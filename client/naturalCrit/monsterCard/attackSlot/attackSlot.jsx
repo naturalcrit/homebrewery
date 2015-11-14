@@ -40,6 +40,7 @@ var AttackSlot = React.createClass({
 			if(diceRoll[0] == 20) res = 'Crit!';
 		}
 		this.state.lastRoll[key] = res
+		this.state.lastRoll[key + 'key'] = _.uniqueId(key);
 		this.setState({
 			lastRoll : this.state.lastRoll
 		})
@@ -67,8 +68,8 @@ var AttackSlot = React.createClass({
 	renderNotes : function(){
 		var notes = _.omit(this.props, ['name', 'atk', 'dmg', 'uses', 'heal']);
 		return _.map(notes, function(text, key){
-			return key + ': ' + text
-		}).join(', ');
+			return <div>{key + ': ' + text}</div>
+		});
 	},
 
 	renderRolls : function(){
@@ -86,7 +87,7 @@ var AttackSlot = React.createClass({
 					})} />
 					{self.props[type]}
 				</button>
-				<span>{self.state.lastRoll[type] || ''}</span>
+				<span key={self.state.lastRoll[type+'key']}>{self.state.lastRoll[type] || ''}</span>
 			</div>
 		})
 

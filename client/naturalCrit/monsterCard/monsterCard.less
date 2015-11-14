@@ -49,6 +49,21 @@
 	&.dead{
 		opacity: 0.3;
 	}
+
+	&>.info{
+		margin-bottom: 10px;
+		.name{
+			font-size: 1.5em;
+			margin-right: 10px;
+		}
+		.stat{
+			font-size: 0.7em;
+			margin-right: 5px;
+			i{
+				font-size: 0.7em;
+			}
+		}
+	}
 	.hpBox{
 		.noselect();
 		position   : absolute;
@@ -73,5 +88,18 @@
 			font-size   : 0.6em;
 			font-weight : 800;
 		}
+	}
+
+	.itemContainer{
+
+		span{
+			cursor: pointer;
+			font-size: 0.7em;
+			margin-right: 5px;
+			&.used{
+				text-decoration: line-through;
+			}
+		}
+
 	}
 }

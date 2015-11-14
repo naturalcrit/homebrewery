@@ -32,15 +32,9 @@ var MonsterCard = React.createClass({
 
 	getInitialState: function() {
 		return {
-			//currentHP: this.props.hp,
 			status : 'normal',
-			usedThings : [],
-
-			lastRoll : {
-
-			},
-
-
+			usedItems : [],
+			lastRoll : { },
 			mousePos : null,
 			tempHP : 0
 		};
@@ -82,6 +76,15 @@ var MonsterCard = React.createClass({
 		})
 	},
 
+	addUsed : function(item, shouldRemove){
+		if(!shouldRemove) this.state.usedItems.push(item);
+		if(shouldRemove) this.state.usedItems.splice(this.state.usedItems.indexOf(item), 1);
+
+		this.setState({
+			usedItems : this.state.usedItems
+		});
+	},
+
 
 	renderHPBox : function(){
 
@@ -100,38 +103,14 @@ var MonsterCard = React.createClass({
 	},
 
 	renderStats : function(){
-
-	},
-
-
-	rollDice : function(key, notation){
-		var additive = 0;
-		var dice = _.reduce([/\+(.*)/, /\-(.*)/], function(r, regexp){
-			var res = r.match(regexp);
-			if(res){
-				additive = res[0]*1;
-				r = r.replace(res[0], '')
-			}
-			return r;
-		}, notation)
-
-		var numDice = dice.split('d')[0];
-		var die = dice.split('d')[1];
-
-		var diceRoll = _.times(numDice, function(){
-			return _.random(1, die);
-		});
-		var res = _.sum(diceRoll) + additive;
-		if(numDice == 1 && die == 20){
-			if(diceRoll[0] == 1) res = 'Fail!';
-			if(diceRoll[0] == 20) res = 'Crit!';
+		var stats = {
+			'fa fa-shield' : this.props.ac,
+			'fa fa-hourglass-2' : this.props.initiative,
 		}
-		this.state.lastRoll[key] = res
-		this.setState({
-			lastRoll : this.state.lastRoll
+		return _.map(stats, function(val, icon){
+			return <span className='stat' key={icon}><i className={icon} /> {val}</span>
 		})
 	},
-
 
 	renderAttacks : function(){
 		var self = this;
@@ -147,9 +126,28 @@ var MonsterCard = React.createClass({
 		})
 	},
 
+	renderItems : function(){
+		var self = this;
+		var usedItems = this.state.usedItems.slice(0);
+		return _.map(this.props.items, function(item, index){
+
+			var used = _.contains(usedItems, item);
+
+			if(used){
+				usedItems.splice(usedItems.indexOf(item), 1);
+			}
+
+			return <span
+				key={index}
+				className={cx({'used' : used})}
+				onClick={self.addUsed.bind(self, item, used)}>
+				{item}
+			</span>
+		});
+	},
+
 	render : function(){
 		var self = this;
-
 		var condition = ''
 		if(this.props.currentHP + this.state.tempHP > this.props.hp) condition='overhealed';
 		if(this.props.currentHP + this.state.tempHP <= this.props.hp * 0.5) condition='hurt';
@@ -164,7 +162,10 @@ var MonsterCard = React.createClass({
 
 
 				{this.renderHPBox()}
-				<div className='name'>{this.props.name}</div>
+				<div className='info'>
+					<span className='name'>{this.props.name}</span>
+					{this.renderStats()}
+				</div>
 
 				<div className='attackContainer'>
 					{this.renderAttacks()}
@@ -172,12 +173,23 @@ var MonsterCard = React.createClass({
 				<div className='spellContainer'>
 					{this.renderSpells()}
 				</div>
-				{this.props.initiative}
 
-				<i className='fa fa-times' onClick={this.props.remove} />
+
+				<div className='itemContainer'>
+					{this.renderItems()}
+				</div>
+
 			</div>
 		);
 	}
 });
 
 module.exports = MonsterCard;
+
+/*
+
+
+{this.props.initiative}
+
+<i className='fa fa-times' onClick={this.props.remove} />
+*/

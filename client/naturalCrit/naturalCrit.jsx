@@ -17,6 +17,7 @@ var MonsterManual = {
 	'goblin' : {
 		"hp" : 40,
 		"mov": 30,
+		"ac" : 13,
 		"attr" : {
 			"str" : 8,
 			"con" : 8,
@@ -49,7 +50,7 @@ var MonsterManual = {
 			}
 		},
 		"abilities" : ["pack tactics"],
-		"items" : []
+		"items" : ['healing_potion', 'healing_potion', 'ring']
 	}
 }
 

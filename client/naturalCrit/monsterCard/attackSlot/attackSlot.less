@@ -12,19 +12,23 @@
 		width : 40%;
 		.name{
 			font-weight : 800;
+			margin-bottom: 3px;
 		}
 		.notes{
 			font-size : 0.8em;
 		}
 		.uses{
 			cursor : pointer;
+			//font-size: 0.8em;
+			//margin-top: 3px;
 		}
 	}
 	.rolls{
 		.roll{
 			margin-bottom : 2px;
-			span{
+			&>span{
 				font-weight: 800;
+				.fadeInLeft();
 			}
 			button{
 				width        : 70px;
