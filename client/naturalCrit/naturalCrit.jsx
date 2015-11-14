@@ -145,7 +145,11 @@ var NaturalCrit = React.createClass({
 				<button className='rollInitiative' onClick={this.addRandomPC}> rollInitiative</button>
 				Project Ready!
 
+
 				{cards}
+
+				<pre>
+				{JSON.stringify(MonsterManual, null, '  ')}</pre>
 			</div>
 		);
 	}
