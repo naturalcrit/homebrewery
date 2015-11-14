@@ -1,0 +1,77 @@
+
+.noselect(){
+	-webkit-touch-callout : none;
+	-webkit-user-select   : none;
+	-khtml-user-select    : none;
+	-moz-user-select      : none;
+	-ms-user-select       : none;
+	user-select           : none;
+}
+.monsterCard{
+	position         : relative;
+	display          : inline-block;
+	vertical-align   : top;
+	box-sizing       : border-box;
+	width            : 250px;
+	margin           : 30px;
+	padding          : 10px;
+	background-color : white;
+	border           : 1px solid #bbb;
+	.healthbar{
+		position         : absolute;
+		top              : 0px;
+		left             : 0px;
+		height           : 3px;
+		max-width        : 100%;
+		background-color : @green;
+		z-index : 50;
+	}
+	.overhealbar{
+		position         : absolute;
+		top              : 0px;
+		left             : 0px;
+		height           : 3px;
+		max-width        : 100%;
+		background-color : @blueLight;
+		z-index : 100;
+	}
+	&.hurt{
+		.healthbar{
+			background-color : orange;
+		}
+	}
+	&.last_legs{
+		background-color: lighten(@red, 49%);
+		.healthbar{
+			background-color : red;
+		}
+	}
+	&.dead{
+		opacity: 0.3;
+	}
+	.hpBox{
+		.noselect();
+		position   : absolute;
+		top        : 5px;
+		right      : 5px;
+		cursor     : pointer;
+		text-align : right;
+		.currentHP{
+			font-size   : 2em;
+			font-weight : 800;
+			line-height : 0.8em;
+			.tempHP{
+				vertical-align : top;
+				font-size      : 0.4em;
+				line-height    : 0.8em;
+			}
+		}
+		.maxHP{
+			font-size : 0.8em;
+		}
+		.hpText{
+			font-size   : 0.6em;
+			font-weight : 800;
+		}
+	}
+}

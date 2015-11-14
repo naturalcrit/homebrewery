@@ -1,0 +1,13 @@
+# Logs
+logs
+*.log
+
+#Ignore our built files
+build/*
+architecture.json
+
+# Ignore sensitive stuff
+/config/*
+!/config/default.json
+
+node_modules
