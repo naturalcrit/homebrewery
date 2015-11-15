@@ -2,16 +2,50 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 
-var MonsterCard = require('./monsterCard/monsterCard.jsx');
+
+var Sidebar = require('./sidebar/sidebar.jsx');
+
+var Encounter = require('./encounter/encounter.jsx');
 
 
-var encounter = {
+var encounters = [
+	{
+		name : 'The Big Bad',
+		desc : 'The big fight!',
+		reward : 'gems',
+		enemies : ['goblin', 'goblin'],
+		reserve : ['goblin'],
+	},
+	{
+		name : 'Demon Goats',
+		desc : 'Gross fight',
+		reward : 'curved horn, goat sac',
+		enemies : ['demon_goat', 'demon_goat', 'demon_goat'],
+		index : {
+			demon_goat : {
+				"hp" : 140,
+				"ac" : 16,
+				"attr" : {
+					"str" : 8,
+					"con" : 8,
+					"dex" : 8,
+					"int" : 8,
+					"wis" : 8,
+					"cha" : 8
+				},
+				"attacks" : {
+					"charge" : {
+						"atk" : "1d20+5",
+						"dmg" : "1d8+5",
+						"type" : "bludge"
+					}
+				},
+				"abilities" : ["charge"],
+			}
+		}
+	},
 
-	name : 'The Big Bad',
-	enemies : ['goblin', 'goblin'],
-	reserve : ['goblin'],
-
-}
+];
 
 var MonsterManual = {
 	'goblin' : {
@@ -65,9 +99,12 @@ var NaturalCrit = React.createClass({
 		var self = this;
 
 		return {
-			enemies: _.indexBy(_.map(encounter.enemies, function(type, index){
-				return  self.createEnemy(type, index)
-			}), 'id')
+
+			selectedEncounterIndex : 0,
+
+			encounters : encounters,
+			monsterManual : MonsterManual,
+
 		};
 	},
 
@@ -103,53 +140,62 @@ var NaturalCrit = React.createClass({
 	},
 
 
-	updateHP : function(enemyId, newHP){
-		this.state.enemies[enemyId].currentHP = newHP;
+
+	handleJSONChange : function(encounterIndex, json){
+
+		this.state.encounters[encounterIndex] = json;
 		this.setState({
-			enemies : this.state.enemies
-		});
-	},
-	removeEnemy : function(enemyId){
-		delete this.state.enemies[enemyId];
-		this.setState({
-			enemies : this.state.enemies
-		});
+			encounters : this.state.encounters
+		})
+
 	},
 
+	handleEncounterChange : function(encounterIndex){
+		this.setState({
+			selectedEncounterIndex : encounterIndex
+		});
+	},
 
 
+	renderSelectedEncounter : function(){
+		var self = this;
+		var selectedEncounter = _.find(this.state.encounters, function(encounter){
+			return encounter.name == self.state.selectedEncounter;
+		});
+
+		if(this.state.selectedEncounterIndex != null){
+			var selectedEncounter = this.state.encounters[this.state.selectedEncounterIndex]
+			return <Encounter
+				key={selectedEncounter.name}
+				{...selectedEncounter}
+				monsterManual={this.state.monsterManual}
+			/>
+		}
+
+		return null;
+	},
 
 
 	render : function(){
 		var self = this;
 
-		console.log();
-
-		var sortedEnemies = _.sortBy(this.state.enemies, function(e){
-			return -e.initiative;
-		});
-
-
-		var cards = _.map(sortedEnemies, function(enemy){
-			return <MonsterCard
-				{...enemy}
-				key={enemy.id}
-				updateHP={self.updateHP.bind(self, enemy.id)}
-				remove={self.removeEnemy.bind(self, enemy.id)} />
-		})
-
-
+		console.log(this.state.encounters);
 
 		return(
 			<div className='naturalCrit'>
-				<button className='rollInitiative' onClick={this.addRandomPC}> rollInitiative</button>
-				Project Ready!
+				<Sidebar
+					selectedEncounter={this.state.selectedEncounterIndex}
+					encounters={this.state.encounters}
+					monsterManual={this.state.monsterManual}
 
+					onSelectEncounter={this.handleEncounterChange}
+					onJSONChange={this.handleJSONChange}
+				/>
 
-				{cards}
+				<div className='encounterContainer'>
+					{this.renderSelectedEncounter()}
+				</div>
 
-				<pre>
-				{JSON.stringify(MonsterManual, null, '  ')}</pre>
 			</div>
 		);
 	}

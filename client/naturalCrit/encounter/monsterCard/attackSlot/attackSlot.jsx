@@ -68,7 +68,7 @@ var AttackSlot = React.createClass({
 	renderNotes : function(){
 		var notes = _.omit(this.props, ['name', 'atk', 'dmg', 'uses', 'heal']);
 		return _.map(notes, function(text, key){
-			return <div>{key + ': ' + text}</div>
+			return <div key={key}>{key + ': ' + text}</div>
 		});
 	},
 

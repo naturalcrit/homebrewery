@@ -13,7 +13,7 @@ var gulp = vitreumTasks(gulp, {
 
 	projectModules: ["./shared/naturalCrit"],
 	additionalRequirePaths : ['./shared'],
-	assetExts: ["*.svg", "*.png", "*.jpg", "*.pdf", "*.eot", "*.ttf", "*.woff", "*.woff2", "*.ico"],
+	assetExts: ["*.svg", "*.png", "*.jpg", "*.pdf", "*.eot", "*.otf", "*.woff", "*.woff2", "*.ico"],
 
 	serverWatchPaths: ["server"],
 	serverScript: "server.js",
@@ -22,7 +22,7 @@ var gulp = vitreumTasks(gulp, {
 		"react-dom",
 		"lodash",
 		"classnames",
-
+		"jsoneditor"
 	],
 	clientLibs: [],
 });

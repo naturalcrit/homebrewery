@@ -1,0 +1,69 @@
+
+@font-face {
+	font-family : CodeLight;
+	src         : url('/assets/naturalCrit/sidebar/CODE Light.otf');
+}
+@font-face {
+	font-family : CodeBold;
+	src         : url('/assets/naturalCrit/sidebar/CODE Bold.otf');
+}
+.sidebar{
+	.animateAll();
+	display        : inline-block;
+	vertical-align : top;
+	box-sizing     : border-box;
+	height         : 100%;
+	width          : 300px;
+
+	&.hide{
+		height : 50px;
+		width  : 50px;
+		.logo .name{
+			left : -200px;
+		}
+		.contents{
+			opacity : 0;
+		}
+	}
+	.logo{
+		padding          : 10px 10px;
+		background-color : @steel;
+		font-family      : 'CodeLight', sans-serif;
+		font-size        : 1.8em;
+		color            : white;
+		svg{
+			vertical-align : middle;
+			height         : 1em;
+			margin-right   : 0.2em;
+			cursor         : pointer;
+			fill           : white;
+		}
+		span.name{
+			.animateAll();
+			position : absolute;
+			top      : 13px;
+			left     : 50px;
+			span.crit{
+				font-family : 'CodeBold';
+			}
+		}
+	}
+
+	.contents{
+		.animate(opacity);
+		width : 100%;
+		&>*{
+			width : 100%;
+		}
+
+		.encounterContainer{
+			.encounter{
+				&.selected{
+					background-color : @green;
+				}
+			}
+		}
+
+
+	}
+}
