@@ -91,7 +91,7 @@ var Sidebar = React.createClass({
 					<div className='encounterContainer'>
 						<h3>
 							<i className='fa fa-flag' /> Encounters
-							<button onClick={} className='addEncounter'>
+							<button className='addEncounter'>
 								<i className='fa fa-plus' />
 							</button>
 						</h3>
