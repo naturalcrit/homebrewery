@@ -15,8 +15,9 @@ var Sidebar = React.createClass({
 
 			onSelectEncounter : function(){},
 			onJSONChange : function(encounterIndex, json){},
-
+			onMonsterManualChange : function(json){},
 			onPlayerChange : function(){},
+			onRemoveEncounter : function(encounterIndex){}
 		};
 	},
 
@@ -33,16 +34,13 @@ var Sidebar = React.createClass({
 	},
 
 	handleJSONChange : function(encounterIndex, json){
-
-
 		this.props.onJSONChange(encounterIndex, json);
-
-
 	},
-
 	handleSelectEncounter : function(encounterIndex){
-		console.log(encounterIndex);
 		this.props.onSelectEncounter(encounterIndex);
+	},
+	handleRemoveEncounter : function(encounterIndex){
+		this.props.onRemoveEncounter(encounterIndex);
 	},
 
 	renderEncounters : function(){
@@ -53,7 +51,7 @@ var Sidebar = React.createClass({
 			var isSelected = self.props.selectedEncounter == index;
 			return <div className={cx('encounter' , {'selected' : isSelected})} key={index}>
 
-				<i onClick={self.handleSelectEncounter.bind(self, index)} className={cx('fa', {
+				<i onClick={self.handleSelectEncounter.bind(self, index)} className={cx('select', 'fa', {
 					'fa-square-o' : !isSelected,
 					'fa-check-square-o' : isSelected,
 				})} />
@@ -64,6 +62,8 @@ var Sidebar = React.createClass({
 					json={encounter}
 					onJSONChange={self.handleJSONChange.bind(self, index)}
 				/>
+
+				<i onClick={self.handleRemoveEncounter.bind(self, index)} className='remove fa fa-times' />
 			</div>
 		})
 	},
@@ -81,11 +81,20 @@ var Sidebar = React.createClass({
 				<div className='contents'>
 
 					<div className='monsterManualContainer'>
-						<i className='fa fa-book' />
-						<JSONFileEditor name="Monster Manual" />
+						<JSONFileEditor
+							name="Monster Manual"
+							json={this.props.monsterManual}
+							onJSONChange={this.onMonsterManualChange}
+						/>
 					</div>
+
 					<div className='encounterContainer'>
-						<h3> <i className='fa fa-flag' /> Encounters </h3>
+						<h3>
+							<i className='fa fa-flag' /> Encounters
+							<button onClick={} className='addEncounter'>
+								<i className='fa fa-plus' />
+							</button>
+						</h3>
 						{this.renderEncounters()}
 
 						<div className='controls'>

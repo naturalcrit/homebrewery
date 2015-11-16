@@ -2,34 +2,52 @@
 @import (less) "./jsoneditor.css";
 .jsonFileEditor{
 	position : relative;
-	width    : 100%;
+	padding : 10px;
 	&.showEditor{
 		.jsonEditor{
 			display : initial;
 		}
 	}
-
 	.jsonEditor{
 		position         : absolute;
 		display          : none;
 		top              : 100%;
 		left             : 0px;
 		z-index          : 1000;
+		min-width        : 400px;
 		background-color : white;
 	}
 	.name{
 		display     : inline-block;
 		font-size   : 0.8em;
 		font-weight : 800;
+		min-width: 100px;
 	}
 	.controls{
-		position : absolute;
-		top      : 0px;
-		right    : 0px;
+		display: inline-block;
+		float: right;
+		//position : absolute;
+		//top      : 0px;
+		//right    : 0px;
 
+		button{
+			outline: none;
+			border : none;
+			cursor: pointer;
+			background-color: transparent;
+			.animate(color);
+
+			&:hover{
+				&.showEditor{ color : @green; }
+				&.downloadJSON{ color : @blue; }
+				&.uploadJSON{ color : @orange; }
+			}
+
+
+
+		}
 	}
-
 	input[type="file"]{
-		display: none;
+		display : none;
 	}
 }

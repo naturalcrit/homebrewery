@@ -68,15 +68,16 @@ var Encounter = React.createClass({
 
 
 	getPlayerObjects : function(){
-		return _.map(this.props.players.split('\n'), function(line){
+		return _.reduce(this.props.players.split('\n'), function(r, line){
 			var parts = line.split(' ');
-			if(parts.length != 2) return null;
-			return {
+			if(parts.length != 2) return r;
+			r.push({
 				name : parts[0],
 				initiative : parts[1] * 1,
 				isPC : true
-			}
-		})
+			})
+			return r;
+		},[])
 	},
 
 
@@ -84,7 +85,7 @@ var Encounter = React.createClass({
 		var self = this;
 
 		var sortedEnemies = _.sortBy(_.union(_.values(this.state.enemies), this.getPlayerObjects()), function(e){
-			if(e.initiative) return -e.initiative;
+			if(e && e.initiative) return -e.initiative;
 			return 0;
 		});
 

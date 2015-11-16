@@ -41,6 +41,7 @@
 			cursor         : pointer;
 			fill           : white;
 		}
+
 		span.name{
 			.animateAll();
 			position : absolute;
@@ -68,17 +69,51 @@
 		.encounterContainer{
 			margin-bottom : 20px;
 			h3{
-				background-color : fade(@red, 25%);
+				background-color : @red;
+				color : white;
+
+				button{
+					outline: none;
+					border : none;
+					cursor: pointer;
+					background-color: transparent;
+					.animate(color);
+					float : right;
+					&:hover{
+						color : white;
+					}
+				}
 			}
 			.encounter{
+				padding-left: 20px;
+				position: relative;
+				i.remove{
+					position: absolute;
+					top : 3px;
+					right : 3px;
+					font-size: 0.6em;
+					cursor: pointer;
+					color : #333;
+					&:hover{
+						color: @red;
+					}
+				}
+				i.select{
+					cursor: pointer;
+				}
+				.jsonFileEditor{
+					display: inline-block;
+				}
 				&.selected{
-					background-color : @green;
+					background-color : fade(@green, 30%);
 				}
 			}
 		}
 		.addPlayers{
 			h3{
-				background-color : fade(@purple, 25%);
+				//background-color : fade(@purple, 25%);
+				color : white;
+				background-color: @purple;
 			}
 			textarea{
 				height : 80px;

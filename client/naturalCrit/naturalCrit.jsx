@@ -47,7 +47,7 @@ var encounters = [
 
 ];
 
-var MonsterManual = {
+var monsterManual = {
 	'goblin' : {
 		"hp" : 40,
 		"mov": 30,
@@ -97,69 +97,48 @@ var NaturalCrit = React.createClass({
 
 	getInitialState: function() {
 		var self = this;
-
 		return {
-
 			selectedEncounterIndex : 0,
+			encounters : JSON.parse(localStorage.getItem('encounters')) || encounters,
+			monsterManual : JSON.parse(localStorage.getItem('monsterManual')) || monsterManual,
 
-			encounters : encounters,
-			monsterManual : MonsterManual,
-
-			players : 'jasper 13'
+			players : localStorage.getItem('players') || 'jasper 13\nzatch 19'
 
 		};
 	},
 
-	createEnemy : function(type, index){
-		var stats = MonsterManual[type]
-		return _.extend({
-			id : type + index,
-			name : type,
-			currentHP : stats.hp,
-			initiative : _.random(1,20) + attrMod(stats.attr.dex)
-		}, stats);
-	},
 
-	addPC : function(name, initiative){
-		this.state.enemies[name] = {
-			name : name,
-			id : name,
-			initiative : initiative,
-			isPC : true
-		};
-		this.setState({
-			enemies : this.state.enemies
-		})
-
-	},
-
-
-	addRandomPC : function(){
-		this.addPC(
-			_.sample(['zatch', 'jasper', 'el toro', 'tulik']) + _.random(1,1000),
-			_.random(1,25)
-		)
-	},
-
-
-
-	handleJSONChange : function(encounterIndex, json){
+	handleEncounterJSONChange : function(encounterIndex, json){
 		this.state.encounters[encounterIndex] = json;
 		this.setState({
 			encounters : this.state.encounters
 		})
+		localStorage.setItem("encounters", JSON.stringify(this.state.encounters));
 	},
-	handleEncounterChange : function(encounterIndex){
+	handleMonsterManualJSONChange : function(json){
 		this.setState({
-			selectedEncounterIndex : encounterIndex
+			monsterManual : json
 		});
+		localStorage.setItem("monsterManual", JSON.stringify(this.state.monsterManual));
 	},
 	handlePlayerChange : function(e){
 		this.setState({
 			players : e.target.value
 		});
+		localStorage.setItem("players", e.target.value);
 	},
-
+	handleSelectedEncounterChange : function(encounterIndex){
+		this.setState({
+			selectedEncounterIndex : encounterIndex
+		});
+	},
+	handleRemoveEncounter : function(encounterIndex){
+		this.state.encounters.splice(encounterIndex, 1);
+		this.setState({
+			encounters : this.state.encounters
+		});
+		localStorage.setItem("encounters", JSON.stringify(this.state.encounters));
+	},
 
 	renderSelectedEncounter : function(){
 		var self = this;
@@ -183,9 +162,6 @@ var NaturalCrit = React.createClass({
 
 	render : function(){
 		var self = this;
-
-		console.log(this.state.encounters);
-
 		return(
 			<div className='naturalCrit'>
 				<Sidebar
@@ -194,13 +170,15 @@ var NaturalCrit = React.createClass({
 					monsterManual={this.state.monsterManual}
 					players={this.state.players}
 
-					onSelectEncounter={this.handleEncounterChange}
-					onJSONChange={this.handleJSONChange}
+					onSelectEncounter={this.handleSelectedEncounterChange}
+					onRemoveEncounter={this.handleRemoveEncounter}
+					onJSONChange={this.handleEncounterJSONChange}
+					onMonsterManualChange={this.handleMonsterManualJSONChange}
 					onPlayerChange={this.handlePlayerChange}
 				/>
 
 
-					{this.renderSelectedEncounter()}
+				{this.renderSelectedEncounter()}
 
 			</div>
 		);

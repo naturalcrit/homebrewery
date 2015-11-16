@@ -2,29 +2,16 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 
-
 var JSONEditor = require('jsoneditor');
 
-//var editor = new JSONEditor(container);
-
-var json = {
-	test : 6,
-	arr : [true, 1,2,3,4],
-	yo : {
-		yeah : true
-	}
-}
 
 var downloadFile = function(filename, text) {
 	var element = document.createElement('a');
 	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
 	element.setAttribute('download', filename);
-
 	element.style.display = 'none';
 	document.body.appendChild(element);
-
 	element.click();
-
 	document.body.removeChild(element);
 }
 
@@ -32,10 +19,8 @@ var downloadFile = function(filename, text) {
 var JsonFileEditor = React.createClass({
 	getDefaultProps: function() {
 		return {
-			name : "yo",
-
-			json : json,
-
+			name : "test",
+			json : {},
 			onJSONChange : function(){}
 		};
 	},
@@ -45,11 +30,11 @@ var JsonFileEditor = React.createClass({
 			showEditor: false
 		};
 	},
-
 	componentWillReceiveProps: function(nextProps) {
-		//this.editor.set(nextProps.json);
+		if(JSON.stringify(nextProps.json) != JSON.stringify(this.editor.get())){
+			this.editor.set(nextProps.json);
+		}
 	},
-
 	componentDidMount: function() {
 		this.editor = new JSONEditor(this.refs.editor, {
 			change : this.handleJSONChange,
@@ -57,23 +42,14 @@ var JsonFileEditor = React.createClass({
 		}, this.props.json)
 	},
 
-
-
-
 	handleJSONChange : function(){
-
 		this.props.onJSONChange(this.editor.get());
-
-		//try to store in local storage?
-
 	},
-
 	handleShowEditorClick : function(){
 		this.setState({
 			showEditor : !this.state.showEditor
 		})
 	},
-
 	handleDownload  : function(){
 		downloadFile(this.props.name + '.json', JSON.stringify(this.props.json, null, '\t'));
 	},
@@ -88,12 +64,6 @@ var JsonFileEditor = React.createClass({
 	handleUploadClick : function(){
 		this.refs.uploader.click()
 	},
-	handleRemove  : function(){
-
-
-
-	},
-
 
 	renderEditor : function(){
 		return <div className='jsonEditor' ref='editor' />
@@ -104,22 +74,13 @@ var JsonFileEditor = React.createClass({
 		var self = this;
 		return(
 			<div className={cx('jsonFileEditor', {'showEditor' : this.state.showEditor})}>
-
 				<span className='name'>{this.props.name}</span>
 
-
 				<div className='controls'>
-
-
 					<button className='showEditor' onClick={this.handleShowEditorClick}><i className='fa fa-edit' /></button>
 					<button className='downloadJSON' onClick={this.handleDownload}><i className='fa fa-download' /></button>
 					<button className='uploadJSON' onClick={this.handleUploadClick}><i className='fa fa-cloud-upload' /></button>
-
-
-
-
 				</div>
-
 
 				{this.renderEditor()}
 				<input type="file" id="input" onChange={this.handleUpload} ref='uploader' />

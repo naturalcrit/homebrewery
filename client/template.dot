@@ -7,7 +7,7 @@
 		<link rel="icon" href="/assets/NaturalCrit/favicon.ico" type="image/x-icon" />
 		{{=vitreum.css}}
 		{{=vitreum.globals}}
-		<title>NaturalCrit</title>
+		<title>Natural Crit - D&D Combat Manager</title>
 	</head>
 	<body>
 		<div id="reactContainer">{{=vitreum.component}}</div>

@@ -131,13 +131,10 @@ var MonsterCard = React.createClass({
 		var self = this;
 		var usedItems = this.state.usedItems.slice(0);
 		return _.map(this.props.items, function(item, index){
-
 			var used = _.contains(usedItems, item);
-
 			if(used){
 				usedItems.splice(usedItems.indexOf(item), 1);
 			}
-
 			return <span
 				key={index}
 				className={cx({'used' : used})}
@@ -174,11 +171,13 @@ var MonsterCard = React.createClass({
 					{this.renderSpells()}
 				</div>
 
-
+				<div className='abilitiesContainer'>
+					{this.props.abilities}
+				</div>
 				<div className='itemContainer'>
+					<i className='fa fa-flask' />
 					{this.renderItems()}
 				</div>
-
 			</div>
 		);
 	}
