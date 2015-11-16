@@ -15,6 +15,19 @@ var json = {
 	}
 }
 
+var downloadFile = function(filename, text) {
+	var element = document.createElement('a');
+	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+	element.setAttribute('download', filename);
+
+	element.style.display = 'none';
+	document.body.appendChild(element);
+
+	element.click();
+
+	document.body.removeChild(element);
+}
+
 
 var JsonFileEditor = React.createClass({
 	getDefaultProps: function() {
@@ -62,9 +75,22 @@ var JsonFileEditor = React.createClass({
 	},
 
 	handleDownload  : function(){
-
+		downloadFile(this.props.name + '.json', JSON.stringify(this.props.json, null, '\t'));
+	},
+	handleUpload : function(e){
+		var self = this;
+		var reader = new FileReader();
+		reader.onload = function() {
+			self.props.onJSONChange(JSON.parse(reader.result));
+		}
+		reader.readAsText(e.target.files[0]);
+	},
+	handleUploadClick : function(){
+		this.refs.uploader.click()
 	},
 	handleRemove  : function(){
+
+
 
 	},
 
@@ -87,17 +113,21 @@ var JsonFileEditor = React.createClass({
 
 					<button className='showEditor' onClick={this.handleShowEditorClick}><i className='fa fa-edit' /></button>
 					<button className='downloadJSON' onClick={this.handleDownload}><i className='fa fa-download' /></button>
-					<div className='remove' onClick={this.handleRemove}><i className='fa fa-times' /></div>
+					<button className='uploadJSON' onClick={this.handleUploadClick}><i className='fa fa-cloud-upload' /></button>
+
+
 
 
 				</div>
 
 
 				{this.renderEditor()}
-
+				<input type="file" id="input" onChange={this.handleUpload} ref='uploader' />
 			</div>
 		);
 	}
 });
 
 module.exports = JsonFileEditor;
+
+//<div className='remove' onClick={this.handleRemove}><i className='fa fa-times' /></div>

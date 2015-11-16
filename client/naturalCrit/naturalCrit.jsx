@@ -105,6 +105,8 @@ var NaturalCrit = React.createClass({
 			encounters : encounters,
 			monsterManual : MonsterManual,
 
+			players : 'jasper 13'
+
 		};
 	},
 
@@ -142,17 +144,19 @@ var NaturalCrit = React.createClass({
 
 
 	handleJSONChange : function(encounterIndex, json){
-
 		this.state.encounters[encounterIndex] = json;
 		this.setState({
 			encounters : this.state.encounters
 		})
-
 	},
-
 	handleEncounterChange : function(encounterIndex){
 		this.setState({
 			selectedEncounterIndex : encounterIndex
+		});
+	},
+	handlePlayerChange : function(e){
+		this.setState({
+			players : e.target.value
 		});
 	},
 
@@ -169,6 +173,7 @@ var NaturalCrit = React.createClass({
 				key={selectedEncounter.name}
 				{...selectedEncounter}
 				monsterManual={this.state.monsterManual}
+				players={this.state.players}
 			/>
 		}
 
@@ -187,14 +192,15 @@ var NaturalCrit = React.createClass({
 					selectedEncounter={this.state.selectedEncounterIndex}
 					encounters={this.state.encounters}
 					monsterManual={this.state.monsterManual}
+					players={this.state.players}
 
 					onSelectEncounter={this.handleEncounterChange}
 					onJSONChange={this.handleJSONChange}
+					onPlayerChange={this.handlePlayerChange}
 				/>
 
-				<div className='encounterContainer'>
+
 					{this.renderSelectedEncounter()}
-				</div>
 
 			</div>
 		);

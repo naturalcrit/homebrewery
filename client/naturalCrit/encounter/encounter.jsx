@@ -16,8 +16,8 @@ var Encounter = React.createClass({
 			desc : '',
 			reward : '',
 			enemies : [],
+			players : '',
 			index : {},
-
 
 			monsterManual : {}
 		};
@@ -67,33 +67,59 @@ var Encounter = React.createClass({
 	},
 
 
+	getPlayerObjects : function(){
+		return _.map(this.props.players.split('\n'), function(line){
+			var parts = line.split(' ');
+			if(parts.length != 2) return null;
+			return {
+				name : parts[0],
+				initiative : parts[1] * 1,
+				isPC : true
+			}
+		})
+	},
+
+
 	renderEnemies : function(){
 		var self = this;
 
-		var sortedEnemies = _.sortBy(this.state.enemies, function(e){
-			return -e.initiative;
+		var sortedEnemies = _.sortBy(_.union(_.values(this.state.enemies), this.getPlayerObjects()), function(e){
+			if(e.initiative) return -e.initiative;
+			return 0;
 		});
 
 		return _.map(sortedEnemies, function(enemy){
+			if(enemy.isPC){
+				return <PlayerCard {...enemy} key={enemy.name} />
+			}
+
 			return <MonsterCard
 				{...enemy}
 				key={enemy.id}
 				updateHP={self.updateHP.bind(self, enemy.id)}
-				remove={self.removeEnemy.bind(self, enemy.id)} />
+				remove={self.removeEnemy.bind(self, enemy.id)}
+			/>
 		})
 	},
 
 	render : function(){
 		var self = this;
 
+		var reward;
+		if(this.props.reward){
+			reward = <div className='reward'>
+				<i className='fa fa-trophy' />
+				{this.props.reward}
+			</div>
+		}
 
 		return(
-			<div className='encounter'>
-
+			<div className='mainEncounter'>
 				<div className='info'>
-					{this.props.name}
+					<h1>{this.props.name}</h1>
+					<p>{this.props.desc}</p>
+					{reward}
 				</div>
-
 
 				<div className='cardContainer'>
 					{this.renderEnemies()}
@@ -104,3 +130,21 @@ var Encounter = React.createClass({
 });
 
 module.exports = Encounter;
+
+
+var PlayerCard = React.createClass({
+
+	getDefaultProps: function() {
+		return {
+			name : '',
+			initiative : 0
+		};
+	},
+	render : function(){
+		return <div className='playerCard'>
+			<span className='name'>{_.startCase(this.props.name)}</span>
+			<span className='initiative'><i className='fa fa-hourglass-2'/>{this.props.initiative}</span>
+		</div>
+	},
+
+})

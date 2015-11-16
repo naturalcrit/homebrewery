@@ -14,8 +14,9 @@ var Sidebar = React.createClass({
 			encounters : [],
 
 			onSelectEncounter : function(){},
-
 			onJSONChange : function(encounterIndex, json){},
+
+			onPlayerChange : function(){},
 		};
 	},
 
@@ -48,7 +49,6 @@ var Sidebar = React.createClass({
 		var self = this;
 
 		return _.map(this.props.encounters, function(encounter, index){
-			console.log(self.props.selectedEncounter, index);
 
 			var isSelected = self.props.selectedEncounter == index;
 			return <div className={cx('encounter' , {'selected' : isSelected})} key={index}>
@@ -85,13 +85,17 @@ var Sidebar = React.createClass({
 						<JSONFileEditor name="Monster Manual" />
 					</div>
 					<div className='encounterContainer'>
-						<h3> <i className='fa fa-flag' /> encounters </h3>
+						<h3> <i className='fa fa-flag' /> Encounters </h3>
 						{this.renderEncounters()}
-					</div>
-					<div className='encounterStats'>
 
+						<div className='controls'>
+
+						</div>
 					</div>
-					<div className='addPC'>
+					<div className='addPlayers'>
+						<h3> <i className='fa fa-group' /> Players </h3>
+
+						<textarea value={this.props.players} onChange={this.props.onPlayerChange} />
 
 					</div>
 

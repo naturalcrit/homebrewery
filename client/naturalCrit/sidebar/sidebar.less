@@ -9,19 +9,22 @@
 }
 .sidebar{
 	.animateAll();
-	display        : inline-block;
-	vertical-align : top;
-	box-sizing     : border-box;
-	height         : 100%;
-	width          : 300px;
-
+	float            : left;
+	box-sizing       : border-box;
+	height           : 100%;
+	width            : @sidebarWidth;
+	padding-bottom   : 20px;
+	background-color : white;
+	//border           : 1px solid @steel;
 	&.hide{
 		height : 50px;
 		width  : 50px;
 		.logo .name{
-			left : -200px;
+			left    : -200px;
+			opacity : 0;
 		}
 		.contents{
+			height  : 0px;
 			opacity : 0;
 		}
 	}
@@ -43,27 +46,45 @@
 			position : absolute;
 			top      : 13px;
 			left     : 50px;
+			opacity  : 1;
 			span.crit{
 				font-family : 'CodeBold';
 			}
 		}
 	}
-
 	.contents{
 		.animate(opacity);
-		width : 100%;
+		box-sizing : border-box;
+		width      : 100%;
 		&>*{
 			width : 100%;
 		}
-
+		h3{
+			padding        : 10px;
+			font-size      : 0.8em;
+			font-weight    : 800;
+			text-transform : uppercase;
+		}
 		.encounterContainer{
+			margin-bottom : 20px;
+			h3{
+				background-color : fade(@red, 25%);
+			}
 			.encounter{
 				&.selected{
 					background-color : @green;
 				}
 			}
 		}
-
-
+		.addPlayers{
+			h3{
+				background-color : fade(@purple, 25%);
+			}
+			textarea{
+				height : 80px;
+				width  : 100px;
+				margin : 10px;
+			}
+		}
 	}
 }

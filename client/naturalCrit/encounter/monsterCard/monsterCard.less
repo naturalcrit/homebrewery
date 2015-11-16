@@ -7,13 +7,42 @@
 	-ms-user-select       : none;
 	user-select           : none;
 }
+
+@marginSize : 10px;
+
+.playerCard{
+	display          : inline-block;
+	box-sizing       : border-box;
+	margin           : @marginSize;
+	padding          : 10px;
+	background-color : white;
+	border           : 1px solid #bbb;
+
+	.name{
+		margin-right: 20px;
+	}
+	.initiative{
+		font-size: 0.8em;
+		i{
+			font-size: 0.8em;
+		}
+	}
+
+	&:nth-child(5n + 1){ background-color: fade(@blue, 25%); }
+	&:nth-child(5n + 2){ background-color: fade(@purple, 25%); }
+	&:nth-child(5n + 3){ background-color: fade(@steel, 25%); }
+	&:nth-child(5n + 4){ background-color: fade(@green, 25%); }
+	&:nth-child(5n + 5){ background-color: fade(@orange, 25%); }
+}
+
+
 .monsterCard{
 	position         : relative;
 	display          : inline-block;
 	vertical-align   : top;
 	box-sizing       : border-box;
-	width            : 250px;
-	margin           : 30px;
+	width            : 220px;
+	margin           : @marginSize;
 	padding          : 10px;
 	background-color : white;
 	border           : 1px solid #bbb;
@@ -81,7 +110,7 @@
 				line-height    : 0.8em;
 			}
 		}
-		.maxHP{
+		.stat{
 			font-size : 0.8em;
 		}
 		.hpText{

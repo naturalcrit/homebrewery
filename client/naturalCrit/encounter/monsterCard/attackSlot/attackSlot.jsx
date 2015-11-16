@@ -83,11 +83,11 @@ var AttackSlot = React.createClass({
 					<i className={cx('fa', {
 						'fa-hand-grab-o' : type=='dmg',
 						'fa-bullseye' : type=='atk',
-						'fa-medkit' : type=='heal'
+						'fa-plus' : type=='heal'
 					})} />
 					{self.props[type]}
 				</button>
-				<span key={self.state.lastRoll[type+'key']}>{self.state.lastRoll[type] || ''}</span>
+				<span key={self.state.lastRoll[type+'key']}>{self.state.lastRoll[type]}</span>
 			</div>
 		})
 

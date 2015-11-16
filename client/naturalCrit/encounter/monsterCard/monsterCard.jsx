@@ -87,6 +87,7 @@ var MonsterCard = React.createClass({
 
 
 	renderHPBox : function(){
+		var self = this;
 
 		var tempHP
 		if(this.state.tempHP){
@@ -98,17 +99,17 @@ var MonsterCard = React.createClass({
 			<div className='currentHP'>
 				{tempHP} {this.props.currentHP}
 			</div>
-			<div className='maxHP'>{this.props.hp}</div>
+			{self.renderStats()}
 		</div>
 	},
 
 	renderStats : function(){
 		var stats = {
 			'fa fa-shield' : this.props.ac,
-			'fa fa-hourglass-2' : this.props.initiative,
+			//'fa fa-hourglass-2' : this.props.initiative,
 		}
 		return _.map(stats, function(val, icon){
-			return <span className='stat' key={icon}><i className={icon} /> {val}</span>
+			return <div className='stat' key={icon}> {val} <i className={icon} /></div>
 		})
 	},
 
@@ -164,7 +165,6 @@ var MonsterCard = React.createClass({
 				{this.renderHPBox()}
 				<div className='info'>
 					<span className='name'>{this.props.name}</span>
-					{this.renderStats()}
 				</div>
 
 				<div className='attackContainer'>
