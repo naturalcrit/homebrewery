@@ -103,8 +103,13 @@ var Sidebar = React.createClass({
 					</div>
 					<div className='addPlayers'>
 						<h3> <i className='fa fa-group' /> Players </h3>
-
 						<textarea value={this.props.players} onChange={this.props.onPlayerChange} />
+					</div>
+
+					<div className='dmDice'>
+						<h3> <i className='fa fa-random' /> DM Dice </h3>
+
+						ah yeah
 
 					</div>
 

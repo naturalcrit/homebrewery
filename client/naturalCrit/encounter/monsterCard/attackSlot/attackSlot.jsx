@@ -2,6 +2,8 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 
+var RollDice = require('naturalCrit/rollDice');
+
 var AttackSlot = React.createClass({
 	getDefaultProps: function() {
 		return {
@@ -18,27 +20,7 @@ var AttackSlot = React.createClass({
 	},
 
 	rollDice : function(key, notation){
-		var additive = 0;
-		var dice = _.reduce([/\+(.*)/, /\-(.*)/], function(r, regexp){
-			var res = r.match(regexp);
-			if(res){
-				additive = res[0]*1;
-				r = r.replace(res[0], '')
-			}
-			return r;
-		}, notation)
-
-		var numDice = dice.split('d')[0];
-		var die = dice.split('d')[1];
-
-		var diceRoll = _.times(numDice, function(){
-			return _.random(1, die);
-		});
-		var res = _.sum(diceRoll) + additive;
-		if(numDice == 1 && die == 20){
-			if(diceRoll[0] == 1) res = 'Fail!';
-			if(diceRoll[0] == 20) res = 'Crit!';
-		}
+		var res = RollDice(notation);
 		this.state.lastRoll[key] = res
 		this.state.lastRoll[key + 'key'] = _.uniqueId(key);
 		this.setState({
