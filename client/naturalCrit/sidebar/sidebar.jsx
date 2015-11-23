@@ -4,6 +4,13 @@ var cx = require('classnames');
 
 var JSONFileEditor = require('naturalCrit/jsonFileEditor/jsonFileEditor.jsx');
 
+
+var DMDice = require('./dmDice/dmDice.jsx');
+
+var Encounters = require('./encounters/encounters.jsx');
+
+
+
 var Sidebar = React.createClass({
 
 	getDefaultProps: function() {
@@ -101,17 +108,16 @@ var Sidebar = React.createClass({
 
 						</div>
 					</div>
+
+					<Encounters />
+
 					<div className='addPlayers'>
 						<h3> <i className='fa fa-group' /> Players </h3>
 						<textarea value={this.props.players} onChange={this.props.onPlayerChange} />
 					</div>
 
-					<div className='dmDice'>
-						<h3> <i className='fa fa-random' /> DM Dice </h3>
 
-						ah yeah
-
-					</div>
+					<DMDice />
 
 
 
