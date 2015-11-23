@@ -4,6 +4,9 @@ var cx = require('classnames');
 
 var JSONFileEditor = require('naturalCrit/jsonFileEditor/jsonFileEditor.jsx');
 
+var GetRandomEncounter = require('naturalCrit/randomEncounter.js');
+
+
 var Encounters = React.createClass({
 	getDefaultProps: function() {
 		return {
@@ -24,6 +27,10 @@ var Encounters = React.createClass({
 	},
 	handleRemoveEncounter : function(encounterIndex){
 		this.props.onRemoveEncounter(encounterIndex);
+	},
+
+	addRandomEncounter : function(){
+		this.props.onJSONChange(this.props.encounters.length, GetRandomEncounter());
 	},
 
 
@@ -58,7 +65,7 @@ var Encounters = React.createClass({
 				<h3>
 					<i className='fa fa-flag' /> Encounters
 					<button className='addEncounter'>
-						<i className='fa fa-plus' />
+						<i className='fa fa-plus' onClick={this.addRandomEncounter}/>
 					</button>
 				</h3>
 				{this.renderEncounters()}

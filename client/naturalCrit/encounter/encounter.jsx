@@ -17,7 +17,7 @@ var Encounter = React.createClass({
 			reward : '',
 			enemies : [],
 			players : '',
-			index : {},
+			unique : {},
 
 			monsterManual : {}
 		};
@@ -109,8 +109,7 @@ var Encounter = React.createClass({
 		var reward;
 		if(this.props.reward){
 			reward = <div className='reward'>
-				<i className='fa fa-trophy' />
-				{this.props.reward}
+				<i className='fa fa-trophy' /> Rewards: {this.props.reward}
 			</div>
 		}
 

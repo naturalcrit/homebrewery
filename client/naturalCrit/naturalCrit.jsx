@@ -44,7 +44,7 @@ var encounters = [
 
 ];
 
-var defaultMonsterManual = require('./defaultMonsterManual.js');
+var defaultMonsterManual = require('naturalCrit/defaultMonsterManual.js');
 
 var attrMod = function(attr){
 	return Math.floor(attr/2) - 5;
@@ -101,13 +101,8 @@ var NaturalCrit = React.createClass({
 
 	renderSelectedEncounter : function(){
 		var self = this;
-		var selectedEncounter = _.find(this.state.encounters, function(encounter){
-			return encounter.name == self.state.selectedEncounter;
-		});
 
-
-
-		if(this.state.selectedEncounterIndex != null && selectedEncounter != null){
+		if(this.state.selectedEncounterIndex != null && this.state.encounters[this.state.selectedEncounterIndex]){
 			var selectedEncounter = this.state.encounters[this.state.selectedEncounterIndex]
 			return <Encounter
 				key={selectedEncounter.name}
