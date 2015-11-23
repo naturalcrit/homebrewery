@@ -2,6 +2,7 @@ module.exports = {
 	goblin : {
 		hp : 40,
 		mov: 30,
+		cr : 0.25,
 		ac : 13,
 		attr : {
 			str : 8,
