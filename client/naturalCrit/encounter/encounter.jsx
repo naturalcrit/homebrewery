@@ -43,7 +43,8 @@ var Encounter = React.createClass({
 	},
 
 	createEnemy : function(props, type, index){
-		var stats = props.index[type] || props.monsterManual[type];
+		var stats = props.unique[type] || props.monsterManual[type];
+		if(!stats) return;
 		return _.extend({
 			id : type + index,
 			name : type,

@@ -18,7 +18,7 @@ var encounters = [
 		desc : 'Gross fight',
 		reward : 'curved horn, goat sac',
 		enemies : ['demon_goat', 'demon_goat', 'demon_goat'],
-		index : {
+		unique : {
 			demon_goat : {
 				"hp" : 140,
 				"ac" : 16,
