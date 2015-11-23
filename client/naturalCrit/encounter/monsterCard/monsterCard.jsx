@@ -127,6 +127,14 @@ var MonsterCard = React.createClass({
 		})
 	},
 
+	renderAbilities : function(){
+		return _.map(this.props.abilities, function(text, name){
+			return <div className='ability' key={name}>
+				<span className='name'>{name}</span>: {text}
+			</div>
+		});
+	},
+
 	renderItems : function(){
 		var self = this;
 		var usedItems = this.state.usedItems.slice(0);
@@ -172,7 +180,7 @@ var MonsterCard = React.createClass({
 				</div>
 
 				<div className='abilitiesContainer'>
-					{this.props.abilities}
+					{this.renderAbilities()}
 				</div>
 				<div className='itemContainer'>
 					<i className='fa fa-flask' />

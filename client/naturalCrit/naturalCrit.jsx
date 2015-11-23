@@ -2,11 +2,8 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 
-
 var Sidebar = require('./sidebar/sidebar.jsx');
-
 var Encounter = require('./encounter/encounter.jsx');
-
 
 var encounters = [
 	{
@@ -47,46 +44,7 @@ var encounters = [
 
 ];
 
-var monsterManual = {
-	'goblin' : {
-		"hp" : 40,
-		"mov": 30,
-		"ac" : 13,
-		"attr" : {
-			"str" : 8,
-			"con" : 8,
-			"dex" : 8,
-			"int" : 8,
-			"wis" : 8,
-			"cha" : 8
-		},
-		"attacks" : {
-			"dagger" : {
-				"atk" : "1d20-5",
-				"dmg" : "1d4+5",
-				"type" : "pierce",
-				"notes" : "Super cool"
-			},
-			"bow" : {
-				"atk" : "1d20+2",
-				"dmg" : "6d6",
-				"rng" : "30"
-			}
-		},
-		"spells" : {
-			"fireball": {
-				"dmg" : "6d6",
-				"uses" : 4
-			},
-			"healing_bolt" : {
-				"heal" : "2d8+4",
-				"uses" : 6
-			}
-		},
-		"abilities" : ["pack tactics"],
-		"items" : ['healing_potion', 'healing_potion', 'ring']
-	}
-}
+var defaultMonsterManual = require('./defaultMonsterManual.js');
 
 var attrMod = function(attr){
 	return Math.floor(attr/2) - 5;
@@ -100,7 +58,7 @@ var NaturalCrit = React.createClass({
 		return {
 			selectedEncounterIndex : 0,
 			encounters : JSON.parse(localStorage.getItem('encounters')) || encounters,
-			monsterManual : JSON.parse(localStorage.getItem('monsterManual')) || monsterManual,
+			monsterManual : JSON.parse(localStorage.getItem('monsterManual')) || defaultMonsterManual,
 
 			players : localStorage.getItem('players') || 'jasper 13\nzatch 19'
 
@@ -128,6 +86,7 @@ var NaturalCrit = React.createClass({
 		localStorage.setItem("players", e.target.value);
 	},
 	handleSelectedEncounterChange : function(encounterIndex){
+		console.log(encounterIndex);
 		this.setState({
 			selectedEncounterIndex : encounterIndex
 		});
@@ -146,7 +105,9 @@ var NaturalCrit = React.createClass({
 			return encounter.name == self.state.selectedEncounter;
 		});
 
-		if(this.state.selectedEncounterIndex != null){
+
+
+		if(this.state.selectedEncounterIndex != null && selectedEncounter != null){
 			var selectedEncounter = this.state.encounters[this.state.selectedEncounterIndex]
 			return <Encounter
 				key={selectedEncounter.name}

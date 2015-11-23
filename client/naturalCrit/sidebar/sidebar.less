@@ -45,11 +45,19 @@
 		span.name{
 			.animateAll();
 			position : absolute;
-			top      : 13px;
+			top      : 15px;
 			left     : 50px;
 			opacity  : 1;
+			font-size: 0.9em;
+			line-height: 0.5em;
 			span.crit{
 				font-family : 'CodeBold';
+			}
+			small{
+				font-size: 0.3em;
+				font-family : 'Open Sans';
+				font-weight: 800;
+				text-transform: uppercase;
 			}
 		}
 	}
@@ -66,49 +74,6 @@
 			font-weight    : 800;
 			text-transform : uppercase;
 		}
-		.encounterContainer{
-			margin-bottom : 20px;
-			h3{
-				background-color : @red;
-				color : white;
-
-				button{
-					outline: none;
-					border : none;
-					cursor: pointer;
-					background-color: transparent;
-					.animate(color);
-					float : right;
-					&:hover{
-						color : white;
-					}
-				}
-			}
-			.encounter{
-				padding-left: 20px;
-				position: relative;
-				i.remove{
-					position: absolute;
-					top : 3px;
-					right : 3px;
-					font-size: 0.6em;
-					cursor: pointer;
-					color : #333;
-					&:hover{
-						color: @red;
-					}
-				}
-				i.select{
-					cursor: pointer;
-				}
-				.jsonFileEditor{
-					display: inline-block;
-				}
-				&.selected{
-					background-color : fade(@green, 30%);
-				}
-			}
-		}
 		.addPlayers{
 			h3{
 				color : white;
@@ -121,12 +86,5 @@
 			}
 		}
 
-		.dmDice{
-			h3{
-				color : white;
-				background-color: @teal;
-			}
-
-		}
 	}
 }
