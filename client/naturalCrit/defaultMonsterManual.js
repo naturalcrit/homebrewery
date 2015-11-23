@@ -39,5 +39,9 @@ module.exports = {
 			"pack tactics" : "Does a thing"
 		},
 		items : ['healing_potion', 'healing_potion', 'ring']
+	},
+
+	"Goat Slime" : {
+
 	}
 }
