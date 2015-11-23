@@ -32,30 +32,29 @@ module.exports = {
 	},
 
 	"Goat Slime" : {
-			hp : 80,
-			mov: 10,
-			cr : 0.5,
-			ac : 16,
-			attr : {
-				str : 8,
-				con : 8,
-				dex : 6,
-				int : 4,
-				wis : 8,
-				cha : 8
-			},
-			attacks : {
-				caress : {
-					atk : "1d20+1",
-					dmg : "3d4+1",
-					type : "sensual"
-				},
-			},
-			abilities : {
-				"Agnostic Gel" : "Immune to magical damage"
-			},
-			items : []
+		hp : 80,
+		mov: 10,
+		cr : 0.5,
+		ac : 16,
+		attr : {
+			str : 8,
+			con : 8,
+			dex : 6,
+			int : 4,
+			wis : 8,
+			cha : 8
 		},
+		attacks : {
+			caress : {
+				atk : "1d20+1",
+				dmg : "3d4+1",
+				type : "sensual"
+			},
+		},
+		abilities : {
+			"Agnostic Gel" : "Immune to magical damage"
+		},
+		items : []
 	},
 	"badass psycho" : {
 		hp : 100,
@@ -126,5 +125,5 @@ module.exports = {
 			"conference" : "when around more than 30 other toxicologists, consume 1 drink every 15 minutes"
 		},
 		items : ['grad_student', 'imposter_syndrome', 'ring']
-	}
+	},
 }
