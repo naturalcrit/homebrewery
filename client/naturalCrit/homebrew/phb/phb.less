@@ -1,0 +1,190 @@
+
+.pbhPages{
+	&>.phb{
+		margin-bottom : 40px;
+		margin-left   : 400px;
+	}
+}
+@font-face {
+	font-family : BookInsanity;
+	src         : url('/assets/naturalCrit/homebrew/assets/Bookinsanity.otf');
+}
+@font-face {
+	font-family : BookInsanityBold;
+	src         : url('/assets/naturalCrit/homebrew/assets/Bookinsanity Bold.otf');
+}
+@font-face {
+	font-family : BookInsanityItalic;
+	src         : url('/assets/naturalCrit/homebrew/assets/Bookinsanity Italic.otf');
+}
+@font-face {
+	font-family : BookInsanityBoldItalic;
+	src         : url('/assets/naturalCrit/homebrew/assets/Bookinsanity Bold Italic.otf');
+}
+@font-face {
+	font-family : ScalaSans;
+	src         : url('/assets/naturalCrit/homebrew/assets/Scaly Sans.otf');
+}
+@font-face {
+	font-family : ScalaSansBold;
+	src         : url('/assets/naturalCrit/homebrew/assets/Scala Sans Bold.ttf');
+}
+@font-face {
+	font-family : ScalaSansSmallCaps;
+	src         : url('/assets/naturalCrit/homebrew/assets/Scala Sans SmallCaps.ttf');
+}
+@font-face {
+	font-family : Solbera;
+	src         : url('/assets/naturalCrit/homebrew/assets/Solbera Imitation.otf');
+}
+@font-face {
+	font-family : MrEaves;
+	src         : url('/assets/naturalCrit/homebrew/assets/MrsEavesSmallCaps_Regular.ttf') format('truetype'),
+	url('/assets/naturalCrit/homebrew/assets/Mr Eaves Small Caps.otf') format('otf');
+}
+.phb{
+	@background          : #f2ece4;
+	@green               : #e0e5c1;
+	@headerUnderline     : #c9ad6a;
+	@horizontalRule      : #9c2b1b;
+	@header              : #58180D;
+	box-sizing           : border-box;
+	height               : 27.5cm;
+	width                : 21cm;
+	padding              : 1.0cm 1.7cm;
+	column-count         : 2;
+	column-fill          : auto;
+	column-width         : 8cm;
+	background-image     : url('/assets/naturalCrit/homebrew/assets/PHB-background.png');
+	-webkit-column-count : 2;
+	-moz-column-count    : 2;
+	-webkit-column-width : 8cm;
+	-moz-column-width    : 8cm;
+	column-gap : 1cm;
+	-webkit-column-gap : 1cm;
+	text-rendering       : optimizeLegibility;
+	p,ul{
+		-webkit-column-break-inside : avoid;
+		-moz-column-break-inside    : avoid;
+		-o-column-break-inside      : avoid;
+		-ms-column-break-inside     : avoid;
+		column-break-inside         : avoid;
+		strong{
+			font-family : BookInsanityBold;
+			em{
+				font-family : BookInsanityBoldItalic;
+			}
+		}
+		em{
+			font-family : BookInsanityItalic;
+		}
+	}
+	p {
+		padding-bottom : 1em;
+		font-family    : BookInsanity;
+		font-size      : 9pt;
+		line-height    : 1.3em;
+		&+p{
+			margin-top  : -1em;
+			text-indent : 1em;
+		}
+	}
+	ul{
+		margin-bottom       : 1em;
+		font-family         : BookInsanity;
+		font-size           : 9pt;
+		line-height         : 1.3em;
+		list-style-position : inside;
+		list-style-type     : disc;
+	}
+	table{
+		width         : 100%;
+		margin-bottom : 1em;
+		font-family   : ScalaSans;
+		font-size     : 10pt;
+		thead{
+			font-weight : 800;
+			th{
+				padding-bottom : 0.3em;
+			}
+		}
+		tr{
+			td{
+				padding : 0.2em 0em;
+			}
+			&:nth-child(even){
+				background : @green;
+			}
+		}
+	}
+	blockquote{
+		background-color    : @green;
+		font-family         : ScalaSans;
+		box-sizing: border-box;
+		padding : 5px 10px;
+		border-top : 2px black solid;
+		border-bottom : 2px black solid;
+		box-shadow: 1px 4px 14px #888;
+		margin-bottom: 1em;
+		p{
+			font-family         : ScalaSans;
+			font-size: 10pt;
+			line-height: 1.1em;
+			em{
+				font-family         : ScalaSans;
+				font-style: italic;
+			}
+			strong{
+				font-weight: 800;
+				em{
+					font-weight: 800;
+					font-style: italic;
+				}
+			}
+
+		}
+	}
+
+	pre{
+
+	}
+
+	h1,h2,h3,h4{
+		margin-top    : 0.2em;
+		margin-bottom : 0.2em;
+		font-family   : MrEaves;
+		font-weight   : 800;
+		color         : @header;
+	}
+	h1{
+		column-span         : all;
+		font-size           : 28pt;
+		-webkit-column-span : all;
+		&+p{
+			&::first-letter{
+				float         : left;
+				margin-top    : 20px;
+				margin-bottom : 10px;
+				font-family   : Solbera;
+				font-size     : 5em;
+			}
+		}
+	}
+	h2{
+		font-size : 20pt;
+	}
+	h3{
+		font-size     : 15pt;
+		border-bottom : 2px solid @headerUnderline;
+	}
+	h4{
+		font-size : 12pt;
+		margin-bottom: 0.00em;
+	}
+	h5{
+		margin-bottom : 0.2em;
+		font-family   : ScalaSansSmallCaps;
+		font-size     : 13pt;
+		font-weight   : 900;
+	}
+}

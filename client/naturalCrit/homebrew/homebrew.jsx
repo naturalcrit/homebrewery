@@ -2,36 +2,49 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 
+var PHB = require('./phb/phb.jsx');
+var Editor = require('./editor/editor.jsx');
 
-var Markdown = require('marked');
+
+var Snippets = require('./editor/snippets');
+
+var KEY = 'naturalCrit-homebrew';
+
+
+
 
 
 var Homebrew = React.createClass({
 
 	getInitialState: function() {
 		return {
-			text : "# test \nneato"
+			text : Snippets.intro
 		};
 	},
 
-	handleTextChange : function(e){
+	componentDidMount: function() {
+		var storage = localStorage.getItem(KEY);
+		if(storage){
+			this.setState({
+				text : storage
+			})
+		}
+	},
 
-		console.log(e.value);
+	handleTextChange : function(text){
 		this.setState({
-			text : e.target.value
-		})
+			text : text
+		});
+
+		localStorage.setItem(KEY, text);
 	},
 
 	render : function(){
 		var self = this;
-
-		console.log(this.state.text);
 		return(
 			<div className='homebrew'>
-				<textarea value={this.state.text} onChange={this.handleTextChange} />
-
-				<div className='phb' dangerouslySetInnerHTML={{__html:Markdown(this.state.text)}} />
-
+				<Editor text={this.state.text} onChange={this.handleTextChange} />
+				<PHB text={this.state.text} />
 			</div>
 		);
 	}

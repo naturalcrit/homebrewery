@@ -1,0 +1,29 @@
+.editor{
+	position : fixed;
+	height : 100%;
+	.textIcons{
+		display: inline-block;
+		vertical-align: top;
+		.icon{
+			cursor: pointer;
+			width : 30px;
+			height : 30px;
+			text-align: center;
+			line-height: 30px;
+			font-size: 1.5em;
+
+			&:nth-child(1){ background-color: @blue; }
+			&:nth-child(2){ background-color: @orange; }
+			&:nth-child(3){ background-color: @red; }
+			&:nth-child(4){ background-color: @yellow; }
+			&:nth-child(5){ background-color: @purple; }
+			&:nth-child(6){ background-color: @green; }
+		}
+	}
+	textarea{
+		display: inline-block;
+		height : 100%;
+		overflow-y: scroll;
+		width : 300px;
+	}
+}

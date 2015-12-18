@@ -1,0 +1,129 @@
+@tooltipColor : #383838;
+@arrowSize : 6px;
+@arrowPosition : 18px;
+
+[data-tooltip]{
+	.tooltip(attr(data-tooltip));
+}
+[data-tooltip-top]{
+	.tooltipTop(attr(data-tooltip-top));
+}
+[data-tooltip-bottom]{
+	.tooltipBottom(attr(data-tooltip-bottom));
+}
+[data-tooltip-left]{
+	.tooltipLeft(attr(data-tooltip-left));
+}
+[data-tooltip-right]{
+	.tooltipRight(attr(data-tooltip-right));
+}
+
+
+
+.tooltip(@content){
+	.tooltipBottom(@content);
+}
+
+.tooltipTop(@content){
+	.tooltipBase(@content);
+	&:before {
+		margin-bottom: -@arrowSize * 2;
+		border-top-color: @tooltipColor;
+	}
+	&:after{ margin-left: -18px; }
+	&:before, &:after {
+		bottom: 100%;
+		left: 50%; }
+	&:hover:after, &:hover:before, &:focus:after, &:focus:before {
+		.transform(translateY(-(@arrowSize + 2)));
+	}
+}
+
+.tooltipBottom(@content){
+	.tooltipBase(@content);
+	&:before {
+		margin-top: -@arrowSize * 2;
+		border-bottom-color: @tooltipColor;
+	}
+	&:after{ margin-left: -18px; }
+	&:before, &:after {
+		top: 100%;
+		left: 50%; }
+	&:hover:after, &:hover:before, &:focus:after, &:focus:before {
+		.transform(translateY(@arrowSize + 2));
+	}
+}
+
+
+.tooltipLeft(@content){
+	.tooltipBase(@content);
+	&:before {
+		margin-right: -@arrowSize * 2;
+		margin-bottom: -@arrowSize;
+		border-left-color: @tooltipColor;
+
+	}
+	&:after{ margin-bottom: -14px;}
+	&:before, &:after {
+		right: 100%;
+		bottom: 50%; }
+	&:hover:after, &:hover:before, &:focus:after, &:focus:before {
+		.transform(translateX(-(@arrowSize + 2)));
+	}
+}
+
+.tooltipRight(@content){
+	.tooltipBase(@content);
+	&:before {
+		margin-left: -@arrowSize * 2;
+		margin-bottom: -@arrowSize;
+		border-right-color: @tooltipColor;
+	}
+	&:after{ margin-bottom: -14px;}
+	&:before, &:after {
+		left: 100%;
+		bottom: 50%; }
+	&:hover:after, &:hover:before, &:focus:after, &:focus:before {
+		.transform(translateX(@arrowSize + 2));
+	}
+}
+
+
+.tooltipShow(){
+
+}
+
+.tooltipBase(@content){
+	position: relative;
+	&:before, &:after{
+		.animateAll();
+		position: absolute;
+		opacity: 0;
+		z-index: 1000000;
+		pointer-events: none;
+	}
+
+	//Arrow
+	&:before{
+		content: '';
+		background: transparent;
+		border: @arrowSize solid transparent;
+		z-index: 1000001;
+	}
+
+	//Box
+	&:after{
+		content: @content;
+		color: white;
+		background: @tooltipColor;
+		padding: 8px 10px;
+		font-size: 12px;
+		line-height: 12px;
+		white-space: nowrap;
+		visibility: hidden;
+	}
+	&:hover:before, &:hover:after {
+		visibility: visible;
+		opacity: 1;
+	}
+}
