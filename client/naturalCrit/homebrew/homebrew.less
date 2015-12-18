@@ -1,0 +1,141 @@
+
+@font-face {
+	font-family : BookInsanity;
+	src         : url('/assets/naturalCrit/homebrew/assets/Bookinsanity.otf');
+}
+@font-face {
+	font-family : BookInsanityBold;
+	src         : url('/assets/naturalCrit/homebrew/assets/Bookinsanity Bold.otf');
+}
+@font-face {
+	font-family : BookInsanityItalic;
+	src         : url('/assets/naturalCrit/homebrew/assets/Bookinsanity Italic.otf');
+}
+@font-face {
+	font-family : BookInsanityBoldItalic;
+	src         : url('/assets/naturalCrit/homebrew/assets/Bookinsanity Bold Italic.otf');
+}
+@font-face {
+	font-family : ScalaSans;
+	src         : url('/assets/naturalCrit/homebrew/assets/Scaly Sans.otf');
+}
+@font-face {
+	font-family : Solbera;
+	src         : url('/assets/naturalCrit/homebrew/assets/Solbera Imitation.otf');
+}
+@font-face {
+	font-family : MrEaves;
+	src         : url('/assets/naturalCrit/homebrew/assets/MrsEavesSmallCaps_Regular.ttf') format('truetype'),
+		url('/assets/naturalCrit/homebrew/assets/Mr Eaves Small Caps.otf') format('otf');
+}
+.homebrew{
+	.phb{
+
+		@background : #f2ece4;
+		@green : #e0e5c1;
+		@headerUnderline : #c9ad6a;
+		@horizontalRule : #9c2b1b;
+		@header : #58180D;
+
+
+
+		background-image : url('/assets/naturalCrit/homebrew/assets/PHB-background.png');
+		padding : 30px;
+
+		-webkit-column-count: 2; /* Chrome, Safari, Opera */
+		-moz-column-count: 2; /* Firefox */
+		column-count: 2;
+
+		-webkit-column-width: 200px;
+		-moz-column-width: 200px;
+		column-width: 200px;
+
+		column-fill : auto;
+
+		height : 500px;
+
+
+		text-rendering : optimizeLegibility;
+
+		p {
+			line-height: 1.2em;
+			font-family  : BookInsanity;
+			font-size    : 9pt;
+			-webkit-column-break-inside:avoid;
+			-moz-column-break-inside:avoid;
+			-o-column-break-inside:avoid;
+			-ms-column-break-inside:avoid;
+			column-break-inside:avoid;
+			padding-bottom: 1em;
+			strong{
+				font-family : BookInsanityBold;
+				em{
+					font-family : BookInsanityBoldItalic;
+				}
+			}
+			em{
+				font-family : BookInsanityItalic;
+			}
+		}
+		p + p{
+			text-indent: 1em;
+			margin-top: -1em;
+		}
+
+		table{
+			font-family: ScalaSans;
+			font-size: 10pt;
+			width : 100%;
+			thead{
+				font-weight: 800;
+			}
+			tr:nth-child(even){
+				background: @green;
+			}
+		}
+
+		blockquote{
+			background-color: @green;
+			font-family: ScalaSans;
+			column-span: all;
+			-webkit-column-span: all;
+		}
+
+
+		h1,h2,h3,h4{
+			font-family : MrEaves;
+			color       : #58180D;
+			margin: 0.2em 0em;
+		}
+		h1{
+			font-size : 24pt;
+			column-span: all;
+			-webkit-column-span: all;
+			&+p{
+				&::first-letter{
+					font-family: Solbera;
+					float :left;
+					font-size: 5em;
+					margin-top: 20px;
+					margin-bottom: 10px;
+				}
+			}
+		}
+		h2{
+			font-size : 20pt;
+		}
+		h3{
+			font-size     : 15pt;
+			border-bottom : 3px solid #D8A866;
+		}
+		h4{
+			font-size : 12pt;
+		}
+		h5{
+
+			font-family: ScalaSans;
+			font-weight: 800;
+			font-size: 12pt;
+		}
+	}
+}
