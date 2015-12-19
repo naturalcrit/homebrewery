@@ -36,6 +36,22 @@ var Icons = [
 		snippet : Snippets.statBlock,
 		tooltip : 'Monster Stat Block'
 	},
+	{
+		icon : 'fa-table',
+		snippet : "",
+		tooltip : "Class Table"
+	},
+	{
+		icon : 'fa-code',
+		snippet : "```\n```",
+		tooltip : "Column Break"
+	},
+	{
+		icon : 'fa-file-o',
+		snippet : "\\page",
+		tooltip : "New Page"
+	},
+
 
 ]
 

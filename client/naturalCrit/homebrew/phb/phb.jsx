@@ -12,8 +12,8 @@ var Phb = React.createClass({
 	},
 
 	renderPages : function(){
-		return _.map(this.props.text.split('\page'), (pageText, index) => {
-			return <div className='phb' dangerouslySetInnerHTML={{__html:Markdown(this.props.text)}} key={index} />
+		return _.map(this.props.text.split('\\page'), (pageText, index) => {
+			return <div className='phb' dangerouslySetInnerHTML={{__html:Markdown(pageText)}} key={index} />
 		})
 	},
 
