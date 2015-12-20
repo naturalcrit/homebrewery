@@ -10,14 +10,22 @@ var request = require("superagent");
 var EditPage = React.createClass({
 	getDefaultProps: function() {
 		return {
-			text : "",
-			id : null
+			//text : "",
+			pending : false,
+			id : null,
+			entry : {
+				text : "",
+				shareId : null,
+				editId : null,
+				createdAt : null,
+				updatedAt : null,
+			}
 		};
 	},
 
 	getInitialState: function() {
 		return {
-			text: this.props.text
+			text: this.props.entry.text
 		};
 	},
 
@@ -29,14 +37,37 @@ var EditPage = React.createClass({
 		//Ajax time
 	},
 
+	handleSave : function(){
+		this.setState({
+			pending : true
+		})
+		request
+			.put('/homebrew/update/' + this.props.id)
+			.send({text : this.state.text})
+			.end((err, res) => {
+
+				console.log('err', err);
+				this.setState({
+					pending : false
+				})
+			})
+	},
+
 	render : function(){
-		var self = this;
-		return(
-			<div className='editPage'>
-				<Editor text={this.state.text} onChange={this.handleTextChange} />
-				<PHB text={this.state.text} />
-			</div>
-		);
+
+		console.log(this.props.entry);
+
+		var temp;
+		if(this.state.pending){
+			temp = <div>processing</div>
+		}
+
+
+		return <div className='editPage'>
+			<button onClick={this.handleSave}>save</button> {temp}
+			<Editor text={this.state.text} onChange={this.handleTextChange} />
+			<PHB text={this.state.text} />
+		</div>
 	}
 });
 

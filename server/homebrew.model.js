@@ -6,9 +6,29 @@ var HomebrewSchema = mongoose.Schema({
 	editId : {type : String, default: shortid.generate},
 	text : {type : String, default : ""},
 
-	created     : { type: Date, default: Date.now },
+	createdAt     : { type: Date, default: Date.now },
+	updatedAt   : { type: Date}
 });
 
+
+//Schema Options
+HomebrewSchema.pre('save', function(done) {
+	this.updatedAt = new Date();
+	done();
+});
+
+/*
+HomebrewSchema.options.toJSON.transform = function (doc, ret, options) {
+	delete ret._id;
+	delete ret.__t;
+	delete ret.__v;
+}
+HomebrewSchema.options.toObject.transform = function (doc, ret, options) {
+	delete ret._id;
+	delete ret.__t;
+	delete ret.__v;
+}
+*/
 
 var Homebrew = mongoose.model('Homebrew', HomebrewSchema);
 

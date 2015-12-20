@@ -13,16 +13,23 @@ var Homebrew = React.createClass({
 	getDefaultProps: function() {
 		return {
 			url : "",
-			text : ""
+			text : "",
+			entry : {
+				text : "",
+				shareId : null,
+				editId : null,
+				createdAt : null,
+				updatedAt : null,
+			}
 		};
 	},
 	componentWillMount: function() {
 		Router = CreateRouter({
 			'/homebrew/edit/:id' : (args) => {
-				return <EditPage id={args.id} text={this.props.text} />
+				return <EditPage id={args.id} entry={this.props.entry} />
 			},
 			'/homebrew/share/:id' : (args) => {
-				return <SharePage id={args.id} text={this.props.text} />
+				return <SharePage id={args.id} entry={this.props.entry} />
 			},
 			'/homebrew*' : <HomePage />,
 		});
