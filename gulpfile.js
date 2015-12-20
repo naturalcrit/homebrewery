@@ -5,7 +5,7 @@ var gulp = require("gulp");
 
 
 var gulp = vitreumTasks(gulp, {
-	entryPoints: ["./client/naturalCrit"],
+	entryPoints: ["./client/naturalCrit", "./client/homebrew"],
 
 	DEV: true,
 
