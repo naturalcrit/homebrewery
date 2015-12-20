@@ -58,6 +58,7 @@
 	column-fill          : auto;
 	column-gap           : 1cm;
 	column-width         : 8cm;
+	background-color: #EEE5CE;
 	background-image     : url('/assets/naturalCrit/homebrew/assets/PHB-background.png');
 	-webkit-column-count : 2;
 	-moz-column-count    : 2;
@@ -65,6 +66,8 @@
 	-moz-column-width    : 8cm;
 	-webkit-column-gap   : 1cm;
 	text-rendering       : optimizeLegibility;
+
+	overflow: hidden;
 
 
 	p,ul,blockquote{
@@ -106,9 +109,11 @@
 	}
 
 
+	//Full Spell casting table
 	hr+table{
 		-webkit-column-span : all;
 		column-span : all;
+		background-color: white;
 	}
 	table{
 		width         : 100%;
@@ -186,6 +191,7 @@
 		hr+table{
 			-webkit-column-span : 1;
 			column-span : 1;
+			background-color: transparent;
 		}
 		table{
 			color : @header;

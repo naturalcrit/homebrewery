@@ -42,13 +42,13 @@ var Icons = [
 		tooltip : "Class Table"
 	},
 	{
-		icon : 'fa-code',
-		snippet : "```\n```",
+		icon : 'fa-columns',
+		snippet : "```\n```\n\n",
 		tooltip : "Column Break"
 	},
 	{
-		icon : 'fa-file-o',
-		snippet : "\\page",
+		icon : 'fa-file-text',
+		snippet : "\\pagen\n\n",
 		tooltip : "New Page"
 	},
 
