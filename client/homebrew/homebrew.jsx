@@ -4,63 +4,33 @@ var cx = require('classnames');
 
 var CreateRouter = require('pico-router').createRouter;
 
-var PHB = require('./phb/phb.jsx');
-var Editor = require('./editor/editor.jsx');
+var HomePage = require('./homePage/homePage.jsx');
+var EditPage = require('./editPage/editPage.jsx');
+var SharePage = require('./sharePage/sharePage.jsx');
 
-
-//var Snippets = require('./editor/snippets');
-
-var KEY = 'naturalCrit-homebrew';
-
-
-
-var Router = CreateRouter({
-	'/homebrew' : 'home',
-	'/homebrew/edit/:id' : function(args){
-
-	},
-	'/homebrew/share/:id' : function(args){
-
-	}
-});
-
-
+var Router;
 var Homebrew = React.createClass({
 	getDefaultProps: function() {
 		return {
+			url : "",
 			text : ""
 		};
 	},
-
-	getInitialState: function() {
-		return {
-			text : "# Holla"
-		};
-	},
-
-	componentDidMount: function() {
-		var storage = localStorage.getItem(KEY);
-		if(storage){
-			this.setState({
-				text : storage
-			})
-		}
-	},
-
-	handleTextChange : function(text){
-		this.setState({
-			text : text
+	componentWillMount: function() {
+		Router = CreateRouter({
+			'/homebrew/edit/:id' : (args) => {
+				return <EditPage id={args.id} text={this.props.text} />
+			},
+			'/homebrew/share/:id' : (args) => {
+				return <SharePage id={args.id} text={this.props.text} />
+			},
+			'/homebrew*' : <HomePage />,
 		});
-
-		localStorage.setItem(KEY, text);
 	},
-
 	render : function(){
-		var self = this;
 		return(
 			<div className='homebrew'>
-				<Editor text={this.state.text} onChange={this.handleTextChange} />
-				<PHB text={this.state.text} />
+				<Router initialUrl={this.props.url}/>
 			</div>
 		);
 	}
