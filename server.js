@@ -8,6 +8,24 @@ app.use(express.static(__dirname + '/build'));
 
 
 
+app.get('/homebrew*', function (req, res) {
+	vitreumRender({
+		page: './build/homebrew/bundle.dot',
+		globals:{},
+		prerenderWith : './client/homebrew/homebrew.jsx',
+		initialProps: {
+			url: req.originalUrl,
+
+			text : "cool"
+		},
+		clearRequireCache : true,
+	}, function (err, page) {
+		return res.send(page)
+	});
+});
+
+
+
 app.get('*', function (req, res) {
 	vitreumRender({
 		page: './build/naturalCrit/bundle.dot',

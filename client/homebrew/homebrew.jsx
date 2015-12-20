@@ -2,23 +2,39 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 
+var CreateRouter = require('pico-router').createRouter;
+
 var PHB = require('./phb/phb.jsx');
 var Editor = require('./editor/editor.jsx');
 
 
-var Snippets = require('./editor/snippets');
+//var Snippets = require('./editor/snippets');
 
 var KEY = 'naturalCrit-homebrew';
 
 
 
+var Router = CreateRouter({
+	'/homebrew' : 'home',
+	'/homebrew/edit/:id' : function(args){
+
+	},
+	'/homebrew/share/:id' : function(args){
+
+	}
+});
 
 
 var Homebrew = React.createClass({
+	getDefaultProps: function() {
+		return {
+			text : ""
+		};
+	},
 
 	getInitialState: function() {
 		return {
-			text : Snippets.intro
+			text : "# Holla"
 		};
 	},
 
