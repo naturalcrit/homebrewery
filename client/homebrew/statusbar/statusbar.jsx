@@ -4,6 +4,12 @@ var cx = require('classnames');
 
 var Statusbar = React.createClass({
 
+	getDefaultProps: function() {
+		return {
+
+		};
+	},
+
 	render : function(){
 		var self = this;
 		return(

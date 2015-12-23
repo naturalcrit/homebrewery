@@ -2,7 +2,10 @@
 .pbhPages{
 	&>.phb{
 		margin-bottom : 40px;
+		margin-top : 40px;
 		margin-left   : 400px;
+		box-shadow       : 1px 4px 14px #000;
+
 	}
 }
 @font-face {
@@ -66,8 +69,31 @@
 	-moz-column-width    : 8cm;
 	-webkit-column-gap   : 1cm;
 	text-rendering       : optimizeLegibility;
-
+	position : relative;
 	overflow: hidden;
+
+	//Accents
+	&:before, &:after{
+		content : "";
+		position: absolute;
+		height: 50px;
+		width: 100%;
+
+		left: 0px;
+		background-size: cover;
+		width : 100%;
+		background-image     : url('/assets/homebrew/assets/accent.png');
+	}
+	&:before{
+		top: 0px;
+	}
+	&:after{
+		-moz-transform: scaleY(-1);
+		    -o-transform: scaleY(-1);
+		    -webkit-transform: scaleY(-1);
+		    transform: scaleY(-1);
+		bottom : 0px;
+	}
 
 
 	p,ul,blockquote{
@@ -295,11 +321,12 @@
 		-webkit-column-span : all;
 		&+p{
 			&::first-letter{
-				float         : left;
-				margin-top    : 20px;
-				margin-bottom : 15px;
-				font-family   : Solbera;
-				font-size     : 7em;
+				float: left;
+				margin-top: 0.3em;
+				margin-bottom: 0.3em;
+				font-family: Solbera;
+				font-size: 10em;
+				color : #222;
 			}
 		}
 	}

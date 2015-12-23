@@ -2,6 +2,7 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 
+var Statusbar = require('../statusbar/statusbar.jsx');
 var PHB = require('../phb/phb.jsx');
 var Editor = require('../editor/editor.jsx');
 
@@ -36,6 +37,7 @@ var HomePage = React.createClass({
 		var self = this;
 		return(
 			<div className='homePage'>
+				<Statusbar />
 				<Editor text={this.state.text} onChange={this.handleTextChange} />
 				<PHB text={this.state.text} />
 			</div>

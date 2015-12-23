@@ -51,6 +51,11 @@ var Icons = [
 		snippet : "\\pagen\n\n",
 		tooltip : "New Page"
 	},
+	{
+		icon : 'fa-arrows-v',
+		snippet : "<div style='margin-top:140px'></div>\n\n",
+		tooltip : "Vertical Spacing"
+	}
 
 
 ]
