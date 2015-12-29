@@ -2,6 +2,7 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 
+var Statusbar = require('../statusbar/statusbar.jsx');
 var PHB = require('../phb/phb.jsx');
 var Editor = require('../editor/editor.jsx');
 
@@ -25,7 +26,8 @@ var EditPage = React.createClass({
 
 	getInitialState: function() {
 		return {
-			text: this.props.entry.text
+			text: this.props.entry.text,
+			pending : false
 		};
 	},
 
@@ -65,6 +67,12 @@ var EditPage = React.createClass({
 
 		return <div className='editPage'>
 			<button onClick={this.handleSave}>save</button> {temp}
+
+			<Statusbar
+				editId={this.props.entry.editId}
+				shareId={this.props.entry.shareId}
+				isPending={this.state.pending} />
+
 			<Editor text={this.state.text} onChange={this.handleTextChange} />
 			<PHB text={this.state.text} />
 		</div>

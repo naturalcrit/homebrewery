@@ -38,7 +38,7 @@ var Icons = [
 	},
 	{
 		icon : 'fa-table',
-		snippet : "",
+		snippet : Snippets.classTable,
 		tooltip : "Class Table"
 	},
 	{

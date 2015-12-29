@@ -73,26 +73,16 @@
 	overflow: hidden;
 
 	//Accents
-	&:before, &:after{
+	&:after{
 		content : "";
 		position: absolute;
 		height: 50px;
 		width: 100%;
-
+		bottom : 0px;
 		left: 0px;
 		background-size: cover;
 		width : 100%;
 		background-image     : url('/assets/homebrew/assets/accent.png');
-	}
-	&:before{
-		top: 0px;
-	}
-	&:after{
-		-moz-transform: scaleY(-1);
-		    -o-transform: scaleY(-1);
-		    -webkit-transform: scaleY(-1);
-		    transform: scaleY(-1);
-		bottom : 0px;
 	}
 
 
@@ -140,6 +130,14 @@
 		-webkit-column-span : all;
 		column-span : all;
 		background-color: white;
+		border-image-source: url('/assets/homebrew/assets/frame_border.png');
+		border-image-slice: 150 200 150 200;
+		border-image-width: 47px;
+		border-image-outset: 37px 17px;
+		border-image-repeat: round;
+		margin: 40px 0px;
+		border-collapse: separate;
+		border: initial;
 	}
 	table{
 		width         : 100%;
@@ -151,13 +149,19 @@
 			th{
 				padding-bottom : 0.3em;
 			}
-		}
-		tr{
-			td{
-				padding : 0.2em 0em;
+			tr{
+				//background-color : white;
 			}
-			&:nth-child(even){
-				background : @green;
+
+		}
+		tbody{
+			tr{
+				td{
+					padding : 0.2em 0em;
+				}
+				&:nth-child(odd){
+					background-color : @green;
+				}
 			}
 		}
 	}
@@ -218,6 +222,18 @@
 			-webkit-column-span : 1;
 			column-span : 1;
 			background-color: transparent;
+			border-image: none;
+			margin: 0;
+			thead{
+				tr{
+					//background-color: transparent;
+				}
+			}
+			tbody{
+				tr:nth-child(odd), tr:nth-child(even){
+					background-color: transparent;
+				}
+			}
 		}
 		table{
 			color : @header;
@@ -323,7 +339,7 @@
 			&::first-letter{
 				float: left;
 				margin-top: 0.3em;
-				margin-bottom: 0.3em;
+				margin-bottom: 0.4em;
 				font-family: Solbera;
 				font-size: 10em;
 				color : #222;

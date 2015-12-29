@@ -104,7 +104,11 @@ module.exports = {
 		"> ***Multiattack.*** The armor makes two two melee attacks.",
 		">",
 		"> ***Slam.*** *Melee Weapon Attack:* +4 to hit, reach 5ft., one target. *Hit* 5 (1d6 + 2) ",
-	].join('\n')
+	].join('\n'),
+
+	classTable : [
+
+	].join('\n'),
 
 
 }
