@@ -4,6 +4,8 @@ var cx = require('classnames');
 
 var Logo = require('naturalCrit/logo/logo.jsx');
 
+
+
 var Statusbar = React.createClass({
 
 	getDefaultProps: function() {
@@ -16,33 +18,39 @@ var Statusbar = React.createClass({
 		};
 	},
 
+	selectInputText : function(refName){
+		this.refs[refName].select();
+	},
+
 	renderInfo : function(){
 		//render last update?
 		//number of times viewed?
 	},
 
 	renderNewButton  : function(){
-		if(this.props.editId) return null;
+		if(this.props.editId || this.props.shareId) return null;
 
 		return <a className='newButton' target='_blank' href='/homebrew/new'>
-			<i className='fa fa-new' />
-			New
+			New <i className='fa fa-plus' />
 		</a>
 	},
 
-	renderLinks : function(){
+	renderEdit : function(){
 		if(!this.props.editId) return null;
 
-		return [
-			<div className='' key='edit'>
-				<span>Edit Link</span>
-				<input type='text' readOnly value={this.props.editId} />
-			</div>,
-			<div className='' key='share'>
-				<a herf={'/share/' + this.props.shareId}>Share Link</a>
-				<input type='text' readOnly value={this.props.shareId} />
-			</div>
-		]
+		return <div className='editField' key='edit' onClick={this.selectInputText.bind(this, 'edit')}>
+			<span>Edit Link</span>
+			<input type='text' readOnly value={'/homebrew/edit/' + this.props.editId} ref='edit' />
+		</div>
+	},
+
+	renderShare : function(){
+		if(!this.props.shareId) return null;
+
+		return <div className='shareField' key='share' onClick={this.selectInputText.bind(this, 'share')}>
+			<span>Share Link</span>
+			<input type='text' readOnly value={'/homebrew/share/' + this.props.shareId} ref='share'/>
+		</div>
 	},
 
 	renderStatus : function(){
@@ -58,14 +66,22 @@ var Statusbar = React.createClass({
 	},
 
 	render : function(){
-		console.log(this.props);
 		return <div className='statusbar'>
-			<Logo />
-			Statusbar Ready!
 
-			<div className='controls'>
-				{this.renderLinks()}
+			<Logo />
+
+			<div className='left'>
+				<div className='toolName'>
+					Home<i className='fa fa-beer' /><small>rewery</small>
+				</div>
+
+			</div>
+
+			<div className='controls right'>
 				{this.renderStatus()}
+				{this.renderEdit()}
+				{this.renderShare()}
+
 				{this.renderNewButton()}
 			</div>
 		</div>

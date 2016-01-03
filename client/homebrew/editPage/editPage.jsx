@@ -33,48 +33,42 @@ var EditPage = React.createClass({
 
 	handleTextChange : function(text){
 		this.setState({
-			text : text
+			text : text,
+			pending : true
 		});
-
-		//Ajax time
+		this.save();
 	},
 
-	handleSave : function(){
-		this.setState({
-			pending : true
-		})
+	save : _.debounce(function(){
 		request
 			.put('/homebrew/update/' + this.props.id)
 			.send({text : this.state.text})
 			.end((err, res) => {
-
-				console.log('err', err);
 				this.setState({
 					pending : false
 				})
 			})
-	},
+	}, 1500),
 
 	render : function(){
 
-		console.log(this.props.entry);
-
-		var temp;
-		if(this.state.pending){
-			temp = <div>processing</div>
-		}
-
-
 		return <div className='editPage'>
-			<button onClick={this.handleSave}>save</button> {temp}
-
 			<Statusbar
 				editId={this.props.entry.editId}
 				shareId={this.props.entry.shareId}
 				isPending={this.state.pending} />
 
-			<Editor text={this.state.text} onChange={this.handleTextChange} />
-			<PHB text={this.state.text} />
+			<div className='paneSplit'>
+				<div className='leftPane'>
+					<Editor text={this.state.text} onChange={this.handleTextChange} />
+				</div>
+				<div className='rightPane'>
+					<PHB text={this.state.text} />
+				</div>
+			</div>
+
+
+
 		</div>
 	}
 });

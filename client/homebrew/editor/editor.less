@@ -1,17 +1,20 @@
-.editor{
-	position : fixed;
-	height : 100%;
-	.textIcons{
-		display: inline-block;
-		vertical-align: top;
-		.icon{
-			cursor: pointer;
-			width : 30px;
-			height : 30px;
-			text-align: center;
-			line-height: 30px;
-			font-size: 1.5em;
 
+.editor{
+	position   : relative;
+	height     : 100%;
+	min-height : 100%;
+	width      : 100%;
+	.textIcons{
+		position       : absolute;
+		display        : inline-block;
+		vertical-align : top;
+		.icon{
+			height      : 30px;
+			width       : 30px;
+			cursor      : pointer;
+			font-size   : 1.5em;
+			line-height : 30px;
+			text-align  : center;
 			&:nth-child(8n + 1){ background-color: @blue; }
 			&:nth-child(8n + 2){ background-color: @orange; }
 			&:nth-child(8n + 3){ background-color: @teal; }
@@ -20,13 +23,13 @@
 			&:nth-child(8n + 6){ background-color: @silver; }
 			&:nth-child(8n + 7){ background-color: @yellow; }
 			&:nth-child(8n + 8){ background-color: @green; }
-
 		}
 	}
 	textarea{
-		display: inline-block;
-		height : 100%;
-		overflow-y: scroll;
-		width : 300px;
+		display    : inline-block;
+		resize     : none;
+		overflow-y : scroll;
+		height     : 100%;
+		width      : 100%;
 	}
 }

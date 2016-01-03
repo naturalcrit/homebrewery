@@ -1,12 +1,60 @@
-.statusbar{
-	font-size        : 1.8em;
-			color            : white;
-	svg{
-		vertical-align : middle;
-		height         : 1em;
-		margin-right   : 0.2em;
-		cursor         : pointer;
-		fill           : white;
-	}
 
+.statusbar{
+	height           : 1.0em;
+	background-color : black;
+	font-size        : 24px;
+	color            : white;
+	line-height      : 1.0em;
+	border-bottom    : 1px solid @grey;
+	.logo{
+		display        : inline-block;
+		vertical-align : middle;
+		margin-right   : 40px;
+	}
+	.left{
+		display : inline-block;
+	}
+	.right{
+		float : right;
+	}
+	.toolName{
+		vertical-align : middle;
+		font-family    : CodeBold;
+		font-size      : 16px;
+		line-height    : 100%;
+		small{
+			font-family : CodeBold;
+		}
+	}
+	.controls{
+		font-size : 12px;
+		>*{
+			display     : inline-block;
+			height      : 100%;
+			padding     : 0px 10px;
+			border-left : 1px solid @grey;
+		}
+		.savingStatus{
+			width      : 56px;
+			color      : @grey;
+			text-align : center;
+		}
+		.newButton{
+			.animate(background-color);
+			color           : white;
+			text-decoration : none;
+			&:hover{
+				background-color : rgba(255,0,0,0.4);
+			}
+		}
+		.editField, .shareField{
+			span{
+				margin-right : 10px;
+			}
+			input{
+				width : 100px;
+				font-size: 12px;
+			}
+		}
+	}
 }

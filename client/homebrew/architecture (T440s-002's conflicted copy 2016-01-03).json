@@ -1,0 +1,51 @@
+{
+	"C:\\Dropbox\\root\\Programming\\Javascript\\NaturalCrit\\client\\homebrew\\editPage\\editPage.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"superagent",
+		"../phb/phb.jsx",
+		"../editor/editor.jsx"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\NaturalCrit\\client\\homebrew\\sharePage\\sharePage.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"../phb/phb.jsx"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\NaturalCrit\\client\\homebrew\\statusbar\\statusbar.jsx": [
+		"react",
+		"lodash",
+		"classnames"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\NaturalCrit\\client\\homebrew\\phb\\phb.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"marked"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\NaturalCrit\\client\\homebrew\\editor\\snippets.js": [],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\NaturalCrit\\client\\homebrew\\editor\\editor.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"./snippets.js"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\NaturalCrit\\client\\homebrew\\homePage\\homePage.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"../statusbar/statusbar.jsx",
+		"../phb/phb.jsx",
+		"../editor/editor.jsx"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\NaturalCrit\\client\\homebrew\\homebrew.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"pico-router",
+		"./editPage/editPage.jsx",
+		"./sharePage/sharePage.jsx",
+		"./homePage/homePage.jsx"
+	]
+}

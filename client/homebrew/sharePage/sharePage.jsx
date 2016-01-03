@@ -2,6 +2,8 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 
+var Statusbar = require('../statusbar/statusbar.jsx');
+
 var PHB = require('../phb/phb.jsx');
 
 var SharePage = React.createClass({
@@ -19,9 +21,13 @@ var SharePage = React.createClass({
 	},
 
 	render : function(){
-		console.log(this.props.entry);
 		return(
 			<div className='sharePage'>
+				<Statusbar
+					shareId={this.props.entry.shareId}
+					/>
+
+
 				<PHB text={this.props.entry.text} />
 			</div>
 		);
