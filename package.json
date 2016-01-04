@@ -17,6 +17,7 @@
     "jsoneditor": "^4.2.1",
     "lodash": "^3.10.1",
     "marked": "^0.3.5",
+    "moment": "^2.11.0",
     "mongoose": "^4.3.3",
     "pico-flux": "^1.1.0",
     "pico-router": "^1.0.0",

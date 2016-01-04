@@ -1,3 +1,20 @@
-.homePage{
 
+.homePage{
+	position : relative;
+	a.floatingNewButton{
+		.animate(background-color);
+		position         : absolute;
+		display          : block;
+		right            : 70px;
+		bottom           : 70px;
+		padding          : 1em;
+		background-color : @orange;
+		font-size        : 1.5em;
+		color            : white;
+		text-decoration  : none;
+		box-shadow       : 3px 3px 15px black;
+		&:hover{
+			background-color : darken(@orange, 20%);
+		}
+	}
 }

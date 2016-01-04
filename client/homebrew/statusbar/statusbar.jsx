@@ -1,6 +1,7 @@
 var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
+var Moment = require('moment');
 
 var Logo = require('naturalCrit/logo/logo.jsx');
 
@@ -14,6 +15,8 @@ var Statusbar = React.createClass({
 			shareId : null,
 			isPending : false,
 
+			lastUpdated : null,
+
 			info : null
 		};
 	},
@@ -23,8 +26,11 @@ var Statusbar = React.createClass({
 	},
 
 	renderInfo : function(){
-		//render last update?
-		//number of times viewed?
+		if(!this.props.lastUpdated) return null;
+
+		return <div className='lastUpdated'>
+			Last updated: {Moment(this.props.lastUpdated).fromNow()}
+		</div>
 	},
 
 	renderNewButton  : function(){
@@ -36,6 +42,8 @@ var Statusbar = React.createClass({
 	},
 
 	renderEdit : function(){
+		return null;
+
 		if(!this.props.editId) return null;
 
 		return <div className='editField' key='edit' onClick={this.selectInputText.bind(this, 'edit')}>
@@ -47,10 +55,9 @@ var Statusbar = React.createClass({
 	renderShare : function(){
 		if(!this.props.shareId) return null;
 
-		return <div className='shareField' key='share' onClick={this.selectInputText.bind(this, 'share')}>
-			<span>Share Link</span>
-			<input type='text' readOnly value={'/homebrew/share/' + this.props.shareId} ref='share'/>
-		</div>
+		return <a className='shareField' key='share' href={'/homebrew/share/' + this.props.shareId} target="_blank">
+			Share Link <i className='fa fa-external-link' />
+		</a>
 	},
 
 	renderStatus : function(){
@@ -71,17 +78,16 @@ var Statusbar = React.createClass({
 			<Logo />
 
 			<div className='left'>
-				<div className='toolName'>
-					Home<i className='fa fa-beer fa-flip-horizontal' /><small>rewery</small>
-				</div>
+				<a href='/homebrew' className='toolName'>
+					The Home<i className='fa fa-beer fa-flip-horizontal' /><small>rewery</small>
+				</a>
 
 			</div>
 
 			<div className='controls right'>
 				{this.renderStatus()}
-				{this.renderEdit()}
+				{this.renderInfo()}
 				{this.renderShare()}
-
 				{this.renderNewButton()}
 			</div>
 		</div>

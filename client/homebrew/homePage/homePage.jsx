@@ -12,7 +12,7 @@ var HomePage = React.createClass({
 
 	getInitialState: function() {
 		return {
-			text: "# Welcome"
+			text: "# Welcome \n Katie help me decide what should go here."
 		};
 	},
 
@@ -38,8 +38,18 @@ var HomePage = React.createClass({
 		return(
 			<div className='homePage'>
 				<Statusbar />
-				<Editor text={this.state.text} onChange={this.handleTextChange} />
-				<PHB text={this.state.text} />
+				<div className='paneSplit'>
+					<div className='leftPane'>
+						<Editor text={this.state.text} onChange={this.handleTextChange} />
+					</div>
+					<div className='rightPane'>
+						<PHB text={this.state.text} />
+					</div>
+				</div>
+
+				<a href='/homebrew/new' className='floatingNewButton'>
+					Create your own <i className='fa fa-magic' />
+				</a>
 			</div>
 		);
 	}

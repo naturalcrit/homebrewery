@@ -11,8 +11,6 @@ var request = require("superagent");
 var EditPage = React.createClass({
 	getDefaultProps: function() {
 		return {
-			//text : "",
-			pending : false,
 			id : null,
 			entry : {
 				text : "",
@@ -27,8 +25,17 @@ var EditPage = React.createClass({
 	getInitialState: function() {
 		return {
 			text: this.props.entry.text,
-			pending : false
+			pending : false,
+			lastUpdated : this.props.entry.updatedAt
 		};
+	},
+
+	componentDidMount: function() {
+		var self = this;
+		window.onbeforeunload = function(){
+			if(!self.state.pending) return;
+			return "You have unsaved changes!";
+		}
 	},
 
 	handleTextChange : function(text){
@@ -45,17 +52,18 @@ var EditPage = React.createClass({
 			.send({text : this.state.text})
 			.end((err, res) => {
 				this.setState({
-					pending : false
+					pending : false,
+					lastUpdated : res.body.updatedAt
 				})
 			})
 	}, 1500),
 
 	render : function(){
-
 		return <div className='editPage'>
 			<Statusbar
 				editId={this.props.entry.editId}
 				shareId={this.props.entry.shareId}
+				lastUpdated={this.state.lastUpdated}
 				isPending={this.state.pending} />
 
 			<div className='paneSplit'>
@@ -66,9 +74,6 @@ var EditPage = React.createClass({
 					<PHB text={this.state.text} />
 				</div>
 			</div>
-
-
-
 		</div>
 	}
 });

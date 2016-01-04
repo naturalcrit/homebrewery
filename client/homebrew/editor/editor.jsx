@@ -55,6 +55,11 @@ var Icons = [
 		icon : 'fa-arrows-v',
 		snippet : "<div style='margin-top:140px'></div>\n\n",
 		tooltip : "Vertical Spacing"
+	},
+	{
+		icon : 'fa-image',
+		snippet : "<img />",
+		tooltip : "Insert Image"
 	}
 
 
@@ -66,6 +71,10 @@ var Editor = React.createClass({
 			text : "",
 			onChange : function(){}
 		};
+	},
+
+	componentDidMount: function() {
+		this.refs.textarea.focus();
 	},
 
 	handleTextChange : function(e){

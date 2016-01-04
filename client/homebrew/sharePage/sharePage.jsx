@@ -24,9 +24,8 @@ var SharePage = React.createClass({
 		return(
 			<div className='sharePage'>
 				<Statusbar
-					shareId={this.props.entry.shareId}
-					/>
-
+					lastUpdated={this.props.entry.updatedAt}
+				/>
 
 				<PHB text={this.props.entry.text} />
 			</div>

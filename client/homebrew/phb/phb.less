@@ -1,11 +1,12 @@
 
 .pbhPages{
 	background-color: @steel;
-	padding : 40px 0px;
+	padding : 30px 0px;
 	&>.phb{
 		box-shadow       : 1px 4px 14px #000;
 		margin-left: auto;
 		margin-right: auto;
+		margin-bottom: 30px;
 	}
 }
 @font-face {
@@ -72,7 +73,7 @@
 	position : relative;
 	overflow: hidden;
 
-	//Accents
+	//Page Accents
 	&:after{
 		content : "";
 		position: absolute;
@@ -85,8 +86,8 @@
 		background-image     : url('/assets/homebrew/assets/accent.png');
 	}
 
-
-	p,ul,blockquote{
+	//Avoid breaking up
+	p,ul,blockquote,table{
 		-webkit-column-break-inside : avoid;
 		-moz-column-break-inside    : avoid;
 		-o-column-break-inside      : avoid;
@@ -338,7 +339,7 @@
 		&+p{
 			&::first-letter{
 				float: left;
-				margin-top: 0.3em;
+				margin-top: 0.4em;
 				margin-bottom: 0.4em;
 				font-family: Solbera;
 				font-size: 10em;

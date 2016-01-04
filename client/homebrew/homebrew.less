@@ -12,4 +12,31 @@ html,body, #reactContainer{
 .homebrew{
 	background-color: @steel;
 	height : 100%;
+
+	.paneSplit{
+		width : 100%;
+		height: 100vh;
+		padding-top: 25px;
+		position: relative;
+		box-sizing: border-box;
+
+		.leftPane, .rightPane{
+			display: inline-block;
+			vertical-align: top;
+			position: relative;
+			height: 100%;
+			min-height: 100%;
+		}
+
+		.leftPane{
+			width : 40%;
+		}
+		.rightPane{
+			width : 60%;
+			height: 100%;
+
+			overflow-y: scroll;
+		}
+
+	}
 }

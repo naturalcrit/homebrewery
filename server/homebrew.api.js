@@ -46,12 +46,12 @@ module.exports = function(app){
 	//Updating
 	app.put('/homebrew/update/:id', function(req, res){
 		HomebrewModel.find({editId : req.params.id}, function(err, objs){
-			if(!objs.length || err) return res.send(400);
+			if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
 			var resEntry = objs[0];
 			resEntry.text = req.body.text;
 			resEntry.save(function(err, obj){
-				if(!err) return res.sendStatus(500);
-				return res.send(200);
+				if(err) return res.status(500).send("Error while saving");
+				return res.status(200).send(obj);
 			})
 		});
 	});

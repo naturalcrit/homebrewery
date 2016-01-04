@@ -1,18 +1,26 @@
 
 .statusbar{
-	height           : 1.0em;
+	height           : 25px;
 	background-color : black;
 	font-size        : 24px;
+	position: fixed;
+	width :100%;
+	z-index : 1000;
 	color            : white;
 	line-height      : 1.0em;
 	border-bottom    : 1px solid @grey;
 	.logo{
 		display        : inline-block;
 		vertical-align : middle;
-		margin-right   : 40px;
+		margin-right   : 20px;
+		margin-top: -5px;
+		svg{
+			margin-top: -6px;
+		}
 	}
 	.left{
 		display : inline-block;
+		vertical-align: top;
 	}
 	.right{
 		float : right;
@@ -20,8 +28,11 @@
 	.toolName{
 		vertical-align : middle;
 		font-family    : CodeBold;
+		text-decoration: none;
+		color: white;
+		display: block;
 		font-size      : 16px;
-		line-height    : 100%;
+		line-height    : 30px;
 		small{
 			font-family : CodeBold;
 		}
@@ -44,10 +55,17 @@
 			color           : white;
 			text-decoration : none;
 			&:hover{
-				background-color : rgba(255,0,0,0.4);
+				background-color : fade(@green, 70%);
 			}
 		}
-		.editField, .shareField{
+		.shareField{
+			color           : white;
+			text-decoration : none;
+			cursor : pointer;
+			.animate(background-color);
+			&:hover{
+				background-color : fade(@teal, 70%);
+			}
 			span{
 				margin-right : 10px;
 			}
