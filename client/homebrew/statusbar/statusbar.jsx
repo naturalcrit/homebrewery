@@ -72,7 +72,7 @@ var Statusbar = React.createClass({
 
 			<div className='left'>
 				<div className='toolName'>
-					Home<i className='fa fa-beer' /><small>rewery</small>
+					Home<i className='fa fa-beer fa-flip-horizontal' /><small>rewery</small>
 				</div>
 
 			</div>
