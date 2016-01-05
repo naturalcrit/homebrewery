@@ -6,6 +6,8 @@ var Statusbar = require('../statusbar/statusbar.jsx');
 var PHB = require('../phb/phb.jsx');
 var Editor = require('../editor/editor.jsx');
 
+var FullClassGen = require('../editor/snippets/fullclass.gen.js');
+
 var request = require("superagent");
 
 var EditPage = React.createClass({
@@ -35,6 +37,12 @@ var EditPage = React.createClass({
 		window.onbeforeunload = function(){
 			if(!self.state.pending) return;
 			return "You have unsaved changes!";
+		}
+
+		if(this.state.text === ""){
+			this.setState({
+				text : FullClassGen()
+			})
 		}
 	},
 

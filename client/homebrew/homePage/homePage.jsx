@@ -12,7 +12,7 @@ var HomePage = React.createClass({
 
 	getInitialState: function() {
 		return {
-			text: "# Welcome \n Katie help me decide what should go here."
+			text: "# Welcome \n Oh god, what to put here. *Instructions* I guess?."
 		};
 	},
 

@@ -5,25 +5,31 @@ var Moment = require('moment');
 
 var Logo = require('naturalCrit/logo/logo.jsx');
 
-
-
 var Statusbar = React.createClass({
 
 	getDefaultProps: function() {
 		return {
-			editId: null,
+			//editId: null,
 			shareId : null,
 			isPending : false,
-
 			lastUpdated : null,
-
 			info : null
 		};
 	},
 
-	selectInputText : function(refName){
-		this.refs[refName].select();
+	componentDidMount: function() {
+		//Updates the last updated text every 10 seconds
+		if(this.props.lastUpdated){
+			this.refreshTimer = setInterval(()=>{
+				this.forceUpdate();
+			}, 10000)
+		}
 	},
+
+	componentWillUnmount: function() {
+		clearInterval(this.refreshTimer);
+	},
+
 
 	renderInfo : function(){
 		if(!this.props.lastUpdated) return null;
@@ -39,17 +45,6 @@ var Statusbar = React.createClass({
 		return <a className='newButton' target='_blank' href='/homebrew/new'>
 			New <i className='fa fa-plus' />
 		</a>
-	},
-
-	renderEdit : function(){
-		return null;
-
-		if(!this.props.editId) return null;
-
-		return <div className='editField' key='edit' onClick={this.selectInputText.bind(this, 'edit')}>
-			<span>Edit Link</span>
-			<input type='text' readOnly value={'/homebrew/edit/' + this.props.editId} ref='edit' />
-		</div>
 	},
 
 	renderShare : function(){
@@ -74,16 +69,12 @@ var Statusbar = React.createClass({
 
 	render : function(){
 		return <div className='statusbar'>
-
 			<Logo />
-
 			<div className='left'>
 				<a href='/homebrew' className='toolName'>
 					The Home<i className='fa fa-beer fa-flip-horizontal' /><small>rewery</small>
 				</a>
-
 			</div>
-
 			<div className='controls right'>
 				{this.renderStatus()}
 				{this.renderInfo()}

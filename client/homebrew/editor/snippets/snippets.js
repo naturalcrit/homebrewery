@@ -1,4 +1,125 @@
-module.exports = {
+var SpellGen = require('./spell.gen.js');
+var ClassTableGen = require('./classtable.gen.js');
+var MonsterBlockGen = require('./monsterblock.gen.js');
+var ClassFeatureGen = require('./classfeature.gen.js');
+var FullClassGen = require('./fullclass.gen.js');
+
+module.exports = [
+	{
+		tooltip : 'Full Class',
+		icon : 'fa-user',
+		snippet : FullClassGen,
+	},
+	{
+		tooltip : 'Spell',
+		icon : 'fa-magic',
+		snippet : SpellGen,
+	},
+	{
+		tooltip : 'Class Feature',
+		icon : 'fa-trophy',
+		snippet : ClassFeatureGen,
+	},
+	{
+		tooltip : 'Note',
+		icon : 'fa-sticky-note',
+		snippet : function(){
+			return ""
+		},
+	},
+	{
+		tooltip : 'Table',
+		icon : 'fa-list',
+		snippet : function(){
+			return [
+				"##### Cookie Tastiness",
+				"| Tasty Level | Cookie Type |",
+				"|:----:|:-------------|",
+				"| -5  | Raisin |",
+				"| 8th  | 1 or lower |",
+				"| 11th | 2 or lower |",
+				"| 14th | 3 or lower |",
+				"| 17th | 4 or lower |\n\n",
+			].join('\n');
+		},
+	},
+	{
+		tooltip : 'Monster Stat Block',
+		icon : 'fa-bug',
+		snippet : MonsterBlockGen,
+	},
+	{
+		tooltip : "Class Table",
+		icon : 'fa-table',
+		snippet : ClassTableGen,
+	},
+	{
+		tooltip : "Column Break",
+		icon : 'fa-columns',
+		snippet : function(){
+			return "```\n```\n\n";
+		}
+	},
+	{
+		tooltip : "New Page",
+		icon : 'fa-file-text',
+		snippet : function(){
+			return "\\page\n\n";
+		}
+	},
+	{
+		tooltip : "Vertical Spacing",
+		icon : 'fa-arrows-v',
+		snippet : function(){
+			return "<div style='margin-top:140px'></div>\n\n";
+		}
+	},
+	{
+		tooltip : "Insert Image",
+		icon : 'fa-image',
+		snippet : function(){
+			return "<img />";
+		}
+	}
+
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var temp = {
 
 	intro : [
 		'# Welcome to HomeBrew',
@@ -12,33 +133,6 @@ module.exports = {
 
 	].join('\n'),
 
-
-	classFeatures : [
-		"## Class Features",
-		"As a paladin, you gain the following class features.",
-		"",
-		"#### Hit Points",
-		"___",
-		"- **Hit Dice:** 1d10 per paladin level",
-		"- **Hit Points at 1st Level:** 10 + your Constitution modifier",
-		"- **Hit Points at Higher Levels:** 1d10 (or 6) + your Constituion modifier per paladin level after 1st",
-		"",
-		"#### Proficiencies",
-		"___",
-		"- **Armor:** All armor, Shields",
-		"- **Weapons:** Simple Weapons, martial weapons",
-		"- **Tools:** None <br>",
-		"___",
-		"- **Saving Throws:** Wisdom, Charisma",
-		"- **Skills:** Choose two from Athletics, Insight, Intimidation, Medicine, Persuasion, and Religion",
-		"",
-		"#### Equipment",
-		"You start with the following equipment, in addition to the equipment granted by your background:",
-		"",
-		"- *(a)* a martial weapon and a shield or *(b)* two martial weapons",
-		"- *(a)* five javelins or *(b)* any simple melee weapon",
-		"- Chain mail and a holy symbol",
-	].join('\n'),
 
 	spell : [
 		"#### Continual Flame",
