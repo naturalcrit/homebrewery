@@ -141,7 +141,7 @@ module.exports = function(){
 		"> - **Speed** " + _.random(0,50) + "ft.",
 		">___",
 		">|STR|DEX|CON|INT|WIS|CHA|",
-		">|:---:|:---:|:---:|:---:|:---:|:---:|:---:|",
+		">|:---:|:---:|:---:|:---:|:---:|:---:|",
 		stats,
 		">___",
 		"> - **Condition Immunities** " + genList(["groggy", "swagged", "weak-kneed", "buzzed", "groovy", "melancholy", "drunk"], 3),

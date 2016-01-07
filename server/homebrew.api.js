@@ -1,11 +1,5 @@
 var vitreumRender = require('vitreum/render');
-
-
-
 var HomebrewModel = require('./homebrew.model.js').model;
-
-
-
 
 module.exports = function(app){
 
@@ -49,11 +43,27 @@ module.exports = function(app){
 			if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
 			var resEntry = objs[0];
 			resEntry.text = req.body.text;
+			resEntry.updatedAt = new Date();
 			resEntry.save(function(err, obj){
 				if(err) return res.status(500).send("Error while saving");
 				return res.status(200).send(obj);
 			})
 		});
+	});
+
+	app.get('/homebrew/remove/:id', function(req, res){
+		if(req.query && req.query.admin_key == process.env.ADMIN_KEY){
+			HomebrewModel.find({editId : req.params.id}, function(err, objs){
+				if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
+				var resEntry = objs[0];
+				resEntry.remove(function(err){
+					if(err) return res.status(500).send("Error while removing");
+					return res.status(200).send();
+				})
+			});
+		}else{
+			return res.status(401).send('Access denied');
+		}
 	});
 
 
@@ -67,7 +77,9 @@ module.exports = function(app){
 				resObj = objs[0];
 			}
 
-			resObj.editId = null;
+			resObj.lastViewed = new Date();
+			resObj.views = resObj.views + 1;
+			resObj.save();
 
 			vitreumRender({
 				page: './build/homebrew/bundle.dot',

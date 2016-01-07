@@ -41,7 +41,7 @@ var EditPage = React.createClass({
 
 		if(this.state.text === ""){
 			this.setState({
-				text : FullClassGen()
+				text : 'Put stuff huuurr'
 			})
 		}
 	},

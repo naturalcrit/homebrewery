@@ -1,0 +1,24 @@
+.homebrewAdmin{
+
+	table{
+		max-height: 800px;
+		overflow-y: scroll;
+		th{
+			font-weight: 800;
+			padding: 10px;
+		}
+
+		tr:nth-child(even){
+			background-color: fade(@green, 10%);
+		}
+		tr.isEmpty{
+			background-color: fade(@red, 30%);
+		}
+		td{
+			min-width: 100px;
+			text-align: center;
+			padding: 10px;
+		}
+	}
+
+}

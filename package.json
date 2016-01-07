@@ -10,6 +10,7 @@
   "license": "BSD-2-Clause",
   "dependencies": {
     "app-module-path": "^1.0.4",
+    "basic-auth": "^1.0.3",
     "body-parser": "^1.14.2",
     "classnames": "^2.2.0",
     "express": "^4.13.3",

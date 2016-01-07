@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var shortid = require('shortid');
+var _ = require('lodash');
 
 var HomebrewSchema = mongoose.Schema({
 	shareId : {type : String, default: shortid.generate},
@@ -7,15 +8,13 @@ var HomebrewSchema = mongoose.Schema({
 	text : {type : String, default : ""},
 
 	createdAt     : { type: Date, default: Date.now },
-	updatedAt   : { type: Date}
+	updatedAt   : { type: Date},
+	lastViewed  : { type: Date},
+	views : {type:Number, default:0}
 });
 
 
-//Schema Options
-HomebrewSchema.pre('save', function(done) {
-	this.updatedAt = new Date();
-	done();
-});
+
 
 /*
 HomebrewSchema.options.toJSON.transform = function (doc, ret, options) {

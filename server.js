@@ -19,7 +19,44 @@ mongoose.connection.on('error', function(){
 });
 
 
+
+
+
+
+//Admin route
+process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
+process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password';
+process.env.ADMIN_KEY  = process.env.ADMIN_KEY  || 'admin_key';
+var auth = require('basic-auth');
+
+var HomebrewModel = require('./server/homebrew.model.js').model;
+
+app.get('/admin', function(req, res){
+	var credentials = auth(req)
+	if (!credentials || credentials.name !== process.env.ADMIN_USER || credentials.pass !== process.env.ADMIN_PASS) {
+		res.setHeader('WWW-Authenticate', 'Basic realm="example"')
+		return res.status(401).send('Access denied')
+	}
+	HomebrewModel.find({}, function(err, homebrews){
+		vitreumRender({
+			page: './build/admin/bundle.dot',
+			prerenderWith : './client/admin/admin.jsx',
+			clearRequireCache : true,
+			initialProps: {
+				url: req.originalUrl,
+				admin_key : process.env.ADMIN_KEY,
+
+				homebrews : homebrews,
+			},
+		}, function (err, page) {
+			return res.send(page)
+		});
+	});
+});
+
+
 app = require('./server/homebrew.api.js')(app);
+
 
 
 app.get('*', function (req, res) {
