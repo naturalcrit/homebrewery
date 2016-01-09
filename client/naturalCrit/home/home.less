@@ -1,0 +1,58 @@
+.home{
+	background-color: white;
+
+	.top{
+		text-align: center;
+
+		.logo{
+			font-size: 4em;
+			color : black;
+			svg{
+				fill : black;
+			}
+		}
+
+		p{
+			margin-top: 15px;
+			font-size: 1.5em;
+			font-style: italic;
+			color : @grey;
+		}
+	}
+
+	.tools{
+
+		.toolContainer{
+			display: inline-block;
+			width : 500px;
+			cursor : pointer;
+
+			border-right : 5px solid @silver;
+
+			padding : 40px;
+
+			svg{
+
+				&:hover{
+					path, line, polyline, circle, rect, polygon{
+
+						stroke-dashoffset : 0px;
+					}
+				}
+
+				path, line, polyline, circle, rect, polygon {
+
+
+					stroke-dasharray  : 300px;
+					stroke-dashoffset : 300px;
+
+					.animateAll(1s);
+				}
+
+
+			}
+
+		}
+	}
+
+}

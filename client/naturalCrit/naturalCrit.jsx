@@ -3,13 +3,15 @@ var _ = require('lodash');
 var cx = require('classnames');
 var CreateRouter = require('pico-router').createRouter;
 
+var Home = require('./home/home.jsx');
 var CombatManager = require('./combatManager/combatManager.jsx');
 //var Homebrew = require('./homebrew/homebrew.jsx');
 
 
 var Router = CreateRouter({
-	'/' : <CombatManager />,
+	'/' : <Home />,
 	'/combat' : <CombatManager />,
+	//'/homebrew' : <Homebrew />,
 });
 
 
