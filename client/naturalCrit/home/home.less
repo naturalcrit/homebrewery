@@ -1,58 +1,104 @@
+
 .home{
-	background-color: white;
-
+	height           : 100vh;
+	background-color : white;
 	.top{
-		text-align: center;
-
+		.fadeInTop(1s);
+		.delay(0.5);
+		margin-bottom : 100px;
+		padding-top   : 100px;
+		text-align    : center;
 		.logo{
-			font-size: 4em;
-			color : black;
+			font-size : 4em;
+			color     : black;
 			svg{
 				fill : black;
 			}
 		}
-
 		p{
-			margin-top: 15px;
-			font-size: 1.5em;
-			font-style: italic;
-			color : @grey;
+			margin-top : 10px;
+			font-size  : 1.3em;
+			font-style : italic;
+			color      : @grey;
 		}
 	}
-
 	.tools{
-
+		width      : 100%;
+		text-align : center;
 		.toolContainer{
-			display: inline-block;
-			width : 500px;
-			cursor : pointer;
+			.sequentialDelay(0.5s, 1s);
+			.fadeInDown(1s);
+			.keep();
+			opacity      : 0;
+			display      : inline-block;
 
+
+			cursor       : pointer;
+
+			text-align   : center;
 			border-right : 5px solid @silver;
-
-			padding : 40px;
-
-			svg{
+			&:last-child{
+				border : none;
+			}
+			.content{
+				.addSketch(360px);
+				.animate(background-color, 0.5s);
+				padding      : 40px;
+				width        : 500px;
 
 				&:hover{
-					path, line, polyline, circle, rect, polygon{
-
-						stroke-dashoffset : 0px;
+					background-color: fade(@red, 20%);
+					svg, h2{
+						.transform(scale(1.3));
 					}
 				}
 
-				path, line, polyline, circle, rect, polygon {
-
-
-					stroke-dasharray  : 300px;
-					stroke-dashoffset : 300px;
-
-					.animateAll(1s);
+				h2{
+					font-family : 'CodeBold';
+					font-size   : 2em;
+					.animateAll(0.5s);
 				}
-
+				p{
+					max-width : 300px;
+					margin    : 20px auto;
+				}
+				svg{
+					.animateAll(0.5s);
+					height : 10em;
+				}
 
 			}
 
 		}
 	}
-
+}
+.addSketch(@length, @color : black){
+	&:hover{
+		path, line, polyline, circle, rect, polygon{
+			.sketch(@length, @color, 2s)
+		}
+	}
+	path, line, polyline, circle, rect, polygon {
+		stroke-dasharray  : @length;
+		stroke-dashoffset : 0px;
+		stroke            : @color;
+		stroke-width      : 0.5px;
+		fill              : @color;
+		//.animateAll(3s);
+	}
+}
+.sketch(@length, @color : black, @duration : 3s, @easing : @defaultEasing){
+	.createAnimation(bounce, @duration, @easing);
+	.sketchKeyFrames(){
+		0% { stroke-dashoffset : 0px; fill:@color;}
+		15% { stroke-dashoffset : 0px; fill : transparent}
+		50% { stroke-dashoffset : @length; fill: transparent}
+		85% { stroke-dashoffset : 0px; fill:transparent;}
+		100% { stroke-dashoffset : 0px; fill:@color;}
+	}
+	@-webkit-keyframes bounce {.sketchKeyFrames();}
+	@-moz-keyframes bounce {.sketchKeyFrames();}
+	@-ms-keyframes bounce {.sketchKeyFrames();}
+	@-o-keyframes bounce {.sketchKeyFrames();}
+	@keyframes bounce {.sketchKeyFrames();}
 }

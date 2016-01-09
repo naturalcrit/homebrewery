@@ -2,6 +2,8 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 
+var Router = require('pico-router');
+
 var Icon = require('naturalCrit/icon.svg.jsx');
 
 var Logo = require('naturalCrit/logo/logo.jsx');
@@ -12,6 +14,10 @@ var CombatIcon = require('naturalCrit/combatIcon.svg.jsx');
 
 var Home = React.createClass({
 
+	navigate : function(){
+
+	},
+
 	render : function(){
 		var self = this;
 		return(
@@ -20,21 +26,24 @@ var Home = React.createClass({
 
 				<div className='top'>
 					<Logo />
-					<p>Tip-top tools for the discerning DM</p>
+					<p>Top-tier tools for the discerning DM</p>
 				</div>
 
 				<div className='tools'>
 
-					<div className='homebrew toolContainer' href='/homebrew'>
-						<HomebrewIcon />
-						<h2>The Homebrewery</h2>
-						<p>Make authentic-looking 5e homebrews using just <a href='https://help.github.com/articles/markdown-basics/'>Markdown</a></p>
-
+					<div className='homebrew toolContainer' onClick={Router.navigate.bind(self, '/homebrew')}>
+						<div className='content'>
+							<HomebrewIcon />
+							<h2>The Homebrewery</h2>
+							<p>Make authentic-looking 5e homebrews using Markdown</p>
+						</div>
 					</div>
-					<div className='combat toolContainer underConstruction'>
-						<CombatIcon />
-						<h2>Combat Manager</h2>
-						<p>Easily create and manage complex encouters for your party</p>
+					<div className='combat toolContainer underConstruction' onClick={Router.navigate.bind(self, '/combat')}>
+						<div className='content'>
+							<CombatIcon />
+							<h2>Combat Manager</h2>
+							<p>Easily create and manage complex encouters for your party</p>
+						</div>
 					</div>
 				</div>
 			</div>
