@@ -13,7 +13,8 @@ var Statusbar = React.createClass({
 			shareId : null,
 			isPending : false,
 			lastUpdated : null,
-			info : null
+			info : null,
+			views : 0
 		};
 	},
 
@@ -34,16 +35,22 @@ var Statusbar = React.createClass({
 	renderInfo : function(){
 		if(!this.props.lastUpdated) return null;
 
-		return <div className='lastUpdated'>
-			Last updated: {Moment(this.props.lastUpdated).fromNow()}
-		</div>
+		return [
+			<div className='views' key='views'>
+				Views: {this.props.views}
+			</div>,
+			<div className='lastUpdated' key='lastUpdated'>
+				Last updated: {Moment(this.props.lastUpdated).fromNow()}
+			</div>
+		];
+
 	},
 
 	renderNewButton  : function(){
 		if(this.props.editId || this.props.shareId) return null;
 
 		return <a className='newButton' target='_blank' href='/homebrew/new'>
-			New <i className='fa fa-plus' />
+			New Brew <i className='fa fa-external-link' />
 		</a>
 	},
 
@@ -69,10 +76,12 @@ var Statusbar = React.createClass({
 
 	render : function(){
 		return <div className='statusbar'>
-			<Logo />
+			<Logo
+				hoverSlide={true}
+			/>
 			<div className='left'>
 				<a href='/homebrew' className='toolName'>
-					The Home<i className='fa fa-beer fa-flip-horizontal' /><small>rewery</small>
+					The Home<small>Brewery</small>
 				</a>
 			</div>
 			<div className='controls right'>

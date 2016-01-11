@@ -16,6 +16,7 @@ var SharePage = React.createClass({
 				editId : null,
 				createdAt : null,
 				updatedAt : null,
+				views : 0
 			}
 		};
 	},
@@ -25,6 +26,7 @@ var SharePage = React.createClass({
 			<div className='sharePage'>
 				<Statusbar
 					lastUpdated={this.props.entry.updatedAt}
+					views={this.props.entry.views}
 				/>
 
 				<PHB text={this.props.entry.text} />

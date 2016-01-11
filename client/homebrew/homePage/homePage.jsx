@@ -6,23 +6,30 @@ var Statusbar = require('../statusbar/statusbar.jsx');
 var PHB = require('../phb/phb.jsx');
 var Editor = require('../editor/editor.jsx');
 
+var WelcomeText = require('./welcomeMessage.js');
+
+
+
 var KEY = 'naturalCrit-homebrew';
 
 var HomePage = React.createClass({
 
 	getInitialState: function() {
 		return {
-			text: "# Welcome \n Oh god, what to put here. *Instructions* I guess?."
+			text: WelcomeText
 		};
 	},
 
 	componentDidMount: function() {
+		/*
 		var storage = localStorage.getItem(KEY);
 		if(storage){
 			this.setState({
 				text : storage
 			})
 		}
+		*/
+
 	},
 
 	handleTextChange : function(text){
@@ -30,7 +37,7 @@ var HomePage = React.createClass({
 			text : text
 		});
 
-		localStorage.setItem(KEY, text);
+		//localStorage.setItem(KEY, text);
 	},
 
 	render : function(){

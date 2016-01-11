@@ -3,9 +3,7 @@ var _ = require('lodash');
 var cx = require('classnames');
 
 var Router = require('pico-router');
-
 var Icon = require('naturalCrit/icon.svg.jsx');
-
 var Logo = require('naturalCrit/logo/logo.jsx');
 
 

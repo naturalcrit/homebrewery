@@ -5,11 +5,13 @@ var ClassFeatureGen = require('./classfeature.gen.js');
 var FullClassGen = require('./fullclass.gen.js');
 
 module.exports = [
+	/*
 	{
 		tooltip : 'Full Class',
 		icon : 'fa-user',
 		snippet : FullClassGen,
 	},
+	*/
 	{
 		tooltip : 'Spell',
 		icon : 'fa-magic',

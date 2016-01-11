@@ -2,6 +2,12 @@ var React = require('react');
 var Icon = require('naturalCrit/icon.svg.jsx');
 
 var Logo = React.createClass({
+	getDefaultProps: function() {
+		return {
+			hoverSlide : false
+		};
+	},
+
 	render : function(){
 		return <a className='logo' {... this.props} href='/'>
 			<Icon />

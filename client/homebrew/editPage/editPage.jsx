@@ -38,12 +38,6 @@ var EditPage = React.createClass({
 			if(!self.state.pending) return;
 			return "You have unsaved changes!";
 		}
-
-		if(this.state.text === ""){
-			this.setState({
-				text : 'Put stuff huuurr'
-			})
-		}
 	},
 
 	handleTextChange : function(text){
