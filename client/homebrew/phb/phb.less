@@ -72,6 +72,12 @@
 	text-rendering       : optimizeLegibility;
 	position : relative;
 	overflow: hidden;
+	z-index : 15;
+
+
+	img{
+		z-index : -1;
+	}
 
 	//Page Accents
 	&:after{
@@ -93,6 +99,7 @@
 		-o-column-break-inside      : avoid;
 		-ms-column-break-inside     : avoid;
 		column-break-inside         : avoid;
+		z-index : 15;
 	}
 
 	p,ul{
