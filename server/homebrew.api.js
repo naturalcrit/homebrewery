@@ -12,31 +12,6 @@ module.exports = function(app){
 	})
 
 
-	//Edit Page
-	app.get('/homebrew/edit/:id', function(req, res){
-		HomebrewModel.find({editId : req.params.id}, function(err, objs){
-			var resObj = null;
-			var errObj = {text: "# oops\nCould not find the homebrew."}
-			if(objs.length){
-				resObj = objs[0];
-			}
-
-			vitreumRender({
-				page: './build/homebrew/bundle.dot',
-				globals:{},
-				prerenderWith : './client/homebrew/homebrew.jsx',
-				initialProps: {
-					url: req.originalUrl,
-					entry : resObj || errObj
-				},
-				clearRequireCache : true,
-			}, function (err, page) {
-				return res.send(page)
-			});
-		})
-	});
-
-
 	//Updating
 	app.put('/homebrew/update/:id', function(req, res){
 		HomebrewModel.find({editId : req.params.id}, function(err, objs){
@@ -68,6 +43,32 @@ module.exports = function(app){
 
 
 
+
+	//Edit Page
+	app.get('/homebrew/edit/:id', function(req, res){
+		HomebrewModel.find({editId : req.params.id}, function(err, objs){
+			var resObj = null;
+			var errObj = {text: "# oops\nCould not find the homebrew."}
+			if(objs.length){
+				resObj = objs[0];
+			}
+
+			vitreumRender({
+				page: './build/homebrew/bundle.dot',
+				globals:{},
+				prerenderWith : './client/homebrew/homebrew.jsx',
+				initialProps: {
+					url: req.originalUrl,
+					brew : resObj || errObj
+				},
+				clearRequireCache : true,
+			}, function (err, page) {
+				return res.send(page)
+			});
+		})
+	});
+
+
 	//Share Page
 	app.get('/homebrew/share/:id', function(req, res){
 		HomebrewModel.find({shareId : req.params.id}, function(err, objs){
@@ -87,7 +88,7 @@ module.exports = function(app){
 				prerenderWith : './client/homebrew/homebrew.jsx',
 				initialProps: {
 					url: req.originalUrl,
-					entry : resObj || errObj
+					brew : resObj || errObj
 				},
 				clearRequireCache : true,
 			}, function (err, page) {

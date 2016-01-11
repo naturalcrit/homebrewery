@@ -14,7 +14,7 @@ var Homebrew = React.createClass({
 		return {
 			url : "",
 			text : "",
-			entry : {
+			brew : {
 				text : "",
 				shareId : null,
 				editId : null,
@@ -26,10 +26,10 @@ var Homebrew = React.createClass({
 	componentWillMount: function() {
 		Router = CreateRouter({
 			'/homebrew/edit/:id' : (args) => {
-				return <EditPage id={args.id} entry={this.props.entry} />
+				return <EditPage id={args.id} entry={this.props.brew} />
 			},
 			'/homebrew/share/:id' : (args) => {
-				return <SharePage id={args.id} entry={this.props.entry} />
+				return <SharePage id={args.id} entry={this.props.brew} />
 			},
 			'/homebrew*' : <HomePage />,
 		});
