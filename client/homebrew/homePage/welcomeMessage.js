@@ -65,7 +65,7 @@ module.exports = [
 "* Download as images",
 "",
 "",
-"<img src='http://i.imgur.com/hMna6G0.png' style='position:absolute;bottom:-10px;right:-60px;width:400px' />",
+"<img src='http://i.imgur.com/hMna6G0.png' style='position:absolute;bottom:-10px;right:50px;width:280px' />",
 "",
 ].join('\n');
 
