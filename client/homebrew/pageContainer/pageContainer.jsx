@@ -2,6 +2,8 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 
+var PHBPage = require('./phbPage/phbPage.jsx');
+
 var Markdown = require('marked');
 
 var PageContainer = React.createClass({
@@ -13,7 +15,7 @@ var PageContainer = React.createClass({
 
 	renderPages : function(){
 		return _.map(this.props.text.split('\\page'), (pageText, index) => {
-			return <div className='phb' dangerouslySetInnerHTML={{__html:Markdown(pageText)}} key={index} />
+			return <PHBPage content={Markdown(pageText)} key={index} />
 		})
 	},
 
