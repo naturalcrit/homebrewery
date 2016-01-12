@@ -2,7 +2,7 @@ module.exports = [
 "# The Homebrewery",
 "Welcome traveler from an antique land. Please sit and tell us of what you have seen. The unheard of monsters, who slither and bite.",
 "",
-"Tell us of the wonderous items and and artifacts you have found, their mysteries yet to be unlocked. Of the vexing vocations and surprising skills you have seen.",
+"Tell us of the wondrous items and and artifacts you have found, their mysteries yet to be unlocked. Of the vexing vocations and surprising skills you have seen.",
 "",
 "### Homebrew made easy",
 "The Homebrewery allows for the creation and sharing of authentic looking Fifth-Edition homebrews, with just text editing. It accomplishes this by using [Markdown](https://help.github.com/articles/markdown-basics/) along with some custom CSS-stlying.",
@@ -46,7 +46,7 @@ module.exports = [
 "",
 "",
 "### Not quite Markdown",
-"Although the Homebrewery uses Markdown, to get all the stlying features from the PHB, we had to get a little creative. Some base HTML elements are not used as expected and I've had to include a few new keywords.",
+"Although the Homebrewery uses Markdown, to get all the styling features from the PHB, we had to get a little creative. Some base HTML elements are not used as expected and I've had to include a few new keywords.",
 "",
 "___",
 "* **Horizontal Rules** are generally used to *modify* existing elements into a different style. For example, a horizontal rule before a blockquote will give it the style of a Monster Stat Block instead of a note.",
@@ -64,4 +64,9 @@ module.exports = [
 "* Switch between DMG-style and Monster Manual-Style",
 "* Download as images",
 "",
+"",
+"<img src='http://i.imgur.com/hMna6G0.png' style='position:absolute;bottom:-10px;right:-60px;width:400px' />",
+"",
 ].join('\n');
+
+

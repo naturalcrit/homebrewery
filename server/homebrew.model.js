@@ -8,8 +8,8 @@ var HomebrewSchema = mongoose.Schema({
 	text : {type : String, default : ""},
 
 	createdAt     : { type: Date, default: Date.now },
-	updatedAt   : { type: Date},
-	lastViewed  : { type: Date},
+	updatedAt   : { type: Date, default: Date.now},
+	lastViewed  : { type: Date, default: Date.now},
 	views : {type:Number, default:0}
 });
 
