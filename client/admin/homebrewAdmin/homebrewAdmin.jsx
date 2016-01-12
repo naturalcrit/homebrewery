@@ -18,12 +18,18 @@ var HomebrewAdmin = React.createClass({
 			return <tr className={cx('brewRow', {'isEmpty' : brew.text == ""})} key={brew.sharedId}>
 
 				<td>{brew.editId}</td>
+				<td>{brew.shareId}</td>
 				<td>{Moment(brew.createdAt).fromNow()}</td>
 				<td>{Moment(brew.updatedAt).fromNow()}</td>
 				<td>{Moment(brew.lastViewed).fromNow()}</td>
 				<td>{brew.views}</td>
 
-				<td><a target="_blank" href={'/homebrew/share/' + brew.shareId}>view</a></td>
+				<td className='preview'>
+					<a target="_blank" href={'/homebrew/share/' + brew.shareId}>view</a>
+					<div className='content'>
+						{brew.text.slice(0, 500)}
+					</div>
+				</td>
 				<td><a href={'/homebrew/remove/' + brew.editId +'?admin_key=' + this.props.admin_key}><i className='fa fa-trash' /></a></td>
 			</tr>
 
@@ -39,6 +45,7 @@ var HomebrewAdmin = React.createClass({
 					<thead>
 						<tr>
 							<th>Edit Id</th>
+							<th>Share Id</th>
 							<th>Created At</th>
 							<th>Last Updated</th>
 							<th>Last Viewed</th>

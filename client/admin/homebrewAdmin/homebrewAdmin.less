@@ -18,6 +18,35 @@
 			min-width: 100px;
 			text-align: center;
 			padding: 10px;
+
+			&.preview{
+				position: relative;
+
+				&:hover{
+					.content{
+						display: block;
+					}
+				}
+
+
+				.content{
+					font-family: monospace;
+					text-align: left;
+					padding : 30px;
+					display: none;
+					position: absolute;
+					top : 100%;
+					left: 0px;
+					width : 300px;
+					max-height : 500px;
+					background-color: white;
+					z-index : 1000;
+					pointer-events: none;
+				}
+
+
+
+			}
 		}
 	}
 
