@@ -87,6 +87,14 @@ module.exports = [
 		snippet : function(){
 			return "<img src='https://i.imgur.com/RJ6S6eY.gif' style='position:absolute;bottom:-10px;right:-60px;' />";
 		}
+	},
+
+	{
+		tooltip : "Page number & Footnote",
+		icon : 'fa-book',
+		snippet : function(){
+			return "<div class='pageNumber'>1</div>\n<div class='footnote'>PART 1 | FANCINESS</div>\n\n";
+		}
 	}
 
 ]
