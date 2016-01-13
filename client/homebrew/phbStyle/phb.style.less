@@ -1,6 +1,6 @@
 
-@import (less) './client/homebrew/phb/phb.fonts.css';
-@import (less) './client/homebrew/phb/phb.assets.less';
+@import (less) './client/homebrew/phbStyle/phb.fonts.css';
+@import (less) './client/homebrew/phbStyle/phb.assets.less';
 //Colors
 @background            : #EEE5CE;
 @noteGreen             : #e0e5c1;
@@ -41,9 +41,9 @@
 	-moz-column-width    : 8cm;
 	-webkit-column-gap   : 1cm;
 	text-rendering       : optimizeLegibility;
-	/*****************************
-	 *            BASE
-	 *****************************/
+	//*****************************
+	// *            BASE
+	// *****************************/
 	p{
 		padding-bottom : 0.8em;
 		line-height    : 1.3em;
@@ -67,9 +67,9 @@
 	em{
 		font-style : italic;
 	}
-	/*****************************
-	 *           HEADERS
-	 *****************************/
+	//*****************************
+	// *           HEADERS
+	// *****************************/
 	h1,h2,h3,h4{
 		margin-top    : 0.2em;
 		margin-bottom : 0.2em;
@@ -107,9 +107,9 @@
 		font-size     : 13pt;
 		font-weight   : 900;
 	}
-	/*****************************
-	 *          TABLE
-	 *****************************/
+	//*****************************
+	// *          TABLE
+	// *****************************/
 	table{
 		.useSansSerif();
 		width         : 100%;
@@ -135,9 +135,9 @@
 			}
 		}
 	}
-	/*****************************
-	 *            NOTE
-	 *****************************/
+	//*****************************
+	// *            NOTE
+	// *****************************/
 	blockquote{
 		.useSansSerif();
 		box-sizing       : border-box;
@@ -152,9 +152,9 @@
 			line-height : 1.1em;
 		}
 	}
-	/*****************************
-	 *    MONSTER STAT BLOCK
-	 *****************************/
+	//*****************************
+	// *    MONSTER STAT BLOCK
+	// *****************************/
 	hr+blockquote{
 		position         : relative;
 		background-color : @monsterStatBackground;
@@ -241,9 +241,9 @@
 			left   : -3px;
 		}
 	}
-	/*****************************
-	 *      FULL CLASS TABLE
-	 *****************************/
+	//*****************************
+	// *      FULL CLASS TABLE
+	// *****************************/
 	h5+hr+table{
 		margin-top          : -5px;
 		margin-bottom       : 50px;
@@ -259,9 +259,9 @@
 		border-image-width  : 47px;
 		-webkit-column-span : all;
 	}
-	/*****************************
-	 *           FOOTER
-	 *****************************/
+	//*****************************
+	// *           FOOTER
+	// *****************************/
 	&:after{
 		content          : "";
 		position         : absolute;
@@ -302,9 +302,9 @@
 		color      : #c9ad6a;
 		text-align : right;
 	}
-	/*****************************
-	 *          EXTRAS
-	 *****************************/
+	//*****************************
+	// *          EXTRAS
+	// *****************************/
 	hr{
 		visibility : hidden;
 		margin     : 0px;
