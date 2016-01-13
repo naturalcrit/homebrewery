@@ -123,6 +123,7 @@ module.exports = function(app){
 	});
 
 	//PDF download
+	/*
 	var pdf = require('html-pdf');
 	app.get('/homebrew/pdf/:id', function(req, res){
 		HomebrewModel.find({shareId : req.params.id}, function(err, objs){
@@ -149,7 +150,7 @@ module.exports = function(app){
 				"border": "0",
 			}
 
-			pdf.create(html, config).toStream(function(err, stream){
+			pdf.create(page, config).toStream(function(err, stream){
 
 				res.attachment('pdfname.pdf');
 				return stream.pipe(res);
@@ -158,7 +159,7 @@ module.exports = function(app){
 
 		})
 	});
-
+	*/
 
 
 
