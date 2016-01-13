@@ -11,6 +11,7 @@ var Statusbar = React.createClass({
 		return {
 			//editId: null,
 			shareId : null,
+			printId : null,
 			isPending : false,
 			lastUpdated : null,
 			info : null,
@@ -62,6 +63,14 @@ var Statusbar = React.createClass({
 		</a>
 	},
 
+	renderPrintButton : function(){
+		if(!this.props.printId) return null;
+
+		return <a className='printField' key='print' href={'/homebrew/print/' + this.props.printId} target="_blank">
+			Print View <i className='fa fa-print' />
+		</a>
+	},
+
 	renderStatus : function(){
 		if(!this.props.editId) return null;
 
@@ -87,6 +96,7 @@ var Statusbar = React.createClass({
 			<div className='controls right'>
 				{this.renderStatus()}
 				{this.renderInfo()}
+				{this.renderPrintButton()}
 				{this.renderShare()}
 				{this.renderNewButton()}
 			</div>

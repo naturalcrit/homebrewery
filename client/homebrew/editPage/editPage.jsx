@@ -67,6 +67,7 @@ var EditPage = React.createClass({
 			<Statusbar
 				editId={this.props.entry.editId}
 				shareId={this.props.entry.shareId}
+				printId={this.props.entry.shareId}
 				lastUpdated={this.state.lastUpdated}
 				isPending={this.state.pending} />
 
