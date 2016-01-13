@@ -3,7 +3,7 @@ var _ = require('lodash');
 var cx = require('classnames');
 
 var Statusbar = require('../statusbar/statusbar.jsx');
-var PHB = require('../phb/phb.jsx');
+var PageContainer = require('../pageContainer/pageContainer.jsx');
 var Editor = require('../editor/editor.jsx');
 
 var WelcomeText = require('./welcomeMessage.js');
@@ -50,7 +50,7 @@ var HomePage = React.createClass({
 						<Editor text={this.state.text} onChange={this.handleTextChange} />
 					</div>
 					<div className='rightPane'>
-						<PHB text={this.state.text} />
+						<PageContainer text={this.state.text} />
 					</div>
 				</div>
 

@@ -4,7 +4,7 @@ var cx = require('classnames');
 
 var Statusbar = require('../statusbar/statusbar.jsx');
 
-var PHB = require('../phb/phb.jsx');
+var PageContainer = require('../pageContainer/pageContainer.jsx');
 
 var SharePage = React.createClass({
 	getDefaultProps: function() {
@@ -29,7 +29,7 @@ var SharePage = React.createClass({
 					views={this.props.entry.views}
 				/>
 
-				<PHB text={this.props.entry.text} />
+				<PageContainer text={this.props.entry.text} />
 			</div>
 		);
 	}

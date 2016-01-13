@@ -1,0 +1,400 @@
+@import (less) './client/homebrew/phb/phb.fonts.css';
+@import (less) './client/homebrew/phb/phb.assets.less';
+
+
+//Colors
+@background          : #EEE5CE;
+@noteGreen               : #e0e5c1;
+@headerUnderline     : #c9ad6a;
+@horizontalRule      : #9c2b1b;
+@headerText              : #58180D;
+
+
+.phb{
+	font-family          : BookSanity;
+	box-sizing           : border-box;
+	height               : 27.5cm;
+	width                : 21cm;
+	padding              : 1.0cm 1.7cm;
+	column-count         : 2;
+	column-fill          : auto;
+	column-gap           : 1cm;
+	column-width         : 8cm;
+	background-color: @background;
+	background-image     : @backgroundImage;
+
+	-webkit-column-count : 2;
+	-moz-column-count    : 2;
+	-webkit-column-width : 8cm;
+	-moz-column-width    : 8cm;
+	-webkit-column-gap   : 1cm;
+	text-rendering       : optimizeLegibility;
+	position : relative;
+	overflow: hidden;
+	z-index : 15;
+
+
+	img{
+		z-index : -1;
+	}
+
+	//Page Accents
+	&:after{
+		content : "";
+		position: absolute;
+		height: 50px;
+		bottom : 0px;
+		left: 0px;
+		background-size: cover;
+		width : 100%;
+		background-image: @footerAccentImage;
+
+	}
+	&:nth-child(even){
+		&:after{
+			transform: scaleX(-1);
+		}
+
+		.pageNumber{
+			left : 2px;
+		}
+
+		.footnote{
+			left : 80px;
+			text-align: left;
+		}
+	}
+
+	//Avoid breaking up
+	p,ul,blockquote,table{
+		-webkit-column-break-inside : avoid;
+		-moz-column-break-inside    : avoid;
+		-o-column-break-inside      : avoid;
+		-ms-column-break-inside     : avoid;
+		column-break-inside         : avoid;
+		z-index : 15;
+	}
+
+	strong{
+		font-weight: bold;
+	}
+	em{
+		font-style: italic;
+	}
+
+	p,ul{
+		strong{
+			//font-family : BookSanityBold;
+			em{
+			//	font-family : BookSanityBoldItalic;
+			}
+		}
+		em{
+			//font-family : BookSanityItalic;
+		}
+	}
+	p {
+		padding-bottom : 0.8em;
+		font-family    : BookSanity;
+		font-size      : 9pt;
+		line-height    : 1.3em;
+		&+p{
+			margin-top  : -0.8em;
+			text-indent : 1em;
+		}
+	}
+	ul{
+		margin-bottom       : 0.8em;
+		font-family         : BookSanity;
+		font-size           : 9pt;
+		line-height         : 1.3em;
+		list-style-position : inside;
+		list-style-type     : disc;
+	}
+
+
+	//Full Spell casting table
+	h5+hr+table{
+		-webkit-column-span : all;
+		column-span : all;
+		background-color: white;
+		border-image-source: @frameBorderImage;
+		border-image-slice: 150 200 150 200;
+		border-image-width: 47px;
+		border-image-outset: 37px 17px;
+		border-image-repeat: round;
+		margin-bottom: 50px;
+		border-collapse: separate;
+		border: initial;
+		padding-top: 10px;
+		margin-top: -5px;
+
+	}
+
+
+	table{
+		width         : 100%;
+		margin-bottom : 1em;
+		font-family   : ScalySans;
+		font-size     : 10pt;
+		em{
+			font-family : ScalySans;
+			font-style  : italic;
+		}
+		strong{
+			font-weight : 800;
+			font-family : ScalySans;
+			em{
+				font-style  : italic;
+				font-weight : 800;
+			}
+		}
+		thead{
+			font-weight : 800;
+			th{
+				padding-bottom : 0.3em;
+				padding-right: 0.1em;
+				padding-left: 0.1em;
+				vertical-align: bottom;
+			}
+		}
+		tbody{
+			tr{
+				td{
+					padding : 0.2em 0em;
+				}
+				&:nth-child(odd){
+					background-color : @noteGreen;
+				}
+			}
+		}
+	}
+	hr{
+		visibility: hidden;
+		//border : none;
+		margin: 0px;
+	}
+
+	//Fancy List of things
+	hr+ul{
+		list-style-type: none;
+		text-indent: -1em;
+		padding-left: 1em;
+
+		//margin-top: -0.5em;
+		margin-bottom: 0.5em;
+	}
+
+	//Column Break
+	pre{
+		visibility: hidden;
+		-webkit-column-break-after: always;
+	}
+
+	//Monster Stat block
+	hr+blockquote{
+		position : relative;
+		background-color: #FDF1DC;
+		border : none;
+
+		h2{
+			margin-bottom: 0px;
+			&+p{
+				padding-bottom: 0px;
+			}
+		}
+		h3{
+			font-family: ScalySans;
+			font-weight: 400;
+			border-bottom: 1px solid @headerText;
+		}
+
+		ul{
+			list-style-type: none;
+			font-family: ScalySans;
+			color : @headerText;
+			font-size: 10pt;
+			text-indent: -1em;
+			padding-left: 1em;
+			strong{
+				font-family: ScalySans;
+				font-weight: 800;
+			}
+		}
+
+		// Monster Ability table
+		hr+table{
+			-webkit-column-span : 1;
+			column-span : 1;
+			background-color: transparent;
+			border-image: none;
+			margin: 0;
+			thead{
+				tr{
+					//background-color: transparent;
+				}
+			}
+			tbody{
+				tr:nth-child(odd), tr:nth-child(even){
+					background-color: transparent;
+				}
+			}
+		}
+		table{
+			color : @headerText;
+		}
+
+		p+p{
+			margin-top  : 0em;
+			text-indent : 0em;
+			padding-bottom: 0.5em;
+		}
+
+
+
+		//Maybe move this to be built in
+		hr{
+			visibility: visible;
+			margin: 8px 0px;
+
+			border-color : transparent;
+			position: relative;
+			@height : 3px;
+			&:after, &:before{
+				content : "";
+				position: absolute;
+				width: 100%;
+				height: @height;
+				left: 0px;
+			}
+			&:before{
+				top : -@height;
+				background: linear-gradient(to right top, @horizontalRule 40%, transparent 50%)
+			}
+			&:after{
+				top: 0px;
+				background: linear-gradient(to right bottom, @horizontalRule 40%, transparent 50%)
+			}
+
+		}
+
+		//Borders
+		&:after, &:before{
+			content : "";
+			position: absolute;
+			background-color : #E69A28;
+			border: 1px solid black;
+			height : 4px;
+			width : 100%;
+			padding : 0px 3px;
+		}
+		&:before{
+			top : 0px;
+			left : -3px;
+		}
+		&:after{
+			bottom : 0px;
+			left : -3px;
+		}
+	}
+
+
+	//Note
+	blockquote{
+		box-sizing       : border-box;
+		margin-bottom    : 1em;
+		padding          : 5px 10px;
+		background-color : @noteGreen;
+		font-family      : ScalySans;
+		border-top       : 2px black solid;
+		border-bottom    : 2px black solid;
+		box-shadow       : 1px 4px 14px #888;
+
+		p, ul{
+			font-family : ScalySans;
+			font-size   : 10pt;
+			line-height : 1.1em;
+			em{
+				font-family : ScalySans;
+				font-style  : italic;
+			}
+			strong{
+				font-weight : 800;
+				font-family : ScalySans;
+				em{
+					font-style  : italic;
+					font-weight : 800;
+				}
+			}
+		}
+	}
+	pre{
+	}
+	h1,h2,h3,h4{
+		margin-top    : 0.2em;
+		margin-bottom : 0.2em;
+		font-family   : MrJeeves;
+		font-weight   : 800;
+		color         : @headerText;
+	}
+	h1{
+		column-span         : all;
+		font-size           : 28pt;
+		-webkit-column-span : all;
+		&+p{
+			&::first-letter{
+				float: left;
+				margin-top: 0.4em;
+				margin-bottom: 0.4em;
+				font-family: Solberry;
+				font-size: 10em;
+				color : #222;
+			}
+		}
+	}
+	h2{
+		font-size : 20pt;
+	}
+	h3{
+		font-size     : 15pt;
+		border-bottom : 2px solid @headerUnderline;
+	}
+	h4{
+		margin-bottom : 0.00em;
+		font-size     : 12pt;
+	}
+	h5{
+		margin-bottom : 0.2em;
+		font-family   : ScalySansSmallCaps;
+		font-size     : 13pt;
+		font-weight   : 900;
+	}
+
+
+
+
+
+
+	//Page Numbers
+	.pageNumber{
+		font-family         : BookSanity;
+			position: absolute;
+			bottom: 22px;
+			right: 2px;
+			font-size: 0.8em;
+			color: #c9ad6a;
+			text-align: center;
+			width : 50px;
+	}
+
+	.footnote{
+		position: absolute;
+		bottom: 32px;
+		right: 80px;
+		width : 200px;
+		font-size: 0.6em;
+		color: #c9ad6a;
+		text-align: right;
+	}
+
+}
