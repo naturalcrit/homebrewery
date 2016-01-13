@@ -1,0 +1,333 @@
+
+@import (less) './client/homebrew/phb/phb.fonts.css';
+@import (less) './client/homebrew/phb/phb.assets.less';
+//Colors
+@background            : #EEE5CE;
+@noteGreen             : #e0e5c1;
+@headerUnderline       : #c9ad6a;
+@horizontalRule        : #9c2b1b;
+@headerText            : #58180D;
+@monsterStatBackground : #FDF1DC;
+.useSansSerif(){
+	font-family : ScalySans;
+	em{
+		font-family : ScalySans;
+		font-style  : italic;
+	}
+	strong{
+		font-family : ScalySans;
+		font-weight : 800;
+	}
+}
+.phb{
+	position             : relative;
+	z-index              : 15;
+	box-sizing           : border-box;
+	overflow             : hidden;
+	height               : 27.5cm;
+	width                : 21cm;
+	padding              : 1.0cm 1.7cm;
+	column-count         : 2;
+	column-fill          : auto;
+	column-gap           : 1cm;
+	column-width         : 8cm;
+	background-color     : @background;
+	background-image     : @backgroundImage;
+	font-family          : BookSanity;
+	font-size            : 9pt;
+	-webkit-column-count : 2;
+	-moz-column-count    : 2;
+	-webkit-column-width : 8cm;
+	-moz-column-width    : 8cm;
+	-webkit-column-gap   : 1cm;
+	text-rendering       : optimizeLegibility;
+	/*****************************
+	 *            BASE
+	 *****************************/
+	p{
+		padding-bottom : 0.8em;
+		line-height    : 1.3em;
+		&+p{
+			margin-top  : -0.8em;
+			text-indent : 1em;
+		}
+	}
+	ul{
+		margin-bottom       : 0.8em;
+		line-height         : 1.3em;
+		list-style-position : inside;
+		list-style-type     : disc;
+	}
+	img{
+		z-index : -1;
+	}
+	strong{
+		font-weight : bold;
+	}
+	em{
+		font-style : italic;
+	}
+	/*****************************
+	 *           HEADERS
+	 *****************************/
+	h1,h2,h3,h4{
+		margin-top    : 0.2em;
+		margin-bottom : 0.2em;
+		font-family   : MrJeeves;
+		font-weight   : 800;
+		color         : @headerText;
+	}
+	h1{
+		column-span         : all;
+		font-size           : 28pt;
+		-webkit-column-span : all;
+		&+p::first-letter{
+			float         : left;
+			margin-top    : 0.4em;
+			margin-bottom : 0.4em;
+			font-family   : Solberry;
+			font-size     : 10em;
+			color         : #222;
+		}
+	}
+	h2{
+		font-size : 20pt;
+	}
+	h3{
+		font-size     : 15pt;
+		border-bottom : 2px solid @headerUnderline;
+	}
+	h4{
+		margin-bottom : 0.00em;
+		font-size     : 12pt;
+	}
+	h5{
+		margin-bottom : 0.2em;
+		font-family   : ScalySansSmallCaps;
+		font-size     : 13pt;
+		font-weight   : 900;
+	}
+	/*****************************
+	 *          TABLE
+	 *****************************/
+	table{
+		.useSansSerif();
+		width         : 100%;
+		margin-bottom : 1em;
+		font-size     : 10pt;
+		thead{
+			font-weight : 800;
+			th{
+				vertical-align : bottom;
+				padding-bottom : 0.3em;
+				padding-right  : 0.1em;
+				padding-left   : 0.1em;
+			}
+		}
+		tbody{
+			tr{
+				td{
+					padding : 0.2em 0em;
+				}
+				&:nth-child(odd){
+					background-color : @noteGreen;
+				}
+			}
+		}
+	}
+	/*****************************
+	 *            NOTE
+	 *****************************/
+	blockquote{
+		.useSansSerif();
+		box-sizing       : border-box;
+		margin-bottom    : 1em;
+		padding          : 5px 10px;
+		background-color : @noteGreen;
+		border-top       : 2px black solid;
+		border-bottom    : 2px black solid;
+		box-shadow       : 1px 4px 14px #888;
+		p, ul{
+			font-size   : 10pt;
+			line-height : 1.1em;
+		}
+	}
+	/*****************************
+	 *    MONSTER STAT BLOCK
+	 *****************************/
+	hr+blockquote{
+		position         : relative;
+		background-color : @monsterStatBackground;
+		border           : none;
+		h2{
+			margin-bottom : 0px;
+			&+p{
+				padding-bottom : 0px;
+			}
+		}
+		h3{
+			font-family   : ScalySans;
+			font-weight   : 400;
+			border-bottom : 1px solid @headerText;
+		}
+		ul{
+			.useSansSerif();
+			padding-left    : 1em;
+			font-size       : 10pt;
+			color           : @headerText;
+			text-indent     : -1em;
+			list-style-type : none;
+		}
+		// Monster Ability table
+		hr+table{
+			margin              : 0;
+			column-span         : 1;
+			background-color    : transparent;
+			border-image        : none;
+			-webkit-column-span : 1;
+			tbody{
+				tr:nth-child(odd), tr:nth-child(even){
+					background-color : transparent;
+				}
+			}
+		}
+		table{
+			color : @headerText;
+		}
+		p+p{
+			margin-top     : 0em;
+			padding-bottom : 0.5em;
+			text-indent    : 0em;
+		}
+		//Triangle dividers
+		hr{
+			@height      : 3px;
+			position     : relative;
+			visibility   : visible;
+			margin       : 8px 0px;
+			border-color : transparent;
+			&:after, &:before{
+				content  : "";
+				position : absolute;
+				left     : 0px;
+				height   : @height;
+				width    : 100%;
+			}
+			&:before{
+				top        : -@height;
+				background : linear-gradient(to right top, @horizontalRule 40%, transparent 50%)
+			}
+			&:after{
+				top        : 0px;
+				background : linear-gradient(to right bottom, @horizontalRule 40%, transparent 50%)
+			}
+		}
+		//Top and Bottom Borders
+		&:after, &:before{
+			content          : "";
+			position         : absolute;
+			height           : 4px;
+			width            : 100%;
+			padding          : 0px 3px;
+			background-color : #E69A28;
+			border           : 1px solid black;
+		}
+		&:before{
+			top  : 0px;
+			left : -3px;
+		}
+		&:after{
+			bottom : 0px;
+			left   : -3px;
+		}
+	}
+	/*****************************
+	 *      FULL CLASS TABLE
+	 *****************************/
+	h5+hr+table{
+		margin-top          : -5px;
+		margin-bottom       : 50px;
+		padding-top         : 10px;
+		border-collapse     : separate;
+		column-span         : all;
+		background-color    : white;
+		border              : initial;
+		border-image-outset : 37px 17px;
+		border-image-repeat : round;
+		border-image-slice  : 150 200 150 200;
+		border-image-source : @frameBorderImage;
+		border-image-width  : 47px;
+		-webkit-column-span : all;
+	}
+	/*****************************
+	 *           FOOTER
+	 *****************************/
+	&:after{
+		content          : "";
+		position         : absolute;
+		bottom           : 0px;
+		left             : 0px;
+		height           : 50px;
+		width            : 100%;
+		background-image : @footerAccentImage;
+		background-size  : cover;
+	}
+	&:nth-child(even){
+		&:after{
+			transform : scaleX(-1);
+		}
+		.pageNumber{
+			left : 2px;
+		}
+		.footnote{
+			left       : 80px;
+			text-align : left;
+		}
+	}
+	.pageNumber{
+		position   : absolute;
+		right      : 2px;
+		bottom     : 22px;
+		width      : 50px;
+		font-size  : 0.9em;
+		color      : #c9ad6a;
+		text-align : center;
+	}
+	.footnote{
+		position   : absolute;
+		right      : 80px;
+		bottom     : 32px;
+		width      : 200px;
+		font-size  : 0.8em;
+		color      : #c9ad6a;
+		text-align : right;
+	}
+	/*****************************
+	 *          EXTRAS
+	 *****************************/
+	hr{
+		visibility : hidden;
+		margin     : 0px;
+	}
+	//Modified unorder list, used in spells
+	hr+ul{
+		margin-bottom   : 0.5em;
+		padding-left    : 1em;
+		text-indent     : -1em;
+		list-style-type : none;
+	}
+	//Column Break
+	pre{
+		visibility                 : hidden;
+		-webkit-column-break-after : always;
+	}
+	//Avoid breaking up
+	p,ul,blockquote,table{
+		z-index                     : 15;
+		-webkit-column-break-inside : avoid;
+		-moz-column-break-inside    : avoid;
+		-o-column-break-inside      : avoid;
+		-ms-column-break-inside     : avoid;
+		column-break-inside         : avoid;
+	}
+}
