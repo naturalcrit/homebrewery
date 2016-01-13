@@ -10,7 +10,8 @@ A tool suite for DMs to use for D&D
 2. Run `npm install -g gulp` to install the gulp build tool 
 1. Run `gulp fresh`, this will compile and build all the needed libraries (this only has to be done once, unless you add more libs)
 1. Run `gulp` to run the project locally. Should be accessible at `localhost:8000`
+2. Any changes to files within the proejct will be detected and the propject will automatically re-build
 
-**Notes:** I use Mongo as the database, so if you'd like to interact with that, make sure you have that installed.
+**Notes:** If you'd like to create and edit homebrews, you'll need to have MongoDB installed and running.
 
 Have fun!
