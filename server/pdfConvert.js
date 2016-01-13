@@ -1,26 +1,31 @@
 var pdf = require('html-pdf');
 var Markdown = require('marked');
 
-var style = require('fs').readFileSync('../build/phbPage/bundle.css', 'utf8');
-
-style = "<style>html, body {margin: 0;padding: 0;-webkit-print-color-adjust: exact;box-sizing: border-box;}\n"+
-	style + "</style>";
-
-	function replaceAll(str, find, replace) {
-	  return str.replace(new RegExp(find, 'g'), replace);
-	}
-
-style = replaceAll(style, '/assets/homebrew/assets/', 'http://www.naturalcrit.com/assets/homebrew/assets/');
-
-var content = Markdown('# oh hey \n welcome! ##### test');
+var PHBStyle = '<style>' + require('fs').readFileSync('../phb.standalone.css', 'utf8') + '</style>'
 
 
-var html = "<html><head>" + style + "</head><body><div class='phb'>"+ content +"</div></body></html>"
-
-console.log(html);
+var content = Markdown('# oh hey \n welcome! isnt this neat \n \\page ##### test');
 
 
-pdf.create(html).toFile('./pdfs/businesscard.pdf', function(err, res){
+var html = "<html><head>" + PHBStyle + "</head><body><div class='phb'>"+ content +"</div></body></html>"
+
+//var h = 279.4 - 20*2.8;
+var h = 279.4 - 56;
+
+
+
+//var w = 215.9 - 56*1.7
+
+var w = 215.9 - 43;
+
+
+var config = {
+	"height": (279.4 - 56) + "mm",
+	"width": (215.9 - 43) + "mm",
+	"border": "0",
+}
+
+pdf.create(html, config).toFile('./temp.pdf', function(err, res){
 	console.log(err);
 	console.log(res.filename);
 });
