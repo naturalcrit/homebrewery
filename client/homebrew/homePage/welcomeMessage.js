@@ -16,7 +16,7 @@ module.exports = [
 "* Full class tables",
 "* Notes and Tables",
 "* Images",
-"* Vertical spacing, column breaks, and mutliple Pages",
+"* Vertical spacing, column breaks, and mutliple pages",
 "",
 "",
 "#### Snippets",
