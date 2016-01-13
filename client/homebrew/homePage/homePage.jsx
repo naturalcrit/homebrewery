@@ -35,7 +35,6 @@ var HomePage = React.createClass({
 			})
 		}
 		*/
-
 	},
 
 	handleTextChange : function(text){
