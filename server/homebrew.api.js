@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var vitreumRender = require('vitreum/render');
 var HomebrewModel = require('./homebrew.model.js').model;
 
@@ -96,6 +97,31 @@ module.exports = function(app){
 			});
 		})
 	});
+
+	//Print Page
+	var Markdown = require('marked');
+	var PHBStyle = '<style>' + require('fs').readFileSync('./phb.standalone.css', 'utf8') + '</style>'
+	app.get('/homebrew/print/:id', function(req, res){
+		HomebrewModel.find({shareId : req.params.id}, function(err, objs){
+			if(err) return res.status(404).send();
+
+			var resObj = null;
+			var errObj = {text: "# oops\nCould not find the homebrew."}
+			if(objs.length){
+				resObj = objs[0];
+			}
+
+			var content = _.map(resObj.text.split('\\page'), function(pageText){
+				return '<div class="phb">' + Markdown(pageText) + '</div>';
+			}).join('\n');
+
+			var title = '<title>' + resObj.text.split('\n')[0] + '</title>';
+			var page = '<html><head>' + title + PHBStyle + '</head><body>' +  content +'</body></html>'
+
+			return res.send(page)
+		})
+	});
+
 
 
 
