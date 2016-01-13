@@ -10,6 +10,8 @@ var FullClassGen = require('../editor/snippets/fullclass.gen.js');
 
 var request = require("superagent");
 
+var SAVE_TIMEOUT = 3000;
+
 var EditPage = React.createClass({
 	getDefaultProps: function() {
 		return {
@@ -58,7 +60,7 @@ var EditPage = React.createClass({
 					lastUpdated : res.body.updatedAt
 				})
 			})
-	}, 1500),
+	}, SAVE_TIMEOUT),
 
 	render : function(){
 		return <div className='editPage'>
