@@ -6,7 +6,7 @@ var Statusbar = require('../statusbar/statusbar.jsx');
 var PageContainer = require('../pageContainer/pageContainer.jsx');
 var Editor = require('../editor/editor.jsx');
 
-var WelcomeText = require('./welcomeMessage.js');
+//var WelcomeText = require('./welcomeMessage.js');
 
 
 
@@ -14,9 +14,15 @@ var KEY = 'naturalCrit-homebrew';
 
 var HomePage = React.createClass({
 
+	getDefaultProps: function() {
+		return {
+			welcomeText : ""
+		};
+	},
+
 	getInitialState: function() {
 		return {
-			text: WelcomeText
+			text: this.props.welcomeText
 		};
 	},
 

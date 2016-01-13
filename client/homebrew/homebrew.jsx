@@ -13,7 +13,7 @@ var Homebrew = React.createClass({
 	getDefaultProps: function() {
 		return {
 			url : "",
-			text : "",
+			welcomeText : "",
 			brew : {
 				text : "",
 				shareId : null,
@@ -31,7 +31,7 @@ var Homebrew = React.createClass({
 			'/homebrew/share/:id' : (args) => {
 				return <SharePage id={args.id} entry={this.props.brew} />
 			},
-			'/homebrew*' : <HomePage />,
+			'/homebrew*' : <HomePage welcomeText={this.props.welcomeText} />,
 		});
 	},
 	render : function(){

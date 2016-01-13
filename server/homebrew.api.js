@@ -166,6 +166,8 @@ module.exports = function(app){
 
 
 	//Home and 404, etc.
+	var welcomeText = require('fs').readFileSync('./client/homebrew/homePage/welcome_msg.txt', 'utf8');
+
 	app.get('/homebrew*', function (req, res) {
 		vitreumRender({
 			page: './build/homebrew/bundle.dot',
@@ -173,6 +175,7 @@ module.exports = function(app){
 			prerenderWith : './client/homebrew/homebrew.jsx',
 			initialProps: {
 				url: req.originalUrl,
+				welcomeText : welcomeText
 			},
 			clearRequireCache : true,
 		}, function (err, page) {
