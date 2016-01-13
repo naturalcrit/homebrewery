@@ -7,6 +7,7 @@ A tool suite for DMs to use for D&D
 1. Clone down the repo
 1. In your terminal, head to the repo
 1. Run `npm install` to get all the dependacies
+2. Run `npm install -g gulp` to install the gulp build tool 
 1. Run `gulp fresh`, this will compile and build all the needed libraries (this only has to be done once, unless you add more libs)
 1. Run `gulp` to run the project locally. Should be accessible at `localhost:8000`
 
