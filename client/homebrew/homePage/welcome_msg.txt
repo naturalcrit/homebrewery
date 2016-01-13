@@ -10,12 +10,13 @@ Stop worrying about learning photoshop, fiddling with spacing, or tracking down 
 
 **Try it! **Simply edit the text on the left and watch it *update live* on the right.
 
+
 #### Features
 * Monster Stat Blocks
 * Full class tables
 * Notes and Tables
 * Images
-* Vertical spacing, column breaks, and mutliple pages
+* Vertical spacing, column breaks, and multiple pages
 
 
 #### Snippets
@@ -38,30 +39,80 @@ Anyone with the *share url* will be able to access a read-only version of your h
 ```
 ```
 
-### Images
-Images can be included 'inline' with the text using Markdown-style images. However for background images more control is needed.
+## New Things!
+What's new in the latest update?
 
-Background images should be included as HTML-style img tags. Using inline CSS you can precisely position your image where you'd like it to be. The image **snippet** provides an example of doing this.
+* **Footnotes & Page Numbers**
+* **Print View** displays your brew ready for printing, saving to PDF or image.
+* **Footer Accent** now switches directions each page, neat!
+* **Standalone Styling** the PHB-style has been reduced to a single file
+* **Reduced asset sizes** This should help with page load times
 
+>##### PDF Exporting
+>The best way to do a PDF export is to use the **print view** of a brew, print that page and save as PDF.
+>
+>***"But there's no columns when I do this in Chrome!"***
+>
+>This is a known bug in Chrome for **five years**. When saving to PDF, it doesn't respect columns. Amazingly this was just fixed [last month](https://code.google.com/p/chromium/issues/detail?id=99358), but hasn't been deployed yet.
+>
+>Converting to PDF *precisely* is **very** difficult. There are many services and libraries out there, but none of them have gotten it right to the level I'm happy with. Most of them use Chrome's engine which has the aforementioned bug in it.
+>
+>This is why I made the **print view**. It gives you a single completely standalone HTML version of your brew; Download it, export it, screenshot it, print it, *do whatever you want*.
+
+
+
+## Bugs, Issues, Suggestions?
+Have an idea of how to make The Homebrewery better? Or did you find something that wasn't quite right? Head [here](https://github.com/stolksdorf/NaturalCrit/issues/new) and let me know!.
+
+
+
+
+<img src='http://i.imgur.com/hMna6G0.png' style='position:absolute;bottom:50px;right:30px;width:280px' />
+
+<div class='pageNumber'>1</div>
+<div class='footnote'>PART 1 | FANCINESS</div>
+
+
+
+
+\page
+
+# Appendix
 
 ### Not quite Markdown
 Although the Homebrewery uses Markdown, to get all the styling features from the PHB, we had to get a little creative. Some base HTML elements are not used as expected and I've had to include a few new keywords.
 
 ___
 * **Horizontal Rules** are generally used to *modify* existing elements into a different style. For example, a horizontal rule before a blockquote will give it the style of a Monster Stat Block instead of a note.
-* **New Pages** are controlled by the author. It's impossible for the site to detect when the end of a page is reached, so indicate you'd like to start a new page with **`page`** on its own line .
+* **New Pages** are controlled by the author. It's impossible for the site to detect when the end of a page is reached, so indicate you'd like to start a new page, use the new page snippet to get the syntax.
 * **Code Blocks** are used only to indicate column breaks. Since they don't allow for styling within them, they weren't that useful to use.
 * **HTML** can be used to get *just* the right look for your homebrew. I've included some examples in the snippet icons above the editor.
 
 
-## Bugs, Issues, Suggestions?
-Have an idea of how to make The Homebrewery better? Or did you find something that wasn't quite right? Head [here](https://github.com/stolksdorf/NaturalCrit/issues/new) and let me know!.
 
-### Planned Features
-Here are a few features I'm planning next
-* Convert to PDF
-* Switch between DMG-style and Monster Manual-Style
-* Download as images
+### Images
+Images can be included 'inline' with the text using Markdown-style images. However for background images more control is needed.
+
+Background images should be included as HTML-style img tags. Using inline CSS you can precisely position your image where you'd like it to be. The image **snippet** provides an example of doing this.
+
+```
+```
 
 
-<img src='http://i.imgur.com/hMna6G0.png' style='position:absolute;bottom:-10px;right:50px;width:280px' />
+### Legal Junk
+You are free to use The Homebrewery is any way that you want, except for claiming that you made it yourself. If you wish to sell or in some way gain profit for what's created on this site, it's your responsibility to ensure you have the proper licenses/rights for any images or resources used.
+
+
+### Things that don't work
+There are a few things I couldn't get right
+
+* Spell save block, with centered text and sans serif are not support. Ran out of mark-up to use
+* Full page monster stat blocks
+* "Spell slots per level" text above the levels on a class table.
+* I built this for Chrome, so if it looks weird to you, use Chrome instead.
+
+<div class='pageNumber'>2</div>
+<div class='footnote'>PART 2 | BORING STUFF</div>
+
+
+
