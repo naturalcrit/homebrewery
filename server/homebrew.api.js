@@ -48,6 +48,8 @@ module.exports = function(app){
 	//Edit Page
 	app.get('/homebrew/edit/:id', function(req, res){
 		HomebrewModel.find({editId : req.params.id}, function(err, objs){
+			if(err || !objs.length) return res.status(404).send('Could not find Homebrew with that id');
+
 			var resObj = null;
 			var errObj = {text: "# oops\nCould not find the homebrew."}
 			if(objs.length){
@@ -73,15 +75,17 @@ module.exports = function(app){
 	//Share Page
 	app.get('/homebrew/share/:id', function(req, res){
 		HomebrewModel.find({shareId : req.params.id}, function(err, objs){
+			if(err || !objs.length) return res.status(404).send('Could not find Homebrew with that id');
+
 			var resObj = null;
 			var errObj = {text: "# oops\nCould not find the homebrew."}
+
 			if(objs.length){
 				resObj = objs[0];
+				resObj.lastViewed = new Date();
+				resObj.views = resObj.views + 1;
+				resObj.save();
 			}
-
-			resObj.lastViewed = new Date();
-			resObj.views = resObj.views + 1;
-			resObj.save();
 
 			vitreumRender({
 				page: './build/homebrew/bundle.dot',
@@ -103,10 +107,9 @@ module.exports = function(app){
 	var PHBStyle = '<style>' + require('fs').readFileSync('./phb.standalone.css', 'utf8') + '</style>'
 	app.get('/homebrew/print/:id', function(req, res){
 		HomebrewModel.find({shareId : req.params.id}, function(err, objs){
-			if(err) return res.status(404).send();
+			if(err || !objs.length) return res.status(404).send('Could not find Homebrew with that id');
 
 			var resObj = null;
-			var errObj = {text: "# oops\nCould not find the homebrew."}
 			if(objs.length){
 				resObj = objs[0];
 			}
