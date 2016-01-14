@@ -46,10 +46,11 @@ var HomePage = React.createClass({
 	},
 
 	render : function(){
-		var self = this;
 		return(
 			<div className='homePage'>
-				<Statusbar />
+				<Statusbar
+					printId="Nkbh52nx_l"
+				/>
 				<div className='paneSplit'>
 					<div className='leftPane'>
 						<Editor text={this.state.text} onChange={this.handleTextChange} />
