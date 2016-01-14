@@ -42,6 +42,8 @@ Anyone with the *share url* will be able to access a read-only version of your h
 ## New Things!
 What's new in the latest update?
 
+* **View Source** on the share page to see the markdown text for the brew
+* **Fixed Server Issues** should increase stability of the site greatly
 * **Footnotes & Page Numbers**
 * **Print View** displays your brew ready for printing, saving to PDF or image.
 * **Footer Accent** now switches directions each page, neat!
