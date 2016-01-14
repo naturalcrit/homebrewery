@@ -5,6 +5,10 @@ var Moment = require('moment');
 
 var Logo = require('naturalCrit/logo/logo.jsx');
 
+var replaceAll = function(str, find, replace) {
+	return str.replace(new RegExp(find, 'g'), replace);
+}
+
 var Statusbar = React.createClass({
 
 	getDefaultProps: function() {
@@ -36,7 +40,13 @@ var Statusbar = React.createClass({
 
 	openSourceWindow : function(){
 		var sourceWindow = window.open();
-		sourceWindow.document.write('<code><pre>' + this.props.sourceText + '</pre></code>');
+
+		var content = replaceAll(this.props.sourceText, '<', '&lt;');
+		content = replaceAll(content, '>', '&gt;');
+
+		console.log(content);
+
+		sourceWindow.document.write('<code><pre>' + content + '</pre></code>');
 	},
 
 
