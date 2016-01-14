@@ -25,6 +25,7 @@ var SharePage = React.createClass({
 		return(
 			<div className='sharePage'>
 				<Statusbar
+					sourceText={this.props.entry.text}
 					lastUpdated={this.props.entry.updatedAt}
 					views={this.props.entry.views}
 					printId={this.props.entry.shareId}

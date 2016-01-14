@@ -10,6 +10,7 @@ var Statusbar = React.createClass({
 	getDefaultProps: function() {
 		return {
 			//editId: null,
+			sourceText : null,
 			shareId : null,
 			printId : null,
 			isPending : false,
@@ -33,6 +34,13 @@ var Statusbar = React.createClass({
 	},
 
 
+	openSourceWindow : function(){
+		var sourceWindow = window.open();
+		sourceWindow.document.write('<code><pre>' + this.props.sourceText + '</pre></code>');
+	},
+
+
+
 	renderInfo : function(){
 		if(!this.props.lastUpdated) return null;
 
@@ -45,6 +53,14 @@ var Statusbar = React.createClass({
 			</div>
 		];
 
+	},
+
+	renderSourceButton  : function(){
+		if(!this.props.sourceText) return null;
+
+		return <a className='sourceField' onClick={this.openSourceWindow}>
+			View Source <i className='fa fa-code' />
+		</a>
 	},
 
 	renderNewButton  : function(){
@@ -96,6 +112,7 @@ var Statusbar = React.createClass({
 			<div className='controls right'>
 				{this.renderStatus()}
 				{this.renderInfo()}
+				{this.renderSourceButton()}
 				{this.renderPrintButton()}
 				{this.renderShare()}
 				{this.renderNewButton()}
