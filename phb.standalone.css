@@ -283,7 +283,7 @@ table {
   padding-left: 0.1em;
 }
 .phb table tbody tr td {
-  padding: 0.2em 0em;
+  padding: 0.2em 0.1em;
 }
 .phb table tbody tr:nth-child(odd) {
   background-color: #e0e5c1;
@@ -479,4 +479,7 @@ table {
   -o-column-break-inside: avoid;
   -ms-column-break-inside: avoid;
   column-break-inside: avoid;
+}
+.phb h4 + p + hr + ul {
+  margin-top: -0.5em;
 }

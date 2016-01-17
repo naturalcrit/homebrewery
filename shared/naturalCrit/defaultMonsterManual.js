@@ -1,10 +1,14 @@
 module.exports = {
 	goblin : {
-		hp : 40,
-		mov: 30,
-		cr : 0.25,
-		ac : 13,
-		attr : {
+		size : 'small',
+		type : 'beast',
+		alignment : 'unaligned',
+		stats : {
+			hp : 40,
+			mov: 30,
+			ac : 13,
+		},
+		scores : {
 			str : 8,
 			con : 8,
 			dex : 8,
@@ -12,21 +16,28 @@ module.exports = {
 			wis : 8,
 			cha : 8
 		},
-		attacks : {
-			dagger : {
-				atk : "1d20-5",
-				dmg : "1d4+5",
-				type : "pierce",
-				notes : "Super cool"
-			},
-			bow : {
-				atk : "1d20+2",
-				dmg : "6d6",
-				rng : "30"
-			}
+		attr : {
+			skills : ['Stealth +5'],
+			lang : ['common'],
+			cr : 0.25,
 		},
 		abilities : {
-			"pack tactics" : "Does a thing"
+			"pack tactics" : "Does a thing",
+			"fancy dance" : "dances fancy"
+		},
+		actions : {
+			bite : {
+				type : "Melee weapon attack",
+				atk : "+4 to hit",
+				rng : "5ft",
+				target : "one target",
+				dmg : "4 (1d4 + 2) piercing damage",
+				desc: ""
+			},
+			scare : {
+				uses : "1/day",
+				desc : "scares you"
+			}
 		},
 		items : ['rat on a stick']
 	},
