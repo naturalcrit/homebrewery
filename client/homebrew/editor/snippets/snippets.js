@@ -95,39 +95,15 @@ module.exports = [
 		snippet : function(){
 			return "<div class='pageNumber'>1</div>\n<div class='footnote'>PART 1 | FANCINESS</div>\n\n";
 		}
-	}
+	},
+
+	{
+		tooltip : "Printer Friendly",
+		icon : 'fa-print',
+		snippet : function(){
+			return "<style>\n  .phb{ background : white;}\n  .phb img{ display : none;}\n  .phb hr+blockquote{background : white;}\n</style>\n\n";
+		}
+	},
+
 
 ]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
