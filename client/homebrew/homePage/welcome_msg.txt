@@ -40,7 +40,7 @@ Anyone with the *share url* will be able to access a read-only version of your h
 ```
 
 ## New Things!
-What's new in the latest update?
+What's new in the latest update? Check out the full changelog [here](https://github.com/stolksdorf/NaturalCrit/blob/master/changelog.md)
 
 * **View Source** on the share page to see the markdown text for the brew
 * **Fixed Server Issues** should increase stability of the site greatly
