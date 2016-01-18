@@ -6,7 +6,7 @@ Tell us of the wondrous items and and artifacts you have found, their mysteries 
 ### Homebrew made easy
 The Homebrewery allows for the creation and sharing of authentic looking Fifth-Edition homebrews, with just text editing. It accomplishes this by using [Markdown](https://help.github.com/articles/markdown-basics/) along with some custom CSS-styling.
 
-Stop worrying about learning photoshop, fiddling with spacing, or tracking down the PHB assets. Just focus on making your homebrew **great**.
+Stop worrying about learning Photoshop, fiddling with spacing, or tracking down the PHB assets. Just focus on making your homebrew **great**.
 
 **Try it! **Simply edit the text on the left and watch it *update live* on the right.
 
