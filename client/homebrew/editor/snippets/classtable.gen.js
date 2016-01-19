@@ -50,12 +50,13 @@ module.exports = function(classname){
 		}).join(' | ')
 	}
 
+	var extraWide = (_.random(0,1) === 0) ? "" : "___\n";
 
 	var cantrips = 3;
 	var spells = 1;
 	var slots = 2;
 	return "##### The " + classname + "\n" +
-	"___\n" +
+	"___\n" + extraWide +
 	"| Level | Proficiency Bonus | Features | Cantrips Known | Spells Known | 1st | 2nd | 3rd | 4th | 5th | 6th | 7th | 8th | 9th |\n"+
 	"|:---:|:---:|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n" +
 	_.map(["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th", "19th", "20th"],function(levelName, level){
