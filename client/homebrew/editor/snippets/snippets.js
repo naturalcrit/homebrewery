@@ -36,7 +36,7 @@ module.exports = [
 	},
 	{
 		tooltip : 'Table',
-		icon : 'fa-list',
+		icon : 'fa-th-list',
 		snippet : function(){
 			return [
 				"##### Cookie Tastiness",
@@ -58,7 +58,12 @@ module.exports = [
 	{
 		tooltip : "Class Table",
 		icon : 'fa-table',
-		snippet : ClassTableGen,
+		snippet : ClassTableGen.full,
+	},
+	{
+		tooltip : "Half Class Table",
+		icon : 'fa-list-alt',
+		snippet : ClassTableGen.half,
 	},
 	{
 		tooltip : "Column Break",
