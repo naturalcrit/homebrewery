@@ -41,7 +41,7 @@
 	height           : 279.4mm;
 	width            : 215.9mm;
 	padding          : 1.0cm 1.7cm;
-	padding-bottom   : 2.0cm;
+	padding-bottom   : 1.5cm;
 	background-color : @background;
 	background-image : @backgroundImage;
 	font-family      : BookSanity;
@@ -63,6 +63,12 @@
 		line-height         : 1.3em;
 		list-style-position : inside;
 		list-style-type     : disc;
+	}
+	ol{
+		list-style-position: inside;
+		margin-bottom       : 0.8em;
+		line-height         : 1.3em;
+		list-style-type     : decimal;
 	}
 	img{
 		z-index : -1;
@@ -341,8 +347,7 @@
 		z-index                     : 15;
 		-webkit-column-break-inside : avoid;
 		column-break-inside         : avoid;
-		page-break-inside: avoid;
-		               break-inside: avoid;
+		overflow: hidden; /* Firefox fix */
 	}
 	//Better spacing for spell blocks
 	h4+p+hr+ul{
