@@ -84,15 +84,14 @@
 		color         : @headerText;
 	}
 	h1{
-		column-span         : all;
+		column-span         : 2;
 		font-size           : 28pt;
-		-webkit-column-span : all;
-		-moz-column-span    : all;
+		-webkit-column-span : 2;
+		-moz-column-span    : 2;
 		&+p::first-letter{
 			float         : left;
-			margin-top    : 0.4em;
-			margin-bottom : 0.4em;
 			font-family   : Solberry;
+			line-height: 0.8em;
 			font-size     : 10em;
 			color         : #222;
 		}
@@ -326,9 +325,9 @@
 		list-style-type : none;
 	}
 	hr+hr+table, hr+hr+blockquote{
-		column-span         : all;
-		-webkit-column-span : all;
-		-moz-column-span    : all;
+		column-span         : 2;
+		-webkit-column-span : 2;
+		-moz-column-span    : 2;
 	}
 	//Column Break
 	pre{
@@ -341,8 +340,9 @@
 	p,ul,blockquote,table{
 		z-index                     : 15;
 		-webkit-column-break-inside : avoid;
-		-moz-column-break-inside    : avoid;
 		column-break-inside         : avoid;
+		page-break-inside: avoid;
+		               break-inside: avoid;
 	}
 	//Better spacing for spell blocks
 	h4+p+hr+ul{
