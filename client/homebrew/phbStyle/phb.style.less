@@ -9,6 +9,9 @@
 @horizontalRule        : #9c2b1b;
 @headerText            : #58180D;
 @monsterStatBackground : #FDF1DC;
+
+@page { margin: 0; }
+
 .useSansSerif(){
 	font-family : ScalySans;
 	em{
@@ -355,5 +358,9 @@
 	//Better spacing for spell blocks
 	h4+p+hr+ul{
 		margin-top : -0.5em
+	}
+	//Text indent right after table
+	table+p{
+		text-indent: 1em;
 	}
 }

@@ -2,7 +2,22 @@ var _ = require('lodash');
 var vitreumRender = require('vitreum/render');
 var HomebrewModel = require('./homebrew.model.js').model;
 
+
+var getTopBrews = function(cb){
+	HomebrewModel.find().sort({views: -1}).limit(5).exec(function(err, brews) {
+		cb(brews);
+	});
+}
+
+
+
 module.exports = function(app){
+
+	app.get('/homebrew/top', function(req, res){
+		getTopBrews(function(topBrews){
+			return res.json(topBrews);
+		});
+	})
 
 
 	app.get('/homebrew/new', function(req, res){
@@ -41,8 +56,6 @@ module.exports = function(app){
 			return res.status(401).send('Access denied');
 		}
 	});
-
-
 
 
 	//Edit Page
@@ -122,51 +135,8 @@ module.exports = function(app){
 			var page = '<html><head>' + title + PHBStyle + '</head><body>' +  content +'</body></html>'
 
 			return res.send(page)
-		})
+		});
 	});
-
-	//PDF download
-	/*
-	var pdf = require('html-pdf');
-	app.get('/homebrew/pdf/:id', function(req, res){
-		HomebrewModel.find({shareId : req.params.id}, function(err, objs){
-			if(err) return res.status(404).send();
-
-			var resObj = null;
-			var errObj = {text: "# oops\nCould not find the homebrew."}
-			if(objs.length){
-				resObj = objs[0];
-			}
-
-			var content = _.map(resObj.text.split('\\page'), function(pageText){
-				return '<div class="phb">' + Markdown(pageText) + '</div>';
-			}).join('\n');
-
-			var title = '<title>' + resObj.text.split('\n')[0] + '</title>';
-			var page = '<html><head>' + title + PHBStyle + '</head><body>' +  content +'</body></html>'
-
-
-
-			var config = {
-				"height": (279.4 - 56) + "mm",
-				"width": (215.9 - 43) + "mm",
-				"border": "0",
-			}
-
-			pdf.create(page, config).toStream(function(err, stream){
-
-				res.attachment('pdfname.pdf');
-				return stream.pipe(res);
-			});
-
-
-		})
-	});
-	*/
-
-
-
-
 
 	//Home and 404, etc.
 	var welcomeText = require('fs').readFileSync('./client/homebrew/homePage/welcome_msg.txt', 'utf8');

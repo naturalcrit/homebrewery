@@ -1,5 +1,9 @@
 ## changelog
 
+#### Tuesday, 16/02/2016
+* Paragraphs right after tables now indent (thanks LikeAJi6!)
+
+
 #### Sunday, 17/01/2016
 * Added a printer friendly snippet that injects some CSS to remove backbrounds and images
 * Adjusted the styling specific to spell blocks to give it tighter spacing
