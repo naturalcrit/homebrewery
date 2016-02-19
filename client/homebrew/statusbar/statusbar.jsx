@@ -2,6 +2,7 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 var Moment = require('moment');
+var request = require('superagent')
 
 var Logo = require('naturalCrit/logo/logo.jsx');
 
@@ -13,7 +14,7 @@ var Statusbar = React.createClass({
 
 	getDefaultProps: function() {
 		return {
-			//editId: null,
+			editId: null,
 			sourceText : null,
 			shareId : null,
 			printId : null,
@@ -38,14 +39,22 @@ var Statusbar = React.createClass({
 	},
 
 
+	deleteBrew : function(){
+		if(!confirm("are you sure you want to delete this brew?")) return;
+		if(!confirm("are you REALLY sure? You will not be able to recover it")) return;
+
+		request.get('/homebrew/remove/' + this.props.editId)
+			.send()
+			.end(function(err, res){
+				window.location.href = '/homebrew';
+			});
+	},
+
+
 	openSourceWindow : function(){
 		var sourceWindow = window.open();
-
 		var content = replaceAll(this.props.sourceText, '<', '&lt;');
 		content = replaceAll(content, '>', '&gt;');
-
-		console.log(content);
-
 		sourceWindow.document.write('<code><pre>' + content + '</pre></code>');
 	},
 
@@ -97,6 +106,15 @@ var Statusbar = React.createClass({
 		</a>
 	},
 
+	renderDeleteButton : function(){
+		if(!this.props.editId) return null;
+
+
+		return <div className='deleteButton' onClick={this.deleteBrew}>
+			Delete <i className='fa fa-trash' />
+		</div>
+	},
+
 	renderStatus : function(){
 		if(!this.props.editId) return null;
 
@@ -123,6 +141,7 @@ var Statusbar = React.createClass({
 				{this.renderStatus()}
 				{this.renderInfo()}
 				{this.renderSourceButton()}
+				{this.renderDeleteButton()}
 				{this.renderPrintButton()}
 				{this.renderShare()}
 				{this.renderNewButton()}

@@ -25,11 +25,9 @@ var HomebrewAdmin = React.createClass({
 	},
 
 	deleteBrew : function(brewId){
-		console.log('removing');
 		request.get('/homebrew/remove/' + brewId +'?admin_key=' + this.props.admin_key)
 			.send()
 			.end(function(err, res){
-				console.log('DONE');
 				window.location.reload();
 			})
 	},

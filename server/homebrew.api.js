@@ -43,7 +43,7 @@ module.exports = function(app){
 	});
 
 	app.get('/homebrew/remove/:id', function(req, res){
-		if(req.query && req.query.admin_key == process.env.ADMIN_KEY){
+		//if(req.query && req.query.admin_key == process.env.ADMIN_KEY){
 			HomebrewModel.find({editId : req.params.id}, function(err, objs){
 				console.log(err);
 				if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
@@ -53,9 +53,9 @@ module.exports = function(app){
 					return res.status(200).send();
 				})
 			});
-		}else{
-			return res.status(401).send('Access denied');
-		}
+		//}else{
+		//	return res.status(401).send('Access denied');
+		//}
 	});
 
 	app.get('/homebrew/clear', function(req, res){
