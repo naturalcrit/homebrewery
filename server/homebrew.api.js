@@ -57,6 +57,28 @@ module.exports = function(app){
 		}
 	});
 
+	app.get('/homebrew/clear', function(req, res){
+		//if(req.query && req.query.admin_key == process.env.ADMIN_KEY){
+
+
+
+			HomebrewModel.find({text : ''}, function(err, objs){
+
+				return res.json(objs);
+
+
+				if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
+				var resEntry = objs[0];
+				resEntry.remove(function(err){
+					if(err) return res.status(500).send("Error while removing");
+					return res.status(200).send();
+				})
+			});
+		//}else{
+		//	return res.status(401).send('Access denied');
+		//}
+	});
+
 
 	//Edit Page
 	app.get('/homebrew/edit/:id', function(req, res){

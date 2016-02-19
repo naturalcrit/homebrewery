@@ -9,9 +9,7 @@
 @horizontalRule        : #9c2b1b;
 @headerText            : #58180D;
 @monsterStatBackground : #FDF1DC;
-
 @page { margin: 0; }
-
 .useSansSerif(){
 	font-family : ScalySans;
 	em{
@@ -19,9 +17,9 @@
 		font-style  : italic;
 	}
 	strong{
-		font-family : ScalySans;
-		font-weight : 800;
-		letter-spacing: -0.02em;
+		font-family    : ScalySans;
+		font-weight    : 800;
+		letter-spacing : -0.02em;
 	}
 }
 .useColumns(){
@@ -38,19 +36,21 @@
 }
 .phb{
 	.useColumns();
-	position         : relative;
-	z-index          : 15;
-	box-sizing       : border-box;
-	overflow         : hidden;
-	height           : 279.4mm;
-	width            : 215.9mm;
-	padding          : 1.0cm 1.7cm;
-	padding-bottom   : 1.5cm;
-	background-color : @background;
-	background-image : @backgroundImage;
-	font-family      : BookSanity;
-	font-size        : 9pt;
-	text-rendering   : optimizeLegibility;
+	position          : relative;
+	z-index           : 15;
+	box-sizing        : border-box;
+	overflow          : hidden;
+	height            : 279.4mm;
+	width             : 215.9mm;
+	padding           : 1.0cm 1.7cm;
+	padding-bottom    : 1.5cm;
+	background-color  : @background;
+	background-image  : @backgroundImage;
+	font-family       : BookSanity;
+	font-size         : 9pt;
+	text-rendering    : optimizeLegibility;
+	page-break-before : always;
+	page-break-after  : always;
 	//*****************************
 	// *            BASE
 	// *****************************/
@@ -69,17 +69,17 @@
 		list-style-type     : disc;
 	}
 	ol{
-		list-style-position: inside;
 		margin-bottom       : 0.8em;
 		line-height         : 1.3em;
+		list-style-position : inside;
 		list-style-type     : decimal;
 	}
 	img{
 		z-index : -1;
 	}
 	strong{
-		font-weight : bold;
-		letter-spacing: 0.03em;
+		font-weight    : bold;
+		letter-spacing : 0.03em;
 	}
 	em{
 		font-style : italic;
@@ -100,11 +100,11 @@
 		-webkit-column-span : 2;
 		-moz-column-span    : 2;
 		&+p::first-letter{
-			float         : left;
-			font-family   : Solberry;
-			line-height: 0.8em;
-			font-size     : 10em;
-			color         : #222;
+			float       : left;
+			font-family : Solberry;
+			font-size   : 10em;
+			color       : #222;
+			line-height : 0.8em;
 		}
 	}
 	h2{
@@ -361,6 +361,6 @@
 	}
 	//Text indent right after table
 	table+p{
-		text-indent: 1em;
+		text-indent : 1em;
 	}
 }

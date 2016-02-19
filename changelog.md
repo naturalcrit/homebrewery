@@ -1,7 +1,9 @@
 ## changelog
 
-#### Tuesday, 16/02/2016
+#### Tuesday, 16/02/2016, `v2.0.0`
 * Paragraphs right after tables now indent (thanks LikeAJi6!)
+* Added a `@page` css rule to auto turn off margins when printing
+* Added a `page-break` property on each `.phb` page to properly page the pages up when exporting (thanks Jokefury!)
 
 
 #### Sunday, 17/01/2016

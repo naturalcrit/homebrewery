@@ -199,6 +199,8 @@ table {
   font-family: BookSanity;
   font-size: 9pt;
   text-rendering: optimizeLegibility;
+  page-break-before: always;
+  page-break-after: always;
 }
 .phb p {
   padding-bottom: 0.8em;
