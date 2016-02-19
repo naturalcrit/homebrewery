@@ -45,6 +45,7 @@ module.exports = function(app){
 	app.get('/homebrew/remove/:id', function(req, res){
 		if(req.query && req.query.admin_key == process.env.ADMIN_KEY){
 			HomebrewModel.find({editId : req.params.id}, function(err, objs){
+				console.log(err);
 				if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
 				var resEntry = objs[0];
 				resEntry.remove(function(err){
