@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var Moment = require('moment');
 var vitreumRender = require('vitreum/render');
 var HomebrewModel = require('./homebrew.model.js').model;
 
@@ -58,26 +59,20 @@ module.exports = function(app){
 		//}
 	});
 
-	app.get('/homebrew/clear', function(req, res){
-		//if(req.query && req.query.admin_key == process.env.ADMIN_KEY){
-
-
-
-			HomebrewModel.find({text : ''}, function(err, objs){
-
-				return res.json(objs);
-
-
-				if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
-				var resEntry = objs[0];
-				resEntry.remove(function(err){
-					if(err) return res.status(500).send("Error while removing");
-					return res.status(200).send();
-				})
+	//Removes all empty brews that are older than 3 days
+	app.get('/homebrew/clear_old', function(req, res){
+		if(req.query && req.query.admin_key == process.env.ADMIN_KEY){
+			HomebrewModel.remove({
+				text : '',
+				createdAt: {
+					$lt: Moment().subtract(3, 'days').toDate()
+				}
+			}, function(err, objs){
+				return res.status(200).send();
 			});
-		//}else{
-		//	return res.status(401).send('Access denied');
-		//}
+		}else{
+			return res.status(401).send('Access denied');
+		}
 	});
 
 

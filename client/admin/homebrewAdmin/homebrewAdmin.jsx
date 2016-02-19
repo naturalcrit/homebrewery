@@ -24,6 +24,16 @@ var HomebrewAdmin = React.createClass({
 		};
 	},
 
+	clearOldBrews : function(){
+		if(!confirm("Are you sure you want to clear out old brews?")) return;
+
+		request.get('/homebrew/clear_old/?admin_key=' + this.props.admin_key)
+			.send()
+			.end(function(err, res){
+				window.location.reload();
+			})
+	},
+
 	deleteBrew : function(brewId){
 		request.get('/homebrew/remove/' + brewId +'?admin_key=' + this.props.admin_key)
 			.send()
@@ -77,7 +87,12 @@ var HomebrewAdmin = React.createClass({
 	render : function(){
 		var self = this;
 		return <div className='homebrewAdmin'>
-			<h2>Homebrews - {this.props.homebrews.length}</h2>
+			<h2>
+				Homebrews - {this.props.homebrews.length}
+				<button className='clearOldButton' onClick={this.clearOldBrews}>
+					Clear Old
+				</button>
+			</h2>
 			{this.renderBrewTable()}
 		</div>
 	}
