@@ -176,7 +176,9 @@
 		position         : relative;
 		background-color : @monsterStatBackground;
 		border           : none;
+		padding-top: 15px;
 		h2{
+			margin-top: -8px;
 			margin-bottom : 0px;
 			&+p{
 				padding-bottom : 0px;
@@ -263,7 +265,7 @@
 		.useColumns();
 	}
 	//*****************************
-	// *      FULL CLASS TABLE
+	// *      CLASS TABLE
 	// *****************************/
 	hr+table{
 		margin-top          : -5px;
@@ -278,6 +280,13 @@
 		border-image-source : @frameBorderImage;
 		border-image-width  : 47px;
 	}
+	h5+hr+table{
+		column-span         : all;
+		-webkit-column-span : all;
+		-moz-column-span    : all;
+	}
+
+
 	//*****************************
 	// *           FOOTER
 	// *****************************/
@@ -336,7 +345,7 @@
 		list-style-type : none;
 	}
 	//Double hr for full width elements
-	hr+hr+table, hr+hr+blockquote{
+	hr+hr+blockquote{
 		column-span         : all;
 		-webkit-column-span : all;
 		-moz-column-span    : all;

@@ -40,9 +40,7 @@ var levels = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10
 
 
 module.exports = {
-
 	full : function(classname){
-
 		classname = classname || _.sample(classnames)
 
 		var maxes = [4,3,3,3,3,2,2,1,1]
@@ -62,7 +60,7 @@ module.exports = {
 		var spells = 1;
 		var slots = 2;
 		return "##### The " + classname + "\n" +
-		"___\n" + "___\n" +
+		"___\n" +
 		"| Level | Proficiency Bonus | Features | Cantrips Known | Spells Known | 1st | 2nd | 3rd | 4th | 5th | 6th | 7th | 8th | 9th |\n"+
 		"|:---:|:---:|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n" +
 		_.map(levels, function(levelName, level){
@@ -88,7 +86,7 @@ module.exports = {
 
 		var featureScore = 1
 		return "##### The " + classname + "\n" +
-		"___\n" +
+		"___\n" + "___\n" +
 		"| Level | Proficiency Bonus | Features | " + _.sample(features) + "|\n" +
 		"|:---:|:---:|:---|:---:|\n" +
 		_.map(levels, function(levelName, level){

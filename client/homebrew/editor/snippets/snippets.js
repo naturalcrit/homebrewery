@@ -53,7 +53,12 @@ module.exports = [
 	{
 		tooltip : 'Monster Stat Block',
 		icon : 'fa-bug',
-		snippet : MonsterBlockGen,
+		snippet : MonsterBlockGen.half,
+	},
+	{
+		tooltip : 'Wide Monster Stat Block',
+		icon : 'fa-bullseye',
+		snippet : MonsterBlockGen.full,
 	},
 	{
 		tooltip : "Class Table",
