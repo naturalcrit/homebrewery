@@ -18,13 +18,14 @@ var Router = CreateRouter({
 var NaturalCrit = React.createClass({
 	getDefaultProps: function() {
 		return {
-			url : '/'
+			url : '/',
+			changelog : ''
 		};
 	},
 
 	render : function(){
 		return <div className='naturalCrit'>
-			<Router initialUrl={this.props.url} />
+			<Router initialUrl={this.props.url} scope={this}/>
 		</div>
 	},
 });

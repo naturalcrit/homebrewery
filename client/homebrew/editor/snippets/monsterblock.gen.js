@@ -4,9 +4,8 @@ var genList = function(list, max){
 	return _.sample(list, _.random(0,max)).join(', ') || "None";
 }
 
-module.exports = function(){
-
-	var monsterName = _.sample([
+var getMonsterName = function(){
+	return _.sample([
 		"All-devouring Baseball Imp",
 		"All-devouring Gumdrop Wraith",
 		"Chocolate Hydra",
@@ -59,10 +58,14 @@ module.exports = function(){
 		"Time Kangaroo",
 		"Tomb Poodle",
 	]);
+}
 
-	var type = _.sample(['Tiny', 'Small', 'Medium', 'Large', 'Gargantuan', 'Stupidly vast']) + " " + _.sample(['beast', 'fiend', 'annoyance', 'guy', 'cutie'])
+var getType = function(){
+	return _.sample(['Tiny', 'Small', 'Medium', 'Large', 'Gargantuan', 'Stupidly vast']) + " " + _.sample(['beast', 'fiend', 'annoyance', 'guy', 'cutie'])
+}
 
-	var alignment =_.sample([
+var getAlignment = function(){
+	return _.sample([
 		"annoying evil",
 		"chaotic gossipy",
 		"chaotic sloppy",
@@ -80,89 +83,114 @@ module.exports = function(){
 		"wordy evil",
 		"unaligned"
 	]);
+};
 
-
-
-	var stats = '>|' + _.times(6, function(){
+var getStats = function(){
+	return '>|' + _.times(6, function(){
 		var num = _.random(1,20);
 		var mod = Math.ceil(num/2 - 5)
 		return num + " (" + (mod >= 0 ? '+'+mod : mod ) + ")"
 	}).join('|') + '|';
-
-
-	var genAbilities = function(){
-		return _.sample([
-			"> ***Pack Tactics.*** These guys work together. Like super well, you don't even know.",
-			"> ***False Appearance. *** While the armor reamin motionless, it is indistinguishable from a normal suit of armor.",
-		]);
-	}
-
-
-	var genAction = function(){
-		var name = _.sample([
-			"Abdominal Drop",
-			"Airplane Hammer",
-			"Atomic Death Throw",
-			"Bulldog Rake",
-			"Corkscrew Strike",
-			"Crossed Splash",
-			"Crossface Suplex",
-			"DDT Powerbomb",
-			"Dual Cobra Wristlock",
-			"Dual Throw",
-			"Elbow Hold",
-			"Gory Body Sweep",
-			"Heel Jawbreaker",
-			"Jumping Driver",
-			"Open Chin Choke",
-			"Scorpion Flurry",
-			"Somersault Stump Fists",
-			"Suffering Wringer",
-			"Super Hip Submission",
-			"Super Spin",
-			"Team Elbow",
-			"Team Foot",
-			"Tilt-a-whirl Chin Sleeper",
-			"Tilt-a-whirl Eye Takedown",
-			"Turnbuckle Roll"
-		])
-
-		return "> ***" + name + ".*** *Melee Weapon Attack:* +4 to hit, reach 5ft., one target. *Hit* 5 (1d6 + 2) ";
-	}
-
-
-	return [
-		"___",
-		"> ## " + monsterName,
-		">*" + type + ", " + alignment+ "*",
-		"> ___",
-		"> - **Armor Class** " + _.random(10,20),
-		"> - **Hit Points** " + _.random(1, 150) + "(1d4 + 5)",
-		"> - **Speed** " + _.random(0,50) + "ft.",
-		">___",
-		">|STR|DEX|CON|INT|WIS|CHA|",
-		">|:---:|:---:|:---:|:---:|:---:|:---:|",
-		stats,
-		">___",
-		"> - **Condition Immunities** " + genList(["groggy", "swagged", "weak-kneed", "buzzed", "groovy", "melancholy", "drunk"], 3),
-		"> - **Senses** passive Perception " + _.random(3, 20),
-		"> - **Languages** " + genList(["Common", "Pottymouth", "Gibberish", "Latin", "Jive"], 2),
-		"> - **Challenge** " + _.random(0, 15) + " (" + _.random(10,10000)+ " XP)",
-		"> ___",
-		_.times(_.random(0,2), function(){
-			return genAbilities()
-		}).join('\n>\n'),
-		"> ### Actions",
-		_.times(_.random(1,2), function(){
-			return genAction()
-		}).join('\n>\n'),
-	].join('\n') + '\n\n\n';
 }
 
-/*
+var genAbilities = function(){
+	return _.sample([
+		"> ***Pack Tactics.*** These guys work together. Like super well, you don't even know.",
+		"> ***False Appearance. *** While the armor reamin motionless, it is indistinguishable from a normal suit of armor.",
+	]);
+}
 
-*/
+var genAction = function(){
+	var name = _.sample([
+		"Abdominal Drop",
+		"Airplane Hammer",
+		"Atomic Death Throw",
+		"Bulldog Rake",
+		"Corkscrew Strike",
+		"Crossed Splash",
+		"Crossface Suplex",
+		"DDT Powerbomb",
+		"Dual Cobra Wristlock",
+		"Dual Throw",
+		"Elbow Hold",
+		"Gory Body Sweep",
+		"Heel Jawbreaker",
+		"Jumping Driver",
+		"Open Chin Choke",
+		"Scorpion Flurry",
+		"Somersault Stump Fists",
+		"Suffering Wringer",
+		"Super Hip Submission",
+		"Super Spin",
+		"Team Elbow",
+		"Team Foot",
+		"Tilt-a-whirl Chin Sleeper",
+		"Tilt-a-whirl Eye Takedown",
+		"Turnbuckle Roll"
+	])
 
-/*
+	return "> ***" + name + ".*** *Melee Weapon Attack:* +4 to hit, reach 5ft., one target. *Hit* 5 (1d6 + 2) ";
+}
 
-*/
+
+module.exports = {
+
+	full : function(){
+		return [
+			"___",
+			"___",
+			"> ## " + getMonsterName(),
+			">*" + getType() + ", " + getAlignment() + "*",
+			"> ___",
+			"> - **Armor Class** " + _.random(10,20),
+			"> - **Hit Points** " + _.random(1, 150) + "(1d4 + 5)",
+			"> - **Speed** " + _.random(0,50) + "ft.",
+			">___",
+			">|STR|DEX|CON|INT|WIS|CHA|",
+			">|:---:|:---:|:---:|:---:|:---:|:---:|",
+			getStats(),
+			">___",
+			"> - **Condition Immunities** " + genList(["groggy", "swagged", "weak-kneed", "buzzed", "groovy", "melancholy", "drunk"], 3),
+			"> - **Senses** passive Perception " + _.random(3, 20),
+			"> - **Languages** " + genList(["Common", "Pottymouth", "Gibberish", "Latin", "Jive"], 2),
+			"> - **Challenge** " + _.random(0, 15) + " (" + _.random(10,10000)+ " XP)",
+			"> ___",
+			_.times(_.random(3,6), function(){
+				return genAbilities()
+			}).join('\n>\n'),
+			"> ### Actions",
+			_.times(_.random(4,6), function(){
+				return genAction()
+			}).join('\n>\n'),
+		].join('\n') + '\n\n\n';
+	},
+
+	half : function(){
+		return [
+			"___",
+			"> ## " + getMonsterName(),
+			">*" + getType() + ", " + getAlignment() + "*",
+			"> ___",
+			"> - **Armor Class** " + _.random(10,20),
+			"> - **Hit Points** " + _.random(1, 150) + "(1d4 + 5)",
+			"> - **Speed** " + _.random(0,50) + "ft.",
+			">___",
+			">|STR|DEX|CON|INT|WIS|CHA|",
+			">|:---:|:---:|:---:|:---:|:---:|:---:|",
+			getStats(),
+			">___",
+			"> - **Condition Immunities** " + genList(["groggy", "swagged", "weak-kneed", "buzzed", "groovy", "melancholy", "drunk"], 3),
+			"> - **Senses** passive Perception " + _.random(3, 20),
+			"> - **Languages** " + genList(["Common", "Pottymouth", "Gibberish", "Latin", "Jive"], 2),
+			"> - **Challenge** " + _.random(0, 15) + " (" + _.random(10,10000)+ " XP)",
+			"> ___",
+			_.times(_.random(0,2), function(){
+				return genAbilities()
+			}).join('\n>\n'),
+			"> ### Actions",
+			_.times(_.random(1,2), function(){
+				return genAction()
+			}).join('\n>\n'),
+		].join('\n') + '\n\n\n';
+	}
+}

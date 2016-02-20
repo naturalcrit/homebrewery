@@ -65,7 +65,7 @@ app.get('*', function (req, res) {
 		globals:{
 
 		},
-		//prerenderWith : './client/naturalCrit/naturalCrit.jsx',
+		prerenderWith : './client/naturalCrit/naturalCrit.jsx',
 		initialProps: {
 			url: req.originalUrl
 		},

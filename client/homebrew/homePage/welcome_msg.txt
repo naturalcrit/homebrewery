@@ -1,14 +1,14 @@
 # The Homebrewery
-Welcome traveler from an antique land. Please sit and tell us of what you have seen. The unheard of monsters, who slither and bite.
+Welcome traveler from an antique land. Please sit and tell us of what you have seen. The unheard of monsters, who slither and bite. Tell us of the wondrous items and and artifacts you have found, their mysteries yet to be unlocked. Of the vexing vocations and surprising skills you have seen.
 
-Tell us of the wondrous items and and artifacts you have found, their mysteries yet to be unlocked. Of the vexing vocations and surprising skills you have seen.
-
-### Homebrew made easy
+### Homebrew D&D made easy
 The Homebrewery allows for the creation and sharing of authentic looking Fifth-Edition homebrews, with just text editing. It accomplishes this by using [Markdown](https://help.github.com/articles/markdown-basics/) along with some custom CSS-styling.
 
 Stop worrying about learning Photoshop, fiddling with spacing, or tracking down the PHB assets. Just focus on making your homebrew **great**.
 
 **Try it! **Simply edit the text on the left and watch it *update live* on the right.
+
+
 
 
 #### Features
@@ -30,41 +30,41 @@ When you create your own homebrew you will be given a *edit url* and a *share ur
 Anyone with the *share url* will be able to access a read-only version of your homebrew.
 
 
-> ##### Words of Caution
-> ___
-> * **Concurrent Editing** The Homebrewery does not support concurrent user editing. It's best one user at a time makes edits to avoid overwriting each other.
-> * **Back-up your brews** I can not guarantee that I will support this project indefinitely. So if you'd like to hang on to your creation be sure to back up it up.
-
-
 ```
 ```
 
-## New Things!
-What's new in the latest update? Check out the full changelog [here](https://github.com/stolksdorf/NaturalCrit/blob/master/changelog.md)
+## New Things in v1.3!
+What's new in the latest update? Check out the full changelog [here](/homebrew/changelog)
 
-* **View Source** on the share page to see the markdown text for the brew
-* **Fixed Server Issues** should increase stability of the site greatly
-* **Footnotes & Page Numbers**
-* **Print View** displays your brew ready for printing, saving to PDF or image.
-* **Footer Accent** now switches directions each page, neat!
-* **Standalone Styling** the PHB-style has been reduced to a single file
-* **Reduced asset sizes** This should help with page load times
+* **PDF Exporting works!** Check out the following note block to see how
+* **Changelog Page** will track all the updates I've made
+* **Delete brew** butotn has been added to the edit page
+* **Wide Monster Stat Blocks** have been added with a snippet
+* **Single Column Class Tables** have been added with a snippet
+* **Improvements to stlying** to get it closer to PHB stlying
+* **Better Firefox Compatibility**, although Chrome still works best.
+
+
 
 >##### PDF Exporting
->The best way to do a PDF export is to use the **print view** of a brew, print that page and save as PDF.
+> Follow these steps to export your brew to PDF
+> * Create a breath-taking homebrew
+> * Share it with a few friends for feedback and balance
+> * Install [Chrome Canary](https://www.google.com/chrome/browser/canary.html)
+> * Go to your brew on Chrome Canary
+> * Hit the **Print View** button
+> * Print that page. Make sure the paper size is **letter**
+> * You're done!
 >
->***"But there's no columns when I do this in Chrome!"***
->
->This is a known bug in Chrome for **five years**. When saving to PDF, it doesn't respect columns. Amazingly this was just fixed [last month](https://code.google.com/p/chromium/issues/detail?id=99358), but hasn't been deployed yet.
->
->Converting to PDF *precisely* is **very** difficult. There are many services and libraries out there, but none of them have gotten it right to the level I'm happy with. Most of them use Chrome's engine which has the aforementioned bug in it.
->
->This is why I made the **print view**. It gives you a single completely standalone HTML version of your brew; Download it, export it, screenshot it, print it, *do whatever you want*.
+> Due to a bug in Chrome's Print To PDF feature, columns aren't supported. The fix to this has been released in Chrome Canary.
+
 
 
 
 ## Bugs, Issues, Suggestions?
 Have an idea of how to make The Homebrewery better? Or did you find something that wasn't quite right? Head [here](https://github.com/stolksdorf/NaturalCrit/issues/new) and let me know!.
+
+You can also checkout the [Changelog here](/homebrew/changelog).
 
 
 
@@ -109,12 +109,10 @@ You are free to use The Homebrewery is any way that you want, except for claimin
 There are a few things I couldn't get right
 
 * Spell save block, with centered text and sans serif are not support. Ran out of mark-up to use
-* Full page monster stat blocks
 * "Spell slots per level" text above the levels on a class table.
 * I built this for Chrome, so if it looks weird to you, use Chrome instead.
 
 <div class='pageNumber'>2</div>
 <div class='footnote'>PART 2 | BORING STUFF</div>
-
 
 

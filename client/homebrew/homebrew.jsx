@@ -14,6 +14,7 @@ var Homebrew = React.createClass({
 		return {
 			url : "",
 			welcomeText : "",
+			changelog : "",
 			brew : {
 				text : "",
 				shareId : null,
@@ -28,8 +29,12 @@ var Homebrew = React.createClass({
 			'/homebrew/edit/:id' : (args) => {
 				return <EditPage id={args.id} entry={this.props.brew} />
 			},
+
 			'/homebrew/share/:id' : (args) => {
 				return <SharePage id={args.id} entry={this.props.brew} />
+			},
+			'/homebrew/changelog' : (args) => {
+				return <SharePage entry={{text : this.props.changelog}} />
 			},
 			'/homebrew*' : <HomePage welcomeText={this.props.welcomeText} />,
 		});

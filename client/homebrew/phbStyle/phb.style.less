@@ -1,3 +1,4 @@
+
 @import (less) 'shared/naturalCrit/styles/reset.less';
 @import (less) './client/homebrew/phbStyle/phb.fonts.css';
 @import (less) './client/homebrew/phbStyle/phb.assets.less';
@@ -8,6 +9,7 @@
 @horizontalRule        : #9c2b1b;
 @headerText            : #58180D;
 @monsterStatBackground : #FDF1DC;
+@page { margin: 0; }
 .useSansSerif(){
 	font-family : ScalySans;
 	em{
@@ -15,32 +17,40 @@
 		font-style  : italic;
 	}
 	strong{
-		font-family : ScalySans;
-		font-weight : 800;
+		font-family    : ScalySans;
+		font-weight    : 800;
+		letter-spacing : -0.02em;
 	}
 }
-.phb{
-	position             : relative;
-	z-index              : 15;
-	box-sizing           : border-box;
-	overflow             : hidden;
-	height               : 279.4mm;
-	width                : 215.9mm;
-	padding              : 1.0cm 1.7cm;
+.useColumns(){
 	column-count         : 2;
 	column-fill          : auto;
 	column-gap           : 1cm;
 	column-width         : 8cm;
-	background-color     : @background;
-	background-image     : @backgroundImage;
-	font-family          : BookSanity;
-	font-size            : 9pt;
 	-webkit-column-count : 2;
 	-moz-column-count    : 2;
 	-webkit-column-width : 8cm;
 	-moz-column-width    : 8cm;
 	-webkit-column-gap   : 1cm;
-	text-rendering       : optimizeLegibility;
+	-moz-column-gap      : 1cm;
+}
+.phb{
+	.useColumns();
+	position          : relative;
+	z-index           : 15;
+	box-sizing        : border-box;
+	overflow          : hidden;
+	height            : 279.4mm;
+	width             : 215.9mm;
+	padding           : 1.0cm 1.7cm;
+	padding-bottom    : 1.5cm;
+	background-color  : @background;
+	background-image  : @backgroundImage;
+	font-family       : BookSanity;
+	font-size         : 9pt;
+	text-rendering    : optimizeLegibility;
+	page-break-before : always;
+	page-break-after  : always;
 	//*****************************
 	// *            BASE
 	// *****************************/
@@ -58,11 +68,18 @@
 		list-style-position : inside;
 		list-style-type     : disc;
 	}
+	ol{
+		margin-bottom       : 0.8em;
+		line-height         : 1.3em;
+		list-style-position : inside;
+		list-style-type     : decimal;
+	}
 	img{
 		z-index : -1;
 	}
 	strong{
-		font-weight : bold;
+		font-weight    : bold;
+		letter-spacing : 0.03em;
 	}
 	em{
 		font-style : italic;
@@ -78,16 +95,16 @@
 		color         : @headerText;
 	}
 	h1{
-		column-span         : all;
+		column-span         : 2;
 		font-size           : 28pt;
-		-webkit-column-span : all;
+		-webkit-column-span : 2;
+		-moz-column-span    : 2;
 		&+p::first-letter{
-			float         : left;
-			margin-top    : 0.4em;
-			margin-bottom : 0.4em;
-			font-family   : Solberry;
-			font-size     : 10em;
-			color         : #222;
+			float       : left;
+			font-family : Solberry;
+			font-size   : 10em;
+			color       : #222;
+			line-height : 0.8em;
 		}
 	}
 	h2{
@@ -127,7 +144,7 @@
 		tbody{
 			tr{
 				td{
-					padding : 0.2em 0.1em;
+					padding : 0.3em 0.1em;
 				}
 				&:nth-child(odd){
 					background-color : @noteGreen;
@@ -159,7 +176,9 @@
 		position         : relative;
 		background-color : @monsterStatBackground;
 		border           : none;
+		padding-top: 15px;
 		h2{
+			margin-top: -8px;
 			margin-bottom : 0px;
 			&+p{
 				padding-bottom : 0px;
@@ -241,15 +260,18 @@
 			left   : -3px;
 		}
 	}
+	//Full Width
+	hr+hr+blockquote{
+		.useColumns();
+	}
 	//*****************************
-	// *      FULL CLASS TABLE
+	// *      CLASS TABLE
 	// *****************************/
-	h5+hr+table{
+	hr+table{
 		margin-top          : -5px;
 		margin-bottom       : 50px;
 		padding-top         : 10px;
 		border-collapse     : separate;
-		column-span         : all;
 		background-color    : white;
 		border              : initial;
 		border-image-outset : 37px 17px;
@@ -257,8 +279,14 @@
 		border-image-slice  : 150 200 150 200;
 		border-image-source : @frameBorderImage;
 		border-image-width  : 47px;
-		-webkit-column-span : all;
 	}
+	h5+hr+table{
+		column-span         : all;
+		-webkit-column-span : all;
+		-moz-column-span    : all;
+	}
+
+
 	//*****************************
 	// *           FOOTER
 	// *****************************/
@@ -316,22 +344,32 @@
 		text-indent     : -1em;
 		list-style-type : none;
 	}
+	//Double hr for full width elements
+	hr+hr+blockquote{
+		column-span         : all;
+		-webkit-column-span : all;
+		-moz-column-span    : all;
+	}
 	//Column Break
 	pre{
 		visibility                 : hidden;
 		-webkit-column-break-after : always;
+		break-after                : always;
+		-moz-column-break-after    : always;
 	}
 	//Avoid breaking up
 	p,ul,blockquote,table{
 		z-index                     : 15;
 		-webkit-column-break-inside : avoid;
-		-moz-column-break-inside    : avoid;
-		-o-column-break-inside      : avoid;
-		-ms-column-break-inside     : avoid;
 		column-break-inside         : avoid;
+		overflow: hidden; /* Firefox fix */
 	}
 	//Better spacing for spell blocks
 	h4+p+hr+ul{
-		margin-top:-0.5em
+		margin-top : -0.5em
+	}
+	//Text indent right after table
+	table+p{
+		text-indent : 1em;
 	}
 }

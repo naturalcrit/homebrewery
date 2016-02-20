@@ -36,7 +36,7 @@ module.exports = [
 	},
 	{
 		tooltip : 'Table',
-		icon : 'fa-list',
+		icon : 'fa-th-list',
 		snippet : function(){
 			return [
 				"##### Cookie Tastiness",
@@ -53,12 +53,22 @@ module.exports = [
 	{
 		tooltip : 'Monster Stat Block',
 		icon : 'fa-bug',
-		snippet : MonsterBlockGen,
+		snippet : MonsterBlockGen.half,
+	},
+	{
+		tooltip : 'Wide Monster Stat Block',
+		icon : 'fa-bullseye',
+		snippet : MonsterBlockGen.full,
 	},
 	{
 		tooltip : "Class Table",
 		icon : 'fa-table',
-		snippet : ClassTableGen,
+		snippet : ClassTableGen.full,
+	},
+	{
+		tooltip : "Half Class Table",
+		icon : 'fa-list-alt',
+		snippet : ClassTableGen.half,
 	},
 	{
 		tooltip : "Column Break",
@@ -98,7 +108,7 @@ module.exports = [
 	},
 
 	{
-		tooltip : "Printer Friendly",
+		tooltip : "Ink Friendly",
 		icon : 'fa-print',
 		snippet : function(){
 			return "<style>\n  .phb{ background : white;}\n  .phb img{ display : none;}\n  .phb hr+blockquote{background : white;}\n</style>\n\n";
