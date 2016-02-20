@@ -14,6 +14,10 @@
 * Paragraphs right after tables now indent (thanks LikeAJi6!)
 * Added a `@page` css rule to auto turn off margins when printing
 * Added a `page-break` property on each `.phb` page to properly page the pages up when exporting (thanks Jokefury!)
+* Improved first character rendering on Firefox
+* Improved table spacing a bit
+* Changed padding at page bottom for better fit and clipping of elements
+* Improved spacing for bold text (thanks nickpunt!)
 
 
 ## v1.2.0
