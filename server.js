@@ -10,8 +10,6 @@ app.use(bodyParser.json());
 
 
 
-
-
 //Mongoose
 var mongoose = require('mongoose');
 var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/naturalcrit';

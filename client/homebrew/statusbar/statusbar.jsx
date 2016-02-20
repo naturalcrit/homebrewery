@@ -74,6 +74,16 @@ var Statusbar = React.createClass({
 
 	},
 
+	renderChromeTip : function(){
+		if(typeof window !== 'undefined' && window.chrome) return;
+		return <div
+			className='chromeField'
+			data-tooltip="If you are noticing rendering issues, try using Chrome instead.">
+			<i className='fa fa-exclamation-triangle' />
+			Optimized for Chrome
+		</div>
+	},
+
 	renderSourceButton  : function(){
 		if(!this.props.sourceText) return null;
 
@@ -146,6 +156,7 @@ var Statusbar = React.createClass({
 				</a>
 			</div>
 			<div className='controls right'>
+				{this.renderChromeTip()}
 				{this.renderChangelogButton()}
 				{this.renderStatus()}
 				{this.renderInfo()}
