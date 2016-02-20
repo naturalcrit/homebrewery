@@ -2,6 +2,7 @@
 
 ### Saturday, 20/02/2016
 * Fixed h1 headers not going full width (thanks McToomin27)
+* Added a github issue template
 
 ## v1.3.0
 
