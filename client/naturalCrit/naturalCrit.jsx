@@ -4,13 +4,13 @@ var cx = require('classnames');
 var CreateRouter = require('pico-router').createRouter;
 
 var Home = require('./home/home.jsx');
-var CombatManager = require('./combatManager/combatManager.jsx');
+//var CombatManager = require('./combatManager/combatManager.jsx');
 //var Homebrew = require('./homebrew/homebrew.jsx');
 
 
 var Router = CreateRouter({
 	'/' : <Home />,
-	'/combat' : <CombatManager />,
+	//'/combat' : <CombatManager />,
 	//'/homebrew' : <Homebrew />,
 });
 
