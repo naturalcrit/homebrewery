@@ -5,7 +5,7 @@
 ### Friday, 19/02/2016
 * Improved the admin panel
 * Added ability to clear away old empty brews
-* Added delete butotn to the edit page
+* Added delete button to the edit page
 * Added a dynamically updating changelog page! Nifty!
 * Added stlying for wide monster stat blocks and single column class tables
 * Added snippets for wide monster stat blocks and single column class tables
