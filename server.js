@@ -1,4 +1,5 @@
 'use strict';
+var _ = require('lodash');
 require('app-module-path').addPath('./shared');
 var vitreumRender = require('vitreum/render');
 var bodyParser = require('body-parser')
@@ -38,6 +39,13 @@ app.get('/admin', function(req, res){
 		return res.status(401).send('Access denied')
 	}
 	HomebrewModel.find({}, function(err, homebrews){
+
+		//Remove the text to reduce the response payload
+		homebrews = _.map(homebrews, (brew)=>{
+			brew.text = brew.text != '';
+			return brew;
+		});
+
 		vitreumRender({
 			page: './build/admin/bundle.dot',
 			prerenderWith : './client/admin/admin.jsx',

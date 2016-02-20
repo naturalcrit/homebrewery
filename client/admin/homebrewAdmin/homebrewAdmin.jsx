@@ -48,7 +48,7 @@ var HomebrewAdmin = React.createClass({
 	//		if(!brew) return null;
 
 		return _.map(this.props.homebrews, (brew)=>{
-			return <tr className={cx('brewRow', {'isEmpty' : brew.text == ""})} key={brew.sharedId}>
+			return <tr className={cx('brewRow', {'isEmpty' : brew.text == "false"})} key={brew.sharedId}>
 				<td><a href={'/homebrew/edit/' + brew.editId} target='_blank'>{brew.editId}</a></td>
 				<td><a href={'/homebrew/share/' + brew.shareId} target='_blank'>{brew.shareId}</a></td>
 				<td>{Moment(brew.createdAt).fromNow()}</td>
