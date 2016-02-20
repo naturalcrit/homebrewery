@@ -243,10 +243,10 @@ table {
   color: #58180D;
 }
 .phb h1 {
-  column-span: 2;
+  column-span: all;
   font-size: 28pt;
-  -webkit-column-span: 2;
-  -moz-column-span: 2;
+  -webkit-column-span: all;
+  -moz-column-span: all;
 }
 .phb h1 + p::first-letter {
   float: left;
