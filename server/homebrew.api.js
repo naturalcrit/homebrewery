@@ -3,6 +3,8 @@ var Moment = require('moment');
 var vitreumRender = require('vitreum/render');
 var HomebrewModel = require('./homebrew.model.js').model;
 
+var changelogText = require('fs').readFileSync('./changelog.md', 'utf8');
+
 
 var getTopBrews = function(cb){
 	HomebrewModel.find().sort({views: -1}).limit(5).exec(function(err, brews) {
@@ -166,7 +168,8 @@ module.exports = function(app){
 			prerenderWith : './client/homebrew/homebrew.jsx',
 			initialProps: {
 				url: req.originalUrl,
-				welcomeText : welcomeText
+				welcomeText : welcomeText,
+				changelog : changelogText
 			},
 			clearRequireCache : true,
 		}, function (err, page) {

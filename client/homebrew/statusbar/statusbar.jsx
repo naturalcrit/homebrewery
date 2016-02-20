@@ -90,6 +90,14 @@ var Statusbar = React.createClass({
 		</a>
 	},
 
+	renderChangelogButton  : function(){
+		if(this.props.editId || this.props.shareId) return null;
+
+		return <a className='changelogButton' target='_blank' href='/homebrew/changelog'>
+			Changelog <i className='fa fa-file-text-o' />
+		</a>
+	},
+
 	renderShare : function(){
 		if(!this.props.shareId) return null;
 
@@ -138,6 +146,7 @@ var Statusbar = React.createClass({
 				</a>
 			</div>
 			<div className='controls right'>
+				{this.renderChangelogButton()}
 				{this.renderStatus()}
 				{this.renderInfo()}
 				{this.renderSourceButton()}
