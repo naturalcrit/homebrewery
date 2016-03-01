@@ -115,5 +115,12 @@ module.exports = [
 		}
 	},
 
+	{
+		tooltip : "A4 Page Size",
+		icon : 'fa-file',
+		snippet : function(){
+			return '<style>\n.phb{\n    width : 210mm;\n    height : 297mm;\n}\n</style>';
+		}
+	}
 
 ]

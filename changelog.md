@@ -1,5 +1,8 @@
 # changelog
 
+### Monday, 29/02/2016
+* Removng the changelog button from the Share page
+
 ### Saturday, 20/02/2016
 * Fixed h1 headers not going full width (thanks McToomin27)
 * Added a github issue template

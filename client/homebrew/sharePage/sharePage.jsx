@@ -29,6 +29,7 @@ var SharePage = React.createClass({
 					lastUpdated={this.props.entry.updatedAt}
 					views={this.props.entry.views}
 					printId={this.props.entry.shareId}
+					shareId={this.props.entry.shareId}
 				/>
 
 				<PageContainer text={this.props.entry.text} />
