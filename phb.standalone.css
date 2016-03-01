@@ -232,6 +232,16 @@ table {
 .phb em {
   font-style: italic;
 }
+.phb sup {
+  vertical-align: super;
+  font-size: smaller;
+  line-height: 0;
+}
+.phb sub {
+  vertical-align: sub;
+  font-size: smaller;
+  line-height: 0;
+}
 .phb h1,
 .phb h2,
 .phb h3,

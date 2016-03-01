@@ -1,7 +1,9 @@
 # changelog
 
-### Monday, 29/02/2016
+### Monday, 29/02/2016 - v1.3.1
 * Removng the changelog button from the Share page
+* Added a A4 page size snippet (thanks 	guppy42!)
+* Added support for `<sup>` and `<sub>` tags (thanks crashinworld14!)
 
 ### Saturday, 20/02/2016
 * Fixed h1 headers not going full width (thanks McToomin27)
