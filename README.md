@@ -16,6 +16,17 @@ A tool suite for DMs to use for D&D
 
 Have fun!
 
+### Docker Image
+You can use [Docker](https://docs.docker.com) to get up and running with NaturalCrit.
+
+1. Install Docker
+1. Clone the repo
+1. In the terminal, go to the repo
+1. Build the docker image `docker build -t naturalcrit .`
+1. Run the docker container `docker run -dit -p 8000:8000 naturalcrit`
+1. You can check out the website on your computer on port 8000
+	1. You may have to use `docker-machine env` to get the IP address of your docker instance	
+
 
 ### changelog
 

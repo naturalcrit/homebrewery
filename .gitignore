@@ -13,3 +13,4 @@ architecture.json
 node_modules
 storage
 .idea
+*.swp
