@@ -6,7 +6,7 @@ var LETTERS = /[a-zA-Z_]/;
 var tokenMap = {
 	//'<' : 'brace',
 	//'>' : 'brace',
-	'/' : 'close',
+	//'/' : 'close',
 	'=' : 'equals',
 }
 
@@ -29,112 +29,104 @@ var tokenizer = function(input){
 			return value;
 		}
 
-		if(char == '>'){
-			inTag = false;
-			tokens.push({
-				type : 'closeTag'
-			})
-			current++;
-			continue;
+		if(inTag){
+			if(char == '>'){
+				inTag = false;
+				tokens.push({
+					type : 'closeTag'
+				})
+
+			}
+			else if(char == '/' && input[current+1] == '>'){
+				inTag = false;
+				tokens.push({
+					type : 'endTag'
+				})
+				current++;
+			}
+			else if(char == '='){
+				tokens.push({
+					type : 'equals'
+				});
+			}
+			else if(WHITESPACE.test(char)){
+
+			}
+			else if(NUMBERS.test(char)){
+				tokens.push({
+					type : 'number',
+					value : getToken(NUMBERS)*1
+				});
+				continue;
+			}
+
+			else if(LETTERS.test(char)){
+				tokens.push({
+					type : 'word',
+					value : getToken(LETTERS)
+				});
+				continue;
+			}
+			else if(char == "'"){
+				char = input[++current]
+				tokens.push({
+					type : 'text',
+					value : getToken(/[^\']/)
+				});
+
+			}
+			else if(char == '"'){
+				char = input[++current]
+				tokens.push({
+					type : 'text',
+					value : getToken(/[^\"]/)
+				});
+			}
 		}
 
-		if(char == '/' && input[current+1] == '>'){
-			inTag = false;
-			tokens.push({
-				type : 'endTag'
-			})
-			current++;
-			current++;
-			continue;
-		}
+		//Not in a tag def
+		else{
 
-
-		if(tokenMap[char]){
-			tokens.push({
-				type : tokenMap[char],
-				value : char
-			});
-			current++;
-			continue;
-		}
-
-		if(WHITESPACE.test(char)){
-			current++;
-			continue;
-		}
-
-		if(NUMBERS.test(char)){
-			tokens.push({
-				type : 'number',
-				value : getToken(NUMBERS)*1
-			});
-			continue;
-		}
-
-		if(LETTERS.test(char)){
-			tokens.push({
-				type : 'word',
-				value : getToken(LETTERS)
-			});
-			continue;
-		}
-
-		if(char == "'"){
-			char = input[++current]
-			tokens.push({
-				type : 'word',
-				value : getToken(/[^\']/)
-			});
-			current++;
-			continue;
-		}
-		if(char == '"'){
-			char = input[++current]
-			tokens.push({
-				type : 'word',
-				value : getToken(/[^\"]/)
-			});
-			current++;
-			continue;
-		}
-
-		if(char == '<'){
-			inTag = true;
-			if(input[current+1] == '/'){
+			//End tag
+			if(char == '<' && input[current+1] == '/'){
 				char = input[++current]
 				char = input[++current]
-				//parse end element
-
-				//console.log(char, getToken(LETTERS));
 				tokens.push({
 					type : 'endTag',
 					value : getToken(LETTERS)
 				})
-				current++;
-			}else{
+				//current++;
+			}
+			else if(char == '<'){
+				inTag = true;
 				char = input[++current];
 				tokens.push({
 					type : 'openTag',
 					value : getToken(LETTERS)
 				})
+				console.log(char);
+				current--;
 			}
-			current++;
-			continue;
+			else{
+				//Handle slush text
+				var value = '';
+				while(char != '<' && current < input.length){
+					value += char;
+					char = input[++current];
+				}
+				value = value.trim()
+				if(value){
+					tokens.push({
+						type : 'text',
+						value : value
+					});
+				}
+				current--;
+			}
+
 		}
 
-		//Handle slush text
-		var value = '';
-		while(char != '<' && current < input.length){
-			value += char;
-			char = input[++current];
-		}
-		value = value.trim()
-		if(value){
-			tokens.push({
-				type : 'text',
-				value : value
-			});
-		}
+		current++;
 		continue;
 	}
 
@@ -182,39 +174,30 @@ var parser = function(tokens){
 	}
 
 
-	var genNode = function(type){
+	var genNode = function(tagType){
 		token = tokens[++current];
 		var node = {
-			type : type,
+			tag : tagType,
 			props : getProps(),
-			children : []
+			children : getChildren(tagType)
 		}
-		//grab props
-
-		//search for children
-		//return them
-
-		var children = [];
-		while(token.type != 'endTag' && token.value != 'type' && current < tokens.length){
-
-			if(token.type == 'openTag'){
-				children.push(genNode(token.value));
-			}
-			token = tokens[++current];
-		}
-
-		node.children = children;
-
 		return node
 	}
 
+	var getChildren = function(tagType){
+		var children = [];
+		while(current < tokens.length && token.type != 'endTag' && token.value != tagType){
+			if(token.type == 'openTag'){
+				children.push(genNode(token.value));
+			}else if(token.type == 'text'){
+				children.push(token.value);
+			}
+			token = tokens[++current];
+		}
+		return children;
+	}
 
-	//get an open tag
-	//grab the props
-
-
-
-	return getProps();
+	return getChildren();
 
 
 }
@@ -222,25 +205,30 @@ var parser = function(tokens){
 
 
 
-
-
-
-
-
-
-
-
-var tokens = tokenizer(`
+var test1 = `
+why you so cray
 <div test="here there 'champ'" more_cool size=0>
-	<span></span>
+	<span>Hey there!<a>so fucking cool</a></span>
+	let's go party!@
+	we be cray
 </div>
-<a href='neato'></a>
-`);
+<a href='neato' />
+`
+
+var test2 = "<div>Hey there!</div>"
+
+
+
+
+
+
+
+var tokens = tokenizer(test1);
 
 console.log(tokens);
 
 
-console.log(parser(tokens));
+console.log(test1, JSON.stringify(parser(tokens), null, '  '));
 
 
 
