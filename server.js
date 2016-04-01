@@ -64,9 +64,11 @@ app.get('/admin', function(req, res){
 
 
 app = require('./server/homebrew.api.js')(app);
+app = require('./server/splatsheet.api.js')(app);
 
 
 
+//Render the homepage
 app.get('*', function (req, res) {
 	vitreumRender({
 		page: './build/naturalCrit/bundle.dot',

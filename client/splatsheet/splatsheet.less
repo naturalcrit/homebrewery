@@ -8,34 +8,29 @@ html,body, #reactContainer{
 	min-height  : 100%;
 	font-family : 'Open Sans', sans-serif;
 }
-.homebrew{
+.splatsheet{
 	height           : 100%;
 	background-color : @steel;
 	.paneSplit{
-		width : 100%;
-		height: 100vh;
-		//padding-top: 25px;
-		position: relative;
-		box-sizing: border-box;
-		overflow: hidden;
-
+		position    : relative;
+		box-sizing  : border-box;
+		height      : 100vh;
+		width       : 100%;
+		padding-top : 25px;
 		.leftPane, .rightPane{
-			display: inline-block;
-			vertical-align: top;
-			position: relative;
-			height: 100%;
-			min-height: 100%;
-			//margin-top: 25px;
+			position       : relative;
+			display        : inline-block;
+			vertical-align : top;
+			height         : 100%;
+			min-height     : 100%;
 		}
 		.leftPane{
 			width : 40%;
 		}
 		.rightPane{
-			width : 60%;
-			height: 100%;
-			//overflow-y: scroll;
-
-			overflow: hidden;
+			overflow-y : scroll;
+			height     : 100%;
+			width      : 60%;
 		}
 	}
 }
