@@ -2,32 +2,25 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 
+var utils = require('../utils');
+
 var Box = React.createClass({
+	mixins : [utils],
 	getDefaultProps: function() {
 		return {
-			data : {},
-			onChange : function(){},
-			defaultValue : {},
+			name : 'box',
+			defaultData : {},
 
-			id : 'box',
+			id : '',
+			title : '',
+			label : '',
+			shadow : false,
+			border : false
 		};
 	},
 
-	//Maybe remove
-	id : function(){
-		return _.snakeCase(this.props.label) || this.props.id;
-	},
-
-
-	data : function(){
-		return this.props.data[this.id()] || this.props.defaultValue;
-	},
-
-
 	handleChange : function(newData){
-		this.props.onChange({
-			[this.id()] : _.extend(this.data(), newData)
-		});
+		this.updateData(newData);
 	},
 
 	renderChildren : function(){
@@ -39,10 +32,21 @@ var Box = React.createClass({
 			})
 		})
 	},
+	renderTitle : function(){
+		if(this.props.title) return <h5 className='title'>{this.props.title}</h5>
+	},
+	renderLabel : function(){
+		if(this.props.label) return <h5 className='label'>{this.props.label}</h5>
+	},
 
 	render : function(){
-		return <div className={cx('box', this.props.className)}>
+		return <div className={cx('box', this.props.className, {
+				shadow : this.props.shadow,
+				border : this.props.border
+			})}>
+			{this.renderTitle()}
 			{this.renderChildren()}
+			{this.renderLabel()}
 		</div>
 	}
 });

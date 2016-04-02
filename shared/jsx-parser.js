@@ -49,10 +49,18 @@ var tokenizer = function(input){
 				current--;
 			}
 			else if(LETTERS.test(char)){
-				tokens.push({
-					type : 'word',
-					value : getToken(LETTERS)
-				});
+				var word = getToken(LETTERS);
+				if(word == 'true' || word == 'false'){
+					tokens.push({
+						type : 'boolean',
+						value : word == 'true'
+					});
+				}else{
+					tokens.push({
+						type : 'word',
+						value : word
+					});
+				}
 				current--;
 			}
 			else if(char == "'"){
@@ -123,24 +131,25 @@ var parser = function(tokens){
 		var last = null;
 
 		while(current < tokens.length && token.type != 'endTag' && token.type != 'closeTag'){
-			if(!key && token.type == 'word'){
+			if(last && token.type == 'word'){
+				props[last] = true;
+				last = token.value;
+			}else if(!key && token.type == 'word'){
 				last = token.value;
 			}else if(last && token.type == 'equals'){
 				key = last;
 				last = null;
-			}else if(key && (token.type == 'number' || token.type == 'text')){
+			}else if(key && (token.type == 'number' || token.type == 'text' || token.type == 'boolean')){
 				props[key] = token.value;
 				key = null;
 				last = null;
-				token = tokens[++current];
-				continue;
-			}else if(last && token.type == 'word'){
-				props[last] = true;
 			}else{
 				throw "Invalid property value: " + key + '=' + token.value;
 			}
 			token = tokens[++current];
 		}
+		if(last) props[last] = true;
+
 		return props;
 	}
 
@@ -177,20 +186,20 @@ var parser = function(tokens){
 }
 
 
-/*
 
+/*
 var test1 = `
-<div test="hey there champ" more_cool=shoobydo size=0>
+<div test="hey there champ" more_cool=false size=0>
 	<span>
 		Hey there!
-		<a>so fucking cool </span>  </a>
+		<a>so fucking cool </a>
 	</span>
 	let's go party
 	<a href='neato' />
 </div>
 `
 
-var test2 = "<div>Hey there!</div>"
+var test2 = "<div cool=0 same>Hey there!</div>"
 
 
 var tokens = tokenizer(test1);

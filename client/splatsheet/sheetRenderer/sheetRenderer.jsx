@@ -16,22 +16,14 @@ var SheetRenderer = React.createClass({
 		};
 	},
 
-/*
-	augmentProps : function(props, key){
-		return _.extend({}, props, {
-			key : key,
-			data : this.props.characterData,
-			onChange :
-		})
-	},
-*/
 	renderElement : function(node, key){
+		if(!node.tag) return null;
+
+		if(!Parts[node.tag]) throw 'Could Not Find Element: ' + node.tag
+
 		return React.createElement(
-			(Parts[node.tag] ? Parts[node.tag] : node.tag),
-
+			Parts[node.tag],
 			{key : key, ...node.props},
-
-			//this.augmentProps(node.props, key),
 			...this.renderChildren(node.children))
 	},
 	renderChildren : function(nodes){
@@ -44,7 +36,6 @@ var SheetRenderer = React.createClass({
 
 		try{
 			var nodes = jsx2json(this.props.code);
-
 			nodes = _.map(nodes, (node)=>{
 				node.props.data = this.props.characterData;
 				node.props.onChange = (newData)=>{

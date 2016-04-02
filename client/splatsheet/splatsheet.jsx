@@ -42,7 +42,7 @@ var SplatSheet = React.createClass({
 
 	handeCharacterChange : function(data){
 		this.setState({
-			characterData : data,
+			characterData : JSON.parse(JSON.stringify(data)),
 		});
 		localStorage.setItem(SPLATSHEET_CHARACTER, JSON.stringify(data));
 	},

@@ -1,0 +1,35 @@
+
+.skill{
+	position     : relative;
+	padding-left : 15px;
+	input[type="radio"]{
+		margin : 0px;
+	}
+	.expertToggle{
+		position : absolute;
+		top      : 1px;
+		left     : 0px;
+	}
+	input[type="text"]{
+		width            : 25px;
+		margin-left      : 10px;
+		background-color : transparent;
+		text-align       : center;
+		border           : none;
+		border-bottom    : 1px solid black;
+		outline          : none;
+		&:focus{
+			background-color : #ddd;
+		}
+	}
+	label{
+		margin-left : 10px;
+		font-size   : 0.8em;
+		small{
+			margin-left    : 5px;
+			font-size      : 0.8em;
+			color          : #999;
+			text-transform : uppercase;
+		}
+	}
+}
