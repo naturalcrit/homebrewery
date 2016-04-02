@@ -16,10 +16,8 @@ var SheetEditor = React.createClass({
 
 	render : function(){
 		return <div className='sheetEditor'>
-			SheetEditor Ready!
-
+			<h2>Sheet Template</h2>
 			<textarea value={this.props.code} onChange={this.handleCodeChange} />
-
 		</div>
 	}
 });

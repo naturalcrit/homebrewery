@@ -1,20 +1,10 @@
-var WHITESPACE = /(\s|\t|\n)/g;
+var WHITESPACE = /(\s|\t|\n|\r)/g;
 var NUMBERS = /[0-9]/;
 var LETTERS = /[a-zA-Z_]/;
-
-
-var tokenMap = {
-	//'<' : 'brace',
-	//'>' : 'brace',
-	//'/' : 'close',
-	'=' : 'equals',
-}
-
 
 var tokenizer = function(input){
 	var tokens = [];
 	var current = 0;
-
 	var inTag = false;
 
 	while(current < input.length){
@@ -35,7 +25,6 @@ var tokenizer = function(input){
 				tokens.push({
 					type : 'closeTag'
 				})
-
 			}
 			else if(char == '/' && input[current+1] == '>'){
 				inTag = false;
@@ -57,15 +46,14 @@ var tokenizer = function(input){
 					type : 'number',
 					value : getToken(NUMBERS)*1
 				});
-				continue;
+				current--;
 			}
-
 			else if(LETTERS.test(char)){
 				tokens.push({
 					type : 'word',
 					value : getToken(LETTERS)
 				});
-				continue;
+				current--;
 			}
 			else if(char == "'"){
 				char = input[++current]
@@ -73,7 +61,6 @@ var tokenizer = function(input){
 					type : 'text',
 					value : getToken(/[^\']/)
 				});
-
 			}
 			else if(char == '"'){
 				char = input[++current]
@@ -83,10 +70,8 @@ var tokenizer = function(input){
 				});
 			}
 		}
-
-		//Not in a tag def
+		//Not tokenizing a tag definition
 		else{
-
 			//End tag
 			if(char == '<' && input[current+1] == '/'){
 				char = input[++current]
@@ -95,7 +80,6 @@ var tokenizer = function(input){
 					type : 'endTag',
 					value : getToken(LETTERS)
 				})
-				//current++;
 			}
 			else if(char == '<'){
 				inTag = true;
@@ -104,7 +88,6 @@ var tokenizer = function(input){
 					type : 'openTag',
 					value : getToken(LETTERS)
 				})
-				console.log(char);
 				current--;
 			}
 			else{
@@ -123,62 +106,49 @@ var tokenizer = function(input){
 				}
 				current--;
 			}
-
 		}
-
 		current++;
-		continue;
 	}
-
 	return tokens;
-
 }
-
-
-
-
-
 
 var parser = function(tokens){
 	var nodes = [];
 	var current = 0;
 	var token = tokens[current];
 
-	var getProps = function(){
+	var parseProps = function(){
 		var props = {};
 		var key = null;
-		var temp = null;
+		var last = null;
 
-		while(token.type != 'endTag' && token.type != 'closeTag' && current < tokens.length){
-			if(temp && token.type == 'equals'){
-				key = temp;
-				temp = null;
-				token = tokens[++current];
-				continue;
-			}
-			if(key){
+		while(current < tokens.length && token.type != 'endTag' && token.type != 'closeTag'){
+			if(!key && token.type == 'word'){
+				last = token.value;
+			}else if(last && token.type == 'equals'){
+				key = last;
+				last = null;
+			}else if(key && (token.type == 'number' || token.type == 'text')){
 				props[key] = token.value;
 				key = null;
-				temp = null;
+				last = null;
 				token = tokens[++current];
 				continue;
+			}else if(last && token.type == 'word'){
+				props[last] = true;
+			}else{
+				throw "Invalid property value: " + key + '=' + token.value;
 			}
-
-			if(temp){
-				props[temp] = true;
-			}
-			temp = token.value;
 			token = tokens[++current];
 		}
 		return props;
 	}
 
-
 	var genNode = function(tagType){
 		token = tokens[++current];
 		var node = {
 			tag : tagType,
-			props : getProps(),
+			props : parseProps(),
 			children : getChildren(tagType)
 		}
 		return node
@@ -186,7 +156,14 @@ var parser = function(tokens){
 
 	var getChildren = function(tagType){
 		var children = [];
-		while(current < tokens.length && token.type != 'endTag' && token.value != tagType){
+		while(current < tokens.length){
+			if(token.type == 'endTag'){
+				if(token.value && token.value != tagType){
+					throw "Invalid closing tag: " + token.value + ". Expected closing tag of type: " + tagType
+				}else{
+					break;
+				}
+			}
 			if(token.type == 'openTag'){
 				children.push(genNode(token.value));
 			}else if(token.type == 'text'){
@@ -196,43 +173,34 @@ var parser = function(tokens){
 		}
 		return children;
 	}
-
 	return getChildren();
-
-
 }
 
 
-
+/*
 
 var test1 = `
-why you so cray
-<div test="here there 'champ'" more_cool size=0>
-	<span>Hey there!<a>so fucking cool</a></span>
-	let's go party!@
-	we be cray
+<div test="hey there champ" more_cool=shoobydo size=0>
+	<span>
+		Hey there!
+		<a>so fucking cool </span>  </a>
+	</span>
+	let's go party
+	<a href='neato' />
 </div>
-<a href='neato' />
 `
 
 var test2 = "<div>Hey there!</div>"
 
 
-
-
-
-
-
 var tokens = tokenizer(test1);
 
-console.log(tokens);
+console.log(test1, '\n---\n', tokens, '---\n', JSON.stringify(parser(tokens), null, '  '));
+*/
 
-
-console.log(test1, JSON.stringify(parser(tokens), null, '  '));
-
-
-
-module.exports = tokenizer;
+module.exports = function(input){
+	return parser(tokenizer(input));
+}
 
 
 
