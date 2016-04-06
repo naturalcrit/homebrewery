@@ -1,5 +1,10 @@
 # changelog
 
+### Wednesday, 06/04/2016 - v1.4
+* Pages will now partially render. This should greatly speed up *very* large homebrews. The Homebreery will figure out which page you should be looking at and render that page, the page before, and the page after.
+* Zooming should be fixed. I've changed the font size units to be cm, which match the units of the page. Zooming in and out now look much better.
+
+
 ### Monday, 29/02/2016 - v1.3.1
 * Removng the changelog button from the Share page
 * Added a A4 page size snippet (thanks 	guppy42!)
