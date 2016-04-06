@@ -14,28 +14,24 @@ var PageContainer = React.createClass({
 	},
 	getInitialState: function() {
 		return {
-			scrollPosition: 0
+			viewablePageIndex: 0
 		};
 	},
 
 	handleScroll : function(e){
 		this.setState({
-			scrollPosition : e.target.scrollTop
+			viewablePageIndex : Math.floor(e.target.scrollTop / PAGE_HEIGHT)
 		});
-	},
-
-	getViewablePageIndex : function(){
-		return Math.floor(this.state.scrollPosition / PAGE_HEIGHT);
 	},
 
 	renderDummyPage : function(key){
 		return <div className='phb' key={key}>
-			yo dawg
+			<i className='fa fa-spinner fa-spin' />
 		</div>
 	},
 
 	renderPages : function(){
-		var currentIndex = this.getViewablePageIndex();
+		var currentIndex = this.state.viewablePageIndex;
 		return _.map(this.props.text.split('\\page'), (pageText, index) => {
 			if(currentIndex - 1 == index || currentIndex == index || currentIndex + 1 == index){
 				return <div className='phb' dangerouslySetInnerHTML={{__html:Markdown(pageText)}} key={index} />

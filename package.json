@@ -1,7 +1,7 @@
 {
   "name": "naturalCrit",
   "description": "A super rad project!",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "scripts": {
     "postinstall": "gulp prod",
     "start": "node server.js"
