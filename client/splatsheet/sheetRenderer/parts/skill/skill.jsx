@@ -41,13 +41,11 @@ var Skill = React.createClass({
 			val : e.target.value
 		})
 	},
-
 	renderExpert : function(){
 		if(this.props.showExpert){
 			return <input type="radio" className='expertToggle' onChange={this.handleToggleExpert} checked={this.data().expert} />
 		}
 	},
-
 	render : function(){
 		return <div className='skill'>
 			{this.renderExpert()}

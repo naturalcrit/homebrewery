@@ -187,7 +187,18 @@ var parser = function(tokens){
 
 
 
-/*
+
+
+
+
+
+
+
+
+
+
+
+
 var test1 = `
 <div test="hey there champ" more_cool=false size=0>
 	<span>
@@ -205,7 +216,10 @@ var test2 = "<div cool=0 same>Hey there!</div>"
 var tokens = tokenizer(test1);
 
 console.log(test1, '\n---\n', tokens, '---\n', JSON.stringify(parser(tokens), null, '  '));
-*/
+
+
+
+
 
 module.exports = function(input){
 	return parser(tokenizer(input));

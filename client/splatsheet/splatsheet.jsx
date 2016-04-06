@@ -16,13 +16,7 @@ var SplatSheet = React.createClass({
 	getInitialState: function() {
 		return {
 			sheetCode: '',
-			characterData : {
-				playerInfo : {
-					name : 'scott',
-					race : 'human',
-					class : 'coder'
-				}
-			}
+			characterData : {}
 		};
 	},
 

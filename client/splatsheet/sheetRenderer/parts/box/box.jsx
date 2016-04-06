@@ -8,7 +8,7 @@ var Box = React.createClass({
 	mixins : [utils],
 	getDefaultProps: function() {
 		return {
-			name : 'box',
+			//name : 'box',
 			defaultData : {},
 
 			id : '',

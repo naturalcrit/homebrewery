@@ -33,7 +33,6 @@ var SheetRenderer = React.createClass({
 		})
 	},
 	renderSheet : function(){
-
 		try{
 			var nodes = jsx2json(this.props.code);
 			nodes = _.map(nodes, (node)=>{
@@ -43,8 +42,6 @@ var SheetRenderer = React.createClass({
 				}
 				return node
 			})
-
-
 			return this.renderChildren(nodes);
 		}catch(e){
 			return <div>Error bruh {e.toString()}</div>

@@ -16,14 +16,18 @@ module.exports = {
 	updateData : function(val){
 		if(typeof this.props.onChange !== 'function') throw "No onChange handler set";
 
-		if(_.isObject(val)){
+		var newVal = val;
+
+		//Clone the data if it's an object to avoid mutation bugs
+		if(_.isObject(val)) newVal = _.extend({}, this.data(), val);
+
+		if(this.id()){
 			this.props.onChange({
-				[this.id()] : _.extend({}, this.data(), val)
+				[this.id()] : newVal
 			});
 		}else{
-			this.props.onChange({
-				[this.id()] : val
-			});
+			//If the box has no id, don't add it to the chain
+			this.props.onChange(newVal)
 		}
 	}
 }
