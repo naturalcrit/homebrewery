@@ -33,17 +33,11 @@ Anyone with the *share url* will be able to access a read-only version of your h
 ```
 ```
 
-## New Things in v1.3!
+## New Things in v1.4!
 What's new in the latest update? Check out the full changelog [here](/homebrew/changelog)
 
-* **PDF Exporting works!** Check out the following note block to see how
-* **Changelog Page** will track all the updates I've made
-* **Delete brew** butotn has been added to the edit page
-* **Wide Monster Stat Blocks** have been added with a snippet
-* **Single Column Class Tables** have been added with a snippet
-* **Improvements to stlying** to get it closer to PHB stlying
-* **Better Firefox Compatibility**, although Chrome still works best.
-
+* **Partial Page Rendering** Only renders the page you're looking at. If you have a very large brew, you'll love this.
+* **Improved Zoom** Zooming in and out on the browser is now way nicer looking. Go get the bird's eye view!
 
 
 >##### PDF Exporting
