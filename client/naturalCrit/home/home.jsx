@@ -40,7 +40,7 @@ var Home = React.createClass({
 						<div className='content'>
 							<CombatIcon />
 							<h2>Combat Manager</h2>
-							<p>Easily create and manage complex encouters for your party</p>
+							<p>Easily create and manage complex encounters for your party</p>
 						</div>
 					</div>
 				</div>
