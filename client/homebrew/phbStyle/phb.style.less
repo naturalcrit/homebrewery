@@ -278,7 +278,7 @@
 	//*****************************
 	// *      CLASS TABLE
 	// *****************************/
-	hr+table{
+	hr:not(hr hr)+table{
 		margin-top          : -5px;
 		margin-bottom       : 50px;
 		padding-top         : 10px;
@@ -291,7 +291,7 @@
 		border-image-source : @frameBorderImage;
 		border-image-width  : 47px;
 	}
-	h5+hr+table{
+	h5+hr+table,hr+hr+table{
 		column-span         : all;
 		-webkit-column-span : all;
 		-moz-column-span    : all;
