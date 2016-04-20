@@ -43,7 +43,7 @@ var Statusbar = React.createClass({
 		if(!confirm("are you sure you want to delete this brew?")) return;
 		if(!confirm("are you REALLY sure? You will not be able to recover it")) return;
 
-		request.get('/homebrew/remove/' + this.props.editId)
+		request.get('/homebrew/api/remove/' + this.props.editId)
 			.send()
 			.end(function(err, res){
 				window.location.href = '/homebrew';

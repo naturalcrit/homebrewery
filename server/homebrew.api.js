@@ -1,9 +1,24 @@
 var _ = require('lodash');
 var Moment = require('moment');
-var vitreumRender = require('vitreum/render');
 var HomebrewModel = require('./homebrew.model.js').model;
 
-var changelogText = require('fs').readFileSync('./changelog.md', 'utf8');
+var homebrewTotal = 0;
+var refreshCount = function(){
+	HomebrewModel.count({}, function(err, total){
+		homebrewTotal = total;
+	});
+};
+refreshCount()
+
+var mw = {
+	adminOnly : function(req, res, next){
+		if(req.query && req.query.admin_key == process.env.ADMIN_KEY){
+			next();
+		}else{
+			return res.status(401).send('Access denied');
+		}
+	}
+};
 
 
 var getTopBrews = function(cb){
@@ -11,7 +26,6 @@ var getTopBrews = function(cb){
 		cb(brews);
 	});
 }
-
 
 
 module.exports = function(app){
@@ -22,16 +36,6 @@ module.exports = function(app){
 		});
 	})
 
-
-	app.get('/homebrew/new', function(req, res){
-		var newHomebrew = new HomebrewModel();
-		newHomebrew.save(function(err, obj){
-			return res.redirect('/homebrew/edit/' + obj.editId);
-		})
-	})
-
-
-	//Updating
 	app.put('/homebrew/update/:id', function(req, res){
 		HomebrewModel.find({editId : req.params.id}, function(err, objs){
 			if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
@@ -45,137 +49,65 @@ module.exports = function(app){
 		});
 	});
 
-	app.get('/homebrew/remove/:id', function(req, res){
-		//if(req.query && req.query.admin_key == process.env.ADMIN_KEY){
-			HomebrewModel.find({editId : req.params.id}, function(err, objs){
-				console.log(err);
-				if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
-				var resEntry = objs[0];
-				resEntry.remove(function(err){
-					if(err) return res.status(500).send("Error while removing");
-					return res.status(200).send();
-				})
-			});
-		//}else{
-		//	return res.status(401).send('Access denied');
-		//}
+	app.get('/homebrew/api/remove/:id', function(req, res){
+		HomebrewModel.find({editId : req.params.id}, function(err, objs){
+			if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
+			var resEntry = objs[0];
+			resEntry.remove(function(err){
+				if(err) return res.status(500).send("Error while removing");
+				return res.status(200).send();
+			})
+		});
 	});
 
-	//Removes all empty brews that are older than 3 days
-	app.get('/homebrew/clear_old', function(req, res){
-		if(req.query && req.query.admin_key == process.env.ADMIN_KEY){
-			HomebrewModel.remove({
-				text : '',
-				createdAt: {
-					$lt: Moment().subtract(3, 'days').toDate()
-				}
-			}, function(err, objs){
-				return res.status(200).send();
-			});
+	//Removes all empty brews that are older than 3 days and that are shorter than a tweet
+	app.get('/homebrew/api/invalid', mw.adminOnly, function(req, res){
+		var invalidBrewQuery = HomebrewModel.find({
+			'$where' : "this.text.length < 140",
+			createdAt: {
+				$lt: Moment().subtract(3, 'days').toDate()
+			}
+		});
+
+		if(req.query.do_it){
+			invalidBrewQuery.remove().exec((err, objs)=>{
+				refreshCount();
+				return res.send(200);
+			})
 		}else{
-			return res.status(401).send('Access denied');
+			invalidBrewQuery.exec((err, objs)=>{
+				if(err) console.log(err);
+				return res.json({
+					count : objs.length
+				})
+			})
 		}
 	});
 
 
-	//Edit Page
-	app.get('/homebrew/edit/:id', function(req, res){
-		HomebrewModel.find({editId : req.params.id}, function(err, objs){
-			if(err || !objs.length) return res.status(404).send('Could not find Homebrew with that id');
+	app.get('/homebrew/api/search', mw.adminOnly, function(req, res){
+		var page = req.query.page || 0;
+		var count = req.query.count || 20;
 
-			var resObj = null;
-			var errObj = {text: "# oops\nCould not find the homebrew."}
-			if(objs.length){
-				resObj = objs[0];
-			}
-
-			vitreumRender({
-				page: './build/homebrew/bundle.dot',
-				globals:{},
-				prerenderWith : './client/homebrew/homebrew.jsx',
-				initialProps: {
-					url: req.originalUrl,
-					brew : resObj || errObj
-				},
-				clearRequireCache : true,
-			}, function (err, page) {
-				return res.send(page)
+		HomebrewModel.find({}, {
+			text : 0 //omit the text
+		}, {
+			skip: page*count,
+			limit: count*1
+		}, function(err, objs){
+			if(err) console.log(err);
+			return res.json({
+				page : page,
+				count : count,
+				total : homebrewTotal,
+				brews : objs
 			});
-		})
-	});
 
-
-	//Share Page
-	app.get('/homebrew/share/:id', function(req, res){
-		HomebrewModel.find({shareId : req.params.id}, function(err, objs){
-			if(err || !objs.length) return res.status(404).send('Could not find Homebrew with that id');
-
-			var resObj = null;
-			var errObj = {text: "# oops\nCould not find the homebrew."}
-
-			if(objs.length){
-				resObj = objs[0];
-				resObj.lastViewed = new Date();
-				resObj.views = resObj.views + 1;
-				resObj.save();
-			}
-
-			vitreumRender({
-				page: './build/homebrew/bundle.dot',
-				globals:{},
-				prerenderWith : './client/homebrew/homebrew.jsx',
-				initialProps: {
-					url: req.originalUrl,
-					brew : resObj || errObj
-				},
-				clearRequireCache : true,
-			}, function (err, page) {
-				return res.send(page)
-			});
-		})
-	});
-
-	//Print Page
-	var Markdown = require('marked');
-	var PHBStyle = '<style>' + require('fs').readFileSync('./phb.standalone.css', 'utf8') + '</style>'
-	app.get('/homebrew/print/:id', function(req, res){
-		HomebrewModel.find({shareId : req.params.id}, function(err, objs){
-			if(err || !objs.length) return res.status(404).send('Could not find Homebrew with that id');
-
-			var resObj = null;
-			if(objs.length){
-				resObj = objs[0];
-			}
-
-			var content = _.map(resObj.text.split('\\page'), function(pageText){
-				return '<div class="phb">' + Markdown(pageText) + '</div>';
-			}).join('\n');
-
-			var title = '<title>' + resObj.text.split('\n')[0] + '</title>';
-			var page = '<html><head>' + title + PHBStyle + '</head><body>' +  content +'</body></html>'
-
-			return res.send(page)
 		});
-	});
+	})
 
-	//Home and 404, etc.
-	var welcomeText = require('fs').readFileSync('./client/homebrew/homePage/welcome_msg.txt', 'utf8');
 
-	app.get('/homebrew*', function (req, res) {
-		vitreumRender({
-			page: './build/homebrew/bundle.dot',
-			globals:{},
-			prerenderWith : './client/homebrew/homebrew.jsx',
-			initialProps: {
-				url: req.originalUrl,
-				welcomeText : welcomeText,
-				changelog : changelogText
-			},
-			clearRequireCache : true,
-		}, function (err, page) {
-			return res.send(page)
-		});
-	});
+
 
 	return app;
 }
