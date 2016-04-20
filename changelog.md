@@ -5,6 +5,7 @@
 - A lot of admin improvements. Pagninated brew table
 - Added a searching and removing abandoned brew api endpoints (turns out about 40% of brews are shorter that a tweet!).
 - Fixed the require cache being cleared. Pages should render a bit faster now.
+- Pulled in `kkragenbrink`s fix for nested lists, Thanks!
 
 
 ### Wednesday, 06/04/2016 - v1.4
