@@ -30,7 +30,7 @@ process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password';
 process.env.ADMIN_KEY  = process.env.ADMIN_KEY  || 'admin_key';
 var auth = require('basic-auth');
 
-var HomebrewModel = require('./server/homebrew.model.js').model;
+//var HomebrewModel = require('./server/homebrew.model.js').model;
 
 app.get('/admin', function(req, res){
 	var credentials = auth(req)
@@ -38,6 +38,8 @@ app.get('/admin', function(req, res){
 		res.setHeader('WWW-Authenticate', 'Basic realm="example"')
 		return res.status(401).send('Access denied')
 	}
+
+	/*
 	HomebrewModel.find({}, function(err, homebrews){
 
 		//Remove the text to reduce the response payload
@@ -46,6 +48,8 @@ app.get('/admin', function(req, res){
 			return brew;
 		});
 
+		console.log("HOMEBREW", homebrews.length);
+*/
 		vitreumRender({
 			page: './build/admin/bundle.dot',
 			prerenderWith : './client/admin/admin.jsx',
@@ -54,16 +58,17 @@ app.get('/admin', function(req, res){
 				url: req.originalUrl,
 				admin_key : process.env.ADMIN_KEY,
 
-				homebrews : homebrews,
+				//homebrews : homebrews,
 			},
 		}, function (err, page) {
 			return res.send(page)
 		});
-	});
+//	});
 });
 
 
 app = require('./server/homebrew.api.js')(app);
+app = require('./server/homebrew.server.js')(app);
 
 
 
