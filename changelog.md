@@ -1,5 +1,12 @@
 # changelog
 
+
+### Wednesday, 20/04/2016
+- A lot of admin improvements. Pagninated brew table
+- Added a searching and removing abandoned brew api endpoints (turns out about 40% of brews are shorter that a tweet!).
+- Fixed the require cache being cleared. Pages should render a bit faster now.
+
+
 ### Wednesday, 06/04/2016 - v1.4
 * Pages will now partially render. This should greatly speed up *very* large homebrews. The Homebreery will figure out which page you should be looking at and render that page, the page before, and the page after.
 * Zooming should be fixed. I've changed the font size units to be cm, which match the units of the page. Zooming in and out now look much better.
