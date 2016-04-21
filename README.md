@@ -1,5 +1,5 @@
 # NaturalCrit
-A tool suite for DMs to use for D&D
+A tool suite for DMs to use for D&D. Check it out [here](http://www.naturalcrit.com).
 
 
 ### Getting started
