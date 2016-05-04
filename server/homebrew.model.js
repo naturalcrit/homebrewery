@@ -15,20 +15,6 @@ var HomebrewSchema = mongoose.Schema({
 
 
 
-
-/*
-HomebrewSchema.options.toJSON.transform = function (doc, ret, options) {
-	delete ret._id;
-	delete ret.__t;
-	delete ret.__v;
-}
-HomebrewSchema.options.toObject.transform = function (doc, ret, options) {
-	delete ret._id;
-	delete ret.__t;
-	delete ret.__v;
-}
-*/
-
 var Homebrew = mongoose.model('Homebrew', HomebrewSchema);
 
 module.exports = {

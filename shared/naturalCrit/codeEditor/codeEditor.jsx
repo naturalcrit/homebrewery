@@ -18,6 +18,7 @@ var CodeEditor = React.createClass({
 		return {
 			language : '',
 			value : '',
+			wrap : false,
 			onChange : function(){},
 			onCursorActivity : function(){},
 		};
@@ -27,6 +28,7 @@ var CodeEditor = React.createClass({
 		this.codeMirror = CodeMirror(this.refs.editor,{
 			value : this.props.value,
 			lineNumbers: true,
+			lineWrapping : this.props.wrap,
 			mode : this.props.language
 		});
 
@@ -34,7 +36,7 @@ var CodeEditor = React.createClass({
 		this.codeMirror.on('cursorActivity', this.handleCursorActivity);
 	},
 
-	componentWillReceiveProps: _.debounce((nextProps)=>{
+	componentWillReceiveProps: _.debounce(function(nextProps){
 		if(this.codeMirror && nextProps.value !== undefined && this.codeMirror.getValue() != nextProps.value) {
 			this.codeMirror.setValue(nextProps.value);
 		}

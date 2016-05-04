@@ -11,6 +11,8 @@ var PageContainer = require('../pageContainer/pageContainer.jsx');
 var Nav = require('naturalCrit/nav/nav.jsx');
 var Navbar = require('../navbar/navbar.jsx');
 
+var RedditShare = require('../navbar/redditShare.navitem.jsx');
+
 var SplitPane = require('../splitPane/splitPane.jsx');
 
 
@@ -59,6 +61,8 @@ var HomePage = React.createClass({
 		return(
 			<div className='homePage page'>
 				<Navbar>
+					<RedditShare brew={{text : this.state.text}}/>
+
 					<Nav.item
 						newTab={true}
 						href='https://github.com/stolksdorf/naturalcrit/issues'
@@ -82,7 +86,7 @@ var HomePage = React.createClass({
 
 				<div className='content'>
 					<SplitPane>
-						<CodeEditor language='gfm' value={this.state.text} onChange={this.handleTextChange} />
+						<CodeEditor wrap={true} language='gfm' value={this.state.text} onChange={this.handleTextChange} />
 						<div>{this.state.text}</div>
 					</SplitPane>
 
