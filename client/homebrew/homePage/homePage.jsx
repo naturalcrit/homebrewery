@@ -13,6 +13,8 @@ var Editor = require('../editor/editor.jsx');
 
 var Nav = require('naturalCrit/nav/nav.jsx');
 
+var Navbar = require('../navbar/navbar.jsx');
+
 
 
 
@@ -58,17 +60,22 @@ var HomePage = React.createClass({
 		return(
 			<div className='homePage'>
 
+				<Navbar>
+					<Nav.item
+						href='/homebrew/changelog'
+						color='purple'
+						icon='fa-file-text-o'>
+						Changelog
+					</Nav.item>
+					<Nav.item
+						href='/homebrew/new'
+						color='green'
+						icon='fa-external-link'>
+						New Brew
+					</Nav.item>
+				</Navbar>
 
-				<Nav.base>
-					Test
 
-				</Nav.base>
-
-
-
-				<Statusbar
-					printId="Nkbh52nx_l"
-				/>
 				<div className='paneSplit'>
 					<div className='leftPane'>
 						<Editor text={this.state.text} onChange={this.handleTextChange} />
