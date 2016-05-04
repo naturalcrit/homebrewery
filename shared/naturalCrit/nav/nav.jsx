@@ -6,7 +6,9 @@ var Nav = {
 	base : React.createClass({
 		render : function(){
 			return <nav>
-				{this.props.children}
+				<div className='navContent'>
+					{this.props.children}
+				</div>
 			</nav>
 		}
 	}),

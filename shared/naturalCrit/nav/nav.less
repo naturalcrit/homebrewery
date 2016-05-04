@@ -8,9 +8,13 @@
 	src         : url('/assets/naturalCrit/logo/CODE Bold.otf');
 }
 nav{
-	display          : flex;
 	background-color : #333;
-	justify-content  : space-between;
+
+	.navContent{
+		display          : flex;
+
+		justify-content  : space-between;
+	}
 	.navSection{
 		display     : flex;
 		align-items : center;
@@ -51,7 +55,7 @@ nav{
 	}
 	.navItem{
 		.animate(background-color);
-		padding          : 5px 8px;
+		padding          : 8px 12px;
 		cursor           : pointer;
 		background-color : #333;
 		font-size        : 12px;

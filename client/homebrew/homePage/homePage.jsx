@@ -9,7 +9,7 @@ var Editor = require('../editor/editor.jsx');
 //var WelcomeText = require('./welcomeMessage.js');
 
 
-
+var SplitPane = require('../splitPane/splitPane.jsx');
 
 var Nav = require('naturalCrit/nav/nav.jsx');
 
@@ -58,7 +58,7 @@ var HomePage = React.createClass({
 
 	render : function(){
 		return(
-			<div className='homePage'>
+			<div className='homePage page'>
 
 				<Navbar>
 					<Nav.item
@@ -75,15 +75,25 @@ var HomePage = React.createClass({
 					</Nav.item>
 				</Navbar>
 
+				<div className='content'>
 
-				<div className='paneSplit'>
-					<div className='leftPane'>
-						<Editor text={this.state.text} onChange={this.handleTextChange} />
-					</div>
-					<div className='rightPane'>
-						<PageContainer text={this.state.text} />
-					</div>
+					<SplitPane>
+						<div className='woo'>
+							one
+						</div>
+
+						<div className='cool'>
+							two
+						</div>
+
+
+					</SplitPane>
+
+
+
 				</div>
+
+
 
 				<a href='/homebrew/new' className='floatingNewButton'>
 					Create your own <i className='fa fa-magic' />
@@ -94,3 +104,28 @@ var HomePage = React.createClass({
 });
 
 module.exports = HomePage;
+
+
+/*
+	<div className='temp'>
+		test
+
+			<div className='woo' />
+
+	</div>
+*/
+
+
+/*
+
+<div className='paneSplit'>
+	<div className='leftPane'>
+		<Editor text={this.state.text} onChange={this.handleTextChange} />
+	</div>
+	<div className='rightPane'>
+		<PageContainer text={this.state.text} />
+	</div>
+</div>
+
+
+*/
