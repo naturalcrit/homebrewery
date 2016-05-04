@@ -6,6 +6,7 @@ X Simplify the panel css to remove the current issues
 - Build new `BrewRenderer`, clean support for partial rendering
 - Add `infoBox` to BrewRenderer to show views, and current pages
 - remove old status bar
+- remove jsoneditor (if we don't need it)
 - Add in markdown editor
 - Add bleed snippet (bump)
 - Add the '/new' page and force save to reduce database size
@@ -14,6 +15,7 @@ X Update the admin page with pagnition and a query box
 X Test the old/small brew filtering for deleteion
 - Partial rendering kills style tags on unrendered pages. Detect if pages have style tags and render them.
 - Add in the link of Pateron?
+- Add in brew title, use for metadata?
 
 - Add in a tutorial page?
 

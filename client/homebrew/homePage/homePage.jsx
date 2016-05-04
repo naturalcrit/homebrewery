@@ -18,6 +18,8 @@ var Navbar = require('../navbar/navbar.jsx');
 
 
 
+var CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
+
 
 
 
@@ -83,20 +85,35 @@ var HomePage = React.createClass({
 
 				<div className='content'>
 					<SplitPane>
-						<Editor text={this.state.text} onChange={this.handleTextChange} />
-						<PageContainer text={this.state.text} />
+						<CodeEditor />
+						<CodeEditor language='gfm' />
 					</SplitPane>
+
+
 				</div>
 
+				{/*
 				<a href='/homebrew/new' className='floatingNewButton'>
 					Create your own <i className='fa fa-magic' />
 				</a>
+				*/}
 			</div>
 		);
 	}
 });
 
 module.exports = HomePage;
+
+/*
+<SplitPane>
+
+
+	<PageContainer text={this.state.text} />
+	<Editor text={this.state.text} onChange={this.handleTextChange} />
+</SplitPane>
+
+*/
+
 
 
 /* Test code

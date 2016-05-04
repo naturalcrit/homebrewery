@@ -26,6 +26,6 @@
     "react-dom": "^15.0.2",
     "shortid": "^2.2.4",
     "superagent": "^1.6.1",
-    "vitreum": "^3.1.1"
+    "vitreum": "^3.2.1"
   }
 }
