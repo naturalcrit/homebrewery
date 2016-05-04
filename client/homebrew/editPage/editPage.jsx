@@ -12,6 +12,8 @@ var request = require("superagent");
 
 var SAVE_TIMEOUT = 3000;
 
+
+
 var EditPage = React.createClass({
 	getDefaultProps: function() {
 		return {
@@ -64,6 +66,9 @@ var EditPage = React.createClass({
 
 	render : function(){
 		return <div className='editPage'>
+
+
+
 			<Statusbar
 				editId={this.props.entry.editId}
 				shareId={this.props.entry.shareId}

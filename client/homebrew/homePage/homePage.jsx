@@ -10,6 +10,15 @@ var Editor = require('../editor/editor.jsx');
 
 
 
+
+var Nav = require('naturalCrit/nav/nav.jsx');
+
+
+
+
+
+
+
 var KEY = 'naturalCrit-homebrew';
 
 var HomePage = React.createClass({
@@ -48,6 +57,15 @@ var HomePage = React.createClass({
 	render : function(){
 		return(
 			<div className='homePage'>
+
+
+				<Nav.base>
+					Test
+
+				</Nav.base>
+
+
+
 				<Statusbar
 					printId="Nkbh52nx_l"
 				/>
