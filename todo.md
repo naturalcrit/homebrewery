@@ -1,14 +1,16 @@
 # The Homebrewery
 
 ## v1.5 todo
-- Make statusbar un-fixed
-- Simplify the panel css to remove the current issues
+X Make statusbar un-fixed
+X Simplify the panel css to remove the current issues
+- Build new `BrewRenderer`, clean support for partial rendering
+- Add `infoBox` to BrewRenderer to show views, and current pages
+- Add in markdown editor
 - Add bleed snippet (bump)
 - Add the '/new' page and force save to reduce database size
-! Add pagniation and query to the homebrew api
-! Update the admin page with pagnition and a query box
-! Test the old/small brew filtering for deleteion
-- Make the status bar take children? Or just give it a string of booleans. Just simplify it
+X Add pagniation and query to the homebrew api
+X Update the admin page with pagnition and a query box
+X Test the old/small brew filtering for deleteion
 - Partial rendering kills style tags on unrendered pages. Detect if pages have style tags and render them.
 - Add in the link of Pateron?
 

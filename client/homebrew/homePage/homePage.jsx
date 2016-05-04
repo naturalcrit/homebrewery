@@ -59,7 +59,6 @@ var HomePage = React.createClass({
 	render : function(){
 		return(
 			<div className='homePage page'>
-
 				<Navbar>
 					<Nav.item
 						href='/homebrew/changelog'
@@ -76,24 +75,11 @@ var HomePage = React.createClass({
 				</Navbar>
 
 				<div className='content'>
-
 					<SplitPane>
-						<div className='woo'>
-							one
-						</div>
-
-						<div className='cool'>
-							two
-						</div>
-
-
+						<Editor text={this.state.text} onChange={this.handleTextChange} />
+						<PageContainer text={this.state.text} />
 					</SplitPane>
-
-
-
 				</div>
-
-
 
 				<a href='/homebrew/new' className='floatingNewButton'>
 					Create your own <i className='fa fa-magic' />
@@ -106,26 +92,16 @@ var HomePage = React.createClass({
 module.exports = HomePage;
 
 
-/*
-	<div className='temp'>
-		test
-
-			<div className='woo' />
-
-	</div>
-*/
-
-
-/*
-
-<div className='paneSplit'>
-	<div className='leftPane'>
-		<Editor text={this.state.text} onChange={this.handleTextChange} />
-	</div>
-	<div className='rightPane'>
-		<PageContainer text={this.state.text} />
-	</div>
+/* Test code
+<div className='content'>
+	<SplitPane>
+		<div className='woo'>
+			one
+		</div>
+		<div className='temp'>
+			yo
+			<div className='tooBig' />
+		</div>
+	</SplitPane>
 </div>
-
-
 */
