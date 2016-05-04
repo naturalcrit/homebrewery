@@ -61,6 +61,13 @@ var HomePage = React.createClass({
 			<div className='homePage page'>
 				<Navbar>
 					<Nav.item
+						newTab={true}
+						href='https://github.com/stolksdorf/naturalcrit/issues'
+						color='red'
+						icon='fa-bug'>
+						issue?
+					</Nav.item>
+					<Nav.item
 						href='/homebrew/changelog'
 						color='purple'
 						icon='fa-file-text-o'>

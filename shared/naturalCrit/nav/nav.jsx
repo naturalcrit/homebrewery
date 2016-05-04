@@ -58,6 +58,7 @@ var Nav = {
 			return {
 				icon : null,
 				href : null,
+				newTab : false,
 				onClick : function(){},
 				color : null
 			};
@@ -72,7 +73,7 @@ var Nav = {
 			if(this.props.icon) icon = <i className={'fa ' + this.props.icon} />;
 
 			if(this.props.href){
-				return <a href={this.props.href} className={classes} >
+				return <a href={this.props.href} className={classes} target={this.props.newTab ? '_blank' : '_self'}>
 					{this.props.children}
 					{icon}
 				</a>
