@@ -4,17 +4,14 @@ var cx = require('classnames');
 
 //var Statusbar = require('../statusbar/statusbar.jsx');
 var PageContainer = require('../pageContainer/pageContainer.jsx');
-var Editor = require('../editor/editor.jsx');
-
-//var WelcomeText = require('./welcomeMessage.js');
+//var Editor = require('../editor/editor.jsx');
 
 
-var SplitPane = require('../splitPane/splitPane.jsx');
 
 var Nav = require('naturalCrit/nav/nav.jsx');
-
 var Navbar = require('../navbar/navbar.jsx');
 
+var SplitPane = require('../splitPane/splitPane.jsx');
 
 
 
@@ -85,8 +82,8 @@ var HomePage = React.createClass({
 
 				<div className='content'>
 					<SplitPane>
-						<CodeEditor />
-						<CodeEditor language='gfm' />
+						<CodeEditor language='gfm' value={this.state.text} onChange={this.handleTextChange} />
+						<div>{this.state.text}</div>
 					</SplitPane>
 
 

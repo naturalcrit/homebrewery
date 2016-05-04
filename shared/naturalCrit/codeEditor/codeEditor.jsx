@@ -16,23 +16,40 @@ if(typeof navigator !== 'undefined'){
 var CodeEditor = React.createClass({
 	getDefaultProps: function() {
 		return {
-			language : 'javascript',
-			text : 'yo dawg',
-			onChange : function(){}
+			language : '',
+			value : '',
+			onChange : function(){},
+			onCursorActivity : function(){},
 		};
 	},
 
 	componentDidMount: function() {
-		this.editor = CodeMirror(this.refs.editor,{
+		this.codeMirror = CodeMirror(this.refs.editor,{
+			value : this.props.value,
 			lineNumbers: true,
 			mode : this.props.language
 		});
+
+		this.codeMirror.on('change', this.handleChange);
+		this.codeMirror.on('cursorActivity', this.handleCursorActivity);
+	},
+
+	componentWillReceiveProps: _.debounce((nextProps)=>{
+		if(this.codeMirror && nextProps.value !== undefined && this.codeMirror.getValue() != nextProps.value) {
+			this.codeMirror.setValue(nextProps.value);
+		}
+	}, 0),
+
+
+	handleChange : function(editor){
+		this.props.onChange(editor.getValue());
+	},
+	handleCursorActivity : function(){
+		this.props.onCursorActivity(this.codeMirror.getCursor());
 	},
 
 	render : function(){
-		return <div className='codeEditor' ref='editor'>
-			CodeEditor Ready!
-		</div>
+		return <div className='codeEditor' ref='editor' />
 	}
 });
 
