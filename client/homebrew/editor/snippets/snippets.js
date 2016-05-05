@@ -4,6 +4,32 @@ var MonsterBlockGen = require('./monsterblock.gen.js');
 var ClassFeatureGen = require('./classfeature.gen.js');
 var FullClassGen = require('./fullclass.gen.js');
 
+
+/* Snippet Categories
+
+	- editor
+	- Tables
+	- PHB
+	- document
+	- print
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports = [
 	/*
 	{
@@ -124,3 +150,46 @@ module.exports = [
 	}
 
 ]
+
+
+
+
+
+module.exports = [
+	{
+		groupName : 'Editor',
+		icon : 'fa-pencil',
+		snippets : [
+			{
+				name : 'Spell',
+				icon : 'fa-magic',
+				snippet : SpellGen
+			}
+		]
+	},
+	{
+		groupName : 'Tables',
+		icon : 'fa-table',
+		snippets : [
+			{
+				name : 'Spell',
+				icon : 'fa-magic',
+				snippet : SpellGen
+			}
+		]
+	},
+	{
+		groupName : 'PHB',
+		icon : 'fa-book',
+		snippets : [
+			{
+				name : 'Spell',
+				icon : 'fa-magic',
+				snippet : SpellGen
+			}
+		]
+	},
+
+]
+
+

@@ -17,7 +17,9 @@ var SplitPane = require('../splitPane/splitPane.jsx');
 
 
 
-var CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
+//var CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
+
+var Editor = require('../editor/editor.jsx');
 
 
 
@@ -61,32 +63,39 @@ var HomePage = React.createClass({
 		return(
 			<div className='homePage page'>
 				<Navbar>
-					<RedditShare brew={{text : this.state.text}}/>
 
-					<Nav.item
-						newTab={true}
-						href='https://github.com/stolksdorf/naturalcrit/issues'
-						color='red'
-						icon='fa-bug'>
-						issue?
-					</Nav.item>
-					<Nav.item
-						href='/homebrew/changelog'
-						color='purple'
-						icon='fa-file-text-o'>
-						Changelog
-					</Nav.item>
-					<Nav.item
-						href='/homebrew/new'
-						color='green'
-						icon='fa-external-link'>
-						New Brew
-					</Nav.item>
+					<Nav.section>
+						<Nav.item>Bad Ass Brew</Nav.item>
+					</Nav.section>
+
+
+					<Nav.section>
+						<RedditShare brew={{text : this.state.text}}/>
+						<Nav.item
+							newTab={true}
+							href='https://github.com/stolksdorf/naturalcrit/issues'
+							color='red'
+							icon='fa-bug'>
+							report issue
+						</Nav.item>
+						<Nav.item
+							href='/homebrew/changelog'
+							color='purple'
+							icon='fa-file-text-o'>
+							Changelog
+						</Nav.item>
+						<Nav.item
+							href='/homebrew/new'
+							color='green'
+							icon='fa-external-link'>
+							New Brew
+						</Nav.item>
+					</Nav.section>
 				</Navbar>
 
 				<div className='content'>
 					<SplitPane>
-						<CodeEditor wrap={true} language='gfm' value={this.state.text} onChange={this.handleTextChange} />
+						<Editor value={this.state.text} onChange={this.handleTextChange} />
 						<div>{this.state.text}</div>
 					</SplitPane>
 

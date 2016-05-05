@@ -8,7 +8,6 @@ X Simplify the panel css to remove the current issues
 - remove old status bar
 X remove jsoneditor (if we don't need it)
 X Add in markdown editor
-- Add bleed snippet (bump)
 - Add the '/new' page and force save to reduce database size
 X Add pagniation and query to the homebrew api
 X Update the admin page with pagnition and a query box
@@ -18,6 +17,7 @@ X Test the old/small brew filtering for deleteion
 - Add in brew title, use for metadata?
 - Add in specific entry point rendering in server.js
 - Add in a tutorial page?
+- Add in a localstorage fallback on the `/new` page, clear it when they save
 
 ## v1.6
 - Add error handling to the saving wdiget in the status bar

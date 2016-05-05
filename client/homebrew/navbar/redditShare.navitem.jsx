@@ -15,7 +15,7 @@ var RedditShare = React.createClass({
 	getDefaultProps: function() {
 		return {
 			brew : {
-				desc : '',
+				title : '',
 				sharedId : '',
 				text : ''
 			}
@@ -30,7 +30,7 @@ var RedditShare = React.createClass({
 	handleClick : function(){
 		var url = [
 			MAIN_URL,
-			'title=' + encodeURIComponent(this.props.brew.desc ? this.props.brew.desc : 'Check out my brew!'),
+			'title=' + encodeURIComponent(this.props.brew.title ? this.props.brew.title : 'Check out my brew!'),
 
 			'text=' + encodeURIComponent(this.props.brew.text)
 
@@ -42,7 +42,7 @@ var RedditShare = React.createClass({
 
 
 	render : function(){
-		return <Nav.item icon='fa-reddit' color='red' onClick={this.handleClick}>
+		return <Nav.item icon='fa-reddit-alien' color='red' onClick={this.handleClick}>
 			share on reddit
 		</Nav.item>
 	},

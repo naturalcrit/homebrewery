@@ -1,23 +1,22 @@
 var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
-var SnippetIcons = require('./snippets/snippets.js');
 
+var CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
+
+var Snippets = require('./snippets/snippets.js');
 
 var Editor = React.createClass({
 	getDefaultProps: function() {
 		return {
-			text : "",
+			value : "",
 			onChange : function(){}
 		};
 	},
 
-	componentDidMount: function() {
-		this.refs.textarea.focus();
-	},
 
-	handleTextChange : function(e){
-		this.props.onChange(e.target.value);
+	handleTextChange : function(text){
+		this.props.onChange(text);
 	},
 
 	iconClick : function(snippetFn){
@@ -28,7 +27,7 @@ var Editor = React.createClass({
 	},
 
 	renderTemplateIcons : function(){
-		return _.map(SnippetIcons, (t) => {
+		return _.map(Snippets, (t) => {
 			return <div className='icon' key={t.icon}
 				onClick={this.iconClick.bind(this, t.snippet)}
 				data-tooltip={t.tooltip}>
@@ -36,18 +35,20 @@ var Editor = React.createClass({
 			</div>;
 		})
 	},
+	renderSnippetBar : function(){
+		return <div className='snippetBar'>
+			Snippet bar yo
+
+		</div>
+	},
 
 	render : function(){
-		var self = this;
 		return(
 			<div className='editor'>
-				<div className='textIcons'>
-					{this.renderTemplateIcons()}
-				</div>
-				<textarea
-					ref='textarea'
-					value={this.props.text}
-					onChange={this.handleTextChange} />
+				{this.renderTemplateIcons()}
+				{this.renderSnippetBar()}
+				<CodeEditor wrap={true} language='gfm' value={this.props.value} onChange={this.handleTextChange} />
+
 			</div>
 		);
 	}
