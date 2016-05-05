@@ -42,8 +42,27 @@
 
 
 	.snippetBar{
-		background-color: #bbb;
+		padding : 5px;
+		background-color: #ddd;
 
+		display: flex;
+
+		align-items: center;
+		//justify-content: center;
+
+
+		.snippetGroup{
+			.animate(background-color);
+
+			border-radius : 5px;
+			&:hover, &.selected{
+				background-color: #999;
+			}
+			padding : 5px;
+			font-size: 20px;
+			margin: 0px 10px;
+			//cursor : pointer;
+		}
 
 
 	}

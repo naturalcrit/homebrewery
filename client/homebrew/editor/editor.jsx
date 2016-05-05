@@ -35,18 +35,25 @@ var Editor = React.createClass({
 			</div>;
 		})
 	},
-	renderSnippetBar : function(){
-		return <div className='snippetBar'>
-			Snippet bar yo
 
-		</div>
+
+	renderSnippetGroups : function(){
+		return _.map(Snippets, (snippetGroup)=>{
+			return <SnippetGroup
+				groupName={snippetGroup.groupName}
+				icon={snippetGroup.icon}
+				snippets={snippetGroup.snippets}
+			/>
+		})
 	},
 
 	render : function(){
 		return(
 			<div className='editor'>
 				{this.renderTemplateIcons()}
-				{this.renderSnippetBar()}
+				<div className='snippetBar'>
+					{this.renderSnippetGroups()}
+				</div>
 				<CodeEditor wrap={true} language='gfm' value={this.props.value} onChange={this.handleTextChange} />
 
 			</div>
@@ -56,3 +63,31 @@ var Editor = React.createClass({
 
 module.exports = Editor;
 
+
+
+var SnippetGroup = React.createClass({
+	getDefaultProps: function() {
+		return {
+			groupName : '',
+			icon : 'fa-rocket',
+			snippets : [],
+			onSnippetClick : function(){},
+		};
+	},
+	getInitialState: function() {
+		return {
+		};
+	},
+
+
+	handleSnippetClick : function(){
+
+	},
+
+	render : function(){
+		return <div className='snippetGroup'>
+			<i className={'fa fa-fw ' + this.props.icon} />
+		</div>
+	},
+
+});
