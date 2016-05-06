@@ -95,7 +95,7 @@ module.exports = function(app){
 	});
 
 	//Home and 404, etc.
-	var welcomeText = require('fs').readFileSync('./client/homebrew/homePage/welcome_msg.txt', 'utf8');
+	var welcomeText = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg.txt', 'utf8');
 	app.get('/homebrew*', function (req, res) {
 		vitreumRender({
 			page: './build/homebrew/bundle.dot',

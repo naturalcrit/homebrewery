@@ -2,11 +2,11 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 
-var Statusbar = require('../statusbar/statusbar.jsx');
-var PageContainer = require('../pageContainer/pageContainer.jsx');
-var Editor = require('../editor/editor.jsx');
+var Statusbar = require('../../statusbar/statusbar.jsx');
+var PageContainer = require('../../pageContainer/pageContainer.jsx');
+var Editor = require('../../editor/editor.jsx');
 
-var FullClassGen = require('../editor/snippets/fullclass.gen.js');
+var FullClassGen = require('../../editor/snippets/fullclass.gen.js');
 
 var request = require("superagent");
 

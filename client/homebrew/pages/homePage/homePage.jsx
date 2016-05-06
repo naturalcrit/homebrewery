@@ -3,23 +3,23 @@ var _ = require('lodash');
 var cx = require('classnames');
 
 //var Statusbar = require('../statusbar/statusbar.jsx');
-var PageContainer = require('../pageContainer/pageContainer.jsx');
+//var PageContainer = require('../pageContainer/pageContainer.jsx');
 //var Editor = require('../editor/editor.jsx');
 
 
 
 var Nav = require('naturalcrit/nav/nav.jsx');
-var Navbar = require('../navbar/navbar.jsx');
+var Navbar = require('../../navbar/navbar.jsx');
 
-var RedditShare = require('../navbar/redditShare.navitem.jsx');
+var RedditShare = require('../../navbar/redditShare.navitem.jsx');
 
-var SplitPane = require('../splitPane/splitPane.jsx');
+var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 
 
 
 //var CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
 
-var Editor = require('../editor/editor.jsx');
+var Editor = require('../../editor/editor.jsx');
 
 
 

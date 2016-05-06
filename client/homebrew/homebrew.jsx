@@ -4,9 +4,9 @@ var cx = require('classnames');
 
 var CreateRouter = require('pico-router').createRouter;
 
-var HomePage = require('./homePage/homePage.jsx');
-var EditPage = require('./editPage/editPage.jsx');
-var SharePage = require('./sharePage/sharePage.jsx');
+var HomePage = require('./pages/homePage/homePage.jsx');
+var EditPage = require('./pages/editPage/editPage.jsx');
+var SharePage = require('./pages/sharePage/sharePage.jsx');
 
 var Router;
 var Homebrew = React.createClass({

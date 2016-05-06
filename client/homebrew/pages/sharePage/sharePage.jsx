@@ -2,9 +2,9 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 
-var Statusbar = require('../statusbar/statusbar.jsx');
+var Statusbar = require('../../statusbar/statusbar.jsx');
 
-var PageContainer = require('../pageContainer/pageContainer.jsx');
+var PageContainer = require('../../pageContainer/pageContainer.jsx');
 
 var SharePage = React.createClass({
 	getDefaultProps: function() {

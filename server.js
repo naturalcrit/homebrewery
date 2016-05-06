@@ -49,9 +49,9 @@ app = require('./server/homebrew.server.js')(app);
 
 app.get('*', function (req, res) {
 	vitreumRender({
-		page: './build/naturalCrit/bundle.dot',
+		page: './build/home/bundle.dot',
 		globals:{},
-		prerenderWith : './client/naturalCrit/naturalCrit.jsx',
+		prerenderWith : './client/home/home.jsx',
 		initialProps: {
 			url: req.originalUrl
 		},
