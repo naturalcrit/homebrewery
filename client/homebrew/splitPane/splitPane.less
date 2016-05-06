@@ -6,12 +6,26 @@
 	outline        : none;
 	flex-direction : row;
 	.pane{
-		flex : 1;
-		overflow-x: hidden;
+		overflow-x : hidden;
+		flex       : 1;
 	}
 	.divider{
-		width            : 5px;
+		display          : table;
+		height           : 100%;
+		width            : 12px;
 		cursor           : ew-resize;
-		background-color : black;
+		background-color : #bbb;
+		text-align       : center;
+		.dots{
+			display        : table-cell;
+			vertical-align : middle;
+			text-align     : center;
+			i{
+				display   : block;
+				margin    : 10px 0px;
+				font-size : 6px;
+				color     : #666;
+			}
+		}
 	}
 }

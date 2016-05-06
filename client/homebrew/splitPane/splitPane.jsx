@@ -51,7 +51,13 @@ var SplitPane = React.createClass({
 	},
 */
 	renderDivider : function(){
-		return <div className='divider' onMouseDown={this.handleDown} />
+		return <div className='divider' onMouseDown={this.handleDown}>
+			<div className='dots'>
+				<i className='fa fa-circle' />
+				<i className='fa fa-circle' />
+				<i className='fa fa-circle' />
+			</div>
+		</div>
 	},
 
 	render : function(){
