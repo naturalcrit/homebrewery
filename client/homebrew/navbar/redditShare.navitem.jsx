@@ -4,7 +4,7 @@ var cx = require('classnames');
 
 var striptags = require('striptags');
 
-var Nav = require('naturalCrit/nav/nav.jsx');
+var Nav = require('naturalcrit/nav/nav.jsx');
 
 const MAX_URL_SIZE = 2083;
 const MAIN_URL = "https://www.reddit.com/r/UnearthedArcana/submit?selftext=true"

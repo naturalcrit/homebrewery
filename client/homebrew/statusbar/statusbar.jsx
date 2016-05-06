@@ -4,7 +4,7 @@ var cx = require('classnames');
 var Moment = require('moment');
 var request = require('superagent')
 
-var Logo = require('naturalCrit/logo/logo.jsx');
+var Logo = require('naturalcrit/logo/logo.jsx');
 
 var replaceAll = function(str, find, replace) {
 	return str.replace(new RegExp(find, 'g'), replace);

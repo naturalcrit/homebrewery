@@ -8,7 +8,7 @@ var PageContainer = require('../pageContainer/pageContainer.jsx');
 
 
 
-var Nav = require('naturalCrit/nav/nav.jsx');
+var Nav = require('naturalcrit/nav/nav.jsx');
 var Navbar = require('../navbar/navbar.jsx');
 
 var RedditShare = require('../navbar/redditShare.navitem.jsx');

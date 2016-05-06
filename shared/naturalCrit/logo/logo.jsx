@@ -1,5 +1,5 @@
 var React = require('react');
-var Icon = require('naturalCrit/icon.svg.jsx');
+var Icon = require('naturalcrit/icon.svg.jsx');
 
 var Logo = React.createClass({
 	getDefaultProps: function() {

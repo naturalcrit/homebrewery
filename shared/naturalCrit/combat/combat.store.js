@@ -1,8 +1,8 @@
 var flux = require('pico-flux');
 var _ = require('lodash');
 
-var defaultMonsterManual = require('naturalCrit/defaultMonsterManual.js');
-var GetRandomEncounter = require('naturalCrit/randomEncounter.js');
+var defaultMonsterManual = require('naturalcrit/defaultMonsterManual.js');
+var GetRandomEncounter = require('naturalcrit/randomEncounter.js');
 
 var Store = {
 	selectedEncounterIndex : 0,

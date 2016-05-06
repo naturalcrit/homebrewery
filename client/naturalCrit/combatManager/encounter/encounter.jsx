@@ -2,7 +2,7 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 
-var Store = require('naturalCrit/combat.store.js');
+var Store = require('naturalcrit/combat.store.js');
 
 var MonsterCard = require('./monsterCard/monsterCard.jsx');
 

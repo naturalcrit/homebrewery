@@ -44,15 +44,15 @@ var encounters = [
 
 ];
 
-var defaultMonsterManual = require('naturalCrit/defaultMonsterManual.js');
+var defaultMonsterManual = require('naturalcrit/defaultMonsterManual.js');
 
 var attrMod = function(attr){
 	return Math.floor(attr/2) - 5;
 }
 
 
-var Store = require('naturalCrit/combat.store');
-var Actions = require('naturalCrit/combat.actions');
+var Store = require('naturalcrit/combat.store');
+var Actions = require('naturalcrit/combat.actions');
 
 
 

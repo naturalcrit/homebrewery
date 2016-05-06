@@ -2,7 +2,7 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 
-var RollDice = require('naturalCrit/rollDice');
+var RollDice = require('naturalcrit/rollDice');
 
 var DmDice = React.createClass({
 

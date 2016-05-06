@@ -3,12 +3,12 @@ var _ = require('lodash');
 var cx = require('classnames');
 
 var Router = require('pico-router');
-var Icon = require('naturalCrit/icon.svg.jsx');
-var Logo = require('naturalCrit/logo/logo.jsx');
+var Icon = require('naturalcrit/icon.svg.jsx');
+var Logo = require('naturalcrit/logo/logo.jsx');
 
 
-var HomebrewIcon = require('naturalCrit/homebrewIcon.svg.jsx');
-var CombatIcon = require('naturalCrit/combatIcon.svg.jsx');
+var HomebrewIcon = require('naturalcrit/homebrewIcon.svg.jsx');
+var CombatIcon = require('naturalcrit/combatIcon.svg.jsx');
 
 var Home = React.createClass({
 

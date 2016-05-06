@@ -2,12 +2,12 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 
-var JSONFileEditor = require('naturalCrit/jsonFileEditor/jsonFileEditor.jsx');
+var JSONFileEditor = require('naturalcrit/jsonFileEditor/jsonFileEditor.jsx');
 
-//var GetRandomEncounter = require('naturalCrit/randomEncounter.js');
+//var GetRandomEncounter = require('naturalcrit/randomEncounter.js');
 
-var Store = require('naturalCrit/combat.store.js');
-var Actions = require('naturalCrit/combat.actions.js');
+var Store = require('naturalcrit/combat.store.js');
+var Actions = require('naturalcrit/combat.actions.js');
 
 
 var Encounters = React.createClass({
