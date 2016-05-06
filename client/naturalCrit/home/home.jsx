@@ -3,12 +3,13 @@ var _ = require('lodash');
 var cx = require('classnames');
 
 var Router = require('pico-router');
-var Icon = require('naturalcrit/icon.svg.jsx');
-var Logo = require('naturalcrit/logo/logo.jsx');
 
 
-var HomebrewIcon = require('naturalcrit/homebrewIcon.svg.jsx');
-var CombatIcon = require('naturalcrit/combatIcon.svg.jsx');
+//var Icon = require('naturalcrit/icon.svg.jsx');
+//var Logo = require('naturalcrit/logo/logo.jsx');
+
+//var HomebrewIcon = require('naturalcrit/homebrewIcon.svg.jsx');
+//var CombatIcon = require('naturalcrit/combatIcon.svg.jsx');
 
 var Home = React.createClass({
 
@@ -17,7 +18,6 @@ var Home = React.createClass({
 	},
 
 	render : function(){
-		var self = this;
 		return(
 			<div className='home'>
 
@@ -31,7 +31,7 @@ var Home = React.createClass({
 
 					<div className='homebrew toolContainer' onClick={Router.navigate.bind(self, '/homebrew')}>
 						<div className='content'>
-							<HomebrewIcon />
+							{/*<HomebrewIcon />*/}
 							<h2>The Homebrewery</h2>
 							<p>Make authentic-looking 5e homebrews using Markdown</p>
 						</div>
