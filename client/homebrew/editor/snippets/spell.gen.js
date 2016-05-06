@@ -56,9 +56,9 @@ module.exports = function(){
 	var spellSchools = ["abjuration", "conjuration", "divination", "enchantment", "evocation", "illusion", "necromancy", "transmutation"];
 
 
-	var components = _.sample(["V", "S", "M"], _.random(1,3)).join(', ');
+	var components = _.sampleSize(["V", "S", "M"], _.random(1,3)).join(', ');
 	if(components.indexOf("M") !== -1){
-		components += " (" +  _.sample(['a small doll', 'a crushed button worth at least 1cp', 'discarded gum wrapper'], _.random(1,3)).join(', ') + ")"
+		components += " (" +  _.sampleSize(['a small doll', 'a crushed button worth at least 1cp', 'discarded gum wrapper'], _.random(1,3)).join(', ') + ")"
 	}
 
 	return [

@@ -163,7 +163,12 @@ module.exports = [
 			{
 				name : 'Spell',
 				icon : 'fa-magic',
-				snippet : SpellGen
+				gen : SpellGen
+			},
+			{
+				name : 'Test',
+				icon : 'fa-rocket',
+				gen : function(){ return "TEST"}
 			}
 		]
 	},
@@ -174,7 +179,7 @@ module.exports = [
 			{
 				name : 'Spell',
 				icon : 'fa-magic',
-				snippet : SpellGen
+				gen : SpellGen
 			}
 		]
 	},
@@ -185,7 +190,7 @@ module.exports = [
 			{
 				name : 'Spell',
 				icon : 'fa-magic',
-				snippet : SpellGen
+				gen : SpellGen
 			}
 		]
 	},

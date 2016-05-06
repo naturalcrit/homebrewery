@@ -3,6 +3,11 @@ var _ = require('lodash');
 var cx = require('classnames');
 
 var SplitPane = React.createClass({
+	getDefaultProps: function() {
+		return {
+			onDragFinish : function(){} //fires when dragging
+		};
+	},
 	getInitialState: function() {
 		return {
 			storageKey : 'naturalcrit-pane-split',
@@ -20,20 +25,23 @@ var SplitPane = React.createClass({
 	},
 
 	handleUp : function(){
+		if(this.state.isDragging){
+			this.props.onDragFinish(this.state.size);
+			window.localStorage.setItem(this.props.storageKey, this.state.size);
+		}
 		this.setState({ isDragging : false });
 	},
 	handleDown : function(){
 		this.setState({ isDragging : true });
-		this.unFocus()
+		//this.unFocus()
 	},
 	handleMove : function(e){
 		if(!this.state.isDragging) return;
 		this.setState({
 			size : e.pageX
 		});
-		window.localStorage.setItem(this.props.storageKey, e.pageX);
 	},
-
+/*
 	unFocus : function() {
 		if(document.selection){
 				document.selection.empty();
@@ -41,12 +49,9 @@ var SplitPane = React.createClass({
 			window.getSelection().removeAllRanges();
 		}
 	},
-
+*/
 	renderDivider : function(){
-		return <div
-			className='divider'
-			onMouseDown={this.handleDown}
-		/>
+		return <div className='divider' onMouseDown={this.handleDown} />
 	},
 
 	render : function(){

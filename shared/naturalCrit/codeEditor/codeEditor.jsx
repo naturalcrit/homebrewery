@@ -34,20 +34,35 @@ var CodeEditor = React.createClass({
 
 		this.codeMirror.on('change', this.handleChange);
 		this.codeMirror.on('cursorActivity', this.handleCursorActivity);
+		this.updateSize();
 	},
 
-	componentWillReceiveProps: _.debounce(function(nextProps){
+	componentWillReceiveProps: function(nextProps){
 		if(this.codeMirror && nextProps.value !== undefined && this.codeMirror.getValue() != nextProps.value) {
 			this.codeMirror.setValue(nextProps.value);
 		}
-	}, 0),
+	},
 
+	shouldComponentUpdate: function(nextProps, nextState) {
+		return false;
+	},
+
+	setCursorPosition : function(line, char){
+		setTimeout(()=>{
+			this.codeMirror.focus();
+			this.codeMirror.doc.setCursor(line, char);
+		}, 10);
+	},
+
+	updateSize : function(){
+		this.codeMirror.refresh();
+	},
 
 	handleChange : function(editor){
 		this.props.onChange(editor.getValue());
 	},
 	handleCursorActivity : function(){
-		this.props.onCursorActivity(this.codeMirror.getCursor());
+		this.props.onCursorActivity(this.codeMirror.doc.getCursor());
 	},
 
 	render : function(){
