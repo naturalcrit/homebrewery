@@ -18,6 +18,7 @@ X Test the old/small brew filtering for deleteion
 - Add in specific entry point rendering in server.js
 - Add in a tutorial page?
 - Add in a localstorage fallback on the `/new` page, clear it when they save
+- Rename `/client/naturalCrit` -> `/client/home`
 
 ## v1.6
 - Add error handling to the saving wdiget in the status bar
