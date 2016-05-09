@@ -5,6 +5,7 @@ var request = require("superagent");
 
 var Nav = require('naturalcrit/nav/nav.jsx');
 var Navbar = require('../../navbar/navbar.jsx');
+var EditTitle = require('../../navbar/editTitle.navitem.jsx');
 
 
 var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
@@ -31,9 +32,8 @@ var NewPage = React.createClass({
 				text : storage
 			})
 		}
-
 		window.onbeforeunload = function(e){
-			return "Your homebrew isn't saved. Are you sure you want to leave?";
+			//return "Your homebrew isn't saved. Are you sure you want to leave?";
 		};
 	},
 
@@ -44,6 +44,12 @@ var NewPage = React.createClass({
 
 	handleSplitMove : function(){
 		this.refs.editor.update();
+	},
+
+	handleTitleChange : function(title){
+		this.setState({
+			title : title
+		});
 	},
 
 	handleTextChange : function(text){
@@ -93,7 +99,7 @@ var NewPage = React.createClass({
 	renderNavbar : function(){
 		return <Navbar>
 			<Nav.section>
-				<Nav.item>{this.state.title}</Nav.item>
+				<EditTitle title={this.state.title} onChange={this.handleTitleChange} />
 			</Nav.section>
 
 			<Nav.section>
