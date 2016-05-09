@@ -2,30 +2,20 @@ var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
 
-//var Statusbar = require('../statusbar/statusbar.jsx');
-//var PageContainer = require('../pageContainer/pageContainer.jsx');
-//var Editor = require('../editor/editor.jsx');
-
-
-
 var Nav = require('naturalcrit/nav/nav.jsx');
 var Navbar = require('../../navbar/navbar.jsx');
-
 var RedditShare = require('../../navbar/redditShare.navitem.jsx');
 
+
+
 var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
-
-
-
-//var CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
-
 var Editor = require('../../editor/editor.jsx');
 var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 
 
 
-//var KEY = 'naturalCrit-homebrew';
+
 
 var HomePage = React.createClass({
 
@@ -41,16 +31,6 @@ var HomePage = React.createClass({
 		};
 	},
 
-	componentDidMount: function() {
-		/*
-		var storage = localStorage.getItem(KEY);
-		if(storage){
-			this.setState({
-				text : storage
-			})
-		}
-		*/
-	},
 
 	handleSplitMove : function(){
 		this.refs.editor.update();
@@ -72,6 +52,8 @@ var HomePage = React.createClass({
 
 			<Nav.section>
 				<RedditShare brew={{text : this.state.text}}/>
+
+
 				<Nav.item
 					newTab={true}
 					href='https://github.com/stolksdorf/naturalcrit/issues'
@@ -80,6 +62,7 @@ var HomePage = React.createClass({
 					report issue
 				</Nav.item>
 				<Nav.item
+					newTab={true}
 					href='/homebrew/changelog'
 					color='purple'
 					icon='fa-file-text-o'>
@@ -96,26 +79,24 @@ var HomePage = React.createClass({
 	},
 
 	render : function(){
-		return(
-			<div className='homePage page'>
-				{this.renderNavbar()}
+		return <div className='homePage page'>
+			{this.renderNavbar()}
 
-				<div className='content'>
-					<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
-						<Editor value={this.state.text} onChange={this.handleTextChange} ref='editor'/>
-						<BrewRenderer brewText={this.state.text} />
-					</SplitPane>
+			<div className='content'>
+				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
+					<Editor value={this.state.text} onChange={this.handleTextChange} ref='editor'/>
+					<BrewRenderer brewText={this.state.text} />
+				</SplitPane>
 
 
-				</div>
-
-				{/*
-				<a href='/homebrew/new' className='floatingNewButton'>
-					Create your own <i className='fa fa-magic' />
-				</a>
-				*/}
 			</div>
-		);
+
+			{/*
+			<a href='/homebrew/new' className='floatingNewButton'>
+				Create your own <i className='fa fa-magic' />
+			</a>
+			*/}
+		</div>
 	}
 });
 

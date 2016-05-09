@@ -7,6 +7,7 @@ var CreateRouter = require('pico-router').createRouter;
 var HomePage = require('./pages/homePage/homePage.jsx');
 var EditPage = require('./pages/editPage/editPage.jsx');
 var SharePage = require('./pages/sharePage/sharePage.jsx');
+var NewPage = require('./pages/newPage/newPage.jsx');
 
 var Router;
 var Homebrew = React.createClass({
@@ -35,6 +36,9 @@ var Homebrew = React.createClass({
 			},
 			'/homebrew/changelog' : (args) => {
 				return <SharePage entry={{text : this.props.changelog}} />
+			},
+			'/homebrew/new' : (args) => {
+				return <NewPage />
 			},
 			'/homebrew*' : <HomePage welcomeText={this.props.welcomeText} />,
 		});
