@@ -17,7 +17,7 @@ var gulp = vitreumTasks(gulp, {
 	buildPath: "./build/",
 	pageTemplate: "./client/template.dot",
 
-	projectModules: ["./shared/naturalCrit","./shared/codemirror"],
+	projectModules: ["./shared/naturalcrit","./shared/codemirror"],
 
 	additionalRequirePaths : ['./shared', './node_modules'],
 
