@@ -30,8 +30,6 @@ var BrewRenderer = React.createClass({
 	},
 
 	handleScroll : function(e){
-		console.log('sco');
-
 		this.setState({
 			viewablePageNumber : Math.floor(e.target.scrollTop / PAGE_HEIGHT)
 		});
@@ -55,7 +53,7 @@ var BrewRenderer = React.createClass({
 
 	renderPageInfo : function(){
 		return <div className='pageInfo'>
-			{this.state.viewablePageNumber} / {this.totalPages}
+			{this.state.viewablePageNumber + 1} / {this.totalPages}
 		</div>
 	},
 

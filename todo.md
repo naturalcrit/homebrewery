@@ -3,8 +3,8 @@
 ## v1.5 todo
 X Make statusbar un-fixed
 X Simplify the panel css to remove the current issues
-- Build new `BrewRenderer`, clean support for partial rendering
-- Add `infoBox` to BrewRenderer to show views, and current pages
+X Build new `BrewRenderer`, clean support for partial rendering
+X Add `infoBox` to BrewRenderer to show views, and current pages
 - remove old status bar
 X remove jsoneditor (if we don't need it)
 X Add in markdown editor
@@ -12,13 +12,13 @@ X Add in markdown editor
 X Add pagniation and query to the homebrew api
 X Update the admin page with pagnition and a query box
 X Test the old/small brew filtering for deleteion
-- Partial rendering kills style tags on unrendered pages. Detect if pages have style tags and render them.
+X Partial rendering kills style tags on unrendered pages. Detect if pages have style tags and render them.
 - Add in the link of Pateron?
 - Add in brew title, use for metadata?
 - Add in specific entry point rendering in server.js
 - Add in a tutorial page?
 - Add in a localstorage fallback on the `/new` page, clear it when they save
-- Rename `/client/naturalCrit` -> `/client/home`
+X Rename `/client/naturalCrit` -> `/client/main`
 
 ## v1.6
 - Add error handling to the saving wdiget in the status bar
