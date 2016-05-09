@@ -8,7 +8,7 @@ X Add `infoBox` to BrewRenderer to show views, and current pages
 - remove old status bar
 X remove jsoneditor (if we don't need it)
 X Add in markdown editor
-- Add the '/new' page and force save to reduce database size
+X Add the '/new' page and force save to reduce database size
 X Add pagniation and query to the homebrew api
 X Update the admin page with pagnition and a query box
 X Test the old/small brew filtering for deleteion
@@ -17,8 +17,10 @@ X Partial rendering kills style tags on unrendered pages. Detect if pages have s
 - Add in brew title, use for metadata?
 - Add in specific entry point rendering in server.js
 - Add in a tutorial page?
-- Add in a localstorage fallback on the `/new` page, clear it when they save
+X Add in a localstorage fallback on the `/new` page, clear it when they save
 X Rename `/client/naturalCrit` -> `/client/main`
+- Move snippets into their new groups
+- Replace pseudo-elements with encoded images
 
 ## v1.6
 - Add error handling to the saving wdiget in the status bar

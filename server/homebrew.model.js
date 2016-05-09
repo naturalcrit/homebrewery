@@ -5,6 +5,7 @@ var _ = require('lodash');
 var HomebrewSchema = mongoose.Schema({
 	shareId : {type : String, default: shortid.generate},
 	editId : {type : String, default: shortid.generate},
+	title : {type : String, default : ""},
 	text : {type : String, default : ""},
 
 	createdAt     : { type: Date, default: Date.now },

@@ -1,31 +1,23 @@
+
 @import (less) './client/homebrew/phbStyle/phb.style.less';
-
-
 .pane{
-	position: relative;
+	position : relative;
 }
-
 .brewRenderer{
-	overflow-y: scroll;
-
-	//height : calc(~"100%");
-
+	overflow-y : scroll;
 	.pageInfo{
-		background-color: #333;
-		color : White;
-		position: absolute;
-		padding: 8px 10px;
-		font-weight: 800;
-		font-size: 10px;
-		z-index : 1000;
-
-		bottom: 0;
-		right : 17px;
+		position         : absolute;
+		right            : 17px;
+		bottom           : 0;
+		z-index          : 1000;
+		padding          : 8px 10px;
+		background-color : #333;
+		font-size        : 10px;
+		font-weight      : 800;
+		color            : white;
 	}
-
 	.pages{
-		margin: 30px 0px;
-
+		margin : 30px 0px;
 		&>.phb{
 			margin-right  : auto;
 			margin-bottom : 30px;
@@ -33,6 +25,4 @@
 			box-shadow    : 1px 4px 14px #000;
 		}
 	}
-
-
 }

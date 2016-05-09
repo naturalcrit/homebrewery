@@ -10,7 +10,6 @@ const MAX_URL_SIZE = 2083;
 const MAIN_URL = "https://www.reddit.com/r/UnearthedArcana/submit?selftext=true"
 
 
-
 var RedditShare = React.createClass({
 	getDefaultProps: function() {
 		return {

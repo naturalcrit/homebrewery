@@ -9,7 +9,7 @@ var PAGE_HEIGHT = 1056 + 30;
 var BrewRenderer = React.createClass({
 	getDefaultProps: function() {
 		return {
-			brewText : ''
+			text : ''
 		};
 	},
 	getInitialState: function() {
@@ -68,7 +68,7 @@ var BrewRenderer = React.createClass({
 	},
 
 	renderPages : function(){
-		var pages = this.props.brewText.split('\\page');
+		var pages = this.props.text.split('\\page');
 		this.totalPages = pages.length;
 
 		return _.map(pages, (page, index)=>{

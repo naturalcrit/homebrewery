@@ -32,8 +32,9 @@ var NewPage = React.createClass({
 				text : storage
 			})
 		}
-		window.onbeforeunload = function(e){
-			//return "Your homebrew isn't saved. Are you sure you want to leave?";
+		window.onbeforeunload = (e)=>{
+			if(this.state.text == '') return;
+			return "Your homebrew isn't saved. Are you sure you want to leave?";
 		};
 	},
 
@@ -104,15 +105,9 @@ var NewPage = React.createClass({
 
 			<Nav.section>
 				{this.renderSaveButton()}
-
-				<Nav.item
-					newTab={true}
-					href='https://github.com/stolksdorf/naturalcrit/issues'
-					color='red'
-					icon='fa-bug'>
+				<Nav.item newTab={true} href='https://github.com/stolksdorf/naturalcrit/issues' color='red' icon='fa-bug'>
 					report issue
 				</Nav.item>
-
 			</Nav.section>
 		</Navbar>
 	},
@@ -125,7 +120,7 @@ var NewPage = React.createClass({
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
 					<Editor value={this.state.text} onChange={this.handleTextChange} ref='editor'/>
-					<BrewRenderer brewText={this.state.text} />
+					<BrewRenderer text={this.state.text} />
 				</SplitPane>
 			</div>
 		</div>
