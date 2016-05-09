@@ -1,3 +1,31 @@
-.COM{
+@import (less) './client/homebrew/phbStyle/phb.style.less';
+
+.brewRenderer{
+	position: relative;
+	overflow-y: scroll;
+
+	//height : calc(~"100%");
+
+	.pageInfo{
+		background-color: black;
+		color : White;
+		position: absolute;
+		padding: 30px;
+		z-index : 1000;
+
+		bottom: 0;
+		right : 0;
+	}
+
+	.pages{
+
+		&>.phb{
+			margin-right  : auto;
+			margin-bottom : 30px;
+			margin-left   : auto;
+			box-shadow    : 1px 4px 14px #000;
+		}
+	}
+
 
 }

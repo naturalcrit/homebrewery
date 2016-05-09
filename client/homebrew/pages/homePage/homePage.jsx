@@ -20,6 +20,7 @@ var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 //var CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
 
 var Editor = require('../../editor/editor.jsx');
+var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 
 
@@ -102,7 +103,7 @@ var HomePage = React.createClass({
 				<div className='content'>
 					<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
 						<Editor value={this.state.text} onChange={this.handleTextChange} ref='editor'/>
-						<div>{this.state.text}</div>
+						<BrewRenderer brewText={this.state.text} />
 					</SplitPane>
 
 
