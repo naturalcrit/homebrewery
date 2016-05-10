@@ -5,6 +5,8 @@ var cx = require('classnames');
 var Nav = require('naturalcrit/nav/nav.jsx');
 var Navbar = require('../../navbar/navbar.jsx');
 
+var PrintLink = require('../../navbar/print.navitem.jsx');
+
 var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 var replaceAll = function(str, find, replace) {
@@ -34,9 +36,6 @@ var SharePage = React.createClass({
 
 
 	render : function(){
-
-		console.log('brew', this.props.brew);
-
 		return <div className='sharePage page'>
 			<Navbar>
 				<Nav.section>
@@ -44,9 +43,7 @@ var SharePage = React.createClass({
 				</Nav.section>
 
 				<Nav.section>
-					<Nav.item newTab={true} href={'/homebrew/print/' + this.props.brew.sharedId} color='orange' icon='fa-print'>
-						print
-					</Nav.item>
+					<PrintLink shareId={this.props.brew.shareId} />
 					<Nav.item onClick={this.openSourceWindow} color='teal' icon='fa-code'>
 						source
 					</Nav.item>

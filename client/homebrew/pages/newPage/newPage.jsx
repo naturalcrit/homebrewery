@@ -86,7 +86,7 @@ var NewPage = React.createClass({
 
 	renderSaveButton : function(){
 		if(this.state.isSaving){
-			return <Nav.item icon='fa-spinner sa-spin' className='saveButton'>
+			return <Nav.item icon='fa-spinner fa-spin' className='saveButton'>
 				save...
 			</Nav.item>
 		}else{

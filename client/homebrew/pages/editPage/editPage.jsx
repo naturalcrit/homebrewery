@@ -85,7 +85,7 @@ var EditPage = React.createClass({
 	handleTitleChange : function(title){
 		this.setState({
 			title : title,
-			pending : true
+			isPending : true
 		});
 
 		(this.hasChanges() ? this.debounceSave() : this.debounceSave.cancel());
@@ -94,7 +94,7 @@ var EditPage = React.createClass({
 	handleTextChange : function(text){
 		this.setState({
 			text : text,
-			pending : true
+			isPending : true
 		});
 
 		(this.hasChanges() ? this.debounceSave() : this.debounceSave.cancel());
@@ -125,6 +125,10 @@ var EditPage = React.createClass({
 	save : function(){
 		console.log('saving!');
 		this.debounceSave.cancel();
+		this.setState({
+			isSaving : true
+		});
+
 		request
 			.put('/homebrew/api/update/' + this.props.brew.editId)
 			.send({text : this.state.text})
@@ -132,19 +136,28 @@ var EditPage = React.createClass({
 				console.log('done', res.body);
 				this.savedBrew = res.body;
 				this.setState({
-					pending : false,
+					isPending : false,
+					isSaving : false,
 					lastUpdated : res.body.updatedAt
 				})
 			})
 	},
 
 	renderSaveButton : function(){
+
+		if(this.state.isSaving){
+
+					return <Nav.item icon="fa-spinner fa-spin">saving...</Nav.item>
+
+				}
+
+
 		if(!this.state.isPending && !this.state.isSaving){
-			//saved
-		}else if(this.state.isPending && this.hasChanges()){
-			//save now
-		}else if(this.state.isSaving){
-			//saving
+			return <Nav.item>saved.</Nav.item>
+		}
+
+		if(this.state.isPending && this.hasChanges()){
+			return <Nav.item onClick={this.save} color='blue'>Save Now</Nav.item>
 		}
 
 	},
@@ -158,6 +171,8 @@ var EditPage = React.createClass({
 			</Nav.section>
 
 			<Nav.section>
+				{this.renderSaveButton()}
+
 				<Nav.item newTab={true} href={'/homebrew/share/' + this.props.brew.shareId} color='teal' icon='fa-share'>
 					Share
 				</Nav.item>
