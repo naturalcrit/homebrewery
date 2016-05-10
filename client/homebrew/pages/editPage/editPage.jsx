@@ -8,6 +8,8 @@ var Nav = require('naturalcrit/nav/nav.jsx');
 var Navbar = require('../../navbar/navbar.jsx');
 
 var EditTitle = require('../../navbar/editTitle.navitem.jsx');
+var ReportIssue = require('../../navbar/issue.navitem.jsx');
+var PrintLink = require('../../navbar/print.navitem.jsx');
 
 
 var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
@@ -49,19 +51,27 @@ var EditPage = React.createClass({
 		return {
 			title : this.props.brew.title,
 			text: this.props.brew.text,
+
 			isSaving : false,
+
+			isPending : false,
+
 			errors : null,
-			pending : false,
 
 			lastUpdated : this.props.brew.updatedAt
 		};
 	},
 
-	componentDidMount: function() {
-		var self = this;
-		window.onbeforeunload = function(){
-			if(!self.state.pending) return;
-			return "You have unsaved changes!";
+	savedBrew : null,
+
+
+	componentDidMount: function(){
+		this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
+
+		window.onbeforeunload = ()=>{
+			//do state checks
+
+			//return "You have unsaved changes!";
 		}
 	},
 	componentWillUnmount: function() {
@@ -77,7 +87,8 @@ var EditPage = React.createClass({
 			title : title,
 			pending : true
 		});
-		this.save();
+
+		(this.hasChanges() ? this.debounceSave() : this.debounceSave.cancel());
 	},
 
 	handleTextChange : function(text){
@@ -85,7 +96,8 @@ var EditPage = React.createClass({
 			text : text,
 			pending : true
 		});
-		this.save();
+
+		(this.hasChanges() ? this.debounceSave() : this.debounceSave.cancel());
 	},
 
 	handleDelete : function(){
@@ -99,17 +111,43 @@ var EditPage = React.createClass({
 			});
 	},
 
-	save : _.debounce(function(){
+	hasChanges : function(){
+		if(this.savedBrew){
+			if(this.state.text !== this.savedBrew.text) return true;
+			if(this.state.title !== this.savedBrew.title) return true;
+		}else{
+			if(this.state.text !== this.props.brew.text) return true;
+			if(this.state.title !== this.props.brew.title) return true;
+		}
+		return false;
+	},
+
+	save : function(){
+		console.log('saving!');
+		this.debounceSave.cancel();
 		request
-			.put('/homebrew/api/update/' + this.props.id)
+			.put('/homebrew/api/update/' + this.props.brew.editId)
 			.send({text : this.state.text})
 			.end((err, res) => {
+				console.log('done', res.body);
+				this.savedBrew = res.body;
 				this.setState({
 					pending : false,
 					lastUpdated : res.body.updatedAt
 				})
 			})
-	}, SAVE_TIMEOUT),
+	},
+
+	renderSaveButton : function(){
+		if(!this.state.isPending && !this.state.isSaving){
+			//saved
+		}else if(this.state.isPending && this.hasChanges()){
+			//save now
+		}else if(this.state.isSaving){
+			//saving
+		}
+
+	},
 
 
 
@@ -120,22 +158,13 @@ var EditPage = React.createClass({
 			</Nav.section>
 
 			<Nav.section>
-				<Nav.item newTab={true} href='https://github.com/stolksdorf/naturalcrit/issues' color='red' icon='fa-bug'>
-					report issue
-				</Nav.item>
-
 				<Nav.item newTab={true} href={'/homebrew/share/' + this.props.brew.shareId} color='teal' icon='fa-share'>
 					Share
 				</Nav.item>
-
-				<Nav.item newTab={true} href={'/homebrew/print/' + this.props.brew.sharedId} color='orange' icon='fa-print'>
-					print
-				</Nav.item>
-
-				<Nav.item color='lightred' icon='fa-trash' onClick={this.handleDelete}>
+				<PrintLink shareId={this.props.brew.shareId} />
+				<Nav.item color='red' icon='fa-trash' onClick={this.handleDelete}>
 					Delete
 				</Nav.item>
-
 			</Nav.section>
 		</Navbar>
 	},

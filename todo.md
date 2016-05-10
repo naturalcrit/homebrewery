@@ -14,23 +14,18 @@ X Update the admin page with pagnition and a query box
 X Test the old/small brew filtering for deleteion
 X Partial rendering kills style tags on unrendered pages. Detect if pages have style tags and render them.
 - Add in the link of Pateron?
-- Add in brew title, use for metadata?
-- Add in specific entry point rendering in server.js
-- Add in a tutorial page?
+
 X Add in a localstorage fallback on the `/new` page, clear it when they save
 X Rename `/client/naturalCrit` -> `/client/main`
 - Move snippets into their new groups
 - Replace pseudo-elements with encoded images
 
 ## v1.6
+- Add in brew title, use for metadata?
 - Add error handling to the saving wdiget in the status bar
   - Should provide error dump to copy and a link to github issues page
-- Add in the pane splitter
-- Add in CodeMIrror of markdown
-- Code Editor should display errors at bottom
-- Add in Descriptive name box for a brew
 - Look into improving the metadata on pages for linking
-
+- Add in a tutorial page?
 
 ## v1.7
 - User accounts!
