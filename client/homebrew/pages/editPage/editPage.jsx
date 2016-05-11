@@ -3,7 +3,6 @@ var _ = require('lodash');
 var cx = require('classnames');
 var request = require("superagent");
 
-
 var Nav = require('naturalcrit/nav/nav.jsx');
 var Navbar = require('../../navbar/navbar.jsx');
 
@@ -15,16 +14,6 @@ var PrintLink = require('../../navbar/print.navitem.jsx');
 var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 var Editor = require('../../editor/editor.jsx');
 var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
-
-
-
-
-
-
-var Statusbar = require('../../statusbar/statusbar.jsx');
-var PageContainer = require('../../pageContainer/pageContainer.jsx');
-var Editor = require('../../editor/editor.jsx');
-
 
 
 
@@ -146,10 +135,8 @@ var EditPage = React.createClass({
 	renderSaveButton : function(){
 
 		if(this.state.isSaving){
-
-					return <Nav.item icon="fa-spinner fa-spin">saving...</Nav.item>
-
-				}
+			return <Nav.item icon="fa-spinner fa-spin">saving...</Nav.item>
+		}
 
 
 		if(!this.state.isPending && !this.state.isSaving){

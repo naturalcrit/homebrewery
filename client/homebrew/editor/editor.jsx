@@ -24,7 +24,10 @@ var Editor = React.createClass({
 		};
 	},
 
-	cursorPosition : null,
+	cursorPosition : {
+		line : 0,
+		ch : 0
+	},
 
 
 	componentDidMount: function() {
@@ -41,7 +44,6 @@ var Editor = React.createClass({
 	},
 
 	handleSnippetClick : function(injectText){
-		if(!this.cursorPosition) return;
 		var lines = this.props.value.split('\n');
 		lines[this.cursorPosition.line] = splice(lines[this.cursorPosition.line], this.cursorPosition.ch, injectText);
 

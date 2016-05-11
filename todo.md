@@ -19,6 +19,7 @@ X Add in a localstorage fallback on the `/new` page, clear it when they save
 X Rename `/client/naturalCrit` -> `/client/main`
 - Move snippets into their new groups
 - Replace pseudo-elements with encoded images
+- Make hybrid editor and brewRenderer (with resize listeners)
 
 ## v1.6
 - Add in brew title, use for metadata?

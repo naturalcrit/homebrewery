@@ -18,7 +18,7 @@ const KEY = 'naturalCrit-homebrew-new';
 var NewPage = React.createClass({
 	getInitialState: function() {
 		return {
-			title : 'EDIT ME',
+			title : 'My Awesome Brew v99.99',
 			text: '',
 			isSaving : false
 		};

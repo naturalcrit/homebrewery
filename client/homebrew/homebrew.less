@@ -1,34 +1,26 @@
+
 @import 'naturalcrit/styles/reset.less';
 //@import 'naturalcrit/styles/elements.less';
 @import 'naturalcrit/styles/animations.less';
 @import 'naturalcrit/styles/colors.less';
 @import 'naturalcrit/styles/tooltip.less';
-
 html,body, #reactContainer{
-	min-height: 100vh;
-	height: 100vh;
-	margin: 0;
-	font-family      : 'Open Sans', sans-serif;
+	height      : 100vh;
+	min-height  : 100vh;
+	margin      : 0;
+	font-family : 'Open Sans', sans-serif;
 }
-
 .homebrew{
-	background-color: @steel;
-
-	height: 100%;
-
+	height           : 100%;
+	background-color : @steel;
 	.page{
-		height : 100%;
-		display: flex;
-		flex-direction: column;
-
-
+		display        : flex;
+		height         : 100%;
+		flex-direction : column;
 		.content{
-			flex: auto;
-			position: relative;
-			height: calc(~"100% - 29px"); //Navbar height
+			position : relative;
+			height   : calc(~"100% - 29px"); //Navbar height
+			flex     : auto;
 		}
 	}
-
-
-
 }
