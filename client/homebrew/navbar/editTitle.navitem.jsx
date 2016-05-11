@@ -6,7 +6,7 @@ var Nav = require('naturalcrit/nav/nav.jsx');
 const MAX_TITLE_LENGTH = 50;
 
 
-var RedditShare = React.createClass({
+var EditTitle = React.createClass({
 	getDefaultProps: function() {
 		return {
 			title : '',
@@ -30,4 +30,4 @@ var RedditShare = React.createClass({
 
 });
 
-module.exports = RedditShare;
+module.exports = EditTitle;

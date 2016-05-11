@@ -5,12 +5,13 @@ var cx = require('classnames');
 var SplitPane = React.createClass({
 	getDefaultProps: function() {
 		return {
+			storageKey : 'naturalcrit-pane-split',
 			onDragFinish : function(){} //fires when dragging
+
 		};
 	},
 	getInitialState: function() {
 		return {
-			storageKey : 'naturalcrit-pane-split',
 			size : null,
 			isDragging : false
 		};
@@ -68,6 +69,11 @@ var SplitPane = React.createClass({
 		</div>
 	}
 });
+
+
+
+
+
 
 var Pane = React.createClass({
 	getDefaultProps: function() {

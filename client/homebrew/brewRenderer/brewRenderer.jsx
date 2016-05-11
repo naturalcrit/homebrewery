@@ -21,20 +21,16 @@ var BrewRenderer = React.createClass({
 	totalPages : 0,
 	height : 0,
 
-
 	componentDidMount: function() {
 		this.setState({
 			height : this.refs.main.parentNode.clientHeight
 		});
-
 	},
-
 	handleScroll : function(e){
 		this.setState({
 			viewablePageNumber : Math.floor(e.target.scrollTop / PAGE_HEIGHT)
 		});
 	},
-
 	//Implement later
 	scrollToPage : function(pageNumber){
 	},

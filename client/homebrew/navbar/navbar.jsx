@@ -19,11 +19,7 @@ var Navbar = React.createClass({
 				<Nav.item>v1.5.0</Nav.item>
 			</Nav.section>
 
-
-
-
-
-				{this.props.children}
+			{this.props.children}
 		</Nav.base>
 	}
 });
