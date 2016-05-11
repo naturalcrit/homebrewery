@@ -14,7 +14,7 @@ X Update the admin page with pagnition and a query box
 X Test the old/small brew filtering for deleteion
 X Partial rendering kills style tags on unrendered pages. Detect if pages have style tags and render them.
 - Add in the link of Pateron?
-
+- Add in window.resize handlers for the elements that need it
 X Add in a localstorage fallback on the `/new` page, clear it when they save
 X Rename `/client/naturalCrit` -> `/client/main`
 - Move snippets into their new groups
@@ -26,6 +26,7 @@ X Rename `/client/naturalCrit` -> `/client/main`
   - Should provide error dump to copy and a link to github issues page
 - Look into improving the metadata on pages for linking
 - Add in a tutorial page?
+- Increase post entity limit size, http://stackoverflow.com/questions/15627573/nodejs-express-request-entity-too-large-heroku
 
 ## v1.7
 - User accounts!
