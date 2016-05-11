@@ -186,8 +186,11 @@
 	hr+blockquote{
 		position         : relative;
 		background-color : @monsterStatBackground;
-		border           : none;
+		//border           : none;
 		padding-top: 15px;
+
+		border-image : @monsterBorderImage 10;
+		border-width : 10px;
 		h2{
 			margin-top: -8px;
 			margin-bottom : 0px;
@@ -231,27 +234,15 @@
 		}
 		//Triangle dividers
 		hr{
-			@height      : 3px;
-			position     : relative;
-			visibility   : visible;
-			margin       : 8px 0px;
-			border-color : transparent;
-			&:after, &:before{
-				content  : "";
-				position : absolute;
-				left     : 0px;
-				height   : @height;
-				width    : 100%;
-			}
-			&:before{
-				top        : -@height;
-				background : linear-gradient(to right top, @horizontalRule 40%, transparent 50%)
-			}
-			&:after{
-				top        : 0px;
-				background : linear-gradient(to right bottom, @horizontalRule 40%, transparent 50%)
-			}
+			visibility: visible;
+			border: none;
+			height: 6px;
+			margin: 4px 0px;
+			background-image: @redTriangleImage;
+			background-size: 100% 100%;
 		}
+
+		/*
 		//Top and Bottom Borders
 		&:after, &:before{
 			content          : "";
@@ -270,6 +261,7 @@
 			bottom : 0px;
 			left   : -3px;
 		}
+		*/
 	}
 	//Full Width
 	hr+hr+blockquote{
