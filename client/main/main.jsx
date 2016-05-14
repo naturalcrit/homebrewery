@@ -22,13 +22,13 @@ var Main = React.createClass({
 					beta : false
 				},
 				{
-					id : 'homebrew2',
-					path : '/homebrew',
-					name : 'The Homebrewery',
+					id : 'spellsort',
+					path : '/spellsort',
+					name : 'Spellsort',
 					icon : <HomebrewIcon />,
-					desc : 'Make authentic-looking 5e homebrews using Markdown',
+					desc : 'Sort and search through spells',
 
-					show : false,
+					show : true,
 					beta : true
 				},
 				{

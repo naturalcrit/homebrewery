@@ -10,6 +10,7 @@ module.exports = function(app){
 			prerenderWith : './client/spellsort/spellsort.jsx',
 			initialProps: {
 				url: req.originalUrl,
+				spells : require('./spellsort.spells.js')
 			},
 			clearRequireCache : !process.env.PRODUCTION,
 		}, function (err, page) {

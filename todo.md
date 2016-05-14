@@ -68,5 +68,6 @@ X Print Dialog now auto-opens on print page
   - should support `has:somatic`, `class:wizard`, `school:divination`, `level:6`
 - Add a dropdown box with clickable elements to inject search terms
 - Clean up the 5th edition spells json
+- Split up the spells into separate josn based on the source
 
 

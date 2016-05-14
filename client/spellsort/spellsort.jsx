@@ -6,23 +6,35 @@ var Nav = require('naturalcrit/nav/nav.jsx');
 var Navbar = require('./navbar/navbar.jsx');
 
 var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
+var SpellRenderer = require('./spellRenderer/spellRenderer.jsx');
+var Sorter = require('./sorter/sorter.jsx');
 
 var SpellSort = React.createClass({
+
+	getDefaultProps: function() {
+		return {
+			spells : []
+		};
+	},
 
 	handleSplitMove : function(){
 
 	},
 
 	render : function(){
+		console.log(this.props.spells);
+
 		return <div className='spellsort page'>
 			<Navbar>
-
+				<Nav.section>
+					yo
+				</Nav.section>
 			</Navbar>
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
 
-					<div>pane 1</div>
-					<div>pane 2</div>
+					<Sorter spells={this.props.spells} />
+					<SpellRenderer spells={this.props.spells} />
 
 				</SplitPane>
 			</div>
