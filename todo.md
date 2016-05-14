@@ -20,6 +20,11 @@ X Rename `/client/naturalCrit` -> `/client/main`
 - Move snippets into their new groups
 - Replace pseudo-elements with encoded images
 - Make hybrid editor and brewRenderer (with resize listeners)
+- add /source/shareId route
+- Add stats nav item
+- make both ids indexes in mongoose
+- Fix main Page
+
 
 ## v1.6
 - Add in brew title, use for metadata?

@@ -147,7 +147,7 @@ module.exports = [
 		snippets : [
 			{
 				name : "A4 PageSize",
-				icon : 'fa-file',
+				icon : 'fa-file-o',
 				gen : ['<style>',
 					'  .phb{',
 					'    width : 210mm;',
@@ -158,7 +158,7 @@ module.exports = [
 			},
 			{
 				name : "Ink Friendly",
-				icon : 'fa-print',
+				icon : 'fa-tint',
 				gen : ['<style>',
 					'  .phb{ background : white;}',
 					'  .phb img{ display : none;}',
