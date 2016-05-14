@@ -34,6 +34,8 @@ X Fix title saving
 X Style the snippet groups
 - Update changelog
 
+- fixed multiline lists (u/Zagorath)
+
 ## v2.1.0
 - Add stats nav item
 - Add a "Hotness" indicator based on the number of views

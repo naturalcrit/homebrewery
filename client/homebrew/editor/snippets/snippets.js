@@ -151,7 +151,7 @@ module.exports = [
 				gen : ['<style>',
 					'  .phb{',
 					'    width : 210mm;',
-					'    height : 297mm;',
+					'    height : 296.8mm;',
 					'  }',
 					'</style>'
 				].join('\n')
