@@ -46,6 +46,9 @@ app = require('./server/homebrew.api.js')(app);
 app = require('./server/homebrew.server.js')(app);
 
 
+//Populate Spellsort routes
+app = require('./server/spellsort.server.js')(app);
+
 
 app.get('*', function (req, res) {
 	vitreumRender({

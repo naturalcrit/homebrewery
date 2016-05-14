@@ -7,15 +7,6 @@ var HomebrewModel = require('./homebrew.model.js').model;
 
 module.exports = function(app){
 
-	/*
-	app.get('/homebrew/new', function(req, res){
-		var newHomebrew = new HomebrewModel();
-		newHomebrew.save(function(err, obj){
-			return res.redirect('/homebrew/edit/' + obj.editId);
-		})
-	})
-	*/
-
 
 	//Edit Page
 	app.get('/homebrew/edit/:id', function(req, res){
