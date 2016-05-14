@@ -9,10 +9,6 @@ var PrintLink = require('../../navbar/print.navitem.jsx');
 
 var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
-var replaceAll = function(str, find, replace) {
-	return str.replace(new RegExp(find, 'g'), replace);
-}
-
 var SharePage = React.createClass({
 	getDefaultProps: function() {
 		return {
@@ -27,14 +23,6 @@ var SharePage = React.createClass({
 		};
 	},
 
-	openSourceWindow : function(){
-		var sourceWindow = window.open();
-		var content = replaceAll(this.props.brew.text, '<', '&lt;');
-		content = replaceAll(content, '>', '&gt;');
-		sourceWindow.document.write('<code><pre>' + content + '</pre></code>');
-	},
-
-
 	render : function(){
 		return <div className='sharePage page'>
 			<Navbar>
@@ -44,7 +32,7 @@ var SharePage = React.createClass({
 
 				<Nav.section>
 					<PrintLink shareId={this.props.brew.shareId} />
-					<Nav.item onClick={this.openSourceWindow} color='teal' icon='fa-code'>
+					<Nav.item href={'/homebrew/source/' + this.props.brew.shareId} color='teal' icon='fa-code'>
 						source
 					</Nav.item>
 				</Nav.section>

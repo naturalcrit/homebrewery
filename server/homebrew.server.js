@@ -97,6 +97,18 @@ module.exports = function(app){
 		});
 	});
 
+	//Source page
+	String.prototype.replaceAll = function(s,r){return this.split(s).join(r)}
+	app.get('/homebrew/source/:id', function(req, res){
+		HomebrewModel.find({shareId : req.params.id}, function(err, objs){
+			if(err || !objs.length) return res.status(404).send('Could not find Homebrew with that id');
+			var brew = null;
+			if(objs.length) brew = objs[0];
+			var text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+			return res.send(`<code><pre>${text}</pre></code>`);
+		});
+	});
+
 	//Home and 404, etc.
 	var welcomeText = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg.txt', 'utf8');
 	var changelogText = require('fs').readFileSync('./changelog.md', 'utf8');

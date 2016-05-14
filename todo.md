@@ -23,7 +23,7 @@ X Move snippets into their new groups
 - add /source/shareId route
 - Add stats nav item
 - make both ids indexes in mongoose
-- Fix main Page
+X Fix main Page
 - Write new welcome message
 
 ## v1.6

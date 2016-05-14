@@ -28,7 +28,7 @@ var Main = React.createClass({
 					icon : <HomebrewIcon />,
 					desc : 'Make authentic-looking 5e homebrews using Markdown',
 
-					show : true,
+					show : false,
 					beta : true
 				},
 				{
