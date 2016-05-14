@@ -35,6 +35,7 @@ X Fix title saving
 
 ## v2.1.0
 - Add stats nav item
+- Add a "Hotness" indicator based on the number of views
 - Adda better error page
 - IMproved firefox support
 - Add in window.resize handlers for the elements that need it
