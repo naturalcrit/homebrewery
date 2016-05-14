@@ -318,8 +318,10 @@ table {
   margin-bottom: 1em;
   padding: 5px 10px;
   background-color: #e0e5c1;
-  border-top: 2px black solid;
-  border-bottom: 2px black solid;
+  border-style: solid;
+  border-width: 11px;
+  border-image: url('/assets/homebrew/phbStyle/note_border.png') 11;
+  border-image-outset: 9px 0px;
   box-shadow: 1px 4px 14px #888;
 }
 .phb blockquote em {
@@ -336,33 +338,16 @@ table {
   font-size: 0.352cm;
   line-height: 1.1em;
 }
+.phb pre + blockquote {
+  margin-top: 11px;
+}
 .phb hr + blockquote {
   position: relative;
-  background-color: #FDF1DC;
   padding-top: 15px;
-  border-image: url('/assets/homebrew/phbStyle/border.png') 10;
+  background-color: #FDF1DC;
   border-style: solid;
   border-width: 10px;
-  /*
-		//Top and Bottom Borders
-		&:after, &:before{
-			content          : "";
-			position         : absolute;
-			height           : 4px;
-			width            : 100%;
-			padding          : 0px 3px;
-			background-color : #E69A28;
-			border           : 1px solid black;
-		}
-		&:before{
-			top  : 0px;
-			left : -3px;
-		}
-		&:after{
-			bottom : 0px;
-			left   : -3px;
-		}
-		*/
+  border-image: url('/assets/homebrew/phbStyle/border.png') 10;
 }
 .phb hr + blockquote h2 {
   margin-top: -8px;
@@ -398,6 +383,7 @@ table {
   column-span: 1;
   background-color: transparent;
   border-image: none;
+  border-style: none;
   -webkit-column-span: 1;
 }
 .phb hr + blockquote hr + table tbody tr:nth-child(odd),
@@ -414,11 +400,11 @@ table {
 }
 .phb hr + blockquote hr {
   visibility: visible;
-  border: none;
   height: 6px;
   margin: 4px 0px;
   background-image: url('/assets/homebrew/phbStyle/red.png');
   background-size: 100% 100%;
+  border: none;
 }
 .phb hr + hr + blockquote {
   column-count: 2;
@@ -439,6 +425,7 @@ table {
   border-collapse: separate;
   background-color: white;
   border: initial;
+  border-style: solid;
   border-image-outset: 37px 17px;
   border-image-repeat: round;
   border-image-slice: 150 200 150 200;
@@ -529,8 +516,8 @@ table {
 .phb ol ol,
 .phb ul ol,
 .phb ol ul {
-  margin-left: 1.5em;
   margin-bottom: 0px;
+  margin-left: 1.5em;
 }
 .phb.print blockquote {
   box-shadow: none;

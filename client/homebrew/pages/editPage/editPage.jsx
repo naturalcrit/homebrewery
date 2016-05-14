@@ -40,27 +40,20 @@ var EditPage = React.createClass({
 		return {
 			title : this.props.brew.title,
 			text: this.props.brew.text,
-
 			isSaving : false,
-
 			isPending : false,
-
 			errors : null,
-
 			lastUpdated : this.props.brew.updatedAt
 		};
 	},
-
 	savedBrew : null,
-
 
 	componentDidMount: function(){
 		this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
-
 		window.onbeforeunload = ()=>{
-			//do state checks
-
-			//return "You have unsaved changes!";
+			if(this.state.isSaving || this.state.isPending){
+				return 'You have unsaved changes!';
+			}
 		}
 	},
 	componentWillUnmount: function() {
@@ -112,7 +105,6 @@ var EditPage = React.createClass({
 	},
 
 	save : function(){
-		console.log('saving!');
 		this.debounceSave.cancel();
 		this.setState({
 			isSaving : true
@@ -125,7 +117,6 @@ var EditPage = React.createClass({
 				title : this.state.title
 			})
 			.end((err, res) => {
-				console.log('done', res.body);
 				this.savedBrew = res.body;
 				this.setState({
 					isPending : false,
@@ -136,34 +127,24 @@ var EditPage = React.createClass({
 	},
 
 	renderSaveButton : function(){
-
 		if(this.state.isSaving){
-			return <Nav.item icon="fa-spinner fa-spin">saving...</Nav.item>
+			return <Nav.item className='save' icon="fa-spinner fa-spin">saving...</Nav.item>
 		}
-
-
 		if(!this.state.isPending && !this.state.isSaving){
-			return <Nav.item>saved.</Nav.item>
+			return <Nav.item className='save saved'>saved.</Nav.item>
 		}
-
 		if(this.state.isPending && this.hasChanges()){
-			return <Nav.item onClick={this.save} color='blue'>Save Now</Nav.item>
+			return <Nav.item className='save' onClick={this.save} color='blue' icon='fa-save'>Save Now</Nav.item>
 		}
-
 	},
-
-
-
 	renderNavbar : function(){
 		return <Navbar>
 			<Nav.section>
 				<EditTitle title={this.state.title} onChange={this.handleTitleChange} />
 			</Nav.section>
-
 			<Nav.section>
 				{this.renderSaveButton()}
-
-				<Nav.item newTab={true} href={'/homebrew/share/' + this.props.brew.shareId} color='teal' icon='fa-share'>
+				<Nav.item newTab={true} href={'/homebrew/share/' + this.props.brew.shareId} color='teal' icon='fa-share-alt'>
 					Share
 				</Nav.item>
 				<PrintLink shareId={this.props.brew.shareId} />

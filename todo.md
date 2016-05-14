@@ -1,6 +1,9 @@
 # The Homebrewery
 
 ## v2.0.0 todo
+X make a sproper staging environment
+X make database backups
+X Cleanup master
 X Make statusbar un-fixed
 X Simplify the panel css to remove the current issues
 X Build new `BrewRenderer`, clean support for partial rendering
@@ -23,15 +26,15 @@ X Move snippets into their new groups
 X Border shadows on second column renders much better
 X Saving a pdf no uses the brew title
 X add /source/shareId route
-- Add stats nav item
 X make both ids unique indexes in mongoose
 X Fix main Page
 - Write new welcome message
-- Fix the edit page saving flow
-- Fix title saving
+X Fix the edit page saving flow
+X Fix title saving
 - Style the snippet groups
 
 ## v2.1.0
+- Add stats nav item
 - Adda better error page
 - IMproved firefox support
 - Add in window.resize handlers for the elements that need it
