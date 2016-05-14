@@ -3,8 +3,8 @@ var shortid = require('shortid');
 var _ = require('lodash');
 
 var HomebrewSchema = mongoose.Schema({
-	shareId : {type : String, default: shortid.generate},
-	editId : {type : String, default: shortid.generate},
+	shareId : {type : String, default: shortid.generate, index: { unique: true }},
+	editId : {type : String, default: shortid.generate, index: { unique: true }},
 	title : {type : String, default : ""},
 	text : {type : String, default : ""},
 

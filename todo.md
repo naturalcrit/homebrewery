@@ -20,7 +20,7 @@ X Rename `/client/naturalCrit` -> `/client/main`
 X Move snippets into their new groups
 - Replace pseudo-elements with encoded images
 - Make hybrid editor and brewRenderer (with resize listeners)
-- add /source/shareId route
+X add /source/shareId route
 - Add stats nav item
 - make both ids indexes in mongoose
 X Fix main Page
