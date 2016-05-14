@@ -1,15 +1,28 @@
+/*
 @import 'naturalcrit/styles/reset.less';
 //@import 'naturalcrit/styles/elements.less';
 @import 'naturalcrit/styles/animations.less';
 @import 'naturalcrit/styles/colors.less';
 @import 'naturalcrit/styles/tooltip.less';
 
+@font-face {
+	font-family : CodeLight;
+	src         : url('/assets/naturalcrit/logo/CODE Light.otf');
+}
+@font-face {
+	font-family : CodeBold;
+	src         : url('/assets/naturalcrit/logo/CODE Bold.otf');
+}
 html,body, #reactContainer{
 	min-height: 100vh;
 	height: 100vh;
 	margin: 0;
 	font-family      : 'Open Sans', sans-serif;
 }
+
+*/
+
+@import 'naturalcrit/styles/core.less';
 
 
 .main{
@@ -26,6 +39,15 @@ html,body, #reactContainer{
 			color     : black;
 			svg{
 				fill : black;
+				height: .9em;
+				margin-right: .2em;
+				cursor: pointer;
+			}
+			.name{
+				font-family: 'CodeLight';
+				.crit{
+					font-family: 'CodeBold';
+				}
 			}
 		}
 		p{
@@ -38,7 +60,7 @@ html,body, #reactContainer{
 	.tools{
 		width      : 100%;
 		text-align : center;
-		.toolContainer{
+		.tool{
 			.sequentialDelay(0.5s, 1s);
 			.fadeInDown(1s);
 			.keep();
@@ -46,10 +68,13 @@ html,body, #reactContainer{
 			cursor       : pointer;
 			opacity      : 0;
 			text-align   : center;
-			border-right : 1px solid #333;
-			&:last-child{
-				border : none;
+			text-decoration: none;
+			color : black;
+
+			&+.tool{
+				border-left : 1px solid #333;
 			}
+
 			.content{
 				.addSketch(360px);
 				.animateAll(0.5s);

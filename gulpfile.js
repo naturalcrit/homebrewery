@@ -8,21 +8,15 @@ var gulp = vitreumTasks(gulp, {
 	entryPoints: [
 		'./client/main',
 		'./client/homebrew',
-
 		'./client/admin'
 	],
 
 	DEV: true,
-
 	buildPath: "./build/",
 	pageTemplate: "./client/template.dot",
-
 	projectModules: ["./shared/naturalcrit","./shared/codemirror"],
-
 	additionalRequirePaths : ['./shared', './node_modules'],
-
 	assetExts: ["*.svg", "*.png", "*.jpg", "*.pdf", "*.eot", "*.otf", "*.woff", "*.woff2", "*.ico", "*.ttf"],
-
 	serverWatchPaths: ["server"],
 	serverScript: "server.js",
 	libs: [
@@ -36,13 +30,8 @@ var gulp = vitreumTasks(gulp, {
 		"codemirror/mode/gfm/gfm.js",
 		'codemirror/mode/javascript/javascript.js',
 
-
-		//"jsoneditor",
-
 		"moment",
-
 		"superagent",
-
 		"marked",
 		"pico-router",
 		"pico-flux"
