@@ -1,30 +1,4 @@
-/*
-@import 'naturalcrit/styles/reset.less';
-//@import 'naturalcrit/styles/elements.less';
-@import 'naturalcrit/styles/animations.less';
-@import 'naturalcrit/styles/colors.less';
-@import 'naturalcrit/styles/tooltip.less';
-
-@font-face {
-	font-family : CodeLight;
-	src         : url('/assets/naturalcrit/logo/CODE Light.otf');
-}
-@font-face {
-	font-family : CodeBold;
-	src         : url('/assets/naturalcrit/logo/CODE Bold.otf');
-}
-html,body, #reactContainer{
-	min-height: 100vh;
-	height: 100vh;
-	margin: 0;
-	font-family      : 'Open Sans', sans-serif;
-}
-
-*/
-
 @import 'naturalcrit/styles/core.less';
-
-
 .main{
 	height           : 100vh;
 	background-color : white;
@@ -38,15 +12,15 @@ html,body, #reactContainer{
 			font-size : 4em;
 			color     : black;
 			svg{
-				fill : black;
-				height: .9em;
-				margin-right: .2em;
-				cursor: pointer;
+				height       : .9em;
+				margin-right : .2em;
+				cursor       : pointer;
+				fill         : black;
 			}
 			.name{
-				font-family: 'CodeLight';
+				font-family : 'CodeLight';
 				.crit{
-					font-family: 'CodeBold';
+					font-family : 'CodeBold';
 				}
 			}
 		}
@@ -64,23 +38,21 @@ html,body, #reactContainer{
 			.sequentialDelay(0.5s, 1s);
 			.fadeInDown(1s);
 			.keep();
-			display      : inline-block;
-			cursor       : pointer;
-			opacity      : 0;
-			text-align   : center;
-			text-decoration: none;
-			color : black;
-
+			display         : inline-block;
+			cursor          : pointer;
+			opacity         : 0;
+			color           : black;
+			text-align      : center;
+			text-decoration : none;
 			&+.tool{
-				border-left : 1px solid #333;
+				border-left : 1px solid #666;
 			}
-
 			.content{
 				.addSketch(360px);
 				.animateAll(0.5s);
 				position : relative;
-				width    : 500px;
-				padding  : 40px;
+				width    : 320px;
+				padding  : 35px;
 				&:hover{
 					svg, h2{
 						.transform(scale(1.3));
@@ -101,19 +73,11 @@ html,body, #reactContainer{
 					height : 10em;
 				}
 			}
-			//Proejct specific styles
-			&.homebrew{
-				.content:hover{
-					background-color : fade(@teal, 20%);
-				}
+			.content:hover{
+				background-color : fade(@teal, 20%);
 			}
-			&.combat{
-				.content:hover{
-					background-color : fade(@red, 20%);
-				}
-			}
-			//Under Construction styles
-			&.underConstruction{
+			//Beta styles
+			&.beta{
 				cursor : initial;
 				.content{
 					&:hover{
@@ -126,7 +90,7 @@ html,body, #reactContainer{
 					}
 					&:after{
 						.animateAll();
-						content          : "Under Construction";
+						content          : "beta!";
 						position         : absolute;
 						display          : block;
 						top              : 120px;
@@ -139,20 +103,6 @@ html,body, #reactContainer{
 						font-weight      : 800;
 						text-align       : center;
 						text-transform   : uppercase;
-					}
-					&:before{
-						content                   : "";
-						position                  : absolute;
-						display                   : block;
-						top                       : 130px;
-						right                     : 30px;
-						height                    : 50px;
-						width                     : 40px;
-						//opacity                   : 0;
-						background-image          : url('/assets/naturalCrit/home/bulldozer.png');
-						background-repeat         : no-repeat;
-						background-size           : contain;
-						animation-iteration-count : infinite;
 					}
 				}
 			}
@@ -184,20 +134,3 @@ html,body, #reactContainer{
 	@-o-keyframes sketch {.sketchKeyFrames();}
 	@keyframes sketch {.sketchKeyFrames();}
 }
-/*
-.sketch(@length, @color : black, @duration : 3s, @easing : @defaultEasing){
-	.createAnimation(bounce, @duration, @easing);
-	.sketchKeyFrames(){
-		0% { stroke-dashoffset : 0px; fill:@color;}
-		15% { stroke-dashoffset : 0px; fill : transparent}
-		50% { stroke-dashoffset : @length; fill: transparent}
-		85% { stroke-dashoffset : 0px; fill:transparent;}
-		100% { stroke-dashoffset : 0px; fill:@color;}
-	}
-	@-webkit-keyframes bounce {.sketchKeyFrames();}
-	@-moz-keyframes bounce {.sketchKeyFrames();}
-	@-ms-keyframes bounce {.sketchKeyFrames();}
-	@-o-keyframes bounce {.sketchKeyFrames();}
-	@keyframes bounce {.sketchKeyFrames();}
-}
-*/
