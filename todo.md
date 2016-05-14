@@ -16,7 +16,7 @@ X Add pagniation and query to the homebrew api
 X Update the admin page with pagnition and a query box
 X Test the old/small brew filtering for deleteion
 X Partial rendering kills style tags on unrendered pages. Detect if pages have style tags and render them.
-- Add in the link of Pateron
+X Add in the link of Pateron
 X Add in a localstorage fallback on the `/new` page, clear it when they save
 X Rename `/client/naturalCrit` -> `/client/main`
 X Move snippets into their new groups
@@ -28,11 +28,11 @@ X Saving a pdf no uses the brew title
 X add /source/shareId route
 X make both ids unique indexes in mongoose
 X Fix main Page
-- Write new welcome message
+X Write new welcome message
 X Fix the edit page saving flow
 X Fix title saving
 X Style the snippet groups
-- Update changelog
+X Update changelog
 X Print Dialog now auto-opens on print page
 
 - fixed multiline lists (u/Zagorath)

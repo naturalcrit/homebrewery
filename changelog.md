@@ -17,6 +17,7 @@ Massive changelog incoming:
 - Added in a new editable Brew Title. This will be shown in the navbar on share pages, and will default to the file name when you save as PDF. All exsisting brews will be defaulted with an empty title.
 - Mutliline lists render better now
 - Firefox rendering has been slithgly improved. Firefox and Chrome render things **slightly** differently, over the course of a brew, these little changes add up and lead to very noticable rendering differences between the browsers. I'm trying my best to get Firefox rendering better, but it's a difficult problem.
+- A bunch of you have wanted to donate to me. I am super flattered by that. I created a [patreon page](https://www.patreon.com/stolksdorf). If you feel like helping out, head here :)
 
 #### Under the Hood Stuff
 - Setup a proper staging environment. Will be using this for tests, and hopefully getting the community to help me test future versions

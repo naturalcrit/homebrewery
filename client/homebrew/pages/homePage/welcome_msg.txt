@@ -44,6 +44,7 @@ What's new in the latest update? Check out the full changelog [here](/homebrew/c
 * **More reliable rendering** Lots of work has been put into making the rendering more reliable, not just for web, but also for PDFs
 * **PDF Printing on Chrome** You don't need to use Chrome Canary anymore!
 * ** Performance Improvements** The site should load faster, save faster, and render large brews *much* faster.
+* **Patreon page** If you like this tool and want to show some thanks you can [head here](https://www.patreon.com/stolksdorf).
 
 >##### PDF Exporting
 > After clicking the "Print" item in the navbar a new page will open and a print dialog will pop-up
