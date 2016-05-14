@@ -25,7 +25,7 @@ When you create your own homebrew you will be given a *edit url* and a *share ur
 Anyone with the *share url* will be able to access a read-only version of your homebrew.
 
 ## Helping out
-Like this tool? Want to buy me a beer? [Head here]() to help me keep the servers running.
+Like this tool? Want to buy me a beer? [Head here](https://www.patreon.com/stolksdorf) to help me keep the servers running.
 
 This tool will **always** be free, never have ads, and I will never offer any "premium" features or whatever.
 
@@ -44,9 +44,6 @@ What's new in the latest update? Check out the full changelog [here](/homebrew/c
 * **More reliable rendering** Lots of work has been put into making the rendering more reliable, not just for web, but also for PDFs
 * **PDF Printing on Chrome** You don't need to use Chrome Canary anymore!
 * ** Performance Improvements** The site should load faster, save faster, and render large brews *much* faster.
-* **Partial Page Rendering** Only renders the page you're looking at. If you have a very large brew, you'll love this.
-* **Improved Zoom** Zooming in and out on the browser is now way nicer looking. Go get the bird's eye view!
-
 
 >##### PDF Exporting
 > After clicking the "Print" item in the navbar a new page will open and a print dialog will pop-up

@@ -4,7 +4,7 @@ var cx = require('classnames');
 
 var Nav = require('naturalcrit/nav/nav.jsx');
 var Navbar = require('../../navbar/navbar.jsx');
-
+var PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
 
 
 var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
@@ -35,6 +35,7 @@ var HomePage = React.createClass({
 	renderNavbar : function(){
 		return <Navbar>
 			<Nav.section>
+				<PatreonNavItem />
 				<Nav.item newTab={true} href='https://github.com/stolksdorf/naturalcrit/issues' color='red' icon='fa-bug'>
 					report issue
 				</Nav.item>
