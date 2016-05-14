@@ -1,3 +1,40 @@
-.COM{
+@import (less) 'naturalcrit/phbStyle/phb.style.less';
+.pane{
+	position : relative;
+}
+.spellRenderer{
+	overflow-y : scroll;
+
+	&>.phb{
+		margin-right  : auto;
+		margin-bottom : 30px;
+		margin-left   : auto;
+		box-shadow    : 1px 4px 14px #000;
+
+		height : auto;
+		width : 100%;
+
+		display: flex;
+			flex-direction: column;
+			flex-wrap: wrap;
+
+		column-count         : initial;
+		column-fill          : initial;
+		column-gap           : initial;
+		column-width         : initial;
+		-webkit-column-count : initial;
+		-moz-column-count    : initial;
+		-webkit-column-width : initial;
+		-moz-column-width    : initial;
+		-webkit-column-gap   : initial;
+		-moz-column-gap      : initial;
+
+		.spell{
+			display: inline;
+			width : 8cm;
+
+		}
+
+	}
 
 }
