@@ -120,7 +120,10 @@ var EditPage = React.createClass({
 
 		request
 			.put('/homebrew/api/update/' + this.props.brew.editId)
-			.send({text : this.state.text})
+			.send({
+				text : this.state.text,
+				title : this.state.title
+			})
 			.end((err, res) => {
 				console.log('done', res.body);
 				this.savedBrew = res.body;

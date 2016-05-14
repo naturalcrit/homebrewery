@@ -1,6 +1,6 @@
 # The Homebrewery
 
-## v1.5 todo
+## v2.0.0 todo
 X Make statusbar un-fixed
 X Simplify the panel css to remove the current issues
 X Build new `BrewRenderer`, clean support for partial rendering
@@ -24,11 +24,16 @@ X Border shadows on second column renders much better
 X Saving a pdf no uses the brew title
 X add /source/shareId route
 - Add stats nav item
-X make both ids indexes in mongoose
+X make both ids unique indexes in mongoose
 X Fix main Page
 - Write new welcome message
+- Fix the edit page saving flow
+- Fix title saving
+- Style the snippet groups
 
-## v1.6
+## v2.1.0
+- Adda better error page
+- IMproved firefox support
 - Add in window.resize handlers for the elements that need it
 - Make hybrid editor and brewRenderer (with resize listeners)
 - Add in brew title, use for metadata?
@@ -38,7 +43,7 @@ X Fix main Page
 - Add in a tutorial page?
 - Increase post entity limit size, http://stackoverflow.com/questions/15627573/nodejs-express-request-entity-too-large-heroku
 
-## v1.7
+## v2.2
 - User accounts!
   - Add a new database model
   - Make sure you salt those passwords

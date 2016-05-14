@@ -1,14 +1,9 @@
 var React = require('react');
 var _ = require('lodash');
-var cx = require('classnames');
-
 
 var Nav = require('naturalcrit/nav/nav.jsx');
 
-
-
 var Navbar = React.createClass({
-
 	render : function(){
 		return <Nav.base>
 			<Nav.section>
@@ -16,9 +11,8 @@ var Navbar = React.createClass({
 				<Nav.item href='/homebrew' className='homebrewLogo'>
 					<div>The Homebrewery</div>
 				</Nav.item>
-				<Nav.item>v1.5.0</Nav.item>
+				<Nav.item>v2.0.0</Nav.item>
 			</Nav.section>
-
 			{this.props.children}
 		</Nav.base>
 	}

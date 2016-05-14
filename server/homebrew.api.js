@@ -49,6 +49,7 @@ module.exports = function(app){
 			if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
 			var resEntry = objs[0];
 			resEntry.text = req.body.text;
+			resEntry.title = req.body.title;
 			resEntry.updatedAt = new Date();
 			resEntry.save(function(err, obj){
 				if(err) return res.status(500).send("Error while saving");
