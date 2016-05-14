@@ -44,7 +44,7 @@ var gulp = vitreumTasks(gulp, {
 var rename = require('gulp-rename');
 var less = require('gulp-less');
 gulp.task('phb', function(){
-	gulp.src('./client/homebrew/phbStyle/phb.style.less')
+	gulp.src('./shared/naturalcrit/phbStyle/phb.style.less')
 		.pipe(less())
 		.pipe(rename('phb.standalone.css'))
 		.pipe(gulp.dest('./'));
