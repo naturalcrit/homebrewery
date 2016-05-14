@@ -20,7 +20,7 @@ var EditTitle = React.createClass({
 	},
 	render : function(){
 		return <Nav.item className='editTitle'>
-			<input type='text' value={this.props.title} onChange={this.handleChange} />
+			<input placeholder='Brew Title' type='text' value={this.props.title} onChange={this.handleChange} />
 
 			<div className={cx('charCount', {'max' : this.props.title.length >= MAX_TITLE_LENGTH})}>
 				{this.props.title.length}/{MAX_TITLE_LENGTH}
