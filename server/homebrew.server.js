@@ -91,7 +91,7 @@ module.exports = function(app){
 			}).join('\n');
 
 			var title = '<title>' + brew.title + '</title>';
-			var page = '<html><head>' + title + PHBStyle + '</head><body>' +  content +'</body></html>'
+			var page = '<html><head>' + title + PHBStyle + '</head><body onload="window.print()">' +  content +'</body></html>'
 
 			return res.send(page)
 		});

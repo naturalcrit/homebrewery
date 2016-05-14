@@ -1,5 +1,10 @@
 # changelog
 
+### Saturday, 14/05/2016 - v2.0.0 (finally!)
+
+I've been working on v2 for a *very* long time. I want to thank you guys for being paitent.
+It started rather small, but as more and more features were added, I decided to just wait until everything was polished.
+
 
 ### Wednesday, 20/04/2016
 - A lot of admin improvements. Pagninated brew table
