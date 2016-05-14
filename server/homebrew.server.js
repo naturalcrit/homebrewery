@@ -90,8 +90,11 @@ module.exports = function(app){
 				return '<div class="phb print">' + Markdown(pageText) + '</div>';
 			}).join('\n');
 
+			var dialog = '';
+			if(req.query && req.query.dialog) dialog = 'onload="window.print()"';
+
 			var title = '<title>' + brew.title + '</title>';
-			var page = '<html><head>' + title + PHBStyle + '</head><body onload="window.print()">' +  content +'</body></html>'
+			var page = `<html><head>${title} ${PHBStyle}</head><body ${dialog}>${content}</body></html>`
 
 			return res.send(page)
 		});

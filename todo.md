@@ -33,6 +33,7 @@ X Fix the edit page saving flow
 X Fix title saving
 X Style the snippet groups
 - Update changelog
+X Print Dialog now auto-opens on print page
 
 - fixed multiline lists (u/Zagorath)
 
