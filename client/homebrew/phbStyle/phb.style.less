@@ -85,16 +85,15 @@
 		font-style : italic;
 	}
 	sup{
-		vertical-align: super;
-		font-size: smaller;
-		line-height: 0;
+		vertical-align : super;
+		font-size      : smaller;
+		line-height    : 0;
 	}
 	sub{
-		vertical-align: sub;
-		font-size: smaller;
-		line-height: 0;
+		vertical-align : sub;
+		font-size      : smaller;
+		line-height    : 0;
 	}
-
 	//*****************************
 	// *           HEADERS
 	// *****************************/
@@ -176,7 +175,7 @@
 		border-bottom    : 2px black solid;
 		box-shadow       : 1px 4px 14px #888;
 		p, ul{
-			font-size         : 0.352cm;
+			font-size   : 0.352cm;
 			line-height : 1.1em;
 		}
 	}
@@ -185,14 +184,13 @@
 	// *****************************/
 	hr+blockquote{
 		position         : relative;
+		padding-top      : 15px;
 		background-color : @monsterStatBackground;
-		//border           : none;
-		padding-top: 15px;
-
-		border-image : @monsterBorderImage 10;
-		border-width : 10px;
+		border-style     : solid;
+		border-width     : 10px;
+		border-image     : @monsterBorderImage 10;
 		h2{
-			margin-top: -8px;
+			margin-top    : -8px;
 			margin-bottom : 0px;
 			&+p{
 				padding-bottom : 0px;
@@ -206,7 +204,7 @@
 		ul{
 			.useSansSerif();
 			padding-left    : 1em;
-			font-size         : 0.352cm;
+			font-size       : 0.352cm;
 			color           : @headerText;
 			text-indent     : -1em;
 			list-style-type : none;
@@ -217,6 +215,7 @@
 			column-span         : 1;
 			background-color    : transparent;
 			border-image        : none;
+			border-style : none;
 			-webkit-column-span : 1;
 			tbody{
 				tr:nth-child(odd), tr:nth-child(even){
@@ -234,34 +233,13 @@
 		}
 		//Triangle dividers
 		hr{
-			visibility: visible;
-			border: none;
-			height: 6px;
-			margin: 4px 0px;
-			background-image: @redTriangleImage;
-			background-size: 100% 100%;
+			visibility       : visible;
+			height           : 6px;
+			margin           : 4px 0px;
+			background-image : @redTriangleImage;
+			background-size  : 100% 100%;
+			border           : none;
 		}
-
-		/*
-		//Top and Bottom Borders
-		&:after, &:before{
-			content          : "";
-			position         : absolute;
-			height           : 4px;
-			width            : 100%;
-			padding          : 0px 3px;
-			background-color : #E69A28;
-			border           : 1px solid black;
-		}
-		&:before{
-			top  : 0px;
-			left : -3px;
-		}
-		&:after{
-			bottom : 0px;
-			left   : -3px;
-		}
-		*/
 	}
 	//Full Width
 	hr+hr+blockquote{
@@ -277,6 +255,7 @@
 		border-collapse     : separate;
 		background-color    : white;
 		border              : initial;
+		border-style        : solid;
 		border-image-outset : 37px 17px;
 		border-image-repeat : round;
 		border-image-slice  : 150 200 150 200;
@@ -288,8 +267,6 @@
 		-webkit-column-span : all;
 		-moz-column-span    : all;
 	}
-
-
 	//*****************************
 	// *           FOOTER
 	// *****************************/
@@ -377,7 +354,15 @@
 	}
 	// Nested lists
 	ul ul,ol ol,ul ol,ol ul{
-		margin-left: 1.5em;
 		margin-bottom : 0px;
+		margin-left   : 1.5em;
+	}
+}
+//*****************************
+// *         PRINT
+// *****************************/
+.phb.print{
+	blockquote{
+		box-shadow : none;
 	}
 }

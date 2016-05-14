@@ -87,10 +87,10 @@ module.exports = function(app){
 			}
 
 			var content = _.map(brew.text.split('\\page'), function(pageText){
-				return '<div class="phb">' + Markdown(pageText) + '</div>';
+				return '<div class="phb print">' + Markdown(pageText) + '</div>';
 			}).join('\n');
 
-			var title = '<title>' + brew.text.split('\n')[0] + '</title>';
+			var title = '<title>' + brew.title + '</title>';
 			var page = '<html><head>' + title + PHBStyle + '</head><body>' +  content +'</body></html>'
 
 			return res.send(page)
