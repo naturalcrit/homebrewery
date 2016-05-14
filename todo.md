@@ -1,7 +1,7 @@
 # The Homebrewery
 
 ## v2.0.0 todo
-X make a sproper staging environment
+X make a proper staging environment
 X make database backups
 X Cleanup master
 X Make statusbar un-fixed
@@ -16,13 +16,13 @@ X Add pagniation and query to the homebrew api
 X Update the admin page with pagnition and a query box
 X Test the old/small brew filtering for deleteion
 X Partial rendering kills style tags on unrendered pages. Detect if pages have style tags and render them.
-- Add in the link of Pateron?
+- Add in the link of Pateron
 X Add in a localstorage fallback on the `/new` page, clear it when they save
 X Rename `/client/naturalCrit` -> `/client/main`
 X Move snippets into their new groups
-- Replace pseudo-elements with encoded images
-  - Encode the images into base64 and embed
-  - Add in note wings
+X Replace pseudo-elements with encoded images
+  X Encode the images into base64 and embed
+  X Add in note wings
 X Border shadows on second column renders much better
 X Saving a pdf no uses the brew title
 X add /source/shareId route
@@ -31,7 +31,8 @@ X Fix main Page
 - Write new welcome message
 X Fix the edit page saving flow
 X Fix title saving
-- Style the snippet groups
+X Style the snippet groups
+- Update changelog
 
 ## v2.1.0
 - Add stats nav item

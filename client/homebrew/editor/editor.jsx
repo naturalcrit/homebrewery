@@ -3,7 +3,6 @@ var _ = require('lodash');
 var cx = require('classnames');
 
 var CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
-
 var Snippets = require('./snippets/snippets.js');
 
 
@@ -23,12 +22,10 @@ var Editor = React.createClass({
 			onChange : function(){}
 		};
 	},
-
 	cursorPosition : {
 		line : 0,
 		ch : 0
 	},
-
 
 	componentDidMount: function() {
 		var paneHeight = this.refs.main.parentNode.clientHeight;
