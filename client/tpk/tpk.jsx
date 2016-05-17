@@ -7,6 +7,12 @@ var Navbar = require('./navbar/navbar.jsx');
 
 var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 var SheetEditor = require('./sheetEditor/sheetEditor.jsx');
+var SheetRenderer = require('./sheetRenderer/sheetRenderer.jsx');
+
+
+const SPLATSHEET_TEMPLATE = 'splatsheet_template';
+const SPLATSHEET_DATA = 'splatsheet_data';
+
 
 
 var TPK = React.createClass({
@@ -14,14 +20,17 @@ var TPK = React.createClass({
 
 	getInitialState: function() {
 		return {
-			sheetCode: ''
+			sheetCode: "<Box>\n\t<TextInput label='test' />\n</Box>",
+
+			sheetData : {}
 		};
 	},
 
 	//remove later
 	componentDidMount: function() {
 		this.setState({
-			sheetCode : localStorage.getItem('temp')
+			sheetCode : localStorage.getItem(SPLATSHEET_TEMPLATE) || this.state.sheetCode,
+			sheetData : JSON.parse(localStorage.getItem(SPLATSHEET_DATA)) || this.state.sheetData
 		})
 	},
 
@@ -34,7 +43,14 @@ var TPK = React.createClass({
 			sheetCode : code
 		});
 
-		localStorage.setItem('temp', code);
+		localStorage.setItem(SPLATSHEET_TEMPLATE, code);
+	},
+
+	handleDataChange : function(data){
+		this.setState({
+			sheetData : JSON.parse(JSON.stringify(data)),
+		});
+		localStorage.setItem(SPLATSHEET_DATA, JSON.stringify(data));
 	},
 
 	render : function(){
@@ -49,9 +65,10 @@ var TPK = React.createClass({
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
 					<SheetEditor value={this.state.sheetCode} onChange={this.handleCodeChange} ref='editor' />
-					<div>
-						{this.state.sheetCode}
-					</div>
+					<SheetRenderer
+						code={this.state.sheetCode}
+						characterData={this.state.sheetData}
+						onChange={this.handleDataChange} />
 				</SplitPane>
 			</div>
 		</div>
