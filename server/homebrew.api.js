@@ -34,13 +34,22 @@ module.exports = function(app){
 		getTopBrews(function(topBrews){
 			return res.json(topBrews);
 		});
-	})
+	});
 
-	app.put('/homebrew/update/:id', function(req, res){
+	app.post('/homebrew/api', function(req, res){
+		var newHomebrew = new HomebrewModel(req.body);
+		newHomebrew.save(function(err, obj){
+			if(err) return;
+			return res.json(obj);
+		})
+	});
+
+	app.put('/homebrew/api/update/:id', function(req, res){
 		HomebrewModel.find({editId : req.params.id}, function(err, objs){
 			if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
 			var resEntry = objs[0];
 			resEntry.text = req.body.text;
+			resEntry.title = req.body.title;
 			resEntry.updatedAt = new Date();
 			resEntry.save(function(err, obj){
 				if(err) return res.status(500).send("Error while saving");

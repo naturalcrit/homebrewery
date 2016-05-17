@@ -1,0 +1,43 @@
+{
+  "dependencies": {},
+  "description": "Full-featured in-browser code editor",
+  "directories": {
+    "lib": "./lib"
+  },
+  "dist": {
+    "shasum": "5bd0aa57c2d1ee7cf3bef8b11bec100544b8b9ae",
+    "tarball": "https://registry.npmjs.org/codemirror/-/codemirror-5.14.2.tgz"
+  },
+  "gitHead": "a25a29159346102591733d2474d6015e170cea06",
+  "homepage": "http://codemirror.net",
+  "jspm": {
+    "dependencies": {},
+    "devDependencies": {},
+    "directories": {}
+  },
+  "keywords": [
+    "JavaScript",
+    "CodeMirror",
+    "Editor"
+  ],
+  "license": "MIT",
+  "main": "lib/codemirror.js",
+  "maintainers": [
+    {
+      "email": "marijnh@gmail.com",
+      "name": "marijn"
+    }
+  ],
+  "name": "codemirror",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codemirror/CodeMirror.git"
+  },
+  "scripts": {
+    "lint": "bin/lint",
+    "test": "node ./test/run.js"
+  },
+  "version": "5.14.2"
+}

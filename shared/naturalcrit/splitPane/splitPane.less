@@ -1,0 +1,31 @@
+
+.splitPane{
+	position       : relative;
+	display        : flex;
+	height         : 100%;
+	outline        : none;
+	flex-direction : row;
+	.pane{
+		overflow-x : hidden;
+		flex       : 1;
+	}
+	.divider{
+		display          : table;
+		height           : 100%;
+		width            : 12px;
+		cursor           : ew-resize;
+		background-color : #ddd;
+		text-align       : center;
+		.dots{
+			display        : table-cell;
+			vertical-align : middle;
+			text-align     : center;
+			i{
+				display   : block;
+				margin    : 10px 0px;
+				font-size : 6px;
+				color     : #666;
+			}
+		}
+	}
+}

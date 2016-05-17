@@ -3,8 +3,9 @@ var shortid = require('shortid');
 var _ = require('lodash');
 
 var HomebrewSchema = mongoose.Schema({
-	shareId : {type : String, default: shortid.generate},
-	editId : {type : String, default: shortid.generate},
+	shareId : {type : String, default: shortid.generate, index: { unique: true }},
+	editId : {type : String, default: shortid.generate, index: { unique: true }},
+	title : {type : String, default : ""},
 	text : {type : String, default : ""},
 
 	createdAt     : { type: Date, default: Date.now },
@@ -14,20 +15,6 @@ var HomebrewSchema = mongoose.Schema({
 });
 
 
-
-
-/*
-HomebrewSchema.options.toJSON.transform = function (doc, ret, options) {
-	delete ret._id;
-	delete ret.__t;
-	delete ret.__v;
-}
-HomebrewSchema.options.toObject.transform = function (doc, ret, options) {
-	delete ret._id;
-	delete ret.__t;
-	delete ret.__v;
-}
-*/
 
 var Homebrew = mongoose.model('Homebrew', HomebrewSchema);
 

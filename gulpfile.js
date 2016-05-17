@@ -5,19 +5,18 @@ var gulp = require("gulp");
 
 
 var gulp = vitreumTasks(gulp, {
-	entryPoints: ["./client/naturalCrit", "./client/homebrew", "./client/admin"],
+	entryPoints: [
+		'./client/main',
+		'./client/homebrew',
+		'./client/admin'
+	],
 
 	DEV: true,
-
 	buildPath: "./build/",
 	pageTemplate: "./client/template.dot",
-
-	projectModules: ["./shared/naturalCrit"],
-
-	additionalRequirePaths : ['./shared'],
-
+	projectModules: ["./shared/naturalcrit","./shared/codemirror"],
+	additionalRequirePaths : ['./shared', './node_modules'],
 	assetExts: ["*.svg", "*.png", "*.jpg", "*.pdf", "*.eot", "*.otf", "*.woff", "*.woff2", "*.ico", "*.ttf"],
-
 	serverWatchPaths: ["server"],
 	serverScript: "server.js",
 	libs: [
@@ -25,12 +24,14 @@ var gulp = vitreumTasks(gulp, {
 		"react-dom",
 		"lodash",
 		"classnames",
-		"jsoneditor",
+
+		//From ./shared
+		"codemirror",
+		"codemirror/mode/gfm/gfm.js",
+		'codemirror/mode/javascript/javascript.js',
 
 		"moment",
-
 		"superagent",
-
 		"marked",
 		"pico-router",
 		"pico-flux"

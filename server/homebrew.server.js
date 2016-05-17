@@ -2,16 +2,19 @@ var _ = require('lodash');
 var vitreumRender = require('vitreum/render');
 var HomebrewModel = require('./homebrew.model.js').model;
 
-var changelogText = require('fs').readFileSync('./changelog.md', 'utf8');
+
 
 
 module.exports = function(app){
+
+	/*
 	app.get('/homebrew/new', function(req, res){
 		var newHomebrew = new HomebrewModel();
 		newHomebrew.save(function(err, obj){
 			return res.redirect('/homebrew/edit/' + obj.editId);
 		})
 	})
+	*/
 
 
 	//Edit Page
@@ -78,24 +81,40 @@ module.exports = function(app){
 		HomebrewModel.find({shareId : req.params.id}, function(err, objs){
 			if(err || !objs.length) return res.status(404).send('Could not find Homebrew with that id');
 
-			var resObj = null;
+			var brew = null;
 			if(objs.length){
-				resObj = objs[0];
+				brew = objs[0];
 			}
 
-			var content = _.map(resObj.text.split('\\page'), function(pageText){
-				return '<div class="phb">' + Markdown(pageText) + '</div>';
+			var content = _.map(brew.text.split('\\page'), function(pageText){
+				return '<div class="phb print">' + Markdown(pageText) + '</div>';
 			}).join('\n');
 
-			var title = '<title>' + resObj.text.split('\n')[0] + '</title>';
-			var page = '<html><head>' + title + PHBStyle + '</head><body>' +  content +'</body></html>'
+			var dialog = '';
+			if(req.query && req.query.dialog) dialog = 'onload="window.print()"';
+
+			var title = '<title>' + brew.title + '</title>';
+			var page = `<html><head>${title} ${PHBStyle}</head><body ${dialog}>${content}</body></html>`
 
 			return res.send(page)
 		});
 	});
 
+	//Source page
+	String.prototype.replaceAll = function(s,r){return this.split(s).join(r)}
+	app.get('/homebrew/source/:id', function(req, res){
+		HomebrewModel.find({shareId : req.params.id}, function(err, objs){
+			if(err || !objs.length) return res.status(404).send('Could not find Homebrew with that id');
+			var brew = null;
+			if(objs.length) brew = objs[0];
+			var text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+			return res.send(`<code><pre>${text}</pre></code>`);
+		});
+	});
+
 	//Home and 404, etc.
-	var welcomeText = require('fs').readFileSync('./client/homebrew/homePage/welcome_msg.txt', 'utf8');
+	var welcomeText = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg.txt', 'utf8');
+	var changelogText = require('fs').readFileSync('./changelog.md', 'utf8');
 	app.get('/homebrew*', function (req, res) {
 		vitreumRender({
 			page: './build/homebrew/bundle.dot',

@@ -1,0 +1,80 @@
+nav{
+	background-color : #333;
+	.navContent{
+		display         : flex;
+		justify-content : space-between;
+	}
+	.navSection{
+		display     : flex;
+		align-items : center;
+	}
+	.navLogo{
+		display         : block;
+		margin-top      : 0px;
+		margin-right    : 8px;
+		margin-left     : 8px;
+		color           : white;
+		text-decoration : none;
+		&:hover{
+			.name{ color : @orange; }
+			svg{ fill : @orange }
+		}
+		svg{
+			height       : 13px;
+			margin-right : 0.2em;
+			cursor       : pointer;
+			fill         : white;
+		}
+		span.name{
+			font-family : 'CodeLight';
+			font-size   : 15px;
+			span.crit{
+				font-family : 'CodeBold';
+			}
+			small{
+				font-family    : 'Open Sans';
+				font-size      : 0.3em;
+				font-weight    : 800;
+				text-transform : uppercase;
+			}
+		}
+	}
+	.navItem{
+		.animate(background-color);
+		padding          : 8px 12px;
+		cursor           : pointer;
+		background-color : #333;
+		font-size        : 10px;
+		font-weight      : 800;
+		color            : white;
+		text-decoration  : none;
+		text-transform   : uppercase;
+		i{
+			margin-left : 5px;
+			font-size   : 13px;
+		}
+		&.tealLight:hover{ background-color : @tealLight };
+		&.teal:hover{ background-color : @teal };
+		&.greenLight:hover{ background-color : @greenLight };
+		&.green:hover{ background-color : @green };
+		&.blueLight:hover{ background-color : @blueLight };
+		&.blue:hover{ background-color : @blue };
+		&.purpleLight:hover{ background-color : @purpleLight };
+		&.purple:hover{ background-color : @purple };
+		&.steelLight:hover{ background-color : @steelLight };
+		&.steel:hover{ background-color : @steel };
+		&.yellowLight:hover{ background-color : @yellowLight };
+		&.yellow:hover{ background-color : @yellow };
+		&.orangeLight:hover{ background-color : @orangeLight };
+		&.orange:hover{ background-color : @orange };
+		&.redLight:hover{ background-color : @redLight };
+		&.red:hover{ background-color : @red };
+		&.silverLight:hover{ background-color : @silverLight };
+		&.silver:hover{ background-color : @silver };
+		&.greyLight:hover{ background-color : @greyLight };
+		&.grey:hover{ background-color : @grey };
+	}
+	.navSection:last-child .navItem{
+		border-left : 1px solid #666;
+	}
+}

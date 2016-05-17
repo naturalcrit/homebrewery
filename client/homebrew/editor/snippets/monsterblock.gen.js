@@ -1,7 +1,7 @@
 var _ = require('lodash');
 
 var genList = function(list, max){
-	return _.sample(list, _.random(0,max)).join(', ') || "None";
+	return _.sampleSize(list, _.random(0,max)).join(', ') || "None";
 }
 
 var getMonsterName = function(){

@@ -67,7 +67,7 @@ module.exports = {
 			var res = [
 				levelName,
 				"+" + Math.ceil(level/5 + 1),
-				_.sample(features, _.sample([0,1,1])).join(', ') || "Ability Score Improvement",
+				_.sampleSize(features, _.sample([0,1,1])).join(', ') || "Ability Score Improvement",
 				cantrips,
 				spells,
 				drawSlots(slots)
@@ -93,7 +93,7 @@ module.exports = {
 			var res = [
 				levelName,
 				"+" + Math.ceil(level/5 + 1),
-				_.sample(features, _.sample([0,1,1])).join(', ') || "Ability Score Improvement",
+				_.sampleSize(features, _.sample([0,1,1])).join(', ') || "Ability Score Improvement",
 				"+" + featureScore
 			].join(' | ');
 

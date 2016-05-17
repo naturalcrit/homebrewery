@@ -1,53 +1,83 @@
 var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
-var SnippetIcons = require('./snippets/snippets.js');
+
+var CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
+var Snippets = require('./snippets/snippets.js');
+
+
+var splice = function(str, index, inject){
+	return str.slice(0, index) + inject + str.slice(index);
+};
+var execute = function(val){
+	if(_.isFunction(val)) return val();
+	return val;
+}
 
 
 var Editor = React.createClass({
 	getDefaultProps: function() {
 		return {
-			text : "",
+			value : "",
 			onChange : function(){}
 		};
 	},
+	cursorPosition : {
+		line : 0,
+		ch : 0
+	},
 
 	componentDidMount: function() {
-		this.refs.textarea.focus();
+		var paneHeight = this.refs.main.parentNode.clientHeight;
+		paneHeight -= this.refs.snippetBar.clientHeight + 1;
+		this.refs.codeEditor.codeMirror.setSize(null, paneHeight);
 	},
 
-	handleTextChange : function(e){
-		this.props.onChange(e.target.value);
+	handleTextChange : function(text){
+		this.props.onChange(text);
+	},
+	handleCursorActivty : function(curpos){
+		this.cursorPosition = curpos;
 	},
 
-	iconClick : function(snippetFn){
-		var curPos = this.refs.textarea.selectionStart;
-		this.props.onChange(this.props.text.slice(0, curPos) +
-			snippetFn() +
-			this.props.text.slice(curPos + 1));
+	handleSnippetClick : function(injectText){
+		var lines = this.props.value.split('\n');
+		lines[this.cursorPosition.line] = splice(lines[this.cursorPosition.line], this.cursorPosition.ch, injectText);
+
+		this.handleTextChange(lines.join('\n'));
+		this.refs.codeEditor.setCursorPosition(this.cursorPosition.line, this.cursorPosition.ch  + injectText.length);
 	},
 
-	renderTemplateIcons : function(){
-		return _.map(SnippetIcons, (t) => {
-			return <div className='icon' key={t.icon}
-				onClick={this.iconClick.bind(this, t.snippet)}
-				data-tooltip={t.tooltip}>
-				<i className={'fa ' + t.icon} />
-			</div>;
+	//Called when there are changes to the editor's dimensions
+	update : function(){
+		this.refs.codeEditor.updateSize();
+	},
+
+	renderSnippetGroups : function(){
+		return _.map(Snippets, (snippetGroup)=>{
+			return <SnippetGroup
+				groupName={snippetGroup.groupName}
+				icon={snippetGroup.icon}
+				snippets={snippetGroup.snippets}
+				key={snippetGroup.groupName}
+				onSnippetClick={this.handleSnippetClick}
+			/>
 		})
 	},
 
 	render : function(){
-		var self = this;
 		return(
-			<div className='editor'>
-				<div className='textIcons'>
-					{this.renderTemplateIcons()}
+			<div className='editor' ref='main'>
+				<div className='snippetBar' ref='snippetBar'>
+					{this.renderSnippetGroups()}
 				</div>
-				<textarea
-					ref='textarea'
-					value={this.props.text}
-					onChange={this.handleTextChange} />
+				<CodeEditor
+					ref='codeEditor'
+					wrap={true}
+					language='gfm'
+					value={this.props.value}
+					onChange={this.handleTextChange}
+					onCursorActivity={this.handleCursorActivty} />
 			</div>
 		);
 	}
@@ -55,3 +85,45 @@ var Editor = React.createClass({
 
 module.exports = Editor;
 
+
+
+
+
+
+
+
+
+var SnippetGroup = React.createClass({
+	getDefaultProps: function() {
+		return {
+			groupName : '',
+			icon : 'fa-rocket',
+			snippets : [],
+			onSnippetClick : function(){},
+		};
+	},
+	handleSnippetClick : function(snippet){
+		this.props.onSnippetClick(execute(snippet.gen));
+	},
+	renderSnippets : function(){
+		return _.map(this.props.snippets, (snippet)=>{
+			return <div className='snippet' key={snippet.name} onClick={this.handleSnippetClick.bind(this, snippet)}>
+				<i className={'fa fa-fw ' + snippet.icon} />
+				{snippet.name}
+			</div>
+		})
+	},
+
+	render : function(){
+		return <div className='snippetGroup'>
+			<div className='text'>
+				<i className={'fa fa-fw ' + this.props.icon} />
+				<span className='groupName'>{this.props.groupName}</span>
+			</div>
+			<div className='dropdown'>
+				{this.renderSnippets()}
+			</div>
+		</div>
+	},
+
+});

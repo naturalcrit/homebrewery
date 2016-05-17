@@ -318,8 +318,10 @@ table {
   margin-bottom: 1em;
   padding: 5px 10px;
   background-color: #e0e5c1;
-  border-top: 2px black solid;
-  border-bottom: 2px black solid;
+  border-style: solid;
+  border-width: 11px;
+  border-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAA8CAMAAADG+c2+AAAANlBMVEX///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABHL6OuAAAAEXRSTlMABAwYJDRIXHSLo7fL2+fz+6go4VUAAAB6SURBVHgB7dg5DsJQAANRZ9+Xuf9lQUKKEHT5LlL4HWB6W5d61m1zrT/dhm5j6/RjPCkJco761ixQFoSl0aXfKQ+y9/qoJnAEYar01q64gqytNBz4ghyDMPMHnyYiIiIiIgIzYeYfj/Z56x3g7ovAf2L4bxb/EWS/ql7LZCDx/Ry3RwAAAABJRU5ErkJggg==) 11;
+  border-image-outset: 9px 0px;
   box-shadow: 1px 4px 14px #888;
 }
 .phb blockquote em {
@@ -336,11 +338,16 @@ table {
   font-size: 0.352cm;
   line-height: 1.1em;
 }
+.phb pre + blockquote {
+  margin-top: 11px;
+}
 .phb hr + blockquote {
   position: relative;
-  background-color: #FDF1DC;
-  border: none;
   padding-top: 15px;
+  background-color: #FDF1DC;
+  border-style: solid;
+  border-width: 10px;
+  border-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAA8CAMAAADG+c2+AAAACVBMVEX///8AAADmmihtJc8lAAAAAXRSTlMAQObYZgAAACxJREFUeAHt2EEBACAAwkCwf2hL8NK7AAuwdCw9U5Og4FgeAAAAAK7IBxPjAl3qBs+hfAnLAAAAAElFTkSuQmCC) 10;
 }
 .phb hr + blockquote h2 {
   margin-top: -8px;
@@ -376,6 +383,7 @@ table {
   column-span: 1;
   background-color: transparent;
   border-image: none;
+  border-style: none;
   -webkit-column-span: 1;
 }
 .phb hr + blockquote hr + table tbody tr:nth-child(odd),
@@ -391,44 +399,12 @@ table {
   text-indent: 0em;
 }
 .phb hr + blockquote hr {
-  position: relative;
   visibility: visible;
-  margin: 8px 0px;
-  border-color: transparent;
-}
-.phb hr + blockquote hr:after,
-.phb hr + blockquote hr:before {
-  content: "";
-  position: absolute;
-  left: 0px;
-  height: 3px;
-  width: 100%;
-}
-.phb hr + blockquote hr:before {
-  top: -3px;
-  background: linear-gradient(to right top, #9c2b1b 40%, transparent 50%);
-}
-.phb hr + blockquote hr:after {
-  top: 0px;
-  background: linear-gradient(to right bottom, #9c2b1b 40%, transparent 50%);
-}
-.phb hr + blockquote:after,
-.phb hr + blockquote:before {
-  content: "";
-  position: absolute;
-  height: 4px;
-  width: 100%;
-  padding: 0px 3px;
-  background-color: #E69A28;
-  border: 1px solid black;
-}
-.phb hr + blockquote:before {
-  top: 0px;
-  left: -3px;
-}
-.phb hr + blockquote:after {
-  bottom: 0px;
-  left: -3px;
+  height: 6px;
+  margin: 4px 0px;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYAAAAeCAYAAACR82geAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwgAADsIBFShKgAAAABh0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4zjOaXUAAAAt5JREFUaEPtWTtoVEEUHf8iaEjMZt/ME6Jx3X1zlwgavyAICoL4aRWFIFYWAUURLZQo+GkUTGHc92Y2q2AKI0oKLbQIKRS0UPxCilgEFIKCTYIfyBrPi4NImGKJyWZ3Xw4cpth9b84c7ty59w3TaXdAS3FXEz8VkLtNp5YuZjNgoTGj/1KRGNEkXoEqkM4RmLamlbG55u/RwXhj7BRDMKw3kPyKkmKflk69ebxyYTeiAJL4CLO6AynOaI/v8Buqq8wrKwPWRU+Ef7bgOy3dm4p4i0456/wmNs9MU36wLnKySO4wzHqCyLoGsw4EyfiKUcZmmalLG9YFTSVJDMKkB0ryc1np7OxsrKo2UkoLVvHFJLl5GNWHpH5bS35UUXxDWyKxwMibPljFTjdJfMP2ewbDrgee06xWxhIoGWYbycWBVViJMQvCqM/go4D4Be25u/wkr4X8qctXNiFlwjwiqx9RdQfj8ZznbvI5X2SW9f+wTFi+JPEdfIHaysd4SKdEqnXrBKt26wQVQrMFv+IE7MlKcakjLfbkKOYUVDLYXljhzOMEHEBU3UMfeDJLfIu1cbY8GDmqtPiJyHoDaph1OJOqa5wxBgyNCUi8DY3pgDEqWbc6csaotPsLUTEAE+7rdES30t/kS7wHJlzGSbU349Xy6CVfEj9gwksk1yDKxzV6LPEBlXAXxhPaE5v9pogVeOGWQAR8AR/DhIuBJ3ZnE04M8iPWEqCJRIJ8jmhohynNimKJLsbmGMnFgVVYMTn22cHtgxGdgcePZWR8Y66+fqGRN32wip1KkhgEHwaSnw8/VClaVmOklBas4ieL5A7jlHiK4qlNEz/YvqquIXqfNkmMoIJ8j+R4C2a0+ElnfSux+Waa8oN1kQUwS+ITzOhWnjir05G9PhFDMKEX7ftV1Av7b6Tiy83jlYvxJmArhPdDrzHq8Io24/G1Ub2iHbvURzN1GuP2tkTNEvNThMHYbySiA8IawOrpAAAAAElFTkSuQmCC);
+  background-size: 100% 100%;
+  border: none;
 }
 .phb hr + hr + blockquote {
   column-count: 2;
@@ -449,6 +425,7 @@ table {
   border-collapse: separate;
   background-color: white;
   border: initial;
+  border-style: solid;
   border-image-outset: 37px 17px;
   border-image-repeat: round;
   border-image-slice: 150 200 150 200;
@@ -534,4 +511,14 @@ table {
 }
 .phb table + p {
   text-indent: 1em;
+}
+.phb ul ul,
+.phb ol ol,
+.phb ul ol,
+.phb ol ul {
+  margin-bottom: 0px;
+  margin-left: 1.5em;
+}
+.phb.print blockquote {
+  box-shadow: none;
 }
