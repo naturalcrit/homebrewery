@@ -8,6 +8,7 @@ var gulp = vitreumTasks(gulp, {
 	entryPoints: [
 		'./client/main',
 		'./client/homebrew',
+		'./client/tpk',
 		'./client/admin'
 	],
 

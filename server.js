@@ -45,6 +45,8 @@ app.get('/admin', function(req, res){
 app = require('./server/homebrew.api.js')(app);
 app = require('./server/homebrew.server.js')(app);
 
+//Populate TPK routes
+app = require('./server/tpk.server.js')(app);
 
 
 app.get('*', function (req, res) {
