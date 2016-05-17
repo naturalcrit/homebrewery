@@ -9,7 +9,7 @@ var Navbar = React.createClass({
 			<Nav.section>
 				<Nav.logo />
 				<Nav.item href='/tpk' className='tpkLogo'>
-					<div>Total.Party.Knolling</div>
+					<div>Total Party Knolling</div>
 				</Nav.item>
 				<Nav.item>v0.0.0</Nav.item>
 			</Nav.section>

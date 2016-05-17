@@ -10,6 +10,7 @@ if(typeof navigator !== 'undefined'){
 	//Language Modes
 	require('codemirror/mode/gfm/gfm.js'); //Github flavoured markdown
 	require('codemirror/mode/javascript/javascript.js');
+	require('codemirror/mode/jsx/jsx.js');
 }
 
 
