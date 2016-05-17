@@ -31,6 +31,7 @@ var gulp = vitreumTasks(gulp, {
 		"codemirror/mode/gfm/gfm.js",
 		'codemirror/mode/javascript/javascript.js',
 
+
 		"moment",
 		"superagent",
 		"marked",

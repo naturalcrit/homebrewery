@@ -18,7 +18,6 @@ var SheetEditor = React.createClass({
 
 	componentDidMount: function() {
 		var paneHeight = this.refs.main.parentNode.clientHeight;
-		paneHeight -= this.refs.snippetBar.clientHeight + 1;
 		this.refs.codeEditor.codeMirror.setSize(null, paneHeight);
 	},
 
@@ -35,7 +34,7 @@ var SheetEditor = React.createClass({
 	},
 
 	render : function(){
-		return <div className='sheetEditor'>
+		return <div className='sheetEditor' ref='main'>
 			<CodeEditor
 				ref='codeEditor'
 				wrap={true}

@@ -18,6 +18,13 @@ var TPK = React.createClass({
 		};
 	},
 
+	//remove later
+	componentDidMount: function() {
+		this.setState({
+			sheetCode : localStorage.getItem('temp')
+		})
+	},
+
 	handleSplitMove : function(){
 		this.refs.editor.update();
 	},
@@ -25,7 +32,9 @@ var TPK = React.createClass({
 	handleCodeChange : function(code){
 		this.setState({
 			sheetCode : code
-		})
+		});
+
+		localStorage.setItem('temp', code);
 	},
 
 	render : function(){
