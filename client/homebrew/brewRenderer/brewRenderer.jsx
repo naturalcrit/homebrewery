@@ -15,7 +15,8 @@ var BrewRenderer = React.createClass({
 	getInitialState: function() {
 		return {
 			viewablePageNumber: 0,
-			height : 0
+			height : 0,
+			isMounted : false
 		};
 	},
 	totalPages : 0,
@@ -23,7 +24,8 @@ var BrewRenderer = React.createClass({
 
 	componentDidMount: function() {
 		this.setState({
-			height : this.refs.main.parentNode.clientHeight
+			height : this.refs.main.parentNode.clientHeight,
+			isMounted : true
 		});
 	},
 	handleScroll : function(e){
@@ -36,6 +38,8 @@ var BrewRenderer = React.createClass({
 	},
 
 	shouldRender : function(pageText, index){
+		if(!this.state.isMounted) return false;
+
 		var viewIndex = this.state.viewablePageNumber;
 		if(index == viewIndex - 1) return true;
 		if(index == viewIndex)     return true;
