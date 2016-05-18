@@ -5,6 +5,9 @@ var request = require('superagent');
 
 var Moment = require('moment');
 
+var BrewSearch = require('./brewSearch.jsx');
+
+
 var HomebrewAdmin = React.createClass({
 	getDefaultProps: function() {
 		return {
@@ -82,6 +85,7 @@ var HomebrewAdmin = React.createClass({
 		this.changePageTo(this.state.page + dir);
 	},
 
+
 	renderPagnination : function(){
 		var outOf;
 		if(this.state.total){
@@ -98,7 +102,7 @@ var HomebrewAdmin = React.createClass({
 	renderBrews : function(){
 		var brews = this.state.brewCache[this.state.page] || _.times(this.state.count);
 		return _.map(brews, (brew)=>{
-			return <tr className={cx('brewRow', {'isEmpty' : brew.text == "false"})} key={brew.sharedId}>
+			return <tr className={cx('brewRow', {'isEmpty' : brew.text == "false"})} key={brew.shareId || brew}>
 				<td><a href={'/homebrew/edit/' + brew.editId} target='_blank'>{brew.editId}</a></td>
 				<td><a href={'/homebrew/share/' + brew.shareId} target='_blank'>{brew.shareId}</a></td>
 				<td>{Moment(brew.createdAt).fromNow()}</td>
@@ -146,6 +150,8 @@ var HomebrewAdmin = React.createClass({
 			<button className='clearOldButton' onClick={this.clearInvalidBrews}>
 				Clear Old
 			</button>
+
+			<BrewSearch admin_key={this.props.admin_key} />
 		</div>
 	}
 });

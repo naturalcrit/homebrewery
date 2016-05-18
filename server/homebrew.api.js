@@ -98,7 +98,18 @@ module.exports = function(app){
 		var page = req.query.page || 0;
 		var count = req.query.count || 20;
 
-		HomebrewModel.find({}, {
+		var query = {};
+		if(req.query && req.query.id){
+			query = {
+				"$or" : [{
+					editId : req.query.id
+				},{
+					shareId : req.query.id
+				}]
+			};
+		}
+
+		HomebrewModel.find(query, {
 			text : 0 //omit the text
 		}, {
 			skip: page*count,
