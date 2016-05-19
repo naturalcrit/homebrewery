@@ -1,30 +1,27 @@
+
 .editPage{
-
 	.navItem.save{
-		width : 75px;
-		text-align: center;
+		width      : 75px;
+		text-align : center;
 		&.saved{
-			color : #666;
 			cursor : initial;
+			color  : #666;
 		}
-
 		&.error{
-			position: relative;
-			background-color: @red;
-
+			position         : relative;
+			background-color : @red;
 			.errorContainer{
-				position: absolute;
-				top: 29px;
-				background-color: #333;
-				padding: 8px;
-				width: 120px;
-				left: -20px;
-				z-index: 1000;
+				position         : absolute;
+				top              : 29px;
+				left             : -20px;
+				z-index          : 1000;
+				width            : 120px;
+				padding          : 8px;
+				background-color : #333;
 				a{
 					color : @teal;
 				}
 			}
 		}
 	}
-
 }
