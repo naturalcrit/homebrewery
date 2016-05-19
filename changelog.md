@@ -1,5 +1,11 @@
 # changelog
 
+### Thursday, 19/05/2016 - v2.0.2
+
+- No longer server-side pre-render brews, just incase the user entered invalid HTML, it might crahsh the server
+- Bumped up the allowed entity size for extra-large brew (Thanks for reporting it dickboner93)
+- Added a little error box when a save fails with a custom link to reporting the issue on github.
+
 ### Saturday, 14/05/2016 - v2.0.0 (finally!)
 
 I've been working on v2 for a *very* long time. I want to thank you guys for being paitent.

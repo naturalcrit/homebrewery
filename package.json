@@ -1,7 +1,7 @@
 {
   "name": "naturalcrit",
   "description": "D&D Tools for the discerning DM",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "scripts": {
     "postinstall": "gulp prod",
     "start": "node server.js"
