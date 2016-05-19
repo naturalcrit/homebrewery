@@ -121,6 +121,7 @@ var EditPage = React.createClass({
 				this.setState({
 					isPending : false,
 					isSaving : false,
+					errors : err,
 					lastUpdated : res.body.updatedAt
 				})
 			})

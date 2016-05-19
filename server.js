@@ -6,7 +6,7 @@ var bodyParser = require('body-parser')
 var express = require("express");
 var app = express();
 app.use(express.static(__dirname + '/build'));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '25mb'}));
 
 //Mongoose
 var mongoose = require('mongoose');
