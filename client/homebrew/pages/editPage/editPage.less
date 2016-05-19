@@ -7,6 +7,24 @@
 			color : #666;
 			cursor : initial;
 		}
+
+		&.error{
+			position: relative;
+			background-color: @red;
+
+			.errorContainer{
+				position: absolute;
+				top: 29px;
+				background-color: #333;
+				padding: 8px;
+				width: 120px;
+				left: -20px;
+				z-index: 1000;
+				a{
+					color : @teal;
+				}
+			}
+		}
 	}
 
 }

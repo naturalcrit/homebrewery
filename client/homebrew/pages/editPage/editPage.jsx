@@ -107,7 +107,8 @@ var EditPage = React.createClass({
 	save : function(){
 		this.debounceSave.cancel();
 		this.setState({
-			isSaving : true
+			isSaving : true,
+			errors : null
 		});
 
 		request
@@ -117,17 +118,35 @@ var EditPage = React.createClass({
 				title : this.state.title
 			})
 			.end((err, res) => {
-				this.savedBrew = res.body;
-				this.setState({
-					isPending : false,
-					isSaving : false,
-					errors : err,
-					lastUpdated : res.body.updatedAt
-				})
+				if(err){
+					this.setState({
+						errors : err,
+					})
+				}else{
+					this.savedBrew = res.body;
+					this.setState({
+						isPending : false,
+						isSaving : false,
+						lastUpdated : res.body.updatedAt
+					})
+				}
 			})
 	},
 
 	renderSaveButton : function(){
+		//if(this.state.errors){
+			return <Nav.item className='save error' icon="fa-warning">
+				Oops!
+				<div className='errorContainer'>
+					Looks like there was a problem saving. <br />
+					Report the issue <a target='_blank' href={'https://github.com/stolksdorf/naturalcrit/issues/new?body='+
+						encodeURIComponent(JSON.stringify(this.state.errors, null, '  '))}>
+						here
+					</a>.
+				</div>
+			</Nav.item>
+		//}
+
 		if(this.state.isSaving){
 			return <Nav.item className='save' icon="fa-spinner fa-spin">saving...</Nav.item>
 		}
