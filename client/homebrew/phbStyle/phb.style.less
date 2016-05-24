@@ -22,15 +22,15 @@
 		letter-spacing : -0.02em;
 	}
 }
-.useColumns(){
+.useColumns(@multiplier : 1){
 	column-count         : 2;
 	column-fill          : auto;
 	column-gap           : 1cm;
-	column-width         : 8cm;
+	column-width         : 8cm * @multiplier;
 	-webkit-column-count : 2;
 	-moz-column-count    : 2;
-	-webkit-column-width : 8cm;
-	-moz-column-width    : 8cm;
+	-webkit-column-width : 8cm * @multiplier;
+	-moz-column-width    : 8cm * @multiplier;
 	-webkit-column-gap   : 1cm;
 	-moz-column-gap      : 1cm;
 }
@@ -251,7 +251,7 @@
 	}
 	//Full Width
 	hr+hr+blockquote{
-		.useColumns();
+		.useColumns(0.96);
 	}
 	//*****************************
 	// *      CLASS TABLE
