@@ -38,7 +38,17 @@ var classnames = ['Archivist', 'Fancyman', 'Linguist', 'Fletcher',
 
 var levels = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th", "19th", "20th"]
 
-var profBonus = [2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6]
+var profBonus = [2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6];
+
+var getFeature = (level)=>{
+	var res = []
+	if(_.includes([4,6,8,12,14,16,19], level+1)){
+		res = ["Ability Score Improvement"]
+	}
+	res = _.union(res, _.sampleSize(features, _.sample([0,1,1,1,1,1])));
+	if(!res.length) return "─";
+	return res.join(', ');
+}
 
 module.exports = {
 	full : function(classname){
@@ -68,7 +78,7 @@ module.exports = {
 			var res = [
 				levelName,
 				"+" + profBonus[level],
-				_.sampleSize(features, _.sample([0,1,1])).join(', ') || "Ability Score Improvement",
+				getFeature(level),
 				cantrips,
 				spells,
 				drawSlots(slots)
@@ -94,7 +104,7 @@ module.exports = {
 			var res = [
 				levelName,
 				"+" + profBonus[level],
-				_.sampleSize(features, _.sample([0,1,1])).join(', ') || "Ability Score Improvement",
+				getFeature(level),
 				"+" + featureScore
 			].join(' | ');
 
