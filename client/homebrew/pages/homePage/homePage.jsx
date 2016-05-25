@@ -60,6 +60,10 @@ var HomePage = React.createClass({
 				</SplitPane>
 			</div>
 
+			<div className={cx('floatingSaveButton', {show : this.props.welcomeText != this.state.text})}>
+				Save current <i className='fa fa-save' />
+			</div>
+
 			<a href='/homebrew/new' className='floatingNewButton'>
 				Create your own <i className='fa fa-magic' />
 			</a>

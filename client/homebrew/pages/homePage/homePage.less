@@ -1,4 +1,3 @@
-
 .homePage{
 	position : relative;
 	a.floatingNewButton{
@@ -8,6 +7,7 @@
 		right            : 70px;
 		bottom           : 70px;
 		z-index          : 100;
+		z-index          : 5001;
 		padding          : 1em;
 		background-color : @orange;
 		font-size        : 1.5em;
@@ -16,6 +16,28 @@
 		box-shadow       : 3px 3px 15px black;
 		&:hover{
 			background-color : darken(@orange, 20%);
+		}
+	}
+	.floatingSaveButton{
+		.animateAll();
+		position         : absolute;
+		display          : block;
+		right            : 200px;
+		bottom           : 90px;
+		z-index          : 100;
+		z-index          : 5000;
+		padding          : 0.8em;
+		cursor           : pointer;
+		background-color : @blue;
+		font-size        : 0.8em;
+		color            : white;
+		text-decoration  : none;
+		box-shadow       : 3px 3px 15px black;
+		&:hover{
+			background-color : darken(@blue, 20%);
+		}
+		&.show{
+			right : 350px;
 		}
 	}
 }
