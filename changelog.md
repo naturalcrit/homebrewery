@@ -1,5 +1,8 @@
 # changelog
 
+### Tuesday, 24/05/2016 - v2.0.3
+- Fixed extra wide monster stat blocks sometimes only being one column
+
 ### Thursday, 19/05/2016 - v2.0.2
 
 - No longer server-side pre-render brews, just incase the user entered invalid HTML, it might crahsh the server

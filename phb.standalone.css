@@ -412,11 +412,11 @@ table {
   column-count: 2;
   column-fill: auto;
   column-gap: 1cm;
-  column-width: 8cm;
+  column-width: 7.68cm;
   -webkit-column-count: 2;
   -moz-column-count: 2;
-  -webkit-column-width: 8cm;
-  -moz-column-width: 8cm;
+  -webkit-column-width: 7.68cm;
+  -moz-column-width: 7.68cm;
   -webkit-column-gap: 1cm;
   -moz-column-gap: 1cm;
 }
