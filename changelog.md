@@ -1,7 +1,8 @@
 # changelog
 
-### Tuesday, 24/05/2016 - v2.0.3
+### Tuesday, 24/05/2016 - v2.0.4
 - Fixed extra wide monster stat blocks sometimes only being one column
+- The class table generators now follow the proper progression from the PHB (thakns u/IrishBandit)
 
 ### Thursday, 19/05/2016 - v2.0.2
 

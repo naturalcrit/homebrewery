@@ -38,6 +38,7 @@ var classnames = ['Archivist', 'Fancyman', 'Linguist', 'Fletcher',
 
 var levels = ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th", "19th", "20th"]
 
+var profBonus = [2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6]
 
 module.exports = {
 	full : function(classname){
@@ -66,7 +67,7 @@ module.exports = {
 		_.map(levels, function(levelName, level){
 			var res = [
 				levelName,
-				"+" + Math.ceil(level/5 + 1),
+				"+" + profBonus[level],
 				_.sampleSize(features, _.sample([0,1,1])).join(', ') || "Ability Score Improvement",
 				cantrips,
 				spells,
@@ -92,7 +93,7 @@ module.exports = {
 		_.map(levels, function(levelName, level){
 			var res = [
 				levelName,
-				"+" + Math.ceil(level/5 + 1),
+				"+" + profBonus[level],
 				_.sampleSize(features, _.sample([0,1,1])).join(', ') || "Ability Score Improvement",
 				"+" + featureScore
 			].join(' | ');
