@@ -9,6 +9,8 @@ var PrintLink = require('../../navbar/print.navitem.jsx');
 
 var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
+var HijackPrint = require('../hijackPrint.js');
+
 var SharePage = React.createClass({
 	getDefaultProps: function() {
 		return {
@@ -21,6 +23,13 @@ var SharePage = React.createClass({
 				views : 0
 			}
 		};
+	},
+
+	componentDidMount: function() {
+		document.onkeydown = HijackPrint(this.props.brew.shareId);
+	},
+	componentWillUnmount: function() {
+		document.onkeydown = function(){};
 	},
 
 	render : function(){

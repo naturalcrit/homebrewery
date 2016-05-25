@@ -15,6 +15,8 @@ var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 var Editor = require('../../editor/editor.jsx');
 var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
+var HijackPrint = require('../hijackPrint.js');
+
 
 
 const SAVE_TIMEOUT = 3000;
@@ -54,10 +56,13 @@ var EditPage = React.createClass({
 			if(this.state.isSaving || this.state.isPending){
 				return 'You have unsaved changes!';
 			}
-		}
+		};
+
+		document.onkeydown = HijackPrint(this.props.brew.shareId);
 	},
 	componentWillUnmount: function() {
 		window.onbeforeunload = function(){};
+		document.onkeydown = function(){};
 	},
 
 	handleSplitMove : function(){
