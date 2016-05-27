@@ -47,12 +47,14 @@ What's new in the latest update? Check out the full changelog [here](/homebrew/c
 * **Patreon page** If you like this tool and want to show some thanks you can [head here](https://www.patreon.com/stolksdorf).
 
 >##### PDF Exporting
-> After clicking the "Print" item in the navbar a new page will open and a print dialog will pop-up
+> After clicking the "Print" item in the navbar a new page will open and a print dialog will pop-up.
 > * Set the **Destination** to "Save as PDF"
 > * Set **Paper Size** to "Letter"
 > * If you are printing on A4 paper, make sure to have the "A4 page size snippet" in your brew
 > * In **Options** make sure "Background Images" is selected.
 > * Hit print and enjoy! You're done!
+>
+> PDF Printing works best in Chrome. If you are having quality/consistency issues, try using Chrome to print instead.
 >
 > If you want to save ink or have a monochrome printer, add the **Ink Friendly** snippet to your brew before you print
 
