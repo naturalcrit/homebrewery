@@ -1,6 +1,10 @@
 # changelog
 
-### Wednesday, 25/05/2016
+### Friday, 27/05/2016 - v2.0.6
+- Updated the issue template for (hopefully) better reporting
+- Added suggestion to use chrome while PDF printing
+
+### Wednesday, 25/05/2016 -v2.0.5
 - The class table generators have the proper ability score improvement progression.
 
 ### Tuesday, 24/05/2016 - v2.0.4
@@ -12,6 +16,8 @@
 - No longer server-side pre-render brews, just incase the user entered invalid HTML, it might crahsh the server
 - Bumped up the allowed entity size for extra-large brew (Thanks for reporting it dickboner93)
 - Added a little error box when a save fails with a custom link to reporting the issue on github.
+
+/page
 
 ### Saturday, 14/05/2016 - v2.0.0 (finally!)
 

@@ -1,14 +1,19 @@
-**Browser Type/Version**: [Google Ultron v90.01]
+**If you are suggestting a feature or improvement**, delete everything here and just write your idea.
 
-**Operating System**: [GLaDOS v34.5.8]
+If you are reporting a bug, please fill out the details. If you don't I will most likely just close the issue asking for more detail.
 
-**Issue Description**: [The thing won't thing]
+---
 
-**Markdown code to reproduce**:
+**Browser Type/Version**: [FILL OUT]
+
+**Operating System**: [FILL OUT]
+
+**Issue Description**: [FILL OUT]
+
+**Brew code to reproduce**:
 
 ```
-# thing
-> thing 2
+PUT YOUR BREW CODE HERE
 ```
 
-**Related Images** :
+**Related Images** : [IF APPLICABLE]
