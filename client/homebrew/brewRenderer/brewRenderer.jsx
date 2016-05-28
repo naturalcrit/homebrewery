@@ -3,6 +3,19 @@ var _ = require('lodash');
 var cx = require('classnames');
 
 var Markdown = require('marked');
+var renderer = new Markdown.Renderer();
+
+//Processes the markdown within an HTML block if it's just a class-wrapper
+renderer.html = function (html) {
+	if(_.startsWith(html, '<div class=') && _.endsWith(_.trim(html), '</div>')){
+		var openTag = html.substring(0, html.indexOf('>'));
+		html = html.substring(html.indexOf('>')+1);
+		html = html.substring(0, html.lastIndexOf('</div>'));
+		return `${openTag} ${Markdown(html)} </div>`;
+	}
+	return html;
+}
+
 
 var PAGE_HEIGHT = 1056 + 30;
 
@@ -64,7 +77,7 @@ var BrewRenderer = React.createClass({
 	},
 
 	renderPage : function(pageText, index){
-		return <div className='phb' dangerouslySetInnerHTML={{__html:Markdown(pageText)}} key={index} />
+		return <div className='phb' dangerouslySetInnerHTML={{__html:Markdown(pageText, {renderer : renderer})}} key={index} />
 	},
 
 	renderPages : function(){
