@@ -5,6 +5,7 @@
 - Override Ctrl+P (and cmd+P) to launch to the print page. Many people try to just print either the editing or share page to get a PDF. While this dones;t make much sense, I do get a ton of issues about it. So now if you try to do this, it'll just bring you imediately to the print page. Everybody wins!
 - The onboarding flow has also been confusing a few users (Homepage -> new -> save -> edit page). If you edit the Homepage text now, a Call to Action to save your work will pop-up.
 - Added a 'Recently Edited' and 'Recently Viewed' nav item to the edit and share page respectively. Each will remember the last 8 items you edited or viewed and when you viewed it. Makes use of the new title attribute of brews to easy navigatation.
+- Paragraphs now indent properly after lists (thanks u/slitjen!)
 
 ### Friday, 27/05/2016 - v2.0.6
 - Updated the issue template for (hopefully) better reporting

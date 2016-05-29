@@ -59,7 +59,6 @@
 		line-height    : 1.3em;
 		&+p{
 			margin-top  : -0.8em;
-			text-indent : 1em;
 		}
 	}
 	ul{
@@ -75,6 +74,10 @@
 		line-height         : 1.3em;
 		list-style-position : outside;
 		list-style-type     : decimal;
+	}
+	//Indents after p or lists
+	p+p, ul+p, ol+p{
+		text-indent : 1em;
 	}
 	img{
 		z-index : -1;

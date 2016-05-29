@@ -208,7 +208,6 @@ table {
 }
 .phb p + p {
   margin-top: -0.8em;
-  text-indent: 1em;
 }
 .phb ul {
   margin-bottom: 0.8em;
@@ -223,6 +222,11 @@ table {
   line-height: 1.3em;
   list-style-position: outside;
   list-style-type: decimal;
+}
+.phb p + p,
+.phb ul + p,
+.phb ol + p {
+  text-indent: 1em;
 }
 .phb img {
   z-index: -1;
