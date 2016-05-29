@@ -1,6 +1,7 @@
 var React = require('react');
 var _ = require('lodash');
 var cx = require('classnames');
+var request = require("superagent");
 
 var Nav = require('naturalcrit/nav/nav.jsx');
 var Navbar = require('../../navbar/navbar.jsx');
@@ -23,6 +24,18 @@ var HomePage = React.createClass({
 		return {
 			text: this.props.welcomeText
 		};
+	},
+	handleSave : function(){
+		request.post('/homebrew/api')
+			.send({
+				title : 'Change This',
+				text : this.state.text
+			})
+			.end((err, res)=>{
+				if(err) return;
+				var brew = res.body;
+				window.location = '/homebrew/edit/' + brew.editId;
+			});
 	},
 	handleSplitMove : function(){
 		this.refs.editor.update();
@@ -60,7 +73,7 @@ var HomePage = React.createClass({
 				</SplitPane>
 			</div>
 
-			<div className={cx('floatingSaveButton', {show : this.props.welcomeText != this.state.text})}>
+			<div className={cx('floatingSaveButton', {show : this.props.welcomeText != this.state.text})} onClick={this.handleSave}>
 				Save current <i className='fa fa-save' />
 			</div>
 
