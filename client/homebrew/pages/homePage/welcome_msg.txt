@@ -36,8 +36,16 @@ Have an idea of how to make The Homebrewery better? Or did you find something th
 ```
 ```
 
-## New Things in v2.0.0!
+## New Things in v2.1.0!
 What's new in the latest update? Check out the full changelog [here](/homebrew/changelog)
+
+* **Spell Lists** Tweaking the Markdown lexer and parser, I can now do nested Markdown within HTML blocks. Which means the available syntax I can use has vastly increased. Spell Lists are just the first of many new elements.
+* **Recently Viewed/Edited** The Homebrewery now remembers which brews you've been editing and viewing. Check the navbar to quickly jump around to these.
+* **Print Capturing** Pressing ctrl+p/cmd+p on any edit or share page will now jump you straight to the print page. Much more intutive.
+
+
+## V2 Overhaul
+A lot of time has been put into the v2 overhaul. Here's the highlights:
 
 * **A whole new look** The site has been re-built from the ground up!
 * **Better editor and Split Pane** Syntax highlighting will make writing your brews even easier, and now you can customize how large your editor is.
@@ -47,14 +55,14 @@ What's new in the latest update? Check out the full changelog [here](/homebrew/c
 * **Patreon page** If you like this tool and want to show some thanks you can [head here](https://www.patreon.com/stolksdorf).
 
 >##### PDF Exporting
+> PDF Printing works best in Chrome. If you are having quality/consistency issues, try using Chrome to print instead.
+>
 > After clicking the "Print" item in the navbar a new page will open and a print dialog will pop-up.
 > * Set the **Destination** to "Save as PDF"
 > * Set **Paper Size** to "Letter"
 > * If you are printing on A4 paper, make sure to have the "A4 page size snippet" in your brew
 > * In **Options** make sure "Background Images" is selected.
 > * Hit print and enjoy! You're done!
->
-> PDF Printing works best in Chrome. If you are having quality/consistency issues, try using Chrome to print instead.
 >
 > If you want to save ink or have a monochrome printer, add the **Ink Friendly** snippet to your brew before you print
 
