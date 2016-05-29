@@ -11,11 +11,6 @@ renderer.html = function (html) {
 		var openTag = html.substring(0, html.indexOf('>')+1);
 		html = html.substring(html.indexOf('>')+1);
 		html = html.substring(0, html.lastIndexOf('</div>'));
-
-		console.log(html);
-
-		console.log(Markdown(html));
-
 		return `${openTag} ${Markdown(html)} </div>`;
 	}
 	return html;

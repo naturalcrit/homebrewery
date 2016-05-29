@@ -23,7 +23,7 @@
 - Bumped up the allowed entity size for extra-large brew (Thanks for reporting it dickboner93)
 - Added a little error box when a save fails with a custom link to reporting the issue on github.
 
-/page
+\page
 
 ### Saturday, 14/05/2016 - v2.0.0 (finally!)
 
