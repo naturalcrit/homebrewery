@@ -36,7 +36,7 @@ var BaseItem = React.createClass({
 			title : this.props.currentBrew.title,
 			ts : Date.now()
 		});
-		brews = _.slice(brews, 0, 5);
+		brews = _.slice(brews, 0, 8);
 		localStorage.setItem(this.props.storageKey, JSON.stringify(brews));
 		this.setState({
 			brews : brews
