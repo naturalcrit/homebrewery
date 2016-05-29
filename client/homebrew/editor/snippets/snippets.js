@@ -1,4 +1,4 @@
-var SpellGen = require('./spell.gen.js');
+var MagicGen = require('./magic.gen.js');
 var ClassTableGen = require('./classtable.gen.js');
 var MonsterBlockGen = require('./monsterblock.gen.js');
 var ClassFeatureGen = require('./classfeature.gen.js');
@@ -67,7 +67,12 @@ module.exports = [
 			{
 				name : 'Spell',
 				icon : 'fa-magic',
-				gen : SpellGen,
+				gen : MagicGen.spell,
+			},
+			{
+				name : 'Spell List',
+				icon : 'fa-list',
+				gen : MagicGen.spellList,
 			},
 			{
 				name : 'Class Feature',
@@ -171,5 +176,3 @@ module.exports = [
 	},
 
 ]
-
-
