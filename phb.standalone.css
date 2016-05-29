@@ -208,21 +208,25 @@ table {
 }
 .phb p + p {
   margin-top: -0.8em;
-  text-indent: 1em;
 }
 .phb ul {
   margin-bottom: 0.8em;
+  padding-left: 1.4em;
   line-height: 1.3em;
   list-style-position: outside;
   list-style-type: disc;
-  padding-left: 1.4em;
 }
 .phb ol {
   margin-bottom: 0.8em;
+  padding-left: 1.4em;
   line-height: 1.3em;
   list-style-position: outside;
   list-style-type: decimal;
-  padding-left: 1.4em;
+}
+.phb p + p,
+.phb ul + p,
+.phb ol + p {
+  text-indent: 1em;
 }
 .phb img {
   z-index: -1;
@@ -384,8 +388,8 @@ table {
   margin: 0;
   column-span: 1;
   background-color: transparent;
-  border-image: none;
   border-style: none;
+  border-image: none;
   -webkit-column-span: 1;
 }
 .phb hr + blockquote hr + table tbody tr:nth-child(odd),
@@ -492,7 +496,8 @@ table {
   -webkit-column-span: all;
   -moz-column-span: all;
 }
-.phb pre {
+.phb pre,
+.phb code {
   visibility: hidden;
   -webkit-column-break-after: always;
   break-after: always;
@@ -520,6 +525,38 @@ table {
 .phb ol ul {
   margin-bottom: 0px;
   margin-left: 1.5em;
+}
+.phb .spellList {
+  font-family: ScalySans;
+  column-count: 4;
+  column-span: all;
+  -webkit-column-span: all;
+  -moz-column-span: all;
+}
+.phb .spellList em {
+  font-family: ScalySans;
+  font-style: italic;
+}
+.phb .spellList strong {
+  font-family: ScalySans;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.phb .spellList ul + h5 {
+  margin-top: 15px;
+}
+.phb .spellList p,
+.phb .spellList ul {
+  font-size: 0.352cm;
+  line-height: 1.3em;
+}
+.phb .spellList ul {
+  margin-bottom: 0.5em;
+  padding-left: 1em;
+  text-indent: -1em;
+  list-style-type: none;
+  -webkit-column-break-inside: auto;
+  column-break-inside: auto;
 }
 .phb.print blockquote {
   box-shadow: none;

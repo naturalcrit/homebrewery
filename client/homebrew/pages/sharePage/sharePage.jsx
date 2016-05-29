@@ -4,10 +4,12 @@ var cx = require('classnames');
 
 var Nav = require('naturalcrit/nav/nav.jsx');
 var Navbar = require('../../navbar/navbar.jsx');
-
 var PrintLink = require('../../navbar/print.navitem.jsx');
+var RecentlyViewed = require('../../navbar/recent.navitem.jsx').viewed;
 
 var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
+
+var HijackPrint = require('../hijackPrint.js');
 
 var SharePage = React.createClass({
 	getDefaultProps: function() {
@@ -23,6 +25,13 @@ var SharePage = React.createClass({
 		};
 	},
 
+	componentDidMount: function() {
+		document.onkeydown = HijackPrint(this.props.brew.shareId);
+	},
+	componentWillUnmount: function() {
+		document.onkeydown = function(){};
+	},
+
 	render : function(){
 		return <div className='sharePage page'>
 			<Navbar>
@@ -31,6 +40,7 @@ var SharePage = React.createClass({
 				</Nav.section>
 
 				<Nav.section>
+					<RecentlyViewed brew={this.props.brew} />
 					<PrintLink shareId={this.props.brew.shareId} />
 					<Nav.item href={'/homebrew/source/' + this.props.brew.shareId} color='teal' icon='fa-code'>
 						source

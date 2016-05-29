@@ -1,5 +1,12 @@
 # changelog
 
+### Sunday, 29/05/2016 - v2.1.0
+- Finally added a syntax for doing spell lists. A bit in-depth about why this took so long. Essentially I'm running out of syntax to use in stardard Markdown. There are too many unique elements in the PHB-style to be mapped. I solved this earlier by stacking certain elements together (eg. an `<hr>` before a `blockquote` turns it into moster state block), but those are getting unweildly. I would like to simply wrap these in `div`s with classes, but unfortunately Markdown stops processing when within HTML blocks. To get around this I wrote my own override to the Markdown parser and lexer to process Markdown within a simple div class wrapper. This should open the door for more unique syntaxes in the future. Big step!
+- Override Ctrl+P (and cmd+P) to launch to the print page. Many people try to just print either the editing or share page to get a PDF. While this dones;t make much sense, I do get a ton of issues about it. So now if you try to do this, it'll just bring you imediately to the print page. Everybody wins!
+- The onboarding flow has also been confusing a few users (Homepage -> new -> save -> edit page). If you edit the Homepage text now, a Call to Action to save your work will pop-up.
+- Added a 'Recently Edited' and 'Recently Viewed' nav item to the edit and share page respectively. Each will remember the last 8 items you edited or viewed and when you viewed it. Makes use of the new title attribute of brews to easy navigatation.
+- Paragraphs now indent properly after lists (thanks u/slitjen!)
+
 ### Friday, 27/05/2016 - v2.0.6
 - Updated the issue template for (hopefully) better reporting
 - Added suggestion to use chrome while PDF printing
@@ -17,7 +24,7 @@
 - Bumped up the allowed entity size for extra-large brew (Thanks for reporting it dickboner93)
 - Added a little error box when a save fails with a custom link to reporting the issue on github.
 
-/page
+\page
 
 ### Saturday, 14/05/2016 - v2.0.0 (finally!)
 

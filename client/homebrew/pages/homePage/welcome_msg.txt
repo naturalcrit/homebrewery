@@ -8,17 +8,6 @@ The Homebrewery makes the creation and sharing of authentic looking Fifth-Editio
 
 
 
-
-#### Features
-* Monster Stat Blocks
-* Full class tables
-* Notes and Tables
-* Images
-* Page numbering and footers
-* Vertical spacing, column breaks, and multiple pages
-
-
-
 ### Editing and Sharing
 When you create your own homebrew you will be given a *edit url* and a *share url*.  Any changes you make will be automatically saved to the database within a few seconds. Anyone with the edit url will be able to make edits to your homebrew. So be careful about who you share it with.
 
@@ -33,20 +22,9 @@ This tool will **always** be free, never have ads, and I will never offer any "p
 Have an idea of how to make The Homebrewery better? Or did you find something that wasn't quite right? Head [here](https://github.com/stolksdorf/NaturalCrit/issues/new) and let me know!.
 
 
-```
-```
-
-## New Things in v2.0.0!
-What's new in the latest update? Check out the full changelog [here](/homebrew/changelog)
-
-* **A whole new look** The site has been re-built from the ground up!
-* **Better editor and Split Pane** Syntax highlighting will make writing your brews even easier, and now you can customize how large your editor is.
-* **More reliable rendering** Lots of work has been put into making the rendering more reliable, not just for web, but also for PDFs
-* **PDF Printing on Chrome** You don't need to use Chrome Canary anymore!
-* ** Performance Improvements** The site should load faster, save faster, and render large brews *much* faster.
-* **Patreon page** If you like this tool and want to show some thanks you can [head here](https://www.patreon.com/stolksdorf).
-
 >##### PDF Exporting
+> PDF Printing works best in Chrome. If you are having quality/consistency issues, try using Chrome to print instead.
+>
 > After clicking the "Print" item in the navbar a new page will open and a print dialog will pop-up.
 > * Set the **Destination** to "Save as PDF"
 > * Set **Paper Size** to "Letter"
@@ -54,9 +32,30 @@ What's new in the latest update? Check out the full changelog [here](/homebrew/c
 > * In **Options** make sure "Background Images" is selected.
 > * Hit print and enjoy! You're done!
 >
-> PDF Printing works best in Chrome. If you are having quality/consistency issues, try using Chrome to print instead.
->
 > If you want to save ink or have a monochrome printer, add the **Ink Friendly** snippet to your brew before you print
+
+
+```
+```
+
+## New Things in v2.1.0!
+What's new in the latest update? Check out the full changelog [here](/homebrew/changelog)
+
+* **Spell Lists** Tweaking the Markdown lexer and parser, I can now do nested Markdown within HTML blocks. Which means the available syntax I can use has vastly increased. Spell Lists are just the first of many new elements.
+* **Recently Viewed/Edited** The Homebrewery now remembers which brews you've been editing and viewing. Check the navbar to quickly jump around to these.
+* **Print Command Capturing** Pressing ctrl+p/cmd+p on any edit or share page will now jump you straight to the print page. Much more intutive.
+
+
+## V2 Overhaul
+A lot of <i class='fa fa-heart'></i> has been put into version 2 of The Homebrewery. Here are the highlights:
+
+* **A whole new look** The site has been re-built from the ground up!
+* **Better editor and split pane** Syntax highlighting will make writing your brews even easier, and now you can customize how large your editor is.
+* **More reliable rendering** Lots of work has been put into making the rendering more reliable, not just for web, but also for PDFs
+* **PDF Printing on Chrome** You don't need to use Chrome Canary anymore!
+* ** Performance Improvements** The site should load faster, save faster, and render large brews *much* faster.
+* **Patreon page** If you like this tool and want to show some thanks you can [head here](https://www.patreon.com/stolksdorf).
+
 
 
 

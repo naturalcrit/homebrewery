@@ -59,22 +59,25 @@
 		line-height    : 1.3em;
 		&+p{
 			margin-top  : -0.8em;
-			text-indent : 1em;
 		}
 	}
 	ul{
 		margin-bottom       : 0.8em;
+		padding-left        : 1.4em;
 		line-height         : 1.3em;
 		list-style-position : outside;
 		list-style-type     : disc;
-		padding-left: 1.4em;
 	}
 	ol{
 		margin-bottom       : 0.8em;
+		padding-left        : 1.4em;
 		line-height         : 1.3em;
 		list-style-position : outside;
 		list-style-type     : decimal;
-		padding-left: 1.4em;
+	}
+	//Indents after p or lists
+	p+p, ul+p, ol+p{
+		text-indent : 1em;
 	}
 	img{
 		z-index : -1;
@@ -169,15 +172,15 @@
 	// *****************************/
 	blockquote{
 		.useSansSerif();
-		box-sizing       : border-box;
-		margin-bottom    : 1em;
-		padding          : 5px 10px;
-		background-color : @noteGreen;
-		border-style: solid;
-		border-width: 11px;
-		border-image: @noteBorderImage 11;
-		border-image-outset: 9px 0px;
-		box-shadow       : 1px 4px 14px #888;
+		box-sizing          : border-box;
+		margin-bottom       : 1em;
+		padding             : 5px 10px;
+		background-color    : @noteGreen;
+		border-style        : solid;
+		border-width        : 11px;
+		border-image        : @noteBorderImage 11;
+		border-image-outset : 9px 0px;
+		box-shadow          : 1px 4px 14px #888;
 		p, ul{
 			font-size   : 0.352cm;
 			line-height : 1.1em;
@@ -185,7 +188,7 @@
 	}
 	//If a note starts a column, give it space at the top to render border
 	pre+blockquote{
-		margin-top: 11px;
+		margin-top : 11px;
 	}
 	//*****************************
 	// *    MONSTER STAT BLOCK
@@ -222,8 +225,8 @@
 			margin              : 0;
 			column-span         : 1;
 			background-color    : transparent;
+			border-style        : none;
 			border-image        : none;
-			border-style : none;
 			-webkit-column-span : 1;
 			tbody{
 				tr:nth-child(odd), tr:nth-child(even){
@@ -339,7 +342,7 @@
 		-moz-column-span    : all;
 	}
 	//Column Break
-	pre{
+	pre, code{
 		visibility                 : hidden;
 		-webkit-column-break-after : always;
 		break-after                : always;
@@ -364,6 +367,31 @@
 	ul ul,ol ol,ul ol,ol ul{
 		margin-bottom : 0px;
 		margin-left   : 1.5em;
+	}
+}
+//*****************************
+// *         SPELL LIST
+// *****************************/
+.phb .spellList{
+	.useSansSerif();
+	column-count        : 4;
+	column-span         : all;
+	-webkit-column-span : all;
+	-moz-column-span    : all;
+	ul+h5{
+		margin-top : 15px;
+	}
+	p, ul{
+		font-size   : 0.352cm;
+		line-height : 1.3em;
+	}
+	ul{
+		margin-bottom               : 0.5em;
+		padding-left                : 1em;
+		text-indent                 : -1em;
+		list-style-type             : none;
+		-webkit-column-break-inside : auto;
+		column-break-inside         : auto;
 	}
 }
 //*****************************

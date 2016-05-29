@@ -9,11 +9,14 @@ var Navbar = require('../../navbar/navbar.jsx');
 var EditTitle = require('../../navbar/editTitle.navitem.jsx');
 var ReportIssue = require('../../navbar/issue.navitem.jsx');
 var PrintLink = require('../../navbar/print.navitem.jsx');
+var RecentlyEdited = require('../../navbar/recent.navitem.jsx').edited;
 
 
 var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 var Editor = require('../../editor/editor.jsx');
 var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
+
+var HijackPrint = require('../hijackPrint.js');
 
 
 
@@ -54,10 +57,13 @@ var EditPage = React.createClass({
 			if(this.state.isSaving || this.state.isPending){
 				return 'You have unsaved changes!';
 			}
-		}
+		};
+
+		document.onkeydown = HijackPrint(this.props.brew.shareId);
 	},
 	componentWillUnmount: function() {
 		window.onbeforeunload = function(){};
+		document.onkeydown = function(){};
 	},
 
 	handleSplitMove : function(){
@@ -170,6 +176,7 @@ var EditPage = React.createClass({
 			</Nav.section>
 			<Nav.section>
 				{this.renderSaveButton()}
+				<RecentlyEdited brew={this.props.brew} />
 				<Nav.item newTab={true} href={'/homebrew/share/' + this.props.brew.shareId} color='teal' icon='fa-share-alt'>
 					Share
 				</Nav.item>
