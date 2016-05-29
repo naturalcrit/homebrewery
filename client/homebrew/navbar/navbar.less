@@ -16,9 +16,9 @@
 	.editTitle.navItem{
 		padding : 2px 12px;
 		input{
+			width            : 250px;
 			margin           : 0;
 			padding          : 2px;
-			width : 250px;
 			background-color : #444;
 			font-family      : 'Open Sans', sans-serif;
 			font-size        : 12px;
@@ -32,19 +32,19 @@
 			display        : inline-block;
 			vertical-align : bottom;
 			margin-left    : 8px;
+			color          : #666;
 			text-align     : right;
-			color : #666;
 			&.max{
 				color : @red;
 			}
 		}
 	}
 	.brewTitle.navItem{
-		font-size        : 12px;
-		font-weight      : 800;
-		color            : white;
-		text-align       : center;
-		text-transform: initial;
+		font-size      : 12px;
+		font-weight    : 800;
+		color          : white;
+		text-align     : center;
+		text-transform : initial;
 	}
 	.patreon.navItem{
 		i{
@@ -54,5 +54,42 @@
 			}
 		}
 	}
-
+	.recent.navItem{
+		position : relative;
+		.dropdown{
+			position : absolute;
+			top      : 28px;
+			left     : 0px;
+			z-index  : 10000;
+			width    : 100%;
+			.item{
+				.animate(background-color);
+				position         : relative;
+				display          : block;
+				box-sizing       : border-box;;
+				padding          : 13px 5px;
+				background-color : #333;
+				color            : white;
+				text-decoration  : none;
+				border-top       : 1px solid #888;
+				&:hover{
+					background-color : @blue;
+				}
+				.title{
+					display       : inline-block;
+					overflow      : hidden;
+					width         : 100%;
+					text-overflow : ellipsis;
+					white-space   : nowrap;
+				}
+				.time{
+					position  : absolute;
+					right     : 2px;
+					bottom    : 2px;
+					font-size : 0.7em;
+					color     : #888;
+				}
+			}
+		}
+	}
 }

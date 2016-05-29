@@ -9,6 +9,7 @@ var Navbar = require('../../navbar/navbar.jsx');
 var EditTitle = require('../../navbar/editTitle.navitem.jsx');
 var ReportIssue = require('../../navbar/issue.navitem.jsx');
 var PrintLink = require('../../navbar/print.navitem.jsx');
+var RecentlyEdited = require('../../navbar/recent.navitem.jsx').edited;
 
 
 var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
@@ -175,6 +176,7 @@ var EditPage = React.createClass({
 			</Nav.section>
 			<Nav.section>
 				{this.renderSaveButton()}
+				<RecentlyEdited brew={this.props.brew} />
 				<Nav.item newTab={true} href={'/homebrew/share/' + this.props.brew.shareId} color='teal' icon='fa-share-alt'>
 					Share
 				</Nav.item>
