@@ -5,7 +5,6 @@ var ClassFeatureGen = require('./classfeature.gen.js');
 var FullClassGen = require('./fullclass.gen.js');
 
 
-
 module.exports = [
 
 	{
