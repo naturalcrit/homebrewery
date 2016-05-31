@@ -27,6 +27,11 @@ module.exports = [
 				gen : "<div style='margin-top:140px'></div>\n\n"
 			},
 			{
+				name : "Wide Block",
+				icon : 'fa-arrows-h',
+				gen : "<div class='wide'>\nEverything in here will be extra wide. Tables, text, everything! Beware though, CSS columns can behave a bit weird sometimes.\n</div>\n"
+			},
+			{
 				name : "Image",
 				icon : 'fa-image',
 				gen : [

@@ -561,3 +561,8 @@ table {
 .phb.print blockquote {
   box-shadow: none;
 }
+.phb .wide {
+  column-span: all;
+  -webkit-column-span: all;
+  -moz-column-span: all;
+}
