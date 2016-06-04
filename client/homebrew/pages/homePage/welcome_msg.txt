@@ -19,7 +19,7 @@ Like this tool? Want to buy me a beer? [Head here](https://www.patreon.com/stolk
 This tool will **always** be free, never have ads, and I will never offer any "premium" features or whatever.
 
 ### Bugs, Issues, Suggestions?
-Have an idea of how to make The Homebrewery better? Or did you find something that wasn't quite right? Head [here](https://github.com/stolksdorf/NaturalCrit/issues/new) and let me know!.
+Have an idea of how to make The Homebrewery better? Or did you find something that wasn't quite right? Head [here](https://github.com/stolksdorf/homebrewery/issues/new) and let me know!.
 
 
 >##### PDF Exporting
@@ -39,7 +39,7 @@ Have an idea of how to make The Homebrewery better? Or did you find something th
 ```
 
 ## New Things in v2.2.0!
-What's new in the latest update? Check out the full changelog [here](/homebrew/changelog)
+What's new in the latest update? Check out the full changelog [here](/changelog)
 
 * **New Subdomain** I moved The Homebrewery to it's own subdomain. This will make it easier to build and deploy more tools in the future.
 
