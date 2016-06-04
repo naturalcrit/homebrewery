@@ -38,12 +38,10 @@ Have an idea of how to make The Homebrewery better? Or did you find something th
 ```
 ```
 
-## New Things in v2.1.0!
+## New Things in v2.2.0!
 What's new in the latest update? Check out the full changelog [here](/homebrew/changelog)
 
-* **Spell Lists** Tweaking the Markdown lexer and parser, I can now do nested Markdown within HTML blocks. Which means the available syntax I can use has vastly increased. Spell Lists are just the first of many new elements.
-* **Recently Viewed/Edited** The Homebrewery now remembers which brews you've been editing and viewing. Check the navbar to quickly jump around to these.
-* **Print Command Capturing** Pressing ctrl+p/cmd+p on any edit or share page will now jump you straight to the print page. Much more intutive.
+* **New Subdomain** I moved The Homebrewery to it's own subdomain. This will make it easier to build and deploy more tools in the future.
 
 
 ## V2 Overhaul
