@@ -92,10 +92,10 @@ var EditPage = React.createClass({
 		if(!confirm("are you sure you want to delete this brew?")) return;
 		if(!confirm("are you REALLY sure? You will not be able to recover it")) return;
 
-		request.get('/homebrew/api/remove/' + this.props.brew.editId)
+		request.get('/api/remove/' + this.props.brew.editId)
 			.send()
 			.end(function(err, res){
-				window.location.href = '/homebrew';
+				window.location.href = '/';
 			});
 	},
 
@@ -118,7 +118,7 @@ var EditPage = React.createClass({
 		});
 
 		request
-			.put('/homebrew/api/update/' + this.props.brew.editId)
+			.put('/api/update/' + this.props.brew.editId)
 			.send({
 				text : this.state.text,
 				title : this.state.title
@@ -177,7 +177,7 @@ var EditPage = React.createClass({
 			<Nav.section>
 				{this.renderSaveButton()}
 				<RecentlyEdited brew={this.props.brew} />
-				<Nav.item newTab={true} href={'/homebrew/share/' + this.props.brew.shareId} color='teal' icon='fa-share-alt'>
+				<Nav.item newTab={true} href={'/share/' + this.props.brew.shareId} color='teal' icon='fa-share-alt'>
 					Share
 				</Nav.item>
 				<PrintLink shareId={this.props.brew.shareId} />

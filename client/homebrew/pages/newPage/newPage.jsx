@@ -6,6 +6,7 @@ var request = require("superagent");
 var Nav = require('naturalcrit/nav/nav.jsx');
 var Navbar = require('../../navbar/navbar.jsx');
 var EditTitle = require('../../navbar/editTitle.navitem.jsx');
+var IssueNavItem = require('../../navbar/issue.navitem.jsx');
 
 
 var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
@@ -64,7 +65,7 @@ var NewPage = React.createClass({
 		this.setState({
 			isSaving : true
 		});
-		request.post('/homebrew/api')
+		request.post('/api')
 			.send({
 				title : this.state.title,
 				text : this.state.text
@@ -80,7 +81,7 @@ var NewPage = React.createClass({
 				window.onbeforeunload = function(){};
 				var brew = res.body;
 				localStorage.removeItem(KEY);
-				window.location = '/homebrew/edit/' + brew.editId;
+				window.location = '/edit/' + brew.editId;
 			})
 	},
 
@@ -96,7 +97,6 @@ var NewPage = React.createClass({
 		}
 	},
 
-
 	renderNavbar : function(){
 		return <Navbar>
 			<Nav.section>
@@ -105,9 +105,7 @@ var NewPage = React.createClass({
 
 			<Nav.section>
 				{this.renderSaveButton()}
-				<Nav.item newTab={true} href='https://github.com/stolksdorf/naturalcrit/issues' color='red' icon='fa-bug'>
-					report issue
-				</Nav.item>
+				<IssueNavItem />
 			</Nav.section>
 		</Navbar>
 	},
@@ -115,7 +113,6 @@ var NewPage = React.createClass({
 	render : function(){
 		return <div className='newPage page'>
 			{this.renderNavbar()}
-
 
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>

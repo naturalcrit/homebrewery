@@ -30,13 +30,13 @@ var getTopBrews = function(cb){
 
 module.exports = function(app){
 
-	app.get('/homebrew/top', function(req, res){
+	app.get('/api/top', function(req, res){
 		getTopBrews(function(topBrews){
 			return res.json(topBrews);
 		});
 	});
 
-	app.post('/homebrew/api', function(req, res){
+	app.post('/api', function(req, res){
 		var newHomebrew = new HomebrewModel(req.body);
 		newHomebrew.save(function(err, obj){
 			if(err) return;
@@ -44,7 +44,7 @@ module.exports = function(app){
 		})
 	});
 
-	app.put('/homebrew/api/update/:id', function(req, res){
+	app.put('/api/update/:id', function(req, res){
 		HomebrewModel.find({editId : req.params.id}, function(err, objs){
 			if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
 			var resEntry = objs[0];
@@ -58,7 +58,7 @@ module.exports = function(app){
 		});
 	});
 
-	app.get('/homebrew/api/remove/:id', function(req, res){
+	app.get('/api/remove/:id', function(req, res){
 		HomebrewModel.find({editId : req.params.id}, function(err, objs){
 			if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
 			var resEntry = objs[0];
@@ -70,7 +70,7 @@ module.exports = function(app){
 	});
 
 	//Removes all empty brews that are older than 3 days and that are shorter than a tweet
-	app.get('/homebrew/api/invalid', mw.adminOnly, function(req, res){
+	app.get('/api/invalid', mw.adminOnly, function(req, res){
 		var invalidBrewQuery = HomebrewModel.find({
 			'$where' : "this.text.length < 140",
 			createdAt: {
@@ -94,7 +94,7 @@ module.exports = function(app){
 	});
 
 
-	app.get('/homebrew/api/search', mw.adminOnly, function(req, res){
+	app.get('/api/search', mw.adminOnly, function(req, res){
 		var page = req.query.page || 0;
 		var count = req.query.count || 20;
 

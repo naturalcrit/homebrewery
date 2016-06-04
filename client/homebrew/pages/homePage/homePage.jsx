@@ -6,6 +6,7 @@ var request = require("superagent");
 var Nav = require('naturalcrit/nav/nav.jsx');
 var Navbar = require('../../navbar/navbar.jsx');
 var PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
+var IssueNavItem = require('../../navbar/issue.navitem.jsx');
 
 
 var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
@@ -26,7 +27,7 @@ var HomePage = React.createClass({
 		};
 	},
 	handleSave : function(){
-		request.post('/homebrew/api')
+		request.post('/api')
 			.send({
 				title : 'Change This',
 				text : this.state.text
@@ -34,7 +35,7 @@ var HomePage = React.createClass({
 			.end((err, res)=>{
 				if(err) return;
 				var brew = res.body;
-				window.location = '/homebrew/edit/' + brew.editId;
+				window.location = '/edit/' + brew.editId;
 			});
 	},
 	handleSplitMove : function(){
@@ -49,13 +50,11 @@ var HomePage = React.createClass({
 		return <Navbar>
 			<Nav.section>
 				<PatreonNavItem />
-				<Nav.item newTab={true} href='https://github.com/stolksdorf/naturalcrit/issues' color='red' icon='fa-bug'>
-					report issue
-				</Nav.item>
-				<Nav.item newTab={true} href='/homebrew/changelog' color='purple' icon='fa-file-text-o'>
+				<IssueNavItem />
+				<Nav.item newTab={true} href='/changelog' color='purple' icon='fa-file-text-o'>
 					Changelog
 				</Nav.item>
-				<Nav.item href='/homebrew/new' color='green' icon='fa-external-link'>
+				<Nav.item href='/new' color='green' icon='fa-external-link'>
 					New Brew
 				</Nav.item>
 			</Nav.section>
@@ -77,7 +76,7 @@ var HomePage = React.createClass({
 				Save current <i className='fa fa-save' />
 			</div>
 
-			<a href='/homebrew/new' className='floatingNewButton'>
+			<a href='/new' className='floatingNewButton'>
 				Create your own <i className='fa fa-magic' />
 			</a>
 		</div>

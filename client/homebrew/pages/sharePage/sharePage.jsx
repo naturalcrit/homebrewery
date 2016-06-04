@@ -42,7 +42,7 @@ var SharePage = React.createClass({
 				<Nav.section>
 					<RecentlyViewed brew={this.props.brew} />
 					<PrintLink shareId={this.props.brew.shareId} />
-					<Nav.item href={'/homebrew/source/' + this.props.brew.shareId} color='teal' icon='fa-code'>
+					<Nav.item href={'/source/' + this.props.brew.shareId} color='teal' icon='fa-code'>
 						source
 					</Nav.item>
 				</Nav.section>

@@ -90,7 +90,7 @@ module.exports = {
 				currentBrew={{
 					id : this.props.brew.shareId,
 					title : this.props.brew.title,
-					url : `/homebrew/share/${this.props.brew.shareId}`
+					url : `/share/${this.props.brew.shareId}`
 				}}
 			/>
 		},
@@ -110,7 +110,7 @@ module.exports = {
 				currentBrew={{
 					id : this.props.brew.editId,
 					title : this.props.brew.title,
-					url : `/homebrew/edit/${this.props.brew.editId}`
+					url : `/edit/${this.props.brew.editId}`
 				}}
 			/>
 		},

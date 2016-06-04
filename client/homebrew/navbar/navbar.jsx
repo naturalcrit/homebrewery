@@ -8,10 +8,10 @@ var Navbar = React.createClass({
 		return <Nav.base>
 			<Nav.section>
 				<Nav.logo />
-				<Nav.item href='/homebrew' className='homebrewLogo'>
+				<Nav.item href='/' className='homebrewLogo'>
 					<div>The Homebrewery</div>
 				</Nav.item>
-				<Nav.item>v2.1.1</Nav.item>
+				<Nav.item>v2.2.0</Nav.item>
 			</Nav.section>
 			{this.props.children}
 		</Nav.base>
