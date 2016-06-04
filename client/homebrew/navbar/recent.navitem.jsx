@@ -30,12 +30,14 @@ var BaseItem = React.createClass({
 		brews = _.filter(brews, (brew)=>{
 			return brew.id !== this.props.currentBrew.id;
 		});
-		brews.unshift({
-			id : this.props.currentBrew.id,
-			url : this.props.currentBrew.url,
-			title : this.props.currentBrew.title,
-			ts : Date.now()
-		});
+		if(this.props.currentBrew.id){
+			brews.unshift({
+				id : this.props.currentBrew.id,
+				url : this.props.currentBrew.url,
+				title : this.props.currentBrew.title,
+				ts : Date.now()
+			});
+		}
 		brews = _.slice(brews, 0, 8);
 		localStorage.setItem(this.props.storageKey, JSON.stringify(brews));
 		this.setState({
