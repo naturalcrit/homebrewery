@@ -88,7 +88,7 @@ module.exports = {
 			};
 		},
 		render : function(){
-			return <BaseItem text='recently viewed' storageKey='naturalCrit-homebrew-recently-viewed'
+			return <BaseItem text='recently viewed' storageKey='homebrewery-recently-viewed'
 				currentBrew={{
 					id : this.props.brew.shareId,
 					title : this.props.brew.title,
@@ -108,7 +108,7 @@ module.exports = {
 			};
 		},
 		render : function(){
-			return <BaseItem text='recently edited' storageKey='naturalCrit-homebrew-recently-edited'
+			return <BaseItem text='recently edited' storageKey='homebrewery-recently-edited'
 				currentBrew={{
 					id : this.props.brew.editId,
 					title : this.props.brew.title,

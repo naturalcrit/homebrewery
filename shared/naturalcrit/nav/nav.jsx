@@ -15,7 +15,7 @@ var Nav = {
 		}
 	}),
 	logo : function(){
-		return <a className='navLogo' href="/">
+		return <a className='navLogo' href="http://naturalcrit.com">
 			<NaturalCritIcon />
 			<span className='name'>
 				Natural<span className='crit'>Crit</span>

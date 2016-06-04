@@ -14,7 +14,7 @@ var Editor = require('../../editor/editor.jsx');
 var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 
-const KEY = 'naturalCrit-homebrew-new';
+const KEY = 'homebrewery-new';
 
 var NewPage = React.createClass({
 	getInitialState: function() {
