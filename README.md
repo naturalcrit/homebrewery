@@ -1,5 +1,5 @@
-# NaturalCrit
-A tool suite for DMs to use for D&D. Check it out [here](http://www.naturalcrit.com).
+# The Homebrewery
+Create authentic looking D&D homebrews using only markdown. Check it out [here](http://homebrewery.naturalcrit.com).
 
 
 ### Getting started
@@ -25,9 +25,9 @@ You can use [Docker](https://docs.docker.com) to get up and running with Natural
 1. Build the docker image `docker build -t naturalcrit .`
 1. Run the docker container `docker run -dit -p 8000:8000 naturalcrit`
 1. You can check out the website on your computer on port 8000
-	1. You may have to use `docker-machine env` to get the IP address of your docker instance	
+	1. You may have to use `docker-machine env` to get the IP address of your docker instance
 
 
 ### changelog
 
-You can check out the changelog [here](https://github.com/stolksdorf/NaturalCrit/blob/master/changelog.md)
+You can check out the changelog [here](https://github.com/stolksdorf/homebrewery/blob/master/changelog.md)
