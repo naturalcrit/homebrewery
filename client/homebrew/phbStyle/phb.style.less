@@ -2,6 +2,7 @@
 @import (less) 'shared/naturalcrit/styles/reset.less';
 @import (less) './client/homebrew/phbStyle/phb.fonts.css';
 @import (less) './client/homebrew/phbStyle/phb.assets.less';
+@import (less) './client/homebrew/phbStyle/phb.depricated.less';
 //Colors
 @background            : #EEE5CE;
 @noteGreen             : #e0e5c1;
@@ -10,6 +11,9 @@
 @headerText            : #58180D;
 @monsterStatBackground : #FDF1DC;
 @page { margin: 0; }
+body {
+	counter-reset: phb-page-numbers;
+}
 .useSansSerif(){
 	font-family : ScalySans;
 	em{
@@ -212,13 +216,13 @@
 			font-weight   : 400;
 			border-bottom : 1px solid @headerText;
 		}
+		hr+ul{
+			color           : @headerText;
+		}
 		ul{
 			.useSansSerif();
 			padding-left    : 1em;
 			font-size       : 0.352cm;
-			color           : @headerText;
-			text-indent     : -1em;
-			list-style-type : none;
 		}
 		// Monster Ability table
 		hr+table{
@@ -256,28 +260,7 @@
 	hr+hr+blockquote{
 		.useColumns(0.96);
 	}
-	//*****************************
-	// *      CLASS TABLE
-	// *****************************/
-	hr+table{
-		margin-top          : -5px;
-		margin-bottom       : 50px;
-		padding-top         : 10px;
-		border-collapse     : separate;
-		background-color    : white;
-		border              : initial;
-		border-style        : solid;
-		border-image-outset : 37px 17px;
-		border-image-repeat : round;
-		border-image-slice  : 150 200 150 200;
-		border-image-source : @frameBorderImage;
-		border-image-width  : 47px;
-	}
-	h5+hr+table{
-		column-span         : all;
-		-webkit-column-span : all;
-		-moz-column-span    : all;
-	}
+
 	//*****************************
 	// *           FOOTER
 	// *****************************/
@@ -311,6 +294,11 @@
 		font-size  : 0.9em;
 		color      : #c9ad6a;
 		text-align : center;
+
+		&.auto::after {
+			counter-increment: phb-page-numbers;
+			content: counter(phb-page-numbers);
+		}
 	}
 	.footnote{
 		position   : absolute;
@@ -335,12 +323,7 @@
 		text-indent     : -1em;
 		list-style-type : none;
 	}
-	//Double hr for full width elements
-	hr+hr+blockquote{
-		column-span         : all;
-		-webkit-column-span : all;
-		-moz-column-span    : all;
-	}
+
 	//Column Break
 	pre, code{
 		visibility                 : hidden;
@@ -411,4 +394,26 @@
 	column-span         : all;
 	-webkit-column-span : all;
 	-moz-column-span    : all;
+}
+
+
+//*****************************
+// *       CLASS TABLE
+// *****************************/
+
+.phb .classTable{
+	margin-top       : 25px;
+	margin-bottom       : 40px;
+	border-collapse     : separate;
+	background-color    : white;
+	border              : initial;
+	border-style        : solid;
+	border-image-outset : 25px 17px;
+	border-image-repeat : round;
+	border-image-slice  : 150 200 150 200;
+	border-image-source : @frameBorderImage;
+	border-image-width  : 47px;
+	h5{
+		margin-bottom: 10px;
+	}
 }

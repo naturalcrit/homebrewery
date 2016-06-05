@@ -57,6 +57,12 @@ module.exports = [
 				gen : "<div class='pageNumber'>1</div>\n<div class='footnote'>PART 1 | FANCINESS</div>\n\n"
 			},
 
+			{
+				name : "Auto-incrementing Page Number",
+				icon : 'fa-sort-numeric-asc',
+				gen : "<div class='pageNumber auto'></div>\n"
+			},
+
 
 		]
 	},
@@ -139,6 +145,24 @@ module.exports = [
 						"| 11th | 2 or lower |",
 						"| 14th | 3 or lower |",
 						"| 17th | 4 or lower |\n\n",
+					].join('\n');
+				},
+			},
+			{
+				name : 'Wide Table',
+				icon : 'fa-list',
+				gen : function(){
+					return [
+						"<div class='wide'>",
+						"##### Cookie Tastiness",
+						"| Tastiness | Cookie Type |",
+						"|:----:|:-------------|",
+						"| -5  | Raisin |",
+						"| 8th  | Chocolate Chip |",
+						"| 11th | 2 or lower |",
+						"| 14th | 3 or lower |",
+						"| 17th | 4 or lower |",
+						"</div>\n\n"
 					].join('\n');
 				},
 			}

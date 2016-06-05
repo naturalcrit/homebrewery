@@ -11,7 +11,7 @@ var Navbar = React.createClass({
 				<Nav.item href='/' className='homebrewLogo'>
 					<div>The Homebrewery</div>
 				</Nav.item>
-				<Nav.item>v2.2.0</Nav.item>
+				<Nav.item>v2.2.1</Nav.item>
 			</Nav.section>
 			{this.props.children}
 		</Nav.base>

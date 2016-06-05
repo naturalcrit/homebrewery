@@ -1,0 +1,31 @@
+.phb{
+	//Double hr for full width elements
+	hr+hr+blockquote{
+		column-span         : all;
+		-webkit-column-span : all;
+		-moz-column-span    : all;
+	}
+
+	//*****************************
+	// *      CLASS TABLE
+	// *****************************/
+	hr+table{
+		margin-top          : -5px;
+		margin-bottom       : 50px;
+		padding-top         : 10px;
+		border-collapse     : separate;
+		background-color    : white;
+		border              : initial;
+		border-style        : solid;
+		border-image-outset : 37px 17px;
+		border-image-repeat : round;
+		border-image-slice  : 150 200 150 200;
+		border-image-source : @frameBorderImage;
+		border-image-width  : 47px;
+	}
+	h5+hr+table{
+		column-span         : all;
+		-webkit-column-span : all;
+		-moz-column-span    : all;
+	}
+}

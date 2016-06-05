@@ -70,8 +70,7 @@ module.exports = {
 		var cantrips = 3;
 		var spells = 1;
 		var slots = 2;
-		return "##### The " + classname + "\n" +
-		"___\n" +
+		return "<div class='classTable wide'>\n##### The " + classname + "\n" +
 		"| Level | Proficiency Bonus | Features | Cantrips Known | Spells Known | 1st | 2nd | 3rd | 4th | 5th | 6th | 7th | 8th | 9th |\n"+
 		"|:---:|:---:|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n" +
 		_.map(levels, function(levelName, level){
@@ -89,15 +88,14 @@ module.exports = {
 			slots += _.random(0,2);
 
 			return "| " + res + " |";
-		}).join('\n') +'\n\n';
+		}).join('\n') +'\n</div>\n\n';
 	},
 
 	half : function(classname){
 		classname = classname || _.sample(classnames)
 
 		var featureScore = 1
-		return "##### The " + classname + "\n" +
-		"___\n" + "___\n" +
+		return "<div class='classTable'>\n##### The " + classname + "\n" +
 		"| Level | Proficiency Bonus | Features | " + _.sample(features) + "|\n" +
 		"|:---:|:---:|:---|:---:|\n" +
 		_.map(levels, function(levelName, level){
@@ -111,6 +109,6 @@ module.exports = {
 			featureScore += _.random(0,1);
 
 			return "| " + res + " |";
-		}).join('\n') +'\n\n';
+		}).join('\n') +'\n</div>\n\n';
 	}
 };
