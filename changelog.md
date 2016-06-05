@@ -4,6 +4,7 @@
 - Adding in a new Class table div block. The old Class table block used weird stacking of HTML elements, resulting is difficult to control behaviour and poor interactiosn with the rest of the page. This new block is much easier to style and work with.
 - Added in a new wide table snippet
 - Added in a new auto-incremeting page number snippet
+- Lists in monster stat blocks should be fixed now
 
 
 ### Saturday, 04/06/2016 - v2.2.0
