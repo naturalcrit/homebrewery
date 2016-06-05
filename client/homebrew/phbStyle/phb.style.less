@@ -11,6 +11,9 @@
 @headerText            : #58180D;
 @monsterStatBackground : #FDF1DC;
 @page { margin: 0; }
+body {
+	counter-reset: phb-page-numbers;
+}
 .useSansSerif(){
 	font-family : ScalySans;
 	em{
@@ -291,6 +294,11 @@
 		font-size  : 0.9em;
 		color      : #c9ad6a;
 		text-align : center;
+
+		&.auto::after {
+			counter-increment: phb-page-numbers;
+			content: counter(phb-page-numbers);
+		}
 	}
 	.footnote{
 		position   : absolute;

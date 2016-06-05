@@ -2,6 +2,7 @@
 
 ### Sunday, 05/06/2016 - v2.2.1
 - Adding in a new Class table div block. The old Class table block used weird stacking of HTML elements, resulting is difficult to control behaviour and poor interactiosn with the rest of the page. This new block is much easier to style and work with.
+- Added in a new wide table snippet
 - Added in a new auto-incremeting page number snippet
 
 
