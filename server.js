@@ -108,7 +108,7 @@ app.get('/share/:id', function(req, res){
 });
 
 //Print Page
-var Markdown = require('marked');
+var Markdown = require('naturalcrit/markdown.js');
 var PHBStyle = '<style>' + require('fs').readFileSync('./phb.standalone.css', 'utf8') + '</style>'
 app.get('/print/:id', function(req, res){
 	HomebrewModel.find({shareId : req.params.id}, function(err, objs){
@@ -120,7 +120,7 @@ app.get('/print/:id', function(req, res){
 		}
 
 		var content = _.map(brew.text.split('\\page'), function(pageText){
-			return '<div class="phb print">' + Markdown(pageText) + '</div>';
+			return '<div class="phb print">' + Markdown.render(pageText) + '</div>';
 		}).join('\n');
 
 		var dialog = '';
