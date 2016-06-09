@@ -213,6 +213,7 @@ body {
   -moz-column-width: 8cm;
   -webkit-column-gap: 1cm;
   -moz-column-gap: 1cm;
+  counter-increment: phb-page-numbers;
   position: relative;
   z-index: 15;
   box-sizing: border-box;
@@ -481,7 +482,6 @@ body {
   text-align: center;
 }
 .phb .pageNumber.auto::after {
-  counter-increment: phb-page-numbers;
   content: counter(phb-page-numbers);
 }
 .phb .footnote {

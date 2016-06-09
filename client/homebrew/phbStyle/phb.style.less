@@ -40,6 +40,7 @@ body {
 }
 .phb{
 	.useColumns();
+	counter-increment: phb-page-numbers;
 	position          : relative;
 	z-index           : 15;
 	box-sizing        : border-box;
@@ -296,7 +297,7 @@ body {
 		text-align : center;
 
 		&.auto::after {
-			counter-increment: phb-page-numbers;
+
 			content: counter(phb-page-numbers);
 		}
 	}
