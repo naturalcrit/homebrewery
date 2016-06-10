@@ -63,6 +63,12 @@ module.exports = [
 				gen : "<div class='pageNumber auto'></div>\n"
 			},
 
+			{
+				name : "Link to page",
+				icon : 'fa-link',
+				gen : "[Click here](#p3) to go to page 3\n"
+			},
+
 
 		]
 	},

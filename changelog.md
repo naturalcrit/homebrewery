@@ -1,5 +1,10 @@
 # changelog
 
+### Friday, 10/06/2016 - v2.2.4
+- Added an id to each rendered page
+- Allows adding in hyperlinks to specific pages
+- Even works after you print to pdf!
+
 ### Tuesday, 07/06/2016 - v2.2.2
 - Fixed bug with new markdown lexer and aprser not working on print page
 

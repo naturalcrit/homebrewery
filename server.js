@@ -119,8 +119,8 @@ app.get('/print/:id', function(req, res){
 			brew = objs[0];
 		}
 
-		var content = _.map(brew.text.split('\\page'), function(pageText){
-			return '<div class="phb print">' + Markdown.render(pageText) + '</div>';
+		var content = _.map(brew.text.split('\\page'), function(pageText, index){
+			return `<div class="phb print" id="p${index+1}">` + Markdown.render(pageText) + '</div>';
 		}).join('\n');
 
 		var dialog = '';

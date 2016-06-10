@@ -57,14 +57,14 @@ var BrewRenderer = React.createClass({
 		</div>
 	},
 
-	renderDummyPage : function(key){
-		return <div className='phb' key={key}>
+	renderDummyPage : function(index){
+		return <div className='phb' id={`p${index + 1}`} key={index}>
 			<i className='fa fa-spinner fa-spin' />
 		</div>
 	},
 
 	renderPage : function(pageText, index){
-		return <div className='phb' dangerouslySetInnerHTML={{__html:Markdown.render(pageText)}} key={index} />
+		return <div className='phb' id={`p${index + 1}`} dangerouslySetInnerHTML={{__html:Markdown.render(pageText)}} key={index} />
 	},
 
 	renderPages : function(){
