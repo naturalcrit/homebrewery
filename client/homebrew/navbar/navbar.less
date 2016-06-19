@@ -66,7 +66,7 @@
 				.animate(background-color);
 				position         : relative;
 				display          : block;
-				box-sizing       : border-box;;
+				box-sizing       : border-box;
 				padding          : 13px 5px;
 				background-color : #333;
 				color            : white;
@@ -90,6 +90,27 @@
 					color     : #888;
 				}
 			}
+		}
+	}
+	.warning.navItem{
+		position         : relative;
+		background-color : @orange;
+		color            : white;
+		&:hover>.dropdown{
+			visibility : visible;
+		}
+		.dropdown{
+			position         : absolute;
+			display          : block;
+			top              : 28px;
+			left             : 0px;
+			visibility       : hidden;
+			z-index          : 10000;
+			box-sizing       : border-box;
+			width            : 100%;
+			padding          : 13px 5px;
+			background-color : #333;
+			text-align       : center;
 		}
 	}
 }
