@@ -62,6 +62,18 @@
 			left     : 0px;
 			z-index  : 10000;
 			width    : 100%;
+			h4{
+				display          : block;
+				box-sizing       : border-box;
+				padding          : 5px 0px;
+				background-color : #333;
+				font-size        : 0.8em;
+				color            : #bbb;
+				text-align       : center;
+				border-top       : 1px solid #888;
+				&:nth-of-type(1){ background-color: darken(@teal, 20%); }
+				&:nth-of-type(2){ background-color: darken(@purple, 30%); }
+			}
 			.item{
 				.animate(background-color);
 				position         : relative;

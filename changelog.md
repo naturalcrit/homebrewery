@@ -1,5 +1,8 @@
 # changelog
 
+### Thursday, 07/07/2016 - v2.2.6
+- Added a new nav item on the homepage for accessing both recently viewed and edited brews (thanks [ChosenSeraph!](https://github.com/stolksdorf/homebrewery/issues/147))
+
 ### Friday, 10/06/2016 - v2.2.4
 - Added an id to each rendered page
 - Allows adding in hyperlinks to specific pages

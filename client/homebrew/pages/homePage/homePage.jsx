@@ -7,6 +7,7 @@ var Nav = require('naturalcrit/nav/nav.jsx');
 var Navbar = require('../../navbar/navbar.jsx');
 var PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
 var IssueNavItem = require('../../navbar/issue.navitem.jsx');
+var RecentNavItem = require('../../navbar/recent.navitem.jsx');
 
 
 var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
@@ -54,6 +55,7 @@ var HomePage = React.createClass({
 				<Nav.item newTab={true} href='/changelog' color='purple' icon='fa-file-text-o'>
 					Changelog
 				</Nav.item>
+				<RecentNavItem.both />
 				<Nav.item href='/new' color='green' icon='fa-external-link'>
 					New Brew
 				</Nav.item>

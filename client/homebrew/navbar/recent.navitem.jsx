@@ -5,6 +5,9 @@ var Moment = require('moment');
 
 var Nav = require('naturalcrit/nav/nav.jsx');
 
+const VIEW_KEY = 'homebrewery-recently-viewed';
+const EDIT_KEY = 'homebrewery-recently-edited';
+
 var BaseItem = React.createClass({
 	getDefaultProps: function() {
 		return {
@@ -88,7 +91,7 @@ module.exports = {
 			};
 		},
 		render : function(){
-			return <BaseItem text='recently viewed' storageKey='homebrewery-recently-viewed'
+			return <BaseItem text='recently viewed' storageKey={VIEW_KEY}
 				currentBrew={{
 					id : this.props.brew.shareId,
 					title : this.props.brew.title,
@@ -108,7 +111,7 @@ module.exports = {
 			};
 		},
 		render : function(){
-			return <BaseItem text='recently edited' storageKey='homebrewery-recently-edited'
+			return <BaseItem text='recently edited' storageKey={EDIT_KEY}
 				currentBrew={{
 					id : this.props.brew.editId,
 					title : this.props.brew.title,
@@ -117,4 +120,57 @@ module.exports = {
 			/>
 		},
 	}),
+
+	both : React.createClass({
+		getInitialState: function() {
+			return {
+				showDropdown: false,
+				edit : [],
+				view : []
+			};
+		},
+
+		componentDidMount: function() {
+			this.setState({
+				edit : JSON.parse(localStorage.getItem(EDIT_KEY) || '[]'),
+				view : JSON.parse(localStorage.getItem(VIEW_KEY) || '[]')
+			});
+		},
+
+		handleDropdown : function(show){
+			this.setState({
+				showDropdown : show
+			})
+		},
+
+		renderDropdown : function(){
+			if(!this.state.showDropdown) return null;
+
+			var makeItems = (brews) => {
+				return _.map(brews, (brew)=>{
+					return <a href={brew.url} className='item' key={brew.id} target='_blank'>
+						<span className='title'>{brew.title}</span>
+						<span className='time'>{Moment(brew.ts).fromNow()}</span>
+					</a>
+				});
+			};
+
+			return <div className='dropdown'>
+				<h4>edited</h4>
+				{makeItems(this.state.edit)}
+				<h4>viewed</h4>
+				{makeItems(this.state.view)}
+			</div>
+		},
+
+		render : function(){
+			return <Nav.item icon='fa-clock-o' color='grey' className='recent'
+						onMouseEnter={this.handleDropdown.bind(null, true)}
+						onMouseLeave={this.handleDropdown.bind(null, false)}>
+				Recent brews
+				{this.renderDropdown()}
+			</Nav.item>
+		}
+
+	})
 }
