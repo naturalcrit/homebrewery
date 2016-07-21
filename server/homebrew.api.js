@@ -39,7 +39,10 @@ module.exports = function(app){
 	app.post('/api', function(req, res){
 		var newHomebrew = new HomebrewModel(req.body);
 		newHomebrew.save(function(err, obj){
-			if(err) return;
+			if(err){
+				console.error(err, err.toString(), err.stack);
+				return res.status(500).send("Error while creating new brew");
+			}
 			return res.json(obj);
 		})
 	});
