@@ -1,7 +1,7 @@
 {
   "name": "homebrewery",
   "description": "Create authentic looking D&D homebrews using only markdown",
-  "version": "2.2.6",
+  "version": "2.2.7",
   "scripts": {
     "postinstall": "gulp prod",
     "start": "node server.js"

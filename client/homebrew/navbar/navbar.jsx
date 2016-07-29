@@ -34,7 +34,7 @@ var Navbar = React.createClass({
 				<Nav.item href='/' className='homebrewLogo'>
 					<div>The Homebrewery</div>
 				</Nav.item>
-				<Nav.item>v2.2.6</Nav.item>
+				<Nav.item>v2.2.7</Nav.item>
 
 				{this.renderChromeWarning()}
 			</Nav.section>

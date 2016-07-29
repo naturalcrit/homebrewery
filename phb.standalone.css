@@ -589,3 +589,34 @@ body {
 .phb .classTable h5 {
   margin-bottom: 10px;
 }
+.phb .descriptive {
+  display: block-inline;
+  margin-bottom: 1em;
+  background-color: #faf7ea;
+  font-family: ScalySans;
+  border-style: solid;
+  border-width: 7px;
+  border-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAA8CAMAAADG+c2+AAAAM1BMVEUAAAAAAAAAAAAkAAA1GwA0GgA5GgA5GwA4HgA7HgA5HgA7HgA7HwA7HgA8HgA7HgA8HwDn6RpAAAAAEHRSTlMAAQcHMDExQ1ZW1dXY3t7+02zZCAAAAKNJREFUWMPt2LEOwyAMBNCkSXGpKfb/f20G3AGUiWOJdNlueYrt6di2J3xHrmZF9mVCdnd3T/NgCO+ItUWdB0P4RrQWfR4chOVggUcu/cgCH0X6o+ynuivg3QjIAm8FggQJEiRIkCBBggQJEoTApO56An15EFIrVgJ4vaAtlnlwEKKbGrLATlgOxg9XeORfv9IMH+Xzb7tSzGo+gL7chNcjXpUulIwXVrjWS+0AAAAASUVORK5CYII=") 12 round;
+  border-image-outset: 4px;
+  box-shadow: 0px 0px 6px #faf7ea;
+}
+.phb .descriptive p {
+  display: block;
+  padding-bottom: 0px;
+  line-height: 1.5em;
+}
+.phb .descriptive p + p {
+  padding-top: .8em;
+}
+.phb .descriptive em {
+  font-family: ScalySans;
+  font-style: italic;
+}
+.phb .descriptive strong {
+  font-family: ScalySans;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.phb pre + .descriptive {
+  margin-top: 8px;
+}

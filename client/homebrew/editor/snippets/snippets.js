@@ -108,6 +108,20 @@ module.exports = [
 				},
 			},
 			{
+				name : 'Descriptive Text Box',
+				icon : 'fa-sticky-note-o',
+				gen : function(){
+					return [
+						"<div class='descriptive'>",
+						"##### Time to Drop Knowledge",
+						"Use notes to point out some interesting information. ",
+						"",
+						"**Tables and lists** both work within a note.",
+						"</div>"
+					].join('\n');
+				},
+			},
+			{
 				name : 'Monster Stat Block',
 				icon : 'fa-bug',
 				gen : MonsterBlockGen.half,

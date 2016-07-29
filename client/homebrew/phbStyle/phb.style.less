@@ -12,7 +12,7 @@
 @monsterStatBackground : #FDF1DC;
 @page { margin: 0; }
 body {
-	counter-reset: phb-page-numbers;
+	counter-reset : phb-page-numbers;
 }
 .useSansSerif(){
 	font-family : ScalySans;
@@ -40,7 +40,7 @@ body {
 }
 .phb{
 	.useColumns();
-	counter-increment: phb-page-numbers;
+	counter-increment : phb-page-numbers;
 	position          : relative;
 	z-index           : 15;
 	box-sizing        : border-box;
@@ -63,7 +63,7 @@ body {
 		padding-bottom : 0.8em;
 		line-height    : 1.3em;
 		&+p{
-			margin-top  : -0.8em;
+			margin-top : -0.8em;
 		}
 	}
 	ul{
@@ -218,12 +218,12 @@ body {
 			border-bottom : 1px solid @headerText;
 		}
 		hr+ul{
-			color           : @headerText;
+			color : @headerText;
 		}
 		ul{
 			.useSansSerif();
-			padding-left    : 1em;
-			font-size       : 0.352cm;
+			padding-left : 1em;
+			font-size    : 0.352cm;
 		}
 		// Monster Ability table
 		hr+table{
@@ -261,7 +261,6 @@ body {
 	hr+hr+blockquote{
 		.useColumns(0.96);
 	}
-
 	//*****************************
 	// *           FOOTER
 	// *****************************/
@@ -295,10 +294,8 @@ body {
 		font-size  : 0.9em;
 		color      : #c9ad6a;
 		text-align : center;
-
 		&.auto::after {
-
-			content: counter(phb-page-numbers);
+			content : counter(phb-page-numbers);
 		}
 	}
 	.footnote{
@@ -324,7 +321,6 @@ body {
 		text-indent     : -1em;
 		list-style-type : none;
 	}
-
 	//Column Break
 	pre, code{
 		visibility                 : hidden;
@@ -386,8 +382,6 @@ body {
 		box-shadow : none;
 	}
 }
-
-
 //*****************************
 // *         WIDE
 // *****************************/
@@ -396,14 +390,11 @@ body {
 	-webkit-column-span : all;
 	-moz-column-span    : all;
 }
-
-
 //*****************************
 // *       CLASS TABLE
 // *****************************/
-
 .phb .classTable{
-	margin-top       : 25px;
+	margin-top          : 25px;
 	margin-bottom       : 40px;
 	border-collapse     : separate;
 	background-color    : white;
@@ -415,6 +406,40 @@ body {
 	border-image-source : @frameBorderImage;
 	border-image-width  : 47px;
 	h5{
-		margin-bottom: 10px;
+		margin-bottom : 10px;
 	}
+}
+//*****************************
+// *       CLASS TABLE
+// *****************************/
+.phb .descriptive{
+	display             : block-inline;
+	margin-bottom       : 1em;
+	background-color    : #faf7ea;
+	font-family         : ScalySans;
+	border-style        : solid;
+	border-width        : 7px;
+	border-image        : @descriptiveBoxImage 12 round;
+	border-image-outset : 4px;
+	box-shadow          : 0px 0px 6px #faf7ea;
+	p{
+		display        : block;
+		padding-bottom : 0px;
+		line-height    : 1.5em;
+	}
+	p + p {
+		padding-top : .8em;
+	}
+	em {
+		font-family : ScalySans;
+		font-style  : italic;
+	}
+	strong {
+		font-family    : ScalySans;
+		font-weight    : 800;
+		letter-spacing : -0.02em;
+	}
+}
+.phb pre+.descriptive{
+	margin-top : 8px;
 }

@@ -1,5 +1,8 @@
 # changelog
 
+### Friday, 29/07/2016
+- Adding in descriptive note blocks. (Thanks calculuschild!)
+
 ### Thursday, 07/07/2016 - v2.2.6
 - Added a new nav item on the homepage for accessing both recently viewed and edited brews (thanks [ChosenSeraph!](https://github.com/stolksdorf/homebrewery/issues/147))
 
