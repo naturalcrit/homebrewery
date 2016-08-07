@@ -30,12 +30,6 @@ var getTopBrews = function(cb){
 
 module.exports = function(app){
 
-	app.get('/api/top', function(req, res){
-		getTopBrews(function(topBrews){
-			return res.json(topBrews);
-		});
-	});
-
 	app.post('/api', function(req, res){
 		var newHomebrew = new HomebrewModel(req.body);
 		newHomebrew.save(function(err, obj){
