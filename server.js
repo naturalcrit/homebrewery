@@ -62,7 +62,7 @@ app.get('/edit/:id', function(req, res){
 		var resObj = null;
 		var errObj = {text: "# oops\nCould not find the homebrew."}
 		if(objs.length){
-			resObj = objs[0];
+			resObj = objs[0].toJSON();
 		}
 
 		vitreumRender({
@@ -102,7 +102,7 @@ app.get('/share/:id', function(req, res){
 			prerenderWith : './client/homebrew/homebrew.jsx',
 			initialProps: {
 				url: req.originalUrl,
-				brew : sanitizeBrew(resObj || errObj)
+				brew : sanitizeBrew(resObj.toJSON() || errObj)
 			},
 			clearRequireCache : !process.env.PRODUCTION,
 		}, function (err, page) {
