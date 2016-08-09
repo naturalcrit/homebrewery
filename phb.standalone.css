@@ -202,6 +202,9 @@ table {
 body {
   counter-reset: phb-page-numbers;
 }
+* {
+  -webkit-print-color-adjust: exact;
+}
 .phb {
   column-count: 2;
   column-fill: auto;
