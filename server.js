@@ -47,7 +47,11 @@ app = require('./server/homebrew.api.js')(app);
 
 var HomebrewModel = require('./server/homebrew.model.js').model;
 
-
+var sanitizeBrew = function(brew){
+	var cleanBrew = _.assign({}, brew);
+	delete cleanBrew.editId;
+	return cleanBrew;
+};
 
 
 //Edit Page
@@ -98,7 +102,7 @@ app.get('/share/:id', function(req, res){
 			prerenderWith : './client/homebrew/homebrew.jsx',
 			initialProps: {
 				url: req.originalUrl,
-				brew : resObj || errObj
+				brew : sanitizeBrew(resObj || errObj)
 			},
 			clearRequireCache : !process.env.PRODUCTION,
 		}, function (err, page) {
