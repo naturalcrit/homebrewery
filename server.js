@@ -10,7 +10,7 @@ app.use(bodyParser.json({limit: '25mb'}));
 
 //Mongoose
 var mongoose = require('mongoose');
-var mongoUri = process.env.MONGODB_URI || 'mongodb://localhost/naturalcrit';
+var mongoUri = process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://localhost/naturalcrit';
 mongoose.connect(mongoUri);
 mongoose.connection.on('error', function(){
 	console.log(">>>ERROR: Run Mongodb.exe ya goof!");

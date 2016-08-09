@@ -35,7 +35,7 @@ module.exports = function(app){
 		newHomebrew.save(function(err, obj){
 			if(err){
 				console.error(err, err.toString(), err.stack);
-				return res.status(500).send("Error while creating new brew");
+				return res.status(500).send(`Error while creating new brew, ${err.toString()}`);
 			}
 			return res.json(obj);
 		})
