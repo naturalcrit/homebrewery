@@ -1,6 +1,6 @@
 # changelog
 
-### Friday, 29/07/2016
+### Friday, 29/07/2016 - v2.2.7
 - Adding in descriptive note blocks. (Thanks calculuschild!)
 
 ### Thursday, 07/07/2016 - v2.2.6
