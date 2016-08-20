@@ -31,3 +31,7 @@ You can use [Docker](https://docs.docker.com) to get up and running with Natural
 ### changelog
 
 You can check out the changelog [here](https://github.com/stolksdorf/homebrewery/blob/master/changelog.md)
+
+### license
+
+This project licensed under [MIT](./license)

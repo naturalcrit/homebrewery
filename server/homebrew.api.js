@@ -27,11 +27,26 @@ var getTopBrews = function(cb){
 	});
 }
 
+var getGoodBrewTitle = (text) => {
+	var titlePos = text.indexOf('# ');
+	if(titlePos !== -1){
+		var ending = text.indexOf('\n', titlePos);
+		return text.substring(titlePos + 2, ending);
+	}else{
+		return _.find(text.split('\n'), (line)=>{
+			return line;
+		});
+	}
+};
+
 
 module.exports = function(app){
 
 	app.post('/api', function(req, res){
 		var newHomebrew = new HomebrewModel(req.body);
+		if(!newHomebrew.title){
+			newHomebrew.title = getGoodBrewTitle(newHomebrew.text);
+		}
 		newHomebrew.save(function(err, obj){
 			if(err){
 				console.error(err, err.toString(), err.stack);
@@ -92,6 +107,7 @@ module.exports = function(app){
 
 
 	app.get('/api/search', mw.adminOnly, function(req, res){
+
 		var page = req.query.page || 0;
 		var count = req.query.count || 20;
 

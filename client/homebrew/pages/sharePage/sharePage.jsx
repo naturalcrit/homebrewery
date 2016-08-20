@@ -14,6 +14,7 @@ var HijackPrint = require('../hijackPrint.js');
 var SharePage = React.createClass({
 	getDefaultProps: function() {
 		return {
+			ver : '0.0.0',
 			brew : {
 				title : '',
 				text : '',
@@ -34,7 +35,7 @@ var SharePage = React.createClass({
 
 	render : function(){
 		return <div className='sharePage page'>
-			<Navbar>
+			<Navbar ver={this.props.ver}>
 				<Nav.section>
 					<Nav.item className='brewTitle'>{this.props.brew.title}</Nav.item>
 				</Nav.section>

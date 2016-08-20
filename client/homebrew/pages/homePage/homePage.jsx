@@ -19,7 +19,8 @@ var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 var HomePage = React.createClass({
 	getDefaultProps: function() {
 		return {
-			welcomeText : ""
+			welcomeText : '',
+			ver : '0.0.0'
 		};
 	},
 	getInitialState: function() {
@@ -30,7 +31,6 @@ var HomePage = React.createClass({
 	handleSave : function(){
 		request.post('/api')
 			.send({
-				title : 'Change This',
 				text : this.state.text
 			})
 			.end((err, res)=>{
@@ -48,7 +48,7 @@ var HomePage = React.createClass({
 		});
 	},
 	renderNavbar : function(){
-		return <Navbar>
+		return <Navbar ver={this.props.ver}>
 			<Nav.section>
 				<PatreonNavItem />
 				<IssueNavItem />

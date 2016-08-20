@@ -18,8 +18,6 @@ Like this tool? Want to buy me a beer? [Head here](https://www.patreon.com/stolk
 
 This tool will **always** be free, never have ads, and I will never offer any "premium" features or whatever.
 
-### Bugs, Issues, Suggestions?
-Have an idea of how to make The Homebrewery better? Or did you find something that wasn't quite right? Head [here](https://github.com/stolksdorf/homebrewery/issues/new) and let me know!.
 
 
 >##### PDF Exporting
@@ -38,25 +36,19 @@ Have an idea of how to make The Homebrewery better? Or did you find something th
 ```
 ```
 
-## New Things in v2.2.0!
+## New Things All The Time!
 What's new in the latest update? Check out the full changelog [here](/changelog)
 
-* **New Subdomain** I moved The Homebrewery to it's own subdomain. This will make it easier to build and deploy more tools in the future.
+### Bugs, Issues, Suggestions?
+Have an idea of how to make The Homebrewery better? Or did you find something that wasn't quite right? Head [here](https://github.com/stolksdorf/homebrewery/issues/new) and let me know!.
 
+### Legal Junk
+The Homebrewery is licensed using the [MIT License](https://github.com/stolksdorf/homebrewery/blob/master/license). Which means you are free to use The Homebrewery is any way that you want, except for claiming that you made it yourself.
 
-## V2 Overhaul
-A lot of <i class='fa fa-heart'></i> has been put into version 2 of The Homebrewery. Here are the highlights:
+If you wish to sell or in some way gain profit for what's created on this site, it's your responsibility to ensure you have the proper licenses/rights for any images or resources used.
 
-* **A whole new look** The site has been re-built from the ground up!
-* **Better editor and split pane** Syntax highlighting will make writing your brews even easier, and now you can customize how large your editor is.
-* **More reliable rendering** Lots of work has been put into making the rendering more reliable, not just for web, but also for PDFs
-* **PDF Printing on Chrome** You don't need to use Chrome Canary anymore!
-* ** Performance Improvements** The site should load faster, save faster, and render large brews *much* faster.
-* **Patreon page** If you like this tool and want to show some thanks you can [head here](https://www.patreon.com/stolksdorf).
-
-
-
-
+### More Resources
+If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/comments/3uwxx9/resources_open_to_the_community/).
 
 
 
@@ -83,17 +75,16 @@ ___
 
 
 
+```
+```
+
+
 ### Images
 Images can be included 'inline' with the text using Markdown-style images. However for background images more control is needed.
 
 Background images should be included as HTML-style img tags. Using inline CSS you can precisely position your image where you'd like it to be. I have added both a inflow image snippet and a background image snippet to give you exmaples of how to do it.
 
-```
-```
 
-
-### Legal Junk
-You are free to use The Homebrewery is any way that you want, except for claiming that you made it yourself. If you wish to sell or in some way gain profit for what's created on this site, it's your responsibility to ensure you have the proper licenses/rights for any images or resources used.
 
 ### Crediting Me
 If you'd like to credit The Homebrewery in your brew, I'd be flattered! Just reference that you made it with The Homebrewery.

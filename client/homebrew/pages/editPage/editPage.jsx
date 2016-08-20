@@ -27,6 +27,7 @@ const SAVE_TIMEOUT = 3000;
 var EditPage = React.createClass({
 	getDefaultProps: function() {
 		return {
+			ver : '0.0.0',
 			id : null,
 			brew : {
 				title : '',
@@ -170,7 +171,7 @@ var EditPage = React.createClass({
 		}
 	},
 	renderNavbar : function(){
-		return <Navbar>
+		return <Navbar ver={this.props.ver}>
 			<Nav.section>
 				<EditTitle title={this.state.title} onChange={this.handleTitleChange} />
 			</Nav.section>

@@ -3,6 +3,7 @@ var ClassTableGen = require('./classtable.gen.js');
 var MonsterBlockGen = require('./monsterblock.gen.js');
 var ClassFeatureGen = require('./classfeature.gen.js');
 var FullClassGen = require('./fullclass.gen.js');
+var CoverPageGen = require('./coverpage.gen.js');
 
 
 module.exports = [
@@ -130,7 +131,12 @@ module.exports = [
 				name : 'Wide Monster Stat Block',
 				icon : 'fa-paw',
 				gen : MonsterBlockGen.full,
-			}
+			},
+			{
+				name : 'Cover Page',
+				icon : 'fa-file-word-o',
+				gen : CoverPageGen,
+			},
 		]
 	},
 

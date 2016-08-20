@@ -1,5 +1,18 @@
 # changelog
 
+### Saturday, 20/08/2016 - v2.3.0
+- Added in a license file
+- Updated the welcome text
+- Added in a much better Error page
+- If you visit a deleted brew, it will now remove it from your recent list. (Thanks u/sIllverback!)
+- Improved parsing of embedded html text in brews. (Thanks u/com-charizard!)
+- Added in a new coverpage snippet
+- Homebrewery will now try and onsert a good title for your brew if you don't provide one
+- Homebrewery now re-renders properly when you zoom
+- Fixed the noteblock overlapping into titles (thanks u/dsompura!)
+- Fixed a bad search route in the admin panel (thanks u/SnappyTom!)
+
+
 ### Friday, 29/07/2016 - v2.2.7
 - Adding in descriptive note blocks. (Thanks calculuschild!)
 

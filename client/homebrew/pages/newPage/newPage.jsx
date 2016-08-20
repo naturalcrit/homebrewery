@@ -19,7 +19,8 @@ const KEY = 'homebrewery-new';
 var NewPage = React.createClass({
 	getInitialState: function() {
 		return {
-			title : 'My Awesome Brew v99',
+			ver : '0.0.0',
+			title : '',
 			text: '',
 			isSaving : false
 		};
@@ -98,7 +99,7 @@ var NewPage = React.createClass({
 	},
 
 	renderNavbar : function(){
-		return <Navbar>
+		return <Navbar ver={this.props.ver}>
 			<Nav.section>
 				<EditTitle title={this.state.title} onChange={this.handleTitleChange} />
 			</Nav.section>

@@ -23,11 +23,20 @@ var BrewRenderer = React.createClass({
 	height : 0,
 
 	componentDidMount: function() {
+		this.updateSize();
+		window.addEventListener("resize", this.updateSize);
+	},
+	componentWillUnmount: function() {
+		window.removeEventListener("resize", this.updateSize);
+	},
+
+	updateSize : function() {
 		this.setState({
 			height : this.refs.main.parentNode.clientHeight,
 			isMounted : true
 		});
 	},
+
 	handleScroll : function(e){
 		this.setState({
 			viewablePageNumber : Math.floor(e.target.scrollTop / PAGE_HEIGHT)
