@@ -375,8 +375,12 @@ body {
   font-size: 0.352cm;
   line-height: 1.1em;
 }
-.phb pre + blockquote {
-  margin-top: 11px;
+.phb pre + blockquote,
+.phb h2 + blockquote,
+.phb h3 + blockquote,
+.phb h4 + blockquote,
+.phb h5 + blockquote {
+  margin-top: 13px;
 }
 .phb hr + blockquote {
   position: relative;

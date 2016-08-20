@@ -9,6 +9,7 @@
 - Added in a new coverpage snippet
 - Homebrewery will now try and onsert a good title for your brew if you don't provide one
 - Homebrewery now re-renders properly when you zoom
+- Fixed the noteblock overlapping into titles (thanks u/dsompura!)
 
 
 ### Friday, 29/07/2016 - v2.2.7
