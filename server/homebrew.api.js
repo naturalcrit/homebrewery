@@ -107,6 +107,7 @@ module.exports = function(app){
 
 
 	app.get('/api/search', mw.adminOnly, function(req, res){
+
 		var page = req.query.page || 0;
 		var count = req.query.count || 20;
 

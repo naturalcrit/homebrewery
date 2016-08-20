@@ -28,7 +28,7 @@ var HomebrewAdmin = React.createClass({
 
 
 	fetchBrews : function(page){
-		request.get('/homebrew/api/search')
+		request.get('/api/search')
 			.query({
 				admin_key : this.props.admin_key,
 				count : this.state.count,
