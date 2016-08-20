@@ -150,7 +150,7 @@ app.get('/source/:id', function(req, res){
 });
 
 //Home and 404, etc.
-var welcomeText = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg.txt', 'utf8');
+var welcomeText = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 var changelogText = require('fs').readFileSync('./changelog.md', 'utf8');
 app.get('*', function (req, res) {
 	vitreumRender({
