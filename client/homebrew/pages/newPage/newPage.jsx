@@ -20,7 +20,7 @@ var NewPage = React.createClass({
 	getInitialState: function() {
 		return {
 			ver : '0.0.0',
-			title : 'My Awesome Brew v99',
+			title : '',
 			text: '',
 			isSaving : false
 		};

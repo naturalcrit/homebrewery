@@ -31,7 +31,6 @@ var HomePage = React.createClass({
 	handleSave : function(){
 		request.post('/api')
 			.send({
-				title : 'Change This',
 				text : this.state.text
 			})
 			.end((err, res)=>{
