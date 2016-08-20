@@ -28,9 +28,19 @@ var Editor = React.createClass({
 	},
 
 	componentDidMount: function() {
+		this.updateEditorSize();
+		window.addEventListener("resize", this.updateEditorSize);
+	},
+	componentWillUnmount: function() {
+		window.removeEventListener("resize", this.updateEditorSize);
+	},
+
+	updateEditorSize : function() {
 		var paneHeight = this.refs.main.parentNode.clientHeight;
 		paneHeight -= this.refs.snippetBar.clientHeight + 1;
 		this.refs.codeEditor.codeMirror.setSize(null, paneHeight);
+
+		this.refs.codeEditor.updateSize();
 	},
 
 	handleTextChange : function(text){
@@ -48,10 +58,6 @@ var Editor = React.createClass({
 		this.refs.codeEditor.setCursorPosition(this.cursorPosition.line, this.cursorPosition.ch  + injectText.length);
 	},
 
-	//Called when there are changes to the editor's dimensions
-	update : function(){
-		this.refs.codeEditor.updateSize();
-	},
 
 	renderSnippetGroups : function(){
 		return _.map(Snippets, (snippetGroup)=>{

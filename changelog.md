@@ -7,6 +7,9 @@
 - If you visit a deleted brew, it will now remove it from your recent list. (Thanks u/sIllverback!)
 - Improved parsing of embedded html text in brews. (Thanks u/com-charizard!)
 - Added in a new coverpage snippet
+- Homebrewery will now try and onsert a good title for your brew if you don't provide one
+- Homebrewery now re-renders properly when you zoom
+
 
 ### Friday, 29/07/2016 - v2.2.7
 - Adding in descriptive note blocks. (Thanks calculuschild!)
