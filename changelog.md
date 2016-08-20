@@ -5,6 +5,8 @@
 - Updated the welcome text
 - Added in a much better Error page
 - If you visit a deleted brew, it will now remove it from your recent list. (Thanks u/sIllverback!)
+- Improved parsing of embedded html text in brews. (Thanks u/com-charizard!)
+-
 
 ### Friday, 29/07/2016 - v2.2.7
 - Adding in descriptive note blocks. (Thanks calculuschild!)

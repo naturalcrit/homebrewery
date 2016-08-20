@@ -52,6 +52,10 @@ var EditPage = React.createClass({
 	},
 	savedBrew : null,
 
+	test : ()=>{
+
+	},
+
 	componentDidMount: function(){
 
 		console.log('getting here');

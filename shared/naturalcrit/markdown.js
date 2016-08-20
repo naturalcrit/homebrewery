@@ -4,7 +4,7 @@ var renderer = new Markdown.Renderer();
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (html) {
-	if(_.startsWith(_.trim(html), '<div class=') && _.endsWith(_.trim(html), '</div>')){
+	if(_.startsWith(_.trim(html), '<div') && _.endsWith(_.trim(html), '</div>')){
 		var openTag = html.substring(0, html.indexOf('>')+1);
 		html = html.substring(html.indexOf('>')+1);
 		html = html.substring(0, html.lastIndexOf('</div>'));
