@@ -56,16 +56,11 @@ var sanitizeBrew = function(brew){
 //Load project version
 var projectVersion = require('./package.json').version;
 
-console.log(projectVersion);
-
 
 //Edit Page
 app.get('/edit/:id', function(req, res){
 	HomebrewModel.find({editId : req.params.id}, function(err, objs){
-		if(err || !objs.length) return res.status(404).send('Could not find Homebrew with that id');
-
 		var resObj = null;
-		var errObj = {text: "# oops\nCould not find the homebrew."}
 		if(objs.length){
 			resObj = objs[0].toJSON();
 		}
@@ -76,7 +71,7 @@ app.get('/edit/:id', function(req, res){
 			prerenderWith : './client/homebrew/homebrew.jsx',
 			initialProps: {
 				url: req.originalUrl,
-				brew : resObj || errObj,
+				brew : resObj || {},
 				version : projectVersion
 			},
 			clearRequireCache : !process.env.PRODUCTION,
@@ -90,16 +85,15 @@ app.get('/edit/:id', function(req, res){
 //Share Page
 app.get('/share/:id', function(req, res){
 	HomebrewModel.find({shareId : req.params.id}, function(err, objs){
-		if(err || !objs.length) return res.status(404).send('Could not find Homebrew with that id');
-
-		var resObj = null;
-		var errObj = {text: "# oops\nCould not find the homebrew."}
+		var brew = {};
 
 		if(objs.length){
-			resObj = objs[0];
+			var resObj = objs[0];
 			resObj.lastViewed = new Date();
 			resObj.views = resObj.views + 1;
 			resObj.save();
+
+			brew = resObj.toJSON();
 		}
 
 		vitreumRender({
@@ -108,7 +102,7 @@ app.get('/share/:id', function(req, res){
 			prerenderWith : './client/homebrew/homebrew.jsx',
 			initialProps: {
 				url: req.originalUrl,
-				brew : sanitizeBrew(resObj.toJSON() || errObj),
+				brew : sanitizeBrew(brew || {}),
 				version : projectVersion
 			},
 			clearRequireCache : !process.env.PRODUCTION,
@@ -123,11 +117,13 @@ var Markdown = require('naturalcrit/markdown.js');
 var PHBStyle = '<style>' + require('fs').readFileSync('./phb.standalone.css', 'utf8') + '</style>'
 app.get('/print/:id', function(req, res){
 	HomebrewModel.find({shareId : req.params.id}, function(err, objs){
-		if(err || !objs.length) return res.status(404).send('Could not find Homebrew with that id');
-
-		var brew = null;
+		var brew = {};
 		if(objs.length){
 			brew = objs[0];
+		}
+
+		if(err || !objs.length){
+			brew.text = '# Oops \n We could not find a brew with that id. **Sorry!**';
 		}
 
 		var content = _.map(brew.text.split('\\page'), function(pageText, index){

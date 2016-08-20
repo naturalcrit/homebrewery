@@ -8,6 +8,7 @@ var HomePage = require('./pages/homePage/homePage.jsx');
 var EditPage = require('./pages/editPage/editPage.jsx');
 var SharePage = require('./pages/sharePage/sharePage.jsx');
 var NewPage = require('./pages/newPage/newPage.jsx');
+var ErrorPage = require('./pages/errorPage/errorPage.jsx');
 
 var Router;
 var Homebrew = React.createClass({
@@ -30,6 +31,10 @@ var Homebrew = React.createClass({
 	componentWillMount: function() {
 		Router = CreateRouter({
 			'/edit/:id' : (args) => {
+				if(!this.props.brew.editId){
+					return <ErrorPage ver={this.props.version} errorId={args.id}/>
+				}
+
 				return <EditPage
 					ver={this.props.version}
 					id={args.id}
@@ -37,6 +42,10 @@ var Homebrew = React.createClass({
 			},
 
 			'/share/:id' : (args) => {
+				if(!this.props.brew.shareId){
+					return <ErrorPage ver={this.props.version} errorId={args.id}/>
+				}
+
 				return <SharePage
 					ver={this.props.version}
 					id={args.id}

@@ -53,6 +53,9 @@ var EditPage = React.createClass({
 	savedBrew : null,
 
 	componentDidMount: function(){
+
+		console.log('getting here');
+
 		this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
 		window.onbeforeunload = ()=>{
 			if(this.state.isSaving || this.state.isPending){
