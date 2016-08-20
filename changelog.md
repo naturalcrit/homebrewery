@@ -1,5 +1,9 @@
 # changelog
 
+### Saturday, 20/08/2016 - v2.3.0
+- Added in a license file
+- Updated the welcome text
+
 ### Friday, 29/07/2016 - v2.2.7
 - Adding in descriptive note blocks. (Thanks calculuschild!)
 

@@ -19,7 +19,8 @@ var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 var HomePage = React.createClass({
 	getDefaultProps: function() {
 		return {
-			welcomeText : ""
+			welcomeText : '',
+			ver : '0.0.0'
 		};
 	},
 	getInitialState: function() {
@@ -48,7 +49,7 @@ var HomePage = React.createClass({
 		});
 	},
 	renderNavbar : function(){
-		return <Navbar>
+		return <Navbar ver={this.props.ver}>
 			<Nav.section>
 				<PatreonNavItem />
 				<IssueNavItem />

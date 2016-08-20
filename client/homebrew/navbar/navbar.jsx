@@ -6,7 +6,8 @@ var Nav = require('naturalcrit/nav/nav.jsx');
 var Navbar = React.createClass({
 	getInitialState: function() {
 		return {
-			showNonChromeWarning : false
+			showNonChromeWarning : false,
+			ver : '0.0.0'
 		};
 	},
 
@@ -34,7 +35,7 @@ var Navbar = React.createClass({
 				<Nav.item href='/' className='homebrewLogo'>
 					<div>The Homebrewery</div>
 				</Nav.item>
-				<Nav.item>v2.2.8</Nav.item>
+				<Nav.item>{`v${this.props.ver}`}</Nav.item>
 
 				{this.renderChromeWarning()}
 			</Nav.section>

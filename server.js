@@ -43,7 +43,7 @@ app.get('/admin', function(req, res){
 
 //Populate homebrew routes
 app = require('./server/homebrew.api.js')(app);
-//app = require('./server/homebrew.server.js')(app);
+
 
 var HomebrewModel = require('./server/homebrew.model.js').model;
 
@@ -52,6 +52,11 @@ var sanitizeBrew = function(brew){
 	delete cleanBrew.editId;
 	return cleanBrew;
 };
+
+//Load project version
+var projectVersion = require('./package.json').version;
+
+console.log(projectVersion);
 
 
 //Edit Page
@@ -71,7 +76,8 @@ app.get('/edit/:id', function(req, res){
 			prerenderWith : './client/homebrew/homebrew.jsx',
 			initialProps: {
 				url: req.originalUrl,
-				brew : resObj || errObj
+				brew : resObj || errObj,
+				version : projectVersion
 			},
 			clearRequireCache : !process.env.PRODUCTION,
 		}, function (err, page) {
@@ -102,7 +108,8 @@ app.get('/share/:id', function(req, res){
 			prerenderWith : './client/homebrew/homebrew.jsx',
 			initialProps: {
 				url: req.originalUrl,
-				brew : sanitizeBrew(resObj.toJSON() || errObj)
+				brew : sanitizeBrew(resObj.toJSON() || errObj),
+				version : projectVersion
 			},
 			clearRequireCache : !process.env.PRODUCTION,
 		}, function (err, page) {
@@ -160,7 +167,8 @@ app.get('*', function (req, res) {
 		initialProps: {
 			url: req.originalUrl,
 			welcomeText : welcomeText,
-			changelog : changelogText
+			changelog : changelogText,
+			version : projectVersion
 		},
 		clearRequireCache : !process.env.PRODUCTION,
 	}, function (err, page) {

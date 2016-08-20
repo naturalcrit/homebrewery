@@ -13,9 +13,10 @@ var Router;
 var Homebrew = React.createClass({
 	getDefaultProps: function() {
 		return {
-			url : "",
-			welcomeText : "",
-			changelog : "",
+			url : '',
+			welcomeText : '',
+			changelog : '',
+			version : '0.0.0',
 			brew : {
 				title : '',
 				text : '',
@@ -29,27 +30,35 @@ var Homebrew = React.createClass({
 	componentWillMount: function() {
 		Router = CreateRouter({
 			'/edit/:id' : (args) => {
-				return <EditPage id={args.id} brew={this.props.brew} />
+				return <EditPage
+					ver={this.props.version}
+					id={args.id}
+					brew={this.props.brew} />
 			},
 
 			'/share/:id' : (args) => {
-				return <SharePage id={args.id} brew={this.props.brew} />
+				return <SharePage
+					ver={this.props.version}
+					id={args.id}
+					brew={this.props.brew} />
 			},
 			'/changelog' : (args) => {
-				return <SharePage brew={{title : 'Changelog', text : this.props.changelog}} />
+				return <SharePage
+					ver={this.props.version}
+					brew={{title : 'Changelog', text : this.props.changelog}} />
 			},
 			'/new' : (args) => {
-				return <NewPage />
+				return <NewPage ver={this.props.version} />
 			},
-			'*' : <HomePage welcomeText={this.props.welcomeText} />,
+			'*' : <HomePage
+					ver={this.props.version}
+					welcomeText={this.props.welcomeText} />,
 		});
 	},
 	render : function(){
-		return(
-			<div className='homebrew'>
-				<Router initialUrl={this.props.url}/>
-			</div>
-		);
+		return <div className='homebrew'>
+			<Router initialUrl={this.props.url}/>
+		</div>
 	}
 });
 
