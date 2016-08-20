@@ -122,6 +122,12 @@ module.exports = {
 	}),
 
 	both : React.createClass({
+		getDefaultProps: function() {
+			return {
+				errorId : null
+			};
+		},
+
 		getInitialState: function() {
 			return {
 				showDropdown: false,
@@ -131,9 +137,26 @@ module.exports = {
 		},
 
 		componentDidMount: function() {
+
+			var edited = JSON.parse(localStorage.getItem(EDIT_KEY) || '[]');
+			var viewed = JSON.parse(localStorage.getItem(VIEW_KEY) || '[]');
+
+			if(this.props.errorId){
+				edited = _.filter(edited, (edit) => {
+					return edit.id !== this.props.errorId;
+				});
+				viewed = _.filter(viewed, (view) => {
+					return view.id !== this.props.errorId;
+				});
+
+				localStorage.setItem(EDIT_KEY, JSON.stringify(edited));
+				localStorage.setItem(VIEW_KEY, JSON.stringify(viewed));
+			}
+
+
 			this.setState({
-				edit : JSON.parse(localStorage.getItem(EDIT_KEY) || '[]'),
-				view : JSON.parse(localStorage.getItem(VIEW_KEY) || '[]')
+				edit : edited,
+				view : viewed
 			});
 		},
 
