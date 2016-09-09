@@ -17,5 +17,27 @@ module.exports = {
 	render : (rawText)=>{
 		return Markdown(rawText, {renderer : renderer})
 	},
+	validate : (rawText)=>{
+		var errors = [];
+		var tokens = Markdown.lexer(rawText);
+
+		_.each(tokens, (token)=>{
+			if(token.type === 'paragraph'){
+				if(_.startsWith(token.text, '<div')){
+					errors.push({
+						err : ' No closing tag',
+						token : token
+					});
+				}else if(_.startsWith(token.text, '</div>')){
+					errors.push({
+						err : ' No opening tag',
+						token : token
+					})
+				}
+			}
+		});
+
+		return errors;
+	},
 	marked : Markdown
 };

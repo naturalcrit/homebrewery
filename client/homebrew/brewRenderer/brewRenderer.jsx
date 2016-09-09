@@ -16,7 +16,9 @@ var BrewRenderer = React.createClass({
 		return {
 			viewablePageNumber: 0,
 			height : 0,
-			isMounted : false
+			isMounted : false,
+
+			errors : []
 		};
 	},
 	totalPages : 0,
@@ -79,6 +81,15 @@ var BrewRenderer = React.createClass({
 	renderPages : function(){
 		var pages = this.props.text.split('\\page');
 		this.totalPages = pages.length;
+
+		try{
+			var temp = Markdown.validate(this.props.text);
+
+			console.log(temp);
+		}catch(e){
+			console.log('ERR', e);
+		}
+
 
 		return _.map(pages, (page, index)=>{
 			if(this.shouldRender(page, index)){
