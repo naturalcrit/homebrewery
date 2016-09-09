@@ -4,10 +4,15 @@ var _ = require('lodash');
 var Nav = require('naturalcrit/nav/nav.jsx');
 
 var Navbar = React.createClass({
+	getDefaultProps: function() {
+		return {
+			ver : '0.0.0'
+		};
+	},
+
 	getInitialState: function() {
 		return {
-			showNonChromeWarning : false,
-			ver : '0.0.0'
+			showNonChromeWarning : false
 		};
 	},
 
