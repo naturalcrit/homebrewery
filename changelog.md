@@ -1,5 +1,8 @@
 # changelog
 
+### Friday, 09/09/2016 - v2.4.0
+- Adding in a HTML validator that will display warnings whenever you save. This should stop a lot of the issues generated with pages not showing up.
+
 ### Saturday, 20/08/2016 - v2.3.0
 - Added in a license file
 - Updated the welcome text
