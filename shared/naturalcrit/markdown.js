@@ -20,59 +20,43 @@ module.exports = {
 	validate : (rawText)=>{
 		var currentLine = 0;
 		var errors = [];
-		var tokens = Markdown.lexer(rawText);
+		var tokens = Markdown.lexer(rawText, {renderer : renderer});
 
-		_.each(tokens, (token)=>{
+		return _.filter(_.map(tokens, (token)=>{
 			if(token.type === 'paragraph' || token.type === 'html'){
 
 				var hasOpen = token.text.indexOf('<div') !== -1;
 				var hasClose = token.text.indexOf('</div>') !== -1;
 
-				if(hasClose && token.text.length > 6){
-					errors.push({
-						err : ' Closing tags must be on their own line',
+
+				if(hasOpen && !hasClose){
+					return {
+						err : 'No closing tag',
 						token : token,
 						line : currentLine
-					});
+					};
 				}
-				else if(hasOpen && !hasClose){
-					errors.push({
-						err : ' No closing tag',
+				if(hasClose && !hasOpen){
+					if(token.text.length > 6){
+						return {
+							err : 'Closing tags must be on their own line',
+							token : token,
+							line : currentLine
+						};
+					}
+					return {
+						err : 'No opening tag',
 						token : token,
 						line : currentLine
-					});
+					};
 				}
-				else if(hasClose && !hasOpen){
-					errors.push({
-						err : ' No opening tag',
-						token : token,
-						line : currentLine
-					});
-				}
 
-
-				/*
-
-
-				if(_.startsWith(token.text, '<div')){
-					errors.push({
-						err : ' No closing tag',
-						token : token,
-						line : currentLine
-					});
-				}else if(_.startsWith(token.text, '</div>')){
-					//Do a check to make sure it's on it's own line
-
-					errors.push({
-						err : ' No opening tag',
-						token : token,
-						line : currentLine
-					})
-				}
-				*/
 			}
 			//console.log(token);
-		});
+
+			//currentLine += token.text.split('\n').length + 1;
+
+		}));
 
 		return errors;
 	},

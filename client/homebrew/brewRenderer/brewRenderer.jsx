@@ -75,6 +75,20 @@ var BrewRenderer = React.createClass({
 	},
 
 	renderPage : function(pageText, index){
+
+		var html = Markdown.render(pageText)
+
+		var checkHTML = function(html) {
+		  var doc = document.createElement('div');
+		  doc.innerHTML = html;
+		  console.log(doc.innerHTML);
+		  return ( doc.innerHTML === html );
+		}
+
+		console.log('page', index, checkHTML(html));
+
+
+
 		return <div className='phb' id={`p${index + 1}`} dangerouslySetInnerHTML={{__html:Markdown.render(pageText)}} key={index} />
 	},
 
@@ -82,6 +96,8 @@ var BrewRenderer = React.createClass({
 		var pages = this.props.text.split('\\page');
 		this.totalPages = pages.length;
 
+
+		//TESTING VALIDATION
 		try{
 			var temp = Markdown.validate(this.props.text);
 
