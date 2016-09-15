@@ -86,9 +86,15 @@ var EditPage = React.createClass({
 	},
 
 	handleTextChange : function(text){
+
+		//If there are errors, run the validator on everychange to give quick feedback
+		var htmlErrors = this.state.htmlErrors;
+		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
+
 		this.setState({
 			text : text,
-			isPending : true
+			isPending : true,
+			htmlErrors : htmlErrors
 		});
 
 		(this.hasChanges() ? this.debounceSave() : this.debounceSave.cancel());
