@@ -17,7 +17,7 @@ var Editor = require('../../editor/editor.jsx');
 var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 var HijackPrint = require('../hijackPrint.js');
-
+var Markdown = require('naturalcrit/markdown.js');
 
 
 const SAVE_TIMEOUT = 3000;
@@ -47,6 +47,7 @@ var EditPage = React.createClass({
 			isSaving : false,
 			isPending : false,
 			errors : null,
+			htmlErrors : [],
 			lastUpdated : this.props.brew.updatedAt
 		};
 	},
@@ -59,6 +60,10 @@ var EditPage = React.createClass({
 				return 'You have unsaved changes!';
 			}
 		};
+
+		this.setState({
+			htmlErrors : Markdown.validate(this.state.text)
+		})
 
 		document.onkeydown = HijackPrint(this.props.brew.shareId);
 	},
@@ -115,7 +120,8 @@ var EditPage = React.createClass({
 		this.debounceSave.cancel();
 		this.setState({
 			isSaving : true,
-			errors : null
+			errors : null,
+			htmlErrors : Markdown.validate(this.state.text)
 		});
 
 		request
@@ -196,7 +202,7 @@ var EditPage = React.createClass({
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
 					<Editor value={this.state.text} onChange={this.handleTextChange} ref='editor'/>
-					<BrewRenderer text={this.state.text} />
+					<BrewRenderer text={this.state.text} errors={this.state.htmlErrors} />
 				</SplitPane>
 			</div>
 		</div>

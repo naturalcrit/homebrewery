@@ -3,12 +3,13 @@ var _ = require('lodash');
 var cx = require('classnames');
 var request = require("superagent");
 
+var Markdown = require('naturalcrit/markdown.js');
+
 var Nav = require('naturalcrit/nav/nav.jsx');
 var Navbar = require('../../navbar/navbar.jsx');
 var EditTitle = require('../../navbar/editTitle.navitem.jsx');
 var IssueNavItem = require('../../navbar/issue.navitem.jsx');
 
-var Markdown = require('naturalcrit/markdown.js');
 var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 var Editor = require('../../editor/editor.jsx');
 var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
@@ -115,7 +116,6 @@ var NewPage = React.createClass({
 	},
 
 	render : function(){
-		console.log(this.state.errors);
 		return <div className='newPage page'>
 			{this.renderNavbar()}
 			<div className='content'>

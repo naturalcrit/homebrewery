@@ -62,6 +62,7 @@ var ErrorBar = React.createClass({
 		return <div className='errorBar'>
 			<i className='fa fa-exclamation-triangle' />
 			<h3> There are HTML errors in your markup</h3>
+			<small>If these aren't fixed your brew will not render properly when you print it to PDF or share it</small>
 			{this.renderErrors()}
 			<hr />
 			{this.renderProtip()}
