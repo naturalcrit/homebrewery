@@ -17,7 +17,21 @@ module.exports = {
 	render : (rawText)=>{
 		return Markdown(rawText, {renderer : renderer})
 	},
-	validate : (rawText)=>{
+
+	validate : (rawText) => {
+
+		var res = xmllint.validateXML({
+			xml: rawText,
+			schema: "String"
+		});
+
+		console.log(res);
+
+
+	},
+
+
+	validate2 : (rawText)=>{
 		var currentLine = 0;
 		var errors = [];
 		var tokens = Markdown.lexer(rawText, {renderer : renderer});
