@@ -13,77 +13,67 @@ renderer.html = function (html) {
 	return html;
 };
 
+
+const tagTypes = ['div', 'span', 'a'];
+const tagRegex = new RegExp('(' +
+	_.map(tagTypes, (type)=>{
+		return `\\<${type}|\\</${type}>`;
+	}).join('|') + ')', 'g');
+
+
 module.exports = {
-	render : (rawText)=>{
-		return Markdown(rawText, {renderer : renderer})
+	marked : Markdown,
+	render : (rawBrewText)=>{
+		return Markdown(rawBrewText, {renderer : renderer})
 	},
 
-	validate : (rawText) => {
-
-		var res = xmllint.validateXML({
-			xml: rawText,
-			schema: "String"
-		});
-
-		console.log(res);
-
-
-	},
-
-
-	validate2 : (rawText)=>{
-		var currentLine = 0;
+	validate : (rawBrewText) => {
 		var errors = [];
-		var tokens = Markdown.lexer(rawText, {renderer : renderer});
+		var leftovers = _.reduce(rawBrewText.split('\n'), (acc, line, _lineNumber) => {
+			var lineNumber = _lineNumber + 1;
+			var matches = line.match(tagRegex);
+			if(!matches || !matches.length) return acc;
 
-		return _.filter(_.map(tokens, (token)=>{
-			if(token.type === 'paragraph' || token.type === 'html'){
-
-				var hasOpen = token.text.indexOf('<div') !== -1;
-				var hasClose = token.text.indexOf('</div>') !== -1;
-
-
-				if(hasOpen && !hasClose){
-					return {
-						err : 'No closing tag',
-						token : token,
-						line : currentLine
-					};
-				}
-				if(hasClose && !hasOpen){
-					if(token.text.length > 6){
-						return {
-							err : 'Closing tags must be on their own line',
-							token : token,
-							line : currentLine
-						};
+			_.each(matches, (match)=>{
+				_.each(tagTypes, (type)=>{
+					if(match == `<${type}`){
+						acc.push({
+							type : type,
+							line : lineNumber
+						});
 					}
-					return {
-						err : 'No opening tag',
-						token : token,
-						line : currentLine
-					};
-				}
+					if(match === `</${type}>`){
+						if(!acc.length){
+							errors.push({
+								line : lineNumber,
+								type : type,
+								err  : 'Unmatched closing tag'
+							});
+						}else if(_.last(acc).type == type){
+							acc.pop();
+						}else{
+							errors.push({
+								line : _.last(acc).line + ' to ' + lineNumber,
+								type : type,
+								err  : 'Type mismatch on closing tag'
+							});
+							acc.pop();
+						}
+					}
+				});
+			});
+			return acc;
+		}, []);
 
-			}
-			//console.log(token);
-
-			//currentLine += token.text.split('\n').length + 1;
-
-		}));
+		_.each(leftovers, (unmatched)=>{
+			errors.push({
+				line : unmatched.line,
+				type : unmatched.type,
+				err  : "Unmatched opening tag"
+			})
+		});
 
 		return errors;
 	},
-	marked : Markdown
 };
 
-
-/* Test Cases
-
-
-
-
-
-
-
-*/
