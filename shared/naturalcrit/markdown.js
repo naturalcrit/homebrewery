@@ -47,7 +47,8 @@ module.exports = {
 							errors.push({
 								line : lineNumber,
 								type : type,
-								err  : 'Unmatched closing tag'
+								text : 'Unmatched closing tag',
+								id : 'CLOSE'
 							});
 						}else if(_.last(acc).type == type){
 							acc.pop();
@@ -55,7 +56,8 @@ module.exports = {
 							errors.push({
 								line : _.last(acc).line + ' to ' + lineNumber,
 								type : type,
-								err  : 'Type mismatch on closing tag'
+								text : 'Type mismatch on closing tag',
+								id : 'MISMATCH'
 							});
 							acc.pop();
 						}
@@ -69,7 +71,8 @@ module.exports = {
 			errors.push({
 				line : unmatched.line,
 				type : unmatched.type,
-				err  : "Unmatched opening tag"
+				text : "Unmatched opening tag",
+				id : 'OPEN'
 			})
 		});
 

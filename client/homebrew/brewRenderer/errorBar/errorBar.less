@@ -1,0 +1,56 @@
+
+.errorBar{
+	position         : absolute;
+	z-index          : 10000;
+	box-sizing       : border-box;
+	width            : 100%;
+	margin-right     : 13px;
+	padding          : 20px;
+	padding-bottom   : 10px;
+	padding-left     : 100px;
+	background-color : @red;
+	color            : white;
+	i{
+		position  : absolute;
+		left      : 30px;
+		opacity   : 0.8;
+		font-size : 3em;
+	}
+	h3{
+		font-size   : 1.1em;
+		font-weight : 800;
+	}
+	ul{
+		margin-top          : 15px;
+		font-size           : 0.8em;
+		list-style-position : inside;
+		list-style-type     : disc;
+		li{
+			line-height : 1.6em;
+		}
+	}
+	hr{
+		box-sizing       : border-box;
+		height           : 2px;
+		width            : 150%;
+		margin-top       : 25px;
+		margin-bottom    : 15px;
+		margin-left      : -100px;
+		background-color : darken(@red, 8%);
+		border           : none;
+	}
+	.protips{
+		margin-left : -80px;
+		font-size   : 0.6em;
+		&>div{
+			margin-bottom : 10px;
+			line-height   : 1.2em;
+		}
+		h4{
+			opacity        : 0.8;
+			font-weight    : 800;
+			line-height    : 1.5em;
+			text-transform : uppercase;
+		}
+	}
+}

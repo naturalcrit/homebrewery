@@ -3,13 +3,15 @@ var _ = require('lodash');
 var cx = require('classnames');
 
 var Markdown = require('naturalcrit/markdown.js');
+var ErrorBar = require('./errorBar/errorBar.jsx');
 
 var PAGE_HEIGHT = 1056 + 30;
 
 var BrewRenderer = React.createClass({
 	getDefaultProps: function() {
 		return {
-			text : ''
+			text : '',
+			errors : []
 		};
 	},
 	getInitialState: function() {
@@ -75,37 +77,12 @@ var BrewRenderer = React.createClass({
 	},
 
 	renderPage : function(pageText, index){
-
-		var html = Markdown.render(pageText)
-
-		var checkHTML = function(html) {
-		  var doc = document.createElement('div');
-		  doc.innerHTML = html;
-		  console.log(doc.innerHTML);
-		  return ( doc.innerHTML === html );
-		}
-
-		console.log('page', index, checkHTML(html));
-
-
-
 		return <div className='phb' id={`p${index + 1}`} dangerouslySetInnerHTML={{__html:Markdown.render(pageText)}} key={index} />
 	},
 
 	renderPages : function(){
 		var pages = this.props.text.split('\\page');
 		this.totalPages = pages.length;
-
-
-		//TESTING VALIDATION
-		try{
-			var temp = Markdown.validate(this.props.text);
-
-			console.log(temp);
-		}catch(e){
-			console.log('ERR', e);
-		}
-
 
 		return _.map(pages, (page, index)=>{
 			if(this.shouldRender(page, index)){
@@ -121,6 +98,8 @@ var BrewRenderer = React.createClass({
 			onScroll={this.handleScroll}
 			ref='main'
 			style={{height : this.state.height}}>
+
+			<ErrorBar errors={this.props.errors} />
 
 			<div className='pages'>
 				{this.renderPages()}
