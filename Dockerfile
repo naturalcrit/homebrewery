@@ -10,12 +10,10 @@ EXPOSE 8000
 COPY . /app/naturalcrit
 WORKDIR /app/naturalcrit
 
-ADD start.sh /
-
-RUN chmod +x /start.sh && \
+RUN chmod +x start.sh && \
     npm install && \
     npm install -g gulp && \
     npm install gulp --save-dev && \
     gulp fresh
 
-CMD [ "/start.sh" ]
+CMD [ "/app/naturalcrit/start.sh" ]
