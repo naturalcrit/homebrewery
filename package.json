@@ -3,6 +3,8 @@
   "description": "Create authentic looking D&D homebrews using only markdown",
   "version": "2.3.0",
   "scripts": {
+    "build": "node_modules/.bin/gulp fresh",
+    "watch": "node_modules/.bin/gulp",
     "postinstall": "gulp prod",
     "start": "node server.js"
   },
