@@ -27,10 +27,10 @@ You can use [Docker](https://docs.docker.com) to get up and running with Natural
 	1. You may have to use `docker-machine env` to get the IP address of your docker instance
 
 
-### changelog
+### Changelog
 
 You can check out the changelog [here](https://github.com/stolksdorf/homebrewery/blob/master/changelog.md)
 
-### license
+### License
 
-This project licensed under [MIT](./license)
+This project is licensed under [MIT](./license)

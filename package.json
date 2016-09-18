@@ -9,7 +9,7 @@
     "start": "node server.js"
   },
   "author": "stolksdorf",
-  "license": "BSD-2-Clause",
+  "license": "MIT",
   "dependencies": {
     "app-module-path": "^1.0.4",
     "basic-auth": "^1.0.3",
