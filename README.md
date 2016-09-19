@@ -7,7 +7,7 @@ Create authentic looking D&D homebrews using only markdown. Check it out [here](
 1. Clone down the repo
 1. In your terminal, head to the repo
 1. Run `npm install` to get all the dependencies
-1. Run `npm run build`, this will compile and build all the needed libraries (this only has to be done once, unless you add more libs)
+1. Run `npm run libs`, this will compile and build all the needed libraries (this only has to be done once, unless you add more libs)
 1. Run `npm run watch` to run the project locally. Should be accessible at `localhost:8000`
 2. Any changes to files within the project will be detected and the project will automatically re-build
 
