@@ -1,8 +1,8 @@
 FROM alpine:latest
 
 RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
-    apk -U -f upgrade && \
-    apk add nodejs mongodb
+    apk --no-cache -U -f upgrade && \
+    apk --no-cache add nodejs mongodb
 
 VOLUME [ "/data/db" ]
 EXPOSE 8000
