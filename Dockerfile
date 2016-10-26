@@ -1,6 +1,7 @@
 FROM alpine:latest
 
-RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
+RUN echo http://dl-cdn.alpinelinux.org/alpine/edge/main >> /etc/apk/repositories && \
+    echo http://dl-cdn.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories && \
     apk --no-cache -U -f upgrade && \
     apk --no-cache add nodejs mongodb
 
