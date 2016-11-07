@@ -1,5 +1,14 @@
 # The Homebrewery
 
+### v2.4.0 todo
+- [] Match style of snippet bar to TPK
+- [] Add 'Snippets' tag to bar
+- [] Add an FAQ page
+  - How to add images
+  - Pages not appearing
+  - Rendering is weird
+  - How to print to PDF
+
 ## v2.0.0 todo
 X make a proper staging environment
 X make database backups
