@@ -80,7 +80,7 @@ ___
 
 
 ### Images
-Images can be included 'inline' with the text using Markdown-style images. However for background images more control is needed.
+Images must be hosted online somewhere, like imgur. You use the address to that image to reference it in your brew. Images can be included 'inline' with the text using Markdown-style images. However for background images more control is needed.
 
 Background images should be included as HTML-style img tags. Using inline CSS you can precisely position your image where you'd like it to be. I have added both a inflow image snippet and a background image snippet to give you exmaples of how to do it.
 
