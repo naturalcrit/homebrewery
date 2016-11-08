@@ -1,13 +1,16 @@
 # The Homebrewery
 
 ### v2.4.0 todo
-- [] Match style of snippet bar to TPK
-- [] Add 'Snippets' tag to bar
-- [] Add an FAQ page
+- [ ] Match style of snippet bar to TPK
+- [ ] Add 'Snippets' tag to bar
+- [ ] Add an FAQ page
   - How to add images
   - Pages not appearing
   - Rendering is weird
   - How to print to PDF
+- [ ] Remove ver and each page
+- [ ] Use pass-through express routes (like in tpk)
+
 
 ## v2.0.0 todo
 X make a proper staging environment

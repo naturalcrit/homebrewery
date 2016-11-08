@@ -2,6 +2,7 @@
 
 ### Monday, 07/11/2016
 - Added final touches to the html validator and updating the rest of the branch
+- If anyone finds issues with the new HTML validator, please let me know. I hope this will bring a more consistent feel to Homebrewery rendering.
 
 ### Friday, 09/09/2016 - v2.4.0
 - Adding in a HTML validator that will display warnings whenever you save. This should stop a lot of the issues generated with pages not showing up.
