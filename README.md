@@ -1,8 +1,10 @@
 # The Homebrewery
 Create authentic looking D&D homebrews using only markdown. Check it out [here](http://homebrewery.naturalcrit.com).
 
+If you want to locally run your own version, or just play around with the code you see here, follow the instructions below.
 
-### Getting started
+
+### Getting started running your own version locally.
 1. Make sure you have [node](https://nodejs.org/en/)
 1. Clone down the repo
 1. In your terminal, head to the repo
@@ -16,7 +18,7 @@ Create authentic looking D&D homebrews using only markdown. Check it out [here](
 Have fun!
 
 ### Docker Image
-You can use [Docker](https://docs.docker.com) to get up and running with NaturalCrit.
+You can use [Docker](https://docs.docker.com) to get up and running with the Homebrewery.
 
 1. Install Docker
 1. Clone the repo
