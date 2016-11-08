@@ -13,9 +13,70 @@ renderer.html = function (html) {
 	return html;
 };
 
+
+const tagTypes = ['div', 'span', 'a'];
+const tagRegex = new RegExp('(' +
+	_.map(tagTypes, (type)=>{
+		return `\\<${type}|\\</${type}>`;
+	}).join('|') + ')', 'g');
+
+
 module.exports = {
-	render : (rawText)=>{
-		return Markdown(rawText, {renderer : renderer})
+	marked : Markdown,
+	render : (rawBrewText)=>{
+		return Markdown(rawBrewText, {renderer : renderer})
 	},
-	marked : Markdown
+
+	validate : (rawBrewText) => {
+		var errors = [];
+		var leftovers = _.reduce(rawBrewText.split('\n'), (acc, line, _lineNumber) => {
+			var lineNumber = _lineNumber + 1;
+			var matches = line.match(tagRegex);
+			if(!matches || !matches.length) return acc;
+
+			_.each(matches, (match)=>{
+				_.each(tagTypes, (type)=>{
+					if(match == `<${type}`){
+						acc.push({
+							type : type,
+							line : lineNumber
+						});
+					}
+					if(match === `</${type}>`){
+						if(!acc.length){
+							errors.push({
+								line : lineNumber,
+								type : type,
+								text : 'Unmatched closing tag',
+								id : 'CLOSE'
+							});
+						}else if(_.last(acc).type == type){
+							acc.pop();
+						}else{
+							errors.push({
+								line : _.last(acc).line + ' to ' + lineNumber,
+								type : type,
+								text : 'Type mismatch on closing tag',
+								id : 'MISMATCH'
+							});
+							acc.pop();
+						}
+					}
+				});
+			});
+			return acc;
+		}, []);
+
+		_.each(leftovers, (unmatched)=>{
+			errors.push({
+				line : unmatched.line,
+				type : unmatched.type,
+				text : "Unmatched opening tag",
+				id : 'OPEN'
+			})
+		});
+
+		return errors;
+	},
 };
+

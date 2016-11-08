@@ -3,11 +3,12 @@ var _ = require('lodash');
 var cx = require('classnames');
 var request = require("superagent");
 
+var Markdown = require('naturalcrit/markdown.js');
+
 var Nav = require('naturalcrit/nav/nav.jsx');
 var Navbar = require('../../navbar/navbar.jsx');
 var EditTitle = require('../../navbar/editTitle.navitem.jsx');
 var IssueNavItem = require('../../navbar/issue.navitem.jsx');
-
 
 var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 var Editor = require('../../editor/editor.jsx');
@@ -22,7 +23,8 @@ var NewPage = React.createClass({
 			ver : '0.0.0',
 			title : '',
 			text: '',
-			isSaving : false
+			isSaving : false,
+			errors : []
 		};
 	},
 
@@ -57,7 +59,8 @@ var NewPage = React.createClass({
 
 	handleTextChange : function(text){
 		this.setState({
-			text : text
+			text : text,
+			errors : Markdown.validate(text)
 		});
 		localStorage.setItem(KEY, text);
 	},
@@ -66,6 +69,7 @@ var NewPage = React.createClass({
 		this.setState({
 			isSaving : true
 		});
+
 		request.post('/api')
 			.send({
 				title : this.state.title,
@@ -114,11 +118,10 @@ var NewPage = React.createClass({
 	render : function(){
 		return <div className='newPage page'>
 			{this.renderNavbar()}
-
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
 					<Editor value={this.state.text} onChange={this.handleTextChange} ref='editor'/>
-					<BrewRenderer text={this.state.text} />
+					<BrewRenderer text={this.state.text} errors={this.state.errors} />
 				</SplitPane>
 			</div>
 		</div>
