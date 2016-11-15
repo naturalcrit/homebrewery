@@ -5,11 +5,14 @@
 - [ ] Add 'Snippets' tag to bar
 - [ ] Add an FAQ page
   - How to add images
+  - How to add background images
   - Pages not appearing
   - Rendering is weird
   - How to print to PDF
 - [ ] Remove ver and each page
 - [ ] Use pass-through express routes (like in tpk)
+- [ ] Add feature of printing from just the new page/local storage
+- [ ] remove save warning on new page
 
 
 ## v2.0.0 todo
