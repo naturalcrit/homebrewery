@@ -1,51 +1,34 @@
-'use strict';
-var _ = require('lodash');
 require('app-module-path').addPath('./shared');
-var vitreumRender = require('vitreum/render');
-var bodyParser = require('body-parser')
-var express = require("express");
-var app = express();
+
+const _ = require('lodash');
+
+const vitreumRender = require('vitreum/render');
+const bodyParser = require('body-parser')
+const express = require("express");
+const app = express();
 app.use(express.static(__dirname + '/build'));
 app.use(bodyParser.json({limit: '25mb'}));
 
+
+
 //Mongoose
-var mongoose = require('mongoose');
-var mongoUri = process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://localhost/naturalcrit';
-mongoose.connect(mongoUri);
+//TODO: Celean up
+const mongoose = require('mongoose');
+const mongoUri = process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://localhost/naturalcrit';
+require('mongoose').connect(mongoUri);
 mongoose.connection.on('error', function(){
 	console.log(">>>ERROR: Run Mongodb.exe ya goof!");
 });
 
-//Admin route
-process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
-process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password';
-process.env.ADMIN_KEY  = process.env.ADMIN_KEY  || 'admin_key';
-var auth = require('basic-auth');
-app.get('/admin', function(req, res){
-	var credentials = auth(req)
-	if (!credentials || credentials.name !== process.env.ADMIN_USER || credentials.pass !== process.env.ADMIN_PASS) {
-		res.setHeader('WWW-Authenticate', 'Basic realm="example"')
-		return res.status(401).send('Access denied')
-	}
-	vitreumRender({
-		page: './build/admin/bundle.dot',
-		prerenderWith : './client/admin/admin.jsx',
-		clearRequireCache : !process.env.PRODUCTION,
-		initialProps: {
-			url: req.originalUrl,
-			admin_key : process.env.ADMIN_KEY,
-		},
-	}, function (err, page) {
-		return res.send(page)
-	});
-});
+
+app.use(require('./server/homebrew.api.js'));
+app.use(require('./server/admin.api.js'));
 
 
-//Populate homebrew routes
-app = require('./server/homebrew.api.js')(app);
+const HomebrewModel = require('./server/homebrew.model.js').model;
+const welcomeText = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
+const changelogText = require('fs').readFileSync('./changelog.md', 'utf8');
 
-
-var HomebrewModel = require('./server/homebrew.model.js').model;
 
 var sanitizeBrew = function(brew){
 	var cleanBrew = _.assign({}, brew);
@@ -53,62 +36,31 @@ var sanitizeBrew = function(brew){
 	return cleanBrew;
 };
 
-//Load project version
-var projectVersion = require('./package.json').version;
 
-
-//Edit Page
-app.get('/edit/:id', function(req, res){
-	HomebrewModel.find({editId : req.params.id}, function(err, objs){
-		var resObj = null;
-		if(objs.length){
-			resObj = objs[0].toJSON();
+app.get('/edit/:id', (req, res, next)=>{
+	HomebrewModel.find({editId : req.params.id}, (err, brews)=>{
+		if(err || !brews.length){
+			return res.status(400).send(`Can't get that`);
 		}
-
-		vitreumRender({
-			page: './build/homebrew/bundle.dot',
-			globals:{},
-			prerenderWith : './client/homebrew/homebrew.jsx',
-			initialProps: {
-				url: req.originalUrl,
-				brew : resObj || {},
-				version : projectVersion
-			},
-			clearRequireCache : !process.env.PRODUCTION,
-		}, function (err, page) {
-			return res.send(page)
-		});
+		req.brew = brews[0].toJSON();
+		return next();
 	})
 });
 
 
 //Share Page
-app.get('/share/:id', function(req, res){
-	HomebrewModel.find({shareId : req.params.id}, function(err, objs){
-		var brew = {};
-
-		if(objs.length){
-			var resObj = objs[0];
-			resObj.lastViewed = new Date();
-			resObj.views = resObj.views + 1;
-			resObj.save();
-
-			brew = resObj.toJSON();
+app.get('/share/:id', (req, res, next)=>{
+	HomebrewModel.find({shareId : req.params.id}, (err, brews)=>{
+		if(err || !brews.length){
+			return res.status(400).send(`Can't get that`);
 		}
+		const brew = brews[0];
+		brew.lastViewed = new Date();
+		brew.views = brew.views + 1;
+		brew.save();
 
-		vitreumRender({
-			page: './build/homebrew/bundle.dot',
-			globals:{},
-			prerenderWith : './client/homebrew/homebrew.jsx',
-			initialProps: {
-				url: req.originalUrl,
-				brew : sanitizeBrew(brew || {}),
-				version : projectVersion
-			},
-			clearRequireCache : !process.env.PRODUCTION,
-		}, function (err, page) {
-			return res.send(page)
-		});
+		req.brew = sanitizeBrew(brew);
+		return next();
 	})
 });
 
@@ -152,9 +104,10 @@ app.get('/source/:id', function(req, res){
 	});
 });
 
+
+/*
 //Home and 404, etc.
-var welcomeText = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
-var changelogText = require('fs').readFileSync('./changelog.md', 'utf8');
+
 app.get('*', function (req, res) {
 	vitreumRender({
 		page: './build/homebrew/bundle.dot',
@@ -171,6 +124,30 @@ app.get('*', function (req, res) {
 		return res.send(page)
 	});
 });
+*/
+
+
+//Render Page
+app.use((req, res) => {
+	vitreumRender({
+		page: './build/homebrew/bundle.dot',
+		globals:{
+			version : require('./package.json').version
+		},
+		prerenderWith : './client/homebrew/homebrew.jsx',
+		initialProps: {
+			url: req.originalUrl,
+
+			welcomeText : welcomeText,
+			changelog : changelogText,
+			brew : req.brew
+		},
+		clearRequireCache : !process.env.PRODUCTION,
+	}, (err, page) => {
+		return res.send(page)
+	});
+});
+
 
 
 
