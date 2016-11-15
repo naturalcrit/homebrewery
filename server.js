@@ -1,14 +1,12 @@
 require('app-module-path').addPath('./shared');
 
 const _ = require('lodash');
-
 const vitreumRender = require('vitreum/render');
 const bodyParser = require('body-parser')
 const express = require("express");
 const app = express();
 app.use(express.static(__dirname + '/build'));
 app.use(bodyParser.json({limit: '25mb'}));
-
 
 
 //Mongoose
@@ -59,11 +57,23 @@ app.get('/share/:id', (req, res, next)=>{
 		brew.views = brew.views + 1;
 		brew.save();
 
-		req.brew = sanitizeBrew(brew);
+		req.brew = sanitizeBrew(brew.toJSON());
 		return next();
 	})
 });
 
+//Share Page
+app.get('/print/:id', (req, res, next)=>{
+	HomebrewModel.find({shareId : req.params.id}, (err, brews)=>{
+		if(err || !brews.length){
+			return res.status(400).send(`Can't get that`);
+		}
+		req.brew = sanitizeBrew(brews[0].toJSON());
+		return next();
+	})
+});
+
+/*
 //Print Page
 var Markdown = require('naturalcrit/markdown.js');
 var PHBStyle = '<style>' + require('fs').readFileSync('./phb.standalone.css', 'utf8') + '</style>'
@@ -91,40 +101,17 @@ app.get('/print/:id', function(req, res){
 		return res.send(page)
 	});
 });
+*/
 
 //Source page
 String.prototype.replaceAll = function(s,r){return this.split(s).join(r)}
-app.get('/source/:id', function(req, res){
-	HomebrewModel.find({shareId : req.params.id}, function(err, objs){
-		if(err || !objs.length) return res.status(404).send('Could not find Homebrew with that id');
-		var brew = null;
-		if(objs.length) brew = objs[0];
-		var text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+app.get('/source/:id', (req, res)=>{
+	HomebrewModel.find({shareId : req.params.id}, (err, brews)=>{
+		if(err || !brews.length) return res.status(404).send('Could not find Homebrew with that id');
+		const text = brews[0].text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 		return res.send(`<code><pre>${text}</pre></code>`);
 	});
 });
-
-
-/*
-//Home and 404, etc.
-
-app.get('*', function (req, res) {
-	vitreumRender({
-		page: './build/homebrew/bundle.dot',
-		globals:{},
-		prerenderWith : './client/homebrew/homebrew.jsx',
-		initialProps: {
-			url: req.originalUrl,
-			welcomeText : welcomeText,
-			changelog : changelogText,
-			version : projectVersion
-		},
-		clearRequireCache : !process.env.PRODUCTION,
-	}, function (err, page) {
-		return res.send(page)
-	});
-});
-*/
 
 
 //Render Page
@@ -137,7 +124,6 @@ app.use((req, res) => {
 		prerenderWith : './client/homebrew/homebrew.jsx',
 		initialProps: {
 			url: req.originalUrl,
-
 			welcomeText : welcomeText,
 			changelog : changelogText,
 			brew : req.brew

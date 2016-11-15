@@ -91,6 +91,17 @@ const NewPage = React.createClass({
 		}
 	},
 
+	handlePrintClick : function(){
+		localStorage.setItem('print', this.state.text);
+		window.open('/print?dialog=true&local=print','_blank');
+	},
+
+	renderLocalPrintButton : function(){
+		return <Nav.item color='purple' icon='fa-file-pdf-o' onClick={this.handlePrintClick}>
+			get PDF
+		</Nav.item>
+	},
+
 	renderNavbar : function(){
 		return <Navbar ver={this.props.ver}>
 			<Nav.section>
@@ -99,6 +110,7 @@ const NewPage = React.createClass({
 
 			<Nav.section>
 				{this.renderSaveButton()}
+				{this.renderLocalPrintButton()}
 				<IssueNavItem />
 			</Nav.section>
 		</Navbar>

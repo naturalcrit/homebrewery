@@ -9,6 +9,7 @@ var EditPage = require('./pages/editPage/editPage.jsx');
 var SharePage = require('./pages/sharePage/sharePage.jsx');
 var NewPage = require('./pages/newPage/newPage.jsx');
 var ErrorPage = require('./pages/errorPage/errorPage.jsx');
+var PrintPage = require('./pages/printPage/printPage.jsx');
 
 var Router;
 var Homebrew = React.createClass({
@@ -32,35 +33,37 @@ var Homebrew = React.createClass({
 		Router = CreateRouter({
 			'/edit/:id' : (args) => {
 				if(!this.props.brew.editId){
-					return <ErrorPage ver={this.props.version} errorId={args.id}/>
+					return <ErrorPage errorId={args.id}/>
 				}
 
 				return <EditPage
-					ver={this.props.version}
 					id={args.id}
 					brew={this.props.brew} />
 			},
 
 			'/share/:id' : (args) => {
 				if(!this.props.brew.shareId){
-					return <ErrorPage ver={this.props.version} errorId={args.id}/>
+					return <ErrorPage errorId={args.id}/>
 				}
 
 				return <SharePage
-					ver={this.props.version}
 					id={args.id}
 					brew={this.props.brew} />
 			},
 			'/changelog' : (args) => {
 				return <SharePage
-					ver={this.props.version}
 					brew={{title : 'Changelog', text : this.props.changelog}} />
 			},
+			'/print/:id' : (args, query) => {
+				return <PrintPage brew={this.props.brew} query={query}/>;
+			},
+			'/print' : (args, query) => {
+				return <PrintPage query={query}/>;
+			},
 			'/new' : (args) => {
-				return <NewPage ver={this.props.version} />
+				return <NewPage />
 			},
 			'*' : <HomePage
-					ver={this.props.version}
 					welcomeText={this.props.welcomeText} />,
 		});
 	},
