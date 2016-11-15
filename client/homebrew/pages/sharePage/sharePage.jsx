@@ -13,7 +13,6 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 const SharePage = React.createClass({
 	getDefaultProps: function() {
 		return {
-			ver : '0.0.0',
 			brew : {
 				title : '',
 				text : '',
@@ -41,7 +40,7 @@ const SharePage = React.createClass({
 
 	render : function(){
 		return <div className='sharePage page'>
-			<Navbar ver={this.props.ver}>
+			<Navbar>
 				<Nav.section>
 					<Nav.item className='brewTitle'>{this.props.brew.title}</Nav.item>
 				</Nav.section>

@@ -1,5 +1,10 @@
 # changelog
 
+### Monday, 14/11/2016
+- Updated snippet bar style
+- You can now print from a new page without saving
+- Added the ability to use ctrl+p and ctrl+s to print and save respectively.
+
 ### Monday, 07/11/2016
 - Added final touches to the html validator and updating the rest of the branch
 - If anyone finds issues with the new HTML validator, please let me know. I hope this will bring a more consistent feel to Homebrewery rendering.

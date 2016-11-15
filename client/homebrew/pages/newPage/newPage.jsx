@@ -115,7 +115,7 @@ const NewPage = React.createClass({
 	},
 
 	renderNavbar : function(){
-		return <Navbar ver={this.props.ver}>
+		return <Navbar>
 			<Nav.section>
 				<EditTitle title={this.state.title} onChange={this.handleTitleChange} />
 			</Nav.section>
