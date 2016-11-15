@@ -26,8 +26,6 @@ const NewPage = React.createClass({
 			errors : []
 		};
 	},
-
-
 	componentDidMount: function() {
 		const storage = localStorage.getItem(KEY);
 		if(storage){
@@ -80,7 +78,6 @@ const NewPage = React.createClass({
 				text : this.state.text
 			})
 			.end((err, res)=>{
-
 				if(err){
 					this.setState({
 						isSaving : false
