@@ -1,18 +1,18 @@
-var React = require('react');
-var _ = require('lodash');
-var cx = require('classnames');
+const React = require('react');
+const _ = require('lodash');
+const cx = require('classnames');
 
-var CreateRouter = require('pico-router').createRouter;
+const CreateRouter = require('pico-router').createRouter;
 
-var HomePage = require('./pages/homePage/homePage.jsx');
-var EditPage = require('./pages/editPage/editPage.jsx');
-var SharePage = require('./pages/sharePage/sharePage.jsx');
-var NewPage = require('./pages/newPage/newPage.jsx');
-var ErrorPage = require('./pages/errorPage/errorPage.jsx');
-var PrintPage = require('./pages/printPage/printPage.jsx');
+const HomePage = require('./pages/homePage/homePage.jsx');
+const EditPage = require('./pages/editPage/editPage.jsx');
+const SharePage = require('./pages/sharePage/sharePage.jsx');
+const NewPage = require('./pages/newPage/newPage.jsx');
+const ErrorPage = require('./pages/errorPage/errorPage.jsx');
+const PrintPage = require('./pages/printPage/printPage.jsx');
 
-var Router;
-var Homebrew = React.createClass({
+let Router;
+const Homebrew = React.createClass({
 	getDefaultProps: function() {
 		return {
 			url : '',

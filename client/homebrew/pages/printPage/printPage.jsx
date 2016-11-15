@@ -1,10 +1,7 @@
 const React = require('react');
 const _     = require('lodash');
 const cx    = require('classnames');
-
-//const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
-
-var Markdown = require('naturalcrit/markdown.js');
+const Markdown = require('naturalcrit/markdown.js');
 
 const PrintPage = React.createClass({
 	getDefaultProps: function() {

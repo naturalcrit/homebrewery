@@ -53,17 +53,19 @@ router.post('/api', (req, res)=>{
 });
 
 router.put('/api/update/:id', (req, res)=>{
-	HomebrewModel.find({editId : req.params.id}, (err, objs)=>{
-		if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
-		var resEntry = objs[0];
-		resEntry.text = req.body.text;
-		resEntry.title = req.body.title;
-		resEntry.updatedAt = new Date();
-		resEntry.save((err, obj)=>{
-			if(err) return res.status(500).send("Error while saving");
-			return res.status(200).send(obj);
+	HomebrewModel.get({editId : req.params.id})
+		.then((brew)=>{
+			brew = _.merge(brew, req.body);
+			brew.updatedAt = new Date();
+			brew.save((err, obj)=>{
+				if(err) throw err;
+				return res.status(200).send(obj);
+			})
 		})
-	});
+		.catch((err)=>{
+			console.log(err);
+			return res.status(500).send("Error while saving");
+		});
 });
 
 router.get('/api/remove/:id', (req, res)=>{

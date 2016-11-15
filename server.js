@@ -35,83 +35,64 @@ var sanitizeBrew = function(brew){
 };
 
 
-app.get('/edit/:id', (req, res, next)=>{
-	HomebrewModel.find({editId : req.params.id}, (err, brews)=>{
-		if(err || !brews.length){
-			return res.status(400).send(`Can't get that`);
-		}
-		req.brew = brews[0].toJSON();
-		return next();
-	})
-});
-
-
-//Share Page
-app.get('/share/:id', (req, res, next)=>{
-	HomebrewModel.find({shareId : req.params.id}, (err, brews)=>{
-		if(err || !brews.length){
-			return res.status(400).send(`Can't get that`);
-		}
-		const brew = brews[0];
-		brew.lastViewed = new Date();
-		brew.views = brew.views + 1;
-		brew.save();
-
-		req.brew = sanitizeBrew(brew.toJSON());
-		return next();
-	})
-});
-
-//Share Page
-app.get('/print/:id', (req, res, next)=>{
-	HomebrewModel.find({shareId : req.params.id}, (err, brews)=>{
-		if(err || !brews.length){
-			return res.status(400).send(`Can't get that`);
-		}
-		req.brew = sanitizeBrew(brews[0].toJSON());
-		return next();
-	})
-});
-
-/*
-//Print Page
-var Markdown = require('naturalcrit/markdown.js');
-var PHBStyle = '<style>' + require('fs').readFileSync('./phb.standalone.css', 'utf8') + '</style>'
-app.get('/print/:id', function(req, res){
-	HomebrewModel.find({shareId : req.params.id}, function(err, objs){
-		var brew = {};
-		if(objs.length){
-			brew = objs[0];
-		}
-
-		if(err || !objs.length){
-			brew.text = '# Oops \n We could not find a brew with that id. **Sorry!**';
-		}
-
-		var content = _.map(brew.text.split('\\page'), function(pageText, index){
-			return `<div class="phb print" id="p${index+1}">` + Markdown.render(pageText) + '</div>';
-		}).join('\n');
-
-		var dialog = '';
-		if(req.query && req.query.dialog) dialog = 'onload="window.print()"';
-
-		var title = '<title>' + brew.title + '</title>';
-		var page = `<html><head>${title} ${PHBStyle}</head><body ${dialog}>${content}</body></html>`
-
-		return res.send(page)
-	});
-});
-*/
 
 //Source page
 String.prototype.replaceAll = function(s,r){return this.split(s).join(r)}
 app.get('/source/:id', (req, res)=>{
-	HomebrewModel.find({shareId : req.params.id}, (err, brews)=>{
-		if(err || !brews.length) return res.status(404).send('Could not find Homebrew with that id');
-		const text = brews[0].text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-		return res.send(`<code><pre>${text}</pre></code>`);
-	});
+	HomebrewModel.get({shareId : req.params.id})
+		.then((brew)=>{
+			const text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+			return res.send(`<code><pre>${text}</pre></code>`);
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(404).send('Could not find Homebrew with that id');
+		})
 });
+
+
+app.get('/edit/:id', (req, res, next)=>{
+	HomebrewModel.get({editId : req.params.id})
+		.then((brew)=>{
+			req.brew = brew.sanatize();
+			return next();
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(400).send(`Can't get that`);
+		});
+});
+
+//Share Page
+app.get('/share/:id', (req, res, next)=>{
+	HomebrewModel.get({shareId : req.params.id})
+		.then((brew)=>{
+			return brew.increaseView();
+		})
+		.then((brew)=>{
+			req.brew = brew.sanatize(true);
+			return next();
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(400).send(`Can't get that`);
+		});
+});
+
+//Print Page
+app.get('/print/:id', (req, res, next)=>{
+	HomebrewModel.get({shareId : req.params.id})
+		.then((brew)=>{
+			req.brew = brew.sanatize(true);
+			return next();
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(400).send(`Can't get that`);
+		});
+});
+
+
 
 
 //Render Page
