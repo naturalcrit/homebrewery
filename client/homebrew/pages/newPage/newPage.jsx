@@ -1,26 +1,25 @@
-var React = require('react');
-var _ = require('lodash');
-var cx = require('classnames');
-var request = require("superagent");
+const React = require('react');
+const _ = require('lodash');
+const cx = require('classnames');
+const request = require("superagent");
 
-var Markdown = require('naturalcrit/markdown.js');
+const Markdown = require('naturalcrit/markdown.js');
 
-var Nav = require('naturalcrit/nav/nav.jsx');
-var Navbar = require('../../navbar/navbar.jsx');
-var EditTitle = require('../../navbar/editTitle.navitem.jsx');
-var IssueNavItem = require('../../navbar/issue.navitem.jsx');
+const Nav = require('naturalcrit/nav/nav.jsx');
+const Navbar = require('../../navbar/navbar.jsx');
+const EditTitle = require('../../navbar/editTitle.navitem.jsx');
+const IssueNavItem = require('../../navbar/issue.navitem.jsx');
 
-var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
-var Editor = require('../../editor/editor.jsx');
-var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
+const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
+const Editor = require('../../editor/editor.jsx');
+const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 
 const KEY = 'homebrewery-new';
 
-var NewPage = React.createClass({
+const NewPage = React.createClass({
 	getInitialState: function() {
 		return {
-			ver : '0.0.0',
 			title : '',
 			text: '',
 			isSaving : false,
@@ -30,23 +29,13 @@ var NewPage = React.createClass({
 
 
 	componentDidMount: function() {
-		var storage = localStorage.getItem(KEY);
+		const storage = localStorage.getItem(KEY);
 		if(storage){
 			this.setState({
 				text : storage
 			})
 		}
-		window.onbeforeunload = (e)=>{
-			if(this.state.text == '') return;
-			return "Your homebrew isn't saved. Are you sure you want to leave?";
-		};
 	},
-
-
-	componentWillUnmount: function() {
-		window.onbeforeunload = function(){};
-	},
-
 	handleSplitMove : function(){
 		this.refs.editor.update();
 	},
@@ -84,7 +73,7 @@ var NewPage = React.createClass({
 					return;
 				}
 				window.onbeforeunload = function(){};
-				var brew = res.body;
+				const brew = res.body;
 				localStorage.removeItem(KEY);
 				window.location = '/edit/' + brew.editId;
 			})
