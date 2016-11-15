@@ -35,7 +35,22 @@ const NewPage = React.createClass({
 				text : storage
 			})
 		}
+		document.addEventListener('keydown', this.handleControlKeys);
 	},
+	componentWillUnmount: function() {
+		document.removeEventListener('keydown', this.handleControlKeys);
+	},
+
+	handleControlKeys : function(e){
+		if(!(e.ctrlKey || e.metaKey)) return;
+		e.stopPropagation();
+		e.preventDefault();
+		const S_KEY = 83;
+		const P_KEY = 80;
+		if(e.keyCode == S_KEY) this.save();
+		if(e.keyCode == P_KEY) this.print();
+	},
+
 	handleSplitMove : function(){
 		this.refs.editor.update();
 	},
@@ -54,7 +69,7 @@ const NewPage = React.createClass({
 		localStorage.setItem(KEY, text);
 	},
 
-	handleSave : function(){
+	save : function(){
 		this.setState({
 			isSaving : true
 		});
@@ -85,19 +100,19 @@ const NewPage = React.createClass({
 				save...
 			</Nav.item>
 		}else{
-			return <Nav.item icon='fa-save' className='saveButton' onClick={this.handleSave}>
+			return <Nav.item icon='fa-save' className='saveButton' onClick={this.save}>
 				save
 			</Nav.item>
 		}
 	},
 
-	handlePrintClick : function(){
+	print : function(){
 		localStorage.setItem('print', this.state.text);
 		window.open('/print?dialog=true&local=print','_blank');
 	},
 
 	renderLocalPrintButton : function(){
-		return <Nav.item color='purple' icon='fa-file-pdf-o' onClick={this.handlePrintClick}>
+		return <Nav.item color='purple' icon='fa-file-pdf-o' onClick={this.print}>
 			get PDF
 		</Nav.item>
 	},

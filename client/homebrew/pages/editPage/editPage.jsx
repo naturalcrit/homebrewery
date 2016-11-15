@@ -16,7 +16,6 @@ var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 var Editor = require('../../editor/editor.jsx');
 var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
-var HijackPrint = require('../hijackPrint.js');
 var Markdown = require('naturalcrit/markdown.js');
 
 
@@ -65,11 +64,22 @@ var EditPage = React.createClass({
 			htmlErrors : Markdown.validate(this.state.text)
 		})
 
-		document.onkeydown = HijackPrint(this.props.brew.shareId);
+		document.addEventListener('keydown', this.handleControlKeys);
 	},
 	componentWillUnmount: function() {
 		window.onbeforeunload = function(){};
-		document.onkeydown = function(){};
+		document.removeEventListener('keydown', this.handleControlKeys);
+	},
+
+
+	handleControlKeys : function(e){
+		if(!(e.ctrlKey || e.metaKey)) return;
+		e.stopPropagation();
+		e.preventDefault();
+		const S_KEY = 83;
+		const P_KEY = 80;
+		if(e.keyCode == S_KEY) this.save();
+		if(e.keyCode == P_KEY) window.open(`/print/${this.props.brew.shareId}?dialog=true`, '_blank').focus();
 	},
 
 	handleSplitMove : function(){
