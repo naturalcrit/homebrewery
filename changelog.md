@@ -1,5 +1,10 @@
 # changelog
 
+### Wednesday, 23/11/2016 - v2.5.0
+- Metadata can now be added to brews
+- Added a metadata editor onto the edit and new pages
+
+
 ### Monday, 14/11/2016
 - Updated snippet bar style
 - You can now print from a new page without saving
