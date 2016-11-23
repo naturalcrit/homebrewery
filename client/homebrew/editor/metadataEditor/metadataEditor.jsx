@@ -1,6 +1,7 @@
 const React = require('react');
 const _     = require('lodash');
 const cx    = require('classnames');
+const request = require("superagent");
 
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder']
 
@@ -8,6 +9,7 @@ const MetadataEditor = React.createClass({
 	getDefaultProps: function() {
 		return {
 			metadata: {
+				editId : null,
 				title : '',
 				description : '',
 				tags : '',
@@ -38,6 +40,17 @@ const MetadataEditor = React.createClass({
 		}));
 	},
 
+	handleDelete : function(){
+		if(!confirm("are you sure you want to delete this brew?")) return;
+		if(!confirm("are you REALLY sure? You will not be able to recover it")) return;
+
+		request.get('/api/remove/' + this.props.metadata.editId)
+			.send()
+			.end(function(err, res){
+				window.location.href = '/';
+			});
+	},
+
 	renderSystems : function(){
 		return _.map(SYSTEMS, (val)=>{
 			return <label key={val}>
@@ -62,7 +75,23 @@ const MetadataEditor = React.createClass({
 		}
 	},
 
+	renderDelete : function(){
+		if(!this.props.metadata.editId) return;
+
+		return <div className='field delete'>
+			<label>delete</label>
+			<div className='value'>
+				<button className='publish' onClick={this.handleDelete}>
+					<i className='fa fa-trash' /> delete brew
+				</button>
+			</div>
+		</div>
+	},
+
 	render : function(){
+		console.log(this.props.metadata);
+
+
 		return <div className='metadataEditor'>
 
 			<div className='field title'>
@@ -98,6 +127,8 @@ const MetadataEditor = React.createClass({
 					<small>Published homebrews will be publicly searchable (eventually...)</small>
 				</div>
 			</div>
+
+			{this.renderDelete()}
 
 		</div>
 	}

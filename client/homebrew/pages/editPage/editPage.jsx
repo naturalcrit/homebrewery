@@ -78,12 +78,14 @@ const EditPage = React.createClass({
 
 	handleControlKeys : function(e){
 		if(!(e.ctrlKey || e.metaKey)) return;
-		e.stopPropagation();
-		e.preventDefault();
 		const S_KEY = 83;
 		const P_KEY = 80;
 		if(e.keyCode == S_KEY) this.save();
 		if(e.keyCode == P_KEY) window.open(`/print/${this.props.brew.shareId}?dialog=true`, '_blank').focus();
+		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
+			e.stopPropagation();
+			e.preventDefault();
+		}
 	},
 
 	handleSplitMove : function(){
@@ -114,17 +116,6 @@ const EditPage = React.createClass({
 		});
 
 		(this.hasChanges() ? this.debounceSave() : this.debounceSave.cancel());
-	},
-
-	handleDelete : function(){
-		if(!confirm("are you sure you want to delete this brew?")) return;
-		if(!confirm("are you REALLY sure? You will not be able to recover it")) return;
-
-		request.get('/api/remove/' + this.props.brew.editId)
-			.send()
-			.end(function(err, res){
-				window.location.href = '/';
-			});
 	},
 
 	hasChanges : function(){
@@ -205,9 +196,6 @@ const EditPage = React.createClass({
 					Share
 				</Nav.item>
 				<PrintLink shareId={this.props.brew.shareId} />
-				<Nav.item color='red' icon='fa-trash' onClick={this.handleDelete}>
-					Delete
-				</Nav.item>
 			</Nav.section>
 		</Navbar>
 	},

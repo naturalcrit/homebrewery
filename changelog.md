@@ -3,6 +3,7 @@
 ### Wednesday, 23/11/2016 - v2.5.0
 - Metadata can now be added to brews
 - Added a metadata editor onto the edit and new pages
+- Moved deleting a brew into the metadata editor
 
 
 ### Monday, 14/11/2016
