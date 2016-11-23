@@ -20,7 +20,15 @@ const KEY = 'homebrewery-new';
 const NewPage = React.createClass({
 	getInitialState: function() {
 		return {
-			title : '',
+			metadata : {
+				title : '',
+				description : '',
+				tags : '',
+				published : false,
+				authors : [],
+				systems : []
+			},
+
 			text: '',
 			isSaving : false,
 			errors : []
@@ -53,9 +61,9 @@ const NewPage = React.createClass({
 		this.refs.editor.update();
 	},
 
-	handleTitleChange : function(title){
+	handleMetadataChange : function(metadata){
 		this.setState({
-			title : title
+			metadata : _.merge({}, this.state.metadata, metadata)
 		});
 	},
 
@@ -73,10 +81,9 @@ const NewPage = React.createClass({
 		});
 
 		request.post('/api')
-			.send({
-				title : this.state.title,
+			.send(_.merge({}, this.state.metadata, {
 				text : this.state.text
-			})
+			}))
 			.end((err, res)=>{
 				if(err){
 					this.setState({
@@ -117,7 +124,7 @@ const NewPage = React.createClass({
 	renderNavbar : function(){
 		return <Navbar>
 			<Nav.section>
-				<EditTitle title={this.state.title} onChange={this.handleTitleChange} />
+				<Nav.item className='brewTitle'>{this.state.metadata.title}</Nav.item>
 			</Nav.section>
 
 			<Nav.section>
@@ -133,7 +140,13 @@ const NewPage = React.createClass({
 			{this.renderNavbar()}
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
-					<Editor value={this.state.text} onChange={this.handleTextChange} ref='editor'/>
+					<Editor
+						ref='editor'
+						value={this.state.text}
+						onChange={this.handleTextChange}
+						metadata={this.state.metadata}
+						onMetadataChange={this.handleMetadataChange}
+					/>
 					<BrewRenderer text={this.state.text} errors={this.state.errors} />
 				</SplitPane>
 			</div>

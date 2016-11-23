@@ -7,7 +7,12 @@ var HomebrewSchema = mongoose.Schema({
 	editId : {type : String, default: shortid.generate, index: { unique: true }},
 	title : {type : String, default : ""},
 	text : {type : String, default : ""},
+
+	description : {type : String, default : ""},
+	tags : {type : String, default : ""},
+	systems : [String],
 	authors : [String],
+	published : {type : Boolean, default : false},
 
 	createdAt     : { type: Date, default: Date.now },
 	updatedAt   : { type: Date, default: Date.now},

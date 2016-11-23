@@ -2,76 +2,10 @@
 .editor{
 	position : relative;
 	width    : 100%;
-	.snippetBar{
-		@height          : 25px;
-		position         : relative;
-		height           : @height;
-		background-color : #ddd;
-		.snippetGroup{
-			/*
-			.animate(background-color);
-			margin        : 0px 8px;
-			padding       : 3px;
-			font-size     : 13px;
-			border-radius : 5px;
-			&:hover, &.selected{
-				background-color : #999;
-			}
-			*/
-			display        : inline-block;
-			height         : @height;
-			padding        : 0px 5px;
-			cursor         : pointer;
-			font-size      : 0.6em;
-			font-weight    : 800;
-			line-height    : @height;
-			text-transform : uppercase;
-			border-right   : 1px solid black;
-			i{
-				vertical-align : middle;
-				margin-right   : 3px;
-				font-size      : 1.2em;
-			}
-			&:hover, &.selected{
-				background-color : #999;
-			}
-			.text{
-				line-height : @height;
-				.groupName{
-					margin-left : 6px;
-					font-size   : 10px;
-				}
-			}
-			&:hover{
-				.dropdown{
-					visibility : visible;
-				}
-			}
-			.dropdown{
-				position         : absolute;
-				visibility       : hidden;
-				top : 100%;
-				z-index          : 1000;
-				padding          : 0px;
-				margin-left: -5px;
-				background-color : #ddd;
-				.snippet{
-					.animate(background-color);
-					padding   : 10px;
-					cursor    : pointer;
-					font-size : 10px;
-					i{
-						margin-right: 8px;
-						font-size : 13px;
-					}
-					&:hover{
-						background-color : #999;
-					}
-				}
-			}
-		}
-	}
+
 	.codeEditor{
 		height : 100%;
 	}
+
+
 }
