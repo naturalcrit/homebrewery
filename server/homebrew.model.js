@@ -55,6 +55,22 @@ HomebrewSchema.statics.get = function(query){
 	});
 };
 
+HomebrewSchema.statics.getByUser = function(username, allowAccess=false){
+	return new Promise((resolve, reject) => {
+		let query = {authors : username, published : true};
+		if(allowAccess){
+			delete query.published;
+		}
+		Homebrew.find(query, (err, brews)=>{
+			if(err) return reject('Can not find brew');
+			return resolve(_.map(brews, (brew)=>{
+				return brew.sanatize(!allowAccess);
+			}));
+		});
+	});
+};
+
+
 
 var Homebrew = mongoose.model('Homebrew', HomebrewSchema);
 

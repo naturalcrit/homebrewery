@@ -16,8 +16,6 @@ refreshCount();
 
 
 
-
-
 const getTopBrews = (cb)=>{
 	HomebrewModel.find().sort({views: -1}).limit(5).exec(function(err, brews) {
 		cb(brews);
@@ -39,7 +37,10 @@ const getGoodBrewTitle = (text) => {
 
 
 router.post('/api', (req, res)=>{
-	const newHomebrew = new HomebrewModel(req.body);
+	const newHomebrew = new HomebrewModel(_.merge({},
+		req.body,
+		{authors : [req.account.username]}
+	));
 	if(!newHomebrew.title){
 		newHomebrew.title = getGoodBrewTitle(newHomebrew.text);
 	}
@@ -57,6 +58,7 @@ router.put('/api/update/:id', (req, res)=>{
 		.then((brew)=>{
 			brew = _.merge(brew, req.body);
 			brew.updatedAt = new Date();
+			brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
 			brew.save((err, obj)=>{
 				if(err) throw err;
 				return res.status(200).send(obj);

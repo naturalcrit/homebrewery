@@ -22,13 +22,14 @@ require('mongoose')
 
 
 //Account MIddleware
-router.use((req, res, next) => {
+app.use((req, res, next) => {
 	if(req.cookies && req.cookies.nc_session){
-		req.user = jwt.decode(req.cookies.nc_session, config.get('secret'));
+		try{
+			req.account = jwt.decode(req.cookies.nc_session, config.get('secret'));
+		}catch(e){}
 	}
 	return next();
 });
-
 
 
 app.use(require('./server/homebrew.api.js'));
@@ -38,13 +39,6 @@ app.use(require('./server/admin.api.js'));
 const HomebrewModel = require('./server/homebrew.model.js').model;
 const welcomeText = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 const changelogText = require('fs').readFileSync('./changelog.md', 'utf8');
-
-
-var sanitizeBrew = function(brew){
-	var cleanBrew = _.assign({}, brew);
-	delete cleanBrew.editId;
-	return cleanBrew;
-};
 
 
 
@@ -61,6 +55,20 @@ app.get('/source/:id', (req, res)=>{
 			return res.status(404).send('Could not find Homebrew with that id');
 		})
 });
+
+
+app.get('/user/:username', (req, res, next) => {
+	const fullAccess = req.account && (req.account.username == req.params.username);
+	HomebrewModel.getByUser(req.params.username, fullAccess)
+		.then((brews) => {
+			req.brews = brews;
+			return next();
+			//return res.json(brews)
+		})
+		.catch((err) => {
+			console.log(err);
+		})
+})
 
 
 app.get('/edit/:id', (req, res, next)=>{
@@ -109,6 +117,8 @@ app.get('/print/:id', (req, res, next)=>{
 
 //Render Page
 app.use((req, res) => {
+
+	console.log('user', req.account);
 	vitreumRender({
 		page: './build/homebrew/bundle.dot',
 		globals:{
@@ -119,7 +129,8 @@ app.use((req, res) => {
 			url: req.originalUrl,
 			welcomeText : welcomeText,
 			changelog : changelogText,
-			brew : req.brew
+			brew : req.brew,
+			brews : req.brews
 		},
 		clearRequireCache : !process.env.PRODUCTION,
 	}, (err, page) => {

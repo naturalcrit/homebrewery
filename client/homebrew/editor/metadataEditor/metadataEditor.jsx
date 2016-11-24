@@ -88,12 +88,21 @@ const MetadataEditor = React.createClass({
 		</div>
 	},
 
+	renderAuthors : function(){
+		let text = 'None.';
+		if(this.props.metadata.authors.length){
+			text = this.props.metadata.authors.join(', ');
+		}
+		return <div className='field authors'>
+			<label>authors</label>
+			<div className='value'>
+				{text}
+			</div>
+		</div>
+	},
+
 	render : function(){
-		console.log(this.props.metadata);
-
-
 		return <div className='metadataEditor'>
-
 			<div className='field title'>
 				<label>title</label>
 				<input type='text' className='value'
@@ -119,6 +128,8 @@ const MetadataEditor = React.createClass({
 					{this.renderSystems()}
 				</div>
 			</div>
+
+			{this.renderAuthors()}
 
 			<div className='field publish'>
 				<label>publish</label>
