@@ -20,7 +20,7 @@ const Editor = React.createClass({
 			onChange : ()=>{},
 
 			metadata : {},
-			onMetadataChange : ()=>{}
+			onMetadataChange : ()=>{},
 		};
 	},
 	getInitialState: function() {

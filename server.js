@@ -113,8 +113,6 @@ app.get('/print/:id', (req, res, next)=>{
 });
 
 
-
-
 //Render Page
 app.use((req, res) => {
 	vitreumRender({

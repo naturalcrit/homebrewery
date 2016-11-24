@@ -5,12 +5,20 @@ const cx    = require('classnames');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 
+const BrewItem = require('./brewItem/brewItem.jsx');
+
 const UserPage = React.createClass({
 	getDefaultProps: function() {
 		return {
 			username : '',
 			brews : []
 		};
+	},
+
+	renderBrews : function(){
+		return _.map(this.props.brews, (brew) => {
+			return <BrewItem brew={brew} />
+		});
 	},
 
 	render : function(){
@@ -26,6 +34,7 @@ const UserPage = React.createClass({
 			<div className='content'>
 				<div className='phb'>
 					<h1>{this.props.username}</h1>
+					{this.renderBrews()}
 				</div>
 			</div>
 		</div>
