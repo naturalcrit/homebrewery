@@ -135,7 +135,7 @@ const MetadataEditor = React.createClass({
 				<label>publish</label>
 				<div className='value'>
 					{this.renderPublish()}
-					<small>Published homebrews will be publicly searchable (eventually...)</small>
+					<small>Published homebrews will be publicly viewable and searchable (eventually...)</small>
 				</div>
 			</div>
 

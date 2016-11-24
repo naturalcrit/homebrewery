@@ -49,12 +49,14 @@ const NewPage = React.createClass({
 
 	handleControlKeys : function(e){
 		if(!(e.ctrlKey || e.metaKey)) return;
-		e.stopPropagation();
-		e.preventDefault();
 		const S_KEY = 83;
 		const P_KEY = 80;
 		if(e.keyCode == S_KEY) this.save();
 		if(e.keyCode == P_KEY) this.print();
+		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
+			e.stopPropagation();
+			e.preventDefault();
+		}
 	},
 
 	handleSplitMove : function(){

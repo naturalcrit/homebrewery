@@ -6,6 +6,7 @@ const CreateRouter = require('pico-router').createRouter;
 
 const HomePage = require('./pages/homePage/homePage.jsx');
 const EditPage = require('./pages/editPage/editPage.jsx');
+const UserPage = require('./pages/userPage/userPage.jsx');
 const SharePage = require('./pages/sharePage/sharePage.jsx');
 const NewPage = require('./pages/newPage/newPage.jsx');
 const ErrorPage = require('./pages/errorPage/errorPage.jsx');
@@ -50,9 +51,11 @@ const Homebrew = React.createClass({
 					id={args.id}
 					brew={this.props.brew} />
 			},
-			'/changelog' : (args) => {
-				return <SharePage
-					brew={{title : 'Changelog', text : this.props.changelog}} />
+			'/user/:username' : (args) => {
+				return <UserPage
+					username={args.username}
+					brews={this.props.brews}
+				/>
 			},
 			'/print/:id' : (args, query) => {
 				return <PrintPage brew={this.props.brew} query={query}/>;
@@ -62,6 +65,10 @@ const Homebrew = React.createClass({
 			},
 			'/new' : (args) => {
 				return <NewPage />
+			},
+			'/changelog' : (args) => {
+				return <SharePage
+					brew={{title : 'Changelog', text : this.props.changelog}} />
 			},
 			'*' : <HomePage
 					welcomeText={this.props.welcomeText} />,

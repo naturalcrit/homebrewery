@@ -117,8 +117,6 @@ app.get('/print/:id', (req, res, next)=>{
 
 //Render Page
 app.use((req, res) => {
-
-	console.log('user', req.account);
 	vitreumRender({
 		page: './build/homebrew/bundle.dot',
 		globals:{
