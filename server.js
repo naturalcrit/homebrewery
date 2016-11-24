@@ -1,22 +1,34 @@
 require('app-module-path').addPath('./shared');
 
 const _ = require('lodash');
+const jwt = require('jwt-simple');
 const vitreumRender = require('vitreum/render');
-const bodyParser = require('body-parser')
 const express = require("express");
 const app = express();
 app.use(express.static(__dirname + '/build'));
-app.use(bodyParser.json({limit: '25mb'}));
+app.use(require('body-parser').json({limit: '25mb'}));
+app.use(require('cookie-parser')());
+
+const config = require('nconf')
+	.argv()
+	.env({ lowerCase: true })
+	.file('environment', { file: `config/${process.env.NODE_ENV}.json` })
+	.file('defaults', { file: 'config/default.json' });
+
+//DB
+require('mongoose')
+	.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://localhost/naturalcrit')
+	.connection.on('error', () => { console.log(">>>ERROR: Run Mongodb.exe ya goof!") });
 
 
-//Mongoose
-//TODO: Celean up
-const mongoose = require('mongoose');
-const mongoUri = process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://localhost/naturalcrit';
-require('mongoose').connect(mongoUri);
-mongoose.connection.on('error', function(){
-	console.log(">>>ERROR: Run Mongodb.exe ya goof!");
+//Account MIddleware
+router.use((req, res, next) => {
+	if(req.cookies && req.cookies.nc_session){
+		req.user = jwt.decode(req.cookies.nc_session, config.get('secret'));
+	}
+	return next();
 });
+
 
 
 app.use(require('./server/homebrew.api.js'));
