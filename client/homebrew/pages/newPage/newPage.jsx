@@ -20,14 +20,20 @@ const KEY = 'homebrewery-new';
 const NewPage = React.createClass({
 	getInitialState: function() {
 		return {
-			title : '',
+			metadata : {
+				title : '',
+				description : '',
+				tags : '',
+				published : false,
+				authors : [],
+				systems : []
+			},
+
 			text: '',
 			isSaving : false,
 			errors : []
 		};
 	},
-
-
 	componentDidMount: function() {
 		const storage = localStorage.getItem(KEY);
 		if(storage){
@@ -35,14 +41,31 @@ const NewPage = React.createClass({
 				text : storage
 			})
 		}
+		document.addEventListener('keydown', this.handleControlKeys);
 	},
+	componentWillUnmount: function() {
+		document.removeEventListener('keydown', this.handleControlKeys);
+	},
+
+	handleControlKeys : function(e){
+		if(!(e.ctrlKey || e.metaKey)) return;
+		const S_KEY = 83;
+		const P_KEY = 80;
+		if(e.keyCode == S_KEY) this.save();
+		if(e.keyCode == P_KEY) this.print();
+		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
+			e.stopPropagation();
+			e.preventDefault();
+		}
+	},
+
 	handleSplitMove : function(){
 		this.refs.editor.update();
 	},
 
-	handleTitleChange : function(title){
+	handleMetadataChange : function(metadata){
 		this.setState({
-			title : title
+			metadata : _.merge({}, this.state.metadata, metadata)
 		});
 	},
 
@@ -54,18 +77,16 @@ const NewPage = React.createClass({
 		localStorage.setItem(KEY, text);
 	},
 
-	handleSave : function(){
+	save : function(){
 		this.setState({
 			isSaving : true
 		});
 
 		request.post('/api')
-			.send({
-				title : this.state.title,
+			.send(_.merge({}, this.state.metadata, {
 				text : this.state.text
-			})
+			}))
 			.end((err, res)=>{
-
 				if(err){
 					this.setState({
 						isSaving : false
@@ -85,20 +106,32 @@ const NewPage = React.createClass({
 				save...
 			</Nav.item>
 		}else{
-			return <Nav.item icon='fa-save' className='saveButton' onClick={this.handleSave}>
+			return <Nav.item icon='fa-save' className='saveButton' onClick={this.save}>
 				save
 			</Nav.item>
 		}
 	},
 
+	print : function(){
+		localStorage.setItem('print', this.state.text);
+		window.open('/print?dialog=true&local=print','_blank');
+	},
+
+	renderLocalPrintButton : function(){
+		return <Nav.item color='purple' icon='fa-file-pdf-o' onClick={this.print}>
+			get PDF
+		</Nav.item>
+	},
+
 	renderNavbar : function(){
-		return <Navbar ver={this.props.ver}>
+		return <Navbar>
 			<Nav.section>
-				<EditTitle title={this.state.title} onChange={this.handleTitleChange} />
+				<Nav.item className='brewTitle'>{this.state.metadata.title}</Nav.item>
 			</Nav.section>
 
 			<Nav.section>
 				{this.renderSaveButton()}
+				{this.renderLocalPrintButton()}
 				<IssueNavItem />
 			</Nav.section>
 		</Navbar>
@@ -109,7 +142,13 @@ const NewPage = React.createClass({
 			{this.renderNavbar()}
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
-					<Editor value={this.state.text} onChange={this.handleTextChange} ref='editor'/>
+					<Editor
+						ref='editor'
+						value={this.state.text}
+						onChange={this.handleTextChange}
+						metadata={this.state.metadata}
+						onMetadataChange={this.handleMetadataChange}
+					/>
 					<BrewRenderer text={this.state.text} errors={this.state.errors} />
 				</SplitPane>
 			</div>
