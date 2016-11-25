@@ -4,7 +4,7 @@ const cx = require('classnames');
 
 const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
 const SnippetBar = require('./snippetbar/snippetbar.jsx');
-const MetadataEditor = require('./MetadataEditor/MetadataEditor.jsx');
+const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
 
 const splice = function(str, index, inject){
