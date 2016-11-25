@@ -5,6 +5,8 @@ const cx    = require('classnames');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 
+const RecentNavItem = require('../../navbar/recent.navitem.jsx');
+const Account = require('../../navbar/account.navitem.jsx');
 const BrewItem = require('./brewItem/brewItem.jsx');
 
 const UserPage = React.createClass({
@@ -29,10 +31,13 @@ const UserPage = React.createClass({
 
 	render : function(){
 		const brews = this.getSortedBrews();
+
+
 		return <div className='userPage page'>
 			<Navbar>
 				<Nav.section>
-					holla
+					<RecentNavItem.both />
+					<Account />
 				</Nav.section>
 			</Navbar>
 

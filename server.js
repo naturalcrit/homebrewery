@@ -126,7 +126,8 @@ app.use((req, res) => {
 			welcomeText : welcomeText,
 			changelog : changelogText,
 			brew : req.brew,
-			brews : req.brews
+			brews : req.brews,
+			account : req.account
 		},
 		clearRequireCache : !process.env.PRODUCTION,
 	}, (err, page) => {

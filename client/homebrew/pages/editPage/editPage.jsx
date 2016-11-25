@@ -8,7 +8,8 @@ const Navbar = require('../../navbar/navbar.jsx');
 
 const ReportIssue = require('../../navbar/issue.navitem.jsx');
 const PrintLink = require('../../navbar/print.navitem.jsx');
-const RecentlyEdited = require('../../navbar/recent.navitem.jsx').edited;
+const Account = require('../../navbar/account.navitem.jsx');
+//const RecentlyEdited = require('../../navbar/recent.navitem.jsx').edited;
 
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
@@ -191,11 +192,12 @@ const EditPage = React.createClass({
 			</Nav.section>
 			<Nav.section>
 				{this.renderSaveButton()}
-				<RecentlyEdited brew={this.props.brew} />
+				{/*<RecentlyEdited brew={this.props.brew} />*/}
 				<Nav.item newTab={true} href={'/share/' + this.props.brew.shareId} color='teal' icon='fa-share-alt'>
 					Share
 				</Nav.item>
 				<PrintLink shareId={this.props.brew.shareId} />
+				<Account />
 			</Nav.section>
 		</Navbar>
 	},

@@ -8,6 +8,8 @@
 - Can now search for brews by a specific author
 - Editing a brew in anyway while logged in will now add you to the list of authors
 - Added a new user page to see others published brews, as well as all of your own brews.
+- Added a new nav item for accessing your profile and logging in
+
 
 ### Monday, 14/11/2016
 - Updated snippet bar style

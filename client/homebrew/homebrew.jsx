@@ -31,6 +31,9 @@ const Homebrew = React.createClass({
 		};
 	},
 	componentWillMount: function() {
+		global.account = this.props.account;
+
+
 		Router = CreateRouter({
 			'/edit/:id' : (args) => {
 				if(!this.props.brew.editId){

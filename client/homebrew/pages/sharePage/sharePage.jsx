@@ -5,7 +5,9 @@ const cx = require('classnames');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 const PrintLink = require('../../navbar/print.navitem.jsx');
-const RecentlyViewed = require('../../navbar/recent.navitem.jsx').viewed;
+//const RecentlyViewed = require('../../navbar/recent.navitem.jsx').viewed;
+const Account = require('../../navbar/account.navitem.jsx');
+
 
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
@@ -46,11 +48,12 @@ const SharePage = React.createClass({
 				</Nav.section>
 
 				<Nav.section>
-					<RecentlyViewed brew={this.props.brew} />
+					{/*<RecentlyViewed brew={this.props.brew} />*/}
 					<PrintLink shareId={this.props.brew.shareId} />
 					<Nav.item href={'/source/' + this.props.brew.shareId} color='teal' icon='fa-code'>
 						source
 					</Nav.item>
+					<Account />
 				</Nav.section>
 			</Navbar>
 
