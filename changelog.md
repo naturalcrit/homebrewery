@@ -4,7 +4,10 @@
 - Metadata can now be added to brews
 - Added a metadata editor onto the edit and new pages
 - Moved deleting a brew into the metadata editor
-
+- Added in account middleware
+- Can now search for brews by a specific author
+- Editing a brew in anyway while logged in will now add you to the list of authors
+- Added a new user page to see others published brews, as well as all of your own brews.
 
 ### Monday, 14/11/2016
 - Updated snippet bar style
