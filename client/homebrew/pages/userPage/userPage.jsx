@@ -15,15 +15,20 @@ const UserPage = React.createClass({
 		};
 	},
 
-	renderBrews : function(){
-		return _.map(this.props.brews, (brew) => {
-			return <BrewItem brew={brew} />
+	renderBrews : function(brews){
+		return _.map(brews, (brew, idx) => {
+			return <BrewItem brew={brew} key={idx}/>
+		});
+	},
+
+	getSortedBrews : function(){
+		return _.groupBy(this.props.brews, (brew)=>{
+			return (brew.published ? 'published' : 'private')
 		});
 	},
 
 	render : function(){
-		console.log(this.props.brews);
-
+		const brews = this.getSortedBrews();
 		return <div className='userPage page'>
 			<Navbar>
 				<Nav.section>
@@ -33,8 +38,10 @@ const UserPage = React.createClass({
 
 			<div className='content'>
 				<div className='phb'>
-					<h1>{this.props.username}</h1>
-					{this.renderBrews()}
+					<h1>{this.props.username}'s brews</h1>
+					{this.renderBrews(brews.published)}
+					{brews.private ? <h1>{this.props.username}'s unpublished brews</h1> : null}
+					{this.renderBrews(brews.private)}
 				</div>
 			</div>
 		</div>
