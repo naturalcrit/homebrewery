@@ -1,12 +1,36 @@
 
+html, body, #reactContainer, .homebrew, .page {
+	height : auto;
+	min-height : 100vh;
+}
+
+.noColumns(){
+	column-count         : auto;
+	column-fill          : auto;
+	column-gap           : auto;
+	column-width         : auto;
+	-webkit-column-count : auto;
+	-moz-column-count    : auto;
+	-webkit-column-width : auto;
+	-moz-column-width    : auto;
+	-webkit-column-gap   : auto;
+	-moz-column-gap      : auto;
+}
+
 .userPage{
 	.content .phb{
-		height       : 80%;
 		min-height   : 350px;
 		margin       : 20px auto;
-		column-count : 1;
+		height : auto;
+		.noColumns();
 		&::after{
 			display : none;
+		}
+
+		.noBrews{
+			margin: 10px 0px;
+			font-style: italic;
+			font-size: 1.3em;
 		}
 	}
 }

@@ -9,6 +9,7 @@ const RecentNavItem = require('../../navbar/recent.navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
 const BrewItem = require('./brewItem/brewItem.jsx');
 
+
 const UserPage = React.createClass({
 	getDefaultProps: function() {
 		return {
@@ -18,6 +19,8 @@ const UserPage = React.createClass({
 	},
 
 	renderBrews : function(brews){
+		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>
+
 		return _.map(brews, (brew, idx) => {
 			return <BrewItem brew={brew} key={idx}/>
 		});
@@ -29,9 +32,17 @@ const UserPage = React.createClass({
 		});
 	},
 
+	renderPrivateBrews : function(privateBrews){
+		if(!privateBrews || !privateBrews.length) return;
+
+		return [
+			<h1>{this.props.username}'s unpublished brews</h1>,
+			this.renderBrews(privateBrews)
+		];
+	},
+
 	render : function(){
 		const brews = this.getSortedBrews();
-
 
 		return <div className='userPage page'>
 			<Navbar>
@@ -45,8 +56,7 @@ const UserPage = React.createClass({
 				<div className='phb'>
 					<h1>{this.props.username}'s brews</h1>
 					{this.renderBrews(brews.published)}
-					{brews.private ? <h1>{this.props.username}'s unpublished brews</h1> : null}
-					{this.renderBrews(brews.private)}
+					{this.renderPrivateBrews(brews.private)}
 				</div>
 			</div>
 		</div>

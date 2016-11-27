@@ -17,9 +17,9 @@ const BrewItem = React.createClass({
 
 	render : function(){
 		const brew = this.props.brew;
-		return <div className='brewItem'>
+		return <div className='brewItem'title={brew.description}>
 			<h4>{brew.title}</h4>
-			<p className='description'><em>{brew.description}</em></p>
+			<p className='description' ><em>{brew.description}</em></p>
 			<hr />
 			<ul>
 				<li><strong>Authors: </strong> {brew.authors.join(', ')}</li>

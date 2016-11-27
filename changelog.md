@@ -1,5 +1,10 @@
 # changelog
 
+### Sunday, 27/11/2016 - v2.5.1
+- Fixed the column rendering on the new user page. Really should have tested that better
+- Added a hover tooltip to fully read the brew description
+- Made the brew items take up only 25% allowing you to view more per row.
+
 ### Wednesday, 23/11/2016 - v2.5.0
 - Metadata can now be added to brews
 - Added a metadata editor onto the edit and new pages
