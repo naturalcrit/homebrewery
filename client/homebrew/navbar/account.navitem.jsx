@@ -4,7 +4,7 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 module.exports = function(props){
 	if(global.account){
 		return <Nav.item href={`/user/${global.account.username}`} color='yellow' icon='fa-user'>
-			profile
+			{global.account.username}
 		</Nav.item>
 	}
 	let url = '';

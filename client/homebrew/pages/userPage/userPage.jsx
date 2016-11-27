@@ -9,6 +9,13 @@ const RecentNavItem = require('../../navbar/recent.navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
 const BrewItem = require('./brewItem/brewItem.jsx');
 
+const brew = {
+	title : 'test',
+	authors : []
+}
+
+//const BREWS = _.times(25, ()=>{ return brew});
+
 
 const UserPage = React.createClass({
 	getDefaultProps: function() {

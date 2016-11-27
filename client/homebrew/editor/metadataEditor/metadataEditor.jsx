@@ -102,6 +102,7 @@ const MetadataEditor = React.createClass({
 	},
 
 	render : function(){
+		console.log(this.props.metadata);
 		return <div className='metadataEditor'>
 			<div className='field title'>
 				<label>title</label>

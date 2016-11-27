@@ -20,6 +20,7 @@ const Homebrew = React.createClass({
 			welcomeText : '',
 			changelog : '',
 			version : '0.0.0',
+			account : null,
 			brew : {
 				title : '',
 				text : '',

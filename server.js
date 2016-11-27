@@ -63,7 +63,6 @@ app.get('/user/:username', (req, res, next) => {
 		.then((brews) => {
 			req.brews = brews;
 			return next();
-			//return res.json(brews)
 		})
 		.catch((err) => {
 			console.log(err);
