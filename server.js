@@ -1,176 +1,139 @@
-'use strict';
-var _ = require('lodash');
 require('app-module-path').addPath('./shared');
-var vitreumRender = require('vitreum/render');
-var bodyParser = require('body-parser')
-var express = require("express");
-var app = express();
+
+const _ = require('lodash');
+const jwt = require('jwt-simple');
+const vitreumRender = require('vitreum/render');
+const express = require("express");
+const app = express();
 app.use(express.static(__dirname + '/build'));
-app.use(bodyParser.json({limit: '25mb'}));
+app.use(require('body-parser').json({limit: '25mb'}));
+app.use(require('cookie-parser')());
 
-//Mongoose
-var mongoose = require('mongoose');
-var mongoUri = process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://localhost/naturalcrit';
-mongoose.connect(mongoUri);
-mongoose.connection.on('error', function(){
-	console.log(">>>ERROR: Run Mongodb.exe ya goof!");
-});
+const config = require('nconf')
+	.argv()
+	.env({ lowerCase: true })
+	.file('environment', { file: `config/${process.env.NODE_ENV}.json` })
+	.file('defaults', { file: 'config/default.json' });
 
-//Admin route
-process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
-process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password';
-process.env.ADMIN_KEY  = process.env.ADMIN_KEY  || 'admin_key';
-var auth = require('basic-auth');
-app.get('/admin', function(req, res){
-	var credentials = auth(req)
-	if (!credentials || credentials.name !== process.env.ADMIN_USER || credentials.pass !== process.env.ADMIN_PASS) {
-		res.setHeader('WWW-Authenticate', 'Basic realm="example"')
-		return res.status(401).send('Access denied')
+//DB
+require('mongoose')
+	.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://localhost/naturalcrit')
+	.connection.on('error', () => { console.log(">>>ERROR: Run Mongodb.exe ya goof!") });
+
+
+//Account MIddleware
+app.use((req, res, next) => {
+	if(req.cookies && req.cookies.nc_session){
+		try{
+			req.account = jwt.decode(req.cookies.nc_session, config.get('secret'));
+		}catch(e){}
 	}
-	vitreumRender({
-		page: './build/admin/bundle.dot',
-		prerenderWith : './client/admin/admin.jsx',
-		clearRequireCache : !process.env.PRODUCTION,
-		initialProps: {
-			url: req.originalUrl,
-			admin_key : process.env.ADMIN_KEY,
-		},
-	}, function (err, page) {
-		return res.send(page)
-	});
+	return next();
 });
 
 
-//Populate homebrew routes
-app = require('./server/homebrew.api.js')(app);
+app.use(require('./server/homebrew.api.js'));
+app.use(require('./server/admin.api.js'));
 
 
-var HomebrewModel = require('./server/homebrew.model.js').model;
-
-var sanitizeBrew = function(brew){
-	var cleanBrew = _.assign({}, brew);
-	delete cleanBrew.editId;
-	return cleanBrew;
-};
-
-//Load project version
-var projectVersion = require('./package.json').version;
+const HomebrewModel = require('./server/homebrew.model.js').model;
+const welcomeText = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
+const changelogText = require('fs').readFileSync('./changelog.md', 'utf8');
 
 
-//Edit Page
-app.get('/edit/:id', function(req, res){
-	HomebrewModel.find({editId : req.params.id}, function(err, objs){
-		var resObj = null;
-		if(objs.length){
-			resObj = objs[0].toJSON();
-		}
-
-		vitreumRender({
-			page: './build/homebrew/bundle.dot',
-			globals:{},
-			prerenderWith : './client/homebrew/homebrew.jsx',
-			initialProps: {
-				url: req.originalUrl,
-				brew : resObj || {},
-				version : projectVersion
-			},
-			clearRequireCache : !process.env.PRODUCTION,
-		}, function (err, page) {
-			return res.send(page)
-		});
-	})
-});
-
-
-//Share Page
-app.get('/share/:id', function(req, res){
-	HomebrewModel.find({shareId : req.params.id}, function(err, objs){
-		var brew = {};
-
-		if(objs.length){
-			var resObj = objs[0];
-			resObj.lastViewed = new Date();
-			resObj.views = resObj.views + 1;
-			resObj.save();
-
-			brew = resObj.toJSON();
-		}
-
-		vitreumRender({
-			page: './build/homebrew/bundle.dot',
-			globals:{},
-			prerenderWith : './client/homebrew/homebrew.jsx',
-			initialProps: {
-				url: req.originalUrl,
-				brew : sanitizeBrew(brew || {}),
-				version : projectVersion
-			},
-			clearRequireCache : !process.env.PRODUCTION,
-		}, function (err, page) {
-			return res.send(page)
-		});
-	})
-});
-
-//Print Page
-var Markdown = require('naturalcrit/markdown.js');
-var PHBStyle = '<style>' + require('fs').readFileSync('./phb.standalone.css', 'utf8') + '</style>'
-app.get('/print/:id', function(req, res){
-	HomebrewModel.find({shareId : req.params.id}, function(err, objs){
-		var brew = {};
-		if(objs.length){
-			brew = objs[0];
-		}
-
-		if(err || !objs.length){
-			brew.text = '# Oops \n We could not find a brew with that id. **Sorry!**';
-		}
-
-		var content = _.map(brew.text.split('\\page'), function(pageText, index){
-			return `<div class="phb print" id="p${index+1}">` + Markdown.render(pageText) + '</div>';
-		}).join('\n');
-
-		var dialog = '';
-		if(req.query && req.query.dialog) dialog = 'onload="window.print()"';
-
-		var title = '<title>' + brew.title + '</title>';
-		var page = `<html><head>${title} ${PHBStyle}</head><body ${dialog}>${content}</body></html>`
-
-		return res.send(page)
-	});
-});
 
 //Source page
 String.prototype.replaceAll = function(s,r){return this.split(s).join(r)}
-app.get('/source/:id', function(req, res){
-	HomebrewModel.find({shareId : req.params.id}, function(err, objs){
-		if(err || !objs.length) return res.status(404).send('Could not find Homebrew with that id');
-		var brew = null;
-		if(objs.length) brew = objs[0];
-		var text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-		return res.send(`<code><pre>${text}</pre></code>`);
-	});
+app.get('/source/:id', (req, res)=>{
+	HomebrewModel.get({shareId : req.params.id})
+		.then((brew)=>{
+			const text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+			return res.send(`<code><pre>${text}</pre></code>`);
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(404).send('Could not find Homebrew with that id');
+		})
 });
 
-//Home and 404, etc.
-var welcomeText = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
-var changelogText = require('fs').readFileSync('./changelog.md', 'utf8');
-app.get('*', function (req, res) {
+
+app.get('/user/:username', (req, res, next) => {
+	const fullAccess = req.account && (req.account.username == req.params.username);
+	HomebrewModel.getByUser(req.params.username, fullAccess)
+		.then((brews) => {
+			req.brews = brews;
+			return next();
+		})
+		.catch((err) => {
+			console.log(err);
+		})
+})
+
+
+app.get('/edit/:id', (req, res, next)=>{
+	HomebrewModel.get({editId : req.params.id})
+		.then((brew)=>{
+			req.brew = brew.sanatize();
+			return next();
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(400).send(`Can't get that`);
+		});
+});
+
+//Share Page
+app.get('/share/:id', (req, res, next)=>{
+	HomebrewModel.get({shareId : req.params.id})
+		.then((brew)=>{
+			return brew.increaseView();
+		})
+		.then((brew)=>{
+			req.brew = brew.sanatize(true);
+			return next();
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(400).send(`Can't get that`);
+		});
+});
+
+//Print Page
+app.get('/print/:id', (req, res, next)=>{
+	HomebrewModel.get({shareId : req.params.id})
+		.then((brew)=>{
+			req.brew = brew.sanatize(true);
+			return next();
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(400).send(`Can't get that`);
+		});
+});
+
+
+//Render Page
+app.use((req, res) => {
 	vitreumRender({
 		page: './build/homebrew/bundle.dot',
-		globals:{},
+		globals:{
+			version : require('./package.json').version
+		},
 		prerenderWith : './client/homebrew/homebrew.jsx',
 		initialProps: {
 			url: req.originalUrl,
 			welcomeText : welcomeText,
 			changelog : changelogText,
-			version : projectVersion
+			brew : req.brew,
+			brews : req.brews,
+			account : req.account
 		},
 		clearRequireCache : !process.env.PRODUCTION,
-	}, function (err, page) {
+	}, (err, page) => {
 		return res.send(page)
 	});
 });
+
 
 
 

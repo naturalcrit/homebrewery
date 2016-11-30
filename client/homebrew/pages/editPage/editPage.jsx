@@ -1,52 +1,57 @@
-var React = require('react');
-var _ = require('lodash');
-var cx = require('classnames');
-var request = require("superagent");
+const React = require('react');
+const _ = require('lodash');
+const cx = require('classnames');
+const request = require("superagent");
 
-var Nav = require('naturalcrit/nav/nav.jsx');
-var Navbar = require('../../navbar/navbar.jsx');
+const Nav = require('naturalcrit/nav/nav.jsx');
+const Navbar = require('../../navbar/navbar.jsx');
 
-var EditTitle = require('../../navbar/editTitle.navitem.jsx');
-var ReportIssue = require('../../navbar/issue.navitem.jsx');
-var PrintLink = require('../../navbar/print.navitem.jsx');
-var RecentlyEdited = require('../../navbar/recent.navitem.jsx').edited;
+const ReportIssue = require('../../navbar/issue.navitem.jsx');
+const PrintLink = require('../../navbar/print.navitem.jsx');
+const Account = require('../../navbar/account.navitem.jsx');
+//const RecentlyEdited = require('../../navbar/recent.navitem.jsx').edited;
 
 
-var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
-var Editor = require('../../editor/editor.jsx');
-var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
+const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
+const Editor = require('../../editor/editor.jsx');
+const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
-var HijackPrint = require('../hijackPrint.js');
-
+const Markdown = require('naturalcrit/markdown.js');
 
 
 const SAVE_TIMEOUT = 3000;
 
 
 
-var EditPage = React.createClass({
+const EditPage = React.createClass({
 	getDefaultProps: function() {
 		return {
-			ver : '0.0.0',
-			id : null,
 			brew : {
-				title : '',
 				text : '',
 				shareId : null,
 				editId : null,
 				createdAt : null,
 				updatedAt : null,
+
+				title : '',
+				description : '',
+				tags : '',
+				published : false,
+				authors : [],
+				systems : []
 			}
 		};
 	},
 
 	getInitialState: function() {
 		return {
-			title : this.props.brew.title,
-			text: this.props.brew.text,
+			brew : this.props.brew,
+
+
 			isSaving : false,
 			isPending : false,
 			errors : null,
+			htmlErrors : [],
 			lastUpdated : this.props.brew.updatedAt
 		};
 	},
@@ -60,53 +65,65 @@ var EditPage = React.createClass({
 			}
 		};
 
-		document.onkeydown = HijackPrint(this.props.brew.shareId);
+		this.setState({
+			htmlErrors : Markdown.validate(this.state.brew.text)
+		})
+
+		document.addEventListener('keydown', this.handleControlKeys);
 	},
 	componentWillUnmount: function() {
 		window.onbeforeunload = function(){};
-		document.onkeydown = function(){};
+		document.removeEventListener('keydown', this.handleControlKeys);
+	},
+
+
+	handleControlKeys : function(e){
+		if(!(e.ctrlKey || e.metaKey)) return;
+		const S_KEY = 83;
+		const P_KEY = 80;
+		if(e.keyCode == S_KEY) this.save();
+		if(e.keyCode == P_KEY) window.open(`/print/${this.props.brew.shareId}?dialog=true`, '_blank').focus();
+		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
+			e.stopPropagation();
+			e.preventDefault();
+		}
 	},
 
 	handleSplitMove : function(){
 		this.refs.editor.update();
 	},
 
-	handleTitleChange : function(title){
+	handleMetadataChange : function(metadata){
 		this.setState({
-			title : title,
-			isPending : true
+			brew : _.merge({}, this.state.brew, metadata),
+			isPending : true,
+		}, ()=>{
+			console.log(this.hasChanges());
+			(this.hasChanges() ? this.debounceSave() : this.debounceSave.cancel());
 		});
 
-		(this.hasChanges() ? this.debounceSave() : this.debounceSave.cancel());
 	},
 
 	handleTextChange : function(text){
+
+		//If there are errors, run the validator on everychange to give quick feedback
+		var htmlErrors = this.state.htmlErrors;
+		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
+
 		this.setState({
-			text : text,
-			isPending : true
+			brew : _.merge({}, this.state.brew, {text : text}),
+			isPending : true,
+			htmlErrors : htmlErrors
 		});
 
 		(this.hasChanges() ? this.debounceSave() : this.debounceSave.cancel());
-	},
-
-	handleDelete : function(){
-		if(!confirm("are you sure you want to delete this brew?")) return;
-		if(!confirm("are you REALLY sure? You will not be able to recover it")) return;
-
-		request.get('/api/remove/' + this.props.brew.editId)
-			.send()
-			.end(function(err, res){
-				window.location.href = '/';
-			});
 	},
 
 	hasChanges : function(){
 		if(this.savedBrew){
-			if(this.state.text !== this.savedBrew.text) return true;
-			if(this.state.title !== this.savedBrew.title) return true;
+			return !_.isEqual(this.state.brew, this.savedBrew)
 		}else{
-			if(this.state.text !== this.props.brew.text) return true;
-			if(this.state.title !== this.props.brew.title) return true;
+			return !_.isEqual(this.state.brew, this.props.brew)
 		}
 		return false;
 	},
@@ -115,15 +132,13 @@ var EditPage = React.createClass({
 		this.debounceSave.cancel();
 		this.setState({
 			isSaving : true,
-			errors : null
+			errors : null,
+			htmlErrors : Markdown.validate(this.state.brew.text)
 		});
 
 		request
 			.put('/api/update/' + this.props.brew.editId)
-			.send({
-				text : this.state.text,
-				title : this.state.title
-			})
+			.send(this.state.brew)
 			.end((err, res) => {
 				if(err){
 					this.setState({
@@ -163,28 +178,26 @@ var EditPage = React.createClass({
 		if(this.state.isSaving){
 			return <Nav.item className='save' icon="fa-spinner fa-spin">saving...</Nav.item>
 		}
-		if(!this.state.isPending && !this.state.isSaving){
-			return <Nav.item className='save saved'>saved.</Nav.item>
-		}
 		if(this.state.isPending && this.hasChanges()){
 			return <Nav.item className='save' onClick={this.save} color='blue' icon='fa-save'>Save Now</Nav.item>
 		}
+		if(!this.state.isPending && !this.state.isSaving){
+			return <Nav.item className='save saved'>saved.</Nav.item>
+		}
 	},
 	renderNavbar : function(){
-		return <Navbar ver={this.props.ver}>
+		return <Navbar>
 			<Nav.section>
-				<EditTitle title={this.state.title} onChange={this.handleTitleChange} />
+				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
 			</Nav.section>
 			<Nav.section>
 				{this.renderSaveButton()}
-				<RecentlyEdited brew={this.props.brew} />
+				{/*<RecentlyEdited brew={this.props.brew} />*/}
 				<Nav.item newTab={true} href={'/share/' + this.props.brew.shareId} color='teal' icon='fa-share-alt'>
 					Share
 				</Nav.item>
 				<PrintLink shareId={this.props.brew.shareId} />
-				<Nav.item color='red' icon='fa-trash' onClick={this.handleDelete}>
-					Delete
-				</Nav.item>
+				<Account />
 			</Nav.section>
 		</Navbar>
 	},
@@ -195,8 +208,14 @@ var EditPage = React.createClass({
 
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
-					<Editor value={this.state.text} onChange={this.handleTextChange} ref='editor'/>
-					<BrewRenderer text={this.state.text} />
+					<Editor
+						ref='editor'
+						value={this.state.brew.text}
+						onChange={this.handleTextChange}
+						metadata={this.state.brew}
+						onMetadataChange={this.handleMetadataChange}
+					/>
+					<BrewRenderer text={this.state.brew.text} errors={this.state.htmlErrors} />
 				</SplitPane>
 			</div>
 		</div>

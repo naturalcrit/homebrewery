@@ -1,5 +1,33 @@
 # changelog
 
+### Sunday, 27/11/2016 - v2.5.1
+- Fixed the column rendering on the new user page. Really should have tested that better
+- Added a hover tooltip to fully read the brew description
+- Made the brew items take up only 25% allowing you to view more per row.
+
+### Wednesday, 23/11/2016 - v2.5.0
+- Metadata can now be added to brews
+- Added a metadata editor onto the edit and new pages
+- Moved deleting a brew into the metadata editor
+- Added in account middleware
+- Can now search for brews by a specific author
+- Editing a brew in anyway while logged in will now add you to the list of authors
+- Added a new user page to see others published brews, as well as all of your own brews.
+- Added a new nav item for accessing your profile and logging in
+
+
+### Monday, 14/11/2016
+- Updated snippet bar style
+- You can now print from a new page without saving
+- Added the ability to use ctrl+p and ctrl+s to print and save respectively.
+
+### Monday, 07/11/2016
+- Added final touches to the html validator and updating the rest of the branch
+- If anyone finds issues with the new HTML validator, please let me know. I hope this will bring a more consistent feel to Homebrewery rendering.
+
+### Friday, 09/09/2016 - v2.4.0
+- Adding in a HTML validator that will display warnings whenever you save. This should stop a lot of the issues generated with pages not showing up.
+
 ### Saturday, 20/08/2016 - v2.3.0
 - Added in a license file
 - Updated the welcome text

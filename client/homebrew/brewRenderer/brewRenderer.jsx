@@ -3,20 +3,24 @@ var _ = require('lodash');
 var cx = require('classnames');
 
 var Markdown = require('naturalcrit/markdown.js');
+var ErrorBar = require('./errorBar/errorBar.jsx');
 
 var PAGE_HEIGHT = 1056 + 30;
 
 var BrewRenderer = React.createClass({
 	getDefaultProps: function() {
 		return {
-			text : ''
+			text : '',
+			errors : []
 		};
 	},
 	getInitialState: function() {
 		return {
 			viewablePageNumber: 0,
 			height : 0,
-			isMounted : false
+			isMounted : false,
+
+			errors : []
 		};
 	},
 	totalPages : 0,
@@ -94,6 +98,8 @@ var BrewRenderer = React.createClass({
 			onScroll={this.handleScroll}
 			ref='main'
 			style={{height : this.state.height}}>
+
+			<ErrorBar errors={this.props.errors} />
 
 			<div className='pages'>
 				{this.renderPages()}

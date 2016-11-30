@@ -1,3 +1,5 @@
+//TODO: Depricate
+
 module.exports = function(shareId){
 	return function(event){
 		event = event || window.event;
