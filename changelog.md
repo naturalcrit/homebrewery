@@ -1,5 +1,10 @@
 # changelog
 
+### Thursday, 01/12/2016
+- Added in a snippet for a split table
+- Added an account nav item to new page
+
+
 ### Sunday, 27/11/2016 - v2.5.1
 - Fixed the column rendering on the new user page. Really should have tested that better
 - Added a hover tooltip to fully read the brew description

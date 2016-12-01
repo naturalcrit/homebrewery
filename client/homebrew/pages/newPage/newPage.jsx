@@ -7,7 +7,7 @@ const Markdown = require('naturalcrit/markdown.js');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
-const EditTitle = require('../../navbar/editTitle.navitem.jsx');
+const AccountNavItem = require('../../navbar/account.navitem.jsx');
 const IssueNavItem = require('../../navbar/issue.navitem.jsx');
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
@@ -133,6 +133,7 @@ const NewPage = React.createClass({
 				{this.renderSaveButton()}
 				{this.renderLocalPrintButton()}
 				<IssueNavItem />
+				<AccountNavItem />
 			</Nav.section>
 		</Navbar>
 	},
