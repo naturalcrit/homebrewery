@@ -50,13 +50,15 @@ var Nav = {
 			var icon;
 			if(this.props.icon) icon = <i className={'fa ' + this.props.icon} />;
 
+			const props = _.omit(this.props, ['newTab']);
+
 			if(this.props.href){
-				return <a {...this.props} className={classes} target={this.props.newTab ? '_blank' : '_self'} >
+				return <a {...props} className={classes} target={this.props.newTab ? '_blank' : '_self'} >
 					{this.props.children}
 					{icon}
 				</a>
 			}else{
-				return <div {...this.props} className={classes} onClick={this.handleClick} >
+				return <div {...props} className={classes} onClick={this.handleClick} >
 					{this.props.children}
 					{icon}
 				</div>

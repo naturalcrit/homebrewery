@@ -1,5 +1,18 @@
 # changelog
 
+### Saturday, 03/12/2016 - v2.6.0
+- Added report back to the edit page
+- Changed metaeditor icon
+- Added a button to quickly share your brew to reddit :)
+- Disabled Partial Page Rendering unless your brew hits 75 pages or longer
+- The brew renderer will now try and use your first page to judge the page size of each of your brews. This allows you now to set landscape and other weird sizes and everthing should work fine :)
+- UI on the user page improved (thanks u/PalaNolho)
+- Fixed lists not breaking across columns (thanks u/tyson-nw)
+- Added a table of contents snippet (thanks u/tullisar)
+- Added a multicolumn snippet
+
+
+
 ### Thursday, 01/12/2016
 - Added in a snippet for a split table
 - Added an account nav item to new page

@@ -10,11 +10,11 @@ const Account = require('../../navbar/account.navitem.jsx');
 const BrewItem = require('./brewItem/brewItem.jsx');
 
 const brew = {
-	title : 'test',
+	title : 'SUPER Long title woah now',
 	authors : []
 }
 
-//const BREWS = _.times(25, ()=>{ return brew});
+const BREWS = _.times(25, ()=>{ return brew});
 
 
 const UserPage = React.createClass({
@@ -26,9 +26,11 @@ const UserPage = React.createClass({
 	},
 
 	renderBrews : function(brews){
-		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>
+		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
 
-		return _.map(brews, (brew, idx) => {
+		const sortedBrews = _.sortBy(brews, (brew)=>{ return brew.title; });
+
+		return _.map(sortedBrews, (brew, idx) => {
 			return <BrewItem brew={brew} key={idx}/>
 		});
 	},

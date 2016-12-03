@@ -51,6 +51,16 @@ const MetadataEditor = React.createClass({
 			});
 	},
 
+	getRedditLink : function(){
+		const meta = this.props.metadata;
+		const title = `${meta.title} [${meta.systems.join(' ')}]`;
+		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
+
+**[Homebrewery Link](http://homebrewery.naturalcrit.com/share/${meta.shareId})**`;
+
+		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
+	},
+
 	renderSystems : function(){
 		return _.map(SYSTEMS, (val)=>{
 			return <label key={val}>
@@ -101,8 +111,22 @@ const MetadataEditor = React.createClass({
 		</div>
 	},
 
+	renderShareToReddit : function(){
+		if(!this.props.metadata.shareId) return;
+
+		return <div className='field reddit'>
+			<label>reddit</label>
+			<div className='value'>
+				<a href={this.getRedditLink()} target='_blank'>
+					<button className='publish'>
+						<i className='fa fa-reddit-alien' /> share to reddit
+					</button>
+				</a>
+			</div>
+		</div>
+	},
+
 	render : function(){
-		console.log(this.props.metadata);
 		return <div className='metadataEditor'>
 			<div className='field title'>
 				<label>title</label>
@@ -139,6 +163,8 @@ const MetadataEditor = React.createClass({
 					<small>Published homebrews will be publicly viewable and searchable (eventually...)</small>
 				</div>
 			</div>
+
+			{this.renderShareToReddit()}
 
 			{this.renderDelete()}
 

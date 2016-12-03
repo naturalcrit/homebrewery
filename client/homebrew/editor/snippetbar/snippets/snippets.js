@@ -4,6 +4,7 @@ var MonsterBlockGen = require('./monsterblock.gen.js');
 var ClassFeatureGen = require('./classfeature.gen.js');
 var FullClassGen = require('./fullclass.gen.js');
 var CoverPageGen = require('./coverpage.gen.js');
+var TableOfContentsGen = require('./tableOfContents.gen.js');
 
 
 module.exports = [
@@ -68,6 +69,12 @@ module.exports = [
 				name : "Link to page",
 				icon : 'fa-link',
 				gen : "[Click here](#p3) to go to page 3\n"
+			},
+
+			{
+				name : "Table of Contents",
+				icon : 'fa-book',
+				gen : TableOfContentsGen
 			},
 
 
