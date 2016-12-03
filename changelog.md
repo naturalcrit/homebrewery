@@ -6,6 +6,7 @@
 - Added a button to quickly share your brew to reddit :)
 - Disabled Partial Page Rendering unless your brew hits 75 pages or longer
 - The brew renderer will now try and use your first page to judge the page size of each of your brews. This allows you now to set landscape and other weird sizes and everthing should work fine :)
+- UI on the user page improved slightly
 
 
 
