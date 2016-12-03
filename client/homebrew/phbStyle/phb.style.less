@@ -15,7 +15,7 @@ body {
 	counter-reset : phb-page-numbers;
 }
 *{
-	-webkit-print-color-adjust: exact;
+	-webkit-print-color-adjust : exact;
 }
 .useSansSerif(){
 	font-family : ScalySans;
@@ -332,7 +332,7 @@ body {
 		-moz-column-break-after    : always;
 	}
 	//Avoid breaking up
-	p,ul,blockquote,table{
+	p,blockquote,table{
 		z-index                     : 15;
 		-webkit-column-break-inside : avoid;
 		column-break-inside         : avoid;
@@ -449,4 +449,25 @@ body {
 }
 .phb pre+.descriptive{
 	margin-top : 8px;
+}
+//*****************************
+// *      TABLE OF CONTENTS
+// *****************************/
+.phb .toc{
+	-webkit-column-break-inside : avoid;
+	column-break-inside         : avoid;
+	a{
+		color           : black;
+		text-decoration : none;
+		&:hover{
+			text-decoration : underline;
+		}
+	}
+	ul{
+		padding-left    : 0;
+		list-style-type : none;
+	}
+	&>ul>li{
+		margin-bottom : 10px;
+	}
 }

@@ -5,8 +5,8 @@ const cx    = require('classnames');
 
 const Snippets = require('./snippets/snippets.js');
 
-const execute = function(val){
-	if(_.isFunction(val)) return val();
+const execute = function(val, brew){
+	if(_.isFunction(val)) return val(brew);
 	return val;
 }
 
@@ -15,6 +15,7 @@ const execute = function(val){
 const Snippetbar = React.createClass({
 	getDefaultProps: function() {
 		return {
+			brew : '',
 			onInject : ()=>{},
 			onToggle : ()=>{},
 			showmeta : false
@@ -28,6 +29,7 @@ const Snippetbar = React.createClass({
 	renderSnippetGroups : function(){
 		return _.map(Snippets, (snippetGroup)=>{
 			return <SnippetGroup
+				brew={this.props.brew}
 				groupName={snippetGroup.groupName}
 				icon={snippetGroup.icon}
 				snippets={snippetGroup.snippets}
@@ -58,6 +60,7 @@ module.exports = Snippetbar;
 const SnippetGroup = React.createClass({
 	getDefaultProps: function() {
 		return {
+			brew : '',
 			groupName : '',
 			icon : 'fa-rocket',
 			snippets : [],
@@ -65,7 +68,7 @@ const SnippetGroup = React.createClass({
 		};
 	},
 	handleSnippetClick : function(snippet){
-		this.props.onSnippetClick(execute(snippet.gen));
+		this.props.onSnippetClick(execute(snippet.gen, this.props.brew));
 	},
 	renderSnippets : function(){
 		return _.map(this.props.snippets, (snippet)=>{

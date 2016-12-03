@@ -82,7 +82,11 @@ const Editor = React.createClass({
 	render : function(){
 		return(
 			<div className='editor' ref='main'>
-				<SnippetBar onInject={this.handleInject} onToggle={this.handgleToggle} showmeta={this.state.showMetadataEditor} />
+				<SnippetBar
+					brew={this.props.value}
+					onInject={this.handleInject}
+					onToggle={this.handgleToggle}
+					showmeta={this.state.showMetadataEditor} />
 				{this.renderMetadataEditor()}
 				<CodeEditor
 					ref='codeEditor'
