@@ -5,6 +5,7 @@ const cx = require('classnames');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 const PrintLink = require('../../navbar/print.navitem.jsx');
+const ReportIssue = require('../../navbar/issue.navitem.jsx');
 //const RecentlyViewed = require('../../navbar/recent.navitem.jsx').viewed;
 const Account = require('../../navbar/account.navitem.jsx');
 
@@ -34,10 +35,12 @@ const SharePage = React.createClass({
 	},
 	handleControlKeys : function(e){
 		if(!(e.ctrlKey || e.metaKey)) return;
-		e.stopPropagation();
-		e.preventDefault();
 		const P_KEY = 80;
-		if(e.keyCode == P_KEY) window.open(`/print/${this.props.brew.shareId}?dialog=true`, '_blank').focus();
+		if(e.keyCode == P_KEY){
+			window.open(`/print/${this.props.brew.shareId}?dialog=true`, '_blank').focus();
+			e.stopPropagation();
+			e.preventDefault();
+		}
 	},
 
 	render : function(){
@@ -48,6 +51,7 @@ const SharePage = React.createClass({
 				</Nav.section>
 
 				<Nav.section>
+					<ReportIssue />
 					{/*<RecentlyViewed brew={this.props.brew} />*/}
 					<PrintLink shareId={this.props.brew.shareId} />
 					<Nav.item href={'/source/' + this.props.brew.shareId} color='teal' icon='fa-code'>

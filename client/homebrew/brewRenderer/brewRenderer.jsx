@@ -16,6 +16,8 @@ const BrewRenderer = React.createClass({
 		};
 	},
 	getInitialState: function() {
+		const pages = this.props.text.split('\\page');
+
 		return {
 			viewablePageNumber: 0,
 			height : 0,
@@ -23,7 +25,8 @@ const BrewRenderer = React.createClass({
 
 			usePPR : true,
 
-			pages : [],
+			pages : pages,
+			usePPR : pages.length >= PPR_THRESHOLD,
 
 			errors : []
 		};
