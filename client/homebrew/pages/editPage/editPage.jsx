@@ -193,6 +193,7 @@ const EditPage = React.createClass({
 			<Nav.section>
 				{this.renderSaveButton()}
 				{/*<RecentlyEdited brew={this.props.brew} />*/}
+				<ReportIssue />
 				<Nav.item newTab={true} href={'/share/' + this.props.brew.shareId} color='teal' icon='fa-share-alt'>
 					Share
 				</Nav.item>

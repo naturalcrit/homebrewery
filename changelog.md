@@ -1,5 +1,8 @@
 # changelog
 
+### Saturday, 03/12/2016 - v2.6.0
+- Added report back to the edit page
+
 ### Thursday, 01/12/2016
 - Added in a snippet for a split table
 - Added an account nav item to new page
