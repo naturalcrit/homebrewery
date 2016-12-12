@@ -51,8 +51,8 @@ var getFeature = (level)=>{
 }
 
 module.exports = {
-	full : function(classname){
-		classname = classname || _.sample(classnames)
+	full : function(){
+		classname = _.sample(classnames)
 
 		var maxes = [4,3,3,3,3,2,2,1,1]
 		var drawSlots = function(Slots){
@@ -91,8 +91,8 @@ module.exports = {
 		}).join('\n') +'\n</div>\n\n';
 	},
 
-	half : function(classname){
-		classname = classname || _.sample(classnames)
+	half : function(){
+		classname =  _.sample(classnames)
 
 		var featureScore = 1
 		return "<div class='classTable'>\n##### The " + classname + "\n" +

@@ -11,16 +11,13 @@ const PrintLink = require('../../navbar/print.navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
 //const RecentlyEdited = require('../../navbar/recent.navitem.jsx').edited;
 
-
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const Markdown = require('naturalcrit/markdown.js');
 
-
 const SAVE_TIMEOUT = 3000;
-
 
 
 const EditPage = React.createClass({
@@ -47,7 +44,6 @@ const EditPage = React.createClass({
 		return {
 			brew : this.props.brew,
 
-
 			isSaving : false,
 			isPending : false,
 			errors : null,
@@ -58,7 +54,7 @@ const EditPage = React.createClass({
 	savedBrew : null,
 
 	componentDidMount: function(){
-		this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
+		this.trySave();
 		window.onbeforeunload = ()=>{
 			if(this.state.isSaving || this.state.isPending){
 				return 'You have unsaved changes!';
@@ -98,8 +94,7 @@ const EditPage = React.createClass({
 			brew : _.merge({}, this.state.brew, metadata),
 			isPending : true,
 		}, ()=>{
-			console.log(this.hasChanges());
-			(this.hasChanges() ? this.debounceSave() : this.debounceSave.cancel());
+			this.trySave();
 		});
 
 	},
@@ -116,7 +111,7 @@ const EditPage = React.createClass({
 			htmlErrors : htmlErrors
 		});
 
-		(this.hasChanges() ? this.debounceSave() : this.debounceSave.cancel());
+		this.trySave();
 	},
 
 	hasChanges : function(){
@@ -128,8 +123,18 @@ const EditPage = React.createClass({
 		return false;
 	},
 
+	trySave : function(){
+		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
+		if(this.hasChanges()){
+			this.debounceSave();
+		}else{
+			this.debounceSave.cancel();
+		}
+	},
+
 	save : function(){
-		this.debounceSave.cancel();
+		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
+
 		this.setState({
 			isSaving : true,
 			errors : null,
@@ -162,7 +167,6 @@ const EditPage = React.createClass({
 				errMsg += this.state.errors.toString() + '\n\n';
 				errMsg += '```\n' + JSON.stringify(this.state.errors.response.error, null, '  ') + '\n```';
 			}catch(e){}
-
 
 			return <Nav.item className='save error' icon="fa-warning">
 				Oops!

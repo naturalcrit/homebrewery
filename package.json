@@ -1,7 +1,7 @@
 {
   "name": "homebrewery",
   "description": "Create authentic looking D&D homebrews using only markdown",
-  "version": "2.6.0",
+  "version": "2.6.1",
   "scripts": {
     "build": "node_modules/.bin/gulp prod",
     "watch": "node_modules/.bin/gulp",
