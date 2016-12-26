@@ -2,9 +2,9 @@
 
 - [ ] Make login self contained
     - Add a faked internal login page/route
-- [ ] Add better error messaging for not having mongo running
-- [ ] Remove Docker support
-- [ ] Improve docs, explain what that project is
+- [x] Add better error messaging for not having mongo running
+- [x] Remove Docker support
+- [x] Improve docs, explain what that project is
 - [ ] Fix search API for admin?
 - [ ] Change icon on editor bar to a menu icon
 - [ ] Add a new button to the user page navbar
