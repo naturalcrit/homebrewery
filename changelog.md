@@ -9,7 +9,8 @@
 - Made links useable in footer (thanks u/Dustfinger1 re:249)
 - Added print media queries to remove box shadow on print (thanks u/dmmagic  re: 246)
 - Fixed realtime renderer not functioning if loaded with malformed html on load (thanks u/RattiganIV re:247)
-
+- Removed a lot of unused files in shared
+- vitreum v4 now lets me use codemirror as a pure node dependacy
 
 
 ### Saturday, 03/12/2016 - v2.6.0

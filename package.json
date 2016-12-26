@@ -32,6 +32,6 @@
     "shortid": "^2.2.4",
     "striptags": "^2.1.1",
     "superagent": "^1.6.1",
-    "vitreum": "^4.0.5"
+    "vitreum": "^4.0.7"
   }
 }

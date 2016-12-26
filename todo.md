@@ -15,3 +15,5 @@
 - [ ] Make a `dev.routes.js` file to store things like login and search
 - [ ] Add syntax highlighting to a `\page` line
 - [ ] Look into snapping from editor position -> renderer position
+- [ ] Break the ctrl => keys into a little util
+- [ ] Add the metadata editor button back to homepage
