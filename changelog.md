@@ -8,7 +8,7 @@
 - Changed icon for the metadata
 - Made links useable in footer (thanks u/Dustfinger1 re:249)
 - Added print media queries to remove box shadow on print (thanks u/dmmagic  re: 246)
-
+- Fixed realtime renderer not functioning if loaded with malformed html on load (thanks u/RattiganIV re:247)
 
 
 

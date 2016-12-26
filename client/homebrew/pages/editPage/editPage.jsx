@@ -47,7 +47,7 @@ const EditPage = React.createClass({
 			isSaving : false,
 			isPending : false,
 			errors : null,
-			htmlErrors : [],
+			htmlErrors : Markdown.validate(this.props.brew.text),
 			lastUpdated : this.props.brew.updatedAt
 		};
 	},
