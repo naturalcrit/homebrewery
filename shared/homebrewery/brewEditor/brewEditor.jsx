@@ -12,7 +12,7 @@ const splice = function(str, index, inject){
 
 const SNIPPETBAR_HEIGHT = 25;
 
-const Editor = React.createClass({
+const BrewEditor = React.createClass({
 	getDefaultProps: function() {
 		return {
 			value : '',
@@ -66,12 +66,9 @@ const Editor = React.createClass({
 		})
 	},
 
-	getCurrentPage : function(){
-		const lines = this.props.value.split('\n').slice(0, this.cursorPosition.line + 1);
-		return _.reduce(lines, (r, line) => {
-			if(line.indexOf('\\page') !== -1) r++;
-			return r;
-		}, 1);
+	//Called when there are changes to the editor's dimensions
+	update : function(){
+		this.refs.codeEditor.updateSize();
 	},
 
 	highlightPageLines : function(){
@@ -88,17 +85,6 @@ const Editor = React.createClass({
 		return lineNumbers
 	},
 
-
-	brewJump : function(){
-		const currentPage = this.getCurrentPage();
-		window.location.hash = 'p' + currentPage;
-	},
-
-	//Called when there are changes to the editor's dimensions
-	update : function(){
-		this.refs.codeEditor.updateSize();
-	},
-
 	renderMetadataEditor : function(){
 		if(!this.state.showMetadataEditor) return;
 		return <MetadataEditor
@@ -108,9 +94,11 @@ const Editor = React.createClass({
 	},
 
 	render : function(){
+
 		this.highlightPageLines();
+
 		return(
-			<div className='editor' ref='main'>
+			<div className='brewEditor' ref='main'>
 				<SnippetBar
 					brew={this.props.value}
 					onInject={this.handleInject}
@@ -124,16 +112,10 @@ const Editor = React.createClass({
 					value={this.props.value}
 					onChange={this.handleTextChange}
 					onCursorActivity={this.handleCursorActivty} />
-
-				{/*
-				<div className='brewJump' onClick={this.brewJump}>
-					<i className='fa fa-arrow-right' />
-				</div>
-				*/}
 			</div>
 		);
 	}
 });
 
-module.exports = Editor;
+module.exports = BrewEditor;
 

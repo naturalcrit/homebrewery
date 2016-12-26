@@ -8,9 +8,11 @@ module.exports = function(props){
 		</Nav.item>
 	}
 	let url = '';
+	/*
 	if(typeof window !== 'undefined'){
 		url = window.location.href
 	}
+	*/
 	return <Nav.item href={`http://naturalcrit.com/login?redirect=${url}`} color='teal' icon='fa-sign-in'>
 		login
 	</Nav.item>

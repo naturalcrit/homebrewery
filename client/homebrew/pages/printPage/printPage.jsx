@@ -1,7 +1,7 @@
 const React = require('react');
 const _     = require('lodash');
 const cx    = require('classnames');
-const Markdown = require('naturalcrit/markdown.js');
+const Markdown = require('homebrewery/markdown.js');
 
 const PrintPage = React.createClass({
 	getDefaultProps: function() {

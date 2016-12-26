@@ -3,7 +3,7 @@ const _ = require('lodash');
 const cx = require('classnames');
 const request = require("superagent");
 
-const Markdown = require('naturalcrit/markdown.js');
+const Markdown = require('homebrewery/markdown.js');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');

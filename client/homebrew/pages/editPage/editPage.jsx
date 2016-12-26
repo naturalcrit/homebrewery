@@ -15,7 +15,8 @@ const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
-const Markdown = require('naturalcrit/markdown.js');
+const Markdown = require('homebrewery/markdown.js');
+
 
 const SAVE_TIMEOUT = 3000;
 

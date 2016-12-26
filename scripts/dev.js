@@ -12,10 +12,8 @@ const Proj = require('./project.json');
 Promise.resolve()
 	.then(jsx('homebrew', './client/homebrew/homebrew.jsx', Proj.libs, './shared'))
 	.then(less('homebrew', './shared'))
-
 	.then(jsx('admin', './client/admin/admin.jsx', Proj.libs, './shared'))
 	.then(less('admin', './shared'))
-
 	.then(assets(Proj.assets, ['./shared', './client']))
 	.then(livereload())
 	.then(server('./server.js', ['server']))

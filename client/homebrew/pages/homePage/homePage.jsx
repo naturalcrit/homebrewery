@@ -1,7 +1,6 @@
 const React = require('react');
 const _ = require('lodash');
 const cx = require('classnames');
-const request = require("superagent");
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
@@ -12,42 +11,34 @@ const AccountNavItem = require('../../navbar/account.navitem.jsx');
 
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
-const Editor = require('../../editor/editor.jsx');
-const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
+const Editor = require('../../editor/editor.smart.jsx');
+const BrewRenderer = require('../../brewRenderer/brewRenderer.smart.jsx');
 
+const BrewInterface = require('homebrewery/brewInterface/brewInterface.jsx');
+
+
+const Actions = require('homebrewery/brew.actions.js');
+//const Store = require('homebrewery/brew.store.js');
 
 
 const HomePage = React.createClass({
 	getDefaultProps: function() {
 		return {
 			welcomeText : '',
-			ver : '0.0.0'
 		};
 	},
-	getInitialState: function() {
-		return {
-			text: this.props.welcomeText
-		};
-	},
-	handleSave : function(){
-		request.post('/api')
-			.send({
-				text : this.state.text
-			})
-			.end((err, res)=>{
-				if(err) return;
-				var brew = res.body;
-				window.location = '/edit/' + brew.editId;
-			});
-	},
-	handleSplitMove : function(){
-		this.refs.editor.update();
-	},
-	handleTextChange : function(text){
-		this.setState({
-			text : text
+	componentWillMount: function() {
+		Actions.init({
+			brew : {
+				text : this.props.welcomeText
+			}
 		});
 	},
+
+	handleSave : function(){
+		Actions.saveNew();
+	},
+
 	renderNavbar : function(){
 		return <Navbar ver={this.props.ver}>
 			<Nav.section>
@@ -70,15 +61,13 @@ const HomePage = React.createClass({
 	render : function(){
 		return <div className='homePage page'>
 			{this.renderNavbar()}
-
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
-					<Editor value={this.state.text} onChange={this.handleTextChange} ref='editor'/>
-					<BrewRenderer text={this.state.text} />
-				</SplitPane>
+				<BrewInterface />
 			</div>
 
-			<div className={cx('floatingSaveButton', {show : this.props.welcomeText != this.state.text})} onClick={this.handleSave}>
+			<div className={cx('floatingSaveButton', {
+				//show : Store.getBrewText() !== this.props.welcomeText
+			})} onClick={this.handleSave}>
 				Save current <i className='fa fa-save' />
 			</div>
 
