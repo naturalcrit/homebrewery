@@ -4,13 +4,13 @@ logs
 
 #Ignore our built files
 build/*
-architecture.json
 
 # Ignore sensitive stuff
-/config/*
-!/config/default.json
+config/local.json
 
 node_modules
 storage
 .idea
 *.swp
+
+todo.md

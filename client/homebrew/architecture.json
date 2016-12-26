@@ -1,0 +1,221 @@
+{
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\pages\\userPage\\brewItem\\brewItem.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"moment"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\editor\\metadataEditor\\metadataEditor.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"superagent"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\brewRenderer\\errorBar\\errorBar.jsx": [
+		"react",
+		"lodash",
+		"classnames"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\editor\\snippetbar\\snippets\\magic.gen.js": [
+		"lodash"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\editor\\snippetbar\\snippets\\classfeature.gen.js": [
+		"lodash"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\editor\\snippetbar\\snippets\\monsterblock.gen.js": [
+		"lodash"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\editor\\snippetbar\\snippets\\classtable.gen.js": [
+		"lodash"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\editor\\snippetbar\\snippets\\coverpage.gen.js": [
+		"lodash"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\editor\\snippetbar\\snippets\\tableOfContents.gen.js": [
+		"lodash"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\editor\\snippetbar\\snippets\\fullclass.gen.js": [
+		"lodash",
+		"./classfeature.gen.js",
+		"./classtable.gen.js"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\editor\\snippetbar\\snippets\\snippets.js": [
+		"./magic.gen.js",
+		"./classfeature.gen.js",
+		"./monsterblock.gen.js",
+		"./classtable.gen.js",
+		"./coverpage.gen.js",
+		"./tableOfContents.gen.js",
+		"./fullclass.gen.js"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\editor\\snippetbar\\snippetbar.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"./snippets/snippets.js"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\pages\\printPage\\printPage.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"naturalcrit/markdown.js"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\shared\\naturalcrit\\markdown.js": [
+		"lodash",
+		"marked"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\brewRenderer\\brewRenderer.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"./errorBar/errorBar.jsx",
+		"naturalcrit/markdown.js"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\navbar\\account.navitem.jsx": [
+		"react",
+		"naturalcrit/nav/nav.jsx"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\navbar\\navbar.jsx": [
+		"react",
+		"lodash",
+		"naturalcrit/nav/nav.jsx"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\navbar\\print.navitem.jsx": [
+		"react",
+		"naturalcrit/nav/nav.jsx"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\pages\\sharePage\\sharePage.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"../../navbar/issue.navitem.jsx",
+		"../../brewRenderer/brewRenderer.jsx",
+		"../../navbar/account.navitem.jsx",
+		"../../navbar/navbar.jsx",
+		"../../navbar/print.navitem.jsx",
+		"naturalcrit/nav/nav.jsx"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\pages\\newPage\\newPage.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"superagent",
+		"../../navbar/navbar.jsx",
+		"../../navbar/issue.navitem.jsx",
+		"../../navbar/account.navitem.jsx",
+		"../../brewRenderer/brewRenderer.jsx",
+		"../../editor/editor.jsx",
+		"naturalcrit/markdown.js",
+		"naturalcrit/nav/nav.jsx",
+		"naturalcrit/splitPane/splitPane.jsx"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\navbar\\recent.navitem.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"moment",
+		"naturalcrit/nav/nav.jsx"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\pages\\errorPage\\errorPage.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"../../navbar/navbar.jsx",
+		"../../navbar/issue.navitem.jsx",
+		"../../navbar/patreon.navitem.jsx",
+		"../../navbar/recent.navitem.jsx",
+		"../../brewRenderer/brewRenderer.jsx",
+		"naturalcrit/nav/nav.jsx"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\shared\\naturalcrit\\codeEditor\\codeEditor.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"codemirror",
+		"codemirror/mode/gfm/gfm.js",
+		"codemirror/mode/javascript/javascript.js"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\editor\\editor.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"./metadataEditor/metadataEditor.jsx",
+		"./snippetbar/snippetbar.jsx",
+		"naturalcrit/codeEditor/codeEditor.jsx"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\navbar\\patreon.navitem.jsx": [
+		"react",
+		"naturalcrit/nav/nav.jsx"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\pages\\homePage\\homePage.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"superagent",
+		"../../navbar/navbar.jsx",
+		"../../navbar/issue.navitem.jsx",
+		"../../editor/editor.jsx",
+		"../../navbar/account.navitem.jsx",
+		"../../brewRenderer/brewRenderer.jsx",
+		"../../navbar/recent.navitem.jsx",
+		"naturalcrit/nav/nav.jsx",
+		"naturalcrit/splitPane/splitPane.jsx",
+		"../../navbar/patreon.navitem.jsx"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\shared\\naturalcrit\\splitPane\\splitPane.jsx": [
+		"react",
+		"lodash",
+		"classnames"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\pages\\userPage\\userPage.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"../../navbar/navbar.jsx",
+		"../../navbar/recent.navitem.jsx",
+		"../../navbar/account.navitem.jsx",
+		"./brewItem/brewItem.jsx",
+		"naturalcrit/nav/nav.jsx"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\shared\\naturalcrit\\svg\\naturalcrit.svg.jsx": [
+		"react"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\shared\\naturalcrit\\nav\\nav.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"naturalcrit/svg/naturalcrit.svg.jsx"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\navbar\\issue.navitem.jsx": [
+		"react",
+		"naturalcrit/nav/nav.jsx"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\pages\\editPage\\editPage.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"superagent",
+		"../../navbar/print.navitem.jsx",
+		"../../navbar/account.navitem.jsx",
+		"../../navbar/navbar.jsx",
+		"../../brewRenderer/brewRenderer.jsx",
+		"naturalcrit/markdown.js",
+		"naturalcrit/nav/nav.jsx",
+		"../../editor/editor.jsx",
+		"naturalcrit/splitPane/splitPane.jsx",
+		"../../navbar/issue.navitem.jsx"
+	],
+	"C:\\Dropbox\\root\\Programming\\Javascript\\homebrewery\\client\\homebrew\\homebrew.jsx": [
+		"react",
+		"lodash",
+		"classnames",
+		"pico-router",
+		"./pages/printPage/printPage.jsx",
+		"./pages/sharePage/sharePage.jsx",
+		"./pages/newPage/newPage.jsx",
+		"./pages/errorPage/errorPage.jsx",
+		"./pages/homePage/homePage.jsx",
+		"./pages/userPage/userPage.jsx",
+		"./pages/editPage/editPage.jsx"
+	]
+}
