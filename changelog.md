@@ -7,6 +7,7 @@
 - Removing support for Docker. I have never used it, nor will I ever test for it, so I don't want to continue to explictly support it on this repo. Feel free to make a fork and make it docker-able though :)
 - Changed icon for the metadata
 - Made links useable in footer (thanks u/Dustfinger1 re:249)
+- Added print media queries to remove box shadow on print (thanks u/dmmagic  re: 246)
 
 
 
