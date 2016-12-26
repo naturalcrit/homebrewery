@@ -1,5 +1,13 @@
 # changelog
 
+### Sunday, 25/12/2016 - v2.7.0
+- Switching over to using Vitreum v4
+  - Removed gulp, all tasks are run through npm scripts
+- Updating docs for local dev
+- Removing support for Docker. I have never used it, nor will I ever test for it, so I don't want to continue to explictly support it on this repo. Feel free to make a fork and make it docker-able though :)
+
+
+
 ### Saturday, 03/12/2016 - v2.6.0
 - Added report back to the edit page
 - Changed metaeditor icon

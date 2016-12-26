@@ -16,7 +16,10 @@ const config = require('nconf')
 //DB
 require('mongoose')
 	.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://localhost/naturalcrit')
-	.connection.on('error', () => { console.log(">>>ERROR: Run Mongodb.exe ya goof!") });
+	.connection.on('error', () => {
+		console.log('Error : Could not connect to a Mongo Database.');
+		console.log('        If you are running locally, make sure mongodb.exe is running.');
+	});
 
 
 //Account MIddleware
