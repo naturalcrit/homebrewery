@@ -14,7 +14,6 @@
   "author": "stolksdorf",
   "license": "MIT",
   "dependencies": {
-    "babel-preset-env": "^1.1.8",
     "basic-auth": "^1.0.3",
     "body-parser": "^1.14.2",
     "classnames": "^2.2.0",
