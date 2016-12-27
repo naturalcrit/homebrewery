@@ -37,8 +37,9 @@ const Store = flux.createStore({
 		State.brew = _.merge({}, State.brew, meta);
 	},
 	SET_STATUS : (status, error) => {
-		State.status = status;
+		if(status == State.status) return false;
 		if(error) State.errors = error;
+		State.status = status;
 	}
 });
 
@@ -64,6 +65,5 @@ Store.getVersion = ()=>{
 Store.getStatus = ()=>{
 	return State.status;
 };
-
 
 module.exports = Store;

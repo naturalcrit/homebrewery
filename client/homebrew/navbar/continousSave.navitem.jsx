@@ -1,51 +1,76 @@
-var React = require('react');
-var _ = require('lodash');
-var cx = require('classnames');
+const flux = require('pico-flux')
+const React = require('react');
+const _ = require('lodash');
+const cx = require('classnames');
 
-//var striptags = require('striptags');
+const Nav = require('naturalcrit/nav/nav.jsx');
 
-var Nav = require('naturalcrit/nav/nav.jsx');
+const Store = require('homebrewery/brew.store.js');
+const Actions = require('homebrewery/brew.actions.js');
 
-const MAX_URL_SIZE = 2083;
-const MAIN_URL = "https://www.reddit.com/r/UnearthedArcana/submit?selftext=true"
+const onStoreChange = () => {
+	return {
+		status : Store.getStatus(),
+		errors : Store.getErrors()
+	}
+};
 
-
-var RedditShare = React.createClass({
+const ContinousSave = React.createClass({
 	getDefaultProps: function() {
 		return {
-			brew : {
-				title : '',
-				sharedId : '',
-				text : ''
-			}
+			status : 'ready',
+			errors : undefined
 		};
 	},
-
-	getText : function(){
-
+	componentDidMount: function() {
+		flux.actionEmitter.on('dispatch', this.brewUpdate);
+		window.onbeforeunload = ()=>{
+			if(this.props.status !== 'ready') return 'You have unsaved changes!';
+		};
 	},
-
-
+	componentWillUnmount: function() {
+		flux.actionEmitter.removeListenr('dispatch', this.brewUpdate);
+		window.onbeforeunload = function(){};
+	},
+	brewUpdate : function(actionType){
+		if(actionType == 'UPDATE_BREW_TEXT' || actionType == 'UPDATE_META'){
+			Actions.pendingSave();
+		}
+	},
 	handleClick : function(){
-		var url = [
-			MAIN_URL,
-			'title=' + encodeURIComponent(this.props.brew.title ? this.props.brew.title : 'Check out my brew!'),
-
-			'text=' + encodeURIComponent(this.props.brew.text)
-
-
-		].join('&');
-
-		window.open(url, '_blank');
+		Actions.save();
 	},
+	renderError : function(){
+		let errMsg = '';
+		try{
+			errMsg += this.state.errors.toString() + '\n\n';
+			errMsg += '```\n' + JSON.stringify(this.state.errors.response.error, null, '  ') + '\n```';
+		}catch(e){}
 
-
-	render : function(){
-		return <Nav.item icon='fa-reddit-alien' color='red' onClick={this.handleClick}>
-			share on reddit
+		return <Nav.item className='continousSave error' icon="fa-warning">
+			Oops!
+			<div className='errorContainer'>
+				Looks like there was a problem saving. <br />
+				Report the issue <a target='_blank' href={'https://github.com/stolksdorf/naturalcrit/issues/new?body='+ encodeURIComponent(errMsg)}>
+					here
+				</a>.
+			</div>
 		</Nav.item>
+	},
+	render : function(){
+		if(this.props.status == 'error') return this.renderError();
+
+		if(this.props.status == 'saving'){
+			return <Nav.item className='continousSave' icon="fa-spinner fa-spin">saving...</Nav.item>
+		}
+		if(this.props.status == 'pending'){
+			return <Nav.item className='continousSave' onClick={this.handleClick} color='blue' icon='fa-save'>Save Now</Nav.item>
+		}
+		if(this.props.status == 'ready'){
+			return <Nav.item className='continousSave saved'>saved.</Nav.item>
+		}
 	},
 
 });
 
-module.exports = RedditShare;
+module.exports = Store.createSmartComponent(ContinousSave, onStoreChange);

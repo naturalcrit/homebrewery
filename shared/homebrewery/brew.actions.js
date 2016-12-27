@@ -3,6 +3,9 @@ const dispatch = require('pico-flux').dispatch;
 const request = require('superagent');
 const Store = require('./brew.store.js');
 
+let pendingTimer;
+const PENDING_TIMEOUT = 3000;
+
 const Actions = {
 	init : (initState) => {
 		Store.init(initState);
@@ -17,9 +20,13 @@ const Actions = {
 		dispatch('UPDATE_META', meta);
 	},
 
-
-
+	pendingSave : () => {
+		clearTimeout(pendingTimer);
+		pendingTimer = setTimeout(Actions.save, PENDING_TIMEOUT);
+		dispatch('SET_STATUS', 'pending');
+	},
 	save : () => {
+		clearTimeout(pendingTimer);
 		const brew = Store.getBrew();
 		dispatch('SET_STATUS', 'saving');
 		request
@@ -27,8 +34,8 @@ const Actions = {
 			.send(brew)
 			.end((err, res) => {
 				if(err) return dispatch('SET_STATUS', 'error', err);
-				dispatch('SET_STATUS', 'ready');
 				dispatch('SET_BREW', res.body);
+				dispatch('SET_STATUS', 'ready');
 			});
 	},
 
@@ -45,6 +52,9 @@ const Actions = {
 	localPrint : ()=>{
 		localStorage.setItem('print', Store.getBrewText());
 		window.open('/print?dialog=true&local=print','_blank');
+	},
+	print : ()=>{
+		window.open(`/print/${Store.getBrew().shareId}?dialog=true`, '_blank').focus();
 	}
 };
 

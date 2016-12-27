@@ -13,32 +13,6 @@
 			color : @blue;
 		}
 	}
-	.editTitle.navItem{
-		padding : 2px 12px;
-		input{
-			width            : 250px;
-			margin           : 0;
-			padding          : 2px;
-			background-color : #444;
-			font-family      : 'Open Sans', sans-serif;
-			font-size        : 12px;
-			font-weight      : 800;
-			color            : white;
-			text-align       : center;
-			border           : 1px solid @blue;
-			outline          : none;
-		}
-		.charCount{
-			display        : inline-block;
-			vertical-align : bottom;
-			margin-left    : 8px;
-			color          : #666;
-			text-align     : right;
-			&.max{
-				color : @red;
-			}
-		}
-	}
 	.brewTitle.navItem{
 		font-size      : 12px;
 		font-weight    : 800;
@@ -130,6 +104,31 @@
 		background-color: @orange;
 		&:hover{
 			background-color: @green;
+		}
+	}
+
+	.continousSave.navItem{
+		width      : 105px;
+		text-align : center;
+		&.saved{
+			cursor : initial;
+			color  : #666;
+		}
+		&.error{
+			position         : relative;
+			background-color : @red;
+			.errorContainer{
+				position         : absolute;
+				top              : 29px;
+				left             : -20px;
+				z-index          : 1000;
+				width            : 120px;
+				padding          : 8px;
+				background-color : #333;
+				a{
+					color : @teal;
+				}
+			}
 		}
 	}
 }
