@@ -9,9 +9,11 @@ const ReportIssue = require('../../navbar/issue.navitem.jsx');
 //const RecentlyViewed = require('../../navbar/recent.navitem.jsx').viewed;
 const Account = require('../../navbar/account.navitem.jsx');
 
+const BrewRenderer = require('homebrewery/brewRenderer/brewRenderer.jsx');
+const Utils = require('homebrewery/utils.js');
 
-const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
-
+const Actions = require('homebrewery/brew.actions.js');
+const Store = require('homebrewery/brew.store.js');
 
 const SharePage = React.createClass({
 	getDefaultProps: function() {
@@ -33,36 +35,29 @@ const SharePage = React.createClass({
 	componentWillUnmount: function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
 	},
-	handleControlKeys : function(e){
-		if(!(e.ctrlKey || e.metaKey)) return;
-		const P_KEY = 80;
-		if(e.keyCode == P_KEY){
-			window.open(`/print/${this.props.brew.shareId}?dialog=true`, '_blank').focus();
-			e.stopPropagation();
-			e.preventDefault();
-		}
-	},
+	handleControlKeys : Utils.controlKeys({
+		p : Actions.print
+	}),
 
 	render : function(){
+		const brew = Store.getBrew();
 		return <div className='sharePage page'>
 			<Navbar>
 				<Nav.section>
-					<Nav.item className='brewTitle'>{this.props.brew.title}</Nav.item>
+					<Nav.item className='brewTitle'>{brew.title}</Nav.item>
 				</Nav.section>
 
 				<Nav.section>
 					<ReportIssue />
-					{/*<RecentlyViewed brew={this.props.brew} />*/}
-					<PrintLink shareId={this.props.brew.shareId} />
-					<Nav.item href={'/source/' + this.props.brew.shareId} color='teal' icon='fa-code'>
+					<PrintLink shareId={brew.shareId} />
+					<Nav.item href={'/source/' + brew.shareId} color='teal' icon='fa-code'>
 						source
 					</Nav.item>
 					<Account />
 				</Nav.section>
 			</Navbar>
-
 			<div className='content'>
-				<BrewRenderer text={this.props.brew.text} />
+				<BrewRenderer brewText={brew.text} />
 			</div>
 		</div>
 	}

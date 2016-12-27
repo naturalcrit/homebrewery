@@ -19,7 +19,6 @@ const Actions = {
 	updateMetaData : (meta) => {
 		dispatch('UPDATE_META', meta);
 	},
-
 	pendingSave : () => {
 		clearTimeout(pendingTimer);
 		pendingTimer = setTimeout(Actions.save, PENDING_TIMEOUT);
@@ -38,7 +37,6 @@ const Actions = {
 				dispatch('SET_STATUS', 'ready');
 			});
 	},
-
 	saveNew : () => {
 		dispatch('SET_STATUS', 'saving');
 		request.post('/api')

@@ -1,6 +1,5 @@
 const _ = require('lodash');
 
-
 const Utils = {
 	controlKeys : (mapping) => {
 		return (e) => {
@@ -12,8 +11,6 @@ const Utils = {
 			}
 		}
 	},
-
-
 
 };
 

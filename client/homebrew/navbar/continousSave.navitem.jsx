@@ -23,16 +23,16 @@ const ContinousSave = React.createClass({
 		};
 	},
 	componentDidMount: function() {
-		flux.actionEmitter.on('dispatch', this.brewUpdate);
+		flux.actionEmitter.on('dispatch', this.actionHandler);
 		window.onbeforeunload = ()=>{
 			if(this.props.status !== 'ready') return 'You have unsaved changes!';
 		};
 	},
 	componentWillUnmount: function() {
-		flux.actionEmitter.removeListenr('dispatch', this.brewUpdate);
+		flux.actionEmitter.removeListener('dispatch', this.actionHandler);
 		window.onbeforeunload = function(){};
 	},
-	brewUpdate : function(actionType){
+	actionHandler : function(actionType){
 		if(actionType == 'UPDATE_BREW_TEXT' || actionType == 'UPDATE_META'){
 			Actions.pendingSave();
 		}
