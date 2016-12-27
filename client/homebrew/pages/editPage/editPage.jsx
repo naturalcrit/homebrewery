@@ -10,35 +10,31 @@ const Navbar = require('../../navbar/navbar.jsx');
 const ReportIssue = require('../../navbar/issue.navitem.jsx');
 const PrintLink = require('../../navbar/print.navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
+const Save = require('../../navbar/continousSave.navitem.jsx');
 //const RecentlyEdited = require('../../navbar/recent.navitem.jsx').edited;
 
-const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
-const Editor = require('../../editor/editor.jsx');
-const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
+
 
 const Markdown = require('homebrewery/markdown.js');
 
-
 const SAVE_TIMEOUT = 3000;
+
+
+const BrewInterface = require('homebrewery/brewInterface/brewInterface.jsx');
+const Utils = require('homebrewery/utils.js');
+
+
+const Store = require('homebrewery/brew.store.js');
+const Actions = require('homebrewery/brew.actions.js');
+
+
+
 
 
 const EditPage = React.createClass({
 	getDefaultProps: function() {
 		return {
-			brew : {
-				text : '',
-				shareId : null,
-				editId : null,
-				createdAt : null,
-				updatedAt : null,
-
-				title : '',
-				description : '',
-				tags : '',
-				published : false,
-				authors : [],
-				systems : []
-			}
+			brew : {}
 		};
 	},
 
@@ -56,16 +52,10 @@ const EditPage = React.createClass({
 	savedBrew : null,
 
 	componentDidMount: function(){
-		this.trySave();
+		//this.trySave();
 		window.onbeforeunload = ()=>{
-			if(this.state.isSaving || this.state.isPending){
-				return 'You have unsaved changes!';
-			}
+			if(Store.getStatus() !== 'ready') return 'You have unsaved changes!';
 		};
-
-		this.setState({
-			htmlErrors : Markdown.validate(this.state.brew.text)
-		})
 
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
@@ -75,12 +65,20 @@ const EditPage = React.createClass({
 	},
 
 
+	handleControlKeys : Utils.controlKeys({
+		s : Actions.pendingSave,
+		p : ()=>{
+			window.open(`/print/${this.props.brew.shareId}?dialog=true`, '_blank').focus();
+		}
+	}),
+
+/*
 	handleControlKeys : function(e){
 		if(!(e.ctrlKey || e.metaKey)) return;
 		const S_KEY = 83;
 		const P_KEY = 80;
 		if(e.keyCode == S_KEY) this.save();
-		if(e.keyCode == P_KEY) window.open(`/print/${this.props.brew.shareId}?dialog=true`, '_blank').focus();
+		if(e.keyCode == P_KEY)
 		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
 			e.stopPropagation();
 			e.preventDefault();
@@ -115,7 +113,7 @@ const EditPage = React.createClass({
 
 		this.trySave();
 	},
-
+*/
 	hasChanges : function(){
 		if(this.savedBrew){
 			return !_.isEqual(this.state.brew, this.savedBrew)
@@ -214,16 +212,7 @@ const EditPage = React.createClass({
 			{this.renderNavbar()}
 
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
-					<Editor
-						ref='editor'
-						value={this.state.brew.text}
-						onChange={this.handleTextChange}
-						metadata={this.state.brew}
-						onMetadataChange={this.handleMetadataChange}
-					/>
-					<BrewRenderer text={this.state.brew.text} errors={this.state.htmlErrors} />
-				</SplitPane>
+				<BrewInterface />
 			</div>
 		</div>
 	}

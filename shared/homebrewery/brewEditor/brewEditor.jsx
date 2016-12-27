@@ -66,6 +66,11 @@ const BrewEditor = React.createClass({
 		})
 	},
 
+	brewJump : function(){
+		const currentPage = this.getCurrentPage();
+		window.location.hash = 'p' + currentPage;
+	},
+
 	//Called when there are changes to the editor's dimensions
 	update : function(){
 		this.refs.codeEditor.updateSize();
@@ -113,6 +118,12 @@ const BrewEditor = React.createClass({
 					onChange={this.handleTextChange}
 					onCursorActivity={this.handleCursorActivty} />
 			</div>
+
+			{/*
+			<div className='brewJump' onClick={this.brewJump}>
+				<i className='fa fa-arrow-right' />
+			</div>
+			*/}
 		);
 	}
 });

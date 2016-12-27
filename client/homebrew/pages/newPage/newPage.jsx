@@ -1,23 +1,26 @@
 const React = require('react');
 const _ = require('lodash');
-const cx = require('classnames');
-const request = require("superagent");
 
-const Markdown = require('homebrewery/markdown.js');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
-const AccountNavItem = require('../../navbar/account.navitem.jsx');
-const IssueNavItem = require('../../navbar/issue.navitem.jsx');
+const Account = require('../../navbar/account.navitem.jsx');
+const Issue = require('../../navbar/issue.navitem.jsx');
+const Save = require('../../navbar/staticSave.navitem.jsx');
 
-const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
-const Editor = require('../../editor/editor.jsx');
-const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
+
+const Store = require('homebrewery/brew.store.js');
+const Actions = require('homebrewery/brew.actions.js');
+
+const BrewInterface = require('homebrewery/brewInterface/brewInterface.jsx');
+
+const Utils = require('homebrewery/utils.js');
 
 
 const KEY = 'homebrewery-new';
 
 const NewPage = React.createClass({
+	/*
 	getInitialState: function() {
 		return {
 			metadata : {
@@ -34,8 +37,13 @@ const NewPage = React.createClass({
 			errors : []
 		};
 	},
+	*/
 	componentDidMount: function() {
 		const storage = localStorage.getItem(KEY);
+
+		//TODO: Add aciton to load from local?
+
+
 		if(storage){
 			this.setState({
 				text : storage
@@ -46,8 +54,15 @@ const NewPage = React.createClass({
 	componentWillUnmount: function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
 	},
+	handleControlKeys : Utils.controlKeys({
+		s : Actions.saveNew,
+		p : Actions.localPrint
+	}),
+
+/*
 
 	handleControlKeys : function(e){
+		console.log(e);
 		if(!(e.ctrlKey || e.metaKey)) return;
 		const S_KEY = 83;
 		const P_KEY = 80;
@@ -59,24 +74,7 @@ const NewPage = React.createClass({
 		}
 	},
 
-	handleSplitMove : function(){
-		this.refs.editor.update();
-	},
-
-	handleMetadataChange : function(metadata){
-		this.setState({
-			metadata : _.merge({}, this.state.metadata, metadata)
-		});
-	},
-
-	handleTextChange : function(text){
-		this.setState({
-			text : text,
-			errors : Markdown.validate(text)
-		});
-		localStorage.setItem(KEY, text);
-	},
-
+/*
 	save : function(){
 		this.setState({
 			isSaving : true
@@ -99,7 +97,8 @@ const NewPage = React.createClass({
 				window.location = '/edit/' + brew.editId;
 			})
 	},
-
+*/
+	/*
 	renderSaveButton : function(){
 		if(this.state.isSaving){
 			return <Nav.item icon='fa-spinner fa-spin' className='saveButton'>
@@ -111,48 +110,45 @@ const NewPage = React.createClass({
 			</Nav.item>
 		}
 	},
-
+	*/
+/*
 	print : function(){
 		localStorage.setItem('print', this.state.text);
 		window.open('/print?dialog=true&local=print','_blank');
 	},
+*/
 
+/*
 	renderLocalPrintButton : function(){
-		return <Nav.item color='purple' icon='fa-file-pdf-o' onClick={this.print}>
+		return <Nav.item color='purple' icon='fa-file-pdf-o' onClick={Actions.localPrint}>
 			get PDF
 		</Nav.item>
 	},
 
 	renderNavbar : function(){
-		return <Navbar>
-
-			<Nav.section>
-				<Nav.item className='brewTitle'>{this.state.metadata.title}</Nav.item>
-			</Nav.section>
-
-			<Nav.section>
-				{this.renderSaveButton()}
-				{this.renderLocalPrintButton()}
-				<IssueNavItem />
-				<AccountNavItem />
-			</Nav.section>
-		</Navbar>
+		return
 	},
 
+*/
 	render : function(){
 		return <div className='newPage page'>
-			{this.renderNavbar()}
+			<Navbar>
+				<Nav.section>
+					<Nav.item className='brewTitle'>{Store.getMetaData().title}</Nav.item>
+				</Nav.section>
+
+				<Nav.section>
+					<Save />
+					<Nav.item color='purple' icon='fa-file-pdf-o' onClick={Actions.localPrint}>
+						get PDF
+					</Nav.item>
+					<Issue />
+					<Account />
+				</Nav.section>
+			</Navbar>
+
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
-					<Editor
-						ref='editor'
-						value={this.state.text}
-						onChange={this.handleTextChange}
-						metadata={this.state.metadata}
-						onMetadataChange={this.handleMetadataChange}
-					/>
-					<BrewRenderer text={this.state.text} errors={this.state.errors} />
-				</SplitPane>
+				<BrewInterface />
 			</div>
 		</div>
 	}

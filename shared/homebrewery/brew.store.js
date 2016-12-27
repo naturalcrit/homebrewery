@@ -21,7 +21,8 @@ let State = {
 		systems : []
 	},
 
-	errors : []
+	errors : [],
+	status : 'ready', //ready, pending, saving, error
 };
 
 const Store = flux.createStore({
@@ -34,6 +35,10 @@ const Store = flux.createStore({
 	},
 	UPDATE_META : (meta) => {
 		State.brew = _.merge({}, State.brew, meta);
+	},
+	SET_STATUS : (status, error) => {
+		State.status = status;
+		if(error) State.errors = error;
 	}
 });
 
@@ -53,9 +58,12 @@ Store.getMetaData = ()=>{
 Store.getErrors = ()=>{
 	return State.errors;
 };
-
 Store.getVersion = ()=>{
 	return State.version;
 };
+Store.getStatus = ()=>{
+	return State.status;
+};
+
 
 module.exports = Store;

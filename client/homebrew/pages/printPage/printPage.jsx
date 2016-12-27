@@ -12,21 +12,17 @@ const PrintPage = React.createClass({
 			}
 		};
 	},
-
 	getInitialState: function() {
 		return {
 			brewText: this.props.brew.text
 		};
 	},
-
 	componentDidMount: function() {
 		if(this.props.query.local){
 			this.setState({ brewText : localStorage.getItem(this.props.query.local)});
 		}
-
 		if(this.props.query.dialog) window.print();
 	},
-
 	renderPages : function(){
 		return _.map(this.state.brewText.split('\\page'), (page, index) => {
 			return <div

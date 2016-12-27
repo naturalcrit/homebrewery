@@ -7,10 +7,10 @@ const Actions = require('homebrewery/brew.actions.js');
 
 const HomePage = require('./pages/homePage/homePage.jsx');
 const EditPage = require('./pages/editPage/editPage.jsx');
-const UserPage = require('./pages/userPage/userPage.jsx');
-const SharePage = require('./pages/sharePage/sharePage.jsx');
+//const UserPage = require('./pages/userPage/userPage.jsx');
+//const SharePage = require('./pages/sharePage/sharePage.jsx');
 const NewPage   = require('./pages/newPage/newPage.jsx');
-const ErrorPage = require('./pages/errorPage/errorPage.jsx');
+//const ErrorPage = require('./pages/errorPage/errorPage.jsx');
 const PrintPage = require('./pages/printPage/printPage.jsx');
 
 let Router;
@@ -47,6 +47,7 @@ const Homebrew = React.createClass({
 					id={args.id}
 					brew={this.props.brew} />
 			},
+			/*
 
 			'/share/:id' : (args) => {
 				if(!this.props.brew.shareId){
@@ -62,7 +63,7 @@ const Homebrew = React.createClass({
 					username={args.username}
 					brews={this.props.brews}
 				/>
-			},
+			},*/
 			'/print/:id' : (args, query) => {
 				return <PrintPage brew={this.props.brew} query={query}/>;
 			},

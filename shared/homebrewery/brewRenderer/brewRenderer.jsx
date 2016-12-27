@@ -5,6 +5,7 @@ const cx = require('classnames');
 const Markdown = require('homebrewery/markdown.js');
 const ErrorBar = require('./errorBar/errorBar.jsx');
 
+const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx')
 const Store = require('homebrewery/brew.store.js');
 
 
@@ -130,6 +131,7 @@ const BrewRenderer = React.createClass({
 			style={{height : this.state.height}}>
 
 			<ErrorBar errors={this.props.errors} />
+			<RenderWarnings />
 
 			<div className='pages' ref='pages'>
 				{this.renderPages()}

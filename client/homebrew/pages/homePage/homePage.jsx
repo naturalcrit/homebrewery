@@ -10,10 +10,6 @@ const RecentNavItem = require('../../navbar/recent.navitem.jsx');
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
 
 
-const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
-const Editor = require('../../editor/editor.smart.jsx');
-const BrewRenderer = require('../../brewRenderer/brewRenderer.smart.jsx');
-
 const BrewInterface = require('homebrewery/brewInterface/brewInterface.jsx');
 
 
@@ -40,7 +36,7 @@ const HomePage = React.createClass({
 	},
 
 	renderNavbar : function(){
-		return <Navbar ver={this.props.ver}>
+		return <Navbar>
 			<Nav.section>
 				<PatreonNavItem />
 				<IssueNavItem />
