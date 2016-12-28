@@ -4,11 +4,7 @@ const cx = require('classnames');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
-
-const ReportIssue = require('../../navbar/issue.navitem.jsx');
-const PrintLink = require('../../navbar/print.navitem.jsx');
-const Account = require('../../navbar/account.navitem.jsx');
-const Save = require('../../navbar/continousSave.navitem.jsx');
+const Items = require('../../navbar/navitems.js');
 
 const BrewInterface = require('homebrewery/brewInterface/brewInterface.jsx');
 const Utils = require('homebrewery/utils.js');
@@ -47,16 +43,16 @@ const SmartNav = Store.createSmartComponent(React.createClass({
 	render : function(){
 		return <Navbar>
 			<Nav.section>
-				<Nav.item className='brewTitle'>{this.props.brew.title}</Nav.item>
+				<Items.BrewTitle />
 			</Nav.section>
 			<Nav.section>
-				<Save />
-				<ReportIssue />
-				<Nav.item newTab={true} href={'/share/' + this.props.brew.shareId} color='teal' icon='fa-share-alt'>
+				<Items.ContinousSave />
+				<Items.Issue />
+				<Nav.item newTab={true} href={'/share/' + Store.getBrew().shareId} color='teal' icon='fa-share-alt'>
 					Share
 				</Nav.item>
-				<PrintLink shareId={this.props.brew.shareId} />
-				<Account />
+				<Items.Print />
+				<Items.Account />
 			</Nav.section>
 		</Navbar>
 	}

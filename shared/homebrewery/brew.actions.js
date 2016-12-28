@@ -43,6 +43,7 @@ const Actions = {
 			.send(Store.getBrew())
 			.end((err, res)=>{
 				if(err) return dispatch('SET_STATUS', 'error', err);
+				localStorage.setItem('homebrewery-new', null);
 				const brew = res.body;
 				window.location = '/edit/' + brew.editId;
 			});
