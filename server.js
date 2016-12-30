@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const jwt = require('jwt-simple');
+
 const express = require("express");
 const app = express();
 
@@ -22,17 +22,16 @@ require('mongoose')
 	});
 
 
-//Account MIddleware
-app.use((req, res, next) => {
-	if(req.cookies && req.cookies.nc_session){
-		try{
-			req.account = jwt.decode(req.cookies.nc_session, config.get('secret'));
-		}catch(e){}
-	}
-	return next();
-});
+//Middleware
+const mw = require('./server/middleware.js');
+app.use(mw.account);
+app.use(mw.admin);
 
 
+//Routes
+
+
+app.use(require('./server/interface.routes.js'));
 app.use(require('./server/homebrew.api.js'));
 app.use(require('./server/admin.api.js'));
 
