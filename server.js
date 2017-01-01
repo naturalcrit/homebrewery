@@ -14,13 +14,7 @@ const config = require('nconf')
 	.file('defaults', { file: 'config/default.json' });
 
 //DB
-require('mongoose')
-	.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://localhost/naturalcrit')
-	.connection.on('error', () => {
-		console.error('Error : Could not connect to a Mongo Database.');
-		console.error('        If you are running locally, make sure mongodb.exe is running.');
-	});
-
+require('./server/db.js').connect();
 
 //Middleware
 const mw = require('./server/middleware.js');
