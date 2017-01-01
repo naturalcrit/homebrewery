@@ -32,25 +32,13 @@ const Middleware = {
 		if(req.isAdmin) return next();
 		return res.sendStatus(401);
 	},
-	validate : (req, res, next) => {
-		//Only allow admin or brew authors pass.
-
-		return next();
-	},
 
 
 	//Loaders
 	loadBrew : (req, res, next) => {
 		//Loads a brew by edit id
-		if(req.params.shareId){
-			BrewData.get({ shareId : req.params.shareId})
-				.then((brew))
-		}else if(req.params.editId){
 
-
-		}else{
-			return next();
-		}
+		//TODO: move validate into hurrr
 	},
 	viewBrew : (req, res, next) => {
 		//load by share

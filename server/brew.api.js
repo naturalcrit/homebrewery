@@ -28,7 +28,7 @@ router.post('/api/brew', (req, res, next)=>{
 });
 
 //Update
-router.put('/api/brew/:editId', mw.loadBrew, mw.Validate, (req, res, next)=>{
+router.put('/api/brew/:editId', mw.loadBrew, (req, res, next)=>{
 	if(req.account){
 		req.brew.authors = _.uniq(_.concat(req.brew.authors, req.account.username));
 	}
@@ -40,7 +40,7 @@ router.put('/api/brew/:editId', mw.loadBrew, mw.Validate, (req, res, next)=>{
 });
 
 //Delete
-router.delete('/api/brew/:editId', mw.loadBrew, mw.Validate, (req, res, next) => {
+router.delete('/api/brew/:editId', mw.loadBrew, (req, res, next) => {
 	BrewData.remove(req.brew.editId)
 		.then(()=>{
 			return res.sendStatus(200);

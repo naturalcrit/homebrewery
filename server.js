@@ -29,110 +29,11 @@ app.use(mw.admin);
 
 
 //Routes
-
-
+app.use(require('./server/brew.api.js'));
 app.use(require('./server/interface.routes.js'));
-app.use(require('./server/homebrew.api.js'));
-app.use(require('./server/admin.api.js'));
 
 
-const HomebrewModel = require('./server/homebrew.model.js').model;
-const welcomeText = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
-const changelogText = require('fs').readFileSync('./changelog.md', 'utf8');
-
-
-
-//Source page
-String.prototype.replaceAll = function(s,r){return this.split(s).join(r)}
-app.get('/source/:id', (req, res)=>{
-	HomebrewModel.get({shareId : req.params.id})
-		.then((brew)=>{
-			const text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-			return res.send(`<code><pre>${text}</pre></code>`);
-		})
-		.catch((err)=>{
-			console.log(err);
-			return res.status(404).send('Could not find Homebrew with that id');
-		})
-});
-
-
-app.get('/user/:username', (req, res, next) => {
-	const fullAccess = req.account && (req.account.username == req.params.username);
-	HomebrewModel.getByUser(req.params.username, fullAccess)
-		.then((brews) => {
-			req.brews = brews;
-			return next();
-		})
-		.catch((err) => {
-			console.log(err);
-		})
-})
-
-
-app.get('/edit/:id', (req, res, next)=>{
-	HomebrewModel.get({editId : req.params.id})
-		.then((brew)=>{
-			req.brew = brew.sanatize();
-			return next();
-		})
-		.catch((err)=>{
-			console.log(err);
-			return res.status(400).send(`Can't get that`);
-		});
-});
-
-//Share Page
-app.get('/share/:id', (req, res, next)=>{
-	HomebrewModel.get({shareId : req.params.id})
-		.then((brew)=>{
-			return brew.increaseView();
-		})
-		.then((brew)=>{
-			req.brew = brew.sanatize(true);
-			return next();
-		})
-		.catch((err)=>{
-			console.log(err);
-			return res.status(400).send(`Can't get that`);
-		});
-});
-
-//Print Page
-app.get('/print/:id', (req, res, next)=>{
-	HomebrewModel.get({shareId : req.params.id})
-		.then((brew)=>{
-			req.brew = brew.sanatize(true);
-			return next();
-		})
-		.catch((err)=>{
-			console.log(err);
-			return res.status(400).send(`Can't get that`);
-		});
-});
-
-
-//Render Page
-const render = require('vitreum/steps/render');
-const templateFn = require('./client/template.js');
-app.use((req, res) => {
-	render('homebrew', templateFn, {
-			version : require('./package.json').version,
-			url: req.originalUrl,
-			welcomeText : welcomeText,
-			changelog : changelogText,
-			brew : req.brew,
-			brews : req.brews,
-			account : req.account
-		})
-		.then((page) => {
-			return res.send(page)
-		})
-		.catch((err) => {
-			console.log(err);
-			return res.sendStatus(500);
-		});
-});
+//app.use(require('./server/admin.api.js'));
 
 
 const PORT = process.env.PORT || 8000;

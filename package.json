@@ -19,6 +19,7 @@
     "classnames": "^2.2.0",
     "codemirror": "^5.22.0",
     "cookie-parser": "^1.4.3",
+    "egads": "^1.0.1",
     "express": "^4.13.3",
     "jwt-simple": "^0.5.1",
     "lodash": "^4.17.3",

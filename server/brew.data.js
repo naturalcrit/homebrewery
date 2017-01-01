@@ -7,21 +7,21 @@ const utils = require('./utils.js');
 
 const BrewSchema = mongoose.Schema({
 	shareId : {type : String, default: shortid.generate, index: { unique: true }},
-	editId : {type : String, default: shortid.generate, index: { unique: true }},
+	editId  : {type : String, default: shortid.generate, index: { unique: true }},
 
 	text : {type : String, default : ""},
 
-	title : {type : String, default : ""},
+	title       : {type : String, default : ""},
 	description : {type : String, default : ""},
-	tags : {type : String, default : ""},
-	systems : [String],
-	authors : [String],
-	published : {type : Boolean, default : false},
+	tags        : {type : String, default : ""},
+	systems     : [String],
+	authors     : [String],
+	published   : {type : Boolean, default : false},
 
-	createdAt     : { type: Date, default: Date.now },
-	updatedAt   : { type: Date, default: Date.now},
-	lastViewed  : { type: Date, default: Date.now},
-	views : {type:Number, default:0}
+	createdAt  : { type: Date, default: Date.now },
+	updatedAt  : { type: Date, default: Date.now},
+	lastViewed : { type: Date, default: Date.now},
+	views      : {type:Number, default:0}
 }, { versionKey: false });
 
 /*
@@ -35,7 +35,7 @@ BrewSchema.methods.sanatize = function(userName, isAdmin, getText = true){
 	return brew;
 };
 */
-
+/*
 BrewSchema.methods.sanatize = function(req, getText = true){
 	const brew = this.toJSON();
 	delete brew._id;
@@ -56,6 +56,12 @@ BrewSchema.methods.increaseView = function(){
 		});
 	});
 };
+*/
+
+BrewSchema.methods.increaseView = function(){
+	this.views = this.views + 1;
+	return this.save();
+};
 
 
 const Brew = mongoose.model('Brew', BrewSchema);
@@ -64,7 +70,7 @@ const Brew = mongoose.model('Brew', BrewSchema);
 
 const BrewData = {
 	schema : BrewSchema,
-	model : Brew,
+	model  : Brew,
 
 	get : (query) => {
 		//returns a single brew with the given query
@@ -95,8 +101,13 @@ const BrewData = {
 
 
 	getByShare : (shareId) => {
-		//auto sanatize
-		//increase view count
+		return BrewData.get({ shareId : shareId})
+			.then((brew) => {
+				brew.increaseView();
+				const brewJSON = brew.toJSON();
+				delete brewJSON.editId;
+				return brewJSON;
+			});
 	},
 	getByEdit : (editId) => {
 		return Brew.get({ editId });
