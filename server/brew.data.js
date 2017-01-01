@@ -91,7 +91,8 @@ const BrewData = {
 	update : (newBrew) => {
 		return Brew.findOneAndUpdate({ editId : newBrew.editId },
 			_.merge(newBrew, { updatedAt : Date.now() }),
-			{new : true, upsert : true}).exec(); //TODO: TEST THIS that this returns a reocrd
+			{new : true, upsert : true}
+		).exec(); //TODO: TEST THIS that this returns a record
 	},
 	remove : (editId) => {
 		return Brew.find({ editId }).remove().exec();

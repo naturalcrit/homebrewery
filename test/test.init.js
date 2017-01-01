@@ -17,13 +17,7 @@ module.exports = {
 	should: should,
 	clearCache: () => {
 		return new Promise((resolve, reject) => {
-			Cache.getRawClientYesIKnowWhatImDoing()
-				.flushdb((err) => {
-					if (err) {
-						return reject(new Error(err));
-					}
-					resolve();
-				});
+			return resolve();
 		});
 	},
 };
