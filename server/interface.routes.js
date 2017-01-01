@@ -12,20 +12,22 @@ const docs = {
 
 
 const vitreumRender = require('vitreum/steps/render');
-const templateFn = require('./client/template.js');
+const templateFn = require('../client/template.js');
 //TODO: Catch errors here?
 const renderPage = (req, res, next) => {
 	return vitreumRender('homebrew', templateFn, {
 			url     : req.originalUrl,
-			version : require('./package.json').version,
+			version : require('../package.json').version,
 			//TODO: add in login path?
 
 			user  : req.account && req.account.username,
 			brews : req.brews,
 			brew  : req.brew
 		})
-		.then(res.send)
-		.catch(next)
+		.then((page) => {
+			return res.send(page)
+		})
+		.catch(next);
 };
 
 
@@ -66,9 +68,15 @@ router.get('/search', (req, res, next) => {
 
 //Changelog Page
 router.get('/changelog', (req, res, next) => {
-	req.brew = { text : docs.changelog };
+	req.brew = {
+		text : docs.changelog,
+		title : 'Changelog'
+	};
 	return next();
 }, renderPage);
+
+//New Page
+router.get('/new', renderPage);
 
 //Home Page
 router.get('/', (req, res, next) => {

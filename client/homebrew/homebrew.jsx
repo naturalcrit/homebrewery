@@ -18,11 +18,11 @@ const Homebrew = React.createClass({
 	getDefaultProps: function() {
 		return {
 			url : '',
-			welcomeText : '',
-			changelog : '',
 			version : '0.0.0',
-			account : undefined,
-			brew : {}
+			user : undefined,
+
+			brew : {},
+			brews : []
 		};
 	},
 	componentWillMount: function() {
@@ -38,23 +38,8 @@ const Homebrew = React.createClass({
 
 
 		Router = CreateRouter({
-			'/edit/:id' : (args) => {
-				if(!this.props.brew.editId){
-					return <ErrorPage errorId={args.id}/>
-				}
-
-				return <EditPage />
-			},
-
-			'/share/:id' : (args) => {
-				if(!this.props.brew.shareId){
-					return <ErrorPage errorId={args.id}/>
-				}
-
-				return <SharePage
-					id={args.id}
-					brew={this.props.brew} />
-			},
+			'/edit/:id' : <EditPage />,
+			'/share/:id' : <SharePage />,
 			/*
 			'/user/:username' : (args) => {
 				return <UserPage
@@ -68,15 +53,9 @@ const Homebrew = React.createClass({
 			'/print' : (args, query) => {
 				return <PrintPage query={query}/>;
 			},
-			'/new' : (args) => {
-				return <NewPage />
-			},
-			'/changelog' : (args) => {
-				return <SharePage
-					brew={{title : 'Changelog', text : this.props.changelog}} />
-			},
-			'*' : <HomePage
-					welcomeText={this.props.welcomeText} />,
+			'/new' : <NewPage />,
+			'/changelog' : <SharePage />,
+			'*' : <HomePage />,
 		});
 	},
 	render : function(){

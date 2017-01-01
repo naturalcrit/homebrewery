@@ -88,10 +88,9 @@ const BrewData = {
 		return newBrew.save();
 	},
 	update : (newBrew) => {
-		return Brew.findOneAndUpdate({ editId : newBrew.editId }, {
-			...newBrew,
-			updatedAt : Date.now()
-		}, {new : true, upsert : true}).exec(); //TODO: TEST THIS that this returns a reocrd
+		return Brew.findOneAndUpdate({ editId : newBrew.editId },
+			_.merge(newBrew, { updatedAt : Date.now() }),
+			{new : true, upsert : true}).exec(); //TODO: TEST THIS that this returns a reocrd
 	},
 	remove : (editId) => {
 		return Brew.find({ editId }).remove().exec();

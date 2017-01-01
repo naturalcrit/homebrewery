@@ -13,7 +13,7 @@ const StaticSave = React.createClass({
 		};
 	},
 	handleClick : function(){
-		Actions.saveNew();
+		Actions.create();
 	},
 	render : function(){
 		if(this.props.status === 'saving'){

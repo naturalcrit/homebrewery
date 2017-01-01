@@ -14,23 +14,9 @@ const BrewInterface = require('homebrewery/brewInterface/brewInterface.jsx');
 
 
 const Actions = require('homebrewery/brew.actions.js');
-//const Store = require('homebrewery/brew.store.js');
-
+//
 
 const HomePage = React.createClass({
-	getDefaultProps: function() {
-		return {
-			welcomeText : '',
-		};
-	},
-	componentWillMount: function() {
-		Actions.init({
-			brew : {
-				text : this.props.welcomeText
-			}
-		});
-	},
-
 	handleSave : function(){
 		Actions.saveNew();
 	},
