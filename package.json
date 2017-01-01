@@ -9,7 +9,8 @@
     "phb": "node scripts/phb.js",
     "prod": "set NODE_ENV=production&& npm run build",
     "postinstall": "npm run build",
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "mocha --recursive test"
   },
   "author": "stolksdorf",
   "license": "MIT",
