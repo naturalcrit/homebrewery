@@ -1,3 +1,4 @@
+require('app-module-path').addPath('./server');
 
 // initialize config
 const config = require('nconf')
@@ -7,9 +8,7 @@ const config = require('nconf')
 	.file('environment', { file: `../config/${process.env.NODE_ENV}.json` })
 	.file('defaults', { file: '../config/default.json' });
 
-// other libs
 const should = require('chai').use(require('chai-as-promised')).should();
-
 
 
 module.exports = {
