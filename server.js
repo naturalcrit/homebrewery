@@ -36,6 +36,9 @@ app.use(require('./server/interface.routes.js'));
 //app.use(require('./server/admin.api.js'));
 
 
+//Error Handler
+app.use(require('./server/error.js').expressHandler);
+
 const PORT = process.env.PORT || 8000;
 app.listen(PORT);
 console.log(`server on port:${PORT}`);

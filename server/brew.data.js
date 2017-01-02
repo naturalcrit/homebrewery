@@ -78,6 +78,7 @@ const BrewData = {
 		return Brew.findOne(query).exec();
 	},
 	create : (brew) => {
+		console.log('here');
 		delete brew.shareId;
 		delete brew.editId;
 
