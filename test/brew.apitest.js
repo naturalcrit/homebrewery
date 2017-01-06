@@ -1,15 +1,14 @@
-
+const should = require('chai').use(require('chai-as-promised')).should();
 const request = require('supertest-as-promised');
 const app = require('../server.js');
 
 
 const apiPath = '/api/brew';
 
-describe('/api/brew', () => {
 
+describe(apiPath, () => {
 
 	describe('POST', () => {
-
 		it('creates a new brew', () => {
 			return request(app)
 				.post(apiPath)
@@ -18,8 +17,12 @@ describe('/api/brew', () => {
 				})
 				.expect(200)
 				.then((res) => {
-					console.log(res.body);
-				});
+					const brew = res.body;
+					should.exist(brew);
+					brew.should.have.property('editId').that.is.a('string');
+					brew.should.have.property('shareId').that.is.a('string');
+					brew.should.have.property('text').that.is.a('string');
+				})
 		});
 
 	});

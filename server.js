@@ -25,6 +25,24 @@ app.use(mw.admin);
 app.use(require('./server/brew.api.js'));
 app.use(require('./server/interface.routes.js'));
 
+setTimeout(()=>{
+	var test = require('./server/brew.data.js');
+
+	test.create({text : 'test'})
+		.then((brew) => {
+			console.log(brew);
+		})
+		.catch(console.log);
+
+	test.get({})
+	.then((brew) => {
+		console.log(brew);
+	})
+	.catch(console.log);
+
+
+}, 1000);
+
 
 //app.use(require('./server/admin.api.js'));
 

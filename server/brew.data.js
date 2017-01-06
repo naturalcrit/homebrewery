@@ -84,15 +84,6 @@ const BrewData = {
 		const newBrew = new Brew(brew);
 
 		return newBrew.save();
-
-		//TODO: add error decorators to the catches
-		const temp = newBrew.save().then(()=>{
-			console.log('SAVED');
-		});
-
-		console.log(typeof temp, _.keys(temp), temp);
-
-		return temp;
 	},
 	update : (newBrew) => {
 		return Brew.findOneAndUpdate({ editId : newBrew.editId },
