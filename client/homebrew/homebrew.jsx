@@ -37,7 +37,7 @@ const Homebrew = React.createClass({
 		global.account = this.props.account;
 		global.version = this.props.version;
 
-		console.log(mapObject(['version', 'brew', 'account'], this.props));
+		//console.log(mapObject(['version', 'brew', 'account'], this.props));
 
 		Actions.init(mapObject(['version', 'brew', 'account'], this.props));
 
