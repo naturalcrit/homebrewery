@@ -13,6 +13,13 @@ const NewPage   = require('./pages/newPage/newPage.jsx');
 //const ErrorPage = require('./pages/errorPage/errorPage.jsx');
 const PrintPage = require('./pages/printPage/printPage.jsx');
 
+const mapObject = (names, obj) => {
+	return _.reduce(names, (r, name) => {
+		if(obj[name]) r[name] = obj[name];
+		return r;
+	}, {});
+};
+
 let Router;
 const Homebrew = React.createClass({
 	getDefaultProps: function() {
@@ -21,7 +28,7 @@ const Homebrew = React.createClass({
 			version : '0.0.0',
 			user : undefined,
 
-			brew : {},
+			brew : undefined,
 			brews : []
 		};
 	},
@@ -30,11 +37,9 @@ const Homebrew = React.createClass({
 		global.account = this.props.account;
 		global.version = this.props.version;
 
-		Actions.init({
-			version : this.props.version,
-			brew : this.props.brew,
-			account : this.props.account
-		});
+		console.log(mapObject(['version', 'brew', 'account'], this.props));
+
+		Actions.init(mapObject(['version', 'brew', 'account'], this.props));
 
 
 		Router = CreateRouter({

@@ -1,17 +1,12 @@
-const testing = require('./test.init.js');
+
 const request = require('supertest-as-promised');
-
-
-const app = require('../server.js')
+const app = require('../server.js');
 
 
 const apiPath = '/api/brew';
 
 describe('/api/brew', () => {
 
-	before('Await DB', ()=>{
-		return require('db.js').connect();
-	});
 
 	describe('POST', () => {
 

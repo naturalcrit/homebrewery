@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const shortid = require('shortid');
-const mongoose = require('mongoose');
-mongoose.Promise = Promise;
+const mongoose = require('./db.js').instance;
 
 const utils = require('./utils.js');
 
@@ -78,15 +77,22 @@ const BrewData = {
 		return Brew.findOne(query).exec();
 	},
 	create : (brew) => {
-		console.log('here');
 		delete brew.shareId;
 		delete brew.editId;
 
 		if(!brew.title) brew.title = utils.getGoodBrewTitle(brew.text);
 		const newBrew = new Brew(brew);
 
-		//TODO: add error decorators to the catches
 		return newBrew.save();
+
+		//TODO: add error decorators to the catches
+		const temp = newBrew.save().then(()=>{
+			console.log('SAVED');
+		});
+
+		console.log(typeof temp, _.keys(temp), temp);
+
+		return temp;
 	},
 	update : (newBrew) => {
 		return Brew.findOneAndUpdate({ editId : newBrew.editId },
