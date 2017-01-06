@@ -10,7 +10,8 @@
     "prod": "set NODE_ENV=production&& npm run build",
     "postinstall": "npm run build",
     "start": "node server.js",
-    "test": "mocha test"
+    "test": "mocha test",
+    "test:dev": "nodemon -x mocha test || exit 0"
   },
   "author": "stolksdorf",
   "license": "MIT",

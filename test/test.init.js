@@ -1,5 +1,6 @@
 require('app-module-path').addPath('./server');
 
+
 // initialize config
 const config = require('nconf')
 	.argv()
