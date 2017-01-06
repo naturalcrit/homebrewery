@@ -25,6 +25,7 @@
     "express": "^4.13.3",
     "jwt-simple": "^0.5.1",
     "lodash": "^4.17.3",
+    "loglevel": "^1.4.1",
     "marked": "^0.3.5",
     "moment": "^2.11.0",
     "mongoose": "^4.3.3",

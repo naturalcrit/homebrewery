@@ -1,57 +1,35 @@
-
-const express = require("express");
-const app = express();
-
-app.use(express.static(__dirname + '/build'));''
-app.use(require('body-parser').json({limit: '25mb'}));
-app.use(require('cookie-parser')());
-
 const config = require('nconf')
 	.argv()
 	.env({ lowerCase: true })
 	.file('environment', { file: `config/${process.env.NODE_ENV}.json` })
 	.file('defaults', { file: 'config/default.json' });
 
+const log = require('loglevel');
+log.setLevel(config.get('log_level'));
+
 //DB
 require('./server/db.js').connect();
 
-//Middleware
-const mw = require('./server/middleware.js');
-app.use(mw.account);
-app.use(mw.admin);
+//Server
+const app = require('./server/app.js');
 
+/*
+app.use((req, res, next) => {
+	log.debug('---------------------------');
+	log.debug(req.method, req.path);
 
-//Routes
-app.use(require('./server/brew.api.js'));
-app.use(require('./server/interface.routes.js'));
+	if (req.params) {
+		log.debug('req params', req.params);
+	}
+	if (req.query) {
+		log.debug('req query', req.query);
+	}
 
-setTimeout(()=>{
-	var test = require('./server/brew.data.js');
-
-	test.create({text : 'test'})
-		.then((brew) => {
-			console.log(brew);
-		})
-		.catch(console.log);
-
-	test.get({})
-	.then((brew) => {
-		console.log(brew);
-	})
-	.catch(console.log);
-
-
-}, 1000);
-
-
-//app.use(require('./server/admin.api.js'));
-
-
-//Error Handler
-app.use(require('./server/error.js').expressHandler);
+	next();
+});
+*/
 
 const PORT = process.env.PORT || 8000;
-app.listen(PORT);
-console.log(`server on port:${PORT}`);
-
-module.exports = app;
+const httpServer = app.listen(PORT, () => {
+	log.info(`server on port:${PORT}`);
+});

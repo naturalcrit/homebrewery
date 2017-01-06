@@ -2,5 +2,6 @@
 	"host" : "localhost:8000",
 	"login_path" : "localhost:8000/dev_login",
 	"secret" : "secretsecret",
-	"admin_key" : "adminadmin"
+	"admin_key" : "adminadmin",
+	"log_level" : "info"
 }

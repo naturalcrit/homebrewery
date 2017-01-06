@@ -1,12 +1,16 @@
-const should = require('chai').use(require('chai-as-promised')).should();
+const testing = require('./test.init.js');
 const request = require('supertest-as-promised');
-const app = require('../server.js');
+
+const app = require('app.js');
+const BrewDB = require('db.js');
 
 
-const apiPath = '/api/brew';
+describe('/api/brew', () => {
+	const apiPath = '/api/brew';
 
-
-describe(apiPath, () => {
+	before('Await DB', ()=>{
+		return BrewDB.connect()
+	});
 
 	describe('POST', () => {
 		it('creates a new brew', () => {
@@ -18,7 +22,7 @@ describe(apiPath, () => {
 				.expect(200)
 				.then((res) => {
 					const brew = res.body;
-					should.exist(brew);
+					//should.exist(brew);
 					brew.should.have.property('editId').that.is.a('string');
 					brew.should.have.property('shareId').that.is.a('string');
 					brew.should.have.property('text').that.is.a('string');
