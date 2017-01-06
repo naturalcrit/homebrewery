@@ -1,17 +1,17 @@
 const _ = require('lodash');
 
 
-
 module.exports = {
-	getGoodBrewTitle : (text) => {
+	getGoodBrewTitle : (text = '') => {
 		const titlePos = text.indexOf('# ');
 		if(titlePos !== -1){
-			const ending = text.indexOf('\n', titlePos);
-			return text.substring(titlePos + 2, ending);
+			let ending = text.indexOf('\n', titlePos);
+			ending = (ending == -1 ? undefined : ending);
+			return text.substring(titlePos + 2, ending).trim();
 		}else{
-			return _.find(text.split('\n'), (line)=>{
+			return (_.find(text.split('\n'), (line)=>{
 				return line;
-			});
+			}) || '').trim();
 		}
 	},
 	replaceByMap : (text, mapping) => {

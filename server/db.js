@@ -24,6 +24,5 @@ module.exports = {
 			);
 		});
 	},
-	instance : mongoose,
-	clearDatabase : ()=>{}
+	instance : mongoose
 }

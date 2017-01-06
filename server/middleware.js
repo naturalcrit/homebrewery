@@ -2,6 +2,7 @@ const _ = require('lodash');
 const jwt = require('jwt-simple');
 const config = require('nconf');
 
+const Error = require('./error.js');
 const BrewData = require('./brew.data.js');
 
 const Middleware = {
@@ -15,12 +16,10 @@ const Middleware = {
 	},
 	admin : (req, res, next) => {
 		if(req.query.admin_key === config.get('admin_key')){
-			delete req.admin_key;
-			req.isAdmin = true;
+			req.admin = true;
 		}
 		return next();
 	},
-
 
 	//Filters
 	devOnly : (req, res, next) => {
@@ -29,20 +28,27 @@ const Middleware = {
 		return res.sendStatus(404);
 	},
 	adminOnly : (req, res, next) => {
-		if(req.isAdmin) return next();
-		return res.sendStatus(401);
+		if(req.admin) return next();
+		return next(Error.noAuth());
 	},
 
 
 	//Loaders
 	loadBrew : (req, res, next) => {
-		//Loads a brew by edit id
-
-		//TODO: move validate into hurrr
+		BrewData.getByEdit(req.params.editId)
+			.then((brew) => {
+				req.brew = brew;
+				return next()
+			})
+			.catch(next);
 	},
 	viewBrew : (req, res, next) => {
-		//load by share
-		//increase view count
+		BrewData.getByShare(req.params.shareId)
+			.then((brew) => {
+				req.brew = brew;
+				return next()
+			})
+			.catch(next);
 	},
 
 };

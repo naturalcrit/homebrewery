@@ -2,6 +2,7 @@ const _ = require('lodash');
 const shortid = require('shortid');
 const mongoose = require('./db.js').instance;
 
+const Error = require('./error.js');
 const utils = require('./utils.js');
 
 const BrewSchema = mongoose.Schema({
@@ -21,41 +22,15 @@ const BrewSchema = mongoose.Schema({
 	updatedAt  : { type: Date, default: Date.now},
 	lastViewed : { type: Date, default: Date.now},
 	views      : {type:Number, default:0}
-}, { versionKey: false });
-
-/*
-BrewSchema.methods.sanatize = function(userName, isAdmin, getText = true){
-	const brew = this.toJSON();
-	delete brew._id;
-	delete brew.__v;
-	const isPriviledged = isAdmin || _.contains(this.authors, userName);
-	if(!isPriviledged) delete brew.editId;
-	if(!getText) delete brew.text;
-	return brew;
-};
-*/
-/*
-BrewSchema.methods.sanatize = function(req, getText = true){
-	const brew = this.toJSON();
-	delete brew._id;
-	delete brew.__v;
-	const isPriviledged = isAdmin || _.contains(this.authors, userName);
-	if(!isPriviledged) delete brew.editId;
-	if(!getText) delete brew.text;
-	return brew;
-};
-
-BrewSchema.methods.increaseView = function(){
-	return new Promise((resolve, reject) => {
-		this.lastViewed = new Date();
-		this.views = this.views + 1;
-		this.save((err) => {
-			if(err) return reject(err);
-			return resolve(this);
-		});
-	});
-};
-*/
+}, {
+	versionKey: false,
+	toJSON : {
+		transform: (doc, ret, options) => {
+			delete ret._id;
+			return ret;
+		}
+	}
+});
 
 BrewSchema.methods.increaseView = function(){
 	this.views = this.views + 1;
@@ -72,31 +47,35 @@ const BrewData = {
 	model  : Brew,
 
 	get : (query) => {
-		//returns a single brew with the given query
-		//Start using egads for errors
-		return Brew.findOne(query).exec();
+		return Brew.findOne(query).exec()
+			.then((brew) => {
+				if(!brew) throw Error.noBrew();
+				return brew;
+			});
 	},
 	create : (brew) => {
 		delete brew.shareId;
 		delete brew.editId;
-
 		if(!brew.title) brew.title = utils.getGoodBrewTitle(brew.text);
-		const newBrew = new Brew(brew);
-
-		return newBrew.save();
+		return (new Brew(brew)).save();
 	},
-	update : (newBrew) => {
-		return Brew.findOneAndUpdate({ editId : newBrew.editId },
-			_.merge(newBrew, { updatedAt : Date.now() }),
-			{new : true, upsert : true}
-		).exec(); //TODO: TEST THIS that this returns a record
+	update : (editId, newBrew) => {
+		return BrewData.get({ editId })
+			.then((brew) => {
+				delete newBrew.shareId;
+				delete newBrew.editId;
+				brew = _.merge(brew, newBrew, { updatedAt : Date.now() });
+				return brew.save();
+			});
 	},
 	remove : (editId) => {
 		return Brew.find({ editId }).remove().exec();
 	},
+	removeAll : ()=>{
+		return Brew.find({}).remove().exec();
+	},
 
 	//////// Special
-
 
 	getByShare : (shareId) => {
 		return BrewData.get({ shareId : shareId})
@@ -108,7 +87,7 @@ const BrewData = {
 			});
 	},
 	getByEdit : (editId) => {
-		return Brew.get({ editId });
+		return BrewData.get({ editId });
 	},
 
 	search : (query, req={}) => {

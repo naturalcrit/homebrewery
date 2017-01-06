@@ -1,14 +1,12 @@
 
-const ApiError = require('egads').extend('Server Error', 500, 'Generic Server Error');
+const Error = require('egads').extend('Server Error', 500, 'Generic Server Error');
 
-ApiError.noBrew = ApiError.extend('Can not find a brew with that id', 404);
-
-
-
+Error.noBrew = Error.extend('Can not find a brew with that id', 404, 'No Brew Found');
+Error.noAuth = Error.extend('You can not access this route', 401, 'Unauthorized');
 
 
-ApiError.expressHandler = (err, req, res, next) => {
-	if(err instanceof ApiError){
+Error.expressHandler = (err, req, res, next) => {
+	if(err instanceof Error){
 		return res.status(err.status).send({
 			type : err.name,
 			message : err.message
@@ -23,4 +21,4 @@ ApiError.expressHandler = (err, req, res, next) => {
 
 
 
-module.exports = ApiError;
+module.exports = Error;

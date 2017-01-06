@@ -14,35 +14,36 @@ router.get('/api/brew', (req, res, next) => {
 
 //Get
 router.get('/api/brew/:shareId', mw.viewBrew, (req, res, next) => {
-	return res.json(req.brew);
+	return res.json(req.brew.toJSON());
 });
 
 //Create
 router.post('/api/brew', (req, res, next)=>{
-	const newBrew = req.body;
-	if(req.account) newBrew.authors = [req.account.username];
-	BrewData.create(newBrew)
+	const brew = req.body;
+	if(req.account) brew.authors = [req.account.username];
+	BrewData.create(brew)
 		.then((brew) => {
-			return res.json(brew);
+			return res.json(brew.toJSON());
 		})
 		.catch(next)
 });
 
 //Update
 router.put('/api/brew/:editId', mw.loadBrew, (req, res, next)=>{
+	const brew = req.body || {};
 	if(req.account){
-		req.brew.authors = _.uniq(_.concat(req.brew.authors, req.account.username));
+		brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
 	}
-	BrewData.update(req.brew)
+	BrewData.update(req.params.editId, brew)
 		.then((brew) => {
-			return res.json(brew);
+			return res.json(brew.toJSON());
 		})
 		.catch(next);
 });
 
 //Delete
 router.delete('/api/brew/:editId', mw.loadBrew, (req, res, next) => {
-	BrewData.remove(req.brew.editId)
+	BrewData.remove(req.params.editId)
 		.then(()=>{
 			return res.sendStatus(200);
 		})
