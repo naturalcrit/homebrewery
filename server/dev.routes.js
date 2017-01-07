@@ -3,6 +3,8 @@ const jwt = require('jwt-simple');
 const auth = require('basic-auth');
 const config = require('nconf');
 
+if(process.env.NODE_ENV == 'production') throw 'Loading dev routes in prod. ABORT ABORT';
+
 
 router.get('/dev/login', (req, res, next) => {
 	const user = req.query.user;

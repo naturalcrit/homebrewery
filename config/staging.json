@@ -1,0 +1,4 @@
+{
+	"login_path" : "http://staging.naturalcrit.com/login",
+	"log_level" : "trace"
+}
