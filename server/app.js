@@ -14,9 +14,9 @@ app.use(mw.admin);
 
 
 //Routes
-app.use(require('./interface.routes.js'));
 app.use(require('./brew.api.js'));
-//app.use(require('./admin.api.js'));
+app.use(require('./interface.routes.js'));
+app.use(require('./admin.routes.js'));
 
 if(config.get('NODE_ENV') !== 'staging' && config.get('NODE_ENV') !== 'production'){
 	app.use(require('./dev.routes.js'));

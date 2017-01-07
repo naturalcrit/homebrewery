@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const config = require('nconf');
 const utils = require('./utils.js');
 const BrewData = require('./brew.data.js');
 const router = require('express').Router();
@@ -18,7 +19,7 @@ const renderPage = (req, res, next) => {
 	return vitreumRender('homebrew', templateFn, {
 			url     : req.originalUrl,
 			version : require('../package.json').version,
-			//TODO: add in login path?
+			loginPath : config.get('login_path'),
 
 			user  : req.account && req.account.username,
 			brews : req.brews,

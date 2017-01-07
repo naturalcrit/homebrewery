@@ -7,10 +7,10 @@ const config = require('nconf');
 const mw = require('./middleware.js');
 const BrewData = require('./brew.data.js');
 
-router.get('/admin', mw.adminLogin, (req, res) => {
+router.get('/admin', mw.adminLogin, (req, res, next) => {
 	return vitreumRender('admin', templateFn, {
 			url       : req.originalUrl,
-			admin_key : config.get('admin"key')
+			admin_key : config.get('admin:key')
 		})
 		.then((page) => {
 			return res.send(page)
@@ -19,7 +19,7 @@ router.get('/admin', mw.adminLogin, (req, res) => {
 });
 
 //Removes all empty brews that are older than 3 days and that are shorter than a tweet
-router.del('/admin/invalid', mw.adminOnly, (req, res)=>{
+router.delete('/admin/invalid', mw.adminOnly, (req, res, next)=>{
 	BrewData.removeInvalid(!!req.query.do_it)
 		.then((removedCount) => {
 			return res.join({

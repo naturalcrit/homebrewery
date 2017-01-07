@@ -37,6 +37,7 @@ const Middleware = {
 		if(!creds
 			|| creds.name !== config.get('admin:user')
 			|| creds.pass !== config.get('admin:pass')){
+			res.setHeader('WWW-Authenticate', 'Basic realm="example"');
 			return next(Error.noAdmin());
 		}
 		return next();
