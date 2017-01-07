@@ -1,3 +1,4 @@
+const config = require('nconf');
 const express = require("express");
 const app = express();
 
@@ -13,10 +14,13 @@ app.use(mw.admin);
 
 
 //Routes
-app.use(require('./brew.api.js'));
 app.use(require('./interface.routes.js'));
+app.use(require('./brew.api.js'));
 //app.use(require('./admin.api.js'));
 
+if(config.get('NODE_ENV') !== 'staging' && config.get('NODE_ENV') !== 'production'){
+	app.use(require('./dev.routes.js'));
+}
 
 //Error Handler
 app.use(require('./error.js').expressHandler);

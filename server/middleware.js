@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const jwt = require('jwt-simple');
+const auth = require('basic-auth');
 const config = require('nconf');
 
 const Error = require('./error.js');
@@ -9,13 +10,13 @@ const Middleware = {
 	account : (req, res, next) => {
 		if(req.cookies && req.cookies.nc_session){
 			try{
-				req.account = jwt.decode(req.cookies.nc_session, config.get('secret'));
+				req.account = jwt.decode(req.cookies.nc_session, config.get('jwt_secret'));
 			}catch(e){}
 		}
 		return next();
 	},
 	admin : (req, res, next) => {
-		if(req.query.admin_key === config.get('admin_key')){
+		if(req.query.admin_key === config.get('admin:key')){
 			req.admin = true;
 		}
 		return next();
@@ -30,6 +31,15 @@ const Middleware = {
 	adminOnly : (req, res, next) => {
 		if(req.admin) return next();
 		return next(Error.noAuth());
+	},
+	adminLogin : (req, res, next) => {
+		const creds = auth(req);
+		if(!creds
+			|| creds.name !== config.get('admin:user')
+			|| creds.pass !== config.get('admin:pass')){
+			return next(Error.noAdmin());
+		}
+		return next();
 	},
 
 

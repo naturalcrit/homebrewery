@@ -90,6 +90,21 @@ const BrewData = {
 		return BrewData.get({ editId });
 	},
 
+	//Removes all empty brews that are older than 3 days and that are shorter than a tweet
+	removeInvalid : (force = false) => {
+		const invalidBrewQuery = Brew.find({
+			'$where' : "this.text.length < 140",
+			createdAt: {
+				$lt: Moment().subtract(3, 'days').toDate()
+			}
+		});
+		if(force) return invalidBrewQuery.remove().exec();
+		return invalidBrewQuery.exec()
+			.then((objs) => {
+				return objs.length;
+			});
+	},
+
 	search : (query, req={}) => {
 		//defaults with page and count
 		//returns a non-text version of brews

@@ -14,6 +14,9 @@ const requestHandler = (req, res) => {
 	return res.status(200).json(_.pick(req, ['brew', 'account', 'admin', 'params', 'query', 'body']));
 };
 
+
+console.log(config.get('admin:key'));
+
 const test_user = {
 	username : 'cool guy'
 };
@@ -23,7 +26,7 @@ describe('Middleware', () => {
 	let session_token = '';
 
 	before('create session token', () => {
-		session_token = jwt.encode(test_user, config.get('secret'));
+		session_token = jwt.encode(test_user, config.get('jwt_secret'));
 	});
 	beforeEach('setup test server', ()=>{
 		app = require('express')();
@@ -102,7 +105,7 @@ describe('Middleware', () => {
 		it('should detect when you use the admin key', () => {
 			app.use(mw.admin);
 			app.use(requestHandler)
-			return request(app).get(`/?admin_key=${config.get('admin_key')}`)
+			return request(app).get(`/?admin_key=${config.get('admin:key')}`)
 				.send()
 				.expect(200)
 				.then((res) => {
@@ -113,9 +116,27 @@ describe('Middleware', () => {
 		it('should block you if you are not an admin', ()=>{
 			app.use(mw.admin);
 			app.use(mw.adminOnly);
-			app.get('/', (req, res) => { return res.status(200).send(); });
+			app.get(requestHandler);
 			app.use(Error.expressHandler);
 			return request(app).get(`/?admin_key=BADKEY`)
+				.send()
+				.expect(401);
+		});
+
+		it('should let your through witch basic auth', () => {
+			app.use(mw.adminLogin);
+			app.use(requestHandler);
+			return request(app).get('/')
+				.auth(config.get('admin:user'), config.get('admin:pass'))
+				.send()
+				.expect(200);
+		});
+		it('should block you if basic auth is wrong', () => {
+			app.use(mw.adminAuth);
+			app.use(requestHandler);
+			app.use(Error.expressHandler);
+			return request(app).get('/')
+				.auth('baduser', 'badpassword')
 				.send()
 				.expect(401);
 		});

@@ -3,6 +3,7 @@ const Error = require('egads').extend('Server Error', 500, 'Generic Server Error
 
 Error.noBrew = Error.extend('Can not find a brew with that id', 404, 'No Brew Found');
 Error.noAuth = Error.extend('You can not access this route', 401, 'Unauthorized');
+Error.noAdmin = Error.extend('You need admin credentials to access this route', 401, 'Unauthorized');
 
 
 Error.expressHandler = (err, req, res, next) => {

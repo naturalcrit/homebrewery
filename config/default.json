@@ -1,7 +1,10 @@
 {
-	"host" : "localhost:8000",
-	"login_path" : "localhost:8000/dev_login",
-	"secret" : "secretsecret",
-	"admin_key" : "adminadmin",
-	"log_level" : "info"
+	"log_level" : "info",
+	"login_path" : "/dev/login",
+	"jwt_secret" : "secretsecret",
+	"admin" : {
+		"user" : "admin",
+		"pass" : "password",
+		"key"  : "adminadminadmin"
+	}
 }
