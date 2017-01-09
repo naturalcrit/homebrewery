@@ -35,11 +35,6 @@ const Homebrew = React.createClass({
 		};
 	},
 	componentWillMount: function() {
-		console.log('user', this.props.user);
-		console.log('loginpath', this.props.loginPath);
-
-		//console.log(mapObject(['version', 'brew', 'account'], this.props));
-
 		BrewActions.init({
 			version : this.props.version,
 			brew    : this.props.brew

@@ -17,6 +17,7 @@ Store.getLoginPath = ()=>{
 	let path = State.loginPath;
 	if(typeof window !== 'undefined'){
 		console.log('yo here');
+		path = `${path}?redirect=${encodeURIComponent(window.location.href)}`;
 	}
 	return path;
 };
