@@ -3,11 +3,12 @@ const _ = require('lodash');
 const cx = require('classnames');
 
 const CreateRouter = require('pico-router').createRouter;
-const Actions = require('homebrewery/brew.actions.js');
+const BrewActions = require('homebrewery/brew.actions.js');
+const AccountActions = require('homebrewery/account.actions.js');
 
 const HomePage = require('./pages/homePage/homePage.jsx');
 const EditPage = require('./pages/editPage/editPage.jsx');
-//const UserPage = require('./pages/userPage/userPage.jsx');
+const UserPage = require('./pages/userPage/userPage.jsx');
 const SharePage = require('./pages/sharePage/sharePage.jsx');
 const NewPage   = require('./pages/newPage/newPage.jsx');
 //const ErrorPage = require('./pages/errorPage/errorPage.jsx');
@@ -39,19 +40,25 @@ const Homebrew = React.createClass({
 
 		//console.log(mapObject(['version', 'brew', 'account'], this.props));
 
-		Actions.init(mapObject(['version', 'brew', 'account'], this.props));
+		BrewActions.init({
+			version : this.props.version,
+			brew    : this.props.brew
+		});
+		AccountActions.init({
+			user      : this.props.user,
+			loginPath : this.props.loginPath
+		});
 
 
 		Router = CreateRouter({
 			'/edit/:id' : <EditPage />,
 			'/share/:id' : <SharePage />,
-			/*
 			'/user/:username' : (args) => {
 				return <UserPage
 					username={args.username}
 					brews={this.props.brews}
 				/>
-			},*/
+			},
 			'/print/:id' : (args, query) => {
 				return <PrintPage brew={this.props.brew} query={query}/>;
 			},

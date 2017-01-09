@@ -57,7 +57,7 @@ const UserPage = React.createClass({
 			<Navbar>
 				<Nav.section>
 					<RecentNavItem.both />
-					<Account />
+					<Account userPage={this.props.username} />
 				</Nav.section>
 			</Navbar>
 

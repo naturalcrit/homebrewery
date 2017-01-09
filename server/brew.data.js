@@ -109,6 +109,7 @@ const BrewData = {
 		//defaults with page and count
 		//returns a non-text version of brews
 		//assume sanatized ?
+		return Promise.resolve([]);
 	},
 
 
