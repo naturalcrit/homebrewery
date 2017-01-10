@@ -3,9 +3,20 @@ const router = require('express').Router();
 const vitreumRender = require('vitreum/steps/render');
 const templateFn = require('../client/template.js');
 const config = require('nconf');
+const Moment = require('moment');
 
 const mw = require('./middleware.js');
 const BrewData = require('./brew.data.js');
+
+
+const getInvalidBrewQuery = ()=>{
+	return BrewData.model.find({
+		'$where' : "this.text.length < 140",
+		createdAt: {
+			$lt: Moment().subtract(3, 'days').toDate()
+		}
+	}).select({ text : false });
+}
 
 router.get('/admin', mw.adminLogin, (req, res, next) => {
 	return vitreumRender('admin', templateFn, {
@@ -19,12 +30,17 @@ router.get('/admin', mw.adminLogin, (req, res, next) => {
 });
 
 //Removes all empty brews that are older than 3 days and that are shorter than a tweet
+router.get('/admin/invalid', mw.adminOnly, (req, res, next)=>{
+	getInvalidBrewQuery().exec()
+		.then((brews) => {
+			return res.json(brews);
+		})
+		.catch(next);
+});
 router.delete('/admin/invalid', mw.adminOnly, (req, res, next)=>{
-	BrewData.removeInvalid(!!req.query.do_it)
-		.then((removedCount) => {
-			return res.join({
-				count : removedCount
-			});
+	getInvalidBrewQuery().remove()
+		.then(()=>{
+			return res.status(200).send();
 		})
 		.catch(next);
 });

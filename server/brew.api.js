@@ -30,15 +30,12 @@ router.post('/api/brew', (req, res, next)=>{
 
 //Update
 router.put('/api/brew/:editId', mw.loadBrew, (req, res, next)=>{
-	console.log(req.account);
 	const brew = req.body || {};
 	if(req.account){
 		brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
 	}
-	console.log(brew);
 	BrewData.update(req.params.editId, brew)
 		.then((brew) => {
-			console.log(brew.toJSON());
 			return res.json(brew.toJSON());
 		})
 		.catch(next);

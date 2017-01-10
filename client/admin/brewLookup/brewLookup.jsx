@@ -2,9 +2,8 @@ const React = require('react');
 const _     = require('lodash');
 const cx    = require('classnames');
 
-const Moment = require('moment');
-
 const request = require('superagent');
+const BrewTable = require('../brewTable/brewTable.jsx');
 
 const BrewLookup = React.createClass({
 	getDefaultProps: function() {
@@ -42,7 +41,7 @@ const BrewLookup = React.createClass({
 		if(this.state.searching) return <div className='searching'><i className='fa fa-spin fa-spinner' /></div>;
 		if(!this.state.resultBrew) return <div className='noBrew'>No brew found.</div>;
 
-		console.log(this.state.resultBrew);
+		return <BrewTable brews={[this.state.resultBrew ]} />
 
 		const brew = this.state.resultBrew;
 		return <div className='brewRow'>
