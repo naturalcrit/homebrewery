@@ -105,8 +105,8 @@ describe('Middleware', () => {
 		it('should detect when you use the admin key', () => {
 			app.use(mw.admin);
 			app.use(requestHandler)
-			return request(app).get(`/?admin_key=${config.get('admin:key')}`)
-				.send()
+			return request(app).get('/')
+				.query({ admin_key : config.get('admin:key') })
 				.expect(200)
 				.then((res) => {
 					const req = res.body;
@@ -118,7 +118,8 @@ describe('Middleware', () => {
 			app.use(mw.adminOnly);
 			app.get(requestHandler);
 			app.use(Error.expressHandler);
-			return request(app).get(`/?admin_key=BADKEY`)
+			return request(app).get('/')
+				.query({ admin_key : 'BADUSER' })
 				.send()
 				.expect(401);
 		});

@@ -29,26 +29,19 @@ router.delete('/admin/invalid', mw.adminOnly, (req, res, next)=>{
 		.catch(next);
 });
 
-router.get('/admin/lookup/:search', (req, res) => {
+router.get('/admin/lookup/:search', mw.adminOnly, (req, res, next) => {
 	//search for mathcing edit id
 	//search for matching share id
 	// search for partial match
-
-	BrewData.get({editId : req.params.search})
-		.then((brew) => {
-
-		})
 
 	BrewData.get({ $or:[
 			{editId : { "$regex": req.params.search, "$options": "i" }},
 			{shareId : { "$regex": req.params.search, "$options": "i" }},
 		]})
 		.then((brews) => {
-			console.log(brews);
 			return res.json(brews);
 		})
-
-
-})
+		.catch(next);
+});
 
 module.exports = router;
