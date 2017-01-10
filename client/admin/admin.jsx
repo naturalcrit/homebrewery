@@ -3,11 +3,9 @@ const _ = require('lodash');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 
-//const HomebrewAdmin = require('./homebrewAdmin/homebrewAdmin.jsx');
-
-
 const BrewLookup = require('./brewLookup/brewLookup.jsx');
-
+const AdminSearch = require('./adminSearch/adminSearch.jsx');
+const InvalidBrew = require('./invalidBrew/invalidBrew.jsx');
 
 const Admin = React.createClass({
 	getDefaultProps: function() {
@@ -31,10 +29,11 @@ const Admin = React.createClass({
 			{this.renderNavbar()}
 			<main className='content'>
 				<BrewLookup adminKey={this.props.admin_key} />
+				<AdminSearch adminKey={this.props.admin_key} />
 
-				Test
+				<div className='dangerZone'>Danger Zone</div>
 
-
+				<InvalidBrew adminKey={this.props.admin_key} />
 			</main>
 		</div>
 	}

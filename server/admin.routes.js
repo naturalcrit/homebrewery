@@ -8,7 +8,6 @@ const mw = require('./middleware.js');
 const BrewData = require('./brew.data.js');
 
 router.get('/admin', mw.adminLogin, (req, res, next) => {
-	console.log('yo');
 	return vitreumRender('admin', templateFn, {
 			url       : req.originalUrl,
 			admin_key : config.get('admin:key')
@@ -29,5 +28,27 @@ router.delete('/admin/invalid', mw.adminOnly, (req, res, next)=>{
 		})
 		.catch(next);
 });
+
+router.get('/admin/lookup/:search', (req, res) => {
+	//search for mathcing edit id
+	//search for matching share id
+	// search for partial match
+
+	BrewData.get({editId : req.params.search})
+		.then((brew) => {
+
+		})
+
+	BrewData.get({ $or:[
+			{editId : { "$regex": req.params.search, "$options": "i" }},
+			{shareId : { "$regex": req.params.search, "$options": "i" }},
+		]})
+		.then((brews) => {
+			console.log(brews);
+			return res.json(brews);
+		})
+
+
+})
 
 module.exports = router;
