@@ -1,19 +1,11 @@
-@import 'naturalcrit/styles/reset.less';
-@import 'naturalcrit/styles/elements.less';
-@import 'naturalcrit/styles/animations.less';
-@import 'naturalcrit/styles/colors.less';
-@import 'naturalcrit/styles/tooltip.less';
+@import 'naturalcrit/styles/core.less';
 
-@import 'font-awesome/css/font-awesome.css';
-
-html,body, #reactContainer, .naturalCrit{
+html,body, #reactRoot{
 	min-height : 100%;
 }
 
-@sidebarWidth : 250px;
-
 body{
-	background-color : #eee;
+	background-color : #ddd;
 	font-family      : 'Open Sans', sans-serif;
 	color            : #4b5055;
 	font-weight      : 100;
@@ -23,17 +15,35 @@ body{
 	height : 100%;
 }
 
-.admin{
-
-	header{
-		background-color : @red;
-		font-size: 2em;
-		padding : 20px 0px;
-		color : white;
-		margin-bottom: 30px;
-		i{
-			margin-right: 30px;
+.admin {
+	nav {
+		background-color: @red;
+		.navItem{
+			background-color: @red;
+		}
+		.homebreweryLogo{
+			font-family : CodeBold;
+			font-size   : 12px;
+			color       : white;
+			div{
+				margin-top    : 2px;
+				margin-bottom : -2px;
+			}
 		}
 	}
 
+	h1{
+		font-size: 2em;
+		font-weight: 800;
+		border-bottom: 1px solid #ddd;
+		margin-bottom: 10px;
+	}
+
+
+	main.content{
+		background-color: white;
+		padding: 50px 20px;
+		width : 1000px;
+		margin: 0 auto;
+	}
 }

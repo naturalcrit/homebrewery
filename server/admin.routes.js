@@ -8,6 +8,7 @@ const mw = require('./middleware.js');
 const BrewData = require('./brew.data.js');
 
 router.get('/admin', mw.adminLogin, (req, res, next) => {
+	console.log('yo');
 	return vitreumRender('admin', templateFn, {
 			url       : req.originalUrl,
 			admin_key : config.get('admin:key')
