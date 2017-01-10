@@ -65,6 +65,9 @@ const BrewData = {
 				delete newBrew.shareId;
 				delete newBrew.editId;
 				brew = _.merge(brew, newBrew, { updatedAt : Date.now() });
+
+				brew.markModified('authors');
+				brew.markModified('systems');
 				return brew.save();
 			});
 	},

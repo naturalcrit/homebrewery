@@ -2,6 +2,8 @@ const React = require('react');
 const _     = require('lodash');
 const cx    = require('classnames');
 
+const Moment = require('moment');
+
 const request = require('superagent');
 
 const BrewLookup = React.createClass({
@@ -13,7 +15,8 @@ const BrewLookup = React.createClass({
 	getInitialState: function() {
 		return {
 			query:'',
-			resultBrew : null
+			resultBrew : null,
+			searching : false
 		};
 	},
 
@@ -23,12 +26,38 @@ const BrewLookup = React.createClass({
 		})
 	},
 	lookup : function(){
+		this.setState({ searching : true });
 
-
+		request.get(`/admin/lookup/${this.state.query}`)
+			.query({ admin_key : this.props.adminKey })
+			.end((err, res) => {
+				this.setState({
+					searching : false,
+					resultBrew : (err ? null : res.body)
+				});
+			})
 	},
 
 	renderFoundBrew : function(){
-		if(!this.state.resultBrew) return null;
+		if(this.state.searching) return <div className='searching'><i className='fa fa-spin fa-spinner' /></div>;
+		if(!this.state.resultBrew) return <div className='noBrew'>No brew found.</div>;
+
+		console.log(this.state.resultBrew);
+
+		const brew = this.state.resultBrew;
+		return <div className='brewRow'>
+			<div>{brew.title}</div>
+			<div>{brew.authors.join(', ')}</div>
+			<div><a href={'/edit/' + brew.editId} target='_blank'>{brew.editId}</a></div>
+			<div><a href={'/share/' + brew.shareId} target='_blank'>{brew.shareId}</a></div>
+			<div>{Moment(brew.updatedAt).fromNow()}</div>
+			<div>{brew.views}</div>
+			<div>
+				<div className='deleteButton'>
+					<i className='fa fa-trash' />
+				</div>
+			</div>
+		</div>
 	},
 
 	render: function(){
