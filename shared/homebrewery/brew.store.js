@@ -30,6 +30,7 @@ const Store = flux.createStore({
 		State.brew = brew;
 	},
 	UPDATE_BREW_TEXT : (brewText) => {
+		console.log(State);
 		State.brew.text = brewText;
 		State.errors = Markdown.validate(brewText);
 	},
