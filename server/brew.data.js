@@ -93,7 +93,15 @@ const BrewData = {
 		return BrewData.get({ editId });
 	},
 
-	search : (query, req={}) => {
+	search : (query, pagniation, sorting, permissions) => {
+
+
+		//search with query, add in `published = false`
+		// filter out editId and text
+
+		//if admin, removed published=false, remove filtering editId
+
+
 		//defaults with page and count
 		//returns a non-text version of brews
 		//assume sanatized ?

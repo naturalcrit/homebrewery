@@ -16,25 +16,33 @@ const brews = {
 		title : 'BrewA',
 		description : 'fancy',
 		authors : [],
-		systems : []
+		systems : [],
+		views   : 12,
+		published : true
 	},
 	BrewB : {
 		title : 'BrewB',
 		description : 'fancy',
 		authors : [],
-		systems : []
+		systems : [],
+		views   : 7,
+		published : true
 	},
 	BrewC : {
 		title : 'BrewC',
 		description : 'test',
 		authors : [],
-		systems : []
+		systems : [],
+		views   : 0,
+		published : false
 	},
 	BrewD : {
 		title : 'BrewD',
 		description : 'test',
 		authors : [],
-		systems : []
+		systems : [],
+		views   : 1,
+		published : true
 	}
 };
 
@@ -48,21 +56,47 @@ describe('Brew Search', () => {
 			}));
 	});
 
-	it('should find brews based on title and/or description', () => {
 
-		return new Promise((resolve, reject) => {
-			return reject()
-		})
-			.catch(()=>{ console.log('here1');})
-			.catch(()=>{ console.log('here2');})
+	describe('Searching', ()=>{
+		it('should be able to search for all brews', ()=>{
 
-		return BrewData.create({
-			text : 'Brew Text'
-		}).then((brew) => {
 
-});
-		//result.count.should.be.equal(2)
-		//result.brews.should.deep.include.members(ids(['BrewA', 'BrewB']);
+		});
+		it('should find brews based on title and/or description', () => {
+
+			//result.count.should.be.equal(2)
+			//result.brews.should.deep.include.members(ids(['BrewA', 'BrewB']);
+		});
+
+		it('should return the total number of brews and page info for query', ()=>{
+
+		});
+	})
+
+	describe('Permissions', () => {
+		it('should only fetch published brews', () => {
+
+		});
+		it('fetched brews should not have text or editId', () => {
+
+		});
+		it('if admin, fetches also non-published brews, with editid', () => {
+
+		});
+		it('if author, fetches also non-published brews, with editid', ()=>{
+
+		});
+	});
+
+	describe('Pagniation', () => {
+		it('should return the exact number of brews based on limit', () => {
+
+		});
+
+	});
+
+	desscribe('Sorting', ()=>{
+
 	});
 
 
