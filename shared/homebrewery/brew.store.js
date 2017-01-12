@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const flux = require('pico-flux');
 
-const Markdown = require('homebrewery/markdown.js');
+const Markdown = require('homebrewery/markdown.new.js');
 
 let State = {
 	version : '0.0.0',
@@ -30,7 +30,6 @@ const Store = flux.createStore({
 		State.brew = brew;
 	},
 	UPDATE_BREW_TEXT : (brewText) => {
-		console.log(State);
 		State.brew.text = brewText;
 		State.errors = Markdown.validate(brewText);
 	},

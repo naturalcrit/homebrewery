@@ -2,7 +2,7 @@ const React = require('react');
 const _ = require('lodash');
 const cx = require('classnames');
 
-const Markdown = require('homebrewery/markdown.js');
+const Markdown = require('homebrewery/markdown.new.js');
 const ErrorBar = require('./errorBar/errorBar.jsx');
 
 const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx')

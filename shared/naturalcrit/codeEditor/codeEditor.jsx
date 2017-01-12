@@ -29,7 +29,7 @@ var CodeEditor = React.createClass({
 			value : this.props.value,
 			lineNumbers: true,
 			lineWrapping : this.props.wrap,
-			mode : this.props.language
+			mode : this.props.language,
 		});
 
 		this.codeMirror.on('change', this.handleChange);
