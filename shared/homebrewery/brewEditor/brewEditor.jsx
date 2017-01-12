@@ -76,6 +76,7 @@ const BrewEditor = React.createClass({
 		this.refs.codeEditor.updateSize();
 	},
 
+	//TODO: convert this into a generic function for columns and blocks
 	highlightPageLines : function(){
 		if(!this.refs.codeEditor) return;
 		const codeMirror = this.refs.codeEditor.codeMirror;
