@@ -45,7 +45,11 @@ const APIActions = {
 
 const Actions = {
 	init : (initState) => {
-		Store.init(initState);
+		const filteredState = _.reduce(initState, (r, val, key) => {
+			if(typeof val !== 'undefined') r[key] = val;
+			return r;
+		}, {});
+		Store.init(filteredState);
 	},
 	setBrew : (brew) => {
 		dispatch('SET_BREW', brew);

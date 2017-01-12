@@ -16,7 +16,8 @@ const KEY = 'homebrewery-new';
 const NewPage = React.createClass({
 	componentDidMount: function() {
 		try{
-			Actions.setBrew(JSON.parse(localStorage.getItem(KEY)));
+			const storedBrew = JSON.parse(localStorage.getItem(KEY));
+			if(storedBrew && storedBrew.text) Actions.setBrew(storedBrew);
 		}catch(e){}
 		Store.updateEmitter.on('change', this.saveToLocal);
 		document.addEventListener('keydown', this.handleControlKeys);
