@@ -12,7 +12,8 @@
     "postinstall": "npm run build",
     "start": "node server.js",
     "test": "mocha test",
-    "test:dev": "nodemon -x mocha test || exit 0"
+    "test:dev": "nodemon -x mocha test || exit 0",
+    "test:markdown": "nodemon -x mocha test/markdown.test.js || exit 0"
   },
   "author": "stolksdorf",
   "license": "MIT",
