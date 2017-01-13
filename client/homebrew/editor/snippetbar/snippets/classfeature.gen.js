@@ -2,7 +2,7 @@ var _ = require('lodash');
 
 module.exports = function(classname){
 
-	classname = classname || _.sample(['archivist', 'fancyman', 'linguist', 'fletcher',
+	var classname = classname || _.sample(['archivist', 'fancyman', 'linguist', 'fletcher',
 			'notary', 'berserker-typist', 'fishmongerer', 'manicurist', 'haberdasher', 'concierge'])
 
 	classname = classname.toLowerCase();
