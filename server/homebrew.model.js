@@ -17,7 +17,8 @@ var HomebrewSchema = mongoose.Schema({
 	createdAt     : { type: Date, default: Date.now },
 	updatedAt   : { type: Date, default: Date.now},
 	lastViewed  : { type: Date, default: Date.now},
-	views : {type:Number, default:0}
+	views       : {type:Number, default:0},
+	version : {type: Number, default:1}
 }, { versionKey: false });
 
 

@@ -11,7 +11,13 @@ const Proj = require('./project.json');
 
 Promise.resolve()
 	.then(jsx('homebrew', './client/homebrew/homebrew.jsx', Proj.libs, ['shared']))
+	.then(() => {
+		console.log('here2');
+	})
 	.then(less('homebrew', './shared'))
+	.then(() => {
+		console.log('here?');
+	})
 	.then(assets(Proj.assets, ['./shared', './client']))
 	.then(livereload())
 	.then(server('./server.js', ['server']))
