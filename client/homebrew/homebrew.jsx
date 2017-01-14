@@ -33,6 +33,7 @@ const Homebrew = React.createClass({
 	},
 	componentWillMount: function() {
 		global.account = this.props.account;
+		global.version = this.props.version;
 
 
 		Router = CreateRouter({
