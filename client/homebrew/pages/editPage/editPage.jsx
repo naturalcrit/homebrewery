@@ -17,8 +17,6 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const Markdown = require('naturalcrit/markdown.js');
 
-const Warnings = require('homebrewery/warnings/warnings.jsx')
-
 const SAVE_TIMEOUT = 3000;
 
 
@@ -212,8 +210,6 @@ const EditPage = React.createClass({
 	render : function(){
 		return <div className='editPage page'>
 			{this.renderNavbar()}
-
-			<Warnings />
 
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>

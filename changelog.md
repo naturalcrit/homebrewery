@@ -11,6 +11,7 @@
 - Fixed realtime renderer not functioning if loaded with malformed html on load (thanks u/RattiganIV re:247)
 - Removed a lot of unused files in shared
 - vitreum v4 now lets me use codemirror as a pure node dependacy
+- Added a new Render Warning overlay. It detects situations where the brew may not be rendering correctly (wrong browser, browser is zoomed in...) and let's the user know
 
 
 ### Saturday, 03/12/2016 - v2.6.0

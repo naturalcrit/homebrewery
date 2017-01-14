@@ -5,6 +5,9 @@ const cx = require('classnames');
 const Markdown = require('naturalcrit/markdown.js');
 const ErrorBar = require('./errorBar/errorBar.jsx');
 
+//TODO: move to the brew renderer
+const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx')
+
 const PAGE_HEIGHT = 1056;
 const PPR_THRESHOLD = 50;
 
@@ -132,6 +135,7 @@ const BrewRenderer = React.createClass({
 			style={{height : this.state.height}}>
 
 			<ErrorBar errors={this.props.errors} />
+			<RenderWarnings />
 
 			<div className='pages' ref='pages'>
 				{this.renderPages()}
