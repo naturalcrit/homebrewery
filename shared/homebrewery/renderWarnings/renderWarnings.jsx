@@ -11,9 +11,10 @@ const RenderWarnings = React.createClass({
 	},
 	componentDidMount: function() {
 		this.checkWarnings();
-
-		//TODO: Setup event for window zoom
-
+		window.addEventListner('onresize', this.checkWarnings);
+	},
+	componentWillUnmount: function() {
+		window.removeEventListener('onresize', this.checkWarnings);
 	},
 	warnings : {
 		chrome : function(){
@@ -21,7 +22,10 @@ const RenderWarnings = React.createClass({
 			if(!isChrome){
 				return <li key='chrome'>
 					<em>Built for Chrome </em> <br />
-					Other browsers do not support key features this site uses.
+					Other browsers do not support
+					<a target='_blank' href='https://developer.mozilla.org/en-US/docs/Web/CSS/column-span#Browser_compatibility'>
+						key features
+					</a> this site uses.
 				</li>;
 			}
 		},
