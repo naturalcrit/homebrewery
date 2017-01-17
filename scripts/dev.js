@@ -10,7 +10,7 @@ const livereload = require('vitreum/steps/livereload.js').partial;
 const Proj = require('./project.json');
 
 Promise.resolve()
-	.then(jsx('homebrew', './client/homebrew/homebrew.jsx', Proj.libs, ['shared']))
+	.then(jsx('homebrew', './client/homebrew/homebrew.jsx', Proj.libs, 'shared'))
 	.then(less('homebrew', './shared'))
 	.then(assets(Proj.assets, ['./shared', './client']))
 	.then(livereload())

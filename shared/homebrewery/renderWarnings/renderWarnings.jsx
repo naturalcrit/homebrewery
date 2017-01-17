@@ -11,10 +11,10 @@ const RenderWarnings = React.createClass({
 	},
 	componentDidMount: function() {
 		this.checkWarnings();
-		window.addEventListner('onresize', this.checkWarnings);
+		window.addEventListener('resize', this.checkWarnings);
 	},
 	componentWillUnmount: function() {
-		window.removeEventListener('onresize', this.checkWarnings);
+		window.removeEventListener('resize', this.checkWarnings);
 	},
 	warnings : {
 		chrome : function(){
