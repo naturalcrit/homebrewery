@@ -1,4 +1,4 @@
-#!/bin/bash
-cd /opt/apps/naturalcrit/
-/usr/bin/mongod --config /etc/mongodb.conf &
+#!/bin/sh
+cd /app/naturalcrit/
+/usr/bin/mongod &
 gulp
