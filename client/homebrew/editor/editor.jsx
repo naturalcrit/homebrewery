@@ -35,6 +35,7 @@ const Editor = React.createClass({
 
 	componentDidMount: function() {
 		this.updateEditorSize();
+		this.highlightPageLines();
 		window.addEventListener("resize", this.updateEditorSize);
 	},
 	componentWillUnmount: function() {
@@ -108,6 +109,7 @@ const Editor = React.createClass({
 	},
 
 	render : function(){
+		this.highlightPageLines();
 		return(
 			<div className='editor' ref='main'>
 				<SnippetBar
