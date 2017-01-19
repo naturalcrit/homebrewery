@@ -1,10 +1,12 @@
 # changelog
 
-### Tuesday, 17/01/2017 - v2.7cont
-- Added in code position to brew page jumping
+### Thursday, 19/01/2017 - v2.7.0
+- Fixed saving multiple authors and multiple systems on brew metadata (thanks u/PalaNolho re:282)
+- Adding in line highlight for new pages
 
-### Saturday, 14/01/2017 - v2.7.0cont
-- - Added a new Render Warning overlay. It detects situations where the brew may not be rendering correctly (wrong browser, browser is zoomed in...) and let's the user know
+
+### Saturday, 14/01/2017 - v2.7.0
+- Added a new Render Warning overlay. It detects situations where the brew may not be rendering correctly (wrong browser, browser is zoomed in...) and let's the user know
 
 
 ### Sunday, 25/12/2016 - v2.7.0

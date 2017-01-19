@@ -63,6 +63,10 @@ router.put('/api/update/:id', (req, res)=>{
 			brew = _.merge(brew, req.body);
 			brew.updatedAt = new Date();
 			if(req.account) brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
+
+			brew.markModified('authors');
+			brew.markModified('systems');
+
 			brew.save((err, obj)=>{
 				if(err) throw err;
 				return res.status(200).send(obj);

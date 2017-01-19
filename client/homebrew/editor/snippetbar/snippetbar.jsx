@@ -44,7 +44,7 @@ const Snippetbar = React.createClass({
 			{this.renderSnippetGroups()}
 			<div className={cx('toggleMeta', {selected: this.props.showmeta})}
 				onClick={this.props.onToggle}>
-				<i className='fa fa-settings' />
+				<i className='fa fa-bars' />
 			</div>
 		</div>
 	}

@@ -73,6 +73,22 @@ const Editor = React.createClass({
 			return r;
 		}, 1);
 	},
+
+	highlightPageLines : function(){
+		if(!this.refs.codeEditor) return;
+		const codeMirror = this.refs.codeEditor.codeMirror;
+
+		const lineNumbers = _.reduce(this.props.value.split('\n'), (r, line, lineNumber)=>{
+			if(line.indexOf('\\page') !== -1){
+				codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
+				r.push(lineNumber);
+			}
+			return r;
+		}, []);
+		return lineNumbers
+	},
+
+
 	brewJump : function(){
 		const currentPage = this.getCurrentPage();
 		window.location.hash = 'p' + currentPage;
