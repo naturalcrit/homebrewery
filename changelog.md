@@ -1,5 +1,8 @@
 # changelog
 
+### Tuesday, 17/01/2017 - v2.7cont
+- Added in code position to brew page jumping
+
 ### Saturday, 14/01/2017 - v2.7.0cont
 - - Added a new Render Warning overlay. It detects situations where the brew may not be rendering correctly (wrong browser, browser is zoomed in...) and let's the user know
 

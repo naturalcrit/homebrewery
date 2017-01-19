@@ -108,9 +108,11 @@ const Editor = React.createClass({
 					onChange={this.handleTextChange}
 					onCursorActivity={this.handleCursorActivty} />
 
+				{/*
 				<div className='brewJump' onClick={this.brewJump}>
 					<i className='fa fa-arrow-right' />
 				</div>
+				*/}
 			</div>
 		);
 	}

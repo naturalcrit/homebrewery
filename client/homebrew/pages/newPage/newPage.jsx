@@ -125,6 +125,7 @@ const NewPage = React.createClass({
 
 	renderNavbar : function(){
 		return <Navbar>
+
 			<Nav.section>
 				<Nav.item className='brewTitle'>{this.state.metadata.title}</Nav.item>
 			</Nav.section>
