@@ -2,7 +2,6 @@ const _ = require('lodash');
 const auth = require('basic-auth');
 const HomebrewModel = require('./homebrew.model.js').model;
 const router = require('express').Router();
-const vitreumRender = require('vitreum/render');
 
 
 const mw = {
@@ -42,28 +41,42 @@ router.get('/api/invalid', mw.adminOnly, (req, res)=>{
 	}
 });
 
+router.get('/admin/lookup/:id', mw.adminOnly, (req, res, next) => {
+	//search for mathcing edit id
+	//search for matching share id
+	// search for partial match
+
+	HomebrewModel.findOne({ $or:[
+			{editId : { "$regex": req.params.id, "$options": "i" }},
+			{shareId : { "$regex": req.params.id, "$options": "i" }},
+		]}).exec((err, brew) => {
+			return res.json(brew);
+		});
+});
+
 
 
 //Admin route
 
-
+const render = require('vitreum/steps/render');
+const templateFn = require('../client/template.js');
 router.get('/admin', function(req, res){
 	const credentials = auth(req)
 	if (!credentials || credentials.name !== process.env.ADMIN_USER || credentials.pass !== process.env.ADMIN_PASS) {
 		res.setHeader('WWW-Authenticate', 'Basic realm="example"')
 		return res.status(401).send('Access denied')
 	}
-	vitreumRender({
-		page: './build/admin/bundle.dot',
-		prerenderWith : './client/admin/admin.jsx',
-		clearRequireCache : !process.env.PRODUCTION,
-		initialProps: {
+	render('admin', templateFn, {
 			url: req.originalUrl,
 			admin_key : process.env.ADMIN_KEY,
-		},
-	}, function (err, page) {
-		return res.send(page)
-	});
+		})
+		.then((page) => {
+			return res.send(page)
+		})
+		.catch((err) => {
+			console.log(err);
+			return res.sendStatus(500);
+		});
 });
 
 

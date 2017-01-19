@@ -3,6 +3,7 @@
 ### Thursday, 19/01/2017 - v2.7.0
 - Fixed saving multiple authors and multiple systems on brew metadata (thanks u/PalaNolho re:282)
 - Adding in line highlight for new pages
+- Added in a simple brew lookup for admin
 
 
 ### Saturday, 14/01/2017 - v2.7.0

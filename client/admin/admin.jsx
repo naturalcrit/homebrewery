@@ -27,8 +27,6 @@ var Admin = React.createClass({
 
 				<div className='container'>
 
-					<a target="_blank" href='https://www.google.com/analytics/web/?hl=en#report/defaultid/a72212009w109843310p114529111/'>Link to Google Analytics</a>
-
 					<HomebrewAdmin homebrews={this.props.homebrews} admin_key={this.props.admin_key} />
 				</div>
 

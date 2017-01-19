@@ -7,6 +7,8 @@ var Moment = require('moment');
 
 var BrewSearch = require('./brewSearch.jsx');
 
+var BrewLookup = require('./brewLookup/brewLookup.jsx');
+
 
 var HomebrewAdmin = React.createClass({
 	getDefaultProps: function() {
@@ -35,6 +37,7 @@ var HomebrewAdmin = React.createClass({
 				page : page
 			})
 			.end((err, res)=>{
+				if(err || !res.body || !res.body.brews) return;
 				this.state.brewCache[page] = res.body.brews;
 				this.setState({
 					brewCache : this.state.brewCache,
@@ -141,9 +144,18 @@ var HomebrewAdmin = React.createClass({
 	render : function(){
 		var self = this;
 		return <div className='homebrewAdmin'>
+
+			<BrewLookup adminKey={this.props.admin_key} />
+
+			{/*
 			<h2>
 				Homebrews - {this.state.total}
 			</h2>
+
+
+
+
+
 			{this.renderPagnination()}
 			{this.renderBrewTable()}
 
@@ -152,6 +164,7 @@ var HomebrewAdmin = React.createClass({
 			</button>
 
 			<BrewSearch admin_key={this.props.admin_key} />
+		*/}
 		</div>
 	}
 });
