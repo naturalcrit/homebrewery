@@ -1,5 +1,10 @@
 # changelog
 
+## BIG NEWS
+With the next major release of Homebrewery, v3.0.0, this tool *will no longer support raw HTML input for brew code*. Most issues and errors users are having are because of this feature and it's become too taxing to help and fix these issues.
+
+All brews made previous to the release of v3.0.0 will still render normally.
+
 ### Thursday, 19/01/2017 - v2.7.0
 - Fixed saving multiple authors and multiple systems on brew metadata (thanks u/PalaNolho re:282)
 - Adding in line highlight for new pages

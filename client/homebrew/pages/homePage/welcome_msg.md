@@ -36,6 +36,9 @@ This tool will **always** be free, never have ads, and I will never offer any "p
 ```
 ```
 
+## Big things coming in v3.0.0
+With the next major release of Homebrewery, v3.0.0, this tool *will no longer support raw HTML input for brew code*. All brews made previous to the release of v3.0.0 will still render normally.
+
 ## New Things All The Time!
 What's new in the latest update? Check out the full changelog [here](/changelog)
 
