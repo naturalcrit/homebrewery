@@ -1,11 +1,9 @@
-require('app-module-path').addPath('./shared');
-
 const _ = require('lodash');
 const jwt = require('jwt-simple');
-const vitreumRender = require('vitreum/render');
 const express = require("express");
 const app = express();
-app.use(express.static(__dirname + '/build'));
+
+app.use(express.static(__dirname + '/build'));''
 app.use(require('body-parser').json({limit: '25mb'}));
 app.use(require('cookie-parser')());
 
@@ -18,7 +16,10 @@ const config = require('nconf')
 //DB
 require('mongoose')
 	.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://localhost/naturalcrit')
-	.connection.on('error', () => { console.log(">>>ERROR: Run Mongodb.exe ya goof!") });
+	.connection.on('error', () => {
+		console.log('Error : Could not connect to a Mongo Database.');
+		console.log('        If you are running locally, make sure mongodb.exe is running.');
+	});
 
 
 //Account MIddleware
@@ -113,31 +114,28 @@ app.get('/print/:id', (req, res, next)=>{
 
 
 //Render Page
+const render = require('vitreum/steps/render');
+const templateFn = require('./client/template.js');
 app.use((req, res) => {
-	vitreumRender({
-		page: './build/homebrew/bundle.dot',
-		globals:{
-			version : require('./package.json').version
-		},
-		prerenderWith : './client/homebrew/homebrew.jsx',
-		initialProps: {
+	render('homebrew', templateFn, {
+			version : require('./package.json').version,
 			url: req.originalUrl,
 			welcomeText : welcomeText,
 			changelog : changelogText,
 			brew : req.brew,
 			brews : req.brews,
 			account : req.account
-		},
-		clearRequireCache : !process.env.PRODUCTION,
-	}, (err, page) => {
-		return res.send(page)
-	});
+		})
+		.then((page) => {
+			return res.send(page)
+		})
+		.catch((err) => {
+			console.log(err);
+			return res.sendStatus(500);
+		});
 });
 
 
-
-
-
-var port = process.env.PORT || 8000;
-app.listen(port);
-console.log('Listening on localhost:' + port);
+const PORT = process.env.PORT || 8000;
+app.listen(PORT);
+console.log(`server on port:${PORT}`);

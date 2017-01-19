@@ -5,6 +5,9 @@ const cx = require('classnames');
 const Markdown = require('naturalcrit/markdown.js');
 const ErrorBar = require('./errorBar/errorBar.jsx');
 
+//TODO: move to the brew renderer
+const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx')
+
 const PAGE_HEIGHT = 1056;
 const PPR_THRESHOLD = 50;
 
@@ -33,6 +36,7 @@ const BrewRenderer = React.createClass({
 	},
 	height : 0,
 	pageHeight : PAGE_HEIGHT,
+	lastRender : <div></div>,
 
 	componentDidMount: function() {
 		this.updateSize();
@@ -43,7 +47,7 @@ const BrewRenderer = React.createClass({
 	},
 
 	componentWillReceiveProps: function(nextProps) {
-		if(this.refs.pages.firstChild) this.pageHeight = this.refs.pages.firstChild.clientHeight;
+		if(this.refs.pages && this.refs.pages.firstChild) this.pageHeight = this.refs.pages.firstChild.clientHeight;
 
 		const pages = nextProps.text.split('\\page');
 		this.setState({
@@ -54,7 +58,7 @@ const BrewRenderer = React.createClass({
 
 	updateSize : function() {
 		setTimeout(()=>{
-			if(this.refs.pages.firstChild) this.pageHeight = this.refs.pages.firstChild.clientHeight;
+			if(this.refs.pages && this.refs.pages.firstChild) this.pageHeight = this.refs.pages.firstChild.clientHeight;
 		}, 1);
 
 		this.setState({
@@ -117,10 +121,11 @@ const BrewRenderer = React.createClass({
 				}
 			});
 		}
-
-		return _.map(this.state.pages, (page, index)=>{
+		if(this.props.errors && this.props.errors.length) return this.lastRender;
+		this.lastRender = _.map(this.state.pages, (page, index)=>{
 			return this.renderPage(page, index);
 		});
+		return this.lastRender;
 	},
 
 	render : function(){
@@ -130,6 +135,7 @@ const BrewRenderer = React.createClass({
 			style={{height : this.state.height}}>
 
 			<ErrorBar errors={this.props.errors} />
+			<RenderWarnings />
 
 			<div className='pages' ref='pages'>
 				{this.renderPages()}

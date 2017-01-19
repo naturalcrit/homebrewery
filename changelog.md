@@ -1,5 +1,34 @@
 # changelog
 
+## BIG NEWS
+With the next major release of Homebrewery, v3.0.0, this tool *will no longer support raw HTML input for brew code*. Most issues and errors users are having are because of this feature and it's become too taxing to help and fix these issues.
+
+All brews made previous to the release of v3.0.0 will still render normally.
+
+### Thursday, 19/01/2017 - v2.7.0
+- Fixed saving multiple authors and multiple systems on brew metadata (thanks u/PalaNolho re:282)
+- Adding in line highlight for new pages
+- Added in a simple brew lookup for admin
+
+
+### Saturday, 14/01/2017 - v2.7.0
+- Added a new Render Warning overlay. It detects situations where the brew may not be rendering correctly (wrong browser, browser is zoomed in...) and let's the user know
+
+
+### Sunday, 25/12/2016 - v2.7.0
+- Switching over to using Vitreum v4
+  - Removed gulp, all tasks are run through npm scripts
+- Updating docs for local dev
+- Removing support for Docker. I have never used it, nor will I ever test for it, so I don't want to continue to explictly support it on this repo. Feel free to make a fork and make it docker-able though :)
+- Changed icon for the metadata
+- Made links useable in footer (thanks u/Dustfinger1 re:249)
+- Added print media queries to remove box shadow on print (thanks u/dmmagic  re: 246)
+- Fixed realtime renderer not functioning if loaded with malformed html on load (thanks u/RattiganIV re:247)
+- Removed a lot of unused files in shared
+- vitreum v4 now lets me use codemirror as a pure node dependacy
+
+
+
 ### Saturday, 03/12/2016 - v2.6.0
 - Added report back to the edit page
 - Changed metaeditor icon

@@ -35,6 +35,7 @@ const Editor = React.createClass({
 
 	componentDidMount: function() {
 		this.updateEditorSize();
+		this.highlightPageLines();
 		window.addEventListener("resize", this.updateEditorSize);
 	},
 	componentWillUnmount: function() {
@@ -66,6 +67,34 @@ const Editor = React.createClass({
 		})
 	},
 
+	getCurrentPage : function(){
+		const lines = this.props.value.split('\n').slice(0, this.cursorPosition.line + 1);
+		return _.reduce(lines, (r, line) => {
+			if(line.indexOf('\\page') !== -1) r++;
+			return r;
+		}, 1);
+	},
+
+	highlightPageLines : function(){
+		if(!this.refs.codeEditor) return;
+		const codeMirror = this.refs.codeEditor.codeMirror;
+
+		const lineNumbers = _.reduce(this.props.value.split('\n'), (r, line, lineNumber)=>{
+			if(line.indexOf('\\page') !== -1){
+				codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
+				r.push(lineNumber);
+			}
+			return r;
+		}, []);
+		return lineNumbers
+	},
+
+
+	brewJump : function(){
+		const currentPage = this.getCurrentPage();
+		window.location.hash = 'p' + currentPage;
+	},
+
 	//Called when there are changes to the editor's dimensions
 	update : function(){
 		this.refs.codeEditor.updateSize();
@@ -80,6 +109,7 @@ const Editor = React.createClass({
 	},
 
 	render : function(){
+		this.highlightPageLines();
 		return(
 			<div className='editor' ref='main'>
 				<SnippetBar
@@ -95,6 +125,12 @@ const Editor = React.createClass({
 					value={this.props.value}
 					onChange={this.handleTextChange}
 					onCursorActivity={this.handleCursorActivty} />
+
+				{/*
+				<div className='brewJump' onClick={this.brewJump}>
+					<i className='fa fa-arrow-right' />
+				</div>
+				*/}
 			</div>
 		);
 	}

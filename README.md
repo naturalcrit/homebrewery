@@ -1,38 +1,33 @@
 # The Homebrewery
-Create authentic looking D&D homebrews using only markdown. Check it out [here](http://homebrewery.naturalcrit.com).
-
-If you want to locally run your own version, or just play around with the code you see here, follow the instructions below.
+The Homebrewery is a tool for making authnetic looking [D&D content](http://dnd.wizards.com/products/tabletop-games/rpg-products/rpg_playershandbook) using only [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet). Check it out [here](http://homebrewery.naturalcrit.com).
 
 
-### Getting started running your own version locally.
-1. Make sure you have [node](https://nodejs.org/en/)
-1. Clone down the repo
-1. In your terminal, head to the repo
-1. Run `npm install` to get all the dependencies
-1. Run `npm run libs`, this will compile and build all the needed libraries (this only has to be done once, unless you add more libs)
-1. Run `npm run watch` to run the project locally. Should be accessible at `localhost:8000`
-2. Any changes to files within the project will be detected and the project will automatically re-build
-
-**Notes:** If you'd like to create and edit homebrews, you'll need to have MongoDB installed and running.
-
-Have fun!
-
-### Docker Image
-You can use [Docker](https://docs.docker.com) to get up and running with the Homebrewery.
-
-1. Install Docker
-1. Clone the repo
-1. In the terminal, go to the repo
-1. Build the docker image `docker build -t naturalcrit .`
-1. Run the docker container `docker run -dit -p 8000:8000 naturalcrit`
-1. You can check out the website on your computer on port 8000
-	1. You may have to use `docker-machine env` to get the IP address of your docker instance
+### issues, suggestions, bugs
+If you run into any issues using The Homebrewery, please submit an issues [here](/issues)
 
 
-### Changelog
+### local dev
+Homebrewery is open source, so feel free to clone it, tinker with it, or run your own local version.
+
+#### pre-reqs
+1. install [node](https://nodejs.org/en/)
+1. install [mongodb](https://www.mongodb.com/)
+
+#### getting started
+1. clone it
+1. `npm install`
+1. `npm build`
+1. `npm start`
+
+#### standalone PHB stylesheet
+If you just want the stylesheet that is generated to make pages look like they are from the PLayer's Handbook, you have find it [here](https://github.com/stolksdorf/homebrewery/blob/master/phb.standalone.css)
+
+If you are developing locally and would like to generate your own, follow the above steps and then run `npm run phb`.
+
+### changelog
 
 You can check out the changelog [here](https://github.com/stolksdorf/homebrewery/blob/master/changelog.md)
 
-### License
+### license
 
 This project is licensed under [MIT](./license)
