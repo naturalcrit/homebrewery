@@ -25,7 +25,7 @@ module.exports = {
 	render : (rawBrewText)=>{
 		//Adds in the new div block syntax
 		let count = 0;
-		let blockReg = /{{\w+|}}/g;
+		let blockReg = /{{[\w|,]+|}}/g;
 		const renderer = new Markdown.Renderer();
 		renderer.paragraph = function (text) {
 			const matches = text.match(blockReg);
@@ -35,7 +35,7 @@ module.exports = {
 				if(text) r.push(`<p>${text}</p>\n`);
 				const block = matches[matchIndex];
 				if(block && _.startsWith(block, '{{')){
-					r.push(`<div class="${block.substring(2)}">`);
+					r.push(`<div class="${block.substring(2).split(',').join(' ')}">`);
 					count++;
 				}
 				if(block == '}}' && count !== 0){
