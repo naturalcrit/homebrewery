@@ -30,6 +30,7 @@ const RenderWarnings = React.createClass({
 			}
 		},
 		zoom : function(){
+			return false;
 			if(window.devicePixelRatio !== 1){
 				return <li key='zoom'>
 					<em>Your browser is zoomed. </em> <br />
