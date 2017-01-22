@@ -102,29 +102,27 @@ const BrewEditor = React.createClass({
 
 		this.highlightPageLines();
 
-		return(
-			<div className='brewEditor' ref='main'>
-				<SnippetBar
-					brew={this.props.value}
-					onInject={this.handleInject}
-					onToggle={this.handgleToggle}
-					showmeta={this.state.showMetadataEditor} />
-				{this.renderMetadataEditor()}
-				<CodeEditor
-					ref='codeEditor'
-					wrap={true}
-					language='gfm'
-					value={this.props.value}
-					onChange={this.handleTextChange}
-					onCursorActivity={this.handleCursorActivty} />
-			</div>
+		return<div className='brewEditor' ref='main'>
+			<SnippetBar
+				brew={this.props.value}
+				onInject={this.handleInject}
+				onToggle={this.handgleToggle}
+				showmeta={this.state.showMetadataEditor} />
+			{this.renderMetadataEditor()}
+			<CodeEditor
+				ref='codeEditor'
+				wrap={true}
+				language='gfm'
+				value={this.props.value}
+				onChange={this.handleTextChange}
+				onCursorActivity={this.handleCursorActivty} />
+		</div>
 
-			{/*
+			/*
 			<div className='brewJump' onClick={this.brewJump}>
 				<i className='fa fa-arrow-right' />
 			</div>
-			*/}
-		);
+			*/
 	}
 });
 

@@ -132,7 +132,7 @@ describe('Middleware', () => {
 				.expect(200);
 		});
 		it('should block you if basic auth is wrong', () => {
-			app.use(mw.adminAuth);
+			app.use(mw.adminLogin);
 			app.use(requestHandler);
 			app.use(Error.expressHandler);
 			return request(app).get('/')
