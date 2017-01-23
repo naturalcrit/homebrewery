@@ -21,7 +21,8 @@ const BrewSchema = mongoose.Schema({
 	createdAt  : { type: Date, default: Date.now },
 	updatedAt  : { type: Date, default: Date.now},
 	lastViewed : { type: Date, default: Date.now},
-	views      : {type:Number, default:0}
+	views      : {type:Number, default:0},
+	version : {type: Number, default:1}
 }, {
 	versionKey: false,
 	toJSON : {
@@ -31,6 +32,8 @@ const BrewSchema = mongoose.Schema({
 		}
 	}
 });
+
+BrewSchema.index({ title: "text", description: "text" });
 
 BrewSchema.methods.increaseView = function(){
 	this.views = this.views + 1;
@@ -93,19 +96,53 @@ const BrewData = {
 		return BrewData.get({ editId });
 	},
 
-	search : (query, pagniation, sorting, permissions) => {
+	search : (searchTerms, pagination, sorting, fullAccess = true) => {
+		let query = {};
+		if(searchTerms){
+			query = {$text: {
+				//Wrap terms in quots to perform an AND operator
+				$search: _.map(searchTerms.split(' '), (term)=>{
+					return `\"${term}\"`;
+				}).join(' '),
+				$caseSensitive : false
+			}};
+		}
+
+		pagination = _.defaults(pagination, {
+			limit : 25,
+			page  : 0
+		});
+		sorting = _.defaults(sorting, {
+			'views' : 1
+		});
+		let filter = {
+			//editId : 0,
+			text   : 0
+		};
 
 
-		//search with query, add in `published = false`
-		// filter out editId and text
+		if(!fullAccess){
+			filter.editId = 0;
+			query.published = false;
+		}
 
-		//if admin, removed published=false, remove filtering editId
+		const searchQuery = Brew
+			.find(query)
+			.sort(sorting)
+			.select(filter)
+			.limit(pagination.limit)
+			.skip(pagination.page * pagination.limit)
+			.exec();
 
+		const countQuery = Brew.count(query).exec();
 
-		//defaults with page and count
-		//returns a non-text version of brews
-		//assume sanatized ?
-		return Promise.resolve([]);
+		return Promise.all([searchQuery, countQuery])
+			.then((result) => {
+				return {
+					brews : result[0],
+					total : result[1]
+				}
+			});
 	},
 
 

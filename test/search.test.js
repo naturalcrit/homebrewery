@@ -18,11 +18,11 @@ const brews = {
 		authors : [],
 		systems : [],
 		views   : 12,
-		published : true
+		published : false
 	},
 	BrewB : {
 		title : 'BrewB',
-		description : 'fancy',
+		description : 'very fancy',
 		authors : [],
 		systems : [],
 		views   : 7,
@@ -38,7 +38,7 @@ const brews = {
 	},
 	BrewD : {
 		title : 'BrewD',
-		description : 'test',
+		description : 'test super amazing brew for 5e. Geared for Rangers.',
 		authors : [],
 		systems : [],
 		views   : 1,
@@ -59,43 +59,82 @@ describe('Brew Search', () => {
 
 	describe('Searching', ()=>{
 		it('should be able to search for all brews', ()=>{
+			return BrewData.search()
+				.then((result) => {
+					result.total.should.be.equal(_.size(brews));
+					result.brews.length.should.be.equal(_.size(brews));
+				})
+		});
+		it('should search brews based on title', () => {
+			return BrewData.search('BrewC')
+				.then((result) => {
+					result.total.should.be.equal(1);
+					result.brews.should.containSubset(ids(['BrewC']));
+				})
+		});
 
+		it('should search brews based on description', () => {
+			return BrewData.search('fancy')
+				.then((result) => {
+					result.total.should.be.equal(2);
+					result.brews.should.containSubset(ids(['BrewA', 'BrewB']));
+				})
+		});
+
+		it('should search brews based on multiple terms', () => {
+			return BrewData.search('ranger 5e')
+				.then((result) => {
+						result.total.should.be.equal(1);
+						result.brews.should.containSubset(ids(['BrewD']));
+					})
+		});
+
+		it('should perform an AND operation on the provided terms', () => {
+			return BrewData.search('BrewD GARBAGE')
+				.then((result) => {
+					result.total.should.be.equal(0);
+				});
+		});
+
+		it('should search brews based on a combination of both', () => {
+			return BrewData.search('BrewB fancy')
+				.then((result) => {
+					result.total.should.be.equal(1);
+					result.brews.should.containSubset(ids(['BrewB']));
+				});
+		});
+
+		it.skip('should be able to search for a specific system', ()=>{
 
 		});
-		it('should find brews based on title and/or description', () => {
-
-			//result.count.should.be.equal(2)
-			//result.brews.should.deep.include.members(ids(['BrewA', 'BrewB']);
-		});
-
-		it('should return the total number of brews and page info for query', ()=>{
+		it.skip('should be able to search for a specifc user', ()=>{
 
 		});
 	})
 
 	describe('Permissions', () => {
-		it('should only fetch published brews', () => {
+		it.skip('should only fetch published brews', () => {
 
 		});
-		it('fetched brews should not have text or editId', () => {
+		it.skip('fetched brews should not have text or editId', () => {
 
 		});
-		it('if admin, fetches also non-published brews, with editid', () => {
+		it.skip('if admin, fetches also non-published brews, with editid', () => {
 
 		});
-		it('if author, fetches also non-published brews, with editid', ()=>{
+		it.skip('if author, fetches also non-published brews, with editid', ()=>{
 
 		});
 	});
 
 	describe('Pagniation', () => {
-		it('should return the exact number of brews based on limit', () => {
+		it.skip('should return the exact number of brews based on limit', () => {
 
 		});
 
 	});
 
-	desscribe('Sorting', ()=>{
+	describe('Sorting', ()=>{
 
 	});
 

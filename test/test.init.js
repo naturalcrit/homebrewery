@@ -7,7 +7,11 @@ const config = require('nconf')
 	.file('environment', { file: `config/${process.env.NODE_ENV}.json` })
 	.file('defaults', { file: 'config/default.json' });
 
-const should = require('chai').use(require('chai-as-promised')).should();
+const should = require('chai')
+	.use(require('chai-as-promised'))
+	.use(require('chai-subset'))
+	.should();
+
 const log = require('loglevel');
 log.setLevel(config.get('log_level'));
 
