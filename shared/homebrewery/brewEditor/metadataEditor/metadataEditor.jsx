@@ -74,6 +74,7 @@ const MetadataEditor = React.createClass({
 	},
 
 	renderPublish : function(){
+		//TODO: Move the publish element into here
 		if(this.props.metadata.published){
 			return <button className='unpublish' onClick={this.handlePublish.bind(null, false)}>
 				<i className='fa fa-ban' /> unpublish
