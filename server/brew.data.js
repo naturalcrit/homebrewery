@@ -14,6 +14,7 @@ const BrewSchema = mongoose.Schema({
 	title       : {type : String, default : ""},
 	description : {type : String, default : ""},
 	tags        : {type : String, default : ""},
+	thumbnail   : {type : String, default : ""},
 	systems     : [String],
 	authors     : [String],
 	published   : {type : Boolean, default : false},
