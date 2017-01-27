@@ -7,14 +7,17 @@ const config = require('nconf')
 	.file('environment', { file: `config/${process.env.NODE_ENV}.json` })
 	.file('defaults', { file: 'config/default.json' });
 
-const should = require('chai')
+const Chai = require('chai')
 	.use(require('chai-as-promised'))
-	.use(require('chai-subset'))
-	.should();
+	.use(require('chai-subset'));
 
 const log = require('loglevel');
 log.setLevel(config.get('log_level'));
 
+//TODO: extend should to have a brewCheck
+//  eg. result.brews.should.haveBrews('BrewA', 'BrewB')
+// Then can remove chai-subset
+
 module.exports = {
-	should: should
+	should: Chai.should()
 };

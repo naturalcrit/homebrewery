@@ -1,4 +1,4 @@
-const testing = require('./test.init.js');
+const Test = require('./test.init.js');
 const _ = require('lodash');
 
 const DB = require('db.js');
@@ -15,7 +15,7 @@ const ids = (brewIds) => {
 //TODO: Move this brew generator to test.init
 const brews = {
 	BrewA : {
-		title : 'BrewA',
+		title : 'Brew-Alpha',
 		description : 'fancy',
 		authors : ['userA'],
 		systems : [],
@@ -23,7 +23,7 @@ const brews = {
 		published : false
 	},
 	BrewB : {
-		title : 'BrewB',
+		title : 'Brew-Beta',
 		description : 'very fancy',
 		authors : ['userA'],
 		systems : [],
@@ -31,7 +31,7 @@ const brews = {
 		published : true
 	},
 	BrewC : {
-		title : 'BrewC',
+		title : 'Brew-Charlie',
 		description : 'test',
 		authors : ['userA', 'userB'],
 		systems : [],
@@ -39,7 +39,7 @@ const brews = {
 		published : false
 	},
 	BrewD : {
-		title : 'BrewD',
+		title : 'Brew-Delta',
 		description : 'test super amazing brew for 5e. Geared for Rangers.',
 		authors : ['userC'],
 		systems : [],
@@ -119,7 +119,7 @@ describe('Brew Search', () => {
 
 	describe('Term Search', ()=>{
 		it('should search brews based on title', () => {
-			return BrewData.termSearch('BrewC')
+			return BrewData.termSearch('Charlie')
 				.then((result) => {
 					result.total.should.be.equal(1);
 					result.brews.should.containSubset(ids(['BrewC']));
@@ -143,18 +143,21 @@ describe('Brew Search', () => {
 		});
 
 		it('should perform an AND operation on the provided terms', () => {
-			return BrewData.termSearch('BrewD GARBAGE')
+			return BrewData.termSearch('Brew Delta GARBAGE')
 				.then((result) => {
 					result.total.should.be.equal(0);
 				});
 		});
 
 		it('should search brews based on a combination of both', () => {
-			return BrewData.termSearch('BrewB fancy')
+			return BrewData.termSearch('Brew Beta fancy')
 				.then((result) => {
 					result.total.should.be.equal(1);
 					result.brews.should.containSubset(ids(['BrewB']));
 				});
+		});
+		it.skip('should not worry about the case of the terms', () => {
+
 		});
 	});
 
