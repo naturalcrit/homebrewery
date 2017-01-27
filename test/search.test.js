@@ -11,11 +11,13 @@ const ids = (brewIds) => {
 	});
 }
 
+
+//TODO: Move this brew generator to test.init
 const brews = {
 	BrewA : {
 		title : 'BrewA',
 		description : 'fancy',
-		authors : [],
+		authors : ['userA'],
 		systems : [],
 		views   : 12,
 		published : false
@@ -23,7 +25,7 @@ const brews = {
 	BrewB : {
 		title : 'BrewB',
 		description : 'very fancy',
-		authors : [],
+		authors : ['userA'],
 		systems : [],
 		views   : 7,
 		published : true
@@ -31,7 +33,7 @@ const brews = {
 	BrewC : {
 		title : 'BrewC',
 		description : 'test',
-		authors : [],
+		authors : ['userA', 'userB'],
 		systems : [],
 		views   : 0,
 		published : false
@@ -39,7 +41,7 @@ const brews = {
 	BrewD : {
 		title : 'BrewD',
 		description : 'test super amazing brew for 5e. Geared for Rangers.',
-		authors : [],
+		authors : ['userC'],
 		systems : [],
 		views   : 1,
 		published : true
@@ -58,6 +60,10 @@ describe('Brew Search', () => {
 
 
 	describe('Searching', ()=>{
+		it.skip('should return a total and a brew array', ()=>{
+
+		});
+
 		it('should be able to search for all brews', ()=>{
 			return BrewData.search()
 				.then((result) => {
@@ -65,52 +71,34 @@ describe('Brew Search', () => {
 					result.brews.length.should.be.equal(_.size(brews));
 				})
 		});
-		it('should search brews based on title', () => {
-			return BrewData.search('BrewC')
-				.then((result) => {
-					result.total.should.be.equal(1);
-					result.brews.should.containSubset(ids(['BrewC']));
-				})
-		});
+	});
 
-		it('should search brews based on description', () => {
-			return BrewData.search('fancy')
-				.then((result) => {
-					result.total.should.be.equal(2);
-					result.brews.should.containSubset(ids(['BrewA', 'BrewB']));
-				})
-		});
-
-		it('should search brews based on multiple terms', () => {
-			return BrewData.search('ranger 5e')
-				.then((result) => {
-						result.total.should.be.equal(1);
-						result.brews.should.containSubset(ids(['BrewD']));
-					})
-		});
-
-		it('should perform an AND operation on the provided terms', () => {
-			return BrewData.search('BrewD GARBAGE')
-				.then((result) => {
-					result.total.should.be.equal(0);
-				});
-		});
-
-		it('should search brews based on a combination of both', () => {
-			return BrewData.search('BrewB fancy')
-				.then((result) => {
-					result.total.should.be.equal(1);
-					result.brews.should.containSubset(ids(['BrewB']));
-				});
-		});
-
-		it.skip('should be able to search for a specific system', ()=>{
+	describe('Pagniation', () => {
+		it.skip('should return the exact number of brews based on limit', () => {
 
 		});
-		it.skip('should be able to search for a specifc user', ()=>{
+
+		it.skip('should return the correct pages when specified', () => {
 
 		});
-	})
+
+		it.skip('should return a partial list if on the last page', () => {
+
+		});
+
+	});
+
+	describe('Sorting', ()=>{
+		it.skip('should sort ASC', () => {
+
+		});
+		it.skip('should sort DESC', () => {
+
+		});
+		it.skip('should sort based on multiple fields', () => {
+
+		});
+	});
 
 	describe('Permissions', () => {
 		it.skip('should only fetch published brews', () => {
@@ -127,16 +115,62 @@ describe('Brew Search', () => {
 		});
 	});
 
-	describe('Pagniation', () => {
-		it.skip('should return the exact number of brews based on limit', () => {
 
+
+	describe('Term Search', ()=>{
+		it('should search brews based on title', () => {
+			return BrewData.termSearch('BrewC')
+				.then((result) => {
+					result.total.should.be.equal(1);
+					result.brews.should.containSubset(ids(['BrewC']));
+				})
 		});
 
+		it('should search brews based on description', () => {
+			return BrewData.termSearch('fancy')
+				.then((result) => {
+					result.total.should.be.equal(2);
+					result.brews.should.containSubset(ids(['BrewA', 'BrewB']));
+				})
+		});
+
+		it('should search brews based on multiple terms', () => {
+			return BrewData.termSearch('ranger 5e')
+				.then((result) => {
+						result.total.should.be.equal(1);
+						result.brews.should.containSubset(ids(['BrewD']));
+					})
+		});
+
+		it('should perform an AND operation on the provided terms', () => {
+			return BrewData.termSearch('BrewD GARBAGE')
+				.then((result) => {
+					result.total.should.be.equal(0);
+				});
+		});
+
+		it('should search brews based on a combination of both', () => {
+			return BrewData.termSearch('BrewB fancy')
+				.then((result) => {
+					result.total.should.be.equal(1);
+					result.brews.should.containSubset(ids(['BrewB']));
+				});
+		});
 	});
 
-	describe('Sorting', ()=>{
-
+	describe('User Search', ()=>{
+		it('should return brews just for a single user', () => {
+			return BrewData.userSearch('userA')
+				.then((result) => {
+					result.total.should.be.equal(3);
+					result.brews.should.containSubset(ids(['BrewA', 'BrewB', 'BrewC']));
+				});
+		});
+		it('should return nothing if provided a non-exsistent user', () => {
+			return BrewData.userSearch('userXYZ')
+				.then((result) => {
+					result.total.should.be.equal(0);
+				});
+		});
 	});
-
-
 });

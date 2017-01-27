@@ -47,5 +47,6 @@ return Promise.resolve()
 	})
 	.then(() => {
 		console.log(`\n Added ${randomBrews.length + specificBrews.length} brews.`);
+		return DB.close();
 	})
 	.catch(console.error);

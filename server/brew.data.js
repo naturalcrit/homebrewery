@@ -93,63 +93,8 @@ const BrewData = {
 	getByEdit : (editId) => {
 		return BrewData.get({ editId });
 	},
-
-
-	//TODO: Add a 'core search' which just takes a search object
-	//TODO: extend the core search with a user search and a term search
-	//TODO: break these functions off into a 'brew.search.js' file
-	//TODO: pagniation, sorting and full access should be an 'opts' param
-
-	search : (searchTerms, pagination, sorting, fullAccess = true) => {
-		let query = {};
-		if(searchTerms){
-			query = {$text: {
-				//Wrap terms in quots to perform an AND operator
-				$search: _.map(searchTerms.split(' '), (term)=>{
-					return `\"${term}\"`;
-				}).join(' '),
-				$caseSensitive : false
-			}};
-		}
-
-		pagination = _.defaults(pagination, {
-			limit : 25,
-			page  : 0
-		});
-		sorting = _.defaults(sorting, {
-			'views' : 1
-		});
-		let filter = {
-			//editId : 0,
-			text   : 0
-		};
-
-
-		if(!fullAccess){
-			filter.editId = 0;
-			query.published = false;
-		}
-
-		const searchQuery = Brew
-			.find(query)
-			.sort(sorting)
-			.select(filter)
-			.limit(pagination.limit)
-			.skip(pagination.page * pagination.limit)
-			.exec();
-
-		const countQuery = Brew.count(query).exec();
-
-		return Promise.all([searchQuery, countQuery])
-			.then((result) => {
-				return {
-					brews : result[0],
-					total : result[1]
-				}
-			});
-	},
-
-
 };
 
-module.exports = BrewData;
+const BrewSearch = require('./brew.search.js')(Brew);
+
+module.exports = _.merge(BrewData, BrewSearch);

@@ -111,4 +111,28 @@ describe('Brew API', () => {
 		});
 	});
 
+	describe('Search', () => {
+		it.skip('should be able to search for brews with given terms', ()=>{
+
+		});
+		it.skip('should exclude unpublished brews and have no editIdsh', ()=>{
+
+		});
+		it.skip('should sort the search', ()=>{
+
+		});
+		it.skip('should use pagniation on the search', ()=>{
+
+		});
+	});
+
+	describe('User', () => {
+		it.skip('should be able to query brews for a specific user', ()=>{
+
+		});
+		it.skip('should return full access to brews if loggedin user is queried user', ()=>{
+
+		});
+	});
+
 });

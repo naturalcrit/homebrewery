@@ -24,5 +24,13 @@ module.exports = {
 			);
 		});
 	},
+	close : ()=>{
+		return new Promise((resolve, reject) => {
+			mongoose.connection.close(()=>{
+				log.info('DB connection closed.');
+				return resolve();
+			});
+		});
+	},
 	instance : mongoose
 }
