@@ -8,14 +8,14 @@ module.exports = {
 	connect : ()=>{
 		return new Promise((resolve, reject)=>{
 			if(mongoose.connection.readyState == 1){
-				log.info('DB already connected');
+				log.warn('DB already connected');
 				return resolve();
 			}
 			mongoose.connect(dbPath,
 				(err) => {
 					if(err){
-						log.info('Error : Could not connect to a Mongo Database.');
-						log.info('        If you are running locally, make sure mongodb.exe is running.');
+						log.error('Error : Could not connect to a Mongo Database.');
+						log.error('        If you are running locally, make sure mongodb.exe is running.');
 						return reject(err);
 					}
 					log.info('DB connected.');
