@@ -9,14 +9,11 @@ const config = require('nconf')
 
 const Chai = require('chai')
 	.use(require('chai-as-promised'))
-	.use(require('chai-subset'));
+	.use(require('chai-subset'))
+	.use(require('./brew.gen.js').chaiPlugin);
 
 const log = require('loglevel');
 log.setLevel(config.get('log_level'));
-
-//TODO: extend should to have a brewCheck
-//  eg. result.brews.should.haveBrews('BrewA', 'BrewB')
-// Then can remove chai-subset
 
 module.exports = {
 	should: Chai.should()

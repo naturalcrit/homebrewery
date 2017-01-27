@@ -7,7 +7,7 @@
     "quick": "node scripts/quick.js",
     "build": "node scripts/build.js",
     "phb": "node scripts/phb.js",
-    "genbrews": "node scripts/genbrews.js",
+    "populate": "node scripts/populate.js",
     "prod": "set NODE_ENV=production&& npm run build",
     "postinstall": "npm run build",
     "start": "node server.js",
