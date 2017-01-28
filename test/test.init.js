@@ -7,10 +7,18 @@ const config = require('nconf')
 	.file('environment', { file: `config/${process.env.NODE_ENV}.json` })
 	.file('defaults', { file: 'config/default.json' });
 
-const should = require('chai').use(require('chai-as-promised')).should();
+const Chai = require('chai')
+	.use(require('chai-as-promised'))
+	.use(require('chai-subset'))
+	.use(require('./brew.gen.js').chaiPlugin);
+
 const log = require('loglevel');
 log.setLevel(config.get('log_level'));
 
+const jwt = require('jwt-simple');
 module.exports = {
-	should: should
+	should: Chai.should(),
+	getSessionToken : (userInfo) => {
+		return jwt.encode(userInfo, config.get('jwt_secret'));
+	}
 };

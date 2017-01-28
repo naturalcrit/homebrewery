@@ -52,6 +52,7 @@ const UserPage = React.createClass({
 
 	render : function(){
 		const brews = this.getSortedBrews();
+		console.log('user brews', brews);
 
 		return <div className='userPage page'>
 			<Navbar>

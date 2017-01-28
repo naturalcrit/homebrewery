@@ -1,39 +1,53 @@
-@import 'naturalcrit/styles/reset.less';
-@import 'naturalcrit/styles/elements.less';
-@import 'naturalcrit/styles/animations.less';
-@import 'naturalcrit/styles/colors.less';
-@import 'naturalcrit/styles/tooltip.less';
 
-@import 'font-awesome/css/font-awesome.css';
-
-html,body, #reactContainer, .naturalCrit{
+@import 'naturalcrit/styles/core.less';
+html,body, #reactRoot{
 	min-height : 100%;
 }
-
-@sidebarWidth : 250px;
-
 body{
-	background-color : #eee;
-	font-family      : 'Open Sans', sans-serif;
-	color            : #4b5055;
-	font-weight      : 100;
-	text-rendering   : optimizeLegibility;
+	height           : 100%;
 	margin           : 0;
 	padding          : 0;
-	height : 100%;
+	background-color : #ddd;
+	font-family      : 'Open Sans', sans-serif;
+	font-weight      : 100;
+	color            : #4b5055;
+	text-rendering   : optimizeLegibility;
 }
-
-.admin{
-
-	header{
+.admin {
+	nav {
 		background-color : @red;
-		font-size: 2em;
-		padding : 20px 0px;
-		color : white;
-		margin-bottom: 30px;
-		i{
-			margin-right: 30px;
+		.navItem{
+			background-color : @red;
+		}
+		.homebreweryLogo{
+			font-family : CodeBold;
+			font-size   : 12px;
+			color       : white;
+			div{
+				margin-top    : 2px;
+				margin-bottom : -2px;
+			}
 		}
 	}
-
+	h1{
+		margin-bottom : 10px;
+		font-size     : 2em;
+		font-weight   : 800;
+		border-bottom : 1px solid #ddd;
+	}
+	main.content{
+		width            : 1000px;
+		margin           : 0 auto;
+		padding          : 50px 20px;
+		background-color : white;
+		.dangerZone{
+			margin         : 30px 0px;
+			padding        : 10px 20px;
+			background     : repeating-linear-gradient(45deg, @yellow, @yellow 10px, darken(#333, 10%) 10px, darken(#333, 10%) 20px);
+			font-size      : 1em;
+			font-weight    : 800;
+			color          : white;
+			text-transform : uppercase;
+		}
+	}
 }

@@ -37,7 +37,6 @@ const Homebrew = React.createClass({
 			loginPath : this.props.loginPath
 		});
 
-
 		Router = CreateRouter({
 			'/edit/:id' : <EditPage />,
 			'/share/:id' : <SharePage />,

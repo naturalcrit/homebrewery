@@ -3,8 +3,7 @@ const _     = require('lodash');
 const cx    = require('classnames');
 
 const request = require('superagent');
-const Moment = require('moment');
-
+const BrewTable = require('../brewTable/brewTable.jsx');
 
 const BrewLookup = React.createClass({
 	getDefaultProps: function() {
@@ -16,7 +15,8 @@ const BrewLookup = React.createClass({
 		return {
 			query:'',
 			resultBrew : null,
-			searching : false
+			searching : false,
+			error : null
 		};
 	},
 
@@ -26,13 +26,14 @@ const BrewLookup = React.createClass({
 		})
 	},
 	lookup : function(){
-		this.setState({ searching : true });
+		this.setState({ searching : true, error : null });
 
 		request.get(`/admin/lookup/${this.state.query}`)
-			.query({ admin_key : this.props.adminKey })
+			.set('x-homebrew-admin', this.props.adminKey)
 			.end((err, res) => {
 				this.setState({
 					searching : false,
+					error : err && err.toString(),
 					resultBrew : (err ? null : res.body)
 				});
 			})
@@ -42,14 +43,31 @@ const BrewLookup = React.createClass({
 		if(this.state.searching) return <div className='searching'><i className='fa fa-spin fa-spinner' /></div>;
 		if(!this.state.resultBrew) return <div className='noBrew'>No brew found.</div>;
 
+		return <BrewTable brews={[this.state.resultBrew ]} />
+
+		/*
 		const brew = this.state.resultBrew;
 		return <div className='brewRow'>
 			<div>{brew.title}</div>
 			<div>{brew.authors.join(', ')}</div>
-			<div><a href={'/edit/' + brew.editId} target='_blank'>/edit/{brew.editId}</a></div>
-			<div><a href={'/share/' + brew.shareId} target='_blank'>/share/{brew.shareId}</a></div>
+			<div><a href={'/edit/' + brew.editId} target='_blank'>{brew.editId}</a></div>
+			<div><a href={'/share/' + brew.shareId} target='_blank'>{brew.shareId}</a></div>
 			<div>{Moment(brew.updatedAt).fromNow()}</div>
 			<div>{brew.views}</div>
+			<div>
+				<div className='deleteButton'>
+					<i className='fa fa-trash' />
+				</div>
+			</div>
+		</div>
+		*/
+	},
+
+	renderError : function(){
+		if(!this.state.error) return;
+
+		return <div className='error'>
+			{this.state.error}
 		</div>
 	},
 
@@ -60,6 +78,7 @@ const BrewLookup = React.createClass({
 			<button onClick={this.lookup}><i className='fa fa-search'/></button>
 
 			{this.renderFoundBrew()}
+			{this.renderError()}
 		</div>
 	}
 });
