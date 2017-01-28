@@ -46,11 +46,8 @@ router.delete('/admin/invalid', mw.adminOnly, (req, res, next)=>{
 });
 
 router.get('/admin/lookup/:search', mw.adminOnly, (req, res, next) => {
-	//search for mathcing edit id
-	//search for matching share id
-	// search for partial match
-
 	BrewData.get({ $or:[
+			//Searches for partial matches on either edit or share
 			{editId : { "$regex": req.params.search, "$options": "i" }},
 			{shareId : { "$regex": req.params.search, "$options": "i" }},
 		]})

@@ -15,7 +15,8 @@ const BrewLookup = React.createClass({
 		return {
 			query:'',
 			resultBrew : null,
-			searching : false
+			searching : false,
+			error : null
 		};
 	},
 
@@ -25,13 +26,14 @@ const BrewLookup = React.createClass({
 		})
 	},
 	lookup : function(){
-		this.setState({ searching : true });
+		this.setState({ searching : true, error : null });
 
 		request.get(`/admin/lookup/${this.state.query}`)
-			.query({ admin_key : this.props.adminKey })
+			.set('x-homebrew-admin', this.props.adminKey)
 			.end((err, res) => {
 				this.setState({
 					searching : false,
+					error : err && err.toString(),
 					resultBrew : (err ? null : res.body)
 				});
 			})
@@ -43,6 +45,7 @@ const BrewLookup = React.createClass({
 
 		return <BrewTable brews={[this.state.resultBrew ]} />
 
+		/*
 		const brew = this.state.resultBrew;
 		return <div className='brewRow'>
 			<div>{brew.title}</div>
@@ -57,6 +60,15 @@ const BrewLookup = React.createClass({
 				</div>
 			</div>
 		</div>
+		*/
+	},
+
+	renderError : function(){
+		if(!this.state.error) return;
+
+		return <div className='error'>
+			{this.state.error}
+		</div>
 	},
 
 	render: function(){
@@ -66,6 +78,7 @@ const BrewLookup = React.createClass({
 			<button onClick={this.lookup}><i className='fa fa-search'/></button>
 
 			{this.renderFoundBrew()}
+			{this.renderError()}
 		</div>
 	}
 });

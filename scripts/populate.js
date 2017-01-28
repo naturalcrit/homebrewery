@@ -10,11 +10,11 @@ return Promise.resolve()
 	.then(BrewData.removeAll)
 	.then(() => {
 		console.log('Adding random brews...');
-		return return BrewGen.populateDB(BrewGen.random(5));
+		return BrewGen.populateDB(BrewGen.random(50));
 	})
 	.then(() => {
 		console.log('Adding specific brews...');
-		return return BrewGen.populateDB(BrewGen.static());
+		return BrewGen.populateDB(BrewGen.static());
 	})
 	.then(() => {
 		return DB.close();
