@@ -15,8 +15,6 @@ const requestHandler = (req, res) => {
 };
 
 
-console.log(config.get('admin:key'));
-
 const test_user = {
 	username : 'cool guy'
 };
@@ -106,7 +104,7 @@ describe('Middleware', () => {
 			app.use(mw.admin);
 			app.use(requestHandler)
 			return request(app).get('/')
-				.query({ admin_key : config.get('admin:key') })
+				.set('x-homebrew-admin', config.get('admin:key'))
 				.expect(200)
 				.then((res) => {
 					const req = res.body;
@@ -119,7 +117,7 @@ describe('Middleware', () => {
 			app.get(requestHandler);
 			app.use(Error.expressHandler);
 			return request(app).get('/')
-				.query({ admin_key : 'BADUSER' })
+				.set('x-homebrew-admin', 'BADADMIN')
 				.send()
 				.expect(401);
 		});

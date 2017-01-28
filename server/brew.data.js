@@ -21,7 +21,8 @@ const BrewSchema = mongoose.Schema({
 	createdAt  : { type: Date, default: Date.now },
 	updatedAt  : { type: Date, default: Date.now},
 	lastViewed : { type: Date, default: Date.now},
-	views      : {type:Number, default:0}
+	views      : {type:Number, default:0},
+	version    : {type: Number, default:1}
 }, {
 	versionKey: false,
 	toJSON : {
@@ -32,6 +33,9 @@ const BrewSchema = mongoose.Schema({
 	}
 });
 
+//Index these fields for fast text searching
+BrewSchema.index({ title: "text", description: "text" });
+
 BrewSchema.methods.increaseView = function(){
 	this.views = this.views + 1;
 	return this.save();
@@ -39,9 +43,6 @@ BrewSchema.methods.increaseView = function(){
 
 
 const Brew = mongoose.model('Brew', BrewSchema);
-
-
-
 const BrewData = {
 	schema : BrewSchema,
 	model  : Brew,
@@ -92,15 +93,8 @@ const BrewData = {
 	getByEdit : (editId) => {
 		return BrewData.get({ editId });
 	},
-
-	search : (query, req={}) => {
-		//defaults with page and count
-		//returns a non-text version of brews
-		//assume sanatized ?
-		return Promise.resolve([]);
-	},
-
-
 };
 
-module.exports = BrewData;
+const BrewSearch = require('./brew.search.js')(Brew);
+
+module.exports = _.merge(BrewData, BrewSearch);

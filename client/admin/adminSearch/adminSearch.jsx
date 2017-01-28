@@ -11,7 +11,7 @@ const AdminSearch = React.createClass({
 	},
 	render: function(){
 		return <div className='adminSearch'>
-			AdminSearch Component Ready.
+			<h1>Admin Search</h1>
 		</div>
 	}
 });

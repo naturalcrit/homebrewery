@@ -6,10 +6,25 @@ const mw = require('./middleware.js');
 
 //Search
 router.get('/api/brew', (req, res, next) => {
+	const opts = _.pick(req.query, ['limit', 'sort', 'page']);
 
-	//TODO
+	BrewData.termSearch(req.query.terms, opts, req.admin)
+		.then((result) => {
+			return res.status(200).json(result);
+		})
+		.catch(next);
+});
 
+//User
+router.get('/api/user/:username', (req, res, next) => {
+	const fullAccess = req.admin ||
+		!!(req.account && req.params.username == req.account.username);
 
+	BrewData.userSearch(req.params.username, fullAccess)
+		.then((result) => {
+			return res.status(200).json(result);
+		})
+		.catch(next);
 });
 
 //Get
