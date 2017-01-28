@@ -15,6 +15,10 @@ const Chai = require('chai')
 const log = require('loglevel');
 log.setLevel(config.get('log_level'));
 
+const jwt = require('jwt-simple');
 module.exports = {
-	should: Chai.should()
+	should: Chai.should(),
+	getSessionToken : (userInfo) => {
+		return jwt.encode(userInfo, config.get('jwt_secret'));
+	}
 };

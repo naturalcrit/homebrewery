@@ -56,6 +56,7 @@ module.exports = {
 	},
 
 	populateDB : (brewCollection)=>{
+		PopulatedBrews = {};
 		return Promise.all(_.map(brewCollection, (brewData, id) => {
 			return BrewData.create(brewData)
 				.then((brew)=>{
@@ -72,8 +73,7 @@ module.exports = {
 				const storedBrew = PopulatedBrews[brewId];
 				if(!storedBrew) return false;
 				return _.some(this._obj, (brew)=>{
-					return brew.editId == storedBrew.editId &&
-						brew.shareId == storedBrew.shareId &&
+					return brew.shareId == storedBrew.shareId &&
 						brew.title == storedBrew.title &&
 						brew.views == storedBrew.views;
 				});

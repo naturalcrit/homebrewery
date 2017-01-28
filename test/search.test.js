@@ -17,8 +17,12 @@ describe('Brew Search', () => {
 
 
 	describe('Searching', ()=>{
-		it.skip('should return a total and a brew array', ()=>{
-
+		it('should return a total and a brew array', ()=>{
+			return BrewData.search()
+				.then((result) => {
+					result.total.should.be.a('number');
+					result.brews.should.be.an('array');
+				})
 		});
 
 		it('should be able to search for all brews', ()=>{
@@ -32,16 +36,35 @@ describe('Brew Search', () => {
 	});
 
 	describe('Pagniation', () => {
-		it.skip('should return the exact number of brews based on limit', () => {
-
+		it('should return the exact number of brews based on limit', () => {
+			return BrewData.search({}, {
+					limit : 2
+				})
+				.then((result) => {
+					result.total.should.be.equal(_.size(BrewGen.static()));
+					result.brews.length.should.be.equal(2);
+				})
 		});
 
-		it.skip('should return the correct pages when specified', () => {
-
+		it('should return the correct pages when specified', () => {
+			return BrewData.search({}, {
+					limit : 2,
+					page : 1,
+					sort : { views : 1 }
+				})
+				.then((result) => {
+					result.brews.should.have.brews('BrewA', 'BrewB');
+				})
 		});
 
-		it.skip('should return a partial list if on the last page', () => {
-
+		it('should return a partial list if on the last page', () => {
+			return BrewData.search({}, {
+					limit : 3,
+					page : 1
+				})
+				.then((result) => {
+					result.brews.length.should.be.equal(1);
+				});
 		});
 
 	});
@@ -59,17 +82,26 @@ describe('Brew Search', () => {
 	});
 
 	describe('Permissions', () => {
-		it.skip('should only fetch published brews', () => {
-
+		it('should only fetch published brews', () => {
+			return BrewData.search({}, {}, false)
+				.then((result) => {
+					result.total.should.be.equal(2);
+					result.brews.should.have.brews('BrewB', 'BrewD');
+				})
 		});
-		it.skip('fetched brews should not have text or editId', () => {
-
+		it('fetched brews should not have text or editId', () => {
+			return BrewData.search({}, {}, false)
+				.then((result) => {
+					result.brews[0].should.not.have.property('text');
+					result.brews[0].should.not.have.property('editId');
+				})
 		});
-		it.skip('if admin, fetches also non-published brews, with editid', () => {
-
-		});
-		it.skip('if author, fetches also non-published brews, with editid', ()=>{
-
+		it('if full access, brews should have editid, but no text', () => {
+			return BrewData.search({}, {}, true)
+				.then((result) => {
+					result.brews[0].should.not.have.property('text');
+					result.brews[0].should.have.property('editId');
+				})
 		});
 	});
 

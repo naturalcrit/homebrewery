@@ -1,6 +1,6 @@
-const testing = require('./test.init.js');
+const Test = require('./test.init.js');
 const request = require('supertest-as-promised');
-const jwt = require('jwt-simple');
+
 const config = require('nconf');
 
 const app = require('app.js');
@@ -24,7 +24,7 @@ describe('Brew API', () => {
 	before('Connect DB', DB.connect);
 	before('Clear DB', BrewData.removeAll);
 	before('Create session token', () => {
-		session_token = jwt.encode(test_user, config.get('jwt_secret'));
+		session_token = Test.getSessionToken(test_user);
 	});
 	before('Create brew', ()=>{
 		return BrewData.create(storedBrew)

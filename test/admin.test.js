@@ -15,6 +15,7 @@ let brewA = {
 	authors : ['your_dm']
 };
 
+
 describe('Admin API', ()=>{
 	before('Connect DB', DB.connect);
 
@@ -35,7 +36,7 @@ describe('Admin API', ()=>{
 		it('looks up a brew based on the share id', () => {
 			return request(app)
 				.get(`/admin/lookup/${brewA.shareId}`)
-				.query({ admin_key : config.get('admin:key') })
+				.set('x-homebrew-admin', config.get('admin:key'))
 				.expect(200)
 				.then((res) => {
 					const brew = res.body;
@@ -47,7 +48,7 @@ describe('Admin API', ()=>{
 		it('looks up a brew based on the edit id', () => {
 			return request(app)
 				.get(`/admin/lookup/${brewA.editId}`)
-				.query({ admin_key : config.get('admin:key') })
+				.set('x-homebrew-admin', config.get('admin:key'))
 				.expect(200)
 				.then((res) => {
 					const brew = res.body;
@@ -60,7 +61,7 @@ describe('Admin API', ()=>{
 			const query = brewA.editId.substring(0, brewA.editId.length -2);
 			return request(app)
 				.get(`/admin/lookup/${query}`)
-				.query({ admin_key : config.get('admin:key') })
+				.set('x-homebrew-admin', config.get('admin:key'))
 				.expect(200)
 				.then((res) => {
 					const brew = res.body;
@@ -72,7 +73,7 @@ describe('Admin API', ()=>{
 		it('throws an error if it can not find a brew', ()=>{
 			return request(app)
 				.get(`/admin/lookup/BADID`)
-				.query({ admin_key : config.get('admin:key') })
+				.set('x-homebrew-admin', config.get('admin:key'))
 				.expect(404);
 		});
 	});

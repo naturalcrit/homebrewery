@@ -21,29 +21,31 @@ module.exports = (Brew) => {
 			return cmds.search(query, opts, fullAccess);
 		},
 
-		search : (queryObj={}, opts={}, fullAccess = true) => {
-			const pagination = _.defaults(opts.pagination, {
+		search : (queryObj={}, options={}, fullAccess = true) => {
+			const opts = _.merge({
 				limit : 25,
-				page  : 0
-			});
-			const sorting = _.defaults(opts.sorting, {
-				'views' : 1
-			});
+				page  : 0,
+				sort : {}
+			}, options);
+
 			let filter = {
 				text : 0
 			};
+
 			if(!fullAccess){
 				filter.editId = 0;
-				queryObj.published = false;
+				queryObj.published = true;
 			}
 
 			const searchQuery = Brew
 				.find(queryObj)
-				.sort(sorting)
+				.sort(opts.sort)
 				.select(filter)
-				.limit(pagination.limit)
-				.skip(pagination.page * pagination.limit)
+				.limit(opts.limit)
+				.skip(opts.page * opts.limit)
+				.lean()
 				.exec();
+
 			const countQuery = Brew.count(queryObj).exec();
 
 			return Promise.all([searchQuery, countQuery])

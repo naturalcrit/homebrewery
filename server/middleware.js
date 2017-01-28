@@ -16,7 +16,7 @@ const Middleware = {
 		return next();
 	},
 	admin : (req, res, next) => {
-		if(req.query.admin_key === config.get('admin:key')){
+		if(req.headers['x-homebrew-admin'] === config.get('admin:key')){
 			req.admin = true;
 		}
 		return next();
