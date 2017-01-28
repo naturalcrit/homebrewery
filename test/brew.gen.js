@@ -4,6 +4,8 @@ const BrewData = require('../server/brew.data.js');
 let PopulatedBrews = {};
 
 module.exports = {
+	//TODO: Add in a generator for old brews to test the old rendering code
+
 	random : (num = 20)=>{
 		return _.times(num, ()=>{
 			//TODO: Build better generator
@@ -66,6 +68,10 @@ module.exports = {
 		);
 	},
 
+	get : (brewId) => {
+		return PopulatedBrews[brewId]
+	},
+
 	chaiPlugin : (chai, utils) => {
 		chai.Assertion.addMethod('brews', function(...brewIds){
 			new chai.Assertion(this._obj).to.be.instanceof(Array);
@@ -82,6 +88,23 @@ module.exports = {
 				valid,
 				`expect #{this} to have brews ${brewIds.join(', ')}`,
 				`expect #{this} to not have brews ${brewIds.join(', ')}`
+			)
+		});
+
+		chai.Assertion.addMethod('brew', function(brewId){
+			new chai.Assertion(this._obj).to.be.instanceof(Object);
+			const brew = this._obj;
+			const storedBrew = PopulatedBrews[brewId];
+
+			const valid = storedBrew &&
+					brew.shareId == storedBrew.shareId &&
+					brew.title == storedBrew.title &&
+					brew.views == storedBrew.views;
+
+			this.assert(
+				valid,
+				`expect #{this} to be brew ${brewId}`,
+				`expect #{this} to not be brew ${brewId}`
 			)
 		});
 	}

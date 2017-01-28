@@ -16,6 +16,7 @@ const Middleware = {
 		return next();
 	},
 	admin : (req, res, next) => {
+		req.admin = false;
 		if(req.headers['x-homebrew-admin'] === config.get('admin:key')){
 			req.admin = true;
 		}
@@ -44,6 +45,7 @@ const Middleware = {
 	},
 
 
+	//TODO: REMOVE
 	//Loaders
 	loadBrew : (req, res, next) => {
 		BrewData.getByEdit(req.params.editId)

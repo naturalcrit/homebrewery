@@ -70,14 +70,27 @@ describe('Brew Search', () => {
 	});
 
 	describe('Sorting', ()=>{
-		it.skip('should sort ASC', () => {
-
+		it('should sort ASC', () => {
+			return BrewData.search({}, {
+					sort : { views : 1 }
+				})
+				.then((result) => {
+					result.brews[0].should.be.brew('BrewC');
+					result.brews[1].should.be.brew('BrewD');
+					result.brews[2].should.be.brew('BrewB');
+					result.brews[3].should.be.brew('BrewA');
+				})
 		});
-		it.skip('should sort DESC', () => {
-
-		});
-		it.skip('should sort based on multiple fields', () => {
-
+		it('should sort DESC', () => {
+			return BrewData.search({}, {
+					sort : { views : -1 }
+				})
+				.then((result) => {
+					result.brews[0].should.be.brew('BrewA');
+					result.brews[1].should.be.brew('BrewB');
+					result.brews[2].should.be.brew('BrewD');
+					result.brews[3].should.be.brew('BrewC');
+				})
 		});
 	});
 
@@ -146,8 +159,12 @@ describe('Brew Search', () => {
 					result.brews.should.have.brews('BrewB');
 				});
 		});
-		it.skip('should not worry about the case of the terms', () => {
-
+		it('should not worry about the case of the terms', () => {
+			return BrewData.termSearch('FANCY')
+				.then((result) => {
+					result.total.should.be.equal(2);
+					result.brews.should.have.brews('BrewA', 'BrewB');
+				});
 		});
 	});
 

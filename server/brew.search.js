@@ -3,30 +3,35 @@ const _ = require('lodash');
 module.exports = (Brew) => {
 	const cmds = {
 		termSearch : (terms='', opts, fullAccess) => {
-			const query = {$text: {
-				//Wrap terms in quotes to perform an AND operation
-				$search: _.map(terms.split(' '), (term)=>{
-					return `\"${term}\"`;
-				}).join(' '),
-				$caseSensitive : false
-			}};
+			let query = {};
+			if(terms){
+				query = {$text: {
+					//Wrap terms in quotes to perform an AND operation
+					$search: _.map(terms.split(' '), (term)=>{
+						return `\"${term}\"`;
+					}).join(' '),
+					$caseSensitive : false
+				}};
+			}
 			return cmds.search(query, opts, fullAccess);
 		},
 
-		userSearch : (username, opts, fullAccess) => {
+		userSearch : (username, fullAccess) => {
 			const query = {
 				authors : username
 			};
 
-			return cmds.search(query, opts, fullAccess);
+			return cmds.search(query, {}, fullAccess);
 		},
 
 		search : (queryObj={}, options={}, fullAccess = true) => {
 			const opts = _.merge({
 				limit : 25,
 				page  : 0,
-				sort : {}
+				sort  : {}
 			}, options);
+			opts.limit = _.toNumber(opts.limit);
+			opts.page = _.toNumber(opts.page);
 
 			let filter = {
 				text : 0
