@@ -33,7 +33,7 @@ const ContinousSave = React.createClass({
 		window.onbeforeunload = function(){};
 	},
 	actionHandler : function(actionType){
-		if(actionType == 'UPDATE_BREW_TEXT' || actionType == 'UPDATE_META'){
+		if(actionType == 'UPDATE_BREW_CODE' || actionType == 'UPDATE_META' || actionType == 'UPDATE_BREW_STYLE'){
 			Actions.pendingSave();
 		}
 	},

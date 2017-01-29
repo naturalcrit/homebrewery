@@ -4,7 +4,8 @@ const BrewRenderer = require('./brewRenderer.jsx');
 
 module.exports = Store.createSmartComponent(BrewRenderer, () => {
 	return {
-		brewText : Store.getBrewText(),
+		value : Store.getBrewCode(),
+		style : Store.getBrewStyle(),
 		errors : Store.getErrors()
 	}
 });

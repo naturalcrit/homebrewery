@@ -54,10 +54,13 @@ const Actions = {
 	setBrew : (brew) => {
 		dispatch('SET_BREW', brew);
 	},
-	updateBrewText : (brewText) => {
-		dispatch('UPDATE_BREW_TEXT', brewText)
+	updateBrewCode : (brewCode) => {
+		dispatch('UPDATE_BREW_CODE', brewCode)
 	},
-	updateMetaData : (meta) => {
+	updateBrewStyle : (style) => {
+		dispatch('UPDATE_BREW_STYLE', style)
+	},
+	updateMetadata : (meta) => {
 		dispatch('UPDATE_META', meta);
 	},
 	pendingSave : () => {
