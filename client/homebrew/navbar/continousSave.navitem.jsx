@@ -51,6 +51,9 @@ const ContinousSave = React.createClass({
 			Oops!
 			<div className='errorContainer'>
 				Looks like there was a problem saving. <br />
+				Back up your brew in a text file, just in case.
+				<br /><br />
+
 				Report the issue <a target='_blank' href={'https://github.com/stolksdorf/naturalcrit/issues/new?body='+ encodeURIComponent(errMsg)}>
 					here
 				</a>.
