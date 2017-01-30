@@ -15,12 +15,13 @@ const PPR_THRESHOLD = 50;
 const BrewRenderer = React.createClass({
 	getDefaultProps: function() {
 		return {
-			brewText : '',
+			value : '',
+			style : '',
 			errors : []
 		};
 	},
 	getInitialState: function() {
-		const pages = this.props.brewText.split('\\page');
+		const pages = this.props.value.split('\\page');
 
 		return {
 			viewablePageNumber: 0,
@@ -45,7 +46,7 @@ const BrewRenderer = React.createClass({
 	componentWillReceiveProps: function(nextProps) {
 		if(this.refs.pages && this.refs.pages.firstChild) this.pageHeight = this.refs.pages.firstChild.clientHeight;
 
-		const pages = nextProps.brewText.split('\\page');
+		const pages = nextProps.value.split('\\page');
 		this.setState({
 			pages : pages,
 			usePPR : pages.length >= PPR_THRESHOLD
@@ -124,6 +125,10 @@ const BrewRenderer = React.createClass({
 		return this.lastRender;
 	},
 
+	renderStyle : function(){
+
+	},
+
 	render : function(){
 		return <div className='brewRenderer'
 			onScroll={this.handleScroll}
@@ -133,6 +138,8 @@ const BrewRenderer = React.createClass({
 			<ErrorBar errors={this.props.errors} />
 			<RenderWarnings />
 
+
+			<style>{this.props.style}</style>
 			<div className='pages' ref='pages'>
 				{this.renderPages()}
 			</div>

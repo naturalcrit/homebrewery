@@ -1,0 +1,35 @@
+
+.menubar{
+	@menuHeight      : 25px;
+	position         : relative;
+	height           : @menuHeight;
+	background-color : #ddd;
+	.editors{
+		position        : absolute;
+		display         : flex;
+		top             : 0px;
+		right           : 0px;
+		height          : @menuHeight;
+		width           : 90px;
+		justify-content : space-between;
+		&>div{
+			height      : @menuHeight;
+			width       : @menuHeight;
+			cursor      : pointer;
+			line-height : @menuHeight;
+			text-align  : center;
+			&:hover,&.selected{
+				background-color : #999;
+			}
+			&.code{
+				.tooltipLeft('Brew Editor');
+			}
+			&.style{
+				.tooltipLeft('Style Editor');
+			}
+			&.meta{
+				.tooltipLeft('Metadata');
+			}
+		}
+	}
+}

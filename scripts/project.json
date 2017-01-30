@@ -10,6 +10,7 @@
 		"codemirror",
 		"codemirror/mode/gfm/gfm.js",
 		"codemirror/mode/javascript/javascript.js",
+		"codemirror/mode/css/css.js",
 		"moment",
 		"superagent",
 		"marked",
