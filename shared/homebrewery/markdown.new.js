@@ -29,17 +29,17 @@ module.exports = {
 		const renderer = new Markdown.Renderer();
 		renderer.paragraph = function (text) {
 			const matches = text.match(blockReg);
-			if(!matches) return `<p>${text}</p>\n`;
+			if(!matches) return `\n<p>${text}</p>\n`;
 			let matchIndex = 0;
 			const res =  _.reduce(text.split(blockReg), (r, text) => {
-				if(text) r.push(`<p>${text}</p>\n`);
+				if(text) r.push(`\n<p>${text}</p>\n`);
 				const block = matches[matchIndex];
 				if(block && _.startsWith(block, '{{')){
-					r.push(`<div class="${block.substring(2).split(',').join(' ')}">`);
+					r.push(`\n\n<div class="${block.substring(2).split(',').join(' ')}">`);
 					count++;
 				}
 				if(block == '}}' && count !== 0){
-					r.push('</div>');
+					r.push('</div>\n\n');
 					count--;
 				}
 				matchIndex++;

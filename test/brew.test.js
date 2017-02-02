@@ -89,6 +89,9 @@ describe('Brew Data', () => {
 				brew.should.have.property('title').equal('Actual Title');
 			});
 		});
+		it.skip('should work with "# title"', ()=>{
+
+		});
 		it('should use the first header found if no title provided', () => {
 			return BrewData.create({
 				text : 'Not this \n # But This'
