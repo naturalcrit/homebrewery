@@ -198,6 +198,10 @@ body {
 	pre+blockquote, h2+blockquote, h3+blockquote, h4+blockquote, h5+blockquote {
 		margin-top : 13px;
 	}
+	//If a note follows a heading (2-6), give it space at the top to prevent the border overlapping the heading
+	h2+blockquote, h3+blockquote, h4+blockquote, h5+blockquote, h6+blockquote {
+		margin-top:1em;
+	}
 	//*****************************
 	// *    MONSTER STAT BLOCK
 	// *****************************/
