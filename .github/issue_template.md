@@ -1,16 +1,5 @@
+Share link to issue brew: http://homebrewery.naturalcrit.com/share/XXXXXXX
 
 
 
 
-
-### Additional Details
-
-**Share Link** :
-
-or
-
-**Brew code to reproduce** : <details><summary>Click to expand</summary><code><pre>
-
-PASTE BREW CODE HERE
-
-</pre></code></details>
