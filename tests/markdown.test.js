@@ -1,6 +1,6 @@
 const testing = require('./test.init.js');
 
-const Markdown = require('../shared/homebrewery/markdown.new.js');
+const Markdown = require('../shared/homebrewery/markdown.js');
 
 describe('Markdown', ()=>{
 

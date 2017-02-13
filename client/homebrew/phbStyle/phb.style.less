@@ -10,12 +10,11 @@
 @horizontalRule        : #9c2b1b;
 @headerText            : #58180D;
 @monsterStatBackground : #FDF1DC;
+
 @page { margin: 0; }
+
 body {
-	counter-reset : phb-page-numbers;
-}
-*{
-	-webkit-print-color-adjust : exact;
+	counter-reset : old-phb-page-numbers;
 }
 .useSansSerif(){
 	font-family : ScalySans;
@@ -42,8 +41,11 @@ body {
 	-moz-column-gap      : 1cm;
 }
 .phb{
+	& *{
+		-webkit-print-color-adjust : exact;
+	}
 	.useColumns();
-	counter-increment : phb-page-numbers;
+	counter-increment : old-phb-page-numbers;
 	position          : relative;
 	z-index           : 15;
 	box-sizing        : border-box;
@@ -299,7 +301,7 @@ body {
 		color      : #c9ad6a;
 		text-align : center;
 		&.auto::after {
-			content : counter(phb-page-numbers);
+			content : counter(old-phb-page-numbers);
 		}
 	}
 	.footnote{

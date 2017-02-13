@@ -2,6 +2,8 @@ const React = require('react');
 const _ = require('lodash');
 const cx = require('classnames');
 
+const OldBrewRenderer = require('depricated/brewRendererOld/brewRendererOld.jsx');
+
 const Markdown = require('homebrewery/markdown.js');
 const ErrorBar = require('./errorBar/errorBar.jsx');
 
@@ -15,13 +17,18 @@ const PPR_THRESHOLD = 50;
 const BrewRenderer = React.createClass({
 	getDefaultProps: function() {
 		return {
-			value : '',
-			style : '',
+			brew : {
+				text : '',
+				style : ''
+			},
+
+
+			//TODO: maybe remove?
 			errors : []
 		};
 	},
 	getInitialState: function() {
-		const pages = this.props.value.split('\\page');
+		const pages = this.props.brew.text.split('\\page');
 
 		return {
 			viewablePageNumber: 0,
@@ -37,16 +44,16 @@ const BrewRenderer = React.createClass({
 
 	componentDidMount: function() {
 		this.updateSize();
-		window.addEventListener("resize", this.updateSize);
+		window.addEventListener('resize', this.updateSize);
 	},
 	componentWillUnmount: function() {
-		window.removeEventListener("resize", this.updateSize);
+		window.removeEventListener('resize', this.updateSize);
 	},
 
 	componentWillReceiveProps: function(nextProps) {
 		if(this.refs.pages && this.refs.pages.firstChild) this.pageHeight = this.refs.pages.firstChild.clientHeight;
 
-		const pages = nextProps.value.split('\\page');
+		const pages = nextProps.brew.text.split('\\page');
 		this.setState({
 			pages : pages,
 			usePPR : pages.length >= PPR_THRESHOLD
@@ -57,6 +64,7 @@ const BrewRenderer = React.createClass({
 		setTimeout(()=>{
 			if(this.refs.pages && this.refs.pages.firstChild) this.pageHeight = this.refs.pages.firstChild.clientHeight;
 		}, 1);
+
 
 		this.setState({
 			height : this.refs.main.parentNode.clientHeight,
@@ -125,11 +133,10 @@ const BrewRenderer = React.createClass({
 		return this.lastRender;
 	},
 
-	renderStyle : function(){
-
-	},
-
 	render : function(){
+		if(this.props.brew.version == 1) return <OldBrewRenderer value={this.props.brew.text} />;
+
+
 		return <div className='brewRenderer'
 			onScroll={this.handleScroll}
 			ref='main'
@@ -139,7 +146,8 @@ const BrewRenderer = React.createClass({
 			<RenderWarnings />
 
 
-			<style>{this.props.style}</style>
+			<style>{this.props.brew.style}</style>
+
 			<div className='pages' ref='pages'>
 				{this.renderPages()}
 			</div>

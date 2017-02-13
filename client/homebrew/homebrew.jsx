@@ -53,7 +53,13 @@ const Homebrew = React.createClass({
 				return <PrintPage query={query}/>;
 			},
 			'/new' : <NewPage />,
+
+
 			'/changelog' : <SharePage />,
+			'/test' : <SharePage />,
+			'/test_old' : <SharePage />,
+
+
 			'*' : <HomePage />,
 		});
 	},

@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const fs = require('fs');
 const config = require('nconf');
 const utils = require('./utils.js');
 const BrewData = require('./brew.data.js');
@@ -6,9 +7,12 @@ const router = require('express').Router();
 const mw = require('./middleware.js');
 
 
-const docs = {
-	welcomeBrew : require('fs').readFileSync('./welcome.brew.md', 'utf8'),
-	changelog : require('fs').readFileSync('./changelog.md', 'utf8'),
+const statics = {
+	welcomeBrew : fs.readFileSync('./welcome.brew.md', 'utf8'),
+	changelog   : fs.readFileSync('./changelog.md', 'utf8'),
+	testBrew    : fs.readFileSync('./statics/test.brew.md', 'utf8'),
+
+	oldTest     : fs.readFileSync('./statics/oldTest.brew.md', 'utf8'),
 };
 
 
@@ -59,6 +63,7 @@ router.get('/user/:username', (req, res, next) => {
 
 //Search Page
 router.get('/search', (req, res, next) => {
+	//TODO: Double check that the defaults are okay
 	BrewData.search()
 		.then((brews) => {
 			req.brews = brews;
@@ -70,7 +75,7 @@ router.get('/search', (req, res, next) => {
 //Changelog Page
 router.get('/changelog', (req, res, next) => {
 	req.brew = {
-		text : docs.changelog,
+		text : statics.changelog,
 		title : 'Changelog'
 	};
 	return next();
@@ -81,8 +86,26 @@ router.get('/new', renderPage);
 
 //Home Page
 router.get('/', (req, res, next) => {
-	req.brew = { text : docs.welcomeBrew };
+	req.brew = { text : statics.welcomeBrew };
 	return next();
 }, renderPage);
+
+
+//Test pages
+router.get('/test', (req, res, next) => {
+	req.brew = {
+		text : statics.testBrew
+	};
+	return next();
+}, renderPage);
+router.get('/test_old', (req, res, next) => {
+	req.brew = {
+		text : statics.oldTest,
+		version : 1
+	};
+	return next();
+}, renderPage);
+
+
 
 module.exports = router;

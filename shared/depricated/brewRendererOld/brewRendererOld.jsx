@@ -2,7 +2,7 @@ const React = require('react');
 const _ = require('lodash');
 const cx = require('classnames');
 
-const Markdown = require('homebrewery/markdown.js');
+const Markdown = require('depricated/markdown.old.js');
 const ErrorBar = require('./errorBar/errorBar.jsx');
 
 const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx')
@@ -12,7 +12,7 @@ const Store = require('homebrewery/brew.store.js');
 const PAGE_HEIGHT = 1056;
 const PPR_THRESHOLD = 50;
 
-const BrewRenderer = React.createClass({
+const OLD_BrewRenderer = React.createClass({
 	getDefaultProps: function() {
 		return {
 			value : '',
@@ -58,8 +58,9 @@ const BrewRenderer = React.createClass({
 			if(this.refs.pages && this.refs.pages.firstChild) this.pageHeight = this.refs.pages.firstChild.clientHeight;
 		}, 1);
 
+		const parentNode = document.querySelector('.page .content');
 		this.setState({
-			height : this.refs.main.parentNode.clientHeight,
+			height : parentNode.clientHeight,
 			isMounted : true
 		});
 	},
@@ -99,7 +100,7 @@ const BrewRenderer = React.createClass({
 	},
 
 	renderDummyPage : function(index){
-		return <div className='phb' id={`p${index + 1}`} key={index}>
+		return <div className='phb old' id={`p${index + 1}`} key={index}>
 			<i className='fa fa-spinner fa-spin' />
 		</div>
 	},
@@ -125,12 +126,8 @@ const BrewRenderer = React.createClass({
 		return this.lastRender;
 	},
 
-	renderStyle : function(){
-
-	},
-
 	render : function(){
-		return <div className='brewRenderer'
+		return <div className='brewRendererOld'
 			onScroll={this.handleScroll}
 			ref='main'
 			style={{height : this.state.height}}>
@@ -138,8 +135,6 @@ const BrewRenderer = React.createClass({
 			<ErrorBar errors={this.props.errors} />
 			<RenderWarnings />
 
-
-			<style>{this.props.style}</style>
 			<div className='pages' ref='pages'>
 				{this.renderPages()}
 			</div>
@@ -149,4 +144,4 @@ const BrewRenderer = React.createClass({
 	}
 });
 
-module.exports = BrewRenderer;
+module.exports = OLD_BrewRenderer;
