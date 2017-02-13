@@ -106,7 +106,7 @@ const OLD_BrewRenderer = React.createClass({
 	},
 
 	renderPage : function(pageText, index){
-		return <div className='phb' id={`p${index + 1}`} dangerouslySetInnerHTML={{__html:Markdown.render(pageText)}} key={index} />
+		return <div className='phb_old' id={`p${index + 1}`} dangerouslySetInnerHTML={{__html:Markdown.render(pageText)}} key={index} />
 	},
 
 	renderPages : function(){

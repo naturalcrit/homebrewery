@@ -13,8 +13,9 @@
 
 @page { margin: 0; }
 
-body {
-	counter-reset : old-phb-page-numbers;
+//TODO: Change
+.brewRenderer {
+	counter-reset : phb-page-numbers;
 }
 .useSansSerif(){
 	font-family : ScalySans;
@@ -45,7 +46,7 @@ body {
 		-webkit-print-color-adjust : exact;
 	}
 	.useColumns();
-	counter-increment : old-phb-page-numbers;
+	counter-increment : phb-page-numbers;
 	position          : relative;
 	z-index           : 15;
 	box-sizing        : border-box;
@@ -61,6 +62,7 @@ body {
 	text-rendering    : optimizeLegibility;
 	page-break-before : always;
 	page-break-after  : always;
+	color : red;
 	//*****************************
 	// *            BASE
 	// *****************************/
@@ -301,7 +303,7 @@ body {
 		color      : #c9ad6a;
 		text-align : center;
 		&.auto::after {
-			content : counter(old-phb-page-numbers);
+			content : counter(phb-page-numbers);
 		}
 	}
 	.footnote{

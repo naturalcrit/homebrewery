@@ -6,6 +6,8 @@ module.exports = function(vitreum){
 		<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 		<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
 		<link rel="icon" href="/assets/homebrew/favicon.ico" type="image/x-icon" />
+
+		<link href="/assets/depricated/phb.old.css" rel="stylesheet" />
 		<title>The Homebrewery - NaturalCrit</title>
 		${vitreum.head}
 	</head>
