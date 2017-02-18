@@ -42,7 +42,6 @@ const welcomeText = require('fs').readFileSync('./client/homebrew/pages/homePage
 const changelogText = require('fs').readFileSync('./changelog.md', 'utf8');
 
 
-
 //Source page
 String.prototype.replaceAll = function(s,r){return this.split(s).join(r)}
 app.get('/source/:id', (req, res)=>{

@@ -2,6 +2,7 @@ const React = require('react');
 const _     = require('lodash');
 const cx    = require('classnames');
 const moment = require('moment');
+const request = require("superagent");
 
 const BrewItem = React.createClass({
 	getDefaultProps: function() {
@@ -15,6 +16,24 @@ const BrewItem = React.createClass({
 		};
 	},
 
+	deleteBrew : function(){
+		if(!confirm("are you sure you want to delete this brew?")) return;
+		if(!confirm("are you REALLY sure? You will not be able to recover it")) return;
+
+		request.get('/api/remove/' + this.props.brew.editId)
+			.send()
+			.end(function(err, res){
+				location.reload();
+			});
+	},
+
+	renderDeleteBrewLink: function(){
+		if(!this.props.brew.editId) return;
+
+		return <a onClick={this.deleteBrew}>
+			<i className='fa fa-trash' />
+		</a>
+	},
 	renderEditLink: function(){
 		if(!this.props.brew.editId) return;
 
@@ -47,6 +66,7 @@ const BrewItem = React.createClass({
 					<i className='fa fa-share-alt' />
 				</a>
 				{this.renderEditLink()}
+				{this.renderDeleteBrewLink()}
 			</div>
 		</div>
 	}
