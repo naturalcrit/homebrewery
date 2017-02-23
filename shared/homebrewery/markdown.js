@@ -12,8 +12,8 @@ renderer.paragraph = function(text){
 	const res =  _.reduce(text.split(blockReg), (r, text) => {
 		if(text) r.push(Markdown(text, {renderer : renderer, sanitize: true}));
 		const block = matches[matchIndex];
-		if(block && _.startsWith(block, '{{')){
-			r.push(`\n\n<div class="${block.substring(2).split(',').join(' ')}">`);
+		if(block && block[0] == '{'){
+			r.push(`\n\n<div class="block ${block.substring(2).split(',').join(' ')}">`);
 			blockCount++;
 		}
 		if(block == '}}' && blockCount !== 0){
