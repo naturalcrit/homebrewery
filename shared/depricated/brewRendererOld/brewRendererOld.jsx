@@ -2,9 +2,7 @@ const React = require('react');
 const _ = require('lodash');
 const cx = require('classnames');
 
-const OldBrewRenderer = require('depricated/brewRendererOld/brewRendererOld.jsx');
-
-const Markdown = require('homebrewery/markdown.js');
+const Markdown = require('depricated/markdown.old.js');
 const ErrorBar = require('./errorBar/errorBar.jsx');
 
 const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx')
@@ -14,21 +12,16 @@ const Store = require('homebrewery/brew.store.js');
 const PAGE_HEIGHT = 1056;
 const PPR_THRESHOLD = 50;
 
-const BrewRenderer = React.createClass({
+const OLD_BrewRenderer = React.createClass({
 	getDefaultProps: function() {
 		return {
-			brew : {
-				text : '',
-				style : ''
-			},
-
-
-			//TODO: maybe remove?
+			value : '',
+			style : '',
 			errors : []
 		};
 	},
 	getInitialState: function() {
-		const pages = this.props.brew.text.split('\\page');
+		const pages = this.props.value.split('\\page');
 
 		return {
 			viewablePageNumber: 0,
@@ -44,16 +37,16 @@ const BrewRenderer = React.createClass({
 
 	componentDidMount: function() {
 		this.updateSize();
-		window.addEventListener('resize', this.updateSize);
+		window.addEventListener("resize", this.updateSize);
 	},
 	componentWillUnmount: function() {
-		window.removeEventListener('resize', this.updateSize);
+		window.removeEventListener("resize", this.updateSize);
 	},
 
 	componentWillReceiveProps: function(nextProps) {
 		if(this.refs.pages && this.refs.pages.firstChild) this.pageHeight = this.refs.pages.firstChild.clientHeight;
 
-		const pages = nextProps.brew.text.split('\\page');
+		const pages = nextProps.value.split('\\page');
 		this.setState({
 			pages : pages,
 			usePPR : pages.length >= PPR_THRESHOLD
@@ -65,9 +58,9 @@ const BrewRenderer = React.createClass({
 			if(this.refs.pages && this.refs.pages.firstChild) this.pageHeight = this.refs.pages.firstChild.clientHeight;
 		}, 1);
 
-
+		const parentNode = document.querySelector('.page .content');
 		this.setState({
-			height : this.refs.main.parentNode.clientHeight,
+			height : parentNode.clientHeight,
 			isMounted : true
 		});
 	},
@@ -107,13 +100,13 @@ const BrewRenderer = React.createClass({
 	},
 
 	renderDummyPage : function(index){
-		return <div className='phb v2' id={`p${index + 1}`} key={index}>
+		return <div className='phb v1' id={`p${index + 1}`} key={index}>
 			<i className='fa fa-spinner fa-spin' />
 		</div>
 	},
 
 	renderPage : function(pageText, index){
-		return <div className='phb v2' id={`p${index + 1}`} dangerouslySetInnerHTML={{__html:Markdown.render(pageText)}} key={index} />
+		return <div className='phb v1' id={`p${index + 1}`} dangerouslySetInnerHTML={{__html:Markdown.render(pageText)}} key={index} />
 	},
 
 	renderPages : function(){
@@ -134,19 +127,13 @@ const BrewRenderer = React.createClass({
 	},
 
 	render : function(){
-		if(this.props.brew.version == 1) return <OldBrewRenderer value={this.props.brew.text} />;
-
-
-		return <div className='brewRenderer'
+		return <div className='brewRendererOld'
 			onScroll={this.handleScroll}
 			ref='main'
 			style={{height : this.state.height}}>
 
 			<ErrorBar errors={this.props.errors} />
 			<RenderWarnings />
-
-
-			<style>{this.props.brew.style}</style>
 
 			<div className='pages' ref='pages'>
 				{this.renderPages()}
@@ -157,4 +144,4 @@ const BrewRenderer = React.createClass({
 	}
 });
 
-module.exports = BrewRenderer;
+module.exports = OLD_BrewRenderer;

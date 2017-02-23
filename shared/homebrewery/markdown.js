@@ -1,82 +1,44 @@
-var _ = require('lodash');
-var Markdown = require('marked');
-var renderer = new Markdown.Renderer();
+const _ = require('lodash');
+const Markdown = require('marked');
 
-//Processes the markdown within an HTML block if it's just a class-wrapper
-renderer.html = function (html) {
-	if(_.startsWith(_.trim(html), '<div') && _.endsWith(_.trim(html), '</div>')){
-		var openTag = html.substring(0, html.indexOf('>')+1);
-		html = html.substring(html.indexOf('>')+1);
-		html = html.substring(0, html.lastIndexOf('</div>'));
-		return `${openTag} ${Markdown(html)} </div>`;
-	}
-	return html;
+
+const renderer = new Markdown.Renderer();
+let blockCount = 0;
+renderer.paragraph = function(text){
+	const blockReg = /{{[\w|,]+|}}/g;
+	const matches = text.match(blockReg);
+	if(!matches) return `\n<p>${text}</p>\n`;
+	let matchIndex = 0;
+	const res =  _.reduce(text.split(blockReg), (r, text) => {
+		if(text) r.push(Markdown(text, {renderer : renderer, sanitize: true}));
+		const block = matches[matchIndex];
+		if(block && block[0] == '{'){
+			r.push(`\n\n<div class="block ${block.substring(2).split(',').join(' ')}">`);
+			blockCount++;
+		}
+		if(block == '}}' && blockCount !== 0){
+			r.push('</div>\n\n');
+			blockCount--;
+		}
+		matchIndex++;
+		return r;
+	}, []).join('\n');
+	return res;
 };
-
-
-const tagTypes = ['div', 'span', 'a'];
-const tagRegex = new RegExp('(' +
-	_.map(tagTypes, (type)=>{
-		return `\\<${type}|\\</${type}>`;
-	}).join('|') + ')', 'g');
 
 
 module.exports = {
 	marked : Markdown,
 	render : (rawBrewText)=>{
-		return Markdown(rawBrewText, {renderer : renderer})
+		blockCount = 0;
+		let html = Markdown(rawBrewText, {renderer : renderer, sanitize: true});
+		//Close all hanging block tags
+		html += _.times(blockCount, ()=>{return '</div>'}).join('\n');
+		return html;
 	},
 
 	validate : (rawBrewText) => {
-		var errors = [];
-		var leftovers = _.reduce(rawBrewText.split('\n'), (acc, line, _lineNumber) => {
-			var lineNumber = _lineNumber + 1;
-			var matches = line.match(tagRegex);
-			if(!matches || !matches.length) return acc;
-
-			_.each(matches, (match)=>{
-				_.each(tagTypes, (type)=>{
-					if(match == `<${type}`){
-						acc.push({
-							type : type,
-							line : lineNumber
-						});
-					}
-					if(match === `</${type}>`){
-						if(!acc.length){
-							errors.push({
-								line : lineNumber,
-								type : type,
-								text : 'Unmatched closing tag',
-								id : 'CLOSE'
-							});
-						}else if(_.last(acc).type == type){
-							acc.pop();
-						}else{
-							errors.push({
-								line : _.last(acc).line + ' to ' + lineNumber,
-								type : type,
-								text : 'Type mismatch on closing tag',
-								id : 'MISMATCH'
-							});
-							acc.pop();
-						}
-					}
-				});
-			});
-			return acc;
-		}, []);
-
-		_.each(leftovers, (unmatched)=>{
-			errors.push({
-				line : unmatched.line,
-				type : unmatched.type,
-				text : "Unmatched opening tag",
-				id : 'OPEN'
-			})
-		});
-
-		return errors;
+		return [];
 	},
 };
 

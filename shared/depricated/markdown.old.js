@@ -1,12 +1,9 @@
-const _ = require('lodash');
-const Markdown = require('marked');
+var _ = require('lodash');
+var Markdown = require('marked');
+var renderer = new Markdown.Renderer();
 
-
-
-/*
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (html) {
-	console.log(html);
 	if(_.startsWith(_.trim(html), '<div') && _.endsWith(_.trim(html), '</div>')){
 		var openTag = html.substring(0, html.indexOf('>')+1);
 		html = html.substring(html.indexOf('>')+1);
@@ -15,59 +12,22 @@ renderer.html = function (html) {
 	}
 	return html;
 };
-*/
 
 
+const tagTypes = ['div', 'span', 'a'];
+const tagRegex = new RegExp('(' +
+	_.map(tagTypes, (type)=>{
+		return `\\<${type}|\\</${type}>`;
+	}).join('|') + ')', 'g');
 
 
 module.exports = {
 	marked : Markdown,
 	render : (rawBrewText)=>{
-		//Adds in the new div block syntax
-		let count = 0;
-		let blockReg = /{{[\w|,]+|}}/g;
-		const renderer = new Markdown.Renderer();
-		renderer.paragraph = function (text) {
-			const matches = text.match(blockReg);
-			if(!matches) return `\n<p>${text}</p>\n`;
-			let matchIndex = 0;
-			const res =  _.reduce(text.split(blockReg), (r, text) => {
-				if(text) r.push(`\n<p>${text}</p>\n`);
-				const block = matches[matchIndex];
-				if(block && _.startsWith(block, '{{')){
-					r.push(`\n\n<div class="${block.substring(2).split(',').join(' ')}">`);
-					count++;
-				}
-				if(block == '}}' && count !== 0){
-					r.push('</div>\n\n');
-					count--;
-				}
-				matchIndex++;
-				return r;
-			}, []).join('\n');
-			return res;
-		};
-		let html = Markdown(rawBrewText, {renderer : renderer, sanitize: true});
-		html += _.times(count, ()=>{return '</div>'}).join('\n');
-		return html;
+		return Markdown(rawBrewText, {renderer : renderer})
 	},
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 	validate : (rawBrewText) => {
-		return [];
-		/*
 		var errors = [];
 		var leftovers = _.reduce(rawBrewText.split('\n'), (acc, line, _lineNumber) => {
 			var lineNumber = _lineNumber + 1;
@@ -117,7 +77,6 @@ module.exports = {
 		});
 
 		return errors;
-		*/
 	},
 };
 

@@ -18,19 +18,6 @@ const Store = require('homebrewery/brew.store.js');
 const Headtags = require('vitreum/headtags');
 
 const SharePage = React.createClass({
-	getDefaultProps: function() {
-		return {
-			brew : {
-				title : '',
-				text : '',
-				shareId : null,
-				createdAt : null,
-				updatedAt : null,
-				views : 0
-			}
-		};
-	},
-
 	componentDidMount: function() {
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
@@ -78,7 +65,7 @@ const SharePage = React.createClass({
 				</Nav.section>
 			</Navbar>
 			<div className='content'>
-				<BrewRenderer brewText={brew.text} />
+				<BrewRenderer brew={brew} />
 			</div>
 		</div>
 	}

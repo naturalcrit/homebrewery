@@ -35,7 +35,7 @@ const BrewEditor = React.createClass({
 
 	componentDidMount: function() {
 		this.updateEditorSize();
-		//this.highlightPageLines();
+		this.highlightPageLines();
 		window.addEventListener("resize", this.updateEditorSize);
 	},
 	componentWillUnmount: function() {
@@ -89,10 +89,14 @@ const BrewEditor = React.createClass({
 		if(!this.refs.codeEditor) return;
 		const codeMirror = this.refs.codeEditor.codeMirror;
 
-		const lineNumbers = _.reduce(this.props.value.split('\n'), (r, line, lineNumber)=>{
+		const lineNumbers = _.reduce(this.props.brew.text.split('\n'), (r, line, lineNumber)=>{
 			if(line.indexOf('\\page') !== -1){
 				codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
 				r.push(lineNumber);
+			}
+
+			if(_.startsWith(line, '{{') || _.startsWith(line, '}}')){
+				codeMirror.addLineClass(lineNumber, 'text', 'block');
 			}
 			return r;
 		}, []);
@@ -134,6 +138,7 @@ const BrewEditor = React.createClass({
 	},
 
 	render : function(){
+		this.highlightPageLines();
 		return <div className='brewEditor' ref='main'>
 			{/*
 			<SnippetBar
