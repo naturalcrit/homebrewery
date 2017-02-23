@@ -1,7 +1,6 @@
 {
-	"assets": ["*.png","*.otf", "*.ico", "phb.old.css"],
-	"shared":[
-	],
+	"assets": ["*.png","*.otf", "*.ico", "*.jpg"],
+	"shared":["./shared"],
 	"libs" : [
 		"react",
 		"react-dom",

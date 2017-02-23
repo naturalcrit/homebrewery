@@ -1,47 +1,34 @@
-
-@import (less) 'shared/naturalcrit/styles/reset.less';
-@import (less) './client/homebrew/phbStyle/phb.fonts.css';
-@import (less) './client/homebrew/phbStyle/phb.assets.less';
-@import (less) './client/homebrew/phbStyle/phb.depricated.less';
-//Colors
-@background            : #EEE5CE;
-@noteGreen             : #e0e5c1;
-@headerUnderline       : #c9ad6a;
-@horizontalRule        : #9c2b1b;
-@headerText            : #58180D;
-@monsterStatBackground : #FDF1DC;
-
-@page { margin: 0; }
-
-//TODO: Change
-.brewRenderer {
-	counter-reset : phb-page-numbers;
-}
-.useSansSerif(){
-	font-family : ScalySans;
-	em{
-		font-family : ScalySans;
-		font-style  : italic;
-	}
-	strong{
-		font-family    : ScalySans;
-		font-weight    : 800;
-		letter-spacing : -0.02em;
+@media print {
+	.phb.v2{
+		.descriptive, blockquote{
+			box-shadow : none;
+		}
 	}
 }
-.useColumns(@multiplier : 1){
-	column-count         : 2;
-	column-fill          : auto;
-	column-gap           : 1cm;
-	column-width         : 8cm * @multiplier;
-	-webkit-column-count : 2;
-	-moz-column-count    : 2;
-	-webkit-column-width : 8cm * @multiplier;
-	-moz-column-width    : 8cm * @multiplier;
-	-webkit-column-gap   : 1cm;
-	-moz-column-gap      : 1cm;
-}
-.phb{
+
+
+
+.phb.v2{
+	@import './phb.fonts.less';
+	@import './phb.colors.less';
+	@import './phb.img.less';
+
+
+	@page { margin: 0; }
+
+
+	.useColumns(@multiplier : 1){
+		column-count         : 2;
+		column-fill          : auto;
+		column-gap           : 1cm;
+		column-width         : 8cm * @multiplier;
+		-webkit-column-count : 2;
+		-moz-column-count    : 2;
+		-webkit-column-width : 8cm * @multiplier;
+		-moz-column-width    : 8cm * @multiplier;
+		-webkit-column-gap   : 1cm;
+		-moz-column-gap      : 1cm;
+	}
 	& *{
 		-webkit-print-color-adjust : exact;
 	}
@@ -56,13 +43,14 @@
 	padding           : 1.0cm 1.7cm;
 	padding-bottom    : 1.5cm;
 	background-color  : @background;
-	background-image  : @backgroundImage;
-	font-family       : BookSanity;
+	background-image  : @phbBG;
+	font-family       : BookInsanity;
 	font-size         : 0.317cm;
 	text-rendering    : optimizeLegibility;
 	page-break-before : always;
 	page-break-after  : always;
-	color : red;
+
+
 	//*****************************
 	// *            BASE
 	// *****************************/
@@ -117,7 +105,7 @@
 	h1,h2,h3,h4{
 		margin-top    : 0.2em;
 		margin-bottom : 0.2em;
-		font-family   : MrJeeves;
+		font-family   : MrEaves;
 		font-weight   : 800;
 		color         : @headerText;
 	}
@@ -128,7 +116,7 @@
 		-moz-column-span    : all;
 		&+p::first-letter{
 			float       : left;
-			font-family : Solberry;
+			font-family : Solbera;
 			font-size   : 10em;
 			color       : #222;
 			line-height : 0.8em;
@@ -190,7 +178,7 @@
 		background-color    : @noteGreen;
 		border-style        : solid;
 		border-width        : 11px;
-		border-image        : @noteBorderImage 11;
+		border-image        : @noteBorder 11;
 		border-image-outset : 9px 0px;
 		box-shadow          : 1px 4px 14px #888;
 		p, ul{
@@ -211,7 +199,7 @@
 		background-color : @monsterStatBackground;
 		border-style     : solid;
 		border-width     : 10px;
-		border-image     : @monsterBorderImage 10;
+		border-image     : @monsterBorder 10;
 		h2{
 			margin-top    : -8px;
 			margin-bottom : 0px;
@@ -259,7 +247,7 @@
 			visibility       : visible;
 			height           : 6px;
 			margin           : 4px 0px;
-			background-image : @redTriangleImage;
+			background-image : @dividerImg;
 			background-size  : 100% 100%;
 			border           : none;
 		}
@@ -279,7 +267,7 @@
 		z-index          : 100;
 		height           : 50px;
 		width            : 100%;
-		background-image : @footerAccentImage;
+		background-image : @footerImg;
 		background-size  : cover;
 	}
 	&:nth-child(even){
@@ -361,124 +349,157 @@
 		-webkit-column-break-inside : avoid;
 		column-break-inside         : avoid;
 	}
-}
-//*****************************
-// *         SPELL LIST
-// *****************************/
-.phb .spellList{
-	.useSansSerif();
-	column-count        : 4;
-	column-span         : all;
-	-webkit-column-span : all;
-	-moz-column-span    : all;
-	ul+h5{
-		margin-top : 15px;
-	}
-	p, ul{
-		font-size   : 0.352cm;
-		line-height : 1.3em;
-	}
-	ul{
-		margin-bottom               : 0.5em;
-		padding-left                : 1em;
-		text-indent                 : -1em;
-		list-style-type             : none;
-		-webkit-column-break-inside : auto;
-		column-break-inside         : auto;
-	}
-}
-//*****************************
-// *         PRINT
-// *****************************/
-.phb.print{
-	blockquote{
-		box-shadow : none;
-	}
-}
-@media print {
-	.phb .descriptive, .phb blockquote{
-		box-shadow : none;
-	}
-}
-//*****************************
-// *         WIDE
-// *****************************/
-.phb .wide{
-	column-span         : all;
-	-webkit-column-span : all;
-	-moz-column-span    : all;
-}
-//*****************************
-// *       CLASS TABLE
-// *****************************/
-.phb .classTable{
-	margin-top          : 25px;
-	margin-bottom       : 40px;
-	border-collapse     : separate;
-	background-color    : white;
-	border              : initial;
-	border-style        : solid;
-	border-image-outset : 25px 17px;
-	border-image-repeat : round;
-	border-image-slice  : 150 200 150 200;
-	border-image-source : @frameBorderImage;
-	border-image-width  : 47px;
-	h5{
-		margin-bottom : 10px;
-	}
-}
-//*****************************
-// *       CLASS TABLE
-// *****************************/
-.phb .descriptive{
-	display             : block-inline;
-	margin-bottom       : 1em;
-	background-color    : #faf7ea;
-	font-family         : ScalySans;
-	border-style        : solid;
-	border-width        : 7px;
-	border-image        : @descriptiveBoxImage 12 round;
-	border-image-outset : 4px;
-	box-shadow          : 0px 0px 6px #faf7ea;
-	p{
-		display        : block;
-		padding-bottom : 0px;
-		line-height    : 1.5em;
-	}
-	p + p {
-		padding-top : .8em;
-	}
-	em {
-		font-family : ScalySans;
-		font-style  : italic;
-	}
-	strong {
-		font-family    : ScalySans;
-		font-weight    : 800;
-		letter-spacing : -0.02em;
-	}
-}
-.phb pre+.descriptive{
-	margin-top : 8px;
-}
-//*****************************
-// *      TABLE OF CONTENTS
-// *****************************/
-.phb .toc{
-	-webkit-column-break-inside : avoid;
-	column-break-inside         : avoid;
-	a{
-		color           : black;
-		text-decoration : none;
-		&:hover{
-			text-decoration : underline;
+
+	//*****************************
+	// *         SPELL LIST
+	// *****************************/
+	.spellList{
+		.useSansSerif();
+		column-count        : 4;
+		column-span         : all;
+		-webkit-column-span : all;
+		-moz-column-span    : all;
+		ul+h5{
+			margin-top : 15px;
+		}
+		p, ul{
+			font-size   : 0.352cm;
+			line-height : 1.3em;
+		}
+		ul{
+			margin-bottom               : 0.5em;
+			padding-left                : 1em;
+			text-indent                 : -1em;
+			list-style-type             : none;
+			-webkit-column-break-inside : auto;
+			column-break-inside         : auto;
 		}
 	}
-	ul{
-		padding-left    : 0;
-		list-style-type : none;
+	//*****************************
+	// *         PRINT
+	// *****************************/
+	&.print{
+		blockquote{
+			box-shadow : none;
+		}
 	}
-	&>ul>li{
-		margin-bottom : 10px;
+
+	//*****************************
+	// *         WIDE
+	// *****************************/
+	.wide{
+		column-span         : all;
+		-webkit-column-span : all;
+		-moz-column-span    : all;
+	}
+	//*****************************
+	// *       CLASS TABLE
+	// *****************************/
+	.classTable{
+		margin-top          : 25px;
+		margin-bottom       : 40px;
+		border-collapse     : separate;
+		background-color    : white;
+		border              : initial;
+		border-style        : solid;
+		border-image-outset : 25px 17px;
+		border-image-repeat : round;
+		border-image-slice  : 150 200 150 200;
+		border-image-source : @frameBorder;
+		border-image-width  : 47px;
+		h5{
+			margin-bottom : 10px;
+		}
+	}
+	//*****************************
+	// *       CLASS TABLE
+	// *****************************/
+	.descriptive{
+		display             : block-inline;
+		margin-bottom       : 1em;
+		background-color    : #faf7ea;
+		font-family         : ScalySans;
+		border-style        : solid;
+		border-width        : 7px;
+		border-image        : @descriptiveBorder 12 round;
+		border-image-outset : 4px;
+		box-shadow          : 0px 0px 6px #faf7ea;
+		p{
+			display        : block;
+			padding-bottom : 0px;
+			line-height    : 1.5em;
+		}
+		p + p {
+			padding-top : .8em;
+		}
+		em {
+			font-family : ScalySans;
+			font-style  : italic;
+		}
+		strong {
+			font-family    : ScalySans;
+			font-weight    : 800;
+			letter-spacing : -0.02em;
+		}
+	}
+	pre+.descriptive{
+		margin-top : 8px;
+	}
+	//*****************************
+	// *      TABLE OF CONTENTS
+	// *****************************/
+	.toc{
+		-webkit-column-break-inside : avoid;
+		column-break-inside         : avoid;
+		a{
+			color           : black;
+			text-decoration : none;
+			&:hover{
+				text-decoration : underline;
+			}
+		}
+		ul{
+			padding-left    : 0;
+			list-style-type : none;
+		}
+		&>ul>li{
+			margin-bottom : 10px;
+		}
+	}
+
+
+
+	//*****************************
+	// *      Old Stuff
+	// *****************************/
+
+	//Double hr for full width elements
+	hr+hr+blockquote{
+		column-span         : all;
+		-webkit-column-span : all;
+		-moz-column-span    : all;
+	}
+
+	//*****************************
+	// *      CLASS TABLE
+	// *****************************/
+	hr+table{
+		margin-top          : -5px;
+		margin-bottom       : 50px;
+		padding-top         : 10px;
+		border-collapse     : separate;
+		background-color    : white;
+		border              : initial;
+		border-style        : solid;
+		border-image-outset : 37px 17px;
+		border-image-repeat : round;
+		border-image-slice  : 150 200 150 200;
+		border-image-source : @frameBorder;
+		border-image-width  : 47px;
+	}
+	h5+hr+table{
+		column-span         : all;
+		-webkit-column-span : all;
+		-moz-column-span    : all;
 	}
 }

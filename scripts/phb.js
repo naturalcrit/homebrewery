@@ -1,5 +1,11 @@
+//DEPRICATE
+
 const less = require('less');
 const fs = require('fs');
+
+
+console.log('you should not b using this');
+
 
 less.render(fs.readFileSync('./client/homebrew/phbStyle/phb.style.less', 'utf8'), {compress : true})
 	.then((output) => {

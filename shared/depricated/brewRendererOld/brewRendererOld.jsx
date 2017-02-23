@@ -100,13 +100,13 @@ const OLD_BrewRenderer = React.createClass({
 	},
 
 	renderDummyPage : function(index){
-		return <div className='phb old' id={`p${index + 1}`} key={index}>
+		return <div className='phb v1' id={`p${index + 1}`} key={index}>
 			<i className='fa fa-spinner fa-spin' />
 		</div>
 	},
 
 	renderPage : function(pageText, index){
-		return <div className='phb_old' id={`p${index + 1}`} dangerouslySetInnerHTML={{__html:Markdown.render(pageText)}} key={index} />
+		return <div className='phb v1' id={`p${index + 1}`} dangerouslySetInnerHTML={{__html:Markdown.render(pageText)}} key={index} />
 	},
 
 	renderPages : function(){
