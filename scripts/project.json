@@ -1,5 +1,5 @@
 {
-	"assets": ["*.png","*.otf", "*.ico", "phb.old.css"],
+	"assets": ["*.png","*.otf", "*.ico"],
 	"shared":[
 	],
 	"libs" : [
