@@ -1,9 +1,3 @@
-
-@import (less) 'shared/naturalcrit/styles/reset.less';
-@import (less) './phb.fonts.css';
-@import (less) './phb.assets.less';
-
-
 @media print {
 	.phb.v1{
 		.descriptive, blockquote{
@@ -13,6 +7,9 @@
 }
 
 .phb.v1{
+	@import (less) './phb.fonts.css';
+	@import (less) './phb.assets.less';
+
 
 	//Colors
 	@background            : #EEE5CE;
@@ -69,7 +66,7 @@
 	text-rendering    : optimizeLegibility;
 	page-break-before : always;
 	page-break-after  : always;
-	color : red;
+
 	//*****************************
 	// *            BASE
 	// *****************************/
