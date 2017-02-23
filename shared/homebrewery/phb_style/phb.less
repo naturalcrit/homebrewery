@@ -1,4 +1,3 @@
-
 @media print {
 	.phb.v2{
 		.descriptive, blockquote{
@@ -7,27 +6,17 @@
 	}
 }
 
+
+
 .phb.v2{
-	@import (less) './phb.fonts.css';
+	@import './phb.fonts.less';
 	@import './phb.colors.less';
-	@import (less) './phb.img.less';
+	@import './phb.img.less';
 
 
 	@page { margin: 0; }
 
 
-	.useSansSerif(){
-		font-family : ScalySans;
-		em{
-			font-family : ScalySans;
-			font-style  : italic;
-		}
-		strong{
-			font-family    : ScalySans;
-			font-weight    : 800;
-			letter-spacing : -0.02em;
-		}
-	}
 	.useColumns(@multiplier : 1){
 		column-count         : 2;
 		column-fill          : auto;
@@ -54,8 +43,8 @@
 	padding           : 1.0cm 1.7cm;
 	padding-bottom    : 1.5cm;
 	background-color  : @background;
-	background-image  : @backgroundImage;
-	font-family       : BookSanity;
+	background-image  : @phbBG;
+	font-family       : BookInsanity;
 	font-size         : 0.317cm;
 	text-rendering    : optimizeLegibility;
 	page-break-before : always;
@@ -116,7 +105,7 @@
 	h1,h2,h3,h4{
 		margin-top    : 0.2em;
 		margin-bottom : 0.2em;
-		font-family   : MrJeeves;
+		font-family   : MrEaves;
 		font-weight   : 800;
 		color         : @headerText;
 	}
@@ -127,7 +116,7 @@
 		-moz-column-span    : all;
 		&+p::first-letter{
 			float       : left;
-			font-family : Solberry;
+			font-family : Solbera;
 			font-size   : 10em;
 			color       : #222;
 			line-height : 0.8em;
@@ -189,7 +178,7 @@
 		background-color    : @noteGreen;
 		border-style        : solid;
 		border-width        : 11px;
-		border-image        : @noteBorderImage 11;
+		border-image        : @noteBorder 11;
 		border-image-outset : 9px 0px;
 		box-shadow          : 1px 4px 14px #888;
 		p, ul{
@@ -210,7 +199,7 @@
 		background-color : @monsterStatBackground;
 		border-style     : solid;
 		border-width     : 10px;
-		border-image     : @monsterBorderImage 10;
+		border-image     : @monsterBorder 10;
 		h2{
 			margin-top    : -8px;
 			margin-bottom : 0px;
@@ -258,7 +247,7 @@
 			visibility       : visible;
 			height           : 6px;
 			margin           : 4px 0px;
-			background-image : @redTriangleImage;
+			background-image : @dividerImg;
 			background-size  : 100% 100%;
 			border           : none;
 		}
@@ -278,7 +267,7 @@
 		z-index          : 100;
 		height           : 50px;
 		width            : 100%;
-		background-image : @footerAccentImage;
+		background-image : @footerImg;
 		background-size  : cover;
 	}
 	&:nth-child(even){
@@ -416,7 +405,7 @@
 		border-image-outset : 25px 17px;
 		border-image-repeat : round;
 		border-image-slice  : 150 200 150 200;
-		border-image-source : @frameBorderImage;
+		border-image-source : @frameBorder;
 		border-image-width  : 47px;
 		h5{
 			margin-bottom : 10px;
@@ -432,7 +421,7 @@
 		font-family         : ScalySans;
 		border-style        : solid;
 		border-width        : 7px;
-		border-image        : @descriptiveBoxImage 12 round;
+		border-image        : @descriptiveBorder 12 round;
 		border-image-outset : 4px;
 		box-shadow          : 0px 0px 6px #faf7ea;
 		p{
@@ -505,7 +494,7 @@
 		border-image-outset : 37px 17px;
 		border-image-repeat : round;
 		border-image-slice  : 150 200 150 200;
-		border-image-source : @frameBorderImage;
+		border-image-source : @frameBorder;
 		border-image-width  : 47px;
 	}
 	h5+hr+table{

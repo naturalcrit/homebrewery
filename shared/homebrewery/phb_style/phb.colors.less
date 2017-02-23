@@ -1,6 +1,24 @@
+//TODO: come up with fun color names
+
 @background            : #EEE5CE;
 @noteGreen             : #e0e5c1;
 @headerUnderline       : #c9ad6a;
 @horizontalRule        : #9c2b1b;
 @headerText            : #58180D;
 @monsterStatBackground : #FDF1DC;
+
+
+@teal : blue;
+
+
+.colorElements(@color){
+	table tbody{
+		tr:nth-child(odd){
+			background-color : @color;
+		}
+	}
+}
+
+
+//TODO make a color mixin generator
+.teal{ .colorElements(@teal); }
