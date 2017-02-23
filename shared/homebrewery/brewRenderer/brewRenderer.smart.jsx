@@ -3,8 +3,16 @@ const BrewRenderer = require('./brewRenderer.jsx');
 
 
 module.exports = Store.createSmartComponent(BrewRenderer, () => {
+	const brew = Store.getBrew();
+
+
 	return {
-		brewText : Store.getBrewText(),
+		brew : Store.getBrew(),
+
+		brewText : Store.getBrewCode(),
+		style : Store.getBrewStyle(),
+
+
 		errors : Store.getErrors()
 	}
 });

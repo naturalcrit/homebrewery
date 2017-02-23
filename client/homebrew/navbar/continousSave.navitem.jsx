@@ -33,7 +33,7 @@ const ContinousSave = React.createClass({
 		window.onbeforeunload = function(){};
 	},
 	actionHandler : function(actionType){
-		if(actionType == 'UPDATE_BREW_TEXT' || actionType == 'UPDATE_META'){
+		if(actionType == 'UPDATE_BREW_CODE' || actionType == 'UPDATE_META' || actionType == 'UPDATE_BREW_STYLE'){
 			Actions.pendingSave();
 		}
 	},
@@ -51,6 +51,9 @@ const ContinousSave = React.createClass({
 			Oops!
 			<div className='errorContainer'>
 				Looks like there was a problem saving. <br />
+				Back up your brew in a text file, just in case.
+				<br /><br />
+
 				Report the issue <a target='_blank' href={'https://github.com/stolksdorf/naturalcrit/issues/new?body='+ encodeURIComponent(errMsg)}>
 					here
 				</a>.

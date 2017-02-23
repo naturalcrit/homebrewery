@@ -74,6 +74,7 @@ const MetadataEditor = React.createClass({
 	},
 
 	renderPublish : function(){
+		//TODO: Move the publish element into here
 		if(this.props.metadata.published){
 			return <button className='unpublish' onClick={this.handlePublish.bind(null, false)}>
 				<i className='fa fa-ban' /> unpublish
@@ -139,13 +140,12 @@ const MetadataEditor = React.createClass({
 				<textarea value={this.props.metadata.description} className='value'
 					onChange={this.handleFieldChange.bind(null, 'description')} />
 			</div>
-			{/*}
-			<div className='field tags'>
-				<label>tags</label>
-				<textarea value={this.props.metadata.tags}
-					onChange={this.handleFieldChange.bind(null, 'tags')} />
+			<div className='field thumbnail'>
+				<label>thumbnail</label>
+				<input type='text' className='value'
+					value={this.props.metadata.thumbnail}
+					onChange={this.handleFieldChange.bind(null, 'thumbnail')} />
 			</div>
-			*/}
 
 			<div className='field systems'>
 				<label>systems</label>

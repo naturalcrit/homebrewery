@@ -1,7 +1,6 @@
 {
-	"assets": ["*.png","*.otf", "*.ico"],
-	"shared":[
-	],
+	"assets": ["*.png","*.otf", "*.ico", "*.jpg"],
+	"shared":["./shared"],
 	"libs" : [
 		"react",
 		"react-dom",
@@ -10,6 +9,7 @@
 		"codemirror",
 		"codemirror/mode/gfm/gfm.js",
 		"codemirror/mode/javascript/javascript.js",
+		"codemirror/mode/css/css.js",
 		"moment",
 		"superagent",
 		"marked",

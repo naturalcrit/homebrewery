@@ -1,68 +1,68 @@
-var React = require('react');
-var _ = require('lodash');
-var cx = require('classnames');
+const React = require('react');
+const _ = require('lodash');
+const cx = require('classnames');
 
-
-var CodeMirror;
+let CodeMirror;
 if(typeof navigator !== 'undefined'){
-	var CodeMirror = require('codemirror');
-
+	CodeMirror = require('codemirror');
 	//Language Modes
 	require('codemirror/mode/gfm/gfm.js'); //Github flavoured markdown
 	require('codemirror/mode/javascript/javascript.js');
+	require('codemirror/mode/css/css.js');
 }
 
 
-var CodeEditor = React.createClass({
+const CodeEditor = React.createClass({
 	getDefaultProps: function() {
 		return {
+			value    : '',
+
 			language : '',
-			value : '',
-			wrap : false,
-			onChange : function(){},
-			onCursorActivity : function(){},
+			wrap     : true,
+			onChange : ()=>{},
 		};
 	},
-
-	componentDidMount: function() {
-		this.codeMirror = CodeMirror(this.refs.editor,{
-			value : this.props.value,
-			lineNumbers: true,
-			lineWrapping : this.props.wrap,
-			mode : this.props.language
-		});
-
-		this.codeMirror.on('change', this.handleChange);
-		this.codeMirror.on('cursorActivity', this.handleCursorActivity);
-		this.updateSize();
-	},
-
 	componentWillReceiveProps: function(nextProps){
+		if(this.props.language !== nextProps.language){
+			this.buildEditor();
+		}
 		if(this.codeMirror && nextProps.value !== undefined && this.codeMirror.getValue() != nextProps.value) {
 			this.codeMirror.setValue(nextProps.value);
 		}
 	},
-
 	shouldComponentUpdate: function(nextProps, nextState) {
 		return false;
 	},
+	componentDidMount: function() {
+		this.buildEditor();
+	},
+	buildEditor : function(){
+		this.codeMirror = CodeMirror(this.refs.editor,{
+			value        : this.props.value,
+			lineNumbers  : true,
+			lineWrapping : this.props.wrap,
+			mode         : this.props.language,
+			indentWithTabs : true,
+			tabSize : 2
+		});
+		this.codeMirror.on('change', ()=>{
+			this.props.onChange(this.codeMirror.getValue());
+		});
+		this.updateSize();
+	},
 
+	//Externally Used
 	setCursorPosition : function(line, char){
 		setTimeout(()=>{
 			this.codeMirror.focus();
 			this.codeMirror.doc.setCursor(line, char);
 		}, 10);
 	},
-
+	getCursorPosition : function(){
+		return this.codeMirror.getCursor();
+	},
 	updateSize : function(){
 		this.codeMirror.refresh();
-	},
-
-	handleChange : function(editor){
-		this.props.onChange(editor.getValue());
-	},
-	handleCursorActivity : function(){
-		this.props.onCursorActivity(this.codeMirror.doc.getCursor());
 	},
 
 	render : function(){

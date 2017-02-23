@@ -8,6 +8,7 @@ let State = {
 
 	brew : {
 		text : '',
+		style : '',
 		shareId : undefined,
 		editId : undefined,
 		createdAt : undefined,
@@ -29,9 +30,15 @@ const Store = flux.createStore({
 	SET_BREW : (brew) => {
 		State.brew = brew;
 	},
-	UPDATE_BREW_TEXT : (brewText) => {
-		State.brew.text = brewText;
-		State.errors = Markdown.validate(brewText);
+	UPDATE_BREW_CODE : (brewCode) => {
+		State.brew.text = brewCode;
+
+		//TODO: Remove?
+		State.errors = Markdown.validate(brewCode);
+	},
+	UPDATE_BREW_STYLE : (style) => {
+		//TODO: add in an error checker?
+		State.brew.style = style;
 	},
 	UPDATE_META : (meta) => {
 		State.brew = _.merge({}, State.brew, meta);
@@ -50,11 +57,14 @@ Store.init = (state)=>{
 Store.getBrew = ()=>{
 	return State.brew;
 };
-Store.getBrewText = ()=>{
+Store.getBrewCode = ()=>{
 	return State.brew.text;
 };
+Store.getBrewStyle = ()=>{
+	return State.brew.style;
+};
 Store.getMetaData = ()=>{
-	return _.omit(State.brew, ['text']);
+	return _.omit(State.brew, ['text', 'style']);
 };
 Store.getErrors = ()=>{
 	return State.errors;

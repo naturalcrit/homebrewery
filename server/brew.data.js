@@ -10,10 +10,12 @@ const BrewSchema = mongoose.Schema({
 	editId  : {type : String, default: shortid.generate, index: { unique: true }},
 
 	text : {type : String, default : ""},
+	style : {type : String, default : ""},
 
 	title       : {type : String, default : ""},
 	description : {type : String, default : ""},
 	tags        : {type : String, default : ""},
+	thumbnail   : {type : String, default : ""},
 	systems     : [String],
 	authors     : [String],
 	published   : {type : Boolean, default : false},
@@ -22,7 +24,7 @@ const BrewSchema = mongoose.Schema({
 	updatedAt  : { type: Date, default: Date.now},
 	lastViewed : { type: Date, default: Date.now},
 	views      : {type:Number, default:0},
-	version    : {type: Number, default:1}
+	version    : {type: Number, default:2}
 }, {
 	versionKey: false,
 	toJSON : {

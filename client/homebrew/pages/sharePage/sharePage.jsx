@@ -15,20 +15,9 @@ const Utils = require('homebrewery/utils.js');
 const Actions = require('homebrewery/brew.actions.js');
 const Store = require('homebrewery/brew.store.js');
 
-const SharePage = React.createClass({
-	getDefaultProps: function() {
-		return {
-			brew : {
-				title : '',
-				text : '',
-				shareId : null,
-				createdAt : null,
-				updatedAt : null,
-				views : 0
-			}
-		};
-	},
+const Headtags = require('vitreum/headtags');
 
+const SharePage = React.createClass({
 	componentDidMount: function() {
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
@@ -39,9 +28,28 @@ const SharePage = React.createClass({
 		p : Actions.print
 	}),
 
+	renderMetatags : function(brew){
+		let metatags = [
+			<Headtags.meta key='site_name' property='og:site_name' content='Homebrewery'/>,
+			<Headtags.meta key='type' property='og:type' content='article' />
+		];
+		if(brew.title){
+			metatags.push(<Headtags.meta key='title' property='og:title' content={brew.title} />);
+		}
+		if(brew.description){
+			metatags.push(<Headtags.meta key='description' name='description' content={brew.description} />);
+		}
+		if(brew.thumbnail){
+			metatags.push(<Headtags.meta key='image' property='og:image' content={brew.thumbnail} />);
+		}
+		return metatags;
+	},
+
 	render : function(){
 		const brew = Store.getBrew();
 		return <div className='sharePage page'>
+			{this.renderMetatags(brew)}
+
 			<Navbar>
 				<Nav.section>
 					<Nav.item className='brewTitle'>{brew.title}</Nav.item>
@@ -57,7 +65,7 @@ const SharePage = React.createClass({
 				</Nav.section>
 			</Navbar>
 			<div className='content'>
-				<BrewRenderer brewText={brew.text} />
+				<BrewRenderer brew={brew} />
 			</div>
 		</div>
 	}

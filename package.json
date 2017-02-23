@@ -11,8 +11,9 @@
     "prod": "set NODE_ENV=production&& npm run build",
     "postinstall": "npm run build",
     "start": "node server.js",
-    "test": "mocha test",
-    "test:dev": "nodemon -x mocha test || exit 0"
+    "test": "mocha tests",
+    "test:dev": "nodemon -x mocha tests || exit 0",
+    "test:markdown": "nodemon -x mocha tests/markdown.test.js || exit 0"
   },
   "author": "stolksdorf",
   "license": "MIT",

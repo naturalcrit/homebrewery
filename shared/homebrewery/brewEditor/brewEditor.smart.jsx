@@ -5,9 +5,10 @@ const BrewEditor = require('./brewEditor.jsx')
 
 module.exports = Store.createSmartComponent(BrewEditor, ()=>{
 	return {
-		value : Store.getBrewText(),
-		onChange : Actions.updateBrewText,
-		metadata : Store.getMetaData(),
-		onMetadataChange : Actions.updateMetaData,
+		brew : Store.getBrew(),
+
+		onCodeChange  : Actions.updateBrewCode,
+		onStyleChange : Actions.updateBrewStyle,
+		onMetaChange  : Actions.updateMetadata,
 	};
 });

@@ -8,7 +8,7 @@ module.exports = {
 
 	random : (num = 20)=>{
 		return _.times(num, ()=>{
-			//TODO: Build better generator
+			//TODO: Build better generator, use new snippets?
 			return {
 				title : 'BrewA',
 				description : '',
@@ -19,6 +19,20 @@ module.exports = {
 				published : !!_.random(0,1)
 			};
 		});
+	},
+	old : () => {
+		return [
+			{
+				title : 'OLD - div test',
+				description : '',
+				authors : ['old'],
+				text : `<div class='wide' style='text-align:center'> neato </div>`,
+				systems : [],
+				views   : 0,
+				published : true,
+				version : 1
+			}
+		]
 	},
 	static : () => {
 		return {
