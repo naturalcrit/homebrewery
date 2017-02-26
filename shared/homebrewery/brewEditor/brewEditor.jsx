@@ -3,9 +3,7 @@ const _ = require('lodash');
 const cx = require('classnames');
 
 const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
-const SnippetBar = require('./snippetbar/snippetbar.jsx');
 const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
-
 const Menubar = require('./menubar/menubar.jsx');
 
 const splice = function(str, index, inject){
@@ -152,13 +150,6 @@ const BrewEditor = React.createClass({
 	render : function(){
 		this.highlightPageLines();
 		return <div className='brewEditor' ref='main'>
-			{/*
-			<SnippetBar
-				brew={this.props.value}
-				onInject={this.handleInject}
-				onToggle={this.handgleToggle}
-				showmeta={this.state.showMetadataEditor} />
-			*/}
 			<Menubar
 				view={this.state.view}
 				onViewChange={this.handleViewChange}
