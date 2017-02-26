@@ -1,7 +1,4 @@
 const _ = require('lodash');
-
-const spellNames = require('./spellname.list.js');
-
 const Data = require('./random.data.js');
 
 
@@ -11,13 +8,11 @@ const schools = ['abjuration', 'conjuration', 'divination', 'enchantment', 'evoc
 
 
 module.exports = {
-	name : 'Spell',
-	icon : 'fa-spell',
-	gen : ()=>{
+	spell : ()=>{
 
 		let components = _.sampleSize(['V', 'S', 'M'], _.random(1,3)).join(', ');
 		if(components.indexOf('M') !== -1){
-			components += ' (' +  _.sampleSize(Data.gear, _.random(1,3)).join(', ') + ')'
+			components += ` (${Data.rand('gear',3).join(', ')})`
 		}
 
 		const duration = _.sample([
@@ -28,11 +23,11 @@ module.exports = {
 			'1 hour'
 		]);
 
-		const description = _.sampleSize(Data.effects, _.random(1,2)).concat(_.sample(Data.effects2)).join(' ');
+		const description = Data.rand('effects', 2).concat(Data.rand('effects2')).join(' ');
 
 
 		return `{{spell
-#### ${_.sample(spellNames)}
+#### ${_.sample(Data.spellNames)}
 *${_.sample(levels)}-level ${_.sample(schools)}*
 - **Casting Time:** ${_.sample(['1 action', 'Reaction', '10 minutes', '1 hour'])}
 - **Range:** ${_.sample(['Self', 'Touch', '30 feet', '60 feet'])}

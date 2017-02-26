@@ -1,13 +1,15 @@
 const _ = require('lodash');
 
-const process = (imports)=>{
-
-};
-
-module.exports = {
-	phb : _.keyBy([
-		require('./spell.snippet.js')
-	], (spt)=>_.snakeCase(spt.name)),
+module.exports = _.merge(
+	require('./spell.snippet.js'),
+	require('./table.snippet.js')
 
 
-}
+		//wide
+		//colors
+		//brushed
+		//font
+		//alignment
+
+
+);

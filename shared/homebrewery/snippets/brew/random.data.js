@@ -1,4 +1,9 @@
-module.exports = {
+const _ = require('lodash');
+
+const Data = {
+	rand : (name, max = 1, min = 1)=>{
+		return _.sampleSize(Data[name], _.random(min, max));
+	},
 
 	titles : [
 		`The Burning Gallows`,
@@ -309,4 +314,6 @@ module.exports = {
 
 
 
-}
+};
+
+module.exports = Data;

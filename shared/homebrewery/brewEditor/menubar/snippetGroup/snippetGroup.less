@@ -1,0 +1,56 @@
+.snippetGroup{
+	//display        : inline-block;
+	display : flex;
+	height : 100%;
+	align-items : center;
+
+	//height         : @menuHeight;
+	padding        : 0px 5px;
+	cursor         : pointer;
+	font-size      : 0.6em;
+	font-weight    : 800;
+	///line-height    : @menuHeight;
+	text-transform : uppercase;
+	border-right   : 1px solid black;
+	i{
+		vertical-align : middle;
+		margin-right   : 3px;
+		font-size      : 1.2em;
+	}
+	&:hover, &.selected{
+		background-color : #999;
+	}
+	.text{
+		//line-height : @menuHeight;
+		.groupName{
+			font-size : 10px;
+		}
+	}
+	&:hover{
+		.dropdown{
+			visibility : visible;
+		}
+	}
+	.dropdown{
+		position         : absolute;
+		top              : 100%;
+		visibility       : hidden;
+		z-index          : 1000;
+		margin-left      : -5px;
+		padding          : 0px;
+		background-color : #ddd;
+		.snippet{
+			.animate(background-color);
+			padding   : 10px;
+			cursor    : pointer;
+			font-size : 10px;
+			i{
+				margin-right : 8px;
+				font-size    : 13px;
+			}
+			&:hover{
+				background-color : #999;
+			}
+		}
+	}
+}
