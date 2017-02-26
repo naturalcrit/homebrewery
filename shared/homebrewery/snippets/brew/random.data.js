@@ -284,6 +284,39 @@ const Data = {
 		`Yielding Throw of the Mills`,
 	],
 
+	abilities : [
+		"Astrological Botany",
+		"Astrological Chemistry",
+		"Biochemical Sorcery",
+		"Civil Alchemy",
+		"Consecrated Biochemistry",
+		"Demonic Anthropology",
+		"Divinatory Mineralogy",
+		"Genetic Banishing",
+		"Hermetic Geography",
+		"Immunological Incantations",
+		"Nuclear Illusionism",
+		"Ritual Astronomy",
+		"Seismological Divination",
+		"Spiritual Biochemistry",
+		"Statistical Occultism",
+		"Police Necromancer",
+		"Sixgun Poisoner",
+		"Pharmaceutical Gunslinger",
+		"Infernal Banker",
+		"Spell Analyst",
+		"Gunslinger Corruptor",
+		"Torque Interfacer",
+		"Exo Interfacer",
+		"Gunpowder Torturer",
+		"Orbital Gravedigger",
+		"Phased Linguist",
+		"Mathematical Pharmacist",
+		"Plasma Outlaw",
+		"Malefic Chemist",
+		"Police Cultist"
+	],
+
 	alignments : [
 		"Annoying Evil",
 		"Chaotic Gossipy",
@@ -309,10 +342,21 @@ const Data = {
 	],
 
 	sizes : ['Microscopic', 'Tiny', 'Small', 'Medium', 'Large', 'Gargantuan', 'Stupidly vast'],
+	levels : ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "11th", "12th", "13th", "14th", "15th", "16th", "17th", "18th", "19th", "20th"],
 
 
-
-
+	sentences : [
+		`The suspicion arises the narrator of the tale is actually a demon.`,
+		`There is a predicted hurricane - but it's not what was expected, and this complicates the plans of the protagonist.`,
+		`The antagonist's believes their life has changed for the strange - this turns out to be this is due to being lied to by others`,
+		`An accidental cuddle leads to complications.`,
+		`It's revealed that everything that is happening is all a dream.`,
+		`There is a sudden hurricane.`,
+		`The alternate protagonist is revealed to be a different race/species than thought, which suddenly makes what's going on much clearer.`,
+		`Thanks to alien forces, the characters end up in the earth's past.`,
+		`Thanks to alien forces, the secondary protagonist ends up in a world after an apocalypse.`,
+		`Due to a panic attack a character has to get psychological therapy.`,
+	]
 
 };
 

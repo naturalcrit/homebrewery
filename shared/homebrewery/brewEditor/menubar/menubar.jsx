@@ -5,7 +5,6 @@ const cx    = require('classnames');
 const SnippetMap = require('./snippet.map.js');
 const SnippetGroup = require('./snippetGroup/snippetGroup.jsx');
 
-console.log(SnippetMap);
 const Menubar = React.createClass({
 	getDefaultProps: function() {
 		return {

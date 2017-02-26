@@ -8,8 +8,6 @@
 @monsterStatBackground : #FDF1DC;
 
 
-@teal : blue;
-
 
 .colorElements(@color){
 	table tbody{
@@ -17,8 +15,23 @@
 			background-color : @color;
 		}
 	}
+	&.note{
+		background-color: @color;
+	}
 }
+
+@red : #9c2b1b;
+@gold : #c9ad6a; //brown?
+@green : #e0e5c1;
+@yellow : #faf7ea; //same as background?
+@teal : blue;
+@blue : blue;
 
 
 //TODO make a color mixin generator
 .teal{ .colorElements(@teal); }
+.blue{ .colorElements(@blue); }
+.green{ .colorElements(@green); }
+.yellow{ .colorElements(@yellow); }
+.gold{ .colorElements(@gold); }
+.red{ .colorElements(@red); }

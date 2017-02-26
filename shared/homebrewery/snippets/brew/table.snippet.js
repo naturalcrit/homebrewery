@@ -20,7 +20,7 @@ const columns = {
 		return _.concat([`d${rows}`, ':---:'], _.times(rows, (i)=>i+1));
 	},
 	level : (rows)=>{
-		return _.concat([`${_.sample(Data.classes)} Level`, ':---:'], _.times(rows, (i)=>`${i*2+3}th`));
+		return _.concat([`${_.sample(Data.classes)} Level`, ':---:'], _.times(rows, (i)=>Data.levels[i*2]));
 	},
 
 	spell : (rows)=>{

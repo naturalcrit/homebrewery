@@ -8,11 +8,13 @@
     "build": "node scripts/build.js",
     "populate": "node scripts/populate.js",
 
-    "snippet" : "nodemon scripts/snippet.test.js",
-
     "prod": "set NODE_ENV=production&& npm run build",
     "postinstall": "npm run build",
     "start": "node server.js",
+
+    "snippet" : "nodemon scripts/snippet.test.js",
+    "todo" : "node_modules/.bin/notes -h true -x node_modules/ -x build/",
+
     "test": "mocha tests",
     "test:dev": "nodemon -x mocha tests || exit 0",
     "test:markdown": "nodemon -x mocha tests/markdown.test.js || exit 0"

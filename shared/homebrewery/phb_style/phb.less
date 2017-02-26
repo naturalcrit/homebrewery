@@ -15,7 +15,7 @@
 	@import './phb.blocks.less';
 
 
-	@page { margin: 0; }
+	@page { margin: 0; } //????
 
 
 	.useColumns(@multiplier : 1){
@@ -171,6 +171,7 @@
 	//*****************************
 	// *            NOTE
 	// *****************************/
+	/*
 	blockquote{
 		.useSansSerif();
 		box-sizing          : border-box;
@@ -187,6 +188,7 @@
 			line-height : 1.1em;
 		}
 	}
+	*/
 	//If a note starts a column, give it space at the top to render border
 	pre+blockquote, h2+blockquote, h3+blockquote, h4+blockquote, h5+blockquote {
 		margin-top : 13px;
@@ -416,6 +418,7 @@
 	//*****************************
 	// *       CLASS TABLE
 	// *****************************/
+	/*
 	.descriptive{
 		display             : block-inline;
 		margin-bottom       : 1em;
@@ -447,6 +450,7 @@
 	pre+.descriptive{
 		margin-top : 8px;
 	}
+	*/
 	//*****************************
 	// *      TABLE OF CONTENTS
 	// *****************************/

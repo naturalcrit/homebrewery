@@ -11,15 +11,37 @@
 		}
 	}
 }
-
 .monster{
-
 }
-
-
-
-
+.note{
+	.useSansSerif();
+	margin-bottom       : 1em;
+	padding             : 5px 10px;
+	background-color    : @green;
+	border-style        : solid;
+	border-width        : 11px;
+	border-image        : @noteBorder 11;
+	border-image-outset : 9px 0px;
+	box-shadow          : 1px 4px 14px #888;
+	h2,h3,h4{
+		.useSansSerif();
+		color : black;
+	}
+	p, ul{
+		font-size   : 0.352cm;
+		line-height : 1.1em;
+	}
+	&.alt{
+		border-style        : solid;
+		border-width        : 7px;
+		border-image        : @descriptiveBorder 12 round;
+		border-image-outset : 4px;
+	}
+}
 .frame{
+	box-sizing          : border-box;
+	margin-top          : 30px;
+	margin-bottom       : 37px;
 	background-color    : white;
 	border              : initial;
 	border-style        : solid;
@@ -28,17 +50,18 @@
 	border-image-slice  : 150 200 150 200;
 	border-image-source : @frameBorder;
 	border-image-width  : 47px;
-	margin-top : 30px;
-	margin-bottom : 37px;
-	box-sizing: border-box;
 }
-
 .wide{
 	column-span         : all;
 	-webkit-column-span : all;
 	-moz-column-span    : all;
 }
 
-.2column, .2col{
+.twoCol{
+	background-color: red;
+	column-count         : 2;
+}
 
+.columnSplit{
+	//TODO: make \column trigger this
 }
