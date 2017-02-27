@@ -13,11 +13,11 @@ renderer.paragraph = function(text){
 		if(text) r.push(Markdown(text, {renderer : renderer, sanitize: true}));
 		const block = matches[matchIndex];
 		if(block && block[0] == '{'){
-			r.push(`\n\n<div class="block ${block.substring(2).split(',').join(' ')}">`);
+			r.push(`\n\n<div class="block ${block.substring(2).split(',').join(' ')}"><div class="internal">`);
 			blockCount++;
 		}
 		if(block == '}}' && blockCount !== 0){
-			r.push('</div>\n\n');
+			r.push('</div></div>\n\n');
 			blockCount--;
 		}
 		matchIndex++;
