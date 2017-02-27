@@ -105,6 +105,11 @@ const BrewEditor = React.createClass({
 				r.push(lineNumber);
 			}
 
+			if(line.indexOf('\\column') !== -1){
+				codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
+				r.push(lineNumber);
+			}
+
 			if(_.startsWith(line, '{{') || _.startsWith(line, '}}')){
 				codeMirror.addLineClass(lineNumber, 'text', 'block');
 			}

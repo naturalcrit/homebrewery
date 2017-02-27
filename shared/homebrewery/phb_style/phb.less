@@ -15,7 +15,7 @@
 	@import './phb.blocks.less';
 
 
-	@page { margin: 0; } //????
+	@page { margin: 0; } //TODO: ????
 
 
 	.useColumns(@multiplier : 1){
@@ -322,12 +322,14 @@
 		list-style-type : none;
 	}
 	//Column Break
+	/*
 	pre, code{
 		visibility                 : hidden;
 		-webkit-column-break-after : always;
 		break-after                : always;
 		-moz-column-break-after    : always;
 	}
+	*/
 	//Avoid breaking up
 	p,blockquote,table{
 		z-index                     : 15;
