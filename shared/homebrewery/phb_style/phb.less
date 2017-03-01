@@ -18,17 +18,11 @@
 	@page { margin: 0; } //TODO: ????
 
 
-	.useColumns(@multiplier : 1){
+	.useColumns(){
 		column-count         : 2;
 		column-fill          : auto;
 		column-gap           : 1cm;
-		column-width         : 8cm * @multiplier;
-		-webkit-column-count : 2;
-		-moz-column-count    : 2;
-		-webkit-column-width : 8cm * @multiplier;
-		-moz-column-width    : 8cm * @multiplier;
-		-webkit-column-gap   : 1cm;
-		-moz-column-gap      : 1cm;
+		column-width         : 8cm;
 	}
 	& *{
 		-webkit-print-color-adjust : exact;
@@ -51,11 +45,14 @@
 	page-break-before : always;
 	page-break-after  : always;
 
+
+	/* CODE */
 	pre{
 		font-family : monospace;
 		background-color : @yellow;
 		padding : 12px;
 		border: 1px solid #bfbfbf;
+		white-space: pre-wrap;
 		color : #333;
 		-webkit-column-break-inside : avoid;
 		column-break-inside         : avoid;
@@ -200,9 +197,9 @@
 	}
 	*/
 	//If a note starts a column, give it space at the top to render border
-	pre+blockquote, h2+blockquote, h3+blockquote, h4+blockquote, h5+blockquote {
-		margin-top : 13px;
-	}
+	//pre+blockquote, h2+blockquote, h3+blockquote, h4+blockquote, h5+blockquote {
+	//	margin-top : 13px;
+	//}
 	//*****************************
 	// *    MONSTER STAT BLOCK
 	// *****************************/

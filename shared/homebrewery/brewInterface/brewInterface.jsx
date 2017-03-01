@@ -7,9 +7,9 @@ const BrewRenderer = require('../brewRenderer/brewRenderer.smart.jsx');
 
 
 const BrewInterface = React.createClass({
-
 	handleSplitMove : function(){
-		console.log('split move!');
+		const BrewEditor = this.refs.editor.refs.wrappedComponent;
+		BrewEditor.updateEditorSize();
 	},
 	render: function(){
 		return <SplitPane onDragFinish={this.handleSplitMove} ref='pane'>

@@ -26,6 +26,10 @@ renderer.paragraph = function(text){
 	return res;
 };
 
+renderer.image = function(href, title, text){
+	return `<img src="${href}" class="${text.split(',').join(' ')}"></img>`;
+};
+
 
 module.exports = {
 	marked : Markdown,

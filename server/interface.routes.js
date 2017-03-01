@@ -8,10 +8,11 @@ const mw = require('./middleware.js');
 
 
 const statics = {
-	welcomeBrew : fs.readFileSync('./welcome.brew.md', 'utf8'),
-	changelog   : fs.readFileSync('./changelog.md', 'utf8'),
-	testBrew    : fs.readFileSync('./statics/test.brew.md', 'utf8'),
+	welcomeBrew : fs.readFileSync('./statics/welcome.brew.md', 'utf8'),
+	changelog   : fs.readFileSync('./statics/changelog.md', 'utf8'),
+	faq         : fs.readFileSync('./statics/faq.md', 'utf8'),
 
+	testBrew    : fs.readFileSync('./statics/test.brew.md', 'utf8'),
 	oldTest     : fs.readFileSync('./statics/oldTest.brew.md', 'utf8'),
 };
 
@@ -77,6 +78,17 @@ router.get('/changelog', (req, res, next) => {
 	req.brew = {
 		text : statics.changelog,
 		title : 'Changelog'
+	};
+	return next();
+}, renderPage);
+
+//faq Page
+router.get('/faq', (req, res, next) => {
+	req.brew = {
+		text : statics.faq,
+		title : 'FAQ',
+
+		editId : true
 	};
 	return next();
 }, renderPage);
