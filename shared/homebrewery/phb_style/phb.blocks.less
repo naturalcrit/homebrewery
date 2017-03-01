@@ -12,7 +12,28 @@
 	}
 }
 .monster{
+	-webkit-column-break-inside : avoid;
+	column-break-inside         : avoid;
+
+	&>.internal{
+		//background-color : @monsterStatBackground;
+		background-image: @monsterBG;
+		border-style     : solid;
+		border-width     : 10px;
+		border-image     : @monsterBorder 10;
+		table{
+			color : @headerText;
+		}
+
+		ul:nth-of-type(1),ul:nth-of-type(2){
+			background-color: red;
+		}
+
+	}
+
 }
+
+
 .note{
 	.useSansSerif();
 	margin: 9px 0px;
@@ -90,6 +111,7 @@
 }
 
 
+
 .brushed{
 	border-image-source : url('http://i.imgur.com/nzPYZyD.png');
 	border-image-outset : 25px 17px;
@@ -98,4 +120,23 @@
 	border-image-width  : 1250px;
 
 
+}
+
+
+//basics
+.left{
+	text-align: left;
+}
+.right{
+	text-align: right;
+}
+.center{
+	text-align: center;
+}
+.bold{
+	font-weight: 800;
+}
+
+.sansSerif{
+	.useSansSerif();
 }

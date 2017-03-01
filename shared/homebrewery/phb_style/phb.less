@@ -147,6 +147,15 @@
 		font-size     : 0.423cm;
 		font-weight   : 900;
 	}
+
+	hr{
+		visibility       : visible;
+		height           : 6px;
+		margin           : 4px 0px;
+		background-image : @dividerImg;
+		background-size  : 100% 100%;
+		border           : none;
+	}
 	//*****************************
 	// *          TABLE
 	// *****************************/
@@ -264,7 +273,7 @@
 	}
 	//Full Width
 	hr+hr+blockquote{
-		.useColumns(0.96);
+		//.useColumns(0.96);
 	}
 	//*****************************
 	// *           FOOTER
@@ -317,17 +326,14 @@
 	//*****************************
 	// *          EXTRAS
 	// *****************************/
-	hr{
-		visibility : hidden;
-		margin     : 0px;
-	}
+
 	//Modified unorder list, used in spells
-	hr+ul{
-		margin-bottom   : 0.5em;
-		padding-left    : 1em;
-		text-indent     : -1em;
-		list-style-type : none;
-	}
+	// hr+ul{
+	// 	margin-bottom   : 0.5em;
+	// 	padding-left    : 1em;
+	// 	text-indent     : -1em;
+	// 	list-style-type : none;
+	// }
 	//Column Break
 	/*
 	pre, code{
@@ -338,20 +344,21 @@
 	}
 	*/
 	//Avoid breaking up
+	/*
 	p,blockquote,table{
 		z-index                     : 15;
 		-webkit-column-break-inside : avoid;
 		column-break-inside         : avoid;
 		overflow: hidden; /* Firefox fix */
-	}
+
 	//Better spacing for spell blocks
-	h4+p+hr+ul{
-		margin-top : -0.5em
-	}
-	//Text indent right after table
-	table+p{
-		text-indent : 1em;
-	}
+	// h4+p+hr+ul{
+	// 	margin-top : -0.5em
+	// }
+	// //Text indent right after table
+	// table+p{
+	// 	text-indent : 1em;
+	// }
 	// Nested lists
 	ul ul,ol ol,ul ol,ol ul{
 		margin-bottom : 0px;
@@ -365,6 +372,7 @@
 	//*****************************
 	// *         SPELL LIST
 	// *****************************/
+	/*
 	.spellList{
 		.useSansSerif();
 		column-count        : 4;
@@ -390,11 +398,11 @@
 	//*****************************
 	// *         PRINT
 	// *****************************/
-	&.print{
-		blockquote{
-			box-shadow : none;
-		}
-	}
+	// &.print{
+	// 	blockquote{
+	// 		box-shadow : none;
+	// 	}
+	// }
 
 	//*****************************
 	// *         WIDE
@@ -408,22 +416,22 @@
 	//*****************************
 	// *       CLASS TABLE
 	// *****************************/
-	.classTable{
-		margin-top          : 25px;
-		margin-bottom       : 40px;
-		border-collapse     : separate;
-		background-color    : white;
-		border              : initial;
-		border-style        : solid;
-		border-image-outset : 25px 17px;
-		border-image-repeat : round;
-		border-image-slice  : 150 200 150 200;
-		border-image-source : @frameBorder;
-		border-image-width  : 47px;
-		h5{
-			margin-bottom : 10px;
-		}
-	}
+	// .classTable{
+	// 	margin-top          : 25px;
+	// 	margin-bottom       : 40px;
+	// 	border-collapse     : separate;
+	// 	background-color    : white;
+	// 	border              : initial;
+	// 	border-style        : solid;
+	// 	border-image-outset : 25px 17px;
+	// 	border-image-repeat : round;
+	// 	border-image-slice  : 150 200 150 200;
+	// 	border-image-source : @frameBorder;
+	// 	border-image-width  : 47px;
+	// 	h5{
+	// 		margin-bottom : 10px;
+	// 	}
+	// }
 	//*****************************
 	// *       CLASS TABLE
 	// *****************************/
@@ -488,33 +496,33 @@
 	// *      Old Stuff
 	// *****************************/
 
-	//Double hr for full width elements
-	hr+hr+blockquote{
-		column-span         : all;
-		-webkit-column-span : all;
-		-moz-column-span    : all;
-	}
+	// //Double hr for full width elements
+	// hr+hr+blockquote{
+	// 	column-span         : all;
+	// 	-webkit-column-span : all;
+	// 	-moz-column-span    : all;
+	// }
 
 	//*****************************
 	// *      CLASS TABLE
 	// *****************************/
-	hr+table{
-		margin-top          : -5px;
-		margin-bottom       : 50px;
-		padding-top         : 10px;
-		border-collapse     : separate;
-		background-color    : white;
-		border              : initial;
-		border-style        : solid;
-		border-image-outset : 37px 17px;
-		border-image-repeat : round;
-		border-image-slice  : 150 200 150 200;
-		border-image-source : @frameBorder;
-		border-image-width  : 47px;
-	}
-	h5+hr+table{
-		column-span         : all;
-		-webkit-column-span : all;
-		-moz-column-span    : all;
-	}
+	// hr+table{
+	// 	margin-top          : -5px;
+	// 	margin-bottom       : 50px;
+	// 	padding-top         : 10px;
+	// 	border-collapse     : separate;
+	// 	background-color    : white;
+	// 	border              : initial;
+	// 	border-style        : solid;
+	// 	border-image-outset : 37px 17px;
+	// 	border-image-repeat : round;
+	// 	border-image-slice  : 150 200 150 200;
+	// 	border-image-source : @frameBorder;
+	// 	border-image-width  : 47px;
+	// }
+	// h5+hr+table{
+	// 	column-span         : all;
+	// 	-webkit-column-span : all;
+	// 	-moz-column-span    : all;
+	// }
 }
