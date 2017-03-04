@@ -1,5 +1,8 @@
 # changelog
 
+### Friday, 03/03/2017 - v2.7.3
+- Increasing the range on the Partial Page Rendering for a quick-fix for it getting out of sync on long brews.
+
 ### Saturday, 18/02/2017 - v2.7.2
 - Adding ability to delete a brew from the user page, incase the user creates a brew that makes the edit page unrender-able. (re:309)
 

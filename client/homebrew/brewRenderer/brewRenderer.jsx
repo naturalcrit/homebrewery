@@ -77,9 +77,13 @@ const BrewRenderer = React.createClass({
 		if(!this.state.isMounted) return false;
 
 		var viewIndex = this.state.viewablePageNumber;
+		if(index == viewIndex - 3) return true;
+		if(index == viewIndex - 2) return true;
 		if(index == viewIndex - 1) return true;
 		if(index == viewIndex)     return true;
 		if(index == viewIndex + 1) return true;
+		if(index == viewIndex + 2) return true;
+		if(index == viewIndex + 3) return true;
 
 		//Check for style tages
 		if(pageText.indexOf('<style>') !== -1) return true;
