@@ -12,6 +12,12 @@
 
 
 
+How to make spacers
+
+
+
+
+
 ## Changing backgrounds
 {{wide
 In style
