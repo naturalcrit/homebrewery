@@ -15,7 +15,11 @@
 How to make spacers
 
 
-
+- How to skip page numbers
+- How to set page number
+- How to hide footers
+#p1:before, #p1:after{ display:none }
+#p2:before{ counter-reset: phb-page-numbers 30; }
 
 
 ## Changing backgrounds
