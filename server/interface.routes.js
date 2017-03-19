@@ -45,6 +45,7 @@ router.get('/edit/:editId', mw.loadBrew, renderPage);
 
 //Print Page
 router.get('/print/:shareId', mw.viewBrew, renderPage);
+router.get('/print', renderPage);
 
 //Source page
 router.get('/source/:sharedId', mw.viewBrew, (req, res, next)=>{

@@ -1,4 +1,20 @@
 
+.breakAvoid(){
+	column-break-inside         : avoid;
+	-webkit-column-break-inside : avoid;
+}
+.pseudoBorder(){
+	position : relative;
+	&:before{
+		content             : '';
+		position            : absolute;
+		z-index             : -1;
+		box-sizing          : border-box;
+		border-style        : solid;
+		border-image-repeat : round;
+	}
+}
+///////////////////
 .spell{
 	ul:first-of-type{
 		margin-top      : -0.5em;
@@ -12,69 +28,73 @@
 	}
 }
 .monster{
-	-webkit-column-break-inside : avoid;
-	column-break-inside         : avoid;
-
-	&>.internal{
-		//background-color : @monsterStatBackground;
-		background-image: @monsterBG;
-		border-style     : solid;
-		border-width     : 10px;
-		border-image     : @monsterBorder 10;
-		table{
-			color : @headerText;
-		}
-
-		ul:nth-of-type(1),ul:nth-of-type(2){
-			background-color: red;
-		}
-
+	.breakAvoid();
+	.pseudoBorder();
+	padding                     : 10px 5px;
+	table{
+		color : @headerText;
 	}
-
+	ul:nth-of-type(1),ul:nth-of-type(2){
+		background-color : red;
+	}
+	&:before{
+		top                 : 10px;
+		right               : 0px;
+		bottom              : 10px;
+		left                : 0px;
+		//background-color : @monsterStatBackground;
+		//border-image-outset : 25px 17px;
+		border-image-slice  : 10;
+		border-image-source : @monsterBorder;
+		border-image-width  : 47px;
+	}
 }
-
-
 .note{
 	.useSansSerif();
-	margin: 9px 0px;
-	&>.internal{
-		margin-bottom       : 1em;
-		padding             : 5px 10px;
+	.breakAvoid();
+	.pseudoBorder();
+	margin  : 9px 0px;
+	padding : 12px 5px;
+	&:before{
+		top                 : 9px;
+		right               : 0px;
+		bottom              : 9px;
+		left                : 0px;
 		background-color    : @green;
-		border-style        : solid;
 		border-width        : 11px;
-		border-image        : @noteBorder 11;
 		border-image-outset : 9px 0px;
-		box-shadow          : 1px 4px 14px #888;
-		h2,h3,h4{
-			.useSansSerif();
-			color : black;
-		}
-		p, ul{
-			font-size   : 0.352cm;
-			line-height : 1.1em;
-		}
-
+		border-image-slice  : 11;
+		border-image-source : @noteBorder;
 	}
-	&.alt>.internal{
-		border-style        : solid;
-		border-width        : 7px;
-		border-image        : @descriptiveBorder 12 round;
-		border-image-outset : 4px;
+	h2,h3,h4{
+		.useSansSerif();
+		color : black;
+	}
+	p, ul{
+		font-size   : 0.352cm;
+		line-height : 1.1em;
+	}
+	&.alt{
+		&:before{
+			border-style        : solid;
+			border-width        : 7px;
+			border-image-outset : 4px;
+			border-image-slice  : 12;
+			border-image-source : @descriptiveBorder;
+		}
 	}
 }
 .frame{
-	margin-top          : 26px;
-	margin-bottom       : 37px;
-	margin-left : 17px;
-	margin-right: 17px;
-	&>.internal{
-		box-sizing          : border-box;
+	.breakAvoid();
+	.pseudoBorder();
+	padding : 25px 17px;
+	&:before{
+		top                 : 25px;
+		right               : 17px;
+		bottom              : 25px;
+		left                : 17px;
 		background-color    : white;
-		border              : initial;
-		border-style        : solid;
 		border-image-outset : 25px 17px;
-		border-image-repeat : round;
 		border-image-slice  : 150 200 150 200;
 		border-image-source : @frameBorder;
 		border-image-width  : 47px;
@@ -85,58 +105,48 @@
 	-webkit-column-span : all;
 	-moz-column-span    : all;
 }
-
 .oneColumn{
-	column-count         : 1;
-	column-gap           : 1cm;
+	column-count : 1;
+	column-gap   : 1cm;
 }
 .twoColumn{
-	column-count         : 2;
-	column-gap           : 1cm;
+	column-count : 2;
+	column-gap   : 1cm;
 }
 .threeColumn{
-	column-count         : 3;
-	column-gap           : 1cm;
+	column-count : 3;
+	column-gap   : 1cm;
 }
 .fourColumn{
-	column-count         : 4;
-	column-gap           : 1cm;
+	column-count : 4;
+	column-gap   : 1cm;
 }
-
 .columnSplit{
 	visibility                 : hidden;
 	-webkit-column-break-after : always;
 	break-after                : always;
 	-moz-column-break-after    : always;
 }
-
-
-
 .brushed{
-	border-image-source : url('http://i.imgur.com/nzPYZyD.png');
-	border-image-outset : 25px 17px;
-	border-image-repeat : round;
-	border-image-slice  : 1250 1250 1250 1250;
-	border-image-width  : 1250px;
-
-
+	border-image-outset             : 25px 17px;
+	border-image-repeat             : round;
+	border-image-slice              : 1250 1250 1250 1250;
+	border-image-width              : 1250px;
+	border-image-source : url('http : //i.imgur.com/nzPYZyD.png');
 }
-
-
 //basics
 .left{
-	text-align: left;
+	text-align : left;
 }
 .right{
-	text-align: right;
+	text-align : right;
 }
 .center{
-	text-align: center;
+	text-align : center;
 }
 .bold{
-	font-weight: 800;
+	font-weight : 800;
 }
-
 .sansSerif{
 	.useSansSerif();
 }
