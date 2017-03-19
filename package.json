@@ -7,14 +7,11 @@
     "quick": "node scripts/quick.js",
     "build": "node scripts/build.js",
     "populate": "node scripts/populate.js",
-
     "prod": "set NODE_ENV=production&& npm run build",
     "postinstall": "npm run build",
     "start": "node server.js",
-
-    "snippet" : "nodemon scripts/snippet.test.js",
-    "todo" : "node_modules/.bin/notes -h true -x node_modules/ -x build/",
-
+    "snippet": "nodemon scripts/snippet.test.js",
+    "todo": "./node_modules/.bin/fixme -i node_modules/** -i build/**",
     "test": "mocha tests",
     "test:dev": "nodemon -x mocha tests || exit 0",
     "test:markdown": "nodemon -x mocha tests/markdown.test.js || exit 0"
@@ -50,6 +47,7 @@
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "chai-subset": "^1.4.0",
+    "fixme": "^0.4.3",
     "mocha": "^3.2.0",
     "supertest": "^2.0.1",
     "supertest-as-promised": "^4.0.2"
