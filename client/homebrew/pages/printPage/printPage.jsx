@@ -9,24 +9,36 @@ const PrintPage = React.createClass({
 			query : {},
 			brew : {
 				text : '',
+				style : ''
 			}
 		};
 	},
 	getInitialState: function() {
 		return {
-			brewText: this.props.brew.text
+			brew: this.props.brew
 		};
 	},
 	componentDidMount: function() {
 		if(this.props.query.local){
-			this.setState({ brewText : localStorage.getItem(this.props.query.local)});
+			try{
+				this.setState({
+					brew : JSON.parse(
+						localStorage.getItem(this.props.query.local)
+					)
+				});
+			}catch(e){}
 		}
 		if(this.props.query.dialog) window.print();
 	},
+	//TODO: This is pretty bad
+	renderStyle : function(){
+		if(!this.state.brew.style) return;
+		return <style>{this.state.brew.style.replace(/;/g, ' !important;')}</style>
+	},
 	renderPages : function(){
-		return _.map(this.state.brewText.split('\\page'), (page, index) => {
+		return _.map(this.state.brew.text.split('\\page'), (page, index) => {
 			return <div
-				className='phb'
+				className='phb v2'
 				id={`p${index + 1}`}
 				dangerouslySetInnerHTML={{__html:Markdown.render(page)}}
 				key={index} />;
@@ -35,6 +47,7 @@ const PrintPage = React.createClass({
 
 	render : function(){
 		return <div>
+			{this.renderStyle()}
 			{this.renderPages()}
 		</div>
 	}

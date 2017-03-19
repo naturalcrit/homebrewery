@@ -70,8 +70,9 @@ const Actions = {
 	},
 
 	localPrint : ()=>{
-		localStorage.setItem('print', Store.getBrewText());
-		window.open('/print?dialog=true&local=print','_blank');
+		const key = 'print';
+		localStorage.setItem(key, JSON.stringify(Store.getBrew()));
+		window.open(`/print?dialog=true&local=${key}`,'_blank');
 	},
 	print : ()=>{
 		window.open(`/print/${Store.getBrew().shareId}?dialog=true`, '_blank').focus();
