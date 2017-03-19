@@ -6,7 +6,6 @@ const cx    = require('classnames');
 const SnippetGroup = React.createClass({
 	getDefaultProps: function() {
 		return {
-			brew : '',
 			name : '',
 			icon : 'fa-rocket',
 			snippets : [],

@@ -9,7 +9,9 @@
 
 
 # Images
-
+Image basics
+- background images
+- Adding brushes
 
 
 How to make spacers
@@ -22,6 +24,18 @@ How to make spacers
 #p2:before{ counter-reset: phb-page-numbers 30; }
 
 
+- blockquotes, cite
+
+styling images
+
+
+# Print
+- Saving ink
+- Changing page size
+- Printing to PDF
+
+
+
 ## Changing backgrounds
 {{wide
 In style
@@ -32,4 +46,62 @@ In style
 
 ```
 }}
+
+## Changes in v3
+
+``` ``` -> \column
+
+
+\page
+
+## Columns
+{{wide,twoColumn
+This is how columns work sdfsdfsdf
+```
+{{twoColumn
+
+| d4 | Manicurist Level | Equipment |
+|:---:|:---:|:---|
+| 1 | 1st | The four fragments of the Disk of Madness |
+| 2 | 3rd | Broch of Air Blasts |
+| 3 | 5th | The four fragments of the Disk of Madness |
+| 4 | 7th | 3rd born child |
+
+
+| d4 | Manicurist Level | Equipment |
+|:---:|:---:|:---|
+| 1 | 1st | The four fragments of the Disk of Madness |
+| 2 | 3rd | Broch of Air Blasts |
+| 3 | 5th | The four fragments of the Disk of Madness |
+| 4 | 7th | 3rd born child |
+
+}}
+
+```
+
+\column
+
+
+{{twoColumn
+
+| d4 | Manicurist Level | Equipment |
+|:---:|:---:|:---|
+| 1 | 1st | The four fragments of the Disk of Madness |
+| 2 | 3rd | Broch of Air Blasts |
+| 3 | 5th | The four fragments of the Disk of Madness |
+| 4 | 7th | 3rd born child |
+
+
+| d4 | Manicurist Level | Equipment |
+|:---:|:---:|:---|
+| 1 | 1st | The four fragments of the Disk of Madness |
+| 2 | 3rd | Broch of Air Blasts |
+| 3 | 5th | The four fragments of the Disk of Madness |
+| 4 | 7th | 3rd born child |
+
+}}
+
+}}
+
+this is after
 

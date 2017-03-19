@@ -1,5 +1,4 @@
 
-
 ///////////////////
 .spell{
 	ul:first-of-type{
@@ -16,7 +15,7 @@
 .monster{
 	.breakAvoid();
 	.pseudoBorder();
-	padding                     : 10px 5px;
+	padding : 10px 5px;
 	table{
 		color : @headerText;
 	}
@@ -86,7 +85,6 @@
 		border-image-width  : 47px;
 	}
 }
-
 .footnote{
 	position   : absolute;
 	right      : 80px;
@@ -97,13 +95,46 @@
 	color      : @gold;
 	text-align : right;
 }
-
-
 //*****************************
 // *      TABLE OF CONTENTS
 // *****************************/
 .toc{
-	.breakAvoid();
+	h1{
+		text-align : center;
+	}
+	li{
+		margin-bottom : 3px;
+		strong, em::after{
+			font-family : BookInsanity;
+			font-size   : 13px;
+			font-style  : normal;
+			font-weight : 500;
+			color       : black;
+		}
+		em{
+			display     : block;
+			overflow    : hidden;
+			width       : auto;
+			font-style  : normal;
+			white-space : nowrap;
+			&:after{
+				content : " ..............................................................................................................";
+			}
+		}
+		strong{
+			float       : right;
+			margin-left : 4px;
+		}
+		h3{
+			margin-top : 15px;
+			em{ color : @crimson; }
+			em::after{ display : none; }
+		}
+		h4{
+			margin-top : 10px;
+			em{ color : @crimson; }
+		}
+	}
 	a{
 		color           : black;
 		text-decoration : none;
@@ -115,17 +146,7 @@
 		padding-left    : 0;
 		list-style-type : none;
 	}
-	&>ul>li{
-		margin-bottom : 10px;
-	}
 }
-
-
-
-
-
-
-
 .wide{
 	column-span         : all;
 	-webkit-column-span : all;
@@ -133,25 +154,25 @@
 }
 .oneColumn{
 	column-count : 1;
-	column-gap   : 1cm;
+//	column-gap   : 1cm;
 }
 .twoColumn{
 	column-count : 2;
-	column-gap   : 1cm;
+	//column-fill: auto;
+	////column-gap   : 1cm;
 }
 .threeColumn{
 	column-count : 3;
-	column-gap   : 1cm;
+	//column-gap   : 1cm;
 }
 .fourColumn{
 	column-count : 4;
-	column-gap   : 1cm;
+	//column-gap   : 1cm;
 }
 .columnSplit{
 	visibility                 : hidden;
-	-webkit-column-break-after : always;
-	break-after                : always;
-	-moz-column-break-after    : always;
+	-webkit-column-break-bfore : always;
+	break-before               : column;
 }
 .brushed{
 	border-image-outset             : 25px 17px;
