@@ -3,6 +3,8 @@ const _     = require('lodash');
 const cx    = require('classnames');
 const Markdown = require('homebrewery/markdown.js');
 
+const Headtags = require('vitreum/headtags');
+
 const PrintPage = React.createClass({
 	getDefaultProps: function() {
 		return {
@@ -30,7 +32,7 @@ const PrintPage = React.createClass({
 		}
 		if(this.props.query.dialog) window.print();
 	},
-	//TODO: This is pretty bad
+	//TODO: Print page shouldn't replicate functionality in brew renderer
 	renderStyle : function(){
 		if(!this.state.brew.style) return;
 		return <style>{this.state.brew.style.replace(/;/g, ' !important;')}</style>
@@ -45,8 +47,17 @@ const PrintPage = React.createClass({
 		});
 	},
 
+	renderPrintInstructions : function(){
+		return <div className='printInstructions'>
+			Hey, I'm really cool instructions!!!!!
+
+		</div>
+	},
+
 	render : function(){
-		return <div>
+		return <div className='printPage'>
+			<Headtags.title>{this.state.brew.title}</Headtags.title>
+			{this.renderPrintInstructions()}
 			{this.renderStyle()}
 			{this.renderPages()}
 		</div>
