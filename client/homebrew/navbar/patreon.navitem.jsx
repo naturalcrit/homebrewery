@@ -3,6 +3,7 @@ var Nav = require('naturalcrit/nav/nav.jsx');
 
 module.exports = function(props){
 	return <Nav.item
+		{...props}
 		className='patreon'
 		newTab={true}
 		href='https://www.patreon.com/stolksdorf'

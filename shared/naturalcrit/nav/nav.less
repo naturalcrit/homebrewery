@@ -1,3 +1,4 @@
+
 nav{
 	background-color : #333;
 	.navContent{
@@ -41,6 +42,7 @@ nav{
 	}
 	.navItem{
 		.animate(background-color);
+		display          : inline-block;
 		padding          : 8px 12px;
 		cursor           : pointer;
 		background-color : #333;
@@ -49,30 +51,32 @@ nav{
 		color            : white;
 		text-decoration  : none;
 		text-transform   : uppercase;
-		display: inline-block;
 		i{
 			margin-left : 5px;
 			font-size   : 13px;
 		}
 		&.collaspe{
-			//width : 60px;
-			overflow: hidden;
-			background-color: red;
+			overflow : hidden;
+			i{
+				margin-left : 0px;
+			}
 			span{
-				white-space: nowrap;
-				width : 0%;
-				display: inline-block;
-				overflow: hidden;
-				visibility: hidden;
+				display     : inline-block;
+				visibility  : hidden;
+				overflow    : hidden;
+				width       : 0px;
+				white-space : nowrap;
 			}
 			&:hover{
 				span{
-					visibility: visible;
-					width : auto;
+					visibility : visible;
+					width      : auto;
+				}
+				i{
+					margin-left : 5px;
 				}
 			}
 		}
-
 		&.tealLight:hover{ background-color : @tealLight };
 		&.teal:hover{ background-color : @teal };
 		&.greenLight:hover{ background-color : @greenLight };
