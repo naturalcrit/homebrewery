@@ -38,28 +38,29 @@ var Nav = {
 				href : null,
 				newTab : false,
 				onClick : function(){},
-				color : null
+				color : null,
+				collaspe : false
 			};
 		},
 		handleClick : function(){
 			this.props.onClick();
 		},
 		render : function(){
-			var classes = cx('navItem', this.props.color, this.props.className);
+			var classes = cx('navItem', this.props.color, this.props.className, {collaspe : this.props.collaspe});
 
 			var icon;
 			if(this.props.icon) icon = <i className={'fa ' + this.props.icon} />;
 
-			const props = _.omit(this.props, ['newTab']);
+			const props = _.omit(this.props, ['newTab', 'collaspe']);
 
 			if(this.props.href){
 				return <a {...props} className={classes} target={this.props.newTab ? '_blank' : '_self'} >
-					{this.props.children}
+					<span>{this.props.children}</span>
 					{icon}
 				</a>
 			}else{
 				return <div {...props} className={classes} onClick={this.handleClick} >
-					{this.props.children}
+					<span>{this.props.children}</span>
 					{icon}
 				</div>
 			}
