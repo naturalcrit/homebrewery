@@ -49,10 +49,30 @@ nav{
 		color            : white;
 		text-decoration  : none;
 		text-transform   : uppercase;
+		display: inline-block;
 		i{
 			margin-left : 5px;
 			font-size   : 13px;
 		}
+		&.collaspe{
+			//width : 60px;
+			overflow: hidden;
+			background-color: red;
+			span{
+				white-space: nowrap;
+				width : 0%;
+				display: inline-block;
+				overflow: hidden;
+				visibility: hidden;
+			}
+			&:hover{
+				span{
+					visibility: visible;
+					width : auto;
+				}
+			}
+		}
+
 		&.tealLight:hover{ background-color : @tealLight };
 		&.teal:hover{ background-color : @teal };
 		&.greenLight:hover{ background-color : @greenLight };

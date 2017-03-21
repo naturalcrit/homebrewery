@@ -47,7 +47,7 @@ const NewPage = React.createClass({
 					<Nav.item color='purple' icon='fa-file-pdf-o' onClick={Actions.localPrint}>
 						get PDF
 					</Nav.item>
-					<Items.Issue />
+					<Items.Issue collaspe={true} />
 					<Items.Account />
 				</Nav.section>
 			</Navbar>
