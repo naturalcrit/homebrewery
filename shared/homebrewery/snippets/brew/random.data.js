@@ -2,7 +2,8 @@ const _ = require('lodash');
 
 const Data = {
 	rand : (name, max = 1, min = 1)=>{
-		return _.sampleSize(Data[name], _.random(min, max));
+		const data = (Data[name] ? Data[name] : name);
+		return _.sampleSize(data, _.random(min, max));
 	},
 
 	titles : [

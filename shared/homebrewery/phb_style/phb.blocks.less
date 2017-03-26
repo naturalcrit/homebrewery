@@ -4,8 +4,7 @@
 	ul:first-of-type{
 		margin-top      : -0.5em;
 		margin-bottom   : 0.5em;
-		padding-left    : 1em;
-		text-indent     : -1em;
+
 		list-style-type : none;
 		&+p{
 			text-indent : 0em;
@@ -15,36 +14,49 @@
 .monster{
 	.breakAvoid();
 	.pseudoBorder();
-	padding : 10px 5px;
-	table{
-		color : @headerText;
+	.pseudoShadow();
+	padding : 17px 14px;
+	table:nth-of-type(1){
+		margin-bottom   : 0.4em;
+		margin-top      : 0.4em;
+		color : @crimson;
+		tbody tr { background-color: transparent };
 	}
 	ul:nth-of-type(1),ul:nth-of-type(2){
-		background-color : red;
+		list-style: none;
+		padding-left    : 1em;
+		text-indent     : -1em;
+		margin-bottom   : 0.5em;
+		strong{
+			color : @crimson;
+		}
 	}
 	&:before{
-		top                 : 10px;
-		right               : 0px;
-		bottom              : 10px;
-		left                : 0px;
-		//background-color : @monsterStatBackground;
-		//border-image-outset : 25px 17px;
-		border-image-slice  : 10;
+		top                 : 8px;
+		right               : 7px;
+		bottom              : 19px;
+		left                : 7px;
+		background-color    : #FDF1DC;
+		border-image-slice  : 8;
 		border-image-source : @monsterBorder;
-		border-image-width  : 47px;
+		border-image-width  : 8px;
+	}
+	&.wide{
+		column-count : 2;
 	}
 }
 .note{
 	.useSansSerif();
 	.breakAvoid();
 	.pseudoBorder();
+	.pseudoShadow();
 	margin  : 9px 0px;
-	padding : 17px 5px;
+	padding : 17px 17px;
 	&:before{
 		top                 : 9px;
-		right               : 0px;
-		bottom              : 9px;
-		left                : 0px;
+		right               : 9px;
+		bottom              : 19px;
+		left                : 9px;
 		background-color    : @green;
 		border-width        : 11px;
 		border-image-outset : 9px 0px;

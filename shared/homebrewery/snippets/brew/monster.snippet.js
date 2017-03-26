@@ -2,6 +2,39 @@ const _ = require('lodash');
 const Data = require('./random.data.js');
 
 
+const getStats = function(){
+	return '|' + _.times(6, function(){
+		const num = _.random(1,20);
+		const mod = Math.ceil(num/2 - 5)
+		return num + " (" + (mod >= 0 ? '+'+mod : mod ) + ")"
+	}).join('|') + '|';
+}
+
+const getAttributes = ()=>{
+
+
+
+
+	return `
+- **Saving Throws**
+- **Condition Immunities** " + genList(["groggy", "swagged", "weak-kneed", "buzzed", "groovy", "melancholy", "drunk"], 3),
+- **Senses** passive Perception " + _.random(3, 20),
+- **Languages** ${Data.rand(["Common", "Pottymouth", "Gibberish", "Latin", "Jive"], 2).join(', ')}
+- **Challenge** ${_.random(0, 15)} (${_.random(10,10000)} XP)
+`;
+
+}
+
+const getAbilities = ()=>{
+
+}
+
+const getActions = ()=>{
+
+
+}
+
+
 module.exports = {
 	monster : ()=>{
 
@@ -21,15 +54,18 @@ module.exports = {
 
 |STR|DEX|CON|INT|WIS|CHA|
 |:---:|:---:|:---:|:---:|:---:|:---:|
-${stats}
+${getStats()}
 
 ---
 
-- **Condition Immunities** " + genList(["groggy", "swagged", "weak-kneed", "buzzed", "groovy", "melancholy", "drunk"], 3),
-- **Senses** passive Perception " + _.random(3, 20),
-- **Languages** " + genList(["Common", "Pottymouth", "Gibberish", "Latin", "Jive"], 2),
-- **Challenge** " + _.random(0, 15) + " (" + _.random(10,10000)+ " XP)",
+${getAttributes()}
 
+---
+
+Abilities
+
+
+### Actions
 
 }}`
 

@@ -7,10 +7,29 @@
 	&:before{
 		content             : '';
 		position            : absolute;
-		z-index             : -1;
+		z-index             : -2;
 		box-sizing          : border-box;
 		border-style        : solid;
 		border-image-repeat : round;
+	}
+}
+
+.pseudoShadow(){
+	position : relative;
+	&:after{
+		content             : '';
+		position            : absolute;
+		z-index             : -1;
+		box-sizing          : border-box;
+		top                 : 4px;
+		right               : 0px;
+		bottom              : 10px;
+		left                : 0px;
+		border-style        : solid;
+		border-image-repeat : round;
+		border-image-slice  : 13 13;
+		border-image-source : @shadowBorder;
+		border-image-width  : 11px;
 	}
 }
 
