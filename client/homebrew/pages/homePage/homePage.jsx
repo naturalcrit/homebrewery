@@ -24,10 +24,10 @@ const HomePage = React.createClass({
 	renderNavbar : function(){
 		return <Navbar>
 			<Nav.section>
-				<PatreonNavItem />
-				<IssueNavItem />
-				<Nav.item newTab={true} href='/changelog' color='purple' icon='fa-file-text-o'>
-					Changelog
+				<PatreonNavItem collaspe={true} />
+				<IssueNavItem collaspe={true} />
+				<Nav.item newTab={true} href='/changelog' color='purple' icon='fa-star' collaspe={true}>
+					What's new
 				</Nav.item>
 				<RecentNavItem.both />
 				<AccountNavItem />

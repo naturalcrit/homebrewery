@@ -1,0 +1,211 @@
+
+///////////////////
+.spell{
+	ul:first-of-type{
+		margin-top      : -0.5em;
+		margin-bottom   : 0.5em;
+
+		list-style-type : none;
+		&+p{
+			text-indent : 0em;
+		}
+	}
+}
+.monster{
+	.breakAvoid();
+	.pseudoBorder();
+	.pseudoShadow();
+	padding : 17px 14px;
+	table:nth-of-type(1){
+		margin-bottom   : 0.4em;
+		margin-top      : 0.4em;
+		color : @crimson;
+		tbody tr { background-color: transparent };
+	}
+	ul:nth-of-type(1),ul:nth-of-type(2){
+		list-style: none;
+		padding-left    : 1em;
+		text-indent     : -1em;
+		margin-bottom   : 0.5em;
+		strong{
+			color : @crimson;
+		}
+	}
+	&:before{
+		top                 : 8px;
+		right               : 7px;
+		bottom              : 19px;
+		left                : 7px;
+		background-color    : #FDF1DC;
+		border-image-slice  : 8;
+		border-image-source : @monsterBorder;
+		border-image-width  : 8px;
+	}
+	&.wide{
+		column-count : 2;
+	}
+}
+.note{
+	.useSansSerif();
+	.breakAvoid();
+	.pseudoBorder();
+	.pseudoShadow();
+	margin  : 9px 0px;
+	padding : 17px 17px;
+	&:before{
+		top                 : 9px;
+		right               : 9px;
+		bottom              : 19px;
+		left                : 9px;
+		background-color    : @green;
+		border-width        : 11px;
+		border-image-outset : 9px 0px;
+		border-image-slice  : 11;
+		border-image-source : @noteBorder;
+	}
+	h2,h3,h4{
+		.useSansSerif();
+		color : black;
+	}
+	p, ul{
+		font-size   : 0.352cm;
+		line-height : 1.1em;
+	}
+	&.alt{
+		&:before{
+			border-style        : solid;
+			border-width        : 7px;
+			border-image-outset : 4px;
+			border-image-slice  : 12;
+			border-image-source : @descriptiveBorder;
+		}
+	}
+}
+.frame{
+	.breakAvoid();
+	.pseudoBorder();
+	padding : 25px 17px;
+	&:before{
+		top                 : 25px;
+		right               : 17px;
+		bottom              : 25px;
+		left                : 17px;
+		background-color    : white;
+		border-image-outset : 25px 17px;
+		border-image-slice  : 150 200 150 200;
+		border-image-source : @frameBorder;
+		border-image-width  : 47px;
+	}
+}
+.footnote{
+	position   : absolute;
+	right      : 80px;
+	bottom     : 28px;
+	z-index    : 150;
+	width      : 200px;
+	font-size  : 0.9em;
+	color      : @gold;
+	text-align : right;
+}
+//*****************************
+// *      TABLE OF CONTENTS
+// *****************************/
+.toc{
+	h1{
+		text-align : center;
+	}
+	li{
+		margin-bottom : 3px;
+		strong, em::after{
+			font-family : BookInsanity;
+			font-size   : 13px;
+			font-style  : normal;
+			font-weight : 500;
+			color       : black;
+		}
+		em{
+			display     : block;
+			overflow    : hidden;
+			width       : auto;
+			font-style  : normal;
+			white-space : nowrap;
+			&:after{
+				content : " ..............................................................................................................";
+			}
+		}
+		strong{
+			float       : right;
+			margin-left : 4px;
+		}
+		h3{
+			margin-top : 15px;
+			em{ color : @crimson; }
+			em::after{ display : none; }
+		}
+		h4{
+			margin-top : 10px;
+			em{ color : @crimson; }
+		}
+	}
+	a{
+		color           : black;
+		text-decoration : none;
+		&:hover{
+			text-decoration : underline;
+		}
+	}
+	ul{
+		padding-left    : 0;
+		list-style-type : none;
+	}
+}
+.wide{
+	column-span         : all;
+	-webkit-column-span : all;
+	-moz-column-span    : all;
+}
+.oneColumn{
+	column-count : 1;
+//	column-gap   : 1cm;
+}
+.twoColumn{
+	column-count : 2;
+	//column-fill: auto;
+	////column-gap   : 1cm;
+}
+.threeColumn{
+	column-count : 3;
+	//column-gap   : 1cm;
+}
+.fourColumn{
+	column-count : 4;
+	//column-gap   : 1cm;
+}
+.columnSplit{
+	visibility                 : hidden;
+	-webkit-column-break-bfore : always;
+	break-before               : column;
+}
+.brushed{
+	border-image-outset             : 25px 17px;
+	border-image-repeat             : round;
+	border-image-slice              : 1250 1250 1250 1250;
+	border-image-width              : 1250px;
+	border-image-source : url('http : //i.imgur.com/nzPYZyD.png');
+}
+//basics
+.left{
+	text-align : left;
+}
+.right{
+	text-align : right;
+}
+.center{
+	text-align : center;
+}
+.bold{
+	font-weight : 800;
+}
+.sansSerif{
+	.useSansSerif();
+}

@@ -133,6 +133,11 @@ const BrewRenderer = React.createClass({
 		return this.lastRender;
 	},
 
+	//TODO: This is pretty bad
+	renderStyle : function(){
+		return <style>{this.props.brew.style.replace(/;/g, ' !important;')}</style>
+	},
+
 	render : function(){
 		if(this.props.brew.version == 1) return <OldBrewRenderer value={this.props.brew.text} />;
 
@@ -146,7 +151,7 @@ const BrewRenderer = React.createClass({
 			<RenderWarnings />
 
 
-			<style>{this.props.brew.style}</style>
+			{this.renderStyle()}
 
 			<div className='pages' ref='pages'>
 				{this.renderPages()}

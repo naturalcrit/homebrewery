@@ -26,11 +26,18 @@ renderer.paragraph = function(text){
 	return res;
 };
 
+renderer.image = function(href, title, text){
+	return `<img src="${href}" class="${text.split(',').join(' ')}"></img>`;
+};
+
 
 module.exports = {
 	marked : Markdown,
 	render : (rawBrewText)=>{
 		blockCount = 0;
+
+		rawBrewText = rawBrewText.replace(/\\column/g, '{{columnSplit }}')
+
 		let html = Markdown(rawBrewText, {renderer : renderer, sanitize: true});
 		//Close all hanging block tags
 		html += _.times(blockCount, ()=>{return '</div>'}).join('\n');

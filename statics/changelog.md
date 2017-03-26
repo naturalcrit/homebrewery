@@ -1,5 +1,9 @@
 # changelog
 
+
+The self-discovery aspect of the snippets isn't working out.
+
+
 ## BIG NEWS
 With the next major release of Homebrewery, v3.0.0, this tool *will no longer support raw HTML input for brew code*. Most issues and errors users are having are because of this feature and it's become too taxing to help and fix these issues.
 

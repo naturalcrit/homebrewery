@@ -48,7 +48,7 @@ const getTOC = (pages) => {
 }
 
 module.exports = function(brew){
-	const pages = brew.split('\\page');
+
 	const TOC = getTOC(pages);
 	const markdown = _.reduce(TOC, (r, g1, idx1)=>{
 		r.push(`- **[${idx1 + 1} ${g1.title}](#p${g1.page})**`)

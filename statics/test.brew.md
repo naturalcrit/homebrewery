@@ -18,22 +18,53 @@ Like this tool? Want to buy me a beer? [Head here](https://www.patreon.com/stolk
 
 This tool will **always** be free, never have ads, and I will never offer any "premium" features or whatever.
 
+{{note,yellow,alt
+##### PDF Exporting
+ PDF Printing works best in Chrome. If you are having quality/consistency issues, try using Chrome to print instead.
+
+ After clicking the "Print" item in the navbar a new page will open and a print dialog will pop-up.
+ * Set the **Destination** to "Save as PDF"
+ * Set **Paper Size** to "Letter"
+ * If you are printing on A4 paper, make sure to have the "A4 page size snippet" in your brew
+ * In **Options** make sure "Background Images" is selected.
+ * Hit print and enjoy! You're done!
+
+ If you want to save ink or have a monochrome printer, add the **Ink Friendly** snippet to your brew before you print
 
 
->##### PDF Exporting
-> PDF Printing works best in Chrome. If you are having quality/consistency issues, try using Chrome to print instead.
+}}
+
+> This is a cool blockquote fdgfgsfg sfd sdfsdfsdfsdfsdfsdf sdfsdfsdfssdfsdffgsdfgsdfg
+> You know?
 >
-> After clicking the "Print" item in the navbar a new page will open and a print dialog will pop-up.
-> * Set the **Destination** to "Save as PDF"
-> * Set **Paper Size** to "Letter"
-> * If you are printing on A4 paper, make sure to have the "A4 page size snippet" in your brew
-> * In **Options** make sure "Background Images" is selected.
-> * Hit print and enjoy! You're done!
->
-> If you want to save ink or have a monochrome printer, add the **Ink Friendly** snippet to your brew before you print
+> One with quotes and what not
+> yeah yeah yeah
+> {{cite -- Very cool person }}
 
+
+{{note
+##### PDF Exporting
+ PDF Printing works best in Chrome. If you are having quality/consistency issues, try using Chrome to print instead.
+
+ After clicking the "Print" item in the navbar a new page will open and a print dialog will pop-up.
+ * Set the **Destination** to "Save as PDF"
+ * Set **Paper Size** to "Letter"
+ * If you are printing on A4 paper, make sure to have the "A4 page size snippet" in your brew
+ * In **Options** make sure "Background Images" is selected.
+ * Hit print and enjoy! You're done!
+
+ If you want to save ink or have a monochrome printer, add the **Ink Friendly** snippet to your brew before you print
+
+
+}}
+
+
+![test](http://i.imgur.com/hMna6G0.png)
 
 ```
+cool stuff
+
+
 ```
 
 ## Big things coming in v3.0.0
@@ -55,18 +86,15 @@ If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](
 
 
 
-<img src='http://i.imgur.com/hMna6G0.png' style='position:absolute;bottom:50px;right:30px;width:280px' />
-
-<div class='pageNumber'>1</div>
-<div class='footnote'>PART 1 | FANCINESS</div>
 
 
+{{footnote PART 1 | FANCINESS }}
 
 
 \page
 
 
-{{classTable,wide
+{{frame,wide
 ##### The Archivist
 | Level | Proficiency Bonus | Features | Statistical Occultism|
 |:---:|:---:|:---|:---:|

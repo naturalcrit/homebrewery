@@ -1,0 +1,172 @@
+pre{
+	font-family : monospace;
+	background-color : @yellow;
+	padding : 12px;
+	border: 1px solid #bfbfbf;
+	white-space: pre-wrap;
+	color : #333;
+	-webkit-column-break-inside : avoid;
+	column-break-inside         : avoid;
+}
+
+
+hr{
+	visibility       : visible;
+	height           : 6px;
+	margin           : 4px 0px;
+	background-image : @dividerImg;
+	background-size  : 100% 100%;
+	border           : none;
+}
+
+
+p{
+	padding-bottom : 0.8em;
+	line-height    : 1.3em;
+	&+p{
+		margin-top : -0.8em;
+	}
+}
+
+blockquote{
+	font-style : italic;
+	&>p{
+		line-height: 1.8em;
+		&:first-child::first-line{
+
+			//TODO: Find the right font for block quotes
+			font-style: normal;
+			font-family: ScalySansSmallCaps;
+
+
+		}
+	}
+	.cite{
+		font-style: normal;
+		text-align: right;
+	}
+
+
+}
+
+//Indents after p or lists
+p+p, ul+p, ol+p{
+	text-indent : 1em;
+}
+img{
+	z-index : -1;
+}
+strong{
+	font-weight    : bold;
+	letter-spacing : 0.03em;
+}
+em{
+	font-style : italic;
+}
+sup{
+	vertical-align : super;
+	font-size      : smaller;
+	line-height    : 0;
+}
+sub{
+	vertical-align : sub;
+	font-size      : smaller;
+	line-height    : 0;
+}
+//*****************************
+// *           HEADERS
+// *****************************/
+h1,h2,h3,h4{
+	margin-top    : 0.2em;
+	margin-bottom : 0.2em;
+	font-family   : MrEaves;
+	font-weight   : 800;
+	color         : @headerText;
+}
+h1{
+	column-span         : all;
+	font-size           : 0.987cm;
+	-webkit-column-span : all;
+	-moz-column-span    : all;
+	&+p::first-letter{
+		float       : left;
+		font-family : Solbera;
+		font-size   : 10em;
+		color       : #222;
+		line-height : 0.8em;
+	}
+}
+h2{
+	font-size : 0.705cm;
+}
+h3{
+	font-size     : 0.529cm;
+	border-bottom : 2px solid @headerUnderline;
+}
+h4{
+	margin-bottom : 0.00em;
+	font-size     : 0.458cm;
+}
+h5{
+	margin-bottom : 0.2em;
+	font-family   : ScalySansSmallCaps;
+	font-size     : 0.423cm;
+	font-weight   : 900;
+}
+
+
+//******************************
+//          LISTS
+//******************************
+ul ul,ol ol,ul ol,ol ul{
+	margin-bottom : 0px;
+	margin-left   : 1.5em;
+}
+li{
+	-webkit-column-break-inside : avoid;
+	column-break-inside         : avoid;
+}
+ul{
+	margin-bottom       : 0.8em;
+	padding-left        : 1.4em;
+	line-height         : 1.3em;
+	list-style-position : outside;
+	list-style-type     : disc;
+}
+ol{
+	margin-bottom       : 0.8em;
+	padding-left        : 1.4em;
+	line-height         : 1.3em;
+	list-style-position : outside;
+	list-style-type     : decimal;
+}
+
+
+//*****************************
+// *          TABLE
+// *****************************/
+table{
+	.useSansSerif();
+	width         : 100%;
+	margin-bottom : 1em;
+	font-size     : 10pt;
+	thead{
+		font-weight : 800;
+		th{
+			vertical-align : bottom;
+			padding-bottom : 0.3em;
+			padding-right  : 0.1em;
+			padding-left   : 0.1em;
+		}
+	}
+	tbody{
+		tr{
+			td{
+				padding : 0.3em 0.1em;
+			}
+			&:nth-child(odd){
+				background-color : @green;
+			}
+		}
+	}
+}
