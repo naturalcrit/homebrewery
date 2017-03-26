@@ -10,7 +10,7 @@ renderer.paragraph = function(text){
 	if(!matches) return `\n<p>${text}</p>\n`;
 	let matchIndex = 0;
 	const res =  _.reduce(text.split(blockReg), (r, text) => {
-		if(text) r.push(Markdown(text, {renderer : renderer, sanitize: true}));
+		if(text) r.push(text);
 		const block = matches[matchIndex];
 		if(block && block[0] == '{'){
 			r.push(`\n\n<div class="block ${block.substring(2).split(',').join(' ')}">`);
