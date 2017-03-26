@@ -8,6 +8,9 @@ var Nav = require('naturalcrit/nav/nav.jsx');
 const VIEW_KEY = 'homebrewery-recently-viewed';
 const EDIT_KEY = 'homebrewery-recently-edited';
 
+//DEPRICATED
+
+
 var BaseItem = React.createClass({
 	getDefaultProps: function() {
 		return {
@@ -28,6 +31,8 @@ var BaseItem = React.createClass({
 	},
 
 	componentDidMount: function() {
+		console.log('Recent nav item is depricated');
+
 		var brews = JSON.parse(localStorage.getItem(this.props.storageKey) || '[]');
 
 		brews = _.filter(brews, (brew)=>{
