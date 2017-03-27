@@ -5,28 +5,21 @@ const cx = require('classnames');
 const OldBrewRenderer = require('depricated/brewRendererOld/brewRendererOld.jsx');
 
 const Markdown = require('homebrewery/markdown.js');
-const ErrorBar = require('./errorBar/errorBar.jsx');
 
-const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx')
-const Store = require('homebrewery/brew.store.js');
-
-
-const PAGE_HEIGHT = 1056;
-const PPR_THRESHOLD = 50;
+const PPR_RANGE = 0;
 
 const BrewRenderer = React.createClass({
 	getDefaultProps: function() {
 		return {
-			brew : {
-				text : '',
-				style : ''
-			},
+			text : '',
+			style : '',
 
+			//usePPR : false // TODO: maybe make this into an page index to render
 
-			//TODO: maybe remove?
-			errors : []
+			pprPage : false
 		};
 	},
+	/*
 	getInitialState: function() {
 		const pages = this.props.brew.text.split('\\page');
 
@@ -40,7 +33,11 @@ const BrewRenderer = React.createClass({
 	},
 	height : 0,
 	pageHeight : PAGE_HEIGHT,
+
+	*/
 	lastRender : <div></div>,
+
+	/*
 
 	componentDidMount: function() {
 		this.updateSize();
@@ -72,11 +69,8 @@ const BrewRenderer = React.createClass({
 		});
 	},
 
-	handleScroll : function(e){
-		this.setState({
-			viewablePageNumber : Math.floor(e.target.scrollTop / this.pageHeight)
-		});
-	},
+
+	*/
 
 	shouldRender : function(pageText, index){
 		if(!this.state.isMounted) return false;
@@ -92,12 +86,8 @@ const BrewRenderer = React.createClass({
 		return false;
 	},
 
-	renderPageInfo : function(){
-		return <div className='pageInfo'>
-			{this.state.viewablePageNumber + 1} / {this.state.pages.length}
-		</div>
-	},
 
+	/*
 	renderPPRmsg : function(){
 		if(!this.state.usePPR) return;
 
@@ -105,18 +95,25 @@ const BrewRenderer = React.createClass({
 			Partial Page Renderer enabled, because your brew is so large. May effect rendering.
 		</div>
 	},
+	*/
 
-	renderDummyPage : function(index){
-		return <div className='phb v2' id={`p${index + 1}`} key={index}>
-			<i className='fa fa-spinner fa-spin' />
-		</div>
-	},
 
 	renderPage : function(pageText, index){
-		return <div className='phb v2' id={`p${index + 1}`} dangerouslySetInnerHTML={{__html:Markdown.render(pageText)}} key={index} />
+		const html = Markdown.render(pageText);
+		return <div className='phb v2' id={`p${index + 1}`} dangerouslySetInnerHTML={{__html:html}} key={index} />
+	},
+
+	renderPPR : function(pages, pprPageIndex){
+		return _.map(pages, (page, index)=>{
+			if(_.inRange(index, pprPageIndex - PPR_RANGE, pprPageIndex + PPR_RANGE +1)){
+				this.renderPage(page, index);
+			}
+			return <div className='phb v2' id={`p${index + 1}`} key={index} />;
+		});
 	},
 
 	renderPages : function(){
+		/*
 		if(this.state.usePPR){
 			return _.map(this.state.pages, (page, index)=>{
 				if(this.shouldRender(page, index)){
@@ -126,38 +123,32 @@ const BrewRenderer = React.createClass({
 				}
 			});
 		}
-		if(this.props.errors && this.props.errors.length) return this.lastRender;
-		this.lastRender = _.map(this.state.pages, (page, index)=>{
-			return this.renderPage(page, index);
-		});
-		return this.lastRender;
+		*/
+		const pages = this.props.text.split('\\page');
+
+		console.log(this.props.pprPage);
+
+		if(this.props.pprPage !== false) return this.renderPPR(pages, this.props.pprPage);
+
+		return _.map(pages, (page, index)=>this.renderPage(page, index));
+
+		//TODO: See if you need error handling?
+		//if(this.props.errors && this.props.errors.length) return this.lastRender;
+
 	},
 
 	//TODO: This is pretty bad
 	renderStyle : function(){
-		return <style>{this.props.brew.style.replace(/;/g, ' !important;')}</style>
+		return <style>{this.props.style.replace(/;/g, ' !important;')}</style>
 	},
 
 	render : function(){
-		if(this.props.brew.version == 1) return <OldBrewRenderer value={this.props.brew.text} />;
+		//if(this.props.brew.version == 1) return <OldBrewRenderer value={this.props.brew.text} />;
 
 
-		return <div className='brewRenderer'
-			onScroll={this.handleScroll}
-			ref='main'
-			style={{height : this.state.height}}>
-
-			<ErrorBar errors={this.props.errors} />
-			<RenderWarnings />
-
-
+		return <div className='brewRenderer'>
 			{this.renderStyle()}
-
-			<div className='pages' ref='pages'>
-				{this.renderPages()}
-			</div>
-			{this.renderPageInfo()}
-			{this.renderPPRmsg()}
+			{this.renderPages()}
 		</div>
 	}
 });

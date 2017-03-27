@@ -48,10 +48,10 @@ const SmartNav = Store.createSmartComponent(React.createClass({
 			<Nav.section>
 				<Items.ContinousSave />
 				<Items.Issue />
-				<Nav.item newTab={true} href={'/share/' + Store.getBrew().shareId} color='teal' icon='fa-share-alt'>
+				<Nav.item newTab={true} href={'/share/' + this.props.brew.shareId} color='teal' icon='fa-share-alt'>
 					Share
 				</Nav.item>
-				<Items.Print />
+				<Items.Print shareId={this.props.brew.shareId} />
 				<Items.Account />
 			</Nav.section>
 		</Navbar>

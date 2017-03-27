@@ -9,7 +9,7 @@ const ReportIssue = require('../../navbar/issue.navitem.jsx');
 //const RecentlyViewed = require('../../navbar/recent.navitem.jsx').viewed;
 const Account = require('../../navbar/account.navitem.jsx');
 
-const BrewRenderer = require('homebrewery/brewRenderer/brewRenderer.jsx');
+const BrewView = require('homebrewery/BrewView/BrewView.jsx');
 const Utils = require('homebrewery/utils.js');
 
 const Actions = require('homebrewery/brew.actions.js');
@@ -56,7 +56,7 @@ const SharePage = React.createClass({
 				</Nav.section>
 
 				<Nav.section>
-					<ReportIssue />
+					<ReportIssue collaspe={true} />
 					<PrintLink shareId={brew.shareId} />
 					<Nav.item href={'/source/' + brew.shareId} color='teal' icon='fa-code'>
 						source
@@ -65,7 +65,7 @@ const SharePage = React.createClass({
 				</Nav.section>
 			</Navbar>
 			<div className='content'>
-				<BrewRenderer brew={brew} />
+				<BrewView brew={brew}/>
 			</div>
 		</div>
 	}

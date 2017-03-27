@@ -1,6 +1,10 @@
 const React = require('react');
 const _     = require('lodash');
 const cx    = require('classnames');
+
+
+const BrewRenderer = require('homebrewery/brewRenderer/brewRenderer.jsx');
+
 const Markdown = require('homebrewery/markdown.js');
 
 const Headtags = require('vitreum/headtags');
@@ -30,7 +34,7 @@ const PrintPage = React.createClass({
 				});
 			}catch(e){}
 		}
-		if(this.props.query.dialog) window.print();
+		//if(this.props.query.dialog) window.print();
 	},
 	//TODO: Print page shouldn't replicate functionality in brew renderer
 	renderStyle : function(){
@@ -58,8 +62,9 @@ const PrintPage = React.createClass({
 		return <div className='printPage'>
 			<Headtags.title>{this.state.brew.title}</Headtags.title>
 			{this.renderPrintInstructions()}
-			{this.renderStyle()}
-			{this.renderPages()}
+
+			<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} />
+
 		</div>
 	}
 });
