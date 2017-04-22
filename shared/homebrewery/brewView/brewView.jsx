@@ -33,6 +33,7 @@ const BrewView = React.createClass({
 			viewablePageNumber: 0,
 			//height : 0,
 			//isMounted : false,
+			//TODO: Change to page count ?
 			pages : pages,
 		};
 	},
@@ -70,6 +71,7 @@ const BrewView = React.createClass({
 			<BrewRenderer
 				text={this.props.brew.text}
 				style={this.props.brew.style}
+				version={this.props.brew.version}
 				pprPage={2}
 				/>
 

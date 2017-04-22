@@ -2,6 +2,7 @@ const React = require('react');
 const _ = require('lodash');
 const cx = require('classnames');
 
+//TODO: Convert old renderer to just be the old markdown parser
 const OldBrewRenderer = require('depricated/brewRendererOld/brewRendererOld.jsx');
 
 const Markdown = require('homebrewery/markdown.js');
@@ -13,6 +14,8 @@ const BrewRenderer = React.createClass({
 		return {
 			text : '',
 			style : '',
+
+			version : 2,
 
 			//usePPR : false // TODO: maybe make this into an page index to render
 
@@ -76,6 +79,7 @@ const BrewRenderer = React.createClass({
 		if(!this.state.isMounted) return false;
 
 		var viewIndex = this.state.viewablePageNumber;
+		//TODO: increase range, make into a simple function with lodash
 		if(index == viewIndex - 1) return true;
 		if(index == viewIndex)     return true;
 		if(index == viewIndex + 1) return true;
@@ -143,6 +147,7 @@ const BrewRenderer = React.createClass({
 	},
 
 	render : function(){
+		//TODO: Add in the brew version check
 		//if(this.props.brew.version == 1) return <OldBrewRenderer value={this.props.brew.text} />;
 
 
