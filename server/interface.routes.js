@@ -16,6 +16,20 @@ const statics = {
 	oldTest     : fs.readFileSync('./statics/oldTest.brew.md', 'utf8'),
 };
 
+let topBrews = [];
+const getTopBrews = ()=>{
+	return BrewData.search({}, {
+		limit : 4,
+		sort : {views : -1}
+	}).then(({brews, total})=>brews);
+};
+
+getTopBrews().then((brews)=>{
+	console.log('top brews', brews);
+	topBrews=brews;
+});
+
+
 
 const vitreumRender = require('vitreum/steps/render');
 const templateFn = require('../client/template.js');
@@ -54,9 +68,18 @@ router.get('/source/:sharedId', mw.viewBrew, (req, res, next)=>{
 });
 
 //User Page
+router.get('/account', (req, res, next)=>{
+	if(req.account && req.account.username){
+		return res.redirect(`/user/${req.account.username}`);
+	}else{
+		return res.redirect(config.get('login_path'));
+	}
+});
 router.get('/user/:username', (req, res, next) => {
-	BrewData.search({ user : req.params.username })
-		.then((brews) => {
+	const isSelf = req.account && req.params.username == req.account.username;
+
+	BrewData.userSearch(req.params.username, isSelf)
+		.then(({brews, total}) => {
 			req.brews = brews;
 			return next();
 		})
@@ -100,6 +123,7 @@ router.get('/new', renderPage);
 //Home Page
 router.get('/', (req, res, next) => {
 	req.brew = { text : statics.welcomeBrew };
+	//TODO add in top brews
 	return next();
 }, renderPage);
 

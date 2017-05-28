@@ -3,6 +3,8 @@ const _     = require('lodash');
 const cx    = require('classnames');
 const moment = require('moment');
 
+//TODO: Depriacte
+
 const BrewItem = React.createClass({
 	getDefaultProps: function() {
 		return {
@@ -24,6 +26,7 @@ const BrewItem = React.createClass({
 	},
 
 	render : function(){
+		console.log('Brew Item should be depricated');
 		const brew = this.props.brew;
 		return <div className='brewItem'>
 			<h2>{brew.title}</h2>

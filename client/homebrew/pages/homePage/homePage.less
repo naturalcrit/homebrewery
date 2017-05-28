@@ -1,43 +1,109 @@
+
+@import 'homebrewery/phb_style/phb.fonts.less';
 .homePage{
 	position : relative;
-	a.floatingNewButton{
-		.animate(background-color);
-		position         : absolute;
-		display          : block;
-		right            : 70px;
-		bottom           : 70px;
-		z-index          : 100;
-		z-index          : 5001;
-		padding          : 1em;
-		background-color : @orange;
-		font-size        : 1.5em;
-		color            : white;
-		text-decoration  : none;
-		box-shadow       : 3px 3px 15px black;
-		&:hover{
-			background-color : darken(@orange, 20%);
+	.hero{
+	//	.backgroundScrollAnimation();
+		height              : 400px;
+		background-image    : url('/assets/homebrew/pages/homePage/fantasy_background.jpg');
+		background-position : 1% 15%;
+		h1{
+			margin-top     : 15%;
+			font-family    : BookInsanity;
+			font-size      : 3em;
+			font-weight    : 800;
+			letter-spacing : 0.3em;
+			text-align     : center;
 		}
 	}
-	.floatingSaveButton{
-		.animateAll();
-		position         : absolute;
-		display          : block;
-		right            : 200px;
-		bottom           : 90px;
-		z-index          : 100;
-		z-index          : 5000;
-		padding          : 0.8em;
-		cursor           : pointer;
-		background-color : @blue;
-		font-size        : 0.8em;
-		color            : white;
-		text-decoration  : none;
-		box-shadow       : 3px 3px 15px black;
-		&:hover{
-			background-color : darken(@blue, 20%);
+	.buttons{
+		padding          : 30px;
+		background-image : url('/assets/homebrew/pages/homePage/dmg_bg.jpg');
+		text-align       : center;
+		&>div{
+			//display         : flex;
+			margin          : 0 auto;
+		//	justify-content : center;
 		}
-		&.show{
-			right : 350px;
+		p{
+			margin-bottom : 20px;
+			font-size     : 0.8em;
+		}
+		a.button{
+			.animate(background-color);
+			position         : relative;
+			display          : block;
+			height           : 60px;
+			max-width            : 280px;
+			width : 100%;
+			margin           : 15px;
+			padding          : 20px 30px;
+			padding-left     : 80px;
+			cursor           : pointer;
+			background-color : fade(@red, 30%);
+			color            : black;
+			text-align       : left;
+			text-decoration  : none;
+			//flex-grow : 0;
+			display: inline-block;
+			i{
+				position  : absolute;
+				top       : 15px;
+				left      : 25px;
+				font-size : 2em;
+				//transform-style: preserve-3d;
+				transform: rotateY(0deg);
+			}
+			h3{
+				display        : block;
+				margin-bottom  : 3px;
+				font-size      : 1.2em;
+				font-weight    : 600;
+				letter-spacing : 0.2em;
+			}
+			p{
+				.fadeOutLeft();
+				.keep();
+				opacity   : 0;
+				font-size : 0.8em;
+			}
+			&:hover{
+				background-color : fade(@red, 50%);
+				p{
+					.fadeInRight();
+				}
+				i{
+					transform: rotateY(360deg);
+					.animateAll(0.5s);
+				}
+			}
 		}
 	}
+
+	.topBrews{
+		background-image    : url('/assets/homebrew/pages/homePage/phb_bg.jpg');
+
+
+	}
+
 }
+// .vendor(@property, @value) {
+// 	-webkit-@{property}: @value;
+// 	 -khtml-@{property}: @value;
+// 	   -moz-@{property}: @value;
+// 			@{property}: @value;
+// }
+// .backgroundScrollAnimation(){
+// 	@top : -100px;
+// 	.vendor(animation-iteration-count, infinite);
+// 	.createAnimation(backgroundScroll, 60s, linear);
+// 	.backgroundScrollKeyFrames(){
+// 		0%   { background-position: 0 @top}
+// 		100% { background-position: -1200px @top}
+// 	}
+// 	@-webkit-keyframes backgroundScroll {.backgroundScrollKeyFrames();}
+// 	@-moz-keyframes backgroundScroll {.backgroundScrollKeyFrames();}
+// 	@-ms-keyframes backgroundScroll {.backgroundScrollKeyFrames();}
+// 	@-o-keyframes backgroundScroll {.backgroundScrollKeyFrames();}
+// 	@keyframes backgroundScroll {.backgroundScrollKeyFrames();}
+// }

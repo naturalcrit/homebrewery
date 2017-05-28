@@ -3,7 +3,7 @@ const _ = require('lodash');
 
 const DB = require('../server/db.js');
 const BrewData = require('../server/brew.data.js');
-const BrewGen = require('../test/brew.gen.js');
+const BrewGen = require('../tests/brew.gen.js');
 
 return Promise.resolve()
 	.then(DB.connect)

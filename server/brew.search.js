@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-module.exports = (Brew) => {
+module.exports = (BrewModel) => {
 	const cmds = {
 		termSearch : (terms='', opts, fullAccess) => {
 			let query = {};
@@ -42,7 +42,7 @@ module.exports = (Brew) => {
 				queryObj.published = true;
 			}
 
-			const searchQuery = Brew
+			const searchQuery = BrewModel
 				.find(queryObj)
 				.sort(opts.sort)
 				.select(filter)
@@ -51,7 +51,7 @@ module.exports = (Brew) => {
 				.lean()
 				.exec();
 
-			const countQuery = Brew.count(queryObj).exec();
+			const countQuery = BrewModel.count(queryObj).exec();
 
 			return Promise.all([searchQuery, countQuery])
 				.then((result) => {
