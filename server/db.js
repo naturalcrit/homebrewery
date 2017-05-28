@@ -7,7 +7,7 @@ const dbPath = process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb:/
 module.exports = {
 	connect : ()=>{
 		return new Promise((resolve, reject)=>{
-			if(mongoose.connection.readyState == 1){
+			if(mongoose.connection.readyState !== 0){
 				log.warn('DB already connected');
 				return resolve();
 			}
