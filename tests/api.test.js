@@ -7,7 +7,7 @@ const config = require('nconf');
 const app = require('app.js');
 const DB = require('db.js');
 const BrewData = require('brew.data.js');
-const BrewGen = require('./brew.gen.js');
+const SampleBrews = require('./sample_brews.js');
 const Error = require('error.js');
 
 
@@ -25,7 +25,7 @@ describe('Brew API', () => {
 		before('Connect DB', DB.connect);
 		before('Clear DB', BrewData.removeAll);
 		before('Populate brews', ()=>{
-			return BrewGen.populateDB(BrewGen.static());
+			return SampleBrews.populateDB(SampleBrews.static());
 		});
 		describe('Create', () => {
 			it('creates a new brew', () => {
@@ -57,7 +57,7 @@ describe('Brew API', () => {
 
 		describe('Update', () => {
 			it('updates an existing brew', () => {
-				const storedBrew = BrewGen.get('BrewA');
+				const storedBrew = SampleBrews.get('BrewA');
 				return request(app)
 					.put(`/api/brew/${storedBrew.editId}`)
 					.send({ text : 'New Text' })
@@ -72,7 +72,7 @@ describe('Brew API', () => {
 			});
 
 			it('adds the user as author', () => {
-				const storedBrew = BrewGen.get('BrewA');
+				const storedBrew = SampleBrews.get('BrewA');
 				return request(app)
 					.put(`/api/brew/${storedBrew.editId}`)
 					.set('Cookie', `nc_session=${UserXToken}`)
@@ -85,7 +85,7 @@ describe('Brew API', () => {
 					});
 			});
 			it('should throw error on bad edit id', ()=>{
-				const storedBrew = BrewGen.get('BrewA');
+				const storedBrew = SampleBrews.get('BrewA');
 				return request(app)
 					.put(`/api/brew/BADEDITID`)
 					.send({ text : 'New Text' })
@@ -95,7 +95,7 @@ describe('Brew API', () => {
 
 		describe('Remove', () => {
 			it('should removes a brew', ()=>{
-				const storedBrew = BrewGen.get('BrewA');
+				const storedBrew = SampleBrews.get('BrewA');
 				return request(app)
 					.del(`/api/brew/${storedBrew.editId}`)
 					.send()
@@ -116,7 +116,7 @@ describe('Brew API', () => {
 		before('Connect DB', DB.connect);
 		before('Clear DB', BrewData.removeAll);
 		before('Populate brews', ()=>{
-			return BrewGen.populateDB(BrewGen.static());
+			return SampleBrews.populateDB(SampleBrews.static());
 		});
 
 		it('should be able to search for all published brews', ()=>{
@@ -187,7 +187,7 @@ describe('Brew API', () => {
 				.expect(200)
 				.then((res) => {
 					const result = res.body;
-					const brewCount = _.size(BrewGen.static());
+					const brewCount = _.size(SampleBrews.static());
 					result.total.should.be.equal(brewCount);
 					result.brews.length.should.be.equal(brewCount);
 					result.brews[0].should.have.property('editId');
@@ -199,7 +199,7 @@ describe('Brew API', () => {
 		before('Connect DB', DB.connect);
 		before('Clear DB', BrewData.removeAll);
 		before('Populate brews', ()=>{
-			return BrewGen.populateDB(BrewGen.static());
+			return SampleBrews.populateDB(SampleBrews.static());
 		});
 
 		it('should be able to query brews for a specific user', ()=>{

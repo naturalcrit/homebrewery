@@ -6,7 +6,10 @@ module.exports = _.merge(
 	require('./class.snippet.js'),
 	require('./note.snippet.js'),
 	require('./monster.snippet.js'),
-	require('./toc.snippet.js')
+	require('./toc.snippet.js'),
+
+	require('./random.brew.js')
+
 
 
 		//wide

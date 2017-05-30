@@ -34,7 +34,8 @@ module.exports = (BrewModel) => {
 			opts.page = _.toNumber(opts.page);
 
 			let filter = {
-				text : 0
+				text : 0,
+				style : 0
 			};
 
 			if(!fullAccess){

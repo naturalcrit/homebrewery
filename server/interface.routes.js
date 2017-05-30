@@ -21,11 +21,10 @@ const getTopBrews = ()=>{
 	return BrewData.search({}, {
 		limit : 4,
 		sort : {views : -1}
-	}).then(({brews, total})=>brews);
+	}, false).then(({brews, total})=>brews);
 };
 
 getTopBrews().then((brews)=>{
-	console.log('top brews', brews);
 	topBrews=brews;
 });
 
@@ -44,9 +43,7 @@ const renderPage = (req, res, next) => {
 			brews : req.brews,
 			brew  : req.brew
 		})
-		.then((page) => {
-			return res.send(page)
-		})
+		.then((page)=>res.send(page))
 		.catch(next);
 };
 
@@ -72,7 +69,7 @@ router.get('/account', (req, res, next)=>{
 	if(req.account && req.account.username){
 		return res.redirect(`/user/${req.account.username}`);
 	}else{
-		return res.redirect(config.get('login_path'));
+		return res.redirect(`${config.get('login_path')}?redirect=${encodeURIComponent(req.headers.referer)}`);
 	}
 });
 router.get('/user/:username', (req, res, next) => {
@@ -122,8 +119,8 @@ router.get('/new', renderPage);
 
 //Home Page
 router.get('/', (req, res, next) => {
-	req.brew = { text : statics.welcomeBrew };
-	//TODO add in top brews
+	req.brews = topBrews;
+	console.log(topBrews);
 	return next();
 }, renderPage);
 

@@ -3,7 +3,7 @@ const _ = require('lodash');
 
 const DB = require('db.js');
 const BrewData = require('brew.data.js');
-const BrewGen = require('./brew.gen.js');
+const SampleBrews = require('./sample_brews.js');
 //const Error = require('error.js');
 
 
@@ -12,7 +12,7 @@ describe('Brew Search', () => {
 	before('Connect DB', DB.connect);
 	before('Clear DB', BrewData.removeAll);
 	before('Populate brews', ()=>{
-		return BrewGen.populateDB(BrewGen.static());
+		return SampleBrews.populateDB(SampleBrews.static());
 	});
 
 
@@ -28,7 +28,7 @@ describe('Brew Search', () => {
 		it('should be able to search for all brews', ()=>{
 			return BrewData.search()
 				.then((result) => {
-					const brewCount = _.size(BrewGen.static());
+					const brewCount = _.size(SampleBrews.static());
 					result.total.should.be.equal(brewCount);
 					result.brews.length.should.be.equal(brewCount);
 				})
@@ -41,7 +41,7 @@ describe('Brew Search', () => {
 					limit : 2
 				})
 				.then((result) => {
-					result.total.should.be.equal(_.size(BrewGen.static()));
+					result.total.should.be.equal(_.size(SampleBrews.static()));
 					result.brews.length.should.be.equal(2);
 				})
 		});

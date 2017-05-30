@@ -60,7 +60,7 @@ const Homebrew = React.createClass({
 			'/test_old' : <SharePage />,
 
 
-			'*' : <HomePage />,
+			'*' : <HomePage brews={this.props.brews}/>,
 		});
 	},
 	render : function(){

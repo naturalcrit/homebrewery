@@ -6,20 +6,20 @@ let PopulatedBrews = {};
 module.exports = {
 	//TODO: Add in a generator for old brews to test the old rendering code
 
-	random : (num = 20)=>{
-		return _.times(num, ()=>{
-			//TODO: Build better generator, use new snippets?
-			return {
-				title : 'BrewA',
-				description : '',
-				text : '',
-				authors : _.sampleSize(['userA','userB','userC','userD'], _.random(0, 3)),
-				systems : _.sampleSize(['5e', '4e', '3.5e', 'Pathfinder'], _.random(0,2)),
-				views   : _.random(0,1000),
-				published : !!_.random(0,1)
-			};
-		});
-	},
+	// random : (num = 20)=>{
+	// 	return _.times(num, ()=>{
+	// 		//TODO: Build better generator, use new snippets?
+	// 		return {
+	// 			title : 'BrewA',
+	// 			description : '',
+	// 			text : '',
+	// 			authors : _.sampleSize(['userA','userB','userC','userD'], _.random(0, 3)),
+	// 			systems : _.sampleSize(['5e', '4e', '3.5e', 'Pathfinder'], _.random(0,2)),
+	// 			views   : _.random(0,1000),
+	// 			published : !!_.random(0,1)
+	// 		};
+	// 	});
+	// },
 	old : () => {
 		return [
 			{

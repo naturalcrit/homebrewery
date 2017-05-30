@@ -10,7 +10,7 @@ const config = require('nconf')
 const Chai = require('chai')
 	.use(require('chai-as-promised'))
 	.use(require('chai-subset'))
-	.use(require('./brew.gen.js').chaiPlugin);
+	.use(require('./sample_brews.js').chaiPlugin);
 
 const log = require('loglevel');
 log.setLevel(config.get('log_level'));
