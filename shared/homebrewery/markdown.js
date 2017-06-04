@@ -1,5 +1,6 @@
 const _ = require('lodash');
-const Markdown = require('marked');
+//const Markdown = require('marked');
+const Markdown = require('./marked.lib.js');
 
 
 const renderer = new Markdown.Renderer();
@@ -25,19 +26,27 @@ renderer.paragraph = function(text){
 	}, []).join('\n');
 	return res;
 };
-
 renderer.image = function(href, title, text){
 	return `<img src="${href}" class="${text.split(',').join(' ')}"></img>`;
 };
+renderer.list = function(list, isOrdered, isDef){
+	if(isDef) return `<ul class='def'>${list}</ul>`;
+	if(isOrdered) return `<ol>${list}</ol>`;
+	return `<ul>${list}</ul>`;
+}
+
 
 module.exports = {
 	marked : Markdown,
 	render : (rawBrewText)=>{
 		blockCount = 0;
 
-		rawBrewText = rawBrewText.replace(/\\column/g, '{{columnSplit }}')
+		rawBrewText = rawBrewText.replace(/\\column/g, '{{columnSplit }}');
 
-		let html = Markdown(rawBrewText, {renderer : renderer, sanitize: true});
+
+		let html = Markdown(rawBrewText,{renderer : renderer, sanitize: true});
+
+
 		//Close all hanging block tags
 		html += _.times(blockCount, ()=>{return '</div>'}).join('\n');
 		return html;

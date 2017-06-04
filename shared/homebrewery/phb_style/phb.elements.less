@@ -1,15 +1,14 @@
+
 pre{
-	font-family : monospace;
-	background-color : @yellow;
-	padding : 12px;
-	border: 1px solid #bfbfbf;
-	white-space: pre-wrap;
-	color : #333;
+	padding                     : 12px;
+	background-color            : @yellow;
+	font-family                 : monospace;
+	color                       : #333;
+	border                      : 1px solid #bfbfbf;
+	white-space                 : pre-wrap;
 	-webkit-column-break-inside : avoid;
 	column-break-inside         : avoid;
 }
-
-
 hr{
 	visibility       : visible;
 	height           : 6px;
@@ -18,65 +17,49 @@ hr{
 	background-size  : 100% 100%;
 	border           : none;
 }
-
-
 p{
 	padding-bottom : 0.8em;
 	line-height    : 1.3em;
 	&+p{
 		margin-top : -0.8em;
 	}
-
-
 }
-
-
-
 blockquote{
 	font-style : italic;
 	&>p{
-		line-height: 1.8em;
-
+		line-height : 1.8em;
 		//Why did I do this?
 		&:first-child::first-line{
-
+			font-family : ScalySansSmallCaps;
 			//TODO: Find the right font for block quotes
-			font-style: normal;
-			font-family: ScalySansSmallCaps;
-
-
+			font-style  : normal;
 		}
 	}
 	.cite{
-		font-style: normal;
-		text-align: right;
+		font-style : normal;
+		text-align : right;
 	}
-
-
 }
-
-
-
 // IMAGE
 img{
-	z-index : -1;
-	display: block;
-	mix-blend-mode:multiply;
-
+	display        : block;
+	z-index        : -1;
+	mix-blend-mode : multiply;
 	&.center{
-		margin-right: auto;
-		margin-left: auto;
+		margin-right : auto;
+		margin-left  : auto;
+	}
+	&.noBlend{
+		mix-blend-mode : normal;
+	}
+	&.bg, &.background{
+		position : absolute;
 	}
 }
-
-
-
 //Indents after p or lists
 p+p, ul+p, ol+p{
 	text-indent : 1em;
 }
-
-
 strong{
 	font-weight    : bold;
 	letter-spacing : 0.03em;
@@ -127,8 +110,6 @@ h5{
 	font-size     : 0.423cm;
 	font-weight   : 900;
 }
-
-
 //******************************
 //          LISTS
 //******************************
@@ -154,17 +135,26 @@ ol{
 	list-style-position : outside;
 	list-style-type     : decimal;
 }
-
-
+ul.def{
+	margin-top          : -0.5em;
+	margin-bottom       : 0.5em;
+	padding-left        : 0em;
+	list-style-position : outside;
+	list-style-type     : none;
+	list-style-type     : none;
+	&+p{
+		text-indent : 0em;
+	}
+}
 //*****************************
 // *          TABLE
 // *****************************/
 table{
 	.useSansSerif();
-	break-inside: avoid-column;
 	width         : 100%;
 	margin-bottom : 1em;
 	font-size     : 10pt;
+	break-inside  : avoid-column;
 	thead{
 		font-weight : 800;
 		th{
