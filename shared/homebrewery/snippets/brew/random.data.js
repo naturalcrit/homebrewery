@@ -5,7 +5,9 @@ const Data = {
 		const data = (Data[name] ? Data[name] : name);
 		return _.sampleSize(data, _.random(min, max));
 	},
-
+	//Boolean of 1 in n chance
+	chance : (max = 20)=>_.random(1,max)== 1,
+	mix : (list, max = 1, min = 1)=>_.times(_.random(min, max), ()=>_.sample(list)),
 	titles : [
 		`The Burning Gallows`,
 		`The Ring of Nenlast`,

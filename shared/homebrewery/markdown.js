@@ -30,7 +30,6 @@ renderer.image = function(href, title, text){
 	return `<img src="${href}" class="${text.split(',').join(' ')}"></img>`;
 };
 
-
 module.exports = {
 	marked : Markdown,
 	render : (rawBrewText)=>{

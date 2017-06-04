@@ -26,12 +26,18 @@ p{
 	&+p{
 		margin-top : -0.8em;
 	}
+
+
 }
+
+
 
 blockquote{
 	font-style : italic;
 	&>p{
 		line-height: 1.8em;
+
+		//Why did I do this?
 		&:first-child::first-line{
 
 			//TODO: Find the right font for block quotes
@@ -49,13 +55,27 @@ blockquote{
 
 }
 
+
+
+// IMAGE
+img{
+	z-index : -1;
+	display: block;
+
+	&.center{
+		margin-right: auto;
+		margin-left: auto;
+	}
+}
+
+
+
 //Indents after p or lists
 p+p, ul+p, ol+p{
 	text-indent : 1em;
 }
-img{
-	z-index : -1;
-}
+
+
 strong{
 	font-weight    : bold;
 	letter-spacing : 0.03em;
@@ -88,13 +108,6 @@ h1{
 	font-size           : 0.987cm;
 	-webkit-column-span : all;
 	-moz-column-span    : all;
-	&+p::first-letter{
-		float       : left;
-		font-family : Solbera;
-		font-size   : 10em;
-		color       : #222;
-		line-height : 0.8em;
-	}
 }
 h2{
 	font-size : 0.705cm;
@@ -147,6 +160,7 @@ ol{
 // *****************************/
 table{
 	.useSansSerif();
+	break-inside: avoid-column;
 	width         : 100%;
 	margin-bottom : 1em;
 	font-size     : 10pt;

@@ -45,11 +45,17 @@ module.exports = {
 	table : () => {
 		const rows = _.sample([4,6,8,10]);
 
-		const cols = [
-			columns.roll(rows),
-			columns.level(rows),
-			columns.gear(rows)
-		];
+		let fns = [];
+		if(Data.chance(3)) fns.push(columns.roll);
+
+		fns = _.concat(fns, Data.rand([
+			columns.level,
+			columns.spell,
+			columns.cost,
+			columns.gear
+		], 3, 2 - fns.length))
+
+		const cols = _.map(fns, (fn)=>fn(rows));
 
 		return _.times(rows + 2, (i)=>{
 			if(i==1){
