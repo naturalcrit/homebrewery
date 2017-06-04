@@ -26,7 +26,7 @@ module.exports = {
 		const description = Data.rand('effects', 2).concat(Data.rand('effects2')).join(' ');
 
 
-		return `{{spell
+		return `
 #### ${_.sample(Data.spellNames)}
 *${_.sample(levels)}-level ${_.sample(schools)}*
 - **Casting Time:** ${_.sample(['1 action', 'Reaction', '10 minutes', '1 hour'])}
@@ -34,8 +34,7 @@ module.exports = {
 - **Components:** ${components}
 - **Duration:** ${duration}
 
-${description}
-}}`;
+${description}`;
 
 	},
 
@@ -47,6 +46,6 @@ ${description}
 			return `##### ${level} \n${spells} \n`;
 		}).join('\n');
 
-		return `{{fourColumn,fullPage\n${content}\n}}`;
+		return `{{fourColumn,fullPage,sansSerif\n${content}\n}}`;
 	}
 }

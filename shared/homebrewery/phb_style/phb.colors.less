@@ -1,5 +1,13 @@
 //TODO: come up with fun color names
 
+@crimson : #58180D;
+@red : #9c2b1b;
+@brown : #c9ad6a; //brown?
+@green : #e0e5c1;
+@yellow : #faf7ea; //same as background?
+@teal : blue;
+@blue : blue;
+
 @background            : #EEE5CE;
 @noteGreen             : #e0e5c1;
 @headerUnderline       : #c9ad6a;
@@ -20,13 +28,7 @@
 	}
 }
 
-@crimson : #58180D;
-@red : #9c2b1b;
-@gold : #c9ad6a; //brown?
-@green : #e0e5c1;
-@yellow : #faf7ea; //same as background?
-@teal : blue;
-@blue : blue;
+
 
 
 //TODO make a color mixin generator
@@ -34,5 +36,6 @@
 .blue{ .colorElements(@blue); }
 .green{ .colorElements(@green); }
 .yellow{ .colorElements(@yellow); }
-.gold{ .colorElements(@gold); }
-.red{ .colorElements(@red); }
+.brown{ .colorElements(fade(@brown, 50%)); }
+.red{ .colorElements(fade(@red, 25%)); }
+.crimson{ .colorElements(fade(@crimson, 20%)); }

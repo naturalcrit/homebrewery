@@ -43,6 +43,11 @@ const columns = {
 
 module.exports = {
 	table : () => {
+		let title = '';
+
+		if(Data.chance(5)) title = `##### ${Data.rand(Data.abilities)}\n`;
+
+
 		const rows = _.sample([4,6,8,10]);
 
 		let fns = [];
@@ -57,7 +62,7 @@ module.exports = {
 
 		const cols = _.map(fns, (fn)=>fn(rows));
 
-		return _.times(rows + 2, (i)=>{
+		return title + _.times(rows + 2, (i)=>{
 			if(i==1){
 				return '|' + _.map(cols, (col)=>col[i]).join('|') + '|';
 			}else{

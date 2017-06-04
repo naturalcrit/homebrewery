@@ -12,9 +12,7 @@ const Snips = _.merge(
 
 const BrewSnippets = {
 	brew : ()=>{
-
-
-
+		return _.times(_.random(1,10), ()=>BrewSnippets.page()).join('\n\n\\page\n\n');
 	},
 
 	page : ()=>{

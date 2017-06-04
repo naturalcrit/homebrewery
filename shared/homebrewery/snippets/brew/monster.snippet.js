@@ -12,9 +12,6 @@ const getStats = function(){
 
 const getAttributes = ()=>{
 
-
-
-
 	return `
 - **Saving Throws**
 - **Condition Immunities** ${Data.rand(["groggy", "swagged", "weak-kneed", "buzzed", "groovy", "melancholy", "drunk"], 3).join(', ')},
