@@ -18,6 +18,7 @@ const statics = {
 
 let topBrews = [];
 const getTopBrews = ()=>{
+	//Add in filter of last 2 weeks
 	return BrewData.search({}, {
 		limit : 4,
 		sort : {views : -1}
