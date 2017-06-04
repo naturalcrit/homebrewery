@@ -37,5 +37,16 @@ module.exports = {
 ${description}
 }}`;
 
+	},
+
+	spellList : ()=>{
+		const levels = ['Cantrips (0 Level)', '2nd Level', '3rd Level', '4th Level', '5th Level', '6th Level', '7th Level', '8th Level', '9th Level'];
+
+		const content = _.map(levels, (level)=>{
+			const spells = _.map(Data.rand('spellNames', 15, 5), (spell)=>`- ${spell}`).join('\n');
+			return `##### ${level} \n${spells} \n`;
+		}).join('\n');
+
+		return `{{fourColumn,fullPage\n${content}\n}}`;
 	}
 }
