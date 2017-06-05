@@ -26,7 +26,7 @@ module.exports = {
 		const description = Data.rand('effects', 2).concat(Data.rand('effects2')).join(' ');
 
 
-		return `{{spell
+		return `
 #### ${_.sample(Data.spellNames)}
 *${_.sample(levels)}-level ${_.sample(schools)}*
 - **Casting Time:** ${_.sample(['1 action', 'Reaction', '10 minutes', '1 hour'])}
@@ -34,8 +34,18 @@ module.exports = {
 - **Components:** ${components}
 - **Duration:** ${duration}
 
-${description}
-}}`;
+${description}`;
 
+	},
+
+	spellList : ()=>{
+		const levels = ['Cantrips (0 Level)', '2nd Level', '3rd Level', '4th Level', '5th Level', '6th Level', '7th Level', '8th Level', '9th Level'];
+
+		const content = _.map(levels, (level)=>{
+			const spells = _.map(Data.rand('spellNames', 15, 5), (spell)=>`- ${spell}`).join('\n');
+			return `##### ${level} \n${spells} \n`;
+		}).join('\n');
+
+		return `{{fourColumn,fullPage,sansSerif\n${content}\n}}`;
 	}
 }

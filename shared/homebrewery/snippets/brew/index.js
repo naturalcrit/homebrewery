@@ -8,7 +8,8 @@ module.exports = _.merge(
 	require('./monster.snippet.js'),
 	require('./toc.snippet.js'),
 
-	require('./random.brew.js')
+	//require('./random.brew.js')
+	require('./brew.snippet.js')
 
 
 

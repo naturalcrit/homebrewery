@@ -43,15 +43,26 @@ const columns = {
 
 module.exports = {
 	table : () => {
+		let title = '';
+
+		if(Data.chance(5)) title = `##### ${Data.rand(Data.abilities)}\n`;
+
+
 		const rows = _.sample([4,6,8,10]);
 
-		const cols = [
-			columns.roll(rows),
-			columns.level(rows),
-			columns.gear(rows)
-		];
+		let fns = [];
+		if(Data.chance(3)) fns.push(columns.roll);
 
-		return _.times(rows + 2, (i)=>{
+		fns = _.concat(fns, Data.rand([
+			columns.level,
+			columns.spell,
+			columns.cost,
+			columns.gear
+		], 3, 2 - fns.length))
+
+		const cols = _.map(fns, (fn)=>fn(rows));
+
+		return title + _.times(rows + 2, (i)=>{
 			if(i==1){
 				return '|' + _.map(cols, (col)=>col[i]).join('|') + '|';
 			}else{

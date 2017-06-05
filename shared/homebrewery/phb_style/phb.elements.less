@@ -1,15 +1,14 @@
+
 pre{
-	font-family : monospace;
-	background-color : @yellow;
-	padding : 12px;
-	border: 1px solid #bfbfbf;
-	white-space: pre-wrap;
-	color : #333;
+	padding                     : 12px;
+	background-color            : @yellow;
+	font-family                 : monospace;
+	color                       : #333;
+	border                      : 1px solid #bfbfbf;
+	white-space                 : pre-wrap;
 	-webkit-column-break-inside : avoid;
 	column-break-inside         : avoid;
 }
-
-
 hr{
 	visibility       : visible;
 	height           : 6px;
@@ -18,8 +17,6 @@ hr{
 	background-size  : 100% 100%;
 	border           : none;
 }
-
-
 p{
 	padding-bottom : 0.8em;
 	line-height    : 1.3em;
@@ -27,34 +24,41 @@ p{
 		margin-top : -0.8em;
 	}
 }
-
 blockquote{
 	font-style : italic;
 	&>p{
-		line-height: 1.8em;
+		line-height : 1.8em;
+		//Why did I do this?
 		&:first-child::first-line{
-
+			font-family : ScalySansSmallCaps;
 			//TODO: Find the right font for block quotes
-			font-style: normal;
-			font-family: ScalySansSmallCaps;
-
-
+			font-style  : normal;
 		}
 	}
 	.cite{
-		font-style: normal;
-		text-align: right;
+		font-style : normal;
+		text-align : right;
 	}
-
-
 }
-
+// IMAGE
+img{
+	display        : block;
+	z-index        : -1;
+	mix-blend-mode : multiply;
+	&.center{
+		margin-right : auto;
+		margin-left  : auto;
+	}
+	&.noBlend{
+		mix-blend-mode : normal;
+	}
+	&.bg, &.background{
+		position : absolute;
+	}
+}
 //Indents after p or lists
 p+p, ul+p, ol+p{
 	text-indent : 1em;
-}
-img{
-	z-index : -1;
 }
 strong{
 	font-weight    : bold;
@@ -88,13 +92,6 @@ h1{
 	font-size           : 0.987cm;
 	-webkit-column-span : all;
 	-moz-column-span    : all;
-	&+p::first-letter{
-		float       : left;
-		font-family : Solbera;
-		font-size   : 10em;
-		color       : #222;
-		line-height : 0.8em;
-	}
 }
 h2{
 	font-size : 0.705cm;
@@ -113,8 +110,6 @@ h5{
 	font-size     : 0.423cm;
 	font-weight   : 900;
 }
-
-
 //******************************
 //          LISTS
 //******************************
@@ -141,7 +136,19 @@ ol{
 	list-style-type     : decimal;
 }
 
-
+p+ul.alt{
+	margin-top          : -0.5em;
+}
+ul.alt{
+	margin-bottom       : 0.5em;
+	padding-left        : 0em;
+	list-style-position : outside;
+	list-style-type     : none;
+	list-style-type     : none;
+	&+p{
+		text-indent : 0em;
+	}
+}
 //*****************************
 // *          TABLE
 // *****************************/
@@ -150,6 +157,7 @@ table{
 	width         : 100%;
 	margin-bottom : 1em;
 	font-size     : 10pt;
+	break-inside  : avoid-column;
 	thead{
 		font-weight : 800;
 		th{
