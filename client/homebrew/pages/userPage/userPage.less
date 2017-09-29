@@ -1,0 +1,33 @@
+
+.noColumns(){
+	column-count         : auto;
+	column-fill          : auto;
+	column-gap           : auto;
+	column-width         : auto;
+	-webkit-column-count : auto;
+	-moz-column-count    : auto;
+	-webkit-column-width : auto;
+	-moz-column-width    : auto;
+	-webkit-column-gap   : auto;
+	-moz-column-gap      : auto;
+}
+.userPage{
+	.content{
+		overflow-y : scroll;
+		.phb{
+			.noColumns();
+			height     : auto;
+			min-height            : 279.4mm;
+			margin     : 20px auto;
+			&::after{
+				display : none;
+			}
+			.noBrews{
+				margin     : 10px 0px;
+				font-size  : 1.3em;
+				font-style : italic;
+			}
+
+		}
+	}
+}

@@ -1,0 +1,73 @@
+
+.snippetBar{
+	@height          : 25px;
+	position         : relative;
+	height           : @height;
+	background-color : #ddd;
+	.toggleMeta{
+		position    : absolute;
+		top         : 0px;
+		right       : 0px;
+		height      : @height;
+		width       : @height;
+		cursor      : pointer;
+		line-height : @height;
+		text-align  : center;
+		.tooltipLeft("Edit Brew Metadata");
+		&:hover, &.selected{
+			background-color : #999;
+		}
+	}
+	.snippetGroup{
+		display        : inline-block;
+		height         : @height;
+		padding        : 0px 5px;
+		cursor         : pointer;
+		font-size      : 0.6em;
+		font-weight    : 800;
+		line-height    : @height;
+		text-transform : uppercase;
+		border-right   : 1px solid black;
+		i{
+			vertical-align : middle;
+			margin-right   : 3px;
+			font-size      : 1.2em;
+		}
+		&:hover, &.selected{
+			background-color : #999;
+		}
+		.text{
+			line-height : @height;
+			.groupName{
+				font-size : 10px;
+			}
+		}
+		&:hover{
+			.dropdown{
+				visibility : visible;
+			}
+		}
+		.dropdown{
+			position         : absolute;
+			top              : 100%;
+			visibility       : hidden;
+			z-index          : 1000;
+			margin-left      : -5px;
+			padding          : 0px;
+			background-color : #ddd;
+			.snippet{
+				.animate(background-color);
+				padding   : 5px;
+				cursor    : pointer;
+				font-size : 10px;
+				i{
+					margin-right : 8px;
+					font-size    : 13px;
+				}
+				&:hover{
+					background-color : #999;
+				}
+			}
+		}
+	}
+}

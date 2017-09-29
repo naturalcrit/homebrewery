@@ -1,0 +1,60 @@
+
+.brewItem{
+	position                    : relative;
+	display                     : inline-block;
+	vertical-align              : top;
+	box-sizing                  : border-box;
+	box-sizing                  : border-box;
+	overflow                    : hidden;
+	width                       : 48%;
+	margin-right                : 15px;
+	margin-bottom               : 15px;
+	padding                     : 5px 15px 5px 8px;
+	padding-right               : 15px;
+	border                      : 1px solid #c9ad6a;
+	border-radius               : 5px;
+	-webkit-column-break-inside : avoid;
+	page-break-inside           : avoid;
+	break-inside                : avoid;
+	h4{
+		margin-bottom : 5px;
+		font-size     : 2.2em;
+	}
+	.info{
+		font-family : ScalySans;
+		font-size   : 1.2em;
+		&>span{
+			margin-right : 15px;
+		}
+	}
+	&:hover{
+		.links{
+			opacity : 1;
+		}
+	}
+	&:nth-child(2n + 1){
+		margin-right : 0px;
+	}
+	.links{
+		.animate(opacity);
+		position         : absolute;
+		top              : 0px;
+		right            : 0px;
+		height           : 100%;
+		width            : 2em;
+		opacity          : 0;
+		background-color : fade(black, 60%);
+		text-align       : center;
+		a{
+			.animate(opacity);
+			display   : block;
+			margin    : 8px 0px;
+			opacity   : 0.6;
+			font-size : 1.3em;
+			color     : white;
+			&:hover{
+				opacity : 1;
+			}
+		}
+	}
+}

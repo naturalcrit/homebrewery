@@ -1,25 +1,31 @@
-var React = require('react');
-var _ = require('lodash');
-var cx = require('classnames');
+const React = require('react');
+const _ = require('lodash');
+const cx = require('classnames');
 
-var CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
-var Snippets = require('./snippets/snippets.js');
+const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
+const SnippetBar = require('./snippetbar/snippetbar.jsx');
+const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
 
-var splice = function(str, index, inject){
+const splice = function(str, index, inject){
 	return str.slice(0, index) + inject + str.slice(index);
 };
-var execute = function(val){
-	if(_.isFunction(val)) return val();
-	return val;
-}
 
+const SNIPPETBAR_HEIGHT = 25;
 
-var Editor = React.createClass({
+const Editor = React.createClass({
 	getDefaultProps: function() {
 		return {
-			value : "",
-			onChange : function(){}
+			value : '',
+			onChange : ()=>{},
+
+			metadata : {},
+			onMetadataChange : ()=>{},
+		};
+	},
+	getInitialState: function() {
+		return {
+			showMetadataEditor: false
 		};
 	},
 	cursorPosition : {
@@ -28,8 +34,17 @@ var Editor = React.createClass({
 	},
 
 	componentDidMount: function() {
-		var paneHeight = this.refs.main.parentNode.clientHeight;
-		paneHeight -= this.refs.snippetBar.clientHeight + 1;
+		this.updateEditorSize();
+		this.highlightPageLines();
+		window.addEventListener("resize", this.updateEditorSize);
+	},
+	componentWillUnmount: function() {
+		window.removeEventListener("resize", this.updateEditorSize);
+	},
+
+	updateEditorSize : function() {
+		let paneHeight = this.refs.main.parentNode.clientHeight;
+		paneHeight -= SNIPPETBAR_HEIGHT + 1;
 		this.refs.codeEditor.codeMirror.setSize(null, paneHeight);
 	},
 
@@ -39,13 +54,45 @@ var Editor = React.createClass({
 	handleCursorActivty : function(curpos){
 		this.cursorPosition = curpos;
 	},
-
-	handleSnippetClick : function(injectText){
-		var lines = this.props.value.split('\n');
+	handleInject : function(injectText){
+		const lines = this.props.value.split('\n');
 		lines[this.cursorPosition.line] = splice(lines[this.cursorPosition.line], this.cursorPosition.ch, injectText);
 
 		this.handleTextChange(lines.join('\n'));
 		this.refs.codeEditor.setCursorPosition(this.cursorPosition.line, this.cursorPosition.ch  + injectText.length);
+	},
+	handgleToggle : function(){
+		this.setState({
+			showMetadataEditor : !this.state.showMetadataEditor
+		})
+	},
+
+	getCurrentPage : function(){
+		const lines = this.props.value.split('\n').slice(0, this.cursorPosition.line + 1);
+		return _.reduce(lines, (r, line) => {
+			if(line.indexOf('\\page') !== -1) r++;
+			return r;
+		}, 1);
+	},
+
+	highlightPageLines : function(){
+		if(!this.refs.codeEditor) return;
+		const codeMirror = this.refs.codeEditor.codeMirror;
+
+		const lineNumbers = _.reduce(this.props.value.split('\n'), (r, line, lineNumber)=>{
+			if(line.indexOf('\\page') !== -1){
+				codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
+				r.push(lineNumber);
+			}
+			return r;
+		}, []);
+		return lineNumbers
+	},
+
+
+	brewJump : function(){
+		const currentPage = this.getCurrentPage();
+		window.location.hash = 'p' + currentPage;
 	},
 
 	//Called when there are changes to the editor's dimensions
@@ -53,24 +100,24 @@ var Editor = React.createClass({
 		this.refs.codeEditor.updateSize();
 	},
 
-	renderSnippetGroups : function(){
-		return _.map(Snippets, (snippetGroup)=>{
-			return <SnippetGroup
-				groupName={snippetGroup.groupName}
-				icon={snippetGroup.icon}
-				snippets={snippetGroup.snippets}
-				key={snippetGroup.groupName}
-				onSnippetClick={this.handleSnippetClick}
-			/>
-		})
+	renderMetadataEditor : function(){
+		if(!this.state.showMetadataEditor) return;
+		return <MetadataEditor
+			metadata={this.props.metadata}
+			onChange={this.props.onMetadataChange}
+		/>
 	},
 
 	render : function(){
+		this.highlightPageLines();
 		return(
 			<div className='editor' ref='main'>
-				<div className='snippetBar' ref='snippetBar'>
-					{this.renderSnippetGroups()}
-				</div>
+				<SnippetBar
+					brew={this.props.value}
+					onInject={this.handleInject}
+					onToggle={this.handgleToggle}
+					showmeta={this.state.showMetadataEditor} />
+				{this.renderMetadataEditor()}
 				<CodeEditor
 					ref='codeEditor'
 					wrap={true}
@@ -78,6 +125,12 @@ var Editor = React.createClass({
 					value={this.props.value}
 					onChange={this.handleTextChange}
 					onCursorActivity={this.handleCursorActivty} />
+
+				{/*
+				<div className='brewJump' onClick={this.brewJump}>
+					<i className='fa fa-arrow-right' />
+				</div>
+				*/}
 			</div>
 		);
 	}
@@ -90,40 +143,3 @@ module.exports = Editor;
 
 
 
-
-
-
-var SnippetGroup = React.createClass({
-	getDefaultProps: function() {
-		return {
-			groupName : '',
-			icon : 'fa-rocket',
-			snippets : [],
-			onSnippetClick : function(){},
-		};
-	},
-	handleSnippetClick : function(snippet){
-		this.props.onSnippetClick(execute(snippet.gen));
-	},
-	renderSnippets : function(){
-		return _.map(this.props.snippets, (snippet)=>{
-			return <div className='snippet' key={snippet.name} onClick={this.handleSnippetClick.bind(this, snippet)}>
-				<i className={'fa fa-fw ' + snippet.icon} />
-				{snippet.name}
-			</div>
-		})
-	},
-
-	render : function(){
-		return <div className='snippetGroup'>
-			<div className='text'>
-				<i className={'fa fa-fw ' + this.props.icon} />
-				<span className='groupName'>{this.props.groupName}</span>
-			</div>
-			<div className='dropdown'>
-				{this.renderSnippets()}
-			</div>
-		</div>
-	},
-
-});

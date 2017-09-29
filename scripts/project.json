@@ -1,0 +1,19 @@
+{
+	"assets": ["*.png","*.otf", "*.ico"],
+	"shared":[
+	],
+	"libs" : [
+		"react",
+		"react-dom",
+		"lodash",
+		"classnames",
+		"codemirror",
+		"codemirror/mode/gfm/gfm.js",
+		"codemirror/mode/javascript/javascript.js",
+		"moment",
+		"superagent",
+		"marked",
+		"pico-router",
+		"pico-flux"
+	]
+}

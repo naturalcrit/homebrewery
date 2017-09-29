@@ -1,49 +1,89 @@
-var React = require('react');
-var _ = require('lodash');
-var cx = require('classnames');
+const React = require('react');
+const _ = require('lodash');
+const cx = require('classnames');
 
-var Markdown = require('naturalcrit/markdown.js');
+const Markdown = require('naturalcrit/markdown.js');
+const ErrorBar = require('./errorBar/errorBar.jsx');
 
-var PAGE_HEIGHT = 1056 + 30;
+//TODO: move to the brew renderer
+const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx')
 
-var BrewRenderer = React.createClass({
+const PAGE_HEIGHT = 1056;
+const PPR_THRESHOLD = 50;
+
+const BrewRenderer = React.createClass({
 	getDefaultProps: function() {
 		return {
-			text : ''
+			text : '',
+			errors : []
 		};
 	},
 	getInitialState: function() {
+		const pages = this.props.text.split('\\page');
+
 		return {
 			viewablePageNumber: 0,
 			height : 0,
-			isMounted : false
+			isMounted : false,
+
+			usePPR : true,
+
+			pages : pages,
+			usePPR : pages.length >= PPR_THRESHOLD,
+
+			errors : []
 		};
 	},
-	totalPages : 0,
 	height : 0,
+	pageHeight : PAGE_HEIGHT,
+	lastRender : <div></div>,
 
 	componentDidMount: function() {
+		this.updateSize();
+		window.addEventListener("resize", this.updateSize);
+	},
+	componentWillUnmount: function() {
+		window.removeEventListener("resize", this.updateSize);
+	},
+
+	componentWillReceiveProps: function(nextProps) {
+		if(this.refs.pages && this.refs.pages.firstChild) this.pageHeight = this.refs.pages.firstChild.clientHeight;
+
+		const pages = nextProps.text.split('\\page');
+		this.setState({
+			pages : pages,
+			usePPR : pages.length >= PPR_THRESHOLD
+		})
+	},
+
+	updateSize : function() {
+		setTimeout(()=>{
+			if(this.refs.pages && this.refs.pages.firstChild) this.pageHeight = this.refs.pages.firstChild.clientHeight;
+		}, 1);
+
 		this.setState({
 			height : this.refs.main.parentNode.clientHeight,
 			isMounted : true
 		});
 	},
+
 	handleScroll : function(e){
 		this.setState({
-			viewablePageNumber : Math.floor(e.target.scrollTop / PAGE_HEIGHT)
+			viewablePageNumber : Math.floor(e.target.scrollTop / this.pageHeight)
 		});
-	},
-	//Implement later
-	scrollToPage : function(pageNumber){
 	},
 
 	shouldRender : function(pageText, index){
 		if(!this.state.isMounted) return false;
 
 		var viewIndex = this.state.viewablePageNumber;
+		if(index == viewIndex - 3) return true;
+		if(index == viewIndex - 2) return true;
 		if(index == viewIndex - 1) return true;
 		if(index == viewIndex)     return true;
 		if(index == viewIndex + 1) return true;
+		if(index == viewIndex + 2) return true;
+		if(index == viewIndex + 3) return true;
 
 		//Check for style tages
 		if(pageText.indexOf('<style>') !== -1) return true;
@@ -53,7 +93,15 @@ var BrewRenderer = React.createClass({
 
 	renderPageInfo : function(){
 		return <div className='pageInfo'>
-			{this.state.viewablePageNumber + 1} / {this.totalPages}
+			{this.state.viewablePageNumber + 1} / {this.state.pages.length}
+		</div>
+	},
+
+	renderPPRmsg : function(){
+		if(!this.state.usePPR) return;
+
+		return <div className='ppr_msg'>
+			Partial Page Renderer enabled, because your brew is so large. May effect rendering.
 		</div>
 	},
 
@@ -68,16 +116,20 @@ var BrewRenderer = React.createClass({
 	},
 
 	renderPages : function(){
-		var pages = this.props.text.split('\\page');
-		this.totalPages = pages.length;
-
-		return _.map(pages, (page, index)=>{
-			if(this.shouldRender(page, index)){
-				return this.renderPage(page, index);
-			}else{
-				return this.renderDummyPage(index);
-			}
+		if(this.state.usePPR){
+			return _.map(this.state.pages, (page, index)=>{
+				if(this.shouldRender(page, index)){
+					return this.renderPage(page, index);
+				}else{
+					return this.renderDummyPage(index);
+				}
+			});
+		}
+		if(this.props.errors && this.props.errors.length) return this.lastRender;
+		this.lastRender = _.map(this.state.pages, (page, index)=>{
+			return this.renderPage(page, index);
 		});
+		return this.lastRender;
 	},
 
 	render : function(){
@@ -86,10 +138,14 @@ var BrewRenderer = React.createClass({
 			ref='main'
 			style={{height : this.state.height}}>
 
-			<div className='pages'>
+			<ErrorBar errors={this.props.errors} />
+			<RenderWarnings />
+
+			<div className='pages' ref='pages'>
 				{this.renderPages()}
 			</div>
 			{this.renderPageInfo()}
+			{this.renderPPRmsg()}
 		</div>
 	}
 });

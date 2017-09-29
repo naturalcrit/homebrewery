@@ -2,55 +2,28 @@
 .editor{
 	position : relative;
 	width    : 100%;
-	.snippetBar{
-		display          : flex;
-		padding          : 5px;
-		background-color : #ddd;
-		align-items      : center;
-		.snippetGroup{
-			.animate(background-color);
-			margin        : 0px 8px;
-			padding       : 3px;
-			font-size     : 13px;
-			border-radius : 5px;
-			&:hover, &.selected{
-				background-color : #999;
-			}
-			.text{
-				line-height : 20px;
-				.groupName{
-					margin-left : 6px;
-					font-size   : 10px;
-				}
-			}
-			&:hover{
-				.dropdown{
-					visibility : visible;
-				}
-			}
-			.dropdown{
-				position         : absolute;
-				visibility       : hidden;
-				z-index          : 1000;
-				padding          : 5px;
-				background-color : #ddd;
-				.snippet{
-					.animate(background-color);
-					padding   : 10px;
-					cursor    : pointer;
-					font-size : 10px;
-					i{
-						margin-right: 8px;
-						font-size : 13px;
-					}
-					&:hover{
-						background-color : #999;
-					}
-				}
-			}
-		}
-	}
+
 	.codeEditor{
 		height : 100%;
+		.pageLine{
+			background-color : fade(#333, 15%);
+			border-bottom    : #333 solid 1px;
+		}
 	}
+
+	.brewJump{
+		position: absolute;
+		background-color: @teal;
+		cursor: pointer;
+		width : 30px;
+		height : 30px;
+		display : flex;
+		align-items : center;
+		bottom : 20px;
+		right : 20px;
+		z-index: 1000000;
+		justify-content:center;
+		.tooltipLeft("Jump to brew page");
+	}
+
 }

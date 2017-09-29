@@ -1,5 +1,106 @@
 # changelog
 
+### Saturday, 22/04/217 - v2.7.4
+- Give ability to hide the render warning notification
+
+
+### Friday, 03/03/2017 - v2.7.3
+- Increasing the range on the Partial Page Rendering for a quick-fix for it getting out of sync on long brews.
+
+### Saturday, 18/02/2017 - v2.7.2
+- Adding ability to delete a brew from the user page, incase the user creates a brew that makes the edit page unrender-able. (re:309)
+
+## BIG NEWS
+With the next major release of Homebrewery, v3.0.0, this tool *will no longer support raw HTML input for brew code*. Most issues and errors users are having are because of this feature and it's become too taxing to help and fix these issues.
+
+All brews made previous to the release of v3.0.0 will still render normally.
+
+### Thursday, 19/01/2017 - v2.7.0
+- Fixed saving multiple authors and multiple systems on brew metadata (thanks u/PalaNolho re:282)
+- Adding in line highlight for new pages
+- Added in a simple brew lookup for admin
+
+
+### Saturday, 14/01/2017 - v2.7.0
+- Added a new Render Warning overlay. It detects situations where the brew may not be rendering correctly (wrong browser, browser is zoomed in...) and let's the user know
+
+
+### Sunday, 25/12/2016 - v2.7.0
+- Switching over to using Vitreum v4
+  - Removed gulp, all tasks are run through npm scripts
+- Updating docs for local dev
+- Removing support for Docker. I have never used it, nor will I ever test for it, so I don't want to continue to explictly support it on this repo. Feel free to make a fork and make it docker-able though :)
+- Changed icon for the metadata
+- Made links useable in footer (thanks u/Dustfinger1 re:249)
+- Added print media queries to remove box shadow on print (thanks u/dmmagic  re: 246)
+- Fixed realtime renderer not functioning if loaded with malformed html on load (thanks u/RattiganIV re:247)
+- Removed a lot of unused files in shared
+- vitreum v4 now lets me use codemirror as a pure node dependacy
+
+
+
+### Saturday, 03/12/2016 - v2.6.0
+- Added report back to the edit page
+- Changed metaeditor icon
+- Added a button to quickly share your brew to reddit :)
+- Disabled Partial Page Rendering unless your brew hits 75 pages or longer
+- The brew renderer will now try and use your first page to judge the page size of each of your brews. This allows you now to set landscape and other weird sizes and everthing should work fine :)
+- UI on the user page improved (thanks u/PalaNolho)
+- Fixed lists not breaking across columns (thanks u/tyson-nw)
+- Added a table of contents snippet (thanks u/tullisar)
+- Added a multicolumn snippet
+
+
+
+### Thursday, 01/12/2016
+- Added in a snippet for a split table
+- Added an account nav item to new page
+
+
+### Sunday, 27/11/2016 - v2.5.1
+- Fixed the column rendering on the new user page. Really should have tested that better
+- Added a hover tooltip to fully read the brew description
+- Made the brew items take up only 25% allowing you to view more per row.
+
+### Wednesday, 23/11/2016 - v2.5.0
+- Metadata can now be added to brews
+- Added a metadata editor onto the edit and new pages
+- Moved deleting a brew into the metadata editor
+- Added in account middleware
+- Can now search for brews by a specific author
+- Editing a brew in anyway while logged in will now add you to the list of authors
+- Added a new user page to see others published brews, as well as all of your own brews.
+- Added a new nav item for accessing your profile and logging in
+
+
+### Monday, 14/11/2016
+- Updated snippet bar style
+- You can now print from a new page without saving
+- Added the ability to use ctrl+p and ctrl+s to print and save respectively.
+
+### Monday, 07/11/2016
+- Added final touches to the html validator and updating the rest of the branch
+- If anyone finds issues with the new HTML validator, please let me know. I hope this will bring a more consistent feel to Homebrewery rendering.
+
+### Friday, 09/09/2016 - v2.4.0
+- Adding in a HTML validator that will display warnings whenever you save. This should stop a lot of the issues generated with pages not showing up.
+
+### Saturday, 20/08/2016 - v2.3.0
+- Added in a license file
+- Updated the welcome text
+- Added in a much better Error page
+- If you visit a deleted brew, it will now remove it from your recent list. (Thanks u/sIllverback!)
+- Improved parsing of embedded html text in brews. (Thanks u/com-charizard!)
+- Added in a new coverpage snippet
+- Homebrewery will now try and onsert a good title for your brew if you don't provide one
+- Homebrewery now re-renders properly when you zoom
+- Fixed the noteblock overlapping into titles (thanks u/dsompura!)
+- Fixed a bad search route in the admin panel (thanks u/SnappyTom!)
+
+
+### Friday, 29/07/2016 - v2.2.7
+- Adding in descriptive note blocks. (Thanks calculuschild!)
+
 ### Thursday, 07/07/2016 - v2.2.6
 - Added a new nav item on the homepage for accessing both recently viewed and edited brews (thanks [ChosenSeraph!](https://github.com/stolksdorf/homebrewery/issues/147))
 

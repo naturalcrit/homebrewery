@@ -1,22 +1,25 @@
-var React = require('react');
-var _ = require('lodash');
+const React = require('react');
+const _ = require('lodash');
 
-var Nav = require('naturalcrit/nav/nav.jsx');
+const Nav = require('naturalcrit/nav/nav.jsx');
 
-var Navbar = React.createClass({
+const Navbar = React.createClass({
 	getInitialState: function() {
 		return {
-			showNonChromeWarning : false
+			//showNonChromeWarning : false,
+			ver : '0.0.0'
 		};
 	},
 
 	componentDidMount: function() {
-		var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+		//const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 		this.setState({
-			showNonChromeWarning : !isChrome
+			//showNonChromeWarning : !isChrome,
+			ver : window.version
 		})
 	},
 
+/*
 	renderChromeWarning : function(){
 		if(!this.state.showNonChromeWarning) return;
 		return <Nav.item className='warning' icon='fa-exclamation-triangle'>
@@ -26,7 +29,7 @@ var Navbar = React.createClass({
 			</div>
 		</Nav.item>
 	},
-
+*/
 	render : function(){
 		return <Nav.base>
 			<Nav.section>
@@ -34,9 +37,9 @@ var Navbar = React.createClass({
 				<Nav.item href='/' className='homebrewLogo'>
 					<div>The Homebrewery</div>
 				</Nav.item>
-				<Nav.item>v2.2.6</Nav.item>
+				<Nav.item>{`v${this.state.ver}`}</Nav.item>
 
-				{this.renderChromeWarning()}
+				{/*this.renderChromeWarning()*/}
 			</Nav.section>
 			{this.props.children}
 		</Nav.base>

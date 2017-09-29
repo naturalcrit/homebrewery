@@ -1,103 +1,110 @@
-var _ = require('lodash');
-var Moment = require('moment');
-var HomebrewModel = require('./homebrew.model.js').model;
+const _ = require('lodash');
+const Moment = require('moment');
+const HomebrewModel = require('./homebrew.model.js').model;
+const router = require('express').Router();
 
-var homebrewTotal = 0;
-var refreshCount = function(){
-	HomebrewModel.count({}, function(err, total){
+
+
+//TODO: Possiblity remove
+let homebrewTotal = 0;
+const refreshCount = ()=>{
+	HomebrewModel.count({}, (err, total)=>{
 		homebrewTotal = total;
 	});
 };
-refreshCount()
-
-var mw = {
-	adminOnly : function(req, res, next){
-		if(req.query && req.query.admin_key == process.env.ADMIN_KEY){
-			next();
-		}else{
-			return res.status(401).send('Access denied');
-		}
-	}
-};
+refreshCount();
 
 
-var getTopBrews = function(cb){
+
+const getTopBrews = (cb)=>{
 	HomebrewModel.find().sort({views: -1}).limit(5).exec(function(err, brews) {
 		cb(brews);
 	});
 }
 
+const getGoodBrewTitle = (text) => {
+	const titlePos = text.indexOf('# ');
+	if(titlePos !== -1){
+		const ending = text.indexOf('\n', titlePos);
+		return text.substring(titlePos + 2, ending);
+	}else{
+		return _.find(text.split('\n'), (line)=>{
+			return line;
+		});
+	}
+};
+
+
+
+router.post('/api', (req, res)=>{
+
+	let authors = [];
+	if(req.account) authors = [req.account.username];
+
+	const newHomebrew = new HomebrewModel(_.merge({},
+		req.body,
+		{authors : authors}
+	));
+	if(!newHomebrew.title){
+		newHomebrew.title = getGoodBrewTitle(newHomebrew.text);
+	}
+	newHomebrew.save((err, obj)=>{
+		if(err){
+			console.error(err, err.toString(), err.stack);
+			return res.status(500).send(`Error while creating new brew, ${err.toString()}`);
+		}
+		return res.json(obj);
+	})
+});
+
+router.put('/api/update/:id', (req, res)=>{
+	HomebrewModel.get({editId : req.params.id})
+		.then((brew)=>{
+			brew = _.merge(brew, req.body);
+			brew.updatedAt = new Date();
+			if(req.account) brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
+
+			brew.markModified('authors');
+			brew.markModified('systems');
+
+			brew.save((err, obj)=>{
+				if(err) throw err;
+				return res.status(200).send(obj);
+			})
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(500).send("Error while saving");
+		});
+});
+
+router.get('/api/remove/:id', (req, res)=>{
+	HomebrewModel.find({editId : req.params.id}, (err, objs)=>{
+		if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
+		var resEntry = objs[0];
+		resEntry.remove((err)=>{
+			if(err) return res.status(500).send("Error while removing");
+			return res.status(200).send();
+		})
+	});
+});
+
+
+module.exports = router;
+
+/*
+
+
 
 module.exports = function(app){
 
-	app.get('/api/top', function(req, res){
-		getTopBrews(function(topBrews){
-			return res.json(topBrews);
-		});
-	});
+	app;
 
-	app.post('/api', function(req, res){
-		var newHomebrew = new HomebrewModel(req.body);
-		newHomebrew.save(function(err, obj){
-			if(err){
-				console.error(err, err.toString(), err.stack);
-				return res.status(500).send("Error while creating new brew");
-			}
-			return res.json(obj);
-		})
-	});
 
-	app.put('/api/update/:id', function(req, res){
-		HomebrewModel.find({editId : req.params.id}, function(err, objs){
-			if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
-			var resEntry = objs[0];
-			resEntry.text = req.body.text;
-			resEntry.title = req.body.title;
-			resEntry.updatedAt = new Date();
-			resEntry.save(function(err, obj){
-				if(err) return res.status(500).send("Error while saving");
-				return res.status(200).send(obj);
-			})
-		});
-	});
-
-	app.get('/api/remove/:id', function(req, res){
-		HomebrewModel.find({editId : req.params.id}, function(err, objs){
-			if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
-			var resEntry = objs[0];
-			resEntry.remove(function(err){
-				if(err) return res.status(500).send("Error while removing");
-				return res.status(200).send();
-			})
-		});
-	});
-
-	//Removes all empty brews that are older than 3 days and that are shorter than a tweet
-	app.get('/api/invalid', mw.adminOnly, function(req, res){
-		var invalidBrewQuery = HomebrewModel.find({
-			'$where' : "this.text.length < 140",
-			createdAt: {
-				$lt: Moment().subtract(3, 'days').toDate()
-			}
-		});
-
-		if(req.query.do_it){
-			invalidBrewQuery.remove().exec((err, objs)=>{
-				refreshCount();
-				return res.send(200);
-			})
-		}else{
-			invalidBrewQuery.exec((err, objs)=>{
-				if(err) console.log(err);
-				return res.json({
-					count : objs.length
-				})
-			})
-		}
-	});
 
 
 	app.get('/api/search', mw.adminOnly, function(req, res){
+
 		var page = req.query.page || 0;
 		var count = req.query.count || 20;
 
@@ -134,3 +141,4 @@ module.exports = function(app){
 
 	return app;
 }
+*/

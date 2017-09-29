@@ -7,6 +7,8 @@ var Moment = require('moment');
 
 var BrewSearch = require('./brewSearch.jsx');
 
+var BrewLookup = require('./brewLookup/brewLookup.jsx');
+
 
 var HomebrewAdmin = React.createClass({
 	getDefaultProps: function() {
@@ -28,13 +30,14 @@ var HomebrewAdmin = React.createClass({
 
 
 	fetchBrews : function(page){
-		request.get('/homebrew/api/search')
+		request.get('/api/search')
 			.query({
 				admin_key : this.props.admin_key,
 				count : this.state.count,
 				page : page
 			})
 			.end((err, res)=>{
+				if(err || !res.body || !res.body.brews) return;
 				this.state.brewCache[page] = res.body.brews;
 				this.setState({
 					brewCache : this.state.brewCache,
@@ -59,11 +62,11 @@ var HomebrewAdmin = React.createClass({
 
 
 	clearInvalidBrews : function(){
-		request.get('/homebrew/api/invalid')
+		request.get('/api/invalid')
 			.query({admin_key : this.props.admin_key})
 			.end((err, res)=>{
 				if(!confirm("This will remove " + res.body.count + " brews. Are you sure?")) return;
-				request.get('/homebrew/api/invalid')
+				request.get('/api/invalid')
 					.query({admin_key : this.props.admin_key, do_it : true})
 					.end((err, res)=>{
 						alert("Done!")
@@ -74,7 +77,7 @@ var HomebrewAdmin = React.createClass({
 
 	deleteBrew : function(brewId){
 		if(!confirm("Are you sure you want to delete '" + brewId + "'?")) return;
-		request.get('/homebrew/api/remove/' + brewId)
+		request.get('/api/remove/' + brewId)
 			.query({admin_key : this.props.admin_key})
 			.end(function(err, res){
 				window.location.reload();
@@ -103,8 +106,8 @@ var HomebrewAdmin = React.createClass({
 		var brews = this.state.brewCache[this.state.page] || _.times(this.state.count);
 		return _.map(brews, (brew)=>{
 			return <tr className={cx('brewRow', {'isEmpty' : brew.text == "false"})} key={brew.shareId || brew}>
-				<td><a href={'/homebrew/edit/' + brew.editId} target='_blank'>{brew.editId}</a></td>
-				<td><a href={'/homebrew/share/' + brew.shareId} target='_blank'>{brew.shareId}</a></td>
+				<td><a href={'/edit/' + brew.editId} target='_blank'>{brew.editId}</a></td>
+				<td><a href={'/share/' + brew.shareId} target='_blank'>{brew.shareId}</a></td>
 				<td>{Moment(brew.createdAt).fromNow()}</td>
 				<td>{Moment(brew.updatedAt).fromNow()}</td>
 				<td>{Moment(brew.lastViewed).fromNow()}</td>
@@ -141,9 +144,18 @@ var HomebrewAdmin = React.createClass({
 	render : function(){
 		var self = this;
 		return <div className='homebrewAdmin'>
+
+			<BrewLookup adminKey={this.props.admin_key} />
+
+			{/*
 			<h2>
 				Homebrews - {this.state.total}
 			</h2>
+
+
+
+
+
 			{this.renderPagnination()}
 			{this.renderBrewTable()}
 
@@ -152,6 +164,7 @@ var HomebrewAdmin = React.createClass({
 			</button>
 
 			<BrewSearch admin_key={this.props.admin_key} />
+		*/}
 		</div>
 	}
 });

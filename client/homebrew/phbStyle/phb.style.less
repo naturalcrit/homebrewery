@@ -12,7 +12,10 @@
 @monsterStatBackground : #FDF1DC;
 @page { margin: 0; }
 body {
-	counter-reset: phb-page-numbers;
+	counter-reset : phb-page-numbers;
+}
+*{
+	-webkit-print-color-adjust : exact;
 }
 .useSansSerif(){
 	font-family : ScalySans;
@@ -40,7 +43,7 @@ body {
 }
 .phb{
 	.useColumns();
-	counter-increment: phb-page-numbers;
+	counter-increment : phb-page-numbers;
 	position          : relative;
 	z-index           : 15;
 	box-sizing        : border-box;
@@ -63,7 +66,7 @@ body {
 		padding-bottom : 0.8em;
 		line-height    : 1.3em;
 		&+p{
-			margin-top  : -0.8em;
+			margin-top : -0.8em;
 		}
 	}
 	ul{
@@ -192,8 +195,8 @@ body {
 		}
 	}
 	//If a note starts a column, give it space at the top to render border
-	pre+blockquote{
-		margin-top : 11px;
+	pre+blockquote, h2+blockquote, h3+blockquote, h4+blockquote, h5+blockquote {
+		margin-top : 13px;
 	}
 	//*****************************
 	// *    MONSTER STAT BLOCK
@@ -218,12 +221,12 @@ body {
 			border-bottom : 1px solid @headerText;
 		}
 		hr+ul{
-			color           : @headerText;
+			color : @headerText;
 		}
 		ul{
 			.useSansSerif();
-			padding-left    : 1em;
-			font-size       : 0.352cm;
+			padding-left : 1em;
+			font-size    : 0.352cm;
 		}
 		// Monster Ability table
 		hr+table{
@@ -261,7 +264,6 @@ body {
 	hr+hr+blockquote{
 		.useColumns(0.96);
 	}
-
 	//*****************************
 	// *           FOOTER
 	// *****************************/
@@ -270,6 +272,7 @@ body {
 		position         : absolute;
 		bottom           : 0px;
 		left             : 0px;
+		z-index          : 100;
 		height           : 50px;
 		width            : 100%;
 		background-image : @footerAccentImage;
@@ -295,16 +298,15 @@ body {
 		font-size  : 0.9em;
 		color      : #c9ad6a;
 		text-align : center;
-
 		&.auto::after {
-
-			content: counter(phb-page-numbers);
+			content : counter(phb-page-numbers);
 		}
 	}
 	.footnote{
 		position   : absolute;
 		right      : 80px;
 		bottom     : 32px;
+		z-index    : 150;
 		width      : 200px;
 		font-size  : 0.8em;
 		color      : #c9ad6a;
@@ -324,7 +326,6 @@ body {
 		text-indent     : -1em;
 		list-style-type : none;
 	}
-
 	//Column Break
 	pre, code{
 		visibility                 : hidden;
@@ -333,7 +334,7 @@ body {
 		-moz-column-break-after    : always;
 	}
 	//Avoid breaking up
-	p,ul,blockquote,table{
+	p,blockquote,table{
 		z-index                     : 15;
 		-webkit-column-break-inside : avoid;
 		column-break-inside         : avoid;
@@ -351,6 +352,10 @@ body {
 	ul ul,ol ol,ul ol,ol ul{
 		margin-bottom : 0px;
 		margin-left   : 1.5em;
+	}
+	li{
+		-webkit-column-break-inside : avoid;
+		column-break-inside         : avoid;
 	}
 }
 //*****************************
@@ -386,8 +391,11 @@ body {
 		box-shadow : none;
 	}
 }
-
-
+@media print {
+	.phb .descriptive, .phb blockquote{
+		box-shadow : none;
+	}
+}
 //*****************************
 // *         WIDE
 // *****************************/
@@ -396,14 +404,11 @@ body {
 	-webkit-column-span : all;
 	-moz-column-span    : all;
 }
-
-
 //*****************************
 // *       CLASS TABLE
 // *****************************/
-
 .phb .classTable{
-	margin-top       : 25px;
+	margin-top          : 25px;
 	margin-bottom       : 40px;
 	border-collapse     : separate;
 	background-color    : white;
@@ -415,6 +420,61 @@ body {
 	border-image-source : @frameBorderImage;
 	border-image-width  : 47px;
 	h5{
-		margin-bottom: 10px;
+		margin-bottom : 10px;
+	}
+}
+//*****************************
+// *       CLASS TABLE
+// *****************************/
+.phb .descriptive{
+	display             : block-inline;
+	margin-bottom       : 1em;
+	background-color    : #faf7ea;
+	font-family         : ScalySans;
+	border-style        : solid;
+	border-width        : 7px;
+	border-image        : @descriptiveBoxImage 12 round;
+	border-image-outset : 4px;
+	box-shadow          : 0px 0px 6px #faf7ea;
+	p{
+		display        : block;
+		padding-bottom : 0px;
+		line-height    : 1.5em;
+	}
+	p + p {
+		padding-top : .8em;
+	}
+	em {
+		font-family : ScalySans;
+		font-style  : italic;
+	}
+	strong {
+		font-family    : ScalySans;
+		font-weight    : 800;
+		letter-spacing : -0.02em;
+	}
+}
+.phb pre+.descriptive{
+	margin-top : 8px;
+}
+//*****************************
+// *      TABLE OF CONTENTS
+// *****************************/
+.phb .toc{
+	-webkit-column-break-inside : avoid;
+	column-break-inside         : avoid;
+	a{
+		color           : black;
+		text-decoration : none;
+		&:hover{
+			text-decoration : underline;
+		}
+	}
+	ul{
+		padding-left    : 0;
+		list-style-type : none;
+	}
+	&>ul>li{
+		margin-bottom : 10px;
 	}
 }

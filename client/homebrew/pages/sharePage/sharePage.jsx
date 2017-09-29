@@ -1,17 +1,19 @@
-var React = require('react');
-var _ = require('lodash');
-var cx = require('classnames');
+const React = require('react');
+const _ = require('lodash');
+const cx = require('classnames');
 
-var Nav = require('naturalcrit/nav/nav.jsx');
-var Navbar = require('../../navbar/navbar.jsx');
-var PrintLink = require('../../navbar/print.navitem.jsx');
-var RecentlyViewed = require('../../navbar/recent.navitem.jsx').viewed;
+const Nav = require('naturalcrit/nav/nav.jsx');
+const Navbar = require('../../navbar/navbar.jsx');
+const PrintLink = require('../../navbar/print.navitem.jsx');
+const ReportIssue = require('../../navbar/issue.navitem.jsx');
+//const RecentlyViewed = require('../../navbar/recent.navitem.jsx').viewed;
+const Account = require('../../navbar/account.navitem.jsx');
 
-var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
-var HijackPrint = require('../hijackPrint.js');
+const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
-var SharePage = React.createClass({
+
+const SharePage = React.createClass({
 	getDefaultProps: function() {
 		return {
 			brew : {
@@ -26,10 +28,19 @@ var SharePage = React.createClass({
 	},
 
 	componentDidMount: function() {
-		document.onkeydown = HijackPrint(this.props.brew.shareId);
+		document.addEventListener('keydown', this.handleControlKeys);
 	},
 	componentWillUnmount: function() {
-		document.onkeydown = function(){};
+		document.removeEventListener('keydown', this.handleControlKeys);
+	},
+	handleControlKeys : function(e){
+		if(!(e.ctrlKey || e.metaKey)) return;
+		const P_KEY = 80;
+		if(e.keyCode == P_KEY){
+			window.open(`/print/${this.props.brew.shareId}?dialog=true`, '_blank').focus();
+			e.stopPropagation();
+			e.preventDefault();
+		}
 	},
 
 	render : function(){
@@ -40,11 +51,13 @@ var SharePage = React.createClass({
 				</Nav.section>
 
 				<Nav.section>
-					<RecentlyViewed brew={this.props.brew} />
+					<ReportIssue />
+					{/*<RecentlyViewed brew={this.props.brew} />*/}
 					<PrintLink shareId={this.props.brew.shareId} />
 					<Nav.item href={'/source/' + this.props.brew.shareId} color='teal' icon='fa-code'>
 						source
 					</Nav.item>
+					<Account />
 				</Nav.section>
 			</Navbar>
 

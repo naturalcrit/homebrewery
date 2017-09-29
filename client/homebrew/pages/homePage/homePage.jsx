@@ -1,25 +1,27 @@
-var React = require('react');
-var _ = require('lodash');
-var cx = require('classnames');
-var request = require("superagent");
+const React = require('react');
+const _ = require('lodash');
+const cx = require('classnames');
+const request = require("superagent");
 
-var Nav = require('naturalcrit/nav/nav.jsx');
-var Navbar = require('../../navbar/navbar.jsx');
-var PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
-var IssueNavItem = require('../../navbar/issue.navitem.jsx');
-var RecentNavItem = require('../../navbar/recent.navitem.jsx');
-
-
-var SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
-var Editor = require('../../editor/editor.jsx');
-var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
+const Nav = require('naturalcrit/nav/nav.jsx');
+const Navbar = require('../../navbar/navbar.jsx');
+const PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
+const IssueNavItem = require('../../navbar/issue.navitem.jsx');
+const RecentNavItem = require('../../navbar/recent.navitem.jsx');
+const AccountNavItem = require('../../navbar/account.navitem.jsx');
 
 
+const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
+const Editor = require('../../editor/editor.jsx');
+const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
-var HomePage = React.createClass({
+
+
+const HomePage = React.createClass({
 	getDefaultProps: function() {
 		return {
-			welcomeText : ""
+			welcomeText : '',
+			ver : '0.0.0'
 		};
 	},
 	getInitialState: function() {
@@ -30,7 +32,6 @@ var HomePage = React.createClass({
 	handleSave : function(){
 		request.post('/api')
 			.send({
-				title : 'Change This',
 				text : this.state.text
 			})
 			.end((err, res)=>{
@@ -48,7 +49,7 @@ var HomePage = React.createClass({
 		});
 	},
 	renderNavbar : function(){
-		return <Navbar>
+		return <Navbar ver={this.props.ver}>
 			<Nav.section>
 				<PatreonNavItem />
 				<IssueNavItem />
@@ -56,9 +57,12 @@ var HomePage = React.createClass({
 					Changelog
 				</Nav.item>
 				<RecentNavItem.both />
+				<AccountNavItem />
+				{/*}
 				<Nav.item href='/new' color='green' icon='fa-external-link'>
 					New Brew
 				</Nav.item>
+				*/}
 			</Nav.section>
 		</Navbar>
 	},

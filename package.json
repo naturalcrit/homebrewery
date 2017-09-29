@@ -1,24 +1,32 @@
 {
   "name": "homebrewery",
   "description": "Create authentic looking D&D homebrews using only markdown",
-  "version": "2.2.6",
+  "version": "2.7.4",
   "scripts": {
-    "postinstall": "gulp prod",
+    "dev": "node scripts/dev.js",
+    "quick": "node scripts/quick.js",
+    "build": "node scripts/build.js",
+    "phb": "node scripts/phb.js",
+    "prod": "set NODE_ENV=production&& npm run build",
+    "postinstall": "npm run build",
     "start": "node server.js"
   },
   "author": "stolksdorf",
-  "license": "BSD-2-Clause",
+  "license": "MIT",
   "dependencies": {
-    "app-module-path": "^1.0.4",
+    "babel-preset-env": "^1.1.8",
     "basic-auth": "^1.0.3",
     "body-parser": "^1.14.2",
     "classnames": "^2.2.0",
+    "codemirror": "^5.22.0",
+    "cookie-parser": "^1.4.3",
     "express": "^4.13.3",
-    "gulp": "^3.9.0",
+    "jwt-simple": "^0.5.1",
     "lodash": "^4.11.2",
     "marked": "^0.3.5",
     "moment": "^2.11.0",
     "mongoose": "^4.3.3",
+    "nconf": "^0.8.4",
     "pico-flux": "^1.1.0",
     "pico-router": "^1.1.0",
     "react": "^15.0.2",
@@ -26,6 +34,6 @@
     "shortid": "^2.2.4",
     "striptags": "^2.1.1",
     "superagent": "^1.6.1",
-    "vitreum": "^3.2.1"
+    "vitreum": "^4.0.12"
   }
 }

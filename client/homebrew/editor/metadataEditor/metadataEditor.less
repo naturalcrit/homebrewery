@@ -1,0 +1,79 @@
+
+.metadataEditor{
+	position         : absolute;
+	z-index          : 10000;
+	box-sizing       : border-box;
+	width            : 100%;
+	padding          : 25px;
+	background-color : #999;
+	.field{
+		display       : flex;
+		width         : 100%;
+		margin-bottom : 10px;
+		&>label{
+			display        : inline-block;
+			vertical-align : top;
+			width          : 80px;
+			font-size      : 0.7em;
+			font-weight    : 800;
+			line-height    : 1.8em;
+			text-transform : uppercase;
+			flex-grow      : 0;
+		}
+		&>.value{
+			flex-grow : 1;
+		}
+	}
+	.description.field textarea.value{
+		resize      : none;
+		height      : 5em;
+		font-family : 'Open Sans', sans-serif;
+		font-size   : 0.8em;
+	}
+	.systems.field .value{
+		label{
+			vertical-align : middle;
+			margin-right   : 15px;
+			cursor         : pointer;
+			font-size      : 0.7em;
+			font-weight    : 800;
+			user-select    : none;
+		}
+		input{
+			vertical-align : middle;
+			cursor         : pointer;
+		}
+	}
+	.publish.field .value{
+		position : relative;
+		margin-bottom: 15px;
+		button.publish{
+			.button(@blueLight);
+		}
+		button.unpublish{
+			.button(@silver);
+		}
+		small{
+			position   : absolute;
+			bottom     : -15px;
+			left       : 0px;
+			font-size  : 0.6em;
+			font-style : italic;
+		}
+	}
+
+	.delete.field .value{
+		button{
+			.button(@red);
+		}
+	}
+	.reddit.field .value{
+		button{
+			.button(@purple);
+		}
+	}
+	.authors.field .value{
+		font-size: 0.8em;
+		line-height    : 1.5em;
+	}
+}
