@@ -44,6 +44,17 @@ module.exports = [
 				].join('\n')
 			},
 			{
+				name : "QR Code",
+				icon : 'fa-qrcode',
+				gen : [
+					"<img ",
+					"  src='https://api.qrserver.com/v1/create-qr-code/?data= ",
+					"  http://homebrewery.naturalcrit.com/ ",
+					"  &amp;size=100x100' ",
+					"  style='width:100px;mix-blend-mode:multiply '/>"
+				].join('\n')
+			},
+			{
 				name : "Background Image",
 				icon : 'fa-tree',
 				gen : [
