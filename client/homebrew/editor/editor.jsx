@@ -18,10 +18,9 @@ const SNIPPETBAR_HEIGHT = 25;
 const Editor = createClass({
 	getDefaultProps : function() {
 		return {
-			value    : '',
+			brew    : {},
 			onChange : ()=>{},
 
-			metadata         : {},
 			onMetadataChange : ()=>{},
 			showMetaButton   : true,
 			renderer         : 'legacy'
@@ -59,7 +58,7 @@ const Editor = createClass({
 		this.cursorPosition = curpos;
 	},
 	handleInject : function(injectText){
-		const lines = this.props.value.split('\n');
+		const lines = this.props.brew.text.split('\n');
 		lines[this.cursorPosition.line] = splice(lines[this.cursorPosition.line], this.cursorPosition.ch, injectText);
 
 		this.handleTextChange(lines.join('\n'));
@@ -72,7 +71,7 @@ const Editor = createClass({
 	},
 
 	getCurrentPage : function(){
-		const lines = this.props.value.split('\n').slice(0, this.cursorPosition.line + 1);
+		const lines = this.props.brew.text.split('\n').slice(0, this.cursorPosition.line + 1);
 		return _.reduce(lines, (r, line)=>{
 			if(line.indexOf('\\page') !== -1) r++;
 			return r;
@@ -87,7 +86,7 @@ const Editor = createClass({
 		const customHighlights = codeMirror.getAllMarks();
 		for (let i=0;i<customHighlights.length;i++) customHighlights[i].clear();
 
-		const lineNumbers = _.reduce(this.props.value.split('\n'), (r, line, lineNumber)=>{
+		const lineNumbers = _.reduce(this.props.brew.text.split('\n'), (r, line, lineNumber)=>{
 
 			//reset custom line styles
 			codeMirror.removeLineClass(lineNumber, 'background');
@@ -159,7 +158,7 @@ const Editor = createClass({
 	renderMetadataEditor : function(){
 		if(!this.state.showMetadataEditor) return;
 		return <MetadataEditor
-			metadata={this.props.metadata}
+			metadata={this.props.brew}
 			onChange={this.props.onMetadataChange}
 		/>;
 	},
@@ -169,7 +168,7 @@ const Editor = createClass({
 		return (
 			<div className='editor' ref='main'>
 				<SnippetBar
-					brew={this.props.value}
+					brew={this.props.brew}
 					onInject={this.handleInject}
 					onToggle={this.handgleToggle}
 					showmeta={this.state.showMetadataEditor}
@@ -180,7 +179,7 @@ const Editor = createClass({
 					ref='codeEditor'
 					wrap={true}
 					language='gfm'
-					value={this.props.value}
+					value={this.props.brew.text}
 					onChange={this.handleTextChange}
 					onCursorActivity={this.handleCursorActivty} />
 
