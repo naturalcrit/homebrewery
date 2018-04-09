@@ -8,14 +8,14 @@ const Snippets = require('./snippets/snippets.js');
 const execute = function(val, brew){
 	if(_.isFunction(val)) return val(brew);
 	return val;
-}
+};
 
 
 
 const Snippetbar = React.createClass({
-	getDefaultProps: function() {
+	getDefaultProps : function() {
 		return {
-			brew : '',
+			brew     : '',
 			onInject : ()=>{},
 			onToggle : ()=>{},
 			showmeta : false
@@ -23,7 +23,7 @@ const Snippetbar = React.createClass({
 	},
 
 	handleSnippetClick : function(injectedText){
-		this.props.onInject(injectedText)
+		this.props.onInject(injectedText);
 	},
 
 	renderSnippetGroups : function(){
@@ -35,18 +35,18 @@ const Snippetbar = React.createClass({
 				snippets={snippetGroup.snippets}
 				key={snippetGroup.groupName}
 				onSnippetClick={this.handleSnippetClick}
-			/>
-		})
+			/>;
+		});
 	},
 
 	render : function(){
 		return <div className='snippetBar'>
 			{this.renderSnippetGroups()}
-			<div className={cx('toggleMeta', {selected: this.props.showmeta})}
+			<div className={cx('toggleMeta', { selected: this.props.showmeta })}
 				onClick={this.props.onToggle}>
 				<i className='fa fa-bars' />
 			</div>
-		</div>
+		</div>;
 	}
 });
 
@@ -58,12 +58,12 @@ module.exports = Snippetbar;
 
 
 const SnippetGroup = React.createClass({
-	getDefaultProps: function() {
+	getDefaultProps : function() {
 		return {
-			brew : '',
-			groupName : '',
-			icon : 'fa-rocket',
-			snippets : [],
+			brew           : '',
+			groupName      : '',
+			icon           : 'fa-rocket',
+			snippets       : [],
 			onSnippetClick : function(){},
 		};
 	},
@@ -72,23 +72,23 @@ const SnippetGroup = React.createClass({
 	},
 	renderSnippets : function(){
 		return _.map(this.props.snippets, (snippet)=>{
-			return <div className='snippet' key={snippet.name} onClick={this.handleSnippetClick.bind(this, snippet)}>
-				<i className={'fa fa-fw ' + snippet.icon} />
+			return <div className='snippet' key={snippet.name} onClick={()=>this.handleSnippetClick(snippet)}>
+				<i className={`fa fa-fw ${snippet.icon}`} />
 				{snippet.name}
-			</div>
-		})
+			</div>;
+		});
 	},
 
 	render : function(){
 		return <div className='snippetGroup'>
 			<div className='text'>
-				<i className={'fa fa-fw ' + this.props.icon} />
+				<i className={`fa fa-fw ${this.props.icon}`} />
 				<span className='groupName'>{this.props.groupName}</span>
 			</div>
 			<div className='dropdown'>
 				{this.renderSnippets()}
 			</div>
-		</div>
+		</div>;
 	},
 
 });

@@ -4,22 +4,22 @@ const _ = require('lodash');
 const Nav = require('naturalcrit/nav/nav.jsx');
 
 const Navbar = React.createClass({
-	getInitialState: function() {
+	getInitialState : function() {
 		return {
 			//showNonChromeWarning : false,
 			ver : '0.0.0'
 		};
 	},
 
-	componentDidMount: function() {
+	componentDidMount : function() {
 		//const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 		this.setState({
 			//showNonChromeWarning : !isChrome,
 			ver : window.version
-		})
+		});
 	},
 
-/*
+	/*
 	renderChromeWarning : function(){
 		if(!this.state.showNonChromeWarning) return;
 		return <Nav.item className='warning' icon='fa-exclamation-triangle'>
@@ -42,7 +42,7 @@ const Navbar = React.createClass({
 				{/*this.renderChromeWarning()*/}
 			</Nav.section>
 			{this.props.children}
-		</Nav.base>
+		</Nav.base>;
 	}
 });
 

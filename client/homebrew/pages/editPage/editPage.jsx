@@ -1,7 +1,7 @@
 const React = require('react');
 const _ = require('lodash');
 const cx = require('classnames');
-const request = require("superagent");
+const request = require('superagent');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
@@ -21,39 +21,39 @@ const SAVE_TIMEOUT = 3000;
 
 
 const EditPage = React.createClass({
-	getDefaultProps: function() {
+	getDefaultProps : function() {
 		return {
 			brew : {
-				text : '',
-				shareId : null,
-				editId : null,
+				text      : '',
+				shareId   : null,
+				editId    : null,
 				createdAt : null,
 				updatedAt : null,
 
-				title : '',
+				title       : '',
 				description : '',
-				tags : '',
-				published : false,
-				authors : [],
-				systems : []
+				tags        : '',
+				published   : false,
+				authors     : [],
+				systems     : []
 			}
 		};
 	},
 
-	getInitialState: function() {
+	getInitialState : function() {
 		return {
 			brew : this.props.brew,
 
-			isSaving : false,
-			isPending : false,
-			errors : null,
-			htmlErrors : Markdown.validate(this.props.brew.text),
+			isSaving    : false,
+			isPending   : false,
+			errors      : null,
+			htmlErrors  : Markdown.validate(this.props.brew.text),
 			lastUpdated : this.props.brew.updatedAt
 		};
 	},
 	savedBrew : null,
 
-	componentDidMount: function(){
+	componentDidMount : function(){
 		this.trySave();
 		window.onbeforeunload = ()=>{
 			if(this.state.isSaving || this.state.isPending){
@@ -63,11 +63,11 @@ const EditPage = React.createClass({
 
 		this.setState({
 			htmlErrors : Markdown.validate(this.state.brew.text)
-		})
+		});
 
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
-	componentWillUnmount: function() {
+	componentWillUnmount : function() {
 		window.onbeforeunload = function(){};
 		document.removeEventListener('keydown', this.handleControlKeys);
 	},
@@ -91,7 +91,7 @@ const EditPage = React.createClass({
 
 	handleMetadataChange : function(metadata){
 		this.setState({
-			brew : _.merge({}, this.state.brew, metadata),
+			brew      : _.merge({}, this.state.brew, metadata),
 			isPending : true,
 		}, ()=>{
 			this.trySave();
@@ -102,12 +102,12 @@ const EditPage = React.createClass({
 	handleTextChange : function(text){
 
 		//If there are errors, run the validator on everychange to give quick feedback
-		var htmlErrors = this.state.htmlErrors;
+		let htmlErrors = this.state.htmlErrors;
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 
 		this.setState({
-			brew : _.merge({}, this.state.brew, {text : text}),
-			isPending : true,
+			brew       : _.merge({}, this.state.brew, { text: text }),
+			isPending  : true,
 			htmlErrors : htmlErrors
 		});
 
@@ -116,9 +116,9 @@ const EditPage = React.createClass({
 
 	hasChanges : function(){
 		if(this.savedBrew){
-			return !_.isEqual(this.state.brew, this.savedBrew)
-		}else{
-			return !_.isEqual(this.state.brew, this.props.brew)
+			return !_.isEqual(this.state.brew, this.savedBrew);
+		} else {
+			return !_.isEqual(this.state.brew, this.props.brew);
 		}
 		return false;
 	},
@@ -127,7 +127,7 @@ const EditPage = React.createClass({
 		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
 		if(this.hasChanges()){
 			this.debounceSave();
-		}else{
+		} else {
 			this.debounceSave.cancel();
 		}
 	},
@@ -136,57 +136,57 @@ const EditPage = React.createClass({
 		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
 
 		this.setState({
-			isSaving : true,
-			errors : null,
+			isSaving   : true,
+			errors     : null,
 			htmlErrors : Markdown.validate(this.state.brew.text)
 		});
 
 		request
-			.put('/api/update/' + this.props.brew.editId)
+			.put(`/api/update/${this.props.brew.editId}`)
 			.send(this.state.brew)
-			.end((err, res) => {
+			.end((err, res)=>{
 				if(err){
 					this.setState({
 						errors : err,
-					})
-				}else{
+					});
+				} else {
 					this.savedBrew = res.body;
 					this.setState({
-						isPending : false,
-						isSaving : false,
+						isPending   : false,
+						isSaving    : false,
 						lastUpdated : res.body.updatedAt
-					})
+					});
 				}
-			})
+			});
 	},
 
 	renderSaveButton : function(){
 		if(this.state.errors){
-			var errMsg = '';
-			try{
-				errMsg += this.state.errors.toString() + '\n\n';
-				errMsg += '```\n' + JSON.stringify(this.state.errors.response.error, null, '  ') + '\n```';
-			}catch(e){}
+			let errMsg = '';
+			try {
+				errMsg += `${this.state.errors.toString()}\n\n`;
+				errMsg += `\`\`\`\n${JSON.stringify(this.state.errors.response.error, null, '  ')}\n\`\`\``;
+			} catch (e){}
 
-			return <Nav.item className='save error' icon="fa-warning">
+			return <Nav.item className='save error' icon='fa-warning'>
 				Oops!
 				<div className='errorContainer'>
 					Looks like there was a problem saving. <br />
-					Report the issue <a target='_blank' href={'https://github.com/stolksdorf/naturalcrit/issues/new?body='+ encodeURIComponent(errMsg)}>
+					Report the issue <a target='_blank' href={`https://github.com/stolksdorf/naturalcrit/issues/new?body=${encodeURIComponent(errMsg)}`}>
 						here
 					</a>.
 				</div>
-			</Nav.item>
+			</Nav.item>;
 		}
 
 		if(this.state.isSaving){
-			return <Nav.item className='save' icon="fa-spinner fa-spin">saving...</Nav.item>
+			return <Nav.item className='save' icon='fa-spinner fa-spin'>saving...</Nav.item>;
 		}
 		if(this.state.isPending && this.hasChanges()){
-			return <Nav.item className='save' onClick={this.save} color='blue' icon='fa-save'>Save Now</Nav.item>
+			return <Nav.item className='save' onClick={this.save} color='blue' icon='fa-save'>Save Now</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving){
-			return <Nav.item className='save saved'>saved.</Nav.item>
+			return <Nav.item className='save saved'>saved.</Nav.item>;
 		}
 	},
 	renderNavbar : function(){
@@ -198,13 +198,13 @@ const EditPage = React.createClass({
 				{this.renderSaveButton()}
 				{/*<RecentlyEdited brew={this.props.brew} />*/}
 				<ReportIssue />
-				<Nav.item newTab={true} href={'/share/' + this.props.brew.shareId} color='teal' icon='fa-share-alt'>
+				<Nav.item newTab={true} href={`/share/${this.props.brew.shareId}`} color='teal' icon='fa-share-alt'>
 					Share
 				</Nav.item>
 				<PrintLink shareId={this.props.brew.shareId} />
 				<Account />
 			</Nav.section>
-		</Navbar>
+		</Navbar>;
 	},
 
 	render : function(){
@@ -223,7 +223,7 @@ const EditPage = React.createClass({
 					<BrewRenderer text={this.state.brew.text} errors={this.state.htmlErrors} />
 				</SplitPane>
 			</div>
-		</div>
+		</div>;
 	}
 });
 

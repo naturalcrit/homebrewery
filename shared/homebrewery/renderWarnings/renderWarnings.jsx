@@ -6,16 +6,16 @@ const cx    = require('classnames');
 const DISMISS_KEY = 'dismiss_render_warning';
 
 const RenderWarnings = React.createClass({
-	getInitialState: function() {
+	getInitialState : function() {
 		return {
-			warnings: {}
+			warnings : {}
 		};
 	},
-	componentDidMount: function() {
+	componentDidMount : function() {
 		this.checkWarnings();
 		window.addEventListener('resize', this.checkWarnings);
 	},
-	componentWillUnmount: function() {
+	componentWillUnmount : function() {
 		window.removeEventListener('resize', this.checkWarnings);
 	},
 	warnings : {
@@ -43,21 +43,21 @@ const RenderWarnings = React.createClass({
 	},
 	checkWarnings : function(){
 		const hideDismiss = localStorage.getItem(DISMISS_KEY);
-		if(hideDismiss) return this.setState({warnings : {}});
+		if(hideDismiss) return this.setState({ warnings: {} });
 
 		this.setState({
-			warnings : _.reduce(this.warnings, (r, fn, type) => {
+			warnings : _.reduce(this.warnings, (r, fn, type)=>{
 				const element = fn();
 				if(element) r[type] = element;
 				return r;
 			}, {})
-		})
+		});
 	},
 	dismiss : function(){
 		localStorage.setItem(DISMISS_KEY, true);
 		this.checkWarnings();
 	},
-	render: function(){
+	render : function(){
 		if(_.isEmpty(this.state.warnings)) return null;
 
 		return <div className='renderWarnings'>
@@ -66,7 +66,7 @@ const RenderWarnings = React.createClass({
 			<h3>Render Warnings</h3>
 			<small>If this homebrew is rendering badly if might be because of the following:</small>
 			<ul>{_.values(this.state.warnings)}</ul>
-		</div>
+		</div>;
 	}
 });
 

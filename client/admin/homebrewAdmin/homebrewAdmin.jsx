@@ -1,28 +1,27 @@
-var React = require('react');
-var _ = require('lodash');
-var cx = require('classnames');
-var request = require('superagent');
+const React = require('react');
+const _ = require('lodash');
+const cx = require('classnames');
+const request = require('superagent');
 
-var Moment = require('moment');
-
-var BrewSearch = require('./brewSearch.jsx');
-
-var BrewLookup = require('./brewLookup/brewLookup.jsx');
+const Moment = require('moment');
 
 
-var HomebrewAdmin = React.createClass({
-	getDefaultProps: function() {
+const BrewLookup = require('./brewLookup/brewLookup.jsx');
+
+
+const HomebrewAdmin = React.createClass({
+	getDefaultProps : function() {
 		return {
 			admin_key : ''
 		};
 	},
 
-	getInitialState: function() {
+	getInitialState : function() {
 		return {
-			page: 0,
-			count : 20,
+			page      : 0,
+			count     : 20,
 			brewCache : {},
-			total : 0,
+			total     : 0,
 
 			processingOldBrews : false
 		};
@@ -33,21 +32,21 @@ var HomebrewAdmin = React.createClass({
 		request.get('/api/search')
 			.query({
 				admin_key : this.props.admin_key,
-				count : this.state.count,
-				page : page
+				count     : this.state.count,
+				page      : page
 			})
 			.end((err, res)=>{
 				if(err || !res.body || !res.body.brews) return;
 				this.state.brewCache[page] = res.body.brews;
 				this.setState({
 					brewCache : this.state.brewCache,
-					total : res.body.total,
-					count : res.body.count
-				})
-			})
+					total     : res.body.total,
+					count     : res.body.count
+				});
+			});
 	},
 
-	componentDidMount: function() {
+	componentDidMount : function() {
 		this.fetchBrews(this.state.page);
 	},
 
@@ -57,31 +56,31 @@ var HomebrewAdmin = React.createClass({
 		}
 		this.setState({
 			page : page
-		})
+		});
 	},
 
 
 	clearInvalidBrews : function(){
 		request.get('/api/invalid')
-			.query({admin_key : this.props.admin_key})
+			.query({ admin_key: this.props.admin_key })
 			.end((err, res)=>{
-				if(!confirm("This will remove " + res.body.count + " brews. Are you sure?")) return;
+				if(!confirm(`This will remove ${res.body.count} brews. Are you sure?`)) return;
 				request.get('/api/invalid')
-					.query({admin_key : this.props.admin_key, do_it : true})
+					.query({ admin_key: this.props.admin_key, do_it: true })
 					.end((err, res)=>{
-						alert("Done!")
+						alert('Done!');
 					});
 			});
 	},
 
 
 	deleteBrew : function(brewId){
-		if(!confirm("Are you sure you want to delete '" + brewId + "'?")) return;
-		request.get('/api/remove/' + brewId)
-			.query({admin_key : this.props.admin_key})
+		if(!confirm(`Are you sure you want to delete '${brewId}'?`)) return;
+		request.get(`/api/remove/${brewId}`)
+			.query({ admin_key: this.props.admin_key })
 			.end(function(err, res){
 				window.location.reload();
-			})
+			});
 	},
 
 	handlePageChange : function(dir){
@@ -90,34 +89,34 @@ var HomebrewAdmin = React.createClass({
 
 
 	renderPagnination : function(){
-		var outOf;
+		let outOf;
 		if(this.state.total){
-			outOf = this.state.page + ' / ' + Math.round(this.state.total/this.state.count);
+			outOf = `${this.state.page} / ${Math.round(this.state.total/this.state.count)}`;
 		}
 		return <div className='pagnination'>
-			<i className='fa fa-chevron-left' onClick={this.handlePageChange.bind(this, -1)}/>
+			<i className='fa fa-chevron-left' onClick={()=>this.handlePageChange(-1)}/>
 			{outOf}
-			<i className='fa fa-chevron-right' onClick={this.handlePageChange.bind(this, 1)}/>
-		</div>
+			<i className='fa fa-chevron-right' onClick={()=>this.handlePageChange(1)}/>
+		</div>;
 	},
 
 
 	renderBrews : function(){
-		var brews = this.state.brewCache[this.state.page] || _.times(this.state.count);
+		const brews = this.state.brewCache[this.state.page] || _.times(this.state.count);
 		return _.map(brews, (brew)=>{
-			return <tr className={cx('brewRow', {'isEmpty' : brew.text == "false"})} key={brew.shareId || brew}>
-				<td><a href={'/edit/' + brew.editId} target='_blank'>{brew.editId}</a></td>
-				<td><a href={'/share/' + brew.shareId} target='_blank'>{brew.shareId}</a></td>
+			return <tr className={cx('brewRow', { 'isEmpty': brew.text == 'false' })} key={brew.shareId || brew}>
+				<td><a href={`/edit/${brew.editId}`} target='_blank'>{brew.editId}</a></td>
+				<td><a href={`/share/${brew.shareId}`} target='_blank'>{brew.shareId}</a></td>
 				<td>{Moment(brew.createdAt).fromNow()}</td>
 				<td>{Moment(brew.updatedAt).fromNow()}</td>
 				<td>{Moment(brew.lastViewed).fromNow()}</td>
 				<td>{brew.views}</td>
 				<td>
-					<div className='deleteButton' onClick={this.deleteBrew.bind(this, brew.editId)}>
+					<div className='deleteButton' onClick={()=>this.deleteBrew(brew.editId)}>
 						<i className='fa fa-trash' />
 					</div>
 				</td>
-			</tr>
+			</tr>;
 		});
 	},
 
@@ -138,11 +137,10 @@ var HomebrewAdmin = React.createClass({
 					{this.renderBrews()}
 				</tbody>
 			</table>
-		</div>
+		</div>;
 	},
 
 	render : function(){
-		var self = this;
 		return <div className='homebrewAdmin'>
 
 			<BrewLookup adminKey={this.props.admin_key} />
@@ -165,7 +163,7 @@ var HomebrewAdmin = React.createClass({
 
 			<BrewSearch admin_key={this.props.admin_key} />
 		*/}
-		</div>
+		</div>;
 	}
 });
 

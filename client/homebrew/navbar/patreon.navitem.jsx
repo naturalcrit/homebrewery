@@ -1,5 +1,5 @@
-var React = require('react');
-var Nav = require('naturalcrit/nav/nav.jsx');
+const React = require('react');
+const Nav = require('naturalcrit/nav/nav.jsx');
 
 module.exports = function(props){
 	return <Nav.item
@@ -9,5 +9,5 @@ module.exports = function(props){
 		color='green'
 		icon='fa-heart'>
 		help out
-	</Nav.item>
+	</Nav.item>;
 };

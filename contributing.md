@@ -38,5 +38,6 @@ If you're updating dependencies, please make sure you use npm@5.6.0 and commit t
 - For ambitious tasks, you should try to get your work in front of the community for feedback as soon as possible. Open a pull request as soon as you have done the minimum needed to demonstrate your idea. At this early stage, don't worry about making things perfect, or 100% complete. Add a [WIP] prefix to the title, and describe what you still need to do. This lets reviewers know not to nit-pick small details or point out improvements you already know you need to make.
 - New features should be accompanied with tests and documentation if applicable.
 - Lint and test before submitting the pull request by running `$ npm run verify`.
+- If your code is not passing Linting checks due to a non-fixable warning, and you feel it's valid (eg. we lint on a file being too long, but sometimes a file just _has_ to be long), add `/* eslint-disable [rule-name] */` to the top of the file. Be sure to justfiy your lint override in your PR description.
 - Use a clear and descriptive title for the pull request and commits.
 - You might be asked to do changes to your pull request. There's never a need to open another pull request. [Just update the existing one.](https://github.com/RichardLitt/knowledge/blob/master/github/amending-a-commit-guide.md)
