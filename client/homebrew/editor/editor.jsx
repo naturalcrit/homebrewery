@@ -1,4 +1,5 @@
 const React = require('react');
+const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 
@@ -13,7 +14,7 @@ const splice = function(str, index, inject){
 
 const SNIPPETBAR_HEIGHT = 25;
 
-const Editor = React.createClass({
+const Editor = createClass({
 	getDefaultProps : function() {
 		return {
 			value    : '',

@@ -1,4 +1,5 @@
 const React = require('react');
+const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
@@ -12,7 +13,7 @@ const execute = function(val, brew){
 
 
 
-const Snippetbar = React.createClass({
+const Snippetbar = createClass({
 	getDefaultProps : function() {
 		return {
 			brew     : '',
@@ -57,7 +58,7 @@ module.exports = Snippetbar;
 
 
 
-const SnippetGroup = React.createClass({
+const SnippetGroup = createClass({
 	getDefaultProps : function() {
 		return {
 			brew           : '',

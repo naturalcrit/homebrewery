@@ -1,4 +1,5 @@
 const React = require('react');
+const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 
@@ -13,7 +14,7 @@ const Account = require('../../navbar/account.navitem.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 
-const SharePage = React.createClass({
+const SharePage = createClass({
 	getDefaultProps : function() {
 		return {
 			brew : {
