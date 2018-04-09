@@ -15,7 +15,7 @@ module.exports = function(vitreum){
 	${vitreum.js}
 </html>
 `;
-}
+};
 
 
 

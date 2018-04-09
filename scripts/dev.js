@@ -20,4 +20,4 @@ Promise.resolve()
 	.then(livereload())
 	.then(server('./server.js', ['server']))
 	.then(console.timeEnd.bind(console, label))
-	.catch(console.error)
+	.catch(console.error);

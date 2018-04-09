@@ -1,33 +1,19 @@
 const _ = require('lodash');
-const Moment = require('moment');
 const HomebrewModel = require('./homebrew.model.js').model;
 const router = require('express').Router();
 
+// const getTopBrews = (cb)=>{
+// 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
+// 		cb(brews);
+// 	});
+// };
 
-
-//TODO: Possiblity remove
-let homebrewTotal = 0;
-const refreshCount = ()=>{
-	HomebrewModel.count({}, (err, total)=>{
-		homebrewTotal = total;
-	});
-};
-refreshCount();
-
-
-
-const getTopBrews = (cb)=>{
-	HomebrewModel.find().sort({views: -1}).limit(5).exec(function(err, brews) {
-		cb(brews);
-	});
-}
-
-const getGoodBrewTitle = (text) => {
+const getGoodBrewTitle = (text)=>{
 	const titlePos = text.indexOf('# ');
 	if(titlePos !== -1){
 		const ending = text.indexOf('\n', titlePos);
 		return text.substring(titlePos + 2, ending);
-	}else{
+	} else {
 		return _.find(text.split('\n'), (line)=>{
 			return line;
 		});
@@ -43,7 +29,7 @@ router.post('/api', (req, res)=>{
 
 	const newHomebrew = new HomebrewModel(_.merge({},
 		req.body,
-		{authors : authors}
+		{ authors: authors }
 	));
 	if(!newHomebrew.title){
 		newHomebrew.title = getGoodBrewTitle(newHomebrew.text);
@@ -54,11 +40,11 @@ router.post('/api', (req, res)=>{
 			return res.status(500).send(`Error while creating new brew, ${err.toString()}`);
 		}
 		return res.json(obj);
-	})
+	});
 });
 
 router.put('/api/update/:id', (req, res)=>{
-	HomebrewModel.get({editId : req.params.id})
+	HomebrewModel.get({ editId: req.params.id })
 		.then((brew)=>{
 			brew = _.merge(brew, req.body);
 			brew.updatedAt = new Date();
@@ -70,22 +56,22 @@ router.put('/api/update/:id', (req, res)=>{
 			brew.save((err, obj)=>{
 				if(err) throw err;
 				return res.status(200).send(obj);
-			})
+			});
 		})
 		.catch((err)=>{
 			console.log(err);
-			return res.status(500).send("Error while saving");
+			return res.status(500).send('Error while saving');
 		});
 });
 
 router.get('/api/remove/:id', (req, res)=>{
-	HomebrewModel.find({editId : req.params.id}, (err, objs)=>{
-		if(!objs.length || err) return res.status(404).send("Can not find homebrew with that id");
-		var resEntry = objs[0];
+	HomebrewModel.find({ editId: req.params.id }, (err, objs)=>{
+		if(!objs.length || err) return res.status(404).send('Can not find homebrew with that id');
+		const resEntry = objs[0];
 		resEntry.remove((err)=>{
-			if(err) return res.status(500).send("Error while removing");
+			if(err) return res.status(500).send('Error while removing');
 			return res.status(200).send();
-		})
+		});
 	});
 });
 

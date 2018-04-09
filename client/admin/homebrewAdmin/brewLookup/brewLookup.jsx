@@ -7,35 +7,35 @@ const Moment = require('moment');
 
 
 const BrewLookup = React.createClass({
-	getDefaultProps: function() {
+	getDefaultProps : function() {
 		return {
 			adminKey : '',
 		};
 	},
-	getInitialState: function() {
+	getInitialState : function() {
 		return {
-			query:'',
+			query      : '',
 			resultBrew : null,
-			searching : false
+			searching  : false
 		};
 	},
 
 	handleChange : function(e){
 		this.setState({
 			query : e.target.value
-		})
+		});
 	},
 	lookup : function(){
-		this.setState({ searching : true });
+		this.setState({ searching: true });
 
 		request.get(`/admin/lookup/${this.state.query}`)
-			.query({ admin_key : this.props.adminKey })
-			.end((err, res) => {
+			.query({ admin_key: this.props.adminKey })
+			.end((err, res)=>{
 				this.setState({
-					searching : false,
+					searching  : false,
 					resultBrew : (err ? null : res.body)
 				});
-			})
+			});
 	},
 
 	renderFoundBrew : function(){
@@ -46,21 +46,21 @@ const BrewLookup = React.createClass({
 		return <div className='brewRow'>
 			<div>{brew.title}</div>
 			<div>{brew.authors.join(', ')}</div>
-			<div><a href={'/edit/' + brew.editId} target='_blank'>/edit/{brew.editId}</a></div>
-			<div><a href={'/share/' + brew.shareId} target='_blank'>/share/{brew.shareId}</a></div>
+			<div><a href={`/edit/${brew.editId}`} target='_blank'>/edit/{brew.editId}</a></div>
+			<div><a href={`/share/${brew.shareId}`} target='_blank'>/share/{brew.shareId}</a></div>
 			<div>{Moment(brew.updatedAt).fromNow()}</div>
 			<div>{brew.views}</div>
-		</div>
+		</div>;
 	},
 
-	render: function(){
+	render : function(){
 		return <div className='brewLookup'>
 			<h1>Brew Lookup</h1>
 			<input type='text' value={this.state.query} onChange={this.handleChange} placeholder='edit or share id...' />
 			<button onClick={this.lookup}><i className='fa fa-search'/></button>
 
 			{this.renderFoundBrew()}
-		</div>
+		</div>;
 	}
 });
 

@@ -1,15 +1,15 @@
-var React = require('react');
-var _     = require('lodash');
-var cx    = require('classnames');
+const React = require('react');
+const _     = require('lodash');
+const cx    = require('classnames');
 
-var ErrorBar = React.createClass({
-	getDefaultProps: function() {
+const ErrorBar = React.createClass({
+	getDefaultProps : function() {
 		return {
 			errors : []
 		};
 	},
 
-	hasOpenError : false,
+	hasOpenError  : false,
 	hasCloseError : false,
 	hasMatchError : false,
 
@@ -19,20 +19,20 @@ var ErrorBar = React.createClass({
 		this.hasMatchError = false;
 
 
-		var errors = _.map(this.props.errors, (err, idx) => {
+		const errors = _.map(this.props.errors, (err, idx)=>{
 			if(err.id == 'OPEN') this.hasOpenError = true;
 			if(err.id == 'CLOSE') this.hasCloseError = true;
 			if(err.id == 'MISMATCH') this.hasMatchError = true;
 			return <li key={idx}>
 				Line {err.line} : {err.text}, '{err.type}' tag
-			</li>
+			</li>;
 		});
 
-		return <ul>{errors}</ul>
+		return <ul>{errors}</ul>;
 	},
 
 	renderProtip : function(){
-		var msg = [];
+		const msg = [];
 		if(this.hasOpenError){
 			msg.push(<div>
 				An unmatched opening tag means there's an opened tag that isn't closed, you need to close a tag, like this {'</div>'}. Make sure to match types!
@@ -53,7 +53,7 @@ var ErrorBar = React.createClass({
 		return <div className='protips'>
 			<h4>Protips!</h4>
 			{msg}
-		</div>
+		</div>;
 	},
 
 	render : function(){
@@ -66,7 +66,7 @@ var ErrorBar = React.createClass({
 			{this.renderErrors()}
 			<hr />
 			{this.renderProtip()}
-		</div>
+		</div>;
 	}
 });
 

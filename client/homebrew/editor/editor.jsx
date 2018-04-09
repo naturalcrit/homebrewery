@@ -14,32 +14,32 @@ const splice = function(str, index, inject){
 const SNIPPETBAR_HEIGHT = 25;
 
 const Editor = React.createClass({
-	getDefaultProps: function() {
+	getDefaultProps : function() {
 		return {
-			value : '',
+			value    : '',
 			onChange : ()=>{},
 
-			metadata : {},
+			metadata         : {},
 			onMetadataChange : ()=>{},
 		};
 	},
-	getInitialState: function() {
+	getInitialState : function() {
 		return {
-			showMetadataEditor: false
+			showMetadataEditor : false
 		};
 	},
 	cursorPosition : {
 		line : 0,
-		ch : 0
+		ch   : 0
 	},
 
-	componentDidMount: function() {
+	componentDidMount : function() {
 		this.updateEditorSize();
 		this.highlightPageLines();
-		window.addEventListener("resize", this.updateEditorSize);
+		window.addEventListener('resize', this.updateEditorSize);
 	},
-	componentWillUnmount: function() {
-		window.removeEventListener("resize", this.updateEditorSize);
+	componentWillUnmount : function() {
+		window.removeEventListener('resize', this.updateEditorSize);
 	},
 
 	updateEditorSize : function() {
@@ -64,12 +64,12 @@ const Editor = React.createClass({
 	handgleToggle : function(){
 		this.setState({
 			showMetadataEditor : !this.state.showMetadataEditor
-		})
+		});
 	},
 
 	getCurrentPage : function(){
 		const lines = this.props.value.split('\n').slice(0, this.cursorPosition.line + 1);
-		return _.reduce(lines, (r, line) => {
+		return _.reduce(lines, (r, line)=>{
 			if(line.indexOf('\\page') !== -1) r++;
 			return r;
 		}, 1);
@@ -86,13 +86,13 @@ const Editor = React.createClass({
 			}
 			return r;
 		}, []);
-		return lineNumbers
+		return lineNumbers;
 	},
 
 
 	brewJump : function(){
 		const currentPage = this.getCurrentPage();
-		window.location.hash = 'p' + currentPage;
+		window.location.hash = `p${currentPage}`;
 	},
 
 	//Called when there are changes to the editor's dimensions
@@ -105,12 +105,12 @@ const Editor = React.createClass({
 		return <MetadataEditor
 			metadata={this.props.metadata}
 			onChange={this.props.onMetadataChange}
-		/>
+		/>;
 	},
 
 	render : function(){
 		this.highlightPageLines();
-		return(
+		return (
 			<div className='editor' ref='main'>
 				<SnippetBar
 					brew={this.props.value}

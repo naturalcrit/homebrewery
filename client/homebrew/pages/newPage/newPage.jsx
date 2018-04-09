@@ -1,7 +1,7 @@
 const React = require('react');
 const _ = require('lodash');
 const cx = require('classnames');
-const request = require("superagent");
+const request = require('superagent');
 
 const Markdown = require('naturalcrit/markdown.js');
 
@@ -18,32 +18,32 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 const KEY = 'homebrewery-new';
 
 const NewPage = React.createClass({
-	getInitialState: function() {
+	getInitialState : function() {
 		return {
 			metadata : {
-				title : '',
+				title       : '',
 				description : '',
-				tags : '',
-				published : false,
-				authors : [],
-				systems : []
+				tags        : '',
+				published   : false,
+				authors     : [],
+				systems     : []
 			},
 
-			text: '',
+			text     : '',
 			isSaving : false,
-			errors : []
+			errors   : []
 		};
 	},
-	componentDidMount: function() {
+	componentDidMount : function() {
 		const storage = localStorage.getItem(KEY);
 		if(storage){
 			this.setState({
 				text : storage
-			})
+			});
 		}
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
-	componentWillUnmount: function() {
+	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
 	},
 
@@ -71,7 +71,7 @@ const NewPage = React.createClass({
 
 	handleTextChange : function(text){
 		this.setState({
-			text : text,
+			text   : text,
 			errors : Markdown.validate(text)
 		});
 		localStorage.setItem(KEY, text);
@@ -96,31 +96,31 @@ const NewPage = React.createClass({
 				window.onbeforeunload = function(){};
 				const brew = res.body;
 				localStorage.removeItem(KEY);
-				window.location = '/edit/' + brew.editId;
-			})
+				window.location = `/edit/${brew.editId}`;
+			});
 	},
 
 	renderSaveButton : function(){
 		if(this.state.isSaving){
 			return <Nav.item icon='fa-spinner fa-spin' className='saveButton'>
 				save...
-			</Nav.item>
-		}else{
+			</Nav.item>;
+		} else {
 			return <Nav.item icon='fa-save' className='saveButton' onClick={this.save}>
 				save
-			</Nav.item>
+			</Nav.item>;
 		}
 	},
 
 	print : function(){
 		localStorage.setItem('print', this.state.text);
-		window.open('/print?dialog=true&local=print','_blank');
+		window.open('/print?dialog=true&local=print', '_blank');
 	},
 
 	renderLocalPrintButton : function(){
 		return <Nav.item color='purple' icon='fa-file-pdf-o' onClick={this.print}>
 			get PDF
-		</Nav.item>
+		</Nav.item>;
 	},
 
 	renderNavbar : function(){
@@ -136,7 +136,7 @@ const NewPage = React.createClass({
 				<IssueNavItem />
 				<AccountNavItem />
 			</Nav.section>
-		</Navbar>
+		</Navbar>;
 	},
 
 	render : function(){
@@ -154,7 +154,7 @@ const NewPage = React.createClass({
 					<BrewRenderer text={this.state.text} errors={this.state.errors} />
 				</SplitPane>
 			</div>
-		</div>
+		</div>;
 	}
 });
 
