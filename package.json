@@ -9,6 +9,7 @@
     "lint": "eslint --fix **/*.{js,jsx}",
     "lint:dry": "eslint **/*.{js,jsx}",
     "circleci": "npm test && eslint **/*.{js,jsx} --max-warnings=0",
+    "verify": "npm run lint && npm test",
     "test": "pico-check",
     "test:dev": "pico-check -v -w",
     "phb": "node scripts/phb.js",
