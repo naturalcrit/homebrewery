@@ -57,7 +57,7 @@
     "react-dom": "^16.3.1",
     "shortid": "^2.2.4",
     "striptags": "^2.1.1",
-    "superagent": "^1.6.1",
+    "superagent": "^3.8.2",
     "vitreum": "^4.10.1"
   },
   "devDependencies": {
