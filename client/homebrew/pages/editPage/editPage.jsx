@@ -1,4 +1,5 @@
 const React = require('react');
+const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 const request = require('superagent');
@@ -20,7 +21,7 @@ const Markdown = require('naturalcrit/markdown.js');
 const SAVE_TIMEOUT = 3000;
 
 
-const EditPage = React.createClass({
+const EditPage = createClass({
 	getDefaultProps : function() {
 		return {
 			brew : {

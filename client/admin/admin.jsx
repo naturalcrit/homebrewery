@@ -1,10 +1,11 @@
 const React = require('react');
+const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 
 const HomebrewAdmin = require('./homebrewAdmin/homebrewAdmin.jsx');
 
-const Admin = React.createClass({
+const Admin = createClass({
 	getDefaultProps : function() {
 		return {
 			url       : '',

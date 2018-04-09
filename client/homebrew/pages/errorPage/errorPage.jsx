@@ -1,4 +1,5 @@
 const React = require('react');
+const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 
@@ -10,7 +11,7 @@ const RecentNavItem = require('../../navbar/recent.navitem.jsx');
 
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
-const ErrorPage = React.createClass({
+const ErrorPage = createClass({
 	getDefaultProps : function() {
 		return {
 			ver     : '0.0.0',

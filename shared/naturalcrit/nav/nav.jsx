@@ -1,11 +1,12 @@
 const React = require('react');
+const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 
 const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
 
 const Nav = {
-	base : React.createClass({
+	base : createClass({
 		render : function(){
 			return <nav>
 				<div className='navContent'>
@@ -23,7 +24,7 @@ const Nav = {
 		</a>;
 	},
 
-	section : React.createClass({
+	section : createClass({
 		render : function(){
 			return <div className='navSection'>
 				{this.props.children}
@@ -31,7 +32,7 @@ const Nav = {
 		}
 	}),
 
-	item : React.createClass({
+	item : createClass({
 		getDefaultProps : function() {
 			return {
 				icon    : null,

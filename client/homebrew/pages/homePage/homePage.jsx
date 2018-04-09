@@ -1,4 +1,5 @@
 const React = require('react');
+const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 const request = require('superagent');
@@ -17,12 +18,14 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 
 
-const HomePage = React.createClass({
+const HomePage = createClass({
 	getDefaultProps : function() {
 		return {
 			welcomeText : '',
 			ver         : '0.0.0'
 		};
+
+
 	},
 	getInitialState : function() {
 		return {

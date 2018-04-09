@@ -1,4 +1,5 @@
 const React = require('react');
+const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 
@@ -13,7 +14,7 @@ const ErrorPage = require('./pages/errorPage/errorPage.jsx');
 const PrintPage = require('./pages/printPage/printPage.jsx');
 
 let Router;
-const Homebrew = React.createClass({
+const Homebrew = createClass({
 	getDefaultProps : function() {
 		return {
 			url         : '',

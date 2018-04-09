@@ -1,4 +1,5 @@
 const React = require('react');
+const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 const Nav = require('naturalcrit/nav/nav.jsx');
@@ -6,7 +7,7 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 const MAX_TITLE_LENGTH = 50;
 
 
-const EditTitle = React.createClass({
+const EditTitle = createClass({
 	getDefaultProps : function() {
 		return {
 			title    : '',

@@ -1,4 +1,5 @@
 const React = require('react');
+const createClass = require('create-react-class');
 
 module.exports = function(props){
 	return <svg version='1.1' x='0px' y='0px' viewBox='0 0 90 112.5' enableBackground='new 0 0 90 90' >

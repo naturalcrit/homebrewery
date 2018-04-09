@@ -1,4 +1,5 @@
 const React = require('react');
+const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 const Moment = require('moment');
@@ -8,7 +9,7 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 const VIEW_KEY = 'homebrewery-recently-viewed';
 const EDIT_KEY = 'homebrewery-recently-edited';
 
-const BaseItem = React.createClass({
+const BaseItem = createClass({
 	getDefaultProps : function() {
 		return {
 			storageKey  : '',
@@ -81,7 +82,7 @@ const BaseItem = React.createClass({
 
 
 module.exports = {
-	viewed : React.createClass({
+	viewed : createClass({
 		getDefaultProps : function() {
 			return {
 				brew : {
@@ -101,7 +102,7 @@ module.exports = {
 		},
 	}),
 
-	edited : React.createClass({
+	edited : createClass({
 		getDefaultProps : function() {
 			return {
 				brew : {
@@ -121,7 +122,7 @@ module.exports = {
 		},
 	}),
 
-	both : React.createClass({
+	both : createClass({
 		getDefaultProps : function() {
 			return {
 				errorId : null
