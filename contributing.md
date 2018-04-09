@@ -23,6 +23,8 @@ You can use issue labels to discover issues you could help out with:
 
 If you're updating dependencies, please make sure you use npm@5.6.0 and commit the updated `package-lock.json` file.
 
+You can also refer to the [Development Roadmap on Trello](https://trello.com/b/q6kE29F8/development-roadmap)
+
 
 ## Submitting an issue
 

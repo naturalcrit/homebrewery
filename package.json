@@ -22,10 +22,10 @@
   "eslintIgnore": [
     "build/*"
   ],
-  "pico-check":{
+  "pico-check": {
     "require": "./tests/test.init.js"
   },
-  "babel":{
+  "babel": {
     "presets": [
       "env",
       "react"
@@ -33,11 +33,13 @@
   },
   "dependencies": {
     "babel-preset-env": "^1.1.8",
+    "babel-preset-react": "^6.24.1",
     "basic-auth": "^1.0.3",
     "body-parser": "^1.14.2",
     "classnames": "^2.2.0",
     "codemirror": "^5.22.0",
     "cookie-parser": "^1.4.3",
+    "create-react-class": "^15.6.3",
     "express": "^4.13.3",
     "jwt-simple": "^0.5.1",
     "lodash": "^4.11.2",
@@ -47,12 +49,12 @@
     "nconf": "^0.8.4",
     "pico-flux": "^1.1.0",
     "pico-router": "^1.1.0",
-    "react": "^15.0.2",
-    "react-dom": "^15.0.2",
+    "react": "^16.3.1",
+    "react-dom": "^16.3.1",
     "shortid": "^2.2.4",
     "striptags": "^2.1.1",
     "superagent": "^1.6.1",
-    "vitreum": "^4.0.12"
+    "vitreum": "^4.10.1"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
