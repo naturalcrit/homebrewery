@@ -49,7 +49,7 @@
     "lodash": "^4.11.2",
     "marked": "^0.3.5",
     "moment": "^2.11.0",
-    "mongoose": "^4.13.12",
+    "mongoose": "^5.0.13",
     "nconf": "^0.10.0",
     "pico-router": "^2.1.0",
     "react": "^16.3.1",

@@ -14,7 +14,6 @@
 		"moment",
 		"superagent",
 		"marked",
-		"pico-router",
-		"pico-flux"
+		"pico-router"
 	]
 }
