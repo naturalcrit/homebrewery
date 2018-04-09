@@ -1,8 +1,9 @@
 const React = require('react');
+const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 
-const SplitPane = React.createClass({
+const SplitPane = createClass({
 	getDefaultProps : function() {
 		return {
 			storageKey   : 'naturalcrit-pane-split',
@@ -75,7 +76,7 @@ const SplitPane = React.createClass({
 
 
 
-const Pane = React.createClass({
+const Pane = createClass({
 	getDefaultProps : function() {
 		return {
 			width : null

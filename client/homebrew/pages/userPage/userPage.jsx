@@ -1,4 +1,5 @@
 const React = require('react');
+const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
@@ -17,7 +18,7 @@ const BrewItem = require('./brewItem/brewItem.jsx');
 //const BREWS = _.times(25, ()=>{ return brew;});
 
 
-const UserPage = React.createClass({
+const UserPage = createClass({
 	getDefaultProps : function() {
 		return {
 			username : '',

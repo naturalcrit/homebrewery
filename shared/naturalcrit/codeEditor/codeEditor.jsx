@@ -1,4 +1,5 @@
 const React = require('react');
+const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 
@@ -13,7 +14,7 @@ if(typeof navigator !== 'undefined'){
 }
 
 
-const CodeEditor = React.createClass({
+const CodeEditor = createClass({
 	getDefaultProps : function() {
 		return {
 			language         : '',
