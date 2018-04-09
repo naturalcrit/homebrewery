@@ -8,15 +8,22 @@
     "build": "node scripts/build.js",
     "lint": "eslint --fix **/*.{js,jsx}",
     "lint:dry": "eslint **/*.{js,jsx}",
-    "circleci": "eslint **/*.{js,jsx} --max-warnings=0",
+    "circleci": "npm test && eslint **/*.{js,jsx} --max-warnings=0",
+    "test": "pico-check",
+    "test:dev": "pico-check -v -w",
     "phb": "node scripts/phb.js",
-    "prod": "set NODE_ENV=production&& npm run build",
+    "prod": "set NODE_ENV=production && npm run build",
     "postinstall": "npm run build",
     "start": "node server.js"
   },
   "author": "stolksdorf",
   "license": "MIT",
-  "eslintIgnore": ["build/*"],
+  "eslintIgnore": [
+    "build/*"
+  ],
+  "pico-check":{
+    "require": "./tests/test.init.js"
+  },
   "dependencies": {
     "babel-preset-env": "^1.1.8",
     "basic-auth": "^1.0.3",
@@ -42,6 +49,7 @@
   },
   "devDependencies": {
     "eslint": "^4.19.1",
-    "eslint-plugin-react": "^7.7.0"
+    "eslint-plugin-react": "^7.7.0",
+    "pico-check": "^1.0.3"
   }
 }
