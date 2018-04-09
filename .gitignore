@@ -1,16 +1,10 @@
-# Logs
-logs
-*.log
-
-#Ignore our built files
-build/*
-
-# Ignore sensitive stuff
-config/local.json
-
 node_modules
 storage
 .idea
 *.swp
+
+*.log
+build/*
+config/local.*
 
 todo.md
