@@ -24,6 +24,12 @@
   "pico-check":{
     "require": "./tests/test.init.js"
   },
+  "babel":{
+    "presets": [
+      "env",
+      "react"
+    ]
+  },
   "dependencies": {
     "babel-preset-env": "^1.1.8",
     "basic-auth": "^1.0.3",
