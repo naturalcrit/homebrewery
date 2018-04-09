@@ -17,7 +17,7 @@ renderer.html = function (html) {
 const tagTypes = ['div', 'span', 'a'];
 const tagRegex = new RegExp('(' +
 	_.map(tagTypes, (type)=>{
-		return `\\<${type}|\\</${type}>`;
+		return `\\<${type}\\b|\\</${type}>`;
 	}).join('|') + ')', 'g');
 
 
@@ -79,4 +79,3 @@ module.exports = {
 		return errors;
 	},
 };
-
