@@ -6,6 +6,8 @@
     "dev": "node scripts/dev.js",
     "quick": "node scripts/quick.js",
     "build": "node scripts/build.js",
+    "lint": "eslint --fix **/*.{js,jsx}",
+    "lint:dry": "eslint **/*.{js,jsx}",
     "phb": "node scripts/phb.js",
     "prod": "set NODE_ENV=production&& npm run build",
     "postinstall": "npm run build",
@@ -35,5 +37,9 @@
     "striptags": "^2.1.1",
     "superagent": "^1.6.1",
     "vitreum": "^4.0.12"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-plugin-react": "^7.7.0"
   }
 }
