@@ -1,21 +1,20 @@
-var React = require('react');
-var _ = require('lodash');
-var cx = require('classnames');
+const React = require('react');
+const _ = require('lodash');
+const cx = require('classnames');
 
-var HomebrewAdmin = require('./homebrewAdmin/homebrewAdmin.jsx');
+const HomebrewAdmin = require('./homebrewAdmin/homebrewAdmin.jsx');
 
-var Admin = React.createClass({
-	getDefaultProps: function() {
+const Admin = React.createClass({
+	getDefaultProps : function() {
 		return {
-			url : "",
-			admin_key : "",
+			url       : '',
+			admin_key : '',
 			homebrews : [],
 		};
 	},
 
 	render : function(){
-		var self = this;
-		return(
+		return (
 			<div className='admin'>
 
 				<header>

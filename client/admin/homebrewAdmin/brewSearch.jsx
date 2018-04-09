@@ -1,22 +1,22 @@
-var React = require('react');
-var _ = require('lodash');
-var cx = require('classnames');
+const React = require('react');
+const _ = require('lodash');
+const cx = require('classnames');
 
-var request = require('superagent');
+const request = require('superagent');
 
-var BrewSearch = React.createClass({
+const BrewSearch = React.createClass({
 
-	getDefaultProps: function() {
+	getDefaultProps : function() {
 		return {
 			admin_key : ''
 		};
 	},
 
-	getInitialState: function() {
+	getInitialState : function() {
 		return {
-			searchTerm: '',
-			brew : null,
-			searching : false
+			searchTerm : '',
+			brew       : null,
+			searching  : false
 		};
 	},
 
@@ -26,7 +26,7 @@ var BrewSearch = React.createClass({
 			searching : true
 		});
 
-		request.get('/homebrew/api/search?id=' + this.state.searchTerm)
+		request.get(`/homebrew/api/search?id=${this.state.searchTerm}`)
 			.query({
 				admin_key : this.props.admin_key,
 			})
@@ -36,7 +36,7 @@ var BrewSearch = React.createClass({
 					brew : res.body.brews[0],
 
 					searching : false
-				})
+				});
 			});
 	},
 
@@ -54,7 +54,7 @@ var BrewSearch = React.createClass({
 		return <div className='brew'>
 			<div>Edit id : {this.state.brew.editId}</div>
 			<div>Share id : {this.state.brew.shareId}</div>
-		</div>
+		</div>;
 	},
 
 	render : function(){
@@ -64,7 +64,7 @@ var BrewSearch = React.createClass({
 			<button onClick={this.handleSearchClick}>Search</button>
 
 			{this.renderBrew()}
-		</div>
+		</div>;
 	},
 
 });

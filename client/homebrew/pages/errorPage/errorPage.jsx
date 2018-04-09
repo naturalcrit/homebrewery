@@ -1,20 +1,20 @@
-var React = require('react');
-var _ = require('lodash');
-var cx = require('classnames');
+const React = require('react');
+const _ = require('lodash');
+const cx = require('classnames');
 
-var Nav = require('naturalcrit/nav/nav.jsx');
-var Navbar = require('../../navbar/navbar.jsx');
-var PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
-var IssueNavItem = require('../../navbar/issue.navitem.jsx');
-var RecentNavItem = require('../../navbar/recent.navitem.jsx');
+const Nav = require('naturalcrit/nav/nav.jsx');
+const Navbar = require('../../navbar/navbar.jsx');
+const PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
+const IssueNavItem = require('../../navbar/issue.navitem.jsx');
+const RecentNavItem = require('../../navbar/recent.navitem.jsx');
 
-var BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
+const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
-var ErrorPage = React.createClass({
-	getDefaultProps: function() {
+const ErrorPage = React.createClass({
+	getDefaultProps : function() {
 		return {
-			ver : '0.0.0',
-			errorId: ''
+			ver     : '0.0.0',
+			errorId : ''
 		};
 	},
 
@@ -39,7 +39,7 @@ var ErrorPage = React.createClass({
 			<div className='content'>
 				<BrewRenderer text={this.text} />
 			</div>
-		</div>
+		</div>;
 	}
 });
 

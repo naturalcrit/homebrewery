@@ -1,44 +1,44 @@
-var React = require('react');
-var _ = require('lodash');
-var cx = require('classnames');
-var Moment = require('moment');
+const React = require('react');
+const _ = require('lodash');
+const cx = require('classnames');
+const Moment = require('moment');
 
-var Nav = require('naturalcrit/nav/nav.jsx');
+const Nav = require('naturalcrit/nav/nav.jsx');
 
 const VIEW_KEY = 'homebrewery-recently-viewed';
 const EDIT_KEY = 'homebrewery-recently-edited';
 
-var BaseItem = React.createClass({
-	getDefaultProps: function() {
+const BaseItem = React.createClass({
+	getDefaultProps : function() {
 		return {
-			storageKey : '',
-			text : '',
-			currentBrew:{
+			storageKey  : '',
+			text        : '',
+			currentBrew : {
 				title : '',
-				id : '',
-				url : ''
+				id    : '',
+				url   : ''
 			}
 		};
 	},
-	getInitialState: function() {
+	getInitialState : function() {
 		return {
-			showDropdown: false,
-			brews : []
+			showDropdown : false,
+			brews        : []
 		};
 	},
 
-	componentDidMount: function() {
-		var brews = JSON.parse(localStorage.getItem(this.props.storageKey) || '[]');
+	componentDidMount : function() {
+		let brews = JSON.parse(localStorage.getItem(this.props.storageKey) || '[]');
 
 		brews = _.filter(brews, (brew)=>{
 			return brew.id !== this.props.currentBrew.id;
 		});
 		if(this.props.currentBrew.id){
 			brews.unshift({
-				id : this.props.currentBrew.id,
-				url : this.props.currentBrew.url,
+				id    : this.props.currentBrew.id,
+				url   : this.props.currentBrew.url,
 				title : this.props.currentBrew.title,
-				ts : Date.now()
+				ts    : Date.now()
 			});
 		}
 		brews = _.slice(brews, 0, 8);
@@ -51,29 +51,29 @@ var BaseItem = React.createClass({
 	handleDropdown : function(show){
 		this.setState({
 			showDropdown : show
-		})
+		});
 	},
 
 	renderDropdown : function(){
 		if(!this.state.showDropdown) return null;
 
-		var items = _.map(this.state.brews, (brew)=>{
+		const items = _.map(this.state.brews, (brew)=>{
 			return <a href={brew.url} className='item' key={brew.id} target='_blank'>
 				<span className='title'>{brew.title}</span>
 				<span className='time'>{Moment(brew.ts).fromNow()}</span>
-			</a>
+			</a>;
 		});
 
-		return <div className='dropdown'>{items}</div>
+		return <div className='dropdown'>{items}</div>;
 	},
 
 	render : function(){
 		return <Nav.item icon='fa-clock-o' color='grey' className='recent'
-					onMouseEnter={this.handleDropdown.bind(null, true)}
-					onMouseLeave={this.handleDropdown.bind(null, false)}>
+			onMouseEnter={()=>this.handleDropdown(true)}
+			onMouseLeave={()=>this.handleDropdown(false)}>
 			{this.props.text}
 			{this.renderDropdown()}
-		</Nav.item>
+		</Nav.item>;
 	},
 
 });
@@ -82,10 +82,10 @@ var BaseItem = React.createClass({
 
 module.exports = {
 	viewed : React.createClass({
-		getDefaultProps: function() {
+		getDefaultProps : function() {
 			return {
 				brew : {
-					title : '',
+					title   : '',
 					shareId : ''
 				}
 			};
@@ -93,19 +93,19 @@ module.exports = {
 		render : function(){
 			return <BaseItem text='recently viewed' storageKey={VIEW_KEY}
 				currentBrew={{
-					id : this.props.brew.shareId,
+					id    : this.props.brew.shareId,
 					title : this.props.brew.title,
-					url : `/share/${this.props.brew.shareId}`
+					url   : `/share/${this.props.brew.shareId}`
 				}}
-			/>
+			/>;
 		},
 	}),
 
 	edited : React.createClass({
-		getDefaultProps: function() {
+		getDefaultProps : function() {
 			return {
 				brew : {
-					title : '',
+					title  : '',
 					editId : ''
 				}
 			};
@@ -113,39 +113,39 @@ module.exports = {
 		render : function(){
 			return <BaseItem text='recently edited' storageKey={EDIT_KEY}
 				currentBrew={{
-					id : this.props.brew.editId,
+					id    : this.props.brew.editId,
 					title : this.props.brew.title,
-					url : `/edit/${this.props.brew.editId}`
+					url   : `/edit/${this.props.brew.editId}`
 				}}
-			/>
+			/>;
 		},
 	}),
 
 	both : React.createClass({
-		getDefaultProps: function() {
+		getDefaultProps : function() {
 			return {
 				errorId : null
 			};
 		},
 
-		getInitialState: function() {
+		getInitialState : function() {
 			return {
-				showDropdown: false,
-				edit : [],
-				view : []
+				showDropdown : false,
+				edit         : [],
+				view         : []
 			};
 		},
 
-		componentDidMount: function() {
+		componentDidMount : function() {
 
-			var edited = JSON.parse(localStorage.getItem(EDIT_KEY) || '[]');
-			var viewed = JSON.parse(localStorage.getItem(VIEW_KEY) || '[]');
+			let edited = JSON.parse(localStorage.getItem(EDIT_KEY) || '[]');
+			let viewed = JSON.parse(localStorage.getItem(VIEW_KEY) || '[]');
 
 			if(this.props.errorId){
-				edited = _.filter(edited, (edit) => {
+				edited = _.filter(edited, (edit)=>{
 					return edit.id !== this.props.errorId;
 				});
-				viewed = _.filter(viewed, (view) => {
+				viewed = _.filter(viewed, (view)=>{
 					return view.id !== this.props.errorId;
 				});
 
@@ -163,18 +163,18 @@ module.exports = {
 		handleDropdown : function(show){
 			this.setState({
 				showDropdown : show
-			})
+			});
 		},
 
 		renderDropdown : function(){
 			if(!this.state.showDropdown) return null;
 
-			var makeItems = (brews) => {
+			const makeItems = (brews)=>{
 				return _.map(brews, (brew)=>{
 					return <a href={brew.url} className='item' key={brew.id} target='_blank'>
 						<span className='title'>{brew.title}</span>
 						<span className='time'>{Moment(brew.ts).fromNow()}</span>
-					</a>
+					</a>;
 				});
 			};
 
@@ -183,17 +183,17 @@ module.exports = {
 				{makeItems(this.state.edit)}
 				<h4>viewed</h4>
 				{makeItems(this.state.view)}
-			</div>
+			</div>;
 		},
 
 		render : function(){
 			return <Nav.item icon='fa-clock-o' color='grey' className='recent'
-						onMouseEnter={this.handleDropdown.bind(null, true)}
-						onMouseLeave={this.handleDropdown.bind(null, false)}>
+				onMouseEnter={()=>this.handleDropdown(true)}
+				onMouseLeave={()=>this.handleDropdown(false)}>
 				Recent brews
 				{this.renderDropdown()}
-			</Nav.item>
+			</Nav.item>;
 		}
 
 	})
-}
+};

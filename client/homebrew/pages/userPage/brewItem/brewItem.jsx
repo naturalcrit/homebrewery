@@ -2,13 +2,13 @@ const React = require('react');
 const _     = require('lodash');
 const cx    = require('classnames');
 const moment = require('moment');
-const request = require("superagent");
+const request = require('superagent');
 
 const BrewItem = React.createClass({
-	getDefaultProps: function() {
+	getDefaultProps : function() {
 		return {
 			brew : {
-				title : '',
+				title       : '',
 				description : '',
 
 				authors : []
@@ -17,29 +17,29 @@ const BrewItem = React.createClass({
 	},
 
 	deleteBrew : function(){
-		if(!confirm("are you sure you want to delete this brew?")) return;
-		if(!confirm("are you REALLY sure? You will not be able to recover it")) return;
+		if(!confirm('are you sure you want to delete this brew?')) return;
+		if(!confirm('are you REALLY sure? You will not be able to recover it')) return;
 
-		request.get('/api/remove/' + this.props.brew.editId)
+		request.get(`/api/remove/${this.props.brew.editId}`)
 			.send()
 			.end(function(err, res){
 				location.reload();
 			});
 	},
 
-	renderDeleteBrewLink: function(){
+	renderDeleteBrewLink : function(){
 		if(!this.props.brew.editId) return;
 
 		return <a onClick={this.deleteBrew}>
 			<i className='fa fa-trash' />
-		</a>
+		</a>;
 	},
-	renderEditLink: function(){
+	renderEditLink : function(){
 		if(!this.props.brew.editId) return;
 
 		return <a href={`/edit/${this.props.brew.editId}`} target='_blank'>
 			<i className='fa fa-pencil' />
-		</a>
+		</a>;
 	},
 
 	render : function(){
@@ -68,7 +68,7 @@ const BrewItem = React.createClass({
 				{this.renderEditLink()}
 				{this.renderDeleteBrewLink()}
 			</div>
-		</div>
+		</div>;
 	}
 });
 
