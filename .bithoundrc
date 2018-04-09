@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "unused-ignores": [
+      "react-dom"
+    ]
+  }
+}
