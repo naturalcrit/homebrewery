@@ -49,7 +49,7 @@ app.get('/source/:id', (req, res)=>{
 	HomebrewModel.get({ shareId: req.params.id })
 		.then((brew)=>{
 			const text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-			return res.send(`<code><pre>${text}</pre></code>`);
+			return res.send(`<code><pre style="white-space: pre-wrap;">${text}</pre></code>`);
 		})
 		.catch((err)=>{
 			console.log(err);
