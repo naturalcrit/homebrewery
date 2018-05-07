@@ -36,7 +36,6 @@ const BrewRenderer = createClass({
 		};
 	},
 	height     : 0,
-	pageHeight : PAGE_HEIGHT,
 	lastRender : <div></div>,
 
 	componentDidMount : function() {
@@ -48,8 +47,6 @@ const BrewRenderer = createClass({
 	},
 
 	componentWillReceiveProps : function(nextProps) {
-		if(this.refs.pages && this.refs.pages.firstChild) this.pageHeight = this.refs.pages.firstChild.clientHeight;
-
 		const pages = nextProps.text.split('\\page');
 		this.setState({
 			pages  : pages,
@@ -58,10 +55,6 @@ const BrewRenderer = createClass({
 	},
 
 	updateSize : function() {
-		setTimeout(()=>{
-			if(this.refs.pages && this.refs.pages.firstChild) this.pageHeight = this.refs.pages.firstChild.clientHeight;
-		}, 1);
-
 		this.setState({
 			height    : this.refs.main.parentNode.clientHeight,
 			isMounted : true
@@ -70,7 +63,7 @@ const BrewRenderer = createClass({
 
 	handleScroll : function(e){
 		this.setState({
-			viewablePageNumber : Math.floor(e.target.scrollTop / this.pageHeight)
+			viewablePageNumber : Math.floor(e.target.scrollTop / e.target.scrollHeight * this.state.pages.length)
 		});
 	},
 
