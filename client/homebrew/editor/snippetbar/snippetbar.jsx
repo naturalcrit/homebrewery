@@ -7,7 +7,9 @@ const cx    = require('classnames');
 const Snippets = require('./snippets/snippets.js');
 
 const execute = function(val, brew){
-	if(_.isFunction(val)) return val(brew);
+	if(snippet.name == 'Table of Contents')
+		return val(brew);
+	else if(_.isFunction(val)) return val();
 	return val;
 };
 
