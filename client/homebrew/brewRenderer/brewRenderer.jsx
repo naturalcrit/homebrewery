@@ -76,7 +76,7 @@ const BrewRenderer = createClass({
 		this.setState({
 			viewablePageNumber : Math.floor(e.target.scrollTop / this.pageHeight)
 		});
-	},100),
+	}, 100),
 
 	shouldRender : function(pageText, index){
 		if(!this.state.isMounted) return false;
