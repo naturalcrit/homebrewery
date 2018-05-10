@@ -25,7 +25,7 @@ const BrewRenderer = createClass({
 		return {
 			viewablePageNumber : 0,
 			height             : 0,
-			willChange		   : 'auto',
+			willChange         : 'auto',
 			isMounted          : false,
 
 			usePPR : true,
@@ -126,19 +126,19 @@ const BrewRenderer = createClass({
 		});
 		return this.lastRender;
 	},
-	
+
 	/**
-	* Optimize for smooth scrolling when mouse enters the rendering panel 
+	* Optimize for smooth scrolling when mouse enters the rendering panel
 	**/
 	prepareScroll : function(){
-		this.setState({willChange : 'transform'});
+		this.setState({ willChange: 'transform' });
 	},
-	
+
 	/**
 	* Unload smooth scrolling optimizations when mouse leaves rendering panel
 	**/
 	unprepareScroll : function(){
-		this.setState({willChange : 'auto'});
+		this.setState({ willChange: 'auto' });
 	},
 
 	render : function(){
@@ -150,7 +150,7 @@ const BrewRenderer = createClass({
 					onMouseOut={this.unprepareScroll}
 					ref='main'
 					style={{ height: 	 this.state.height,
-							 willChange: this.state.willChange}}>
+							 willChange: this.state.willChange }}>
 
 					<ErrorBar errors={this.props.errors} />
 					<RenderWarnings />
