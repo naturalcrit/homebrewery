@@ -12,6 +12,8 @@ const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
 const PAGE_HEIGHT = 1056;
 const PPR_THRESHOLD = 50;
 
+var waiting = false;
+
 const BrewRenderer = createClass({
 	getDefaultProps : function() {
 		return {
@@ -69,22 +71,24 @@ const BrewRenderer = createClass({
 	},
 
 	handleScroll : function(e){
+		if(waiting)
+			return;
+		waiting = true;
 		this.setState({
 			viewablePageNumber : Math.floor(e.target.scrollTop / this.pageHeight)
 		});
+		setTimeout(function () {waiting = false;}, 100);
 	},
 
 	shouldRender : function(pageText, index){
 		if(!this.state.isMounted) return false;
 
 		const viewIndex = this.state.viewablePageNumber;
-		if(index == viewIndex - 3) return true;
 		if(index == viewIndex - 2) return true;
 		if(index == viewIndex - 1) return true;
 		if(index == viewIndex)     return true;
 		if(index == viewIndex + 1) return true;
 		if(index == viewIndex + 2) return true;
-		if(index == viewIndex + 3) return true;
 
 		//Check for style tages
 		if(pageText.indexOf('<style>') !== -1) return true;
