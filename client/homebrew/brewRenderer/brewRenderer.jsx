@@ -135,14 +135,14 @@ const BrewRenderer = createClass({
 	},
 	
 	/**
-	*	Optimize for smooth scrolling when mouse enters the rendering panel 
+	* Optimize for smooth scrolling when mouse enters the rendering panel 
 	**/
 	prepareScroll : function(){
 		this.setState({willChange : 'transform'});
 	},
 	
 	/**
-	*	Unload smooth scrolling optimizations when mouse leaves rendering panel
+	* Unload smooth scrolling optimizations when mouse leaves rendering panel
 	**/
 	unprepareScroll : function(){
 		this.setState({willChange : 'auto'});
