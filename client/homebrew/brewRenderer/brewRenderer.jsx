@@ -68,23 +68,25 @@ const BrewRenderer = createClass({
 		});
 	},
 
-	handleScroll : function(e){
+	/**
+	* Updates the index of the current viewed page when the renderer is scrolled.
+	* Throttled to only run once per 100ms, reducing number of style recalculations
+	**/
+	handleScroll : _.throttle(function(e){
 		this.setState({
 			viewablePageNumber : Math.floor(e.target.scrollTop / this.pageHeight)
 		});
-	},
+	},100),
 
 	shouldRender : function(pageText, index){
 		if(!this.state.isMounted) return false;
 
 		const viewIndex = this.state.viewablePageNumber;
-		if(index == viewIndex - 3) return true;
 		if(index == viewIndex - 2) return true;
 		if(index == viewIndex - 1) return true;
 		if(index == viewIndex)     return true;
 		if(index == viewIndex + 1) return true;
 		if(index == viewIndex + 2) return true;
-		if(index == viewIndex + 3) return true;
 
 		//Check for style tages
 		if(pageText.indexOf('<style>') !== -1) return true;
