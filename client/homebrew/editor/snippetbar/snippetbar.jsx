@@ -6,8 +6,8 @@ const cx    = require('classnames');
 
 const Snippets = require('./snippets/snippets.js');
 
-const execute = function(val, brew){
-	if(_.isFunction(val)) return val(brew);
+const execute = function(val, arg){
+	if(_.isFunction(val)) return val(arg);
 	return val;
 };
 
@@ -69,7 +69,10 @@ const SnippetGroup = createClass({
 		};
 	},
 	handleSnippetClick : function(snippet){
-		this.props.onSnippetClick(execute(snippet.gen, this.props.brew));
+		let arg = null;
+		if(snippet.name == 'Table of Contents;')
+			arg = this.props.brew;
+		this.props.onSnippetClick(execute(snippet.gen, arg));
 	},
 	renderSnippets : function(){
 		return _.map(this.props.snippets, (snippet)=>{
