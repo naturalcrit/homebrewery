@@ -6,8 +6,8 @@ const cx    = require('classnames');
 
 const Snippets = require('./snippets/snippets.js');
 
-const execute = function(val, brew){
-	if(_.isFunction(val)) return val(brew);
+const execute = function(val, arg){
+	if(_.isFunction(val)) return val(arg);
 	return val;
 };
 
