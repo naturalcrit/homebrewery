@@ -131,8 +131,6 @@ const BrewRenderer = createClass({
 			<React.Fragment>
 				<div className='brewRenderer'
 					onScroll={this.handleScroll}
-					onMouseOver={this.prepareScroll}
-					onMouseOut={this.unprepareScroll}
 					ref='main'
 					style={{ height: this.state.height }}>
 
