@@ -134,7 +134,7 @@ const BrewRenderer = createClass({
 					onMouseOver={this.prepareScroll}
 					onMouseOut={this.unprepareScroll}
 					ref='main'
-					style={{ height : this.state.height }}>
+					style={{ height: this.state.height }}>
 
 					<ErrorBar errors={this.props.errors} />
 					<RenderWarnings />
