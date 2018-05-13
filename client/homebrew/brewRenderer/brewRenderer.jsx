@@ -25,7 +25,6 @@ const BrewRenderer = createClass({
 		return {
 			viewablePageNumber : 0,
 			height             : 0,
-			willChange         : 'auto',
 			isMounted          : false,
 
 			usePPR : true,
@@ -127,20 +126,6 @@ const BrewRenderer = createClass({
 		return this.lastRender;
 	},
 
-	/**
-	* Optimize for smooth scrolling when mouse enters the rendering panel
-	**/
-	prepareScroll : function(){
-		this.setState({ willChange: 'transform' });
-	},
-
-	/**
-	* Unload smooth scrolling optimizations when mouse leaves rendering panel
-	**/
-	unprepareScroll : function(){
-		this.setState({ willChange: 'auto' });
-	},
-
 	render : function(){
 		return (
 			<React.Fragment>
@@ -149,8 +134,7 @@ const BrewRenderer = createClass({
 					onMouseOver={this.prepareScroll}
 					onMouseOut={this.unprepareScroll}
 					ref='main'
-					style={{ height     : this.state.height,
-							 willChange : this.state.willChange }}>
+					style={{ height : this.state.height }}>
 
 					<ErrorBar errors={this.props.errors} />
 					<RenderWarnings />
