@@ -82,7 +82,7 @@ const Homebrew = createClass({
 	},
 	render : function(){
 		return <div className='homebrew'>
-			<Router initialUrl={this.props.url}/>
+			<Router defaultUrl={this.props.url}/>
 		</div>;
 	}
 });
