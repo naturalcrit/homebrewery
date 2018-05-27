@@ -18,6 +18,7 @@ check('Void tags', 'No <a>need to close tags like <img></a> or <area>.', 0);
 
 // This should arguably pass validation, but does not currently.
 check('Immediately closing div', '<div/>', 1);
+check('Tags in CSS comments', '<style>/* Style <a> tags later */</style>', 1);
 
 // Strings that should give validation errors.
 check('Partial tag', '<a', 1);
