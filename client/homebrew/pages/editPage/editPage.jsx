@@ -49,7 +49,6 @@ const EditPage = createClass({
 			isPending   : false,
 			errors      : null,
 			htmlErrors  : Markdown.validate(this.props.brew.text),
-			lastUpdated : this.props.brew.updatedAt
 		};
 	},
 	savedBrew : null,
@@ -147,7 +146,6 @@ const EditPage = createClass({
 					this.setState({
 						isPending   : false,
 						isSaving    : false,
-						lastUpdated : res.body.updatedAt
 					});
 				}
 			});
