@@ -44,7 +44,6 @@ module.exports = {
 		'arrow-parens'    : ['warn', 'always'],
 		'brace-style'     : ['warn', '1tbs', { allowSingleLine: true }],
 		'jsx-quotes'      : ['warn', 'prefer-single'],
-		'linebreak-style' : ['warn', 'unix'],
 		'no-var'          : 'warn',
 		'prefer-const'    : 'warn',
 		'prefer-template' : 'warn',
