@@ -14,6 +14,7 @@ check('Embedded closed tag', 'See <a href="foo">here</a> for more.', 0);
 check('<aside> tag works', 'Odd <aside>as in, suffix of a <a>link tag</a></aside> tag', 0);
 check('Multiple tags', 'Multiple <a>shiny</a> <span>tags</span>', 0);
 check('Nested tags', 'Nested <div>shiny <span>tags</span></div>', 0);
+check('Void tags', 'No <a>need to close tags like <img></a> or <area>.', 0);
 
 // This should arguably pass validation, but does not currently.
 check('Immediately closing div', '<div/>', 1);
