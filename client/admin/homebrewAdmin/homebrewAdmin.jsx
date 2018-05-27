@@ -107,8 +107,8 @@ const HomebrewAdmin = createClass({
 		const brews = this.state.brewCache[this.state.page] || _.times(this.state.count);
 		return _.map(brews, (brew)=>{
 			return <tr className={cx('brewRow', { 'isEmpty': brew.text == 'false' })} key={brew.shareId || brew}>
-				<td><a href={`/edit/${brew.editId}`} target='_blank'>{brew.editId}</a></td>
-				<td><a href={`/share/${brew.shareId}`} target='_blank'>{brew.shareId}</a></td>
+				<td><a href={`/edit/${brew.editId}`} target='_blank' rel='noopener noreferrer'>{brew.editId}</a></td>
+				<td><a href={`/share/${brew.shareId}`} target='_blank' rel='noopener noreferrer'>{brew.shareId}</a></td>
 				<td>{Moment(brew.createdAt).fromNow()}</td>
 				<td>{Moment(brew.updatedAt).fromNow()}</td>
 				<td>{Moment(brew.lastViewed).fromNow()}</td>
