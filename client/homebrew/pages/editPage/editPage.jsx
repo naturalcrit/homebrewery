@@ -165,7 +165,8 @@ const EditPage = createClass({
 				Oops!
 				<div className='errorContainer'>
 					Looks like there was a problem saving. <br />
-					Report the issue <a target='_blank' href={`https://github.com/stolksdorf/naturalcrit/issues/new?body=${encodeURIComponent(errMsg)}`}>
+					Report the issue <a target='_blank' rel='noopener noreferrer'
+							href={`https://github.com/stolksdorf/naturalcrit/issues/new?body=${encodeURIComponent(errMsg)}`}>
 						here
 					</a>.
 				</div>
