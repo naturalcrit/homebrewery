@@ -38,9 +38,10 @@ const HomebrewAdmin = createClass({
 			})
 			.end((err, res)=>{
 				if(err || !res.body || !res.body.brews) return;
-				this.state.brewCache[page] = res.body.brews;
+				const newCache = _.extend({}, this.state.brewCache);
+				newCache[page] = res.body.brews;
 				this.setState({
-					brewCache : this.state.brewCache,
+					brewCache : newCache,
 					total     : res.body.total,
 					count     : res.body.count
 				});
