@@ -22,7 +22,9 @@ const PrintPage = createClass({
 
 	componentDidMount : function() {
 		if(this.props.query.local){
-			this.setState({ brewText: localStorage.getItem(this.props.query.local) });
+			this.setState((prevState, prevProps) => ({
+				brewText: localStorage.getItem(prevProps.query.local)
+			}));
 		}
 
 		if(this.props.query.dialog) window.print();
