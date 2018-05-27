@@ -32,15 +32,6 @@ const RenderWarnings = createClass({
 				</li>;
 			}
 		},
-		zoom : function(){
-			return false;
-			if(window.devicePixelRatio !== 1){
-				return <li key='zoom'>
-					<em>Your browser is zoomed. </em> <br />
-					This can cause content to jump columns.
-				</li>;
-			}
-		}
 	},
 	checkWarnings : function(){
 		const hideDismiss = localStorage.getItem(DISMISS_KEY);
