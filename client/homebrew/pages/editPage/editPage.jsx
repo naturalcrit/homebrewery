@@ -112,12 +112,8 @@ const EditPage = createClass({
 	},
 
 	hasChanges : function(){
-		if(this.savedBrew){
-			return !_.isEqual(this.state.brew, this.savedBrew);
-		} else {
-			return !_.isEqual(this.state.brew, this.props.brew);
-		}
-		return false;
+		const savedBrew = this.savedBrew ? this.savedBrew : this.props.brew;
+		return !_.isEqual(this.state.brew, savedBrew);
 	},
 
 	trySave : function(){
