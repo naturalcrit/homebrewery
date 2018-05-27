@@ -45,10 +45,10 @@ const EditPage = createClass({
 		return {
 			brew : this.props.brew,
 
-			isSaving    : false,
-			isPending   : false,
-			errors      : null,
-			htmlErrors  : Markdown.validate(this.props.brew.text),
+			isSaving   : false,
+			isPending  : false,
+			errors     : null,
+			htmlErrors : Markdown.validate(this.props.brew.text),
 		};
 	},
 	savedBrew : null,
@@ -144,8 +144,8 @@ const EditPage = createClass({
 				} else {
 					this.savedBrew = res.body;
 					this.setState({
-						isPending   : false,
-						isSaving    : false,
+						isPending : false,
+						isSaving  : false,
 					});
 				}
 			});
