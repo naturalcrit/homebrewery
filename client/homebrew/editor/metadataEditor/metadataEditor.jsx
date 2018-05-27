@@ -118,7 +118,7 @@ const MetadataEditor = createClass({
 		return <div className='field reddit'>
 			<label>reddit</label>
 			<div className='value'>
-				<a href={this.getRedditLink()} target='_blank'>
+				<a href={this.getRedditLink()} target='_blank' rel='noopener noreferrer'>
 					<button className='publish'>
 						<i className='fa fa-reddit-alien' /> share to reddit
 					</button>
