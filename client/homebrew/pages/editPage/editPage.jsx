@@ -94,9 +94,7 @@ const EditPage = createClass({
 		this.setState((prevState)=>({
 			brew      : _.merge({}, prevState.brew, metadata),
 			isPending : true,
-		}), ()=>{
-			this.trySave();
-		});
+		}), ()=>this.trySave());
 
 	},
 
@@ -110,9 +108,7 @@ const EditPage = createClass({
 			brew       : _.merge({}, prevState.brew, { text: text }),
 			isPending  : true,
 			htmlErrors : htmlErrors
-		}));
-
-		this.trySave();
+		}), ()=>this.trySave());
 	},
 
 	hasChanges : function(){
