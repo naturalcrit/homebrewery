@@ -62,7 +62,7 @@ const EditPage = createClass({
 			}
 		};
 
-		this.setState((prevState) => ({
+		this.setState((prevState)=>({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
@@ -128,7 +128,7 @@ const EditPage = createClass({
 	save : function(){
 		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
 
-		this.setState((prevState) => ({
+		this.setState((prevState)=>({
 			isSaving   : true,
 			errors     : null,
 			htmlErrors : Markdown.validate(prevState.brew.text)
@@ -166,7 +166,7 @@ const EditPage = createClass({
 				<div className='errorContainer'>
 					Looks like there was a problem saving. <br />
 					Report the issue <a target='_blank' rel='noopener noreferrer'
-							href={`https://github.com/stolksdorf/naturalcrit/issues/new?body=${encodeURIComponent(errMsg)}`}>
+						href={`https://github.com/stolksdorf/naturalcrit/issues/new?body=${encodeURIComponent(errMsg)}`}>
 						here
 					</a>.
 				</div>
