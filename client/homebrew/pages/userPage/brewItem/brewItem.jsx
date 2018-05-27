@@ -38,7 +38,7 @@ const BrewItem = createClass({
 	renderEditLink : function(){
 		if(!this.props.brew.editId) return;
 
-		return <a href={`/edit/${this.props.brew.editId}`} target='_blank'>
+		return <a href={`/edit/${this.props.brew.editId}`} target='_blank' rel='noopener noreferrer'>
 			<i className='fa fa-pencil' />
 		</a>;
 	},
@@ -63,7 +63,7 @@ const BrewItem = createClass({
 			</div>
 
 			<div className='links'>
-				<a href={`/share/${brew.shareId}`} target='_blank'>
+				<a href={`/share/${brew.shareId}`} target='_blank' rel='noopener noreferrer'>
 					<i className='fa fa-share-alt' />
 				</a>
 				{this.renderEditLink()}
