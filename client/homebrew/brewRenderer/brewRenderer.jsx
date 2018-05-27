@@ -29,8 +29,6 @@ const BrewRenderer = createClass({
 
 			pages  : pages,
 			usePPR : pages.length >= PPR_THRESHOLD,
-
-			errors : []
 		};
 	},
 	height     : 0,
