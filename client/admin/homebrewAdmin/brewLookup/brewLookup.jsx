@@ -47,8 +47,8 @@ const BrewLookup = createClass({
 		return <div className='brewRow'>
 			<div>{brew.title}</div>
 			<div>{brew.authors.join(', ')}</div>
-			<div><a href={`/edit/${brew.editId}`} target='_blank'>/edit/{brew.editId}</a></div>
-			<div><a href={`/share/${brew.shareId}`} target='_blank'>/share/{brew.shareId}</a></div>
+			<div><a href={`/edit/${brew.editId}`} target='_blank' rel='noopener noreferrer'>/edit/{brew.editId}</a></div>
+			<div><a href={`/share/${brew.shareId}`} target='_blank' rel='noopener noreferrer'>/share/{brew.shareId}</a></div>
 			<div>{Moment(brew.updatedAt).fromNow()}</div>
 			<div>{brew.views}</div>
 		</div>;
