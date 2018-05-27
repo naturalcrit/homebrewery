@@ -17,16 +17,11 @@ const BrewSearch = createClass({
 		return {
 			searchTerm : '',
 			brew       : null,
-			searching  : false
 		};
 	},
 
 
 	search : function(){
-		this.setState({
-			searching : true
-		});
-
 		request.get(`/homebrew/api/search?id=${this.state.searchTerm}`)
 			.query({
 				admin_key : this.props.admin_key,
@@ -35,8 +30,6 @@ const BrewSearch = createClass({
 				console.log(err, res, res.body.brews[0]);
 				this.setState({
 					brew : res.body.brews[0],
-
-					searching : false
 				});
 			});
 	},
