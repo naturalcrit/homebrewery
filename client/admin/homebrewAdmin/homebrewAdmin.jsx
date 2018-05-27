@@ -23,8 +23,6 @@ const HomebrewAdmin = createClass({
 			count     : 20,
 			brewCache : {},
 			total     : 0,
-
-			processingOldBrews : false
 		};
 	},
 
