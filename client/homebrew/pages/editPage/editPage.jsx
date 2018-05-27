@@ -62,9 +62,9 @@ const EditPage = createClass({
 			}
 		};
 
-		this.setState({
-			htmlErrors : Markdown.validate(this.state.brew.text)
-		});
+		this.setState((prevState) => ({
+			htmlErrors : Markdown.validate(prevState.brew.text)
+		}));
 
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
@@ -91,10 +91,10 @@ const EditPage = createClass({
 	},
 
 	handleMetadataChange : function(metadata){
-		this.setState({
-			brew      : _.merge({}, this.state.brew, metadata),
+		this.setState((prevState)=>({
+			brew      : _.merge({}, prevState.brew, metadata),
 			isPending : true,
-		}, ()=>{
+		}), ()=>{
 			this.trySave();
 		});
 
@@ -106,11 +106,11 @@ const EditPage = createClass({
 		let htmlErrors = this.state.htmlErrors;
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 
-		this.setState({
-			brew       : _.merge({}, this.state.brew, { text: text }),
+		this.setState((prevState)=>({
+			brew       : _.merge({}, prevState.brew, { text: text }),
 			isPending  : true,
 			htmlErrors : htmlErrors
-		});
+		}));
 
 		this.trySave();
 	},
@@ -136,11 +136,11 @@ const EditPage = createClass({
 	save : function(){
 		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
 
-		this.setState({
+		this.setState((prevState) => ({
 			isSaving   : true,
 			errors     : null,
-			htmlErrors : Markdown.validate(this.state.brew.text)
-		});
+			htmlErrors : Markdown.validate(prevState.brew.text)
+		}));
 
 		request
 			.put(`/api/update/${this.props.brew.editId}`)
