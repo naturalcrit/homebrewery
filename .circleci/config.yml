@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       - image: circleci/node:8.9
-      - image: circleci/mongo:3.4.4
+      - image: circleci/mongo:3.4-jessie
 
     working_directory: ~/repo
 
