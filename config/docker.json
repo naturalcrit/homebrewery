@@ -1,0 +1,4 @@
+{
+	"mongodb_uri" : "mongodb://mongodb:27017/homebrewery",
+	"secret" : "secret"
+}
