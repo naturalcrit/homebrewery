@@ -3,7 +3,7 @@ services:
   mongodb:
     image: mongo:latest
     volumes:
-      - /your/data/location:/data/db
+      - mongodata:/data/db
   homebrewery:
     build:
       context: .
