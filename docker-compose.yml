@@ -1,0 +1,15 @@
+version: '2'
+services:
+  mongodb:
+    image: mongo:latest
+    volumes:
+      - /your/data/location:/data/db
+  homebrewery:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: homebrewery
+    environment:
+      MONGODB_URI: mongodb://mongodb/homebrewery
+    ports:
+      - "8000:8000"
