@@ -13,3 +13,5 @@ services:
       MONGODB_URI: mongodb://mongodb/homebrewery
     ports:
       - "8000:8000"
+volumes:
+  mongodata:
