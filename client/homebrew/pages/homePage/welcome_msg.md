@@ -55,7 +55,7 @@ If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](
 
 
 
-<img src='http://i.imgur.com/hMna6G0.png' style='position:absolute;bottom:50px;right:30px;width:280px' />
+<img src='https://i.imgur.com/hMna6G0.png' style='position:absolute;bottom:50px;right:30px;width:280px' />
 
 <div class='pageNumber'>1</div>
 <div class='footnote'>PART 1 | FANCINESS</div>
