@@ -14,14 +14,8 @@ const config = require('nconf')
 	.file('defaults', { file: 'config/default.json' });
 
 //DB
-const mongoose = require('mongoose');
-mongoose.connect(config.get('mongodb_uri') || config.get('mongolab_uri') || 'mongodb://localhost/naturalcrit');
-mongoose.connection.on('error', ()=>{
-	console.log('Error : Could not connect to a Mongo Database.');
-	console.log('        If you are running locally, make sure mongodb.exe is running.');
-	throw 'Can not connect to Mongo';
-});
-
+const database = require('./server/database');
+database.connect();
 
 //Account MIddleware
 app.use((req, res, next)=>{
