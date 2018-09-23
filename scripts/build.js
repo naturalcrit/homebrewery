@@ -15,6 +15,8 @@ clean()
 	.then((deps)=>less('homebrew', { shared: ['./shared'] }, deps))
 	.then(()=>jsx('admin', './client/admin/admin.jsx', { libs: Proj.libs, shared: ['./shared'] }))
 	.then((deps)=>less('admin', { shared: ['./shared'] }, deps))
+	.then(()=>jsx('account', './client/account/account.jsx', { libs: Proj.libs, shared: ['./shared'] }))
+	.then((deps)=>less('account', { shared: ['./shared'] }, deps))
 	.then(()=>asset(Proj.assets, ['./shared', './client']))
 	.then(console.timeEnd.bind(console, label))
 	.catch(console.error);

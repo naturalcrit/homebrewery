@@ -1,0 +1,51 @@
+@import 'naturalcrit/styles/core.less';
+@import './client/homebrew/phbStyle/phb.style.less';
+.account{
+  height : 100%;
+  .page{
+    display          : flex;
+    height           : 100%;
+    background-color : @steel;
+    flex-direction   : column;
+    .content{
+      position : relative;
+      height   : calc(~"100% - 29px"); //Navbar height
+      flex     : auto;
+    }
+  }
+  .brewRenderer{
+    .pages{
+      margin : 30px 0px;
+      &>.phb{
+        margin-right  : auto;
+        margin-bottom : 30px;
+        margin-left   : auto;
+        box-shadow    : 1px 4px 14px #000;
+        height: auto;
+      }
+    }
+  }
+
+  .error-message {
+    color: #cc0033;
+  }
+  
+  input[type=text], input[type=password] {
+    display: block;
+    margin: 3px;
+    padding: 5px;
+  }
+
+  input[type=text].has-error, input[type=password].has-error {
+      background-color: #fce4e4;
+      border: 1px solid #cc0033;
+      outline: none;
+  }
+    
+
+  input[type=submit] {
+    margin: 3px;
+    padding: 5px;
+  }
+
+}
