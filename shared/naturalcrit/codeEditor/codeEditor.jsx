@@ -41,7 +41,7 @@ const CodeEditor = createClass({
 		this.codeMirror.on('cursorActivity', this.handleCursorActivity);
 		this.updateSize();
 	},
-	
+
 	makeBold : function() {
 		const selection = this.codeMirror.getSelection();
 		this.codeMirror.replaceSelection(`**${selection}**`, 'around');
@@ -51,7 +51,7 @@ const CodeEditor = createClass({
 		const selection = this.codeMirror.getSelection();
 		this.codeMirror.replaceSelection(`*${selection}*`, 'around');
 	},
-	
+
 	componentWillReceiveProps : function(nextProps){
 		if(this.codeMirror && nextProps.value !== undefined && this.codeMirror.getValue() != nextProps.value) {
 			this.codeMirror.setValue(nextProps.value);
