@@ -3,11 +3,11 @@ The Homebrewery is a tool for making authentic looking [D&D content](http://dnd.
 
 
 ### issues, suggestions, bugs
-If you run into any issues using The Homebrewery, please submit an issue [here](/issues)
+If you run into any issues using The Homebrewery, please submit an issue [here](/issues).
 
 
 ### local dev
-Homebrewery is open source, so feel free to clone it, tinker with it, or run your own local version.
+The Homebrewery is open source, so feel free to clone it, tinker with it, or run your own local version.
 
 #### pre-reqs
 1. install [node](https://nodejs.org/en/)
@@ -20,14 +20,16 @@ Homebrewery is open source, so feel free to clone it, tinker with it, or run you
 1. `npm start`
 
 #### standalone PHB stylesheet
-If you just want the stylesheet that is generated to make pages look like they are from the Player's Handbook, you will find it [here](https://github.com/stolksdorf/homebrewery/blob/master/phb.standalone.css)
+If you just want the stylesheet that is generated to make pages look like they are from the Player's Handbook, you will find it [here](https://github.com/stolksdorf/homebrewery/blob/master/phb.standalone.css).
 
 If you are developing locally and would like to generate your own, follow the above steps and then run `npm run phb`.
 
 ### changelog
 
-You can check out the changelog [here](https://github.com/stolksdorf/homebrewery/blob/master/changelog.md)
+You can check out the changelog [here](https://github.com/stolksdorf/homebrewery/blob/master/changelog.md).
 
 ### license
 
-This project is licensed under [MIT](./license)
+This project is licensed under [MIT](./license). Which means you are free to use The Homebrewery is any way that you want, except for claiming that you made it yourself.
+
+If you wish to sell or in some way gain profit for what's created on this site, it's your responsibility to ensure you have the proper licenses/rights for any images or resources used.
