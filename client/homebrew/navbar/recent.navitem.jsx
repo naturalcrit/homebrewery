@@ -69,12 +69,12 @@ const BaseItem = createClass({
 	},
 
 	render : function(){
-		return <Nav.item icon='fa-clock-o' color='grey' className='recent'
+		return <Nav.block icon='fa-clock-o' color='grey' className='recent'
 			onMouseEnter={()=>this.handleDropdown(true)}
 			onMouseLeave={()=>this.handleDropdown(false)}>
 			{this.props.text}
 			{this.renderDropdown()}
-		</Nav.item>;
+		</Nav.block>;
 	},
 
 });
@@ -188,12 +188,12 @@ module.exports = {
 		},
 
 		render : function(){
-			return <Nav.item icon='fa-clock-o' color='grey' className='recent'
+			return <Nav.block icon='fa-clock-o' color='grey' className='recent'
 				onMouseEnter={()=>this.handleDropdown(true)}
 				onMouseLeave={()=>this.handleDropdown(false)}>
 				Recent brews
 				{this.renderDropdown()}
-			</Nav.item>;
+			</Nav.block>;
 		}
 
 	})

@@ -42,9 +42,9 @@ const RedditShare = createClass({
 
 
 	render : function(){
-		return <Nav.item icon='fa-reddit-alien' color='red' onClick={this.handleClick}>
+		return <Nav.block icon='fa-reddit-alien' color='red' onClick={this.handleClick}>
 			share on reddit
-		</Nav.item>;
+		</Nav.block>;
 	},
 
 });

@@ -25,9 +25,9 @@ const ErrorPage = createClass({
 		return <div className='errorPage page'>
 			<Navbar ver={this.props.ver}>
 				<Nav.section>
-					<Nav.item className='errorTitle'>
+					<Nav.block className='errorTitle'>
 						Crit Fail!
-					</Nav.item>
+					</Nav.block>
 				</Nav.section>
 
 				<Nav.section>

@@ -48,16 +48,16 @@ const SharePage = createClass({
 		return <div className='sharePage page'>
 			<Navbar>
 				<Nav.section>
-					<Nav.item className='brewTitle'>{this.props.brew.title}</Nav.item>
+					<Nav.block className='brewTitle'>{this.props.brew.title}</Nav.block>
 				</Nav.section>
 
 				<Nav.section>
 					<ReportIssue />
 					{/*<RecentlyViewed brew={this.props.brew} />*/}
 					<PrintLink shareId={this.props.brew.shareId} />
-					<Nav.item href={`/source/${this.props.brew.shareId}`} color='teal' icon='fa-code'>
+					<Nav.link href={`/source/${this.props.brew.shareId}`} color='teal' icon='fa-code'>
 						source
-					</Nav.item>
+					</Nav.link>
 					<Account />
 				</Nav.section>
 			</Navbar>
