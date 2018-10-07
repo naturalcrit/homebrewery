@@ -89,7 +89,45 @@ const Nav = {
 			</a>;
 		}
 	}),
-};
 
+	dropdown : createClass({
+		getDefaultProps : function() {
+			return {
+				color : '',
+				items : []
+			};
+		},
+		getInitialState : function() {
+			return {
+				showDropdown : false
+			};
+		},
+		handleDropdown : function(show){
+			this.setState({
+				showDropdown : show
+			});
+		},
+		renderDropdown : function(){
+			if(!this.state.showDropdown) return null;
+
+			const items = this.props.items.map((item)=>{
+				return <a href={item.href} className='item'>
+					<span className='title'>{item.text}</span>
+				</a>;
+			});
+
+			return <div className='dropdown'>{items}</div>;
+		},
+
+		render : function(){
+			return <Nav.block className='with-dropdown' color={this.props.color}
+				onMouseEnter={()=>this.handleDropdown(true)}
+				onMouseLeave={()=>this.handleDropdown(false)}>
+				{this.props.children}
+				{this.renderDropdown()}
+			</Nav.block>;
+		}
+	})
+};
 
 module.exports = Nav;
