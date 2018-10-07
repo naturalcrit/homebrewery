@@ -20,13 +20,13 @@ const EditTitle = createClass({
 		this.props.onChange(e.target.value);
 	},
 	render : function(){
-		return <Nav.item className='editTitle'>
+		return <Nav.block className='editTitle'>
 			<input placeholder='Brew Title' type='text' value={this.props.title} onChange={this.handleChange} />
 
 			<div className={cx('charCount', { 'max': this.props.title.length >= MAX_TITLE_LENGTH })}>
 				{this.props.title.length}/{MAX_TITLE_LENGTH}
 			</div>
-		</Nav.item>;
+		</Nav.block>;
 	},
 
 });

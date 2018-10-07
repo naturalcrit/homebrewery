@@ -159,7 +159,7 @@ const EditPage = createClass({
 				errMsg += `\`\`\`\n${JSON.stringify(this.state.errors.response.error, null, '  ')}\n\`\`\``;
 			} catch (e){}
 
-			return <Nav.item className='save error' icon='fa-warning'>
+			return <Nav.block className='save error' icon='fa-warning'>
 				Oops!
 				<div className='errorContainer'>
 					Looks like there was a problem saving. <br />
@@ -168,31 +168,31 @@ const EditPage = createClass({
 						here
 					</a>.
 				</div>
-			</Nav.item>;
+			</Nav.block>;
 		}
 
 		if(this.state.isSaving){
-			return <Nav.item className='save' icon='fa-spinner fa-spin'>saving...</Nav.item>;
+			return <Nav.block className='save' icon='fa-spinner fa-spin'>saving...</Nav.block>;
 		}
 		if(this.state.isPending && this.hasChanges()){
-			return <Nav.item className='save' onClick={this.save} color='blue' icon='fa-save'>Save Now</Nav.item>;
+			return <Nav.block className='save' onClick={this.save} color='blue' icon='fa-save'>Save Now</Nav.block>;
 		}
 		if(!this.state.isPending && !this.state.isSaving){
-			return <Nav.item className='save saved'>saved.</Nav.item>;
+			return <Nav.block className='save saved'>saved.</Nav.block>;
 		}
 	},
 	renderNavbar : function(){
 		return <Navbar>
 			<Nav.section>
-				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
+				<Nav.block className='brewTitle'>{this.state.brew.title}</Nav.block>
 			</Nav.section>
 			<Nav.section>
 				{this.renderSaveButton()}
 				{/*<RecentlyEdited brew={this.props.brew} />*/}
 				<ReportIssue />
-				<Nav.item newTab={true} href={`/share/${this.props.brew.shareId}`} color='teal' icon='fa-share-alt'>
+				<Nav.link newTab={true} href={`/share/${this.props.brew.shareId}`} color='teal' icon='fa-share-alt'>
 					Share
-				</Nav.item>
+				</Nav.link>
 				<PrintLink shareId={this.props.brew.shareId} />
 				<Account />
 			</Nav.section>

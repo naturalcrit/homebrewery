@@ -103,13 +103,13 @@ const NewPage = createClass({
 
 	renderSaveButton : function(){
 		if(this.state.isSaving){
-			return <Nav.item icon='fa-spinner fa-spin' className='saveButton'>
+			return <Nav.block icon='fa-spinner fa-spin' className='saveButton'>
 				save...
-			</Nav.item>;
+			</Nav.block>;
 		} else {
-			return <Nav.item icon='fa-save' className='saveButton' onClick={this.save}>
+			return <Nav.block icon='fa-save' className='saveButton' onClick={this.save}>
 				save
-			</Nav.item>;
+			</Nav.block>;
 		}
 	},
 
@@ -119,16 +119,16 @@ const NewPage = createClass({
 	},
 
 	renderLocalPrintButton : function(){
-		return <Nav.item color='purple' icon='fa-file-pdf-o' onClick={this.print}>
+		return <Nav.block color='purple' icon='fa-file-pdf-o' onClick={this.print}>
 			get PDF
-		</Nav.item>;
+		</Nav.block>;
 	},
 
 	renderNavbar : function(){
 		return <Navbar>
 
 			<Nav.section>
-				<Nav.item className='brewTitle'>{this.state.metadata.title}</Nav.item>
+				<Nav.block className='brewTitle'>{this.state.metadata.title}</Nav.block>
 			</Nav.section>
 
 			<Nav.section>

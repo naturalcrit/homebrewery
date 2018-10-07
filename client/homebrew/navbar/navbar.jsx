@@ -23,22 +23,22 @@ const Navbar = createClass({
 	/*
 	renderChromeWarning : function(){
 		if(!this.state.showNonChromeWarning) return;
-		return <Nav.item className='warning' icon='fa-exclamation-triangle'>
+		return <Nav.block className='warning' icon='fa-exclamation-triangle'>
 			Optimized for Chrome
 			<div className='dropdown'>
 				If you are experiencing rendering issues, use Chrome instead
 			</div>
-		</Nav.item>
+		</Nav.block>
 	},
 */
 	render : function(){
 		return <Nav.base>
 			<Nav.section>
 				<Nav.logo />
-				<Nav.item href='/' className='homebrewLogo'>
+				<Nav.link href='/' className='homebrewLogo'>
 					<div>The Homebrewery</div>
-				</Nav.item>
-				<Nav.item>{`v${this.state.ver}`}</Nav.item>
+				</Nav.link>
+				<Nav.link>{`v${this.state.ver}`}</Nav.link>
 
 				{/*this.renderChromeWarning()*/}
 			</Nav.section>

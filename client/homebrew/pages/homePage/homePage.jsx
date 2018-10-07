@@ -56,15 +56,15 @@ const HomePage = createClass({
 			<Nav.section>
 				<PatreonNavItem />
 				<IssueNavItem />
-				<Nav.item newTab={true} href='/changelog' color='purple' icon='fa-file-text-o'>
+				<Nav.link newTab={true} href='/changelog' color='purple' icon='fa-file-text-o'>
 					Changelog
-				</Nav.item>
+				</Nav.link>
 				<RecentNavItem.both />
 				<AccountNavItem />
 				{/*}
-				<Nav.item href='/new' color='green' icon='fa-external-link'>
+				<Nav.link href='/new' color='green' icon='fa-external-link'>
 					New Brew
-				</Nav.item>
+				</Nav.link>
 				*/}
 			</Nav.section>
 		</Navbar>;
