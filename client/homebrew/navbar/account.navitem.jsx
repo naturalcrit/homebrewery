@@ -1,18 +1,47 @@
 const React = require('react');
-const createClass = require('create-react-class');
 const Nav = require('naturalcrit/nav/nav.jsx');
 
 module.exports = function(props){
+	const items = [];
+	let logged = false;
+	let username = null;
+
 	if(global.account){
-		return <Nav.link href={`/user/${global.account.username}`} color='yellow' icon='fa-user'>
-			{global.account.username}
-		</Nav.link>;
+		logged = true;
+		username = global.account.username;
+	} else if(global.oldAccount) {
+		logged = true;
+		username = global.oldAccount.username;
 	}
+
+	if(logged) {
+		items.push({
+			href : `/account`,
+			text : 'My account'
+		});
+		items.push({
+			href : '/logout',
+			text : 'Log out'
+		});
+
+		return <Nav.dropdown items={items} color='yellow'>
+			<a href={`/user/${username}`}>{username}</a>
+			<Nav.icon icon='fa-user' />
+		</Nav.dropdown>;
+	}
+
 	let url = '';
 	if(typeof window !== 'undefined'){
 		url = window.location.href;
 	}
-	return <Nav.link href={`http://naturalcrit.com/login?redirect=${url}`} color='teal' icon='fa-sign-in'>
-		login
-	</Nav.link>;
+
+	items.push({
+		href : '/register',
+		text : 'Register'
+	});
+
+	return <Nav.dropdown items={items} color='teal'>
+		<a href={`/login?redirect=${url}`}>Login</a>
+		<Nav.icon icon='fa-sign-in' />
+	</Nav.dropdown>;
 };
