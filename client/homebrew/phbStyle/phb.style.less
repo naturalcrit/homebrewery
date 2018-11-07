@@ -415,7 +415,7 @@ body {
 	border              : initial;
 	border-style        : solid;
 	border-image-outset : 25px 17px;
-	border-image-repeat : stretch;
+	border-image-repeat : round;
 	border-image-slice  : 150 200 150 200;
 	border-image-source : @frameBorderImage;
 	border-image-width  : 47px;
@@ -423,9 +423,9 @@ body {
 		margin-bottom : 10px;
 	}
 }
-//************************************
-// *       DESCRIPTIVE TEXT BOX
-// ************************************/
+//*****************************
+// *       CLASS TABLE
+// *****************************/
 .phb .descriptive{
 	display             : block-inline;
 	margin-bottom       : 1em;
@@ -433,7 +433,7 @@ body {
 	font-family         : ScalySans;
 	border-style        : solid;
 	border-width        : 7px;
-	border-image        : @descriptiveBoxImage 12 stretch;
+	border-image        : @descriptiveBoxImage 12 round;
 	border-image-outset : 4px;
 	box-shadow          : 0px 0px 6px #faf7ea;
 	p{
