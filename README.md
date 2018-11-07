@@ -30,6 +30,6 @@ You can check out the changelog [here](https://github.com/stolksdorf/homebrewery
 
 ### license
 
-This project is licensed under [MIT](./license). Which means you are free to use The Homebrewery is any way that you want, except for claiming that you made it yourself.
+This project is licensed under [MIT](./license). Which means you are free to use The Homebrewery in any way that you want, except for claiming that you made it yourself.
 
 If you wish to sell or in some way gain profit for what's created on this site, it's your responsibility to ensure you have the proper licenses/rights for any images or resources used.
