@@ -133,18 +133,18 @@ const MetadataEditor = createClass({
 				<label>title</label>
 				<input type='text' className='value'
 					value={this.props.metadata.title}
-					onChange={(e)=>this.handleFieldChange('title',e)} />
+					onChange={(e)=>this.handleFieldChange('title', e)} />
 			</div>
 			<div className='field description'>
 				<label>description</label>
 				<textarea value={this.props.metadata.description} className='value'
-					onChange={(e)=>this.handleFieldChange('description',e)} />
+					onChange={(e)=>this.handleFieldChange('description', e)} />
 			</div>
 			{/*}
 			<div className='field tags'>
 				<label>tags</label>
 				<textarea value={this.props.metadata.tags}
-					onChange={(e)=>this.handleFieldChange('tags',e)} />
+					onChange={(e)=>this.handleFieldChange('tags', e)} />
 			</div>
 			*/}
 
