@@ -68,7 +68,7 @@ const MetadataEditor = createClass({
 				<input
 					type='checkbox'
 					checked={_.includes(this.props.metadata.systems, val)}
-					onChange={()=>this.handleSystem(val)} />
+					onChange={this.handleSystem.bind(null, val)} />
 				{val}
 			</label>;
 		});
@@ -133,18 +133,18 @@ const MetadataEditor = createClass({
 				<label>title</label>
 				<input type='text' className='value'
 					value={this.props.metadata.title}
-					onChange={()=>this.handleFieldChange('title')} />
+					onChange={this.handleFieldChange.bind(null, 'title')} />
 			</div>
 			<div className='field description'>
 				<label>description</label>
 				<textarea value={this.props.metadata.description} className='value'
-					onChange={()=>this.handleFieldChange('description')} />
+					onChange={this.handleFieldChange.bind(null, 'description')} />
 			</div>
 			{/*}
 			<div className='field tags'>
 				<label>tags</label>
 				<textarea value={this.props.metadata.tags}
-					onChange={()=>this.handleFieldChange('tags')} />
+					onChange={this.handleFieldChange.bind(null, 'tags')} />
 			</div>
 			*/}
 
