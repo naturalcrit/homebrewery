@@ -14,7 +14,7 @@
     "lint:dry": "eslint **/*.{js,jsx}",
     "circleci": "npm test && eslint **/*.{js,jsx} --max-warnings=0",
     "verify": "npm run lint && npm test",
-    "test": "pico-check",
+    "test": "set MONGODB_URI=mongodb://localhost/test_homebrewery && pico-check -v --timeout 5000",
     "test:dev": "pico-check -v -w",
     "phb": "node scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
@@ -66,6 +66,7 @@
   "devDependencies": {
     "eslint": "^4.19.1",
     "eslint-plugin-react": "^7.7.0",
-    "pico-check": "^1.0.3"
+    "pico-check": "^1.0.3",
+    "supertest": "^3.3.0"
   }
 }

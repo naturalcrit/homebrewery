@@ -40,8 +40,10 @@ const renderHelper = function(request, response) {
 };
 
 router.get('/account', (req, res)=>{
-	if(!req.isAuthenticated())
-		res.redirect('/login');
+	if(!req.isAuthenticated()) {
+		return res.redirect('/login');
+	}
+
 	return renderHelper(req, res);
 });
 
@@ -69,7 +71,7 @@ router.post('/register', (request, response, next)=>{
 			return response.redirect('/register');
 		}
 
-		response.redirect('/login');
+		return response.redirect('/login');
 	});
 });
 
