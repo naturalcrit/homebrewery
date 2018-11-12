@@ -122,12 +122,20 @@ body {
 		font-size           : 0.987cm;
 		-webkit-column-span : all;
 		-moz-column-span    : all;
+		&+p::first-line{
+			font-variant : small-caps;
+			font-size    : 0.3704cm;
+		}
 		&+p::first-letter{
-			float       : left;
-			font-family : Solberry;
-			font-size   : 10em;
-			color       : #222;
-			line-height : 0.8em;
+			float        : left;
+			font-family  : Solberry;
+			font-variant : normal;
+			font-size    : 9em;
+			color        : #222;
+			line-height  : 1.1em;
+			margin-top   : -0.08em;
+			margin-right : 0.08em;
+			margin-bottom: -0.15em;
 		}
 	}
 	h2{
@@ -203,12 +211,14 @@ body {
 	// *    MONSTER STAT BLOCK
 	// *****************************/
 	hr+blockquote{
-		position         : relative;
-		padding-top      : 15px;
-		background-color : @monsterStatBackground;
-		border-style     : solid;
-		border-width     : 10px;
-		border-image     : @monsterBorderImage 10;
+		position            : relative;
+		padding-top         : 15px;
+		background-color    : @monsterStatBackground;
+		background-image    : @backgroundImage;
+		background-position : center;
+		border-style        : solid;
+		border-width        : 10px;
+		border-image        : @monsterBorderImage 10;
 		h2{
 			margin-top    : -8px;
 			margin-bottom : 0px;
@@ -217,9 +227,12 @@ body {
 			}
 		}
 		h3{
-			font-family   : ScalySans;
-			font-weight   : 400;
-			border-bottom : 1px solid @headerText;
+			font-family    : ScalySans;
+			font-variant   : small-caps; 
+			font-size      : 19px;
+			font-weight    : bold;
+			letter-spacing : 1px;
+			border-bottom  : 1px solid @headerText;
 		}
 		hr+ul{
 			color : @headerText;
