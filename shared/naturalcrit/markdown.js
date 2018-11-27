@@ -13,6 +13,11 @@ renderer.html = function (html) {
 	return html;
 };
 
+const sanatizeScriptTags = (content)=>{
+	return content
+		.replace(/<script/g, '&lt;script')
+		.replace(/<\/script>/g, '&lt;/script&gt;');
+};
 
 const tagTypes = ['div', 'span', 'a'];
 const tagRegex = new RegExp(`(${
@@ -24,7 +29,10 @@ const tagRegex = new RegExp(`(${
 module.exports = {
 	marked : Markdown,
 	render : (rawBrewText)=>{
-		return Markdown(rawBrewText, { renderer: renderer });
+		return Markdown(
+			sanatizeScriptTags(rawBrewText),
+			{ renderer: renderer }
+		);
 	},
 
 	validate : (rawBrewText)=>{
