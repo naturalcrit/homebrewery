@@ -15,8 +15,8 @@ renderer.html = function (html) {
 
 const sanatizeScriptTags = (content)=>{
 	return content
-		.replace(/<script/g, '&lt;script')
-		.replace(/<\/script>/g, '&lt;/script&gt;');
+		.replace(/<script/ig, '&lt;script')
+		.replace(/<\/script>/ig, '&lt;/script&gt;');
 };
 
 const tagTypes = ['div', 'span', 'a'];
