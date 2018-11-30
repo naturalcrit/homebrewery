@@ -6,6 +6,7 @@ const app = express();
 app.use(express.static(`${__dirname}/build`));
 app.use(require('body-parser').json({ limit: '25mb' }));
 app.use(require('cookie-parser')());
+app.use(require('./server/forcessl.mw.js'));
 
 const config = require('nconf')
 	.argv()
@@ -23,7 +24,7 @@ mongoose.connection.on('error', ()=>{
 });
 
 
-//Account MIddleware
+//Account Middleware
 app.use((req, res, next)=>{
 	if(req.cookies && req.cookies.nc_session){
 		try {
