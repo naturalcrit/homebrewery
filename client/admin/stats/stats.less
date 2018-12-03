@@ -1,0 +1,28 @@
+
+.Stats{
+	position : relative;
+	.pending{
+		position         : absolute;
+		top              : 0px;
+		left             : 0px;
+		height           : 100%;
+		width            : 100%;
+		background-color : rgba(238,238,238, 0.5);
+	}
+	dl{
+		@maxItemWidth : 132px;
+		dt{
+			float      : left;
+			clear      : left;
+			width      : @maxItemWidth;
+			text-align : right;
+			&::after {
+				content: " : ";
+			}
+		}
+		dd{
+			margin  : 0 0 0 @maxItemWidth + 10px;
+			padding : 0 0 0.5em 0;
+		}
+	}
+}
