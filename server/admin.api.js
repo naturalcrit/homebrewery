@@ -17,8 +17,8 @@ process.env.ADMIN_KEY  = process.env.ADMIN_KEY  || 'admin_key';
 
 
 
-//Removes all empty brews that are older than 3 days and that are shorter than a tweet
-router.get('/api/invalid', mw.adminOnly, (req, res)=>{
+/* Removes all empty brews that are older than 3 days and that are shorter than a tweet */
+router.get('/admin/clear_invalid', mw.adminOnly, (req, res)=>{
 	const invalidBrewQuery = HomebrewModel.find({
 		'$where'  : 'this.text.length < 140',
 		createdAt : {
@@ -28,12 +28,12 @@ router.get('/api/invalid', mw.adminOnly, (req, res)=>{
 
 	if(req.query.do_it){
 		invalidBrewQuery.remove().exec((err, objs)=>{
-			refreshCount();
+			if(err) return res.status(500).send(err);
 			return res.send(200);
 		});
 	} else {
 		invalidBrewQuery.exec((err, objs)=>{
-			if(err) console.log(err);
+			if(err) return res.status(500).send(err);
 			return res.json({
 				count : objs.length
 			});
@@ -41,10 +41,11 @@ router.get('/api/invalid', mw.adminOnly, (req, res)=>{
 	}
 });
 
+/* Searches for matching edit or share id, also attempts to partial match */
 router.get('/admin/lookup/:id', mw.adminOnly, (req, res, next)=>{
-	//search for mathcing edit id
-	//search for matching share id
-	// search for partial match
+
+	console.log('lookup');
+
 
 	HomebrewModel.findOne({ $or : [
 		{ editId: { '$regex': req.params.id, '$options': 'i' } },
@@ -52,6 +53,17 @@ router.get('/admin/lookup/:id', mw.adminOnly, (req, res, next)=>{
 	] }).exec((err, brew)=>{
 		return res.json(brew);
 	});
+});
+
+router.get('/admin/stats', mw.adminOnly, (req, res)=>{
+	console.log('hittting stats');
+
+	HomebrewModel.count({}, (err, count)=>{
+		return res.json({
+			totalBrews : count
+		})
+	})
+
 });
 
 
@@ -68,7 +80,7 @@ router.get('/admin', function(req, res){
 	}
 	render('admin', templateFn, {
 		url       : req.originalUrl,
-		admin_key : process.env.ADMIN_KEY,
+		adminKey : process.env.ADMIN_KEY
 	})
 		.then((page)=>{
 			return res.send(page);
