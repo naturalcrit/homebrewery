@@ -15,31 +15,31 @@ const BrewCleanup = createClass({
 			count : 0,
 
 			pending : false,
-			primed : false,
-			err : null
+			primed  : false,
+			err     : null
 		};
 	},
 	prime(){
 		this.setState({ pending: true });
 
 		request.get('/admin/cleanup')
-			.then((res)=> this.setState({count : res.body.count, primed : true }))
-			.catch((err)=>this.setState({ error : err }))
-			.finally(()=>this.setState({ pending : false }))
+			.then((res)=>this.setState({ count: res.body.count, primed: true }))
+			.catch((err)=>this.setState({ error: err }))
+			.finally(()=>this.setState({ pending: false }));
 	},
 	cleanup(){
 		this.setState({ pending: true });
 
 		request.post('/admin/cleanup')
-			.then((res)=> this.setState({count : res.body.count }))
-			.catch((err)=>this.setState({ error : err }))
-			.finally(()=>this.setState({ pending : false, primed : false }))
+			.then((res)=>this.setState({ count: res.body.count }))
+			.catch((err)=>this.setState({ error: err }))
+			.finally(()=>this.setState({ pending: false, primed: false }));
 	},
 	renderPrimed(){
 		if(!this.state.primed) return;
 
 		if(!this.state.count){
-			return <div className='removeBox'>No Matching Brews found.</div>
+			return <div className='removeBox'>No Matching Brews found.</div>;
 		}
 		return <div className='removeBox'>
 			<button onClick={this.cleanup} className='remove'>
@@ -49,7 +49,7 @@ const BrewCleanup = createClass({
 				}
 			</button>
 			<span>Found {this.state.count} Brews that could be removed. </span>
-		</div>
+		</div>;
 	},
 	render(){
 		return <div className='BrewCleanup'>

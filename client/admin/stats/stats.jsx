@@ -16,16 +16,16 @@ const Stats = createClass({
 				totalBrews : 0
 			},
 			fetching : false
-		}
+		};
 	},
 	componentDidMount(){
 		this.fetchStats();
 	},
 	fetchStats(){
-		this.setState({ fetching : true})
+		this.setState({ fetching: true });
 		request.get('/admin/stats')
-			.then((res)=> this.setState({ stats : res.body }))
-			.finally(()=>this.setState({fetching : false}));
+			.then((res)=>this.setState({ stats: res.body }))
+			.finally(()=>this.setState({ fetching: false }));
 	},
 	render(){
 		return <div className='Stats'>

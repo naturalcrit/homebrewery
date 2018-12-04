@@ -27,7 +27,7 @@ const Admin = createClass({
 				<hr />
 				<BrewCleanup />
 			</div>
-		</div>
+		</div>;
 	}
 });
 
