@@ -1,16 +1,11 @@
-//const auth = require('basic-auth');
 const HomebrewModel = require('./homebrew.model.js').model;
 const router = require('express').Router();
 const Moment = require('moment');
 const render = require('vitreum/steps/render');
 const templateFn = require('../client/template.js');
 
-
 process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
 process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password3';
-//process.env.ADMIN_KEY  = process.env.ADMIN_KEY  || 'admin_key';
-
-//FIXME: remove this whole 'ADMIN_KEY' buulshit
 
 const mw = {
 	adminOnly : (req, res, next)=>{
@@ -35,7 +30,7 @@ const mw = {
 const junkBrewQuery = HomebrewModel.find({
 	'$where'  : 'this.text.length < 140',
 	createdAt : {
-		$lt : Moment().subtract(3, 'days').toDate()
+		$lt : Moment().subtract(30, 'days').toDate()
 	}
 });
 router.get('/admin/cleanup', mw.adminOnly, (req, res)=>{
@@ -62,7 +57,6 @@ router.get('/admin/lookup/:id', mw.adminOnly, (req, res, next)=>{
 	});
 });
 
-
 router.get('/admin/stats', mw.adminOnly, (req, res)=>{
 	HomebrewModel.count({}, (err, count)=>{
 		return res.json({
@@ -72,14 +66,8 @@ router.get('/admin/stats', mw.adminOnly, (req, res)=>{
 });
 
 router.get('/admin', mw.adminOnly, (req, res)=>{
-	// const credentials = auth(req);
-	// if(!credentials || credentials.name !== process.env.ADMIN_USER || credentials.pass !== process.env.ADMIN_PASS) {
-	// 	res.setHeader('WWW-Authenticate', 'Basic realm="example"');
-	// 	return res.status(401).send('Access denied');
-	// }
 	render('admin', templateFn, {
-		url       : req.originalUrl,
-		adminKey : process.env.ADMIN_KEY
+		url       : req.originalUrl
 	})
 	.then((page)=>res.send(page))
 	.catch((err)=>res.sendStatus(500))

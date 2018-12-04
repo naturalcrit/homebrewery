@@ -8,9 +8,7 @@ const Stats = require('./stats/stats.jsx');
 
 const Admin = createClass({
 	getDefaultProps : function() {
-		return {
-			adminKey : ''
-		};
+		return {};
 	},
 
 	render : function(){
@@ -23,11 +21,11 @@ const Admin = createClass({
 				</div>
 			</header>
 			<div className='container'>
-				<Stats adminKey={this.props.adminKey} />
+				<Stats />
 				<hr />
-				<BrewLookup adminKey={this.props.adminKey} />
+				<BrewLookup />
 				<hr />
-				<BrewCleanup adminKey={this.props.adminKey} />
+				<BrewCleanup />
 			</div>
 		</div>
 	}

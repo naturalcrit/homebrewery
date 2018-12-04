@@ -8,9 +8,7 @@ const Moment = require('moment');
 
 const BrewLookup = createClass({
 	getDefaultProps() {
-		return {
-			adminKey : '',
-		};
+		return {};
 	},
 	getInitialState() {
 		return {
@@ -27,7 +25,6 @@ const BrewLookup = createClass({
 		this.setState({ searching: true, error: null });
 
 		request.get(`/admin/lookup/${this.state.query}`)
-			//.query({ admin_key: this.props.adminKey })
 			.then((res)=> this.setState({foundBrew : res.body}))
 			.catch((err)=>this.setState({ error : err }))
 			.finally(()=>this.setState({ searching : false }))
