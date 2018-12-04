@@ -8,9 +8,7 @@ const request = require('superagent');
 const Stats = createClass({
 	displayName : 'Stats',
 	getDefaultProps(){
-		return {
-			adminKey : ''
-		};
+		return {};
 	},
 	getInitialState(){
 		return {
@@ -26,7 +24,6 @@ const Stats = createClass({
 	fetchStats(){
 		this.setState({ fetching : true})
 		request.get('/admin/stats')
-			.query({ admin_key : this.props.adminKey })
 			.then((res)=> this.setState({ stats : res.body }))
 			.finally(()=>this.setState({fetching : false}));
 	},
