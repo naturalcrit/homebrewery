@@ -1,6 +1,5 @@
 const React = require('react');
 const createClass = require('create-react-class');
-const _     = require('lodash');
 const cx    = require('classnames');
 
 const request = require('superagent');
@@ -21,7 +20,6 @@ const BrewLookup = createClass({
 			error      : null
 		};
 	},
-
 	handleChange(e){
 		this.setState({ query : e.target.value });
 	},
@@ -29,7 +27,7 @@ const BrewLookup = createClass({
 		this.setState({ searching: true, error: null });
 
 		request.get(`/admin/lookup/${this.state.query}`)
-			.query({ admin_key: this.props.adminKey })
+			//.query({ admin_key: this.props.adminKey })
 			.then((res)=> this.setState({foundBrew : res.body}))
 			.catch((err)=>this.setState({ error : err }))
 			.finally(()=>this.setState({ searching : false }))
@@ -72,7 +70,7 @@ const BrewLookup = createClass({
 			</button>
 
 			{this.state.error
-				&& <div className='error'>{this.state.error}</div>
+				&& <div className='error'>{this.state.error.toString()}</div>
 			}
 
 			{this.state.foundBrew
