@@ -36,23 +36,23 @@ const junkBrewQuery = HomebrewModel.find({
 router.get('/admin/cleanup', mw.adminOnly, (req, res)=>{
 	junkBrewQuery.exec((err, objs)=>{
 		if(err) return res.status(500).send(err);
-		return res.json({ count : objs.length });
+		return res.json({ count: objs.length });
 	});
 });
 /* Removes all empty brews that are older than 3 days and that are shorter than a tweet */
 router.post('/admin/cleanup', mw.adminOnly, (req, res)=>{
 	junkBrewQuery.remove().exec((err, objs)=>{
 		if(err) return res.status(500).send(err);
-		return res.json({ count : objs.length });
+		return res.json({ count: objs.length });
 	});
-})
+});
 
 /* Searches for matching edit or share id, also attempts to partial match */
 router.get('/admin/lookup/:id', mw.adminOnly, (req, res, next)=>{
 	HomebrewModel.findOne({ $or : [
-		{ editId:  { '$regex': req.params.id, '$options': 'i' } },
+		{ editId: { '$regex': req.params.id, '$options': 'i' } },
 		{ shareId: { '$regex': req.params.id, '$options': 'i' } },
-	]}).exec((err, brew)=>{
+	] }).exec((err, brew)=>{
 		return res.json(brew);
 	});
 });
@@ -61,16 +61,16 @@ router.get('/admin/stats', mw.adminOnly, (req, res)=>{
 	HomebrewModel.count({}, (err, count)=>{
 		return res.json({
 			totalBrews : count
-		})
-	})
+		});
+	});
 });
 
 router.get('/admin', mw.adminOnly, (req, res)=>{
 	render('admin', templateFn, {
-		url       : req.originalUrl
+		url : req.originalUrl
 	})
-	.then((page)=>res.send(page))
-	.catch((err)=>res.sendStatus(500))
+		.then((page)=>res.send(page))
+		.catch((err)=>res.sendStatus(500));
 });
 
 module.exports = router;

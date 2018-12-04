@@ -12,22 +12,22 @@ const BrewLookup = createClass({
 	},
 	getInitialState() {
 		return {
-			query      : '',
-			foundBrew  : null,
-			searching  : false,
-			error      : null
+			query     : '',
+			foundBrew : null,
+			searching : false,
+			error     : null
 		};
 	},
 	handleChange(e){
-		this.setState({ query : e.target.value });
+		this.setState({ query: e.target.value });
 	},
 	lookup(){
 		this.setState({ searching: true, error: null });
 
 		request.get(`/admin/lookup/${this.state.query}`)
-			.then((res)=> this.setState({foundBrew : res.body}))
-			.catch((err)=>this.setState({ error : err }))
-			.finally(()=>this.setState({ searching : false }))
+			.then((res)=>this.setState({ foundBrew: res.body }))
+			.catch((err)=>this.setState({ error: err }))
+			.finally(()=>this.setState({ searching: false }));
 	},
 
 	renderFoundBrew(){
@@ -61,7 +61,7 @@ const BrewLookup = createClass({
 			<input type='text' value={this.state.query} onChange={this.handleChange} placeholder='edit or share id' />
 			<button onClick={this.lookup}>
 				<i className={cx('fa', {
-					'fa-search' : !this.state.searching,
+					'fa-search'          : !this.state.searching,
 					'fa-spin fa-spinner' : this.state.searching,
 				})} />
 			</button>
