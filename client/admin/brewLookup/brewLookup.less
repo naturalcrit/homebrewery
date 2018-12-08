@@ -1,0 +1,30 @@
+
+.brewLookup{
+	input{
+		height        : 33px;
+		margin-bottom : 20px;
+		padding       : 0px 10px;
+		font-family   : monospace;
+	}
+	button{
+		vertical-align : middle;
+		height         : 37px;
+	}
+	dl{
+		@maxItemWidth : 132px;
+		dt{
+			float      : left;
+			clear      : left;
+			width      : @maxItemWidth;
+			text-align : right;
+			&::after {
+				content: " : ";
+			}
+		}
+		dd{
+			height      : 1em;
+			margin-left : @maxItemWidth + 6px;
+			padding     : 0 0 0.5em 0;
+		}
+	}
+}

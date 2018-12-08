@@ -1,5 +1,5 @@
 # The Homebrewery
-The Homebrewery is a tool for making authentic looking [D&D content](http://dnd.wizards.com/products/tabletop-games/rpg-products/rpg_playershandbook) using only [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet). Check it out [here](http://homebrewery.naturalcrit.com).
+The Homebrewery is a tool for making authentic looking [D&D content](https://dnd.wizards.com/products/tabletop-games/rpg-products/rpg_playershandbook) using only [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet). Check it out [here](https://homebrewery.naturalcrit.com).
 
 
 ### issues, suggestions, bugs

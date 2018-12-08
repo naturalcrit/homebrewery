@@ -1,7 +1,7 @@
 {
   "name": "homebrewery",
   "description": "Create authentic looking D&D homebrews using only markdown",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "repository": {
     "type": "git",
     "url": "git://github.com/stolksdorf/homebrewery.git"
@@ -38,7 +38,6 @@
   "dependencies": {
     "babel-preset-env": "^1.1.8",
     "babel-preset-react": "^6.24.1",
-    "basic-auth": "^2.0.0",
     "body-parser": "^1.14.2",
     "classnames": "^2.2.0",
     "codemirror": "^5.22.0",

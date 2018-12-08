@@ -1,51 +1,54 @@
-const _ = require('lodash');
-const auth = require('basic-auth');
 const HomebrewModel = require('./homebrew.model.js').model;
 const router = require('express').Router();
+const Moment = require('moment');
+const render = require('vitreum/steps/render');
+const templateFn = require('../client/template.js');
 
+process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
+process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password3';
 
 const mw = {
 	adminOnly : (req, res, next)=>{
-		if(req.query && req.query.admin_key == process.env.ADMIN_KEY) return next();
+		if(!req.get('authorization')){
+			return res
+				.set('WWW-Authenticate', 'Basic realm="Authorization Required"')
+				.status(401)
+				.send('Authorization Required');
+		}
+		const [username, password] = new Buffer(req.get('authorization').split(' ').pop(), 'base64')
+			.toString('ascii')
+			.split(':');
+		if(process.env.ADMIN_USER === username && process.env.ADMIN_PASS === password){
+			return next();
+		}
 		return res.status(401).send('Access denied');
 	}
 };
 
-process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
-process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password';
-process.env.ADMIN_KEY  = process.env.ADMIN_KEY  || 'admin_key';
 
-
-
-//Removes all empty brews that are older than 3 days and that are shorter than a tweet
-router.get('/api/invalid', mw.adminOnly, (req, res)=>{
-	const invalidBrewQuery = HomebrewModel.find({
-		'$where'  : 'this.text.length < 140',
-		createdAt : {
-			$lt : Moment().subtract(3, 'days').toDate()
-		}
-	});
-
-	if(req.query.do_it){
-		invalidBrewQuery.remove().exec((err, objs)=>{
-			refreshCount();
-			return res.send(200);
-		});
-	} else {
-		invalidBrewQuery.exec((err, objs)=>{
-			if(err) console.log(err);
-			return res.json({
-				count : objs.length
-			});
-		});
+/* Removes all empty brews that are older than 3 days and that are shorter than a tweet */
+const junkBrewQuery = HomebrewModel.find({
+	'$where'  : 'this.text.length < 140',
+	createdAt : {
+		$lt : Moment().subtract(30, 'days').toDate()
 	}
 });
+router.get('/admin/cleanup', mw.adminOnly, (req, res)=>{
+	junkBrewQuery.exec((err, objs)=>{
+		if(err) return res.status(500).send(err);
+		return res.json({ count: objs.length });
+	});
+});
+/* Removes all empty brews that are older than 3 days and that are shorter than a tweet */
+router.post('/admin/cleanup', mw.adminOnly, (req, res)=>{
+	junkBrewQuery.remove().exec((err, objs)=>{
+		if(err) return res.status(500).send(err);
+		return res.json({ count: objs.length });
+	});
+});
 
+/* Searches for matching edit or share id, also attempts to partial match */
 router.get('/admin/lookup/:id', mw.adminOnly, (req, res, next)=>{
-	//search for mathcing edit id
-	//search for matching share id
-	// search for partial match
-
 	HomebrewModel.findOne({ $or : [
 		{ editId: { '$regex': req.params.id, '$options': 'i' } },
 		{ shareId: { '$regex': req.params.id, '$options': 'i' } },
@@ -54,32 +57,20 @@ router.get('/admin/lookup/:id', mw.adminOnly, (req, res, next)=>{
 	});
 });
 
-
-
-//Admin route
-
-const render = require('vitreum/steps/render');
-const templateFn = require('../client/template.js');
-router.get('/admin', function(req, res){
-	const credentials = auth(req);
-	if(!credentials || credentials.name !== process.env.ADMIN_USER || credentials.pass !== process.env.ADMIN_PASS) {
-		res.setHeader('WWW-Authenticate', 'Basic realm="example"');
-		return res.status(401).send('Access denied');
-	}
-	render('admin', templateFn, {
-		url       : req.originalUrl,
-		admin_key : process.env.ADMIN_KEY,
-	})
-		.then((page)=>{
-			return res.send(page);
-		})
-		.catch((err)=>{
-			console.log(err);
-			return res.sendStatus(500);
+router.get('/admin/stats', mw.adminOnly, (req, res)=>{
+	HomebrewModel.count({}, (err, count)=>{
+		return res.json({
+			totalBrews : count
 		});
+	});
 });
 
-
-
+router.get('/admin', mw.adminOnly, (req, res)=>{
+	render('admin', templateFn, {
+		url : req.originalUrl
+	})
+		.then((page)=>res.send(page))
+		.catch((err)=>res.sendStatus(500));
+});
 
 module.exports = router;

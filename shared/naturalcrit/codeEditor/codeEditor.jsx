@@ -30,12 +30,26 @@ const CodeEditor = createClass({
 			value        : this.props.value,
 			lineNumbers  : true,
 			lineWrapping : this.props.wrap,
-			mode         : this.props.language
+			mode         : this.props.language,
+			extraKeys    : {
+				'Ctrl-B' : this.makeBold,
+				'Ctrl-I' : this.makeItalic
+			}
 		});
 
 		this.codeMirror.on('change', this.handleChange);
 		this.codeMirror.on('cursorActivity', this.handleCursorActivity);
 		this.updateSize();
+	},
+
+	makeBold : function() {
+		const selection = this.codeMirror.getSelection();
+		this.codeMirror.replaceSelection(`**${selection}**`, 'around');
+	},
+
+	makeItalic : function() {
+		const selection = this.codeMirror.getSelection();
+		this.codeMirror.replaceSelection(`*${selection}*`, 'around');
 	},
 
 	componentWillReceiveProps : function(nextProps){
