@@ -36,13 +36,13 @@ const ErrorBar = createClass({
 		const msg = [];
 		if(this.hasOpenError){
 			msg.push(<div>
-				An unmatched opening tag means there's an opened tag that isn't closed, you need to close a tag, like this {'</div>'}. Make sure to match types!
+				An unmatched opening tag means there's an opened tag that isn't closed. You need to close your tags, like this {'</div>'}. Make sure to match types!
 			</div>);
 		}
 
 		if(this.hasCloseError){
 			msg.push(<div>
-				An unmatched closing tag means you closed a tag without opening it. Either remove it, you check to where you think you opened it.
+				An unmatched closing tag means you closed a tag without opening it. Either remove it, or check to where you think you opened it.
 			</div>);
 		}
 
