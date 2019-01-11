@@ -8,6 +8,7 @@ const ErrorBar = require('./errorBar/errorBar.jsx');
 
 //TODO: move to the brew renderer
 const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
+const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 
 const PAGE_HEIGHT = 1056;
 const PPR_THRESHOLD = 50;
@@ -132,7 +133,10 @@ const BrewRenderer = createClass({
 					style={{ height: this.state.height }}>
 
 					<ErrorBar errors={this.props.errors} />
-					<RenderWarnings />
+					<div className='popups'>
+						<RenderWarnings />
+						<NotificationPopup />
+					</div>
 
 					<div className='pages' ref='pages'>
 						{this.renderPages()}

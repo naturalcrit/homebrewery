@@ -25,7 +25,7 @@ const RenderWarnings = createClass({
 			if(!isChrome){
 				return <li key='chrome'>
 					<em>Built for Chrome </em> <br />
-					Other browsers do not support
+					Other browsers do not support &nbsp;
 					<a target='_blank' href='https://developer.mozilla.org/en-US/docs/Web/CSS/column-span#Browser_compatibility'>
 						key features
 					</a> this site uses.

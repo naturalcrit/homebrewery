@@ -1,18 +1,26 @@
-.renderWarnings{
+.popups{
+	position         : fixed;
+	top				 : @navbarHeight;
+	right            : 15px;
+	z-index          : 10001;
+	width            : 350px;
+}
+
+.notificationPopup{
 	position		 : relative;
 	float			 : right;
-	display          : inline-block;
+	display          : inline-block;	
 	width            : 350px;
 	padding          : 20px;
 	padding-bottom   : 10px;
 	padding-left     : 85px;
-	margin-bottom    : 10px;
-	background-color : @yellow;
+	background-color : @blue;
 	color            : white;
 	a{
+		color       : @steel;
 		font-weight : 800;
 	}
-	i.ohno{
+	i.info{
 		position  : absolute;
 		top       : 24px;
 		left      : 24px;
