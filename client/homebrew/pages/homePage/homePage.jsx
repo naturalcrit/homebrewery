@@ -8,7 +8,7 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 const PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
 const IssueNavItem = require('../../navbar/issue.navitem.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx');
+const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
 
 
@@ -59,7 +59,7 @@ const HomePage = createClass({
 				<Nav.item newTab={true} href='/changelog' color='purple' icon='fa-file-text-o'>
 					Changelog
 				</Nav.item>
-				<RecentNavItem.both />
+				<RecentNavItem />
 				<AccountNavItem />
 				{/*}
 				<Nav.item href='/new' color='green' icon='fa-external-link'>
