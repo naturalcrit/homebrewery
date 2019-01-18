@@ -6,7 +6,7 @@ const cx    = require('classnames');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 
-const RecentNavItem = require('../../navbar/recent.navitem.jsx');
+const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account = require('../../navbar/account.navitem.jsx');
 const BrewItem = require('./brewItem/brewItem.jsx');
 
@@ -57,7 +57,7 @@ const UserPage = createClass({
 		return <div className='userPage page'>
 			<Navbar>
 				<Nav.section>
-					<RecentNavItem.both />
+					<RecentNavItem />
 					<Account />
 				</Nav.section>
 			</Navbar>
