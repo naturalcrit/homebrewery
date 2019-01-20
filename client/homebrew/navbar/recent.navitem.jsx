@@ -10,7 +10,7 @@ const VIEW_KEY = 'homebrewery-recently-viewed';
 
 
 const RecentItems = createClass({
-	
+
 	getDefaultProps : function() {
 		return {
 			storageKey : '',
@@ -18,7 +18,7 @@ const RecentItems = createClass({
 			showView   : false
 		};
 	},
-	
+
 	getInitialState : function() {
 		return {
 			showDropdown : false,
@@ -32,8 +32,8 @@ const RecentItems = createClass({
 	//== Load recent items list ==//
 		let edited = JSON.parse(localStorage.getItem(EDIT_KEY) || '[]');
 		let viewed = JSON.parse(localStorage.getItem(VIEW_KEY) || '[]');
-	
-	//== Add current brew to appropriate recent items list (depending on storageKey) ==//
+
+		//== Add current brew to appropriate recent items list (depending on storageKey) ==//
 		if(this.props.storageKey == 'edit'){
 			edited = _.filter(edited, (brew)=>{
 				return brew.id !== this.props.brew.editId;
@@ -56,26 +56,26 @@ const RecentItems = createClass({
 				ts    : Date.now()
 			});
 		}
-			
-	//== Store the updated lists (up to 8 items each) ==//
+
+		//== Store the updated lists (up to 8 items each) ==//
 		edited = _.slice(edited, 0, 8);
 		viewed = _.slice(viewed, 0, 8);
-	
+
 		localStorage.setItem(EDIT_KEY, JSON.stringify(edited));
 		localStorage.setItem(VIEW_KEY, JSON.stringify(viewed));
-		
+
 		this.setState({
 			edit : edited,
 			view : viewed
 		});
 	},
-	
+
 	handleDropdown : function(show){
 		this.setState({
 			showDropdown : show
 		});
 	},
-	
+
 	renderDropdown : function(){
 		if(!this.state.showDropdown) return null;
 
@@ -99,7 +99,7 @@ const RecentItems = createClass({
 				makeItems(this.state.view) : null }
 		</div>;
 	},
-	
+
 	render : function(){
 		return <Nav.item icon='fa-clock-o' color='grey' className='recent'
 			onMouseEnter={()=>this.handleDropdown(true)}
@@ -108,36 +108,36 @@ const RecentItems = createClass({
 			{this.renderDropdown()}
 		</Nav.item>;
 	}
-	
+
 });
 
 module.exports = {
 
-	edited:   (props) => {
-				return <RecentItems
-					brew={props.brew}
-					storageKey={props.storageKey}
-					text='recently edited'
-					showEdit={true}
-				/>;
+	edited : (props)=>{
+		return <RecentItems
+			brew={props.brew}
+			storageKey={props.storageKey}
+			text='recently edited'
+			showEdit={true}
+		/>;
 	},
-	
-	viewed:   (props) => {
-				return <RecentItems
-					brew={props.brew}
-					storageKey={props.storageKey}
-					text='recently viewed'
-					showView={true}
-				/>;
+
+	viewed : (props)=>{
+		return <RecentItems
+			brew={props.brew}
+			storageKey={props.storageKey}
+			text='recently viewed'
+			showView={true}
+		/>;
 	},
-	
-	both:   (props) => {
-				return <RecentItems
-					brew={props.brew}
-					storageKey={props.storageKey}
-					text='recent brews'
-					showEdit={true}
-					showView={true}
-				/>;
+
+	both : (props)=>{
+		return <RecentItems
+			brew={props.brew}
+			storageKey={props.storageKey}
+			text='recent brews'
+			showEdit={true}
+			showView={true}
+		/>;
 	}
 };

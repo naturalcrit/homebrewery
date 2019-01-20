@@ -186,7 +186,7 @@ const EditPage = createClass({
 			<Nav.section>
 				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
 			</Nav.section>
-			
+
 			<Nav.section>
 				{this.renderSaveButton()}
 				<ReportIssue />
