@@ -7,7 +7,7 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 const PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
 const IssueNavItem = require('../../navbar/issue.navitem.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
+const RecentNavItem = require('../../navbar/recent.navitem.jsx');
 
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
@@ -33,7 +33,7 @@ const ErrorPage = createClass({
 				<Nav.section>
 					<PatreonNavItem />
 					<IssueNavItem />
-					<RecentNavItem />
+					<RecentNavItem.both errorId={this.props.errorId} />
 				</Nav.section>
 			</Navbar>
 
