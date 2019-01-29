@@ -1,6 +1,6 @@
 # changelog
 
-### Saturday, 22/04/217 - v2.7.4
+### Saturday, 22/04/2017 - v2.7.4
 - Give ability to hide the render warning notification
 
 
