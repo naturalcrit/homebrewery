@@ -1,8 +1,27 @@
 # changelog
 
+### Monday, 26/11/2018 - v2.8.1
+- Fixed some SSL issues with images in the example page so they appear now
+- Fixed duplicate scrollbars in Edit Page
+- Fixed issue of being unable to change brew metadata
+- Sanitized script tags-javascript typed into the editor was crashing brews
+
+### Sunday, 08/04/2018 - v2.8.0
+- Re-enabled box shadows for PDF output
+- Added a "contributing guide" for the GitHub
+- "Report Issue" navbar button now links to the subreddit
+- Refactored background code
+
+### Sunday, 04/06/2017 - v2.7.5
+- Fixed the class feature snippet duplicating the entire brew
+- Fixed headers in tables being duplicated
+- Fixed border-image being scrambled on class tables and descriptive text boxes
+- Fixed pages going out of sync in large brews, causing them to be rendered off-page
+- Improved performance in the preview window when scrolling through large brews
+- Text in the "view source" page now wraps
+
 ### Saturday, 22/04/2017 - v2.7.4
 - Give ability to hide the render warning notification
-
 
 ### Friday, 03/03/2017 - v2.7.3
 - Increasing the range on the Partial Page Rendering for a quick-fix for it getting out of sync on long brews.
