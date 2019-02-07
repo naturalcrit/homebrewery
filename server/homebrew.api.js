@@ -68,13 +68,13 @@ router.get('/api/remove/:id', (req, res)=>{
 	HomebrewModel.find({ editId: req.params.id }, (err, objs)=>{
 		if(!objs.length || err) return res.status(404).send('Can not find homebrew with that id');
 		const brew = objs[0];
-		
+
 		// Remove current user as author
 		if(req.account){
 			brew.authors = _.pull(brew.authors, req.account.username);
 			brew.markModified('authors');
 		}
-		
+
 		// Delete brew if there are no authors left
 		if(!brew.authors.length)
 			brew.remove((err)=>{
