@@ -18,9 +18,15 @@ const BrewItem = createClass({
 	},
 
 	deleteBrew : function(){
-		if(!confirm('are you sure you want to delete this brew?')) return;
-		if(!confirm('are you REALLY sure? You will not be able to recover it')) return;
-
+		if(this.props.brew.authors.length <= 1){
+			if(!confirm('Are you sure you want to delete this brew? Because you are the only owner of this brew, the document will be deleted permanently.')) return;
+			if(!confirm('Are you REALLY sure? You will not be able to recover the document.')) return;
+		}
+		else{
+			if(!confirm('Are you sure you want to remove this brew from your collection? This will remove you as an editor, but other owners will still be able to access the document.')) return;
+			if(!confirm('Are you REALLY sure? You will lose editor access to this document.')) return;
+		}
+		
 		request.get(`/api/remove/${this.props.brew.editId}`)
 			.send()
 			.end(function(err, res){
