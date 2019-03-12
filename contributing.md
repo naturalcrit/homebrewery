@@ -16,10 +16,10 @@ Some issues are created with missing information, not reproducible, or plain inv
 
 You can use issue labels to discover issues you could help out with:
 
-* [`blocked` issues](https://github.com/stolksdorf/homebrewery/labels/blocked) need help getting unstuck
-* [`bug` issues](https://github.com/stolksdorf/homebrewery/labels/bug) are known bugs we'd like to fix
-* [`feature` issues](https://github.com/stolksdorf/homebrewery/labels/feature) are features we're open to including
-* [`help wanted`](https://github.com/stolksdorf/homebrewery/labels/help%20wanted) labels are especially useful.
+* [`blocked` issues](https://github.com/naturalcrit/homebrewery/labels/blocked) need help getting unstuck
+* [`bug` issues](https://github.com/naturalcrit/homebrewery/labels/bug) are known bugs we'd like to fix
+* [`feature` issues](https://github.com/naturalcrit/homebrewery/labels/feature) are features we're open to including
+* [`help wanted`](https://github.com/naturalcrit/homebrewery/labels/help%20wanted) labels are especially useful.
 
 If you're updating dependencies, please make sure you use npm@5.6.0 and commit the updated `package-lock.json` file.
 
