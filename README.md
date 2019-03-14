@@ -28,7 +28,7 @@ Fourth, you will need to install the program and run it using the two commands:
 You should now be able to go to [http://localhost:8000](http://localhost:8000) in your browser and use the Homebrewery offline.
 
 ### Standalone PHB Stylesheet
-If you just want the stylesheet that is generated to make pages look like they are from the Player's Handbook, you will find it in the [phb.standalone.css](./blob/master/phb.standalone.css) file.
+If you just want the stylesheet that is generated to make pages look like they are from the Player's Handbook, you will find it in the [phb.standalone.css](./phb.standalone.css) file.
 
 If you are developing locally and would like to generate your own, follow the above steps and then run `npm run phb`.
 
@@ -37,7 +37,7 @@ If you run into any issues using The Homebrewery or have suggestions for improve
 
 ## Changelog
 
-You can check out the [changelog](./blob/master/changelog.md).
+You can check out the [changelog](./changelog.md).
 
 ## License
 
