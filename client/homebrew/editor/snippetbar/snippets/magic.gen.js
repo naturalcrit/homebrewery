@@ -47,6 +47,12 @@ const spellNames = [
 	'Ultimate Rite of the Confetti Angel',
 	'Ultimate Ritual of Mouthwash',
 ];
+const itemNames = [
+	'Doorknob of Niceness',
+	'Paper Armor of Folding',
+	'Mixtape of Sadness',
+	'Staff of Endless Confetti',
+];
 
 module.exports = {
 
@@ -86,6 +92,15 @@ module.exports = {
 			'The effect look like a regular flame, but it creates no heat and doesn\'t use oxygen. ',
 			'A *continual flame* can be covered or hidden but not smothered or quenched.',
 			'\n\n\n'
+		].join('\n');
+	},
+	
+	item: function() {
+		return [
+		    `#### ${_.sample(itemNames)}`,
+            `*${_.sample(['Wondrous item', 'Armor', 'Weapon'])}, ${_.sample(['Common', 'Uncommon', 'Rare', 'Very Rare', 'Legendary', 'Artifact'])} (requires attunement)*`,
+            `<div style='margin-top:-2px'></div>`,
+            `This knob is pretty nice. It opens the door you put it on.`
 		].join('\n');
 	}
 };

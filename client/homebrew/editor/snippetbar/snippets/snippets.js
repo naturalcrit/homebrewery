@@ -6,7 +6,6 @@ const MonsterBlockGen = require('./monsterblock.gen.js');
 const ClassFeatureGen = require('./classfeature.gen.js');
 const CoverPageGen = require('./coverpage.gen.js');
 const TableOfContentsGen = require('./tableOfContents.gen.js');
-const MagicItemGen = require('./magicitem.gen.js');
 
 
 module.exports = [
@@ -149,7 +148,7 @@ module.exports = [
 			{
 				name : 'Magic Item',
 				icon : 'fa-key',
-				gen  : MagicItemGen,
+				gen  : MagicGen.item,
 			},
 		]
 	},
