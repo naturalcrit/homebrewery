@@ -349,7 +349,10 @@ body {
 	//Text indent right after table
 	table+p{
 		text-indent : 1em;
-        padding     : 0em;
+	}
+	//Prevent offset split tables
+	.split-table p{
+	    padding: 0em;
 	}
 	// Nested lists
 	ul ul,ol ol,ul ol,ol ul{
