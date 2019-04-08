@@ -6,7 +6,6 @@ const cx = require('classnames');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 const PrintLink = require('../../navbar/print.navitem.jsx');
-const ReportIssue = require('../../navbar/issue.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account = require('../../navbar/account.navitem.jsx');
 
@@ -52,7 +51,6 @@ const SharePage = createClass({
 				</Nav.section>
 
 				<Nav.section>
-					<ReportIssue />
 					<PrintLink shareId={this.props.brew.shareId} />
 					<Nav.item href={`/source/${this.props.brew.shareId}`} color='teal' icon='fa-code'>
 						source
