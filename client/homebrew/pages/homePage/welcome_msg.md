@@ -43,10 +43,10 @@ With the next major release of Homebrewery, v3.0.0, this tool *will no longer su
 What's new in the latest update? Check out the full changelog [here](/changelog)
 
 ### Bugs, Issues, Suggestions?
-Have an idea of how to make The Homebrewery better? Or did you find something that wasn't quite right? Head [here](https://github.com/stolksdorf/homebrewery/issues/new) and let me know!.
+Have an idea of how to make The Homebrewery better? Or did you find something that wasn't quite right? Head [here](https://www.reddit.com/r/homebrewery/submit?selftext=true&title=%5BIssue%5D%20Describe%20Your%20Issue%20Here) and let me know!.
 
 ### Legal Junk
-The Homebrewery is licensed using the [MIT License](https://github.com/stolksdorf/homebrewery/blob/master/license). Which means you are free to use The Homebrewery is any way that you want, except for claiming that you made it yourself.
+The Homebrewery is licensed using the [MIT License](https://github.com/naturalcrit/homebrewery/blob/master/license). Which means you are free to use The Homebrewery is any way that you want, except for claiming that you made it yourself.
 
 If you wish to sell or in some way gain profit for what's created on this site, it's your responsibility to ensure you have the proper licenses/rights for any images or resources used.
 
