@@ -32,7 +32,7 @@ const junkBrewQuery = HomebrewModel.find({
 	createdAt : {
 		$lt : Moment().subtract(30, 'days').toDate()
 	}
-}).maxTimeMS(60000);
+});
 
 router.get('/admin/cleanup', mw.adminOnly, (req, res)=>{
 	junkBrewQuery.exec((err, objs)=>{
