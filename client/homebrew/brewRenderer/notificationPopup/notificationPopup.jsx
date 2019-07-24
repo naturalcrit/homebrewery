@@ -4,7 +4,7 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');	//Unused variable
 
-const DISMISS_KEY = 'dismiss_notification2-7-19';
+const DISMISS_KEY = 'dismiss_notification7-24-19';
 
 const NotificationPopup = createClass({
 	getInitialState : function() {
@@ -22,9 +22,9 @@ const NotificationPopup = createClass({
 	notifications : {
 		psa : function(){
 			return <li key='psa'>
-				<em>Known bug: Missing letters in PDF </em> <br />
-				With the latest Chrome update, certain characters appear as blank spaces when generating a PDF.  &nbsp;
-				<a target='_blank' href='https://www.reddit.com/r/homebrewery/comments/ao5yt2/psa_missing_letters_on_pdf/'>
+				<em>Known bug: Grey Shadow Boxes </em> <br />
+				The shadows around certain brew elements such as notes and statblocks might appear as a solid grey box when generating a PDF.  &nbsp;
+				<a target='_blank' href='https://old.reddit.com/r/homebrewery/comments/ch3v0d/psa_grey_boxesshadows_around_notes_stat_blocks_etc/'>
 					See this Reddit post
 				</a> for updates and possible workarounds.
 			</li>;
