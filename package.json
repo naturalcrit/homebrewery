@@ -44,7 +44,7 @@
     "cookie-parser": "^1.4.3",
     "create-react-class": "^15.6.3",
     "express": "^4.13.3",
-    "jwt-simple": "^0.5.1",
+    "jwt-simple": "^0.5.3",
     "lodash": "^4.17.13",
     "marked": "^0.3.5",
     "moment": "^2.11.0",
