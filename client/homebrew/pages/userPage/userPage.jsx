@@ -42,17 +42,17 @@ const UserPage = createClass({
 		});
 	},
 
-	renderPrivateBrews : function(privateBrews){
-		if(!privateBrews || !privateBrews.length) return;
-
-		return [
-			<h1>{this.props.username}'s unpublished brews</h1>,
-			this.renderBrews(privateBrews)
-		];
-	},
-
 	render : function(){
 		const brews = this.getSortedBrews();
+		const publishedBrews = 
+					<h1>{this.props.username}&rsquo;s brews</h1>
+					{this.renderBrews(brews.published)};
+		let privateBrews = '';
+		if(privateBrews && privateBrews.length) {
+			privateBrews = 
+					<h1>{this.props.username}&rsquo;s unpublished brews</h1>
+					{this.renderBrews(brews.private)};
+		}
 
 		return <div className='userPage page'>
 			<Navbar>
@@ -64,9 +64,12 @@ const UserPage = createClass({
 
 			<div className='content'>
 				<div className='phb'>
-					<h1>{this.props.username}'s brews</h1>
-					{this.renderBrews(brews.published)}
-					{this.renderPrivateBrews(brews.private)}
+					<div className='published'>
+						{publishedBrews}
+					</div>
+					<div className='private'>
+						{privateBrews}
+					</div>
 				</div>
 			</div>
 		</div>;
