@@ -11,7 +11,7 @@ const router = require('express').Router();
 const getGoodBrewTitle = (text)=>{
 	const titlePos = text.indexOf('# ');
 	if(titlePos !== -1){
-		const ending = text.indexOf('\n', titlePos);
+		const ending = (text+'\n').indexOf('\n', titlePos);
 		return text.substring(titlePos + 2, ending);
 	} else {
 		return _.find(text.split('\n'), (line)=>{
