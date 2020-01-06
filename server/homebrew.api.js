@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const HomebrewModel = require('./homebrew.model.js').model;
 const router = require('express').Router();
+const zlib = require('zlib');
 
 // const getTopBrews = (cb)=>{
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
@@ -47,6 +48,9 @@ router.put('/api/update/:id', (req, res)=>{
 	HomebrewModel.get({ editId: req.params.id })
 		.then((brew)=>{
 			brew = _.merge(brew, req.body);
+			brew.textBin = zlib.deflateSync(req.body.text);		// Compress brew text to binary before saving
+			brew.text = '';										// Clear out the non-binary text field so its not saved twice
+			
 			brew.updatedAt = new Date();
 			if(req.account) brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
 

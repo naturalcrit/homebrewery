@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 const shortid = require('shortid');
 const _ = require('lodash');
+const zlib = require('zlib');
 
 const HomebrewSchema = mongoose.Schema({
 	shareId : { type: String, default: shortid.generate, index: { unique: true } },
 	editId  : { type: String, default: shortid.generate, index: { unique: true } },
 	title   : { type: String, default: '' },
 	text    : { type: String, default: '' },
+	textBin : { type: Buffer }, 
 
 	description : { type: String, default: '' },
 	tags        : { type: String, default: '' },
@@ -51,6 +53,10 @@ HomebrewSchema.statics.get = function(query){
 	return new Promise((resolve, reject)=>{
 		Homebrew.find(query, (err, brews)=>{
 			if(err || !brews.length) return reject('Can not find brew');
+			if(!_.isUndefined(brews[0].textBin)) {			// Uncompress zipped text field
+				unzipped = zlib.unzipSync(brews[0].textBin);
+				brews[0].text = unzipped.toString();
+			}
 			return resolve(brews[0]);
 		});
 	});
