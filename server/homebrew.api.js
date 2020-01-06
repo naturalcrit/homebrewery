@@ -50,8 +50,8 @@ router.put('/api/update/:id', (req, res)=>{
 			brew = _.merge(brew, req.body);
 			brew.textBin = zlib.deflateSync(req.body.text);		// Compress brew text to binary before saving
 			brew.text = '';										// Clear out the non-binary text field so its not saved twice
-			
 			brew.updatedAt = new Date();
+
 			if(req.account) brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
 
 			brew.markModified('authors');

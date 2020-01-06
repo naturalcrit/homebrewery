@@ -8,7 +8,7 @@ const HomebrewSchema = mongoose.Schema({
 	editId  : { type: String, default: shortid.generate, index: { unique: true } },
 	title   : { type: String, default: '' },
 	text    : { type: String, default: '' },
-	textBin : { type: Buffer }, 
+	textBin : { type: Buffer },
 
 	description : { type: String, default: '' },
 	tags        : { type: String, default: '' },
