@@ -54,7 +54,7 @@ HomebrewSchema.statics.get = function(query){
 		Homebrew.find(query, (err, brews)=>{
 			if(err || !brews.length) return reject('Can not find brew');
 			if(!_.isUndefined(brews[0].textBin)) {			// Uncompress zipped text field
-				unzipped = zlib.unzipSync(brews[0].textBin);
+				unzipped = zlib.inflateRawSync(brews[0].textBin);
 				brews[0].text = unzipped.toString();
 			}
 			return resolve(brews[0]);
