@@ -32,9 +32,14 @@ router.post('/api', (req, res)=>{
 		req.body,
 		{ authors: authors }
 	));
+
 	if(!newHomebrew.title){
 		newHomebrew.title = getGoodBrewTitle(newHomebrew.text);
 	}
+
+	newHomebrew.textBin = zlib.deflateRawSync(newHomebrew.text);	// Compress brew text to binary before saving
+	newHomebrew.text = '';											// Clear out the non-binary text field so its not saved twice
+
 	newHomebrew.save((err, obj)=>{
 		if(err){
 			console.error(err, err.toString(), err.stack);
@@ -48,7 +53,7 @@ router.put('/api/update/:id', (req, res)=>{
 	HomebrewModel.get({ editId: req.params.id })
 		.then((brew)=>{
 			brew = _.merge(brew, req.body);
-			brew.textBin = zlib.deflateRawSync(req.body.text);		// Compress brew text to binary before saving
+			brew.textBin = zlib.deflateRawSync(req.body.text);	// Compress brew text to binary before saving
 			brew.text = '';										// Clear out the non-binary text field so its not saved twice
 			brew.updatedAt = new Date();
 
