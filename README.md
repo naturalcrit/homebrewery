@@ -2,7 +2,7 @@
 The Homebrewery is a tool for making authentic looking [D&D content](https://dnd.wizards.com/products/tabletop-games/rpg-products/rpg_playershandbook) using [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet). It is distributed under the terms of the [MIT License](./license).
 
 ## Quick Start
-The easiest way to get started using the Homebrewery is to use it [on our website](https://homebrewery.naturalcrit.com). If you have larger brews or want to make changes to the code follow the installation instructions below.
+The easiest way to get started using the Homebrewery is to use it [on our website](https://homebrewery.naturalcrit.com). The code is open source, so feel free to clone it, tinker with it. If you want to make changes to the code, you can run your own local version for testing by following the installation instructions below.
 
 ### Installation
 First, install two programs that the Homebrewery requires to run.
@@ -15,10 +15,12 @@ Second, download a copy of the repository. If you have git you can do so with
 git clone https://github.com/naturalcrit/homebrewery.git
 ```
 
-Third, you will need to modify line 9 of the file server.js so that it looks like:
-```
-//app.use(require('./server/forcessl.mw.js'));
-```
+Third, you will need to add the environment variable `NODE_ENV = local` to allow the project to run locally.
+
+You can set this temporarily in your shell of choice:
+* Windows Powershell: `$env:NODE_ENV="local"`
+* Windows CMD: `set NODE_ENV=production`
+* Linux / OSX: `export NODE_ENV=production`
 
 Fourth, you will need to install the program and run it using the two commands:
 
