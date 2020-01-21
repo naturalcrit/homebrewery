@@ -19,8 +19,8 @@ Third, you will need to add the environment variable `NODE_ENV = local` to allow
 
 You can set this temporarily in your shell of choice:
 * Windows Powershell: `$env:NODE_ENV="local"`
-* Windows CMD: `set NODE_ENV=production`
-* Linux / OSX: `export NODE_ENV=production`
+* Windows CMD: `set NODE_ENV=local`
+* Linux / OSX: `export NODE_ENV=local`
 
 Fourth, you will need to install the program and run it using the two commands:
 
