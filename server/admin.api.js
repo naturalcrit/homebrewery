@@ -68,9 +68,7 @@ router.get('/admin/lookup/:id', mw.adminOnly, (req, res, next)=>{
 router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{
 	uncompressedBrewQuery.exec((err, objs)=>{
 		if(err) return res.status(500).send(err);
-		console.log(objs);
 		objs = objs.map((obj)=>{return obj._id});
-		console.log(objs);
 		return res.json({ count: objs.length, ids: objs });
 	});
 });
