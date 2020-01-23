@@ -3,6 +3,7 @@ const router = require('express').Router();
 const Moment = require('moment');
 const render = require('vitreum/steps/render');
 const templateFn = require('../client/template.js');
+const zlib = require('zlib');
 
 process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
 process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password3';
@@ -26,13 +27,18 @@ const mw = {
 };
 
 
-/* Removes all empty brews that are older than 3 days and that are shorter than a tweet */
+/* Search for brews that are older than 3 days and that are shorter than a tweet */
 const junkBrewQuery = HomebrewModel.find({
 	'$where'  : 'this.text.length < 140',
 	createdAt : {
 		$lt : Moment().subtract(30, 'days').toDate()
 	}
 }).limit(100).maxTime(60000);
+
+/* Search for brews that aren't compressed (missing the compressed text field) */
+const uncompressedBrewQuery = HomebrewModel.find({
+	'textBin' : null
+}).limit(50).distinct('_id');
 
 router.get('/admin/cleanup', mw.adminOnly, (req, res)=>{
 	junkBrewQuery.exec((err, objs)=>{
@@ -56,6 +62,32 @@ router.get('/admin/lookup/:id', mw.adminOnly, (req, res, next)=>{
 	] }).exec((err, brew)=>{
 		return res.json(brew);
 	});
+});
+
+/* Find 50 brews that aren't compressed yet */
+router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{
+	uncompressedBrewQuery.exec((err, objs)=>{
+		if(err) return res.status(500).send(err);
+		return res.json({ count: objs.length, ids: objs});
+	});
+});
+
+/* Compresses the "text" field of a brew to binary */
+router.put('/admin/compress/:id', (req, res)=>{
+	HomebrewModel.get({ _id: req.params.id })
+		.then((brew)=>{
+			brew.textBin = zlib.deflateRawSync(brew.text);	// Compress brew text to binary before saving
+			brew.text = undefined;							// Delete the non-binary text field since it's not needed anymore
+			
+			brew.save((err, obj)=>{
+				if(err) throw err;
+				return res.status(200).send(obj);
+			});
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(500).send('Error while saving');
+		});
 });
 
 router.get('/admin/stats', mw.adminOnly, (req, res)=>{
