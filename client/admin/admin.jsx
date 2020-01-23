@@ -4,7 +4,6 @@ const createClass = require('create-react-class');
 
 const BrewCleanup = require('./brewCleanup/brewCleanup.jsx');
 const BrewLookup = require('./brewLookup/brewLookup.jsx');
-const BrewCompress = require ('./brewCompress/brewCompress.jsx');
 const Stats = require('./stats/stats.jsx');
 
 const Admin = createClass({
@@ -27,8 +26,6 @@ const Admin = createClass({
 				<BrewLookup />
 				<hr />
 				<BrewCleanup />
-				<hr />
-				<BrewCompress />
 			</div>
 		</div>;
 	}
