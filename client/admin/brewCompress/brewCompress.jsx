@@ -30,9 +30,7 @@ const BrewCompress = createClass({
 	},
 	cleanup(){
 		this.setState({ pending: true });
-		this.state.ids.forEach((id) => {
-			console.log("trying to compress this one:");
-			console.log(id);
+		this.state.ids.forEach((id)=>{
 			request.put(`/admin/compress/${id}`)
 				.catch((err)=>this.setState({ error: err }))
 				.finally(()=>this.setState({ pending: false, primed: false }));

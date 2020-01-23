@@ -68,7 +68,7 @@ router.get('/admin/lookup/:id', mw.adminOnly, (req, res, next)=>{
 router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{
 	uncompressedBrewQuery.exec((err, objs)=>{
 		if(err) return res.status(500).send(err);
-		return res.json({ count: objs.length, ids: objs});
+		return res.json({ count: objs.length, ids: objs });
 	});
 });
 
@@ -78,7 +78,7 @@ router.put('/admin/compress/:id', (req, res)=>{
 		.then((brew)=>{
 			brew.textBin = zlib.deflateRawSync(brew.text);	// Compress brew text to binary before saving
 			brew.text = undefined;							// Delete the non-binary text field since it's not needed anymore
-			
+
 			brew.save((err, obj)=>{
 				if(err) throw err;
 				return res.status(200).send(obj);
