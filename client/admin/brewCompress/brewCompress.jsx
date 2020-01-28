@@ -12,7 +12,8 @@ const BrewCompress = createClass({
 	},
 	getInitialState() {
 		return {
-			count : 0,
+			count      : 0,
+			batchRange : 0,
 
 			pending : false,
 			primed  : false,
@@ -29,12 +30,26 @@ const BrewCompress = createClass({
 			.finally(()=>this.setState({ pending: false }));
 	},
 	cleanup(){
+		const brews = this.state.ids;
+		const compressBatches = ()=>{
+			if(brews.length == 0){
+				this.setState({ pending: false, primed: false });
+				return;
+			}
+			const batch = brews.splice(0, 1000);	// Process brews in batches of 1000
+			this.setState({ batchRange: this.state.count - brews.length });
+			batch.forEach((id, idx)=>{
+				request.put(`/admin/compress/${id}`)
+					.catch((err)=>this.setState({ error: err }));
+
+				console.log(`compresed brew ${id}`);
+			});
+			setTimeout(compressBatches, 10000);		//Wait 10 seconds between batches
+		};
+
 		this.setState({ pending: true });
-		this.state.ids.forEach((id)=>{
-			request.put(`/admin/compress/${id}`)
-				.catch((err)=>this.setState({ error: err }))
-				.finally(()=>this.setState({ pending: false, primed: false }));
-		});
+
+		compressBatches();
 	},
 	renderPrimed(){
 		if(!this.state.primed) return;
@@ -49,7 +64,10 @@ const BrewCompress = createClass({
 					: <span><i className='fa fa-compress' /> compress </span>
 				}
 			</button>
-			<span>Found {this.state.count} Brews that could be compressed. </span>
+			{this.state.pending
+				? <span>Compressing {this.state.batchRange} brews. </span>
+				: <span>Found {this.state.count} Brews that could be compressed. </span>
+			}
 		</div>;
 	},
 	render(){
