@@ -41,8 +41,6 @@ const BrewCompress = createClass({
 			batch.forEach((id, idx)=>{
 				request.put(`/admin/compress/${id}`)
 					.catch((err)=>this.setState({ error: err }));
-
-				console.log(`compresed brew ${id}`);
 			});
 			setTimeout(compressBatches, 10000);		//Wait 10 seconds between batches
 		};
