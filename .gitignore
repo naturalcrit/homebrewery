@@ -8,3 +8,4 @@ build/*
 config/local.*
 
 todo.md
+startDB.bat
