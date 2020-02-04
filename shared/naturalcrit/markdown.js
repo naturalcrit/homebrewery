@@ -4,11 +4,14 @@ const renderer = new Markdown.Renderer();
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (html) {
-	if(_.startsWith(_.trim(html), '<div') && _.endsWith(_.trim(html), '</div>')){
-		const openTag = html.substring(0, html.indexOf('>')+1);
+	if(_.startsWith(_.trim(html), '<div')){
+		let openTag = html.substring(0, html.indexOf('>')+1);
+		let closeTag = '';
 		html = html.substring(html.indexOf('>')+1);
-		html = html.substring(0, html.lastIndexOf('</div>'));
-		return `${openTag} ${Markdown(html)} </div>`;
+		if(_.endsWith(_.trim(html), '</div>')){
+			closeTag = '</div>'
+		}
+		return `${openTag} ${Markdown(html)} ${closeTag}`;
 	}
 	return html;
 };
@@ -87,4 +90,3 @@ module.exports = {
 		return errors;
 	},
 };
-
