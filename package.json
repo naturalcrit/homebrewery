@@ -43,7 +43,7 @@
     "codemirror": "^5.51.0",
     "cookie-parser": "^1.4.4",
     "create-react-class": "^15.6.3",
-    "express": "^4.13.3",
+    "express": "^4.17.1",
     "jwt-simple": "^0.5.6",
     "lodash": "^4.17.15",
     "marked": "^0.8.0",
