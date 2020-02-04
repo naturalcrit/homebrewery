@@ -41,7 +41,7 @@
     "body-parser": "^1.14.2",
     "classnames": "^2.2.6",
     "codemirror": "^5.51.0",
-    "cookie-parser": "^1.4.3",
+    "cookie-parser": "^1.4.4",
     "create-react-class": "^15.6.3",
     "express": "^4.13.3",
     "jwt-simple": "^0.5.6",
