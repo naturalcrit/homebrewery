@@ -72,7 +72,7 @@ module.exports = {
 		let slots = 2;
 		return `<div class='classTable wide'>\n##### The ${classname}\n` +
 		`| Level | Proficiency Bonus | Features | Cantrips Known | Spells Known | 1st | 2nd | 3rd | 4th | 5th | 6th | 7th | 8th | 9th |\n`+
-		`|:---:|:---:|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n${
+		`|:---:|:---:|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n${
 			_.map(levels, function(levelName, level){
 				const res = [
 					levelName,
