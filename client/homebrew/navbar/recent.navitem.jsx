@@ -29,7 +29,7 @@ const RecentItems = createClass({
 
 	componentDidMount : function() {
 
-	//== Load recent items list ==//
+		//== Load recent items list ==//
 		let edited = JSON.parse(localStorage.getItem(EDIT_KEY) || '[]');
 		let viewed = JSON.parse(localStorage.getItem(VIEW_KEY) || '[]');
 
