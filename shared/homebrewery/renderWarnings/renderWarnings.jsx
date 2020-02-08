@@ -20,17 +20,14 @@ const RenderWarnings = createClass({
 		window.removeEventListener('resize', this.checkWarnings);
 	},
 	warnings : {
-		chrome : function(){
-			const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
-			if(!isChrome){
-				return <li key='chrome'>
-					<em>Built for Chrome </em> <br />
-					Other browsers do not support &nbsp;
-					<a target='_blank' href='https://developer.mozilla.org/en-US/docs/Web/CSS/column-span#Browser_compatibility'>
-						key features
-					</a> this site uses.
-				</li>;
-			}
+		columnSpan : function(){
+			if ("columnSpan" in document.body.style) return null;
+			return <li key='column-span'>
+				Please use a browser that supports &nbsp;
+				<a target='_blank' href='https://developer.mozilla.org/en-US/docs/Web/CSS/column-span#Browser_compatibility'>
+					key features
+				</a> this site uses.
+			</li>;
 		},
 	},
 	checkWarnings : function(){
