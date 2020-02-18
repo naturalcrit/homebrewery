@@ -3,7 +3,7 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 
-const CreateRouter = require('pico-router').createRouter;
+const CreateRouter = require('pico-router').CreateRouter;
 
 const HomePage = require('./pages/homePage/homePage.jsx');
 const EditPage = require('./pages/editPage/editPage.jsx');
@@ -38,7 +38,7 @@ const Homebrew = createClass({
 
 
 		Router = CreateRouter({
-			'/edit/:id' : (args)=>{
+			'/edit/:id' : ({args})=>{
 				if(!this.props.brew.editId){
 					return <ErrorPage errorId={args.id}/>;
 				}
@@ -48,7 +48,7 @@ const Homebrew = createClass({
 					brew={this.props.brew} />;
 			},
 
-			'/share/:id' : (args)=>{
+			'/share/:id' : ({args})=>{
 				if(!this.props.brew.shareId){
 					return <ErrorPage errorId={args.id}/>;
 				}
@@ -57,32 +57,33 @@ const Homebrew = createClass({
 					id={args.id}
 					brew={this.props.brew} />;
 			},
-			'/user/:username' : (args)=>{
+			'/user/:username' : ({args})=>{
+				console.log(args);
 				return <UserPage
 					username={args.username}
 					brews={this.props.brews}
 				/>;
 			},
-			'/print/:id' : (args, query)=>{
+			'/print/:id' : ({args, query})=>{
 				return <PrintPage brew={this.props.brew} query={query}/>;
 			},
-			'/print' : (args, query)=>{
+			'/print' : ({args, query})=>{
 				return <PrintPage query={query}/>;
 			},
-			'/new' : (args)=>{
+			'/new' : ({args})=>{
 				return <NewPage />;
 			},
-			'/changelog' : (args)=>{
+			'/changelog' : ({args})=>{
 				return <SharePage
 					brew={{ title: 'Changelog', text: this.props.changelog }} />;
 			},
-			'*' : <HomePage
+			'/*' : <HomePage
 				welcomeText={this.props.welcomeText} />,
 		});
 	},
 	render : function(){
 		return <div className='homebrew'>
-			<Router defaultUrl={this.props.url}/>
+			<Router/>
 		</div>;
 	}
 });
