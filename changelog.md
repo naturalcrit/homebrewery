@@ -1,6 +1,6 @@
 # changelog
 
-### Wednesday, 11/03/2020
+### Wednesday, 11/03/2020 - v2.8.2
 - Fixed delete button removing everyone's copy for brews with multiple authors
 - Compressed homebrew text in database
 
