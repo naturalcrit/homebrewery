@@ -9,12 +9,58 @@ renderer.html = function (html) {
 		let closeTag = '';
 		html = html.substring(html.indexOf('>')+1);
 		if(_.endsWith(_.trim(html), '</div>')){
-			closeTag = '</div>'
+			closeTag = '</div>';
+			html = html.substring(0,html.lastIndexOf('</div'));
 		}
 		return `${openTag} ${Markdown(html)} ${closeTag}`;
 	}
+
+// Below may work better if we just explicitly allow <script, <pre and <style
+// tags to return directly
+	/*if(_.startsWith(_.trim(html), '<script')){
+		return html;
+	}*/
+
+// Allow raw HTML tags to end without a blank line if markdown is right after
+	if(html.includes('\n')){
+		let openTag = html.substring(0, html.indexOf('>')+1);
+		if(!_.endsWith(_.trim(html), '>')){	// If there is no closing tag, parse markdown directly after
+			let remainder = html.substring(html.indexOf('>')+1);
+			return `${openTag} ${Markdown(remainder)}`;
+		}
+	}
+
+	/*if(html.includes('\n')){
+		//let openTag = html.substring(0, html.indexOf('\n'));
+		let openTag = html.substring(0, html.indexOf('>')+1);
+		console.log("FULL HTML");
+		console.log(html);
+		console.log("OPEN TAG");
+		console.log(openTag);
+
+		let closeTag = '';
+		if(_.endsWith(_.trim(html), '>')){
+			closeTag = html.substring(html.lastIndexOf('<'));
+			console.log("CLOSETAG");
+			console.log(closeTag);
+		}
+		else {
+			let remainder = html.substring(html.indexOf('>')+1);
+			console.log("REMAINDER");
+			console.log(remainder);
+			return `${openTag} ${Markdown(remainder)}`;
+		}
+	}*/
+
 	return html;
 };
+
+/*renderer.code = function (code, infostring, escaped) {
+	if(code == ''){
+		return '<pre><code>\n</code></pre>';
+	}
+	return code;
+}*/
 
 const sanatizeScriptTags = (content)=>{
 	return content

@@ -1,10 +1,10 @@
 {
   "name": "homebrewery",
   "description": "Create authentic looking D&D homebrews using only markdown",
-  "version": "2.8.1",
+  "version": "2.8.2",
   "repository": {
     "type": "git",
-    "url": "git://github.com/stolksdorf/homebrewery.git"
+    "url": "git://github.com/naturalcrit/homebrewery.git"
   },
   "scripts": {
     "dev": "node scripts/dev.js",
@@ -36,30 +36,30 @@
     ]
   },
   "dependencies": {
-    "babel-preset-env": "^1.1.8",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "body-parser": "^1.19.0",
     "classnames": "^2.2.6",
-    "codemirror": "^5.51.0",
+    "codemirror": "^5.52.0",
     "cookie-parser": "^1.4.4",
     "create-react-class": "^15.6.3",
     "express": "^4.17.1",
     "jwt-simple": "^0.5.6",
     "lodash": "^4.17.15",
-    "marked": "^0.8.0",
+    "marked": "^0.8.2",
     "moment": "^2.24.0",
-    "mongoose": "^5.7.5",
+    "mongoose": "^5.9.2",
     "nconf": "^0.10.0",
     "pico-router": "^2.1.0",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0",
     "shortid": "^2.2.15",
-    "superagent": "^5.2.1",
+    "superagent": "^5.2.2",
     "vitreum": "^4.10.1"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
-    "eslint-plugin-react": "^7.18.3",
+    "eslint-plugin-react": "^7.19.0",
     "pico-check": "^1.3.2"
   }
 }
