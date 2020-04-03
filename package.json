@@ -51,7 +51,7 @@
     "mongoose": "^5.9.2",
     "nconf": "^0.10.0",
     "pico-router": "^2.1.0",
-    "react": "^16.13.0",
+    "react": "^16.13.1",
     "react-dom": "^16.13.0",
     "shortid": "^2.2.15",
     "superagent": "^5.2.2",
