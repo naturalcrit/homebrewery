@@ -134,7 +134,7 @@ const EditPage = createClass({
 		}));
 
 		request
-			.put(`/api/update/${this.props.brew.editId}`)
+			.put(`/api/${this.props.brew.editId}`)
 			.send(this.state.brew)
 			.end((err, res)=>{
 				if(err){
