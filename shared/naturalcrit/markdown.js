@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const Markdown = require('marked');
 const renderer = new Markdown.Renderer();
+const lexer    = new Markdown.Lexer();
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (html) {
@@ -15,12 +16,6 @@ renderer.html = function (html) {
 		return `${openTag} ${Markdown(html)} ${closeTag}`;
 	}
 
-// Below may work better if we just explicitly allow <script, <pre and <style
-// tags to return directly
-	/*if(_.startsWith(_.trim(html), '<script')){
-		return html;
-	}*/
-
 // Allow raw HTML tags to end without a blank line if markdown is right after
 	if(html.includes('\n')){
 		let openTag = html.substring(0, html.indexOf('>')+1);
@@ -30,30 +25,16 @@ renderer.html = function (html) {
 		}
 	}
 
-	/*if(html.includes('\n')){
-		//let openTag = html.substring(0, html.indexOf('\n'));
-		let openTag = html.substring(0, html.indexOf('>')+1);
-		console.log("FULL HTML");
-		console.log(html);
-		console.log("OPEN TAG");
-		console.log(openTag);
-
-		let closeTag = '';
-		if(_.endsWith(_.trim(html), '>')){
-			closeTag = html.substring(html.lastIndexOf('<'));
-			console.log("CLOSETAG");
-			console.log(closeTag);
-		}
-		else {
-			let remainder = html.substring(html.indexOf('>')+1);
-			console.log("REMAINDER");
-			console.log(remainder);
-			return `${openTag} ${Markdown(remainder)}`;
-		}
-	}*/
+	// Above may work better if we just explicitly allow <script, <pre and <style
+	// tags to return directly
+		/*if(_.startsWith(_.trim(html), '<script')){
+			return html;
+		}*/
 
 	return html;
 };
+
+console.log(lexer.rules);
 
 /*renderer.code = function (code, infostring, escaped) {
 	if(code == ''){
@@ -80,7 +61,8 @@ module.exports = {
 	render : (rawBrewText)=>{
 		return Markdown(
 			sanatizeScriptTags(rawBrewText),
-			{ renderer: renderer }
+			{ renderer: renderer,
+				lexer: lexer }
 		);
 	},
 
