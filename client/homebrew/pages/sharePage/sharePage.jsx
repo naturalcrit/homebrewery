@@ -46,7 +46,7 @@ const SharePage = createClass({
 
 	render : function(){
 		return <div className='sharePage page'>
-			<Meta name="robots" content="noindex" />
+			<Meta name='robots' content='noindex, nofollow' />
 			<Navbar>
 				<Nav.section>
 					<Nav.item className='brewTitle'>{this.props.brew.title}</Nav.item>

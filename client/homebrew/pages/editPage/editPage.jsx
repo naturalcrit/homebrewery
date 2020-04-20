@@ -203,7 +203,7 @@ const EditPage = createClass({
 
 	render : function(){
 		return <div className='editPage page'>
-			<Meta name="robots" content="noindex" />
+			<Meta name='robots' content='noindex, nofollow' />
 			{this.renderNavbar()}
 
 			<div className='content'>

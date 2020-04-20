@@ -73,7 +73,7 @@ const HomePage = createClass({
 
 	render : function(){
 		return <div className='homePage page'>
-			<Meta name="google-site-verification" content="NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4" />
+			<Meta name='google-site-verification' content='NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4' />
 			{this.renderNavbar()}
 
 			<div className='content'>
