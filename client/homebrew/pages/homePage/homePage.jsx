@@ -3,6 +3,7 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 const request = require('superagent');
+const Meta = require('vitreum/meta');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
@@ -72,6 +73,7 @@ const HomePage = createClass({
 
 	render : function(){
 		return <div className='homePage page'>
+			<Meta name="google-site-verification" content="NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4" />
 			{this.renderNavbar()}
 
 			<div className='content'>
