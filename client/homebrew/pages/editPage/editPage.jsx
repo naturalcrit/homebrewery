@@ -3,6 +3,7 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 const request = require('superagent');
+const Meta = require('vitreum/meta');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
@@ -134,7 +135,7 @@ const EditPage = createClass({
 		}));
 
 		request
-			.put(`/api/update/${this.props.brew.editId}`)
+			.put(`/api/${this.props.brew.editId}`)
 			.send(this.state.brew)
 			.end((err, res)=>{
 				if(err){
@@ -202,6 +203,7 @@ const EditPage = createClass({
 
 	render : function(){
 		return <div className='editPage page'>
+			<Meta name='robots' content='noindex, nofollow' />
 			{this.renderNavbar()}
 
 			<div className='content'>

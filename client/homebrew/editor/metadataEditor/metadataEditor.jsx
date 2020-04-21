@@ -50,7 +50,7 @@ const MetadataEditor = createClass({
 			if(!confirm('Are you REALLY sure? You will lose editor access to this document.')) return;
 		}
 
-		request.get(`/api/remove/${this.props.metadata.editId}`)
+		request.delete(`/api/${this.props.metadata.editId}`)
 			.send()
 			.end(function(err, res){
 				window.location.href = '/';

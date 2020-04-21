@@ -1,5 +1,9 @@
 # changelog
 
+### Wednesday, 11/03/2020 - v2.8.2
+- Fixed delete button removing everyone's copy for brews with multiple authors
+- Compressed homebrew text in database
+
 ### Monday, 26/11/2018 - v2.8.1
 - Fixed some SSL issues with images in the example page so they appear now
 - Fixed duplicate scrollbars in Edit Page

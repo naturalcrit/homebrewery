@@ -29,6 +29,10 @@ Fourth, you will need to install the program and run it using the two commands:
 
 You should now be able to go to [http://localhost:8000](http://localhost:8000) in your browser and use the Homebrewery offline.
 
+### Running the application via Docker
+
+Please see the docs here: [README.DOCKER.md](./README.DOCKER.md)
+
 ### Standalone PHB Stylesheet
 If you just want the stylesheet that is generated to make pages look like they are from the Player's Handbook, you will find it in the [phb.standalone.css](./phb.standalone.css) file.
 

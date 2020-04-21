@@ -1,0 +1,5 @@
+# Disallow crawling brew edit and share pages
+User-agent: *
+Disallow: /edit/
+Disallow: /share/
+Disallow: /print/
