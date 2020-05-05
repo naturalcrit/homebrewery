@@ -47,7 +47,7 @@
     "jwt-simple": "^0.5.6",
     "lodash": "^4.17.15",
     "marked": "^0.3.19",
-    "moment": "^2.24.0",
+    "moment": "^2.25.3",
     "mongoose": "^5.9.9",
     "nconf": "^0.10.0",
     "pico-router": "^2.1.0",
