@@ -37,33 +37,25 @@ function splitCells(tableRow, count) {
 const renderer = {
 	// Adjust the way html is handled
 	html(html) {
-		// Processes the markdown within an HTML block if it's just a class-wrapper
-		if(_.startsWith(_.trim(html), '<div')){
-			let openTag = html.substring(0, html.indexOf('>')+1);
-			let closeTag = '';
-			html = html.substring(html.indexOf('>')+1);
-			if(_.endsWith(_.trim(html), '</div>')){
-				closeTag = '</div>';
-				html = html.substring(0,html.lastIndexOf('</div'));
-			}
-			return `${openTag} ${Markdown(html)} ${closeTag}`;
-		}
+    html = _.trim(html)
 
-		// Allow raw HTML tags to end without a blank line if markdown is right after
-		if(html.includes('\n')){
-			let openTag = html.substring(0, html.indexOf('>')+1);
-			if(!_.endsWith(_.trim(html), '>')){	// If there is no closing tag, parse markdown directly after
-				let remainder = html.substring(html.indexOf('>')+1);
-				return `${openTag} ${Markdown(remainder)}`;
-			}
-		}
+    // Process the markdown within Divs
+    if(_.startsWith(html, '<div') && html.includes('>')) {
+      let openTag = html.substring(0, html.indexOf('>')+1);
+      html = html.substring(html.indexOf('>')+1);
+      return `${openTag} ${Markdown(html)}`;
+    }
 
-		// Above may work better if we just force <script, <pre and <style
-		// tags to return directly instead of working around <divs>
-			/*if(_.startsWith(_.trim(html), '<script')){
-				return html;
-			}*/
-
+    // Don't require a blank line after HTML to parse Markdown
+    if(html.includes('\n')) {
+      if(_.startsWith(html, '<style') || _.startsWith(html, '<pre')) {
+        return html; // Style and Pre tags should not parse Markdown
+      }
+      let openTag = html.substring(0, html.indexOf('\n')+1);
+      html = html.substring(html.indexOf('\n')+1);
+      return `${openTag} ${Markdown(html)}`;
+    }
+    
 		return html;
 	}
 };
