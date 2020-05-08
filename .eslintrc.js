@@ -9,6 +9,7 @@ module.exports = {
 	},
 	env : {
 		browser : true,
+		node: true
 	},
 	plugins : ['react'],
 	rules   : {
@@ -66,7 +67,7 @@ module.exports = {
 			multiLine  : { beforeColon: true, afterColon: true, align: 'colon' },
 			singleLine : { beforeColon: false, afterColon: true }
 		}],
-		'linebreak-style'               : ['warn', 'unix'],
+		'linebreak-style'               : 'off',
 		'no-trailing-spaces'            : 'warn',
 		'no-whitespace-before-property' : 'warn',
 		'object-curly-spacing'          : ['warn', 'always'],
