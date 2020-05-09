@@ -27,7 +27,7 @@ const NotificationPopup = createClass({
 				HTML for security reasons. We have made every effort to make sure your
 				homebrews appear just as they did before, but there's always a chance we
 				missed something. If your homebrew has started rendering incorrectly
-				since your last visit,&nbsp; 
+				since your last visit,&nbsp;
 				<a target='_blank' href={`https://www.reddit.com/r/homebrewery/submit?selftext=true&title=${encodeURIComponent('[Issue] Describe Your Issue Here')}`}>
 					please let us know
 				</a>
