@@ -55,7 +55,7 @@
     "react-dom": "^16.13.1",
     "shortid": "^2.2.15",
     "superagent": "^5.2.2",
-    "vitreum": "^4.10.1"
+    "vitreum": "^5.0.37"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
