@@ -177,12 +177,6 @@ body {
 		}
 	}
 	//*****************************
-	// *       SPLIT TABLE
-	// *****************************/
-	div table+pre {
-		display: none;
-	}
-	//*****************************
 	// *            NOTE
 	// *****************************/
 	blockquote{
@@ -336,8 +330,9 @@ body {
 	//Column Break
 	pre, code{
 		visibility                 : hidden;
-		break-after                : column;
-		min-height                 : 1px;
+		-webkit-column-break-after : always;
+		break-after                : always;
+		-moz-column-break-after    : always;
 	}
 	//Avoid breaking up
 	p,blockquote,table{

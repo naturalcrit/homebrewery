@@ -4,7 +4,7 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');	//Unused variable
 
-const DISMISS_KEY = 'dismiss_notification5-8-2020';
+const DISMISS_KEY = 'dismiss_notification7-24-19';
 
 const NotificationPopup = createClass({
 	getInitialState : function() {
@@ -21,24 +21,19 @@ const NotificationPopup = createClass({
 	},
 	notifications : {
 		psa : function(){
-			return <li key='markdown'>
-				<em>Markdown library update </em> <br />
-				We have updated the library that converts your brews from markdown to
-				HTML for security reasons. We have made every effort to make sure your
-				homebrews appear just as they did before, but there's always a chance we
-				missed something. If your homebrew has started rendering incorrectly
-				since your last visit,&nbsp;
-				<a target='_blank' href={`https://www.reddit.com/r/homebrewery/submit?selftext=true&title=${encodeURIComponent('[Issue] Describe Your Issue Here')}`}>
-					please let us know
-				</a>
-				&nbsp;and we will try to fix your issue as soon as possible.
+			return <li key='psa'>
+				<em>Known bug: Grey Shadow Boxes </em> <br />
+				The shadows around certain brew elements such as notes and statblocks might appear as a solid grey box when generating a PDF.  &nbsp;
+				<a target='_blank' href='https://old.reddit.com/r/homebrewery/comments/ch3v0d/psa_grey_boxesshadows_around_notes_stat_blocks_etc/'>
+					See this Reddit post
+				</a> for updates and possible workarounds.
 			</li>;
 		},
 		faq : function(){
 			return <li key='faq'>
 				<em>Protect your work! </em> <br />
 				At the moment we do not save a history of your projects, so please make frequent backups of your brews!  &nbsp;
-				<a target='_blank' href='https://www.reddit.com/r/homebrewery/comments/fwhl3n/faq_psas_announcements/'>
+				<a target='_blank' href='https://www.reddit.com/r/homebrewery/comments/adh6lh/faqs_psas_announcements/'>
 					See the FAQ
 				</a> to learn how to avoid losing your work!
 			</li>;
