@@ -2,7 +2,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
-const Meta = require('vitreum/meta');
+const Meta = require('vitreum/headtags');
 const Markdown = require('naturalcrit/markdown.js');
 
 const PrintPage = createClass({
