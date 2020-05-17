@@ -22,7 +22,7 @@
     "test:dev": "pico-check -v -w",
     "phb": "node scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
-    "postinstall": "npm run build",
+    "postinstall": "npm run buildall",
     "start": "node server.js"
   },
   "author": "stolksdorf",
