@@ -1,8 +1,8 @@
 const fs = require('fs-extra');
 const Proj = require('./project.json');
 
-const { pack, watchFile, livereload } = require('vitreum');
-const isDev = !!process.argv.find(arg=>arg=='--dev');
+const { pack } = require('vitreum');
+const isDev = !!process.argv.find((arg)=>arg=='--dev');
 
 const lessTransform  = require('vitreum/transforms/less.js');
 const assetTransform = require('vitreum/transforms/asset.js');
@@ -10,11 +10,11 @@ const assetTransform = require('vitreum/transforms/asset.js');
 
 const transforms = {
 	'.less' : lessTransform,
-  '*' : assetTransform('./build')
+	'*'     : assetTransform('./build')
 };
 
 const build = async ({ bundle, render, ssr })=>{
-	await fs.outputFile('./build/homebrew/bundle.css', await lessTransform.generate({paths: './shared'}));
+	await fs.outputFile('./build/homebrew/bundle.css', await lessTransform.generate({ paths: './shared' }));
 	await fs.outputFile('./build/homebrew/bundle.js', bundle);
 	await fs.outputFile('./build/homebrew/ssr.js', ssr);
 	await fs.outputFile('./build/homebrew/render.js', render);
@@ -22,10 +22,10 @@ const build = async ({ bundle, render, ssr })=>{
 
 fs.emptyDirSync('./build/homebrew');
 pack('./client/homebrew/homebrew.jsx', {
-	paths: ['./shared'],
-	libs : Proj.libs,
-	dev : isDev && build,
+	paths : ['./shared'],
+	libs  : Proj.libs,
+	dev   : isDev && build,
 	transforms
 })
-.then(build)
-.catch(console.error);
+	.then(build)
+	.catch(console.error);
