@@ -12,7 +12,8 @@
   "scripts": {
     "dev": "node scripts/dev.js",
     "quick": "node scripts/quick.js",
-    "build": "node scripts/buildNew.js",
+    "build": "node scripts/buildHomebrew.js",
+    "buildall": "node scripts/buildHomebrew.js && node scripts/buildAdmin.js",
     "lint": "eslint --fix **/*.{js,jsx}",
     "lint:dry": "eslint **/*.{js,jsx}",
     "circleci": "npm test && eslint **/*.{js,jsx} --max-warnings=0",
@@ -48,6 +49,7 @@
     "cookie-parser": "^1.4.5",
     "create-react-class": "^15.6.3",
     "express": "^4.17.1",
+    "fs-extra": "9.0.0",
     "jwt-simple": "^0.5.6",
     "less": "^3.11.1",
     "lodash": "^4.17.15",
@@ -55,12 +57,13 @@
     "moment": "^2.25.3",
     "mongoose": "^5.9.12",
     "nconf": "^0.10.0",
-    "pico-router": "^2.1.0",
+    "query-string": "6.12.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-router-dom": "5.2.0",
     "shortid": "^2.2.15",
     "superagent": "^5.2.2",
-    "vitreum": "^6.0.1"
+    "vitreum": "calculuschild/vitreum#9d904d4edd76fa4708d8c5ef96f59a0ebb1a1455"
   },
   "devDependencies": {
     "eslint": "^6.8.0",

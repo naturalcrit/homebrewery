@@ -1,7 +1,7 @@
 const HomebrewModel = require('./homebrew.model.js').model;
 const router = require('express').Router();
 const Moment = require('moment');
-const render = require('vitreum/steps/render');
+//const render = require('vitreum/steps/render');
 const templateFn = require('../client/template.js');
 const zlib = require('zlib');
 
@@ -100,7 +100,7 @@ router.get('/admin/stats', mw.adminOnly, (req, res)=>{
 });
 
 router.get('/admin', mw.adminOnly, (req, res)=>{
-	render('admin', templateFn, {
+	templateFn('admin', {
 		url : req.originalUrl
 	})
 		.then((page)=>res.send(page))

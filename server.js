@@ -121,21 +121,20 @@ app.get('/print/:id', (req, res, next)=>{
 
 
 //Render the page
-const render = require('vitreum/steps/render');
+//const render = require('.build/render');
 const templateFn = require('./client/template.js');
 app.use((req, res)=>{
-	render('homebrew', templateFn, {
+	const props = {
 		version     : require('./package.json').version,
 		url         : req.originalUrl,
 		welcomeText : welcomeText,
 		changelog   : changelogText,
 		brew        : req.brew,
 		brews       : req.brews,
-		account     : req.account
-	})
-		.then((page)=>{
-			return res.send(page);
-		})
+		account     : req.account,
+	};
+	templateFn('homebrew', props)
+		.then((page)=>res.send(page))
 		.catch((err)=>{
 			console.log(err);
 			return res.sendStatus(500);
