@@ -13,7 +13,6 @@
 		"codemirror/mode/javascript/javascript.js",
 		"moment",
 		"superagent",
-		"marked",
-		"pico-router"
+		"marked"
 	]
 }
