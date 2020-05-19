@@ -64,7 +64,7 @@
     "react-router-dom": "5.2.0",
     "shortid": "^2.2.15",
     "superagent": "^5.2.2",
-    "vitreum": "calculuschild/vitreum#9d904d4edd76fa4708d8c5ef96f59a0ebb1a1455"
+    "vitreum": "calculuschild/vitreum#21a8e1c9421f1d3a3b474c12f480feb2fbd28c5b"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
