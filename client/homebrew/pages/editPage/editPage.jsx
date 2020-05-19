@@ -1,9 +1,10 @@
+require('./editPage.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 const request = require('superagent');
-const Meta = require('vitreum/meta');
+const { Meta } = require('vitreum/headtags');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');

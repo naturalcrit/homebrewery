@@ -1,3 +1,4 @@
+require('./codeEditor.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
