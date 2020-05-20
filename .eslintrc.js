@@ -1,5 +1,5 @@
 module.exports = {
-	root: true,
+	root          : true,
 	parserOptions : {
 		ecmaVersion  : 9,
 		sourceType   : 'module',
@@ -9,7 +9,7 @@ module.exports = {
 	},
 	env : {
 		browser : true,
-		node: true
+		node    : true
 	},
 	plugins : ['react'],
 	rules   : {
@@ -48,7 +48,7 @@ module.exports = {
 		'no-var'          : 'warn',
 		'prefer-const'    : 'warn',
 		'prefer-template' : 'warn',
-		'quotes'          : ['warn', 'single', { 'allowTemplateLiterals': true } ],
+		'quotes'          : ['warn', 'single', { 'allowTemplateLiterals': true }],
 		'semi'            : ['warn', 'always'],
 
 		/** Whitespace **/
