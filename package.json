@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.9.0",
-    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-env": "^7.10.4",
     "@babel/preset-react": "^7.9.4",
     "body-parser": "^1.19.0",
     "classnames": "^2.2.6",
