@@ -63,7 +63,7 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "5.2.0",
     "shortid": "^2.2.15",
-    "superagent": "^5.2.2",
+    "superagent": "^6.0.0",
     "vitreum": "github:calculuschild/vitreum#21a8e1c9421f1d3a3b474c12f480feb2fbd28c5b"
   },
   "devDependencies": {
