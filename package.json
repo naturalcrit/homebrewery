@@ -55,7 +55,7 @@
     "lodash": "^4.17.15",
     "marked": "^0.3.19",
     "moment": "^2.26.0",
-    "mongoose": "^5.9.15",
+    "mongoose": "^5.9.29",
     "nconf": "^0.10.0",
     "prop-types": "15.7.2",
     "query-string": "6.12.1",
