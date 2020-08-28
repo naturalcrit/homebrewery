@@ -1,5 +1,15 @@
 # changelog
 
+### Friday, 28/08/2020 - v2.9.2
+- Many dependency updates
+- Finally fixed this changelog page to not run off the edge :P
+
+### Sunday, 19/07/2020 - v2.9.1
+- Fixed paragraphs appearing blank on new columns
+
+### Wednesday, 20/05/2020 - v2.9.0
+- Major refactoring of site backend to work with updated dependencies for security (should be invisible to users)
+
 ### Wednesday, 11/03/2020 - v2.8.2
 - Fixed delete button removing everyone's copy for brews with multiple authors
 - Compressed homebrew text in database
@@ -33,20 +43,16 @@
 ### Saturday, 18/02/2017 - v2.7.2
 - Adding ability to delete a brew from the user page, incase the user creates a brew that makes the edit page unrender-able. (re:309)
 
-## BIG NEWS
-With the next major release of Homebrewery, v3.0.0, this tool *will no longer support raw HTML input for brew code*. Most issues and errors users are having are because of this feature and it's become too taxing to help and fix these issues.
-
-All brews made previous to the release of v3.0.0 will still render normally.
+```
+```
 
 ### Thursday, 19/01/2017 - v2.7.0
 - Fixed saving multiple authors and multiple systems on brew metadata (thanks u/PalaNolho re:282)
 - Adding in line highlight for new pages
 - Added in a simple brew lookup for admin
 
-
 ### Saturday, 14/01/2017 - v2.7.0
 - Added a new Render Warning overlay. It detects situations where the brew may not be rendering correctly (wrong browser, browser is zoomed in...) and let's the user know
-
 
 ### Sunday, 25/12/2016 - v2.7.0
 - Switching over to using Vitreum v4
@@ -60,8 +66,6 @@ All brews made previous to the release of v3.0.0 will still render normally.
 - Removed a lot of unused files in shared
 - vitreum v4 now lets me use codemirror as a pure node dependacy
 
-
-
 ### Saturday, 03/12/2016 - v2.6.0
 - Added report back to the edit page
 - Changed metaeditor icon
@@ -73,17 +77,16 @@ All brews made previous to the release of v3.0.0 will still render normally.
 - Added a table of contents snippet (thanks u/tullisar)
 - Added a multicolumn snippet
 
-
-
 ### Thursday, 01/12/2016
 - Added in a snippet for a split table
 - Added an account nav item to new page
-
 
 ### Sunday, 27/11/2016 - v2.5.1
 - Fixed the column rendering on the new user page. Really should have tested that better
 - Added a hover tooltip to fully read the brew description
 - Made the brew items take up only 25% allowing you to view more per row.
+
+\page
 
 ### Wednesday, 23/11/2016 - v2.5.0
 - Metadata can now be added to brews
@@ -94,7 +97,6 @@ All brews made previous to the release of v3.0.0 will still render normally.
 - Editing a brew in anyway while logged in will now add you to the list of authors
 - Added a new user page to see others published brews, as well as all of your own brews.
 - Added a new nav item for accessing your profile and logging in
-
 
 ### Monday, 14/11/2016
 - Updated snippet bar style
@@ -120,7 +122,6 @@ All brews made previous to the release of v3.0.0 will still render normally.
 - Fixed the noteblock overlapping into titles (thanks u/dsompura!)
 - Fixed a bad search route in the admin panel (thanks u/SnappyTom!)
 
-
 ### Friday, 29/07/2016 - v2.2.7
 - Adding in descriptive note blocks. (Thanks calculuschild!)
 
@@ -141,11 +142,8 @@ All brews made previous to the release of v3.0.0 will still render normally.
 - Added in a new auto-incremeting page number snippet (thakns u/Ryrok!)
 - Lists in monster stat blocks should be fixed now
 
-
 ### Saturday, 04/06/2016 - v2.2.0
 - MIgrating The Homebrewery over to hombrewery.naturalcrit.com. It know runs on it's own server, with it's own repo separate from the other tools I'm working on. Makes updating and deploying much easier.
-
-\page
 
 ### Sunday, 29/05/2016 - v2.1.0
 - Finally added a syntax for doing spell lists. A bit in-depth about why this took so long. Essentially I'm running out of syntax to use in stardard Markdown. There are too many unique elements in the PHB-style to be mapped. I solved this earlier by stacking certain elements together (eg. an `<hr>` before a `blockquote` turns it into moster state block), but those are getting unweildly. I would like to simply wrap these in `div`s with classes, but unfortunately Markdown stops processing when within HTML blocks. To get around this I wrote my own override to the Markdown parser and lexer to process Markdown within a simple div class wrapper. This should open the door for more unique syntaxes in the future. Big step!
@@ -157,6 +155,8 @@ All brews made previous to the release of v3.0.0 will still render normally.
 ### Friday, 27/05/2016 - v2.0.6
 - Updated the issue template for (hopefully) better reporting
 - Added suggestion to use chrome while PDF printing
+
+\page
 
 ### Wednesday, 25/05/2016 -v2.0.5
 - The class table generators have the proper ability score improvement progression.
@@ -170,8 +170,6 @@ All brews made previous to the release of v3.0.0 will still render normally.
 - No longer server-side pre-render brews, just incase the user entered invalid HTML, it might crahsh the server
 - Bumped up the allowed entity size for extra-large brew (Thanks for reporting it dickboner93)
 - Added a little error box when a save fails with a custom link to reporting the issue on github.
-
-\page
 
 ### Saturday, 14/05/2016 - v2.0.0 (finally!)
 
@@ -211,8 +209,6 @@ Massive changelog incoming:
 - Elements under the hood are way more organized and should behaviour much more reliably in many sizes.
 - Source now opens to it's own route `/source/:sharedId` instead of just a window. Now easier to share, and won't be blocked by some browsers.
 - Print page now auto-opens print dialog. If you want to share your print page link, just remove the `?dialog=true` parameter and it won't open the dialog.
-
-
 
 \page
 
@@ -281,4 +277,3 @@ Massive changelog incoming:
 * Added `phb.standalone.css` plus a build system for creating it
 * Added page numbers and footer text
 * Page accent now flips each page
-
