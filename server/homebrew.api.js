@@ -120,7 +120,7 @@ const deleteBrew = (req, res)=>{
 	});
 };
 
-newGoogleBrew = async (req, res, next)=>{
+const newGoogleBrew = async (req, res, next)=>{
 	let oAuth2Client;
 
 	console.log('newGoogleBrew (API)');
@@ -142,57 +142,28 @@ newGoogleBrew = async (req, res, next)=>{
 
 	console.log(oAuth2Client);
 
-	const newHomebrew = await GoogleActions.newGoogleBrew(oAuth2Client, brew);
+	const newBrew = await GoogleActions.newGoogleBrew(oAuth2Client, brew);
 
-	return res.status(200).send(newHomebrew);
+	return res.status(200).send(newBrew);
+};
+
+const updateGoogleBrew = async (req, res, next)=>{
+	let oAuth2Client;
+
+	try {	oAuth2Client = GoogleActions.authCheck(req.account, res); } catch (err) { return res.status(err.status).send(err.message); }
+
+	const updatedBrew = await GoogleActions.updateGoogleBrew(oAuth2Client, req.body);
+
+	return res.status(200).send(updatedBrew);
 };
 
 router.post('/api', newBrew);
 router.post('/api/newGoogle/', newGoogleBrew);
 router.put('/api/:id', updateBrew);
 router.put('/api/update/:id', updateBrew);
-router.put('/api/updateGoogle/:id', (req, res)=>{GoogleActions.updateGoogleBrew(req, res);});
+router.put('/api/updateGoogle/:id', updateGoogleBrew);
 router.delete('/api/:id', deleteBrew);
 router.get('/api/remove/:id', deleteBrew);
 router.get('/api/removeGoogle/:id', (req, res)=>{GoogleActions.deleteGoogleBrew(req, res, req.params.id);});
 
 module.exports = router;
-
-/*
-module.exports = function(app) {
-	app;
-
-	app.get('/api/search', mw.adminOnly, function(req, res) {
-		var page = req.query.page || 0;
-		var count = req.query.count || 20;
-
-		var query = {};
-		if (req.query && req.query.id) {
-			query = {
-				"$or": [{
-					editId : req.query.id
-				}, {
-					shareId : req.query.id
-				}]
-			};
-		}
-
-		HomebrewModel.find(query, {
-			text : 0 //omit the text
-		}, {
-			skip: page*count,
-			limit: count*1
-		}, function(err, objs) {
-			if (err) console.error(err);
-			return res.json({
-				page : page,
-				count : count,
-				total : homebrewTotal,
-				brews : objs
-			});
-		});
-	})
-
-	return app;
-}
-*/

@@ -187,7 +187,7 @@ const EditPage = createClass({
 					return;
 				});
 
-				this.savedBrew = res.body.brew;
+				this.savedBrew = res.body;
 			}
 		} else {
 			console.log('Saving Locally');

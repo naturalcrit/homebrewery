@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 const _ = require('lodash');
 const { google } = require('googleapis');
 const { nanoid } = require('nanoid');
@@ -49,49 +48,7 @@ GoogleActions = {
 		return oAuth2Client;
 	},
 
-	getGoogleFolder : async (req, res)=>{
-		console.log('getting google folder');
-		oAuth2Client = GoogleActions.authCheck(req.account, res);
-
-		const drive = google.drive({ version: 'v3', auth: oAuth2Client });
-
-		fileMetadata = {
-			'name'     : 'Homebrewery',
-			'mimeType' : 'application/vnd.google-apps.folder'
-		};
-
-		const obj = await drive.files.list({
-			q : 'mimeType = \'application/vnd.google-apps.folder\''
-		})
-		.catch((err)=>{
-			console.log('Error searching Google Drive Folders');
-			console.error(err);
-		});
-
-		let folderId;
-
-		if(obj.data.files.length == 0){
-			console.log('no folders found');	// CREATE APP FOLDER
-
-			const obj = await drive.files.create({
-				resource : fileMetadata
-			})
-			.catch((err)=>{
-				console.log('Error creating google app folder');
-				console.error(err);
-			});
-
-			console.log('created new drive folder with ID:');
-			console.log(obj.data.id);
-			folderId = obj.data.id;
-		} else {
-			folderId = obj.data.files[0].id;
-		}
-
-		return folderId;
-	},
-
-	getGoogleFolderNew : async (auth)=>{
+	getGoogleFolder : async (auth)=>{
 		console.log('getting google folder');
 		const drive = google.drive({ version: 'v3', auth: auth });
 
@@ -190,88 +147,27 @@ GoogleActions = {
 		return false;
 	},
 
-	updateGoogleBrew : async (req, res)=>{
-		oAuth2Client = GoogleActions.authCheck(req.account, res);
+	updateGoogleBrew : async (auth, brew)=>{
+		const drive = google.drive({ version: 'v3', auth: auth });
 
-		const drive = google.drive({ version: 'v3', auth: oAuth2Client });
-		const brew = req.body;
+		if(await GoogleActions.existsGoogleBrew(auth, brew.googleId) == true) {
 
-		const media = {
-			mimeType : 'text/plain',
-			body     : brew.text
-		};
-
-		let obj;
-
-		//CHECK IF FILE ALREADY EXISTS
-		if(await GoogleActions.existsGoogleBrew(oAuth2Client, req.body.googleId) == true) {
-			//IF SO, JUST UPDATE EXISTING FILE
-			const fileMetadata = {
-				'name'       : `${brew.title}.txt`,
-				'properties' : {								//AppProperties is not accessible
-					'shareId' : brew.shareId,
-					'editId'  : brew.editId,
-					'title'   : brew.title,
-				}
-			};
-
-			obj = await drive.files.update({
-				fileId   : req.body.googleId,
-				resource : fileMetadata,
-				media    : media
+			await drive.files.update({
+				fileId   : brew.googleId,
+				resource : { name       : `${brew.title}.txt`,
+										 properties : { title: brew.title } //AppProperties is not accessible via API key
+									 },
+				media : { mimeType : 'text/plain',
+										 body     : brew.text }
 			})
 			.catch((err)=>{
 				console.log('Error saving to google');
 				console.error(err);
 				//return res.status(500).send('Error while saving');
 			});
-		} else {
-			//IF NOT, CREATE NEW FILE
-			const folderId = await GoogleActions.getGoogleFolder(req, res);
-			const fileMetadata = {
-				'name'       : `${brew.title}.txt`,
-				'parents'    : [folderId],
-				'properties' : {								//AppProperties is not accessible
-					'shareId' : nanoid(12),
-					'editId'  : nanoid(12),
-					'title'   : brew.title,
-				}
-			};
-
-			obj = await drive.files.create({
-				resource : fileMetadata,
-				media    : media
-			})
-			.catch((err)=>{
-				console.log('Error saving to google');
-				console.error(err);
-			});
 		}
 
-		if(obj) {
-			//Update permissions
-			const permissions = {
-		    'type' : 'anyone',
-		    'role' : 'writer',
-		  };
-
-			await drive.permissions.create({
-		    resource : permissions,
-		    fileId   : obj.data.id,
-		    fields   : 'id',
-		  })
-			.catch((err)=>{
-				console.log('Error updating permissions');
-				console.error(err);
-			});
-
-			response = {
-				brew     : brew,
-				googleId : obj.data.id
-			};
-
-			return res.status(200).send(response);
-		}
+		return (brew);
 	},
 
 	newGoogleBrew : async (auth, brew)=>{
@@ -283,7 +179,7 @@ GoogleActions = {
 			body     : brew.text
 		};
 
-		const folderId = await GoogleActions.getGoogleFolderNew(auth);
+		const folderId = await GoogleActions.getGoogleFolder(auth);
 
 		const fileMetadata = {
 			'name'       : `${brew.title}.txt`,
@@ -300,20 +196,15 @@ GoogleActions = {
 			media    : media
 		})
 		.catch((err)=>{
-			console.log('Error saving to google');
 			console.error(err);
 			return res.status(500).send('Error while creating google brew');
 		});
 
 		if(!obj) return;
 
-		const permissions = {
-			'type' : 'anyone',
-			'role' : 'writer',
-		};
-
 		await drive.permissions.create({
-			resource : permissions,
+			resource : { type : 'anyone',
+									 role : 'writer'},
 			fileId   : obj.data.id,
 			fields   : 'id',
 		})
