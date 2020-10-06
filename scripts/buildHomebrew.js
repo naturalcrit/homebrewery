@@ -1,7 +1,7 @@
 const fs = require('fs-extra');
 const Proj = require('./project.json');
 
-const { pack } = require('vitreum');
+const { pack, watchFile, livereload } = require('vitreum');
 const isDev = !!process.argv.find((arg)=>arg=='--dev');
 
 const lessTransform  = require('vitreum/transforms/less.js');
@@ -29,3 +29,12 @@ pack('./client/homebrew/homebrew.jsx', {
 })
 	.then(build)
 	.catch(console.error);
+
+
+//In development set up a watch server and livereload
+if(isDev){
+	livereload('./build');
+	watchFile('./server.js', {
+		watch : ['./homebrew'] // Watch additional folders if you want
+	});
+}

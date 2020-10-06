@@ -24,6 +24,7 @@ const NewPage = createClass({
 	getInitialState : function() {
 		return {
 			metadata : {
+				gDrive      : false,
 				title       : '',
 				description : '',
 				tags        : '',
@@ -32,11 +33,13 @@ const NewPage = createClass({
 				systems     : []
 			},
 
-			text     : '',
-			isSaving : false,
-			errors   : []
+			text       : '',
+			isSaving   : false,
+			saveGoogle : (global.account.googleId ? true : false),
+			errors     : []
 		};
 	},
+
 	componentDidMount : function() {
 		const storage = localStorage.getItem(KEY);
 		if(storage){
@@ -80,12 +83,30 @@ const NewPage = createClass({
 		localStorage.setItem(KEY, text);
 	},
 
-	save : function(){
+	save : async function(){
 		this.setState({
 			isSaving : true
 		});
 
-		request.post('/api')
+		console.log('saving new brew');
+
+		if(this.state.saveGoogle) {
+			const res = await request
+			.post('/api/newGoogle/')
+			.send(_.merge({}, this.state.metadata, { text: this.state.text }))
+			.catch((err)=>{
+				console.log(err.status === 401
+					? 'Not signed in!'
+					: 'Error Creating New Google Brew!');
+				this.setState({ isSaving: false });
+				return;
+			});
+
+			const brew = res.body;
+			localStorage.removeItem(KEY);
+			window.location = `/edit/${brew.googleId}${brew.editId}`;
+		} else {
+			request.post('/api')
 			.send(_.merge({}, this.state.metadata, {
 				text : this.state.text
 			}))
@@ -101,6 +122,8 @@ const NewPage = createClass({
 				localStorage.removeItem(KEY);
 				window.location = `/edit/${brew.editId}`;
 			});
+		}
+
 	},
 
 	renderSaveButton : function(){

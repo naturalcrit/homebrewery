@@ -45,6 +45,17 @@ const SharePage = createClass({
 		}
 	},
 
+	renderSourceButton : function() {
+		let shareLink = this.props.brew.shareId;
+		if(this.props.brew.googleId) {
+			shareLink = this.props.brew.googleId + shareLink;
+		}
+
+		return <Nav.item href={`/source/${shareLink}`} color='teal' icon='fa-code'>
+			source
+		</Nav.item>;
+	},
+
 	render : function(){
 		return <div className='sharePage page'>
 			<Meta name='robots' content='noindex, nofollow' />
@@ -55,9 +66,7 @@ const SharePage = createClass({
 
 				<Nav.section>
 					<PrintLink shareId={this.props.brew.shareId} />
-					<Nav.item href={`/source/${this.props.brew.shareId}`} color='teal' icon='fa-code'>
-						source
-					</Nav.item>
+					{this.renderSourceButton()}
 					<RecentNavItem brew={this.props.brew} storageKey='view' />
 					<Account />
 				</Nav.section>

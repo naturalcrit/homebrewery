@@ -3,6 +3,9 @@ const jwt = require('jwt-simple');
 const express = require('express');
 const app = express();
 
+const homebrewApi = require('./server/homebrew.api.js');
+const GoogleActions = require('./server/googleActions.js');
+
 app.use(express.static(`${__dirname}/build`));
 app.use(require('body-parser').json({ limit: '25mb' }));
 app.use(require('cookie-parser')());
@@ -24,20 +27,29 @@ mongoose.connection.on('error', ()=>{
 	throw 'Can not connect to Mongo';
 });
 
-
 //Account Middleware
 app.use((req, res, next)=>{
 	if(req.cookies && req.cookies.nc_session){
 		try {
 			req.account = jwt.decode(req.cookies.nc_session, config.get('secret'));
+			//console.log("Just loaded up JWT from cookie:");
+			//console.log(req.account);
 		} catch (e){}
 	}
+
+	req.config = {
+		googleClientId     : config.get('googleClientId'),
+		googleClientSecret : config.get('googleClientSecret')
+	};
 	return next();
 });
 
 
-app.use(require('./server/homebrew.api.js'));
+app.use(homebrewApi);
+
 app.use(require('./server/admin.api.js'));
+
+//app.use('/user',require('./server/user.routes.js'));
 
 
 const HomebrewModel = require('./server/homebrew.model.js').model;
@@ -53,57 +65,112 @@ app.get('/robots.txt', (req, res)=>{
 
 //Source page
 app.get('/source/:id', (req, res)=>{
-	HomebrewModel.get({ shareId: req.params.id })
+	if(req.params.id.length > 12) {
+		const googleId = req.params.id.slice(0, -12);
+		const shareId = req.params.id.slice(-12);
+		GoogleActions.readFileMetadata(config.get('googleApiKey'), googleId, shareId, 'share')
 		.then((brew)=>{
 			const text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 			return res.send(`<code><pre style="white-space: pre-wrap;">${text}</pre></code>`);
 		})
 		.catch((err)=>{
 			console.log(err);
-			return res.status(404).send('Could not find Homebrew with that id');
+			return res.status(400).send('Can\'t get brew from Google');
 		});
+	} else {
+		HomebrewModel.get({ shareId: req.params.id })
+			.then((brew)=>{
+				const text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+				return res.send(`<code><pre style="white-space: pre-wrap;">${text}</pre></code>`);
+			})
+			.catch((err)=>{
+				console.log(err);
+				return res.status(404).send('Could not find Homebrew with that id');
+			});
+	}
 });
 
 //User Page
-app.get('/user/:username', (req, res, next)=>{
+app.get('/user/:username', async (req, res, next)=>{
 	const fullAccess = req.account && (req.account.username == req.params.username);
-	HomebrewModel.getByUser(req.params.username, fullAccess)
-		.then((brews)=>{
-			req.brews = brews;
-			return next();
-		})
+
+	let googleBrews = [];
+
+	if(req.account.googleId){
+		console.log('GETTING DATA FOR USER PAGE');
+		googleBrews = await GoogleActions.listGoogleBrews(req, res)
 		.catch((err)=>{
-			console.log(err);
+			console.error(err);
 		});
+	}
+
+	const brews = await HomebrewModel.getByUser(req.params.username, fullAccess)
+	.catch((err)=>{
+		console.log(err);
+	});
+
+	if(googleBrews) {
+		req.brews = _.concat(brews, googleBrews);
+	} else {req.brews = brews;}
+
+	return next();
 });
 
 //Edit Page
 app.get('/edit/:id', (req, res, next)=>{
-	HomebrewModel.get({ editId: req.params.id })
+	if(req.params.id.length > 12) {
+		const googleId = req.params.id.slice(0, -12);
+		const editId = req.params.id.slice(-12);
+		GoogleActions.readFileMetadata(config.get('googleApiKey'), googleId, editId, 'edit')
 		.then((brew)=>{
-			req.brew = brew.sanatize();
+			req.brew = brew; //TODO Need to sanitize later
 			return next();
 		})
 		.catch((err)=>{
 			console.log(err);
-			return res.status(400).send(`Can't get that`);
+			return res.status(400).send('Can\'t get brew from Google');
 		});
+	} else {
+		HomebrewModel.get({ editId: req.params.id })
+			.then((brew)=>{
+				req.brew = brew.sanatize();
+				return next();
+			})
+			.catch((err)=>{
+				console.log(err);
+				return res.status(400).send(`Can't get that`);
+			});
+	}
 });
 
 //Share Page
 app.get('/share/:id', (req, res, next)=>{
-	HomebrewModel.get({ shareId: req.params.id })
+	if(req.params.id.length > 12) {
+		const googleId = req.params.id.slice(0, -12);
+		const shareId = req.params.id.slice(-12);
+		GoogleActions.readFileMetadata(config.get('googleApiKey'), googleId, shareId, 'share')
 		.then((brew)=>{
-			return brew.increaseView();
-		})
-		.then((brew)=>{
-			req.brew = brew.sanatize(true);
+			req.brew = brew; //TODO Need to sanitize later
 			return next();
 		})
 		.catch((err)=>{
 			console.log(err);
-			return res.status(400).send(`Can't get that`);
+			return res.status(400).send('Can\'t get brew from Google');
 		});
+	} else {
+		HomebrewModel.get({ shareId: req.params.id })
+			.then((brew)=>{
+				return brew.increaseView();
+			})
+			.then((brew)=>{
+				req.brew = brew.sanatize(true);
+				return next();
+			})
+			.catch((err)=>{
+				console.log(err);
+				return res.status(400).send(`Can't get that`);
+			});
+	}
 });
 
 //Print Page
@@ -131,10 +198,11 @@ app.use((req, res)=>{
 		changelog   : changelogText,
 		brew        : req.brew,
 		brews       : req.brews,
+		googleBrews : req.googleBrews,
 		account     : req.account,
 	};
 	templateFn('homebrew', props)
-		.then((page)=>res.send(page))
+		.then((page)=>{console.log('^--- END OF REQUEST ---^'); res.send(page);})
 		.catch((err)=>{
 			console.log(err);
 			return res.sendStatus(500);
