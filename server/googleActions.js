@@ -205,9 +205,9 @@ GoogleActions = {
 
 		await drive.permissions.create({
 			resource : { type : 'anyone',
-									 role : 'writer'},
-			fileId   : obj.data.id,
-			fields   : 'id',
+									 role : 'writer' },
+			fileId : obj.data.id,
+			fields : 'id',
 		})
 		.catch((err)=>{
 			console.log('Error updating permissions');
