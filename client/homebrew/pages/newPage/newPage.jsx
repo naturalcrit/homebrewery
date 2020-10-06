@@ -35,7 +35,7 @@ const NewPage = createClass({
 
 			text       : '',
 			isSaving   : false,
-			saveGoogle : (global.account.googleId ? true : false),
+			saveGoogle : (global.account && global.account.googleId ? true : false),
 			errors     : []
 		};
 	},

@@ -96,7 +96,7 @@ app.get('/user/:username', async (req, res, next)=>{
 
 	let googleBrews = [];
 
-	if(req.account.googleId){
+	if(req.account && req.account.googleId){
 		console.log('GETTING DATA FOR USER PAGE');
 		googleBrews = await GoogleActions.listGoogleBrews(req, res)
 		.catch((err)=>{

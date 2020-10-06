@@ -137,8 +137,10 @@ const EditPage = createClass({
 
 	toggleGoogleStorage : function(){
 		this.setState((prevState)=>({
-			saveGoogle : !prevState.saveGoogle
-		}));
+			saveGoogle : !prevState.saveGoogle,
+			isSaving   : false,
+			errors     : null
+		}), ()=>this.trySave());
 	},
 
 	save : async function(){
