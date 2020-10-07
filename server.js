@@ -17,9 +17,6 @@ const config = require('nconf')
 	.file('environment', { file: `config/${process.env.NODE_ENV}.json` })
 	.file('defaults', { file: 'config/default.json' });
 
-console.log(config.get('googleClientId'));
-console.log(config.get('secret'));
-console.log(config.get('googleApiKey'));
 //DB
 const mongoose = require('mongoose');
 mongoose.connect(config.get('mongodb_uri') || config.get('mongolab_uri') || 'mongodb://localhost/naturalcrit',
@@ -41,8 +38,8 @@ app.use((req, res, next)=>{
 	}
 
 	req.config = {
-		googleClientId     : config.get('googleClientId'),
-		googleClientSecret : config.get('googleClientSecret')
+		google_client_id     : config.get('google_client_id'),
+		google_client_secret : config.get('google_client_secret')
 	};
 	return next();
 });
@@ -71,7 +68,7 @@ app.get('/source/:id', (req, res)=>{
 	if(req.params.id.length > 12) {
 		const googleId = req.params.id.slice(0, -12);
 		const shareId = req.params.id.slice(-12);
-		GoogleActions.readFileMetadata(config.get('googleApiKey'), googleId, shareId, 'share')
+		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
 		.then((brew)=>{
 			const text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 			return res.send(`<code><pre style="white-space: pre-wrap;">${text}</pre></code>`);
@@ -123,7 +120,7 @@ app.get('/edit/:id', (req, res, next)=>{
 	if(req.params.id.length > 12) {
 		const googleId = req.params.id.slice(0, -12);
 		const editId = req.params.id.slice(-12);
-		GoogleActions.readFileMetadata(config.get('googleApiKey'), googleId, editId, 'edit')
+		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, editId, 'edit')
 		.then((brew)=>{
 			req.brew = brew; //TODO Need to sanitize later
 			return next();
@@ -150,7 +147,7 @@ app.get('/share/:id', (req, res, next)=>{
 	if(req.params.id.length > 12) {
 		const googleId = req.params.id.slice(0, -12);
 		const shareId = req.params.id.slice(-12);
-		GoogleActions.readFileMetadata(config.get('googleApiKey'), googleId, shareId, 'share')
+		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
 		.then((brew)=>{
 			req.brew = brew; //TODO Need to sanitize later
 			return next();

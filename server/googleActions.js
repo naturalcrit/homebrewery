@@ -21,8 +21,8 @@ GoogleActions = {
 		}
 
 		const oAuth2Client = new google.auth.OAuth2(
-			config.get('googleClientId'),
-			config.get('googleClientSecret'),
+			config.get('google_client_id'),
+			config.get('google_client_secret'),
 			'/auth/google/redirect'
 		);
 
@@ -225,7 +225,7 @@ GoogleActions = {
 	readFileMetadata : async (auth, id, accessId, accessType)=>{
 		const drive = google.drive({ version: 'v3', auth: auth });
 		console.log(auth);
-		
+
 		const obj = await drive.files.get({
 			fileId : id,
 			fields : 'properties'
