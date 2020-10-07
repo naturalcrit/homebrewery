@@ -174,15 +174,33 @@ app.get('/share/:id', (req, res, next)=>{
 
 //Print Page
 app.get('/print/:id', (req, res, next)=>{
-	HomebrewModel.get({ shareId: req.params.id })
+	if(req.params.id.length > 12) {
+		const googleId = req.params.id.slice(0, -12);
+		const shareId = req.params.id.slice(-12);
+		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
 		.then((brew)=>{
-			req.brew = brew.sanatize(true);
+			req.brew = brew; //TODO Need to sanitize later
 			return next();
 		})
 		.catch((err)=>{
 			console.log(err);
-			return res.status(400).send(`Can't get that`);
+			return res.status(400).send('Can\'t get brew from Google');
 		});
+	} else {
+		HomebrewModel.get({ shareId: req.params.id })
+			.then((brew)=>{
+				req.brew = brew.sanatize(true);
+				return next();
+			})
+			.catch((err)=>{
+				console.log(err);
+				return res.status(400).send(`Can't get that`);
+			});
+	}
+});
+
+app.get('/source/:id', (req, res)=>{
+
 });
 
 

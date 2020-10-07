@@ -290,6 +290,12 @@ const EditPage = createClass({
 		}
 	},
 
+	processShareId : function() {
+		return this.state.brew.googleId ?
+					 this.state.brew.googleId + this.state.brew.shareId :
+					 this.state.brew.shareId;
+	},
+
 	renderNavbar : function(){
 		return <Navbar>
 			<Nav.section>
@@ -300,10 +306,10 @@ const EditPage = createClass({
 				{this.renderGoogleDriveIcon()}
 				{this.renderSaveButton()}
 				<ReportIssue />
-				<Nav.item newTab={true} href={`/share/${this.props.brew.shareId}`} color='teal' icon='fa-share-alt'>
+				<Nav.item newTab={true} href={`/share/${this.processShareId()}`} color='teal' icon='fa-share-alt'>
 					Share
 				</Nav.item>
-				<PrintLink shareId={this.props.brew.shareId} />
+				<PrintLink shareId={this.processShareId()} />
 				<RecentNavItem brew={this.props.brew} storageKey='edit' />
 				<Account />
 			</Nav.section>

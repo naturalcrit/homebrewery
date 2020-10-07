@@ -45,15 +45,10 @@ const SharePage = createClass({
 		}
 	},
 
-	renderSourceButton : function() {
-		let shareLink = this.props.brew.shareId;
-		if(this.props.brew.googleId) {
-			shareLink = this.props.brew.googleId + shareLink;
-		}
-
-		return <Nav.item href={`/source/${shareLink}`} color='teal' icon='fa-code'>
-			source
-		</Nav.item>;
+	processShareId : function() {
+		return this.props.brew.googleId ?
+					 this.props.brew.googleId + this.props.brew.shareId :
+					 this.props.brew.shareId;
 	},
 
 	render : function(){
@@ -65,8 +60,10 @@ const SharePage = createClass({
 				</Nav.section>
 
 				<Nav.section>
-					<PrintLink shareId={this.props.brew.shareId} />
-					{this.renderSourceButton()}
+					<PrintLink shareId={this.processShareId()} />
+					<Nav.item href={`/source/${this.processShareId()}`} color='teal' icon='fa-code'>
+						source
+					</Nav.item>
 					<RecentNavItem brew={this.props.brew} storageKey='view' />
 					<Account />
 				</Nav.section>
