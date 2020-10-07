@@ -21,9 +21,6 @@ const generateAccessToken = (account)=>{
 	delete payload.password;
 	delete payload._id;
 
-	console.log('THE PAYLOAD');
-	console.log(payload);
-
 	const secret = config.get('authentication_token_secret');
 
 	const token = jwt.encode(payload, secret);

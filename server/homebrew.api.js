@@ -32,11 +32,7 @@ const newBrew = (req, res)=>{
 	delete brew.shareId;
 	delete brew.googleId;
 
-	console.log('creating new local file using this data:');
-	console.log(brew);
 	const newHomebrew = new HomebrewModel(brew);
-	console.log('this is the new local homebrew');
-	console.log(newHomebrew);
 	// Compress brew text to binary before saving
 	newHomebrew.textBin = zlib.deflateRawSync(newHomebrew.text);
 	// Delete the non-binary text field since it's not needed anymore
@@ -48,16 +44,13 @@ const newBrew = (req, res)=>{
 			return res.status(500).send(`Error while creating new brew, ${err.toString()}`);
 		}
 
-		console.log('NEW BREW. gOING TO RETURN THIS:');
 		obj = obj.toObject();
 		obj.gDrive = false;
-		console.log(obj);
 		return res.status(200).send(obj);
 	});
 };
 
 const updateBrew = (req, res)=>{
-	console.log('UPDATE LOCAL');
 	HomebrewModel.get({ editId: req.params.id })
 		.then((brew)=>{
 			brew = _.merge(brew, req.body);
@@ -74,13 +67,8 @@ const updateBrew = (req, res)=>{
 			brew.markModified('authors');
 			brew.markModified('systems');
 
-			console.log('saving this brew');
-			console.log(brew);
-
 			brew.save((err, obj)=>{
 				if(err) throw err;
-				console.log('sending this updated brew:');
-				console.log(obj);
 				return res.status(200).send(obj);
 			});
 		})
@@ -122,8 +110,6 @@ const deleteBrew = (req, res)=>{
 
 const newGoogleBrew = async (req, res, next)=>{
 	let oAuth2Client;
-
-	console.log('newGoogleBrew (API)');
 
 	try {	oAuth2Client = GoogleActions.authCheck(req.account, res); } catch (err) { return res.status(err.status).send(err.message); }
 

@@ -97,7 +97,6 @@ app.get('/user/:username', async (req, res, next)=>{
 	let googleBrews = [];
 
 	if(req.account && req.account.googleId){
-		console.log('GETTING DATA FOR USER PAGE');
 		googleBrews = await GoogleActions.listGoogleBrews(req, res)
 		.catch((err)=>{
 			console.error(err);
@@ -202,7 +201,7 @@ app.use((req, res)=>{
 		account     : req.account,
 	};
 	templateFn('homebrew', props)
-		.then((page)=>{console.log('^--- END OF REQUEST ---^'); res.send(page);})
+		.then((page)=>{res.send(page);})
 		.catch((err)=>{
 			console.log(err);
 			return res.sendStatus(500);

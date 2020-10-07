@@ -192,9 +192,7 @@ const EditPage = createClass({
 				this.savedBrew = res.body;
 			}
 		} else {
-			console.log('Saving Locally');
 			if(transfer) {
-				console.log('Moving to Local Storage');
 				const res = await request.post('/api')
 				.send(this.state.brew)
 				.catch((err)=>{
@@ -209,12 +207,9 @@ const EditPage = createClass({
 					console.log('Error Deleting Google Brew');
 				});
 
-				console.log('GOT THIS SAVED BREW:');
-				console.log(res);
 				this.savedBrew = res.body;
 				history.replaceState(null, null, `/edit/${this.savedBrew.editId}`); //update URL to match doc ID
 			} else {
-				console.log('Updating existing local copy');
 				const res = await request
 				.put(`/api/update/${this.state.brew.editId}`)
 				.send(this.state.brew)
@@ -228,7 +223,6 @@ const EditPage = createClass({
 			}
 		}
 
-		console.log('Finished saving. About to merge saved brew with current');
 		this.setState((prevState)=>({
 			brew : _.merge({}, prevState.brew, {
 				googleId : this.savedBrew.googleId ? this.savedBrew.googleId : null,

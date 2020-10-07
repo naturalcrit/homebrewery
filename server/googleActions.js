@@ -14,8 +14,6 @@ const config = require('nconf')
 GoogleActions = {
 
 	authCheck : (account, res)=>{
-		console.log('RUNNING AUTH CHECK');
-
 		if(!account || !account.googleId){ // If not signed into Google
 			const err = new Error('Not Signed In');
 			err.status = 401;
@@ -39,18 +37,16 @@ GoogleActions = {
 			}
 			account.googleAccessToken = tokens.access_token;
 			const JWTToken = token.generateAccessToken(account);
-			console.log('Updated Access Token');
 
 			//Save updated token to cookie
-			res.cookie('nc_session', JWTToken, { maxAge: 1000*60*60*24*365, path: '/', sameSite: 'lax' });
-			//res.cookie('nc_session', JWTToken, {maxAge: 1000*60*60*24*365, path: '/', sameSite: 'lax', domain: '.naturalcrit.com'});
+			//res.cookie('nc_session', JWTToken, { maxAge: 1000*60*60*24*365, path: '/', sameSite: 'lax' });
+			res.cookie('nc_session', JWTToken, { maxAge: 1000*60*60*24*365, path: '/', sameSite: 'lax', domain: '.naturalcrit.com' });
 		});
 
 		return oAuth2Client;
 	},
 
 	getGoogleFolder : async (auth)=>{
-		console.log('getting google folder');
 		const drive = google.drive({ version: 'v3', auth: auth });
 
 		fileMetadata = {
@@ -69,8 +65,6 @@ GoogleActions = {
 		let folderId;
 
 		if(obj.data.files.length == 0){
-			console.log('no folders found');	// CREATE APP FOLDER
-
 			const obj = await drive.files.create({
 				resource : fileMetadata
 			})
@@ -104,12 +98,7 @@ GoogleActions = {
 	    return console.error(`Error Listing Google Brews: ${err}`);
 	  });
 
-		if(obj.data.files.length) {
-	    console.log('List Google Brews:');
-	    obj.data.files.map((file)=>{
-	      console.log(`${file.name} (${file.id})`);
-	    });
-	  } else {
+		if(!obj.data.files.length) {
 	    console.log('No files found.');
 	  }
 
@@ -172,7 +161,6 @@ GoogleActions = {
 	},
 
 	newGoogleBrew : async (auth, brew)=>{
-		console.log('CREATE GOOGLE BREW');
 		const drive = google.drive({ version: 'v3', auth: auth });
 
 		const media = {
@@ -288,7 +276,6 @@ GoogleActions = {
 
 	deleteGoogleBrew : async (req, res, id)=>{
 
-		console.log('trying to delete google brew');
 		oAuth2Client = GoogleActions.authCheck(req.account, res);
 		const drive = google.drive({ version: 'v3', auth: oAuth2Client });
 
