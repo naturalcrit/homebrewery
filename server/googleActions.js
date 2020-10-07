@@ -223,7 +223,7 @@ GoogleActions = {
 	},
 
 	readFileMetadata : async (auth, id, accessId, accessType)=>{
-		const drive = google.drive({ version: 'v3', auth });
+		const drive = google.drive({ version: 'v3', auth: auth });
 
 		const obj = await drive.files.get({
 			fileId : id,
