@@ -1,4 +1,12 @@
 @navbarHeight : 28px;
+@keyframes coloring {
+	//from {color: white;}
+	//to {color: red;}
+	0%   {color: pink;}
+	50%  {color: pink;}
+	75%  {color: red;}
+	100% {color: pink;}
+}
 .homebrew nav{
 	.homebrewLogo{
 		.animate(color);
@@ -47,11 +55,16 @@
 		text-transform : initial;
 	}
 	.patreon.navItem{
+		border-left  : 1px solid #666;
+		border-right : 1px solid #666;
+		&:hover i {
+			color: red;
+		}
 		i{
 			.animate(color);
-			&:hover{
-				color : @red;
-			}
+			animation-name: coloring;
+			animation-duration: 2s;
+			color: pink;
 		}
 	}
 	.recent.navItem{
