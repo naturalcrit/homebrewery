@@ -6,7 +6,7 @@ module.exports = function(props){
 	return <Nav.item
 		className='patreon'
 		newTab={true}
-		href='https://www.patreon.com/stolksdorf'
+		href='https://www.patreon.com/NaturalCrit'
 		color='green'
 		icon='fa-heart'>
 		help out

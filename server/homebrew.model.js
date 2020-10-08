@@ -4,8 +4,8 @@ const _ = require('lodash');
 const zlib = require('zlib');
 
 const HomebrewSchema = mongoose.Schema({
-	shareId : { type: String, default: nanoid(12), index: { unique: true } },
-	editId  : { type: String, default: nanoid(12), index: { unique: true } },
+	shareId : { type: String, default: ()=>{return nanoid(12);}, index: { unique: true } },
+	editId  : { type: String, default: ()=>{return nanoid(12);}, index: { unique: true } },
 	title   : { type: String, default: '' },
 	text    : { type: String, default: '' },
 	textBin : { type: Buffer },
