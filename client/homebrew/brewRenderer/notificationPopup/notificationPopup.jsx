@@ -4,7 +4,7 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');	//Unused variable
 
-const DISMISS_KEY = 'dismiss_notification7-24-19';
+const DISMISS_KEY = 'dismiss_notification7-10-20';
 
 const NotificationPopup = createClass({
 	getInitialState : function() {
@@ -22,17 +22,22 @@ const NotificationPopup = createClass({
 	notifications : {
 		psa : function(){
 			return <li key='psa'>
-				<em>Known bug: Grey Shadow Boxes </em> <br />
-				The shadows around certain brew elements such as notes and statblocks might appear as a solid grey box when generating a PDF.  &nbsp;
-				<a target='_blank' href='https://old.reddit.com/r/homebrewery/comments/ch3v0d/psa_grey_boxesshadows_around_notes_stat_blocks_etc/'>
-					See this Reddit post
-				</a> for updates and possible workarounds.
+				<em>Google Drive Integration!</em> <br />
+				We have added Google Drive integration to the Homebrewery! <a target='_blank' href='http://naturalcrit.com/login'>Sign in</a> with
+				your Google account to link it with your Homebrewery profile. A new button in the Edit page will let you transfer your file to your personal
+				Google Drive storage, and Google will keep a backup of each version! No more lost work surprises!
+				<br /><br />
+				However, we are aware that there may be uncaught bugs. We encourage you to copy your brew into a text document before transferring to Google
+				Drive just in case any issues arise as this update is rolled out.
+				<br /><br />
+				<b>Note:</b> Transferring an existing brew to Google Drive will change the edit and share links of your document. If you have shared your
+				document online, remember to update the links there as well.
 			</li>;
 		},
 		faq : function(){
 			return <li key='faq'>
 				<em>Protect your work! </em> <br />
-				At the moment we do not save a history of your projects, so please make frequent backups of your brews!  &nbsp;
+				If you opt not to use your Google Drive, keep in mind that we do not save a history of your projects. Please make frequent backups of your brews!  &nbsp;
 				<a target='_blank' href='https://www.reddit.com/r/homebrewery/comments/adh6lh/faqs_psas_announcements/'>
 					See the FAQ
 				</a> to learn how to avoid losing your work!

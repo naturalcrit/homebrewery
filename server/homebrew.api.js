@@ -2,6 +2,7 @@ const _ = require('lodash');
 const HomebrewModel = require('./homebrew.model.js').model;
 const router = require('express').Router();
 const zlib = require('zlib');
+const GoogleActions = require('./googleActions.js');
 
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
@@ -20,17 +21,18 @@ const getGoodBrewTitle = (text)=>{
 };
 
 const newBrew = (req, res)=>{
-	const authors = (req.account) ? [req.account.username] : [];
+	const brew = req.body;
+	brew.authors = (req.account) ? [req.account.username] : [];
 
-	const newHomebrew = new HomebrewModel(_.merge({},
-		req.body,
-		{ authors: authors }
-	));
-
-	if(!newHomebrew.title) {
-		newHomebrew.title = getGoodBrewTitle(newHomebrew.text);
+	if(!brew.title) {
+		brew.title = getGoodBrewTitle(brew.text);
 	}
 
+	delete brew.editId;
+	delete brew.shareId;
+	delete brew.googleId;
+
+	const newHomebrew = new HomebrewModel(brew);
 	// Compress brew text to binary before saving
 	newHomebrew.textBin = zlib.deflateRawSync(newHomebrew.text);
 	// Delete the non-binary text field since it's not needed anymore
@@ -41,7 +43,10 @@ const newBrew = (req, res)=>{
 			console.error(err, err.toString(), err.stack);
 			return res.status(500).send(`Error while creating new brew, ${err.toString()}`);
 		}
-		return res.json(obj);
+
+		obj = obj.toObject();
+		obj.gDrive = false;
+		return res.status(200).send(obj);
 	});
 };
 
@@ -103,49 +108,48 @@ const deleteBrew = (req, res)=>{
 	});
 };
 
+const newGoogleBrew = async (req, res, next)=>{
+	let oAuth2Client;
+
+	try {	oAuth2Client = GoogleActions.authCheck(req.account, res); } catch (err) { return res.status(err.status).send(err.message); }
+
+	const brew = req.body;
+	brew.authors = (req.account) ? [req.account.username] : [];
+
+	if(!brew.title) {
+		brew.title = getGoodBrewTitle(brew.text);
+	}
+
+	delete brew.editId;
+	delete brew.shareId;
+	delete brew.googleId;
+
+	req.body = brew;
+
+	console.log(oAuth2Client);
+
+	const newBrew = await GoogleActions.newGoogleBrew(oAuth2Client, brew);
+
+	return res.status(200).send(newBrew);
+};
+
+const updateGoogleBrew = async (req, res, next)=>{
+	let oAuth2Client;
+
+	try {	oAuth2Client = GoogleActions.authCheck(req.account, res); } catch (err) { return res.status(err.status).send(err.message); }
+
+	const updatedBrew = await GoogleActions.updateGoogleBrew(oAuth2Client, req.body);
+
+	return res.status(200).send(updatedBrew);
+};
+
 router.post('/api', newBrew);
+router.post('/api/newGoogle/', newGoogleBrew);
 router.put('/api/:id', updateBrew);
 router.put('/api/update/:id', updateBrew);
+router.put('/api/updateGoogle/:id', updateGoogleBrew);
 router.delete('/api/:id', deleteBrew);
 router.get('/api/remove/:id', deleteBrew);
+router.get('/api/removeGoogle/:id', (req, res)=>{GoogleActions.deleteGoogleBrew(req, res, req.params.id);});
 
 module.exports = router;
-
-/*
-module.exports = function(app) {
-	app;
-
-	app.get('/api/search', mw.adminOnly, function(req, res) {
-		var page = req.query.page || 0;
-		var count = req.query.count || 20;
-
-		var query = {};
-		if (req.query && req.query.id) {
-			query = {
-				"$or": [{
-					editId : req.query.id
-				}, {
-					shareId : req.query.id
-				}]
-			};
-		}
-
-		HomebrewModel.find(query, {
-			text : 0 //omit the text
-		}, {
-			skip: page*count,
-			limit: count*1
-		}, function(err, objs) {
-			if (err) console.error(err);
-			return res.json({
-				page : page,
-				count : count,
-				total : homebrewTotal,
-				brews : objs
-			});
-		});
-	})
-
-	return app;
-}
-*/

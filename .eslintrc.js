@@ -55,7 +55,7 @@ module.exports = {
 		'array-bracket-spacing' : ['warn', 'never'],
 		'arrow-spacing'         : ['warn', { before: false, after: false }],
 		'comma-spacing'         : ['warn', { before: false, after: true }],
-		'indent'                : ['warn', 'tab'],
+		'indent'                : ['warn', 'tab', { 'MemberExpression': 'off' }],
 		'keyword-spacing'       : ['warn', {
 			before    : true,
 			after     : true,
