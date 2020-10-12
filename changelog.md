@@ -1,5 +1,9 @@
 # changelog
 
+### Monday, 12/10/2020 - v2.10.1
+- Fixed issue with users unable to create new brews
+- Fixing brews being lost when loaded via back button
+
 ### Wednesday, 07/10/2020 - v2.10.0
 - Google Drive integration -- Sign in with your Google account to link it with your Homebrewery profile. A new button in the Edit page will let you transfer your file to your personal Google Drive storage, and Google will keep a backup of each version! No more lost work surprises!
 
@@ -40,11 +44,13 @@
 ### Saturday, 22/04/2017 - v2.7.4
 - Give ability to hide the render warning notification
 
+```
+```
+
 ### Friday, 03/03/2017 - v2.7.3
 - Increasing the range on the Partial Page Rendering for a quick-fix for it getting out of sync on long brews.
 
-```
-```
+
 
 ### Saturday, 18/02/2017 - v2.7.2
 - Adding ability to delete a brew from the user page, incase the user creates a brew that makes the edit page unrender-able. (re:309)
@@ -82,11 +88,10 @@
 - Added a table of contents snippet (thanks u/tullisar)
 - Added a multicolumn snippet
 
+\page
 ### Thursday, 01/12/2016
 - Added in a snippet for a split table
 - Added an account nav item to new page
-
-\page
 
 ### Sunday, 27/11/2016 - v2.5.1
 - Fixed the column rendering on the new user page. Really should have tested that better
@@ -127,11 +132,11 @@
 - Fixed the noteblock overlapping into titles (thanks u/dsompura!)
 - Fixed a bad search route in the admin panel (thanks u/SnappyTom!)
 
+```
+```
+
 ### Friday, 29/07/2016 - v2.2.7
 - Adding in descriptive note blocks. (Thanks calculuschild!)
-
-```
-```
 
 ### Thursday, 07/07/2016 - v2.2.6
 - Added a new nav item on the homepage for accessing both recently viewed and edited brews (thanks [ChosenSeraph!](https://github.com/stolksdorf/homebrewery/issues/147))
