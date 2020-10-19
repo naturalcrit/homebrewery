@@ -38,6 +38,7 @@ HomebrewSchema.methods.increaseView = function(){
 	return new Promise((resolve, reject)=>{
 		this.lastViewed = new Date();
 		this.views = this.views + 1;
+		this.text = undefined;
 		this.save((err)=>{
 			if(err) return reject(err);
 			return resolve(this);
