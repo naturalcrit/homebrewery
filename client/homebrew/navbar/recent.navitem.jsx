@@ -35,24 +35,32 @@ const RecentItems = createClass({
 
 		//== Add current brew to appropriate recent items list (depending on storageKey) ==//
 		if(this.props.storageKey == 'edit'){
+			let editId = this.props.brew.editId;
+			if(this.props.brew.googleId){
+				editId = `${this.props.brew.googleId}${this.props.brew.editId}`;
+			}
 			edited = _.filter(edited, (brew)=>{
-				return brew.id !== this.props.brew.editId;
+				return brew.id !== editId;
 			});
 			edited.unshift({
-				id    : this.props.brew.editId,
+				id    : editId,
 				title : this.props.brew.title,
-				url   : `/edit/${this.props.brew.editId}`,
+				url   : `/edit/${editId}`,
 				ts    : Date.now()
 			});
 		}
 		if(this.props.storageKey == 'view'){
+			let shareId = this.props.brew.shareId;
+			if(this.props.brew.googleId){
+				shareId = `${this.props.brew.googleId}${this.props.brew.shareId}`;
+			}
 			viewed = _.filter(viewed, (brew)=>{
-				return brew.id !== this.props.brew.shareId;
+				return brew.id !== shareId;
 			});
 			viewed.unshift({
-				id    : this.props.brew.shareId,
+				id    : shareId,
 				title : this.props.brew.title,
-				url   : `/share/${this.props.brew.shareId}`,
+				url   : `/share/${shareId}`,
 				ts    : Date.now()
 			});
 		}
@@ -68,6 +76,40 @@ const RecentItems = createClass({
 			edit : edited,
 			view : viewed
 		});
+	},
+
+	componentDidUpdate : function(prevProps) {
+		if(prevProps.brew && this.props.brew.editId !== prevProps.brew.editId) {
+	 		if(this.props.storageKey == 'edit') {
+				let prevEditId = prevProps.brew.editId;
+				if(prevProps.brew.googleId){
+					prevEditId = `${prevProps.brew.googleId}${prevProps.brew.editId}`;
+				}
+
+				edited = _.filter(this.state.edit, (brew)=>{
+					return brew.id !== prevEditId;
+				});
+				let editId = this.props.brew.editId;
+				if(this.props.brew.googleId){
+					editId = `${this.props.brew.googleId}${this.props.brew.editId}`;
+				}
+				edited.unshift({
+					id    : editId,
+					title : this.props.brew.title,
+					url   : `/edit/${editId}`,
+					ts    : Date.now()
+				});
+			}
+
+			//== Store the updated lists (up to 8 items each) ==//
+			edited = _.slice(edited, 0, 8);
+
+			localStorage.setItem(EDIT_KEY, JSON.stringify(edited));
+
+			this.setState({
+				edit : edited
+			});
+		}
 	},
 
 	handleDropdown : function(show){

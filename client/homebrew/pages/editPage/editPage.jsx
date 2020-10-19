@@ -311,7 +311,7 @@ const EditPage = createClass({
 					Share
 				</Nav.item>
 				<PrintLink shareId={this.processShareId()} />
-				<RecentNavItem brew={this.props.brew} storageKey='edit' />
+				<RecentNavItem brew={this.state.brew} storageKey='edit' />
 				<Account />
 			</Nav.section>
 		</Navbar>;

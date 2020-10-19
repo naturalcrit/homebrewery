@@ -224,7 +224,6 @@ GoogleActions = {
 
 	readFileMetadata : async (auth, id, accessId, accessType)=>{
 		const drive = google.drive({ version: 'v3', auth: auth });
-		console.log(auth);
 
 		const obj = await drive.files.get({
 			fileId : id,
@@ -235,8 +234,6 @@ GoogleActions = {
 			console.error(err);
 			return;
 		});
-
-		console.log(`ACCESS TYPE: ${accessType}`);
 
 		if(obj) {
 			if(accessType == 'edit' && obj.data.properties.editId != accessId){
