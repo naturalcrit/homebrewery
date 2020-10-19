@@ -38,7 +38,7 @@ const junkBrewQuery = HomebrewModel.find({
 /* Search for brews that aren't compressed (missing the compressed text field) */
 const uncompressedBrewQuery = HomebrewModel.find({
 	'textBin' : null
-}).lean().limit(10000).select('_id');
+}).lean().limit(1000).select('_id');
 
 router.get('/admin/cleanup', mw.adminOnly, (req, res)=>{
 	junkBrewQuery.exec((err, objs)=>{
