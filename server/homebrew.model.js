@@ -34,18 +34,17 @@ HomebrewSchema.methods.sanatize = function(full=false){
 	return brew;
 };
 
-HomebrewSchema.methods.increaseView = function(){
-	return new Promise((resolve, reject)=>{
-		this.lastViewed = new Date();
-		this.views = this.views + 1;
-		const text = this.text;
-		this.text = undefined;
-		this.save((err)=>{
-			if(err) return reject(err);
-			return resolve(this);
-		});
-		this.text = text;
+HomebrewSchema.methods.increaseView = async function(){
+	this.lastViewed = new Date();
+	this.views = this.views + 1;
+	const text = this.text;
+	this.text = undefined;
+	await this.save()
+	.catch((err)=>{
+		return err;
 	});
+	this.text = text;
+	return this;
 };
 
 HomebrewSchema.statics.get = function(query){
