@@ -33,7 +33,11 @@ const BrewRenderer = createClass({
 			pages          : pages,
 			usePPR         : pages.length >= PPR_THRESHOLD,
 			visibility     : 'hidden',
-			initialContent : `<!DOCTYPE html><html><head><link href='/homebrew/bundle.css' rel='stylesheet'></link></head><body style='overflow: hidden'><div></div></body></html>`
+			initialContent : `<!DOCTYPE html><html><head>
+												<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+												<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
+												<link href='/homebrew/bundle.css' rel='stylesheet' />
+												</head><body style='overflow: hidden'><div></div></body></html>`
 		};
 	},
 	height     : 0,
