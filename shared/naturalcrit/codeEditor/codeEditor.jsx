@@ -45,24 +45,12 @@ const CodeEditor = createClass({
 
 	makeBold : function() {
 		const selection = this.codeMirror.getSelection();
-		if (selection.length === 0){
-			this.codeMirror.replaceSelection(`**${selection}**`, 'around');
-			let cursor = this.codeMirror.getCursor();
-			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 2 });
-		} else {
-			this.codeMirror.replaceSelection(`**${selection}**`, 'around');
-		}
+		this.codeMirror.replaceSelection(`**${selection}**`, 'around');
 	},
 
 	makeItalic : function() {
 		const selection = this.codeMirror.getSelection();
-		if (selection.length === 0){
-			this.codeMirror.replaceSelection(`*${selection}*`, 'around');
-			let cursor = this.codeMirror.getCursor();
-			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 1 });
-		} else {
-			this.codeMirror.replaceSelection(`*${selection}*`, 'around');
-		}
+		this.codeMirror.replaceSelection(`*${selection}*`, 'around');
 	},
 
 	componentWillReceiveProps : function(nextProps){
