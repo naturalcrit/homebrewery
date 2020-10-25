@@ -54,7 +54,7 @@ const SplitPane = createClass({
 	},
 */
 	renderDivider : function(){
-		return <div className='divider' onMouseDown={this.handleDown}>
+		return <div className='divider' onMouseDown={this.handleDown} >
 			<div className='dots'>
 				<i className='fa fa-circle' />
 				<i className='fa fa-circle' />
@@ -67,15 +67,10 @@ const SplitPane = createClass({
 		return <div className='splitPane' onMouseMove={this.handleMove} onMouseUp={this.handleUp}>
 			<Pane ref='pane1' width={this.state.size}>{this.props.children[0]}</Pane>
 			{this.renderDivider()}
-			<Pane ref='pane2'>{this.props.children[1]}</Pane>
+			<Pane ref='pane2' isDragging={this.state.isDragging}>{this.props.children[1]}</Pane>
 		</div>;
 	}
 });
-
-
-
-
-
 
 const Pane = createClass({
 	getDefaultProps : function() {
@@ -90,12 +85,16 @@ const Pane = createClass({
 				flex  : 'none',
 				width : `${this.props.width}px`
 			};
+		} else {
+			styles = {
+				pointerEvents : this.props.isDragging ? 'none' : 'auto' //Disable mouse capture in the rightmost pane; dragging into the iframe drops the divider otherwise
+			};
 		}
+
 		return <div className={cx('pane', this.props.className)} style={styles}>
 			{this.props.children}
 		</div>;
 	}
 });
-
 
 module.exports = SplitPane;

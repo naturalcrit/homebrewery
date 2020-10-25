@@ -1,5 +1,8 @@
 # changelog
 
+### Thursday, 22/10/2020 - v2.10.3
+- Fixed brews with broken code crashing the edit page when loaded (the "blue screen of death" bug).
+
 ### Monday, 19/10/2020 - v2.10.2
 - Fixed issue with "recent" item links not updating when transferring between Google Drive.
 

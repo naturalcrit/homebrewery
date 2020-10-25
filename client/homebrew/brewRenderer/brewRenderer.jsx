@@ -10,6 +10,7 @@ const ErrorBar = require('./errorBar/errorBar.jsx');
 //TODO: move to the brew renderer
 const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
 const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
+const Frame = require('react-frame-component').default;
 
 const PAGE_HEIGHT = 1056;
 const PPR_THRESHOLD = 50;
@@ -29,17 +30,19 @@ const BrewRenderer = createClass({
 			height             : 0,
 			isMounted          : false,
 
-			pages  : pages,
-			usePPR : pages.length >= PPR_THRESHOLD,
+			pages          : pages,
+			usePPR         : pages.length >= PPR_THRESHOLD,
+			visibility     : 'hidden',
+			initialContent : `<!DOCTYPE html><html><head>
+												<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+												<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
+												<link href='/homebrew/bundle.css' rel='stylesheet' />
+												</head><body style='overflow: hidden'><div></div></body></html>`
 		};
 	},
 	height     : 0,
 	lastRender : <div></div>,
 
-	componentDidMount : function() {
-		this.updateSize();
-		window.addEventListener('resize', this.updateSize);
-	},
 	componentWillUnmount : function() {
 		window.removeEventListener('resize', this.updateSize);
 	},
@@ -54,8 +57,9 @@ const BrewRenderer = createClass({
 
 	updateSize : function() {
 		this.setState({
-			height    : this.refs.main.parentNode.clientHeight,
-			isMounted : true
+			height     : this.refs.main.parentNode.clientHeight,
+			isMounted  : true,
+			visibility : 'visible'
 		});
 	},
 
@@ -85,7 +89,7 @@ const BrewRenderer = createClass({
 	},
 
 	renderPageInfo : function(){
-		return <div className='pageInfo'>
+		return <div className='pageInfo' ref='main'>
 			{this.state.viewablePageNumber + 1} / {this.state.pages.length}
 		</div>;
 	},
@@ -125,24 +129,33 @@ const BrewRenderer = createClass({
 		return this.lastRender;
 	},
 
+	frameDidMount : function(){	//This triggers when iFrame finishes internal "componentDidMount"
+		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
+			this.updateSize();
+			window.addEventListener('resize', this.updateSize);
+		}, 100);
+	},
+
 	render : function(){
+		//render in iFrame so broken code doesn't crash the site.
 		return (
 			<React.Fragment>
-				<div className='brewRenderer'
-					onScroll={this.handleScroll}
-					ref='main'
-					style={{ height: this.state.height }}>
+				<Frame initialContent={this.state.initialContent} style={{ width: '100%', height: '100%', visibility: this.state.visibility }} contentDidMount={this.frameDidMount}>
+					<div className='brewRenderer'
+						onScroll={this.handleScroll}
+						style={{ height: this.state.height }}>
 
-					<ErrorBar errors={this.props.errors} />
-					<div className='popups'>
-						<RenderWarnings />
-						<NotificationPopup />
-					</div>
+						<ErrorBar errors={this.props.errors} />
+						<div className='popups'>
+							<RenderWarnings />
+							<NotificationPopup />
+						</div>
 
-					<div className='pages' ref='pages'>
-						{this.renderPages()}
+						<div className='pages' ref='pages'>
+							{this.renderPages()}
+						</div>
 					</div>
-				</div>;
+				</Frame>
 				{this.renderPageInfo()}
 				{this.renderPPRmsg()}
 			</React.Fragment>
