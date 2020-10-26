@@ -208,22 +208,22 @@ app.get('/source/:id', (req, res)=>{
 //Render the page
 //const render = require('.build/render');
 const templateFn = require('./client/template.js');
-app.use((req, res) => {
-    const props = {
-        version: require('./package.json').version,
-        url: req.originalUrl,
-        welcomeText: welcomeText,
-        changelog: changelogText,
-        brew: req.brew,
-        brews: req.brews,
-        googleBrews: req.googleBrews,
-        account: req.account,
-    };
-    templateFn('homebrew', title = req.brew ? req.brew.title : "", props)
-        .then((page) => { res.send(page); })
-        .catch((err) => {
-            console.log(err);
-            return res.sendStatus(500);
+app.use((req, res)=>{
+	const props = {
+		version     : require('./package.json').version,
+		url         : req.originalUrl,
+		welcomeText : welcomeText,
+		changelog   : changelogText,
+		brew        : req.brew,
+		brews       : req.brews,
+		googleBrews : req.googleBrews,
+		account     : req.account,
+	};
+	templateFn('homebrew', title = req.brew ? req.brew.title : '', props)
+        .then((page)=>{ res.send(page); })
+        .catch((err)=>{
+        	console.log(err);
+        	return res.sendStatus(500);
         });
 });
 
