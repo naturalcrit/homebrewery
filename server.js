@@ -219,12 +219,12 @@ app.use((req, res)=>{
 		googleBrews : req.googleBrews,
 		account     : req.account,
 	};
-	templateFn('homebrew', props)
-		.then((page)=>{res.send(page);})
-		.catch((err)=>{
-			console.log(err);
-			return res.sendStatus(500);
-		});
+	templateFn('homebrew', title = req.brew ? req.brew.title : '', props)
+        .then((page)=>{ res.send(page); })
+        .catch((err)=>{
+        	console.log(err);
+        	return res.sendStatus(500);
+        });
 });
 
 
