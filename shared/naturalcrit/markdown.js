@@ -19,12 +19,11 @@ renderer.link = function (href, title, text) {
 		self = true;
 	}
 	href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
-	console.log(href);
-	console.log(this.options.sanitize);
+
 	if(href === null) {
 		return text;
 	}
-	let out = `<a href="${href}"`;
+	let out = `<a href="${escape(href)}"`;
 	if(title) {
 		out += ` title="${title}"`;
 	}
@@ -32,7 +31,6 @@ renderer.link = function (href, title, text) {
 		out += ' target="_self"';
 	}
 	out += `>${text}</a>`;
-	console.log(out);
 	return out;
 };
 
@@ -57,6 +55,32 @@ const cleanUrl = function (sanitize, base, href) {
 		return null;
 	}
 	return href;
+};
+
+const escapeTest = /[&<>"']/;
+const escapeReplace = /[&<>"']/g;
+const escapeTestNoEncode = /[<>"']|&(?!#?\w+;)/;
+const escapeReplaceNoEncode = /[<>"']|&(?!#?\w+;)/g;
+const escapeReplacements = {
+	'&'  : '&amp;',
+	'<'  : '&lt;',
+	'>'  : '&gt;',
+	'"'  : '&quot;',
+	'\'' : '&#39;'
+};
+const getEscapeReplacement = (ch)=>escapeReplacements[ch];
+const escape = function (html, encode) {
+	if(encode) {
+		if(escapeTest.test(html)) {
+			return html.replace(escapeReplace, getEscapeReplacement);
+		}
+	} else {
+		if(escapeTestNoEncode.test(html)) {
+			return html.replace(escapeReplaceNoEncode, getEscapeReplacement);
+		}
+	}
+
+	return html;
 };
 
 const sanatizeScriptTags = (content)=>{
