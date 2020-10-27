@@ -13,6 +13,52 @@ renderer.html = function (html) {
 	return html;
 };
 
+renderer.link = function (href, title, text) {
+	let self = false;
+	if(href[0] == '#') {
+		self = true;
+	}
+	href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+	console.log(href);
+	console.log(this.options.sanitize);
+	if(href === null) {
+		return text;
+	}
+	let out = `<a href="${href}"`;
+	if(title) {
+		out += ` title="${title}"`;
+	}
+	if(self) {
+		out += ' target="_self"';
+	}
+	out += `>${text}</a>`;
+	console.log(out);
+	return out;
+};
+
+const nonWordAndColonTest = /[^\w:]/g;
+const cleanUrl = function (sanitize, base, href) {
+	if(sanitize) {
+		let prot;
+		try {
+			prot = decodeURIComponent(unescape(href))
+        .replace(nonWordAndColonTest, '')
+        .toLowerCase();
+		} catch (e) {
+			return null;
+		}
+		if(prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
+			return null;
+		}
+	}
+	try {
+		href = encodeURI(href).replace(/%25/g, '%');
+	} catch (e) {
+		return null;
+	}
+	return href;
+};
+
 const sanatizeScriptTags = (content)=>{
 	return content
 		.replace(/<script/ig, '&lt;script')
@@ -87,4 +133,3 @@ module.exports = {
 		return errors;
 	},
 };
-
