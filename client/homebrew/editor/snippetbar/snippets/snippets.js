@@ -167,6 +167,38 @@ module.exports = [
 				gen  : ClassTableGen.half,
 			},
 			{
+				name : 'Third-Caster Spells Table',
+				icon : 'fa-table',
+				gen  : function() {
+					return [
+						'<div class=\'arch-table\'>',
+						'##### Third-Caster Spellcasting',
+						'###### —Spell Slots per Spell Level—',
+						'| Class<br>Level | Cantrips<br>Known | Spells<br>Known | 1st | 2nd | 3rd | 4th |',
+						'|:---:|:-:|:-:|:-:|:-:|:-:|:-:|',
+						'| 3rd | 2 | 3 | 2 | — | — | — |',
+						'| 4th | 2 | 4 | 3 | — | — | — |',
+						'| 5th | 2 | 4 | 3 | — | — | — |',
+						'| 6th | 2 | 4 | 3 | — | — | — |',
+						'| 7th | 2 | 5 | 4 | 2 | — | — |',
+						'| 8th | 2 | 6 | 4 | 2 | — | — |',
+						'| 9th | 2 | 6 | 4 | 2 | — | — |',
+						'|10th | 3 | 7 | 4 | 3 | — | — |',
+						'|11th | 3 | 8 | 4 | 3 | — | — |',
+						'|12th | 3 | 8 | 4 | 3 | — | — |',
+						'|13th | 3 | 9 | 4 | 3 | 2 | — |',
+						'|14th | 3 |10 | 4 | 3 | 2 | — |',
+						'|15th | 3 |10 | 4 | 3 | 2 | — |',
+						'|16th | 3 |11 | 4 | 3 | 3 | — |',
+						'|17th | 3 |11 | 4 | 3 | 3 | — |',
+						'|18th | 3 |11 | 4 | 3 | 3 | — |',
+						'|19th | 3 |12 | 4 | 3 | 3 | 1 |',
+						'|20th | 3 |13 | 4 | 3 | 3 | 1 |',
+						'</div>',
+					].join('\n');
+				},
+			},
+			{
 				name : 'Table',
 				icon : 'fa-th-list',
 				gen  : function(){
