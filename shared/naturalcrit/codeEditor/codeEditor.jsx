@@ -45,23 +45,19 @@ const CodeEditor = createClass({
 
 	makeBold : function() {
 		const selection = this.codeMirror.getSelection();
+		this.codeMirror.replaceSelection(`**${selection}**`, 'around');
 		if(selection.length === 0){
-			this.codeMirror.replaceSelection(`**${selection}**`, 'around');
 			const cursor = this.codeMirror.getCursor();
 			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 2 });
-		} else {
-			this.codeMirror.replaceSelection(`**${selection}**`, 'around');
 		}
 	},
 
 	makeItalic : function() {
 		const selection = this.codeMirror.getSelection();
+		this.codeMirror.replaceSelection(`*${selection}*`, 'around');
 		if(selection.length === 0){
-			this.codeMirror.replaceSelection(`*${selection}*`, 'around');
 			const cursor = this.codeMirror.getCursor();
 			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 1 });
-		} else {
-			this.codeMirror.replaceSelection(`*${selection}*`, 'around');
 		}
 	},
 
