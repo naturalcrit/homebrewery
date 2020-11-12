@@ -47,7 +47,7 @@
     "classnames": "^2.2.6",
     "codemirror": "^5.58.1",
     "cookie-parser": "^1.4.5",
-    "create-react-class": "^15.6.3",
+    "create-react-class": "^15.7.0",
     "express": "^4.17.1",
     "express-static-gzip": "2.1.0",
     "fs-extra": "9.0.1",
