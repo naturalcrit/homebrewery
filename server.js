@@ -1,10 +1,29 @@
 const _ = require('lodash');
 const jwt = require('jwt-simple');
+const fs = require('fs-extra');
 const express = require('express');
 const app = express();
 
 const homebrewApi = require('./server/homebrew.api.js');
 const GoogleActions = require('./server/googleActions.js');
+
+// Serve brotli-compressed static files if available
+app.get('*.js', function(req, res, next) {
+	if(fs.existsSync('build' + req.url + '.br')){
+		req.url = req.url + '.br';
+		res.set('Content-Encoding', 'br');
+		res.set('Content-Type', 'text/javascript');
+	}
+  next();
+});
+app.get('*.css', function(req, res, next) {
+	if(fs.existsSync('build' + req.url + '.br')){
+		req.url = req.url + '.br';
+		res.set('Content-Encoding', 'br');
+		res.set('Content-Type', 'text/javascript');
+	}
+  next();
+});
 
 app.use(express.static(`${__dirname}/build`));
 app.use(require('body-parser').json({ limit: '25mb' }));
