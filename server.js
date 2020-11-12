@@ -1,12 +1,19 @@
 const _ = require('lodash');
 const jwt = require('jwt-simple');
+const expressStaticGzip = require('express-static-gzip');
 const express = require('express');
 const app = express();
 
 const homebrewApi = require('./server/homebrew.api.js');
 const GoogleActions = require('./server/googleActions.js');
 
-app.use(express.static(`${__dirname}/build`));
+// Serve brotli-compressed static files if available
+app.use('/', expressStaticGzip(`${__dirname}/build`, {
+	enableBrotli    : true,
+	orderPreference : ['br']
+}));
+
+//app.use(express.static(`${__dirname}/build`));
 app.use(require('body-parser').json({ limit: '25mb' }));
 app.use(require('cookie-parser')());
 app.use(require('./server/forcessl.mw.js'));
@@ -44,13 +51,8 @@ app.use((req, res, next)=>{
 	return next();
 });
 
-
 app.use(homebrewApi);
-
 app.use(require('./server/admin.api.js'));
-
-//app.use('/user',require('./server/user.routes.js'));
-
 
 const HomebrewModel = require('./server/homebrew.model.js').model;
 const welcomeText = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
@@ -199,11 +201,6 @@ app.get('/print/:id', (req, res, next)=>{
 			});
 	}
 });
-
-app.get('/source/:id', (req, res)=>{
-
-});
-
 
 //Render the page
 //const render = require('.build/render');
