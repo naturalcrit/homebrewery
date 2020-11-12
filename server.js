@@ -8,21 +8,13 @@ const homebrewApi = require('./server/homebrew.api.js');
 const GoogleActions = require('./server/googleActions.js');
 
 // Serve brotli-compressed static files if available
-app.get('*.js', function(req, res, next) {
-	if(fs.existsSync('build' + req.url + '.br')){
-		req.url = req.url + '.br';
+app.get(['*.js', '*.css'], function(req, res, next) {
+	if(fs.existsSync(`build${req.url}.br`)){
+		req.url = `${req.url}.br`;
 		res.set('Content-Encoding', 'br');
 		res.set('Content-Type', 'text/javascript');
 	}
-  next();
-});
-app.get('*.css', function(req, res, next) {
-	if(fs.existsSync('build' + req.url + '.br')){
-		req.url = req.url + '.br';
-		res.set('Content-Encoding', 'br');
-		res.set('Content-Type', 'text/javascript');
-	}
-  next();
+	next();
 });
 
 app.use(express.static(`${__dirname}/build`));
@@ -63,13 +55,8 @@ app.use((req, res, next)=>{
 	return next();
 });
 
-
 app.use(homebrewApi);
-
 app.use(require('./server/admin.api.js'));
-
-//app.use('/user',require('./server/user.routes.js'));
-
 
 const HomebrewModel = require('./server/homebrew.model.js').model;
 const welcomeText = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
@@ -218,11 +205,6 @@ app.get('/print/:id', (req, res, next)=>{
 			});
 	}
 });
-
-app.get('/source/:id', (req, res)=>{
-
-});
-
 
 //Render the page
 //const render = require('.build/render');
