@@ -1,6 +1,5 @@
 const _ = require('lodash');
 const jwt = require('jwt-simple');
-const fs = require('fs-extra');
 const expressStaticGzip = require('express-static-gzip');
 const express = require('express');
 const app = express();
@@ -18,8 +17,8 @@ const GoogleActions = require('./server/googleActions.js');
 // });
 
 app.use('/', expressStaticGzip(`${__dirname}/build`, {
-    enableBrotli: true,
-    orderPreference: ['br']
+	enableBrotli    : true,
+	orderPreference : ['br']
 }));
 
 //app.use(express.static(`${__dirname}/build`));
