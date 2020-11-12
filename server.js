@@ -8,14 +8,6 @@ const homebrewApi = require('./server/homebrew.api.js');
 const GoogleActions = require('./server/googleActions.js');
 
 // Serve brotli-compressed static files if available
-// app.get(['*.js', '*.css'], function(req, res, next) {
-// 	if(fs.existsSync(`build${req.url}.br`)){
-// 		req.url = `${req.url}.br`;
-// 		res.set('Content-Encoding', 'br');
-// 	}
-// 	next();
-// });
-
 app.use('/', expressStaticGzip(`${__dirname}/build`, {
 	enableBrotli    : true,
 	orderPreference : ['br']
