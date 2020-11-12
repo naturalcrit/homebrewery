@@ -10,7 +10,8 @@ const GoogleActions = require('./server/googleActions.js');
 // Serve brotli-compressed static files if available
 app.use('/', expressStaticGzip(`${__dirname}/build`, {
 	enableBrotli    : true,
-	orderPreference : ['br']
+	orderPreference : ['br'],
+	index           : false
 }));
 
 //app.use(express.static(`${__dirname}/build`));
