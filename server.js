@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const jwt = require('jwt-simple');
 const fs = require('fs-extra');
+const expressStaticGzip = require('express-static-gzip');
 const express = require('express');
 const app = express();
 
@@ -8,16 +9,20 @@ const homebrewApi = require('./server/homebrew.api.js');
 const GoogleActions = require('./server/googleActions.js');
 
 // Serve brotli-compressed static files if available
-app.get(['*.js', '*.css'], function(req, res, next) {
-	if(fs.existsSync(`build${req.url}.br`)){
-		req.url = `${req.url}.br`;
-		res.set('Content-Encoding', 'br');
-		res.set('Content-Type', 'text/javascript');
-	}
-	next();
-});
+// app.get(['*.js', '*.css'], function(req, res, next) {
+// 	if(fs.existsSync(`build${req.url}.br`)){
+// 		req.url = `${req.url}.br`;
+// 		res.set('Content-Encoding', 'br');
+// 	}
+// 	next();
+// });
 
-app.use(express.static(`${__dirname}/build`));
+app.use('/', expressStaticGzip(`${__dirname}/build`, {
+    enableBrotli: true,
+    orderPreference: ['br']
+}));
+
+//app.use(express.static(`${__dirname}/build`));
 app.use(require('body-parser').json({ limit: '25mb' }));
 app.use(require('cookie-parser')());
 app.use(require('./server/forcessl.mw.js'));
