@@ -22,9 +22,8 @@ const BrewItem = require('./brewItem/brewItem.jsx');
 const UserPage = createClass({
 	getDefaultProps : function() {
 		return {
-			username    : '',
-			brews       : [],
-			googleBrews : []
+			username : '',
+			brews    : []
 		};
 	},
 
