@@ -1,5 +1,9 @@
 # changelog
 
+### Wednesday, 25/11/2020 - v2.10.4
+- Fixed Google Drive brews not saving metadata (view count, description, etc.) Note that we are still working on making published Google brews visible to the public when viewing your profile page.
+- Fixed inconsistent font size for bullet lists inside notes (thanks /u/garumoo! re:1085)
+
 ### Thursday, 22/10/2020 - v2.10.3
 - Fixed brews with broken code crashing the edit page when loaded (the "blue screen of death" bug).
 
@@ -33,14 +37,14 @@
 - Fixed issue of being unable to change brew metadata
 - Sanitized script tags-javascript typed into the editor was crashing brews
 
+```
+```
+
 ### Sunday, 08/04/2018 - v2.8.0
 - Re-enabled box shadows for PDF output
 - Added a "contributing guide" for the GitHub
 - "Report Issue" navbar button now links to the subreddit
 - Refactored background code
-
-```
-```
 
 ### Sunday, 04/06/2017 - v2.7.5
 - Fixed the class feature snippet duplicating the entire brew

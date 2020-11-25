@@ -153,6 +153,10 @@ app.get('/share/:id', (req, res, next)=>{
 		const shareId = req.params.id.slice(-12);
 		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
 		.then((brew)=>{
+			GoogleActions.increaseView(googleId, shareId, 'share', brew);
+			return brew;
+		})
+		.then((brew)=>{
 			req.brew = brew; //TODO Need to sanitize later
 			return next();
 		})
