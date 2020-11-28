@@ -12,15 +12,14 @@ const execute = function(val, brew){
 	return val;
 };
 
-
-
 const Snippetbar = createClass({
 	getDefaultProps : function() {
 		return {
-			brew     : '',
-			onInject : ()=>{},
-			onToggle : ()=>{},
-			showmeta : false
+			brew           : '',
+			onInject       : ()=>{},
+			onToggle       : ()=>{},
+			showmeta       : false,
+			showMetaButton : true
 		};
 	},
 
@@ -41,13 +40,18 @@ const Snippetbar = createClass({
 		});
 	},
 
+	renderMetadataButton : function(){
+		if(!this.props.showMetaButton) return;
+		return <div className={cx('toggleMeta', { selected: this.props.showmeta })}
+			onClick={this.props.onToggle}>
+			<i className='fa fa-bars' />
+		</div>;
+	},
+
 	render : function(){
 		return <div className='snippetBar'>
 			{this.renderSnippetGroups()}
-			<div className={cx('toggleMeta', { selected: this.props.showmeta })}
-				onClick={this.props.onToggle}>
-				<i className='fa fa-bars' />
-			</div>
+			{this.renderMetadataButton()}
 		</div>;
 	}
 });
