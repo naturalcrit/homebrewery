@@ -331,7 +331,7 @@ const EditPage = createClass({
 						metadata={this.state.brew}
 						onMetadataChange={this.handleMetadataChange}
 					/>
-					<BrewRenderer text={this.state.brew.text} errors={this.state.htmlErrors} />
+					<BrewRenderer text={this.state.brew.text} errors={this.state.htmlErrors} version='v2' />
 				</SplitPane>
 			</div>
 		</div>;

@@ -4,6 +4,7 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 
+const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
 const Markdown = require('naturalcrit/markdown.js');
 const ErrorBar = require('./errorBar/errorBar.jsx');
 
@@ -18,12 +19,16 @@ const PPR_THRESHOLD = 50;
 const BrewRenderer = createClass({
 	getDefaultProps : function() {
 		return {
-			text   : '',
-			errors : []
+			text    : '',
+			version : '',
+			errors  : []
 		};
 	},
 	getInitialState : function() {
 		const pages = this.props.text.split('\\page');
+		let renderer = 'legacy';
+		if(this.props.version)
+			renderer = this.props.version;
 
 		return {
 			viewablePageNumber : 0,
@@ -33,6 +38,7 @@ const BrewRenderer = createClass({
 			pages          : pages,
 			usePPR         : pages.length >= PPR_THRESHOLD,
 			visibility     : 'hidden',
+			renderer       : renderer,
 			initialContent : `<!DOCTYPE html><html><head>
 												<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 												<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
@@ -110,7 +116,10 @@ const BrewRenderer = createClass({
 	},
 
 	renderPage : function(pageText, index){
-		return <div className='phb' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: Markdown.render(pageText) }} key={index} />;
+		if(this.state.renderer == 'legacy')
+			return <div className='phb' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(pageText) }} key={index} />;
+		else
+			return <div className='phb' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: Markdown.render(pageText) }} key={index} />;
 	},
 
 	renderPages : function(){
@@ -142,7 +151,7 @@ const BrewRenderer = createClass({
 		return (
 			<React.Fragment>
 				<Frame initialContent={this.state.initialContent} style={{ width: '100%', height: '100%', visibility: this.state.visibility }} contentDidMount={this.frameDidMount}>
-					<div className='brewRenderer'
+					<div className={cx('brewRenderer', this.state.renderer)}
 						onScroll={this.handleScroll}
 						style={{ height: this.state.height }}>
 
