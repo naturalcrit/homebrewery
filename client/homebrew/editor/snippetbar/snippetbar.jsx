@@ -15,10 +15,10 @@ const execute = function(val, brew){
 const Snippetbar = createClass({
 	getDefaultProps : function() {
 		return {
-			brew     : '',
-			onInject : ()=>{},
-			onToggle : ()=>{},
-			showmeta : false,
+			brew           : '',
+			onInject       : ()=>{},
+			onToggle       : ()=>{},
+			showmeta       : false,
 			showMetaButton : true
 		};
 	},
@@ -45,7 +45,7 @@ const Snippetbar = createClass({
 		return <div className={cx('toggleMeta', { selected: this.props.showmeta })}
 			onClick={this.props.onToggle}>
 			<i className='fa fa-bars' />
-		</div>
+		</div>;
 	},
 
 	render : function(){
