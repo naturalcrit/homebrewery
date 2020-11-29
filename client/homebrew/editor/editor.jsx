@@ -23,7 +23,8 @@ const Editor = createClass({
 
 			metadata         : {},
 			onMetadataChange : ()=>{},
-			showMetaButton   : true
+			showMetaButton   : true,
+			version          : ''
 		};
 	},
 	getInitialState : function() {
@@ -87,6 +88,10 @@ const Editor = createClass({
 				codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
 				r.push(lineNumber);
 			}
+			if(line.indexOf('\\column') !== -1){
+				codeMirror.addLineClass(lineNumber, 'background', 'columnLine');
+				r.push(lineNumber);
+			}
 			return r;
 		}, []);
 		return lineNumbers;
@@ -120,7 +125,8 @@ const Editor = createClass({
 					onInject={this.handleInject}
 					onToggle={this.handgleToggle}
 					showmeta={this.state.showMetadataEditor}
-					showMetaButton={this.props.showMetaButton} />
+					showMetaButton={this.props.showMetaButton}
+					version={this.props.version} />
 				{this.renderMetadataEditor()}
 				<CodeEditor
 					ref='codeEditor'

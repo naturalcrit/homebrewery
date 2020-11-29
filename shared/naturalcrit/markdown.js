@@ -16,12 +16,12 @@ renderer.html = function (html) {
 // Mustache-style Divs {{class \n content ... \n}}
 let blockCount = 0;
 renderer.paragraph = function(text){
-	const blockReg = /{{[\w|,]+|}}/g;
+	const blockReg = /{{[\w|,]*|}}/g;
 	const matches = text.match(blockReg);
 	if(!matches) return `\n<p>${text}</p>\n`;
 	let matchIndex = 0;
 	const res =  _.reduce(text.split(blockReg), (r, text)=>{
-		if(text) r.push(Markdown(text, { renderer: renderer, sanitize: true }));
+		if(text) r.push(Markdown(text, { renderer: renderer }));
 
 		const block = matches[matchIndex];
 		if(block && block[0] == '{'){
@@ -124,6 +124,7 @@ const tagRegex = new RegExp(`(${
 module.exports = {
 	marked : Markdown,
 	render : (rawBrewText)=>{
+		rawBrewText = rawBrewText.replace(/\\column/g, '{{columnSplit }}');
 		return Markdown(
 			sanatizeScriptTags(rawBrewText),
 			{ renderer: renderer }

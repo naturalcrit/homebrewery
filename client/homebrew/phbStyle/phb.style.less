@@ -326,12 +326,12 @@ body {
 		text-indent     : -1em;
 		list-style-type : none;
 	}
-	//Column Break
-	pre, code{
+	.columnSplit {
 		visibility                 : hidden;
 		-webkit-column-break-after : always;
 		break-after                : always;
 		-moz-column-break-after    : always;
+		break-before               : column;
 	}
 	//Avoid breaking up
 	p,blockquote,table{
