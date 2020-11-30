@@ -8,7 +8,23 @@ The easiest way to get started using the Homebrewery is to use it [on our websit
 First, install three programs that the Homebrewery requires to run and retrieve updates
 
 1. install [node](https://nodejs.org/en/)
-1. install [mongodb](https://www.mongodb.com/)
+1. install [mongodb](https://www.mongodb.com/try/download/community) (Community version)
+
+    For easiest installation, follow these steps:
+    1. In the installer, uncheck the option to run as a service
+    1. You can install MongoDB Compass if you want a GUI to view your database documents
+    1. Go to the C drive and create a folder called "data"
+    1. Inside the "data" folder, create a new folder called "db"
+    1. Open a command prompt or other terminal and navigate to your mongodb install folder (c:program files\mongo\server\4.4\bin)
+    1. In the command prompt, run "mongod", which will start up your local database server
+    1. While MongoD is running, open a second command prompt and navigate to the mongodb install folder
+    1. In the second command prompt, run "mongo", which allows you to edit the database
+    1. Type `use homebrewery` to create the homebrewery database. You should see `switched to db homebrewery`
+    1. Type `db.brews.insert({"title":"test"})` to create a blank document. You should see `WriteResult({ "nInserted" : 1 })`
+    1. Search in Windows for "Advanced system settings" and open it
+    1. Click "Environment variables", find the "path" variable, and double-click to open it
+    1. Click "New" and paste in the path to the mongodb "bin" folder
+    1. Click "OK", "OK", "OK" to close all the windows
 1. install [git](https://git-scm.com/downloads) (select the option that allows Git to run from the command prompt)
 
 Second, set up the MongoDB database 
