@@ -88,10 +88,23 @@ const Editor = createClass({
 				codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
 				r.push(lineNumber);
 			}
-			if(line.indexOf('\\column') !== -1){
-				codeMirror.addLineClass(lineNumber, 'background', 'columnLine');
+
+			if(line.indexOf('\\column') === 0){
+				codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 				r.push(lineNumber);
 			}
+
+			if(_.startsWith(line, '{{') || _.startsWith(line, '}}')){
+				let endCh = line.length+1;
+				if(line.indexOf(' ') !== -1)
+					endCh = line.indexOf(' ');
+				codeMirror.markText({line:lineNumber, ch:0}, {line:lineNumber, ch:endCh}, {className: 'block'});
+
+				if(line.lastIndexOf('}}') == line.length-2)
+					codeMirror.markText({line:lineNumber, ch:line.lastIndexOf('}}')}, {line:lineNumber, ch:line.length+1}, {className: 'block'});
+			}
+
+
 			return r;
 		}, []);
 		return lineNumbers;
