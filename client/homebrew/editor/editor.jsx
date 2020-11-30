@@ -111,7 +111,7 @@ const Editor = createClass({
 						endCh = match[0].indexOf(' ');
 					codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + endCh }, { className: 'inline-block' });
 					codeMirror.markText({ line: lineNumber, ch: regex.lastIndex-2 }, { line: lineNumber, ch: regex.lastIndex }, { className: 'inline-block' });
-					}
+				}
 			}
 
 
