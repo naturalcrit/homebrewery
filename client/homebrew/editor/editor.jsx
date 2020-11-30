@@ -98,10 +98,10 @@ const Editor = createClass({
 				let endCh = line.length+1;
 				if(line.indexOf(' ') !== -1)
 					endCh = line.indexOf(' ');
-				codeMirror.markText({line:lineNumber, ch:0}, {line:lineNumber, ch:endCh}, {className: 'block'});
+				codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
 
 				if(line.lastIndexOf('}}') == line.length-2)
-					codeMirror.markText({line:lineNumber, ch:line.lastIndexOf('}}')}, {line:lineNumber, ch:line.length+1}, {className: 'block'});
+					codeMirror.markText({ line: lineNumber, ch: line.lastIndexOf('}}') }, { line: lineNumber, ch: line.length+1 }, { className: 'block' });
 			}
 
 
