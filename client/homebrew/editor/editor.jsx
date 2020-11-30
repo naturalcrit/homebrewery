@@ -99,9 +99,19 @@ const Editor = createClass({
 				if(line.indexOf(' ') !== -1)
 					endCh = line.indexOf(' ');
 				codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
+			}
 
-				if(line.lastIndexOf('}}') == line.length-2)
-					codeMirror.markText({ line: lineNumber, ch: line.lastIndexOf('}}') }, { line: lineNumber, ch: line.length+1 }, { className: 'block' });
+			if(line.indexOf('{{') !== -1 && line.indexOf('}}') !== -1){
+				const regex = /{{.*?}}/g;
+				let match;
+				let endCh;
+				while ((match = regex.exec(line)) != null) {
+					endCh = match[0].length;
+					if(match[0].indexOf(' ') !== -1)
+						endCh = match[0].indexOf(' ');
+					codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + endCh }, { className: 'inline-block' });
+					codeMirror.markText({ line: lineNumber, ch: regex.lastIndex-2 }, { line: lineNumber, ch: regex.lastIndex }, { className: 'inline-block' });
+					}
 			}
 
 
