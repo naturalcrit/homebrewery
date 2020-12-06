@@ -1,6 +1,6 @@
 #!/bin/sh
 
-pkg install -y git nano node npm mongodb36-3.6.20
+pkg install -y git nano node npm mongodb44-4.4.1
 
 sysrc mongod_enable=YES
 service mongod start
