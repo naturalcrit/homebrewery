@@ -1,20 +1,20 @@
 #!/bin/sh
 
-pkg install -y git nano node npm mongodb44
+pkg install -y git nano node npm mongodb36-3.6.20
 
 sysrc mongod_enable=YES
 service mongod start
 
-cd /usr/local/
-git clone https://github.com/naturalcrit/homebrewery.git
+cd /
+git clone https://github.com/G-Ambatte/homebrewery.git
 
 cd homebrewery
 npm install
-npm audit fix
+npm audit fix -force
 npm run postinstall
 
-cp freebsd/rc.d/homebrewery /usr/local/etc/rc.d/
-chmod +x /usr/local/etc/rc.d/homebrewery
+cp freebsd/rc.d/homebrewery /etc/rc.d/
+chmod +x /etc/rc.d/homebrewery
 
-sysrc homebrewery_enable=YES
+sysrc homebrewery=YES
 service homebrewery start
