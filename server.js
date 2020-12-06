@@ -27,6 +27,11 @@ const config = require('nconf')
 	.file('environment', { file: `config/${process.env.NODE_ENV}.json` })
 	.file('defaults', { file: 'config/default.json' });
 
+if ( !process.env.NODE_ENV && config.get('environment') ) {
+	process.env.NODE_ENV = config.get('environment');
+	console.log('NODE_ENV set from config')
+}
+
 //DB
 const mongoose = require('mongoose');
 mongoose.connect(config.get('mongodb_uri') || config.get('mongolab_uri') || 'mongodb://localhost/naturalcrit',
@@ -232,6 +237,6 @@ app.use((req, res)=>{
 });
 
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || config.get('web_port') || 8000;
 app.listen(PORT);
 console.log(`server on port:${PORT}`);

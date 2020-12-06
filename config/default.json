@@ -1,5 +1,7 @@
 {
 	"host" : "homebrewery.local.naturalcrit.com:8000",
 	"naturalcrit_url" : "local.naturalcrit.com:8010",
-	"secret" : "secret"
+	"secret" : "secret",
+	"web_port" : 8001,
+	"environment" : "local"
 }
