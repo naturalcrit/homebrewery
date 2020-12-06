@@ -16,5 +16,5 @@ npm run postinstall
 cp freebsd/rc.d/homebrewery /etc/rc.d/
 chmod +x /etc/rc.d/homebrewery
 
-sysrc homebrewery=YES
+sysrc homebrewery_enable=YES
 service homebrewery start
