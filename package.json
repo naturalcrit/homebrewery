@@ -57,7 +57,7 @@
     "lodash": "^4.17.20",
     "marked": "^0.3.19",
     "moment": "^2.29.1",
-    "mongoose": "^5.10.9",
+    "mongoose": "^5.11.4",
     "nanoid": "3.1.12",
     "nconf": "^0.10.0",
     "prop-types": "15.7.2",
