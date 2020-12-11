@@ -5,24 +5,27 @@ The Homebrewery is a tool for making authentic looking [D&D content](https://dnd
 The easiest way to get started using the Homebrewery is to use it [on our website](https://homebrewery.naturalcrit.com). The code is open source, so feel free to clone it, tinker with it. If you want to make changes to the code, you can run your own local version for testing by following the installation instructions below.
 
 ### Installation
-First, install two programs that the Homebrewery requires to run.
+First, install three programs that the Homebrewery requires to run and retrieve updates
 
 1. install [node](https://nodejs.org/en/)
 1. install [mongodb](https://www.mongodb.com/)
+1. install [git](https://git-scm.com/downloads) (select the option that allows Git to run from the command prompt)
 
-Second, download a copy of the repository. If you have git you can do so with
+Second, set up the MongoDB database 
+
+Third, download a copy of the repository. Once you have git you can do so with
 ```
 git clone https://github.com/naturalcrit/homebrewery.git
 ```
 
-Third, you will need to add the environment variable `NODE_ENV = local` to allow the project to run locally.
+Fourth, you will need to add the environment variable `NODE_ENV = local` to allow the project to run locally.
 
 You can set this temporarily in your shell of choice:
 * Windows Powershell: `$env:NODE_ENV="local"`
 * Windows CMD: `set NODE_ENV=local`
 * Linux / OSX: `export NODE_ENV=local`
 
-Fourth, you will need to install the program and run it using the two commands:
+Fifth, you will need to install the Node dependencies, compile the app, and run it using the two commands:
 
 1. `npm install`
 1. `npm start`

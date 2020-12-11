@@ -1,3 +1,4 @@
+require('./brewCleanup.less');
 const React       = require('react');
 const createClass = require('create-react-class');
 const cx          = require('classnames');

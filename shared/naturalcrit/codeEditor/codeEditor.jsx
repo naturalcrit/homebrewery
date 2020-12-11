@@ -1,3 +1,4 @@
+require('./codeEditor.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
@@ -45,11 +46,19 @@ const CodeEditor = createClass({
 	makeBold : function() {
 		const selection = this.codeMirror.getSelection();
 		this.codeMirror.replaceSelection(`**${selection}**`, 'around');
+		if(selection.length === 0){
+			const cursor = this.codeMirror.getCursor();
+			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 2 });
+		}
 	},
 
 	makeItalic : function() {
 		const selection = this.codeMirror.getSelection();
 		this.codeMirror.replaceSelection(`*${selection}*`, 'around');
+		if(selection.length === 0){
+			const cursor = this.codeMirror.getCursor();
+			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 1 });
+		}
 	},
 
 	componentWillReceiveProps : function(nextProps){

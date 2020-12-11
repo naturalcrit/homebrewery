@@ -4,7 +4,7 @@
 @import (less) './client/homebrew/phbStyle/phb.depricated.less';
 //Colors
 @background            : #EEE5CE;
-@noteGreen             : #FF0000;
+@noteGreen             : #e0e5c1;
 @headerUnderline       : #c9ad6a;
 @horizontalRule        : #9c2b1b;
 @headerText            : #58180D;
@@ -326,12 +326,12 @@ body {
 		text-indent     : -1em;
 		list-style-type : none;
 	}
-	.columnSplit {
+	//Column Break
+	pre, code{
 		visibility                 : hidden;
 		-webkit-column-break-after : always;
 		break-after                : always;
 		-moz-column-break-after    : always;
-		break-before               : column;
 	}
 	//Avoid breaking up
 	p,blockquote,table{

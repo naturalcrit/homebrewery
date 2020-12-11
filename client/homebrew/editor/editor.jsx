@@ -1,3 +1,4 @@
+require('./editor.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
@@ -22,6 +23,8 @@ const Editor = createClass({
 
 			metadata         : {},
 			onMetadataChange : ()=>{},
+			showMetaButton   : true,
+			version          : ''
 		};
 	},
 	getInitialState : function() {
@@ -85,6 +88,33 @@ const Editor = createClass({
 				codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
 				r.push(lineNumber);
 			}
+
+			if(line.indexOf('\\column') === 0){
+				codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
+				r.push(lineNumber);
+			}
+
+			if(_.startsWith(line, '{{') || _.startsWith(line, '}}')){
+				let endCh = line.length+1;
+				if(line.indexOf(' ') !== -1)
+					endCh = line.indexOf(' ');
+				codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
+			}
+
+			if(line.indexOf('{{') !== -1 && line.indexOf('}}') !== -1){
+				const regex = /{{.*?}}/g;
+				let match;
+				let endCh;
+				while ((match = regex.exec(line)) != null) {
+					endCh = match[0].length;
+					if(match[0].indexOf(' ') !== -1)
+						endCh = match[0].indexOf(' ');
+					codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + endCh }, { className: 'inline-block' });
+					codeMirror.markText({ line: lineNumber, ch: regex.lastIndex-2 }, { line: lineNumber, ch: regex.lastIndex }, { className: 'inline-block' });
+				}
+			}
+
+
 			return r;
 		}, []);
 		return lineNumbers;
@@ -117,7 +147,9 @@ const Editor = createClass({
 					brew={this.props.value}
 					onInject={this.handleInject}
 					onToggle={this.handgleToggle}
-					showmeta={this.state.showMetadataEditor} />
+					showmeta={this.state.showMetadataEditor}
+					showMetaButton={this.props.showMetaButton}
+					version={this.props.version} />
 				{this.renderMetadataEditor()}
 				<CodeEditor
 					ref='codeEditor'
@@ -138,9 +170,3 @@ const Editor = createClass({
 });
 
 module.exports = Editor;
-
-
-
-
-
-

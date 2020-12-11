@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
-const shortid = require('shortid');
+const { nanoid } = require('nanoid');
 const _ = require('lodash');
 const zlib = require('zlib');
 
 const HomebrewSchema = mongoose.Schema({
-	shareId : { type: String, default: shortid.generate, index: { unique: true } },
-	editId  : { type: String, default: shortid.generate, index: { unique: true } },
+	shareId : { type: String, default: ()=>{return nanoid(12);}, index: { unique: true } },
+	editId  : { type: String, default: ()=>{return nanoid(12);}, index: { unique: true } },
 	title   : { type: String, default: '' },
 	text    : { type: String, default: '' },
 	textBin : { type: Buffer },
@@ -24,7 +24,6 @@ const HomebrewSchema = mongoose.Schema({
 }, { versionKey: false });
 
 
-
 HomebrewSchema.methods.sanatize = function(full=false){
 	const brew = this.toJSON();
 	delete brew._id;
@@ -35,19 +34,18 @@ HomebrewSchema.methods.sanatize = function(full=false){
 	return brew;
 };
 
-
-HomebrewSchema.methods.increaseView = function(){
-	return new Promise((resolve, reject)=>{
-		this.lastViewed = new Date();
-		this.views = this.views + 1;
-		this.save((err)=>{
-			if(err) return reject(err);
-			return resolve(this);
-		});
+HomebrewSchema.methods.increaseView = async function(){
+	this.lastViewed = new Date();
+	this.views = this.views + 1;
+	const text = this.text;
+	this.text = undefined;
+	await this.save()
+	.catch((err)=>{
+		return err;
 	});
+	this.text = text;
+	return this;
 };
-
-
 
 HomebrewSchema.statics.get = function(query){
 	return new Promise((resolve, reject)=>{
@@ -76,8 +74,6 @@ HomebrewSchema.statics.getByUser = function(username, allowAccess=false){
 		});
 	});
 };
-
-
 
 const Homebrew = mongoose.model('Homebrew', HomebrewSchema);
 

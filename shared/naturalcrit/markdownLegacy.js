@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const Markdown = require('marked');
+const Markdown = require('markedLegacy');
 const renderer = new Markdown.Renderer();
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
@@ -11,31 +11,6 @@ renderer.html = function (html) {
 		return `${openTag} ${Markdown(html)} </div>`;
 	}
 	return html;
-};
-
-// Mustache-style Divs {{class \n content ... \n}}
-let blockCount = 0;
-renderer.paragraph = function(text){
-	const blockReg = /{{[\w|,]*|}}/g;
-	const matches = text.match(blockReg);
-	if(!matches) return `\n<p>${text}</p>\n`;
-	let matchIndex = 0;
-	const res =  _.reduce(text.split(blockReg), (r, text)=>{
-		if(text) r.push(Markdown(text, { renderer: renderer }));
-
-		const block = matches[matchIndex];
-		if(block && block[0] == '{'){
-			r.push(`\n\n<div class="block ${block.substring(2).split(',').join(' ')}">`);
-			blockCount++;
-		}
-		if(block == '}}' && blockCount !== 0){
-			r.push('</div>\n\n');
-			blockCount--;
-		}
-		matchIndex++;
-		return r;
-	}, []).join('\n');
-	return res;
 };
 
 renderer.link = function (href, title, text) {
@@ -124,7 +99,6 @@ const tagRegex = new RegExp(`(${
 module.exports = {
 	marked : Markdown,
 	render : (rawBrewText)=>{
-		rawBrewText = rawBrewText.replace(/\\column/g, '{{columnSplit }}');
 		return Markdown(
 			sanatizeScriptTags(rawBrewText),
 			{ renderer: renderer }

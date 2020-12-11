@@ -1,25 +1,36 @@
+require('./snippetbar.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
 
-const Snippets = require('./snippets/snippets.js');
+const SnippetsLegacy = require('./snippetsLegacy/snippets.js');
+const SnippetsV2 = require('./snippets/snippets.js');
 
 const execute = function(val, brew){
 	if(_.isFunction(val)) return val(brew);
 	return val;
 };
 
-
-
 const Snippetbar = createClass({
 	getDefaultProps : function() {
 		return {
-			brew     : '',
-			onInject : ()=>{},
-			onToggle : ()=>{},
-			showmeta : false
+			brew           : '',
+			onInject       : ()=>{},
+			onToggle       : ()=>{},
+			showmeta       : false,
+			showMetaButton : true,
+			version        : ''
+		};
+	},
+
+	getInitialState : function() {
+		let renderer = 'legacy';
+		if(this.props.version)
+			renderer = this.props.version;
+		return {
+			renderer : renderer
 		};
 	},
 
@@ -28,6 +39,11 @@ const Snippetbar = createClass({
 	},
 
 	renderSnippetGroups : function(){
+		if(this.props.version == 'v2')
+			Snippets = SnippetsV2;
+		else
+			Snippets = SnippetsLegacy;
+
 		return _.map(Snippets, (snippetGroup)=>{
 			return <SnippetGroup
 				brew={this.props.brew}
@@ -40,13 +56,18 @@ const Snippetbar = createClass({
 		});
 	},
 
+	renderMetadataButton : function(){
+		if(!this.props.showMetaButton) return;
+		return <div className={cx('toggleMeta', { selected: this.props.showmeta })}
+			onClick={this.props.onToggle}>
+			<i className='fa fa-bars' />
+		</div>;
+	},
+
 	render : function(){
 		return <div className='snippetBar'>
 			{this.renderSnippetGroups()}
-			<div className={cx('toggleMeta', { selected: this.props.showmeta })}
-				onClick={this.props.onToggle}>
-				<i className='fa fa-bars' />
-			</div>
+			{this.renderMetadataButton()}
 		</div>;
 	}
 });
