@@ -1,7 +1,7 @@
 
 .editPage{
 	.navItem.save{
-		width      : 105px;
+		width      : 106px;
 		text-align : center;
 		&.saved{
 			cursor : initial;
@@ -10,23 +10,77 @@
 		&.error{
 			position         : relative;
 			background-color : @red;
-			.errorContainer{
-				position         : absolute;
-				top              : 29px;
-				left             : -20px;
-				z-index          : 1000;
-				width            : 135px;
-				padding          : 6px;
-				background-color : #333;
-				a{
-					color : @teal;
-				}
-			}
 		}
+	}
+	.googleDriveStorage {
+		position : relative;
 	}
 	.googleDriveStorage img{
 		height	: 20px;
 		padding : 0px;
 		margin  : -5px;
+	}
+	.errorContainer{
+		position         : absolute;
+		top              : 100%;
+		left             : 50%;
+		z-index          : 1000;
+		width            : 140px;
+		padding          : 3px;
+		background-color : #333;
+		border           : 3px solid #444;
+		border-radius    : 5px;
+		transform        : translate(-50% + 3px, 10px);
+		text-align       : center;
+		a{
+			color : @teal;
+		}
+		&:before {
+			content: "";
+			width: 0px;
+			height: 0px;
+			position: absolute;
+			border-left: 10px solid transparent;
+			border-right: 10px solid transparent;
+			border-top: 10px solid transparent;
+			border-bottom: 10px solid #444;
+			left: 53px;
+			top: -23px;
+		}
+		&:after {
+			content: "";
+			width: 0px;
+			height: 0px;
+			position: absolute;
+			border-left: 10px solid transparent;
+			border-right: 10px solid transparent;
+			border-top: 10px solid transparent;
+			border-bottom: 10px solid #333;
+			left: 53px;
+			top: -19px;
+		}
+		.deny {
+			width            : 48%;
+		  margin           : 1px;
+			padding          : 5px;
+			background-color : #333;
+			display          : inline-block;
+			border-left      : 1px solid #666;
+			.animate(background-color);
+			&:hover{
+				background-color : red;
+			}
+		}
+		.confirm {
+			width            : 48%;
+			margin           : 1px;
+			padding          : 5px;
+			background-color : #333;
+			display          : inline-block;
+			.animate(background-color);
+			&:hover{
+				background-color : teal;
+			}
+		}
 	}
 }
