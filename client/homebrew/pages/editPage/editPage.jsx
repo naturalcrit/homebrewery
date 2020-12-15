@@ -140,6 +140,7 @@ const EditPage = createClass({
 		this.setState((prevState)=>({
 			confirmGoogleTransfer : !prevState.confirmGoogleTransfer
 		}));
+		this.clearErrors();
 	},
 
 	toggleGoogleStorage : function(){
@@ -148,6 +149,14 @@ const EditPage = createClass({
 			isSaving   : false,
 			errors     : null
 		}), ()=>this.save());
+	},
+
+	clearErrors : function(){
+		this.setState({
+			errors   : null,
+			isSaving : false
+
+		});
 	},
 
 	save : async function(){
@@ -170,7 +179,7 @@ const EditPage = createClass({
 					console.log(err.status === 401
 						? 'Not signed in!'
 						: 'Error Saving to Google!');
-					this.setState({ errors: err });
+					this.setState({ errors: err, saveGoogle: false });
 				});
 
 				if(!res) { return; }
@@ -192,7 +201,7 @@ const EditPage = createClass({
 					console.log(err.status === 401
 						? 'Not signed in!'
 						: 'Error Saving to Google!');
-					this.setState({ errors: err });
+					this.setState({ errors: err, saveGoogle: false });
 					return;
 				});
 
@@ -288,12 +297,18 @@ const EditPage = createClass({
 			if(this.state.errors.status == '401'){
 				return <Nav.item className='save error' icon='fa-warning'>
 					Oops!
-					<div className='errorContainer'>
+					<div className='errorContainer' onClick={this.clearErrors}>
 					You must be signed in to a Google account
-						to save this to Google Drive!<br />
-						Sign in <a target='_blank' rel='noopener noreferrer'
+						to save this to<br />Google Drive!<br />
+						<a target='_blank' rel='noopener noreferrer'
 							href={`http://naturalcrit.com/login?redirect=${this.state.url}`}>
-						here</a>.
+							<div className='confirm' onClick={this.toggleGoogleStorage}>
+								Sign In
+							</div>
+						</a>
+						<div className='deny'>
+							Not Now
+						</div>
 					</div>
 				</Nav.item>;
 			}
@@ -303,7 +318,7 @@ const EditPage = createClass({
 				<div className='errorContainer'>
 					Looks like there was a problem saving. <br />
 					Report the issue <a target='_blank' rel='noopener noreferrer'
-						href={`https://github.com/stolksdorf/naturalcrit/issues/new?body=${encodeURIComponent(errMsg)}`}>
+						href={`https://github.com/naturalcrt/naturalcrit/issues/new?body=${encodeURIComponent(errMsg)}`}>
 						here
 					</a>.
 				</div>
