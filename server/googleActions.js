@@ -257,7 +257,14 @@ GoogleActions = {
 				throw ('Share ID does not match');
 			}
 
-			const file = await drive.files.get({
+			//Access actual file with service account. Just api key is causing "automated query" errors.
+			const keys = JSON.parse(config.get('service_account'));
+			const serviceAuth = google.auth.fromJSON(keys);
+			serviceAuth.scopes = ['https://www.googleapis.com/auth/drive'];
+
+			const serviceDrive = google.drive({ version: 'v3', auth: serviceAuth });
+
+			const file = await serviceDrive.files.get({
 				fileId : id,
 				fields : 'description, properties',
 				alt    : 'media'
