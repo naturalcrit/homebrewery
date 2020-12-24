@@ -1,10 +1,6 @@
 const React = require('react');
 const createClass = require('create-react-class');
-const _ = require('lodash');
 const cx = require('classnames');
-
-//var striptags = require('striptags');
-
 const Nav = require('naturalcrit/nav/nav.jsx');
 
 const MAX_URL_SIZE = 2083;
@@ -31,10 +27,7 @@ const RedditShare = createClass({
 		const url = [
 			MAIN_URL,
 			`title=${encodeURIComponent(this.props.brew.title ? this.props.brew.title : 'Check out my brew!')}`,
-
 			`text=${encodeURIComponent(this.props.brew.text)}`
-
-
 		].join('&');
 
 		window.open(url, '_blank');
