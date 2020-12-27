@@ -10,7 +10,7 @@ git clone https://github.com/G-Ambatte/homebrewery.git
 
 cd homebrewery
 npm install
-npm audit fix -force
+npm audit fix
 npm run postinstall
 
 cp freebsd/rc.d/homebrewery /etc/rc.d/
