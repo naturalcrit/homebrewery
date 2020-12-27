@@ -73,8 +73,6 @@ GoogleActions = {
 				console.error(err);
 			});
 
-			console.log('created new drive folder with ID:');
-			console.log(obj.data.id);
 			folderId = obj.data.id;
 		} else {
 			folderId = obj.data.files[0].id;
@@ -149,13 +147,7 @@ GoogleActions = {
 	updateGoogleBrew : async (auth, brew)=>{
 		const drive = google.drive({ version: 'v3', auth: auth });
 
-		console.log('trying to update a brew');
-		console.log(brew);
-
 		if(await GoogleActions.existsGoogleBrew(auth, brew.googleId) == true) {
-			console.log('the brew exists at least');
-			console.log('going to put this text:');
-			console.log(brew.text);
 			await drive.files.update({
 				fileId   : brew.googleId,
 				resource : { name        : `${brew.title}.txt`,
@@ -265,7 +257,14 @@ GoogleActions = {
 				throw ('Share ID does not match');
 			}
 
-			const file = await drive.files.get({
+			//Access actual file with service account. Just api key is causing "automated query" errors.
+			const keys = JSON.parse(config.get('service_account'));
+			const serviceAuth = google.auth.fromJSON(keys);
+			serviceAuth.scopes = ['https://www.googleapis.com/auth/drive'];
+
+			const serviceDrive = google.drive({ version: 'v3', auth: serviceAuth });
+
+			const file = await serviceDrive.files.get({
 				fileId : id,
 				fields : 'description, properties',
 				alt    : 'media'
@@ -282,7 +281,7 @@ GoogleActions = {
 				text    : file.data,
 
 				description : obj.data.description,
-				tags        : obj.data.properties.tags    ? obj.data.properties.tags.split(',')    : [],
+				tags        : obj.data.properties.tags    ? obj.data.properties.tags               : '',
 				systems     : obj.data.properties.systems ? obj.data.properties.systems.split(',') : [],
 				authors     : [],
 				published   : obj.data.properties.published ? obj.data.properties.published == 'true' : false,
@@ -323,8 +322,9 @@ GoogleActions = {
 			throw ('Not authorized to delete this Google brew');
 		}
 
-		await drive.files.delete({
-			fileId : googleId
+		await drive.files.update({
+			fileId   : googleId,
+			resource : { trashed: true }
 		})
 		.catch((err)=>{
 			console.log('Can\'t delete Google file');

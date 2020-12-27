@@ -1,7 +1,6 @@
 require('./homePage.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const _ = require('lodash');
 const cx = require('classnames');
 const request = require('superagent');
 const { Meta } = require('vitreum/headtags');
@@ -61,11 +60,6 @@ const HomePage = createClass({
 				</Nav.item>
 				<RecentNavItem />
 				<AccountNavItem />
-				{/*}
-				<Nav.item href='/new' color='green' icon='fa-external-link'>
-					New Brew
-				</Nav.item>
-				*/}
 			</Nav.section>
 		</Navbar>;
 	},

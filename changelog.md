@@ -1,8 +1,13 @@
 # changelog
 
+### Friday, 18/12/2020 - v2.10.5
+- Brews now immediately save when transferring between Google Drive and Homebrewery storage.
+- Added confirmation popup to clarify the transfer process.
+- Brews transferred or deleted from Google will be found in your Google Drive trash.
+- Dependency updates.
+
 ### Wednesday, 25/11/2020 - v2.10.4
 - Fixed Google Drive brews not saving metadata (view count, description, etc.) Note that we are still working on making published Google brews visible to the public when viewing your profile page.
-- Fixed inconsistent font size for bullet lists inside notes (thanks /u/garumoo! re:1085)
 
 ### Thursday, 22/10/2020 - v2.10.3
 - Fixed brews with broken code crashing the edit page when loaded (the "blue screen of death" bug).
@@ -27,6 +32,9 @@
 ### Wednesday, 20/05/2020 - v2.9.0
 - Major refactoring of site backend to work with updated dependencies for security (should be invisible to users)
 
+```
+```
+
 ### Wednesday, 11/03/2020 - v2.8.2
 - Fixed delete button removing everyone's copy for brews with multiple authors
 - Compressed homebrew text in database
@@ -36,9 +44,6 @@
 - Fixed duplicate scrollbars in Edit Page
 - Fixed issue of being unable to change brew metadata
 - Sanitized script tags-javascript typed into the editor was crashing brews
-
-```
-```
 
 ### Sunday, 08/04/2018 - v2.8.0
 - Re-enabled box shadows for PDF output
