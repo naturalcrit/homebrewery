@@ -6,7 +6,7 @@ sysrc mongod_enable=YES
 service mongod start
 
 cd /
-git clone https://github.com/G-Ambatte/homebrewery.git
+git clone https://github.com/naturalcrit/homebrewery.git
 
 cd homebrewery
 npm install
