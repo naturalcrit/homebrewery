@@ -37,8 +37,8 @@ pidfile="/var/run/${program_name}.pid" 	   # File that allows the system to keep
 export HOME=$( getent passwd "homebrewery_runAs" | cut -d: -f6 ) # Gets the home directory of the runAs user
 
 # Command Setup
-exec_cmd="/homebrewery/server.js" 		# Path to the HomeBrewery server.js, /usr/local/bin/ when installed globally
-output_file="/var/log/${program_name}.log" 	# Path to HomeBrewery output file
+exec_cmd="/usr/local/homebrewery/server.js" 		# Path to the HomeBrewery server.js
+output_file="/var/log/${program_name}.log" 			# Path to HomeBrewery output file
 
 # Command
 command="/usr/sbin/daemon"
