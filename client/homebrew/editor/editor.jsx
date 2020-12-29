@@ -89,6 +89,10 @@ const Editor = createClass({
 				r.push(lineNumber);
 			}
 
+			if(!this.props.renderer) {
+				return r;
+			}
+
 			if(line.indexOf('\\column') === 0){
 				codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 				r.push(lineNumber);

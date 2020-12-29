@@ -20,15 +20,15 @@ const BrewRenderer = createClass({
 	getDefaultProps : function() {
 		return {
 			text    : '',
-			version : '',
+			renderer : '',
 			errors  : []
 		};
 	},
 	getInitialState : function() {
 		const pages = this.props.text.split('\\page');
 		let renderer = 'legacy';
-		if(this.props.version)
-			renderer = this.props.version;
+		if(this.props.renderer)
+			renderer = this.props.renderer;
 
 		return {
 			viewablePageNumber : 0,

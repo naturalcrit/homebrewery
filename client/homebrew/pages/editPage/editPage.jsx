@@ -41,7 +41,8 @@ const EditPage = createClass({
 				tags        : '',
 				published   : false,
 				authors     : [],
-				systems     : []
+				systems     : [],
+				renderer    : ''
 			}
 		};
 	},
@@ -374,9 +375,9 @@ const EditPage = createClass({
 						onChange={this.handleTextChange}
 						metadata={this.state.brew}
 						onMetadataChange={this.handleMetadataChange}
-						version='v2'
+						renderer={this.state.brew.renderer}
 					/>
-					<BrewRenderer text={this.state.brew.text} errors={this.state.htmlErrors} version='v2' />
+					<BrewRenderer text={this.state.brew.text} errors={this.state.htmlErrors} renderer={this.state.brew.renderer} />
 				</SplitPane>
 			</div>
 		</div>;

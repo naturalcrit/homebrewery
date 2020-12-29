@@ -17,7 +17,8 @@ const MetadataEditor = createClass({
 				tags        : '',
 				published   : false,
 				authors     : [],
-				systems     : []
+				systems     : [],
+				renderer    : ''
 			},
 			onChange : ()=>{}
 		};
@@ -33,6 +34,12 @@ const MetadataEditor = createClass({
 			this.props.metadata.systems.push(system);
 		} else {
 			this.props.metadata.systems = _.without(this.props.metadata.systems, system);
+		}
+		this.props.onChange(this.props.metadata);
+	},
+	handleRenderer : function(renderer, e){
+		if(e.target.checked){
+			this.props.metadata.renderer = renderer;
 		}
 		this.props.onChange(this.props.metadata);
 	},
@@ -154,6 +161,8 @@ const MetadataEditor = createClass({
 			</div>
 			*/}
 
+			{this.renderAuthors()}
+
 			<div className='field systems'>
 				<label>systems</label>
 				<div className='value'>
@@ -161,7 +170,30 @@ const MetadataEditor = createClass({
 				</div>
 			</div>
 
-			{this.renderAuthors()}
+			<div className='field systems'>
+				<label>Renderer</label>
+				<div className='value'>
+					<label key="legacy">
+						<input
+							type='radio'
+							value = 'legacy'
+							name = 'renderer'
+							checked={!this.props.metadata.renderer}
+							onChange={(e)=>this.handleRenderer(null, e)} />
+						Legacy
+					</label>
+
+					<label key="V3">
+						<input
+							type='radio'
+							value = 'V3'
+							name = 'renderer'
+							checked={this.props.metadata.renderer === "V3"}
+							onChange={(e)=>this.handleRenderer("V3", e)} />
+						V3
+					</label>
+				</div>
+			</div>
 
 			<div className='field publish'>
 				<label>publish</label>

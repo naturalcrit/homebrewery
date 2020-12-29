@@ -13,6 +13,7 @@ const HomebrewSchema = mongoose.Schema({
 	description : { type: String, default: '' },
 	tags        : { type: String, default: '' },
 	systems     : [String],
+	renderer    : { type: String, default: '' },
 	authors     : [String],
 	published   : { type: Boolean, default: false },
 
