@@ -27,15 +27,7 @@ const config = require('nconf')
 	.file('environment', { file: `config/${process.env.NODE_ENV}.json` })
 	.file('defaults', { file: 'config/default.json' });
 
-if ( !process.env.NODE_ENV) {
-	if ( config.get('environment') ) {
-		process.env.NODE_ENV = config.get('environment');
-		console.log('NODE_ENV set from config');
-	} else {
-		process.env.NODE_ENV = 'local';
-		console.log('NODE_ENV set to "local" as no other values were set');
-	}
-}
+if(!process.env.NODE_ENV) { process.env.NODE_ENV = ( config.get('environment') || 'local' ); }
 
 //DB
 const mongoose = require('mongoose');
