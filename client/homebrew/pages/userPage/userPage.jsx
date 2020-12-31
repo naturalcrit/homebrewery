@@ -26,6 +26,11 @@ const UserPage = createClass({
 			brews    : []
 		};
 	},
+	getUsernameWithS : function() {
+		if(this.props.username.endsWith('s'))
+			return `${this.props.username}'`;
+		return `${this.props.username}'s`;
+	},
 
 	renderBrews : function(brews){
 		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
@@ -57,11 +62,11 @@ const UserPage = createClass({
 			<div className='content'>
 				<div className='phb'>
 					<div>
-						<h1>{this.props.username}'s brews</h1>
+						<h1>{this.getUsernameWithS()} brews</h1>
 						{this.renderBrews(brews.published)}
 					</div>
 					<div>
-						<h1>{this.props.username}'s unpublished brews</h1>
+						<h1>{this.getUsernameWithS()} unpublished brews</h1>
 						{this.renderBrews(brews.private)}
 					</div>
 				</div>
