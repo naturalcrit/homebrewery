@@ -116,7 +116,7 @@ const BrewRenderer = createClass({
 	renderPages : function(){
 		if(this.state.usePPR){
 			return _.map(this.state.pages, (page, index)=>{
-				if(this.shouldRender(page, index)){
+				if(this.shouldRender(page, index) && typeof window !== 'undefined'){
 					return this.renderPage(page, index);
 				} else {
 					return this.renderDummyPage(index);
@@ -125,7 +125,11 @@ const BrewRenderer = createClass({
 		}
 		if(this.props.errors && this.props.errors.length) return this.lastRender;
 		this.lastRender = _.map(this.state.pages, (page, index)=>{
-			return this.renderPage(page, index);
+			if(typeof window !== 'undefined') {
+				return this.renderPage(page, index);
+			} else {
+				return this.renderDummyPage(index);
+			}
 		});
 		return this.lastRender;
 	},
@@ -139,8 +143,19 @@ const BrewRenderer = createClass({
 
 	render : function(){
 		//render in iFrame so broken code doesn't crash the site.
+		//Also render dummy page while iframe is mounting.
+
 		return (
 			<React.Fragment>
+				{!this.state.isMounted
+					? <div className='brewRenderer' onScroll={this.handleScroll}>
+						<div className='pages' ref='pages'>
+							{this.renderDummyPage(1)}
+						</div>
+					</div>
+	        : null
+	      }
+
 				<Frame initialContent={this.state.initialContent} style={{ width: '100%', height: '100%', visibility: this.state.visibility }} contentDidMount={this.frameDidMount}>
 					<div className='brewRenderer'
 						onScroll={this.handleScroll}
