@@ -1,5 +1,10 @@
 # changelog
 
+### Friday, 02/1/2021 - v2.10.6
+- Fixed punctuation for usernames ending with 's' on the user page. (Thanks @AlexeySachkov)
+- Fixed server crashes due to excessive long lines in brews
+- Fixed "automated request" lockouts from Google
+
 ### Friday, 18/12/2020 - v2.10.5
 - Brews now immediately save when transferring between Google Drive and Homebrewery storage.
 - Added confirmation popup to clarify the transfer process.
