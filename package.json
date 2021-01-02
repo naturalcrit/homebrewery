@@ -59,7 +59,7 @@
     "mongoose": "^5.11.9",
     "nanoid": "3.1.20",
     "markedLegacy": "npm:marked@^0.3.19",
-    "marked": "npm:marked@^1.0.0",
+    "marked": "npm:marked@^1.2.7",
     "nconf": "^0.11.0",
     "prop-types": "15.7.2",
     "query-string": "6.13.8",
