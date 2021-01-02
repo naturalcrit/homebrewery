@@ -58,9 +58,7 @@ const BrewRenderer = createClass({
 
 	updateSize : function() {
 		this.setState({
-			height     : this.refs.main.parentNode.clientHeight,
-			isMounted  : true,
-			visibility : 'visible'
+			height : this.refs.main.parentNode.clientHeight,
 		});
 	},
 
@@ -138,6 +136,11 @@ const BrewRenderer = createClass({
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			this.updateSize();
 			window.addEventListener('resize', this.updateSize);
+			this.renderPages(); //Make sure page is renderable before showing
+			this.setState({
+				isMounted  : true,
+				visibility : 'visible'
+			});
 		}, 100);
 	},
 
@@ -153,8 +156,7 @@ const BrewRenderer = createClass({
 							{this.renderDummyPage(1)}
 						</div>
 					</div>
-	        : null
-	      }
+	        : null}
 
 				<Frame initialContent={this.state.initialContent} style={{ width: '100%', height: '100%', visibility: this.state.visibility }} contentDidMount={this.frameDidMount}>
 					<div className='brewRenderer'
@@ -168,7 +170,9 @@ const BrewRenderer = createClass({
 						</div>
 
 						<div className='pages' ref='pages'>
-							{this.renderPages()}
+							{this.state.isMounted
+								? this.renderPages()
+							  : null}
 						</div>
 					</div>
 				</Frame>
