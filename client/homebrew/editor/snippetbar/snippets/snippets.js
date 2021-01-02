@@ -6,7 +6,7 @@ const MonsterBlockGen = require('./monsterblock.gen.js');
 const ClassFeatureGen = require('./classfeature.gen.js');
 const CoverPageGen = require('./coverpage.gen.js');
 const TableOfContentsGen = require('./tableOfContents.gen.js');
-const CardTemplateGen = requite('./cardtemplate/gen/js');
+const CardTemplateGen = requite('./cardtemplate.gen.js');
 
 
 module.exports = [
