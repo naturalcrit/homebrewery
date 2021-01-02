@@ -468,3 +468,99 @@ body {
 		margin-bottom : 10px;
 	}
 }
+//*****************************
+// *      MAGIC ITEM CARD
+// *****************************/
+.phb .card {
+	width: var(--card-width);
+	height: var(--card-height);
+	-webkit-print-color-adjust:exact;
+	border: 2px solid black;
+	border-radius: 20px;
+	column-count: 1;
+	padding-left: 10px;
+	padding-right: 10px;
+	column-span: all;
+	margin: auto;
+	box-shadow: 0px 0px 15px #888 inset;
+}
+
+.phb .card.back {
+	width: calc(10px + (2 * var(--card-width)));
+	column-count: 2;
+	column-rule: 2px solid black;
+	column-gap: 25px;
+	padding-left: 0px;
+}
+
+.phb .card.back::before {
+	content: url(https://i.imgur.com/iNJH8j9.png) !important;
+}
+
+.phb .card h1 {
+	column-span: none;
+	font-size: 16px;
+	margin-bottom: 0px;
+	padding-top: 10px;
+}
+  
+.phb .card h2 {
+	font-family: 'Open Sans',sans-serif;
+	font-size: 8px;
+	color: black;
+	font-style: italic;
+	padding: 0px 0px 3px;
+	border-bottom: 2px solid #cc3333;
+}
+  
+.phb .card p {
+	font-size: 10px;
+}
+  
+.phb .card img {
+	display: block;
+	width: 35%;
+	padding-top: 5px;
+	margin: auto;
+	mix-blend-mode:darken;
+}
+  
+.phb .card .caption {
+	margin-top: 5px;
+	font-style: italic;
+	font-size: 9px;
+	font-weight: normal;
+	text-align: center;
+	display: block;
+	text-indent: 0;
+	line-height: 1em;
+}
+
+.phb .card .statblock {
+	position: relative;
+	padding-top: 5px;
+	padding-bottom: 2px;
+	background-color: #FDF1DC;
+	border-style: solid;
+	border-width: 10px;
+	border-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAA8CAMAAADG+c2+AAAACVBMVEX///8AAADmmihtJc8lAAAAAXRSTlMAQObYZgAAACxJREFUeAHt2EEBACAAwkCwf2hL8NK7AAuwdCw9U5Og4FgeAAAAAK7IBxPjAl3qBs+hfAnLAAAAAElFTkSuQmCC) 10;
+	font-size: 10px;
+	line-height: 1em;
+}
+
+.phb .card .description {
+	font-family: ScalySans;
+	box-sizing: border-box;
+	margin-bottom: 0px;
+	padding: 5px 0px 5px 0px;
+	background-color: #e0e5c1;
+	border-style: solid;
+	border-width: 8px;
+	border-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAA8CAMAAADG+c2+AAAANlBMVEX///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABHL6OuAAAAEXRSTlMABAwYJDRIXHSLo7fL2+fz+6go4VUAAAB6SURBVHgB7dg5DsJQAANRZ9+Xuf9lQUKKEHT5LlL4HWB6W5d61m1zrT/dhm5j6/RjPCkJco761ixQFoSl0aXfKQ+y9/qoJnAEYar01q64gqytNBz4ghyDMPMHnyYiIiIiIgIzYeYfj/Z56x3g7ovAf2L4bxb/EWS/ql7LZCDx/Ry3RwAAAABJRU5ErkJggg==) 11;
+	border-image-outset: 6px 0px;
+	box-shadow: 1px 4px 7px #888;
+}
+
+.phb .card .centered {
+	text-align: center;
+}
