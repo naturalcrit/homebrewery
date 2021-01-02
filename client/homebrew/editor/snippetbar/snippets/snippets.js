@@ -145,8 +145,6 @@ module.exports = [
 				icon : 'fa-file-word-o',
 				gen  : CoverPageGen,
 			},
-			
-			
 			{
 				name : 'Card Template',
 				icon : 'fa-star-o',
