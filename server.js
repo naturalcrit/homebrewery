@@ -27,8 +27,6 @@ const config = require('nconf')
 	.file('environment', { file: `config/${process.env.NODE_ENV}.json` })
 	.file('defaults', { file: 'config/default.json' });
 
-if(!process.env.NODE_ENV) {process.env.NODE_ENV = (config.get('environment') || 'local');}
-
 //DB
 const mongoose = require('mongoose');
 mongoose.connect(config.get('mongodb_uri') || config.get('mongolab_uri') || 'mongodb://localhost/naturalcrit',

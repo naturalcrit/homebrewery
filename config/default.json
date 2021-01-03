@@ -3,5 +3,4 @@
 	"naturalcrit_url" : "local.naturalcrit.com:8010",
 	"secret" : "secret",
 	"web_port" : 8001,
-	"environment" : "local"
 }
