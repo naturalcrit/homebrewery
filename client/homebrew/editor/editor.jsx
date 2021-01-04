@@ -83,41 +83,48 @@ const Editor = createClass({
 		if(!this.refs.codeEditor) return;
 		const codeMirror = this.refs.codeEditor.codeMirror;
 
+		//Clear all Text styles
+		const ranges=codeMirror.getAllMarks();
+		for (let i=0;i<ranges.length;i++) ranges[i].clear();
+
 		const lineNumbers = _.reduce(this.props.value.split('\n'), (r, line, lineNumber)=>{
+
+			//clear all line styles
+			codeMirror.removeLineClass(lineNumber, 'background');
+			codeMirror.removeLineClass(lineNumber, 'text');
+
 			if(line.indexOf('\\page') !== -1){
 				codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
 				r.push(lineNumber);
 			}
 
-			if(!this.props.renderer) {
-				return r;
-			}
+			// New Codemirror styling for V3 renderer
+			if(this.props.renderer == 'V3') {
+				if(line.indexOf('\\column') === 0){
+					codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
+					r.push(lineNumber);
+				}
 
-			if(line.indexOf('\\column') === 0){
-				codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
-				r.push(lineNumber);
-			}
+				if(_.startsWith(line, '{{') || _.startsWith(line, '}}')){
+					let endCh = line.length+1;
+					if(line.indexOf(' ') !== -1)
+						endCh = line.indexOf(' ');
+					codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
+				}
 
-			if(_.startsWith(line, '{{') || _.startsWith(line, '}}')){
-				let endCh = line.length+1;
-				if(line.indexOf(' ') !== -1)
-					endCh = line.indexOf(' ');
-				codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
-			}
-
-			if(line.indexOf('{{') !== -1 && line.indexOf('}}') !== -1){
-				const regex = /{{.*?}}/g;
-				let match;
-				let endCh;
-				while ((match = regex.exec(line)) != null) {
-					endCh = match[0].length;
-					if(match[0].indexOf(' ') !== -1)
-						endCh = match[0].indexOf(' ');
-					codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + endCh }, { className: 'inline-block' });
-					codeMirror.markText({ line: lineNumber, ch: regex.lastIndex-2 }, { line: lineNumber, ch: regex.lastIndex }, { className: 'inline-block' });
+				if(line.indexOf('{{') !== -1 && line.indexOf('}}') !== -1){
+					const regex = /{{.*?}}/g;
+					let match;
+					let endCh;
+					while ((match = regex.exec(line)) != null) {
+						endCh = match[0].length;
+						if(match[0].indexOf(' ') !== -1)
+							endCh = match[0].indexOf(' ');
+						codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + endCh }, { className: 'inline-block' });
+						codeMirror.markText({ line: lineNumber, ch: regex.lastIndex-2 }, { line: lineNumber, ch: regex.lastIndex }, { className: 'inline-block' });
+					}
 				}
 			}
-
 
 			return r;
 		}, []);

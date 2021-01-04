@@ -16,26 +16,58 @@ renderer.html = function (html) {
 // Mustache-style Divs {{class \n content ... \n}}
 let blockCount = 0;
 renderer.paragraph = function(text){
-	const blockReg = /{{[\w|,]*|}}/g;
-	const matches = text.match(blockReg);
-	if(!matches) return `\n<p>${text}</p>\n`;
-	let matchIndex = 0;
-	const res =  _.reduce(text.split(blockReg), (r, text)=>{
-		if(text) r.push(Markdown(text, { renderer: renderer }));
+	const blockReg = /^\s*{{[\w|,]*$|^\s*}}$/gm;
+	const inlineFullReg = /{{[^\n]*}}/g;
+	const inlineReg = /{{[\w|,]*|}}/g;
+	let matches;
 
-		const block = matches[matchIndex];
-		if(block && block[0] == '{'){
-			r.push(`\n\n<div class="block ${block.substring(2).split(',').join(' ')}">`);
-			blockCount++;
-		}
-		if(block == '}}' && blockCount !== 0){
-			r.push('</div>\n\n');
-			blockCount--;
-		}
-		matchIndex++;
-		return r;
-	}, []).join('\n');
-	return res;
+	//DIV - BLOCK-LEVEL
+	if(matches = text.match(blockReg)) {
+		let matchIndex = 0;
+		const res =  _.reduce(text.split(blockReg), (r, text)=>{
+
+			if(text) r.push(Markdown(text, { renderer: renderer }));
+
+			const block = matches[matchIndex] ? matches[matchIndex].trimLeft() : '';
+			if(block && block[0] == '{') {
+				r.push(`\n\n<div class="block ${block.substring(2).split(',').join(' ')}">`);
+				blockCount++;
+			} else if(block == '}}' && blockCount !== 0){
+				r.push('</div>\n\n');
+				blockCount--;
+			}
+
+			matchIndex++;
+
+			return r;
+		}, []).join('\n');
+		return res;
+	} else if(matches = text.match(inlineFullReg)) {
+
+		//SPAN - INLINE
+		matches = text.match(inlineReg);
+		let matchIndex = 0;
+		const res =  _.reduce(text.split(inlineReg), (r, text)=>{
+
+			if(text) r.push(Markdown.parseInline(text, { renderer: renderer }));
+
+			const block = matches[matchIndex] ? matches[matchIndex].trimLeft() : '';
+			if(block && block[0] == '{') {
+				r.push(`<span class="inline-block ${block.substring(2).split(',').join(' ')}">`);
+				blockCount++;
+			} else if(block == '}}' && blockCount !== 0){
+				r.push('</span>');
+				blockCount--;
+			}
+
+			matchIndex++;
+
+			return r;
+		}, []).join('');
+		return `\n<p>${res}</p>\n`;
+	} else {
+		if(!matches) return `\n<p>${text}</p>\n`;
+	}
 };
 
 renderer.link = function (href, title, text) {
@@ -124,6 +156,7 @@ const tagRegex = new RegExp(`(${
 module.exports = {
 	marked : Markdown,
 	render : (rawBrewText)=>{
+		blockCount = 0;
 		rawBrewText = rawBrewText.replace(/\\column/g, '{{columnSplit }}');
 		return Markdown(
 			sanatizeScriptTags(rawBrewText),

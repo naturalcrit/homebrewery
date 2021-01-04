@@ -26,8 +26,7 @@ const build = async ({ bundle, render, ssr })=>{
 		await fs.outputFile('./build/homebrew/bundle.css.br', zlib.brotliCompressSync(css));
 		await fs.outputFile('./build/homebrew/bundle.js.br', zlib.brotliCompressSync(bundle));
 		await fs.outputFile('./build/homebrew/ssr.js.br', zlib.brotliCompressSync(ssr));
-	}
-	else{
+	} else {
 		await fs.remove('./build/homebrew/bundle.css.br');
 		await fs.remove('./build/homebrew/bundle.js.br');
 		await fs.remove('./build/homebrew/ssr.js.br');
