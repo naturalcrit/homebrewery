@@ -18,7 +18,7 @@
     "lint:dry": "eslint **/*.{js,jsx}",
     "circleci": "npm test && eslint **/*.{js,jsx} --max-warnings=0",
     "verify": "npm run lint && npm test",
-    "test": "pico-check",
+    "test": "jest",
     "test:dev": "pico-check -v -w",
     "phb": "node scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
@@ -33,10 +33,19 @@
   "pico-check": {
     "require": "./tests/test.init.js"
   },
+  "jest": {
+    "moduleNameMapper": {
+      ".*\\.(less|png)$": "<rootDir>/tests/styles.mock.js"
+    },
+    "modulePaths": [
+      "node_moduled",
+      "shared"
+    ]
+  },
   "babel": {
     "presets": [
-      "env",
-      "react"
+      "@babel/preset-env",
+      "@babel/preset-react"
     ]
   },
   "dependencies": {
@@ -72,6 +81,7 @@
   "devDependencies": {
     "eslint": "^7.16.0",
     "eslint-plugin-react": "^7.22.0",
+    "jest": "^26.6.3",
     "pico-check": "^2.0.3"
   }
 }
