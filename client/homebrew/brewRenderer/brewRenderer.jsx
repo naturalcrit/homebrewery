@@ -19,9 +19,9 @@ const PPR_THRESHOLD = 50;
 const BrewRenderer = createClass({
 	getDefaultProps : function() {
 		return {
-			text    : '',
+			text     : '',
 			renderer : '',
-			errors  : []
+			errors   : []
 		};
 	},
 	getInitialState : function() {

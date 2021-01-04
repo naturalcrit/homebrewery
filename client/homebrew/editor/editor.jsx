@@ -24,7 +24,7 @@ const Editor = createClass({
 			metadata         : {},
 			onMetadataChange : ()=>{},
 			showMetaButton   : true,
-			version          : ''
+			renderer         : ''
 		};
 	},
 	getInitialState : function() {
@@ -153,7 +153,7 @@ const Editor = createClass({
 					onToggle={this.handgleToggle}
 					showmeta={this.state.showMetadataEditor}
 					showMetaButton={this.props.showMetaButton}
-					version={this.props.version} />
+					renderer={this.props.renderer} />
 				{this.renderMetadataEditor()}
 				<CodeEditor
 					ref='codeEditor'

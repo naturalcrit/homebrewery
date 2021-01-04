@@ -6,7 +6,7 @@ const cx    = require('classnames');
 
 
 const SnippetsLegacy = require('./snippetsLegacy/snippets.js');
-const SnippetsV2 = require('./snippets/snippets.js');
+const SnippetsV3 = require('./snippets/snippets.js');
 
 const execute = function(val, brew){
 	if(_.isFunction(val)) return val(brew);
@@ -21,16 +21,13 @@ const Snippetbar = createClass({
 			onToggle       : ()=>{},
 			showmeta       : false,
 			showMetaButton : true,
-			version        : ''
+			renderer       : ''
 		};
 	},
 
 	getInitialState : function() {
-		let renderer = 'legacy';
-		if(this.props.version)
-			renderer = this.props.version;
 		return {
-			renderer : renderer
+			renderer : this.props.renderer
 		};
 	},
 
@@ -39,8 +36,8 @@ const Snippetbar = createClass({
 	},
 
 	renderSnippetGroups : function(){
-		if(this.props.version == 'v2')
-			Snippets = SnippetsV2;
+		if(this.props.renderer == 'V3')
+			Snippets = SnippetsV3;
 		else
 			Snippets = SnippetsLegacy;
 

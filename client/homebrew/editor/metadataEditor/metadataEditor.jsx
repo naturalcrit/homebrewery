@@ -173,23 +173,23 @@ const MetadataEditor = createClass({
 			<div className='field systems'>
 				<label>Renderer</label>
 				<div className='value'>
-					<label key="legacy">
+					<label key='legacy'>
 						<input
 							type='radio'
 							value = 'legacy'
 							name = 'renderer'
 							checked={!this.props.metadata.renderer}
-							onChange={(e)=>this.handleRenderer(null, e)} />
+							onChange={(e)=>this.handleRenderer('', e)} />
 						Legacy
 					</label>
 
-					<label key="V3">
+					<label key='V3'>
 						<input
 							type='radio'
 							value = 'V3'
 							name = 'renderer'
-							checked={this.props.metadata.renderer === "V3"}
-							onChange={(e)=>this.handleRenderer("V3", e)} />
+							checked={this.props.metadata.renderer === 'V3'}
+							onChange={(e)=>this.handleRenderer('V3', e)} />
 						V3
 					</label>
 				</div>

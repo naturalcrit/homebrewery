@@ -49,10 +49,10 @@ const EditPage = createClass({
 
 	getInitialState : function() {
 		return {
-			brew : this.props.brew,
-
+			brew                  : this.props.brew,
 			isSaving              : false,
 			isPending             : false,
+			alertRenderChange     : false,
 			saveGoogle            : this.props.brew.googleId ? true : false,
 			confirmGoogleTransfer : false,
 			errors                : null,
@@ -66,6 +66,8 @@ const EditPage = createClass({
 		this.setState({
 			url : window.location.href
 		});
+
+		this.savedBrew = JSON.parse(JSON.stringify(this.props.brew)); //Deep copy
 
 		this.trySave();
 		window.onbeforeunload = ()=>{
@@ -102,6 +104,12 @@ const EditPage = createClass({
 	},
 
 	handleMetadataChange : function(metadata){
+		if(metadata.renderer != this.savedBrew.renderer){
+			console.log('renderer changed!');
+			this.setState({
+				alertRenderChange : true
+			});
+		}
 		this.setState((prevState)=>({
 			brew      : _.merge({}, prevState.brew, metadata),
 			isPending : true,
@@ -123,8 +131,7 @@ const EditPage = createClass({
 	},
 
 	hasChanges : function(){
-		const savedBrew = this.savedBrew ? this.savedBrew : this.props.brew;
-		return !_.isEqual(this.state.brew, savedBrew);
+		return !_.isEqual(this.state.brew, this.savedBrew);
 	},
 
 	trySave : function(){
@@ -141,6 +148,12 @@ const EditPage = createClass({
 			confirmGoogleTransfer : !prevState.confirmGoogleTransfer
 		}));
 		this.clearErrors();
+	},
+
+	closeAlerts : function(){
+		this.setState({
+			alertRenderChange : false
+		});
 	},
 
 	toggleGoogleStorage : function(){
@@ -332,7 +345,16 @@ const EditPage = createClass({
 			return <Nav.item className='save' onClick={this.save} color='blue' icon='fa-save'>Save Now</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving){
-			return <Nav.item className='save saved'>saved.</Nav.item>;
+			return <Nav.item className='save saved'>saved.
+				{this.state.alertRenderChange &&
+					<div className='errorContainer' onClick={this.closeAlerts}>
+					Rendering mode for this brew has been changed! Refresh the page to load the new renderer.<br />
+						<div className='confirm'>
+							OK
+						</div>
+					</div>
+				}
+			</Nav.item>;
 		}
 	},
 
