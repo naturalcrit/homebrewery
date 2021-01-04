@@ -18,8 +18,7 @@
     "lint:dry": "eslint **/*.{js,jsx}",
     "circleci": "npm test && eslint **/*.{js,jsx} --max-warnings=0",
     "verify": "npm run lint && npm test",
-    "test": "pico-check",
-    "test:dev": "pico-check -v -w",
+    "test": "jest",
     "phb": "node scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
     "postinstall": "npm run buildall",
@@ -30,19 +29,27 @@
   "eslintIgnore": [
     "build/*"
   ],
-  "pico-check": {
-    "require": "./tests/test.init.js"
+  "jest": {
+    "modulePaths": [
+      "node_modules",
+      "<rootDir>"
+    ],
+    "preset": "@shelf/jest-mongodb"
   },
   "babel": {
     "presets": [
-      "env",
-      "react"
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ],
+    "plugins": [
+      "@babel/plugin-transform-runtime"
     ]
   },
   "dependencies": {
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "@babel/preset-react": "^7.12.10",
+    "app-module-path": "^2.2.0",
     "body-parser": "^1.19.0",
     "classnames": "^2.2.6",
     "codemirror": "^5.59.1",
@@ -70,8 +77,11 @@
     "vitreum": "github:calculuschild/vitreum#21a8e1c9421f1d3a3b474c12f480feb2fbd28c5b"
   },
   "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.12.10",
+    "@shelf/jest-mongodb": "^1.2.3",
     "eslint": "^7.16.0",
     "eslint-plugin-react": "^7.22.0",
-    "pico-check": "^2.0.3"
+    "jest": "^26.6.3",
+    "supertest": "^6.0.1"
   }
 }
