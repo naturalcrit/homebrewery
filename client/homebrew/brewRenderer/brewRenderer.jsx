@@ -25,7 +25,7 @@ const BrewRenderer = createClass({
 		};
 	},
 	getInitialState : function() {
-		const pages = this.props.text.split('\\page');
+		const pages = this.props.text.split(/^\\page/gm);
 		let renderer = 'legacy';
 		if(this.props.renderer)
 			renderer = this.props.renderer;
@@ -55,7 +55,7 @@ const BrewRenderer = createClass({
 	},
 
 	componentWillReceiveProps : function(nextProps) {
-		const pages = nextProps.text.split('\\page');
+		const pages = nextProps.text.split(/^\\page/gm);
 		this.setState({
 			pages  : pages,
 			usePPR : pages.length >= PPR_THRESHOLD

@@ -93,32 +93,32 @@ const Editor = createClass({
 			codeMirror.removeLineClass(lineNumber, 'background');
 			codeMirror.removeLineClass(lineNumber, 'text');
 
-			if(line.indexOf('\\page') !== -1){
+			if(line.startsWith('\\page')){
 				codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
 				r.push(lineNumber);
 			}
 
 			// New Codemirror styling for V3 renderer
 			if(this.props.renderer == 'V3') {
-				if(line.indexOf('\\column') === 0){
+				if(line.startsWith('\\column')){
 					codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 					r.push(lineNumber);
 				}
 
-				if(_.startsWith(line, '{{') || _.startsWith(line, '}}')){
+				if(line.startsWith('{{') || line.startsWith('}}')){
 					let endCh = line.length+1;
-					if(line.indexOf(' ') !== -1)
+					if(line.includes(' '))
 						endCh = line.indexOf(' ');
 					codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
 				}
 
-				if(line.indexOf('{{') !== -1 && line.indexOf('}}') !== -1){
+				if(line.includes('{{') && line.includes('}}')){
 					const regex = /{{.*?}}/g;
 					let match;
 					let endCh;
 					while ((match = regex.exec(line)) != null) {
 						endCh = match[0].length;
-						if(match[0].indexOf(' ') !== -1)
+						if(match[0].includes(' '))
 							endCh = match[0].indexOf(' ');
 						codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + endCh }, { className: 'inline-block' });
 						codeMirror.markText({ line: lineNumber, ch: regex.lastIndex-2 }, { line: lineNumber, ch: regex.lastIndex }, { className: 'inline-block' });
