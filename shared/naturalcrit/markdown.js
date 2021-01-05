@@ -13,46 +13,53 @@ renderer.html = function (html) {
 	return html;
 };
 
+// Ensure Divs don't confuse paragraph parsing (else it renders empty paragraphs)
+renderer.paragraph = function(text){
+	if(text.startsWith('<div'))
+		return `${text}`;
+	else
+		return `<p>${text}</p>\n`;
+}
+
 // Mustache-style Divs {{class \n content ... \n}}
 let blockCount = 0;
-renderer.paragraph = function(text){
-	const blockReg = /^\s*{{[\w|,]*$|^\s*}}$/gm;
-	const inlineFullReg = /{{[^\n]*}}/g;
-	const inlineReg = /{{[\w|,]*|}}/g;
+renderer.text = function(text){
+	const blockRegex = /^\s*{{[\w|,]*$|^\s*}}$/gm;
+	const inlineFullRegex = /{{[^\n]*}}/g;
+	const inlineRegex = /{{[\w|,]*|}}/g;
 	let matches;
 
 	//DIV - BLOCK-LEVEL
-	if(matches = text.match(blockReg)) {
+	if(matches = text.match(blockRegex)) {
 		let matchIndex = 0;
-		const res =  _.reduce(text.split(blockReg), (r, text)=>{
-
-			if(text) r.push(Markdown(text, { renderer: renderer }));
+		const res =  _.reduce(text.split(blockRegex), (r, splitText)=>{
+			if(splitText) r.push(Markdown.parseInline(splitText, { renderer: renderer }));
 
 			const block = matches[matchIndex] ? matches[matchIndex].trimLeft() : '';
-			if(block && block[0] == '{') {
-				r.push(`\n\n<div class="block ${block.substring(2).split(',').join(' ')}">`);
+			if(block && block.startsWith('{')) {
+				r.push(`<div class="block ${block.substring(2).split(',').join(' ')}">`);
 				blockCount++;
 			} else if(block == '}}' && blockCount !== 0){
-				r.push('</div>\n\n');
+				r.push('</div>');
 				blockCount--;
 			}
 
 			matchIndex++;
 
 			return r;
-		}, []).join('\n');
+		}, []).join('');
 		return res;
-	} else if(matches = text.match(inlineFullReg)) {
+	} else if(matches = text.match(inlineFullRegex)) {
 
 		//SPAN - INLINE
-		matches = text.match(inlineReg);
+		matches = text.match(inlineRegex);
 		let matchIndex = 0;
-		const res =  _.reduce(text.split(inlineReg), (r, text)=>{
+		const res =  _.reduce(text.split(inlineRegex), (r, splitText)=>{
 
-			if(text) r.push(Markdown.parseInline(text, { renderer: renderer }));
+			if(splitText) r.push(Markdown.parseInline(splitText, { renderer: renderer }));
 
 			const block = matches[matchIndex] ? matches[matchIndex].trimLeft() : '';
-			if(block && block[0] == '{') {
+			if(block && block.startsWith('{{')) {
 				r.push(`<span class="inline-block ${block.substring(2).split(',').join(' ')}">`);
 				blockCount++;
 			} else if(block == '}}' && blockCount !== 0){
@@ -64,9 +71,11 @@ renderer.paragraph = function(text){
 
 			return r;
 		}, []).join('');
-		return `\n<p>${res}</p>\n`;
+		return `${res}`;
 	} else {
-		if(!matches) return `\n<p>${text}</p>\n`;
+		if(!matches) {
+			return `${text}`;
+		}
 	}
 };
 
