@@ -15,7 +15,7 @@ renderer.html = function (html) {
 
 // Ensure Divs don't confuse paragraph parsing (else it renders empty paragraphs)
 renderer.paragraph = function(text){
-	if(text.startsWith('<div'))
+	if(text.startsWith('<div') || text.startsWith('</div'))
 		return `${text}`;
 	else
 		return `<p>${text}</p>\n`;
