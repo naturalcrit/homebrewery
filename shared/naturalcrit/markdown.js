@@ -19,7 +19,7 @@ renderer.paragraph = function(text){
 		return `${text}`;
 	else
 		return `<p>${text}</p>\n`;
-}
+};
 
 // Mustache-style Divs {{class \n content ... \n}}
 let blockCount = 0;
