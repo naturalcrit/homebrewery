@@ -157,7 +157,7 @@ module.exports = {
 	marked : Markdown,
 	render : (rawBrewText)=>{
 		blockCount = 0;
-		rawBrewText = rawBrewText.replace(/\\column/g, '{{columnSplit }}');
+		rawBrewText = rawBrewText.replace(/\\column/g, `<div class='columnSplit'></div>`);
 		return Markdown(
 			sanatizeScriptTags(rawBrewText),
 			{ renderer: renderer }
