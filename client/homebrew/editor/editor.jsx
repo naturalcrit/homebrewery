@@ -39,7 +39,7 @@ const Editor = createClass({
 
 	componentDidMount : function() {
 		this.updateEditorSize();
-		this.highlightPageLines();
+		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
 	},
 	componentWillUnmount : function() {
@@ -79,17 +79,17 @@ const Editor = createClass({
 		}, 1);
 	},
 
-	highlightPageLines : function(){
+	highlightCustomMarkdown : function(){
 		if(!this.refs.codeEditor) return;
 		const codeMirror = this.refs.codeEditor.codeMirror;
 
-		//Clear all Text styles
-		const ranges=codeMirror.getAllMarks();
-		for (let i=0;i<ranges.length;i++) ranges[i].clear();
+		//reset custom text styles
+		const customHighlights = codeMirror.getAllMarks();
+		for (let i=0;i<customHighlights.length;i++) customHighlights[i].clear();
 
 		const lineNumbers = _.reduce(this.props.value.split('\n'), (r, line, lineNumber)=>{
 
-			//clear all line styles
+			//reset custom line styles
 			codeMirror.removeLineClass(lineNumber, 'background');
 			codeMirror.removeLineClass(lineNumber, 'text');
 
@@ -151,7 +151,7 @@ const Editor = createClass({
 	},
 
 	render : function(){
-		this.highlightPageLines();
+		this.highlightCustomMarkdown();
 		return (
 			<div className='editor' ref='main'>
 				<SnippetBar
