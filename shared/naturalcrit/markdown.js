@@ -166,7 +166,9 @@ module.exports = {
 	marked : Markdown,
 	render : (rawBrewText)=>{
 		blockCount = 0;
-		rawBrewText = rawBrewText.replace(/\\column/g, `<div class='columnSplit'></div>`);
+		rawBrewText = rawBrewText.replace(/^\\column/gm, `<div class='columnSplit'></div>`)
+		                         .replace(/^}}/gm, '\n}}')
+		                         .replace(/^({{[\w|,]*)$/gm, '$1\n');
 		return Markdown(
 			sanatizeScriptTags(rawBrewText),
 			{ renderer: renderer }

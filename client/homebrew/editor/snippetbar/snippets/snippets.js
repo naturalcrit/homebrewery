@@ -17,12 +17,12 @@ module.exports = [
 			{
 				name : 'Column Break',
 				icon : 'fa-columns',
-				gen  : '\\column\n'
+				gen  : '\n\\column\n'
 			},
 			{
 				name : 'New Page',
 				icon : 'fa-file-text',
-				gen  : '\\page\n'
+				gen  : '\n\\page\n'
 			},
 			{
 				name : 'Vertical Spacing',
