@@ -143,7 +143,7 @@ const RecentItems = createClass({
 	},
 
 	render : function(){
-		return <Nav.item icon='fa-clock-o' color='grey' className='recent'
+		return <Nav.item icon='fa-history' color='grey' className='recent'
 			onMouseEnter={()=>this.handleDropdown(true)}
 			onMouseLeave={()=>this.handleDropdown(false)}>
 			{this.props.text}

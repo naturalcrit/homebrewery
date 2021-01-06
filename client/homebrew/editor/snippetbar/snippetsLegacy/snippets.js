@@ -12,31 +12,31 @@ module.exports = [
 
 	{
 		groupName : 'Editor',
-		icon      : 'fa-pencil',
+		icon      : 'fas fa-pencil-alt',
 		snippets  : [
 			{
 				name : 'Column Break',
-				icon : 'fa-columns',
+				icon : 'fas fa-columns',
 				gen  : '```\n```\n\n'
 			},
 			{
 				name : 'New Page',
-				icon : 'fa-file-text',
+				icon : 'fas fa-file-alt',
 				gen  : '\\page\n\n'
 			},
 			{
 				name : 'Vertical Spacing',
-				icon : 'fa-arrows-v',
+				icon : 'fas fa-arrows-alt-v',
 				gen  : '<div style=\'margin-top:140px\'></div>\n\n'
 			},
 			{
 				name : 'Wide Block',
-				icon : 'fa-arrows-h',
+				icon : 'fas fa-arrows-alt-h',
 				gen  : '<div class=\'wide\'>\nEverything in here will be extra wide. Tables, text, everything! Beware though, CSS columns can behave a bit weird sometimes.\n</div>\n'
 			},
 			{
 				name : 'Image',
-				icon : 'fa-image',
+				icon : 'fas fa-image',
 				gen  : [
 					'<img ',
 					'  src=\'https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg\' ',
@@ -46,7 +46,7 @@ module.exports = [
 			},
 			{
 				name : 'Background Image',
-				icon : 'fa-tree',
+				icon : 'fas fa-tree',
 				gen  : [
 					'<img ',
 					'  src=\'http://i.imgur.com/hMna6G0.png\' ',
@@ -56,25 +56,25 @@ module.exports = [
 
 			{
 				name : 'Page Number',
-				icon : 'fa-bookmark',
+				icon : 'fas fa-bookmark',
 				gen  : '<div class=\'pageNumber\'>1</div>\n<div class=\'footnote\'>PART 1 | FANCINESS</div>\n\n'
 			},
 
 			{
 				name : 'Auto-incrementing Page Number',
-				icon : 'fa-sort-numeric-asc',
+				icon : 'fas fa-sort-numeric-down',
 				gen  : '<div class=\'pageNumber auto\'></div>\n'
 			},
 
 			{
 				name : 'Link to page',
-				icon : 'fa-link',
+				icon : 'fas fa-link',
 				gen  : '[Click here](#p3) to go to page 3\n'
 			},
 
 			{
 				name : 'Table of Contents',
-				icon : 'fa-book',
+				icon : 'fas fa-book',
 				gen  : TableOfContentsGen
 			},
 
@@ -87,26 +87,26 @@ module.exports = [
 
 	{
 		groupName : 'PHB',
-		icon      : 'fa-book',
+		icon      : 'fas fa-book',
 		snippets  : [
 			{
 				name : 'Spell',
-				icon : 'fa-magic',
+				icon : 'fas fa-magic',
 				gen  : MagicGen.spell,
 			},
 			{
 				name : 'Spell List',
-				icon : 'fa-list',
+				icon : 'fas fa-list',
 				gen  : MagicGen.spellList,
 			},
 			{
 				name : 'Class Feature',
-				icon : 'fa-trophy',
+				icon : 'fas fa-trophy',
 				gen  : ClassFeatureGen,
 			},
 			{
 				name : 'Note',
-				icon : 'fa-sticky-note',
+				icon : 'fas fa-sticky-note',
 				gen  : function(){
 					return [
 						'> ##### Time to Drop Knowledge',
@@ -118,7 +118,7 @@ module.exports = [
 			},
 			{
 				name : 'Descriptive Text Box',
-				icon : 'fa-sticky-note-o',
+				icon : 'far fa-sticky-note',
 				gen  : function(){
 					return [
 						'<div class=\'descriptive\'>',
@@ -132,17 +132,17 @@ module.exports = [
 			},
 			{
 				name : 'Monster Stat Block',
-				icon : 'fa-bug',
+				icon : 'fas fa-bug',
 				gen  : MonsterBlockGen.half,
 			},
 			{
 				name : 'Wide Monster Stat Block',
-				icon : 'fa-paw',
+				icon : 'fas fa-paw',
 				gen  : MonsterBlockGen.full,
 			},
 			{
 				name : 'Cover Page',
-				icon : 'fa-file-word-o',
+				icon : 'far fa-file-word',
 				gen  : CoverPageGen,
 			},
 		]
@@ -154,21 +154,21 @@ module.exports = [
 
 	{
 		groupName : 'Tables',
-		icon      : 'fa-table',
+		icon      : 'fas fa-table',
 		snippets  : [
 			{
 				name : 'Class Table',
-				icon : 'fa-table',
+				icon : 'fas fa-table',
 				gen  : ClassTableGen.full,
 			},
 			{
 				name : 'Half Class Table',
-				icon : 'fa-list-alt',
+				icon : 'fas fa-list-alt',
 				gen  : ClassTableGen.half,
 			},
 			{
 				name : 'Table',
-				icon : 'fa-th-list',
+				icon : 'fas fa-th-list',
 				gen  : function(){
 					return [
 						'##### Cookie Tastiness',
@@ -184,7 +184,7 @@ module.exports = [
 			},
 			{
 				name : 'Wide Table',
-				icon : 'fa-list',
+				icon : 'fas fa-list',
 				gen  : function(){
 					return [
 						'<div class=\'wide\'>',
@@ -202,7 +202,7 @@ module.exports = [
 			},
 			{
 				name : 'Split Table',
-				icon : 'fa-th-large',
+				icon : 'fas fa-th-large',
 				gen  : function(){
 					return [
 						'<div style=\'column-count:2\'>',
@@ -238,11 +238,11 @@ module.exports = [
 
 	{
 		groupName : 'Print',
-		icon      : 'fa-print',
+		icon      : 'fas fa-print',
 		snippets  : [
 			{
 				name : 'A4 PageSize',
-				icon : 'fa-file-o',
+				icon : 'far fa-file',
 				gen  : ['<style>',
 					'  .phb{',
 					'    width : 210mm;',
@@ -253,7 +253,7 @@ module.exports = [
 			},
 			{
 				name : 'Ink Friendly',
-				icon : 'fa-tint',
+				icon : 'fas fa-tint',
 				gen  : ['<style>',
 					'  .phb{ background : white;}',
 					'  .phb img{ display : none;}',

@@ -92,7 +92,7 @@ const SnippetGroup = createClass({
 	renderSnippets : function(){
 		return _.map(this.props.snippets, (snippet)=>{
 			return <div className='snippet' key={snippet.name} onClick={()=>this.handleSnippetClick(snippet)}>
-				<i className={`fa fa-fw ${snippet.icon}`} />
+				<i className={`fa-fw ${snippet.icon}`} />
 				{snippet.name}
 			</div>;
 		});
@@ -101,7 +101,7 @@ const SnippetGroup = createClass({
 	render : function(){
 		return <div className='snippetGroup'>
 			<div className='text'>
-				<i className={`fa fa-fw ${this.props.icon}`} />
+				<i className={`fa-fw ${this.props.icon}`} />
 				<span className='groupName'>{this.props.groupName}</span>
 			</div>
 			<div className='dropdown'>

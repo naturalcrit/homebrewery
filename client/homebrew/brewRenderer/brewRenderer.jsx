@@ -40,7 +40,7 @@ const BrewRenderer = createClass({
 			visibility     : 'hidden',
 			renderer       : renderer,
 			initialContent : `<!DOCTYPE html><html><head>
-												<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+												<link href="//use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
 												<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
 												<link href='/homebrew/bundle.css' rel='stylesheet' />
 												<base target=_blank>

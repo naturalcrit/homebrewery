@@ -25,7 +25,7 @@ const Account = createClass({
 			</Nav.item>;
 		}
 
-		return <Nav.item href={`http://naturalcrit.com/login?redirect=${this.state.url}`} color='teal' icon='fa-sign-in'>
+		return <Nav.item href={`http://naturalcrit.com/login?redirect=${this.state.url}`} color='teal' icon='fa-sign-in-alt'>
 			login
 		</Nav.item>;
 	}

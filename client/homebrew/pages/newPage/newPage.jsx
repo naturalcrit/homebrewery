@@ -143,7 +143,7 @@ const NewPage = createClass({
 	},
 
 	renderLocalPrintButton : function(){
-		return <Nav.item color='purple' icon='fa-file-pdf-o' onClick={this.print}>
+		return <Nav.item color='purple' icon='fa-file-pdf' onClick={this.print}>
 			get PDF
 		</Nav.item>;
 	},
