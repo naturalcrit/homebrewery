@@ -56,7 +56,7 @@ renderer.text = function(text){
 		let matchIndex = 0;
 		const res =  _.reduce(text.split(inlineRegex), (r, splitText)=>{
 
-			if(splitText) r.push(Markdown.parseInline(splitText, { renderer: renderer }));
+			if(splitText) r.push(Markdown.parseInline(splitText.trimLeft(), { renderer: renderer }));
 
 			const block = matches[matchIndex] ? matches[matchIndex].trimLeft() : '';
 			if(block && block.startsWith('{{')) {
