@@ -26,7 +26,7 @@ let blockCount = 0;
 renderer.text = function(text){
 	const blockRegex = /^\s*{{[\w|,]*$|^\s*}}$/gm;
 	const inlineFullRegex = /{{[^\n]*}}/g;
-	const inlineRegex = /{{[\w|,]*|}}/g;
+	const inlineRegex = /{{[\w|,]*\s*|}}/g;
 	let matches;
 
 	//DIV - BLOCK-LEVEL
@@ -56,7 +56,7 @@ renderer.text = function(text){
 		let matchIndex = 0;
 		const res =  _.reduce(text.split(inlineRegex), (r, splitText)=>{
 
-			if(splitText) r.push(Markdown.parseInline(splitText.trimLeft(), { renderer: renderer }));
+			if(splitText) r.push(Markdown.parseInline(splitText, { renderer: renderer }));
 
 			const block = matches[matchIndex] ? matches[matchIndex].trimLeft() : '';
 			if(block && block.startsWith('{{')) {
