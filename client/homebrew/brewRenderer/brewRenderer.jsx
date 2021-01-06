@@ -119,7 +119,6 @@ const BrewRenderer = createClass({
 		else {
 			pageText = pageText.replace(/^}}/gm, '\n}}');
 			pageText = pageText.replace(/^({{[\w|,]*)$/gm, '$1\n');
-			console.log(pageText);
 			return <div className='phb' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: Markdown.render(pageText) }} key={index} />;
 		}
 	},
