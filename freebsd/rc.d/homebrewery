@@ -37,7 +37,7 @@ pidfile="/var/run/${program_name}.pid" 	   # File that allows the system to keep
 # Env Setup
 export HOME=$( getent passwd "homebrewery_runAs" | cut -d: -f6 ) # Gets the home directory of the runAs user
 export NODE_ENV="local"
-export PORT=8001
+export PORT=8000
 
 # Command Setup
 exec_cmd="${location}/${program_name}/server.js" 	# Path to the HomeBrewery server.js, /usr/local/bin/ when installed globally
