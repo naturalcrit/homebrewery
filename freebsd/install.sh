@@ -1,6 +1,6 @@
 #!/bin/sh
 
-pkg install -y git nano node npm mongodb44-4.4.1
+pkg install -y git nano node npm mongodb44
 
 sysrc mongod_enable=YES
 service mongod start
@@ -13,8 +13,8 @@ npm install
 npm audit fix
 npm run postinstall
 
-cp freebsd/rc.d/homebrewery /etc/rc.d/
-chmod +x /etc/rc.d/homebrewery
+cp freebsd/rc.d/homebrewery /usr/local/etc/rc.d/
+chmod +x /usr/local/etc/rc.d/homebrewery
 
 sysrc homebrewery_enable=YES
 service homebrewery start
