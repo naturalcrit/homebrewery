@@ -14,6 +14,8 @@ app.use('/', expressStaticGzip(`${__dirname}/build`, {
 	index           : false
 }));
 
+process.chdir(__dirname);
+
 //app.use(express.static(`${__dirname}/build`));
 app.use(require('body-parser').json({ limit: '25mb' }));
 app.use(require('cookie-parser')());
@@ -230,6 +232,6 @@ app.use((req, res)=>{
 });
 
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || config.get('web_port') || 8000;
 app.listen(PORT);
 console.log(`server on port:${PORT}`);

@@ -69,6 +69,10 @@ in your browser and use the Homebrewery offline.
 
 Please see the docs here: [README.DOCKER.md](./README.DOCKER.md)
 
+### Running the application on FreeBSD or FreeNAS
+
+Please see the docs here: [README.FreeBSD.md](./README.FREEBSD.md)
+
 ### Standalone PHB Stylesheet
 If you just want the stylesheet that is generated to make pages look like they
 are from the Player's Handbook, you will find it in the
