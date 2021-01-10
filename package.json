@@ -19,7 +19,6 @@
     "circleci": "npm test && eslint **/*.{js,jsx} --max-warnings=0",
     "verify": "npm run lint && npm test",
     "test": "jest",
-    "test:dev": "pico-check -v -w",
     "phb": "node scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
     "postinstall": "npm run buildall",
@@ -30,9 +29,6 @@
   "eslintIgnore": [
     "build/*"
   ],
-  "pico-check": {
-    "require": "./tests/test.init.js"
-  },
   "jest": {
     "moduleNameMapper": {
       ".*\\.(less|png)$": "<rootDir>/tests/styles.mock.js"
@@ -81,7 +77,6 @@
   "devDependencies": {
     "eslint": "^7.16.0",
     "eslint-plugin-react": "^7.22.0",
-    "jest": "^26.6.3",
-    "pico-check": "^2.0.3"
+    "jest": "^26.6.3"
   }
 }
