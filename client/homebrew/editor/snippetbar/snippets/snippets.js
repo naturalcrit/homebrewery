@@ -6,6 +6,7 @@ const MonsterBlockGen = require('./monsterblock.gen.js');
 const ClassFeatureGen = require('./classfeature.gen.js');
 const CoverPageGen = require('./coverpage.gen.js');
 const TableOfContentsGen = require('./tableOfContents.gen.js');
+const CardTemplateGen = require('./cardtemplate.gen.js');
 
 
 module.exports = [
@@ -78,7 +79,6 @@ module.exports = [
 				gen  : TableOfContentsGen
 			},
 
-
 		]
 	},
 
@@ -144,6 +144,11 @@ module.exports = [
 				name : 'Cover Page',
 				icon : 'fa-file-word-o',
 				gen  : CoverPageGen,
+			},
+			{
+				name : 'Card Template',
+				icon : 'fa-star-o',
+				gen  : CardTemplateGen
 			},
 		]
 	},
