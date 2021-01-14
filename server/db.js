@@ -20,10 +20,15 @@ function connectionResolver(resolve, reject) {
   });
 }
 
+function disconnect() {
+  return Mongoose.close();
+}
+
 function connect() {
   return new Promise(connectionResolver);
 }
 
 module.exports = {
-  connect: connect
+  connect: connect,
+  disconnect: disconnect
 }
