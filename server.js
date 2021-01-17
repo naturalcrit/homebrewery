@@ -76,7 +76,7 @@ app.get('/source/:id', (req, res)=>{
 		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
 		.then((brew)=>{
 			const text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-			return res.send(`<code><pre style="white-space: pre-wrap;">${text}</pre></code>`);
+			return res.status(200).send(`<code><pre style="white-space: pre-wrap;">${text}</pre></code>`);
 		})
 		.catch((err)=>{
 			console.log(err);
@@ -86,7 +86,52 @@ app.get('/source/:id', (req, res)=>{
 		HomebrewModel.get({ shareId: req.params.id })
 			.then((brew)=>{
 				const text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-				return res.send(`<code><pre style="white-space: pre-wrap;">${text}</pre></code>`);
+				return res.status(200).send(`<code><pre style="white-space: pre-wrap;">${text}</pre></code>`);
+			})
+			.catch((err)=>{
+				console.log(err);
+				return res.status(404).send('Could not find Homebrew with that id');
+			});
+	}
+});
+
+//Source download page
+app.get('/source_dl/:id', (req, res)=>{
+	if(req.params.id.length > 12) {
+		const googleId = req.params.id.slice(0, -12);
+		const shareId = req.params.id.slice(-12);
+		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
+		.then((brew)=>{
+			const text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+			const fileName = brew.title.replaceAll(' ', '-');
+
+			res.status(200);
+			res.set({
+				'Cache-Control'       : 'no-cache',
+				'Content-Type'        : 'text/plain',
+				'Content-Disposition' : `attachment; filename="HomeBrewery-${fileName}.txt"`
+			});
+
+			return res.send(text);
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(400).send('Can\'t get brew from Google');
+		});
+	} else {
+		HomebrewModel.get({ shareId: req.params.id })
+			.then((brew)=>{
+				const text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+				const fileName = brew.title.replaceAll(' ', '-');
+
+				res.status(200);
+				res.set({
+					'Cache-Control'       : 'no-cache',
+					'Content-Type'        : 'text/plain',
+					'Content-Disposition' : `attachment; filename="HomeBrewery-${fileName}.txt"`
+				});
+
+				return res.send(text);
 			})
 			.catch((err)=>{
 				console.log(err);
