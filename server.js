@@ -97,22 +97,14 @@ app.get('/source/:id', (req, res)=>{
 
 //Source download page
 app.get('/source_dl/:id', (req, res)=>{
+	const sourceDL = require ('./client/homebrew/pages/sharePage/source_dl.jsx');
 	if(req.params.id.length > 12) {
 		const googleId = req.params.id.slice(0, -12);
 		const shareId = req.params.id.slice(-12);
 		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
 		.then((brew)=>{
-			const text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-			const fileName = brew.title.replaceAll(' ', '-');
-
-			res.status(200);
-			res.set({
-				'Cache-Control'       : 'no-cache',
-				'Content-Type'        : 'text/plain',
-				'Content-Disposition' : `attachment; filename="HomeBrewery-${fileName}.txt"`
-			});
-
-			return res.send(text);
+			res = sourceDL(res, brew);
+			return res.send(brew.text);
 		})
 		.catch((err)=>{
 			console.log(err);
@@ -120,23 +112,14 @@ app.get('/source_dl/:id', (req, res)=>{
 		});
 	} else {
 		HomebrewModel.get({ shareId: req.params.id })
-			.then((brew)=>{
-				const text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-				const fileName = brew.title.replaceAll(' ', '-');
-
-				res.status(200);
-				res.set({
-					'Cache-Control'       : 'no-cache',
-					'Content-Type'        : 'text/plain',
-					'Content-Disposition' : `attachment; filename="HomeBrewery-${fileName}.txt"`
-				});
-
-				return res.send(text);
-			})
-			.catch((err)=>{
-				console.log(err);
-				return res.status(404).send('Could not find Homebrew with that id');
-			});
+		.then((brew)=>{
+			res = sourceDL(res, brew);
+			return res.send(brew.text);
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(404).send('Could not find Homebrew with that id');
+		});
 	}
 });
 
