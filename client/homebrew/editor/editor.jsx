@@ -107,21 +107,27 @@ const Editor = createClass({
 
 				if(line.startsWith('{{') || line.startsWith('}}')){
 					let endCh = line.length+1;
-					if(line.includes(' '))
-						endCh = line.indexOf(' ');
+					const match = line.match(/{{(?:[\w,#-]|="[\w, ]*")*\s*|}}/);
+					if(match)
+						endCh = match.index+match[0].length;
 					codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
 				}
 
 				if(line.includes('{{') && line.includes('}}')){
-					const regex = /{{.*?}}/g;
+					const regex = /{{(?:[\w,#-]|="[\w, ]*")*\s*|}}/g;
 					let match;
-					let endCh;
+					let blockCount = 0;
 					while ((match = regex.exec(line)) != null) {
-						endCh = match[0].length;
-						if(match[0].includes(' '))
-							endCh = match[0].indexOf(' ');
-						codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + endCh }, { className: 'inline-block' });
-						codeMirror.markText({ line: lineNumber, ch: regex.lastIndex-2 }, { line: lineNumber, ch: regex.lastIndex }, { className: 'inline-block' });
+						if(match[0].startsWith('{')) {
+							blockCount += 1;
+						} else {
+							blockCount -= 1;
+						}
+						if(blockCount < 0) {
+							blockCount = 0;
+							continue;
+						}
+						codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: 'inline-block' });
 					}
 				}
 			}
