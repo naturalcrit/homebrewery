@@ -169,7 +169,7 @@ const tagRegex = new RegExp(`(${
 const processStyleTags = (string)=>{
 	const tags = string.match(/(?:[^, "=]+|="[^"]*")+/g);
 
-	if(!tags)	return '';
+	if(!tags)	return '"';
 
 	const id      = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
 	const classes = _.remove(tags, (tag)=>!tag.includes('"'));
