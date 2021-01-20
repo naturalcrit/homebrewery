@@ -24,9 +24,9 @@ renderer.paragraph = function(text){
 
 // Mustache-style Divs {{class \n content ... \n}}
 let blockCount = 0;
-const blockRegex = /^ *{{(?:[\w,#-]|="[\w, ]*")*$|^ *}}$/gm;
+const blockRegex = /^ *{{(?:="[\w, ]*"|[^"'\s])*$|^ *}}$/gm;
 const inlineFullRegex = /{{[^\n]*}}/g;
-const inlineRegex = /{{(?:[\w,#-]|="[\w, ]*")*\s*|}}/g;
+const inlineRegex = /{{(?:="[\w, ]*"|[^"'\s])*\s*|}}/g;
 
 renderer.text = function(text){
 	const newText = text.replaceAll('&quot;', '"');
