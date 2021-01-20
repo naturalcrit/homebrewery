@@ -50,7 +50,7 @@
     "create-react-class": "^15.7.0",
     "express": "^4.17.1",
     "express-static-gzip": "2.1.0",
-    "fs-extra": "9.0.1",
+    "fs-extra": "9.1.0",
     "googleapis": "66.0.0",
     "jwt-simple": "^0.5.6",
     "less": "^3.13.1",
