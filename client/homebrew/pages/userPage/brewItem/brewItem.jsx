@@ -65,7 +65,7 @@ const BrewItem = createClass({
 		</a>;
 	},
 
-	renderShareLink : function(){
+	renderSourceLink : function(path, icon){
 		if(!this.props.brew.shareId) return;
 
 		let shareLink = this.props.brew.shareId;
@@ -73,8 +73,8 @@ const BrewItem = createClass({
 			shareLink = this.props.brew.googleId + shareLink;
 		}
 
-		return <a href={`/share/${shareLink}`} target='_blank' rel='noopener noreferrer'>
-			<i className='fa fa-share-alt' />
+		return <a href={`/${path}/${shareLink}`} target='_blank' rel='noopener noreferrer'>
+			<i className={`fa ${icon}`} />
 		</a>;
 	},
 
@@ -107,8 +107,9 @@ const BrewItem = createClass({
 			</div>
 
 			<div className='links'>
-				{this.renderShareLink()}
+				{this.renderSourceLink('share', 'fa-share-alt')}
 				{this.renderEditLink()}
+				{this.renderSourceLink('download', 'fa-download')}
 				{this.renderDeleteBrewLink()}
 			</div>
 		</div>;

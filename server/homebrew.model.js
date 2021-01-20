@@ -34,6 +34,17 @@ HomebrewSchema.methods.sanatize = function(full=false){
 	return brew;
 };
 
+HomebrewSchema.methods.sanitizeHtml = function(){
+	const brew = this.toJSON();
+	const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
+	text = brew.text;
+	for (const replaceStr in replaceStrings) {
+		text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
+	}
+	text = `<code><pre style="white-space: pre-wrap;">${text}</pre></code>`;
+	return text;
+};
+
 HomebrewSchema.methods.increaseView = async function(){
 	this.lastViewed = new Date();
 	this.views = this.views + 1;

@@ -62,7 +62,7 @@ const SharePage = createClass({
 					<Nav.item href={`/source/${this.processShareId()}`} color='teal' icon='fa-code'>
 						view source
 					</Nav.item>
-					<Nav.item href={`/source_dl/${this.processShareId()}`} color='red' icon='fa-download'>
+					<Nav.item href={`/download/${this.processShareId()}`} color='red' icon='fa-download'>
 						download source
 					</Nav.item>
 					<RecentNavItem brew={this.props.brew} storageKey='view' />
