@@ -34,10 +34,9 @@ HomebrewSchema.methods.sanatize = function(full=false){
 	return brew;
 };
 
-HomebrewSchema.methods.sanitizeHtml = function(){
-	const brew = this.toJSON();
+HomebrewSchema.methods.escapeTextForHtmlDisplay = function(){
 	const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
-	text = brew.text;
+	text = this.text;
 	for (const replaceStr in replaceStrings) {
 		text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
 	}
