@@ -8,10 +8,13 @@ const shareFunction = function(req, res, type) {
 		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
 		.then((brew)=>{
 			if(type == 'source') {
-				return res.status(200).send(brew.sanitizeHtml());
+				return res.status(200).send(brew.escapeTextForHtmlDisplay());
 			} else if(type == 'download') {
 				let fileName = sanitizeFilename(brew.title);
 				fileName = fileName.replaceAll(' ', '-');
+				if(!fileName || !fileName.length) {
+					fileName = 'Untitled-Brew';
+				}
 				res.status(200);
 				res.set({
 					'Cache-Control'       : 'no-cache',
@@ -31,7 +34,7 @@ const shareFunction = function(req, res, type) {
 		HomebrewModel.get({ shareId: req.params.id })
 			.then((brew)=>{
 				if(type == 'source') {
-					return res.status(200).send(brew.sanitizeHtml());
+					return res.status(200).send(brew.escapeTextForHtmlDisplay());
 				} else if(type == 'download') {
 					let fileName = sanitizeFilename(brew.title);
 					fileName = fileName.replaceAll(' ', '-');
