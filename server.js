@@ -99,8 +99,8 @@ const shareFunction = function(req, res, type) {
 
 const setSourceHeaders = function (res, title, type) {
 	res.status(200);
-	if (type == 'download') {
-		let fileName = sanitizeFilename(title).replaceAll(' ', '-');
+	if(type == 'download') {
+		const fileName = sanitizeFilename(title).replaceAll(' ', '-');
 
 		res.set({
 			'Cache-Control'       : 'no-cache',
@@ -108,18 +108,18 @@ const setSourceHeaders = function (res, title, type) {
 			'Content-Disposition' : `attachment; filename="HomeBrewery-${fileName}.txt"`
 		});
 	}
-}
+};
 
 const getSourceText = function (brewText, type) {
 	if(type == 'source') {
-		return `<code><pre style="white-space: pre-wrap;">${brewText.replaceAll('&', '&amp;').replaceAll('<','&lt;').replaceAll('>', '&gt;')}</pre></code>`;
+		return `<code><pre style="white-space: pre-wrap;">${brewText.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')}</pre></code>`;
 	} else if(type == 'download') {
 		return brewText;
 	} else {
 		console.log('Unhandled source share type');
 		return;
 	}
-}
+};
 
 //Source page
 app.get('/source/:id', (req, res)=>{
