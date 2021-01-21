@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 const _ = require('lodash');
 const jwt = require('jwt-simple');
 const expressStaticGzip = require('express-static-gzip');
@@ -7,7 +8,7 @@ const app = express();
 const homebrewApi = require('./server/homebrew.api.js');
 const GoogleActions = require('./server/googleActions.js');
 
-const shareFunction = require ('./client/homebrew/pages/sharePage/sourceFunctions.jsx');
+const sanitizeFilename = require('sanitize-filename');
 
 // Serve brotli-compressed static files if available
 app.use('/', expressStaticGzip(`${__dirname}/build`, {
@@ -69,6 +70,56 @@ String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 app.get('/robots.txt', (req, res)=>{
 	return res.sendFile(`${__dirname}/robots.txt`);
 });
+
+const shareFunction = function(req, res, type) {
+	if(req.params.id.length > 12) {
+		const googleId = req.params.id.slice(0, -12);
+		const shareId = req.params.id.slice(-12);
+		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
+		.then((brew)=>{
+			setSourceHeaders(res, brew.title, type);
+			res.send(getSourceText(brew.text, type));
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(400).send('Can\'t get brew from Google');
+		});
+	} else {
+		HomebrewModel.get({ shareId: req.params.id })
+			.then((brew)=>{
+				setSourceHeaders(res, brew.title, type);
+				res.send(getSourceText(brew.text, type));
+			})
+			.catch((err)=>{
+				console.log(err);
+				return res.status(404).send('Could not find Homebrew with that id');
+			});
+	}
+};
+
+const setSourceHeaders = function (res, title, type) {
+	res.status(200);
+	if (type == 'download') {
+		let fileName = sanitizeFilename(title).replaceAll(' ', '-');
+
+		res.set({
+			'Cache-Control'       : 'no-cache',
+			'Content-Type'        : 'text/plain',
+			'Content-Disposition' : `attachment; filename="HomeBrewery-${fileName}.txt"`
+		});
+	}
+}
+
+const getSourceText = function (brewText, type) {
+	if(type == 'source') {
+		return `<code><pre style="white-space: pre-wrap;">${brewText.replaceAll('&', '&amp;').replaceAll('<','&lt;').replaceAll('>', '&gt;')}</pre></code>`;
+	} else if(type == 'download') {
+		return brewText;
+	} else {
+		console.log('Unhandled source share type');
+		return;
+	}
+}
 
 //Source page
 app.get('/source/:id', (req, res)=>{
