@@ -80,7 +80,7 @@ app.get('/source/:id', (req, res)=>{
 		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
 		.then((brew)=>{
 			const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
-			var text = brew.text;
+			let text = brew.text;
 			for (const replaceStr in replaceStrings) {
 				text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
 			}
@@ -95,7 +95,7 @@ app.get('/source/:id', (req, res)=>{
 		HomebrewModel.get({ shareId: req.params.id })
 		.then((brew)=>{
 			const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
-			var text = brew.text;
+			let text = brew.text;
 			for (const replaceStr in replaceStrings) {
 				text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
 			}
@@ -116,7 +116,7 @@ app.get('/download/:id', (req, res)=>{
 		const shareId = req.params.id.slice(-12);
 		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
 		.then((brew)=>{
-			var fileName = sanitizeFilename(title).replaceAll(' ', '-');
+			let fileName = sanitizeFilename(title).replaceAll(' ', '-');
 			if(!fileName || !fileName.length) { fileName = 'Untitled-Brew'; };
 			res.set({
 				'Cache-Control'       : 'no-cache',
@@ -132,7 +132,7 @@ app.get('/download/:id', (req, res)=>{
 	} else {
 		HomebrewModel.get({ shareId: req.params.id })
 		.then((brew)=>{
-			var fileName = sanitizeFilename(title).replaceAll(' ', '-');
+			let fileName = sanitizeFilename(title).replaceAll(' ', '-');
 			if(!fileName || !fileName.length) { fileName = 'Untitled-Brew'; };
 			res.set({
 				'Cache-Control'       : 'no-cache',
