@@ -1,4 +1,4 @@
-const Markdown = require('naturalcrit/markdown.js');
+const Markdown = require('shared/naturalcrit/markdown.js');
 
 test('Escapes <script> tag', function() {
   const source = '<script></script>';
