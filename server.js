@@ -112,7 +112,12 @@ const setSourceHeaders = function (res, title, type) {
 
 const getSourceText = function (brewText, type) {
 	if(type == 'source') {
-		return `<code><pre style="white-space: pre-wrap;">${brewText.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')}</pre></code>`;
+		const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
+		const text = brewText;
+		for (const replaceStr in replaceStrings) {
+			text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
+		}
+		return `<code><pre style="white-space: pre-wrap;">${text}</pre></code>`;
 	} else if(type == 'download') {
 		return brewText;
 	} else {
