@@ -1,13 +1,17 @@
 const Mongoose = require('mongoose');
-// TODO: should some config object be used here instead of hardcoging the URL?
-const DB_URL = process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://localhost/homebrewery';
 
-function errorHandler() {
+const getMongoDBURL = () => {
+  if (process.env.NODE_ENV === 'test' && process.env.MONGO_URL) {
+    // This env variable is provided by shelfio/jest-mongodb and it should be
+    // used in test environment
+    return process.env.MONGO_URL;
+  }
 
-}
+  return process.env.MONGODB_URI || process.env.MONGOLAB_URI || 'mongodb://localhost/homebrewery';
+};
 
 function connectionResolver(resolve, reject) {
-  Mongoose.connect(DB_URL,
+  Mongoose.connect(getMongoDBURL(),
   { retryWrites: false, useNewUrlParser: true },
   (error) => {
     if (error) {
