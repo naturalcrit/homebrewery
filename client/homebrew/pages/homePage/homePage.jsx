@@ -7,6 +7,7 @@ const { Meta } = require('vitreum/headtags');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
+const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
 const IssueNavItem = require('../../navbar/issue.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
@@ -54,6 +55,7 @@ const HomePage = createClass({
 	renderNavbar : function(){
 		return <Navbar ver={this.props.ver}>
 			<Nav.section>
+				<NewBrewItem />
 				<IssueNavItem />
 				<Nav.item newTab={true} href='/changelog' color='purple' icon='fa-file-text-o'>
 					Changelog
