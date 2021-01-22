@@ -78,9 +78,9 @@ app.get('/source/:id', (req, res)=>{
 		const googleId = req.params.id.slice(0, -12);
 		const shareId = req.params.id.slice(-12);
 		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
-		.then((brew)=>{	
+		.then((brew)=>{
 			const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
-			const text = brew.text;
+			var text = brew.text;
 			for (const replaceStr in replaceStrings) {
 				text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
 			}
@@ -95,7 +95,7 @@ app.get('/source/:id', (req, res)=>{
 		HomebrewModel.get({ shareId: req.params.id })
 		.then((brew)=>{
 			const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
-			const text = brew.text;
+			var text = brew.text;
 			for (const replaceStr in replaceStrings) {
 				text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
 			}
@@ -116,14 +116,14 @@ app.get('/download/:id', (req, res)=>{
 		const shareId = req.params.id.slice(-12);
 		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
 		.then((brew)=>{
-			const fileName = sanitizeFilename(title).replaceAll(' ', '-');
-			if (!fileName || !fileName.length) { fileName = 'Untitled-Brew'; };
+			var fileName = sanitizeFilename(title).replaceAll(' ', '-');
+			if(!fileName || !fileName.length) { fileName = 'Untitled-Brew'; };
 			res.set({
 				'Cache-Control'       : 'no-cache',
 				'Content-Type'        : 'text/plain',
 				'Content-Disposition' : `attachment; filename="HomeBrewery-${fileName}.txt"`
 			});
-			res.status(200).send(getSourceText(brew.text, type));
+			res.status(200).send(brew.text);
 		})
 		.catch((err)=>{
 			console.log(err);
@@ -132,8 +132,14 @@ app.get('/download/:id', (req, res)=>{
 	} else {
 		HomebrewModel.get({ shareId: req.params.id })
 		.then((brew)=>{
-			setSourceHeaders(res, brew.title, type);
-			res.send(getSourceText(brew.text, type));
+			var fileName = sanitizeFilename(title).replaceAll(' ', '-');
+			if(!fileName || !fileName.length) { fileName = 'Untitled-Brew'; };
+			res.set({
+				'Cache-Control'       : 'no-cache',
+				'Content-Type'        : 'text/plain',
+				'Content-Disposition' : `attachment; filename="HomeBrewery-${fileName}.txt"`
+			});
+			res.status(200).send(brew.text);
 		})
 		.catch((err)=>{
 			console.log(err);
