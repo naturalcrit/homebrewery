@@ -73,7 +73,7 @@ const BrewItem = createClass({
 			shareLink = this.props.brew.googleId + shareLink;
 		}
 
-		return <a href={`/${path}/${shareLink}`} target='_blank' rel='noopener noreferrer'>
+		return <a href={`/${path}/${shareLink}`} target=`${(path != 'download') ? '_blank' : ''}` rel=`${(path != 'download') ? 'noopener noreferrer') ? '_blank' : ''}`>
 			<i className={`fa ${icon}`} />
 		</a>;
 	},
