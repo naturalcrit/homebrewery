@@ -30,11 +30,8 @@
     "build/*"
   ],
   "jest": {
-    "moduleNameMapper": {
-      ".*\\.(less|png)$": "<rootDir>/tests/styles.mock.js"
-    },
     "modulePaths": [
-      "node_moduled",
+      "node_modules",
       "<rootDir>"
     ],
     "preset": "@shelf/jest-mongodb"
