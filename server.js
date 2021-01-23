@@ -1,6 +1,6 @@
 require('app-module-path').addPath(__dirname);
 
-const app = require('./server/app.js')
+const app = require('./server/app.js');
 
 //DB
 const DB = require('./server/db.js');
