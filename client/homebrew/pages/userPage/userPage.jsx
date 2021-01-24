@@ -62,10 +62,18 @@ const UserPage = createClass({
 			<div className='content'>
 				<div className='phb'>
 					<div>
+						<table className='systemFilter'>
+							<tr>
+								<td><a href={`/user/${this.props.username}`}>All</a></td>
+								<td><a href={`/user/${this.props.username}/3.5e`}>3.5E</a></td>
+								<td><a href={`/user/${this.props.username}/4e`}>4E</a></td>
+								<td><a href={`/user/${this.props.username}/5e`}>5E</a></td>
+							</tr>
+						</table>
+						<br />
 						<h1>{this.getUsernameWithS()} brews</h1>
 						{this.renderBrews(brews.published)}
-					</div>
-					<div>
+						<br />
 						<h1>{this.getUsernameWithS()} unpublished brews</h1>
 						{this.renderBrews(brews.private)}
 					</div>
