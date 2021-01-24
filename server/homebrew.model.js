@@ -60,14 +60,19 @@ HomebrewSchema.statics.get = function(query){
 	});
 };
 
-HomebrewSchema.statics.getByUser = function(username, allowAccess=false){
+HomebrewSchema.statics.getByUser = function(username, allowAccess=false, systemFilter){
 	return new Promise((resolve, reject)=>{
-		const query = { authors: username, published: true };
+		const query = { authors: username, published: true, systems: { $in: systemFilter } };
+
+		if(!systemFilter || !systemFilter.length) {
+			delete query.systems;
+		}
 		if(allowAccess){
 			delete query.published;
 		}
+
 		Homebrew.find(query, (err, brews)=>{
-			if(err) return reject('Can not find brew');
+			if(err) return reject('No brews found!');
 			return resolve(_.map(brews, (brew)=>{
 				return brew.sanatize(!allowAccess);
 			}));

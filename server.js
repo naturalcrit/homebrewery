@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 250, "skipBlankLines": true, "skipComments": true}]*/
 const _ = require('lodash');
 const jwt = require('jwt-simple');
 const expressStaticGzip = require('express-static-gzip');
@@ -96,7 +97,7 @@ app.get('/source/:id', (req, res)=>{
 });
 
 //User Page
-app.get('/user/:username', async (req, res, next)=>{
+app.get('/user/:username/:system?', async (req, res, next)=>{
 	const fullAccess = req.account && (req.account.username == req.params.username);
 
 	let googleBrews = [];
@@ -108,7 +109,12 @@ app.get('/user/:username', async (req, res, next)=>{
 		});
 	}
 
-	const brews = await HomebrewModel.getByUser(req.params.username, fullAccess)
+	let systems = {};
+	if(req.params.system) {
+		systems = (req.params.system).split(',');
+	}
+
+	const brews = await HomebrewModel.getByUser(req.params.username, fullAccess, systems)
 	.catch((err)=>{
 		console.log(err);
 	});
