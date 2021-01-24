@@ -111,7 +111,7 @@ app.get('/user/:username/:system?', async (req, res, next)=>{
 
 	let systems = {};
 	if(req.params.system) {
-		systems = (req.params.system).split(',');
+		systems = (req.params.system).toLowerCase().split(',');
 	}
 
 	const brews = await HomebrewModel.getByUser(req.params.username, fullAccess, systems)
