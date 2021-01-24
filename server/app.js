@@ -219,4 +219,7 @@ app.use((req, res)=>{
         });
 });
 
+// Configure which port to listen
+app.locals.PORT = process.env.PORT || config.get('web_port') || 8000;
+
 module.exports = app;
