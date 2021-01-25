@@ -125,11 +125,11 @@ GoogleActions = {
 	      systems     : file.properties.systems
 	    };
 	  });
-	  
+
 	  console.log('Filtering Google Brews...');
 	  console.log(systemFilter);
 	  if(!systemFilter && !systemFilter.length) {
-		  brews.systems = brews.systems.filter(sys => systemFilter.includes(sys));
+		  brews.systems = brews.systems.filter((sys)=>systemFilter.includes(sys));
 	  }
 
 	  return brews;
