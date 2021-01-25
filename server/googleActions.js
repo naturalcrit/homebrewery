@@ -81,7 +81,7 @@ GoogleActions = {
 		return folderId;
 	},
 
-	listGoogleBrews : async (req, res)=>{
+	listGoogleBrews : async (req, res, systemFilter=false)=>{
 
 		oAuth2Client = GoogleActions.authCheck(req.account, res);
 
@@ -122,9 +122,15 @@ GoogleActions = {
 	      tags        : '',
 	      published   : file.properties.published ? file.properties.published == 'true' : false,
 	      authors     : [req.account.username],	//TODO: properly save and load authors to google drive
-	      systems     : []
+	      systems     : file.properties.systems
 	    };
 	  });
+	  
+	  console.log('Filtering Google Brews...');
+	  console.log(systemFilter);
+	  if(!systemFilter && !systemFilter.length) {
+		  brews.systems = brews.systems.filter(sys => systemFilter.includes(sys));
+	  }
 
 	  return brews;
 	},

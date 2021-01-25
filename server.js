@@ -100,18 +100,17 @@ app.get('/source/:id', (req, res)=>{
 app.get('/user/:username/:system?', async (req, res, next)=>{
 	const fullAccess = req.account && (req.account.username == req.params.username);
 
-	let googleBrews = [];
-
-	if(req.account && req.account.googleId){
-		googleBrews = await GoogleActions.listGoogleBrews(req, res)
-		.catch((err)=>{
-			console.error(err);
-		});
-	}
-
 	let systems = {};
 	if(req.params.system) {
 		systems = (req.params.system).toLowerCase().split(',');
+	}
+
+	let googleBrews = [];
+	if(req.account && req.account.googleId){
+		googleBrews = await GoogleActions.listGoogleBrews(req, res, systems)
+		.catch((err)=>{
+			console.error(err);
+		});
 	}
 
 	const brews = await HomebrewModel.getByUser(req.params.username, fullAccess, systems)
