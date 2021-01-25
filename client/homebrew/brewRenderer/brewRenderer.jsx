@@ -58,9 +58,7 @@ const BrewRenderer = createClass({
 
 	updateSize : function() {
 		this.setState({
-			height     : this.refs.main.parentNode.clientHeight,
-			isMounted  : true,
-			visibility : 'visible'
+			height : this.refs.main.parentNode.clientHeight,
 		});
 	},
 
@@ -116,7 +114,7 @@ const BrewRenderer = createClass({
 	renderPages : function(){
 		if(this.state.usePPR){
 			return _.map(this.state.pages, (page, index)=>{
-				if(this.shouldRender(page, index)){
+				if(this.shouldRender(page, index) && typeof window !== 'undefined'){
 					return this.renderPage(page, index);
 				} else {
 					return this.renderDummyPage(index);
@@ -125,7 +123,11 @@ const BrewRenderer = createClass({
 		}
 		if(this.props.errors && this.props.errors.length) return this.lastRender;
 		this.lastRender = _.map(this.state.pages, (page, index)=>{
-			return this.renderPage(page, index);
+			if(typeof window !== 'undefined') {
+				return this.renderPage(page, index);
+			} else {
+				return this.renderDummyPage(index);
+			}
 		});
 		return this.lastRender;
 	},
@@ -134,13 +136,28 @@ const BrewRenderer = createClass({
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			this.updateSize();
 			window.addEventListener('resize', this.updateSize);
+			this.renderPages(); //Make sure page is renderable before showing
+			this.setState({
+				isMounted  : true,
+				visibility : 'visible'
+			});
 		}, 100);
 	},
 
 	render : function(){
 		//render in iFrame so broken code doesn't crash the site.
+		//Also render dummy page while iframe is mounting.
+
 		return (
 			<React.Fragment>
+				{!this.state.isMounted
+					? <div className='brewRenderer' onScroll={this.handleScroll}>
+						<div className='pages' ref='pages'>
+							{this.renderDummyPage(1)}
+						</div>
+					</div>
+	        : null}
+
 				<Frame initialContent={this.state.initialContent} style={{ width: '100%', height: '100%', visibility: this.state.visibility }} contentDidMount={this.frameDidMount}>
 					<div className='brewRenderer'
 						onScroll={this.handleScroll}
@@ -153,7 +170,9 @@ const BrewRenderer = createClass({
 						</div>
 
 						<div className='pages' ref='pages'>
-							{this.renderPages()}
+							{this.state.isMounted
+								? this.renderPages()
+							  : null}
 						</div>
 					</div>
 				</Frame>

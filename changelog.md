@@ -1,5 +1,19 @@
 # changelog
 
+### Friday, 02/1/2021 - v2.10.6
+- Fixed punctuation for usernames ending with 's' on the user page. (Thanks @AlexeySachkov)
+- Fixed server crashes due to excessive long lines in brews
+- Fixed "automated request" lockouts from Google
+
+### Friday, 18/12/2020 - v2.10.5
+- Brews now immediately save when transferring between Google Drive and Homebrewery storage.
+- Added confirmation popup to clarify the transfer process.
+- Brews transferred or deleted from Google will be found in your Google Drive trash.
+- Dependency updates.
+
+### Wednesday, 25/11/2020 - v2.10.4
+- Fixed Google Drive brews not saving metadata (view count, description, etc.) Note that we are still working on making published Google brews visible to the public when viewing your profile page.
+
 ### Thursday, 22/10/2020 - v2.10.3
 - Fixed brews with broken code crashing the edit page when loaded (the "blue screen of death" bug).
 
@@ -23,6 +37,9 @@
 ### Wednesday, 20/05/2020 - v2.9.0
 - Major refactoring of site backend to work with updated dependencies for security (should be invisible to users)
 
+```
+```
+
 ### Wednesday, 11/03/2020 - v2.8.2
 - Fixed delete button removing everyone's copy for brews with multiple authors
 - Compressed homebrew text in database
@@ -38,9 +55,6 @@
 - Added a "contributing guide" for the GitHub
 - "Report Issue" navbar button now links to the subreddit
 - Refactored background code
-
-```
-```
 
 ### Sunday, 04/06/2017 - v2.7.5
 - Fixed the class feature snippet duplicating the entire brew

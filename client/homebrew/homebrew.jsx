@@ -1,8 +1,6 @@
 require('./homebrew.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const _ = require('lodash');
-const cx = require('classnames');
 const { StaticRouter:Router, Switch, Route } = require('react-router-dom');
 const queryString = require('query-string');
 

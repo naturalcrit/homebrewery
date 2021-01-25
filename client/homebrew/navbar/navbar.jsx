@@ -1,7 +1,6 @@
 require('./navbar.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const _ = require('lodash');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const PatreonNavItem = require('./patreon.navitem.jsx');

@@ -1,7 +1,6 @@
 require('./homePage.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const _ = require('lodash');
 const cx = require('classnames');
 const request = require('superagent');
 const { Meta } = require('vitreum/headtags');
@@ -61,11 +60,6 @@ const HomePage = createClass({
 				</Nav.item>
 				<RecentNavItem />
 				<AccountNavItem />
-				{/*}
-				<Nav.item href='/new' color='green' icon='fa-external-link'>
-					New Brew
-				</Nav.item>
-				*/}
 			</Nav.section>
 		</Navbar>;
 	},
@@ -77,7 +71,7 @@ const HomePage = createClass({
 
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
-					<Editor value={this.state.text} onChange={this.handleTextChange} ref='editor'/>
+					<Editor value={this.state.text} onChange={this.handleTextChange} showMetaButton={false} ref='editor'/>
 					<BrewRenderer text={this.state.text} />
 				</SplitPane>
 			</div>

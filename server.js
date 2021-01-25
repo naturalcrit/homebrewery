@@ -14,6 +14,8 @@ app.use('/', expressStaticGzip(`${__dirname}/build`, {
 	index           : false
 }));
 
+process.chdir(__dirname);
+
 //app.use(express.static(`${__dirname}/build`));
 app.use(require('body-parser').json({ limit: '25mb' }));
 app.use(require('cookie-parser')());
@@ -153,6 +155,10 @@ app.get('/share/:id', (req, res, next)=>{
 		const shareId = req.params.id.slice(-12);
 		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
 		.then((brew)=>{
+			GoogleActions.increaseView(googleId, shareId, 'share', brew);
+			return brew;
+		})
+		.then((brew)=>{
 			req.brew = brew; //TODO Need to sanitize later
 			return next();
 		})
@@ -226,6 +232,6 @@ app.use((req, res)=>{
 });
 
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || config.get('web_port') || 8000;
 app.listen(PORT);
 console.log(`server on port:${PORT}`);
