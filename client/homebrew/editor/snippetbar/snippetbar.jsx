@@ -55,9 +55,10 @@ const Snippetbar = createClass({
 
 	renderMetadataButton : function(){
 		if(!this.props.showMetaButton) return;
-		return <div className={cx('toggleMeta', { selected: this.props.showmeta })}
+		return <div className={cx('snippetBarButton', 'toggleMeta', { selected: this.props.showmeta })}
 			onClick={this.props.onToggle}>
-			<i className='fa fa-bars' />
+			<i className='fa fa-info-circle' />
+			<span className='groupName'>Properties</span>
 		</div>;
 	},
 
@@ -99,7 +100,7 @@ const SnippetGroup = createClass({
 	},
 
 	render : function(){
-		return <div className='snippetGroup'>
+		return <div className='snippetGroup snippetBarButton'>
 			<div className='text'>
 				<i className={`fa-fw ${this.props.icon}`} />
 				<span className='groupName'>{this.props.groupName}</span>
