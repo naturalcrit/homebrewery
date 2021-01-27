@@ -60,7 +60,7 @@ HomebrewSchema.statics.get = function(query){
 	});
 };
 
-HomebrewSchema.statics.getByUser = function(username, allowAccess=false, systemFilter){
+HomebrewSchema.statics.getByUser = function(username, allowAccess=false, systemFilter=false){
 	return new Promise((resolve, reject)=>{
 		const query = { authors: username, published: true, systems: { $in: systemFilter } };
 

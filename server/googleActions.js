@@ -106,7 +106,7 @@ GoogleActions = {
 	    console.log('No files found.');
 	  }
 
-		const brews = obj.data.files.map((file)=>{
+		let brews = obj.data.files.map((file)=>{
 	    return {
 	      text      : '',
 	      shareId   : file.properties.shareId,
@@ -126,10 +126,8 @@ GoogleActions = {
 	    };
 	  });
 
-	  console.log('Filtering Google Brews...');
-	  console.log(systemFilter);
-	  if(!systemFilter && !systemFilter.length) {
-		  brews.systems = brews.systems.filter((sys)=>systemFilter.includes(sys));
+	  if(systemFilter && systemFilter.length) {
+		  brews = brews.filter((_brew)=> systemFilter.includes(_brew.systems));
 	  }
 
 	  return brews;
@@ -164,7 +162,7 @@ GoogleActions = {
 																	  views      : brew.views,
 																	  version    : brew.version,
 																	  tags       : brew.tags,
-																	  systems    : brew.systems.join() }
+																	  systems    : brew.systems.join(',') }
 									 },
 				media : { mimeType : 'text/plain',
 										 body     : brew.text }
@@ -236,16 +234,15 @@ GoogleActions = {
 			description : brew.description,
 			tags        : '',
 			published   : brew.published,
-			authors     : [],
-			systems     : []
+			authors     : brew.authors.join(','),
+			systems     : brew.systems.join(',')
 		};
 
 		return newHomebrew;
 	},
 
 	readFileMetadata : async (auth, id, accessId, accessType)=>{
-		oAuth2Client = GoogleActions.authCheck(req.account, res);
-		const drive = google.drive({ version: 'v3', auth: oAuth2Client });
+		const drive = google.drive({ version: 'v3', auth: auth });
 
 		const obj = await drive.files.get({
 			fileId : id,
@@ -290,7 +287,7 @@ GoogleActions = {
 				description : obj.data.description,
 				tags        : obj.data.properties.tags    ? obj.data.properties.tags               : '',
 				systems     : obj.data.properties.systems ? obj.data.properties.systems.split(',') : [],
-				authors     : [],
+				authors     : obj.data.properties.authors ? obj.data.properties.authors.split(',') : [],
 				published   : obj.data.properties.published ? obj.data.properties.published == 'true' : false,
 
 				createdAt  : obj.data.createdTime,

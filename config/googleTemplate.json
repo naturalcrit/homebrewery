@@ -1,0 +1,9 @@
+{
+	"google_api_key" : "XYZ",
+	"google_client_id" : "XYZ.apps.googleusercontent.com",
+	"google_client_secret" : "XYZ",
+	"authentication_token_issuer" : "your-app-name",
+	"authentication_token_secret" : "your-app-secret",
+	"authentication_token_audience" : "your-app-name",
+	"service_account" : "your-app-service-account"
+}
