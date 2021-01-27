@@ -90,6 +90,7 @@ const BrewItem = createClass({
 		const brew = this.props.brew;
 		return <div className='brewItem'>
 			<h2>{brew.title}</h2>
+			<h5>Systems: {brew.systems}</h5>
 			<p className='description' >{brew.description}</p>
 			<hr />
 
