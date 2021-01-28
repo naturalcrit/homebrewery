@@ -122,7 +122,7 @@ GoogleActions = {
 	      tags        : '',
 	      published   : file.properties.published ? file.properties.published == 'true' : false,
 	      authors     : [req.account.username],	//TODO: properly save and load authors to google drive
-	      systems     : file.properties.systems
+	      systems     : file.properties.systems.split(',').sort()
 	    };
 	  });
 
@@ -294,8 +294,8 @@ GoogleActions = {
 
 				description : obj.data.description,
 				tags        : obj.data.properties.tags    ? obj.data.properties.tags               : '',
-				systems     : obj.data.properties.systems ? obj.data.properties.systems.split(',') : [],
-				authors     : obj.data.properties.authors ? obj.data.properties.authors.split(',') : [],
+				systems     : obj.data.properties.systems ? obj.data.properties.systems.split(',').sort() : [],
+				authors     : obj.data.properties.authors ? obj.data.properties.authors.split(',').sort() : [],
 				published   : obj.data.properties.published ? obj.data.properties.published == 'true' : false,
 
 				createdAt  : obj.data.createdTime,
