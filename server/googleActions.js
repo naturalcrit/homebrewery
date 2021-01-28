@@ -262,7 +262,15 @@ GoogleActions = {
 			}
 
 			//Access actual file with service account. Just api key is causing "automated query" errors.
-			const keys = JSON.parse(config.get('service_account'));
+			//console.log(config.get('service_account'));
+			//const keys = JSON.parse(config.get('service_account'));
+			
+			const actionList = {
+				"string" : function() { return JSON.parse(config.get('service_account')); },
+				"object" : function() { return config.get('service_account') }
+			}
+			const keys = actionList[typeof(config.get('service_account'))]();
+			
 			const serviceAuth = google.auth.fromJSON(keys);
 			serviceAuth.scopes = ['https://www.googleapis.com/auth/drive'];
 
@@ -361,5 +369,6 @@ GoogleActions = {
 		return;
 	}
 };
+
 
 module.exports = GoogleActions;
