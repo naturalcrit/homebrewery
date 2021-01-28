@@ -89,9 +89,12 @@ const BrewItem = createClass({
 	render : function(){
 		const brew = this.props.brew;
 		
+		let systemsText = 'Uncategorized';
+		if(this.props.brew.systems.length > 0) { systemsText = this.props.brew.systems.toString(); }
+		
 		return <div className='brewItem'>
 			<h2>{brew.title}</h2>
-			<h5>Systems:- {this.props.brew.systems.toString()}</h5>
+			<h5>Systems:- {systemsText}</h5>
 			<p className='description' >{brew.description}</p>
 			<hr />
 
