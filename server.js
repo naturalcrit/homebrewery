@@ -111,17 +111,18 @@ app.get('/source/:id', (req, res)=>{
 
 //Download brew source page
 app.get('/download/:id', (req, res)=>{
+	const prefix = config.get('filename-prefix');
 	if(req.params.id.length > 12) {
 		const googleId = req.params.id.slice(0, -12);
 		const shareId = req.params.id.slice(-12);
 		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
 		.then((brew)=>{
-			let fileName = sanitizeFilename(title).replaceAll(' ', '-');
-			if(!fileName || !fileName.length) { fileName = 'Untitled-Brew'; };
+			let fileName = sanitizeFilename(prefix + title).replaceAll(' ', '-');
+			if(!title || !title.length) { fileName = prefix + 'Untitled-Brew'; };
 			res.set({
 				'Cache-Control'       : 'no-cache',
 				'Content-Type'        : 'text/plain',
-				'Content-Disposition' : `attachment; filename="HomeBrewery-${fileName}.txt"`
+				'Content-Disposition' : `attachment; filename="${fileName}.txt"`
 			});
 			res.status(200).send(brew.text);
 		})
@@ -132,12 +133,13 @@ app.get('/download/:id', (req, res)=>{
 	} else {
 		HomebrewModel.get({ shareId: req.params.id })
 		.then((brew)=>{
-			let fileName = sanitizeFilename(title).replaceAll(' ', '-');
-			if(!fileName || !fileName.length) { fileName = 'Untitled-Brew'; };
+			let fileName = sanitizeFilename(prefix + title).replaceAll(' ', '-');
+			console.log(title);
+			if(!title || !title.length) { fileName = prefix + 'Untitled-Brew'; };
 			res.set({
 				'Cache-Control'       : 'no-cache',
 				'Content-Type'        : 'text/plain',
-				'Content-Disposition' : `attachment; filename="HomeBrewery-${fileName}.txt"`
+				'Content-Disposition' : `attachment; filename="${fileName}.txt"`
 			});
 			res.status(200).send(brew.text);
 		})
