@@ -111,14 +111,15 @@ app.get('/source/:id', (req, res)=>{
 
 //Download brew source page
 app.get('/download/:id', (req, res)=>{
-	const prefix = config.get('filename-prefix');
+	const prefix = config.get('name_prefix');
+
 	if(req.params.id.length > 12) {
 		const googleId = req.params.id.slice(0, -12);
 		const shareId = req.params.id.slice(-12);
 		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
 		.then((brew)=>{
-			let fileName = sanitizeFilename(prefix + title).replaceAll(' ', '-');
-			if(!title || !title.length) { fileName = prefix + 'Untitled-Brew'; };
+			let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
+			if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };
 			res.set({
 				'Cache-Control'       : 'no-cache',
 				'Content-Type'        : 'text/plain',
@@ -133,9 +134,8 @@ app.get('/download/:id', (req, res)=>{
 	} else {
 		HomebrewModel.get({ shareId: req.params.id })
 		.then((brew)=>{
-			let fileName = sanitizeFilename(prefix + title).replaceAll(' ', '-');
-			console.log(title);
-			if(!title || !title.length) { fileName = prefix + 'Untitled-Brew'; };
+			let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
+			if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };
 			res.set({
 				'Cache-Control'       : 'no-cache',
 				'Content-Type'        : 'text/plain',
