@@ -60,7 +60,7 @@ const SharePage = createClass({
 
 				<Nav.section>
 					<PrintLink shareId={this.processShareId()} />
-					<Nav.item href={`/source/${this.processShareId()}`} color='teal' icon='fa-code'>
+					<Nav.item href={`/source/${this.processShareId()}`} color='teal' icon='fas fa-code'>
 						source
 					</Nav.item>
 					<RecentNavItem brew={this.props.brew} storageKey='view' />

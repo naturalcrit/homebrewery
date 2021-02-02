@@ -178,7 +178,7 @@ const Editor = createClass({
 
 				{/*
 				<div className='brewJump' onClick={this.brewJump}>
-					<i className='fa fa-arrow-right' />
+					<i className='fas fa-arrow-right' />
 				</div>
 				*/}
 			</div>

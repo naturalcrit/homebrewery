@@ -50,7 +50,7 @@ const Nav = {
 			const classes = cx('navItem', this.props.color, this.props.className);
 
 			let icon;
-			if(this.props.icon) icon = <i className={`fa ${this.props.icon}`} />;
+			if(this.props.icon) icon = <i className={this.props.icon} />;
 
 			const props = _.omit(this.props, ['newTab']);
 

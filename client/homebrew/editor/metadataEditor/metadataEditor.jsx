@@ -90,11 +90,11 @@ const MetadataEditor = createClass({
 	renderPublish : function(){
 		if(this.props.metadata.published){
 			return <button className='unpublish' onClick={()=>this.handlePublish(false)}>
-				<i className='fa fa-ban' /> unpublish
+				<i className='fas fa-ban' /> unpublish
 			</button>;
 		} else {
 			return <button className='publish' onClick={()=>this.handlePublish(true)}>
-				<i className='fa fa-globe' /> publish
+				<i className='fas fa-globe' /> publish
 			</button>;
 		}
 	},
@@ -106,7 +106,7 @@ const MetadataEditor = createClass({
 			<label>delete</label>
 			<div className='value'>
 				<button className='publish' onClick={this.handleDelete}>
-					<i className='fa fa-trash' /> delete brew
+					<i className='fas fa-trash-alt' /> delete brew
 				</button>
 			</div>
 		</div>;
@@ -133,7 +133,7 @@ const MetadataEditor = createClass({
 			<div className='value'>
 				<a href={this.getRedditLink()} target='_blank' rel='noopener noreferrer'>
 					<button className='publish'>
-						<i className='fa fa-reddit-alien' /> share to reddit
+						<i className='fab fa-reddit-alien' /> share to reddit
 					</button>
 				</a>
 			</div>

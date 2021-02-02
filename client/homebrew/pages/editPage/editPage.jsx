@@ -308,7 +308,7 @@ const EditPage = createClass({
 			} catch (e){}
 
 			if(this.state.errors.status == '401'){
-				return <Nav.item className='save error' icon='fa-warning'>
+				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 					Oops!
 					<div className='errorContainer' onClick={this.clearErrors}>
 					You must be signed in to a Google account
@@ -326,7 +326,7 @@ const EditPage = createClass({
 				</Nav.item>;
 			}
 
-			return <Nav.item className='save error' icon='fa-warning'>
+			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
 				<div className='errorContainer'>
 					Looks like there was a problem saving. <br />
@@ -339,10 +339,10 @@ const EditPage = createClass({
 		}
 
 		if(this.state.isSaving){
-			return <Nav.item className='save' icon='fa-spinner fa-spin'>saving...</Nav.item>;
+			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
 		}
 		if(this.state.isPending && this.hasChanges()){
-			return <Nav.item className='save' onClick={this.save} color='blue' icon='fa-save'>Save Now</Nav.item>;
+			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving){
 			return <Nav.item className='save saved'>saved.
@@ -374,7 +374,7 @@ const EditPage = createClass({
 				{this.renderGoogleDriveIcon()}
 				{this.renderSaveButton()}
 				<ReportIssue />
-				<Nav.item newTab={true} href={`/share/${this.processShareId()}`} color='teal' icon='fa-share-alt'>
+				<Nav.item newTab={true} href={`/share/${this.processShareId()}`} color='teal' icon='fas fa-share-alt'>
 					Share
 				</Nav.item>
 				<PrintLink shareId={this.processShareId()} />

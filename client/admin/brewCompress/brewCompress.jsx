@@ -59,8 +59,8 @@ const BrewCompress = createClass({
 		return <div className='removeBox'>
 			<button onClick={this.cleanup} className='remove'>
 				{this.state.pending
-					? <i className='fa fa-spin fa-spinner' />
-					: <span><i className='fa fa-compress' /> compress </span>
+					? <i className='fas fa-spin fa-spinner' />
+					: <span><i className='fas fa-compress' /> compress </span>
 				}
 			</button>
 			{this.state.pending
@@ -76,7 +76,7 @@ const BrewCompress = createClass({
 
 			<button onClick={this.prime} className='query'>
 				{this.state.pending
-					? <i className='fa fa-spin fa-spinner' />
+					? <i className='fas fa-spin fa-spinner' />
 					: 'Query Brews'
 				}
 			</button>

@@ -57,7 +57,7 @@ const Snippetbar = createClass({
 		if(!this.props.showMetaButton) return;
 		return <div className={cx('snippetBarButton', 'toggleMeta', { selected: this.props.showmeta })}
 			onClick={this.props.onToggle}>
-			<i className='fa fa-info-circle' />
+			<i className='fas fa-info-circle' />
 			<span className='groupName'>Properties</span>
 		</div>;
 	},
@@ -82,7 +82,7 @@ const SnippetGroup = createClass({
 		return {
 			brew           : '',
 			groupName      : '',
-			icon           : 'fa-rocket',
+			icon           : 'fas fa-rocket',
 			snippets       : [],
 			onSnippetClick : function(){},
 		};
@@ -93,7 +93,7 @@ const SnippetGroup = createClass({
 	renderSnippets : function(){
 		return _.map(this.props.snippets, (snippet)=>{
 			return <div className='snippet' key={snippet.name} onClick={()=>this.handleSnippetClick(snippet)}>
-				<i className={`fa-fw ${snippet.icon}`} />
+				<i className={snippet.icon} />
 				{snippet.name}
 			</div>;
 		});
@@ -102,7 +102,7 @@ const SnippetGroup = createClass({
 	render : function(){
 		return <div className='snippetGroup snippetBarButton'>
 			<div className='text'>
-				<i className={`fa-fw ${this.props.icon}`} />
+				<i className={this.props.icon} />
 				<span className='groupName'>{this.props.groupName}</span>
 			</div>
 			<div className='dropdown'>

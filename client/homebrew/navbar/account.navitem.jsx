@@ -20,12 +20,12 @@ const Account = createClass({
 
 	render : function(){
 		if(global.account){
-			return <Nav.item href={`/user/${global.account.username}`} color='yellow' icon='fa-user'>
+			return <Nav.item href={`/user/${global.account.username}`} color='yellow' icon='fas fa-user'>
 				{global.account.username}
 			</Nav.item>;
 		}
 
-		return <Nav.item href={`http://naturalcrit.com/login?redirect=${this.state.url}`} color='teal' icon='fa-sign-in-alt'>
+		return <Nav.item href={`http://naturalcrit.com/login?redirect=${this.state.url}`} color='teal' icon='fas fa-sign-in-alt'>
 			login
 		</Nav.item>;
 	}
