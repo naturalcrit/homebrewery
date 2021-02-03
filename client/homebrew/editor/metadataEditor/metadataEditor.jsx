@@ -140,7 +140,7 @@ const MetadataEditor = createClass({
 		</div>;
 	},
 
-	renderRenderOptions: function(){
+	renderRenderOptions : function(){
 		if(!global.enable_v3) return;
 
 		return <div className='field systems'>
@@ -166,7 +166,7 @@ const MetadataEditor = createClass({
 					V3
 				</label>
 			</div>
-		</div>
+		</div>;
 	},
 
 	render : function(){

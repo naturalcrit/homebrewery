@@ -20,6 +20,7 @@ const Homebrew = createClass({
 			changelog   : '',
 			version     : '0.0.0',
 			account     : null,
+			enable_v3   : false,
 			brew        : {
 				title     : '',
 				text      : '',
