@@ -55,7 +55,7 @@ const HomePage = createClass({
 		return <Navbar ver={this.props.ver}>
 			<Nav.section>
 				<IssueNavItem />
-				<Nav.item newTab={true} href='/changelog' color='purple' icon='fa-file-text-o'>
+				<Nav.item newTab={true} href='/changelog' color='purple' icon='far fa-file-alt'>
 					Changelog
 				</Nav.item>
 				<RecentNavItem />
@@ -77,11 +77,11 @@ const HomePage = createClass({
 			</div>
 
 			<div className={cx('floatingSaveButton', { show: this.props.welcomeText != this.state.text })} onClick={this.handleSave}>
-				Save current <i className='fa fa-save' />
+				Save current <i className='fas fa-save' />
 			</div>
 
 			<a href='/new' className='floatingNewButton'>
-				Create your own <i className='fa fa-magic' />
+				Create your own <i className='fas fa-magic' />
 			</a>
 		</div>;
 	}

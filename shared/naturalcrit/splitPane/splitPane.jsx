@@ -56,9 +56,9 @@ const SplitPane = createClass({
 	renderDivider : function(){
 		return <div className='divider' onMouseDown={this.handleDown} >
 			<div className='dots'>
-				<i className='fa fa-circle' />
-				<i className='fa fa-circle' />
-				<i className='fa fa-circle' />
+				<i className='fas fa-circle' />
+				<i className='fas fa-circle' />
+				<i className='fas fa-circle' />
 			</div>
 		</div>;
 	},

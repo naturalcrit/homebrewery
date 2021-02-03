@@ -4,6 +4,7 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 
+const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
 const Markdown = require('naturalcrit/markdown.js');
 const ErrorBar = require('./errorBar/errorBar.jsx');
 
@@ -18,12 +19,16 @@ const PPR_THRESHOLD = 50;
 const BrewRenderer = createClass({
 	getDefaultProps : function() {
 		return {
-			text   : '',
-			errors : []
+			text     : '',
+			renderer : '',
+			errors   : []
 		};
 	},
 	getInitialState : function() {
-		const pages = this.props.text.split('\\page');
+		const pages = this.props.text.split(/^\\page/gm);
+		let renderer = 'legacy';
+		if(this.props.renderer)
+			renderer = this.props.renderer;
 
 		return {
 			viewablePageNumber : 0,
@@ -33,8 +38,9 @@ const BrewRenderer = createClass({
 			pages          : pages,
 			usePPR         : pages.length >= PPR_THRESHOLD,
 			visibility     : 'hidden',
+			renderer       : renderer,
 			initialContent : `<!DOCTYPE html><html><head>
-												<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+												<link href="//use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
 												<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
 												<link href='/homebrew/bundle.css' rel='stylesheet' />
 												<base target=_blank>
@@ -49,7 +55,7 @@ const BrewRenderer = createClass({
 	},
 
 	componentWillReceiveProps : function(nextProps) {
-		const pages = nextProps.text.split('\\page');
+		const pages = nextProps.text.split(/^\\page/gm);
 		this.setState({
 			pages  : pages,
 			usePPR : pages.length >= PPR_THRESHOLD
@@ -103,12 +109,15 @@ const BrewRenderer = createClass({
 
 	renderDummyPage : function(index){
 		return <div className='phb' id={`p${index + 1}`} key={index}>
-			<i className='fa fa-spinner fa-spin' />
+			<i className='fas fa-spinner fa-spin' />
 		</div>;
 	},
 
 	renderPage : function(pageText, index){
-		return <div className='phb' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: Markdown.render(pageText) }} key={index} />;
+		if(this.state.renderer == 'legacy')
+			return <div className='phb' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(pageText) }} key={index} />;
+		else
+			return <div className='phb' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: Markdown.render(pageText) }} key={index} />;
 	},
 
 	renderPages : function(){
@@ -159,7 +168,7 @@ const BrewRenderer = createClass({
 	        : null}
 
 				<Frame initialContent={this.state.initialContent} style={{ width: '100%', height: '100%', visibility: this.state.visibility }} contentDidMount={this.frameDidMount}>
-					<div className='brewRenderer'
+					<div className={cx('brewRenderer', this.state.renderer)}
 						onScroll={this.handleScroll}
 						style={{ height: this.state.height }}>
 

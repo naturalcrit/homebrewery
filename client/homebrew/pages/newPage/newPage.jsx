@@ -127,11 +127,11 @@ const NewPage = createClass({
 
 	renderSaveButton : function(){
 		if(this.state.isSaving){
-			return <Nav.item icon='fa-spinner fa-spin' className='saveButton'>
+			return <Nav.item icon='fas fa-spinner fa-spin' className='saveButton'>
 				save...
 			</Nav.item>;
 		} else {
-			return <Nav.item icon='fa-save' className='saveButton' onClick={this.save}>
+			return <Nav.item icon='fas fa-save' className='saveButton' onClick={this.save}>
 				save
 			</Nav.item>;
 		}
@@ -143,7 +143,7 @@ const NewPage = createClass({
 	},
 
 	renderLocalPrintButton : function(){
-		return <Nav.item color='purple' icon='fa-file-pdf-o' onClick={this.print}>
+		return <Nav.item color='purple' icon='far fa-file-pdf' onClick={this.print}>
 			get PDF
 		</Nav.item>;
 	},

@@ -20,6 +20,7 @@ const Homebrew = createClass({
 			changelog   : '',
 			version     : '0.0.0',
 			account     : null,
+			enable_v3   : false,
 			brew        : {
 				title     : '',
 				text      : '',
@@ -33,6 +34,7 @@ const Homebrew = createClass({
 	componentWillMount : function() {
 		global.account = this.props.account;
 		global.version = this.props.version;
+		global.enable_v3 = this.props.enable_v3;
 
 	},
 	render : function (){

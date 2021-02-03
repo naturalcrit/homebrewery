@@ -3,7 +3,7 @@
 @import (less) './client/homebrew/phbStyle/phb.depricated.less';
 //Colors
 @background            : #EEE5CE;
-@noteGreen             : #FF0000;
+@noteGreen             : #e0e5c1;
 @headerUnderline       : #c9ad6a;
 @horizontalRule        : #9c2b1b;
 @headerText            : #58180D;
@@ -188,7 +188,6 @@ body {
 		border-image        : @noteBorderImage 11;
 		border-image-outset : 9px 0px;
 		box-shadow          : 1px 4px 14px #888;
-		-webkit-transform   : translateZ(0); //Prevents shadows from breaking across columns
 		p, ul{
 			font-size   : 0.352cm;
 			line-height : 1.1em;
@@ -326,12 +325,12 @@ body {
 		text-indent     : -1em;
 		list-style-type : none;
 	}
-	.columnSplit {
+	//Column Break
+	pre, code{
 		visibility                 : hidden;
 		-webkit-column-break-after : always;
 		break-after                : always;
 		-moz-column-break-after    : always;
-		break-before               : column;
 	}
 	//Avoid breaking up
 	p,blockquote,table{

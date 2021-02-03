@@ -1,8 +1,7 @@
+@import (multiple, less) 'shared/naturalcrit/styles/reset.less';
+.V3 {@import (multiple, less) './client/homebrew/phbStyle/phb.style.less';}
+.legacy {@import (multiple, less) './client/homebrew/phbStyle/phb.styleLegacy.less';}
 
-@import (less) './client/homebrew/phbStyle/phb.style.less';
-.pane{
-	position : relative;
-}
 .brewRenderer{
 	will-change : transform;
 	overflow-y  : scroll;
@@ -15,6 +14,9 @@
 			box-shadow    : 1px 4px 14px #000;
 		}
 	}
+}
+.pane{
+	position : relative;
 }
 .pageInfo{
 	position         : absolute;
