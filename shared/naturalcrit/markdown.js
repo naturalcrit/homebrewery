@@ -15,7 +15,7 @@ renderer.html = function (html) {
 		const openTag = html.substring(0, html.indexOf('>')+1);
 		html = html.substring(html.indexOf('>')+1);
 		html = html.substring(0, html.lastIndexOf('</style>'));
-		html = html.replaceAll('.phb', '.phb.phb');
+		html = html.replaceAll(/\s(\.[^\s]*)/gm, '.v3 $1');
 		return `${openTag} ${html} </style>`;
 	}
 	return html;
