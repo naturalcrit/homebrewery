@@ -10,6 +10,13 @@ renderer.html = function (html) {
 		html = html.substring(0, html.lastIndexOf('</div>'));
 		return `${openTag} ${Markdown(html)} </div>`;
 	}
+	if(_.startsWith(_.trim(html), '<style') && _.endsWith(_.trim(html), '</style>')){
+		const openTag = html.substring(0, html.indexOf('>')+1);
+		html = html.substring(html.indexOf('>')+1);
+		html = html.substring(0, html.lastIndexOf('</style>'));
+		html = html.replaceAll('.phb', '.phb.phb');
+		return `${openTag} ${html} </style>`;
+	}
 	return html;
 };
 
