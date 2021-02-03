@@ -140,6 +140,35 @@ const MetadataEditor = createClass({
 		</div>;
 	},
 
+	renderRenderOptions: function(){
+		if(!global.enable_v3) return;
+
+		return <div className='field systems'>
+			<label>Renderer</label>
+			<div className='value'>
+				<label key='legacy'>
+					<input
+						type='radio'
+						value = 'legacy'
+						name = 'renderer'
+						checked={!this.props.metadata.renderer}
+						onChange={(e)=>this.handleRenderer('', e)} />
+					Legacy
+				</label>
+
+				<label key='V3'>
+					<input
+						type='radio'
+						value = 'V3'
+						name = 'renderer'
+						checked={this.props.metadata.renderer === 'V3'}
+						onChange={(e)=>this.handleRenderer('V3', e)} />
+					V3
+				</label>
+			</div>
+		</div>
+	},
+
 	render : function(){
 		return <div className='metadataEditor'>
 			<div className='field title'>
@@ -170,30 +199,7 @@ const MetadataEditor = createClass({
 				</div>
 			</div>
 
-			<div className='field systems'>
-				<label>Renderer</label>
-				<div className='value'>
-					<label key='legacy'>
-						<input
-							type='radio'
-							value = 'legacy'
-							name = 'renderer'
-							checked={!this.props.metadata.renderer}
-							onChange={(e)=>this.handleRenderer('', e)} />
-						Legacy
-					</label>
-
-					<label key='V3'>
-						<input
-							type='radio'
-							value = 'V3'
-							name = 'renderer'
-							checked={this.props.metadata.renderer === 'V3'}
-							onChange={(e)=>this.handleRenderer('V3', e)} />
-						V3
-					</label>
-				</div>
-			</div>
+			{this.renderRenderOptions()}
 
 			<div className='field publish'>
 				<label>publish</label>
