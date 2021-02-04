@@ -1,6 +1,6 @@
 @import (multiple, less) 'shared/naturalcrit/styles/reset.less';
-.V3 {@import (multiple, less) './client/homebrew/phbStyle/phb.style.less';}
-.legacy {@import (multiple, less) './client/homebrew/phbStyle/phb.styleLegacy.less';}
+@import (multiple, less) './client/homebrew/phbStyle/phb.styleLegacy.less';
+@import (multiple, less) './client/homebrew/phbStyle/phb.style.less';
 
 .brewRenderer{
 	will-change : transform;
@@ -8,6 +8,12 @@
 	.pages{
 		margin : 30px 0px;
 		&>.phb{
+			margin-right  : auto;
+			margin-bottom : 30px;
+			margin-left   : auto;
+			box-shadow    : 1px 4px 14px #000;
+		}
+		&>.phb3{
 			margin-right  : auto;
 			margin-bottom : 30px;
 			margin-left   : auto;
