@@ -168,7 +168,7 @@ const BrewRenderer = createClass({
 	        : null}
 
 				<Frame initialContent={this.state.initialContent} style={{ width: '100%', height: '100%', visibility: this.state.visibility }} contentDidMount={this.frameDidMount}>
-					<div className={cx('brewRenderer', this.state.renderer)}
+					<div className={'brewRenderer'}
 						onScroll={this.handleScroll}
 						style={{ height: this.state.height }}>
 
