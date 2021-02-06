@@ -175,12 +175,6 @@ const Editor = createClass({
 					value={this.props.value}
 					onChange={this.handleTextChange}
 					onCursorActivity={this.handleCursorActivty} />
-
-				{/*
-				<div className='brewJump' onClick={this.brewJump}>
-					<i className='fas fa-arrow-right' />
-				</div>
-				*/}
 			</div>
 		);
 	}
