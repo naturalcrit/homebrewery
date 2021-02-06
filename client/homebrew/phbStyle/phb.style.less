@@ -1,6 +1,6 @@
 @import (less) './client/homebrew/phbStyle/phb.fonts.css';
 @import (less) './client/homebrew/phbStyle/phb.assets.less';
-@import (less) './client/homebrew/phbStyle/phb.depricated.less';
+
 //Colors
 @background            : #EEE5CE;
 @noteGreen             : #FF0000;
@@ -17,12 +17,11 @@ body {
 }
 .useSansSerif(){
 	font-family : ScalySans;
+	font-size   : 10pt;
 	em{
-		font-family : ScalySans;
 		font-style  : italic;
 	}
 	strong{
-		font-family    : ScalySans;
 		font-weight    : 800;
 		letter-spacing : -0.02em;
 	}
@@ -48,8 +47,7 @@ body {
 	overflow          : hidden;
 	height            : 279.4mm;
 	width             : 215.9mm;
-	padding           : 1.0cm 1.7cm;
-	padding-bottom    : 1.5cm;
+	padding           : 1.0cm 1.7cm, 1.5cm;
 	background-color  : @background;
 	background-image  : @backgroundImage;
 	font-family       : BookSanity;
@@ -61,6 +59,7 @@ body {
 	// *            BASE
 	// *****************************/
 	p{
+		overflow-wrap : break-word;
 		padding-bottom : 0.8em;
 		line-height    : 1.3em;
 		&+p{
@@ -123,9 +122,20 @@ body {
 		&+p::first-letter{
 			float       : left;
 			font-family : Solberry;
-			font-size   : 10em;
-			color       : #222;
 			line-height : 0.8em;
+			font-size: 3.1cm;
+	    padding-top: 4px;
+	    padding-bottom: 4px;
+	    margin-top: -6px;
+	    margin-left: -6px;
+			background-image: linear-gradient(-45deg, #322814, #998250, #322814);
+	    background-clip: text;
+	    -webkit-background-clip: text;
+	    color: rgba(0, 0, 0, 0);
+		}
+		&+p::first-line{
+			font-size    : .385cm;
+			font-variant : small-caps;
 		}
 	}
 	h2{
