@@ -18,7 +18,7 @@ const MetadataEditor = createClass({
 				published   : false,
 				authors     : [],
 				systems     : [],
-				renderer    : ''
+				renderer    : 'legacy'
 			},
 			onChange : ()=>{}
 		};
@@ -151,8 +151,8 @@ const MetadataEditor = createClass({
 						type='radio'
 						value = 'legacy'
 						name = 'renderer'
-						checked={!this.props.metadata.renderer}
-						onChange={(e)=>this.handleRenderer('', e)} />
+						checked={this.props.metadata.renderer === 'legacy'}
+						onChange={(e)=>this.handleRenderer('legacy', e)} />
 					Legacy
 				</label>
 
