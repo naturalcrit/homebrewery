@@ -24,7 +24,7 @@ const Editor = createClass({
 			metadata         : {},
 			onMetadataChange : ()=>{},
 			showMetaButton   : true,
-			renderer         : ''
+			renderer         : 'legacy'
 		};
 	},
 	getInitialState : function() {
@@ -93,13 +93,21 @@ const Editor = createClass({
 			codeMirror.removeLineClass(lineNumber, 'background');
 			codeMirror.removeLineClass(lineNumber, 'text');
 
-			if(line.startsWith('\\page')){
-				codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
-				r.push(lineNumber);
+			// Legacy Codemirror styling
+			if(this.props.renderer == 'legacy') {
+				if(line.includes('\\page')){
+					codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
+					r.push(lineNumber);
+				}
 			}
 
 			// New Codemirror styling for V3 renderer
 			if(this.props.renderer == 'V3') {
+				if(line.startsWith('\\page')){
+					codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
+					r.push(lineNumber);
+				}
+
 				if(line.startsWith('\\column')){
 					codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 					r.push(lineNumber);

@@ -20,15 +20,17 @@ const BrewRenderer = createClass({
 	getDefaultProps : function() {
 		return {
 			text     : '',
-			renderer : '',
+			renderer : 'legacy',
 			errors   : []
 		};
 	},
 	getInitialState : function() {
-		const pages = this.props.text.split(/^\\page/gm);
-		let renderer = 'legacy';
-		if(this.props.renderer)
-			renderer = this.props.renderer;
+		let pages;
+		if(this.props.renderer == 'legacy') {
+			pages = this.props.text.split('\\page');
+		} else {
+			pages = this.props.text.split(/^\\page/gm);
+		}
 
 		return {
 			viewablePageNumber : 0,
@@ -38,7 +40,6 @@ const BrewRenderer = createClass({
 			pages          : pages,
 			usePPR         : pages.length >= PPR_THRESHOLD,
 			visibility     : 'hidden',
-			renderer       : renderer,
 			initialContent : `<!DOCTYPE html><html><head>
 												<link href="//use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
 												<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
@@ -54,12 +55,19 @@ const BrewRenderer = createClass({
 		window.removeEventListener('resize', this.updateSize);
 	},
 
-	componentWillReceiveProps : function(nextProps) {
-		const pages = nextProps.text.split(/^\\page/gm);
-		this.setState({
-			pages  : pages,
-			usePPR : pages.length >= PPR_THRESHOLD
-		});
+	componentDidUpdate : function(prevProps) {
+		if(prevProps.text !== this.props.text) {
+			let pages;
+			if(this.props.renderer == 'legacy') {
+				pages = this.props.text.split('\\page');
+			} else {
+				pages = this.props.text.split(/^\\page/gm);
+			}
+			this.setState({
+				pages  : pages,
+				usePPR : pages.length >= PPR_THRESHOLD
+			});
+		}
 	},
 
 	updateSize : function() {
@@ -114,7 +122,7 @@ const BrewRenderer = createClass({
 	},
 
 	renderPage : function(pageText, index){
-		if(this.state.renderer == 'legacy')
+		if(this.props.renderer == 'legacy')
 			return <div className='phb' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(pageText) }} key={index} />;
 		else
 			return <div className='phb3' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: Markdown.render(pageText) }} key={index} />;
