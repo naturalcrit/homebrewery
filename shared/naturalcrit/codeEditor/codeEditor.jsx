@@ -62,13 +62,9 @@ const CodeEditor = createClass({
 	},
 
 	componentDidUpdate : function(prevProps) {
-		if(this.codeMirror && this.props.value !== undefined && this.codeMirror.getValue() != this.props.value) {
+		if(this.codeMirror && this.codeMirror.getValue() != this.props.value) {
 			this.codeMirror.setValue(this.props.value);
 		}
-	},
-
-	shouldComponentUpdate : function(nextProps, nextState) {
-		return false;
 	},
 
 	setCursorPosition : function(line, char){

@@ -42,7 +42,7 @@ const EditPage = createClass({
 				published   : false,
 				authors     : [],
 				systems     : [],
-				renderer    : ''
+				renderer    : 'legacy'
 			}
 		};
 	},
@@ -105,7 +105,6 @@ const EditPage = createClass({
 
 	handleMetadataChange : function(metadata){
 		if(metadata.renderer != this.savedBrew.renderer){
-			console.log('renderer changed!');
 			this.setState({
 				alertRenderChange : true
 			});
@@ -345,18 +344,18 @@ const EditPage = createClass({
 			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving){
-			return <Nav.item className='save saved'>saved.
-				{this.state.alertRenderChange &&
-					<div className='errorContainer' onClick={this.closeAlerts}>
-					Rendering mode for this brew has been changed! Refresh the page to load the new renderer.<br />
-						<div className='confirm'>
-							OK
-						</div>
-					</div>
-				}
-			</Nav.item>;
+			return <Nav.item className='save saved'>saved.</Nav.item>;
 		}
 	},
+
+	// {this.state.alertRenderChange &&
+	// 	<div className='errorContainer' onClick={this.closeAlerts}>
+	// 	Rendering mode for this brew has been changed! Refresh the page to load the new renderer.<br />
+	// 		<div className='confirm'>
+	// 			OK
+	// 		</div>
+	// 	</div>
+	// }
 
 	processShareId : function() {
 		return this.state.brew.googleId ?
