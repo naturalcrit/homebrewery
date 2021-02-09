@@ -4,6 +4,7 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 const { Meta } = require('vitreum/headtags');
+const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
 const Markdown = require('naturalcrit/markdown.js');
 
 const PrintPage = createClass({
@@ -11,7 +12,8 @@ const PrintPage = createClass({
 		return {
 			query : {},
 			brew  : {
-				text : '',
+				text     : '',
+				renderer : 'legacy'
 			}
 		};
 	},
@@ -33,13 +35,24 @@ const PrintPage = createClass({
 	},
 
 	renderPages : function(){
-		return _.map(this.state.brewText.split('\\page'), (page, index)=>{
-			return <div
-				className='phb'
-				id={`p${index + 1}`}
-				dangerouslySetInnerHTML={{ __html: Markdown.render(page) }}
-				key={index} />;
-		});
+		if(this.props.brew.renderer == 'legacy') {
+			return _.map(this.state.brewText.split('\\page'), (page, index)=>{
+				return <div
+					className='phb'
+					id={`p${index + 1}`}
+					dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(page) }}
+					key={index} />;
+			});
+		} else {
+			return _.map(this.state.brewText.split(/^\\page/gm), (page, index)=>{
+				return <div
+					className='phb3'
+					id={`p${index + 1}`}
+					dangerouslySetInnerHTML={{ __html: Markdown.render(page) }}
+					key={index} />;
+			});
+		}
+
 	},
 
 	render : function(){
