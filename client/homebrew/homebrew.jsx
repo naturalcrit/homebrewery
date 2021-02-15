@@ -9,6 +9,7 @@ const EditPage = require('./pages/editPage/editPage.jsx');
 const UserPage = require('./pages/userPage/userPage.jsx');
 const SharePage = require('./pages/sharePage/sharePage.jsx');
 const NewPage = require('./pages/newPage/newPage.jsx');
+const ImportPage = require('./pages/importPage/importPage.jsx');
 //const ErrorPage = require('./pages/errorPage/errorPage.jsx');
 const PrintPage = require('./pages/printPage/printPage.jsx');
 
@@ -44,6 +45,7 @@ const Homebrew = createClass({
 					<Switch>
 						<Route path='/edit/:id' component={(routeProps)=><EditPage id={routeProps.match.params.id} brew={this.props.brew} />}/>
 						<Route path='/share/:id' component={(routeProps)=><SharePage id={routeProps.match.params.id} brew={this.props.brew} />}/>
+						<Route path='/import/:id' component={(routeProps)=><ImportPage id={routeProps.match.params.id} brew={this.props.brew} />}/>
 						<Route path='/user/:username' component={(routeProps)=><UserPage username={routeProps.match.params.username} brews={this.props.brews} />}/>
 						<Route path='/print/:id' component={(routeProps)=><PrintPage brew={this.props.brew} query={queryString.parse(routeProps.location.search)} /> } />
 						<Route path='/print' exact component={(routeProps)=><PrintPage query={queryString.parse(routeProps.location.search)} /> } />

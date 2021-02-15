@@ -143,6 +143,34 @@ app.get('/edit/:id', (req, res, next)=>{
 	}
 });
 
+//Import Page
+app.get('/import/:id', (req, res, next)=>{
+	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
+	if(req.params.id.length > 12) {
+		const googleId = req.params.id.slice(0, -12);
+		const shareId = req.params.id.slice(-12);
+		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
+		.then((brew)=>{
+			req.brew = brew; //TODO Need to sanitize later
+			return next();
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(400).send('Can\'t get brew from Google');
+		});
+	} else {
+		HomebrewModel.get({ shareId: req.params.id })
+			.then((brew)=>{
+				req.brew = brew;
+				return next();
+			})
+			.catch((err)=>{
+				console.log(err);
+				return res.status(400).send(`Can't get that`);
+			});
+	}
+});
+
 //Share Page
 app.get('/share/:id', (req, res, next)=>{
 	if(req.params.id.length > 12) {
