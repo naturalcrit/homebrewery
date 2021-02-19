@@ -13,6 +13,7 @@ const HomebrewSchema = mongoose.Schema({
 	description : { type: String, default: '' },
 	tags        : { type: String, default: '' },
 	systems     : [String],
+	renderer    : { type: String, default: '' },
 	authors     : [String],
 	published   : { type: Boolean, default: false },
 
@@ -55,6 +56,8 @@ HomebrewSchema.statics.get = function(query){
 				unzipped = zlib.inflateRawSync(brews[0].textBin);
 				brews[0].text = unzipped.toString();
 			}
+			if(!brews[0].renderer)
+				brews[0].renderer = 'legacy';
 			return resolve(brews[0]);
 		});
 	});

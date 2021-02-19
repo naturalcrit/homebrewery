@@ -8,7 +8,7 @@ module.exports = function(props){
 		newTab={true}
 		href='https://www.patreon.com/NaturalCrit'
 		color='green'
-		icon='fa-heart'>
+		icon='fas fa-heart'>
 		help out
 	</Nav.item>;
 };

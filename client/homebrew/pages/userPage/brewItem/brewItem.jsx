@@ -48,7 +48,7 @@ const BrewItem = createClass({
 		if(!this.props.brew.editId) return;
 
 		return <a onClick={this.deleteBrew}>
-			<i className='fa fa-trash' />
+			<i className='fas fa-trash-alt' />
 		</a>;
 	},
 
@@ -61,7 +61,7 @@ const BrewItem = createClass({
 		}
 
 		return <a href={`/edit/${editLink}`} target='_blank' rel='noopener noreferrer'>
-			<i className='fa fa-pencil' />
+			<i className='fas fa-pencil-alt' />
 		</a>;
 	},
 
@@ -74,7 +74,7 @@ const BrewItem = createClass({
 		}
 
 		return <a href={`/share/${shareLink}`} target='_blank' rel='noopener noreferrer'>
-			<i className='fa fa-share-alt' />
+			<i className='fas fa-share-alt' />
 		</a>;
 	},
 
@@ -95,13 +95,13 @@ const BrewItem = createClass({
 
 			<div className='info'>
 				<span>
-					<i className='fa fa-user' /> {brew.authors.join(', ')}
+					<i className='fas fa-user' /> {brew.authors.join(', ')}
 				</span>
 				<span>
-					<i className='fa fa-eye' /> {brew.views}
+					<i className='fas fa-eye' /> {brew.views}
 				</span>
 				<span>
-					<i className='fa fa-refresh' /> {moment(brew.updatedAt).fromNow()}
+					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
 				</span>
 				{this.renderGoogleDriveIcon()}
 			</div>

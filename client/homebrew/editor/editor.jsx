@@ -23,7 +23,8 @@ const Editor = createClass({
 
 			metadata         : {},
 			onMetadataChange : ()=>{},
-			showMetaButton   : true
+			showMetaButton   : true,
+			renderer         : 'legacy'
 		};
 	},
 	getInitialState : function() {
@@ -38,7 +39,7 @@ const Editor = createClass({
 
 	componentDidMount : function() {
 		this.updateEditorSize();
-		this.highlightPageLines();
+		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
 	},
 	componentWillUnmount : function() {
@@ -78,15 +79,67 @@ const Editor = createClass({
 		}, 1);
 	},
 
-	highlightPageLines : function(){
+	highlightCustomMarkdown : function(){
 		if(!this.refs.codeEditor) return;
 		const codeMirror = this.refs.codeEditor.codeMirror;
 
+		//reset custom text styles
+		const customHighlights = codeMirror.getAllMarks();
+		for (let i=0;i<customHighlights.length;i++) customHighlights[i].clear();
+
 		const lineNumbers = _.reduce(this.props.value.split('\n'), (r, line, lineNumber)=>{
-			if(line.indexOf('\\page') !== -1){
-				codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
-				r.push(lineNumber);
+
+			//reset custom line styles
+			codeMirror.removeLineClass(lineNumber, 'background');
+			codeMirror.removeLineClass(lineNumber, 'text');
+
+			// Legacy Codemirror styling
+			if(this.props.renderer == 'legacy') {
+				if(line.includes('\\page')){
+					codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
+					r.push(lineNumber);
+				}
 			}
+
+			// New Codemirror styling for V3 renderer
+			if(this.props.renderer == 'V3') {
+				if(line.startsWith('\\page')){
+					codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
+					r.push(lineNumber);
+				}
+
+				if(line.startsWith('\\column')){
+					codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
+					r.push(lineNumber);
+				}
+
+				if(line.startsWith('{{') || line.startsWith('}}')){
+					let endCh = line.length+1;
+					const match = line.match(/{{(?:[\w,#-]|="[\w, ]*")*\s*|}}/);
+					if(match)
+						endCh = match.index+match[0].length;
+					codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
+				}
+
+				if(line.includes('{{') && line.includes('}}')){
+					const regex = /{{(?:[\w,#-]|="[\w, ]*")*\s*|}}/g;
+					let match;
+					let blockCount = 0;
+					while ((match = regex.exec(line)) != null) {
+						if(match[0].startsWith('{')) {
+							blockCount += 1;
+						} else {
+							blockCount -= 1;
+						}
+						if(blockCount < 0) {
+							blockCount = 0;
+							continue;
+						}
+						codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: 'inline-block' });
+					}
+				}
+			}
+
 			return r;
 		}, []);
 		return lineNumbers;
@@ -112,7 +165,7 @@ const Editor = createClass({
 	},
 
 	render : function(){
-		this.highlightPageLines();
+		this.highlightCustomMarkdown();
 		return (
 			<div className='editor' ref='main'>
 				<SnippetBar
@@ -120,7 +173,8 @@ const Editor = createClass({
 					onInject={this.handleInject}
 					onToggle={this.handgleToggle}
 					showmeta={this.state.showMetadataEditor}
-					showMetaButton={this.props.showMetaButton} />
+					showMetaButton={this.props.showMetaButton}
+					renderer={this.props.renderer} />
 				{this.renderMetadataEditor()}
 				<CodeEditor
 					ref='codeEditor'
@@ -132,7 +186,7 @@ const Editor = createClass({
 
 				{/*
 				<div className='brewJump' onClick={this.brewJump}>
-					<i className='fa fa-arrow-right' />
+					<i className='fas fa-arrow-right' />
 				</div>
 				*/}
 			</div>
