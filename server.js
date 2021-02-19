@@ -1,18 +1,13 @@
 const _ = require('lodash');
 const jwt = require('jwt-simple');
-const expressStaticGzip = require('express-static-gzip');
 const express = require('express');
 const app = express();
 
 const homebrewApi = require('./server/homebrew.api.js');
 const GoogleActions = require('./server/googleActions.js');
+const serveCompressedStaticAssets = require('./server/static-assets.mv.js');
 
-// Serve brotli-compressed static files if available
-app.use('/', expressStaticGzip(`${__dirname}/build`, {
-	enableBrotli    : true,
-	orderPreference : ['br'],
-	index           : false
-}));
+app.use('/', serveCompressedStaticAssets(`${__dirname}/build`));
 
 process.chdir(__dirname);
 
