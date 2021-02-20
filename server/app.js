@@ -6,13 +6,9 @@ const app = express();
 
 const homebrewApi = require('server/homebrew.api.js');
 const GoogleActions = require('server/googleActions.js');
+const serveCompressedStaticAssets = require('./server/static-assets.mv.js');
 
-// Serve brotli-compressed static files if available
-app.use('/', expressStaticGzip(`${__dirname}/../build`, {
-	enableBrotli    : true,
-	orderPreference : ['br'],
-	index           : false
-}));
+app.use('/', serveCompressedStaticAssets(`${__dirname}/build`));
 
 //app.use(express.static(`${__dirname}/build`));
 app.use(require('body-parser').json({ limit: '25mb' }));
@@ -210,6 +206,7 @@ app.use((req, res)=>{
 		brews       : req.brews,
 		googleBrews : req.googleBrews,
 		account     : req.account,
+		enable_v3   : config.get('enable_v3')
 	};
 	templateFn('homebrew', title = req.brew ? req.brew.title : '', props)
         .then((page)=>{ res.send(page); })

@@ -1,5 +1,11 @@
 # changelog
 
+### Friday, 25/1/2021 - v2.10.7
+- Cover Page snippet now flips left-right page numbering.
+- Added instructions for [installing on a FreeBSD Jail](https://github.com/naturalcrit/homebrewery/blob/master/README.FREEBSD.md).
+- Fix for box-shadows breaking across columns. <br>(Thanks @G-Ambatte for all of these!)
+- Small user interface tweaks (Thanks @Ericsheid)
+
 ### Friday, 02/1/2021 - v2.10.6
 - Fixed punctuation for usernames ending with 's' on the user page. (Thanks @AlexeySachkov)
 - Fixed server crashes due to excessive long lines in brews
@@ -27,6 +33,9 @@
 ### Wednesday, 07/10/2020 - v2.10.0
 - Google Drive integration -- Sign in with your Google account to link it with your Homebrewery profile. A new button in the Edit page will let you transfer your file to your personal Google Drive storage, and Google will keep a backup of each version! No more lost work surprises!
 
+```
+```
+
 ### Friday, 28/08/2020 - v2.9.2
 - Many dependency updates
 - Finally fixed this changelog page to not run off the edge :P
@@ -36,9 +45,6 @@
 
 ### Wednesday, 20/05/2020 - v2.9.0
 - Major refactoring of site backend to work with updated dependencies for security (should be invisible to users)
-
-```
-```
 
 ### Wednesday, 11/03/2020 - v2.8.2
 - Fixed delete button removing everyone's copy for brews with multiple authors
@@ -73,15 +79,15 @@
 ### Saturday, 18/02/2017 - v2.7.2
 - Adding ability to delete a brew from the user page, incase the user creates a brew that makes the edit page unrender-able. (re:309)
 
-### Thursday, 19/01/2017 - v2.7.0
+\page
+
+### Thursday, 19/01/2017 - v2.7.1
 - Fixed saving multiple authors and multiple systems on brew metadata (thanks u/PalaNolho re:282)
 - Adding in line highlight for new pages
 - Added in a simple brew lookup for admin
 
 ### Saturday, 14/01/2017 - v2.7.0
 - Added a new Render Warning overlay. It detects situations where the brew may not be rendering correctly (wrong browser, browser is zoomed in...) and let's the user know
-
-\page
 
 ### Sunday, 25/12/2016 - v2.7.0
 - Switching over to using Vitreum v4
@@ -115,6 +121,10 @@
 - Added a hover tooltip to fully read the brew description
 - Made the brew items take up only 25% allowing you to view more per row.
 
+
+```
+```
+
 ### Wednesday, 23/11/2016 - v2.5.0
 - Metadata can now be added to brews
 - Added a metadata editor onto the edit and new pages
@@ -125,8 +135,6 @@
 - Added a new user page to see others published brews, as well as all of your own brews.
 - Added a new nav item for accessing your profile and logging in
 
-```
-```
 
 ### Monday, 14/11/2016
 - Updated snippet bar style
@@ -163,10 +171,11 @@
 - Allows adding in hyperlinks to specific pages
 - Even works after you print to pdf!
 
-### Tuesday, 07/06/2016 - v2.2.2
-- Fixed bug with new markdown lexer and aprser not working on print page
 
 \page
+
+### Tuesday, 07/06/2016 - v2.2.2
+- Fixed bug with new markdown lexer and aprser not working on print page
 
 ### Sunday, 05/06/2016 - v2.2.1
 - Adding in a new Class table div block. The old Class table block used weird stacking of HTML elements, resulting is difficult to control behaviour and poor interactiosn with the rest of the page. This new block is much easier to style and work with.
@@ -188,11 +197,12 @@
 - Updated the issue template for (hopefully) better reporting
 - Added suggestion to use chrome while PDF printing
 
-### Wednesday, 25/05/2016 -v2.0.5
-- The class table generators have the proper ability score improvement progression.
 
 ```
 ```
+
+### Wednesday, 25/05/2016 -v2.0.5
+- The class table generators have the proper ability score improvement progression.
 
 ### Tuesday, 24/05/2016 - v2.0.4
 - Fixed extra wide monster stat blocks sometimes only being one column

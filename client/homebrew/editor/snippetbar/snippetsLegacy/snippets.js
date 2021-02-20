@@ -17,66 +17,68 @@ module.exports = [
 			{
 				name : 'Column Break',
 				icon : 'fas fa-columns',
-				gen  : '\n\\column\n'
+				gen  : '```\n```\n\n'
 			},
 			{
 				name : 'New Page',
 				icon : 'fas fa-file-alt',
-				gen  : '\n\\page\n'
+				gen  : '\\page\n\n'
 			},
 			{
 				name : 'Vertical Spacing',
-				icon : 'fas fa-times-circle',
-				gen  : ''
+				icon : 'fas fa-arrows-alt-v',
+				gen  : '<div style=\'margin-top:140px\'></div>\n\n'
 			},
 			{
 				name : 'Wide Block',
-				icon : 'fas fa-times-circle',
-				gen  : ''
+				icon : 'fas fa-arrows-alt-h',
+				gen  : '<div class=\'wide\'>\nEverything in here will be extra wide. Tables, text, everything! Beware though, CSS columns can behave a bit weird sometimes.\n</div>\n'
 			},
 			{
 				name : 'Image',
-				icon : 'fas fa-times-circle',
-				gen  : ''
+				icon : 'fas fa-image',
+				gen  : [
+					'<img ',
+					'  src=\'https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg\' ',
+					'  style=\'width:325px\' />',
+					'Credit: Kyounghwan Kim'
+				].join('\n')
 			},
 			{
 				name : 'Background Image',
 				icon : 'fas fa-tree',
-				gen  : `<img src='http://i.imgur.com/hMna6G0.png' ` +
-							`style='position:absolute; top:50px; right:30px; width:280px'/>`
+				gen  : [
+					'<img ',
+					'  src=\'http://i.imgur.com/hMna6G0.png\' ',
+					'  style=\'position:absolute; top:50px; right:30px; width:280px\' />'
+				].join('\n')
 			},
-			{
-				name : 'QR Code',
-				icon : 'fas fa-qrcode',
-				gen  : (brew)=>{
-					return `<img ` +
-							`src='https://api.qrserver.com/v1/create-qr-code/?data=` +
-							`https://homebrewery.naturalcrit.com/share/${brew.shareId}` +
-							`&amp;size=100x100' ` +
-							`style='width:100px;mix-blend-mode:multiply'/>`;
-				}
 
-			},
 			{
 				name : 'Page Number',
 				icon : 'fas fa-bookmark',
-				gen  : '{{pageNumber\n1\n}}\n{{footnote\nPART 1 | FANCINESS\n}}\n\n'
+				gen  : '<div class=\'pageNumber\'>1</div>\n<div class=\'footnote\'>PART 1 | FANCINESS</div>\n\n'
 			},
+
 			{
 				name : 'Auto-incrementing Page Number',
 				icon : 'fas fa-sort-numeric-down',
-				gen  : '{{\npageNumber,auto\n}}\n\n'
+				gen  : '<div class=\'pageNumber auto\'></div>\n'
 			},
+
 			{
 				name : 'Link to page',
 				icon : 'fas fa-link',
 				gen  : '[Click here](#p3) to go to page 3\n'
 			},
+
 			{
 				name : 'Table of Contents',
 				icon : 'fas fa-book',
 				gen  : TableOfContentsGen
 			},
+
+
 		]
 	},
 
@@ -94,12 +96,12 @@ module.exports = [
 			},
 			{
 				name : 'Spell List',
-				icon : 'fas fa-scroll',
+				icon : 'fas fa-list',
 				gen  : MagicGen.spellList,
 			},
 			{
 				name : 'Class Feature',
-				icon : 'fas fa-mask',
+				icon : 'fas fa-trophy',
 				gen  : ClassFeatureGen,
 			},
 			{
@@ -116,7 +118,7 @@ module.exports = [
 			},
 			{
 				name : 'Descriptive Text Box',
-				icon : 'fas fa-comment-alt',
+				icon : 'far fa-sticky-note',
 				gen  : function(){
 					return [
 						'<div class=\'descriptive\'>',
@@ -130,17 +132,17 @@ module.exports = [
 			},
 			{
 				name : 'Monster Stat Block',
-				icon : 'fas fa-spider',
+				icon : 'fas fa-bug',
 				gen  : MonsterBlockGen.half,
 			},
 			{
 				name : 'Wide Monster Stat Block',
-				icon : 'fas fa-dragon',
+				icon : 'fas fa-paw',
 				gen  : MonsterBlockGen.full,
 			},
 			{
 				name : 'Cover Page',
-				icon : 'fas fa-file-word',
+				icon : 'far fa-file-word',
 				gen  : CoverPageGen,
 			},
 		]

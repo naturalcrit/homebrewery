@@ -1,8 +1,14 @@
-
+@keyframes glideDown {
+	0%   {transform : translate(-50% + 3px, 0px);
+				opacity   : 0;}
+	100% {transform : translate(-50% + 3px, 10px);
+				opacity   : 1;}
+}
 .editPage{
 	.navItem.save{
 		width      : 106px;
 		text-align : center;
+		position   : relative;
 		&.saved{
 			cursor : initial;
 			color  : #666;
@@ -21,12 +27,15 @@
 		margin  : -5px;
 	}
 	.errorContainer{
+		animation-name: glideDown;
+		animation-duration: 0.4s;
 		position         : absolute;
 		top              : 100%;
 		left             : 50%;
-		z-index          : 1000;
+		z-index          : 100000;
 		width            : 140px;
 		padding          : 3px;
+		color            : white;
 		background-color : #333;
 		border           : 3px solid #444;
 		border-radius    : 5px;

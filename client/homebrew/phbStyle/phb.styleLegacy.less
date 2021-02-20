@@ -1,6 +1,6 @@
 @import (less) './client/homebrew/phbStyle/phb.fonts.css';
 @import (less) './client/homebrew/phbStyle/phb.assets.less';
-
+@import (less) './client/homebrew/phbStyle/phb.depricated.less';
 //Colors
 @background            : #EEE5CE;
 @noteGreen             : #e0e5c1;
@@ -17,11 +17,12 @@ body {
 }
 .useSansSerif(){
 	font-family : ScalySans;
-	font-size   : 10pt;
 	em{
+		font-family : ScalySans;
 		font-style  : italic;
 	}
 	strong{
+		font-family    : ScalySans;
 		font-weight    : 800;
 		letter-spacing : -0.02em;
 	}
@@ -38,7 +39,7 @@ body {
 	-webkit-column-gap   : 1cm;
 	-moz-column-gap      : 1cm;
 }
-.phb3{
+.phb{
 	.useColumns();
 	counter-increment : phb-page-numbers;
 	position          : relative;
@@ -47,7 +48,8 @@ body {
 	overflow          : hidden;
 	height            : 279.4mm;
 	width             : 215.9mm;
-	padding           : 1.0cm 1.7cm 1.5cm;
+	padding           : 1.0cm 1.7cm;
+	padding-bottom    : 1.5cm;
 	background-color  : @background;
 	background-image  : @backgroundImage;
 	font-family       : BookSanity;
@@ -59,7 +61,6 @@ body {
 	// *            BASE
 	// *****************************/
 	p{
-		overflow-wrap : break-word;
 		padding-bottom : 0.8em;
 		line-height    : 1.3em;
 		&+p{
@@ -122,20 +123,9 @@ body {
 		&+p::first-letter{
 			float       : left;
 			font-family : Solberry;
+			font-size   : 10em;
+			color       : #222;
 			line-height : 0.8em;
-			font-size: 3.1cm;
-	    padding-top: 4px;
-	    padding-bottom: 4px;
-	    margin-top: -6px;
-	    margin-left: -6px;
-			background-image: linear-gradient(-45deg, #322814, #998250, #322814);
-	    background-clip: text;
-	    -webkit-background-clip: text;
-	    color: rgba(0, 0, 0, 0);
-		}
-		&+p::first-line{
-			font-size    : .385cm;
-			font-variant : small-caps;
 		}
 	}
 	h2{
@@ -198,7 +188,6 @@ body {
 		border-image        : @noteBorderImage 11;
 		border-image-outset : 9px 0px;
 		box-shadow          : 1px 4px 14px #888;
-		-webkit-transform   : translateZ(0); //Prevents shadows from breaking across columns
 		p, ul{
 			font-size   : 0.352cm;
 			line-height : 1.1em;
@@ -336,12 +325,12 @@ body {
 		text-indent     : -1em;
 		list-style-type : none;
 	}
-	.columnSplit {
+	//Column Break
+	pre, code{
 		visibility                 : hidden;
 		-webkit-column-break-after : always;
 		break-after                : always;
 		-moz-column-break-after    : always;
-		break-before               : column;
 	}
 	//Avoid breaking up
 	p,blockquote,table{
@@ -372,7 +361,7 @@ body {
 //*****************************
 // *         SPELL LIST
 // *****************************/
-.phb3 .spellList{
+.phb .spellList{
 	.useSansSerif();
 	column-count        : 4;
 	column-span         : all;
@@ -398,7 +387,7 @@ body {
 //*****************************
 // *         WIDE
 // *****************************/
-.phb3 .wide{
+.phb .wide{
 	column-span         : all;
 	-webkit-column-span : all;
 	-moz-column-span    : all;
@@ -406,7 +395,7 @@ body {
 //*****************************
 // *       CLASS TABLE
 // *****************************/
-.phb3 .classTable{
+.phb .classTable{
 	margin-top          : 25px;
 	margin-bottom       : 40px;
 	border-collapse     : separate;
@@ -425,7 +414,7 @@ body {
 //************************************
 // *       DESCRIPTIVE TEXT BOX
 // ************************************/
-.phb3 .descriptive{
+.phb .descriptive{
 	display             : block-inline;
 	margin-bottom       : 1em;
 	background-color    : #faf7ea;
@@ -453,13 +442,13 @@ body {
 		letter-spacing : -0.02em;
 	}
 }
-.phb3 pre+.descriptive{
+.phb pre+.descriptive{
 	margin-top : 8px;
 }
 //*****************************
 // *      TABLE OF CONTENTS
 // *****************************/
-.phb3 .toc{
+.phb .toc{
 	-webkit-column-break-inside : avoid;
 	page-break-inside           : avoid;
 	break-inside                : avoid;

@@ -4,44 +4,33 @@
 	position         : relative;
 	height           : @height;
 	background-color : #ddd;
-	.toggleMeta{
-		position    : absolute;
-		top         : 0px;
-		right       : 0px;
-		height      : @height;
-		width       : @height;
-		cursor      : pointer;
-		line-height : @height;
-		text-align  : center;
-		.tooltipLeft("Edit Brew Metadata");
+	.snippetBarButton{
+		height         : @height;
+		line-height    : @height;
+		display        : inline-block;
+		padding        : 0px 5px;
+		font-weight    : 800;
+		font-size      : 0.625em;
+		text-transform : uppercase;
+		cursor         : pointer;
 		&:hover, &.selected{
 			background-color : #999;
 		}
-	}
-	.snippetGroup{
-		display        : inline-block;
-		height         : @height;
-		padding        : 0px 5px;
-		cursor         : pointer;
-		font-size      : 0.6em;
-		font-weight    : 800;
-		line-height    : @height;
-		text-transform : uppercase;
-		border-right   : 1px solid black;
 		i{
 			vertical-align : middle;
 			margin-right   : 3px;
-			font-size      : 1.2em;
+			font-size      : 1.4em;
 		}
-		&:hover, &.selected{
-			background-color : #999;
-		}
-		.text{
-			line-height : @height;
-			.groupName{
-				font-size : 10px;
-			}
-		}
+	}
+	.toggleMeta{
+		position     : absolute;
+		top          : 0px;
+		right        : 0px;
+		border-left  : 1px solid black;
+		.tooltipLeft("Edit Brew Properties");
+	}
+	.snippetGroup{
+		border-right   : 1px solid black;
 		&:hover{
 			.dropdown{
 				visibility : visible;
@@ -62,7 +51,7 @@
 				font-size : 10px;
 				i{
 					margin-right : 8px;
-					font-size    : 13px;
+					font-size    : 1.2em;
 				}
 				&:hover{
 					background-color : #999;

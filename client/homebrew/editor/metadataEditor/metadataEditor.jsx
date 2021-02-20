@@ -17,7 +17,8 @@ const MetadataEditor = createClass({
 				tags        : '',
 				published   : false,
 				authors     : [],
-				systems     : []
+				systems     : [],
+				renderer    : 'legacy'
 			},
 			onChange : ()=>{}
 		};
@@ -33,6 +34,12 @@ const MetadataEditor = createClass({
 			this.props.metadata.systems.push(system);
 		} else {
 			this.props.metadata.systems = _.without(this.props.metadata.systems, system);
+		}
+		this.props.onChange(this.props.metadata);
+	},
+	handleRenderer : function(renderer, e){
+		if(e.target.checked){
+			this.props.metadata.renderer = renderer;
 		}
 		this.props.onChange(this.props.metadata);
 	},
@@ -83,11 +90,11 @@ const MetadataEditor = createClass({
 	renderPublish : function(){
 		if(this.props.metadata.published){
 			return <button className='unpublish' onClick={()=>this.handlePublish(false)}>
-				<i className='fa fa-ban' /> unpublish
+				<i className='fas fa-ban' /> unpublish
 			</button>;
 		} else {
 			return <button className='publish' onClick={()=>this.handlePublish(true)}>
-				<i className='fa fa-globe' /> publish
+				<i className='fas fa-globe' /> publish
 			</button>;
 		}
 	},
@@ -99,7 +106,7 @@ const MetadataEditor = createClass({
 			<label>delete</label>
 			<div className='value'>
 				<button className='publish' onClick={this.handleDelete}>
-					<i className='fa fa-trash' /> delete brew
+					<i className='fas fa-trash-alt' /> delete brew
 				</button>
 			</div>
 		</div>;
@@ -126,9 +133,38 @@ const MetadataEditor = createClass({
 			<div className='value'>
 				<a href={this.getRedditLink()} target='_blank' rel='noopener noreferrer'>
 					<button className='publish'>
-						<i className='fa fa-reddit-alien' /> share to reddit
+						<i className='fab fa-reddit-alien' /> share to reddit
 					</button>
 				</a>
+			</div>
+		</div>;
+	},
+
+	renderRenderOptions : function(){
+		if(!global.enable_v3) return;
+
+		return <div className='field systems'>
+			<label>Renderer</label>
+			<div className='value'>
+				<label key='legacy'>
+					<input
+						type='radio'
+						value = 'legacy'
+						name = 'renderer'
+						checked={this.props.metadata.renderer === 'legacy'}
+						onChange={(e)=>this.handleRenderer('legacy', e)} />
+					Legacy
+				</label>
+
+				<label key='V3'>
+					<input
+						type='radio'
+						value = 'V3'
+						name = 'renderer'
+						checked={this.props.metadata.renderer === 'V3'}
+						onChange={(e)=>this.handleRenderer('V3', e)} />
+					V3
+				</label>
 			</div>
 		</div>;
 	},
@@ -154,6 +190,8 @@ const MetadataEditor = createClass({
 			</div>
 			*/}
 
+			{this.renderAuthors()}
+
 			<div className='field systems'>
 				<label>systems</label>
 				<div className='value'>
@@ -161,7 +199,7 @@ const MetadataEditor = createClass({
 				</div>
 			</div>
 
-			{this.renderAuthors()}
+			{this.renderRenderOptions()}
 
 			<div className='field publish'>
 				<label>publish</label>
