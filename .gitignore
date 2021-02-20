@@ -10,3 +10,7 @@ config/local.*
 todo.md
 startDB.bat
 startMViewer.bat
+
+# jest-mongodb creates this file to record some global configuration for tests
+# FIXME: by some reason this file is being regenerated each time tests launched
+globalConfig.json
