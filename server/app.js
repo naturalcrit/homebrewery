@@ -6,7 +6,7 @@ const app = express();
 
 const homebrewApi = require('server/homebrew.api.js');
 const GoogleActions = require('server/googleActions.js');
-const serveCompressedStaticAssets = require('./server/static-assets.mv.js');
+const serveCompressedStaticAssets = require('server/static-assets.mv.js');
 
 app.use('/', serveCompressedStaticAssets(`${__dirname}/build`));
 
