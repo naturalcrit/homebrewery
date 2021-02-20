@@ -26,9 +26,9 @@ body {
 		letter-spacing : -0.02em;
 	}
 }
-.useColumns(@multiplier : 1){
+.useColumns(@multiplier : 1, @fillMode: auto){
 	column-count         : 2;
-	column-fill          : auto;
+	column-fill          : @fillMode;
 	column-gap           : 1cm;
 	column-width         : 8cm * @multiplier;
 	-webkit-column-count : 2;
@@ -272,7 +272,7 @@ body {
 	}
 	//Full Width
 	hr+hr+blockquote{
-		.useColumns(0.96);
+		.useColumns(0.96, @fillMode: balance);
 	}
 	//*****************************
 	// *           FOOTER
