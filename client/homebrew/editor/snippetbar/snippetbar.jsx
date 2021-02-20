@@ -16,7 +16,7 @@ const execute = function(val, brew){
 const Snippetbar = createClass({
 	getDefaultProps : function() {
 		return {
-			brew           : '',
+			brew           : {},
 			onInject       : ()=>{},
 			onToggle       : ()=>{},
 			showmeta       : false,
@@ -80,7 +80,7 @@ module.exports = Snippetbar;
 const SnippetGroup = createClass({
 	getDefaultProps : function() {
 		return {
-			brew           : '',
+			brew           : {},
 			groupName      : '',
 			icon           : 'fas fa-rocket',
 			snippets       : [],
