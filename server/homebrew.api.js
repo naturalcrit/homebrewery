@@ -128,6 +128,8 @@ const newGoogleBrew = async (req, res, next)=>{
 
 	req.body = brew;
 
+	console.log(oAuth2Client);
+
 	const newBrew = await GoogleActions.newGoogleBrew(oAuth2Client, brew);
 
 	return res.status(200).send(newBrew);
