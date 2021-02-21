@@ -21,6 +21,9 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 const HomePage = createClass({
 	getDefaultProps : function() {
 		return {
+			brew : {
+				text : ''
+			},
 			welcomeText : '',
 			ver         : '0.0.0'
 		};
@@ -29,13 +32,15 @@ const HomePage = createClass({
 	},
 	getInitialState : function() {
 		return {
-			text : this.props.welcomeText
+			brew : {
+				text : this.props.welcomeText
+			}
 		};
 	},
 	handleSave : function(){
 		request.post('/api')
 			.send({
-				text : this.state.text
+				text : this.state.brew.text
 			})
 			.end((err, res)=>{
 				if(err) return;
@@ -48,7 +53,7 @@ const HomePage = createClass({
 	},
 	handleTextChange : function(text){
 		this.setState({
-			text : text
+			brew : { text: text }
 		});
 	},
 	renderNavbar : function(){
@@ -71,12 +76,12 @@ const HomePage = createClass({
 
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
-					<Editor value={this.state.text} onChange={this.handleTextChange} showMetaButton={false} ref='editor'/>
-					<BrewRenderer text={this.state.text} />
+					<Editor brew={this.state.brew} onChange={this.handleTextChange} showMetaButton={false} ref='editor'/>
+					<BrewRenderer text={this.state.brew.text} />
 				</SplitPane>
 			</div>
 
-			<div className={cx('floatingSaveButton', { show: this.props.welcomeText != this.state.text })} onClick={this.handleSave}>
+			<div className={cx('floatingSaveButton', { show: this.props.welcomeText != this.state.brew.text })} onClick={this.handleSave}>
 				Save current <i className='fas fa-save' />
 			</div>
 

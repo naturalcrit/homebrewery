@@ -50,7 +50,7 @@ const MetadataEditor = createClass({
 	},
 
 	handleDelete : function(){
-		if(this.props.metadata.authors.length <= 1){
+		if(this.props.metadata.authors && this.props.metadata.authors.length <= 1){
 			if(!confirm('Are you sure you want to delete this brew? Because you are the only owner of this brew, the document will be deleted permanently.')) return;
 			if(!confirm('Are you REALLY sure? You will not be able to recover the document.')) return;
 		} else {
@@ -114,7 +114,7 @@ const MetadataEditor = createClass({
 
 	renderAuthors : function(){
 		let text = 'None.';
-		if(this.props.metadata.authors.length){
+		if(this.props.metadata.authors && this.props.metadata.authors.length){
 			text = this.props.metadata.authors.join(', ');
 		}
 		return <div className='field authors'>

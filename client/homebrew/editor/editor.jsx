@@ -18,7 +18,9 @@ const SNIPPETBAR_HEIGHT = 25;
 const Editor = createClass({
 	getDefaultProps : function() {
 		return {
-			brew     : {},
+			brew : {
+				text : ''
+			},
 			onChange : ()=>{},
 
 			onMetadataChange : ()=>{},
