@@ -143,6 +143,11 @@ module.exports = [
 				icon : 'fas fa-file-word',
 				gen  : CoverPageGen,
 			},
+			{
+				name : 'Magic Item',
+				icon : 'fas fa-hat-wizard',
+				gen  : MagicGen.item,
+			},
 		]
 	},
 

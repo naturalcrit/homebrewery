@@ -109,21 +109,14 @@ const Editor = createClass({
 					r.push(lineNumber);
 				}
 
-				if(line.startsWith('\\column')){
+				if(line.match(/^\\column$/)){
 					codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 					r.push(lineNumber);
 				}
 
-				if(line.startsWith('{{') || line.startsWith('}}')){
-					let endCh = line.length+1;
-					const match = line.match(/{{(?:[\w,#-]|="[\w, ]*")*\s*|}}/);
-					if(match)
-						endCh = match.index+match[0].length;
-					codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
-				}
-
+				// Highlight inline spans {{content}}
 				if(line.includes('{{') && line.includes('}}')){
-					const regex = /{{(?:[\w,#-]|="[\w, ]*")*\s*|}}/g;
+					const regex = /{{(?:="[\w,\-. ]*"|[^"'\s])*\s*|}}/g;
 					let match;
 					let blockCount = 0;
 					while ((match = regex.exec(line)) != null) {
@@ -138,6 +131,14 @@ const Editor = createClass({
 						}
 						codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: 'inline-block' });
 					}
+				} else if(line.trimLeft().startsWith('{{') || line.trimLeft().startsWith('}}')){
+					// Highlight block divs {{\n Content \n}}
+					let endCh = line.length+1;
+
+					const match = line.match(/^ *{{(?:="[\w,\-. ]*"|[^"'\s])*$|^ *}}$/);
+					if(match)
+						endCh = match.index+match[0].length;
+					codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
 				}
 			}
 
