@@ -94,13 +94,16 @@ module.exports = {
 			'\n\n\n'
 		].join('\n');
 	},
-	
-	item: function() {
+
+	item : function() {
 		return [
-		    `#### ${_.sample(itemNames)}`,
-            `*${_.sample(['Wondrous item', 'Armor', 'Weapon'])}, ${_.sample(['Common', 'Uncommon', 'Rare', 'Very Rare', 'Legendary', 'Artifact'])} (requires attunement)*`,
-            `<div style='margin-top:-2px'></div>`,
-            `This knob is pretty nice. It opens the door you put it on.`
+		  `#### ${_.sample(itemNames)}`,
+			`*${_.sample(['Wondrous item', 'Armor', 'Weapon'])}, ${_.sample(['Common', 'Uncommon', 'Rare', 'Very Rare', 'Legendary', 'Artifact'])} (requires attunement)*`,
+			`:`,
+			`This knob is pretty nice. When attached to a door, it allows a user to`,
+			`open that door with the strength of the nearest animal. For example, if`,
+			`there is a cow nearby, the user will have the "strength of a cow" while`,
+			`opening this door.`
 		].join('\n');
 	}
 };

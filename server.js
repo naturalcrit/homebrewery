@@ -25,7 +25,7 @@ const config = require('nconf')
 //DB
 const mongoose = require('mongoose');
 mongoose.connect(config.get('mongodb_uri') || config.get('mongolab_uri') || 'mongodb://localhost/naturalcrit',
-	{ retryWrites: false, useNewUrlParser: true });
+	{ retryWrites: false, useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 mongoose.connection.on('error', ()=>{
 	console.log('Error : Could not connect to a Mongo Database.');
 	console.log('        If you are running locally, make sure mongodb.exe is running.');

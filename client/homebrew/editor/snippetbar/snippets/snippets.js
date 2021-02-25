@@ -145,7 +145,7 @@ module.exports = [
 			},
 			{
 				name : 'Magic Item',
-				icon : 'fa-key',
+				icon : 'fas fa-hat-wizard',
 				gen  : MagicGen.item,
 			},
 		]
