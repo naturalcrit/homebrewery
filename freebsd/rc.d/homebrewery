@@ -1,0 +1,65 @@
+#!/bin/sh
+#
+# PROVIDE: homebrewery
+# REQUIRE: NETWORKING
+# KEYWORD: shutdown
+
+# Author: S Robertson
+# Version: 1.0.0
+
+# Description:
+#    This script runs HomeBrewery as a service under the supplied user on boot
+
+# How to use:
+#    Place this file in /usr/local/etc/rc.d/
+#    Add homebrewery_enable="YES" to /etc/rc.config
+#    (Optional) To run as non-root, add homebrewery_runAs="homebrewery" to /etc/rc.config
+#    (Optional) To pass HomeBrewery args, add homebrewery_args="" to /etc/rc.config
+
+# Freebsd rc library
+. /etc/rc.subr
+
+# General Info
+name="homebrewery"            # Safe name of program
+location="/usr/local/"	      # Install location
+program_name="homebrewery"    # Name of exec
+title="HomeBrewery"           # Title to display in top/htop
+
+# RC.config vars
+load_rc_config $name      # Loading rc config vars
+: ${homebrewery_enable="NO"}  # Default: Do not enable HomeBrewery
+: ${homebrewery_runAs="root"} # Default: Run HomeBrewery as root
+: ${homebrewery_port=8000}    # Default: Run HomeBrewery on port 8000
+: ${homebrewery_NODE_ENV="local"}  # Default: Run HomeBrewery in local mode
+
+# Freebsd Setup
+rcvar=homebrewery_enable                   # Enables the rc.conf YES/NO flag
+pidfile="/var/run/${program_name}.pid" 	   # File that allows the system to keep track of HomeBrewery status
+
+# Env Setup
+export HOME=$( getent passwd "homebrewery_runAs" | cut -d: -f6 ) # Gets the home directory of the runAs user
+export NODE_ENV=${homebrewery_NODE_ENV}
+export PORT=${homebrewery_port}
+
+# Command Setup
+exec_cmd="${location}/${program_name}/server.js" 	# Path to the HomeBrewery server.js, /usr/local/bin/ when installed globally
+output_file="/var/log/${program_name}.log" 		# Path to HomeBrewery output file
+
+# Command
+command="/usr/sbin/daemon"
+command_args="-r -t ${title} -u ${homebrewery_runAs} -o ${output_file} -P ${pidfile} /usr/local/bin/node ${exec_cmd} ${homebrewery_args}"
+
+# Extra Commands
+extra_commands="dev_mode"
+
+dev_mode_cmd="homebrewery_dev_mode"
+
+homebrewery_dev_mode() {
+echo "Starting HomeBrewery in live rebuild Developer mode..."
+cd ${location}/${program_name}/
+/usr/local/bin/node ${location}/${program_name}/scripts/buildHomebrew.js --dev
+}
+
+# Loading Config
+load_rc_config ${name}
+run_rc_command "$1"

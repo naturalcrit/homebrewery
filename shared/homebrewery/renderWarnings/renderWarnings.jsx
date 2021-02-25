@@ -53,8 +53,8 @@ const RenderWarnings = createClass({
 		if(_.isEmpty(this.state.warnings)) return null;
 
 		return <div className='renderWarnings'>
-			<i className='fa fa-times dismiss' onClick={this.dismiss}/>
-			<i className='fa fa-exclamation-triangle ohno' />
+			<i className='fas fa-times dismiss' onClick={this.dismiss}/>
+			<i className='fas fa-exclamation-triangle ohno' />
 			<h3>Render Warnings</h3>
 			<small>If this homebrew is rendering badly if might be because of the following:</small>
 			<ul>{_.values(this.state.warnings)}</ul>

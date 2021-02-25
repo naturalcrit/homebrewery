@@ -19,12 +19,17 @@ const build = async ({ bundle, render, ssr })=>{
 	await fs.outputFile('./build/homebrew/bundle.css', css);
 	await fs.outputFile('./build/homebrew/bundle.js', bundle);
 	await fs.outputFile('./build/homebrew/ssr.js', ssr);
-	await fs.outputFile('./build/homebrew/render.js', render);
 
-	//compress files
-	await fs.outputFile('./build/homebrew/bundle.css.br', zlib.brotliCompressSync(css));
-	await fs.outputFile('./build/homebrew/bundle.js.br', zlib.brotliCompressSync(bundle));
-	await fs.outputFile('./build/homebrew/ssr.js.br', zlib.brotliCompressSync(ssr));
+	//compress files in production
+	if(!isDev){
+		await fs.outputFile('./build/homebrew/bundle.css.br', zlib.brotliCompressSync(css));
+		await fs.outputFile('./build/homebrew/bundle.js.br', zlib.brotliCompressSync(bundle));
+		await fs.outputFile('./build/homebrew/ssr.js.br', zlib.brotliCompressSync(ssr));
+	} else {
+		await fs.remove('./build/homebrew/bundle.css.br');
+		await fs.remove('./build/homebrew/bundle.js.br');
+		await fs.remove('./build/homebrew/ssr.js.br');
+	}
 };
 
 fs.emptyDirSync('./build/homebrew');
@@ -42,6 +47,6 @@ pack('./client/homebrew/homebrew.jsx', {
 if(isDev){
 	livereload('./build');
 	watchFile('./server.js', {
-		watch : ['./homebrew'] // Watch additional folders if you want
+		watch : ['./client'] // Watch additional folders if you want
 	});
 }

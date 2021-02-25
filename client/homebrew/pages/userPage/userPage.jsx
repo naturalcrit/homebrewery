@@ -59,7 +59,7 @@ const UserPage = createClass({
 				</Nav.section>
 			</Navbar>
 
-			<div className='content'>
+			<div className='content V3'>
 				<div className='phb'>
 					<div>
 						<h1>{this.getUsernameWithS()} brews</h1>

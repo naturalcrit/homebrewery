@@ -61,7 +61,7 @@ const BrewLookup = createClass({
 			<h2>Brew Lookup</h2>
 			<input type='text' value={this.state.query} onChange={this.handleChange} placeholder='edit or share id' />
 			<button onClick={this.lookup}>
-				<i className={cx('fa', {
+				<i className={cx('fas', {
 					'fa-search'          : !this.state.searching,
 					'fa-spin fa-spinner' : this.state.searching,
 				})} />

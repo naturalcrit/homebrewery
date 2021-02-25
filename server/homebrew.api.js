@@ -3,6 +3,7 @@ const HomebrewModel = require('./homebrew.model.js').model;
 const router = require('express').Router();
 const zlib = require('zlib');
 const GoogleActions = require('./googleActions.js');
+const Markdown = require('../shared/naturalcrit/markdown.js');
 
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
@@ -11,13 +12,8 @@ const GoogleActions = require('./googleActions.js');
 // };
 
 const getGoodBrewTitle = (text)=>{
-	const titlePos = text.indexOf('# ');
-	if(titlePos !== -1) {
-		const ending = text.indexOf('\n', titlePos);
-		return text.substring(titlePos + 2, ending);
-	} else {
-		return _.find(text.split('\n'), (line)=>line);
-	}
+	const tokens = Markdown.marked.lexer(text);
+ 	return title = (tokens.find((token)=>token.type == 'heading' || token.type == 'paragraph') || { text: 'No Title' }).text;
 };
 
 const newBrew = (req, res)=>{
@@ -125,8 +121,6 @@ const newGoogleBrew = async (req, res, next)=>{
 	delete brew.googleId;
 
 	req.body = brew;
-
-	console.log(oAuth2Client);
 
 	const newBrew = await GoogleActions.newGoogleBrew(oAuth2Client, brew);
 

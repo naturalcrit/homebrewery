@@ -45,8 +45,8 @@ const BrewCleanup = createClass({
 		return <div className='removeBox'>
 			<button onClick={this.cleanup} className='remove'>
 				{this.state.pending
-					? <i className='fa fa-spin fa-spinner' />
-					: <span><i className='fa fa-times' /> Remove</span>
+					? <i className='fas fa-spin fa-spinner' />
+					: <span><i className='fas fa-times' /> Remove</span>
 				}
 			</button>
 			<span>Found {this.state.count} Brews that could be removed. </span>
@@ -59,7 +59,7 @@ const BrewCleanup = createClass({
 
 			<button onClick={this.prime} className='query'>
 				{this.state.pending
-					? <i className='fa fa-spin fa-spinner' />
+					? <i className='fas fa-spin fa-spinner' />
 					: 'Query Brews'
 				}
 			</button>

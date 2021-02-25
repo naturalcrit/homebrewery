@@ -37,8 +37,8 @@ const CodeEditor = createClass({
 				'Cmd-B'   : this.makeBold,
 				'Ctrl-I'  : this.makeItalic,
 				'Cmd-I'   : this.makeItalic,
-				'Ctrl-F1' : this.makeSpan,
-				'Cmd-F1'  : this.makeSpan,
+				'Ctrl-{' : this.makeSpan,
+				'Cmd-{'  : this.makeSpan,
 			}
 		});
 
@@ -78,10 +78,6 @@ const CodeEditor = createClass({
 		if(this.codeMirror && nextProps.value !== undefined && this.codeMirror.getValue() != nextProps.value) {
 			this.codeMirror.setValue(nextProps.value);
 		}
-	},
-
-	shouldComponentUpdate : function(nextProps, nextState) {
-		return false;
 	},
 
 	setCursorPosition : function(line, char){

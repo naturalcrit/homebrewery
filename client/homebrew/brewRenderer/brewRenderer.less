@@ -1,8 +1,7 @@
+@import (multiple, less) 'shared/naturalcrit/styles/reset.less';
+& {@import (multiple, less) './client/homebrew/phbStyle/phb.styleLegacy.less';} //&{} keeps internal variables locally-scoped
+& {@import (multiple, less) './client/homebrew/phbStyle/phb.style.less';}
 
-@import (less) './client/homebrew/phbStyle/phb.style.less';
-.pane{
-	position : relative;
-}
 .brewRenderer{
 	will-change : transform;
 	overflow-y  : scroll;
@@ -14,7 +13,16 @@
 			margin-left   : auto;
 			box-shadow    : 1px 4px 14px #000;
 		}
+		&>.phb3{
+			margin-right  : auto;
+			margin-bottom : 30px;
+			margin-left   : auto;
+			box-shadow    : 1px 4px 14px #000;
+		}
 	}
+}
+.pane{
+	position : relative;
 }
 .pageInfo{
 	position         : absolute;
