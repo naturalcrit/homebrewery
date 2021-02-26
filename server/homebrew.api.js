@@ -15,11 +15,8 @@ const MAX_TITLE_LENGTH = 100;
 
 const getGoodBrewTitle = (text)=>{
 	const tokens = Markdown.marked.lexer(text);
- 	let title = (tokens.find((token)=>token.type == 'heading' || token.type == 'paragraph') || { text: 'No Title' }).text;
-	if(title.length > MAX_TITLE_LENGTH) {
-		title = title.substr(0, MAX_TITLE_LENGTH);
-	}
-	return title;
+ 	return (tokens.find((token)=>token.type == 'heading' ||	token.type == 'paragraph')?.text || 'No Title')
+				 .slice(0, MAX_TITLE_LENGTH);
 };
 
 const newBrew = (req, res)=>{
