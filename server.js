@@ -144,7 +144,7 @@ app.get('/edit/:id', (req, res, next)=>{
 });
 
 //Import Page
-app.get('/import/:id', (req, res, next)=>{
+app.get('/new/:id', (req, res, next)=>{
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
 	if(req.params.id.length > 12) {
 		const googleId = req.params.id.slice(0, -12);
