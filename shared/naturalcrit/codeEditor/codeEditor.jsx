@@ -33,12 +33,12 @@ const CodeEditor = createClass({
 			lineWrapping : this.props.wrap,
 			mode         : this.props.language,
 			extraKeys    : {
-				'Ctrl-B'  : this.makeBold,
-				'Cmd-B'   : this.makeBold,
-				'Ctrl-I'  : this.makeItalic,
-				'Cmd-I'   : this.makeItalic,
-				'Ctrl-{' : this.makeSpan,
-				'Cmd-{'  : this.makeSpan,
+				'Ctrl-B' : this.makeBold,
+				'Cmd-B'  : this.makeBold,
+				'Ctrl-I' : this.makeItalic,
+				'Cmd-I'  : this.makeItalic,
+				'Ctrl-M' : this.makeSpan,
+				'Cmd-M'  : this.makeSpan,
 			}
 		});
 
@@ -66,11 +66,11 @@ const CodeEditor = createClass({
 	},
 
 	makeSpan : function() {
-		const selection = this.codeMirror.getSelection();
-		this.codeMirror.replaceSelection(`<span>${selection}<span>`, 'around');
+		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 2) === '{{' && selection.slice(-2) === '}}';				
+        this.codeMirror.replaceSelection(t ? selection.slice(2, -2) : '{{' + selection + '}}', 'around');
 		if(selection.length === 0){
 			const cursor = this.codeMirror.getCursor();
-			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 6 });
+			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 2 });
 		}
 	},
 
