@@ -66,8 +66,8 @@ const CodeEditor = createClass({
 	},
 
 	makeSpan : function() {
-		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 2) === '{{' && selection.slice(-2) === '}}';				
-        this.codeMirror.replaceSelection(t ? selection.slice(2, -2) : '{{' + selection + '}}', 'around');
+		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 2) === '{{' && selection.slice(-2) === '}}';
+		this.codeMirror.replaceSelection(t ? selection.slice(2, -2) : `{{${selection}}}`, 'around');
 		if(selection.length === 0){
 			const cursor = this.codeMirror.getCursor();
 			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 2 });
