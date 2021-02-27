@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 250, "skipBlankLines": true, "skipComments": true}]*/
 const _ = require('lodash');
 const jwt = require('jwt-simple');
 const express = require('express');

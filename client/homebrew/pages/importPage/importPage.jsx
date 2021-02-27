@@ -39,7 +39,7 @@ const ImportPage = createClass({
 			}
 		};
 	},
-	
+
 	getInitialState : function() {
 		return {
 			metadata : {
