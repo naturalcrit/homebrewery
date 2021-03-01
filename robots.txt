@@ -1,2 +1,4 @@
 # Notes
 User-agent: *
+Disallow: /edit/
+
