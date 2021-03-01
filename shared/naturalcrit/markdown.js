@@ -11,18 +11,10 @@ renderer.html = function (html) {
 		html = html.substring(0, html.lastIndexOf('</div>'));
 		return `${openTag} ${Markdown(html)} </div>`;
 	}
-	//if(html.startsWith('<dt>'))
-	// if(_.startsWith(_.trim(html), '<style') && _.endsWith(_.trim(html), '</style>')){
-	// 	const openTag = html.substring(0, html.indexOf('>')+1);
-	// 	html = html.substring(html.indexOf('>')+1);
-	// 	html = html.substring(0, html.lastIndexOf('</style>'));
-	// 	html = html.replaceAll(/\s(\.[^{]*)/gm, '.V3 $1');
-	// 	return `${openTag} ${html} </style>`;
-	// }
 	return html;
 };
 
-// Don't render {{ Divs or {{ empty Spans on their own line inside a <p>
+// Don't wrap {{ Divs or {{ empty Spans in <p> tags
 renderer.paragraph = function(text){
 	let match;
 	if(text.startsWith('<div') || text.startsWith('</div'))
