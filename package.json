@@ -62,7 +62,7 @@
     "marked": "2.0.0",
     "nconf": "^0.11.2",
     "prop-types": "15.7.2",
-    "query-string": "6.14.0",
+    "query-string": "6.14.1",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-frame-component": "4.1.3",
