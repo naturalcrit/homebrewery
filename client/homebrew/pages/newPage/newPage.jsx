@@ -43,7 +43,7 @@ const NewPage = createClass({
 	getInitialState : function() {
 		return {
 			brew : {
-				text       : this.props.brew.text,
+				text        : this.props.brew.text,
 				gDrive      : false,
 				title       : '',
 				description : '',
