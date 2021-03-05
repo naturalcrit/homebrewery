@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 250, "skipBlankLines": true, "skipComments": true}]*/
 const _ = require('lodash');
 const jwt = require('jwt-simple');
 const express = require('express');
@@ -134,6 +135,33 @@ app.get('/edit/:id', (req, res, next)=>{
 		HomebrewModel.get({ editId: req.params.id })
 			.then((brew)=>{
 				req.brew = brew.sanatize();
+				return next();
+			})
+			.catch((err)=>{
+				console.log(err);
+				return res.status(400).send(`Can't get that`);
+			});
+	}
+});
+
+//New Page
+app.get('/new/:id', (req, res, next)=>{
+	if(req.params.id.length > 12) {
+		const googleId = req.params.id.slice(0, -12);
+		const shareId = req.params.id.slice(-12);
+		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
+		.then((brew)=>{
+			req.brew = brew; //TODO Need to sanitize later
+			return next();
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(400).send('Can\'t get brew from Google');
+		});
+	} else {
+		HomebrewModel.get({ shareId: req.params.id })
+			.then((brew)=>{
+				req.brew = brew;
 				return next();
 			})
 			.catch((err)=>{

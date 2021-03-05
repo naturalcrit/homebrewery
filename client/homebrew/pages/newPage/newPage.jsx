@@ -20,10 +20,30 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 const KEY = 'homebrewery-new';
 
 const NewPage = createClass({
+	getDefaultProps : function() {
+		return {
+			brew : {
+				text      : '',
+				shareId   : null,
+				editId    : null,
+				createdAt : null,
+				updatedAt : null,
+				gDrive    : false,
+
+				title       : '',
+				description : '',
+				tags        : '',
+				published   : false,
+				authors     : [],
+				systems     : []
+			}
+		};
+	},
+
 	getInitialState : function() {
 		return {
 			brew : {
-				text        : '',
+				text        : this.props.brew.text,
 				gDrive      : false,
 				title       : '',
 				description : '',
@@ -41,7 +61,7 @@ const NewPage = createClass({
 
 	componentDidMount : function() {
 		const storage = localStorage.getItem(KEY);
-		if(storage){
+		if(!this.props.brew.text && storage){
 			this.setState({
 				brew : { text: storage }
 			});
