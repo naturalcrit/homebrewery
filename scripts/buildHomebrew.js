@@ -19,6 +19,7 @@ const build = async ({ bundle, render, ssr })=>{
 	await fs.outputFile('./build/homebrew/bundle.css', css);
 	await fs.outputFile('./build/homebrew/bundle.js', bundle);
 	await fs.outputFile('./build/homebrew/ssr.js', ssr);
+	await fs.copy('./client/homebrew/phbStyle/fonts', './build/fonts');
 
 	//compress files in production
 	if(!isDev){
