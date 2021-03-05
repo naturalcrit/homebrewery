@@ -1,4 +1,4 @@
-@import (less) './client/homebrew/phbStyle/phb.fonts.css';
+@import (less) './client/homebrew/phbStyle/phb.fonts.less';
 @import (less) './client/homebrew/phbStyle/phb.assets.less';
 
 //Colors
@@ -16,7 +16,7 @@ body {
 	-webkit-print-color-adjust : exact;
 }
 .useSansSerif(){
-	font-family : ScalySans;
+	font-family : ScalySansRemake;
 	font-size   : 10pt;
 	em{
 		font-style  : italic;
@@ -50,7 +50,7 @@ body {
 	padding           : 1.0cm 1.7cm 1.5cm;
 	background-color  : @background;
 	background-image  : @backgroundImage;
-	font-family       : BookSanity;
+	font-family       : BookInsanityRemake;
 	font-size         : 0.317cm;
 	text-rendering    : optimizeLegibility;
 	page-break-before : always;
@@ -110,7 +110,7 @@ body {
 	h1,h2,h3,h4{
 		margin-top    : 0.2em;
 		margin-bottom : 0.2em;
-		font-family   : MrJeeves;
+		font-family   : MrEavesRemake;
 		font-weight   : 800;
 		color         : @headerText;
 	}
@@ -121,7 +121,7 @@ body {
 		-moz-column-span    : all;
 		&+p::first-letter{
 			float       : left;
-			font-family : Solberry;
+			font-family : SolberaImitationRemake;
 			line-height : 0.8em;
 			font-size: 3.5cm;
 			padding-left: 40px;
@@ -153,7 +153,7 @@ body {
 	}
 	h5{
 		margin-bottom : 0.2em;
-		font-family   : ScalySansSmallCaps;
+		font-family   : ScalySansSmallCapsRemake;
 		font-size     : 0.423cm;
 		font-weight   : 900;
 	}
@@ -228,7 +228,7 @@ body {
 			}
 		}
 		h3{
-			font-family   : ScalySans;
+			font-family   : ScalySansRemake;
 			font-weight   : 400;
 			border-bottom : 1px solid @headerText;
 		}
@@ -431,7 +431,7 @@ body {
 	display             : block-inline;
 	margin-bottom       : 1em;
 	background-color    : #faf7ea;
-	font-family         : ScalySans;
+	font-family         : ScalySansRemake;
 	border-style        : solid;
 	border-width        : 7px;
 	border-image        : @descriptiveBoxImage 12 stretch;
@@ -446,11 +446,11 @@ body {
 		padding-top : .8em;
 	}
 	em {
-		font-family : ScalySans;
+		font-family : ScalySansRemake;
 		font-style  : italic;
 	}
 	strong {
-		font-family    : ScalySans;
+		font-family    : ScalySansRemake;
 		font-weight    : 800;
 		letter-spacing : -0.02em;
 	}
