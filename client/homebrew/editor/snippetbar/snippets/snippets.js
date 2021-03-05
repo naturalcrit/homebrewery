@@ -41,8 +41,21 @@ module.exports = [
 			},
 			{
 				name : 'Background Image',
-				icon : 'fas fa-times-circle',
-				gen  : ''
+				icon : 'fas fa-tree',
+				gen  : `<img src='http://i.imgur.com/hMna6G0.png' ` +
+							`style='position:absolute; top:50px; right:30px; width:280px'/>`
+			},
+			{
+				name : 'QR Code',
+				icon : 'fas fa-qrcode',
+				gen  : (brew)=>{
+					return `<img ` +
+							`src='https://api.qrserver.com/v1/create-qr-code/?data=` +
+							`https://homebrewery.naturalcrit.com/share/${brew.shareId}` +
+							`&amp;size=100x100' ` +
+							`style='width:100px;mix-blend-mode:multiply'/>`;
+				}
+
 			},
 			{
 				name : 'Page Number',
@@ -129,6 +142,11 @@ module.exports = [
 				name : 'Cover Page',
 				icon : 'fas fa-file-word',
 				gen  : CoverPageGen,
+			},
+			{
+				name : 'Magic Item',
+				icon : 'fas fa-hat-wizard',
+				gen  : MagicGen.item,
 			},
 		]
 	},

@@ -60,10 +60,10 @@ body {
 	// *****************************/
 	p{
 		overflow-wrap : break-word;
-		padding-bottom : 0.8em;
+		padding-top : 0em;
 		line-height    : 1.3em;
 		&+p{
-			margin-top : -0.8em;
+			padding-top : 0em;
 		}
 	}
 	ul{
@@ -478,5 +478,40 @@ body {
 	}
 	&>ul>li{
 		margin-bottom : 10px;
+	}
+}
+
+//*****************************
+// *    MUSTACHE DIVS/SPANS
+// *****************************/
+.phb3 {
+	.inline-block {
+		display : block;
+	}
+}
+
+//*****************************
+// *    DEFINITION LISTS
+// *****************************/
+.phb3 {
+	// dl {
+  // 	margin-top: 10px;
+  // }
+  dt {
+    float: left;
+    //clear: left;  //Doesn't seem necessary
+    margin-right: 5px;
+  }
+  // dd {
+  //   margin-left: 0px;
+  // }
+}
+
+//*****************************
+// *    BLANK LINE
+// *****************************/
+.phb3 {
+	.blank {
+		height: 0.8em;
 	}
 }

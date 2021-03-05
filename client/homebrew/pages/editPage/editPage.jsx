@@ -392,9 +392,8 @@ const EditPage = createClass({
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
 					<Editor
 						ref='editor'
-						value={this.state.brew.text}
+						brew={this.state.brew}
 						onChange={this.handleTextChange}
-						metadata={this.state.brew}
 						onMetadataChange={this.handleMetadataChange}
 						renderer={this.state.brew.renderer}
 					/>

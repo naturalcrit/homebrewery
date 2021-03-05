@@ -19,7 +19,6 @@ const build = async ({ bundle, render, ssr })=>{
 	await fs.outputFile('./build/homebrew/bundle.css', css);
 	await fs.outputFile('./build/homebrew/bundle.js', bundle);
 	await fs.outputFile('./build/homebrew/ssr.js', ssr);
-	await fs.outputFile('./build/homebrew/render.js', render);
 	await fs.copy('./client/homebrew/phbStyle/fonts', './build/fonts');
 
 	//compress files in production
@@ -49,6 +48,6 @@ pack('./client/homebrew/homebrew.jsx', {
 if(isDev){
 	livereload('./build');
 	watchFile('./server.js', {
-		watch : ['./homebrew'] // Watch additional folders if you want
+		watch : ['./client'] // Watch additional folders if you want
 	});
 }

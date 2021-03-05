@@ -1,18 +1,13 @@
 const _ = require('lodash');
 const jwt = require('jwt-simple');
-const expressStaticGzip = require('express-static-gzip');
 const express = require('express');
 const app = express();
 
 const homebrewApi = require('./server/homebrew.api.js');
 const GoogleActions = require('./server/googleActions.js');
+const serveCompressedStaticAssets = require('./server/static-assets.mv.js');
 
-// Serve brotli-compressed static files if available
-app.use('/', expressStaticGzip(`${__dirname}/build`, {
-	enableBrotli    : true,
-	orderPreference : ['br'],
-	index           : false
-}));
+app.use('/', serveCompressedStaticAssets(`${__dirname}/build`));
 
 process.chdir(__dirname);
 
@@ -30,7 +25,7 @@ const config = require('nconf')
 //DB
 const mongoose = require('mongoose');
 mongoose.connect(config.get('mongodb_uri') || config.get('mongolab_uri') || 'mongodb://localhost/naturalcrit',
-	{ retryWrites: false, useNewUrlParser: true });
+	{ retryWrites: false, useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 mongoose.connection.on('error', ()=>{
 	console.log('Error : Could not connect to a Mongo Database.');
 	console.log('        If you are running locally, make sure mongodb.exe is running.');
