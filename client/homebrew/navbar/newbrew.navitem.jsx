@@ -3,11 +3,9 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 
 module.exports = function(props){
 	return <Nav.item
-		className='patreon'
-		newTab={true}
-		href='https://www.patreon.com/NaturalCrit'
-		color='green'
-		icon='fas fa-heart'>
-		help out
+		href='/new'
+		color='purple'
+		icon='fa-plus-square'>
+		new
 	</Nav.item>;
 };
