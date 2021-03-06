@@ -5,7 +5,7 @@ module.exports = function(props){
 	return <Nav.item
 		href='/new'
 		color='purple'
-		icon='fa-plus-square'>
+		icon='fas fa-plus-square'>
 		new
 	</Nav.item>;
 };
