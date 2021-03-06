@@ -349,9 +349,9 @@ const EditPage = createClass({
 			</Nav.section>
 
 			<Nav.section>
-				<NewBrew />
 				{this.renderGoogleDriveIcon()}
 				{this.renderSaveButton()}
+				<NewBrew />
 				<ReportIssue />
 				<Nav.item newTab={true} href={`/share/${this.processShareId()}`} color='teal' icon='fa-share-alt'>
 					Share
