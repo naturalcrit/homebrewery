@@ -208,7 +208,7 @@ module.exports = [
 				icon : 'fas fa-th-large',
 				gen  : function(){
 					return [
-						'<div style=\'column-count:2\'>',
+						'<div class=\'split-table\' style=\'column-count:2\'>',
 						'| d10 | Damage Type |',
 						'|:---:|:------------|',
 						'|  1  | Acid        |',
