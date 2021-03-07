@@ -9,6 +9,7 @@ const { Meta } = require('vitreum/headtags');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 
+const NewBrew = require('../../navbar/newbrew.navitem.jsx');
 const ReportIssue = require('../../navbar/issue.navitem.jsx');
 const PrintLink = require('../../navbar/print.navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
@@ -41,17 +42,18 @@ const EditPage = createClass({
 				tags        : '',
 				published   : false,
 				authors     : [],
-				systems     : []
+				systems     : [],
+				renderer    : 'legacy'
 			}
 		};
 	},
 
 	getInitialState : function() {
 		return {
-			brew : this.props.brew,
-
+			brew                  : this.props.brew,
 			isSaving              : false,
 			isPending             : false,
+			alertRenderChange     : false,
 			saveGoogle            : this.props.brew.googleId ? true : false,
 			confirmGoogleTransfer : false,
 			errors                : null,
@@ -65,6 +67,8 @@ const EditPage = createClass({
 		this.setState({
 			url : window.location.href
 		});
+
+		this.savedBrew = JSON.parse(JSON.stringify(this.props.brew)); //Deep copy
 
 		this.trySave();
 		window.onbeforeunload = ()=>{
@@ -101,6 +105,11 @@ const EditPage = createClass({
 	},
 
 	handleMetadataChange : function(metadata){
+		if(metadata.renderer != this.savedBrew.renderer){
+			this.setState({
+				alertRenderChange : true
+			});
+		}
 		this.setState((prevState)=>({
 			brew      : _.merge({}, prevState.brew, metadata),
 			isPending : true,
@@ -122,8 +131,7 @@ const EditPage = createClass({
 	},
 
 	hasChanges : function(){
-		const savedBrew = this.savedBrew ? this.savedBrew : this.props.brew;
-		return !_.isEqual(this.state.brew, savedBrew);
+		return !_.isEqual(this.state.brew, this.savedBrew);
 	},
 
 	trySave : function(){
@@ -140,6 +148,12 @@ const EditPage = createClass({
 			confirmGoogleTransfer : !prevState.confirmGoogleTransfer
 		}));
 		this.clearErrors();
+	},
+
+	closeAlerts : function(){
+		this.setState({
+			alertRenderChange : false
+		});
 	},
 
 	toggleGoogleStorage : function(){
@@ -294,7 +308,7 @@ const EditPage = createClass({
 			} catch (e){}
 
 			if(this.state.errors.status == '401'){
-				return <Nav.item className='save error' icon='fa-warning'>
+				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 					Oops!
 					<div className='errorContainer' onClick={this.clearErrors}>
 					You must be signed in to a Google account
@@ -312,7 +326,7 @@ const EditPage = createClass({
 				</Nav.item>;
 			}
 
-			return <Nav.item className='save error' icon='fa-warning'>
+			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
 				<div className='errorContainer'>
 					Looks like there was a problem saving. <br />
@@ -325,15 +339,24 @@ const EditPage = createClass({
 		}
 
 		if(this.state.isSaving){
-			return <Nav.item className='save' icon='fa-spinner fa-spin'>saving...</Nav.item>;
+			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
 		}
 		if(this.state.isPending && this.hasChanges()){
-			return <Nav.item className='save' onClick={this.save} color='blue' icon='fa-save'>Save Now</Nav.item>;
+			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving){
 			return <Nav.item className='save saved'>saved.</Nav.item>;
 		}
 	},
+
+	// {this.state.alertRenderChange &&
+	// 	<div className='errorContainer' onClick={this.closeAlerts}>
+	// 	Rendering mode for this brew has been changed! Refresh the page to load the new renderer.<br />
+	// 		<div className='confirm'>
+	// 			OK
+	// 		</div>
+	// 	</div>
+	// }
 
 	processShareId : function() {
 		return this.state.brew.googleId ?
@@ -350,8 +373,9 @@ const EditPage = createClass({
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
 				{this.renderSaveButton()}
+				<NewBrew />
 				<ReportIssue />
-				<Nav.item newTab={true} href={`/share/${this.processShareId()}`} color='teal' icon='fa-share-alt'>
+				<Nav.item newTab={true} href={`/share/${this.processShareId()}`} color='teal' icon='fas fa-share-alt'>
 					Share
 				</Nav.item>
 				<PrintLink shareId={this.processShareId()} />
@@ -370,12 +394,12 @@ const EditPage = createClass({
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
 					<Editor
 						ref='editor'
-						value={this.state.brew.text}
+						brew={this.state.brew}
 						onChange={this.handleTextChange}
-						metadata={this.state.brew}
 						onMetadataChange={this.handleMetadataChange}
+						renderer={this.state.brew.renderer}
 					/>
-					<BrewRenderer text={this.state.brew.text} errors={this.state.htmlErrors} />
+					<BrewRenderer text={this.state.brew.text} errors={this.state.htmlErrors} renderer={this.state.brew.renderer} />
 				</SplitPane>
 			</div>
 		</div>;

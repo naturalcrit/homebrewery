@@ -60,8 +60,8 @@ const NotificationPopup = createClass({
 		if(_.isEmpty(this.state.notifications)) return null;
 
 		return <div className='notificationPopup'>
-			<i className='fa fa-times dismiss' onClick={this.dismiss}/>
-			<i className='fa fa-info-circle info' />
+			<i className='fas fa-times dismiss' onClick={this.dismiss}/>
+			<i className='fas fa-info-circle info' />
 			<h3>Notice</h3>
 			<small>This website is always improving and we are still adding new features and squashing bugs. Keep the following in mind:</small>
 			<ul>{_.values(this.state.notifications)}</ul>

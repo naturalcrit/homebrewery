@@ -1,7 +1,6 @@
-@import (less) 'shared/naturalcrit/styles/reset.less';
-@import (less) './client/homebrew/phbStyle/phb.fonts.css';
+@import (less) './client/homebrew/phbStyle/phb.fonts.less';
 @import (less) './client/homebrew/phbStyle/phb.assets.less';
-@import (less) './client/homebrew/phbStyle/phb.depricated.less';
+
 //Colors
 @background            : #EEE5CE;
 @noteGreen             : #e0e5c1;
@@ -17,13 +16,12 @@ body {
 	-webkit-print-color-adjust : exact;
 }
 .useSansSerif(){
-	font-family : ScalySans;
+	font-family : ScalySansRemake;
+	font-size   : 10pt;
 	em{
-		font-family : ScalySans;
 		font-style  : italic;
 	}
 	strong{
-		font-family    : ScalySans;
 		font-weight    : 800;
 		letter-spacing : -0.02em;
 	}
@@ -40,7 +38,7 @@ body {
 	-webkit-column-gap   : 1cm;
 	-moz-column-gap      : 1cm;
 }
-.phb{
+.phb3{
 	.useColumns();
 	counter-increment : phb-page-numbers;
 	position          : relative;
@@ -49,11 +47,10 @@ body {
 	overflow          : hidden;
 	height            : 279.4mm;
 	width             : 215.9mm;
-	padding           : 1.0cm 1.7cm;
-	padding-bottom    : 1.5cm;
+	padding           : 1.0cm 1.7cm 1.5cm;
 	background-color  : @background;
 	background-image  : @backgroundImage;
-	font-family       : BookSanity;
+	font-family       : BookInsanityRemake;
 	font-size         : 0.317cm;
 	text-rendering    : optimizeLegibility;
 	page-break-before : always;
@@ -62,10 +59,11 @@ body {
 	// *            BASE
 	// *****************************/
 	p{
-		padding-bottom : 0.8em;
+		overflow-wrap : break-word;
+		padding-top : 0em;
 		line-height    : 1.3em;
 		&+p{
-			margin-top : -0.8em;
+			padding-top : 0em;
 		}
 	}
 	ul{
@@ -112,7 +110,7 @@ body {
 	h1,h2,h3,h4{
 		margin-top    : 0.2em;
 		margin-bottom : 0.2em;
-		font-family   : MrJeeves;
+		font-family   : MrEavesRemake;
 		font-weight   : 800;
 		color         : @headerText;
 	}
@@ -123,10 +121,23 @@ body {
 		-moz-column-span    : all;
 		&+p::first-letter{
 			float       : left;
-			font-family : Solberry;
-			font-size   : 10em;
-			color       : #222;
+			font-family : SolberaImitationRemake;
 			line-height : 0.8em;
+			font-size: 3.5cm;
+			padding-left: 40px;
+			margin-left: -40px;
+			padding-top:10px;
+			margin-top:-8px;
+			padding-bottom:10px;
+			margin-bottom:-20px;
+			background-image: linear-gradient(-45deg, #322814, #998250, #322814);
+	    background-clip: text;
+	    -webkit-background-clip: text;
+	    color: rgba(0, 0, 0, 0);
+		}
+		&+p::first-line{
+			font-size    : .385cm;
+			font-variant : small-caps;
 		}
 	}
 	h2{
@@ -142,7 +153,7 @@ body {
 	}
 	h5{
 		margin-bottom : 0.2em;
-		font-family   : ScalySansSmallCaps;
+		font-family   : ScalySansSmallCapsRemake;
 		font-size     : 0.423cm;
 		font-weight   : 900;
 	}
@@ -189,6 +200,7 @@ body {
 		border-image        : @noteBorderImage 11;
 		border-image-outset : 9px 0px;
 		box-shadow          : 1px 4px 14px #888;
+		-webkit-transform   : translateZ(0); //Prevents shadows from breaking across columns
 		p, ul{
 			font-size   : 0.352cm;
 			line-height : 1.1em;
@@ -216,7 +228,7 @@ body {
 			}
 		}
 		h3{
-			font-family   : ScalySans;
+			font-family   : ScalySansRemake;
 			font-weight   : 400;
 			border-bottom : 1px solid @headerText;
 		}
@@ -326,12 +338,12 @@ body {
 		text-indent     : -1em;
 		list-style-type : none;
 	}
-	//Column Break
-	pre, code{
+	.columnSplit {
 		visibility                 : hidden;
 		-webkit-column-break-after : always;
 		break-after                : always;
 		-moz-column-break-after    : always;
+		break-before               : column;
 	}
 	//Avoid breaking up
 	p,blockquote,table{
@@ -362,7 +374,7 @@ body {
 //*****************************
 // *         SPELL LIST
 // *****************************/
-.phb .spellList{
+.phb3 .spellList{
 	.useSansSerif();
 	column-count        : 4;
 	column-span         : all;
@@ -388,7 +400,7 @@ body {
 //*****************************
 // *         WIDE
 // *****************************/
-.phb .wide{
+.phb3 .wide{
 	column-span         : all;
 	-webkit-column-span : all;
 	-moz-column-span    : all;
@@ -396,7 +408,7 @@ body {
 //*****************************
 // *       CLASS TABLE
 // *****************************/
-.phb .classTable{
+.phb3 .classTable{
 	margin-top          : 25px;
 	margin-bottom       : 40px;
 	border-collapse     : separate;
@@ -415,11 +427,11 @@ body {
 //************************************
 // *       DESCRIPTIVE TEXT BOX
 // ************************************/
-.phb .descriptive{
+.phb3 .descriptive{
 	display             : block-inline;
 	margin-bottom       : 1em;
 	background-color    : #faf7ea;
-	font-family         : ScalySans;
+	font-family         : ScalySansRemake;
 	border-style        : solid;
 	border-width        : 7px;
 	border-image        : @descriptiveBoxImage 12 stretch;
@@ -434,22 +446,22 @@ body {
 		padding-top : .8em;
 	}
 	em {
-		font-family : ScalySans;
+		font-family : ScalySansRemake;
 		font-style  : italic;
 	}
 	strong {
-		font-family    : ScalySans;
+		font-family    : ScalySansRemake;
 		font-weight    : 800;
 		letter-spacing : -0.02em;
 	}
 }
-.phb pre+.descriptive{
+.phb3 pre+.descriptive{
 	margin-top : 8px;
 }
 //*****************************
 // *      TABLE OF CONTENTS
 // *****************************/
-.phb .toc{
+.phb3 .toc{
 	-webkit-column-break-inside : avoid;
 	page-break-inside           : avoid;
 	break-inside                : avoid;
@@ -466,5 +478,40 @@ body {
 	}
 	&>ul>li{
 		margin-bottom : 10px;
+	}
+}
+
+//*****************************
+// *    MUSTACHE DIVS/SPANS
+// *****************************/
+.phb3 {
+	.inline-block {
+		display : block;
+	}
+}
+
+//*****************************
+// *    DEFINITION LISTS
+// *****************************/
+.phb3 {
+	// dl {
+  // 	margin-top: 10px;
+  // }
+  dt {
+    float: left;
+    //clear: left;  //Doesn't seem necessary
+    margin-right: 5px;
+  }
+  // dd {
+  //   margin-left: 0px;
+  // }
+}
+
+//*****************************
+// *    BLANK LINE
+// *****************************/
+.phb3 {
+	.blank {
+		height: 0.8em;
 	}
 }

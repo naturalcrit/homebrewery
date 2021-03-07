@@ -18,7 +18,7 @@ const Admin = createClass({
 
 			<header>
 				<div className='container'>
-					<i className='fa fa-rocket' />
+					<i className='fas fa-rocket' />
 					homebrewery admin
 				</div>
 			</header>

@@ -157,6 +157,7 @@ GoogleActions = {
 																	  lastViewed : brew.lastViewed,
 																	  views      : brew.views,
 																	  version    : brew.version,
+						renderer   : brew.renderer,
 																	  tags       : brew.tags,
 																	  systems    : brew.systems.join() }
 									 },
@@ -230,6 +231,7 @@ GoogleActions = {
 			description : brew.description,
 			tags        : '',
 			published   : brew.published,
+			renderer    : brew.renderer,
 			authors     : [],
 			systems     : []
 		};
@@ -296,6 +298,7 @@ GoogleActions = {
 				lastViewed : obj.data.properties.lastViewed,
 				views      : parseInt(obj.data.properties.views) || 0, //brews with no view parameter will return undefined
 				version    : parseInt(obj.data.properties.version) || 0,
+				renderer   : obj.data.properties.renderer ? obj.data.properties.renderer : 'legacy',
 
 				gDrive   : true,
 				googleId : id

@@ -1,7 +1,31 @@
+<style>
+h5 {
+	font-size: .35cm !important;
+}
+</style>
+
 # changelog
 
+### Saturday, 05/3/2021 - v2.11.0
+
+- Many background things for upcoming v3. Get pumped.
+
+##### G-Ambatte :
+- Fixed new brews failing to save when auto-generated file name is too long.
+- "New" button added to the Nav bar.
+- Reduced download size and improved caching.
+
+##### RKuerten :
+- Bold and Italics hotkeys for Mac users (Cmd+B, Cmd+I)
+
+### Friday, 25/1/2021 - v2.10.7
+- Cover Page snippet now flips left-right page numbering.
+- Added instructions for [installing on a FreeBSD Jail](https://github.com/naturalcrit/homebrewery/blob/master/README.FREEBSD.md).
+- Fix for box-shadows breaking across columns. <br>(Thanks G-Ambatte for all of these!)
+- Small user interface tweaks (Thanks Ericsheid)
+
 ### Friday, 02/1/2021 - v2.10.6
-- Fixed punctuation for usernames ending with 's' on the user page. (Thanks @AlexeySachkov)
+- Fixed punctuation for usernames ending with 's' on the user page. (Thanks AlexeySachkov)
 - Fixed server crashes due to excessive long lines in brews
 - Fixed "automated request" lockouts from Google
 
@@ -24,6 +48,9 @@
 - Fixed issue with users unable to create new brews
 - Fixing brews being lost when loaded via back button
 
+```
+```
+
 ### Wednesday, 07/10/2020 - v2.10.0
 - Google Drive integration -- Sign in with your Google account to link it with your Homebrewery profile. A new button in the Edit page will let you transfer your file to your personal Google Drive storage, and Google will keep a backup of each version! No more lost work surprises!
 
@@ -36,9 +63,6 @@
 
 ### Wednesday, 20/05/2020 - v2.9.0
 - Major refactoring of site backend to work with updated dependencies for security (should be invisible to users)
-
-```
-```
 
 ### Wednesday, 11/03/2020 - v2.8.2
 - Fixed delete button removing everyone's copy for brews with multiple authors
@@ -70,18 +94,18 @@
 ### Friday, 03/03/2017 - v2.7.3
 - Increasing the range on the Partial Page Rendering for a quick-fix for it getting out of sync on long brews.
 
+\page
+
 ### Saturday, 18/02/2017 - v2.7.2
 - Adding ability to delete a brew from the user page, incase the user creates a brew that makes the edit page unrender-able. (re:309)
 
-### Thursday, 19/01/2017 - v2.7.0
+### Thursday, 19/01/2017 - v2.7.1
 - Fixed saving multiple authors and multiple systems on brew metadata (thanks u/PalaNolho re:282)
 - Adding in line highlight for new pages
 - Added in a simple brew lookup for admin
 
 ### Saturday, 14/01/2017 - v2.7.0
 - Added a new Render Warning overlay. It detects situations where the brew may not be rendering correctly (wrong browser, browser is zoomed in...) and let's the user know
-
-\page
 
 ### Sunday, 25/12/2016 - v2.7.0
 - Switching over to using Vitreum v4
@@ -110,6 +134,9 @@
 - Added in a snippet for a split table
 - Added an account nav item to new page
 
+```
+```
+
 ### Sunday, 27/11/2016 - v2.5.1
 - Fixed the column rendering on the new user page. Really should have tested that better
 - Added a hover tooltip to fully read the brew description
@@ -124,9 +151,6 @@
 - Editing a brew in anyway while logged in will now add you to the list of authors
 - Added a new user page to see others published brews, as well as all of your own brews.
 - Added a new nav item for accessing your profile and logging in
-
-```
-```
 
 ### Monday, 14/11/2016
 - Updated snippet bar style
@@ -152,6 +176,8 @@
 - Fixed the noteblock overlapping into titles (thanks u/dsompura!)
 - Fixed a bad search route in the admin panel (thanks u/SnappyTom!)
 
+\page
+
 ### Friday, 29/07/2016 - v2.2.7
 - Adding in descriptive note blocks. (Thanks calculuschild!)
 
@@ -165,8 +191,6 @@
 
 ### Tuesday, 07/06/2016 - v2.2.2
 - Fixed bug with new markdown lexer and aprser not working on print page
-
-\page
 
 ### Sunday, 05/06/2016 - v2.2.1
 - Adding in a new Class table div block. The old Class table block used weird stacking of HTML elements, resulting is difficult to control behaviour and poor interactiosn with the rest of the page. This new block is much easier to style and work with.
@@ -190,9 +214,6 @@
 
 ### Wednesday, 25/05/2016 -v2.0.5
 - The class table generators have the proper ability score improvement progression.
-
-```
-```
 
 ### Tuesday, 24/05/2016 - v2.0.4
 - Fixed extra wide monster stat blocks sometimes only being one column

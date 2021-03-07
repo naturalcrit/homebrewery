@@ -1,21 +1,15 @@
 /*eslint max-lines: ["warn", {"max": 250, "skipBlankLines": true, "skipComments": true}]*/
 const _ = require('lodash');
 const jwt = require('jwt-simple');
-const expressStaticGzip = require('express-static-gzip');
 const express = require('express');
 const app = express();
 
 const homebrewApi = require('./server/homebrew.api.js');
 const GoogleActions = require('./server/googleActions.js');
-
+const serveCompressedStaticAssets = require('./server/static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 
-// Serve brotli-compressed static files if available
-app.use('/', expressStaticGzip(`${__dirname}/build`, {
-	enableBrotli    : true,
-	orderPreference : ['br'],
-	index           : false
-}));
+app.use('/', serveCompressedStaticAssets(`${__dirname}/build`));
 
 process.chdir(__dirname);
 
@@ -33,7 +27,7 @@ const config = require('nconf')
 //DB
 const mongoose = require('mongoose');
 mongoose.connect(config.get('mongodb_uri') || config.get('mongolab_uri') || 'mongodb://localhost/naturalcrit',
-	{ retryWrites: false, useNewUrlParser: true });
+	{ retryWrites: false, useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
 mongoose.connection.on('error', ()=>{
 	console.log('Error : Could not connect to a Mongo Database.');
 	console.log('        If you are running locally, make sure mongodb.exe is running.');
@@ -203,6 +197,33 @@ app.get('/edit/:id', (req, res, next)=>{
 	}
 });
 
+//New Page
+app.get('/new/:id', (req, res, next)=>{
+	if(req.params.id.length > 12) {
+		const googleId = req.params.id.slice(0, -12);
+		const shareId = req.params.id.slice(-12);
+		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
+		.then((brew)=>{
+			req.brew = brew; //TODO Need to sanitize later
+			return next();
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(400).send('Can\'t get brew from Google');
+		});
+	} else {
+		HomebrewModel.get({ shareId: req.params.id })
+			.then((brew)=>{
+				req.brew = brew;
+				return next();
+			})
+			.catch((err)=>{
+				console.log(err);
+				return res.status(400).send(`Can't get that`);
+			});
+	}
+});
+
 //Share Page
 app.get('/share/:id', (req, res, next)=>{
 	if(req.params.id.length > 12) {
@@ -277,6 +298,7 @@ app.use((req, res)=>{
 		brews       : req.brews,
 		googleBrews : req.googleBrews,
 		account     : req.account,
+		enable_v3   : config.get('enable_v3')
 	};
 	templateFn('homebrew', title = req.brew ? req.brew.title : '', props)
         .then((page)=>{ res.send(page); })

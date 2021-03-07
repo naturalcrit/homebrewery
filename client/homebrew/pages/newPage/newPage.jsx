@@ -20,9 +20,30 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 const KEY = 'homebrewery-new';
 
 const NewPage = createClass({
+	getDefaultProps : function() {
+		return {
+			brew : {
+				text      : '',
+				shareId   : null,
+				editId    : null,
+				createdAt : null,
+				updatedAt : null,
+				gDrive    : false,
+
+				title       : '',
+				description : '',
+				tags        : '',
+				published   : false,
+				authors     : [],
+				systems     : []
+			}
+		};
+	},
+
 	getInitialState : function() {
 		return {
-			metadata : {
+			brew : {
+				text        : this.props.brew.text,
 				gDrive      : false,
 				title       : '',
 				description : '',
@@ -32,7 +53,6 @@ const NewPage = createClass({
 				systems     : []
 			},
 
-			text       : '',
 			isSaving   : false,
 			saveGoogle : (global.account && global.account.googleId ? true : false),
 			errors     : []
@@ -41,9 +61,9 @@ const NewPage = createClass({
 
 	componentDidMount : function() {
 		const storage = localStorage.getItem(KEY);
-		if(storage){
+		if(!this.props.brew.text && storage){
 			this.setState({
-				text : storage
+				brew : { text: storage }
 			});
 		}
 		document.addEventListener('keydown', this.handleControlKeys);
@@ -70,13 +90,13 @@ const NewPage = createClass({
 
 	handleMetadataChange : function(metadata){
 		this.setState({
-			metadata : _.merge({}, this.state.metadata, metadata)
+			brew : _.merge({}, this.state.brew, metadata)
 		});
 	},
 
 	handleTextChange : function(text){
 		this.setState({
-			text   : text,
+			brew   : { text: text },
 			errors : Markdown.validate(text)
 		});
 		localStorage.setItem(KEY, text);
@@ -92,7 +112,7 @@ const NewPage = createClass({
 		if(this.state.saveGoogle) {
 			const res = await request
 			.post('/api/newGoogle/')
-			.send(_.merge({}, this.state.metadata, { text: this.state.text }))
+			.send(this.state.brew)
 			.catch((err)=>{
 				console.log(err.status === 401
 					? 'Not signed in!'
@@ -106,9 +126,7 @@ const NewPage = createClass({
 			window.location = `/edit/${brew.googleId}${brew.editId}`;
 		} else {
 			request.post('/api')
-			.send(_.merge({}, this.state.metadata, {
-				text : this.state.text
-			}))
+			.send(this.state.brew)
 			.end((err, res)=>{
 				if(err){
 					this.setState({
@@ -122,28 +140,27 @@ const NewPage = createClass({
 				window.location = `/edit/${brew.editId}`;
 			});
 		}
-
 	},
 
 	renderSaveButton : function(){
 		if(this.state.isSaving){
-			return <Nav.item icon='fa-spinner fa-spin' className='saveButton'>
+			return <Nav.item icon='fas fa-spinner fa-spin' className='saveButton'>
 				save...
 			</Nav.item>;
 		} else {
-			return <Nav.item icon='fa-save' className='saveButton' onClick={this.save}>
+			return <Nav.item icon='fas fa-save' className='saveButton' onClick={this.save}>
 				save
 			</Nav.item>;
 		}
 	},
 
 	print : function(){
-		localStorage.setItem('print', this.state.text);
+		localStorage.setItem('print', this.state.brew.text);
 		window.open('/print?dialog=true&local=print', '_blank');
 	},
 
 	renderLocalPrintButton : function(){
-		return <Nav.item color='purple' icon='fa-file-pdf-o' onClick={this.print}>
+		return <Nav.item color='purple' icon='far fa-file-pdf' onClick={this.print}>
 			get PDF
 		</Nav.item>;
 	},
@@ -152,7 +169,7 @@ const NewPage = createClass({
 		return <Navbar>
 
 			<Nav.section>
-				<Nav.item className='brewTitle'>{this.state.metadata.title}</Nav.item>
+				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
 			</Nav.section>
 
 			<Nav.section>
@@ -172,12 +189,11 @@ const NewPage = createClass({
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
 					<Editor
 						ref='editor'
-						value={this.state.text}
+						brew={this.state.brew}
 						onChange={this.handleTextChange}
-						metadata={this.state.metadata}
 						onMetadataChange={this.handleMetadataChange}
 					/>
-					<BrewRenderer text={this.state.text} errors={this.state.errors} />
+					<BrewRenderer text={this.state.brew.text} errors={this.state.errors} />
 				</SplitPane>
 			</div>
 		</div>;

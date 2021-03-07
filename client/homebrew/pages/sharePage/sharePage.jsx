@@ -22,7 +22,8 @@ const SharePage = createClass({
 				shareId   : null,
 				createdAt : null,
 				updatedAt : null,
-				views     : 0
+				views     : 0,
+				renderer  : ''
 			}
 		};
 	},
@@ -59,11 +60,11 @@ const SharePage = createClass({
 
 				<Nav.section>
 					<PrintLink shareId={this.processShareId()} />
-					<Nav.item href={`/source/${this.processShareId()}`} color='teal' icon='fa-code'>
-						view source
+					<Nav.item href={`/source/${this.processShareId()}`} color='teal' icon='fas fa-code'>
+						source
 					</Nav.item>
 					<Nav.item href={`/download/${this.processShareId()}`} color='red' icon='fa-download'>
-						download source
+						download
 					</Nav.item>
 					<RecentNavItem brew={this.props.brew} storageKey='view' />
 					<Account />
@@ -71,7 +72,7 @@ const SharePage = createClass({
 			</Navbar>
 
 			<div className='content'>
-				<BrewRenderer text={this.props.brew.text} />
+				<BrewRenderer text={this.props.brew.text} renderer={this.props.brew.renderer} />
 			</div>
 		</div>;
 	}

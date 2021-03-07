@@ -37,7 +37,7 @@ const Stats = createClass({
 			</dl>
 
 			{this.state.fetching
-				&& <div className='pending'><i className='fa fa-spin fa-spinner' /></div>
+				&& <div className='pending'><i className='fas fa-spin fa-spinner' /></div>
 			}
 		</div>;
 	}
