@@ -87,7 +87,7 @@ const BrewItem = createClass({
 		}
 
 		return <a href={`/download/${shareLink}`}>
-			<i className='fa fa-download' />
+			<i className='fas fa-download' />
 		</a>;
 	},
 

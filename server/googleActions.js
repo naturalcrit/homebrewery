@@ -259,13 +259,12 @@ GoogleActions = {
 				throw ('Share ID does not match');
 			}
 
-			//Access actual file with service account. Just api key is causing "automated query" errors.
+			//Access file using service account. Using API key only causes "automated query" lockouts after a while.
 
-			const actionList = {
-				'string' : function() { return JSON.parse(config.get('service_account')); },
-				'object' : function() { return config.get('service_account'); }
-			};
-			const keys = actionList[typeof(config.get('service_account'))]();
+			const keys = typeof(config.get('service_account')) == 'string' ?
+				JSON.parse(config.get('service_account')) :
+				config.get('service_account');
+
 			const serviceAuth = google.auth.fromJSON(keys);
 			serviceAuth.scopes = ['https://www.googleapis.com/auth/drive'];
 
