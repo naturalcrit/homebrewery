@@ -105,7 +105,7 @@ app.get('/source/:id', (req, res)=>{
 
 //Download brew source page
 app.get('/download/:id', (req, res)=>{
-	const prefix = config.get('name_prefix');
+	const prefix = 'HB - ';
 
 	if(req.params.id.length > 12) {
 		const googleId = req.params.id.slice(0, -12);
