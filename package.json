@@ -57,7 +57,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "mongoose": "^5.12.0",
-    "nanoid": "3.1.20",
+    "nanoid": "3.1.21",
     "markedLegacy": "npm:marked@^0.3.19",
     "marked": "2.0.1",
     "nconf": "^0.11.2",
