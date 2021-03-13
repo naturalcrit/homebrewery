@@ -78,6 +78,19 @@ const BrewItem = createClass({
 		</a>;
 	},
 
+	renderDownloadLink : function(){
+		if(!this.props.brew.shareId) return;
+
+		let shareLink = this.props.brew.shareId;
+		if(this.props.brew.googleId) {
+			shareLink = this.props.brew.googleId + shareLink;
+		}
+
+		return <a href={`/download/${shareLink}`}>
+			<i className='fas fa-download' />
+		</a>;
+	},
+
 	renderGoogleDriveIcon : function(){
 		if(!this.props.brew.gDrive) return;
 
@@ -109,6 +122,7 @@ const BrewItem = createClass({
 			<div className='links'>
 				{this.renderShareLink()}
 				{this.renderEditLink()}
+				{this.renderDownloadLink()}
 				{this.renderDeleteBrewLink()}
 			</div>
 		</div>;

@@ -67,6 +67,7 @@
     "react-dom": "^16.14.0",
     "react-frame-component": "4.1.3",
     "react-router-dom": "5.2.0",
+    "sanitize-filename": "1.6.3",
     "superagent": "^6.1.0",
     "vitreum": "github:calculuschild/vitreum#21a8e1c9421f1d3a3b474c12f480feb2fbd28c5b"
   },
