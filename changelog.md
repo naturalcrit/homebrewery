@@ -6,13 +6,14 @@ h5 {
 
 # changelog
 
-### Saturday, 05/3/2021 - v2.11.0
+### Saturday, 13/3/2021 - v2.11.0
 
 - Many background things for upcoming v3. Get pumped.
 
 ##### G-Ambatte :
 - Fixed new brews failing to save when auto-generated file name is too long.
 - "New" button added to the Nav bar.
+- "Download" button to download your brew as a text file.
 - Reduced download size and improved caching.
 
 ##### RKuerten :
