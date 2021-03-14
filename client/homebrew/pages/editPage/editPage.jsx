@@ -9,6 +9,7 @@ const { Meta } = require('vitreum/headtags');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 
+const NewBrew = require('../../navbar/newbrew.navitem.jsx');
 const ReportIssue = require('../../navbar/issue.navitem.jsx');
 const PrintLink = require('../../navbar/print.navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
@@ -372,6 +373,7 @@ const EditPage = createClass({
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
 				{this.renderSaveButton()}
+				<NewBrew />
 				<ReportIssue />
 				<Nav.item newTab={true} href={`/share/${this.processShareId()}`} color='teal' icon='fas fa-share-alt'>
 					Share

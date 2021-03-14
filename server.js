@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 const _ = require('lodash');
 const jwt = require('jwt-simple');
 const express = require('express');
@@ -6,6 +7,7 @@ const app = express();
 const homebrewApi = require('./server/homebrew.api.js');
 const GoogleActions = require('./server/googleActions.js');
 const serveCompressedStaticAssets = require('./server/static-assets.mv.js');
+const sanitizeFilename = require('sanitize-filename');
 
 app.use('/', serveCompressedStaticAssets(`${__dirname}/build`));
 
@@ -63,6 +65,7 @@ app.get('/robots.txt', (req, res)=>{
 	return res.sendFile(`${__dirname}/robots.txt`);
 });
 
+
 //Source page
 app.get('/source/:id', (req, res)=>{
 	if(req.params.id.length > 12) {
@@ -70,8 +73,13 @@ app.get('/source/:id', (req, res)=>{
 		const shareId = req.params.id.slice(-12);
 		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
 		.then((brew)=>{
-			const text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-			return res.send(`<code><pre style="white-space: pre-wrap;">${text}</pre></code>`);
+			const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
+			let text = brew.text;
+			for (const replaceStr in replaceStrings) {
+				text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
+			}
+			text = `<code><pre style="white-space: pre-wrap;">${text}</pre></code>`;
+			res.status(200).send(text);
 		})
 		.catch((err)=>{
 			console.log(err);
@@ -79,14 +87,60 @@ app.get('/source/:id', (req, res)=>{
 		});
 	} else {
 		HomebrewModel.get({ shareId: req.params.id })
-			.then((brew)=>{
-				const text = brew.text.replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-				return res.send(`<code><pre style="white-space: pre-wrap;">${text}</pre></code>`);
-			})
-			.catch((err)=>{
-				console.log(err);
-				return res.status(404).send('Could not find Homebrew with that id');
+		.then((brew)=>{
+			const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
+			let text = brew.text;
+			for (const replaceStr in replaceStrings) {
+				text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
+			}
+			text = `<code><pre style="white-space: pre-wrap;">${text}</pre></code>`;
+			res.status(200).send(text);
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(404).send('Could not find Homebrew with that id');
+		});
+	}
+});
+
+//Download brew source page
+app.get('/download/:id', (req, res)=>{
+	const prefix = 'HB - ';
+
+	if(req.params.id.length > 12) {
+		const googleId = req.params.id.slice(0, -12);
+		const shareId = req.params.id.slice(-12);
+		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
+		.then((brew)=>{
+			let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
+			if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };
+			res.set({
+				'Cache-Control'       : 'no-cache',
+				'Content-Type'        : 'text/plain',
+				'Content-Disposition' : `attachment; filename="${fileName}.txt"`
 			});
+			res.status(200).send(brew.text);
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(400).send('Can\'t get brew from Google');
+		});
+	} else {
+		HomebrewModel.get({ shareId: req.params.id })
+		.then((brew)=>{
+			let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
+			if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };
+			res.set({
+				'Cache-Control'       : 'no-cache',
+				'Content-Type'        : 'text/plain',
+				'Content-Disposition' : `attachment; filename="${fileName}.txt"`
+			});
+			res.status(200).send(brew.text);
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(404).send('Could not find Homebrew with that id');
+		});
 	}
 });
 
@@ -134,6 +188,33 @@ app.get('/edit/:id', (req, res, next)=>{
 		HomebrewModel.get({ editId: req.params.id })
 			.then((brew)=>{
 				req.brew = brew.sanatize();
+				return next();
+			})
+			.catch((err)=>{
+				console.log(err);
+				return res.status(400).send(`Can't get that`);
+			});
+	}
+});
+
+//New Page
+app.get('/new/:id', (req, res, next)=>{
+	if(req.params.id.length > 12) {
+		const googleId = req.params.id.slice(0, -12);
+		const shareId = req.params.id.slice(-12);
+		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
+		.then((brew)=>{
+			req.brew = brew; //TODO Need to sanitize later
+			return next();
+		})
+		.catch((err)=>{
+			console.log(err);
+			return res.status(400).send('Can\'t get brew from Google');
+		});
+	} else {
+		HomebrewModel.get({ shareId: req.params.id })
+			.then((brew)=>{
+				req.brew = brew;
 				return next();
 			})
 			.catch((err)=>{

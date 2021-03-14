@@ -44,10 +44,11 @@ const Homebrew = createClass({
 					<Switch>
 						<Route path='/edit/:id' component={(routeProps)=><EditPage id={routeProps.match.params.id} brew={this.props.brew} />}/>
 						<Route path='/share/:id' component={(routeProps)=><SharePage id={routeProps.match.params.id} brew={this.props.brew} />}/>
+						<Route path='/new/:id' component={(routeProps)=><NewPage id={routeProps.match.params.id} brew={this.props.brew} />}/>
+						<Route path='/new' exact component={NewPage}/>
 						<Route path='/user/:username' component={(routeProps)=><UserPage username={routeProps.match.params.username} brews={this.props.brews} />}/>
 						<Route path='/print/:id' component={(routeProps)=><PrintPage brew={this.props.brew} query={queryString.parse(routeProps.location.search)} /> } />
 						<Route path='/print' exact component={(routeProps)=><PrintPage query={queryString.parse(routeProps.location.search)} /> } />
-						<Route path='/new' exact component={NewPage}/>
 						<Route path='/changelog' exact component={()=><SharePage brew={{ title: 'Changelog', text: this.props.changelog }} />}/>
 						<Route path='/' component={()=><HomePage welcomeText={this.props.welcomeText}/>}/>
 					</Switch>
