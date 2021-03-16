@@ -9,6 +9,45 @@ const GoogleActions = require('./server/googleActions.js');
 const serveCompressedStaticAssets = require('./server/static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 
+// //Custom Error
+// class ErrorHandler extends Error {
+// 	constructor(statusCode, message) {
+// 		super();
+// 		this.statusCode = statusCode;
+// 		this.message = message;
+// 	}
+// }
+
+//Format brew source for viewing in the browser as plain text
+// const sanitizeSource = (text)=>{
+// 	const replaceStrings = { '&' : '&amp;',
+// 													 '<' : '&lt;',
+// 													 '>' : '&gt;' };
+// 	for (const replaceStr in replaceStrings) {
+// 		text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
+// 	}
+// 	return `<code><pre style="white-space: pre-wrap;">${text}</pre></code>`;
+// };
+
+//Get the brew object from the HB database or Google Drive
+const getBrewFromId = async (id, accessType)=>{
+	if(accessType !== 'edit' && accessType !== 'share')
+		throw ('Invalid Access Type when getting brew');
+	let brew;
+	if(id.length > 12) {
+		const googleId = id.slice(0, -12);
+		id             = id.slice(-12);
+		brew = await GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, id, accessType)
+					.catch((err)=>{throw err;});
+	} else {
+		brew = await HomebrewModel.get(accessType == 'edit' ? { editId: id } : { shareId: id })
+					.catch((err)=>{throw err;});
+		brew.sanatize(true);
+	}
+
+	return brew;
+};
+
 app.use('/', serveCompressedStaticAssets(`${__dirname}/build`));
 
 process.chdir(__dirname);
@@ -64,6 +103,10 @@ String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 app.get('/robots.txt', (req, res)=>{
 	return res.sendFile(`${__dirname}/robots.txt`);
 });
+
+// app.get('/error', (req, res)=>{
+// 	throw new ErrorHandler(404, 'User with the specified email does not exist');
+// });
 
 
 //Source page
@@ -170,119 +213,48 @@ app.get('/user/:username', async (req, res, next)=>{
 });
 
 //Edit Page
-app.get('/edit/:id', (req, res, next)=>{
+app.get('/edit/:id', async (req, res, next)=>{
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
-	if(req.params.id.length > 12) {
-		const googleId = req.params.id.slice(0, -12);
-		const editId = req.params.id.slice(-12);
-		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, editId, 'edit')
-		.then((brew)=>{
-			req.brew = brew; //TODO Need to sanitize later
-			return next();
-		})
-		.catch((err)=>{
-			console.log(err);
-			return res.status(400).send('Can\'t get brew from Google');
-		});
-	} else {
-		HomebrewModel.get({ editId: req.params.id })
-			.then((brew)=>{
-				req.brew = brew.sanatize();
-				return next();
-			})
-			.catch((err)=>{
-				console.log(err);
-				return res.status(400).send(`Can't get that`);
-			});
-	}
+	const brew = await getBrewFromId(req.params.id, 'edit')
+						.catch((err)=>{next(err);});
+
+	req.brew = brew;
+	return next();
 });
 
 //New Page
-app.get('/new/:id', (req, res, next)=>{
-	if(req.params.id.length > 12) {
-		const googleId = req.params.id.slice(0, -12);
-		const shareId = req.params.id.slice(-12);
-		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
-		.then((brew)=>{
-			req.brew = brew; //TODO Need to sanitize later
-			return next();
-		})
-		.catch((err)=>{
-			console.log(err);
-			return res.status(400).send('Can\'t get brew from Google');
-		});
-	} else {
-		HomebrewModel.get({ shareId: req.params.id })
-			.then((brew)=>{
-				req.brew = brew;
-				return next();
-			})
-			.catch((err)=>{
-				console.log(err);
-				return res.status(400).send(`Can't get that`);
-			});
-	}
+app.get('/new/:id', async (req, res, next)=>{
+	const brew = await getBrewFromId(req.params.id, 'share')
+						.catch((err)=>{next(err);});
+
+	req.brew = brew;
+	return next();
 });
 
 //Share Page
-app.get('/share/:id', (req, res, next)=>{
+app.get('/share/:id', async (req, res, next)=>{
+	const brew = await getBrewFromId(req.params.id, 'share')
+						.catch((err)=>{next(err);});
+
 	if(req.params.id.length > 12) {
 		const googleId = req.params.id.slice(0, -12);
 		const shareId = req.params.id.slice(-12);
-		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
-		.then((brew)=>{
-			GoogleActions.increaseView(googleId, shareId, 'share', brew);
-			return brew;
-		})
-		.then((brew)=>{
-			req.brew = brew; //TODO Need to sanitize later
-			return next();
-		})
-		.catch((err)=>{
-			console.log(err);
-			return res.status(400).send('Can\'t get brew from Google');
-		});
+		await GoogleActions.increaseView(googleId, shareId, 'share', brew)
+					.catch((err)=>{next(err);});
 	} else {
-		HomebrewModel.get({ shareId: req.params.id })
-			.then((brew)=>{
-				return brew.increaseView();
-			})
-			.then((brew)=>{
-				req.brew = brew.sanatize(true);
-				return next();
-			})
-			.catch((err)=>{
-				console.log(err);
-				return res.status(400).send(`Can't get that`);
-			});
+		await brew.increaseView();
 	}
+
+	req.brew = brew;
+	return next();
 });
 
 //Print Page
-app.get('/print/:id', (req, res, next)=>{
-	if(req.params.id.length > 12) {
-		const googleId = req.params.id.slice(0, -12);
-		const shareId = req.params.id.slice(-12);
-		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
-		.then((brew)=>{
-			req.brew = brew; //TODO Need to sanitize later
-			return next();
-		})
-		.catch((err)=>{
-			console.log(err);
-			return res.status(400).send('Can\'t get brew from Google');
-		});
-	} else {
-		HomebrewModel.get({ shareId: req.params.id })
-			.then((brew)=>{
-				req.brew = brew.sanatize(true);
-				return next();
-			})
-			.catch((err)=>{
-				console.log(err);
-				return res.status(400).send(`Can't get that`);
-			});
-	}
+app.get('/print/:id', async (req, res, next)=>{
+	const brew = await getBrewFromId(req.params.id, 'share');
+
+	req.brew = brew;
+	return next();
 });
 
 //Render the page
@@ -308,6 +280,17 @@ app.use((req, res)=>{
         });
 });
 
+//Error Handling Middleware
+app.use((err, req, res, next)=>{
+	const { statusCode, message } = err;
+	console.log('CUSTOM ERROR HANDLER');
+	console.error(err);
+	res.status(statusCode).json({
+		status : 'error',
+		statusCode,
+		message
+	});
+});
 
 const PORT = process.env.PORT || config.get('web_port') || 8000;
 app.listen(PORT);
