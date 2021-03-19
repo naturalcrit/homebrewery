@@ -77,8 +77,15 @@ module.exports = [
 				icon : 'fas fa-book',
 				gen  : TableOfContentsGen
 			},
-
-
+			{
+				name : 'Remove Drop Cap',
+				icon : 'fas fa-remove-format',
+				gen  : 	'<style>\n' +
+						'  .phb h1+p:first-letter {\n' +
+						'    all: unset;\n' +
+						'  }\n' +
+						'</style>'
+			},
 		]
 	},
 
