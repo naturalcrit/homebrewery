@@ -80,7 +80,7 @@ module.exports = [
 			{
 				name : 'Remove Drop Cap',
 				icon : 'fas fa-remove-format',
-				gen  : 	'<style>\n' +
+				gen  : '<style>\n' +
 						'  .phb h1+p:first-letter {\n' +
 						'    all: unset;\n' +
 						'  }\n' +
