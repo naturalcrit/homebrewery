@@ -36,6 +36,7 @@ const EditPage = createClass({
 				createdAt : null,
 				updatedAt : null,
 				gDrive    : false,
+				trashed   : false,
 
 				title       : '',
 				description : '',
@@ -50,15 +51,15 @@ const EditPage = createClass({
 
 	getInitialState : function() {
 		return {
-			brew                  : this.props.brew,
-			isSaving              : false,
-			isPending             : false,
-			alertRenderChange     : false,
-			saveGoogle            : this.props.brew.googleId ? true : false,
-			confirmGoogleTransfer : false,
-			errors                : null,
-			htmlErrors            : Markdown.validate(this.props.brew.text),
-			url                   : ''
+			brew                   : this.props.brew,
+			isSaving               : false,
+			isPending              : false,
+			alertTrashedGoogleBrew : this.props.brew.trashed,
+			saveGoogle             : this.props.brew.googleId ? true : false,
+			confirmGoogleTransfer  : false,
+			errors                 : null,
+			htmlErrors             : Markdown.validate(this.props.brew.text),
+			url                    : ''
 		};
 	},
 	savedBrew : null,
@@ -105,11 +106,6 @@ const EditPage = createClass({
 	},
 
 	handleMetadataChange : function(metadata){
-		if(metadata.renderer != this.savedBrew.renderer){
-			this.setState({
-				alertRenderChange : true
-			});
-		}
 		this.setState((prevState)=>({
 			brew      : _.merge({}, prevState.brew, metadata),
 			isPending : true,
@@ -152,7 +148,7 @@ const EditPage = createClass({
 
 	closeAlerts : function(){
 		this.setState({
-			alertRenderChange : false
+			alertTrashedGoogleBrew : false
 		});
 	},
 
@@ -349,15 +345,6 @@ const EditPage = createClass({
 		}
 	},
 
-	// {this.state.alertRenderChange &&
-	// 	<div className='errorContainer' onClick={this.closeAlerts}>
-	// 	Rendering mode for this brew has been changed! Refresh the page to load the new renderer.<br />
-	// 		<div className='confirm'>
-	// 			OK
-	// 		</div>
-	// 	</div>
-	// }
-
 	processShareId : function() {
 		return this.state.brew.googleId ?
 					 this.state.brew.googleId + this.state.brew.shareId :
@@ -366,6 +353,16 @@ const EditPage = createClass({
 
 	renderNavbar : function(){
 		return <Navbar>
+
+			{this.state.alertTrashedGoogleBrew &&
+				<div className='errorContainer' onClick={this.closeAlerts}>
+				This brew is currently in your Trash folder on Google Drive!<br />If you want to keep it, make sure to move it before it is deleted permanently!<br />
+					<div className='confirm'>
+						OK
+					</div>
+				</div>
+			}
+
 			<Nav.section>
 				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
 			</Nav.section>
@@ -382,6 +379,7 @@ const EditPage = createClass({
 				<RecentNavItem brew={this.state.brew} storageKey='edit' />
 				<Account />
 			</Nav.section>
+
 		</Navbar>;
 	},
 
