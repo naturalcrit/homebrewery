@@ -244,7 +244,7 @@ GoogleActions = {
 
 		const obj = await drive.files.get({
 			fileId : id,
-			fields : 'properties, createdTime, modifiedTime, description'
+			fields : 'properties, createdTime, modifiedTime, description, trashed'
 		})
 		.catch((err)=>{
 			console.log('Error loading from Google');
@@ -291,6 +291,7 @@ GoogleActions = {
 				systems     : obj.data.properties.systems ? obj.data.properties.systems.split(',') : [],
 				authors     : [],
 				published   : obj.data.properties.published ? obj.data.properties.published == 'true' : false,
+				trashed     : obj.data.trashed,
 
 				createdAt  : obj.data.createdTime,
 				updatedAt  : obj.data.modifiedTime,
