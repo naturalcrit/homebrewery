@@ -6,6 +6,13 @@ h5 {
 
 # changelog
 
+### Saturday, 20/3/2021 - v2.11.1
+
+- Warning when opening brew in your Google Drive trash
+
+##### G-Ambatte :
+- Snippet to remove drop caps (fancy first letter after title)
+
 ### Saturday, 13/3/2021 - v2.11.0
 
 - Many background things for upcoming v3. Get pumped.
@@ -45,12 +52,13 @@ h5 {
 ### Monday, 19/10/2020 - v2.10.2
 - Fixed issue with "recent" item links not updating when transferring between Google Drive.
 
-### Monday, 12/10/2020 - v2.10.1
-- Fixed issue with users unable to create new brews
-- Fixing brews being lost when loaded via back button
 
 ```
 ```
+
+### Monday, 12/10/2020 - v2.10.1
+- Fixed issue with users unable to create new brews
+- Fixing brews being lost when loaded via back button
 
 ### Wednesday, 07/10/2020 - v2.10.0
 - Google Drive integration -- Sign in with your Google account to link it with your Homebrewery profile. A new button in the Edit page will let you transfer your file to your personal Google Drive storage, and Google will keep a backup of each version! No more lost work surprises!
@@ -92,10 +100,11 @@ h5 {
 ### Saturday, 22/04/2017 - v2.7.4
 - Give ability to hide the render warning notification
 
-### Friday, 03/03/2017 - v2.7.3
-- Increasing the range on the Partial Page Rendering for a quick-fix for it getting out of sync on long brews.
 
 \page
+
+### Friday, 03/03/2017 - v2.7.3
+- Increasing the range on the Partial Page Rendering for a quick-fix for it getting out of sync on long brews.
 
 ### Saturday, 18/02/2017 - v2.7.2
 - Adding ability to delete a brew from the user page, incase the user creates a brew that makes the edit page unrender-able. (re:309)
