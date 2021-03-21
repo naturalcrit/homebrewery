@@ -81,7 +81,7 @@ module.exports = [
 				name : 'Remove Drop Cap',
 				icon : 'fas fa-remove-format',
 				gen  : '<style>\n' +
-						'  .phb h1+p:first-letter {\n' +
+						'  .phb3 h1+p:first-letter {\n' +
 						'    all: unset;\n' +
 						'  }\n' +
 						'</style>'
@@ -91,10 +91,10 @@ module.exports = [
 				icon : 'fas fa-sliders-h',
 				gen  : '<style>\n' +
 						'  /* Drop Cap settings */\n' +
-						'  .phb h1 + p::first-letter {\n' +
+						'  .phb3 h1 + p::first-letter {\n' +
 						'    float: left;\n' +
-						'    font-family: Solberry;\n' +
-						'    font-size: 10em;\n' +
+						'    font-family: SolberaImitationRemake;\n' +
+						'    font-size: 3.5cm;\n' +
 						'    color: #222;\n' +
 						'    line-height: .8em;\n' +
 						'  }\n' +
