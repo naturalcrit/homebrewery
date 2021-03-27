@@ -11,22 +11,20 @@ const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
 
 //Get the brew object from the HB database or Google Drive
-const getBrewFromId = async (id, accessType)=>{
+const getBrewFromId = asyncHandler(async (id, accessType)=>{
 	if(accessType !== 'edit' && accessType !== 'share')
 		throw ('Invalid Access Type when getting brew');
 	let brew;
 	if(id.length > 12) {
 		const googleId = id.slice(0, -12);
 		id             = id.slice(-12);
-		brew = await GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, id, accessType)
-					.catch((err)=>{throw err;});
+		brew = await GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, id, accessType);
 	} else {
-		brew = await HomebrewModel.get(accessType == 'edit' ? { editId: id } : { shareId: id })
-					.catch((err)=>{throw err;});
+		brew = await HomebrewModel.get(accessType == 'edit' ? { editId: id } : { shareId: id });
 		brew.sanatize(true);
 	}
 	return brew;
-};
+});
 
 app.use('/', serveCompressedStaticAssets(`${__dirname}/build`));
 
