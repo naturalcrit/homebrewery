@@ -8,15 +8,7 @@ const homebrewApi = require('./server/homebrew.api.js');
 const GoogleActions = require('./server/googleActions.js');
 const serveCompressedStaticAssets = require('./server/static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
-
-// //Custom Error
-// class ErrorHandler extends Error {
-// 	constructor(statusCode, message) {
-// 		super();
-// 		this.statusCode = statusCode;
-// 		this.message = message;
-// 	}
-// }
+const asyncHandler = require('express-async-handler');
 
 //Get the brew object from the HB database or Google Drive
 const getBrewFromId = async (id, accessType)=>{
@@ -33,7 +25,6 @@ const getBrewFromId = async (id, accessType)=>{
 					.catch((err)=>{throw err;});
 		brew.sanatize(true);
 	}
-
 	return brew;
 };
 
@@ -93,15 +84,9 @@ app.get('/robots.txt', (req, res)=>{
 	return res.sendFile(`${__dirname}/robots.txt`);
 });
 
-// app.get('/error', (req, res)=>{
-// 	throw new ErrorHandler(404, 'User with the specified email does not exist');
-// });
-
-
 //Source page
-app.get('/source/:id', async (req, res)=>{
-	const brew = await getBrewFromId(req.params.id, 'share')
-						.catch((err)=>{next(err);});
+app.get('/source/:id', asyncHandler(async (req, res)=>{
+	const brew = await getBrewFromId(req.params.id, 'share');
 
 	const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
 	let text = brew.text;
@@ -110,13 +95,11 @@ app.get('/source/:id', async (req, res)=>{
 	}
 	text = `<code><pre style="white-space: pre-wrap;">${text}</pre></code>`;
 	res.status(200).send(text);
-});
+}));
 
 //Download brew source page
-app.get('/download/:id', async (req, res)=>{
-	const brew = await getBrewFromId(req.params.id, 'share')
-						.catch((err)=>{next(err);});
-
+app.get('/download/:id', asyncHandler(async (req, res)=>{
+	const brew = await getBrewFromId(req.params.id, 'share');
 	const prefix = 'HB - ';
 
 	let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
@@ -127,7 +110,7 @@ app.get('/download/:id', async (req, res)=>{
 		'Content-Disposition' : `attachment; filename="${fileName}.txt"`
 	});
 	res.status(200).send(brew.text);
-});
+}));
 
 //User Page
 app.get('/user/:username', async (req, res, next)=>{
@@ -155,28 +138,23 @@ app.get('/user/:username', async (req, res, next)=>{
 });
 
 //Edit Page
-app.get('/edit/:id', async (req, res, next)=>{
+app.get('/edit/:id', asyncHandler(async (req, res, next)=>{
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
-	const brew = await getBrewFromId(req.params.id, 'edit')
-						.catch((err)=>{next(err);});
-
+	const brew = await getBrewFromId(req.params.id, 'edit');
 	req.brew = brew;
 	return next();
-});
+}));
 
 //New Page
-app.get('/new/:id', async (req, res, next)=>{
-	const brew = await getBrewFromId(req.params.id, 'share')
-						.catch((err)=>{next(err);});
-
+app.get('/new/:id', asyncHandler(async (req, res, next)=>{
+	const brew = await getBrewFromId(req.params.id, 'share');
 	req.brew = brew;
 	return next();
-});
+}));
 
 //Share Page
-app.get('/share/:id', async (req, res, next)=>{
-	const brew = await getBrewFromId(req.params.id, 'share')
-						.catch((err)=>{next(err);});
+app.get('/share/:id', asyncHandler(async (req, res, next)=>{
+	const brew = await getBrewFromId(req.params.id, 'share');
 
 	if(req.params.id.length > 12) {
 		const googleId = req.params.id.slice(0, -12);
@@ -189,18 +167,16 @@ app.get('/share/:id', async (req, res, next)=>{
 
 	req.brew = brew;
 	return next();
-});
+}));
 
 //Print Page
-app.get('/print/:id', async (req, res, next)=>{
+app.get('/print/:id', asyncHandler(async (req, res, next)=>{
 	const brew = await getBrewFromId(req.params.id, 'share');
-
 	req.brew = brew;
 	return next();
-});
+}));
 
 //Render the page
-//const render = require('.build/render');
 const templateFn = require('./client/template.js');
 app.use((req, res)=>{
 	const props = {
@@ -217,22 +193,35 @@ app.use((req, res)=>{
 	templateFn('homebrew', title = req.brew ? req.brew.title : '', props)
         .then((page)=>{ res.send(page); })
         .catch((err)=>{
+        	console.log('TEMPLATE ERROR');
         	console.log(err);
         	return res.sendStatus(500);
         });
 });
 
-//Error Handling Middleware
+//v=====----- Error-Handling Middleware -----=====v//
+//Format Errors so all fields will be sent
+const replaceErrors = (key, value)=>{
+	if(value instanceof Error) {
+		const error = {};
+		Object.getOwnPropertyNames(value).forEach(function (key) {
+			error[key] = value[key];
+		});
+		return error;
+	}
+	return value;
+};
+
+const getPureError = (error)=>{
+	return JSON.parse(JSON.stringify(error, replaceErrors));
+};
+
 app.use((err, req, res, next)=>{
-	const { statusCode, message } = err;
-	console.log('CUSTOM ERROR HANDLER');
+	const status = err.status || 500;
 	console.error(err);
-	res.status(statusCode).json({
-		status : 'error',
-		statusCode,
-		message
-	});
+	res.status(status).send(getPureError(err));
 });
+//^=====--------------------------------------=====^//
 
 const PORT = process.env.PORT || config.get('web_port') || 8000;
 app.listen(PORT);
