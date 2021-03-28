@@ -240,6 +240,7 @@ GoogleActions = {
 	},
 
 	readFileMetadata : async (auth, id, accessId, accessType)=>{
+
 		const drive = google.drive({ version: 'v3', auth: auth });
 
 		const obj = await drive.files.get({
@@ -248,7 +249,7 @@ GoogleActions = {
 		})
 		.catch((err)=>{
 			console.log('Error loading from Google');
-			console.error(err);
+			throw (err);
 			return;
 		});
 
@@ -345,7 +346,10 @@ GoogleActions = {
 	increaseView : async (id, accessId, accessType, brew)=>{
 		//service account because this is modifying another user's file properties
 		//so we need extended scope
-		const keys = JSON.parse(config.get('service_account'));
+		const keys = typeof(config.get('service_account')) == 'string' ?
+			JSON.parse(config.get('service_account')) :
+			config.get('service_account');
+
 		const auth = google.auth.fromJSON(keys);
 		auth.scopes = ['https://www.googleapis.com/auth/drive'];
 

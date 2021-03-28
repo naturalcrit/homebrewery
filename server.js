@@ -8,6 +8,23 @@ const homebrewApi = require('./server/homebrew.api.js');
 const GoogleActions = require('./server/googleActions.js');
 const serveCompressedStaticAssets = require('./server/static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
+const asyncHandler = require('express-async-handler');
+
+//Get the brew object from the HB database or Google Drive
+const getBrewFromId = asyncHandler(async (id, accessType)=>{
+	if(accessType !== 'edit' && accessType !== 'share')
+		throw ('Invalid Access Type when getting brew');
+	let brew;
+	if(id.length > 12) {
+		const googleId = id.slice(0, -12);
+		id             = id.slice(-12);
+		brew = await GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, id, accessType);
+	} else {
+		brew = await HomebrewModel.get(accessType == 'edit' ? { editId: id } : { shareId: id });
+		brew.sanatize(true);
+	}
+	return brew;
+});
 
 app.use('/', serveCompressedStaticAssets(`${__dirname}/build`));
 
@@ -65,84 +82,33 @@ app.get('/robots.txt', (req, res)=>{
 	return res.sendFile(`${__dirname}/robots.txt`);
 });
 
-
 //Source page
-app.get('/source/:id', (req, res)=>{
-	if(req.params.id.length > 12) {
-		const googleId = req.params.id.slice(0, -12);
-		const shareId = req.params.id.slice(-12);
-		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
-		.then((brew)=>{
-			const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
-			let text = brew.text;
-			for (const replaceStr in replaceStrings) {
-				text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
-			}
-			text = `<code><pre style="white-space: pre-wrap;">${text}</pre></code>`;
-			res.status(200).send(text);
-		})
-		.catch((err)=>{
-			console.log(err);
-			return res.status(400).send('Can\'t get brew from Google');
-		});
-	} else {
-		HomebrewModel.get({ shareId: req.params.id })
-		.then((brew)=>{
-			const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
-			let text = brew.text;
-			for (const replaceStr in replaceStrings) {
-				text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
-			}
-			text = `<code><pre style="white-space: pre-wrap;">${text}</pre></code>`;
-			res.status(200).send(text);
-		})
-		.catch((err)=>{
-			console.log(err);
-			return res.status(404).send('Could not find Homebrew with that id');
-		});
+app.get('/source/:id', asyncHandler(async (req, res)=>{
+	const brew = await getBrewFromId(req.params.id, 'share');
+
+	const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
+	let text = brew.text;
+	for (const replaceStr in replaceStrings) {
+		text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
 	}
-});
+	text = `<code><pre style="white-space: pre-wrap;">${text}</pre></code>`;
+	res.status(200).send(text);
+}));
 
 //Download brew source page
-app.get('/download/:id', (req, res)=>{
+app.get('/download/:id', asyncHandler(async (req, res)=>{
+	const brew = await getBrewFromId(req.params.id, 'share');
 	const prefix = 'HB - ';
 
-	if(req.params.id.length > 12) {
-		const googleId = req.params.id.slice(0, -12);
-		const shareId = req.params.id.slice(-12);
-		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
-		.then((brew)=>{
-			let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
-			if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };
-			res.set({
-				'Cache-Control'       : 'no-cache',
-				'Content-Type'        : 'text/plain',
-				'Content-Disposition' : `attachment; filename="${fileName}.txt"`
-			});
-			res.status(200).send(brew.text);
-		})
-		.catch((err)=>{
-			console.log(err);
-			return res.status(400).send('Can\'t get brew from Google');
-		});
-	} else {
-		HomebrewModel.get({ shareId: req.params.id })
-		.then((brew)=>{
-			let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
-			if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };
-			res.set({
-				'Cache-Control'       : 'no-cache',
-				'Content-Type'        : 'text/plain',
-				'Content-Disposition' : `attachment; filename="${fileName}.txt"`
-			});
-			res.status(200).send(brew.text);
-		})
-		.catch((err)=>{
-			console.log(err);
-			return res.status(404).send('Could not find Homebrew with that id');
-		});
-	}
-});
+	let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
+	if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };
+	res.set({
+		'Cache-Control'       : 'no-cache',
+		'Content-Type'        : 'text/plain',
+		'Content-Disposition' : `attachment; filename="${fileName}.txt"`
+	});
+	res.status(200).send(brew.text);
+}));
 
 //User Page
 app.get('/user/:username', async (req, res, next)=>{
@@ -170,123 +136,45 @@ app.get('/user/:username', async (req, res, next)=>{
 });
 
 //Edit Page
-app.get('/edit/:id', (req, res, next)=>{
+app.get('/edit/:id', asyncHandler(async (req, res, next)=>{
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
-	if(req.params.id.length > 12) {
-		const googleId = req.params.id.slice(0, -12);
-		const editId = req.params.id.slice(-12);
-		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, editId, 'edit')
-		.then((brew)=>{
-			req.brew = brew; //TODO Need to sanitize later
-			return next();
-		})
-		.catch((err)=>{
-			console.log(err);
-			return res.status(400).send('Can\'t get brew from Google');
-		});
-	} else {
-		HomebrewModel.get({ editId: req.params.id })
-			.then((brew)=>{
-				req.brew = brew.sanatize();
-				return next();
-			})
-			.catch((err)=>{
-				console.log(err);
-				return res.status(400).send(`Can't get that`);
-			});
-	}
-});
+	const brew = await getBrewFromId(req.params.id, 'edit');
+	req.brew = brew;
+	return next();
+}));
 
 //New Page
-app.get('/new/:id', (req, res, next)=>{
-	if(req.params.id.length > 12) {
-		const googleId = req.params.id.slice(0, -12);
-		const shareId = req.params.id.slice(-12);
-		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
-		.then((brew)=>{
-			req.brew = brew; //TODO Need to sanitize later
-			return next();
-		})
-		.catch((err)=>{
-			console.log(err);
-			return res.status(400).send('Can\'t get brew from Google');
-		});
-	} else {
-		HomebrewModel.get({ shareId: req.params.id })
-			.then((brew)=>{
-				req.brew = brew;
-				return next();
-			})
-			.catch((err)=>{
-				console.log(err);
-				return res.status(400).send(`Can't get that`);
-			});
-	}
-});
+app.get('/new/:id', asyncHandler(async (req, res, next)=>{
+	const brew = await getBrewFromId(req.params.id, 'share');
+	req.brew = brew;
+	return next();
+}));
 
 //Share Page
-app.get('/share/:id', (req, res, next)=>{
+app.get('/share/:id', asyncHandler(async (req, res, next)=>{
+	const brew = await getBrewFromId(req.params.id, 'share');
+
 	if(req.params.id.length > 12) {
 		const googleId = req.params.id.slice(0, -12);
 		const shareId = req.params.id.slice(-12);
-		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
-		.then((brew)=>{
-			GoogleActions.increaseView(googleId, shareId, 'share', brew);
-			return brew;
-		})
-		.then((brew)=>{
-			req.brew = brew; //TODO Need to sanitize later
-			return next();
-		})
-		.catch((err)=>{
-			console.log(err);
-			return res.status(400).send('Can\'t get brew from Google');
-		});
+		await GoogleActions.increaseView(googleId, shareId, 'share', brew)
+					.catch((err)=>{next(err);});
 	} else {
-		HomebrewModel.get({ shareId: req.params.id })
-			.then((brew)=>{
-				return brew.increaseView();
-			})
-			.then((brew)=>{
-				req.brew = brew.sanatize(true);
-				return next();
-			})
-			.catch((err)=>{
-				console.log(err);
-				return res.status(400).send(`Can't get that`);
-			});
+		await brew.increaseView();
 	}
-});
+
+	req.brew = brew;
+	return next();
+}));
 
 //Print Page
-app.get('/print/:id', (req, res, next)=>{
-	if(req.params.id.length > 12) {
-		const googleId = req.params.id.slice(0, -12);
-		const shareId = req.params.id.slice(-12);
-		GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, shareId, 'share')
-		.then((brew)=>{
-			req.brew = brew; //TODO Need to sanitize later
-			return next();
-		})
-		.catch((err)=>{
-			console.log(err);
-			return res.status(400).send('Can\'t get brew from Google');
-		});
-	} else {
-		HomebrewModel.get({ shareId: req.params.id })
-			.then((brew)=>{
-				req.brew = brew.sanatize(true);
-				return next();
-			})
-			.catch((err)=>{
-				console.log(err);
-				return res.status(400).send(`Can't get that`);
-			});
-	}
-});
+app.get('/print/:id', asyncHandler(async (req, res, next)=>{
+	const brew = await getBrewFromId(req.params.id, 'share');
+	req.brew = brew;
+	return next();
+}));
 
 //Render the page
-//const render = require('.build/render');
 const templateFn = require('./client/template.js');
 app.use((req, res)=>{
 	const props = {
@@ -303,11 +191,35 @@ app.use((req, res)=>{
 	templateFn('homebrew', title = req.brew ? req.brew.title : '', props)
         .then((page)=>{ res.send(page); })
         .catch((err)=>{
+        	console.log('TEMPLATE ERROR');
         	console.log(err);
         	return res.sendStatus(500);
         });
 });
 
+//v=====----- Error-Handling Middleware -----=====v//
+//Format Errors so all fields will be sent
+const replaceErrors = (key, value)=>{
+	if(value instanceof Error) {
+		const error = {};
+		Object.getOwnPropertyNames(value).forEach(function (key) {
+			error[key] = value[key];
+		});
+		return error;
+	}
+	return value;
+};
+
+const getPureError = (error)=>{
+	return JSON.parse(JSON.stringify(error, replaceErrors));
+};
+
+app.use((err, req, res, next)=>{
+	const status = err.status || 500;
+	console.error(err);
+	res.status(status).send(getPureError(err));
+});
+//^=====--------------------------------------=====^//
 
 const PORT = process.env.PORT || config.get('web_port') || 8000;
 app.listen(PORT);
