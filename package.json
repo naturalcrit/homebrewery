@@ -40,7 +40,7 @@
     ]
   },
   "dependencies": {
-    "@babel/core": "^7.13.10",
+    "@babel/core": "^7.13.13",
     "@babel/preset-env": "^7.13.10",
     "@babel/preset-react": "^7.12.13",
     "body-parser": "^1.19.0",
