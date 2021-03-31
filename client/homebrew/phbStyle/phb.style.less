@@ -213,6 +213,86 @@ body {
 	//*****************************
 	// *    MONSTER STAT BLOCK
 	// *****************************/
+
+	.monster {
+		.useSansSerif();
+		position         : relative;
+		padding          : 5px;
+		font-family      : ScalySansRemake;
+		font-size        : 0.352cm;
+		line-height      : 1.1em;
+		background-color : @monsterStatBackground;
+		border-style     : solid;
+		border-width     : 10px;
+		background-image  : @monsterBlockBackground;
+		border-image     : @monsterBorderImage 14 round;
+		box-shadow          : 1px 4px 14px #888;
+		-webkit-transform   : translateZ(0); //Prevents shadows from breaking across columns
+
+		p + p {
+			margin-top  : 1em;
+			text-indent : 0;
+		}
+
+		//Headers
+		h3{
+			font-family   : ScalySansRemake;
+			font-weight   : 400;
+			border-bottom : 1px solid @headerText;
+		}
+
+		//Triangle dividers
+		hr{
+			visibility       : visible;
+			height           : 6px;
+			margin           : 4px 0px;
+			background-image : @redTriangleImage;
+			background-size  : 100% 100%;
+			border           : none;
+		}
+
+		//Attribute Lists
+		dl {
+			.useSansSerif();
+			color : @headerText;
+			//lettr-spacing: -0.02em;
+			//font-size:.352cm;
+			//line-height:1.1em;
+			padding-left:1.3em;
+			text-indent:-1.3em;
+		}
+
+		dd {
+			text-indent: 0px;
+		}
+
+		// Monster Ability table
+		hr + table{									//TODO: only select first table that immediately follows HR
+			margin              : 0;
+			column-span         : 1;
+			background-color    : transparent;
+			border-style        : none;
+			border-image        : none;
+			-webkit-column-span : 1;
+			tbody{
+				tr:nth-child(odd), tr:nth-child(even){
+					background-color : transparent;
+				}
+			}
+		}
+		table{
+			color : @headerText;
+		}
+	}
+
+
+
+
+
+
+
+
+	// OLD MONSTER BLOCK
 	hr+blockquote{
 		position         : relative;
 		padding-top      : 15px;
