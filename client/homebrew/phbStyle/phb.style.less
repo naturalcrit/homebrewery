@@ -7,7 +7,7 @@
 @headerUnderline       : #c9ad6a;
 @horizontalRule        : #9c2b1b;
 @headerText            : #58180D;
-@monsterStatBackground : #FDF1DC;
+@monsterStatBackground : #EEDBAB;
 @page { margin: 0; }
 body {
 	counter-reset : phb-page-numbers;
@@ -18,6 +18,10 @@ body {
 .useSansSerif(){
 	font-family : ScalySansRemake;
 	font-size   : 10pt;
+	line-height : 1.1em;
+	p,dl,ul {
+		line-height : 1.1em;
+	}
 	em{
 		font-style  : italic;
 	}
@@ -217,15 +221,18 @@ body {
 	.monster {
 		.useSansSerif();
 		position         : relative;
-		padding          : 5px;
+		padding          : 0px;
+		margin           : 0px -6px;
 		font-family      : ScalySansRemake;
 		font-size        : 0.352cm;
-		line-height      : 1.1em;
 		background-color : @monsterStatBackground;
 		border-style     : solid;
-		border-width     : 10px;
+		border-width     : 7px 6px;
 		background-image  : @monsterBlockBackground;
 		border-image     : @monsterBorderImage 14 round;
+		border-image-outset :4px 2px;
+		background-blend-mode: overlay;
+		background-attachment: fixed;
 		box-shadow          : 1px 4px 14px #888;
 		-webkit-transform   : translateZ(0); //Prevents shadows from breaking across columns
 
@@ -274,12 +281,17 @@ body {
 			border-style        : none;
 			border-image        : none;
 			-webkit-column-span : 1;
+
 			tbody{
 				tr:nth-child(odd), tr:nth-child(even){
 					background-color : transparent;
 				}
 			}
+			td,th {
+				padding: 0px;
+			}
 		}
+
 		table{
 			color : @headerText;
 		}
