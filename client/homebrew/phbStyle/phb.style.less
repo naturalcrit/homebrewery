@@ -217,21 +217,22 @@ body {
 	// *****************************/
 
 	.monster {
+		&.frame {
+			border-style          : solid;
+			border-width          : 7px 6px;
+			background-color      : @monsterStatBackground;
+			background-image      : @monsterBlockBackground;
+			border-image          : @monsterBorderImage 14 round;
+			border-image-outset   : 4px 2px;
+			background-blend-mode : overlay;
+			background-attachment : fixed;
+			box-shadow            : 1px 4px 14px #888;
+			margin                : 0px -6px;
+			-webkit-transform     : translateZ(0); //Prevents shadows from breaking across columns
+		}
 		.useSansSerif();
 		position         : relative;
 		padding          : 0px;
-		margin           : 0px -6px;
-		font-family      : ScalySansRemake;
-		background-color : @monsterStatBackground;
-		border-style     : solid;
-		border-width     : 7px 6px;
-		background-image  : @monsterBlockBackground;
-		border-image     : @monsterBorderImage 14 round;
-		border-image-outset :4px 2px;
-		background-blend-mode: overlay;
-		background-attachment: fixed;
-		box-shadow          : 1px 4px 14px #888;
-		-webkit-transform   : translateZ(0); //Prevents shadows from breaking across columns
 
 		p+p {
 			margin-top  : 0.3cm;
@@ -240,19 +241,19 @@ body {
 
 		//Headers
 		h2{
-			font-size: 0.62cm;
-			margin-bottom: 0.1cm;
+			font-size     : 0.62cm;
+			margin-bottom : 0.1cm;
 			&+p {
-				font-size : 0.304cm; //Monster size and type subtext
+				font-size   : 0.304cm; //Monster size and type subtext
 			}
 		}
 		h3{
-			font-family   : ScalySansRemake;
-			font-weight   : 800;
-			font-variant: small-caps;
-			border-bottom : 2px solid @headerText;
-			margin-top:    0.05cm;
-  		padding-bottom: 0.05cm;
+			font-family    : ScalySansRemake;
+			font-weight    : 800;
+			font-variant   : small-caps;
+			border-bottom  : 2px solid @headerText;
+			margin-top     : 0.05cm;
+  		padding-bottom : 0.05cm;
 		}
 
 		//Triangle dividers
@@ -268,109 +269,32 @@ body {
 		//Attribute Lists
 		dl {
 			.useSansSerif();
-			color : @headerText;
-			//lettr-spacing: -0.02em;
-			//font-size:.352cm;
-			//line-height:1.1em;
-			padding-left:1.3em;
-			text-indent:-1.3em;
+			color        : @headerText;
+			padding-left :1.3em;
+			text-indent  :-1.3em;
 		}
-
 		dd {
-			text-indent: 0px;
+			text-indent  : 0px;
 		}
 
 		// Monster Ability table
-		hr + table{									//TODO: only select first table that immediately follows HR
+		hr + table:first-of-type{
 			margin              : 0;
 			column-span         : 1;
+			color               : @headerText;
 			background-color    : transparent;
 			border-style        : none;
 			border-image        : none;
 			-webkit-column-span : 1;
-
-			tbody{
-				tr:nth-child(odd), tr:nth-child(even){
-					background-color : transparent;
-				}
+			tr {
+				background-color : transparent;
 			}
 			td,th {
 				padding: 0px;
 			}
 		}
-
-		table{
-			color : @headerText;
-		}
 	}
 
-
-
-
-
-
-
-
-	// OLD MONSTER BLOCK
-	hr+blockquote{
-		position         : relative;
-		padding-top      : 15px;
-		background-color : @monsterStatBackground;
-		border-style     : solid;
-		border-width     : 10px;
-		border-image     : @monsterBorderImage 10;
-		h2{
-			margin-top    : -8px;
-			margin-bottom : 0px;
-			&+p{
-				padding-bottom : 0px;
-			}
-		}
-		h3{
-			font-family   : ScalySansRemake;
-			font-weight   : 400;
-			border-bottom : 1px solid @headerText;
-		}
-		hr+ul{
-			color : @headerText;
-		}
-		ul{
-			.useSansSerif();
-			padding-left : 1em;
-			font-size    : 0.352cm;
-		}
-		// Monster Ability table
-		hr+table{
-			margin              : 0;
-			column-span         : 1;
-			background-color    : transparent;
-			border-style        : none;
-			border-image        : none;
-			-webkit-column-span : 1;
-			tbody{
-				tr:nth-child(odd), tr:nth-child(even){
-					background-color : transparent;
-				}
-			}
-		}
-		table{
-			color : @headerText;
-		}
-		p+p{
-			margin-top     : 0em;
-			padding-bottom : 0.5em;
-			text-indent    : 0em;
-		}
-		//Triangle dividers
-		hr{
-			visibility       : visible;
-			height           : 6px;
-			margin           : 4px 0px;
-			background-image : @redTriangleImage;
-			background-size  : 100% 100%;
-			border           : none;
-		}
-	}
 	//Full Width
 	hr+hr+blockquote{
 		.useColumns(0.96);
