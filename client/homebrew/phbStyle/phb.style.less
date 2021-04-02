@@ -17,10 +17,10 @@ body {
 }
 .useSansSerif(){
 	font-family : ScalySansRemake;
-	font-size   : 10pt;
-	line-height : 1.1em;
+	font-size   : 0.325cm;
+	line-height : 1.2em;
 	p,dl,ul {
-		line-height : 1.1em;
+		line-height : 1.2em;
 	}
 	em{
 		font-style  : italic;
@@ -33,14 +33,14 @@ body {
 .useColumns(@multiplier : 1){
 	column-count         : 2;
 	column-fill          : auto;
-	column-gap           : 1cm;
+	column-gap           : 0.9cm;
 	column-width         : 8cm * @multiplier;
 	-webkit-column-count : 2;
 	-moz-column-count    : 2;
 	-webkit-column-width : 8cm * @multiplier;
 	-moz-column-width    : 8cm * @multiplier;
-	-webkit-column-gap   : 1cm;
-	-moz-column-gap      : 1cm;
+	-webkit-column-gap   : 0.9cm;
+	-moz-column-gap      : 0.9cm;
 }
 .phb3{
 	.useColumns();
@@ -51,11 +51,11 @@ body {
 	overflow          : hidden;
 	height            : 279.4mm;
 	width             : 215.9mm;
-	padding           : 1.0cm 1.7cm 1.5cm;
+	padding           : 1.4cm 1.9cm 1.7cm;
 	background-color  : @background;
 	background-image  : @backgroundImage;
 	font-family       : BookInsanityRemake;
-	font-size         : 0.317cm;
+	font-size         : 0.34cm;
 	text-rendering    : optimizeLegibility;
 	page-break-before : always;
 	page-break-after  : always;
@@ -120,7 +120,7 @@ body {
 	}
 	h1{
 		column-span         : all;
-		font-size           : 0.987cm;
+		font-size           : 0.89cm;
 		-webkit-column-span : all;
 		-moz-column-span    : all;
 		&+p::first-letter{
@@ -140,12 +140,11 @@ body {
 	    color: rgba(0, 0, 0, 0);
 		}
 		&+p::first-line{
-			font-size    : .385cm;
 			font-variant : small-caps;
 		}
 	}
 	h2{
-		font-size : 0.705cm;
+		font-size : 0.75cm;
 	}
 	h3{
 		font-size     : 0.529cm;
@@ -168,7 +167,6 @@ body {
 		.useSansSerif();
 		width         : 100%;
 		margin-bottom : 1em;
-		font-size     : 10pt;
 		thead{
 			display: table-row-group;
 			font-weight : 800;
@@ -224,7 +222,6 @@ body {
 		padding          : 0px;
 		margin           : 0px -6px;
 		font-family      : ScalySansRemake;
-		font-size        : 0.352cm;
 		background-color : @monsterStatBackground;
 		border-style     : solid;
 		border-width     : 7px 6px;
@@ -236,23 +233,33 @@ body {
 		box-shadow          : 1px 4px 14px #888;
 		-webkit-transform   : translateZ(0); //Prevents shadows from breaking across columns
 
-		p + p {
-			margin-top  : 1em;
+		p+p {
+			margin-top  : 0.3cm;
 			text-indent : 0;
 		}
 
 		//Headers
+		h2{
+			font-size: 0.62cm;
+			margin-bottom: 0.1cm;
+			&+p {
+				font-size : 0.304cm; //Monster size and type subtext
+			}
+		}
 		h3{
 			font-family   : ScalySansRemake;
-			font-weight   : 400;
-			border-bottom : 1px solid @headerText;
+			font-weight   : 800;
+			font-variant: small-caps;
+			border-bottom : 2px solid @headerText;
+			margin-top:    0.05cm;
+  		padding-bottom: 0.05cm;
 		}
 
 		//Triangle dividers
 		hr{
 			visibility       : visible;
 			height           : 6px;
-			margin           : 4px 0px;
+			margin           : 0.12cm 0cm;
 			background-image : @redTriangleImage;
 			background-size  : 100% 100%;
 			border           : none;
@@ -604,6 +611,6 @@ body {
 // *****************************/
 .phb3 {
 	.blank {
-		height: 0.8em;
+		height: 0.75em;
 	}
 }
