@@ -64,10 +64,10 @@ body {
 	// *****************************/
 	p{
 		overflow-wrap : break-word;
-		padding-top : 0em;
-		line-height    : 1.3em;
+		margin-bottom : 1em;
+		line-height   : 1.3em;
 		&+p{
-			padding-top : 0em;
+			margin-top  : -1em;
 		}
 	}
 	ul{
@@ -227,13 +227,16 @@ body {
 			background-blend-mode : overlay;
 			background-attachment : fixed;
 			box-shadow            : 1px 4px 14px #888;
-			margin                : 0px -6px;
+			margin                : 0px -6px 1em;
 			-webkit-transform     : translateZ(0); //Prevents shadows from breaking across columns
 		}
 		.useSansSerif();
 		position         : relative;
 		padding          : 0px;
 
+		p{
+			margin-bottom : 0;
+		}
 		p+p {
 			margin-top  : 0.3cm;
 			text-indent : 0;
@@ -242,7 +245,8 @@ body {
 		//Headers
 		h2{
 			font-size     : 0.62cm;
-			margin-bottom : 0.1cm;
+			line-height   : 1em;
+			margin        : 0;
 			&+p {
 				font-size   : 0.304cm; //Monster size and type subtext
 			}
@@ -296,6 +300,10 @@ body {
 	}
 
 	//Full Width
+	.monster.wide{
+		.useColumns(0.96);
+	}
+
 	hr+hr+blockquote{
 		.useColumns(0.96);
 	}
@@ -508,6 +516,9 @@ body {
 // *    MUSTACHE DIVS/SPANS
 // *****************************/
 .phb3 {
+	.block {
+		break-inside: avoid;
+	}
 	.inline-block {
 		display : block;
 	}
