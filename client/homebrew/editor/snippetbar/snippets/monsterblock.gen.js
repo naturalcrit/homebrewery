@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const dedent = require('dedent-tabs').default;
 
 const genList = function(list, max){
 	return _.sampleSize(list, _.random(0, max)).join(', ') || 'None';
@@ -86,7 +87,7 @@ const getAlignment = function(){
 };
 
 const getStats = function(){
-	return `>|${_.times(6, function(){
+	return `|${_.times(6, function(){
 		const num = _.random(1, 20);
 		const mod = Math.ceil(num/2 - 5);
 		return `${num} (${mod >= 0 ? `+${mod}` : mod})`;
@@ -95,12 +96,12 @@ const getStats = function(){
 
 const genAbilities = function(){
 	return _.sample([
-		'> ***Pack Tactics.*** These guys work together. Like super well, you don\'t even know.',
-		'> ***Fowl Appearance.*** While the creature remains motionless, it is indistinguishable from a normal chicken.',
-		'> ***Onion Stench.*** Any creatures within 5 feet of this thing develops an irrational craving for onion rings.',
-		'> ***Enormous Nose.*** This creature gains advantage on any check involving putting things in its nose.',
-		'> ***Sassiness.*** When questioned, this creature will talk back instead of answering.',
-		'> ***Big Jerk.*** Thinks he is just *waaaay* better than you.',
+		'***Pack Tactics.*** These guys work together like peanut butter and jelly.',
+		'***Fowl Appearance.*** While the creature remains motionless, it is indistinguishable from a normal chicken.',
+		'***Onion Stench.*** Any creatures within 5 feet of this thing develops an irrational craving for onion rings.',
+		'***Enormous Nose.*** This creature gains advantage on any check involving putting things in its nose.',
+		'***Sassiness.*** When questioned, this creature will talk back instead of answering.',
+		'***Big Jerk.*** Whenever this creature makes an attack, it starts telling you how much cooler it is than you.',
 	]);
 };
 
@@ -133,68 +134,36 @@ const genAction = function(){
 		'Turnbuckle Roll'
 	]);
 
-	return `> ***${name}.*** *Melee Weapon Attack:* +4 to hit, reach 5ft., one target. *Hit* 5 (1d6 + 2) `;
+	return `***${name}.*** *Melee Weapon Attack:* +4 to hit, reach 5ft., one target. *Hit* 5 (1d6 + 2) `;
 };
 
 
 module.exports = {
 
-	full : function(){
-		return `${[
-			'___',
-			'___',
-			`> ## ${getMonsterName()}`,
-			`>*${getType()}, ${getAlignment()}*`,
-			'> ___',
-			`> - **Armor Class** ${_.random(10, 20)}`,
-			`> - **Hit Points** ${_.random(1, 150)}(1d4 + 5)`,
-			`> - **Speed** ${_.random(0, 50)}ft.`,
-			'>___',
-			'>|STR|DEX|CON|INT|WIS|CHA|',
-			'>|:---:|:---:|:---:|:---:|:---:|:---:|',
-			getStats(),
-			'>___',
-			`> - **Condition Immunities** ${genList(['groggy', 'swagged', 'weak-kneed', 'buzzed', 'groovy', 'melancholy', 'drunk'], 3)}`,
-			`> - **Senses** passive Perception ${_.random(3, 20)}`,
-			`> - **Languages** ${genList(['Common', 'Pottymouth', 'Gibberish', 'Latin', 'Jive'], 2)}`,
-			`> - **Challenge** ${_.random(0, 15)} (${_.random(10, 10000)} XP)`,
-			'> ___',
-			_.times(_.random(3, 6), function(){
-				return genAbilities();
-			}).join('\n>\n'),
-			'> ### Actions',
-			_.times(_.random(4, 6), function(){
-				return genAction();
-			}).join('\n>\n'),
-		].join('\n')}\n\n\n`;
-	},
-
-	half : function(){
-		return `${[
-			'___',
-			`> ## ${getMonsterName()}`,
-			`>*${getType()}, ${getAlignment()}*`,
-			'> ___',
-			`> - **Armor Class** ${_.random(10, 20)}`,
-			`> - **Hit Points** ${_.random(1, 150)}(1d4 + 5)`,
-			`> - **Speed** ${_.random(0, 50)}ft.`,
-			'>___',
-			'>|STR|DEX|CON|INT|WIS|CHA|',
-			'>|:---:|:---:|:---:|:---:|:---:|:---:|',
-			getStats(),
-			'>___',
-			`> - **Condition Immunities** ${genList(['groggy', 'swagged', 'weak-kneed', 'buzzed', 'groovy', 'melancholy', 'drunk'], 3)}`,
-			`> - **Senses** passive Perception ${_.random(3, 20)}`,
-			`> - **Languages** ${genList(['Common', 'Pottymouth', 'Gibberish', 'Latin', 'Jive'], 2)}`,
-			`> - **Challenge** ${_.random(0, 15)} (${_.random(10, 10000)} XP)`,
-			'> ___',
-			_.times(_.random(2, 3), function(){
-				return genAbilities();
-			}).join('\n>\n'),
-			'> ### Actions',
-			_.times(_.random(1, 2), function(){
-				return genAction();
-			}).join('\n>\n'),
-		].join('\n')}\n\n\n`;
+	monster : function(classes, genLines){
+		return dedent`
+			{{${classes}
+			## ${getMonsterName()}
+			*${getType()}, ${getAlignment()}*
+			___
+			: **Armor Class** : ${_.random(10, 20)} (chain mail, shield)
+			: **Hit Points**  : ${_.random(1, 150)}(1d4 + 5)
+			: **Speed**       : ${_.random(0, 50)}ft.
+			___
+			|  STR  |  DEX  |  CON  |  INT  |  WIS  |  CHA  |
+			|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|
+			${getStats()}
+			___
+			: **Condition Immunities** : ${genList(['groggy', 'swagged', 'weak-kneed', 'buzzed', 'groovy', 'melancholy', 'drunk'], 3)}
+			: **Senses**               : darkvision 60 ft., passive Perception ${_.random(3, 20)}
+			: **Languages**            : ${genList(['Common', 'Pottymouth', 'Gibberish', 'Latin', 'Jive'], 2)}
+			: **Challenge**            : ${_.random(0, 15)} (${_.random(10, 10000)} XP)
+			___
+			:
+			${_.times(_.random(genLines, genLines + 2), function(){return genAbilities();}).join('\n\t\t\t\n\t\t\t')}
+			:
+			### Actions
+			${_.times(_.random(genLines, genLines + 2), function(){return genAction();}).join('\n\t\t\t\n\t\t\t')}
+			}}`;
 	}
 };
