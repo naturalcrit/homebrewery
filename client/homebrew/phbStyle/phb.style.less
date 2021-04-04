@@ -223,11 +223,12 @@ body {
 			background-color      : @monsterStatBackground;
 			background-image      : @monsterBlockBackground;
 			border-image          : @monsterBorderImage 14 round;
-			border-image-outset   : 4px 2px;
+			border-image-outset   : 0px 2px;
 			background-blend-mode : overlay;
 			background-attachment : fixed;
 			box-shadow            : 1px 4px 14px #888;
-			margin                : 7px -6px 1em;
+			padding               : 4px 2px;
+			margin                : 0px -6px 1em;
 			-webkit-transform     : translateZ(0); //Prevents shadows from breaking across columns
 		}
 		.useSansSerif();
