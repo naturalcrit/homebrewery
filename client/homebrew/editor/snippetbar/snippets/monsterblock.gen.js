@@ -141,33 +141,30 @@ const genAction = function(){
 module.exports = {
 
 	full : function(){
-		return `${[
-			'___',
-			'___',
-			`> ## ${getMonsterName()}`,
-			`>*${getType()}, ${getAlignment()}*`,
-			'> ___',
-			`> - **Armor Class** ${_.random(10, 20)}`,
-			`> - **Hit Points** ${_.random(1, 150)}(1d4 + 5)`,
-			`> - **Speed** ${_.random(0, 50)}ft.`,
-			'>___',
-			'>|STR|DEX|CON|INT|WIS|CHA|',
-			'>|:---:|:---:|:---:|:---:|:---:|:---:|',
-			getStats(),
-			'>___',
-			`> - **Condition Immunities** ${genList(['groggy', 'swagged', 'weak-kneed', 'buzzed', 'groovy', 'melancholy', 'drunk'], 3)}`,
-			`> - **Senses** passive Perception ${_.random(3, 20)}`,
-			`> - **Languages** ${genList(['Common', 'Pottymouth', 'Gibberish', 'Latin', 'Jive'], 2)}`,
-			`> - **Challenge** ${_.random(0, 15)} (${_.random(10, 10000)} XP)`,
-			'> ___',
-			_.times(_.random(3, 6), function(){
-				return genAbilities();
-			}).join('\n>\n'),
-			'> ### Actions',
-			_.times(_.random(4, 6), function(){
-				return genAction();
-			}).join('\n>\n'),
-		].join('\n')}\n\n\n`;
+		return dedent`
+			{{monster,frame,wide
+			## ${getMonsterName()}
+			*${getType()}, ${getAlignment()}*
+			___
+			: **Armor Class** : ${_.random(10, 20)} (chain mail, shield)
+			: **Hit Points**  : ${_.random(1, 150)}(1d4 + 5)
+			: **Speed**       : ${_.random(0, 50)}ft.
+			___
+			|  STR  |  DEX  |  CON  |  INT  |  WIS  |  CHA  |
+			|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|
+			${getStats()}
+			___
+			: **Condition Immunities** : ${genList(['groggy', 'swagged', 'weak-kneed', 'buzzed', 'groovy', 'melancholy', 'drunk'], 3)}
+			: **Senses**               : darkvision 60 ft., passive Perception ${_.random(3, 20)}
+			: **Languages**            : ${genList(['Common', 'Pottymouth', 'Gibberish', 'Latin', 'Jive'], 2)}
+			: **Challenge**            : ${_.random(0, 15)} (${_.random(10, 10000)} XP)
+			___
+			:
+			${_.times(_.random(3, 6), function(){return genAbilities();}).join('\n\t\t\t\n\t\t\t')}
+			:
+			### Actions
+			${_.times(_.random(4, 6), function(){return genAction();}).join('\n\t\t\t\n\t\t\t')}
+			}}`;
 	},
 
 	half : function(){
