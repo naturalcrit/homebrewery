@@ -192,5 +192,32 @@ module.exports = {
 			### Actions
 			${_.times(_.random(2, 3), function(){return genAction();}).join('\n\t\t\t\n\t\t\t')}
 			}}`;
+	},
+
+	unframed : function(){
+		return dedent`
+			{{monster
+			## ${getMonsterName()}
+			*${getType()}, ${getAlignment()}*
+			___
+			: **Armor Class** : ${_.random(10, 20)} (chain mail, shield)
+			: **Hit Points**  : ${_.random(1, 150)}(1d4 + 5)
+			: **Speed**       : ${_.random(0, 50)}ft.
+			___
+			|  STR  |  DEX  |  CON  |  INT  |  WIS  |  CHA  |
+			|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|
+			${getStats()}
+			___
+			: **Condition Immunities** : ${genList(['groggy', 'swagged', 'weak-kneed', 'buzzed', 'groovy', 'melancholy', 'drunk'], 3)}
+			: **Senses**               : darkvision 60 ft., passive Perception ${_.random(3, 20)}
+			: **Languages**            : ${genList(['Common', 'Pottymouth', 'Gibberish', 'Latin', 'Jive'], 2)}
+			: **Challenge**            : ${_.random(0, 15)} (${_.random(10, 10000)} XP)
+			___
+			:
+			${_.times(_.random(2, 3), function(){return genAbilities();}).join('\n\t\t\t\n\t\t\t')}
+			:
+			### Actions
+			${_.times(_.random(2, 3), function(){return genAction();}).join('\n\t\t\t\n\t\t\t')}
+			}}`;
 	}
 };

@@ -152,6 +152,11 @@ module.exports = [
 				},
 			},
 			{
+				name : 'Monster Stat Block (unframed)',
+				icon : 'fas fa-paw',
+				gen  : MonsterBlockGen.unframed,
+			},
+			{
 				name : 'Monster Stat Block',
 				icon : 'fas fa-spider',
 				gen  : MonsterBlockGen.half,
