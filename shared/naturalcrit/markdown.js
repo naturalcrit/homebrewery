@@ -190,7 +190,6 @@ module.exports = {
 														 .replace(/(<dt>.*<\/dt><dd>.*<\/dd>\n?)+/gm, `<dl>$1</dl>\n\n`)
 		                         .replace(/^}}/gm, '\n}}')
 		                         .replace(/^({{[^\n]*)$/gm, '$1\n');
-		console.log(rawBrewText);
 		return Markdown(
 			sanatizeScriptTags(rawBrewText),
 			{ renderer: renderer }
