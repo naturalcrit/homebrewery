@@ -164,6 +164,7 @@ module.exports = {
 			:
 			### Actions
 			${_.times(_.random(genLines, genLines + 2), function(){return genAction();}).join('\n\t\t\t\n\t\t\t')}
-			}}`;
+			}}
+			\n`;
 	}
 };
