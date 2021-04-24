@@ -187,7 +187,7 @@ const EditPage = createClass({
 				.catch((err)=>{
 					console.log(err.status === 401
 						? 'Not signed in!'
-						: 'Error Saving to Google!');
+						: 'Error Transferring to Google!');
 					this.setState({ errors: err, saveGoogle: false });
 				});
 
@@ -210,7 +210,7 @@ const EditPage = createClass({
 					console.log(err.status === 401
 						? 'Not signed in!'
 						: 'Error Saving to Google!');
-					this.setState({ errors: err, saveGoogle: false });
+					this.setState({ errors: err });
 					return;
 				});
 
