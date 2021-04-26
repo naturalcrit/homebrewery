@@ -55,6 +55,7 @@ const EditPage = createClass({
 			isSaving               : false,
 			isPending              : false,
 			alertTrashedGoogleBrew : this.props.brew.trashed,
+			alertLoginToTransfer   : false,
 			saveGoogle             : this.props.brew.googleId ? true : false,
 			confirmGoogleTransfer  : false,
 			errors                 : null,
@@ -140,15 +141,25 @@ const EditPage = createClass({
 	},
 
 	handleGoogleClick : function(){
+		console.log('handlegoogleclick');
+		if(!global.account?.googleId) {
+			this.setState({
+				alertLoginToTransfer : true
+			});
+			return;
+		}
 		this.setState((prevState)=>({
 			confirmGoogleTransfer : !prevState.confirmGoogleTransfer
 		}));
 		this.clearErrors();
 	},
 
-	closeAlerts : function(){
+	closeAlerts : function(event){
+		event.stopPropagation();	//Only handle click once so alert doesn't reopen
 		this.setState({
-			alertTrashedGoogleBrew : false
+			alertTrashedGoogleBrew : false,
+			alertLoginToTransfer   : false,
+			confirmGoogleTransfer  : false
 		});
 	},
 
@@ -260,39 +271,44 @@ const EditPage = createClass({
 	},
 
 	renderGoogleDriveIcon : function(){
-		if(this.state.saveGoogle) {
-			return <Nav.item className='googleDriveStorage' onClick={this.handleGoogleClick}>
-				<img src={googleDriveActive} alt='googleDriveActive' />
+		return <Nav.item className='googleDriveStorage' onClick={this.handleGoogleClick}>
+			{this.state.saveGoogle
+				? <img src={googleDriveActive} alt='googleDriveActive'/>
+				: <img src={googleDriveInactive} alt='googleDriveInactive'/>
+			}
 
-				{this.state.confirmGoogleTransfer &&
-					<div className='errorContainer'>
-					Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?<br />
-						<div className='confirm' onClick={this.toggleGoogleStorage}>
-							Yes
-						</div>
-						<div className='deny'>
-							No
-						</div>
+			{this.state.confirmGoogleTransfer &&
+				<div className='errorContainer' onClick={this.closeAlerts}>
+					{ this.state.saveGoogle
+						?	`Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?`
+						: `Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?`
+					}
+					<br />
+					<div className='confirm' onClick={this.toggleGoogleStorage}>
+						Yes
 					</div>
-				}
-			</Nav.item>;
-		} else {
-			return <Nav.item className='googleDriveStorage' onClick={this.handleGoogleClick}>
-				<img src={googleDriveInactive} alt='googleDriveInactive' />
+					<div className='deny'>
+						No
+					</div>
+				</div>
+			}
 
-				{this.state.confirmGoogleTransfer &&
-					<div className='errorContainer'>
-					Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?<br />
-						<div className='confirm' onClick={this.toggleGoogleStorage}>
-							Yes
+			{this.state.alertLoginToTransfer &&
+				<div className='errorContainer' onClick={this.closeAlerts}>
+					You must be signed in to a Google account to transfer
+					between the homebrewery and Google Drive!
+					<a target='_blank' rel='noopener noreferrer'
+						href={`http://naturalcrit.com/login?redirect=${this.state.url}`}>
+						<div className='confirm'>
+							Sign In
 						</div>
-						<div className='deny'>
-							No
-						</div>
+					</a>
+					<div className='deny'>
+						Not Now
 					</div>
-				}
-			</Nav.item>;
-		}
+				</div>
+			}
+		</Nav.item>;
 	},
 
 	renderSaveButton : function(){
@@ -311,7 +327,7 @@ const EditPage = createClass({
 						to save this to<br />Google Drive!<br />
 						<a target='_blank' rel='noopener noreferrer'
 							href={`http://naturalcrit.com/login?redirect=${this.state.url}`}>
-							<div className='confirm' onClick={this.toggleGoogleStorage}>
+							<div className='confirm'>
 								Sign In
 							</div>
 						</a>
