@@ -63,7 +63,7 @@ body {
 	// *            BASE
 	// *****************************/
 	p{
-		overflow-wrap : break-word;
+		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
 		margin-bottom : 1em;
 		line-height   : 1.3em;
 		&+p{
@@ -93,7 +93,7 @@ body {
 	}
 	strong{
 		font-weight    : bold;
-		letter-spacing : 0.03em;
+		letter-spacing : -0.02em;
 	}
 	em{
 		font-style : italic;
@@ -112,13 +112,12 @@ body {
 	// *           HEADERS
 	// *****************************/
 	h1,h2,h3,h4{
-		margin-top    : 0.2em;
-		margin-bottom : 0.2em;
 		font-family   : MrEavesRemake;
 		font-weight   : 800;
 		color         : @headerText;
 	}
 	h1{
+		margin-bottom       : 0.18cm;
 		column-span         : all;
 		font-size           : 0.89cm;
 		-webkit-column-span : all;
@@ -144,18 +143,24 @@ body {
 		}
 	}
 	h2{
-		font-size : 0.75cm;
+		margin-top    : 0px;
+		margin-bottom : 0.05cm;
+		font-size     : 0.75cm;
 	}
 	h3{
-		font-size     : 0.529cm;
+		margin-top    : -0.1cm;
+		margin-bottom : 0.1cm;
+		font-size     : 0.575cm;
 		border-bottom : 2px solid @headerUnderline;
 	}
 	h4{
-		margin-bottom : 0.00em;
+		margin-top    : -0.02cm;
+		margin-bottom : 0.02cm;
 		font-size     : 0.458cm;
 	}
 	h5{
-		margin-bottom : 0.2em;
+		margin-top    : -0.02cm;
+		margin-bottom : 0.02cm;
 		font-family   : ScalySansSmallCapsRemake;
 		font-size     : 0.423cm;
 		font-weight   : 900;
@@ -172,15 +177,13 @@ body {
 			font-weight : 800;
 			th{
 				vertical-align : bottom;
-				padding-bottom : 0.3em;
-				padding-right  : 0.1em;
-				padding-left   : 0.1em;
+				padding        : 0.14em 0.4em;
 			}
 		}
 		tbody{
 			tr{
 				td{
-					padding : 0.3em 0.1em;
+					padding : 0.14em 0.4em;
 				}
 				&:nth-child(odd){
 					background-color : @noteGreen;
@@ -237,11 +240,14 @@ body {
 		margin-bottom     : 1em;
 
 		p{
-			margin-bottom : 0;
+			margin-bottom : 0.3cm;
 		}
 		p+p {
-			margin-top  : 0.3cm;
+			margin-top  : 0;	//May not be needed
 			text-indent : 0;
+		}
+		p:last-of-type {
+			margin-bottom: 0;
 		}
 
 		//Headers
@@ -250,7 +256,8 @@ body {
 			line-height   : 1em;
 			margin        : 0;
 			&+p {
-				font-size   : 0.304cm; //Monster size and type subtext
+				font-size     : 0.304cm; //Monster size and type subtext
+				margin-bottom : 0;
 			}
 		}
 		h3{
@@ -519,10 +526,13 @@ body {
 // *****************************/
 .phb3 {
 	.block {
-		break-inside: avoid;
+		break-inside : avoid;
 	}
 	.inline-block {
 		display : block;
+	}
+	div {
+		column-gap : 0.5cm; //Default spacing if a div uses multicolumns
 	}
 }
 
@@ -549,5 +559,8 @@ body {
 .phb3 {
 	.blank {
 		height: 0.75em;
+	}
+	p + .blank {
+		margin-top: -1em;
 	}
 }
