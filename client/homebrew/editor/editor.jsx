@@ -64,7 +64,7 @@ const Editor = createClass({
 		lines[this.cursorPosition.line] = splice(lines[this.cursorPosition.line], this.cursorPosition.ch, injectText);
 
 		this.handleTextChange(lines.join('\n'));
-		this.refs.codeEditor.setCursorPosition(this.cursorPosition.line, this.cursorPosition.ch  + injectText.length);
+		this.refs.codeEditor.setCursorPosition(this.cursorPosition.line + injectText.split('\n').length, this.cursorPosition.ch  + injectText.length);
 	},
 	handgleToggle : function(){
 		this.setState({

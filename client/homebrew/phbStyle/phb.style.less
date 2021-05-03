@@ -7,7 +7,7 @@
 @headerUnderline       : #c9ad6a;
 @horizontalRule        : #9c2b1b;
 @headerText            : #58180D;
-@monsterStatBackground : #FDF1DC;
+@monsterStatBackground : #EEDBAB;
 @page { margin: 0; }
 body {
 	counter-reset : phb-page-numbers;
@@ -17,7 +17,11 @@ body {
 }
 .useSansSerif(){
 	font-family : ScalySansRemake;
-	font-size   : 10pt;
+	font-size   : 0.325cm;
+	line-height : 1.2em;
+	p,dl,ul {
+		line-height : 1.2em;
+	}
 	em{
 		font-style  : italic;
 	}
@@ -29,14 +33,14 @@ body {
 .useColumns(@multiplier : 1){
 	column-count         : 2;
 	column-fill          : auto;
-	column-gap           : 1cm;
+	column-gap           : 0.9cm;
 	column-width         : 8cm * @multiplier;
 	-webkit-column-count : 2;
 	-moz-column-count    : 2;
 	-webkit-column-width : 8cm * @multiplier;
 	-moz-column-width    : 8cm * @multiplier;
-	-webkit-column-gap   : 1cm;
-	-moz-column-gap      : 1cm;
+	-webkit-column-gap   : 0.9cm;
+	-moz-column-gap      : 0.9cm;
 }
 .phb3{
 	.useColumns();
@@ -47,11 +51,11 @@ body {
 	overflow          : hidden;
 	height            : 279.4mm;
 	width             : 215.9mm;
-	padding           : 1.0cm 1.7cm 1.5cm;
+	padding           : 1.4cm 1.9cm 1.7cm;
 	background-color  : @background;
 	background-image  : @backgroundImage;
 	font-family       : BookInsanityRemake;
-	font-size         : 0.317cm;
+	font-size         : 0.34cm;
 	text-rendering    : optimizeLegibility;
 	page-break-before : always;
 	page-break-after  : always;
@@ -59,11 +63,11 @@ body {
 	// *            BASE
 	// *****************************/
 	p{
-		overflow-wrap : break-word;
-		padding-top : 0em;
-		line-height    : 1.3em;
+		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
+		margin-bottom : 1em;
+		line-height   : 1.3em;
 		&+p{
-			padding-top : 0em;
+			margin-top  : -1em;
 		}
 	}
 	ul{
@@ -89,7 +93,7 @@ body {
 	}
 	strong{
 		font-weight    : bold;
-		letter-spacing : 0.03em;
+		letter-spacing : -0.02em;
 	}
 	em{
 		font-style : italic;
@@ -108,15 +112,14 @@ body {
 	// *           HEADERS
 	// *****************************/
 	h1,h2,h3,h4{
-		margin-top    : 0.2em;
-		margin-bottom : 0.2em;
 		font-family   : MrEavesRemake;
 		font-weight   : 800;
 		color         : @headerText;
 	}
 	h1{
+		margin-bottom       : 0.18cm;
 		column-span         : all;
-		font-size           : 0.987cm;
+		font-size           : 0.89cm;
 		-webkit-column-span : all;
 		-moz-column-span    : all;
 		&+p::first-letter{
@@ -136,23 +139,28 @@ body {
 	    color: rgba(0, 0, 0, 0);
 		}
 		&+p::first-line{
-			font-size    : .385cm;
 			font-variant : small-caps;
 		}
 	}
 	h2{
-		font-size : 0.705cm;
+		margin-top    : 0px;
+		margin-bottom : 0.05cm;
+		font-size     : 0.75cm;
 	}
 	h3{
-		font-size     : 0.529cm;
+		margin-top    : -0.1cm;
+		margin-bottom : 0.1cm;
+		font-size     : 0.575cm;
 		border-bottom : 2px solid @headerUnderline;
 	}
 	h4{
-		margin-bottom : 0.00em;
+		margin-top    : -0.02cm;
+		margin-bottom : 0.02cm;
 		font-size     : 0.458cm;
 	}
 	h5{
-		margin-bottom : 0.2em;
+		margin-top    : -0.02cm;
+		margin-bottom : 0.02cm;
 		font-family   : ScalySansSmallCapsRemake;
 		font-size     : 0.423cm;
 		font-weight   : 900;
@@ -164,21 +172,18 @@ body {
 		.useSansSerif();
 		width         : 100%;
 		margin-bottom : 1em;
-		font-size     : 10pt;
 		thead{
 			display: table-row-group;
 			font-weight : 800;
 			th{
 				vertical-align : bottom;
-				padding-bottom : 0.3em;
-				padding-right  : 0.1em;
-				padding-left   : 0.1em;
+				padding        : 0.14em 0.4em;
 			}
 		}
 		tbody{
 			tr{
 				td{
-					padding : 0.3em 0.1em;
+					padding : 0.14em 0.4em;
 				}
 				&:nth-child(odd){
 					background-color : @noteGreen;
@@ -213,66 +218,101 @@ body {
 	//*****************************
 	// *    MONSTER STAT BLOCK
 	// *****************************/
-	hr+blockquote{
-		position         : relative;
-		padding-top      : 15px;
-		background-color : @monsterStatBackground;
-		border-style     : solid;
-		border-width     : 10px;
-		border-image     : @monsterBorderImage 10;
+
+	.monster {
+		&.frame {
+			border-style          : solid;
+			border-width          : 7px 6px;
+			background-color      : @monsterStatBackground;
+			background-image      : @monsterBlockBackground;
+			border-image          : @monsterBorderImage 14 round;
+			border-image-outset   : 0px 2px;
+			background-blend-mode : overlay;
+			background-attachment : fixed;
+			box-shadow            : 1px 4px 14px #888;
+			padding               : 4px 2px;
+			margin                : 0px -6px 1em;
+		}
+		.useSansSerif();
+		//-webkit-transform : translateZ(0); //Prevents shadows from breaking across columns, but breaks internal columns...
+		position          : relative;
+		padding           : 0px;
+		margin-bottom     : 1em;
+
+		p{
+			margin-bottom : 0.3cm;
+		}
+		p+p {
+			margin-top  : 0;	//May not be needed
+			text-indent : 0;
+		}
+		p:last-of-type {
+			margin-bottom: 0;
+		}
+
+		//Headers
 		h2{
-			margin-top    : -8px;
-			margin-bottom : 0px;
-			&+p{
-				padding-bottom : 0px;
+			font-size     : 0.62cm;
+			line-height   : 1em;
+			margin        : 0;
+			&+p {
+				font-size     : 0.304cm; //Monster size and type subtext
+				margin-bottom : 0;
 			}
 		}
 		h3{
-			font-family   : ScalySansRemake;
-			font-weight   : 400;
-			border-bottom : 1px solid @headerText;
+			font-family    : ScalySansRemake;
+			font-weight    : 800;
+			font-variant   : small-caps;
+			border-bottom  : 2px solid @headerText;
+			margin-top     : 0.05cm;
+  		padding-bottom : 0.05cm;
 		}
-		hr+ul{
-			color : @headerText;
-		}
-		ul{
-			.useSansSerif();
-			padding-left : 1em;
-			font-size    : 0.352cm;
-		}
-		// Monster Ability table
-		hr+table{
-			margin              : 0;
-			column-span         : 1;
-			background-color    : transparent;
-			border-style        : none;
-			border-image        : none;
-			-webkit-column-span : 1;
-			tbody{
-				tr:nth-child(odd), tr:nth-child(even){
-					background-color : transparent;
-				}
-			}
-		}
-		table{
-			color : @headerText;
-		}
-		p+p{
-			margin-top     : 0em;
-			padding-bottom : 0.5em;
-			text-indent    : 0em;
-		}
+
 		//Triangle dividers
 		hr{
 			visibility       : visible;
 			height           : 6px;
-			margin           : 4px 0px;
+			margin           : 0.12cm 0cm;
 			background-image : @redTriangleImage;
 			background-size  : 100% 100%;
 			border           : none;
 		}
+
+		//Attribute Lists
+		dl {
+			.useSansSerif();
+			color        : @headerText;
+			padding-left :1.3em;
+			text-indent  :-1.3em;
+		}
+		dd {
+			text-indent  : 0px;
+		}
+
+		// Monster Ability table
+		hr + table:first-of-type{
+			margin              : 0;
+			column-span         : 1;
+			color               : @headerText;
+			background-color    : transparent;
+			border-style        : none;
+			border-image        : none;
+			-webkit-column-span : 1;
+			tr {
+				background-color : transparent;
+			}
+			td,th {
+				padding: 0px;
+			}
+		}
 	}
+
 	//Full Width
+	.monster.wide{
+		.useColumns(0.96);
+	}
+
 	hr+hr+blockquote{
 		.useColumns(0.96);
 	}
@@ -485,8 +525,14 @@ body {
 // *    MUSTACHE DIVS/SPANS
 // *****************************/
 .phb3 {
+	.block {
+		break-inside : avoid;
+	}
 	.inline-block {
 		display : block;
+	}
+	div {
+		column-gap : 0.5cm; //Default spacing if a div uses multicolumns
 	}
 }
 
@@ -512,6 +558,9 @@ body {
 // *****************************/
 .phb3 {
 	.blank {
-		height: 0.8em;
+		height: 0.75em;
+	}
+	p + .blank {
+		margin-top: -1em;
 	}
 }

@@ -43,14 +43,14 @@ const NewPage = createClass({
 	getInitialState : function() {
 		return {
 			brew : {
-				text        : this.props.brew.text,
+				text        : this.props.brew.text || '',
 				gDrive      : false,
-				title       : '',
-				description : '',
-				tags        : '',
+				title       : this.props.brew.title || '',
+				description : this.props.brew.description || '',
+				tags        : this.props.brew.tags || '',
 				published   : false,
 				authors     : [],
-				systems     : []
+				systems     : this.props.brew.systems || []
 			},
 
 			isSaving   : false,

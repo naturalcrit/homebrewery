@@ -6,6 +6,11 @@ h5 {
 
 # changelog
 
+### Saturday, 02/5/2021 - v2.11.2
+
+- Fix for edge case where brews could accidentally transfer from Google Drive back to Homebrewery.
+- Move cursor to end of snippet after insertion
+
 ### Saturday, 20/3/2021 - v2.11.1
 
 - Warning when opening brew in your Google Drive trash
@@ -52,10 +57,6 @@ h5 {
 ### Monday, 19/10/2020 - v2.10.2
 - Fixed issue with "recent" item links not updating when transferring between Google Drive.
 
-
-```
-```
-
 ### Monday, 12/10/2020 - v2.10.1
 - Fixed issue with users unable to create new brews
 - Fixing brews being lost when loaded via back button
@@ -72,6 +73,13 @@ h5 {
 
 ### Wednesday, 20/05/2020 - v2.9.0
 - Major refactoring of site backend to work with updated dependencies for security (should be invisible to users)
+
+
+
+
+
+
+\page
 
 ### Wednesday, 11/03/2020 - v2.8.2
 - Fixed delete button removing everyone's copy for brews with multiple authors
@@ -99,9 +107,6 @@ h5 {
 
 ### Saturday, 22/04/2017 - v2.7.4
 - Give ability to hide the render warning notification
-
-
-\page
 
 ### Friday, 03/03/2017 - v2.7.3
 - Increasing the range on the Partial Page Rendering for a quick-fix for it getting out of sync on long brews.
@@ -144,9 +149,6 @@ h5 {
 - Added in a snippet for a split table
 - Added an account nav item to new page
 
-```
-```
-
 ### Sunday, 27/11/2016 - v2.5.1
 - Fixed the column rendering on the new user page. Really should have tested that better
 - Added a hover tooltip to fully read the brew description
@@ -167,6 +169,8 @@ h5 {
 - You can now print from a new page without saving
 - Added the ability to use ctrl+p and ctrl+s to print and save respectively.
 
+\page
+
 ### Monday, 07/11/2016
 - Added final touches to the html validator and updating the rest of the branch
 - If anyone finds issues with the new HTML validator, please let me know. I hope this will bring a more consistent feel to Homebrewery rendering.
@@ -185,8 +189,6 @@ h5 {
 - Homebrewery now re-renders properly when you zoom
 - Fixed the noteblock overlapping into titles (thanks u/dsompura!)
 - Fixed a bad search route in the admin panel (thanks u/SnappyTom!)
-
-\page
 
 ### Friday, 29/07/2016 - v2.2.7
 - Adding in descriptive note blocks. (Thanks calculuschild!)

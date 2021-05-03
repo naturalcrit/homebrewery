@@ -6,6 +6,7 @@ const MonsterBlockGen = require('./monsterblock.gen.js');
 const ClassFeatureGen = require('./classfeature.gen.js');
 const CoverPageGen = require('./coverpage.gen.js');
 const TableOfContentsGen = require('./tableOfContents.gen.js');
+const dedent = require('dedent-tabs').default;
 
 
 module.exports = [
@@ -152,14 +153,19 @@ module.exports = [
 				},
 			},
 			{
+				name : 'Monster Stat Block (unframed)',
+				icon : 'fas fa-paw',
+				gen  : MonsterBlockGen.monster('monster', 2),
+			},
+			{
 				name : 'Monster Stat Block',
 				icon : 'fas fa-spider',
-				gen  : MonsterBlockGen.half,
+				gen  : MonsterBlockGen.monster('monster,frame', 2),
 			},
 			{
 				name : 'Wide Monster Stat Block',
 				icon : 'fas fa-dragon',
-				gen  : MonsterBlockGen.full,
+				gen  : MonsterBlockGen.monster('monster,frame,wide', 4),
 			},
 			{
 				name : 'Cover Page',
@@ -196,63 +202,61 @@ module.exports = [
 				name : 'Table',
 				icon : 'fas fa-th-list',
 				gen  : function(){
-					return [
-						'##### Cookie Tastiness',
-						'| Tastiness | Cookie Type |',
-						'|:----:|:-------------|',
-						'| -5  | Raisin |',
-						'| 8th  | Chocolate Chip |',
-						'| 11th | 2 or lower |',
-						'| 14th | 3 or lower |',
-						'| 17th | 4 or lower |\n\n',
-					].join('\n');
-				},
+					return dedent`
+						##### Character Advancement
+						| Experience Points | Level | Proficiency Bonus |
+						|:------------------|:-----:|:-----------------:|
+						| 0                 | 1     | +2                |
+						| 300               | 2     | +2                |
+						| 900               | 3     | +2                |
+						| 2,700             | 4     | +2                |
+						| 6,500             | 5     | +3                |
+						| 14,000            | 6     | +3                |
+						\n`;
+				}
 			},
 			{
 				name : 'Wide Table',
 				icon : 'fas fa-list',
 				gen  : function(){
-					return [
-						'<div class=\'wide\'>',
-						'##### Cookie Tastiness',
-						'| Tastiness | Cookie Type |',
-						'|:----:|:-------------|',
-						'| -5  | Raisin |',
-						'| 8th  | Chocolate Chip |',
-						'| 11th | 2 or lower |',
-						'| 14th | 3 or lower |',
-						'| 17th | 4 or lower |',
-						'</div>\n\n'
-					].join('\n');
-				},
+					return dedent`
+						{{wide
+						##### Weapons
+						| Name                    | Cost  | Damage          | Weight  | Properties |
+						|:------------------------|:-----:|:----------------|--------:|:-----------|
+						| *Simple Melee Weapons*  |       |                 |         |            |
+						| &emsp; Club             | 1 sp  | 1d4 bludgeoning | 2 lb.   | Light      |
+						| &emsp; Dagger           | 2 gp  | 1d4 piercing    | 1 lb.   | Finesse    |
+						| &emsp; Spear            | 1 gp  | 1d6 piercing    | 3 lb.   | Thrown     |
+						| *Simple Ranged Weapons* |       |                 |         |            |
+						| &emsp; Dart             | 5 cp  | 1d4 piercig     | 1/4 lb. | Finesse    |
+						| &emsp; Shortbow         | 25 gp | 1d6 piercing    | 2 lb.   | Ammunition |
+						| &emsp; Sling            | 1 sp  | 1d4 bludgeoning | &mdash; | Ammunition |
+						}}
+						\n`;
+				}
 			},
 			{
 				name : 'Split Table',
 				icon : 'fas fa-th-large',
 				gen  : function(){
-					return [
-						'<div style=\'column-count:2\'>',
-						'| d10 | Damage Type |',
-						'|:---:|:------------|',
-						'|  1  | Acid        |',
-						'|  2  | Cold        |',
-						'|  3  | Fire        |',
-						'|  4  | Force       |',
-						'|  5  | Lightning   |',
-						'',
-						'```',
-						'```',
-						'',
-						'| d10 | Damage Type |',
-						'|:---:|:------------|',
-						'|  6  | Necrotic    |',
-						'|  7  | Poison      |',
-						'|  8  | Psychic     |',
-						'|  9  | Radiant     |',
-						'|  10 | Thunder     |',
-						'</div>\n\n',
-					].join('\n');
-				},
+					return dedent`
+						##### Typical Difficulty Classes
+						{{column-count="2"
+						| Task Difficulty | DC |
+						|:----------------|:--:|
+						| Very easy       | 5  |
+						| Easy            | 10 |
+						| Medium          | 15 |
+
+						| Task Difficulty   | DC |
+						|:------------------|:--:|
+						| Hard              | 20 |
+						| Very hard         | 25 |
+						| Nearly impossible | 30 |
+						}}
+						\n`;
+				}
 			}
 		]
 	},
