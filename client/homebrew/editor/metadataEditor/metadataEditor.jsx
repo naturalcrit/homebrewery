@@ -18,7 +18,8 @@ const MetadataEditor = createClass({
 				published   : false,
 				authors     : [],
 				systems     : [],
-				renderer    : 'legacy'
+				renderer    : 'legacy',
+				language	: 'en'
 			},
 			onChange : ()=>{}
 		};

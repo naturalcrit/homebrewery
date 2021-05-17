@@ -1,7 +1,9 @@
 module.exports = async(name, title = '', props = {})=>{
+	const lang = this.props.metadata.language ? this.props.metadata.language : 'en';
+	
 	return `
 <!DOCTYPE html>
-<html>
+<html lang="${lang}">
 	<head>
 		<link href="//use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
 		<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
