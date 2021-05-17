@@ -19,7 +19,7 @@ const MetadataEditor = createClass({
 				authors     : [],
 				systems     : [],
 				renderer    : 'legacy',
-				language	: 'en'
+				language   	: 'en'
 			},
 			onChange : ()=>{}
 		};
@@ -182,6 +182,11 @@ const MetadataEditor = createClass({
 				<label>description</label>
 				<textarea value={this.props.metadata.description} className='value'
 					onChange={(e)=>this.handleFieldChange('description', e)} />
+			</div>
+			<div className='field language'>
+				<label>language</label>
+				<textarea value={this.props.metadata.language} className='value'
+					onChange={(e)=>this.handleFieldChange('language', e)} />
 			</div>
 			{/*}
 			<div className='field tags'>

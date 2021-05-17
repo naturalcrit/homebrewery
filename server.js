@@ -188,7 +188,7 @@ app.use((req, res)=>{
 		account     : req.account,
 		enable_v3   : config.get('enable_v3')
 	};
-	templateFn('homebrew', title = req.brew ? req.brew.title : '', props)
+	templateFn('homebrew', title = req.brew ? req.brew.title : '', props, lang = req.brew ? req.brew.language : 'en')
         .then((page)=>{ res.send(page); })
         .catch((err)=>{
         	console.log('TEMPLATE ERROR');

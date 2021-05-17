@@ -1,6 +1,4 @@
-module.exports = async(name, title = '', props = {})=>{
-	const lang = this.props.metadata.language ? this.props.metadata.language : 'en';
-	
+module.exports = async(name, title = '', props = {}, lang='en')=>{
 	return `
 <!DOCTYPE html>
 <html lang="${lang}">
