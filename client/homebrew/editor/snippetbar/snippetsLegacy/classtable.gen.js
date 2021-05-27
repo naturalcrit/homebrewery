@@ -70,9 +70,10 @@ module.exports = {
 		let cantrips = 3;
 		let spells = 1;
 		let slots = 2;
-		return `<div class='classTable wide'>\n##### The ${classname}\n` +
-		`| Level | Proficiency Bonus | Features | Cantrips Known | Spells Known | 1st | 2nd | 3rd | 4th | 5th | 6th | 7th | 8th | 9th |\n`+
-		`|:---:|:---:|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n${
+		return `<div class='classTable wide twoHeadingRows'>\n##### The ${classname}\n` +
+		`| <th colspan=4></th> <th colspan=9>—Spell Slots per Spell Level—</th> |\n` +
+		`|:---:|:---:|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n` +
+		`| Level | Proficiency Bonus | Features | Cantrips Known | Spells Known | 1st | 2nd | 3rd | 4th | 5th | 6th | 7th | 8th | 9th |\n${
 			_.map(levels, function(levelName, level){
 				const res = [
 					levelName,
