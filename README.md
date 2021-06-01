@@ -1,3 +1,7 @@
+# This is a fork!
+
+This is a fork of the [Homebrewery](https://github.com/naturalcrit/homebrewery) repo that maintains https://homebrewery.naturalcrit.com
+
 # The Homebrewery
 
 [![Homebrewery](https://circleci.com/gh/naturalcrit/homebrewery/tree/master.svg?style=svg)](https://app.circleci.com/pipelines/github/naturalcrit/homebrewery?branch=master)
@@ -15,7 +19,7 @@ clone it, tinker with it. If you want to make changes to the code, you can run
 your own local version for testing by following the installation instructions
 below.
 
-[homebrewery-url]: https://homebrewery.naturalcrit.com
+[homebrewery-url]: https://homebrewery.theglowingfool.com
 
 ### Installation
 First, install three programs that the Homebrewery requires to run and retrieve
