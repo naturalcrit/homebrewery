@@ -70,7 +70,7 @@ const MetadataEditor = createClass({
 		const title = `${meta.title} [${meta.systems.join(' ')}]`;
 		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
 
-**[Homebrewery Link](http://homebrewery.naturalcrit.com/share/${meta.shareId})**`;
+**[Homebrewery Link](http://homebrewery.theglowingfool.com/share/${meta.shareId})**`;
 
 		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
 	},

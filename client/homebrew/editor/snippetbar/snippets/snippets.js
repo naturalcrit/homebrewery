@@ -52,7 +52,7 @@ module.exports = [
 				gen  : (brew)=>{
 					return `<img ` +
 							`src='https://api.qrserver.com/v1/create-qr-code/?data=` +
-							`https://homebrewery.naturalcrit.com/share/${brew.shareId}` +
+							`https://homebrewery.theglowingfool.com/share/${brew.shareId}` +
 							`&amp;size=100x100' ` +
 							`style='width:100px;mix-blend-mode:multiply'/>`;
 				}
