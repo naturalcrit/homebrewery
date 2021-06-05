@@ -20,7 +20,7 @@ const Editor = createClass({
 		return {
 			brew : {
 				text  : '',
-				style : 'sample style'
+				style : ''
 			},
 
 			onTextChange  : ()=>{},
