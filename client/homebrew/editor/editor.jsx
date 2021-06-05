@@ -19,57 +19,62 @@ const Editor = createClass({
 	getDefaultProps : function() {
 		return {
 			brew : {
-				text : ''
+				text  : '',
+				style : 'sample style'
 			},
-			onChange : ()=>{},
 
-			onMetadataChange : ()=>{},
-			showMetaButton   : true,
-			renderer         : 'legacy'
+			onTextChange  : ()=>{},
+			onStyleChange : ()=>{},
+			onMetaChange  : ()=>{},
+
+			renderer : 'legacy'
 		};
 	},
 	getInitialState : function() {
 		return {
-			showMetadataEditor : false
+			view : 'text' //'text', 'style', 'meta'
 		};
 	},
-	cursorPosition : {
-		line : 0,
-		ch   : 0
-	},
+
+	isText  : function() {return this.state.view == 'text';},
+	isStyle : function() {return this.state.view == 'style';},
+	isMeta  : function() {return this.state.view == 'meta';},
 
 	componentDidMount : function() {
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
 	},
+
 	componentWillUnmount : function() {
 		window.removeEventListener('resize', this.updateEditorSize);
 	},
 
 	updateEditorSize : function() {
-		let paneHeight = this.refs.main.parentNode.clientHeight;
-		paneHeight -= SNIPPETBAR_HEIGHT + 1;
-		this.refs.codeEditor.codeMirror.setSize(null, paneHeight);
+		if(this.refs.codeEditor) {
+			let paneHeight = this.refs.main.parentNode.clientHeight;
+			paneHeight -= SNIPPETBAR_HEIGHT + 1;
+			this.refs.codeEditor.codeMirror.setSize(null, paneHeight);
+		}
 	},
 
-	handleTextChange : function(text){
-		this.props.onChange(text);
-	},
-	handleCursorActivty : function(curpos){
-		this.cursorPosition = curpos;
-	},
 	handleInject : function(injectText){
-		const lines = this.props.brew.text.split('\n');
-		lines[this.cursorPosition.line] = splice(lines[this.cursorPosition.line], this.cursorPosition.ch, injectText);
+		const text = (this.isText() ? this.props.brew.text : this.props.brew.style);
 
-		this.handleTextChange(lines.join('\n'));
-		this.refs.codeEditor.setCursorPosition(this.cursorPosition.line + injectText.split('\n').length, this.cursorPosition.ch  + injectText.length);
+		const lines = text.split('\n');
+		const cursorPos = this.refs.codeEditor.getCursorPosition();
+		lines[cursorPos.line] = splice(lines[cursorPos.line], cursorPos.ch, injectText);
+
+		this.refs.codeEditor.setCursorPosition(cursorPos.line + injectText.split('\n').length, cursorPos.ch  + injectText.length);
+
+		if(this.isText()) this.props.onTextChange(lines.join('\n'));
+		if(this.isStyle()) this.props.onStyleChange(lines.join('\n'));
 	},
-	handgleToggle : function(){
+
+	handleViewChange : function(newView){
 		this.setState({
-			showMetadataEditor : !this.state.showMetadataEditor
-		});
+			view : newView
+		}, this.updateEditorSize);	//TODO: not sure if updateeditorsize needed
 	},
 
 	getCurrentPage : function(){
@@ -82,71 +87,72 @@ const Editor = createClass({
 
 	highlightCustomMarkdown : function(){
 		if(!this.refs.codeEditor) return;
-		const codeMirror = this.refs.codeEditor.codeMirror;
+		if(this.state.view === 'text')  {
+			const codeMirror = this.refs.codeEditor.codeMirror;
 
-		//reset custom text styles
-		const customHighlights = codeMirror.getAllMarks();
-		for (let i=0;i<customHighlights.length;i++) customHighlights[i].clear();
+			//reset custom text styles
+			const customHighlights = codeMirror.getAllMarks();
+			for (let i=0;i<customHighlights.length;i++) customHighlights[i].clear();
 
-		const lineNumbers = _.reduce(this.props.brew.text.split('\n'), (r, line, lineNumber)=>{
+			const lineNumbers = _.reduce(this.props.brew.text.split('\n'), (r, line, lineNumber)=>{
 
-			//reset custom line styles
-			codeMirror.removeLineClass(lineNumber, 'background');
-			codeMirror.removeLineClass(lineNumber, 'text');
+				//reset custom line styles
+				codeMirror.removeLineClass(lineNumber, 'background');
+				codeMirror.removeLineClass(lineNumber, 'text');
 
-			// Legacy Codemirror styling
-			if(this.props.renderer == 'legacy') {
-				if(line.includes('\\page')){
-					codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
-					r.push(lineNumber);
-				}
-			}
-
-			// New Codemirror styling for V3 renderer
-			if(this.props.renderer == 'V3') {
-				if(line.startsWith('\\page')){
-					codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
-					r.push(lineNumber);
-				}
-
-				if(line.match(/^\\column$/)){
-					codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
-					r.push(lineNumber);
-				}
-
-				// Highlight inline spans {{content}}
-				if(line.includes('{{') && line.includes('}}')){
-					const regex = /{{(?:="[\w,\-. ]*"|[^"'\s])*\s*|}}/g;
-					let match;
-					let blockCount = 0;
-					while ((match = regex.exec(line)) != null) {
-						if(match[0].startsWith('{')) {
-							blockCount += 1;
-						} else {
-							blockCount -= 1;
-						}
-						if(blockCount < 0) {
-							blockCount = 0;
-							continue;
-						}
-						codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: 'inline-block' });
+				// Legacy Codemirror styling
+				if(this.props.renderer == 'legacy') {
+					if(line.includes('\\page')){
+						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
+						r.push(lineNumber);
 					}
-				} else if(line.trimLeft().startsWith('{{') || line.trimLeft().startsWith('}}')){
-					// Highlight block divs {{\n Content \n}}
-					let endCh = line.length+1;
-
-					const match = line.match(/^ *{{(?:="[\w,\-. ]*"|[^"'\s])*$|^ *}}$/);
-					if(match)
-						endCh = match.index+match[0].length;
-					codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
 				}
-			}
 
-			return r;
-		}, []);
-		return lineNumbers;
+				// New Codemirror styling for V3 renderer
+				if(this.props.renderer == 'V3') {
+					if(line.startsWith('\\page')){
+						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
+						r.push(lineNumber);
+					}
+
+					if(line.match(/^\\column$/)){
+						codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
+						r.push(lineNumber);
+					}
+
+					// Highlight inline spans {{content}}
+					if(line.includes('{{') && line.includes('}}')){
+						const regex = /{{(?:="[\w,\-. ]*"|[^"'\s])*\s*|}}/g;
+						let match;
+						let blockCount = 0;
+						while ((match = regex.exec(line)) != null) {
+							if(match[0].startsWith('{')) {
+								blockCount += 1;
+							} else {
+								blockCount -= 1;
+							}
+							if(blockCount < 0) {
+								blockCount = 0;
+								continue;
+							}
+							codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: 'inline-block' });
+						}
+					} else if(line.trimLeft().startsWith('{{') || line.trimLeft().startsWith('}}')){
+						// Highlight block divs {{\n Content \n}}
+						let endCh = line.length+1;
+
+						const match = line.match(/^ *{{(?:="[\w,\-. ]*"|[^"'\s])*$|^ *}}$/);
+						if(match)
+							endCh = match.index+match[0].length;
+						codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
+					}
+				}
+
+				return r;
+			}, []);
+			return lineNumbers;
+		}
 	},
-
 
 	brewJump : function(){
 		const currentPage = this.getCurrentPage();
@@ -158,12 +164,26 @@ const Editor = createClass({
 		this.refs.codeEditor.updateSize();
 	},
 
-	renderMetadataEditor : function(){
-		if(!this.state.showMetadataEditor) return;
-		return <MetadataEditor
-			metadata={this.props.brew}
-			onChange={this.props.onMetadataChange}
-		/>;
+	renderEditor : function(){
+		if(this.isText()){
+			return <CodeEditor key='text'
+				ref='codeEditor'
+				language='gfm'
+				value={this.props.brew.text}
+				onChange={this.props.onTextChange} />;
+		}
+		if(this.isStyle()){
+			return <CodeEditor key='style'
+				ref='codeEditor'
+				language='css'
+				value={this.props.brew.style}
+				onChange={this.props.onStyleChange} />;
+		}
+		if(this.isMeta()){
+			return <MetadataEditor
+				metadata={this.props.brew}
+				onChange={this.props.onMetaChange} />;
+		}
 	},
 
 	render : function(){
@@ -172,25 +192,13 @@ const Editor = createClass({
 			<div className='editor' ref='main'>
 				<SnippetBar
 					brew={this.props.brew}
+					view={this.state.view}
+					onViewChange={this.handleViewChange}
 					onInject={this.handleInject}
-					onToggle={this.handgleToggle}
-					showmeta={this.state.showMetadataEditor}
-					showMetaButton={this.props.showMetaButton}
+					showEditButtons={this.props.showEditButtons}
 					renderer={this.props.renderer} />
-				{this.renderMetadataEditor()}
-				<CodeEditor
-					ref='codeEditor'
-					wrap={true}
-					language='gfm'
-					value={this.props.brew.text}
-					onChange={this.handleTextChange}
-					onCursorActivity={this.handleCursorActivty} />
 
-				{/*
-				<div className='brewJump' onClick={this.brewJump}>
-					<i className='fas fa-arrow-right' />
-				</div>
-				*/}
+				{this.renderEditor()}
 			</div>
 		);
 	}

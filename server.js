@@ -21,10 +21,27 @@ const getBrewFromId = asyncHandler(async (id, accessType)=>{
 		brew = await GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, id, accessType);
 	} else {
 		brew = await HomebrewModel.get(accessType == 'edit' ? { editId: id } : { shareId: id });
-		brew.sanatize(true);
+		brew = brew.toObject();
+	}
+
+	brew = sanitizeBrew(brew, accessType === 'edit' ? false : true);
+	//Split brew.text into text and style
+	if(brew.text.startsWith('```css')) {
+		const index = brew.text.indexOf('```\n\n');
+		brew.style = brew.text.slice(7, index - 1);
+		brew.text = brew.text.slice(index + 5);
 	}
 	return brew;
 });
+
+const sanitizeBrew = (brew, full=false)=>{
+	delete brew._id;
+	delete brew.__v;
+	if(full){
+		delete brew.editId;
+	}
+	return brew;
+};
 
 app.use('/', serveCompressedStaticAssets(`${__dirname}/build`));
 
@@ -160,7 +177,7 @@ app.get('/share/:id', asyncHandler(async (req, res, next)=>{
 		await GoogleActions.increaseView(googleId, shareId, 'share', brew)
 					.catch((err)=>{next(err);});
 	} else {
-		await brew.increaseView();
+		await HomebrewModel.increaseView({ shareId: brew.shareId });
 	}
 
 	req.brew = brew;

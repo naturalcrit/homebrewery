@@ -20,6 +20,7 @@ const BrewRenderer = createClass({
 	getDefaultProps : function() {
 		return {
 			text     : '',
+			style    : '',
 			renderer : 'legacy',
 			errors   : []
 		};
@@ -187,6 +188,10 @@ const BrewRenderer = createClass({
 						</div>
 
 						<div className='pages' ref='pages'>
+							{/* Apply CSS from Style tab */}
+							<div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${this.props.style} </style>` }} />
+
+							{/* Render pages from Markdown tab */}
 							{this.state.isMounted
 								? this.renderPages()
 							  : null}
