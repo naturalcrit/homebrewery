@@ -24,28 +24,15 @@ const HomebrewSchema = mongoose.Schema({
 	version    : { type: Number, default: 1 }
 }, { versionKey: false });
 
-
-HomebrewSchema.methods.sanatize = function(full=false){
-	const brew = this.toJSON();
-	delete brew._id;
-	delete brew.__v;
-	if(full){
-		delete brew.editId;
-	}
-	return brew;
-};
-
-HomebrewSchema.methods.increaseView = async function(){
-	this.lastViewed = new Date();
-	this.views = this.views + 1;
-	const text = this.text;
-	this.text = undefined;
-	await this.save()
+HomebrewSchema.statics.increaseView = async function(query) {
+	const brew = await Homebrew.findOne(query).exec();
+	brew.lastViewed = new Date();
+	brew.views = brew.views + 1;
+	await brew.save()
 	.catch((err)=>{
 		return err;
 	});
-	this.text = text;
-	return this;
+	return brew;
 };
 
 HomebrewSchema.statics.get = function(query){

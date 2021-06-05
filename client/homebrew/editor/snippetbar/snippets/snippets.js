@@ -66,7 +66,7 @@ module.exports = [
 			{
 				name : 'Auto-incrementing Page Number',
 				icon : 'fas fa-sort-numeric-down',
-				gen  : '{{\npageNumber,auto\n}}\n\n'
+				gen  : '{{pageNumber,auto\n}}\n\n'
 			},
 			{
 				name : 'Link to page',
