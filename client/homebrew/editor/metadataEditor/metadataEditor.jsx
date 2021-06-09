@@ -68,7 +68,7 @@ const MetadataEditor = createClass({
 	getRedditLink : function(){
 		const meta = this.props.metadata;
 
-		const shareLink = (meta.googleID || '') + meta.shareId;
+		const shareLink = (meta.googleId || '') + meta.shareId;
 		const title = `${meta.title} [${meta.systems.join(' ')}]`;
 		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
 
