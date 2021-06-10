@@ -37,14 +37,13 @@ const Snippetbar = createClass({
 	},
 
 	renderSnippetGroups : function(){
+		let snippets = [];
 
 		if(this.props.view === 'text') {
 			if(this.props.renderer === 'V3')
 				snippets = SnippetsV3;
 			else
 				snippets = SnippetsLegacy;
-		} else {
-			snippets = [];
 		}
 
 		return _.map(snippets, (snippetGroup)=>{

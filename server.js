@@ -35,7 +35,7 @@ const getBrewFromId = asyncHandler(async (id, accessType)=>{
 		brew.style = dedent`
 			/*=======---  Example CSS styling  ---=======*/
 			/* Any CSS here will apply to your document! */
-			
+
 			.myExampleClass {
  			  color: black;
 			}`;
@@ -217,7 +217,6 @@ app.use((req, res)=>{
 	templateFn('homebrew', title = req.brew ? req.brew.title : '', props)
         .then((page)=>{ res.send(page); })
         .catch((err)=>{
-        	console.log('TEMPLATE ERROR');
         	console.log(err);
         	return res.sendStatus(500);
         });

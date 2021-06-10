@@ -27,6 +27,7 @@ const NewPage = createClass({
 				style : dedent`
 										/*=======---  Example CSS styling  ---=======*/
 										/* Any CSS here will apply to your document! */
+										
 										.myExampleClass {
 							 			  color: black;
 										}`,
