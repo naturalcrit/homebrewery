@@ -138,25 +138,25 @@ app.get('/download/:id', asyncHandler(async (req, res)=>{
 
 //User Page
 app.get('/user/:username', async (req, res, next)=>{
-	const fullAccess = req.account && (req.account.username == req.params.username);
+	const ownAccount = req.account && (req.account.username == req.params.username);
 
-	let googleBrews = [];
-
-	if(req.account && req.account.googleId){
-		googleBrews = await GoogleActions.listGoogleBrews(req, res)
-		.catch((err)=>{
-			console.error(err);
-		});
-	}
-
-	const brews = await HomebrewModel.getByUser(req.params.username, fullAccess)
+	let brews = await HomebrewModel.getByUser(req.params.username, ownAccount)
 	.catch((err)=>{
 		console.log(err);
 	});
 
-	if(googleBrews) {
-		req.brews = _.concat(brews, googleBrews);
-	} else {req.brews = brews;}
+	if(ownAccount && req?.account?.googleId){
+		const googleBrews = await GoogleActions.listGoogleBrews(req, res)
+		.catch((err)=>{
+			console.error(err);
+		});
+
+		brews = _.concat(brews, googleBrews);
+	}
+
+	req.brews = _.map(brews, (brew)=>{
+		return sanitizeBrew(brew, !ownAccount);
+	});
 
 	return next();
 });

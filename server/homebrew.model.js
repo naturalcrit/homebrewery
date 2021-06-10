@@ -58,9 +58,7 @@ HomebrewSchema.statics.getByUser = function(username, allowAccess=false){
 		}
 		Homebrew.find(query, (err, brews)=>{
 			if(err) return reject('Can not find brew');
-			return resolve(_.map(brews, (brew)=>{
-				return brew.sanatize(!allowAccess);
-			}));
+			return resolve(brews);
 		});
 	});
 };
