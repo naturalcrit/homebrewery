@@ -72,7 +72,7 @@
     "react-router-dom": "5.2.0",
     "sanitize-filename": "1.6.3",
     "superagent": "^6.1.0",
-    "vitreum": "git+https://github.com/calculuschild/vitreum.git"
+    "vitreum": "git+https://git@github.com/calculuschild/vitreum.git"
   },
   "devDependencies": {
     "eslint": "^7.27.0",
