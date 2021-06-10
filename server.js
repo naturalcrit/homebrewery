@@ -9,6 +9,7 @@ const GoogleActions = require('./server/googleActions.js');
 const serveCompressedStaticAssets = require('./server/static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
+const dedent = require('dedent-tabs').default;
 
 //Get the brew object from the HB database or Google Drive
 const getBrewFromId = asyncHandler(async (id, accessType)=>{
@@ -30,6 +31,14 @@ const getBrewFromId = asyncHandler(async (id, accessType)=>{
 		const index = brew.text.indexOf('```\n\n');
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
+	} else {
+		brew.style = dedent`
+			/*=======---  Example CSS styling  ---=======*/
+			/* Any CSS here will apply to your document! */
+
+			.myExampleClass {
+ 			  color: black;
+			}`;
 	}
 	return brew;
 });
@@ -208,7 +217,6 @@ app.use((req, res)=>{
 	templateFn('homebrew', title = req.brew ? req.brew.title : '', props)
         .then((page)=>{ res.send(page); })
         .catch((err)=>{
-        	console.log('TEMPLATE ERROR');
         	console.log(err);
         	return res.sendStatus(500);
         });

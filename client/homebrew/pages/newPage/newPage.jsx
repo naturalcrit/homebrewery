@@ -3,6 +3,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const request = require('superagent');
+const dedent = require('dedent-tabs').default;
 
 const Markdown = require('naturalcrit/markdown.js');
 
@@ -16,15 +17,20 @@ const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
-
 const KEY = 'homebrewery-new';
 
 const NewPage = createClass({
 	getDefaultProps : function() {
 		return {
 			brew : {
-				text      : '',
-				style     : '',
+				text  : '',
+				style : dedent`
+										/*=======---  Example CSS styling  ---=======*/
+										/* Any CSS here will apply to your document! */
+										
+										.myExampleClass {
+							 			  color: black;
+										}`,
 				shareId   : null,
 				editId    : null,
 				createdAt : null,
@@ -52,7 +58,8 @@ const NewPage = createClass({
 				tags        : this.props.brew.tags || '',
 				published   : false,
 				authors     : [],
-				systems     : this.props.brew.systems || []
+				systems     : this.props.brew.systems || [],
+				renderer    : this.props.brew.renderer || 'legacy'
 			},
 
 			isSaving   : false,
@@ -214,7 +221,7 @@ const NewPage = createClass({
 						onMetaChange={this.handleMetaChange}
 						renderer={this.state.brew.renderer}
 					/>
-					<BrewRenderer text={this.state.brew.text} errors={this.state.htmlErrors} renderer={this.state.brew.renderer} />
+					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} errors={this.state.htmlErrors}/>
 				</SplitPane>
 			</div>
 		</div>;
