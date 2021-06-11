@@ -100,6 +100,7 @@ GoogleActions = {
 		})
 		.catch((err)=>{
 	    return console.error(`Error Listing Google Brews: ${err}`);
+			//TODO: Should break out here, but continues on for some reason.
 	  });
 
 		if(!obj.data.files.length) {

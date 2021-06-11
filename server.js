@@ -151,7 +151,8 @@ app.get('/user/:username', async (req, res, next)=>{
 			console.error(err);
 		});
 
-		brews = _.concat(brews, googleBrews);
+		if(googleBrews)
+			brews = _.concat(brews, googleBrews);
 	}
 
 	req.brews = _.map(brews, (brew)=>{
