@@ -113,7 +113,7 @@ app.get('/source/:id', asyncHandler(async (req, res)=>{
 	const brew = await getBrewFromId(req.params.id, 'share');
 
 	const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
-	let text = brew.text;
+	let text = `\`\`\`css\n${brew.style}\n\`\`\`\n\n${brew.text}`;
 	for (const replaceStr in replaceStrings) {
 		text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
 	}
@@ -132,8 +132,9 @@ app.get('/download/:id', asyncHandler(async (req, res)=>{
 		'Cache-Control'       : 'no-cache',
 		'Content-Type'        : 'text/plain',
 		'Content-Disposition' : `attachment; filename="${fileName}.txt"`
-	});
-	res.status(200).send(brew.text);
+	});	
+	let text = `\`\`\`css\n${brew.style}\n\`\`\`\n\n${brew.text}`;	
+	res.status(200).send(text);
 }));
 
 //User Page
