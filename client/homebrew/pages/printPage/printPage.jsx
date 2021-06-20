@@ -13,6 +13,7 @@ const PrintPage = createClass({
 			query : {},
 			brew  : {
 				text     : '',
+				style    : '',
 				renderer : 'legacy'
 			}
 		};
@@ -58,6 +59,8 @@ const PrintPage = createClass({
 	render : function(){
 		return <div>
 			<Meta name='robots' content='noindex, nofollow' />
+			{/* Apply CSS from Style tab */}
+			<div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${this.props.brew.style} </style>` }} />
 			{this.renderPages()}
 		</div>;
 	}

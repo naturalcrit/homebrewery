@@ -78,7 +78,13 @@ const HomePage = createClass({
 
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
-					<Editor brew={this.state.brew} onChange={this.handleTextChange} showMetaButton={false} ref='editor'/>
+					<Editor
+						ref='editor'
+						brew={this.state.brew}
+						onTextChange={this.handleTextChange}
+						renderer={this.state.brew.renderer}
+						showEditButtons={false}
+					/>
 					<BrewRenderer text={this.state.brew.text} />
 				</SplitPane>
 			</div>

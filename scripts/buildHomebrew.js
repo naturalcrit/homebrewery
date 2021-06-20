@@ -7,9 +7,13 @@ const isDev = !!process.argv.find((arg)=>arg=='--dev');
 
 const lessTransform  = require('vitreum/transforms/less.js');
 const assetTransform = require('vitreum/transforms/asset.js');
-//const Meta = require('vitreum/headtags');
+const babel          = require('@babel/core');
+
+const babelify = async (code)=>(await babel.transformAsync(code, { presets: ['@babel/preset-env', '@babel/preset-react'], plugins: ['@babel/plugin-transform-runtime'] })).code;
 
 const transforms = {
+	'.js'   : (code, filename, opts)=>babelify(code),
+	'.jsx'  : (code, filename, opts)=>babelify(code),
 	'.less' : lessTransform,
 	'*'     : assetTransform('./build')
 };
