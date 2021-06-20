@@ -45,7 +45,7 @@ HomebrewSchema.statics.get = function(query){
 			}
 			if(!brews[0].renderer)
 				brews[0].renderer = 'legacy';
-			return resolve(brews[0].toObject()); //Convert Mongo Object to JSObject
+			return resolve(brews[0]);
 		});
 	});
 };
