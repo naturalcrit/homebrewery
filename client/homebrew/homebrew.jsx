@@ -35,7 +35,6 @@ const Homebrew = createClass({
 		global.account = this.props.account;
 		global.version = this.props.version;
 		global.enable_v3 = this.props.enable_v3;
-
 	},
 	render : function (){
 		return (
@@ -45,7 +44,7 @@ const Homebrew = createClass({
 						<Route path='/edit/:id' component={(routeProps)=><EditPage id={routeProps.match.params.id} brew={this.props.brew} />}/>
 						<Route path='/share/:id' component={(routeProps)=><SharePage id={routeProps.match.params.id} brew={this.props.brew} />}/>
 						<Route path='/new/:id' component={(routeProps)=><NewPage id={routeProps.match.params.id} brew={this.props.brew} />}/>
-						<Route path='/new' exact component={NewPage}/>
+						<Route path='/new' exact component={(routeProps)=><NewPage/>}/>
 						<Route path='/user/:username' component={(routeProps)=><UserPage username={routeProps.match.params.username} brews={this.props.brews} />}/>
 						<Route path='/print/:id' component={(routeProps)=><PrintPage brew={this.props.brew} query={queryString.parse(routeProps.location.search)} /> } />
 						<Route path='/print' exact component={(routeProps)=><PrintPage query={queryString.parse(routeProps.location.search)} /> } />

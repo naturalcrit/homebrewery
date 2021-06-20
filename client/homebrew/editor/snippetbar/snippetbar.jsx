@@ -16,12 +16,13 @@ const execute = function(val, brew){
 const Snippetbar = createClass({
 	getDefaultProps : function() {
 		return {
-			brew           : {},
-			onInject       : ()=>{},
-			onToggle       : ()=>{},
-			showmeta       : false,
-			showMetaButton : true,
-			renderer       : ''
+			brew            : {},
+			view            : 'text',
+			onViewChange    : ()=>{},
+			onInject        : ()=>{},
+			onToggle        : ()=>{},
+			showEditButtons : true,
+			renderer        : 'legacy'
 		};
 	},
 
@@ -36,12 +37,16 @@ const Snippetbar = createClass({
 	},
 
 	renderSnippetGroups : function(){
-		if(this.props.renderer == 'V3')
-			Snippets = SnippetsV3;
-		else
-			Snippets = SnippetsLegacy;
+		let snippets = [];
 
-		return _.map(Snippets, (snippetGroup)=>{
+		if(this.props.view === 'text') {
+			if(this.props.renderer === 'V3')
+				snippets = SnippetsV3;
+			else
+				snippets = SnippetsLegacy;
+		}
+
+		return _.map(snippets, (snippetGroup)=>{
 			return <SnippetGroup
 				brew={this.props.brew}
 				groupName={snippetGroup.groupName}
@@ -53,19 +58,29 @@ const Snippetbar = createClass({
 		});
 	},
 
-	renderMetadataButton : function(){
-		if(!this.props.showMetaButton) return;
-		return <div className={cx('snippetBarButton', 'toggleMeta', { selected: this.props.showmeta })}
-			onClick={this.props.onToggle}>
-			<i className='fas fa-info-circle' />
-			<span className='groupName'>Properties</span>
+	renderEditorButtons : function(){
+		if(!this.props.showEditButtons) return;
+
+		return <div className='editors'>
+			<div className={cx('text', { selected: this.props.view === 'text' })}
+				 onClick={()=>this.props.onViewChange('text')}>
+				<i className='fa fa-beer' />
+			</div>
+			<div className={cx('style', { selected: this.props.view === 'style' })}
+				 onClick={()=>this.props.onViewChange('style')}>
+				<i className='fa fa-paint-brush' />
+			</div>
+			<div className={cx('meta', { selected: this.props.view === 'meta' })}
+				onClick={()=>this.props.onViewChange('meta')}>
+				<i className='fas fa-info-circle' />
+			</div>
 		</div>;
 	},
 
 	render : function(){
 		return <div className='snippetBar'>
 			{this.renderSnippetGroups()}
-			{this.renderMetadataButton()}
+			{this.renderEditorButtons()}
 		</div>;
 	}
 });

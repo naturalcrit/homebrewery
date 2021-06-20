@@ -24,28 +24,15 @@ const HomebrewSchema = mongoose.Schema({
 	version    : { type: Number, default: 1 }
 }, { versionKey: false });
 
-
-HomebrewSchema.methods.sanatize = function(full=false){
-	const brew = this.toJSON();
-	delete brew._id;
-	delete brew.__v;
-	if(full){
-		delete brew.editId;
-	}
-	return brew;
-};
-
-HomebrewSchema.methods.increaseView = async function(){
-	this.lastViewed = new Date();
-	this.views = this.views + 1;
-	const text = this.text;
-	this.text = undefined;
-	await this.save()
+HomebrewSchema.statics.increaseView = async function(query) {
+	const brew = await Homebrew.findOne(query).exec();
+	brew.lastViewed = new Date();
+	brew.views = brew.views + 1;
+	await brew.save()
 	.catch((err)=>{
 		return err;
 	});
-	this.text = text;
-	return this;
+	return brew;
 };
 
 HomebrewSchema.statics.get = function(query){
@@ -71,9 +58,7 @@ HomebrewSchema.statics.getByUser = function(username, allowAccess=false){
 		}
 		Homebrew.find(query, (err, brews)=>{
 			if(err) return reject('Can not find brew');
-			return resolve(_.map(brews, (brew)=>{
-				return brew.sanatize(!allowAccess);
-			}));
+			return resolve(brews);
 		});
 	});
 };

@@ -20,6 +20,7 @@ const BrewRenderer = createClass({
 	getDefaultProps : function() {
 		return {
 			text     : '',
+			style    : '',
 			renderer : 'legacy',
 			errors   : []
 		};
@@ -123,9 +124,9 @@ const BrewRenderer = createClass({
 
 	renderPage : function(pageText, index){
 		if(this.props.renderer == 'legacy')
-			return <div className='phb' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(pageText) }} key={index} />;
+			return <div className='phb page' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(pageText) }} key={index} />;
 		else
-			return <div className='phb3' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: Markdown.render(pageText) }} key={index} />;
+			return <div className='phb3 page' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: Markdown.render(pageText) }} key={index} />;
 	},
 
 	renderPages : function(){
@@ -187,6 +188,10 @@ const BrewRenderer = createClass({
 						</div>
 
 						<div className='pages' ref='pages'>
+							{/* Apply CSS from Style tab */}
+							<div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${this.props.style} </style>` }} />
+
+							{/* Render pages from Markdown tab */}
 							{this.state.isMounted
 								? this.renderPages()
 							  : null}

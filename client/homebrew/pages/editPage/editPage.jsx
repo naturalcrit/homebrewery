@@ -31,6 +31,7 @@ const EditPage = createClass({
 		return {
 			brew : {
 				text      : '',
+				style     : '',
 				shareId   : null,
 				editId    : null,
 				createdAt : null,
@@ -106,17 +107,8 @@ const EditPage = createClass({
 		this.refs.editor.update();
 	},
 
-	handleMetadataChange : function(metadata){
-		this.setState((prevState)=>({
-			brew      : _.merge({}, prevState.brew, metadata),
-			isPending : true,
-		}), ()=>this.trySave());
-
-	},
-
 	handleTextChange : function(text){
-
-		//If there are errors, run the validator on everychange to give quick feedback
+		//If there are errors, run the validator on every change to give quick feedback
 		let htmlErrors = this.state.htmlErrors;
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 
@@ -125,6 +117,21 @@ const EditPage = createClass({
 			isPending  : true,
 			htmlErrors : htmlErrors
 		}), ()=>this.trySave());
+	},
+
+	handleStyleChange : function(style){
+		this.setState((prevState)=>({
+			brew      : _.merge({}, prevState.brew, { style: style }),
+			isPending : true
+		}), ()=>this.trySave());
+	},
+
+	handleMetaChange : function(metadata){
+		this.setState((prevState)=>({
+			brew      : _.merge({}, prevState.brew, metadata),
+			isPending : true,
+		}), ()=>this.trySave());
+
 	},
 
 	hasChanges : function(){
@@ -141,7 +148,6 @@ const EditPage = createClass({
 	},
 
 	handleGoogleClick : function(){
-		console.log('handlegoogleclick');
 		if(!global.account?.googleId) {
 			this.setState({
 				alertLoginToTransfer : true
@@ -409,11 +415,12 @@ const EditPage = createClass({
 					<Editor
 						ref='editor'
 						brew={this.state.brew}
-						onChange={this.handleTextChange}
-						onMetadataChange={this.handleMetadataChange}
+						onTextChange={this.handleTextChange}
+						onStyleChange={this.handleStyleChange}
+						onMetaChange={this.handleMetaChange}
 						renderer={this.state.brew.renderer}
 					/>
-					<BrewRenderer text={this.state.brew.text} errors={this.state.htmlErrors} renderer={this.state.brew.renderer} />
+					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} errors={this.state.htmlErrors} />
 				</SplitPane>
 			</div>
 		</div>;

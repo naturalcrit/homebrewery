@@ -3,6 +3,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const request = require('superagent');
+const dedent = require('dedent-tabs').default;
 
 const Markdown = require('naturalcrit/markdown.js');
 
@@ -16,14 +17,20 @@ const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
-
 const KEY = 'homebrewery-new';
 
 const NewPage = createClass({
 	getDefaultProps : function() {
 		return {
 			brew : {
-				text      : '',
+				text  : '',
+				style : dedent`
+										/*=======---  Example CSS styling  ---=======*/
+										/* Any CSS here will apply to your document! */
+										
+										.myExampleClass {
+							 			  color: black;
+										}`,
 				shareId   : null,
 				editId    : null,
 				createdAt : null,
@@ -44,18 +51,21 @@ const NewPage = createClass({
 		return {
 			brew : {
 				text        : this.props.brew.text || '',
+				style       : this.props.brew.style || '',
 				gDrive      : false,
 				title       : this.props.brew.title || '',
 				description : this.props.brew.description || '',
 				tags        : this.props.brew.tags || '',
 				published   : false,
 				authors     : [],
-				systems     : this.props.brew.systems || []
+				systems     : this.props.brew.systems || [],
+				renderer    : this.props.brew.renderer || 'legacy'
 			},
 
 			isSaving   : false,
 			saveGoogle : (global.account && global.account.googleId ? true : false),
-			errors     : []
+			errors     : [],
+			htmlErrors : Markdown.validate(this.props.brew.text)
 		};
 	},
 
@@ -66,6 +76,11 @@ const NewPage = createClass({
 				brew : { text: storage }
 			});
 		}
+
+		this.setState((prevState)=>({
+			htmlErrors : Markdown.validate(prevState.brew.text)
+		}));
+
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
 	componentWillUnmount : function() {
@@ -88,18 +103,29 @@ const NewPage = createClass({
 		this.refs.editor.update();
 	},
 
-	handleMetadataChange : function(metadata){
-		this.setState({
-			brew : _.merge({}, this.state.brew, metadata)
-		});
+	handleTextChange : function(text){
+		//If there are errors, run the validator on every change to give quick feedback
+		let htmlErrors = this.state.htmlErrors;
+		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
+
+		this.setState((prevState)=>({
+			brew       : _.merge({}, prevState.brew, { text: text }),
+			htmlErrors : htmlErrors
+		}));
+		localStorage.setItem(KEY, text);
 	},
 
-	handleTextChange : function(text){
-		this.setState({
-			brew   : { text: text },
-			errors : Markdown.validate(text)
-		});
-		localStorage.setItem(KEY, text);
+	handleStyleChange : function(style){
+		this.setState((prevState)=>({
+			brew : _.merge({}, prevState.brew, { style: style }),
+		}));
+	},
+
+	handleMetaChange : function(metadata){
+		this.setState((prevState)=>({
+			brew : _.merge({}, prevState.brew, metadata),
+		}));
+
 	},
 
 	save : async function(){
@@ -190,10 +216,12 @@ const NewPage = createClass({
 					<Editor
 						ref='editor'
 						brew={this.state.brew}
-						onChange={this.handleTextChange}
-						onMetadataChange={this.handleMetadataChange}
+						onTextChange={this.handleTextChange}
+						onStyleChange={this.handleStyleChange}
+						onMetaChange={this.handleMetaChange}
+						renderer={this.state.brew.renderer}
 					/>
-					<BrewRenderer text={this.state.brew.text} errors={this.state.errors} />
+					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} errors={this.state.htmlErrors}/>
 				</SplitPane>
 			</div>
 		</div>;

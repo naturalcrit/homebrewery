@@ -9,6 +9,7 @@ const GoogleActions = require('./server/googleActions.js');
 const serveCompressedStaticAssets = require('./server/static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
+const dedent = require('dedent-tabs').default;
 
 //Get the brew object from the HB database or Google Drive
 const getBrewFromId = asyncHandler(async (id, accessType)=>{
@@ -21,10 +22,35 @@ const getBrewFromId = asyncHandler(async (id, accessType)=>{
 		brew = await GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, id, accessType);
 	} else {
 		brew = await HomebrewModel.get(accessType == 'edit' ? { editId: id } : { shareId: id });
-		brew.sanatize(true);
+		brew = brew.toObject();
+	}
+
+	brew = sanitizeBrew(brew, accessType === 'edit' ? false : true);
+	//Split brew.text into text and style
+	if(brew.text.startsWith('```css')) {
+		const index = brew.text.indexOf('```\n\n');
+		brew.style = brew.text.slice(7, index - 1);
+		brew.text = brew.text.slice(index + 5);
+	} else {
+		brew.style = dedent`
+			/*=======---  Example CSS styling  ---=======*/
+			/* Any CSS here will apply to your document! */
+
+			.myExampleClass {
+ 			  color: black;
+			}`;
 	}
 	return brew;
 });
+
+const sanitizeBrew = (brew, full=false)=>{
+	delete brew._id;
+	delete brew.__v;
+	if(full){
+		delete brew.editId;
+	}
+	return brew;
+};
 
 app.use('/', serveCompressedStaticAssets(`${__dirname}/build`));
 
@@ -112,25 +138,26 @@ app.get('/download/:id', asyncHandler(async (req, res)=>{
 
 //User Page
 app.get('/user/:username', async (req, res, next)=>{
-	const fullAccess = req.account && (req.account.username == req.params.username);
+	const ownAccount = req.account && (req.account.username == req.params.username);
 
-	let googleBrews = [];
-
-	if(req.account && req.account.googleId){
-		googleBrews = await GoogleActions.listGoogleBrews(req, res)
-		.catch((err)=>{
-			console.error(err);
-		});
-	}
-
-	const brews = await HomebrewModel.getByUser(req.params.username, fullAccess)
+	let brews = await HomebrewModel.getByUser(req.params.username, ownAccount)
 	.catch((err)=>{
 		console.log(err);
 	});
 
-	if(googleBrews) {
-		req.brews = _.concat(brews, googleBrews);
-	} else {req.brews = brews;}
+	if(ownAccount && req?.account?.googleId){
+		const googleBrews = await GoogleActions.listGoogleBrews(req, res)
+		.catch((err)=>{
+			console.error(err);
+		});
+
+		if(googleBrews)
+			brews = _.concat(brews, googleBrews);
+	}
+
+	req.brews = _.map(brews, (brew)=>{
+		return sanitizeBrew(brew, !ownAccount);
+	});
 
 	return next();
 });
@@ -160,7 +187,7 @@ app.get('/share/:id', asyncHandler(async (req, res, next)=>{
 		await GoogleActions.increaseView(googleId, shareId, 'share', brew)
 					.catch((err)=>{next(err);});
 	} else {
-		await brew.increaseView();
+		await HomebrewModel.increaseView({ shareId: brew.shareId });
 	}
 
 	req.brew = brew;
@@ -191,7 +218,6 @@ app.use((req, res)=>{
 	templateFn('homebrew', title = req.brew ? req.brew.title : '', props)
         .then((page)=>{ res.send(page); })
         .catch((err)=>{
-        	console.log('TEMPLATE ERROR');
         	console.log(err);
         	return res.sendStatus(500);
         });

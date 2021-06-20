@@ -19,13 +19,23 @@ const getGoodBrewTitle = (text)=>{
 				 .slice(0, MAX_TITLE_LENGTH);
 };
 
+const mergeBrewText = (text, style)=>{
+	text = `\`\`\`css\n` +
+		   	 `${style}\n` +
+				 `\`\`\`\n\n` +
+				 `${text}`;
+	return text;
+};
+
 const newBrew = (req, res)=>{
 	const brew = req.body;
-	brew.authors = (req.account) ? [req.account.username] : [];
 
 	if(!brew.title) {
 		brew.title = getGoodBrewTitle(brew.text);
 	}
+
+	brew.authors = (req.account) ? [req.account.username] : [];
+	brew.text = mergeBrewText(brew.text, brew.style);
 
 	delete brew.editId;
 	delete brew.shareId;
@@ -53,8 +63,10 @@ const updateBrew = (req, res)=>{
 	HomebrewModel.get({ editId: req.params.id })
 		.then((brew)=>{
 			brew = _.merge(brew, req.body);
+			brew.text = mergeBrewText(brew.text, brew.style);
+
 			// Compress brew text to binary before saving
-			brew.textBin = zlib.deflateRawSync(req.body.text);
+			brew.textBin = zlib.deflateRawSync(brew.text);
 			// Delete the non-binary text field since it's not needed anymore
 			brew.text = undefined;
 			brew.updatedAt = new Date();
@@ -113,11 +125,13 @@ const newGoogleBrew = async (req, res, next)=>{
 	try {	oAuth2Client = GoogleActions.authCheck(req.account, res); } catch (err) { return res.status(err.status).send(err.message); }
 
 	const brew = req.body;
-	brew.authors = (req.account) ? [req.account.username] : [];
 
 	if(!brew.title) {
 		brew.title = getGoodBrewTitle(brew.text);
 	}
+
+	brew.authors = (req.account) ? [req.account.username] : [];
+	brew.text = mergeBrewText(brew.text, brew.style);
 
 	delete brew.editId;
 	delete brew.shareId;
@@ -135,7 +149,10 @@ const updateGoogleBrew = async (req, res, next)=>{
 
 	try {	oAuth2Client = GoogleActions.authCheck(req.account, res); } catch (err) { return res.status(err.status).send(err.message); }
 
-	const updatedBrew = await GoogleActions.updateGoogleBrew(oAuth2Client, req.body);
+	const brew = req.body;
+	brew.text = mergeBrewText(brew.text, brew.style);
+
+	const updatedBrew = await GoogleActions.updateGoogleBrew(oAuth2Client, brew);
 
 	return res.status(200).send(updatedBrew);
 };

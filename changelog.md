@@ -6,6 +6,11 @@ h5 {
 
 # changelog
 
+### Thursday, 10/6/2021 - v2.12.0
+
+- New "style" tab to better organize custom CSS in preparation for new themes and sharable styles.
+- Your own Google brews will no longer show up in the list when viewing someone else's profile.
+
 ### Saturday, 02/5/2021 - v2.11.2
 
 - Fix for edge case where brews could accidentally transfer from Google Drive back to Homebrewery.

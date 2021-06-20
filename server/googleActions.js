@@ -100,6 +100,7 @@ GoogleActions = {
 		})
 		.catch((err)=>{
 	    return console.error(`Error Listing Google Brews: ${err}`);
+			//TODO: Should break out here, but continues on for some reason.
 	  });
 
 		if(!obj.data.files.length) {
@@ -152,17 +153,17 @@ GoogleActions = {
 				fileId   : brew.googleId,
 				resource : { name        : `${brew.title}.txt`,
 										 description : `${brew.description}`,
-										 properties  : { title   			: brew.title,
-										 								published  : brew.published,
-																	  lastViewed : brew.lastViewed,
-																	  views      : brew.views,
-																	  version    : brew.version,
-						renderer   : brew.renderer,
-																	  tags       : brew.tags,
-																	  systems    : brew.systems.join() }
+										 properties  : { title      : brew.title,
+										 							 	 published  : brew.published,
+																	   lastViewed : brew.lastViewed,
+																	   views      : brew.views,
+																	   version    : brew.version,
+																		 renderer   : brew.renderer,
+																	   tags       : brew.tags,
+																	   systems    : brew.systems.join() }
 									 },
 				media : { mimeType : 'text/plain',
-										 body     : brew.text }
+								  body     : brew.text }
 			})
 			.catch((err)=>{
 				console.log('Error saving to google');
