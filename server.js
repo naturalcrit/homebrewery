@@ -22,7 +22,6 @@ const getBrewFromId = asyncHandler(async (id, accessType)=>{
 		brew = await GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, id, accessType);
 	} else {
 		brew = await HomebrewModel.get(accessType == 'edit' ? { editId: id } : { shareId: id });
-		brew = brew.toObject();
 	}
 
 	brew = sanitizeBrew(brew, accessType === 'edit' ? false : true);

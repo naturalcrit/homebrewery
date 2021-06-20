@@ -45,7 +45,7 @@ HomebrewSchema.statics.get = function(query){
 			}
 			if(!brews[0].renderer)
 				brews[0].renderer = 'legacy';
-			return resolve(brews[0]);
+			return resolve(brews[0].toObject()); //Convert Mongo Object to JSObject
 		});
 	});
 };
@@ -56,7 +56,7 @@ HomebrewSchema.statics.getByUser = function(username, allowAccess=false){
 		if(allowAccess){
 			delete query.published;
 		}
-		Homebrew.find(query, (err, brews)=>{
+		Homebrew.find(query).lean().exec((err, brews)=>{ //lean() converts results to JSObjects
 			if(err) return reject('Can not find brew');
 			return resolve(brews);
 		});
