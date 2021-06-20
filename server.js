@@ -139,8 +139,7 @@ app.get('/download/:id', asyncHandler(async (req, res)=>{
 		'Content-Type'        : 'text/plain',
 		'Content-Disposition' : `attachment; filename="${fileName}.txt"`
 	});
-	const text = brew.text;
-	res.status(200).send(text);
+	res.status(200).send(brew.text);
 }));
 
 //User Page
