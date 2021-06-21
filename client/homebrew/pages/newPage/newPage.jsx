@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./newPage.less');
 const React = require('react');
 const createClass = require('create-react-class');
@@ -77,13 +78,13 @@ const NewPage = createClass({
 			this.setState({
 				brew : { text: brewStorage }
 			});
-		}
+		};
 		const styleStorage = localStorage.getItem(STYLEKEY);
-		if(!this.props.brew.text && styleStorage){
+		if(!this.props.brew.style && styleStorage){
 			this.setState({
 				brew : { style: styleStorage }
 			});
-		}
+		};
 
 		this.setState((prevState)=>({
 			htmlErrors : Markdown.validate(prevState.brew.text)
