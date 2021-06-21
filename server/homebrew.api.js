@@ -28,7 +28,6 @@ const mergeBrewText = (text, style)=>{
 };
 
 const newBrew = (req, res)=>{
-
 	const brew = req.body;
 
 	if(!brew.title) {
