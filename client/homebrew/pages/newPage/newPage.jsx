@@ -158,6 +158,7 @@ const NewPage = createClass({
 
 			const brew = res.body;
 			localStorage.removeItem(BREWKEY);
+			localStorage.removeItem(STYLEKEY);
 			window.location = `/edit/${brew.googleId}${brew.editId}`;
 		} else {
 			request.post('/api')
@@ -172,6 +173,7 @@ const NewPage = createClass({
 				window.onbeforeunload = function(){};
 				const brew = res.body;
 				localStorage.removeItem(BREWKEY);
+				localStorage.removeItem(STYLEKEY);
 				window.location = `/edit/${brew.editId}`;
 			});
 		}
