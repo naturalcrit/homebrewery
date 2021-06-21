@@ -34,10 +34,10 @@ const newBrew = (req, res)=>{
 	// Split out CSS to Style if CSS codefence exists
 	if(brew.text.startsWith('```css') && brew.text.indexOf('```\n\n') > 0) {
 		const index = brew.text.indexOf('```\n\n');
-		brew.style = `${brew.style ? brew.style + '\n' : ''}${brew.text.slice(7, index - 1)}`;
+		brew.style = `${brew.style ? `${brew.style}\n` : ''}${brew.text.slice(7, index - 1)}`;
 		brew.text = brew.text.slice(index + 5);
 	};
-	
+
 	if(!brew.title) {
 		brew.title = getGoodBrewTitle(brew.text);
 	}

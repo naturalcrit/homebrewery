@@ -135,7 +135,7 @@ const NewPage = createClass({
 		});
 
 		console.log('saving new brew');
-	
+
 		if(this.state.saveGoogle) {
 			const res = await request
 			.post('/api/newGoogle/')
