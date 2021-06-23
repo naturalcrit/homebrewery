@@ -29,6 +29,12 @@ const SharePage = createClass({
 		};
 	},
 
+	getInitialState : function() {
+		return {
+			showDropdown : false
+		};
+	},
+
 	componentDidMount : function() {
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
@@ -51,6 +57,28 @@ const SharePage = createClass({
 					 this.props.brew.shareId;
 	},
 
+	handleDropdown : function(show){
+		this.setState({
+			showDropdown : show
+		});
+	},
+
+	renderDropdown : function(){
+		if(!this.state.showDropdown) return null;
+
+		return <div className='dropdown'>
+			<a href={`/source/${this.processShareId()}`} color='teal' icon='fas fa-code' className='item'>
+				view
+			</a>
+			<a href={`/download/${this.processShareId()}`} color='red' icon='fas fa-download' className='item'>
+				download
+			</a>
+			<a href={`/new/${this.processShareId()}`} color='red' icon='fas fa-download' className='item'>
+				clone to new
+			</a>
+		</div>;
+	},
+
 	render : function(){
 		return <div className='sharePage page'>
 			<Meta name='robots' content='noindex, nofollow' />
@@ -61,11 +89,11 @@ const SharePage = createClass({
 
 				<Nav.section>
 					<PrintLink shareId={this.processShareId()} />
-					<Nav.item href={`/source/${this.processShareId()}`} color='teal' icon='fas fa-code'>
+					<Nav.item icon='fas fa-code' color='red' className='source'
+						onMouseEnter={()=>this.handleDropdown(true)}
+						onMouseLeave={()=>this.handleDropdown(false)}>
 						source
-					</Nav.item>
-					<Nav.item href={`/download/${this.processShareId()}`} color='red' icon='fas fa-download'>
-						download
+						{this.renderDropdown()}
 					</Nav.item>
 					<RecentNavItem brew={this.props.brew} storageKey='view' />
 					<Account />
