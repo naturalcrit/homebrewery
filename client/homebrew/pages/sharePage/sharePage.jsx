@@ -67,13 +67,13 @@ const SharePage = createClass({
 		if(!this.state.showDropdown) return null;
 
 		return <div className='dropdown'>
-			<a href={`/source/${this.processShareId()}`} color='teal' icon='fas fa-code' className='item'>
+			<a href={`/source/${this.processShareId()}`} className='item'>
 				view
 			</a>
-			<a href={`/download/${this.processShareId()}`} color='red' icon='fas fa-download' className='item'>
+			<a href={`/download/${this.processShareId()}`} className='item'>
 				download
 			</a>
-			<a href={`/new/${this.processShareId()}`} color='red' icon='fas fa-download' className='item'>
+			<a href={`/new/${this.processShareId()}`} className='item'>
 				clone to new
 			</a>
 		</div>;
