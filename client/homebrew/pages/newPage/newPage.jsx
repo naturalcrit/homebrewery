@@ -181,7 +181,7 @@ const NewPage = createClass({
 	},
 
 	print : function(){
-		localStorage.setItem('print', this.state.brew.text);
+		localStorage.setItem('print', `<style>\n${this.state.brew.style}\n</style>\n\n${this.state.brew.text}`);
 		window.open('/print?dialog=true&local=print', '_blank');
 	},
 
