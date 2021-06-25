@@ -9,7 +9,6 @@ const GoogleActions = require('./server/googleActions.js');
 const serveCompressedStaticAssets = require('./server/static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
-const dedent = require('dedent-tabs').default;
 
 const brewAccessTypes = ['edit', 'share', 'raw'];
 
@@ -37,14 +36,6 @@ const getBrewFromId = asyncHandler(async (id, accessType)=>{
 		const index = brew.text.indexOf('```\n\n');
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
-	} else {
-		brew.style = dedent`
-			/*=======---  Example CSS styling  ---=======*/
-			/* Any CSS here will apply to your document! */
-
-			.myExampleClass {
-				color: black;
-			}`;
 	}
 	return brew;
 });

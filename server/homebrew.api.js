@@ -20,10 +20,12 @@ const getGoodBrewTitle = (text)=>{
 };
 
 const mergeBrewText = (text, style)=>{
-	text = `\`\`\`css\n` +
-		   	 `${style}\n` +
-				 `\`\`\`\n\n` +
-				 `${text}`;
+	if(typeof style !== 'undefined') {
+		text = `\`\`\`css\n` +
+					 `${style}\n` +
+					 `\`\`\`\n\n` +
+					 `${text}`;
+	}
 	return text;
 };
 
