@@ -4,7 +4,6 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const request = require('superagent');
-const dedent = require('dedent-tabs').default;
 
 const Markdown = require('naturalcrit/markdown.js');
 
@@ -24,14 +23,7 @@ const NewPage = createClass({
 	getDefaultProps : function() {
 		return {
 			brew : {
-				text  : '',
-				style : dedent`
-										/*=======---  Example CSS styling  ---=======*/
-										/* Any CSS here will apply to your document! */
-										
-										.myExampleClass {
-							 			  color: black;
-										}`,
+				text      : '',
 				shareId   : null,
 				editId    : null,
 				createdAt : null,
@@ -52,7 +44,6 @@ const NewPage = createClass({
 		return {
 			brew : {
 				text        : this.props.brew.text || '',
-				style       : this.props.brew.style || '',
 				gDrive      : false,
 				title       : this.props.brew.title || '',
 				description : this.props.brew.description || '',
