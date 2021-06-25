@@ -23,7 +23,7 @@ const ErrorPage = createClass({
 	text : '# Oops \n We could not find a brew with that id. **Sorry!**',
 
 	render : function(){
-		return <div className='errorPage page'>
+		return <div className='errorPage sitePage'>
 			<Navbar ver={this.props.ver}>
 				<Nav.section>
 					<Nav.item className='errorTitle'>

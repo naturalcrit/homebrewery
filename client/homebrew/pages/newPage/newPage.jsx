@@ -191,7 +191,7 @@ const NewPage = createClass({
 	},
 
 	print : function(){
-		localStorage.setItem('print', this.state.brew.text);
+		localStorage.setItem('print', `<style>\n${this.state.brew.style}\n</style>\n\n${this.state.brew.text}`);
 		window.open('/print?dialog=true&local=print', '_blank');
 	},
 
@@ -219,7 +219,7 @@ const NewPage = createClass({
 	},
 
 	render : function(){
-		return <div className='newPage page'>
+		return <div className='newPage sitePage'>
 			{this.renderNavbar()}
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>

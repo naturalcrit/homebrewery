@@ -406,7 +406,7 @@ const EditPage = createClass({
 	},
 
 	render : function(){
-		return <div className='editPage page'>
+		return <div className='editPage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
 			{this.renderNavbar()}
 

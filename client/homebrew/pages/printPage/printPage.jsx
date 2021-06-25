@@ -39,7 +39,7 @@ const PrintPage = createClass({
 		if(this.props.brew.renderer == 'legacy') {
 			return _.map(this.state.brewText.split('\\page'), (page, index)=>{
 				return <div
-					className='phb'
+					className='phb page'
 					id={`p${index + 1}`}
 					dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(page) }}
 					key={index} />;
@@ -47,7 +47,7 @@ const PrintPage = createClass({
 		} else {
 			return _.map(this.state.brewText.split(/^\\page/gm), (page, index)=>{
 				return <div
-					className='phb3'
+					className='phb3 page'
 					id={`p${index + 1}`}
 					dangerouslySetInnerHTML={{ __html: Markdown.render(page) }}
 					key={index} />;
