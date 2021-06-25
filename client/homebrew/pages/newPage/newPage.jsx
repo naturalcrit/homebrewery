@@ -4,7 +4,6 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const request = require('superagent');
-const dedent = require('dedent-tabs').default;
 
 const Markdown = require('naturalcrit/markdown.js');
 
@@ -26,14 +25,7 @@ const NewPage = createClass({
 	getDefaultProps : function() {
 		return {
 			brew : {
-				text  : '',
-				style : dedent`
-										/*=======---  Example CSS styling  ---=======*/
-										/* Any CSS here will apply to your document! */
-										
-										.myExampleClass {
-							 			  color: black;
-										}`,
+				text      : '',
 				shareId   : null,
 				editId    : null,
 				createdAt : null,
@@ -54,7 +46,6 @@ const NewPage = createClass({
 		return {
 			brew : {
 				text        : this.props.brew.text || '',
-				style       : this.props.brew.style || '',
 				gDrive      : false,
 				title       : this.props.brew.title || '',
 				description : this.props.brew.description || '',
@@ -145,10 +136,18 @@ const NewPage = createClass({
 
 		console.log('saving new brew');
 
+		const brew = this.state.brew;
+		// Split out CSS to Style if CSS codefence exists
+		if(brew.text.startsWith('```css') && brew.text.indexOf('```\n\n') > 0) {
+			const index = brew.text.indexOf('```\n\n');
+			brew.style = `${brew.style ? `${brew.style}\n` : ''}${brew.text.slice(7, index - 1)}`;
+			brew.text = brew.text.slice(index + 5);
+		};
+
 		if(this.state.saveGoogle) {
 			const res = await request
 			.post('/api/newGoogle/')
-			.send(this.state.brew)
+			.send(brew)
 			.catch((err)=>{
 				console.log(err.status === 401
 					? 'Not signed in!'
@@ -163,7 +162,7 @@ const NewPage = createClass({
 			window.location = `/edit/${brew.googleId}${brew.editId}`;
 		} else {
 			request.post('/api')
-			.send(this.state.brew)
+			.send(brew)
 			.end((err, res)=>{
 				if(err){
 					this.setState({
