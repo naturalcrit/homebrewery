@@ -64,18 +64,17 @@ const NewPage = createClass({
 	},
 
 	componentDidMount : function() {
-		const brewStorage = localStorage.getItem(BREWKEY);
-		if(!this.props.brew.text && brewStorage){
-			this.setState({
-				brew : { text: brewStorage }
-			});
-		};
+		const brewStorage  = localStorage.getItem(BREWKEY);
 		const styleStorage = localStorage.getItem(STYLEKEY);
-		if(!this.props.brew.style && styleStorage){
+
+		if(!this.props.brew.text || !this.props.brew.style){
 			this.setState({
-				brew : { style: styleStorage }
+				brew : {
+					text  : this.props.brew.text  || (brewStorage  ?? ''),
+					style : this.props.brew.style || (styleStorage ?? undefined)
+				}
 			});
-		};
+		}
 
 		this.setState((prevState)=>({
 			htmlErrors : Markdown.validate(prevState.brew.text)
