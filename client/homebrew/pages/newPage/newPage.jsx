@@ -219,7 +219,7 @@ const NewPage = createClass({
 	},
 
 	render : function(){
-		return <div className='newPage page'>
+		return <div className='newPage sitePage'>
 			{this.renderNavbar()}
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>

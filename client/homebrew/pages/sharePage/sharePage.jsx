@@ -52,7 +52,7 @@ const SharePage = createClass({
 	},
 
 	render : function(){
-		return <div className='sharePage page'>
+		return <div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
 			<Navbar>
 				<Nav.section>
