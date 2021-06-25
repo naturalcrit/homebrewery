@@ -17,7 +17,9 @@ const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
-const KEY = 'homebrewery-new';
+const BREWKEY = 'homebrewery-new';
+const STYLEKEY = 'homebrewery-new-style';
+
 
 const NewPage = createClass({
 	getDefaultProps : function() {
@@ -62,10 +64,15 @@ const NewPage = createClass({
 	},
 
 	componentDidMount : function() {
-		const storage = localStorage.getItem(KEY);
-		if(!this.props.brew.text && storage){
+		const brewStorage  = localStorage.getItem(BREWKEY);
+		const styleStorage = localStorage.getItem(STYLEKEY);
+
+		if(!this.props.brew.text || !this.props.brew.style){
 			this.setState({
-				brew : { text: storage }
+				brew : {
+					text  : this.props.brew.text  || (brewStorage  ?? ''),
+					style : this.props.brew.style || (styleStorage ?? undefined)
+				}
 			});
 		}
 
@@ -104,13 +111,14 @@ const NewPage = createClass({
 			brew       : _.merge({}, prevState.brew, { text: text }),
 			htmlErrors : htmlErrors
 		}));
-		localStorage.setItem(KEY, text);
+		localStorage.setItem(BREWKEY, text);
 	},
 
 	handleStyleChange : function(style){
 		this.setState((prevState)=>({
 			brew : _.merge({}, prevState.brew, { style: style }),
 		}));
+		localStorage.setItem(STYLEKEY, style);
 	},
 
 	handleMetaChange : function(metadata){
@@ -148,7 +156,8 @@ const NewPage = createClass({
 			});
 
 			const brew = res.body;
-			localStorage.removeItem(KEY);
+			localStorage.removeItem(BREWKEY);
+			localStorage.removeItem(STYLEKEY);
 			window.location = `/edit/${brew.googleId}${brew.editId}`;
 		} else {
 			request.post('/api')
@@ -162,7 +171,8 @@ const NewPage = createClass({
 				}
 				window.onbeforeunload = function(){};
 				const brew = res.body;
-				localStorage.removeItem(KEY);
+				localStorage.removeItem(BREWKEY);
+				localStorage.removeItem(STYLEKEY);
 				window.location = `/edit/${brew.editId}`;
 			});
 		}
