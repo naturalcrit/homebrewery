@@ -6,6 +6,23 @@ h5 {
 
 # changelog
 
+### Saturday, 26/6/2021 - v2.13.0
+
+- "Share to Reddit" button now works with Google brews
+- Downloading or viewing the source of your brew will now show the contents of the Style tab at the top of the document in a backtick code fence like this:
+
+\`\`\`css
+
+myStyle {color: black}
+
+\`\`\`
+
+##### G-Ambatte :
+- New **Download**, **View**, and **Clone to New** buttons in the "Source" dropdown on the Share page.
+- Pasting your brew into a "New" page and saving will transfer any CSS in the code fence to the Style tab.
+- Unsaved work in the New page Style tab is now cached to your browser storage if you navigate away.
+
+
 ### Thursday, 10/6/2021 - v2.12.0
 
 - New "style" tab to better organize custom CSS in preparation for new themes and sharable styles.
