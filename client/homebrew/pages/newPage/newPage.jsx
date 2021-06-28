@@ -135,7 +135,7 @@ const NewPage = createClass({
 
 		console.log('saving new brew');
 
-		const brew = this.state.brew;
+		let brew = this.state.brew;
 		// Split out CSS to Style if CSS codefence exists
 		if(brew.text.startsWith('```css') && brew.text.indexOf('```\n\n') > 0) {
 			const index = brew.text.indexOf('```\n\n');
@@ -155,7 +155,7 @@ const NewPage = createClass({
 				return;
 			});
 
-			const brew = res.body;
+			brew = res.body;
 			localStorage.removeItem(BREWKEY);
 			localStorage.removeItem(STYLEKEY);
 			window.location = `/edit/${brew.googleId}${brew.editId}`;
@@ -170,7 +170,7 @@ const NewPage = createClass({
 					return;
 				}
 				window.onbeforeunload = function(){};
-				const brew = res.body;
+				brew = res.body;
 				localStorage.removeItem(BREWKEY);
 				localStorage.removeItem(STYLEKEY);
 				window.location = `/edit/${brew.editId}`;
