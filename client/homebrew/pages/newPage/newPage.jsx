@@ -158,7 +158,7 @@ const NewPage = createClass({
 			const brew = res.body;
 			localStorage.removeItem(BREWKEY);
 			localStorage.removeItem(STYLEKEY);
-			window.location = `/edit/${saveBrew.googleId}${saveBrew.editId}`;
+			window.location = `/edit/${brew.googleId}${brew.editId}`;
 		} else {
 			request.post('/api')
 			.send(saveBrew)
@@ -173,7 +173,7 @@ const NewPage = createClass({
 				const brew = res.body;
 				localStorage.removeItem(BREWKEY);
 				localStorage.removeItem(STYLEKEY);
-				window.location = `/edit/${saveBrew.editId}`;
+				window.location = `/edit/${brew.editId}`;
 			});
 		}
 	},
