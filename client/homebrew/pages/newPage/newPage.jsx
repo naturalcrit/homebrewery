@@ -20,6 +20,9 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 const BREWKEY = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
 
+const googleDriveActive = require('../../googleDrive.png');
+const googleDriveInactive = require('../../googleDriveMono.png');
+
 
 const NewPage = createClass({
 	getDefaultProps : function() {
@@ -56,10 +59,11 @@ const NewPage = createClass({
 				renderer    : this.props.brew.renderer || 'legacy'
 			},
 
-			isSaving   : false,
-			saveGoogle : (global.account && global.account.googleId ? true : false),
-			errors     : [],
-			htmlErrors : Markdown.validate(this.props.brew.text)
+			isSaving   				: false,
+			saveGoogle 				: (global.account && global.account.googleId ? true : false),
+			alertGoogleLoginReqd	: false,
+			errors 				    : [],
+			htmlErrors 				: Markdown.validate(this.props.brew.text)
 		};
 	},
 
@@ -201,6 +205,56 @@ const NewPage = createClass({
 		</Nav.item>;
 	},
 
+	renderGoogleDriveIcon : function(){
+		// Can't access Google Drive without an account
+		// so don't display the Drive icon if not logged in
+		if(!global.account) {
+			return;
+		}
+		return <Nav.item className='googleDriveStorage' onClick={this.handleGoogleClick}>
+			{this.state.saveGoogle
+				? <img src={googleDriveActive} alt='googleDriveActive'/>
+				: <img src={googleDriveInactive} alt='googleDriveInactive'/>
+			}
+
+			{this.state.alertGoogleLoginReqd &&
+				<div className='errorContainer' onClick={this.closeAlert}>
+					You must be signed in to a Google account to save
+					the Brew to Google Drive!
+					<a target='_blank' rel='noopener noreferrer'
+						href={`http://naturalcrit.com/login?redirect=${this.state.url}`}>
+						<div className='confirm'>
+							Sign In
+						</div>
+					</a>
+					<div className='deny'>
+						Not Now
+					</div>
+				</div>
+			}
+		</Nav.item>;
+	},
+
+	closeAlert : function(event){
+		event.stopPropagation();	//Only handle click once so alert doesn't reopen
+		this.setState({
+			alertLoginToTransfer   : false
+		});
+	},
+
+	handleGoogleClick : function(){
+		if(!global.account?.googleId) {
+			this.setState({
+				alertLoginToTransfer : true
+			});
+			return;
+		}
+		this.setState((prevState)=>({
+			confirmGoogleTransfer : !prevState.confirmGoogleTransfer
+		}));
+		this.clearErrors();
+	},
+
 	renderNavbar : function(){
 		return <Navbar>
 
@@ -209,6 +263,7 @@ const NewPage = createClass({
 			</Nav.section>
 
 			<Nav.section>
+				{this.renderGoogleDriveIcon()}
 				{this.renderSaveButton()}
 				{this.renderLocalPrintButton()}
 				<IssueNavItem />
