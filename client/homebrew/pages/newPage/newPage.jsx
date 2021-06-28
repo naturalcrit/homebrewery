@@ -145,7 +145,7 @@ const NewPage = createClass({
 
 		if(this.state.saveGoogle) {
 			const res = await request
-			.post('/api/newGoogle')
+			.post('/api/newGoogle/')
 			.send(brew)
 			.catch((err)=>{
 				console.log(err.status === 401
