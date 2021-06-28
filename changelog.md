@@ -6,6 +6,10 @@ h5 {
 
 # changelog
 
+### Saturday, 28/6/2021 - v2.13.1
+
+- Fixed the issue with new brews not saving!
+
 ### Saturday, 26/6/2021 - v2.13.0
 
 - "Share to Reddit" button now works with Google brews
