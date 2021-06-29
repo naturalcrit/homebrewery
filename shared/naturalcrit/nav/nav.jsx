@@ -17,7 +17,7 @@ const Nav = {
 		}
 	}),
 	logo : function(){
-		return <a className='navLogo' href='http://naturalcrit.com'>
+		return <a className='navLogo' href='https://www.naturalcrit.com'>
 			<NaturalCritIcon />
 			<span className='name'>
 				Natural<span className='crit'>Crit</span>

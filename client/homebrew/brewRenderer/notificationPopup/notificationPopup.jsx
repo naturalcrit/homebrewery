@@ -23,7 +23,7 @@ const NotificationPopup = createClass({
 		psa : function(){
 			return <li key='psa'>
 				<em>Google Drive Integration!</em> <br />
-				We have added Google Drive integration to the Homebrewery! <a target='_blank' href='http://naturalcrit.com/login'>Sign in</a> with
+				We have added Google Drive integration to the Homebrewery! <a target='_blank' href='https://www.naturalcrit.com/login'>Sign in</a> with
 				your Google account to link it with your Homebrewery profile. A new button in the Edit page will let you transfer your file to your personal
 				Google Drive storage, and Google will keep a backup of each version! No more lost work surprises!
 				<br /><br />
