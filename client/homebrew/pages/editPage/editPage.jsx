@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-require('./unifiedEditPage.less');
+require('./editPage.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
@@ -26,7 +26,7 @@ const googleDriveInactive = require('../../googleDriveMono.png');
 
 const SAVE_TIMEOUT = 3000;
 
-const editTypes = ['new','edit'];
+const editTypes = ['edit', 'new'];
 
 const EditPage = createClass({
 	getDefaultProps : function() {
@@ -73,10 +73,13 @@ const EditPage = createClass({
 		this.setState({
 			url : window.location.href
 		});
-		
-		console.log(url);
-		editTypes.forEach(type => if(url.contains(type)) { this.setState({editType = type}); });
-		console.log(this.props);
+
+		// Determine editor type
+		editTypes.forEach((type)=>{
+			if(window.location.href.includes(type)) {
+				this.editType = type;
+			}
+		});
 
 		this.savedBrew = JSON.parse(JSON.stringify(this.props.brew)); //Deep copy
 
@@ -399,7 +402,7 @@ const EditPage = createClass({
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
 				{this.renderSaveButton()}
-				<NewBrewNavItem />
+				{this.editType=='edit' && <NewBrewNavItem />}
 				<Nav.item newTab={true} href={`/share/${this.processShareId()}`} color='teal' icon='fas fa-share-alt'>
 					Share
 				</Nav.item>
