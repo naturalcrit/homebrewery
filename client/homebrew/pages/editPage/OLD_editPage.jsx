@@ -1,32 +1,30 @@
 /* eslint-disable max-lines */
-require('./unifiedEditPage.less');
+require('./editPage.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const request = require('superagent');
 const { Meta } = require('vitreum/headtags');
 
-const Markdown = require('naturalcrit/markdown.js');
-
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 
-const NewBrewNavItem = require('../../navbar/newbrew.navitem.jsx');
-const PrintLinkNavItem = require('../../navbar/print.navitem.jsx');
-const ReportIssueNavItem = require('../../navbar/issue.navitem.jsx');
+const NewBrew = require('../../navbar/newbrew.navitem.jsx');
+const ReportIssue = require('../../navbar/issue.navitem.jsx');
+const PrintLink = require('../../navbar/print.navitem.jsx');
+const Account = require('../../navbar/account.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const AccountNavItem = require('../../navbar/account.navitem.jsx');
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
+const Markdown = require('naturalcrit/markdown.js');
+
 const googleDriveActive = require('../../googleDrive.png');
 const googleDriveInactive = require('../../googleDriveMono.png');
 
 const SAVE_TIMEOUT = 3000;
-
-const editTypes = ['new','edit'];
 
 const EditPage = createClass({
 	getDefaultProps : function() {
@@ -63,8 +61,7 @@ const EditPage = createClass({
 			confirmGoogleTransfer  : false,
 			errors                 : null,
 			htmlErrors             : Markdown.validate(this.props.brew.text),
-			url                    : '',
-			editType               : ''
+			url                    : ''
 		};
 	},
 	savedBrew : null,
@@ -73,10 +70,6 @@ const EditPage = createClass({
 		this.setState({
 			url : window.location.href
 		});
-		
-		console.log(url);
-		editTypes.forEach(type => if(url.contains(type)) { this.setState({editType = type}); });
-		console.log(this.props);
 
 		this.savedBrew = JSON.parse(JSON.stringify(this.props.brew)); //Deep copy
 
@@ -399,14 +392,14 @@ const EditPage = createClass({
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
 				{this.renderSaveButton()}
-				<NewBrewNavItem />
+				<NewBrew />
+				<ReportIssue />
 				<Nav.item newTab={true} href={`/share/${this.processShareId()}`} color='teal' icon='fas fa-share-alt'>
 					Share
 				</Nav.item>
-				<PrintLinkNavItem shareId={this.processShareId()} />
-				<ReportIssueNavItem />
+				<PrintLink shareId={this.processShareId()} />
 				<RecentNavItem brew={this.state.brew} storageKey='edit' />
-				<AccountNavItem />
+				<Account />
 			</Nav.section>
 
 		</Navbar>;
