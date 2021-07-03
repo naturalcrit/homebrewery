@@ -86,46 +86,52 @@ const EditPage = createClass({
 	savedBrew : null,
 
 	componentDidMount : function(){
-		this.setState({
-			url : window.location.href
-		});
-
 		// Determine editor type
 		editTypes.forEach((type)=>{
 			if(this.props.editType == type) {
 				this.editType = this.props.editType;
 			};
 		});
+		if(!this.editType){
+			// ERROR: Unknown editType
+			console.log('Unknown EditType parameter!');
+			// Redirect to Home page; need to revisit with better Error messaging in the future
+			window.location.href = `/`;
+		};
 
-		// DEBUGGING LINE
-		console.log(this.editType);
-
-		if(this.editType == 'edit') {
-			this.saveGoogle = this.props.brew.googleId ? true : false; //Need to fix this - in Edit mode, brew may or may not have Google ID that needs to be retained
+		if(this.editTypeIsEdit()) {
+			this.saveGoogle = this.props.brew.googleId ? true : false;
 		}
 
 		this.savedBrew = JSON.parse(JSON.stringify(this.props.brew)); //Deep copy
 
-		if(this.editType == 'new' && (!this.props.brew.text || !this.props.brew.style)){
-			const brewStorage  = localStorage.getItem(BREWKEY);
-			const styleStorage = localStorage.getItem(STYLEKEY);
+		const brew = this.props.brew;
 
-			//this.setState({
-			//	brew : {
-			//		text  : this.props.brew.text  || (brewStorage  || ''),
-			//		style : this.props.brew.style || (styleStorage || undefined)
-			//	}
-			//});
+		if(this.editTypeIsNew()) {
+			console.log('is new');
+			if((!brew.text && localStorage.getItem(BREWKEY)) && (!brew.style && localStorage.getItem(STYLEKEY))){
+				console.log('has local data');
+
+				const brewStorage  = localStorage.getItem(BREWKEY) ?? '';
+				const styleStorage  = localStorage.getItem(STYLEKEY) ?? '';
+
+				brew.text = brew.text || (brewStorage  ?? '');
+				brew.style = brew.style || (styleStorage ?? '');
+			}
 		}
 
-		if(this.editType == 'edit') { this.trySave(); };
+		if(this.editTypeIsEdit()) { this.trySave(); };
 		window.onbeforeunload = ()=>{
-			if(this.state.isSaving || this.state.isPending){
+			if(!editTypeIsNew && (this.state.isSaving || this.state.isPending)){
 				return 'You have unsaved changes!';
 			}
 		};
 
+		console.log(brew);
+
 		this.setState((prevState)=>({
+			brew       : _.merge({}, prevState.brew, brew),
+			url        : window.location.href,
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
@@ -134,6 +140,14 @@ const EditPage = createClass({
 	componentWillUnmount : function() {
 		window.onbeforeunload = function(){};
 		document.removeEventListener('keydown', this.handleControlKeys);
+	},
+
+	editTypeIsNew : function() {
+		return (this.editType == 'new');
+	},
+
+	editTypeIsEdit : function() {
+		return (this.editType == 'edit');
 	},
 
 	handleControlKeys : function(e){
@@ -184,12 +198,12 @@ const EditPage = createClass({
 	},
 
 	trySave : function(){
-		if(this.editType == 'new') {
+		if(this.editTypeIsNew()) {
 			console.log(this.state.brew.text);
 			localStorage.setItem(BREWKEY, this.state.brew.text);
 			localStorage.setItem(STYLEKEY, this.state.brew.style);
 		}
-		if(this.editType == 'edit') {
+		if(this.editTypeIsEdit()) {
 			if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
 			if(this.hasChanges()){
 				this.debounceSave();
@@ -246,7 +260,7 @@ const EditPage = createClass({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
-		if(this.editType == 'new') {
+		if(this.editTypeIsNew()) {
 			const brew = this.state.brew;
 			// Split out CSS to Style if CSS codefence exists
 			if(brew.text.startsWith('```css') && brew.text.indexOf('```\n\n') > 0) {
@@ -292,7 +306,7 @@ const EditPage = createClass({
 			}
 		}
 
-		if(this.editType == 'edit')	{
+		if(this.editTypeIsEdit())	{
 			const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 
 			if(this.state.saveGoogle) {
@@ -459,7 +473,7 @@ const EditPage = createClass({
 		if(this.state.isSaving){
 			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
 		}
-		if(this.editType == 'new' || (this.state.isPending && this.hasChanges())){
+		if(this.editTypeIsNew() || (this.state.isPending && this.hasChanges())){
 			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving){
@@ -492,7 +506,7 @@ const EditPage = createClass({
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
 				{this.renderSaveButton()}
-				{this.editType=='edit' ? <NewBrewNavItem /> : '' }
+				{this.editTypeIsEdit() ? <NewBrewNavItem /> : '' }
 				<Nav.item newTab={true} href={`/share/${this.processShareId()}`} color='teal' icon='fas fa-share-alt'>
 					Share
 				</Nav.item>
