@@ -92,15 +92,17 @@ const EditPage = createClass({
 
 		// Determine editor type
 		editTypes.forEach((type)=>{
-			if(window.location.href.includes(type)) {
-				this.editType = type;
+			if(this.props.editType == type) {
+				this.editType = this.props.editType;
 			};
 		});
 
 		// DEBUGGING LINE
 		console.log(this.editType);
 
-		this.saveGoogle = this.props.brew.googleId ? true : false;
+		if(this.editType == 'edit') {
+			this.saveGoogle = this.props.brew.googleId ? true : false; //Need to fix this - in Edit mode, brew may or may not have Google ID that needs to be retained
+		}
 
 		this.savedBrew = JSON.parse(JSON.stringify(this.props.brew)); //Deep copy
 
