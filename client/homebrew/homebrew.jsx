@@ -41,11 +41,11 @@ const Homebrew = createClass({
 			<Router location={this.props.url}>
 				<div className='homebrew'>
 					<Switch>
-						<Route path='/edit/:id' component={(routeProps)=><EditPage id={routeProps.match.params.id} brew={this.props.brew} />}/>
+						<Route path='/edit/:id' component={(routeProps)=><EditPage id={routeProps.match.params.id} brew={this.props.brew} editType='edit' />}/>
 						<Route path='/share/:id' component={(routeProps)=><SharePage id={routeProps.match.params.id} brew={this.props.brew} />}/>
 						<Route path='/new/:id' component={(routeProps)=><NewPage id={routeProps.match.params.id} brew={this.props.brew} />}/>
 						<Route path='/new' exact component={(routeProps)=><NewPage/>}/>
-						<Route path='/new2' exact component={(routeProps)=><EditPage/>}/>
+						<Route path='/new2' exact component={(routeProps)=><EditPage editType='new' />}/>
 						<Route path='/user/:username' component={(routeProps)=><UserPage username={routeProps.match.params.username} brews={this.props.brews} />}/>
 						<Route path='/print/:id' component={(routeProps)=><PrintPage brew={this.props.brew} query={queryString.parse(routeProps.location.search)} /> } />
 						<Route path='/print' exact component={(routeProps)=><PrintPage query={queryString.parse(routeProps.location.search)} /> } />
