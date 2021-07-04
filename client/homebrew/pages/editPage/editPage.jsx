@@ -75,7 +75,7 @@ const EditPage = createClass({
 			isPending              : false,
 			alertTrashedGoogleBrew : this.props.brew.trashed,
 			alertLoginToTransfer   : false,
-			saveGoogle             : (global.account && global.account.googleId ? true : false),
+			saveGoogle             : this.props.brew.googleId || (global.account?.googleId && this.props.editType == 'new') ? true : false,
 			confirmGoogleTransfer  : false,
 			errors                 : null,
 			htmlErrors             : Markdown.validate(this.props.brew.text),
