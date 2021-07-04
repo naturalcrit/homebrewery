@@ -57,20 +57,7 @@ const EditPage = createClass({
 
 	getInitialState : function() {
 		return {
-			brew : {
-				text        : this.props.brew.text || '',
-				style       : this.props.brew.style || '',
-				shareId     : this.props.brew.shareId || null,
-				editId      : this.props.brew.editId || null,
-				gDrive      : this.props.brew.gDrive || false,
-				title       : this.props.brew.title || '',
-				description : this.props.brew.description || '',
-				tags        : this.props.brew.tags || '',
-				published   : this.props.brew.published || false,
-				authors     : this.props.brew.authors || [],
-				systems     : this.props.brew.systems || [],
-				renderer    : this.props.brew.renderer || 'legacy'
-			},
+			brew : this.props.brew,			
 			isSaving               : false,
 			isPending              : false,
 			alertTrashedGoogleBrew : this.props.brew.trashed,
