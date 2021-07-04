@@ -74,9 +74,6 @@ const EditPage = createClass({
 
 	componentDidMount : function(){
 
-		if(this.editTypeIsEdit()) {
-			this.saveGoogle = this.props.brew.googleId ? true : false;
-		}
 
 		this.savedBrew = JSON.parse(JSON.stringify(this.props.brew)); //Deep copy
 
