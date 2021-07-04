@@ -86,18 +86,6 @@ const EditPage = createClass({
 	savedBrew : null,
 
 	componentDidMount : function(){
-		// Determine editor type
-		editTypes.forEach((type)=>{
-			if(this.props.editType == type) {
-				this.editType = this.props.editType;
-			};
-		});
-		if(!this.editType){
-			// ERROR: Unknown editType
-			console.log('Unknown EditType parameter!');
-			// Redirect to Home page; need to revisit with better Error messaging in the future
-			window.location.href = `/`;
-		};
 
 		if(this.editTypeIsEdit()) {
 			this.saveGoogle = this.props.brew.googleId ? true : false;
