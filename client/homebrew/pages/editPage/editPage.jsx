@@ -506,7 +506,7 @@ const EditPage = createClass({
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
 				{this.renderSaveButton()}
-				{this.editTypeIsEdit() ? <NewBrewNavItem /> : '' }
+				{this.editTypeIsEdit() && <NewBrewNavItem />}
 				<Nav.item newTab={true} href={`/share/${this.processShareId()}`} color='teal' icon='fas fa-share-alt'>
 					Share
 				</Nav.item>
