@@ -29,7 +29,6 @@ const SAVE_TIMEOUT = 3000;
 const BREWKEY = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
 
-const editTypes = ['edit', 'new'];
 
 const EditPage = createClass({
 	getDefaultProps : function() {
@@ -57,7 +56,7 @@ const EditPage = createClass({
 
 	getInitialState : function() {
 		return {
-			brew : this.props.brew,			
+			brew                   : this.props.brew,
 			isSaving               : false,
 			isPending              : false,
 			alertTrashedGoogleBrew : this.props.brew.trashed,
@@ -66,8 +65,7 @@ const EditPage = createClass({
 			confirmGoogleTransfer  : false,
 			errors                 : null,
 			htmlErrors             : Markdown.validate(this.props.brew.text),
-			url                    : '',
-			editType               : ''
+			url                    : ''
 		};
 	},
 	savedBrew : null,
@@ -79,7 +77,7 @@ const EditPage = createClass({
 
 		const brew = this.props.brew;
 
-		if(this.editTypeIsNew()) {
+		if(this.typeNew()) {
 			console.log('is new');
 			if((!brew.text && localStorage.getItem(BREWKEY)) && (!brew.style && localStorage.getItem(STYLEKEY))){
 				console.log('has local data');
@@ -92,9 +90,9 @@ const EditPage = createClass({
 			}
 		}
 
-		if(this.editTypeIsEdit()) { this.trySave(); };
+		if(this.typeEdit()) { this.trySave(); };
 		window.onbeforeunload = ()=>{
-			if(!editTypeIsNew && (this.state.isSaving || this.state.isPending)){
+			if(!typeNew && (this.state.isSaving || this.state.isPending)){
 				return 'You have unsaved changes!';
 			}
 		};
@@ -114,12 +112,12 @@ const EditPage = createClass({
 		document.removeEventListener('keydown', this.handleControlKeys);
 	},
 
-	editTypeIsNew : function() {
-		return (this.editType == 'new');
+	typeNew : function() {
+		return (this.props.editType == 'new');
 	},
 
-	editTypeIsEdit : function() {
-		return (this.editType == 'edit');
+	typeEdit : function() {
+		return (this.props.editType == 'edit');
 	},
 
 	handleControlKeys : function(e){
@@ -170,18 +168,19 @@ const EditPage = createClass({
 	},
 
 	trySave : function(){
-		if(this.editTypeIsNew()) {
-			console.log(this.state.brew.text);
-			localStorage.setItem(BREWKEY, this.state.brew.text);
-			localStorage.setItem(STYLEKEY, this.state.brew.style);
-		}
-		if(this.editTypeIsEdit()) {
-			if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
-			if(this.hasChanges()){
+		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
+		if(this.hasChanges()){
+			if(this.typeEdit()) {
 				this.debounceSave();
-			} else {
+			}
+			if(this.typeNew()) {
+				//console.log(this.state.brew.text);
+				localStorage.setItem(BREWKEY, this.state.brew.text);
+				localStorage.setItem(STYLEKEY, this.state.brew.style);
 				this.debounceSave.cancel();
 			}
+		} else {
+			this.debounceSave.cancel();
 		}
 	},
 
@@ -232,7 +231,7 @@ const EditPage = createClass({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
-		if(this.editTypeIsNew()) {
+		if(this.typeNew()) {
 			const brew = this.state.brew;
 			// Split out CSS to Style if CSS codefence exists
 			if(brew.text.startsWith('```css') && brew.text.indexOf('```\n\n') > 0) {
@@ -278,7 +277,7 @@ const EditPage = createClass({
 			}
 		}
 
-		if(this.editTypeIsEdit())	{
+		if(this.typeEdit())	{
 			const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 
 			if(this.state.saveGoogle) {
@@ -445,7 +444,7 @@ const EditPage = createClass({
 		if(this.state.isSaving){
 			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
 		}
-		if(this.editTypeIsNew() || (this.state.isPending && this.hasChanges())){
+		if(this.typeNew() || (this.state.isPending && this.hasChanges())){
 			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving){
@@ -478,7 +477,7 @@ const EditPage = createClass({
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
 				{this.renderSaveButton()}
-				{this.editTypeIsEdit() && <NewBrewNavItem />}
+				{this.typeEdit() && <NewBrewNavItem />}
 				<Nav.item newTab={true} href={`/share/${this.processShareId()}`} color='teal' icon='fas fa-share-alt'>
 					Share
 				</Nav.item>
