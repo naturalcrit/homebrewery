@@ -77,7 +77,7 @@ const EditPage = createClass({
 
 		const brew = this.props.brew;
 
-		if(this.typeNew()) {
+		if(this.isNew()) {
 			console.log('is new');
 			if((!brew.text && localStorage.getItem(BREWKEY)) && (!brew.style && localStorage.getItem(STYLEKEY))){
 				console.log('has local data');
@@ -90,9 +90,9 @@ const EditPage = createClass({
 			}
 		}
 
-		if(this.typeEdit()) { this.trySave(); };
+		if(this.isEdit()) { this.trySave(); };
 		window.onbeforeunload = ()=>{
-			if(!typeNew && (this.state.isSaving || this.state.isPending)){
+			if(!isNew && (this.state.isSaving || this.state.isPending)){
 				return 'You have unsaved changes!';
 			}
 		};
@@ -112,11 +112,11 @@ const EditPage = createClass({
 		document.removeEventListener('keydown', this.handleControlKeys);
 	},
 
-	typeNew : function() {
+	isNew : function() {
 		return (this.props.editType == 'new');
 	},
 
-	typeEdit : function() {
+	isEdit : function() {
 		return (this.props.editType == 'edit');
 	},
 
@@ -170,10 +170,10 @@ const EditPage = createClass({
 	trySave : function(){
 		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
 		if(this.hasChanges()){
-			if(this.typeEdit()) {
+			if(this.isEdit()) {
 				this.debounceSave();
 			}
-			if(this.typeNew()) {
+			if(this.isNew()) {
 				//console.log(this.state.brew.text);
 				localStorage.setItem(BREWKEY, this.state.brew.text);
 				localStorage.setItem(STYLEKEY, this.state.brew.style);
@@ -231,7 +231,7 @@ const EditPage = createClass({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
-		if(this.typeNew()) {
+		if(this.isNew()) {
 			const brew = this.state.brew;
 			// Split out CSS to Style if CSS codefence exists
 			if(brew.text.startsWith('```css') && brew.text.indexOf('```\n\n') > 0) {
@@ -277,7 +277,7 @@ const EditPage = createClass({
 			}
 		}
 
-		if(this.typeEdit())	{
+		if(this.isEdit())	{
 			const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 
 			if(this.state.saveGoogle) {
@@ -444,7 +444,7 @@ const EditPage = createClass({
 		if(this.state.isSaving){
 			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
 		}
-		if(this.typeNew() || (this.state.isPending && this.hasChanges())){
+		if(this.isNew() || (this.state.isPending && this.hasChanges())){
 			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving){
@@ -477,7 +477,7 @@ const EditPage = createClass({
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
 				{this.renderSaveButton()}
-				{this.typeEdit() && <NewBrewNavItem />}
+				{this.isEdit() && <NewBrewNavItem />}
 				<Nav.item newTab={true} href={`/share/${this.processShareId()}`} color='teal' icon='fas fa-share-alt'>
 					Share
 				</Nav.item>
