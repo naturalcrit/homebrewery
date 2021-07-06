@@ -92,12 +92,12 @@ const EditPage = createClass({
 
 		if(this.isEdit()) { this.trySave(); };
 		window.onbeforeunload = ()=>{
-			if(!isNew && (this.state.isSaving || this.state.isPending)){
+			if(!this.isNew && (this.state.isSaving || this.state.isPending)){
 				return 'You have unsaved changes!';
 			}
 		};
 
-		console.log(brew);
+		//console.log(brew);
 
 		this.setState((prevState)=>({
 			brew       : _.merge({}, prevState.brew, brew),
@@ -207,11 +207,20 @@ const EditPage = createClass({
 	},
 
 	toggleGoogleStorage : function(){
-		this.setState((prevState)=>({
-			saveGoogle : !prevState.saveGoogle,
-			isSaving   : false,
-			errors     : null
-		}), ()=>this.save());
+		if(this.isNew()){
+			this.setState((prevState)=>({
+				saveGoogle : !prevState.saveGoogle,
+				isSaving   : false,
+				errors     : null
+			}));
+		}
+		if(this.isEdit()) {
+			this.setState((prevState)=>({
+				saveGoogle : !prevState.saveGoogle,
+				isSaving   : false,
+				errors     : null
+			}), ()=>this.save());
+		}
 	},
 
 	clearErrors : function(){
@@ -231,19 +240,19 @@ const EditPage = createClass({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
+		const savingBrew = this.state.brew;
 		if(this.isNew()) {
-			const brew = this.state.brew;
 			// Split out CSS to Style if CSS codefence exists
-			if(brew.text.startsWith('```css') && brew.text.indexOf('```\n\n') > 0) {
-				const index = brew.text.indexOf('```\n\n');
-				brew.style = `${brew.style ? `${brew.style}\n` : ''}${brew.text.slice(7, index - 1)}`;
-				brew.text = brew.text.slice(index + 5);
+			if(savingBrew.text.startsWith('```css') && savingBrew.text.indexOf('```\n\n') > 0) {
+				const index = savingBrew.text.indexOf('```\n\n');
+				savingBrew.style = `${savingBrew.style ? `${savingBrew.style}\n` : ''}${savingBrew.text.slice(7, index - 1)}`;
+				savingBrew.text = savingBrew.text.slice(index + 5);
 			};
 
 			if(this.state.saveGoogle) {
 				const res = await request
 					.post('/api/newGoogle/')
-					.send(brew)
+					.send(savingBrew)
 					.catch((err)=>{
 						alert(err.status === 401
 							? 'Not signed in!'
@@ -252,14 +261,14 @@ const EditPage = createClass({
 						return;
 					});
 
-				const brew = res.body;
+				this.savedBrew = res.body;
 				localStorage.removeItem(BREWKEY);
 				localStorage.removeItem(STYLEKEY);
-				window.location.href = `/edit/${brew.googleId}${brew.editId}`;
+				window.location.href = `/edit/${this.savedBrew.googleId}${this.savedBrew.editId}`;
 			} else {
 				console.log('HB saving');
 				request.post('/api')
-				.send(brew)
+				.send(savingBrew)
 				.end((err, res)=>{
 					if(err){
 						this.setState({
@@ -269,22 +278,22 @@ const EditPage = createClass({
 						return;
 					}
 					window.onbeforeunload = function(){};
-					const brew = res.body;
+					this.savedBrew = res.body;
 					localStorage.removeItem(BREWKEY);
 					localStorage.removeItem(STYLEKEY);
-					window.location.href = `/edit/${brew.editId}`;
+					window.location.href = `/edit/${this.savedBrew.editId}`;
 				});
 			}
 		}
 
 		if(this.isEdit())	{
-			const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
+			const transfer = this.state.saveGoogle == _.isNil(savingBrew.googleId);
 
 			if(this.state.saveGoogle) {
 				if(transfer) {
 					const res = await request
 					.post('/api/newGoogle/')
-					.send(this.state.brew)
+					.send(savingBrew)
 					.catch((err)=>{
 						console.log(err.status === 401
 							? 'Not signed in!'
@@ -295,7 +304,7 @@ const EditPage = createClass({
 					if(!res) { return; }
 
 					console.log('Deleting Local Copy');
-					await request.delete(`/api/${this.state.brew.editId}`)
+					await request.delete(`/api/${savingBrew.editId}`)
 					.send()
 					.catch((err)=>{
 						console.log('Error deleting Local Copy');
@@ -305,8 +314,8 @@ const EditPage = createClass({
 					history.replaceState(null, null, `/edit/${this.savedBrew.googleId}${this.savedBrew.editId}`); //update URL to match doc ID
 				} else {
 					const res = await request
-					.put(`/api/updateGoogle/${this.state.brew.editId}`)
-					.send(this.state.brew)
+					.put(`/api/updateGoogle/${savingBrew.editId}`)
+					.send(savingBrew)
 					.catch((err)=>{
 						console.log(err.status === 401
 							? 'Not signed in!'
@@ -320,14 +329,14 @@ const EditPage = createClass({
 			} else {
 				if(transfer) {
 					const res = await request.post('/api')
-					.send(this.state.brew)
+					.send(savingBrew)
 					.catch((err)=>{
 						console.log('Error creating Local Copy');
 						this.setState({ errors: err });
 						return;
 					});
 
-					await request.get(`/api/removeGoogle/${this.state.brew.googleId}${this.state.brew.editId}`)
+					await request.get(`/api/removeGoogle/${savingBrew.googleId}${savingBrew.editId}`)
 					.send()
 					.catch((err)=>{
 						console.log('Error Deleting Google Brew');
@@ -337,8 +346,8 @@ const EditPage = createClass({
 					history.replaceState(null, null, `/edit/${this.savedBrew.editId}`); //update URL to match doc ID
 				} else {
 					const res = await request
-					.put(`/api/update/${this.state.brew.editId}`)
-					.send(this.state.brew)
+					.put(`/api/update/${savingBrew.editId}`)
+					.send(savingBrew)
 					.catch((err)=>{
 						console.log('Error Updating Local Brew');
 						this.setState({ errors: err });
@@ -370,10 +379,14 @@ const EditPage = createClass({
 
 			{this.state.confirmGoogleTransfer &&
 				<div className='errorContainer' onClick={this.closeAlerts}>
-					{ this.state.saveGoogle
+					{ this.isNew() && (this.state.saveGoogle
+						?	`Use Homebrewery storage when you save this brew?`
+						: `Use Google Drive storage when you save this brew?`
+					)}
+					{ this.isEdit() && (this.state.saveGoogle
 						?	`Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?`
 						: `Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?`
-					}
+					)}
 					<br />
 					<div className='confirm' onClick={this.toggleGoogleStorage}>
 						Yes
