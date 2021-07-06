@@ -28,6 +28,7 @@ const SAVE_TIMEOUT = 3000;
 
 const BREWKEY = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
+const localStorageKeys = [BREWKEY, STYLEKEY];
 
 
 const EditPage = createClass({
@@ -231,6 +232,39 @@ const EditPage = createClass({
 		});
 	},
 
+	saveBrew : async function(brewToSave) {
+		const res = await request
+							.post('/api')
+							.send(brewToSave)
+							.catch((err)=>{
+								alert('Error while saving!');
+								this.setState({
+									errors   : err,
+									isSaving : false
+								});
+								return;
+							});
+		return res;
+	},
+
+	saveGoogleBrew : async function(brewToSave) {
+		const res = await request
+					.post('/api/newGoogle/')
+					.send(brewToSave)
+					.catch((err)=>{
+						alert(err.status === 401
+							? 'Not signed in!'
+							: 'Error Saving to Google Brew!');
+						this.setState({
+							errors     : err,
+							isSaving   : false,
+							saveGoogle : false
+						});
+						return;
+					});
+		return res;
+	},
+
 	save : async function(){
 		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
 
@@ -249,57 +283,29 @@ const EditPage = createClass({
 				savingBrew.text = savingBrew.text.slice(index + 5);
 			};
 
+			let editUrl = '';
 			if(this.state.saveGoogle) {
-				const res = await request
-					.post('/api/newGoogle/')
-					.send(savingBrew)
-					.catch((err)=>{
-						alert(err.status === 401
-							? 'Not signed in!'
-							: 'Error Creating New Google Brew!');
-						this.setState({ isSaving: false });
-						return;
-					});
+				const res = await this.saveGoogleBrew(savingBrew);
 
 				this.savedBrew = res.body;
-				localStorage.removeItem(BREWKEY);
-				localStorage.removeItem(STYLEKEY);
-				window.location.href = `/edit/${this.savedBrew.googleId}${this.savedBrew.editId}`;
+				editUrl = `/edit/${this.savedBrew.googleId}${this.savedBrew.editId}`;
 			} else {
-				console.log('HB saving');
-				request.post('/api')
-				.send(savingBrew)
-				.end((err, res)=>{
-					if(err){
-						this.setState({
-							isSaving : false
-						});
-						alert('Error while saving!');
-						return;
-					}
-					window.onbeforeunload = function(){};
-					this.savedBrew = res.body;
-					localStorage.removeItem(BREWKEY);
-					localStorage.removeItem(STYLEKEY);
-					window.location.href = `/edit/${this.savedBrew.editId}`;
-				});
-			}
-		}
+				const res = await this.saveBrew(savingBrew);
 
+				window.onbeforeunload = function(){};
+				this.savedBrew = res.body;
+				editUrl = `/edit/${this.savedBrew.editId}`;
+			}
+
+			localStorageKeys.forEach((key)=>(localStorage.removeItem(key)));
+			window.location.href = editUrl;
+		}
 		if(this.isEdit())	{
 			const transfer = this.state.saveGoogle == _.isNil(savingBrew.googleId);
 
 			if(this.state.saveGoogle) {
 				if(transfer) {
-					const res = await request
-					.post('/api/newGoogle/')
-					.send(savingBrew)
-					.catch((err)=>{
-						console.log(err.status === 401
-							? 'Not signed in!'
-							: 'Error Transferring to Google!');
-						this.setState({ errors: err, saveGoogle: false });
-					});
+					const res = await this.saveGoogleBrew(savingBrew);
 
 					if(!res) { return; }
 
@@ -328,13 +334,7 @@ const EditPage = createClass({
 				}
 			} else {
 				if(transfer) {
-					const res = await request.post('/api')
-					.send(savingBrew)
-					.catch((err)=>{
-						console.log('Error creating Local Copy');
-						this.setState({ errors: err });
-						return;
-					});
+					const res = await this.saveBrew(savingBrew);
 
 					await request.get(`/api/removeGoogle/${savingBrew.googleId}${savingBrew.editId}`)
 					.send()
