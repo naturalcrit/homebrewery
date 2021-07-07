@@ -80,7 +80,8 @@ const RecentItems = createClass({
 
 	componentDidUpdate : function(prevProps) {
 		if(prevProps.brew && this.props.brew.editId !== prevProps.brew.editId) {
-	 		if(this.props.storageKey == 'edit') {
+	 		let edited = JSON.parse(localStorage.getItem(EDIT_KEY) || '[]');
+			if(this.props.storageKey == 'edit') {
 				let prevEditId = prevProps.brew.editId;
 				if(prevProps.brew.googleId){
 					prevEditId = `${prevProps.brew.googleId}${prevProps.brew.editId}`;
