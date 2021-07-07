@@ -410,6 +410,27 @@ body {
 	h5{
 		margin-bottom : 10px;
 	}
+	&.wide.twoHeadingRows table {
+		thead tr:first-child th:nth-child(n+3) {
+			position: relative;
+			bottom: -1rem;
+			text-align: center;
+		}
+		tbody {
+			tr {
+				&:first-child td {
+					font-weight: 800;
+					vertical-align: bottom;
+				}
+				&:nth-child(2n) {
+					background-color: @noteGreen;
+				}
+				&:nth-child(2n+1) {
+					background-color: inherit;
+				}
+			}
+		}
+	}
 }
 //************************************
 // *       DESCRIPTIVE TEXT BOX
