@@ -78,7 +78,7 @@ const EditPage = createClass({
 
 		if(this.isNew()) {
 			console.log('is new');
-			if((!brew.text && localStorage.getItem(BREWKEY)) && (!brew.style && localStorage.getItem(STYLEKEY))){
+			if(!brew.text || !brew.style){
 				console.log('has local data');
 
 				const brewStorage  = localStorage.getItem(BREWKEY) ?? '';
