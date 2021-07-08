@@ -203,14 +203,20 @@ const EditPage = createClass({
 	},
 
 	toggleGoogleStorage : function(){
-		this.setState((prevState)=>({
-			saveGoogle : !prevState.saveGoogle,
-			isSaving   : false,
-			errors     : null
-		}), ()=> {
-			if(this.isEdit())
-				this.transferBrew();
-		});
+		if(this.isNew()){
+			this.setState((prevState)=>({
+				saveGoogle : !prevState.saveGoogle,
+				isSaving   : false,
+				errors     : null
+			}));
+		}
+		if(this.isEdit()) {
+			this.setState((prevState)=>({
+				saveGoogle : !prevState.saveGoogle,
+				isSaving   : false,
+				errors     : null
+			}), ()=>this.transferBrew());
+		}
 	},
 
 	clearErrors : function(){
