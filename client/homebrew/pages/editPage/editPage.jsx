@@ -81,8 +81,11 @@ const EditPage = createClass({
 			if(!brew.text || !brew.style){
 				console.log('has local data');
 
-				brew.text = brew.text || (localStorage.getItem(BREWKEY) ?? '');
-				brew.style = brew.style || (localStorage.getItem(STYLEKEY) ?? undefined);
+				const brewStorage  = localStorage.getItem(BREWKEY) ?? '';
+				const styleStorage  = localStorage.getItem(STYLEKEY) ?? '';
+
+				brew.text = brew.text || (brewStorage  ?? '');
+				brew.style = brew.style || (styleStorage ?? '');
 			}
 		}
 
