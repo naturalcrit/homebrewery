@@ -265,54 +265,6 @@ const EditPage = createClass({
 		return res;
 	},
 
-	deleteBrew : async function(brewToDelete) {
-		const res = await request.delete(`/api/${brewToDelete.editId}`)
-					.send()
-					.catch((err)=>{
-						console.log('Error deleting Local Copy');
-						// TODO: setState errors: err, as per saveBrew/saveGoogleBrew???
-						return;
-					});
-		return res;
-	},
-
-	deleteGoogleBrew : async function(brewToDelete) {
-		const res = await request.get(`/api/removeGoogle/${brewToDelete.googleId}${brewToDelete.editId}`)
-					.send()
-					.catch((err)=>{
-						console.log('Error Deleting Google Brew');
-						// TODO: setState errors: err, as per saveBrew/saveGoogleBrew???
-						return;
-					});
-		return res;
-	},
-
-	updateBrew : async function(brewToUpdate) {
-		const res = await request
-		.put(`/api/update/${brewToUpdate.editId}`)
-		.send(brewToUpdate)
-		.catch((err)=>{
-			console.log('Error Updating Local Brew');
-			this.setState({ errors: err });
-			return;
-		});
-		return res;
-	},
-
-	updateGoogleBrew : async function(brewToUpdate) {
-		const res = await request
-					.put(`/api/updateGoogle/${brewToUpdate.editId}`)
-					.send(brewToUpdate)
-					.catch((err)=>{
-						console.log(err.status === 401
-							? 'Not signed in!'
-							: 'Error Saving to Google!');
-						this.setState({ errors: err });
-						return;
-					});
-		return res;
-	},
-
 	save : async function(){
 		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
 
@@ -322,23 +274,23 @@ const EditPage = createClass({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
-		const brewToSave = this.state.brew;
+		const savingBrew = this.state.brew;
 		if(this.isNew()) {
 			// Split out CSS to Style if CSS codefence exists
-			if(brewToSave.text.startsWith('```css') && brewToSave.text.indexOf('```\n\n') > 0) {
-				const index = brewToSave.text.indexOf('```\n\n');
-				brewToSave.style = `${brewToSave.style ? `${brewToSave.style}\n` : ''}${brewToSave.text.slice(7, index - 1)}`;
-				brewToSave.text = brewToSave.text.slice(index + 5);
+			if(savingBrew.text.startsWith('```css') && savingBrew.text.indexOf('```\n\n') > 0) {
+				const index = savingBrew.text.indexOf('```\n\n');
+				savingBrew.style = `${savingBrew.style ? `${savingBrew.style}\n` : ''}${savingBrew.text.slice(7, index - 1)}`;
+				savingBrew.text = savingBrew.text.slice(index + 5);
 			};
 
 			let editUrl = '';
 			if(this.state.saveGoogle) {
-				const res = await this.saveGoogleBrew(brewToSave);
+				const res = await this.saveGoogleBrew(savingBrew);
 
 				this.savedBrew = res.body;
 				editUrl = `/edit/${this.savedBrew.googleId}${this.savedBrew.editId}`;
 			} else {
-				const res = await this.saveBrew(brewToSave);
+				const res = await this.saveBrew(savingBrew);
 
 				window.onbeforeunload = function(){};
 				this.savedBrew = res.body;
@@ -349,34 +301,58 @@ const EditPage = createClass({
 			window.location.href = editUrl;
 		}
 		if(this.isEdit())	{
-			const transfer = this.state.saveGoogle == _.isNil(brewToSave.googleId);
+			const transfer = this.state.saveGoogle == _.isNil(savingBrew.googleId);
 
 			if(this.state.saveGoogle) {
 				if(transfer) {
-					const res = await this.saveGoogleBrew(brewToSave);
+					const res = await this.saveGoogleBrew(savingBrew);
 
 					if(!res) { return; }
 
 					console.log('Deleting Local Copy');
-					await deleteBrew(brewToSave);
+					await request.delete(`/api/${savingBrew.editId}`)
+					.send()
+					.catch((err)=>{
+						console.log('Error deleting Local Copy');
+					});
 
 					this.savedBrew = res.body;
 					history.replaceState(null, null, `/edit/${this.savedBrew.googleId}${this.savedBrew.editId}`); //update URL to match doc ID
 				} else {
-					const res = await this.updateGoogleBrew(brewToSave);
+					const res = await request
+					.put(`/api/updateGoogle/${savingBrew.editId}`)
+					.send(savingBrew)
+					.catch((err)=>{
+						console.log(err.status === 401
+							? 'Not signed in!'
+							: 'Error Saving to Google!');
+						this.setState({ errors: err });
+						return;
+					});
 
 					this.savedBrew = res.body;
 				}
 			} else {
 				if(transfer) {
-					const res = await this.saveBrew(brewToSave);
+					const res = await this.saveBrew(savingBrew);
 
-					await deleteGoogleBrew(brewToSave);
+					await request.get(`/api/removeGoogle/${savingBrew.googleId}${savingBrew.editId}`)
+					.send()
+					.catch((err)=>{
+						console.log('Error Deleting Google Brew');
+					});
 
 					this.savedBrew = res.body;
 					history.replaceState(null, null, `/edit/${this.savedBrew.editId}`); //update URL to match doc ID
 				} else {
-					const res = await this.updateBrew(brewToSave);
+					const res = await request
+					.put(`/api/update/${savingBrew.editId}`)
+					.send(savingBrew)
+					.catch((err)=>{
+						console.log('Error Updating Local Brew');
+						this.setState({ errors: err });
+						return;
+					});
 
 					this.savedBrew = res.body;
 				}
