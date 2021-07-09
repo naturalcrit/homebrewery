@@ -14,6 +14,7 @@ const Markdown = require('../shared/naturalcrit/markdown.js');
 const MAX_TITLE_LENGTH = 100;
 
 const getGoodBrewTitle = (text)=>{
+	if(!text) { return 'No Title'; };
 	const tokens = Markdown.marked.lexer(text);
  	return (tokens.find((token)=>token.type == 'heading' ||	token.type == 'paragraph')?.text || 'No Title')
 				 .slice(0, MAX_TITLE_LENGTH);
