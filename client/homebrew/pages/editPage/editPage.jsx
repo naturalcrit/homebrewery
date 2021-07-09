@@ -380,7 +380,7 @@ const EditPage = createClass({
 			{this.state.confirmGoogleTransfer &&
 				<div className='errorContainer' onClick={this.closeAlerts}>
 					{ this.isNew() && (this.state.saveGoogle
-						?	`Use Homebrewery storage when you save this brew?`
+						? `Use Homebrewery storage when you save this brew?`
 						: `Use Google Drive storage when you save this brew?`
 					)}
 					{ this.isEdit() && (this.state.saveGoogle
