@@ -27,18 +27,34 @@ module.exports = [
 			},
 			{
 				name : 'Vertical Spacing',
-				icon : 'fas fa-times-circle',
-				gen  : ''
+				icon : 'fas fa-arrows-alt-v',
+				gen  : '\n::::\n'
+			},
+			{
+				name : 'Horizontal Spacing',
+				icon : 'fas fa-arrows-alt-h',
+				gen  : ' {{width="100px"}} '
 			},
 			{
 				name : 'Wide Block',
-				icon : 'fas fa-times-circle',
-				gen  : ''
+				icon : 'fas fa-window-maximize',
+				gen  : dedent`\n
+					{{wide
+					Everything in here will be extra wide. Tables, text, everything!
+					Beware though, CSS columns can behave a bit weird sometimes. You may
+					have to rely on the automatic column-break rather than \`\column\` if
+					you mix columns and wide blocks on the same page.
+					}}
+					\n`
 			},
 			{
 				name : 'Image',
-				icon : 'fas fa-times-circle',
-				gen  : ''
+				icon : 'fas fa-image',
+				gen  : dedent`
+					<img
+					  src='https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg'
+					  style='width:325px'/>
+					Credit: Kyounghwan Kim`
 			},
 			{
 				name : 'Background Image',
