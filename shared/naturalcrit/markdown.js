@@ -20,20 +20,20 @@ renderer.paragraph = function(text){
 	if(text.startsWith('<div') || text.startsWith('</div'))
 		return `${text}`;
 	else if(match = text.match(/(^|^.*?\n)<span class="inline(.*?<\/span>)$/)) {
-		return `${match[1].trim() ? `<p>${match[1]}</p>` : ''}<span class="inline-block${match[2]}`; }
-	else
+		return `${match[1].trim() ? `<p>${match[1]}</p>` : ''}<span class="inline-block${match[2]}`;
+	} else
 		return `<p>${text}</p>\n`;
 };
 
 const mustacheSpans = {
-  name: 'mustacheSpans',
-  level: 'inline',                                    // Is this a block-level or inline-level tokenizer?
-  start(src) { return src.match(/{{[^{]/)?.index; },  // Hint to Marked.js to stop and check for a match
-  tokenizer(src, tokens) {
-    const completeSpan = /^{{[^\n]*}}/;               // Regex for the complete token
-		const inlineRegex = /{{(?:="[\w,\-. ]*"|[^"'{}}\s])*\s*|}}/g;
-    const match = completeSpan.exec(src);
-    if (match) {
+	name  : 'mustacheSpans',
+	level : 'inline',                                   // Is this a block-level or inline-level tokenizer?
+	start(src) { return src.match(/{{[^{]/)?.index; },  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const completeSpan = /^{{[^\n]*}}/;               // Regex for the complete token
+		const inlineRegex = /{{(?:="[\w,\-. ]*"|[^"'{}\s])*\s*|}}/g;
+		const match = completeSpan.exec(src);
+		if(match) {
 			//Find closing delimiter
 			let blockCount = 0;
 			let tags = '';
@@ -41,10 +41,9 @@ const mustacheSpans = {
 			let delim;
 			while (delim = inlineRegex.exec(match[0])) {
 				if(delim[0].startsWith('{{')) {
-					tags = tags || ' ' + processStyleTags(delim[0].substring(2));
+					tags = tags || ` ${processStyleTags(delim[0].substring(2))}`;
 					blockCount++;
-				}
-				else if(delim[0] == '}}' && blockCount !== 0) {
+				} else if(delim[0] == '}}' && blockCount !== 0) {
 					blockCount--;
 					if(blockCount == 0) {
 						endIndex = inlineRegex.lastIndex;
@@ -55,65 +54,69 @@ const mustacheSpans = {
 
 			if(endIndex) {
 				const raw = src.slice(0, endIndex);
-				const text = raw.slice((raw.indexOf(' ')+1) || -2, -2)
+				const text = raw.slice((raw.indexOf(' ')+1) || -2, -2);
 
-				return {                                        // Token to generate
-					type: 'mustacheSpans',                        // Should match "name" above
-					raw: raw,                                     // Text to consume from the source
-					text: text,                                   // Additional custom properties
-					tags: tags,
-					tokens: this.inlineTokens(text)    // inlineTokens to process **bold**, *italics*, etc.
-				}
+				return {                              // Token to generate
+					type   : 'mustacheSpans',           // Should match "name" above
+					raw    : raw,                       // Text to consume from the source
+					text   : text,                      // Additional custom properties
+					tags   : tags,
+					tokens : this.inlineTokens(text)    // inlineTokens to process **bold**, *italics*, etc.
+				};
 			}
-    }
-  },
-  renderer(token) {
-		console.log(token);
-    return `<span class="inline${token.tags}>${this.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
-  }
-};
-
-Markdown.use({extensions : [mustacheSpans]});
-
-// Mustache-style Divs {{class \n content ... \n}}
-let blockCount = 0;
-const blockRegex = /^ *{{(?:="[\w,\-. ]*"|[^"'\s])*$|^ *}}$/gm;
-const inlineFullRegex = /{{[^\n]*}}/g;
-const inlineRegex = /{{(?:="[\w,\-. ]*"|[^"'{}}\s])*\s*|}}/g;
-
-renderer.text = function(text){
-	const newText = text.replaceAll('&quot;', '"');
-	let matches;
-
-	if(matches = newText.match(blockRegex)) {
-		//DIV - BLOCK-LEVEL
-		console.log({match: matches});
-		console.log({newText: newText});
- 		let matchIndex = 0;
- 		const res =  _.reduce(newText.split(blockRegex), (r, splitText)=>{
- 			if(splitText) r.push(Markdown.parseInline(splitText, { renderer: renderer }));
-
- 			const block = matches[matchIndex] ? matches[matchIndex].trimLeft() : '';
- 			if(block && block.startsWith('{')) {
- 				const values = processStyleTags(block.substring(2));
- 				r.push(`<div class="block ${values}">`);
- 				blockCount++;
- 			} else if(block == '}}' && blockCount !== 0){
- 				r.push('</div>');
- 				blockCount--;
- 			}
-
- 			matchIndex++;
-
- 			return r;
- 		}, []).join('');
- 		return res;
- 	} else {
-		if(!matches) {
-			return `${text}`;
 		}
+	},
+	renderer(token) {
+		return `<span class="inline${token.tags}>${this.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
 	}
 };
+
+const mustacheDivs = {
+	name  : 'mustacheDivs',
+	level : 'block',
+	start(src) { return src.match(/^ *{{[^{]/)?.index; },  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const completeBlock = /^ *{{.*\n *}}/s;                // Regex for the complete token
+		const blockRegex = /^ *{{(?:="[\w,\-. ]*"|[^"'{}\s])*$|^ *}}$/gm;
+		const match = completeBlock.exec(src);
+		if(match) {
+			//Find closing delimiter
+			let blockCount = 0;
+			let tags = '';
+			let endIndex = 0;
+			let delim;
+			while (delim = blockRegex.exec(match[0])?.[0].trim()) {
+				if(delim.startsWith('{{')) {
+					tags = tags || ` ${processStyleTags(delim.substring(2))}`;
+					blockCount++;
+				} else if(delim == '}}' && blockCount !== 0) {
+					blockCount--;
+					if(blockCount == 0) {
+						endIndex = blockRegex.lastIndex;
+						break;
+					}
+				}
+			}
+
+			if(endIndex) {
+				const raw = src.slice(0, endIndex);
+				const text = raw.slice((raw.indexOf('\n')+1) || -2, -2);
+				return {                                        // Token to generate
+					type   : 'mustacheDivs',                      // Should match "name" above
+					raw    : raw,                                 // Text to consume from the source
+					text   : text,                                // Additional custom properties
+					tags   : tags,
+					tokens : this.inline(this.blockTokens(text))
+				};
+			}
+		}
+	},
+	renderer(token) {
+		return `<div class="block${token.tags}>${this.parse(token.tokens)}</div>`; // parseInline to turn child tokens into HTML
+	}
+};
+
+Markdown.use({ extensions: [mustacheSpans, mustacheDivs] });
 
 //Fix local links in the Preview iFrame to link inside the frame
 renderer.link = function (href, title, text) {
@@ -211,7 +214,6 @@ const processStyleTags = (string)=>{
 module.exports = {
 	marked : Markdown,
 	render : (rawBrewText)=>{
-		blockCount = 0;
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `<div class='columnSplit'></div>`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`)
 														 .replace(/(?:^|>) *:([^:\n]*):([^\n]*)\n/gm, (match, term, def)=>`<dt>${Markdown.parseInline(term)}</dt><dd>${def}</dd>`)
