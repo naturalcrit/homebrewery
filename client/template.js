@@ -1,7 +1,7 @@
-module.exports = async(name, title = '', props = {})=>{
+module.exports = async(name, title = '', props = {}, lang='en')=>{
 	return `
 <!DOCTYPE html>
-<html>
+<html lang="${lang}">
 	<head>
 		<link href="//use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
 		<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
