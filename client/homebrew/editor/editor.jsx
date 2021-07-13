@@ -3,17 +3,26 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
+const dedent = require('dedent-tabs').default;
 
 const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
 const SnippetBar = require('./snippetbar/snippetbar.jsx');
 const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
+const SNIPPETBAR_HEIGHT = 25;
+const DEFAULT_STYLE_TEXT = dedent`
+				/*=======---  Example CSS styling  ---=======*/
+				/* Any CSS here will apply to your document! */
+
+				.myExampleClass {
+					color: black;
+				}`;
 
 const splice = function(str, index, inject){
 	return str.slice(0, index) + inject + str.slice(index);
 };
 
-const SNIPPETBAR_HEIGHT = 25;
+
 
 const Editor = createClass({
 	getDefaultProps : function() {
@@ -176,7 +185,7 @@ const Editor = createClass({
 			return <CodeEditor key='style'
 				ref='codeEditor'
 				language='css'
-				value={this.props.brew.style}
+				value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
 				onChange={this.props.onStyleChange} />;
 		}
 		if(this.isMeta()){

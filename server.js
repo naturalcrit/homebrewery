@@ -9,11 +9,12 @@ const GoogleActions = require('./server/googleActions.js');
 const serveCompressedStaticAssets = require('./server/static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
-const dedent = require('dedent-tabs').default;
+
+const brewAccessTypes = ['edit', 'share', 'raw'];
 
 //Get the brew object from the HB database or Google Drive
 const getBrewFromId = asyncHandler(async (id, accessType)=>{
-	if(accessType !== 'edit' && accessType !== 'share')
+	if(!brewAccessTypes.includes(accessType))
 		throw ('Invalid Access Type when getting brew');
 	let brew;
 	if(id.length > 12) {
@@ -22,23 +23,19 @@ const getBrewFromId = asyncHandler(async (id, accessType)=>{
 		brew = await GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, id, accessType);
 	} else {
 		brew = await HomebrewModel.get(accessType == 'edit' ? { editId: id } : { shareId: id });
-		brew = brew.toObject();
+		brew = brew.toObject(); // Convert MongoDB object to standard Javascript Object
 	}
 
 	brew = sanitizeBrew(brew, accessType === 'edit' ? false : true);
 	//Split brew.text into text and style
+	//unless the Access Type is RAW, in which case return immediately
+	if(accessType == 'raw') {
+		return brew;
+	}
 	if(brew.text.startsWith('```css')) {
 		const index = brew.text.indexOf('```\n\n');
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
-	} else {
-		brew.style = dedent`
-			/*=======---  Example CSS styling  ---=======*/
-			/* Any CSS here will apply to your document! */
-
-			.myExampleClass {
- 			  color: black;
-			}`;
 	}
 	return brew;
 });
@@ -110,7 +107,7 @@ app.get('/robots.txt', (req, res)=>{
 
 //Source page
 app.get('/source/:id', asyncHandler(async (req, res)=>{
-	const brew = await getBrewFromId(req.params.id, 'share');
+	const brew = await getBrewFromId(req.params.id, 'raw');
 
 	const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
 	let text = brew.text;
@@ -123,7 +120,7 @@ app.get('/source/:id', asyncHandler(async (req, res)=>{
 
 //Download brew source page
 app.get('/download/:id', asyncHandler(async (req, res)=>{
-	const brew = await getBrewFromId(req.params.id, 'share');
+	const brew = await getBrewFromId(req.params.id, 'raw');
 	const prefix = 'HB - ';
 
 	let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');

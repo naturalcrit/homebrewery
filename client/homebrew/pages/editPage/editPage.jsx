@@ -304,7 +304,7 @@ const EditPage = createClass({
 					You must be signed in to a Google account to transfer
 					between the homebrewery and Google Drive!
 					<a target='_blank' rel='noopener noreferrer'
-						href={`http://naturalcrit.com/login?redirect=${this.state.url}`}>
+						href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
 						<div className='confirm'>
 							Sign In
 						</div>
@@ -332,7 +332,7 @@ const EditPage = createClass({
 					You must be signed in to a Google account
 						to save this to<br />Google Drive!<br />
 						<a target='_blank' rel='noopener noreferrer'
-							href={`http://naturalcrit.com/login?redirect=${this.state.url}`}>
+							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
 							<div className='confirm'>
 								Sign In
 							</div>
@@ -349,7 +349,7 @@ const EditPage = createClass({
 				<div className='errorContainer'>
 					Looks like there was a problem saving. <br />
 					Report the issue <a target='_blank' rel='noopener noreferrer'
-						href={`https://github.com/naturalcrt/naturalcrit/issues/new?body=${encodeURIComponent(errMsg)}`}>
+						href={`https://github.com/naturalcrit/homebrewery/issues/new?body=${encodeURIComponent(errMsg)}`}>
 						here
 					</a>.
 				</div>
@@ -406,7 +406,7 @@ const EditPage = createClass({
 	},
 
 	render : function(){
-		return <div className='editPage page'>
+		return <div className='editPage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
 			{this.renderNavbar()}
 

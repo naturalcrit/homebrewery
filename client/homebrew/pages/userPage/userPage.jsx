@@ -52,7 +52,7 @@ const UserPage = createClass({
 	render : function(){
 		const brews = this.getSortedBrews();
 
-		return <div className='userPage page'>
+		return <div className='userPage sitePage'>
 			<Navbar>
 				<Nav.section>
 					<NewBrew />

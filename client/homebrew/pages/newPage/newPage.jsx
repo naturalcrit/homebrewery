@@ -1,9 +1,9 @@
+/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./newPage.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const request = require('superagent');
-const dedent = require('dedent-tabs').default;
 
 const Markdown = require('naturalcrit/markdown.js');
 
@@ -17,20 +17,15 @@ const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
-const KEY = 'homebrewery-new';
+const BREWKEY = 'homebrewery-new';
+const STYLEKEY = 'homebrewery-new-style';
+
 
 const NewPage = createClass({
 	getDefaultProps : function() {
 		return {
 			brew : {
-				text  : '',
-				style : dedent`
-										/*=======---  Example CSS styling  ---=======*/
-										/* Any CSS here will apply to your document! */
-										
-										.myExampleClass {
-							 			  color: black;
-										}`,
+				text      : '',
 				shareId   : null,
 				editId    : null,
 				createdAt : null,
@@ -51,7 +46,6 @@ const NewPage = createClass({
 		return {
 			brew : {
 				text        : this.props.brew.text || '',
-				style       : this.props.brew.style || '',
 				gDrive      : false,
 				title       : this.props.brew.title || '',
 				description : this.props.brew.description || '',
@@ -70,10 +64,15 @@ const NewPage = createClass({
 	},
 
 	componentDidMount : function() {
-		const storage = localStorage.getItem(KEY);
-		if(!this.props.brew.text && storage){
+		const brewStorage  = localStorage.getItem(BREWKEY);
+		const styleStorage = localStorage.getItem(STYLEKEY);
+
+		if(!this.props.brew.text || !this.props.brew.style){
 			this.setState({
-				brew : { text: storage }
+				brew : {
+					text  : this.props.brew.text  || (brewStorage  ?? ''),
+					style : this.props.brew.style || (styleStorage ?? undefined)
+				}
 			});
 		}
 
@@ -112,13 +111,14 @@ const NewPage = createClass({
 			brew       : _.merge({}, prevState.brew, { text: text }),
 			htmlErrors : htmlErrors
 		}));
-		localStorage.setItem(KEY, text);
+		localStorage.setItem(BREWKEY, text);
 	},
 
 	handleStyleChange : function(style){
 		this.setState((prevState)=>({
 			brew : _.merge({}, prevState.brew, { style: style }),
 		}));
+		localStorage.setItem(STYLEKEY, style);
 	},
 
 	handleMetaChange : function(metadata){
@@ -135,10 +135,18 @@ const NewPage = createClass({
 
 		console.log('saving new brew');
 
+		let brew = this.state.brew;
+		// Split out CSS to Style if CSS codefence exists
+		if(brew.text.startsWith('```css') && brew.text.indexOf('```\n\n') > 0) {
+			const index = brew.text.indexOf('```\n\n');
+			brew.style = `${brew.style ? `${brew.style}\n` : ''}${brew.text.slice(7, index - 1)}`;
+			brew.text = brew.text.slice(index + 5);
+		};
+
 		if(this.state.saveGoogle) {
 			const res = await request
 			.post('/api/newGoogle/')
-			.send(this.state.brew)
+			.send(brew)
 			.catch((err)=>{
 				console.log(err.status === 401
 					? 'Not signed in!'
@@ -147,12 +155,13 @@ const NewPage = createClass({
 				return;
 			});
 
-			const brew = res.body;
-			localStorage.removeItem(KEY);
+			brew = res.body;
+			localStorage.removeItem(BREWKEY);
+			localStorage.removeItem(STYLEKEY);
 			window.location = `/edit/${brew.googleId}${brew.editId}`;
 		} else {
 			request.post('/api')
-			.send(this.state.brew)
+			.send(brew)
 			.end((err, res)=>{
 				if(err){
 					this.setState({
@@ -161,8 +170,9 @@ const NewPage = createClass({
 					return;
 				}
 				window.onbeforeunload = function(){};
-				const brew = res.body;
-				localStorage.removeItem(KEY);
+				brew = res.body;
+				localStorage.removeItem(BREWKEY);
+				localStorage.removeItem(STYLEKEY);
 				window.location = `/edit/${brew.editId}`;
 			});
 		}
@@ -181,7 +191,7 @@ const NewPage = createClass({
 	},
 
 	print : function(){
-		localStorage.setItem('print', this.state.brew.text);
+		localStorage.setItem('print', `<style>\n${this.state.brew.style}\n</style>\n\n${this.state.brew.text}`);
 		window.open('/print?dialog=true&local=print', '_blank');
 	},
 
@@ -209,7 +219,7 @@ const NewPage = createClass({
 	},
 
 	render : function(){
-		return <div className='newPage page'>
+		return <div className='newPage sitePage'>
 			{this.renderNavbar()}
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>

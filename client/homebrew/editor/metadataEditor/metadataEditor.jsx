@@ -67,10 +67,12 @@ const MetadataEditor = createClass({
 
 	getRedditLink : function(){
 		const meta = this.props.metadata;
+
+		const shareLink = (meta.googleId || '') + meta.shareId;
 		const title = `${meta.title} [${meta.systems.join(' ')}]`;
 		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
 
-**[Homebrewery Link](http://homebrewery.naturalcrit.com/share/${meta.shareId})**`;
+**[Homebrewery Link](https://homebrewery.naturalcrit.com/share/${shareLink})**`;
 
 		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
 	},
