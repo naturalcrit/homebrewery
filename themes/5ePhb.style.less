@@ -464,7 +464,7 @@ body {
 // ************************************/
 .page .descriptive{
 	display             : block-inline;
-	margin-bottom       : 1em;
+	margin-top          : 1.3em;
 	background-color    : #faf7ea;
 	font-family         : ScalySansRemake;
 	border-style        : solid;
@@ -472,6 +472,10 @@ body {
 	border-image        : @descriptiveBoxImage 12 stretch;
 	border-image-outset : 4px;
 	box-shadow          : 0px 0px 6px #faf7ea;
+	padding             : 0.1em;
+	& + * {
+		margin-top : 1.3em;
+	}
 	p{
 		display        : block;
 		padding-bottom : 0px;
@@ -479,6 +483,9 @@ body {
 	}
 	p + p {
 		padding-top : .8em;
+	}
+	p:last-of-type {
+		margin-bottom : 0em;
 	}
 	em {
 		font-family : ScalySansRemake;

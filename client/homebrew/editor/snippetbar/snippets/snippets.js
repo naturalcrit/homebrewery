@@ -159,12 +159,12 @@ module.exports = [
 				icon : 'fas fa-comment-alt',
 				gen  : function(){
 					return [
-						'<div class=\'descriptive\'>',
+						'{{descriptive',
 						'##### Time to Drop Knowledge',
 						'Use notes to point out some interesting information. ',
 						'',
 						'**Tables and lists** both work within a note.',
-						'</div>'
+						'}}'
 					].join('\n');
 				},
 			},
