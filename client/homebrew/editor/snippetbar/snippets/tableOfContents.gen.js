@@ -64,8 +64,7 @@ module.exports = function(brew){
 					_.each(g2.children, (g3, idx3)=>{
 						if(g2.title !== null) {
 							r.push(`\t\t    - [{{ ${g3.title}}}{{ ${g3.page}}}](#p${g3.page})`);
-						}
-						else { // Don't over-indent if no level-2 parent entry
+						} else { // Don't over-indent if no level-2 parent entry
 							r.push(`\t\t  - [{{ ${g3.title}}}{{ ${g3.page}}}](#p${g3.page})`);
 						}
 					});
