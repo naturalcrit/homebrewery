@@ -74,7 +74,7 @@ const mustacheSpans = {
 const mustacheDivs = {
 	name  : 'mustacheDivs',
 	level : 'block',
-	start(src) { return src.match(/^ *{{[^{]/)?.index; },  // Hint to Marked.js to stop and check for a match
+	start(src) { return src.match(/^ *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeBlock = /^ *{{.*\n *}}/s;                // Regex for the complete token
 		const blockRegex = /^ *{{(?:="[\w,\-. ]*"|[^"'{}\s])*$|^ *}}$/gm;
@@ -116,7 +116,43 @@ const mustacheDivs = {
 	}
 };
 
-Markdown.use({ extensions: [mustacheSpans, mustacheDivs] });
+const definitionLists = {
+	name  : 'definitionLists',
+	level : 'block',
+	start(src) { return src.match(/^.*?::.*/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const regex = /^([^\n]*?)::([^\n]*)/ym;
+		let match;
+		let endIndex = 0;
+		const definitions = [];
+		//if(!src.match(/^[^\n]*?::/)) {console.log('return'); return;}
+		while (match = regex.exec(src)) {
+			definitions.push({
+				dt : this.inlineTokens(match[1].trim()),
+				dd : this.inlineTokens(match[2].trim())
+			});
+			//console.log(regexl)
+			endIndex = regex.lastIndex;
+		}
+		if(definitions.length) {
+			return {
+				type : 'definitionLists',
+				raw  : src.slice(0, endIndex),
+				definitions
+			};
+		}
+	},
+	renderer(token) {
+		return `<dl>
+						${token.definitions.reduce((html, def)=>{
+		return `${html}<dt>${this.parseInline(def.dt)}</dt>`
+									 				+ `<dd>${this.parseInline(def.dd)}</dd>\n`;
+	}, '')}
+		 				</dl>`;
+	}
+};
+
+Markdown.use({ extensions: [mustacheSpans, mustacheDivs, definitionLists] });
 
 //Fix local links in the Preview iFrame to link inside the frame
 renderer.link = function (href, title, text) {
@@ -216,8 +252,6 @@ module.exports = {
 	render : (rawBrewText)=>{
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `<div class='columnSplit'></div>`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`)
-														 .replace(/(?:^|>) *:([^:\n]*):([^\n]*)\n/gm, (match, term, def)=>`<dt>${Markdown.parseInline(term)}</dt><dd>${def}</dd>`)
-														 .replace(/(<dt>.*<\/dt><dd>.*<\/dd>\n?)+/gm, `<dl>$1</dl>\n\n`)
 		                         .replace(/^}}/gm, '\n}}')
 		                         .replace(/^({{[^\n]*)$/gm, '$1\n');
 		return Markdown(

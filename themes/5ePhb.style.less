@@ -283,11 +283,6 @@ body {
 		dl {
 			.useSansSerif();
 			color        : @headerText;
-			padding-left :1.3em;
-			text-indent  :-1.3em;
-		}
-		dd {
-			text-indent  : 0px;
 		}
 
 		// Monster Ability table
@@ -581,17 +576,26 @@ body {
 // *    DEFINITION LISTS
 // *****************************/
 .page {
-	// dl {
-  // 	margin-top: 10px;
-  // }
+	dl {
+		line-height  : 1.3em;
+		padding-left : 1em;
+		text-indent  : -1em;
+	}
+	dl + p {
+  	margin-top: 0.5em;
+  }
+	p + dl {
+		margin-top: -0.5em;
+	}
   dt {
     float: left;
     //clear: left;  //Doesn't seem necessary
     margin-right: 5px;
   }
-  // dd {
-  //   margin-left: 0px;
-  // }
+  dd {
+		margin-left : 0px;
+		text-indent : 0px;
+  }
 }
 
 //*****************************
