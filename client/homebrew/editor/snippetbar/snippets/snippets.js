@@ -146,26 +146,28 @@ module.exports = [
 				name : 'Note',
 				icon : 'fas fa-sticky-note',
 				gen  : function(){
-					return [
-						'> ##### Time to Drop Knowledge',
-						'> Use notes to point out some interesting information. ',
-						'> ',
-						'> **Tables and lists** both work within a note.'
-					].join('\n');
+					return dedent`
+						{{note
+						##### Time to Drop Knowledge',
+						Use notes to point out some interesting information.
+
+						**Tables and lists** both work within a note.
+						}}
+						\n`;
 				},
 			},
 			{
 				name : 'Descriptive Text Box',
 				icon : 'fas fa-comment-alt',
 				gen  : function(){
-					return [
-						'{{descriptive',
-						'##### Time to Drop Knowledge',
-						'Use notes to point out some interesting information. ',
-						'',
-						'**Tables and lists** both work within a note.',
-						'}}'
-					].join('\n');
+					return dedent`
+						{{descriptive
+						##### Time to Drop Knowledge
+						Use descriptive boxes to highlight text that should be read aloud.
+						
+						**Tables and lists** both work within a descriptive box.
+						}}
+						\n`;
 				},
 			},
 			{
