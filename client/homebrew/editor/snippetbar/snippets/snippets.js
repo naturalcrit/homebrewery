@@ -148,7 +148,7 @@ module.exports = [
 				gen  : function(){
 					return dedent`
 						{{note
-						##### Time to Drop Knowledge',
+						##### Time to Drop Knowledge
 						Use notes to point out some interesting information.
 
 						**Tables and lists** both work within a note.
@@ -164,7 +164,7 @@ module.exports = [
 						{{descriptive
 						##### Time to Drop Knowledge
 						Use descriptive boxes to highlight text that should be read aloud.
-						
+
 						**Tables and lists** both work within a descriptive box.
 						}}
 						\n`;
