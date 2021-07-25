@@ -170,6 +170,7 @@ app.get('/edit/:id', asyncHandler(async (req, res, next)=>{
 //New Page
 app.get('/new/:id', asyncHandler(async (req, res, next)=>{
 	const brew = await getBrewFromId(req.params.id, 'share');
+	brew.title = `CLONE:- ${brew.title}`;
 	req.brew = brew;
 	return next();
 }));
