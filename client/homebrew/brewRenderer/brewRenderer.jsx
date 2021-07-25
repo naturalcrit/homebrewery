@@ -129,6 +129,13 @@ const BrewRenderer = createClass({
 			return <div className='phb3 page' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: Markdown.render(pageText) }} key={index} />;
 	},
 
+	renderStyle : function(){
+		if(this.props.renderer == 'legacy')
+			return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(`<style> ${this.props.style} </style>`) }} />;
+		else
+			return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: Markdown.render(`<style> ${this.props.style} </style>`) }} />;
+	},
+
 	renderPages : function(){
 		if(this.state.usePPR){
 			return _.map(this.state.pages, (page, index)=>{
@@ -189,7 +196,7 @@ const BrewRenderer = createClass({
 
 						<div className='pages' ref='pages'>
 							{/* Apply CSS from Style tab */}
-							<div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${this.props.style} </style>` }} />
+							{this.renderStyle()}
 
 							{/* Render pages from Markdown tab */}
 							{this.state.isMounted
