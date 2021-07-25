@@ -130,6 +130,7 @@ const BrewRenderer = createClass({
 	},
 
 	renderStyle : function(){
+		if(!this.props.brew.style) return;
 		if(this.props.renderer == 'legacy')
 			return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(`<style> ${this.props.style} </style>`) }} />;
 		else
