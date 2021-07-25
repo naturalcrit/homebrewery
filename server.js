@@ -105,6 +105,18 @@ app.get('/robots.txt', (req, res)=>{
 	return res.sendFile(`${__dirname}/robots.txt`);
 });
 
+//Home page
+app.get('/', async (req, res, next)=>{
+	req.welcomeText = welcomeText;
+	return next();
+});
+
+//Changelog page
+app.get('/changelog', async (req, res, next)=>{
+	req.changelogText = changelogText;
+	return next();
+});
+
 //Source page
 app.get('/source/:id', asyncHandler(async (req, res)=>{
 	const brew = await getBrewFromId(req.params.id, 'raw');
@@ -204,8 +216,8 @@ app.use((req, res)=>{
 	const props = {
 		version     : require('./package.json').version,
 		url         : req.originalUrl,
-		welcomeText : welcomeText,
-		changelog   : changelogText,
+		welcomeText : req.welcomeText,
+		changelog   : req.changelogText,
 		brew        : req.brew,
 		brews       : req.brews,
 		googleBrews : req.googleBrews,
