@@ -26,6 +26,7 @@ const NewPage = createClass({
 		return {
 			brew : {
 				text      : '',
+				style     : undefined,
 				shareId   : null,
 				editId    : null,
 				createdAt : null,
@@ -46,6 +47,7 @@ const NewPage = createClass({
 		return {
 			brew : {
 				text        : this.props.brew.text || '',
+				style       : this.props.brew.style || undefined,
 				gDrive      : false,
 				title       : this.props.brew.title || '',
 				description : this.props.brew.description || '',
