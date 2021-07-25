@@ -53,6 +53,7 @@ const UserPage = createClass({
 		const brews = this.getSortedBrews();
 
 		return <div className='userPage sitePage'>
+			<link href='/themes/5ePhbLegacy.style.css' rel='stylesheet'/>
 			<Navbar>
 				<Nav.section>
 					<NewBrew />
