@@ -162,7 +162,7 @@ const UserPage = createClass({
 						<button
 							onClick={this.handleSortDirChange}
 						>
-							{`${(this.state.sortDir == 'asc' ? '⮝ ASC' : '⮟ DESC')}`}
+							{`${(this.state.sortDir == 'asc' ? '\u2B9D ASC' : '\u2B9F DESC')}`}
 						</button>
 					</td>
 				</tr>
