@@ -53,7 +53,7 @@ const UserPage = createClass({
 
 	sortBrews : function(brews, sortType){
 		if(sortType == 'alpha') {
-			return _.orderBy(brews, (brew)=>{ return brew.title; }, this.state.sortDir);
+			return _.orderBy(brews, (brew)=>{ return brew.title.toLowerCase(); }, this.state.sortDir);
 		}
 		if(sortType == 'created'){
 			return _.orderBy(brews, (brew)=>{ return brew.createdAt; }, this.state.sortDir);
@@ -67,7 +67,7 @@ const UserPage = createClass({
 		if(sortType == 'latest'){
 			return _.orderBy(brews, (brew)=>{ return brew.lastViewed; }, this.state.sortDir);
 		}
-		return _.orderBy(brews, (brew)=>{ return brew.title; }, this.state.sortDir);
+		return _.orderBy(brews, (brew)=>{ return brew.title.toLowerCase(); }, this.state.sortDir);
 	},
 
 	handleSortOptionChange : function(event){
