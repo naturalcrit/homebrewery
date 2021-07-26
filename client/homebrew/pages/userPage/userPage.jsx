@@ -83,6 +83,22 @@ const UserPage = createClass({
 		});
 	},
 
+	renderSortRadioOption : function(sortTitle, sortValue){
+		return <td>
+			<label>
+				  <input
+					  type='radio'
+					  name='sortType'
+					  value={`${sortValue}`}
+					  checked={this.state.sortType == `${sortValue}`}
+					  className='sort-radio'
+					  onChange={this.handleSortOptionChange}
+				  />
+  		{`${sortTitle}`}
+			  </label>
+		  </td>;
+	},
+
 	renderSortOptions : function(){
 		return <div className='sort-container'>
 			<table>
@@ -90,72 +106,12 @@ const UserPage = createClass({
 					<td>
 						<h6>Sort Type :</h6>
 					</td>
-					<td>
-		  		<label>
-							<input
-								type='radio'
-								name='sortType'
-								value='alpha'
-								checked={this.state.sortType == 'alpha'}
-								className='sort-radio'
-								onChange={this.handleSortOptionChange}
-							/>
-			Title
-						</label>
-					</td>
-					<td>
-						<label>
-							<input
-								type='radio'
-								name='sortType'
-								value='created'
-								checked={this.state.sortType == 'created'}
-								className='sort-radio'
-								onChange={this.handleSortOptionChange}
-							/>
-			Created Date
-						</label>
-					</td>
-					<td>
-						<label>
-							<input
-								type='radio'
-								name='sortType'
-								value='updated'
-								checked={this.state.sortType == 'updated'}
-								className='sort-radio'
-								onChange={this.handleSortOptionChange}
-							/>
-			Updated Date
-		  		</label>
-				  </td>
-				  <td>
-				  <label>
-							<input
-								type='radio'
-								name='sortType'
-								value='views'
-								checked={this.state.sortType == 'views'}
-								className='sort-radio'
-								onChange={this.handleSortOptionChange}
-							/>
-			Views
-		  		</label>
-				  </td>
-				  <td>
-				  <label>
-							<input
-								type='radio'
-								name='sortType'
-								value='latest'
-								checked={this.state.sortType == 'latest'}
-								className='sort-radio'
-								onChange={this.handleSortOptionChange}
-							/>
-			Latest
-		  		</label>
-				  </td>
-				  <td>
+					{this.renderSortRadioOption('Title', 'alpha')}
+					{this.renderSortRadioOption('Created Date', 'created')}
+					{this.renderSortRadioOption('Updated Date', 'updated')}
+					{this.renderSortRadioOption('Views', 'views')}
+					{/* {this.renderSortRadioOption('Latest', 'latest')} */}
+				    <td>
 						<h6>Direction :</h6>
 					</td>
 					<td>
