@@ -24,7 +24,13 @@ const UserPage = createClass({
 	getDefaultProps : function() {
 		return {
 			username : '',
-			brews    : []
+			brews    : [],
+		};
+	},
+	getInitialState : function() {
+		return {
+			sortType : 'alpha',
+			sortDir  : 'asc'
 		};
 	},
 	getUsernameWithS : function() {
@@ -36,11 +42,80 @@ const UserPage = createClass({
 	renderBrews : function(brews){
 		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
 
-		const sortedBrews = _.sortBy(brews, (brew)=>{ return brew.title; });
+		const sortedBrews = this.sortBrews(brews, this.state.sortType);
 
 		return _.map(sortedBrews, (brew, idx)=>{
 			return <BrewItem brew={brew} key={idx}/>;
 		});
+	},
+
+	sortBrewOrder : function(brew){
+		const mapping = {
+			'alpha'   : _.deburr(brew.title.toLowerCase()),
+			'created' : brew.createdAt,
+			'updated' : brew.updatedAt,
+			'views'   : brew.views,
+			'latest'  : brew.lastViewed
+		};
+		return mapping[this.state.sortType];
+	},
+
+	sortBrews : function(brews){
+		return _.orderBy(brews, (brew)=>{ return this.sortBrewOrder(brew); }, this.state.sortDir);
+	},
+
+	handleSortOptionChange : function(event){
+		this.setState({
+			sortType : event.target.value
+		});
+	},
+
+	handleSortDirChange : function(event){
+		this.setState({
+			sortDir : `${(this.state.sortDir == 'asc' ? 'desc' : 'asc')}`
+		});
+	},
+
+	renderSortOption : function(sortTitle, sortValue){
+		return <td>
+				  <button
+					  value={`${sortValue}`}
+					  onClick={this.handleSortOptionChange}
+					  className={`${(this.state.sortType == sortValue ? 'active' : '')}`}
+				  >
+  					{`${sortTitle}`}
+		 		  </button>
+		  </td>;
+	},
+
+	renderSortOptions : function(){
+		return <div className='sort-container'>
+			<table>
+				<tbody>
+					<tr>
+						<td>
+							<h6>Sort by :</h6>
+						</td>
+						{this.renderSortOption('Title', 'alpha')}
+						{this.renderSortOption('Created Date', 'created')}
+						{this.renderSortOption('Updated Date', 'updated')}
+						{this.renderSortOption('Views', 'views')}
+						{/* {this.renderSortOption('Latest', 'latest')} */}
+				    	<td>
+							<h6>Direction :</h6>
+						</td>
+						<td>
+							<button
+								onClick={this.handleSortDirChange}
+								className='sortDir'
+							>
+								{`${(this.state.sortDir == 'asc' ? '\u25B2 ASC' : '\u25BC DESC')}`}
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>;
 	},
 
 	getSortedBrews : function(){
@@ -64,6 +139,7 @@ const UserPage = createClass({
 
 			<div className='content V3'>
 				<div className='phb'>
+					{this.renderSortOptions()}
 					<div>
 						<h1>{this.getUsernameWithS()} brews</h1>
 						{this.renderBrews(brews.published)}
