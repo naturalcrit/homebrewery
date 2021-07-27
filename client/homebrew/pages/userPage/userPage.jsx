@@ -25,14 +25,12 @@ const UserPage = createClass({
 		return {
 			username : '',
 			brews    : [],
-			sortType : 'alpha',
-			sortDir  : 'desc'
 		};
 	},
 	getInitialState : function() {
 		return {
 			sortType : 'alpha',
-			sortDir  : 'desc'
+			sortDir  : 'asc'
 		};
 	},
 	getUsernameWithS : function() {
@@ -51,23 +49,19 @@ const UserPage = createClass({
 		});
 	},
 
-	sortBrews : function(brews, sortType){
-		if(sortType == 'alpha') {
-			return _.orderBy(brews, (brew)=>{ return _.deburr(brew.title.toLowerCase()); }, this.state.sortDir);
-		}
-		if(sortType == 'created'){
-			return _.orderBy(brews, (brew)=>{ return brew.createdAt; }, this.state.sortDir);
-		}
-		if(sortType == 'updated'){
-			return _.orderBy(brews, (brew)=>{ return brew.updatedAt; }, this.state.sortDir);
-		}
-		if(sortType == 'views'){
-			return _.orderBy(brews, (brew)=>{ return brew.views; }, this.state.sortDir);
-		}
-		if(sortType == 'latest'){
-			return _.orderBy(brews, (brew)=>{ return brew.lastViewed; }, this.state.sortDir);
-		}
-		return _.orderBy(brews, (brew)=>{ return _.deburr(brew.title.toLowerCase()); }, this.state.sortDir);
+	sortBrewOrder : function(brew){
+		const mapping = {
+			'alpha'   : _.deburr(brew.title.toLowerCase()),
+			'created' : brew.createdAt,
+			'updated' : brew.updatedAt,
+			'views'   : brew.views,
+			'latest'  : brew.lastViewed
+		};
+		return mapping[this.state.sortType];
+	},
+
+	sortBrews : function(brews){
+		return _.orderBy(brews, (brew)=>{ return this.sortBrewOrder(brew); }, this.state.sortDir);
 	},
 
 	handleSortOptionChange : function(event){
@@ -77,51 +71,49 @@ const UserPage = createClass({
 	},
 
 	handleSortDirChange : function(event){
-		const newDir = (this.state.sortDir == 'asc' ? 'desc' : 'asc');
 		this.setState({
-			sortDir : `${newDir}`
+			sortDir : `${(this.state.sortDir == 'asc' ? 'desc' : 'asc')}`
 		});
 	},
 
-	renderSortRadioOption : function(sortTitle, sortValue){
+	renderSortOption : function(sortTitle, sortValue){
 		return <td>
-			<label>
-				  <input
-					  type='radio'
-					  name='sortType'
+				  <button
 					  value={`${sortValue}`}
-					  checked={this.state.sortType == `${sortValue}`}
-					  className='sort-radio'
-					  onChange={this.handleSortOptionChange}
-				  />
-  		{`${sortTitle}`}
-			  </label>
+					  onClick={this.handleSortOptionChange}
+					  className={`${(this.state.sortType == sortValue ? 'active' : '')}`}
+				  >
+  					{`${sortTitle}`}
+		 		  </button>
 		  </td>;
 	},
 
 	renderSortOptions : function(){
 		return <div className='sort-container'>
 			<table>
-				<tr>
-					<td>
-						<h6>Sort Type :</h6>
-					</td>
-					{this.renderSortRadioOption('Title', 'alpha')}
-					{this.renderSortRadioOption('Created Date', 'created')}
-					{this.renderSortRadioOption('Updated Date', 'updated')}
-					{this.renderSortRadioOption('Views', 'views')}
-					{/* {this.renderSortRadioOption('Latest', 'latest')} */}
-				    <td>
-						<h6>Direction :</h6>
-					</td>
-					<td>
-						<button
-							onClick={this.handleSortDirChange}
-						>
-							{`${(this.state.sortDir == 'asc' ? '\u2B9D ASC' : '\u2B9F DESC')}`}
-						</button>
-					</td>
-				</tr>
+				<tbody>
+					<tr>
+						<td>
+							<h6>Sort by :</h6>
+						</td>
+						{this.renderSortOption('Title', 'alpha')}
+						{this.renderSortOption('Created Date', 'created')}
+						{this.renderSortOption('Updated Date', 'updated')}
+						{this.renderSortOption('Views', 'views')}
+						{/* {this.renderSortOption('Latest', 'latest')} */}
+				    	<td>
+							<h6>Direction :</h6>
+						</td>
+						<td>
+							<button
+								onClick={this.handleSortDirChange}
+								className='sortDir'
+							>
+								{`${(this.state.sortDir == 'asc' ? '\u25B2 ASC' : '\u25BC DESC')}`}
+							</button>
+						</td>
+					</tr>
+				</tbody>
 			</table>
 		</div>;
 	},
