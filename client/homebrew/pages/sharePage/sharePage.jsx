@@ -84,7 +84,7 @@ const SharePage = createClass({
 	renderPrint : function(){
 		if(!this.state.showPrint) return;
 		return <PrintLink shareId={this.processShareId()} />;
-	}
+	},
 
 	renderSourceDropdown : function(){
 		if(!this.state.showSource) return;
