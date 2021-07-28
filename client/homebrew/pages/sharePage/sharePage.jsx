@@ -88,13 +88,15 @@ const SharePage = createClass({
 				</Nav.section>
 
 				<Nav.section>
-					{this.props.shareId && <PrintLink shareId={this.processShareId()} />
-					<Nav.item icon='fas fa-code' color='red' className='source'
-						onMouseEnter={()=>this.handleDropdown(true)}
-						onMouseLeave={()=>this.handleDropdown(false)}>
-						source
-						{this.renderDropdown()}
-					</Nav.item>}
+					{this.props.shareId && <>
+						<PrintLink shareId={this.processShareId()} />
+						<Nav.item icon='fas fa-code' color='red' className='source'
+							onMouseEnter={()=>this.handleDropdown(true)}
+							onMouseLeave={()=>this.handleDropdown(false)}>
+							source
+							{this.renderDropdown()}
+						</Nav.item>
+					</>}
 					<RecentNavItem brew={this.props.brew} storageKey='view' />
 					<Account />
 				</Nav.section>
