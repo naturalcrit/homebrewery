@@ -88,7 +88,7 @@ const SharePage = createClass({
 				</Nav.section>
 
 				<Nav.section>
-					{this.props.shareId && <>
+					{this.props.brew.shareId && <>
 						<PrintLink shareId={this.processShareId()} />
 						<Nav.item icon='fas fa-code' color='red' className='source'
 							onMouseEnter={()=>this.handleDropdown(true)}
