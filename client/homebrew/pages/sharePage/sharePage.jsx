@@ -79,21 +79,6 @@ const SharePage = createClass({
 		</div>;
 	},
 
-	renderPrint : function(){
-		if(!this.props.brew.shareId) return;
-		return <PrintLink shareId={this.processShareId()} />;
-	},
-
-	renderSourceDropdown : function(){
-		if(!this.props.brew.shareId) return;
-		return <Nav.item icon='fas fa-code' color='red' className='source'
-						onMouseEnter={()=>this.handleDropdown(true)}
-						onMouseLeave={()=>this.handleDropdown(false)}>
-						source
-						{this.renderDropdown()}
-					</Nav.item>;
-	},
-
 	render : function(){
 		return <div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
@@ -103,8 +88,13 @@ const SharePage = createClass({
 				</Nav.section>
 
 				<Nav.section>
-					{this.renderPrint()}
-					{this.renderSourceDropdown()}
+					{this.props.shareId && <PrintLink shareId={this.processShareId()} />
+					<Nav.item icon='fas fa-code' color='red' className='source'
+						onMouseEnter={()=>this.handleDropdown(true)}
+						onMouseLeave={()=>this.handleDropdown(false)}>
+						source
+						{this.renderDropdown()}
+					</Nav.item>}
 					<RecentNavItem brew={this.props.brew} storageKey='view' />
 					<Account />
 				</Nav.section>
