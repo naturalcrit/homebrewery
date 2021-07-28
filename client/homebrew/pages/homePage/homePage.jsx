@@ -28,8 +28,6 @@ const HomePage = createClass({
 			welcomeText : '',
 			ver         : '0.0.0'
 		};
-
-
 	},
 	getInitialState : function() {
 		return {

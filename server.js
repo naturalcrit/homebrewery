@@ -113,7 +113,11 @@ app.get('/', async (req, res, next)=>{
 
 //Changelog page
 app.get('/changelog', async (req, res, next)=>{
-	req.changelogText = changelogText;
+	const brew = {
+		title : 'Changelog',
+		text  : changelogText
+	};
+	req.brew = brew;
 	return next();
 });
 
