@@ -25,9 +25,7 @@ const SharePage = createClass({
 				updatedAt : null,
 				views     : 0,
 				renderer  : ''
-			},
-			showSource : true,
-			showPrint  : true
+			}
 		};
 	},
 
@@ -82,12 +80,12 @@ const SharePage = createClass({
 	},
 
 	renderPrint : function(){
-		if(!this.state.showPrint) return;
+		if(!this.props.brew.shareId) return;
 		return <PrintLink shareId={this.processShareId()} />;
 	},
 
 	renderSourceDropdown : function(){
-		if(!this.state.showSource) return;
+		if(!this.props.brew.shareId) return;
 		return <Nav.item icon='fas fa-code' color='red' className='source'
 						onMouseEnter={()=>this.handleDropdown(true)}
 						onMouseLeave={()=>this.handleDropdown(false)}>
