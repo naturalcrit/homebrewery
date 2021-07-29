@@ -26,9 +26,6 @@
   justify-content:center;
   padding:20px;
   gap:15px;
-  border:6px solid #333333;
-  border-radius:10px;
-  margin-bottom:20px;
 }
 
 .phb div:first-child h1 {
@@ -50,6 +47,10 @@
   color:white;
   display:flex;
   flex-direction:column;
+}
+
+.phb .brewItem:active {
+  transform:scale(.99);
 }
 
 .phb div:nth-child(2) .brewItem {
