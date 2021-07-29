@@ -57,7 +57,7 @@ const itemNames = [
 module.exports = {
 
 	spellList : function(){
-		const levels = ['Cantrips (0 Level)', '2nd Level', '3rd Level', '4th Level', '5th Level', '6th Level', '7th Level', '8th Level', '9th Level'];
+		const levels = ['Cantrips (0 Level)', '1st Level', '2nd Level', '3rd Level', '4th Level', '5th Level', '6th Level', '7th Level', '8th Level', '9th Level'];
 
 		const content = _.map(levels, (level)=>{
 			const spells = _.map(_.sampleSize(spellNames, _.random(5, 15)), (spell)=>{
@@ -66,7 +66,7 @@ module.exports = {
 			return `##### ${level} \n${spells} \n`;
 		}).join('\n');
 
-		return `<div class='spellList'>\n${content}\n</div>`;
+		return `{{spellList\n${content}\n}}`;
 	},
 
 	spell : function(){
