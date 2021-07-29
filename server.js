@@ -224,8 +224,6 @@ app.use((req, res)=>{
 	const props = {
 		version     : require('./package.json').version,
 		url         : req.originalUrl,
-		welcomeText : req.welcomeText,
-		changelog   : req.changelogText,
 		brew        : req.brew,
 		brews       : req.brews,
 		googleBrews : req.googleBrews,
