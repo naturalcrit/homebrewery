@@ -193,14 +193,13 @@ const BrewRenderer = createClass({
 						</div>
 
 						<div className='pages' ref='pages'>
-							{/* Apply CSS from Style tab */}
+							{/* Apply CSS and render pages from Markdown tab */}
 							{this.state.isMounted
-								? this.renderStyle()
-							  : null}
-
-							{/* Render pages from Markdown tab */}
-							{this.state.isMounted
-								? this.renderPages()
+								?
+								<>
+									{this.renderStyle()}
+									{this.renderPages()}
+								</>
 							  : null}
 						</div>
 					</div>
