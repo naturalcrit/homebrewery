@@ -204,7 +204,7 @@ const BasePage = createClass({
 	},
 
 	save : function(){
-		return this.props.callbackSave(this.state.brew);
+		return this.props.callbackSave(this.state.brew, this.state.saveGoogle);
 	},
 
 	renderGoogleDriveIcon : function(){
