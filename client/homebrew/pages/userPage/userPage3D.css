@@ -1,0 +1,80 @@
+
+.phb {
+  background:transparent;
+  width:100%;
+}
+
+.phb > div > h1 {
+  color:white;
+  background:linear-gradient(150deg, red, orange);
+  margin:10px;
+  border-radius:5px;
+  border:1px outset black;
+  filter:drop-shadow(3px 3px 8px black);
+  padding:10px;
+  font-family:codebold;
+  font-size: .705cm;
+}
+
+.phb > div:nth-child(2) > h1 {
+  background:linear-gradient(150deg, blue, purple);
+}
+
+.phb > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content:center;
+  padding:20px;
+  gap:15px;
+  border:6px solid #333333;
+  border-radius:10px;
+  margin-bottom:20px;
+}
+
+.phb div:first-child h1 {
+  flex: 1 0 100%;
+  margin:0 0 10px 0;
+}
+
+.phb div:nth-child(2) h1 {
+  flex: 1 0 100%;
+}
+
+.phb .brewItem {
+  background:linear-gradient(150deg, red, orange);
+  flex: 1 1 content;
+  margin:unset;
+  height: 150px;
+  border:1px outset black;
+  filter:drop-shadow(3px 3px 8px black);
+  color:white;
+  display:flex;
+  flex-direction:column;
+}
+
+.phb div:nth-child(2) .brewItem {
+  background:linear-gradient(150deg, blue, purple);
+}
+
+.phb .brewItem h2 {
+  font-family:CodeBold;
+  color:white;
+  /* width:max(90%,300px); */
+  flex:0 0 auto;
+}
+
+.phb .brewItem .description {
+  /* width:clamp(200px,100%,300px); */
+  flex:1 1 auto;
+}
+
+.phb .brewItem .info {
+  all:unset;
+  /* width:clamp(200px,100%,300px); */
+  flex:0 0 20px;
+  opacity:30%
+}
+
+.phb .brewItem:hover .info {
+  opacity:unset;
+}
