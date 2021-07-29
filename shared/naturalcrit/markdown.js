@@ -31,7 +31,7 @@ const mustacheSpans = {
 	start(src) { return src.match(/{{[^{]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeSpan = /^{{[^\n]*}}/;               // Regex for the complete token
-		const inlineRegex = /{{(?:="[\w,\-. ]*"|[^"'{}\s])*\s*|}}/g;
+		const inlineRegex = /{{(?:="[\w,\-(). ]*"|[^"'{}\s])*\s*|}}/g;
 		const match = completeSpan.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -77,7 +77,7 @@ const mustacheDivs = {
 	start(src) { return src.match(/^ *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeBlock = /^ *{{.*\n *}}/s;                // Regex for the complete token
-		const blockRegex = /^ *{{(?:="[\w,\-. ]*"|[^"'{}\s])*$|^ *}}$/gm;
+		const blockRegex = /^ *{{(?:="[\w,\-(). ]*"|[^"'{}\s])*$|^ *}}$/gm;
 		const match = completeBlock.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -116,6 +116,82 @@ const mustacheDivs = {
 	}
 };
 
+const mustacheInjectInline = {
+	name  : 'mustacheInjectInline',
+	level : 'inline',
+	start(src) { return src.match(/ *{[^{\n]/)?.index; },  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const inlineRegex = /^ *{((?:="[\w,\-(). ]*"|[^"'{}\s])*)}/g;
+		const match = inlineRegex.exec(src);
+		if(match) {
+			const lastToken = tokens[tokens.length - 1];
+			if(!lastToken)
+				return false;
+
+			const tags = ` ${processStyleTags(match[1])}`;
+			lastToken.originalType = lastToken.type;
+			lastToken.type         = 'mustacheInjectInline';
+			lastToken.tags         = tags;
+			return {
+				type : 'text',            // Should match "name" above
+				raw  : match[0],          // Text to consume from the source
+				text : ''
+			};
+		}
+	},
+	renderer(token) {
+		token.type = token.originalType;
+		const text = this.parseInline([token]);
+		const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
+		if(openingTag) {
+			return `${openingTag[1]} class="${token.tags}${openingTag[2]}`;
+		}
+		return text;
+	}
+};
+
+const mustacheInjectBlock = {
+	extensions : [{
+		name  : 'mustacheInjectBlock',
+		level : 'block',
+		start(src) { return src.match(/^ *{[^{\n]/m)?.index; },  // Hint to Marked.js to stop and check for a match
+		tokenizer(src, tokens) {
+			const inlineRegex = /^ *{((?:="[\w,\-(). ]*"|[^"'{}\s])*)}/ym;
+			const match = inlineRegex.exec(src);
+			if(match) {
+				const lastToken = tokens[tokens.length - 1];
+				if(!lastToken)
+					return false;
+
+				lastToken.originalType = 'mustacheInjectBlock';
+				lastToken.tags         = ` ${processStyleTags(match[1])}`;
+				return {
+					type : 'text',            // Should match "name" above
+					raw  : match[0],          // Text to consume from the source
+					text : ''
+				};
+			}
+		},
+		renderer(token) {
+			token.type = token.originalType;
+			const text = this.parse([token]);
+			const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
+			if(openingTag) {
+				return `${openingTag[1]} class="${token.tags}${openingTag[2]}`;
+			}
+			return text;
+		}
+	}],
+	walkTokens(token) {
+		// After token tree is finished, tag tokens to apply styles to so Renderer can find them
+		// Does not work with tables since Marked.js tables generate invalid "tokens", and changing "type" ruins Marked handling that edge-case
+		if(token.originalType == 'mustacheInjectBlock' && token.type !== 'table') {
+			token.originalType = token.type;
+			token.type         = 'mustacheInjectBlock';
+		}
+	}
+};
+
 const definitionLists = {
 	name  : 'definitionLists',
 	level : 'block',
@@ -125,13 +201,11 @@ const definitionLists = {
 		let match;
 		let endIndex = 0;
 		const definitions = [];
-		//if(!src.match(/^[^\n]*?::/)) {console.log('return'); return;}
 		while (match = regex.exec(src)) {
 			definitions.push({
 				dt : this.inlineTokens(match[1].trim()),
 				dd : this.inlineTokens(match[2].trim())
 			});
-			//console.log(regexl)
 			endIndex = regex.lastIndex;
 		}
 		if(definitions.length) {
@@ -146,13 +220,15 @@ const definitionLists = {
 		return `<dl>
 						${token.definitions.reduce((html, def)=>{
 		return `${html}<dt>${this.parseInline(def.dt)}</dt>`
-									 				+ `<dd>${this.parseInline(def.dd)}</dd>\n`;
+									 + `<dd>${this.parseInline(def.dd)}</dd>\n`;
 	}, '')}
 		 				</dl>`;
 	}
 };
 
-Markdown.use({ extensions: [mustacheSpans, mustacheDivs, definitionLists] });
+Markdown.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists] });
+Markdown.use(mustacheInjectBlock);
+Markdown.use({ smartypants: true });
 
 //Fix local links in the Preview iFrame to link inside the frame
 renderer.link = function (href, title, text) {
@@ -251,9 +327,7 @@ module.exports = {
 	marked : Markdown,
 	render : (rawBrewText)=>{
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `<div class='columnSplit'></div>`)
-														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`)
-		                         .replace(/^}}/gm, '\n}}')
-		                         .replace(/^({{[^\n]*)$/gm, '$1\n');
+														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
 		return Markdown(
 			sanatizeScriptTags(rawBrewText),
 			{ renderer: renderer }
