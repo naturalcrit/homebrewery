@@ -228,6 +228,7 @@ const definitionLists = {
 
 Markdown.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists] });
 Markdown.use(mustacheInjectBlock);
+Markdown.use({ smartypants: true });
 
 //Fix local links in the Preview iFrame to link inside the frame
 renderer.link = function (href, title, text) {
