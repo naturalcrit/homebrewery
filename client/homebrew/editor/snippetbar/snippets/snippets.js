@@ -51,16 +51,13 @@ module.exports = [
 				name : 'Image',
 				icon : 'fas fa-image',
 				gen  : dedent`
-					<img
-					  src='https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg'
-					  style='width:325px'/>
+					![cat warrior](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width="325px"}
 					Credit: Kyounghwan Kim`
 			},
 			{
 				name : 'Background Image',
 				icon : 'fas fa-tree',
-				gen  : `<img src='http://i.imgur.com/hMna6G0.png' ` +
-							`style='position:absolute; top:50px; right:30px; width:280px'/>`
+				gen  : `![homebrew mug](http://i.imgur.com/hMna6G0.png) {position="absolute",top="50px",right="30px",width="280px"}`
 			},
 			{
 				name : 'QR Code',
