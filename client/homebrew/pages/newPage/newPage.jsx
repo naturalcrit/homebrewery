@@ -41,8 +41,7 @@ const NewPage = createClass({
 
 	getInitialState : function() {
 		return {
-			brew       : this.props.brew,
-			saveGoogle : this.saveGoogle
+			brew : this.props.brew
 		};
 	},
 
@@ -65,7 +64,8 @@ const NewPage = createClass({
 		this.debounceSave.cancel();
 	},
 
-	save : async function(brew){
+	save : async function(brew, saveGoogle){
+		console.log(`saveGoogle: ${saveGoogle}`);
 		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
 
 		this.setState((prevState)=>({
@@ -83,7 +83,7 @@ const NewPage = createClass({
 			savingBrew.text = savingBrew.text.slice(index + 5);
 		};
 
-		if(this.state.saveGoogle) {
+		if(saveGoogle) {
 			console.log('Google save');
 			const res = await request
 					.post('/api/newGoogle/')
