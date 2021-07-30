@@ -70,7 +70,7 @@ module.exports = {
 		let cantrips = 3;
 		let spells = 1;
 		let slots = 2;
-		return `<div class='classTable wide'>\n##### The ${classname}\n` +
+		return `{{classTable,full,--row-color="rgba(250,0,0,.2)"\n##### The ${classname}\n` +
 		`| Level | Proficiency Bonus | Features | Cantrips Known | Spells Known | 1st | 2nd | 3rd | 4th | 5th | 6th | 7th | 8th | 9th |\n`+
 		`|:---:|:---:|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n${
 			_.map(levels, function(levelName, level){
@@ -88,14 +88,14 @@ module.exports = {
 				slots += _.random(0, 2);
 
 				return `| ${res} |`;
-			}).join('\n')}\n</div>\n\n`;
+			}).join('\n')}\n}}\n\n`;
 	},
 
 	half : function(){
 		const classname =  _.sample(classnames);
 
 		let featureScore = 1;
-		return `<div class='classTable'>\n##### The ${classname}\n` +
+		return `{{classTable,--row-color="rgba(250,0,0,.2)"\n##### The ${classname}\n` +
 		`| Level | Proficiency Bonus | Features | ${_.sample(features)}|\n` +
 		`|:---:|:---:|:---|:---:|\n${
 			_.map(levels, function(levelName, level){
@@ -109,6 +109,6 @@ module.exports = {
 				featureScore += _.random(0, 1);
 
 				return `| ${res} |`;
-			}).join('\n')}\n</div>\n\n`;
+			}).join('\n')}\n}}\n\n`;
 	}
 };
