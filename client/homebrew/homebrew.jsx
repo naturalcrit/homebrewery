@@ -44,12 +44,12 @@ const Homebrew = createClass({
 						<Route path='/edit/:id' component={(routeProps)=><EditPage id={routeProps.match.params.id} brew={this.props.brew} />}/>
 						<Route path='/share/:id' component={(routeProps)=><SharePage id={routeProps.match.params.id} brew={this.props.brew} />}/>
 						<Route path='/new/:id' component={(routeProps)=><NewPage id={routeProps.match.params.id} brew={this.props.brew} />}/>
-						<Route path='/new' exact component={(routeProps)=><NewPage/>}/>
+						<Route path='/new' exact component={(routeProps)=><NewPage />}/>
 						<Route path='/user/:username' component={(routeProps)=><UserPage username={routeProps.match.params.username} brews={this.props.brews} />}/>
-						<Route path='/print/:id' component={(routeProps)=><PrintPage brew={this.props.brew} query={queryString.parse(routeProps.location.search)} /> } />
-						<Route path='/print' exact component={(routeProps)=><PrintPage query={queryString.parse(routeProps.location.search)} /> } />
-						<Route path='/changelog' exact component={()=><SharePage brew={{ title: 'Changelog', text: this.props.changelog }} />}/>
-						<Route path='/' component={()=><HomePage welcomeText={this.props.welcomeText}/>}/>
+						<Route path='/print/:id' component={(routeProps)=><PrintPage brew={this.props.brew} query={queryString.parse(routeProps.location.search)} />}/>
+						<Route path='/print' exact component={(routeProps)=><PrintPage query={queryString.parse(routeProps.location.search)} />}/>
+						<Route path='/changelog' exact component={()=><SharePage brew={this.props.brew} />}/>
+						<Route path='/' component={()=><HomePage brew={this.props.brew} />}/>
 					</Switch>
 				</div>
 			</Router>

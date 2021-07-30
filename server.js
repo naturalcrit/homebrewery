@@ -105,6 +105,25 @@ app.get('/robots.txt', (req, res)=>{
 	return res.sendFile(`${__dirname}/robots.txt`);
 });
 
+//Home page
+app.get('/', async (req, res, next)=>{
+	const brew = {
+		text : welcomeText
+	};
+	req.brew = brew;
+	return next();
+});
+
+//Changelog page
+app.get('/changelog', async (req, res, next)=>{
+	const brew = {
+		title : 'Changelog',
+		text  : changelogText
+	};
+	req.brew = brew;
+	return next();
+});
+
 //Source page
 app.get('/source/:id', asyncHandler(async (req, res)=>{
 	const brew = await getBrewFromId(req.params.id, 'raw');
@@ -205,8 +224,6 @@ app.use((req, res)=>{
 	const props = {
 		version     : require('./package.json').version,
 		url         : req.originalUrl,
-		welcomeText : welcomeText,
-		changelog   : changelogText,
 		brew        : req.brew,
 		brews       : req.brews,
 		googleBrews : req.googleBrews,
