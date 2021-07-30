@@ -31,7 +31,7 @@ const mustacheSpans = {
 	start(src) { return src.match(/{{[^{]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeSpan = /^{{[^\n]*}}/;               // Regex for the complete token
-		const inlineRegex = /{{(?:="[\w,\-(). ]*"|[^"'{}\s])*\s*|}}/g;
+		const inlineRegex = /{{(?:="[\w,\-()#%. ]*"|[^"'{}\s])*\s*|}}/g;
 		const match = completeSpan.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -74,10 +74,10 @@ const mustacheSpans = {
 const mustacheDivs = {
 	name  : 'mustacheDivs',
 	level : 'block',
-	start(src) { return src.match(/^ *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	start(src) { return src.match(/\n *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const completeBlock = /^ *{{.*\n *}}/s;                // Regex for the complete token
-		const blockRegex = /^ *{{(?:="[\w,\-(). ]*"|[^"'{}\s])*$|^ *}}$/gm;
+		const completeBlock = /^ *{{[^\s}]*\n.*\n *}}/s;                // Regex for the complete token
+		const blockRegex = /^ *{{(?:="[\w,\-()#%. ]*"|[^"'{}\s])*$|^ *}}$/gm;
 		const match = completeBlock.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -121,7 +121,7 @@ const mustacheInjectInline = {
 	level : 'inline',
 	start(src) { return src.match(/ *{[^{\n]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const inlineRegex = /^ *{((?:="[\w,\-(). ]*"|[^"'{}\s])*)}/g;
+		const inlineRegex = /^ *{((?:="[\w,\-()#%. ]*"|[^"'{}\s])*)}/g;
 		const match = inlineRegex.exec(src);
 		if(match) {
 			const lastToken = tokens[tokens.length - 1];
@@ -154,9 +154,9 @@ const mustacheInjectBlock = {
 	extensions : [{
 		name  : 'mustacheInjectBlock',
 		level : 'block',
-		start(src) { return src.match(/^ *{[^{\n]/m)?.index; },  // Hint to Marked.js to stop and check for a match
+		start(src) { return src.match(/\n *{[^{\n]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 		tokenizer(src, tokens) {
-			const inlineRegex = /^ *{((?:="[\w,\-(). ]*"|[^"'{}\s])*)}/ym;
+			const inlineRegex = /^ *{((?:="[\w,\-()#%. ]*"|[^"'{}\s])*)}/ym;
 			const match = inlineRegex.exec(src);
 			if(match) {
 				const lastToken = tokens[tokens.length - 1];
