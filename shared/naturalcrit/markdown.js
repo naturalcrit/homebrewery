@@ -76,8 +76,8 @@ const mustacheDivs = {
 	level : 'block',
 	start(src) { return src.match(/\n *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const completeBlock = /^ *{{[^\s}]*\n.*\n *}}/s;                // Regex for the complete token
-		const blockRegex = /^ *{{(?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])*$|^ *}}$/gm;
+		const completeBlock = /^ *{{[^\s}]* *\n.*\n *}}/s;                // Regex for the complete token
+		const blockRegex = /^ *{{(?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])* *$|^ *}}$/gm;
 		const match = completeBlock.exec(src);
 		if(match) {
 			//Find closing delimiter

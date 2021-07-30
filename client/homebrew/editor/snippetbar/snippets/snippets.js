@@ -33,7 +33,7 @@ module.exports = [
 			{
 				name : 'Horizontal Spacing',
 				icon : 'fas fa-arrows-alt-h',
-				gen  : ' {{width="100px"}} '
+				gen  : ' {{width:100px}} '
 			},
 			{
 				name : 'Wide Block',
@@ -51,23 +51,22 @@ module.exports = [
 				name : 'Image',
 				icon : 'fas fa-image',
 				gen  : dedent`
-					![cat warrior](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width="325px"}
+					![cat warrior](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:325px}
 					Credit: Kyounghwan Kim`
 			},
 			{
 				name : 'Background Image',
 				icon : 'fas fa-tree',
-				gen  : `![homebrew mug](http://i.imgur.com/hMna6G0.png) {position="absolute",top="50px",right="30px",width="280px"}`
+				gen  : `![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,top:50px,right:30px,width:280px}`
 			},
 			{
 				name : 'QR Code',
 				icon : 'fas fa-qrcode',
 				gen  : (brew)=>{
-					return `<img ` +
-							`src='https://api.qrserver.com/v1/create-qr-code/?data=` +
+					return `![]` +
+							`(https://api.qrserver.com/v1/create-qr-code/?data=` +
 							`https://homebrewery.naturalcrit.com/share/${brew.shareId}` +
-							`&amp;size=100x100' ` +
-							`style='width:100px;mix-blend-mode:multiply'/>`;
+							`&amp;size=100x100) {width:100px;mix-blend-mode:multiply}`;
 				}
 
 			},
@@ -257,7 +256,7 @@ module.exports = [
 				gen  : function(){
 					return dedent`
 						##### Typical Difficulty Classes
-						{{column-count="2"
+						{{column-count:2
 						| Task Difficulty | DC |
 						|:----------------|:--:|
 						| Very easy       | 5  |
