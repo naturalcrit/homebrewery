@@ -73,12 +73,12 @@ module.exports = [
 			{
 				name : 'Page Number',
 				icon : 'fas fa-bookmark',
-				gen  : '{{pageNumber\n1\n}}\n{{footnote\nPART 1 | FANCINESS\n}}\n\n'
+				gen  : '{{pageNumber 1}}\n{{footnote PART 1 | SECTION NAME}}\n\n'
 			},
 			{
 				name : 'Auto-incrementing Page Number',
 				icon : 'fas fa-sort-numeric-down',
-				gen  : '{{pageNumber,auto\n}}\n\n'
+				gen  : '{{pageNumber,auto}}\n{{footnote PART 1 | SECTION NAME}}\n\n'
 			},
 			{
 				name : 'Link to page',
