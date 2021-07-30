@@ -30,4 +30,44 @@
 
 		}
 	}
+	.sort-container{
+		font-family        : 'Open Sans', sans-serif;
+		position           : fixed;
+		top                : 35px;
+		border             : 2px solid #58180D;
+		width              : 675px;
+		background-color   : #EEE5CE;
+		padding            : 2px;
+		text-align         : center;
+		z-index            : 15;
+		h6{
+			text-transform : uppercase;
+			font-family    : 'Open Sans', sans-serif;
+			font-size      : 11px;
+			font-weight    : bold;
+			color          : #58180D;
+		}
+		table{
+			margin : 0px;
+			vertical-align : middle;
+			tbody tr{
+				background-color: transparent !important;
+			button{
+					background-color : transparent;
+					color            : #58180D;
+					font-family    : 'Open Sans', sans-serif;
+					font-size      : 11px;
+					text-transform : uppercase;
+					font-weight      : normal;
+					&.active{
+						font-weight : bold;
+						border      : 2px solid #58180D;
+					}
+					&.sortDir{
+						width : 75px;
+					}
+				}
+			}
+		}
+	}
 }

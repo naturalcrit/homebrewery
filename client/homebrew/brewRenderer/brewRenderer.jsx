@@ -181,7 +181,10 @@ const BrewRenderer = createClass({
 					</div>
 	        : null}
 
-				<Frame initialContent={this.state.initialContent} style={{ width: '100%', height: '100%', visibility: this.state.visibility }} contentDidMount={this.frameDidMount}>
+				<Frame initialContent={this.state.initialContent}
+					head = <link href={`${this.props.renderer == 'legacy' ? '/themes/5ePhbLegacy.style.css' : '/themes/5ePhb.style.css'}`} rel='stylesheet'/>
+					style={{ width: '100%', height: '100%', visibility: this.state.visibility }}
+					contentDidMount={this.frameDidMount}>
 					<div className={'brewRenderer'}
 						onScroll={this.handleScroll}
 						style={{ height: this.state.height }}>
@@ -193,7 +196,7 @@ const BrewRenderer = createClass({
 						</div>
 
 						<div className='pages' ref='pages'>
-							{/* Apply CSS and render pages from Markdown tab */}
+							{/* Apply CSS from Style tab and render pages from Markdown tab */}
 							{this.state.isMounted
 								&&
 								<>

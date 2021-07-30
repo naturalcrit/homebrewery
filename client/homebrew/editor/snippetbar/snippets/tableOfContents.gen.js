@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const dedent = require('dedent-tabs').default;
 
 const getTOC = (pages)=>{
 	const add1 = (title, page)=>{
@@ -9,7 +10,7 @@ const getTOC = (pages)=>{
 		});
 	};
 	const add2 = (title, page)=>{
-		if(!_.last(res)) add1('', page);
+		if(!_.last(res)) add1(null, page);
 		_.last(res).children.push({
 			title    : title,
 			page     : page + 1,
@@ -17,8 +18,8 @@ const getTOC = (pages)=>{
 		});
 	};
 	const add3 = (title, page)=>{
-		if(!_.last(res)) add1('', page);
-		if(!_.last(_.last(res).children)) add2('', page);
+		if(!_.last(res)) add1(null, page);
+		if(!_.last(_.last(res).children)) add2(null, page);
 		_.last(_.last(res).children).children.push({
 			title    : title,
 			page     : page + 1,
@@ -51,13 +52,21 @@ module.exports = function(brew){
 	const pages = brew.text.split('\\page');
 	const TOC = getTOC(pages);
 	const markdown = _.reduce(TOC, (r, g1, idx1)=>{
-		r.push(`- **[${idx1 + 1} ${g1.title}](#p${g1.page})**`);
+		if(g1.title !== null) {
+			r.push(`\t\t- ### [{{ ${g1.title}}}{{ ${g1.page}}}](#p${g1.page})`);
+		}
 		if(g1.children.length){
 			_.each(g1.children, (g2, idx2)=>{
-				r.push(`  - [${idx1 + 1}.${idx2 + 1} ${g2.title}](#p${g2.page})`);
+				if(g2.title !== null) {
+					r.push(`\t\t  - #### [{{ ${g2.title}}}{{ ${g2.page}}}](#p${g2.page})`);
+				}
 				if(g2.children.length){
 					_.each(g2.children, (g3, idx3)=>{
-						r.push(`    - [${idx1 + 1}.${idx2 + 1}.${idx3 + 1} ${g3.title}](#p${g3.page})`);
+						if(g2.title !== null) {
+							r.push(`\t\t    - [{{ ${g3.title}}}{{ ${g3.page}}}](#p${g3.page})`);
+						} else { // Don't over-indent if no level-2 parent entry
+							r.push(`\t\t  - [{{ ${g3.title}}}{{ ${g3.page}}}](#p${g3.page})`);
+						}
 					});
 				}
 			});
@@ -65,8 +74,11 @@ module.exports = function(brew){
 		return r;
 	}, []).join('\n');
 
-	return `<div class='toc'>
-##### Table Of Contents
+	return dedent`
+		{{toc,wide
+		# Table Of Contents
+
 ${markdown}
-</div>\n`;
+		}}
+		\n`;
 };

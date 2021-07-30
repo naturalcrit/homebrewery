@@ -1,5 +1,5 @@
-@import (less) './client/homebrew/phbStyle/phb.fonts.less';
-@import (less) './client/homebrew/phbStyle/phb.assets.less';
+@import (less) './themes/fonts/5e/fonts.less';
+@import (less) './themes/assets/assets.less';
 
 //Colors
 @background            : #EEE5CE;
@@ -19,8 +19,11 @@ body {
 	font-family : ScalySansRemake;
 	font-size   : 0.325cm;
 	line-height : 1.2em;
-	p,dl,ul {
+	p,dl,ul,ol {
 		line-height : 1.2em;
+	}
+	ul, ol {
+		padding-left : 1em;
 	}
 	em{
 		font-style  : italic;
@@ -42,7 +45,7 @@ body {
 	-webkit-column-gap   : 0.9cm;
 	-moz-column-gap      : 0.9cm;
 }
-.phb3{
+.page{
 	.useColumns();
 	counter-increment : phb-page-numbers;
 	position          : relative;
@@ -64,10 +67,10 @@ body {
 	// *****************************/
 	p{
 		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
-		margin-bottom : 1em;
+		margin-bottom : 0.8em;
 		line-height   : 1.3em;
 		&+p{
-			margin-top  : -1em;
+			margin-top  : -0.8em;
 		}
 	}
 	ul{
@@ -194,31 +197,75 @@ body {
 	//*****************************
 	// *            NOTE
 	// *****************************/
-	blockquote{
+	.note{
+		&::before{
+			content             : "";
+			box-sizing          : border-box;
+			border-style        : solid;
+			border-width        : 11px;
+			border-image        : @noteBorderImage 12;
+			border-image-outset : 9px 0px;
+			box-shadow          : 1px 4px 14px #888;
+			position            : absolute;
+			width               : 100%;
+			height              : 100%;
+			top                 : 0;
+			left                : 0;
+		}
 		.useSansSerif();
-		box-sizing          : border-box;
-		margin-bottom       : 1em;
-		padding             : 5px 10px;
+		position            : relative;
+		margin-top          : 1.3em;
+		margin-left         : -0.1em;
+		margin-right        : -0.1em;
 		background-color    : @noteGreen;
-		border-style        : solid;
-		border-width        : 11px;
-		border-image        : @noteBorderImage 11;
-		border-image-outset : 9px 0px;
-		box-shadow          : 1px 4px 14px #888;
-		-webkit-transform   : translateZ(0); //Prevents shadows from breaking across columns
-		p, ul{
-			font-size   : 0.352cm;
-			line-height : 1.1em;
+		padding             : 0.5em 0.6em;
+		& + * {
+			margin-top : 1.3em;
+		}
+		p{
+			display        : block;
+			padding-bottom : 0px;
+		}
+		p + p {
+			padding-top : .8em;
+		}
+		:last-child {
+			margin-bottom : 0em;
 		}
 	}
-	//If a note starts a column, give it space at the top to render border
-	pre+blockquote, h2+blockquote, h3+blockquote, h4+blockquote, h5+blockquote {
-		margin-top : 13px;
+	//************************************
+	// *       DESCRIPTIVE TEXT BOX
+	// ************************************/
+	.descriptive{
+		.useSansSerif();
+		display             : block-inline;
+		margin-top          : 1.4em;
+		background-color    : #faf7ea;
+		font-family         : ScalySansRemake;
+		border-style        : solid;
+		border-width        : 7px;
+		border-image        : @descriptiveBoxImage 12 stretch;
+		border-image-outset : 4px;
+		box-shadow          : 0px 0px 6px #faf7ea;
+		padding             : 0.1em;
+		& + * {
+			margin-top : 1.4em;
+		}
+		p{
+			display        : block;
+			padding-bottom : 0px;
+			line-height    : 1.5em;
+		}
+		p + p {
+			padding-top : .8em;
+		}
+		:last-child {
+			margin-bottom : 0em;
+		}
 	}
 	//*****************************
 	// *    MONSTER STAT BLOCK
 	// *****************************/
-
 	.monster {
 		&.frame {
 			border-style          : solid;
@@ -283,11 +330,6 @@ body {
 		dl {
 			.useSansSerif();
 			color        : @headerText;
-			padding-left :1.3em;
-			text-indent  :-1.3em;
-		}
-		dd {
-			text-indent  : 0px;
 		}
 
 		// Monster Ability table
@@ -364,6 +406,27 @@ body {
 		color      : #c9ad6a;
 		text-align : right;
 	}
+	//************************************
+	// *           CODE BLOCKS
+	// ************************************/
+	code{
+    font-family: "Courier New", Courier, monospace;
+    font-size: 0.325;
+    padding: 2px 4px;
+    color: #58180d;
+    background-color: #faf7ea;
+    border-radius: 4px;
+	}
+
+	pre code{
+		width               : 100%;
+		display             : block;
+		border              : 4px solid;
+		border-image        : @codeBorderImage 26 stretch;
+		border-image-width  : 10px;
+		border-image-outset : 2px;
+		border-radius       : 12px;
+	}
 	//*****************************
 	// *          EXTRAS
 	// *****************************/
@@ -414,7 +477,7 @@ body {
 //*****************************
 // *         SPELL LIST
 // *****************************/
-.phb3 .spellList{
+.page .spellList{
 	.useSansSerif();
 	column-count        : 4;
 	column-span         : all;
@@ -440,7 +503,7 @@ body {
 //*****************************
 // *         WIDE
 // *****************************/
-.phb3 .wide{
+.page .wide{
 	column-span         : all;
 	-webkit-column-span : all;
 	-moz-column-span    : all;
@@ -448,7 +511,7 @@ body {
 //*****************************
 // *       CLASS TABLE
 // *****************************/
-.phb3 .classTable{
+.page .classTable{
 	margin-top          : 25px;
 	margin-bottom       : 40px;
 	border-collapse     : separate;
@@ -464,72 +527,84 @@ body {
 		margin-bottom : 10px;
 	}
 }
-//************************************
-// *       DESCRIPTIVE TEXT BOX
-// ************************************/
-.phb3 .descriptive{
-	display             : block-inline;
-	margin-bottom       : 1em;
-	background-color    : #faf7ea;
-	font-family         : ScalySansRemake;
-	border-style        : solid;
-	border-width        : 7px;
-	border-image        : @descriptiveBoxImage 12 stretch;
-	border-image-outset : 4px;
-	box-shadow          : 0px 0px 6px #faf7ea;
-	p{
-		display        : block;
-		padding-bottom : 0px;
-		line-height    : 1.5em;
-	}
-	p + p {
-		padding-top : .8em;
-	}
-	em {
-		font-family : ScalySansRemake;
-		font-style  : italic;
-	}
-	strong {
-		font-family    : ScalySansRemake;
-		font-weight    : 800;
-		letter-spacing : -0.02em;
-	}
-}
-.phb3 pre+.descriptive{
-	margin-top : 8px;
-}
 //*****************************
 // *      TABLE OF CONTENTS
 // *****************************/
-.phb3 .toc{
+.page .toc{
 	-webkit-column-break-inside : avoid;
 	page-break-inside           : avoid;
 	break-inside                : avoid;
+	h1 {
+		text-align    : center;
+		margin-bottom : 0.1cm;
+	}
 	a{
-		color           : black;
+		display         : table;
+		color           : inherit;
 		text-decoration : none;
 		&:hover{
 			text-decoration : underline;
 		}
 	}
+	h4 {
+		margin-top : 0.1cm;
+	}
 	ul{
 		padding-left    : 0;
 		list-style-type : none;
+		li + li h3 {
+			margin-top  : 0.26cm;
+			line-height : 1em
+		}
+		h3 span:first-child::after {
+			border : none;
+		}
+		span {
+			display : table-cell;
+			&:first-child {
+				position   :       relative;
+				overflow   :       hidden;
+				&::after {
+					content       : "";
+					position      : absolute;
+					bottom        : 0.08cm;        /* Set as you want */
+					margin-left   : 0.06cm;        /* Spacing before dot leaders */
+					width         : 100%;
+					border-bottom : 0.05cm dotted #000;
+				}
+			}
+			&:last-child {
+				font-family		 : BookInsanityRemake;
+				font-size   	 : 0.34cm;
+				font-weight		 : normal;
+				color		       : black;
+				text-align     : right;
+				vertical-align : bottom;       /* Keep Price text bottom-aligned */
+				width          : 1%;
+				padding-left   : 0.06cm;       /* Spacing after dot leaders */
+				/*white-space: nowrap;         /* Uncomment if needed */
+			}
+		}
+		ul { /*List indent*/
+			margin-left : 1em;
+		}
 	}
-	&>ul>li{
-		margin-bottom : 10px;
+	&.wide{
+		.useColumns(0.96);
 	}
 }
 
 //*****************************
 // *    MUSTACHE DIVS/SPANS
 // *****************************/
-.phb3 {
+.page {
 	.block {
 		break-inside : avoid;
+		-webkit-transform   : translateZ(0); //Prevents shadows from breaking across columns
 	}
 	.inline-block {
-		display : block;
+		display : inline-block;
+		text-indent : initial;
 	}
 	div {
 		column-gap : 0.5cm; //Default spacing if a div uses multicolumns
@@ -539,24 +614,33 @@ body {
 //*****************************
 // *    DEFINITION LISTS
 // *****************************/
-.phb3 {
-	// dl {
-  // 	margin-top: 10px;
-  // }
+.page {
+	dl {
+		line-height  : 1.3em;
+		padding-left : 1em;
+		text-indent  : -1em;
+	}
+	dl + p {
+  	margin-top: 0.5em;
+  }
+	p + dl {
+		margin-top: -0.5em;
+	}
   dt {
     float: left;
     //clear: left;  //Doesn't seem necessary
     margin-right: 5px;
   }
-  // dd {
-  //   margin-left: 0px;
-  // }
+  dd {
+		margin-left : 0px;
+		text-indent : 0px;
+  }
 }
 
 //*****************************
 // *    BLANK LINE
 // *****************************/
-.phb3 {
+.page {
 	.blank {
 		height: 0.75em;
 	}

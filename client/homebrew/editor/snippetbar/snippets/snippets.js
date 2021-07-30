@@ -27,34 +27,46 @@ module.exports = [
 			},
 			{
 				name : 'Vertical Spacing',
-				icon : 'fas fa-times-circle',
-				gen  : ''
+				icon : 'fas fa-arrows-alt-v',
+				gen  : '\n::::\n'
+			},
+			{
+				name : 'Horizontal Spacing',
+				icon : 'fas fa-arrows-alt-h',
+				gen  : ' {{width:100px}} '
 			},
 			{
 				name : 'Wide Block',
-				icon : 'fas fa-times-circle',
-				gen  : ''
+				icon : 'fas fa-window-maximize',
+				gen  : dedent`\n
+					{{wide
+					Everything in here will be extra wide. Tables, text, everything!
+					Beware though, CSS columns can behave a bit weird sometimes. You may
+					have to rely on the automatic column-break rather than \`\column\` if
+					you mix columns and wide blocks on the same page.
+					}}
+					\n`
 			},
 			{
 				name : 'Image',
-				icon : 'fas fa-times-circle',
-				gen  : ''
+				icon : 'fas fa-image',
+				gen  : dedent`
+					![cat warrior](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:325px}
+					Credit: Kyounghwan Kim`
 			},
 			{
 				name : 'Background Image',
 				icon : 'fas fa-tree',
-				gen  : `<img src='http://i.imgur.com/hMna6G0.png' ` +
-							`style='position:absolute; top:50px; right:30px; width:280px'/>`
+				gen  : `![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,top:50px,right:30px,width:280px}`
 			},
 			{
 				name : 'QR Code',
 				icon : 'fas fa-qrcode',
 				gen  : (brew)=>{
-					return `<img ` +
-							`src='https://api.qrserver.com/v1/create-qr-code/?data=` +
+					return `![]` +
+							`(https://api.qrserver.com/v1/create-qr-code/?data=` +
 							`https://homebrewery.naturalcrit.com/share/${brew.shareId}` +
-							`&amp;size=100x100' ` +
-							`style='width:100px;mix-blend-mode:multiply'/>`;
+							`&amp;size=100x100) {width:100px;mix-blend-mode:multiply}`;
 				}
 
 			},
@@ -130,26 +142,28 @@ module.exports = [
 				name : 'Note',
 				icon : 'fas fa-sticky-note',
 				gen  : function(){
-					return [
-						'> ##### Time to Drop Knowledge',
-						'> Use notes to point out some interesting information. ',
-						'> ',
-						'> **Tables and lists** both work within a note.'
-					].join('\n');
+					return dedent`
+						{{note
+						##### Time to Drop Knowledge
+						Use notes to point out some interesting information.
+
+						**Tables and lists** both work within a note.
+						}}
+						\n`;
 				},
 			},
 			{
 				name : 'Descriptive Text Box',
 				icon : 'fas fa-comment-alt',
 				gen  : function(){
-					return [
-						'<div class=\'descriptive\'>',
-						'##### Time to Drop Knowledge',
-						'Use notes to point out some interesting information. ',
-						'',
-						'**Tables and lists** both work within a note.',
-						'</div>'
-					].join('\n');
+					return dedent`
+						{{descriptive
+						##### Time to Drop Knowledge
+						Use descriptive boxes to highlight text that should be read aloud.
+
+						**Tables and lists** both work within a descriptive box.
+						}}
+						\n`;
 				},
 			},
 			{
@@ -242,7 +256,7 @@ module.exports = [
 				gen  : function(){
 					return dedent`
 						##### Typical Difficulty Classes
-						{{column-count="2"
+						{{column-count:2
 						| Task Difficulty | DC |
 						|:----------------|:--:|
 						| Very easy       | 5  |
