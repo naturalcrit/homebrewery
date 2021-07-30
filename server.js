@@ -108,8 +108,7 @@ app.get('/robots.txt', (req, res)=>{
 //Home page
 app.get('/', async (req, res, next)=>{
 	const brew = {
-		text        : welcomeText,
-		welcomeText : welcomeText
+		text : welcomeText
 	};
 	req.brew = brew;
 	return next();
