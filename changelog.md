@@ -6,6 +6,19 @@ h5 {
 
 # changelog
 
+### Friday, 30/07/2021 - v2.13.2
+
+- Background work to allow new themes in the future
+- Fixed cursor getting stuck when resizing divider bar
+
+##### G-Ambatte :
+- Fix Style tab not copying when Cloned To New
+- Basic brew sorting on User page
+- Reduced data sent on each request from server
+
+##### Gazook89 :
+- Cleaned up styling on menus
+
 ### Saturday, 28/6/2021 - v2.13.1
 
 - Fixed the issue with new brews not saving!
@@ -43,6 +56,9 @@ myStyle {color: black}
 
 ##### G-Ambatte :
 - Snippet to remove drop caps (fancy first letter after title)
+
+```
+```
 
 ### Saturday, 13/3/2021 - v2.11.0
 
@@ -87,6 +103,8 @@ myStyle {color: black}
 - Fixed issue with users unable to create new brews
 - Fixing brews being lost when loaded via back button
 
+\page
+
 ### Wednesday, 07/10/2020 - v2.10.0
 - Google Drive integration -- Sign in with your Google account to link it with your Homebrewery profile. A new button in the Edit page will let you transfer your file to your personal Google Drive storage, and Google will keep a backup of each version! No more lost work surprises!
 
@@ -99,13 +117,6 @@ myStyle {color: black}
 
 ### Wednesday, 20/05/2020 - v2.9.0
 - Major refactoring of site backend to work with updated dependencies for security (should be invisible to users)
-
-
-
-
-
-
-\page
 
 ### Wednesday, 11/03/2020 - v2.8.2
 - Fixed delete button removing everyone's copy for brews with multiple authors
@@ -180,6 +191,8 @@ myStyle {color: black}
 - Added a hover tooltip to fully read the brew description
 - Made the brew items take up only 25% allowing you to view more per row.
 
+\page
+
 ### Wednesday, 23/11/2016 - v2.5.0
 - Metadata can now be added to brews
 - Added a metadata editor onto the edit and new pages
@@ -194,8 +207,6 @@ myStyle {color: black}
 - Updated snippet bar style
 - You can now print from a new page without saving
 - Added the ability to use ctrl+p and ctrl+s to print and save respectively.
-
-\page
 
 ### Monday, 07/11/2016
 - Added final touches to the html validator and updating the rest of the branch
@@ -253,6 +264,8 @@ myStyle {color: black}
 ### Wednesday, 25/05/2016 -v2.0.5
 - The class table generators have the proper ability score improvement progression.
 
+\page
+
 ### Tuesday, 24/05/2016 - v2.0.4
 - Fixed extra wide monster stat blocks sometimes only being one column
 - The class table generators now follow the proper progression from the PHB (thakns u/IrishBandit)
@@ -262,8 +275,6 @@ myStyle {color: black}
 - No longer server-side pre-render brews, just incase the user entered invalid HTML, it might crahsh the server
 - Bumped up the allowed entity size for extra-large brew (Thanks for reporting it dickboner93)
 - Added a little error box when a save fails with a custom link to reporting the issue on github.
-
-\page
 
 ### Saturday, 14/05/2016 - v2.0.0 (finally!)
 
