@@ -24,6 +24,7 @@ const UserPage = createClass({
 	getDefaultProps : function() {
 		return {
 			username : '',
+			pageType : 'user',
 			brews    : []
 		};
 	},
@@ -49,9 +50,33 @@ const UserPage = createClass({
 		});
 	},
 
-	render : function(){
-		const brews = this.getSortedBrews();
+	getContent : function(){
+		if(this.props.pageType == 'user'){
+			const brews = this.getSortedBrews();
+			return <>
+				<div>
+					<h1>{this.getUsernameWithS()} brews</h1>
+					{this.renderBrews(brews.published)}
+				</div>
+				{this.props.username == global.account.username &&
+					<div>
+						<h1>{this.getUsernameWithS()} unpublished brews</h1>
+						{this.renderBrews(brews.private)}
+					</div>
+				}
+			</>;
+		};
+		if(this.props.pageType == 'liked'){
+			return <>
+				<div>
+					<h1>{this.getUsernameWithS()} liked brews</h1>
+					{this.renderBrews(this.props.brews)}
+				</div>
+			</>;
+		}
+	},
 
+	render : function(){
 		return <div className='userPage sitePage'>
 			<Navbar>
 				<Nav.section>
@@ -63,14 +88,7 @@ const UserPage = createClass({
 
 			<div className='content V3'>
 				<div className='phb'>
-					<div>
-						<h1>{this.getUsernameWithS()} brews</h1>
-						{this.renderBrews(brews.published)}
-					</div>
-					<div>
-						<h1>{this.getUsernameWithS()} unpublished brews</h1>
-						{this.renderBrews(brews.private)}
-					</div>
+					{this.getContent()}
 				</div>
 			</div>
 		</div>;

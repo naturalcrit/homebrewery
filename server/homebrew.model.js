@@ -63,6 +63,22 @@ HomebrewSchema.statics.getByUser = function(username, allowAccess=false){
 	});
 };
 
+HomebrewSchema.statics.getByShareIds = function(shareIds, username){
+	return new Promise((resolve, reject)=>{
+		const query = { shareId: { $in: shareIds } };
+		Homebrew.find(query, (err, brews)=>{
+			if(err){ return reject(); };
+			brews = _.map(brews, (brew)=>{
+				if(!brew.authors.includes(username)) {
+					brew.editId = '';
+				};
+				return brew;
+			});
+			return resolve(brews);
+		});
+	});
+};
+
 const Homebrew = mongoose.model('Homebrew', HomebrewSchema);
 
 module.exports = {

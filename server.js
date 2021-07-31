@@ -5,6 +5,7 @@ const express = require('express');
 const app = express();
 
 const homebrewApi = require('./server/homebrew.api.js');
+const AccountModel = require('./server/account.model.js').model;
 const GoogleActions = require('./server/googleActions.js');
 const serveCompressedStaticAssets = require('./server/static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
@@ -159,6 +160,27 @@ app.get('/user/:username', async (req, res, next)=>{
 	return next();
 });
 
+//Liked Brews Page
+app.get('/liked', async (req, res, next)=>{
+	const userAccount = await AccountModel.getAccount(req.account.username)
+	.catch((err)=>{
+		console.log(err);
+	});
+
+	const brews = await HomebrewModel.getByShareIds(userAccount.likedBrews, req.account.username)
+	.catch((err)=>{
+		console.log(err);
+	});
+
+	console.log(brews);
+
+	req.brews = _.map(brews, (brew)=>{
+		return brew;
+	});
+
+	return next();
+});
+
 //Edit Page
 app.get('/edit/:id', asyncHandler(async (req, res, next)=>{
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
@@ -187,6 +209,12 @@ app.get('/share/:id', asyncHandler(async (req, res, next)=>{
 		await HomebrewModel.increaseView({ shareId: brew.shareId });
 	}
 
+	const userAccount = await AccountModel.getAccount(req.account.username)
+	.catch((err)=>{
+		console.log(err);
+	});
+
+	brew.userAccount = userAccount;
 	req.brew = brew;
 	return next();
 }));

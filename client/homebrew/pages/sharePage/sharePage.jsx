@@ -17,26 +17,34 @@ const SharePage = createClass({
 	getDefaultProps : function() {
 		return {
 			brew : {
-				title     : '',
-				text      : '',
-				style     : '',
-				shareId   : null,
-				createdAt : null,
-				updatedAt : null,
-				views     : 0,
-				renderer  : ''
+				title       : '',
+				text        : '',
+				style       : '',
+				shareId     : null,
+				createdAt   : null,
+				updatedAt   : null,
+				views       : 0,
+				renderer    : '',
+				userAccount : null
 			}
 		};
 	},
 
 	getInitialState : function() {
 		return {
-			showDropdown : false
+			showDropdown : false,
+			liked        : false
 		};
 	},
 
 	componentDidMount : function() {
 		document.addEventListener('keydown', this.handleControlKeys);
+
+		if(this.props.brew.userAccount && (this.state.liked != this.props.brew.userAccount.likedBrews.includes(this.processShareId()))){
+			this.setState({
+				liked : !this.state.liked
+			});
+		}
 	},
 	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
@@ -79,6 +87,33 @@ const SharePage = createClass({
 		</div>;
 	},
 
+	isLiked : function(){
+		return (this.state.liked);
+	},
+
+	addLike : async function(){
+		// TO DO: Implement adding to Account.likedBrews
+		this.setState({
+			liked : true
+		});
+	},
+
+	removeLike : async function(){
+		// TO DO: Implement removing from Account.likedBrews
+		this.setState({
+			liked : false
+		});
+	},
+
+	renderLike : function(){
+		if(!this.props.brew.userAccount){return;};
+		return <>
+			{this.isLiked()
+				? <Nav.item className='heart' icon='fas fa-heart' color='red' onClick={this.removeLike} ></Nav.item>
+				: <Nav.item className='heart' icon='far fa-heart' color='white' onClick={this.addLike} ></Nav.item>}
+		</>;
+	},
+
 	render : function(){
 		return <div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
@@ -95,6 +130,7 @@ const SharePage = createClass({
 						source
 						{this.renderDropdown()}
 					</Nav.item>
+					{this.renderLike()}
 					<RecentNavItem brew={this.props.brew} storageKey='view' />
 					<Account />
 				</Nav.section>

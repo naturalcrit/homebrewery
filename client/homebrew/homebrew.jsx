@@ -46,6 +46,7 @@ const Homebrew = createClass({
 						<Route path='/new/:id' component={(routeProps)=><NewPage id={routeProps.match.params.id} brew={this.props.brew} />}/>
 						<Route path='/new' exact component={(routeProps)=><NewPage/>}/>
 						<Route path='/user/:username' component={(routeProps)=><UserPage username={routeProps.match.params.username} brews={this.props.brews} />}/>
+						<Route path='/liked' component={(routeProps)=><UserPage username={this.props.account.username} brews={this.props.brews} pageType='liked' />}/>
 						<Route path='/print/:id' component={(routeProps)=><PrintPage brew={this.props.brew} query={queryString.parse(routeProps.location.search)} /> } />
 						<Route path='/print' exact component={(routeProps)=><PrintPage query={queryString.parse(routeProps.location.search)} /> } />
 						<Route path='/changelog' exact component={()=><SharePage brew={{ title: 'Changelog', text: this.props.changelog }} />}/>
