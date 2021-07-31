@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 const _ = require('lodash');
-const Markdown = require('marked');
+const Markdown = require('marked').setOptions(MarkedOpts);
 const renderer = new Markdown.Renderer();
 
 //Processes the markdown within an HTML block if it's just a class-wrapper

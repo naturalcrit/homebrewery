@@ -1,5 +1,6 @@
 const _ = require('lodash');
-const Markdown = require('markedLegacy');
+const MarkedOpts = require('./markedOpts.json');
+const Markdown = require('markedLegacy').setOptions(MarkedOpts);
 const renderer = new Markdown.Renderer();
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
