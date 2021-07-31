@@ -38,6 +38,7 @@ const newBrew = (req, res)=>{
 
 	brew.authors = (req.account) ? [req.account.username] : [];
 	brew.text = mergeBrewText(brew.text, brew.style);
+	brew.pageCount = (brew.text.match(/\\page/g) || []).length + 1;
 
 	delete brew.editId;
 	delete brew.shareId;
@@ -66,6 +67,7 @@ const updateBrew = (req, res)=>{
 		.then((brew)=>{
 			brew = _.merge(brew, req.body);
 			brew.text = mergeBrewText(brew.text, brew.style);
+			brew.pageCount = (brew.text.match(/\\page/g) || []).length + 1;
 
 			// Compress brew text to binary before saving
 			brew.textBin = zlib.deflateRawSync(brew.text);
