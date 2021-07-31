@@ -125,6 +125,9 @@ const BrewItem = createClass({
 					</span>
 				}
 				<span>
+					<i className='far fa-file' /> {brew.pageCount || 1}
+				</span>
+				<span>
 					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
 				</span>
 				{this.renderGoogleDriveIcon()}
