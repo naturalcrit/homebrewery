@@ -114,13 +114,16 @@ const BrewItem = createClass({
 				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
 					<i className='fas fa-eye'/> {brew.views}
 				</span>
-				<span
-					title={
-						`Created: ${brew.createdAt ? moment(brew.createdAt).local().format(dateFormatString) : 'UNKNOWN'}\n` +
-						`Last updated: ${brew.updatedAt ? moment(brew.updatedAt).local().format(dateFormatString) : 'UNKNOWN'}`
-					}>
-					<i className='fas fa-sync-alt'	/>
-					{moment(brew.updatedAt).fromNow()}
+				{brew.pageCount &&
+					<span>
+						<i className='far fa-file' /> {brew.pageCount}
+					</span>
+				}
+				<span>
+					<i className='far fa-file' /> {brew.pageCount || 1}
+				</span>
+				<span>
+					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
 				</span>
 				{this.renderGoogleDriveIcon()}
 			</div>
