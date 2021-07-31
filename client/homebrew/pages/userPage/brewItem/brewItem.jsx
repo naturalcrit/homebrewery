@@ -112,6 +112,7 @@ const BrewItem = createClass({
 			<h2>{brew.title}</h2>
 			<p className='description'>{brew.description}</p>
 			<hr />
+			<div className='spacer'></div>
 
 			<div className='info'>
 				<span>
@@ -119,6 +120,9 @@ const BrewItem = createClass({
 				</span>
 				<span>
 					<i className='fas fa-eye' /> {brew.views}
+				</span>
+				<span>
+					<i className='far fa-file' /> {brew.pageCount || 1}
 				</span>
 				<span>
 					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
