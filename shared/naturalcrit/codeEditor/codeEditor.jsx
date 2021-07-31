@@ -54,6 +54,7 @@ const CodeEditor = createClass({
 				'Ctrl-M' : this.makeSpan,
 				'Cmd-M'  : this.makeSpan,
 				'Ctrl-K' : this.makeComment,
+				'Cmd-K'  : this.makeComment,
 			}
 		});
 
