@@ -170,7 +170,7 @@ const Editor = createClass({
 
 	//Called when there are changes to the editor's dimensions
 	update : function(){
-		this.refs.codeEditor.updateSize();
+		this.refs.codeEditor?.updateSize();
 	},
 
 	renderEditor : function(){
