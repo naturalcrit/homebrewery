@@ -23,19 +23,15 @@ const HomePage = createClass({
 	getDefaultProps : function() {
 		return {
 			brew : {
-				text : ''
+				text : '',
 			},
-			welcomeText : '',
-			ver         : '0.0.0'
+			ver : '0.0.0'
 		};
-
-
 	},
 	getInitialState : function() {
 		return {
-			brew : {
-				text : this.props.welcomeText
-			}
+			brew        : this.props.brew,
+			welcomeText : this.props.brew.text
 		};
 	},
 	handleSave : function(){
@@ -89,7 +85,7 @@ const HomePage = createClass({
 				</SplitPane>
 			</div>
 
-			<div className={cx('floatingSaveButton', { show: this.props.welcomeText != this.state.brew.text })} onClick={this.handleSave}>
+			<div className={cx('floatingSaveButton', { show: this.state.welcomeText != this.state.brew.text })} onClick={this.handleSave}>
 				Save current <i className='fas fa-save' />
 			</div>
 

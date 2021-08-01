@@ -385,13 +385,14 @@ body {
 		}
 	}
 	.pageNumber{
-		position   : absolute;
-		right      : 2px;
-		bottom     : 22px;
-		width      : 50px;
-		font-size  : 0.9em;
-		color      : #c9ad6a;
-		text-align : center;
+		position    : absolute;
+		right       : 2px;
+		bottom      : 22px;
+		width       : 50px;
+		font-size   : 0.9em;
+		color       : #c9ad6a;
+		text-align  : center;
+		text-indent : 0;
 		&.auto::after {
 			content : counter(phb-page-numbers);
 		}
@@ -620,9 +621,10 @@ body {
 		break-inside : avoid;
 		-webkit-transform   : translateZ(0); //Prevents shadows from breaking across columns
 	}
-	.inline {
+	.inline-block {
 		display : inline-block;
 		text-indent : initial;
+		line-height : 1.3em;
 	}
 	div {
 		column-gap : 0.5cm; //Default spacing if a div uses multicolumns

@@ -18,10 +18,11 @@
 			font-weight    : 800;
 			line-height    : 1.8em;
 			text-transform : uppercase;
-			flex-grow      : 0;
+			flex           : 0 0 auto;
 		}
 		&>.value{
-			flex-grow : 1;
+			flex           : 1 1 auto;
+			min-width      : 200px;
 		}
 	}
 	.description.field textarea.value{
@@ -38,15 +39,22 @@
 			font-size      : 0.7em;
 			font-weight    : 800;
 			user-select    : none;
+			white-space    : nowrap;
+			display        : inline-flex;
+			align-items    : center;
 		}
 		input{
 			vertical-align : middle;
 			cursor         : pointer;
+			margin         : 3px;
 		}
 	}
 	.publish.field .value{
 		position : relative;
 		margin-bottom: 15px;
+		button{
+			width:100%;
+		}
 		button.publish{
 			.button(@blueLight);
 		}

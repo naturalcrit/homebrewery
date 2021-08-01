@@ -31,30 +31,34 @@ const mustacheSpans = {
 	start(src) { return src.match(/{{[^{]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeSpan = /^{{[^\n]*}}/;               // Regex for the complete token
-		const inlineRegex = /{{(?:="[\w,\-(). ]*"|[^"'{}\s])*\s*|}}/g;
+		const inlineRegex = /{{(?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])*\s*|}}/g;
 		const match = completeSpan.exec(src);
 		if(match) {
 			//Find closing delimiter
 			let blockCount = 0;
 			let tags = '';
-			let endIndex = 0;
+			let endTags = 0;
+			let endToken = 0;
 			let delim;
 			while (delim = inlineRegex.exec(match[0])) {
+				if(!tags) {
+					tags = ` ${processStyleTags(delim[0].substring(2))}`;
+					endTags = delim[0].length;
+				}
 				if(delim[0].startsWith('{{')) {
-					tags = tags || ` ${processStyleTags(delim[0].substring(2))}`;
 					blockCount++;
 				} else if(delim[0] == '}}' && blockCount !== 0) {
 					blockCount--;
 					if(blockCount == 0) {
-						endIndex = inlineRegex.lastIndex;
+						endToken = inlineRegex.lastIndex;
 						break;
 					}
 				}
 			}
 
-			if(endIndex) {
-				const raw = src.slice(0, endIndex);
-				const text = raw.slice((raw.indexOf(' ')+1) || -2, -2);
+			if(endToken) {
+				const raw = src.slice(0, endToken);
+				const text = raw.slice(endTags || -2, -2);
 
 				return {                              // Token to generate
 					type   : 'mustacheSpans',           // Should match "name" above
@@ -74,33 +78,37 @@ const mustacheSpans = {
 const mustacheDivs = {
 	name  : 'mustacheDivs',
 	level : 'block',
-	start(src) { return src.match(/^ *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	start(src) { return src.match(/\n *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const completeBlock = /^ *{{.*\n *}}/s;                // Regex for the complete token
-		const blockRegex = /^ *{{(?:="[\w,\-(). ]*"|[^"'{}\s])*$|^ *}}$/gm;
+		const completeBlock = /^ *{{[^\n}]* *\n.*\n *}}/s;                // Regex for the complete token
+		const blockRegex = /^ *{{(?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])* *$|^ *}}$/gm;
 		const match = completeBlock.exec(src);
 		if(match) {
 			//Find closing delimiter
 			let blockCount = 0;
 			let tags = '';
-			let endIndex = 0;
+			let endTags = 0;
+			let endToken = 0;
 			let delim;
 			while (delim = blockRegex.exec(match[0])?.[0].trim()) {
+				if(!tags) {
+					tags = ` ${processStyleTags(delim.substring(2))}`;
+					endTags = delim.length;
+				}
 				if(delim.startsWith('{{')) {
-					tags = tags || ` ${processStyleTags(delim.substring(2))}`;
 					blockCount++;
 				} else if(delim == '}}' && blockCount !== 0) {
 					blockCount--;
 					if(blockCount == 0) {
-						endIndex = blockRegex.lastIndex;
+						endToken = blockRegex.lastIndex;
 						break;
 					}
 				}
 			}
 
-			if(endIndex) {
-				const raw = src.slice(0, endIndex);
-				const text = raw.slice((raw.indexOf('\n')+1) || -2, -2);
+			if(endToken) {
+				const raw = src.slice(0, endToken);
+				const text = raw.slice(endTags || -2, -2);
 				return {                                        // Token to generate
 					type   : 'mustacheDivs',                      // Should match "name" above
 					raw    : raw,                                 // Text to consume from the source
@@ -121,7 +129,7 @@ const mustacheInjectInline = {
 	level : 'inline',
 	start(src) { return src.match(/ *{[^{\n]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const inlineRegex = /^ *{((?:="[\w,\-(). ]*"|[^"'{}\s])*)}/g;
+		const inlineRegex = /^ *{((?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])*)}/g;
 		const match = inlineRegex.exec(src);
 		if(match) {
 			const lastToken = tokens[tokens.length - 1];
@@ -154,9 +162,9 @@ const mustacheInjectBlock = {
 	extensions : [{
 		name  : 'mustacheInjectBlock',
 		level : 'block',
-		start(src) { return src.match(/^ *{[^{\n]/m)?.index; },  // Hint to Marked.js to stop and check for a match
+		start(src) { return src.match(/\n *{[^{\n]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 		tokenizer(src, tokens) {
-			const inlineRegex = /^ *{((?:="[\w,\-(). ]*"|[^"'{}\s])*)}/ym;
+			const inlineRegex = /^ *{((?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])*)}/ym;
 			const match = inlineRegex.exec(src);
 			if(match) {
 				const lastToken = tokens[tokens.length - 1];
@@ -313,13 +321,15 @@ const tagRegex = new RegExp(`(${
 	}).join('|')})`, 'g');
 
 const processStyleTags = (string)=>{
-	const tags = string.match(/(?:[^, "=]+|="[^"]*")+/g);
+	//split tags up. quotes can only occur right after colons.
+	//TODO: can we simplify to just split on commas?
+	const tags = string.match(/(?:[^, ":]+|:(?:"[^"]*"|))+/g);
 
 	if(!tags)	return '"';
 
 	const id      = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
-	const classes = _.remove(tags, (tag)=>!tag.includes('"'));
-	const styles  = tags.map((tag)=>tag.replace(/="(.*)"/g, ':$1;'));
+	const classes = _.remove(tags, (tag)=>!tag.includes(':'));
+	const styles  = tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;'));
 	return `${classes.join(' ')}" ${id ? `id="${id}"` : ''} ${styles.length ? `style="${styles.join(' ')}"` : ''}`;
 };
 
