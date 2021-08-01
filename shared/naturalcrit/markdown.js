@@ -37,24 +37,28 @@ const mustacheSpans = {
 			//Find closing delimiter
 			let blockCount = 0;
 			let tags = '';
-			let endIndex = 0;
+			let endTags = 0;
+			let endToken = 0;
 			let delim;
 			while (delim = inlineRegex.exec(match[0])) {
+				if(!tags) {
+					tags = ` ${processStyleTags(delim[0].substring(2))}`;
+					endTags = delim[0].length;
+				}
 				if(delim[0].startsWith('{{')) {
-					tags = tags || ` ${processStyleTags(delim[0].substring(2))}`;
 					blockCount++;
 				} else if(delim[0] == '}}' && blockCount !== 0) {
 					blockCount--;
 					if(blockCount == 0) {
-						endIndex = inlineRegex.lastIndex;
+						endToken = inlineRegex.lastIndex;
 						break;
 					}
 				}
 			}
 
-			if(endIndex) {
-				const raw = src.slice(0, endIndex);
-				const text = raw.slice((raw.indexOf(' ')+1) || -2, -2);
+			if(endToken) {
+				const raw = src.slice(0, endToken);
+				const text = raw.slice(endTags || -2, -2);
 
 				return {                              // Token to generate
 					type   : 'mustacheSpans',           // Should match "name" above
@@ -76,31 +80,35 @@ const mustacheDivs = {
 	level : 'block',
 	start(src) { return src.match(/\n *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const completeBlock = /^ *{{[^\s}]* *\n.*\n *}}/s;                // Regex for the complete token
+		const completeBlock = /^ *{{[^\n}]* *\n.*\n *}}/s;                // Regex for the complete token
 		const blockRegex = /^ *{{(?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])* *$|^ *}}$/gm;
 		const match = completeBlock.exec(src);
 		if(match) {
 			//Find closing delimiter
 			let blockCount = 0;
 			let tags = '';
-			let endIndex = 0;
+			let endTags = 0;
+			let endToken = 0;
 			let delim;
 			while (delim = blockRegex.exec(match[0])?.[0].trim()) {
+				if(!tags) {
+					tags = ` ${processStyleTags(delim.substring(2))}`;
+					endTags = delim.length;
+				}
 				if(delim.startsWith('{{')) {
-					tags = tags || ` ${processStyleTags(delim.substring(2))}`;
 					blockCount++;
 				} else if(delim == '}}' && blockCount !== 0) {
 					blockCount--;
 					if(blockCount == 0) {
-						endIndex = blockRegex.lastIndex;
+						endToken = blockRegex.lastIndex;
 						break;
 					}
 				}
 			}
 
-			if(endIndex) {
-				const raw = src.slice(0, endIndex);
-				const text = raw.slice((raw.indexOf('\n')+1) || -2, -2);
+			if(endToken) {
+				const raw = src.slice(0, endToken);
+				const text = raw.slice(endTags || -2, -2);
 				return {                                        // Token to generate
 					type   : 'mustacheDivs',                      // Should match "name" above
 					raw    : raw,                                 // Text to consume from the source
