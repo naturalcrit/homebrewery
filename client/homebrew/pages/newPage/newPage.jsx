@@ -69,16 +69,15 @@ const NewPage = createClass({
 		const brewStorage  = localStorage.getItem(BREWKEY);
 		const styleStorage = localStorage.getItem(STYLEKEY);
 
+		const brew = this.state.brew;
+
 		if(!this.props.brew.text || !this.props.brew.style){
-			this.setState({
-				brew : {
-					text  : this.props.brew.text  || (brewStorage  ?? ''),
-					style : this.props.brew.style || (styleStorage ?? undefined)
-				}
-			});
+			brew.text = this.props.brew.text  || (brewStorage  ?? '');
+			brew.style = this.props.brew.style || (styleStorage ?? undefined);
 		}
 
 		this.setState((prevState)=>({
+			brew       : brew,
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
