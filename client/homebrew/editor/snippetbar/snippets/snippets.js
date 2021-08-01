@@ -117,7 +117,7 @@ module.exports = [
 				name : 'Add Comment',
 				icon : 'fas fa-comment-code',  /* might need to be fa-solid fa-comment-code --not sure, Gazook */
 				gen  : dedent`\n
-					<!-- Add a comment to your code here without adding it to your live brew. Hotkey Ctrl/Cmd K -->
+					<!-- Add a comment to your code here without adding it to your live brew. Hotkey Ctrl/Cmd \\ -->
 					\n`
 			},
 		]
