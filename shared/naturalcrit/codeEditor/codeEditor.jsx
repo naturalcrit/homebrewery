@@ -47,14 +47,14 @@ const CodeEditor = createClass({
 			indentWithTabs : true,
 			tabSize        : 2,
 			extraKeys      : {
-				'Ctrl-B' : this.makeBold,
-				'Cmd-B'  : this.makeBold,
-				'Ctrl-I' : this.makeItalic,
-				'Cmd-I'  : this.makeItalic,
-				'Ctrl-M' : this.makeSpan,
-				'Cmd-M'  : this.makeSpan,
-				'Ctrl-\\': this.makeComment,
-				'Cmd-\\' : this.makeComment,
+				'Ctrl-B'  : this.makeBold,
+				'Cmd-B'   : this.makeBold,
+				'Ctrl-I'  : this.makeItalic,
+				'Cmd-I'   : this.makeItalic,
+				'Ctrl-M'  : this.makeSpan,
+				'Cmd-M'   : this.makeSpan,
+				'Ctrl-\\' : this.makeComment,
+				'Cmd-\\'  : this.makeComment,
 			}
 		});
 
