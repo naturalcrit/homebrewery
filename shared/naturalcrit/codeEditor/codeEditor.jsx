@@ -53,8 +53,8 @@ const CodeEditor = createClass({
 				'Cmd-I'  : this.makeItalic,
 				'Ctrl-M' : this.makeSpan,
 				'Cmd-M'  : this.makeSpan,
-				'Ctrl-\\' : this.makeComment,
-				'Cmd-\\'  : this.makeComment,
+				'Ctrl-\\': this.makeComment,
+				'Cmd-\\' : this.makeComment,
 			}
 		});
 
