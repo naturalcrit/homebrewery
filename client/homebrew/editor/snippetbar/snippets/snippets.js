@@ -191,6 +191,18 @@ module.exports = [
 				icon : 'fas fa-hat-wizard',
 				gen  : MagicGen.item,
 			},
+			{
+				name : 'Artist Credit',
+				icon : 'fas fa-signature',
+				gen  : function(){
+					return dedent`
+						{{artist,top:10px,left:10px
+						##### Starry Night
+						[Van Gogh](https://www.vangoghmuseum.nl/en)
+						}}
+						\n`;
+				},
+			},
 		]
 	},
 
