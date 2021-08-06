@@ -284,8 +284,6 @@ const spanTable = {
 					}
 				}
 
-				let prevRow;
-
 				// Get any remaining header rows
 				l = item.header.length;
 				for (i = 1; i < l; i++) {
@@ -332,7 +330,7 @@ const spanTable = {
 			for (j = 0; j < row.length; j++) {
 				cell = row[j];
 				text = this.parseInline(cell.tokens);
-				output += getTableCell(text, cell.colspan, cell.rowspan, 'th', token.align[col]);
+				output += getTableCell(text, cell, 'th', token.align[col]);
 				col += cell.colspan;
 			}
 			output += `</tr>`;
@@ -347,7 +345,7 @@ const spanTable = {
 				for (j = 0; j < row.length; j++) {
 					cell = row[j];
 					text = this.parseInline(cell.tokens);
-					output += getTableCell(text, cell.colspan, cell.rowspan, 'td', token.align[col]);
+					output += getTableCell(text, cell, 'td', token.align[col]);
 					col += cell.colspan;
 				}
 				output += `</tr>`;
@@ -359,13 +357,13 @@ const spanTable = {
 	}
 };
 
-const getTableCell = (text, colspan, rowspan, type, align)=>{
-	if(!rowspan) {
+const getTableCell = (text, cell, type, align)=>{
+	if(!cell.rowspan) {
 		return '';
 	}
 	const tag = `<${type}`
-						+ `${colspan > 1 ? ` colspan=${colspan}` : ''}`
-						+ `${rowspan > 1 ? ` rowspan=${rowspan}` : ''}`
+						+ `${cell.colspan > 1 ? ` colspan=${cell.colspan}` : ''}`
+						+ `${cell.rowspan > 1 ? ` rowspan=${cell.rowspan}` : ''}`
 						+ `${align ? ` align=${align}` : ''}>`;
 	return `${tag + text}</${type}>\n`;
 };
@@ -411,10 +409,10 @@ const splitCells = (tableRow, count, prevRow = [])=>{
 			let prevCols = 0;
 			let j, prevCell;
 			for (j = 0; j < prevRow.length; j++) {
-				let prevCell = prevRow[j];
+				prevCell = prevRow[j];
 				if((prevCols == numCols) && (prevCell.colspan == cells[i].colspan)) {
 					cells[i].rowSpanTarget = prevCell.rowSpanTarget ?? prevCell;
-					cells[i].rowSpanTarget.text += ' ' + cells[i].text.slice(0, -1);
+					cells[i].rowSpanTarget.text += ` ${cells[i].text.slice(0, -1)}`;
 					cells[i].rowSpanTarget.rowspan += 1;
 					cells[i].rowspan = 0;
 					break;
