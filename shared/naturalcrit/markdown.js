@@ -287,13 +287,13 @@ const spanTable = {
 				// Get any remaining header rows
 				l = item.header.length;
 				for (i = 1; i < l; i++) {
-					item.header[i] = splitCells(item.header[i], colCount);
+					item.header[i] = splitCells(item.header[i], colCount, item.header[i-1]);
 				}
 
 				// Get main table cells
 				l = item.rows.length;
 				for (i = 0; i < l; i++) {
-					item.rows[i] = splitCells(item.rows[i], colCount);
+					item.rows[i] = splitCells(item.rows[i], colCount, item.rows[i-1]);
 				}
 
 				// header child tokens
@@ -330,7 +330,7 @@ const spanTable = {
 			for (j = 0; j < row.length; j++) {
 				cell = row[j];
 				text = this.parseInline(cell.tokens);
-				output += getTableCell(text, cell.colspan, 'th', token.align[col]);
+				output += getTableCell(text, cell, 'th', token.align[col]);
 				col += cell.colspan;
 			}
 			output += `</tr>`;
@@ -345,7 +345,7 @@ const spanTable = {
 				for (j = 0; j < row.length; j++) {
 					cell = row[j];
 					text = this.parseInline(cell.tokens);
-					output += getTableCell(text, cell.colspan, 'td', token.align[col]);
+					output += getTableCell(text, cell, 'td', token.align[col]);
 					col += cell.colspan;
 				}
 				output += `</tr>`;
@@ -357,14 +357,18 @@ const spanTable = {
 	}
 };
 
-const getTableCell = (text, colspan, type, align)=>{
+const getTableCell = (text, cell, type, align)=>{
+	if(!cell.rowspan) {
+		return '';
+	}
 	const tag = `<${type}`
-						+ `${colspan > 1 ? ` colspan=${colspan}` : ''}`
+						+ `${cell.colspan > 1 ? ` colspan=${cell.colspan}` : ''}`
+						+ `${cell.rowspan > 1 ? ` rowspan=${cell.rowspan}` : ''}`
 						+ `${align ? ` align=${align}` : ''}>`;
 	return `${tag + text}</${type}>\n`;
 };
 
-const splitCells = (tableRow, count)=>{
+const splitCells = (tableRow, count, prevRow = [])=>{
 	// ensure that every cell-delimiting pipe has a space
 	// before it to distinguish it from an escaped pipe
 	const row = tableRow.replace(/(\|+)/g, (match, p1, offset, str)=>{
@@ -391,12 +395,34 @@ const splitCells = (tableRow, count)=>{
 	let numCols = 0;
 
 	for (; i < cells.length; i++) {
-		const trimmedCell = cells[i].split(/(?<!\\)\|+$/)[0];
+		const trimmedCell = cells[i].split(/ \|+$/)[0];
 		cells[i] = {
-			colspan : 1 + cells[i].length - trimmedCell.length,
+			rowspan : 1,
+			colspan : Math.max(cells[i].length - trimmedCell.length, 1),
 			text    : trimmedCell.trim().replace(/\\\|/g, '|')
 			// leading or trailing whitespace is ignored per the gfm spec
 		};
+
+		// Handle Rowspan
+		if(trimmedCell.slice(-1) == '^' && prevRow.length) {
+			// Find matching cell in previous row
+			let prevCols = 0;
+			let j, prevCell;
+			for (j = 0; j < prevRow.length; j++) {
+				prevCell = prevRow[j];
+				if((prevCols == numCols) && (prevCell.colspan == cells[i].colspan)) {
+					cells[i].rowSpanTarget = prevCell.rowSpanTarget ?? prevCell;
+					cells[i].rowSpanTarget.text += ` ${cells[i].text.slice(0, -1)}`;
+					cells[i].rowSpanTarget.rowspan += 1;
+					cells[i].rowspan = 0;
+					break;
+				}
+				prevCols += prevCell.colspan;
+				if(prevCols > numCols)
+					break;
+			}
+		}
+
 		numCols += cells[i].colspan;
 	}
 
