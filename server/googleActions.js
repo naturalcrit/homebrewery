@@ -95,7 +95,7 @@ GoogleActions = {
 
 		const obj = await drive.files.list({
 			pageSize : 100,
-			fields   : 'nextPageToken, files(id, name, description, modifiedTime, properties)',
+			fields   : 'nextPageToken, files(id, name, description, createdTime, modifiedTime, properties)',
 			q        : 'mimeType != \'application/vnd.google-apps.folder\' and trashed = false'
 		})
 		.catch((err)=>{
