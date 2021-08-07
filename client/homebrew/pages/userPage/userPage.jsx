@@ -140,11 +140,11 @@ const UserPage = createClass({
 			<div className='content V3'>
 				<div className='phb'>
 					{this.renderSortOptions()}
-					<div>
+					<div className='published'>
 						<h1>{this.getUsernameWithS()} brews</h1>
 						{this.renderBrews(brews.published)}
 					</div>
-					<div>
+					<div className='unpublished'>
 						<h1>{this.getUsernameWithS()} unpublished brews</h1>
 						{this.renderBrews(brews.private)}
 					</div>
