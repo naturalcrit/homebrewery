@@ -4,6 +4,8 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
+const moment = require('moment');
+
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 
@@ -42,7 +44,7 @@ const UserPage = createClass({
 	renderBrews : function(brews){
 		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
 
-		const sortedBrews = this.sortBrews(brews);
+		const sortedBrews = this.sortBrews(brews, this.state.sortType);
 
 		return _.map(sortedBrews, (brew, idx)=>{
 			return <BrewItem brew={brew} key={idx}/>;
@@ -50,13 +52,12 @@ const UserPage = createClass({
 	},
 
 	sortBrewOrder : function(brew){
-		if(!brew.title){brew.title = 'No Title';};
 		const mapping = {
 			'alpha'   : _.deburr(brew.title.toLowerCase()),
-			'created' : brew.createdAt,
-			'updated' : brew.updatedAt,
+			'created' : moment(brew.createdAt).format(),
+			'updated' : moment(brew.updatedAt).format(),
 			'views'   : brew.views,
-			'latest'  : brew.lastViewed
+			'latest'  : moment(brew.lastViewed).format()
 		};
 		return mapping[this.state.sortType];
 	},
