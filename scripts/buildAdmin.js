@@ -18,7 +18,6 @@ const build = async ({ bundle, render, ssr })=>{
 	await fs.outputFile('./build/admin/bundle.css', css);
 	await fs.outputFile('./build/admin/bundle.js', bundle);
 	await fs.outputFile('./build/admin/ssr.js', ssr);
-	//await fs.outputFile('./build/admin/render.js', render);
 };
 
 fs.emptyDirSync('./build/admin');
