@@ -411,12 +411,17 @@ body {
 	// *           CODE BLOCKS
 	// ************************************/
 	code{
-    font-family: "Courier New", Courier, monospace;
-    font-size: 0.325;
-    padding: 2px 4px;
-    color: #58180d;
-    background-color: #faf7ea;
-    border-radius: 4px;
+    	font-family		: "Courier New", Courier, monospace;
+		font-size		: 0.325;
+		padding			: 0px 4px;
+		color			: #58180d;
+		background-color	: #faf7ea;
+		border-radius		: 4px;
+		white-space		: pre-wrap
+	}
+
+	pre{
+		margin-bottom	: 10px;
 	}
 
 	pre code{
@@ -538,6 +543,8 @@ body {
 	h1 {
 		text-align    : center;
 		margin-bottom : 0.1cm;
+		+ ul{
+			margin-top  : 20px;
 	}
 	a{
 		display         : table;
