@@ -145,10 +145,12 @@ const UserPage = createClass({
 						<h1>{this.getUsernameWithS()} brews</h1>
 						{this.renderBrews(brews.published)}
 					</div>
-					<div className='unpublished'>
-						<h1>{this.getUsernameWithS()} unpublished brews</h1>
-						{this.renderBrews(brews.private)}
-					</div>
+					{this.props?.username == global.account?.username &&
+						<div className='unpublished'>
+							<h1>{this.getUsernameWithS()} unpublished brews</h1>
+							{this.renderBrews(brews.private)}
+						</div>
+					}
 				</div>
 			</div>
 		</div>;
