@@ -38,7 +38,8 @@ const NewPage = createClass({
 				tags        : '',
 				published   : false,
 				authors     : [],
-				systems     : []
+				systems     : [],
+				query       : {}
 			}
 		};
 	},
@@ -46,11 +47,11 @@ const NewPage = createClass({
 	getInitialState : function() {
 		return {
 			brew : {
-				text        : this.props.brew.text || '',
-				style       : this.props.brew.style || undefined,
+				text        : this.props.brew.text || this.props.query?.text || '',
+				style       : this.props.brew.style || this.props.query?.style || undefined,
 				gDrive      : false,
-				title       : this.props.brew.title || '',
-				description : this.props.brew.description || '',
+				title       : this.props.brew.title || this.props.query?.title ||  '',
+				description : this.props.brew.description || this.props.query?.description || '',
 				tags        : this.props.brew.tags || '',
 				published   : false,
 				authors     : [],
@@ -71,9 +72,9 @@ const NewPage = createClass({
 
 		const brew = this.state.brew;
 
-		if(!this.props.brew.text || !this.props.brew.style){
-			brew.text = this.props.brew.text  || (brewStorage  ?? '');
-			brew.style = this.props.brew.style || (styleStorage ?? undefined);
+		if(!this.state.brew.text || !this.state.brew.style){
+			brew.text = this.state.brew.text  || (brewStorage  ?? '');
+			brew.style = this.state.brew.style || (styleStorage ?? undefined);
 		}
 
 		this.setState((prevState)=>({
@@ -220,6 +221,7 @@ const NewPage = createClass({
 	},
 
 	render : function(){
+		console.log(this.props.query);
 		return <div className='newPage sitePage'>
 			{this.renderNavbar()}
 			<div className='content'>
