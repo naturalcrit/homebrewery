@@ -143,13 +143,15 @@ const UserPage = createClass({
 				<div className='phb'>
 					{this.renderSortOptions()}
 					<div className='published'>
-						<h1>{this.getUsernameWithS()} brews</h1>
+						<h1>{this.getUsernameWithS()} published brews</h1>
 						{this.renderBrews(brews.published)}
 					</div>
-					<div className='unpublished'>
-						<h1>{this.getUsernameWithS()} unpublished brews</h1>
-						{this.renderBrews(brews.private)}
-					</div>
+					{this.props.username == global.account?.username &&
+						<div className='unpublished'>
+							<h1>{this.getUsernameWithS()} unpublished brews</h1>
+							{this.renderBrews(brews.private)}
+						</div>
+					}
 				</div>
 			</div>
 		</div>;
