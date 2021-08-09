@@ -221,7 +221,6 @@ const NewPage = createClass({
 	},
 
 	render : function(){
-		console.log(this.props.query);
 		return <div className='newPage sitePage'>
 			{this.renderNavbar()}
 			<div className='content'>
