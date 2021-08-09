@@ -355,9 +355,6 @@ body {
 		.useColumns(0.96);
 	}
 
-	hr+hr+blockquote{
-		.useColumns(0.96);
-	}
 	//*****************************
 	// *           FOOTER
 	// *****************************/
@@ -411,17 +408,13 @@ body {
 	// *           CODE BLOCKS
 	// ************************************/
 	code{
-    	font-family		: "Courier New", Courier, monospace;
-		font-size		: 0.325;
-		padding			: 0px 4px;
-		color			: #58180d;
-		background-color	: #faf7ea;
-		border-radius		: 4px;
-		white-space		: pre-wrap
-	}
-
-	pre{
-		margin-bottom	: 10px;
+    font-family      : "Courier New", Courier, monospace;
+		font-size        : 0.325;
+		padding          : 0px 4px;
+		color            : #58180d;
+		background-color : #faf7ea;
+		border-radius    : 4px;
+		white-space      : pre-wrap
 	}
 
 	pre code{
@@ -432,6 +425,9 @@ body {
 		border-image-width  : 10px;
 		border-image-outset : 2px;
 		border-radius       : 12px;
+		& + * {
+			margin-top : 1em;
+		}
 	}
 	//*****************************
 	// *          EXTRAS
@@ -542,9 +538,7 @@ body {
 	break-inside                : avoid;
 	h1 {
 		text-align    : center;
-		margin-bottom : 0.1cm;
-		+ ul{
-			margin-top  : 20px;
+		margin-bottom : 0cm;
 	}
 	a{
 		display         : table;
@@ -555,7 +549,13 @@ body {
 		}
 	}
 	h4 {
-		margin-top : 0.1cm;
+		margin-top : 0.14cm;
+		& + ul li {
+			line-height: 1.2em;
+		}
+	}
+	& > ul {
+		margin-top: 0.52cm;
 	}
 	ul{
 		padding-left    : 0;
@@ -575,22 +575,22 @@ body {
 				&::after {
 					content       : "";
 					position      : absolute;
-					bottom        : 0.08cm;        /* Set as you want */
+					bottom        : 0.08cm;
 					margin-left   : 0.06cm;        /* Spacing before dot leaders */
 					width         : 100%;
 					border-bottom : 0.05cm dotted #000;
 				}
 			}
 			&:last-child {
-				font-family		 : BookInsanityRemake;
-				font-size   	 : 0.34cm;
-				font-weight		 : normal;
-				color		       : black;
+				font-family    : BookInsanityRemake;
+				font-size      : 0.34cm;
+				font-weight    : normal;
+				color          : black;
 				text-align     : right;
-				vertical-align : bottom;       /* Keep Price text bottom-aligned */
+				vertical-align : bottom; /* Keep page number bottom-aligned */
 				width          : 1%;
-				padding-left   : 0.06cm;       /* Spacing after dot leaders */
-				/*white-space: nowrap;         /* Uncomment if needed */
+				padding-left   : 0.06cm; /* Spacing after dot leaders */
+				/*white-space  : nowrap; /* Uncomment if needed */
 			}
 		}
 		ul { /*List indent*/
