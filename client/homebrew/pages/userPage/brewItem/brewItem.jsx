@@ -112,13 +112,13 @@ const BrewItem = createClass({
 				<span title={`Authors:\n${brew.authors.join('\n')}`}>
 					<i className='fas fa-user'/> {brew.authors.join(', ')}
 				</span>
-				<span title={`Last viewed: ${brew.lastViewed}`}>
+				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
 					<i className='fas fa-eye'/> {brew.views}
 				</span>
 				<span
 					title={
-						`Created: ${this.props.brew.createdAt ? moment(this.props.brew.createdAt).local().format(dateFormatString) : 'UNKNOWN'}\n` +
-						`Last updated: ${this.props.brew.updatedAt ? moment(this.props.brew.updatedAt).local().format(dateFormatString) : 'UNKNOWN'}`
+						`Created: ${brew.createdAt ? moment(brew.createdAt).local().format(dateFormatString) : 'UNKNOWN'}\n` +
+						`Last updated: ${brew.updatedAt ? moment(brew.updatedAt).local().format(dateFormatString) : 'UNKNOWN'}`
 					}>
 					<i className='fas fa-sync-alt'	/>
 					{moment(brew.updatedAt).fromNow()}
