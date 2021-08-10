@@ -116,40 +116,40 @@ module.exports = {
 	third : function(classes){
 		const classname = _.sample(classnames);
 
-			const maxes = [4, 3, 3, 3, 3, 2, 2, 1, 1];
-			const drawSlots = function(Slots){
-				let slots = Number(Slots);
-				return _.times(4, function(i){
-					const max = maxes[i];
-					if(slots < 1) return '—';
-					const res = _.min([max, slots]);
-					slots -= res;
-					return res;
-				}).join(' | ');
-			};
+		const maxes = [4, 3, 3, 3, 3, 2, 2, 1, 1];
+		const drawSlots = function(Slots){
+			let slots = Number(Slots);
+			return _.times(4, function(i){
+				const max = maxes[i];
+				if(slots < 1) return '—';
+				const res = _.min([max, slots]);
+				slots -= res;
+				return res;
+			}).join(' | ');
+		};
 
 
-			let cantrips = 3;
-			let spells = 1;
-			let slots = 2;
-			return `{{${classes}\n##### ${classname} Spellcasting\n` +
-			`| Class  | Cantrips | Spells  | --- Spells Slots per Spell Level --- ||||\n` +
-			`| Level ^| Known   ^| Known  ^| 1st | 2nd | 3rd | 4th |\n` +
-			`|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n${
-				_.map(levels, function(levelName, level){
-					const res = [
-						levelName,
-						cantrips,
-						spells,
-						drawSlots(slots)
-					].join(' | ');
+		let cantrips = 3;
+		let spells = 1;
+		let slots = 2;
+		return `{{${classes}\n##### ${classname} Spellcasting\n` +
+		`| Class  | Cantrips | Spells  | --- Spells Slots per Spell Level --- ||||\n` +
+		`| Level ^| Known   ^| Known  ^| 1st | 2nd | 3rd | 4th |\n` +
+		`|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n${
+			_.map(levels, function(levelName, level){
+				const res = [
+					levelName,
+					cantrips,
+					spells,
+					drawSlots(slots)
+				].join(' | ');
 
-					cantrips += _.random(0, 1);
-					spells += _.random(0, 1);
-					slots += _.random(0, 2);
+				cantrips += _.random(0, 1);
+				spells += _.random(0, 1);
+				slots += _.random(0, 2);
 
-					return `| ${res} |`;
-				}).join('\n')}\n}}\n\n`;
+				return `| ${res} |`;
+			}).join('\n')}\n}}\n\n`;
 	}
 
 };
