@@ -6,6 +6,15 @@ h5 {
 
 # changelog
 
+### Monday, 09/08/2021 - v2.13.3
+
+##### G-Ambatte :
+- Tooltips hovering over brews in dropdowns / user page.
+- Fixed sort-by created date on user page.
+
+##### Gazook89 :
+- Hotkey Ctrl-/ and snippets to add HTML comments; use for notes that won't appear in your brew.
+
 ### Friday, 30/07/2021 - v2.13.2
 
 - Background work to allow new themes in the future
@@ -56,9 +65,6 @@ myStyle {color: black}
 
 ##### G-Ambatte :
 - Snippet to remove drop caps (fancy first letter after title)
-
-```
-```
 
 ### Saturday, 13/3/2021 - v2.11.0
 
