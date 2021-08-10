@@ -358,8 +358,9 @@ GoogleActions = {
 
 		await drive.files.update({
 			fileId   : brew.googleId,
-			resource : { properties : { views      : brew.views + 1,
-		 															lastViewed : new Date() } }
+			resource : { modifiedTime : brew.updatedAt,
+						 properties   : { views      : brew.views + 1,
+		 							      lastViewed : new Date() } }
 		})
 		.catch((err)=>{
 			console.log('Error updating Google views');
