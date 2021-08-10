@@ -71,7 +71,7 @@ module.exports = {
 		let spells = 1;
 		let slots = 2;
 		return `{{${classes}\n##### The ${classname}\n` +
-		`| Level | Proficiency | Features | Cantrips | Spells | --- Spell Slots Per Level ---               |||||||||\n`+
+		`| Level | Proficiency | Features | Cantrips | Spells | --- Spell Slots Per Spell Level ---         |||||||||\n`+
 		`|      ^| Bonus      ^|         ^| Known   ^| Known ^| 1st | 2nd | 3rd | 4th | 5th | 6th | 7th | 8th | 9th |\n`+
 		`|:-----:|:-----------:|:---------|:--------:|:------:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n${
 			_.map(levels, function(levelName, level){
