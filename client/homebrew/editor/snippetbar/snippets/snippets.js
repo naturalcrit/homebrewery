@@ -113,6 +113,13 @@ module.exports = [
 						'  }\n' +
 						'</style>'
 			},
+			{
+				name : 'Add Comment',
+				icon : 'fas fa-code',  /* might need to be fa-solid fa-comment-code --not sure, Gazook */
+				gen  : dedent`\n
+					<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->
+					`
+			},
 		]
 	},
 

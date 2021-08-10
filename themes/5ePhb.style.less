@@ -293,6 +293,7 @@ body {
 	// *    MONSTER STAT BLOCK
 	// *****************************/
 	.monster {
+		.useSansSerif();
 		&.frame {
 			border-style          : solid;
 			border-width          : 7px 6px;
@@ -306,7 +307,7 @@ body {
 			padding               : 4px 2px;
 			margin                : 0px -6px 1em;
 		}
-		.useSansSerif();
+
 		//-webkit-transform : translateZ(0); //Prevents shadows from breaking across columns, but breaks internal columns...
 		position          : relative;
 		padding           : 0px;
@@ -380,9 +381,6 @@ body {
 		.useColumns(0.96);
 	}
 
-	hr+hr+blockquote{
-		.useColumns(0.96);
-	}
 	//*****************************
 	// *           FOOTER
 	// *****************************/
@@ -436,12 +434,13 @@ body {
 	// *           CODE BLOCKS
 	// ************************************/
 	code{
-    font-family: "Courier New", Courier, monospace;
-    font-size: 0.325;
-    padding: 2px 4px;
-    color: #58180d;
-    background-color: #faf7ea;
-    border-radius: 4px;
+    font-family      : "Courier New", Courier, monospace;
+		font-size        : 0.325;
+		padding          : 0px 4px;
+		color            : #58180d;
+		background-color : #faf7ea;
+		border-radius    : 4px;
+		white-space      : pre-wrap
 	}
 
 	pre code{
@@ -452,6 +451,9 @@ body {
 		border-image-width  : 10px;
 		border-image-outset : 2px;
 		border-radius       : 12px;
+		& + * {
+			margin-top : 1em;
+		}
 	}
 	//*****************************
 	// *          EXTRAS
@@ -475,7 +477,7 @@ body {
 		break-before               : column;
 	}
 	//Avoid breaking up
-	p,blockquote,table{
+	blockquote,table{
 		z-index                     : 15;
 		-webkit-column-break-inside : avoid;
 		page-break-inside           : avoid;
@@ -562,7 +564,7 @@ body {
 	break-inside                : avoid;
 	h1 {
 		text-align    : center;
-		margin-bottom : 0.1cm;
+		margin-bottom : 0cm;
 	}
 	a{
 		display         : table;
@@ -573,7 +575,13 @@ body {
 		}
 	}
 	h4 {
-		margin-top : 0.1cm;
+		margin-top : 0.14cm;
+		& + ul li {
+			line-height: 1.2em;
+		}
+	}
+	& > ul {
+		margin-top: 0.52cm;
 	}
 	ul{
 		padding-left    : 0;
@@ -593,22 +601,22 @@ body {
 				&::after {
 					content       : "";
 					position      : absolute;
-					bottom        : 0.08cm;        /* Set as you want */
+					bottom        : 0.08cm;
 					margin-left   : 0.06cm;        /* Spacing before dot leaders */
 					width         : 100%;
 					border-bottom : 0.05cm dotted #000;
 				}
 			}
 			&:last-child {
-				font-family		 : BookInsanityRemake;
-				font-size   	 : 0.34cm;
-				font-weight		 : normal;
-				color		       : black;
+				font-family    : BookInsanityRemake;
+				font-size      : 0.34cm;
+				font-weight    : normal;
+				color          : black;
 				text-align     : right;
-				vertical-align : bottom;       /* Keep Price text bottom-aligned */
+				vertical-align : bottom; /* Keep page number bottom-aligned */
 				width          : 1%;
-				padding-left   : 0.06cm;       /* Spacing after dot leaders */
-				/*white-space: nowrap;         /* Uncomment if needed */
+				padding-left   : 0.06cm; /* Spacing after dot leaders */
+				/*white-space  : nowrap; /* Uncomment if needed */
 			}
 		}
 		ul { /*List indent*/
@@ -654,11 +662,11 @@ body {
 		margin-top: -0.5em;
 	}
   dt {
-    float: left;
-    //clear: left;  //Doesn't seem necessary
-    margin-right: 5px;
+    display      : inline;
+    margin-right : 5px;
   }
   dd {
+		display     : inline;
 		margin-left : 0px;
 		text-indent : 0px;
   }

@@ -99,11 +99,18 @@ const BrewItem = createClass({
 		</span>;
 	},
 
+	getTooltipData : function(){
+		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
+		let outputString = `Created: ${this.props.brew.createdAt ? moment(this.props.brew.createdAt).local().format(dateFormatString) : 'UNKNOWN'}\n`;
+		outputString +=    `Last updated: ${this.props.brew.updatedAt ? moment(this.props.brew.updatedAt).local().format(dateFormatString) : 'UNKNOWN'}`;
+		return  outputString;
+	},
+
 	render : function(){
 		const brew = this.props.brew;
-		return <div className='brewItem'>
+		return <div className='brewItem' title={this.getTooltipData()}>
 			<h2>{brew.title}</h2>
-			<p className='description' >{brew.description}</p>
+			<p className='description'>{brew.description}</p>
 			<hr />
 
 			<div className='info'>

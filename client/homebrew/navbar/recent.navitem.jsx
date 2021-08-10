@@ -124,7 +124,7 @@ const RecentItems = createClass({
 
 		const makeItems = (brews)=>{
 			return _.map(brews, (brew)=>{
-				return <a href={brew.url} className='item' key={brew.id} target='_blank' rel='noopener noreferrer'>
+				return <a href={brew.url} className='item' key={brew.id} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
 					<span className='title'>{brew.title || '[ no title ]'}</span>
 					<span className='time'>{Moment(brew.ts).fromNow()}</span>
 				</a>;
