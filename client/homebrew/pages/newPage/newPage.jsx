@@ -19,6 +19,7 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const BREWKEY = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
+const METAKEY = 'homebrewery-new-meta';
 
 
 const NewPage = createClass({
@@ -68,12 +69,16 @@ const NewPage = createClass({
 	componentDidMount : function() {
 		const brewStorage  = localStorage.getItem(BREWKEY);
 		const styleStorage = localStorage.getItem(STYLEKEY);
+		const metaStorage = JSON.parse(localStorage.getItem(METAKEY));
 
 		const brew = this.state.brew;
 
-		if(!this.props.brew.text || !this.props.brew.style){
-			brew.text = this.props.brew.text  || (brewStorage  ?? '');
-			brew.style = this.props.brew.style || (styleStorage ?? undefined);
+		if(!this.state.brew.text || !this.state.brew.style){
+			brew.text = this.state.brew.text  || (brewStorage  ?? '');
+			brew.style = this.state.brew.style || (styleStorage ?? undefined);
+			// brew.title = metaStorage?.title || this.state.brew.title;
+			// brew.description = metaStorage?.description || this.state.brew.description;
+			brew.renderer = metaStorage?.renderer || this.state.brew.renderer;
 		}
 
 		this.setState((prevState)=>({
@@ -126,7 +131,11 @@ const NewPage = createClass({
 		this.setState((prevState)=>({
 			brew : _.merge({}, prevState.brew, metadata),
 		}));
-
+		localStorage.setItem(METAKEY, JSON.stringify({
+			// 'title'       : this.state.brew.title,
+			// 'description' : this.state.brew.description,
+			'renderer' : this.state.brew.renderer
+		}));
 	},
 
 	save : async function(){
@@ -159,6 +168,7 @@ const NewPage = createClass({
 			brew = res.body;
 			localStorage.removeItem(BREWKEY);
 			localStorage.removeItem(STYLEKEY);
+			localStorage.removeItem(METAKEY);
 			window.location = `/edit/${brew.googleId}${brew.editId}`;
 		} else {
 			request.post('/api')
@@ -174,6 +184,7 @@ const NewPage = createClass({
 				brew = res.body;
 				localStorage.removeItem(BREWKEY);
 				localStorage.removeItem(STYLEKEY);
+				localStorage.removeItem(METAKEY);
 				window.location = `/edit/${brew.editId}`;
 			});
 		}
