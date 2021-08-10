@@ -99,29 +99,29 @@ const BrewItem = createClass({
 		</span>;
 	},
 
-	getTooltipData : function(){
-		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
-		let outputString = `Title: ${this.props.brew.title}\nCreated: ${this.props.brew.createdAt ? moment(this.props.brew.createdAt).local().format(dateFormatString) : 'UNKNOWN'}\n`;
-		outputString +=    `Last updated: ${this.props.brew.updatedAt ? moment(this.props.brew.updatedAt).local().format(dateFormatString) : 'UNKNOWN'}`;
-		return  outputString;
-	},
-
 	render : function(){
 		const brew = this.props.brew;
-		return <div className='brewItem' title={this.getTooltipData()}>
+		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
+
+		return <div className='brewItem'>
 			<h2>{brew.title}</h2>
 			<p className='description'>{brew.description}</p>
 			<hr />
 
 			<div className='info'>
-				<span>
-					<i className='fas fa-user' /> {brew.authors.join(', ')}
+				<span title={`Authors:\n${brew.authors.join('\n')}`}>
+					<i className='fas fa-user'/> {brew.authors.join(', ')}
 				</span>
-				<span>
-					<i className='fas fa-eye' /> {brew.views}
+				<span title={`Last viewed: ${brew.lastViewed}`}>
+					<i className='fas fa-eye'/> {brew.views}
 				</span>
-				<span>
-					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
+				<span
+					title={
+						`Created: ${this.props.brew.createdAt ? moment(this.props.brew.createdAt).local().format(dateFormatString) : 'UNKNOWN'}\n` +
+						`Last updated: ${this.props.brew.updatedAt ? moment(this.props.brew.updatedAt).local().format(dateFormatString) : 'UNKNOWN'}`
+					}>
+					<i className='fas fa-sync-alt'	/>
+					{moment(brew.updatedAt).fromNow()}
 				</span>
 				{this.renderGoogleDriveIcon()}
 			</div>
