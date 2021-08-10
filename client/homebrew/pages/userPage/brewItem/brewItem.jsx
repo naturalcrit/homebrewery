@@ -48,7 +48,7 @@ const BrewItem = createClass({
 		if(!this.props.brew.editId) return;
 
 		return <a onClick={this.deleteBrew}>
-			<i className='fas fa-trash-alt' />
+			<i className='fas fa-trash-alt' title='Delete' />
 		</a>;
 	},
 
@@ -61,7 +61,7 @@ const BrewItem = createClass({
 		}
 
 		return <a href={`/edit/${editLink}`} target='_blank' rel='noopener noreferrer'>
-			<i className='fas fa-pencil-alt' />
+			<i className='fas fa-pencil-alt' title='Edit' />
 		</a>;
 	},
 
@@ -74,7 +74,7 @@ const BrewItem = createClass({
 		}
 
 		return <a href={`/share/${shareLink}`} target='_blank' rel='noopener noreferrer'>
-			<i className='fas fa-share-alt' />
+			<i className='fas fa-share-alt' title='Share' />
 		</a>;
 	},
 
@@ -87,7 +87,7 @@ const BrewItem = createClass({
 		}
 
 		return <a href={`/download/${shareLink}`}>
-			<i className='fas fa-download' />
+			<i className='fas fa-download' title='Download' />
 		</a>;
 	},
 
@@ -101,7 +101,7 @@ const BrewItem = createClass({
 
 	getTooltipData : function(){
 		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
-		let outputString = `Created: ${this.props.brew.createdAt ? moment(this.props.brew.createdAt).local().format(dateFormatString) : 'UNKNOWN'}\n`;
+		let outputString = `Title: ${this.props.brew.title}\nCreated: ${this.props.brew.createdAt ? moment(this.props.brew.createdAt).local().format(dateFormatString) : 'UNKNOWN'}\n`;
 		outputString +=    `Last updated: ${this.props.brew.updatedAt ? moment(this.props.brew.updatedAt).local().format(dateFormatString) : 'UNKNOWN'}`;
 		return  outputString;
 	},
