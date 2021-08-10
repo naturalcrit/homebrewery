@@ -14,7 +14,7 @@ When you create your own homebrew you will be given a *edit url* and a *share ur
 Anyone with the *share url* will be able to access a read-only version of your homebrew.
 
 ## Helping out
-Like this tool? Want to buy me a beer? [Head here](https://www.patreon.com/stolksdorf) to help me keep the servers running.
+Like this tool? Want to buy me a beer? [Head here](https://www.patreon.com/Naturalcrit) to help me keep the servers running.
 
 This tool will **always** be free, never have ads, and I will never offer any "premium" features or whatever.
 
@@ -96,5 +96,3 @@ If you'd like to credit The Homebrewery in your brew, I'd be flattered! Just ref
 
 <div class='pageNumber'>2</div>
 <div class='footnote'>PART 2 | BORING STUFF</div>
-
-
