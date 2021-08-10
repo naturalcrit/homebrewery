@@ -1,7 +1,7 @@
 {
   "name": "homebrewery",
   "description": "Create authentic looking D&D homebrews using only markdown",
-  "version": "2.13.2",
+  "version": "2.13.3",
   "engines": {
     "node": "14.15.x"
   },
