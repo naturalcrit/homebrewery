@@ -514,17 +514,19 @@ body {
 // *       CLASS TABLE
 // *****************************/
 .page .classTable{
-	margin-top          : 25px;
-	margin-bottom       : 40px;
-	border-collapse     : separate;
-	background-color    : white;
-	border              : initial;
-	border-style        : solid;
-	border-image-outset : 25px 17px;
-	border-image-repeat : stretch;
-	border-image-slice  : 150 200 150 200;
-	border-image-source : @frameBorderImage;
-	border-image-width  : 47px;
+	&.frame {
+		margin-top          : 25px;
+		margin-bottom       : 40px;
+		border-collapse     : separate;
+		background-color    : white;
+		border              : initial;
+		border-style        : solid;
+		border-image-outset : 25px 17px;
+		border-image-repeat : stretch;
+		border-image-slice  : 150 200 150 200;
+		border-image-source : @frameBorderImage;
+		border-image-width  : 47px;
+	}
 	h5{
 		margin-bottom : 10px;
 	}
