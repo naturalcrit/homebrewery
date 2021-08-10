@@ -110,7 +110,7 @@ module.exports = {
 				featureScore += _.random(0, 1);
 
 				return `| ${res} |`;
-			}).join('\n')}\n</div>\n\n`;
+			}).join('\n')}\n}}\n\n`;
 	},
 
 	third : function(classes){
