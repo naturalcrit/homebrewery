@@ -51,7 +51,7 @@ const getFeature = (level)=>{
 };
 
 module.exports = {
-	full : function(){
+	full : function(classes){
 		const classname = _.sample(classnames);
 
 		const maxes = [4, 3, 3, 3, 3, 2, 2, 1, 1];
@@ -70,7 +70,7 @@ module.exports = {
 		let cantrips = 3;
 		let spells = 1;
 		let slots = 2;
-		return `{{classTable,wide\n##### The ${classname}\n` +
+		return `{{${classes}\n##### The ${classname}\n` +
 		`| Level | Proficiency | Features | Cantrips | Spells | --- Spell Slots Per Level ---               |||||||||\n`+
 		`|      ^| Bonus      ^|         ^| Known   ^| Known ^| 1st | 2nd | 3rd | 4th | 5th | 6th | 7th | 8th | 9th |\n`+
 		`|:-----:|:-----------:|:---------|:--------:|:------:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n${
@@ -92,11 +92,11 @@ module.exports = {
 			}).join('\n')}\n}}\n\n`;
 	},
 
-	half : function(){
+	half : function(classes){
 		const classname =  _.sample(classnames);
 
 		let featureScore = 1;
-		return `<div class='classTable'>\n##### The ${classname}\n` +
+		return `{{${classes}\n##### The ${classname}\n` +
 		`| Level | Proficiency Bonus | Features | ${_.sample(features)}|\n` +
 		`|:---:|:---:|:---|:---:|\n${
 			_.map(levels, function(levelName, level){
@@ -111,5 +111,45 @@ module.exports = {
 
 				return `| ${res} |`;
 			}).join('\n')}\n</div>\n\n`;
+	},
+
+	third : function(classes){
+		const classname = _.sample(classnames);
+
+			const maxes = [4, 3, 3, 3, 3, 2, 2, 1, 1];
+			const drawSlots = function(Slots){
+				let slots = Number(Slots);
+				return _.times(4, function(i){
+					const max = maxes[i];
+					if(slots < 1) return '—';
+					const res = _.min([max, slots]);
+					slots -= res;
+					return res;
+				}).join(' | ');
+			};
+
+
+			let cantrips = 3;
+			let spells = 1;
+			let slots = 2;
+			return `{{${classes}\n##### ${classname} Spellcasting\n` +
+			`| Class  | Cantrips | Spells  | --- Spells Slots per Spell Level --- ||||\n` +
+			`| Level ^| Known   ^| Known  ^| 1st | 2nd | 3rd | 4th |\n` +
+			`|:---:|:---:|:---:|:---:|:---:|:---:|:---:|\n${
+				_.map(levels, function(levelName, level){
+					const res = [
+						levelName,
+						cantrips,
+						spells,
+						drawSlots(slots)
+					].join(' | ');
+
+					cantrips += _.random(0, 1);
+					spells += _.random(0, 1);
+					slots += _.random(0, 2);
+
+					return `| ${res} |`;
+				}).join('\n')}\n}}\n\n`;
 	}
+
 };
