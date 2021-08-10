@@ -216,7 +216,7 @@ module.exports = [
 			},
 			{
 				name : 'Class Table (unframed)',
-				icon : 'fas fa-table',
+				icon : 'fas fa-border-none',
 				gen  : ClassTableGen.full('classTable,wide'),
 			},
 			{
@@ -226,17 +226,17 @@ module.exports = [
 			},
 			{
 				name : '1/2 Class Table (unframed)',
-				icon : 'fas fa-list-alt',
+				icon : 'fas fa-border-none',
 				gen  : ClassTableGen.half('classTable'),
 			},
 			{
 				name : '1/3 Class Table',
-				icon : 'fas fa-list-alt',
+				icon : 'fas fa-border-all',
 				gen  : ClassTableGen.third('classTable,frame'),
 			},
 			{
 				name : '1/3 Class Table (unframed)',
-				icon : 'fas fa-list-alt',
+				icon : 'fas fa-border-none',
 				gen  : ClassTableGen.third('classTable'),
 			},
 			{
