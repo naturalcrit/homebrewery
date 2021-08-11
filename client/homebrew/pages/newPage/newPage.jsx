@@ -71,7 +71,6 @@ const NewPage = createClass({
 	},
 
 	save : async function(brew, saveGoogle){
-		console.log(`saveGoogle: ${saveGoogle}`);
 		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
 
 		this.setState((prevState)=>({
@@ -105,7 +104,7 @@ const NewPage = createClass({
 			const savedBrew = res.body;
 			window.location.href = `/edit/${savedBrew.googleId}${savedBrew.editId}`;
 		} else {
-			console.log('HB saving');
+			console.log('HB save');
 			request.post('/api')
 				.send(savingBrew)
 				.end((err, res)=>{
