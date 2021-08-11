@@ -101,7 +101,7 @@ const NewPage = createClass({
 					});
 
 			const savedBrew = res.body;
-			window.location.href = `/edit/${savedBrew.googleId}${this.savedBrew.editId}`;
+			window.location.href = `/edit/${savedBrew.googleId}${savedBrew.editId}`;
 		} else {
 			console.log('HB saving');
 			request.post('/api')
