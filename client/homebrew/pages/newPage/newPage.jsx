@@ -36,13 +36,15 @@ const NewPage = createClass({
 				authors     : [],
 				systems     : [],
 				renderer    : 'legacy'
-			}
+			},
+			saveGoogle : false
 		};
 	},
 
 	getInitialState : function() {
 		return {
-			brew : this.props.brew
+			brew       : this.props.brew,
+			saveGoogle : global.account?.googleId || false
 		};
 	},
 
@@ -144,6 +146,7 @@ const NewPage = createClass({
 			callbackSave={this.save}
 			callbackTrySave={this.autoSave}
 			saveMessages={saveMessages}
+			saveGoogle={this.state.saveGoogle}
 			pageType='new'
 		/>;
 	}

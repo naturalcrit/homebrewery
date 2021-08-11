@@ -49,6 +49,7 @@ const BasePage = createClass({
 			callbackTrySave        : function(){},
 			callbackRenderNavItems : function(){},
 			saveMessages           : [],
+			saveGoogle             : false,
 			pageType               : '',
 		};
 	},
@@ -60,7 +61,7 @@ const BasePage = createClass({
 			isPending              : false,
 			alertTrashedGoogleBrew : this.props.brew.trashed,
 			alertLoginToTransfer   : false,
-			saveGoogle             : this.props.brew.googleId || (global.account?.googleId && this.props.editType == 'new') ? true : false,
+			saveGoogle             : this.props.saveGoogle,
 			confirmGoogleTransfer  : false,
 			errors                 : null,
 			htmlErrors             : Markdown.validate(this.props.brew.text),
