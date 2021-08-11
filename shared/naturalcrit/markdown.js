@@ -384,8 +384,10 @@ const splitCells = (tableRow, count, prevRow = [])=>{
 			return ` ${p1}`;
 		}
 	});
+	tableRow = ` ${tableRow}`;
 
-	const cells = tableRow.split(/(?: \||(?<=\|)\|)(?=[^\|]|$)/g);
+	// Split into cells. Contents are:  no pipes unless escaped. Add any ending pipes; if not don't include ending space
+	const cells = [...tableRow.matchAll(/(?:[^\|]+(?:\\\|)*)+(?:\|+(?=\|)|(?= \|))/g)].map((x)=>x[0]);
 	let i = 0;
 
 	// First/last cell in a row cannot be empty if it has no leading/trailing pipe
