@@ -3,7 +3,7 @@ require('./basePage.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
-const request = require('superagent');
+// const request = require('superagent');
 const { Meta } = require('vitreum/headtags');
 
 const Markdown = require('naturalcrit/markdown.js');
