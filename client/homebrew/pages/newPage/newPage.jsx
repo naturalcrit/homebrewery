@@ -99,7 +99,7 @@ const NewPage = createClass({
 						this.setState({ isSaving: false });
 						return;
 					});
-
+			window.onbeforeunload = function(){};
 			const savedBrew = res.body;
 			window.location.href = `/edit/${savedBrew.googleId}${savedBrew.editId}`;
 		} else {
