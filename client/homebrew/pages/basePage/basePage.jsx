@@ -155,11 +155,6 @@ const BasePage = createClass({
 		return !_.isEqual(this.state.brew, this.savedBrew);
 	},
 
-	trySave : function(){
-		if(!this.hasChanges()){return;};
-		return this.props.callbackTrySave(this.state.brew);
-	},
-
 	handleGoogleClick : function(){
 		if(!global.account?.googleId) {
 			this.setState({
@@ -201,8 +196,21 @@ const BasePage = createClass({
 		});
 	},
 
-	save : function(){
-		return this.props.callbackSave(this.state.brew, this.state.saveGoogle);
+	trySave : async function(){
+		if(!this.hasChanges()){return;};
+		return await this.props.callbackTrySave(this.state.brew);
+	},
+
+	save : async function(){
+		this.setState({
+			isSaving : true
+		});
+		const result = await this.props.callbackSave(this.state.brew, this.state.saveGoogle);
+		this.setState({
+			isSaving  : false,
+			isPending : false
+		});
+		return result;
 	},
 
 	renderGoogleDriveIcon : function(){
@@ -288,7 +296,7 @@ const BasePage = createClass({
 		if(this.state.isSaving){
 			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
 		}
-		if(this.isNew() || (this.state.isPending && this.hasChanges())){
+		if(this.state.isPending && this.hasChanges()){
 			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving){
