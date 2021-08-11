@@ -11,6 +11,7 @@ const BasePage = require('../basePage/basePage.jsx');
 
 const BREWKEY = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
+const METAKEY = 'homebrewery-new-meta';
 
 const SAVE_TIMEOUT = 3000;
 
@@ -50,10 +51,12 @@ const NewPage = createClass({
 		this.savedBrew = JSON.parse(JSON.stringify(this.props.brew)); //Deep copy
 
 		const brew = this.props.brew;
+		const metaOpts = JSON.parse(localStorage.getItem(METAKEY));
 
 		if((!brew.text && localStorage.getItem(BREWKEY)) && (!brew.style && localStorage.getItem(STYLEKEY))){
 			brew.text = brew.text || (localStorage.getItem(BREWKEY) ?? '');
 			brew.style = brew.style || (localStorage.getItem(STYLEKEY) ?? undefined);
+			brew.renderer = metaOpts?.renderer || brew.renderer;
 		}
 	},
 
@@ -61,6 +64,7 @@ const NewPage = createClass({
 		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
 		localStorage.setItem(BREWKEY, brew.text);
 		localStorage.setItem(STYLEKEY, brew.style);
+		localStorage.setItem(METAKEY, JSON.stringify({ 'renderer': brew.renderer }));
 		this.debounceSave.cancel();
 	},
 
@@ -97,8 +101,6 @@ const NewPage = createClass({
 					});
 
 			const savedBrew = res.body;
-			localStorage.removeItem(BREWKEY);
-			localStorage.removeItem(STYLEKEY);
 			window.location.href = `/edit/${savedBrew.googleId}${this.savedBrew.editId}`;
 		} else {
 			console.log('HB saving');
@@ -114,11 +116,13 @@ const NewPage = createClass({
 					}
 					window.onbeforeunload = function(){};
 					const savedBrew = res.body;
-					localStorage.removeItem(BREWKEY);
-					localStorage.removeItem(STYLEKEY);
 					window.location.href = `/edit/${savedBrew.editId}`;
 				});
 		}
+
+		localStorage.removeItem(BREWKEY);
+		localStorage.removeItem(STYLEKEY);
+		localStorage.removeItem(METAKEY);
 
 		this.setState((prevState)=>({
 			brew : _.merge({}, prevState.brew, {
