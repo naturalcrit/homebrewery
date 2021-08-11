@@ -128,6 +128,13 @@ module.exports = [
 				icon : 'fas fa-tree',
 				gen  : `![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,top:50px,right:30px,width:280px}`
 			},
+			{
+				name : 'Class Table Decoration',
+				icon : 'fas fa-award',
+				gen  : dedent`\n
+					![ClassTable Decoration](https://i.imgur.com/xYVVT7e.png) {position:absolute,top:0px,right:0px,width:380px}`
+			},
+		]
 	},
 
 
