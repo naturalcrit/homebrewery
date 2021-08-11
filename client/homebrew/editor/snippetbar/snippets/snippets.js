@@ -319,9 +319,9 @@ module.exports = [
 				name : 'Ink Friendly',
 				icon : 'fas fa-tint',
 				gen  : ['<style>',
-					'  .phb{ background : white;}',
-					'  .phb img{ display : none;}',
-					'  .phb hr+blockquote{background : white;}',
+					'	.pages *:is(.page,.monster,.note,.descriptive) {',
+					'		background:white !important;',
+					'	}',
 					'</style>',
 					''
 				].join('\n')
