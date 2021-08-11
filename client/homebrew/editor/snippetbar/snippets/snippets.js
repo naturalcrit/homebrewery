@@ -285,20 +285,33 @@ module.exports = [
 
 
 
-	/**************** PRINT *************/
+	/**************** PAGE *************/
 
 	{
-		groupName : 'Print',
+		groupName : 'Page',
 		icon      : 'fas fa-print',
 		snippets  : [
 			{
-				name : 'A4 PageSize',
+				name : 'A4 Page Size',
 				icon : 'far fa-file',
 				gen  : ['<style>',
 					'  .phb{',
 					'    width : 210mm;',
 					'    height : 296.8mm;',
 					'  }',
+					'</style>'
+				].join('\n')
+			},
+			{
+				name : 'Square Page Size',
+				icon : 'far fa-file',
+				gen  : ['<style>',
+					'	.page {',
+					'		width:5.25in;',
+					'		height:5.25in;',
+					'		padding:.5in;',
+					'		columns:unset;',
+					'	}',
 					'</style>'
 				].join('\n')
 			},
