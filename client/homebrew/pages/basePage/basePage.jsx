@@ -68,9 +68,6 @@ const BasePage = createClass({
 			url                    : '',
 			savedBrew              : null,
 			saveMessages           : ['saveMessage1', 'saveMessage2'],
-			callbackSave           : function(){},
-			callbackTrySave        : function(){},
-			callbackRenderNavItems : function(){},
 			pageType               : 'new'
 		};
 	},
