@@ -7,6 +7,7 @@ const ClassFeatureGen = require('./classfeature.gen.js');
 const CoverPageGen = require('./coverpage.gen.js');
 const TableOfContentsGen = require('./tableOfContents.gen.js');
 const dedent = require('dedent-tabs').default;
+const watercolorGen = require('./watercolor.gen.js');
 
 
 module.exports = [
@@ -131,8 +132,12 @@ module.exports = [
 			{
 				name : 'Class Table Decoration',
 				icon : 'fas fa-award',
-				gen  : dedent`\n
-					![ClassTable Decoration](https://i.imgur.com/xYVVT7e.png) {position:absolute,top:0px,right:0px,width:380px}`
+				gen  : `\n![ClassTable Decoration](https://i.imgur.com/xYVVT7e.png) {position:absolute,top:0px,right:0px,width:380px}`
+			},
+			{
+				name : 'Watercolor Splatter',
+				icon : 'fas fa-fill-drip',
+				gen  : watercolorGen,
 			},
 		]
 	},
