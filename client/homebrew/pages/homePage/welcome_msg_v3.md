@@ -12,7 +12,7 @@ Welcome traveler from an antique land. Please sit and tell us of what you have s
 ### Homebrew D&D made easy
 The Homebrewery makes the creation and sharing of authentic looking Fifth-Edition homebrews easy. It uses [Markdown](https://help.github.com/articles/markdown-basics/) with a little CSS magic to make your brews come to life.
 
-**Try it!** Simply edit the text on the left and watch it *update live* on the right.
+**Try it!** Simply edit the text on the left and watch it *update live* on the right. Note that not every button is visible on this demo page. Click New {{fas,fa-plus-square}} in the navbar above to start brewing with all the features!
 
 ### Editing and Sharing
 When you create your own homebrew, you will be given a *edit url* and a *share url*.
@@ -27,11 +27,11 @@ PDF Printing works best in Google Chrome. If you are having quality/consistency 
 After clicking the "Print" item in the navbar a new page will open and a print dialog will pop-up.
 * Set the **Destination** to "Save as PDF"
 * Set **Paper Size** to "Letter"
-* If you are printing on A4 paper, make sure to have the "A4 page size snippet" in your brew
+* If you are printing on A4 paper, make sure to have the {{far,fa-file}} **A4 Pagesize** snippet in your brew
 * In **Options** make sure "Background Images" is selected.
 * Hit print and enjoy! You're done!
 
-If you want to save ink or have a monochrome printer, add the **Ink Friendly** snippet to your brew before you print
+If you want to save ink or have a monochrome printer, add the {{fas,fa-tint}} **Ink Friendly** snippet to your brew before you print
 
 
 
@@ -55,12 +55,12 @@ This tool will **always** be free, never have ads, and I will never offer any "p
 ### Bugs, Issues, Suggestions?
 Need help getting started or just the right look for your brew? Head to [r/Homebrewery](https://www.reddit.com/r/homebrewery/submit?selftext=true&title=%5BIssue%5D%20Describe%20Your%20Issue%20Here) and let us know!
 
-Have an idea of how to make The Homebrewery better? Or did you find something that wasn't quite right? Check out the [GitHub Repo](https://github.com/naturalcrit/homebrewery/) to report technical issues.
+Have an idea to make The Homebrewery better? Or did you find something that wasn't quite right? Check out the [GitHub Repo](https://github.com/naturalcrit/homebrewery/) to report technical issues.
 
 
 
 ### Legal Junk
-The Homebrewery is licensed using the [MIT License](https://github.com/naturalcrit/homebrewery/blob/master/license). Which means you are free to use The Homebrewery any way that you want, except for claiming that you made it yourself.
+The Homebrewery is licensed using the [MIT License](https://github.com/naturalcrit/homebrewery/blob/master/license). Which means you are free to use The Homebrewery codebase any way that you want, except for claiming that you made it yourself.
 
 If you wish to sell or in some way gain profit for what's created on this site, it's your responsibility to ensure you have the proper licenses/rights for any images or resources used.
 
@@ -83,32 +83,37 @@ If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](
 \page
 
 ## Markdown+
-Homebrewery aims to make homebrewering as simple as possible, providing a live editor in combination with Markdown syntax for formatting.  
+The Homebrewery aims to make homebrewing as simple as possible, providing a live editor with Markdown syntax that is more human-readable and faster to write with than raw HTML.
 
-In version 3.0.0, with a goal of retaining maximum flexibility while elmininating the need for any HTML in a brew, Homebrewery has developed additional Markdown-like syntax.
+In version 3.0.0, with a goal of adding maximum flexibility without users resorting to complex HTML to accomplish simple tasks, Homebrewery provides an extended verision of Markdown with additional syntax.
 
 {{text-align:center
-**You must enable v3 via the metadata editor!**
+**You can enable V3 via the {{fa,fa-info-circle}} **Properties** button!**
 }}
 
 
 ### Curly Brackets
-The biggest change in version 3 is the replacement of `<span></span>` and `<div></div>` with `{{ }}`.  Inline spans and block elements can be created and given ID's and Classes, as well as css properties, each of which are comma separated with no spaces.  Spans and Blocks start the same:
+The biggest change in V3 is the replacement of `<span></span>` and `<div></div>` with `{{ }}` for a cleaner custom formatting.  Inline spans and block elements can be created and given ID's and Classes, as well as css properties, each of which are comma separated with no spaces. Use double quotes if a value requires spaces. Spans and Blocks start the same:
 
 #### Span
-My favorite author is {{pen,#author,color:orange,font-family:"trebuchet ms" Brandon Sanderson}}.  The orange text is given a class of `pen`, and id of `author`, colored orange, and given a new font.
+My favorite author is {{pen,#author,color:orange,font-family:"trebuchet ms" Brandon Sanderson}}.  The orange text is given a class of `pen`, and id of `author`, colored orange, and given a new font. Note that the first space outside of quotes marks the beginning of the content.
 
 
 #### Block
 {{purple,#book,background:#aa88aa55,text-align:center
-My favorite book is Wheel of Time.  This block has a class of `purple`, an id of `book`, and has been styled with a purple background and centered text.
+My favorite book is Wheel of Time.  This block has a class of `purple`, an id of `book`, and has been styled with a purple background and centered text. Note that the opening and curly brackets are on their own lines without any other contents.
 }}
 
 
 #### Injection
-For any element that is not inside a span or block, you can *inject* attributes using the same syntax but with single brackets immediately after the element.  Below, a width and border are set for an image:
+For any element not inside a span or block, you can *inject* attributes using the same syntax but with single brackets in a single line immediately after the element.
 
-![alt-text](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:100px,border:"2px solid",border-radius:10px}
+Inline elements like *italics* {color:#D35400} or images require the injection on the same line.
+
+Block elements like headers require injection starting on the line immediately following.
+
+##### A Purple Header
+{color:purple}
 
 \* *this does not currently work for tables yet*
 
@@ -122,16 +127,12 @@ Much nicer than `<br><br><br><br><br>`
 ### Definition Lists
 V3 uses HTML *definition lists* to create "lists" with hanging indents.
 
-
-**Condition Immunities** :: Here is some text that is long and overflows into a second line, creating a "hanging indent".
-**Senses**               :: Here is some text that is long and overflows into a second line, creating a "hanging indent".
-
-
+**Senses** :: Here is some text that is long and overflows into a second line, creating a "hanging indent".
 
 \column
 
 ### Tables
-New in v3.0.0 is the option  to add column & row spanning between cells.  You can see a working example in the updated Class Table Snippet, but a simplified example is given below.
+Tables now allow column & row spanning between cells. This is included in some updated snippets, but a simplified example is given below.
 
 A cell can be spanned across columns by bunching pipe `|` characters together.
 
@@ -156,7 +157,7 @@ Images must be hosted online somewhere, like [Imgur](https://www.imgur.com). You
 
 Using *Curly Injection* you can assign an id, classes, or specific inline CSS properties to the image.
 
-:::
+![alt-text](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:100px,border:"2px solid",border-radius:10px}
 
 \* *When using Imgur-hosted images, use the "direct link", which can be found when you click into your image in the Imgur interace.*
 
