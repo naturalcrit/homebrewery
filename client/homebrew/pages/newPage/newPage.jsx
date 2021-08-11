@@ -13,8 +13,6 @@ const BREWKEY = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
 const METAKEY = 'homebrewery-new-meta';
 
-const SAVE_TIMEOUT = 3000;
-
 
 const NewPage = createClass({
 	getDefaultProps : function() {
@@ -63,18 +61,16 @@ const NewPage = createClass({
 	},
 
 	autoSave : function(brew){
-		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
 		localStorage.setItem(BREWKEY, brew.text);
 		localStorage.setItem(STYLEKEY, brew.style);
 		localStorage.setItem(METAKEY, JSON.stringify({ 'renderer': brew.renderer }));
-		this.debounceSave.cancel();
+		return brew;
 	},
 
 	save : async function(brew, saveGoogle){
 		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
 
 		this.setState((prevState)=>({
-			isSaving   : true,
 			errors     : null,
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
@@ -97,7 +93,6 @@ const NewPage = createClass({
 						alert(err.status === 401
 							? 'Not signed in!'
 							: 'Error Creating New Google Brew!');
-						this.setState({ isSaving: false });
 						return;
 					});
 			window.onbeforeunload = function(){};
@@ -109,9 +104,6 @@ const NewPage = createClass({
 				.send(savingBrew)
 				.end((err, res)=>{
 					if(err){
-						this.setState({
-							isSaving : false
-						});
 						alert('Error while saving!');
 						return;
 					}
@@ -124,16 +116,6 @@ const NewPage = createClass({
 		localStorage.removeItem(BREWKEY);
 		localStorage.removeItem(STYLEKEY);
 		localStorage.removeItem(METAKEY);
-
-		this.setState((prevState)=>({
-			brew : _.merge({}, prevState.brew, {
-				googleId : this.savedBrew.googleId ? this.savedBrew.googleId : null,
-				editId 	 : this.savedBrew.editId,
-				shareId  : this.savedBrew.shareId
-			}),
-			isPending : false,
-			isSaving  : false,
-		}));
 	},
 
 	render : function(){

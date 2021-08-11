@@ -23,6 +23,8 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 const googleDriveActive = require('../../googleDrive.png');
 const googleDriveInactive = require('../../googleDriveMono.png');
 
+const SAVE_TIMEOUT = 3000;
+
 
 const BasePage = createClass({
 	getDefaultProps : function() {
@@ -66,17 +68,13 @@ const BasePage = createClass({
 			errors                 : null,
 			htmlErrors             : Markdown.validate(this.props.brew.text),
 			url                    : '',
-			savedBrew              : null,
+			savedBrew              : this.props.brew,
 			saveMessages           : ['saveMessage1', 'saveMessage2'],
 			pageType               : 'new'
 		};
 	},
 
 	componentDidMount : function(){
-
-
-		this.savedBrew = JSON.parse(JSON.stringify(this.props.brew)); //Deep copy
-
 		const brew = this.props.brew;
 
 		if(this.isEdit()) { this.trySave(); };
@@ -90,7 +88,9 @@ const BasePage = createClass({
 		this.setState((prevState)=>({
 			brew       : _.merge({}, prevState.brew, brew),
 			url        : window.location.href,
-			htmlErrors : Markdown.validate(prevState.brew.text)
+			htmlErrors : Markdown.validate(prevState.brew.text),
+			isSaving   : false,
+			isPending  : false
 		}));
 
 		document.addEventListener('keydown', this.handleControlKeys);
@@ -148,11 +148,10 @@ const BasePage = createClass({
 			brew      : _.merge({}, prevState.brew, metadata),
 			isPending : true,
 		}), ()=>this.trySave());
-
 	},
 
 	hasChanges : function(){
-		return !_.isEqual(this.state.brew, this.savedBrew);
+		return !_.isEqual(this.state.brew, this.state.savedBrew);
 	},
 
 	handleGoogleClick : function(){
@@ -197,8 +196,20 @@ const BasePage = createClass({
 	},
 
 	trySave : async function(){
+		if(!this.debounceSave) this.debounceSave = _.debounce(this.autoSaveDebounce, SAVE_TIMEOUT);
+		return this.debounceSave();
+	},
+
+	autoSaveDebounce : async function(){
 		if(!this.hasChanges()){return;};
-		return await this.props.callbackTrySave(this.state.brew);
+		const result = await this.props.callbackTrySave(this.state.brew);
+		if(result){
+			this.setState({
+				savedBrew : this.state.brew,
+				isPending : false
+			});
+		};
+		return result;
 	},
 
 	save : async function(){
@@ -206,10 +217,21 @@ const BasePage = createClass({
 			isSaving : true
 		});
 		const result = await this.props.callbackSave(this.state.brew, this.state.saveGoogle);
-		this.setState({
+		result.googleId = this.savedBrew.googleId ? this.savedBrew.googleId : null;
+		result.editId = this.savedBrew.editId;
+		result.shareId = this.savedBrew.shareId;
+
+		this.setState((prevState)=>({
+			savedBrew : this.state.brew,
 			isSaving  : false,
-			isPending : false
-		});
+			isPending : false,
+
+			brew : _.merge({}, prevState.brew, {
+				googleId : result.googleId,
+				editId 	 : result.editId,
+				shareId  : result.shareId
+			})
+		}));
 		return result;
 	},
 
@@ -292,6 +314,10 @@ const BasePage = createClass({
 				</div>
 			</Nav.item>;
 		}
+
+		console.log(`isSaving: ${this.state.isSaving}`);
+		console.log(`isPending: ${this.state.isPending}`);
+		console.log(`hasChanges: ${this.hasChanges()}`);
 
 		if(this.state.isSaving){
 			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;

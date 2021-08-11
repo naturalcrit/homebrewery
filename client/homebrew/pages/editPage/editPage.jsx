@@ -9,8 +9,6 @@ const Markdown = require('naturalcrit/markdown.js');
 
 const BasePage = require('../basePage/basePage.jsx');
 
-const SAVE_TIMEOUT = 3000;
-
 
 const EditPage = createClass({
 	getDefaultProps : function() {
@@ -39,11 +37,9 @@ const EditPage = createClass({
 	getInitialState : function() {
 		return {
 			brew                   : this.props.brew,
-			isSaving               : false,
-			isPending              : false,
 			alertTrashedGoogleBrew : this.props.brew.trashed,
 			alertLoginToTransfer   : false,
-			saveGoogle             : this.props.brew.googleId,
+			saveGoogle             : (this.props.brew.googleId ? true : false),
 			confirmGoogleTransfer  : false,
 			errors                 : null,
 			htmlErrors             : Markdown.validate(this.props.brew.text),
@@ -74,14 +70,7 @@ const EditPage = createClass({
 		return (true);
 	},
 
-	trySave : function(){
-		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
-		this.debounceSave();
-	},
-
 	save : async function(brew, saveGoogle){
-		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
-
 		this.setState((prevState)=>({
 			errors     : null,
 			htmlErrors : Markdown.validate(prevState.brew.text)
@@ -176,7 +165,7 @@ const EditPage = createClass({
 			id={this.id}
 			brew={this.props.brew}
 			callbackSave={this.save}
-			callbackTrySave={this.trySave}
+			callbackTrySave={this.save}
 			saveMessages={saveMessages}
 			saveGoogle={this.state.saveGoogle}
 			pageType='edit'
