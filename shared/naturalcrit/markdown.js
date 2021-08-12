@@ -371,30 +371,36 @@ const getTableCell = (text, cell, type, align)=>{
 const splitCells = (tableRow, count, prevRow = [])=>{
 	// trim any excessive pipes at start of row
 	tableRow = tableRow.replace(/^\|+(?=\|)/, '')
-	.replace(/(\|+)/g, (match, p1, offset, str)=>{
+	.replace(/(\|)(\|*)/g, (match, p1, p2, offset, str)=>{
 		let escaped = false,
 			curr = offset;
 		while (--curr >= 0 && str[curr] === '\\') escaped = !escaped;
 		if(escaped) {
 			// odd number of slashes means | is escaped
-			// so we leave it and the slashes alone
-			return p1;
+			// so apply a space after to separate from unescaped pipes
+			return `${p1} ${p2}`;
 		} else {
 			// add space before unescaped | to distinguish it from an escaped pipe
-			return ` ${p1}`;
+			return ` ${p1}${p2}`;
 		}
 	});
 	tableRow = ` ${tableRow}`;
 
-	// Split into cells. Contents are:  no pipes unless escaped. Add any ending pipes; if not don't include ending space
-	const cells = [...tableRow.matchAll(/(?:[^\|]+(?:\\\|)*)+(?:\|+(?=\|)|(?= \|))/g)].map((x)=>x[0]);
-	let i = 0;
+	// Split into cells by matching anything that ends with space followed by pipes
+	const cells = [...tableRow.matchAll(/[^\|].*?(?: \|+|$)/g)].map((x)=>{
+		if(x[0].slice(-2) == ' |') //Cut off the added space too if only one pipe
+			return x[0].slice(0, -2);
+		else {
+			return x[0].slice(0, -1);
+		}
+	});
 
 	// First/last cell in a row cannot be empty if it has no leading/trailing pipe
 	if(!cells[0].trim()) { cells.shift(); }
 	if(!cells[cells.length - 1].trim()) { cells.pop(); }
 
 	let numCols = 0;
+	let i = 0;
 
 	for (; i < cells.length; i++) {
 		const trimmedCell = cells[i].split(/ \|+$/)[0];
