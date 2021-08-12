@@ -298,35 +298,39 @@ module.exports = [
 			{
 				name : 'A4 Page Size',
 				icon : 'far fa-file',
-				gen  : ['<style>',
-					'  .phb{',
-					'    width : 210mm;',
-					'    height : 296.8mm;',
-					'  }',
-					'</style>'
+				gen  : ['/* A4 Page Size */',
+					'.phb{',
+					'	width : 210mm;',
+					'	height : 296.8mm;',
+					'}',
+					''
 				].join('\n')
 			},
 			{
 				name : 'Square Page Size',
 				icon : 'far fa-file',
-				gen  : ['<style>',
-					'	.page {',
-					'		width:5.25in;',
-					'		height:5.25in;',
-					'		padding:.5in;',
-					'		columns:unset;',
-					'	}',
-					'</style>'
+				gen  : ['/* Square Page Size */',
+					'.page {',
+					'	width:5.25in;',
+					'	height:5.25in;',
+					'	padding:.5in;',
+					'	columns:unset;',
+					'}',
+					''
 				].join('\n')
 			},
 			{
 				name : 'Ink Friendly',
 				icon : 'fas fa-tint',
-				gen  : ['<style>',
-					'	.pages *:is(.page,.monster,.note,.descriptive) {',
-					'		background:white !important;',
-					'	}',
-					'</style>',
+				gen  : ['/* Ink Friendly */',
+					'.pages *:is(.page,.monster,.note,.descriptive) {',
+					'	background:white !important;',
+					'	box-shadow:0px 0px 3px !important;',
+					'}',
+					'',
+					'.page .note:before {',
+					'	box-shadow:0px 0px 3px;',
+					'}',
 					''
 				].join('\n')
 			},

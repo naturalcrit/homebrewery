@@ -271,24 +271,36 @@ module.exports = [
 		view    : 'style',
 		snippets  : [
 			{
-				name : 'A4 PageSize',
+				name : 'A4 Page Size',
 				icon : 'far fa-file',
-				gen  : ['<style>',
-					'  .phb{',
+				gen  : ['/* A4 Page Size */',
+					'.phb {',
 					'    width : 210mm;',
 					'    height : 296.8mm;',
-					'  }',
-					'</style>'
+					'}'
+				].join('\n')
+			},
+			{
+				name : 'Square Page Size',
+				icon : 'far fa-file',
+				gen  : ['/* Square Page Size */',
+					'.phb {',
+					'	width:5.25in;',
+					'	height:5.25in;',
+					'	padding:.5in;',
+					'	columns:unset;',
+					'}',
+					''
 				].join('\n')
 			},
 			{
 				name : 'Ink Friendly',
 				icon : 'fas fa-tint',
-				gen  : ['<style>',
-					'  .phb{ background : white;}',
-					'  .phb img{ display : none;}',
-					'  .phb hr+blockquote{background : white;}',
-					'</style>',
+				gen  : ['/* Ink Friendly */',
+					'.phb, .phb blockquote, .phb hr+blockquote {',
+					'	background : white;',
+					'	box-shadow : 0px 0px 3px;',
+					'}',
 					''
 				].join('\n')
 			},
