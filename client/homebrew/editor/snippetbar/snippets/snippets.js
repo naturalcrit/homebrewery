@@ -14,6 +14,7 @@ module.exports = [
 	{
 		groupName : 'Editor',
 		icon      : 'fas fa-pencil-alt',
+		editor    : 'text',
 		snippets  : [
 			{
 				name : 'Column Break',
@@ -129,6 +130,7 @@ module.exports = [
 	{
 		groupName : 'PHB',
 		icon      : 'fas fa-book',
+		editor    : 'text',
 		snippets  : [
 			{
 				name : 'Spell',
@@ -208,6 +210,7 @@ module.exports = [
 	{
 		groupName : 'Tables',
 		icon      : 'fas fa-table',
+		editor    : 'text',
 		snippets  : [
 			{
 				name : 'Class Table',
@@ -290,6 +293,7 @@ module.exports = [
 	{
 		groupName : 'Page',
 		icon      : 'fas fa-print',
+		editor    : 'style',
 		snippets  : [
 			{
 				name : 'A4 Page Size',
