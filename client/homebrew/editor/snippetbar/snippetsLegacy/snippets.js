@@ -266,7 +266,7 @@ module.exports = [
 	/**************** PRINT *************/
 
 	{
-		groupName : 'Print',
+		groupName : 'Page',
 		icon      : 'fas fa-print',
 		view    : 'style',
 		snippets  : [
