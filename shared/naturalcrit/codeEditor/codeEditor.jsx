@@ -54,7 +54,9 @@ const CodeEditor = createClass({
 				'Ctrl-M' : this.makeSpan,
 				'Cmd-M'  : this.makeSpan,
 				'Ctrl-/' : this.makeComment,
-				'Cmd-/'  : this.makeComment
+				'Cmd-/'  : this.makeComment,
+				'Ctrl-K' : this.makeLink,
+				'Cmd-K'  : this.makeLink
 			}
 		});
 
@@ -96,6 +98,15 @@ const CodeEditor = createClass({
 		if(selection.length === 0){
 			const cursor = this.codeMirror.getCursor();
 			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 4 });
+		}
+	},
+
+	makeLink : function() {
+		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 1) === '[' && selection.slice(-3) === ']()';
+		this.codeMirror.replaceSelection(t ? selection.slice(1, -3) : `[${selection}]()`, 'around');
+		if(selection.length === 0){
+			const cursor = this.codeMirror.getCursor();
+			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 3 });
 		}
 	},
 
