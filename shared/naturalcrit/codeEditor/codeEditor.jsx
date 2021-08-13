@@ -104,10 +104,8 @@ const CodeEditor = createClass({
 	makeLink : function() {
 		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 1) === '[' && selection.slice(-3) === ']()';
 		this.codeMirror.replaceSelection(t ? selection.slice(1, -3) : `[${selection}]()`, 'around');
-		if(selection.length === 0){
-			const cursor = this.codeMirror.getCursor();
-			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 3 });
-		}
+		const cursor = this.codeMirror.getCursor();
+		this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 1 });
 	},
 
 	//=-- Externally used -==//
