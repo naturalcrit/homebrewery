@@ -104,7 +104,7 @@ const CodeEditor = createClass({
 	makeLink : function() {
 		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 1) === '[' && selection.slice(-3) === ']()';
 		this.codeMirror.replaceSelection(t ? selection.slice(1, -3) : `[${selection}]()`);
-		if ((selection.slice(0, 1) !== '[' || selection.slice(-3) !== ']()') || selection.length === 0){
+		if((selection.slice(0, 1) !== '[' || selection.slice(-3) !== ']()') || selection.length === 0){
 			const cursor = this.codeMirror.getCursor();
 			console.log('hello');
 			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 1 });
