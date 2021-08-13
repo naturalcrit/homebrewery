@@ -369,53 +369,28 @@ const getTableCell = (text, cell, type, align)=>{
 };
 
 const splitCells = (tableRow, count, prevRow = [])=>{
-	// trim any excessive pipes at start of row
-	tableRow = tableRow.replace(/^\|+(?=\|)/, '')
-	.replace(/(\|)(\|*)/g, (match, p1, p2, offset, str)=>{
-		let escaped = false,
-			curr = offset;
-		while (--curr >= 0 && str[curr] === '\\') escaped = !escaped;
-		if(escaped) {
-			// odd number of slashes means | is escaped
-			// so apply a space after to separate from unescaped pipes
-			return `${p1} ${p2}`;
-		} else {
-			// add space before unescaped | to distinguish it from an escaped pipe
-			return ` ${p1}${p2}`;
-		}
-	});
-	tableRow = ` ${tableRow}`;
+	const cells = [...tableRow.matchAll(/(?:[^|\\]|\\.?)+(?:\|+|$)/g)].map((x)=>x[0]);
 
-	// Split into cells by matching anything that ends with space followed by pipes
-	const cells = [...tableRow.matchAll(/[^\|].*?(?: \|+|$)/g)].map((x)=>{
-		if(x[0].slice(-2) == ' |') //Cut off the added space too if only one pipe
-			return x[0].slice(0, -2);
-		else {
-			return x[0].slice(0, -1);
-		}
-	});
-
-	// First/last cell in a row cannot be empty if it has no leading/trailing pipe
-	if(!cells[0].trim()) { cells.shift(); }
-	if(!cells[cells.length - 1].trim()) { cells.pop(); }
+	// Remove first/last cell in a row if whitespace only and no leading/trailing pipe
+	if(!cells[0]?.trim()) { cells.shift(); }
+	if(!cells[cells.length - 1]?.trim()) { cells.pop(); }
 
 	let numCols = 0;
-	let i = 0;
+	let i, j, trimmedCell, prevCell, prevCols;
 
-	for (; i < cells.length; i++) {
-		const trimmedCell = cells[i].split(/ \|+$/)[0];
+	for (i = 0; i < cells.length; i++) {
+		trimmedCell = cells[i].split(/\|+$/)[0];
 		cells[i] = {
 			rowspan : 1,
 			colspan : Math.max(cells[i].length - trimmedCell.length, 1),
 			text    : trimmedCell.trim().replace(/\\\|/g, '|')
-			// trim whitespace and display escaped pipes as normal character
+			// display escaped pipes as normal character
 		};
 
 		// Handle Rowspan
 		if(trimmedCell.slice(-1) == '^' && prevRow.length) {
 			// Find matching cell in previous row
-			let prevCols = 0;
-			let j, prevCell;
+			prevCols = 0;
 			for (j = 0; j < prevRow.length; j++) {
 				prevCell = prevRow[j];
 				if((prevCols == numCols) && (prevCell.colspan == cells[i].colspan)) {
