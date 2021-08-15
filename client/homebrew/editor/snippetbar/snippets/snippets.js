@@ -291,7 +291,7 @@ module.exports = [
 	/**************** PAGE *************/
 
 	{
-		groupName : 'Page',
+		groupName : 'Print',
 		icon      : 'fas fa-print',
 		view      : 'style',
 		snippets  : [
@@ -299,8 +299,8 @@ module.exports = [
 				name : 'A4 Page Size',
 				icon : 'far fa-file',
 				gen  : ['/* A4 Page Size */',
-					'.phb{',
-					'	width : 210mm;',
+					'.page{',
+					'	width  : 210mm;',
 					'	height : 296.8mm;',
 					'}',
 					''
@@ -311,10 +311,10 @@ module.exports = [
 				icon : 'far fa-file',
 				gen  : ['/* Square Page Size */',
 					'.page {',
-					'	width:5.25in;',
-					'	height:5.25in;',
-					'	padding:.5in;',
-					'	columns:unset;',
+					'	width   : 125mm;',
+					'	height  : 125mm;',
+					'	padding : 12.5mm;',
+					'	columns : unset;',
 					'}',
 					''
 				].join('\n')
@@ -322,17 +322,20 @@ module.exports = [
 			{
 				name : 'Ink Friendly',
 				icon : 'fas fa-tint',
-				gen  : ['/* Ink Friendly */',
-					'.pages *:is(.page,.monster,.note,.descriptive) {',
-					'	background:white !important;',
-					'	box-shadow:0px 0px 3px !important;',
-					'}',
-					'',
-					'.page .note:before {',
-					'	box-shadow:0px 0px 3px;',
-					'}',
-					''
-				].join('\n')
+				gen  : dedent`
+					/* Ink Friendly */
+					.pages *:is(.page,.monster,.note,.descriptive) {
+						background : white !important;
+						box-shadow : 0px 0px 3px !important;
+					}
+
+					.page .note:before {
+						box-shadow : 0px 0px 3px;
+					}
+
+					.page img {
+						visibility : hidden;
+					}`
 			},
 		]
 	},

@@ -6,7 +6,7 @@ const MonsterBlockGen = require('./monsterblock.gen.js');
 const ClassFeatureGen = require('./classfeature.gen.js');
 const CoverPageGen = require('./coverpage.gen.js');
 const TableOfContentsGen = require('./tableOfContents.gen.js');
-
+const dedent = require('dedent-tabs').default;
 
 module.exports = [
 
@@ -266,7 +266,7 @@ module.exports = [
 	/**************** PRINT *************/
 
 	{
-		groupName : 'Page',
+		groupName : 'Print',
 		icon      : 'fas fa-print',
 		view      : 'style',
 		snippets  : [
@@ -275,8 +275,8 @@ module.exports = [
 				icon : 'far fa-file',
 				gen  : ['/* A4 Page Size */',
 					'.phb {',
-					'    width : 210mm;',
-					'    height : 296.8mm;',
+					'	width  : 210mm;',
+					'	height : 296.8mm;',
 					'}'
 				].join('\n')
 			},
@@ -285,10 +285,10 @@ module.exports = [
 				icon : 'far fa-file',
 				gen  : ['/* Square Page Size */',
 					'.phb {',
-					'	width:5.25in;',
-					'	height:5.25in;',
-					'	padding:.5in;',
-					'	columns:unset;',
+					'	width   : 125mm;',
+					'	height  : 125mm;',
+					'	padding : 12.5mm;',
+					'	columns : unset;',
 					'}',
 					''
 				].join('\n')
@@ -296,13 +296,16 @@ module.exports = [
 			{
 				name : 'Ink Friendly',
 				icon : 'fas fa-tint',
-				gen  : ['/* Ink Friendly */',
-					'.phb, .phb blockquote, .phb hr+blockquote {',
-					'	background : white;',
-					'	box-shadow : 0px 0px 3px;',
-					'}',
-					''
-				].join('\n')
+				gen  : dedent`
+					/* Ink Friendly */',
+					.phb, .phb blockquote, .phb hr+blockquote {
+						background : white;
+						box-shadow : 0px 0px 3px;
+					}
+
+					.phb img {
+						visibility : hidden;
+					}`
 			},
 		]
 	},
