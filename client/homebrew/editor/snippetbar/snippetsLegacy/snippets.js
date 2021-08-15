@@ -115,7 +115,7 @@ module.exports = [
 			{
 				name : 'Add Comment',
 				icon : 'fas fa-code',
-				gen  : `\n/* This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). */\n\n`
+				gen  : `\n/* This is a comment that will not be rendered into your brew. */\n\n`
 			}
 		]
 	},
