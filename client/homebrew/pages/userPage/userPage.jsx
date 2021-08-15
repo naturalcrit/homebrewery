@@ -31,8 +31,9 @@ const UserPage = createClass({
 	},
 	getInitialState : function() {
 		return {
-			sortType : 'alpha',
-			sortDir  : 'asc'
+			sortType     : 'alpha',
+			sortDir      : 'asc',
+			filterString : ''
 		};
 	},
 	getUsernameWithS : function() {
@@ -52,6 +53,7 @@ const UserPage = createClass({
 	},
 
 	sortBrewOrder : function(brew){
+		if(!brew.title){brew.title='No Title';};
 		const mapping = {
 			'alpha'   : _.deburr(brew.title.toLowerCase()),
 			'created' : moment(brew.createdAt).format(),
@@ -90,6 +92,25 @@ const UserPage = createClass({
 		  </td>;
 	},
 
+	handleFilterTextChange : function(e){
+		this.setState({
+			filterString : e.target.value
+		});
+		return;
+	},
+
+	renderFilterOption : function(){
+		return <td>
+			<label>
+				Filter Title:
+				<input
+					type='text'
+					onChange={this.handleFilterTextChange}
+				/>
+			</label>
+		</td>;
+	},
+
 	renderSortOptions : function(){
 		return <div className='sort-container'>
 			<table>
@@ -114,6 +135,7 @@ const UserPage = createClass({
 								{`${(this.state.sortDir == 'asc' ? '\u25B2 ASC' : '\u25BC DESC')}`}
 							</button>
 						</td>
+						{this.renderFilterOption()}
 					</tr>
 				</tbody>
 			</table>
@@ -121,7 +143,11 @@ const UserPage = createClass({
 	},
 
 	getSortedBrews : function(){
-		return _.groupBy(this.props.brews, (brew)=>{
+		const testString = _.deburr(this.state.filterString).toLowerCase();
+		const brewCollection = this.state.filterString ? _.filter(this.props.brews, (brew)=>{
+			return (_.deburr(brew?.title).toLowerCase().includes(testString));
+		}) : this.props.brews;
+		return _.groupBy(brewCollection, (brew)=>{
 			return (brew.published ? 'published' : 'private');
 		});
 	},
