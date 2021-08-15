@@ -174,7 +174,7 @@ module.exports = [
 			{
 				name : 'Artist Credit',
 				icon : 'fas fa-signature',
-				gen  : '<div class=\'artist\' style=\'top:20px;left:20px;\'>\n' +
+				gen  : '<div class=\'artist\' style=\'top:90px;right:30px;\'>\n' +
 						'##### Starry Night\n' +
 						'[Van Gogh](https://www.vangoghmuseum.nl/en)\n' +
 						'</div>\n'
