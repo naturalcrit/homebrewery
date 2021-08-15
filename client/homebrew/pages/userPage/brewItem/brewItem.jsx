@@ -114,9 +114,11 @@ const BrewItem = createClass({
 				<span>
 					<i className='fas fa-eye' /> {brew.views}
 				</span>
-				<span>
-					<i className='far fa-file' /> {brew.pageCount || 1}
-				</span>
+				{(brew?.pageCount>1) &&
+					<span>
+						<i className='far fa-file' /> {brew.pageCount}
+					</span>
+				}
 				<span>
 					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
 				</span>
