@@ -45,14 +45,14 @@ const sanitizeBrew = (brew, full=false)=>{
 	return brew;
 };
 
-const splitTextAndStyle = (brew) => {
-	brew.text = brew.text.replaceAll('\r\n','\n');
+const splitTextAndStyle = (brew)=>{
+	brew.text = brew.text.replaceAll('\r\n', '\n');
 	if(brew.text.startsWith('```css')) {
 		const index = brew.text.indexOf('```\n\n');
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
-}
+};
 
 app.use('/', serveCompressedStaticAssets(`${__dirname}/build`));
 
@@ -101,7 +101,7 @@ app.use(require('./server/admin.api.js'));
 
 const HomebrewModel  = require('./server/homebrew.model.js').model;
 const welcomeText    = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
-const welcomeText_v3 = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg_v3.md', 'utf8');
+const welcomeTextV3 = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg_v3.md', 'utf8');
 const changelogText  = require('fs').readFileSync('./changelog.md', 'utf8');
 
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
@@ -123,7 +123,7 @@ app.get('/', async (req, res, next)=>{
 //Home page v3
 app.get('/v3_preview', async (req, res, next)=>{
 	const brew = {
-		text     : welcomeText_v3,
+		text     : welcomeTextV3,
 		renderer : 'V3'
 	};
 	splitTextAndStyle(brew);
