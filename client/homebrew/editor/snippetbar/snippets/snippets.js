@@ -12,7 +12,7 @@ const dedent = require('dedent-tabs').default;
 module.exports = [
 
 	{
-		groupName : 'Editor',
+		groupName : 'Text Editor',
 		icon      : 'fas fa-pencil-alt',
 		view      : 'text',
 		snippets  : [
@@ -92,33 +92,44 @@ module.exports = [
 				gen  : TableOfContentsGen
 			},
 			{
+				name : 'Add Comment',
+				icon : 'fas fa-code',
+				gen  : dedent`\n
+					<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->
+					`
+			},
+		]
+	},
+	{
+		groupName : 'Style Editor',
+		icon      : 'fas fa-pencil-alt',
+		view      : 'style',
+		snippets  : [
+			{
 				name : 'Remove Drop Cap',
 				icon : 'fas fa-remove-format',
-				gen  : '<style>\n' +
-						'  .phb3 h1+p:first-letter {\n' +
-						'    all: unset;\n' +
-						'  }\n' +
-						'</style>'
+				gen  : '/* Removes Drop Caps */\n' +
+						'.phb3 h1+p:first-letter {\n' +
+						'  all: unset;\n' +
+						'}\n'
 			},
 			{
 				name : 'Tweak Drop Cap',
 				icon : 'fas fa-sliders-h',
-				gen  : '<style>\n' +
-						'  /* Drop Cap settings */\n' +
-						'  .phb3 h1 + p::first-letter {\n' +
-						'    float: left;\n' +
-						'    font-family: SolberaImitationRemake;\n' +
-						'    font-size: 3.5cm;\n' +
-						'    color: #222;\n' +
-						'    line-height: .8em;\n' +
-						'  }\n' +
-						'</style>'
+				gen  : '/* Drop Cap settings */\n' +
+						'.phb3 h1 + p::first-letter {\n' +
+						'  float: left;\n' +
+						'  font-family: SolberaImitationRemake;\n' +
+						'  font-size: 3.5cm;\n' +
+						'  color: #222;\n' +
+						'  line-height: .8em;\n' +
+						'}\n'
 			},
 			{
 				name : 'Add Comment',
-				icon : 'fas fa-code',  /* might need to be fa-solid fa-comment-code --not sure, Gazook */
+				icon : 'fas fa-code',
 				gen  : dedent`\n
-					<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->
+					/* This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). */
 					`
 			},
 		]
