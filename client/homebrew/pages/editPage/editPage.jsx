@@ -322,7 +322,9 @@ const EditPage = createClass({
 			let errMsg = '';
 			try {
 				errMsg += `${this.state.errors.toString()}\n\n`;
-				errMsg += `\`\`\`\n${JSON.stringify(this.state.errors.response.error, null, '  ')}\n\`\`\``;
+				errMsg += `\`\`\`\n${this.state.errors.stack}\n`;
+				errMsg += `${JSON.stringify(this.state.errors.response.error, null, '  ')}\n\`\`\``;
+				console.log(errMsg);
 			} catch (e){}
 
 			if(this.state.errors.status == '401'){
@@ -331,6 +333,27 @@ const EditPage = createClass({
 					<div className='errorContainer' onClick={this.clearErrors}>
 					You must be signed in to a Google account
 						to save this to<br />Google Drive!<br />
+						<a target='_blank' rel='noopener noreferrer'
+							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
+							<div className='confirm'>
+								Sign In
+							</div>
+						</a>
+						<div className='deny'>
+							Not Now
+						</div>
+					</div>
+				</Nav.item>;
+			}
+
+			if(this.state.errors.status == '403' && this.state.errors.response.body.errors[0].reason == 'insufficientPermissions'){
+				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+					Oops!
+					<div className='errorContainer' onClick={this.clearErrors}>
+					Looks like your Google credentials have
+					expired! Visit the log in page to sign out
+					and sign back in with Google
+					to save this to Google Drive!
 						<a target='_blank' rel='noopener noreferrer'
 							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
 							<div className='confirm'>

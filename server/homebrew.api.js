@@ -141,9 +141,12 @@ const newGoogleBrew = async (req, res, next)=>{
 
 	req.body = brew;
 
-	const newBrew = await GoogleActions.newGoogleBrew(oAuth2Client, brew);
-
-	return res.status(200).send(newBrew);
+	try {
+		const newBrew = await GoogleActions.newGoogleBrew(oAuth2Client, brew);
+		return res.status(200).send(newBrew);
+	} catch (err) {
+		return res.status(err.response.status).send(err);
+	}
 };
 
 const updateGoogleBrew = async (req, res, next)=>{
@@ -154,9 +157,12 @@ const updateGoogleBrew = async (req, res, next)=>{
 	const brew = req.body;
 	brew.text = mergeBrewText(brew.text, brew.style);
 
-	const updatedBrew = await GoogleActions.updateGoogleBrew(oAuth2Client, brew);
-
-	return res.status(200).send(updatedBrew);
+	try {
+		const updatedBrew = await GoogleActions.updateGoogleBrew(oAuth2Client, brew);
+		return res.status(200).send(updatedBrew);
+	} catch (err) {
+		return res.status(err.response.status).send(err);
+	}
 };
 
 router.post('/api', newBrew);

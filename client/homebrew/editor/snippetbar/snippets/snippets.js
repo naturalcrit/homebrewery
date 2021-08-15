@@ -57,7 +57,6 @@ module.exports = [
 							`https://homebrewery.naturalcrit.com/share/${brew.shareId}` +
 							`&amp;size=100x100) {width:100px;mix-blend-mode:multiply}`;
 				}
-
 			},
 			{
 				name : 'Page Number',
@@ -121,13 +120,23 @@ module.exports = [
 				name : 'Image',
 				icon : 'fas fa-image',
 				gen  : dedent`
-					![cat warrior](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:325px}
-					Credit: Kyounghwan Kim`
+					![cat warrior](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:325px,mix-blend-mode:multiply}
+
+					{{artist,position:relative,top:-230px,left:-100px,margin-bottom:-30px
+					##### Cat Warrior
+					[Kyoung Hwan Kim](https://www.artstation.com/tahra)
+					}}`
 			},
 			{
 				name : 'Background Image',
 				icon : 'fas fa-tree',
-				gen  : `![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,top:50px,right:30px,width:280px}`
+				gen  : dedent`
+					![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,top:50px,right:30px,width:280px}
+
+					{{artist,top:90px,right:30px
+					##### Homebrew Mug
+					[naturalcrit](https://homebrew.naturalcrit.com)
+					}}`
 			},
 			{
 				name : 'Class Table Decoration',
@@ -216,6 +225,18 @@ module.exports = [
 				name : 'Magic Item',
 				icon : 'fas fa-hat-wizard',
 				gen  : MagicGen.item,
+			},
+			{
+				name : 'Artist Credit',
+				icon : 'fas fa-signature',
+				gen  : function(){
+					return dedent`
+						{{artist,top:90px,right:30px
+						##### Starry Night
+						[Van Gogh](https://www.vangoghmuseum.nl/en)
+						}}
+						\n`;
+				},
 			},
 		]
 	},

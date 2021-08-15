@@ -61,7 +61,7 @@ const NewPage = createClass({
 
 			isSaving   : false,
 			saveGoogle : (global.account && global.account.googleId ? true : false),
-			errors     : [],
+			errors     : null,
 			htmlErrors : Markdown.validate(this.props.brew.text)
 		};
 	},
@@ -138,6 +138,14 @@ const NewPage = createClass({
 		}));
 	},
 
+	clearErrors : function(){
+		this.setState({
+			errors   : null,
+			isSaving : false
+
+		});
+	},
+
 	save : async function(){
 		this.setState({
 			isSaving : true
@@ -161,7 +169,7 @@ const NewPage = createClass({
 				console.log(err.status === 401
 					? 'Not signed in!'
 					: 'Error Creating New Google Brew!');
-				this.setState({ isSaving: false });
+				this.setState({ isSaving: false, errors: err });
 				return;
 			});
 
@@ -191,12 +199,73 @@ const NewPage = createClass({
 	},
 
 	renderSaveButton : function(){
+		if(this.state.errors){
+			let errMsg = '';
+			try {
+				errMsg += `${this.state.errors.toString()}\n\n`;
+				errMsg += `\`\`\`\n${this.state.errors.stack}\n`;
+				errMsg += `${JSON.stringify(this.state.errors.response.error, null, '  ')}\n\`\`\``;
+				console.log(errMsg);
+			} catch (e){}
+
+			if(this.state.errors.status == '401'){
+				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+					Oops!
+					<div className='errorContainer' onClick={this.clearErrors}>
+					You must be signed in to a Google account
+						to save this to<br />Google Drive!<br />
+						<a target='_blank' rel='noopener noreferrer'
+							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
+							<div className='confirm'>
+								Sign In
+							</div>
+						</a>
+						<div className='deny'>
+							Not Now
+						</div>
+					</div>
+				</Nav.item>;
+			}
+
+			if(this.state.errors.status == '403' && this.state.errors.response.body.errors[0].reason == 'insufficientPermissions'){
+				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+					Oops!
+					<div className='errorContainer' onClick={this.clearErrors}>
+					Looks like your Google credentials have
+					expired! Visit the log in page to sign out
+					and sign back in with Google
+					to save this to Google Drive!
+						<a target='_blank' rel='noopener noreferrer'
+							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
+							<div className='confirm'>
+								Sign In
+							</div>
+						</a>
+						<div className='deny'>
+							Not Now
+						</div>
+					</div>
+				</Nav.item>;
+			}
+
+			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+				Oops!
+				<div className='errorContainer'>
+					Looks like there was a problem saving. <br />
+					Report the issue <a target='_blank' rel='noopener noreferrer'
+						href={`https://github.com/naturalcrit/homebrewery/issues/new?body=${encodeURIComponent(errMsg)}`}>
+						here
+					</a>.
+				</div>
+			</Nav.item>;
+		}
+
 		if(this.state.isSaving){
-			return <Nav.item icon='fas fa-spinner fa-spin' className='saveButton'>
+			return <Nav.item icon='fas fa-spinner fa-spin' className='save'>
 				save...
 			</Nav.item>;
 		} else {
-			return <Nav.item icon='fas fa-save' className='saveButton' onClick={this.save}>
+			return <Nav.item icon='fas fa-save' className='save' onClick={this.save}>
 				save
 			</Nav.item>;
 		}
