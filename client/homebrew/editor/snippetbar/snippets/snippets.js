@@ -115,7 +115,8 @@ module.exports = [
 	/*********************** IMAGES *******************/
 	{
 		groupName : 'Images',
-		icon      : 'fas fa-book',
+		icon      : 'fas fa-images',
+		view      : 'text',
 		snippets  : [
 			{
 				name : 'Image',
