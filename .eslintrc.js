@@ -32,7 +32,7 @@ module.exports = {
 			skipBlankLines : true,
 		}],
 		'max-depth'            : ['warn', { max: 4 }],
-		'max-params'           : ['warn', { max: 4 }],
+		'max-params'           : ['warn', { max: 5 }],
 		'no-restricted-syntax' : ['warn', 'ClassDeclaration', 'SwitchStatement'],
 		'no-unused-vars'       : ['warn', {
 			vars              : 'all',

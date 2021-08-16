@@ -168,6 +168,7 @@ GoogleActions = {
 			.catch((err)=>{
 				console.log('Error saving to google');
 				console.error(err);
+				throw (err);
 				//return res.status(500).send('Error while saving');
 			});
 		}
@@ -203,8 +204,9 @@ GoogleActions = {
 			media    : media
 		})
 		.catch((err)=>{
+			console.log('Error while creating new Google brew');
 			console.error(err);
-			return res.status(500).send('Error while creating google brew');
+			throw (err);
 		});
 
 		if(!obj) return;
