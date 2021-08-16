@@ -101,7 +101,7 @@ app.use(require('./server/admin.api.js'));
 
 const HomebrewModel  = require('./server/homebrew.model.js').model;
 const welcomeText    = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
-const welcomeTextV3 = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg_v3.md', 'utf8');
+const welcomeTextV3  = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg_v3.md', 'utf8');
 const changelogText  = require('fs').readFileSync('./changelog.md', 'utf8');
 
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};

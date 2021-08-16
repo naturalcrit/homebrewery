@@ -3,6 +3,10 @@
 	border:1px dashed #00000030;
 }
 
+.page {
+	padding-bottom : 1.6cm;
+}
+
 
 ```
 
@@ -86,22 +90,19 @@ If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](
 The Homebrewery aims to make homebrewing as simple as possible, providing a live editor with Markdown syntax that is more human-readable and faster to write with than raw HTML.
 
 In version 3.0.0, with a goal of adding maximum flexibility without users resorting to complex HTML to accomplish simple tasks, Homebrewery provides an extended verision of Markdown with additional syntax.
-
-{{text-align:center
-**You can enable V3 via the {{fa,fa-info-circle}} **Properties** button!**
-}}
+**You can enable V3 via the {{fa,fa-info-circle}} Properties button!**
 
 
 ### Curly Brackets
 The biggest change in V3 is the replacement of `<span></span>` and `<div></div>` with `{{ }}` for a cleaner custom formatting.  Inline spans and block elements can be created and given ID's and Classes, as well as css properties, each of which are comma separated with no spaces. Use double quotes if a value requires spaces. Spans and Blocks start the same:
 
 #### Span
-My favorite author is {{pen,#author,color:orange,font-family:"trebuchet ms" Brandon Sanderson}}.  The orange text is given a class of `pen`, and id of `author`, colored orange, and given a new font. Note that the first space outside of quotes marks the beginning of the content.
+My favorite author is {{pen,#author,color:orange,font-family:"trebuchet ms" Brandon Sanderson}}.  The orange text has a class of `pen`, an id of `author`, is colored orange, and given a new font. The first space outside of quotes marks the beginning of the content.
 
 
 #### Block
-{{purple,#book,background:#aa88aa55,text-align:center
-My favorite book is Wheel of Time.  This block has a class of `purple`, an id of `book`, and has been styled with a purple background and centered text. Note that the opening and curly brackets are on their own lines without any other contents.
+{{purple,#book,text-align:center,background:#aa88aa55
+My favorite book is Wheel of Time. This block has a class of `purple`, an id of `book`, and centered text with a colored background. The opening and closing brackets are on lines separate from the block contents.
 }}
 
 
@@ -110,15 +111,15 @@ For any element not inside a span or block, you can *inject* attributes using th
 
 Inline elements like *italics* {color:#D35400} or images require the injection on the same line.
 
-Block elements like headers require injection starting on the line immediately following.
+Block elements like headers require the injection to start on the line immediately following.
 
 ##### A Purple Header
-{color:purple}
+{color:purple,text-align:center}
 
 \* *this does not currently work for tables yet*
 
 ### Vertical Spacing
-The HTML tag `<br>` has been replaced by either a single `:` along on a line, or multiple `:` on the same line.
+A blank line can be achieved with a run of one or more `:` alone on a line. More `:`'s will create more space.
 
 ::
 
@@ -129,12 +130,15 @@ V3 uses HTML *definition lists* to create "lists" with hanging indents.
 
 **Senses** :: Here is some text that is long and overflows into a second line, creating a "hanging indent".
 
+### Column Breaks
+Column and page breaks with `\column` and `\page`.
+
 \column
 
 ### Tables
 Tables now allow column & row spanning between cells. This is included in some updated snippets, but a simplified example is given below.
 
-A cell can be spanned across columns by bunching pipe `|` characters together.
+A cell can be spanned across columns by grouping multiple pipe `|` characters at the end of a cell.
 
 Row spanning is achieved by adding a `^` at the end of a cell just before the `|`.  
 
@@ -167,7 +171,7 @@ Homebrewery comes with a series of *code snippets* found at the top of the edito
 
 ## Style Editor Panel
 
-{{fa,fa-paint-brush}}Also, technically released prior to v3 but still new to many users, check out the new **Style Editor** located on the right side of the Snippet bar.  This editor excepts CSS for styling without requiring `<style>` tags-- anything that would have gone inside style tags before can now be placed here.
+{{fa,fa-paint-brush}} Technically released prior to v3 but still new to many users, check out the new **Style Editor** located on the right side of the Snippet bar.  This editor accepts CSS for styling without requiring `<style>` tags-- anything that would have gone inside style tags before can now be placed here, and snippets that insert CSS styles are now located on that tab.
 
 
 
