@@ -49,6 +49,7 @@ const Homebrew = createClass({
 						<Route path='/print/:id' component={(routeProps)=><PrintPage brew={this.props.brew} query={queryString.parse(routeProps.location.search)} />}/>
 						<Route path='/print' exact component={(routeProps)=><PrintPage query={queryString.parse(routeProps.location.search)} />}/>
 						<Route path='/changelog' exact component={()=><SharePage brew={this.props.brew} />}/>
+						<Route path='/v3_preview' exact component={()=><HomePage brew={this.props.brew} />}/>
 						<Route path='/' component={()=><HomePage brew={this.props.brew} />}/>
 					</Switch>
 				</div>
