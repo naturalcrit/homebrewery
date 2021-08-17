@@ -112,8 +112,6 @@ const BrewItem = createClass({
 			<h2>{brew.title}</h2>
 			<p className='description'>{brew.description}</p>
 			<hr />
-			<div className='spacer'></div>
-
 			<div className='info'>
 				<span>
 					<i className='fas fa-user' /> {brew.authors.join(', ')}
