@@ -162,7 +162,7 @@ GoogleActions = {
 																	    renderer   : brew.renderer,
 																	    tags       : brew.tags,
 																	    systems    : brew.systems.join(),
-																	    pageCount  : (brew.text.match(/\\page/g) || []).length + 1
+																	    pageCount  : brew.pageCount
 																 }
 									 },
 				media : { mimeType : 'text/plain',
@@ -198,7 +198,7 @@ GoogleActions = {
 				'editId'    : nanoid(12),
 				'title'     : brew.title,
 				'views'     : '0',
-				'pageCount' : (brew.text.match(/\\page/g) || []).length + 1,
+				'pageCount' : brew.pageCount,
 				'renderer'  : brew.renderer || 'legacy'
 			}
 		};
@@ -234,7 +234,7 @@ GoogleActions = {
 			updatedAt : new Date(),
 			gDrive    : true,
 			googleId  : obj.data.id,
-			pageCount : fileMetadata.properties.pageCount || 1,
+			pageCount : fileMetadata.properties.pageCount,
 
 			title       : brew.title,
 			description : brew.description,
