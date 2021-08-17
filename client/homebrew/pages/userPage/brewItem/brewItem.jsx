@@ -121,7 +121,7 @@ const BrewItem = createClass({
 				<span>
 					<i className='fas fa-eye' /> {brew.views}
 				</span>
-				{(brew?.pageCount>1) &&
+				{brew.pageCount &&
 					<span>
 						<i className='far fa-file' /> {brew.pageCount}
 					</span>
