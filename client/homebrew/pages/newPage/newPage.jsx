@@ -56,7 +56,7 @@ const NewPage = createClass({
 				published   : false,
 				authors     : [],
 				systems     : this.props.brew.systems || [],
-				renderer    : this.props.brew.renderer || 'legacy'
+				renderer    : this.props.brew.renderer || this.props.query?.renderer || 'legacy'
 			},
 
 			isSaving   : false,
