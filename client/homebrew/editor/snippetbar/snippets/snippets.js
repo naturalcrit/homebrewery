@@ -150,6 +150,12 @@ module.exports = [
 				icon : 'fas fa-fill-drip',
 				gen  : watercolorGen,
 			},
+			{
+				name : 'Watermark',
+				icon : 'fas fa-id-card',
+				gen  : dedent`
+				{{watermark Homebrewery}}\n`
+			},
 		]
 	},
 

@@ -265,8 +265,10 @@ body {
 		}
 	}
 	//*****************************
-	// *    ARTIST CREDIT BLOCK
+	// *    Images Snippets
 	// *****************************/
+
+	/* Arist Credit */
 	.artist {
 		position    : absolute;
 		text-align  : center;
@@ -288,6 +290,28 @@ body {
 			&:hover {
 				text-decoration : underline;
 			}
+		}
+	}
+
+	/* Watermark */
+	.watermark {
+		display			: grid !important;
+		place-items		: center;
+		justify-content	: center;
+		position		: absolute;
+		top				: 0;
+		left			: 0;
+		width			: 100%;
+		height			: 100%;
+		font-size		: 120px;
+		text-transform	: uppercase;
+		color			: black;
+		mix-blend-mode 	: overlay;
+		opacity			: 30%;
+		transform		: rotate(-45deg);
+		z-index			: 500;
+		p {
+			margin-bottom : none;
 		}
 	}
 
