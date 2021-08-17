@@ -306,7 +306,7 @@ GoogleActions = {
 				createdAt  : obj.data.createdTime,
 				updatedAt  : obj.data.modifiedTime,
 				lastViewed : obj.data.properties.lastViewed,
-				pageCount : obj.data.properties.pageCount,
+				pageCount  : obj.data.properties.pageCount,
 				views      : parseInt(obj.data.properties.views) || 0, //brews with no view parameter will return undefined
 				version    : parseInt(obj.data.properties.version) || 0,
 				renderer   : obj.data.properties.renderer ? obj.data.properties.renderer : 'legacy',
