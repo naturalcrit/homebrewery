@@ -116,7 +116,7 @@ GoogleActions = {
 	      updatedAt : file.modifiedTime,
 	      gDrive    : true,
 	      googleId  : file.id,
-		  pageCount : file.properties?.pageCount || 1,
+		  pageCount : file.properties.pageCount,
 
 	      title       : file.properties.title,
 	      description : file.description,
