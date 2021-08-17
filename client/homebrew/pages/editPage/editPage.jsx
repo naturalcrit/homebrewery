@@ -191,7 +191,7 @@ const EditPage = createClass({
 		this.setState((prevState)=>({
 			isSaving   : true,
 			errors     : null,
-			htmlErrors : Markdown.validate(prevState.brew.text),
+			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
