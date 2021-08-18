@@ -104,26 +104,28 @@ const BrewItem = createClass({
 		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
 
 		return <div className='brewItem'>
-			<h2>{brew.title}</h2>
-			<p className='description'>{brew.description}</p>
+			<div className='text'>
+				<h2>{brew.title}</h2>
+				<p className='description'>{brew.description}</p>
+			</div>
 			<hr />
-
 			<div className='info'>
-				<span title={`Authors:\n${brew.authors.join('\n')}`}>
-					<i className='fas fa-user'/> {brew.authors.join(', ')}
-				</span>
 				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
 					<i className='fas fa-eye'/> {brew.views}
 				</span>
-				<span
-					title={
-						`Created: ${brew.createdAt ? moment(brew.createdAt).local().format(dateFormatString) : 'UNKNOWN'}\n` +
-						`Last updated: ${brew.updatedAt ? moment(brew.updatedAt).local().format(dateFormatString) : 'UNKNOWN'}`
-					}>
-					<i className='fas fa-sync-alt'	/>
-					{moment(brew.updatedAt).fromNow()}
+				{brew.pageCount &&
+					<span title={`Page count: ${brew.pageCount}`}>
+						<i className='far fa-file' /> {brew.pageCount}
+					</span>
+				}
+				<span>
+					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
 				</span>
 				{this.renderGoogleDriveIcon()}
+				<br />
+				<span title={`Authors:\n${brew.authors.join('\n')}`}>
+					<i className='fas fa-user'/> {brew.authors.join(', ')}
+				</span>
 			</div>
 
 			<div className='links'>

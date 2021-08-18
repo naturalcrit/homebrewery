@@ -109,24 +109,23 @@ GoogleActions = {
 
 		const brews = obj.data.files.map((file)=>{
 	    return {
-	      text      : '',
-	      shareId   : file.properties.shareId,
-	      editId    : file.properties.editId,
-	      createdAt : file.createdTime,
-	      updatedAt : file.modifiedTime,
-	      gDrive    : true,
-	      googleId  : file.id,
-
-	      title       : file.properties.title,
-	      description : file.description,
+				text        : '',
+				shareId     : file.properties.shareId,
+				editId      : file.properties.editId,
+				createdAt   : file.createdTime,
+				updatedAt   : file.modifiedTime,
+				gDrive      : true,
+				googleId    : file.id,
+				pageCount   : file.properties.pageCount,
+				title       : file.properties.title,
+				description : file.description,
 				views       : file.properties.views,
-	      tags        : '',
-	      published   : file.properties.published ? file.properties.published == 'true' : false,
-	      authors     : [req.account.username],	//TODO: properly save and load authors to google drive
-	      systems     : []
-	    };
-	  });
-
+				tags        : '',
+				published   : file.properties.published ? file.properties.published == 'true' : false,
+				authors     : [req.account.username],	//TODO: properly save and load authors to google drive
+				systems     : []
+			};
+		});
 	  return brews;
 	},
 
@@ -154,13 +153,15 @@ GoogleActions = {
 				resource : { name        : `${brew.title}.txt`,
 										 description : `${brew.description}`,
 										 properties  : { title      : brew.title,
-										 							 	 published  : brew.published,
-																	   lastViewed : brew.lastViewed,
-																	   views      : brew.views,
-																	   version    : brew.version,
-																		 renderer   : brew.renderer,
-																	   tags       : brew.tags,
-																	   systems    : brew.systems.join() }
+										 							    published  : brew.published,
+																	    lastViewed : brew.lastViewed,
+																	    views      : brew.views,
+																	    version    : brew.version,
+																	    renderer   : brew.renderer,
+																	    tags       : brew.tags,
+																	    systems    : brew.systems.join(),
+																	    pageCount  : brew.pageCount
+																 }
 									 },
 				media : { mimeType : 'text/plain',
 								  body     : brew.text }
@@ -191,11 +192,12 @@ GoogleActions = {
 			'description' : `${brew.description}`,
 			'parents'     : [folderId],
 			'properties'  : {								//AppProperties is not accessible
-				'shareId'  : nanoid(12),
-				'editId'   : nanoid(12),
-				'title'    : brew.title,
-				'views'    : '0',
-				'renderer' : brew.renderer || 'legacy'
+				'shareId'   : nanoid(12),
+				'editId'    : nanoid(12),
+				'title'     : brew.title,
+				'views'     : '0',
+				'pageCount' : brew.pageCount,
+				'renderer'  : brew.renderer || 'legacy'
 			}
 		};
 
@@ -230,6 +232,7 @@ GoogleActions = {
 			updatedAt : new Date(),
 			gDrive    : true,
 			googleId  : obj.data.id,
+			pageCount : fileMetadata.properties.pageCount,
 
 			title       : brew.title,
 			description : brew.description,
@@ -301,6 +304,7 @@ GoogleActions = {
 				createdAt  : obj.data.createdTime,
 				updatedAt  : obj.data.modifiedTime,
 				lastViewed : obj.data.properties.lastViewed,
+				pageCount  : obj.data.properties.pageCount,
 				views      : parseInt(obj.data.properties.views) || 0, //brews with no view parameter will return undefined
 				version    : parseInt(obj.data.properties.version) || 0,
 				renderer   : obj.data.properties.renderer ? obj.data.properties.renderer : 'legacy',
