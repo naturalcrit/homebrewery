@@ -146,6 +146,14 @@ const NewPage = createClass({
 		});
 	},
 
+	clearErrors : function(){
+		this.setState({
+			errors   : null,
+			isSaving : false
+
+		});
+	},
+
 	save : async function(){
 		this.setState({
 			isSaving : true
