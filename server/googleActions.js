@@ -109,15 +109,14 @@ GoogleActions = {
 
 		const brews = obj.data.files.map((file)=>{
 	    return {
-	      text      : '',
-	      shareId   : file.properties.shareId,
-	      editId    : file.properties.editId,
-	      createdAt : file.createdTime,
-	      updatedAt : file.modifiedTime,
-	      gDrive    : true,
-	      googleId  : file.id,
-		  pageCount : file.properties.pageCount,
-
+	      text        : '',
+	      shareId     : file.properties.shareId,
+	      editId      : file.properties.editId,
+	      createdAt   : file.createdTime,
+	      updatedAt   : file.modifiedTime,
+	      gDrive      : true,
+	      googleId    : file.id,
+		  pageCount   : file.properties.pageCount,
 	      title       : file.properties.title,
 	      description : file.description,
 		  views       : file.properties.views,
