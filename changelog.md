@@ -5,6 +5,7 @@ h5 {
 </style>
 
 # changelog
+To see a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
 ### Tuesday, 17/08/2021 - v2.13.4
 - Fixed user page crashing when user has untitled brew
