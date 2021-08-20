@@ -17,7 +17,7 @@ GoogleActions = {
 		if(!account || !account.googleId){ // If not signed into Google
 			const err = new Error('Not Signed In');
 			err.status = 401;
-			throw err;
+			throw (err);
 		}
 
 		const oAuth2Client = new google.auth.OAuth2(
@@ -60,6 +60,7 @@ GoogleActions = {
 		.catch((err)=>{
 			console.log('Error searching Google Drive Folders');
 			console.error(err);
+			throw (err);
 		});
 
 		let folderId;
@@ -69,8 +70,9 @@ GoogleActions = {
 				resource : fileMetadata
 			})
 			.catch((err)=>{
-				console.log('Error creating google app folder');
+				console.log('Error creating Google Drive folder');
 				console.error(err);
+				throw (err);
 			});
 
 			folderId = obj.data.id;
@@ -99,7 +101,9 @@ GoogleActions = {
 			q        : 'mimeType != \'application/vnd.google-apps.folder\' and trashed = false'
 		})
 		.catch((err)=>{
-	    return console.error(`Error Listing Google Brews: ${err}`);
+	    console.log(`Error Listing Google Brews`);
+			console.error(err);
+			throw (err);
 			//TODO: Should break out here, but continues on for some reason.
 	  });
 
@@ -135,7 +139,7 @@ GoogleActions = {
 		const result = await drive.files.get({ fileId: id })
 		.catch((err)=>{
 			console.log('error checking file exists...');
-			console.log(err);
+			console.error(err);
 			return false;
 		});
 
