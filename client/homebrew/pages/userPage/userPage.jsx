@@ -135,6 +135,7 @@ const UserPage = createClass({
 			<Navbar>
 				<Nav.section>
 					<NewBrew />
+					<ReportIssue />
 					<RecentNavItem />
 					<Account />
 				</Nav.section>
