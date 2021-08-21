@@ -527,7 +527,7 @@ const processStyleTags = (string)=>{
 module.exports = {
 	marked : Markdown,
 	render : (rawBrewText)=>{
-		rawBrewText = rawBrewText.replace(/^\\column$/gm, `<div class='columnSplit'></div>`)
+		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
 		return Markdown(
 			sanatizeScriptTags(rawBrewText),
