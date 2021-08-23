@@ -131,7 +131,11 @@ const BrewRenderer = createClass({
 		if(this.props.renderer == 'legacy')
 			return <div className='phb page' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(pageText) }} key={index} />;
 		else
-			return <div className='phb3 page' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: Markdown.render(pageText) }} key={index} />;
+			return (
+				<div className='pageWrapper' id={`p${index + 1}`} key={index} >
+					<div className='page' dangerouslySetInnerHTML={{ __html: Markdown.render(pageText) }} />
+				</div>
+			);
 	},
 
 	renderPages : function(){
