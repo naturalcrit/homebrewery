@@ -7,6 +7,7 @@ const moment = require('moment');
 const request = require('superagent');
 
 const googleDriveIcon = require('../../../googleDrive.png');
+const { default: dedentTabs } = require('dedent-tabs');
 
 const BrewItem = createClass({
 	getDefaultProps : function() {
@@ -118,7 +119,10 @@ const BrewItem = createClass({
 						<i className='far fa-file' /> {brew.pageCount}
 					</span>
 				}
-				<span>
+				<span title={dedentTabs(`
+					Created: ${moment(brew.createdAt).local().format(dateFormatString)}
+					Last updated: ${moment(brew.updatedAt).local().format(dateFormatString)}
+					`)}>
 					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
 				</span>
 				{this.renderGoogleDriveIcon()}
