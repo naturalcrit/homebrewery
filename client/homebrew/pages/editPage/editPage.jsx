@@ -51,18 +51,16 @@ const EditPage = createClass({
 	},
 
 	getInitialState : function() {
-		const newBrew = this.props.brew;
-		delete newBrew.views;
 		return {
-			brew                   : newBrew,
+			brew                   : this.props.brew,
 			isSaving               : false,
 			isPending              : false,
-			alertTrashedGoogleBrew : newBrew.trashed,
+			alertTrashedGoogleBrew : this.props.brew.trashed,
 			alertLoginToTransfer   : false,
-			saveGoogle             : newBrew.googleId ? true : false,
+			saveGoogle             : this.props.brew.googleId ? true : false,
 			confirmGoogleTransfer  : false,
 			errors                 : null,
-			htmlErrors             : Markdown.validate(newBrew.text),
+			htmlErrors             : Markdown.validate(this.props.brew.text),
 			url                    : ''
 		};
 	},
