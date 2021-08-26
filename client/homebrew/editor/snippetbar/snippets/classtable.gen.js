@@ -50,21 +50,22 @@ const getFeature = (level)=>{
 	return res.join(', ');
 };
 
+const maxes = [4, 3, 3, 3, 3, 2, 2, 1, 1];
+
+const drawSlots = function(Slots, rows){
+	let slots = Number(Slots);
+	return _.times(rows, function(i){
+		const max = maxes[i];
+		if(slots < 1) return '—';
+		const res = _.min([max, slots]);
+		slots -= res;
+		return res;
+	}).join(' | ');
+};
+
 module.exports = {
 	full : function(classes){
 		const classname = _.sample(classnames);
-
-		const maxes = [4, 3, 3, 3, 3, 2, 2, 1, 1];
-		const drawSlots = function(Slots){
-			let slots = Number(Slots);
-			return _.times(9, function(i){
-				const max = maxes[i];
-				if(slots < 1) return '—';
-				const res = _.min([max, slots]);
-				slots -= res;
-				return res;
-			}).join(' | ');
-		};
 
 
 		let cantrips = 3;
@@ -81,7 +82,7 @@ module.exports = {
 					getFeature(level),
 					cantrips,
 					spells,
-					drawSlots(slots)
+					drawSlots(slots, 9)
 				].join(' | ');
 
 				cantrips += _.random(0, 1);
@@ -116,19 +117,6 @@ module.exports = {
 	third : function(classes){
 		const classname = _.sample(classnames);
 
-		const maxes = [4, 3, 3, 3, 3, 2, 2, 1, 1];
-		const drawSlots = function(Slots){
-			let slots = Number(Slots);
-			return _.times(4, function(i){
-				const max = maxes[i];
-				if(slots < 1) return '—';
-				const res = _.min([max, slots]);
-				slots -= res;
-				return res;
-			}).join(' | ');
-		};
-
-
 		let cantrips = 3;
 		let spells = 1;
 		let slots = 2;
@@ -141,12 +129,12 @@ module.exports = {
 					levelName,
 					cantrips,
 					spells,
-					drawSlots(slots)
+					drawSlots(slots, 4)
 				].join(' | ');
 
 				cantrips += _.random(0, 1);
 				spells += _.random(0, 1);
-				slots += _.random(0, 2);
+				slots += _.random(0, 1);
 
 				return `| ${res} |`;
 			}).join('\n')}\n}}\n\n`;
