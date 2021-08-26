@@ -46,7 +46,7 @@
     "@babel/preset-react": "^7.14.5",
     "body-parser": "^1.19.0",
     "classnames": "^2.3.1",
-    "codemirror": "^5.62.2",
+    "codemirror": "^5.62.3",
     "cookie-parser": "^1.4.5",
     "create-react-class": "^15.7.0",
     "dedent-tabs": "^0.9.0",
