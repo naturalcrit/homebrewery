@@ -151,19 +151,21 @@ GoogleActions = {
 		if(await GoogleActions.existsGoogleBrew(auth, brew.googleId) == true) {
 			await drive.files.update({
 				fileId   : brew.googleId,
-				resource : { name        : `${brew.title}.txt`,
-										 description : `${brew.description}`,
-										 properties  : { title      : brew.title,
-										 							 	 published  : brew.published,
-																	   lastViewed : brew.lastViewed,
-																	   views      : brew.views,
-																	   version    : brew.version,
-																		 renderer   : brew.renderer,
-																	   tags       : brew.tags,
-																	   systems    : brew.systems.join() }
-									 },
-				media : { mimeType : 'text/plain',
-								  body     : brew.text }
+				resource : {
+					name        : `${brew.title}.txt`,
+					description : `${brew.description}`,
+					properties  : {
+						title     : brew.title,
+						published : brew.published,
+						version   : brew.version,
+						renderer  : brew.renderer,
+						tags      : brew.tags,
+						systems   : brew.systems.join() }
+				},
+				media : {
+					mimeType : 'text/plain',
+					body     : brew.text
+				}
 			})
 			.catch((err)=>{
 				console.log('Error saving to google');
