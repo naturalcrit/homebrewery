@@ -19,6 +19,15 @@ const getGoodBrewTitle = (text)=>{
 				 .slice(0, MAX_TITLE_LENGTH);
 };
 
+const excludePropsFromUpdate = (brew)=>{
+	// Remove undesired properties
+	const propsToExclude = ['views', 'lastViewed'];
+	for (const prop of propsToExclude) {
+		delete brew[prop];
+	};
+	return brew;
+};
+
 const mergeBrewText = (text, style)=>{
 	if(typeof style !== 'undefined') {
 		text = `\`\`\`css\n` +
@@ -61,19 +70,10 @@ const newBrew = (req, res)=>{
 	});
 };
 
-const cleanBrew = (brew)=>{
-	// Remove undesired properties
-	const undesiredPropertyNames=['views', 'lastViewed'];
-	for (const undesiredProperty of undesiredPropertyNames) {
-		delete brew[undesiredProperty];
-	};
-	return brew;
-};
-
 const updateBrew = (req, res)=>{
 	HomebrewModel.get({ editId: req.params.id })
 		.then((brew)=>{
-			const updateBrew = cleanBrew(req.body);
+			const updateBrew = excludePropsFromUpdate(req.body);
 			brew = _.merge(brew, updateBrew);
 			brew.text = mergeBrewText(brew.text, brew.style);
 
@@ -164,7 +164,7 @@ const updateGoogleBrew = async (req, res, next)=>{
 
 	try {	oAuth2Client = GoogleActions.authCheck(req.account, res); } catch (err) { return res.status(err.status).send(err.message); }
 
-	const brew = cleanBrew(req.body);
+	const brew = excludePropsFromUpdate(req.body);
 	brew.text = mergeBrewText(brew.text, brew.style);
 
 	try {
