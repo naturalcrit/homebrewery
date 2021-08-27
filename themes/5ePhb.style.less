@@ -46,7 +46,11 @@ body {
 	-webkit-column-gap   : 0.9cm;
 	-moz-column-gap      : 0.9cm;
 }
-.pageWrapper{
+.columnWrapper{
+	max-height        : 100%;
+}
+.page{
+	.useColumns();
 	counter-increment : phb-page-numbers;
 	position          : relative;
 	z-index           : 15;
@@ -56,10 +60,6 @@ body {
 	width             : 215.9mm;
 	background-color  : @background;
 	background-image  : @backgroundImage;
-}
-.page{
-	.useColumns();
-	max-height        : 100%;
 	padding           : 1.4cm 1.9cm 1.7cm;
 	font-family       : BookInsanityRemake;
 	font-size         : 0.34cm;
@@ -540,6 +540,7 @@ body {
 	column-span         : all;
 	-webkit-column-span : all;
 	-moz-column-span    : all;
+	display             : block;
 }
 //*****************************
 // *       CLASS TABLE
