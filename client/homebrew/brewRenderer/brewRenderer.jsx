@@ -133,8 +133,8 @@ const BrewRenderer = createClass({
 		else {
 			pageText += `\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			return (
-				<div className='pageWrapper' id={`p${index + 1}`} key={index} >
-					<div className='page' dangerouslySetInnerHTML={{ __html: Markdown.render(pageText) }} />
+				<div className='page' id={`p${index + 1}`} key={index} >
+					<div className='columnWrapper' dangerouslySetInnerHTML={{ __html: Markdown.render(pageText) }} />
 				</div>
 			);
 		}
