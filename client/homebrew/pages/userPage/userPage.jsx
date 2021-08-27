@@ -146,7 +146,7 @@ const UserPage = createClass({
 	getSortedBrews : function(){
 		const testString = _.deburr(this.state.filterString).toLowerCase();
 		const brewCollection = this.state.filterString ? _.filter(this.props.brews, (brew)=>{
-			return (_.deburr(brew?.title).toLowerCase().includes(testString)) ||
+			return (_.deburr(brew.title).toLowerCase().includes(testString)) ||
 			(_.deburr(brew?.description).toLowerCase().includes(testString));
 		}) : this.props.brews;
 		return _.groupBy(brewCollection, (brew)=>{
