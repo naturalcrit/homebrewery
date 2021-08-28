@@ -280,6 +280,6 @@ app.use((err, req, res, next)=>{
 //^=====--------------------------------------=====^//
 
 const PORT = process.env.PORT || config.get('web_port') || 8000;
-app.listen(PORT, () => {
+app.listen(PORT, ()=>{
 	console.log(`server on port:${PORT}`);
 });
