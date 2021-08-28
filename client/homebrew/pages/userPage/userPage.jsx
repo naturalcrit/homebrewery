@@ -45,7 +45,7 @@ const UserPage = createClass({
 	renderBrews : function(brews){
 		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
 
-		const sortedBrews = this.sortBrews(brews, this.state.sortType);
+		const sortedBrews = this.sortBrews(brews);
 
 		return _.map(sortedBrews, (brew, idx)=>{
 			return <BrewItem brew={brew} key={idx}/>;
@@ -53,7 +53,7 @@ const UserPage = createClass({
 	},
 
 	sortBrewOrder : function(brew){
-		if(!brew.title){brew.title='No Title';};
+		if(!brew.title){brew.title = 'No Title';}
 		const mapping = {
 			'alpha'   : _.deburr(brew.title.toLowerCase()),
 			'created' : moment(brew.createdAt).format(),

@@ -6,6 +6,17 @@ h5 {
 
 # changelog
 
+### Tuesday, 17/08/2021 - v2.13.4
+- Fixed user page crashing when user has untitled brew
+
+##### G-Ambatte:
+- Tweaks to user page tool tips
+- Fix view counts being reset on Google Drive files
+
+##### Gazook89 :
+- New **PHB → Artist Credit** snippet
+- **PRINT** snippets moved to the **Style Editor** tab
+
 ### Monday, 09/08/2021 - v2.13.3
 
 ##### G-Ambatte :
@@ -47,6 +58,8 @@ myStyle {color: black}
 - New **Download**, **View**, and **Clone to New** buttons in the "Source" dropdown on the Share page.
 - Pasting your brew into a "New" page and saving will transfer any CSS in the code fence to the Style tab.
 - Unsaved work in the New page Style tab is now cached to your browser storage if you navigate away.
+
+\page
 
 
 ### Thursday, 10/6/2021 - v2.12.0

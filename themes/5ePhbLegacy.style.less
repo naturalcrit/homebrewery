@@ -2,12 +2,13 @@
 @import (less) './themes/assets/assets.less';
 @import (less) './themes/phb.depricated.less';
 //Colors
-@background            : #EEE5CE;
-@noteGreen             : #e0e5c1;
-@headerUnderline       : #c9ad6a;
-@horizontalRule        : #9c2b1b;
-@headerText            : #58180D;
-@monsterStatBackground : #FDF1DC;
+@background            : #EEE5CE; // Light parchment
+@noteGreen             : #e0e5c1; // Pastel green
+@headerUnderline       : #c9ad6a; // Gold
+@horizontalRule        : #9c2b1b; // Maroon
+@headerText            : #58180D; // Dark maroon
+@monsterStatBackground : #FDF1DC; // Lighter parchment
+@captionText           : #766649; // Brown
 @page { margin: 0; }
 body {
 	counter-reset : phb-page-numbers;
@@ -230,11 +231,11 @@ body {
 		// Monster Ability table
 		hr+table{
 			margin              : 0;
-			column-span         : 1;
+			column-span         : none;
 			background-color    : transparent;
 			border-style        : none;
 			border-image        : none;
-			-webkit-column-span : 1;
+			-webkit-column-span : none;
 			tbody{
 				tr:nth-child(odd), tr:nth-child(even){
 					background-color : transparent;
@@ -415,7 +416,7 @@ body {
 // *       DESCRIPTIVE TEXT BOX
 // ************************************/
 .phb .descriptive{
-	display             : block-inline;
+	display             : inline-block;
 	margin-bottom       : 1em;
 	background-color    : #faf7ea;
 	font-family         : ScalySans;
@@ -444,6 +445,35 @@ body {
 }
 .phb pre+.descriptive{
 	margin-top : 8px;
+}
+
+//*****************************
+// *    ARTIST CREDIT BLOCK
+// *****************************/
+.phb {
+	.artist {
+		position    : absolute;
+		text-align  : center;
+		font-family : WalterTurncoat;
+		font-size   : 0.27cm;
+		color       : @captionText;
+		p, p + p {
+			margin      : unset;
+			text-indent : unset;
+			line-height : 1em;
+		}
+	 	h5 {
+			font-size   : 1.3em;
+			font-family : WalterTurncoat;
+		}
+		a{
+			color           : inherit;
+			text-decoration : unset;
+			&:hover {
+				text-decoration : underline;
+			}
+		}
+	}
 }
 //*****************************
 // *      TABLE OF CONTENTS

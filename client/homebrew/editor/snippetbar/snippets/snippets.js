@@ -14,6 +14,7 @@ module.exports = [
 	{
 		groupName : 'Editor',
 		icon      : 'fas fa-pencil-alt',
+		view      : 'text',
 		snippets  : [
 			{
 				name : 'Column Break',
@@ -51,13 +52,23 @@ module.exports = [
 				name : 'Image',
 				icon : 'fas fa-image',
 				gen  : dedent`
-					![cat warrior](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:325px}
-					Credit: Kyounghwan Kim`
+					![cat warrior](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:325px,mix-blend-mode:multiply}
+
+					{{artist,position:relative,top:-230px,left:-100px,margin-bottom:-30px
+					##### Cat Warrior
+					[Kyoung Hwan Kim](https://www.artstation.com/tahra)
+					}}`
 			},
 			{
 				name : 'Background Image',
 				icon : 'fas fa-tree',
-				gen  : `![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,top:50px,right:30px,width:280px}`
+				gen  : dedent`
+					![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,top:50px,right:30px,width:280px}
+
+					{{artist,top:90px,right:30px
+					##### Homebrew Mug
+					[naturalcrit](https://homebrew.naturalcrit.com)
+					}}`
 			},
 			{
 				name : 'QR Code',
@@ -129,6 +140,7 @@ module.exports = [
 	{
 		groupName : 'PHB',
 		icon      : 'fas fa-book',
+		view      : 'text',
 		snippets  : [
 			{
 				name : 'Spell',
@@ -198,6 +210,18 @@ module.exports = [
 				icon : 'fas fa-hat-wizard',
 				gen  : MagicGen.item,
 			},
+			{
+				name : 'Artist Credit',
+				icon : 'fas fa-signature',
+				gen  : function(){
+					return dedent`
+						{{artist,top:90px,right:30px
+						##### Starry Night
+						[Van Gogh](https://www.vangoghmuseum.nl/en)
+						}}
+						\n`;
+				},
+			},
 		]
 	},
 
@@ -208,6 +232,7 @@ module.exports = [
 	{
 		groupName : 'Tables',
 		icon      : 'fas fa-table',
+		view      : 'text',
 		snippets  : [
 			{
 				name : 'Class Table',
@@ -285,33 +310,54 @@ module.exports = [
 
 
 
-	/**************** PRINT *************/
+	/**************** PAGE *************/
 
 	{
 		groupName : 'Print',
 		icon      : 'fas fa-print',
+		view      : 'style',
 		snippets  : [
 			{
-				name : 'A4 PageSize',
+				name : 'A4 Page Size',
 				icon : 'far fa-file',
-				gen  : ['<style>',
-					'  .phb{',
-					'    width : 210mm;',
-					'    height : 296.8mm;',
-					'  }',
-					'</style>'
+				gen  : ['/* A4 Page Size */',
+					'.page{',
+					'	width  : 210mm;',
+					'	height : 296.8mm;',
+					'}',
+					''
+				].join('\n')
+			},
+			{
+				name : 'Square Page Size',
+				icon : 'far fa-file',
+				gen  : ['/* Square Page Size */',
+					'.page {',
+					'	width   : 125mm;',
+					'	height  : 125mm;',
+					'	padding : 12.5mm;',
+					'	columns : unset;',
+					'}',
+					''
 				].join('\n')
 			},
 			{
 				name : 'Ink Friendly',
 				icon : 'fas fa-tint',
-				gen  : ['<style>',
-					'  .phb{ background : white;}',
-					'  .phb img{ display : none;}',
-					'  .phb hr+blockquote{background : white;}',
-					'</style>',
-					''
-				].join('\n')
+				gen  : dedent`
+					/* Ink Friendly */
+					.pages *:is(.page,.monster,.note,.descriptive) {
+						background : white !important;
+						box-shadow : 0px 0px 3px !important;
+					}
+
+					.page .note:before {
+						box-shadow : 0px 0px 3px;
+					}
+
+					.page img {
+						visibility : hidden;
+					}`
 			},
 		]
 	},

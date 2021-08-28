@@ -19,7 +19,7 @@ renderer.paragraph = function(text){
 	let match;
 	if(text.startsWith('<div') || text.startsWith('</div'))
 		return `${text}`;
-	else if(match = text.match(/(^|^.*?\n)<span class="inline(.*?<\/span>)$/)) {
+	else if(match = text.match(/(^|^.*?\n)<span class="inline-block(.*?<\/span>)$/)) {
 		return `${match[1].trim() ? `<p>${match[1]}</p>` : ''}<span class="inline-block${match[2]}`;
 	} else
 		return `<p>${text}</p>\n`;
@@ -71,7 +71,7 @@ const mustacheSpans = {
 		}
 	},
 	renderer(token) {
-		return `<span class="inline${token.tags}>${this.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
+		return `<span class="inline-block${token.tags}>${this.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
 	}
 };
 
@@ -527,7 +527,7 @@ const processStyleTags = (string)=>{
 module.exports = {
 	marked : Markdown,
 	render : (rawBrewText)=>{
-		rawBrewText = rawBrewText.replace(/^\\column$/gm, `<div class='columnSplit'></div>`)
+		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
 		return Markdown(
 			sanatizeScriptTags(rawBrewText),

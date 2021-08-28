@@ -48,7 +48,7 @@ const BrewItem = createClass({
 		if(!this.props.brew.editId) return;
 
 		return <a onClick={this.deleteBrew}>
-			<i className='fas fa-trash-alt' />
+			<i className='fas fa-trash-alt' title='Delete' />
 		</a>;
 	},
 
@@ -61,7 +61,7 @@ const BrewItem = createClass({
 		}
 
 		return <a href={`/edit/${editLink}`} target='_blank' rel='noopener noreferrer'>
-			<i className='fas fa-pencil-alt' />
+			<i className='fas fa-pencil-alt' title='Edit' />
 		</a>;
 	},
 
@@ -74,7 +74,7 @@ const BrewItem = createClass({
 		}
 
 		return <a href={`/share/${shareLink}`} target='_blank' rel='noopener noreferrer'>
-			<i className='fas fa-share-alt' />
+			<i className='fas fa-share-alt' title='Share' />
 		</a>;
 	},
 
@@ -87,7 +87,7 @@ const BrewItem = createClass({
 		}
 
 		return <a href={`/download/${shareLink}`}>
-			<i className='fas fa-download' />
+			<i className='fas fa-download' title='Download' />
 		</a>;
 	},
 
@@ -99,31 +99,33 @@ const BrewItem = createClass({
 		</span>;
 	},
 
-	getTooltipData : function(){
-		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
-		let outputString = `Created: ${this.props.brew.createdAt ? moment(this.props.brew.createdAt).local().format(dateFormatString) : 'UNKNOWN'}\n`;
-		outputString +=    `Last updated: ${this.props.brew.updatedAt ? moment(this.props.brew.updatedAt).local().format(dateFormatString) : 'UNKNOWN'}`;
-		return  outputString;
-	},
-
 	render : function(){
 		const brew = this.props.brew;
-		return <div className='brewItem' title={this.getTooltipData()}>
-			<h2>{brew.title}</h2>
-			<p className='description'>{brew.description}</p>
-			<hr />
+		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
 
+		return <div className='brewItem'>
+			<div className='text'>
+				<h2>{brew.title}</h2>
+				<p className='description'>{brew.description}</p>
+			</div>
+			<hr />
 			<div className='info'>
-				<span>
-					<i className='fas fa-user' /> {brew.authors.join(', ')}
+				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
+					<i className='fas fa-eye'/> {brew.views}
 				</span>
-				<span>
-					<i className='fas fa-eye' /> {brew.views}
-				</span>
+				{brew.pageCount &&
+					<span title={`Page count: ${brew.pageCount}`}>
+						<i className='far fa-file' /> {brew.pageCount}
+					</span>
+				}
 				<span>
 					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
 				</span>
 				{this.renderGoogleDriveIcon()}
+				<br />
+				<span title={`Authors:\n${brew.authors.join('\n')}`}>
+					<i className='fas fa-user'/> {brew.authors.join(', ')}
+				</span>
 			</div>
 
 			<div className='links'>
