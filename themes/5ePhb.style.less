@@ -362,6 +362,9 @@ body {
 		dl {
 			color : @headerText;
 		}
+		hr:last-of-type~dl{
+			color : inherit; // After the HRs, hanging indents remain black.
+		}
 
 		// Monster Ability table
 		hr + table:first-of-type{
