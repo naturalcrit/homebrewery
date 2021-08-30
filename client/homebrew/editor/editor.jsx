@@ -1,9 +1,12 @@
+/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./editor.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 const dedent = require('dedent-tabs').default;
+
+import { SketchPicker } from 'react-color';
 
 const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
 const SnippetBar = require('./snippetbar/snippetbar.jsx');
@@ -41,7 +44,9 @@ const Editor = createClass({
 	},
 	getInitialState : function() {
 		return {
-			view : 'text' //'text', 'style', 'meta'
+			view            : 'text', //'text', 'style', 'meta'
+			hideColorPicker : false,
+			sketchColor     : '#000000'
 		};
 	},
 
@@ -67,7 +72,7 @@ const Editor = createClass({
 		}
 	},
 
-	handleInject : function(injectText){
+	handleInject : function(injectText, overwrite=false){
 		const text = (
 			this.isText() && this.props.brew.text ||
 			this.isStyle() && (this.props.brew.style ?? DEFAULT_STYLE_TEXT)
@@ -99,9 +104,8 @@ const Editor = createClass({
 
 	highlightCustomMarkdown : function(){
 		if(!this.refs.codeEditor) return;
+		const codeMirror = this.refs.codeEditor.codeMirror;
 		if(this.state.view === 'text')  {
-			const codeMirror = this.refs.codeEditor.codeMirror;
-
 			//reset custom text styles
 			const customHighlights = codeMirror.getAllMarks();
 			for (let i=0;i<customHighlights.length;i++) customHighlights[i].clear();
@@ -176,6 +180,33 @@ const Editor = createClass({
 		this.refs.codeEditor?.updateSize();
 	},
 
+	renderSketchPicker : function(){
+		if(this.state.hideColorPicker){ return; };
+		const presetSwatchColors = ['#D0021B', '#F5A623', '#F8E71C', '#8B572A', '#7ED321', '#417505', '#BD10E0', '#9013FE', '#4A90E2', '#50E3C2', '#B8E986', '#000000', '#4A4A4A', '#9B9B9B', '#FFFFFF', '', '#EEE5CE', '#58180D'];
+		return <SketchPicker
+			className='sketchPicker'
+			color={this.state.sketchColor}
+			presetColors={presetSwatchColors}
+			onChange={this.handleInternalChange}
+			onChangeComplete={this.handleColorChange}
+		/>;
+	},
+
+	handleInternalChange : function(color, event){
+		this.setState({
+			sketchColor : color
+		});
+	},
+
+	handleColorChange : function(color, event){
+		const selection = this.refs.codeEditor.getSelection();
+		const regex = /(#[0-9a-f]{8}|#[0-9a-f]{6}|#[0-9a-f]{3,4})(?:\b)/gi;
+		if(regex.exec(selection) != null){
+			const newSelection = selection.replace(regex, color.hex);
+			this.refs.codeEditor.replaceSelection(newSelection, 'around');
+		}
+	},
+
 	renderEditor : function(){
 		if(this.isText()){
 			return <CodeEditor key='text'
@@ -185,11 +216,14 @@ const Editor = createClass({
 				onChange={this.props.onTextChange} />;
 		}
 		if(this.isStyle()){
-			return <CodeEditor key='style'
-				ref='codeEditor'
-				language='css'
-				value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
-				onChange={this.props.onStyleChange} />;
+			return <>
+				{this.renderSketchPicker()}
+				<CodeEditor key='style'
+					ref='codeEditor'
+					language='css'
+					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
+					onChange={this.props.onStyleChange} />
+			</>;
 		}
 		if(this.isMeta()){
 			return <MetadataEditor

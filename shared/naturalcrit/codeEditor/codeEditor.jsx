@@ -112,6 +112,12 @@ const CodeEditor = createClass({
 	updateSize : function(){
 		this.codeMirror.refresh();
 	},
+	replaceSelection : function(text, select=''){
+		return this.codeMirror.replaceSelection(text, select);
+	},
+	getSelection : function(lineSeparator=undefined){
+		return this.codeMirror.getSelection(lineSeparator);
+	},
 	//----------------------//
 
 	render : function(){
