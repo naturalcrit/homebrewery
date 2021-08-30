@@ -45,7 +45,7 @@ const Editor = createClass({
 	getInitialState : function() {
 		return {
 			view            : 'text', //'text', 'style', 'meta'
-			hideColorPicker : false,
+			hideColorPicker : true,
 			sketchColor     : '#000000'
 		};
 	},
@@ -181,15 +181,32 @@ const Editor = createClass({
 	},
 
 	renderSketchPicker : function(){
-		if(this.state.hideColorPicker){ return; };
+		if(this.isMeta()){ return; };
+
 		const presetSwatchColors = ['#D0021B', '#F5A623', '#F8E71C', '#8B572A', '#7ED321', '#417505', '#BD10E0', '#9013FE', '#4A90E2', '#50E3C2', '#B8E986', '#000000', '#4A4A4A', '#9B9B9B', '#FFFFFF', '', '#EEE5CE', '#58180D'];
-		return <SketchPicker
-			className='sketchPicker'
-			color={this.state.sketchColor}
-			presetColors={presetSwatchColors}
-			onChange={this.handleInternalChange}
-			onChangeComplete={this.handleColorChange}
-		/>;
+		return <div className='sketchPicker'>
+			<button
+				className='fas fa-palette'
+				onMouseDown={this.handleColorToggle}
+			>
+				{this.state.hideColorPicker ? '\u25B2' : '\u25BC'}
+			</button>
+			{!this.state.hideColorPicker &&
+				<SketchPicker
+					className='sketchPicker'
+					color={this.state.sketchColor}
+					presetColors={presetSwatchColors}
+					onChange={this.handleInternalChange}
+					onChangeComplete={this.handleColorChange}
+				/>
+			}
+		</div>;
+	},
+
+	handleColorToggle : function(){
+		this.setState((prevState)=>({
+			hideColorPicker : !prevState.hideColorPicker
+		}));
 	},
 
 	handleInternalChange : function(color, event){
@@ -200,10 +217,14 @@ const Editor = createClass({
 
 	handleColorChange : function(color, event){
 		const selection = this.refs.codeEditor.getSelection();
-		const regex = /(#[0-9a-f]{8}|#[0-9a-f]{6}|#[0-9a-f]{3,4})(?:\b)/gi;
-		if(regex.exec(selection) != null){
-			const newSelection = selection.replace(regex, color.hex);
-			this.refs.codeEditor.replaceSelection(newSelection, 'around');
+		if(selection){
+			const regex = /(#[0-9a-f]{8}|#[0-9a-f]{6}|#[0-9a-f]{3,4})(?:\b)/gi;
+			if(regex.exec(selection) != null){
+				const newSelection = selection.replace(regex, color.hex);
+				this.refs.codeEditor.replaceSelection(newSelection, 'around');
+			}
+		} else {
+			this.handleInject(color.hex);
 		}
 	},
 
@@ -216,14 +237,11 @@ const Editor = createClass({
 				onChange={this.props.onTextChange} />;
 		}
 		if(this.isStyle()){
-			return <>
-				{this.renderSketchPicker()}
-				<CodeEditor key='style'
-					ref='codeEditor'
-					language='css'
-					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
-					onChange={this.props.onStyleChange} />
-			</>;
+			return <CodeEditor key='style'
+				ref='codeEditor'
+				language='css'
+				value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
+				onChange={this.props.onStyleChange} />;
 		}
 		if(this.isMeta()){
 			return <MetadataEditor
@@ -244,6 +262,7 @@ const Editor = createClass({
 					showEditButtons={this.props.showEditButtons}
 					renderer={this.props.renderer} />
 
+				{this.renderSketchPicker()}
 				{this.renderEditor()}
 			</div>
 		);
