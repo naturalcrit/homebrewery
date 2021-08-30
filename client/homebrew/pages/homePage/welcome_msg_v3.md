@@ -4,7 +4,7 @@
 }
 
 .page {
-	padding-bottom : 1.6cm;
+	padding-bottom : 1.3cm;
 }
 
 
@@ -37,7 +37,10 @@ After clicking the "Print" item in the navbar a new page will open and a print d
 
 If you want to save ink or have a monochrome printer, add the {{fas,fa-tint}} **Ink Friendly** snippet to your brew before you print
 
+<img src='https://i.imgur.com/hMna6G0.png' style='position:absolute;bottom:50px;left:120px;width:180px' />
 
+<div class='pageNumber'>1</div>
+<div class='footnote'>PART 1 | FANCINESS</div>
 
 \column
 
@@ -73,15 +76,6 @@ If you'd like to credit The Homebrewery in your brew, I'd be flattered! Just ref
 
 ### More Resources
 If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/comments/3uwxx9/resources_open_to_the_community/).
-
-
-
-<img src='https://i.imgur.com/hMna6G0.png' style='position:absolute;bottom:50px;left:120px;width:180px' />
-
-<div class='pageNumber'>1</div>
-<div class='footnote'>PART 1 | FANCINESS</div>
-
-
 
 
 \page
