@@ -134,8 +134,9 @@ app.get('/v3_preview', async (req, res, next)=>{
 //Changelog page
 app.get('/changelog', async (req, res, next)=>{
 	const brew = {
-		title : 'Changelog',
-		text  : changelogText
+		title    : 'Changelog',
+		text     : changelogText,
+		renderer : 'V3'
 	};
 	req.brew = brew;
 	return next();

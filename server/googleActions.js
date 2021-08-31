@@ -17,7 +17,7 @@ GoogleActions = {
 		if(!account || !account.googleId){ // If not signed into Google
 			const err = new Error('Not Signed In');
 			err.status = 401;
-			throw err;
+			throw (err);
 		}
 
 		const oAuth2Client = new google.auth.OAuth2(
@@ -60,6 +60,7 @@ GoogleActions = {
 		.catch((err)=>{
 			console.log('Error searching Google Drive Folders');
 			console.error(err);
+			throw (err);
 		});
 
 		let folderId;
@@ -69,8 +70,9 @@ GoogleActions = {
 				resource : fileMetadata
 			})
 			.catch((err)=>{
-				console.log('Error creating google app folder');
+				console.log('Error creating Google Drive folder');
 				console.error(err);
+				throw (err);
 			});
 
 			folderId = obj.data.id;
@@ -99,7 +101,9 @@ GoogleActions = {
 			q        : 'mimeType != \'application/vnd.google-apps.folder\' and trashed = false'
 		})
 		.catch((err)=>{
-	    return console.error(`Error Listing Google Brews: ${err}`);
+	    console.log(`Error Listing Google Brews`);
+			console.error(err);
+			throw (err);
 			//TODO: Should break out here, but continues on for some reason.
 	  });
 
@@ -109,24 +113,23 @@ GoogleActions = {
 
 		const brews = obj.data.files.map((file)=>{
 	    return {
-	      text      : '',
-	      shareId   : file.properties.shareId,
-	      editId    : file.properties.editId,
-	      createdAt : file.createdTime,
-	      updatedAt : file.modifiedTime,
-	      gDrive    : true,
-	      googleId  : file.id,
-
-	      title       : file.properties.title,
-	      description : file.description,
+				text        : '',
+				shareId     : file.properties.shareId,
+				editId      : file.properties.editId,
+				createdAt   : file.createdTime,
+				updatedAt   : file.modifiedTime,
+				gDrive      : true,
+				googleId    : file.id,
+				pageCount   : file.properties.pageCount,
+				title       : file.properties.title,
+				description : file.description,
 				views       : file.properties.views,
-	      tags        : '',
-	      published   : file.properties.published ? file.properties.published == 'true' : false,
-	      authors     : [req.account.username],	//TODO: properly save and load authors to google drive
-	      systems     : []
-	    };
-	  });
-
+				tags        : '',
+				published   : file.properties.published ? file.properties.published == 'true' : false,
+				authors     : [req.account.username],	//TODO: properly save and load authors to google drive
+				systems     : []
+			};
+		});
 	  return brews;
 	},
 
@@ -136,7 +139,7 @@ GoogleActions = {
 		const result = await drive.files.get({ fileId: id })
 		.catch((err)=>{
 			console.log('error checking file exists...');
-			console.log(err);
+			console.error(err);
 			return false;
 		});
 
@@ -151,19 +154,22 @@ GoogleActions = {
 		if(await GoogleActions.existsGoogleBrew(auth, brew.googleId) == true) {
 			await drive.files.update({
 				fileId   : brew.googleId,
-				resource : { name        : `${brew.title}.txt`,
-										 description : `${brew.description}`,
-										 properties  : { title      : brew.title,
-										 							 	 published  : brew.published,
-																	   lastViewed : brew.lastViewed,
-																	   views      : brew.views,
-																	   version    : brew.version,
-																		 renderer   : brew.renderer,
-																	   tags       : brew.tags,
-																	   systems    : brew.systems.join() }
-									 },
-				media : { mimeType : 'text/plain',
-								  body     : brew.text }
+				resource : {
+					name        : `${brew.title}.txt`,
+					description : `${brew.description}`,
+					properties  : {
+						title     : brew.title,
+						published : brew.published,
+						version   : brew.version,
+						renderer  : brew.renderer,
+						tags      : brew.tags,
+						systems   : brew.systems.join()
+					}
+				},
+				media : {
+					mimeType : 'text/plain',
+					body     : brew.text
+				}
 			})
 			.catch((err)=>{
 				console.log('Error saving to google');
@@ -191,11 +197,12 @@ GoogleActions = {
 			'description' : `${brew.description}`,
 			'parents'     : [folderId],
 			'properties'  : {								//AppProperties is not accessible
-				'shareId'  : nanoid(12),
-				'editId'   : nanoid(12),
-				'title'    : brew.title,
-				'views'    : '0',
-				'renderer' : brew.renderer || 'legacy'
+				'shareId'   : nanoid(12),
+				'editId'    : nanoid(12),
+				'title'     : brew.title,
+				'views'     : '0',
+				'pageCount' : brew.pageCount,
+				'renderer'  : brew.renderer || 'legacy'
 			}
 		};
 
@@ -230,6 +237,7 @@ GoogleActions = {
 			updatedAt : new Date(),
 			gDrive    : true,
 			googleId  : obj.data.id,
+			pageCount : fileMetadata.properties.pageCount,
 
 			title       : brew.title,
 			description : brew.description,
@@ -301,6 +309,7 @@ GoogleActions = {
 				createdAt  : obj.data.createdTime,
 				updatedAt  : obj.data.modifiedTime,
 				lastViewed : obj.data.properties.lastViewed,
+				pageCount  : obj.data.properties.pageCount,
 				views      : parseInt(obj.data.properties.views) || 0, //brews with no view parameter will return undefined
 				version    : parseInt(obj.data.properties.version) || 0,
 				renderer   : obj.data.properties.renderer ? obj.data.properties.renderer : 'legacy',
@@ -361,8 +370,13 @@ GoogleActions = {
 
 		await drive.files.update({
 			fileId   : brew.googleId,
-			resource : { properties : { views      : brew.views + 1,
-		 															lastViewed : new Date() } }
+			resource : {
+				modifiedTime : brew.updatedAt,
+				properties   : {
+					views      : brew.views + 1,
+		 			lastViewed : new Date()
+				}
+			}
 		})
 		.catch((err)=>{
 			console.log('Error updating Google views');

@@ -44,8 +44,8 @@ module.exports = [
 					{{wide
 					Everything in here will be extra wide. Tables, text, everything!
 					Beware though, CSS columns can behave a bit weird sometimes. You may
-					have to rely on the automatic column-break rather than \`\column\` if
-					you mix columns and wide blocks on the same page.
+					have to manually place column breaks with \`\column\` to make the
+					surrounding text flow with this wide block the way you want.
 					}}
 					\n`
 			},
@@ -262,12 +262,32 @@ module.exports = [
 			{
 				name : 'Class Table',
 				icon : 'fas fa-table',
-				gen  : ClassTableGen.full,
+				gen  : ClassTableGen.full('classTable,frame,wide'),
 			},
 			{
-				name : 'Half Class Table',
+				name : 'Class Table (unframed)',
+				icon : 'fas fa-border-none',
+				gen  : ClassTableGen.full('classTable,wide'),
+			},
+			{
+				name : '1/2 Class Table',
 				icon : 'fas fa-list-alt',
-				gen  : ClassTableGen.half,
+				gen  : ClassTableGen.half('classTable,frame'),
+			},
+			{
+				name : '1/2 Class Table (unframed)',
+				icon : 'fas fa-border-none',
+				gen  : ClassTableGen.half('classTable'),
+			},
+			{
+				name : '1/3 Class Table',
+				icon : 'fas fa-border-all',
+				gen  : ClassTableGen.third('classTable,frame'),
+			},
+			{
+				name : '1/3 Class Table (unframed)',
+				icon : 'fas fa-border-none',
+				gen  : ClassTableGen.third('classTable'),
 			},
 			{
 				name : 'Table',

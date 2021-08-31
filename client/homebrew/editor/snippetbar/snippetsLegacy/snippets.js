@@ -305,7 +305,7 @@ module.exports = [
 				name : 'Ink Friendly',
 				icon : 'fas fa-tint',
 				gen  : dedent`
-					/* Ink Friendly */',
+					/* Ink Friendly */
 					.phb, .phb blockquote, .phb hr+blockquote {
 						background : white;
 						box-shadow : 0px 0px 3px;
