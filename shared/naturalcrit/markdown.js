@@ -65,13 +65,13 @@ const mustacheSpans = {
 					raw    : raw,                       // Text to consume from the source
 					text   : text,                      // Additional custom properties
 					tags   : tags,
-					tokens : this.inlineTokens(text)    // inlineTokens to process **bold**, *italics*, etc.
+					tokens : this.lexer.inlineTokens(text)    // inlineTokens to process **bold**, *italics*, etc.
 				};
 			}
 		}
 	},
 	renderer(token) {
-		return `<span class="inline-block${token.tags}>${this.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
+		return `<span class="inline-block${token.tags}>${this.parser.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
 	}
 };
 
@@ -114,13 +114,13 @@ const mustacheDivs = {
 					raw    : raw,                                 // Text to consume from the source
 					text   : text,                                // Additional custom properties
 					tags   : tags,
-					tokens : this.inline(this.blockTokens(text))
+					tokens : this.lexer.blockTokens(text)
 				};
 			}
 		}
 	},
 	renderer(token) {
-		return `<div class="block${token.tags}>${this.parse(token.tokens)}</div>`; // parseInline to turn child tokens into HTML
+		return `<div class="block${token.tags}>${this.parser.parse(token.tokens)}</div>`; // parseInline to turn child tokens into HTML
 	}
 };
 
@@ -149,7 +149,7 @@ const mustacheInjectInline = {
 	},
 	renderer(token) {
 		token.type = token.originalType;
-		const text = this.parseInline([token]);
+		const text = this.parser.parseInline([token]);
 		const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
 		if(openingTag) {
 			return `${openingTag[1]} class="${token.tags}${openingTag[2]}`;
@@ -182,7 +182,7 @@ const mustacheInjectBlock = {
 		},
 		renderer(token) {
 			token.type = token.originalType;
-			const text = this.parse([token]);
+			const text = this.parser.parse([token]);
 			const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
 			if(openingTag) {
 				return `${openingTag[1]} class="${token.tags}${openingTag[2]}`;
@@ -211,8 +211,8 @@ const definitionLists = {
 		const definitions = [];
 		while (match = regex.exec(src)) {
 			definitions.push({
-				dt : this.inlineTokens(match[1].trim()),
-				dd : this.inlineTokens(match[2].trim())
+				dt : this.lexer.inlineTokens(match[1].trim()),
+				dd : this.lexer.inlineTokens(match[2].trim())
 			});
 			endIndex = regex.lastIndex;
 		}
@@ -227,8 +227,8 @@ const definitionLists = {
 	renderer(token) {
 		return `<dl>
 						${token.definitions.reduce((html, def)=>{
-		return `${html}<dt>${this.parseInline(def.dt)}</dt>`
-									 + `<dd>${this.parseInline(def.dd)}</dd>\n`;
+		return `${html}<dt>${this.parser.parseInline(def.dt)}</dt>`
+									 + `<dd>${this.parser.parseInline(def.dd)}</dd>\n`;
 	}, '')}
 		 				</dl>`;
 	}
@@ -302,7 +302,7 @@ const spanTable = {
 					row = item.header[j];
 					for (k = 0; k < row.length; k++) {
 						row[k].tokens = [];
-						this.inlineTokens(row[k].text, row[k].tokens);
+						this.lexer.inlineTokens(row[k].text, row[k].tokens);
 					}
 				}
 
@@ -312,7 +312,7 @@ const spanTable = {
 					row = item.rows[j];
 					for (k = 0; k < row.length; k++) {
 						row[k].tokens = [];
-						this.inlineTokens(row[k].text, row[k].tokens);
+						this.lexer.inlineTokens(row[k].text, row[k].tokens);
 					}
 				}
 				return item;
@@ -329,7 +329,7 @@ const spanTable = {
 			output += `<tr>`;
 			for (j = 0; j < row.length; j++) {
 				cell = row[j];
-				text = this.parseInline(cell.tokens);
+				text = this.parser.parseInline(cell.tokens);
 				output += getTableCell(text, cell, 'th', token.align[col]);
 				col += cell.colspan;
 			}
@@ -344,7 +344,7 @@ const spanTable = {
 				output += `<tr>`;
 				for (j = 0; j < row.length; j++) {
 					cell = row[j];
-					text = this.parseInline(cell.tokens);
+					text = this.parser.parseInline(cell.tokens);
 					output += getTableCell(text, cell, 'td', token.align[col]);
 					col += cell.colspan;
 				}
