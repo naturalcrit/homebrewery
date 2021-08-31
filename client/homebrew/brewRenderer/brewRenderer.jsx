@@ -30,7 +30,7 @@ const BrewRenderer = createClass({
 		if(this.props.renderer == 'legacy') {
 			pages = this.props.text.split('\\page');
 		} else {
-			pages = this.props.text.split(/^\\page/gm);
+			pages = this.props.text.split(/^\\page$/gm);
 		}
 
 		return {
@@ -62,7 +62,7 @@ const BrewRenderer = createClass({
 			if(this.props.renderer == 'legacy') {
 				pages = this.props.text.split('\\page');
 			} else {
-				pages = this.props.text.split(/^\\page/gm);
+				pages = this.props.text.split(/^\\page$/gm);
 			}
 			this.setState({
 				pages  : pages,

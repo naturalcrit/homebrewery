@@ -121,7 +121,7 @@ const Editor = createClass({
 
 				// New Codemirror styling for V3 renderer
 				if(this.props.renderer == 'V3') {
-					if(line.startsWith('\\page')){
+					if(line.match(/^\\page$/)){
 						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
 						r.push(lineNumber);
 					}
