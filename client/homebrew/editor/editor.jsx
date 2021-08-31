@@ -68,10 +68,9 @@ const Editor = createClass({
 	},
 
 	handleInject : function(injectText){
-		const text = (
-			this.isText()  ? this.props.brew.text :
-			this.isStyle() ? this.props.brew.style ?? DEFAULT_STYLE_TEXT : ''
-		);
+		let text;
+		if(this.isText())  text = this.props.brew.text;
+		if(this.isStyle()) text = this.props.brew.style ?? DEFAULT_STYLE_TEXT;
 
 		const lines = text.split('\n');
 		const cursorPos = this.refs.codeEditor.getCursorPosition();
@@ -79,7 +78,7 @@ const Editor = createClass({
 
 		this.refs.codeEditor.setCursorPosition(cursorPos.line + injectText.split('\n').length, cursorPos.ch  + injectText.length);
 
-		if(this.isText()) this.props.onTextChange(lines.join('\n'));
+		if(this.isText())  this.props.onTextChange(lines.join('\n'));
 		if(this.isStyle()) this.props.onStyleChange(lines.join('\n'));
 	},
 
