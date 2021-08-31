@@ -48,6 +48,8 @@ body {
 }
 .columnWrapper{
 	max-height        : 100%;
+	column-span       : all;
+	columns           : inherit;
 }
 .page{
 	.useColumns();
@@ -71,10 +73,13 @@ body {
 	// *****************************/
 	p{
 		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
-		margin-bottom : 0.8em;
+		display       : block;
 		line-height   : 1.3em;
+		&+* {
+			margin-top : 0.27cm;
+		}
 		&+p{
-			margin-top  : -0.8em;
+			margin-top : 0;
 		}
 	}
 	ul{
@@ -124,50 +129,49 @@ body {
 		color         : @headerText;
 	}
 	h1{
-		margin-bottom       : 0.18cm;
+		margin-bottom       : 0.18cm; //Margin-bottom only because this is WIDE
 		column-span         : all;
 		font-size           : 0.89cm;
 		-webkit-column-span : all;
 		-moz-column-span    : all;
 		&+p::first-letter{
-			float       : left;
-			font-family : SolberaImitationRemake;
-			line-height : 0.8em;
-			font-size: 3.5cm;
-			padding-left: 40px;
-			margin-left: -40px;
-			padding-top:10px;
-			margin-top:-8px;
-			padding-bottom:10px;
-			margin-bottom:-20px;
-			background-image: linear-gradient(-45deg, #322814, #998250, #322814);
-	    background-clip: text;
-	    -webkit-background-clip: text;
-	    color: rgba(0, 0, 0, 0);
+			float                   : left;
+			font-family             : SolberaImitationRemake;
+			line-height             : 1em;
+			font-size               : 3.5cm;
+			padding-left            : 40px; //Allow background color to extend into margins
+			margin-left             : -40px;
+			margin-top              :-0.3cm;
+			padding-bottom          :2px;
+			margin-bottom           :-20px;
+			background-image        : linear-gradient(-45deg, #322814, #998250, #322814);
+	    background-clip         : text;
+	    -webkit-background-clip : text;
+	    color                   : rgba(0, 0, 0, 0);
 		}
 		&+p::first-line{
 			font-variant : small-caps;
 		}
 	}
 	h2{
-		margin-top    : 0px;
-		margin-bottom : 0.05cm;
+		//margin-top    : 0px; //Font is misaligned. Shift up slightly
+		//margin-bottom : 0.05cm;
 		font-size     : 0.75cm;
 	}
 	h3{
-		margin-top    : -0.1cm;
-		margin-bottom : 0.1cm;
+		//margin-top    : -0.1cm; //Font is misaligned. Shift up slightly
+		//margin-bottom : 0.1cm;
 		font-size     : 0.575cm;
 		border-bottom : 2px solid @headerUnderline;
 	}
 	h4{
-		margin-top    : -0.02cm;
-		margin-bottom : 0.02cm;
+		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
+		//margin-bottom : 0.02cm;
 		font-size     : 0.458cm;
 	}
 	h5{
-		margin-top    : -0.02cm;
-		margin-bottom : 0.02cm;
+		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
+		//margin-bottom : 0.02cm;
 		font-family   : ScalySansSmallCapsRemake;
 		font-size     : 0.423cm;
 		font-weight   : 900;
@@ -483,6 +487,9 @@ body {
 		break-after                : always;
 		-moz-column-break-after    : always;
 		break-before               : column;
+		&+* {
+			margin-top: 0;
+		}
 	}
 	//Avoid breaking up
 	blockquote,table{
@@ -544,6 +551,10 @@ body {
 	-webkit-column-span : all;
 	-moz-column-span    : all;
 	display             : block;
+	margin-bottom       : 0.34cm;
+	&+* {
+		margin-top : 0;
+	}
 }
 //*****************************
 // *       CLASS TABLE
@@ -662,15 +673,18 @@ body {
 		line-height  : 1.3em;
 		padding-left : 1em;
 		text-indent  : -1em;
+		& + * {
+			margin-top : 0.28cm;
+		}
+		& + dl {
+			margin-top : 0;
+		}
 	}
 	dl + * {
-		margin-top : 0.28cm;
-	}
-	dl + p {
-  	margin-top : 0.5em;
+  	margin-top : 0.17cm;
   }
 	p + dl {
-		margin-top: -0.5em;
+		margin-top: 0.17cm;
 	}
   dt {
     display      : inline;
