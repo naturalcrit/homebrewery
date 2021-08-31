@@ -69,8 +69,8 @@ const Editor = createClass({
 
 	handleInject : function(injectText){
 		const text = (
-			this.isText() && this.props.brew.text ||
-			this.isStyle() && (this.props.brew.style ?? DEFAULT_STYLE_TEXT)
+			this.isText()  ? this.props.brew.text :
+			this.isStyle() ? this.props.brew.style ?? DEFAULT_STYLE_TEXT : ''
 		);
 
 		const lines = text.split('\n');
