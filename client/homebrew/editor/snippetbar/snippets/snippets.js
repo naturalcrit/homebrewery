@@ -141,11 +141,6 @@ module.exports = [
 					}}`
 			},
 			{
-				name : 'Class Table Decoration',
-				icon : 'fas fa-award',
-				gen  : `\n![ClassTable Decoration](https://i.imgur.com/xYVVT7e.png) {position:absolute,top:0px,right:0px,width:380px}`
-			},
-			{
 				name : 'Watercolor Splatter',
 				icon : 'fas fa-fill-drip',
 				gen  : watercolorGen,
@@ -262,7 +257,7 @@ module.exports = [
 			{
 				name : 'Class Table',
 				icon : 'fas fa-table',
-				gen  : ClassTableGen.full('classTable,frame,wide'),
+				gen  : ClassTableGen.full('classTable,frame,decoration,wide'),
 			},
 			{
 				name : 'Class Table (unframed)',
@@ -272,7 +267,7 @@ module.exports = [
 			{
 				name : '1/2 Class Table',
 				icon : 'fas fa-list-alt',
-				gen  : ClassTableGen.half('classTable,frame'),
+				gen  : ClassTableGen.half('classTable,decoration,frame'),
 			},
 			{
 				name : '1/2 Class Table (unframed)',
