@@ -627,15 +627,17 @@ body {
 		white-space : nowrap;
 	}
 	&.frame {
-		margin-top          : 25px;
-		margin-bottom       : 40px;
+		margin-top          : 0.66cm;
+		margin-bottom       : 1.05cm;
+		margin-left         : -0.1cm;
+		margin-right        : -0.1cm;
 		border-collapse     : separate;
 		background-color    : white;
 		border              : initial;
 		border-style        : solid;
-		border-image-outset : 0.66cm 0.3cm;
+		border-image-outset : 0.55cm 0.3cm;
 		border-image-repeat : stretch;
-		border-image-slice  : 150 200 150 200;
+		border-image-slice  : 200;
 		border-image-source : @frameBorderImage;
 		border-image-width  : 47px;
 	}
@@ -648,14 +650,20 @@ body {
 		background-image  : @classTableDecoration;
 		background-size   : contain;
 		background-repeat : space;
-		width             : calc(100% + 3.4cm);
-		height            : 7.75cm;
-		top               : calc(50% + 0.35cm);
+		width             : 7.75cm;
+		height            : calc(100% + 3.3cm);
+		top               : 50%;
 		left              : 50%;
 		transform         : translateY(-50%) translateX(-50%) translateZ(-1px);
+		filter            : drop-shadow(0px 0px 1px #C8C5C080)
+	}
+	&.decoration.wide::before {
+		width             : calc(100% + 3.3cm);
+		height            : 7.75cm;
+		top               : calc(50% + 0.4cm);
 	}
 	h5 + table{
-		margin-top : 10px;
+		margin-top : 0.2cm;
 	}
 }
 //*****************************
