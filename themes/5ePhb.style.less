@@ -9,6 +9,7 @@
 @headerText            : #58180D; // Dark maroon
 @monsterStatBackground : #EEDBAB; // Light orange parchment
 @captionText           : #766649; // Brown
+@watercolorStain       : #BBAD82; // Light brown
 @page { margin: 0; }
 body {
 	counter-reset : phb-page-numbers;
@@ -182,7 +183,9 @@ body {
 	table{
 		.useSansSerif();
 		width         : 100%;
-		margin-bottom : 1em;
+		& + * {
+			margin-top : 1em;
+		}
 		thead{
 			display: table-row-group;
 			font-weight : 800;
@@ -272,8 +275,10 @@ body {
 		}
 	}
 	//*****************************
-	// *    ARTIST CREDIT BLOCK
+	// *    Images Snippets
 	// *****************************/
+
+	/* Arist Credit */
 	.artist {
 		position    : absolute;
 		text-align  : center;
@@ -296,6 +301,64 @@ body {
 				text-decoration : underline;
 			}
 		}
+	}
+
+	/* Watermark */
+	.watermark {
+		display			: grid !important;
+		place-items		: center;
+		justify-content	: center;
+		position		: absolute;
+		top				: 0;
+		left			: 0;
+		width			: 100%;
+		height			: 100%;
+		font-size		: 120px;
+		text-transform	: uppercase;
+		color			: black;
+		mix-blend-mode 	: overlay;
+		opacity			: 30%;
+		transform		: rotate(-45deg);
+		z-index			: 500;
+		p {
+			margin-bottom : none;
+		}
+	}
+
+	/* Watercolor */
+	[class*="watercolor"] {
+		position            : absolute;
+		width               : 2000px;    /* dimensions need to be real big so the user can set */
+		height              : 2000px;    /* height or width and the image will maintain aspect ratio */
+		-webkit-mask-image  : var(--wc);
+		-webkit-mask-size   : contain;
+		-webkit-mask-repeat : no-repeat;
+		mask-image          : var(--wc);
+		mask-size           : contain;
+		mask-repeat         : no-repeat;
+		background-size     : cover;
+		background-color    : @watercolorStain;			/*default color*/
+		--wc                : @watercolor1;         /*default image*/
+		z-index             : -2;
+	}
+
+	.watercolor1  { --wc : @watercolor1; }
+	.watercolor2  { --wc : @watercolor2; }
+	.watercolor3  { --wc : @watercolor3; }
+	.watercolor4  { --wc : @watercolor4; }
+	.watercolor5  { --wc : @watercolor5; }
+	.watercolor6  { --wc : @watercolor6; }
+	.watercolor7  { --wc : @watercolor7; }
+	.watercolor8  { --wc : @watercolor8; }
+	.watercolor9  { --wc : @watercolor9; }
+	.watercolor10 { --wc : @watercolor10; }
+	.watercolor11 { --wc : @watercolor11; }
+	.watercolor12 { --wc : @watercolor12; }
+
+	img {
+		z-index: 2 !important;
+		filter : drop-shadow(0px 6px 6px rgba(0,0,0,.4));
+		position: absolute;
 	}
 
 	//*****************************
@@ -564,20 +627,43 @@ body {
 		white-space : nowrap;
 	}
 	&.frame {
-		margin-top          : 25px;
-		margin-bottom       : 40px;
+		margin-top          : 0.66cm;
+		margin-bottom       : 1.05cm;
+		margin-left         : -0.1cm;
+		margin-right        : -0.1cm;
 		border-collapse     : separate;
 		background-color    : white;
 		border              : initial;
 		border-style        : solid;
-		border-image-outset : 25px 17px;
+		border-image-outset : 0.55cm 0.3cm;
 		border-image-repeat : stretch;
-		border-image-slice  : 150 200 150 200;
+		border-image-slice  : 200;
 		border-image-source : @frameBorderImage;
 		border-image-width  : 47px;
 	}
-	h5{
-		margin-bottom : 10px;
+	&.decoration {
+		transform-style : preserve-3d;
+	}
+	&.decoration::before {
+		content           :'';
+		position          : absolute;
+		background-image  : @classTableDecoration;
+		background-size   : contain;
+		background-repeat : space;
+		width             : 7.75cm;
+		height            : calc(100% + 3.3cm);
+		top               : 50%;
+		left              : 50%;
+		transform         : translateY(-50%) translateX(-50%) translateZ(-1px);
+		filter            : drop-shadow(0px 0px 1px #C8C5C080)
+	}
+	&.decoration.wide::before {
+		width             : calc(100% + 3.3cm);
+		height            : 7.75cm;
+		top               : calc(50% + 0.4cm);
+	}
+	h5 + table{
+		margin-top : 0.2cm;
 	}
 }
 //*****************************
