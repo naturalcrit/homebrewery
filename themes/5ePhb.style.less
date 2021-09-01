@@ -183,7 +183,9 @@ body {
 	table{
 		.useSansSerif();
 		width         : 100%;
-		margin-bottom : 1em;
+		& + * {
+			margin-top : 1em;
+		}
 		thead{
 			display: table-row-group;
 			font-weight : 800;
@@ -631,14 +633,29 @@ body {
 		background-color    : white;
 		border              : initial;
 		border-style        : solid;
-		border-image-outset : 25px 17px;
+		border-image-outset : 0.66cm 0.3cm;
 		border-image-repeat : stretch;
 		border-image-slice  : 150 200 150 200;
 		border-image-source : @frameBorderImage;
 		border-image-width  : 47px;
 	}
-	h5{
-		margin-bottom : 10px;
+	&.decoration {
+		transform-style : preserve-3d;
+	}
+	&.decoration::before {
+		content           :'';
+		position          : absolute;
+		background-image  : @classTableDecoration;
+		background-size   : contain;
+		background-repeat : space;
+		width             : calc(100% + 3.4cm);
+		height            : 7.75cm;
+		top               : calc(50% + 0.35cm);
+		left              : 50%;
+		transform         : translateY(-50%) translateX(-50%) translateZ(-1px);
+	}
+	h5 + table{
+		margin-top : 10px;
 	}
 }
 //*****************************
