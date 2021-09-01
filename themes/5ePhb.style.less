@@ -9,6 +9,7 @@
 @headerText            : #58180D; // Dark maroon
 @monsterStatBackground : #EEDBAB; // Light orange parchment
 @captionText           : #766649; // Brown
+@watercolorStain       : #BBAD82; // Light brown
 @page { margin: 0; }
 body {
 	counter-reset : phb-page-numbers;
@@ -320,6 +321,42 @@ body {
 		p {
 			margin-bottom : none;
 		}
+	}
+
+	/* Watercolor */
+	[class*="watercolor"] {
+		position            : absolute;
+		width               : 2000px;    /* dimensions need to be real big so the user can set */
+		height              : 2000px;    /* height or width and the image will maintain aspect ratio */
+		-webkit-mask-image  : var(--wc);
+		-webkit-mask-size   : contain;
+		-webkit-mask-repeat : no-repeat;
+		mask-image          : var(--wc);
+		mask-size           : contain;
+		mask-repeat         : no-repeat;
+		background-size     : cover;
+		background-color    : @watercolorStain;			/*default color*/
+		--wc                : @watercolor1;         /*default image*/
+		z-index             : -2;
+	}
+
+	.watercolor1  { --wc : @watercolor1; }
+	.watercolor2  { --wc : @watercolor2; }
+	.watercolor3  { --wc : @watercolor3; }
+	.watercolor4  { --wc : @watercolor4; }
+	.watercolor5  { --wc : @watercolor5; }
+	.watercolor6  { --wc : @watercolor6; }
+	.watercolor7  { --wc : @watercolor7; }
+	.watercolor8  { --wc : @watercolor8; }
+	.watercolor9  { --wc : @watercolor9; }
+	.watercolor10 { --wc : @watercolor10; }
+	.watercolor11 { --wc : @watercolor11; }
+	.watercolor12 { --wc : @watercolor12; }
+
+	img {
+		z-index: 2 !important;
+		filter : drop-shadow(0px 6px 6px rgba(0,0,0,.4));
+		position: absolute;
 	}
 
 	//*****************************
