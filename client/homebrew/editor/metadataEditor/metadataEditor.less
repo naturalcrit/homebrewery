@@ -84,6 +84,47 @@
 				.button(@purple)
 			}
 		}
+		.value{
+			display		: flex;
+			flex-wrap	: wrap;
+			.hovertext{
+				flex			: 1 0 100%;
+				align-items 	: center;
+				position		: relative;
+				padding-bottom 	: 5px;
+				input{
+					width			: 100%;
+					direction 		: rtl;
+					text-align 		: left;
+					text-overflow 	: ellipsis;
+				}
+				button{
+					position			: absolute;
+					right				: 5px;
+					top					: 1px;
+					background-color	: #cdcdcd;
+					height				: unset;
+					width				: unset;
+					border-radius		: 4px;
+					padding 			: 2px;
+					color				: black;
+					opacity 			: 0%;
+					transition			: all .5s ease;
+					font-size 			: .5em;
+					margin 				: 2px;
+				}
+				&:hover button{
+					opacity		: 100%;
+					transition	: all .5s ease;
+				}
+			}
+			a{
+				flex	: 1 0 100%;
+				button{
+					width	: 100%;
+				}
+			}
+		}
 	}
 	.authors.field .value{
 		font-size: 0.8em;

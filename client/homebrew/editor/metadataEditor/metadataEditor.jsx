@@ -134,16 +134,19 @@ const MetadataEditor = createClass({
 
 		return <div className='field share'>
 			<label>share</label>
-			<input type='text' className='value'
-				value={shareURL} readOnly />
-			<button className='clipboard' onClick={()=>{navigator.clipboard.writeText(`${shareURL}`);}}>
-				<i className='far fa-copy' />
-			</button>
-			<a href={this.getRedditLink()} target='_blank' rel='noopener noreferrer'>
-				<button className='reddit'>
-					<i className='fab fa-reddit-alien' />
-				</button>
-			</a>
+			<div className='value'>
+				<div className='hovertext'>
+					<input type='text' value={shareURL} readOnly />
+					<button className='clipboard' onClick={()=>{navigator.clipboard.writeText(`${shareURL}`);}}>
+						<i className='far fa-copy' /> copy
+					</button>
+				</div>
+				<a href={this.getRedditLink()} target='_blank' rel='noopener noreferrer'>
+					<button className='reddit'>
+						<i className='fab fa-reddit-alien' /> share to r/unearthedarcana
+					</button>
+				</a>
+			</div>
 		</div>;
 	},
 
