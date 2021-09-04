@@ -130,15 +130,20 @@ const MetadataEditor = createClass({
 	renderShareToReddit : function(){
 		if(!this.props.metadata.shareId) return;
 
-		return <div className='field reddit'>
-			<label>reddit</label>
-			<div className='value'>
-				<a href={this.getRedditLink()} target='_blank' rel='noopener noreferrer'>
-					<button className='publish'>
-						<i className='fab fa-reddit-alien' /> share to reddit
-					</button>
-				</a>
-			</div>
+		const shareURL = `https://homebrewery.naturalcrit.com/share/${this.props.metadata.shareId}`;
+
+		return <div className='field share'>
+			<label>share</label>
+			<input type='text' className='value'
+				value={shareURL} readOnly />
+			<button className='clipboard' onClick={()=>{navigator.clipboard.writeText(`${shareURL}`);}}>
+				<i className='far fa-copy' />
+			</button>
+			<a href={this.getRedditLink()} target='_blank' rel='noopener noreferrer'>
+				<button className='reddit'>
+					<i className='fab fa-reddit-alien' />
+				</button>
+			</a>
 		</div>;
 	},
 
