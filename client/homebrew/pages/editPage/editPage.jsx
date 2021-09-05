@@ -196,11 +196,14 @@ const EditPage = createClass({
 
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 
+		const brew = this.state.brew;
+		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
+
 		if(this.state.saveGoogle) {
 			if(transfer) {
 				const res = await request
 				.post('/api/newGoogle/')
-				.send(this.state.brew)
+				.send(brew)
 				.catch((err)=>{
 					console.log(err.status === 401
 						? 'Not signed in!'
@@ -211,7 +214,7 @@ const EditPage = createClass({
 				if(!res) { return; }
 
 				console.log('Deleting Local Copy');
-				await request.delete(`/api/${this.state.brew.editId}`)
+				await request.delete(`/api/${brew.editId}`)
 				.send()
 				.catch((err)=>{
 					console.log('Error deleting Local Copy');
@@ -221,8 +224,8 @@ const EditPage = createClass({
 				history.replaceState(null, null, `/edit/${this.savedBrew.googleId}${this.savedBrew.editId}`); //update URL to match doc ID
 			} else {
 				const res = await request
-				.put(`/api/updateGoogle/${this.state.brew.editId}`)
-				.send(this.state.brew)
+				.put(`/api/updateGoogle/${brew.editId}`)
+				.send(brew)
 				.catch((err)=>{
 					console.log(err.status === 401
 						? 'Not signed in!'
@@ -236,14 +239,14 @@ const EditPage = createClass({
 		} else {
 			if(transfer) {
 				const res = await request.post('/api')
-				.send(this.state.brew)
+				.send(brew)
 				.catch((err)=>{
 					console.log('Error creating Local Copy');
 					this.setState({ errors: err });
 					return;
 				});
 
-				await request.get(`/api/removeGoogle/${this.state.brew.googleId}${this.state.brew.editId}`)
+				await request.get(`/api/removeGoogle/${brew.googleId}${brew.editId}`)
 				.send()
 				.catch((err)=>{
 					console.log('Error Deleting Google Brew');
@@ -253,8 +256,8 @@ const EditPage = createClass({
 				history.replaceState(null, null, `/edit/${this.savedBrew.editId}`); //update URL to match doc ID
 			} else {
 				const res = await request
-				.put(`/api/update/${this.state.brew.editId}`)
-				.send(this.state.brew)
+				.put(`/api/update/${brew.editId}`)
+				.send(brew)
 				.catch((err)=>{
 					console.log('Error Updating Local Brew');
 					this.setState({ errors: err });
@@ -322,7 +325,9 @@ const EditPage = createClass({
 			let errMsg = '';
 			try {
 				errMsg += `${this.state.errors.toString()}\n\n`;
-				errMsg += `\`\`\`\n${JSON.stringify(this.state.errors.response.error, null, '  ')}\n\`\`\``;
+				errMsg += `\`\`\`\n${this.state.errors.stack}\n`;
+				errMsg += `${JSON.stringify(this.state.errors.response.error, null, '  ')}\n\`\`\``;
+				console.log(errMsg);
 			} catch (e){}
 
 			if(this.state.errors.status == '401'){
@@ -331,6 +336,27 @@ const EditPage = createClass({
 					<div className='errorContainer' onClick={this.clearErrors}>
 					You must be signed in to a Google account
 						to save this to<br />Google Drive!<br />
+						<a target='_blank' rel='noopener noreferrer'
+							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
+							<div className='confirm'>
+								Sign In
+							</div>
+						</a>
+						<div className='deny'>
+							Not Now
+						</div>
+					</div>
+				</Nav.item>;
+			}
+
+			if(this.state.errors.status == '403' && this.state.errors.response.body.errors[0].reason == 'insufficientPermissions'){
+				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+					Oops!
+					<div className='errorContainer' onClick={this.clearErrors}>
+					Looks like your Google credentials have
+					expired! Visit the log in page to sign out
+					and sign back in with Google
+					to save this to Google Drive!
 						<a target='_blank' rel='noopener noreferrer'
 							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
 							<div className='confirm'>

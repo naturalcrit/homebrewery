@@ -19,6 +19,15 @@ const getGoodBrewTitle = (text)=>{
 				 .slice(0, MAX_TITLE_LENGTH);
 };
 
+const excludePropsFromUpdate = (brew)=>{
+	// Remove undesired properties
+	const propsToExclude = ['views', 'lastViewed'];
+	for (const prop of propsToExclude) {
+		delete brew[prop];
+	};
+	return brew;
+};
+
 const mergeBrewText = (text, style)=>{
 	if(typeof style !== 'undefined') {
 		text = `\`\`\`css\n` +
@@ -64,7 +73,8 @@ const newBrew = (req, res)=>{
 const updateBrew = (req, res)=>{
 	HomebrewModel.get({ editId: req.params.id })
 		.then((brew)=>{
-			brew = _.merge(brew, req.body);
+			const updateBrew = excludePropsFromUpdate(req.body);
+			brew = _.merge(brew, updateBrew);
 			brew.text = mergeBrewText(brew.text, brew.style);
 
 			// Compress brew text to binary before saving
@@ -141,9 +151,12 @@ const newGoogleBrew = async (req, res, next)=>{
 
 	req.body = brew;
 
-	const newBrew = await GoogleActions.newGoogleBrew(oAuth2Client, brew);
-
-	return res.status(200).send(newBrew);
+	try {
+		const newBrew = await GoogleActions.newGoogleBrew(oAuth2Client, brew);
+		return res.status(200).send(newBrew);
+	} catch (err) {
+		return res.status(err.response.status).send(err);
+	}
 };
 
 const updateGoogleBrew = async (req, res, next)=>{
@@ -151,12 +164,15 @@ const updateGoogleBrew = async (req, res, next)=>{
 
 	try {	oAuth2Client = GoogleActions.authCheck(req.account, res); } catch (err) { return res.status(err.status).send(err.message); }
 
-	const brew = req.body;
+	const brew = excludePropsFromUpdate(req.body);
 	brew.text = mergeBrewText(brew.text, brew.style);
 
-	const updatedBrew = await GoogleActions.updateGoogleBrew(oAuth2Client, brew);
-
-	return res.status(200).send(updatedBrew);
+	try {
+		const updatedBrew = await GoogleActions.updateGoogleBrew(oAuth2Client, brew);
+		return res.status(200).send(updatedBrew);
+	} catch (err) {
+		return res.status(err.response.status).send(err);
+	}
 };
 
 router.post('/api', newBrew);

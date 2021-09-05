@@ -167,6 +167,10 @@ const MetadataEditor = createClass({
 						onChange={(e)=>this.handleRenderer('V3', e)} />
 					V3
 				</label>
+
+				<a href='/v3_preview' target='_blank' rel='noopener noreferrer'>
+					Click here for a quick intro to V3!
+				</a>
 			</div>
 		</div>;
 	},

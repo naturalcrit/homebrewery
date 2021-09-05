@@ -2,12 +2,14 @@
 @import (less) './themes/assets/assets.less';
 
 //Colors
-@background            : #EEE5CE;
-@noteGreen             : #e0e5c1;
-@headerUnderline       : #c9ad6a;
-@horizontalRule        : #9c2b1b;
-@headerText            : #58180D;
-@monsterStatBackground : #EEDBAB;
+@background            : #EEE5CE; // Light parchment
+@noteGreen             : #e0e5c1; // Pastel green
+@headerUnderline       : #c9ad6a; // Gold
+@horizontalRule        : #9c2b1b; // Maroon
+@headerText            : #58180D; // Dark maroon
+@monsterStatBackground : #EEDBAB; // Light orange parchment
+@captionText           : #766649; // Brown
+@watercolorStain       : #BBAD82; // Light brown
 @page { margin: 0; }
 body {
 	counter-reset : phb-page-numbers;
@@ -33,9 +35,9 @@ body {
 		letter-spacing : -0.02em;
 	}
 }
-.useColumns(@multiplier : 1){
+.useColumns(@multiplier : 1, @fillMode: balance){
 	column-count         : 2;
-	column-fill          : auto;
+	column-fill          : @fillMode;
 	column-gap           : 0.9cm;
 	column-width         : 8cm * @multiplier;
 	-webkit-column-count : 2;
@@ -44,6 +46,11 @@ body {
 	-moz-column-width    : 8cm * @multiplier;
 	-webkit-column-gap   : 0.9cm;
 	-moz-column-gap      : 0.9cm;
+}
+.columnWrapper{
+	max-height        : 100%;
+	column-span       : all;
+	columns           : inherit;
 }
 .page{
 	.useColumns();
@@ -54,9 +61,9 @@ body {
 	overflow          : hidden;
 	height            : 279.4mm;
 	width             : 215.9mm;
-	padding           : 1.4cm 1.9cm 1.7cm;
 	background-color  : @background;
 	background-image  : @backgroundImage;
+	padding           : 1.4cm 1.9cm 1.7cm;
 	font-family       : BookInsanityRemake;
 	font-size         : 0.34cm;
 	text-rendering    : optimizeLegibility;
@@ -67,10 +74,13 @@ body {
 	// *****************************/
 	p{
 		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
-		margin-bottom : 0.8em;
+		display       : block;
 		line-height   : 1.3em;
+		&+* {
+			margin-top : 0.27cm;
+		}
 		&+p{
-			margin-top  : -0.8em;
+			margin-top : 0;
 		}
 	}
 	ul{
@@ -120,50 +130,49 @@ body {
 		color         : @headerText;
 	}
 	h1{
-		margin-bottom       : 0.18cm;
+		margin-bottom       : 0.18cm; //Margin-bottom only because this is WIDE
 		column-span         : all;
 		font-size           : 0.89cm;
 		-webkit-column-span : all;
 		-moz-column-span    : all;
 		&+p::first-letter{
-			float       : left;
-			font-family : SolberaImitationRemake;
-			line-height : 0.8em;
-			font-size: 3.5cm;
-			padding-left: 40px;
-			margin-left: -40px;
-			padding-top:10px;
-			margin-top:-8px;
-			padding-bottom:10px;
-			margin-bottom:-20px;
-			background-image: linear-gradient(-45deg, #322814, #998250, #322814);
-	    background-clip: text;
-	    -webkit-background-clip: text;
-	    color: rgba(0, 0, 0, 0);
+			float                   : left;
+			font-family             : SolberaImitationRemake;
+			line-height             : 1em;
+			font-size               : 3.5cm;
+			padding-left            : 40px; //Allow background color to extend into margins
+			margin-left             : -40px;
+			margin-top              :-0.3cm;
+			padding-bottom          :2px;
+			margin-bottom           :-20px;
+			background-image        : linear-gradient(-45deg, #322814, #998250, #322814);
+	    background-clip         : text;
+	    -webkit-background-clip : text;
+	    color                   : rgba(0, 0, 0, 0);
 		}
 		&+p::first-line{
 			font-variant : small-caps;
 		}
 	}
 	h2{
-		margin-top    : 0px;
-		margin-bottom : 0.05cm;
+		//margin-top    : 0px; //Font is misaligned. Shift up slightly
+		//margin-bottom : 0.05cm;
 		font-size     : 0.75cm;
 	}
 	h3{
-		margin-top    : -0.1cm;
-		margin-bottom : 0.1cm;
+		//margin-top    : -0.1cm; //Font is misaligned. Shift up slightly
+		//margin-bottom : 0.1cm;
 		font-size     : 0.575cm;
 		border-bottom : 2px solid @headerUnderline;
 	}
 	h4{
-		margin-top    : -0.02cm;
-		margin-bottom : 0.02cm;
+		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
+		//margin-bottom : 0.02cm;
 		font-size     : 0.458cm;
 	}
 	h5{
-		margin-top    : -0.02cm;
-		margin-bottom : 0.02cm;
+		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
+		//margin-bottom : 0.02cm;
 		font-family   : ScalySansSmallCapsRemake;
 		font-size     : 0.423cm;
 		font-weight   : 900;
@@ -174,7 +183,9 @@ body {
 	table{
 		.useSansSerif();
 		width         : 100%;
-		margin-bottom : 1em;
+		& + * {
+			margin-top : 1em;
+		}
 		thead{
 			display: table-row-group;
 			font-weight : 800;
@@ -205,7 +216,6 @@ body {
 			border-width        : 11px;
 			border-image        : @noteBorderImage 12;
 			border-image-outset : 9px 0px;
-			box-shadow          : 1px 4px 14px #888;
 			position            : absolute;
 			width               : 100%;
 			height              : 100%;
@@ -218,6 +228,7 @@ body {
 		margin-left         : -0.1em;
 		margin-right        : -0.1em;
 		background-color    : @noteGreen;
+		filter              : drop-shadow(1px 4px 6px #888);
 		padding             : 0.5em 0.6em;
 		& + * {
 			margin-top : 1.3em;
@@ -238,7 +249,7 @@ body {
 	// ************************************/
 	.descriptive{
 		.useSansSerif();
-		display             : block-inline;
+		display             : inline-block;
 		margin-top          : 1.4em;
 		background-color    : #faf7ea;
 		font-family         : ScalySansRemake;
@@ -246,7 +257,7 @@ body {
 		border-width        : 7px;
 		border-image        : @descriptiveBoxImage 12 stretch;
 		border-image-outset : 4px;
-		box-shadow          : 0px 0px 6px #faf7ea;
+		filter              : drop-shadow(0 0 3px #faf7ea);
 		padding             : 0.1em;
 		& + * {
 			margin-top : 1.4em;
@@ -264,6 +275,93 @@ body {
 		}
 	}
 	//*****************************
+	// *    Images Snippets
+	// *****************************/
+
+	/* Arist Credit */
+	.artist {
+		position    : absolute;
+		text-align  : center;
+		font-family : WalterTurncoat;
+		font-size   : 0.27cm;
+		color       : @captionText;
+		p, p + p {
+			margin      : unset;
+			text-indent : unset;
+			line-height : 1em;
+		}
+	 	h5 {
+			font-size   : 1.3em;
+			font-family : WalterTurncoat;
+		}
+		a{
+			color           : inherit;
+			text-decoration : unset;
+			&:hover {
+				text-decoration : underline;
+			}
+		}
+	}
+
+	/* Watermark */
+	.watermark {
+		display			: grid !important;
+		place-items		: center;
+		justify-content	: center;
+		position		: absolute;
+		top				: 0;
+		left			: 0;
+		width			: 100%;
+		height			: 100%;
+		font-size		: 120px;
+		text-transform	: uppercase;
+		color			: black;
+		mix-blend-mode 	: overlay;
+		opacity			: 30%;
+		transform		: rotate(-45deg);
+		z-index			: 500;
+		p {
+			margin-bottom : none;
+		}
+	}
+
+	/* Watercolor */
+	[class*="watercolor"] {
+		position            : absolute;
+		width               : 2000px;    /* dimensions need to be real big so the user can set */
+		height              : 2000px;    /* height or width and the image will maintain aspect ratio */
+		-webkit-mask-image  : var(--wc);
+		-webkit-mask-size   : contain;
+		-webkit-mask-repeat : no-repeat;
+		mask-image          : var(--wc);
+		mask-size           : contain;
+		mask-repeat         : no-repeat;
+		background-size     : cover;
+		background-color    : @watercolorStain;			/*default color*/
+		--wc                : @watercolor1;         /*default image*/
+		z-index             : -2;
+	}
+
+	.watercolor1  { --wc : @watercolor1; }
+	.watercolor2  { --wc : @watercolor2; }
+	.watercolor3  { --wc : @watercolor3; }
+	.watercolor4  { --wc : @watercolor4; }
+	.watercolor5  { --wc : @watercolor5; }
+	.watercolor6  { --wc : @watercolor6; }
+	.watercolor7  { --wc : @watercolor7; }
+	.watercolor8  { --wc : @watercolor8; }
+	.watercolor9  { --wc : @watercolor9; }
+	.watercolor10 { --wc : @watercolor10; }
+	.watercolor11 { --wc : @watercolor11; }
+	.watercolor12 { --wc : @watercolor12; }
+
+	img {
+		z-index: 2 !important;
+		filter : drop-shadow(0px 6px 6px rgba(0,0,0,.4));
+		position: absolute;
+	}
+
+	//*****************************
 	// *    MONSTER STAT BLOCK
 	// *****************************/
 	.monster {
@@ -277,7 +375,7 @@ body {
 			border-image-outset   : 0px 2px;
 			background-blend-mode : overlay;
 			background-attachment : fixed;
-			box-shadow            : 1px 4px 14px #888;
+			filter                : drop-shadow(1px 4px 6px #888);
 			padding               : 4px 2px;
 			margin                : 0px -6px 1em;
 		}
@@ -331,16 +429,19 @@ body {
 		dl {
 			color : @headerText;
 		}
+		hr:last-of-type~dl{
+			color : inherit; // After the HRs, hanging indents remain black.
+		}
 
 		// Monster Ability table
 		hr + table:first-of-type{
 			margin              : 0;
-			column-span         : 1;
+			column-span         : none;
 			color               : @headerText;
 			background-color    : transparent;
 			border-style        : none;
 			border-image        : none;
-			-webkit-column-span : 1;
+			-webkit-column-span : none;
 			tr {
 				background-color : transparent;
 			}
@@ -352,7 +453,7 @@ body {
 
 	//Full Width
 	.monster.wide{
-		.useColumns(0.96);
+		.useColumns(0.96, @fillMode: balance);
 	}
 
 	//*****************************
@@ -449,6 +550,9 @@ body {
 		break-after                : always;
 		-moz-column-break-after    : always;
 		break-before               : column;
+		&+* {
+			margin-top: 0;
+		}
 	}
 	//Avoid breaking up
 	blockquote,table{
@@ -509,24 +613,57 @@ body {
 	column-span         : all;
 	-webkit-column-span : all;
 	-moz-column-span    : all;
+	display             : block;
+	margin-bottom       : 0.34cm;
+	&+* {
+		margin-top : 0;
+	}
 }
 //*****************************
 // *       CLASS TABLE
 // *****************************/
 .page .classTable{
-	margin-top          : 25px;
-	margin-bottom       : 40px;
-	border-collapse     : separate;
-	background-color    : white;
-	border              : initial;
-	border-style        : solid;
-	border-image-outset : 25px 17px;
-	border-image-repeat : stretch;
-	border-image-slice  : 150 200 150 200;
-	border-image-source : @frameBorderImage;
-	border-image-width  : 47px;
-	h5{
-		margin-bottom : 10px;
+	th[colspan]:not([rowspan]) {
+		white-space : nowrap;
+	}
+	&.frame {
+		margin-top          : 0.66cm;
+		margin-bottom       : 1.05cm;
+		margin-left         : -0.1cm;
+		margin-right        : -0.1cm;
+		border-collapse     : separate;
+		background-color    : white;
+		border              : initial;
+		border-style        : solid;
+		border-image-outset : 0.55cm 0.3cm;
+		border-image-repeat : stretch;
+		border-image-slice  : 200;
+		border-image-source : @frameBorderImage;
+		border-image-width  : 47px;
+	}
+	&.decoration {
+		transform-style : preserve-3d;
+	}
+	&.decoration::before {
+		content           :'';
+		position          : absolute;
+		background-image  : @classTableDecoration;
+		background-size   : contain;
+		background-repeat : space;
+		width             : 7.75cm;
+		height            : calc(100% + 3.3cm);
+		top               : 50%;
+		left              : 50%;
+		transform         : translateY(-50%) translateX(-50%) translateZ(-1px);
+		filter            : drop-shadow(0px 0px 1px #C8C5C080)
+	}
+	&.decoration.wide::before {
+		width             : calc(100% + 3.3cm);
+		height            : 7.75cm;
+		top               : calc(50% + 0.4cm);
+	}
+	h5 + table{
+		margin-top : 0.2cm;
 	}
 }
 //*****************************
@@ -598,7 +735,7 @@ body {
 		}
 	}
 	&.wide{
-		.useColumns(0.96);
+		.useColumns(0.96, @fillMode: balance);
 	}
 }
 
@@ -613,7 +750,6 @@ body {
 	.inline-block {
 		display : inline-block;
 		text-indent : initial;
-		line-height : 1.3em;
 	}
 	div {
 		column-gap : 0.5cm; //Default spacing if a div uses multicolumns
@@ -628,12 +764,18 @@ body {
 		line-height  : 1.3em;
 		padding-left : 1em;
 		text-indent  : -1em;
+		& + * {
+			margin-top : 0.28cm;
+		}
+		& + dl {
+			margin-top : 0;
+		}
 	}
-	dl + p {
-  	margin-top: 0.5em;
+	dl + * {
+  	margin-top : 0.17cm;
   }
 	p + dl {
-		margin-top: -0.5em;
+		margin-top: 0.17cm;
 	}
   dt {
     display      : inline;

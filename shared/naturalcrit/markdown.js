@@ -19,7 +19,7 @@ renderer.paragraph = function(text){
 	let match;
 	if(text.startsWith('<div') || text.startsWith('</div'))
 		return `${text}`;
-	else if(match = text.match(/(^|^.*?\n)<span class="inline(.*?<\/span>)$/)) {
+	else if(match = text.match(/(^|^.*?\n)<span class="inline-block(.*?<\/span>)$/)) {
 		return `${match[1].trim() ? `<p>${match[1]}</p>` : ''}<span class="inline-block${match[2]}`;
 	} else
 		return `<p>${text}</p>\n`;
@@ -65,13 +65,13 @@ const mustacheSpans = {
 					raw    : raw,                       // Text to consume from the source
 					text   : text,                      // Additional custom properties
 					tags   : tags,
-					tokens : this.inlineTokens(text)    // inlineTokens to process **bold**, *italics*, etc.
+					tokens : this.lexer.inlineTokens(text)    // inlineTokens to process **bold**, *italics*, etc.
 				};
 			}
 		}
 	},
 	renderer(token) {
-		return `<span class="inline${token.tags}>${this.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
+		return `<span class="inline-block${token.tags}>${this.parser.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
 	}
 };
 
@@ -114,13 +114,13 @@ const mustacheDivs = {
 					raw    : raw,                                 // Text to consume from the source
 					text   : text,                                // Additional custom properties
 					tags   : tags,
-					tokens : this.inline(this.blockTokens(text))
+					tokens : this.lexer.blockTokens(text)
 				};
 			}
 		}
 	},
 	renderer(token) {
-		return `<div class="block${token.tags}>${this.parse(token.tokens)}</div>`; // parseInline to turn child tokens into HTML
+		return `<div class="block${token.tags}>${this.parser.parse(token.tokens)}</div>`; // parseInline to turn child tokens into HTML
 	}
 };
 
@@ -149,7 +149,7 @@ const mustacheInjectInline = {
 	},
 	renderer(token) {
 		token.type = token.originalType;
-		const text = this.parseInline([token]);
+		const text = this.parser.parseInline([token]);
 		const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
 		if(openingTag) {
 			return `${openingTag[1]} class="${token.tags}${openingTag[2]}`;
@@ -182,7 +182,7 @@ const mustacheInjectBlock = {
 		},
 		renderer(token) {
 			token.type = token.originalType;
-			const text = this.parse([token]);
+			const text = this.parser.parse([token]);
 			const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
 			if(openingTag) {
 				return `${openingTag[1]} class="${token.tags}${openingTag[2]}`;
@@ -211,8 +211,8 @@ const definitionLists = {
 		const definitions = [];
 		while (match = regex.exec(src)) {
 			definitions.push({
-				dt : this.inlineTokens(match[1].trim()),
-				dd : this.inlineTokens(match[2].trim())
+				dt : this.lexer.inlineTokens(match[1].trim()),
+				dd : this.lexer.inlineTokens(match[2].trim())
 			});
 			endIndex = regex.lastIndex;
 		}
@@ -227,8 +227,8 @@ const definitionLists = {
 	renderer(token) {
 		return `<dl>
 						${token.definitions.reduce((html, def)=>{
-		return `${html}<dt>${this.parseInline(def.dt)}</dt>`
-									 + `<dd>${this.parseInline(def.dd)}</dd>\n`;
+		return `${html}<dt>${this.parser.parseInline(def.dt)}</dt>`
+									 + `<dd>${this.parser.parseInline(def.dd)}</dd>\n`;
 	}, '')}
 		 				</dl>`;
 	}
@@ -302,7 +302,7 @@ const spanTable = {
 					row = item.header[j];
 					for (k = 0; k < row.length; k++) {
 						row[k].tokens = [];
-						this.inlineTokens(row[k].text, row[k].tokens);
+						this.lexer.inlineTokens(row[k].text, row[k].tokens);
 					}
 				}
 
@@ -312,7 +312,7 @@ const spanTable = {
 					row = item.rows[j];
 					for (k = 0; k < row.length; k++) {
 						row[k].tokens = [];
-						this.inlineTokens(row[k].text, row[k].tokens);
+						this.lexer.inlineTokens(row[k].text, row[k].tokens);
 					}
 				}
 				return item;
@@ -329,7 +329,7 @@ const spanTable = {
 			output += `<tr>`;
 			for (j = 0; j < row.length; j++) {
 				cell = row[j];
-				text = this.parseInline(cell.tokens);
+				text = this.parser.parseInline(cell.tokens);
 				output += getTableCell(text, cell, 'th', token.align[col]);
 				col += cell.colspan;
 			}
@@ -344,7 +344,7 @@ const spanTable = {
 				output += `<tr>`;
 				for (j = 0; j < row.length; j++) {
 					cell = row[j];
-					text = this.parseInline(cell.tokens);
+					text = this.parser.parseInline(cell.tokens);
 					output += getTableCell(text, cell, 'td', token.align[col]);
 					col += cell.colspan;
 				}
@@ -369,45 +369,28 @@ const getTableCell = (text, cell, type, align)=>{
 };
 
 const splitCells = (tableRow, count, prevRow = [])=>{
-	// trim any excessive pipes at start of row
-	tableRow = tableRow.replace(/^\|+(?=\|)/, '')
-	.replace(/(\|+)/g, (match, p1, offset, str)=>{
-		let escaped = false,
-			curr = offset;
-		while (--curr >= 0 && str[curr] === '\\') escaped = !escaped;
-		if(escaped) {
-			// odd number of slashes means | is escaped
-			// so we leave it and the slashes alone
-			return p1;
-		} else {
-			// add space before unescaped | to distinguish it from an escaped pipe
-			return ` ${p1}`;
-		}
-	});
+	const cells = [...tableRow.matchAll(/(?:[^|\\]|\\.?)+(?:\|+|$)/g)].map((x)=>x[0]);
 
-	const cells = tableRow.split(/(?: \||(?<=\|)\|)(?=[^\|]|$)/g);
-	let i = 0;
-
-	// First/last cell in a row cannot be empty if it has no leading/trailing pipe
-	if(!cells[0].trim()) { cells.shift(); }
-	if(!cells[cells.length - 1].trim()) { cells.pop(); }
+	// Remove first/last cell in a row if whitespace only and no leading/trailing pipe
+	if(!cells[0]?.trim()) { cells.shift(); }
+	if(!cells[cells.length - 1]?.trim()) { cells.pop(); }
 
 	let numCols = 0;
+	let i, j, trimmedCell, prevCell, prevCols;
 
-	for (; i < cells.length; i++) {
-		const trimmedCell = cells[i].split(/ \|+$/)[0];
+	for (i = 0; i < cells.length; i++) {
+		trimmedCell = cells[i].split(/\|+$/)[0];
 		cells[i] = {
 			rowspan : 1,
 			colspan : Math.max(cells[i].length - trimmedCell.length, 1),
 			text    : trimmedCell.trim().replace(/\\\|/g, '|')
-			// trim whitespace and display escaped pipes as normal character
+			// display escaped pipes as normal character
 		};
 
 		// Handle Rowspan
 		if(trimmedCell.slice(-1) == '^' && prevRow.length) {
 			// Find matching cell in previous row
-			let prevCols = 0;
-			let j, prevCell;
+			prevCols = 0;
 			for (j = 0; j < prevRow.length; j++) {
 				prevCell = prevRow[j];
 				if((prevCols == numCols) && (prevCell.colspan == cells[i].colspan)) {
@@ -544,7 +527,7 @@ const processStyleTags = (string)=>{
 module.exports = {
 	marked : Markdown,
 	render : (rawBrewText)=>{
-		rawBrewText = rawBrewText.replace(/^\\column$/gm, `<div class='columnSplit'></div>`)
+		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
 		return Markdown(
 			sanatizeScriptTags(rawBrewText),
