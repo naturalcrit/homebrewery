@@ -82,9 +82,7 @@ module.exports = [
 			{
 				name : 'Add Comment',
 				icon : 'fas fa-code',
-				gen  : dedent`\n
-					<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->
-					`
+				gen  : '<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->'
 			},
 		]
 	},
@@ -96,28 +94,26 @@ module.exports = [
 			{
 				name : 'Remove Drop Cap',
 				icon : 'fas fa-remove-format',
-				gen  : '/* Removes Drop Caps */\n' +
-						'.phb3 h1+p:first-letter {\n' +
-						'  all: unset;\n' +
-						'}\n'
+				gen  : dedent`/* Removes Drop Caps */
+						.phb3 h1+p:first-letter {
+							all: unset;
+						}\n\n`
 			},
 			{
 				name : 'Tweak Drop Cap',
 				icon : 'fas fa-sliders-h',
-				gen  : '/* Drop Cap settings */\n' +
-						'.phb3 h1 + p::first-letter {\n' +
-						'  font-family: SolberaImitationRemake;\n' +
-						'  font-size: 3.5cm;\n' +
-						'  background: linear-gradient(-45deg, #322814, #998250, #322814);\n' +
-						'  line-height: 1em;\n' +
-						'}\n'
+				gen  : dedent`/* Drop Cap settings */
+						.phb3 h1 + p::first-letter {
+							font-family: SolberaImitationRemake;
+							font-size: 3.5cm;
+							background: linear-gradient(-45deg, #322814, #998250, #322814);
+							line-height: 1em;
+						}\n\n`
 			},
 			{
 				name : 'Add Comment',
 				icon : 'fas fa-code',
-				gen  : dedent`\n
-					/* This is a comment that will not be rendered into your brew. */
-					`
+				gen  : '/* This is a comment that will not be rendered into your brew. */'
 			},
 		]
 	},
@@ -370,26 +366,22 @@ module.exports = [
 			{
 				name : 'A4 Page Size',
 				icon : 'far fa-file',
-				gen  : ['/* A4 Page Size */',
-					'.page{',
-					'	width  : 210mm;',
-					'	height : 296.8mm;',
-					'}',
-					''
-				].join('\n')
+				gen  : dedent`/* A4 Page Size */
+					.page{
+						width  : 210mm;
+						height : 296.8mm;
+					}\n\n`
 			},
 			{
 				name : 'Square Page Size',
 				icon : 'far fa-file',
-				gen  : ['/* Square Page Size */',
-					'.page {',
-					'	width   : 125mm;',
-					'	height  : 125mm;',
-					'	padding : 12.5mm;',
-					'	columns : unset;',
-					'}',
-					''
-				].join('\n')
+				gen  : dedent`/* Square Page Size */
+					.page {
+						width   : 125mm;
+						height  : 125mm;
+						padding : 12.5mm;
+						columns : unset;
+					}\n\n`
 			},
 			{
 				name : 'Ink Friendly',
@@ -407,7 +399,7 @@ module.exports = [
 
 					.page img {
 						visibility : hidden;
-					}`
+					}\n\n`
 			},
 		]
 	},

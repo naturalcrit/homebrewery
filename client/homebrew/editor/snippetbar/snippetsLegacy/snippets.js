@@ -81,7 +81,7 @@ module.exports = [
 			{
 				name : 'Add Comment',
 				icon : 'fas fa-code',
-				gen  : `\n<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->\n\n`
+				gen  : '<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->'
 			}
 		]
 	},
@@ -95,27 +95,27 @@ module.exports = [
 			{
 				name : 'Remove Drop Cap',
 				icon : 'fas fa-remove-format',
-				gen  : '/* Removes Drop Caps */\n' +
-						'.phb h1+p:first-letter {\n' +
-						'  all: unset;\n' +
-						'}\n'
+				gen  : dedent`/* Removes Drop Caps */
+						.phb h1+p:first-letter {
+							all: unset;
+						}\n\n`
 			},
 			{
 				name : 'Tweak Drop Cap',
 				icon : 'fas fa-sliders-h',
-				gen  : '/* Drop Cap Settings */\n' +
-						'.phb h1 + p::first-letter {\n' +
-						'  float: left;\n' +
-						'  font-family: Solberry;\n' +
-						'  font-size: 10em;\n' +
-						'  color: #222;\n' +
-						'  line-height: .8em;\n' +
-						'}\n'
+				gen  : dedent`/* Drop Cap Settings */
+						.phb h1 + p::first-letter {
+							float: left;
+							font-family: Solberry;
+							font-size: 10em;
+							color: #222;
+							line-height: .8em;
+						}\n\n`
 			},
 			{
 				name : 'Add Comment',
 				icon : 'fas fa-code',
-				gen  : `\n/* This is a comment that will not be rendered into your brew. */\n\n`
+				gen  : '/* This is a comment that will not be rendered into your brew. */'
 			}
 		]
 	},
