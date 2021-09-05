@@ -106,11 +106,10 @@ module.exports = [
 				icon : 'fas fa-sliders-h',
 				gen  : '/* Drop Cap settings */\n' +
 						'.phb3 h1 + p::first-letter {\n' +
-						'  float: left;\n' +
 						'  font-family: SolberaImitationRemake;\n' +
 						'  font-size: 3.5cm;\n' +
-						'  color: #222;\n' +
-						'  line-height: .8em;\n' +
+						'  background: linear-gradient(-45deg, #322814, #998250, #322814);\n' +
+						'  line-height: 1em;\n' +
 						'}\n'
 			},
 			{
@@ -266,36 +265,6 @@ module.exports = [
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'Class Table',
-				icon : 'fas fa-table',
-				gen  : ClassTableGen.full('classTable,frame,decoration,wide'),
-			},
-			{
-				name : 'Class Table (unframed)',
-				icon : 'fas fa-border-none',
-				gen  : ClassTableGen.full('classTable,wide'),
-			},
-			{
-				name : '1/2 Class Table',
-				icon : 'fas fa-list-alt',
-				gen  : ClassTableGen.half('classTable,decoration,frame'),
-			},
-			{
-				name : '1/2 Class Table (unframed)',
-				icon : 'fas fa-border-none',
-				gen  : ClassTableGen.half('classTable'),
-			},
-			{
-				name : '1/3 Class Table',
-				icon : 'fas fa-border-all',
-				gen  : ClassTableGen.third('classTable,frame'),
-			},
-			{
-				name : '1/3 Class Table (unframed)',
-				icon : 'fas fa-border-none',
-				gen  : ClassTableGen.third('classTable'),
-			},
-			{
 				name : 'Table',
 				icon : 'fas fa-th-list',
 				gen  : function(){
@@ -354,6 +323,36 @@ module.exports = [
 						}}
 						\n`;
 				}
+			},
+			{
+				name : 'Class Table',
+				icon : 'fas fa-table',
+				gen  : ClassTableGen.full('classTable,frame,decoration,wide'),
+			},
+			{
+				name : 'Class Table (unframed)',
+				icon : 'fas fa-border-none',
+				gen  : ClassTableGen.full('classTable,wide'),
+			},
+			{
+				name : '1/2 Class Table',
+				icon : 'fas fa-list-alt',
+				gen  : ClassTableGen.half('classTable,decoration,frame'),
+			},
+			{
+				name : '1/2 Class Table (unframed)',
+				icon : 'fas fa-border-none',
+				gen  : ClassTableGen.half('classTable'),
+			},
+			{
+				name : '1/3 Class Table',
+				icon : 'fas fa-border-all',
+				gen  : ClassTableGen.third('classTable,frame'),
+			},
+			{
+				name : '1/3 Class Table (unframed)',
+				icon : 'fas fa-border-none',
+				gen  : ClassTableGen.third('classTable'),
 			}
 		]
 	},
