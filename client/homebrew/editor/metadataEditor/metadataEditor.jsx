@@ -7,6 +7,8 @@ const request = require('superagent');
 
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
+
+
 const MetadataEditor = createClass({
 	getDefaultProps : function() {
 		return {
@@ -69,6 +71,7 @@ const MetadataEditor = createClass({
 		const meta = this.props.metadata;
 
 		const shareLink = (meta.googleId || '') + meta.shareId;
+
 		const title = `${meta.title} [${meta.systems.join(' ')}]`;
 		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
 
