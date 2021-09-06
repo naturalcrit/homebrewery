@@ -7,6 +7,7 @@ const ClassFeatureGen = require('./classfeature.gen.js');
 const CoverPageGen = require('./coverpage.gen.js');
 const TableOfContentsGen = require('./tableOfContents.gen.js');
 const dedent = require('dedent-tabs').default;
+const watercolorGen = require('./watercolor.gen.js');
 
 
 module.exports = [
@@ -49,28 +50,6 @@ module.exports = [
 					\n`
 			},
 			{
-				name : 'Image',
-				icon : 'fas fa-image',
-				gen  : dedent`
-					![cat warrior](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:325px,mix-blend-mode:multiply}
-
-					{{artist,position:relative,top:-230px,left:-100px,margin-bottom:-30px
-					##### Cat Warrior
-					[Kyoung Hwan Kim](https://www.artstation.com/tahra)
-					}}`
-			},
-			{
-				name : 'Background Image',
-				icon : 'fas fa-tree',
-				gen  : dedent`
-					![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,top:50px,right:30px,width:280px}
-
-					{{artist,top:90px,right:30px
-					##### Homebrew Mug
-					[naturalcrit](https://homebrew.naturalcrit.com)
-					}}`
-			},
-			{
 				name : 'QR Code',
 				icon : 'fas fa-qrcode',
 				gen  : (brew)=>{
@@ -79,7 +58,6 @@ module.exports = [
 							`https://homebrewery.naturalcrit.com/share/${brew.shareId}` +
 							`&amp;size=100x100) {width:100px;mix-blend-mode:multiply}`;
 				}
-
 			},
 			{
 				name : 'Page Number',
@@ -130,6 +108,48 @@ module.exports = [
 				gen  : dedent`\n
 					<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->
 					`
+			},
+		]
+	},
+
+	/*********************** IMAGES *******************/
+	{
+		groupName : 'Images',
+		icon      : 'fas fa-images',
+		view      : 'text',
+		snippets  : [
+			{
+				name : 'Image',
+				icon : 'fas fa-image',
+				gen  : dedent`
+					![cat warrior](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:325px,mix-blend-mode:multiply}
+
+					{{artist,position:relative,top:-230px,left:-100px,margin-bottom:-30px
+					##### Cat Warrior
+					[Kyoung Hwan Kim](https://www.artstation.com/tahra)
+					}}`
+			},
+			{
+				name : 'Background Image',
+				icon : 'fas fa-tree',
+				gen  : dedent`
+					![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,top:50px,right:30px,width:280px}
+
+					{{artist,top:90px,right:30px
+					##### Homebrew Mug
+					[naturalcrit](https://homebrew.naturalcrit.com)
+					}}`
+			},
+			{
+				name : 'Watercolor Splatter',
+				icon : 'fas fa-fill-drip',
+				gen  : watercolorGen,
+			},
+			{
+				name : 'Watermark',
+				icon : 'fas fa-id-card',
+				gen  : dedent`
+				{{watermark Homebrewery}}\n`
 			},
 		]
 	},
@@ -237,12 +257,32 @@ module.exports = [
 			{
 				name : 'Class Table',
 				icon : 'fas fa-table',
-				gen  : ClassTableGen.full,
+				gen  : ClassTableGen.full('classTable,frame,decoration,wide'),
 			},
 			{
-				name : 'Half Class Table',
+				name : 'Class Table (unframed)',
+				icon : 'fas fa-border-none',
+				gen  : ClassTableGen.full('classTable,wide'),
+			},
+			{
+				name : '1/2 Class Table',
 				icon : 'fas fa-list-alt',
-				gen  : ClassTableGen.half,
+				gen  : ClassTableGen.half('classTable,decoration,frame'),
+			},
+			{
+				name : '1/2 Class Table (unframed)',
+				icon : 'fas fa-border-none',
+				gen  : ClassTableGen.half('classTable'),
+			},
+			{
+				name : '1/3 Class Table',
+				icon : 'fas fa-border-all',
+				gen  : ClassTableGen.third('classTable,frame'),
+			},
+			{
+				name : '1/3 Class Table (unframed)',
+				icon : 'fas fa-border-none',
+				gen  : ClassTableGen.third('classTable'),
 			},
 			{
 				name : 'Table',

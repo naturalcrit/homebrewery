@@ -76,7 +76,8 @@ const Editor = createClass({
 		const cursorPos = this.refs.codeEditor.getCursorPosition();
 		lines[cursorPos.line] = splice(lines[cursorPos.line], cursorPos.ch, injectText);
 
-		this.refs.codeEditor.setCursorPosition(cursorPos.line + injectText.split('\n').length, cursorPos.ch  + injectText.length);
+		const injectLines = injectText.split('\n');
+		this.refs.codeEditor.setCursorPosition(cursorPos.line + injectLines.length, cursorPos.ch  + injectLines[injectLines.length - 1].length);
 
 		if(this.isText())  this.props.onTextChange(lines.join('\n'));
 		if(this.isStyle()) this.props.onStyleChange(lines.join('\n'));
