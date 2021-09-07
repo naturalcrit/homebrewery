@@ -47,7 +47,7 @@ If you want to save ink or have a monochrome printer, add the {{fas,fa-tint}} **
 ## New in V3.0.0
 With the latest major update to *The Homebrewery* we've implemented an extended Markdown-like syntax for block and span elements, plus a few other changes, eliminating the need for HTML tags like `div` and `span` in most cases. No raw HTML tags should be needed in a brew, and going forward, raw HTML will no longer receive debugging support (*but can still be used if you insist*).
 
-All brews made prior to the release of v3.0.0 will still render normally, and you may switch between the "legacy" brew renderer and the newer "V3" renderer via the {{fa,fa-info-circle}} **Properties** button  on your brew. Much of the syntax and styling has changed in V3, so code in one version may be broken in the other.
+Much of the syntax and styling has changed in V3. Code in one version may be broken in the other, and updating an older brew to V3 will require more than just a copy and paste. *However*, all brews made prior to the release of v3.0.0 will still render normally, and you may switch between the "Legacy" brew renderer and the newer "V3" renderer via the {{fa,fa-info-circle}} **Properties** button on your brew at any time.
 
 Scroll down to the next page for a brief summary of the changes and new features available in V3!
 
