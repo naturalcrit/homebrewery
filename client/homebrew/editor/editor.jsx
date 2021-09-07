@@ -122,12 +122,12 @@ const Editor = createClass({
 
 				// New Codemirror styling for V3 renderer
 				if(this.props.renderer == 'V3') {
-					if(line.match(/^\\page$/)){
+					if(line.match(/^\\page$|^\\pagebreak$|^\\pagebreakNum$/)){
 						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
 						r.push(lineNumber);
 					}
 
-					if(line.match(/^\\column$/)){
+					if(line.match(/^\\column$|^\\columnbreak$/)){
 						codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 						r.push(lineNumber);
 					}

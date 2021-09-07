@@ -161,7 +161,7 @@ const NewPage = createClass({
 			brew.text = brew.text.slice(index + 5);
 		};
 
-		brew.pageCount=((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
+		brew.pageCount=((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$|^\\pagebreak$|^\\pagebreakNum$/gm)) || []).length + 1;
 
 		if(this.state.saveGoogle) {
 			const res = await request

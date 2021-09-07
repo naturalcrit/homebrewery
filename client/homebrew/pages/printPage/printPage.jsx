@@ -45,7 +45,7 @@ const PrintPage = createClass({
 					key={index} />;
 			});
 		} else {
-			return _.map(this.state.brewText.split(/^\\page$/gm), (pageText, index)=>{
+			return _.map(this.state.brewText.split(/^\\page$|^\\pagebreak$|^\\pagebreakNum$/gm), (pageText, index)=>{
 				pageText += `\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 				return (
 					<div className='page' id={`p${index + 1}`} key={index} >
