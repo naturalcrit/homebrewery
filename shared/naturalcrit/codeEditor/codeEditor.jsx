@@ -47,16 +47,18 @@ const CodeEditor = createClass({
 			indentWithTabs : true,
 			tabSize        : 2,
 			extraKeys      : {
-				'Ctrl-B' : this.makeBold,
-				'Cmd-B'  : this.makeBold,
-				'Ctrl-I' : this.makeItalic,
-				'Cmd-I'  : this.makeItalic,
-				'Ctrl-U' : this.makeUnderline,
-				'Cmd-U'  : this.makeUnderline,
-				'Ctrl-M' : this.makeSpan,
-				'Cmd-M'  : this.makeSpan,
-				'Ctrl-/' : this.makeComment,
-				'Cmd-/'  : this.makeComment
+				'Ctrl-B'       : this.makeBold,
+				'Cmd-B'        : this.makeBold,
+				'Ctrl-I'       : this.makeItalic,
+				'Cmd-I'        : this.makeItalic,
+				'Ctrl-U'       : this.makeUnderline,
+				'Cmd-U'        : this.makeUnderline,
+				'Ctrl-M'       : this.makeSpan,
+				'Cmd-M'        : this.makeSpan,
+				'Shift-Ctrl-M' : this.makeDiv,
+				'Shift-Cmd-M'  : this.makeDiv,
+				'Ctrl-/'       : this.makeComment,
+				'Cmd-/'        : this.makeComment
 			}
 		});
 
@@ -98,6 +100,15 @@ const CodeEditor = createClass({
 		if(selection.length === 0){
 			const cursor = this.codeMirror.getCursor();
 			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 2 });
+		}
+	},
+
+	makeDiv : function() {
+		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 2) === '{{' && selection.slice(-2) === '}}';
+		this.codeMirror.replaceSelection(t ? selection.slice(2, -2) : `{{\n${selection}\n}}`, 'around');
+		if(selection.length === 0){
+			const cursor = this.codeMirror.getCursor();
+			this.codeMirror.setCursor({ line: cursor.line - 1, ch: cursor.ch });  // set to -2? if wanting to enter classes etc.  if so, get rid of first \n when replacing selection
 		}
 	},
 
