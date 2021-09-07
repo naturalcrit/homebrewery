@@ -51,6 +51,8 @@ const CodeEditor = createClass({
 				'Cmd-B'  : this.makeBold,
 				'Ctrl-I' : this.makeItalic,
 				'Cmd-I'  : this.makeItalic,
+				'Ctrl-U' : this.makeUnderline,
+				'Cmd-U'  : this.makeUnderline,
 				'Ctrl-M' : this.makeSpan,
 				'Cmd-M'  : this.makeSpan,
 				'Ctrl-/' : this.makeComment,
@@ -73,11 +75,20 @@ const CodeEditor = createClass({
 	},
 
 	makeItalic : function() {
-		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 1) === '_' && selection.slice(-1) === '_';
-		this.codeMirror.replaceSelection(t ? selection.slice(1, -1) : `_${selection}_`, 'around');
+		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 1) === '*' && selection.slice(-1) === '*';
+		this.codeMirror.replaceSelection(t ? selection.slice(1, -1) : `*${selection}*`, 'around');
 		if(selection.length === 0){
 			const cursor = this.codeMirror.getCursor();
 			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 1 });
+		}
+	},
+
+	makeUnderline : function() {
+		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 3) === '<u>' && selection.slice(-4) === '</u>';
+		this.codeMirror.replaceSelection(t ? selection.slice(3, -4) : `<u>${selection}</u>`, 'around');
+		if(selection.length === 0){
+			const cursor = this.codeMirror.getCursor();
+			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 4 });
 		}
 	},
 
