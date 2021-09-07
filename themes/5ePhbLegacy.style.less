@@ -245,10 +245,12 @@ body {
 		table{
 			color : @headerText;
 		}
-		p+p{
-			margin-top     : 0em;
-			padding-bottom : 0.5em;
-			text-indent    : 0em;
+		p+p strong::before {
+			content: 'br'; //can be anything but empty
+			display: block;
+			color: #0000; //for invisible letters
+			margin-left: -1em;
+			line-height: 0.8em;
 		}
 		//Triangle dividers
 		hr{

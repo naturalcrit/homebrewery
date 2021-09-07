@@ -388,9 +388,12 @@ body {
 		p{
 			margin-bottom : 0.3cm;
 		}
-		p+p {
-			margin-top  : 0;	//May not be needed
-			text-indent : 0;
+		p+p strong::before {
+			content: 'br'; //can be anything but empty
+			display: block;
+			color: #0000; //for invisible letters
+			margin-left: -1em;
+			line-height: 0.8em;
 		}
 		p:last-of-type {
 			margin-bottom: 0;
