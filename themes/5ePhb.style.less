@@ -388,12 +388,17 @@ body {
 		p{
 			margin-bottom : 0.3cm;
 		}
-		p+p strong::before {
+		p+p code::before {
 			content: 'br'; //can be anything but empty
 			display: block;
 			color: #0000; //for invisible letters
 			margin-left: -1em;
 			line-height: 0.8em;
+		}
+		code {
+			visibility: visible !important;
+			font-weight: 800;
+			font-style: italic;
 		}
 		p:last-of-type {
 			margin-bottom: 0;

@@ -96,12 +96,12 @@ const getStats = function(){
 
 const genAbilities = function(){
 	return _.sample([
-		'***Pack Tactics.*** These guys work together like peanut butter and jelly.',
-		'***Fowl Appearance.*** While the creature remains motionless, it is indistinguishable from a normal chicken.',
-		'***Onion Stench.*** Any creatures within 5 feet of this thing develops an irrational craving for onion rings.',
-		'***Enormous Nose.*** This creature gains advantage on any check involving putting things in its nose.',
-		'***Sassiness.*** When questioned, this creature will talk back instead of answering.',
-		'***Big Jerk.*** Whenever this creature makes an attack, it starts telling you how much cooler it is than you.',
+		'\`Pack Tactics.\` These guys work together like peanut butter and jelly.',
+		'\`Fowl Appearance.\` While the creature remains motionless, it is indistinguishable from a normal chicken.',
+		'\`Onion Stench.\` Any creatures within 5 feet of this thing develops an irrational craving for onion rings.',
+		'\`Enormous Nose.\` This creature gains advantage on any check involving putting things in its nose.',
+		'\`Sassiness.\` When questioned, this creature will talk back instead of answering.',
+		'\`Big Jerk.\` Whenever this creature makes an attack, it starts telling you how much cooler it is than you.',
 	]);
 };
 
@@ -134,7 +134,7 @@ const genAction = function(){
 		'Turnbuckle Roll'
 	]);
 
-	return `***${name}.*** *Melee Weapon Attack:* +4 to hit, reach 5ft., one target. *Hit* 5 (1d6 + 2) `;
+	return `\`${name}.\` *Melee Weapon Attack:* +4 to hit, reach 5ft., one target. *Hit* 5 (1d6 + 2) `;
 };
 
 
