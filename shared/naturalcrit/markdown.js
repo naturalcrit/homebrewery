@@ -174,13 +174,16 @@ const mustacheInjectBlock = {
 				lastToken.originalType = 'mustacheInjectBlock';
 				lastToken.tags         = ` ${processStyleTags(match[1])}`;
 				return {
-					type : 'text',            // Should match "name" above
-					raw  : match[0],          // Text to consume from the source
+					type : 'mustacheInjectBlock', // Should match "name" above
+					raw  : match[0],              // Text to consume from the source
 					text : ''
 				};
 			}
 		},
 		renderer(token) {
+			if(!token.originalType){
+				return;
+			}
 			token.type = token.originalType;
 			const text = this.parser.parse([token]);
 			const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
