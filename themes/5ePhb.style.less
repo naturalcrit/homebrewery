@@ -567,10 +567,7 @@ body {
 // *****************************/
 .page .spellList{
 	.useSansSerif();
-	column-count        : 4;
-	column-span         : all;
-	-webkit-column-span : all;
-	-moz-column-span    : all;
+	column-count        : 2;
 	ul+h5{
 		margin-top : 15px;
 	}
@@ -586,6 +583,9 @@ body {
 		-webkit-column-break-inside : auto;
 		page-break-inside           : auto;
 		break-inside                : auto;
+	}
+	&.wide{
+		column-count : 4;
 	}
 }
 
@@ -717,7 +717,7 @@ body {
 		break-inside      : avoid;
 		display           : inline-block;
 		min-width         : 100%;
-		-webkit-transform : translateZ(0); //Prevents shadows from breaking across columns
+		//-webkit-transform : translateZ(0); //Prevents shadows from breaking across columns
 	}
 	.inline-block {
 		display : inline-block;

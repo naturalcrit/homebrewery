@@ -46,7 +46,7 @@ const PrintPage = createClass({
 			});
 		} else {
 			return _.map(this.state.brewText.split(/^\\page$/gm), (pageText, index)=>{
-				pageText += `\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
+				pageText += `\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 				return (
 					<div className='page' id={`p${index + 1}`} key={index} >
 						<div className='columnWrapper' dangerouslySetInnerHTML={{ __html: Markdown.render(pageText) }} />
