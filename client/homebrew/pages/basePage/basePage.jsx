@@ -70,7 +70,6 @@ const BasePage = createClass({
 			url                    : '',
 			savedBrew              : this.props.brew,
 			saveMessages           : ['saveMessage1', 'saveMessage2'],
-			pageType               : 'new'
 		};
 	},
 
@@ -101,11 +100,11 @@ const BasePage = createClass({
 	},
 
 	isNew : function() {
-		return (this.state.pageType == 'new');
+		return (this.props.pageType == 'new');
 	},
 
 	isEdit : function() {
-		return (this.state.pageType == 'edit');
+		return (this.props.pageType == 'edit');
 	},
 
 	handleControlKeys : function(e){
