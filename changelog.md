@@ -1,13 +1,53 @@
-<style>
+```css
 h5 {
 	font-size: .35cm !important;
 }
-</style>
+
+.taskList li {
+	list-style-type : none;
+}
+
+.taskList li input {
+	margin-left : -0.52cm;
+	transform: translateY(.05cm);
+	filter: brightness(1.1) drop-shadow(1px 2px 1px #222);
+}
+
+.taskList li input[checked] {
+	filter: sepia(100%) hue-rotate(60deg) saturate(3.5) contrast(4) brightness(1.1) drop-shadow(1px 2px 1px #222);
+}
+
+pre + * {
+	margin-top: 0.17cm;
+}
+
+pre {
+	margin-top: 0.17cm;
+}
+
+.page {
+	padding-bottom:.5cm;
+}
+```
 
 # changelog
 
+### Thursday, 09/09/2021 - v2.13.5
+- Slightly better error logging and messages for users.
+
+##### G-Ambatte :
+- Added a search bar to the User page to help find your brews.
+- Added page counts to brews in the User page; page count will be updated the next time a brew is edited.
+- Fixed edge case where view counts could get reset.
+- Fixed edge case where last-modified time was not accurate for Google Doc brews.
+
+##### Gazook89 :
+- Fixed typo in the **PRINT → Ink-Friendly** snippet.
+
+
+
 ### Tuesday, 17/08/2021 - v2.13.4
-- Fixed user page crashing when user has untitled brew
+- Fixed User page crashing when user has an untitled brew
 
 ##### G-Ambatte:
 - Tweaks to user page tool tips
@@ -43,6 +83,10 @@ h5 {
 
 - Fixed the issue with new brews not saving!
 
+
+
+\page
+
 ### Saturday, 26/6/2021 - v2.13.0
 
 - "Share to Reddit" button now works with Google brews
@@ -58,9 +102,6 @@ myStyle {color: black}
 - New **Download**, **View**, and **Clone to New** buttons in the "Source" dropdown on the Share page.
 - Pasting your brew into a "New" page and saving will transfer any CSS in the code fence to the Style tab.
 - Unsaved work in the New page Style tab is now cached to your browser storage if you navigate away.
-
-\page
-
 
 ### Thursday, 10/6/2021 - v2.12.0
 
@@ -98,6 +139,8 @@ myStyle {color: black}
 - Fix for box-shadows breaking across columns. <br>(Thanks G-Ambatte for all of these!)
 - Small user interface tweaks (Thanks Ericsheid)
 
+\column
+
 ### Friday, 02/1/2021 - v2.10.6
 - Fixed punctuation for usernames ending with 's' on the user page. (Thanks AlexeySachkov)
 - Fixed server crashes due to excessive long lines in brews
@@ -122,8 +165,6 @@ myStyle {color: black}
 - Fixed issue with users unable to create new brews
 - Fixing brews being lost when loaded via back button
 
-\page
-
 ### Wednesday, 07/10/2020 - v2.10.0
 - Google Drive integration -- Sign in with your Google account to link it with your Homebrewery profile. A new button in the Edit page will let you transfer your file to your personal Google Drive storage, and Google will keep a backup of each version! No more lost work surprises!
 
@@ -141,6 +182,8 @@ myStyle {color: black}
 - Fixed delete button removing everyone's copy for brews with multiple authors
 - Compressed homebrew text in database
 
+\page
+
 ### Monday, 26/11/2018 - v2.8.1
 - Fixed some SSL issues with images in the example page so they appear now
 - Fixed duplicate scrollbars in Edit Page
@@ -154,7 +197,7 @@ myStyle {color: black}
 - Refactored background code
 
 ### Sunday, 04/06/2017 - v2.7.5
-- Fixed the class feature snippet duplicating the entire brew
+- Fixed Class Feature snippet duplicating entire brew
 - Fixed headers in tables being duplicated
 - Fixed border-image being scrambled on class tables and descriptive text boxes
 - Fixed pages going out of sync in large brews, causing them to be rendered off-page
@@ -180,9 +223,12 @@ myStyle {color: black}
 
 ### Sunday, 25/12/2016 - v2.7.0
 - Switching over to using Vitreum v4
-  - Removed gulp, all tasks are run through npm scripts
+- Removed gulp, all tasks are run through npm scripts
 - Updating docs for local dev
 - Removing support for Docker. I have never used it, nor will I ever test for it, so I don't want to continue to explictly support it on this repo. Feel free to make a fork and make it docker-able though :)
+
+\column
+
 - Changed icon for the metadata
 - Made links useable in footer (thanks u/Dustfinger1 re:249)
 - Added print media queries to remove box shadow on print (thanks u/dmmagic  re: 246)
@@ -210,8 +256,6 @@ myStyle {color: black}
 - Added a hover tooltip to fully read the brew description
 - Made the brew items take up only 25% allowing you to view more per row.
 
-\page
-
 ### Wednesday, 23/11/2016 - v2.5.0
 - Metadata can now be added to brews
 - Added a metadata editor onto the edit and new pages
@@ -226,6 +270,8 @@ myStyle {color: black}
 - Updated snippet bar style
 - You can now print from a new page without saving
 - Added the ability to use ctrl+p and ctrl+s to print and save respectively.
+
+\page
 
 ### Monday, 07/11/2016
 - Added final touches to the html validator and updating the rest of the branch
@@ -258,7 +304,7 @@ myStyle {color: black}
 - Even works after you print to pdf!
 
 ### Tuesday, 07/06/2016 - v2.2.2
-- Fixed bug with new markdown lexer and aprser not working on print page
+- Fixed bug with new markdown lexer and parser not working on print page
 
 ### Sunday, 05/06/2016 - v2.2.1
 - Adding in a new Class table div block. The old Class table block used weird stacking of HTML elements, resulting is difficult to control behaviour and poor interactiosn with the rest of the page. This new block is much easier to style and work with.
@@ -266,8 +312,10 @@ myStyle {color: black}
 - Added in a new auto-incremeting page number snippet (thakns u/Ryrok!)
 - Lists in monster stat blocks should be fixed now
 
+\column
+
 ### Saturday, 04/06/2016 - v2.2.0
-- MIgrating The Homebrewery over to hombrewery.naturalcrit.com. It know runs on it's own server, with it's own repo separate from the other tools I'm working on. Makes updating and deploying much easier.
+- Migrating The Homebrewery over to hombrewery.naturalcrit.com. It now runs on it's own server, with it's own repo separate from the other tools I'm working on. Makes updating and deploying much easier.
 
 ### Sunday, 29/05/2016 - v2.1.0
 - Finally added a syntax for doing spell lists. A bit in-depth about why this took so long. Essentially I'm running out of syntax to use in stardard Markdown. There are too many unique elements in the PHB-style to be mapped. I solved this earlier by stacking certain elements together (eg. an `<hr>` before a `blockquote` turns it into moster state block), but those are getting unweildly. I would like to simply wrap these in `div`s with classes, but unfortunately Markdown stops processing when within HTML blocks. To get around this I wrote my own override to the Markdown parser and lexer to process Markdown within a simple div class wrapper. This should open the door for more unique syntaxes in the future. Big step!
