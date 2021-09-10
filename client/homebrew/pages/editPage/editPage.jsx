@@ -66,10 +66,6 @@ const EditPage = createClass({
 		document.removeEventListener('keydown', this.handleControlKeys);
 	},
 
-	isEdit : function() {
-		return (true);
-	},
-
 	save : async function(brew, saveGoogle){
 		this.setState((prevState)=>({
 			errors     : null,
