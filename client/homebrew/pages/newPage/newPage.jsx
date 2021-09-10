@@ -61,10 +61,14 @@ const NewPage = createClass({
 	},
 
 	autoSave : function(brew){
-		localStorage.setItem(BREWKEY, brew.text);
-		localStorage.setItem(STYLEKEY, brew.style);
-		localStorage.setItem(METAKEY, JSON.stringify({ 'renderer': brew.renderer }));
-		return brew;
+		try {
+			localStorage.setItem(BREWKEY, brew.text);
+			localStorage.setItem(STYLEKEY, brew.style);
+			localStorage.setItem(METAKEY, JSON.stringify({ 'renderer': brew.renderer }));
+			return true;
+		} catch {
+			return false;
+		}
 	},
 
 	save : async function(brew, saveGoogle){
