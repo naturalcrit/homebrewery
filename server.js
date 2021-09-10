@@ -138,6 +138,7 @@ app.get('/changelog', async (req, res, next)=>{
 		text     : changelogText,
 		renderer : 'V3'
 	};
+	splitTextAndStyle(brew);
 	req.brew = brew;
 	return next();
 });
