@@ -1,15 +1,3 @@
-```css
-.page #example + table td {
-	border:1px dashed #00000030;
-}
-
-.page {
-	padding-bottom : 1.3cm;
-}
-
-
-```
-
 # The Homebrewery *V3*
 Welcome traveler from an antique land. Please sit and tell us of what you have seen. The unheard of monsters, who slither and bite. Tell us of the wondrous items and and artifacts you have found, their mysteries yet to be unlocked. Of the vexing vocations and surprising skills you have seen.
 
@@ -25,7 +13,8 @@ Any changes you make while on the *edit url* will be automatically saved to the 
 
 Anyone with the *share url* will be able to access a read-only version of your homebrew.
 
-### PDF Creation
+{{note
+##### PDF Creation
 PDF Printing works best in Google Chrome. If you are having quality/consistency issues, try using Chrome to print instead.
 
 After clicking the "Print" item in the navbar a new page will open and a print dialog will pop-up.
@@ -36,6 +25,7 @@ After clicking the "Print" item in the navbar a new page will open and a print d
 * Hit print and enjoy! You're done!
 
 If you want to save ink or have a monochrome printer, add the {{fas,fa-tint}} **Ink Friendly** snippet to your brew before you print
+}}
 
 <img src='https://i.imgur.com/hMna6G0.png' style='position:absolute;bottom:50px;left:120px;width:180px' />
 
@@ -63,8 +53,6 @@ This tool will **always** be free, never have ads, and I will never offer any "p
 Need help getting started or just the right look for your brew? Head to [r/Homebrewery](https://www.reddit.com/r/homebrewery/submit?selftext=true&title=%5BIssue%5D%20Describe%20Your%20Issue%20Here) and let us know!
 
 Have an idea to make The Homebrewery better? Or did you find something that wasn't quite right? Check out the [GitHub Repo](https://github.com/naturalcrit/homebrewery/) to report technical issues.
-
-
 
 ### Legal Junk
 The Homebrewery is licensed using the [MIT License](https://github.com/naturalcrit/homebrewery/blob/master/license). Which means you are free to use The Homebrewery codebase any way that you want, except for claiming that you made it yourself.
