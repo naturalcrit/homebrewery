@@ -28,6 +28,10 @@ pre {
 .page {
 	padding-bottom:.5cm;
 }
+
+.page p + pre {
+	margin-top : 0.1cm;
+}
 ```
 
 # changelog

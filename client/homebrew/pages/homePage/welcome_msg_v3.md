@@ -1,3 +1,13 @@
+```css
+.page #example + table td {
+	border:1px dashed #00000030;
+}
+
+.page {
+	padding-bottom : 1.3cm;
+}
+```
+
 # The Homebrewery *V3*
 Welcome traveler from an antique land. Please sit and tell us of what you have seen. The unheard of monsters, who slither and bite. Tell us of the wondrous items and and artifacts you have found, their mysteries yet to be unlocked. Of the vexing vocations and surprising skills you have seen.
 
@@ -20,11 +30,11 @@ PDF Printing works best in Google Chrome. If you are having quality/consistency 
 After clicking the "Print" item in the navbar a new page will open and a print dialog will pop-up.
 * Set the **Destination** to "Save as PDF"
 * Set **Paper Size** to "Letter"
-* If you are printing on A4 paper, make sure to have the {{far,fa-file}} **A4 Pagesize** snippet in your brew
+* If you are printing on A4 paper, make sure to have the **PRINT → {{far,fa-file}} A4 Pagesize** snippet in your brew
 * In **Options** make sure "Background Images" is selected.
 * Hit print and enjoy! You're done!
 
-If you want to save ink or have a monochrome printer, add the {{fas,fa-tint}} **Ink Friendly** snippet to your brew before you print
+If you want to save ink or have a monochrome printer, add the **PRINT → {{fas,fa-tint}} Ink Friendly** snippet to your brew before you print
 }}
 
 <img src='https://i.imgur.com/hMna6G0.png' style='position:absolute;bottom:50px;left:120px;width:180px' />
@@ -60,7 +70,7 @@ The Homebrewery is licensed using the [MIT License](https://github.com/naturalcr
 If you wish to sell or in some way gain profit for what's created on this site, it's your responsibility to ensure you have the proper licenses/rights for any images or resources used.
 
 #### Crediting Me
-If you'd like to credit The Homebrewery in your brew, I'd be flattered! Just reference that you made it with The Homebrewery.
+If you'd like to credit me in your brew, I'd be flattered! Just reference that you made it with The Homebrewery.
 
 ### More Resources
 If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/comments/3uwxx9/resources_open_to_the_community/).
@@ -127,16 +137,15 @@ Row spanning is achieved by adding a `^` at the end of a cell just before the `|
 These can be combined to span a cell across both columns and rows. Cells must have the same colspan if they are to be rowspan'd.
 
 ##### Example
-|        | Spanned Header ||
-| Head A | Head B | Head C |
-|:-------|:-------|:-------|
+| Head A | Spanned Header ||
+| Head B | Head C | Head D |
+|:-------|:------:|:------:|
 | 1A     |    1B  |    1C  |
 | 2A    ^|    2B  |    2C  |
 | 3A    ^|    3B       3C ||
 | 4A     |    4B       4C^||
 | 5A    ^|    5B  |    5C  |
 | 6A     |    6B ^|    6C  |
-
 
 ## Images
 Images must be hosted online somewhere, like [Imgur](https://www.imgur.com). You use the address to that image to reference it in your brew\*. Images can be included using Markdown-style images.
