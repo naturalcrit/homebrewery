@@ -34,6 +34,9 @@ body {
 		font-weight    : 800;
 		letter-spacing : -0.02em;
 	}
+	h5 + * {
+		margin-top : 0.1cm;
+	}
 }
 .useColumns(@multiplier : 1, @fillMode: balance){
 	column-count         : 2;
@@ -78,7 +81,7 @@ body {
 		display       : block;
 		line-height   : 1.3em;
 		&+* {
-			margin-top : 0.27cm;
+			margin-top : 0.325cm;
 		}
 		&+p{
 			margin-top : 0;
@@ -177,6 +180,9 @@ body {
 		font-family   : ScalySansSmallCapsRemake;
 		font-size     : 0.423cm;
 		font-weight   : 900;
+		& + * {
+			margin-top : 0.2cm;
+		}
 	}
 	//*****************************
 	// *          TABLE
@@ -185,7 +191,7 @@ body {
 		.useSansSerif();
 		width         : 100%;
 		& + * {
-			margin-top : 0.27cm;
+			margin-top : 0.325cm;
 		}
 		thead{
 			display: table-row-group;
@@ -217,9 +223,11 @@ body {
 		border-image        : @noteBorderImage 12 stretch;
 		border-image-outset : 9px 0px;
 		border-image-width  : 11px;
-		margin-top          : 9px; //Prevent top border getting cut off on colbreak
 		padding             : 0.13cm 0.16cm;
 		filter              : drop-shadow(1px 4px 6px #888);
+		.page :where(&) {
+			margin-top        : 9px; //Prevent top border getting cut off on colbreak
+		}
 		& + * {
 			margin-top : 0.45cm;
 		}
@@ -247,9 +255,11 @@ body {
 		border-width        : 7px;
 		border-image        : @descriptiveBoxImage 12 stretch;
 		border-image-outset : 4px;
-		margin-top          : 4px; //Prevent top border getting cut off on colbreak
 		padding             : 0.1em;
 		filter              : drop-shadow(0 0 3px #faf7ea);
+		.page :where(&) {
+			margin-top        : 4px; //Prevent top border getting cut off on colbreak
+		}
 		& + * {
 			margin-top : 0.45cm;
 		}
@@ -365,12 +375,13 @@ body {
 			background-attachment : fixed;
 			filter                : drop-shadow(1px 4px 6px #888);
 			padding               : 4px 2px;
-			margin                : 0px -6px 1em;
+			margin-left           : -6px;
+			margin-right          : -6px;
 		}
 
 		position          : relative;
 		padding           : 0px;
-		margin-bottom     : 1em;
+		margin-bottom     : 0.325cm;
 
 		p{
 			margin-bottom : 0.3cm;
@@ -514,10 +525,12 @@ body {
 		border-image-width  : 10px;
 		border-image-outset : 2px;
 		border-radius       : 12px;
-		margin-top          : 2px; //Prevent top border getting cut off on colbreak
 		margin-bottom       : 2px;
+		.page :where(&) {
+			margin-top        : 2px; //Prevent top border getting cut off on colbreak
+		}
 		& + * {
-			margin-top : 0.27cm;
+			margin-top : 0.325cm;
 		}
 	}
 	//*****************************
