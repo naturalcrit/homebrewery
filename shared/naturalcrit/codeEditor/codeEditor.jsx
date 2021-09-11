@@ -53,6 +53,12 @@ const CodeEditor = createClass({
 				'Cmd-I'        : this.makeItalic,
 				'Ctrl-U'       : this.makeUnderline,
 				'Cmd-U'        : this.makeUnderline,
+				'Ctrl-.'       : this.makeNbsp,
+				'Cmd-.'        : this.makeNbsp,
+				'Shift-Ctrl-.' : this.makeSpace,
+				'Shift-Cmd-.'  : this.makeSpace,
+				'Shift-Ctrl-,' : this.removeSpace,
+				'Shift-Cmd-,'  : this.removeSpace,
 				'Ctrl-M'       : this.makeSpan,
 				'Cmd-M'        : this.makeSpan,
 				'Shift-Ctrl-M' : this.makeDiv,
@@ -82,6 +88,30 @@ const CodeEditor = createClass({
 		if(selection.length === 0){
 			const cursor = this.codeMirror.getCursor();
 			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 1 });
+		}
+	},
+
+	makeNbsp : function() {
+		this.codeMirror.replaceSelection('&nbsp;', 'end');
+	},
+
+	makeSpace : function() {
+		const selection = this.codeMirror.getSelection();
+		const t = selection.slice(0, 8) === '{{width:' && selection.slice(0 -4) === '% }}';
+		if(t){
+			const percent = parseInt(selection.slice(8, -4)) + 10;
+			this.codeMirror.replaceSelection(percent < 90 ? `{{width:${percent}% }}` : '{{width:100% }}', 'around');
+		} else {
+			this.codeMirror.replaceSelection(`{{width:10% }}`, 'around');
+		}
+	},
+
+	removeSpace : function() {
+		const selection = this.codeMirror.getSelection();
+		const t = selection.slice(0, 8) === '{{width:' && selection.slice(0 -4) === '% }}';
+		if(t){
+			const percent = parseInt(selection.slice(8, -4)) - 10;
+			this.codeMirror.replaceSelection(percent > 10 ? `{{width:${percent}% }}` : '', 'around');
 		}
 	},
 
