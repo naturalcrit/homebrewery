@@ -4,7 +4,7 @@
 }
 
 .page {
-	padding-bottom : 1.3cm;
+	padding-bottom : 1.1cm;
 }
 ```
 
