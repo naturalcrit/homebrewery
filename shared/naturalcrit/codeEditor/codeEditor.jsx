@@ -47,24 +47,28 @@ const CodeEditor = createClass({
 			indentWithTabs : true,
 			tabSize        : 2,
 			extraKeys      : {
-				'Ctrl-B'       : this.makeBold,
-				'Cmd-B'        : this.makeBold,
-				'Ctrl-I'       : this.makeItalic,
-				'Cmd-I'        : this.makeItalic,
-				'Ctrl-U'       : this.makeUnderline,
-				'Cmd-U'        : this.makeUnderline,
-				'Ctrl-.'       : this.makeNbsp,
-				'Cmd-.'        : this.makeNbsp,
-				'Shift-Ctrl-.' : this.makeSpace,
-				'Shift-Cmd-.'  : this.makeSpace,
-				'Shift-Ctrl-,' : this.removeSpace,
-				'Shift-Cmd-,'  : this.removeSpace,
-				'Ctrl-M'       : this.makeSpan,
-				'Cmd-M'        : this.makeSpan,
-				'Shift-Ctrl-M' : this.makeDiv,
-				'Shift-Cmd-M'  : this.makeDiv,
-				'Ctrl-/'       : this.makeComment,
-				'Cmd-/'        : this.makeComment
+				'Ctrl-B'           : this.makeBold,
+				'Cmd-B'            : this.makeBold,
+				'Ctrl-I'           : this.makeItalic,
+				'Cmd-I'            : this.makeItalic,
+				'Ctrl-U'           : this.makeUnderline,
+				'Cmd-U'            : this.makeUnderline,
+				'Ctrl-.'           : this.makeNbsp,
+				'Cmd-.'            : this.makeNbsp,
+				'Shift-Ctrl-.'     : this.makeSpace,
+				'Shift-Cmd-.'      : this.makeSpace,
+				'Shift-Ctrl-,'     : this.removeSpace,
+				'Shift-Cmd-,'      : this.removeSpace,
+				'Shift-Ctrl-Enter' : this.newColumn,
+				'Shift-Cmd-Enter'  : this.newColumn,
+				'Ctrl-Enter'       : this.newPage,
+				'Cmd-Enter'        : this.newPage,
+				'Ctrl-M'           : this.makeSpan,
+				'Cmd-M'            : this.makeSpan,
+				'Shift-Ctrl-M'     : this.makeDiv,
+				'Shift-Cmd-M'      : this.makeDiv,
+				'Ctrl-/'           : this.makeComment,
+				'Cmd-/'            : this.makeComment
 			}
 		});
 
@@ -113,6 +117,14 @@ const CodeEditor = createClass({
 			const percent = parseInt(selection.slice(8, -4)) - 10;
 			this.codeMirror.replaceSelection(percent > 10 ? `{{width:${percent}% }}` : '', 'around');
 		}
+	},
+
+	newColumn : function() {
+		this.codeMirror.replaceSelection('\n\\column\n\n', 'end');
+	},
+
+	newPage : function() {
+		this.codeMirror.replaceSelection('\n\\page\n\n', 'end');
 	},
 
 	makeUnderline : function() {
