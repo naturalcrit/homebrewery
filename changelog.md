@@ -36,7 +36,7 @@ pre {
 
 # changelog
 
-### Saturday, 28/08/2021 - v3.0.0
+### Saturday, 11/09/2021 - v3.0.0
 
 We have been working on v3 for a *very* long time. We want to thank everyone for being paitent.
 
