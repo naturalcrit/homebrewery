@@ -4,10 +4,16 @@
 	width    : 100%;
 
 	.codeEditor{
-		height 		: 100%;
+		height        : 100%;
+		counter-reset : page;
 		.pageLine{
-			background       : linear-gradient(to bottom, #DDD 0%, #EEE 100%);
-			border-top       : #AAA solid 1px;
+			background : linear-gradient(to bottom, white 80%, lightgray);
+			&:after{
+				content           : counter(page);
+				counter-increment : page;
+				float             : right;
+				color             : gray;
+			}
 		}
 		.columnSplit{
 			font-style 			: italic;
