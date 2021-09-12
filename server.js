@@ -10,6 +10,8 @@ const serveCompressedStaticAssets = require('./server/static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
 
+const userInfo = require('./server/userinfo.model.js').model;
+
 const brewAccessTypes = ['edit', 'share', 'raw'];
 
 //Get the brew object from the HB database or Google Drive
@@ -35,6 +37,10 @@ const getBrewFromId = asyncHandler(async (id, accessType)=>{
 	splitTextAndStyle(brew);
 	return brew;
 });
+
+const updateUserActivity = (account)=>{
+	userInfo.updateUserActivity(account.username);
+};
 
 const sanitizeBrew = (brew, full=false)=>{
 	delete brew._id;
@@ -93,6 +99,9 @@ app.use((req, res, next)=>{
 		google_client_id     : config.get('google_client_id'),
 		google_client_secret : config.get('google_client_secret')
 	};
+
+	if(req.account){ updateUserActivity(req.account); };
+
 	return next();
 });
 
