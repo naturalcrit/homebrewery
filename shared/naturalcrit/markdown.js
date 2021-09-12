@@ -208,7 +208,7 @@ const definitionLists = {
 	level : 'block',
 	start(src) { return src.match(/^.*?::.*/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const regex = /^([^\n]*?)::([^\n]*)/ym;
+		const regex = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym;
 		let match;
 		let endIndex = 0;
 		const definitions = [];
@@ -228,12 +228,10 @@ const definitionLists = {
 		}
 	},
 	renderer(token) {
-		return `<dl>
-						${token.definitions.reduce((html, def)=>{
-		return `${html}<dt>${this.parser.parseInline(def.dt)}</dt>`
-									 + `<dd>${this.parser.parseInline(def.dd)}</dd>\n`;
-	}, '')}
-		 				</dl>`;
+		return `<dl>${token.definitions.reduce((html, def)=>{
+			return `${html}<dt>${this.parser.parseInline(def.dt)}</dt>`
+			            + `<dd>${this.parser.parseInline(def.dd)}</dd>\n`;
+		}, '')}</dl>`;
 	}
 };
 

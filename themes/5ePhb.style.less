@@ -739,12 +739,9 @@ body {
 	dl {
 		line-height  : 1.3em;
 		padding-left : 1em;
-		text-indent  : -1em;
+		white-space  : pre-line;
 		& + * {
 			margin-top : 0.28cm;
-		}
-		& + dl {
-			margin-top : 0;
 		}
 	}
 	dl + * {
@@ -756,6 +753,7 @@ body {
   dt {
     display      : inline;
     margin-right : 5px;
+		margin-left  : -1em;
   }
   dd {
 		display     : inline;
