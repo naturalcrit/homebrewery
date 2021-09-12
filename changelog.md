@@ -25,10 +25,6 @@ pre {
 	margin-top: 0.17cm;
 }
 
-.page {
-	padding-bottom:.5cm;
-}
-
 .page p + pre {
 	margin-top : 0.1cm;
 }
@@ -65,18 +61,19 @@ Visit [this page](/v3_preview) for brief examples of the new syntax!
 
   Hello {{mySpan,color:blue World}} !
   ```
-  Fixes issues: [#348](https://github.com/naturalcrit/homebrewery/issues/348)
 
-* [x] Add inline CSS to Markdown objects via "curly injection" syntax:
-  ```
-  Hello *world*{myClass,#id,color:red}
-  ```
-  Fixes issues: [#403](https://github.com/naturalcrit/homebrewery/issues/403)
+  Fixes issues: [#348](https://github.com/naturalcrit/homebrewery/issues/348)
 }}
 
 \column
 
 {{taskList
+* [x] Add inline CSS to Markdown objects via "curly injection" syntax:
+  ```
+  Hello *world*{myClass,#id,color:red}
+  ```
+  Fixes issues: [#403](https://github.com/naturalcrit/homebrewery/issues/403)
+
 * [x] Rowspan, Colspan, and multiple header rows with extended table syntax:
 ```
 | Header 1a | Header 1b | Header 1c |
@@ -123,7 +120,10 @@ Term :: big long definition that bleeds onto multiple lines
 * [x] Page breaks using `\page` now only trigger when placed alone at the start of a line.
 
   Fixes issues: [#1147](https://github.com/naturalcrit/homebrewery/issues/1147)
+}}
 
+\page
+{{taskList
 * [x] New **EDITOR → QR Code** snippet.
 
   Fixes issues: [#538](https://github.com/naturalcrit/homebrewery/issues/538)
@@ -139,10 +139,7 @@ Term :: big long definition that bleeds onto multiple lines
 * [x] New **TABLES → 1/3 Class Table** snippet for 1/3 casters.
 
   Fixes issues: [#191](https://github.com/naturalcrit/homebrewery/issues/191)
-}}
 
-\page
-{{taskList
 * [x] Improved **EDITOR → Table of Contents** snippet to actually look like the PHB style. Will auto-generate based on the headers in your brew.
 
   Fixes issues: [#304](https://github.com/naturalcrit/homebrewery/issues/304)
@@ -268,10 +265,6 @@ We had to make a whole lot of background upgrades and changes to get all of this
 
 - Fixed the issue with new brews not saving!
 
-
-
-\page
-
 ### Saturday, 26/6/2021 - v2.13.0
 
 - "Share to Reddit" button now works with Google brews
@@ -297,6 +290,8 @@ myStyle {color: black}
 
 - Fix for edge case where brews could accidentally transfer from Google Drive back to Homebrewery.
 - Move cursor to end of snippet after insertion
+
+\page
 
 ### Saturday, 20/3/2021 - v2.11.1
 
@@ -324,8 +319,6 @@ myStyle {color: black}
 - Fix for box-shadows breaking across columns. <br>(Thanks G-Ambatte for all of these!)
 - Small user interface tweaks (Thanks Ericsheid)
 
-\column
-
 ### Friday, 02/1/2021 - v2.10.6
 - Fixed punctuation for usernames ending with 's' on the user page. (Thanks AlexeySachkov)
 - Fixed server crashes due to excessive long lines in brews
@@ -339,6 +332,8 @@ myStyle {color: black}
 
 ### Wednesday, 25/11/2020 - v2.10.4
 - Fixed Google Drive brews not saving metadata (view count, description, etc.) Note that we are still working on making published Google brews visible to the public when viewing your profile page.
+
+\column
 
 ### Thursday, 22/10/2020 - v2.10.3
 - Fixed brews with broken code crashing the edit page when loaded (the "blue screen of death" bug).
@@ -367,8 +362,6 @@ myStyle {color: black}
 - Fixed delete button removing everyone's copy for brews with multiple authors
 - Compressed homebrew text in database
 
-\page
-
 ### Monday, 26/11/2018 - v2.8.1
 - Fixed some SSL issues with images in the example page so they appear now
 - Fixed duplicate scrollbars in Edit Page
@@ -380,6 +373,8 @@ myStyle {color: black}
 - Added a "contributing guide" for the GitHub
 - "Report Issue" navbar button now links to the subreddit
 - Refactored background code
+
+\page
 
 ### Sunday, 04/06/2017 - v2.7.5
 - Fixed Class Feature snippet duplicating entire brew
@@ -411,15 +406,14 @@ myStyle {color: black}
 - Removed gulp, all tasks are run through npm scripts
 - Updating docs for local dev
 - Removing support for Docker. I have never used it, nor will I ever test for it, so I don't want to continue to explictly support it on this repo. Feel free to make a fork and make it docker-able though :)
-
-\column
-
 - Changed icon for the metadata
 - Made links useable in footer (thanks u/Dustfinger1 re:249)
 - Added print media queries to remove box shadow on print (thanks u/dmmagic  re: 246)
 - Fixed realtime renderer not functioning if loaded with malformed html on load (thanks u/RattiganIV re:247)
 - Removed a lot of unused files in shared
 - vitreum v4 now lets me use codemirror as a pure node dependacy
+
+\column
 
 ### Saturday, 03/12/2016 - v2.6.0
 - Added report back to the edit page
@@ -456,11 +450,11 @@ myStyle {color: black}
 - You can now print from a new page without saving
 - Added the ability to use ctrl+p and ctrl+s to print and save respectively.
 
-\page
-
 ### Monday, 07/11/2016
 - Added final touches to the html validator and updating the rest of the branch
 - If anyone finds issues with the new HTML validator, please let me know. I hope this will bring a more consistent feel to Homebrewery rendering.
+
+\page
 
 ### Friday, 09/09/2016 - v2.4.0
 - Adding in a HTML validator that will display warnings whenever you save. This should stop a lot of the issues generated with pages not showing up.
