@@ -53,19 +53,19 @@ module.exports = function(brew){
 	const TOC = getTOC(pages);
 	const markdown = _.reduce(TOC, (r, g1, idx1)=>{
 		if(g1.title !== null) {
-			r.push(`\t\t- ### [{{ ${g1.title}}}{{ ${g1.page}}}](#p${g1.page})`);
+			r.push(`- ### [{{ ${g1.title}}}{{ ${g1.page}}}](#p${g1.page})`);
 		}
 		if(g1.children.length){
 			_.each(g1.children, (g2, idx2)=>{
 				if(g2.title !== null) {
-					r.push(`\t\t  - #### [{{ ${g2.title}}}{{ ${g2.page}}}](#p${g2.page})`);
+					r.push(`  - #### [{{ ${g2.title}}}{{ ${g2.page}}}](#p${g2.page})`);
 				}
 				if(g2.children.length){
 					_.each(g2.children, (g3, idx3)=>{
 						if(g2.title !== null) {
-							r.push(`\t\t    - [{{ ${g3.title}}}{{ ${g3.page}}}](#p${g3.page})`);
+							r.push(`    - [{{ ${g3.title}}}{{ ${g3.page}}}](#p${g3.page})`);
 						} else { // Don't over-indent if no level-2 parent entry
-							r.push(`\t\t  - [{{ ${g3.title}}}{{ ${g3.page}}}](#p${g3.page})`);
+							r.push(`  - [{{ ${g3.title}}}{{ ${g3.page}}}](#p${g3.page})`);
 						}
 					});
 				}
@@ -78,7 +78,7 @@ module.exports = function(brew){
 		{{toc,wide
 		# Table Of Contents
 
-${markdown}
+		${markdown}
 		}}
 		\n`;
 };

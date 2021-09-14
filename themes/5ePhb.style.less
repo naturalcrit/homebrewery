@@ -385,17 +385,6 @@ body {
 		padding           : 0px;
 		margin-bottom     : 0.325cm;
 
-		p{
-			margin-bottom : 0.3cm;
-		}
-		p+p {
-			margin-top  : 0;	//May not be needed
-			text-indent : 0;
-		}
-		p:last-of-type {
-			margin-bottom: 0;
-		}
-
 		//Headers
 		h2{
 			font-size     : 0.62cm;
@@ -411,7 +400,7 @@ body {
 			font-weight    : 800;
 			font-variant   : small-caps;
 			border-bottom  : 2px solid @headerText;
-			margin-top     : 0.05cm;
+			// margin-top     : 0.05cm;  //Font is misaligned. Shift up slightly
   		padding-bottom : 0.05cm;
 		}
 
@@ -425,12 +414,17 @@ body {
 			border           : none;
 		}
 
-		//Attribute Lists
-		dl {
+		//Attribute Lists - All text between HRs is red
+		hr ~ :is(dl,p) {
 			color : @headerText;
 		}
-		hr:last-of-type~dl{
-			color : inherit; // After the HRs, hanging indents remain black.
+		hr:last-of-type {
+			& ~ :is(dl,p) {
+				color : inherit; // After the HRs, reset text to black
+			}
+			& + * {
+				margin-top : 0.325cm; // Space after last HR
+			}
 		}
 
 		// Monster Ability table
@@ -448,6 +442,10 @@ body {
 			td,th {
 				padding: 0px;
 			}
+		}
+
+		:last-child {
+			margin-bottom : 0;
 		}
 	}
 
@@ -773,10 +771,8 @@ body {
 // *****************************/
 .page {
 	.blank {
-		height: 0.75em;
-	}
-	p + .blank {
-		margin-top: -1em;
+		height     : 1em;
+		margin-top : 0;
 	}
 }
 
