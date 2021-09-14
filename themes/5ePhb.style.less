@@ -285,6 +285,7 @@ body {
 	/* Arist Credit */
 	.artist {
 		position    : absolute;
+		width       : auto;
 		text-align  : center;
 		font-family : WalterTurncoat;
 		font-size   : 0.27cm;
@@ -309,21 +310,21 @@ body {
 
 	/* Watermark */
 	.watermark {
-		display			: grid !important;
-		place-items		: center;
+		display         : grid !important;
+		place-items     : center;
 		justify-content	: center;
-		position		: absolute;
-		top				: 0;
-		left			: 0;
-		width			: 100%;
-		height			: 100%;
-		font-size		: 120px;
+		position        : absolute;
+		top             : 0;
+		left            : 0;
+		width           : 100%;
+		height          : 100%;
+		font-size       : 120px;
 		text-transform	: uppercase;
-		color			: black;
-		mix-blend-mode 	: overlay;
-		opacity			: 30%;
-		transform		: rotate(-45deg);
-		z-index			: 500;
+		color           : black;
+		mix-blend-mode  : overlay;
+		opacity         : 30%;
+		transform       : rotate(-45deg);
+		z-index         : 500;
 		p {
 			margin-bottom : none;
 		}
@@ -375,8 +376,9 @@ body {
 			background-attachment : fixed;
 			filter                : drop-shadow(1px 4px 6px #888);
 			padding               : 4px 2px;
-			margin-left           : -6px;
-			margin-right          : -6px;
+			margin-left           : -0.16cm;
+			margin-right          : -0.16cm;
+			width                 : calc(100% + 0.32cm);
 		}
 
 		position          : relative;
@@ -609,6 +611,7 @@ body {
 		margin-bottom       : 1.05cm;
 		margin-left         : -0.1cm;
 		margin-right        : -0.1cm;
+		width               : calc(100% + 0.2cm);
 		border-collapse     : separate;
 		background-color    : white;
 		border              : initial;
@@ -724,7 +727,9 @@ body {
 	.block {
 		break-inside      : avoid;
 		display           : inline-block;
-		min-width         : 100%;
+		.page :where(&) {
+			width             : 100%;
+		}
 		//-webkit-transform : translateZ(0); //Prevents shadows from breaking across columns
 	}
 	.inline-block {
