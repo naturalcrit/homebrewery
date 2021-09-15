@@ -49,7 +49,7 @@
     "codemirror": "^5.62.3",
     "cookie-parser": "^1.4.5",
     "create-react-class": "^15.7.0",
-    "dedent-tabs": "^0.10.0",
+    "dedent-tabs": "^0.10.1",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
     "express-static-gzip": "2.1.1",
