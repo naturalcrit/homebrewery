@@ -95,7 +95,7 @@ module.exports = [
 				name : 'Remove Drop Cap',
 				icon : 'fas fa-remove-format',
 				gen  : dedent`/* Removes Drop Caps */
-						.phb3 h1+p:first-letter {
+						.page h1+p:first-letter {
 							all: unset;
 						}\n\n`
 			},
@@ -103,7 +103,7 @@ module.exports = [
 				name : 'Tweak Drop Cap',
 				icon : 'fas fa-sliders-h',
 				gen  : dedent`/* Drop Cap settings */
-						.phb3 h1 + p::first-letter {
+						.page h1 + p::first-letter {
 							font-family: SolberaImitationRemake;
 							font-size: 3.5cm;
 							background: linear-gradient(-45deg, #322814, #998250, #322814);
