@@ -388,7 +388,7 @@ module.exports = [
 				icon : 'fas fa-tint',
 				gen  : dedent`
 					/* Ink Friendly */
-					.pages *:is(.page,.monster,.note,.descriptive) {
+					*:is(.page,.monster,.note,.descriptive) {
 						background : white !important;
 						filter : drop-shadow(0px 0px 3px #888) !important;
 					}
