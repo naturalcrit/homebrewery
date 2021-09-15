@@ -390,11 +390,7 @@ module.exports = [
 					/* Ink Friendly */
 					.pages *:is(.page,.monster,.note,.descriptive) {
 						background : white !important;
-						box-shadow : 0px 0px 3px !important;
-					}
-
-					.page .note:before {
-						box-shadow : 0px 0px 3px;
+						filter : drop-shadow(0px 0px 3px #888) !important;
 					}
 
 					.page img {
