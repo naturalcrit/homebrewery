@@ -509,8 +509,14 @@ const sanatizeScriptTags = (content)=>{
 const tagTypes = ['div', 'span', 'a'];
 const tagRegex = new RegExp(`(${
 	_.map(tagTypes, (type)=>{
-		return `\\<${type}|\\</${type}>`;
+		return `\\<${type}\\b|\\</${type}>`;
 	}).join('|')})`, 'g');
+
+// Special "void" tags that can be self-closed but don't need to be.
+const voidTags = new Set([
+	'area', 'base', 'br', 'col', 'command', 'hr', 'img',
+	'input', 'keygen', 'link', 'meta', 'param', 'source'
+]);
 
 const processStyleTags = (string)=>{
 	//split tags up. quotes can only occur right after colons.
@@ -552,6 +558,13 @@ module.exports = {
 						});
 					}
 					if(match === `</${type}>`){
+						// Closing tag: Check we expect it to be closed.
+						// The accumulator may contain a sequence of voidable opening tags,
+						// over which we skip before checking validity of the close.
+						while (acc.length && voidTags.has(_.last(acc).type) && _.last(acc).type != type) {
+							acc.pop();
+						}
+						// Now check that what remains in the accumulator is valid.
 						if(!acc.length){
 							errors.push({
 								line : lineNumber,
