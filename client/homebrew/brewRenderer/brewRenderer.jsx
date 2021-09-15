@@ -117,7 +117,7 @@ const BrewRenderer = createClass({
 	},
 
 	renderDummyPage : function(index){
-		return <div className='phb' id={`p${index + 1}`} key={index}>
+		return <div className='phb page' id={`p${index + 1}`} key={index}>
 			<i className='fas fa-spinner fa-spin' />
 		</div>;
 	},
