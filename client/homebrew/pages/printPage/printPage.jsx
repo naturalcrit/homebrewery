@@ -63,7 +63,9 @@ const PrintPage = createClass({
 			<link href={`${this.props.brew.renderer == 'legacy' ? '/themes/5ePhbLegacy.style.css' : '/themes/5ePhb.style.css'}`} rel='stylesheet'/>
 			{/* Apply CSS from Style tab */}
 			<div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${this.props.brew.style} </style>` }} />
-			{this.renderPages()}
+			<div className='pages'>
+				{this.renderPages()}
+			</div>
 		</div>;
 	}
 });
