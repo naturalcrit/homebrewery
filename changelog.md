@@ -32,6 +32,41 @@ pre {
 
 # changelog
 
+### Friday, 17/09/2021 - v3.0.1
+
+{{taskList
+* [x] Updated V3 **PHB → Class Feature** snippet to use V3 syntax.
+
+	Fixes issues: [Reported on Reddit](https://www.reddit.com/r/homebrewery/comments/pm6ki7/two_version_of_class_features_making_it_look_more/)
+
+* [x] Improved V3 **PHB → Monster Stat Block** snippet and styling to allow for easier control of paragraph indentation in the Abilities text.
+
+  Fixes issues: [#181](https://github.com/naturalcrit/homebrewery/issues/181)
+
+* [x] Improved Legacy **TABLES → Split Table** snippet by removing unneeded column-break backticks.
+
+  Fixes issues: [#844](https://github.com/naturalcrit/homebrewery/issues/844)
+
+* [x] Changed block elements to use CSS `width` instead of `min-width`. This should make custom styles behave more predictably when trying to resize items.
+
+  Fixes issues: [Reported on Reddit](https://www.reddit.com/r/homebrewery/comments/pohoy3/looking_for_help_with_basic_stuff_in_v3/)
+
+* [x] Fixed Partial Page Rendering in V3 for large brews
+
+  Fixes issues: [Reported on Reddit](https://www.reddit.com/r/homebrewery/comments/pori3a/weird_behaviour_of_the_brew_after_page_50/)
+
+* [x] Fixed HTML validation to handle tags starting with 'a', as in `<​aside>`.  
+
+  Fixes issues: [#230](https://github.com/naturalcrit/homebrewery/issues/230)
+
+* [x] Fixed page footers switching side when printing.
+
+  Fixes issues: [#1612](https://github.com/naturalcrit/homebrewery/issues/1612)
+}}
+
+
+\page
+
 ### Saturday, 11/09/2021 - v3.0.0
 
 We have been working on v3 for a *very* long time. We want to thank everyone for being paitent.
