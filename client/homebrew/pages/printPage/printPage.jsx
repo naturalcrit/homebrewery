@@ -35,6 +35,11 @@ const PrintPage = createClass({
 		if(this.props.query.dialog) window.print();
 	},
 
+	renderStyle : function() {
+		if(!this.props.brew.style) return;
+		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${this.props.brew.style} </style>` }} />;
+	},
+
 	renderPages : function(){
 		if(this.props.brew.renderer == 'legacy') {
 			return _.map(this.state.brewText.split('\\page'), (pageText, index)=>{
@@ -62,8 +67,10 @@ const PrintPage = createClass({
 			<Meta name='robots' content='noindex, nofollow' />
 			<link href={`${this.props.brew.renderer == 'legacy' ? '/themes/5ePhbLegacy.style.css' : '/themes/5ePhb.style.css'}`} rel='stylesheet'/>
 			{/* Apply CSS from Style tab */}
-			<div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${this.props.brew.style} </style>` }} />
-			{this.renderPages()}
+			{this.renderStyle()}
+			<div className='pages' ref='pages'>
+				{this.renderPages()}
+			</div>
 		</div>;
 	}
 });
