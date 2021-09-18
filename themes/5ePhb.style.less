@@ -600,49 +600,57 @@ body {
 //*****************************
 // *       CLASS TABLE
 // *****************************/
-.page .classTable{
-	th[colspan]:not([rowspan]) {
-		white-space : nowrap;
+.page {
+	* + .classTable.frame {
+		margin-top : 0.66cm;
 	}
-	&.frame {
-		margin-top          : 0.66cm;
-		margin-bottom       : 1.05cm;
-		margin-left         : -0.1cm;
-		margin-right        : -0.1cm;
-		width               : calc(100% + 0.2cm);
-		border-collapse     : separate;
-		background-color    : white;
-		border              : initial;
-		border-style        : solid;
-		border-image-outset : 0.55cm 0.3cm;
-		border-image-repeat : stretch;
-		border-image-slice  : 200;
-		border-image-source : @frameBorderImage;
-		border-image-width  : 47px;
-	}
-	&.decoration {
-		transform-style : preserve-3d;
-	}
-	&.decoration::before {
-		content           :'';
-		position          : absolute;
-		background-image  : @classTableDecoration;
-		background-size   : contain;
-		background-repeat : space;
-		width             : 7.75cm;
-		height            : calc(100% + 3.3cm);
-		top               : 50%;
-		left              : 50%;
-		transform         : translateY(-50%) translateX(-50%) translateZ(-1px);
-		filter            : drop-shadow(0px 0px 1px #C8C5C080)
-	}
-	&.decoration.wide::before {
-		width             : calc(100% + 3.3cm);
-		height            : 7.75cm;
-		top               : calc(50% + 0.4cm);
-	}
-	h5 + table{
-		margin-top : 0.2cm;
+	.classTable{
+		th[colspan]:not([rowspan]) {
+			white-space : nowrap;
+		}
+		&.frame {
+			margin-top          : 0.66cm;
+			&.wide {	// Allow top border to move into margin if
+				margin-top        : 0;
+			}
+			margin-bottom       : 1.05cm;
+			margin-left         : -0.1cm;
+			margin-right        : -0.1cm;
+			width               : calc(100% + 0.2cm);
+			border-collapse     : separate;
+			background-color    : white;
+			border              : initial;
+			border-style        : solid;
+			border-image-outset : 0.4cm 0.3cm;
+			border-image-repeat : stretch;
+			border-image-slice  : 200;
+			border-image-source : @frameBorderImage;
+			border-image-width  : 47px;
+		}
+		&.decoration {
+			transform-style : preserve-3d;
+		}
+		&.decoration::before {
+			content           :'';
+			position          : absolute;
+			background-image  : @classTableDecoration;
+			background-size   : contain;
+			background-repeat : space;
+			width             : 7.75cm;
+			height            : calc(100% + 3.3cm);
+			top               : 50%;
+			left              : 50%;
+			transform         : translateY(-50%) translateX(-50%) translateZ(-1px);
+			filter            : drop-shadow(0px 0px 1px #C8C5C080)
+		}
+		&.decoration.wide::before {
+			width             : calc(100% + 3.3cm);
+			height            : 7.75cm;
+			top               : calc(50% + 0.4cm);
+		}
+		h5 + table{
+			margin-top : 0.2cm;
+		}
 	}
 }
 //*****************************
