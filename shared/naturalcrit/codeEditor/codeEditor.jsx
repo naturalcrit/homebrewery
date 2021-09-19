@@ -112,6 +112,12 @@ const CodeEditor = createClass({
 	updateSize : function(){
 		this.codeMirror.refresh();
 	},
+	redo : function(){
+		this.codeMirror.redo();
+	},
+	undo : function(){
+		this.codeMirror.undo();
+	},
 	//----------------------//
 
 	render : function(){
