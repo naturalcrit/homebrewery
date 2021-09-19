@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./editor.less');
 const React = require('react');
 const createClass = require('create-react-class');
@@ -198,6 +199,21 @@ const Editor = createClass({
 		}
 	},
 
+	renderEditorToolbar : function(){
+		return <div className='editorToolbar'>
+			<span className='undo'
+				onClick={this.refs.codeEditor?.undo}
+				title='Undo'>
+				<i className='fas fa-undo' />
+			</span>
+			<span className='redo'
+				onClick={this.refs.codeEditor?.redo}
+				title='Redo'>
+				<i className='fas fa-redo' />
+			</span>
+		</div>;
+	},
+
 	render : function(){
 		this.highlightCustomMarkdown();
 		return (
@@ -211,6 +227,7 @@ const Editor = createClass({
 					renderer={this.props.renderer} />
 
 				{this.renderEditor()}
+				{!this.isMeta() && this.renderEditorToolbar()}
 			</div>
 		);
 	}
