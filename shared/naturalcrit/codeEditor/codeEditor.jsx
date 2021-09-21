@@ -47,20 +47,32 @@ const CodeEditor = createClass({
 			indentWithTabs : true,
 			tabSize        : 2,
 			extraKeys      : {
-				'Ctrl-B' : this.makeBold,
-				'Cmd-B'  : this.makeBold,
-				'Ctrl-I' : this.makeItalic,
-				'Cmd-I'  : this.makeItalic,
-				'Ctrl-M' : this.makeSpan,
-				'Cmd-M'  : this.makeSpan,
-				'Ctrl-/' : this.makeComment,
-				'Cmd-/'  : this.makeComment
+				'Ctrl-B'       : this.makeBold,
+				'Cmd-B'        : this.makeBold,
+				'Ctrl-I'       : this.makeItalic,
+				'Cmd-I'        : this.makeItalic,
+				'Ctrl-M'       : this.makeSpan,
+				'Cmd-M'        : this.makeSpan,
+				'Ctrl-/'       : this.makeComment,
+				'Cmd-/'        : this.makeComment,
+				'Shift-Ctrl-1' : ()=>this.makeHeader(1),
+				'Shift-Ctrl-2' : ()=>this.makeHeader(2),
+				'Shift-Ctrl-3' : ()=>this.makeHeader(3),
+				'Shift-Ctrl-4' : ()=>this.makeHeader(4),
+				'Shift-Ctrl-5' : ()=>this.makeHeader(5),
+				'Shift-Ctrl-6' : ()=>this.makeHeader(6),
 			}
 		});
 
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
 		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
 		this.updateSize();
+	},
+
+	makeHeader : function (number) {
+		const selection = this.codeMirror.getSelection();
+		const header = Array(number).fill('#').join('');
+		this.codeMirror.replaceSelection(`${header} ${selection}`, 'around');
 	},
 
 	makeBold : function() {
