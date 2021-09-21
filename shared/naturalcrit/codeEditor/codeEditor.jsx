@@ -55,8 +55,6 @@ const CodeEditor = createClass({
 				'Cmd-M'        : this.makeSpan,
 				'Ctrl-/'       : this.makeComment,
 				'Cmd-/'        : this.makeComment,
-				'Shift-Ctrl-1' : ()=>this.makeHeader(1),
-				'Shift-Ctrl-2' : ()=>this.makeHeader(2),
 				'Shift-Ctrl-3' : ()=>this.makeHeader(3),
 				'Shift-Ctrl-4' : ()=>this.makeHeader(4),
 				'Shift-Ctrl-5' : ()=>this.makeHeader(5),
@@ -73,6 +71,8 @@ const CodeEditor = createClass({
 		const selection = this.codeMirror.getSelection();
 		const header = Array(number).fill('#').join('');
 		this.codeMirror.replaceSelection(`${header} ${selection}`, 'around');
+		const cursor = this.codeMirror.getCursor();
+		this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch + selection.length + number + 1 });
 	},
 
 	makeBold : function() {
