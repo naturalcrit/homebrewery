@@ -55,10 +55,18 @@ const CodeEditor = createClass({
 				'Cmd-M'        : this.makeSpan,
 				'Ctrl-/'       : this.makeComment,
 				'Cmd-/'        : this.makeComment,
+				'Shift-Ctrl-1' : ()=>this.makeHeader(1),
+				'Shift-Ctrl-2' : ()=>this.makeHeader(2),
 				'Shift-Ctrl-3' : ()=>this.makeHeader(3),
 				'Shift-Ctrl-4' : ()=>this.makeHeader(4),
 				'Shift-Ctrl-5' : ()=>this.makeHeader(5),
 				'Shift-Ctrl-6' : ()=>this.makeHeader(6),
+				'Shift-Cmd-1'  : ()=>this.makeHeader(1),
+				'Shift-Cmd-2'  : ()=>this.makeHeader(2),
+				'Shift-Cmd-3'  : ()=>this.makeHeader(3),
+				'Shift-Cmd-4'  : ()=>this.makeHeader(4),
+				'Shift-Cmd-5'  : ()=>this.makeHeader(5),
+				'Shift-Cmd-6'  : ()=>this.makeHeader(6),
 			}
 		});
 
