@@ -1,6 +1,7 @@
 require('./homePage.less');
 const React = require('react');
 const createClass = require('create-react-class');
+const _ = require('lodash');
 const cx = require('classnames');
 const request = require('superagent');
 const { Meta } = require('vitreum/headtags');
@@ -49,9 +50,9 @@ const HomePage = createClass({
 		this.refs.editor.update();
 	},
 	handleTextChange : function(text){
-		this.setState({
-			brew : { text: text }
-		});
+		this.setState((prevState)=>({
+			brew : _.merge({}, prevState.brew, { text: text })
+		}));
 	},
 	renderNavbar : function(){
 		return <Navbar ver={this.props.ver}>
@@ -81,7 +82,7 @@ const HomePage = createClass({
 						renderer={this.state.brew.renderer}
 						showEditButtons={false}
 					/>
-					<BrewRenderer text={this.state.brew.text} />
+					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer}/>
 				</SplitPane>
 			</div>
 

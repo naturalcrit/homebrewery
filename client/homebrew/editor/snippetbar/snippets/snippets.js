@@ -7,6 +7,7 @@ const ClassFeatureGen = require('./classfeature.gen.js');
 const CoverPageGen = require('./coverpage.gen.js');
 const TableOfContentsGen = require('./tableOfContents.gen.js');
 const dedent = require('dedent-tabs').default;
+const watercolorGen = require('./watercolor.gen.js');
 
 
 module.exports = [
@@ -14,6 +15,7 @@ module.exports = [
 	{
 		groupName : 'Editor',
 		icon      : 'fas fa-pencil-alt',
+		view      : 'text',
 		snippets  : [
 			{
 				name : 'Column Break',
@@ -42,22 +44,10 @@ module.exports = [
 					{{wide
 					Everything in here will be extra wide. Tables, text, everything!
 					Beware though, CSS columns can behave a bit weird sometimes. You may
-					have to rely on the automatic column-break rather than \`\column\` if
-					you mix columns and wide blocks on the same page.
+					have to manually place column breaks with \`\column\` to make the
+					surrounding text flow with this wide block the way you want.
 					}}
 					\n`
-			},
-			{
-				name : 'Image',
-				icon : 'fas fa-image',
-				gen  : dedent`
-					![cat warrior](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:325px}
-					Credit: Kyounghwan Kim`
-			},
-			{
-				name : 'Background Image',
-				icon : 'fas fa-tree',
-				gen  : `![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,top:50px,right:30px,width:280px}`
 			},
 			{
 				name : 'QR Code',
@@ -68,7 +58,6 @@ module.exports = [
 							`https://homebrewery.naturalcrit.com/share/${brew.shareId}` +
 							`&amp;size=100x100) {width:100px;mix-blend-mode:multiply}`;
 				}
-
 			},
 			{
 				name : 'Page Number',
@@ -123,12 +112,55 @@ module.exports = [
 		]
 	},
 
+	/*********************** IMAGES *******************/
+	{
+		groupName : 'Images',
+		icon      : 'fas fa-images',
+		view      : 'text',
+		snippets  : [
+			{
+				name : 'Image',
+				icon : 'fas fa-image',
+				gen  : dedent`
+					![cat warrior](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:325px,mix-blend-mode:multiply}
+
+					{{artist,position:relative,top:-230px,left:10px,margin-bottom:-30px
+					##### Cat Warrior
+					[Kyoung Hwan Kim](https://www.artstation.com/tahra)
+					}}`
+			},
+			{
+				name : 'Background Image',
+				icon : 'fas fa-tree',
+				gen  : dedent`
+					![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,top:50px,right:30px,width:280px}
+
+					{{artist,top:80px,right:30px
+					##### Homebrew Mug
+					[naturalcrit](https://homebrew.naturalcrit.com)
+					}}`
+			},
+			{
+				name : 'Watercolor Splatter',
+				icon : 'fas fa-fill-drip',
+				gen  : watercolorGen,
+			},
+			{
+				name : 'Watermark',
+				icon : 'fas fa-id-card',
+				gen  : dedent`
+				{{watermark Homebrewery}}\n`
+			},
+		]
+	},
+
 
 	/************************* PHB ********************/
 
 	{
 		groupName : 'PHB',
 		icon      : 'fas fa-book',
+		view      : 'text',
 		snippets  : [
 			{
 				name : 'Spell',
@@ -198,6 +230,18 @@ module.exports = [
 				icon : 'fas fa-hat-wizard',
 				gen  : MagicGen.item,
 			},
+			{
+				name : 'Artist Credit',
+				icon : 'fas fa-signature',
+				gen  : function(){
+					return dedent`
+						{{artist,top:90px,right:30px
+						##### Starry Night
+						[Van Gogh](https://www.vangoghmuseum.nl/en)
+						}}
+						\n`;
+				},
+			},
 		]
 	},
 
@@ -208,16 +252,37 @@ module.exports = [
 	{
 		groupName : 'Tables',
 		icon      : 'fas fa-table',
+		view      : 'text',
 		snippets  : [
 			{
 				name : 'Class Table',
 				icon : 'fas fa-table',
-				gen  : ClassTableGen.full,
+				gen  : ClassTableGen.full('classTable,frame,decoration,wide'),
 			},
 			{
-				name : 'Half Class Table',
+				name : 'Class Table (unframed)',
+				icon : 'fas fa-border-none',
+				gen  : ClassTableGen.full('classTable,wide'),
+			},
+			{
+				name : '1/2 Class Table',
 				icon : 'fas fa-list-alt',
-				gen  : ClassTableGen.half,
+				gen  : ClassTableGen.half('classTable,decoration,frame'),
+			},
+			{
+				name : '1/2 Class Table (unframed)',
+				icon : 'fas fa-border-none',
+				gen  : ClassTableGen.half('classTable'),
+			},
+			{
+				name : '1/3 Class Table',
+				icon : 'fas fa-border-all',
+				gen  : ClassTableGen.third('classTable,frame'),
+			},
+			{
+				name : '1/3 Class Table (unframed)',
+				icon : 'fas fa-border-none',
+				gen  : ClassTableGen.third('classTable'),
 			},
 			{
 				name : 'Table',
@@ -285,33 +350,54 @@ module.exports = [
 
 
 
-	/**************** PRINT *************/
+	/**************** PAGE *************/
 
 	{
 		groupName : 'Print',
 		icon      : 'fas fa-print',
+		view      : 'style',
 		snippets  : [
 			{
-				name : 'A4 PageSize',
+				name : 'A4 Page Size',
 				icon : 'far fa-file',
-				gen  : ['<style>',
-					'  .phb{',
-					'    width : 210mm;',
-					'    height : 296.8mm;',
-					'  }',
-					'</style>'
+				gen  : ['/* A4 Page Size */',
+					'.page{',
+					'	width  : 210mm;',
+					'	height : 296.8mm;',
+					'}',
+					''
+				].join('\n')
+			},
+			{
+				name : 'Square Page Size',
+				icon : 'far fa-file',
+				gen  : ['/* Square Page Size */',
+					'.page {',
+					'	width   : 125mm;',
+					'	height  : 125mm;',
+					'	padding : 12.5mm;',
+					'	columns : unset;',
+					'}',
+					''
 				].join('\n')
 			},
 			{
 				name : 'Ink Friendly',
 				icon : 'fas fa-tint',
-				gen  : ['<style>',
-					'  .phb{ background : white;}',
-					'  .phb img{ display : none;}',
-					'  .phb hr+blockquote{background : white;}',
-					'</style>',
-					''
-				].join('\n')
+				gen  : dedent`
+					/* Ink Friendly */
+					.pages *:is(.page,.monster,.note,.descriptive) {
+						background : white !important;
+						box-shadow : 0px 0px 3px !important;
+					}
+
+					.page .note:before {
+						box-shadow : 0px 0px 3px;
+					}
+
+					.page img {
+						visibility : hidden;
+					}`
 			},
 		]
 	},
