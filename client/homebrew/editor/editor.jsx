@@ -68,15 +68,18 @@ const Editor = createClass({
 	},
 
 	handleInject : function(injectText){
-		const text = (this.isText() ? this.props.brew.text : this.props.brew.style);
+		let text;
+		if(this.isText())  text = this.props.brew.text;
+		if(this.isStyle()) text = this.props.brew.style ?? DEFAULT_STYLE_TEXT;
 
 		const lines = text.split('\n');
 		const cursorPos = this.refs.codeEditor.getCursorPosition();
 		lines[cursorPos.line] = splice(lines[cursorPos.line], cursorPos.ch, injectText);
 
-		this.refs.codeEditor.setCursorPosition(cursorPos.line + injectText.split('\n').length, cursorPos.ch  + injectText.length);
+		const injectLines = injectText.split('\n');
+		this.refs.codeEditor.setCursorPosition(cursorPos.line + injectLines.length, cursorPos.ch  + injectLines[injectLines.length - 1].length);
 
-		if(this.isText()) this.props.onTextChange(lines.join('\n'));
+		if(this.isText())  this.props.onTextChange(lines.join('\n'));
 		if(this.isStyle()) this.props.onStyleChange(lines.join('\n'));
 	},
 
@@ -119,7 +122,7 @@ const Editor = createClass({
 
 				// New Codemirror styling for V3 renderer
 				if(this.props.renderer == 'V3') {
-					if(line.startsWith('\\page')){
+					if(line.match(/^\\page$/)){
 						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
 						r.push(lineNumber);
 					}

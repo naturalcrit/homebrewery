@@ -30,7 +30,7 @@ const BrewRenderer = createClass({
 		if(this.props.renderer == 'legacy') {
 			pages = this.props.text.split('\\page');
 		} else {
-			pages = this.props.text.split(/^\\page/gm);
+			pages = this.props.text.split(/^\\page$/gm);
 		}
 
 		return {
@@ -62,7 +62,7 @@ const BrewRenderer = createClass({
 			if(this.props.renderer == 'legacy') {
 				pages = this.props.text.split('\\page');
 			} else {
-				pages = this.props.text.split(/^\\page/gm);
+				pages = this.props.text.split(/^\\page$/gm);
 			}
 			this.setState({
 				pages  : pages,
@@ -117,7 +117,7 @@ const BrewRenderer = createClass({
 	},
 
 	renderDummyPage : function(index){
-		return <div className='phb' id={`p${index + 1}`} key={index}>
+		return <div className='phb page' id={`p${index + 1}`} key={index}>
 			<i className='fas fa-spinner fa-spin' />
 		</div>;
 	},
@@ -130,8 +130,14 @@ const BrewRenderer = createClass({
 	renderPage : function(pageText, index){
 		if(this.props.renderer == 'legacy')
 			return <div className='phb page' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(pageText) }} key={index} />;
-		else
-			return <div className='phb3 page' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: Markdown.render(pageText) }} key={index} />;
+		else {
+			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
+			return (
+				<div className='page' id={`p${index + 1}`} key={index} >
+					<div className='columnWrapper' dangerouslySetInnerHTML={{ __html: Markdown.render(pageText) }} />
+				</div>
+			);
+		}
 	},
 
 	renderPages : function(){
@@ -182,7 +188,6 @@ const BrewRenderer = createClass({
 	        : null}
 
 				<Frame initialContent={this.state.initialContent}
-					head = <link href={`${this.props.renderer == 'legacy' ? '/themes/5ePhbLegacy.style.css' : '/themes/5ePhb.style.css'}`} rel='stylesheet'/>
 					style={{ width: '100%', height: '100%', visibility: this.state.visibility }}
 					contentDidMount={this.frameDidMount}>
 					<div className={'brewRenderer'}
@@ -194,17 +199,17 @@ const BrewRenderer = createClass({
 							<RenderWarnings />
 							<NotificationPopup />
 						</div>
-
-						<div className='pages' ref='pages'>
-							{/* Apply CSS from Style tab and render pages from Markdown tab */}
-							{this.state.isMounted
-								&&
-								<>
-									{this.renderStyle()}
+						<link href={`${this.props.renderer == 'legacy' ? '/themes/5ePhbLegacy.style.css' : '/themes/5ePhb.style.css'}`} rel='stylesheet'/>
+						{/* Apply CSS from Style tab and render pages from Markdown tab */}
+						{this.state.isMounted
+							&&
+							<>
+								{this.renderStyle()}
+								<div className='pages' ref='pages'>
 									{this.renderPages()}
-								</>
-							}
-						</div>
+								</div>
+							</>
+						}
 					</div>
 				</Frame>
 				{this.renderPageInfo()}

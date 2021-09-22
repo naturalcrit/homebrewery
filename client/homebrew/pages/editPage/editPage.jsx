@@ -196,11 +196,14 @@ const EditPage = createClass({
 
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 
+		const brew = this.state.brew;
+		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
+
 		if(this.state.saveGoogle) {
 			if(transfer) {
 				const res = await request
 				.post('/api/newGoogle/')
-				.send(this.state.brew)
+				.send(brew)
 				.catch((err)=>{
 					console.log(err.status === 401
 						? 'Not signed in!'
@@ -211,7 +214,7 @@ const EditPage = createClass({
 				if(!res) { return; }
 
 				console.log('Deleting Local Copy');
-				await request.delete(`/api/${this.state.brew.editId}`)
+				await request.delete(`/api/${brew.editId}`)
 				.send()
 				.catch((err)=>{
 					console.log('Error deleting Local Copy');
@@ -221,8 +224,8 @@ const EditPage = createClass({
 				history.replaceState(null, null, `/edit/${this.savedBrew.googleId}${this.savedBrew.editId}`); //update URL to match doc ID
 			} else {
 				const res = await request
-				.put(`/api/updateGoogle/${this.state.brew.editId}`)
-				.send(this.state.brew)
+				.put(`/api/updateGoogle/${brew.editId}`)
+				.send(brew)
 				.catch((err)=>{
 					console.log(err.status === 401
 						? 'Not signed in!'
@@ -236,14 +239,14 @@ const EditPage = createClass({
 		} else {
 			if(transfer) {
 				const res = await request.post('/api')
-				.send(this.state.brew)
+				.send(brew)
 				.catch((err)=>{
 					console.log('Error creating Local Copy');
 					this.setState({ errors: err });
 					return;
 				});
 
-				await request.get(`/api/removeGoogle/${this.state.brew.googleId}${this.state.brew.editId}`)
+				await request.get(`/api/removeGoogle/${brew.googleId}${brew.editId}`)
 				.send()
 				.catch((err)=>{
 					console.log('Error Deleting Google Brew');
@@ -253,8 +256,8 @@ const EditPage = createClass({
 				history.replaceState(null, null, `/edit/${this.savedBrew.editId}`); //update URL to match doc ID
 			} else {
 				const res = await request
-				.put(`/api/update/${this.state.brew.editId}`)
-				.send(this.state.brew)
+				.put(`/api/update/${brew.editId}`)
+				.send(brew)
 				.catch((err)=>{
 					console.log('Error Updating Local Brew');
 					this.setState({ errors: err });
