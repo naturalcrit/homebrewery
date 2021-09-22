@@ -106,7 +106,7 @@ module.exports = [
 						.page h1 + p::first-letter {
 							font-family: SolberaImitationRemake;
 							font-size: 3.5cm;
-							background: linear-gradient(-45deg, #322814, #998250, #322814);
+							background-image: linear-gradient(-45deg, #322814, #998250, #322814);
 							line-height: 1em;
 						}\n\n`
 			},
