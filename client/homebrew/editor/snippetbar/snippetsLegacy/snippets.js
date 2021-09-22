@@ -205,6 +205,16 @@ module.exports = [
 		view      : 'text',
 		snippets  : [
 			{
+				name : 'Class Table',
+				icon : 'fas fa-table',
+				gen  : ClassTableGen.full,
+			},
+			{
+				name : 'Half Class Table',
+				icon : 'fas fa-list-alt',
+				gen  : ClassTableGen.half,
+			},
+			{
 				name : 'Table',
 				icon : 'fas fa-th-list',
 				gen  : function(){
