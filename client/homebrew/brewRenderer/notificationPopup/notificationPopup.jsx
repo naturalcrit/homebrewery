@@ -4,7 +4,7 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');	//Unused variable
 
-const DISMISS_KEY = 'dismiss_notification7-10-20';
+const DISMISS_KEY = 'dismiss_notification09-9-21';
 
 const NotificationPopup = createClass({
 	getInitialState : function() {
@@ -22,22 +22,39 @@ const NotificationPopup = createClass({
 	notifications : {
 		psa : function(){
 			return <li key='psa'>
-				<em>Google Drive Integration!</em> <br />
-				We have added Google Drive integration to the Homebrewery! <a target='_blank' href='https://www.naturalcrit.com/login'>Sign in</a> with
-				your Google account to link it with your Homebrewery profile. A new button in the Edit page will let you transfer your file to your personal
-				Google Drive storage, and Google will keep a backup of each version! No more lost work surprises!
+				<em>V3.0.0 Released!</em> <br />
+				After a long and bumpy road, we decided it was high time we finally release version 3 of the homebrewery into the wild. You can check out a
+				brief overview and see how to opt-in to the new features here:&nbsp;
+				<a target='_blank' href='https://homebrewery.naturalcrit.com/v3_preview'>V3 Welcome Page</a> and&nbsp;
+				<a target='_blank' href='https://homebrewery.naturalcrit.com/changelog'>the Changelog</a>.
 				<br /><br />
-				However, we are aware that there may be uncaught bugs. We encourage you to copy your brew into a text document before transferring to Google
-				Drive just in case any issues arise as this update is rolled out.
+				<em>BE WARNED:</em> As we continue to develop V3, expect small tweaks in the styling, fonts, and snippets; your brews may look slightly
+				different from day-to-day. All of your old documents will continue to work as normal; we are not touching them. If you don't want to deal
+				with the possibility of slight formatting changes, you may choose to stick with the Legacy renderer on any of your brews for as long as you like.
 				<br /><br />
-				<b>Note:</b> Transferring an existing brew to Google Drive will change the edit and share links of your document. If you have shared your
-				document online, remember to update the links there as well.
+				With this in mind, if you still wish to try out V3, you can opt-in any of your brews to the the V3 renderer.
+				This will likely break much of your formatting as a lot of the Markdown code has been updated, and starting from scratch may be cleaner.
+				(Don't worry, you can always change the renderer back to Legacy	for any brew at any time).
+			</li>;
+		},
+		refreshGoogle : function (){
+			return <li key='refreshGoogle'>
+				<em>Refresh your Google Drive Credentials!</em> <br />
+				Currently a lot of people are striking issues with their Google credentials expiring, which happens one year after the last sign in via
+				Google. This can cause errors when trying to save your brews. If this happens, simply visit the&nbsp;
+				<a target='_blank' href='https://www.naturalcrit.com/login'>
+				logout page
+				</a>
+				, sign out, and then sign	back in "with Google" to refresh your credentials. See&nbsp;
+				<a target='_blank' href='https://github.com/naturalcrit/homebrewery/discussions/1580'>
+					this discussion on Github
+				</a> for more details.
 			</li>;
 		},
 		faq : function(){
 			return <li key='faq'>
 				<em>Protect your work! </em> <br />
-				If you opt not to use your Google Drive, keep in mind that we do not save a history of your projects. Please make frequent backups of your brews!  &nbsp;
+				If you opt not to use your Google Drive, keep in mind that we do not save a history of your projects. Please make frequent backups of your brews!&nbsp;
 				<a target='_blank' href='https://www.reddit.com/r/homebrewery/comments/adh6lh/faqs_psas_announcements/'>
 					See the FAQ
 				</a> to learn how to avoid losing your work!
@@ -62,8 +79,10 @@ const NotificationPopup = createClass({
 		return <div className='notificationPopup'>
 			<i className='fas fa-times dismiss' onClick={this.dismiss}/>
 			<i className='fas fa-info-circle info' />
-			<h3>Notice</h3>
-			<small>This website is always improving and we are still adding new features and squashing bugs. Keep the following in mind:</small>
+			<div className='header'>
+				<h3>Notice</h3>
+				<small>This website is always improving and we are still adding new features and squashing bugs. Keep the following in mind:</small>
+			</div>
 			<ul>{_.values(this.state.notifications)}</ul>
 		</div>;
 	}

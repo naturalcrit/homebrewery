@@ -130,7 +130,7 @@ module.exports = [
 				gen  : dedent`
 					![cat warrior](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:325px,mix-blend-mode:multiply}
 
-					{{artist,position:relative,top:-230px,left:-100px,margin-bottom:-30px
+					{{artist,position:relative,top:-230px,left:10px,margin-bottom:-30px
 					##### Cat Warrior
 					[Kyoung Hwan Kim](https://www.artstation.com/tahra)
 					}}`
@@ -141,7 +141,7 @@ module.exports = [
 				gen  : dedent`
 					![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,top:50px,right:30px,width:280px}
 
-					{{artist,top:90px,right:30px
+					{{artist,top:80px,right:30px
 					##### Homebrew Mug
 					[naturalcrit](https://homebrew.naturalcrit.com)
 					}}`

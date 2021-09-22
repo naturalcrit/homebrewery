@@ -163,6 +163,7 @@ GoogleActions = {
 						version   : brew.version,
 						renderer  : brew.renderer,
 						tags      : brew.tags,
+						pageCount : brew.pageCount,
 						systems   : brew.systems.join()
 					}
 				},
