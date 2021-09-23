@@ -102,9 +102,16 @@ const CodeEditor = createClass({
 	},
 
 	makeLink : function() {
-		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 1) === '[' && selection.slice(-6) === '](url)';
-		this.codeMirror.replaceSelection(t ? selection.slice(1, -6) : `[${selection}](url)`);
-		if((selection.slice(0, 1) !== '[' || selection.slice(-6) !== '](url)') || selection.length === 0){
+		const isLink = /^\[(.*)(\]\()(.*)\)$/g;
+		const selection = this.codeMirror.getSelection();
+		if(isLink.test(selection) == true){
+			const altText = selection.slice(1, selection.lastIndexOf(']('));
+			const url = selection.slice(selection.lastIndexOf('](') + 2, -1);
+			this.codeMirror.replaceSelection(`${altText} ${url}`);
+			const cursor = this.codeMirror.getCursor();
+			this.codeMirror.setSelection({ line: cursor.line, ch: cursor.ch - url.length }, { line: cursor.line, ch: cursor.ch });
+		} else {
+			this.codeMirror.replaceSelection(`[${selection}](url)`);
 			const cursor = this.codeMirror.getCursor();
 			this.codeMirror.setSelection({ line: cursor.line, ch: cursor.ch - 4 }, { line: cursor.line, ch: cursor.ch - 1 });
 		}
