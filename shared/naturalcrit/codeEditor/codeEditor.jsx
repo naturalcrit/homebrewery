@@ -47,14 +47,18 @@ const CodeEditor = createClass({
 			indentWithTabs : true,
 			tabSize        : 2,
 			extraKeys      : {
-				'Ctrl-B' : this.makeBold,
-				'Cmd-B'  : this.makeBold,
-				'Ctrl-I' : this.makeItalic,
-				'Cmd-I'  : this.makeItalic,
-				'Ctrl-M' : this.makeSpan,
-				'Cmd-M'  : this.makeSpan,
-				'Ctrl-/' : this.makeComment,
-				'Cmd-/'  : this.makeComment
+				'Ctrl-B'       : this.makeBold,
+				'Cmd-B'        : this.makeBold,
+				'Ctrl-I'       : this.makeItalic,
+				'Cmd-I'        : this.makeItalic,
+				'Ctrl-M'       : this.makeSpan,
+				'Cmd-M'        : this.makeSpan,
+				'Ctrl-/'       : this.makeComment,
+				'Cmd-/'        : this.makeComment,
+				'Ctrl-L'       : this.makeUnOrderedList,
+				'Cmd-L'        : this.makeUnOrderedList,
+				'Shift-Ctrl-L' : this.makeOrderedList,
+				'Shift-Cmd-L'  : this.makeOrderedList
 			}
 		});
 
@@ -98,6 +102,10 @@ const CodeEditor = createClass({
 			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 4 });
 		}
 	},
+
+	makeUnOrderedList : function() {
+		const selection = this.codeMirror.getSelection()
+	}
 
 	//=-- Externally used -==//
 	setCursorPosition : function(line, char){
