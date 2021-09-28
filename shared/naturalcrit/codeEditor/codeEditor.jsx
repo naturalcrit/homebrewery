@@ -55,10 +55,10 @@ const CodeEditor = createClass({
 				'Cmd-M'        : this.makeSpan,
 				'Ctrl-/'       : this.makeComment,
 				'Cmd-/'        : this.makeComment,
-				'Ctrl-L'       : this.makeUnOrderedList,
-				'Cmd-L'        : this.makeUnOrderedList,
-				'Shift-Ctrl-L' : this.makeOrderedList,
-				'Shift-Cmd-L'  : this.makeOrderedList
+				'Ctrl-L'       : ()=>this.makeList('UL'),
+				'Cmd-L'        : ()=>this.makeList('UL'),
+				'Shift-Ctrl-L' : ()=>this.makeList('OL'),
+				'Shift-Cmd-L'  : ()=>this.makeList('OL')
 			}
 		});
 
@@ -103,19 +103,21 @@ const CodeEditor = createClass({
 		}
 	},
 
-	makeUnOrderedList : function() {
-		const selectionStart = this.codeMirror.getCursor('from');
-		const selectionEnd = this.codeMirror.getCursor('to');
+	makeList : function(listType) {
+		const selectionStart = this.codeMirror.getCursor('from'), selectionEnd = this.codeMirror.getCursor('to');
 		this.codeMirror.setSelection(
 			{ line: selectionStart.line, ch: 0 },
 			{ line: selectionEnd.line, ch: this.codeMirror.getLine(selectionEnd.line).length }
 		);
-		const isUL = /^-\s/gm;
 		const newSelection = this.codeMirror.getSelection();
-		if(newSelection.match(isUL) == null){
-			this.codeMirror.replaceSelection(newSelection.replace(/^/gm, '- '), 'around');
-		} else {
-			this.codeMirror.replaceSelection(newSelection.replace(isUL, ''), 'around');
+
+		const regex = /^\d+\.\s|^-\s/gm;
+		console.log(regex);
+		if(newSelection.match(regex) != null){   	// if selection IS A LIST
+			this.codeMirror.replaceSelection(newSelection.replace(regex, ''), 'around');
+		} else {									// if selection IS NOT A LIST
+			listType == 'UL' ? this.codeMirror.replaceSelection(newSelection.replace(/^/gm, '- '), 'around') :
+				this.codeMirror.replaceSelection(newSelection.replace(/^/gm, '1. '), 'around');
 		}
 	},
 
