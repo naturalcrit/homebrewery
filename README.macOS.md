@@ -13,6 +13,11 @@ Homebrew is a *package manager* for macOS and Linux, and we will use it to insta
 
 - In the same Terminal window, type `brew install node`.  This should install NodeJS without any further input.  
 
+### Alternate NodeJS installation with [NVM](https://nodejs.dev/download/package-manager/)
+Installing NodeJS with Homebrew allows for getting set up with Homebrewery using only a single package manager to set up the dependencies.  However, if you don't mind installing one more piece, you could install and manage NodeJS using NVM (Node Version Manager).
+
+NVM allows the installation of multiple versions of NodeJS on your machine, and the ability to switch between those versions should you need an exact version for a specific project (and different versions for other projects).  This is handy if you are a developer and think you need more flexibility with NodeJS.  [Here is a walkthrough on that.](https://techstacker.com/run-multiple-node-versions-node-nvm/)
+
 ## Step 3: Install [MongoDB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/)
 MongoDB will be your database for storing any information passed to Homebrewery such as your brews.  This is how brews are stored on the Homebrewery website unless a user decides to use their Google Drive account.
 
@@ -51,17 +56,52 @@ In the Terminal:
 
 You can exit out of the mongo shell ('mongosh') by typing `.exit`.  Your Mongo service will still be running in the background.
 
-## Step 5: Set Environment Variables
+## Step 5: Get Git  // TODO: I already had git installed, so I haven't done this myself and likely needs revision for clarity/completeness.
+You will need to install a program called "git" which allows for *versioning* of any program and managing those versions.  It's complicated-- if you are just going through this process to be able to *use* Homebrewery offline, you won't have to worry much about it; if you are looking to contribute to development, you'll need to be familiar with git to some degree.  Here, we are just going to do the minimum work needed:
+
+- Using Homebrew again, install git via the Terminal: `brew install git`
+
+## Step 6: Get Homebrewery
+Now with your JS runtime environment (Node) and your database (Mongo) setup, and your version control system (git) installed, you can get started on running Homebrewery.
+
+In Finder:
+- Create a folder wherever you want your Homebrewery stored.  For example, I have mine at /Documents/Programming/Projects/Homebrewery.
+- Once you have your destination folder, click into it and find the "path" at the bottom of the Finder window showing the path of folders from your Hard Drive to here; right click on your destination folder and "Copy [yourFolder] as Pathname".
+
+In the terminal:
+- Navigate to your new folder:  `cd [paste your pathname here]`
+- *clone* the Homebrewery repo to this folder: `git clone https://github.com/naturalcrit/homebrewery.git`.  Do not close the Terminal yet (will use it in Step 7)
+
+Back in Finder:
+- Look into your new folder; you should see the entire Homebrewery project in there now.
+
+## Step 7: Set Environment Variables
 This step allows Homebrewery to work offline.
 
-- first check to see if the env variable is already set, type in the terminal: `echo $NODE_ENV`...we are looking to find if "local" is the result...likely nothing will appear.
-- 
+In the Terminal:
+- In your Homebrewery folder:  `export NODE_ENV=local`
+- Double check it went through by doing:  `echo $NODE_ENV` and you should get back `local`.
 
+## Step 8: Enable v3
+You don't have to do this if you don't want v3, but I recommend it even if you don't end up using v3 (Homebrewery makes both available and you can choose between it and Legacy).
 
-### Alternate NodeJS installation with [NVM](https://nodejs.dev/download/package-manager/)
-Installing NodeJS with Homebrew allows for getting set up with Homebrewery using only a single package manager to set up the dependencies.  However, if you don't mind installing one more piece, you could install and manage NodeJS using NVM (Node Version Manager).
+In the Terminal:
+- In the Homebrewery folder, do:  `git update-index --skip-worktree config/default.json`
+- Then open config/default.json in a text editor (nano in this case):  `nano config/default.json`
+- Add `"enable_v3" : true` to the end of the attributes, being mindful to add a comma at the end of the previous attribute (full text below).
+- Save and exit by doing `ctrl x`, `y` (for Yes), and `Enter`
 
-NVM allows the installation of multiple versions of NodeJS on your machine, and the ability to switch between those versions should you need an exact version for a specific project (and different versions for other projects).  This is handy if you are a developer and think you need more flexibility with NodeJS.  [Here is a walkthrough on that.](https://techstacker.com/run-multiple-node-versions-node-nvm/)
+```
+{
+	"host" : "homebrewery.local.naturalcrit.com:8000",
+	"naturalcrit_url" : "local.naturalcrit.com:8010",
+	"secret" : "secret",
+	"web_port" : 8000,
+	"enable_v3" : true
+}
+```
+
+_*[skip_worktree](https://compiledsuccessfully.dev/git-skip-worktree/) tells git to ignore a folder or file, similar to .gitignore, except it works on files that are already tracked and .gitignore does not._
 
 ## Resources
 Below is a list of resources that I found helpful in figuring this out-- Not one of them is a "silver bullet" in getting Homebrewery running on your machine, but together they help provide a path.
