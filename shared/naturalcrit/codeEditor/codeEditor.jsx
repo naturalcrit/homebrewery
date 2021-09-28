@@ -112,12 +112,16 @@ const CodeEditor = createClass({
 		const newSelection = this.codeMirror.getSelection();
 
 		const regex = /^\d+\.\s|^-\s/gm;
-		console.log(regex);
 		if(newSelection.match(regex) != null){   	// if selection IS A LIST
 			this.codeMirror.replaceSelection(newSelection.replace(regex, ''), 'around');
 		} else {									// if selection IS NOT A LIST
-			listType == 'UL' ? this.codeMirror.replaceSelection(newSelection.replace(/^/gm, '- '), 'around') :
-				this.codeMirror.replaceSelection(newSelection.replace(/^/gm, '1. '), 'around');
+			listType == 'UL' ? this.codeMirror.replaceSelection(newSelection.replace(/^/gm, `- `), 'around') :
+				this.codeMirror.replaceSelection(newSelection.replace(/^/gm, (()=>{
+					let n = 1;
+					return ()=>{
+						return `${n++}. `;
+					};
+				})()), 'around');
 		}
 	},
 
