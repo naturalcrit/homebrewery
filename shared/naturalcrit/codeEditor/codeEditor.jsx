@@ -111,6 +111,11 @@ const CodeEditor = createClass({
 			{ line: selectionStart.line, ch: 0 },
 			{ line: selectionEnd.line, ch: this.codeMirror.getLine(selectionEnd.line).length });
 		console.log(selectionStart, selectionEnd, selection);
+		if(isList.test(this.codeMirror.getSelection()) == true){
+			console.log('is list');
+		} else {
+			console.log('is not a list');
+		}
 	},
 
 
