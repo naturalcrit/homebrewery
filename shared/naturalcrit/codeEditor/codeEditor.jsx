@@ -104,17 +104,18 @@ const CodeEditor = createClass({
 	},
 
 	makeUnOrderedList : function() {
-		const isList = /^-\s/gm;
 		const selectionStart = this.codeMirror.getCursor('from');
 		const selectionEnd = this.codeMirror.getCursor('to');
-		const selection = this.codeMirror.setSelection(
+		this.codeMirror.setSelection(
 			{ line: selectionStart.line, ch: 0 },
-			{ line: selectionEnd.line, ch: this.codeMirror.getLine(selectionEnd.line).length });
-		console.log(selectionStart, selectionEnd, selection);
-		if(isList.test(this.codeMirror.getSelection()) == true){
-			console.log('is list');
+			{ line: selectionEnd.line, ch: this.codeMirror.getLine(selectionEnd.line).length }
+		);
+		const isUL = /^-\s/gm;
+		const newSelection = this.codeMirror.getSelection();
+		if(newSelection.match(isUL) == null){
+			this.codeMirror.replaceSelection(newSelection.replace(/^/gm, '- '), 'around');
 		} else {
-			console.log('is not a list');
+			this.codeMirror.replaceSelection(newSelection.replace(isUL, ''), 'around');
 		}
 	},
 
