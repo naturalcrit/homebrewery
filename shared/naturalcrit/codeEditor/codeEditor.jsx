@@ -104,8 +104,20 @@ const CodeEditor = createClass({
 	},
 
 	makeUnOrderedList : function() {
-		const selection = this.codeMirror.getSelection()
-	}
+		const isList = /^-\s/gm;
+		const selectionStart = this.codeMirror.getCursor('from');
+		const selectionEnd = this.codeMirror.getCursor('to');
+		const selection = this.codeMirror.setSelection(
+			{ line: selectionStart.line, ch: 0 },
+			{ line: selectionEnd.line, ch: this.codeMirror.getLine(selectionEnd.line).length });
+		console.log(selectionStart, selectionEnd, selection);
+	},
+
+
+	// ordered list:
+	// selection should expand to include the full line even if selection is only part of line
+	// regex should match "- " at beginning of selection
+	// regex should match "- " at beginnign of each line or maybe "\n- "
 
 	//=-- Externally used -==//
 	setCursorPosition : function(line, char){
