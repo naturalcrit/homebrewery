@@ -4,10 +4,12 @@
 	width    : 100%;
 
 	.codeEditor{
-		height        : 100%;
-		counter-reset : page;
+		height            : 100%;
+		counter-reset     : page;
+		counter-increment : page;
 		.pageLine{
-			background : linear-gradient(to bottom, white 80%, lightgray);
+			background : #33333328;
+			border-top : #339 solid 1px;
 			&:after{
 				content           : counter(page);
 				counter-increment : page;
