@@ -408,11 +408,14 @@ const EditPage = createClass({
 	getRedditLink : function(){
 
 		const shareLink = this.processShareId();
-
-		const title = `${this.props.brew.title} [${this.props.brew.systems.join(' ')}]`;
+		const systems = this.props.brew.systems.length > 0 ? ` [${this.props.brew.systems.join(' - ')}]` : '';
+		const title = `${this.props.brew.title} ${systems}`;
+		const description = this.props.brew.description.length > 0 ? `### Description\n${this.props.brew.description}` : '';
 		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
 
-**[Homebrewery Link](https://homebrewery.naturalcrit.com/share/${shareLink})**`;
+**[Homebrewery Link](https://homebrewery.naturalcrit.com/share/${shareLink})**
+
+${description}`;
 
 		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
 	},
