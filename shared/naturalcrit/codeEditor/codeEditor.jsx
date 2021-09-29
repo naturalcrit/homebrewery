@@ -45,6 +45,8 @@ const CodeEditor = createClass({
 			lineWrapping   : this.props.wrap,
 			mode           : this.props.language, //TODO: CSS MODE DOESN'T SEEM TO LOAD PROPERLY
 			indentWithTabs : true,
+			inputStyle     : 'contenteditable',
+			spellcheck     : true,
 			tabSize        : 2,
 			extraKeys      : {
 				'Ctrl-B' : this.makeBold,
