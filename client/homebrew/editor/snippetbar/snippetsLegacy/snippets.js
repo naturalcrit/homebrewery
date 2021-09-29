@@ -11,7 +11,7 @@ const dedent = require('dedent-tabs').default;
 module.exports = [
 
 	{
-		groupName : 'Editor',
+		groupName : 'Text Editor',
 		icon      : 'fas fa-pencil-alt',
 		view      : 'text',
 		snippets  : [
@@ -79,32 +79,43 @@ module.exports = [
 				gen  : TableOfContentsGen
 			},
 			{
+				name : 'Add Comment',
+				icon : 'fas fa-code',
+				gen  : '<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->'
+			}
+		]
+	},
+
+
+	{
+		groupName : 'Style Editor',
+		icon      : 'fas fa-pencil-alt',
+		view      : 'style',
+		snippets  : [
+			{
 				name : 'Remove Drop Cap',
 				icon : 'fas fa-remove-format',
-				gen  : '<style>\n' +
-						'  .phb h1+p:first-letter {\n' +
-						'    all: unset;\n' +
-						'  }\n' +
-						'</style>'
+				gen  : dedent`/* Removes Drop Caps */
+						.phb h1+p:first-letter {
+							all: unset;
+						}\n\n`
 			},
 			{
 				name : 'Tweak Drop Cap',
 				icon : 'fas fa-sliders-h',
-				gen  : '<style>\n' +
-						'  /* Drop Cap settings */\n' +
-						'  .phb h1 + p::first-letter {\n' +
-						'    float: left;\n' +
-						'    font-family: Solberry;\n' +
-						'    font-size: 10em;\n' +
-						'    color: #222;\n' +
-						'    line-height: .8em;\n' +
-						'  }\n' +
-						'</style>'
+				gen  : dedent`/* Drop Cap Settings */
+						.phb h1 + p::first-letter {
+							float: left;
+							font-family: Solberry;
+							font-size: 10em;
+							color: #222;
+							line-height: .8em;
+						}\n\n`
 			},
 			{
 				name : 'Add Comment',
 				icon : 'fas fa-code',
-				gen  : `\n<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->\n\n`
+				gen  : '/* This is a comment that will not be rendered into your brew. */'
 			}
 		]
 	},
@@ -240,30 +251,25 @@ module.exports = [
 			{
 				name : 'Split Table',
 				icon : 'fas fa-th-large',
-				gen  : function(){
-					return [
-						'<div style=\'column-count:2\'>',
-						'| d10 | Damage Type |',
-						'|:---:|:------------|',
-						'|  1  | Acid        |',
-						'|  2  | Cold        |',
-						'|  3  | Fire        |',
-						'|  4  | Force       |',
-						'|  5  | Lightning   |',
-						'',
-						'```',
-						'```',
-						'',
-						'| d10 | Damage Type |',
-						'|:---:|:------------|',
-						'|  6  | Necrotic    |',
-						'|  7  | Poison      |',
-						'|  8  | Psychic     |',
-						'|  9  | Radiant     |',
-						'|  10 | Thunder     |',
-						'</div>\n\n',
-					].join('\n');
-				},
+				gen  : dedent`\n
+					<div style='column-count:2'>
+					| d10 | Damage Type |
+					|:---:|:------------|
+					|  1  | Acid        |
+					|  2  | Cold        |
+					|  3  | Fire        |
+					|  4  | Force       |
+					|  5  | Lightning   |
+
+					| d10 | Damage Type |
+					|:---:|:------------|
+					|  6  | Necrotic    |
+					|  7  | Poison      |
+					|  8  | Psychic     |
+					|  9  | Radiant     |
+					|  10 | Thunder     |
+					</div>
+					\n`
 			}
 		]
 	},

@@ -105,6 +105,20 @@ const genAbilities = function(){
 	]);
 };
 
+const genLongAbilities = function(){
+	return _.sample([
+		dedent`***Pack Tactics.*** These guys work together like peanut butter and jelly. Jelly and peanut butter.
+
+		When one of these guys attacks, the target is covered with, well, peanut butter and jelly.`,
+		dedent`***Hangriness.*** This creature is angry, and hungry. It will refuse to do anything with you until its hunger is satisfied.
+
+		When in visual contact with this creature, you must purchase an extra order of fries, even if they say they aren't hungry.`,
+		dedent`***Full of Detergent.*** This creature has swallowed an entire bottle of dish detergent and is actually having a pretty good time.
+
+		While walking near this creature, you must make a dexterity check or become "a soapy mess" for three hours, after which your skin will get all dry and itchy.`
+	]);
+};
+
 const genAction = function(){
 	const name = _.sample([
 		'Abdominal Drop',
@@ -159,11 +173,11 @@ module.exports = {
 			**Languages**            :: ${genList(['Common', 'Pottymouth', 'Gibberish', 'Latin', 'Jive'], 2)}
 			**Challenge**            :: ${_.random(0, 15)} (${_.random(10, 10000)} XP)
 			___
+			${_.times(_.random(genLines, genLines + 2), function(){return genAbilities();}).join('\n:\n')}
 			:
-			${_.times(_.random(genLines, genLines + 2), function(){return genAbilities();}).join('\n\t\t\t\n\t\t\t')}
-			:
+			${genLongAbilities()}
 			### Actions
-			${_.times(_.random(genLines, genLines + 2), function(){return genAction();}).join('\n\t\t\t\n\t\t\t')}
+			${_.times(_.random(genLines, genLines + 2), function(){return genAction();}).join('\n:\n')}
 			}}
 			\n`;
 	}
