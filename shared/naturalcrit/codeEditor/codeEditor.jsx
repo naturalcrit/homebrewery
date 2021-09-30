@@ -155,12 +155,24 @@ const CodeEditor = createClass({
 	},
 
 	makeComment : function() {
-		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 4) === '<!--' && selection.slice(-3) === '-->';
-		this.codeMirror.replaceSelection(t ? selection.slice(4, -3) : `<!-- ${selection} -->`, 'around');
+		let regex;
+		let cursorPos;
+		let newComment;
+		const selection = this.codeMirror.getSelection();
+		if(this.props.language === 'gfm'){
+			regex = /^\s*(<!--\s?)(.*?)(\s?-->)\s*$/gs;
+			cursorPos = 4;
+			newComment = `<!-- ${selection} -->`;
+		} else {
+			regex = /^\s*(\/\*\s?)(.*?)(\s?\*\/)\s*$/gs;
+			cursorPos = 3;
+			newComment = `/* ${selection} */`;
+		}
+		this.codeMirror.replaceSelection(regex.test(selection) == true ? selection.replace(regex, '$2') : newComment, 'around');
 		if(selection.length === 0){
 			const cursor = this.codeMirror.getCursor();
-			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 4 });
-		}
+			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - cursorPos });
+		};
 	},
 
 	//=-- Externally used -==//
