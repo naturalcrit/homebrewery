@@ -53,10 +53,10 @@ module.exports = [
 				name : 'QR Code',
 				icon : 'fas fa-qrcode',
 				gen  : (brew)=>{
-					return `![]` +
-							`(https://api.qrserver.com/v1/create-qr-code/?data=` +
-							`https://homebrewery.naturalcrit.com` + `${brew.shareId ? `/share/${brew.shareId}` : ''}` +
-							`&amp;size=100x100) {width:100px;mix-blend-mode:multiply}`;
+					return dedent`![]
+							(https://api.qrserver.com/v1/create-qr-code/?data=
+							https://homebrewery.naturalcrit.com${brew.shareId ? `/share/${brew.shareId}` : ''}
+							&amp;size=100x100) {width:100px;mix-blend-mode:multiply}`;
 				}
 			},
 			{
