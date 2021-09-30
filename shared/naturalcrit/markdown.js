@@ -174,13 +174,16 @@ const mustacheInjectBlock = {
 				lastToken.originalType = 'mustacheInjectBlock';
 				lastToken.tags         = ` ${processStyleTags(match[1])}`;
 				return {
-					type : 'text',            // Should match "name" above
-					raw  : match[0],          // Text to consume from the source
+					type : 'mustacheInjectBlock', // Should match "name" above
+					raw  : match[0],              // Text to consume from the source
 					text : ''
 				};
 			}
 		},
 		renderer(token) {
+			if(!token.originalType){
+				return;
+			}
 			token.type = token.originalType;
 			const text = this.parser.parse([token]);
 			const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
@@ -205,7 +208,7 @@ const definitionLists = {
 	level : 'block',
 	start(src) { return src.match(/^.*?::.*/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const regex = /^([^\n]*?)::([^\n]*)/ym;
+		const regex = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym;
 		let match;
 		let endIndex = 0;
 		const definitions = [];
@@ -225,12 +228,10 @@ const definitionLists = {
 		}
 	},
 	renderer(token) {
-		return `<dl>
-						${token.definitions.reduce((html, def)=>{
-		return `${html}<dt>${this.parser.parseInline(def.dt)}</dt>`
-									 + `<dd>${this.parser.parseInline(def.dd)}</dd>\n`;
-	}, '')}
-		 				</dl>`;
+		return `<dl>${token.definitions.reduce((html, def)=>{
+			return `${html}<dt>${this.parser.parseInline(def.dt)}</dt>`
+			            + `<dd>${this.parser.parseInline(def.dd)}</dd>\n`;
+		}, '')}</dl>`;
 	}
 };
 
@@ -508,8 +509,14 @@ const sanatizeScriptTags = (content)=>{
 const tagTypes = ['div', 'span', 'a'];
 const tagRegex = new RegExp(`(${
 	_.map(tagTypes, (type)=>{
-		return `\\<${type}|\\</${type}>`;
+		return `\\<${type}\\b|\\</${type}>`;
 	}).join('|')})`, 'g');
+
+// Special "void" tags that can be self-closed but don't need to be.
+const voidTags = new Set([
+	'area', 'base', 'br', 'col', 'command', 'hr', 'img',
+	'input', 'keygen', 'link', 'meta', 'param', 'source'
+]);
 
 const processStyleTags = (string)=>{
 	//split tags up. quotes can only occur right after colons.
@@ -551,6 +558,13 @@ module.exports = {
 						});
 					}
 					if(match === `</${type}>`){
+						// Closing tag: Check we expect it to be closed.
+						// The accumulator may contain a sequence of voidable opening tags,
+						// over which we skip before checking validity of the close.
+						while (acc.length && voidTags.has(_.last(acc).type) && _.last(acc).type != type) {
+							acc.pop();
+						}
+						// Now check that what remains in the accumulator is valid.
 						if(!acc.length){
 							errors.push({
 								line : lineNumber,

@@ -72,10 +72,11 @@ const config = require('nconf')
 //DB
 const mongoose = require('mongoose');
 mongoose.connect(config.get('mongodb_uri') || config.get('mongolab_uri') || 'mongodb://localhost/naturalcrit',
-	{ retryWrites: false, useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true });
-mongoose.connection.on('error', ()=>{
+	{ retryWrites: false });
+mongoose.connection.on('error', (err)=>{
 	console.log('Error : Could not connect to a Mongo Database.');
 	console.log('        If you are running locally, make sure mongodb.exe is running.');
+	console.log(err);
 	throw 'Can not connect to Mongo';
 });
 
@@ -103,6 +104,7 @@ const HomebrewModel  = require('./server/homebrew.model.js').model;
 const welcomeText    = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 const welcomeTextV3  = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg_v3.md', 'utf8');
 const changelogText  = require('fs').readFileSync('./changelog.md', 'utf8');
+const faqText        = require('fs').readFileSync('./faq.md', 'utf8');
 
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
@@ -138,6 +140,19 @@ app.get('/changelog', async (req, res, next)=>{
 		text     : changelogText,
 		renderer : 'V3'
 	};
+	splitTextAndStyle(brew);
+	req.brew = brew;
+	return next();
+});
+
+//FAQ page
+app.get('/faq', async (req, res, next)=>{
+	const brew = {
+		title    : 'FAQ',
+		text     : faqText,
+		renderer : 'V3'
+	};
+	splitTextAndStyle(brew);
 	req.brew = brew;
 	return next();
 });
@@ -281,5 +296,6 @@ app.use((err, req, res, next)=>{
 //^=====--------------------------------------=====^//
 
 const PORT = process.env.PORT || config.get('web_port') || 8000;
-app.listen(PORT);
-console.log(`server on port:${PORT}`);
+app.listen(PORT, ()=>{
+	console.log(`server on port:${PORT}`);
+});

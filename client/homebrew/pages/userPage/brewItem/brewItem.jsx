@@ -7,6 +7,7 @@ const moment = require('moment');
 const request = require('superagent');
 
 const googleDriveIcon = require('../../../googleDrive.png');
+const dedent = require('dedent-tabs').default;
 
 const BrewItem = createClass({
 	getDefaultProps : function() {
@@ -110,6 +111,10 @@ const BrewItem = createClass({
 			</div>
 			<hr />
 			<div className='info'>
+				<span title={`Authors:\n${brew.authors.join('\n')}`}>
+					<i className='fas fa-user'/> {brew.authors.join(', ')}
+				</span>
+				<br />
 				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
 					<i className='fas fa-eye'/> {brew.views}
 				</span>
@@ -118,14 +123,12 @@ const BrewItem = createClass({
 						<i className='far fa-file' /> {brew.pageCount}
 					</span>
 				}
-				<span>
+				<span title={dedent`
+					Created: ${moment(brew.createdAt).local().format(dateFormatString)}
+					Last updated: ${moment(brew.updatedAt).local().format(dateFormatString)}`}>
 					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
 				</span>
 				{this.renderGoogleDriveIcon()}
-				<br />
-				<span title={`Authors:\n${brew.authors.join('\n')}`}>
-					<i className='fas fa-user'/> {brew.authors.join(', ')}
-				</span>
 			</div>
 
 			<div className='links'>
