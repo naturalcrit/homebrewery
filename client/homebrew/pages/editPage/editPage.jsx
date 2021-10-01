@@ -197,7 +197,7 @@ const EditPage = createClass({
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 
 		const brew = this.state.brew;
-		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page/gm)) || []).length + 1;
+		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
 
 		if(this.state.saveGoogle) {
 			if(transfer) {

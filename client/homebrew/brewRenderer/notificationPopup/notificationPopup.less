@@ -1,23 +1,22 @@
 .popups{
 	position         : fixed;
-	top				 : @navbarHeight;
+	top              : @navbarHeight;
 	right            : 15px;
 	z-index          : 10001;
-	width            : 350px;
+	width            : 450px;
 }
 
 .notificationPopup{
-	position		 : relative;
-	float			 : right;
+	position         : relative;
 	display          : inline-block;
-	width            : 350px;
+	width            : 100%;
 	padding          : 15px;
 	padding-bottom   : 10px;
-	padding-left     : 55px;
+	padding-left     : 25px;
 	background-color : @blue;
 	color            : white;
 	a{
-		color       : @steel;
+		color       : #e0e5c1;
 		font-weight : 800;
 	}
 	i.info{
@@ -36,6 +35,9 @@
 		&:hover{
 			opacity : 1;
 		}
+	}
+	.header {
+		padding-left : 50px;
 	}
 	small{
 		opacity   : 0.7;

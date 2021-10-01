@@ -1,14 +1,271 @@
-<style>
+```css
 h5 {
 	font-size: .35cm !important;
 }
-</style>
+
+.taskList li {
+	list-style-type : none;
+}
+
+.taskList li input {
+	margin-left : -0.52cm;
+	transform: translateY(.05cm);
+	filter: brightness(1.1) drop-shadow(1px 2px 1px #222);
+}
+
+.taskList li input[checked] {
+	filter: sepia(100%) hue-rotate(60deg) saturate(3.5) contrast(4) brightness(1.1) drop-shadow(1px 2px 1px #222);
+}
+
+pre + * {
+	margin-top: 0.17cm;
+}
+
+pre {
+	margin-top: 0.17cm;
+}
+
+.page p + pre {
+	margin-top : 0.1cm;
+}
+```
 
 # changelog
 To see a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Friday, 17/09/2021 - v3.0.1
+
+{{taskList
+* [x] Updated V3 **PHB → Class Feature** snippet to use V3 syntax.
+
+	Fixes issues: [Reported on Reddit](https://www.reddit.com/r/homebrewery/comments/pm6ki7/two_version_of_class_features_making_it_look_more/)
+
+* [x] Improved V3 **PHB → Monster Stat Block** snippet and styling to allow for easier control of paragraph indentation in the Abilities text.
+
+  Fixes issues: [#181](https://github.com/naturalcrit/homebrewery/issues/181)
+
+* [x] Improved Legacy **TABLES → Split Table** snippet by removing unneeded column-break backticks.
+
+  Fixes issues: [#844](https://github.com/naturalcrit/homebrewery/issues/844)
+
+* [x] Changed block elements to use CSS `width` instead of `min-width`. This should make custom styles behave more predictably when trying to resize items.
+
+  Fixes issues: [Reported on Reddit](https://www.reddit.com/r/homebrewery/comments/pohoy3/looking_for_help_with_basic_stuff_in_v3/)
+
+* [x] Fixed Partial Page Rendering in V3 for large brews
+
+  Fixes issues: [Reported on Reddit](https://www.reddit.com/r/homebrewery/comments/pori3a/weird_behaviour_of_the_brew_after_page_50/)
+
+* [x] Fixed HTML validation to handle tags starting with 'a', as in `<​aside>`.  
+
+  Fixes issues: [#230](https://github.com/naturalcrit/homebrewery/issues/230)
+
+* [x] Fixed page footers switching side when printing.
+
+  Fixes issues: [#1612](https://github.com/naturalcrit/homebrewery/issues/1612)
+}}
+
+
+\page
+
+### Saturday, 11/09/2021 - v3.0.0
+
+We have been working on v3 for a *very* long time. We want to thank everyone for being paitent.
+
+
+Some features planned for V3 have actually been released over the recent months as part of V2, and some are still on the way. But at its core, V3 provides brand new Markdown-to-Brew rendering system, which was no simple task. This has opened up access to all sorts of bugfixes, tweaks, and potential for new features that just wouldn't be possible on the old system.
+
+***BE WARNED:*** As we continue to develop V3, expect small tweaks in the styling, fonts, and snippets; your brews may look slightly different from day-to-day; some things might break completely while we tackle any bugs in this early stage. All of your old documents will continue to work as normal. We are not touching them. If you don't want to deal With the possibility of slight formatting changes, you may choose to stick with the Legacy renderer on any of your brews for as long as you like. However, most new features added from now on will only be available for brews using the V3 renderer.
+
+Massive changelog incoming:
+
+#### Markdown+
+With the latest major update to *The Homebrewery*, we've implemented an extended Markdown-like syntax for block and span elements, plus a few other changes, eliminating the need for HTML tags like `div`, and `span` in most cases. This should hopefully aid non-coders with readability, and also allows us a few tricks in the background to fix some old issues. No raw HTML tags should be needed in a brew, and going forward, raw HTML will no longer receive debugging support (*but can still be used if you insist*).
+
+All brews made prior to the release of v3.0.0 will still render normally, and you may switch between the "Legacy" brew renderer and the newer "V3" renderer via the {{fa,fa-info-circle}} **Properties** button  on your brew. Much of the syntax and styling has changed in V3, so code in one version may be broken in the other.
+
+Visit [this page](/v3_preview) for brief examples of the new syntax!
+
+#### Extended Markdown Syntax:
+
+{{taskList
+* [x] Add Divs and Spans for all your custom styling needs, via a simplified Markdown-like syntax:
+  ```
+  {{myDivClass,#myId,color:red
+  My Div content
+  }}
+
+  Hello {{mySpan,color:blue World}} !
+  ```
+
+  Fixes issues: [#348](https://github.com/naturalcrit/homebrewery/issues/348)
+}}
+
+\column
+
+{{taskList
+* [x] Add inline CSS to Markdown objects via "curly injection" syntax:
+  ```
+  Hello *world*{myClass,#id,color:red}
+  ```
+  Fixes issues: [#403](https://github.com/naturalcrit/homebrewery/issues/403)
+
+* [x] Rowspan, Colspan, and multiple header rows with extended table syntax:
+```
+| Header 1a | Header 1b | Header 1c |
+| Header 2a | Header 2b | Header 2c |
+|:---------:|:----------|:---------:|
+| Span 2 columns       || Span 2    |
+| one col   |  one col  | rows     ^|
+```
+  Fixes issues: [#773](https://github.com/naturalcrit/homebrewery/issues/773), [#191](https://github.com/naturalcrit/homebrewery/issues/191)
+
+* [x] Hanging indents via `<dl>` tags, as seen in the **PHB → Spell** snippet. Add via "double-colon" syntax:
+```
+Term :: big long definition that bleeds onto multiple lines
+```
+  Fixes issues: [#182](https://github.com/naturalcrit/homebrewery/issues/182), [#149](https://github.com/naturalcrit/homebrewery/issues/149)
+
+* [x] Easier vertical spacing via colons alone on a line:
+  ```
+   :::
+  ```
+  Fixes issues: [#374](https://github.com/naturalcrit/homebrewery/issues/374)
+
+* [x] Avoid paragraph indendation by ending the previous paragraph with a backslash `\` or two spaces `  `
+  ```
+  Paragraph one\
+  Paragraph two
+  ```
+  Fixes issues: [#636](https://github.com/naturalcrit/homebrewery/issues/636)
+
+* [x] Code blocks can be inserted by surrounding it with rows of three backticks ` ``` `, for demonstration purposes or to share custom styles. Inline-code can be inserted with single backticks <code>&#96;code&#96;</code>
+ <pre><code>&#96;&#96;&#96;
+ Here is some code!
+&#96;&#96;&#96;
+</code></pre>
+
+  Fixes issues: [#465](https://github.com/naturalcrit/homebrewery/issues/465)
+
+#### New and Fixed Snippets
+
+* [x] Column breaks now use `\column` instead of ` ``` ` backticks.
+
+  Fixes issues: [#607](https://github.com/naturalcrit/homebrewery/issues/607)
+
+* [x] Page breaks using `\page` now only trigger when placed alone at the start of a line.
+
+  Fixes issues: [#1147](https://github.com/naturalcrit/homebrewery/issues/1147)
+}}
+
+\page
+{{taskList
+* [x] New **EDITOR → QR Code** snippet.
+
+  Fixes issues: [#538](https://github.com/naturalcrit/homebrewery/issues/538)
+
+* [x] New **IMAGES → Watercolor Splatter** snippet, which adds one of a range of stylish stains to your brew.
+
+* [x] New **IMAGES → Watermark** snippet, which adds transparent text diagonally across the page.
+
+* [x] New **PHB → Magic Item** snippet.
+
+  Fixes issues: [#671](https://github.com/naturalcrit/homebrewery/issues/671)
+
+* [x] New **TABLES → 1/3 Class Table** snippet for 1/3 casters.
+
+  Fixes issues: [#191](https://github.com/naturalcrit/homebrewery/issues/191)
+
+* [x] Improved **EDITOR → Table of Contents** snippet to actually look like the PHB style. Will auto-generate based on the headers in your brew.
+
+  Fixes issues: [#304](https://github.com/naturalcrit/homebrewery/issues/304)
+
+* [x] Improved **PHB → Monster Stat Block** snippet with textures, and an option to remove the frame entirely.
+
+* [x] Improved **PHB → Spell List** snippet can now be made single-column.
+
+  Fixes issues: [#509](https://github.com/naturalcrit/homebrewery/issues/509), [#914](https://github.com/naturalcrit/homebrewery/issues/914)
+
+* [x] Improved **TABLES → Class Table** snippet is now cleaned up, has an option to remove the frame entirely, and includes additional boundary decorations.
+
+  Fixes issues: [#773](https://github.com/naturalcrit/homebrewery/issues/773), [#302](https://github.com/naturalcrit/homebrewery/issues/302)
+
+#### Miscellaneous Formatting Fixes
+
+* [x] Paragraphs are now able to split across columns.
+
+  Fixes issues: [#239](https://github.com/naturalcrit/homebrewery/issues/239)
+
+* [x] Multiple fixes for bold/italicize using asterisks `* *`
+
+  Fixes issues: [#1321](https://github.com/naturalcrit/homebrewery/issues/1321), [#852](https://github.com/naturalcrit/homebrewery/issues/852)
+
+* [x] Multiple for list items not displaying correctly.
+
+  Fixes issues: [#1085](https://github.com/naturalcrit/homebrewery/issues/1085), [#588](https://github.com/naturalcrit/homebrewery/issues/588)
+
+* [x] "Smart quotes", so left and right quotes are different.
+
+  Fixes issues: [#849](https://github.com/naturalcrit/homebrewery/issues/849)
+
+* [x] Long URLs in links now wrap properly.
+
+  Fixes issues: [#1136](https://github.com/naturalcrit/homebrewery/issues/1136)
+
+* [x] Better support for `wide` blocks that span across the whole page! No more problems with contents getting shunted off the edge, and each new wide element in a page will restart the next item back at column one. Manual `\column` breaks will help organize subsequent content between the columns as needed.
+
+  Fixes issues: [#144](https://github.com/naturalcrit/homebrewery/issues/144), [#1024](https://github.com/naturalcrit/homebrewery/issues/1024)
+
+* [x] Fonts now support a wider range of latin characters for non-English brews, including áéíóúñ¡¿, etc...
+
+  Fixes issues: [#116](https://github.com/naturalcrit/homebrewery/issues/116)
+
+* [x] Drop-caps (fancy first letters) have been re-styled and re-aligned to correct the ugly overlapping and cut-off on some characters like K and Y.
+
+  Fixes issues: [#848](https://github.com/naturalcrit/homebrewery/issues/848)
+}}
+
+\column
+
+### Under-the-Hood Stuff
+We had to make a whole lot of background upgrades and changes to get all of this working, and now that the framework is in place, there's a lot more planned and upcoming *"sometime"* :
+
+{{taskList
+* [ ] New Themes to style your brews. DMG, MM, a custom Homebrewery theme, and others.
+* [ ] The ability to build your own custom themes using CSS, apply it to other brews, and share it with others!
+* [ ] Easy control of item colors. Change your monster blocks, tables, and notes from yellow to green to red!
+* [ ] New image-based snippets, including handwritten notes, title illustrations, and alternative decorations.
+* [ ] New fun fonts like Elvish, Draconic, Orcish, etc.
+* [ ] Better organization of personal brews using tags.
+* [ ] ....a log-out button...?
+* [ ] AND MORE.
+}}
+
+### Interface
+::
+#### Style Editor Panel
+
+{{fa,fa-paint-brush}} Technically released prior to v3 but still new to many users, check out the new **Style Editor** located on the right side of the Snippet bar.  This editor accepts CSS for styling without requiring `<style>` tags-- anything that would have gone inside style tags before can now be placed here, and snippets that insert CSS styles are now located on that tab.
+
+
+
+\page
+### Thursday, 09/09/2021 - v2.13.5
+- Slightly better error logging and messages for users.
+
+##### G-Ambatte :
+- Added a search bar to the User page to help find your brews.
+- Added page counts to brews in the User page; page count will be updated the next time a brew is edited.
+- Fixed edge case where view counts could get reset.
+- Fixed edge case where last-modified time was not accurate for Google Doc brews.
+
+##### Gazook89 :
+- Fixed typo in the **PRINT → Ink-Friendly** snippet.
+
+
+
 ### Tuesday, 17/08/2021 - v2.13.4
-- Fixed user page crashing when user has untitled brew
+- Fixed User page crashing when user has an untitled brew
 
 ##### G-Ambatte:
 - Tweaks to user page tool tips
@@ -60,9 +317,6 @@ myStyle {color: black}
 - Pasting your brew into a "New" page and saving will transfer any CSS in the code fence to the Style tab.
 - Unsaved work in the New page Style tab is now cached to your browser storage if you navigate away.
 
-\page
-
-
 ### Thursday, 10/6/2021 - v2.12.0
 
 - New "style" tab to better organize custom CSS in preparation for new themes and sharable styles.
@@ -72,6 +326,8 @@ myStyle {color: black}
 
 - Fix for edge case where brews could accidentally transfer from Google Drive back to Homebrewery.
 - Move cursor to end of snippet after insertion
+
+\page
 
 ### Saturday, 20/3/2021 - v2.11.1
 
@@ -113,6 +369,8 @@ myStyle {color: black}
 ### Wednesday, 25/11/2020 - v2.10.4
 - Fixed Google Drive brews not saving metadata (view count, description, etc.) Note that we are still working on making published Google brews visible to the public when viewing your profile page.
 
+\column
+
 ### Thursday, 22/10/2020 - v2.10.3
 - Fixed brews with broken code crashing the edit page when loaded (the "blue screen of death" bug).
 
@@ -122,8 +380,6 @@ myStyle {color: black}
 ### Monday, 12/10/2020 - v2.10.1
 - Fixed issue with users unable to create new brews
 - Fixing brews being lost when loaded via back button
-
-\page
 
 ### Wednesday, 07/10/2020 - v2.10.0
 - Google Drive integration -- Sign in with your Google account to link it with your Homebrewery profile. A new button in the Edit page will let you transfer your file to your personal Google Drive storage, and Google will keep a backup of each version! No more lost work surprises!
@@ -154,8 +410,10 @@ myStyle {color: black}
 - "Report Issue" navbar button now links to the subreddit
 - Refactored background code
 
+\page
+
 ### Sunday, 04/06/2017 - v2.7.5
-- Fixed the class feature snippet duplicating the entire brew
+- Fixed Class Feature snippet duplicating entire brew
 - Fixed headers in tables being duplicated
 - Fixed border-image being scrambled on class tables and descriptive text boxes
 - Fixed pages going out of sync in large brews, causing them to be rendered off-page
@@ -181,7 +439,7 @@ myStyle {color: black}
 
 ### Sunday, 25/12/2016 - v2.7.0
 - Switching over to using Vitreum v4
-  - Removed gulp, all tasks are run through npm scripts
+- Removed gulp, all tasks are run through npm scripts
 - Updating docs for local dev
 - Removing support for Docker. I have never used it, nor will I ever test for it, so I don't want to continue to explictly support it on this repo. Feel free to make a fork and make it docker-able though :)
 - Changed icon for the metadata
@@ -190,6 +448,8 @@ myStyle {color: black}
 - Fixed realtime renderer not functioning if loaded with malformed html on load (thanks u/RattiganIV re:247)
 - Removed a lot of unused files in shared
 - vitreum v4 now lets me use codemirror as a pure node dependacy
+
+\column
 
 ### Saturday, 03/12/2016 - v2.6.0
 - Added report back to the edit page
@@ -211,8 +471,6 @@ myStyle {color: black}
 - Added a hover tooltip to fully read the brew description
 - Made the brew items take up only 25% allowing you to view more per row.
 
-\page
-
 ### Wednesday, 23/11/2016 - v2.5.0
 - Metadata can now be added to brews
 - Added a metadata editor onto the edit and new pages
@@ -231,6 +489,8 @@ myStyle {color: black}
 ### Monday, 07/11/2016
 - Added final touches to the html validator and updating the rest of the branch
 - If anyone finds issues with the new HTML validator, please let me know. I hope this will bring a more consistent feel to Homebrewery rendering.
+
+\page
 
 ### Friday, 09/09/2016 - v2.4.0
 - Adding in a HTML validator that will display warnings whenever you save. This should stop a lot of the issues generated with pages not showing up.
@@ -259,7 +519,7 @@ myStyle {color: black}
 - Even works after you print to pdf!
 
 ### Tuesday, 07/06/2016 - v2.2.2
-- Fixed bug with new markdown lexer and aprser not working on print page
+- Fixed bug with new markdown lexer and parser not working on print page
 
 ### Sunday, 05/06/2016 - v2.2.1
 - Adding in a new Class table div block. The old Class table block used weird stacking of HTML elements, resulting is difficult to control behaviour and poor interactiosn with the rest of the page. This new block is much easier to style and work with.
@@ -267,8 +527,10 @@ myStyle {color: black}
 - Added in a new auto-incremeting page number snippet (thakns u/Ryrok!)
 - Lists in monster stat blocks should be fixed now
 
+\column
+
 ### Saturday, 04/06/2016 - v2.2.0
-- MIgrating The Homebrewery over to hombrewery.naturalcrit.com. It know runs on it's own server, with it's own repo separate from the other tools I'm working on. Makes updating and deploying much easier.
+- Migrating The Homebrewery over to hombrewery.naturalcrit.com. It now runs on it's own server, with it's own repo separate from the other tools I'm working on. Makes updating and deploying much easier.
 
 ### Sunday, 29/05/2016 - v2.1.0
 - Finally added a syntax for doing spell lists. A bit in-depth about why this took so long. Essentially I'm running out of syntax to use in stardard Markdown. There are too many unique elements in the PHB-style to be mapped. I solved this earlier by stacking certain elements together (eg. an `<hr>` before a `blockquote` turns it into moster state block), but those are getting unweildly. I would like to simply wrap these in `div`s with classes, but unfortunately Markdown stops processing when within HTML blocks. To get around this I wrote my own override to the Markdown parser and lexer to process Markdown within a simple div class wrapper. This should open the door for more unique syntaxes in the future. Big step!
