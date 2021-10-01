@@ -7,6 +7,8 @@ const { Meta } = require('vitreum/headtags');
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
 const Markdown = require('naturalcrit/markdown.js');
 
+const METAKEY = 'homebrewery-new-meta';
+
 const PrintPage = createClass({
 	getDefaultProps : function() {
 		return {
@@ -21,14 +23,19 @@ const PrintPage = createClass({
 
 	getInitialState : function() {
 		return {
-			brewText : this.props.brew.text
+			brewText     : this.props.brew.text,
+			brewRenderer : this.props.brew.renderer
 		};
 	},
 
 	componentDidMount : function() {
 		if(this.props.query.local){
+			const localText = localStorage.getItem(prevProps.query.local);
+			const localRenderer = JSON.stringify(localStorage.getItem(METAKEY)).renderer || 'legacy';
 			this.setState((prevState, prevProps)=>({
-				brewText : localStorage.getItem(prevProps.query.local)
+				brewText     : localText,
+				brewRenderer : localRenderer
+				}
 			}));
 		}
 
@@ -41,7 +48,7 @@ const PrintPage = createClass({
 	},
 
 	renderPages : function(){
-		if(this.props.brew.renderer == 'legacy') {
+		if(this.state.brewRenderer == 'legacy') {
 			return _.map(this.state.brewText.split('\\page'), (pageText, index)=>{
 				return <div
 					className='phb page'
@@ -65,7 +72,7 @@ const PrintPage = createClass({
 	render : function(){
 		return <div>
 			<Meta name='robots' content='noindex, nofollow' />
-			<link href={`${this.props.brew.renderer == 'legacy' ? '/themes/5ePhbLegacy.style.css' : '/themes/5ePhb.style.css'}`} rel='stylesheet'/>
+			<link href={`${this.state.brewRenderer == 'legacy' ? '/themes/5ePhbLegacy.style.css' : '/themes/5ePhb.style.css'}`} rel='stylesheet'/>
 			{/* Apply CSS from Style tab */}
 			{this.renderStyle()}
 			<div className='pages' ref='pages'>
