@@ -31,7 +31,7 @@ const PrintPage = createClass({
 	componentDidMount : function() {
 		if(this.props.query.local){
 			const localText = localStorage.getItem(prevProps.query.local);
-			const localRenderer = JSON.stringify(localStorage.getItem(METAKEY)).renderer || 'legacy';
+			const localRenderer = JSON.parse(localStorage.getItem(METAKEY)).renderer || 'legacy';
 			this.setState((prevState, prevProps)=>({
 				brewText     : localText,
 				brewRenderer : localRenderer
