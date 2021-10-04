@@ -40,13 +40,14 @@ const CodeEditor = createClass({
 
 	buildEditor : function() {
 		this.codeMirror = CodeMirror(this.refs.editor, {
-			value          : this.props.value,
-			lineNumbers    : true,
-			lineWrapping   : this.props.wrap,
-			mode           : this.props.language, //TODO: CSS MODE DOESN'T SEEM TO LOAD PROPERLY
-			indentWithTabs : true,
-			tabSize        : 2,
-			extraKeys      : {
+			value             : this.props.value,
+			lineNumbers       : true,
+			lineWrapping      : this.props.wrap,
+			mode              : this.props.language, //TODO: CSS MODE DOESN'T SEEM TO LOAD PROPERLY
+			indentWithTabs    : true,
+			tabSize           : 2,
+			historyEventDelay : 250,
+			extraKeys         : {
 				'Ctrl-B' : this.makeBold,
 				'Cmd-B'  : this.makeBold,
 				'Ctrl-I' : this.makeItalic,
