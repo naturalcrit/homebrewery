@@ -199,19 +199,16 @@ const Editor = createClass({
 		}
 	},
 
-	renderEditorToolbar : function(){
-		return <div className='editorToolbar'>
-			<span className='undo'
-				onClick={this.refs.codeEditor?.undo}
-				title='Undo'>
-				<i className='fas fa-undo' />
-			</span>
-			<span className='redo'
-				onClick={this.refs.codeEditor?.redo}
-				title='Redo'>
-				<i className='fas fa-redo' />
-			</span>
-		</div>;
+	redo : function(){
+		return this.refs.codeEditor?.redo();
+	},
+
+	historySize : function(){
+		return this.refs.codeEditor?.historySize();
+	},
+
+	undo : function(){
+		return this.refs.codeEditor?.undo();
 	},
 
 	render : function(){
@@ -224,10 +221,12 @@ const Editor = createClass({
 					onViewChange={this.handleViewChange}
 					onInject={this.handleInject}
 					showEditButtons={this.props.showEditButtons}
-					renderer={this.props.renderer} />
+					renderer={this.props.renderer}
+					undo={this.undo}
+					redo={this.redo}
+					historySize={this.historySize} />
 
 				{this.renderEditor()}
-				{!this.isMeta() && this.renderEditorToolbar()}
 			</div>
 		);
 	}

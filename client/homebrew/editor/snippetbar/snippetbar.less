@@ -10,7 +10,7 @@
 		top             : 0px;
 		right           : 0px;
 		height          : @menuHeight;
-		width           : 90px;
+		width           : 125px;
 		justify-content : space-between;
 		&>div{
 			height      : @menuHeight;
@@ -29,6 +29,14 @@
 			}
 			&.meta{
 				.tooltipLeft('Properties');
+			}
+			&.undo{
+				.tooltipLeft('Undo');
+				font-size : 0.75em;
+			}
+			&.redo{
+				.tooltipLeft('Redo');
+				font-size : 0.75em;
 			}
 		}
 	}
