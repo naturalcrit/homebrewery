@@ -114,10 +114,13 @@ const CodeEditor = createClass({
 		this.codeMirror.refresh();
 	},
 	redo : function(){
-		this.codeMirror.redo();
+		return this.codeMirror.redo();
 	},
 	undo : function(){
-		this.codeMirror.undo();
+		return this.codeMirror.undo();
+	},
+	historySize : function(){
+		return this.codeMirror.doc.historySize();
 	},
 	//----------------------//
 
