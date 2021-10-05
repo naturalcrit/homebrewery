@@ -22,7 +22,9 @@ const Snippetbar = createClass({
 			onInject        : ()=>{},
 			onToggle        : ()=>{},
 			showEditButtons : true,
-			renderer        : 'legacy'
+			renderer        : 'legacy',
+			undo            : ()=>{},
+			redo            : ()=>{}
 		};
 	},
 
@@ -60,6 +62,14 @@ const Snippetbar = createClass({
 		if(!this.props.showEditButtons) return;
 
 		return <div className='editors'>
+			<div className='editorTool undo'
+				onClick={this.props.undo} >
+				<i className='fas fa-undo' />
+			</div>
+			<div className='editorTool redo'
+				onClick={this.props.redo} >
+				<i className='fas fa-redo' />
+			</div>
 			<div className={cx('text', { selected: this.props.view === 'text' })}
 				 onClick={()=>this.props.onViewChange('text')}>
 				<i className='fa fa-beer' />
