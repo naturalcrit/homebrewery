@@ -59,9 +59,6 @@ const HomePage = createClass({
 			<Nav.section>
 				<NewBrewItem />
 				<IssueNavItem />
-				<Nav.item newTab={true} href='/changelog' color='purple' icon='far fa-file-alt'>
-					Changelog
-				</Nav.item>
 				<RecentNavItem />
 				<AccountNavItem />
 			</Nav.section>

@@ -30,7 +30,8 @@ pre {
 }
 ```
 
-# changelog
+## changelog
+To see a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
 ### Friday, 17/09/2021 - v3.0.1
 
