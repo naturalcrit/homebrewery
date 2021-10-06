@@ -33,6 +33,25 @@ pre {
 ## changelog
 To see a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Wednesday 06/10/2021 - v3.0.2
+{{taskList
+* [x] Fixed V3 **EDITOR → QR Code** snippet not working on `/new` (unsaved) pages.
+
+	Fixes issues: [#1710](https://github.com/naturalcrit/homebrewery/issues/1710)
+
+* [x] Reorganized several snippets from the **Brew Editor** panel into the **Style Editor** panel.
+
+	Fixes issues: [Reported on Reddit](https://www.reddit.com/r/homebrewery/comments/pm6ki7/two_version_of_class_features_making_it_look_more/)
+
+* [x] Added a page counter to the right of each `\page` line in V3 to help navigate your brews. Starts counting from page 2.
+
+	Fixes issues: [#846](https://github.com/naturalcrit/homebrewery/issues/846)
+
+* [x] Moved the changelog to be accessible by clicking on the Homebrewery version number.
+
+	Fixes issues: [#1166](https://github.com/naturalcrit/homebrewery/issues/1166)
+}}
+
 ### Friday, 17/09/2021 - v3.0.1
 
 {{taskList
