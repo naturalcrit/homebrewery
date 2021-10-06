@@ -62,7 +62,7 @@
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.29.1",
     "mongoose": "^6.0.8",
-    "nanoid": "3.1.28",
+    "nanoid": "3.1.29",
     "nconf": "^0.11.3",
     "prop-types": "15.7.2",
     "query-string": "7.0.1",
