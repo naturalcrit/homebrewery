@@ -399,6 +399,42 @@ const EditPage = createClass({
 					 this.state.brew.shareId;
 	},
 
+	handleDropdown : function(show){
+		this.setState({
+			showDropdown : show
+		});
+	},
+
+	getRedditLink : function(){
+
+		const shareLink = this.processShareId();
+		const systems = this.props.brew.systems.length > 0 ? ` [${this.props.brew.systems.join(' - ')}]` : '';
+		const title = `${this.props.brew.title} ${systems}`;
+		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
+
+**[Homebrewery Link](https://homebrewery.naturalcrit.com/share/${shareLink})**`;
+
+		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
+	},
+
+	renderDropdown : function(){
+		if(!this.state.showDropdown) return null;
+
+		const shareLink = this.processShareId();
+
+		return <div className='dropdown'>
+			<a href={`/share/${this.processShareId()}`} className='item'>
+				view
+			</a>
+			<a className='item' onClick={()=>{navigator.clipboard.writeText(`https://homebrewery.naturalcrit.com/share/${shareLink}`);}}>
+				copy url
+			</a>
+			<a href={`${this.getRedditLink()}`} target='_blank' rel='noopener noreferrer' className='item'>
+				post to reddit
+			</a>
+		</div>;
+	},
+
 	renderNavbar : function(){
 		return <Navbar>
 
@@ -420,8 +456,11 @@ const EditPage = createClass({
 				{this.renderSaveButton()}
 				<NewBrew />
 				<ReportIssue />
-				<Nav.item newTab={true} href={`/share/${this.processShareId()}`} color='teal' icon='fas fa-share-alt'>
-					Share
+				<Nav.item color='teal' icon='fas fa-share-alt' className='share'
+					onMouseEnter={()=>this.handleDropdown(true)}
+					onMouseLeave={()=>this.handleDropdown(false)}>
+					share
+					{this.renderDropdown()}
 				</Nav.item>
 				<PrintLink shareId={this.processShareId()} />
 				<RecentNavItem brew={this.state.brew} storageKey='edit' />

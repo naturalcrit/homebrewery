@@ -18,6 +18,50 @@
 			background-color : @red;
 		}
 	}
+	.share.navItem{
+		position : relative;
+		.dropdown{
+			position : absolute;
+			top      : 28px;
+			left     : 0px;
+			z-index  : 10000;
+			width    : 100%;
+			h4{
+				display          : block;
+				box-sizing       : border-box;
+				padding          : 5px 0px;
+				background-color : #333;
+				font-size        : 0.8em;
+				color            : #bbb;
+				text-align       : center;
+				border-top       : 1px solid #888;
+				&:nth-of-type(1){ background-color: darken(@teal, 20%); }
+				&:nth-of-type(2){ background-color: darken(@purple, 30%); }
+			}
+			.item{
+				.animate(background-color);
+				position         : relative;
+				display          : block;
+				width            : 100%;
+				padding          : 13px 5px;
+				box-sizing       : border-box;
+				background-color : #333;
+				color            : white;
+				text-decoration  : none;
+				border-top       : 1px solid #888;
+				&:hover{
+					background-color : @blue;
+				}
+				.title{
+					display       : inline-block;
+					overflow      : hidden;
+					width         : 100%;
+					text-overflow : ellipsis;
+					white-space   : nowrap;
+				}
+			}
+		}
+	}
 	.googleDriveStorage {
 		position : relative;
 	}
