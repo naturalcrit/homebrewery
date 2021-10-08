@@ -7,6 +7,8 @@ const { Meta } = require('vitreum/headtags');
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
 const Markdown = require('naturalcrit/markdown.js');
 
+const BREWKEY = 'homebrewery-new';
+const STYLEKEY = 'homebrewery-new-style';
 const METAKEY = 'homebrewery-new-meta';
 
 const PrintPage = createClass({
@@ -23,33 +25,42 @@ const PrintPage = createClass({
 
 	getInitialState : function() {
 		return {
-			brewText     : this.props.brew.text,
-			brewRenderer : this.props.brew.renderer
+			brew : {
+				text     : this.props.brew.text || '',
+				style    : this.props.brew.style || undefined,
+				renderer : this.props.brew.renderer || 'legacy'
+			}
 		};
 	},
 
 	componentDidMount : function() {
-		if(this.props.query.local){
-			const localText = localStorage.getItem(prevProps.query.local);
-			const localRenderer = JSON.parse(localStorage.getItem(METAKEY)).renderer || 'legacy';
-			this.setState((prevState, prevProps)=>({
-				brewText     : localText,
-				brewRenderer : localRenderer
-				}
-			}));
+		if(this.props.query.local == 'print'){
+			const brewStorage  = localStorage.getItem(BREWKEY);
+			const styleStorage = localStorage.getItem(STYLEKEY);
+			const metaStorage = JSON.parse(localStorage.getItem(METAKEY));
+
+			this.setState((prevState, prevProps)=>{
+				return {
+					brew : {
+						text     : brewStorage,
+						style    : styleStorage,
+						renderer : metaStorage.renderer || 'legacy'
+					}
+				};
+			});
 		}
 
 		if(this.props.query.dialog) window.print();
 	},
 
 	renderStyle : function() {
-		if(!this.props.brew.style) return;
-		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${this.props.brew.style} </style>` }} />;
+		if(!this.state.brew.style) return;
+		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${this.state.brew.style} </style>` }} />;
 	},
 
 	renderPages : function(){
-		if(this.state.brewRenderer == 'legacy') {
-			return _.map(this.state.brewText.split('\\page'), (pageText, index)=>{
+		if(this.state.brew.renderer == 'legacy') {
+			return _.map(this.state.brew.text.split('\\page'), (pageText, index)=>{
 				return <div
 					className='phb page'
 					id={`p${index + 1}`}
@@ -57,7 +68,7 @@ const PrintPage = createClass({
 					key={index} />;
 			});
 		} else {
-			return _.map(this.state.brewText.split(/^\\page$/gm), (pageText, index)=>{
+			return _.map(this.state.brew.text.split(/^\\page$/gm), (pageText, index)=>{
 				pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 				return (
 					<div className='page' id={`p${index + 1}`} key={index} >
@@ -72,7 +83,7 @@ const PrintPage = createClass({
 	render : function(){
 		return <div>
 			<Meta name='robots' content='noindex, nofollow' />
-			<link href={`${this.state.brewRenderer == 'legacy' ? '/themes/5ePhbLegacy.style.css' : '/themes/5ePhb.style.css'}`} rel='stylesheet'/>
+			<link href={`${this.state.brew.renderer == 'legacy' ? '/themes/5ePhbLegacy.style.css' : '/themes/5ePhb.style.css'}`} rel='stylesheet'/>
 			{/* Apply CSS from Style tab */}
 			{this.renderStyle()}
 			<div className='pages' ref='pages'>
