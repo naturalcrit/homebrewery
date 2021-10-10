@@ -53,7 +53,7 @@ The Homebrewery is licensed using the [MIT License](https://github.com/naturalcr
 If you wish to sell or in some way gain profit for what you make on this site, it's your responsibility to ensure you have the proper licenses/rights for any images or resources used.
 
 ### More Resources
-If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/comments/3uwxx9/resources_open_to_the_community/).
+If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/wiki/resources).
 
 
 
