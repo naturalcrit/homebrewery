@@ -58,7 +58,7 @@ pre {
 ```
 
 # FAQ
-{{wide Updated Sept. 12, 2021}}
+{{wide Updated Oct. 11, 2021}}
 
 
 ### The site is down for me! Anyone else?
@@ -69,7 +69,8 @@ You can check the site status here: [Everyone or Just Me](https://downforeveryon
 
 Go to https://homebrewery.naturalcrit.com/login, and hit the "*logout*" link.
 
-### I am getting an error when trying to save to Google Drive?
+### Why am I getting an error when trying to save, and my account is linked to Google?
+
 A sign-in with Google only lasts a year until the authentication expires.  You must go [here](https://www.naturalcrit.com/login), click the *Log-out* button, and then sign back in using your Google account.
 
 ### I lost my password, how do I reset it?  How do I change my password?
@@ -80,14 +81,11 @@ If you have linked your account with a Google account, you would change your pas
 
 ### Is there a way to restore a previous version of my brew?
 
-Currently, no. This would take too much of a toll on the amount of storage the homebrewery requires. This may be solved in the future.
+Currently, there is no way to do this through the site yourself. This would take too much of a toll on the amount of storage the homebrewery requires. However, we do have daily backups of our database that we keep for 8 days, and you can contact the moderators on [the subreddit](https://www.reddit.com/r/homebrewery) with your Homebrewery username, the name of the lost brew, and the last known time it was working properly. We can manually look through our backups and restore it if it exists.
 
-### I worked on a brew for X hours, and when I returned the next day, all changes were gone?
+# I worked on a brew for X hours, and suddenly all the text disappeared!
 
-This happens when you did not close the tab but closed the browser, or used the back button of your browser to return to your brew! If you return to your brew under these circumstances, the version of your brew you saved before is still loaded in the cache, so you need to refresh or reopen the page for your recent changes to be in said cache. If you start working on your brew without refreshing, all changes you made in the meantime are gone. 
-
-*Linking your brew to Google Drive greatly decreases the odds of lost work.*
-
+This usually happens if you accidentally drag-select all of your text and then start typing which overwrites the selection. Do not panic, and do not refresh the page or reload your brew quite yet as it is probably auto-saved in this state already. Simply press CTRL+Z as many times as needed to undo your last few changes and you will be back to where you were, then make sure to save your brew in the "good" state.
 
 ### Why is only Chrome supported?
 
@@ -149,8 +147,4 @@ The Homebrewery defaults to creating US Letter page sizes.  If you are printing 
 
 ### Typing `#### Adhesion` in the text editor doesn't show the header at all in the completed page?
 
-Whitelist homebrewery.naturalcrit.com in your ad-blocking software.
-
-
-
-
+Your ad-blocking software is mistakenly assuming your text to be an ad. Whitelist homebrewery.naturalcrit.com in your ad-blocking software.
