@@ -55,6 +55,10 @@ pre {
 	font-size:2em;
 	margin-left:-1.2em;	
 }
+
+.page .columnSplit + h3 {
+	margin-top:0;
+}
 ```
 
 # FAQ
@@ -83,9 +87,11 @@ If you have linked your account with a Google account, you would change your pas
 
 Currently, there is no way to do this through the site yourself. This would take too much of a toll on the amount of storage the homebrewery requires. However, we do have daily backups of our database that we keep for 8 days, and you can contact the moderators on [the subreddit](https://www.reddit.com/r/homebrewery) with your Homebrewery username, the name of the lost brew, and the last known time it was working properly. We can manually look through our backups and restore it if it exists.
 
-# I worked on a brew for X hours, and suddenly all the text disappeared!
+### I worked on a brew for X hours, and suddenly all the text disappeared!
 
 This usually happens if you accidentally drag-select all of your text and then start typing which overwrites the selection. Do not panic, and do not refresh the page or reload your brew quite yet as it is probably auto-saved in this state already. Simply press CTRL+Z as many times as needed to undo your last few changes and you will be back to where you were, then make sure to save your brew in the "good" state.
+
+\column
 
 ### Why is only Chrome supported?
 
@@ -106,17 +112,13 @@ The Homebrewery does not provide images for use besides some page elements and e
 
 Once you have an image you would like to use, it is recommended to host it somewhere that won't disappear; commonly, people host their images on [Imgur](https://www.imgur.com).  Create an account and upload your images there, and use the *Direct Link* that is shown when you click into the image from the gallery in your Homebrewery document.
 
+\page
+
 ### A particular font does not work for my language, what do I do?
 The fonts used were originally created for use with the English language, though revisions since then have added more support for other languages.  They are still not complete sets and may be missing a glyph/character you need.  Unfortunately, the volunteer group as it stands at the time of this writing does not have a font guru, so it would be difficult to add more glyphs (especially complicated glyphs).  Let us know which glyph is missing on the subreddit, but you may need to search [Google Fonts](https://fonts.google.com) for an alternative font if you need something fast.
 
-\page
-
-
-
 ### Whenever I click on the "Get PDF" button, instead of getting a download, it opens Print Preview in another tab.
-
 Yes, this is by design. In the print preview, select "Save as PDF" as the Destination, and then click "Save". There will be a normal download dialog where you can save your brew as a PDF.
-
 
 ### The preview window is suddenly gone, I can only see the editor side of the Homebrewery (or the other way around).
 
