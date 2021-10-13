@@ -78,4 +78,23 @@ nav{
 	.navSection:last-child .navItem{
 		border-left : 1px solid #666;
 	}
+	.navDropdownContainer{
+		position: relative;
+		.navDropdown {
+			position : absolute;
+			top      : 28px;
+			left     : 0px;
+			z-index  : 10000;
+			width    : 100%;
+			.navItem{
+				position         : relative;
+				display          : block;
+				width            : 100%;
+				vertical-align   : middle;
+				padding          : 8px 5px;
+				border           : 1px solid #888;
+				border-bottom    : 0;
+			}
+		}
+	}
 }
