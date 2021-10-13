@@ -52,7 +52,7 @@ Much of the syntax and styling has changed in V3. Code in one version may be bro
 Scroll down to the next page for a brief summary of the changes and new features available in V3!
 
 #### New Things All The Time!
-What's new in the latest update? Check out the full changelog [here](/changelog).
+Check out the latest updates in the full changelog [here](/changelog).
 
 ### Helping out
 Like this tool? Want to buy me a beer? [Head here](https://www.patreon.com/Naturalcrit) to help me keep the servers running.
@@ -60,6 +60,8 @@ Like this tool? Want to buy me a beer? [Head here](https://www.patreon.com/Natur
 This tool will **always** be free, never have ads, and I will never offer any "premium" features or whatever.
 
 ### Bugs, Issues, Suggestions?
+Take a quick look at our [Frequently Asked Questions page](/faq) to see if your question has a handy answer.
+
 Need help getting started or just the right look for your brew? Head to [r/Homebrewery](https://www.reddit.com/r/homebrewery/submit?selftext=true&title=%5BIssue%5D%20Describe%20Your%20Issue%20Here) and let us know!
 
 Have an idea to make The Homebrewery better? Or did you find something that wasn't quite right? Check out the [GitHub Repo](https://github.com/naturalcrit/homebrewery/) to report technical issues.
