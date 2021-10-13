@@ -52,7 +52,7 @@ Much of the syntax and styling has changed in V3. Code in one version may be bro
 Scroll down to the next page for a brief summary of the changes and new features available in V3!
 
 #### New Things All The Time!
-What's new in the latest update? Check out the full changelog [here](/changelog).
+Check out the latest updates in the full changelog [here](/changelog).
 
 ### Helping out
 Like this tool? Want to buy me a beer? [Head here](https://www.patreon.com/Naturalcrit) to help me keep the servers running.
