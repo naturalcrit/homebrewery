@@ -92,9 +92,9 @@ const Nav = {
 		},
 
 		render : function () {
-			const dropdownChildren = React.Children.map(this.props.children, (child, i) => {
+			const dropdownChildren = React.Children.map(this.props.children, (child, i)=>{
 				// Ignore the first child
-				if (i < 1) return;
+				if(i < 1) return;
 				return child;
 			});
 			return (
@@ -104,7 +104,7 @@ const Nav = {
 					{this.props.children[0]}
 					{this.renderDropdown(dropdownChildren)}
 				</div>
-			)
+			);
 		}
 	})
 

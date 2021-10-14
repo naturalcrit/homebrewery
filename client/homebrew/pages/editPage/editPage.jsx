@@ -399,12 +399,6 @@ const EditPage = createClass({
 					 this.state.brew.shareId;
 	},
 
-	handleDropdown : function(show){
-		this.setState({
-			showDropdown : show
-		});
-	},
-
 	getRedditLink : function(){
 
 		const shareLink = this.processShareId();
@@ -417,25 +411,9 @@ const EditPage = createClass({
 		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
 	},
 
-	renderDropdown : function(){
-		if(!this.state.showDropdown) return null;
-
+	renderNavbar : function(){
 		const shareLink = this.processShareId();
 
-		return <div className='dropdown'>
-			<a href={`/share/${this.processShareId()}`} className='item'>
-				view
-			</a>
-			<a className='item' onClick={()=>{navigator.clipboard.writeText(`https://homebrewery.naturalcrit.com/share/${shareLink}`);}}>
-				copy url
-			</a>
-			<a href={`${this.getRedditLink()}`} target='_blank' rel='noopener noreferrer' className='item'>
-				post to reddit
-			</a>
-		</div>;
-	},
-
-	renderNavbar : function(){
 		return <Navbar>
 
 			{this.state.alertTrashedGoogleBrew &&
@@ -456,12 +434,20 @@ const EditPage = createClass({
 				{this.renderSaveButton()}
 				<NewBrew />
 				<ReportIssue />
-				<Nav.item color='teal' icon='fas fa-share-alt' className='share'
-					onMouseEnter={()=>this.handleDropdown(true)}
-					onMouseLeave={()=>this.handleDropdown(false)}>
-					share
-					{this.renderDropdown()}
-				</Nav.item>
+				<Nav.dropdown>
+					<Nav.item color='teal' icon='fas fa-share-alt'>
+						share
+					</Nav.item>
+					<Nav.item color='blue' href={`/share/${shareLink}`}>
+						view
+					</Nav.item>
+					<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`https://homebrewery.naturalcrit.com/share/${shareLink}`);}}>
+						copy url
+					</Nav.item>
+					<Nav.item color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
+						post to reddit
+					</Nav.item>
+				</Nav.dropdown>
 				<PrintLink shareId={this.processShareId()} />
 				<RecentNavItem brew={this.state.brew} storageKey='edit' />
 				<Account />

@@ -32,9 +32,11 @@ const SharePage = createClass({
 	componentDidMount : function() {
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
+
 	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
 	},
+
 	handleControlKeys : function(e){
 		if(!(e.ctrlKey || e.metaKey)) return;
 		const P_KEY = 80;
