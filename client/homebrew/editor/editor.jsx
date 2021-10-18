@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./editor.less');
 const React = require('react');
 const createClass = require('create-react-class');
@@ -198,6 +199,18 @@ const Editor = createClass({
 		}
 	},
 
+	redo : function(){
+		return this.refs.codeEditor?.redo();
+	},
+
+	historySize : function(){
+		return this.refs.codeEditor?.historySize();
+	},
+
+	undo : function(){
+		return this.refs.codeEditor?.undo();
+	},
+
 	render : function(){
 		this.highlightCustomMarkdown();
 		return (
@@ -208,7 +221,10 @@ const Editor = createClass({
 					onViewChange={this.handleViewChange}
 					onInject={this.handleInject}
 					showEditButtons={this.props.showEditButtons}
-					renderer={this.props.renderer} />
+					renderer={this.props.renderer}
+					undo={this.undo}
+					redo={this.redo}
+					historySize={this.historySize} />
 
 				{this.renderEditor()}
 			</div>
