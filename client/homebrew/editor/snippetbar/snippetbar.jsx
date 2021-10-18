@@ -70,6 +70,7 @@ const Snippetbar = createClass({
 				onClick={this.props.redo} >
 				<i className='fas fa-redo' />
 			</div>
+			<div className='divider'></div>
 			<div className={cx('text', { selected: this.props.view === 'text' })}
 				 onClick={()=>this.props.onViewChange('text')}>
 				<i className='fa fa-beer' />

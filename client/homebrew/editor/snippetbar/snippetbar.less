@@ -33,10 +33,25 @@
 			&.undo{
 				.tooltipLeft('Undo');
 				font-size : 0.75em;
+				color     : grey;
+				&.active{
+					color : black;
+				}
 			}
 			&.redo{
 				.tooltipLeft('Redo');
 				font-size : 0.75em;
+				color     : grey;
+				&.active{
+					color : black;
+				}
+			}
+			&.divider {
+				background: linear-gradient(#000, #000) no-repeat center/1px 100%;
+				width: 5px;
+				&:hover{
+					background-color: inherit;
+				}
 			}
 		}
 	}
