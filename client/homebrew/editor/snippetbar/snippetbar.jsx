@@ -24,7 +24,8 @@ const Snippetbar = createClass({
 			showEditButtons : true,
 			renderer        : 'legacy',
 			undo            : ()=>{},
-			redo            : ()=>{}
+			redo            : ()=>{},
+			historySize     : ()=>{}
 		};
 	},
 
@@ -62,11 +63,11 @@ const Snippetbar = createClass({
 		if(!this.props.showEditButtons) return;
 
 		return <div className='editors'>
-			<div className='editorTool undo'
+			<div className={`editorTool undo ${this.props.historySize()?.undo ? 'active' : ''}`}
 				onClick={this.props.undo} >
 				<i className='fas fa-undo' />
 			</div>
-			<div className='editorTool redo'
+			<div className={`editorTool redo ${this.props.historySize()?.redo ? 'active' : ''}`}
 				onClick={this.props.redo} >
 				<i className='fas fa-redo' />
 			</div>
