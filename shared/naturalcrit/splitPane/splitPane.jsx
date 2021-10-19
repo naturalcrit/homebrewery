@@ -4,9 +4,6 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 
-const MIN_DRAG_WIDTH_PCT = 10; // How close the divider can get to the left of the screen (as a percentage of total screen width) before stopping
-const MAX_DRAG_WIDTH_PCT = 90; // How close the divider can get to the right of the screen (as a percentage of total screen width) before stopping
-
 const SplitPane = createClass({
 	getDefaultProps : function() {
 		return {
@@ -43,8 +40,9 @@ const SplitPane = createClass({
 	},
 	handleMove : function(e){
 		if(!this.state.isDragging) return;
-		const minWidth = window.innerWidth * (MIN_DRAG_WIDTH_PCT / 100);
-		const maxWidth = window.innerWidth * (MAX_DRAG_WIDTH_PCT / 100);
+
+		const minWidth = 1;
+		const maxWidth = window.innerWidth - 13;
 		const newSize = Math.min(maxWidth, Math.max(minWidth, e.pageX));
 		this.setState({
 			size : newSize
