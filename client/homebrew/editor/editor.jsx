@@ -60,6 +60,10 @@ const Editor = createClass({
 		window.removeEventListener('resize', this.updateEditorSize);
 	},
 
+	componentDidUpdate : function() {
+		this.highlightCustomMarkdown();
+	},
+
 	updateEditorSize : function() {
 		if(this.refs.codeEditor) {
 			let paneHeight = this.refs.main.parentNode.clientHeight;
@@ -177,25 +181,44 @@ const Editor = createClass({
 		this.refs.codeEditor?.updateSize();
 	},
 
+	//Called by CodeEditor after document switch, so Snippetbar can refresh UndoHistory
+	rerenderParent : function (){
+		this.forceUpdate();
+	},
+
 	renderEditor : function(){
 		if(this.isText()){
-			return <CodeEditor key='text'
-				ref='codeEditor'
-				language='gfm'
-				value={this.props.brew.text}
-				onChange={this.props.onTextChange} />;
+			return <>
+				<CodeEditor key='codeEditor'
+					ref='codeEditor'
+					language='gfm'
+					view={this.state.view}
+					value={this.props.brew.text}
+					onChange={this.props.onTextChange}
+					rerenderParent={this.rerenderParent} />
+			</>;
 		}
 		if(this.isStyle()){
-			return <CodeEditor key='style'
-				ref='codeEditor'
-				language='css'
-				value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
-				onChange={this.props.onStyleChange} />;
+			return <>
+				<CodeEditor key='codeEditor'
+					ref='codeEditor'
+					language='css'
+					view={this.state.view}
+					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
+					onChange={this.props.onStyleChange}
+					rerenderParent={this.rerenderParent} />
+			</>;
 		}
 		if(this.isMeta()){
-			return <MetadataEditor
-				metadata={this.props.brew}
-				onChange={this.props.onMetaChange} />;
+			return <>
+				<CodeEditor key='codeEditor'
+					view={this.state.view}
+					style={{ display: 'none', width: '600px' }}
+					rerenderParent={this.rerenderParent} />
+				<MetadataEditor
+					metadata={this.props.brew}
+					onChange={this.props.onMetaChange} />
+			</>;
 		}
 	},
 
@@ -212,7 +235,6 @@ const Editor = createClass({
 	},
 
 	render : function(){
-		this.highlightCustomMarkdown();
 		return (
 			<div className='editor' ref='main'>
 				<SnippetBar
@@ -224,7 +246,7 @@ const Editor = createClass({
 					renderer={this.props.renderer}
 					undo={this.undo}
 					redo={this.redo}
-					historySize={this.historySize} />
+					historySize={this.historySize()} />
 
 				{this.renderEditor()}
 			</div>
