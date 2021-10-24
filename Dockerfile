@@ -1,4 +1,4 @@
-FROM node:14.15
+FROM node:16.11
 
 ENV NODE_ENV=docker
 
