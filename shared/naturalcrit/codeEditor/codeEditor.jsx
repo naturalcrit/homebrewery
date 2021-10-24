@@ -33,8 +33,8 @@ const CodeEditor = createClass({
 
 	componentDidMount : function() {
 		this.buildEditor();
-		this.codeMirror.setValue(this.props.value);
-		this.codeMirror.clearHistory();
+		const newDoc = CodeMirror.Doc(this.props.value, this.props.language);
+		this.codeMirror.swapDoc(newDoc);
 	},
 
 	componentDidUpdate : function(prevProps) {
