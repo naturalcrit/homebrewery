@@ -213,7 +213,7 @@ const Editor = createClass({
 			return <>
 				<CodeEditor key='codeEditor'
 					view={this.state.view}
-					style={{ display: 'none', width: '600px' }}
+					style={{ display: 'none' }}
 					rerenderParent={this.rerenderParent} />
 				<MetadataEditor
 					metadata={this.props.brew}
