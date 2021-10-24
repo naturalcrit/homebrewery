@@ -25,25 +25,44 @@ const CodeEditor = createClass({
 		};
 	},
 
+	getInitialState : function() {
+		return {
+			docs : {}
+		};
+	},
+
 	componentDidMount : function() {
 		this.buildEditor();
+		const newDoc = CodeMirror.Doc(this.props.value, this.props.language);
+		this.codeMirror.swapDoc(newDoc);
 	},
 
 	componentDidUpdate : function(prevProps) {
-		if(prevProps.language !== this.props.language){ //rebuild editor when switching tabs
-			this.buildEditor();
-		}
-		if(this.codeMirror && this.codeMirror.getValue() != this.props.value) { //update editor contents if brew.text is changed from outside
+		if(prevProps.view !== this.props.view){ //view changed; swap documents
+			let newDoc;
+
+			if(!this.state.docs[this.props.view]) {
+				newDoc = CodeMirror.Doc(this.props.value, this.props.language);
+			} else {
+				newDoc = this.state.docs[this.props.view];
+			}
+
+			const oldDoc = { [prevProps.view]: this.codeMirror.swapDoc(newDoc) };
+
+			this.setState((prevState)=>({
+				docs : _.merge({}, prevState.docs, oldDoc)
+			}));
+
+			this.props.rerenderParent();
+		} else if(this.codeMirror?.getValue() != this.props.value) { //update editor contents if brew.text is changed from outside
 			this.codeMirror.setValue(this.props.value);
 		}
 	},
 
 	buildEditor : function() {
 		this.codeMirror = CodeMirror(this.refs.editor, {
-			value             : this.props.value,
 			lineNumbers       : true,
 			lineWrapping      : this.props.wrap,
-			mode              : this.props.language, //TODO: CSS MODE DOESN'T SEEM TO LOAD PROPERLY
 			indentWithTabs    : true,
 			tabSize           : 2,
 			historyEventDelay : 250,
@@ -125,7 +144,7 @@ const CodeEditor = createClass({
 	//----------------------//
 
 	render : function(){
-		return <div className='codeEditor' ref='editor' />;
+		return <div className='codeEditor' ref='editor' style={this.props.style}/>;
 	}
 });
 
