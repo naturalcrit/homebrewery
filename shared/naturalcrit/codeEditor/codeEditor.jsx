@@ -21,7 +21,8 @@ const CodeEditor = createClass({
 			language : '',
 			value    : '',
 			wrap     : true,
-			onChange : ()=>{}
+			onChange : ()=>{},
+			theme    : 'default'
 		};
 	},
 
@@ -47,6 +48,7 @@ const CodeEditor = createClass({
 			indentWithTabs    : true,
 			tabSize           : 2,
 			historyEventDelay : 250,
+			theme             : this.props.theme,
 			extraKeys         : {
 				'Ctrl-B' : this.makeBold,
 				'Cmd-B'  : this.makeBold,
