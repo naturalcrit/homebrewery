@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
 const zlib = require('zlib');
 const Proj = require('./project.json');
+const _ = require('lodash');
 
 const { pack, watchFile, livereload } = require('vitreum');
 const isDev = !!process.argv.find((arg)=>arg=='--dev');
@@ -25,8 +26,29 @@ const build = async ({ bundle, render, ssr })=>{
 	await fs.outputFile('./build/homebrew/bundle.js', bundle);
 	await fs.outputFile('./build/homebrew/ssr.js', ssr);
 	await fs.copy('./themes/fonts', './build/fonts');
+
+	// Parse CodeMirror theme files
+	const cmLocation = './build/homebrew/cm-theme';
+	const cmIndex = './build/homebrew/cmIndex.css';
+	await fs.copy('./node_modules/codemirror/theme', cmLocation);
+	const cmData = await fs.readdir(cmLocation)
+		.then((cmFiles)=>{
+			return _.map(cmFiles, (file)=>{
+				//console.log(file);
+				//console.log(fs.readFileSync(`${cmLocation}/${file}`, 'UTF-8'));
+				return fs.readFileSync(`${cmLocation}/${file}`, 'UTF-8');
+			}).join('\n');
+		});
+	//console.log(cmData);
+	fs.outputFileSync(cmIndex, cmData);
+	less.render(cmData.toString(), {
+		compress : !isDev
+	}, function(e, output) {
+		fs.outputFile(`${cmLocation}/index.css`, output.css);
+	});
+
+	// Parse brew theme files
 	let src = './themes/5ePhbLegacy.style.less';
-	//Parse brew theme files
 	less.render(fs.readFileSync(src).toString(), {
 		compress : !isDev
 	}, function(e, output) {
