@@ -18,7 +18,8 @@ const MetadataEditor = createClass({
 				published   : false,
 				authors     : [],
 				systems     : [],
-				renderer    : 'legacy'
+				renderer    : 'legacy',
+				thumbnail   : ''
 			},
 			onChange : ()=>{}
 		};
@@ -160,6 +161,11 @@ const MetadataEditor = createClass({
 				<label>description</label>
 				<textarea value={this.props.metadata.description} className='value'
 					onChange={(e)=>this.handleFieldChange('description', e)} />
+			</div>
+			<div className='field thumbnail'>
+				<label>thumbnail URL</label>
+				<textarea value={this.props.metadata.thumbnail} className='value'
+					onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
 			</div>
 			{/*}
 			<div className='field tags'>
