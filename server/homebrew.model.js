@@ -17,7 +17,7 @@ const HomebrewSchema = mongoose.Schema({
 	renderer    : { type: String, default: '' },
 	authors     : [String],
 	published   : { type: Boolean, default: false },
-	thumbnail   : [String],
+	thumbnail   : { type: String, default: '' },
 
 	createdAt  : { type: Date, default: Date.now },
 	updatedAt  : { type: Date, default: Date.now },
