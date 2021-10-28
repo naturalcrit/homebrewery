@@ -11,17 +11,24 @@ const MetadataEditor = createClass({
 	getDefaultProps : function() {
 		return {
 			metadata : {
-				editId      : null,
-				title       : '',
-				description : '',
-				tags        : '',
-				published   : false,
-				authors     : [],
-				systems     : [],
-				renderer    : 'legacy',
-				thumbnail   : ''
+				editId        : null,
+				title         : '',
+				description   : '',
+				tags          : '',
+				published     : false,
+				authors       : [],
+				systems       : [],
+				renderer      : 'legacy',
+				thumbnail     : '',
+				showThumbnail : false
 			},
 			onChange : ()=>{}
+		};
+	},
+
+	getInitialState : function(){
+		return {
+			showThumbnail : false
 		};
 	},
 
@@ -64,6 +71,17 @@ const MetadataEditor = createClass({
 			.end(function(err, res){
 				window.location.href = '/';
 			});
+	},
+
+	toggleThumbnailDisplay : function(){
+		this.setState({
+			showThumbnail : !this.state.showThumbnail
+		});
+	},
+
+	renderThumbnail : function(){
+		if(!this.state.showThumbnail) return;
+		return <img className='thumbnail-preview' src={this.props.metadata.thumbnail || 'https://i.imgur.com/FwRuhv7.png'}></img>;
 	},
 
 	renderSystems : function(){
@@ -166,7 +184,12 @@ const MetadataEditor = createClass({
 				<label>thumbnail URL</label>
 				<textarea value={this.props.metadata.thumbnail} className='value'
 					onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
+				<button className='display' onClick={this.toggleThumbnailDisplay}>
+					<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
+				</button>
+				{this.renderThumbnail()}
 			</div>
+
 			{/*}
 			<div className='field tags'>
 				<label>tags</label>

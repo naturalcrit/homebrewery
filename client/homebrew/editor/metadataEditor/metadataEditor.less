@@ -24,6 +24,29 @@
 			flex           : 1 1 auto;
 			min-width      : 200px;
 		}
+		&.thumbnail{
+			height      : 1.8em;
+			.label{
+				line-height: 1.1em;
+			}
+			button{
+				border: 1px solid #999;
+				font-size: 20px;
+				color: white;
+				padding: 0px 5px;
+				background-color: black;
+				&:hover{
+					background-color: #777;
+				}
+			}
+			.thumbnail-preview{
+				position    : relative;
+				width       : 80px;
+				height      : min-content;
+				border      : 2px solid white;
+				margin-left : 5px;
+			}
+		}
 	}
 	.description.field textarea.value{
 		resize      : none;
@@ -78,7 +101,7 @@
 		}
 	}
 	.authors.field .value{
-		font-size: 0.8em;
-		line-height    : 1.5em;
+		font-size   : 0.8em;
+		line-height : 1.5em;
 	}
 }
