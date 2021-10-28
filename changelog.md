@@ -31,9 +31,41 @@ pre {
 ```
 
 ## changelog
-To see a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
+For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
+
+### Wednesday 27/10/2021 - v3.0.3
+
+{{taskList
+* [x] Moved **Post To Reddit** button from {{fa,fa-info-circle}} **Properties** menu to the **SHARE** {{fa,fa-share-alt}} button as a dropdown.
+
+* [x] Added a  **Copy URL** button to the **SHARE** {{fa,fa-share-alt}} button as a dropdown.
+
+* [x] Fixed pages being printed directly from `/new` not recognizing the V3 renderer.
+
+	Fixes issues: [#1702](https://github.com/naturalcrit/homebrewery/issues/1702)
+
+* [x] Updated links to [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) on home page.
+
+	Fixes issues: [#1744](https://github.com/naturalcrit/homebrewery/issues/1744)
+
+* [x] Added a [FAQ page](https://homebrewery.naturalcrit.com/faq).
+
+	Fixes issues: [#810](https://github.com/naturalcrit/homebrewery/issues/810)
+
+* [x] Added {{fa,fa-undo}} **Undo** and {{fa,fa-redo}} **Redo** buttons to the snippet bar.
+
+* [x] Switching between the {{fa,fa-beer}} **Brew** and {{fa,fa-paint-brush}} **Style** tabs no longer loses your scroll position or undo history.
+
+	Fixes issues: [#1735](https://github.com/naturalcrit/homebrewery/issues/1735)
+
+* [x] Divider bar between editor and preview panels can no longer be dragged off the edge of the screen.
+
+	Fixes issues: [#1674](https://github.com/naturalcrit/homebrewery/issues/1674)
+}}
+
 
 ### Wednesday 06/10/2021 - v3.0.2
+
 {{taskList
 * [x] Fixed V3 **EDITOR → QR Code** snippet not working on `/new` (unsaved) pages.
 
