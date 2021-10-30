@@ -183,7 +183,10 @@ const MetadataEditor = createClass({
 			</div>
 			<div className='field thumbnail'>
 				<label>thumbnail URL</label>
-				<input type='text' value={this.props.metadata.thumbnail} className='value'
+				<input type='text'
+					value={this.props.metadata.thumbnail}
+					placeholder='my.thumbnail.url'
+					className='value'
 					onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
 				<button className='display' onClick={this.toggleThumbnailDisplay}>
 					<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
