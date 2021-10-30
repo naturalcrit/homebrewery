@@ -1,5 +1,5 @@
 module.exports = async(name, title = '', props = {})=>{
-	const HOMEBREWERY_PUBLIC_URL='https://homebrewery.naturalcrit.com';
+	const HOMEBREWERY_PUBLIC_URL=(process.env.NODE_ENV == 'local' ? 'localhost:8000' : 'https://homebrewery.naturalcrit.com');
 	return `
 <!DOCTYPE html>
 <html>
