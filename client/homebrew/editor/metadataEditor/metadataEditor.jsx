@@ -28,7 +28,7 @@ const MetadataEditor = createClass({
 
 	getInitialState : function(){
 		return {
-			showThumbnail : false
+			showThumbnail : true
 		};
 	},
 
