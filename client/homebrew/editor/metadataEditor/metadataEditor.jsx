@@ -6,7 +6,8 @@ const cx    = require('classnames');
 const request = require('superagent');
 
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
-const HOMEBREWERY_DEFAULT_ICON = 'https://i.imgur.com/FwRuhv7.png';
+
+const homebreweryThumbnail = require('../../thumbnail.png');
 
 const MetadataEditor = createClass({
 	getDefaultProps : function() {
@@ -81,7 +82,7 @@ const MetadataEditor = createClass({
 
 	renderThumbnail : function(){
 		if(!this.state.showThumbnail) return;
-		return <img className='thumbnail-preview' src={this.props.metadata.thumbnail || HOMEBREWERY_DEFAULT_ICON}></img>;
+		return <img className='thumbnail-preview' src={this.props.metadata.thumbnail || homebreweryThumbnail}></img>;
 	},
 
 	renderSystems : function(){
