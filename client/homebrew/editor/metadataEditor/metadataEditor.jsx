@@ -12,16 +12,15 @@ const MetadataEditor = createClass({
 	getDefaultProps : function() {
 		return {
 			metadata : {
-				editId        : null,
-				title         : '',
-				description   : '',
-				tags          : '',
-				published     : false,
-				authors       : [],
-				systems       : [],
-				renderer      : 'legacy',
-				thumbnail     : '',
-				showThumbnail : false
+				editId      : null,
+				title       : '',
+				description : '',
+				tags        : '',
+				published   : false,
+				authors     : [],
+				systems     : [],
+				renderer    : 'legacy',
+				thumbnail   : ''
 			},
 			onChange : ()=>{}
 		};
