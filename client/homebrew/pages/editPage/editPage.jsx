@@ -45,8 +45,7 @@ const EditPage = createClass({
 				published   : false,
 				authors     : [],
 				systems     : [],
-				renderer    : 'legacy',
-				thumbnail   : ''
+				renderer    : 'legacy'
 			}
 		};
 	},
