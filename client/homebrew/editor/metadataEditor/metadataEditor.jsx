@@ -182,7 +182,7 @@ const MetadataEditor = createClass({
 					onChange={(e)=>this.handleFieldChange('description', e)} />
 			</div>
 			<div className='field thumbnail'>
-				<label>thumbnail URL</label>
+				<label>thumbnail</label>
 				<input type='text'
 					value={this.props.metadata.thumbnail}
 					placeholder='my.thumbnail.url'
