@@ -6,6 +6,7 @@ const cx    = require('classnames');
 const request = require('superagent');
 
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
+const HOMEBREWERY_DEFAULT_ICON = 'https://i.imgur.com/FwRuhv7.png';
 
 const MetadataEditor = createClass({
 	getDefaultProps : function() {
@@ -81,7 +82,7 @@ const MetadataEditor = createClass({
 
 	renderThumbnail : function(){
 		if(!this.state.showThumbnail) return;
-		return <img className='thumbnail-preview' src={this.props.metadata.thumbnail || 'https://i.imgur.com/FwRuhv7.png'}></img>;
+		return <img className='thumbnail-preview' src={this.props.metadata.thumbnail || HOMEBREWERY_DEFAULT_ICON}></img>;
 	},
 
 	renderSystems : function(){
@@ -182,7 +183,7 @@ const MetadataEditor = createClass({
 			</div>
 			<div className='field thumbnail'>
 				<label>thumbnail URL</label>
-				<textarea value={this.props.metadata.thumbnail} className='value'
+				<input type='text' value={this.props.metadata.thumbnail} className='value'
 					onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
 				<button className='display' onClick={this.toggleThumbnailDisplay}>
 					<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
