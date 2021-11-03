@@ -13,6 +13,10 @@ if(typeof navigator !== 'undefined'){
 	require('codemirror/mode/gfm/gfm.js'); //Github flavoured markdown
 	require('codemirror/mode/css/css.js');
 	require('codemirror/mode/javascript/javascript.js');
+
+	const foldCode = require('./fold-code');
+	foldCode.enableCodeFolding(CodeMirror);
+	foldCode.registerHomebreweryHelper(CodeMirror);
 }
 
 const CodeEditor = createClass({
@@ -74,8 +78,15 @@ const CodeEditor = createClass({
 				'Ctrl-M' : this.makeSpan,
 				'Cmd-M'  : this.makeSpan,
 				'Ctrl-/' : this.makeComment,
-				'Cmd-/'  : this.makeComment
-			}
+				'Cmd-/'  : this.makeComment,
+				'Ctrl-,' : this.toggleCodeFolded,
+				'Cmd-,'  : this.toggleCodeFolded
+			},
+			foldGutter  : true,
+			foldOptions : {
+				rangeFinder : CodeMirror.fold.homebrewery,
+			},
+			gutters : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
 		});
 
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
@@ -117,6 +128,10 @@ const CodeEditor = createClass({
 			const cursor = this.codeMirror.getCursor();
 			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 4 });
 		}
+	},
+
+	toggleCodeFolded : function() {
+		this.codeMirror.foldCode(this.codeMirror.getCursor());
 	},
 
 	//=-- Externally used -==//
