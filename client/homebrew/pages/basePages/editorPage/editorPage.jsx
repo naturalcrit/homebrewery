@@ -70,7 +70,7 @@ const EditorPage = createClass({
 			confirmGoogleTransfer  : false,
 			errors                 : null,
 			htmlErrors             : Markdown.validate(this.props.brew.text),
-			url                    : ''
+			url                    : '',
 		};
 		// return {
 		// 	brew : {
@@ -129,7 +129,7 @@ const EditorPage = createClass({
 		const S_KEY = 83;
 		const P_KEY = 80;
 		if(e.keyCode == S_KEY) this.save();
-		if(e.keyCode == P_KEY) window.open(`/print/${this.processShareId()}?dialog=true`, '_blank').focus();
+		if(e.keyCode == P_KEY) window.open(this.getPrintLink(), '_blank').focus();
 		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
 			e.stopPropagation();
 			e.preventDefault();
@@ -172,7 +172,14 @@ const EditorPage = createClass({
 			brew      : _.merge({}, prevState.brew, metadata),
 			isPending : true,
 		}), ()=>this.trySave());
+	},
 
+	localSave : function(){
+		if(this.state.brew.text) localStorage.setItem(BREWKEY, this.state.brew.text);
+		if(this.state.brew.style) localStorage.setItem(STYLEKEY, this.state.brew.style);
+		localStorage.setItem(METAKEY, JSON.stringify({
+			renderer : (this.state.brew.renderer || 'legacy')
+		}));
 	},
 
 	hasChanges : function(){
@@ -180,8 +187,8 @@ const EditorPage = createClass({
 	},
 
 	trySave : function(){
-		if(!this.isEdit()) return;
-		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
+		if(this.isEdit() && !this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
+		if(this.isNew() && !this.debounceSave) this.debounceSave = _.debounce(this.localSave, SAVE_TIMEOUT);
 		if(this.hasChanges()){
 			this.debounceSave();
 		} else {
@@ -346,7 +353,7 @@ const EditorPage = createClass({
 					this.setState({ isSaving: false, errors: err });
 					return;
 				});
-
+				window.onbeforeunload = function(){};
 				brew = res.body;
 				localStorage.removeItem(BREWKEY);
 				localStorage.removeItem(STYLEKEY);
@@ -493,6 +500,11 @@ const EditorPage = createClass({
 					 this.state.brew.shareId;
 	},
 
+	getPrintLink : function(){
+		if(this.isNew()){ return '/print?dialog=true&local=print'; };
+		if(this.isEdit()){ return `/print/${this.processShareId()}?dialog=true`; };
+	},
+
 	getRedditLink : function(){
 
 		const shareLink = this.processShareId();
@@ -526,9 +538,11 @@ const EditorPage = createClass({
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
 				{this.renderSaveButton()}
-				<NewBrew />
-				<ReportIssue />
+				{this.isNew() && <>
+					<PrintLink url={this.getPrintLink()}/>
+				</>}
 				{this.isEdit() && <>
+					<NewBrew />
 					<Nav.dropdown>
 						<Nav.item color='teal' icon='fas fa-share-alt'>
 							share
@@ -543,9 +557,10 @@ const EditorPage = createClass({
 							post to reddit
 						</Nav.item>
 					</Nav.dropdown>
-					<PrintLink shareId={this.processShareId()} />
+					<PrintLink url={this.getPrintLink()} />
 				</>
 				}
+				<ReportIssue />
 				<RecentNavItem brew={this.state.brew} storageKey='edit' />
 				<Account />
 			</Nav.section>
