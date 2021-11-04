@@ -7,6 +7,8 @@ const request = require('superagent');
 
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
+const homebreweryThumbnail = require('../../thumbnail.png');
+
 const MetadataEditor = createClass({
 	getDefaultProps : function() {
 		return {
@@ -18,9 +20,16 @@ const MetadataEditor = createClass({
 				published   : false,
 				authors     : [],
 				systems     : [],
-				renderer    : 'legacy'
+				renderer    : 'legacy',
+				thumbnail   : ''
 			},
 			onChange : ()=>{}
+		};
+	},
+
+	getInitialState : function(){
+		return {
+			showThumbnail : true
 		};
 	},
 
@@ -63,6 +72,17 @@ const MetadataEditor = createClass({
 			.end(function(err, res){
 				window.location.href = '/';
 			});
+	},
+
+	toggleThumbnailDisplay : function(){
+		this.setState({
+			showThumbnail : !this.state.showThumbnail
+		});
+	},
+
+	renderThumbnail : function(){
+		if(!this.state.showThumbnail) return;
+		return <img className='thumbnail-preview' src={this.props.metadata.thumbnail || homebreweryThumbnail}></img>;
 	},
 
 	renderSystems : function(){
@@ -161,6 +181,19 @@ const MetadataEditor = createClass({
 				<textarea value={this.props.metadata.description} className='value'
 					onChange={(e)=>this.handleFieldChange('description', e)} />
 			</div>
+			<div className='field thumbnail'>
+				<label>thumbnail</label>
+				<input type='text'
+					value={this.props.metadata.thumbnail}
+					placeholder='my.thumbnail.url'
+					className='value'
+					onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
+				<button className='display' onClick={this.toggleThumbnailDisplay}>
+					<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
+				</button>
+				{this.renderThumbnail()}
+			</div>
+
 			{/*}
 			<div className='field tags'>
 				<label>tags</label>
