@@ -127,8 +127,7 @@ GoogleActions = {
 				tags        : '',
 				published   : file.properties.published ? file.properties.published == 'true' : false,
 				authors     : [req.account.username],	//TODO: properly save and load authors to google drive
-				systems     : [],
-				thumbnail   : file.properties.thumbnail
+				systems     : []
 			};
 		});
 	  return brews;
@@ -165,8 +164,7 @@ GoogleActions = {
 						renderer  : brew.renderer,
 						tags      : brew.tags,
 						pageCount : brew.pageCount,
-						systems   : brew.systems.join(),
-						thumbnail : brew.thumbnail
+						systems   : brew.systems.join()
 					}
 				},
 				media : {
@@ -205,8 +203,7 @@ GoogleActions = {
 				'title'     : brew.title,
 				'views'     : '0',
 				'pageCount' : brew.pageCount,
-				'renderer'  : brew.renderer || 'legacy',
-				'thumbnail' : brew.thumbnail
+				'renderer'  : brew.renderer || 'legacy'
 			}
 		};
 
@@ -249,8 +246,7 @@ GoogleActions = {
 			published   : brew.published,
 			renderer    : brew.renderer,
 			authors     : [],
-			systems     : [],
-			thumbnail   : brew.thumbnail
+			systems     : []
 		};
 
 		return newHomebrew;
@@ -262,7 +258,7 @@ GoogleActions = {
 
 		const obj = await drive.files.get({
 			fileId : id,
-			fields : 'properties, createdTime, modifiedTime, description, trashed, thumbnail'
+			fields : 'properties, createdTime, modifiedTime, description, trashed'
 		})
 		.catch((err)=>{
 			console.log('Error loading from Google');
@@ -318,7 +314,6 @@ GoogleActions = {
 				views      : parseInt(obj.data.properties.views) || 0, //brews with no view parameter will return undefined
 				version    : parseInt(obj.data.properties.version) || 0,
 				renderer   : obj.data.properties.renderer ? obj.data.properties.renderer : 'legacy',
-				thumbnail  : obj.data.properties.thumbnail ? obj.data.properties.thumbnail : '',
 
 				gDrive   : true,
 				googleId : id
