@@ -5,17 +5,13 @@
 
 	.codeEditor{
 		height            : 100%;
-		counter-reset     : page;
-		counter-increment : page;
 		.pageLine{
 			background : #33333328;
 			border-top : #339 solid 1px;
-			&:after{
-				content           : counter(page);
-				counter-increment : page;
-				float             : right;
-				color             : gray;
-			}
+		}
+		.editor-page-count{
+			color : grey;
+			right : 12px;
 		}
 		.columnSplit{
 			font-style 			: italic;
