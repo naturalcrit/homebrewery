@@ -107,39 +107,36 @@ const Editor = createClass({
 	addEditorPageNumbers : function(){
 		if(!this.refs.codeEditor) return;
 		if(this.state.view === 'text')  {
-			let editorPageCount = 2; // start counting from page 2
 			const codeMirror = this.refs.codeEditor.codeMirror;
 
-			const pageCountWidgets = document.getElementsByClassName('editor-page');
-					
-			for(let x=pageCountWidgets.length - 1;x>=0;x--) pageCountWidgets[x].remove();
+			const pageCountWidgets = document.getElementsByClassName('editor-page-count');
+			for (let x=pageCountWidgets.length - 1;x>=0;x--) pageCountWidgets[x].remove();
 
-			
-			console.log(editorPageCount);
+			let editorPageCount = 2; // start counting from page 2
 
 			const lineNumbers = _.reduce(this.props.brew.text.split('\n'), (r, line, lineNumber)=>{
 				if(this.props.renderer == 'legacy') {
 					if(line.includes('\\page')) {
 						const testElement = Object.assign(document.createElement('div'), {
-							className : 'editor-page-count',
+							className   : 'editor-page-count',
 							textContent : editorPageCount
 						});
-						codeMirror.addWidget({ line: lineNumber, ch: 0}, testElement);
-						testElement.style.top = parseInt(testElement.style.top) - 12.5 + 'px';
+						codeMirror.addWidget({ line: lineNumber, ch: 0 }, testElement);
+						testElement.style.top = `${parseInt(testElement.style.top) - 12.5}px`;
 						testElement.style.left = 'unset';
 						editorPageCount = editorPageCount + 1;
 						r.push(lineNumber);
 					}
 				}
-				
+
 				if(this.props.renderer == 'V3') {
 					if(line.match(/^\\page$/)){
 						const testElement = Object.assign(document.createElement('div'), {
-							className : 'editor-page-count',
+							className   : 'editor-page-count',
 							textContent : editorPageCount
 						});
-						codeMirror.addWidget({ line: lineNumber, ch: 0}, testElement);
-						testElement.style.top = parseInt(testElement.style.top) - 12.5 + 'px';
+						codeMirror.addWidget({ line: lineNumber, ch: 0 }, testElement);
+						testElement.style.top = `${parseInt(testElement.style.top) - 12.5}px`;
 						testElement.style.left = 'unset';
 						editorPageCount = editorPageCount + 1;
 						r.push(lineNumber);
