@@ -2,7 +2,6 @@ module.exports = {
 	registerHomebreweryHelper : function(CodeMirror) {
 		CodeMirror.registerHelper('fold', 'homebrewery', function(cm, start) {
 			const matcher = /^\\page.*/;
-			const firstLine = cm.getLine(start.line);
 			const prevLine = cm.getLine(start.line - 1);
 
 			if(start.line === cm.firstLine() || prevLine.match(matcher)) {
