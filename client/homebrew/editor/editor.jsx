@@ -114,7 +114,7 @@ const Editor = createClass({
 
 			let editorPageCount = 2; // start counting from page 2
 
-			const lineNumbers = _.reduce(this.props.brew.text.split('\n'), (r, line, lineNumber)=>{
+			_.forEach(this.props.brew.text.split('\n'), (line, lineNumber)=>{
 				if(this.props.renderer == 'legacy') {
 					if(line.includes('\\page')) {
 						const testElement = Object.assign(document.createElement('div'), {
@@ -125,7 +125,6 @@ const Editor = createClass({
 						testElement.style.top = `${parseInt(testElement.style.top) - 12.5}px`;
 						testElement.style.left = 'unset';
 						editorPageCount = editorPageCount + 1;
-						r.push(lineNumber);
 					}
 				}
 
@@ -139,12 +138,9 @@ const Editor = createClass({
 						testElement.style.top = `${parseInt(testElement.style.top) - 12.5}px`;
 						testElement.style.left = 'unset';
 						editorPageCount = editorPageCount + 1;
-						r.push(lineNumber);
 					}
 				}
-				return r;
-			}, []);
-			return lineNumbers;
+			}, [])
 		}
 	},
 
