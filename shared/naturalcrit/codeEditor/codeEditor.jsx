@@ -14,8 +14,11 @@ if(typeof navigator !== 'undefined'){
 	require('codemirror/mode/css/css.js');
 	require('codemirror/mode/javascript/javascript.js');
 
+	// this should add the foldcode helpers and such to the CodeMirror object, but seemingly is adding them to a new instance of CodeMirror
+	require('codemirror/addon/fold/foldcode.js');
+	require('codemirror/addon/fold/foldgutter.js');
+
 	const foldCode = require('./fold-code');
-	foldCode.enableCodeFolding(CodeMirror);
 	foldCode.registerHomebreweryHelper(CodeMirror);
 }
 
@@ -40,8 +43,10 @@ const CodeEditor = createClass({
 		const newDoc = CodeMirror.Doc(this.props.value, this.props.language);
 		this.codeMirror.swapDoc(newDoc);
 	},
-
-	componentDidUpdate : function(prevProps) {
+	getSnapshotBeforeUpdate : function() {
+		return _.uniq(this.codeMirror.getAllMarks().filter((mark)=>mark.__isFold).map((mark)=>mark.find().from));
+	},
+	componentDidUpdate : function(prevProps, prevState, snapshot) {
 		if(prevProps.view !== this.props.view){ //view changed; swap documents
 			let newDoc;
 
@@ -61,6 +66,12 @@ const CodeEditor = createClass({
 		} else if(this.codeMirror?.getValue() != this.props.value) { //update editor contents if brew.text is changed from outside
 			this.codeMirror.setValue(this.props.value);
 		}
+
+		setTimeout(()=>{
+			snapshot.forEach((fold)=>{
+				this.codeMirror.foldCode(fold, { scanUp: false }, 'fold');
+			});
+		}, 0);
 	},
 
 	buildEditor : function() {
@@ -79,12 +90,30 @@ const CodeEditor = createClass({
 				'Cmd-M'  : this.makeSpan,
 				'Ctrl-/' : this.makeComment,
 				'Cmd-/'  : this.makeComment,
-				'Ctrl-,' : this.toggleCodeFolded,
-				'Cmd-,'  : this.toggleCodeFolded
+				'Ctrl-\\' : this.toggleCodeFolded,
+				'Cmd-\\'  : this.toggleCodeFolded,
+				'Ctrl-[' : this.foldAllCode,
+				'Cmd-['  : this.foldAllCode,
+				'Ctrl-]' : this.unfoldAllCode,
+				'Cmd-]'  : this.unfoldAllCode
 			},
 			foldGutter  : true,
 			foldOptions : {
 				rangeFinder : CodeMirror.fold.homebrewery,
+				widget      : (from, to)=>{
+					let text = '';
+					let currentLine = from.line;
+					const maxLength = 50;
+					while (currentLine <= to.line && text.length <= maxLength) {
+						text += this.codeMirror.getLine(currentLine);
+						if(currentLine < to.line) {
+							text += ' ';
+						}
+						currentLine += 1;
+					}
+
+					return `\u21A4${text.substr(0, maxLength)}\u21A6`;
+				}
 			},
 			gutters : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
 		});
@@ -132,6 +161,14 @@ const CodeEditor = createClass({
 
 	toggleCodeFolded : function() {
 		this.codeMirror.foldCode(this.codeMirror.getCursor());
+	},
+
+	foldAllCode : function() {
+		this.codeMirror.execCommand('foldAll');
+	},
+
+	unfoldAllCode : function() {
+		this.codeMirror.execCommand('unfoldAll');
 	},
 
 	//=-- Externally used -==//
