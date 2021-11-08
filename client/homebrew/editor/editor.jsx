@@ -140,7 +140,7 @@ const Editor = createClass({
 						editorPageCount = editorPageCount + 1;
 					}
 				}
-			}, []);
+			});
 		}
 	},
 
