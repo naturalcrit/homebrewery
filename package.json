@@ -75,7 +75,7 @@
     "vitreum": "git+https://git@github.com/calculuschild/vitreum.git"
   },
   "devDependencies": {
-    "eslint": "^8.1.0",
+    "eslint": "^8.2.0",
     "eslint-plugin-react": "^7.26.1",
     "pico-check": "^2.1.3"
   }
