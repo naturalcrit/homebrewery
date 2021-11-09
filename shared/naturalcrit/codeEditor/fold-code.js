@@ -19,7 +19,10 @@ module.exports = {
 					nextLine = cm.getLine(end + 1);
 				}
 
-				return null;
+				return {
+					from : CodeMirror.Pos(start.line, 0),
+					to   : CodeMirror.Pos(end, cm.getLine(end).length)
+				};
 			}
 
 			return null;
