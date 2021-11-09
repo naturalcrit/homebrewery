@@ -120,10 +120,10 @@ GoogleActions = {
 				updatedAt   : file.modifiedTime,
 				gDrive      : true,
 				googleId    : file.id,
-				pageCount   : file.properties.pageCount,
+				pageCount   : parseInt(file.properties.pageCount),
 				title       : file.properties.title,
 				description : file.description,
-				views       : file.properties.views,
+				views       : parseInt(file.properties.views),
 				tags        : '',
 				published   : file.properties.published ? file.properties.published == 'true' : false,
 				authors     : [req.account.username],	//TODO: properly save and load authors to google drive
