@@ -43,10 +43,8 @@ const CodeEditor = createClass({
 		const newDoc = CodeMirror.Doc(this.props.value, this.props.language);
 		this.codeMirror.swapDoc(newDoc);
 	},
-	getSnapshotBeforeUpdate : function() {
-		return _.uniq(this.codeMirror.getAllMarks().filter((mark)=>mark.__isFold).map((mark)=>mark.find().from));
-	},
-	componentDidUpdate : function(prevProps, prevState, snapshot) {
+
+	componentDidUpdate : function(prevProps) {
 		if(prevProps.view !== this.props.view){ //view changed; swap documents
 			let newDoc;
 
@@ -66,12 +64,6 @@ const CodeEditor = createClass({
 		} else if(this.codeMirror?.getValue() != this.props.value) { //update editor contents if brew.text is changed from outside
 			this.codeMirror.setValue(this.props.value);
 		}
-
-		setTimeout(()=>{
-			snapshot.forEach((fold)=>{
-				this.codeMirror.foldCode(fold, { scanUp: false }, 'fold');
-			});
-		}, 0);
 	},
 
 	buildEditor : function() {
