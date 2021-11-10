@@ -122,8 +122,9 @@ const Editor = createClass({
 							textContent : editorPageCount
 						});
 						codeMirror.addWidget({ line: lineNumber, ch: 0 }, testElement);
-						testElement.style.top = `${parseInt(testElement.style.top) - 12.5}px`;
-						testElement.style.left = 'unset';
+						// testElement.style.top = `${parseInt(testElement.style.top) - 12.5}px`;
+						testElement.style.top = `${parseInt(testElement.style.top) - cm.defaultTextHeight()}px`;
+						testElement.style.left = null;
 						editorPageCount = editorPageCount + 1;
 					}
 				}
@@ -136,7 +137,7 @@ const Editor = createClass({
 						});
 						codeMirror.addWidget({ line: lineNumber, ch: 0 }, testElement);
 						testElement.style.top = `${parseInt(testElement.style.top) - 12.5}px`;
-						testElement.style.left = 'unset';
+						testElement.style.left = null;
 						editorPageCount = editorPageCount + 1;
 					}
 				}
