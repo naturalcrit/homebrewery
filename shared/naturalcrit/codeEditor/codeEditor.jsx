@@ -14,7 +14,7 @@ if(typeof navigator !== 'undefined'){
 	require('codemirror/mode/css/css.js');
 	require('codemirror/mode/javascript/javascript.js');
 
-	// this should add the foldcode helpers and such to the CodeMirror object, but seemingly is adding them to a new instance of CodeMirror
+	//Addons
 	require('codemirror/addon/fold/foldcode.js');
 	require('codemirror/addon/fold/foldgutter.js');
 
