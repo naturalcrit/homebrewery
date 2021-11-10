@@ -3,7 +3,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
-
+const closeTag = require('./close-tag');
 
 let CodeMirror;
 if(typeof navigator !== 'undefined'){
@@ -17,6 +17,16 @@ if(typeof navigator !== 'undefined'){
 	//Addons
 	require('codemirror/addon/fold/foldcode.js');
 	require('codemirror/addon/fold/foldgutter.js');
+	require('codemirror/addon/fold/xml-fold.js');
+	require('codemirror/addon/search/search.js');
+	require('codemirror/addon/search/searchcursor.js');
+	require('codemirror/addon/search/jump-to-line.js');
+	require('codemirror/addon/search/match-highlighter.js');
+	require('codemirror/addon/search/matchesonscrollbar.js');
+	require('codemirror/addon/dialog/dialog.js');
+	require('codemirror/addon/edit/closetag.js');
+	require('codemirror/addon/edit/trailingspace.js');
+	require('codemirror/addon/selection/active-line.js');
 
 	const foldCode = require('./fold-code');
 	foldCode.registerHomebreweryHelper(CodeMirror);
@@ -74,20 +84,22 @@ const CodeEditor = createClass({
 			tabSize           : 2,
 			historyEventDelay : 250,
 			extraKeys         : {
-				'Ctrl-B'  : this.makeBold,
-				'Cmd-B'   : this.makeBold,
-				'Ctrl-I'  : this.makeItalic,
-				'Cmd-I'   : this.makeItalic,
-				'Ctrl-M'  : this.makeSpan,
-				'Cmd-M'   : this.makeSpan,
-				'Ctrl-/'  : this.makeComment,
-				'Cmd-/'   : this.makeComment,
-				'Ctrl-\\' : this.toggleCodeFolded,
-				'Cmd-\\'  : this.toggleCodeFolded,
-				'Ctrl-['  : this.foldAllCode,
-				'Cmd-['   : this.foldAllCode,
-				'Ctrl-]'  : this.unfoldAllCode,
-				'Cmd-]'   : this.unfoldAllCode
+				'Ctrl-B'     : this.makeBold,
+				'Cmd-B'      : this.makeBold,
+				'Ctrl-I'     : this.makeItalic,
+				'Cmd-I'      : this.makeItalic,
+				'Ctrl-M'     : this.makeSpan,
+				'Cmd-M'      : this.makeSpan,
+				'Ctrl-/'     : this.makeComment,
+				'Cmd-/'      : this.makeComment,
+				'Ctrl-\\'    : this.toggleCodeFolded,
+				'Cmd-\\'     : this.toggleCodeFolded,
+				'Ctrl-['     : this.foldAllCode,
+				'Cmd-['      : this.foldAllCode,
+				'Ctrl-]'     : this.unfoldAllCode,
+				'Cmd-]'      : this.unfoldAllCode,
+				'Ctrl-Alt-F' : this.findPersistent,
+				'Cmd-Opt-F'  : this.findPersistent
 			},
 			foldGutter  : true,
 			foldOptions : {
@@ -107,8 +119,12 @@ const CodeEditor = createClass({
 					return `\u21A4${text.substr(0, maxLength)}\u21A6`;
 				}
 			},
-			gutters : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
+			gutters           : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+			showTrailingSpace : true,
+			autoCloseTags     : true,
+			styleActiveLine   : true
 		});
+		closeTag.autoCloseCurlyBraces(CodeMirror, this.codeMirror);
 
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
 		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
@@ -161,6 +177,10 @@ const CodeEditor = createClass({
 
 	unfoldAllCode : function() {
 		this.codeMirror.execCommand('unfoldAll');
+	},
+
+	findPersistent : function() {
+		this.codeMirror.execCommand('findPersistent');
 	},
 
 	//=-- Externally used -==//
