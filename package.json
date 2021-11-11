@@ -76,7 +76,7 @@
   },
   "devDependencies": {
     "eslint": "^8.2.0",
-    "eslint-plugin-react": "^7.26.1",
+    "eslint-plugin-react": "^7.27.0",
     "pico-check": "^2.1.3"
   }
 }
