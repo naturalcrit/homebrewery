@@ -114,7 +114,7 @@ const Editor = createClass({
 			const lineNumbers = _.reduce(this.props.brew.text.split('\n'), (r, line, lineNumber)=>{
 
 				//reset custom line styles
-				codeMirror.removeLineClass(lineNumber, 'background');
+				codeMirror.removeLineClass(lineNumber, 'background', 'pageLine');
 				codeMirror.removeLineClass(lineNumber, 'text');
 
 				// Legacy Codemirror styling
