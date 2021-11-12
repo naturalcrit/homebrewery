@@ -9,12 +9,8 @@ module.exports = {
 				let end = start.line, nextLine = cm.getLine(start.line + 1);
 
 				while (end < lastLineNo) {
-					if(nextLine.match(matcher)) {
-						return {
-							from : CodeMirror.Pos(start.line, 0),
-							to   : CodeMirror.Pos(end, cm.getLine(end).length)
-						};
-					}
+					if(nextLine.match(matcher))
+						break;
 					++end;
 					nextLine = cm.getLine(end + 1);
 				}

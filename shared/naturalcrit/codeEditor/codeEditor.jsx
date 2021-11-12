@@ -103,6 +103,7 @@ const CodeEditor = createClass({
 			},
 			foldGutter  : true,
 			foldOptions : {
+				scanUp      : true,
 				rangeFinder : CodeMirror.fold.homebrewery,
 				widget      : (from, to)=>{
 					let text = '';
@@ -110,13 +111,16 @@ const CodeEditor = createClass({
 					const maxLength = 50;
 					while (currentLine <= to.line && text.length <= maxLength) {
 						text += this.codeMirror.getLine(currentLine);
-						if(currentLine < to.line) {
+						if(currentLine < to.line)
 							text += ' ';
-						}
 						currentLine += 1;
 					}
 
-					return `\u21A4${text.substr(0, maxLength)}\u21A6`;
+					text = text.trim();
+					if(text.length > maxLength)
+						text = `${text.substr(0, maxLength)}...`;
+
+					return `\u21A4 ${text} \u21A6`;
 				}
 			},
 			gutters           : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],

@@ -108,7 +108,7 @@ const Editor = createClass({
 			const codeMirror = this.refs.codeEditor.codeMirror;
 
 			//reset custom text styles
-			const customHighlights = codeMirror.getAllMarks().filter((mark)=>!mark.__isFold);
+			const customHighlights = codeMirror.getAllMarks().filter((mark)=>!mark.__isFold); //Don't undo code folding
 			for (let i=0;i<customHighlights.length;i++) customHighlights[i].clear();
 
 			const lineNumbers = _.reduce(this.props.brew.text.split('\n'), (r, line, lineNumber)=>{
