@@ -6,13 +6,12 @@ module.exports = {
 
 			if(start.line === cm.firstLine() || prevLine.match(matcher)) {
 				const lastLineNo = cm.lastLine();
-				let end = start.line, nextLine = cm.getLine(start.line + 1);
+				let end = start.line;
 
 				while (end < lastLineNo) {
-					if(nextLine.match(matcher))
+					if(cm.getLine(end + 1).match(matcher))
 						break;
 					++end;
-					nextLine = cm.getLine(end + 1);
 				}
 
 				return {
