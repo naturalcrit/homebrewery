@@ -92,8 +92,6 @@ const CodeEditor = createClass({
 				'Cmd-M'      : this.makeSpan,
 				'Ctrl-/'     : this.makeComment,
 				'Cmd-/'      : this.makeComment,
-				'Ctrl-\\'    : this.toggleCodeFolded,
-				'Cmd-\\'     : this.toggleCodeFolded,
 				'Ctrl-['     : this.foldAllCode,
 				'Cmd-['      : this.foldAllCode,
 				'Ctrl-]'     : this.unfoldAllCode,
@@ -169,10 +167,6 @@ const CodeEditor = createClass({
 			const cursor = this.codeMirror.getCursor();
 			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 4 });
 		}
-	},
-
-	toggleCodeFolded : function() {
-		this.codeMirror.foldCode(this.codeMirror.getCursor());
 	},
 
 	foldAllCode : function() {
