@@ -74,20 +74,18 @@ const CodeEditor = createClass({
 			tabSize           : 2,
 			historyEventDelay : 250,
 			extraKeys         : {
-				'Ctrl-B'  : this.makeBold,
-				'Cmd-B'   : this.makeBold,
-				'Ctrl-I'  : this.makeItalic,
-				'Cmd-I'   : this.makeItalic,
-				'Ctrl-M'  : this.makeSpan,
-				'Cmd-M'   : this.makeSpan,
-				'Ctrl-/'  : this.makeComment,
-				'Cmd-/'   : this.makeComment,
-				'Ctrl-\\' : this.toggleCodeFolded,
-				'Cmd-\\'  : this.toggleCodeFolded,
-				'Ctrl-['  : this.foldAllCode,
-				'Cmd-['   : this.foldAllCode,
-				'Ctrl-]'  : this.unfoldAllCode,
-				'Cmd-]'   : this.unfoldAllCode
+				'Ctrl-B' : this.makeBold,
+				'Cmd-B'  : this.makeBold,
+				'Ctrl-I' : this.makeItalic,
+				'Cmd-I'  : this.makeItalic,
+				'Ctrl-M' : this.makeSpan,
+				'Cmd-M'  : this.makeSpan,
+				'Ctrl-/' : this.makeComment,
+				'Cmd-/'  : this.makeComment,
+				'Ctrl-[' : this.foldAllCode,
+				'Cmd-['  : this.foldAllCode,
+				'Ctrl-]' : this.unfoldAllCode,
+				'Cmd-]'  : this.unfoldAllCode
 			},
 			foldGutter  : true,
 			foldOptions : {
@@ -153,10 +151,6 @@ const CodeEditor = createClass({
 			const cursor = this.codeMirror.getCursor();
 			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 4 });
 		}
-	},
-
-	toggleCodeFolded : function() {
-		this.codeMirror.foldCode(this.codeMirror.getCursor());
 	},
 
 	foldAllCode : function() {
