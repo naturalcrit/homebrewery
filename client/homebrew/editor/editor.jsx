@@ -116,8 +116,8 @@ const Editor = createClass({
 
 			// get top and bottom line numbers currently in editor viewport
 			const viewportRect = codeMirror.getWrapperElement().getBoundingClientRect();
-			const topVisibleLine = codeMirror.lineAtHeight(viewportRect.top, "window");
-			const bottomVisibleLine = codeMirror.lineAtHeight(viewportRect.bottom, "window");
+			const topVisibleLine = codeMirror.lineAtHeight(viewportRect.top, 'window');
+			const bottomVisibleLine = codeMirror.lineAtHeight(viewportRect.bottom, 'window');
 
 			_.forEach(this.props.brew.text.split('\n'), (line, lineNumber)=>{
 				if(this.props.renderer == 'legacy') {
