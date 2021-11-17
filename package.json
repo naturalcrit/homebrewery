@@ -47,7 +47,7 @@
     "body-parser": "^1.19.0",
     "classnames": "^2.3.1",
     "codemirror": "^5.63.3",
-    "cookie-parser": "^1.4.5",
+    "cookie-parser": "^1.4.6",
     "create-react-class": "^15.7.0",
     "dedent-tabs": "^0.10.1",
     "express": "^4.17.1",
