@@ -80,6 +80,7 @@ const CodeEditor = createClass({
 
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
 		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
+		this.codeMirror.on('viewportChange', _.debounce((cm)=>{this.props.onChange(cm.getValue());},200));
 		this.updateSize();
 	},
 

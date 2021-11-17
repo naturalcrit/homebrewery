@@ -114,30 +114,40 @@ const Editor = createClass({
 
 			let editorPageCount = 2; // start counting from page 2
 
+			// get top and bottom line numbers currently in editor viewport
+			const viewportRect = codeMirror.getWrapperElement().getBoundingClientRect();
+			const topVisibleLine = codeMirror.lineAtHeight(viewportRect.top, "window");
+			const bottomVisibleLine = codeMirror.lineAtHeight(viewportRect.bottom, "window");
+
 			_.forEach(this.props.brew.text.split('\n'), (line, lineNumber)=>{
 				if(this.props.renderer == 'legacy') {
 					if(line.includes('\\page')) {
-						const testElement = Object.assign(document.createElement('div'), {
-							className   : 'editor-page-count',
-							textContent : editorPageCount
-						});
-						codeMirror.addWidget({ line: lineNumber, ch: 0 }, testElement);
-						// testElement.style.top = `${parseInt(testElement.style.top) - 12.5}px`;
-						testElement.style.top = `${parseInt(testElement.style.top) - cm.defaultTextHeight()}px`;
-						testElement.style.left = null;
+						// add a check here to see if in current viewport, then create widget if true
+						if(lineNumber > topVisibleLine && lineNumber < bottomVisibleLine){
+							const testElement = Object.assign(document.createElement('div'), {
+								className   : 'editor-page-count',
+								textContent : editorPageCount
+							});
+							codeMirror.addWidget({ line: lineNumber, ch: 0 }, testElement);
+							testElement.style.top = `${parseInt(testElement.style.top) - codeMirror.defaultTextHeight()}px`;
+							testElement.style.left = null;
+						}
+						// end createWidget process
 						editorPageCount = editorPageCount + 1;
 					}
 				}
 
 				if(this.props.renderer == 'V3') {
 					if(line.match(/^\\page$/)){
-						const testElement = Object.assign(document.createElement('div'), {
-							className   : 'editor-page-count',
-							textContent : editorPageCount
-						});
-						codeMirror.addWidget({ line: lineNumber, ch: 0 }, testElement);
-						testElement.style.top = `${parseInt(testElement.style.top) - 12.5}px`;
-						testElement.style.left = null;
+						if(lineNumber > topVisibleLine && lineNumber < bottomVisibleLine){
+							const testElement = Object.assign(document.createElement('div'), {
+								className   : 'editor-page-count',
+								textContent : editorPageCount
+							});
+							codeMirror.addWidget({ line: lineNumber, ch: 0 }, testElement);
+							testElement.style.top = `${parseInt(testElement.style.top) - codeMirror.defaultTextHeight()}px`;
+							testElement.style.left = null;
+						}
 						editorPageCount = editorPageCount + 1;
 					}
 				}
