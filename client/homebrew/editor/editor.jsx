@@ -52,7 +52,6 @@ const Editor = createClass({
 
 	componentDidMount : function() {
 		this.updateEditorSize();
-		this.addEditorPageNumbers();
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
 	},
@@ -62,7 +61,6 @@ const Editor = createClass({
 	},
 
 	componentDidUpdate : function() {
-		this.addEditorPageNumbers();
 		this.highlightCustomMarkdown();
 	},
 
@@ -104,57 +102,6 @@ const Editor = createClass({
 		}, 1);
 	},
 
-	addEditorPageNumbers : function(){
-		if(!this.refs.codeEditor) return;
-		if(this.state.view === 'text')  {
-			const codeMirror = this.refs.codeEditor.codeMirror;
-
-			const pageCountWidgets = document.getElementsByClassName('editor-page-count');
-			for (let x=pageCountWidgets.length - 1;x>=0;x--) pageCountWidgets[x].remove();
-
-			let editorPageCount = 2; // start counting from page 2
-
-			// get top and bottom line numbers currently in editor viewport
-			const viewportRect = codeMirror.getWrapperElement().getBoundingClientRect();
-			const topVisibleLine = codeMirror.lineAtHeight(viewportRect.top, 'window');
-			const bottomVisibleLine = codeMirror.lineAtHeight(viewportRect.bottom, 'window');
-
-			_.forEach(this.props.brew.text.split('\n'), (line, lineNumber)=>{
-				if(this.props.renderer == 'legacy') {
-					if(line.includes('\\page')) {
-						// add a check here to see if in current viewport, then create widget if true
-						if(lineNumber > topVisibleLine && lineNumber < bottomVisibleLine){
-							const testElement = Object.assign(document.createElement('div'), {
-								className   : 'editor-page-count',
-								textContent : editorPageCount
-							});
-							codeMirror.addWidget({ line: lineNumber, ch: 0 }, testElement);
-							testElement.style.top = `${parseInt(testElement.style.top) - codeMirror.defaultTextHeight()}px`;
-							testElement.style.left = null;
-						}
-						// end createWidget process
-						editorPageCount = editorPageCount + 1;
-					}
-				}
-
-				if(this.props.renderer == 'V3') {
-					if(line.match(/^\\page$/)){
-						if(lineNumber > topVisibleLine && lineNumber < bottomVisibleLine){
-							const testElement = Object.assign(document.createElement('div'), {
-								className   : 'editor-page-count',
-								textContent : editorPageCount
-							});
-							codeMirror.addWidget({ line: lineNumber, ch: 0 }, testElement);
-							testElement.style.top = `${parseInt(testElement.style.top) - codeMirror.defaultTextHeight()}px`;
-							testElement.style.left = null;
-						}
-						editorPageCount = editorPageCount + 1;
-					}
-				}
-			});
-		}
-	},
-
 	highlightCustomMarkdown : function(){
 		if(!this.refs.codeEditor) return;
 		if(this.state.view === 'text')  {
@@ -164,8 +111,18 @@ const Editor = createClass({
 			const customHighlights = codeMirror.getAllMarks();
 			for (let i=0;i<customHighlights.length;i++) customHighlights[i].clear();
 
+			// remove all widgets (page numbers in Editor)
+			const pageCountWidgets = document.getElementsByClassName('editor-page-count');
+			for (let x=pageCountWidgets.length - 1;x>=0;x--) pageCountWidgets[x].remove();
 
-			const lineNumbers = _.reduce(this.props.brew.text.split('\n'), (r, line, lineNumber)=>{
+			let editorPageCount = 2; // start page count from page 2
+
+			// get top and bottom line numbers currently in editor viewport
+			const viewportRect = codeMirror.getWrapperElement().getBoundingClientRect();
+			const topVisibleLine = codeMirror.lineAtHeight(viewportRect.top, 'window');
+			const bottomVisibleLine = codeMirror.lineAtHeight(viewportRect.bottom, 'window');
+
+			_.forEach(this.props.brew.text.split('\n'), (line, lineNumber)=>{
 
 				//reset custom line styles
 				codeMirror.removeLineClass(lineNumber, 'background');
@@ -174,21 +131,46 @@ const Editor = createClass({
 				// Legacy Codemirror styling
 				if(this.props.renderer == 'legacy') {
 					if(line.includes('\\page')){
+						// add back the original class 'background' but also add the new class '.pageline'
 						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
-						r.push(lineNumber);
-					}
+						// add a check here to see if in current viewport, then create widget if true
+						if(lineNumber > topVisibleLine && lineNumber < bottomVisibleLine){
+							const testElement = Object.assign(document.createElement('div'), {
+								className   : 'editor-page-count',
+								textContent : editorPageCount
+							});
+							codeMirror.addWidget({ line: lineNumber, ch: 0 }, testElement);
+							// addWidget() sets an inline style for 'top' and 'left' by default; the below overrides or removes the default values
+							testElement.style.top = `${parseInt(testElement.style.top) - codeMirror.defaultTextHeight()}px`;
+							testElement.style.left = null;
+						}
+						// end createWidget process
+						editorPageCount = editorPageCount + 1;
+					};
+
 				}
 
 				// New Codemirror styling for V3 renderer
 				if(this.props.renderer == 'V3') {
 					if(line.match(/^\\page$/)){
+						// add back the original class 'background' but also add the new class '.pageline'
 						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
-						r.push(lineNumber);
+						// add a check here to see if in current viewport, then create widget if true
+						if(lineNumber > topVisibleLine && lineNumber < bottomVisibleLine){
+							const testElement = Object.assign(document.createElement('div'), {
+								className   : 'editor-page-count',
+								textContent : editorPageCount
+							});
+							codeMirror.addWidget({ line: lineNumber, ch: 0 }, testElement);
+							// addWidget() sets an inline style for 'top' and 'left' by default; the below overrides or removes the default values
+							testElement.style.top = `${parseInt(testElement.style.top) - codeMirror.defaultTextHeight()}px`;
+							testElement.style.left = null;
+						}
+						editorPageCount = editorPageCount + 1;
 					}
 
 					if(line.match(/^\\column$/)){
 						codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
-						r.push(lineNumber);
 					}
 
 					// Highlight inline spans {{content}}
@@ -218,10 +200,7 @@ const Editor = createClass({
 						codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
 					}
 				}
-
-				return r;
-			}, []);
-			return lineNumbers;
+			});
 		}
 	},
 
