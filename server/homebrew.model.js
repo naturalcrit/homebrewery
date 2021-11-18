@@ -12,7 +12,7 @@ const HomebrewSchema = mongoose.Schema({
 	pageCount : { type: Number, default: 1 },
 
 	description : { type: String, default: '' },
-	tags        : { type: String, default: '' },
+	tags        : [String],
 	systems     : [String],
 	renderer    : { type: String, default: '' },
 	authors     : [String],
@@ -65,6 +65,24 @@ HomebrewSchema.statics.getByUser = function(username, allowAccess=false){
 };
 
 const Homebrew = mongoose.model('Homebrew', HomebrewSchema);
+
+Homebrew.count({ tags: '' }, async (err, count)=>{
+	if(!err) {
+		if(count > 0) {
+			Homebrew.updateMany({ tags: '' }, { tags: [] }, { multi: true }, function(err, data) {
+				if(!err) {
+					console.log('Successfully updated all brews to new schema definition');
+				} else {
+					console.log('An error occurred while updating brews to the new schema', err);
+				}
+			});
+		} else {
+			console.log('No brews to update');
+		}
+	} else {
+		console.log('An error occurred while counting brews with the old schema', err);
+	}
+});
 
 module.exports = {
 	schema : HomebrewSchema,

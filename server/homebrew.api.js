@@ -76,6 +76,7 @@ const updateBrew = (req, res)=>{
 			const updateBrew = excludePropsFromUpdate(req.body);
 			brew = _.merge(brew, updateBrew);
 			brew.text = mergeBrewText(brew.text, brew.style);
+			brew.tags = updateBrew.tags;
 
 			// Compress brew text to binary before saving
 			brew.textBin = zlib.deflateRawSync(brew.text);
