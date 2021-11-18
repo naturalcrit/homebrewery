@@ -81,4 +81,31 @@
 		font-size: 0.8em;
 		line-height    : 1.5em;
 	}
+
+	.tags.field .list {
+		display   : flex;
+		flex-wrap : wrap;
+
+		>* {
+			flex : 0 0 auto;
+		}
+
+		.badge {
+			background-color : #444;
+			border-radius    : .5em;
+			color            : white;
+			font-size        : .9em;
+			margin           : 2px;
+			padding          : .3em;
+
+			i.fa-times {
+				cursor: pointer;
+			}
+		}
+
+		.value {
+			width     : 7.5vw;
+			min-width : 75px;
+		}
+	}
 }
