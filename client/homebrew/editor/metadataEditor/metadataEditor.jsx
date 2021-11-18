@@ -182,7 +182,7 @@ const MetadataEditor = createClass({
 	},
 
 	addTag : function(tag){
-		this.props.metadata.tags = _.uniq([...this.props.metadata.tags, tag]);
+		this.props.metadata.tags = _.uniq([...this.props.metadata.tags, ...(tag.split(',').map((t)=>t.trim()))]);
 		this.props.onChange(this.props.metadata);
 	},
 	removeTag : function(tag){
@@ -216,7 +216,7 @@ const MetadataEditor = createClass({
 
 	renderTags : function(){
 		const tagElements = Object.values(this.state.tagContext).map((context, i)=>context.editing
-			? <input type='text' className='value'
+			? <input type='text' className='value' autoFocus
 					 value={this.state.updateTag}
 					 key={i}
 					 onKeyDown={(e)=>{ this.handleTagInputKeyDown(e, i); }}
