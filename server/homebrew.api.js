@@ -28,12 +28,27 @@ const excludePropsFromUpdate = (brew)=>{
 	return brew;
 };
 
-const mergeBrewText = (text, style)=>{
+const mergeBrewText = (text, style, brew)=>{
 	if(typeof style !== 'undefined') {
 		text = `\`\`\`css\n` +
 					 `${style}\n` +
 					 `\`\`\`\n\n` +
 					 `${text}`;
+	}
+	if(typeof brew !== 'undefined') {
+		const metadata = {
+			title       : brew.title,
+			description : brew.description,
+			tags        : brew.tags,
+			systems     : brew.systems,
+			renderer    : brew.renderer,
+			authors     : brew.authors,
+			published   : brew.published
+		};
+		text = `\`\`\`metadata\n` +
+		       `${JSON.stringify(metadata)}\n` +
+			   `\`\`\`\n\n` +
+		       `${text}`;
 	}
 	return text;
 };
@@ -143,7 +158,7 @@ const newGoogleBrew = async (req, res, next)=>{
 	}
 
 	brew.authors = (req.account) ? [req.account.username] : [];
-	brew.text = mergeBrewText(brew.text, brew.style);
+	brew.text = mergeBrewText(brew.text, brew.style, brew);
 
 	delete brew.editId;
 	delete brew.shareId;
@@ -165,7 +180,7 @@ const updateGoogleBrew = async (req, res, next)=>{
 	try {	oAuth2Client = GoogleActions.authCheck(req.account, res); } catch (err) { return res.status(err.status).send(err.message); }
 
 	const brew = excludePropsFromUpdate(req.body);
-	brew.text = mergeBrewText(brew.text, brew.style);
+	brew.text = mergeBrewText(brew.text, brew.style, brew);
 
 	try {
 		const updatedBrew = await GoogleActions.updateGoogleBrew(oAuth2Client, brew);

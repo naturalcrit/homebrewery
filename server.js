@@ -32,7 +32,7 @@ const getBrewFromId = asyncHandler(async (id, accessType)=>{
 	if(accessType == 'raw') {
 		return brew;
 	}
-	splitTextAndStyle(brew);
+	splitTextStyleAndMetadata(brew);
 	return brew;
 });
 
@@ -45,8 +45,14 @@ const sanitizeBrew = (brew, full=false)=>{
 	return brew;
 };
 
-const splitTextAndStyle = (brew)=>{
+const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
+	if(brew.text.startsWith('```metadata')) {
+		const index = brew.text.indexOf('```\n\n');
+		const metadata = brew.text.slice(12, index - 1);
+		Object.assign(brew, JSON.parse(metadata));
+		brew.text = brew.text.slice(index + 5);
+	}
 	if(brew.text.startsWith('```css')) {
 		const index = brew.text.indexOf('```\n\n');
 		brew.style = brew.text.slice(7, index - 1);
@@ -128,7 +134,7 @@ app.get('/v3_preview', async (req, res, next)=>{
 		text     : welcomeTextV3,
 		renderer : 'V3'
 	};
-	splitTextAndStyle(brew);
+	splitTextStyleAndMetadata(brew);
 	req.brew = brew;
 	return next();
 });
@@ -140,7 +146,7 @@ app.get('/changelog', async (req, res, next)=>{
 		text     : changelogText,
 		renderer : 'V3'
 	};
-	splitTextAndStyle(brew);
+	splitTextStyleAndMetadata(brew);
 	req.brew = brew;
 	return next();
 });
@@ -152,7 +158,7 @@ app.get('/faq', async (req, res, next)=>{
 		text     : faqText,
 		renderer : 'V3'
 	};
-	splitTextAndStyle(brew);
+	splitTextStyleAndMetadata(brew);
 	req.brew = brew;
 	return next();
 });
