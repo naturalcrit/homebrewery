@@ -202,14 +202,19 @@ const MetadataEditor = createClass({
 	},
 	handleTagInputKeyDown : function(event, index){
 		if(event.key === 'Enter') {
-			if(!!index) {
-				this.updateTag(event.target.value, index);
-				const tagContext = this.state.tagContext;
-				tagContext[index].editing = false;
-				this.setState({ tagContext, updateTag: '' });
+			const tagPattern = /^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 /.:\-]+$/;
+			if(!!event.target.value.match(tagPattern)) {
+				if(!!index) {
+					this.updateTag(event.target.value, index);
+					const tagContext = this.state.tagContext;
+					tagContext[index].editing = false;
+					this.setState({ tagContext, updateTag: '' });
+				} else {
+					this.addTag(event.target.value);
+					this.setState({ temporaryTag: '' });
+				}
 			} else {
-				this.addTag(event.target.value);
-				this.setState({ temporaryTag: '' });
+				console.log('does not match');
 			}
 		}
 	},
