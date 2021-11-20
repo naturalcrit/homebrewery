@@ -108,7 +108,7 @@ const Editor = createClass({
 			const codeMirror = this.refs.codeEditor.codeMirror;
 
 			//reset custom text styles
-			const customHighlights = codeMirror.getAllMarks();
+			const customHighlights = codeMirror.getAllMarks().filter((mark)=>!mark.__isFold); //Don't undo code folding
 			for (let i=0;i<customHighlights.length;i++) customHighlights[i].clear();
 
 			// remove all widgets (page numbers in Editor)

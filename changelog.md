@@ -33,6 +33,21 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Wednesday 17/11/2021 - v3.0.4
+{{taskList
+* [x] Fixed incorrect sorting of Google brews by page count and views on the user page.
+
+	Fixes issues: [#1793](https://github.com/naturalcrit/homebrewery/issues/1793)
+
+* [x] Added code folding! Only on a page-level for now. Hotkeys `CTRL + [` and `CTRL + ]` to fold/unfold all pages. (Thanks jeddai, new contributor!)
+
+	Fixes issues: [#629](https://github.com/naturalcrit/homebrewery/issues/629)
+
+* [x] Fixed rendering issues due to the latest Chrome update to version 96. (Also thanks to jeddai!)
+
+	Fixes issues: [#1828](https://github.com/naturalcrit/homebrewery/issues/1828)
+}}
+
 ### Wednesday 27/10/2021 - v3.0.3
 
 {{taskList
