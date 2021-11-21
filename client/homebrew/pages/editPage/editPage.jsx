@@ -349,7 +349,7 @@ const EditPage = createClass({
 				</Nav.item>;
 			}
 
-			if(this.state.errors.status == '403' && this.state.errors.response.body.errors[0].reason == 'insufficientPermissions'){
+			if(this.state.errors.url.match(/^\/api\/.*Google.*$/m)){
 				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 					Oops!
 					<div className='errorContainer' onClick={this.clearErrors}>
@@ -360,7 +360,7 @@ const EditPage = createClass({
 						<a target='_blank' rel='noopener noreferrer'
 							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
 							<div className='confirm'>
-								Sign In
+								Go to Log In Page
 							</div>
 						</a>
 						<div className='deny'>
