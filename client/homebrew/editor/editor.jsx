@@ -112,7 +112,7 @@ const Editor = createClass({
 			for (let i=0;i<customHighlights.length;i++) customHighlights[i].clear();
 
 			let x = 0;
-			const blockTypes = ['note','descriptive','toc'];
+			const blockTypes = ['note', 'descriptive', 'toc', 'monster'];
 			let blockClass;
 
 			const lineNumbers = _.reduce(this.props.brew.text.split('\n'), (r, line, lineNumber)=>{
@@ -167,15 +167,15 @@ const Editor = createClass({
 							endCh = match.index+match[0].length;
 						codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
 					};
-					
+
 					if(line.trimLeft().startsWith('{{')){
 						x += 1;
-						blockTypes.forEach(type=>{
+						blockTypes.forEach((type)=>{
 							if(line.includes(type)){   // todo: likely change to "starts with" rather than include to avoid overlapping issues
 								blockClass = type;
-							} 
+							}
 						});
-						if(blockClass === null){ blockClass = 'blockHighlight'}
+						if(blockClass === null){ blockClass = 'blockHighlight'};
 					}
 					if(x>0){
 						codeMirror.addLineClass(lineNumber, 'background', blockClass);
@@ -184,9 +184,6 @@ const Editor = createClass({
 						x -= 1;
 						blockClass = null; // todo:  need to switch back to previous class if nested within another div
 					}
-
-					
-
 				}
 
 				return r;
