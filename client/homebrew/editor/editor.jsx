@@ -111,6 +111,10 @@ const Editor = createClass({
 			const customHighlights = codeMirror.getAllMarks().filter((mark)=>!mark.__isFold); //Don't undo code folding
 			for (let i=0;i<customHighlights.length;i++) customHighlights[i].clear();
 
+			let x = 0;
+			const blockTypes = ['note','descriptive','toc'];
+			let blockClass;
+
 			const lineNumbers = _.reduce(this.props.brew.text.split('\n'), (r, line, lineNumber)=>{
 
 				//reset custom line styles
@@ -162,7 +166,27 @@ const Editor = createClass({
 						if(match)
 							endCh = match.index+match[0].length;
 						codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
+					};
+					
+					if(line.trimLeft().startsWith('{{')){
+						x += 1;
+						blockTypes.forEach(type=>{
+							if(line.includes(type)){   // todo: likely change to "starts with" rather than include to avoid overlapping issues
+								blockClass = type;
+							} 
+						});
+						if(blockClass === null){ blockClass = 'blockHighlight'}
 					}
+					if(x>0){
+						codeMirror.addLineClass(lineNumber, 'background', blockClass);
+					}
+					if(line.trimLeft().startsWith('}}')){
+						x -= 1;
+						blockClass = null; // todo:  need to switch back to previous class if nested within another div
+					}
+
+					
+
 				}
 
 				return r;
