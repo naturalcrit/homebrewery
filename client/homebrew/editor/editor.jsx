@@ -9,6 +9,7 @@ const dedent = require('dedent-tabs').default;
 const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
 const SnippetBar = require('./snippetbar/snippetbar.jsx');
 const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
+const { includes } = require('./snippetbar/snippets/snippets');
 
 const SNIPPETBAR_HEIGHT = 25;
 const DEFAULT_STYLE_TEXT = dedent`
@@ -113,7 +114,7 @@ const Editor = createClass({
 
 			let x = 0;
 			const blockTypes = ['note', 'descriptive', 'toc', 'monster'];
-			let blockClass;
+			let blockClass = [];
 
 			const lineNumbers = _.reduce(this.props.brew.text.split('\n'), (r, line, lineNumber)=>{
 
@@ -168,21 +169,26 @@ const Editor = createClass({
 						codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
 					};
 
-					if(line.trimLeft().startsWith('{{')){
+					if(line.trimLeft().startsWith('{{') && !line.includes('}}')){
 						x += 1;
-						blockTypes.forEach((type)=>{
-							if(line.includes(type)){   // todo: likely change to "starts with" rather than include to avoid overlapping issues
-								blockClass = type;
-							}
-						});
-						if(blockClass === null){ blockClass = 'blockHighlight'};
+						if(blockTypes.some((type)=>line.includes(type))){
+							blockTypes.forEach((type)=>{
+								if(line.startsWith('{{' + type)){
+									blockClass.push(type)
+								}
+							})
+						} else {
+							blockClass.push('blockHighlight')
+						};
+						console.log('line: ' + line);
+						console.log(blockClass);
 					}
 					if(x>0){
-						codeMirror.addLineClass(lineNumber, 'background', blockClass);
+						codeMirror.addLineClass(lineNumber, 'background', _.last(blockClass));
 					}
 					if(line.trimLeft().startsWith('}}')){
 						x -= 1;
-						blockClass = null; // todo:  need to switch back to previous class if nested within another div
+						blockClass.pop();
 					}
 				}
 
