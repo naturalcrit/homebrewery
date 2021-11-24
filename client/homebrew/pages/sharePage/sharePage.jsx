@@ -41,7 +41,7 @@ const SharePage = createClass({
 		if(!(e.ctrlKey || e.metaKey)) return;
 		const P_KEY = 80;
 		if(e.keyCode == P_KEY){
-			window.open(`/print/${this.processShareID()}?dialog=true`, '_blank').focus();
+			window.open(`/print/${this.processShareId()}?dialog=true`, '_blank').focus();
 			e.stopPropagation();
 			e.preventDefault();
 		}
