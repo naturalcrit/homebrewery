@@ -4,6 +4,7 @@ const router = require('express').Router();
 const zlib = require('zlib');
 const GoogleActions = require('./googleActions.js');
 const Markdown = require('../shared/naturalcrit/markdown.js');
+const brewUtils = require('./utils/brew');
 
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
@@ -28,31 +29,6 @@ const excludePropsFromUpdate = (brew)=>{
 	return brew;
 };
 
-const mergeBrewText = (text, style, brew)=>{
-	if(typeof style !== 'undefined') {
-		text = `\`\`\`css\n` +
-					 `${style}\n` +
-					 `\`\`\`\n\n` +
-					 `${text}`;
-	}
-	if(typeof brew !== 'undefined') {
-		const metadata = {
-			title       : brew.title,
-			description : brew.description,
-			tags        : brew.tags,
-			systems     : brew.systems,
-			renderer    : brew.renderer,
-			authors     : brew.authors,
-			published   : brew.published
-		};
-		text = `\`\`\`metadata\n` +
-		       `${JSON.stringify(metadata)}\n` +
-			   `\`\`\`\n\n` +
-		       `${text}`;
-	}
-	return text;
-};
-
 const newBrew = (req, res)=>{
 	const brew = req.body;
 
@@ -61,7 +37,7 @@ const newBrew = (req, res)=>{
 	}
 
 	brew.authors = (req.account) ? [req.account.username] : [];
-	brew.text = mergeBrewText(brew.text, brew.style);
+	brew.text = brewUtils.mergeBrewText(brew, { style: true });
 
 	delete brew.editId;
 	delete brew.shareId;
@@ -90,7 +66,7 @@ const updateBrew = (req, res)=>{
 		.then((brew)=>{
 			const updateBrew = excludePropsFromUpdate(req.body);
 			brew = _.merge(brew, updateBrew);
-			brew.text = mergeBrewText(brew.text, brew.style);
+			brew.text = brewUtils.mergeBrewText(brew, { style: true });
 
 			// Compress brew text to binary before saving
 			brew.textBin = zlib.deflateRawSync(brew.text);
@@ -158,7 +134,7 @@ const newGoogleBrew = async (req, res, next)=>{
 	}
 
 	brew.authors = (req.account) ? [req.account.username] : [];
-	brew.text = mergeBrewText(brew.text, brew.style, brew);
+	brew.text = brewUtils.mergeBrewText(brew, { style: true, metadata: true });
 
 	delete brew.editId;
 	delete brew.shareId;
@@ -180,7 +156,7 @@ const updateGoogleBrew = async (req, res, next)=>{
 	try {	oAuth2Client = GoogleActions.authCheck(req.account, res); } catch (err) { return res.status(err.status).send(err.message); }
 
 	const brew = excludePropsFromUpdate(req.body);
-	brew.text = mergeBrewText(brew.text, brew.style, brew);
+	brew.text = brewUtils.mergeBrewText(brew, { style: true, metadata: true });
 
 	try {
 		const updatedBrew = await GoogleActions.updateGoogleBrew(oAuth2Client, brew);

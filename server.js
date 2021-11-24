@@ -2,6 +2,8 @@
 const _ = require('lodash');
 const jwt = require('jwt-simple');
 const express = require('express');
+const yaml = require('js-yaml');
+const brewUtils = require('./server/utils/brew');
 const app = express();
 
 const homebrewApi = require('./server/homebrew.api.js');
@@ -50,7 +52,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 	if(brew.text.startsWith('```metadata')) {
 		const index = brew.text.indexOf('```\n\n');
 		const metadata = brew.text.slice(12, index - 1);
-		Object.assign(brew, JSON.parse(metadata));
+		Object.assign(brew, yaml.load(metadata));
 		brew.text = brew.text.slice(index + 5);
 	}
 	if(brew.text.startsWith('```css')) {
@@ -168,7 +170,7 @@ app.get('/source/:id', asyncHandler(async (req, res)=>{
 	const brew = await getBrewFromId(req.params.id, 'raw');
 
 	const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
-	let text = brew.text;
+	let text = brewUtils.mergeBrewText(brew, { metadata: true, fullMetadata: true });
 	for (const replaceStr in replaceStrings) {
 		text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
 	}
@@ -188,7 +190,7 @@ app.get('/download/:id', asyncHandler(async (req, res)=>{
 		'Content-Type'        : 'text/plain',
 		'Content-Disposition' : `attachment; filename="${fileName}.txt"`
 	});
-	res.status(200).send(brew.text);
+	res.status(200).send(brewUtils.mergeBrewText(brew, { metadata: true, fullMetadata: true }));
 }));
 
 //User Page
