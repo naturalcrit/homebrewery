@@ -349,7 +349,7 @@ const EditPage = createClass({
 				</Nav.item>;
 			}
 
-			if(this.state.errors.url.match(/^\/api\/.*Google.*$/m)){
+			if(this.state.errors.response.req.url.match(/^\/api\/.*Google.*$/m)){
 				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 					Oops!
 					<div className='errorContainer' onClick={this.clearErrors}>
