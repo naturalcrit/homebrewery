@@ -12,7 +12,7 @@ const serveCompressedStaticAssets = require('./server/static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
 
-const brewAccessTypes = ['edit', 'share', 'raw'];
+const brewAccessTypes = ['edit', 'share', 'raw', 'view'];
 
 //Get the brew object from the HB database or Google Drive
 const getBrewFromId = asyncHandler(async (id, accessType)=>{
@@ -167,10 +167,10 @@ app.get('/faq', async (req, res, next)=>{
 
 //Source page
 app.get('/source/:id', asyncHandler(async (req, res)=>{
-	const brew = await getBrewFromId(req.params.id, 'raw');
+	const brew = await getBrewFromId(req.params.id, 'view');
 
 	const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
-	let text = brewUtils.mergeBrewText(brew, { metadata: true, fullMetadata: true });
+	let text = brewUtils.mergeBrewText(brew, { style: true, metadata: true, fullMetadata: true });
 	for (const replaceStr in replaceStrings) {
 		text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
 	}
@@ -180,7 +180,7 @@ app.get('/source/:id', asyncHandler(async (req, res)=>{
 
 //Download brew source page
 app.get('/download/:id', asyncHandler(async (req, res)=>{
-	const brew = await getBrewFromId(req.params.id, 'raw');
+	const brew = await getBrewFromId(req.params.id, 'view');
 	const prefix = 'HB - ';
 
 	let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
@@ -190,7 +190,8 @@ app.get('/download/:id', asyncHandler(async (req, res)=>{
 		'Content-Type'        : 'text/plain',
 		'Content-Disposition' : `attachment; filename="${fileName}.txt"`
 	});
-	res.status(200).send(brewUtils.mergeBrewText(brew, { metadata: true, fullMetadata: true }));
+	const text = brewUtils.mergeBrewText(brew, { style: true, metadata: true, fullMetadata: true });
+	res.status(200).send(text);
 }));
 
 //User Page
