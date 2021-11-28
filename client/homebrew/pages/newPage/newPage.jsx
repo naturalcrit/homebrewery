@@ -79,7 +79,12 @@ const NewPage = createClass({
 			'Set save location to your personal Google Drive storage?'
 		];
 
-		return <EditorPage pageType='new' googleDriveOptions={googleDriveOptions} brew={this.props.brew}></EditorPage>;
+		return <EditorPage
+			pageType='new'
+			googleDriveOptions={googleDriveOptions}
+			brew={this.props.brew}
+			printLink='/print?dialog=true&local=print'
+		></EditorPage>;
 	}
 });
 

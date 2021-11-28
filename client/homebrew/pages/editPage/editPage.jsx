@@ -30,6 +30,12 @@ const EditPage = createClass({
 		};
 	},
 
+	processShareId : function() {
+		return this.props.brew.googleId ?
+					 this.props.brew.googleId + this.props.brew.shareId :
+					 this.props.brew.shareId;
+	},
+
 	render : function(){
 		const googleDriveOptions = [
 			'Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?',
@@ -40,6 +46,7 @@ const EditPage = createClass({
 			pageType='edit'
 			brew={this.props.brew}
 			googleDriveOptions = {googleDriveOptions}
+			printLink={`/print/${this.processShareId()}?dialog=true`}
 		></EditorPage>;
 	}
 });

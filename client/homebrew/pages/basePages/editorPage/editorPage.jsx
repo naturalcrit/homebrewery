@@ -55,7 +55,8 @@ const EditorPage = createClass({
 			googleDriveOptions : [
 				'DRIVE > HB',
 				'HB > DRIVE'
-			]
+			],
+			printLink : ''
 		};
 	},
 
@@ -129,7 +130,7 @@ const EditorPage = createClass({
 		const S_KEY = 83;
 		const P_KEY = 80;
 		if(e.keyCode == S_KEY) this.save();
-		if(e.keyCode == P_KEY) window.open(this.getPrintLink(), '_blank').focus();
+		if(e.keyCode == P_KEY) window.open(this.props.printLink, '_blank').focus();
 		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
 			e.stopPropagation();
 			e.preventDefault();
@@ -500,11 +501,6 @@ const EditorPage = createClass({
 					 this.state.brew.shareId;
 	},
 
-	getPrintLink : function(){
-		if(this.isNew()){ return '/print?dialog=true&local=print'; };
-		if(this.isEdit()){ return `/print/${this.processShareId()}?dialog=true`; };
-	},
-
 	getRedditLink : function(){
 
 		const shareLink = this.processShareId();
@@ -538,9 +534,6 @@ const EditorPage = createClass({
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
 				{this.renderSaveButton()}
-				{this.isNew() && <>
-					<PrintLink url={this.getPrintLink()}/>
-				</>}
 				{this.isEdit() && <>
 					<NewBrew />
 					<Nav.dropdown>
@@ -557,9 +550,9 @@ const EditorPage = createClass({
 							post to reddit
 						</Nav.item>
 					</Nav.dropdown>
-					<PrintLink url={this.getPrintLink()} />
 				</>
 				}
+				<PrintLink url={this.props.printLink}/>
 				<ReportIssue />
 				<RecentNavItem brew={this.state.brew} storageKey='edit' />
 				<Account />
