@@ -9,7 +9,6 @@ const { Meta } = require('vitreum/headtags');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../../navbar/navbar.jsx');
 
-const NewBrew = require('../../../navbar/newbrew.navitem.jsx');
 const ReportIssue = require('../../../navbar/issue.navitem.jsx');
 const PrintLink = require('../../../navbar/print.navitem.jsx');
 const Account = require('../../../navbar/account.navitem.jsx');
@@ -56,7 +55,8 @@ const EditorPage = createClass({
 				'DRIVE > HB',
 				'HB > DRIVE'
 			],
-			printLink : ''
+			printLink   : '',
+			navElements : ''
 		};
 	},
 
@@ -495,27 +495,7 @@ const EditorPage = createClass({
 		}
 	},
 
-	processShareId : function() {
-		return this.state.brew.googleId ?
-					 this.state.brew.googleId + this.state.brew.shareId :
-					 this.state.brew.shareId;
-	},
-
-	getRedditLink : function(){
-
-		const shareLink = this.processShareId();
-		const systems = this.props.brew.systems.length > 0 ? ` [${this.props.brew.systems.join(' - ')}]` : '';
-		const title = `${this.props.brew.title} ${systems}`;
-		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
-
-**[Homebrewery Link](https://homebrewery.naturalcrit.com/share/${shareLink})**`;
-
-		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
-	},
-
 	renderNavbar : function(){
-		const shareLink = this.processShareId();
-
 		return <Navbar>
 
 			{this.state.alertTrashedGoogleBrew &&
@@ -534,24 +514,7 @@ const EditorPage = createClass({
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
 				{this.renderSaveButton()}
-				{this.isEdit() && <>
-					<NewBrew />
-					<Nav.dropdown>
-						<Nav.item color='teal' icon='fas fa-share-alt'>
-							share
-						</Nav.item>
-						<Nav.item color='blue' href={`/share/${shareLink}`}>
-							view
-						</Nav.item>
-						<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`https://homebrewery.naturalcrit.com/share/${shareLink}`);}}>
-							copy url
-						</Nav.item>
-						<Nav.item color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
-							post to reddit
-						</Nav.item>
-					</Nav.dropdown>
-				</>
-				}
+				{this.props.navElements}
 				<PrintLink url={this.props.printLink}/>
 				<ReportIssue />
 				<RecentNavItem brew={this.state.brew} storageKey='edit' />

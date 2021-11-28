@@ -6,6 +6,9 @@ const _ = require('lodash');
 
 const EditorPage = require('../basePages/editorPage/editorPage.jsx');
 
+const Nav = require('naturalcrit/nav/nav.jsx');
+const NewBrew = require('../../navbar/newbrew.navitem.jsx');
+
 const EditPage = createClass({
 	getDefaultProps : function() {
 		return {
@@ -36,6 +39,38 @@ const EditPage = createClass({
 					 this.props.brew.shareId;
 	},
 
+	renderNavElements : function() {
+		return <>
+			<NewBrew />
+			<Nav.dropdown>
+				<Nav.item color='teal' icon='fas fa-share-alt'>
+					share
+				</Nav.item>
+				<Nav.item color='blue' href={`/share/${this.processShareId()}`}>
+					view
+				</Nav.item>
+				<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`https://homebrewery.naturalcrit.com/share/${shareLink}`);}}>
+					copy url
+				</Nav.item>
+				<Nav.item color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
+					post to reddit
+				</Nav.item>
+			</Nav.dropdown>
+		</>;
+	},
+
+	getRedditLink : function(){
+
+		const shareLink = this.processShareId();
+		const systems = this.props.brew.systems.length > 0 ? ` [${this.props.brew.systems.join(' - ')}]` : '';
+		const title = `${this.props.brew.title} ${systems}`;
+		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
+
+**[Homebrewery Link](https://homebrewery.naturalcrit.com/share/${shareLink})**`;
+
+		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
+	},
+
 	render : function(){
 		const googleDriveOptions = [
 			'Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?',
@@ -47,6 +82,7 @@ const EditPage = createClass({
 			brew={this.props.brew}
 			googleDriveOptions = {googleDriveOptions}
 			printLink={`/print/${this.processShareId()}?dialog=true`}
+			navElements={this.renderNavElements()}
 		></EditorPage>;
 	}
 });
