@@ -73,6 +73,14 @@ const EditPage = createClass({
 		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
 	},
 
+	autoSave : function(brew){
+		console.log(brew);
+	},
+
+	save : function(brew){
+		console.log(brew);
+	},
+
 	render : function(){
 		const googleDriveOptions = [
 			'Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?',
@@ -80,10 +88,12 @@ const EditPage = createClass({
 		];
 
 		return <EditorPage
-			pageType='edit'
+			pageType='new'
 			brew={this.props.brew}
-			googleDriveOptions = {googleDriveOptions}
+			googleDriveOptions={googleDriveOptions}
 			navElements={this.renderNavElements()}
+			autoSave={this.autoSave}
+			save={this.save}
 		></EditorPage>;
 	}
 });
