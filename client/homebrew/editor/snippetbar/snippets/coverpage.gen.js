@@ -100,9 +100,8 @@ const subtitles = [
 
 module.exports = ()=>{
 	return `<style>
-  .page#p1{ text-align:center; }
+  .page#p1{ text-align:center; counter-increment: none; }
   .page#p1:after{ display:none; }
-  .page#p2 { counter-reset:phb-page-numbers; }
   .page:nth-child(2n) .pageNumber { left: inherit !important; right: 2px !important; }
   .page:nth-child(2n+1) .pageNumber { right: inherit !important; left: 2px !important; }
   .page:nth-child(2n)::after { transform: scaleX(1); }
