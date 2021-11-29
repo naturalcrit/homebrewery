@@ -100,15 +100,15 @@ const subtitles = [
 
 module.exports = ()=>{
 	return `<style>
-  .phb#p1{ text-align:center; }
-  .phb#p1:after{ display:none; }
-  .phb#p2 { counter-reset:phb-page-numbers; }
-  .phb:nth-child(2n) .pageNumber { left: inherit !important; right: 2px !important; }
-  .phb:nth-child(2n+1) .pageNumber { right: inherit !important; left: 2px !important; }
-  .phb:nth-child(2n)::after { transform: scaleX(1); }
-  .phb:nth-child(2n+1)::after { transform: scaleX(-1); }
-  .phb:nth-child(2n) .footnote { left: inherit; text-align: right; }
-  .phb:nth-child(2n+1) .footnote { left: 80px; text-align: left; }
+  .page#p1{ text-align:center; }
+  .page#p1:after{ display:none; }
+  .page#p2 { counter-reset:phb-page-numbers; }
+  .page:nth-child(2n) .pageNumber { left: inherit !important; right: 2px !important; }
+  .page:nth-child(2n+1) .pageNumber { right: inherit !important; left: 2px !important; }
+  .page:nth-child(2n)::after { transform: scaleX(1); }
+  .page:nth-child(2n+1)::after { transform: scaleX(-1); }
+  .page:nth-child(2n) .footnote { left: inherit; text-align: right; }
+  .page:nth-child(2n+1) .footnote { left: 80px; text-align: left; }
 </style>
 
 <div style='margin-top:450px;'></div>
@@ -116,9 +116,10 @@ module.exports = ()=>{
 # ${_.sample(titles)}
 
 <div style='margin-top:25px'></div>
-<div class='wide'>
+
+{{wide
 ##### ${_.sample(subtitles)}
-</div>
+}}
 
 \\page`;
 };
