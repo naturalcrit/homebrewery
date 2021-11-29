@@ -8,6 +8,7 @@ const EditorPage = require('../basePages/editorPage/editorPage.jsx');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const NewBrew = require('../../navbar/newbrew.navitem.jsx');
+const PrintLink = require('../../navbar/print.navitem.jsx');
 
 const EditPage = createClass({
 	getDefaultProps : function() {
@@ -56,6 +57,7 @@ const EditPage = createClass({
 					post to reddit
 				</Nav.item>
 			</Nav.dropdown>
+			<PrintLink url={`/print/${this.processShareId()}?dialog=true`}/>
 		</>;
 	},
 
@@ -81,7 +83,6 @@ const EditPage = createClass({
 			pageType='edit'
 			brew={this.props.brew}
 			googleDriveOptions = {googleDriveOptions}
-			printLink={`/print/${this.processShareId()}?dialog=true`}
 			navElements={this.renderNavElements()}
 		></EditorPage>;
 	}

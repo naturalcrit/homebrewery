@@ -6,6 +6,8 @@ const _ = require('lodash');
 
 const EditorPage = require('../basePages/editorPage/editorPage.jsx');
 
+const PrintLink = require('../../navbar/print.navitem.jsx');
+
 const Markdown = require('naturalcrit/markdown.js');
 
 const BREWKEY = 'homebrewery-new';
@@ -73,6 +75,10 @@ const NewPage = createClass({
 		};
 	},
 
+	renderNavElements : function(){
+		return <PrintLink url='/print?dialog=true&local=print'></PrintLink>;
+	},
+
 	render : function(){
 		const googleDriveOptions = [
 			'Set save location to the Homebrewery?',
@@ -83,7 +89,7 @@ const NewPage = createClass({
 			pageType='new'
 			googleDriveOptions={googleDriveOptions}
 			brew={this.props.brew}
-			printLink='/print?dialog=true&local=print'
+			navElements={this.renderNavElements()}
 		></EditorPage>;
 	}
 });

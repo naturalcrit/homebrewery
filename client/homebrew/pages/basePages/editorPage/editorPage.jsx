@@ -10,7 +10,6 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../../navbar/navbar.jsx');
 
 const ReportIssue = require('../../../navbar/issue.navitem.jsx');
-const PrintLink = require('../../../navbar/print.navitem.jsx');
 const Account = require('../../../navbar/account.navitem.jsx');
 const RecentNavItem = require('../../../navbar/recent.navitem.jsx').both;
 
@@ -515,7 +514,6 @@ const EditorPage = createClass({
 				{this.renderGoogleDriveIcon()}
 				{this.renderSaveButton()}
 				{this.props.navElements}
-				<PrintLink url={this.props.printLink}/>
 				<ReportIssue />
 				<RecentNavItem brew={this.state.brew} storageKey='edit' />
 				<Account />
