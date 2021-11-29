@@ -24,10 +24,6 @@ const googleDriveInactive = require('../../../googleDriveMono.png');
 
 const SAVE_TIMEOUT = 3000;
 
-const BREWKEY = 'homebrewery-new';
-const STYLEKEY = 'homebrewery-new-style';
-const METAKEY = 'homebrewery-new-meta';
-
 const EditorPage = createClass({
 	getDefaultProps : function() {
 		return {
@@ -55,7 +51,9 @@ const EditorPage = createClass({
 				'HB > DRIVE'
 			],
 			printLink   : '',
-			navElements : ''
+			navElements : '',
+			autoSave    : ()=>{},
+			save        : ()=>{}
 		};
 	},
 
@@ -174,12 +172,8 @@ const EditorPage = createClass({
 		}), ()=>this.trySave());
 	},
 
-	localSave : function(){
-		if(this.state.brew.text) localStorage.setItem(BREWKEY, this.state.brew.text);
-		if(this.state.brew.style) localStorage.setItem(STYLEKEY, this.state.brew.style);
-		localStorage.setItem(METAKEY, JSON.stringify({
-			renderer : (this.state.brew.renderer || 'legacy')
-		}));
+	autoSave : function(){
+		return this.props.autoSave(this.state.brew);
 	},
 
 	hasChanges : function(){
@@ -187,8 +181,7 @@ const EditorPage = createClass({
 	},
 
 	trySave : function(){
-		if(this.isEdit() && !this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
-		if(this.isNew() && !this.debounceSave) this.debounceSave = _.debounce(this.localSave, SAVE_TIMEOUT);
+		if(!this.debounceSave) this.debounceSave = _.debounce(this.autoSave, SAVE_TIMEOUT);
 		if(this.hasChanges()){
 			this.debounceSave();
 		} else {
@@ -330,54 +323,10 @@ const EditorPage = createClass({
 		}
 
 		if(this.isNew()){
-			console.log('saving new brew');
-
-			let brew = this.state.brew;
-			// Split out CSS to Style if CSS codefence exists
-			if(brew.text.startsWith('```css') && brew.text.indexOf('```\n\n') > 0) {
-				const index = brew.text.indexOf('```\n\n');
-				brew.style = `${brew.style ? `${brew.style}\n` : ''}${brew.text.slice(7, index - 1)}`;
-				brew.text = brew.text.slice(index + 5);
-			};
-
-			brew.pageCount=((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
-
-			if(this.state.saveGoogle) {
-				const res = await request
-				.post('/api/newGoogle/')
-				.send(brew)
-				.catch((err)=>{
-					console.log(err.status === 401
-						? 'Not signed in!'
-						: 'Error Creating New Google Brew!');
-					this.setState({ isSaving: false, errors: err });
-					return;
-				});
-				window.onbeforeunload = function(){};
-				brew = res.body;
-				localStorage.removeItem(BREWKEY);
-				localStorage.removeItem(STYLEKEY);
-				localStorage.removeItem(METAKEY);
-				window.location = `/edit/${brew.googleId}${brew.editId}`;
-			} else {
-				request.post('/api')
-				.send(brew)
-				.end((err, res)=>{
-					if(err){
-						this.setState({
-							isSaving : false
-						});
-						return;
-					}
-					window.onbeforeunload = function(){};
-					brew = res.body;
-					localStorage.removeItem(BREWKEY);
-					localStorage.removeItem(STYLEKEY);
-					localStorage.removeItem(METAKEY);
-					window.location = `/edit/${brew.editId}`;
-				});
-			}
-		}
+			console.log(this.state.brew);
+			console.log(this.state.saveGoogle);
+			await this.props.save(this.state.brew, this.state.saveGoogle);
+		};
 	},
 
 	renderGoogleDriveIcon : function(){

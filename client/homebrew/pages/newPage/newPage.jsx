@@ -2,7 +2,9 @@
 require('./newPage.less');
 const React = require('react');
 const createClass = require('create-react-class');
+
 const _ = require('lodash');
+const request = require('superagent');
 
 const EditorPage = require('../basePages/editorPage/editorPage.jsx');
 
@@ -75,6 +77,63 @@ const NewPage = createClass({
 		};
 	},
 
+	autoSave : function(brew){
+		if(brew.text) localStorage.setItem(BREWKEY, brew.text);
+		if(brew.style) localStorage.setItem(STYLEKEY, brew.style);
+		localStorage.setItem(METAKEY, JSON.stringify({
+			renderer : (brew.renderer || 'legacy')
+		}));
+	},
+
+	save : async function(brew, saveGoogle){
+		console.log('saving new brew');
+
+		// Split out CSS to Style if CSS codefence exists
+		if(brew.text.startsWith('```css') && brew.text.indexOf('```\n\n') > 0) {
+			const index = brew.text.indexOf('```\n\n');
+			brew.style = `${brew.style ? `${brew.style}\n` : ''}${brew.text.slice(7, index - 1)}`;
+			brew.text = brew.text.slice(index + 5);
+		};
+
+		brew.pageCount=((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
+
+		if(saveGoogle) {
+			const res = await request
+			.post('/api/newGoogle/')
+			.send(brew)
+			.catch((err)=>{
+				console.log(err.status === 401
+					? 'Not signed in!'
+					: 'Error Creating New Google Brew!');
+				this.setState({ isSaving: false, errors: err });
+				return;
+			});
+			window.onbeforeunload = function(){};
+			brew = res.body;
+			localStorage.removeItem(BREWKEY);
+			localStorage.removeItem(STYLEKEY);
+			localStorage.removeItem(METAKEY);
+			window.location = `/edit/${brew.googleId}${brew.editId}`;
+		} else {
+			request.post('/api')
+			.send(brew)
+			.end((err, res)=>{
+				if(err){
+					this.setState({
+						isSaving : false
+					});
+					return;
+				}
+				window.onbeforeunload = function(){};
+				brew = res.body;
+				localStorage.removeItem(BREWKEY);
+				localStorage.removeItem(STYLEKEY);
+				localStorage.removeItem(METAKEY);
+				window.location = `/edit/${brew.editId}`;
+			});
+		}
+	},
+
 	renderNavElements : function(){
 		return <PrintLink url='/print?dialog=true&local=print'></PrintLink>;
 	},
@@ -87,9 +146,11 @@ const NewPage = createClass({
 
 		return <EditorPage
 			pageType='new'
-			googleDriveOptions={googleDriveOptions}
 			brew={this.props.brew}
+			googleDriveOptions={googleDriveOptions}
 			navElements={this.renderNavElements()}
+			autoSave={this.autoSave}
+			save={this.save}
 		></EditorPage>;
 	}
 });
