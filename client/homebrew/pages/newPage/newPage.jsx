@@ -77,7 +77,7 @@ const NewPage = createClass({
 		};
 	},
 
-	autoSave : function(brew){
+	autoSave : async function(brew){
 		if(brew.text) localStorage.setItem(BREWKEY, brew.text);
 		if(brew.style) localStorage.setItem(STYLEKEY, brew.style);
 		localStorage.setItem(METAKEY, JSON.stringify({
@@ -97,6 +97,8 @@ const NewPage = createClass({
 
 		brew.pageCount=((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
 
+		let outputUrl = '';
+
 		if(saveGoogle) {
 			const res = await request
 			.post('/api/newGoogle/')
@@ -105,33 +107,27 @@ const NewPage = createClass({
 				console.log(err.status === 401
 					? 'Not signed in!'
 					: 'Error Creating New Google Brew!');
-				this.setState({ isSaving: false, errors: err });
+				// this.setState({ isSaving: false, errors: err });
 				return;
 			});
-			window.onbeforeunload = function(){};
 			brew = res.body;
-			localStorage.removeItem(BREWKEY);
-			localStorage.removeItem(STYLEKEY);
-			localStorage.removeItem(METAKEY);
-			window.location = `/edit/${brew.googleId}${brew.editId}`;
+			outputUrl = `/edit/${brew.googleId}${brew.editId}`;
 		} else {
-			request.post('/api')
-			.send(brew)
-			.end((err, res)=>{
-				if(err){
-					this.setState({
-						isSaving : false
-					});
-					return;
-				}
-				window.onbeforeunload = function(){};
-				brew = res.body;
-				localStorage.removeItem(BREWKEY);
-				localStorage.removeItem(STYLEKEY);
-				localStorage.removeItem(METAKEY);
-				window.location = `/edit/${brew.editId}`;
-			});
+			const res = await request
+				.post('/api')
+				.send(brew)
+				.catch((err)=>{
+					if(err){console.log(err);};
+				});
+			brew = res.body;
+			outputUrl = `/edit/${brew.editId}`;
 		}
+
+		window.onbeforeunload = function(){};
+		localStorage.removeItem(BREWKEY);
+		localStorage.removeItem(STYLEKEY);
+		localStorage.removeItem(METAKEY);
+		window.location = outputUrl;
 	},
 
 	renderNavElements : function(){
