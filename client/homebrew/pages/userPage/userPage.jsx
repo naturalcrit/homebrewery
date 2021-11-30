@@ -86,7 +86,7 @@ const UserPage = createClass({
 				  <button
 					  value={`${sortValue}`}
 					  onClick={this.handleSortOptionChange}
-					  className={`${(this.state.sortType == sortValue ? 'active' : '')}`}
+					  className={`sortOption ${(this.state.sortType == sortValue ? 'active' : '')}`}
 				  >
   					{`${sortTitle}`}
 		 		  </button>
@@ -102,7 +102,7 @@ const UserPage = createClass({
 
 	renderFilterOption : function(){
 		return <td>
-			<label>
+			<label className='filterOption'>
 				<i className='fas fa-search'></i>
 				<input
 					type='search'
