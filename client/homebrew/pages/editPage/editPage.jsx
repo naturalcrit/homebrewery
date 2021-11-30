@@ -2,7 +2,9 @@
 require('./editPage.less');
 const React = require('react');
 const createClass = require('create-react-class');
+
 const _ = require('lodash');
+const request = require('superagent');
 
 const EditorPage = require('../basePages/editorPage/editorPage.jsx');
 
@@ -40,30 +42,31 @@ const EditPage = createClass({
 					 this.props.brew.shareId;
 	},
 
-	renderNavElements : function() {
+	renderNavElements : function(googleId, shareId) {
+		const shareLink = googleId ? googleId + shareId : shareId;
 		return <>
 			<NewBrew />
 			<Nav.dropdown>
 				<Nav.item color='teal' icon='fas fa-share-alt'>
 					share
 				</Nav.item>
-				<Nav.item color='blue' href={`/share/${this.processShareId()}`}>
+				<Nav.item color='blue' href={`/share/${shareLink}`}>
 					view
 				</Nav.item>
 				<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`https://homebrewery.naturalcrit.com/share/${shareLink}`);}}>
 					copy url
 				</Nav.item>
-				<Nav.item color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
+				<Nav.item color='blue' href={this.getRedditLink(shareLink)} newTab={true} rel='noopener noreferrer'>
 					post to reddit
 				</Nav.item>
 			</Nav.dropdown>
-			<PrintLink url={`/print/${this.processShareId()}?dialog=true`}/>
+			<PrintLink url={`/print/${shareLink}?dialog=true`}/>
 		</>;
 	},
 
-	getRedditLink : function(){
+	getRedditLink : function(shareLink){
 
-		const shareLink = this.processShareId();
+		shareLink = shareLink || this.processShareId();
 		const systems = this.props.brew.systems.length > 0 ? ` [${this.props.brew.systems.join(' - ')}]` : '';
 		const title = `${this.props.brew.title} ${systems}`;
 		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
@@ -94,7 +97,7 @@ const EditPage = createClass({
 					return;
 				});
 
-			this.savedBrew = res.body;
+			brew = res.body;
 		} else {
 			const res = await request
 			.put(`/api/update/${brew.editId}`)
@@ -105,8 +108,57 @@ const EditPage = createClass({
 				return;
 			});
 
-			this.savedBrew = res.body;
+			brew = res.body;
 		}
+
+		return brew;
+	},
+
+	transfer : async function(brew, saveGoogle){
+		let outputUrl = '';
+		if(saveGoogle) {
+			const res = await request
+			.post('/api/newGoogle/')
+			.send(brew)
+			.catch((err)=>{
+				console.log(err.status === 401
+					? 'Not signed in!'
+					: 'Error Transferring to Google!');
+				this.setState({ errors: err, saveGoogle: false });
+			});
+
+			if(!res) { return; }
+
+			console.log('Deleting Local Copy');
+			await request.delete(`/api/${brew.editId}`)
+			.send()
+			.catch((err)=>{
+				console.log('Error deleting Local Copy');
+			});
+
+			brew = res.body;
+			outputUrl = `/edit/${brew.googleId}${brew.editId}`;
+		} else {
+			const res = await request.post('/api')
+			.send(brew)
+			.catch((err)=>{
+				console.log('Error creating Local Copy');
+				this.setState({ errors: err });
+				return;
+			});
+
+			await request.get(`/api/removeGoogle/${brew.googleId}${brew.editId}`)
+			.send()
+			.catch((err)=>{
+				console.log('Error Deleting Google Brew');
+			});
+
+			brew = res.body;
+			outputUrl = `/edit/${brew.editId}`; //update URL to match doc ID
+		}
+		if(outputUrl){ history.replaceState(null, null, outputUrl); }
+
+		return brew;
 	},
 
 	render : function(){
@@ -119,9 +171,10 @@ const EditPage = createClass({
 			pageType='edit'
 			brew={this.props.brew}
 			googleDriveOptions={googleDriveOptions}
-			navElements={this.renderNavElements()}
+			renderNavElements={this.renderNavElements}
 			autoSave={this.autoSave}
 			save={this.save}
+			transfer={this.transfer}
 		></EditorPage>;
 	}
 });

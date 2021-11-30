@@ -128,6 +128,7 @@ const NewPage = createClass({
 		localStorage.removeItem(STYLEKEY);
 		localStorage.removeItem(METAKEY);
 		window.location = outputUrl;
+		return brew;
 	},
 
 	renderNavElements : function(){
@@ -144,9 +145,10 @@ const NewPage = createClass({
 			pageType='new'
 			brew={this.props.brew}
 			googleDriveOptions={googleDriveOptions}
-			navElements={this.renderNavElements()}
+			renderNavElements={this.renderNavElements}
 			autoSave={this.autoSave}
 			save={this.save}
+			// transfer={this.transfer}
 		></EditorPage>;
 	}
 });

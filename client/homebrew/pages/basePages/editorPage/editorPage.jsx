@@ -3,7 +3,6 @@ require('./editorPage.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
-const request = require('superagent');
 const { Meta } = require('vitreum/headtags');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
@@ -50,10 +49,11 @@ const EditorPage = createClass({
 				'DRIVE > HB',
 				'HB > DRIVE'
 			],
-			printLink   : '',
-			navElements : '',
-			autoSave    : ()=>{},
-			save        : ()=>{}
+			printLink         : '',
+			autoSave          : ()=>{},
+			save              : ()=>{},
+			transfer          : ()=>{},
+			renderNavElements : ()=>{}
 		};
 	},
 
@@ -217,9 +217,7 @@ const EditorPage = createClass({
 			saveGoogle : !prevState.saveGoogle,
 			isSaving   : false,
 			errors     : null
-		}), ()=>this.isEdit() && this.save());
-
-		// Trigger transfer to/from Google from here?
+		}), ()=>this.props.transfer(this.state.brew, this.state.saveGoogle));
 	},
 
 	clearErrors : function(){
@@ -239,97 +237,22 @@ const EditorPage = createClass({
 
 		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
 
-		if(this.isEdit()){
-			const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
+		const brew = this.state.brew;
+		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
 
-			const brew = this.state.brew;
-			brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
+		const savedBrew = await this.props.save(brew, this.state.saveGoogle);
 
-			if(this.state.saveGoogle) {
-				if(transfer) {
-					const res = await request
-					.post('/api/newGoogle/')
-					.send(brew)
-					.catch((err)=>{
-						console.log(err.status === 401
-							? 'Not signed in!'
-							: 'Error Transferring to Google!');
-						this.setState({ errors: err, saveGoogle: false });
-					});
+		// TBI: Error handling
 
-					if(!res) { return; }
-
-					console.log('Deleting Local Copy');
-					await request.delete(`/api/${brew.editId}`)
-					.send()
-					.catch((err)=>{
-						console.log('Error deleting Local Copy');
-					});
-
-					this.savedBrew = res.body;
-					history.replaceState(null, null, `/edit/${this.savedBrew.googleId}${this.savedBrew.editId}`); //update URL to match doc ID
-				} else {
-					const res = await request
-					.put(`/api/updateGoogle/${brew.editId}`)
-					.send(brew)
-					.catch((err)=>{
-						console.log(err.status === 401
-							? 'Not signed in!'
-							: 'Error Saving to Google!');
-						this.setState({ errors: err });
-						return;
-					});
-
-					this.savedBrew = res.body;
-				}
-			} else {
-				if(transfer) {
-					const res = await request.post('/api')
-					.send(brew)
-					.catch((err)=>{
-						console.log('Error creating Local Copy');
-						this.setState({ errors: err });
-						return;
-					});
-
-					await request.get(`/api/removeGoogle/${brew.googleId}${brew.editId}`)
-					.send()
-					.catch((err)=>{
-						console.log('Error Deleting Google Brew');
-					});
-
-					this.savedBrew = res.body;
-					history.replaceState(null, null, `/edit/${this.savedBrew.editId}`); //update URL to match doc ID
-				} else {
-					const res = await request
-					.put(`/api/update/${brew.editId}`)
-					.send(brew)
-					.catch((err)=>{
-						console.log('Error Updating Local Brew');
-						this.setState({ errors: err });
-						return;
-					});
-
-					this.savedBrew = res.body;
-				}
-			}
-
-			this.setState((prevState)=>({
-				brew : _.merge({}, prevState.brew, {
-					googleId : this.savedBrew.googleId ? this.savedBrew.googleId : null,
-					editId 	 : this.savedBrew.editId,
-					shareId  : this.savedBrew.shareId
-				}),
-				isPending : false,
-				isSaving  : false,
-			}));
-		}
-
-		if(this.isNew()){
-			console.log(this.state.brew);
-			console.log(this.state.saveGoogle);
-			await this.props.save(this.state.brew, this.state.saveGoogle);
-		};
+		this.setState((prevState)=>({
+			brew : _.merge({}, prevState.brew, {
+				googleId : savedBrew.googleId ? savedBrew.googleId : null,
+				editId 	 : savedBrew.editId,
+				shareId  : savedBrew.shareId
+			}),
+			isPending : false,
+			isSaving  : false,
+		}));
 	},
 
 	renderGoogleDriveIcon : function(){
@@ -465,7 +388,7 @@ const EditorPage = createClass({
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
 				{this.renderSaveButton()}
-				{this.props.navElements}
+				{this.props.renderNavElements(this.props.googleId, this.props.shareId)}
 				<ReportIssue />
 				<RecentNavItem brew={this.state.brew} storageKey='edit' />
 				<Account />
