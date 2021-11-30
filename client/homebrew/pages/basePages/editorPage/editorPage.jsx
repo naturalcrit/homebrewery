@@ -173,7 +173,7 @@ const EditorPage = createClass({
 	},
 
 	autoSave : function(){
-		return this.props.autoSave(this.state.brew);
+		return this.props.autoSave(this.state.brew, this.state.saveGoogle);
 	},
 
 	hasChanges : function(){
@@ -190,6 +190,7 @@ const EditorPage = createClass({
 	},
 
 	handleGoogleClick : function(){
+		// Google button is clicked
 		if(!global.account?.googleId) {
 			this.setState({
 				alertLoginToTransfer : true
@@ -217,6 +218,8 @@ const EditorPage = createClass({
 			isSaving   : false,
 			errors     : null
 		}), ()=>this.isEdit() && this.save());
+
+		// Trigger transfer to/from Google from here?
 	},
 
 	clearErrors : function(){
@@ -234,9 +237,9 @@ const EditorPage = createClass({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
-		if(this.isEdit()){
-			if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
+		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
 
+		if(this.isEdit()){
 			const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 
 			const brew = this.state.brew;

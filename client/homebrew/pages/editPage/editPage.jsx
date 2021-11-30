@@ -73,12 +73,40 @@ const EditPage = createClass({
 		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
 	},
 
-	autoSave : function(brew){
-		console.log(brew);
+	autoSave : async function(brew, saveGoogle){
+		return await this.save(brew, saveGoogle);
 	},
 
-	save : function(brew){
-		console.log(brew);
+	save : async function(brew, saveGoogle){
+		// console.log(brew);
+
+		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
+
+		if(saveGoogle) {
+			const res = await request
+				.put(`/api/updateGoogle/${brew.editId}`)
+				.send(brew)
+				.catch((err)=>{
+					console.log(err.status === 401
+						? 'Not signed in!'
+						: 'Error Saving to Google!');
+					// this.setState({ errors: err });
+					return;
+				});
+
+			this.savedBrew = res.body;
+		} else {
+			const res = await request
+			.put(`/api/update/${brew.editId}`)
+			.send(brew)
+			.catch((err)=>{
+				console.log('Error Updating Local Brew');
+				// this.setState({ errors: err });
+				return;
+			});
+
+			this.savedBrew = res.body;
+		}
 	},
 
 	render : function(){
@@ -88,7 +116,7 @@ const EditPage = createClass({
 		];
 
 		return <EditorPage
-			pageType='new'
+			pageType='edit'
 			brew={this.props.brew}
 			googleDriveOptions={googleDriveOptions}
 			navElements={this.renderNavElements()}
