@@ -4,7 +4,7 @@ const router = require('express').Router();
 const zlib = require('zlib');
 const GoogleActions = require('./googleActions.js');
 const Markdown = require('../shared/naturalcrit/markdown.js');
-const yaml = require("js-yaml");
+const yaml = require('js-yaml');
 
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
