@@ -3,7 +3,6 @@ const _ = require('lodash');
 const jwt = require('jwt-simple');
 const express = require('express');
 const yaml = require('js-yaml');
-const brewUtils = require('./server/utils/brew');
 const app = express();
 
 const homebrewApi = require('./server/homebrew.api.js');
@@ -12,7 +11,7 @@ const serveCompressedStaticAssets = require('./server/static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
 
-const brewAccessTypes = ['edit', 'share', 'raw', 'view'];
+const brewAccessTypes = ['edit', 'share', 'raw'];
 
 //Get the brew object from the HB database or Google Drive
 const getBrewFromId = asyncHandler(async (id, accessType)=>{
@@ -51,8 +50,13 @@ const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
 	if(brew.text.startsWith('```metadata')) {
 		const index = brew.text.indexOf('```\n\n');
-		const metadata = brew.text.slice(12, index - 1);
-		Object.assign(brew, yaml.load(metadata));
+		const metadataSection = brew.text.slice(12, index - 1);
+		const metadata = yaml.load(metadataSection);
+		brew.title = metadata.title;
+		brew.description = metadata.description;
+		brew.tags = metadata.tags;
+		brew.systems = metadata.systems;
+		brew.renderer = metadata.renderer;
 		brew.text = brew.text.slice(index + 5);
 	}
 	if(brew.text.startsWith('```css')) {
@@ -167,10 +171,10 @@ app.get('/faq', async (req, res, next)=>{
 
 //Source page
 app.get('/source/:id', asyncHandler(async (req, res)=>{
-	const brew = await getBrewFromId(req.params.id, 'view');
+	const brew = await getBrewFromId(req.params.id, 'raw');
 
 	const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
-	let text = brewUtils.mergeBrewText(brew, { style: true, metadata: true, fullMetadata: true });
+	let text = brew.text;
 	for (const replaceStr in replaceStrings) {
 		text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
 	}
@@ -180,7 +184,7 @@ app.get('/source/:id', asyncHandler(async (req, res)=>{
 
 //Download brew source page
 app.get('/download/:id', asyncHandler(async (req, res)=>{
-	const brew = await getBrewFromId(req.params.id, 'view');
+	const brew = await getBrewFromId(req.params.id, 'raw');
 	const prefix = 'HB - ';
 
 	let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
@@ -190,8 +194,7 @@ app.get('/download/:id', asyncHandler(async (req, res)=>{
 		'Content-Type'        : 'text/plain',
 		'Content-Disposition' : `attachment; filename="${fileName}.txt"`
 	});
-	const text = brewUtils.mergeBrewText(brew, { style: true, metadata: true, fullMetadata: true });
-	res.status(200).send(text);
+	res.status(200).send(brew.text);
 }));
 
 //User Page
