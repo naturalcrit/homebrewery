@@ -13,6 +13,13 @@ if(typeof navigator !== 'undefined'){
 	require('codemirror/mode/gfm/gfm.js'); //Github flavoured markdown
 	require('codemirror/mode/css/css.js');
 	require('codemirror/mode/javascript/javascript.js');
+
+	//Addons
+	require('codemirror/addon/fold/foldcode.js');
+	require('codemirror/addon/fold/foldgutter.js');
+
+	const foldCode = require('./fold-code');
+	foldCode.registerHomebreweryHelper(CodeMirror);
 }
 
 const CodeEditor = createClass({
@@ -25,28 +32,48 @@ const CodeEditor = createClass({
 		};
 	},
 
+	getInitialState : function() {
+		return {
+			docs : {}
+		};
+	},
+
 	componentDidMount : function() {
 		this.buildEditor();
+		const newDoc = CodeMirror.Doc(this.props.value, this.props.language);
+		this.codeMirror.swapDoc(newDoc);
 	},
 
 	componentDidUpdate : function(prevProps) {
-		if(prevProps.language !== this.props.language){ //rebuild editor when switching tabs
-			this.buildEditor();
-		}
-		if(this.codeMirror && this.codeMirror.getValue() != this.props.value) { //update editor contents if brew.text is changed from outside
+		if(prevProps.view !== this.props.view){ //view changed; swap documents
+			let newDoc;
+
+			if(!this.state.docs[this.props.view]) {
+				newDoc = CodeMirror.Doc(this.props.value, this.props.language);
+			} else {
+				newDoc = this.state.docs[this.props.view];
+			}
+
+			const oldDoc = { [prevProps.view]: this.codeMirror.swapDoc(newDoc) };
+
+			this.setState((prevState)=>({
+				docs : _.merge({}, prevState.docs, oldDoc)
+			}));
+
+			this.props.rerenderParent();
+		} else if(this.codeMirror?.getValue() != this.props.value) { //update editor contents if brew.text is changed from outside
 			this.codeMirror.setValue(this.props.value);
 		}
 	},
 
 	buildEditor : function() {
 		this.codeMirror = CodeMirror(this.refs.editor, {
-			value          : this.props.value,
-			lineNumbers    : true,
-			lineWrapping   : this.props.wrap,
-			mode           : this.props.language, //TODO: CSS MODE DOESN'T SEEM TO LOAD PROPERLY
-			indentWithTabs : true,
-			tabSize        : 2,
-			extraKeys      : {
+			lineNumbers       : true,
+			lineWrapping      : this.props.wrap,
+			indentWithTabs    : true,
+			tabSize           : 2,
+			historyEventDelay : 250,
+			extraKeys         : {
 				'Ctrl-B' : this.makeBold,
 				'Cmd-B'  : this.makeBold,
 				'Ctrl-I' : this.makeItalic,
@@ -56,8 +83,35 @@ const CodeEditor = createClass({
 				'Ctrl-/' : this.makeComment,
 				'Cmd-/'  : this.makeComment,
 				'Ctrl-K' : this.makeLink,
-				'Cmd-K'  : this.makeLink
-			}
+				'Cmd-K'  : this.makeLink,
+				'Ctrl-[' : this.foldAllCode,
+				'Cmd-['  : this.foldAllCode,
+				'Ctrl-]' : this.unfoldAllCode,
+				'Cmd-]'  : this.unfoldAllCode
+			},
+			foldGutter  : true,
+			foldOptions : {
+				scanUp      : true,
+				rangeFinder : CodeMirror.fold.homebrewery,
+				widget      : (from, to)=>{
+					let text = '';
+					let currentLine = from.line;
+					const maxLength = 50;
+					while (currentLine <= to.line && text.length <= maxLength) {
+						text += this.codeMirror.getLine(currentLine);
+						if(currentLine < to.line)
+							text += ' ';
+						currentLine += 1;
+					}
+
+					text = text.trim();
+					if(text.length > maxLength)
+						text = `${text.substr(0, maxLength)}...`;
+
+					return `\u21A4 ${text} \u21A6`;
+				}
+			},
+			gutters : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
 		});
 
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
@@ -117,6 +171,14 @@ const CodeEditor = createClass({
 		}
 	},
 
+	foldAllCode : function() {
+		this.codeMirror.execCommand('foldAll');
+	},
+
+	unfoldAllCode : function() {
+		this.codeMirror.execCommand('unfoldAll');
+	},
+
 	//=-- Externally used -==//
 	setCursorPosition : function(line, char){
 		setTimeout(()=>{
@@ -130,10 +192,19 @@ const CodeEditor = createClass({
 	updateSize : function(){
 		this.codeMirror.refresh();
 	},
+	redo : function(){
+		return this.codeMirror.redo();
+	},
+	undo : function(){
+		return this.codeMirror.undo();
+	},
+	historySize : function(){
+		return this.codeMirror.doc.historySize();
+	},
 	//----------------------//
 
 	render : function(){
-		return <div className='codeEditor' ref='editor' />;
+		return <div className='codeEditor' ref='editor' style={this.props.style}/>;
 	}
 });
 

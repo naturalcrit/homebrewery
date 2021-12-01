@@ -12,6 +12,8 @@
 		"codemirror/mode/gfm/gfm.js",
 		"codemirror/mode/css/css.js",
 		"codemirror/mode/javascript/javascript.js",
+		"codemirror/addon/fold/foldcode.js",
+		"codemirror/addon/fold/foldgutter.js",
 		"moment",
 		"superagent",
 		"marked"
