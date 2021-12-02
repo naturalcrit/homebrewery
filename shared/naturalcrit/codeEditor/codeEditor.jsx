@@ -82,6 +82,8 @@ const CodeEditor = createClass({
 				'Cmd-M'  : this.makeSpan,
 				'Ctrl-/' : this.makeComment,
 				'Cmd-/'  : this.makeComment,
+				'Ctrl-K' : this.makeLink,
+				'Cmd-K'  : this.makeLink,
 				'Ctrl-[' : this.foldAllCode,
 				'Cmd-['  : this.foldAllCode,
 				'Ctrl-]' : this.unfoldAllCode,
@@ -150,6 +152,23 @@ const CodeEditor = createClass({
 		if(selection.length === 0){
 			const cursor = this.codeMirror.getCursor();
 			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 4 });
+		}
+	},
+
+	makeLink : function() {
+		const isLink = /^\[(.*)\]\((.*)\)$/;
+		const selection = this.codeMirror.getSelection().trim();
+		let match;
+		if(match = isLink.exec(selection)){
+			const altText = match[1];
+			const url     = match[2];
+			this.codeMirror.replaceSelection(`${altText} ${url}`);
+			const cursor = this.codeMirror.getCursor();
+			this.codeMirror.setSelection({ line: cursor.line, ch: cursor.ch - url.length }, { line: cursor.line, ch: cursor.ch });
+		} else {
+			this.codeMirror.replaceSelection(`[${selection || 'alt text'}](url)`);
+			const cursor = this.codeMirror.getCursor();
+			this.codeMirror.setSelection({ line: cursor.line, ch: cursor.ch - 4 }, { line: cursor.line, ch: cursor.ch - 1 });
 		}
 	},
 
