@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 require('./codeEditor.less');
 const React = require('react');
 const createClass = require('create-react-class');
@@ -74,20 +75,34 @@ const CodeEditor = createClass({
 			tabSize           : 2,
 			historyEventDelay : 250,
 			extraKeys         : {
-				'Ctrl-B' : this.makeBold,
-				'Cmd-B'  : this.makeBold,
-				'Ctrl-I' : this.makeItalic,
-				'Cmd-I'  : this.makeItalic,
-				'Ctrl-M' : this.makeSpan,
-				'Cmd-M'  : this.makeSpan,
-				'Ctrl-/' : this.makeComment,
-				'Cmd-/'  : this.makeComment,
-				'Ctrl-K' : this.makeLink,
-				'Cmd-K'  : this.makeLink,
-				'Ctrl-[' : this.foldAllCode,
-				'Cmd-['  : this.foldAllCode,
-				'Ctrl-]' : this.unfoldAllCode,
-				'Cmd-]'  : this.unfoldAllCode
+				'Ctrl-B'           : this.makeBold,
+				'Cmd-B'            : this.makeBold,
+				'Ctrl-I'           : this.makeItalic,
+				'Cmd-I'            : this.makeItalic,
+				'Ctrl-U'           : this.makeUnderline,
+				'Cmd-U'            : this.makeUnderline,
+				'Ctrl-.'           : this.makeNbsp,
+				'Cmd-.'            : this.makeNbsp,
+				'Shift-Ctrl-.'     : this.makeSpace,
+				'Shift-Cmd-.'      : this.makeSpace,
+				'Shift-Ctrl-,'     : this.removeSpace,
+				'Shift-Cmd-,'      : this.removeSpace,
+				'Ctrl-M'           : this.makeSpan,
+				'Cmd-M'            : this.makeSpan,
+				'Shift-Ctrl-M'     : this.makeDiv,
+				'Shift-Cmd-M'      : this.makeDiv,
+				'Ctrl-/'           : this.makeComment,
+				'Cmd-/'            : this.makeComment,
+				'Ctrl-K'           : this.makeLink,
+				'Cmd-K'            : this.makeLink,
+				'Shift-Ctrl-Enter' : this.newColumn,
+				'Shift-Cmd-Enter'  : this.newColumn,
+				'Ctrl-Enter'       : this.newPage,
+				'Cmd-Enter'        : this.newPage,
+				'Ctrl-['           : this.foldAllCode,
+				'Cmd-['            : this.foldAllCode,
+				'Ctrl-]'           : this.unfoldAllCode,
+				'Cmd-]'            : this.unfoldAllCode
 			},
 			foldGutter  : true,
 			foldOptions : {
@@ -129,11 +144,52 @@ const CodeEditor = createClass({
 	},
 
 	makeItalic : function() {
-		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 1) === '_' && selection.slice(-1) === '_';
-		this.codeMirror.replaceSelection(t ? selection.slice(1, -1) : `_${selection}_`, 'around');
+		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 1) === '*' && selection.slice(-1) === '*';
+		this.codeMirror.replaceSelection(t ? selection.slice(1, -1) : `*${selection}*`, 'around');
 		if(selection.length === 0){
 			const cursor = this.codeMirror.getCursor();
 			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 1 });
+		}
+	},
+
+	makeNbsp : function() {
+		this.codeMirror.replaceSelection('&nbsp;', 'end');
+	},
+
+	makeSpace : function() {
+		const selection = this.codeMirror.getSelection();
+		const t = selection.slice(0, 8) === '{{width:' && selection.slice(0 -4) === '% }}';
+		if(t){
+			const percent = parseInt(selection.slice(8, -4)) + 10;
+			this.codeMirror.replaceSelection(percent < 90 ? `{{width:${percent}% }}` : '{{width:100% }}', 'around');
+		} else {
+			this.codeMirror.replaceSelection(`{{width:10% }}`, 'around');
+		}
+	},
+
+	removeSpace : function() {
+		const selection = this.codeMirror.getSelection();
+		const t = selection.slice(0, 8) === '{{width:' && selection.slice(0 -4) === '% }}';
+		if(t){
+			const percent = parseInt(selection.slice(8, -4)) - 10;
+			this.codeMirror.replaceSelection(percent > 10 ? `{{width:${percent}% }}` : '', 'around');
+		}
+	},
+
+	newColumn : function() {
+		this.codeMirror.replaceSelection('\n\\column\n\n', 'end');
+	},
+
+	newPage : function() {
+		this.codeMirror.replaceSelection('\n\\page\n\n', 'end');
+	},
+
+	makeUnderline : function() {
+		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 3) === '<u>' && selection.slice(-4) === '</u>';
+		this.codeMirror.replaceSelection(t ? selection.slice(3, -4) : `<u>${selection}</u>`, 'around');
+		if(selection.length === 0){
+			const cursor = this.codeMirror.getCursor();
+			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 4 });
 		}
 	},
 
@@ -146,13 +202,34 @@ const CodeEditor = createClass({
 		}
 	},
 
-	makeComment : function() {
-		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 4) === '<!--' && selection.slice(-3) === '-->';
-		this.codeMirror.replaceSelection(t ? selection.slice(4, -3) : `<!-- ${selection} -->`, 'around');
+	makeDiv : function() {
+		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 2) === '{{' && selection.slice(-2) === '}}';
+		this.codeMirror.replaceSelection(t ? selection.slice(2, -2) : `{{\n${selection}\n}}`, 'around');
 		if(selection.length === 0){
 			const cursor = this.codeMirror.getCursor();
-			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 4 });
+			this.codeMirror.setCursor({ line: cursor.line - 1, ch: cursor.ch });  // set to -2? if wanting to enter classes etc.  if so, get rid of first \n when replacing selection
 		}
+	},
+
+	makeComment : function() {
+		let regex;
+		let cursorPos;
+		let newComment;
+		const selection = this.codeMirror.getSelection();
+		if(this.props.language === 'gfm'){
+			regex = /^\s*(<!--\s?)(.*?)(\s?-->)\s*$/gs;
+			cursorPos = 4;
+			newComment = `<!-- ${selection} -->`;
+		} else {
+			regex = /^\s*(\/\*\s?)(.*?)(\s?\*\/)\s*$/gs;
+			cursorPos = 3;
+			newComment = `/* ${selection} */`;
+		}
+		this.codeMirror.replaceSelection(regex.test(selection) == true ? selection.replace(regex, '$2') : newComment, 'around');
+		if(selection.length === 0){
+			const cursor = this.codeMirror.getCursor();
+			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - cursorPos });
+		};
 	},
 
 	makeLink : function() {
