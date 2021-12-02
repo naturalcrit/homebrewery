@@ -68,6 +68,46 @@ const Nav = {
 		}
 	}),
 
+	dropdown : createClass({
+		getInitialState : function() {
+			return {
+				showDropdown : false
+			};
+		},
+
+		handleDropdown : function(show){
+			this.setState({
+				showDropdown : show
+			});
+		},
+
+		renderDropdown : function(dropdownChildren){
+			if(!this.state.showDropdown) return null;
+
+			return (
+				<div className='navDropdown'>
+					{dropdownChildren}
+				</div>
+			);
+		},
+
+		render : function () {
+			const dropdownChildren = React.Children.map(this.props.children, (child, i)=>{
+				// Ignore the first child
+				if(i < 1) return;
+				return child;
+			});
+			return (
+				<div className='navDropdownContainer'
+					onMouseEnter={()=>this.handleDropdown(true)}
+					onMouseLeave={()=>this.handleDropdown(false)}>
+					{this.props.children[0]}
+					{this.renderDropdown(dropdownChildren)}
+				</div>
+			);
+		}
+	})
+
 };
 
 
