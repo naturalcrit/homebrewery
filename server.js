@@ -52,11 +52,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const index = brew.text.indexOf('```\n\n');
 		const metadataSection = brew.text.slice(12, index - 1);
 		const metadata = yaml.load(metadataSection);
-		brew.title = metadata.title;
-		brew.description = metadata.description;
-		brew.tags = metadata.tags;
-		brew.systems = metadata.systems;
-		brew.renderer = metadata.renderer;
+		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer']));
 		brew.text = brew.text.slice(index + 5);
 	}
 	if(brew.text.startsWith('```css')) {
