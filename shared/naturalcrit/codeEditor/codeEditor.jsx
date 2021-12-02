@@ -156,16 +156,17 @@ const CodeEditor = createClass({
 	},
 
 	makeLink : function() {
-		const isLink = /^\[(.*)(\]\()(.*)\)$/g;
-		const selection = this.codeMirror.getSelection();
-		if(isLink.test(selection) == true){
-			const altText = selection.slice(1, selection.lastIndexOf(']('));    // could likely be done better with capture groups
-			const url = selection.slice(selection.lastIndexOf('](') + 2, -1);   // could likely be done better with capture groups
+		const isLink = /^\[(.*)\]\((.*)\)$/;
+		const selection = this.codeMirror.getSelection().trim();
+		let match;
+		if(match = isLink.exec(selection)){
+			const altText = match[1];
+			const url     = match[2];
 			this.codeMirror.replaceSelection(`${altText} ${url}`);
 			const cursor = this.codeMirror.getCursor();
 			this.codeMirror.setSelection({ line: cursor.line, ch: cursor.ch - url.length }, { line: cursor.line, ch: cursor.ch });
 		} else {
-			this.codeMirror.replaceSelection(`[${selection}](url)`);
+			this.codeMirror.replaceSelection(`[${selection || 'alt text'}](url)`);
 			const cursor = this.codeMirror.getCursor();
 			this.codeMirror.setSelection({ line: cursor.line, ch: cursor.ch - 4 }, { line: cursor.line, ch: cursor.ch - 1 });
 		}
