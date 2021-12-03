@@ -40,8 +40,12 @@ const SplitPane = createClass({
 	},
 	handleMove : function(e){
 		if(!this.state.isDragging) return;
+
+		const minWidth = 1;
+		const maxWidth = window.innerWidth - 13;
+		const newSize = Math.min(maxWidth, Math.max(minWidth, e.pageX));
 		this.setState({
-			size : e.pageX
+			size : newSize
 		});
 	},
 	/*

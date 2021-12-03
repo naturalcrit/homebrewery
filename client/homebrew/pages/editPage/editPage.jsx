@@ -399,7 +399,21 @@ const EditPage = createClass({
 					 this.state.brew.shareId;
 	},
 
+	getRedditLink : function(){
+
+		const shareLink = this.processShareId();
+		const systems = this.props.brew.systems.length > 0 ? ` [${this.props.brew.systems.join(' - ')}]` : '';
+		const title = `${this.props.brew.title} ${systems}`;
+		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
+
+**[Homebrewery Link](https://homebrewery.naturalcrit.com/share/${shareLink})**`;
+
+		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
+	},
+
 	renderNavbar : function(){
+		const shareLink = this.processShareId();
+
 		return <Navbar>
 
 			{this.state.alertTrashedGoogleBrew &&
@@ -420,9 +434,20 @@ const EditPage = createClass({
 				{this.renderSaveButton()}
 				<NewBrew />
 				<ReportIssue />
-				<Nav.item newTab={true} href={`/share/${this.processShareId()}`} color='teal' icon='fas fa-share-alt'>
-					Share
-				</Nav.item>
+				<Nav.dropdown>
+					<Nav.item color='teal' icon='fas fa-share-alt'>
+						share
+					</Nav.item>
+					<Nav.item color='blue' href={`/share/${shareLink}`}>
+						view
+					</Nav.item>
+					<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`https://homebrewery.naturalcrit.com/share/${shareLink}`);}}>
+						copy url
+					</Nav.item>
+					<Nav.item color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
+						post to reddit
+					</Nav.item>
+				</Nav.dropdown>
 				<PrintLink shareId={this.processShareId()} />
 				<RecentNavItem brew={this.state.brew} storageKey='edit' />
 				<Account />

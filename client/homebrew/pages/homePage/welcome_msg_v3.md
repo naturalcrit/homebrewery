@@ -34,13 +34,18 @@ After clicking the "Print" item in the navbar a new page will open and a print d
 * In **Options** make sure "Background Images" is selected.
 * Hit print and enjoy! You're done!
 
-If you want to save ink or have a monochrome printer, add the **PRINT → {{fas,fa-tint}} Ink Friendly** snippet to your brew before you print
+If you want to save ink or have a monochrome printer, add the **PRINT → {{fas,fa-tint}} Ink Friendly** snippet to your brew!
 }}
 
-<img src='https://i.imgur.com/hMna6G0.png' style='position:absolute;bottom:50px;left:120px;width:180px' />
+![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,bottom:20px,left:130px,width:220px}
 
-<div class='pageNumber'>1</div>
-<div class='footnote'>PART 1 | FANCINESS</div>
+{{artist,bottom:160px,left:100px
+##### Homebrew Mug
+[naturalcrit](https://homebrew.naturalcrit.com)
+}}
+
+{{pageNumber 1}}
+{{footnote PART 1 | FANCINESS}}
 
 \column
 
@@ -52,7 +57,7 @@ Much of the syntax and styling has changed in V3. Code in one version may be bro
 Scroll down to the next page for a brief summary of the changes and new features available in V3!
 
 #### New Things All The Time!
-What's new in the latest update? Check out the full changelog [here](/changelog).
+Check out the latest updates in the full changelog [here](/changelog).
 
 ### Helping out
 Like this tool? Want to buy me a beer? [Head here](https://www.patreon.com/Naturalcrit) to help me keep the servers running.
@@ -60,6 +65,8 @@ Like this tool? Want to buy me a beer? [Head here](https://www.patreon.com/Natur
 This tool will **always** be free, never have ads, and I will never offer any "premium" features or whatever.
 
 ### Bugs, Issues, Suggestions?
+Take a quick look at our [Frequently Asked Questions page](/faq) to see if your question has a handy answer.
+
 Need help getting started or just the right look for your brew? Head to [r/Homebrewery](https://www.reddit.com/r/homebrewery/submit?selftext=true&title=%5BIssue%5D%20Describe%20Your%20Issue%20Here) and let us know!
 
 Have an idea to make The Homebrewery better? Or did you find something that wasn't quite right? Check out the [GitHub Repo](https://github.com/naturalcrit/homebrewery/) to report technical issues.
@@ -72,8 +79,8 @@ If you wish to sell or in some way gain profit for what's created on this site, 
 #### Crediting Me
 If you'd like to credit me in your brew, I'd be flattered! Just reference that you made it with The Homebrewery.
 
-### More Resources
-If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/comments/3uwxx9/resources_open_to_the_community/).
+### More Homebrew Resources
+Check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/wiki/resources).
 
 
 \page
@@ -83,7 +90,6 @@ The Homebrewery aims to make homebrewing as simple as possible, providing a live
 
 In version 3.0.0, with a goal of adding maximum flexibility without users resorting to complex HTML to accomplish simple tasks, Homebrewery provides an extended verision of Markdown with additional syntax.
 **You can enable V3 via the {{fa,fa-info-circle}} Properties button!**
-
 
 ### Curly Brackets
 The biggest change in V3 is the replacement of `<span></span>` and `<div></div>` with `{{ }}` for a cleaner custom formatting.  Inline spans and block elements can be created and given ID's and Classes, as well as css properties, each of which are comma separated with no spaces. Use double quotes if a value requires spaces. Spans and Blocks start the same:
@@ -96,7 +102,6 @@ My favorite author is {{pen,#author,color:orange,font-family:"trebuchet ms" Bran
 {{purple,#book,text-align:center,background:#aa88aa55
 My favorite book is Wheel of Time. This block has a class of `purple`, an id of `book`, and centered text with a colored background. The opening and closing brackets are on lines separate from the block contents.
 }}
-
 
 #### Injection
 For any element not inside a span or block, you can *inject* attributes using the same syntax but with single brackets in a single line immediately after the element.
@@ -159,12 +164,8 @@ Using *Curly Injection* you can assign an id, classes, or specific inline CSS pr
 ## Snippets
 Homebrewery comes with a series of *code snippets* found at the top of the editor pane that make it easy to create brews as quickly as possible.  Just set your cursor where you want the code to appear in the editor pane, choose a snippet, and make the adjustments you need.
 
-
 ## Style Editor Panel
-
 {{fa,fa-paint-brush}} Technically released prior to v3 but still new to many users, check out the new **Style Editor** located on the right side of the Snippet bar.  This editor accepts CSS for styling without requiring `<style>` tags-- anything that would have gone inside style tags before can now be placed here, and snippets that insert CSS styles are now located on that tab.
 
-
-
-<div class='pageNumber'>2</div>
-<div class='footnote'>PART 2 | BORING STUFF</div>
+{{pageNumber 2}}
+{{footnote PART 2 | BORING STUFF}}

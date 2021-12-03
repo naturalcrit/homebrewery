@@ -45,7 +45,11 @@ With the latest major update to *The Homebrewery* we've implemented an extended 
 What's new in the latest update? Check out the full changelog [here](/changelog)
 
 ### Bugs, Issues, Suggestions?
-Have an idea of how to make The Homebrewery better? Or did you find something that wasn't quite right? Head [here](https://www.reddit.com/r/homebrewery/submit?selftext=true&title=%5BIssue%5D%20Describe%20Your%20Issue%20Here) and let me know!.
+Take a quick look at our [Frequently Asked Questions page](/faq) to see if your question has a handy answer.
+
+Need help getting started or just the right look for your brew? Head to [r/Homebrewery](https://www.reddit.com/r/homebrewery/submit?selftext=true&title=%5BIssue%5D%20Describe%20Your%20Issue%20Here) and let us know!
+
+Have an idea to make The Homebrewery better? Or did you find something that wasn't quite right? Check out the [GitHub Repo](https://github.com/naturalcrit/homebrewery/) to report technical issues.
 
 ### Legal Junk
 The Homebrewery is licensed using the [MIT License](https://github.com/naturalcrit/homebrewery/blob/master/license). This means you are free to use The Homebrewery codebase any way that you want, except for claiming that you made it yourself.
@@ -53,7 +57,7 @@ The Homebrewery is licensed using the [MIT License](https://github.com/naturalcr
 If you wish to sell or in some way gain profit for what you make on this site, it's your responsibility to ensure you have the proper licenses/rights for any images or resources used.
 
 ### More Resources
-If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/comments/3uwxx9/resources_open_to_the_community/).
+If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/wiki/resources).
 
 
 
