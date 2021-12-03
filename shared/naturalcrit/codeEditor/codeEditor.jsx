@@ -95,6 +95,10 @@ const CodeEditor = createClass({
 				'Cmd-/'            : this.makeComment,
 				'Ctrl-K'           : this.makeLink,
 				'Cmd-K'            : this.makeLink,
+				'Ctrl-L'           : ()=>this.makeList('UL'),
+				'Cmd-L'            : ()=>this.makeList('UL'),
+				'Shift-Ctrl-L'     : ()=>this.makeList('OL'),
+				'Shift-Cmd-L'      : ()=>this.makeList('OL'),
 				'Shift-Ctrl-1'     : ()=>this.makeHeader(1),
 				'Shift-Ctrl-2'     : ()=>this.makeHeader(2),
 				'Shift-Ctrl-3'     : ()=>this.makeHeader(3),
@@ -266,6 +270,28 @@ const CodeEditor = createClass({
 			this.codeMirror.replaceSelection(`[${selection || 'alt text'}](url)`);
 			const cursor = this.codeMirror.getCursor();
 			this.codeMirror.setSelection({ line: cursor.line, ch: cursor.ch - 4 }, { line: cursor.line, ch: cursor.ch - 1 });
+		}
+	},
+
+	makeList : function(listType) {
+		const selectionStart = this.codeMirror.getCursor('from'), selectionEnd = this.codeMirror.getCursor('to');
+		this.codeMirror.setSelection(
+			{ line: selectionStart.line, ch: 0 },
+			{ line: selectionEnd.line, ch: this.codeMirror.getLine(selectionEnd.line).length }
+		);
+		const newSelection = this.codeMirror.getSelection();
+
+		const regex = /^\d+\.\s|^-\s/gm;
+		if(newSelection.match(regex) != null){   	// if selection IS A LIST
+			this.codeMirror.replaceSelection(newSelection.replace(regex, ''), 'around');
+		} else {									// if selection IS NOT A LIST
+			listType == 'UL' ? this.codeMirror.replaceSelection(newSelection.replace(/^/gm, `- `), 'around') :
+				this.codeMirror.replaceSelection(newSelection.replace(/^/gm, (()=>{
+					let n = 1;
+					return ()=>{
+						return `${n++}. `;
+					};
+				})()), 'around');
 		}
 	},
 
