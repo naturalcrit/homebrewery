@@ -95,6 +95,18 @@ const CodeEditor = createClass({
 				'Cmd-/'            : this.makeComment,
 				'Ctrl-K'           : this.makeLink,
 				'Cmd-K'            : this.makeLink,
+				'Shift-Ctrl-1'     : ()=>this.makeHeader(1),
+				'Shift-Ctrl-2'     : ()=>this.makeHeader(2),
+				'Shift-Ctrl-3'     : ()=>this.makeHeader(3),
+				'Shift-Ctrl-4'     : ()=>this.makeHeader(4),
+				'Shift-Ctrl-5'     : ()=>this.makeHeader(5),
+				'Shift-Ctrl-6'     : ()=>this.makeHeader(6),
+				'Shift-Cmd-1'      : ()=>this.makeHeader(1),
+				'Shift-Cmd-2'      : ()=>this.makeHeader(2),
+				'Shift-Cmd-3'      : ()=>this.makeHeader(3),
+				'Shift-Cmd-4'      : ()=>this.makeHeader(4),
+				'Shift-Cmd-5'      : ()=>this.makeHeader(5),
+				'Shift-Cmd-6'      : ()=>this.makeHeader(6),
 				'Shift-Ctrl-Enter' : this.newColumn,
 				'Shift-Cmd-Enter'  : this.newColumn,
 				'Ctrl-Enter'       : this.newPage,
@@ -132,6 +144,14 @@ const CodeEditor = createClass({
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
 		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
 		this.updateSize();
+	},
+
+	makeHeader : function (number) {
+		const selection = this.codeMirror.getSelection();
+		const header = Array(number).fill('#').join('');
+		this.codeMirror.replaceSelection(`${header} ${selection}`, 'around');
+		const cursor = this.codeMirror.getCursor();
+		this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch + selection.length + number + 1 });
 	},
 
 	makeBold : function() {
