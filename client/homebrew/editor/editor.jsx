@@ -131,7 +131,7 @@ const Editor = createClass({
 							textContent : editorPageCount
 						});
 						codeMirror.setBookmark({ line: lineNumber, ch: line.length }, pageCountElement);
-		
+
 						editorPageCount += 1;
 					};
 
@@ -140,14 +140,14 @@ const Editor = createClass({
 				// New Codemirror styling for V3 renderer
 				if(this.props.renderer == 'V3') {
 					if(line.match(/^\\page$/)){
-							// add back the original class 'background' but also add the new class '.pageline'
-							codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
-							const pageCountElement = Object.assign(document.createElement('span'), {
-								className   : 'editor-page-count',
-								textContent : editorPageCount
-							});
-							codeMirror.setBookmark({ line: lineNumber, ch: line.length }, pageCountElement);
-						
+						// add back the original class 'background' but also add the new class '.pageline'
+						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
+						const pageCountElement = Object.assign(document.createElement('span'), {
+							className   : 'editor-page-count',
+							textContent : editorPageCount
+						});
+						codeMirror.setBookmark({ line: lineNumber, ch: line.length }, pageCountElement);
+
 						editorPageCount += 1;
 					}
 
