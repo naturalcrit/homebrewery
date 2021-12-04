@@ -115,11 +115,6 @@ const Editor = createClass({
 
 			let editorPageCount = 2; // start page count from page 2
 
-			// get top and bottom line numbers currently in editor viewport
-			const viewportRect = codeMirror.getWrapperElement().getBoundingClientRect();
-			const topVisibleLine = codeMirror.lineAtHeight(viewportRect.top, 'window') - 50;
-			const bottomVisibleLine = codeMirror.lineAtHeight(viewportRect.bottom, 'window') + 50;
-
 			_.forEach(this.props.brew.text.split('\n'), (line, lineNumber)=>{
 
 				//reset custom line styles
@@ -129,17 +124,15 @@ const Editor = createClass({
 				// Legacy Codemirror styling
 				if(this.props.renderer == 'legacy') {
 					if(line.includes('\\page')){
-						// add a check here to see if in current viewport
-						if(lineNumber > topVisibleLine && lineNumber < bottomVisibleLine){
-							// add back the original class 'background' but also add the new class '.pageline'
-							codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
-							const pageCountElement = Object.assign(document.createElement('span'), {
-								className   : 'editor-page-count',
-								textContent : editorPageCount
-							});
-							codeMirror.setBookmark({ line: lineNumber, ch: line.length }, pageCountElement);
-						}
-						editorPageCount = editorPageCount + 1;
+						// add back the original class 'background' but also add the new class '.pageline'
+						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
+						const pageCountElement = Object.assign(document.createElement('span'), {
+							className   : 'editor-page-count',
+							textContent : editorPageCount
+						});
+						codeMirror.setBookmark({ line: lineNumber, ch: line.length }, pageCountElement);
+		
+						editorPageCount += 1;
 					};
 
 				}
@@ -147,8 +140,6 @@ const Editor = createClass({
 				// New Codemirror styling for V3 renderer
 				if(this.props.renderer == 'V3') {
 					if(line.match(/^\\page$/)){
-						// add a check here to see if in current viewport,
-						if(lineNumber > topVisibleLine && lineNumber < bottomVisibleLine){
 							// add back the original class 'background' but also add the new class '.pageline'
 							codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
 							const pageCountElement = Object.assign(document.createElement('span'), {
@@ -156,8 +147,8 @@ const Editor = createClass({
 								textContent : editorPageCount
 							});
 							codeMirror.setBookmark({ line: lineNumber, ch: line.length }, pageCountElement);
-						}
-						editorPageCount = editorPageCount + 1;
+						
+						editorPageCount += 1;
 					}
 
 					if(line.match(/^\\column$/)){
