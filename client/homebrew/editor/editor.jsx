@@ -107,6 +107,8 @@ const Editor = createClass({
 		if(this.state.view === 'text')  {
 			const codeMirror = this.refs.codeEditor.codeMirror;
 
+			codeMirror.startOperation();
+
 			//reset custom text styles
 			const customHighlights = codeMirror.getAllMarks().filter((mark)=>!mark.__isFold); //Don't undo code folding
 			for (let i=customHighlights.length - 1;i>=0;i--) customHighlights[i].clear();
@@ -168,6 +170,8 @@ const Editor = createClass({
 					}
 				}
 			});
+
+			codeMirror.endOperation();
 		}
 	},
 
