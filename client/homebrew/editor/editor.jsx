@@ -109,32 +109,35 @@ const Editor = createClass({
 
 			//reset custom text styles
 			const customHighlights = codeMirror.getAllMarks().filter((mark)=>!mark.__isFold); //Don't undo code folding
-			for (let i=0;i<customHighlights.length;i++) customHighlights[i].clear();
+			for (let i=customHighlights.length - 1;i>=0;i--) customHighlights[i].clear();
 
-			const lineNumbers = _.reduce(this.props.brew.text.split('\n'), (r, line, lineNumber)=>{
+			let editorPageCount = 2; // start page count from page 2
+
+			_.forEach(this.props.brew.text.split('\n'), (line, lineNumber)=>{
 
 				//reset custom line styles
 				codeMirror.removeLineClass(lineNumber, 'background');
 				codeMirror.removeLineClass(lineNumber, 'text');
 
-				// Legacy Codemirror styling
-				if(this.props.renderer == 'legacy') {
-					if(line.includes('\\page')){
-						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
-						r.push(lineNumber);
-					}
-				}
+				// Styling for \page breaks
+				if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
+			     (this.props.renderer == 'V3'     && line.match(/^\\page$/))) {
+
+					// add back the original class 'background' but also add the new class '.pageline'
+					codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
+					const pageCountElement = Object.assign(document.createElement('span'), {
+						className   : 'editor-page-count',
+						textContent : editorPageCount
+					});
+					codeMirror.setBookmark({ line: lineNumber, ch: line.length }, pageCountElement);
+
+					editorPageCount += 1;
+				};
 
 				// New Codemirror styling for V3 renderer
 				if(this.props.renderer == 'V3') {
-					if(line.match(/^\\page$/)){
-						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
-						r.push(lineNumber);
-					}
-
 					if(line.match(/^\\column$/)){
 						codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
-						r.push(lineNumber);
 					}
 
 					// Highlight inline spans {{content}}
@@ -164,10 +167,7 @@ const Editor = createClass({
 						codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
 					}
 				}
-
-				return r;
-			}, []);
-			return lineNumbers;
+			});
 		}
 	},
 
