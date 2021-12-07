@@ -237,7 +237,7 @@ const NewPage = createClass({
 						<a target='_blank' rel='noopener noreferrer'
 							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
 							<div className='confirm'>
-							Sign In
+								Sign In
 							</div>
 						</a>
 						<div className='deny'>
