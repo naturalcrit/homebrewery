@@ -231,9 +231,9 @@ const NewPage = createClass({
 					Oops!
 					<div className='errorContainer' onClick={this.clearErrors}>
 					Looks like your Google credentials have
-					expired! Visit the log in page to sign out
-					and sign back in with Google
-					to save this to Google Drive!
+					expired! Visit our log in page to sign out
+					and sign back in with Google,
+					then try saving again!
 						<a target='_blank' rel='noopener noreferrer'
 							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
 							<div className='confirm'>
