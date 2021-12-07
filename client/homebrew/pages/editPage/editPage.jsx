@@ -360,7 +360,7 @@ const EditPage = createClass({
 						<a target='_blank' rel='noopener noreferrer'
 							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
 							<div className='confirm'>
-								Go to Log In Page
+								Sign In
 							</div>
 						</a>
 						<div className='deny'>
