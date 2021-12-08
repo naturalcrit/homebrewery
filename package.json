@@ -1,7 +1,7 @@
 {
   "name": "homebrewery",
   "description": "Create authentic looking D&D homebrews using only markdown",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "engines": {
     "node": "16.11.x"
   },
@@ -62,7 +62,7 @@
     "marked": "3.0.8",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.29.1",
-    "mongoose": "^6.0.14",
+    "mongoose": "^6.0.15",
     "nanoid": "3.1.30",
     "nconf": "^0.11.3",
     "prop-types": "15.7.2",
@@ -76,7 +76,7 @@
     "vitreum": "git+https://git@github.com/calculuschild/vitreum.git"
   },
   "devDependencies": {
-    "eslint": "^8.3.0",
+    "eslint": "^8.4.1",
     "eslint-plugin-react": "^7.27.1",
     "pico-check": "^2.1.3"
   }
