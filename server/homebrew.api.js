@@ -178,7 +178,7 @@ const updateGoogleBrew = async (req, res, next)=>{
 		const updatedBrew = await GoogleActions.updateGoogleBrew(oAuth2Client, brew);
 		return res.status(200).send(updatedBrew);
 	} catch (err) {
-		return res.status(err.response.status).send(err);
+		return res.status(err.response?.status || 500).send(err);
 	}
 };
 
