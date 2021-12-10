@@ -3,11 +3,12 @@ h5 {
 	font-size: .35cm !important;
 }
 
-.taskList li {
-	list-style-type : none;
+.page ul ul {
+	margin-left: 0px;
 }
 
 .taskList li input {
+	list-style-type : none;
 	margin-left : -0.52cm;
 	transform: translateY(.05cm);
 	filter: brightness(1.1) drop-shadow(1px 2px 1px #222);
@@ -31,9 +32,84 @@ pre {
 ```
 
 ## changelog
-To see a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
+For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
+
+### Tuesday 07/12/2021 - v3.0.5
+{{taskList
+* [x] Fixed paragraph spacing for **note** and **descriptive** boxes in V3.
+
+	Fixes issues: [#1836](https://github.com/naturalcrit/homebrewery/issues/1836)
+
+* [x] Added a whole bunch of hotkeys:
+
+  * Page Break `CTRL + ENTER`
+  * Column Break `CTRL + SHIFT + ENTER`
+  * Bulleted Lists `CTRL + L`
+  * Numbered Lists `CTRL + SHIFT + L`
+  * Headers `CTRL + SHIFT + (1-6)`
+  * Underline `CTRL + U`
+  * Link `CTRL + K`
+  * Non-breaking space (\&nbsp;) `CTRL + .`
+  * Add Horizontal Space `CTRL + SHIFT + .`
+  * Remove Horizontal Space `CTRL + SHIFT + ,`
+  * Curly Span `CTRL + M`
+  * Curly Div `CTRL + SHIFT + M`
+
+* [x] Fixed page numbers in the editor panel getting scrambled when scrolling up and down.
+
+* [x] Faster swapping between tabs on long brews.
+
+* [x] Better error messages for common issue with Google Drive credentials expiring.
+}}
+
+### Wednesday 17/11/2021 - v3.0.4
+{{taskList
+* [x] Fixed incorrect sorting of Google brews by page count and views on the user page.
+
+	Fixes issues: [#1793](https://github.com/naturalcrit/homebrewery/issues/1793)
+
+* [x] Added code folding! Only on a page-level for now. Hotkeys `CTRL + [` and `CTRL + ]` to fold/unfold all pages. (Thanks jeddai, new contributor!)
+
+	Fixes issues: [#629](https://github.com/naturalcrit/homebrewery/issues/629)
+
+* [x] Fixed rendering issues due to the latest Chrome update to version 96. (Also thanks to jeddai!)
+
+	Fixes issues: [#1828](https://github.com/naturalcrit/homebrewery/issues/1828)
+}}
+
+### Wednesday 27/10/2021 - v3.0.3
+
+{{taskList
+* [x] Moved **Post To Reddit** button from {{fa,fa-info-circle}} **Properties** menu to the **SHARE** {{fa,fa-share-alt}} button as a dropdown.
+
+* [x] Added a  **Copy URL** button to the **SHARE** {{fa,fa-share-alt}} button as a dropdown.
+
+* [x] Fixed pages being printed directly from `/new` not recognizing the V3 renderer.
+
+	Fixes issues: [#1702](https://github.com/naturalcrit/homebrewery/issues/1702)
+
+* [x] Updated links to [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) on home page.
+
+	Fixes issues: [#1744](https://github.com/naturalcrit/homebrewery/issues/1744)
+
+* [x] Added a [FAQ page](https://homebrewery.naturalcrit.com/faq).
+
+	Fixes issues: [#810](https://github.com/naturalcrit/homebrewery/issues/810)
+
+* [x] Added {{fa,fa-undo}} **Undo** and {{fa,fa-redo}} **Redo** buttons to the snippet bar.
+
+* [x] Switching between the {{fa,fa-beer}} **Brew** and {{fa,fa-paint-brush}} **Style** tabs no longer loses your scroll position or undo history.
+
+	Fixes issues: [#1735](https://github.com/naturalcrit/homebrewery/issues/1735)
+
+* [x] Divider bar between editor and preview panels can no longer be dragged off the edge of the screen.
+
+	Fixes issues: [#1674](https://github.com/naturalcrit/homebrewery/issues/1674)
+}}
+
 
 ### Wednesday 06/10/2021 - v3.0.2
+
 {{taskList
 * [x] Fixed V3 **EDITOR → QR Code** snippet not working on `/new` (unsaved) pages.
 

@@ -79,7 +79,7 @@ body {
 	p{
 		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
 		display       : block;
-		line-height   : 1.3em;
+		line-height   : 1.25em;
 		&+* {
 			margin-top : 0.325cm;
 		}
@@ -90,14 +90,14 @@ body {
 	ul{
 		margin-bottom       : 0.8em;
 		padding-left        : 1.4em;
-		line-height         : 1.3em;
+		line-height         : 1.25em;
 		list-style-position : outside;
 		list-style-type     : disc;
 	}
 	ol{
 		margin-bottom       : 0.8em;
 		padding-left        : 1.4em;
-		line-height         : 1.3em;
+		line-height         : 1.25em;
 		list-style-position : outside;
 		list-style-type     : decimal;
 	}
@@ -162,17 +162,20 @@ body {
 		//margin-top    : 0px; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.05cm;
 		font-size     : 0.75cm;
+		line-height   : 0.988em; //Font is misaligned. Shift up slightly
 	}
 	h3{
 		//margin-top    : -0.1cm; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.1cm;
 		font-size     : 0.575cm;
 		border-bottom : 2px solid @headerUnderline;
+		line-height   : 0.995em; //Font is misaligned. Shift up slightly
 	}
 	h4{
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.02cm;
 		font-size     : 0.458cm;
+		line-height   : 0.971em; //Font is misaligned. Shift up slightly
 	}
 	h5{
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
@@ -180,6 +183,7 @@ body {
 		font-family   : ScalySansSmallCapsRemake;
 		font-size     : 0.423cm;
 		font-weight   : 900;
+		line-height   : 0.951em; //Font is misaligned. Shift up slightly
 		& + * {
 			margin-top : 0.2cm;
 		}
@@ -238,9 +242,6 @@ body {
 			display        : block;
 			padding-bottom : 0px;
 		}
-		p + p {
-			padding-top : .8em;
-		}
 		:last-child {
 			margin-bottom : 0;
 		}
@@ -270,9 +271,6 @@ body {
 			display        : block;
 			padding-bottom : 0px;
 			line-height    : 1.5em;
-		}
-		p + p {
-			padding-top : .8em;
 		}
 		:last-child {
 			margin-bottom : 0;
@@ -582,7 +580,7 @@ body {
 	}
 	p, ul{
 		font-size   : 0.352cm;
-		line-height : 1.3em;
+		line-height : 1.265em;
 	}
 	ul{
 		margin-bottom               : 0.5em;
@@ -742,7 +740,7 @@ body {
 // *****************************/
 .page {
 	dl {
-		line-height  : 1.3em;
+		line-height  : 1.25em;
 		padding-left : 1em;
 		white-space  : pre-line;
 		& + * {

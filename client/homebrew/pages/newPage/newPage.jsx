@@ -45,47 +45,44 @@ const NewPage = createClass({
 	},
 
 	getInitialState : function() {
+		const brew = this.props.brew;
+
+		if(typeof window !== 'undefined') { //Load from localStorage if in client browser
+			const brewStorage  = localStorage.getItem(BREWKEY);
+			const styleStorage = localStorage.getItem(STYLEKEY);
+			const metaStorage = JSON.parse(localStorage.getItem(METAKEY));
+
+			if(!brew.text || !brew.style){
+				brew.text = brew.text  || (brewStorage  ?? '');
+				brew.style = brew.style || (styleStorage ?? undefined);
+				// brew.title = metaStorage?.title || this.state.brew.title;
+				// brew.description = metaStorage?.description || this.state.brew.description;
+				brew.renderer = metaStorage?.renderer || brew.renderer;
+			}
+		}
+
 		return {
 			brew : {
-				text        : this.props.brew.text || '',
-				style       : this.props.brew.style || undefined,
+				text        : brew.text || '',
+				style       : brew.style || undefined,
 				gDrive      : false,
-				title       : this.props.brew.title || '',
-				description : this.props.brew.description || '',
-				tags        : this.props.brew.tags || '',
+				title       : brew.title || '',
+				description : brew.description || '',
+				tags        : brew.tags || '',
 				published   : false,
 				authors     : [],
-				systems     : this.props.brew.systems || [],
-				renderer    : this.props.brew.renderer || 'legacy'
+				systems     : brew.systems || [],
+				renderer    : brew.renderer || 'legacy'
 			},
 
 			isSaving   : false,
 			saveGoogle : (global.account && global.account.googleId ? true : false),
 			errors     : null,
-			htmlErrors : Markdown.validate(this.props.brew.text)
+			htmlErrors : Markdown.validate(brew.text)
 		};
 	},
 
 	componentDidMount : function() {
-		const brewStorage  = localStorage.getItem(BREWKEY);
-		const styleStorage = localStorage.getItem(STYLEKEY);
-		const metaStorage = JSON.parse(localStorage.getItem(METAKEY));
-
-		const brew = this.state.brew;
-
-		if(!this.state.brew.text || !this.state.brew.style){
-			brew.text = this.state.brew.text  || (brewStorage  ?? '');
-			brew.style = this.state.brew.style || (styleStorage ?? undefined);
-			// brew.title = metaStorage?.title || this.state.brew.title;
-			// brew.description = metaStorage?.description || this.state.brew.description;
-			brew.renderer = metaStorage?.renderer || this.state.brew.renderer;
-		}
-
-		this.setState((prevState)=>({
-			brew       : brew,
-			htmlErrors : Markdown.validate(prevState.brew.text)
-		}));
-
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
 	componentWillUnmount : function() {
@@ -229,14 +226,14 @@ const NewPage = createClass({
 				</Nav.item>;
 			}
 
-			if(this.state.errors.status == '403' && this.state.errors.response.body.errors[0].reason == 'insufficientPermissions'){
+			if(this.state.errors.response.req.url.match(/^\/api\/.*Google.*$/m)){
 				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 					Oops!
 					<div className='errorContainer' onClick={this.clearErrors}>
 					Looks like your Google credentials have
-					expired! Visit the log in page to sign out
-					and sign back in with Google
-					to save this to Google Drive!
+					expired! Visit our log in page to sign out
+					and sign back in with Google,
+					then try saving again!
 						<a target='_blank' rel='noopener noreferrer'
 							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
 							<div className='confirm'>
