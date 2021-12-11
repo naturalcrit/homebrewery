@@ -139,25 +139,20 @@ ___
 **Use these find/replace commands in the order listed for the best result.**
 
 #### Blockquotes
-The key difference is the lack of blockquotes. GMBinder uses the `>` symbol at the start of the line for each line in the stat block, and Homebrewery's v3 renderer does not. Running the following find/replace commands with regex enabled should remove the blockquotes:
-
-| Find  | Replace |
-|:------|:--------|
-| `^> ` |         |
-| `^>`  |         |
+The key difference is the lack of blockquotes. GMBinder uses the `>` symbol at the start of the line for each line in the stat block, and Homebrewery's v3 renderer does not. **You will want to remove all `>` characters at the beginning of all lines, and delete any leading spaces.**
 
 #### Lists
-The basic characteristics and advanced characteristics sections are not list elements in Homebrewery. You can remove them by finding `^- ` and replacing it with nothing.
+The basic characteristics and advanced characteristics sections are not list elements in Homebrewery. **You will want to remove all `-` or `*` characters from the beginning of lines.**
 
 #### Spacing
-In order to have the correct spacing after removing the list elements, you will want to add `\:\:` between the name of each basic/advanced characteristic and its value. i.e:
+In order to have the correct spacing after removing the list elements, **you will want to add two colons (`::`) between the name of each basic/advanced characteristic and its value.** i.e:
 ```
 **Skills** :: Athletics +6
 ```
 
 :
 
-Additionally, in the special traits and actions sections, you will want to add a `\:` at the beginning of each line that separates a trait/action from another, as seen below. This can be accomplished with find/replace by replacing `^$` with `\:`.
+Additionally, in the special traits and actions sections, you will want to add a colon at the beginning of each line that separates a trait/action from another, as seen below. **Any empty lines between special traits and actions should contain only a colon.**
 
 ```
 ### Actions

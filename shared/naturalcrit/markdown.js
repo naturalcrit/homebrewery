@@ -535,7 +535,24 @@ module.exports = {
 	marked : Markdown,
 	render : (rawBrewText)=>{
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
-														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
+								 .replace(/^(:+)$/gm, (match, _, i)=>{
+									 let test, matches=[];
+									 const codeBlock = /`/gm, inlineCodeBlock = /[^`]`[^`]/g;
+									 while (test = codeBlock.exec(rawBrewText)) {
+										 matches.push(test);
+									 }
+									 // console.log(match, m, i, indexes);
+									 if(matches.filter((m)=>m.index < i).length % 2 !== 0) return match;
+
+									 // matches = [];
+									 // while (test = inlineCodeBlock.exec(rawBrewText)) {
+										//  matches.push(test);
+									 // }
+									 // console.log(matches, match, i);
+									 // if(matches.filter((m)=>m.index < i).length % 2 !== 0) return match;
+
+									 return `${`<div class='blank'></div>`.repeat(match.length)}\n`;
+								 });
 		return Markdown(
 			sanatizeScriptTags(rawBrewText),
 			{ renderer: renderer }
