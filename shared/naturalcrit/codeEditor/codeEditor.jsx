@@ -16,18 +16,24 @@ if(typeof navigator !== 'undefined'){
 	require('codemirror/mode/javascript/javascript.js');
 
 	//Addons
+	//Code folding
 	require('codemirror/addon/fold/foldcode.js');
 	require('codemirror/addon/fold/foldgutter.js');
-	require('codemirror/addon/fold/xml-fold.js');
+	//Search and replace
 	require('codemirror/addon/search/search.js');
 	require('codemirror/addon/search/searchcursor.js');
 	require('codemirror/addon/search/jump-to-line.js');
 	require('codemirror/addon/search/match-highlighter.js');
 	require('codemirror/addon/search/matchesonscrollbar.js');
 	require('codemirror/addon/dialog/dialog.js');
-	require('codemirror/addon/edit/closetag.js');
+	//Trailing space highlighting
 	require('codemirror/addon/edit/trailingspace.js');
+	//Active line highlighting
 	require('codemirror/addon/selection/active-line.js');
+	//Auto-closing
+	//XML code folding is a requirement of the auto-closing tag feature and is not enabled
+	require('codemirror/addon/fold/xml-fold.js');
+	require('codemirror/addon/edit/closetag.js');
 
 	const foldCode = require('./fold-code');
 	foldCode.registerHomebreweryHelper(CodeMirror);
