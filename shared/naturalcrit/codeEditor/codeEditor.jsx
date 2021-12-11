@@ -326,10 +326,6 @@ const CodeEditor = createClass({
 		this.codeMirror.execCommand('unfoldAll');
 	},
 
-	findPersistent : function() {
-		this.codeMirror.execCommand('findPersistent');
-	},
-
 	//=-- Externally used -==//
 	setCursorPosition : function(line, char){
 		setTimeout(()=>{
