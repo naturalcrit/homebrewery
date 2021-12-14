@@ -117,7 +117,7 @@ const Editor = createClass({
 				_.forEach(this.props.brew.text.split('\n'), (line, lineNumber)=>{
 
 					//reset custom line styles
-					codeMirror.removeLineClass(lineNumber, 'background');
+					codeMirror.removeLineClass(lineNumber, 'background', 'pageLine');
 					codeMirror.removeLineClass(lineNumber, 'text');
 
 					// Styling for \page breaks
