@@ -60,7 +60,7 @@
     "less": "^3.13.1",
     "lodash": "^4.17.21",
     "marked": "4.0.7",
-    "marked-extended-tables": "^1.0.2",
+    "marked-extended-tables": "^1.0.3",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.29.1",
     "mongoose": "^6.1.1",
