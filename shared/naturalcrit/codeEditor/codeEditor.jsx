@@ -161,10 +161,17 @@ const CodeEditor = createClass({
 					return `\u21A4 ${text} \u21A6`;
 				}
 			},
-			gutters           : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-			showTrailingSpace : true,
-			autoCloseTags     : true,
-			styleActiveLine   : true
+			gutters                : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+			autoCloseTags          : true,
+			styleActiveLine        : true,
+			showTrailingSpace      : true,
+			specialChars           : / /,
+			specialCharPlaceholder : function(char) {
+				const el = document.createElement('span');
+				el.className = 'cm-space';
+				el.innerHTML = ' ';
+				return el;
+			}
 		});
 		closeTag.autoCloseCurlyBraces(CodeMirror, this.codeMirror);
 
