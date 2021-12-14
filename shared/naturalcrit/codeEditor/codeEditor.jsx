@@ -4,7 +4,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
-
+const closeTag = require('./close-tag');
 
 let CodeMirror;
 if(typeof navigator !== 'undefined'){
@@ -16,8 +16,24 @@ if(typeof navigator !== 'undefined'){
 	require('codemirror/mode/javascript/javascript.js');
 
 	//Addons
+	//Code folding
 	require('codemirror/addon/fold/foldcode.js');
 	require('codemirror/addon/fold/foldgutter.js');
+	//Search and replace
+	require('codemirror/addon/search/search.js');
+	require('codemirror/addon/search/searchcursor.js');
+	require('codemirror/addon/search/jump-to-line.js');
+	require('codemirror/addon/search/match-highlighter.js');
+	require('codemirror/addon/search/matchesonscrollbar.js');
+	require('codemirror/addon/dialog/dialog.js');
+	//Trailing space highlighting
+	require('codemirror/addon/edit/trailingspace.js');
+	//Active line highlighting
+	require('codemirror/addon/selection/active-line.js');
+	//Auto-closing
+	//XML code folding is a requirement of the auto-closing tag feature and is not enabled
+	require('codemirror/addon/fold/xml-fold.js');
+	require('codemirror/addon/edit/closetag.js');
 
 	const foldCode = require('./fold-code');
 	foldCode.registerHomebreweryHelper(CodeMirror);
@@ -115,6 +131,9 @@ const CodeEditor = createClass({
 				'Shift-Cmd-Enter'  : this.newColumn,
 				'Ctrl-Enter'       : this.newPage,
 				'Cmd-Enter'        : this.newPage,
+				'Ctrl-F'           : 'findPersistent',
+				'Cmd-F'            : 'findPersistent',
+				'Shift-Enter'      : 'findPersistentPrevious',
 				'Ctrl-['           : this.foldAllCode,
 				'Cmd-['            : this.foldAllCode,
 				'Ctrl-]'           : this.unfoldAllCode,
@@ -142,8 +161,19 @@ const CodeEditor = createClass({
 					return `\u21A4 ${text} \u21A6`;
 				}
 			},
-			gutters : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
+			gutters                : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+			autoCloseTags          : true,
+			styleActiveLine        : true,
+			showTrailingSpace      : true,
+			specialChars           : / /,
+			specialCharPlaceholder : function(char) {
+				const el = document.createElement('span');
+				el.className = 'cm-space';
+				el.innerHTML = ' ';
+				return el;
+			}
 		});
+		closeTag.autoCloseCurlyBraces(CodeMirror, this.codeMirror);
 
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
 		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
