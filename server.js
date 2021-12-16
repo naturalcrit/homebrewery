@@ -148,7 +148,7 @@ app.get('/migrate', async (req, res, next)=>{
 		text     : migrateText,
 		renderer : 'V3'
 	};
-	splitTextAndStyle(brew);
+	splitTextStyleAndMetadata(brew);
 	req.brew = brew;
 	return next();
 });
