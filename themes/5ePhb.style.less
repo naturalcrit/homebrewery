@@ -511,7 +511,8 @@ body {
 		color            : #58180d;
 		background-color : #faf7ea;
 		border-radius    : 4px;
-		white-space      : pre-wrap
+		white-space      : pre-wrap;
+		overflow-wrap    : break-word;
 	}
 
 	pre code{
@@ -652,7 +653,7 @@ body {
 	break-inside                : avoid;
 	h1 {
 		text-align    : center;
-		margin-bottom : 0cm;
+		margin-bottom : 0.3cm;
 	}
 	a{
 		display         : table;
@@ -663,13 +664,11 @@ body {
 		}
 	}
 	h4 {
-		margin-top : 0.14cm;
+		margin-top  : 0.2cm;
+		line-height : 0.4cm;
 		& + ul li {
 			line-height: 1.2em;
 		}
-	}
-	& > ul {
-		margin-top: 0.52cm;
 	}
 	ul{
 		padding-left    : 0;

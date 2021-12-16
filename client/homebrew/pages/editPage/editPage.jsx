@@ -350,14 +350,14 @@ const EditPage = createClass({
 				</Nav.item>;
 			}
 
-			if(this.state.errors.status == '403' && this.state.errors.response.body.errors[0].reason == 'insufficientPermissions'){
+			if(this.state.errors.response.req.url.match(/^\/api\/.*Google.*$/m)){
 				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 					Oops!
 					<div className='errorContainer' onClick={this.clearErrors}>
 					Looks like your Google credentials have
-					expired! Visit the log in page to sign out
-					and sign back in with Google
-					to save this to Google Drive!
+					expired! Visit our log in page to sign out
+					and sign back in with Google,
+					then try saving again!
 						<a target='_blank' rel='noopener noreferrer'
 							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
 							<div className='confirm'>

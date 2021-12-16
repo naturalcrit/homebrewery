@@ -2,6 +2,7 @@
 const _ = require('lodash');
 const jwt = require('jwt-simple');
 const express = require('express');
+const yaml = require('js-yaml');
 const app = express();
 
 const homebrewApi = require('./server/homebrew.api.js');
@@ -32,7 +33,7 @@ const getBrewFromId = asyncHandler(async (id, accessType)=>{
 	if(accessType == 'raw') {
 		return brew;
 	}
-	splitTextAndStyle(brew);
+	splitTextStyleAndMetadata(brew);
 	return brew;
 });
 
@@ -45,8 +46,15 @@ const sanitizeBrew = (brew, full=false)=>{
 	return brew;
 };
 
-const splitTextAndStyle = (brew)=>{
+const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
+	if(brew.text.startsWith('```metadata')) {
+		const index = brew.text.indexOf('```\n\n');
+		const metadataSection = brew.text.slice(12, index - 1);
+		const metadata = yaml.load(metadataSection);
+		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer']));
+		brew.text = brew.text.slice(index + 5);
+	}
 	if(brew.text.startsWith('```css')) {
 		const index = brew.text.indexOf('```\n\n');
 		brew.style = brew.text.slice(7, index - 1);
@@ -129,7 +137,7 @@ app.get('/v3_preview', async (req, res, next)=>{
 		text     : welcomeTextV3,
 		renderer : 'V3'
 	};
-	splitTextAndStyle(brew);
+	splitTextStyleAndMetadata(brew);
 	req.brew = brew;
 	return next();
 });
@@ -152,7 +160,7 @@ app.get('/changelog', async (req, res, next)=>{
 		text     : changelogText,
 		renderer : 'V3'
 	};
-	splitTextAndStyle(brew);
+	splitTextStyleAndMetadata(brew);
 	req.brew = brew;
 	return next();
 });
@@ -164,7 +172,7 @@ app.get('/faq', async (req, res, next)=>{
 		text     : faqText,
 		renderer : 'V3'
 	};
-	splitTextAndStyle(brew);
+	splitTextStyleAndMetadata(brew);
 	req.brew = brew;
 	return next();
 });

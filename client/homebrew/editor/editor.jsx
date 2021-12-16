@@ -107,67 +107,69 @@ const Editor = createClass({
 		if(this.state.view === 'text')  {
 			const codeMirror = this.refs.codeEditor.codeMirror;
 
-			//reset custom text styles
-			const customHighlights = codeMirror.getAllMarks().filter((mark)=>!mark.__isFold); //Don't undo code folding
-			for (let i=0;i<customHighlights.length;i++) customHighlights[i].clear();
+			codeMirror.operation(()=>{ // Batch CodeMirror styling
+				//reset custom text styles
+				const customHighlights = codeMirror.getAllMarks().filter((mark)=>!mark.__isFold); //Don't undo code folding
+				for (let i=customHighlights.length - 1;i>=0;i--) customHighlights[i].clear();
 
-			const lineNumbers = _.reduce(this.props.brew.text.split('\n'), (r, line, lineNumber)=>{
+				let editorPageCount = 2; // start page count from page 2
 
-				//reset custom line styles
-				codeMirror.removeLineClass(lineNumber, 'background');
-				codeMirror.removeLineClass(lineNumber, 'text');
+				_.forEach(this.props.brew.text.split('\n'), (line, lineNumber)=>{
 
-				// Legacy Codemirror styling
-				if(this.props.renderer == 'legacy') {
-					if(line.includes('\\page')){
+					//reset custom line styles
+					codeMirror.removeLineClass(lineNumber, 'background', 'pageLine');
+					codeMirror.removeLineClass(lineNumber, 'text');
+
+					// Styling for \page breaks
+					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
+				     (this.props.renderer == 'V3'     && line.match(/^\\page$/))) {
+
+						// add back the original class 'background' but also add the new class '.pageline'
 						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
-						r.push(lineNumber);
-					}
-				}
+						const pageCountElement = Object.assign(document.createElement('span'), {
+							className   : 'editor-page-count',
+							textContent : editorPageCount
+						});
+						codeMirror.setBookmark({ line: lineNumber, ch: line.length }, pageCountElement);
 
-				// New Codemirror styling for V3 renderer
-				if(this.props.renderer == 'V3') {
-					if(line.match(/^\\page$/)){
-						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
-						r.push(lineNumber);
-					}
+						editorPageCount += 1;
+					};
 
-					if(line.match(/^\\column$/)){
-						codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
-						r.push(lineNumber);
-					}
-
-					// Highlight inline spans {{content}}
-					if(line.includes('{{') && line.includes('}}')){
-						const regex = /{{(?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])*\s*|}}/g;
-						let match;
-						let blockCount = 0;
-						while ((match = regex.exec(line)) != null) {
-							if(match[0].startsWith('{')) {
-								blockCount += 1;
-							} else {
-								blockCount -= 1;
-							}
-							if(blockCount < 0) {
-								blockCount = 0;
-								continue;
-							}
-							codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: 'inline-block' });
+					// New Codemirror styling for V3 renderer
+					if(this.props.renderer == 'V3') {
+						if(line.match(/^\\column$/)){
+							codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 						}
-					} else if(line.trimLeft().startsWith('{{') || line.trimLeft().startsWith('}}')){
-						// Highlight block divs {{\n Content \n}}
-						let endCh = line.length+1;
 
-						const match = line.match(/^ *{{(?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])* *$|^ *}}$/);
-						if(match)
-							endCh = match.index+match[0].length;
-						codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
+						// Highlight inline spans {{content}}
+						if(line.includes('{{') && line.includes('}}')){
+							const regex = /{{(?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])*\s*|}}/g;
+							let match;
+							let blockCount = 0;
+							while ((match = regex.exec(line)) != null) {
+								if(match[0].startsWith('{')) {
+									blockCount += 1;
+								} else {
+									blockCount -= 1;
+								}
+								if(blockCount < 0) {
+									blockCount = 0;
+									continue;
+								}
+								codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: 'inline-block' });
+							}
+						} else if(line.trimLeft().startsWith('{{') || line.trimLeft().startsWith('}}')){
+							// Highlight block divs {{\n Content \n}}
+							let endCh = line.length+1;
+
+							const match = line.match(/^ *{{(?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])* *$|^ *}}$/);
+							if(match)
+								endCh = match.index+match[0].length;
+							codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
+						}
 					}
-				}
-
-				return r;
-			}, []);
-			return lineNumbers;
+				});
+			});
 		}
 	},
 
