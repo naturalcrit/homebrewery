@@ -3,11 +3,12 @@ h5 {
 	font-size: .35cm !important;
 }
 
-.taskList li {
-	list-style-type : none;
+.page ul ul {
+	margin-left: 0px;
 }
 
 .taskList li input {
+	list-style-type : none;
 	margin-left : -0.52cm;
 	transform: translateY(.05cm);
 	filter: brightness(1.1) drop-shadow(1px 2px 1px #222);
@@ -32,6 +33,34 @@ pre {
 
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
+
+### Tuesday 07/12/2021 - v3.0.5
+{{taskList
+* [x] Fixed paragraph spacing for **note** and **descriptive** boxes in V3.
+
+	Fixes issues: [#1836](https://github.com/naturalcrit/homebrewery/issues/1836)
+
+* [x] Added a whole bunch of hotkeys:
+
+  * Page Break `CTRL + ENTER`
+  * Column Break `CTRL + SHIFT + ENTER`
+  * Bulleted Lists `CTRL + L`
+  * Numbered Lists `CTRL + SHIFT + L`
+  * Headers `CTRL + SHIFT + (1-6)`
+  * Underline `CTRL + U`
+  * Link `CTRL + K`
+  * Non-breaking space (\&nbsp;) `CTRL + .`
+  * Add Horizontal Space `CTRL + SHIFT + .`
+  * Remove Horizontal Space `CTRL + SHIFT + ,`
+  * Curly Span `CTRL + M`
+  * Curly Div `CTRL + SHIFT + M`
+
+* [x] Fixed page numbers in the editor panel getting scrambled when scrolling up and down.
+
+* [x] Faster swapping between tabs on long brews.
+
+* [x] Better error messages for common issue with Google Drive credentials expiring.
+}}
 
 ### Wednesday 17/11/2021 - v3.0.4
 {{taskList
