@@ -11,7 +11,7 @@ const IssueNavItem = require('../../navbar/issue.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
-const MigrateNavItem = require("../../navbar/migrate.navitem.jsx");
+const MigrateNavItem = require('../../navbar/migrate.navitem.jsx');
 
 const ErrorPage = createClass({
 	getDefaultProps : function() {

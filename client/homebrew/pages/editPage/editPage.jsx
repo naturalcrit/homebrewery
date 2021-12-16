@@ -23,7 +23,7 @@ const Markdown = require('naturalcrit/markdown.js');
 
 const googleDriveActive = require('../../googleDrive.png');
 const googleDriveInactive = require('../../googleDriveMono.png');
-const MigrateNavItem = require("../../navbar/migrate.navitem.jsx");
+const MigrateNavItem = require('../../navbar/migrate.navitem.jsx');
 
 const SAVE_TIMEOUT = 3000;
 
