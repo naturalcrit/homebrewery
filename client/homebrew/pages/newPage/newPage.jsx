@@ -16,6 +16,7 @@ const IssueNavItem = require('../../navbar/issue.navitem.jsx');
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
+const MigrateNavItem = require("../../navbar/migrate.navitem.jsx");
 
 const BREWKEY = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
@@ -290,6 +291,7 @@ const NewPage = createClass({
 			<Nav.section>
 				{this.renderSaveButton()}
 				{this.renderLocalPrintButton()}
+				<MigrateNavItem />
 				<IssueNavItem />
 				<RecentNavItem />
 				<AccountNavItem />

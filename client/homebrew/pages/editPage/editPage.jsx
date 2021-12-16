@@ -23,6 +23,7 @@ const Markdown = require('naturalcrit/markdown.js');
 
 const googleDriveActive = require('../../googleDrive.png');
 const googleDriveInactive = require('../../googleDriveMono.png');
+const MigrateNavItem = require("../../navbar/migrate.navitem.jsx");
 
 const SAVE_TIMEOUT = 3000;
 
@@ -433,6 +434,7 @@ const EditPage = createClass({
 				{this.renderGoogleDriveIcon()}
 				{this.renderSaveButton()}
 				<NewBrew />
+				<MigrateNavItem />
 				<ReportIssue />
 				<Nav.dropdown>
 					<Nav.item color='teal' icon='fas fa-share-alt'>

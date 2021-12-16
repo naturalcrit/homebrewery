@@ -103,7 +103,7 @@ app.use(require('./server/admin.api.js'));
 const HomebrewModel  = require('./server/homebrew.model.js').model;
 const welcomeText    = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 const welcomeTextV3  = require('fs').readFileSync('./client/homebrew/pages/homePage/welcome_msg_v3.md', 'utf8');
-const migrateGMBText  = require('fs').readFileSync('./client/homebrew/pages/homePage/migrate_gmb.md', 'utf8');
+const migrateText  = require('fs').readFileSync('./client/homebrew/pages/homePage/migrate.md', 'utf8');
 const changelogText  = require('fs').readFileSync('./changelog.md', 'utf8');
 const faqText        = require('fs').readFileSync('./faq.md', 'utf8');
 
@@ -134,10 +134,10 @@ app.get('/v3_preview', async (req, res, next)=>{
 	return next();
 });
 
-//GMBinder Migration Guide
-app.get('/migrate-from-gmb', async (req, res, next)=>{
+//Legacy/Other Document -> v3 Migration Guide
+app.get('/migrate', async (req, res, next)=>{
 	const brew = {
-		text     : migrateGMBText,
+		text     : migrateText,
 		renderer : 'V3'
 	};
 	splitTextAndStyle(brew);

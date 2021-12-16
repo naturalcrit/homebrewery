@@ -1,5 +1,5 @@
 @navbarHeight : 28px;
-@keyframes coloring {
+@keyframes pinkColoring {
 	//from {color: white;}
 	//to {color: red;}
 	0%   {color: pink;}
@@ -62,10 +62,13 @@
 		}
 		i{
 			.animate(color);
-			animation-name: coloring;
+			animation-name: pinkColoring;
 			animation-duration: 2s;
 			color: pink;
 		}
+	}
+	.migrate.navItem{
+		border-right : 1px solid #666;
 	}
 	.recent.navItem{
 		position : relative;
