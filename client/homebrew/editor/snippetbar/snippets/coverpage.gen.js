@@ -110,11 +110,11 @@ module.exports = ()=>{
   .page:nth-child(2n+1) .footnote { left: 80px; text-align: left; }
 </style>
 
-<div style='margin-top:450px;'></div>
+{{margin-top:225px}}
 
 # ${_.sample(titles)}
 
-<div style='margin-top:25px'></div>
+{{margin-top:25px}}
 
 {{wide
 ##### ${_.sample(subtitles)}
