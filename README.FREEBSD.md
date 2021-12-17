@@ -10,7 +10,7 @@ These instructions assume that you are installing to a completely new, fresh Fre
 
 2. Install wget (`pkg install -y wget`). On a fresh jail, you will be prompted to press 'Y' to set up `pkg`.
 
-3. Download the installation script (`wget --no-check-certificate https://raw.githubusercontent.com/naturalcrit/homebrewery/master/freebsd/install.sh`). The parameter `--no-check-certificate` is required as we haven't set up any trusted certificates/authorities yet.
+3. Download the installation script (`wget --no-check-certificate https://raw.githubusercontent.com/naturalcrit/homebrewery/master/install/freebsd/install.sh`). The parameter `--no-check-certificate` is required as we haven't set up any trusted certificates/authorities yet.
 
 4. Make the downloaded file executable (`chmod +x install.sh`).
 
