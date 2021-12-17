@@ -1,11 +1,13 @@
 #!/bin/sh
 
+apt install -y curl
 curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-apt install -y git nodejs npm mongodb44
 
-export NODE_ENV=local
+apt satisfy -y git nodejs npm mongodb
 
-cd /usr/local/
+NODE_ENV=local
+export NODE_ENV
+
 git clone https://github.com/naturalcrit/homebrewery.git
 
 cd homebrewery
