@@ -137,7 +137,9 @@ const CodeEditor = createClass({
 				'Ctrl-['           : this.foldAllCode,
 				'Cmd-['            : this.foldAllCode,
 				'Ctrl-]'           : this.unfoldAllCode,
-				'Cmd-]'            : this.unfoldAllCode
+				'Cmd-]'            : this.unfoldAllCode,
+				'Ctrl-F9'          : this.sortLines,
+				'Cmd-F9'           : this.sortLines
 			},
 			foldGutter  : true,
 			foldOptions : {
@@ -178,6 +180,13 @@ const CodeEditor = createClass({
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
 		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
 		this.updateSize();
+	},
+
+	sortLines : function() {
+		const selections = this.codeMirror.getSelection('\n').split('\n');
+		selections.sort((a, b)=>a.localeCompare(b));
+		const text = selections.join('\n');
+		this.codeMirror.replaceSelection(text, 'around');
 	},
 
 	makeHeader : function (number) {
