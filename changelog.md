@@ -34,6 +34,36 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Saturday 18/12/2021 - v3.0.6
+{{taskList
+* [x] Fixed text wrapping for long strings in code blocks.
+
+	Fixes issues: [#1736](https://github.com/naturalcrit/homebrewery/issues/1736)
+	
+* [x] Code search/replace `CTRL F / CTRL SHIFT F`
+
+	Fixes issues: [#1201](https://github.com/naturalcrit/homebrewery/issues/1201)
+	
+* [x] Auto-closing HTML tags and curly braces `{{ }}`
+* [x] Highlight current active line
+
+	Fixes issues: [#1202](https://github.com/naturalcrit/homebrewery/issues/1202)
+
+* [x] Display tabs and trailing spaces
+
+	Fixes issues: [#1622](https://github.com/naturalcrit/homebrewery/issues/1622)
+
+* [x] Make columns even in V3 Table of Contents.
+
+	Fixes issues: [#1671](https://github.com/naturalcrit/homebrewery/issues/1671)
+	
+* [x] Fix `CTRL P` failing to print from `/new` pages.
+
+	Fixes issues: [#1815](https://github.com/naturalcrit/homebrewery/issues/1815)
+}}
+
+\page
+
 ### Tuesday 07/12/2021 - v3.0.5
 {{taskList
 * [x] Fixed paragraph spacing for **note** and **descriptive** boxes in V3.
@@ -97,6 +127,12 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 	Fixes issues: [#810](https://github.com/naturalcrit/homebrewery/issues/810)
 
 * [x] Added {{fa,fa-undo}} **Undo** and {{fa,fa-redo}} **Redo** buttons to the snippet bar.
+
+}}
+
+\column
+
+{{taskList
 
 * [x] Switching between the {{fa,fa-beer}} **Brew** and {{fa,fa-paint-brush}} **Style** tabs no longer loses your scroll position or undo history.
 
