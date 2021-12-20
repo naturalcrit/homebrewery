@@ -4,6 +4,7 @@ const createClass = require('create-react-class');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const PatreonNavItem = require('./patreon.navitem.jsx');
+const DiscordNavItem = require('./discord.navitem.jsx');
 
 const Navbar = createClass({
 	getInitialState : function() {
@@ -43,6 +44,7 @@ const Navbar = createClass({
 					{`v${this.state.ver}`}
 				</Nav.item>
 				<PatreonNavItem />
+				<DiscordNavItem />
 				{/*this.renderChromeWarning()*/}
 			</Nav.section>
 			{this.props.children}
