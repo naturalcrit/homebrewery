@@ -1,7 +1,8 @@
 require('./homebrew.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const { StaticRouter:Router, Switch, Route } = require('react-router-dom');
+const { Routes, Route } = require('react-router-dom');
+const { StaticRouter:Router} = require('react-router-dom/server')
 const queryString = require('query-string');
 
 const HomePage = require('./pages/homePage/homePage.jsx');
@@ -40,7 +41,7 @@ const Homebrew = createClass({
 		return (
 			<Router location={this.props.url}>
 				<div className='homebrew'>
-					<Switch>
+					<Routes>
 						<Route path='/edit/:id' component={(routeProps)=><EditPage id={routeProps.match.params.id} brew={this.props.brew} />}/>
 						<Route path='/share/:id' component={(routeProps)=><SharePage id={routeProps.match.params.id} brew={this.props.brew} />}/>
 						<Route path='/new/:id' component={(routeProps)=><NewPage id={routeProps.match.params.id} brew={this.props.brew} />}/>
@@ -52,7 +53,7 @@ const Homebrew = createClass({
 						<Route path='/faq' exact component={()=><SharePage brew={this.props.brew} />}/>
 						<Route path='/v3_preview' exact component={()=><HomePage brew={this.props.brew} />}/>
 						<Route path='/' component={()=><HomePage brew={this.props.brew} />}/>
-					</Switch>
+					</Routes>
 				</div>
 			</Router>
 		);
