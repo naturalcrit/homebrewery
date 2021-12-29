@@ -1,4 +1,28 @@
+```css
+#header {
+	display: flex;
+	flex: 0 0 auto;
+	justify-content: space-between;
+}
+
+#header a {
+    color: black;
+}
+
+i.domt:before {
+    content: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3Csvg version='1.1' id='Layer_3' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' height='31' width='31' viewBox='0 0 36 36' style='enable-background:new 0 0 36 36;' xml:space='preserve'%3E%3Cstyle type='text/css'%3E .st0%7Bopacity:0.9;%7D .st1%7Bfill:%23001013;%7D .st2%7Bfill:%23FFFFFF;%7D .st3%7Bfill:%23AA2A29;%7D%0A%3C/style%3E%3Cg class='st0'%3E%3Cpath d='M6.2,1.5C6,1.8,5.9,2,5.8,2.3C5.7,2.8,5.5,3.3,5.5,3.9c0,7.7,0,15.3,0,23c0,1.8,1.2,3.3,2.9,3.7c0.2,0,0.5,0.1,0.7,0.1 c6.3,0,12.7,0,19,0h0.6c-0.3-1.1-0.9-3.1-0.9-3.1l0.2,0.2c0,0,3.8,3.5,5.7,5.2c0.2,0.2,0.3,0.4,0.3,0.7c0,0.8,0,1.5,0,2.3 c-0.6-0.5-1.1-0.9-1.6-1.4c-0.9-0.8-1.8-1.6-2.6-2.3c-0.2-0.2-0.4-0.3-0.7-0.3c-7.2,0-14.3,0-21.5,0c-1.9,0-3.1-0.8-3.8-2.6 c-0.1-0.2-0.1-0.5-0.1-0.7c0-7.1,0-14.3,0-21.4V4.8C3.8,3.3,4.7,2.1,6.2,1.5z'/%3E%3C/g%3E%3Cpath class='st1' d='M28,28c0,0,0.5,1.8,0.8,2.8h-0.5c-6.4,0-12.7,0-19.1,0c-1.6,0-3.2-0.9-3.7-3.1c0-0.2,0-0.4,0-0.5 c0-7.8,0-15.7,0-23.5c0-1.8,1.4-3.4,3.2-3.5c0.3,0,0.5,0,0.8,0c7.5,0,15.1,0,22.6,0c1.2,0,2.3,0.3,3.1,1.3c0.6,0.7,0.9,1.5,0.9,2.3 c0,10.2,0,20.5,0,30.7c0,0.1,0,0.2,0,0.4c-0.4-0.3-0.7-0.6-1-0.9c-2.2-2-4.3-3.9-6.5-5.9c-0.1-0.1-0.3-0.3-0.3-0.3l-0.2-0.2L28,28z' /%3E%3Cpath class='st2' d='M35.4,33.9c-0.7-0.6-1.4-1.2-2-1.8c-1.7-1.6-3.4-3.2-5.2-4.8c-0.2-0.2-0.4-0.3-0.7-0.2 c-0.3,0.1-0.3,0.4-0.2,0.7c0.2,0.8,0.4,1.5,0.7,2.2c0,0.1,0,0.1,0,0.2c-0.1,0-0.3,0-0.4,0c-6.2,0-12.4,0-18.5,0 c-1.7,0-3-1.2-3.2-2.7c0-0.3-0.1-0.6-0.1-0.9c0-7.6,0-15.2,0-22.8c0-1,0.3-1.8,1-2.5c0.5-0.5,1.2-0.8,1.9-0.8c0.2,0,0.4,0,0.5,0 c7.6,0,15.1,0,22.7,0c0.9,0,1.7,0.2,2.4,0.8c0.7,0.7,1,1.6,1,2.5c0,3.7,0,7.5,0,11.2L35.4,33.9L35.4,33.9z'/%3E%3Cpath class='st3' d='M25.6,9.6c-1.1,4.1-2.1,8.2-3.2,12.3l-8.9-9.1L25.6,9.6z'/%3E%3Cpath class='st3' d='M31.9,18.3L23.1,22c1-4,2.1-8,3.1-11.9l0.1,0L31.9,18.3z'/%3E%3Cpath class='st3' d='M12.1,23.5c0.3-3.3,0.5-6.6,0.8-10l8.7,8.9L12.1,23.5z'/%3E%3Cpath class='st3' d='M17.4,3.8l7.6,5.1L13.3,12L17.4,3.8z'/%3E%3Cpath class='st3' d='M30.5,19.7l-6.7,6.7c-0.3-1.2-0.6-2.4-0.9-3.5L30.5,19.7z'/%3E%3Cpath class='st3' d='M22.1,23.1c0.3,1.2,0.6,2.3,1,3.5l-9.1-2.4l0-0.1L22.1,23.1z'/%3E%3Cpath class='st3' d='M31.3,16l-4.7-6.9l2.5-2L31.3,16L31.3,16z'/%3E%3Cpath class='st3' d='M12.1,12.9c-0.2,2.8-0.4,5.6-0.6,8.4l-0.1,0c-0.8-2.9-1.6-5.9-2.4-8.9L12.1,12.9z'/%3E%3Cpath class='st3' d='M26,8.5l-6.3-4.2l0-0.1l8.6,2.3L26,8.5z'/%3E%3Cpath class='st3' d='M9.5,11.7l6.1-6.3l0.1,0.1l-3.4,6.7L9.5,11.7z'/%3E%3C/svg%3E%0A");
+}
+```
+
+<div id="header" class="wide">
 # The Homebrewery
+<div class="links" style="">
+<a href="https://discord.gg/by3deKx" target="_blank" title="discord"><i class="domt"></i></a>
+<a href="https://github.com/naturalcrit/homebrewery" target="_blank" title="github"><i class="fab fa-github fa-3x"></i></a>
+<a href="https://www.reddit.com/r/homebrewery/" target="_blank"><i class="fab fa-reddit fa-3x" title="reddit" style="color: #FF4500"></i></a>
+</div>
+</div>
+
 Welcome traveler from an antique land. Please sit and tell us of what you have seen. The unheard of monsters, who slither and bite. Tell us of the wondrous items and and artifacts you have found, their mysteries yet to be unlocked. Of the vexing vocations and surprising skills you have seen.
 
 ### Homebrew D&D made easy

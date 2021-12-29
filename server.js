@@ -126,6 +126,7 @@ app.get('/', async (req, res, next)=>{
 	const brew = {
 		text : welcomeText
 	};
+	splitTextStyleAndMetadata(brew);
 	req.brew = brew;
 	return next();
 });
