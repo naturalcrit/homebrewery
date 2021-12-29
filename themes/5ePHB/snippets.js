@@ -1,13 +1,14 @@
 /* eslint-disable max-lines */
 
-const MagicGen = require('./magic.gen.js');
-const ClassTableGen = require('./classtable.gen.js');
-const MonsterBlockGen = require('./monsterblock.gen.js');
-const ClassFeatureGen = require('./classfeature.gen.js');
-const CoverPageGen = require('./coverpage.gen.js');
-const TableOfContentsGen = require('./tableOfContents.gen.js');
-const dedent = require('dedent-tabs').default;
-const watercolorGen = require('./watercolor.gen.js');
+const MagicGen           = require('./snippets/magic.gen.js');
+const ClassTableGen      = require('./snippets/classtable.gen.js');
+const MonsterBlockGen    = require('./snippets/monsterblock.gen.js');
+const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
+const CoverPageGen       = require('./snippets/coverpage.gen.js');
+const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
+const WatercolorGen      = require('./snippets/watercolor.gen.js');
+const dedent             = require('dedent-tabs').default;
+
 
 
 module.exports = [
@@ -149,7 +150,7 @@ module.exports = [
 			{
 				name : 'Watercolor Splatter',
 				icon : 'fas fa-fill-drip',
-				gen  : watercolorGen,
+				gen  : WatercolorGen,
 			},
 			{
 				name : 'Watermark',
