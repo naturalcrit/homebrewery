@@ -5,7 +5,7 @@ const _ = require('lodash');
 const cx = require('classnames');
 
 const SplitPane = createClass({
-	displayName : 'SplitPane',
+	displayName     : 'SplitPane',
 	getDefaultProps : function() {
 		return {
 			storageKey   : 'naturalcrit-pane-split',
@@ -78,7 +78,7 @@ const SplitPane = createClass({
 });
 
 const Pane = createClass({
-	displayName : 'Pane',
+	displayName     : 'Pane',
 	getDefaultProps : function() {
 		return {
 			width : null

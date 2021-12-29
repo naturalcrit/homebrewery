@@ -27,7 +27,7 @@ const googleDriveInactive = require('../../googleDriveMono.png');
 const SAVE_TIMEOUT = 3000;
 
 const EditPage = createClass({
-	displayName : 'EditPage',
+	displayName     : 'EditPage',
 	getDefaultProps : function() {
 		return {
 			brew : {

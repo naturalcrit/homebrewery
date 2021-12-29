@@ -21,7 +21,7 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 
 const HomePage = createClass({
-	displayName : 'HomePage',
+	displayName     : 'HomePage',
 	getDefaultProps : function() {
 		return {
 			brew : {

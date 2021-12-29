@@ -23,7 +23,7 @@ const METAKEY = 'homebrewery-new-meta';
 
 
 const NewPage = createClass({
-	displayName : 'NewPage',
+	displayName     : 'NewPage',
 	getDefaultProps : function() {
 		return {
 			brew : {

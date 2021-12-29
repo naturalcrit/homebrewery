@@ -26,7 +26,7 @@ const splice = function(str, index, inject){
 
 
 const Editor = createClass({
-	displayName : 'Editor',
+	displayName     : 'Editor',
 	getDefaultProps : function() {
 		return {
 			brew : {

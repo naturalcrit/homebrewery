@@ -24,7 +24,7 @@ const ReportIssue = require('../../navbar/issue.navitem.jsx');
 
 
 const UserPage = createClass({
-	displayName : 'UserPage',
+	displayName     : 'UserPage',
 	getDefaultProps : function() {
 		return {
 			username : '',

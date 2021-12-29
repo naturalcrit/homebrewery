@@ -12,7 +12,7 @@ const STYLEKEY = 'homebrewery-new-style';
 const METAKEY = 'homebrewery-new-meta';
 
 const PrintPage = createClass({
-	displayName : 'PrintPage',
+	displayName     : 'PrintPage',
 	getDefaultProps : function() {
 		return {
 			query : {},
