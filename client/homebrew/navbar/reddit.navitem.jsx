@@ -8,6 +8,7 @@ const MAIN_URL = 'https://www.reddit.com/r/UnearthedArcana/submit?selftext=true'
 
 
 const RedditShare = createClass({
+	displayName     : 'RedditShareNavItem',
 	getDefaultProps : function() {
 		return {
 			brew : {
