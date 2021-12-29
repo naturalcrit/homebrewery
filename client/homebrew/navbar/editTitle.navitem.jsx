@@ -7,6 +7,7 @@ const MAX_TITLE_LENGTH = 50;
 
 
 const EditTitle = createClass({
+	displayName : 'EditTitleNavItem',
 	getDefaultProps : function() {
 		return {
 			title    : '',

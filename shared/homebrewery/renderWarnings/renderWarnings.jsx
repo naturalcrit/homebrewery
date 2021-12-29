@@ -7,6 +7,7 @@ const cx    = require('classnames');
 const DISMISS_KEY = 'dismiss_render_warning';
 
 const RenderWarnings = createClass({
+	displayName : 'RenderWarnings',
 	getInitialState : function() {
 		return {
 			warnings : {}

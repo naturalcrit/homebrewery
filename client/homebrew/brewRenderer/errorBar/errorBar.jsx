@@ -5,6 +5,7 @@ const _     = require('lodash');
 const cx    = require('classnames');
 
 const ErrorBar = createClass({
+	displayName : 'ErrorBar',
 	getDefaultProps : function() {
 		return {
 			errors : []

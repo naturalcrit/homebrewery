@@ -13,6 +13,7 @@ const NewPage = require('./pages/newPage/newPage.jsx');
 const PrintPage = require('./pages/printPage/printPage.jsx');
 
 const Homebrew = createClass({
+	displayName : 'Homebrewery',
 	getDefaultProps : function() {
 		return {
 			url         : '',

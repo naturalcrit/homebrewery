@@ -10,6 +10,7 @@ const googleDriveIcon = require('../../../googleDrive.png');
 const dedent = require('dedent-tabs').default;
 
 const BrewItem = createClass({
+	displayName : 'BrewItem',
 	getDefaultProps : function() {
 		return {
 			brew : {

@@ -8,6 +8,7 @@ const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
 
 const Nav = {
 	base : createClass({
+		displayName : 'Nav.base',
 		render : function(){
 			return <nav>
 				<div className='navContent'>
@@ -26,6 +27,7 @@ const Nav = {
 	},
 
 	section : createClass({
+		displayName : 'Nav.section',
 		render : function(){
 			return <div className='navSection'>
 				{this.props.children}
@@ -34,6 +36,7 @@ const Nav = {
 	}),
 
 	item : createClass({
+		displayName : 'Nav.item',
 		getDefaultProps : function() {
 			return {
 				icon    : null,
@@ -69,6 +72,7 @@ const Nav = {
 	}),
 
 	dropdown : createClass({
+		displayName : 'Nav.dropdown',
 		getInitialState : function() {
 			return {
 				showDropdown : false

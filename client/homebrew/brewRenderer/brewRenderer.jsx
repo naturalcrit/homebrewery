@@ -17,6 +17,7 @@ const PAGE_HEIGHT = 1056;
 const PPR_THRESHOLD = 50;
 
 const BrewRenderer = createClass({
+	displayName : 'BrewRenderer',
 	getDefaultProps : function() {
 		return {
 			text     : '',

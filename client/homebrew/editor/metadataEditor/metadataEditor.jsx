@@ -8,6 +8,7 @@ const request = require('superagent');
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
 const MetadataEditor = createClass({
+	displayName : 'MetadataEditor',
 	getDefaultProps : function() {
 		return {
 			metadata : {

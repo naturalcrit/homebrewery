@@ -14,6 +14,7 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 
 const SharePage = createClass({
+	displayName : 'SharePage',
 	getDefaultProps : function() {
 		return {
 			brew : {

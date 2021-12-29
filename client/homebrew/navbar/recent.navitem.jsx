@@ -10,7 +10,7 @@ const VIEW_KEY = 'homebrewery-recently-viewed';
 
 
 const RecentItems = createClass({
-
+	DisplayName : 'RecentItems',
 	getDefaultProps : function() {
 		return {
 			storageKey : '',
