@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+
 const Markdown = require('naturalcrit/markdown.js');
 
 test('Escapes <script> tag', function() {
