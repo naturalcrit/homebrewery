@@ -18,8 +18,8 @@
     "lint:dry": "eslint **/*.{js,jsx}",
     "circleci": "npm test && eslint **/*.{js,jsx} --max-warnings=0",
     "verify": "npm run lint && npm test",
-    "test": "pico-check",
-    "test:dev": "pico-check -v -w",
+    "test": "jest",
+    "test:dev": "jest --verbose --watch",
     "phb": "node scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
     "postinstall": "npm run buildall",
@@ -30,8 +30,11 @@
   "eslintIgnore": [
     "build/*"
   ],
-  "pico-check": {
-    "require": "./tests/test.init.js"
+  "jest": {
+    "modulePaths": [
+      "mode_modules",
+      "shared"
+    ]
   },
   "babel": {
     "presets": [
@@ -79,6 +82,6 @@
   "devDependencies": {
     "eslint": "^8.5.0",
     "eslint-plugin-react": "^7.28.0",
-    "pico-check": "^2.2.0"
+    "jest": "^27.4.5"
   }
 }
