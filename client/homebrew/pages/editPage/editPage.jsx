@@ -351,37 +351,36 @@ const EditPage = createClass({
 			}
 
 			if(this.state.errors.response.req.url.match(/^\/api\/.*Google.*$/m)){
-				if(this.state.errors.status == '403' && this.state.errors.response.body.errors[0].reason == 'insufficientPermissions'){
-					return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 					Oops!
-						<div className='errorContainer' onClick={this.clearErrors}>
+					<div className='errorContainer' onClick={this.clearErrors}>
 					Looks like your Google credentials have
 					expired! Visit our log in page to sign out
 					and sign back in with Google,
 					then try saving again!
-							<a target='_blank' rel='noopener noreferrer'
-								href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
-								<div className='confirm'>
+						<a target='_blank' rel='noopener noreferrer'
+							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
+							<div className='confirm'>
 								Sign In
-								</div>
-							</a>
-							<div className='deny'>
-							Not Now
 							</div>
+						</a>
+						<div className='deny'>
+							Not Now
 						</div>
-					</Nav.item>;
-				}
-
-				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-				Oops!
-					<div className='errorContainer'>
-					Looks like there was a problem saving. <br />
-					Report the issue <a target='_blank' rel='noopener noreferrer' href={`https://github.com/naturalcrit/homebrewery/issues/new?body=${encodeURIComponent(errMsg)}`}>
-						here
-						</a>.
 					</div>
 				</Nav.item>;
 			}
+
+			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+				Oops!
+				<div className='errorContainer'>
+					Looks like there was a problem saving. <br />
+					Report the issue <a target='_blank' rel='noopener noreferrer'
+						href={`https://github.com/naturalcrit/homebrewery/issues/new?body=${encodeURIComponent(errMsg)}`}>
+						here
+					</a>.
+				</div>
+			</Nav.item>;
 		}
 
 		if(this.state.isSaving){
@@ -406,7 +405,9 @@ const EditPage = createClass({
 		const shareLink = this.processShareId();
 		const systems = this.props.brew.systems.length > 0 ? ` [${this.props.brew.systems.join(' - ')}]` : '';
 		const title = `${this.props.brew.title} ${systems}`;
-		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out. **[Homebrewery Link](https://homebrewery.naturalcrit.com/share/${shareLink})**`;
+		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
+
+**[Homebrewery Link](https://homebrewery.naturalcrit.com/share/${shareLink})**`;
 
 		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
 	},
