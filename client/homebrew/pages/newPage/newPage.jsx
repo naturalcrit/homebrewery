@@ -253,8 +253,8 @@ const NewPage = createClass({
 				Oops!
 					<div className='errorContainer'>
 					Looks like there was a problem saving. <br />
-					Report the issue <a target='_blank' rel='noopener noreferrer'
-							href={`https://github.com/naturalcrit/homebrewery/issues/new?body=${encodeURIComponent(errMsg)}`}>
+					Report the issue <a	target='_blank' rel='noopener noreferrer' href={`https://github.com/naturalcrit/homebrewery/issues/new?body=${encodeURIComponent(errMsg)}`}
+						>
 						here
 						</a>.
 					</div>
