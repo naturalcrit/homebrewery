@@ -228,6 +228,7 @@ const NewPage = createClass({
 			}
 
 			if(this.state.errors.response.req.url.match(/^\/api\/.*Google.*$/m)){
+			if(this.state.errors.status == '403' && this.state.errors.response.body.errors[0].reason == 'insufficientPermissions'){
 				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 					Oops!
 					<div className='errorContainer' onClick={this.clearErrors}>
