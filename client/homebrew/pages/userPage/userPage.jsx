@@ -3,16 +3,7 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
-const moment = require('moment');
-
-const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
-
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const Account = require('../../navbar/account.navitem.jsx');
-const NewBrew = require('../../navbar/newbrew.navitem.jsx');
-const BrewItem = require('./brewItem/brewItem.jsx');
-const ReportIssue = require('../../navbar/issue.navitem.jsx');
+const ListPage = require('../basePages/listPage/listPage.jsx');
 
 // const brew = {
 // 	title   : 'SUPER Long title woah now',
@@ -145,12 +136,7 @@ const UserPage = createClass({
 	},
 
 	getSortedBrews : function(){
-		const testString = _.deburr(this.state.filterString).toLowerCase();
-		const brewCollection = this.state.filterString ? _.filter(this.props.brews, (brew)=>{
-			return (_.deburr(brew.title).toLowerCase().includes(testString)) ||
-			(_.deburr(brew.description).toLowerCase().includes(testString));
-		}) : this.props.brews;
-		return _.groupBy(brewCollection, (brew)=>{
+		return _.groupBy(this.props.brews, (brew)=>{
 			return (brew.published ? 'published' : 'private');
 		});
 	},
@@ -158,33 +144,24 @@ const UserPage = createClass({
 	render : function(){
 		const brews = this.getSortedBrews();
 
-		return <div className='userPage sitePage'>
-			<link href='/themes/5ePhbLegacy.style.css' rel='stylesheet'/>
-			<Navbar>
-				<Nav.section>
-					<NewBrew />
-					<ReportIssue />
-					<RecentNavItem />
-					<Account />
-				</Nav.section>
-			</Navbar>
+		const brewCollections = [
+			{
+				title : `${this.getUsernameWithS()} published brews`,
+				class : 'published',
+				brews : brews.published
+			}
+		];
+		if(this.props.username == global.account?.username){
+			brewCollections.push(
+				{
+					title : `${this.getUsernameWithS()} unpublished brews`,
+					class : 'unpublished',
+					brews : brews.private
+				}
+			);
+		}
 
-			<div className='content V3'>
-				<div className='phb'>
-					{this.renderSortOptions()}
-					<div className='published'>
-						<h1>{this.getUsernameWithS()} published brews</h1>
-						{this.renderBrews(brews.published)}
-					</div>
-					{this.props.username == global.account?.username &&
-						<div className='unpublished'>
-							<h1>{this.getUsernameWithS()} unpublished brews</h1>
-							{this.renderBrews(brews.private)}
-						</div>
-					}
-				</div>
-			</div>
-		</div>;
+		return <ListPage brewCollection={brewCollections} ></ListPage>;
 	}
 });
 
