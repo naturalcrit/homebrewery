@@ -199,7 +199,7 @@ const BrewRenderer = createClass({
 							<RenderWarnings />
 							<NotificationPopup />
 						</div>
-						<link href={`${this.props.renderer == 'legacy' ? '/themes/5ePhbLegacy.style.css' : '/themes/5ePhb.style.css'}`} rel='stylesheet'/>
+						<link href={`${this.props.renderer == 'legacy' ? '/themes/Legacy/5ePHB/style.css' : '/themes/V3/5ePHB/style.css'}`} rel='stylesheet'/>
 						{/* Apply CSS from Style tab and render pages from Markdown tab */}
 						{this.state.isMounted
 							&&

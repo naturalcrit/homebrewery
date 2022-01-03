@@ -4,9 +4,11 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
+//Import all themes
 
-const SnippetsLegacy = require('./snippetsLegacy/snippets.js');
-const SnippetsV3 = require('./snippets/snippets.js');
+const Themes = {};
+Themes['Legacy_5ePHB'] = require('themes/Legacy/5ePHB/snippets.js');
+Themes['V3_5ePHB']     = require('themes/V3/5ePHB/snippets.js');
 
 const execute = function(val, brew){
 	if(_.isFunction(val)) return val(brew);
@@ -31,8 +33,31 @@ const Snippetbar = createClass({
 
 	getInitialState : function() {
 		return {
-			renderer : this.props.renderer
+			renderer : this.props.renderer,
+			snippets : []
 		};
+	},
+
+	componentDidMount : async function() {
+		const rendererPath = this.props.renderer == 'V3' ? 'V3' : "Legacy";
+		const themePath    = this.props.theme ?? '5ePHB';
+		console.log(Themes);
+		console.log(Themes[`${rendererPath}_${themePath}`]);
+		const snippets = Themes[`${rendererPath}_${themePath}`];
+		this.setState({
+			snippets : snippets
+		});
+	},
+
+	componentDidUpdate : async function(prevProps) {
+		if(prevProps.renderer != this.props.renderer) {
+			const rendererPath = this.props.renderer == 'V3' ? 'V3' : "Legacy";
+			const themePath    = this.props.theme ?? '5ePHB';
+			const snippets = Themes[`${rendererPath}_${themePath}`];
+			this.setState({
+				snippets : snippets
+			});
+		}
 	},
 
 	handleSnippetClick : function(injectedText){
@@ -42,10 +67,7 @@ const Snippetbar = createClass({
 	renderSnippetGroups : function(){
 		let snippets = [];
 
-		if(this.props.renderer === 'V3')
-			snippets = SnippetsV3.filter((snippetGroup)=>snippetGroup.view === this.props.view);
-		else
-			snippets = SnippetsLegacy.filter((snippetGroup)=>snippetGroup.view === this.props.view);
+		snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
 
 		return _.map(snippets, (snippetGroup)=>{
 			return <SnippetGroup
