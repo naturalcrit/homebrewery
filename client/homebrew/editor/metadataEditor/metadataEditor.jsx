@@ -21,7 +21,8 @@ const MetadataEditor = createClass({
 				published   : false,
 				authors     : [],
 				systems     : [],
-				renderer    : 'legacy'
+				renderer    : 'legacy',
+				theme       : '5ePHB'
 			},
 			onChange : ()=>{}
 		};
@@ -50,6 +51,12 @@ const MetadataEditor = createClass({
 		this.props.onChange(_.merge({}, this.props.metadata, {
 			published : val
 		}));
+	},
+
+	handleTheme : function(theme){
+		this.props.metadata.renderer = theme.renderer;
+		this.props.metadata.theme    = theme.name;
+		this.props.onChange(this.props.metadata);
 	},
 
 	handleDelete : function(){
@@ -121,7 +128,7 @@ const MetadataEditor = createClass({
 	renderThemeDropdown : function(){
 		const listThemes = (renderer)=>{
 			return _.map(Themes[renderer], (theme)=>{
-				return <div href={''} className='item' key={''} target='_blank' rel='noopener noreferrer' title={''}>
+				return <div href={''} className='item' key={''} onClick={()=>this.handleTheme(theme)} title={''}>
 					{`${theme.renderer} : ${theme.name}`}
 				</div>;
 			});
@@ -131,7 +138,7 @@ const MetadataEditor = createClass({
 			<label>theme</label>
 			<Nav.dropdown trigger='click'>
 				<div>
-					share <i class='fas fa-caret-down'></i>
+					{`${this.props.metadata.renderer} : ${this.props.metadata.theme}`} <i className='fas fa-caret-down'></i>
 				</div>
 				{listThemes('Legacy')}
 				{listThemes('V3')}
