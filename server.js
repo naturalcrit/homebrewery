@@ -60,7 +60,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
-	_.defaults(brew, {'renderer' : 'legacy', 'theme' : '5ePHB'});
+	_.defaults(brew, { 'renderer': 'legacy', 'theme': '5ePHB' });
 };
 
 app.use('/', serveCompressedStaticAssets(`${__dirname}/build`));

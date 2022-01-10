@@ -69,6 +69,12 @@ const Nav = {
 	}),
 
 	dropdown : createClass({
+		getDefaultProps : function() {
+			return {
+				trigger : 'hover'
+			};
+		},
+
 		getInitialState : function() {
 			return {
 				showDropdown : false
@@ -99,7 +105,8 @@ const Nav = {
 			});
 			return (
 				<div className='navDropdownContainer'
-					onMouseEnter={()=>this.handleDropdown(true)}
+					onMouseEnter={this.props.trigger == 'hover' ? ()=>{this.handleDropdown(true);} : undefined}
+					onClick=     {this.props.trigger == 'click' ? ()=>{this.handleDropdown(true);} : undefined}
 					onMouseLeave={()=>this.handleDropdown(false)}>
 					{this.props.children[0]}
 					{this.renderDropdown(dropdownChildren)}

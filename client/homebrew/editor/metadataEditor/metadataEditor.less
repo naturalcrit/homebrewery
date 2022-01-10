@@ -14,7 +14,7 @@
 			display        : inline-block;
 			vertical-align : top;
 			width          : 80px;
-			font-size      : 0.7em;
+			font-size      : 11px;
 			font-weight    : 800;
 			line-height    : 1.8em;
 			text-transform : uppercase;
@@ -80,5 +80,36 @@
 	.authors.field .value{
 		font-size: 0.8em;
 		line-height    : 1.5em;
+	}
+
+	.themes.field{
+		font-size: 13.33px;
+		.navDropdownContainer {
+			background-color: white;
+
+			width: 100%;
+			&:hover {
+				background-color: rgb(187, 187, 187);
+			}
+			&>div:first-child {
+				border : 2px solid rgb(118,118,118);
+				padding : 6px 2px;
+				background-color : inherit;
+				i {
+					float: right;
+				}
+			}
+			.navDropdown {
+				box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+				* {
+					padding: 3px 2px;
+					border-top: 1px solid rgb(118, 118, 118);
+					&:hover {
+						background-color: @blue;
+						color: white;
+					}
+				}
+			}
+		}
 	}
 }

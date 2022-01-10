@@ -10,7 +10,7 @@ const assetTransform = require('vitreum/transforms/asset.js');
 const babel          = require('@babel/core');
 const less           = require('less');
 
-const babelify = async (code)=>(await babel.transformAsync(code, { presets: [["@babel/preset-env", { "exclude": ["proposal-dynamic-import"] }], '@babel/preset-react'], plugins: ['@babel/plugin-transform-runtime'] })).code;
+const babelify = async (code)=>(await babel.transformAsync(code, { presets: [['@babel/preset-env', { 'exclude': ['proposal-dynamic-import'] }], '@babel/preset-react'], plugins: ['@babel/plugin-transform-runtime'] })).code;
 
 const transforms = {
 	'.js'   : (code, filename, opts)=>babelify(code),
@@ -24,27 +24,6 @@ const build = async ({ bundle, render, ssr })=>{
 	await fs.outputFile('./build/homebrew/bundle.css', css);
 	await fs.outputFile('./build/homebrew/bundle.js', bundle);
 	await fs.outputFile('./build/homebrew/ssr.js', ssr);
-	await fs.copy('./themes/fonts', './build/fonts');
-	let src = './themes/Legacy/5ePHB/style.less';
-	//Parse brew theme files
-	less.render(fs.readFileSync(src).toString(), {
-		compress : !isDev
-	}, function(e, output) {
-		fs.outputFile('./build/themes/Legacy/5ePHB/style.css', output.css);
-	});
-	src = './themes/V3/5ePHB/style.less';
-	less.render(fs.readFileSync(src).toString(), {
-		compress : !isDev
-	}, function(e, output) {
-		fs.outputFile('./build/themes/V3/5ePHB/style.css', output.css);
-	});
-	// await less.render(lessCode, {
-	// 	compress  : !dev,
-	// 	sourceMap : (dev ? {
-	// 		sourceMapFileInline: true,
-	// 		outputSourceFiles: true
-	// 	} : false),
-	// })
 
 	//compress files in production
 	if(!isDev){
@@ -61,16 +40,64 @@ const build = async ({ bundle, render, ssr })=>{
 fs.emptyDirSync('./build');
 
 
-(async () => {
-	let bundles = await pack('./client/homebrew/homebrew.jsx', {
-		paths  : ['./shared','./'],
-		libs   : Proj.libs,
-		dev    : isDev && build,
+(async ()=>{
+
+	//v==----------------------------- COMPILE THEMES --------------------------------==v//
+
+	// Update list of all Theme files
+	const themes = { Legacy: [], V3: [] };
+
+	let themeFiles = fs.readdirSync('./themes/Legacy');
+	for (dir of themeFiles) {
+		const themeData = JSON.parse(fs.readFileSync(`./themes/Legacy/${dir}/settings.json`).toString());
+		themes.Legacy.push(themeData);
+	}
+
+	themeFiles = fs.readdirSync('./themes/V3');
+	for (dir of themeFiles) {
+		const themeData = JSON.parse(fs.readFileSync(`./themes/V3/${dir}/settings.json`).toString());
+		themes.V3.push(themeData);
+	}
+
+	await fs.outputFile('./themes/themes.json', JSON.stringify(themes, null, 2));
+
+	// Compile Less files TODO: MOVE INTO ABOVE SECTION TO PROGRAMATICALLY GRAB ALL LESS FILES
+	let src = './themes/Legacy/5ePHB/style.less';
+
+	less.render(fs.readFileSync(src).toString(), {
+		compress : !isDev
+	}, function(e, output) {
+		fs.outputFile('./build/themes/Legacy/5ePHB/style.css', output.css);
+	});
+	src = './themes/V3/5ePHB/style.less';
+	less.render(fs.readFileSync(src).toString(), {
+		compress : !isDev
+	}, function(e, output) {
+		fs.outputFile('./build/themes/V3/5ePHB/style.css', output.css);
+	});
+
+	// await less.render(lessCode, {
+	// 	compress  : !dev,
+	// 	sourceMap : (dev ? {
+	// 		sourceMapFileInline: true,
+	// 		outputSourceFiles: true
+	// 	} : false),
+	// })
+
+	// Move assets
+	await fs.copy('./themes/fonts', './build/fonts');
+
+	//v==----------------------------- BUNDLE PACKAGES --------------------------------==v//
+
+	const bundles = await pack('./client/homebrew/homebrew.jsx', {
+		paths : ['./shared', './'],
+		libs  : Proj.libs,
+		dev   : isDev && build,
 		transforms
 	});
 	build(bundles);
 
-	// Possible method for generating separate bundles for snippets: factor-bundle first sending all common files to bundle.js, then again using default settings, keeping only snippet bundles
+	// Possible method for generating separate bundles for theme snippets: factor-bundle first sending all common files to bundle.js, then again using default settings, keeping only snippet bundles
 	// await fs.outputFile('./build/junk.js', '');
 	// await fs.outputFile('./build/themes/Legacy/5ePHB/snippets.js', '');
 	//

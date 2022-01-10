@@ -4,6 +4,9 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 const request = require('superagent');
+const Nav = require('naturalcrit/nav/nav.jsx');
+
+const Themes = require('themes/themes.json');
 
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
@@ -115,6 +118,27 @@ const MetadataEditor = createClass({
 		</div>;
 	},
 
+	renderThemeDropdown : function(){
+		const listThemes = (renderer)=>{
+			return _.map(Themes[renderer], (theme)=>{
+				return <div href={''} className='item' key={''} target='_blank' rel='noopener noreferrer' title={''}>
+					{`${theme.renderer} : ${theme.name}`}
+				</div>;
+			});
+		};
+
+		return <div className='field themes'>
+			<label>theme</label>
+			<Nav.dropdown trigger='click'>
+				<div>
+					share <i class='fas fa-caret-down'></i>
+				</div>
+				{listThemes('Legacy')}
+				{listThemes('V3')}
+			</Nav.dropdown>
+		</div>;
+	},
+
 	renderRenderOptions : function(){
 		if(!global.enable_v3) return;
 
@@ -177,6 +201,8 @@ const MetadataEditor = createClass({
 					{this.renderSystems()}
 				</div>
 			</div>
+
+			{this.renderThemeDropdown()}
 
 			{this.renderRenderOptions()}
 
