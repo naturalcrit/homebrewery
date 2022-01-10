@@ -79,7 +79,6 @@ const config = require('nconf')
 
 // DB
 const DB = require('./server/db.js');
-// FIXME: consider implementing error hanlding for a Promise returned by connect
 DB.connect(config);
 
 //Account Middleware
