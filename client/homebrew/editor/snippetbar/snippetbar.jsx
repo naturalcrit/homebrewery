@@ -16,6 +16,7 @@ const execute = function(val, brew){
 };
 
 const Snippetbar = createClass({
+	displayName     : 'SnippetBar',
 	getDefaultProps : function() {
 		return {
 			brew            : {},
@@ -125,6 +126,7 @@ module.exports = Snippetbar;
 
 
 const SnippetGroup = createClass({
+	displayName     : 'SnippetGroup',
 	getDefaultProps : function() {
 		return {
 			brew           : {},

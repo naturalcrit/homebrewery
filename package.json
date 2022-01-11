@@ -18,8 +18,8 @@
     "lint:dry": "eslint **/*.{js,jsx}",
     "circleci": "npm test && eslint **/*.{js,jsx} --max-warnings=0",
     "verify": "npm run lint && npm test",
-    "test": "pico-check",
-    "test:dev": "pico-check -v -w",
+    "test": "jest",
+    "test:dev": "jest --verbose --watch",
     "phb": "node scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
     "postinstall": "npm run buildall",
@@ -30,8 +30,11 @@
   "eslintIgnore": [
     "build/*"
   ],
-  "pico-check": {
-    "require": "./tests/test.init.js"
+  "jest": {
+    "modulePaths": [
+      "mode_modules",
+      "shared"
+    ]
   },
   "babel": {
     "presets": [
@@ -40,10 +43,10 @@
     ]
   },
   "dependencies": {
-    "@babel/core": "^7.16.5",
-    "@babel/plugin-transform-runtime": "^7.16.5",
-    "@babel/preset-env": "^7.16.5",
-    "@babel/preset-react": "^7.16.5",
+    "@babel/core": "^7.16.7",
+    "@babel/plugin-transform-runtime": "^7.16.7",
+    "@babel/preset-env": "^7.16.7",
+    "@babel/preset-react": "^7.16.7",
     "body-parser": "^1.19.1",
     "classnames": "^2.3.1",
     "codemirror": "^5.65.0",
@@ -59,15 +62,15 @@
     "jwt-simple": "^0.5.6",
     "less": "^3.13.1",
     "lodash": "^4.17.21",
-    "marked": "4.0.8",
+    "marked": "4.0.9",
     "marked-extended-tables": "^1.0.3",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.29.1",
-    "mongoose": "^6.1.3",
+    "mongoose": "^6.1.5",
     "nanoid": "3.1.30",
     "nconf": "^0.11.3",
     "prop-types": "15.8.0",
-    "query-string": "7.0.1",
+    "query-string": "7.1.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
     "react-frame-component": "4.1.3",
@@ -77,8 +80,8 @@
     "vitreum": "git+https://git@github.com/calculuschild/vitreum.git"
   },
   "devDependencies": {
-    "eslint": "^8.5.0",
+    "eslint": "^8.6.0",
     "eslint-plugin-react": "^7.28.0",
-    "pico-check": "^2.2.0"
+    "jest": "^27.4.5"
   }
 }
