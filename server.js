@@ -1,11 +1,7 @@
 const DB = require('./server/db.js');
 const server = require('./server/app.js');
 
-const config = require('nconf')
-	.argv()
-	.env({ lowerCase: true })
-	.file('environment', { file: `config/${process.env.NODE_ENV}.json` })
-	.file('defaults', { file: 'config/default.json' });
+const config = require('./server/config.js');
 
 DB.connect(config).then(()=>{
 	// Ensure that we have successfully connected to the database
