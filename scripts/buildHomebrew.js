@@ -50,31 +50,35 @@ fs.emptyDirSync('./build');
 	let themeFiles = fs.readdirSync('./themes/Legacy');
 	for (dir of themeFiles) {
 		const themeData = JSON.parse(fs.readFileSync(`./themes/Legacy/${dir}/settings.json`).toString());
+		themeData.path = dir;
 		themes.Legacy.push(themeData);
+		const src = `./themes/Legacy/${dir}/style.less`;
+		((outputDirectory)=>{
+			less.render(fs.readFileSync(src).toString(), {
+				compress : !isDev
+			}, function(e, output) {
+				fs.outputFile(`./build/themes/Legacy/${dir}/style.css`, output.css);
+			});
+		})(`./build/themes/Legacy/${dir}/style.css`);
+
 	}
 
 	themeFiles = fs.readdirSync('./themes/V3');
 	for (dir of themeFiles) {
 		const themeData = JSON.parse(fs.readFileSync(`./themes/V3/${dir}/settings.json`).toString());
+		themeData.path = dir;
 		themes.V3.push(themeData);
+		const src = `./themes/V3/${dir}/style.less`;
+	  ((outputDirectory)=>{
+			less.render(fs.readFileSync(src).toString(), {
+				compress : !isDev
+			}, function(e, output) {
+				fs.outputFile(outputDirectory, output.css);
+			});
+		})(`./build/themes/V3/${dir}/style.css`);
 	}
 
 	await fs.outputFile('./themes/themes.json', JSON.stringify(themes, null, 2));
-
-	// Compile Less files TODO: MOVE INTO ABOVE SECTION TO PROGRAMATICALLY GRAB ALL LESS FILES
-	let src = './themes/Legacy/5ePHB/style.less';
-
-	less.render(fs.readFileSync(src).toString(), {
-		compress : !isDev
-	}, function(e, output) {
-		fs.outputFile('./build/themes/Legacy/5ePHB/style.css', output.css);
-	});
-	src = './themes/V3/5ePHB/style.less';
-	less.render(fs.readFileSync(src).toString(), {
-		compress : !isDev
-	}, function(e, output) {
-		fs.outputFile('./build/themes/V3/5ePHB/style.css', output.css);
-	});
 
 	// await less.render(lessCode, {
 	// 	compress  : !dev,
@@ -86,6 +90,7 @@ fs.emptyDirSync('./build');
 
 	// Move assets
 	await fs.copy('./themes/fonts', './build/fonts');
+	await fs.copy('./themes/assets', './build/assets');
 
 	//v==----------------------------- BUNDLE PACKAGES --------------------------------==v//
 

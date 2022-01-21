@@ -23,6 +23,7 @@ const BrewRenderer = createClass({
 			text     : '',
 			style    : '',
 			renderer : 'legacy',
+			theme    : '5ePHB',
 			errors   : []
 		};
 	},
@@ -177,6 +178,8 @@ const BrewRenderer = createClass({
 	render : function(){
 		//render in iFrame so broken code doesn't crash the site.
 		//Also render dummy page while iframe is mounting.
+		const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
+		const themePath    = this.props.theme ?? '5ePHB';
 
 		return (
 			<React.Fragment>
@@ -200,7 +203,7 @@ const BrewRenderer = createClass({
 							<RenderWarnings />
 							<NotificationPopup />
 						</div>
-						<link href={`${this.props.renderer == 'legacy' ? '/themes/Legacy/5ePHB/style.css' : '/themes/V3/5ePHB/style.css'}`} rel='stylesheet'/>
+						<link href={`/themes/${rendererPath}/${themePath}/style.css`} rel='stylesheet'/>
 						{/* Apply CSS from Style tab and render pages from Markdown tab */}
 						{this.state.isMounted
 							&&

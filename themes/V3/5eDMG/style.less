@@ -1,0 +1,25 @@
+@import (less) './themes/fonts/5e/fonts.less';
+@import (less) './themes/assets/assets.less';
+@import (less) './themes/V3/5ePHB/style.less';
+
+@noteGreen : #ebcec3; // Salmon
+@footnotes : #5c5c5c; // Dark gray
+
+.page {
+	background-image : url(/assets/DMG_background.png);
+	background-size  : cover;
+
+	&:after {
+		background-image : url(/assets/DMG_footerAccent.png);
+		height: 58px;
+	}
+
+	.pageNumber {
+		color : @footnotes;
+	}
+
+	.footnote {
+		color  : @footnotes;
+		bottom : 40px;
+	}
+}

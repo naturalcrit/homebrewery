@@ -42,8 +42,6 @@ const Snippetbar = createClass({
 	componentDidMount : async function() {
 		const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
 		const themePath    = this.props.theme ?? '5ePHB';
-		console.log(Themes);
-		console.log(Themes[`${rendererPath}_${themePath}`]);
 		const snippets = Themes[`${rendererPath}_${themePath}`];
 		this.setState({
 			snippets : snippets

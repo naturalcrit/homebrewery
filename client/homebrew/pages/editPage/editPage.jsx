@@ -472,7 +472,7 @@ const EditPage = createClass({
 						onMetaChange={this.handleMetaChange}
 						renderer={this.state.brew.renderer}
 					/>
-					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} errors={this.state.htmlErrors} />
+					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} theme={this.state.brew.theme} errors={this.state.htmlErrors} />
 				</SplitPane>
 			</div>
 		</div>;

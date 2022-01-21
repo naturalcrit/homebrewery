@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./metadataEditor.less');
 const React = require('react');
 const createClass = require('create-react-class');
@@ -29,6 +30,11 @@ const MetadataEditor = createClass({
 		};
 	},
 
+	getThemeData : function(renderer, theme){
+
+		return Themes[_.upperFirst(renderer)].find((x)=>x.path == theme);
+	},
+
 	handleFieldChange : function(name, e){
 		this.props.onChange(_.merge({}, this.props.metadata, {
 			[name] : e.target.value
@@ -45,6 +51,8 @@ const MetadataEditor = createClass({
 	handleRenderer : function(renderer, e){
 		if(e.target.checked){
 			this.props.metadata.renderer = renderer;
+			if(renderer == 'legacy')
+				this.props.metadata.theme = '5ePHB';
 		}
 		this.props.onChange(this.props.metadata);
 	},
@@ -56,7 +64,7 @@ const MetadataEditor = createClass({
 
 	handleTheme : function(theme){
 		this.props.metadata.renderer = theme.renderer;
-		this.props.metadata.theme    = theme.name;
+		this.props.metadata.theme    = theme.path;
 		this.props.onChange(this.props.metadata);
 	},
 
@@ -129,17 +137,19 @@ const MetadataEditor = createClass({
 	renderThemeDropdown : function(){
 		const listThemes = (renderer)=>{
 			return _.map(Themes[renderer], (theme)=>{
-				return <div href={''} className='item' key={''} onClick={()=>this.handleTheme(theme)} title={''}>
+				return <div className='item' key={''} onClick={()=>this.handleTheme(theme)} title={''}>
 					{`${theme.renderer} : ${theme.name}`}
 				</div>;
 			});
 		};
 
+		const currentTheme = this.getThemeData(this.props.metadata.renderer, this.props.metadata.theme);
+
 		return <div className='field themes'>
 			<label>theme</label>
 			<Nav.dropdown trigger='click'>
 				<div>
-					{`${this.props.metadata.renderer} : ${this.props.metadata.theme}`} <i className='fas fa-caret-down'></i>
+					{`${_.upperFirst(currentTheme.renderer)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
 				</div>
 				{listThemes('Legacy')}
 				{listThemes('V3')}
