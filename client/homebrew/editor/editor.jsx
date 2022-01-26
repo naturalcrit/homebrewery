@@ -208,6 +208,7 @@ const Editor = createClass({
 					view={this.state.view}
 					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
 					onChange={this.props.onStyleChange}
+					enableFolding={false}
 					rerenderParent={this.rerenderParent} />
 			</>;
 		}

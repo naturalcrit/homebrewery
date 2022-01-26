@@ -27,9 +27,9 @@ if(typeof navigator !== 'undefined'){
 	require('codemirror/addon/search/matchesonscrollbar.js');
 	require('codemirror/addon/dialog/dialog.js');
 	//Trailing space highlighting
-	require('codemirror/addon/edit/trailingspace.js');
+	// require('codemirror/addon/edit/trailingspace.js');
 	//Active line highlighting
-	require('codemirror/addon/selection/active-line.js');
+	// require('codemirror/addon/selection/active-line.js');
 	//Auto-closing
 	//XML code folding is a requirement of the auto-closing tag feature and is not enabled
 	require('codemirror/addon/fold/xml-fold.js');
@@ -42,10 +42,11 @@ if(typeof navigator !== 'undefined'){
 const CodeEditor = createClass({
 	getDefaultProps : function() {
 		return {
-			language : '',
-			value    : '',
-			wrap     : true,
-			onChange : ()=>{}
+			language      : '',
+			value         : '',
+			wrap          : true,
+			onChange      : ()=>{},
+			enableFolding : true
 		};
 	},
 
@@ -80,6 +81,12 @@ const CodeEditor = createClass({
 			this.props.rerenderParent();
 		} else if(this.codeMirror?.getValue() != this.props.value) { //update editor contents if brew.text is changed from outside
 			this.codeMirror.setValue(this.props.value);
+		}
+
+		if(this.props.enableFolding) {
+			this.codeMirror.setOption('foldOptions', this.foldOptions(this.codeMirror));
+		} else {
+			this.codeMirror.setOption('foldOptions', false);
 		}
 	},
 
@@ -139,39 +146,19 @@ const CodeEditor = createClass({
 				'Ctrl-]'           : this.unfoldAllCode,
 				'Cmd-]'            : this.unfoldAllCode
 			},
-			foldGutter  : true,
-			foldOptions : {
-				scanUp      : true,
-				rangeFinder : CodeMirror.fold.homebrewery,
-				widget      : (from, to)=>{
-					let text = '';
-					let currentLine = from.line;
-					const maxLength = 50;
-					while (currentLine <= to.line && text.length <= maxLength) {
-						text += this.codeMirror.getLine(currentLine);
-						if(currentLine < to.line)
-							text += ' ';
-						currentLine += 1;
-					}
-
-					text = text.trim();
-					if(text.length > maxLength)
-						text = `${text.substr(0, maxLength)}...`;
-
-					return `\u21A4 ${text} \u21A6`;
-				}
-			},
-			gutters                : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-			autoCloseTags          : true,
-			styleActiveLine        : true,
-			showTrailingSpace      : true,
-			specialChars           : / /,
-			specialCharPlaceholder : function(char) {
-				const el = document.createElement('span');
-				el.className = 'cm-space';
-				el.innerHTML = ' ';
-				return el;
-			}
+			foldGutter        : true,
+			foldOptions       : this.foldOptions(this.codeMirror),
+			gutters           : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+			autoCloseTags     : true,
+			styleActiveLine   : true,
+			showTrailingSpace : false,
+			// specialChars           : / /,
+			// specialCharPlaceholder : function(char) {
+			// 	const el = document.createElement('span');
+			// 	el.className = 'cm-space';
+			// 	el.innerHTML = ' ';
+			// 	return el;
+			// }
 		});
 		closeTag.autoCloseCurlyBraces(CodeMirror, this.codeMirror);
 
@@ -354,6 +341,30 @@ const CodeEditor = createClass({
 	},
 	historySize : function(){
 		return this.codeMirror.doc.historySize();
+	},
+
+	foldOptions : function(cm){
+		return {
+			scanUp      : true,
+			rangeFinder : CodeMirror.fold.homebrewery,
+			widget      : (from, to)=>{
+				let text = '';
+				let currentLine = from.line;
+				const maxLength = 50;
+				while (currentLine <= to.line && text.length <= maxLength) {
+					text += this.codeMirror.getLine(currentLine);
+					if(currentLine < to.line)
+						text += ' ';
+					currentLine += 1;
+				}
+
+				text = text.trim();
+				if(text.length > maxLength)
+					text = `${text.substr(0, maxLength)}...`;
+
+				return `\u21A4 ${text} \u21A6`;
+			}
+		};
 	},
 	//----------------------//
 
