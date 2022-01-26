@@ -7,6 +7,7 @@ const cx    = require('classnames');	//Unused variable
 const DISMISS_KEY = 'dismiss_notification09-9-21';
 
 const NotificationPopup = createClass({
+	displayName     : 'NotificationPopup',
 	getInitialState : function() {
 		return {
 			notifications : {}
