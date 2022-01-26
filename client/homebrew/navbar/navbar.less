@@ -1,3 +1,4 @@
+@import 'naturalcrit/styles/colors.less';
 @navbarHeight : 28px;
 @keyframes pinkColoring {
 	//from {color: white;}
@@ -67,17 +68,17 @@
 			color: pink;
 		}
 	}
-	.migrate.navItem{
-		border-right : 1px solid #666;
-	}
-	.recent.navItem{
+	.recent.navItem,
+	.help.navItem{
 		position : relative;
 		.dropdown{
-			position : absolute;
-			top      : 28px;
-			left     : 0px;
-			z-index  : 10000;
-			width    : 100%;
+			position   : absolute;
+			top        : 28px;
+			left       : 0px;
+			z-index    : 10000;
+			width      : 100%;
+			overflow   : hidden auto;
+			max-height : ~"calc(100vh - 28px)";
 			h4{
 				display          : block;
 				box-sizing       : border-box;
@@ -91,6 +92,7 @@
 				&:nth-of-type(2){ background-color: darken(@purple, 30%); }
 			}
 			.item{
+				#backgroundColors;
 				.animate(background-color);
 				position         : relative;
 				display          : block;
@@ -104,11 +106,14 @@
 					background-color : @blue;
 				}
 				.title{
-					display       : inline-block;
 					overflow      : hidden;
 					width         : 100%;
 					text-overflow : ellipsis;
 					white-space   : nowrap;
+
+					i{
+						float: right;
+					}
 				}
 				.time{
 					position  : absolute;

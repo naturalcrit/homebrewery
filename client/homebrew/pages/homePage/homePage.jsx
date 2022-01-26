@@ -9,8 +9,7 @@ const { Meta } = require('vitreum/headtags');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
-const IssueNavItem = require('../../navbar/issue.navitem.jsx');
-const MigrateNavItem = require('../../navbar/migrate.navitem.jsx');
+const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
 
@@ -59,8 +58,7 @@ const HomePage = createClass({
 		return <Navbar ver={this.props.ver}>
 			<Nav.section>
 				<NewBrewItem />
-				<MigrateNavItem />
-				<IssueNavItem />
+				<HelpNavItem />
 				<RecentNavItem />
 				<AccountNavItem />
 			</Nav.section>

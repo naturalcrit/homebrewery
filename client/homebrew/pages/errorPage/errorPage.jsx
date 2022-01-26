@@ -7,11 +7,10 @@ const cx = require('classnames');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 const PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
-const IssueNavItem = require('../../navbar/issue.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
+const HelpNavItem = require('../../navbar/help.navitem.jsx');
 
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
-const MigrateNavItem = require('../../navbar/migrate.navitem.jsx');
 
 const ErrorPage = createClass({
 	getDefaultProps : function() {
@@ -34,8 +33,7 @@ const ErrorPage = createClass({
 
 				<Nav.section>
 					<PatreonNavItem />
-					<MigrateNavItem />
-					<IssueNavItem />
+					<HelpNavItem />
 					<RecentNavItem />
 				</Nav.section>
 			</Navbar>

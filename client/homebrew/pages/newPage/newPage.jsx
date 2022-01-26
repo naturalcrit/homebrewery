@@ -11,12 +11,11 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const IssueNavItem = require('../../navbar/issue.navitem.jsx');
+const HelpNavItem = require('../../navbar/help.navitem.jsx');
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
-const MigrateNavItem = require('../../navbar/migrate.navitem.jsx');
 
 const BREWKEY = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
@@ -291,8 +290,7 @@ const NewPage = createClass({
 			<Nav.section>
 				{this.renderSaveButton()}
 				{this.renderLocalPrintButton()}
-				<MigrateNavItem />
-				<IssueNavItem />
+				<HelpNavItem />
 				<RecentNavItem />
 				<AccountNavItem />
 			</Nav.section>
