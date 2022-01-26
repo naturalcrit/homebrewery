@@ -6,6 +6,7 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 const PatreonNavItem = require('./patreon.navitem.jsx');
 
 const Navbar = createClass({
+	displayName     : 'Navbar',
 	getInitialState : function() {
 		return {
 			//showNonChromeWarning : false,

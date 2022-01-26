@@ -40,6 +40,7 @@ if(typeof navigator !== 'undefined'){
 }
 
 const CodeEditor = createClass({
+	displayName     : 'CodeEditor',
 	getDefaultProps : function() {
 		return {
 			language      : '',

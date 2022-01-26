@@ -3,7 +3,7 @@ const createClass = require('create-react-class');
 const Nav = require('naturalcrit/nav/nav.jsx');
 
 const Account = createClass({
-
+	displayName     : 'AccountNavItem',
 	getInitialState : function() {
 		return {
 			url : ''

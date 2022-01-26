@@ -24,6 +24,7 @@ const HelpNavItem = require('../../navbar/help.navitem.jsx');
 
 
 const UserPage = createClass({
+	displayName     : 'UserPage',
 	getDefaultProps : function() {
 		return {
 			username : '',
