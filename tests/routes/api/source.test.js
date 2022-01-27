@@ -1,5 +1,9 @@
 const supertest = require('supertest');
 
+// We need to mock google actions to avoid accessing real servers in our tests
+// (there are limits on unauthorized access)
+jest.mock('googleActions.js');
+
 // Mimic https responses to avoid being redirected all the time
 const app = supertest.agent(require('app.js').app)
     .set('X-Forwarded-Proto', 'https');
@@ -20,18 +24,18 @@ describe('/source/:id', ()=>{
 	});
 
 	beforeAll(async ()=>{
-		const regular_brew = new Homebrew.model({
+		const regularBrew = new Homebrew.model({
 			shareId : 'share-id-1',
 			text    : 'This is text',
 			authors : ['this', 'is', 'list', 'of', 'authors']
 		});
-		await regular_brew.save();
-        
-        const brew_with_special_symbols = new Homebrew.model({
-            shareId : 'share-id-2',
+		await regularBrew.save();
+
+		const brewWithSpecialSymbol = new Homebrew.model({
+			shareId : 'share-id-2',
 			text    : '<div>&</div>'
-        });
-        await brew_with_special_symbols.save();
+		});
+		await brewWithSpecialSymbol.save();
 	});
 
 	it('able to return a source of an existing brew', ()=>{
@@ -39,48 +43,55 @@ describe('/source/:id', ()=>{
             .send()
             .expect(200)
             .then((response)=>{
-                expect(response.text).toBe('<code><pre style="white-space: pre-wrap;">This is text</pre></code>');
-                expect(response.headers).toHaveProperty('content-type', 'text/html; charset=utf-8');
+            	expect(response.text).toBe('<code><pre style="white-space: pre-wrap;">This is text</pre></code>');
             });
 	});
 
-    it('encodes special symbols', ()=>{
-        return app.get('/source/share-id-2')
+	it('encodes special symbols', ()=>{
+		return app.get('/source/share-id-2')
             .send()
             .expect(200)
             .then((response)=>{
-                expect(response.text).toBe('<code><pre style="white-space: pre-wrap;">&lt;div&gt;&amp;&lt;/div&gt;</pre></code>');
-                expect(response.headers).toHaveProperty('content-type', 'text/html; charset=utf-8');
+            	expect(response.text).toBe('<code><pre style="white-space: pre-wrap;">&lt;div&gt;&amp;&lt;/div&gt;</pre></code>');
             });
-    });
+	});
 
-    it('returns an error for a non-existing brew', ()=>{
-        return app.get('/source/invalid-id')
+	it('sets the correct response headers', ()=>{
+		return app.get('/source/share-id-1')
+            .send()
+            .expect(200)
+            .then((response)=>{
+            	expect(response.headers).toHaveProperty('content-type', 'text/html; charset=utf-8');
+            });
+	});
+
+	it('returns an error for a non-existing brew', ()=>{
+		return app.get('/source/invalid-id')
             .send()
             // FIXME: we should be expecting 404 Not Found (#1983)
             .expect(500);
-    });
+	});
 
-    it('returns an error for a non-existing brew (google id)', ()=>{
-        return app.get('/source/non-existing-brew-id')
+	it('returns an error for a non-existing brew (google id)', ()=>{
+		return app.get('/source/non-existing-brew-id')
             .send()
             // FIXME: we should be expecting 404 Not Found (#1983)
             .expect(500);
-    });
+	});
 
-    // FIXME: we should return an error instead of a home page here
-    it.skip('returns an error for a missing brew id', ()=>{
-        return app.get('/source/')
+	// FIXME: we should return an error instead of a home page here
+	it.skip('returns an error for a missing brew id', ()=>{
+		return app.get('/source/')
             .send()
             .expect(404);
-    });
+	});
 
-    // FIXME: we should return an error instead of a home page here
-    it.skip('returns an error for a missing brew id #2', ()=>{
-        return app.get('/source')
+	// FIXME: we should return an error instead of a home page here
+	it.skip('returns an error for a missing brew id #2', ()=>{
+		return app.get('/source')
             .send()
             .expect(404);
-    });
+	});
 
 	afterAll(()=>{
 		return Homebrew.model.deleteMany();
