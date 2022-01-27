@@ -261,7 +261,8 @@ app.use((req, res)=>{
 		account     : req.account,
 		enable_v3   : config.get('enable_v3')
 	};
-	templateFn('homebrew', title = req.brew ? req.brew.title : '', props)
+	const title = req.brew ? req.brew.title : '';
+	templateFn('homebrew', title, props)
         .then((page)=>{ res.send(page); })
         .catch((err)=>{
         	console.log(err);
