@@ -1,13 +1,3 @@
-```css
-.page #example + table td {
-	border:1px dashed #00000030;
-}
-
-.page {
-	padding-bottom : 1.1cm;
-}
-```
-
 # The Homebrewery *V3*
 Welcome traveler from an antique land. Please sit and tell us of what you have seen. The unheard of monsters, who slither and bite. Tell us of the wondrous items and and artifacts you have found, their mysteries yet to be unlocked. Of the vexing vocations and surprising skills you have seen.
 
@@ -42,6 +32,13 @@ If you want to save ink or have a monochrome printer, add the **PRINT → {{fas,
 {{artist,bottom:160px,left:100px
 ##### Homebrew Mug
 [naturalcrit](https://homebrew.naturalcrit.com)
+}}
+
+{{position:absolute;top:40px;right:-580px
+<a href='https://discord.gg/by3deKx' target='_blank' title='discord' style='color: black;'><img src='/assets/discord.png' height='36px'/></a><span style='position: absolute; left: -6px; top: 40px'>Discord</span>
+<a href='https://github.com/naturalcrit/homebrewery' target='_blank' title='github' style='color: black; padding-left: 10px;'><img src='/assets/github.png' height='36px'/></a><span style='position: absolute; top: 40px; left: 47px'>Github</span>
+<a href='https://patreon.com/NaturalCrit' target='_blank' title='patreon' style='color: black; padding-left: 10px;'><img src='/assets/patreon.png' height='36px'/></a><span style='position: absolute; top: 40px; left: 93px'>Patreon</span>
+<a href='https://www.reddit.com/r/homebrewery/' target='_blank' title='reddit' style='color: black; padding-left: 10px;'><img src='/assets/reddit.png' height='36px'/></a><span style='position: absolute; top: 40px; left: 147px;'>Reddit</span>
 }}
 
 {{pageNumber 1}}
@@ -79,11 +76,11 @@ If you wish to sell or in some way gain profit for what's created on this site, 
 #### Crediting Me
 If you'd like to credit me in your brew, I'd be flattered! Just reference that you made it with The Homebrewery.
 
-### More Homebrew Resources
-Check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/wiki/resources).
-
-
 \page
+
+### More Homebrew Resources
+<a href='https://discord.gg/by3deKx' target='_blank'><img src='/assets/discordOfManyThings.svg' alt='Discord of Many Things Logo' title='Discord of Many Things Logo' style='width:50px; float: right; padding-left: 10px;'/></a>
+If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/wiki/resources). The <a href='https://discord.gg/by3deKx' target='_blank' title='Discord of Many Things'>Discord of Many Things</a> is another great resource to connect with fellow homebrewers for help and feedback.
 
 ## Markdown+
 The Homebrewery aims to make homebrewing as simple as possible, providing a live editor with Markdown syntax that is more human-readable and faster to write with than raw HTML.
@@ -122,6 +119,8 @@ A blank line can be achieved with a run of one or more `:` alone on a line. More
 
 Much nicer than `<br><br><br><br><br>`
 
+\column
+
 ### Definition Lists
 V3 uses HTML *definition lists* to create "lists" with hanging indents.
 
@@ -130,14 +129,12 @@ V3 uses HTML *definition lists* to create "lists" with hanging indents.
 ### Column Breaks
 Column and page breaks with `\column` and `\page`.
 
-\column
-
 ### Tables
 Tables now allow column & row spanning between cells. This is included in some updated snippets, but a simplified example is given below.
 
 A cell can be spanned across columns by grouping multiple pipe `|` characters at the end of a cell.
 
-Row spanning is achieved by adding a `^` at the end of a cell just before the `|`.  
+Row spanning is achieved by adding a `^` at the end of a cell just before the `|`.
 
 These can be combined to span a cell across both columns and rows. Cells must have the same colspan if they are to be rowspan'd.
 
@@ -164,8 +161,13 @@ Using *Curly Injection* you can assign an id, classes, or specific inline CSS pr
 ## Snippets
 Homebrewery comes with a series of *code snippets* found at the top of the editor pane that make it easy to create brews as quickly as possible.  Just set your cursor where you want the code to appear in the editor pane, choose a snippet, and make the adjustments you need.
 
+{{pageNumber 2}}
+{{footnote PART 2 | BORING STUFF}}
+
+\page
+
 ## Style Editor Panel
 {{fa,fa-paint-brush}} Technically released prior to v3 but still new to many users, check out the new **Style Editor** located on the right side of the Snippet bar.  This editor accepts CSS for styling without requiring `<style>` tags-- anything that would have gone inside style tags before can now be placed here, and snippets that insert CSS styles are now located on that tab.
 
-{{pageNumber 2}}
+{{pageNumber 3}}
 {{footnote PART 2 | BORING STUFF}}
