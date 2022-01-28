@@ -47,9 +47,9 @@ If you want to save ink or have a monochrome printer, add the **PRINT → {{fas,
 \column
 
 ## New in V3.0.0
-With the latest major update to *The Homebrewery* we've implemented an extended Markdown-like syntax for block and span elements, plus a few other changes, eliminating the need for HTML tags like `div` and `span` in most cases. No raw HTML tags should be needed in a brew, and going forward, raw HTML will no longer receive debugging support (*but can still be used if you insist*).
+We've implemented an extended Markdown-like syntax for block and span elements, plus a few other changes, eliminating the need for HTML tags like `div` and `span` in most cases. No raw HTML tags should be needed in a brew (*but can still be used if you insist*).
 
-Much of the syntax and styling has changed in V3. Code in one version may be broken in the other, and updating an older brew to V3 will require more than just a copy and paste. *However*, all brews made prior to the release of v3.0.0 will still render normally, and you may switch between the "Legacy" brew renderer and the newer "V3" renderer via the {{fa,fa-info-circle}} **Properties** button on your brew at any time.
+Much of the syntax and styling has changed in V3, so converting a Legacy brew to V3 (or vice-versa) will require tweaking your document. *However*, all brews made prior to the release of v3.0.0 will still render normally, and you may switch between the "Legacy" brew renderer and the newer "V3" renderer via the {{fa,fa-info-circle}} **Properties** button on your brew at any time.
 
 Scroll down to the next page for a brief summary of the changes and new features available in V3!
 
@@ -76,11 +76,11 @@ If you wish to sell or in some way gain profit for what's created on this site, 
 #### Crediting Me
 If you'd like to credit me in your brew, I'd be flattered! Just reference that you made it with The Homebrewery.
 
-\page
-
 ### More Homebrew Resources
 <a href='https://discord.gg/by3deKx' target='_blank'><img src='/assets/discordOfManyThings.svg' alt='Discord of Many Things Logo' title='Discord of Many Things Logo' style='width:50px; float: right; padding-left: 10px;'/></a>
 If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/wiki/resources). The <a href='https://discord.gg/by3deKx' target='_blank' title='Discord of Many Things'>Discord of Many Things</a> is another great resource to connect with fellow homebrewers for help and feedback.
+
+\page
 
 ## Markdown+
 The Homebrewery aims to make homebrewing as simple as possible, providing a live editor with Markdown syntax that is more human-readable and faster to write with than raw HTML.
@@ -119,22 +119,20 @@ A blank line can be achieved with a run of one or more `:` alone on a line. More
 
 Much nicer than `<br><br><br><br><br>`
 
-\column
-
 ### Definition Lists
-V3 uses HTML *definition lists* to create "lists" with hanging indents.
-
-**Senses** :: Here is some text that is long and overflows into a second line, creating a "hanging indent".
+**Example** :: V3 uses HTML *definition lists* to create "lists" with hanging indents.
 
 ### Column Breaks
 Column and page breaks with `\column` and `\page`.
+
+\column
 
 ### Tables
 Tables now allow column & row spanning between cells. This is included in some updated snippets, but a simplified example is given below.
 
 A cell can be spanned across columns by grouping multiple pipe `|` characters at the end of a cell.
 
-Row spanning is achieved by adding a `^` at the end of a cell just before the `|`.
+Row spanning is achieved by adding a `^` at the end of a cell just before the `|`.  
 
 These can be combined to span a cell across both columns and rows. Cells must have the same colspan if they are to be rowspan'd.
 
@@ -150,9 +148,9 @@ These can be combined to span a cell across both columns and rows. Cells must ha
 | 6A     |    6B ^|    6C  |
 
 ## Images
-Images must be hosted online somewhere, like [Imgur](https://www.imgur.com). You use the address to that image to reference it in your brew\*. Images can be included using Markdown-style images.
+Images must be hosted online somewhere, like [Imgur](https://www.imgur.com). You use the address to that image to reference it in your brew\*.
 
-Using *Curly Injection* you can assign an id, classes, or specific inline CSS properties to the image.
+Using *Curly Injection* you can assign an id, classes, or inline CSS properties to the Markdown image syntax.
 
 ![alt-text](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:100px,border:"2px solid",border-radius:10px}
 
@@ -161,13 +159,8 @@ Using *Curly Injection* you can assign an id, classes, or specific inline CSS pr
 ## Snippets
 Homebrewery comes with a series of *code snippets* found at the top of the editor pane that make it easy to create brews as quickly as possible.  Just set your cursor where you want the code to appear in the editor pane, choose a snippet, and make the adjustments you need.
 
-{{pageNumber 2}}
-{{footnote PART 2 | BORING STUFF}}
-
-\page
-
 ## Style Editor Panel
 {{fa,fa-paint-brush}} Technically released prior to v3 but still new to many users, check out the new **Style Editor** located on the right side of the Snippet bar.  This editor accepts CSS for styling without requiring `<style>` tags-- anything that would have gone inside style tags before can now be placed here, and snippets that insert CSS styles are now located on that tab.
 
-{{pageNumber 3}}
+{{pageNumber 2}}
 {{footnote PART 2 | BORING STUFF}}
