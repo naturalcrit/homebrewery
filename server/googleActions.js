@@ -6,7 +6,7 @@ const token = require('./token.js');
 const config = require('nconf')
 	.argv()
 	.env({ lowerCase: true })	// Load environment variables
-	.file('environment', { file: `${__dirname}/../config/${process.env.NODE_ENV}.json` })
+	.file('environment', { file: `config/${process.env.NODE_ENV}.json` })
 	.file('defaults', { file: 'config/default.json' });
 
 //let oAuth2Client;

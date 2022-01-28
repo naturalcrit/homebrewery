@@ -4,7 +4,7 @@ const jwt = require('jwt-simple');
 const config = require('nconf')
 	.argv()
 	.env({ lowerCase: true })	// Load environment variables
-	.file('environment', { file: `${__dirname}/../config/${process.env.NODE_ENV}.json` })
+	.file('environment', { file: `config/${process.env.NODE_ENV}.json` })
 	.file('defaults', { file: 'config/default.json' });
 
 // Generate an Access Token for the given User ID
