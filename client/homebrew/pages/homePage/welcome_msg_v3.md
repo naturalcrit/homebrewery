@@ -1,3 +1,12 @@
+```css
+.page #example + table td {
+	border:1px dashed #00000030;
+}
+.page {
+	padding-bottom : 1.1cm;
+}
+```
+
 # The Homebrewery *V3*
 Welcome traveler from an antique land. Please sit and tell us of what you have seen. The unheard of monsters, who slither and bite. Tell us of the wondrous items and and artifacts you have found, their mysteries yet to be unlocked. Of the vexing vocations and surprising skills you have seen.
 
