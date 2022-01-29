@@ -106,7 +106,7 @@ const faqText        = require('fs').readFileSync('./../faq.md', 'utf8');
 
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
-const path = require("path");
+const path = require('path');
 
 //Robots.txt
 app.get('/robots.txt', (req, res)=>{
