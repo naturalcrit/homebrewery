@@ -4,6 +4,7 @@ const jwt = require('jwt-simple');
 const express = require('express');
 const yaml = require('js-yaml');
 const app = express();
+const path = require('path');
 
 const homebrewApi = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
@@ -62,9 +63,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 	}
 };
 
-app.use('/', serveCompressedStaticAssets(`${__dirname}/../build`));
-
-process.chdir(__dirname);
+app.use('/', serveCompressedStaticAssets(path.resolve(__dirname, '../build')));
 
 //app.use(express.static(`${__dirname}/build`));
 app.use(require('body-parser').json({ limit: '25mb' }));
@@ -99,10 +98,11 @@ app.use(homebrewApi);
 app.use(require('./admin.api.js'));
 
 const HomebrewModel  = require('./homebrew.model.js').model;
-const welcomeText    = require('fs').readFileSync('./../client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
-const welcomeTextV3  = require('fs').readFileSync('./../client/homebrew/pages/homePage/welcome_msg_v3.md', 'utf8');
-const changelogText  = require('fs').readFileSync('./../changelog.md', 'utf8');
-const faqText        = require('fs').readFileSync('./../faq.md', 'utf8');
+const fs = require('fs');
+const welcomeText    = fs.readFileSync(path.resolve(__dirname, '../client/homebrew/pages/homePage/welcome_msg.md'), 'utf8');
+const welcomeTextV3  = fs.readFileSync(path.resolve(__dirname, '../client/homebrew/pages/homePage/welcome_msg_v3.md'), 'utf8');
+const changelogText  = fs.readFileSync(path.resolve(__dirname, '../changelog.md'), 'utf8');
+const faqText        = fs.readFileSync(path.resolve(__dirname, '../faq.md'), 'utf8');
 
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
