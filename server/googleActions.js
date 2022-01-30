@@ -7,7 +7,7 @@ const config = require('./config.js');
 
 //let oAuth2Client;
 
-GoogleActions = {
+const GoogleActions = {
 
 	authCheck : (account, res)=>{
 		if(!account || !account.googleId){ // If not signed into Google

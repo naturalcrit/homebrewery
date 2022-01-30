@@ -2,7 +2,6 @@
 .page #example + table td {
 	border:1px dashed #00000030;
 }
-
 .page {
 	padding-bottom : 1.1cm;
 }
@@ -44,15 +43,22 @@ If you want to save ink or have a monochrome printer, add the **PRINT → {{fas,
 [naturalcrit](https://homebrew.naturalcrit.com)
 }}
 
+{{position:absolute;top:40px;right:-580px
+<a href='https://discord.gg/by3deKx' target='_blank' title='discord' style='color: black;'><img src='/assets/discord.png' height='36px'/></a><span style='position: absolute; left: -6px; top: 40px'>Discord</span>
+<a href='https://github.com/naturalcrit/homebrewery' target='_blank' title='github' style='color: black; padding-left: 10px;'><img src='/assets/github.png' height='36px'/></a><span style='position: absolute; top: 40px; left: 47px'>Github</span>
+<a href='https://patreon.com/NaturalCrit' target='_blank' title='patreon' style='color: black; padding-left: 10px;'><img src='/assets/patreon.png' height='36px'/></a><span style='position: absolute; top: 40px; left: 93px'>Patreon</span>
+<a href='https://www.reddit.com/r/homebrewery/' target='_blank' title='reddit' style='color: black; padding-left: 10px;'><img src='/assets/reddit.png' height='36px'/></a><span style='position: absolute; top: 40px; left: 147px;'>Reddit</span>
+}}
+
 {{pageNumber 1}}
 {{footnote PART 1 | FANCINESS}}
 
 \column
 
 ## New in V3.0.0
-With the latest major update to *The Homebrewery* we've implemented an extended Markdown-like syntax for block and span elements, plus a few other changes, eliminating the need for HTML tags like `div` and `span` in most cases. No raw HTML tags should be needed in a brew, and going forward, raw HTML will no longer receive debugging support (*but can still be used if you insist*).
+We've implemented an extended Markdown-like syntax for block and span elements, plus a few other changes, eliminating the need for HTML tags like `div` and `span` in most cases. No raw HTML tags should be needed in a brew (*but can still be used if you insist*).
 
-Much of the syntax and styling has changed in V3. Code in one version may be broken in the other, and updating an older brew to V3 will require more than just a copy and paste. *However*, all brews made prior to the release of v3.0.0 will still render normally, and you may switch between the "Legacy" brew renderer and the newer "V3" renderer via the {{fa,fa-info-circle}} **Properties** button on your brew at any time.
+Much of the syntax and styling has changed in V3, so converting a Legacy brew to V3 (or vice-versa) will require tweaking your document. *However*, all brews made prior to the release of v3.0.0 will still render normally, and you may switch between the "Legacy" brew renderer and the newer "V3" renderer via the {{fa,fa-info-circle}} **Properties** button on your brew at any time.
 
 Scroll down to the next page for a brief summary of the changes and new features available in V3!
 
@@ -80,8 +86,8 @@ If you wish to sell or in some way gain profit for what's created on this site, 
 If you'd like to credit me in your brew, I'd be flattered! Just reference that you made it with The Homebrewery.
 
 ### More Homebrew Resources
-Check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/wiki/resources).
-
+<a href='https://discord.gg/by3deKx' target='_blank'><img src='/assets/discordOfManyThings.svg' alt='Discord of Many Things Logo' title='Discord of Many Things Logo' style='width:50px; float: right; padding-left: 10px;'/></a>
+If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/wiki/resources). The <a href='https://discord.gg/by3deKx' target='_blank' title='Discord of Many Things'>Discord of Many Things</a> is another great resource to connect with fellow homebrewers for help and feedback.
 
 \page
 
@@ -123,9 +129,7 @@ A blank line can be achieved with a run of one or more `:` alone on a line. More
 Much nicer than `<br><br><br><br><br>`
 
 ### Definition Lists
-V3 uses HTML *definition lists* to create "lists" with hanging indents.
-
-**Senses** :: Here is some text that is long and overflows into a second line, creating a "hanging indent".
+**Example** :: V3 uses HTML *definition lists* to create "lists" with hanging indents.
 
 ### Column Breaks
 Column and page breaks with `\column` and `\page`.
@@ -153,9 +157,9 @@ These can be combined to span a cell across both columns and rows. Cells must ha
 | 6A     |    6B ^|    6C  |
 
 ## Images
-Images must be hosted online somewhere, like [Imgur](https://www.imgur.com). You use the address to that image to reference it in your brew\*. Images can be included using Markdown-style images.
+Images must be hosted online somewhere, like [Imgur](https://www.imgur.com). You use the address to that image to reference it in your brew\*.
 
-Using *Curly Injection* you can assign an id, classes, or specific inline CSS properties to the image.
+Using *Curly Injection* you can assign an id, classes, or inline CSS properties to the Markdown image syntax.
 
 ![alt-text](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:100px,border:"2px solid",border-radius:10px}
 
