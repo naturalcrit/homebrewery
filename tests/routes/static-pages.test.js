@@ -21,9 +21,7 @@ describe('Tests for static pages', ()=>{
 		return app.get('/faq').expect(200);
 	});
 
-	// FIXME: robots.txt file can't be properly loaded under testing environment,
-	// most likely due to __dirname being different from what is expected
-	it.skip('robots.txt works', ()=>{
+	it('robots.txt works', ()=>{
 		return app.get('/robots.txt').expect(200);
 	});
 });

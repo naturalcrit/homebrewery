@@ -1,6 +1,5 @@
 const DB = require('./server/db.js');
 const server = require('./server/app.js');
-
 const config = require('./server/config.js');
 
 DB.connect(config).then(()=>{
