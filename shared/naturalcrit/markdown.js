@@ -329,6 +329,66 @@ const voidTags = new Set([
 	'input', 'keygen', 'link', 'meta', 'param', 'source'
 ]);
 
+const recolor = (target)=>{
+	//First, extract the RGB components of the hex color notation.
+
+	var r = parseInt(target.substr(1,2), 16); // Grab the hex representation of red (chars 1-2) and convert to decimal (base 10).
+	var g = parseInt(target.substr(3,2), 16);
+	var b = parseInt(target.substr(5,2), 16);
+
+  r /= 255, g /= 255, b /= 255;
+  var max = Math.max(r, g, b), min = Math.min(r, g, b);
+  var h, s, l = (max + min) / 2;
+
+  if(max == min){
+      h = s = 0; // achromatic
+  }else{
+      var d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch(max){
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+      }
+      h /= 6;
+  }
+
+	// fake hue-rotate to see how much to post-brighten and saturate
+  let angle = h * 2 * Math.PI;
+	console.log({angle: angle});
+  let sin = Math.sin(angle);
+  let cos = Math.cos(angle);
+
+	let matrix = [
+      0.213 + cos * 0.787 - sin * 0.213, 0.715 - cos * 0.715 - sin * 0.715, 0.072 - cos * 0.072 + sin * 0.928,
+      0.213 - cos * 0.213 + sin * 0.143, 0.715 + cos * 0.285 + sin * 0.140, 0.072 - cos * 0.072 - sin * 0.283,
+      0.213 - cos * 0.213 - sin * 0.787, 0.715 - cos * 0.715 + sin * 0.715, 0.072 + cos * 0.928 + sin * 0.072
+  ];
+
+	r = Math.max(Math.min(1 * matrix[0] + 0 * matrix[1] + 0 * matrix[2], 255), 0);
+  g = Math.max(Math.min(1 * matrix[3] + 0 * matrix[4] + 0 * matrix[5], 255), 0);
+  b = Math.max(Math.min(1 * matrix[6] + 0 * matrix[7] + 0 * matrix[8], 255), 0);
+	//=========--------------------------------============
+
+	max = Math.max(r, g, b), min = Math.min(r, g, b);
+	let newL= (max + min) / 2;
+
+	console.log({newR : r, newG : g, newB: b});
+	console.log({newL :newL});
+	console.log({l : l})
+
+	l = l * 2; //Set lightness range from 0 to 200%, with 100% = no change (since we start with pure red which is .5 lightness)
+	           //Set saturation range from 0 to 100%, with 100% = no change (since pure red is 1 saturation)
+	console.log({s:s});
+	console.log({l:l});
+	let contrast = 1;
+
+	if(l > 1)
+		contrast = (2-l)/(l);
+
+  return `filter:hue-rotate(${h}turn) contrast(${contrast}) brightness(${l}) saturate(${s});`; // Add  at end
+}
+
 const processStyleTags = (string)=>{
 	//split tags up. quotes can only occur right after colons.
 	//TODO: can we simplify to just split on commas?
@@ -338,7 +398,17 @@ const processStyleTags = (string)=>{
 
 	const id      = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
 	const classes = _.remove(tags, (tag)=>!tag.includes(':'));
-	const styles  = tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;'));
+	const styles  = tags.map((tag)=>{
+		let newTag = tag.replace(/:"?([^"]*)"?/g, ':$1;');
+		let match;
+		if(match = newTag.match(/recolor:(#.{6})/)) {
+			console.log(match[1]);
+			newTag = recolor(match[1]);
+		}
+		return newTag;
+	});
+
+
 	return `${classes.join(' ')}" ${id ? `id="${id}"` : ''} ${styles.length ? `style="${styles.join(' ')}"` : ''}`;
 };
 

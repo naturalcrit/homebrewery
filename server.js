@@ -1,6 +1,8 @@
 const DB = require('./server/db.js');
 const server = require('./server/app.js');
 
+process.chdir(__dirname);
+
 const config = require('nconf')
 	.argv()
 	.env({ lowerCase: true })
