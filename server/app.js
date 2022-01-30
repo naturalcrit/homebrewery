@@ -1,4 +1,7 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
+// Set working directory to project root
+process.chdir(`${__dirname}/..`);
+
 const _ = require('lodash');
 const jwt = require('jwt-simple');
 const express = require('express');
@@ -13,9 +16,6 @@ const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
 
 const brewAccessTypes = ['edit', 'share', 'raw'];
-
-// Set working directory to project root
-process.chdir(`${__dirname}/..`);
 
 //Get the brew object from the HB database or Google Drive
 const getBrewFromId = asyncHandler(async (id, accessType)=>{
