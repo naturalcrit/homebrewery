@@ -1,5 +1,7 @@
+const path = require('path');
+
 module.exports = require('nconf')
     .argv()
     .env({ lowerCase: true })
-    .file('environment', { file: `config/${process.env.NODE_ENV}.json` })
-    .file('defaults', { file: 'config/default.json' });
+    .file('environment', { file: path.resolve(__dirname, '../config/${process.env.NODE_ENV}.json') })
+    .file('default', { file: path.resolve(__dirname, '../config/default.json') });
