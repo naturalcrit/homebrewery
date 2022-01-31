@@ -3,15 +3,11 @@ const _ = require('lodash');
 const { google } = require('googleapis');
 const { nanoid } = require('nanoid');
 const token = require('./token.js');
-const config = require('nconf')
-	.argv()
-	.env({ lowerCase: true })	// Load environment variables
-	.file('environment', { file: `config/${process.env.NODE_ENV}.json` })
-	.file('defaults', { file: 'config/default.json' });
+const config = require('./config.js');
 
 //let oAuth2Client;
 
-GoogleActions = {
+const GoogleActions = {
 
 	authCheck : (account, res)=>{
 		if(!account || !account.googleId){ // If not signed into Google

@@ -1,9 +1,13 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
+// Set working directory to project root
+process.chdir(`${__dirname}/..`);
+
 const _ = require('lodash');
 const jwt = require('jwt-simple');
 const express = require('express');
 const yaml = require('js-yaml');
 const app = express();
+const config = require('./config.js');
 
 const homebrewApi = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
@@ -62,21 +66,12 @@ const splitTextStyleAndMetadata = (brew)=>{
 	}
 };
 
-app.use('/', serveCompressedStaticAssets(`${__dirname}/../build`));
-
-process.chdir(__dirname);
+app.use('/', serveCompressedStaticAssets(`build`));
 
 //app.use(express.static(`${__dirname}/build`));
 app.use(require('body-parser').json({ limit: '25mb' }));
 app.use(require('cookie-parser')());
 app.use(require('./forcessl.mw.js'));
-
-// FIXME: the config should be passed as an argument for the app
-const config = require('nconf')
-	.argv()
-	.env({ lowerCase: true })
-	.file('environment', { file: `config/${process.env.NODE_ENV}.json` })
-	.file('defaults', { file: 'config/default.json' });
 
 //Account Middleware
 app.use((req, res, next)=>{
@@ -99,17 +94,17 @@ app.use(homebrewApi);
 app.use(require('./admin.api.js'));
 
 const HomebrewModel  = require('./homebrew.model.js').model;
-const welcomeText    = require('fs').readFileSync('./../client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
-const welcomeTextV3  = require('fs').readFileSync('./../client/homebrew/pages/homePage/welcome_msg_v3.md', 'utf8');
-const migrateText    = require('fs').readFileSync('./../client/homebrew/pages/homePage/migrate.md', 'utf8');
-const changelogText  = require('fs').readFileSync('./../changelog.md', 'utf8');
-const faqText        = require('fs').readFileSync('./../faq.md', 'utf8');
+const welcomeText    = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
+const welcomeTextV3  = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg_v3.md', 'utf8');
+const migrateText    = require('fs').readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
+const changelogText  = require('fs').readFileSync('changelog.md', 'utf8');
+const faqText        = require('fs').readFileSync('faq.md', 'utf8');
 
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
 //Robots.txt
 app.get('/robots.txt', (req, res)=>{
-	return res.sendFile(`${__dirname}/robots.txt`);
+	return res.sendFile(`robots.txt`, { root: process.cwd() });
 });
 
 //Home page
@@ -273,7 +268,8 @@ app.use((req, res)=>{
 		account     : req.account,
 		enable_v3   : config.get('enable_v3')
 	};
-	templateFn('homebrew', title = req.brew ? req.brew.title : '', props)
+	const title = req.brew ? req.brew.title : '';
+	templateFn('homebrew', title, props)
         .then((page)=>{ res.send(page); })
         .catch((err)=>{
         	console.log(err);

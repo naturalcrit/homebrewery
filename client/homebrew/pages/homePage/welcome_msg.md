@@ -1,4 +1,5 @@
 # The Homebrewery
+
 Welcome traveler from an antique land. Please sit and tell us of what you have seen. The unheard of monsters, who slither and bite. Tell us of the wondrous items and and artifacts you have found, their mysteries yet to be unlocked. Of the vexing vocations and surprising skills you have seen.
 
 ### Homebrew D&D made easy
@@ -57,17 +58,20 @@ The Homebrewery is licensed using the [MIT License](https://github.com/naturalcr
 If you wish to sell or in some way gain profit for what you make on this site, it's your responsibility to ensure you have the proper licenses/rights for any images or resources used.
 
 ### More Resources
-If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/wiki/resources).
+<a href='https://discord.gg/by3deKx' target='_blank'><img src='/assets/discordOfManyThings.svg' alt='Discord of Many Things Logo' title='Discord of Many Things Logo' style='width:50px; float: right; padding-left: 10px;'/></a>
+If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/wiki/resources). The Discord of Many Things is another great resource to connect with fellow homebrewers for help and feedback.
 
-
-
-<img src='https://i.imgur.com/hMna6G0.png' style='position:absolute;bottom:50px;right:30px;width:280px' />
+<img src='https://i.imgur.com/hMna6G0.png' style='position:absolute;bottom:40px;right:30px;width:280px' />
 
 <div class='pageNumber'>1</div>
 <div class='footnote'>PART 1 | FANCINESS</div>
 
-
-
+<div style='position: absolute; top: 40px; right: 60px;'>
+<a href='https://discord.gg/by3deKx' target='_blank' title='Discord of Many Things'><img src='/assets/discord.png' height='36px'/></a><span style='position: absolute; left: -4px; top: 40px'>Discord</span>
+<a href='https://github.com/naturalcrit/homebrewery' target='_blank' title='github' style='color: black; padding-left: 10px;'><img src='/assets/github.png' height='36px'/></a><span style='position: absolute; top: 40px; left: 48px'>Github</span>
+<a href='https://patreon.com/NaturalCrit' target='_blank' title='patreon' style='color: black; padding-left: 10px;'><img src='/assets/patreon.png' height='36px'/></a><span style='position: absolute; top: 40px; right: 46px'>Patreon</span>
+<a href='https://www.reddit.com/r/homebrewery/' target='_blank' title='reddit' style='color: black; padding-left: 10px;'><img src='/assets/reddit.png' height='36px'/></a><span style='position: absolute; top: 40px; right: 0px;'>Reddit</span>
+</div>
 
 \page
 
