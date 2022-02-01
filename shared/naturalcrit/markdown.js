@@ -372,9 +372,12 @@ const recolor = (target)=>{
 
 	max = Math.max(r, g, b), min = Math.min(r, g, b);
 	let newL= (max + min) / 2;
+	d = max - min;
+	let newS = newL > 0.5 ? d / (2 - max - min) : d / (max + min);
 
 	console.log({newR : r, newG : g, newB: b});
 	console.log({newL :newL});
+	console.log({newS : newS});
 	console.log({l : l})
 
 	l = l * 2; //Set lightness range from 0 to 200%, with 100% = no change (since we start with pure red which is .5 lightness)
@@ -382,11 +385,12 @@ const recolor = (target)=>{
 	console.log({s:s});
 	console.log({l:l});
 	let contrast = 1;
+	console.log({contrast: contrast});
 
 	if(l > 1)
 		contrast = (2-l)/(l);
 
-  return `filter:hue-rotate(${h}turn) contrast(${contrast}) brightness(${l}) saturate(${s});`; // Add  at end
+  return `filter:hue-rotate(${h}turn) saturate(${1/newS}) contrast(${contrast}) brightness(${l}) saturate(${s});`; // Add  at end
 }
 
 const processStyleTags = (string)=>{
