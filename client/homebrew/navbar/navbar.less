@@ -68,8 +68,7 @@
 			color: pink;
 		}
 	}
-	.recent.navItem,
-	.help.navItem{
+	.recent.navItem {
 		position : relative;
 		.dropdown{
 			position   : absolute;
@@ -97,7 +96,7 @@
 				position         : relative;
 				display          : block;
 				box-sizing       : border-box;
-				padding          : 13px 5px;
+				padding          : 8px 5px 13px;
 				background-color : #333;
 				color            : white;
 				text-decoration  : none;
@@ -106,14 +105,11 @@
 					background-color : @blue;
 				}
 				.title{
+					display       : inline-block;
 					overflow      : hidden;
 					width         : 100%;
 					text-overflow : ellipsis;
 					white-space   : nowrap;
-
-					i{
-						float: right;
-					}
 				}
 				.time{
 					position  : absolute;

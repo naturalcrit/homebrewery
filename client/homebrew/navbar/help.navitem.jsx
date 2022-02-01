@@ -4,46 +4,22 @@ const _ = require('lodash');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 
-const Help = createClass({
-
-	getInitialState : function() {
-		return {
-			showDropdown : false
-		};
-	},
-
-	handleDropdown : function(show){
-		this.setState({
-			showDropdown : show
-		});
-	},
-
-	renderDropdown : function(){
-		return !this.state.showDropdown ? null : <div className='dropdown'>
-			<a href={`https://www.reddit.com/r/homebrewery/submit?selftext=true&title=${encodeURIComponent('[Issue] Describe Your Issue Here')}`}
-				className='item red'
-				target='_blank'
-				rel='noopener noreferrer'>
-				<span className='title'>report issue <i className='fas fa-fw fa-bug'/></span>
-			</a>
-			<a href='/migrate'
-				className='item blue'
-				target='_blank'
-				rel='noopener noreferrer'>
-				<span className='title'>migrate <i className='fas fa-fw fa-route'/></span>
-			</a>
-		</div>;
-	},
-
-	render : function(){
-		return <Nav.item icon='fas fa-life-ring' color='grey' className='recent'
-			onMouseEnter={()=>this.handleDropdown(true)}
-			onMouseLeave={()=>this.handleDropdown(false)}>
-			Need Help?
-			{this.renderDropdown()}
-		</Nav.item>;
-	}
-
-});
-
-module.exports = Help;
+module.exports = function(props){
+	return <Nav.dropdown>
+		<Nav.item color='grey' icon='fas fa-question-circle'>
+			need help?
+		</Nav.item>
+		<Nav.item color='red' icon='fas fa-fw fa-bug'
+			href={`https://www.reddit.com/r/homebrewery/submit?selftext=true&title=${encodeURIComponent('[Issue] Describe Your Issue Here')}`}
+			newTab={true}
+			rel='noopener noreferrer'>
+			report issue
+		</Nav.item>
+		<Nav.item color='blue' icon='fas fa-fw fa-file-import'
+			href='/migrate'
+			newTab={true}
+			rel='noopener noreferrer'>
+			migrate
+		</Nav.item>
+	</Nav.dropdown>;
+};
