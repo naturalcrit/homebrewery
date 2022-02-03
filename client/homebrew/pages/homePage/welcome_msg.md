@@ -66,11 +66,11 @@ If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](
 <div class='pageNumber'>1</div>
 <div class='footnote'>PART 1 | FANCINESS</div>
 
-<div style='position: absolute; top: 40px; right: 60px;'>
-<a href='https://discord.gg/by3deKx' target='_blank' title='Discord of Many Things'><img src='/assets/discord.png' height='36px'/></a><span style='position: absolute; left: -4px; top: 40px'>Discord</span>
-<a href='https://github.com/naturalcrit/homebrewery' target='_blank' title='github' style='color: black; padding-left: 10px;'><img src='/assets/github.png' height='36px'/></a><span style='position: absolute; top: 40px; left: 48px'>Github</span>
-<a href='https://patreon.com/NaturalCrit' target='_blank' title='patreon' style='color: black; padding-left: 10px;'><img src='/assets/patreon.png' height='36px'/></a><span style='position: absolute; top: 40px; right: 46px'>Patreon</span>
-<a href='https://www.reddit.com/r/homebrewery/' target='_blank' title='reddit' style='color: black; padding-left: 10px;'><img src='/assets/reddit.png' height='36px'/></a><span style='position: absolute; top: 40px; right: 0px;'>Reddit</span>
+<div style='position: absolute; top: 20px; right: 20px;'>
+<a href='https://discord.gg/by3deKx' target='_blank' title='Discord of Many Things'><img src='/assets/discord.png' height='30px'/></a>
+<a href='https://github.com/naturalcrit/homebrewery' target='_blank' title='Github' style='color: black; padding-left: 5px;'><img src='/assets/github.png' height='30px'/></a>
+<a href='https://patreon.com/NaturalCrit' target='_blank' title='Patreon' style='color: black; padding-left: 5px;'><img src='/assets/patreon.png' height='30px'/></a>
+<a href='https://www.reddit.com/r/homebrewery/' target='_blank' title='Reddit' style='color: black; padding-left: 5px;'><img src='/assets/reddit.png' height='30px'/></a>
 </div>
 
 \page
