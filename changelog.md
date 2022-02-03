@@ -34,16 +34,37 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Wednesday 02/02/2022 - v3.0.7
+{{taskList
+* [x] Revert active line highlighting.
+
+	Fixes issues: [#1913](https://github.com/naturalcrit/homebrewery/issues/1913)
+
+* [x] Added install steps for Ubuntu. [HERE](https://github.com/naturalcrit/homebrewery/blob/master/install/README.UBUNTU.md)
+
+	Fixes issues: [#1900](https://github.com/naturalcrit/homebrewery/issues/1900)
+
+* [x] Added social media links to home page.
+
+* [x] Increase brews visible on the user page to 1,000.
+
+	Fixes issues: [#1943](https://github.com/naturalcrit/homebrewery/issues/1943)
+
+* [x] Added a Legacy to V3 migration guide under **NEED HELP? {{fa,fa-question-circle}} → MIGRATE {{fas,fa-file-import}}**
+
+* [x] Background refactoring and unit tests.
+}}
+
 ### Saturday 18/12/2021 - v3.0.6
 {{taskList
 * [x] Fixed text wrapping for long strings in code blocks.
 
 	Fixes issues: [#1736](https://github.com/naturalcrit/homebrewery/issues/1736)
-	
+
 * [x] Code search/replace `CTRL F / CTRL SHIFT F`
 
 	Fixes issues: [#1201](https://github.com/naturalcrit/homebrewery/issues/1201)
-	
+
 * [x] Auto-closing HTML tags and curly braces `{{ }}`
 * [x] Highlight current active line
 
@@ -56,7 +77,7 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 * [x] Make columns even in V3 Table of Contents.
 
 	Fixes issues: [#1671](https://github.com/naturalcrit/homebrewery/issues/1671)
-	
+
 * [x] Fix `CTRL P` failing to print from `/new` pages.
 
 	Fixes issues: [#1815](https://github.com/naturalcrit/homebrewery/issues/1815)
