@@ -43,13 +43,6 @@ If you want to save ink or have a monochrome printer, add the **PRINT → {{fas,
 [naturalcrit](https://homebrew.naturalcrit.com)
 }}
 
-{{position:absolute;top:40px;right:-580px
-<a href='https://discord.gg/by3deKx' target='_blank' title='discord' style='color: black;'><img src='/assets/discord.png' height='36px'/></a><span style='position: absolute; left: -6px; top: 40px'>Discord</span>
-<a href='https://github.com/naturalcrit/homebrewery' target='_blank' title='github' style='color: black; padding-left: 10px;'><img src='/assets/github.png' height='36px'/></a><span style='position: absolute; top: 40px; left: 47px'>Github</span>
-<a href='https://patreon.com/NaturalCrit' target='_blank' title='patreon' style='color: black; padding-left: 10px;'><img src='/assets/patreon.png' height='36px'/></a><span style='position: absolute; top: 40px; left: 93px'>Patreon</span>
-<a href='https://www.reddit.com/r/homebrewery/' target='_blank' title='reddit' style='color: black; padding-left: 10px;'><img src='/assets/reddit.png' height='36px'/></a><span style='position: absolute; top: 40px; left: 147px;'>Reddit</span>
-}}
-
 {{pageNumber 1}}
 {{footnote PART 1 | FANCINESS}}
 
@@ -88,6 +81,13 @@ If you'd like to credit me in your brew, I'd be flattered! Just reference that y
 ### More Homebrew Resources
 <a href='https://discord.gg/by3deKx' target='_blank'><img src='/assets/discordOfManyThings.svg' alt='Discord of Many Things Logo' title='Discord of Many Things Logo' style='width:50px; float: right; padding-left: 10px;'/></a>
 If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/wiki/resources). The <a href='https://discord.gg/by3deKx' target='_blank' title='Discord of Many Things'>Discord of Many Things</a> is another great resource to connect with fellow homebrewers for help and feedback.
+
+{{position:absolute;top:20px;right:20px;width:auto
+<a href='https://discord.gg/by3deKx' target='_blank' title='Discord of Many Things' style='color: black;'><img src='/assets/discord.png' style='height:30px'/></a>
+<a href='https://github.com/naturalcrit/homebrewery' target='_blank' title='Github' style='color: black; padding-left: 5px;'><img src='/assets/github.png' style='height:30px'/></a>
+<a href='https://patreon.com/NaturalCrit' target='_blank' title='Patreon' style='color: black; padding-left: 5px;'><img src='/assets/patreon.png' style='height:30px'/></a>
+<a href='https://www.reddit.com/r/homebrewery/' target='_blank' title='Reddit' style='color: black; padding-left: 5px;'><img src='/assets/reddit.png' style='height:30px'/></a>
+}}
 
 \page
 
