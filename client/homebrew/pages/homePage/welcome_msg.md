@@ -59,7 +59,7 @@ If you wish to sell or in some way gain profit for what you make on this site, i
 
 ### More Resources
 <a href='https://discord.gg/by3deKx' target='_blank'><img src='/assets/discordOfManyThings.svg' alt='Discord of Many Things Logo' title='Discord of Many Things Logo' style='width:50px; float: right; padding-left: 10px;'/></a>
-If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/wiki/resources). The Discord of Many Things is another great resource to connect with fellow homebrewers for help and feedback.
+If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/wiki/resources). The <a href='https://discord.gg/by3deKx' target='_blank' title='Discord of Many Things'>Discord of Many Things</a> is another great resource to connect with fellow homebrewers for help and feedback.
 
 <img src='https://i.imgur.com/hMna6G0.png' style='position:absolute;bottom:40px;right:30px;width:280px' />
 
