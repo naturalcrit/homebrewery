@@ -12,7 +12,8 @@ const dedent = require('dedent-tabs').default;
 const BrewItem = createClass({
 	getDefaultProps : function() {
 		return {
-			brew : {
+			displayName : 'BrewItem',
+			brew        : {
 				title       : '',
 				description : '',
 
@@ -48,7 +49,7 @@ const BrewItem = createClass({
 	renderDeleteBrewLink : function(){
 		if(!this.props.brew.editId) return;
 
-		return <a onClick={this.deleteBrew}>
+		return <a className='deleteLink' onClick={this.deleteBrew}>
 			<i className='fas fa-trash-alt' title='Delete' />
 		</a>;
 	},
@@ -61,7 +62,7 @@ const BrewItem = createClass({
 			editLink = this.props.brew.googleId + editLink;
 		}
 
-		return <a href={`/edit/${editLink}`} target='_blank' rel='noopener noreferrer'>
+		return <a className='editLink' href={`/edit/${editLink}`} target='_blank' rel='noopener noreferrer'>
 			<i className='fas fa-pencil-alt' title='Edit' />
 		</a>;
 	},
@@ -74,7 +75,7 @@ const BrewItem = createClass({
 			shareLink = this.props.brew.googleId + shareLink;
 		}
 
-		return <a href={`/share/${shareLink}`} target='_blank' rel='noopener noreferrer'>
+		return <a className='shareLink' href={`/share/${shareLink}`} target='_blank' rel='noopener noreferrer'>
 			<i className='fas fa-share-alt' title='Share' />
 		</a>;
 	},
@@ -87,7 +88,7 @@ const BrewItem = createClass({
 			shareLink = this.props.brew.googleId + shareLink;
 		}
 
-		return <a href={`/download/${shareLink}`}>
+		return <a className='downloadLink' href={`/download/${shareLink}`}>
 			<i className='fas fa-download' title='Download' />
 		</a>;
 	},
