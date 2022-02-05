@@ -4,16 +4,9 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
-const moment = require('moment');
-
-const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../../navbar/navbar.jsx');
-
-const RecentNavItem = require('../../../navbar/recent.navitem.jsx').both;
-const Account = require('../../../navbar/account.navitem.jsx');
-const NewBrew = require('../../../navbar/newbrew.navitem.jsx');
 const BrewItem = require('./brewItem/brewItem.jsx');
-const ReportIssue = require('../../../navbar/issue.navitem.jsx');
+
+const moment = require('moment');
 
 // const brew = {
 // 	title   : 'SUPER Long title woah now',
@@ -32,7 +25,8 @@ const ListPage = createClass({
 					class : '',
 					brews : []
 				}
-			]
+			],
+			navItems : <></>
 		};
 	},
 	getInitialState : function() {
@@ -146,16 +140,17 @@ const ListPage = createClass({
 
 	getSortedBrews : function(brewCollection){
 		const testString = _.deburr(this.state.filterString).toLowerCase();
-		const brews = this.state.filterString ? _.filter(brewCollection.brews, (brew)=>{
+		console.log(testString);
+		const brews = testString ? _.filter(brewCollection.brews, (brew)=>{
 			return (_.deburr(brew.title).toLowerCase().includes(testString)) ||
 			(_.deburr(brew.description).toLowerCase().includes(testString));
-		}) : this.props.brewCollection.brews;
-		return _.groupBy(brews, (brew)=>{
-			return (brew.published ? 'published' : 'private');
-		});
+		}) : brewCollection.brews;
+		console.log(brews);
+		return brews;
 	},
 
 	renderBrewCollection : function(brewCollection){
+		brewCollection.brews = this.getSortedBrews(brewCollection);
 		return _.map(brewCollection, (brewItem, idx)=>{
 			return <div key={idx} className={`brewCollection${brewItem?.class ? ` ${brewItem.class}` : ''}`}>
 				<h1>{brewItem.title || 'No Title'}</h1>
@@ -167,14 +162,7 @@ const ListPage = createClass({
 	render : function(){
 		return <div className='listPage sitePage'>
 			<link href='/themes/5ePhbLegacy.style.css' rel='stylesheet'/>
-			<Navbar>
-				<Nav.section>
-					<NewBrew />
-					<ReportIssue />
-					<RecentNavItem />
-					<Account />
-				</Nav.section>
-			</Navbar>
+			{this.props.navItems}
 
 			<div className='content V3'>
 				<div className='phb'>

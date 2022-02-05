@@ -5,6 +5,14 @@ const cx    = require('classnames');
 
 const ListPage = require('../basePages/listPage/listPage.jsx');
 
+const Nav = require('naturalcrit/nav/nav.jsx');
+const Navbar = require('../../navbar/navbar.jsx');
+
+const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
+const Account = require('../../navbar/account.navitem.jsx');
+const NewBrew = require('../../navbar/newbrew.navitem.jsx');
+const ReportIssue = require('../../navbar/issue.navitem.jsx');
+
 const UserPage = createClass({
 	displayName     : 'UserPage',
 	getDefaultProps : function() {
@@ -42,8 +50,19 @@ const UserPage = createClass({
 		};
 	},
 
+	navItems : function() {
+		return <Navbar>
+			<Nav.section>
+				<NewBrew />
+				<ReportIssue />
+				<RecentNavItem />
+				<Account />
+			</Nav.section>
+		</Navbar>;
+	},
+
 	render : function(){
-		return <ListPage brewCollection={this.state.brewCollection} ></ListPage>;
+		return <ListPage brewCollection={this.state.brewCollection} navItems={this.navItems()}></ListPage>;
 	}
 });
 
