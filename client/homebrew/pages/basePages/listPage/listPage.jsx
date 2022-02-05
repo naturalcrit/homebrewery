@@ -138,14 +138,12 @@ const ListPage = createClass({
 		</div>;
 	},
 
-	getSortedBrews : function(brewCollection){
+	getSortedBrews : function(brews){
 		const testString = _.deburr(this.state.filterString).toLowerCase();
-		console.log(testString);
-		const brews = testString ? _.filter(brewCollection.brews, (brew)=>{
+		brews = testString ? _.filter(brews, (brew)=>{
 			return (_.deburr(brew.title).toLowerCase().includes(testString)) ||
 			(_.deburr(brew.description).toLowerCase().includes(testString));
-		}) : brewCollection.brews;
-		console.log(brews);
+		}) : brews;
 		return brews;
 	},
 
@@ -154,7 +152,7 @@ const ListPage = createClass({
 		return _.map(brewCollection, (brewItem, idx)=>{
 			return <div key={idx} className={`brewCollection${brewItem?.class ? ` ${brewItem.class}` : ''}`}>
 				<h1>{brewItem.title || 'No Title'}</h1>
-				{this.renderBrews(brewItem.brews)}
+				{this.renderBrews(this.getSortedBrews(brewItem.brews))}
 			</div>;
 		});
 	},
