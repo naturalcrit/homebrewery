@@ -17,6 +17,7 @@ const moment = require('moment');
 
 
 const ListPage = createClass({
+	displayName     : 'ListPage',
 	getDefaultProps : function() {
 		return {
 			brewCollection : [
