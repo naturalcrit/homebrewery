@@ -81,6 +81,13 @@ const updateBrew = (req, res)=>{
 	HomebrewModel.get({ editId: req.params.id })
 		.then((brew)=>{
 			const updateBrew = excludePropsFromUpdate(req.body);
+
+			if(brew.authors.length > 0 && !(!!req.account && brew.authors.includes(req.account?.username))) {
+				console.warn(`User ${req.account?.username} is not an author on brew ${brew._id}`);
+				res.setHeader('Content-Type', 'application/json');
+				return res.status(403).send(JSON.stringify({ message: `You must be added as an author by the document owner to edit this brew!` }));
+			}
+
 			brew = _.merge(brew, updateBrew);
 			brew.text = mergeBrewText(brew);
 
@@ -91,7 +98,7 @@ const updateBrew = (req, res)=>{
 			brew.updatedAt = new Date();
 
 			if(req.account) {
-				brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
+				brew.authors = _.uniq(_.concat(updateBrew.authors.filter((a)=>a.length > 0), req.account.username));
 			}
 
 			brew.markModified('authors');

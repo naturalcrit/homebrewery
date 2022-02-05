@@ -7,6 +7,8 @@ const request = require('superagent');
 
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
+const StringArrayEditor = require('./stringArrayEditor.jsx');
+
 const MetadataEditor = createClass({
 	displayName     : 'MetadataEditor',
 	getDefaultProps : function() {
@@ -26,9 +28,10 @@ const MetadataEditor = createClass({
 	},
 
 	handleFieldChange : function(name, e){
-		this.props.onChange(_.merge({}, this.props.metadata, {
+		this.props.onChange({
+			...this.props.metadata,
 			[name] : e.target.value
-		}));
+		});
 	},
 	handleSystem : function(system, e){
 		if(e.target.checked){
@@ -103,19 +106,6 @@ const MetadataEditor = createClass({
 		</div>;
 	},
 
-	renderAuthors : function(){
-		let text = 'None.';
-		if(this.props.metadata.authors && this.props.metadata.authors.length){
-			text = this.props.metadata.authors.join(', ');
-		}
-		return <div className='field authors'>
-			<label>authors</label>
-			<div className='value'>
-				{text}
-			</div>
-		</div>;
-	},
-
 	renderRenderOptions : function(){
 		if(!global.enable_v3) return;
 
@@ -170,7 +160,9 @@ const MetadataEditor = createClass({
 			</div>
 			*/}
 
-			{this.renderAuthors()}
+			<StringArrayEditor label='authors'
+				values={this.props.metadata.authors}
+				onChange={(e)=>this.handleFieldChange('authors', e)}/>
 
 			<div className='field systems'>
 				<label>systems</label>

@@ -129,7 +129,7 @@ const EditPage = createClass({
 
 	handleMetaChange : function(metadata){
 		this.setState((prevState)=>({
-			brew      : _.merge({}, prevState.brew, metadata),
+			brew      : { ...prevState.brew, ...metadata },
 			isPending : true,
 		}), ()=>this.trySave());
 
@@ -232,10 +232,11 @@ const EditPage = createClass({
 						? 'Not signed in!'
 						: 'Error Saving to Google!');
 					this.setState({ errors: err });
-					return;
 				});
 
-				this.savedBrew = res.body;
+				if(res) {
+					this.savedBrew = res.body;
+				}
 			}
 		} else {
 			if(transfer) {
@@ -244,7 +245,6 @@ const EditPage = createClass({
 				.catch((err)=>{
 					console.log('Error creating Local Copy');
 					this.setState({ errors: err });
-					return;
 				});
 
 				await request.get(`/api/removeGoogle/${brew.googleId}${brew.editId}`)
@@ -253,8 +253,10 @@ const EditPage = createClass({
 					console.log('Error Deleting Google Brew');
 				});
 
-				this.savedBrew = res.body;
-				history.replaceState(null, null, `/edit/${this.savedBrew.editId}`); //update URL to match doc ID
+				if(res) {
+					this.savedBrew = res.body;
+					history.replaceState(null, null, `/edit/${this.savedBrew.editId}`); //update URL to match doc ID
+				}
 			} else {
 				const res = await request
 				.put(`/api/update/${brew.editId}`)
@@ -262,10 +264,11 @@ const EditPage = createClass({
 				.catch((err)=>{
 					console.log('Error Updating Local Brew');
 					this.setState({ errors: err });
-					return;
 				});
 
-				this.savedBrew = res.body;
+				if(res) {
+					this.savedBrew = res.body;
+				}
 			}
 		}
 
@@ -367,6 +370,15 @@ const EditPage = createClass({
 						<div className='deny'>
 							Not Now
 						</div>
+					</div>
+				</Nav.item>;
+			}
+
+			if(!!this.state.errors.response?.body?.message) {
+				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+					Uh oh!
+					<div className='errorContainer'>
+						{this.state.errors.response.body.message}
 					</div>
 				</Nav.item>;
 			}
