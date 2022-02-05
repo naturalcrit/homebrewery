@@ -11,7 +11,7 @@ const Navbar = require('../../navbar/navbar.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account = require('../../navbar/account.navitem.jsx');
 const NewBrew = require('../../navbar/newbrew.navitem.jsx');
-const ReportIssue = require('../../navbar/issue.navitem.jsx');
+const HelpNavItem = require('../../navbar/help.navitem.jsx');
 
 const UserPage = createClass({
 	displayName     : 'UserPage',
@@ -54,7 +54,7 @@ const UserPage = createClass({
 		return <Navbar>
 			<Nav.section>
 				<NewBrew />
-				<ReportIssue />
+				<HelpNavItem />
 				<RecentNavItem />
 				<Account />
 			</Nav.section>
