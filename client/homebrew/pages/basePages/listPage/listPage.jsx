@@ -1,20 +1,10 @@
 require('./listPage.less');
-const React = require('react');
+const React       = require('react');
 const createClass = require('create-react-class');
-const _     = require('lodash');
-const cx    = require('classnames');
+const _           = require('lodash');
+const moment      = require('moment');
 
-const BrewItem = require('./brewItem/brewItem.jsx');
-
-const moment = require('moment');
-
-// const brew = {
-// 	title   : 'SUPER Long title woah now',
-// 	authors : []
-// };
-
-//const BREWS = _.times(25, ()=>{ return brew;});
-
+const BrewItem    = require('./brewItem/brewItem.jsx');
 
 const ListPage = createClass({
 	displayName     : 'ListPage',
@@ -41,9 +31,7 @@ const ListPage = createClass({
 	renderBrews : function(brews){
 		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
 
-		const sortedBrews = this.sortBrews(brews);
-
-		return _.map(sortedBrews, (brew, idx)=>{
+		return _.map(brews, (brew, idx)=>{
 			return <BrewItem brew={brew} key={idx}/>;
 		});
 	},
@@ -58,10 +46,6 @@ const ListPage = createClass({
 			'latest'  : moment(brew.lastViewed).format()
 		};
 		return mapping[this.state.sortType];
-	},
-
-	sortBrews : function(brews){
-		return _.orderBy(brews, (brew)=>{ return this.sortBrewOrder(brew); }, this.state.sortDir);
 	},
 
 	handleSortOptionChange : function(event){
@@ -141,19 +125,19 @@ const ListPage = createClass({
 
 	getSortedBrews : function(brews){
 		const testString = _.deburr(this.state.filterString).toLowerCase();
-		brews = testString ? _.filter(brews, (brew)=>{
+		brews = _.filter(brews, (brew)=>{
 			return (_.deburr(brew.title).toLowerCase().includes(testString)) ||
 			(_.deburr(brew.description).toLowerCase().includes(testString));
-		}) : brews;
-		return brews;
+		});
+
+		return _.orderBy(brews, (brew)=>{ return this.sortBrewOrder(brew); }, this.state.sortDir);
 	},
 
 	renderBrewCollection : function(brewCollection){
-		brewCollection.brews = this.getSortedBrews(brewCollection);
-		return _.map(brewCollection, (brewItem, idx)=>{
-			return <div key={idx} className={`brewCollection${brewItem?.class ? ` ${brewItem.class}` : ''}`}>
-				<h1>{brewItem.title || 'No Title'}</h1>
-				{this.renderBrews(this.getSortedBrews(brewItem.brews))}
+		return _.map(brewCollection, (brewGroup, idx)=>{
+			return <div key={idx} className={`brewCollection ${brewGroup.class ?? ''}`}>
+				<h1>{brewGroup.title || 'No Title'}</h1>
+				{this.renderBrews(this.getSortedBrews(brewGroup.brews))}
 			</div>;
 		});
 	},
