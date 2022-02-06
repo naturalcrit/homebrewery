@@ -6,7 +6,7 @@ const cx    = require('classnames');
 const moment = require('moment');
 const request = require('superagent');
 
-const googleDriveIcon = require('../../../googleDrive.png');
+const googleDriveIcon = require('../../../../googleDrive.png');
 const dedent = require('dedent-tabs').default;
 
 const BrewItem = createClass({
