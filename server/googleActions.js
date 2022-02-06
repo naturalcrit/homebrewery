@@ -3,15 +3,11 @@ const _ = require('lodash');
 const { google } = require('googleapis');
 const { nanoid } = require('nanoid');
 const token = require('./token.js');
-const config = require('nconf')
-	.argv()
-	.env({ lowerCase: true })	// Load environment variables
-	.file('environment', { file: `config/${process.env.NODE_ENV}.json` })
-	.file('defaults', { file: 'config/default.json' });
+const config = require('./config.js');
 
 //let oAuth2Client;
 
-GoogleActions = {
+const GoogleActions = {
 
 	authCheck : (account, res)=>{
 		if(!account || !account.googleId){ // If not signed into Google
@@ -96,7 +92,7 @@ GoogleActions = {
 		const drive = google.drive({ version: 'v3', auth: oAuth2Client });
 
 		const obj = await drive.files.list({
-			pageSize : 100,
+			pageSize : 1000,
 			fields   : 'nextPageToken, files(id, name, description, createdTime, modifiedTime, properties)',
 			q        : 'mimeType != \'application/vnd.google-apps.folder\' and trashed = false'
 		})
