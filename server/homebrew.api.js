@@ -94,6 +94,12 @@ const updateBrew = (req, res)=>{
 				return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
 			}
 
+			if(req.account) {
+				console.log(brew.authors, updateBrew.authors);
+				brew.authors = _.uniq(_.concat([!!brew.authors ? brew.authors[0] : undefined], updateBrew.authors, req.account.username)).filter((a)=>a !== undefined && a.length > 0);
+				delete updateBrew.authors;
+			}
+
 			brew = _.merge(brew, updateBrew);
 			brew.text = mergeBrewText(brew);
 
@@ -102,10 +108,6 @@ const updateBrew = (req, res)=>{
 			// Delete the non-binary text field since it's not needed anymore
 			brew.text = undefined;
 			brew.updatedAt = new Date();
-
-			if(req.account) {
-				brew.authors = _.uniq(_.concat(updateBrew.authors.filter((a)=>a.length > 0), req.account.username));
-			}
 
 			brew.markModified('authors');
 			brew.markModified('systems');
