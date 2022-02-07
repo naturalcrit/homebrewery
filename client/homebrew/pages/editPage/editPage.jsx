@@ -276,7 +276,8 @@ const EditPage = createClass({
 			brew : _.merge({}, prevState.brew, {
 				googleId : this.savedBrew.googleId ? this.savedBrew.googleId : null,
 				editId 	 : this.savedBrew.editId,
-				shareId  : this.savedBrew.shareId
+				shareId  : this.savedBrew.shareId,
+				version  : this.savedBrew.version
 			}),
 			isPending : false,
 			isSaving  : false,

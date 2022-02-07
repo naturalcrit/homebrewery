@@ -88,6 +88,12 @@ const updateBrew = (req, res)=>{
 				return res.status(403).send(JSON.stringify({ message: `You must be added as an author by the document owner to edit this brew!` }));
 			}
 
+			if(brew.version > updateBrew.version) {
+				console.warn(`Document ${brew._id} had a version mismatch`);
+				res.setHeader('Content-Type', 'application/json');
+				return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
+			}
+
 			brew = _.merge(brew, updateBrew);
 			brew.text = mergeBrewText(brew);
 
@@ -103,6 +109,7 @@ const updateBrew = (req, res)=>{
 
 			brew.markModified('authors');
 			brew.markModified('systems');
+			brew.version++;
 
 			brew.save((err, obj)=>{
 				if(err) throw err;
