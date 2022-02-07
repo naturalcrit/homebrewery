@@ -127,7 +127,10 @@ const NewPage = createClass({
 
 	handleMetaChange : function(metadata){
 		this.setState((prevState)=>({
-			brew : _.merge({}, prevState.brew, metadata),
+			brew : {
+				...prevState.brew,
+				...metadata
+			},
 		}));
 		localStorage.setItem(METAKEY, JSON.stringify({
 			// 'title'       : this.state.brew.title,

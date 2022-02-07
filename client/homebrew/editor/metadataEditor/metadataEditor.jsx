@@ -160,7 +160,8 @@ const MetadataEditor = createClass({
 			</div>
 			*/}
 
-			<StringArrayEditor label='authors'
+			<StringArrayEditor label='authors' valuePatterns={[/^$/]} canEdit={(value)=>value !== global.account?.username}
+				addPlaceholder='add username' editPlaceholder='input username'
 				values={this.props.metadata.authors}
 				onChange={(e)=>this.handleFieldChange('authors', e)}/>
 

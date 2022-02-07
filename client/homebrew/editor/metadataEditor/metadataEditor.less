@@ -1,3 +1,4 @@
+@import 'naturalcrit/styles/colors.less';
 
 .metadataEditor{
 	position         : absolute;
@@ -77,10 +78,6 @@
 			.button(@red);
 		}
 	}
-	//.authors.field .value{
-	//	font-size: 0.8em;
-	//	line-height    : 1.5em;
-	//}
 
 	.field .list {
 		display   : flex;
@@ -90,22 +87,66 @@
 			flex : 0 0 auto;
 		}
 
+		#groupedIcon {
+			#backgroundColors;
+			display: inline-block;
+			border-radius: 0 0.5em 0.5em 0;
+			height: ~"calc(100% + 0.6em)";
+			position: relative;
+			top: -0.3em;
+			right: -0.3em;
+			cursor: pointer;
+			min-width : 20px;
+			text-align: center;
+			color: white;
+
+			i {
+				position: relative;
+				top: 50%;
+				transform: translateY(-50%);
+			}
+		}
+
 		.badge {
-			background-color : #ddd;
+			background-color : #dddddd;
 			border-radius    : .5em;
-			//color            : black;
 			font-size        : .9em;
 			margin           : 2px;
 			padding          : .3em;
 
-			i.fa-times {
-				cursor: pointer;
+			.icon {
+				#groupedIcon
 			}
 		}
 
-		.value {
-			width     : 7.5vw;
-			min-width : 75px;
+		.input-group {
+			height : ~"calc(.9em + 4px + .6em)";
+
+			input {
+				border-radius : .5em 0 0 .5em;
+			}
+
+			input:last-child {
+				border-radius : .5em;
+			}
+
+			.value {
+				width     : 7.5vw;
+				min-width : 75px;
+				height: 100%;
+			}
+
+			.invalid {
+				background-color : pink;
+			}
+
+			.icon {
+				#groupedIcon;
+				height: 97%;
+				font-size : .8em;
+				right : 1px;
+				top : -.54em;
+			}
 		}
 	}
 }
