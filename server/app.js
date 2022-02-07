@@ -220,6 +220,10 @@ app.get('/user/:username', async (req, res, next)=>{
 app.get('/edit/:id', asyncHandler(async (req, res, next)=>{
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
 	const brew = await getBrewFromId(req.params.id, 'edit');
+	if(brew.authors.length > 0 && !(!!req.account && brew.authors.includes(req.account?.username))) {
+		console.warn(`User ${req.account?.username} is not an author on brew ${brew._id}`);
+		return res.status(403).send(`You must be added as an author by the document owner to edit this brew!`);
+	}
 	req.brew = brew;
 	return next();
 }));
