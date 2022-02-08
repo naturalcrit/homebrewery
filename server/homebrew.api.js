@@ -95,7 +95,6 @@ const updateBrew = (req, res)=>{
 			}
 
 			if(req.account) {
-				console.log(brew.authors, updateBrew.authors);
 				brew.authors = _.uniq(_.concat([!!brew.authors ? brew.authors[0] : undefined], updateBrew.authors, req.account.username)).filter((a)=>a !== undefined && a.length > 0);
 				delete updateBrew.authors;
 			}
