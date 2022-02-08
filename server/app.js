@@ -93,6 +93,7 @@ app.use((req, res, next)=>{
 app.use(homebrewApi);
 app.use(require('./admin.api.js'));
 
+const UserInfo = require('./userinfo.model.js').model;
 const HomebrewModel  = require('./homebrew.model.js').model;
 const welcomeText    = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 const welcomeTextV3  = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg_v3.md', 'utf8');
@@ -268,6 +269,10 @@ app.use((req, res)=>{
 		account     : req.account,
 		enable_v3   : config.get('enable_v3')
 	};
+
+	// Update user activity
+	if(req.account) UserInfo.updateUserActivity(req.account?.username);
+
 	const title = req.brew ? req.brew.title : '';
 	templateFn('homebrew', title, props)
         .then((page)=>{ res.send(page); })
