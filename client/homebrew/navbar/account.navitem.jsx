@@ -38,7 +38,7 @@ const Account = createClass({
 				<Nav.item
 					href={`/user/${global.account.username}`}
 					color='yellow'
-					icon='fas fa-user'
+					icon='fas fa-beer'
 				>
 					brews
 				</Nav.item>
