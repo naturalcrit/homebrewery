@@ -25,7 +25,11 @@ const UserPage = createClass({
 		const usernameWithS = this.props.username + (this.props.username.endsWith('s') ? `'` : `'s`);
 
 		const brews = _.groupBy(this.props.brews, (brew)=>{
-			return (brew.published ? 'published' : 'private');
+			if(brew.collaborating) {
+				return 'collaborating';
+			} else {
+				return (brew.published ? 'published' : 'private');
+			}
 		});
 
 		const brewCollection = [
@@ -41,6 +45,13 @@ const UserPage = createClass({
 					title : `${usernameWithS} unpublished brews`,
 					class : 'unpublished',
 					brews : brews.private
+				}
+			);
+			brewCollection.push(
+				{
+					title : `${usernameWithS} collaborating brews`,
+					class : 'collaborating',
+					brews : brews.collaborating
 				}
 			);
 		}
