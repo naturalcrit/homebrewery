@@ -151,8 +151,12 @@ const UserPage = createClass({
 			return (_.deburr(brew.title).toLowerCase().includes(testString)) ||
 			(_.deburr(brew.description).toLowerCase().includes(testString));
 		}) : this.props.brews;
-		return _.groupBy(brewCollection, (brew)=>{
-			return (brew.published ? 'published' : 'private');
+		return _.groupBy(brewCollection, ({ collaborating, published })=>{
+			if(collaborating) {
+				return 'collaborating';
+			} else {
+				return published ? 'published' : 'private';
+			}
 		});
 	},
 
@@ -178,10 +182,16 @@ const UserPage = createClass({
 						{this.renderBrews(brews.published)}
 					</div>
 					{this.props.username == global.account?.username &&
-						<div className='unpublished'>
-							<h1>{this.getUsernameWithS()} unpublished brews</h1>
-							{this.renderBrews(brews.private)}
-						</div>
+						<React.Fragment>
+							<div className='unpublished'>
+								<h1>{this.getUsernameWithS()} unpublished brews</h1>
+								{this.renderBrews(brews.private)}
+							</div>
+							<div className='invited'>
+								<h1>{this.getUsernameWithS()} collaborating brews</h1>
+								{this.renderBrews(brews.collaborating)}
+							</div>
+						</React.Fragment>
 					}
 				</div>
 			</div>

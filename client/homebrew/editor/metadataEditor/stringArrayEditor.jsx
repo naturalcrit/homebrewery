@@ -6,13 +6,13 @@ const StringArrayEditor = createClass({
 	displayName     : 'StringArrayEditor',
 	getDefaultProps : function() {
 		return {
-			label           : '',
-			values          : [],
-			valuePatterns   : null,
-			editPlaceholder : '',
-			addPlaceholder  : '',
-			canEdit         : null,
-			onChange        : ()=>{}
+			label         : '',
+			values        : [],
+			valuePatterns : null,
+			placeholder   : '',
+			unique        : false,
+			cannotEdit    : [],
+			onChange      : ()=>{}
 		};
 	},
 
@@ -66,7 +66,7 @@ const StringArrayEditor = createClass({
 	},
 
 	editValue : function(index){
-		if(!!this.props.canEdit && !this.props.canEdit(this.props.values[index])) {
+		if(!!this.props.cannotEdit && this.props.cannotEdit.includes(this.props.values[index])) {
 			return;
 		}
 		const valueContext = this.state.valueContext.map((context, i)=>{
@@ -77,7 +77,9 @@ const StringArrayEditor = createClass({
 	},
 
 	valueIsValid : function(value) {
-		return !this.props.valuePatterns || !this.props.valuePatterns.some((pattern)=>!!(value || '').match(pattern));
+		const matchesPatterns = !this.props.valuePatterns || !this.props.valuePatterns.some((pattern)=>!!(value || '').match(pattern));
+		const uniqueIfSet = !this.props.unique || !this.props.values.includes(value);
+		return matchesPatterns && uniqueIfSet;
 	},
 
 	handleValueInputKeyDown : function(event, index) {
@@ -106,17 +108,15 @@ const StringArrayEditor = createClass({
 		const valueElements = Object.values(this.state.valueContext).map((context, i)=>context.editing
 			? <React.Fragment key={i}>
 				<div className='input-group'>
-					<div className='input-group'>
-						<input type='text' className={`value ${this.valueIsValid(this.state.updateValue) ? '' : 'invalid'}`} autoFocus placeholder={this.props.editPlaceholder}
-							   value={this.state.updateValue}
-							   onKeyDown={(e)=>this.handleValueInputKeyDown(e, i)}
-							   onChange={(e)=>this.setState({ updateValue: e.target.value })}/>
-						{this.valueIsValid(this.state.updateValue) ? <div className='icon steel'><i className='fa fa-check fa-fw' onClick={(e)=>{ e.stopPropagation(); this.updateValue(this.state.updateValue, i); }}/></div> : null}
-					</div>
+					<input type='text' className={`value ${this.valueIsValid(this.state.updateValue) ? '' : 'invalid'}`} autoFocus placeholder={this.props.placeholder}
+						   value={this.state.updateValue}
+						   onKeyDown={(e)=>this.handleValueInputKeyDown(e, i)}
+						   onChange={(e)=>this.setState({ updateValue: e.target.value })}/>
+					{this.valueIsValid(this.state.updateValue) ? <div className='icon steel'><i className='fa fa-check fa-fw' onClick={(e)=>{ e.stopPropagation(); this.updateValue(this.state.updateValue, i); }}/></div> : null}
 				</div>
 			</React.Fragment>
 			: <div className='badge' key={i} onClick={()=>this.editValue(i)}>{context.value}
-				{!!this.props.canEdit && !this.props.canEdit(context.value) ? null : <div className='icon steel'><i className='fa fa-times fa-fw' onClick={(e)=>{ e.stopPropagation(); this.removeValue(i); }}/></div>}
+				{!!this.props.cannotEdit && this.props.cannotEdit.includes(context.value) ? null : <div className='icon steel'><i className='fa fa-times fa-fw' onClick={(e)=>{ e.stopPropagation(); this.removeValue(i); }}/></div>}
 			</div>
 		);
 
@@ -125,7 +125,7 @@ const StringArrayEditor = createClass({
 			<div className='list'>
 				{valueElements}
 				<div className='input-group'>
-					<input type='text' className={`value ${this.valueIsValid(this.state.temporaryValue) ? '' : 'invalid'}`} placeholder={this.props.addPlaceholder}
+					<input type='text' className={`value ${this.valueIsValid(this.state.temporaryValue) ? '' : 'invalid'}`} placeholder={this.props.placeholder}
 						   value={this.state.temporaryValue}
 						   onKeyDown={(e)=>this.handleValueInputKeyDown(e)}
 						   onChange={(e)=>this.setState({ temporaryValue: e.target.value })}/>

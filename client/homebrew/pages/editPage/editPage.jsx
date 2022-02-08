@@ -128,7 +128,6 @@ const EditPage = createClass({
 	},
 
 	handleMetaChange : function(metadata){
-		console.log(metadata);
 		this.setState((prevState)=>({
 			brew      : { ...prevState.brew, ...metadata },
 			isPending : true,

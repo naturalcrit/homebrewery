@@ -5,6 +5,7 @@ const zlib = require('zlib');
 const GoogleActions = require('./googleActions.js');
 const Markdown = require('../shared/naturalcrit/markdown.js');
 const yaml = require('js-yaml');
+const asyncHandler = require('express-async-handler');
 
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
@@ -45,6 +46,27 @@ const excludePropsFromUpdate = (brew)=>{
 	return brew;
 };
 
+const getBrewForEdit = async (req, res, next)=>{
+	let { brew } = req;
+
+	if(!brew) {
+		brew = await HomebrewModel.get({ editId: req.params.id })
+			.catch((err)=>{
+				console.error(err);
+				return res.status(500).send('Error while fetching brew');
+			});
+	}
+
+	if(brew.authors.length > 0 && !brew.authors.includes(req?.account?.username)) {
+		console.warn(`User ${req.account?.username} is not an author on brew ${brew._id}`);
+		res.setHeader('Content-Type', 'application/json');
+		return res.status(403).send(JSON.stringify({ message: `You must be added as an author by the document owner to edit this brew!` }));
+	}
+
+	req.brew = brew;
+	!!next ? next() : undefined;
+};
+
 const newBrew = (req, res)=>{
 	const brew = req.body;
 
@@ -78,49 +100,38 @@ const newBrew = (req, res)=>{
 };
 
 const updateBrew = (req, res)=>{
-	HomebrewModel.get({ editId: req.params.id })
-		.then((brew)=>{
-			const updateBrew = excludePropsFromUpdate(req.body);
+	let { brew } = req;
+	const { body, account } = req;
+	const updateBrew = excludePropsFromUpdate(body);
 
-			if(brew.authors.length > 0 && !(!!req.account && brew.authors.includes(req.account?.username))) {
-				console.warn(`User ${req.account?.username} is not an author on brew ${brew._id}`);
-				res.setHeader('Content-Type', 'application/json');
-				return res.status(403).send(JSON.stringify({ message: `You must be added as an author by the document owner to edit this brew!` }));
-			}
+	if(brew.version > updateBrew.version) {
+		console.warn(`Document ${brew._id} had a version mismatch`);
+		res.setHeader('Content-Type', 'application/json');
+		return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
+	}
 
-			if(brew.version > updateBrew.version) {
-				console.warn(`Document ${brew._id} had a version mismatch`);
-				res.setHeader('Content-Type', 'application/json');
-				return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
-			}
+	if(account) {
+		brew.authors = _.uniq(_.concat([brew?.authors?.[0]], updateBrew.authors, account.username)).filter((a)=>a !== undefined && a.length > 0);
+		delete updateBrew.authors;
+	}
 
-			if(req.account) {
-				brew.authors = _.uniq(_.concat([!!brew.authors ? brew.authors[0] : undefined], updateBrew.authors, req.account.username)).filter((a)=>a !== undefined && a.length > 0);
-				delete updateBrew.authors;
-			}
+	brew = _.merge(brew, updateBrew);
+	brew.text = mergeBrewText(brew);
 
-			brew = _.merge(brew, updateBrew);
-			brew.text = mergeBrewText(brew);
+	// Compress brew text to binary before saving
+	brew.textBin = zlib.deflateRawSync(brew.text);
+	// Delete the non-binary text field since it's not needed anymore
+	brew.text = undefined;
+	brew.updatedAt = new Date();
 
-			// Compress brew text to binary before saving
-			brew.textBin = zlib.deflateRawSync(brew.text);
-			// Delete the non-binary text field since it's not needed anymore
-			brew.text = undefined;
-			brew.updatedAt = new Date();
+	brew.markModified('authors');
+	brew.markModified('systems');
+	brew.version++;
 
-			brew.markModified('authors');
-			brew.markModified('systems');
-			brew.version++;
-
-			brew.save((err, obj)=>{
-				if(err) throw err;
-				return res.status(200).send(obj);
-			});
-		})
-		.catch((err)=>{
-			console.error(err);
-			return res.status(500).send('Error while saving');
-		});
+	brew.save((err, obj)=>{
+		if(err) throw err;
+		return res.status(200).send(obj);
+	});
 };
 
 const deleteBrew = (req, res)=>{
@@ -199,11 +210,14 @@ const updateGoogleBrew = async (req, res, next)=>{
 
 router.post('/api', newBrew);
 router.post('/api/newGoogle/', newGoogleBrew);
-router.put('/api/:id', updateBrew);
-router.put('/api/update/:id', updateBrew);
+router.put('/api/:id', asyncHandler(getBrewForEdit), updateBrew);
+router.put('/api/update/:id', asyncHandler(getBrewForEdit), updateBrew);
 router.put('/api/updateGoogle/:id', updateGoogleBrew);
 router.delete('/api/:id', deleteBrew);
 router.get('/api/remove/:id', deleteBrew);
 router.get('/api/removeGoogle/:id', (req, res)=>{GoogleActions.deleteGoogleBrew(req, res, req.params.id);});
 
-module.exports = router;
+module.exports = {
+	homebrewApi : router,
+	getBrewForEdit
+};

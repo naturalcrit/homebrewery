@@ -9,7 +9,7 @@ const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
 
-const homebrewApi = require('./homebrew.api.js');
+const { homebrewApi, getBrewForEdit } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
@@ -18,28 +18,33 @@ const asyncHandler = require('express-async-handler');
 const brewAccessTypes = ['edit', 'share', 'raw'];
 
 //Get the brew object from the HB database or Google Drive
-const getBrewFromId = asyncHandler(async (id, accessType)=>{
-	if(!brewAccessTypes.includes(accessType))
-		throw ('Invalid Access Type when getting brew');
-	let brew;
-	if(id.length > 12) {
-		const googleId = id.slice(0, -12);
-		id             = id.slice(-12);
-		brew = await GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, id, accessType);
-	} else {
-		brew = await HomebrewModel.get(accessType == 'edit' ? { editId: id } : { shareId: id });
-		brew = brew.toObject(); // Convert MongoDB object to standard Javascript Object
-	}
+const getBrewFromId = (accessType)=>{
+	return async (req, res, next)=>{
+		let { id } = req.params;
+		if(!brewAccessTypes.includes(accessType))
+			throw ('Invalid Access Type when getting brew');
+		let brew;
+		if(id.length > 12) {
+			const googleId = id.slice(0, -12);
+			id             = id.slice(-12);
+			brew = await GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, id, accessType);
+		} else {
+			brew = await HomebrewModel.get(accessType == 'edit' ? { editId: id } : { shareId: id });
+			brew = brew.toObject(); // Convert MongoDB object to standard Javascript Object
+		}
 
-	brew = sanitizeBrew(brew, accessType === 'edit' ? false : true);
-	//Split brew.text into text and style
-	//unless the Access Type is RAW, in which case return immediately
-	if(accessType == 'raw') {
-		return brew;
-	}
-	splitTextStyleAndMetadata(brew);
-	return brew;
-});
+		brew = sanitizeBrew(brew, accessType === 'edit' ? false : true);
+		//Split brew.text into text and style
+		//unless the Access Type is RAW, in which case return immediately
+		if(accessType == 'raw') {
+			req.brew = brew;
+			return next();
+		}
+		splitTextStyleAndMetadata(brew);
+		req.brew = brew;
+		next();
+	};
+};
 
 const sanitizeBrew = (brew, full=false)=>{
 	delete brew._id;
@@ -163,11 +168,9 @@ app.get('/faq', async (req, res, next)=>{
 });
 
 //Source page
-app.get('/source/:id', asyncHandler(async (req, res)=>{
-	const brew = await getBrewFromId(req.params.id, 'raw');
-
+app.get('/source/:id', asyncHandler(getBrewFromId('raw')), asyncHandler(async (req, res)=>{
 	const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
-	let text = brew.text;
+	let text = req.brew.text;
 	for (const replaceStr in replaceStrings) {
 		text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
 	}
@@ -176,22 +179,21 @@ app.get('/source/:id', asyncHandler(async (req, res)=>{
 }));
 
 //Download brew source page
-app.get('/download/:id', asyncHandler(async (req, res)=>{
-	const brew = await getBrewFromId(req.params.id, 'raw');
+app.get('/download/:id', asyncHandler(getBrewFromId('raw')), asyncHandler(async (req, res)=>{
 	const prefix = 'HB - ';
 
-	let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
+	let fileName = sanitizeFilename(`${prefix}${req.brew.title}`).replaceAll(' ', '');
 	if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };
 	res.set({
 		'Cache-Control'       : 'no-cache',
 		'Content-Type'        : 'text/plain',
 		'Content-Disposition' : `attachment; filename="${fileName}.txt"`
 	});
-	res.status(200).send(brew.text);
+	res.status(200).send(req.brew.text);
 }));
 
 //User Page
-app.get('/user/:username', async (req, res, next)=>{
+app.get('/user/:username', asyncHandler(async (req, res, next)=>{
 	const ownAccount = req.account && (req.account.username == req.params.username);
 
 	let brews = await HomebrewModel.getByUser(req.params.username, ownAccount)
@@ -199,14 +201,24 @@ app.get('/user/:username', async (req, res, next)=>{
 		console.log(err);
 	});
 
-	if(ownAccount && req?.account?.googleId){
-		const googleBrews = await GoogleActions.listGoogleBrews(req, res)
-		.catch((err)=>{
-			console.error(err);
+	if(ownAccount) {
+		brews.forEach((brew)=>{
+			if(brew.authors?.[0] !== req?.account?.username) {
+				brew.collaborating = true;
+			}
 		});
 
-		if(googleBrews)
-			brews = _.concat(brews, googleBrews);
+		if(req?.account?.googleId) {
+			const googleBrews = await GoogleActions.listGoogleBrews(req, res)
+				.catch((err)=>{
+					console.error(err);
+				});
+
+			if(googleBrews)
+				brews = _.concat(brews, googleBrews);
+		}
+	} else {
+		brews = brews.filter((brew)=>brew.authors?.[0] === req?.account?.username);
 	}
 
 	req.brews = _.map(brews, (brew)=>{
@@ -214,51 +226,36 @@ app.get('/user/:username', async (req, res, next)=>{
 	});
 
 	return next();
-});
+}));
 
 //Edit Page
-app.get('/edit/:id', asyncHandler(async (req, res, next)=>{
+app.get('/edit/:id', asyncHandler(getBrewFromId('edit')), asyncHandler(getBrewForEdit), asyncHandler(async (req, res, next)=>{
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
-	const brew = await getBrewFromId(req.params.id, 'edit');
-	if(brew.authors.length > 0 && !(!!req.account && brew.authors.includes(req.account?.username))) {
-		console.warn(`User ${req.account?.username} is not an author on brew ${brew._id}`);
-		return res.status(403).send(`You must be added as an author by the document owner to edit this brew!`);
-	}
-	req.brew = brew;
 	return next();
 }));
 
 //New Page
-app.get('/new/:id', asyncHandler(async (req, res, next)=>{
-	const brew = await getBrewFromId(req.params.id, 'share');
-	brew.title = `CLONE - ${brew.title}`;
-	req.brew = brew;
+app.get('/new/:id', asyncHandler(getBrewFromId('share')), asyncHandler(async (req, res, next)=>{
+	req.brew.title = `CLONE - ${req.brew.title}`;
 	return next();
 }));
 
 //Share Page
-app.get('/share/:id', asyncHandler(async (req, res, next)=>{
-	const brew = await getBrewFromId(req.params.id, 'share');
-
+app.get('/share/:id', asyncHandler(getBrewFromId('share')), asyncHandler(async (req, res, next)=>{
 	if(req.params.id.length > 12) {
 		const googleId = req.params.id.slice(0, -12);
 		const shareId = req.params.id.slice(-12);
-		await GoogleActions.increaseView(googleId, shareId, 'share', brew)
+		await GoogleActions.increaseView(googleId, shareId, 'share', req.brew)
 					.catch((err)=>{next(err);});
 	} else {
-		await HomebrewModel.increaseView({ shareId: brew.shareId });
+		await HomebrewModel.increaseView({ shareId: req.brew.shareId });
 	}
 
-	req.brew = brew;
 	return next();
 }));
 
 //Print Page
-app.get('/print/:id', asyncHandler(async (req, res, next)=>{
-	const brew = await getBrewFromId(req.params.id, 'share');
-	req.brew = brew;
-	return next();
-}));
+app.get('/print/:id', asyncHandler(getBrewFromId('share')));
 
 //Render the page
 const templateFn = require('./../client/template.js');
