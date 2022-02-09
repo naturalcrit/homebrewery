@@ -112,8 +112,8 @@ const BrewItem = createClass({
 			</div>
 			<hr />
 			<div className='info'>
-				<span title={`Authors:\n${brew.authors.join('\n')}`}>
-					<i className='fas fa-user'/> {brew.authors.join(', ')}
+				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
+					<i className='fas fa-user'/> {brew.authors?.join(', ')}
 				</span>
 				<br />
 				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>

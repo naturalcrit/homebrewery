@@ -39,7 +39,7 @@ const BrewLookup = createClass({
 				<dd>{brew.title}</dd>
 
 				<dt>Authors</dt>
-				<dd>{brew.authors.join(', ')}</dd>
+				<dd>{brew.authors?.join(', ')}</dd>
 
 				<dt>Edit Link</dt>
 				<dd><a href={`/edit/${brew.editId}`} target='_blank' rel='noopener noreferrer'>/edit/{brew.editId}</a></dd>

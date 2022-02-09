@@ -1,11 +1,20 @@
 /* eslint-disable max-lines */
 const _ = require('lodash');
 const { google } = require('googleapis');
-const { nanoid } = require('nanoid');
 const token = require('./token.js');
 const config = require('./config.js');
 
-//let oAuth2Client;
+const keys = typeof(config.get('service_account')) == 'string' ?
+	JSON.parse(config.get('service_account')) :
+	config.get('service_account');
+const serviceAuth = google.auth.fromJSON(keys);
+serviceAuth.scopes = [
+	'https://www.googleapis.com/auth/drive',
+	'https://www.googleapis.com/auth/drive.appdata',
+	'https://www.googleapis.com/auth/drive.file',
+	'https://www.googleapis.com/auth/drive.metadata'
+];
+google.options({ auth: serviceAuth });
 
 const GoogleActions = {
 
@@ -43,7 +52,7 @@ const GoogleActions = {
 	},
 
 	getGoogleFolder : async (auth)=>{
-		const drive = google.drive({ version: 'v3', auth: auth });
+		const drive = google.drive({ version: 'v3', auth });
 
 		fileMetadata = {
 			'name'     : 'Homebrewery',
@@ -81,13 +90,11 @@ const GoogleActions = {
 
 	listGoogleBrews : async (req, res)=>{
 
-		oAuth2Client = GoogleActions.authCheck(req.account, res);
+		const oAuth2Client = GoogleActions.authCheck(req.account, res);
 
 		//TODO: Change to service account to allow non-owners to view published files.
 		// Requires a driveId parameter in the drive.files.list command
-		// const keys = JSON.parse(config.get('service_account'));
-		// const auth = google.auth.fromJSON(keys);
-		// auth.scopes = ['https://www.googleapis.com/auth/drive'];
+		// Then remove the `auth` parameter from the drive object initialization
 
 		const drive = google.drive({ version: 'v3', auth: oAuth2Client });
 
@@ -110,27 +117,26 @@ const GoogleActions = {
 		const brews = obj.data.files.map((file)=>{
 	    return {
 				text        : '',
-				shareId     : file.properties.shareId,
-				editId      : file.properties.editId,
+				shareId     : file.properties?.shareId,
+				editId      : file.properties?.editId,
 				createdAt   : file.createdTime,
 				updatedAt   : file.modifiedTime,
 				gDrive      : true,
 				googleId    : file.id,
-				pageCount   : parseInt(file.properties.pageCount),
-				title       : file.properties.title,
+				pageCount   : parseInt(file.properties?.pageCount),
+				title       : file.properties?.title,
 				description : file.description,
-				views       : parseInt(file.properties.views),
+				views       : parseInt(file.properties?.views),
 				tags        : '',
-				published   : file.properties.published ? file.properties.published == 'true' : false,
-				authors     : [req.account.username],	//TODO: properly save and load authors to google drive
+				published   : file.properties?.published ? file.properties.published == 'true' : false,
 				systems     : []
 			};
 		});
 	  return brews;
 	},
 
-	existsGoogleBrew : async (auth, id)=>{
-		const drive = google.drive({ version: 'v3', auth: auth });
+	existsGoogleBrew : async (id)=>{
+		const drive = google.drive({ version: 'v3' });
 
 		const result = await drive.files.get({ fileId: id })
 		.catch((err)=>{
@@ -144,10 +150,10 @@ const GoogleActions = {
 		return false;
 	},
 
-	updateGoogleBrew : async (auth, brew)=>{
-		const drive = google.drive({ version: 'v3', auth: auth });
+	updateGoogleBrew : async (brew)=>{
+		const drive = google.drive({ version: 'v3' });
 
-		if(await GoogleActions.existsGoogleBrew(auth, brew.googleId) == true) {
+		if(await GoogleActions.existsGoogleBrew(brew.googleId) == true) {
 			await drive.files.update({
 				fileId   : brew.googleId,
 				resource : {
@@ -160,7 +166,7 @@ const GoogleActions = {
 						renderer  : brew.renderer,
 						tags      : brew.tags,
 						pageCount : brew.pageCount,
-						systems   : brew.systems.join()
+						systems   : brew.systems.join(),
 					}
 				},
 				media : {
@@ -180,7 +186,7 @@ const GoogleActions = {
 	},
 
 	newGoogleBrew : async (auth, brew)=>{
-		const drive = google.drive({ version: 'v3', auth: auth });
+		const drive = google.drive({ version: 'v3', auth });
 
 		const media = {
 			mimeType : 'text/plain',
@@ -190,16 +196,20 @@ const GoogleActions = {
 		const folderId = await GoogleActions.getGoogleFolder(auth);
 
 		const fileMetadata = {
-			'name'        : `${brew.title}.txt`,
-			'description' : `${brew.description}`,
-			'parents'     : [folderId],
-			'properties'  : {								//AppProperties is not accessible
-				'shareId'   : nanoid(12),
-				'editId'    : nanoid(12),
-				'title'     : brew.title,
-				'views'     : '0',
-				'pageCount' : brew.pageCount,
-				'renderer'  : brew.renderer || 'legacy'
+			name        : `${brew.title}.txt`,
+			description : `${brew.description}`,
+			parents     : [folderId],
+			properties  : {								//AppProperties is not accessible
+				shareId   : brew.shareId,
+				editId    : brew.editId,
+				title     : brew.title,
+				views     : brew.views,
+				pageCount : brew.pageCount,
+				renderer  : brew.renderer || 'legacy',
+				tags      : brew.tags,
+				systems   : brew.systems.join(),
+				published : brew.published,
+				version   : brew.version
 			}
 		};
 
@@ -226,31 +236,12 @@ const GoogleActions = {
 			console.error(err);
 		});
 
-		const newHomebrew = {
-			text      : brew.text,
-			shareId   : fileMetadata.properties.shareId,
-			editId    : fileMetadata.properties.editId,
-			createdAt : new Date(),
-			updatedAt : new Date(),
-			gDrive    : true,
-			googleId  : obj.data.id,
-			pageCount : fileMetadata.properties.pageCount,
-
-			title       : brew.title,
-			description : brew.description,
-			tags        : '',
-			published   : brew.published,
-			renderer    : brew.renderer,
-			authors     : [],
-			systems     : []
-		};
-
-		return newHomebrew;
+		return obj.data.id;
 	},
 
-	readFileMetadata : async (auth, id, accessId, accessType)=>{
+	readFileMetadata : async (id, accessId, accessType)=>{
 
-		const drive = google.drive({ version: 'v3', auth: auth });
+		const drive = google.drive({ version: 'v3' });
 
 		const obj = await drive.files.get({
 			fileId : id,
@@ -269,16 +260,7 @@ const GoogleActions = {
 				throw ('Share ID does not match');
 			}
 
-			//Access file using service account. Using API key only causes "automated query" lockouts after a while.
-
-			const keys = typeof(config.get('service_account')) == 'string' ?
-				JSON.parse(config.get('service_account')) :
-				config.get('service_account');
-
-			const serviceAuth = google.auth.fromJSON(keys);
-			serviceAuth.scopes = ['https://www.googleapis.com/auth/drive'];
-
-			const serviceDrive = google.drive({ version: 'v3', auth: serviceAuth });
+			const serviceDrive = google.drive({ version: 'v3' });
 
 			const file = await serviceDrive.files.get({
 				fileId : id,
@@ -297,9 +279,8 @@ const GoogleActions = {
 				text    : file.data,
 
 				description : obj.data.description,
-				tags        : obj.data.properties.tags    ? obj.data.properties.tags               : '',
+				tags        : obj.data.properties.tags ? obj.data.properties.tags : '',
 				systems     : obj.data.properties.systems ? obj.data.properties.systems.split(',') : [],
-				authors     : [],
 				published   : obj.data.properties.published ? obj.data.properties.published == 'true' : false,
 				trashed     : obj.data.trashed,
 
@@ -319,38 +300,32 @@ const GoogleActions = {
 		}
 	},
 
-	deleteGoogleBrew : async (req, res, id)=>{
+	deleteGoogleBrew : async (brew, account, res, id)=>{
 
-		oAuth2Client = GoogleActions.authCheck(req.account, res);
+		const oAuth2Client = GoogleActions.authCheck(account, res);
 		const drive = google.drive({ version: 'v3', auth: oAuth2Client });
 
-		const googleId = id.slice(0, -12);
-		const accessId = id.slice(-12);
-
 		const obj = await drive.files.get({
-			fileId : googleId,
+			fileId : brew.googleId,
 			fields : 'properties'
 		})
 		.catch((err)=>{
 			console.log('Error loading from Google');
 			console.error(err);
-			return;
 		});
 
-		if(obj && obj.data.properties.editId != accessId) {
+		if(obj && obj.data.properties.editId != brew.editId) {
 			throw ('Not authorized to delete this Google brew');
 		}
 
 		await drive.files.update({
-			fileId   : googleId,
+			fileId   : brew.googleId,
 			resource : { trashed: true }
 		})
 		.catch((err)=>{
 			console.log('Can\'t delete Google file');
 			console.error(err);
 		});
-
-		return res.status(200).send();
 	},
 
 	increaseView : async (id, accessId, accessType, brew)=>{
@@ -363,7 +338,7 @@ const GoogleActions = {
 		const auth = google.auth.fromJSON(keys);
 		auth.scopes = ['https://www.googleapis.com/auth/drive'];
 
-		const drive = google.drive({ version: 'v3', auth: auth });
+		const drive = google.drive({ version: 'v3' });
 
 		await drive.files.update({
 			fileId   : brew.googleId,
@@ -378,10 +353,7 @@ const GoogleActions = {
 		.catch((err)=>{
 			console.log('Error updating Google views');
 			console.error(err);
-			//return res.status(500).send('Error while saving');
 		});
-
-		return;
 	}
 };
 

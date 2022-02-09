@@ -157,45 +157,32 @@ const NewPage = createClass({
 			const index = brew.text.indexOf('```\n\n');
 			brew.style = `${brew.style ? `${brew.style}\n` : ''}${brew.text.slice(7, index - 1)}`;
 			brew.text = brew.text.slice(index + 5);
-		};
+		}
 
 		brew.pageCount=((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
 
-		if(this.state.saveGoogle) {
-			const res = await request
-			.post('/api/newGoogle/')
-			.send(brew)
-			.catch((err)=>{
-				console.log(err.status === 401
-					? 'Not signed in!'
-					: 'Error Creating New Google Brew!');
-				this.setState({ isSaving: false, errors: err });
-				return;
-			});
+		const res = await request
+		.post(`/api${this.state.saveGoogle ? '?transferToGoogle=true' : ''}`)
+		.send(brew)
+		.catch((err)=>{
+			console.log(err.status === 401
+				? 'Not signed in!'
+				: 'Error Creating New Google Brew!');
+			this.setState({ isSaving: false, errors: err });
+		});
 
-			brew = res.body;
-			localStorage.removeItem(BREWKEY);
-			localStorage.removeItem(STYLEKEY);
-			localStorage.removeItem(METAKEY);
-			window.location = `/edit/${brew.googleId}${brew.editId}`;
-		} else {
-			request.post('/api')
-			.send(brew)
-			.end((err, res)=>{
-				if(err){
-					this.setState({
-						isSaving : false
-					});
-					return;
-				}
-				window.onbeforeunload = function(){};
-				brew = res.body;
-				localStorage.removeItem(BREWKEY);
-				localStorage.removeItem(STYLEKEY);
-				localStorage.removeItem(METAKEY);
-				window.location = `/edit/${brew.editId}`;
-			});
-		}
+		if(!res) return;
+
+		this.setState({
+			isSaving : false
+		});
+
+		window.onbeforeunload = function(){};
+		brew = res.body;
+		localStorage.removeItem(BREWKEY);
+		localStorage.removeItem(STYLEKEY);
+		localStorage.removeItem(METAKEY);
+		window.location = `/edit/${brew.editId}`;
 	},
 
 	renderSaveButton : function(){
