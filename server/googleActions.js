@@ -7,14 +7,19 @@ const config = require('./config.js');
 const keys = typeof(config.get('service_account')) == 'string' ?
 	JSON.parse(config.get('service_account')) :
 	config.get('service_account');
-const serviceAuth = google.auth.fromJSON(keys);
-serviceAuth.scopes = [
-	'https://www.googleapis.com/auth/drive',
-	'https://www.googleapis.com/auth/drive.appdata',
-	'https://www.googleapis.com/auth/drive.file',
-	'https://www.googleapis.com/auth/drive.metadata'
-];
-google.options({ auth: serviceAuth });
+let serviceAuth;
+try {
+	serviceAuth = google.auth.fromJSON(keys);
+	serviceAuth.scopes = [
+		'https://www.googleapis.com/auth/drive',
+		'https://www.googleapis.com/auth/drive.appdata',
+		'https://www.googleapis.com/auth/drive.file',
+		'https://www.googleapis.com/auth/drive.metadata'
+	];
+} catch (err) {
+	console.error(err);
+}
+google.options({ auth: serviceAuth || config.get('google_api_key') });
 
 const GoogleActions = {
 
