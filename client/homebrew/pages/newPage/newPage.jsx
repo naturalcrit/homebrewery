@@ -40,7 +40,9 @@ const NewPage = createClass({
 				tags        : '',
 				published   : false,
 				authors     : [],
-				systems     : []
+				systems     : [],
+				renderer    : 'legacy',
+				theme       : '5ePHB'
 			}
 		};
 	},
@@ -59,6 +61,7 @@ const NewPage = createClass({
 				// brew.title = metaStorage?.title || this.state.brew.title;
 				// brew.description = metaStorage?.description || this.state.brew.description;
 				brew.renderer = metaStorage?.renderer || brew.renderer;
+				brew.theme    = metaStorage?.theme    || brew.theme;
 			}
 		}
 
@@ -73,7 +76,8 @@ const NewPage = createClass({
 				published   : false,
 				authors     : [],
 				systems     : brew.systems || [],
-				renderer    : brew.renderer || 'legacy'
+				renderer    : brew.renderer || 'legacy',
+				theme       : brew.theme
 			},
 
 			isSaving   : false,
@@ -132,7 +136,8 @@ const NewPage = createClass({
 		localStorage.setItem(METAKEY, JSON.stringify({
 			// 'title'       : this.state.brew.title,
 			// 'description' : this.state.brew.description,
-			'renderer' : this.state.brew.renderer
+			'renderer' : this.state.brew.renderer,
+			'theme'    : this.state.brew.theme
 		}));
 	},
 
@@ -311,7 +316,7 @@ const NewPage = createClass({
 						onMetaChange={this.handleMetaChange}
 						renderer={this.state.brew.renderer}
 					/>
-					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} errors={this.state.htmlErrors}/>
+					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} theme={this.state.brew.theme} errors={this.state.htmlErrors}/>
 				</SplitPane>
 			</div>
 		</div>;
