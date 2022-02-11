@@ -1,3 +1,4 @@
+@import '../styles/colors';
 @keyframes glideDropDown {
 	0%   {transform : translate(0px, -100%);
 				opacity   : 0;
@@ -49,6 +50,7 @@ nav{
 		}
 	}
 	.navItem{
+		#backgroundColors;
 		.animate(background-color);
 		padding          : 8px 12px;
 		cursor           : pointer;
@@ -58,30 +60,12 @@ nav{
 		color            : white;
 		text-decoration  : none;
 		text-transform   : uppercase;
+		line-height      : 13px;
 		i{
 			margin-left : 5px;
 			font-size   : 13px;
+			float       : right;
 		}
-		&.tealLight:hover{ background-color : @tealLight };
-		&.teal:hover{ background-color : @teal };
-		&.greenLight:hover{ background-color : @greenLight };
-		&.green:hover{ background-color : @green };
-		&.blueLight:hover{ background-color : @blueLight };
-		&.blue:hover{ background-color : @blue };
-		&.purpleLight:hover{ background-color : @purpleLight };
-		&.purple:hover{ background-color : @purple };
-		&.steelLight:hover{ background-color : @steelLight };
-		&.steel:hover{ background-color : @steel };
-		&.yellowLight:hover{ background-color : @yellowLight };
-		&.yellow:hover{ background-color : @yellow };
-		&.orangeLight:hover{ background-color : @orangeLight };
-		&.orange:hover{ background-color : @orange };
-		&.redLight:hover{ background-color : @redLight };
-		&.red:hover{ background-color : @red };
-		&.silverLight:hover{ background-color : @silverLight };
-		&.silver:hover{ background-color : @silver };
-		&.greyLight:hover{ background-color : @greyLight };
-		&.grey:hover{ background-color : @grey };
 	}
 	.navSection:last-child .navItem{
 		border-left : 1px solid #666;

@@ -24,6 +24,28 @@ const build = async ({ bundle, render, ssr })=>{
 	await fs.outputFile('./build/homebrew/bundle.css', css);
 	await fs.outputFile('./build/homebrew/bundle.js', bundle);
 	await fs.outputFile('./build/homebrew/ssr.js', ssr);
+	await fs.copy('./themes/fonts', './build/fonts');
+	await fs.copy('./themes/assets', './build/assets');
+	let src = './themes/5ePhbLegacy.style.less';
+	//Parse brew theme files
+	less.render(fs.readFileSync(src).toString(), {
+		compress : !isDev
+	}, function(e, output) {
+		fs.outputFile('./build/themes/5ePhbLegacy.style.css', output.css);
+	});
+	src = './themes/5ePhb.style.less';
+	less.render(fs.readFileSync(src).toString(), {
+		compress : !isDev
+	}, function(e, output) {
+		fs.outputFile('./build/themes/5ePhb.style.css', output.css);
+	});
+	// await less.render(lessCode, {
+	// 	compress  : !dev,
+	// 	sourceMap : (dev ? {
+	// 		sourceMapFileInline: true,
+	// 		outputSourceFiles: true
+	// 	} : false),
+	// })
 
 	//compress files in production
 	if(!isDev){
@@ -132,6 +154,6 @@ fs.emptyDirSync('./build');
 if(isDev){
 	livereload('./build');
 	watchFile('./server.js', {
-		watch : ['./client'] // Watch additional folders if you want
+		watch : ['./client', './server'] // Watch additional folders if you want
 	});
 }
