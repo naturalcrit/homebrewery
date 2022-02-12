@@ -58,7 +58,7 @@ const BrewItem = createClass({
 		if(!this.props.brew.editId) return;
 
 		let editLink = this.props.brew.editId;
-		if(this.props.brew.googleId) {
+		if(this.props.brew.googleId && !this.props.brew.stubbed) {
 			editLink = this.props.brew.googleId + editLink;
 		}
 
@@ -94,7 +94,7 @@ const BrewItem = createClass({
 	},
 
 	renderGoogleDriveIcon : function(){
-		if(!this.props.brew.gDrive) return;
+		if(!this.props.brew.googleId) return;
 
 		return <span>
 			<img className='googleDriveIcon' src={googleDriveIcon} alt='googleDriveIcon' />

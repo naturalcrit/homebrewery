@@ -33,7 +33,6 @@ const NewPage = createClass({
 				editId    : null,
 				createdAt : null,
 				updatedAt : null,
-				gDrive    : false,
 
 				title       : '',
 				description : '',
@@ -66,7 +65,6 @@ const NewPage = createClass({
 			brew : {
 				text        : brew.text || '',
 				style       : brew.style || undefined,
-				gDrive      : false,
 				title       : brew.title || '',
 				description : brew.description || '',
 				tags        : brew.tags || '',

@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 const _ = require('lodash');
 const HomebrewModel = require('./homebrew.model.js').model;
 const router = require('express').Router();
@@ -54,33 +55,45 @@ const excludeGoogleProps = (brew)=>{
 	return brew;
 };
 
-const getBrewForEdit = async (req, res, next)=>{
-	const { brew } = req;
-	let editId = req.params.id, googleId = (brew?.googleId || req.body?.googleId) || req.query.googleId;
-	if(editId.length > 12) {
-		googleId = editId.slice(0, -12);
-		editId = editId.slice(-12);
+const findBrew = async (brewId, accessType, googleObjectId)=>{
+	let id = brewId;
+	let googleId = googleObjectId;
+	if(id.length > 12) {
+		googleId = id.slice(0, -12);
+		id = id.slice(-12);
 	}
-	let foundBrew;
-	if(!brew) {
-		foundBrew = await HomebrewModel.get({ editId })
+	let brew = await HomebrewModel.get(accessType === 'edit' ? { editId: id } : { shareId: id })
+		.catch((err)=>{
+			if(googleId) {
+				console.warn(`Unable to find document stub for ${accessType}Id ${id}`);
+			} else {
+				console.warn(err);
+			}
+		});
+	let googleBrew;
+
+	if(googleId || brew?.googleId) {
+		googleBrew = await GoogleActions.readFileMetadata(googleId || brew?.googleId, id, accessType)
 			.catch((err)=>{
 				console.warn(err);
 			});
-
-		if(googleId) {
-			const googleBrew = await GoogleActions.readFileMetadata(googleId, editId, 'edit')
-				.catch((err)=>{
-					console.warn(err);
-				});
-			if(!foundBrew && !googleBrew) return res.status(500).send('Brew not found in database or Google Drive');
-			foundBrew = foundBrew ? _.merge(foundBrew, googleBrew) : googleBrew;
-		} else if(!foundBrew) {
-			return res.status(500).send('Brew not found in database');
-		}
+		if(!brew && !googleBrew) throw 'Brew not found in database or Google Drive';
+		brew = brew ? _.merge(brew, googleBrew) : googleBrew;
+	} else if(!brew) {
+		throw 'Brew not found in database';
 	}
 
-	req.brew = foundBrew;
+	return googleBrew ? _.merge(brew, googleBrew) : brew;
+};
+
+const getBrewForEdit = async (req, res, next)=>{
+	const { brew } = req;
+
+	if(!brew) {
+		const id = req.params.id, googleId = req.body?.googleId;
+		req.brew = await findBrew(id, 'edit', googleId);
+	}
+
 	!!next ? next() : undefined;
 };
 
@@ -122,7 +135,6 @@ const newBrew = async (req, res)=>{
 };
 
 const updateBrew = async (req, res)=>{
-	console.log('updating');
 	let { brew } = req;
 	const { transferToGoogle, transferFromGoogle } = req.query;
 	const updateBrew = excludePropsFromUpdate(req.body);
@@ -131,7 +143,7 @@ const updateBrew = async (req, res)=>{
 	brew.updatedAt = new Date();
 
 	if(req.account) {
-		brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
+		brew.authors = _.uniq(_.concat(brew.authors, req.account.username)).filter((author)=>!!author);
 	}
 
 	try {
@@ -177,7 +189,7 @@ const deleteBrew = async (req, res)=>{
 		.catch((err)=>{
 			console.warn(err);
 		});
-	let editId = req.params.id, googleId = brew?.googleId || req.query.googleId;
+	let editId = req.params.id, googleId = brew?.googleId;
 	if(editId.length > 12) {
 		googleId = editId.slice(0, -12);
 		editId = editId.slice(-12);
@@ -240,4 +252,7 @@ router.put('/api/update/:id', asyncHandler(getBrewForEdit), asyncHandler(updateB
 router.delete('/api/:id', asyncHandler(deleteBrew));
 router.get('/api/remove/:id', asyncHandler(deleteBrew));
 
-module.exports = router;
+module.exports = {
+	homebrewApi : router,
+	findBrew
+};

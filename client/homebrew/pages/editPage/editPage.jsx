@@ -37,7 +37,6 @@ const EditPage = createClass({
 				editId    : null,
 				createdAt : null,
 				updatedAt : null,
-				gDrive    : false,
 				trashed   : false,
 
 				title       : '',

@@ -126,7 +126,6 @@ const GoogleActions = {
 				editId      : file.properties?.editId,
 				createdAt   : file.createdTime,
 				updatedAt   : file.modifiedTime,
-				gDrive      : true,
 				googleId    : file.id,
 				pageCount   : parseInt(file.properties?.pageCount),
 				title       : file.properties?.title,
@@ -165,13 +164,16 @@ const GoogleActions = {
 					name        : `${brew.title}.txt`,
 					description : `${brew.description}`,
 					properties  : {
+						shareId   : brew.shareId,
+						editId    : brew.editId,
 						title     : brew.title,
-						published : brew.published,
-						version   : brew.version,
+						views     : brew.views,
+						pageCount : brew.pageCount,
 						renderer  : brew.renderer,
 						tags      : brew.tags,
-						pageCount : brew.pageCount,
 						systems   : brew.systems.join(),
+						published : brew.published,
+						version   : brew.version,
 					}
 				},
 				media : {
@@ -297,7 +299,6 @@ const GoogleActions = {
 				version    : parseInt(obj.data.properties.version) || 0,
 				renderer   : obj.data.properties.renderer ? obj.data.properties.renderer : 'legacy',
 
-				gDrive   : true,
 				googleId : id
 			};
 

@@ -9,7 +9,7 @@ const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
 
-const homebrewApi = require('./homebrew.api.js');
+const { homebrewApi, findBrew } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
@@ -18,22 +18,10 @@ const asyncHandler = require('express-async-handler');
 const brewAccessTypes = ['edit', 'share', 'raw'];
 
 //Get the brew object from the HB database or Google Drive
-const getBrewFromId = asyncHandler(async (id, accessType)=>{
+const getBrewFromId = async (id, accessType)=>{
 	if(!brewAccessTypes.includes(accessType))
 		throw ('Invalid Access Type when getting brew');
-	let brew;
-	if(id.length > 12) {
-		const googleId = id.slice(0, -12);
-		id             = id.slice(-12);
-		brew = await GoogleActions.readFileMetadata(googleId, id, accessType);
-	} else {
-		brew = await HomebrewModel.get(accessType == 'edit' ? { editId: id } : { shareId: id });
-		brew = brew.toObject(); // Convert MongoDB object to standard Javascript Object
-
-		if(brew.googleId) {
-			await GoogleActions.readFileMetadata(brew.googleId, id, accessType);
-		}
-	}
+	let brew = await findBrew(id, accessType);
 
 	brew = sanitizeBrew(brew, accessType === 'edit' ? false : true);
 	//Split brew.text into text and style
@@ -43,7 +31,7 @@ const getBrewFromId = asyncHandler(async (id, accessType)=>{
 	}
 	splitTextStyleAndMetadata(brew);
 	return brew;
-});
+};
 
 const sanitizeBrew = (brew, full=false)=>{
 	delete brew._id;
@@ -60,7 +48,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const index = brew.text.indexOf('```\n\n');
 		const metadataSection = brew.text.slice(12, index - 1);
 		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer']));
+		Object.assign(brew, _.pick(metadata, ['title', 'description', 'systems', 'renderer']));
 		brew.text = brew.text.slice(index + 5);
 	}
 	if(brew.text.startsWith('```css')) {
@@ -200,7 +188,11 @@ app.get('/user/:username', async (req, res, next)=>{
 
 	let brews = await HomebrewModel.getByUser(req.params.username, ownAccount)
 	.catch((err)=>{
-		console.log(err);
+		console.warn(err);
+	});
+
+	brews.forEach((brew)=>{
+		brew.stubbed = true;
 	});
 
 	if(ownAccount && req?.account?.googleId){
@@ -209,8 +201,9 @@ app.get('/user/:username', async (req, res, next)=>{
 			console.error(err);
 		});
 
-		if(googleBrews)
-			brews = _.concat(brews, googleBrews);
+		if(googleBrews) {
+			brews = _.concat(brews, googleBrews.filter((brew)=>!brews.find((b)=>b.googleId === brew.googleId)));
+		}
 	}
 
 	req.brews = _.map(brews, (brew)=>{
