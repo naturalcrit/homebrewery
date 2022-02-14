@@ -150,14 +150,12 @@ const updateBrew = async (req, res)=>{
 		if(transferToGoogle) {
 			brew.googleId = await newGoogleBrew(req.account, brew, res);
 			brew.textBin = undefined;
-			excludeGoogleProps(brew);
 		} else if(transferFromGoogle) {
 			await GoogleActions.deleteGoogleBrew(brew, req.account, res, req.params.id);
 			brew.googleId = undefined;
 			brew.textBin = zlib.deflateRawSync(brew.text);
 		} else if(brew.googleId) {
 			await GoogleActions.updateGoogleBrew(brew);
-			excludeGoogleProps(brew);
 		} else {
 			// Compress brew text to binary before saving
 			brew.textBin = zlib.deflateRawSync(brew.text);
@@ -171,6 +169,9 @@ const updateBrew = async (req, res)=>{
 
 	if(!brew.markModified) {
 		brew = new HomebrewModel(brew);
+	}
+
+	if(brew.googleId) {
 		excludeGoogleProps(brew);
 	}
 
@@ -185,25 +186,7 @@ const updateBrew = async (req, res)=>{
 };
 
 const deleteBrew = async (req, res)=>{
-	let brew = await HomebrewModel.findOne({ editId: req.params.id })
-		.catch((err)=>{
-			console.warn(err);
-		});
-	let editId = req.params.id, googleId = brew?.googleId;
-	if(editId.length > 12) {
-		googleId = editId.slice(0, -12);
-		editId = editId.slice(-12);
-	}
-	if(googleId) {
-		const googleBrew = await GoogleActions.readFileMetadata(googleId, editId, 'edit')
-			.catch((err)=>{
-				console.warn(err);
-			});
-		if(!brew && !googleBrew) return res.status(500).send('Brew not found in database or Google Drive');
-		brew = brew ? _.merge(brew, googleBrew) : googleBrew;
-	} else if(!brew) {
-		return res.status(500).send('Brew not found in database');
-	}
+	const { brew } = req;
 
 	if(req.account) {
 		// Remove current user as author
@@ -222,11 +205,10 @@ const deleteBrew = async (req, res)=>{
 		});
 		return res.status(200).send();
 	} else {
-		// Otherwise, save the brew with updated author list
-		if(brew.googleId) {
-			await GoogleActions.updateGoogleBrew(brew);
-			excludeGoogleProps(brew);
+		if(brew.authors[0] === req.account?.username && brew.googleId) {
+			await GoogleActions.deleteGoogleBrew(brew, req.account, res, req.params.id);
 		}
+		// Otherwise, save the brew with updated author list
 		const savedBrew = await brew.save().catch((err)=>{
 			throw err;
 		});
@@ -249,8 +231,8 @@ const newGoogleBrew = async (account, brew, res)=>{
 router.post('/api', asyncHandler(newBrew));
 router.put('/api/:id', asyncHandler(getBrewForEdit), asyncHandler(updateBrew));
 router.put('/api/update/:id', asyncHandler(getBrewForEdit), asyncHandler(updateBrew));
-router.delete('/api/:id', asyncHandler(deleteBrew));
-router.get('/api/remove/:id', asyncHandler(deleteBrew));
+router.delete('/api/:id', asyncHandler(getBrewForEdit), asyncHandler(deleteBrew));
+router.get('/api/remove/:id', asyncHandler(getBrewForEdit), asyncHandler(deleteBrew));
 
 module.exports = {
 	homebrewApi : router,
