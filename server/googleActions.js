@@ -5,7 +5,22 @@ const { nanoid } = require('nanoid');
 const token = require('./token.js');
 const config = require('./config.js');
 
-//let oAuth2Client;
+const keys = typeof(config.get('service_account')) == 'string' ?
+	JSON.parse(config.get('service_account')) :
+	config.get('service_account');
+let serviceAuth;
+try {
+	serviceAuth = google.auth.fromJSON(keys);
+	serviceAuth.scopes = [
+		'https://www.googleapis.com/auth/drive',
+		'https://www.googleapis.com/auth/drive.appdata',
+		'https://www.googleapis.com/auth/drive.file',
+		'https://www.googleapis.com/auth/drive.metadata'
+	];
+} catch (err) {
+	console.warn(err);
+}
+google.options({ auth: serviceAuth || config.get('google_api_key') });
 
 const GoogleActions = {
 
@@ -43,7 +58,7 @@ const GoogleActions = {
 	},
 
 	getGoogleFolder : async (auth)=>{
-		const drive = google.drive({ version: 'v3', auth: auth });
+		const drive = google.drive({ version: 'v3', auth });
 
 		fileMetadata = {
 			'name'     : 'Homebrewery',
@@ -81,13 +96,11 @@ const GoogleActions = {
 
 	listGoogleBrews : async (req, res)=>{
 
-		oAuth2Client = GoogleActions.authCheck(req.account, res);
+		const oAuth2Client = GoogleActions.authCheck(req.account, res);
 
 		//TODO: Change to service account to allow non-owners to view published files.
 		// Requires a driveId parameter in the drive.files.list command
-		// const keys = JSON.parse(config.get('service_account'));
-		// const auth = google.auth.fromJSON(keys);
-		// auth.scopes = ['https://www.googleapis.com/auth/drive'];
+		// Then remove the `auth` parameter from the drive object initialization
 
 		const drive = google.drive({ version: 'v3', auth: oAuth2Client });
 
@@ -129,8 +142,8 @@ const GoogleActions = {
 	  return brews;
 	},
 
-	existsGoogleBrew : async (auth, id)=>{
-		const drive = google.drive({ version: 'v3', auth: auth });
+	existsGoogleBrew : async (id)=>{
+		const drive = google.drive({ version: 'v3' });
 
 		const result = await drive.files.get({ fileId: id })
 		.catch((err)=>{
@@ -144,10 +157,10 @@ const GoogleActions = {
 		return false;
 	},
 
-	updateGoogleBrew : async (auth, brew)=>{
-		const drive = google.drive({ version: 'v3', auth: auth });
+	updateGoogleBrew : async (brew)=>{
+		const drive = google.drive({ version: 'v3' });
 
-		if(await GoogleActions.existsGoogleBrew(auth, brew.googleId) == true) {
+		if(await GoogleActions.existsGoogleBrew(brew.googleId) == true) {
 			await drive.files.update({
 				fileId   : brew.googleId,
 				resource : {
@@ -180,7 +193,7 @@ const GoogleActions = {
 	},
 
 	newGoogleBrew : async (auth, brew)=>{
-		const drive = google.drive({ version: 'v3', auth: auth });
+		const drive = google.drive({ version: 'v3', auth });
 
 		const media = {
 			mimeType : 'text/plain',
@@ -248,9 +261,8 @@ const GoogleActions = {
 		return newHomebrew;
 	},
 
-	readFileMetadata : async (auth, id, accessId, accessType)=>{
-
-		const drive = google.drive({ version: 'v3', auth: auth });
+	readFileMetadata : async (id, accessId, accessType)=>{
+		const drive = google.drive({ version: 'v3' });
 
 		const obj = await drive.files.get({
 			fileId : id,
@@ -269,16 +281,7 @@ const GoogleActions = {
 				throw ('Share ID does not match');
 			}
 
-			//Access file using service account. Using API key only causes "automated query" lockouts after a while.
-
-			const keys = typeof(config.get('service_account')) == 'string' ?
-				JSON.parse(config.get('service_account')) :
-				config.get('service_account');
-
-			const serviceAuth = google.auth.fromJSON(keys);
-			serviceAuth.scopes = ['https://www.googleapis.com/auth/drive'];
-
-			const serviceDrive = google.drive({ version: 'v3', auth: serviceAuth });
+			const serviceDrive = google.drive({ version: 'v3' });
 
 			const file = await serviceDrive.files.get({
 				fileId : id,
@@ -320,8 +323,7 @@ const GoogleActions = {
 	},
 
 	deleteGoogleBrew : async (req, res, id)=>{
-
-		oAuth2Client = GoogleActions.authCheck(req.account, res);
+		const oAuth2Client = GoogleActions.authCheck(req.account, res);
 		const drive = google.drive({ version: 'v3', auth: oAuth2Client });
 
 		const googleId = id.slice(0, -12);
@@ -354,16 +356,7 @@ const GoogleActions = {
 	},
 
 	increaseView : async (id, accessId, accessType, brew)=>{
-		//service account because this is modifying another user's file properties
-		//so we need extended scope
-		const keys = typeof(config.get('service_account')) == 'string' ?
-			JSON.parse(config.get('service_account')) :
-			config.get('service_account');
-
-		const auth = google.auth.fromJSON(keys);
-		auth.scopes = ['https://www.googleapis.com/auth/drive'];
-
-		const drive = google.drive({ version: 'v3', auth: auth });
+		const drive = google.drive({ version: 'v3' });
 
 		await drive.files.update({
 			fileId   : brew.googleId,
@@ -380,8 +373,6 @@ const GoogleActions = {
 			console.error(err);
 			//return res.status(500).send('Error while saving');
 		});
-
-		return;
 	}
 };
 

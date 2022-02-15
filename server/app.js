@@ -25,7 +25,7 @@ const getBrewFromId = asyncHandler(async (id, accessType)=>{
 	if(id.length > 12) {
 		const googleId = id.slice(0, -12);
 		id             = id.slice(-12);
-		brew = await GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, id, accessType);
+		brew = await GoogleActions.readFileMetadata(googleId, id, accessType);
 	} else {
 		brew = await HomebrewModel.get(accessType == 'edit' ? { editId: id } : { shareId: id });
 		brew = brew.toObject(); // Convert MongoDB object to standard Javascript Object

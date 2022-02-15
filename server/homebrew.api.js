@@ -167,15 +167,11 @@ const newGoogleBrew = async (req, res, next)=>{
 };
 
 const updateGoogleBrew = async (req, res, next)=>{
-	let oAuth2Client;
-
-	try {	oAuth2Client = GoogleActions.authCheck(req.account, res); } catch (err) { return res.status(err.status).send(err.message); }
-
 	const brew = excludePropsFromUpdate(req.body);
 	brew.text = mergeBrewText(brew);
 
 	try {
-		const updatedBrew = await GoogleActions.updateGoogleBrew(oAuth2Client, brew);
+		const updatedBrew = await GoogleActions.updateGoogleBrew(brew);
 		return res.status(200).send(updatedBrew);
 	} catch (err) {
 		return res.status(err.response?.status || 500).send(err);
