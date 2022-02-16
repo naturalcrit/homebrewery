@@ -185,6 +185,10 @@ router.put('/api/update/:id', updateBrew);
 router.put('/api/updateGoogle/:id', updateGoogleBrew);
 router.delete('/api/:id', deleteBrew);
 router.get('/api/remove/:id', deleteBrew);
-router.get('/api/removeGoogle/:id', (req, res)=>{GoogleActions.deleteGoogleBrew(req, res, req.params.id);});
+router.get('/api/removeGoogle/:id', async (req, res)=>{
+	const auth = await GoogleActions.authCheck(req.account, res);
+	await GoogleActions.deleteGoogleBrew(auth, req.params.id);
+	return res.status(200).send();
+});
 
 module.exports = router;

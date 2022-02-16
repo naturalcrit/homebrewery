@@ -12,10 +12,7 @@ let serviceAuth;
 try {
 	serviceAuth = google.auth.fromJSON(keys);
 	serviceAuth.scopes = [
-		'https://www.googleapis.com/auth/drive',
-		'https://www.googleapis.com/auth/drive.appdata',
-		'https://www.googleapis.com/auth/drive.file',
-		'https://www.googleapis.com/auth/drive.metadata'
+		'https://www.googleapis.com/auth/drive'
 	];
 } catch (err) {
 	console.warn(err);
@@ -94,15 +91,8 @@ const GoogleActions = {
 		return folderId;
 	},
 
-	listGoogleBrews : async (req, res)=>{
-
-		const oAuth2Client = GoogleActions.authCheck(req.account, res);
-
-		//TODO: Change to service account to allow non-owners to view published files.
-		// Requires a driveId parameter in the drive.files.list command
-		// Then remove the `auth` parameter from the drive object initialization
-
-		const drive = google.drive({ version: 'v3', auth: oAuth2Client });
+	listGoogleBrews : async (auth)=>{
+		const drive = google.drive({ version: 'v3', auth });
 
 		const obj = await drive.files.list({
 			pageSize : 1000,
@@ -110,18 +100,18 @@ const GoogleActions = {
 			q        : 'mimeType != \'application/vnd.google-apps.folder\' and trashed = false'
 		})
 		.catch((err)=>{
-	    console.log(`Error Listing Google Brews`);
+			console.log(`Error Listing Google Brews`);
 			console.error(err);
 			throw (err);
 			//TODO: Should break out here, but continues on for some reason.
-	  });
+		});
 
 		if(!obj.data.files.length) {
-	    console.log('No files found.');
-	  }
+			console.log('No files found.');
+		}
 
 		const brews = obj.data.files.map((file)=>{
-	    return {
+			return {
 				text        : '',
 				shareId     : file.properties.shareId,
 				editId      : file.properties.editId,
@@ -135,59 +125,41 @@ const GoogleActions = {
 				views       : parseInt(file.properties.views),
 				tags        : '',
 				published   : file.properties.published ? file.properties.published == 'true' : false,
-				authors     : [req.account.username],	//TODO: properly save and load authors to google drive
 				systems     : []
 			};
 		});
 	  return brews;
 	},
 
-	existsGoogleBrew : async (id)=>{
-		const drive = google.drive({ version: 'v3' });
-
-		const result = await drive.files.get({ fileId: id })
-		.catch((err)=>{
-			console.log('error checking file exists...');
-			console.error(err);
-			return false;
-		});
-
-		if(result){return true;}
-
-		return false;
-	},
-
 	updateGoogleBrew : async (brew)=>{
 		const drive = google.drive({ version: 'v3' });
 
-		if(await GoogleActions.existsGoogleBrew(brew.googleId) == true) {
-			await drive.files.update({
-				fileId   : brew.googleId,
-				resource : {
-					name        : `${brew.title}.txt`,
-					description : `${brew.description}`,
-					properties  : {
-						title     : brew.title,
-						published : brew.published,
-						version   : brew.version,
-						renderer  : brew.renderer,
-						tags      : brew.tags,
-						pageCount : brew.pageCount,
-						systems   : brew.systems.join()
-					}
-				},
-				media : {
-					mimeType : 'text/plain',
-					body     : brew.text
+		await drive.files.update({
+			fileId   : brew.googleId,
+			resource : {
+				name        : `${brew.title}.txt`,
+				description : `${brew.description}`,
+				properties  : {
+					title     : brew.title,
+					published : brew.published,
+					version   : brew.version,
+					renderer  : brew.renderer,
+					tags      : brew.tags,
+					pageCount : brew.pageCount,
+					systems   : brew.systems.join()
 				}
-			})
-			.catch((err)=>{
-				console.log('Error saving to google');
-				console.error(err);
-				throw (err);
-				//return res.status(500).send('Error while saving');
-			});
-		}
+			},
+			media : {
+				mimeType : 'text/plain',
+				body     : brew.text
+			}
+		})
+		.catch((err)=>{
+			console.log('Error saving to google');
+			console.error(err);
+			throw (err);
+			//return res.status(500).send('Error while saving');
+		});
 
 		return (brew);
 	},
@@ -322,9 +294,8 @@ const GoogleActions = {
 		}
 	},
 
-	deleteGoogleBrew : async (req, res, id)=>{
-		const oAuth2Client = GoogleActions.authCheck(req.account, res);
-		const drive = google.drive({ version: 'v3', auth: oAuth2Client });
+	deleteGoogleBrew : async (auth, id)=>{
+		const drive = google.drive({ version: 'v3', auth });
 
 		const googleId = id.slice(0, -12);
 		const accessId = id.slice(-12);
@@ -336,7 +307,6 @@ const GoogleActions = {
 		.catch((err)=>{
 			console.log('Error loading from Google');
 			console.error(err);
-			return;
 		});
 
 		if(obj && obj.data.properties.editId != accessId) {
@@ -351,8 +321,6 @@ const GoogleActions = {
 			console.log('Can\'t delete Google file');
 			console.error(err);
 		});
-
-		return res.status(200).send();
 	},
 
 	increaseView : async (id, accessId, accessType, brew)=>{
