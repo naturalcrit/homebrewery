@@ -233,7 +233,7 @@ const GoogleActions = {
 		return newHomebrew;
 	},
 
-	readFileMetadata : async (id, accessId, accessType)=>{
+	getGoogleBrew : async (id, accessId, accessType)=>{
 		const drive = google.drive({ version: 'v3' });
 
 		const obj = await drive.files.get({
