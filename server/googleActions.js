@@ -16,6 +16,7 @@ try {
 	];
 } catch (err) {
 	console.warn(err);
+	console.log('Please make sure that a Google Service Account is set up properly in your config files.');
 }
 google.options({ auth: serviceAuth || config.get('google_api_key') });
 
