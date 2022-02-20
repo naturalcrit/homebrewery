@@ -11,12 +11,7 @@ const app = supertest.agent(require('app.js').app)
 const DB = require('db.js');
 const Homebrew = require('homebrew.model.js');
 
-// FIXME: outline config creation into a separate module
-const config = require('nconf')
-	.argv()
-	.env({ lowerCase: true })
-	.file('environment', { file: `config/${process.env.NODE_ENV}.json` })
-	.file('defaults', { file: 'config/default.json' });
+const config = require('config.js');
 
 describe('/source/:id', ()=>{
 	beforeAll(()=>{
@@ -92,6 +87,8 @@ describe('/source/:id', ()=>{
             .send()
             .expect(404);
 	});
+
+	// FIXME: add tests for retrieving a Google brew source
 
 	afterAll(()=>{
 		return Homebrew.model.deleteMany();
