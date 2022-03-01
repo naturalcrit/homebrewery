@@ -109,7 +109,7 @@ const Nav = {
 					onMouseEnter={this.props.trigger == 'hover' ? ()=>{this.handleDropdown(true);} : undefined}
 					onClick=     {this.props.trigger == 'click' ? ()=>{this.handleDropdown(true);} : undefined}
 					onMouseLeave={()=>this.handleDropdown(false)}>
-					{this.props.children[0] || this.props.children} //children is not an array when only one child
+					{this.props.children[0] || this.props.children /*children is not an array when only one child*/}
 					{this.renderDropdown(dropdownChildren)}
 				</div>
 			);
