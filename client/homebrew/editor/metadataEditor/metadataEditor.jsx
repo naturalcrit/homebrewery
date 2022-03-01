@@ -144,16 +144,29 @@ const MetadataEditor = createClass({
 		};
 
 		const currentTheme = this.getThemeData(this.props.metadata.renderer, this.props.metadata.theme);
+		let dropdown;
+
+		if(this.props.metadata.renderer == 'legacy') {
+			dropdown =
+				<Nav.dropdown className='disabled' trigger='disabled'>
+					<div>
+						{`Themes are not suppdorted in the Legacy Renderer`} <i className='fas fa-caret-down'></i>
+					</div>
+				</Nav.dropdown>;
+		} else {
+			dropdown =
+				<Nav.dropdown trigger='click'>
+					<div>
+						{`${_.upperFirst(currentTheme.renderer)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
+					</div>
+					{/*listThemes('Legacy')*/}
+					{listThemes('V3')}
+				</Nav.dropdown>;
+		}
 
 		return <div className='field themes'>
 			<label>theme</label>
-			<Nav.dropdown trigger='click'>
-				<div>
-					{`${_.upperFirst(currentTheme.renderer)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
-				</div>
-				{listThemes('Legacy')}
-				{listThemes('V3')}
-			</Nav.dropdown>
+			{dropdown}
 		</div>;
 	},
 

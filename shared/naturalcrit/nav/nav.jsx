@@ -98,17 +98,18 @@ const Nav = {
 			);
 		},
 		render : function () {
+			console.log(this.props.children);
 			const dropdownChildren = React.Children.map(this.props.children, (child, i)=>{
 				// Ignore the first child
 				if(i < 1) return;
 				return child;
 			});
 			return (
-				<div className='navDropdownContainer'
+				<div className={`navDropdownContainer ${this.props.className}`}
 					onMouseEnter={this.props.trigger == 'hover' ? ()=>{this.handleDropdown(true);} : undefined}
 					onClick=     {this.props.trigger == 'click' ? ()=>{this.handleDropdown(true);} : undefined}
 					onMouseLeave={()=>this.handleDropdown(false)}>
-					{this.props.children[0]}
+					{this.props.children[0] || this.props.children} //children is not an array when only one child
 					{this.renderDropdown(dropdownChildren)}
 				</div>
 			);

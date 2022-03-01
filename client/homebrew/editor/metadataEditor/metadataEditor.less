@@ -86,10 +86,15 @@
 		font-size: 13.33px;
 		.navDropdownContainer {
 			background-color: white;
-
 			width: 100%;
 			&:hover {
 				background-color: rgb(187, 187, 187);
+			}
+			&.disabled {
+				font-style:italic;
+				font-style: italic;
+				background-color: darkgray;
+				color: dimgray;
 			}
 			&>div:first-child {
 				border : 2px solid rgb(118,118,118);
