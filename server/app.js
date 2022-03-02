@@ -141,8 +141,33 @@ app.get('/migrate', async (req, res, next)=>{
 
 //Account Information page
 app.get('/account', async (req, res, next)=>{
-	let text = 'Not logged in.';
+	let text = dedent`
+	#Account
+	
+	Not logged in.`;
+
+	let auth;
+	let files;
 	if(req.account) {
+		if(req.account.googleId) {
+			try {
+				auth = await GoogleActions.authCheck(req.account, res);
+			} catch (e) {
+				auth = undefined;
+				console.log('Google auth check failed!');
+				console.log(e);
+			}
+			if(auth.credentials.access_token) {
+				try {
+					files = await GoogleActions.listGoogleBrews(auth);
+				} catch (e) {
+					files = undefined;
+					console.log('List Google files failed!');
+					console.log(e);
+				}
+			}
+		}
+
 		text = dedent`
 	# Account
 	
@@ -151,7 +176,8 @@ app.get('/account', async (req, res, next)=>{
 	Username : ${req.account.username}  
 	Logged in at: ${req.account.issued}  
 	Linked to Google? ${req.account.googleId ? 'YES' : 'NO'}  
-	${req.account.googleId ? 'Google access check: --NYI--' : ''}
+	${req.account.googleId ? `Google auth check: ${auth.credentials.access_token ? 'YES' : 'NO'}` : ''}  
+	${req.account.googleId ? `Google file list count: ${files ? files.length : 'NO'}` : ''}  
 	`;
 	}
 
