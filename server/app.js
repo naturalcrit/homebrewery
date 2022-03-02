@@ -8,6 +8,7 @@ const express = require('express');
 const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
+const dedent = require('dedent-tabs').default;
 
 const homebrewApi = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
@@ -134,6 +135,30 @@ app.get('/migrate', async (req, res, next)=>{
 		renderer : 'V3'
 	};
 	splitTextStyleAndMetadata(brew);
+	req.brew = brew;
+	return next();
+});
+
+//Account Information page
+app.get('/account', async (req, res, next)=>{
+	let text = 'Not logged in.';
+	if(req.account) {
+		text = dedent`
+	# Account
+	
+	### Info:
+
+	Username : ${req.account.username}  
+	Logged in at: ${req.account.issued}  
+	Linked to Google? ${req.account.googleId ? 'YES' : 'NO'}  
+	${req.account.googleId ? 'Google access check: --NYI--' : ''}
+	`;
+	}
+
+	const brew = {
+		text     : text,
+		renderer : 'V3'
+	};
 	req.brew = brew;
 	return next();
 });
