@@ -142,7 +142,7 @@ app.get('/migrate', async (req, res, next)=>{
 //Account Information page
 app.get('/account', async (req, res, next)=>{
 	let text = dedent`
-	#Account
+	# Account Details
 	
 	Not logged in.`;
 
@@ -169,16 +169,19 @@ app.get('/account', async (req, res, next)=>{
 		}
 
 		text = dedent`
-	# Account
-	
-	### Info:
-
-	Username : ${req.account.username}  
-	Logged in at: ${req.account.issued}  
-	Linked to Google? ${req.account.googleId ? 'YES' : 'NO'}  
-	${req.account.googleId ? `Google auth check: ${auth.credentials.access_token ? 'YES' : 'NO'}` : ''}  
-	${req.account.googleId ? `Google file list count: ${files ? files.length : 'NO'}` : ''}  
-	`;
+	# Account Details
+	:
+	{{wide,centered,text-align:center,border-color:#58180D,border-width:2px,border-style:solid,border-radius:10px,padding:10px
+	### Info
+	:
+	|||
+	|:-|:-|
+	|Username|${req.account.username}|
+	|Logged in at|${req.account.issued}|
+	|Linked to Google|${req.account.googleId ? 'YES' : 'NO'}|
+	${req.account.googleId ? `|Google auth check: ${auth.credentials.access_token ? '|YES|' : '|NO|'}` : ''}
+	${req.account.googleId ? `|Google file list count: ${files ? `|${files.length}|` : '|NO|'}` : ''}
+	}}`;
 	}
 
 	const brew = {
