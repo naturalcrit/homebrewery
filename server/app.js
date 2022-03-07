@@ -262,9 +262,16 @@ app.get('/print/:id', asyncHandler(async (req, res, next)=>{
 //Render the page
 const templateFn = require('./../client/template.js');
 app.use((req, res)=>{
+	// Create configuration object
 	const configuration = {
-		environment : config.get('node_env'),
-		secret      : config.get('secret')
+		local       : false,
+		environment : config.get('node_env')
+	};
+	// Add local only items to configuration object
+	const localEnvironments = config.get('local_environments');
+	if(localEnvironments.includes(configuration.environment)){
+		configuration.local = true;
+		configuration.secret = config.get('secret');
 	};
 	const props = {
 		version     : require('./../package.json').version,

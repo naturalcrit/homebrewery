@@ -43,8 +43,6 @@ const Account = createClass({
 	},
 
 	render : function(){
-		const localEnvironments = ['local', 'docker'];
-
 		//  Logged in
 		if(global.account){
 			return <Nav.dropdown>
@@ -75,7 +73,7 @@ const Account = createClass({
 
 		//  Logged out
 		//  LOCAL ONLY
-		if(localEnvironments.includes(global.config.environment)) {
+		if(global.config.local) {
 			return <Nav.item color='teal' icon='fas fa-sign-in-alt' onClick={this.localLogin}>
 				login
 			</Nav.item>;
