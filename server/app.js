@@ -262,6 +262,10 @@ app.get('/print/:id', asyncHandler(async (req, res, next)=>{
 //Render the page
 const templateFn = require('./../client/template.js');
 app.use((req, res)=>{
+	const configuration = {
+		environment : config.get('node_env'),
+		secret      : config.get('secret')
+	};
 	const props = {
 		version     : require('./../package.json').version,
 		url         : req.originalUrl,
@@ -269,7 +273,8 @@ app.use((req, res)=>{
 		brews       : req.brews,
 		googleBrews : req.googleBrews,
 		account     : req.account,
-		enable_v3   : config.get('enable_v3')
+		enable_v3   : config.get('enable_v3'),
+		config      : configuration
 	};
 	const title = req.brew ? req.brew.title : '';
 	templateFn('homebrew', title, props)

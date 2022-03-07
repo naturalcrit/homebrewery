@@ -1,6 +1,7 @@
 const React = require('react');
 const createClass = require('create-react-class');
 const Nav = require('naturalcrit/nav/nav.jsx');
+const jwt = require('jwt-simple');
 
 const Account = createClass({
 	displayName     : 'AccountNavItem',
@@ -25,7 +26,26 @@ const Account = createClass({
 		};
 	},
 
+	localLogin : function(){
+		const username = prompt('Enter username:');
+		if(!username) {return;};
+
+		const payload = {
+			username : username,
+			issued   : new Date()
+		};
+		const expiry = new Date;
+		expiry.setFullYear(expiry.getFullYear() + 1);
+		const token = jwt.encode(payload, global.config.secret);
+
+		document.cookie = `nc_session=${token};expires=${expiry};path=/;samesite=lax;${window.domain ? `domain=${window.domain}` : ''}`;
+		window.location.reload(true);
+	},
+
 	render : function(){
+		const localEnvironments = ['local', 'docker'];
+
+		//  Logged in
 		if(global.account){
 			return <Nav.dropdown>
 				<Nav.item
@@ -53,6 +73,16 @@ const Account = createClass({
 			</Nav.dropdown>;
 		}
 
+		//  Logged out
+		//  LOCAL ONLY
+		if(localEnvironments.includes(global.config.environment)) {
+			return <Nav.item color='teal' icon='fas fa-sign-in-alt' onClick={this.localLogin}>
+				login
+			</Nav.item>;
+		};
+
+		// Logged out
+		// Production site
 		return <Nav.item href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`} color='teal' icon='fas fa-sign-in-alt'>
 			login
 		</Nav.item>;
