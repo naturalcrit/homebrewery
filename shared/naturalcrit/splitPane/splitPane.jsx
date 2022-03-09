@@ -10,7 +10,6 @@ const SplitPane = createClass({
 		return {
 			storageKey   : 'naturalcrit-pane-split',
 			onDragFinish : function(){} //fires when dragging
-
 		};
 	},
 	getInitialState : function() {
@@ -26,6 +25,17 @@ const SplitPane = createClass({
 				size : paneSize
 			});
 		}
+		window.addEventListener('resize', this.resetSize);
+	},
+
+	componentWillUnmount : function() {
+		window.removeEventListener('resize', this.resetSize);
+	},
+
+	resetSize : function() {
+		this.setState({
+			size : window.innerWidth / 2
+		});
 	},
 
 	handleUp : function(){
