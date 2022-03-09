@@ -33,6 +33,7 @@ const SplitPane = createClass({
 	},
 
 	resetSize : function() {
+		window.localStorage.removeItem(this.props.storageKey);
 		this.setState({
 			size : window.innerWidth / 2
 		});
