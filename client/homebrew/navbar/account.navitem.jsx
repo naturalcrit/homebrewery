@@ -20,6 +20,9 @@ const Account = createClass({
 
 	handleLogout : function(){
 		if(confirm('Are you sure you want to log out?')) {
+			// Reset divider position
+			window.localStorage.removeItem('naturalcrit-pane-split');
+			// Clear login cookie
 			document.cookie = `nc_session=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;samesite=lax;${window.domain ? `domain=${window.domain}` : ''}`;
 			window.location = '/';
 		};
