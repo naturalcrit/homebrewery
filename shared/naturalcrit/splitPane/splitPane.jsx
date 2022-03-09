@@ -15,8 +15,9 @@ const SplitPane = createClass({
 
 	getInitialState : function() {
 		return {
-			size       : null,
-			isDragging : false
+			size        : null,
+			screenWidth : 0,
+			isDragging  : false
 		};
 	},
 
@@ -24,21 +25,32 @@ const SplitPane = createClass({
 		const paneSize = window.localStorage.getItem(this.props.storageKey);
 		if(paneSize){
 			this.setState({
-				size : paneSize
+				size        : paneSize,
+				screenWidth : window.innerWidth
 			});
 		}
-		window.addEventListener('resize', this.resetSize);
+		window.addEventListener('resize', this.changeSize);
 	},
 
 	componentWillUnmount : function() {
-		window.removeEventListener('resize', this.resetSize);
+		window.removeEventListener('resize', this.changeSize);
 	},
 
-	resetSize : function() {
-		window.localStorage.removeItem(this.props.storageKey);
+	changeSize : function() {
+		const oldWidth = this.state.screenWidth;
+		const oldLoc = this.state.size;
+		const newLoc = this.limitPosition(window.innerWidth * (oldLoc / oldWidth));
 		this.setState({
-			size : window.innerWidth / 2
+			size        : newLoc,
+			screenWidth : window.innerWidth
 		});
+	},
+
+	limitPosition : function(x) {
+		const minWidth = 1;
+		const maxWidth = window.innerWidth - 13;
+		const result = Math.min(maxWidth, Math.max(minWidth, x));
+		return result;
 	},
 
 	handleUp : function(){
@@ -48,16 +60,16 @@ const SplitPane = createClass({
 		}
 		this.setState({ isDragging: false });
 	},
+
 	handleDown : function(){
 		this.setState({ isDragging: true });
 		//this.unFocus()
 	},
+
 	handleMove : function(e){
 		if(!this.state.isDragging) return;
 
-		const minWidth = 1;
-		const maxWidth = window.innerWidth - 13;
-		const newSize = Math.min(maxWidth, Math.max(minWidth, e.pageX));
+		const newSize = this.limitPosition(e.pageX);
 		this.setState({
 			size : newSize
 		});
