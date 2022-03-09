@@ -12,12 +12,14 @@ const SplitPane = createClass({
 			onDragFinish : function(){} //fires when dragging
 		};
 	},
+
 	getInitialState : function() {
 		return {
 			size       : null,
 			isDragging : false
 		};
 	},
+
 	componentDidMount : function() {
 		const paneSize = window.localStorage.getItem(this.props.storageKey);
 		if(paneSize){
