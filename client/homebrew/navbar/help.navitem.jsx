@@ -10,7 +10,7 @@ module.exports = function(props){
 			need help?
 		</Nav.item>
 		<Nav.item color='red' icon='fas fa-fw fa-bug'
-			href={`https://www.reddit.com/r/homebrewery/submit?selftext=true&title=${encodeURIComponent('[Issue] Describe Your Issue Here')}`}
+			href={`https://www.reddit.com/r/homebrewery/submit?selftext=true&text=Browser%28s%29%3A++%0D%0AOperating+System%3A++%0D%0ALegacy+or+v3+renderer%3F%3A++%0D%0AIssue%3A++`}
 			newTab={true}
 			rel='noopener noreferrer'>
 			report issue
