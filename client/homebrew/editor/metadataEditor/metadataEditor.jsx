@@ -151,7 +151,7 @@ const MetadataEditor = createClass({
 			dropdown =
 				<Nav.dropdown className='disabled' trigger='disabled'>
 					<div>
-						{`Themes are not suppdorted in the Legacy Renderer`} <i className='fas fa-caret-down'></i>
+						{`Themes are not supported in the Legacy Renderer`} <i className='fas fa-caret-down'></i>
 					</div>
 				</Nav.dropdown>;
 		} else {
