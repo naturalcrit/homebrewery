@@ -83,49 +83,50 @@
 	}
 
 	.themes.field{
-		font-size: 13.33px;
+		font-size : 13.33px;
 		.navDropdownContainer {
-			background-color: white;
-			width: 100%;
-			position: relative;
+			background-color	: white;
+			width				: 100%;
+			position			: relative;
+			z-index				: 500;
 			&.disabled {
-				font-style:italic;
-				font-style: italic;
-				background-color: darkgray;
-				color: dimgray;
+				font-style			:italic;
+				font-style			: italic;
+				background-color	: darkgray;
+				color				: dimgray;
 			}
 			&>div:first-child {
-				border : 2px solid rgb(118,118,118);
-				padding : 6px 3px;
-				background-color : inherit;
+				border 				: 2px solid rgb(118,118,118);
+				padding 			: 6px 3px;
+				background-color 	: inherit;
 				i {
-					float: right;
+					float	: right;
 				}
 				&:hover {
-					background-color: @blue;
-					color: white;
+					background-color	: @blue;
+					color				: white;
 				}
 			}
 			.navDropdown {
-				box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
-				position:absolute;
-				width:100%;
+				box-shadow	: 0px 5px 10px rgba(0, 0, 0, 0.3);
+				position	: absolute;
+				width		: 100%;
 				.item {
-					padding: 3px 3px;
-					border-top: 1px solid rgb(118, 118, 118);
-					position: relative;
-					overflow: hidden;
-					background-color: white;
+					padding				: 3px 3px;
+					border-top			: 1px solid rgb(118, 118, 118);
+					position			: relative;
+					overflow			: hidden;
+					background-color	: white;
 					&:hover {
-						background-color: @blue;
-						color: white;
+						background-color	: @blue;
+						color				: white;
 					}
 					img {
-						mask-image: linear-gradient(90deg, transparent, black 20%);
-						-webkit-mask-image: linear-gradient(90deg, transparent, black 20%);
-				    position: absolute;
-				    left: ~"max(100px, 100% - 300px)";
-				    top: 0px;
+						mask-image			: linear-gradient(90deg, transparent, black 20%);
+						-webkit-mask-image	: linear-gradient(90deg, transparent, black 20%);
+				    position	: absolute;
+				    left		: ~"max(100px, 100% - 300px)";
+				    top			: 0px;
 					}
 				}
 			}
