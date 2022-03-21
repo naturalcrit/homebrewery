@@ -35,6 +35,12 @@ jobs:
             - .
 
   test:
+    docker:
+      - image: circleci/node:16.10.0
+      - image: circleci/mongo:4.4
+
+    working_directory: ~/repo
+
     steps:
       - attach_workspace:
           at: .
