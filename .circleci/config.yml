@@ -2,7 +2,7 @@
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
@@ -21,12 +21,33 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: npm install
+      - node/install-npm
+      - node/install-packages
 
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  test:
+    steps:
+      - attach_workspace:
+          at: .
+
       # run tests!
-      - run: npm run circleci
+      - run: 
+          name: Tests
+          command: npm run circleci
+
+workflows:
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
