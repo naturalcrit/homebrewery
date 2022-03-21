@@ -61,7 +61,7 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 
 	Fixes issues: [#1736](https://github.com/naturalcrit/homebrewery/issues/1736)
 
-* [x] Code search/replace `CTRL F / CTRL SHIFT F`
+* [x] Code search/replace PC: `CTRL F / CTRL SHIFT F` / Mac: `CMD F / OPTION CMD F`
 
 	Fixes issues: [#1201](https://github.com/naturalcrit/homebrewery/issues/1201)
 
