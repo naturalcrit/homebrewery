@@ -58,7 +58,7 @@ jobs:
       # run tests!
       - run: 
           name: Tests
-          command: npm run circleci
+          command: npm run circleci --verbose
 
 workflows:
   build_and_test:
