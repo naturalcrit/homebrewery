@@ -27,7 +27,10 @@ jobs:
           - v1-dependencies-
 
       - node/install-npm
-      - node/install-packages
+      - node/install-packages:
+          app-dir: ~/homebrewery
+          cache-path: node_modules
+          overrise-ci-command: npm i
 
       - save_cache:
           paths:
