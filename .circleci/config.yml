@@ -49,6 +49,7 @@ jobs:
       - image: circleci/mongo:4.4
 
     working_directory: ~/homebrewery
+    parallelism: 4
 
     steps:
       - attach_workspace:
