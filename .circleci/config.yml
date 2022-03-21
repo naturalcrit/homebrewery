@@ -30,7 +30,7 @@ jobs:
       - node/install-packages:
           app-dir: ~/homebrewery
           cache-path: node_modules
-          overrise-ci-command: npm i
+          override-ci-command: npm i
 
       - save_cache:
           paths:
