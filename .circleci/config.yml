@@ -17,7 +17,8 @@ jobs:
     executor: node/default
 
     steps:
-      - checkout
+      - checkout:
+          path: ~/repo/homebrewery
 
       # Download and cache dependencies
       - restore_cache:
@@ -28,7 +29,7 @@ jobs:
 
       - node/install-npm
       - node/install-packages:
-          app-dir: ~/homebrewery
+          app-dir: ~/repo/homebrewery
           cache-path: node_modules
           override-ci-command: npm i
 
