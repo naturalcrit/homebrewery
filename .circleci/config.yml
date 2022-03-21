@@ -13,12 +13,12 @@ jobs:
       - image: circleci/node:16.10.0
       - image: circleci/mongo:4.4
 
-    working_directory: ~/repo
+    working_directory: ~/homebrewery
     executor: node/default
 
     steps:
       - checkout:
-          path: ~/repo/homebrewery
+          path: ~/homebrewery
 
       # Download and cache dependencies
       - restore_cache:
@@ -29,7 +29,7 @@ jobs:
 
       - node/install-npm
       - node/install-packages:
-          app-dir: ~/repo/homebrewery
+          app-dir: ~/homebrewery
           cache-path: node_modules
           override-ci-command: npm i
 
@@ -48,7 +48,7 @@ jobs:
       - image: circleci/node:16.10.0
       - image: circleci/mongo:4.4
 
-    working_directory: ~/repo
+    working_directory: ~/homebrewery
 
     steps:
       - attach_workspace:
