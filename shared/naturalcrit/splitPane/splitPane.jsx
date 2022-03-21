@@ -26,6 +26,7 @@ const SplitPane = createClass({
 		if(paneSize){
 			this.setState({
 				size        : paneSize,
+				dividerSize : paneSize,
 				screenWidth : window.innerWidth
 			});
 		}
@@ -37,19 +38,24 @@ const SplitPane = createClass({
 	},
 
 	changeSize : function() {
-		const oldWidth = this.state.screenWidth;
 		const oldLoc = this.state.size;
-		const newLoc = this.limitPosition(window.innerWidth * (oldLoc / oldWidth));
+		const oldWidth = this.state.screenWidth;
+		let newLoc = oldLoc;
+		// Allow divider to increase in size to original position
+		if(window.innerWidth > oldWidth) {
+			newLoc = Math.min(oldLoc * (window.innerWidth / this.state.screenWidth), this.state.dividerSize);
+		}
+		// Limit current position to between 10% and 90% of visible space
+		newLoc = this.limitPosition(newLoc, 0.1*(window.innerWidth-13), 0.9*(window.innerWidth-13));
+
 		this.setState({
 			size        : newLoc,
 			screenWidth : window.innerWidth
 		});
 	},
 
-	limitPosition : function(x) {
-		const minWidth = 1;
-		const maxWidth = window.innerWidth - 13;
-		const result = Math.min(maxWidth, Math.max(minWidth, x));
+	limitPosition : function(x, min = 1, max = window.innerWidth - 13) {
+		const result = Math.round(Math.min(max, Math.max(min, x)));
 		return result;
 	},
 
@@ -71,7 +77,8 @@ const SplitPane = createClass({
 
 		const newSize = this.limitPosition(e.pageX);
 		this.setState({
-			size : newSize
+			size        : newSize,
+			dividerSize : newSize
 		});
 	},
 	/*
