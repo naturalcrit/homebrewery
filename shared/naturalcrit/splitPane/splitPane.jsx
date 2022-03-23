@@ -15,42 +15,36 @@ const SplitPane = createClass({
 
 	getInitialState : function() {
 		return {
-			size        : null,
-			screenWidth : 0,
-			isDragging  : false
+			currentDividerPos : null,
+			windowWidth       : 0,
+			isDragging        : false
 		};
 	},
 
 	componentDidMount : function() {
-		const paneSize = window.localStorage.getItem(this.props.storageKey);
-		if(paneSize){
+		const dividerPos = window.localStorage.getItem(this.props.storageKey);
+		if(dividerPos){
 			this.setState({
-				size        : paneSize,
-				dividerSize : paneSize,
-				screenWidth : window.innerWidth
+				currentDividerPos : this.limitPosition(dividerPos, 0.1*(window.innerWidth-13), 0.9*(window.innerWidth-13)),
+				userSetDividerPos : dividerPos,
+				windowWidth       : window.innerWidth
 			});
 		}
-		window.addEventListener('resize', this.changeSize);
+		window.addEventListener('resize', this.handleWindowResize);
 	},
 
 	componentWillUnmount : function() {
-		window.removeEventListener('resize', this.changeSize);
+		window.removeEventListener('resize', this.handleWindowResize);
 	},
 
-	changeSize : function() {
-		const oldLoc = this.state.size;
-		const oldWidth = this.state.screenWidth;
-		let newLoc = oldLoc;
-		// Allow divider to increase in size to original position
-		if(window.innerWidth > oldWidth) {
-			newLoc = Math.min(oldLoc * (window.innerWidth / this.state.screenWidth), this.state.dividerSize);
-		}
+	handleWindowResize : function() {
+		// Allow divider to increase in size to last user-set position
 		// Limit current position to between 10% and 90% of visible space
-		newLoc = this.limitPosition(newLoc, 0.1*(window.innerWidth-13), 0.9*(window.innerWidth-13));
+		const newLoc = this.limitPosition(this.state.userSetDividerPos, 0.1*(window.innerWidth-13), 0.9*(window.innerWidth-13));
 
 		this.setState({
-			size        : newLoc,
-			screenWidth : window.innerWidth
+			currentDividerPos : newLoc,
+			windowWidth       : window.innerWidth
 		});
 	},
 
@@ -61,8 +55,8 @@ const SplitPane = createClass({
 
 	handleUp : function(){
 		if(this.state.isDragging){
-			this.props.onDragFinish(this.state.size);
-			window.localStorage.setItem(this.props.storageKey, this.state.size);
+			this.props.onDragFinish(this.state.currentDividerPos);
+			window.localStorage.setItem(this.props.storageKey, this.state.currentDividerPos);
 		}
 		this.setState({ isDragging: false });
 	},
@@ -77,8 +71,8 @@ const SplitPane = createClass({
 
 		const newSize = this.limitPosition(e.pageX);
 		this.setState({
-			size        : newSize,
-			dividerSize : newSize
+			currentDividerPos : newSize,
+			userSetDividerPos : newSize
 		});
 	},
 	/*
@@ -102,7 +96,7 @@ const SplitPane = createClass({
 
 	render : function(){
 		return <div className='splitPane' onMouseMove={this.handleMove} onMouseUp={this.handleUp}>
-			<Pane ref='pane1' width={this.state.size}>{this.props.children[0]}</Pane>
+			<Pane ref='pane1' width={this.state.currentDividerPos}>{this.props.children[0]}</Pane>
 			{this.renderDivider()}
 			<Pane ref='pane2' isDragging={this.state.isDragging}>{this.props.children[1]}</Pane>
 		</div>;
