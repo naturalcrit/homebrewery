@@ -210,7 +210,9 @@ const EditPage = createClass({
 			});
 
 		this.savedBrew = res.body;
-		history.replaceState(null, null, `/edit/${this.savedBrew.googleId ?? ''}${this.savedBrew.editId}`);
+		if(transfer) {
+			history.replaceState(null, null, `/edit/${this.savedBrew.googleId ?? ''}${this.savedBrew.editId}`);
+		}
 
 		this.setState((prevState)=>({
 			brew : _.merge({}, prevState.brew, {
