@@ -103,7 +103,7 @@ const ListPage = createClass({
 				<input
 					type='search'
 					autoFocus={true}
-					placeholder='search title/description'
+					placeholder='filter title/description'
 					onChange={this.handleFilterTextChange}
 					onFocus={(e)=>{e.target.select();}}
 					onKeyDown={(e)=>{this.handleKeys(e);}}
