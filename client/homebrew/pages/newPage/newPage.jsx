@@ -174,7 +174,7 @@ const NewPage = createClass({
 		localStorage.removeItem(BREWKEY);
 		localStorage.removeItem(STYLEKEY);
 		localStorage.removeItem(METAKEY);
-		window.location = `/edit/${brew.googleId ? brew.googleId : ''}${brew.editId}`;
+		window.location = `/edit/${brew.googleId ?? ''}${brew.editId}`;
 	},
 
 	renderSaveButton : function(){

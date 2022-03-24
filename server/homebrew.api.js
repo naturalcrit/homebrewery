@@ -109,7 +109,7 @@ const updateBrew = async (req, res)=>{
 	const { transferToGoogle, transferFromGoogle } = req.query;
 
 	let saved;
-	if(!!brew.googleId && transferFromGoogle) {
+	if(brew.googleId && transferFromGoogle) {
 		beforeNewSave(req.account, brew);
 
 		saved = await newLocalBrew(brew)
@@ -137,7 +137,7 @@ const updateBrew = async (req, res)=>{
 				console.error(err);
 				res.status(err.status).send(err.message);
 			});
-	} else if(!!brew.googleId) {
+	} else if(brew.googleId) {
 		brew.text = mergeBrewText(brew);
 
 		saved = await GoogleActions.updateGoogleBrew(brew)
