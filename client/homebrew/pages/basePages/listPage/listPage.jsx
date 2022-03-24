@@ -77,13 +77,8 @@ const ListPage = createClass({
 		this.setState({
 			filterString : e.target.value,
 		});
+		this.updateUrl(e.target.value);
 		return;
-	},
-
-	handleKeys : function(e){
-		if(e.key === 'Enter') {
-			this.updateUrl(e.target.value);
-		  }
 	},
 
 	updateUrl : function(filterTerm){
@@ -93,7 +88,7 @@ const ListPage = createClass({
 		urlParams.set('filter', filterTerm);
 		if(!filterTerm) urlParams.delete('filter');
 		url.search = urlParams;
-		window.location.replace(url.href);
+		window.history.replaceState(null, null, url);
 	},
 
 	renderFilterOption : function(){
@@ -105,8 +100,6 @@ const ListPage = createClass({
 					autoFocus={true}
 					placeholder='filter title/description'
 					onChange={this.handleFilterTextChange}
-					onFocus={(e)=>{e.target.select();}}
-					onKeyDown={(e)=>{this.handleKeys(e);}}
 					value={this.state.filterString}
 				/>
 			</label>
