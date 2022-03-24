@@ -24,7 +24,8 @@ const ListPage = createClass({
 		return {
 			sortType     : 'alpha',
 			sortDir      : 'asc',
-			filterString : ''
+			filterString : this.props.query?.filter || '',
+			query        : this.props.query
 		};
 	},
 
@@ -74,9 +75,25 @@ const ListPage = createClass({
 
 	handleFilterTextChange : function(e){
 		this.setState({
-			filterString : e.target.value
+			filterString : e.target.value,
 		});
 		return;
+	},
+
+	handleKeys : function(e){
+		if(e.key === 'Enter') {
+			this.updateUrl(e.target.value);
+		  }
+	},
+
+	updateUrl : function(filterTerm){
+		const url = new URL(window.location.href);
+		const urlParams = new URLSearchParams(url.search);
+		if(urlParams.get('filter') == filterTerm) return;
+		urlParams.set('filter', filterTerm);
+		if(!filterTerm) urlParams.delete('filter');
+		url.search = urlParams;
+		window.location.replace(url.href);
 	},
 
 	renderFilterOption : function(){
@@ -85,8 +102,12 @@ const ListPage = createClass({
 				<i className='fas fa-search'></i>
 				<input
 					type='search'
+					autoFocus={true}
 					placeholder='search title/description'
 					onChange={this.handleFilterTextChange}
+					onFocus={(e)=>{e.target.select();}}
+					onKeyDown={(e)=>{this.handleKeys(e);}}
+					value={this.state.filterString}
 				/>
 			</label>
 		</td>;
