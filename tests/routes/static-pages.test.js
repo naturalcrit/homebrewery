@@ -1,13 +1,12 @@
 const supertest = require('supertest');
 
-const start = Date.now();
-console.log(`START DELAY ${Date.now().toString()}`);
-while (Date.now() < start + 10000){};
-console.log(`END DELAY ${Date.now().toString()}`);
-
 // Mimic https responses to avoid being redirected all the time
 const app = supertest.agent(require('app.js').app)
     .set('X-Forwarded-Proto', 'https');
+
+const timeout = 10000; //ms
+const start = Date.now();
+while (Date.now() < start + timeout){};
 
 describe('Tests for static pages', ()=>{
 	it('Home page works', ()=>{
