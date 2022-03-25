@@ -32,11 +32,14 @@ const Homebrew = createClass({
 			}
 		};
 	},
-	componentDidMount : function() {
-		global.account = this.props.account;
+
+	getInitialState : function(){
 		global.version = this.props.version;
+		global.account = this.props.account;
 		global.enable_v3 = this.props.enable_v3;
+		return {};
 	},
+
 	render : function (){
 		return (
 			<Router location={this.props.url}>
