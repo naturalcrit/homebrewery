@@ -10,6 +10,7 @@ const app = express();
 const config = require('./config.js');
 
 const homebrewApi = require('./homebrew.api.js');
+const userInfoApi = require('./userinfo.api.js');
 const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
@@ -91,9 +92,11 @@ app.use((req, res, next)=>{
 });
 
 app.use(homebrewApi);
+app.use(userInfoApi);
 app.use(require('./admin.api.js'));
 
 const HomebrewModel  = require('./homebrew.model.js').model;
+const userInfoModel  = require('./userinfo.model.js').model;
 const welcomeText    = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 const welcomeTextV3  = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg_v3.md', 'utf8');
 const migrateText    = require('fs').readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
@@ -261,7 +264,14 @@ app.get('/print/:id', asyncHandler(async (req, res, next)=>{
 
 //Render the page
 const templateFn = require('./../client/template.js');
+
 app.use((req, res)=>{
+	if(req.account?.username) {
+		// async ()=>{
+		// 	await userInfoModel.updateActivity(req.account.username);
+		// };
+		userInfoModel.updateActivity(req.account.username);
+	};
 	const props = {
 		version     : require('./../package.json').version,
 		url         : req.originalUrl,
