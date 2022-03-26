@@ -3,11 +3,14 @@ const UserInfoModel = require('./userinfo.model.js').model;
 const router = require('express').Router();
 
 
-const updateUserActivity = (req, res)=>{
+const updateUserActivity = async (req, res)=>{
 	username = req.account?.username;
-	return UserInfoModel.updateActivity(username);
+	if(username) {
+		await UserInfoModel.updateActivity(username);
+	}
+	return res.redirect(301, '/');
 };
 
-router.post('/userinfo/updateActivity', updateUserActivity);
+router.get('/userinfo/updateActivity', updateUserActivity);
 
 module.exports = router;
