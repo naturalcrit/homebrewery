@@ -11,7 +11,7 @@ jobs:
   build:
     docker:
       - image: cimg/node:16.11.0
-      - image: circleci/mongo:4.4
+      - image: mongo:4.4
 
     working_directory: ~/homebrewery
     executor: node/default
