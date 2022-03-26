@@ -7,7 +7,7 @@ const app = supertest.agent(require('app.js').app)
 describe('Tests for static pages', ()=>{
 	it('Home page works', ()=>{
 		return app.get('/').expect(200);
-	}, 30000);
+	});
 
 	it('Home page v3 works', ()=>{
 		return app.get('/v3_preview').expect(200);
