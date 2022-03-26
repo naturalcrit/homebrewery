@@ -4,10 +4,6 @@ const supertest = require('supertest');
 const app = supertest.agent(require('app.js').app)
     .set('X-Forwarded-Proto', 'https');
 
-// const timeout = 10000; //ms
-// const start = Date.now();
-// while (Date.now() < start + timeout){};
-
 describe('Tests for static pages', ()=>{
 	it('Home page works', ()=>{
 		return app.get('/').expect(200);
