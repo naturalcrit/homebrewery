@@ -200,73 +200,18 @@ const EditPage = createClass({
 		const brew = this.state.brew;
 		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
 
-		if(this.state.saveGoogle) {
-			if(transfer) {
-				const res = await request
-				.post('/api/newGoogle/')
-				.send(brew)
-				.catch((err)=>{
-					console.log(err.status === 401
-						? 'Not signed in!'
-						: 'Error Transferring to Google!');
-					this.setState({ errors: err, saveGoogle: false });
-				});
+		const params = `${transfer ? `?transfer${this.state.saveGoogle ? 'To' : 'From'}Google=true` : ''}`;
+		const res = await request
+			.put(`/api/update/${brew.editId}${params}`)
+			.send(brew)
+			.catch((err)=>{
+				console.log('Error Updating Local Brew');
+				this.setState({ errors: err });
+			});
 
-				if(!res) { return; }
-
-				console.log('Deleting Local Copy');
-				await request.delete(`/api/${brew.editId}`)
-				.send()
-				.catch((err)=>{
-					console.log('Error deleting Local Copy');
-				});
-
-				this.savedBrew = res.body;
-				history.replaceState(null, null, `/edit/${this.savedBrew.googleId}${this.savedBrew.editId}`); //update URL to match doc ID
-			} else {
-				const res = await request
-				.put(`/api/updateGoogle/${brew.editId}`)
-				.send(brew)
-				.catch((err)=>{
-					console.log(err.status === 401
-						? 'Not signed in!'
-						: 'Error Saving to Google!');
-					this.setState({ errors: err });
-					return;
-				});
-
-				this.savedBrew = res.body;
-			}
-		} else {
-			if(transfer) {
-				const res = await request.post('/api')
-				.send(brew)
-				.catch((err)=>{
-					console.log('Error creating Local Copy');
-					this.setState({ errors: err });
-					return;
-				});
-
-				await request.get(`/api/removeGoogle/${brew.googleId}${brew.editId}`)
-				.send()
-				.catch((err)=>{
-					console.log('Error Deleting Google Brew');
-				});
-
-				this.savedBrew = res.body;
-				history.replaceState(null, null, `/edit/${this.savedBrew.editId}`); //update URL to match doc ID
-			} else {
-				const res = await request
-				.put(`/api/update/${brew.editId}`)
-				.send(brew)
-				.catch((err)=>{
-					console.log('Error Updating Local Brew');
-					this.setState({ errors: err });
-					return;
-				});
-
-				this.savedBrew = res.body;
-			}
+		this.savedBrew = res.body;
+		if(transfer) {
+			history.replaceState(null, null, `/edit/${this.savedBrew.googleId ?? ''}${this.savedBrew.editId}`);
 		}
 
 		this.setState((prevState)=>({
