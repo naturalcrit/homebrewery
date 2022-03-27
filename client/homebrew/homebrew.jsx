@@ -32,11 +32,12 @@ const Homebrew = createClass({
 			}
 		};
 	},
-	componentWillMount : function() {
+	getInitialState : function() {
 		global.account = this.props.account;
 		global.version = this.props.version;
 		global.enable_v3 = this.props.enable_v3;
 		global.config = this.props.config;
+		return {};
 	},
 	render : function (){
 		return (
