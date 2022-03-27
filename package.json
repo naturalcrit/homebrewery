@@ -20,6 +20,9 @@
     "verify": "npm run lint && npm test",
     "test": "jest",
     "test:dev": "jest --verbose --watch",
+    "test:basic": "jest tests/markdown/basic.test.js --verbose",
+    "test:mustache-span": "jest tests/markdown/mustache-span.test.js --verbose",
+    "test:route": "jest tests/routes/static-pages.test.js --verbose",
     "phb": "node scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
     "postinstall": "npm run buildall",
@@ -31,6 +34,7 @@
     "build/*"
   ],
   "jest": {
+    "testTimeout" : 15000,
     "modulePaths": [
       "mode_modules",
       "shared",
@@ -83,7 +87,7 @@
     "vitreum": "git+https://git@github.com/calculuschild/vitreum.git"
   },
   "devDependencies": {
-    "eslint": "^8.11.0",
+    "eslint": "^8.12.0",
     "eslint-plugin-react": "^7.29.4",
     "jest": "^27.5.1",
     "supertest": "^6.2.2"
