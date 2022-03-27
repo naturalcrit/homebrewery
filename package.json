@@ -47,7 +47,7 @@
     ]
   },
   "dependencies": {
-    "@babel/core": "^7.17.7",
+    "@babel/core": "^7.17.8",
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
@@ -61,7 +61,7 @@
     "express-async-handler": "^1.2.0",
     "express-static-gzip": "2.1.5",
     "fs-extra": "10.0.1",
-    "googleapis": "97.0.0",
+    "googleapis": "98.0.0",
     "js-yaml": "^4.1.0",
     "jwt-simple": "^0.5.6",
     "less": "^3.13.1",
@@ -70,7 +70,7 @@
     "marked-extended-tables": "^1.0.3",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.29.1",
-    "mongoose": "^6.2.7",
+    "mongoose": "^6.2.8",
     "nanoid": "3.3.1",
     "nconf": "^0.11.3",
     "query-string": "7.1.1",
