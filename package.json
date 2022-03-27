@@ -20,6 +20,9 @@
     "verify": "npm run lint && npm test",
     "test": "jest",
     "test:dev": "jest --verbose --watch",
+    "test:basic": "jest tests/markdown/basic.test.js --verbose",
+    "test:mustache-span": "jest tests/markdown/mustache-span.test.js --verbose",
+    "test:route": "jest tests/routes/static-pages.test.js --verbose",
     "phb": "node scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
     "postinstall": "npm run buildall",
@@ -31,6 +34,7 @@
     "build/*"
   ],
   "jest": {
+    "testTimeout" : 15000,
     "modulePaths": [
       "mode_modules",
       "shared",
@@ -61,7 +65,7 @@
     "express-async-handler": "^1.2.0",
     "express-static-gzip": "2.1.5",
     "fs-extra": "10.0.1",
-    "googleapis": "98.0.0",
+    "googleapis": "99.0.0",
     "js-yaml": "^4.1.0",
     "jwt-simple": "^0.5.6",
     "less": "^3.13.1",
