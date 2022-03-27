@@ -14,12 +14,10 @@ const Navbar = createClass({
 		};
 	},
 
-	componentDidMount : function() {
-		//const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
-		this.setState({
-			//showNonChromeWarning : !isChrome,
-			ver : window.version
-		});
+	getInitialState : function() {
+		return {
+			ver : global.version
+		};
 	},
 
 	/*
