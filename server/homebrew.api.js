@@ -5,6 +5,7 @@ const zlib = require('zlib');
 const GoogleActions = require('./googleActions.js');
 const Markdown = require('../shared/naturalcrit/markdown.js');
 const yaml = require('js-yaml');
+const asyncHandler = require('express-async-handler');
 
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
@@ -226,10 +227,10 @@ const deleteGoogleBrew = async (account, id, res)=>{
 	return true;
 };
 
-router.post('/api', newBrew);
-router.put('/api/:id', updateBrew);
-router.put('/api/update/:id', updateBrew);
-router.delete('/api/:id', deleteBrew);
-router.get('/api/remove/:id', deleteBrew);
+router.post('/api', asyncHandler(newBrew));
+router.put('/api/:id', asyncHandler(updateBrew));
+router.put('/api/update/:id', asyncHandler(updateBrew));
+router.delete('/api/:id', asyncHandler(deleteBrew));
+router.get('/api/remove/:id', asyncHandler(deleteBrew));
 
 module.exports = router;
