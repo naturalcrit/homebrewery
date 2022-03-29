@@ -276,26 +276,26 @@ const EditPage = createClass({
 				console.log(errMsg);
 			} catch (e){}
 
-			if(this.state.errors.status == '401'){
-				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-					Oops!
-					<div className='errorContainer' onClick={this.clearErrors}>
-					You must be signed in to a Google account
-						to save this to<br />Google Drive!<br />
-						<a target='_blank' rel='noopener noreferrer'
-							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
-							<div className='confirm'>
-								Sign In
-							</div>
-						</a>
-						<div className='deny'>
-							Not Now
-						</div>
-					</div>
-				</Nav.item>;
-			}
+			// if(this.state.errors.status == '401'){
+			// 	return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+			// 		Oops!
+			// 		<div className='errorContainer' onClick={this.clearErrors}>
+			// 		You must be signed in to a Google account
+			// 			to save this to<br />Google Drive!<br />
+			// 			<a target='_blank' rel='noopener noreferrer'
+			// 				href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
+			// 				<div className='confirm'>
+			// 					Sign In
+			// 				</div>
+			// 			</a>
+			// 			<div className='deny'>
+			// 				Not Now
+			// 			</div>
+			// 		</div>
+			// 	</Nav.item>;
+			// }
 
-			if(this.state.errors.response.req.url.match(/^\/api\/.*Google.*$/m)){
+			if(this.state.errors.response.req.url.match(/^\/api\/.*transfer.*$/m)){
 				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 					Oops!
 					<div className='errorContainer' onClick={this.clearErrors}>
