@@ -8,9 +8,21 @@ const updateUserActivity = async (req, res)=>{
 	if(username) {
 		await UserInfoModel.updateActivity(username);
 	}
-	return res.redirect(301, '/');
+	return res.status(200).send();
+};
+
+const getUserOpts = async (req, res)=>{
+	console.log(req.account?.username);
+	username = req.account?.username;
+
+	if(username) {
+		const userOpts = await UserInfoModel.getUserOpts(username);
+		console.log(userOpts);
+		return res.status(200).send(userOpts);
+	}
 };
 
 router.get('/userinfo/updateActivity', updateUserActivity);
+router.get('/userinfo/getUserOpts', getUserOpts);
 
 module.exports = router;

@@ -76,17 +76,19 @@ UserInfoSchema.statics.get = function(username){
 // 	return true;
 // };
 
-// // Get only the User options
-// UserInfoSchema.statics.getUserOpts = function(username){
-// 	return new Promise((resolve, reject)=>{
-// 		const query = { username: username };
+// Get only the User options
+// - Requires username (String)
+// - Returns a JS object
+UserInfoSchema.statics.getUserOpts = function(username){
+	return new Promise((resolve, reject)=>{
+		const query = { username: username };
 
-// 		UserInfo.findOne(query).lean().exec((err, user)=>{ //lean() converts results to JSObjects
-// 			if(err) return reject('Can not find user');
-// 			return resolve(user.options);
-// 		});
-// 	});
-// };
+		UserInfo.findOne(query).lean().exec((err, user)=>{ //lean() converts results to JSObjects
+			if(err) return reject('Can not find user');
+			return resolve(user.options);
+		});
+	});
+};
 
 const UserInfo = mongoose.model('UserInfo', UserInfoSchema);
 
