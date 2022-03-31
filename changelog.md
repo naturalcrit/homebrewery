@@ -29,10 +29,42 @@ pre {
 .page p + pre {
 	margin-top : 0.1cm;
 }
+
+.page .openSans {
+	font-family: 'Open Sans';
+	font-size: 0.9em;
+}
 ```
 
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
+
+### Wednesday 27/03/2022 - v3.0.8
+{{taskList
+* [x] Style updates to user page.
+
+* [x] Added a logout button (finally)! You can find it under {{openSans **USERNAME {{fa,fa-user}} → LOGOUT {{fas,fa-power-off}}**}}
+
+	Fixes issues: [#303](https://github.com/naturalcrit/homebrewery/issues/303)
+
+* [x] Clarified the default text when submitting an issue via Reddit post.
+
+* [x] Fixed broken Table of Contents links in PDFs. (Thanks lucastucious!)
+
+	Fixes issues: [#1749](https://github.com/naturalcrit/homebrewery/issues/1749)
+
+* [x] Fixed window resizing causing the edit page divider to get lost off of the edge of the page.
+
+	Fixes issues: [#2053](https://github.com/naturalcrit/homebrewery/issues/2053)
+
+* [x] Fixed Class Table decorations overlapping main text.
+
+	Fixes issues: [#1985](https://github.com/naturalcrit/homebrewery/issues/1985)
+
+* [x] Updated {{openSans **STYLE EDITOR {{fa,fa-pencil-alt}} → REMOVE DROP CAP {{fas,fa-remove-format}}**}} snippet to also remove small-caps first line font.
+
+* [x] Background work in preparation for brew themes.
+}}
 
 ### Wednesday 02/02/2022 - v3.0.7
 {{taskList
@@ -50,7 +82,7 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 
 	Fixes issues: [#1943](https://github.com/naturalcrit/homebrewery/issues/1943)
 
-* [x] Added a Legacy to V3 migration guide under **NEED HELP? {{fa,fa-question-circle}} → MIGRATE {{fas,fa-file-import}}**
+* [x] Added a Legacy to V3 migration guide under {{openSans **NEED HELP? {{fa,fa-question-circle}} → MIGRATE {{fas,fa-file-import}}**}}
 
 * [x] Background refactoring and unit tests.
 }}

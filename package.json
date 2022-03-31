@@ -1,7 +1,7 @@
 {
   "name": "homebrewery",
   "description": "Create authentic looking D&D homebrews using only markdown",
-  "version": "3.0.7",
+  "version": "3.0.8",
   "engines": {
     "node": "16.11.x"
   },
@@ -20,6 +20,9 @@
     "verify": "npm run lint && npm test",
     "test": "jest",
     "test:dev": "jest --verbose --watch",
+    "test:basic": "jest tests/markdown/basic.test.js --verbose",
+    "test:mustache-span": "jest tests/markdown/mustache-span.test.js --verbose",
+    "test:route": "jest tests/routes/static-pages.test.js --verbose",
     "phb": "node scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
     "postinstall": "npm run buildall",
@@ -31,6 +34,7 @@
     "build/*"
   ],
   "jest": {
+    "testTimeout" : 15000,
     "modulePaths": [
       "mode_modules",
       "shared",
