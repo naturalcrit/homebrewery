@@ -5,12 +5,59 @@ const zlib = require('zlib');
 const GoogleActions = require('./googleActions.js');
 const Markdown = require('../shared/naturalcrit/markdown.js');
 const yaml = require('js-yaml');
+const asyncHandler = require('express-async-handler');
+const { nanoid } = require('nanoid');
 
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
 // 		cb(brews);
 // 	});
 // };
+
+const findBrew = async (brewId, accessType, googleObjectId)=>{
+	let id = brewId;
+	let googleId = googleObjectId;
+	if(id.length > 12) {
+		googleId = id.slice(0, -12);
+		id = id.slice(-12);
+	}
+	let brew = await HomebrewModel.get(accessType === 'edit' ? { editId: id } : { shareId: id })
+		.catch((err)=>{
+			if(googleId) {
+				console.warn(`Unable to find document stub for ${accessType}Id ${id}`);
+			} else {
+				console.warn(err);
+			}
+		});
+
+	let googleBrew;
+	if(googleId || brew?.googleId) {
+		googleBrew = await GoogleActions.getGoogleBrew(googleId || brew?.googleId, id, accessType)
+			.catch((err)=>{
+				console.warn(err);
+			});
+		if(!brew && !googleBrew) throw 'Brew not found in database or Google Drive';
+		brew = brew ? _.merge(brew, googleBrew) : googleBrew;
+	} else if(!brew) {
+		throw 'Brew not found in database';
+	}
+
+	return brew;
+};
+
+const getBrew = (accessType)=>{
+	return async (req, res, next)=>{
+		const { brew } = req;
+
+		if(!brew) {
+			const id = req.params.id, googleId = req.body?.googleId;
+			const found = await findBrew(id, accessType, googleId);
+			req.brew = accessType !== 'edit' && found.toObject ? found.toObject() : found;
+		}
+
+		!!next ? next() : undefined;
+	};
+};
 
 const mergeBrewText = (brew)=>{
 	let text = brew.text;
@@ -32,13 +79,21 @@ const MAX_TITLE_LENGTH = 100;
 
 const getGoodBrewTitle = (text)=>{
 	const tokens = Markdown.marked.lexer(text);
- 	return (tokens.find((token)=>token.type == 'heading' ||	token.type == 'paragraph')?.text || 'No Title')
+ 	return (tokens.find((token)=>token.type === 'heading' || token.type === 'paragraph')?.text || 'No Title')
 				 .slice(0, MAX_TITLE_LENGTH);
 };
 
 const excludePropsFromUpdate = (brew)=>{
 	// Remove undesired properties
-	const propsToExclude = ['views', 'lastViewed'];
+	const propsToExclude = ['views', 'lastViewed', 'editId', 'shareId', 'googleId'];
+	for (const prop of propsToExclude) {
+		delete brew[prop];
+	}
+	return brew;
+};
+
+const excludeGoogleProps = (brew)=>{
+	const propsToExclude = ['views', 'lastViewed', 'pageCount', 'renderer', 'tags', 'systems', 'published', 'version', 'authors'];
 	for (const prop of propsToExclude) {
 		delete brew[prop];
 	}
@@ -54,28 +109,12 @@ const beforeNewSave = (account, brew)=>{
 	brew.text = mergeBrewText(brew);
 };
 
-const newLocalBrew = async (brew)=>{
-	const newHomebrew = new HomebrewModel(brew);
-	// Compress brew text to binary before saving
-	newHomebrew.textBin = zlib.deflateRawSync(newHomebrew.text);
-	// Delete the non-binary text field since it's not needed anymore
-	newHomebrew.text = undefined;
-
-	let saved = await newHomebrew.save()
-		.catch((err)=>{
-			console.error(err, err.toString(), err.stack);
-			throw `Error while creating new brew, ${err.toString()}`;
-		});
-
-	saved = saved.toObject();
-	saved.gDrive = false;
-	return saved;
-};
-
 const newGoogleBrew = async (account, brew, res)=>{
 	const oAuth2Client = GoogleActions.authCheck(account, res);
 
-	return await GoogleActions.newGoogleBrew(oAuth2Client, brew);
+	const newBrew = excludeGoogleProps(_.clone(brew));
+
+	return await GoogleActions.newGoogleBrew(oAuth2Client, newBrew);
 };
 
 const newBrew = async (req, res)=>{
@@ -88,148 +127,178 @@ const newBrew = async (req, res)=>{
 
 	beforeNewSave(req.account, brew);
 
-	let saved;
+	const newHomebrew = new HomebrewModel(brew);
+	newHomebrew.editId = nanoid(12);
+	newHomebrew.shareId = nanoid(12);
+
+	let googleId, saved;
 	if(transferToGoogle) {
-		saved = await newGoogleBrew(req.account, brew, res)
+		googleId = await newGoogleBrew(req.account, newHomebrew, res)
 			.catch((err)=>{
-				res.status(err.status || err.response.status).send(err.message || err);
+				res.status(err?.status || err?.response?.status || 500).send(err?.message || err);
 			});
+		newHomebrew.textBin = undefined;
+		newHomebrew.text = undefined;
 	} else {
-		saved = await newLocalBrew(brew)
-			.catch((err)=>{
-				res.status(500).send(err);
-			});
+		// Compress brew text to binary before saving
+		newHomebrew.textBin = zlib.deflateRawSync(newHomebrew.text);
+		// Delete the non-binary text field since it's not needed anymore
+		newHomebrew.text = undefined;
 	}
+	if(transferToGoogle && !googleId) {
+		if(!res.headersSent) {
+			res.status(500).send('Unable to save document to Google Drive');
+		}
+		return;
+	} else if(transferToGoogle) {
+		newHomebrew.googleId = googleId;
+	}
+
+	saved = await newHomebrew.save()
+		.catch((err)=>{
+			console.error(err, err.toString(), err.stack);
+			throw `Error while creating new brew, ${err.toString()}`;
+		});
 	if(!saved) return;
+	saved = saved.toObject();
+
 	return res.status(200).send(saved);
 };
 
 const updateBrew = async (req, res)=>{
-	let brew = excludePropsFromUpdate(req.body);
+	let brew = Object.assign(req.brew, excludePropsFromUpdate(req.body));
+	brew.text = mergeBrewText(brew);
 	const { transferToGoogle, transferFromGoogle } = req.query;
 
-	let saved;
 	if(brew.googleId && transferFromGoogle) {
-		beforeNewSave(req.account, brew);
-
-		saved = await newLocalBrew(brew)
+		const deleted = await deleteGoogleBrew(req.account, brew.googleId, brew.editId, res)
 			.catch((err)=>{
 				console.error(err);
-				res.status(500).send(err);
+				res.status(err?.status || err?.response?.status || 500).send(err.message || err);
 			});
-		if(!saved) return;
+		if(!deleted) {
+			if(res.headersSent) {
+				res.status(500).send('Unable to delete brew from Google');
+			}
+			return;
+		}
 
-		await deleteGoogleBrew(req.account, `${brew.googleId}${brew.editId}`, res)
-			.catch((err)=>{
-				console.error(err);
-				res.status(err.status || err.response.status).send(err.message || err);
-			});
+		delete brew.googleId;
 	} else if(!brew.googleId && transferToGoogle) {
-		saved = await newGoogleBrew(req.account, brew, res)
+		brew.googleId = await newGoogleBrew(req.account, excludeGoogleProps(_.clone(brew)), res)
 			.catch((err)=>{
 				console.error(err);
 				res.status(err.status || err.response.status).send(err.message || err);
 			});
-		if(!saved) return;
-
-		await deleteLocalBrew(req.account, brew.editId)
-			.catch((err)=>{
-				console.error(err);
-				res.status(err.status).send(err.message);
-			});
+		if(!brew.googleId) {
+			if(res.headersSent) {
+				res.status(500).send('Unable to save brew to Google');
+			}
+			return;
+		}
 	} else if(brew.googleId) {
-		brew.text = mergeBrewText(brew);
-
-		saved = await GoogleActions.updateGoogleBrew(brew)
+		const updated = await GoogleActions.updateGoogleBrew(excludeGoogleProps(_.clone(brew)))
 			.catch((err)=>{
 				console.error(err);
-				res.status(err.response?.status || 500).send(err);
+				res.status(err?.response?.status || 500).send(err);
 			});
+		if(!updated) {
+			if(res.headersSent) {
+				res.status(500).send('Unable to save brew to Google');
+			}
+			return;
+		}
+	}
+
+	if(brew.googleId) {
+		brew.textBin = undefined;
+		brew.text = undefined;
 	} else {
-		const dbBrew = await HomebrewModel.get({ editId: req.params.id })
-			.catch((err)=>{
-				console.error(err);
-				return res.status(500).send('Error while saving');
-			});
-
-		brew = _.merge(dbBrew, brew);
-		brew.text = mergeBrewText(brew);
-
 		// Compress brew text to binary before saving
 		brew.textBin = zlib.deflateRawSync(brew.text);
 		// Delete the non-binary text field since it's not needed anymore
 		brew.text = undefined;
-		brew.updatedAt = new Date();
-
-		if(req.account) {
-			brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
-		}
-
-		brew.markModified('authors');
-		brew.markModified('systems');
-
-		saved = await brew.save();
 	}
-	if(!saved) return;
+	brew.updatedAt = new Date();
+
+	if(req.account) {
+		brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
+	}
+
+	if(!brew.markModified) {
+		brew = new HomebrewModel(brew);
+	}
+
+	brew.markModified('authors');
+	brew.markModified('systems');
+
+	const saved = await brew.save()
+		.catch((err)=>{
+			res.status(err.status || 500).send(err.message || 'Unable to save brew to Homebrewery database');
+		});
+	if(!saved) {
+		if(!res.headersSent) {
+			res.status(500).send('Unable to save brew to Homebrewery database');
+		}
+	}
 
 	if(!res.headersSent) return res.status(200).send(saved);
 };
 
-const deleteBrew = async (req, res)=>{
-	if(req.params.id.length > 12) {
-		const deleted = await deleteGoogleBrew(req.account, req.params.id, res)
-			.catch((err)=>{
-				res.status(500).send(err);
-			});
-		if(deleted) return res.status(200).send();
-	} else {
-		const deleted = await deleteLocalBrew(req.account, req.params.id)
-			.catch((err)=>{
-				res.status(err.status).send(err.message);
-			});
-		if(deleted) return res.status(200).send(deleted);
-		return res.status(200).send();
-	}
-};
-
-const deleteLocalBrew = async (account, id)=>{
-	const brew = await HomebrewModel.findOne({ editId: id });
-	if(!brew) {
-		throw { status: 404, message: 'Can not find homebrew with that id' };
-	}
-
-	if(account) {
-		// Remove current user as author
-		brew.authors = _.pull(brew.authors, account.username);
-		brew.markModified('authors');
-	}
-
-	if(brew.authors.length === 0) {
-		// Delete brew if there are no authors left
-		await brew.remove()
-			.catch((err)=>{
-				console.error(err);
-				throw { status: 500, message: 'Error while removing' };
-			});
-	} else {
-		// Otherwise, save the brew with updated author list
-		return await brew.save()
-			.catch((err)=>{
-				throw { status: 500, message: err };
-			});
-	}
-};
-
-const deleteGoogleBrew = async (account, id, res)=>{
+const deleteGoogleBrew = async (account, id, editId, res)=>{
 	const auth = await GoogleActions.authCheck(account, res);
-	await GoogleActions.deleteGoogleBrew(auth, id);
+	await GoogleActions.deleteGoogleBrew(auth, id, editId);
 	return true;
 };
 
-router.post('/api', newBrew);
-router.put('/api/:id', updateBrew);
-router.put('/api/update/:id', updateBrew);
-router.delete('/api/:id', deleteBrew);
-router.get('/api/remove/:id', deleteBrew);
+const deleteBrew = async (req, res)=>{
+	const { brew, account } = req;
+	if(brew.googleId) {
+		const googleDeleted = await deleteGoogleBrew(account, brew.googleId, brew.editId, res)
+			.catch((err)=>{
+				res.status(500).send(err);
+			});
+		if(!googleDeleted) {
+			if(!res.headersSent) {
+				res.status(500).send('Unable to delete brew from Google');
+			}
+			return;
+		}
+	}
 
-module.exports = router;
+	if(brew._id) {
+		if(account) {
+			// Remove current user as author
+			brew.authors = _.pull(brew.authors, account.username);
+			brew.markModified('authors');
+		}
+
+		if(brew.authors.length === 0) {
+			// Delete brew if there are no authors left
+			await brew.remove()
+				.catch((err)=>{
+					console.error(err);
+					throw { status: 500, message: 'Error while removing' };
+				});
+		} else {
+			// Otherwise, save the brew with updated author list
+			await brew.save()
+				.catch((err)=>{
+					throw { status: 500, message: err };
+				});
+		}
+	}
+
+	return res.status(204).send();
+};
+
+router.post('/api', asyncHandler(newBrew));
+router.put('/api/:id', asyncHandler(getBrew('edit')), asyncHandler(updateBrew));
+router.put('/api/update/:id', asyncHandler(getBrew('edit')), asyncHandler(updateBrew));
+router.delete('/api/:id', asyncHandler(getBrew('edit')), asyncHandler(deleteBrew));
+router.get('/api/remove/:id', asyncHandler(getBrew('edit')), asyncHandler(deleteBrew));
+
+module.exports = {
+	homebrewApi : router,
+	getBrew
+};

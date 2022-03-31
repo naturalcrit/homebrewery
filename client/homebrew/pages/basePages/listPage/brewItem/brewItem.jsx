@@ -16,8 +16,8 @@ const BrewItem = createClass({
 			brew : {
 				title       : '',
 				description : '',
-
-				authors : []
+				authors     : [],
+				stubbed     : true
 			}
 		};
 	},
@@ -50,7 +50,7 @@ const BrewItem = createClass({
 		if(!this.props.brew.editId) return;
 
 		let editLink = this.props.brew.editId;
-		if(this.props.brew.googleId) {
+		if(this.props.brew.googleId && !this.props.brew.stubbed) {
 			editLink = this.props.brew.googleId + editLink;
 		}
 
@@ -63,7 +63,7 @@ const BrewItem = createClass({
 		if(!this.props.brew.shareId) return;
 
 		let shareLink = this.props.brew.shareId;
-		if(this.props.brew.googleId) {
+		if(this.props.brew.googleId && !this.props.brew.stubbed) {
 			shareLink = this.props.brew.googleId + shareLink;
 		}
 
@@ -86,7 +86,7 @@ const BrewItem = createClass({
 	},
 
 	renderGoogleDriveIcon : function(){
-		if(!this.props.brew.gDrive) return;
+		if(!this.props.brew.googleId) return;
 
 		return <span>
 			<img className='googleDriveIcon' src={googleDriveIcon} alt='googleDriveIcon' />
@@ -104,8 +104,8 @@ const BrewItem = createClass({
 			</div>
 			<hr />
 			<div className='info'>
-				<span title={`Authors:\n${brew.authors.join('\n')}`}>
-					<i className='fas fa-user'/> {brew.authors.join(', ')}
+				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
+					<i className='fas fa-user'/> {brew.authors?.join(', ')}
 				</span>
 				<br />
 				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
