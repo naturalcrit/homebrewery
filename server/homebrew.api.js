@@ -183,7 +183,7 @@ const updateBrew = async (req, res)=>{
 			return;
 		}
 
-		delete brew.googleId;
+		brew.googleId = undefined;
 	} else if(!brew.googleId && transferToGoogle) {
 		brew.googleId = await newGoogleBrew(req.account, excludeGoogleProps(_.clone(brew)), res)
 			.catch((err)=>{
