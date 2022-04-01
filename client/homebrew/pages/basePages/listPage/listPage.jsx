@@ -84,9 +84,12 @@ const ListPage = createClass({
 	updateUrl : function(filterTerm){
 		const url = new URL(window.location.href);
 		const urlParams = new URLSearchParams(url.search);
-		if(urlParams.get('filter') == filterTerm) return;
-		urlParams.set('filter', filterTerm);
-		if(!filterTerm) urlParams.delete('filter');
+		if(urlParams.get('filter') == filterTerm)
+			return;
+		if(!filterTerm)
+			urlParams.delete('filter');
+		else
+			urlParams.set('filter', filterTerm);
 		url.search = urlParams;
 		window.history.replaceState(null, null, url);
 	},
