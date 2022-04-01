@@ -109,28 +109,9 @@ app.get('/robots.txt', (req, res)=>{
 
 //Home page
 app.get('/', async (req, res, next)=>{
-	const homePageId = config.get('homePage');
-	if(homePageId){
-		return res.redirect('/home');
-	}
-	// const brew = homePageId ? await getBrewFromId(homePageId, 'share') : { text: welcomeText } ;
-
 	const brew = {
 		text : welcomeText
 	};
-
-	req.brew = brew;
-	return next();
-});
-
-app.get('/home', async (req, res, next)=>{
-	const homePageId = config.get('homePage');
-
-	const brew = homePageId ? await getBrewFromId(homePageId, 'share') : { text: welcomeText } ;
-	// const brew = {
-	// 	text : welcomeText
-	// };
-
 	req.brew = brew;
 	return next();
 });
