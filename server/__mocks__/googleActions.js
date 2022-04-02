@@ -7,15 +7,11 @@ const GoogleActionsMock = {
 		// FIXME: implement
 		return null;
 	},
-	listGoogleBrews : async (req, res)=>{
+	listGoogleBrews : async (auth)=>{
 		// FIXME: implement
 		return null;
 	},
-	existsGoogleBrew : async (auth, id)=>{
-		// FIXME: implement
-		return null;
-	},
-	updateGoogleBrew : async (auth, brew)=>{
+	updateGoogleBrew : async (auth)=>{
 		// FIXME: implement
 		return null;
 	},
@@ -23,11 +19,11 @@ const GoogleActionsMock = {
 		// FIXME: implement
 		return null;
 	},
-	readFileMetadata : async (auth, id, accessId, accessType)=>{
+	getGoogleBrew : async (id, accessId, accessType)=>{
 		// FIXME: implement
 		return null;
 	},
-	deleteGoolgeBrew : async (req, res, id)=>{
+	deleteGoogleBrew : async (auth, id)=>{
 		// FIXME: implement
 		return null;
 	},
