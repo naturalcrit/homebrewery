@@ -25,7 +25,7 @@ const getBrewFromId = asyncHandler(async (id, accessType)=>{
 	if(id.length > 12) {
 		const googleId = id.slice(0, -12);
 		id             = id.slice(-12);
-		brew = await GoogleActions.readFileMetadata(config.get('google_api_key'), googleId, id, accessType);
+		brew = await GoogleActions.getGoogleBrew(googleId, id, accessType);
 	} else {
 		brew = await HomebrewModel.get(accessType == 'edit' ? { editId: id } : { shareId: id });
 		brew = brew.toObject(); // Convert MongoDB object to standard Javascript Object
@@ -201,13 +201,16 @@ app.get('/user/:username', async (req, res, next)=>{
 	});
 
 	if(ownAccount && req?.account?.googleId){
-		const googleBrews = await GoogleActions.listGoogleBrews(req, res)
-		.catch((err)=>{
-			console.error(err);
-		});
+		const auth = await GoogleActions.authCheck(req.account, res);
+		let googleBrews = await GoogleActions.listGoogleBrews(auth)
+			.catch((err)=>{
+				console.error(err);
+			});
 
-		if(googleBrews)
+		if(googleBrews) {
+			googleBrews = googleBrews.map((brew)=>({ ...brew, authors: [req.account.username] }));
 			brews = _.concat(brews, googleBrews);
+		}
 	}
 
 	req.brews = _.map(brews, (brew)=>{

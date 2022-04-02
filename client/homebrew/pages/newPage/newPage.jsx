@@ -162,45 +162,24 @@ const NewPage = createClass({
 			const index = brew.text.indexOf('```\n\n');
 			brew.style = `${brew.style ? `${brew.style}\n` : ''}${brew.text.slice(7, index - 1)}`;
 			brew.text = brew.text.slice(index + 5);
-		};
+		}
 
 		brew.pageCount=((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
 
-		if(this.state.saveGoogle) {
-			const res = await request
-			.post('/api/newGoogle/')
+		const res = await request
+			.post(`/api${this.state.saveGoogle ? '?transferToGoogle=true' : ''}`)
 			.send(brew)
 			.catch((err)=>{
-				console.log(err.status === 401
-					? 'Not signed in!'
-					: 'Error Creating New Google Brew!');
+				console.log(err);
 				this.setState({ isSaving: false, errors: err });
-				return;
 			});
+		if(!res) return;
 
-			brew = res.body;
-			localStorage.removeItem(BREWKEY);
-			localStorage.removeItem(STYLEKEY);
-			localStorage.removeItem(METAKEY);
-			window.location = `/edit/${brew.googleId}${brew.editId}`;
-		} else {
-			request.post('/api')
-			.send(brew)
-			.end((err, res)=>{
-				if(err){
-					this.setState({
-						isSaving : false
-					});
-					return;
-				}
-				window.onbeforeunload = function(){};
-				brew = res.body;
-				localStorage.removeItem(BREWKEY);
-				localStorage.removeItem(STYLEKEY);
-				localStorage.removeItem(METAKEY);
-				window.location = `/edit/${brew.editId}`;
-			});
-		}
+		brew = res.body;
+		localStorage.removeItem(BREWKEY);
+		localStorage.removeItem(STYLEKEY);
+		localStorage.removeItem(METAKEY);
+		window.location = `/edit/${brew.googleId ?? ''}${brew.editId}`;
 	},
 
 	renderSaveButton : function(){
@@ -213,26 +192,26 @@ const NewPage = createClass({
 				console.log(errMsg);
 			} catch (e){}
 
-			if(this.state.errors.status == '401'){
-				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-					Oops!
-					<div className='errorContainer' onClick={this.clearErrors}>
-					You must be signed in to a Google account
-						to save this to<br />Google Drive!<br />
-						<a target='_blank' rel='noopener noreferrer'
-							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
-							<div className='confirm'>
-								Sign In
-							</div>
-						</a>
-						<div className='deny'>
-							Not Now
-						</div>
-					</div>
-				</Nav.item>;
-			}
+			// if(this.state.errors.status == '401'){
+			// 	return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+			// 		Oops!
+			// 		<div className='errorContainer' onClick={this.clearErrors}>
+			// 		You must be signed in to a Google account
+			// 			to save this to<br />Google Drive!<br />
+			// 			<a target='_blank' rel='noopener noreferrer'
+			// 				href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
+			// 				<div className='confirm'>
+			// 					Sign In
+			// 				</div>
+			// 			</a>
+			// 			<div className='deny'>
+			// 				Not Now
+			// 			</div>
+			// 		</div>
+			// 	</Nav.item>;
+			// }
 
-			if(this.state.errors.response.req.url.match(/^\/api\/.*Google.*$/m)){
+			if(this.state.errors.response.req.url.match(/^\/api.*Google.*$/m)){
 				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 					Oops!
 					<div className='errorContainer' onClick={this.clearErrors}>
