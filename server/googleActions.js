@@ -141,7 +141,14 @@ const GoogleActions = {
 				name        : `${brew.title}.txt`,
 				description : `${brew.description}`,
 				properties  : {
-					title : brew.title
+					'title'     : brew.title,
+					'shareId'   : brew.shareId || nanoid(12),
+					'editId'    : brew.editId || nanoid(12),
+					'views'     : brew.views,
+					'pageCount' : brew.pageCount,
+					'renderer'  : brew.renderer || 'legacy',
+					'isStubbed' : true,
+					'updatedAt' : new Date().toISOString(),
 				}
 			},
 			media : {
@@ -173,9 +180,15 @@ const GoogleActions = {
 			'description' : `${brew.description}`,
 			'parents'     : [folderId],
 			'properties'  : {								//AppProperties is not accessible
-				'shareId' : brew.shareId || nanoid(12),
-				'editId'  : brew.editId || nanoid(12),
-				'title'   : brew.title
+				'shareId'   : brew.shareId || nanoid(12),
+				'editId'    : brew.editId || nanoid(12),
+				'title'     : brew.title,
+				'views'     : '0',
+				'pageCount' : brew.pageCount,
+				'renderer'  : brew.renderer || 'legacy',
+				'isStubbed' : true,
+				'createdAt' : new Date().toISOString(),
+				'version'   : 1
 			}
 		};
 

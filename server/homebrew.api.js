@@ -92,12 +92,20 @@ const excludePropsFromUpdate = (brew)=>{
 	return brew;
 };
 
-const excludeGoogleProps = (brew)=>{
-	const propsToExclude = ['views', 'lastViewed', 'pageCount', 'renderer', 'tags', 'systems', 'published', 'version', 'authors'];
+const excludeStubProps = (brew)=>{
+	const propsToExclude = ['text', 'textBin', 'renderer', 'pageCount', 'views', 'version'];
 	for (const prop of propsToExclude) {
-		delete brew[prop];
+		brew[prop] = undefined;
 	}
-	return brew;
+};
+
+const excludeGoogleProps = (brew)=>{
+	const modified = brew.toObject ? brew.toObject() : brew;
+	const propsToExclude = ['tags', 'systems', 'published', 'authors', 'owner'];
+	for (const prop of propsToExclude) {
+		delete modified[prop];
+	}
+	return modified;
 };
 
 const beforeNewSave = (account, brew)=>{
@@ -137,8 +145,7 @@ const newBrew = async (req, res)=>{
 			.catch((err)=>{
 				res.status(err?.status || err?.response?.status || 500).send(err?.message || err);
 			});
-		newHomebrew.textBin = undefined;
-		newHomebrew.text = undefined;
+		excludeStubProps(newHomebrew);
 	} else {
 		// Compress brew text to binary before saving
 		newHomebrew.textBin = zlib.deflateRawSync(newHomebrew.text);
@@ -211,8 +218,7 @@ const updateBrew = async (req, res)=>{
 	}
 
 	if(brew.googleId) {
-		brew.textBin = undefined;
-		brew.text = undefined;
+		excludeStubProps(brew);
 	} else {
 		// Compress brew text to binary before saving
 		brew.textBin = zlib.deflateRawSync(brew.text);
