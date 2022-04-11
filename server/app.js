@@ -181,7 +181,16 @@ app.get('/user/:username', async (req, res, next)=>{
 				console.error(err);
 			});
 
-		if(googleBrews) {
+		for (const brew of brews) {
+			const match = googleBrews.findIndex((b)=>b.editId === brew.editId);
+			if(match !== -1) {
+				brew.googleId = googleBrews[match].googleId;
+				brew.stubbed = true;
+				googleBrews.splice(match, 1);
+			}
+		}
+
+		if(googleBrews && googleBrews.length > 0) {
 			googleBrews = googleBrews.map((brew)=>({ ...brew, authors: [req.account.username] }));
 			brews = _.concat(brews, googleBrews);
 		}
