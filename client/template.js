@@ -11,7 +11,7 @@ module.exports = async(name, title = '', props = {})=>{
 		<link rel="icon" href="/assets/homebrew/favicon.ico" type="image/x-icon" />
 		<meta property="og:title" content="${props.brew?.title ? props.brew.title : 'Homebrewery - Untitled Brew'}">
 		<meta property="og:url" content="${HOMEBREWERY_PUBLIC_URL}/${props.brew?.shareId ? `share/${props.brew.shareId}` : ''}">
-		<meta property="og:image" content="${props.brew?.thumbnail ? props.brew.thumbnail : `${HOMEBREWERY_PUBLIC_URL}/thumbnail.png`}">
+		<meta property="og:image" content="${props.brew?.thumbnail ?? `${HOMEBREWERY_PUBLIC_URL}/thumbnail.png`}">
 		<meta property="og:description" content="${props.brew?.description ? props.brew.description : 'No description.'}">
 		<meta property="og:site_name" content="The Homebrewery - Make your Homebrew content look legit!">
 		<meta property="og:type" content="website">
