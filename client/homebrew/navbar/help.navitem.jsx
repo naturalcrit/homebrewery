@@ -1,6 +1,7 @@
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
+const dedent = require('dedent-tabs').default;
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 
@@ -10,7 +11,11 @@ module.exports = function(props){
 			need help?
 		</Nav.item>
 		<Nav.item color='red' icon='fas fa-fw fa-bug'
-			href={`https://www.reddit.com/r/homebrewery/submit?selftext=true&title=${encodeURIComponent('[Issue] Describe Your Issue Here')}`}
+			href={`https://www.reddit.com/r/homebrewery/submit?selftext=true&text=${encodeURIComponent(dedent`
+			**Browser(s)** :
+			**Operating System** :  
+			**Legacy or v3 Renderer** :
+			**Issue** :  `)}`}
 			newTab={true}
 			rel='noopener noreferrer'>
 			report issue

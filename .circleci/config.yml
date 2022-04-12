@@ -2,17 +2,23 @@
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
-version: 2
+version: 2.1
+
+orbs:
+  node: circleci/node@3.0.0
+
 jobs:
   build:
     docker:
-      - image: circleci/node:16.10.0
-      - image: circleci/mongo:4.4
+      - image: cimg/node:16.11.0
+      - image: mongo:4.4
 
-    working_directory: ~/repo
+    working_directory: ~/homebrewery
+    executor: node/default
 
     steps:
-      - checkout
+      - checkout:
+          path: ~/homebrewery
 
       # Download and cache dependencies
       - restore_cache:
@@ -21,12 +27,48 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - run: npm install
+      - node/install-npm
+      - node/install-packages:
+          app-dir: ~/homebrewery
+          cache-path: node_modules
+          override-ci-command: npm i
 
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
+  test:
+    docker:
+      - image: cimg/node:16.11.0
+
+    working_directory: ~/homebrewery
+    parallelism: 4
+
+    steps:
+      - attach_workspace:
+          at: .
+
       # run tests!
-      - run: npm run circleci
+      - run: 
+          name: Test - Basic
+          command: npm run test:basic
+      - run: 
+          name: Test - Mustache Spans
+          command: npm run test:mustache-span
+      - run: 
+          name: Test - Routes
+          command: npm run test:route
+
+workflows:
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build

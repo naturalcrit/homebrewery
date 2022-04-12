@@ -621,6 +621,8 @@ body {
 	}
 	&.decoration {
 		transform-style : preserve-3d;
+		z-index: -1;
+		position:relative;
 	}
 	&.decoration::before {
 		content           :'';
@@ -656,7 +658,7 @@ body {
 		margin-bottom : 0.3cm;
 	}
 	a{
-		display         : table;
+		display         : inline;
 		color           : inherit;
 		text-decoration : none;
 		&:hover{
