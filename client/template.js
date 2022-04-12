@@ -1,5 +1,5 @@
 module.exports = async(name, title = '', props = {})=>{
-	const HOMEBREWERY_PUBLIC_URL=(props.publicUrl ? props.publicUrl : 'https://homebrewery.naturalcrit.com');
+	const HOMEBREWERY_PUBLIC_URL=props.publicUrl ?? '';
 
 	return `
 <!DOCTYPE html>

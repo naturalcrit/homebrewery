@@ -264,7 +264,7 @@ const templateFn = require('./../client/template.js');
 app.use((req, res)=>{
 	const props = {
 		version     : require('./../package.json').version,
-		publicUrl   : config.get('publicUrl'),
+		publicUrl   : config.get('publicUrl') ?? 'https://homebrewery.naturalcrit.com',
 		url         : req.originalUrl,
 		brew        : req.brew,
 		brews       : req.brews,
