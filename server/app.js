@@ -260,10 +260,11 @@ app.get('/print/:id', asyncHandler(async (req, res, next)=>{
 }));
 
 const localEnvironments = config.get('local_environments');
+const nodeEnv = config.get('node_env');
 // Login
 app.post('/login', (req, res)=>{
 	// Local only
-	if(!localEnvironments.includes(config.get('node_env'))){
+	if(!localEnvironments.includes(nodeEnv)){
 		return;
 	}
 
@@ -282,10 +283,10 @@ app.use((req, res)=>{
 	// Create configuration object
 	const configuration = {
 		local       : false,
-		environment : config.get('node_env')
+		environment : nodeEnv
 	};
 	// Add local only items to configuration object
-	if(localEnvironments.includes(configuration.environment)){
+	if(localEnvironments.includes(nodeEnv)){
 		configuration.local = true;
 	};
 	const props = {
