@@ -259,8 +259,8 @@ app.get('/print/:id', asyncHandler(async (req, res, next)=>{
 	return next();
 }));
 
-const localEnvironments = config.get('local_environments');
 const nodeEnv = config.get('node_env');
+const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
 // Login
 app.post('/login', (req, res)=>{
 	// Local only
