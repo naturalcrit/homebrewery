@@ -261,20 +261,17 @@ app.get('/print/:id', asyncHandler(async (req, res, next)=>{
 
 const nodeEnv = config.get('node_env');
 const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
-// Login
-app.post('/login', (req, res)=>{
-	// Local only
-	if(!isLocalEnvironment){
+// Local only
+if(isLocalEnvironment){
+	// Login
+	app.post('/local/login', (req, res)=>{
+		const username = req.body.username;
+		if(!username) return;
 
-		return;
-	}
-
-	const username = req.body.username;
-	if(!username) return;
-
-	const payload = jwt.encode({ username: username, issued: new Date }, config.get('secret'));
-	return res.json(payload);
-});
+		const payload = jwt.encode({ username: username, issued: new Date }, config.get('secret'));
+		return res.json(payload);
+	});
+}
 
 
 

@@ -44,7 +44,7 @@ const Account = createClass({
 		const expiry = new Date;
 		expiry.setFullYear(expiry.getFullYear() + 1);
 
-		const token = await request.post('/login')
+		const token = await request.post('/local/login')
 				.send({ username })
 				.then((response)=>{
 					return response.body;
