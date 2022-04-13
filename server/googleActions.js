@@ -180,8 +180,8 @@ const GoogleActions = {
 			'description' : `${brew.description}`,
 			'parents'     : [folderId],
 			'properties'  : {								//AppProperties is not accessible
-				'shareId'   : nanoid(12),
-				'editId'    : nanoid(12),
+				'shareId'   : brew.shareId || nanoid(12),
+				'editId'    : brew.editId || nanoid(12),
 				'title'     : brew.title,
 				'views'     : '0',
 				'pageCount' : brew.pageCount,
