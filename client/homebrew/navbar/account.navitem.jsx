@@ -31,7 +31,7 @@ const Account = createClass({
 
 	localLogin : async function(){
 		const username = prompt('Enter username:');
-		if(!username) {return;};
+		if(!username) {return;}
 
 		const expiry = new Date;
 		expiry.setFullYear(expiry.getFullYear() + 1);
