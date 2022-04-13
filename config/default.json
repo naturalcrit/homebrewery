@@ -4,5 +4,6 @@
 	"secret" : "secret",
 	"web_port" : 8000,
 	"enable_v3" : true,
+	"local_environments" : ["docker", "local"],
 	"publicUrl" : "https://homebrewery.naturalcrit.com"
 }
