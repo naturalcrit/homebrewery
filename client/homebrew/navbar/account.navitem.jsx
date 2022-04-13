@@ -50,7 +50,7 @@ const Account = createClass({
 					return response.body;
 				})
 				.catch((err)=>{
-					return null;
+					console.warn(err);
 				});
 		if(!token) return;
 
