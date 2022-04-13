@@ -126,7 +126,8 @@ const GoogleActions = {
 				views       : parseInt(file.properties.views),
 				tags        : '',
 				published   : file.properties.published ? file.properties.published == 'true' : false,
-				systems     : []
+				systems     : [],
+				thumbnail   : file.properties.thumbnail
 			};
 		});
 	  return brews;
@@ -147,7 +148,8 @@ const GoogleActions = {
 					renderer  : brew.renderer,
 					tags      : brew.tags,
 					pageCount : brew.pageCount,
-					systems   : brew.systems.join()
+					systems   : brew.systems.join(),
+					thumbnail : brew.thumbnail
 				}
 			},
 			media : {
@@ -180,12 +182,13 @@ const GoogleActions = {
 			'description' : `${brew.description}`,
 			'parents'     : [folderId],
 			'properties'  : {								//AppProperties is not accessible
-				'shareId'   : nanoid(12),
-				'editId'    : nanoid(12),
+				'shareId'   : brew.shareId || nanoid(12),
+				'editId'    : brew.editId || nanoid(12),
 				'title'     : brew.title,
 				'views'     : '0',
 				'pageCount' : brew.pageCount,
-				'renderer'  : brew.renderer || 'legacy'
+				'renderer'  : brew.renderer || 'legacy',
+				'thumbnail' : brew.thumbnail || ''
 			}
 		};
 
@@ -286,6 +289,7 @@ const GoogleActions = {
 				views      : parseInt(obj.data.properties.views) || 0, //brews with no view parameter will return undefined
 				version    : parseInt(obj.data.properties.version) || 0,
 				renderer   : obj.data.properties.renderer ? obj.data.properties.renderer : 'legacy',
+				thumbnail  : obj.data.properties.thumbnail || '',
 
 				gDrive   : true,
 				googleId : id

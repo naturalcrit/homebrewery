@@ -31,19 +31,11 @@ const BrewItem = createClass({
 			if(!confirm('Are you REALLY sure? You will lose editor access to this document.')) return;
 		}
 
-		if(this.props.brew.googleId) {
-			request.get(`/api/removeGoogle/${this.props.brew.googleId}${this.props.brew.editId}`)
-				.send()
-				.end(function(err, res){
-					location.reload();
-				});
-		} else {
-			request.delete(`/api/${this.props.brew.editId}`)
-				.send()
-				.end(function(err, res){
-					location.reload();
-				});
-		}
+		request.delete(`/api/${this.props.brew.googleId ?? ''}${this.props.brew.editId}`)
+			.send()
+			.end(function(err, res){
+				location.reload();
+			});
 	},
 
 	renderDeleteBrewLink : function(){
