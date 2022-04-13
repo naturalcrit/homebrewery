@@ -281,11 +281,11 @@ app.use((req, res)=>{
 	// Create configuration object
 	const configuration = {
 		local       : isLocalEnvironment,
+		publicUrl   : config.get('publicUrl') ?? '',
 		environment : nodeEnv
 	};
 	const props = {
 		version     : require('./../package.json').version,
-		publicUrl   : config.get('publicUrl') ?? '',
 		url         : req.originalUrl,
 		brew        : req.brew,
 		brews       : req.brews,
