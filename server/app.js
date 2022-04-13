@@ -259,6 +259,23 @@ app.get('/print/:id', asyncHandler(async (req, res, next)=>{
 	return next();
 }));
 
+const localEnvironments = config.get('local_environments');
+// Login
+app.post('/login', (req, res)=>{
+	// Local only
+	if(!localEnvironments.includes(config.get('node_env'))){
+		return;
+	}
+
+	const username = req.body.username;
+	if(!username) return;
+
+	const payload = jwt.encode({ username: username, issued: new Date }, config.get('secret'));
+	return res.json(payload);
+});
+
+
+
 //Render the page
 const templateFn = require('./../client/template.js');
 app.use((req, res)=>{
@@ -268,10 +285,8 @@ app.use((req, res)=>{
 		environment : config.get('node_env')
 	};
 	// Add local only items to configuration object
-	const localEnvironments = config.get('local_environments');
 	if(localEnvironments.includes(configuration.environment)){
 		configuration.local = true;
-		configuration.secret = config.get('secret');
 	};
 	const props = {
 		version     : require('./../package.json').version,

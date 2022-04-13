@@ -1,7 +1,7 @@
 const React = require('react');
 const createClass = require('create-react-class');
 const Nav = require('naturalcrit/nav/nav.jsx');
-const jwt = require('jwt-simple');
+const request = require('superagent');
 
 const Account = createClass({
 	displayName     : 'AccountNavItem',
@@ -29,17 +29,22 @@ const Account = createClass({
 		};
 	},
 
-	localLogin : function(){
+	localLogin : async function(){
 		const username = prompt('Enter username:');
 		if(!username) {return;};
 
-		const payload = {
-			username : username,
-			issued   : new Date()
-		};
 		const expiry = new Date;
 		expiry.setFullYear(expiry.getFullYear() + 1);
-		const token = jwt.encode(payload, global.config.secret);
+
+		const token = await request.post('/login')
+				.send({ username })
+				.then((response)=>{
+					return response.body;
+				})
+				.catch((err)=>{
+					return null;
+				});
+		if(!token) return;
 
 		document.cookie = `nc_session=${token};expires=${expiry};path=/;samesite=lax;${window.domain ? `domain=${window.domain}` : ''}`;
 		window.location.reload(true);
