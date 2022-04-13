@@ -39,7 +39,7 @@ const Homebrew = createClass({
 		global.enable_v3 = this.props.enable_v3;
 		global.config = this.props.config;
 
-    return {};
+		return {};
 	},
 
 	render : function (){
