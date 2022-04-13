@@ -264,7 +264,8 @@ const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
 // Login
 app.post('/login', (req, res)=>{
 	// Local only
-	if(!localEnvironments.includes(nodeEnv)){
+	if(!isLocalEnvironment){
+
 		return;
 	}
 
