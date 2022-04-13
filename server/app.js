@@ -283,12 +283,8 @@ const templateFn = require('./../client/template.js');
 app.use((req, res)=>{
 	// Create configuration object
 	const configuration = {
-		local       : false,
+		local       : isLocalEnvironment,
 		environment : nodeEnv
-	};
-	// Add local only items to configuration object
-	if(localEnvironments.includes(nodeEnv)){
-		configuration.local = true;
 	};
 	const props = {
 		version     : require('./../package.json').version,
