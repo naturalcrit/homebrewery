@@ -352,7 +352,7 @@ const EditPage = createClass({
 		const title = `${this.props.brew.title} ${systems}`;
 		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
 
-**[Homebrewery Link](https://homebrewery.naturalcrit.com/share/${shareLink})**`;
+**[Homebrewery Link](${global.config.publicUrl}/share/${shareLink})**`;
 
 		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
 	},
@@ -387,7 +387,7 @@ const EditPage = createClass({
 					<Nav.item color='blue' href={`/share/${shareLink}`}>
 						view
 					</Nav.item>
-					<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`https://homebrewery.naturalcrit.com/share/${shareLink}`);}}>
+					<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.publicUrl}/share/${shareLink}`);}}>
 						copy url
 					</Nav.item>
 					<Nav.item color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
