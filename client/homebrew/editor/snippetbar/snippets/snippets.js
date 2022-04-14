@@ -229,28 +229,23 @@ module.exports = [
 						*${srdMonsters[monsterIndex]['meta']}*  
 						___
 						**Armor Class** :: ${srdMonsters[monsterIndex]['Armor Class']}
-						**Hit Points**  :: ${srdMonsters[monsterIndex]['Hit Points']}
-						**Speed**       :: ${srdMonsters[monsterIndex]['Speed']}
+						**Hit Points** :: ${srdMonsters[monsterIndex]['Hit Points']}
+						**Speed** :: ${srdMonsters[monsterIndex]['Speed']}
 						___
 						|  STR  |  DEX  |  CON  |  INT  |  WIS  |  CHA  |
 						|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|
-						|${srdMonsters[monsterIndex]['STR']} ${srdMonsters[monsterIndex]['STR_mod']}|${srdMonsters[monsterIndex]['DEX']} ${srdMonsters[monsterIndex]['DEX_mod']}|5${srdMonsters[monsterIndex]['CON']} ${srdMonsters[monsterIndex]['CON_mod']}|${srdMonsters[monsterIndex]['INT']} ${srdMonsters[monsterIndex]['INT_mod']}|${srdMonsters[monsterIndex]['WIS']} ${srdMonsters[monsterIndex]['WIS_mod']}|${srdMonsters[monsterIndex]['CHA']} ${srdMonsters[monsterIndex]['CHA_mod']}|
+						|${['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'].flatMap((item)=>{
+		return `${srdMonsters[monsterIndex][item]} ${srdMonsters[monsterIndex][`${item}_mod`]}`;
+	}).join('|')}|\n
+						${['Saving Throws', 'Skills', 'Damage Resistances', 'Damage Immunities', 'Condition Immunities', 'Senses', 'Languages'].flatMap((item)=>{
+		return (srdMonsters[monsterIndex][item] ? [`**${item}** :: ${srdMonsters[monsterIndex][item]}`] : []);
+	}).join('  \n')}					
+						**Challenge** :: ${srdMonsters[monsterIndex]['Challenge']}
 						___
-						${srdMonsters[monsterIndex]['Saving Throws'] ? `**Saving Throws** :: ${srdMonsters[monsterIndex]['Saving Throws']}` : ''}  
-						${srdMonsters[monsterIndex]['Skills'] ? `**Skills** ::${srdMonsters[monsterIndex]['Skills']}` : ''}  
-						${srdMonsters[monsterIndex]['Damage Resistance'] ? `**Damage Resistances** :: ${srdMonsters[monsterIndex]['Damage Resistance']}` : ''}
-						${srdMonsters[monsterIndex]['Damage Immunities'] ? `**Damage Immunities** :: ${srdMonsters[monsterIndex]['Damage Immunities']}` : ''}
-						${srdMonsters[monsterIndex]['Condition Immunities'] ? `**Condition Immunities** :: ${srdMonsters[monsterIndex]['Condition Immunities']}` : ''}
-						${srdMonsters[monsterIndex]['Senses'] ? `**Senses** :: ${srdMonsters[monsterIndex]['Senses']}` : ''}  
-						${srdMonsters[monsterIndex]['Languages'] ? `**Languages** :: ${srdMonsters[monsterIndex]['Languages']}` : ''}  
-						**Challenge**            :: ${srdMonsters[monsterIndex]['Challenge']}
-						___
-						${srdMonsters[monsterIndex]['Traits']}
-
+						${srdMonsters[monsterIndex]['Traits'] ? `${srdMonsters[monsterIndex]['Traits']}\n:\n` : ''}
 						### Actions
 						${srdMonsters[monsterIndex]['Actions']}
 						:
-						{{font-size:small }}
 						}}
 						${srdMonsters[monsterIndex]['img_url'] ? `![](${srdMonsters[monsterIndex]['img_url']}){width:100%;mix-blend-mode:darken}` : ''}
 						`;
