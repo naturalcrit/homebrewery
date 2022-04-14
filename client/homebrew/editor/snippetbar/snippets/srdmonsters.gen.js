@@ -33,22 +33,27 @@ const srdFormat = function(monster){
 };
 
 module.exports = {
+	monsterNames : function(){
+		return srdMonsters.flatMap((monster)=>{return [monster.name];});
+	},
+
 	randomMonster : function() {
 		const monsterIndex = Math.floor(Math.random() * srdMonsters.length);
 	    return srdFormat(srdMonsters[monsterIndex]);
 	},
 
 	getByName : function(name) {
+		if(!name) return;
 		const selectedMonster = srdMonsters.filter((monster)=>{
 			return monster.name.toLowerCase().includes(name.toLowerCase());
 		});
-		if(selectedMonster.length > 1) {
-			alert(`Multiple results found; returning first - ${selectedMonster[0].name}`);
-		}
 		if(selectedMonster.length == 0) {
 			alert(`${name} not found!`);
 			return;
 		};
+		if(selectedMonster.length > 1) {
+			alert(`Multiple results found; returning first - ${selectedMonster[0].name}`);
+		}
 		return srdFormat(selectedMonster[0]);
 	}
 };
