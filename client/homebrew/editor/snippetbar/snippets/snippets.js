@@ -8,6 +8,7 @@ const CoverPageGen = require('./coverpage.gen.js');
 const TableOfContentsGen = require('./tableOfContents.gen.js');
 const dedent = require('dedent-tabs').default;
 const watercolorGen = require('./watercolor.gen.js');
+const srdMonsters = require('./srd_monsters.json');
 
 
 module.exports = [
@@ -213,6 +214,46 @@ module.exports = [
 						**Tables and lists** both work within a descriptive box.
 						}}
 						\n`;
+				},
+			},
+			{
+				name : 'Random SRD Monster Stat Block',
+				icon : 'fas fa-paw',
+				gen  : function(){
+					const monsterIndex = Math.floor(Math.random() * srdMonsters.length);
+					return dedent`
+						{{font-size:smaller *Monsters from the System Reference Document (SRD) are subject to the Open Gaming License. Please check the terms of use are met prior to distribution of material.*}}
+						:
+						{{monster,srd,frame
+						## ${srdMonsters[monsterIndex]['name']}  
+						*${srdMonsters[monsterIndex]['meta']}*  
+						___
+						**Armor Class** :: ${srdMonsters[monsterIndex]['Armor Class']}
+						**Hit Points**  :: ${srdMonsters[monsterIndex]['Hit Points']}
+						**Speed**       :: ${srdMonsters[monsterIndex]['Speed']}
+						___
+						|  STR  |  DEX  |  CON  |  INT  |  WIS  |  CHA  |
+						|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|
+						|${srdMonsters[monsterIndex]['STR']} ${srdMonsters[monsterIndex]['STR_mod']}|${srdMonsters[monsterIndex]['DEX']} ${srdMonsters[monsterIndex]['DEX_mod']}|5${srdMonsters[monsterIndex]['CON']} ${srdMonsters[monsterIndex]['CON_mod']}|${srdMonsters[monsterIndex]['INT']} ${srdMonsters[monsterIndex]['INT_mod']}|${srdMonsters[monsterIndex]['WIS']} ${srdMonsters[monsterIndex]['WIS_mod']}|${srdMonsters[monsterIndex]['CHA']} ${srdMonsters[monsterIndex]['CHA_mod']}|
+						___
+						${srdMonsters[monsterIndex]['Saving Throws'] ? `**Saving Throws** :: ${srdMonsters[monsterIndex]['Saving Throws']}` : ''}  
+						${srdMonsters[monsterIndex]['Skills'] ? `**Skills** ::${srdMonsters[monsterIndex]['Skills']}` : ''}  
+						${srdMonsters[monsterIndex]['Damage Resistance'] ? `**Damage Resistances** :: ${srdMonsters[monsterIndex]['Damage Resistance']}` : ''}
+						${srdMonsters[monsterIndex]['Damage Immunities'] ? `**Damage Immunities** :: ${srdMonsters[monsterIndex]['Damage Immunities']}` : ''}
+						${srdMonsters[monsterIndex]['Condition Immunities'] ? `**Condition Immunities** :: ${srdMonsters[monsterIndex]['Condition Immunities']}` : ''}
+						${srdMonsters[monsterIndex]['Senses'] ? `**Senses** :: ${srdMonsters[monsterIndex]['Senses']}` : ''}  
+						${srdMonsters[monsterIndex]['Languages'] ? `**Languages** :: ${srdMonsters[monsterIndex]['Languages']}` : ''}  
+						**Challenge**            :: ${srdMonsters[monsterIndex]['Challenge']}
+						___
+						${srdMonsters[monsterIndex]['Traits']}
+
+						### Actions
+						${srdMonsters[monsterIndex]['Actions']}
+						:
+						{{font-size:small }}
+						}}
+						${srdMonsters[monsterIndex]['img_url'] ? `![](${srdMonsters[monsterIndex]['img_url']}){width:100%;mix-blend-mode:darken}` : ''}
+						`;
 				},
 			},
 			{
