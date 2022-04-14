@@ -1,5 +1,5 @@
 module.exports = async(name, title = '', props = {})=>{
-	const HOMEBREWERY_PUBLIC_URL=props.publicUrl;
+	const HOMEBREWERY_PUBLIC_URL=props.config.publicUrl;
 
 	return `
 <!DOCTYPE html>
