@@ -220,8 +220,8 @@ module.exports = [
 				name : 'Select SRD Monster Stat Block',
 				icon : 'fas fa-paw',
 				gen  : function(){
-					const selectByName = prompt('Enter the name of the monster');
-					return selectByName;
+					const monsterName = prompt('Enter the name of the monster');
+					return srdMonsters.getByName(monsterName);
 				}
 			},
 			{
