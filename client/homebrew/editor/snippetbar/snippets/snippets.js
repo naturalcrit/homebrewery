@@ -8,7 +8,7 @@ const CoverPageGen = require('./coverpage.gen.js');
 const TableOfContentsGen = require('./tableOfContents.gen.js');
 const dedent = require('dedent-tabs').default;
 const watercolorGen = require('./watercolor.gen.js');
-const srdMonsters = require('./srd_monsters.json');
+const srdMonsters = require('./srdmonsters.gen.js');
 
 
 module.exports = [
@@ -217,39 +217,19 @@ module.exports = [
 				},
 			},
 			{
-				name : 'Random SRD Monster Stat Block',
+				name : 'Select SRD Monster Stat Block',
 				icon : 'fas fa-paw',
 				gen  : function(){
-					const monsterIndex = Math.floor(Math.random() * srdMonsters.length);
-					return dedent`
-						{{font-size:smaller *Monsters from the System Reference Document (SRD) are subject to the Open Gaming License. Please check the terms of use are met prior to distribution of material.*}}
-						:
-						{{monster,srd,frame
-						## ${srdMonsters[monsterIndex]['name']}  
-						*${srdMonsters[monsterIndex]['meta']}*  
-						___
-						**Armor Class** :: ${srdMonsters[monsterIndex]['Armor Class']}
-						**Hit Points** :: ${srdMonsters[monsterIndex]['Hit Points']}
-						**Speed** :: ${srdMonsters[monsterIndex]['Speed']}
-						___
-						|  STR  |  DEX  |  CON  |  INT  |  WIS  |  CHA  |
-						|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|
-						|${['STR', 'DEX', 'CON', 'INT', 'WIS', 'CHA'].flatMap((item)=>{
-		return `${srdMonsters[monsterIndex][item]} ${srdMonsters[monsterIndex][`${item}_mod`]}`;
-	}).join('|')}|\n
-						${['Saving Throws', 'Skills', 'Damage Resistances', 'Damage Immunities', 'Condition Immunities', 'Senses', 'Languages'].flatMap((item)=>{
-		return (srdMonsters[monsterIndex][item] ? [`**${item}** :: ${srdMonsters[monsterIndex][item]}`] : []);
-	}).join('  \n')}					
-						**Challenge** :: ${srdMonsters[monsterIndex]['Challenge']}
-						___
-						${srdMonsters[monsterIndex]['Traits'] ? `${srdMonsters[monsterIndex]['Traits']}\n:\n` : ''}
-						### Actions
-						${srdMonsters[monsterIndex]['Actions']}
-						:
-						}}
-						${srdMonsters[monsterIndex]['img_url'] ? `![](${srdMonsters[monsterIndex]['img_url']}){width:100%;mix-blend-mode:darken}` : ''}
-						`;
-				},
+					const selectByName = prompt('Enter the name of the monster');
+					return selectByName;
+				}
+			},
+			{
+				name : 'Random SRD Monster Stat Block',
+				icon : 'fas fa-paw',
+				gen  : function() {
+					return srdMonsters.randomMonster();
+				}
 			},
 			{
 				name : 'Monster Stat Block (unframed)',
