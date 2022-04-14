@@ -26,6 +26,7 @@ const srdFormat = function(monster){
         ${monster['Traits'] ? `${monster['Traits']}\n:\n` : ''}
         ### Actions
         ${monster['Actions']}
+        ${monster['Legendary Actions'] ? `:\n### Legendary Actions\n${monster['Legendary Actions']}\n` : ''}
         :
         }}
         ${monster['img_url'] ? `![](${monster['img_url']}){width:100%;mix-blend-mode:darken}` : ''}
