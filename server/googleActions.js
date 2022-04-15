@@ -126,7 +126,8 @@ const GoogleActions = {
 				views       : parseInt(file.properties.views),
 				tags        : '',
 				published   : file.properties.published ? file.properties.published == 'true' : false,
-				systems     : []
+				systems     : [],
+				thumbnail   : file.properties.thumbnail
 			};
 		});
 	  return brews;
@@ -149,6 +150,7 @@ const GoogleActions = {
 					'renderer'  : brew.renderer || 'legacy',
 					'isStubbed' : true,
 					'updatedAt' : new Date().toISOString(),
+					thumbnail   : brew.thumbnail
 				}
 			},
 			media : {
@@ -188,7 +190,8 @@ const GoogleActions = {
 				'renderer'  : brew.renderer || 'legacy',
 				'isStubbed' : true,
 				'createdAt' : new Date().toISOString(),
-				'version'   : 1
+				'version'   : 1,
+				'thumbnail' : brew.thumbnail || ''
 			}
 		};
 
@@ -267,6 +270,7 @@ const GoogleActions = {
 				views      : parseInt(obj.data.properties.views) || 0, //brews with no view parameter will return undefined
 				version    : parseInt(obj.data.properties.version) || 0,
 				renderer   : obj.data.properties.renderer ? obj.data.properties.renderer : 'legacy',
+				thumbnail  : obj.data.properties.thumbnail || '',
 
 				googleId : id
 			};

@@ -19,6 +19,7 @@ const UserPage = createClass({
 		return {
 			username : '',
 			brews    : [],
+			query    : ''
 		};
 	},
 	getInitialState : function() {
@@ -62,7 +63,7 @@ const UserPage = createClass({
 	},
 
 	render : function(){
-		return <ListPage brewCollection={this.state.brewCollection} navItems={this.navItems()}></ListPage>;
+		return <ListPage brewCollection={this.state.brewCollection} navItems={this.navItems()} query={this.props.query}></ListPage>;
 	}
 });
 

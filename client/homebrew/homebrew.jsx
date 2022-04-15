@@ -33,10 +33,12 @@ const Homebrew = createClass({
 		};
 	},
 
-	getInitialState : function(){
-		global.version = this.props.version;
+	getInitialState : function() {
 		global.account = this.props.account;
+		global.version = this.props.version;
 		global.enable_v3 = this.props.enable_v3;
+		global.config = this.props.config;
+
 		return {};
 	},
 
@@ -49,7 +51,7 @@ const Homebrew = createClass({
 						<Route path='/share/:id' component={(routeProps)=><SharePage id={routeProps.match.params.id} brew={this.props.brew} />}/>
 						<Route path='/new/:id' component={(routeProps)=><NewPage id={routeProps.match.params.id} brew={this.props.brew} />}/>
 						<Route path='/new' exact component={(routeProps)=><NewPage />}/>
-						<Route path='/user/:username' component={(routeProps)=><UserPage username={routeProps.match.params.username} brews={this.props.brews} />}/>
+						<Route path='/user/:username' component={(routeProps)=><UserPage username={routeProps.match.params.username} brews={this.props.brews} query={queryString.parse(routeProps.location.search)}/>}/>
 						<Route path='/print/:id' component={(routeProps)=><PrintPage brew={this.props.brew} query={queryString.parse(routeProps.location.search)} />}/>
 						<Route path='/print' exact component={(routeProps)=><PrintPage query={queryString.parse(routeProps.location.search)} />}/>
 						<Route path='/changelog' exact component={()=><SharePage brew={this.props.brew} />}/>

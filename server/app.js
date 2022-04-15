@@ -234,17 +234,40 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 //Print Page
 app.get('/print/:id', asyncHandler(getBrew('share')), sanitizeMiddleware('share'), splitTextStyleAndMetadata);
 
+const nodeEnv = config.get('node_env');
+const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
+// Local only
+if(isLocalEnvironment){
+	// Login
+	app.post('/local/login', (req, res)=>{
+		const username = req.body.username;
+		if(!username) return;
+
+		const payload = jwt.encode({ username: username, issued: new Date }, config.get('secret'));
+		return res.json(payload);
+	});
+}
+
+
+
 //Render the page
 const templateFn = require('./../client/template.js');
 app.use((req, res)=>{
+	// Create configuration object
+	const configuration = {
+		local       : isLocalEnvironment,
+		environment : nodeEnv
+	};
 	const props = {
 		version     : require('./../package.json').version,
+		publicUrl   : config.get('publicUrl') ?? '',
 		url         : req.originalUrl,
 		brew        : req.brew,
 		brews       : req.brews,
 		googleBrews : req.googleBrews,
 		account     : req.account,
-		enable_v3   : config.get('enable_v3')
+		enable_v3   : config.get('enable_v3'),
+		config      : configuration
 	};
 	const title = req.brew ? req.brew.title : '';
 	templateFn('homebrew', title, props)
