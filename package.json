@@ -74,7 +74,7 @@
     "marked-extended-tables": "^1.0.3",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.29.2",
-    "mongoose": "^6.2.11",
+    "mongoose": "^6.3.0",
     "nanoid": "3.3.2",
     "nconf": "^0.11.4",
     "query-string": "7.1.1",
