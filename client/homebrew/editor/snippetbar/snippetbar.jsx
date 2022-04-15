@@ -6,9 +6,12 @@ const cx    = require('classnames');
 
 //Import all themes
 
+const ThemesSettings = require('themes/themes.json');
+
 const Themes = {};
 Themes['Legacy_5ePHB'] = require('themes/Legacy/5ePHB/snippets.js');
 Themes['V3_5ePHB']     = require('themes/V3/5ePHB/snippets.js');
+Themes['V3_5eDMG']     = require('themes/V3/5eDMG/snippets.js');
 
 const execute = function(val, brew){
 	if(_.isFunction(val)) return val(brew);
@@ -42,7 +45,8 @@ const Snippetbar = createClass({
 	componentDidMount : async function() {
 		const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
 		const themePath    = this.props.theme ?? '5ePHB';
-		const snippets = Themes[`${rendererPath}_${themePath}`];
+		let snippets = Themes[`${rendererPath}_${themePath}`];
+		snippets = this.compileSnippets(rendererPath, themePath, snippets);
 		this.setState({
 			snippets : snippets
 		});
@@ -52,11 +56,27 @@ const Snippetbar = createClass({
 		if(prevProps.renderer != this.props.renderer) {
 			const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
 			const themePath    = this.props.theme ?? '5ePHB';
-			const snippets = Themes[`${rendererPath}_${themePath}`];
+			let snippets = Themes[`${rendererPath}_${themePath}`];
+			snippets = this.compileSnippets(rendererPath, themePath, snippets);
 			this.setState({
 				snippets : snippets
 			});
 		}
+	},
+
+	compileSnippets : function(rendererPath, themePath, snippets) {
+		let compiledSnippets = snippets;
+		console.log(ThemesSettings);
+		console.log("rendererpath:");
+		console.log(rendererPath);
+		console.log("themepath");
+		console.log(themePath);
+		const baseThemePath = ThemesSettings[rendererPath][themePath].baseTheme;
+		if(baseThemePath) {
+			compiledSnippets = _.merge(compiledSnippets, Themes[`${rendererPath}_${baseThemePath}`]);
+			this.compileSnippets(rendererPath, themePath, compiledSnippets);
+		}
+		return compiledSnippets;
 	},
 
 	handleSnippetClick : function(injectedText){

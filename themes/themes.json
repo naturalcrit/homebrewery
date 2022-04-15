@@ -1,24 +1,24 @@
 {
-  "Legacy": [
-    {
+  "Legacy": {
+    "5ePHB": {
       "name": "5e PHB",
       "renderer": "legacy",
       "baseTheme": false,
       "path": "5ePHB"
     }
-  ],
-  "V3": [
-    {
+  },
+  "V3": {
+    "5eDMG": {
       "name": "5e DMG",
       "renderer": "V3",
       "baseTheme": "5ePHB",
       "path": "5eDMG"
     },
-    {
+    "5ePHB": {
       "name": "5e PHB",
       "renderer": "V3",
       "baseTheme": false,
       "path": "5ePHB"
     }
-  ]
+  }
 }

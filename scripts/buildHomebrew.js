@@ -45,13 +45,13 @@ fs.emptyDirSync('./build');
 	//v==----------------------------- COMPILE THEMES --------------------------------==v//
 
 	// Update list of all Theme files
-	const themes = { Legacy: [], V3: [] };
+	const themes = { Legacy: {}, V3: {} };
 
 	let themeFiles = fs.readdirSync('./themes/Legacy');
 	for (dir of themeFiles) {
 		const themeData = JSON.parse(fs.readFileSync(`./themes/Legacy/${dir}/settings.json`).toString());
 		themeData.path = dir;
-		themes.Legacy.push(themeData);
+		themes.Legacy[dir] = (themeData);
 		//fs.copy(`./themes/Legacy/${dir}/dropdownTexture.png`, `./build/themes/Legacy/${dir}/dropdownTexture.png`);
 		const src = `./themes/Legacy/${dir}/style.less`;
 		((outputDirectory)=>{
@@ -68,7 +68,7 @@ fs.emptyDirSync('./build');
 	for (dir of themeFiles) {
 		const themeData = JSON.parse(fs.readFileSync(`./themes/V3/${dir}/settings.json`).toString());
 		themeData.path = dir;
-		themes.V3.push(themeData);
+		themes.V3[dir] = (themeData);
 		fs.copy(`./themes/V3/${dir}/dropdownTexture.png`, `./build/themes/V3/${dir}/dropdownTexture.png`);
 		const src = `./themes/V3/${dir}/style.less`;
 	  ((outputDirectory)=>{

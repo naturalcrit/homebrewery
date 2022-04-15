@@ -1,9 +1,13 @@
 @import (less) './themes/fonts/5e/fonts.less';
 @import (less) './themes/assets/assets.less';
 
+:root {
+	--noteGreen : red; // Pastel green
+}
+
 //Colors
 @background            : #EEE5CE; // Light parchment
-@noteGreen             : #e0e5c1; // Pastel green
+@noteGreen            : #e0e5c1; // Pastel green
 @headerUnderline       : #c9ad6a; // Gold
 @horizontalRule        : #9c2b1b; // Maroon
 @headerText            : #58180D; // Dark maroon
@@ -211,7 +215,7 @@ body {
 					padding : 0.14em 0.4em;
 				}
 				&:nth-child(odd){
-					background-color : @noteGreen;
+					background-color : var(--noteGreen);
 				}
 			}
 		}
@@ -221,7 +225,7 @@ body {
 	// *****************************/
 	.note{
 		.useSansSerif();
-		background-color    : @noteGreen;
+		background-color    : var(--noteGreen);
 		border-style        : solid;
 		border-width        : 1px;
 		border-image        : @noteBorderImage 12 stretch;

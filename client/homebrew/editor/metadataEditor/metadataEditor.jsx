@@ -30,11 +30,6 @@ const MetadataEditor = createClass({
 		};
 	},
 
-	getThemeData : function(renderer, theme){
-
-		return Themes[_.upperFirst(renderer)].find((x)=>x.path == theme);
-	},
-
 	handleFieldChange : function(name, e){
 		this.props.onChange(_.merge({}, this.props.metadata, {
 			[name] : e.target.value
@@ -136,7 +131,8 @@ const MetadataEditor = createClass({
 
 	renderThemeDropdown : function(){
 		const listThemes = (renderer)=>{
-			return _.map(Themes[renderer], (theme)=>{
+			return _.map(_.values(Themes[renderer]), (theme)=>{
+				console.log(theme);
 				return <div className='item' key={''} onClick={()=>this.handleTheme(theme)} title={''}>
 					{`${theme.renderer} : ${theme.name}`}
 					<img src={`/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`}/>
@@ -144,7 +140,7 @@ const MetadataEditor = createClass({
 			});
 		};
 
-		const currentTheme = this.getThemeData(this.props.metadata.renderer, this.props.metadata.theme);
+		const currentTheme = Themes[this.props.metadata.renderer][this.props.metadata.theme];
 		let dropdown;
 
 		if(this.props.metadata.renderer == 'legacy') {
