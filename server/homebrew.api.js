@@ -14,48 +14,41 @@ const { nanoid } = require('nanoid');
 // 	});
 // };
 
-const findBrew = async (brewId, accessType, googleObjectId)=>{
-	let id = brewId;
-	let googleId = googleObjectId;
-	if(id.length > 12) {
-		googleId = id.slice(0, -12);
-		id = id.slice(-12);
-	}
-	let brew = await HomebrewModel.get(accessType === 'edit' ? { editId: id } : { shareId: id })
-		.catch((err)=>{
-			if(googleId) {
-				console.warn(`Unable to find document stub for ${accessType}Id ${id}`);
-			} else {
-				console.warn(err);
-			}
-		});
-
-	let googleBrew;
-	if(googleId || brew?.googleId) {
-		googleBrew = await GoogleActions.getGoogleBrew(googleId || brew?.googleId, id, accessType)
-			.catch((err)=>{
-				console.warn(err);
-			});
-		if(!brew && !googleBrew) throw 'Brew not found in database or Google Drive';
-		brew = brew ? _.merge(brew, googleBrew) : googleBrew;
-	} else if(!brew) {
-		throw 'Brew not found in database';
-	}
-
-	return brew;
-};
-
 const getBrew = (accessType)=>{
 	return async (req, res, next)=>{
 		const { brew } = req;
 
 		if(!brew) {
-			const id = req.params.id, googleId = req.body?.googleId;
-			const found = await findBrew(id, accessType, googleId);
+			let id = req.params.id, googleId = req.body?.googleId;
+
+			if(id.length > 12) {
+				googleId = id.slice(0, -12);
+				id = id.slice(-12);
+			}
+			let found = await HomebrewModel.get(accessType === 'edit' ? { editId: id } : { shareId: id })
+				.catch((err)=>{
+					if(googleId) {
+						console.warn(`Unable to find document stub for ${accessType}Id ${id}`);
+					} else {
+						console.warn(err);
+					}
+				});
+
+			if(googleId || found?.googleId) {
+				const googleBrew = await GoogleActions.getGoogleBrew(googleId || found?.googleId, id, accessType)
+					.catch((err)=>{
+						console.warn(err);
+					});
+				if(!found && !googleBrew) throw 'Brew not found in database or Google Drive';
+				found = found ? Object.assign(excludeStubProps(found), excludeGoogleProps(googleBrew)) : googleBrew;
+			} else if(!found) {
+				throw 'Brew not found in database';
+			}
+
 			req.brew = accessType !== 'edit' && found.toObject ? found.toObject() : found;
 		}
 
-		!!next ? next() : undefined;
+		next();
 	};
 };
 
@@ -85,7 +78,7 @@ const getGoodBrewTitle = (text)=>{
 
 const excludePropsFromUpdate = (brew)=>{
 	// Remove undesired properties
-	const propsToExclude = ['views', 'lastViewed', 'editId', 'shareId', 'googleId'];
+	const propsToExclude = ['_id', 'views', 'lastViewed', 'editId', 'shareId', 'googleId'];
 	for (const prop of propsToExclude) {
 		delete brew[prop];
 	}
@@ -93,15 +86,16 @@ const excludePropsFromUpdate = (brew)=>{
 };
 
 const excludeStubProps = (brew)=>{
-	const propsToExclude = ['text', 'textBin', 'renderer', 'pageCount', 'views', 'version'];
+	const propsToExclude = ['text', 'textBin', 'renderer', 'pageCount', 'version'];
 	for (const prop of propsToExclude) {
 		brew[prop] = undefined;
 	}
+	return brew;
 };
 
 const excludeGoogleProps = (brew)=>{
 	const modified = brew.toObject ? brew.toObject() : brew;
-	const propsToExclude = ['tags', 'systems', 'published', 'authors', 'owner'];
+	const propsToExclude = ['tags', 'systems', 'published', 'authors', 'owner', 'views'];
 	for (const prop of propsToExclude) {
 		delete modified[prop];
 	}
@@ -173,6 +167,7 @@ const newBrew = async (req, res)=>{
 };
 
 const updateBrew = async (req, res)=>{
+	console.log(req.brew, req.body);
 	let brew = Object.assign(req.brew, excludePropsFromUpdate(req.body));
 	brew.text = mergeBrewText(brew);
 	const { transferToGoogle, transferFromGoogle } = req.query;

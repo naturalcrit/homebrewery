@@ -142,15 +142,13 @@ const GoogleActions = {
 				name        : `${brew.title}.txt`,
 				description : `${brew.description}`,
 				properties  : {
-					'title'     : brew.title,
-					'shareId'   : brew.shareId || nanoid(12),
-					'editId'    : brew.editId || nanoid(12),
-					'views'     : brew.views,
-					'pageCount' : brew.pageCount,
-					'renderer'  : brew.renderer || 'legacy',
-					'isStubbed' : true,
-					'updatedAt' : new Date().toISOString(),
-					thumbnail   : brew.thumbnail
+					title     : brew.title,
+					shareId   : brew.shareId || nanoid(12),
+					editId    : brew.editId || nanoid(12),
+					pageCount : brew.pageCount,
+					renderer  : brew.renderer || 'legacy',
+					isStubbed : true,
+					thumbnail : brew.thumbnail
 				}
 			},
 			media : {
@@ -178,20 +176,18 @@ const GoogleActions = {
 		const folderId = await GoogleActions.getGoogleFolder(auth);
 
 		const fileMetadata = {
-			'name'        : `${brew.title}.txt`,
-			'description' : `${brew.description}`,
-			'parents'     : [folderId],
-			'properties'  : {								//AppProperties is not accessible
-				'shareId'   : brew.shareId || nanoid(12),
-				'editId'    : brew.editId || nanoid(12),
-				'title'     : brew.title,
-				'views'     : '0',
-				'pageCount' : brew.pageCount,
-				'renderer'  : brew.renderer || 'legacy',
-				'isStubbed' : true,
-				'createdAt' : new Date().toISOString(),
-				'version'   : 1,
-				'thumbnail' : brew.thumbnail || ''
+			name        : `${brew.title}.txt`,
+			description : `${brew.description}`,
+			parents     : [folderId],
+			properties  : {								//AppProperties is not accessible
+				shareId   : brew.shareId || nanoid(12),
+				editId    : brew.editId || nanoid(12),
+				title     : brew.title,
+				pageCount : brew.pageCount,
+				renderer  : brew.renderer || 'legacy',
+				isStubbed : true,
+				version   : 1,
+				thumbnail : brew.thumbnail || ''
 			}
 		};
 

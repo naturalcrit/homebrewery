@@ -15,8 +15,7 @@ const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
 
-const splitTextStyleAndMetadata = (req, res, next)=>{
-	const { brew } = req;
+const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
 	if(brew.text.startsWith('```metadata')) {
 		const index = brew.text.indexOf('```\n\n');
@@ -30,24 +29,15 @@ const splitTextStyleAndMetadata = (req, res, next)=>{
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
-	req.brew = brew;
-	return next();
 };
 
-const sanitizeBrew = (brew, full = false)=>{
-	delete brew._id;
-	delete brew.__v;
-	if(full){
-		delete brew.editId;
+const sanitizeBrew = (brew, accessType)=>{
+	brew._id = undefined;
+	brew.__v = undefined;
+	if(accessType !== 'edit'){
+		brew.editId = undefined;
 	}
 	return brew;
-};
-
-const sanitizeMiddleware = (accessType)=>{
-	return (req, res, next)=>{
-		req.brew = sanitizeBrew(req.brew, accessType !== 'edit');
-		return next();
-	};
 };
 
 app.use('/', serveCompressedStaticAssets(`build`));
@@ -105,8 +95,9 @@ app.get('/v3_preview', (req, res, next)=>{
 		text     : welcomeTextV3,
 		renderer : 'V3'
 	};
+	splitTextStyleAndMetadata(req.brew);
 	return next();
-}, splitTextStyleAndMetadata);
+});
 
 //Legacy/Other Document -> v3 Migration Guide
 app.get('/migrate', (req, res, next)=>{
@@ -114,8 +105,9 @@ app.get('/migrate', (req, res, next)=>{
 		text     : migrateText,
 		renderer : 'V3'
 	};
+	splitTextStyleAndMetadata(req.brew);
 	return next();
-}, splitTextStyleAndMetadata);
+});
 
 //Changelog page
 app.get('/changelog', async (req, res, next)=>{
@@ -124,8 +116,9 @@ app.get('/changelog', async (req, res, next)=>{
 		text     : changelogText,
 		renderer : 'V3'
 	};
+	splitTextStyleAndMetadata(req.brew);
 	return next();
-}, splitTextStyleAndMetadata);
+});
 
 //FAQ page
 app.get('/faq', async (req, res, next)=>{
@@ -134,8 +127,9 @@ app.get('/faq', async (req, res, next)=>{
 		text     : faqText,
 		renderer : 'V3'
 	};
+	splitTextStyleAndMetadata(req.brew);
 	return next();
-}, splitTextStyleAndMetadata);
+});
 
 //Source page
 app.get('/source/:id', asyncHandler(getBrew('share')), (req, res)=>{
@@ -151,8 +145,9 @@ app.get('/source/:id', asyncHandler(getBrew('share')), (req, res)=>{
 });
 
 //Download brew source page
-app.get('/download/:id', asyncHandler(getBrew('share')), sanitizeMiddleware('share'), (req, res)=>{
+app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	const { brew } = req;
+	sanitizeBrew(brew, 'share');
 	const prefix = 'HB - ';
 
 	let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
@@ -186,6 +181,9 @@ app.get('/user/:username', async (req, res, next)=>{
 			if(match !== -1) {
 				brew.googleId = googleBrews[match].googleId;
 				brew.stubbed = true;
+				brew.pageCount = googleBrews[match].pageCount;
+				brew.renderer = googleBrews[match].renderer;
+				brew.version = googleBrews[match].version;
 				googleBrews.splice(match, 1);
 			}
 		}
@@ -197,20 +195,26 @@ app.get('/user/:username', async (req, res, next)=>{
 	}
 
 	req.brews = _.map(brews, (brew)=>{
-		return sanitizeBrew(brew, !ownAccount);
+		return sanitizeBrew(brew, ownAccount ? 'edit' : 'share');
 	});
 
 	return next();
 });
 
 //Edit Page
-app.get('/edit/:id', asyncHandler(getBrew('edit')), sanitizeMiddleware('edit'), splitTextStyleAndMetadata, (req, res, next)=>{
+app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
+	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
+	sanitizeBrew(req.brew, 'edit');
+	console.log('edit', req.brew);
+	splitTextStyleAndMetadata(req.brew);
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
 	return next();
 });
 
 //New Page
-app.get('/new/:id', asyncHandler(getBrew('share')), sanitizeMiddleware('share'), splitTextStyleAndMetadata, (req, res, next)=>{
+app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
+	sanitizeBrew(req.brew, 'share');
+	splitTextStyleAndMetadata(req.brew);
 	req.brew.title = `CLONE - ${brew.title}`;
 	return next();
 });
@@ -227,12 +231,17 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 	} else {
 		await HomebrewModel.increaseView({ shareId: brew.shareId });
 	}
-
+	sanitizeBrew(req.brew, 'share');
+	splitTextStyleAndMetadata(req.brew);
 	return next();
-}), sanitizeMiddleware('share'), splitTextStyleAndMetadata);
+}));
 
 //Print Page
-app.get('/print/:id', asyncHandler(getBrew('share')), sanitizeMiddleware('share'), splitTextStyleAndMetadata);
+app.get('/print/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
+	sanitizeBrew(req.brew, 'share');
+	splitTextStyleAndMetadata(req.brew);
+	next();
+});
 
 const nodeEnv = config.get('node_env');
 const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
