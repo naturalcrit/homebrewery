@@ -2,18 +2,17 @@
 @import (less) './themes/assets/assets.less';
 
 :root {
-	--noteGreen : red; // Pastel green
+	//Colors
+	--HB_Color_Background            : #EEE5CE; // Light parchment
+	--HB_Color_Accent                : #E0E5C1; // Pastel green
+	--HB_Color_HeaderUnderline       : #C0AD6A; // Gold
+	--HB_Color_HorizontalRule        : #9C2B1B; // Maroon
+	--HB_Color_HeaderText            : #58180D; // Dark Maroon
+	--HB_Color_MonsterStatBackground : #EEDBAB; // Light orange parchment
+	--HB_Color_CaptionText           : #766649; // Brown
+	--HB_Color_WatercolorStain       : #BBAD82; // Light brown
 }
 
-//Colors
-@background            : #EEE5CE; // Light parchment
-@noteGreen            : #e0e5c1; // Pastel green
-@headerUnderline       : #c9ad6a; // Gold
-@horizontalRule        : #9c2b1b; // Maroon
-@headerText            : #58180D; // Dark maroon
-@monsterStatBackground : #EEDBAB; // Light orange parchment
-@captionText           : #766649; // Brown
-@watercolorStain       : #BBAD82; // Light brown
 @page { margin: 0; }
 body {
 	counter-reset : phb-page-numbers;
@@ -69,7 +68,7 @@ body {
 	overflow          : hidden;
 	height            : 279.4mm;
 	width             : 215.9mm;
-	background-color  : @background;
+	background-color  : var(--HB_Color_Background);
 	background-image  : @backgroundImage;
 	padding           : 1.4cm 1.9cm 1.7cm;
 	font-family       : BookInsanityRemake;
@@ -135,7 +134,7 @@ body {
 	h1,h2,h3,h4{
 		font-family   : MrEavesRemake;
 		font-weight   : 800;
-		color         : @headerText;
+		color         : var(--HB_Color_HeaderText);
 	}
 	h1{
 		margin-bottom       : 0.18cm; //Margin-bottom only because this is WIDE
@@ -172,7 +171,7 @@ body {
 		//margin-top    : -0.1cm; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.1cm;
 		font-size     : 0.575cm;
-		border-bottom : 2px solid @headerUnderline;
+		border-bottom : 2px solid var(--HB_Color_HeaderUnderline);;
 		line-height   : 0.995em; //Font is misaligned. Shift up slightly
 	}
 	h4{
@@ -215,7 +214,7 @@ body {
 					padding : 0.14em 0.4em;
 				}
 				&:nth-child(odd){
-					background-color : var(--noteGreen);
+					background-color : var(--HB_Color_Accent);
 				}
 			}
 		}
@@ -225,7 +224,7 @@ body {
 	// *****************************/
 	.note{
 		.useSansSerif();
-		background-color    : var(--noteGreen);
+		background-color    : var(--HB_Color_Accent);
 		border-style        : solid;
 		border-width        : 1px;
 		border-image        : @noteBorderImage 12 stretch;
@@ -291,7 +290,7 @@ body {
 		text-align  : center;
 		font-family : WalterTurncoat;
 		font-size   : 0.27cm;
-		color       : @captionText;
+		color       : var(--HB_Color_CaptionText);
 		p, p + p {
 			margin      : unset;
 			text-indent : unset;
@@ -344,7 +343,7 @@ body {
 		mask-size           : contain;
 		mask-repeat         : no-repeat;
 		background-size     : cover;
-		background-color    : @watercolorStain;			/*default color*/
+		background-color    : var(--HB_Color_WatercolorStain);			/*default color*/
 		--wc                : @watercolor1;         /*default image*/
 		z-index             : -2;
 	}
@@ -370,7 +369,7 @@ body {
 		&.frame {
 			border-style          : solid;
 			border-width          : 7px 6px;
-			background-color      : @monsterStatBackground;
+			background-color      : var(--HB_Color_MonsterStatBackground);
 			background-image      : @monsterBlockBackground;
 			border-image          : @monsterBorderImage 14 round;
 			border-image-outset   : 0px 2px;
@@ -401,7 +400,7 @@ body {
 			font-family    : ScalySansRemake;
 			font-weight    : 800;
 			font-variant   : small-caps;
-			border-bottom  : 2px solid @headerText;
+			border-bottom  : 2px solid var(--HB_Color_HeaderText);
 			// margin-top     : 0.05cm;  //Font is misaligned. Shift up slightly
   		padding-bottom : 0.05cm;
 		}
@@ -418,7 +417,7 @@ body {
 
 		//Attribute Lists - All text between HRs is red
 		hr ~ :is(dl,p) {
-			color : @headerText;
+			color : var(--HB_Color_HeaderText);
 		}
 		hr:last-of-type {
 			& ~ :is(dl,p) {
@@ -433,7 +432,7 @@ body {
 		hr + table:first-of-type{
 			margin              : 0;
 			column-span         : none;
-			color               : @headerText;
+			color               : var(--HB_Color_HeaderText);
 			background-color    : transparent;
 			border-style        : none;
 			border-image        : none;
