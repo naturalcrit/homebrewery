@@ -98,7 +98,6 @@ const Nav = {
 			);
 		},
 		render : function () {
-			console.log(this.props.children);
 			const dropdownChildren = React.Children.map(this.props.children, (child, i)=>{
 				// Ignore the first child
 				if(i < 1) return;
