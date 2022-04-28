@@ -39,7 +39,7 @@ HomebrewSchema.statics.increaseView = async function(query) {
 
 HomebrewSchema.statics.get = function(query, fields=null){
 	return new Promise((resolve, reject)=>{
-		Homebrew.find(query, (err, brews)=>{
+		Homebrew.find(query, fields, null, (err, brews)=>{
 			if(err || !brews.length) return reject('Can not find brew');
 			if(!_.isNil(brews[0].textBin)) {			// Uncompress zipped text field
 				unzipped = zlib.inflateRawSync(brews[0].textBin);
@@ -48,7 +48,7 @@ HomebrewSchema.statics.get = function(query, fields=null){
 			if(!brews[0].renderer)
 				brews[0].renderer = 'legacy';
 			return resolve(brews[0]);
-		}).select(fields);
+		});
 	});
 };
 
@@ -58,7 +58,7 @@ HomebrewSchema.statics.getByUser = function(username, allowAccess=false, fields=
 		if(allowAccess){
 			delete query.published;
 		}
-		Homebrew.find(query).select(fields).lean().exec((err, brews)=>{ //lean() converts results to JSObjects
+		Homebrew.find(query, fields).lean().exec((err, brews)=>{ //lean() converts results to JSObjects
 			if(err) return reject('Can not find brew');
 			return resolve(brews);
 		});
