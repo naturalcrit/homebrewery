@@ -272,6 +272,16 @@ app.get('/print/:id', asyncHandler(async (req, res, next)=>{
 	return next();
 }));
 
+//UI Page
+app.get('/ui', asyncHandler(async (req, res, next)=>{
+	const brew = {
+		title : 'UI PAGE'
+	};
+	req.brew = brew;
+	return next();
+}));
+
+
 const nodeEnv = config.get('node_env');
 const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
 // Local only
@@ -285,8 +295,6 @@ if(isLocalEnvironment){
 		return res.json(payload);
 	});
 }
-
-
 
 //Render the page
 const templateFn = require('./../client/template.js');

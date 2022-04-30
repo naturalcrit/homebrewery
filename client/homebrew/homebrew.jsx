@@ -11,6 +11,7 @@ const SharePage = require('./pages/sharePage/sharePage.jsx');
 const NewPage = require('./pages/newPage/newPage.jsx');
 //const ErrorPage = require('./pages/errorPage/errorPage.jsx');
 const PrintPage = require('./pages/printPage/printPage.jsx');
+const UIPage = require('./pages/basePages/uiPage/uiPage.jsx');
 
 const Homebrew = createClass({
 	displayName     : 'Homebrewery',
@@ -56,6 +57,7 @@ const Homebrew = createClass({
 						<Route path='/print' exact component={(routeProps)=><PrintPage query={queryString.parse(routeProps.location.search)} />}/>
 						<Route path='/changelog' exact component={()=><SharePage brew={this.props.brew} />}/>
 						<Route path='/faq' exact component={()=><SharePage brew={this.props.brew} />}/>
+						<Route path='/ui' exact component={()=><UIPage brew={this.props.brew} uiItems={this.props.uiItems} />}/>
 						<Route path='/v3_preview' exact component={()=><HomePage brew={this.props.brew} />}/>
 						<Route path='/' component={()=><HomePage brew={this.props.brew} />}/>
 					</Switch>
