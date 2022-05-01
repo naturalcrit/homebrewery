@@ -12,7 +12,6 @@ const NewPage = require('./pages/newPage/newPage.jsx');
 //const ErrorPage = require('./pages/errorPage/errorPage.jsx');
 const PrintPage = require('./pages/printPage/printPage.jsx');
 const AccountPage = require('./pages/accountPage/accountPage.jsx');
-const UIPage = require('./pages/basePages/uiPage/uiPage.jsx');
 
 const Homebrew = createClass({
 	displayName     : 'Homebrewery',
