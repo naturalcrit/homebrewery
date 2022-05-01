@@ -272,11 +272,42 @@ app.get('/print/:id', asyncHandler(async (req, res, next)=>{
 	return next();
 }));
 
-//UI Page
-app.get('/ui', asyncHandler(async (req, res, next)=>{
-	const brew = {
-		title : 'UI PAGE'
-	};
+//Account Page
+app.get('/ui/account', asyncHandler(async (req, res, next)=>{
+	const brew = {};
+	brew.title = 'ACCOUNT';
+
+	let auth;
+	let files;
+	if(req.account) {
+		if(req.account.googleId) {
+			try {
+				auth = await GoogleActions.authCheck(req.account, res);
+			} catch (e) {
+				auth = undefined;
+				console.log('Google auth check failed!');
+				console.log(e);
+			}
+			if(auth.credentials.access_token) {
+				try {
+					files = await GoogleActions.listGoogleBrews(auth);
+				} catch (e) {
+					files = undefined;
+					console.log('List Google files failed!');
+					console.log(e);
+				}
+			}
+		}
+
+		brew.uiItems = {
+			username  : req.account.username,
+			issued    : req.account.issued,
+			googleId  : Boolean(req.account.googleId),
+			authCheck : Boolean(req.account.googleId && auth.credentials.access_token),
+			fileCount : files?.length
+		};
+	}
+
 	req.brew = brew;
 	return next();
 }));
@@ -298,6 +329,7 @@ if(isLocalEnvironment){
 
 //Render the page
 const templateFn = require('./../client/template.js');
+
 app.use((req, res)=>{
 	// Create configuration object
 	const configuration = {
