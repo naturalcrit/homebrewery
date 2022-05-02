@@ -275,7 +275,7 @@ app.get('/print/:id', asyncHandler(async (req, res, next)=>{
 //Account Page
 app.get('/ui/account', asyncHandler(async (req, res, next)=>{
 	const brew = {};
-	brew.title = 'ACCOUNT';
+	brew.title = 'ACCOUNT INFORMATION PAGE';
 
 	let auth;
 	let files;
@@ -299,12 +299,18 @@ app.get('/ui/account', asyncHandler(async (req, res, next)=>{
 			}
 		}
 
+		const brews = await HomebrewModel.getByUser(req.account.username, true, 'id')
+			.catch((err)=>{
+				console.log(err);
+			});
+
 		brew.uiItems = {
-			username  : req.account.username,
-			issued    : req.account.issued,
-			googleId  : Boolean(req.account.googleId),
-			authCheck : Boolean(req.account.googleId && auth.credentials.access_token),
-			fileCount : files?.length
+			username   : req.account.username,
+			issued     : req.account.issued,
+			mongoCount : brews.length,
+			googleId   : Boolean(req.account.googleId),
+			authCheck  : Boolean(req.account.googleId && auth.credentials.access_token),
+			fileCount  : files?.length || '-'
 		};
 	}
 

@@ -39,10 +39,18 @@ const AccountPage = createClass({
 	},
 
 	uiItems : function() {
+		// console.log(JSON.stringify(this.props.uiItems));
 		const result = <>
 			<h1>Account Information</h1>
-			<p><strong>Username: </strong> {this.props.uiItems.username}</p>
-			<p><strong>Issued: </strong> {this.props.uiItems.issued}</p>
+			<p><strong>Username: </strong> {this.props.uiItems.username || 'No user currently logged in'}</p>
+			<p><strong>Issued: </strong> {this.props.uiItems.issued || '-'}</p>
+			<p></p>
+			<h3>MongoDB Information</h3>
+			<p><strong>Brews on MongoDB: </strong> {this.props.uiItems.mongoCount || '-'}</p>
+			<p></p>
+			<h3>Google Information</h3>
+			<p><strong>Linked to Google: </strong> {this.props.uiItems.googleId ? 'YES' : 'NO'}</p>
+			{this.props.uiItems.googleId ? <p><strong>Brews on Google: </strong> {this.props.uiItems.fileCount || '-'}</p> : '' }
 		</>;
 
 		return result;
