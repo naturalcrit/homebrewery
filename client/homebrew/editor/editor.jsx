@@ -96,7 +96,7 @@ const Editor = createClass({
 	},
 
 	getCurrentPage : function(){
-		const lines = this.props.brew.text.split('\n').slice(0, this.cursorPosition.line + 1);
+		const lines = this.props.brew.text.split('\n').slice(0, this.refs.codeEditor.getCursorPosition().line + 1);
 		return _.reduce(lines, (r, line)=>{
 			if(line.indexOf('\\page') !== -1) r++;
 			return r;
@@ -174,16 +174,17 @@ const Editor = createClass({
 		}
 	},
 
-	brewJump : function(page=this.getCurrentPage()){
-		if(!document) return;
-		window.frames['BrewRenderer'].contentDocument.getElementById(`p${page}`).scrollIntoView({ behaviour: 'auto', block: 'start' });
+	brewJump : function(targetPage=this.getCurrentPage()){
+		if(!window || this.isMeta()) return;
+		window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).scrollIntoView({ behaviour: 'auto', block: 'start' });
 		// const hashPage = (page != 1) ? `p${page}` : '';
 		// window.location.hash = hashPage;
 	},
 
-	sourceJump : function(line=1){
-		if(!this.isText || !this.isStyle) return;
-		this.refs.codeEditor.setCursorPosition(line, 1);
+	sourceJump : function(targetLine=1){
+		if(this.isText() || this.isStyle()) {
+			this.refs.codeEditor.setCursorPosition(targetLine, 0);
+		}
 	},
 
 	//Called when there are changes to the editor's dimensions
