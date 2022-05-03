@@ -41,7 +41,7 @@ const AccountPage = createClass({
 	uiItems : function() {
 		// console.log(JSON.stringify(this.props.uiItems));
 		const result = <>
-			<h1>Account Information</h1>
+			<h1>Account Information  <i class="fas fa-user"></i></h1>
 			<p><strong>Username: </strong> {this.props.uiItems.username || 'No user currently logged in'}</p>
 			<p><strong>Issued: </strong> {this.props.uiItems.issued || '-'}</p>
 			<p></p>
