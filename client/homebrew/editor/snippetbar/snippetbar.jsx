@@ -69,7 +69,7 @@ const Snippetbar = createClass({
 		if(!this.props.showEditButtons) return;
 
 		return <div className='editors'>
-			<div className={`editorTool toTop ${this.props.view != 'meta' ? 'active' : ''}`}
+			<div className={`editorTool toTop ${['text', 'style'].includes(this.props.view) ? 'active' : ''}`}
 				onClick={this.toTop} >
 				<i className='fas fa-arrow-up' />
 			</div>
