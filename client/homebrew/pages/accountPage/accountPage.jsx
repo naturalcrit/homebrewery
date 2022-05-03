@@ -48,9 +48,9 @@ const AccountPage = createClass({
 			<h3>MongoDB Information</h3>
 			<p><strong>Brews on MongoDB: </strong> {this.props.uiItems.mongoCount || '-'}</p>
 			<p></p>
-			<h3>Google Information</h3>
+			<h3>Google Information <i class="fa-brands fa-google-drive"></i></h3>
 			<p><strong>Linked to Google: </strong> {this.props.uiItems.googleId ? 'YES' : 'NO'}</p>
-			{this.props.uiItems.googleId ? <p><strong>Brews on Google: </strong> {this.props.uiItems.fileCount || '-'}</p> : '' }
+			{this.props.uiItems.googleId ? <p><strong>Brews on Google Drive: </strong> {this.props.uiItems.fileCount || '-'}</p> : '' }
 		</>;
 
 		return result;
