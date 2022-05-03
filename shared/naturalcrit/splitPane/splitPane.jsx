@@ -85,13 +85,25 @@ const SplitPane = createClass({
 	},
 */
 	renderDivider : function(){
-		return <div className='divider' onMouseDown={this.handleDown} >
-			<div className='dots'>
-				<i className='fas fa-circle' />
-				<i className='fas fa-circle' />
-				<i className='fas fa-circle' />
+		return <>
+			<div className='arrow left'
+				style={{ left: this.state.currentDividerPos-4 }}
+				onClick={()=>console.log('left')} >
+				<i className='fas fa-arrow-left' />
 			</div>
-		</div>;
+			<div className='arrow right'
+				style={{ left: this.state.currentDividerPos-4 }}
+				onClick={()=>console.log('right')} >
+				<i className='fas fa-arrow-right' />
+			</div>
+			<div className='divider' onMouseDown={this.handleDown} >
+				<div className='dots'>
+					<i className='fas fa-circle' />
+					<i className='fas fa-circle' />
+					<i className='fas fa-circle' />
+				</div>
+			</div>
+		</>;
 	},
 
 	render : function(){
