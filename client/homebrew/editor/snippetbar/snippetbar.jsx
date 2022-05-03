@@ -61,17 +61,33 @@ const Snippetbar = createClass({
 	},
 
 	toTop : function(){
+		this.props.sourceJump(0);
 		this.props.brewJump(1);
-		this.props.sourceJump(1);
+	},
+
+	moveBrew : function(){
+		this.props.brewJump();
+	},
+
+	moveSource : function(){
+		this.props.sourceJump();
 	},
 
 	renderEditorButtons : function(){
 		if(!this.props.showEditButtons) return;
 
 		return <div className='editors'>
+			<div className={`editorTool fromBrew ${['text'].includes(this.props.view) ? 'active' : ''}`}
+				onClick={this.moveSource} >
+				<i className='fas fa-arrow-left' />
+			</div>
 			<div className={`editorTool toTop ${['text', 'style'].includes(this.props.view) ? 'active' : ''}`}
 				onClick={this.toTop} >
 				<i className='fas fa-arrow-up' />
+			</div>
+			<div className={`editorTool toBrew ${['text'].includes(this.props.view) ? 'active' : ''}`}
+				onClick={this.moveBrew} >
+				<i className='fas fa-arrow-right' />
 			</div>
 			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
 				onClick={this.props.undo} >
