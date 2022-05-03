@@ -181,8 +181,30 @@ const Editor = createClass({
 		// window.location.hash = hashPage;
 	},
 
-	sourceJump : function(targetLine=1){
+	sourceJump : function(targetLine=null){
 		if(this.isText() || this.isStyle()) {
+			if(targetLine == null) {
+				const brewPosition = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer').item(0).scrollTop;
+				const pageCollection = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('page');
+
+				let currentPage = 0;
+				let currentPagePosition = 0;
+				while (currentPagePosition < brewPosition && currentPage < pageCollection.length) {
+					currentPagePosition = currentPagePosition + pageCollection[currentPage].scrollHeight;
+					currentPage++;
+				};
+
+				const textArray = this.props.brew.text.split('\n');
+				let lineCount = 0;
+				let linePosition = 0;
+				while (linePosition < currentPage-1 && lineCount < textArray.length) {
+					// console.log(`${lineCount}: ${textArray[lineCount].toString()}`);
+					if(textArray[lineCount].toString().includes('\\page')) { linePosition++; }
+					lineCount++;
+				}
+				targetLine = lineCount;
+			}
+			// Math.floor(target.scrollTop / target.scrollHeight * prevState.pages.length);
 			this.refs.codeEditor.setCursorPosition(targetLine, 0);
 		}
 	},
