@@ -60,10 +60,19 @@ const Snippetbar = createClass({
 		});
 	},
 
+	toTop : function(){
+		this.props.brewJump(1);
+		this.props.sourceJump(1);
+	},
+
 	renderEditorButtons : function(){
 		if(!this.props.showEditButtons) return;
 
 		return <div className='editors'>
+			<div className={`editorTool toTop ${this.props.view != 'meta' ? 'active' : ''}`}
+				onClick={this.toTop} >
+				<i className='fas fa-arrow-up' />
+			</div>
 			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
 				onClick={this.props.undo} >
 				<i className='fas fa-undo' />
