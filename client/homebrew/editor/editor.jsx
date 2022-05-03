@@ -174,9 +174,16 @@ const Editor = createClass({
 		}
 	},
 
-	brewJump : function(){
-		const currentPage = this.getCurrentPage();
-		window.location.hash = `p${currentPage}`;
+	brewJump : function(page=this.getCurrentPage()){
+		if(!document) return;
+		window.frames['BrewRenderer'].contentDocument.getElementById(`p${page}`).scrollIntoView({ behaviour: 'auto', block: 'start' });
+		// const hashPage = (page != 1) ? `p${page}` : '';
+		// window.location.hash = hashPage;
+	},
+
+	sourceJump : function(line=1){
+		if(!this.isText || !this.isStyle) return;
+		this.refs.codeEditor.setCursorPosition(line, 1);
 	},
 
 	//Called when there are changes to the editor's dimensions
@@ -250,6 +257,8 @@ const Editor = createClass({
 					renderer={this.props.renderer}
 					undo={this.undo}
 					redo={this.redo}
+					brewJump={this.brewJump}
+					sourceJump={this.sourceJump}
 					historySize={this.historySize()} />
 
 				{this.renderEditor()}
