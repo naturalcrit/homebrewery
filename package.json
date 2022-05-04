@@ -63,7 +63,7 @@
     "dedent-tabs": "^0.10.1",
     "express": "^4.18.1",
     "express-async-handler": "^1.2.0",
-    "express-static-gzip": "2.1.5",
+    "express-static-gzip": "2.1.6",
     "fs-extra": "10.1.0",
     "googleapis": "100.0.0",
     "js-yaml": "^4.1.0",
