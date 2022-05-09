@@ -180,7 +180,7 @@ const Editor = createClass({
 
 	brewJump : function(targetPage=this.getCurrentPage()){
 		if(!window || this.isMeta()) return;
-		window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).scrollIntoView({ behavior: 'auto', block: 'start' });
+		window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
 		// const hashPage = (page != 1) ? `p${page}` : '';
 		// window.location.hash = hashPage;
 	},
