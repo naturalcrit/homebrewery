@@ -195,7 +195,7 @@ const Editor = createClass({
 				let currentPage = 0;
 				let currentPagePosition = 0;
 				while (currentPagePosition < brewPosition && currentPage < pageCollection.length) {
-					currentPagePosition = currentPagePosition + pageCollection[currentPage].getBoundingClientRect().height;
+					currentPagePosition = currentPagePosition + pageCollection[currentPage].getBoundingClientRect().bottom;
 					currentPage++;
 				};
 
