@@ -98,7 +98,11 @@ const Editor = createClass({
 	getCurrentPage : function(){
 		const lines = this.props.brew.text.split('\n').slice(0, this.refs.codeEditor.getCursorPosition().line + 1);
 		return _.reduce(lines, (r, line)=>{
-			if(line.indexOf('\\page') !== -1) r++;
+			if(
+				(this.props.renderer == 'legacy' && line.indexOf('\\page') !== -1)
+				||
+				(this.props.renderer == 'V3' && line.match(/^\\page$/))
+			) r++;
 			return r;
 		}, 1);
 	},
