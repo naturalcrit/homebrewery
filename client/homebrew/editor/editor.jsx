@@ -182,7 +182,7 @@ const Editor = createClass({
 	},
 
 	sourceJump : function(targetLine=null){
-		if(this.isText() || this.isStyle()) {
+		if(this.isText() || (this.isStyle() && targetLine == 0)) {
 			if(targetLine == null) {
 				const brewPosition = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer').item(0).scrollTop;
 				const pageCollection = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('page');
