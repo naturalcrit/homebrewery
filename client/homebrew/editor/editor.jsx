@@ -180,6 +180,7 @@ const Editor = createClass({
 
 	brewJump : function(targetPage=this.getCurrentPage()){
 		if(!window || this.isMeta()) return;
+		// console.log(`Scroll to: p${targetPage}`);
 		window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
 		// const hashPage = (page != 1) ? `p${page}` : '';
 		// window.location.hash = hashPage;
@@ -198,15 +199,15 @@ const Editor = createClass({
 					currentPage++;
 				};
 
-				const textArray = this.props.brew.text.split('\n');
-				let lineCount = 0;
-				let linePosition = 0;
-				while (linePosition < currentPage-1 && lineCount < textArray.length) {
-					// console.log(`${lineCount}: ${textArray[lineCount].toString()}`);
-					if(textArray[lineCount].toString().includes('\\page')) { linePosition++; }
-					lineCount++;
+				targetLine = 0;
+
+				if(currentPage > 1){
+					const textString = this.props.brew.text.split('\\page').slice(0, currentPage-1).join('\\page');
+					const textPosition = textString.length;
+					const lineCount = textString.slice(0, textPosition).split('\n').length;
+
+					targetLine = lineCount;
 				}
-				targetLine = lineCount;
 			}
 			// Math.floor(target.scrollTop / target.scrollHeight * prevState.pages.length);
 			this.refs.codeEditor.setCursorPosition(targetLine, 0);
