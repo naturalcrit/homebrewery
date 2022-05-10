@@ -189,17 +189,19 @@ const Editor = createClass({
 	sourceJump : function(targetLine=null){
 		if(this.isText() || (this.isStyle() && targetLine == 0)) {
 			if(targetLine == null) {
-				const brewPosition = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer').item(0).scrollTop;
-				const pageCollection = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('page');
-
-				let currentPage = 0;
-				let currentPagePosition = 0;
-				while (currentPagePosition < brewPosition && currentPage < pageCollection.length) {
-					currentPagePosition = currentPagePosition + pageCollection[currentPage].getBoundingClientRect().bottom;
-					currentPage++;
-				};
-
 				targetLine = 0;
+
+				const pageCollection = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('page');
+				const brewRendererHeight = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer').item(0).getBoundingClientRect().height;
+
+				let currentPage = 1;
+				for (const page of pageCollection) {
+					if(page.getBoundingClientRect().bottom > (brewRendererHeight / 2)) {
+						const pageId = page.id;
+						currentPage = parseInt(pageId.slice(1, pageId.length)) || 1;
+						break;
+					}
+				}
 
 				if(currentPage > 1){
 					const textString = this.props.brew.text.split('\\page').slice(0, currentPage-1).join('\\page');
