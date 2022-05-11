@@ -197,8 +197,7 @@ const Editor = createClass({
 				let currentPage = 1;
 				for (const page of pageCollection) {
 					if(page.getBoundingClientRect().bottom > (brewRendererHeight / 2)) {
-						const pageId = page.id;
-						currentPage = parseInt(pageId.slice(1, pageId.length)) || 1;
+						currentPage = parseInt(page.id.slice(1)) || 1;
 						break;
 					}
 				}
