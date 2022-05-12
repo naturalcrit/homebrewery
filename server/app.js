@@ -205,7 +205,6 @@ app.get('/user/:username', async (req, res, next)=>{
 app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
 	sanitizeBrew(req.brew, 'edit');
-	console.log('edit', req.brew);
 	splitTextStyleAndMetadata(req.brew);
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
 	return next();
@@ -261,7 +260,7 @@ if(isLocalEnvironment){
 
 //Render the page
 const templateFn = require('./../client/template.js');
-app.use((req, res)=>{
+app.use(asyncHandler(async (req, res, next)=>{
 	// Create configuration object
 	const configuration = {
 		local       : isLocalEnvironment,
@@ -279,13 +278,14 @@ app.use((req, res)=>{
 		config      : configuration
 	};
 	const title = req.brew ? req.brew.title : '';
-	templateFn('homebrew', title, props)
-        .then((page)=>{ res.send(page); })
-        .catch((err)=>{
-        	console.log(err);
-        	return res.sendStatus(500);
-        });
-});
+	const page = await templateFn('homebrew', title, props)
+		.catch((err)=>{
+			console.log(err);
+			return res.sendStatus(500);
+		});
+	if(!page) return;
+	res.send(page);
+}));
 
 //v=====----- Error-Handling Middleware -----=====v//
 //Format Errors so all fields will be sent
@@ -308,6 +308,13 @@ app.use((err, req, res, next)=>{
 	const status = err.status || 500;
 	console.error(err);
 	res.status(status).send(getPureError(err));
+});
+
+app.use((req, res)=>{
+	if(!res.headersSent) {
+		console.error('Headers have not been sent, responding with a server error.', req.url);
+		res.status(500).send('An error occurred and the server did not send a response. The error has been logged, please note the time this occurred and report this issue.');
+	}
 });
 //^=====--------------------------------------=====^//
 
