@@ -164,7 +164,20 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 app.get('/user/:username', async (req, res, next)=>{
 	const ownAccount = req.account && (req.account.username == req.params.username);
 
-	let brews = await HomebrewModel.getByUser(req.params.username, ownAccount)
+	const fields = [
+		'title',
+		'pageCount',
+		'description',
+		'authors',
+		'views',
+		'shareId',
+		'editId',
+		'createdAt',
+		'updatedAt',
+		'lastViewed'
+	];
+
+	let brews = await HomebrewModel.getByUser(req.params.username, ownAccount, fields)
 	.catch((err)=>{
 		console.log(err);
 	});
