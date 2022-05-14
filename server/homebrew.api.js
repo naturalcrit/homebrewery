@@ -132,7 +132,7 @@ const newGoogleBrew = async (account, brew, res)=>{
 
 const newBrew = async (req, res)=>{
 	const brew = req.body;
-	const { transferToGoogle } = req.query;
+	const { saveToGoogle } = req.query;
 
 	delete brew.editId;
 	delete brew.shareId;
@@ -145,7 +145,7 @@ const newBrew = async (req, res)=>{
 	newHomebrew.shareId = nanoid(12);
 
 	let googleId, saved;
-	if(transferToGoogle) {
+	if(saveToGoogle) {
 		googleId = await newGoogleBrew(req.account, newHomebrew, res)
 			.catch((err)=>{
 				console.error(err);
