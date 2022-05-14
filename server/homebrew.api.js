@@ -16,43 +16,47 @@ const { nanoid } = require('nanoid');
 // };
 
 const getBrew = (accessType)=>{
+	// Create middleware with the accessType passed in as part of the scope
 	return async (req, res, next)=>{
-		const { brew } = req;
+		// Set the id and initial potential google id, where the google id is present on the existing brew. 
+		let id = req.params.id, googleId = req.body?.googleId;
 
-		if(!brew) {
-			let id = req.params.id, googleId = req.body?.googleId;
-
-			if(id.length > 12) {
-				googleId = id.slice(0, -12);
-				id = id.slice(-12);
-			}
-			let stub = await HomebrewModel.get(accessType === 'edit' ? { editId: id } : { shareId: id })
-				.catch((err)=>{
-					if(googleId) {
-						console.warn(`Unable to find document stub for ${accessType}Id ${id}`);
-					} else {
-						console.warn(err);
-					}
-				});
-			stub = stub?.toObject();
-
-			if(googleId || stub?.googleId) {
-				let googleError;
-				const googleBrew = await GoogleActions.getGoogleBrew(googleId || stub?.googleId, id, accessType)
-					.catch((err)=>{
-						console.warn(err);
-						googleError = err;
-					});
-				if(!googleBrew) throw googleError;
-				stub = stub ? _.assign(excludeStubProps(stub), excludeGoogleProps(googleBrew)) : googleBrew;
-			}
-
-			if(!stub) {
-				throw 'Brew not found in database';
-			}
-
-			req.brew = stub;
+		// If the id is longer than 12, then it's a google id + the edit id. This splits the longer id up.
+		if(id.length > 12) {
+			googleId = id.slice(0, -12);
+			id = id.slice(-12);
 		}
+		// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine. 
+		let stub = await HomebrewModel.get(accessType === 'edit' ? { editId: id } : { shareId: id })
+			.catch((err)=>{
+				if(googleId) {
+					console.warn(`Unable to find document stub for ${accessType}Id ${id}`);
+				} else {
+					console.warn(err);
+				}
+			});
+		stub = stub?.toObject();
+
+		// If there is a google id, try to find the google brew
+		if(googleId || stub?.googleId) {
+			let googleError;
+			const googleBrew = await GoogleActions.getGoogleBrew(googleId || stub?.googleId, id, accessType)
+				.catch((err)=>{
+					console.warn(err);
+					googleError = err;
+				});
+			// If we can't find the google brew and there is a google id for the brew, throw an error.
+			if(!googleBrew) throw googleError;
+			// Combine the Homebrewery stub with the google brew, or if the stub doesn't exist just use the google brew
+			stub = stub ? _.assign(excludeStubProps(stub), excludeGoogleProps(googleBrew)) : googleBrew;
+		}
+
+		// If after all of that we still don't have a brew, throw an exception
+		if(!stub) {
+			throw 'Brew not found in Homebrewery database or Google Drive';
+		}
+
+		req.brew = stub;
 
 		next();
 	};
@@ -169,20 +173,27 @@ const newBrew = async (req, res)=>{
 };
 
 const updateBrew = async (req, res)=>{
+	// Initialize brew from request and body, destructure query params, set a constant for the google id, and set the initial value for the after-save method
 	let brew = _.assign(req.brew, excludePropsFromUpdate(req.body));
-	brew.text = mergeBrewText(brew);
-	const { transferToGoogle, transferFromGoogle } = req.query;
+	const { saveToGoogle, removeFromGoogle } = req.query;
+	const googleId = brew.googleId;
+	let afterSave = async ()=>true;
 
-	if(brew.googleId && transferFromGoogle) {
-		const deleted = await deleteGoogleBrew(req.account, brew.googleId, brew.editId, res)
-			.catch((err)=>{
-				console.error(err);
-				res.status(err?.status || err?.response?.status || 500).send(err.message || err);
-			});
-		if(!deleted) return;
+	brew.text = mergeBrewText(brew);
+
+	if(brew.googleId && removeFromGoogle) {	
+		// If the google id exists and we're removing it from google, set afterSave to delete the google brew and mark the brew's google id as undefined
+		afterSave = async ()=>{
+			return await deleteGoogleBrew(req.account, googleId, brew.editId, res)
+				.catch((err)=>{
+					console.error(err);
+					res.status(err?.status || err?.response?.status || 500).send(err.message || err);
+				});
+		}
 
 		brew.googleId = undefined;
-	} else if(!brew.googleId && transferToGoogle) {
+	} else if(!brew.googleId && saveToGoogle) {
+		// If we don't have a google id and the user wants to save to google, create the google brew and set the google id on the brew
 		brew.googleId = await newGoogleBrew(req.account, excludeGoogleProps(brew), res)
 			.catch((err)=>{
 				console.error(err);
@@ -190,6 +201,7 @@ const updateBrew = async (req, res)=>{
 			});
 		if(!brew.googleId) return;
 	} else if(brew.googleId) {
+		// If the google id exists and no other actions are being performed, update the google brew
 		const updated = await GoogleActions.updateGoogleBrew(excludeGoogleProps(brew))
 			.catch((err)=>{
 				console.error(err);
@@ -199,6 +211,7 @@ const updateBrew = async (req, res)=>{
 	}
 
 	if(brew.googleId) {
+		// If the google id exists after all those actions, exclude the props that are stored in google and aren't needed for rendering the brew items
 		excludeStubProps(brew);
 	} else {
 		// Compress brew text to binary before saving
@@ -212,21 +225,27 @@ const updateBrew = async (req, res)=>{
 		brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
 	}
 
+	// Fetch the brew from the database again (if it existed there to begin with), and assign the existing brew to it
 	brew = _.assign(await HomebrewModel.findOne({ _id: brew._id }), brew);
 
 	if(!brew.markModified) {
+		// If it wasn't in the database, create a new db brew
 		brew = new HomebrewModel(brew);
 	}
 
 	brew.markModified('authors');
 	brew.markModified('systems');
 
+	// Save the database brew
 	const saved = await brew.save()
 		.catch((err)=>{
 			console.error(err);
 			res.status(err.status || 500).send(err.message || 'Unable to save brew to Homebrewery database');
 		});
 	if(!saved) return;
+	// Call and wait for afterSave to complete
+	const after = await afterSave();
+	if (!after) return;
 
 	res.status(200).send(saved);
 };

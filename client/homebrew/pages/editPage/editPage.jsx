@@ -200,7 +200,7 @@ const EditPage = createClass({
 		const brew = this.state.brew;
 		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
 
-		const params = `${transfer ? `?transfer${this.state.saveGoogle ? 'To' : 'From'}Google=true` : ''}`;
+		const params = `${transfer ? `?${this.state.saveGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : ''}`;
 		const res = await request
 			.put(`/api/update/${brew.editId}${params}`)
 			.send(brew)

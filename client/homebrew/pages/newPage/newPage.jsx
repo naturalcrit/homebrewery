@@ -162,7 +162,7 @@ const NewPage = createClass({
 		brew.pageCount=((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
 
 		const res = await request
-			.post(`/api${this.state.saveGoogle ? '?transferToGoogle=true' : ''}`)
+			.post(`/api${this.state.saveGoogle ? '?saveToGoogle=true' : ''}`)
 			.send(brew)
 			.catch((err)=>{
 				console.log(err);
