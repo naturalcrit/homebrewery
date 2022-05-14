@@ -18,7 +18,7 @@ const { nanoid } = require('nanoid');
 const getBrew = (accessType)=>{
 	// Create middleware with the accessType passed in as part of the scope
 	return async (req, res, next)=>{
-		// Set the id and initial potential google id, where the google id is present on the existing brew. 
+		// Set the id and initial potential google id, where the google id is present on the existing brew.
 		let id = req.params.id, googleId = req.body?.googleId;
 
 		// If the id is longer than 12, then it's a google id + the edit id. This splits the longer id up.
@@ -26,7 +26,7 @@ const getBrew = (accessType)=>{
 			googleId = id.slice(0, -12);
 			id = id.slice(-12);
 		}
-		// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine. 
+		// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine.
 		let stub = await HomebrewModel.get(accessType === 'edit' ? { editId: id } : { shareId: id })
 			.catch((err)=>{
 				if(googleId) {
@@ -181,7 +181,7 @@ const updateBrew = async (req, res)=>{
 
 	brew.text = mergeBrewText(brew);
 
-	if(brew.googleId && removeFromGoogle) {	
+	if(brew.googleId && removeFromGoogle) {
 		// If the google id exists and we're removing it from google, set afterSave to delete the google brew and mark the brew's google id as undefined
 		afterSave = async ()=>{
 			return await deleteGoogleBrew(req.account, googleId, brew.editId, res)
@@ -189,7 +189,7 @@ const updateBrew = async (req, res)=>{
 					console.error(err);
 					res.status(err?.status || err?.response?.status || 500).send(err.message || err);
 				});
-		}
+		};
 
 		brew.googleId = undefined;
 	} else if(!brew.googleId && saveToGoogle) {
@@ -245,7 +245,7 @@ const updateBrew = async (req, res)=>{
 	if(!saved) return;
 	// Call and wait for afterSave to complete
 	const after = await afterSave();
-	if (!after) return;
+	if(!after) return;
 
 	res.status(200).send(saved);
 };
