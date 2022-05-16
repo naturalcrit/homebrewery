@@ -21,7 +21,7 @@ module.exports = [
 			{
 				name : 'Column Break',
 				icon : 'fas fa-columns',
-				gen  : '\n\\column\n'
+				gen  : false
 			},
 			{
 				name : 'New Page',
