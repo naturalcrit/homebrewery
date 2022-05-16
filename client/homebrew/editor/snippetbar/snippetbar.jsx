@@ -56,7 +56,7 @@ const Snippetbar = createClass({
 		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme) {
 			const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
 			const themePath    = this.props.theme ?? '5ePHB';
-			console.log({ThemeSnippets:ThemeSnippets});
+			console.log({ ThemeSnippets: ThemeSnippets });
 			let snippets = ThemeSnippets[`${rendererPath}_${themePath}`];
 			snippets = this.compileSnippets(rendererPath, themePath, snippets);
 			this.setState({
@@ -66,21 +66,21 @@ const Snippetbar = createClass({
 	},
 
 	mergeCustomizer : function(objValue, srcValue) {
-	  if (_.isArray(objValue)) {
-			let result = _.unionBy(srcValue, objValue, 'name'); // Join snippets together, with preference for the current theme over the base theme
+		if(_.isArray(objValue)) {
+			const result = _.unionBy(srcValue, objValue, 'name'); // Join snippets together, with preference for the current theme over the base theme
 			return _.filter(result, 'gen'); //Only keep snippets with a 'gen' property.
-	  }
+		}
 	},
 
 	compileSnippets : function(rendererPath, themePath, snippets) {
 		let compiledSnippets = snippets;
 		const baseThemePath = Themes[rendererPath][themePath].baseTheme;
-		console.log({baseSnippets:ThemeSnippets[`${rendererPath}_${baseThemePath}`]});
-		console.log({themeSnippets:compiledSnippets});
+		console.log({ baseSnippets: ThemeSnippets[`${rendererPath}_${baseThemePath}`] });
+		console.log({ themeSnippets: compiledSnippets });
 
 		if(baseThemePath) {
 			compiledSnippets = _.mergeWith([], ThemeSnippets[`${rendererPath}_${baseThemePath}`], compiledSnippets, this.mergeCustomizer);
-				console.log({compiledSnippets:compiledSnippets});
+			console.log({ compiledSnippets: compiledSnippets });
 			//this.compileSnippets(rendererPath, themePath, compiledSnippets); (for nested baseThemes)
 		}
 		return compiledSnippets;
