@@ -140,7 +140,7 @@ const MetadataEditor = createClass({
 			});
 		};
 
-		const currentTheme = Themes[this.props.metadata.renderer][this.props.metadata.theme];
+		const currentTheme = Themes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme];
 		let dropdown;
 
 		if(this.props.metadata.renderer == 'legacy') {

@@ -11,6 +11,7 @@
 	--HB_Color_MonsterStatBackground : #EEDBAB; // Light orange parchment
 	--HB_Color_CaptionText           : #766649; // Brown
 	--HB_Color_WatercolorStain       : #BBAD82; // Light brown
+	--HB_Color_Footnotes             : #C9AD6A; // Gold
 }
 
 @page { margin: 0; }
@@ -487,7 +488,7 @@ body {
 		bottom      : 22px;
 		width       : 50px;
 		font-size   : 0.9em;
-		color       : #c9ad6a;
+		color       : var(--HB_Color_Footnotes);
 		text-align  : center;
 		text-indent : 0;
 		&.auto::after {
@@ -501,7 +502,7 @@ body {
 		z-index    : 150;
 		width      : 200px;
 		font-size  : 0.8em;
-		color      : #c9ad6a;
+		color      : var(--HB_Color_Footnotes);
 		text-align : right;
 	}
 	//************************************
