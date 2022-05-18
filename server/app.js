@@ -195,7 +195,20 @@ app.get('/download/:id', asyncHandler(async (req, res)=>{
 app.get('/user/:username', async (req, res, next)=>{
 	const ownAccount = req.account && (req.account.username == req.params.username);
 
-	let brews = await HomebrewModel.getByUser(req.params.username, ownAccount)
+	const fields = [
+		'title',
+		'pageCount',
+		'description',
+		'authors',
+		'views',
+		'shareId',
+		'editId',
+		'createdAt',
+		'updatedAt',
+		'lastViewed'
+	];
+
+	let brews = await HomebrewModel.getByUser(req.params.username, ownAccount, fields)
 	.catch((err)=>{
 		console.log(err);
 	});
@@ -260,9 +273,31 @@ app.get('/print/:id', asyncHandler(async (req, res, next)=>{
 	return next();
 }));
 
+const nodeEnv = config.get('node_env');
+const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
+// Local only
+if(isLocalEnvironment){
+	// Login
+	app.post('/local/login', (req, res)=>{
+		const username = req.body.username;
+		if(!username) return;
+
+		const payload = jwt.encode({ username: username, issued: new Date }, config.get('secret'));
+		return res.json(payload);
+	});
+}
+
+
+
 //Render the page
 const templateFn = require('./../client/template.js');
 app.use((req, res)=>{
+	// Create configuration object
+	const configuration = {
+		local       : isLocalEnvironment,
+		publicUrl   : config.get('publicUrl') ?? '',
+		environment : nodeEnv
+	};
 	const props = {
 		version     : require('./../package.json').version,
 		url         : req.originalUrl,
@@ -270,7 +305,8 @@ app.use((req, res)=>{
 		brews       : req.brews,
 		googleBrews : req.googleBrews,
 		account     : req.account,
-		enable_v3   : config.get('enable_v3')
+		enable_v3   : config.get('enable_v3'),
+		config      : configuration
 	};
 	const title = req.brew ? req.brew.title : '';
 	templateFn('homebrew', title, props)
