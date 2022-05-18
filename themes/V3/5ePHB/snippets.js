@@ -98,7 +98,11 @@ module.exports = [
 				gen  : dedent`/* Removes Drop Caps */
 						.page h1+p:first-letter {
 							all: unset;
-						}\n\n`
+						}\n\n
+						/* Removes Small-Caps in first line */
+						.page h1+p:first-line {
+							all: unset;
+						}`
 			},
 			{
 				name : 'Tweak Drop Cap',
