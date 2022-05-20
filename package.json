@@ -53,7 +53,7 @@
   "dependencies": {
     "@babel/core": "^7.17.12",
     "@babel/plugin-transform-runtime": "^7.17.12",
-    "@babel/preset-env": "^7.17.12",
+    "@babel/preset-env": "^7.18.0",
     "@babel/preset-react": "^7.17.12",
     "body-parser": "^1.20.0",
     "classnames": "^2.3.1",
