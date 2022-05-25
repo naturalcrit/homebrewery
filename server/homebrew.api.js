@@ -48,7 +48,7 @@ const getBrew = (accessType)=>{
 			// If we can't find the google brew and there is a google id for the brew, throw an error.
 			if(!googleBrew) throw googleError;
 			// Combine the Homebrewery stub with the google brew, or if the stub doesn't exist just use the google brew
-			stub = stub ? _.assign(excludeStubProps(stub), excludeGoogleProps(googleBrew)) : googleBrew;
+			stub = stub ? _.assign({ ...excludeStubProps(stub), stubbed: true }, excludeGoogleProps(googleBrew)) : googleBrew;
 		}
 
 		// If after all of that we still don't have a brew, throw an exception
@@ -257,17 +257,22 @@ const deleteGoogleBrew = async (account, id, editId, res)=>{
 };
 
 const deleteBrew = async (req, res)=>{
-	const { brew, account } = req;
-	if(brew.googleId) {
-		const googleDeleted = await deleteGoogleBrew(account, brew.googleId, brew.editId, res)
+	let brew = req.brew;
+	const { googleId, editId } = brew;
+	const account = req.account;
+	const isOwner = account && (brew.authors.length === 0 || brew.authors[0] === account.username);
+	console.log(brew.authors, googleId, account.username);
+	let afterSave = async ()=>true;
+	if(googleId && isOwner) {
+		afterSave = async ()=>await deleteGoogleBrew(account, googleId, editId, res)
 			.catch((err)=>{
 				console.error(err);
 				res.status(500).send(err);
 			});
-		if(!googleDeleted) return;
 	}
 
 	if(brew._id) {
+		brew = _.assign(await HomebrewModel.findOne({ _id: brew._id }), brew);
 		if(account) {
 			// Remove current user as author
 			brew.authors = _.pull(brew.authors, account.username);
@@ -282,6 +287,12 @@ const deleteBrew = async (req, res)=>{
 					throw { status: 500, message: 'Error while removing' };
 				});
 		} else {
+			if(googleId && isOwner) {
+				brew.googleId = undefined;
+				brew.textBin = zlib.deflateRawSync(brew.text);
+				brew.text = undefined;
+			}
+
 			// Otherwise, save the brew with updated author list
 			await brew.save()
 				.catch((err)=>{
@@ -289,6 +300,8 @@ const deleteBrew = async (req, res)=>{
 				});
 		}
 	}
+	const after = await afterSave();
+	if(!after) return;
 
 	res.status(204).send();
 };

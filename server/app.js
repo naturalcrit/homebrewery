@@ -190,7 +190,7 @@ app.get('/user/:username', async (req, res, next)=>{
 			});
 
 		for (const brew of brews) {
-			const match = googleBrews.findIndex((b)=>b.editId === brew.editId);
+			const match = googleBrews?.findIndex((b)=>b.editId === brew.editId) ?? -1;
 			if(match !== -1) {
 				brew.googleId = googleBrews[match].googleId;
 				brew.stubbed = true;

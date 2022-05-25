@@ -76,7 +76,7 @@ const BrewItem = createClass({
 		if(!this.props.brew.shareId) return;
 
 		let shareLink = this.props.brew.shareId;
-		if(this.props.brew.googleId) {
+		if(this.props.brew.googleId && !this.props.brew.stubbed) {
 			shareLink = this.props.brew.googleId + shareLink;
 		}
 
