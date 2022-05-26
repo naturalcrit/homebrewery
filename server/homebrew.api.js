@@ -261,15 +261,8 @@ const deleteBrew = async (req, res)=>{
 	const { googleId, editId } = brew;
 	const account = req.account;
 	const isOwner = account && (brew.authors.length === 0 || brew.authors[0] === account.username);
-	console.log(brew.authors, googleId, account.username);
-	let afterSave = async ()=>true;
-	if(googleId && isOwner) {
-		afterSave = async ()=>await deleteGoogleBrew(account, googleId, editId, res)
-			.catch((err)=>{
-				console.error(err);
-				res.status(500).send(err);
-			});
-	}
+	// If the user is the owner and the file is saved to google, mark the google brew for deletion
+	const deleteGoogleBrew = googleId && isOwner;
 
 	if(brew._id) {
 		brew = _.assign(await HomebrewModel.findOne({ _id: brew._id }), brew);
@@ -287,7 +280,8 @@ const deleteBrew = async (req, res)=>{
 					throw { status: 500, message: 'Error while removing' };
 				});
 		} else {
-			if(googleId && isOwner) {
+			if(deleteGoogleBrew) {
+				// When there are still authors remaining, we delete the google brew but store the full brew in the Homebrewery database
 				brew.googleId = undefined;
 				brew.textBin = zlib.deflateRawSync(brew.text);
 				brew.text = undefined;
@@ -300,8 +294,14 @@ const deleteBrew = async (req, res)=>{
 				});
 		}
 	}
-	const after = await afterSave();
-	if(!after) return;
+	if(deleteGoogleBrew) {
+		const deleted = await deleteGoogleBrew(account, googleId, editId, res)
+			.catch((err)=>{
+				console.error(err);
+				res.status(500).send(err);
+			});
+		if(!deleted) return;
+	}
 
 	res.status(204).send();
 };
