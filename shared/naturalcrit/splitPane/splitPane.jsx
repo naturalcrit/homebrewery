@@ -29,6 +29,10 @@ const SplitPane = createClass({
 				userSetDividerPos : dividerPos,
 				windowWidth       : window.innerWidth
 			});
+		} else {
+			this.setState({
+				currentDividerPos : window.innerWidth / 2
+			});
 		}
 		window.addEventListener('resize', this.handleWindowResize);
 	},
@@ -83,7 +87,8 @@ const SplitPane = createClass({
 			window.getSelection().removeAllRanges();
 		}
 	},
-*/
+	*/
+
 	renderDivider : function(){
 		return <>
 			<div className='arrow left'
