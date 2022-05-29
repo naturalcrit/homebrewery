@@ -291,8 +291,6 @@ const Editor = createClass({
 					renderer={this.props.renderer}
 					undo={this.undo}
 					redo={this.redo}
-					brewJump={this.brewJump}
-					sourceJump={this.sourceJump}
 					historySize={this.historySize()} />
 
 				{this.renderEditor()}
