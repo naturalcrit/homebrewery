@@ -19,7 +19,8 @@ const SplitPane = createClass({
 			windowWidth       : 0,
 			isDragging        : false,
 			moveSource        : false,
-			moveBrew          : false
+			moveBrew          : false,
+			showMoveArrows    : true
 		};
 	},
 
@@ -91,18 +92,34 @@ const SplitPane = createClass({
 	},
 	*/
 
+	setMoveArrows : function(newState) {
+		if(this.state.showMoveArrows != newState){
+			this.setState({
+				showMoveArrows : newState
+			});
+		}
+	},
+
+	renderMoveArrows : function(){
+		if(this.state.showMoveArrows) {
+			return <>
+				<div className='arrow left'
+					style={{ left: this.state.currentDividerPos-4 }}
+					onClick={()=>this.setState({ moveSource: !this.state.moveSource })} >
+					<i className='fas fa-arrow-left' />
+				</div>
+				<div className='arrow right'
+					style={{ left: this.state.currentDividerPos-4 }}
+					onClick={()=>this.setState({ moveBrew: !this.state.moveBrew })} >
+					<i className='fas fa-arrow-right' />
+				</div>
+			</>;
+		}
+	},
+
 	renderDivider : function(){
 		return <>
-			<div className='arrow left'
-				style={{ left: this.state.currentDividerPos-4 }}
-				onClick={()=>this.setState({ moveSource: !this.state.moveSource })} >
-				<i className='fas fa-arrow-left' />
-			</div>
-			<div className='arrow right'
-				style={{ left: this.state.currentDividerPos-4 }}
-				onClick={()=>this.setState({ moveBrew: !this.state.moveBrew })} >
-				<i className='fas fa-arrow-right' />
-			</div>
+			{this.renderMoveArrows()}
 			<div className='divider' onMouseDown={this.handleDown} >
 				<div className='dots'>
 					<i className='fas fa-circle' />
@@ -120,8 +137,9 @@ const SplitPane = createClass({
 				width={this.state.currentDividerPos}
 			>
 				{React.cloneElement(this.props.children[0], {
-					moveBrew   : this.state.moveBrew,
-					moveSource : this.state.moveSource
+					moveBrew      : this.state.moveBrew,
+					moveSource    : this.state.moveSource,
+					setMoveArrows : this.setMoveArrows
 				})}
 			</Pane>
 			{this.renderDivider()}

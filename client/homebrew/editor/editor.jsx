@@ -232,6 +232,7 @@ const Editor = createClass({
 
 	renderEditor : function(){
 		if(this.isText()){
+			this.props.setMoveArrows(true);
 			return <>
 				<CodeEditor key='codeEditor'
 					ref='codeEditor'
@@ -243,6 +244,7 @@ const Editor = createClass({
 			</>;
 		}
 		if(this.isStyle()){
+			this.props.setMoveArrows(false);
 			return <>
 				<CodeEditor key='codeEditor'
 					ref='codeEditor'
@@ -255,6 +257,7 @@ const Editor = createClass({
 			</>;
 		}
 		if(this.isMeta()){
+			this.props.setMoveArrows(false);
 			return <>
 				<CodeEditor key='codeEditor'
 					view={this.state.view}
