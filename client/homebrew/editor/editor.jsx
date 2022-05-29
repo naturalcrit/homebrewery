@@ -208,7 +208,7 @@ const Editor = createClass({
 					}
 				}
 
-				const textSplit = this.props.renderer == 'V3' ? '\n\\page\n' : '\\page';
+				const textSplit = this.props.renderer == 'V3' ? `/^\\page$/gm` : '\\page';
 				const textString = this.props.brew.text.split(textSplit).slice(0, currentPage-1).join(textSplit);
 				const textPosition = textString.length;
 				const lineCount = textString.match('\n') ? textString.slice(0, textPosition).split('\n').length : 0;
