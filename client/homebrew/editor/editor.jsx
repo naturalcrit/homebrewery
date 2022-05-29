@@ -202,15 +202,14 @@ const Editor = createClass({
 					}
 				}
 
-				if(currentPage > 1){
-					const textString = this.props.brew.text.split('\\page').slice(0, currentPage-1).join('\\page');
-					const textPosition = textString.length;
-					const lineCount = textString.slice(0, textPosition).split('\n').length;
+				const textSplit = this.props.renderer == 'V3' ? '\n\\page\n' : '\\page';
+				const textString = this.props.brew.text.split(textSplit).slice(0, currentPage-1).join(textSplit);
+				const textPosition = textString.length;
+				const lineCount = textString.match('\n') ? textString.slice(0, textPosition).split('\n').length : 0;
 
-					targetLine = lineCount;
-				}
+				targetLine = lineCount;
 			}
-			// Math.floor(target.scrollTop / target.scrollHeight * prevState.pages.length);
+
 			this.refs.codeEditor.setCursorPosition(targetLine, 0);
 		}
 	},
