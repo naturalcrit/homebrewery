@@ -61,8 +61,14 @@ const Editor = createClass({
 		window.removeEventListener('resize', this.updateEditorSize);
 	},
 
-	componentDidUpdate : function() {
+	componentDidUpdate : function(prevProps, prevState, snapshot) {
 		this.highlightCustomMarkdown();
+		if(prevProps.moveBrew !== this.props.moveBrew) {
+			this.brewJump();
+		};
+		if(prevProps.moveSource !== this.props.moveSource) {
+			this.sourceJump();
+		};
 	},
 
 	updateEditorSize : function() {

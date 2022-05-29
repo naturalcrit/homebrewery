@@ -17,7 +17,9 @@ const SplitPane = createClass({
 		return {
 			currentDividerPos : null,
 			windowWidth       : 0,
-			isDragging        : false
+			isDragging        : false,
+			moveSource        : false,
+			moveBrew          : false
 		};
 	},
 
@@ -93,12 +95,12 @@ const SplitPane = createClass({
 		return <>
 			<div className='arrow left'
 				style={{ left: this.state.currentDividerPos-4 }}
-				onClick={()=>console.log('left')} >
+				onClick={()=>this.setState({ moveSource: !this.state.moveSource })} >
 				<i className='fas fa-arrow-left' />
 			</div>
 			<div className='arrow right'
 				style={{ left: this.state.currentDividerPos-4 }}
-				onClick={()=>console.log('right')} >
+				onClick={()=>this.setState({ moveBrew: !this.state.moveBrew })} >
 				<i className='fas fa-arrow-right' />
 			</div>
 			<div className='divider' onMouseDown={this.handleDown} >
@@ -113,7 +115,15 @@ const SplitPane = createClass({
 
 	render : function(){
 		return <div className='splitPane' onMouseMove={this.handleMove} onMouseUp={this.handleUp}>
-			<Pane ref='pane1' width={this.state.currentDividerPos}>{this.props.children[0]}</Pane>
+			<Pane
+				ref='pane1'
+				width={this.state.currentDividerPos}
+			>
+				{React.cloneElement(this.props.children[0], {
+					moveBrew   : this.state.moveBrew,
+					moveSource : this.state.moveSource
+				})}
+			</Pane>
 			{this.renderDivider()}
 			<Pane ref='pane2' isDragging={this.state.isDragging}>{this.props.children[1]}</Pane>
 		</div>;
