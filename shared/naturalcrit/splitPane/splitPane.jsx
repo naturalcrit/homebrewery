@@ -47,7 +47,7 @@ const SplitPane = createClass({
 	handleWindowResize : function() {
 		// Allow divider to increase in size to last user-set position
 		// Limit current position to between 10% and 90% of visible space
-		const newLoc = this.limitPosition(this.state.userSetDividerPos, 0.1*(window.innerWidth-13), 0.9*(window.innerWidth-13));
+		const newLoc = this.limitPosition(this.state.userSetDividerPos || this.state.currentDividerPos, 0.1*(window.innerWidth-13), 0.9*(window.innerWidth-13));
 
 		this.setState({
 			currentDividerPos : newLoc,
