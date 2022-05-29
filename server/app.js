@@ -189,19 +189,19 @@ app.get('/user/:username', async (req, res, next)=>{
 				console.error(err);
 			});
 
-		for (const brew of brews) {
-			const match = googleBrews.findIndex((b)=>b.editId === brew.editId);
-			if(match !== -1) {
-				brew.googleId = googleBrews[match].googleId;
-				brew.stubbed = true;
-				brew.pageCount = googleBrews[match].pageCount;
-				brew.renderer = googleBrews[match].renderer;
-				brew.version = googleBrews[match].version;
-				googleBrews.splice(match, 1);
-			}
-		}
-
 		if(googleBrews && googleBrews.length > 0) {
+			for (const brew of brews.filter((brew)=>brew.googleId)) {
+				const match = googleBrews.findIndex((b)=>b.editId === brew.editId);
+				if(match !== -1) {
+					brew.googleId = googleBrews[match].googleId;
+					brew.stubbed = true;
+					brew.pageCount = googleBrews[match].pageCount;
+					brew.renderer = googleBrews[match].renderer;
+					brew.version = googleBrews[match].version;
+					googleBrews.splice(match, 1);
+				}
+			}
+
 			googleBrews = googleBrews.map((brew)=>({ ...brew, authors: [req.account.username] }));
 			brews = _.concat(brews, googleBrews);
 		}
