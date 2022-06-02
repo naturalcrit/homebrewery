@@ -19,6 +19,8 @@ const DEFAULT_STYLE_TEXT = dedent`
 					color: black;
 				}`;
 
+const sourceMoveHighlightClass = 'sourceMoveFlash';
+
 const splice = function(str, index, inject){
 	return str.slice(0, index) + inject + str.slice(index);
 };
@@ -131,6 +133,7 @@ const Editor = createClass({
 					//reset custom line styles
 					codeMirror.removeLineClass(lineNumber, 'background', 'pageLine');
 					codeMirror.removeLineClass(lineNumber, 'text');
+					codeMirror.removeLineClass(lineNumber, 'wrap', sourceMoveHighlightClass);
 
 					// Styling for \page breaks
 					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
@@ -217,7 +220,9 @@ const Editor = createClass({
 				targetLine = lineCount;
 			}
 
-			this.refs.codeEditor.setCursorPosition(targetLine, 0);
+			// this.refs.codeEditor.codeMirror.scrollIntoView({ line: targetLine, ch: 0 }, 30);
+			this.refs.codeEditor.setCursorPosition({ line: targetLine, ch: 0 });
+			this.refs.codeEditor.codeMirror.addLineClass(targetLine, 'wrap', sourceMoveHighlightClass);
 		}
 	},
 
