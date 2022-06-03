@@ -36,7 +36,7 @@
 		position         : absolute;
 		width            : 25px;
 		height           : 25px;
-		border           : 2px solid black;
+		border           : 2px solid #bbb;
 		border-radius    : 15px;
 		text-align       : center;
 		font-size        : 1.2em;
@@ -45,9 +45,11 @@
 		z-index          : 999;
 		box-shadow      : 0 4px 5px #0000007f;
 		&.left{
+			.tooltipLeft('Jump to locaton in Editor');
 			top : 30px;
 		}
 		&.right{
+			.tooltipRight('Jump to location in Preview');
 			top : 60px;
 		}
 		&:hover{
