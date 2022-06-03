@@ -3,6 +3,11 @@
 @import (less) 'codemirror/addon/search/matchesonscrollbar.css';
 @import (less) 'codemirror/addon/dialog/dialog.css';
 
+@keyframes sourceMoveAnimation {
+	50%  {background-color: red;   color: white;}
+	100% {background-color: unset; color: unset;}
+}
+
 .codeEditor{
   .CodeMirror-foldmarker {
     font-family: inherit;
@@ -11,8 +16,8 @@
   }
 
   .sourceMoveFlash .CodeMirror-line{
-    background-color: #0000fc;
-    color: #ffffff;
+    animation-name: sourceMoveAnimation;
+    animation-duration: 0.4s;
   }
 
   //.cm-tab {

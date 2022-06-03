@@ -19,8 +19,6 @@ const DEFAULT_STYLE_TEXT = dedent`
 					color: black;
 				}`;
 
-const sourceMoveHighlightClass = 'sourceMoveFlash';
-
 const splice = function(str, index, inject){
 	return str.slice(0, index) + inject + str.slice(index);
 };
@@ -133,7 +131,7 @@ const Editor = createClass({
 					//reset custom line styles
 					codeMirror.removeLineClass(lineNumber, 'background', 'pageLine');
 					codeMirror.removeLineClass(lineNumber, 'text');
-					codeMirror.removeLineClass(lineNumber, 'wrap', sourceMoveHighlightClass);
+					codeMirror.removeLineClass(lineNumber, 'wrap', 'sourceMoveFlash');
 
 					// Styling for \page breaks
 					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
@@ -217,12 +215,29 @@ const Editor = createClass({
 				const textPosition = textString.length;
 				const lineCount = textString.match('\n') ? textString.slice(0, textPosition).split('\n').length : 0;
 
-				targetLine = lineCount;
-			}
+				targetLine = lineCount - 1; //Scroll to `\page`, which is one line back.
 
-			// this.refs.codeEditor.codeMirror.scrollIntoView({ line: targetLine, ch: 0 }, 30);
-			this.refs.codeEditor.setCursorPosition({ line: targetLine, ch: 0 });
-			this.refs.codeEditor.codeMirror.addLineClass(targetLine, 'wrap', sourceMoveHighlightClass);
+				let currentY = this.refs.codeEditor.codeMirror.getScrollInfo().top;
+				let targetY  = this.refs.codeEditor.codeMirror.heightAtLine(targetLine, 'local', true);
+
+				//Scroll 1/10 of the way every 10ms until 1px off.
+				const incrementalScroll = setInterval(()=>{
+					currentY += (targetY - currentY) / 10;
+					this.refs.codeEditor.codeMirror.scrollTo(null, currentY);
+
+					// Update target: target height is not accurate until within +-10 lines of the visible window
+					if(Math.abs(targetY - currentY > 100))
+						targetY = this.refs.codeEditor.codeMirror.heightAtLine(targetLine, 'local', true);
+
+					// End when close enough
+					if(Math.abs(targetY - currentY) < 1) {
+						this.refs.codeEditor.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
+						this.refs.codeEditor.setCursorPosition({ line: targetLine + 1, ch: 0 });
+						this.refs.codeEditor.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
+						clearInterval(incrementalScroll);
+					}
+				}, 10);
+			}
 		}
 	},
 
