@@ -203,7 +203,7 @@ const Editor = createClass({
 				setTimeout(()=>{
 					brewRenderer.scrollTo({ top: currentPos + targetPos, behavior: 'smooth', block: 'start' });
 				}, bounceDelay);
-			}, scrollDelay, { leading: true });
+			}, scrollDelay, { leading: true, trailing: false });
 		};
 		this.throttleBrewMove(currentPos, interimPos, targetPos);
 
