@@ -187,7 +187,7 @@ const Editor = createClass({
 	},
 
 	brewJump : function(targetPage=this.getCurrentPage()){
-		if(!window || this.isMeta()) return;
+		if(!window) return;
 		// console.log(`Scroll to: p${targetPage}`);
 		const brewRenderer = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
 		const currentPos = brewRenderer.scrollTop;
