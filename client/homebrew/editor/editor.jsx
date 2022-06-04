@@ -190,7 +190,8 @@ const Editor = createClass({
 	brewJump : function(targetPage=this.getCurrentPage()){
 		if(!window || this.isMeta()) return;
 		// console.log(`Scroll to: p${targetPage}`);
-		const currentPos = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0].scrollTop;
+		const brewRenderer = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
+		const currentPos = brewRenderer.scrollTop;
 		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
 		const interimPos = targetPos >= 0 ? -30 : 30;
 
@@ -201,9 +202,9 @@ const Editor = createClass({
 			this.setState({
 				isBrewScrolling : true
 			});
-			window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0].scrollTo({ top: currentPos + interimPos, behavior: 'smooth' });
+			brewRenderer.scrollTo({ top: currentPos + interimPos, behavior: 'smooth' });
 			setTimeout(()=>{
-				window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0].scrollTo({ top: currentPos + targetPos, behavior: 'smooth', block: 'start' });
+				brewRenderer.scrollTo({ top: currentPos + targetPos, behavior: 'smooth', block: 'start' });
 			}, bounceDelay);
 			setTimeout(()=>{
 				this.setState({
