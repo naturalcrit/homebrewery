@@ -60,11 +60,6 @@ const Snippetbar = createClass({
 		});
 	},
 
-	toTop : function(){
-		this.props.sourceJump(0);
-		this.props.brewJump(1);
-	},
-
 	renderEditorButtons : function(){
 		if(!this.props.showEditButtons) return;
 
