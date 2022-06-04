@@ -102,8 +102,6 @@ const CodeEditor = createClass({
 			historyEventDelay : 250,
 			scrollPastEnd     : true,
 			extraKeys         : {
-				// 'Alt-Left'         : this.moveSource,
-				// 'Alt-Right'        : this.moveBrew,
 				'Ctrl-B'           : this.makeBold,
 				'Cmd-B'            : this.makeBold,
 				'Ctrl-I'           : this.makeItalic,
