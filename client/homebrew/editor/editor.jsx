@@ -212,7 +212,7 @@ const Editor = createClass({
 	},
 
 	sourceJump : function(targetLine=null){
-		if(this.isText() || (this.isStyle() && targetLine == 0)) {
+		if(this.isText()) {
 			if(targetLine == null) {
 				targetLine = 0;
 
