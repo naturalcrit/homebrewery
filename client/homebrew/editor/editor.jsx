@@ -43,8 +43,7 @@ const Editor = createClass({
 	},
 	getInitialState : function() {
 		return {
-			view            : 'text', //'text', 'style', 'meta'
-			isBrewScrolling : false
+			view : 'text' //'text', 'style', 'meta'
 		};
 	},
 
@@ -198,20 +197,15 @@ const Editor = createClass({
 		const bounceDelay = 100;
 		const scrollDelay = 500;
 
-		if(!this.state.isBrewScrolling) {
-			this.setState({
-				isBrewScrolling : true
-			});
-			brewRenderer.scrollTo({ top: currentPos + interimPos, behavior: 'smooth' });
-			setTimeout(()=>{
-				brewRenderer.scrollTo({ top: currentPos + targetPos, behavior: 'smooth', block: 'start' });
-			}, bounceDelay);
-			setTimeout(()=>{
-				this.setState({
-					isBrewScrolling : false
-				});
-			}, scrollDelay);
-		}
+		if(!this.throttleBrewMove) {
+			this.throttleBrewMove = _.throttle((currentPos, interimPos, targetPos)=>{
+				brewRenderer.scrollTo({ top: currentPos + interimPos, behavior: 'smooth' });
+				setTimeout(()=>{
+					brewRenderer.scrollTo({ top: currentPos + targetPos, behavior: 'smooth', block: 'start' });
+				}, bounceDelay);
+			}, scrollDelay, { leading: true });
+		};
+		this.throttleBrewMove(currentPos, interimPos, targetPos);
 
 		// const hashPage = (page != 1) ? `p${page}` : '';
 		// window.location.hash = hashPage;
