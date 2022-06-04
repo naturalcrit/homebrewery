@@ -43,7 +43,8 @@ const Editor = createClass({
 	},
 	getInitialState : function() {
 		return {
-			view : 'text' //'text', 'style', 'meta'
+			view            : 'text', //'text', 'style', 'meta'
+			isBrewScrolling : false
 		};
 	},
 
@@ -189,7 +190,28 @@ const Editor = createClass({
 	brewJump : function(targetPage=this.getCurrentPage()){
 		if(!window || this.isMeta()) return;
 		// console.log(`Scroll to: p${targetPage}`);
-		window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).scrollIntoView({ behavior: 'smooth', block: 'start' });
+		const currentPos = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0].scrollTop;
+		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
+		const interimPos = targetPos >= 0 ? -30 : 30;
+
+		const bounceDelay = 100;
+		const scrollDelay = 500;
+
+		if(!this.state.isBrewScrolling) {
+			this.setState({
+				isBrewScrolling : true
+			});
+			window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0].scrollTo({ top: currentPos + interimPos, behavior: 'smooth' });
+			setTimeout(()=>{
+				window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0].scrollTo({ top: currentPos + targetPos, behavior: 'smooth', block: 'start' });
+			}, bounceDelay);
+			setTimeout(()=>{
+				this.setState({
+					isBrewScrolling : false
+				});
+			}, scrollDelay);
+		}
+
 		// const hashPage = (page != 1) ? `p${page}` : '';
 		// window.location.hash = hashPage;
 	},
