@@ -165,6 +165,7 @@ app.get('/user/:username', async (req, res, next)=>{
 	const ownAccount = req.account && (req.account.username == req.params.username);
 
 	const fields = [
+		'googleId',
 		'title',
 		'pageCount',
 		'description',
