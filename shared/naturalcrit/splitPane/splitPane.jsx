@@ -17,7 +17,10 @@ const SplitPane = createClass({
 		return {
 			currentDividerPos : null,
 			windowWidth       : 0,
-			isDragging        : false
+			isDragging        : false,
+			moveSource        : false,
+			moveBrew          : false,
+			showMoveArrows    : true
 		};
 	},
 
@@ -28,6 +31,11 @@ const SplitPane = createClass({
 				currentDividerPos : this.limitPosition(dividerPos, 0.1*(window.innerWidth-13), 0.9*(window.innerWidth-13)),
 				userSetDividerPos : dividerPos,
 				windowWidth       : window.innerWidth
+			});
+		} else {
+			this.setState({
+				currentDividerPos : window.innerWidth / 2,
+				userSetDividerPos : window.innerWidth / 2
 			});
 		}
 		window.addEventListener('resize', this.handleWindowResize);
@@ -83,20 +91,58 @@ const SplitPane = createClass({
 			window.getSelection().removeAllRanges();
 		}
 	},
-*/
+	*/
+
+	setMoveArrows : function(newState) {
+		if(this.state.showMoveArrows != newState){
+			this.setState({
+				showMoveArrows : newState
+			});
+		}
+	},
+
+	renderMoveArrows : function(){
+		if(this.state.showMoveArrows) {
+			return <>
+				<div className='arrow left'
+					style={{ left: this.state.currentDividerPos-4 }}
+					onClick={()=>this.setState({ moveSource: !this.state.moveSource })} >
+					<i className='fas fa-arrow-left' />
+				</div>
+				<div className='arrow right'
+					style={{ left: this.state.currentDividerPos-4 }}
+					onClick={()=>this.setState({ moveBrew: !this.state.moveBrew })} >
+					<i className='fas fa-arrow-right' />
+				</div>
+			</>;
+		}
+	},
+
 	renderDivider : function(){
-		return <div className='divider' onMouseDown={this.handleDown} >
-			<div className='dots'>
-				<i className='fas fa-circle' />
-				<i className='fas fa-circle' />
-				<i className='fas fa-circle' />
+		return <>
+			{this.renderMoveArrows()}
+			<div className='divider' onMouseDown={this.handleDown} >
+				<div className='dots'>
+					<i className='fas fa-circle' />
+					<i className='fas fa-circle' />
+					<i className='fas fa-circle' />
+				</div>
 			</div>
-		</div>;
+		</>;
 	},
 
 	render : function(){
 		return <div className='splitPane' onMouseMove={this.handleMove} onMouseUp={this.handleUp}>
-			<Pane ref='pane1' width={this.state.currentDividerPos}>{this.props.children[0]}</Pane>
+			<Pane
+				ref='pane1'
+				width={this.state.currentDividerPos}
+			>
+				{React.cloneElement(this.props.children[0], {
+					moveBrew      : this.state.moveBrew,
+					moveSource    : this.state.moveSource,
+					setMoveArrows : this.setMoveArrows
+				})}
+			</Pane>
 			{this.renderDivider()}
 			<Pane ref='pane2' isDragging={this.state.isDragging}>{this.props.children[1]}</Pane>
 		</div>;

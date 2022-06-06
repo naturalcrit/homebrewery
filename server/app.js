@@ -170,6 +170,7 @@ app.get('/user/:username', async (req, res, next)=>{
 		'pageCount',
 		'description',
 		'authors',
+		'published',
 		'views',
 		'shareId',
 		'editId',

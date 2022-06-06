@@ -39,6 +39,32 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Monday 06/06/2022 - v3.1.0
+{{taskList
+
+##### G-Ambatte:
+
+* [x] "Jump to Preview/Editor" buttons added to the divider bar. Easily sync between the editor and preview panels!
+
+  Fixes issues: [#1756](https://github.com/naturalcrit/homebrewery/issues/1756)
+
+* [x] Speedups to the user page for users with large and/or many brews.
+
+  Fixes issues: [#2147](https://github.com/naturalcrit/homebrewery/issues/2147)
+
+* [x] Search text on the user page is saved to the URL for easy bookmarking in your browser
+
+  Fixes issues: [#1858](https://github.com/naturalcrit/homebrewery/issues/1858)
+
+* [x] Added easy login system for offline installs.
+
+  Fixes issues: [#269](https://github.com/naturalcrit/homebrewery/issues/269)
+
+* [x] New **THUMBNAIL** option in the {{fa,fa-info-circle}} **Properties** menu. This image will show up in social media links.
+
+  Fixes issues: [#820](https://github.com/naturalcrit/homebrewery/issues/820)
+}}
+
 ### Wednesday 27/03/2022 - v3.0.8
 {{taskList
 * [x] Style updates to user page.
