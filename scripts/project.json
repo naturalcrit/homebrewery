@@ -15,6 +15,7 @@
 		"codemirror/addon/fold/foldcode.js",
 		"codemirror/addon/fold/foldgutter.js",
 		"codemirror/addon/fold/xml-fold.js",
+		"codemirror/addon/scroll/scrollpastend.js",
 		"codemirror/addon/search/search.js",
 		"codemirror/addon/search/searchcursor.js",
 		"codemirror/addon/search/jump-to-line.js",

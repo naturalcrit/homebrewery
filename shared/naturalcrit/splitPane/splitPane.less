@@ -13,7 +13,7 @@
 	.divider{
 		display          : table;
 		height           : 100%;
-		width            : 12px;
+		width            : 15px;
 		cursor           : ew-resize;
 		background-color : #bbb;
 		text-align       : center;
@@ -30,6 +30,30 @@
 		}
 		&:hover{
 			background-color: #999;
+		}
+	}
+	.arrow{
+		position         : absolute;
+		width            : 25px;
+		height           : 25px;
+		border           : 2px solid #bbb;
+		border-radius    : 15px;
+		text-align       : center;
+		font-size        : 1.2em;
+		cursor           : pointer;
+		background-color : #ddd;
+		z-index          : 999;
+		box-shadow      : 0 4px 5px #0000007f;
+		&.left{
+			.tooltipLeft('Jump to location in Editor');
+			top : 30px;
+		}
+		&.right{
+			.tooltipRight('Jump to location in Preview');
+			top : 60px;
+		}
+		&:hover{
+			background-color: #666;
 		}
 	}
 }
