@@ -619,27 +619,28 @@ body {
 		border-image-width  : 47px;
 	}
 	&.decoration {
-		transform-style : preserve-3d;
-		z-index: -1;
 		position:relative;
 	}
 	&.decoration::before {
-		content           :'';
-		position          : absolute;
-		background-image  : @classTableDecoration;
-		background-size   : contain;
-		background-repeat : space;
-		width             : 7.75cm;
-		height            : calc(100% + 3.3cm);
-		top               : 50%;
-		left              : 50%;
-		transform         : translateY(-50%) translateX(-50%) translateZ(-1px);
-		filter            : drop-shadow(0px 0px 1px #C8C5C080)
+		content             :'';
+		position            : absolute;
+		background-image    : @classTableDecoration,
+		                      @classTableDecoration;
+		background-size     : contain, contain;
+		background-repeat   : no-repeat, no-repeat;
+		background-position : top, bottom;
+		width               : 7.75cm;
+		height              : calc(100% + 3.3cm);
+		top                 : 50%;
+		left                : 50%;
+		transform           : translateY(-50%) translateX(-50%);
+		filter              : drop-shadow(0px 0px 1px #C8C5C080);
+		z-index             : -1;
 	}
 	&.decoration.wide::before {
-		width             : calc(100% + 3.3cm);
-		height            : 7.75cm;
-		top               : calc(50% + 0.4cm);
+		width               : calc(100% + 3.3cm);
+		height              : 7.75cm;
+		background-position : left, right;
 	}
 	h5 + table{
 		margin-top : 0.2cm;
