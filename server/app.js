@@ -229,7 +229,7 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
-	req.brew.title = `CLONE - ${brew.title}`;
+	req.brew.title = `CLONE - ${req.brew.title}`;
 	return next();
 });
 
