@@ -1,7 +1,7 @@
 {
   "name": "homebrewery",
   "description": "Create authentic looking D&D homebrews using only markdown",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "engines": {
     "node": "16.11.x"
   },
@@ -34,7 +34,7 @@
     "build/*"
   ],
   "jest": {
-    "testTimeout" : 15000,
+    "testTimeout": 15000,
     "modulePaths": [
       "mode_modules",
       "shared",
