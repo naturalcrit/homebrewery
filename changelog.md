@@ -39,6 +39,20 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Thursday 09/06/2022 - v3.1.1
+{{taskList
+
+##### Calculuschild:
+
+* [x] Fixed class table decorations appearing on top of the table in PDF output.
+
+  Fixes issues: [#1784](https://github.com/naturalcrit/homebrewery/issues/1784)
+
+* [x] Fix bottom decoration on half class tables disappearing when the table is too short.
+
+  Fixes issues: [#2202](https://github.com/naturalcrit/homebrewery/issues/2202)
+}}
+
 ### Monday 06/06/2022 - v3.1.0
 {{taskList
 
