@@ -13,7 +13,7 @@ const watercolorGen = require('./watercolor.gen.js');
 module.exports = [
 
 	{
-		groupName : 'Editor',
+		groupName : 'Text Editor',
 		icon      : 'fas fa-pencil-alt',
 		view      : 'text',
 		snippets  : [
@@ -55,7 +55,7 @@ module.exports = [
 				gen  : (brew)=>{
 					return `![]` +
 							`(https://api.qrserver.com/v1/create-qr-code/?data=` +
-							`https://homebrewery.naturalcrit.com/share/${brew.shareId}` +
+							`https://homebrewery.naturalcrit.com${brew.shareId ? `/share/${brew.shareId}` : ''}` +
 							`&amp;size=100x100) {width:100px;mix-blend-mode:multiply}`;
 				}
 			},
@@ -80,34 +80,44 @@ module.exports = [
 				gen  : TableOfContentsGen
 			},
 			{
+				name : 'Add Comment',
+				icon : 'fas fa-code',
+				gen  : '<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->'
+			},
+		]
+	},
+	{
+		groupName : 'Style Editor',
+		icon      : 'fas fa-pencil-alt',
+		view      : 'style',
+		snippets  : [
+			{
 				name : 'Remove Drop Cap',
 				icon : 'fas fa-remove-format',
-				gen  : '<style>\n' +
-						'  .phb3 h1+p:first-letter {\n' +
-						'    all: unset;\n' +
-						'  }\n' +
-						'</style>'
+				gen  : dedent`/* Removes Drop Caps */
+						.page h1+p:first-letter {
+							all: unset;
+						}\n\n
+						/* Removes Small-Caps in first line */
+						.page h1+p:first-line {
+							all: unset;
+						}`
 			},
 			{
 				name : 'Tweak Drop Cap',
 				icon : 'fas fa-sliders-h',
-				gen  : '<style>\n' +
-						'  /* Drop Cap settings */\n' +
-						'  .phb3 h1 + p::first-letter {\n' +
-						'    float: left;\n' +
-						'    font-family: SolberaImitationRemake;\n' +
-						'    font-size: 3.5cm;\n' +
-						'    color: #222;\n' +
-						'    line-height: .8em;\n' +
-						'  }\n' +
-						'</style>'
+				gen  : dedent`/* Drop Cap settings */
+						.page h1 + p::first-letter {
+							font-family: SolberaImitationRemake;
+							font-size: 3.5cm;
+							background-image: linear-gradient(-45deg, #322814, #998250, #322814);
+							line-height: 1em;
+						}\n\n`
 			},
 			{
 				name : 'Add Comment',
-				icon : 'fas fa-code',  /* might need to be fa-solid fa-comment-code --not sure, Gazook */
-				gen  : dedent`\n
-					<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->
-					`
+				icon : 'fas fa-code',
+				gen  : '/* This is a comment that will not be rendered into your brew. */'
 			},
 		]
 	},
@@ -255,36 +265,6 @@ module.exports = [
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'Class Table',
-				icon : 'fas fa-table',
-				gen  : ClassTableGen.full('classTable,frame,decoration,wide'),
-			},
-			{
-				name : 'Class Table (unframed)',
-				icon : 'fas fa-border-none',
-				gen  : ClassTableGen.full('classTable,wide'),
-			},
-			{
-				name : '1/2 Class Table',
-				icon : 'fas fa-list-alt',
-				gen  : ClassTableGen.half('classTable,decoration,frame'),
-			},
-			{
-				name : '1/2 Class Table (unframed)',
-				icon : 'fas fa-border-none',
-				gen  : ClassTableGen.half('classTable'),
-			},
-			{
-				name : '1/3 Class Table',
-				icon : 'fas fa-border-all',
-				gen  : ClassTableGen.third('classTable,frame'),
-			},
-			{
-				name : '1/3 Class Table (unframed)',
-				icon : 'fas fa-border-none',
-				gen  : ClassTableGen.third('classTable'),
-			},
-			{
 				name : 'Table',
 				icon : 'fas fa-th-list',
 				gen  : function(){
@@ -343,6 +323,36 @@ module.exports = [
 						}}
 						\n`;
 				}
+			},
+			{
+				name : 'Class Table',
+				icon : 'fas fa-table',
+				gen  : ClassTableGen.full('classTable,frame,decoration,wide'),
+			},
+			{
+				name : 'Class Table (unframed)',
+				icon : 'fas fa-border-none',
+				gen  : ClassTableGen.full('classTable,wide'),
+			},
+			{
+				name : '1/2 Class Table',
+				icon : 'fas fa-list-alt',
+				gen  : ClassTableGen.half('classTable,decoration,frame'),
+			},
+			{
+				name : '1/2 Class Table (unframed)',
+				icon : 'fas fa-border-none',
+				gen  : ClassTableGen.half('classTable'),
+			},
+			{
+				name : '1/3 Class Table',
+				icon : 'fas fa-border-all',
+				gen  : ClassTableGen.third('classTable,frame'),
+			},
+			{
+				name : '1/3 Class Table (unframed)',
+				icon : 'fas fa-border-none',
+				gen  : ClassTableGen.third('classTable'),
 			}
 		]
 	},
@@ -360,44 +370,36 @@ module.exports = [
 			{
 				name : 'A4 Page Size',
 				icon : 'far fa-file',
-				gen  : ['/* A4 Page Size */',
-					'.page{',
-					'	width  : 210mm;',
-					'	height : 296.8mm;',
-					'}',
-					''
-				].join('\n')
+				gen  : dedent`/* A4 Page Size */
+					.page{
+						width  : 210mm;
+						height : 296.8mm;
+					}\n\n`
 			},
 			{
 				name : 'Square Page Size',
 				icon : 'far fa-file',
-				gen  : ['/* Square Page Size */',
-					'.page {',
-					'	width   : 125mm;',
-					'	height  : 125mm;',
-					'	padding : 12.5mm;',
-					'	columns : unset;',
-					'}',
-					''
-				].join('\n')
+				gen  : dedent`/* Square Page Size */
+					.page {
+						width   : 125mm;
+						height  : 125mm;
+						padding : 12.5mm;
+						columns : unset;
+					}\n\n`
 			},
 			{
 				name : 'Ink Friendly',
 				icon : 'fas fa-tint',
 				gen  : dedent`
 					/* Ink Friendly */
-					.pages *:is(.page,.monster,.note,.descriptive) {
+					*:is(.page,.monster,.note,.descriptive) {
 						background : white !important;
-						box-shadow : 0px 0px 3px !important;
-					}
-
-					.page .note:before {
-						box-shadow : 0px 0px 3px;
+						filter : drop-shadow(0px 0px 3px #888) !important;
 					}
 
 					.page img {
 						visibility : hidden;
-					}`
+					}\n\n`
 			},
 		]
 	},

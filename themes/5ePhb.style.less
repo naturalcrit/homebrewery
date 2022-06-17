@@ -79,7 +79,7 @@ body {
 	p{
 		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
 		display       : block;
-		line-height   : 1.3em;
+		line-height   : 1.25em;
 		&+* {
 			margin-top : 0.325cm;
 		}
@@ -90,14 +90,14 @@ body {
 	ul{
 		margin-bottom       : 0.8em;
 		padding-left        : 1.4em;
-		line-height         : 1.3em;
+		line-height         : 1.25em;
 		list-style-position : outside;
 		list-style-type     : disc;
 	}
 	ol{
 		margin-bottom       : 0.8em;
 		padding-left        : 1.4em;
-		line-height         : 1.3em;
+		line-height         : 1.25em;
 		list-style-position : outside;
 		list-style-type     : decimal;
 	}
@@ -146,9 +146,9 @@ body {
 			font-size               : 3.5cm;
 			padding-left            : 40px; //Allow background color to extend into margins
 			margin-left             : -40px;
-			margin-top              :-0.3cm;
-			padding-bottom          :2px;
-			margin-bottom           :-20px;
+			margin-top              : -0.3cm;
+			padding-bottom          : 2px;
+			margin-bottom           : -20px;
 			background-image        : linear-gradient(-45deg, #322814, #998250, #322814);
 	    background-clip         : text;
 	    -webkit-background-clip : text;
@@ -162,17 +162,20 @@ body {
 		//margin-top    : 0px; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.05cm;
 		font-size     : 0.75cm;
+		line-height   : 0.988em; //Font is misaligned. Shift up slightly
 	}
 	h3{
 		//margin-top    : -0.1cm; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.1cm;
 		font-size     : 0.575cm;
 		border-bottom : 2px solid @headerUnderline;
+		line-height   : 0.995em; //Font is misaligned. Shift up slightly
 	}
 	h4{
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.02cm;
 		font-size     : 0.458cm;
+		line-height   : 0.971em; //Font is misaligned. Shift up slightly
 	}
 	h5{
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
@@ -180,6 +183,7 @@ body {
 		font-family   : ScalySansSmallCapsRemake;
 		font-size     : 0.423cm;
 		font-weight   : 900;
+		line-height   : 0.951em; //Font is misaligned. Shift up slightly
 		& + * {
 			margin-top : 0.2cm;
 		}
@@ -238,9 +242,6 @@ body {
 			display        : block;
 			padding-bottom : 0px;
 		}
-		p + p {
-			padding-top : .8em;
-		}
 		:last-child {
 			margin-bottom : 0;
 		}
@@ -270,9 +271,6 @@ body {
 			display        : block;
 			padding-bottom : 0px;
 			line-height    : 1.5em;
-		}
-		p + p {
-			padding-top : .8em;
 		}
 		:last-child {
 			margin-bottom : 0;
@@ -513,7 +511,8 @@ body {
 		color            : #58180d;
 		background-color : #faf7ea;
 		border-radius    : 4px;
-		white-space      : pre-wrap
+		white-space      : pre-wrap;
+		overflow-wrap    : break-word;
 	}
 
 	pre code{
@@ -546,7 +545,6 @@ body {
 		-webkit-column-break-after : always;
 		break-after                : always;
 		-moz-column-break-after    : always;
-		break-before               : column;
 	}
 	//Avoid breaking up
 	blockquote,table{
@@ -581,7 +579,7 @@ body {
 	}
 	p, ul{
 		font-size   : 0.352cm;
-		line-height : 1.3em;
+		line-height : 1.265em;
 	}
 	ul{
 		margin-bottom               : 0.5em;
@@ -600,57 +598,52 @@ body {
 //*****************************
 // *       CLASS TABLE
 // *****************************/
-.page {
-	* + .classTable.frame {
-		margin-top : 0.66cm;
+.page .classTable{
+	th[colspan]:not([rowspan]) {
+		white-space : nowrap;
 	}
-	.classTable{
-		th[colspan]:not([rowspan]) {
-			white-space : nowrap;
-		}
-		&.frame {
-			margin-top          : 0.66cm;
-			&.wide {	// Allow top border to move into margin if
-				margin-top        : 0;
-			}
-			margin-bottom       : 1.05cm;
-			margin-left         : -0.1cm;
-			margin-right        : -0.1cm;
-			width               : calc(100% + 0.2cm);
-			border-collapse     : separate;
-			background-color    : white;
-			border              : initial;
-			border-style        : solid;
-			border-image-outset : 0.4cm 0.3cm;
-			border-image-repeat : stretch;
-			border-image-slice  : 200;
-			border-image-source : @frameBorderImage;
-			border-image-width  : 47px;
-		}
-		&.decoration {
-			transform-style : preserve-3d;
-		}
-		&.decoration::before {
-			content           :'';
-			position          : absolute;
-			background-image  : @classTableDecoration;
-			background-size   : contain;
-			background-repeat : space;
-			width             : 7.75cm;
-			height            : calc(100% + 3.3cm);
-			top               : 50%;
-			left              : 50%;
-			transform         : translateY(-50%) translateX(-50%) translateZ(-1px);
-			filter            : drop-shadow(0px 0px 1px #C8C5C080)
-		}
-		&.decoration.wide::before {
-			width             : calc(100% + 3.3cm);
-			height            : 7.75cm;
-			top               : calc(50% + 0.4cm);
-		}
-		h5 + table{
-			margin-top : 0.2cm;
-		}
+	&.frame {
+		margin-top          : 0.66cm;
+		margin-bottom       : 1.05cm;
+		margin-left         : -0.1cm;
+		margin-right        : -0.1cm;
+		width               : calc(100% + 0.2cm);
+		border-collapse     : separate;
+		background-color    : white;
+		border              : initial;
+		border-style        : solid;
+		border-image-outset : 0.55cm 0.3cm;
+		border-image-repeat : stretch;
+		border-image-slice  : 200;
+		border-image-source : @frameBorderImage;
+		border-image-width  : 47px;
+	}
+	&.decoration {
+		position:relative;
+	}
+	&.decoration::before {
+		content             :'';
+		position            : absolute;
+		background-image    : @classTableDecoration,
+		                      @classTableDecoration;
+		background-size     : contain, contain;
+		background-repeat   : no-repeat, no-repeat;
+		background-position : top, bottom;
+		width               : 7.75cm;
+		height              : calc(100% + 3.3cm);
+		top                 : 50%;
+		left                : 50%;
+		transform           : translateY(-50%) translateX(-50%);
+		filter              : drop-shadow(0px 0px 1px #C8C5C080);
+		z-index             : -1;
+	}
+	&.decoration.wide::before {
+		width               : calc(100% + 3.3cm);
+		height              : 7.75cm;
+		background-position : left, right;
+	}
+	h5 + table{
+		margin-top : 0.2cm;
 	}
 }
 //*****************************
@@ -662,10 +655,10 @@ body {
 	break-inside                : avoid;
 	h1 {
 		text-align    : center;
-		margin-bottom : 0cm;
+		margin-bottom : 0.3cm;
 	}
 	a{
-		display         : table;
+		display         : inline;
 		color           : inherit;
 		text-decoration : none;
 		&:hover{
@@ -673,13 +666,11 @@ body {
 		}
 	}
 	h4 {
-		margin-top : 0.14cm;
+		margin-top  : 0.2cm;
+		line-height : 0.4cm;
 		& + ul li {
 			line-height: 1.2em;
 		}
-	}
-	& > ul {
-		margin-top: 0.52cm;
 	}
 	ul{
 		padding-left    : 0;
@@ -749,7 +740,7 @@ body {
 // *****************************/
 .page {
 	dl {
-		line-height  : 1.3em;
+		line-height  : 1.25em;
 		padding-left : 1em;
 		white-space  : pre-line;
 		& + * {

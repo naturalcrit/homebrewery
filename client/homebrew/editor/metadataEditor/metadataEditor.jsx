@@ -7,7 +7,10 @@ const request = require('superagent');
 
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
+const homebreweryThumbnail = require('../../thumbnail.png');
+
 const MetadataEditor = createClass({
+	displayName     : 'MetadataEditor',
 	getDefaultProps : function() {
 		return {
 			metadata : {
@@ -22,6 +25,23 @@ const MetadataEditor = createClass({
 			},
 			onChange : ()=>{}
 		};
+	},
+
+	getInitialState : function(){
+		return {
+			showThumbnail : true
+		};
+	},
+
+	toggleThumbnailDisplay : function(){
+		this.setState({
+			showThumbnail : !this.state.showThumbnail
+		});
+	},
+
+	renderThumbnail : function(){
+		if(!this.state.showThumbnail) return;
+		return <img className='thumbnail-preview' src={this.props.metadata.thumbnail || homebreweryThumbnail}></img>;
 	},
 
 	handleFieldChange : function(name, e){
@@ -58,23 +78,11 @@ const MetadataEditor = createClass({
 			if(!confirm('Are you REALLY sure? You will lose editor access to this document.')) return;
 		}
 
-		request.delete(`/api/${this.props.metadata.editId}`)
+		request.delete(`/api/${this.props.metadata.googleId ?? ''}${this.props.metadata.editId}`)
 			.send()
 			.end(function(err, res){
 				window.location.href = '/';
 			});
-	},
-
-	getRedditLink : function(){
-		const meta = this.props.metadata;
-
-		const shareLink = (meta.googleId || '') + meta.shareId;
-		const title = `${meta.title} [${meta.systems.join(' ')}]`;
-		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
-
-**[Homebrewery Link](https://homebrewery.naturalcrit.com/share/${shareLink})**`;
-
-		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
 	},
 
 	renderSystems : function(){
@@ -127,21 +135,6 @@ const MetadataEditor = createClass({
 		</div>;
 	},
 
-	renderShareToReddit : function(){
-		if(!this.props.metadata.shareId) return;
-
-		return <div className='field reddit'>
-			<label>reddit</label>
-			<div className='value'>
-				<a href={this.getRedditLink()} target='_blank' rel='noopener noreferrer'>
-					<button className='publish'>
-						<i className='fab fa-reddit-alien' /> share to reddit
-					</button>
-				</a>
-			</div>
-		</div>;
-	},
-
 	renderRenderOptions : function(){
 		if(!global.enable_v3) return;
 
@@ -188,6 +181,18 @@ const MetadataEditor = createClass({
 				<textarea value={this.props.metadata.description} className='value'
 					onChange={(e)=>this.handleFieldChange('description', e)} />
 			</div>
+			<div className='field thumbnail'>
+				<label>thumbnail</label>
+				<input type='text'
+					value={this.props.metadata.thumbnail}
+					placeholder='my.thumbnail.url'
+					className='value'
+					onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
+				<button className='display' onClick={this.toggleThumbnailDisplay}>
+					<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
+				</button>
+				{this.renderThumbnail()}
+			</div>
 			{/*}
 			<div className='field tags'>
 				<label>tags</label>
@@ -214,8 +219,6 @@ const MetadataEditor = createClass({
 					<small>Published homebrews will be publicly viewable and searchable (eventually...)</small>
 				</div>
 			</div>
-
-			{this.renderShareToReddit()}
 
 			{this.renderDelete()}
 

@@ -14,6 +14,7 @@ const execute = function(val, brew){
 };
 
 const Snippetbar = createClass({
+	displayName     : 'SnippetBar',
 	getDefaultProps : function() {
 		return {
 			brew            : {},
@@ -22,7 +23,10 @@ const Snippetbar = createClass({
 			onInject        : ()=>{},
 			onToggle        : ()=>{},
 			showEditButtons : true,
-			renderer        : 'legacy'
+			renderer        : 'legacy',
+			undo            : ()=>{},
+			redo            : ()=>{},
+			historySize     : ()=>{}
 		};
 	},
 
@@ -60,6 +64,15 @@ const Snippetbar = createClass({
 		if(!this.props.showEditButtons) return;
 
 		return <div className='editors'>
+			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
+				onClick={this.props.undo} >
+				<i className='fas fa-undo' />
+			</div>
+			<div className={`editorTool redo ${this.props.historySize.redo ? 'active' : ''}`}
+				onClick={this.props.redo} >
+				<i className='fas fa-redo' />
+			</div>
+			<div className='divider'></div>
 			<div className={cx('text', { selected: this.props.view === 'text' })}
 				 onClick={()=>this.props.onViewChange('text')}>
 				<i className='fa fa-beer' />
@@ -91,6 +104,7 @@ module.exports = Snippetbar;
 
 
 const SnippetGroup = createClass({
+	displayName     : 'SnippetGroup',
 	getDefaultProps : function() {
 		return {
 			brew           : {},
