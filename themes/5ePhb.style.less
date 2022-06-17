@@ -604,7 +604,7 @@ body {
 	}
 	&.frame {
 		margin-top          : 0.66cm;
-		margin-bottom       : 1.05cm;
+		margin-bottom       : 0.9cm;
 		margin-left         : -0.1cm;
 		margin-right        : -0.1cm;
 		width               : calc(100% + 0.2cm);
@@ -612,11 +612,14 @@ body {
 		background-color    : white;
 		border              : initial;
 		border-style        : solid;
-		border-image-outset : 0.55cm 0.3cm;
+		border-image-outset : 0.4cm 0.3cm;
 		border-image-repeat : stretch;
 		border-image-slice  : 200;
 		border-image-source : @frameBorderImage;
 		border-image-width  : 47px;
+		&.wide:first-child {
+			margin-top: 0.225cm;
+		}
 	}
 	&.decoration {
 		position:relative;
