@@ -9,6 +9,7 @@ module.exports = function(classname){
 	classname = classname.toLowerCase();
 
 	const hitDie = _.sample([4, 6, 8, 10, 12]);
+	const spellSkill = _.sample(['Wisdom', 'Charisma', 'Intelligence']);
 
 	const abilityList = ['Strength', 'Dexerity', 'Constitution', 'Wisdom', 'Charisma', 'Intelligence'];
 	const skillList = ['Acrobatics', 'Animal Handling', 'Arcana', 'Athletics', 'Deception', 'History', 'Insight', 'Intimidation', 'Investigation', 'Medicine', 'Nature', 'Perception', 'Performance', 'Persuasion', 'Religion', 'Sleight of Hand', 'Stealth', 'Survival'];
@@ -31,6 +32,14 @@ module.exports = function(classname){
 
 		**Saving Throws:** :: ${_.sampleSize(abilityList, 2).join(', ')}
 		**Skills:**        :: Choose two from ${_.sampleSize(skillList, _.random(4, 6)).join(', ')}
+
+		#### Spellcasting Ability
+
+		{{text-align:center
+		**Spell save DC** = ${_.sample([6, 8, 10])} + your proficiency bonus + your ${spellSkill} modifier
+		:
+		**Spell attack modifier** = your proficiency bonus + your ${spellSkill} modifier  
+		}}
 
 		#### Equipment
 		You start with the following equipment, in addition to the equipment granted by your background:
