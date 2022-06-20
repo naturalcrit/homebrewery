@@ -2,8 +2,7 @@ require('./homebrew.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const { StaticRouter:Router } = require('react-router-dom/server');
-const { Route, Routes, useParams, useLocation } = require('react-router-dom');
-const queryString = require('query-string');
+const { Route, Routes, useParams, useSearchParams } = require('react-router-dom');
 
 const HomePage = require('./pages/homePage/homePage.jsx');
 const EditPage = require('./pages/editPage/editPage.jsx');
@@ -13,19 +12,17 @@ const NewPage = require('./pages/newPage/newPage.jsx');
 //const ErrorPage = require('./pages/errorPage/errorPage.jsx');
 const PrintPage = require('./pages/printPage/printPage.jsx');
 
-const WithRoute = (props)=>{ //(Element, additionalPropsFn)=>{
+const WithRoute = (props)=>{
 	const params = useParams();
-	const location = useLocation();
-	let additionalProps = {};
-	if(props.additionalPropsFn) {
-		additionalProps = props.additionalPropsFn({ props, params, location });
-	}
+	const searchParams = useSearchParams();
 	const Element = props.el;
-	return <Element {...{
+	const allProps = {
 		...props,
-		el                : undefined,
-		additionalPropsFn : undefined
-	}} {...params} {...additionalProps}/>;
+		...params,
+		...searchParams,
+		el : undefined
+	};
+	return <Element {...allProps} />;
 };
 
 const Homebrew = createClass({
@@ -66,9 +63,9 @@ const Homebrew = createClass({
 					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
 					<Route path='/new/:id' element={<WithRoute el={NewPage} brew={this.props.brew} />} />
 					<Route path='/new' element={<WithRoute el={NewPage}/>} />
-					<Route path='/user/:username' element={<WithRoute el={UserPage} brews={this.props.brews} additionalPropsFn={({ location })=>({ query: queryString.parse(location.search) })} />} />
-					<Route path='/print/:id' element={<WithRoute el={PrintPage} brew={this.props.brew} additionalPropsFn={({ location })=>({ query: queryString.parse(location.search) })} />} />
-					<Route path='/print' element={<WithRoute el={PrintPage} additionalPropsFn={({ location })=>({ query: queryString.parse(location.search) })} />} />
+					<Route path='/user/:username' element={<WithRoute el={UserPage} brews={this.props.brews} />} />
+					<Route path='/print/:id' element={<WithRoute el={PrintPage} brew={this.props.brew} />} />
+					<Route path='/print' element={<WithRoute el={PrintPage} />} />
 					<Route path='/changelog' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
 					<Route path='/faq' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
 					<Route path='/v3_preview' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
