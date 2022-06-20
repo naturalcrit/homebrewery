@@ -74,7 +74,7 @@
     "marked-extended-tables": "^1.0.3",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.29.3",
-    "mongoose": "^6.3.8",
+    "mongoose": "^6.4.0",
     "nanoid": "3.3.4",
     "nconf": "^0.12.0",
     "react": "^16.14.0",
@@ -86,7 +86,7 @@
     "vitreum": "git+https://git@github.com/calculuschild/vitreum.git"
   },
   "devDependencies": {
-    "eslint": "^8.17.0",
+    "eslint": "^8.18.0",
     "eslint-plugin-react": "^7.30.0",
     "jest": "^28.1.1",
     "supertest": "^6.2.3"
