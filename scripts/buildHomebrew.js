@@ -26,6 +26,7 @@ const build = async ({ bundle, render, ssr })=>{
 	await fs.outputFile('./build/homebrew/ssr.js', ssr);
 	await fs.copy('./themes/fonts', './build/fonts');
 	await fs.copy('./themes/assets', './build/assets');
+	await fs.copy('./client/homebrew/favicon.ico', './build/assets/favicon.ico');
 	let src = './themes/5ePhbLegacy.style.less';
 	//Parse brew theme files
 	less.render(fs.readFileSync(src).toString(), {
