@@ -28,7 +28,7 @@ module.exports = function(classname){
 
 		**Armor:**   :: ${_.sampleSize(['Light armor', 'Medium armor', 'Heavy armor', 'Shields'], _.random(0, 3)).join(', ') || 'None'}
 		**Weapons:** :: ${_.sampleSize(['Squeegee', 'Rubber Chicken', 'Simple weapons', 'Martial weapons'], _.random(0, 2)).join(', ') || 'None'}
-		**Tools:**   :: ${_.sampleSize(['Artian\'s tools', 'one musical instrument', 'Thieve\'s tools'], _.random(0, 2)).join(', ') || 'None'}
+		**Tools:**   :: ${_.sampleSize(['Artisan\'s tools', 'one musical instrument', 'Thieves\' tools'], _.random(0, 2)).join(', ') || 'None'}
 
 		**Saving Throws:** :: ${_.sampleSize(abilityList, 2).join(', ')}
 		**Skills:**        :: Choose two from ${_.sampleSize(skillList, _.random(4, 6)).join(', ')}
@@ -38,7 +38,7 @@ module.exports = function(classname){
 		{{text-align:center
 		**Spell save DC** = ${_.sample([6, 8, 10])} + your proficiency bonus + your ${spellSkill} modifier
 		:
-		**Spell attack modifier** = your proficiency bonus + your ${spellSkill} modifier  
+		**Spell attack modifier** = your proficiency bonus + your ${spellSkill} modifier
 		}}
 
 		#### Equipment
