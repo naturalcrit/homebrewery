@@ -91,9 +91,7 @@ const Snippetbar = createClass({
 	},
 
 	renderSnippetGroups : function(){
-		let snippets = [];
-
-		snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
+		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
 
 		return _.map(snippets, (snippetGroup)=>{
 			return <SnippetGroup
