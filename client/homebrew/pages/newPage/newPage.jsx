@@ -167,7 +167,7 @@ const NewPage = createClass({
 		brew.pageCount=((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
 
 		const res = await request
-			.post(`/api${this.state.saveGoogle ? '?transferToGoogle=true' : ''}`)
+			.post(`/api${this.state.saveGoogle ? '?saveToGoogle=true' : ''}`)
 			.send(brew)
 			.catch((err)=>{
 				console.log(err);
@@ -179,7 +179,7 @@ const NewPage = createClass({
 		localStorage.removeItem(BREWKEY);
 		localStorage.removeItem(STYLEKEY);
 		localStorage.removeItem(METAKEY);
-		window.location = `/edit/${brew.googleId ?? ''}${brew.editId}`;
+		window.location = `/edit/${brew.editId}`;
 	},
 
 	renderSaveButton : function(){

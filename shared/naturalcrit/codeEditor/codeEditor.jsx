@@ -30,6 +30,8 @@ if(typeof navigator !== 'undefined'){
 	// require('codemirror/addon/edit/trailingspace.js');
 	//Active line highlighting
 	// require('codemirror/addon/selection/active-line.js');
+	//Scroll past last line
+	require('codemirror/addon/scroll/scrollpastend.js');
 	//Auto-closing
 	//XML code folding is a requirement of the auto-closing tag feature and is not enabled
 	require('codemirror/addon/fold/xml-fold.js');
@@ -98,6 +100,7 @@ const CodeEditor = createClass({
 			indentWithTabs    : true,
 			tabSize           : 2,
 			historyEventDelay : 250,
+			scrollPastEnd     : true,
 			extraKeys         : {
 				'Ctrl-B'           : this.makeBold,
 				'Cmd-B'            : this.makeBold,

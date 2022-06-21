@@ -194,7 +194,7 @@ const BrewRenderer = createClass({
 					</div>
 	        : null}
 
-				<Frame initialContent={this.state.initialContent}
+				<Frame id='BrewRenderer' initialContent={this.state.initialContent}
 					style={{ width: '100%', height: '100%', visibility: this.state.visibility }}
 					contentDidMount={this.frameDidMount}>
 					<div className={'brewRenderer'}

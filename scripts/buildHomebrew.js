@@ -25,6 +25,8 @@ const build = async ({ bundle, render, ssr })=>{
 	await fs.outputFile('./build/homebrew/bundle.js', bundle);
 	await fs.outputFile('./build/homebrew/ssr.js', ssr);
 
+	await fs.copy('./client/homebrew/favicon.ico', './build/assets/favicon.ico');
+
 	//compress files in production
 	if(!isDev){
 		await fs.outputFile('./build/homebrew/bundle.css.br', zlib.brotliCompressSync(css));
