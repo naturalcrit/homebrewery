@@ -36,9 +36,9 @@ module.exports = function(classname){
 		#### Spellcasting Ability
 
 		{{text-align:center
-		**Spell save DC** = ${_.sample([6, 8, 10])} + your proficiency bonus + your ${spellSkill} modifier
-		:
-		**Spell attack modifier** = your proficiency bonus + your ${spellSkill} modifier
+		**Spell save DC**:: = ${_.sample([6, 8, 10])} + your proficiency bonus + your ${spellSkill} modifier
+
+		**Spell attack modifier**:: = your proficiency bonus + your ${spellSkill} modifier
 		}}
 
 		#### Equipment
