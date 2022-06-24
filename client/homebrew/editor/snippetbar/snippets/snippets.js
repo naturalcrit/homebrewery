@@ -8,6 +8,7 @@ const CoverPageGen = require('./coverpage.gen.js');
 const TableOfContentsGen = require('./tableOfContents.gen.js');
 const dedent = require('dedent-tabs').default;
 const watercolorGen = require('./watercolor.gen.js');
+const srdMonsters = require('./srdmonsters.gen.js');
 
 
 module.exports = [
@@ -214,6 +215,22 @@ module.exports = [
 						}}
 						\n`;
 				},
+			},
+			{
+				name : 'Select SRD Monster Stat Block',
+				icon : 'fas fa-paw',
+				gen  : function(){
+					// console.log(srdMonsters.monsterNames());
+					const monsterName = prompt('Enter the name of the monster');
+					return srdMonsters.getByName(monsterName) || '';
+				}
+			},
+			{
+				name : 'Random SRD Monster Stat Block',
+				icon : 'fas fa-paw',
+				gen  : function() {
+					return srdMonsters.randomMonster();
+				}
 			},
 			{
 				name : 'Monster Stat Block (unframed)',
