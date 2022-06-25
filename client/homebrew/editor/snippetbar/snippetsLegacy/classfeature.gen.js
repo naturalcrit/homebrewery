@@ -8,6 +8,7 @@ module.exports = function(classname){
 	classname = classname.toLowerCase();
 
 	const hitDie = _.sample([4, 6, 8, 10, 12]);
+	const spellSkill = _.sample(['Wisdom', 'Charisma', 'Intelligence']);
 
 	const abilityList = ['Strength', 'Dexerity', 'Constitution', 'Wisdom', 'Charisma', 'Intelligence'];
 	const skillList = ['Acrobatics ', 'Animal Handling', 'Arcana', 'Athletics', 'Deception', 'History', 'Insight', 'Intimidation', 'Investigation', 'Medicine', 'Nature', 'Perception', 'Performance', 'Persuasion', 'Religion', 'Sleight of Hand', 'Stealth', 'Survival'];
@@ -26,11 +27,20 @@ module.exports = function(classname){
 		'___',
 		`- **Armor:** ${_.sampleSize(['Light armor', 'Medium armor', 'Heavy armor', 'Shields'], _.random(0, 3)).join(', ') || 'None'}`,
 		`- **Weapons:** ${_.sampleSize(['Squeegee', 'Rubber Chicken', 'Simple weapons', 'Martial weapons'], _.random(0, 2)).join(', ') || 'None'}`,
-		`- **Tools:** ${_.sampleSize(['Artian\'s tools', 'one musical instrument', 'Thieve\'s tools'], _.random(0, 2)).join(', ') || 'None'}`,
+		`- **Tools:** ${_.sampleSize(['Artisan\'s tools', 'one musical instrument', 'Thieves\' tools'], _.random(0, 2)).join(', ') || 'None'}`,
 		'',
 		'___',
 		`- **Saving Throws:** ${_.sampleSize(abilityList, 2).join(', ')}`,
 		`- **Skills:** Choose two from ${_.sampleSize(skillList, _.random(4, 6)).join(', ')}`,
+		'',
+		'#### Spellcasting Ability',
+		'',
+		`<div style=text-align:center>`,
+		'___',
+		`- **Spell save DC** = ${_.sample([6, 8, 10])} + your proficiency bonus + your ${spellSkill} modifier`,
+		'',
+		`- **Spell attack modifier** = your proficiency bonus + your ${spellSkill} modifier`,
+		`</div>`,
 		'',
 		'#### Equipment',
 		'You start with the following equipment, in addition to the equipment granted by your background:',

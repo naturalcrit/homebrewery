@@ -24,6 +24,33 @@
 			flex           : 1 1 auto;
 			min-width      : 200px;
 		}
+		&.thumbnail{
+			height      : 1.4em;
+			label{
+				line-height: 2.0em;
+			}
+			.value{
+  				overflow: hidden;
+  				text-overflow: ellipsis;
+			}
+			button{
+				border: 1px solid #999;
+				color: white;
+				padding: 0px 5px;
+				background-color: black;
+				&:hover{
+					background-color: #777;
+				}
+			}
+			.thumbnail-preview{
+				position    : relative;
+				width       : 80px;
+				height      : min-content;
+				border      : 2px solid white;
+				margin-left : 5px;
+				max-height  : 115px;
+			}
+		}
 	}
 	.description.field textarea.value{
 		resize      : none;

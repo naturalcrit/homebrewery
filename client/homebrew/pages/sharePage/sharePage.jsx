@@ -14,6 +14,7 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 
 const SharePage = createClass({
+	displayName     : 'SharePage',
 	getDefaultProps : function() {
 		return {
 			brew : {
@@ -41,14 +42,14 @@ const SharePage = createClass({
 		if(!(e.ctrlKey || e.metaKey)) return;
 		const P_KEY = 80;
 		if(e.keyCode == P_KEY){
-			window.open(`/print/${this.props.brew.shareId}?dialog=true`, '_blank').focus();
+			window.open(`/print/${this.processShareId()}?dialog=true`, '_blank').focus();
 			e.stopPropagation();
 			e.preventDefault();
 		}
 	},
 
 	processShareId : function() {
-		return this.props.brew.googleId ?
+		return this.props.brew.googleId && !this.props.brew.stubbed ?
 					 this.props.brew.googleId + this.props.brew.shareId :
 					 this.props.brew.shareId;
 	},

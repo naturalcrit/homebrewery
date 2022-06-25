@@ -6,6 +6,7 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 const PatreonNavItem = require('./patreon.navitem.jsx');
 
 const Navbar = createClass({
+	displayName     : 'Navbar',
 	getInitialState : function() {
 		return {
 			//showNonChromeWarning : false,
@@ -13,12 +14,10 @@ const Navbar = createClass({
 		};
 	},
 
-	componentDidMount : function() {
-		//const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
-		this.setState({
-			//showNonChromeWarning : !isChrome,
-			ver : window.version
-		});
+	getInitialState : function() {
+		return {
+			ver : global.version
+		};
 	},
 
 	/*

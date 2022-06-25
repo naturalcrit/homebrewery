@@ -1,0 +1,13 @@
+[Unit]
+Description=Homebrewery Web Server
+
+[Service]
+User=root
+After=mongodb
+Environment=NODE_ENV=local
+WorkingDirectory=/usr/local/homebrewery
+ExecStart=node server.js
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

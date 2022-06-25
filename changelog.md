@@ -3,11 +3,12 @@ h5 {
 	font-size: .35cm !important;
 }
 
-.taskList li {
-	list-style-type : none;
+.page ul ul {
+	margin-left: 0px;
 }
 
 .taskList li input {
+	list-style-type : none;
 	margin-left : -0.52cm;
 	transform: translateY(.05cm);
 	filter: brightness(1.1) drop-shadow(1px 2px 1px #222);
@@ -28,10 +29,161 @@ pre {
 .page p + pre {
 	margin-top : 0.1cm;
 }
+
+.page .openSans {
+	font-family: 'Open Sans';
+	font-size: 0.9em;
+}
 ```
 
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
+
+### Thursday 09/06/2022 - v3.1.1
+{{taskList
+
+##### Calculuschild:
+
+* [x] Fixed class table decorations appearing on top of the table in PDF output.
+
+  Fixes issues: [#1784](https://github.com/naturalcrit/homebrewery/issues/1784)
+
+* [x] Fix bottom decoration on half class tables disappearing when the table is too short.
+
+  Fixes issues: [#2202](https://github.com/naturalcrit/homebrewery/issues/2202)
+}}
+
+### Monday 06/06/2022 - v3.1.0
+{{taskList
+
+##### G-Ambatte:
+
+* [x] "Jump to Preview/Editor" buttons added to the divider bar. Easily sync between the editor and preview panels!
+
+  Fixes issues: [#1756](https://github.com/naturalcrit/homebrewery/issues/1756)
+
+* [x] Speedups to the user page for users with large and/or many brews.
+
+  Fixes issues: [#2147](https://github.com/naturalcrit/homebrewery/issues/2147)
+
+* [x] Search text on the user page is saved to the URL for easy bookmarking in your browser
+
+  Fixes issues: [#1858](https://github.com/naturalcrit/homebrewery/issues/1858)
+
+* [x] Added easy login system for offline installs.
+
+  Fixes issues: [#269](https://github.com/naturalcrit/homebrewery/issues/269)
+
+* [x] New **THUMBNAIL** option in the {{fa,fa-info-circle}} **Properties** menu. This image will show up in social media links.
+
+  Fixes issues: [#820](https://github.com/naturalcrit/homebrewery/issues/820)
+}}
+
+### Wednesday 27/03/2022 - v3.0.8
+{{taskList
+* [x] Style updates to user page.
+
+* [x] Added a logout button (finally)! You can find it under {{openSans **USERNAME {{fa,fa-user}} → LOGOUT {{fas,fa-power-off}}**}}
+
+	Fixes issues: [#303](https://github.com/naturalcrit/homebrewery/issues/303)
+
+* [x] Clarified the default text when submitting an issue via Reddit post.
+
+* [x] Fixed broken Table of Contents links in PDFs. (Thanks lucastucious!)
+
+	Fixes issues: [#1749](https://github.com/naturalcrit/homebrewery/issues/1749)
+
+* [x] Fixed window resizing causing the edit page divider to get lost off of the edge of the page.
+
+	Fixes issues: [#2053](https://github.com/naturalcrit/homebrewery/issues/2053)
+
+* [x] Fixed Class Table decorations overlapping main text.
+
+	Fixes issues: [#1985](https://github.com/naturalcrit/homebrewery/issues/1985)
+
+* [x] Updated {{openSans **STYLE EDITOR {{fa,fa-pencil-alt}} → REMOVE DROP CAP {{fas,fa-remove-format}}**}} snippet to also remove small-caps first line font.
+
+* [x] Background work in preparation for brew themes.
+}}
+
+### Wednesday 02/02/2022 - v3.0.7
+{{taskList
+* [x] Revert active line highlighting.
+
+	Fixes issues: [#1913](https://github.com/naturalcrit/homebrewery/issues/1913)
+
+* [x] Added install steps for Ubuntu. [HERE](https://github.com/naturalcrit/homebrewery/blob/master/install/README.UBUNTU.md)
+
+	Fixes issues: [#1900](https://github.com/naturalcrit/homebrewery/issues/1900)
+
+* [x] Added social media links to home page.
+
+* [x] Increase brews visible on the user page to 1,000.
+
+	Fixes issues: [#1943](https://github.com/naturalcrit/homebrewery/issues/1943)
+
+* [x] Added a Legacy to V3 migration guide under {{openSans **NEED HELP? {{fa,fa-question-circle}} → MIGRATE {{fas,fa-file-import}}**}}
+
+* [x] Background refactoring and unit tests.
+}}
+
+### Saturday 18/12/2021 - v3.0.6
+{{taskList
+* [x] Fixed text wrapping for long strings in code blocks.
+
+	Fixes issues: [#1736](https://github.com/naturalcrit/homebrewery/issues/1736)
+
+* [x] Code search/replace PC: `CTRL F / CTRL SHIFT F` / Mac: `CMD F / OPTION CMD F`
+
+	Fixes issues: [#1201](https://github.com/naturalcrit/homebrewery/issues/1201)
+
+* [x] Auto-closing HTML tags and curly braces `{{ }}`
+* [x] Highlight current active line
+
+	Fixes issues: [#1202](https://github.com/naturalcrit/homebrewery/issues/1202)
+
+* [x] Display tabs and trailing spaces
+
+	Fixes issues: [#1622](https://github.com/naturalcrit/homebrewery/issues/1622)
+
+* [x] Make columns even in V3 Table of Contents.
+
+	Fixes issues: [#1671](https://github.com/naturalcrit/homebrewery/issues/1671)
+
+* [x] Fix `CTRL P` failing to print from `/new` pages.
+
+	Fixes issues: [#1815](https://github.com/naturalcrit/homebrewery/issues/1815)
+}}
+
+\page
+
+### Tuesday 07/12/2021 - v3.0.5
+{{taskList
+* [x] Fixed paragraph spacing for **note** and **descriptive** boxes in V3.
+
+	Fixes issues: [#1836](https://github.com/naturalcrit/homebrewery/issues/1836)
+
+* [x] Added a whole bunch of hotkeys:
+
+  * Page Break `CTRL + ENTER`
+  * Column Break `CTRL + SHIFT + ENTER`
+  * Bulleted Lists `CTRL + L`
+  * Numbered Lists `CTRL + SHIFT + L`
+  * Headers `CTRL + SHIFT + (1-6)`
+  * Underline `CTRL + U`
+  * Link `CTRL + K`
+  * Non-breaking space (\&nbsp;) `CTRL + .`
+  * Add Horizontal Space `CTRL + SHIFT + .`
+  * Remove Horizontal Space `CTRL + SHIFT + ,`
+  * Curly Span `CTRL + M`
+  * Curly Div `CTRL + SHIFT + M`
+
+* [x] Fixed page numbers in the editor panel getting scrambled when scrolling up and down.
+
+* [x] Faster swapping between tabs on long brews.
+
+* [x] Better error messages for common issue with Google Drive credentials expiring.
+}}
 
 ### Wednesday 17/11/2021 - v3.0.4
 {{taskList
@@ -68,6 +220,12 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 	Fixes issues: [#810](https://github.com/naturalcrit/homebrewery/issues/810)
 
 * [x] Added {{fa,fa-undo}} **Undo** and {{fa,fa-redo}} **Redo** buttons to the snippet bar.
+
+}}
+
+\column
+
+{{taskList
 
 * [x] Switching between the {{fa,fa-beer}} **Brew** and {{fa,fa-paint-brush}} **Style** tabs no longer loses your scroll position or undo history.
 
