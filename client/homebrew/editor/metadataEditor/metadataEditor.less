@@ -1,3 +1,4 @@
+@import 'naturalcrit/styles/colors.less';
 
 .metadataEditor{
 	position         : absolute;
@@ -109,30 +110,74 @@
 		line-height    : 1.5em;
 	}
 
-	.tags.field .list {
-		display   : flex;
-		flex-wrap : wrap;
+	.field .list {
+		display: flex;
+		flex-wrap: wrap;
 
-		>* {
-			flex : 0 0 auto;
+		> * {
+			flex: 0 0 auto;
 		}
 
-		.badge {
-			background-color : #444;
-			border-radius    : .5em;
-			color            : white;
-			font-size        : .9em;
-			margin           : 2px;
-			padding          : .3em;
+		#groupedIcon {
+			#backgroundColors;
+			display: inline-block;
+			border-radius: 0 0.5em 0.5em 0;
+			height: ~"calc(100% + 0.6em)";
+			position: relative;
+			top: -0.3em;
+			right: -0.3em;
+			cursor: pointer;
+			min-width: 20px;
+			text-align: center;
+			color: white;
 
-			i.fa-times {
-				cursor: pointer;
+			i {
+				position: relative;
+				top: 50%;
+				transform: translateY(-50%);
 			}
 		}
 
-		.value {
-			width     : 7.5vw;
-			min-width : 75px;
+		.badge {
+			background-color: #dddddd;
+			border-radius: .5em;
+			font-size: .9em;
+			margin: 2px;
+			padding: .3em;
+
+			.icon {
+				#groupedIcon
+			}
+		}
+
+		.input-group {
+			height: ~"calc(.9em + 4px + .6em)";
+
+			input {
+				border-radius: .5em 0 0 .5em;
+			}
+
+			input:last-child {
+				border-radius: .5em;
+			}
+
+			.value {
+				width: 7.5vw;
+				min-width: 75px;
+				height: 100%;
+			}
+
+			.invalid:focus {
+				background-color: pink;
+			}
+
+			.icon {
+				#groupedIcon;
+				height: 97%;
+				font-size: .8em;
+				right: 1px;
+				top: -.54em;
+			}
 		}
 	}
 }

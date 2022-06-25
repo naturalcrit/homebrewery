@@ -5,6 +5,7 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 const request = require('superagent');
+const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
 
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
@@ -27,38 +28,6 @@ const MetadataEditor = createClass({
 			onChange : ()=>{}
 		};
 	},
-	getInitialState : function() {
-		return {
-			tagContext : !!this.props.metadata.tags ? this.props.metadata.tags.map((tag)=>({
-				tag,
-				editing : false
-			})) : [],
-			temporaryTag : '',
-			updateTag    : ''
-		};
-	},
-
-	componentWillUpdate : function() {
-		const tags = this.props.metadata.tags;
-		if(!!tags) {
-			const contextTags = Object.values(this.state.tagContext).map((context)=>context.tag);
-			let updateContext = tags.length !== contextTags.length;
-			for (let i = 0; i < tags.length && updateContext === false; i++){
-				const tag = tags[i];
-				if(!contextTags.includes(tag))
-					updateContext = true;
-			}
-			if(updateContext) {
-				this.setState((prevState)=>({
-					...prevState,
-					tagContext : this.props.metadata.tags.map((tag)=>({
-						tag,
-						editing : false
-					}))
-				}));
-			}
-		}
-	},
 
 	getInitialState : function(){
 		return {
@@ -78,9 +47,10 @@ const MetadataEditor = createClass({
 	},
 
 	handleFieldChange : function(name, e){
-		this.props.onChange(_.merge({}, this.props.metadata, {
+		this.props.onChange({
+			...this.props.metadata,
 			[name] : e.target.value
-		}));
+		});
 	},
 	handleSystem : function(system, e){
 		if(e.target.checked){
@@ -97,9 +67,10 @@ const MetadataEditor = createClass({
 		this.props.onChange(this.props.metadata);
 	},
 	handlePublish : function(val){
-		this.props.onChange(_.merge({}, this.props.metadata, {
+		this.props.onChange({
+			...this.props.metadata,
 			published : val
-		}));
+		});
 	},
 
 	handleDelete : function(){
@@ -201,68 +172,6 @@ const MetadataEditor = createClass({
 		</div>;
 	},
 
-	addTag : function(tag){
-		this.props.metadata.tags = _.uniq([...this.props.metadata.tags, ...(tag.split(',').map((t)=>t.trim()))]);
-		this.props.onChange(this.props.metadata);
-	},
-	removeTag : function(tag){
-		this.props.metadata.tags = this.props.metadata.tags.filter((t)=>t !== tag);
-		this.props.onChange(this.props.metadata);
-	},
-	updateTag : function(tag, index){
-		this.props.metadata.tags[index] = tag;
-		this.props.onChange(this.props.metadata);
-	},
-	editTag : function(index){
-		const tagContext = this.state.tagContext.map((context, i)=>{
-			context.editing = index === i;
-			return context;
-		});
-		this.setState({ tagContext, updateTag: this.props.metadata.tags[index] });
-	},
-	handleTagInputKeyDown : function(event, index){
-		if(event.key === 'Enter') {
-			const tagPattern = /^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 /.:\-]+$/;
-			if(!!event.target.value.match(tagPattern)) {
-				if(!!index) {
-					this.updateTag(event.target.value, index);
-					const tagContext = this.state.tagContext;
-					tagContext[index].editing = false;
-					this.setState({ tagContext, updateTag: '' });
-				} else {
-					this.addTag(event.target.value);
-					this.setState({ temporaryTag: '' });
-				}
-			} else {
-				console.log('does not match');
-			}
-		}
-	},
-
-	renderTags : function(){
-		const tagElements = Object.values(this.state.tagContext).map((context, i)=>context.editing
-			? <input type='text' className='value' autoFocus
-					 value={this.state.updateTag}
-					 key={i}
-					 onKeyDown={(e)=>{ this.handleTagInputKeyDown(e, i); }}
-					 onChange={(e)=>{ this.setState({ updateTag: e.target.value }); }}/>
-			: <div className='badge' key={i} onClick={()=>{ this.editTag(i); }}>{context.tag}&nbsp;
-				<i className='fa fa-times' onClick={()=>this.removeTag(context.tag)}/>
-			  </div>
-		);
-
-		return <div className='field tags'>
-			<label>tags</label>
-			<div className='list'>
-				{tagElements}
-				<input type='text' className='value'
-					   value={this.state.temporaryTag}
-					   onKeyDown={(e)=>{ this.handleTagInputKeyDown(e); }}
-					   onChange={(e)=>{ this.setState({ temporaryTag: e.target.value }); }}/>
-			</div>
-		</div>;
-	},
-
 	render : function(){
 		return <div className='metadataEditor'>
 			<div className='field title'>
@@ -289,7 +198,10 @@ const MetadataEditor = createClass({
 				{this.renderThumbnail()}
 			</div>
 
-			{this.renderTags()}
+			<StringArrayEditor label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]+$/]}
+				placeholder='add tag' unique={true}
+				values={this.props.metadata.tags}
+				onChange={(e)=>this.handleFieldChange('tags', e)}/>
 
 			{this.renderAuthors()}
 

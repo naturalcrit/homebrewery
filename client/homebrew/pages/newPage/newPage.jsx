@@ -112,7 +112,7 @@ const NewPage = createClass({
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 
 		this.setState((prevState)=>({
-			brew       : _.merge({}, prevState.brew, { text: text }),
+			brew       : { ...prevState.brew, text: text },
 			htmlErrors : htmlErrors
 		}));
 		localStorage.setItem(BREWKEY, text);
@@ -120,14 +120,14 @@ const NewPage = createClass({
 
 	handleStyleChange : function(style){
 		this.setState((prevState)=>({
-			brew : _.merge({}, prevState.brew, { style: style }),
+			brew : { ...prevState.brew, style: style },
 		}));
 		localStorage.setItem(STYLEKEY, style);
 	},
 
 	handleMetaChange : function(metadata){
 		this.setState((prevState)=>({
-			brew : _.merge({}, prevState.brew, metadata),
+			brew : { ...prevState.brew, ...metadata },
 		}));
 		localStorage.setItem(METAKEY, JSON.stringify({
 			// 'title'       : this.state.brew.title,
