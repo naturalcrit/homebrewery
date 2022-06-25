@@ -180,7 +180,6 @@ const updateBrew = async (req, res)=>{
 	let afterSave = async ()=>true;
 
 	brew.text = mergeBrewText(brew);
-	brew.tags = updateBrew.tags;
 
 	if(brew.googleId && removeFromGoogle) {
 		// If the google id exists and we're removing it from google, set afterSave to delete the google brew and mark the brew's google id as undefined
