@@ -68,23 +68,25 @@ HomebrewSchema.statics.getByUser = function(username, allowAccess=false, fields=
 
 const Homebrew = mongoose.model('Homebrew', HomebrewSchema);
 
-Homebrew.count({ tags: '' }, async (err, count)=>{
-	if(!err) {
-		if(count > 0) {
-			Homebrew.updateMany({ tags: '' }, { tags: [] }, { multi: true }, function(err, data) {
-				if(!err) {
-					console.log('Successfully updated all brews to new schema definition');
-				} else {
-					console.log('An error occurred while updating brews to the new schema', err);
-				}
-			});
+if(process.env.MIGRATE === 'true') {
+	Homebrew.count({ tags: '' }, async (err, count)=>{
+		if(!err) {
+			if(count > 0) {
+				Homebrew.updateMany({ tags: '' }, { tags: [] }, { multi: true }, function(err, data) {
+					if(!err) {
+						console.log('Successfully updated all brews to new schema definition');
+					} else {
+						console.log('An error occurred while updating brews to the new schema', err);
+					}
+				});
+			} else {
+				console.log('No brews to update');
+			}
 		} else {
-			console.log('No brews to update');
+			console.log('An error occurred while counting brews with the old schema', err);
 		}
-	} else {
-		console.log('An error occurred while counting brews with the old schema', err);
-	}
-});
+	});
+}
 
 module.exports = {
 	schema : HomebrewSchema,
