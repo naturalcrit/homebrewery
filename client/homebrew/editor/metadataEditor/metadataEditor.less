@@ -121,7 +121,6 @@
 		#groupedIcon {
 			#backgroundColors;
 			display: inline-block;
-			border-radius: 0 0.5em 0.5em 0;
 			height: ~"calc(100% + 0.6em)";
 			position: relative;
 			top: -0.3em;
@@ -135,6 +134,14 @@
 				position: relative;
 				top: 50%;
 				transform: translateY(-50%);
+			}
+
+			&:not(:last-child) {
+				border-right: 1px solid black;
+			}
+
+			&:last-child {
+				border-radius: 0 0.5em 0.5em 0;
 			}
 		}
 
@@ -177,6 +184,10 @@
 				font-size: .8em;
 				right: 1px;
 				top: -.54em;
+
+				i {
+					font-size: 1.125em;
+				}
 			}
 		}
 	}

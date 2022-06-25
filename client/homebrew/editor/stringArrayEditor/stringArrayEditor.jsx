@@ -92,10 +92,14 @@ const StringArrayEditor = createClass({
 				}
 			}
 		} else if(event.key === 'Escape') {
-			const valueContext = this.state.valueContext;
-			valueContext[index].editing = false;
-			this.setState({ valueContext, updateValue: '' });
+			this.closeEditInput(index);
 		}
+	},
+
+	closeEditInput : function(index) {
+		const valueContext = this.state.valueContext;
+		valueContext[index].editing = false;
+		this.setState({ valueContext, updateValue: '' });
 	},
 
 	render : function() {
@@ -106,11 +110,12 @@ const StringArrayEditor = createClass({
 						value={this.state.updateValue}
 						onKeyDown={(e)=>this.handleValueInputKeyDown(e, i)}
 						onChange={(e)=>this.setState({ updateValue: e.target.value })}/>
-					{this.valueIsValid(this.state.updateValue) ? <div className='icon steel'><i className='fa fa-check fa-fw' onClick={(e)=>{ e.stopPropagation(); this.updateValue(this.state.updateValue, i); }}/></div> : null}
+					{<div className='icon steel' onClick={(e)=>{ e.stopPropagation(); this.closeEditInput(i); }}><i className='fa fa-times fa-fw'/></div>}
+					{this.valueIsValid(this.state.updateValue) ? <div className='icon steel'  onClick={(e)=>{ e.stopPropagation(); this.updateValue(this.state.updateValue, i); }}><i className='fa fa-check fa-fw'/></div> : null}
 				</div>
 			</React.Fragment>
 			: <div className='badge' key={i} onClick={()=>this.editValue(i)}>{context.value}
-				{!!this.props.cannotEdit && this.props.cannotEdit.includes(context.value) ? null : <div className='icon steel'><i className='fa fa-times fa-fw' onClick={(e)=>{ e.stopPropagation(); this.removeValue(i); }}/></div>}
+				{!!this.props.cannotEdit && this.props.cannotEdit.includes(context.value) ? null : <div className='icon steel' onClick={(e)=>{ e.stopPropagation(); this.removeValue(i); }}><i className='fa fa-times fa-fw'/></div>}
 			</div>
 		);
 
@@ -123,7 +128,7 @@ const StringArrayEditor = createClass({
 						value={this.state.temporaryValue}
 						onKeyDown={(e)=>this.handleValueInputKeyDown(e)}
 						onChange={(e)=>this.setState({ temporaryValue: e.target.value })}/>
-					{this.valueIsValid(this.state.temporaryValue) ? <div className='icon steel'><i className='fa fa-check fa-fw' onClick={(e)=>{ e.stopPropagation(); this.addValue(this.state.temporaryValue); }}/></div> : null}
+					{this.valueIsValid(this.state.temporaryValue) ? <div className='icon steel' onClick={(e)=>{ e.stopPropagation(); this.addValue(this.state.temporaryValue); }}><i className='fa fa-check fa-fw'/></div> : null}
 				</div>
 			</div>
 		</div>;
