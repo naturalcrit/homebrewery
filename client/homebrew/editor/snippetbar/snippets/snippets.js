@@ -115,6 +115,14 @@ module.exports = [
 						}\n\n`
 			},
 			{
+				name : 'Remove Indents',
+				icon : 'fas fa-bars',
+				gen  : dedent`/* Remove New Paragraph Indentation */
+						.page p + p {
+							text-indent: unset;
+						}\n\n`
+			},
+			{
 				name : 'Add Comment',
 				icon : 'fas fa-code',
 				gen  : '/* This is a comment that will not be rendered into your brew. */'
