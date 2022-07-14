@@ -4,6 +4,8 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');	//Unused variable
 
+const DismissSVG = require('../../../../shared/naturalcrit/svg/cross.svg.jsx');
+
 const DISMISS_KEY = 'dismiss_notification09-9-21';
 
 const NotificationPopup = createClass({
@@ -78,7 +80,9 @@ const NotificationPopup = createClass({
 		if(_.isEmpty(this.state.notifications)) return null;
 
 		return <div className='notificationPopup'>
-			<i className='fas fa-times dismiss' onClick={this.dismiss}/>
+			<i className='dismiss' onClick={this.dismiss}>
+				<DismissSVG />
+			</i>
 			<i className='fas fa-info-circle info' />
 			<div className='header'>
 				<h3>Notice</h3>
