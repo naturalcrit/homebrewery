@@ -4,6 +4,8 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
+const DismissSVG = require('../../naturalcrit/svg/cross.svg.jsx');
+
 const DISMISS_KEY = 'dismiss_render_warning';
 
 const RenderWarnings = createClass({
@@ -54,7 +56,9 @@ const RenderWarnings = createClass({
 		if(_.isEmpty(this.state.warnings)) return null;
 
 		return <div className='renderWarnings'>
-			<i className='fas fa-times dismiss' onClick={this.dismiss}/>
+			<i className='dismiss' onClick={this.dismiss}>
+				<DismissSVG />
+			</i>
 			<i className='fas fa-exclamation-triangle ohno' />
 			<h3>Render Warnings</h3>
 			<small>If this homebrew is rendering badly if might be because of the following:</small>
