@@ -1,0 +1,797 @@
+@import (less) './themes/fonts/5e/fonts.less';
+@import (less) './themes/assets/assets.less';
+
+:root {
+	//Colors
+	--HB_Color_Background            : #EEE5CE; // Light parchment
+	--HB_Color_Accent                : #E0E5C1; // Pastel green
+	--HB_Color_HeaderUnderline       : #C0AD6A; // Gold
+	--HB_Color_HorizontalRule        : #9C2B1B; // Maroon
+	--HB_Color_HeaderText            : #58180D; // Dark Maroon
+	--HB_Color_MonsterStatBackground : #EEDBAB; // Light orange parchment
+	--HB_Color_CaptionText           : #766649; // Brown
+	--HB_Color_WatercolorStain       : #BBAD82; // Light brown
+	--HB_Color_Footnotes             : #C9AD6A; // Gold
+}
+
+@page { margin: 0; }
+body {
+	counter-reset : phb-page-numbers;
+}
+*{
+	-webkit-print-color-adjust : exact;
+}
+.useSansSerif(){
+	font-family : ScalySansRemake;
+	font-size   : 0.318cm;
+	line-height : 1.2em;
+	p,dl,ul,ol {
+		line-height : 1.2em;
+	}
+	ul, ol {
+		padding-left : 1em;
+	}
+	em{
+		font-style  : italic;
+	}
+	strong{
+		font-weight    : 800;
+		letter-spacing : -0.02em;
+	}
+	h5 + * {
+		margin-top : 0.1cm;
+	}
+}
+.useColumns(@multiplier : 1, @fillMode: balance){
+	column-count         : 2;
+	column-fill          : @fillMode;
+	column-gap           : 0.9cm;
+	column-width         : 8cm * @multiplier;
+	-webkit-column-count : 2;
+	-moz-column-count    : 2;
+	-webkit-column-width : 8cm * @multiplier;
+	-moz-column-width    : 8cm * @multiplier;
+	-webkit-column-gap   : 0.9cm;
+	-moz-column-gap      : 0.9cm;
+}
+.columnWrapper{
+	max-height        : 100%;
+	column-span       : all;
+	columns           : inherit;
+	column-gap        : inherit;
+}
+.page{
+	.useColumns();
+	counter-increment : phb-page-numbers;
+	position          : relative;
+	z-index           : 15;
+	box-sizing        : border-box;
+	overflow          : hidden;
+	height            : 279.4mm;
+	width             : 215.9mm;
+	background-color  : var(--HB_Color_Background);
+	background-image  : @backgroundImage;
+	padding           : 1.4cm 1.9cm 1.7cm;
+	font-family       : BookInsanityRemake;
+	font-size         : 0.34cm;
+	text-rendering    : optimizeLegibility;
+	page-break-before : always;
+	page-break-after  : always;
+	//*****************************
+	// *            BASE
+	// *****************************/
+	p{
+		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
+		display       : block;
+		line-height   : 1.25em;
+		&+* {
+			margin-top : 0.325cm;
+		}
+		&+p{
+			margin-top : 0;
+		}
+	}
+	ul{
+		margin-bottom       : 0.8em;
+		padding-left        : 1.4em;
+		line-height         : 1.25em;
+		list-style-position : outside;
+		list-style-type     : disc;
+	}
+	ol{
+		margin-bottom       : 0.8em;
+		padding-left        : 1.4em;
+		line-height         : 1.25em;
+		list-style-position : outside;
+		list-style-type     : decimal;
+	}
+	//Indents after p or lists
+	p+p, ul+p, ol+p{
+		text-indent : 1em;
+	}
+	img{
+		z-index : -1;
+	}
+	strong{
+		font-weight    : bold;
+		letter-spacing : -0.02em;
+	}
+	em{
+		font-style : italic;
+	}
+	sup{
+		vertical-align : super;
+		font-size      : smaller;
+		line-height    : 0;
+	}
+	sub{
+		vertical-align : sub;
+		font-size      : smaller;
+		line-height    : 0;
+	}
+	//*****************************
+	// *           HEADERS
+	// *****************************/
+	h1,h2,h3,h4{
+		font-family   : MrEavesRemake;
+		font-weight   : 800;
+		color         : var(--HB_Color_HeaderText);
+	}
+	h1{
+		margin-bottom       : 0.18cm; //Margin-bottom only because this is WIDE
+		column-span         : all;
+		font-size           : 0.89cm;
+		-webkit-column-span : all;
+		-moz-column-span    : all;
+		&+p::first-letter{
+			float                   : left;
+			font-family             : SolberaImitationRemake;
+			line-height             : 1em;
+			font-size               : 3.5cm;
+			padding-left            : 40px; //Allow background color to extend into margins
+			margin-left             : -40px;
+			margin-top              : -0.3cm;
+			padding-bottom          : 2px;
+			margin-bottom           : -20px;
+			background-image        : linear-gradient(-45deg, #322814, #998250, #322814);
+	    background-clip         : text;
+	    -webkit-background-clip : text;
+	    color                   : rgba(0, 0, 0, 0);
+		}
+		&+p::first-line{
+			font-variant : small-caps;
+		}
+	}
+	h2{
+		//margin-top    : 0px; //Font is misaligned. Shift up slightly
+		//margin-bottom : 0.05cm;
+		font-size     : 0.75cm;
+		line-height   : 0.988em; //Font is misaligned. Shift up slightly
+	}
+	h3{
+		//margin-top    : -0.1cm; //Font is misaligned. Shift up slightly
+		//margin-bottom : 0.1cm;
+		font-size     : 0.575cm;
+		border-bottom : 2px solid var(--HB_Color_HeaderUnderline);;
+		line-height   : 0.995em; //Font is misaligned. Shift up slightly
+	}
+	h4{
+		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
+		//margin-bottom : 0.02cm;
+		font-size     : 0.458cm;
+		line-height   : 0.971em; //Font is misaligned. Shift up slightly
+	}
+	h5{
+		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
+		//margin-bottom : 0.02cm;
+		font-family   : ScalySansSmallCapsRemake;
+		font-size     : 0.423cm;
+		font-weight   : 900;
+		line-height   : 0.951em; //Font is misaligned. Shift up slightly
+		& + * {
+			margin-top : 0.2cm;
+		}
+	}
+	//*****************************
+	// *          TABLE
+	// *****************************/
+	table{
+		.useSansSerif();
+		width         : 100%;
+		& + * {
+			margin-top : 0.325cm;
+		}
+		thead{
+			display: table-row-group;
+			font-weight : 800;
+			th{
+				vertical-align : bottom;
+				padding        : 0.14em 0.4em;
+			}
+		}
+		tbody{
+			tr{
+				td{
+					padding : 0.14em 0.4em;
+				}
+				&:nth-child(odd){
+					background-color : var(--HB_Color_Accent);
+				}
+			}
+		}
+	}
+	//*****************************
+	// *            NOTE
+	// *****************************/
+	.note{
+		.useSansSerif();
+		background-color    : var(--HB_Color_Accent);
+		border-style        : solid;
+		border-width        : 1px;
+		border-image        : @noteBorderImage 12 stretch;
+		border-image-outset : 9px 0px;
+		border-image-width  : 11px;
+		padding             : 0.13cm 0.16cm;
+		filter              : drop-shadow(1px 4px 6px #888);
+		.page :where(&) {
+			margin-top        : 9px; //Prevent top border getting cut off on colbreak
+		}
+		& + * {
+			margin-top : 0.45cm;
+		}
+		h5 {
+			font-size : 0.375cm;
+		}
+		p{
+			display        : block;
+			padding-bottom : 0px;
+		}
+		:last-child {
+			margin-bottom : 0;
+		}
+	}
+	//************************************
+	// *       DESCRIPTIVE TEXT BOX
+	// ************************************/
+	.descriptive{
+		.useSansSerif();
+		background-color    : #faf7ea;
+		border-style        : solid;
+		border-width        : 7px;
+		border-image        : @descriptiveBoxImage 12 stretch;
+		border-image-outset : 4px;
+		padding             : 0.1em;
+		filter              : drop-shadow(0 0 3px #faf7ea);
+		.page :where(&) {
+			margin-top        : 4px; //Prevent top border getting cut off on colbreak
+		}
+		& + * {
+			margin-top : 0.45cm;
+		}
+		h5 {
+			font-size : 0.375cm;
+		}
+		p{
+			display        : block;
+			padding-bottom : 0px;
+			line-height    : 1.5em;
+		}
+		:last-child {
+			margin-bottom : 0;
+		}
+	}
+	//*****************************
+	// *    Images Snippets
+	// *****************************/
+
+	/* Arist Credit */
+	.artist {
+		position    : absolute;
+		width       : auto;
+		text-align  : center;
+		font-family : WalterTurncoat;
+		font-size   : 0.27cm;
+		color       : var(--HB_Color_CaptionText);
+		p, p + p {
+			margin      : unset;
+			text-indent : unset;
+			line-height : 1em;
+		}
+	 	h5 {
+			font-size   : 1.3em;
+			font-family : WalterTurncoat;
+		}
+		a{
+			color           : inherit;
+			text-decoration : unset;
+			&:hover {
+				text-decoration : underline;
+			}
+		}
+	}
+
+	/* Watermark */
+	.watermark {
+		display         : grid !important;
+		place-items     : center;
+		justify-content	: center;
+		position        : absolute;
+		top             : 0;
+		left            : 0;
+		width           : 100%;
+		height          : 100%;
+		font-size       : 120px;
+		text-transform	: uppercase;
+		color           : black;
+		mix-blend-mode  : overlay;
+		opacity         : 30%;
+		transform       : rotate(-45deg);
+		z-index         : 500;
+		p {
+			margin-bottom : none;
+		}
+	}
+
+	/* Watercolor */
+	[class*="watercolor"] {
+		position            : absolute;
+		width               : 2000px;    /* dimensions need to be real big so the user can set */
+		height              : 2000px;    /* height or width and the image will maintain aspect ratio */
+		-webkit-mask-image  : var(--wc);
+		-webkit-mask-size   : contain;
+		-webkit-mask-repeat : no-repeat;
+		mask-image          : var(--wc);
+		mask-size           : contain;
+		mask-repeat         : no-repeat;
+		background-size     : cover;
+		background-color    : var(--HB_Color_WatercolorStain);			/*default color*/
+		--wc                : @watercolor1;         /*default image*/
+		z-index             : -2;
+	}
+
+	.watercolor1  { --wc : @watercolor1; }
+	.watercolor2  { --wc : @watercolor2; }
+	.watercolor3  { --wc : @watercolor3; }
+	.watercolor4  { --wc : @watercolor4; }
+	.watercolor5  { --wc : @watercolor5; }
+	.watercolor6  { --wc : @watercolor6; }
+	.watercolor7  { --wc : @watercolor7; }
+	.watercolor8  { --wc : @watercolor8; }
+	.watercolor9  { --wc : @watercolor9; }
+	.watercolor10 { --wc : @watercolor10; }
+	.watercolor11 { --wc : @watercolor11; }
+	.watercolor12 { --wc : @watercolor12; }
+
+	//*****************************
+	// *    MONSTER STAT BLOCK
+	// *****************************/
+	.monster {
+		.useSansSerif();
+		&.frame {
+			border-style          : solid;
+			border-width          : 7px 6px;
+			background-color      : var(--HB_Color_MonsterStatBackground);
+			background-image      : @monsterBlockBackground;
+			border-image          : @monsterBorderImage 14 round;
+			border-image-outset   : 0px 2px;
+			background-blend-mode : overlay;
+			background-attachment : fixed;
+			filter                : drop-shadow(1px 4px 6px #888);
+			padding               : 4px 2px;
+			margin-left           : -0.16cm;
+			margin-right          : -0.16cm;
+			width                 : calc(100% + 0.32cm);
+		}
+
+		position          : relative;
+		padding           : 0px;
+		margin-bottom     : 0.325cm;
+
+		//Headers
+		h2{
+			font-size     : 0.62cm;
+			line-height   : 1em;
+			margin        : 0;
+			&+p {
+				font-size     : 0.304cm; //Monster size and type subtext
+				margin-bottom : 0;
+			}
+		}
+		h3{
+			font-family    : ScalySansRemake;
+			font-weight    : 800;
+			font-variant   : small-caps;
+			border-bottom  : 2px solid var(--HB_Color_HeaderText);
+			// margin-top     : 0.05cm;  //Font is misaligned. Shift up slightly
+  		padding-bottom : 0.05cm;
+		}
+
+		//Triangle dividers
+		hr{
+			visibility       : visible;
+			height           : 6px;
+			margin           : 0.12cm 0cm;
+			background-image : @redTriangleImage;
+			background-size  : 100% 100%;
+			border           : none;
+		}
+
+		//Attribute Lists - All text between HRs is red
+		hr ~ :is(dl,p) {
+			color : var(--HB_Color_HeaderText);
+		}
+		hr:last-of-type {
+			& ~ :is(dl,p) {
+				color : inherit; // After the HRs, reset text to black
+			}
+			& + * {
+				margin-top : 0.325cm; // Space after last HR
+			}
+		}
+
+		// Monster Ability table
+		hr + table:first-of-type{
+			margin              : 0;
+			column-span         : none;
+			color               : var(--HB_Color_HeaderText);
+			background-color    : transparent;
+			border-style        : none;
+			border-image        : none;
+			-webkit-column-span : none;
+			tr {
+				background-color : transparent;
+			}
+			td,th {
+				padding: 0px;
+			}
+		}
+
+		:last-child {
+			margin-bottom : 0;
+		}
+	}
+
+	//Full Width
+	.monster.wide{
+		.useColumns(0.96, @fillMode: balance);
+	}
+
+	//*****************************
+	// *           FOOTER
+	// *****************************/
+	&:after{
+		content          : "";
+		position         : absolute;
+		bottom           : 0px;
+		left             : 0px;
+		z-index          : 100;
+		height           : 50px;
+		width            : 100%;
+		background-image : @footerAccentImage;
+		background-size  : cover;
+	}
+	&:nth-child(even){
+		&:after{
+			transform : scaleX(-1);
+		}
+		.pageNumber{
+			left : 2px;
+		}
+		.footnote{
+			left       : 80px;
+			text-align : left;
+		}
+	}
+	.pageNumber{
+		position    : absolute;
+		right       : 2px;
+		bottom      : 22px;
+		width       : 50px;
+		font-size   : 0.9em;
+		color       : var(--HB_Color_Footnotes);
+		text-align  : center;
+		text-indent : 0;
+		&.auto::after {
+			content : counter(phb-page-numbers);
+		}
+	}
+	.footnote{
+		position   : absolute;
+		right      : 80px;
+		bottom     : 32px;
+		z-index    : 150;
+		width      : 200px;
+		font-size  : 0.8em;
+		color      : var(--HB_Color_Footnotes);
+		text-align : right;
+	}
+	//************************************
+	// *           CODE BLOCKS
+	// ************************************/
+	code{
+    font-family      : "Courier New", Courier, monospace;
+		font-size        : 0.325;
+		padding          : 0px 4px;
+		color            : #58180d;
+		background-color : #faf7ea;
+		border-radius    : 4px;
+		white-space      : pre-wrap;
+		overflow-wrap    : break-word;
+	}
+
+	pre code{
+		width               : 100%;
+		display             : inline-block;
+		border-style        : solid;
+		border-width        : 1px;
+		border-image        : @codeBorderImage 26 stretch;
+		border-image-width  : 10px;
+		border-image-outset : 2px;
+		border-radius       : 12px;
+		margin-bottom       : 2px;
+		padding             : 0.15cm;
+		.page :where(&) {
+			margin-top        : 2px; //Prevent top border getting cut off on colbreak
+		}
+		& + * {
+			margin-top : 0.325cm;
+		}
+	}
+	//*****************************
+	// *          EXTRAS
+	// *****************************/
+	hr{
+		visibility : hidden;
+		margin     : 0px;
+	}
+	.columnSplit {
+		visibility                 : hidden;
+		-webkit-column-break-after : always;
+		break-after                : always;
+		-moz-column-break-after    : always;
+	}
+	//Avoid breaking up
+	blockquote,table{
+		z-index                     : 15;
+		-webkit-column-break-inside : avoid;
+		page-break-inside           : avoid;
+		break-inside                : avoid;
+	}
+	//Text indent right after table
+	table+p{
+		text-indent : 1em;
+	}
+	// Nested lists
+	ul ul,ol ol,ul ol,ol ul{
+		margin-bottom : 0px;
+		margin-left   : 1.5em;
+	}
+	li{
+		-webkit-column-break-inside : avoid;
+		page-break-inside           : avoid;
+		break-inside                : avoid;
+	}
+}
+//*****************************
+// *         SPELL LIST
+// *****************************/
+.page .spellList{
+	.useSansSerif();
+	column-count        : 2;
+	ul+h5{
+		margin-top : 15px;
+	}
+	p, ul{
+		font-size   : 0.352cm;
+		line-height : 1.265em;
+	}
+	ul{
+		margin-bottom               : 0.5em;
+		padding-left                : 1em;
+		text-indent                 : -1em;
+		list-style-type             : none;
+		-webkit-column-break-inside : auto;
+		page-break-inside           : auto;
+		break-inside                : auto;
+	}
+	&.wide{
+		column-count : 4;
+	}
+}
+
+//*****************************
+// *       CLASS TABLE
+// *****************************/
+.page .classTable{
+	th[colspan]:not([rowspan]) {
+		white-space : nowrap;
+	}
+	&.frame {
+		margin-top          : 0.7cm;
+		margin-bottom       : 0.9cm;
+		margin-left         : -0.1cm;
+		margin-right        : -0.1cm;
+		width               : calc(100% + 0.2cm);
+		border-collapse     : separate;
+		background-color    : white;
+		border              : initial;
+		border-style        : solid;
+		border-image-outset : 0.4cm 0.3cm;
+		border-image-repeat : stretch;
+		border-image-slice  : 200;
+		border-image-source : @frameBorderImage;
+		border-image-width  : 47px;
+		&.wide:first-child {
+			margin-top: 0.12cm;
+		}
+	}
+	&.decoration {
+		position:relative;
+	}
+	&.decoration::before {
+		content             :'';
+		position            : absolute;
+		background-image    : @classTableDecoration,
+		                      @classTableDecoration;
+		background-size     : contain, contain;
+		background-repeat   : no-repeat, no-repeat;
+		background-position : top, bottom;
+		width               : 7.75cm;
+		height              : calc(100% + 3.3cm);
+		top                 : 50%;
+		left                : 50%;
+		transform           : translateY(-50%) translateX(-50%);
+		filter              : drop-shadow(0px 0px 1px #C8C5C080);
+		z-index             : -1;
+	}
+	&.decoration.wide::before {
+		width               : calc(100% + 3.3cm);
+		height              : 7.75cm;
+		background-position : left, right;
+	}
+	h5 + table{
+		margin-top : 0.2cm;
+	}
+}
+//*****************************
+// *      TABLE OF CONTENTS
+// *****************************/
+.page .toc{
+	-webkit-column-break-inside : avoid;
+	page-break-inside           : avoid;
+	break-inside                : avoid;
+	h1 {
+		text-align    : center;
+		margin-bottom : 0.3cm;
+	}
+	a{
+		display         : inline;
+		color           : inherit;
+		text-decoration : none;
+		&:hover{
+			text-decoration : underline;
+		}
+	}
+	h4 {
+		margin-top  : 0.2cm;
+		line-height : 0.4cm;
+		& + ul li {
+			line-height: 1.2em;
+		}
+	}
+	ul{
+		padding-left    : 0;
+		list-style-type : none;
+		li + li h3 {
+			margin-top  : 0.26cm;
+			line-height : 1em
+		}
+		h3 span:first-child::after {
+			border : none;
+		}
+		span {
+			display : table-cell;
+			&:first-child {
+				position   :       relative;
+				overflow   :       hidden;
+				&::after {
+					content       : "";
+					position      : absolute;
+					bottom        : 0.08cm;
+					margin-left   : 0.06cm;        /* Spacing before dot leaders */
+					width         : 100%;
+					border-bottom : 0.05cm dotted #000;
+				}
+			}
+			&:last-child {
+				font-family    : BookInsanityRemake;
+				font-size      : 0.34cm;
+				font-weight    : normal;
+				color          : black;
+				text-align     : right;
+				vertical-align : bottom; /* Keep page number bottom-aligned */
+				width          : 1%;
+				padding-left   : 0.06cm; /* Spacing after dot leaders */
+				/*white-space  : nowrap; /* Uncomment if needed */
+			}
+		}
+		ul { /*List indent*/
+			margin-left : 1em;
+		}
+	}
+	&.wide{
+		.useColumns(0.96, @fillMode: balance);
+	}
+}
+
+//*****************************
+// *    MUSTACHE DIVS/SPANS
+// *****************************/
+.page {
+	.block {
+		break-inside      : avoid;
+		display           : inline-block;
+		.page :where(&) {
+			width             : 100%;
+		}
+		//-webkit-transform : translateZ(0); //Prevents shadows from breaking across columns
+	}
+	.inline-block {
+		display : inline-block;
+		text-indent : initial;
+	}
+}
+
+//*****************************
+// *    DEFINITION LISTS
+// *****************************/
+.page {
+	dl {
+		line-height  : 1.25em;
+		padding-left : 1em;
+		white-space  : pre-line;
+		& + * {
+			margin-top : 0.28cm;
+		}
+	}
+	dl + * {
+  	margin-top : 0.17cm;
+  }
+	p + dl {
+		margin-top: 0.17cm;
+	}
+  dt {
+    display      : inline;
+    margin-right : 5px;
+		margin-left  : -1em;
+  }
+  dd {
+		display     : inline;
+		margin-left : 0px;
+		text-indent : 0px;
+  }
+}
+
+//*****************************
+// *    BLANK LINE
+// *****************************/
+.page {
+	.blank {
+		height     : 1em;
+		margin-top : 0;
+	}
+}
+
+//*****************************
+// *         WIDE
+// *****************************/
+.page .wide{
+	column-span         : all;
+	-webkit-column-span : all;
+	-moz-column-span    : all;
+	display             : block;
+	margin-bottom       : 0.34cm;
+	&+* {
+		margin-top : 0;
+	}
+}

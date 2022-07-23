@@ -12,6 +12,7 @@ const ThemeSnippets = {};
 ThemeSnippets['Legacy_5ePHB'] = require('themes/Legacy/5ePHB/snippets.js');
 ThemeSnippets['V3_5ePHB']     = require('themes/V3/5ePHB/snippets.js');
 ThemeSnippets['V3_5eDMG']     = require('themes/V3/5eDMG/snippets.js');
+ThemeSnippets['V3_Journal']   = require('themes/V3/Journal/snippets.js');
 
 const execute = function(val, brew){
 	if(_.isFunction(val)) return val(brew);
@@ -74,14 +75,14 @@ const Snippetbar = createClass({
 
 	compileSnippets : function(rendererPath, themePath, snippets) {
 		let compiledSnippets = snippets;
-		const baseThemePath = Themes[rendererPath][themePath].baseTheme;
-		console.log({ baseSnippets: ThemeSnippets[`${rendererPath}_${baseThemePath}`] });
-		console.log({ themeSnippets: compiledSnippets });
+		const baseSnippetsPath = Themes[rendererPath][themePath].baseSnippets;
+		//console.log({ baseSnippets: ThemeSnippets[`${rendererPath}_${baseSnippetsPath}`] });
+		//console.log({ themeSnippets: compiledSnippets });
 
-		if(baseThemePath) {
-			compiledSnippets = _.mergeWith([], ThemeSnippets[`${rendererPath}_${baseThemePath}`], compiledSnippets, this.mergeCustomizer);
+		if(baseSnippetsPath) {
+			compiledSnippets = _.mergeWith([], ThemeSnippets[`${rendererPath}_${baseSnippetsPath}`], compiledSnippets, this.mergeCustomizer);
 			console.log({ compiledSnippets: compiledSnippets });
-			//this.compileSnippets(rendererPath, themePath, compiledSnippets); (for nested baseThemes)
+			//this.compileSnippets(rendererPath, themePath, compiledSnippets); (for nested baseSnippets)
 		}
 		return compiledSnippets;
 	},

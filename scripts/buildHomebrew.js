@@ -60,7 +60,7 @@ fs.emptyDirSync('./build');
 			less.render(fs.readFileSync(src).toString(), {
 				compress : !isDev
 			}, function(e, output) {
-				fs.outputFile(`./build/themes/Legacy/${dir}/style.css`, output.css);
+				fs.outputFile(outputDirectory, output.css);
 			});
 		})(`./build/themes/Legacy/${dir}/style.css`);
 
