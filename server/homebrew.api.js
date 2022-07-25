@@ -5,8 +5,10 @@ const zlib = require('zlib');
 const GoogleActions = require('./googleActions.js');
 const Markdown = require('../shared/naturalcrit/markdown.js');
 const yaml = require('js-yaml');
-const Themes = require('../themes/themes.json');
 const { send } = require('process');
+const fs = require('fs');
+const Themes = require('../themes/themes.json');
+const { encode } = require('punycode');
 
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
@@ -234,29 +236,64 @@ const getThemes = (req, res)=>{
 		});
 	});
 
+	// Header stuff for allowing the css to access fonts
+	// res.setHeader('Access-Control-Allow-Origin',  req.protocol + '://' + req.get('host'));
+	res.setHeader('Access-Control-Allow-Origin',  '*');
+	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
+	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
 	res.type('json');
     res.send(themesData);
 };
 
 // Checks for a specific theme from the path in the url and sends its style.css
 const getThemeStyle = (req, res)=>{
-	const path = '/' + req.params.path + '/style.css'	
+	fs.readFile('./build/themes/V3/' + req.params.path + '/style.css', 'utf8', function (err,data) {
+		if (err) {
+			if (err.code === 'ENOENT') {
+				return res.status(404).send("No such file: " + path);
+			}
+			else {
+				return res.status(500).send(err);
+			}
+		}
+		// Takes something like "url('../../../fonts/5e/Scaly Sans Caps.woff2')", 
+		// and extracts "5e" and "Scaly Sans Caps.woff2"
+		const re = /url\('\.\.\/\.\.\/\.\.\/fonts\/([^\/|\s]*)\/([^\/]*)'\)/gm;
+		const formattedData = data.replace(re, (_, $1, $2)=>{
+			// Substitutes with url('/api/themes/fonts/5e/Scaly%20Sans%20Caps.woff2')
+			return "url('/api/themes/fonts/" + encodeURIComponent($1) + "/" + encodeURIComponent($2) + "')"
+		});
+
+		res.contentType('text/css');
+		return res.send(formattedData);
+	});
+};
+
+const getThemeFonts = (req, res)=>{
+	const path = req.params.path + '/' + req.params.file	
 	options = {
-		'root': './build/themes/V3',
+		'root': './build/fonts',
 		'headers': {
-			'Content-Type': 'text/css'
+			'Content-Type': req.params.file
 		}
 	};
+
+	// Header stuff for allowing the css to access fonts
+	// res.setHeader('Access-Control-Allow-Origin',  req.protocol + '://' + req.get('host'));
+	res.setHeader('Access-Control-Allow-Origin',  '*');
+	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
+	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+	res.contentType('application/font-woff');
 
     res.sendFile(path, options, function (err) {
 		if (err) {
 			if (err.code === 'ENOENT') {
-				res.status(404).send("No such file: " + path);
+				return res.status(404).send("No such file: " + path);
 			}
-            else {
-				res.status(500).send(err);
+			else {
+				return res.status(500).send(err);
 			}
-        }
+		}
     });
 };
 
@@ -326,7 +363,8 @@ router.get('/api/remove/:id', deleteBrew);
 router.get('/api/removeGoogle/:id', (req, res)=>{GoogleActions.deleteGoogleBrew(req, res, req.params.id);});
 
 router.post('/api/themes/', getThemes);
-router.post('/api/themes/:path/style', getThemeStyle);
+router.get('/api/themes/:path/style', getThemeStyle);
+router.get('/api/themes/fonts/:path/:file', getThemeFonts);
 router.post('/api/themes/:path/snippets/:snippetGroup/:snippet', getThemeSnippet);
 
 module.exports = router;

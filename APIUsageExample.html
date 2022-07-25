@@ -1,0 +1,92 @@
+<head>
+    <link id="themeStyle" rel="stylesheet" type="text/css" href="http://localhost:8000/api/themes/5eDMG/style"/>
+</head>
+<body>
+
+    <div style="display: flex; flex-wrap: nowrap; margin: 2% 10%;">
+        <div style="width:50%;">
+            <h1>Testing the Homebrewery API</h1>
+            <h2>Set Theme</h2>
+            <select id="themes-dropdown" name="themes-dropdown"></select>
+            <br>
+            <h3>Snippets</h3>
+        </div>
+        <div class="page" style="width:50%;">
+            <h1>Testing the Homebrewery API</h1>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et 
+                dolore magna aliqua. Nulla facilisi etiam dignissim diam quis enim lobortis. Porttitor leo a diam 
+                sollicitudin tempor id eu. At lectus urna duis convallis. Cras pulvinar mattis nunc sed blandit libero 
+                volutpat. Velit egestas dui id ornare arcu odio ut sem. Habitasse platea dictumst quisque sagittis purus. 
+                Convallis tellus id interdum velit laoreet id donec ultrices. Eget mi proin sed libero enim sed faucibus 
+                turpis in. Eu feugiat pretium nibh ipsum consequat nisl vel pretium lectus. Eros donec ac odio tempor orci. 
+                Ultrices tincidunt arcu non sodales neque sodales ut etiam sit. Consequat ac felis donec et odio pellentesque 
+                diam volutpat commodo. Egestas sed sed risus pretium quam vulputate dignissim suspendisse. Orci a scelerisque 
+                purus semper eget duis at tellus at. Amet nisl purus in mollis nunc sed id. Mi ipsum faucibus vitae aliquet.
+            </p>
+            <p>
+                Aliquam malesuada bibendum arcu vitae elementum curabitur. Quis lectus nulla at volutpat diam ut venenatis 
+                tellus in. Ipsum suspendisse ultrices gravida dictum fusce. Pharetra sit amet aliquam id. Cursus turpis massa 
+                tincidunt dui ut ornare lectus sit. Dignissim diam quis enim lobortis scelerisque fermentum dui faucibus. 
+                Mauris pellentesque pulvinar pellentesque habitant morbi tristique senectus et. Donec ultrices tincidunt arcu 
+                non sodales neque sodales ut. A erat nam at lectus urna duis. Lectus mauris ultrices eros in cursus turpis. 
+                Felis imperdiet proin fermentum leo vel orci porta non. Vestibulum morbi blandit cursus risus at ultrices mi 
+                tempus. Mollis nunc sed id semper risus in hendrerit gravida rutrum.
+            </p>
+            <h2>Heading two</h2>
+            <p> 
+                Elementum tempus egestas sed sed risus pretium. Id velit ut tortor pretium viverra suspendisse. Nisl vel 
+                pretium lectus quam. Egestas maecenas pharetra convallis posuere morbi leo urna molestie. Interdum velit 
+                laoreet id donec ultrices. Augue lacus viverra vitae congue eu consequat ac felis. Aliquet enim tortor at 
+                auctor urna. Tincidunt praesent semper feugiat nibh sed pulvinar proin gravida hendrerit. Enim sit amet 
+                venenatis urna cursus eget. Interdum varius sit amet mattis vulputate enim nulla aliquet porttitor. Nunc 
+                faucibus a pellentesque sit amet porttitor. Ultrices vitae auctor eu augue. Arcu cursus vitae congue mauris 
+                rhoncus aenean vel elit. Tellus mauris a diam maecenas sed enim.
+            </p>
+        </div>
+    </div>
+    <script>
+        // The website that the application should get content from
+        // Here in the debug enviroment it is set to localhost
+        const HOMEBREWERY_URL = 'http://localhost:8000';
+        // But when deployed, the homebrewery site will work
+        //const HOMEBREWERY_URL = 'https://homebrewery.naturalcrit.com';
+
+        // Runs when the dropdown menu changes. Reads the current value of the dropdown menu and changes the stylesheet
+        // link to that value. The page then requests that stylesheet from the homebrewery API.
+        function setTheme() {
+            let dropdown = document.getElementById('themes-dropdown')
+            path = dropdown.options[dropdown.selectedIndex].value
+            
+            let setThemeStyle = new XMLHttpRequest();
+            setThemeStyle.open("POST", HOMEBREWERY_URL + "/api/themes");
+            setThemeStyle.onload = () => {
+                document.getElementById('themeStyle').href = HOMEBREWERY_URL + '/api/themes/' + path + '/style';
+            };
+            setThemeStyle.send();
+
+        }
+        // Sets up the themes at page load. Requests the "themes" URL from the API, which returns a JSON file with 
+        // the names and paths to all themes, along with the names, icon names and paths for all snippets 
+        function setupThemes(){
+            let readThemes = new XMLHttpRequest();
+            readThemes.open("POST", HOMEBREWERY_URL + "/api/themes");
+            readThemes.onload = () => {
+                let themes = JSON.parse(readThemes.responseText);
+                let dropdownHtml = "";
+                console.log(themes['homebrewery-themes']);
+                themes['homebrewery-themes'].forEach(theme => {
+                    dropdownHtml += '<option value = "' + theme['path'] + '">' + theme['name'] + '</option>'
+                });
+
+                document.getElementById('themes-dropdown').innerHTML = dropdownHtml;
+            };
+            readThemes.send();
+
+            document.getElementById('themes-dropdown').onchange = setTheme;
+        }
+        
+        setupThemes();
+
+    </script>
+</body>
