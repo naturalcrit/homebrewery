@@ -279,7 +279,6 @@ const getThemeFonts = (req, res)=>{
 	};
 
 	// Header stuff for allowing the css to access fonts
-	// res.setHeader('Access-Control-Allow-Origin',  req.protocol + '://' + req.get('host'));
 	res.setHeader('Access-Control-Allow-Origin',  '*');
 	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
 	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -347,6 +346,11 @@ const getThemeSnippet = (req, res, next)=>{
 		}
 		return res.status(404).send("No such file: " + req.params.path );
 	}
+
+	// Header stuff for allowing the css to access fonts
+	res.setHeader('Access-Control-Allow-Origin',  '*');
+	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
+	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
 
 	// Returns the result from running a snippet
 	return res.send(snippetOutput);
