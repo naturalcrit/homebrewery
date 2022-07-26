@@ -1,5 +1,6 @@
 const fs = require('fs-extra');
 const zlib = require('zlib');
+const browserify = require('browserify');
 const Proj = require('./project.json');
 
 const { pack, watchFile, livereload } = require('vitreum');
@@ -128,6 +129,16 @@ fs.emptyDirSync('./build');
 	// build(bundles);
 	//
 
+})().catch(console.error);
+
+// Uses Browserify to build a standalone parser containing the parser in markdown.js and all its required modules
+(async()=>{
+	if (!fs.existsSync('./build/parser')){
+		fs.mkdirSync('./build/parser');
+	}
+	const bundle = browserify('./client/homebrew/parser/homebreweryParser.js', {standalone: 'homebreweryParser'})
+		.bundle()
+		.pipe(fs.createWriteStream('./build/parser/homebreweryParser.js'));
 })().catch(console.error);
 
 //In development set up a watch server and livereload

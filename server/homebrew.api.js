@@ -186,11 +186,31 @@ const updateGoogleBrew = async (req, res, next)=>{
 	}
 };
 
+// Send the parser built by browserify containing markdown.js and all its required modules
+const getStandaloneParser = async (req, res)=>{
+	options = {
+		'root': './build/parser',
+		'headers': {
+			'Content-Type': 'text/javascript'
+		}
+	};
+
+	// Header stuff for allowing the css to access fonts
+	res.setHeader('Access-Control-Allow-Origin',  '*');
+	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
+	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+
+    res.sendFile('homebreweryParser.js', options, function (err) {
+		if (err) {
+			return res.status(500).send(err);
+		}
+    });
+};
+
 // Parse content of themes.json and sends a version containing name and path to all themes.
 // Also tries to import the snippets.js file for the theme and sends names, paths and icon 
 // strings for all available snippet groups and snippets
 const getThemes = (req, res)=>{
-
 	let themesData = {
 		// Homebrewery provided themes that are located in the source code
 		"homebrewery-themes": [],
@@ -237,7 +257,6 @@ const getThemes = (req, res)=>{
 	});
 
 	// Header stuff for allowing the css to access fonts
-	// res.setHeader('Access-Control-Allow-Origin',  req.protocol + '://' + req.get('host'));
 	res.setHeader('Access-Control-Allow-Origin',  '*');
 	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
 	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -264,6 +283,10 @@ const getThemeStyle = (req, res)=>{
 			return "url('/api/themes/fonts/" + encodeURIComponent($1) + "/" + encodeURIComponent($2) + "')"
 		});
 
+		// Header stuff for allowing the css to access fonts
+		res.setHeader('Access-Control-Allow-Origin',  '*');
+		res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
+		res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
 		res.contentType('text/css');
 		return res.send(formattedData);
 	});
@@ -282,7 +305,6 @@ const getThemeFonts = (req, res)=>{
 	res.setHeader('Access-Control-Allow-Origin',  '*');
 	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
 	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-	res.contentType('application/font-woff');
 
     res.sendFile(path, options, function (err) {
 		if (err) {
@@ -366,6 +388,7 @@ router.delete('/api/:id', deleteBrew);
 router.get('/api/remove/:id', deleteBrew);
 router.get('/api/removeGoogle/:id', (req, res)=>{GoogleActions.deleteGoogleBrew(req, res, req.params.id);});
 
+router.get('/api/homebreweryParser.js', getStandaloneParser);
 router.post('/api/themes/', getThemes);
 router.get('/api/themes/:path/style', getThemeStyle);
 router.get('/api/themes/fonts/:path/:file', getThemeFonts);

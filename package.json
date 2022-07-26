@@ -52,6 +52,7 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
     "body-parser": "^1.19.1",
+    "browserify": "^17.0.0",
     "classnames": "^2.3.1",
     "codemirror": "^5.65.1",
     "cookie-parser": "^1.4.6",
