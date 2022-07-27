@@ -366,7 +366,7 @@ const getThemeSnippet = (req, res, next)=>{
 		if (error.code !== 'MODULE_NOT_FOUND') {
 			throw error;
 		}
-		return res.status(404).send("No such file: " + req.params.path );
+		return res.status(404).send("No such module: " + req.params.path );
 	}
 
 	// Header stuff for allowing the css to access fonts
