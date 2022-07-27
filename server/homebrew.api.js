@@ -256,12 +256,12 @@ const getThemes = (req, res)=>{
 		});
 	});
 
-	// Header stuff for allowing the css to access fonts
+	// Header stuff for allowing sites to make cross origin requests for the json object
 	res.setHeader('Access-Control-Allow-Origin',  '*');
 	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
 	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
 	res.type('json');
-    res.send(themesData);
+	res.send(themesData);
 };
 
 // Checks for a specific theme from the path in the url and sends its style.css
@@ -283,7 +283,7 @@ const getThemeStyle = (req, res)=>{
 			return "url('/api/themes/fonts/" + encodeURIComponent($1) + "/" + encodeURIComponent($2) + "')"
 		});
 
-		// Header stuff for allowing the css to access fonts
+		// Header stuff for allowing sites to make cross origin requests for the stylesheets
 		res.setHeader('Access-Control-Allow-Origin',  '*');
 		res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
 		res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -292,6 +292,7 @@ const getThemeStyle = (req, res)=>{
 	});
 };
 
+// Checks for font files required by the stylesheets and sends it
 const getThemeFonts = (req, res)=>{
 	const path = req.params.path + '/' + req.params.file	
 	options = {
@@ -301,7 +302,7 @@ const getThemeFonts = (req, res)=>{
 		}
 	};
 
-	// Header stuff for allowing the css to access fonts
+	// Header stuff for allowing sites to make cross origin requests for the fonts, required for the css to work
 	res.setHeader('Access-Control-Allow-Origin',  '*');
 	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
 	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -352,7 +353,7 @@ const getThemeSnippet = (req, res, next)=>{
 				snippetOutput = snippet['gen']();
 			}
 			catch {
-				return res.status(500).send("Malformed snippet (function");
+				return res.status(500).send("Malformed snippet (function)");
 			}
 		}
 		else if(typeof snippet['gen'] == 'string' || snippet['gen'] instanceof String) {
@@ -369,7 +370,7 @@ const getThemeSnippet = (req, res, next)=>{
 		return res.status(404).send("No such module: " + req.params.path );
 	}
 
-	// Header stuff for allowing the css to access fonts
+	// Header stuff for allowing sites to make cross origin requests for the snippets
 	res.setHeader('Access-Control-Allow-Origin',  '*');
 	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
 	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
