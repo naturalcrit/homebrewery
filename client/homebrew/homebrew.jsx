@@ -1,8 +1,8 @@
 require('./homebrew.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const { StaticRouter:Router, Switch, Route } = require('react-router-dom');
-const queryString = require('query-string');
+const { StaticRouter:Router } = require('react-router-dom/server');
+const { Route, Routes, useParams, useSearchParams } = require('react-router-dom');
 
 const HomePage = require('./pages/homePage/homePage.jsx');
 const EditPage = require('./pages/editPage/editPage.jsx');
@@ -11,6 +11,19 @@ const SharePage = require('./pages/sharePage/sharePage.jsx');
 const NewPage = require('./pages/newPage/newPage.jsx');
 //const ErrorPage = require('./pages/errorPage/errorPage.jsx');
 const PrintPage = require('./pages/printPage/printPage.jsx');
+
+const WithRoute = (props)=>{
+	const params = useParams();
+	const searchParams = useSearchParams();
+	const Element = props.el;
+	const allProps = {
+		...props,
+		...params,
+		...searchParams,
+		el : undefined
+	};
+	return <Element {...allProps} />;
+};
 
 const Homebrew = createClass({
 	displayName     : 'Homebrewery',
@@ -32,31 +45,35 @@ const Homebrew = createClass({
 			}
 		};
 	},
-	componentWillMount : function() {
+
+	getInitialState : function() {
 		global.account = this.props.account;
 		global.version = this.props.version;
 		global.enable_v3 = this.props.enable_v3;
+		global.config = this.props.config;
+
+		return {};
 	},
+
 	render : function (){
-		return (
-			<Router location={this.props.url}>
-				<div className='homebrew'>
-					<Switch>
-						<Route path='/edit/:id' component={(routeProps)=><EditPage id={routeProps.match.params.id} brew={this.props.brew} />}/>
-						<Route path='/share/:id' component={(routeProps)=><SharePage id={routeProps.match.params.id} brew={this.props.brew} />}/>
-						<Route path='/new/:id' component={(routeProps)=><NewPage id={routeProps.match.params.id} brew={this.props.brew} />}/>
-						<Route path='/new' exact component={(routeProps)=><NewPage />}/>
-						<Route path='/user/:username' component={(routeProps)=><UserPage username={routeProps.match.params.username} brews={this.props.brews} />}/>
-						<Route path='/print/:id' component={(routeProps)=><PrintPage brew={this.props.brew} query={queryString.parse(routeProps.location.search)} />}/>
-						<Route path='/print' exact component={(routeProps)=><PrintPage query={queryString.parse(routeProps.location.search)} />}/>
-						<Route path='/changelog' exact component={()=><SharePage brew={this.props.brew} />}/>
-						<Route path='/faq' exact component={()=><SharePage brew={this.props.brew} />}/>
-						<Route path='/v3_preview' exact component={()=><HomePage brew={this.props.brew} />}/>
-						<Route path='/' component={()=><HomePage brew={this.props.brew} />}/>
-					</Switch>
-				</div>
-			</Router>
-		);
+		return <Router location={this.props.url}>
+			<div className='homebrew'>
+				<Routes>
+					<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={this.props.brew} />} />
+					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
+					<Route path='/new/:id' element={<WithRoute el={NewPage} brew={this.props.brew} />} />
+					<Route path='/new' element={<WithRoute el={NewPage}/>} />
+					<Route path='/user/:username' element={<WithRoute el={UserPage} brews={this.props.brews} />} />
+					<Route path='/print/:id' element={<WithRoute el={PrintPage} brew={this.props.brew} />} />
+					<Route path='/print' element={<WithRoute el={PrintPage} />} />
+					<Route path='/changelog' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
+					<Route path='/faq' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
+					<Route path='/v3_preview' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
+					<Route path='/' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
+					<Route path='/*' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
+				</Routes>
+			</div>
+		</Router>;
 	}
 });
 

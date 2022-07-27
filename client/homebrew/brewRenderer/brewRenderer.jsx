@@ -13,6 +13,8 @@ const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
 const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
 
+const Themes = require('themes/themes.json');
+
 const PAGE_HEIGHT = 1056;
 const PPR_THRESHOLD = 50;
 
@@ -180,6 +182,7 @@ const BrewRenderer = createClass({
 		//Also render dummy page while iframe is mounting.
 		const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
 		const themePath    = this.props.theme ?? '5ePHB';
+		const baseThemePath = Themes[rendererPath][themePath].baseTheme;
 
 		return (
 			<React.Fragment>
@@ -191,7 +194,7 @@ const BrewRenderer = createClass({
 					</div>
 	        : null}
 
-				<Frame initialContent={this.state.initialContent}
+				<Frame id='BrewRenderer' initialContent={this.state.initialContent}
 					style={{ width: '100%', height: '100%', visibility: this.state.visibility }}
 					contentDidMount={this.frameDidMount}>
 					<div className={'brewRenderer'}
@@ -203,6 +206,9 @@ const BrewRenderer = createClass({
 							<RenderWarnings />
 							<NotificationPopup />
 						</div>
+						{baseThemePath &&
+							<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} rel='stylesheet'/>
+						}
 						<link href={`/themes/${rendererPath}/${themePath}/style.css`} rel='stylesheet'/>
 						{/* Apply CSS from Style tab and render pages from Markdown tab */}
 						{this.state.isMounted

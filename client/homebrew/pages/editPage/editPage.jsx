@@ -200,74 +200,17 @@ const EditPage = createClass({
 		const brew = this.state.brew;
 		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
 
-		if(this.state.saveGoogle) {
-			if(transfer) {
-				const res = await request
-				.post('/api/newGoogle/')
-				.send(brew)
-				.catch((err)=>{
-					console.log(err.status === 401
-						? 'Not signed in!'
-						: 'Error Transferring to Google!');
-					this.setState({ errors: err, saveGoogle: false });
-				});
+		const params = `${transfer ? `?${this.state.saveGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : ''}`;
+		const res = await request
+			.put(`/api/update/${brew.editId}${params}`)
+			.send(brew)
+			.catch((err)=>{
+				console.log('Error Updating Local Brew');
+				this.setState({ errors: err });
+			});
 
-				if(!res) { return; }
-
-				console.log('Deleting Local Copy');
-				await request.delete(`/api/${brew.editId}`)
-				.send()
-				.catch((err)=>{
-					console.log('Error deleting Local Copy');
-				});
-
-				this.savedBrew = res.body;
-				history.replaceState(null, null, `/edit/${this.savedBrew.googleId}${this.savedBrew.editId}`); //update URL to match doc ID
-			} else {
-				const res = await request
-				.put(`/api/updateGoogle/${brew.editId}`)
-				.send(brew)
-				.catch((err)=>{
-					console.log(err.status === 401
-						? 'Not signed in!'
-						: 'Error Saving to Google!');
-					this.setState({ errors: err });
-					return;
-				});
-
-				this.savedBrew = res.body;
-			}
-		} else {
-			if(transfer) {
-				const res = await request.post('/api')
-				.send(brew)
-				.catch((err)=>{
-					console.log('Error creating Local Copy');
-					this.setState({ errors: err });
-					return;
-				});
-
-				await request.get(`/api/removeGoogle/${brew.googleId}${brew.editId}`)
-				.send()
-				.catch((err)=>{
-					console.log('Error Deleting Google Brew');
-				});
-
-				this.savedBrew = res.body;
-				history.replaceState(null, null, `/edit/${this.savedBrew.editId}`); //update URL to match doc ID
-			} else {
-				const res = await request
-				.put(`/api/update/${brew.editId}`)
-				.send(brew)
-				.catch((err)=>{
-					console.log('Error Updating Local Brew');
-					this.setState({ errors: err });
-					return;
-				});
-
-				this.savedBrew = res.body;
-			}
-		}
+		this.savedBrew = res.body;
+		history.replaceState(null, null, `/edit/${this.savedBrew.editId}`);
 
 		this.setState((prevState)=>({
 			brew : _.merge({}, prevState.brew, {
@@ -331,26 +274,26 @@ const EditPage = createClass({
 				console.log(errMsg);
 			} catch (e){}
 
-			if(this.state.errors.status == '401'){
-				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-					Oops!
-					<div className='errorContainer' onClick={this.clearErrors}>
-					You must be signed in to a Google account
-						to save this to<br />Google Drive!<br />
-						<a target='_blank' rel='noopener noreferrer'
-							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
-							<div className='confirm'>
-								Sign In
-							</div>
-						</a>
-						<div className='deny'>
-							Not Now
-						</div>
-					</div>
-				</Nav.item>;
-			}
+			// if(this.state.errors.status == '401'){
+			// 	return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+			// 		Oops!
+			// 		<div className='errorContainer' onClick={this.clearErrors}>
+			// 		You must be signed in to a Google account
+			// 			to save this to<br />Google Drive!<br />
+			// 			<a target='_blank' rel='noopener noreferrer'
+			// 				href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
+			// 				<div className='confirm'>
+			// 					Sign In
+			// 				</div>
+			// 			</a>
+			// 			<div className='deny'>
+			// 				Not Now
+			// 			</div>
+			// 		</div>
+			// 	</Nav.item>;
+			// }
 
-			if(this.state.errors.response.req.url.match(/^\/api\/.*Google.*$/m)){
+			if(this.state.errors.response.req.url.match(/^\/api.*Google.*$/m)){
 				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 					Oops!
 					<div className='errorContainer' onClick={this.clearErrors}>
@@ -395,7 +338,7 @@ const EditPage = createClass({
 	},
 
 	processShareId : function() {
-		return this.state.brew.googleId ?
+		return this.state.brew.googleId && !this.state.brew.stubbed ?
 					 this.state.brew.googleId + this.state.brew.shareId :
 					 this.state.brew.shareId;
 	},
@@ -407,7 +350,7 @@ const EditPage = createClass({
 		const title = `${this.props.brew.title} ${systems}`;
 		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
 
-**[Homebrewery Link](https://homebrewery.naturalcrit.com/share/${shareLink})**`;
+**[Homebrewery Link](${global.config.publicUrl}/share/${shareLink})**`;
 
 		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
 	},
@@ -442,7 +385,7 @@ const EditPage = createClass({
 					<Nav.item color='blue' href={`/share/${shareLink}`}>
 						view
 					</Nav.item>
-					<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`https://homebrewery.naturalcrit.com/share/${shareLink}`);}}>
+					<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.publicUrl}/share/${shareLink}`);}}>
 						copy url
 					</Nav.item>
 					<Nav.item color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>

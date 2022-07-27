@@ -29,10 +29,82 @@ pre {
 .page p + pre {
 	margin-top : 0.1cm;
 }
+
+.page .openSans {
+	font-family: 'Open Sans';
+	font-size: 0.9em;
+}
 ```
 
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
+
+### Thursday 09/06/2022 - v3.1.1
+{{taskList
+
+##### Calculuschild:
+
+* [x] Fixed class table decorations appearing on top of the table in PDF output.
+
+  Fixes issues: [#1784](https://github.com/naturalcrit/homebrewery/issues/1784)
+
+* [x] Fix bottom decoration on half class tables disappearing when the table is too short.
+
+  Fixes issues: [#2202](https://github.com/naturalcrit/homebrewery/issues/2202)
+}}
+
+### Monday 06/06/2022 - v3.1.0
+{{taskList
+
+##### G-Ambatte:
+
+* [x] "Jump to Preview/Editor" buttons added to the divider bar. Easily sync between the editor and preview panels!
+
+  Fixes issues: [#1756](https://github.com/naturalcrit/homebrewery/issues/1756)
+
+* [x] Speedups to the user page for users with large and/or many brews.
+
+  Fixes issues: [#2147](https://github.com/naturalcrit/homebrewery/issues/2147)
+
+* [x] Search text on the user page is saved to the URL for easy bookmarking in your browser
+
+  Fixes issues: [#1858](https://github.com/naturalcrit/homebrewery/issues/1858)
+
+* [x] Added easy login system for offline installs.
+
+  Fixes issues: [#269](https://github.com/naturalcrit/homebrewery/issues/269)
+
+* [x] New **THUMBNAIL** option in the {{fa,fa-info-circle}} **Properties** menu. This image will show up in social media links.
+
+  Fixes issues: [#820](https://github.com/naturalcrit/homebrewery/issues/820)
+}}
+
+### Wednesday 27/03/2022 - v3.0.8
+{{taskList
+* [x] Style updates to user page.
+
+* [x] Added a logout button (finally)! You can find it under {{openSans **USERNAME {{fa,fa-user}} → LOGOUT {{fas,fa-power-off}}**}}
+
+	Fixes issues: [#303](https://github.com/naturalcrit/homebrewery/issues/303)
+
+* [x] Clarified the default text when submitting an issue via Reddit post.
+
+* [x] Fixed broken Table of Contents links in PDFs. (Thanks lucastucious!)
+
+	Fixes issues: [#1749](https://github.com/naturalcrit/homebrewery/issues/1749)
+
+* [x] Fixed window resizing causing the edit page divider to get lost off of the edge of the page.
+
+	Fixes issues: [#2053](https://github.com/naturalcrit/homebrewery/issues/2053)
+
+* [x] Fixed Class Table decorations overlapping main text.
+
+	Fixes issues: [#1985](https://github.com/naturalcrit/homebrewery/issues/1985)
+
+* [x] Updated {{openSans **STYLE EDITOR {{fa,fa-pencil-alt}} → REMOVE DROP CAP {{fas,fa-remove-format}}**}} snippet to also remove small-caps first line font.
+
+* [x] Background work in preparation for brew themes.
+}}
 
 ### Wednesday 02/02/2022 - v3.0.7
 {{taskList
@@ -50,7 +122,7 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 
 	Fixes issues: [#1943](https://github.com/naturalcrit/homebrewery/issues/1943)
 
-* [x] Added a Legacy to V3 migration guide under **NEED HELP? {{fa,fa-question-circle}} → MIGRATE {{fas,fa-file-import}}**
+* [x] Added a Legacy to V3 migration guide under {{openSans **NEED HELP? {{fa,fa-question-circle}} → MIGRATE {{fas,fa-file-import}}**}}
 
 * [x] Background refactoring and unit tests.
 }}
@@ -61,7 +133,7 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 
 	Fixes issues: [#1736](https://github.com/naturalcrit/homebrewery/issues/1736)
 
-* [x] Code search/replace `CTRL F / CTRL SHIFT F`
+* [x] Code search/replace PC: `CTRL F / CTRL SHIFT F` / Mac: `CMD F / OPTION CMD F`
 
 	Fixes issues: [#1201](https://github.com/naturalcrit/homebrewery/issues/1201)
 

@@ -24,7 +24,8 @@ const ListPage = createClass({
 		return {
 			sortType     : 'alpha',
 			sortDir      : 'asc',
-			filterString : ''
+			filterString : this.props.query?.filter || '',
+			query        : this.props.query
 		};
 	},
 
@@ -74,9 +75,23 @@ const ListPage = createClass({
 
 	handleFilterTextChange : function(e){
 		this.setState({
-			filterString : e.target.value
+			filterString : e.target.value,
 		});
+		this.updateUrl(e.target.value);
 		return;
+	},
+
+	updateUrl : function(filterTerm){
+		const url = new URL(window.location.href);
+		const urlParams = new URLSearchParams(url.search);
+		if(urlParams.get('filter') == filterTerm)
+			return;
+		if(!filterTerm)
+			urlParams.delete('filter');
+		else
+			urlParams.set('filter', filterTerm);
+		url.search = urlParams;
+		window.history.replaceState(null, null, url);
 	},
 
 	renderFilterOption : function(){
@@ -85,8 +100,10 @@ const ListPage = createClass({
 				<i className='fas fa-search'></i>
 				<input
 					type='search'
-					placeholder='search title/description'
+					autoFocus={true}
+					placeholder='filter title/description'
 					onChange={this.handleFilterTextChange}
+					value={this.state.filterString}
 				/>
 			</label>
 		</td>;
@@ -144,7 +161,7 @@ const ListPage = createClass({
 
 	render : function(){
 		return <div className='listPage sitePage'>
-			<link href='/themes/5ePhbLegacy.style.css' rel='stylesheet'/>
+			<link href='/themes/Legacy/5ePHB/style.css' rel='stylesheet'/>
 			{this.props.navItems}
 
 			<div className='content V3'>

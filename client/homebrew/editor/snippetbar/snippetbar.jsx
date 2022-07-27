@@ -6,9 +6,13 @@ const cx    = require('classnames');
 
 //Import all themes
 
-const Themes = {};
-Themes['Legacy_5ePHB'] = require('themes/Legacy/5ePHB/snippets.js');
-Themes['V3_5ePHB']     = require('themes/V3/5ePHB/snippets.js');
+const Themes = require('themes/themes.json');
+
+const ThemeSnippets = {};
+ThemeSnippets['Legacy_5ePHB'] = require('themes/Legacy/5ePHB/snippets.js');
+ThemeSnippets['V3_5ePHB']     = require('themes/V3/5ePHB/snippets.js');
+ThemeSnippets['V3_5eDMG']     = require('themes/V3/5eDMG/snippets.js');
+ThemeSnippets['V3_Journal']   = require('themes/V3/Journal/snippets.js');
 
 const execute = function(val, brew){
 	if(_.isFunction(val)) return val(brew);
@@ -42,21 +46,45 @@ const Snippetbar = createClass({
 	componentDidMount : async function() {
 		const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
 		const themePath    = this.props.theme ?? '5ePHB';
-		const snippets = Themes[`${rendererPath}_${themePath}`];
+		let snippets = ThemeSnippets[`${rendererPath}_${themePath}`];
+		snippets = this.compileSnippets(rendererPath, themePath, snippets);
 		this.setState({
 			snippets : snippets
 		});
 	},
 
 	componentDidUpdate : async function(prevProps) {
-		if(prevProps.renderer != this.props.renderer) {
+		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme) {
 			const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
 			const themePath    = this.props.theme ?? '5ePHB';
-			const snippets = Themes[`${rendererPath}_${themePath}`];
+			console.log({ ThemeSnippets: ThemeSnippets });
+			let snippets = ThemeSnippets[`${rendererPath}_${themePath}`];
+			snippets = this.compileSnippets(rendererPath, themePath, snippets);
 			this.setState({
 				snippets : snippets
 			});
 		}
+	},
+
+	mergeCustomizer : function(objValue, srcValue) {
+		if(_.isArray(objValue)) {
+			const result = _.unionBy(srcValue, objValue, 'name'); // Join snippets together, with preference for the current theme over the base theme
+			return _.filter(result, 'gen'); //Only keep snippets with a 'gen' property.
+		}
+	},
+
+	compileSnippets : function(rendererPath, themePath, snippets) {
+		let compiledSnippets = snippets;
+		const baseSnippetsPath = Themes[rendererPath][themePath].baseSnippets;
+		//console.log({ baseSnippets: ThemeSnippets[`${rendererPath}_${baseSnippetsPath}`] });
+		//console.log({ themeSnippets: compiledSnippets });
+
+		if(baseSnippetsPath) {
+			compiledSnippets = _.mergeWith([], ThemeSnippets[`${rendererPath}_${baseSnippetsPath}`], compiledSnippets, this.mergeCustomizer);
+			console.log({ compiledSnippets: compiledSnippets });
+			//this.compileSnippets(rendererPath, themePath, compiledSnippets); (for nested baseSnippets)
+		}
+		return compiledSnippets;
 	},
 
 	handleSnippetClick : function(injectedText){
@@ -64,9 +92,7 @@ const Snippetbar = createClass({
 	},
 
 	renderSnippetGroups : function(){
-		let snippets = [];
-
-		snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
+		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
 
 		return _.map(snippets, (snippetGroup)=>{
 			return <SnippetGroup
