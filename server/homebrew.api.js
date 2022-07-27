@@ -8,7 +8,9 @@ const Markdown = require('../shared/naturalcrit/markdown.js');
 const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
+
 const Themes = require('../themes/themes.json');
+const fs = require('fs');
 
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
@@ -338,8 +340,9 @@ const getThemes = (req, res)=>{
 		// User made themes (might be implemented in the future)
 		"user-themes": []
 	};
-	Themes["V3"].forEach(theme => {
+	Object.keys(Themes["V3"]).map((key, index) => {
 		let snippetGroups = [];
+		const theme = Themes["V3"][key];
 
 		try {
 			const themeSnippets = require("../themes/V3/" + theme["path"] + "/snippets.js");
