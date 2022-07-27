@@ -51,6 +51,7 @@
     "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
+    "bl": "^5.0.0",
     "body-parser": "^1.19.1",
     "browserify": "^17.0.0",
     "classnames": "^2.3.1",
@@ -81,6 +82,7 @@
     "react-router-dom": "5.3.0",
     "sanitize-filename": "1.6.3",
     "superagent": "^6.1.0",
+    "terser": "^5.14.2",
     "vitreum": "git+https://git@github.com/calculuschild/vitreum.git"
   },
   "devDependencies": {

@@ -1,6 +1,8 @@
 const fs = require('fs-extra');
 const zlib = require('zlib');
 const browserify = require('browserify');
+const bl = require('bl');
+const { minify } = require("terser");
 const Proj = require('./project.json');
 
 const { pack, watchFile, livereload } = require('vitreum');
@@ -10,6 +12,7 @@ const lessTransform  = require('vitreum/transforms/less.js');
 const assetTransform = require('vitreum/transforms/asset.js');
 const babel          = require('@babel/core');
 const less           = require('less');
+const { writeFileSync, writeFile } = require('fs');
 
 const babelify = async (code)=>(await babel.transformAsync(code, { presets: [['@babel/preset-env', { 'exclude': ['proposal-dynamic-import'] }], '@babel/preset-react'], plugins: ['@babel/plugin-transform-runtime'] })).code;
 
@@ -133,12 +136,26 @@ fs.emptyDirSync('./build');
 
 // Uses Browserify to build a standalone parser containing the parser in markdown.js and all its required modules
 (async()=>{
-	if (!fs.existsSync('./build/parser')){
-		fs.mkdirSync('./build/parser');
+	const INPUT_FILEPATH = './client/homebrew/parser/homebreweryParser.js';
+	const OUTPUT_DIR_PATH = './build/parser'
+	const OUTPUT_FILEPATH = OUTPUT_DIR_PATH + '/homebreweryParser.js';
+
+	if (!fs.existsSync(OUTPUT_DIR_PATH)){
+		fs.mkdirSync(OUTPUT_DIR_PATH);
 	}
-	const bundle = browserify('./client/homebrew/parser/homebreweryParser.js', {standalone: 'homebreweryParser'})
+	const bundle = browserify(INPUT_FILEPATH, {standalone: 'homebreweryParser'})
 		.bundle()
-		.pipe(fs.createWriteStream('./build/parser/homebreweryParser.js'));
+		// I hate pipes...
+		.pipe(fs.createWriteStream(OUTPUT_FILEPATH)).on("close", async () =>{
+			// To write and then read the output file is kinda bad, but I cant be bothered to figure out how to 
+			// do it with pipes
+			var result = await minify((await fs.readFile(OUTPUT_FILEPATH)).toString(), { sourceMap: false });
+			writeFile(OUTPUT_FILEPATH, result.code, (err)=>{
+				if(err){
+					console.log(err);
+				}
+			});
+		});
 })().catch(console.error);
 
 //In development set up a watch server and livereload
