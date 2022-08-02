@@ -227,6 +227,10 @@ const generateThemeSnippets = (req, themePath)=>{
 
 // Generate a JSON object containing all snippets in a theme
 const getSnippets = (req, res)=>{
+	if(!req.params.path) {
+		return res.status(400).send("Unspecified path");
+	}
+
 	let theme = Themes['V3'][req.params.path];
 	if(!theme) {
 		return res.status(404).send("No such theme: " + path);
@@ -304,10 +308,10 @@ const runThemeSnippet = (req, res, next)=>{
 
 router.get('/api/homebreweryParser.js', getStandaloneParser);
 router.get('/api/themes.json', getThemes);
-router.get('/api/themes/:path/style.css', getThemeStyle);
 router.get('/api/themes/fonts/:path/:file', getThemeFonts);
-router.get('/api/themes/:path/snippets.json', getSnippets);
 router.post('/api/themes/:path/snippets/:snippetGroup/:snippet', runThemeSnippet);
+router.get('/api/themes/:path/style.css', getThemeStyle);
+router.get('/api/themes/:path/snippets.json', getSnippets);
 
 module.exports = {
 	externalRendererApi : router

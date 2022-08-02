@@ -9,9 +9,6 @@ const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
 
-const Themes = require('../themes/themes.json');
-const fs = require('fs');
-
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
 // 		cb(brews);

@@ -66,8 +66,8 @@ app.use((req, res, next)=>{
 	return next();
 });
 
-app.use(homebrewApi);
 app.use(externalRendererApi);
+app.use(homebrewApi);
 app.use(require('./admin.api.js'));
 
 const HomebrewModel  = require('./homebrew.model.js').model;
