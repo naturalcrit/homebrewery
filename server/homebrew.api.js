@@ -332,7 +332,11 @@ const getStandaloneParser = async (req, res)=>{
 
 // Parse content of themes.json and sends a version containing name and path to all themes.
 // Also tries to import the snippets.js file for the theme and sends names, paths and icon 
-// strings for all available snippet groups and snippets
+// strings for all available snippet groups and snippets.
+//
+// This step should be changed to mirror the style of themes.json. Both homebrewery-themes 
+// and user-themes should be in the form of an object rather than an array, and they will
+// need to contain baseTheme and baseSnippets
 const getThemes = (req, res)=>{
 	let themesData = {
 		// Homebrewery provided themes that are located in the source code
@@ -340,43 +344,14 @@ const getThemes = (req, res)=>{
 		// User made themes (might be implemented in the future)
 		"user-themes": []
 	};
-	Object.keys(Themes["V3"]).map((key, index) => {
-		let snippetGroups = [];
+	Object.keys(Themes["V3"]).map((key) => {
 		const theme = Themes["V3"][key];
-
-		try {
-			const themeSnippets = require("../themes/V3/" + theme["path"] + "/snippets.js");
-			
-			themeSnippets.forEach(group => {
-				snippetsCategory = []
-				group['snippets'].forEach(snippet => {
-					snippetsCategory.push({
-						'name': snippet['name'],
-						'path': encodeURIComponent(snippet['name']),
-						'icon': snippet['icon']
-					});
-				});
-				snippetGroups.push({
-					'groupName': group['groupName'],
-					'path': encodeURIComponent(group['groupName']),
-					'icon': group['icon'],
-					'view': group['view'],
-					'snippets': snippetsCategory
-				});
-			});
-		}
-		catch(error) {
-			if (error.code !== 'MODULE_NOT_FOUND') {
-				throw error;
-			}
-		}
 
 		// TODO: Add user made themes to the same object, using the same format, when that is implemented
 
 		themesData["homebrewery-themes"].push({
 			"name": theme["name"],
-			"path": theme["path"],
-			"snippets": snippetGroups
+			"path": theme["path"]
 		});
 	});
 
@@ -388,32 +363,49 @@ const getThemes = (req, res)=>{
 	res.send(themesData);
 };
 
-// Checks for a specific theme from the path in the url and sends its style.css
-const getThemeStyle = (req, res)=>{
-	fs.readFile('./build/themes/V3/' + req.params.path + '/style.css', 'utf8', function (err,data) {
-		if (err) {
-			if (err.code === 'ENOENT') {
-				return res.status(404).send("No such file: " + path);
-			}
-			else {
-				return res.status(500).send(err);
-			}
-		}
-		// Takes something like "url('../../../fonts/5e/Scaly Sans Caps.woff2')", 
-		// and extracts "5e" and "Scaly Sans Caps.woff2"
-		const re = /url\('\.\.\/\.\.\/\.\.\/fonts\/([^\/|\s]*)\/([^\/]*)'\)/gm;
-		const formattedData = data.replace(re, (_, $1, $2)=>{
-			// Substitutes with url('/api/themes/fonts/5e/Scaly%20Sans%20Caps.woff2')
-			return "url('/api/themes/fonts/" + encodeURIComponent($1) + "/" + encodeURIComponent($2) + "')"
-		});
+// Generates a single stylesheet from a themes style and its basetheme.
+// TODO: This doesn't check for import loops. This needs to be fixed before user themes are implemented
+const generateStyleSheet = (theme)=>{
+	let res = '';
+	
+	// Appends all basethemes stylesheets to the top of the resulting document
+	if(Themes["V3"][theme]['baseTheme']) {
+		res += generateStyleSheet(Themes["V3"][theme]['baseTheme']) + '\n';
+	}
 
+	let data = fs.readFileSync('./build/themes/V3/' + theme + '/style.css', 'utf8');
+
+	// Takes something like "url('../../../fonts/5e/Scaly Sans Caps.woff2')", 
+	// and extracts "5e" and "Scaly Sans Caps.woff2"
+	const re = /url\('\.\.\/\.\.\/\.\.\/fonts\/([^\/|\s]*)\/([^\/]*)'\)/gm;
+	res += data.replace(re, (_, $1, $2)=>{
+		// Substitutes with url('/api/themes/fonts/5e/Scaly%20Sans%20Caps.woff2')
+		return "url('/api/themes/fonts/" + encodeURIComponent($1) + "/" + encodeURIComponent($2) + "')"
+	});
+
+	return res;
+}
+
+// Checks for a specific theme from the path in the url and sends its style.css.
+const getThemeStyle = (req, res)=>{
+	try {
+		const stylesheet = generateStyleSheet(req.params.path);
 		// Header stuff for allowing sites to make cross origin requests for the stylesheets
 		res.setHeader('Access-Control-Allow-Origin',  '*');
 		res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
 		res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
 		res.contentType('text/css');
-		return res.send(formattedData);
-	});
+		return res.send(stylesheet);
+	}
+	catch (err) {
+		if(err.code == 'ENOENT') {
+			return res.status(404).send('No such file: ' + req.params.path);
+		}
+		else {
+			return res.status(500).send(err);
+		}
+	}
+	
 };
 
 // Checks for font files required by the stylesheets and sends it
@@ -443,8 +435,121 @@ const getThemeFonts = (req, res)=>{
     });
 };
 
-// Checks for a snippet in a theme, tries to run it and return the results
-const getThemeSnippet = (req, res, next)=>{
+// Generate a JSON object recursively, containing all snippets in a theme and their URLs
+// TODO: This doesn't check for import loops. This needs to be fixed before user themes are implemented
+const generateThemeSnippets = (req, themePath)=>{
+	let baseTheme = Themes['V3'][themePath];
+	let resSnippetGroups = [];
+
+	if(!baseTheme) {
+		return resSnippetGroups;
+	}
+
+	// Load snippets from parent theme
+	if(baseTheme['baseSnippets']) {
+		let baseSnippets = Themes['V3'][baseTheme['baseSnippets']];
+		if(baseSnippets) {
+			resSnippetGroups = generateThemeSnippets(req, baseTheme['baseSnippets']);
+		}
+	}
+
+	try {
+		const baseThemeSnippets = require("../themes/V3/" + baseTheme["path"] + "/snippets.js");
+
+		// Add a new snippet in resSnippets
+		function addSnippet(resSnippets, baseSnippet, groupName) {
+			resSnippets.push({
+				'name': baseSnippet['name'],
+				'path': `${req.protocol}://${req.get('host')}/api/themes/${themePath}/snippets/${encodeURIComponent(groupName)}/${encodeURIComponent(baseSnippet['name'])}`,
+				'icon': baseSnippet['icon']
+			});
+		}
+		
+		// Append to an existing snippet
+		function appendSnippet(resSnippet, baseSnippet, groupName) {
+			resSnippet['path'] = `${req.protocol}://${req.get('host')}/api/themes/${themePath}/snippets/${encodeURIComponent(groupName)}/${encodeURIComponent(baseSnippet['name'])}`;
+			resSnippet['icon'] = baseSnippet['icon'];
+		}
+
+		// Add a new snippet group in resSnippetGroups
+		function addSnippetGroup(resSnippetsGroups, baseSnippetGroup) {
+			let resGroup = {
+				'groupName': baseSnippetGroup['groupName'],
+				'icon': baseSnippetGroup['icon'],
+				'view': baseSnippetGroup['view'],
+				'snippets': []
+			};
+
+			baseSnippetGroup['snippets'].forEach(baseSnippet => {
+				addSnippet(resGroup['snippets'], baseSnippet, baseSnippetGroup['groupName']);
+			})
+
+			resSnippetsGroups.push(resGroup);
+		}
+
+		// Append to existing group in result
+		function appendSnippetGroup(resSnippetGroup, baseSnippetGroup) {
+			// Set the existing group icon and view to the one from the base
+			resSnippetGroup['icon'] = baseSnippetGroup['icon'];
+			resSnippetGroup['view'] = baseSnippetGroup['view'];
+
+			// Go through all snippets in base and check if it's already present in the result. Overwrite it if so, otherwise add it
+			baseSnippetGroup['snippets'].forEach(baseSnippet => {
+				if(!resSnippetGroup['snippets']) {
+					addSnippet(resSnippetGroup['snippets'], baseSnippet, baseSnippetGroup['groupName']);
+				}
+				if(resSnippetGroup['snippets'].find((snippetInstance) => {return snippetInstance['name'] === baseSnippet['name']})) {
+					appendSnippet(resSnippetGroup['snippets'].find((snippetInstance) => {return snippetInstance['name'] === baseSnippet['name']}), baseSnippet, baseSnippetGroup['groupName']);
+				}
+				else {
+					addSnippet(resSnippetGroup['snippets'], baseSnippet, baseSnippetGroup['groupName']);
+				}
+			});
+		}
+
+		baseThemeSnippets.forEach(baseSnippetGroup => {
+			// Check so that no other snippet group of the same name exists in the result. Creates a new one in that case
+			if(!resSnippetGroups.length) {
+				addSnippetGroup(resSnippetGroups, baseSnippetGroup);
+			}
+			else if(resSnippetGroups.find((groupInstance) => {return groupInstance['groupName'] === baseSnippetGroup['groupName']})) {
+				appendSnippetGroup(resSnippetGroups.find((groupInstance) => {return groupInstance['groupName'] === baseSnippetGroup['groupName']}), baseSnippetGroup);
+			}
+			// Create new group if none is present
+			else {
+				addSnippetGroup(resSnippetGroups, baseSnippetGroup);
+			}
+		});
+	}
+	catch(error) {
+		// Ignore if there is an error in themes.json and just return an unaltered array
+		if (error.code !== 'MODULE_NOT_FOUND') {
+			throw error;
+		}
+	}
+
+	return resSnippetGroups;
+};
+
+// Generate a JSON object containing all snippets in a theme
+const getSnippets = (req, res)=>{
+	let theme = Themes['V3'][req.params.path];
+	if(!theme) {
+		return res.status(404).send("No such theme: " + path);
+	}
+
+	// Header stuff for allowing sites to make cross origin requests for the json object
+	res.setHeader('Access-Control-Allow-Origin',  '*');
+	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
+	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+	res.type('json');
+	res.send(generateThemeSnippets(req, req.params.path));
+};
+
+// Checks for a snippet in a theme, tries to run it and return the results.
+// It needs to go through all snippets in baseSnippets too, and all snippets
+// in its baseSnippets
+const runThemeSnippet = (req, res, next)=>{
 	let snippetOutput = "";
 
 	// Try loading the snippets.js file for the theme
@@ -510,10 +615,11 @@ router.delete('/api/:id', asyncHandler(getBrew('edit')), asyncHandler(deleteBrew
 router.get('/api/remove/:id', asyncHandler(getBrew('edit')), asyncHandler(deleteBrew));
 
 router.get('/api/homebreweryParser.js', getStandaloneParser);
-router.post('/api/themes/', getThemes);
-router.get('/api/themes/:path/style', getThemeStyle);
+router.get('/api/themes.json', getThemes);
+router.get('/api/themes/:path/style.css', getThemeStyle);
 router.get('/api/themes/fonts/:path/:file', getThemeFonts);
-router.post('/api/themes/:path/snippets/:snippetGroup/:snippet', getThemeSnippet);
+router.get('/api/themes/:path/snippets.json', getSnippets);
+router.post('/api/themes/:path/snippets/:snippetGroup/:snippet', runThemeSnippet);
 
 module.exports = {
 	homebrewApi : router,
