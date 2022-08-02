@@ -10,6 +10,7 @@ const app = express();
 const config = require('./config.js');
 
 const { homebrewApi, getBrew } = require('./homebrew.api.js');
+const { externalRendererApi } = require('./external-renderer.api.js');
 const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
@@ -66,6 +67,7 @@ app.use((req, res, next)=>{
 });
 
 app.use(homebrewApi);
+app.use(externalRendererApi);
 app.use(require('./admin.api.js'));
 
 const HomebrewModel  = require('./homebrew.model.js').model;
