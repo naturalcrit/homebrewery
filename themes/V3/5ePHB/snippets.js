@@ -61,12 +61,7 @@ module.exports = [
 							background-image: linear-gradient(-45deg, #322814, #998250, #322814);
 							line-height: 1em;
 						}\n\n`
-			},
-			{
-				name : 'Add Comment',
-				icon : 'fas fa-code',
-				gen  : '/* This is a comment that will not be rendered into your brew. */'
-			},
+			}
 		]
 	},
 

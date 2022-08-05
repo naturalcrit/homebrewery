@@ -80,11 +80,11 @@ const Snippetbar = createClass({
 		let objB = _.keyBy(compiledSnippets, 'groupName');
 
 		if(baseSnippetsPath) {
-			let objA = _.keyBy(_.cloneDeep(ThemeSnippets[`${rendererPath}_${baseSnippetsPath}`], 'groupName'));
+			let objA = _.keyBy(_.cloneDeep(ThemeSnippets[`${rendererPath}_${baseSnippetsPath}`]), 'groupName');
 			compiledSnippets = _.values(_.mergeWith(objA, objB, this.mergeCustomizer));
 		}
 		else {
-			let objA = _.keyBy(_.cloneDeep(ThemeSnippets[`${rendererPath}_Blank`], 'groupName'));
+			let objA = _.keyBy(_.cloneDeep(ThemeSnippets[`${rendererPath}_Blank`]), 'groupName');
 			compiledSnippets = _.values(_.mergeWith(objA, objB, this.mergeCustomizer));
 		}
 		return compiledSnippets;
