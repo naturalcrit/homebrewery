@@ -6,7 +6,6 @@ const MonsterBlockGen    = require('./snippets/monsterblock.gen.js');
 const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
 const CoverPageGen       = require('./snippets/coverpage.gen.js');
 const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
-const WatercolorGen      = require('./snippets/watercolor.gen.js');
 const dedent             = require('dedent-tabs').default;
 
 
@@ -19,48 +18,6 @@ module.exports = [
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'Column Break',
-				icon : 'fas fa-columns',
-				gen  : '\n\\column\n'
-			},
-			{
-				name : 'New Page',
-				icon : 'fas fa-file-alt',
-				gen  : '\n\\page\n'
-			},
-			{
-				name : 'Vertical Spacing',
-				icon : 'fas fa-arrows-alt-v',
-				gen  : '\n::::\n'
-			},
-			{
-				name : 'Horizontal Spacing',
-				icon : 'fas fa-arrows-alt-h',
-				gen  : ' {{width:100px}} '
-			},
-			{
-				name : 'Wide Block',
-				icon : 'fas fa-window-maximize',
-				gen  : dedent`\n
-					{{wide
-					Everything in here will be extra wide. Tables, text, everything!
-					Beware though, CSS columns can behave a bit weird sometimes. You may
-					have to manually place column breaks with \`\column\` to make the
-					surrounding text flow with this wide block the way you want.
-					}}
-					\n`
-			},
-			{
-				name : 'QR Code',
-				icon : 'fas fa-qrcode',
-				gen  : (brew)=>{
-					return `![]` +
-							`(https://api.qrserver.com/v1/create-qr-code/?data=` +
-							`https://homebrewery.naturalcrit.com${brew.shareId ? `/share/${brew.shareId}` : ''}` +
-							`&amp;size=100x100) {width:100px;mix-blend-mode:multiply}`;
-				}
-			},
-			{
 				name : 'Page Number',
 				icon : 'fas fa-bookmark',
 				gen  : '{{pageNumber 1}}\n{{footnote PART 1 | SECTION NAME}}\n\n'
@@ -71,20 +28,10 @@ module.exports = [
 				gen  : '{{pageNumber,auto}}\n{{footnote PART 1 | SECTION NAME}}\n\n'
 			},
 			{
-				name : 'Link to page',
-				icon : 'fas fa-link',
-				gen  : '[Click here](#p3) to go to page 3\n'
-			},
-			{
 				name : 'Table of Contents',
 				icon : 'fas fa-book',
 				gen  : TableOfContentsGen
-			},
-			{
-				name : 'Add Comment',
-				icon : 'fas fa-code',
-				gen  : '<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->'
-			},
+			}
 		]
 	},
 	{
@@ -150,11 +97,6 @@ module.exports = [
 					##### Homebrew Mug
 					[naturalcrit](https://homebrew.naturalcrit.com)
 					}}`
-			},
-			{
-				name : 'Watercolor Splatter',
-				icon : 'fas fa-fill-drip',
-				gen  : WatercolorGen,
 			},
 			{
 				name : 'Watermark',
