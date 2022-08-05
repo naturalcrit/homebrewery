@@ -251,26 +251,6 @@ module.exports = [
 		view      : 'style',
 		snippets  : [
 			{
-				name : 'A4 Page Size',
-				icon : 'far fa-file',
-				gen  : dedent`/* A4 Page Size */
-					.page{
-						width  : 210mm;
-						height : 296.8mm;
-					}\n\n`
-			},
-			{
-				name : 'Square Page Size',
-				icon : 'far fa-file',
-				gen  : dedent`/* Square Page Size */
-					.page {
-						width   : 125mm;
-						height  : 125mm;
-						padding : 12.5mm;
-						columns : unset;
-					}\n\n`
-			},
-			{
 				name : 'Ink Friendly',
 				icon : 'fas fa-tint',
 				gen  : dedent`
@@ -285,6 +265,5 @@ module.exports = [
 					}\n\n`
 			},
 		]
-	},
-
+	}
 ];
