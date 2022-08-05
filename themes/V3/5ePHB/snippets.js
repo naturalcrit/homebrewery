@@ -208,66 +208,6 @@ module.exports = [
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'Table',
-				icon : 'fas fa-th-list',
-				gen  : function(){
-					return dedent`
-						##### Character Advancement
-						| Experience Points | Level | Proficiency Bonus |
-						|:------------------|:-----:|:-----------------:|
-						| 0                 | 1     | +2                |
-						| 300               | 2     | +2                |
-						| 900               | 3     | +2                |
-						| 2,700             | 4     | +2                |
-						| 6,500             | 5     | +3                |
-						| 14,000            | 6     | +3                |
-						\n`;
-				}
-			},
-			{
-				name : 'Wide Table',
-				icon : 'fas fa-list',
-				gen  : function(){
-					return dedent`
-						{{wide
-						##### Weapons
-						| Name                    | Cost  | Damage          | Weight  | Properties |
-						|:------------------------|:-----:|:----------------|--------:|:-----------|
-						| *Simple Melee Weapons*  |       |                 |         |            |
-						| &emsp; Club             | 1 sp  | 1d4 bludgeoning | 2 lb.   | Light      |
-						| &emsp; Dagger           | 2 gp  | 1d4 piercing    | 1 lb.   | Finesse    |
-						| &emsp; Spear            | 1 gp  | 1d6 piercing    | 3 lb.   | Thrown     |
-						| *Simple Ranged Weapons* |       |                 |         |            |
-						| &emsp; Dart             | 5 cp  | 1d4 piercig     | 1/4 lb. | Finesse    |
-						| &emsp; Shortbow         | 25 gp | 1d6 piercing    | 2 lb.   | Ammunition |
-						| &emsp; Sling            | 1 sp  | 1d4 bludgeoning | &mdash; | Ammunition |
-						}}
-						\n`;
-				}
-			},
-			{
-				name : 'Split Table',
-				icon : 'fas fa-th-large',
-				gen  : function(){
-					return dedent`
-						##### Typical Difficulty Classes
-						{{column-count:2
-						| Task Difficulty | DC |
-						|:----------------|:--:|
-						| Very easy       | 5  |
-						| Easy            | 10 |
-						| Medium          | 15 |
-
-						| Task Difficulty   | DC |
-						|:------------------|:--:|
-						| Hard              | 20 |
-						| Very hard         | 25 |
-						| Nearly impossible | 30 |
-						}}
-						\n`;
-				}
-			},
-			{
 				name : 'Class Table',
 				icon : 'fas fa-table',
 				gen  : ClassTableGen.full('classTable,frame,decoration,wide'),
