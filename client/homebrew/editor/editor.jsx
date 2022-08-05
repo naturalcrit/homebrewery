@@ -299,10 +299,7 @@ const Editor = createClass({
 					style={{ display: 'none' }}
 					rerenderParent={this.rerenderParent} />
 				<MetadataEditor
-					metadata={({
-						...this.props.brew,
-						tags : typeof this.props.brew.tags === 'string' ? [] : this.props.brew.tags
-					})}
+					metadata={this.props.brew}
 					onChange={this.props.onMetaChange} />
 			</>;
 		}
