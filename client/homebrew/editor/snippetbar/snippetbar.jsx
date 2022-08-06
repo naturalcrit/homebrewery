@@ -68,7 +68,7 @@ const Snippetbar = createClass({
 
 	mergeCustomizer : function(valueA, valueB, key) {
 		if(key == "snippets") {
-			const result = _.unionBy(valueB, valueA, 'name'); // Join snippets together, with preference for the current theme over the base theme
+			const result = _.reverse(_.unionBy(_.reverse(valueB), _.reverse(valueA), 'name')); // Join snippets together, with preference for the current theme over the base theme
 			return _.filter(result, 'gen'); //Only keep snippets with a 'gen' property.
 		}
 	},

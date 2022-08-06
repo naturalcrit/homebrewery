@@ -151,7 +151,6 @@ const MetadataEditor = createClass({
 	renderThemeDropdown : function(){
 		const listThemes = (renderer)=>{
 			return _.map(_.values(Themes[renderer]), (theme)=>{
-				console.log(theme);
 				return <div className='item' key={''} onClick={()=>this.handleTheme(theme)} title={''}>
 					{`${theme.renderer} : ${theme.name}`}
 					<img src={`/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`}/>
