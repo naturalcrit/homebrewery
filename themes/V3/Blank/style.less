@@ -41,9 +41,11 @@ body {
 	text-rendering    : optimizeLegibility;
 	page-break-before : always;
 	page-break-after  : always;
+}
 	//*****************************
 	// *            BASE
 	// *****************************/
+:where(.page){
 	p{
 		overflow-wrap : break-word;
 		display       : block;
@@ -73,6 +75,7 @@ body {
 	// *****************************/
 	h1,h2,h3,h4,h5,h6{
 		font-weight   : bold;
+		line-height   : normal;
 	}
 	h1{
 		font-size : 2em;
@@ -168,10 +171,6 @@ body {
 	//*****************************
 	// *          EXTRAS
 	// *****************************/
-	hr{
-		visibility : hidden;
-		margin     : 0px;
-	}
 	.columnSplit {
 		visibility                 : hidden;
 		-webkit-column-break-after : always;
@@ -200,17 +199,16 @@ body {
 //*****************************
 // *    MUSTACHE DIVS/SPANS
 // *****************************/
-.page {
+:where(.page) {
 	.block {
 		break-inside      : avoid;
 		display           : inline-block;
 		.page :where(&) {
 			width             : 100%;
 		}
-		//-webkit-transform : translateZ(0); //Prevents shadows from breaking across columns
 	}
 	.inline-block {
-		display : inline-block;
+		display     : inline-block;
 		text-indent : initial;
 	}
 }
@@ -218,37 +216,27 @@ body {
 //*****************************
 // *    DEFINITION LISTS
 // *****************************/
-.page {
+:where(.page) {
 	dl {
-		line-height  : 1.25em;
 		padding-left : 1em;
 		white-space  : pre-line;
-		& + * {
-			margin-top : 0.28cm;
-		}
-	}
-	dl + * {
-  	margin-top : 0.17cm;
-  }
-	p + dl {
-		margin-top: 0.17cm;
 	}
   dt {
     display      : inline;
-    margin-right : 5px;
+    margin-right : 0.5ch;
 		margin-left  : -1em;
   }
   dd {
 		display     : inline;
-		margin-left : 0px;
-		text-indent : 0px;
+		margin-left : 0;
+		text-indent : 0;
   }
 }
 
 //*****************************
 // *    BLANK LINE
 // *****************************/
-.page {
+:where(.page) {
 	.blank {
 		height     : 1em;
 		margin-top : 0;
@@ -258,13 +246,13 @@ body {
 //*****************************
 // *         WIDE
 // *****************************/
-.page .wide{
-	column-span         : all;
-	-webkit-column-span : all;
-	-moz-column-span    : all;
-	display             : block;
-	margin-bottom       : 0.34cm;
-	&+* {
-		margin-top : 0;
+:where(.page) {
+	.wide{
+		column-span         : all;
+		display             : block;
+		margin-bottom       : 1em;
+		&+* {
+			margin-top : 0;
+		}
 	}
 }
