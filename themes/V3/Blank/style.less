@@ -56,26 +56,32 @@ body {
 	em{
 		font-style : italic;
 	}
-	img{
-		z-index : -1;
-	}
 	sup{
 		vertical-align : super;
 		font-size      : smaller;
+		line-height    : 0;
 	}
 	sub{
 		vertical-align : sub;
 		font-size      : smaller;
+		line-height    : 0;
 	}
-	* + * {
-		margin-top: 1em;  		//NOTE: MAKE ALL MARGINS TOP-ONLY FOR BEST RESULTS WITH COLUMN BREAKS. USE * + * STYLE SELECTORS
+	img{
+		z-index : -1;
+	}
+	:not(:where(.wide,.columnSplit,.blank,hr)) + :where(h1,h2,h3,h4,h5,h6,table,dl,.block) {
+		margin-top : 1em;  		//NOTE: MAKE ALL MARGINS TOP-ONLY FOR BEST RESULTS WITH COLUMN BREAKS. USE * + * STYLE SELECTORS
+	}
+
+	:where(h1,h3,h3,h4,h5,h6) + * {
+		margin-top : 0;
 	}
 	//*****************************
 	// *           HEADERS
 	// *****************************/
 	h1,h2,h3,h4,h5,h6{
-		font-weight   : bold;
-		line-height   : normal;
+		font-weight  : bold;
+		line-height  : 1.2em;
 	}
 	h1{
 		font-size : 2em;
