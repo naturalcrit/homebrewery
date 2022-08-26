@@ -30,7 +30,7 @@ const StringArrayEditor = createClass({
 	componentDidUpdate : function(prevProps) {
 		if(!_.eq(this.props, prevProps)) {
 			this.setState({
-				valueContext : !!this.props.values ? this.props.values.map((newValue)=>({
+				valueContext : this.props.values ? this.props.values.map((newValue)=>({
 					value   : newValue,
 					editing : this.state.valueContext.find(({ value })=>value === newValue)?.editing || false
 				})) : []
@@ -76,15 +76,19 @@ const StringArrayEditor = createClass({
 		this.setState({ valueContext, updateValue: this.props.values[index] });
 	},
 
-	valueIsValid : function(value) {
+	valueIsValid : function(value, index) {
+		const values = _.clone(this.props.values);
+		if(index !== undefined) {
+			values.splice(index, 1);
+		}
 		const matchesPatterns = !this.props.valuePatterns || this.props.valuePatterns.some((pattern)=>!!(value || '').match(pattern));
-		const uniqueIfSet = !this.props.unique || !this.props.values.includes(value);
+		const uniqueIfSet = !this.props.unique || !values.includes(value);
 		return matchesPatterns && uniqueIfSet;
 	},
 
 	handleValueInputKeyDown : function(event, index) {
 		if(event.key === 'Enter') {
-			if(this.valueIsValid(event.target.value)) {
+			if(this.valueIsValid(event.target.value, index)) {
 				if(index !== undefined) {
 					this.updateValue(event.target.value, index);
 				} else {
@@ -106,12 +110,12 @@ const StringArrayEditor = createClass({
 		const valueElements = Object.values(this.state.valueContext).map((context, i)=>context.editing
 			? <React.Fragment key={i}>
 				<div className='input-group'>
-					<input type='text' className={`value ${this.valueIsValid(this.state.updateValue) ? '' : 'invalid'}`} autoFocus placeholder={this.props.placeholder}
+					<input type='text' className={`value ${this.valueIsValid(this.state.updateValue, i) ? '' : 'invalid'}`} autoFocus placeholder={this.props.placeholder}
 						value={this.state.updateValue}
 						onKeyDown={(e)=>this.handleValueInputKeyDown(e, i)}
 						onChange={(e)=>this.setState({ updateValue: e.target.value })}/>
-					{<div className='icon steel' onClick={(e)=>{ e.stopPropagation(); this.closeEditInput(i); }}><i className='fa fa-times fa-fw'/></div>}
-					{this.valueIsValid(this.state.updateValue) ? <div className='icon steel'  onClick={(e)=>{ e.stopPropagation(); this.updateValue(this.state.updateValue, i); }}><i className='fa fa-check fa-fw'/></div> : null}
+					{<div className='icon steel' onClick={(e)=>{ e.stopPropagation(); this.closeEditInput(i); }}><i className='fa fa-undo fa-fw'/></div>}
+					{this.valueIsValid(this.state.updateValue, i) ? <div className='icon steel'  onClick={(e)=>{ e.stopPropagation(); this.updateValue(this.state.updateValue, i); }}><i className='fa fa-check fa-fw'/></div> : null}
 				</div>
 			</React.Fragment>
 			: <div className='badge' key={i} onClick={()=>this.editValue(i)}>{context.value}
