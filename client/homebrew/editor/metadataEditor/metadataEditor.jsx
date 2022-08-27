@@ -161,8 +161,8 @@ const MetadataEditor = createClass({
 					V3
 				</label>
 
-				<a href='/v3_preview' target='_blank' rel='noopener noreferrer'>
-					Click here for a quick intro to V3!
+				<a href='/legacy' target='_blank' rel='noopener noreferrer'>
+					Click here to see the demo page for the old Legacy renderer!
 				</a>
 			</div>
 		</div>;

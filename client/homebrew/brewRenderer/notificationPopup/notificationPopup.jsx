@@ -4,7 +4,7 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');	//Unused variable
 
-const DISMISS_KEY = 'dismiss_notification09-9-21';
+const DISMISS_KEY = 'dismiss_notification08-27-22';
 
 const NotificationPopup = createClass({
 	displayName     : 'NotificationPopup',
@@ -23,19 +23,12 @@ const NotificationPopup = createClass({
 	notifications : {
 		psa : function(){
 			return <li key='psa'>
-				<em>V3.0.0 Released!</em> <br />
-				After a long and bumpy road, we decided it was high time we finally release version 3 of the homebrewery into the wild. You can check out a
-				brief overview and see how to opt-in to the new features here:&nbsp;
-				<a target='_blank' href='https://homebrewery.naturalcrit.com/v3_preview'>V3 Welcome Page</a> and&nbsp;
-				<a target='_blank' href='https://homebrewery.naturalcrit.com/changelog'>the Changelog</a>.
-				<br /><br />
-				<em>BE WARNED:</em> As we continue to develop V3, expect small tweaks in the styling, fonts, and snippets; your brews may look slightly
-				different from day-to-day. All of your old documents will continue to work as normal; we are not touching them. If you don't want to deal
-				with the possibility of slight formatting changes, you may choose to stick with the Legacy renderer on any of your brews for as long as you like.
-				<br /><br />
-				With this in mind, if you still wish to try out V3, you can opt-in any of your brews to the the V3 renderer.
-				This will likely break much of your formatting as a lot of the Markdown code has been updated, and starting from scratch may be cleaner.
-				(Don't worry, you can always change the renderer back to Legacy	for any brew at any time).
+				<em>V3.2.0 Released!</em> <br />
+				We are happy to announce that after nearly a year of use by our many users,
+				we are making the V3 render mode the default setting for all new brews.
+				This mode has become quite popular, and has proven to be stable and powerful.
+				Of course, we will always keep the option to use the Legacy renderer for any
+				brew, which can still be accessed from the Properties menu.
 			</li>;
 		},
 		refreshGoogle : function (){

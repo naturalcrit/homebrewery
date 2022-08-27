@@ -73,7 +73,7 @@ const NewPage = createClass({
 				published   : false,
 				authors     : [],
 				systems     : brew.systems || [],
-				renderer    : brew.renderer || 'legacy'
+				renderer    : brew.renderer || 'V3'
 			},
 
 			isSaving   : false,
