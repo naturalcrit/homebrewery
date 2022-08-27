@@ -39,6 +39,33 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Thursday 27/08/2022 - v3.2.0
+{{taskList
+
+##### Calculuschild
+
+* [x] The V3 renderer is now the default for new brews.
+
+* [x] Small tweaks to the spacing around the `classTable` style
+
+##### Jeddai:
+
+* [x] Brew transfers between Homebrewery and Google Drive now keep the same share and edit links! Metadata is now also kept across transfers.
+
+  Fixes issues: [#1838](https://github.com/naturalcrit/homebrewery/issues/1838)
+
+* [x] Brews can now be labeled with tags; these will be searchable on the My Brews page in a future update.
+
+  Fixes issues: [#758](https://github.com/naturalcrit/homebrewery/issues/758)
+
+##### Jlgraves:
+
+* [x] Small tweaks to the `ClassFeature` snippet
+
+  Fixes issues: [#2215](https://github.com/naturalcrit/homebrewery/issues/2215)
+}}
+
+
 ### Thursday 09/06/2022 - v3.1.1
 {{taskList
 
