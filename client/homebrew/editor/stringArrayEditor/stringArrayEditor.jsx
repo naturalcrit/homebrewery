@@ -28,7 +28,7 @@ const StringArrayEditor = createClass({
 	},
 
 	componentDidUpdate : function(prevProps) {
-		if(!_.eq(this.props, prevProps)) {
+		if(!_.eq(this.props.values, prevProps.values)) {
 			this.setState({
 				valueContext : this.props.values ? this.props.values.map((newValue)=>({
 					value   : newValue,
