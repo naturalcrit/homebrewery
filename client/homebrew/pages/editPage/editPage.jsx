@@ -114,7 +114,7 @@ const EditPage = createClass({
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 
 		this.setState((prevState)=>({
-			brew       : _.merge({}, prevState.brew, { text: text }),
+			brew       : { ...prevState.brew, text: text },
 			isPending  : true,
 			htmlErrors : htmlErrors
 		}), ()=>this.trySave());
@@ -122,14 +122,17 @@ const EditPage = createClass({
 
 	handleStyleChange : function(style){
 		this.setState((prevState)=>({
-			brew      : _.merge({}, prevState.brew, { style: style }),
+			brew      : { ...prevState.brew, style: style },
 			isPending : true
 		}), ()=>this.trySave());
 	},
 
 	handleMetaChange : function(metadata){
 		this.setState((prevState)=>({
-			brew      : _.merge({}, prevState.brew, metadata),
+			brew : {
+				...prevState.brew,
+				...metadata
+			},
 			isPending : true,
 		}), ()=>this.trySave());
 
@@ -213,11 +216,11 @@ const EditPage = createClass({
 		history.replaceState(null, null, `/edit/${this.savedBrew.editId}`);
 
 		this.setState((prevState)=>({
-			brew : _.merge({}, prevState.brew, {
+			brew : { ...prevState.brew,
 				googleId : this.savedBrew.googleId ? this.savedBrew.googleId : null,
 				editId 	 : this.savedBrew.editId,
 				shareId  : this.savedBrew.shareId
-			}),
+			},
 			isPending : false,
 			isSaving  : false,
 		}));

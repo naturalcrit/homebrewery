@@ -1,9 +1,11 @@
+/* eslint-disable max-lines */
 require('./metadataEditor.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 const request = require('superagent');
+const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
 
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
@@ -17,7 +19,7 @@ const MetadataEditor = createClass({
 				editId      : null,
 				title       : '',
 				description : '',
-				tags        : '',
+				tags        : [],
 				published   : false,
 				authors     : [],
 				systems     : [],
@@ -45,9 +47,10 @@ const MetadataEditor = createClass({
 	},
 
 	handleFieldChange : function(name, e){
-		this.props.onChange(_.merge({}, this.props.metadata, {
+		this.props.onChange({
+			...this.props.metadata,
 			[name] : e.target.value
-		}));
+		});
 	},
 	handleSystem : function(system, e){
 		if(e.target.checked){
@@ -64,9 +67,10 @@ const MetadataEditor = createClass({
 		this.props.onChange(this.props.metadata);
 	},
 	handlePublish : function(val){
-		this.props.onChange(_.merge({}, this.props.metadata, {
+		this.props.onChange({
+			...this.props.metadata,
 			published : val
-		}));
+		});
 	},
 
 	handleDelete : function(){
@@ -193,13 +197,11 @@ const MetadataEditor = createClass({
 				</button>
 				{this.renderThumbnail()}
 			</div>
-			{/*}
-			<div className='field tags'>
-				<label>tags</label>
-				<textarea value={this.props.metadata.tags}
-					onChange={(e)=>this.handleFieldChange('tags', e)} />
-			</div>
-			*/}
+
+			<StringArrayEditor label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
+				placeholder='add tag' unique={true}
+				values={this.props.metadata.tags}
+				onChange={(e)=>this.handleFieldChange('tags', e)}/>
 
 			{this.renderAuthors()}
 

@@ -56,6 +56,9 @@ const getBrew = (accessType)=>{
 			throw 'Brew not found in Homebrewery database or Google Drive';
 		}
 
+		if(typeof stub.tags === 'string') {
+			stub.tags = [];
+		}
 		req.brew = stub;
 
 		next();
