@@ -68,12 +68,12 @@ app.use((req, res, next)=>{
 app.use(homebrewApi);
 app.use(require('./admin.api.js'));
 
-const HomebrewModel  = require('./homebrew.model.js').model;
-const welcomeText    = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
-const welcomeTextV3  = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg_v3.md', 'utf8');
-const migrateText    = require('fs').readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
-const changelogText  = require('fs').readFileSync('changelog.md', 'utf8');
-const faqText        = require('fs').readFileSync('faq.md', 'utf8');
+const HomebrewModel     = require('./homebrew.model.js').model;
+const welcomeText       = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
+const welcomeTextLegacy = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
+const migrateText       = require('fs').readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
+const changelogText     = require('fs').readFileSync('changelog.md', 'utf8');
+const faqText           = require('fs').readFileSync('faq.md', 'utf8');
 
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
@@ -85,16 +85,18 @@ app.get('/robots.txt', (req, res)=>{
 //Home page
 app.get('/', (req, res, next)=>{
 	req.brew = {
-		text : welcomeText
+		text     : welcomeText,
+		renderer : 'V3'
 	};
+	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
 
 //Home page v3
-app.get('/v3_preview', (req, res, next)=>{
+app.get('/legacy', (req, res, next)=>{
 	req.brew = {
-		text     : welcomeTextV3,
-		renderer : 'V3'
+		text     : welcomeTextLegacy,
+		renderer : 'legacy'
 	};
 	splitTextStyleAndMetadata(req.brew);
 	return next();
@@ -177,7 +179,8 @@ app.get('/user/:username', async (req, res, next)=>{
 		'editId',
 		'createdAt',
 		'updatedAt',
-		'lastViewed'
+		'lastViewed',
+		'tags'
 	];
 
 	let brews = await HomebrewModel.getByUser(req.params.username, ownAccount, fields)

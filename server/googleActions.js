@@ -124,7 +124,6 @@ const GoogleActions = {
 				title       : file.properties.title,
 				description : file.description,
 				views       : parseInt(file.properties.views),
-				tags        : '',
 				published   : file.properties.published ? file.properties.published == 'true' : false,
 				systems     : [],
 				thumbnail   : file.properties.thumbnail

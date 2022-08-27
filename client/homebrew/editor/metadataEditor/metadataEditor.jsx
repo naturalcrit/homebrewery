@@ -1,4 +1,4 @@
-/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
+/* eslint-disable max-lines */
 require('./metadataEditor.less');
 const React = require('react');
 const createClass = require('create-react-class');
@@ -6,6 +6,7 @@ const _     = require('lodash');
 const cx    = require('classnames');
 const request = require('superagent');
 const Nav = require('naturalcrit/nav/nav.jsx');
+const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
 
 const Themes = require('themes/themes.json');
 
@@ -21,7 +22,7 @@ const MetadataEditor = createClass({
 				editId      : null,
 				title       : '',
 				description : '',
-				tags        : '',
+				tags        : [],
 				published   : false,
 				authors     : [],
 				systems     : [],
@@ -50,9 +51,10 @@ const MetadataEditor = createClass({
 	},
 
 	handleFieldChange : function(name, e){
-		this.props.onChange(_.merge({}, this.props.metadata, {
+		this.props.onChange({
+			...this.props.metadata,
 			[name] : e.target.value
-		}));
+		});
 	},
 	handleSystem : function(system, e){
 		if(e.target.checked){
@@ -71,9 +73,10 @@ const MetadataEditor = createClass({
 		this.props.onChange(this.props.metadata);
 	},
 	handlePublish : function(val){
-		this.props.onChange(_.merge({}, this.props.metadata, {
+		this.props.onChange({
+			...this.props.metadata,
 			published : val
-		}));
+		});
 	},
 
 	handleTheme : function(theme){
@@ -211,8 +214,8 @@ const MetadataEditor = createClass({
 					V3
 				</label>
 
-				<a href='/v3_preview' target='_blank' rel='noopener noreferrer'>
-					Click here for a quick intro to V3!
+				<a href='/legacy' target='_blank' rel='noopener noreferrer'>
+					Click here to see the demo page for the old Legacy renderer!
 				</a>
 			</div>
 		</div>;
@@ -243,13 +246,11 @@ const MetadataEditor = createClass({
 				</button>
 				{this.renderThumbnail()}
 			</div>
-			{/*}
-			<div className='field tags'>
-				<label>tags</label>
-				<textarea value={this.props.metadata.tags}
-					onChange={(e)=>this.handleFieldChange('tags', e)} />
-			</div>
-			*/}
+
+			<StringArrayEditor label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
+				placeholder='add tag' unique={true}
+				values={this.props.metadata.tags}
+				onChange={(e)=>this.handleFieldChange('tags', e)}/>
 
 			{this.renderAuthors()}
 
