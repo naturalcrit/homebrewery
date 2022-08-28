@@ -16,13 +16,6 @@
 	--HB_Color_Footnotes             : #C9AD6A; // Gold
 }
 
-@page { margin: 0; }
-body {
-	counter-reset : phb-page-numbers;
-}
-*{
-	-webkit-print-color-adjust : exact;
-}
 .useSansSerif(){
 	font-family : PermanentMarker;
 	font-size   : 0.3cm;
@@ -46,15 +39,10 @@ body {
 	}
 }
 .useColumns(@multiplier : 1, @fillMode: balance){
-	column-count         : 2;
-	column-fill          : @fillMode;
 	column-gap           : 0.5cm;
-	column-width         : unset;
 }
 
 .page{
-	.useColumns();
-	background-color    : var(--HB_Color_Background);
 	background-size     : 200% 100%;
 	background-repeat   : no-repeat;
 	filter              : drop-shadow(1px 4px 14px black);
@@ -76,7 +64,6 @@ body {
 	}
 }
 
-
 	//*****************************
 	// *            BASE
 	// *****************************/
@@ -85,31 +72,17 @@ body {
 	font-family : ReenieBeanie;
 	font-size   : 0.53cm;
 	line-height : 0.8em;
-	p{
-		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
-		display       : block;
-		&+* {
-			margin-top : 0.325cm;
-		}
-		&+p{
-			margin-top : 0;
-		}
+	p + * {
+		margin-top : 0.325cm;
+	}
+	p + p{
+		margin-top : 0;
 	}
 	ul{
 		margin-bottom       : 0.8em;
-		padding-left        : 1.4em;
-		list-style-position : outside;
-		list-style-type     : disc;
 	}
 	ol{
 		margin-bottom       : 0.8em;
-		padding-left        : 1.4em;
-		list-style-position : outside;
-		list-style-type     : decimal;
-	}
-	//Indents after p or lists
-	p+p, ul+p, ol+p{
-		text-indent : 1em;
 	}
 	em{
 		text-decoration : underline;
@@ -117,6 +90,11 @@ body {
 	}
 	del{
 		text-decoration-style: double;
+	}
+
+	//Indents after p or lists
+	p+p, ul+p, ol+p{
+		text-indent : 1em;
 	}
 	//*****************************
 	// *           HEADERS
@@ -185,7 +163,6 @@ body {
 	// *****************************/
 	table{
 		.useSansSerif();
-		width         : 100%;
 		& + * {
 			margin-top : 0.325cm;
 		}
@@ -434,13 +411,9 @@ body {
 		vertical-align   : middle;
 		background-color : #faf7ea;
 		border-radius    : 4px;
-		white-space      : pre-wrap;
-		overflow-wrap    : break-word;
 	}
 
 	pre code{
-		width               : 100%;
-		display             : inline-block;
 		border-style        : solid;
 		border-width        : 1px;
 		border-image        : @codeBorderImage 26 stretch;
