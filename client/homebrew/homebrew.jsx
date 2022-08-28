@@ -14,13 +14,17 @@ const PrintPage = require('./pages/printPage/printPage.jsx');
 
 const WithRoute = (props)=>{
 	const params = useParams();
-	const searchParams = useSearchParams();
+	const [searchParams] = useSearchParams();
+	const queryParams = {};
+	for (const [key, value] of searchParams?.entries() || []) {
+		queryParams[key] = value;
+	}
 	const Element = props.el;
 	const allProps = {
 		...props,
 		...params,
-		...searchParams,
-		el : undefined
+		query : queryParams,
+		el    : undefined
 	};
 	return <Element {...allProps} />;
 };
