@@ -31,17 +31,19 @@ const UserPage = createClass({
 
 		const brewCollection = [
 			{
-				title : `${usernameWithS} published brews`,
-				class : 'published',
-				brews : brews.published
+				title   : `${usernameWithS} published brews`,
+				class   : 'published',
+				brews   : brews.published,
+				visible : true
 			}
 		];
 		if(this.props.username == global.account?.username){
 			brewCollection.push(
 				{
-					title : `${usernameWithS} unpublished brews`,
-					class : 'unpublished',
-					brews : brews.private
+					title   : `${usernameWithS} unpublished brews`,
+					class   : 'unpublished',
+					brews   : brews.private,
+					visible : true
 				}
 			);
 		}

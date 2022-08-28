@@ -6,27 +6,57 @@ const moment      = require('moment');
 
 const BrewItem    = require('./brewItem/brewItem.jsx');
 
+const USERPAGE_KEY_PREFIX = 'HOMEBREWERY-LISTPAGE-VISIBILITY';
+
 const ListPage = createClass({
 	displayName     : 'ListPage',
 	getDefaultProps : function() {
 		return {
 			brewCollection : [
 				{
-					title : '',
-					class : '',
-					brews : []
+					title   : '',
+					class   : '',
+					brews   : [],
+					visible : true
 				}
 			],
 			navItems : <></>
 		};
 	},
 	getInitialState : function() {
+		let brewCollection = [];
+
+		if(typeof window !== 'undefined') {
+			brewCollection = this.props.brewCollection.map((brewGroup)=>{
+				const localVisibility = localStorage.getItem(`${USERPAGE_KEY_PREFIX}-${brewGroup.class}`) ?? 'true';
+				if(brewGroup.visible != (localVisibility=='true')) {
+					brewGroup.visible = (localVisibility=='true');
+				};
+				return brewGroup;
+			});
+		}
+
 		return {
-			sortType     : 'alpha',
-			sortDir      : 'asc',
-			filterString : this.props.query?.filter || '',
-			query        : this.props.query
+			sortType       : 'alpha',
+			sortDir        : 'asc',
+			filterString   : this.props.query?.filter || '',
+			query          : this.props.query,
+			brewCollection : brewCollection
 		};
+	},
+	componentDidMount : function() {
+		// SAVE TO LOCAL STORAGE WHEN LEAVING PAGE
+		window.onbeforeunload = this.saveToLocalStorage;
+	},
+
+	componentWillUnmount : function() {
+		window.onbeforeunload = function(){};
+	},
+
+	saveToLocalStorage : function() {
+		this.state.brewCollection.map((brewGroup)=>{
+			localStorage.setItem(`${USERPAGE_KEY_PREFIX}-${brewGroup.class}`, `${brewGroup.visible}`);
+		});
 	},
 
 	renderBrews : function(brews){
@@ -149,11 +179,22 @@ const ListPage = createClass({
 		return _.orderBy(brews, (brew)=>{ return this.sortBrewOrder(brew); }, this.state.sortDir);
 	},
 
+	toggleBrewCollectionState : function(brewGroupClass) {
+		this.setState((prevState)=>({
+			brewCollection : prevState.brewCollection.map(
+				(brewGroup)=>brewGroup.class === brewGroupClass ? { ...brewGroup, visible: !brewGroup.visible } : brewGroup
+			)
+		}));
+	},
+
 	renderBrewCollection : function(brewCollection){
+		if(brewCollection == []) return <div className='brewCollection'>
+			<h1>No Brews</h1>
+		</div>;
 		return _.map(brewCollection, (brewGroup, idx)=>{
 			return <div key={idx} className={`brewCollection ${brewGroup.class ?? ''}`}>
-				<h1>{brewGroup.title || 'No Title'}</h1>
-				{this.renderBrews(this.getSortedBrews(brewGroup.brews))}
+				<h1 className={brewGroup.visible ? 'active' : 'inactive'} onClick={()=>{this.toggleBrewCollectionState(brewGroup.class);}}>{brewGroup.title || 'No Title'}</h1>
+				{brewGroup.visible ? this.renderBrews(this.getSortedBrews(brewGroup.brews)) : <></>}
 			</div>;
 		});
 	},
@@ -166,7 +207,7 @@ const ListPage = createClass({
 			<div className='content V3'>
 				<div className='phb page'>
 					{this.renderSortOptions()}
-					{this.renderBrewCollection(this.props.brewCollection)}
+					{this.renderBrewCollection(this.state.brewCollection)}
 				</div>
 			</div>
 		</div>;
