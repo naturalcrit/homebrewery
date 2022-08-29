@@ -161,11 +161,11 @@ const ListPage = createClass({
 
 	render : function(){
 		return <div className='listPage sitePage'>
-			<link href='/themes/5ePhbLegacy.style.css' rel='stylesheet'/>
+			<link href='/themes/5ePhb.style.css' rel='stylesheet'/>
 			{this.props.navItems}
 
 			<div className='content V3'>
-				<div className='phb'>
+				<div className='phb page'>
 					{this.renderSortOptions()}
 					{this.renderBrewCollection(this.props.brewCollection)}
 				</div>
