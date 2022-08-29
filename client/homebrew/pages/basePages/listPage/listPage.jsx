@@ -24,17 +24,11 @@ const ListPage = createClass({
 		};
 	},
 	getInitialState : function() {
-		let brewCollection = [];
-
-		if(typeof window !== 'undefined') {
-			brewCollection = this.props.brewCollection.map((brewGroup)=>{
-				const localVisibility = localStorage.getItem(`${USERPAGE_KEY_PREFIX}-${brewGroup.class}`) ?? 'true';
-				if(brewGroup.visible != (localVisibility=='true')) {
-					brewGroup.visible = (localVisibility=='true');
-				};
-				return brewGroup;
-			});
-		}
+		// HIDE ALL GROUPS UNTIL LOADED
+		const brewCollection = this.props.brewCollection.map((brewGroup)=>{
+			brewGroup.visible = false;
+			return brewGroup;
+		});
 
 		return {
 			sortType       : 'alpha',
@@ -44,9 +38,22 @@ const ListPage = createClass({
 			brewCollection : brewCollection
 		};
 	},
+
 	componentDidMount : function() {
 		// SAVE TO LOCAL STORAGE WHEN LEAVING PAGE
 		window.onbeforeunload = this.saveToLocalStorage;
+
+		// LOAD FROM LOCAL STORAGE
+		if(typeof window !== 'undefined') {
+			const brewCollection = this.props.brewCollection.map((brewGroup)=>{
+				const localVisibility = (localStorage.getItem(`${USERPAGE_KEY_PREFIX}-${brewGroup.class}`) ?? 'true')=='true';
+				brewGroup.visible = (brewGroup.visible != localVisibility ? localVisibility : brewGroup.visible);
+				return brewGroup;
+			});
+			this.setState({
+				brewCollection : brewCollection
+			});
+		};
 	},
 
 	componentWillUnmount : function() {
