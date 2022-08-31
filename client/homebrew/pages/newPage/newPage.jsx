@@ -54,7 +54,7 @@ const NewPage = createClass({
 			const metaStorage = JSON.parse(localStorage.getItem(METAKEY));
 
 			if(!brew.text || !brew.style){
-				brew.text = brew.text  || (brewStorage  ?? '');
+				brew.text  = brew.text  || (brewStorage  ?? '');
 				brew.style = brew.style || (styleStorage ?? undefined);
 				// brew.title = metaStorage?.title || this.state.brew.title;
 				// brew.description = metaStorage?.description || this.state.brew.description;
@@ -84,6 +84,11 @@ const NewPage = createClass({
 	},
 
 	componentDidMount : function() {
+		localStorage.setItem(BREWKEY, this.state.brew.text);
+		localStorage.setItem(STYLEKEY, this.state.brew.style);
+		localStorage.setItem(METAKEY, JSON.stringify({
+			'renderer' : this.state.brew.renderer
+		}));
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
 	componentWillUnmount : function() {
