@@ -45,7 +45,7 @@ const PrintPage = createClass({
 					brew : {
 						text     : brewStorage,
 						style    : styleStorage,
-						renderer : metaStorage.renderer || 'legacy'
+						renderer : metaStorage?.renderer || 'legacy'
 					}
 				};
 			});
