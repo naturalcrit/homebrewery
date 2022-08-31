@@ -100,7 +100,6 @@ const ListPage = createClass({
 				<i className='fas fa-search'></i>
 				<input
 					type='search'
-					autoFocus={true}
 					placeholder='filter title/description'
 					onChange={this.handleFilterTextChange}
 					value={this.state.filterString}
