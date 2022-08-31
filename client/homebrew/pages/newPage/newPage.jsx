@@ -48,20 +48,6 @@ const NewPage = createClass({
 	getInitialState : function() {
 		const brew = this.props.brew;
 
-		if(typeof window !== 'undefined') { //Load from localStorage if in client browser
-			const brewStorage  = localStorage.getItem(BREWKEY);
-			const styleStorage = localStorage.getItem(STYLEKEY);
-			const metaStorage = JSON.parse(localStorage.getItem(METAKEY));
-
-			if(!brew.text || !brew.style){
-				brew.text  = brew.text  || (brewStorage  ?? '');
-				brew.style = brew.style || (styleStorage ?? undefined);
-				// brew.title = metaStorage?.title || this.state.brew.title;
-				// brew.description = metaStorage?.description || this.state.brew.description;
-				brew.renderer = metaStorage?.renderer || brew.renderer;
-			}
-		}
-
 		return {
 			brew : {
 				text        : brew.text || '',
@@ -84,12 +70,31 @@ const NewPage = createClass({
 	},
 
 	componentDidMount : function() {
-		localStorage.setItem(BREWKEY, this.state.brew.text);
-		localStorage.setItem(STYLEKEY, this.state.brew.style);
-		localStorage.setItem(METAKEY, JSON.stringify({
-			'renderer' : this.state.brew.renderer
-		}));
 		document.addEventListener('keydown', this.handleControlKeys);
+
+		const brew = this.props.brew;
+
+		if(typeof window !== 'undefined') { //Load from localStorage if in client browser
+			const brewStorage  = localStorage.getItem(BREWKEY);
+			const styleStorage = localStorage.getItem(STYLEKEY);
+			const metaStorage = JSON.parse(localStorage.getItem(METAKEY));
+
+			if(!brew.text || !brew.style){
+				brew.text = brew.text  || (brewStorage  ?? '');
+				brew.style = brew.style || (styleStorage ?? undefined);
+				// brew.title = metaStorage?.title || this.state.brew.title;
+				// brew.description = metaStorage?.description || this.state.brew.description;
+				brew.renderer = brew.renderer || metaStorage?.renderer;
+
+				this.setState({
+					brew : brew
+				});
+			}
+		}
+
+		localStorage.setItem(BREWKEY, brew.text);
+		localStorage.setItem(STYLEKEY, brew.style);
+		localStorage.setItem(METAKEY, JSON.stringify({'renderer' : brew.renderer}));
 	},
 	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
