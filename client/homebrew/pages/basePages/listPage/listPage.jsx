@@ -100,7 +100,6 @@ const ListPage = createClass({
 				<i className='fas fa-search'></i>
 				<input
 					type='search'
-					autoFocus={true}
 					placeholder='filter title/description'
 					onChange={this.handleFilterTextChange}
 					value={this.state.filterString}
@@ -161,11 +160,11 @@ const ListPage = createClass({
 
 	render : function(){
 		return <div className='listPage sitePage'>
-			<link href='/themes/Legacy/5ePHB/style.css' rel='stylesheet'/>
+			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet'/>
 			{this.props.navItems}
 
 			<div className='content V3'>
-				<div className='phb'>
+				<div className='phb page'>
 					{this.renderSortOptions()}
 					{this.renderBrewCollection(this.props.brewCollection)}
 				</div>
