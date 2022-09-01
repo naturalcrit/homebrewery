@@ -141,9 +141,18 @@ const ListPage = createClass({
 
 	getSortedBrews : function(brews){
 		const testString = _.deburr(this.state.filterString).toLowerCase();
+
+		const checkString = (stringToTest)=>{
+			return (_.deburr(stringToTest).toLowerCase().includes(testString));
+		};
+
 		brews = _.filter(brews, (brew)=>{
-			return (_.deburr(brew.title).toLowerCase().includes(testString)) ||
-			(_.deburr(brew.description).toLowerCase().includes(testString));
+			const brewStrings = []
+				.concat(brew.title)
+				.concat(brew.description)
+				.concat(brew.tags);
+
+			return _.filter(brewStrings, (brewString)=>{return checkString(brewString);}).length > 0;
 		});
 
 		return _.orderBy(brews, (brew)=>{ return this.sortBrewOrder(brew); }, this.state.sortDir);
