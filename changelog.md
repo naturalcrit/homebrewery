@@ -39,7 +39,35 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-### Thursday 27/08/2022 - v3.2.0
+### Wednesday 31/08/2022 - v3.2.1
+{{taskList
+
+##### Calculuschild
+
+* [x] Reference Links should now work inside tables
+
+	Fixes issues: [#2307](https://github.com/naturalcrit/homebrewery/issues/2307)
+
+##### Jeddai:
+
+* [x] Fix printing from `/new` not working
+
+  Fixes issues: [#1789](https://github.com/naturalcrit/homebrewery/issues/1789), [#1806](https://github.com/naturalcrit/homebrewery/issues/1806)
+
+* [x] Fix broken snippet buttons on `/new`
+
+  Fixes issues: [#2311](https://github.com/naturalcrit/homebrewery/issues/2311)
+
+##### G-Ambatte:
+
+* [x] Several small tweaks to the User page
+
+  Fixes issues: [#2301](https://github.com/naturalcrit/homebrewery/issues/2301), [#2303](https://github.com/naturalcrit/homebrewery/issues/2303), [#2121](https://github.com/naturalcrit/homebrewery/issues/2121)
+}}
+
+\page
+
+### Saturday 27/08/2022 - v3.2.0
 {{taskList
 
 ##### Calculuschild
