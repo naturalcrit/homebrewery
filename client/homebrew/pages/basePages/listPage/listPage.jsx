@@ -14,10 +14,9 @@ const ListPage = createClass({
 		return {
 			brewCollection : [
 				{
-					title   : '',
-					class   : '',
-					brews   : [],
-					visible : true
+					title : '',
+					class : '',
+					brews : []
 				}
 			],
 			navItems : <></>
@@ -46,8 +45,7 @@ const ListPage = createClass({
 		// LOAD FROM LOCAL STORAGE
 		if(typeof window !== 'undefined') {
 			const brewCollection = this.props.brewCollection.map((brewGroup)=>{
-				const localVisibility = (localStorage.getItem(`${USERPAGE_KEY_PREFIX}-${brewGroup.class}`) ?? 'true')=='true';
-				brewGroup.visible = (brewGroup.visible != localVisibility ? localVisibility : brewGroup.visible);
+				brewGroup.visible = (localStorage.getItem(`${USERPAGE_KEY_PREFIX}-${brewGroup.class}`) ?? 'true')=='true';
 				return brewGroup;
 			});
 			this.setState({
