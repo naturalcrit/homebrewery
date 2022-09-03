@@ -179,6 +179,7 @@ app.get('/user/:username', async (req, res, next)=>{
 		'createdAt',
 		'updatedAt',
 		'lastViewed',
+		'thumbnail',
 		'tags'
 	];
 
