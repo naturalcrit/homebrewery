@@ -94,7 +94,7 @@ const NewPage = createClass({
 
 		localStorage.setItem(BREWKEY, brew.text);
 		localStorage.setItem(STYLEKEY, brew.style);
-		localStorage.setItem(METAKEY, JSON.stringify({'renderer' : brew.renderer}));
+		localStorage.setItem(METAKEY, JSON.stringify({ 'renderer': brew.renderer }));
 	},
 	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
