@@ -179,7 +179,8 @@ app.get('/user/:username', async (req, res, next)=>{
 		'createdAt',
 		'updatedAt',
 		'lastViewed',
-		'tags'
+		'tags',
+		'systems'
 	];
 
 	let brews = await HomebrewModel.getByUser(req.params.username, ownAccount, fields)

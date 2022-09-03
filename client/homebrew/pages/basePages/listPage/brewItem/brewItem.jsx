@@ -104,7 +104,7 @@ const BrewItem = createClass({
 			</div>
 			<hr />
 			<div className='info'>
-				{brew.tags ? <>
+				{([].concat(brew.tags)[0]!='') ? <>
 					<span className='brewTags' title={`Tags:\n${brew.tags.join('\n')}`}>
 						<i className='fas fa-tags'/> {brew.tags.join(', ')}
 					</span>
@@ -115,6 +115,13 @@ const BrewItem = createClass({
 					<i className='fas fa-user'/> {brew.authors?.join(', ')}
 				</span>
 				<br />
+				{brew.systems?.length > 0 ? <>
+					<span className='systemTags' title={`Systems:\n${brew.systems.join('\n')}`}>
+						<i className='fas fa-dice-d20'/> {brew.systems.join(', ')}
+					</span>
+					<br />
+				</> : <></>
+				}
 				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
 					<i className='fas fa-eye'/> {brew.views}
 				</span>
