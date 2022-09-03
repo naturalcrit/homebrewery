@@ -31,10 +31,9 @@ const UserPage = createClass({
 
 		const brewCollection = [
 			{
-				title   : `${usernameWithS} published brews`,
-				class   : 'published',
-				brews   : brews.published,
-				visible : true
+				title : `${usernameWithS} published brews`,
+				class : 'published',
+				brews : brews.published
 			}
 		];
 		if(this.props.username == global.account?.username){
