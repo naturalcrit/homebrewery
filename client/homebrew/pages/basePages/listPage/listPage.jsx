@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./listPage.less');
 const React       = require('react');
 const createClass = require('create-react-class');
@@ -6,7 +7,10 @@ const moment      = require('moment');
 
 const BrewItem    = require('./brewItem/brewItem.jsx');
 
-const USERPAGE_KEY_PREFIX = 'HOMEBREWERY-LISTPAGE-VISIBILITY';
+const USERPAGE_KEY_PREFIX = 'HOMEBREWERY-LISTPAGE';
+
+const DEFAULT_SORT_TYPE = 'alpha';
+const DEFAULT_SORT_DIR = 'asc';
 
 const ListPage = createClass({
 	displayName     : 'ListPage',
@@ -31,8 +35,8 @@ const ListPage = createClass({
 
 		return {
 			filterString   : this.props.query?.filter || '',
-			sortType       : this.props.query?.sort || 'alpha',
-			sortDir        : this.props.query?.dir || 'asc',
+			sortType       : this.props.query?.sort || null,
+			sortDir        : this.props.query?.dir || null,
 			query          : this.props.query,
 			brewCollection : brewCollection
 		};
@@ -44,12 +48,19 @@ const ListPage = createClass({
 
 		// LOAD FROM LOCAL STORAGE
 		if(typeof window !== 'undefined') {
+			const newSortType = (this.state.sortType ?? (localStorage.getItem(`${USERPAGE_KEY_PREFIX}-SORTTYPE`) || DEFAULT_SORT_TYPE));
+			const newSortDir = (this.state.sortDir ?? (localStorage.getItem(`${USERPAGE_KEY_PREFIX}-SORTDIR`) || DEFAULT_SORT_DIR));
+			this.updateUrl(this.state.filterString, newSortType, newSortDir);
+
 			const brewCollection = this.props.brewCollection.map((brewGroup)=>{
-				brewGroup.visible = (localStorage.getItem(`${USERPAGE_KEY_PREFIX}-${brewGroup.class}`) ?? 'true')=='true';
+				brewGroup.visible = (localStorage.getItem(`${USERPAGE_KEY_PREFIX}-VISIBILITY-${brewGroup.class}`) ?? 'true')=='true';
 				return brewGroup;
 			});
+
 			this.setState({
-				brewCollection : brewCollection
+				brewCollection : brewCollection,
+				sortType       : newSortType,
+				sortDir        : newSortDir
 			});
 		};
 	},
@@ -60,8 +71,10 @@ const ListPage = createClass({
 
 	saveToLocalStorage : function() {
 		this.state.brewCollection.map((brewGroup)=>{
-			localStorage.setItem(`${USERPAGE_KEY_PREFIX}-${brewGroup.class}`, `${brewGroup.visible}`);
+			localStorage.setItem(`${USERPAGE_KEY_PREFIX}-VISIBILITY-${brewGroup.class}`, `${brewGroup.visible}`);
 		});
+		localStorage.setItem(`${USERPAGE_KEY_PREFIX}-SORTTYPE`, this.state.sortType);
+		localStorage.setItem(`${USERPAGE_KEY_PREFIX}-SORTDIR`, this.state.sortDir);
 	},
 
 	renderBrews : function(brews){
