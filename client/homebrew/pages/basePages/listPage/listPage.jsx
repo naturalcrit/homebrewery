@@ -30,10 +30,10 @@ const ListPage = createClass({
 		});
 
 		return {
-			filterString : this.props.query?.filter || '',
-			sortType     : this.props.query?.sort || 'alpha',
-			sortDir      : this.props.query?.dir || 'asc',
-			query        : this.props.query,
+			filterString   : this.props.query?.filter || '',
+			sortType       : this.props.query?.sort || 'alpha',
+			sortDir        : this.props.query?.dir || 'asc',
+			query          : this.props.query,
 			brewCollection : brewCollection
 		};
 	},
