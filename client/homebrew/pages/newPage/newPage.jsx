@@ -75,7 +75,7 @@ const NewPage = createClass({
 	componentDidMount : function() {
 		document.addEventListener('keydown', this.handleControlKeys);
 
-		const brew = this.props.brew;
+		const brew = this.state.brew;
 
 		if(typeof window !== 'undefined') { //Load from localStorage if in client browser
 			const brewStorage  = localStorage.getItem(BREWKEY);
