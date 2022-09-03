@@ -98,6 +98,12 @@ const BrewItem = createClass({
 		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
 
 		return <div className='brewItem'>
+			{brew.thumbnail ?
+				<div className='thumbnail'>
+					<img className='thumbnailImage' src={brew.thumbnail} ></img>
+				</div> :
+				<></>
+			}
 			<div className='text'>
 				<h2>{brew.title}</h2>
 				<p className='description'>{brew.description}</p>
