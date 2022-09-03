@@ -74,4 +74,26 @@
 			}
 		}
 	}
+	h1 {
+		cursor: pointer;
+		&.active {
+			color: #58180D;
+		}
+		&.inactive {
+			color: #707070;
+			
+		}
+		&.active::before, &.inactive::before {
+			font-family: 'Font Awesome 5 Free';
+			font-weight: 900;
+			font-size: 0.6cm;
+    			padding-right: 0.5em;
+		}
+		&.active::before {
+			content: '\f107';
+		}
+		&.inactive::before {
+			content: '\f105';
+		}
+	}
 }
