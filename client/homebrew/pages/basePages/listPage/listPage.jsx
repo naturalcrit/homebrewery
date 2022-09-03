@@ -30,10 +30,10 @@ const ListPage = createClass({
 		});
 
 		return {
-			sortType       : 'alpha',
-			sortDir        : 'asc',
-			filterString   : this.props.query?.filter || '',
-			query          : this.props.query,
+			filterString : this.props.query?.filter || '',
+			sortType     : this.props.query?.sort || 'alpha',
+			sortDir      : this.props.query?.dir || 'asc',
+			query        : this.props.query,
 			brewCollection : brewCollection
 		};
 	},
@@ -85,14 +85,18 @@ const ListPage = createClass({
 	},
 
 	handleSortOptionChange : function(event){
+		this.updateUrl(this.state.filterString, event.target.value, this.state.sortDir);
 		this.setState({
 			sortType : event.target.value
 		});
 	},
 
 	handleSortDirChange : function(event){
+		const newDir = this.state.sortDir == 'asc' ? 'desc' : 'asc';
+
+		this.updateUrl(this.state.filterString, this.state.sortType, newDir);
 		this.setState({
-			sortDir : `${(this.state.sortDir == 'asc' ? 'desc' : 'asc')}`
+			sortDir : newDir
 		});
 	},
 
@@ -112,19 +116,22 @@ const ListPage = createClass({
 		this.setState({
 			filterString : e.target.value,
 		});
-		this.updateUrl(e.target.value);
+		this.updateUrl(e.target.value, this.state.sortType, this.state.sortDir);
 		return;
 	},
 
-	updateUrl : function(filterTerm){
+	updateUrl : function(filterTerm, sortType, sortDir){
 		const url = new URL(window.location.href);
 		const urlParams = new URLSearchParams(url.search);
-		if(urlParams.get('filter') == filterTerm)
-			return;
+
+		urlParams.set('sort', sortType);
+		urlParams.set('dir', sortDir);
+
 		if(!filterTerm)
 			urlParams.delete('filter');
 		else
 			urlParams.set('filter', filterTerm);
+
 		url.search = urlParams;
 		window.history.replaceState(null, null, url);
 	},
