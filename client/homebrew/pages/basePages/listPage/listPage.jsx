@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./listPage.less');
 const React       = require('react');
 const createClass = require('create-react-class');
@@ -30,10 +31,10 @@ const ListPage = createClass({
 		});
 
 		return {
-			filterString : this.props.query?.filter || '',
-			sortType     : this.props.query?.sort || 'alpha',
-			sortDir      : this.props.query?.dir || 'asc',
-			query        : this.props.query,
+			filterString   : this.props.query?.filter || '',
+			sortType       : this.props.query?.sort || 'alpha',
+			sortDir        : this.props.query?.dir || 'asc',
+			query          : this.props.query,
 			brewCollection : brewCollection
 		};
 	},
@@ -184,19 +185,15 @@ const ListPage = createClass({
 	getSortedBrews : function(brews){
 		const testString = _.deburr(this.state.filterString).toLowerCase();
 
-		const checkString = (stringToTest)=>{
-			return (_.deburr(stringToTest).toLowerCase().includes(testString));
-		};
-
 		brews = _.filter(brews, (brew)=>{
-			const brewStrings = []
-				.concat(brew.title)
-				.concat(brew.description)
-				.concat(brew.tags);
+			const brewStrings = _.deburr([
+				brew.title,
+				brew.description,
+				brew.tags].join('\n')
+				.toLowerCase());
 
-			return _.filter(brewStrings, (brewString)=>{return checkString(brewString);}).length > 0;
+			return brewStrings.includes(testString);
 		});
-
 		return _.orderBy(brews, (brew)=>{ return this.sortBrewOrder(brew); }, this.state.sortDir);
 	},
 
