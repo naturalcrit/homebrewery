@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./listPage.less');
 const React       = require('react');
 const createClass = require('create-react-class');
@@ -183,11 +184,16 @@ const ListPage = createClass({
 
 	getSortedBrews : function(brews){
 		const testString = _.deburr(this.state.filterString).toLowerCase();
-		brews = _.filter(brews, (brew)=>{
-			return (_.deburr(brew.title).toLowerCase().includes(testString)) ||
-			(_.deburr(brew.description).toLowerCase().includes(testString));
-		});
 
+		brews = _.filter(brews, (brew)=>{
+			const brewStrings = _.deburr([
+				brew.title,
+				brew.description,
+				brew.tags].join('\n')
+				.toLowerCase());
+
+			return brewStrings.includes(testString);
+		});
 		return _.orderBy(brews, (brew)=>{ return this.sortBrewOrder(brew); }, this.state.sortDir);
 	},
 
