@@ -88,7 +88,7 @@
   "devDependencies": {
     "eslint": "^8.23.0",
     "eslint-plugin-react": "^7.31.1",
-    "jest": "^29.0.1",
+    "jest": "^29.0.2",
     "supertest": "^6.2.4"
   }
 }
