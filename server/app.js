@@ -287,14 +287,15 @@ app.use(asyncHandler(async (req, res, next)=>{
 		environment : nodeEnv
 	};
 	const props = {
-		version     : require('./../package.json').version,
-		url         : req.originalUrl,
-		brew        : req.brew,
-		brews       : req.brews,
-		googleBrews : req.googleBrews,
-		account     : req.account,
-		enable_v3   : config.get('enable_v3'),
-		config      : configuration
+		version       : require('./../package.json').version,
+		url           : req.originalUrl,
+		brew          : req.brew,
+		brews         : req.brews,
+		googleBrews   : req.googleBrews,
+		account       : req.account,
+		enable_v3     : config.get('enable_v3'),
+		enable_themes : config.get('enable_themes'),
+		config        : configuration
 	};
 	const title = req.brew ? req.brew.title : '';
 	const page = await templateFn('homebrew', title, props)

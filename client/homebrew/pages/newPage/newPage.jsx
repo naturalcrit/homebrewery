@@ -75,7 +75,7 @@ const NewPage = createClass({
 			// brew.title = metaStorage?.title || this.state.brew.title;
 			// brew.description = metaStorage?.description || this.state.brew.description;
 			brew.renderer = metaStorage?.renderer ?? brew.renderer;
-			brew.renderer = metaStorage?.theme    ?? brew.theme;
+			brew.theme    = metaStorage?.theme    ?? brew.theme;
 
 			this.setState({
 				brew : brew

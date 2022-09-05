@@ -152,6 +152,8 @@ const MetadataEditor = createClass({
 	},
 
 	renderThemeDropdown : function(){
+		if(!global.enable_themes) return;
+
 		const listThemes = (renderer)=>{
 			return _.map(_.values(Themes[renderer]), (theme)=>{
 				return <div className='item' key={''} onClick={()=>this.handleTheme(theme)} title={''}>

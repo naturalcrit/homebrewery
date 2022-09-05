@@ -67,7 +67,7 @@ const Snippetbar = createClass({
 	},
 
 	mergeCustomizer : function(valueA, valueB, key) {
-		if(key == "snippets") {
+		if(key == 'snippets') {
 			const result = _.reverse(_.unionBy(_.reverse(valueB), _.reverse(valueA), 'name')); // Join snippets together, with preference for the current theme over the base theme
 			return _.filter(result, 'gen'); //Only keep snippets with a 'gen' property.
 		}
@@ -77,15 +77,14 @@ const Snippetbar = createClass({
 		let compiledSnippets = snippets;
 		const baseSnippetsPath = Themes[rendererPath][themePath].baseSnippets;
 
-		let objB = _.keyBy(compiledSnippets, 'groupName');
+		const objB = _.keyBy(compiledSnippets, 'groupName');
 
 		if(baseSnippetsPath) {
-			let objA = _.keyBy(_.cloneDeep(ThemeSnippets[`${rendererPath}_${baseSnippetsPath}`]), 'groupName');
+			const objA = _.keyBy(_.cloneDeep(ThemeSnippets[`${rendererPath}_${baseSnippetsPath}`]), 'groupName');
 			compiledSnippets = _.values(_.mergeWith(objA, objB, this.mergeCustomizer));
 			compiledSnippets = this.compileSnippets(rendererPath, baseSnippetsPath, _.cloneDeep(compiledSnippets));
-		}
-		else {
-			let objA = _.keyBy(_.cloneDeep(ThemeSnippets[`${rendererPath}_Blank`]), 'groupName');
+		} else {
+			const objA = _.keyBy(_.cloneDeep(ThemeSnippets[`${rendererPath}_Blank`]), 'groupName');
 			compiledSnippets = _.values(_.mergeWith(objA, objB, this.mergeCustomizer));
 		}
 		return compiledSnippets;
