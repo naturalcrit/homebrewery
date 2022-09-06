@@ -105,11 +105,10 @@ const BrewItem = createClass({
 			<hr />
 			<div className='info'>
 				{brew.tags ? <>
-					<span className='brewTags' title={`Tags:\n${brew.tags.join('\n')}`}>
+					<div className='brewTags' title={`Tags:\n${brew.tags.join('\n')}`}>
 						<i className='fas fa-tags'/>
-						{brew.tags.map((tag, idx)=>{return <><span>{tag}</span>{'\n'}</>;})}
-					</span>
-					<br />
+						{brew.tags.map((tag, idx)=>{return <span>{tag}</span>;})}
+					</div>
 				</> : <></>
 				}
 				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
