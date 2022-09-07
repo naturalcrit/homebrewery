@@ -97,7 +97,6 @@ const BrewItem = createClass({
 		const brew = this.props.brew;
 		if(Array.isArray(brew.tags)) {               // temporary fix until dud tags are cleaned
 			brew.tags = brew.tags?.filter(tag => tag); //remove tags that are empty strings
-			console.log(brew.tags);
 		}
 		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
 
