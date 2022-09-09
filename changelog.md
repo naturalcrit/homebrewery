@@ -39,6 +39,26 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Friday 08/09/2022 - v3.2.2
+{{taskList
+
+##### Jeddai:
+
+* [x] Fix brews not deleting from User page when removed from Google Drive externally.
+
+  Fixes issues: [#2325](https://github.com/naturalcrit/homebrewery/issues/2325)
+
+##### G-Ambatte:
+
+* [x] Brew Tags are now searchable on the User page
+
+Fixes issues  [#2317](https://github.com/naturalcrit/homebrewery/issues/2317), [#2319](https://github.com/naturalcrit/homebrewery/issues/2319), [#2334](https://github.com/naturalcrit/homebrewery/issues/2334)
+
+* [x] Several tweaks to the User page
+
+ Fixes issues:  [#1797](https://github.com/naturalcrit/homebrewery/issues/1797), [#2315](https://github.com/naturalcrit/homebrewery/issues/2315), [#2326](https://github.com/naturalcrit/homebrewery/issues/2326), [#2328](https://github.com/naturalcrit/homebrewery/issues/2328)
+}}
+
 ### Wednesday 31/08/2022 - v3.2.1
 {{taskList
 
