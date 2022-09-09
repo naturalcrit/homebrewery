@@ -231,7 +231,7 @@ const ListPage = createClass({
 
 	render : function(){
 		return <div className='listPage sitePage'>
-			<link href='/themes/5ePhb.style.css' rel='stylesheet'/>
+			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet'/>
 			{this.props.navItems}
 
 			<div className='content V3'>

@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
 const createClass = require('create-react-class');
@@ -13,6 +14,8 @@ const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
 const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
 
+const Themes = require('themes/themes.json');
+
 const PAGE_HEIGHT = 1056;
 const PPR_THRESHOLD = 50;
 
@@ -23,6 +26,7 @@ const BrewRenderer = createClass({
 			text     : '',
 			style    : '',
 			renderer : 'legacy',
+			theme    : '5ePHB',
 			errors   : []
 		};
 	},
@@ -177,6 +181,9 @@ const BrewRenderer = createClass({
 	render : function(){
 		//render in iFrame so broken code doesn't crash the site.
 		//Also render dummy page while iframe is mounting.
+		const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
+		const themePath    = this.props.theme ?? '5ePHB';
+		const baseThemePath = Themes[rendererPath][themePath].baseTheme;
 
 		return (
 			<React.Fragment>
@@ -200,7 +207,11 @@ const BrewRenderer = createClass({
 							<RenderWarnings />
 							<NotificationPopup />
 						</div>
-						<link href={`${this.props.renderer == 'legacy' ? '/themes/5ePhbLegacy.style.css' : '/themes/5ePhb.style.css'}`} rel='stylesheet'/>
+						<link href={`/themes/${rendererPath}/Blank/style.css`} rel='stylesheet'/>
+						{baseThemePath &&
+							<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} rel='stylesheet'/>
+						}
+						<link href={`/themes/${rendererPath}/${themePath}/style.css`} rel='stylesheet'/>
 						{/* Apply CSS from Style tab and render pages from Markdown tab */}
 						{this.state.isMounted
 							&&

@@ -31,7 +31,8 @@ const NewPage = createClass({
 				style       : undefined,
 				title       : '',
 				description : '',
-				renderer    : 'V3'
+				renderer    : 'V3',
+				theme       : '5ePHB'
 			}
 		};
 	},
@@ -45,7 +46,8 @@ const NewPage = createClass({
 				style       : brew.style       ?? undefined,
 				title       : brew.title       ?? '',
 				description : brew.description ?? '',
-				renderer    : brew.renderer    ?? 'legacy'
+				renderer    : brew.renderer    ?? 'legacy',
+				theme       : brew.theme       ?? '5ePHB'
 			};
 		}
 
@@ -73,6 +75,7 @@ const NewPage = createClass({
 			// brew.title = metaStorage?.title || this.state.brew.title;
 			// brew.description = metaStorage?.description || this.state.brew.description;
 			brew.renderer = metaStorage?.renderer ?? brew.renderer;
+			brew.theme    = metaStorage?.theme    ?? brew.theme;
 
 			this.setState({
 				brew : brew
@@ -81,7 +84,7 @@ const NewPage = createClass({
 
 		localStorage.setItem(BREWKEY, brew.text);
 		localStorage.setItem(STYLEKEY, brew.style);
-		localStorage.setItem(METAKEY, JSON.stringify({ 'renderer': brew.renderer }));
+		localStorage.setItem(METAKEY, JSON.stringify({ 'renderer': brew.renderer, 'theme': brew.theme }));
 	},
 	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
@@ -129,7 +132,8 @@ const NewPage = createClass({
 		localStorage.setItem(METAKEY, JSON.stringify({
 			// 'title'       : this.state.brew.title,
 			// 'description' : this.state.brew.description,
-			'renderer' : this.state.brew.renderer
+			'renderer' : this.state.brew.renderer,
+			'theme'    : this.state.brew.theme
 		}));
 	},
 
@@ -287,7 +291,7 @@ const NewPage = createClass({
 						onMetaChange={this.handleMetaChange}
 						renderer={this.state.brew.renderer}
 					/>
-					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} errors={this.state.htmlErrors}/>
+					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} theme={this.state.brew.theme} errors={this.state.htmlErrors}/>
 				</SplitPane>
 			</div>
 		</div>;

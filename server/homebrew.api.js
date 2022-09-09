@@ -80,7 +80,7 @@ const mergeBrewText = (brew)=>{
 			`\`\`\`\n\n` +
 			`${text}`;
 	}
-	const metadata = _.pick(brew, ['title', 'description', 'tags', 'systems', 'renderer']);
+	const metadata = _.pick(brew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']);
 	text = `\`\`\`metadata\n` +
 		`${yaml.dump(metadata)}\n` +
 		`\`\`\`\n\n` +

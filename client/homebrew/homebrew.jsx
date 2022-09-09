@@ -54,6 +54,7 @@ const Homebrew = createClass({
 		global.account = this.props.account;
 		global.version = this.props.version;
 		global.enable_v3 = this.props.enable_v3;
+		global.enable_themes = this.props.enable_themes;
 		global.config = this.props.config;
 
 		return {};

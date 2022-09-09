@@ -17,15 +17,15 @@ module.exports = function(classname){
 
 	return dedent`
 		## Class Features
-		As a ${classname}, you gain the following class features
-		#### Hit Points
 
+		As a ${classname}, you gain the following class features
+
+		#### Hit Points
 		**Hit Dice:**                    :: 1d${hitDie} per ${classname} level
 		**Hit Points at 1st Level:**     :: ${hitDie} + your Constitution modifier
 		**Hit Points at Higher Levels:** :: 1d${hitDie} (or ${hitDie/2 + 1}) + your Constitution modifier per ${classname} level after 1st
 
 		#### Proficiencies
-
 		**Armor:**   :: ${_.sampleSize(['Light armor', 'Medium armor', 'Heavy armor', 'Shields'], _.random(0, 3)).join(', ') || 'None'}
 		**Weapons:** :: ${_.sampleSize(['Squeegee', 'Rubber Chicken', 'Simple weapons', 'Martial weapons'], _.random(0, 2)).join(', ') || 'None'}
 		**Tools:**   :: ${_.sampleSize(['Artisan\'s tools', 'one musical instrument', 'Thieves\' tools'], _.random(0, 2)).join(', ') || 'None'}
@@ -34,7 +34,6 @@ module.exports = function(classname){
 		**Skills:**        :: Choose two from ${_.sampleSize(skillList, _.random(4, 6)).join(', ')}
 
 		#### Spellcasting Ability
-
 		{{text-align:center
 		**Spell save DC**:: = ${_.sample([6, 8, 10])} + your proficiency bonus + your ${spellSkill} modifier
 
@@ -46,6 +45,5 @@ module.exports = function(classname){
 		- *(a)* a martial weapon and a shield or *(b)* two martial weapons
 		- *(a)* five javelins or *(b)* any simple melee weapon
 		- ${_.sample(['10 lint fluffs', '1 button', 'a cherished lost sock'])}
-
 		`;
 };
