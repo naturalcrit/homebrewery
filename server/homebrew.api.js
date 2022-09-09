@@ -15,17 +15,24 @@ const { nanoid } = require('nanoid');
 // 	});
 // };
 
+const getId = (req)=>{
+	// Set the id and initial potential google id, where the google id is present on the existing brew.
+	let id = req.params.id, googleId = req.body?.googleId;
+
+	// If the id is longer than 12, then it's a google id + the edit id. This splits the longer id up.
+	if(id.length > 12) {
+		googleId = id.slice(0, -12);
+		id = id.slice(-12);
+	}
+	return { id, googleId };
+};
+
 const getBrew = (accessType)=>{
 	// Create middleware with the accessType passed in as part of the scope
 	return async (req, res, next)=>{
-		// Set the id and initial potential google id, where the google id is present on the existing brew.
-		let id = req.params.id, googleId = req.body?.googleId;
+		// Get relevant IDs for the brew
+		const { id, googleId } = getId(req);
 
-		// If the id is longer than 12, then it's a google id + the edit id. This splits the longer id up.
-		if(id.length > 12) {
-			googleId = id.slice(0, -12);
-			id = id.slice(-12);
-		}
 		// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine.
 		let stub = await HomebrewModel.get(accessType === 'edit' ? { editId: id } : { shareId: id })
 			.catch((err)=>{
@@ -259,7 +266,17 @@ const deleteGoogleBrew = async (account, id, editId, res)=>{
 	return true;
 };
 
-const deleteBrew = async (req, res)=>{
+const deleteBrew = async (req, res, next)=>{
+	// Delete an orphaned stub if its Google brew doesn't exist
+	try {
+		await getBrew('edit')(req, res, ()=>{});
+	} catch (err) {
+		const { id, googleId } = getId(req);
+		console.warn(`No google brew found for id ${googleId}, the stub with id ${id} will be deleted.`);
+		await HomebrewModel.deleteOne({ editId: id });
+		return next();
+	}
+
 	let brew = req.brew;
 	const { googleId, editId } = brew;
 	const account = req.account;
@@ -312,8 +329,8 @@ const deleteBrew = async (req, res)=>{
 router.post('/api', asyncHandler(newBrew));
 router.put('/api/:id', asyncHandler(getBrew('edit')), asyncHandler(updateBrew));
 router.put('/api/update/:id', asyncHandler(getBrew('edit')), asyncHandler(updateBrew));
-router.delete('/api/:id', asyncHandler(getBrew('edit')), asyncHandler(deleteBrew));
-router.get('/api/remove/:id', asyncHandler(getBrew('edit')), asyncHandler(deleteBrew));
+router.delete('/api/:id', asyncHandler(deleteBrew));
+router.get('/api/remove/:id', asyncHandler(deleteBrew));
 
 module.exports = {
 	homebrewApi : router,
