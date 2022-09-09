@@ -267,11 +267,12 @@ const deleteGoogleBrew = async (account, id, editId, res)=>{
 };
 
 const deleteBrew = async (req, res, next)=>{
+	// Delete an orphaned stub if its Google brew doesn't exist
 	try {
 		await getBrew('edit')(req, res, ()=>{});
 	} catch (err) {
 		const { id, googleId } = getId(req);
-		console.warn(`No google brew found for id ${googleId}, the stub will be deleted.`);
+		console.warn(`No google brew found for id ${googleId}, the stub with id ${id} will be deleted.`);
 		await HomebrewModel.deleteOne({ editId: id });
 		return next();
 	}
