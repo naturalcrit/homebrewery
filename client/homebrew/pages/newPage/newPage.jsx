@@ -27,41 +27,32 @@ const NewPage = createClass({
 	getDefaultProps : function() {
 		return {
 			brew : {
-				text      : '',
-				style     : undefined,
-				shareId   : null,
-				editId    : null,
-				createdAt : null,
-				updatedAt : null,
-				gDrive    : false,
-
+				text        : '',
+				style       : undefined,
 				title       : '',
 				description : '',
-				tags        : '',
-				published   : false,
-				authors     : [],
-				systems     : []
+				renderer    : 'V3',
+				theme       : '5ePHB'
 			}
 		};
 	},
 
 	getInitialState : function() {
-		const brew = this.props.brew;
+		let brew = this.props.brew;
+
+		if(this.props.brew.shareId) {
+			brew = {
+				text        : brew.text        ?? '',
+				style       : brew.style       ?? undefined,
+				title       : brew.title       ?? '',
+				description : brew.description ?? '',
+				renderer    : brew.renderer    ?? 'legacy',
+				theme       : brew.theme       ?? '5ePHB'
+			};
+		}
 
 		return {
-			brew : {
-				text        : brew.text || '',
-				style       : brew.style || undefined,
-				gDrive      : false,
-				title       : brew.title || '',
-				description : brew.description || '',
-				tags        : brew.tags || '',
-				published   : false,
-				authors     : [],
-				systems     : brew.systems || [],
-				renderer    : brew.renderer || 'V3'
-			},
-
+			brew       : brew,
 			isSaving   : false,
 			saveGoogle : (global.account && global.account.googleId ? true : false),
 			errors     : null,
@@ -74,27 +65,26 @@ const NewPage = createClass({
 
 		const brew = this.state.brew;
 
-		if(typeof window !== 'undefined') { //Load from localStorage if in client browser
+		if(!this.props.brew.shareId && typeof window !== 'undefined') { //Load from localStorage if in client browser
 			const brewStorage  = localStorage.getItem(BREWKEY);
 			const styleStorage = localStorage.getItem(STYLEKEY);
 			const metaStorage = JSON.parse(localStorage.getItem(METAKEY));
 
-			if(!brew.text || !brew.style){
-				brew.text = brew.text  || (brewStorage  ?? '');
-				brew.style = brew.style || (styleStorage ?? undefined);
-				// brew.title = metaStorage?.title || this.state.brew.title;
-				// brew.description = metaStorage?.description || this.state.brew.description;
-				brew.renderer = brew.renderer || metaStorage?.renderer;
+			brew.text  = brewStorage  ?? brew.text;
+			brew.style = styleStorage ?? brew.style;
+			// brew.title = metaStorage?.title || this.state.brew.title;
+			// brew.description = metaStorage?.description || this.state.brew.description;
+			brew.renderer = metaStorage?.renderer ?? brew.renderer;
+			brew.theme    = metaStorage?.theme    ?? brew.theme;
 
-				this.setState({
-					brew : brew
-				});
-			}
+			this.setState({
+				brew : brew
+			});
 		}
 
 		localStorage.setItem(BREWKEY, brew.text);
 		localStorage.setItem(STYLEKEY, brew.style);
-		localStorage.setItem(METAKEY, JSON.stringify({'renderer' : brew.renderer}));
+		localStorage.setItem(METAKEY, JSON.stringify({ 'renderer': brew.renderer, 'theme': brew.theme }));
 	},
 	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
@@ -142,7 +132,8 @@ const NewPage = createClass({
 		localStorage.setItem(METAKEY, JSON.stringify({
 			// 'title'       : this.state.brew.title,
 			// 'description' : this.state.brew.description,
-			'renderer' : this.state.brew.renderer
+			'renderer' : this.state.brew.renderer,
+			'theme'    : this.state.brew.theme
 		}));
 	},
 
@@ -300,7 +291,7 @@ const NewPage = createClass({
 						onMetaChange={this.handleMetaChange}
 						renderer={this.state.brew.renderer}
 					/>
-					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} errors={this.state.htmlErrors}/>
+					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} theme={this.state.brew.theme} errors={this.state.htmlErrors}/>
 				</SplitPane>
 			</div>
 		</div>;

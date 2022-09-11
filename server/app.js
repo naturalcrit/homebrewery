@@ -21,7 +21,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const index = brew.text.indexOf('```\n\n');
 		const metadataSection = brew.text.slice(12, index - 1);
 		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer']));
+		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']));
 		brew.text = brew.text.slice(index + 5);
 	}
 	if(brew.text.startsWith('```css')) {
@@ -29,6 +29,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
+	_.defaults(brew, { 'renderer': 'legacy', 'theme': '5ePHB' });
 };
 
 const sanitizeBrew = (brew, accessType)=>{
@@ -287,14 +288,15 @@ app.use(asyncHandler(async (req, res, next)=>{
 		environment : nodeEnv
 	};
 	const props = {
-		version     : require('./../package.json').version,
-		url         : req.originalUrl,
-		brew        : req.brew,
-		brews       : req.brews,
-		googleBrews : req.googleBrews,
-		account     : req.account,
-		enable_v3   : config.get('enable_v3'),
-		config      : configuration
+		version       : require('./../package.json').version,
+		url           : req.originalUrl,
+		brew          : req.brew,
+		brews         : req.brews,
+		googleBrews   : req.googleBrews,
+		account       : req.account,
+		enable_v3     : config.get('enable_v3'),
+		enable_themes : config.get('enable_themes'),
+		config        : configuration
 	};
 	const title = req.brew ? req.brew.title : '';
 	const page = await templateFn('homebrew', title, props)

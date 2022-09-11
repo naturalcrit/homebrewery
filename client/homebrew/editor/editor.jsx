@@ -327,6 +327,7 @@ const Editor = createClass({
 					onInject={this.handleInject}
 					showEditButtons={this.props.showEditButtons}
 					renderer={this.props.renderer}
+					theme={this.props.brew.theme}
 					undo={this.undo}
 					redo={this.redo}
 					historySize={this.historySize()} />
