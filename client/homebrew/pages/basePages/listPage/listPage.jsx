@@ -114,14 +114,23 @@ const ListPage = createClass({
 	},
 
 	renderSortOption : function(sortTitle, sortValue){
-		return <div>
-				  <button
-					  value={`${sortValue}`}
-					  onClick={this.handleSortOptionChange}
-					  className={`${(this.state.sortType == sortValue ? 'active' : '')}`}
-				  >
-  					{`${sortTitle}`}
-		 		  </button>
+		return <div className='sort-option'>
+			<button
+				value={`${sortValue}`}
+				onClick={this.handleSortOptionChange}
+				className={`${(this.state.sortType == sortValue ? 'active' : '')}`}
+			>
+				{`${sortTitle}`}
+			</button>
+			{this.state.sortType == sortValue ? 
+				<button
+					onClick={this.handleSortDirChange}
+					className='sortDir'
+				>
+					{this.state.sortDir == 'asc' ? <i className='fas fa-sort-amount-up'></i> : <i className='fas fa-sort-amount-down'></i>}
+				</button>
+				: ''
+			}
 		  </div>;
 	},
 
@@ -165,26 +174,17 @@ const ListPage = createClass({
 
 	renderSortOptions : function(){
 		return <div className='sort-container'>
-							<h6>Sort by :</h6>
-						{this.renderSortOption('Title', 'alpha')}
-						{this.renderSortOption('Created Date', 'created')}
-						{this.renderSortOption('Updated Date', 'updated')}
-						{this.renderSortOption('Views', 'views')}
-						{/* {this.renderSortOption('Latest', 'latest')} */}
+			<h6>Sort by :</h6>
+			{this.renderSortOption('Title', 'alpha')}
+			{this.renderSortOption('Created Date', 'created')}
+			{this.renderSortOption('Updated Date', 'updated')}
+			{this.renderSortOption('Views', 'views')}
+			{/* {this.renderSortOption('Latest', 'latest')} */}
 
-							<h6>Direction :</h6>
+			{this.renderFilterOption()}
 
-							<button
-								onClick={this.handleSortDirChange}
-								className='sortDir'
-							>
-								{`${(this.state.sortDir == 'asc' ? '\u25B2 ASC' : '\u25BC DESC')}`}
-							</button>
 
-						{this.renderFilterOption()}
 
-				
-			
 		</div>;
 	},
 

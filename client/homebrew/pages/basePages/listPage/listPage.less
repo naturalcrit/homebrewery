@@ -45,6 +45,9 @@
 		display            : flex;
 		justify-content    : center;
 		align-items        : center;
+		column-gap         : 15px;
+		row-gap            : 5px;
+		flex-wrap          : wrap;
 		h6{
 			text-transform : uppercase;
 			font-family    : 'Open Sans', sans-serif;
@@ -52,50 +55,35 @@
 			font-weight    : bold;
 		}
 		.filter-option {
-			background-color: transparent !important;
+			margin-left: 20px;
+			background-color : transparent !important;
+			font-size        : 11px;
 			i{
-				padding-right : 5px
+				padding-right : 5px;
 			}
 		}
 		button{
 				background-color : transparent;
 				font-family      : 'Open Sans', sans-serif;
-				font-size        : 11px;
 				text-transform   : uppercase;
 				font-weight      : normal;
+				font-size        : 11px;
 				color            : #888;
+				padding          : 0;
 				&.active{
 					font-weight      : bold;
-					text-decoration  : underline;
-					color            : unset;
+					color            : white;
+					border-bottom : 1px solid white;
 				}
 				&.sortDir{
-					width : 75px;
+					width : auto;
+					padding: 5px;
+					&:hover {
+						color: white;
+					}
 				}
 			}
 		
 		
-	}
-	h1 {
-		cursor: pointer;
-		&.active {
-			color: #58180D;
-		}
-		&.inactive {
-			color: #707070;
-			
-		}
-		&.active::before, &.inactive::before {
-			font-family: 'Font Awesome 5 Free';
-			font-weight: 900;
-			font-size: 0.6cm;
-    			padding-right: 0.5em;
-		}
-		&.active::before {
-			content: '\f107';
-		}
-		&.inactive::before {
-			content: '\f105';
-		}
 	}
 }
