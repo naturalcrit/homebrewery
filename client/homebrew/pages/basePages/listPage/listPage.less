@@ -12,8 +12,8 @@
 	-moz-column-gap      : auto;
 }
 .listPage{
+	height : unset !important;
 	.content{
-		overflow-y : overlay;
 		.phb{
 			.noColumns();
 			height     : auto;
@@ -32,47 +32,49 @@
 	}
 	.sort-container{
 		font-family        : 'Open Sans', sans-serif;
-		position           : fixed;
-		top                : 35px;
-		left               : calc(50vw - 400px);
-		border             : 2px solid #58180D;
-		width              : 800px;
-		background-color   : #EEE5CE;
+		position           : sticky;
+		top                : 0;
+		left               : 0;
+		width              : 100%;
+		background-color   : #555;
+		border-top         : 1px solid #666;
+		color              : white;
 		padding            : 2px;
 		text-align         : center;
-		z-index            : 15;
+		z-index            : 500;
+		display            : flex;
+		justify-content    : center;
+		align-items        : center;
 		h6{
 			text-transform : uppercase;
 			font-family    : 'Open Sans', sans-serif;
 			font-size      : 11px;
 			font-weight    : bold;
-			color          : #58180D;
 		}
-		table{
-			margin : 0px;
-			vertical-align : middle;
-			tbody tr{
-				background-color: transparent !important;
-				i{
-					padding-right : 5px
-				}
-			button{
-					background-color : transparent;
-					color            : #58180D;
-					font-family    : 'Open Sans', sans-serif;
-					font-size      : 11px;
-					text-transform : uppercase;
-					font-weight      : normal;
-					&.active{
-						font-weight : bold;
-						border      : 2px solid #58180D;
-					}
-					&.sortDir{
-						width : 75px;
-					}
-				}
+		.filter-option {
+			background-color: transparent !important;
+			i{
+				padding-right : 5px
 			}
 		}
+		button{
+				background-color : transparent;
+				font-family      : 'Open Sans', sans-serif;
+				font-size        : 11px;
+				text-transform   : uppercase;
+				font-weight      : normal;
+				color            : #888;
+				&.active{
+					font-weight      : bold;
+					text-decoration  : underline;
+					color            : unset;
+				}
+				&.sortDir{
+					width : 75px;
+				}
+			}
+		
+		
 	}
 	h1 {
 		cursor: pointer;
