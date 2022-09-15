@@ -1,7 +1,8 @@
 /* eslint-disable max-lines */
 
-const WatercolorGen      = require('./snippets/watercolor.gen.js');
-const dedent             = require('dedent-tabs').default;
+const WatercolorGen = require('./snippets/watercolor.gen.js');
+const ImageMaskGen  = require('./snippets/imageMask.gen.js');
+const dedent        = require('dedent-tabs').default;
 
 
 
@@ -101,6 +102,11 @@ module.exports = [
 				name : 'Watercolor Splatter',
 				icon : 'fas fa-fill-drip',
 				gen  : WatercolorGen,
+			},
+			{
+				name : 'Watercolor Image Mask',
+				icon : 'fas fa-fill-drip',
+				gen  : ImageMaskGen,
 			},
 			{
 				name : 'Watermark',

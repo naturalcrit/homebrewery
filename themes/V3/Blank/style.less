@@ -170,6 +170,78 @@ body {
 	.watercolor11 { --wc : @watercolor11; }
 	.watercolor12 { --wc : @watercolor12; }
 
+	/* Image Masks */
+	[class*="imageMask"] {
+		position:absolute;
+		height: 100%;
+		width: 279.4mm; // Page height
+		left:0px;
+		bottom:0px;
+		--revealer : none;
+		-webkit-mask-image  : var(--wc), var(--revealer);
+		-webkit-mask-repeat : no-repeat;
+		-webkit-mask-size   : 100% 100%;
+		mask-image  : var(--wc);
+		mask-repeat : no-repeat;
+		mask-size   : 100% 100%;
+		z-index     : -1;
+		//background-image : url(/assets/watercolorMasks/testBackground.jpg);
+		//background-size  : 0px; // Hide the background so it can be inherited into :before
+		transform  : rotate(calc(1deg * var(--rotation)));
+		transition       : transform 2s;
+		& > :not(img) {
+			position   : absolute;
+			bottom     : 0;
+			left       : 0;
+			width      : 100%;
+			height     : 100%;
+			transform  : rotate(calc(-1deg * var(--rotation)));
+			transition : transform 2s;
+		}
+		& img {
+			position : absolute;
+			display  : block;
+		}
+		&:before {
+			content:'';
+			position:absolute;
+			display:block;
+			height:100%;
+			width:100%;
+			bottom:0px;
+			background-image:inherit;
+			background-position: bottom 0px left 0px;
+			background-size:100% 100%;
+			background-repeat:no-repeat;
+			transform  : rotate(calc(-1deg * var(--rotation)));
+			transition : transform 2s;
+		}
+		&.bottom {
+			--rotation : 0;
+		}
+		&.top {
+			--rotation : 180;
+		}
+		&.left {
+			--rotation : 90;
+		}
+		&.right {
+			--rotation : -90;
+			left  : unset;
+			right : 0px;
+		}
+		&.revealImage {
+			--revealer : linear-gradient(0deg, rgba(0,0,0,.2) 0%, rgba(0,0,0,0.2));
+		}
+	}
+
+	.imageMask1  { --wc : url(/assets/waterColorMasks/edge/0001.png); }
+	.imageMask2  { --wc : url(/assets/waterColorMasks/edge/0002.png); }
+	.imageMask3  { --wc : url(/assets/waterColorMasks/edge/0003.png); }
+	.imageMask4  { --wc : url(/assets/waterColorMasks/edge/0004.png); }
+	.imageMask5  { --wc : url(/assets/waterColorMasks/edge/0005.png); }
+	.imageMask6  { --wc : url(/assets/waterColorMasks/edge/0006.png); }
+
 	//************************************
 	// *           CODE BLOCKS
 	// ************************************/
