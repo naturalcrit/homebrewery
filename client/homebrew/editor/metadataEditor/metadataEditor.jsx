@@ -27,7 +27,8 @@ const MetadataEditor = createClass({
 				authors     : [],
 				systems     : [],
 				renderer    : 'legacy',
-				theme       : '5ePHB'
+				theme       : '5ePHB',
+				errors      : '',
 			},
 			onChange : ()=>{}
 		};
@@ -99,6 +100,21 @@ const MetadataEditor = createClass({
 			.end(function(err, res){
 				window.location.href = '/';
 			});
+	},
+
+	handleError : function(msg){
+		if(!msg){
+			this.props.metadata.errors = '';
+			return;
+		}
+		this.props.metadata.errors = msg;
+		this.props.onChange(this.props.metadata);
+	},
+
+	renderError : function(){
+		if(!this.props.metadata.errors) return;
+
+		return <div className='error'>{this.props.metadata.errors}</div>;
 	},
 
 	renderSystems : function(){
@@ -223,8 +239,12 @@ const MetadataEditor = createClass({
 		</div>;
 	},
 
+
+
 	render : function(){
 		return <div className='metadataEditor'>
+
+			{this.renderError()}
 			<div className='field title'>
 				<label>title</label>
 				<input type='text' className='value'
@@ -242,15 +262,14 @@ const MetadataEditor = createClass({
 					value={this.props.metadata.thumbnail}
 					placeholder='my.thumbnail.url'
 					className='value'
-					onChange={
-						(e)=>{
-							if(e.target.value.length > 5){
-								console.log('too long');
-							} else {
-								this.handleFieldChange('thumbnail', e)
-							}
+					onChange={(e)=>{
+						if(e.target.value.length > 5){
+							this.handleError('URL cannot be longer than 256 characters.  Try uploading to an image hosting service like Imgur.com.');
+						} else {
+							this.handleError();
+							this.handleFieldChange('thumbnail', e);
 						}
-					} />
+					}} />
 				<button className='display' onClick={this.toggleThumbnailDisplay}>
 					<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
 				</button>
