@@ -244,7 +244,7 @@ const MetadataEditor = createClass({
 	render : function(){
 		return <div className='metadataEditor'>
 
-			{this.renderError()}
+			{this.renderValidationNotice()}
 			<div className='field title'>
 				<label>title</label>
 				<input type='text' className='value'
