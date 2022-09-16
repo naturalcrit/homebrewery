@@ -242,7 +242,15 @@ const MetadataEditor = createClass({
 					value={this.props.metadata.thumbnail}
 					placeholder='my.thumbnail.url'
 					className='value'
-					onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
+					onChange={
+						(e)=>{
+							if(e.target.value.length > 5){
+								console.log('too long');
+							} else {
+								this.handleFieldChange('thumbnail', e)
+							}
+						}
+					} />
 				<button className='display' onClick={this.toggleThumbnailDisplay}>
 					<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
 				</button>
