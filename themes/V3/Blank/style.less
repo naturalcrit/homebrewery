@@ -177,13 +177,17 @@ body {
 		width: 279.4mm; // Page height
 		left:0px;
 		bottom:0px;
+		--rotation : 0;
 		--revealer : none;
+		--checkerboard : none;
 		-webkit-mask-image  : var(--wc), var(--revealer);
 		-webkit-mask-repeat : no-repeat;
 		-webkit-mask-size   : 100% 100%;
 		mask-image  : var(--wc);
 		mask-repeat : no-repeat;
 		mask-size   : 100% 100%;
+		background-image: var(--checkerboard);
+		background-size: 20px;
 		z-index     : -1;
 		//background-image : url(/assets/watercolorMasks/testBackground.jpg);
 		//background-size  : 0px; // Hide the background so it can be inherited into :before
@@ -201,37 +205,29 @@ body {
 		& img {
 			position : absolute;
 			display  : block;
-		}
-		&:before {
-			content:'';
-			position:absolute;
-			display:block;
-			height:100%;
-			width:100%;
-			bottom:0px;
-			background-image:inherit;
-			background-position: bottom 0px left 0px;
-			background-size:100% 100%;
-			background-repeat:no-repeat;
-			transform  : rotate(calc(-1deg * var(--rotation)));
-			transition : transform 2s;
+			bottom   : 0;
 		}
 		&.bottom {
 			--rotation : 0;
+			& img {bottom: 0;}
 		}
 		&.top {
 			--rotation : 180;
+			& img {top: 0;}
 		}
 		&.left {
 			--rotation : 90;
+			& img {left: 0;}
 		}
 		&.right {
 			--rotation : -90;
 			left  : unset;
 			right : 0px;
+			& img {right: 0;}
 		}
 		&.revealImage {
 			--revealer : linear-gradient(0deg, rgba(0,0,0,.2) 0%, rgba(0,0,0,0.2));
+			--checkerboard : url(/assets/waterColorMasks/missingImage.png); //shows any masked regions not filled by image
 		}
 	}
 
@@ -290,9 +286,9 @@ body {
 	.block {
 		break-inside      : avoid;
 		display           : inline-block;
-		.page :where(&) {
-			width             : 100%;
-		}
+	}
+	& :where(.block) {
+		width      : 100%;
 	}
 	.inline-block {
 		display     : inline-block;
