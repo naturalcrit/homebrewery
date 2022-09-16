@@ -28,7 +28,7 @@ const MetadataEditor = createClass({
 				systems     : [],
 				renderer    : 'legacy',
 				theme       : '5ePHB',
-				errors      : '',
+				validation  : [],
 			},
 			onChange : ()=>{}
 		};
@@ -102,19 +102,19 @@ const MetadataEditor = createClass({
 			});
 	},
 
-	handleError : function(msg){
+	handleValidation : function(msg){
 		if(!msg){
-			this.props.metadata.errors = '';
+			this.props.metadata.validation = '';
 			return;
 		}
-		this.props.metadata.errors = msg;
+		this.props.metadata.validation = msg;
 		this.props.onChange(this.props.metadata);
 	},
 
-	renderError : function(){
-		if(!this.props.metadata.errors) return;
+	renderValidationNotice : function(){
+		if(!this.props.metadata.validation) return;
 
-		return <div className='error'>{this.props.metadata.errors}</div>;
+		return <div className='validations'>{this.props.metadata.validation}</div>;
 	},
 
 	renderSystems : function(){
@@ -264,9 +264,9 @@ const MetadataEditor = createClass({
 					className='value'
 					onChange={(e)=>{
 						if(e.target.value.length > 5){
-							this.handleError('URL cannot be longer than 256 characters.  Try uploading to an image hosting service like Imgur.com.');
+							this.handleValidation('URL cannot be longer than 256 characters.  Try uploading to an image hosting service like Imgur.com.');
 						} else {
-							this.handleError();
+							this.handleValidation();
 							this.handleFieldChange('thumbnail', e);
 						}
 					}} />
