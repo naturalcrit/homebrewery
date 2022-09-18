@@ -6,10 +6,12 @@
 		height           : 100%;
 		background-color : @steel;
 		flex-direction   : column;
+		overflow-y       : hidden;
 		.content{
 			position   : relative;
 			height     : calc(~"100% - 29px"); //Navbar height
 			flex       : auto;
+			overflow-y : scroll;
 		}
 	}
 }
