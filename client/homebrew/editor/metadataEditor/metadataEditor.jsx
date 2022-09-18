@@ -52,7 +52,7 @@ const MetadataEditor = createClass({
 	},
 
 	handleFieldChange : function(name, inputRules, e){
-		console.log(this.state.errs)
+		// check if each field meets the requirements set for that field
 		for (const err of inputRules){
 			if(new RegExp(err.reg).test(e.target.value)){
 				this.setState((prevState)=>({
@@ -68,12 +68,15 @@ const MetadataEditor = createClass({
 			}
 		}
 
+		if(this.state.errs.length == 0){
+			this.props.onChange({
+				...this.props.metadata,
+				[name] : e.target.value
+			});
 
+		}
 
-		this.props.onChange({
-			...this.props.metadata,
-			[name] : e.target.value
-		});
+		console.log(this.props.metadata);
 	},
 
 	handleSystem : function(system, e){
