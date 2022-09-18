@@ -36,7 +36,7 @@ const MetadataEditor = createClass({
 	getInitialState : function(){
 		return {
 			showThumbnail : true,
-			errs: []
+			errs : []
 		};
 	},
 
@@ -51,12 +51,31 @@ const MetadataEditor = createClass({
 		return <img className='thumbnail-preview' src={this.props.metadata.thumbnail || homebreweryThumbnail}></img>;
 	},
 
-	handleFieldChange : function(name, e){
+	handleFieldChange : function(name, inputRules, e){
+		console.log(this.state.errs)
+		for (const err of inputRules){
+			if(new RegExp(err.reg).test(e.target.value)){
+				this.setState((prevState)=>({
+					errs : prevState.errs.filter(function(o){
+						return (o.field !== name || o.type !== err.type);
+					})
+				}));
+			} else {
+				err.field = name;
+				if(_.findIndex(this.state.errs, { 'field': err.field, 'type': err.type }) < 0){
+					this.setState((prevState)=>({ errs: [...prevState.errs, err] }));
+				}
+			}
+		}
+
+
+
 		this.props.onChange({
 			...this.props.metadata,
 			[name] : e.target.value
 		});
 	},
+
 	handleSystem : function(system, e){
 		if(e.target.checked){
 			this.props.metadata.systems.push(system);
@@ -102,20 +121,6 @@ const MetadataEditor = createClass({
 			});
 	},
 
-	checkValid : function(err, e){
-		if(new RegExp(err.reg).test(e.target.value)){
-			this.setState((prevState)=>({
-				errs : prevState.errs.filter(function(o){
-					return (o.field !== err.field || o.type !== err.type);
-				})
-			}));
-		} else {
-			if(_.findIndex(this.state.errs, { 'field': err.field, 'type': err.type })){
-				this.setState((prevState)=>({ errs: [...prevState.errs, err] }));
-			}
-		}
-
-	},
 
 	renderValidationNotice : function(){
 		if(this.state.errs.length == 0) return;
@@ -265,13 +270,13 @@ const MetadataEditor = createClass({
 				<label>description</label>
 				<textarea value={this.props.metadata.description} className='value'
 					onChange={(e)=>{
-						this.checkValid({
-							field : 'description',
-							type  : 'maxLength',
-							reg   : '^.{0,5}$',
-							msg   : 'Max URL length of 5 characters.'
-						}, e);
-						this.handleFieldChange('description', e);
+						this.handleFieldChange('description', [
+							{
+								type : 'maxLength',
+								reg  : '^.{0,5}$',
+								msg  : 'Max description length of 5 characters.'
+							}
+						], e);
 					}} />
 			</div>
 			<div className='field thumbnail'>
@@ -281,13 +286,18 @@ const MetadataEditor = createClass({
 					placeholder='my.thumbnail.url'
 					className='value'
 					onChange={(e)=>{
-						this.checkValid({
-							field : 'thumbnail',
-							type  : 'maxLength',
-							reg   : '^.{0,5}$',
-							msg   : 'Max URL length of 256 characters.'
-						}, e);
-						this.handleFieldChange('thumbnail', e);
+						this.handleFieldChange('thumbnail', [
+							{
+								type : 'maxLength',
+								reg  : '^.{0,5}$',
+								msg  : 'Max URL length of 5 characters.'
+							},
+							{
+								type : 'wStart',
+								reg  : '^W',
+								msg  : 'URL must start with W'
+							}
+						], e);
 					}
 					 } />
 				<button className='display' onClick={this.toggleThumbnailDisplay}>
