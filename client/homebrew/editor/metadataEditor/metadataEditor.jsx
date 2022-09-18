@@ -28,7 +28,6 @@ const MetadataEditor = createClass({
 				systems     : [],
 				renderer    : 'legacy',
 				theme       : '5ePHB',
-				validation  : [],
 			},
 			onChange : ()=>{}
 		};
@@ -36,7 +35,8 @@ const MetadataEditor = createClass({
 
 	getInitialState : function(){
 		return {
-			showThumbnail : true
+			showThumbnail : true,
+			errs: []
 		};
 	},
 
@@ -102,19 +102,31 @@ const MetadataEditor = createClass({
 			});
 	},
 
-	handleValidation : function(msg){
-		if(!msg){
-			this.props.metadata.validation = '';
-			return;
+	checkValid : function(err, e){
+		if(new RegExp(err.reg).test(e.target.value)){
+			// console.log('matches the requirements');
+			this.setState((prevState)=>({ 
+				errs : prevState.errs.filter(function(o){
+					return o.field !== err.field && o.type !== err.type;
+				})
+			}));
+		} else {
+			// console.log('does not match input requirements');
+			if(_.findIndex(this.state.errs, { 'field': err.field, 'type': err.type })){
+				this.setState((prevState)=>({ errs: [...prevState.errs, err] }));
+			}
 		}
-		this.props.metadata.validation = msg;
-		this.props.onChange(this.props.metadata);
+
 	},
 
 	renderValidationNotice : function(){
-		if(!this.props.metadata.validation) return;
+		if(this.state.errs.length == 0) return;
 
-		return <div className='validations'>{this.props.metadata.validation}</div>;
+		return <div className='errs'>
+			<ul>
+				{this.state.errs.map((err, index)=><li key={index}>{err.msg}</li>)}
+			</ul>
+		</div>;
 	},
 
 	renderSystems : function(){
@@ -262,14 +274,13 @@ const MetadataEditor = createClass({
 					value={this.props.metadata.thumbnail}
 					placeholder='my.thumbnail.url'
 					className='value'
+					pattern='^.{0,5}$'
 					onChange={(e)=>{
-						if(e.target.value.length > 5){
-							this.handleValidation('URL cannot be longer than 256 characters.  Try uploading to an image hosting service like Imgur.com.');
-						} else {
-							this.handleValidation();
+							const err = { field: 'thumbnail', type: 'maxLength', reg: '^.{0,5}$', msg: 'Max URL length of 256 characters.'}
+							this.checkValid(err, e);
 							this.handleFieldChange('thumbnail', e);
 						}
-					}} />
+					 } />
 				<button className='display' onClick={this.toggleThumbnailDisplay}>
 					<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
 				</button>
