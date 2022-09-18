@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        We'd love to hear your idea!  Please be sure to search the current Issues for any duplicate requests.
+        "We'd love to hear your idea!  Please be sure to [search the current Issues](https://github.com/naturalcrit/homebrewery/issues) for any duplicate requests."
   - type: textarea
     id: user-request
     attributes:
