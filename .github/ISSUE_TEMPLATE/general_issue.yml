@@ -3,8 +3,7 @@ description: Report an issue unrelated to Saving
 body:
   - type: markdown
     attributes:
-      value: |
-        Please include as much information as possible.
+      value: Please include as much information as possible.
   - type: checkboxes
     id: renderer
     attributes:
@@ -16,17 +15,30 @@ body:
       validations:
         required: true
   - type: dropdown
-  id: operating-system
-  attributes:
-    label: Operating System
-    description: Which OS were you using when the issue occurred?
-    options:
-      - label: Windows
-      - label: MacOS
-      - label: Linux
-      - label: other
-    validations:
-      required: true
+    id: browser
+    attributes:
+      label: Browser
+      description: Which browser were you using when the issue occurred?
+      options:
+        - label: Chrome
+        - label: Firefox
+        - label: Edge
+        - label: Safari
+        - label: other
+      validations:
+        required: true
+  - type: dropdown
+    id: operating-system
+    attributes:
+      label: Operating System
+      description: Which OS were you using when the issue occurred?
+      options:
+        - label: Windows
+        - label: MacOS
+        - label: Linux
+        - label: other
+      validations:
+        required: true
   - type: textarea
     id: user-description
     attributes:
