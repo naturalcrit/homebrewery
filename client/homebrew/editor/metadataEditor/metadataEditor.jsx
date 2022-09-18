@@ -104,14 +104,12 @@ const MetadataEditor = createClass({
 
 	checkValid : function(err, e){
 		if(new RegExp(err.reg).test(e.target.value)){
-			// console.log('matches the requirements');
-			this.setState((prevState)=>({ 
+			this.setState((prevState)=>({
 				errs : prevState.errs.filter(function(o){
-					return o.field !== err.field && o.type !== err.type;
+					return (o.field !== err.field || o.type !== err.type);
 				})
 			}));
 		} else {
-			// console.log('does not match input requirements');
 			if(_.findIndex(this.state.errs, { 'field': err.field, 'type': err.type })){
 				this.setState((prevState)=>({ errs: [...prevState.errs, err] }));
 			}
@@ -266,7 +264,15 @@ const MetadataEditor = createClass({
 			<div className='field description'>
 				<label>description</label>
 				<textarea value={this.props.metadata.description} className='value'
-					onChange={(e)=>this.handleFieldChange('description', e)} />
+					onChange={(e)=>{
+						this.checkValid({
+							field : 'description',
+							type  : 'maxLength',
+							reg   : '^.{0,5}$',
+							msg   : 'Max URL length of 5 characters.'
+						}, e);
+						this.handleFieldChange('description', e);
+					}} />
 			</div>
 			<div className='field thumbnail'>
 				<label>thumbnail</label>
@@ -274,12 +280,15 @@ const MetadataEditor = createClass({
 					value={this.props.metadata.thumbnail}
 					placeholder='my.thumbnail.url'
 					className='value'
-					pattern='^.{0,5}$'
 					onChange={(e)=>{
-							const err = { field: 'thumbnail', type: 'maxLength', reg: '^.{0,5}$', msg: 'Max URL length of 256 characters.'}
-							this.checkValid(err, e);
-							this.handleFieldChange('thumbnail', e);
-						}
+						this.checkValid({
+							field : 'thumbnail',
+							type  : 'maxLength',
+							reg   : '^.{0,5}$',
+							msg   : 'Max URL length of 256 characters.'
+						}, e);
+						this.handleFieldChange('thumbnail', e);
+					}
 					 } />
 				<button className='display' onClick={this.toggleThumbnailDisplay}>
 					<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
