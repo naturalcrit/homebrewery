@@ -20,11 +20,11 @@ body:
       label: Browser
       description: Which browser were you using when the issue occurred?
       options:
-        - label: Chrome
-        - label: Firefox
-        - label: Edge
-        - label: Safari
-        - label: other
+        - Chrome
+        - Firefox
+        - Edge
+        - Safari
+        - other
     validations:
       required: true
   - type: dropdown
@@ -33,10 +33,10 @@ body:
       label: Operating System
       description: Which OS were you using when the issue occurred?
       options:
-        - label: Windows
-        - label: MacOS
-        - label: Linux
-        - label: other
+        - Windows
+        - MacOS
+        - Linux
+        - other
     validations:
       required: true
   - type: textarea
