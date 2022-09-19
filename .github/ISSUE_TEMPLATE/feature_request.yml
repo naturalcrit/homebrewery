@@ -4,8 +4,7 @@ labels: ["feature request"]
 body:
   - type: markdown
     attributes:
-      value: |
-        "We'd love to hear your idea!  Please be sure to [search the current Issues](https://github.com/naturalcrit/homebrewery/issues) for any duplicate requests."
+      value: "We'd love to hear your idea!  Please be sure to [search the current Issues](https://github.com/naturalcrit/homebrewery/issues) for any duplicate requests."
   - type: textarea
     id: user-request
     attributes:
@@ -15,6 +14,7 @@ body:
       required: true
   - type: checkboxes
     id: terms
-    options:
-      - label: I have searched the Issues tracker for any duplicate requests and found none.
-        required: true
+    attributes:
+      options:
+        - label: I have searched the Issues tracker for any duplicate requests and found none.
+          required: true
