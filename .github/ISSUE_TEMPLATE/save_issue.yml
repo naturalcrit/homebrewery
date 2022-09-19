@@ -1,6 +1,5 @@
 name: Saving Issue
 description: Report an issue Saving
-title: "Save Error: "
 labels: ["saving"]
 body:
   - type: markdown
