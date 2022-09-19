@@ -53,6 +53,27 @@
 			font-size      : 11px;
 			font-weight    : bold;
 		}
+		.sort-option {
+			display: flex;
+			align-items: center;
+			padding: 0 5px;
+
+
+			&.active {
+			font-weight: bold;
+			color: white;
+			border: 1px solid darkcyan;
+			border-radius: 5px;
+			button {
+				color: white;
+
+				&.sortDir {
+					background-color: darkcyan;
+				}
+			}
+		}
+			
+		}
 		.filter-option {
 			margin-left: 20px;
 			background-color : transparent !important;
@@ -69,14 +90,9 @@
 				font-size        : 11px;
 				color            : #888;
 				padding          : 0;
-				&.active{
-					font-weight      : bold;
-					color            : white;
-					border-bottom : 1px solid white;
-				}
 				&.sortDir{
 					width : auto;
-					padding: 5px;
+					padding-left: 5px;
 					color: white;
 				}
 			}
