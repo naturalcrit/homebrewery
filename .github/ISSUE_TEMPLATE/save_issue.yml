@@ -15,6 +15,8 @@ body:
     id: user-description
     attributes:
       label: "Your description of what happened:"
+    validations:
+      required: true
   - type: markdown
     attributes:
       value: |
