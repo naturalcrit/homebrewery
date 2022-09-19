@@ -1,6 +1,6 @@
 name: Saving Issue
 description: Report an issue Saving
-labels: ["saving"]
+labels: ["Saving"]
 body:
   - type: markdown
     attributes:
