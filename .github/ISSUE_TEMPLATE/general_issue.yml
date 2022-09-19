@@ -12,8 +12,8 @@ body:
       options:
         - label: Legacy
         - label: v3
-      validations:
-        required: true
+    validations:
+      required: true
   - type: dropdown
     id: browser
     attributes:
@@ -37,8 +37,8 @@ body:
         - label: MacOS
         - label: Linux
         - label: other
-      validations:
-        required: true
+    validations:
+      required: true
   - type: textarea
     id: user-description
     attributes:
