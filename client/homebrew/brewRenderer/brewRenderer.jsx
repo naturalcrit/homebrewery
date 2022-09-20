@@ -117,7 +117,7 @@ const BrewRenderer = createClass({
 		if(!this.state.usePPR) return;
 
 		return <div className='ppr_msg'>
-			Partial Page Renderer enabled, because your brew is so large. May effect rendering.
+			Partial Page Renderer is enabled, because your brew is so large. May affect rendering.
 		</div>;
 	},
 
