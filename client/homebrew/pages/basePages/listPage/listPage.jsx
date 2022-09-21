@@ -126,7 +126,7 @@ const ListPage = createClass({
 					onClick={this.handleSortDirChange}
 					className='sortDir'
 				>
-					{this.state.sortDir == 'asc' ? <i className='fas fa-sort-amount-up'></i> : <i className='fas fa-sort-amount-down'></i>}
+					{this.state.sortDir == 'asc' ? <i className='fas fa-sort-up'></i> : <i className='fas fa-sort-down'></i>}
 				</button>
 				: ''
 			}

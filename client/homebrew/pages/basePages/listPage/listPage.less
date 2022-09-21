@@ -35,10 +35,11 @@
 		top                : 0;
 		left               : 0;
 		width              : 100%;
+		height             : 30px;
 		background-color   : #555;
 		border-top         : 1px solid #666;
+		border-bottom         : 1px solid #666;
 		color              : white;
-		padding            : 2px;
 		text-align         : center;
 		z-index            : 500;
 		display            : flex;
@@ -56,19 +57,24 @@
 		.sort-option {
 			display: flex;
 			align-items: center;
-			padding: 0 5px;
+			padding: 0 8px;
+			color: #ccc;
+			height: 100%;
 
+			&:hover{
+				background-color : #444;
+			}
 
 			&.active {
 			font-weight: bold;
-			color: white;
-			border: 1px solid darkcyan;
-			border-radius: 5px;
+			color: #ddd;
+			background-color: #333;
+			
 			button {
 				color: white;
-
+				font-weight: 800;
 				&.sortDir {
-					background-color: darkcyan;
+					padding-left: 5px;
 				}
 			}
 		}
@@ -88,13 +94,8 @@
 				text-transform   : uppercase;
 				font-weight      : normal;
 				font-size        : 11px;
-				color            : #888;
+				color            : #ccc;
 				padding          : 0;
-				&.sortDir{
-					width : auto;
-					padding-left: 5px;
-					color: white;
-				}
 			}
 		
 		
