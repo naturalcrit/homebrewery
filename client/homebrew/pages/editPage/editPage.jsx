@@ -148,7 +148,7 @@ const EditPage = createClass({
 	},
 
 	trySave : function(){
-		if(!this.state.autoSave){ console.log('Auto-save is now off.'); return };
+		if(!this.state.autoSave){ console.log('Auto-save is off.'); return };
 		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
 		if(this.hasChanges()){
 			this.debounceSave();
