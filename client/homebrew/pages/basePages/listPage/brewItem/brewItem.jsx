@@ -102,8 +102,7 @@ const BrewItem = createClass({
 
 		return <div className='brewItem'>
 			{brew.thumbnail ?
-				<div className='thumbnail'>
-					<img className='thumbnailImage' src={brew.thumbnail} ></img>
+				<div className='thumbnail' style={{ backgroundImage: `url(${brew.thumbnail})` }} >
 				</div> :
 				<></>
 			}

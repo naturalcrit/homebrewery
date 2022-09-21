@@ -20,19 +20,16 @@
 	box-shadow                  : 0px 4px 5px 0px #333;
 	background-color            : #cab2802e;
 	.thumbnail  {
-		width: 80px;
-		height: 100px;
-		border: 2px solid #58180D;
-		border-radius: 8px;
-		float: left;
-		margin-right: 5px;
-		display: flex;
-		img.thumbnailImage {
-			width : 100%;
-			height : 100%;
-			object-fit : cover;
-			border-radius : inherit;
-		}
+		position: absolute;
+		width: 150px;
+		height: 100%;
+		top: 0;
+		right: 0;
+		z-index: -1;
+		background-size: cover;
+		mask-image: linear-gradient(80deg, #0000 20%, #050 40%);
+		-webkit-mask-image: linear-gradient(80deg, #0000 20%, #050 40%);
+		opacity: 50%;
 	}
 	.text {
 		min-height : 54px;
