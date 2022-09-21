@@ -62,7 +62,8 @@ const EditPage = createClass({
 			confirmGoogleTransfer  : false,
 			errors                 : null,
 			htmlErrors             : Markdown.validate(this.props.brew.text),
-			url                    : ''
+			url                    : '',
+			autoSave               : true
 		};
 	},
 	savedBrew : null,
@@ -142,7 +143,12 @@ const EditPage = createClass({
 		return !_.isEqual(this.state.brew, this.savedBrew);
 	},
 
+	toggleAutoSave : function(){
+		this.setState((prevState)=>({ autoSave: !prevState.autoSave }));
+	},
+
 	trySave : function(){
+		if(!this.state.autoSave){ console.log('Auto-save is now off.'); return };
 		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
 		if(this.hasChanges()){
 			this.debounceSave();
@@ -336,7 +342,7 @@ const EditPage = createClass({
 			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving){
-			return <Nav.item className='save saved'>saved.</Nav.item>;
+			return <Nav.item className='save saved' onClick={this.toggleAutoSave}>{this.state.autoSave ? `saved.` : `auto-save off`}</Nav.item>;
 		}
 	},
 
