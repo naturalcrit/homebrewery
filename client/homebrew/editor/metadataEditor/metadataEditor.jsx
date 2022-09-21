@@ -28,7 +28,7 @@ const MetadataEditor = createClass({
 				systems     : [],
 				renderer    : 'legacy',
 				theme       : '5ePHB',
-				lang        : 'en'
+				lang        : ''
 			},
 			onChange : ()=>{}
 		};

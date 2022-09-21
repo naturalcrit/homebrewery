@@ -27,6 +27,7 @@ const BrewRenderer = createClass({
 			style    : '',
 			renderer : 'legacy',
 			theme    : '5ePHB',
+			lang     : '',
 			errors   : []
 		};
 	},
@@ -183,6 +184,8 @@ const BrewRenderer = createClass({
 		//Also render dummy page while iframe is mounting.
 		const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
 		const themePath    = this.props.theme ?? '5ePHB';
+		const language = this.props.lang;
+		console.log(language);
 		const baseThemePath = Themes[rendererPath][themePath].baseTheme;
 
 		return (
@@ -217,7 +220,7 @@ const BrewRenderer = createClass({
 							&&
 							<>
 								{this.renderStyle()}
-								<div className='pages' ref='pages'>
+								<div className='pages' ref='pages' lang={language}>
 									{this.renderPages()}
 								</div>
 							</>
