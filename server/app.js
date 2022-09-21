@@ -21,7 +21,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const index = brew.text.indexOf('```\n\n');
 		const metadataSection = brew.text.slice(12, index - 1);
 		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']));
+		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
 		brew.text = brew.text.slice(index + 5);
 	}
 	if(brew.text.startsWith('```css')) {
@@ -173,6 +173,7 @@ app.get('/user/:username', async (req, res, next)=>{
 		'pageCount',
 		'description',
 		'authors',
+		'lang',
 		'published',
 		'views',
 		'shareId',

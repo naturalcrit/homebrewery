@@ -126,6 +126,7 @@ const GoogleActions = {
 				views       : parseInt(file.properties.views),
 				published   : file.properties.published ? file.properties.published == 'true' : false,
 				systems     : [],
+				lang        : file.properties.lang,
 				thumbnail   : file.properties.thumbnail
 			};
 		});
@@ -255,6 +256,7 @@ const GoogleActions = {
 				tags        : obj.data.properties.tags ? obj.data.properties.tags : '',
 				systems     : obj.data.properties.systems ? obj.data.properties.systems.split(',') : [],
 				authors     : [],
+				lang        : obj.data.properties.lang,
 				published   : obj.data.properties.published ? obj.data.properties.published == 'true' : false,
 				trashed     : obj.data.trashed,
 
