@@ -27,7 +27,8 @@ const MetadataEditor = createClass({
 				authors     : [],
 				systems     : [],
 				renderer    : 'legacy',
-				theme       : '5ePHB'
+				theme       : '5ePHB',
+				lang        : 'en'
 			},
 			onChange : ()=>{}
 		};
@@ -261,6 +262,13 @@ const MetadataEditor = createClass({
 				<div className='value'>
 					{this.renderSystems()}
 				</div>
+			</div>
+
+			<div className='field language'>
+				<label>language</label>
+				<input type='text' className='value'
+					value={this.props.metadata.lang}
+					onChange={(e)=>this.handleFieldChange('lang', e)} />
 			</div>
 
 			{this.renderThemeDropdown()}
