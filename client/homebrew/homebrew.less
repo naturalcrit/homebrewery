@@ -11,7 +11,13 @@
 			position   : relative;
 			height     : calc(~"100% - 29px"); //Navbar height
 			flex       : auto;
+			overflow-y : hidden;
+		}
+		&.listPage .content {
 			overflow-y : scroll;
 		}
+		// &.editPage .content, &.sharePage .content, &.newPage .content {
+		// 	overflow-y : hidden;
+		// }
 	}
 }
