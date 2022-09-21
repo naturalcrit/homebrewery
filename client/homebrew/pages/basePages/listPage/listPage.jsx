@@ -117,7 +117,7 @@ const ListPage = createClass({
 		return <div className={`sort-option ${(this.state.sortType == sortValue ? 'active' : '')}`}>
 			<button
 				value={`${sortValue}`}
-				onClick={this.handleSortOptionChange}
+				onClick={this.state.sortType == sortValue ? this.handleSortDirChange : this.handleSortOptionChange}
 			>
 				{`${sortTitle}`}
 			</button>
