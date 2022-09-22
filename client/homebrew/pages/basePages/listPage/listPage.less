@@ -13,7 +13,7 @@
 }
 .listPage{
 	.content{
-		overflow-y : scroll;
+		overflow-y : overlay;
 		.phb{
 			.noColumns();
 			height     : auto;
@@ -34,7 +34,7 @@
 		font-family        : 'Open Sans', sans-serif;
 		position           : fixed;
 		top                : 35px;
-		left               : calc(50vw - 408px);
+		left               : calc(50vw - 400px);
 		border             : 2px solid #58180D;
 		width              : 800px;
 		background-color   : #EEE5CE;
@@ -72,6 +72,28 @@
 					}
 				}
 			}
+		}
+	}
+	h1 {
+		cursor: pointer;
+		&.active {
+			color: #58180D;
+		}
+		&.inactive {
+			color: #707070;
+			
+		}
+		&.active::before, &.inactive::before {
+			font-family: 'Font Awesome 5 Free';
+			font-weight: 900;
+			font-size: 0.6cm;
+    			padding-right: 0.5em;
+		}
+		&.active::before {
+			content: '\f107';
+		}
+		&.inactive::before {
+			content: '\f105';
 		}
 	}
 }

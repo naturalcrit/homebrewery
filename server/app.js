@@ -21,7 +21,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const index = brew.text.indexOf('```\n\n');
 		const metadataSection = brew.text.slice(12, index - 1);
 		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer']));
+		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']));
 		brew.text = brew.text.slice(index + 5);
 	}
 	if(brew.text.startsWith('```css')) {
@@ -29,6 +29,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
+	_.defaults(brew, { 'renderer': 'legacy', 'theme': '5ePHB' });
 };
 
 const sanitizeBrew = (brew, accessType)=>{
@@ -67,12 +68,12 @@ app.use((req, res, next)=>{
 app.use(homebrewApi);
 app.use(require('./admin.api.js'));
 
-const HomebrewModel  = require('./homebrew.model.js').model;
-const welcomeText    = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
-const welcomeTextV3  = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg_v3.md', 'utf8');
-const migrateText    = require('fs').readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
-const changelogText  = require('fs').readFileSync('changelog.md', 'utf8');
-const faqText        = require('fs').readFileSync('faq.md', 'utf8');
+const HomebrewModel     = require('./homebrew.model.js').model;
+const welcomeText       = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
+const welcomeTextLegacy = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
+const migrateText       = require('fs').readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
+const changelogText     = require('fs').readFileSync('changelog.md', 'utf8');
+const faqText           = require('fs').readFileSync('faq.md', 'utf8');
 
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
@@ -84,16 +85,18 @@ app.get('/robots.txt', (req, res)=>{
 //Home page
 app.get('/', (req, res, next)=>{
 	req.brew = {
-		text : welcomeText
+		text     : welcomeText,
+		renderer : 'V3'
 	};
+	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
 
 //Home page v3
-app.get('/v3_preview', (req, res, next)=>{
+app.get('/legacy', (req, res, next)=>{
 	req.brew = {
-		text     : welcomeTextV3,
-		renderer : 'V3'
+		text     : welcomeTextLegacy,
+		renderer : 'legacy'
 	};
 	splitTextStyleAndMetadata(req.brew);
 	return next();
@@ -176,7 +179,8 @@ app.get('/user/:username', async (req, res, next)=>{
 		'editId',
 		'createdAt',
 		'updatedAt',
-		'lastViewed'
+		'lastViewed',
+		'tags'
 	];
 
 	let brews = await HomebrewModel.getByUser(req.params.username, ownAccount, fields)
@@ -283,14 +287,15 @@ app.use(asyncHandler(async (req, res, next)=>{
 		environment : nodeEnv
 	};
 	const props = {
-		version     : require('./../package.json').version,
-		url         : req.originalUrl,
-		brew        : req.brew,
-		brews       : req.brews,
-		googleBrews : req.googleBrews,
-		account     : req.account,
-		enable_v3   : config.get('enable_v3'),
-		config      : configuration
+		version       : require('./../package.json').version,
+		url           : req.originalUrl,
+		brew          : req.brew,
+		brews         : req.brews,
+		googleBrews   : req.googleBrews,
+		account       : req.account,
+		enable_v3     : config.get('enable_v3'),
+		enable_themes : config.get('enable_themes'),
+		config        : configuration
 	};
 	const title = req.brew ? req.brew.title : '';
 	const page = await templateFn('homebrew', title, props)

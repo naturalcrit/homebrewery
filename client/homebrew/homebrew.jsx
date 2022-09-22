@@ -14,13 +14,17 @@ const PrintPage = require('./pages/printPage/printPage.jsx');
 
 const WithRoute = (props)=>{
 	const params = useParams();
-	const searchParams = useSearchParams();
+	const [searchParams] = useSearchParams();
+	const queryParams = {};
+	for (const [key, value] of searchParams?.entries() || []) {
+		queryParams[key] = value;
+	}
 	const Element = props.el;
 	const allProps = {
 		...props,
 		...params,
-		...searchParams,
-		el : undefined
+		query : queryParams,
+		el    : undefined
 	};
 	return <Element {...allProps} />;
 };
@@ -50,6 +54,7 @@ const Homebrew = createClass({
 		global.account = this.props.account;
 		global.version = this.props.version;
 		global.enable_v3 = this.props.enable_v3;
+		global.enable_themes = this.props.enable_themes;
 		global.config = this.props.config;
 
 		return {};
@@ -68,7 +73,7 @@ const Homebrew = createClass({
 					<Route path='/print' element={<WithRoute el={PrintPage} />} />
 					<Route path='/changelog' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
 					<Route path='/faq' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
-					<Route path='/v3_preview' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
+					<Route path='/legacy' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
 					<Route path='/' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
 					<Route path='/*' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
 				</Routes>

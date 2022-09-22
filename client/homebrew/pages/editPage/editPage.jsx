@@ -114,7 +114,7 @@ const EditPage = createClass({
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 
 		this.setState((prevState)=>({
-			brew       : _.merge({}, prevState.brew, { text: text }),
+			brew       : { ...prevState.brew, text: text },
 			isPending  : true,
 			htmlErrors : htmlErrors
 		}), ()=>this.trySave());
@@ -122,14 +122,17 @@ const EditPage = createClass({
 
 	handleStyleChange : function(style){
 		this.setState((prevState)=>({
-			brew      : _.merge({}, prevState.brew, { style: style }),
+			brew      : { ...prevState.brew, style: style },
 			isPending : true
 		}), ()=>this.trySave());
 	},
 
 	handleMetaChange : function(metadata){
 		this.setState((prevState)=>({
-			brew      : _.merge({}, prevState.brew, metadata),
+			brew : {
+				...prevState.brew,
+				...metadata
+			},
 			isPending : true,
 		}), ()=>this.trySave());
 
@@ -213,11 +216,11 @@ const EditPage = createClass({
 		history.replaceState(null, null, `/edit/${this.savedBrew.editId}`);
 
 		this.setState((prevState)=>({
-			brew : _.merge({}, prevState.brew, {
+			brew : { ...prevState.brew,
 				googleId : this.savedBrew.googleId ? this.savedBrew.googleId : null,
 				editId 	 : this.savedBrew.editId,
 				shareId  : this.savedBrew.shareId
-			}),
+			},
 			isPending : false,
 			isSaving  : false,
 		}));
@@ -319,7 +322,7 @@ const EditPage = createClass({
 				<div className='errorContainer'>
 					Looks like there was a problem saving. <br />
 					Report the issue <a target='_blank' rel='noopener noreferrer'
-						href={`https://github.com/naturalcrit/homebrewery/issues/new?body=${encodeURIComponent(errMsg)}`}>
+						href={`https://github.com/naturalcrit/homebrewery/issues/new?template=save_issue.yml&error-code=${encodeURIComponent(errMsg)}`}>
 						here
 					</a>.
 				</div>
@@ -415,7 +418,7 @@ const EditPage = createClass({
 						onMetaChange={this.handleMetaChange}
 						renderer={this.state.brew.renderer}
 					/>
-					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} errors={this.state.htmlErrors} />
+					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} theme={this.state.brew.theme} errors={this.state.htmlErrors} />
 				</SplitPane>
 			</div>
 		</div>;

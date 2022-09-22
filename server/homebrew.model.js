@@ -13,7 +13,7 @@ const HomebrewSchema = mongoose.Schema({
 	pageCount : { type: Number, default: 1 },
 
 	description : { type: String, default: '' },
-	tags        : { type: String, default: '' },
+	tags        : [String],
 	systems     : [String],
 	renderer    : { type: String, default: '' },
 	authors     : [String],
