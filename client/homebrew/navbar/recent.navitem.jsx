@@ -120,13 +120,14 @@ const RecentItems = createClass({
 	},
 
 	renderDropdown : function(){
-		if(!this.state.showDropdown) return null;
+		// if(!this.state.showDropdown) return null;
 
 		const makeItems = (brews)=>{
 			return _.map(brews, (brew, i)=>{
 				return <a href={brew.url} className='item' key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
 					<span className='title'>{brew.title || '[ no title ]'}</span>
 					<span className='time'>{Moment(brew.ts).fromNow()}</span>
+					<div className='clear'><i className='fas fa-times'></i></div>
 				</a>;
 			});
 		};

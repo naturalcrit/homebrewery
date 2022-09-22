@@ -101,8 +101,33 @@
 				color            : white;
 				text-decoration  : none;
 				border-top       : 1px solid #888;
+				overflow         : clip;
+				.clear{
+					display	         : none;
+					position         : absolute;
+					top              : 50%;
+					transform        : translateY(-50%);
+					right            : 10px;
+					width            : 20px;
+					height           : 20px;
+					background-color : #333;
+					box-shadow       : 0px 0 5px 8px #2980b9;
+					border-radius    : 3px;
+					i {
+						text-align : center;
+						font-size  : 10px;
+						margin     : 0;
+						height     :100%;
+						width      :100%;
+					}
+				}
 				&:hover{
 					background-color : @blue;
+					
+					.clear{
+						display       : grid;
+						place-content : center;
+					}
 				}
 				.title{
 					display       : inline-block;
