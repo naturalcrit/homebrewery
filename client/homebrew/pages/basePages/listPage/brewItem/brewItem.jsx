@@ -101,10 +101,9 @@ const BrewItem = createClass({
 		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
 
 		return <div className='brewItem'>
-			{brew.thumbnail ?
+			{brew.thumbnail &&
 				<div className='thumbnail' style={{ backgroundImage: `url(${brew.thumbnail})` }} >
-				</div> :
-				<></>
+				</div>
 			}
 			<div className='text'>
 				<h2>{brew.title}</h2>
