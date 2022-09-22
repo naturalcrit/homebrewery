@@ -96,11 +96,15 @@ const BrewItem = createClass({
 	render : function(){
 		const brew = this.props.brew;
 		if(Array.isArray(brew.tags)) {               // temporary fix until dud tags are cleaned
-			brew.tags = brew.tags?.filter(tag => tag); //remove tags that are empty strings
+			brew.tags = brew.tags?.filter((tag)=>tag); //remove tags that are empty strings
 		}
 		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
 
 		return <div className='brewItem'>
+			{brew.thumbnail &&
+				<div className='thumbnail' style={{ backgroundImage: `url(${brew.thumbnail})` }} >
+				</div>
+			}
 			<div className='text'>
 				<h2>{brew.title}</h2>
 				<p className='description'>{brew.description}</p>
@@ -112,7 +116,7 @@ const BrewItem = createClass({
 					<div className='brewTags' title={`Tags:\n${brew.tags.join('\n')}`}>
 						<i className='fas fa-tags'/>
 						{brew.tags.map((tag, idx)=>{
-							let matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
+							const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
 							return <span className={matches[1]}>{matches[2]}</span>;
 						})}
 					</div>
