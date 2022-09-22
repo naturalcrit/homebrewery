@@ -4,13 +4,9 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');	//Unused variable
 
-<<<<<<< HEAD
 const DismissSVG = require('../../../../shared/naturalcrit/svg/cross.svg.jsx');
 
-const DISMISS_KEY = 'dismiss_notification09-9-21';
-=======
 const DISMISS_KEY = 'dismiss_notification08-27-22';
->>>>>>> master
 
 const NotificationPopup = createClass({
 	displayName     : 'NotificationPopup',
