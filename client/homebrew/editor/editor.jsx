@@ -75,7 +75,7 @@ const Editor = createClass({
 	},
 
 	handleInject : function(injectText){
-		this.refs.codeEditor?.injectText(injectText);
+		this.refs.codeEditor?.injectText(injectText, false);
 	},
 
 	handleViewChange : function(newView){

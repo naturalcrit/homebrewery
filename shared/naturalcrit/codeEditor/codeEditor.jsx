@@ -229,8 +229,12 @@ const CodeEditor = createClass({
 		this.codeMirror.replaceSelection('\n\\page\n\n', 'end');
 	},
 
-	injectText : function(injectText) {
-		this.codeMirror.replaceSelection(injectText, 'around');
+	injectText : function(injectText, overwrite=true) {
+		const cm = this.codeMirror;
+		if(!overwrite) {
+			cm.setCursor(cm.getCursor('from'));
+		}
+		cm.replaceSelection(injectText, 'around');
 	},
 
 	makeUnderline : function() {
