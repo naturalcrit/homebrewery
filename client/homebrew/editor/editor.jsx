@@ -55,6 +55,7 @@ const Editor = createClass({
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
+		this.refs.codeEditor.codeMirror.getWrapperElement().addEventListener('mouseover', this.renderURLPreview);
 	},
 
 	componentWillUnmount : function() {
@@ -261,6 +262,18 @@ const Editor = createClass({
 	//Called when there are changes to the editor's dimensions
 	update : function(){
 		this.refs.codeEditor?.updateSize();
+	},
+
+	renderURLPreview : function(e){
+		console.log(typeof e.target.innerText);
+		if(e.target.classList.contains('cm-url')){
+			const pos = this.refs.codeEditor.codeMirror.coordsChar({ left: e.clientX, top: e.clientY });
+			const el = Object.assign(document.createElement('div'), { className: 'url-preview' });
+			el.style.backgroundImage = `url${e.target.innerText}`;
+			this.refs.codeEditor.codeMirror.addWidget(pos, el);
+
+			e.target.addEventListener('mouseout', ()=>{el.remove();});
+		}
 	},
 
 	//Called by CodeEditor after document switch, so Snippetbar can refresh UndoHistory
