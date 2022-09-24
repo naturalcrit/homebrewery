@@ -19,11 +19,6 @@ const DEFAULT_STYLE_TEXT = dedent`
 					color: black;
 				}`;
 
-const splice = function(str, index, inject){
-	return str.slice(0, index) + inject + str.slice(index);
-};
-
-
 
 const Editor = createClass({
 	displayName     : 'Editor',
