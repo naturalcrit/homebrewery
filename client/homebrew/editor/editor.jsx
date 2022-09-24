@@ -80,19 +80,7 @@ const Editor = createClass({
 	},
 
 	handleInject : function(injectText){
-		let text;
-		if(this.isText())  text = this.props.brew.text;
-		if(this.isStyle()) text = this.props.brew.style ?? DEFAULT_STYLE_TEXT;
-
-		const lines = text.split('\n');
-		const cursorPos = this.refs.codeEditor.getCursorPosition();
-		lines[cursorPos.line] = splice(lines[cursorPos.line], cursorPos.ch, injectText);
-
-		const injectLines = injectText.split('\n');
-		this.refs.codeEditor.setCursorPosition(cursorPos.line + injectLines.length, cursorPos.ch  + injectLines[injectLines.length - 1].length);
-
-		if(this.isText())  this.props.onTextChange(lines.join('\n'));
-		if(this.isStyle()) this.props.onStyleChange(lines.join('\n'));
+		this.refs.codeEditor?.injectText(injectText);
 	},
 
 	handleViewChange : function(newView){
