@@ -27,7 +27,7 @@ const AccountPage = createClass({
 		};
 	},
 
-	navItems : function() {
+	renderNavItems : function() {
 		return <Navbar>
 			<Nav.section>
 				<NewBrew />
@@ -38,9 +38,9 @@ const AccountPage = createClass({
 		</Navbar>;
 	},
 
-	uiItems : function() {
+	renderUiItems : function() {
 		// console.log(JSON.stringify(this.props.uiItems));
-		const result = <>
+		return <>
 			<h1>Account Information  <i className='fas fa-user'></i></h1>
 			<p><strong>Username: </strong> {this.props.uiItems.username || 'No user currently logged in'}</p>
 			<p><strong>Last Login: </strong> {this.props.uiItems.issued || '-'}</p>
@@ -52,12 +52,10 @@ const AccountPage = createClass({
 			<p><strong>Linked to Google: </strong> {this.props.uiItems.googleId ? 'YES' : 'NO'}</p>
 			{this.props.uiItems.googleId ? <p><strong>Brews on Google Drive: </strong> {this.props.uiItems.fileCount || '-'}</p> : '' }
 		</>;
-
-		return result;
 	},
 
 	render : function(){
-		return <UIPage brew={this.props.brew} uiItems={this.uiItems()} ></UIPage>;
+		return <UIPage brew={this.props.brew} uiItems={this.renderUiItems()} ></UIPage>;
 	}
 });
 
