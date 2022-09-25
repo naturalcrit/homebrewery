@@ -48,7 +48,7 @@ const AccountPage = createClass({
 			<h3>Homebrewery Information</h3>
 			<p><strong>Brews on Homebrewery: </strong> {this.props.uiItems.mongoCount || '-'}</p>
 			<p></p>
-			<h3>Google Information <i class='fab fa-google-drive'></i></h3>
+			<h3>Google Information <i className='fab fa-google-drive'></i></h3>
 			<p><strong>Linked to Google: </strong> {this.props.uiItems.googleId ? 'YES' : 'NO'}</p>
 			{this.props.uiItems.googleId ? <p><strong>Brews on Google Drive: </strong> {this.props.uiItems.fileCount || '-'}</p> : '' }
 		</>;
