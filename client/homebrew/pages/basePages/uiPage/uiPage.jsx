@@ -13,13 +13,15 @@ const UIPage = createClass({
 
 	getDefaultProps : function(){
 		return {
-			uiItems : <>
-				<h1>H1 Header</h1>
-				<h2>H2 Header</h2>
-				<h3>H3 Header</h3>
-				<h4>H4 Header</h4>
-				<p>This is some test text.</p>
-			</>
+			renderUiItems : ()=>{
+				return <>
+					<h1>H1 Header</h1>
+					<h2>H2 Header</h2>
+					<h3>H3 Header</h3>
+					<h4>H4 Header</h4>
+					<p>This is some test text.</p>
+				</>;
+			}
 		};
 	},
 
@@ -37,7 +39,7 @@ const UIPage = createClass({
 			</Navbar>
 
 			<div className='content'>
-				{this.props.uiItems}
+				{this.props.renderUiItems()}
 			</div>
 		</div>;
 	}

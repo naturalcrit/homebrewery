@@ -18,7 +18,7 @@ const AccountPage = createClass({
 	getDefaultProps : function() {
 		return {
 			brew    : {},
-			uiItems : []
+			uiItems : {}
 		};
 	},
 	getInitialState : function() {
@@ -39,14 +39,14 @@ const AccountPage = createClass({
 	},
 
 	renderUiItems : function() {
-		// console.log(JSON.stringify(this.props.uiItems));
+		// console.log(this.props.uiItems);
 		return <>
 			<h1>Account Information  <i className='fas fa-user'></i></h1>
 			<p><strong>Username: </strong> {this.props.uiItems.username || 'No user currently logged in'}</p>
-			<p><strong>Last Login: </strong> {this.props.uiItems.issued || '-'}</p>
+			<p><strong>Last Login: </strong> {this.props.uiItems.issued.toString() || '-'}</p>
 			<p></p>
-			<h3>MongoDB Information</h3>
-			<p><strong>Brews on MongoDB: </strong> {this.props.uiItems.mongoCount || '-'}</p>
+			<h3>Homebrewery Information</h3>
+			<p><strong>Brews on Homebrewery: </strong> {this.props.uiItems.mongoCount || '-'}</p>
 			<p></p>
 			<h3>Google Information <i className='fa-brands fa-google-drive'></i></h3>
 			<p><strong>Linked to Google: </strong> {this.props.uiItems.googleId ? 'YES' : 'NO'}</p>
@@ -55,7 +55,7 @@ const AccountPage = createClass({
 	},
 
 	render : function(){
-		return <UIPage brew={this.props.brew} uiItems={this.renderUiItems()} ></UIPage>;
+		return <UIPage brew={this.props.brew} renderUiItems={this.renderUiItems} ></UIPage>;
 	}
 });
 
