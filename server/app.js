@@ -1,4 +1,4 @@
-/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 400, "skipBlankLines": true, "skipComments": true}]*/
 // Set working directory to project root
 process.chdir(`${__dirname}/..`);
 
@@ -263,9 +263,9 @@ app.get('/print/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 });
 
 //Account Page
-app.get('/ui/account', asyncHandler(async (req, res, next)=>{
-	const brew = {};
-	brew.title = 'ACCOUNT INFORMATION PAGE';
+app.get('/account', asyncHandler(async (req, res, next)=>{
+	const data = {};
+	data.title = 'ACCOUNT INFORMATION PAGE';
 
 	let auth;
 	let files;
@@ -294,7 +294,7 @@ app.get('/ui/account', asyncHandler(async (req, res, next)=>{
 				console.log(err);
 			});
 
-		brew.uiItems = {
+		data.uiItems = {
 			username   : req.account.username,
 			issued     : req.account.issued,
 			mongoCount : brews.length,
@@ -304,7 +304,7 @@ app.get('/ui/account', asyncHandler(async (req, res, next)=>{
 		};
 	}
 
-	req.brew = brew;
+	req.brew = data;
 	return next();
 }));
 
