@@ -23,7 +23,7 @@ const UserPage = createClass({
 		};
 	},
 	getInitialState : function() {
-		const usernameWithS = this.props.username + (this.props.username.endsWith('s') ? `'` : `'s`);
+		const usernameWithS = this.props.username + (this.props.username.endsWith('s') ? `’` : `’s`);
 
 		const brews = _.groupBy(this.props.brews, (brew)=>{
 			return (brew.published ? 'published' : 'private');

@@ -114,7 +114,7 @@ const EditPage = createClass({
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 
 		this.setState((prevState)=>({
-			brew       : _.merge({}, prevState.brew, { text: text }),
+			brew       : { ...prevState.brew, text: text },
 			isPending  : true,
 			htmlErrors : htmlErrors
 		}), ()=>this.trySave());
@@ -122,14 +122,17 @@ const EditPage = createClass({
 
 	handleStyleChange : function(style){
 		this.setState((prevState)=>({
-			brew      : _.merge({}, prevState.brew, { style: style }),
+			brew      : { ...prevState.brew, style: style },
 			isPending : true
 		}), ()=>this.trySave());
 	},
 
 	handleMetaChange : function(metadata){
 		this.setState((prevState)=>({
-			brew      : _.merge({}, prevState.brew, metadata),
+			brew : {
+				...prevState.brew,
+				...metadata
+			},
 			isPending : true,
 		}), ()=>this.trySave());
 
@@ -200,7 +203,7 @@ const EditPage = createClass({
 		const brew = this.state.brew;
 		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
 
-		const params = `${transfer ? `?transfer${this.state.saveGoogle ? 'To' : 'From'}Google=true` : ''}`;
+		const params = `${transfer ? `?${this.state.saveGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : ''}`;
 		const res = await request
 			.put(`/api/update/${brew.editId}${params}`)
 			.send(brew)
@@ -210,16 +213,14 @@ const EditPage = createClass({
 			});
 
 		this.savedBrew = res.body;
-		if(transfer) {
-			history.replaceState(null, null, `/edit/${this.savedBrew.googleId ?? ''}${this.savedBrew.editId}`);
-		}
+		history.replaceState(null, null, `/edit/${this.savedBrew.editId}`);
 
 		this.setState((prevState)=>({
-			brew : _.merge({}, prevState.brew, {
+			brew : { ...prevState.brew,
 				googleId : this.savedBrew.googleId ? this.savedBrew.googleId : null,
 				editId 	 : this.savedBrew.editId,
 				shareId  : this.savedBrew.shareId
-			}),
+			},
 			isPending : false,
 			isSaving  : false,
 		}));
@@ -321,7 +322,7 @@ const EditPage = createClass({
 				<div className='errorContainer'>
 					Looks like there was a problem saving. <br />
 					Report the issue <a target='_blank' rel='noopener noreferrer'
-						href={`https://github.com/naturalcrit/homebrewery/issues/new?body=${encodeURIComponent(errMsg)}`}>
+						href={`https://github.com/naturalcrit/homebrewery/issues/new?template=save_issue.yml&error-code=${encodeURIComponent(errMsg)}`}>
 						here
 					</a>.
 				</div>
@@ -340,7 +341,7 @@ const EditPage = createClass({
 	},
 
 	processShareId : function() {
-		return this.state.brew.googleId ?
+		return this.state.brew.googleId && !this.state.brew.stubbed ?
 					 this.state.brew.googleId + this.state.brew.shareId :
 					 this.state.brew.shareId;
 	},
@@ -417,7 +418,7 @@ const EditPage = createClass({
 						onMetaChange={this.handleMetaChange}
 						renderer={this.state.brew.renderer}
 					/>
-					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} errors={this.state.htmlErrors} />
+					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} theme={this.state.brew.theme} errors={this.state.htmlErrors} />
 				</SplitPane>
 			</div>
 		</div>;

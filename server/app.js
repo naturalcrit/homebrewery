@@ -9,46 +9,11 @@ const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
 
-const homebrewApi = require('./homebrew.api.js');
+const { homebrewApi, getBrew } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
-
-const brewAccessTypes = ['edit', 'share', 'raw'];
-
-//Get the brew object from the HB database or Google Drive
-const getBrewFromId = asyncHandler(async (id, accessType)=>{
-	if(!brewAccessTypes.includes(accessType))
-		throw ('Invalid Access Type when getting brew');
-	let brew;
-	if(id.length > 12) {
-		const googleId = id.slice(0, -12);
-		id             = id.slice(-12);
-		brew = await GoogleActions.getGoogleBrew(googleId, id, accessType);
-	} else {
-		brew = await HomebrewModel.get(accessType == 'edit' ? { editId: id } : { shareId: id });
-		brew = brew.toObject(); // Convert MongoDB object to standard Javascript Object
-	}
-
-	brew = sanitizeBrew(brew, accessType === 'edit' ? false : true);
-	//Split brew.text into text and style
-	//unless the Access Type is RAW, in which case return immediately
-	if(accessType == 'raw') {
-		return brew;
-	}
-	splitTextStyleAndMetadata(brew);
-	return brew;
-});
-
-const sanitizeBrew = (brew, full=false)=>{
-	delete brew._id;
-	delete brew.__v;
-	if(full){
-		delete brew.editId;
-	}
-	return brew;
-};
 
 const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
@@ -56,7 +21,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const index = brew.text.indexOf('```\n\n');
 		const metadataSection = brew.text.slice(12, index - 1);
 		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer']));
+		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']));
 		brew.text = brew.text.slice(index + 5);
 	}
 	if(brew.text.startsWith('```css')) {
@@ -64,6 +29,16 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
+	_.defaults(brew, { 'renderer': 'legacy', 'theme': '5ePHB' });
+};
+
+const sanitizeBrew = (brew, accessType)=>{
+	brew._id = undefined;
+	brew.__v = undefined;
+	if(accessType !== 'edit'){
+		brew.editId = undefined;
+	}
+	return brew;
 };
 
 app.use('/', serveCompressedStaticAssets(`build`));
@@ -93,12 +68,12 @@ app.use((req, res, next)=>{
 app.use(homebrewApi);
 app.use(require('./admin.api.js'));
 
-const HomebrewModel  = require('./homebrew.model.js').model;
-const welcomeText    = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
-const welcomeTextV3  = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg_v3.md', 'utf8');
-const migrateText    = require('fs').readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
-const changelogText  = require('fs').readFileSync('changelog.md', 'utf8');
-const faqText        = require('fs').readFileSync('faq.md', 'utf8');
+const HomebrewModel     = require('./homebrew.model.js').model;
+const welcomeText       = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
+const welcomeTextLegacy = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
+const migrateText       = require('fs').readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
+const changelogText     = require('fs').readFileSync('changelog.md', 'utf8');
+const faqText           = require('fs').readFileSync('faq.md', 'utf8');
 
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
@@ -108,63 +83,60 @@ app.get('/robots.txt', (req, res)=>{
 });
 
 //Home page
-app.get('/', async (req, res, next)=>{
-	const brew = {
-		text : welcomeText
+app.get('/', (req, res, next)=>{
+	req.brew = {
+		text     : welcomeText,
+		renderer : 'V3'
 	};
-	req.brew = brew;
+	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
 
 //Home page v3
-app.get('/v3_preview', async (req, res, next)=>{
-	const brew = {
-		text     : welcomeTextV3,
-		renderer : 'V3'
+app.get('/legacy', (req, res, next)=>{
+	req.brew = {
+		text     : welcomeTextLegacy,
+		renderer : 'legacy'
 	};
-	splitTextStyleAndMetadata(brew);
-	req.brew = brew;
+	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
 
 //Legacy/Other Document -> v3 Migration Guide
-app.get('/migrate', async (req, res, next)=>{
-	const brew = {
+app.get('/migrate', (req, res, next)=>{
+	req.brew = {
 		text     : migrateText,
 		renderer : 'V3'
 	};
-	splitTextStyleAndMetadata(brew);
-	req.brew = brew;
+	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
 
 //Changelog page
 app.get('/changelog', async (req, res, next)=>{
-	const brew = {
+	req.brew = {
 		title    : 'Changelog',
 		text     : changelogText,
 		renderer : 'V3'
 	};
-	splitTextStyleAndMetadata(brew);
-	req.brew = brew;
+	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
 
 //FAQ page
 app.get('/faq', async (req, res, next)=>{
-	const brew = {
+	req.brew = {
 		title    : 'FAQ',
 		text     : faqText,
 		renderer : 'V3'
 	};
-	splitTextStyleAndMetadata(brew);
-	req.brew = brew;
+	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
 
 //Source page
-app.get('/source/:id', asyncHandler(async (req, res)=>{
-	const brew = await getBrewFromId(req.params.id, 'raw');
+app.get('/source/:id', asyncHandler(getBrew('share')), (req, res)=>{
+	const { brew } = req;
 
 	const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
 	let text = brew.text;
@@ -173,11 +145,12 @@ app.get('/source/:id', asyncHandler(async (req, res)=>{
 	}
 	text = `<code><pre style="white-space: pre-wrap;">${text}</pre></code>`;
 	res.status(200).send(text);
-}));
+});
 
 //Download brew source page
-app.get('/download/:id', asyncHandler(async (req, res)=>{
-	const brew = await getBrewFromId(req.params.id, 'raw');
+app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
+	const { brew } = req;
+	sanitizeBrew(brew, 'share');
 	const prefix = 'HB - ';
 
 	let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
@@ -188,23 +161,27 @@ app.get('/download/:id', asyncHandler(async (req, res)=>{
 		'Content-Disposition' : `attachment; filename="${fileName}.txt"`
 	});
 	res.status(200).send(brew.text);
-}));
+});
 
 //User Page
 app.get('/user/:username', async (req, res, next)=>{
 	const ownAccount = req.account && (req.account.username == req.params.username);
 
 	const fields = [
+		'googleId',
 		'title',
 		'pageCount',
 		'description',
 		'authors',
+		'published',
 		'views',
 		'shareId',
 		'editId',
 		'createdAt',
 		'updatedAt',
-		'lastViewed'
+		'lastViewed',
+		'thumbnail',
+		'tags'
 	];
 
 	let brews = await HomebrewModel.getByUser(req.params.username, ownAccount, fields)
@@ -219,58 +196,71 @@ app.get('/user/:username', async (req, res, next)=>{
 				console.error(err);
 			});
 
-		if(googleBrews) {
+		if(googleBrews && googleBrews.length > 0) {
+			for (const brew of brews.filter((brew)=>brew.googleId)) {
+				const match = googleBrews.findIndex((b)=>b.editId === brew.editId);
+				if(match !== -1) {
+					brew.googleId = googleBrews[match].googleId;
+					brew.stubbed = true;
+					brew.pageCount = googleBrews[match].pageCount;
+					brew.renderer = googleBrews[match].renderer;
+					brew.version = googleBrews[match].version;
+					googleBrews.splice(match, 1);
+				}
+			}
+
 			googleBrews = googleBrews.map((brew)=>({ ...brew, authors: [req.account.username] }));
 			brews = _.concat(brews, googleBrews);
 		}
 	}
 
 	req.brews = _.map(brews, (brew)=>{
-		return sanitizeBrew(brew, !ownAccount);
+		return sanitizeBrew(brew, ownAccount ? 'edit' : 'share');
 	});
 
 	return next();
 });
 
 //Edit Page
-app.get('/edit/:id', asyncHandler(async (req, res, next)=>{
+app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
+	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
+	sanitizeBrew(req.brew, 'edit');
+	splitTextStyleAndMetadata(req.brew);
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
-	const brew = await getBrewFromId(req.params.id, 'edit');
-	req.brew = brew;
 	return next();
-}));
+});
 
 //New Page
-app.get('/new/:id', asyncHandler(async (req, res, next)=>{
-	const brew = await getBrewFromId(req.params.id, 'share');
-	brew.title = `CLONE - ${brew.title}`;
-	req.brew = brew;
+app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
+	sanitizeBrew(req.brew, 'share');
+	splitTextStyleAndMetadata(req.brew);
+	req.brew.title = `CLONE - ${req.brew.title}`;
 	return next();
-}));
+});
 
 //Share Page
-app.get('/share/:id', asyncHandler(async (req, res, next)=>{
-	const brew = await getBrewFromId(req.params.id, 'share');
+app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
+	const { brew } = req;
 
-	if(req.params.id.length > 12) {
+	if(req.params.id.length > 12 && !brew._id) {
 		const googleId = req.params.id.slice(0, -12);
 		const shareId = req.params.id.slice(-12);
 		await GoogleActions.increaseView(googleId, shareId, 'share', brew)
-					.catch((err)=>{next(err);});
+			.catch((err)=>{next(err);});
 	} else {
 		await HomebrewModel.increaseView({ shareId: brew.shareId });
 	}
-
-	req.brew = brew;
+	sanitizeBrew(req.brew, 'share');
+	splitTextStyleAndMetadata(req.brew);
 	return next();
 }));
 
 //Print Page
-app.get('/print/:id', asyncHandler(async (req, res, next)=>{
-	const brew = await getBrewFromId(req.params.id, 'share');
-	req.brew = brew;
-	return next();
-}));
+app.get('/print/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
+	sanitizeBrew(req.brew, 'share');
+	splitTextStyleAndMetadata(req.brew);
+	next();
+});
 
 //Account Page
 app.get('/ui/account', asyncHandler(async (req, res, next)=>{
@@ -335,8 +325,7 @@ if(isLocalEnvironment){
 
 //Render the page
 const templateFn = require('./../client/template.js');
-
-app.use((req, res)=>{
+app.use(asyncHandler(async (req, res, next)=>{
 	// Create configuration object
 	const configuration = {
 		local       : isLocalEnvironment,
@@ -344,23 +333,25 @@ app.use((req, res)=>{
 		environment : nodeEnv
 	};
 	const props = {
-		version     : require('./../package.json').version,
-		url         : req.originalUrl,
-		brew        : req.brew,
-		brews       : req.brews,
-		googleBrews : req.googleBrews,
-		account     : req.account,
-		enable_v3   : config.get('enable_v3'),
-		config      : configuration
+		version       : require('./../package.json').version,
+		url           : req.originalUrl,
+		brew          : req.brew,
+		brews         : req.brews,
+		googleBrews   : req.googleBrews,
+		account       : req.account,
+		enable_v3     : config.get('enable_v3'),
+		enable_themes : config.get('enable_themes'),
+		config        : configuration
 	};
 	const title = req.brew ? req.brew.title : '';
-	templateFn('homebrew', title, props)
-        .then((page)=>{ res.send(page); })
-        .catch((err)=>{
-        	console.log(err);
-        	return res.sendStatus(500);
-        });
-});
+	const page = await templateFn('homebrew', title, props)
+		.catch((err)=>{
+			console.log(err);
+			return res.sendStatus(500);
+		});
+	if(!page) return;
+	res.send(page);
+}));
 
 //v=====----- Error-Handling Middleware -----=====v//
 //Format Errors so all fields will be sent
@@ -383,6 +374,13 @@ app.use((err, req, res, next)=>{
 	const status = err.status || 500;
 	console.error(err);
 	res.status(status).send(getPureError(err));
+});
+
+app.use((req, res)=>{
+	if(!res.headersSent) {
+		console.error('Headers have not been sent, responding with a server error.', req.url);
+		res.status(500).send('An error occurred and the server did not send a response. The error has been logged, please note the time this occurred and report this issue.');
+	}
 });
 //^=====--------------------------------------=====^//
 

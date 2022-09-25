@@ -1,15 +1,19 @@
 @import (less) './themes/fonts/5e/fonts.less';
 @import (less) './themes/assets/assets.less';
 
-//Colors
-@background            : #EEE5CE; // Light parchment
-@noteGreen             : #e0e5c1; // Pastel green
-@headerUnderline       : #c9ad6a; // Gold
-@horizontalRule        : #9c2b1b; // Maroon
-@headerText            : #58180D; // Dark maroon
-@monsterStatBackground : #EEDBAB; // Light orange parchment
-@captionText           : #766649; // Brown
-@watercolorStain       : #BBAD82; // Light brown
+:root {
+	//Colors
+	--HB_Color_Background            : #EEE5CE; // Light parchment
+	--HB_Color_Accent                : #E0E5C1; // Pastel green
+	--HB_Color_HeaderUnderline       : #C0AD6A; // Gold
+	--HB_Color_HorizontalRule        : #9C2B1B; // Maroon
+	--HB_Color_HeaderText            : #58180D; // Dark Maroon
+	--HB_Color_MonsterStatBackground : #EEDBAB; // Light orange parchment
+	--HB_Color_CaptionText           : #766649; // Brown
+	--HB_Color_WatercolorStain       : #BBAD82; // Light brown
+	--HB_Color_Footnotes             : #C9AD6A; // Gold
+}
+
 @page { margin: 0; }
 body {
 	counter-reset : phb-page-numbers;
@@ -65,7 +69,7 @@ body {
 	overflow          : hidden;
 	height            : 279.4mm;
 	width             : 215.9mm;
-	background-color  : @background;
+	background-color  : var(--HB_Color_Background);
 	background-image  : @backgroundImage;
 	padding           : 1.4cm 1.9cm 1.7cm;
 	font-family       : BookInsanityRemake;
@@ -131,12 +135,13 @@ body {
 	h1,h2,h3,h4{
 		font-family   : MrEavesRemake;
 		font-weight   : 800;
-		color         : @headerText;
+		color         : var(--HB_Color_HeaderText);
 	}
 	h1{
 		margin-bottom       : 0.18cm; //Margin-bottom only because this is WIDE
 		column-span         : all;
 		font-size           : 0.89cm;
+		line-height         : 1em;
 		-webkit-column-span : all;
 		-moz-column-span    : all;
 		&+p::first-letter{
@@ -168,7 +173,7 @@ body {
 		//margin-top    : -0.1cm; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.1cm;
 		font-size     : 0.575cm;
-		border-bottom : 2px solid @headerUnderline;
+		border-bottom : 2px solid var(--HB_Color_HeaderUnderline);;
 		line-height   : 0.995em; //Font is misaligned. Shift up slightly
 	}
 	h4{
@@ -211,7 +216,7 @@ body {
 					padding : 0.14em 0.4em;
 				}
 				&:nth-child(odd){
-					background-color : @noteGreen;
+					background-color : var(--HB_Color_Accent);
 				}
 			}
 		}
@@ -221,7 +226,7 @@ body {
 	// *****************************/
 	.note{
 		.useSansSerif();
-		background-color    : @noteGreen;
+		background-color    : var(--HB_Color_Accent);
 		border-style        : solid;
 		border-width        : 1px;
 		border-image        : @noteBorderImage 12 stretch;
@@ -287,7 +292,7 @@ body {
 		text-align  : center;
 		font-family : WalterTurncoat;
 		font-size   : 0.27cm;
-		color       : @captionText;
+		color       : var(--HB_Color_CaptionText);
 		p, p + p {
 			margin      : unset;
 			text-indent : unset;
@@ -340,7 +345,7 @@ body {
 		mask-size           : contain;
 		mask-repeat         : no-repeat;
 		background-size     : cover;
-		background-color    : @watercolorStain;			/*default color*/
+		background-color    : var(--HB_Color_WatercolorStain);			/*default color*/
 		--wc                : @watercolor1;         /*default image*/
 		z-index             : -2;
 	}
@@ -366,7 +371,7 @@ body {
 		&.frame {
 			border-style          : solid;
 			border-width          : 7px 6px;
-			background-color      : @monsterStatBackground;
+			background-color      : var(--HB_Color_MonsterStatBackground);
 			background-image      : @monsterBlockBackground;
 			border-image          : @monsterBorderImage 14 round;
 			border-image-outset   : 0px 2px;
@@ -397,7 +402,7 @@ body {
 			font-family    : ScalySansRemake;
 			font-weight    : 800;
 			font-variant   : small-caps;
-			border-bottom  : 2px solid @headerText;
+			border-bottom  : 2px solid var(--HB_Color_HeaderText);
 			// margin-top     : 0.05cm;  //Font is misaligned. Shift up slightly
   		padding-bottom : 0.05cm;
 		}
@@ -414,7 +419,7 @@ body {
 
 		//Attribute Lists - All text between HRs is red
 		hr ~ :is(dl,p) {
-			color : @headerText;
+			color : var(--HB_Color_HeaderText);
 		}
 		hr:last-of-type {
 			& ~ :is(dl,p) {
@@ -429,7 +434,7 @@ body {
 		hr + table:first-of-type{
 			margin              : 0;
 			column-span         : none;
-			color               : @headerText;
+			color               : var(--HB_Color_HeaderText);
 			background-color    : transparent;
 			border-style        : none;
 			border-image        : none;
@@ -484,7 +489,7 @@ body {
 		bottom      : 22px;
 		width       : 50px;
 		font-size   : 0.9em;
-		color       : #c9ad6a;
+		color       : var(--HB_Color_Footnotes);
 		text-align  : center;
 		text-indent : 0;
 		&.auto::after {
@@ -498,7 +503,7 @@ body {
 		z-index    : 150;
 		width      : 200px;
 		font-size  : 0.8em;
-		color      : #c9ad6a;
+		color      : var(--HB_Color_Footnotes);
 		text-align : right;
 	}
 	//************************************
@@ -545,7 +550,6 @@ body {
 		-webkit-column-break-after : always;
 		break-after                : always;
 		-moz-column-break-after    : always;
-		break-before               : column;
 	}
 	//Avoid breaking up
 	blockquote,table{
@@ -604,8 +608,8 @@ body {
 		white-space : nowrap;
 	}
 	&.frame {
-		margin-top          : 0.66cm;
-		margin-bottom       : 1.05cm;
+		margin-top          : 0.7cm;
+		margin-bottom       : 0.9cm;
 		margin-left         : -0.1cm;
 		margin-right        : -0.1cm;
 		width               : calc(100% + 0.2cm);
@@ -613,34 +617,38 @@ body {
 		background-color    : white;
 		border              : initial;
 		border-style        : solid;
-		border-image-outset : 0.55cm 0.3cm;
+		border-image-outset : 0.4cm 0.3cm;
 		border-image-repeat : stretch;
 		border-image-slice  : 200;
 		border-image-source : @frameBorderImage;
 		border-image-width  : 47px;
+		&.wide:first-child {
+			margin-top: 0.12cm;
+		}
 	}
 	&.decoration {
-		transform-style : preserve-3d;
-		z-index: -1;
 		position:relative;
 	}
 	&.decoration::before {
-		content           :'';
-		position          : absolute;
-		background-image  : @classTableDecoration;
-		background-size   : contain;
-		background-repeat : space;
-		width             : 7.75cm;
-		height            : calc(100% + 3.3cm);
-		top               : 50%;
-		left              : 50%;
-		transform         : translateY(-50%) translateX(-50%) translateZ(-1px);
-		filter            : drop-shadow(0px 0px 1px #C8C5C080)
+		content             :'';
+		position            : absolute;
+		background-image    : @classTableDecoration,
+		                      @classTableDecoration;
+		background-size     : contain, contain;
+		background-repeat   : no-repeat, no-repeat;
+		background-position : top, bottom;
+		width               : 7.75cm;
+		height              : calc(100% + 3.3cm);
+		top                 : 50%;
+		left                : 50%;
+		transform           : translateY(-50%) translateX(-50%);
+		filter              : drop-shadow(0px 0px 1px #C8C5C080);
+		z-index             : -1;
 	}
 	&.decoration.wide::before {
-		width             : calc(100% + 3.3cm);
-		height            : 7.75cm;
-		top               : calc(50% + 0.4cm);
+		width               : calc(100% + 3.3cm);
+		height              : 7.75cm;
+		background-position : left, right;
 	}
 	h5 + table{
 		margin-top : 0.2cm;

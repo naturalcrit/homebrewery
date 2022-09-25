@@ -1,3 +1,4 @@
+@import 'naturalcrit/styles/colors.less';
 
 .metadataEditor{
 	position         : absolute;
@@ -14,7 +15,7 @@
 			display        : inline-block;
 			vertical-align : top;
 			width          : 80px;
-			font-size      : 0.7em;
+			font-size      : 11px;
 			font-weight    : 800;
 			line-height    : 1.8em;
 			text-transform : uppercase;
@@ -107,5 +108,137 @@
 	.authors.field .value{
 		font-size: 0.8em;
 		line-height    : 1.5em;
+	}
+
+	.themes.field{
+		font-size : 13.33px;
+		.navDropdownContainer {
+			background-color	: white;
+			width				: 100%;
+			position			: relative;
+			z-index				: 500;
+			&.disabled {
+				font-style			:italic;
+				font-style			: italic;
+				background-color	: darkgray;
+				color				: dimgray;
+			}
+			&>div:first-child {
+				border 				: 2px solid rgb(118,118,118);
+				padding 			: 6px 3px;
+				background-color 	: inherit;
+				i {
+					float	: right;
+				}
+				&:hover {
+					background-color	: @blue;
+					color				: white;
+				}
+			}
+			.navDropdown {
+				box-shadow	: 0px 5px 10px rgba(0, 0, 0, 0.3);
+				position	: absolute;
+				width		: 100%;
+				.item {
+					padding				: 3px 3px;
+					border-top			: 1px solid rgb(118, 118, 118);
+					position			: relative;
+					overflow			: hidden;
+					background-color	: white;
+					&:hover {
+						background-color	: @blue;
+						color				: white;
+					}
+					img {
+						mask-image			: linear-gradient(90deg, transparent, black 20%);
+						-webkit-mask-image	: linear-gradient(90deg, transparent, black 20%);
+				    position	: absolute;
+				    left		: ~"max(100px, 100% - 300px)";
+				    top			: 0px;
+					}
+				}
+			}
+		}
+	}
+	.field .list {
+		display: flex;
+		flex-wrap: wrap;
+
+		> * {
+			flex: 0 0 auto;
+		}
+
+		#groupedIcon {
+			#backgroundColors;
+			display: inline-block;
+			height: ~"calc(100% + 0.6em)";
+			position: relative;
+			top: -0.3em;
+			right: -0.3em;
+			cursor: pointer;
+			min-width: 20px;
+			text-align: center;
+			color: white;
+
+			i {
+				position: relative;
+				top: 50%;
+				transform: translateY(-50%);
+			}
+
+			&:not(:last-child) {
+				border-right: 1px solid black;
+			}
+
+			&:last-child {
+				border-radius: 0 0.5em 0.5em 0;
+			}
+		}
+
+		.badge {
+			background-color: #dddddd;
+			border-radius: .5em;
+			font-size: .9em;
+			margin: 2px;
+			padding: .3em;
+
+			.icon {
+				#groupedIcon
+			}
+		}
+
+		.input-group {
+			height: ~"calc(.9em + 4px + .6em)";
+
+			input {
+				border-radius: .5em 0 0 .5em;
+			}
+
+			input:last-child {
+				border-radius: .5em;
+			}
+
+			.value {
+				width: 7.5vw;
+				min-width: 75px;
+				height: 100%;
+			}
+
+			.invalid:focus {
+				background-color: pink;
+			}
+
+			.icon {
+				#groupedIcon;
+				height: 97%;
+				font-size: .8em;
+				right: 1px;
+				top: -.54em;
+
+				i {
+					font-size: 1.125em;
+				}
+			}
+		}
 	}
 }
