@@ -1,0 +1,19 @@
+:root {
+	//Colors
+	--HB_Color_Accent                : #EBCEC3; // Salmon
+	--HB_Color_Footnotes             : #5C5C5C; // Dark gray
+}
+
+.page {
+	background-image : url(/assets/DMG_background.png);
+	background-size  : cover;
+
+	&:after {
+		background-image : url(/assets/DMG_footerAccent.png);
+		height: 58px;
+	}
+
+	.footnote {
+		bottom : 40px;
+	}
+}

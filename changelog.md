@@ -39,6 +39,121 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Friday 08/09/2022 - v3.2.2
+{{taskList
+
+##### Jeddai:
+
+* [x] Fix brews not deleting from User page when removed from Google Drive externally.
+
+  Fixes issues: [#2325](https://github.com/naturalcrit/homebrewery/issues/2325)
+
+##### G-Ambatte:
+
+* [x] Brew Tags are now searchable on the User page
+
+Fixes issues  [#2317](https://github.com/naturalcrit/homebrewery/issues/2317), [#2319](https://github.com/naturalcrit/homebrewery/issues/2319), [#2334](https://github.com/naturalcrit/homebrewery/issues/2334)
+
+* [x] Several tweaks to the User page
+
+ Fixes issues:  [#1797](https://github.com/naturalcrit/homebrewery/issues/1797), [#2315](https://github.com/naturalcrit/homebrewery/issues/2315), [#2326](https://github.com/naturalcrit/homebrewery/issues/2326), [#2328](https://github.com/naturalcrit/homebrewery/issues/2328)
+}}
+
+### Wednesday 31/08/2022 - v3.2.1
+{{taskList
+
+##### Calculuschild
+
+* [x] Reference Links should now work inside tables
+
+	Fixes issues: [#2307](https://github.com/naturalcrit/homebrewery/issues/2307)
+
+##### Jeddai:
+
+* [x] Fix printing from `/new` not working
+
+  Fixes issues: [#1789](https://github.com/naturalcrit/homebrewery/issues/1789), [#1806](https://github.com/naturalcrit/homebrewery/issues/1806)
+
+* [x] Fix broken snippet buttons on `/new`
+
+  Fixes issues: [#2311](https://github.com/naturalcrit/homebrewery/issues/2311)
+
+##### G-Ambatte:
+
+* [x] Several small tweaks to the User page
+
+  Fixes issues: [#2301](https://github.com/naturalcrit/homebrewery/issues/2301), [#2303](https://github.com/naturalcrit/homebrewery/issues/2303), [#2121](https://github.com/naturalcrit/homebrewery/issues/2121)
+}}
+
+\page
+
+### Saturday 27/08/2022 - v3.2.0
+{{taskList
+
+##### Calculuschild
+
+* [x] The V3 renderer is now the default for new brews.
+
+* [x] Small tweaks to the spacing around the `classTable` style
+
+##### Jeddai:
+
+* [x] Brew transfers between Homebrewery and Google Drive now keep the same share and edit links! Metadata is now also kept across transfers.
+
+  Fixes issues: [#1838](https://github.com/naturalcrit/homebrewery/issues/1838)
+
+* [x] Brews can now be labeled with tags; these will be searchable on the My Brews page in a future update.
+
+  Fixes issues: [#758](https://github.com/naturalcrit/homebrewery/issues/758)
+
+##### Jlgraves:
+
+* [x] Small tweaks to the `ClassFeature` snippet
+
+  Fixes issues: [#2215](https://github.com/naturalcrit/homebrewery/issues/2215)
+}}
+
+
+### Thursday 09/06/2022 - v3.1.1
+{{taskList
+
+##### Calculuschild:
+
+* [x] Fixed class table decorations appearing on top of the table in PDF output.
+
+  Fixes issues: [#1784](https://github.com/naturalcrit/homebrewery/issues/1784)
+
+* [x] Fix bottom decoration on half class tables disappearing when the table is too short.
+
+  Fixes issues: [#2202](https://github.com/naturalcrit/homebrewery/issues/2202)
+}}
+
+### Monday 06/06/2022 - v3.1.0
+{{taskList
+
+##### G-Ambatte:
+
+* [x] "Jump to Preview/Editor" buttons added to the divider bar. Easily sync between the editor and preview panels!
+
+  Fixes issues: [#1756](https://github.com/naturalcrit/homebrewery/issues/1756)
+
+* [x] Speedups to the user page for users with large and/or many brews.
+
+  Fixes issues: [#2147](https://github.com/naturalcrit/homebrewery/issues/2147)
+
+* [x] Search text on the user page is saved to the URL for easy bookmarking in your browser
+
+  Fixes issues: [#1858](https://github.com/naturalcrit/homebrewery/issues/1858)
+
+* [x] Added easy login system for offline installs.
+
+  Fixes issues: [#269](https://github.com/naturalcrit/homebrewery/issues/269)
+
+* [x] New **THUMBNAIL** option in the {{fa,fa-info-circle}} **Properties** menu. This image will show up in social media links.
+
+  Fixes issues: [#820](https://github.com/naturalcrit/homebrewery/issues/820)
+}}
+
 ### Wednesday 27/03/2022 - v3.0.8
 {{taskList
 * [x] Style updates to user page.

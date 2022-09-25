@@ -1,9 +1,14 @@
+/* eslint-disable max-lines */
 require('./metadataEditor.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 const request = require('superagent');
+const Nav = require('naturalcrit/nav/nav.jsx');
+const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
+
+const Themes = require('themes/themes.json');
 
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
@@ -17,11 +22,12 @@ const MetadataEditor = createClass({
 				editId      : null,
 				title       : '',
 				description : '',
-				tags        : '',
+				tags        : [],
 				published   : false,
 				authors     : [],
 				systems     : [],
-				renderer    : 'legacy'
+				renderer    : 'legacy',
+				theme       : '5ePHB'
 			},
 			onChange : ()=>{}
 		};
@@ -45,9 +51,10 @@ const MetadataEditor = createClass({
 	},
 
 	handleFieldChange : function(name, e){
-		this.props.onChange(_.merge({}, this.props.metadata, {
+		this.props.onChange({
+			...this.props.metadata,
 			[name] : e.target.value
-		}));
+		});
 	},
 	handleSystem : function(system, e){
 		if(e.target.checked){
@@ -60,13 +67,22 @@ const MetadataEditor = createClass({
 	handleRenderer : function(renderer, e){
 		if(e.target.checked){
 			this.props.metadata.renderer = renderer;
+			if(renderer == 'legacy')
+				this.props.metadata.theme = '5ePHB';
 		}
 		this.props.onChange(this.props.metadata);
 	},
 	handlePublish : function(val){
-		this.props.onChange(_.merge({}, this.props.metadata, {
+		this.props.onChange({
+			...this.props.metadata,
 			published : val
-		}));
+		});
+	},
+
+	handleTheme : function(theme){
+		this.props.metadata.renderer = theme.renderer;
+		this.props.metadata.theme    = theme.path;
+		this.props.onChange(this.props.metadata);
 	},
 
 	handleDelete : function(){
@@ -135,6 +151,45 @@ const MetadataEditor = createClass({
 		</div>;
 	},
 
+	renderThemeDropdown : function(){
+		if(!global.enable_themes) return;
+
+		const listThemes = (renderer)=>{
+			return _.map(_.values(Themes[renderer]), (theme)=>{
+				return <div className='item' key={''} onClick={()=>this.handleTheme(theme)} title={''}>
+					{`${theme.renderer} : ${theme.name}`}
+					<img src={`/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`}/>
+				</div>;
+			});
+		};
+
+		const currentTheme = Themes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme];
+		let dropdown;
+
+		if(this.props.metadata.renderer == 'legacy') {
+			dropdown =
+				<Nav.dropdown className='disabled' trigger='disabled'>
+					<div>
+						{`Themes are not supported in the Legacy Renderer`} <i className='fas fa-caret-down'></i>
+					</div>
+				</Nav.dropdown>;
+		} else {
+			dropdown =
+				<Nav.dropdown trigger='click'>
+					<div>
+						{`${_.upperFirst(currentTheme.renderer)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
+					</div>
+					{/*listThemes('Legacy')*/}
+					{listThemes('V3')}
+				</Nav.dropdown>;
+		}
+
+		return <div className='field themes'>
+			<label>theme</label>
+			{dropdown}
+		</div>;
+	},
+
 	renderRenderOptions : function(){
 		if(!global.enable_v3) return;
 
@@ -161,8 +216,8 @@ const MetadataEditor = createClass({
 					V3
 				</label>
 
-				<a href='/v3_preview' target='_blank' rel='noopener noreferrer'>
-					Click here for a quick intro to V3!
+				<a href='/legacy' target='_blank' rel='noopener noreferrer'>
+					Click here to see the demo page for the old Legacy renderer!
 				</a>
 			</div>
 		</div>;
@@ -193,13 +248,11 @@ const MetadataEditor = createClass({
 				</button>
 				{this.renderThumbnail()}
 			</div>
-			{/*}
-			<div className='field tags'>
-				<label>tags</label>
-				<textarea value={this.props.metadata.tags}
-					onChange={(e)=>this.handleFieldChange('tags', e)} />
-			</div>
-			*/}
+
+			<StringArrayEditor label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
+				placeholder='add tag' unique={true}
+				values={this.props.metadata.tags}
+				onChange={(e)=>this.handleFieldChange('tags', e)}/>
 
 			{this.renderAuthors()}
 
@@ -209,6 +262,8 @@ const MetadataEditor = createClass({
 					{this.renderSystems()}
 				</div>
 			</div>
+
+			{this.renderThemeDropdown()}
 
 			{this.renderRenderOptions()}
 
