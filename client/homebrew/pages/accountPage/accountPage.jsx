@@ -40,18 +40,22 @@ const AccountPage = createClass({
 
 	renderUiItems : function() {
 		// console.log(this.props.uiItems);
-		return <>
-			<h1>Account Information  <i className='fas fa-user'></i></h1>
-			<p><strong>Username: </strong> {this.props.uiItems.username || 'No user currently logged in'}</p>
-			<p><strong>Last Login: </strong> {this.props.uiItems.issued.toString() || '-'}</p>
-			<p></p>
-			<h3>Homebrewery Information</h3>
-			<p><strong>Brews on Homebrewery: </strong> {this.props.uiItems.mongoCount || '-'}</p>
-			<p></p>
-			<h3>Google Information <i className='fab fa-google-drive'></i></h3>
-			<p><strong>Linked to Google: </strong> {this.props.uiItems.googleId ? 'YES' : 'NO'}</p>
-			{this.props.uiItems.googleId ? <p><strong>Brews on Google Drive: </strong> {this.props.uiItems.fileCount || '-'}</p> : '' }
-		</>;
+		return [
+			<>
+				<h1>Account Information  <i className='fas fa-user'></i></h1>
+				<p><strong>Username: </strong> {this.props.uiItems.username || 'No user currently logged in'}</p>
+				<p><strong>Last Login: </strong> {this.props.uiItems.issued.toString() || '-'}</p>
+			</>,
+			<>
+				<h3>Homebrewery Information</h3>
+				<p><strong>Brews on Homebrewery: </strong> {this.props.uiItems.mongoCount || '-'}</p>
+			</>,
+			<>
+				<h3>Google Information <i className='fab fa-google-drive'></i></h3>
+				<p><strong>Linked to Google: </strong> {this.props.uiItems.googleId ? 'YES' : 'NO'}</p>
+				{this.props.uiItems.googleId ? <p><strong>Brews on Google Drive: </strong> {this.props.uiItems.fileCount || '-'}</p> : '' }
+			</>
+		];
 	},
 
 	render : function(){

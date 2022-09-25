@@ -39,7 +39,11 @@ const UIPage = createClass({
 			</Navbar>
 
 			<div className='content'>
-				{this.props.renderUiItems()}
+				{this.props.renderUiItems().map((item, index)=>{
+					return <div className='dataGroup' key={index}>
+						{item}
+					</div>;
+				})}
 			</div>
 		</div>;
 	}
