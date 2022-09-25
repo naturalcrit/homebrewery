@@ -13,6 +13,8 @@ const Account = require('../../navbar/account.navitem.jsx');
 const NewBrew = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 
+const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
+
 const AccountPage = createClass({
 	displayName     : 'AccountPage',
 	getDefaultProps : function() {
@@ -47,7 +49,7 @@ const AccountPage = createClass({
 				<p><strong>Last Login: </strong> {this.props.uiItems.issued.toString() || '-'}</p>
 			</>,
 			<>
-				<h3>Homebrewery Information</h3>
+				<h3>Homebrewery Information <NaturalCritIcon /></h3>
 				<p><strong>Brews on Homebrewery: </strong> {this.props.uiItems.mongoCount || '-'}</p>
 			</>,
 			<>
