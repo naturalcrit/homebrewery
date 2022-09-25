@@ -65,22 +65,21 @@ const Homebrew = createClass({
 		return (
 			<Router location={this.props.url}>
 				<div className='homebrew'>
-					<Switch>
-						<Route path='/edit/:id' component={(routeProps)=><EditPage id={routeProps.match.params.id} brew={this.props.brew} />}/>
-						<Route path='/share/:id' component={(routeProps)=><SharePage id={routeProps.match.params.id} brew={this.props.brew} />}/>
-						<Route path='/new/:id' component={(routeProps)=><NewPage id={routeProps.match.params.id} brew={this.props.brew} />}/>
-						<Route path='/new' exact component={(routeProps)=><NewPage />}/>
-						<Route path='/user/:username' component={(routeProps)=><UserPage username={routeProps.match.params.username} brews={this.props.brews} query={queryString.parse(routeProps.location.search)}/>}/>
-						<Route path='/print/:id' component={(routeProps)=><PrintPage brew={this.props.brew} query={queryString.parse(routeProps.location.search)} />}/>
-						<Route path='/print' exact component={(routeProps)=><PrintPage query={queryString.parse(routeProps.location.search)} />}/>
-						<Route path='/changelog' exact component={()=><SharePage brew={this.props.brew} />}/>
-						<Route path='/faq' exact component={()=><SharePage brew={this.props.brew} />}/>
-						<Route path='/v3_preview' exact component={()=><HomePage brew={this.props.brew} />}/>
-						<Route path='/account' exact component={()=><AccountPage brew={this.props.brew} uiItems={this.props.brew.uiItems} />}/>
+					<Routes>
+						<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={this.props.brew} />} />
+						<Route path='/share/:id' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
+						<Route path='/new/:id' element={<WithRoute el={NewPage} brew={this.props.brew} />} />
+						<Route path='/new' element={<WithRoute el={NewPage}/>} />
+						<Route path='/user/:username' element={<WithRoute el={UserPage} brews={this.props.brews} />} />
+						<Route path='/print/:id' element={<WithRoute el={PrintPage} brew={this.props.brew} />} />
+						<Route path='/print' element={<WithRoute el={PrintPage} />} />
+						<Route path='/changelog' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
+						<Route path='/faq' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
+						<Route path='/account' element={<WithRoute el={AccountPage} brew={this.props.brew} uiItems={this.props.brew.uiItems} />} />
 						<Route path='/legacy' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
 					  	<Route path='/' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
 					  	<Route path='/*' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
-					</Switch>
+					</Routes>
 				</div>
 			</Router>
 		);
