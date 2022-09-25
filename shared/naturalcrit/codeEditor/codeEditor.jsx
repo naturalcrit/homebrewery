@@ -355,12 +355,24 @@ const CodeEditor = createClass({
 				let text = '';
 				let currentLine = from.line;
 				const maxLength = 50;
+
+				let headerText = '';
+				let otherText = '';
 				while (currentLine <= to.line && text.length <= maxLength) {
-					text += this.codeMirror.getLine(currentLine);
-					if(currentLine < to.line)
-						text += ' ';
-					currentLine += 1;
+					const currentText = this.codeMirror.getLine(currentLine);
+					currentLine++;
+					if(!currentText) {
+						continue;
+					}
+					if(currentText[0] == '#'){
+						headerText = currentText;
+						break;
+					}
+					if(!otherText && currentText != '\n') {
+						otherText = currentText;
+					}
 				}
+				text = headerText || otherText || `Lines ${from.line+1}-${to.line+1}`;
 
 				text = text.trim();
 				if(text.length > maxLength)
