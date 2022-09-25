@@ -58,7 +58,7 @@ const Homebrew = createClass({
 						<Route path='/changelog' exact component={()=><SharePage brew={this.props.brew} />}/>
 						<Route path='/faq' exact component={()=><SharePage brew={this.props.brew} />}/>
 						<Route path='/v3_preview' exact component={()=><HomePage brew={this.props.brew} />}/>
-						<Route path='/ui/account' exact component={()=><AccountPage brew={this.props.brew} uiItems={this.props.brew.uiItems} />}/>
+						<Route path='/account' exact component={()=><AccountPage brew={this.props.brew} uiItems={this.props.brew.uiItems} />}/>
 						<Route path='/' component={()=><HomePage brew={this.props.brew} />}/>
 					</Switch>
 				</div>
