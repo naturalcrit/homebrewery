@@ -356,23 +356,19 @@ const CodeEditor = createClass({
 				let currentLine = from.line;
 				const maxLength = 50;
 
-				let headerText = '';
-				let otherText = '';
+				let foldPreviewText = '';
 				while (currentLine <= to.line && text.length <= maxLength) {
 					const currentText = this.codeMirror.getLine(currentLine);
 					currentLine++;
-					if(!currentText) {
-						continue;
-					}
 					if(currentText[0] == '#'){
-						headerText = currentText;
+						foldPreviewText = currentText;
 						break;
 					}
-					if(!otherText && currentText != '\n') {
-						otherText = currentText;
+					if(!foldPreviewText && currentText != '\n') {
+						foldPreviewText = currentText;
 					}
 				}
-				text = headerText || otherText || `Lines ${from.line+1}-${to.line+1}`;
+				text = foldPreviewText || `Lines ${from.line+1}-${to.line+1}`;
 
 				text = text.trim();
 				if(text.length > maxLength)
