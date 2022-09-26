@@ -77,6 +77,14 @@ const Account = createClass({
 					brews
 				</Nav.item>
 				<Nav.item
+					className='account'
+					color='orange'
+					icon='fas fa-user'
+					href='/account'
+				>
+					account
+				</Nav.item>
+				<Nav.item
 					className='logout'
 					color='red'
 					icon='fas fa-power-off'
