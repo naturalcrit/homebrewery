@@ -108,7 +108,7 @@ const excludePropsFromUpdate = (brew)=>{
 
 const excludeGoogleProps = (brew)=>{
 	const modified = _.clone(brew);
-	const propsToExclude = ['tags', 'systems', 'published', 'authors', 'owner', 'views'];
+	const propsToExclude = ['tags', 'systems', 'published', 'authors', 'owner', 'views', 'thumbnail'];
 	for (const prop of propsToExclude) {
 		delete modified[prop];
 	}

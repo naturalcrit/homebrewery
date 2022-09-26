@@ -69,7 +69,8 @@ const SplitPane = createClass({
 		this.setState({ isDragging: false });
 	},
 
-	handleDown : function(){
+	handleDown : function(e){
+		e.preventDefault();
 		this.setState({ isDragging: true });
 		//this.unFocus()
 	},
