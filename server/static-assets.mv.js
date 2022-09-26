@@ -14,6 +14,10 @@ const customCacheControlHandler=(response, path)=>{
 		// Everything else is cached up to a months as we don't update our images
 		// or fonts frequently
 		response.setHeader('Cache-Control', 'public, max-age=2592000, must-revalidate');
+		// Allow cross access from origin
+		response.setHeader('Access-Control-Allow-Origin',  '*');
+		response.setHeader('Access-Control-Allow-Headers', 'Content-Type, Accept');
+		response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
 	}
 };
 
