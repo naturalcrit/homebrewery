@@ -172,34 +172,34 @@ body {
 
 	/* Image Masks */
 	[class*="imageMask"] {
-		position:absolute;
-		height: 100%;
-		width: 279.4mm; // Page height
-		left:0px;
-		bottom:0px;
-		--rotation : 0;
-		--revealer : none;
-		--checkerboard : none;
-		-webkit-mask-image  : var(--wc), var(--revealer);
-		-webkit-mask-repeat : no-repeat;
-		-webkit-mask-size   : 100% 100%;
-		mask-image  : var(--wc);
-		mask-repeat : no-repeat;
-		mask-size   : 100% 100%;
-		background-image: var(--checkerboard);
-		background-size: 20px;
-		z-index     : -1;
-		//background-image : url(/assets/watercolorMasks/testBackground.jpg);
-		//background-size  : 0px; // Hide the background so it can be inherited into :before
-		transform  : rotate(calc(1deg * var(--rotation)));
-		transition       : transform 2s;
-		& > :not(img) {
+		position              : absolute;
+		height                : 200%;
+		width                 : 200%;
+		left                  : 50%;
+		bottom                : 50%;
+		--rotation            : 0;
+		--revealer            : none;
+		--checkerboard        : none;
+		-webkit-mask-image    : var(--wc), var(--revealer);
+		-webkit-mask-repeat   : repeat-x;
+		-webkit-mask-size     : 50%;
+		-webkit-mask-position : 50% calc(50% - var(--offset));
+		mask-image            : var(--wc);
+		mask-repeat           : repeat-x;
+		mask-size             : 50%;
+		mask-position         : 50% calc(50% - var(--offset));
+		background-image      : var(--checkerboard);
+		background-size       : 20px;
+		z-index               : -1;
+		transform             : translateY(50%) translateX(-50%) rotate(calc(1deg * var(--rotation)));
+		transition            : transform 2s;
+		& > p:has(img) {
 			position   : absolute;
-			bottom     : 0;
-			left       : 0;
-			width      : 100%;
-			height     : 100%;
-			transform  : rotate(calc(-1deg * var(--rotation)));
+			width      : 50%;
+			height     : 50%;
+			bottom     : 50%;
+			left       : 50%;
+			transform  : translateX(-50%) translateY(50%) rotate(calc(-1deg * var(--rotation)));
 			transition : transform 2s;
 		}
 		& img {
@@ -221,8 +221,6 @@ body {
 		}
 		&.right {
 			--rotation : -90;
-			left  : unset;
-			right : 0px;
 			& img {right: 0;}
 		}
 		&.revealImage {
@@ -231,12 +229,14 @@ body {
 		}
 	}
 
-	.imageMask1  { --wc : url(/assets/waterColorMasks/edge/0001.png); }
-	.imageMask2  { --wc : url(/assets/waterColorMasks/edge/0002.png); }
-	.imageMask3  { --wc : url(/assets/waterColorMasks/edge/0003.png); }
-	.imageMask4  { --wc : url(/assets/waterColorMasks/edge/0004.png); }
-	.imageMask5  { --wc : url(/assets/waterColorMasks/edge/0005.png); }
-	.imageMask6  { --wc : url(/assets/waterColorMasks/edge/0006.png); }
+	.imageMask1  { --wc : url(/assets/waterColorMasks/edge/0001.webp); }
+	.imageMask2  { --wc : url(/assets/waterColorMasks/edge/0002.webp); }
+	.imageMask3  { --wc : url(/assets/waterColorMasks/edge/0003.webp); }
+	.imageMask4  { --wc : url(/assets/waterColorMasks/edge/0004.webp); }
+	.imageMask5  { --wc : url(/assets/waterColorMasks/edge/0005.webp); }
+	.imageMask6  { --wc : url(/assets/waterColorMasks/edge/0006.webp); }
+	.imageMask7  { --wc : url(/assets/waterColorMasks/edge/0007.webp); }
+	.imageMask8  { --wc : url(/assets/waterColorMasks/edge/0008.webp); }
 
 	//************************************
 	// *           CODE BLOCKS
