@@ -2,6 +2,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
+const moment = require('moment');
 
 const UIPage = require('../basePages/uiPage/uiPage.jsx');
 
@@ -46,7 +47,7 @@ const AccountPage = createClass({
 			<>
 				<h1>Account Information  <i className='fas fa-user'></i></h1>
 				<p><strong>Username: </strong> {this.props.uiItems.username || 'No user currently logged in'}</p>
-				<p><strong>Last Login: </strong> {this.props.uiItems.issued.toString() || '-'}</p>
+				<p><strong>Last Login: </strong> {moment(this.props.uiItems.issued).format('dddd, MMMM Do YYYY, h:mm:ss a ZZ') || '-'}</p>
 			</>,
 			<>
 				<h3>Homebrewery Information <NaturalCritIcon /></h3>
