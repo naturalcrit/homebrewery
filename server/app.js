@@ -265,7 +265,7 @@ app.get('/print/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 //Account Page
 app.get('/account', asyncHandler(async (req, res, next)=>{
 	const data = {};
-	data.title = 'ACCOUNT INFORMATION PAGE';
+	data.title = 'Account Information Page';
 
 	let auth;
 	let files;
