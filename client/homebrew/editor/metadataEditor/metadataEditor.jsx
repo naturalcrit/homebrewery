@@ -231,21 +231,25 @@ const MetadataEditor = createClass({
 					value={this.props.metadata.title}
 					onChange={(e)=>this.handleFieldChange('title', e)} />
 			</div>
-			<div className='field description'>
-				<label>description</label>
-				<textarea value={this.props.metadata.description} className='value'
-					onChange={(e)=>this.handleFieldChange('description', e)} />
-			</div>
-			<div className='field thumbnail'>
-				<label>thumbnail</label>
-				<input type='text'
-					value={this.props.metadata.thumbnail}
-					placeholder='my.thumbnail.url'
-					className='value'
-					onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
-				<button className='display' onClick={this.toggleThumbnailDisplay}>
-					<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
-				</button>
+			<div className='field-group'>
+				<div className='field-column'>
+					<div className='field description'>
+						<label>description</label>
+						<textarea value={this.props.metadata.description} className='value'
+							onChange={(e)=>this.handleFieldChange('description', e)} />
+					</div>
+					<div className='field thumbnail'>
+						<label>thumbnail</label>
+						<input type='text'
+							value={this.props.metadata.thumbnail}
+							placeholder='my.thumbnail.url'
+							className='value'
+							onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
+						<button className='display' onClick={this.toggleThumbnailDisplay}>
+							<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
+						</button>
+					</div>
+				</div>
 				{this.renderThumbnail()}
 			</div>
 
