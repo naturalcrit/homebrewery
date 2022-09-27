@@ -30,6 +30,8 @@ if(typeof navigator !== 'undefined'){
 	// require('codemirror/addon/edit/trailingspace.js');
 	//Active line highlighting
 	// require('codemirror/addon/selection/active-line.js');
+	//Scroll past last line
+	require('codemirror/addon/scroll/scrollpastend.js');
 	//Auto-closing
 	//XML code folding is a requirement of the auto-closing tag feature and is not enabled
 	require('codemirror/addon/fold/xml-fold.js');
@@ -98,6 +100,7 @@ const CodeEditor = createClass({
 			indentWithTabs    : true,
 			tabSize           : 2,
 			historyEventDelay : 250,
+			scrollPastEnd     : true,
 			extraKeys         : {
 				'Ctrl-B'           : this.makeBold,
 				'Cmd-B'            : this.makeBold,
@@ -352,12 +355,20 @@ const CodeEditor = createClass({
 				let text = '';
 				let currentLine = from.line;
 				const maxLength = 50;
+
+				let foldPreviewText = '';
 				while (currentLine <= to.line && text.length <= maxLength) {
-					text += this.codeMirror.getLine(currentLine);
-					if(currentLine < to.line)
-						text += ' ';
-					currentLine += 1;
+					const currentText = this.codeMirror.getLine(currentLine);
+					currentLine++;
+					if(currentText[0] == '#'){
+						foldPreviewText = currentText;
+						break;
+					}
+					if(!foldPreviewText && currentText != '\n') {
+						foldPreviewText = currentText;
+					}
 				}
+				text = foldPreviewText || `Lines ${from.line+1}-${to.line+1}`;
 
 				text = text.trim();
 				if(text.length > maxLength)

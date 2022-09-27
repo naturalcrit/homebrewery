@@ -1,13 +1,13 @@
 /* eslint-disable max-lines */
 
-const MagicGen = require('./magic.gen.js');
-const ClassTableGen = require('./classtable.gen.js');
-const MonsterBlockGen = require('./monsterblock.gen.js');
-const ClassFeatureGen = require('./classfeature.gen.js');
-const CoverPageGen = require('./coverpage.gen.js');
-const TableOfContentsGen = require('./tableOfContents.gen.js');
-const dedent = require('dedent-tabs').default;
-const watercolorGen = require('./watercolor.gen.js');
+const MagicGen           = require('./snippets/magic.gen.js');
+const ClassTableGen      = require('./snippets/classtable.gen.js');
+const MonsterBlockGen    = require('./snippets/monsterblock.gen.js');
+const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
+const CoverPageGen       = require('./snippets/coverpage.gen.js');
+const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
+const dedent             = require('dedent-tabs').default;
+
 
 
 module.exports = [
@@ -17,48 +17,6 @@ module.exports = [
 		icon      : 'fas fa-pencil-alt',
 		view      : 'text',
 		snippets  : [
-			{
-				name : 'Column Break',
-				icon : 'fas fa-columns',
-				gen  : '\n\\column\n'
-			},
-			{
-				name : 'New Page',
-				icon : 'fas fa-file-alt',
-				gen  : '\n\\page\n'
-			},
-			{
-				name : 'Vertical Spacing',
-				icon : 'fas fa-arrows-alt-v',
-				gen  : '\n::::\n'
-			},
-			{
-				name : 'Horizontal Spacing',
-				icon : 'fas fa-arrows-alt-h',
-				gen  : ' {{width:100px}} '
-			},
-			{
-				name : 'Wide Block',
-				icon : 'fas fa-window-maximize',
-				gen  : dedent`\n
-					{{wide
-					Everything in here will be extra wide. Tables, text, everything!
-					Beware though, CSS columns can behave a bit weird sometimes. You may
-					have to manually place column breaks with \`\column\` to make the
-					surrounding text flow with this wide block the way you want.
-					}}
-					\n`
-			},
-			{
-				name : 'QR Code',
-				icon : 'fas fa-qrcode',
-				gen  : (brew)=>{
-					return `![]` +
-							`(https://api.qrserver.com/v1/create-qr-code/?data=` +
-							`https://homebrewery.naturalcrit.com${brew.shareId ? `/share/${brew.shareId}` : ''}` +
-							`&amp;size=100x100) {width:100px;mix-blend-mode:multiply}`;
-				}
-			},
 			{
 				name : 'Page Number',
 				icon : 'fas fa-bookmark',
@@ -70,20 +28,10 @@ module.exports = [
 				gen  : '{{pageNumber,auto}}\n{{footnote PART 1 | SECTION NAME}}\n\n'
 			},
 			{
-				name : 'Link to page',
-				icon : 'fas fa-link',
-				gen  : '[Click here](#p3) to go to page 3\n'
-			},
-			{
 				name : 'Table of Contents',
 				icon : 'fas fa-book',
 				gen  : TableOfContentsGen
-			},
-			{
-				name : 'Add Comment',
-				icon : 'fas fa-code',
-				gen  : '<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->'
-			},
+			}
 		]
 	},
 	{
@@ -97,7 +45,11 @@ module.exports = [
 				gen  : dedent`/* Removes Drop Caps */
 						.page h1+p:first-letter {
 							all: unset;
-						}\n\n`
+						}\n\n
+						/* Removes Small-Caps in first line */
+						.page h1+p:first-line {
+							all: unset;
+						}`
 			},
 			{
 				name : 'Tweak Drop Cap',
@@ -109,12 +61,7 @@ module.exports = [
 							background-image: linear-gradient(-45deg, #322814, #998250, #322814);
 							line-height: 1em;
 						}\n\n`
-			},
-			{
-				name : 'Add Comment',
-				icon : 'fas fa-code',
-				gen  : '/* This is a comment that will not be rendered into your brew. */'
-			},
+			}
 		]
 	},
 
@@ -145,11 +92,6 @@ module.exports = [
 					##### Homebrew Mug
 					[naturalcrit](https://homebrew.naturalcrit.com)
 					}}`
-			},
-			{
-				name : 'Watercolor Splatter',
-				icon : 'fas fa-fill-drip',
-				gen  : watercolorGen,
 			},
 			{
 				name : 'Watermark',
@@ -261,66 +203,6 @@ module.exports = [
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'Table',
-				icon : 'fas fa-th-list',
-				gen  : function(){
-					return dedent`
-						##### Character Advancement
-						| Experience Points | Level | Proficiency Bonus |
-						|:------------------|:-----:|:-----------------:|
-						| 0                 | 1     | +2                |
-						| 300               | 2     | +2                |
-						| 900               | 3     | +2                |
-						| 2,700             | 4     | +2                |
-						| 6,500             | 5     | +3                |
-						| 14,000            | 6     | +3                |
-						\n`;
-				}
-			},
-			{
-				name : 'Wide Table',
-				icon : 'fas fa-list',
-				gen  : function(){
-					return dedent`
-						{{wide
-						##### Weapons
-						| Name                    | Cost  | Damage          | Weight  | Properties |
-						|:------------------------|:-----:|:----------------|--------:|:-----------|
-						| *Simple Melee Weapons*  |       |                 |         |            |
-						| &emsp; Club             | 1 sp  | 1d4 bludgeoning | 2 lb.   | Light      |
-						| &emsp; Dagger           | 2 gp  | 1d4 piercing    | 1 lb.   | Finesse    |
-						| &emsp; Spear            | 1 gp  | 1d6 piercing    | 3 lb.   | Thrown     |
-						| *Simple Ranged Weapons* |       |                 |         |            |
-						| &emsp; Dart             | 5 cp  | 1d4 piercig     | 1/4 lb. | Finesse    |
-						| &emsp; Shortbow         | 25 gp | 1d6 piercing    | 2 lb.   | Ammunition |
-						| &emsp; Sling            | 1 sp  | 1d4 bludgeoning | &mdash; | Ammunition |
-						}}
-						\n`;
-				}
-			},
-			{
-				name : 'Split Table',
-				icon : 'fas fa-th-large',
-				gen  : function(){
-					return dedent`
-						##### Typical Difficulty Classes
-						{{column-count:2
-						| Task Difficulty | DC |
-						|:----------------|:--:|
-						| Very easy       | 5  |
-						| Easy            | 10 |
-						| Medium          | 15 |
-
-						| Task Difficulty   | DC |
-						|:------------------|:--:|
-						| Hard              | 20 |
-						| Very hard         | 25 |
-						| Nearly impossible | 30 |
-						}}
-						\n`;
-				}
-			},
-			{
 				name : 'Class Table',
 				icon : 'fas fa-table',
 				gen  : ClassTableGen.full('classTable,frame,decoration,wide'),
@@ -364,26 +246,6 @@ module.exports = [
 		view      : 'style',
 		snippets  : [
 			{
-				name : 'A4 Page Size',
-				icon : 'far fa-file',
-				gen  : dedent`/* A4 Page Size */
-					.page{
-						width  : 210mm;
-						height : 296.8mm;
-					}\n\n`
-			},
-			{
-				name : 'Square Page Size',
-				icon : 'far fa-file',
-				gen  : dedent`/* Square Page Size */
-					.page {
-						width   : 125mm;
-						height  : 125mm;
-						padding : 12.5mm;
-						columns : unset;
-					}\n\n`
-			},
-			{
 				name : 'Ink Friendly',
 				icon : 'fas fa-tint',
 				gen  : dedent`
@@ -398,6 +260,5 @@ module.exports = [
 					}\n\n`
 			},
 		]
-	},
-
+	}
 ];

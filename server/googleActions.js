@@ -124,7 +124,6 @@ const GoogleActions = {
 				title       : file.properties.title,
 				description : file.description,
 				views       : parseInt(file.properties.views),
-				tags        : '',
 				published   : file.properties.published ? file.properties.published == 'true' : false,
 				systems     : []
 			};
@@ -142,12 +141,11 @@ const GoogleActions = {
 				description : `${brew.description}`,
 				properties  : {
 					title     : brew.title,
-					published : brew.published,
-					version   : brew.version,
-					renderer  : brew.renderer,
-					tags      : brew.tags,
+					shareId   : brew.shareId || nanoid(12),
+					editId    : brew.editId || nanoid(12),
 					pageCount : brew.pageCount,
-					systems   : brew.systems.join()
+					renderer  : brew.renderer || 'legacy',
+					isStubbed : true
 				}
 			},
 			media : {
@@ -159,10 +157,9 @@ const GoogleActions = {
 			console.log('Error saving to google');
 			console.error(err);
 			throw (err);
-			//return res.status(500).send('Error while saving');
 		});
 
-		return (brew);
+		return true;
 	},
 
 	newGoogleBrew : async (auth, brew)=>{
@@ -176,16 +173,17 @@ const GoogleActions = {
 		const folderId = await GoogleActions.getGoogleFolder(auth);
 
 		const fileMetadata = {
-			'name'        : `${brew.title}.txt`,
-			'description' : `${brew.description}`,
-			'parents'     : [folderId],
-			'properties'  : {								//AppProperties is not accessible
-				'shareId'   : nanoid(12),
-				'editId'    : nanoid(12),
-				'title'     : brew.title,
-				'views'     : '0',
-				'pageCount' : brew.pageCount,
-				'renderer'  : brew.renderer || 'legacy'
+			name        : `${brew.title}.txt`,
+			description : `${brew.description}`,
+			parents     : [folderId],
+			properties  : {								//AppProperties is not accessible
+				shareId   : brew.shareId || nanoid(12),
+				editId    : brew.editId || nanoid(12),
+				title     : brew.title,
+				pageCount : brew.pageCount,
+				renderer  : brew.renderer || 'legacy',
+				isStubbed : true,
+				version   : 1
 			}
 		};
 
@@ -212,26 +210,7 @@ const GoogleActions = {
 			console.error(err);
 		});
 
-		const newHomebrew = {
-			text      : brew.text,
-			shareId   : fileMetadata.properties.shareId,
-			editId    : fileMetadata.properties.editId,
-			createdAt : new Date(),
-			updatedAt : new Date(),
-			gDrive    : true,
-			googleId  : obj.data.id,
-			pageCount : fileMetadata.properties.pageCount,
-
-			title       : brew.title,
-			description : brew.description,
-			tags        : '',
-			published   : brew.published,
-			renderer    : brew.renderer,
-			authors     : [],
-			systems     : []
-		};
-
-		return newHomebrew;
+		return obj.data.id;
 	},
 
 	getGoogleBrew : async (id, accessId, accessType)=>{
@@ -244,7 +223,6 @@ const GoogleActions = {
 		.catch((err)=>{
 			console.log('Error loading from Google');
 			throw (err);
-			return;
 		});
 
 		if(obj) {
@@ -254,9 +232,7 @@ const GoogleActions = {
 				throw ('Share ID does not match');
 			}
 
-			const serviceDrive = google.drive({ version: 'v3' });
-
-			const file = await serviceDrive.files.get({
+			const file = await drive.files.get({
 				fileId : id,
 				fields : 'description, properties',
 				alt    : 'media'
@@ -273,7 +249,7 @@ const GoogleActions = {
 				text    : file.data,
 
 				description : obj.data.description,
-				tags        : obj.data.properties.tags    ? obj.data.properties.tags               : '',
+				tags        : obj.data.properties.tags ? obj.data.properties.tags : '',
 				systems     : obj.data.properties.systems ? obj.data.properties.systems.split(',') : [],
 				authors     : [],
 				published   : obj.data.properties.published ? obj.data.properties.published == 'true' : false,
@@ -287,7 +263,6 @@ const GoogleActions = {
 				version    : parseInt(obj.data.properties.version) || 0,
 				renderer   : obj.data.properties.renderer ? obj.data.properties.renderer : 'legacy',
 
-				gDrive   : true,
 				googleId : id
 			};
 
@@ -295,14 +270,11 @@ const GoogleActions = {
 		}
 	},
 
-	deleteGoogleBrew : async (auth, id)=>{
+	deleteGoogleBrew : async (auth, id, accessId)=>{
 		const drive = google.drive({ version: 'v3', auth });
 
-		const googleId = id.slice(0, -12);
-		const accessId = id.slice(-12);
-
 		const obj = await drive.files.get({
-			fileId : googleId,
+			fileId : id,
 			fields : 'properties'
 		})
 		.catch((err)=>{
@@ -311,11 +283,11 @@ const GoogleActions = {
 		});
 
 		if(obj && obj.data.properties.editId != accessId) {
-			throw ('Not authorized to delete this Google brew');
+			throw { status: 403, message: 'Not authorized to delete this Google brew' };
 		}
 
 		await drive.files.update({
-			fileId   : googleId,
+			fileId   : id,
 			resource : { trashed: true }
 		})
 		.catch((err)=>{

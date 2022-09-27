@@ -10,7 +10,7 @@
 	min-height                  : 105px;
 	margin-right                : 15px;
 	margin-bottom               : 15px;
-	padding                     : 5px 15px 2px 8px;
+	padding                     : 5px 15px 2px 6px;
 	padding-right               : 15px;
 	border                      : 1px solid #c9ad6a;
 	border-radius               : 5px;
@@ -19,6 +19,20 @@
 	break-inside                : avoid;
 	box-shadow                  : 0px 4px 5px 0px #333;
 	background-color            : #cab2802e;
+	.thumbnail  {
+		position: absolute;
+		width: 150px;
+		height: 100%;
+		top: 0;
+		right: 0;
+		z-index: -1;
+		background-size: contain;
+		background-repeat: no-repeat;
+		background-position: right top;
+		mask-image: linear-gradient(80deg, #0000 20%, #050 40%);
+		-webkit-mask-image: linear-gradient(80deg, #0000 20%, #050 40%);
+		opacity: 50%;
+	}
 	.text {
 		min-height : 54px;
 		h4{
@@ -29,12 +43,22 @@
 	.info{
 		position: initial;
 		bottom: 2px;
-		font-family : ScalySans;
+		font-family : ScalySansRemake;
 		font-size   : 1.2em;
 		&>span{
 			margin-right : 12px;
 			line-height  : 1.5em;
 		}
+	}
+	.brewTags span {
+		background-color: #c8ac6e3b;
+		margin: 2px;
+		padding: 2px;
+		border: 1px solid #c8ac6e;
+		border-radius: 4px;
+		white-space: nowrap;
+		display: inline-block;
+		font-weight: bold;
 	}
 	&:hover{
 		.links{

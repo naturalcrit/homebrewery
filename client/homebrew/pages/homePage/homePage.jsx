@@ -52,7 +52,7 @@ const HomePage = createClass({
 	},
 	handleTextChange : function(text){
 		this.setState((prevState)=>({
-			brew : _.merge({}, prevState.brew, { text: text })
+			brew : { ...prevState.brew, text: text }
 		}));
 	},
 	renderNavbar : function(){

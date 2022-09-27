@@ -19,10 +19,11 @@ const UserPage = createClass({
 		return {
 			username : '',
 			brews    : [],
+			query    : ''
 		};
 	},
 	getInitialState : function() {
-		const usernameWithS = this.props.username + (this.props.username.endsWith('s') ? `'` : `'s`);
+		const usernameWithS = this.props.username + (this.props.username.endsWith('s') ? `’` : `’s`);
 
 		const brews = _.groupBy(this.props.brews, (brew)=>{
 			return (brew.published ? 'published' : 'private');
@@ -62,7 +63,7 @@ const UserPage = createClass({
 	},
 
 	render : function(){
-		return <ListPage brewCollection={this.state.brewCollection} navItems={this.navItems()}></ListPage>;
+		return <ListPage brewCollection={this.state.brewCollection} navItems={this.navItems()} query={this.props.query}></ListPage>;
 	}
 });
 

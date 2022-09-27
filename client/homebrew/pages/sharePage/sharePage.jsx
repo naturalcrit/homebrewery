@@ -49,7 +49,7 @@ const SharePage = createClass({
 	},
 
 	processShareId : function() {
-		return this.props.brew.googleId ?
+		return this.props.brew.googleId && !this.props.brew.stubbed ?
 					 this.props.brew.googleId + this.props.brew.shareId :
 					 this.props.brew.shareId;
 	},
@@ -86,7 +86,7 @@ const SharePage = createClass({
 			</Navbar>
 
 			<div className='content'>
-				<BrewRenderer text={this.props.brew.text} style={this.props.brew.style} renderer={this.props.brew.renderer} />
+				<BrewRenderer text={this.props.brew.text} style={this.props.brew.style} renderer={this.props.brew.renderer} theme={this.props.brew.theme} />
 			</div>
 		</div>;
 	}
