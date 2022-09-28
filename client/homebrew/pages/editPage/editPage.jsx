@@ -344,6 +344,19 @@ const EditPage = createClass({
 		}
 	},
 
+	handleAutoSave : function(){
+		this.setState((prevState)=>({
+			autoSave : !prevState.autoSave
+		}));
+		localStorage.setItem('AUTOSAVE_ON', JSON.stringify(!this.state.autoSave));
+	},
+
+	renderAutoSaveButton : function(){
+		return <Nav.item onClick={this.handleAutoSave}>
+			Autosave <i className={this.state.autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
+		</Nav.item>;
+	},
+
 	processShareId : function() {
 		return this.state.brew.googleId && !this.state.brew.stubbed ?
 					 this.state.brew.googleId + this.state.brew.shareId :
@@ -384,15 +397,7 @@ const EditPage = createClass({
 				{this.renderGoogleDriveIcon()}
 				<Nav.dropdown className='save-menu'>
 					{this.renderSaveButton()}
-					<Nav.item onClick={()=>{
-						this.setState((prevState)=>({
-							autoSave : !prevState.autoSave
-						}));
-						localStorage.setItem('AUTOSAVE_ON', JSON.stringify(!this.state.autoSave));
-					}}>
-						Autosave <i className={this.state.autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
-
-					</Nav.item>
+					{this.renderAutoSaveButton()}
 				</Nav.dropdown>
 				<NewBrew />
 				<HelpNavItem/>
