@@ -63,12 +63,14 @@ const EditPage = createClass({
 			errors                 : null,
 			htmlErrors             : Markdown.validate(this.props.brew.text),
 			url                    : '',
-			autoSave               : true
+			autoSave               : null
 		};
 	},
 	savedBrew : null,
 
 	componentDidMount : function(){
+		this.setState({ autoSave: JSON.parse(localStorage.getItem('AUTOSAVE_ON')) });
+
 		this.setState({
 			url : window.location.href
 		});
@@ -382,7 +384,12 @@ const EditPage = createClass({
 				{this.renderGoogleDriveIcon()}
 				<Nav.dropdown className='save-menu'>
 					{this.renderSaveButton()}
-					<Nav.item onClick={()=>{ this.setState((prevState)=>({ autoSave: !prevState.autoSave }));}}>
+					<Nav.item onClick={()=>{
+						this.setState((prevState)=>({
+							autoSave : !prevState.autoSave
+						}));
+						localStorage.setItem('AUTOSAVE_ON', JSON.stringify(!this.state.autoSave));
+					}}>
 						Autosave <i className={this.state.autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
 
 					</Nav.item>
