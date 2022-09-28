@@ -104,9 +104,14 @@ module.exports = [
 				gen  : WatercolorGen,
 			},
 			{
-				name : 'Watercolor Image Mask',
+				name : 'Watercolor Image Mask Edge',
 				icon : 'fas fa-fill-drip',
-				gen  : ImageMaskGen,
+				gen  : ImageMaskGen.edge,
+			},
+			{
+				name : 'Watercolor Image Mask Corner',
+				icon : 'fas fa-fill-drip',
+				gen  : ImageMaskGen.corner,
 			},
 			{
 				name : 'Watermark',
