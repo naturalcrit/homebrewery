@@ -107,6 +107,12 @@ const BrewRenderer = createClass({
 		return false;
 	},
 
+	sanitizeScriptTags : function(content) {
+		return content
+			.replace(/<script/ig, '&lt;script')
+			.replace(/<\/script>/ig, '&lt;/script&gt;');
+	},
+
 	renderPageInfo : function(){
 		return <div className='pageInfo' ref='main'>
 			<div>
@@ -134,7 +140,7 @@ const BrewRenderer = createClass({
 
 	renderStyle : function() {
 		if(!this.props.style) return;
-		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${this.props.style} </style>` }} />;
+		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${this.sanitizeScriptTags(this.props.style)} </style>` }} />;
 	},
 
 	renderPage : function(pageText, index){
