@@ -143,12 +143,8 @@ const EditPage = createClass({
 		return !_.isEqual(this.state.brew, this.savedBrew);
 	},
 
-	toggleAutoSave : function(){
-		this.setState((prevState)=>({ autoSave: !prevState.autoSave }));
-	},
-
 	trySave : function(){
-		if(!this.state.autoSave){ console.log('Auto-save is off.'); return };
+		if(!this.state.autoSave){return;};
 		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
 		if(this.hasChanges()){
 			this.debounceSave();
@@ -342,7 +338,7 @@ const EditPage = createClass({
 			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving){
-			return <Nav.item className='save saved' onClick={this.toggleAutoSave}>{this.state.autoSave ? `saved.` : `auto-save off`}</Nav.item>;
+			return <Nav.item className='save saved'>saved.</Nav.item>;
 		}
 	},
 
@@ -384,7 +380,13 @@ const EditPage = createClass({
 
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
-				{this.renderSaveButton()}
+				<Nav.dropdown className='save-menu'>
+					{this.renderSaveButton()}
+					<Nav.item onClick={()=>{ this.setState((prevState)=>({ autoSave: !prevState.autoSave }));}}>
+						Autosave <i className={this.state.autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
+
+					</Nav.item>
+				</Nav.dropdown>
 				<NewBrew />
 				<HelpNavItem/>
 				<Nav.dropdown>
