@@ -63,7 +63,7 @@ const EditPage = createClass({
 			errors                 : null,
 			htmlErrors             : Markdown.validate(this.props.brew.text),
 			url                    : '',
-			autoSave               : null
+			autoSave               : true
 		};
 	},
 	savedBrew : null,
@@ -339,6 +339,9 @@ const EditPage = createClass({
 		if(this.state.isPending && this.hasChanges()){
 			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
 		}
+		if(!this.state.isPending && !this.state.isSaving && this.state.autoSave){
+			return <Nav.item className='save saved'>auto-saved.</Nav.item>;
+		}
 		if(!this.state.isPending && !this.state.isSaving){
 			return <Nav.item className='save saved'>saved.</Nav.item>;
 		}
@@ -347,8 +350,10 @@ const EditPage = createClass({
 	handleAutoSave : function(){
 		this.setState((prevState)=>({
 			autoSave : !prevState.autoSave
-		}));
-		localStorage.setItem('AUTOSAVE_ON', JSON.stringify(!this.state.autoSave));
+		}), ()=>{
+			this.trySave();
+			localStorage.setItem('AUTOSAVE_ON', JSON.stringify(this.state.autoSave));
+		});
 	},
 
 	renderAutoSaveButton : function(){
