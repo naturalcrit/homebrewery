@@ -25,6 +25,7 @@ const googleDriveActive = require('../../googleDrive.png');
 const googleDriveInactive = require('../../googleDriveMono.png');
 
 const SAVE_TIMEOUT = 3000;
+const AUTOSAVE_TIMEOUT = 10000;
 
 const EditPage = createClass({
 	displayName     : 'EditPage',
@@ -120,14 +121,14 @@ const EditPage = createClass({
 			brew       : { ...prevState.brew, text: text },
 			isPending  : true,
 			htmlErrors : htmlErrors
-		}), ()=>this.trySave());
+		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
 	handleStyleChange : function(style){
 		this.setState((prevState)=>({
 			brew      : { ...prevState.brew, style: style },
 			isPending : true
-		}), ()=>this.trySave());
+		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
 	handleMetaChange : function(metadata){
@@ -137,7 +138,7 @@ const EditPage = createClass({
 				...metadata
 			},
 			isPending : true,
-		}), ()=>this.trySave());
+		}), ()=>{if(this.state.autoSave) this.trySave();});
 
 	},
 
@@ -146,7 +147,13 @@ const EditPage = createClass({
 	},
 
 	trySave : function(){
-		if(!this.state.autoSave){return;};
+		// if(!this.state.autoSave){
+		// 	if(this.autoSaveInterval){
+		// 		clearInterval(this.autoSaveInterval);
+		// 	}
+		// 	this.autoSaveInterval = setInterval(this.trySave, 10000);
+		// 	return;
+		// };
 		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
 		if(this.hasChanges()){
 			this.debounceSave();
@@ -351,7 +358,7 @@ const EditPage = createClass({
 		this.setState((prevState)=>({
 			autoSave : !prevState.autoSave
 		}), ()=>{
-			this.trySave();
+			if(this.state.autoSave) this.trySave();
 			localStorage.setItem('AUTOSAVE_ON', JSON.stringify(this.state.autoSave));
 		});
 	},
