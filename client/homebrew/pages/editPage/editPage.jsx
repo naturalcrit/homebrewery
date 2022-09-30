@@ -342,14 +342,14 @@ const EditPage = createClass({
 		}
 
 		if(this.state.autoSaveWarning){
-			console.log(this.state.unsavedTime);
-			setTimeout(()=>this.setState({ autoSaveWarning: false }), 4000);
 			this.setAutosaveWarning();
+			const elapsedTime = Math.round((new Date() - this.state.unsavedTime) / 1000 / 60);
+			const text = elapsedTime == 0 ? 'Autosave is OFF.' : `Autosave has been turned off, and you haven't saved for ${elapsedTime} minutes.`;
 
 			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
 			Reminder...
 				<div className='errorContainer'>
-					Autosave has been turned off, and you haven't saved for {Math.round((new Date() - this.state.unsavedTime) / 1000 / 60)} minutes.
+					{text}
 				</div>
 			</Nav.item>;
 		}
@@ -379,6 +379,7 @@ const EditPage = createClass({
 	},
 
 	setAutosaveWarning : function(){
+		setTimeout(()=>this.setState({ autoSaveWarning: false }), 4000);
 		this.warningTimer = setTimeout(()=>{this.setState({ autoSaveWarning: true });}, 15000);
 		this.warningTimer;
 	},
