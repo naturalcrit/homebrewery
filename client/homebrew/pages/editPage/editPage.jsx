@@ -25,7 +25,6 @@ const googleDriveActive = require('../../googleDrive.png');
 const googleDriveInactive = require('../../googleDriveMono.png');
 
 const SAVE_TIMEOUT = 3000;
-const AUTOSAVE_TIMEOUT = 10000;
 
 const EditPage = createClass({
 	displayName     : 'EditPage',
@@ -64,21 +63,27 @@ const EditPage = createClass({
 			errors                 : null,
 			htmlErrors             : Markdown.validate(this.props.brew.text),
 			url                    : '',
-			autoSave               : true
+			autoSave               : true,
+			autoSaveWarning        : false
 		};
 	},
 	savedBrew : null,
 
 	componentDidMount : function(){
-		this.setState({ autoSave: JSON.parse(localStorage.getItem('AUTOSAVE_ON')) });
-
 		this.setState({
 			url : window.location.href
 		});
 
 		this.savedBrew = JSON.parse(JSON.stringify(this.props.brew)); //Deep copy
 
-		this.trySave();
+		this.setState({ autoSave: JSON.parse(localStorage.getItem('AUTOSAVE_ON')) }, ()=>{
+			if(this.state.autoSave){
+				this.trySave();
+			} else {
+				this.setState({ autoSaveWarning: true });
+			}
+		});
+
 		window.onbeforeunload = ()=>{
 			if(this.state.isSaving || this.state.isPending){
 				return 'You have unsaved changes!';
@@ -147,13 +152,6 @@ const EditPage = createClass({
 	},
 
 	trySave : function(){
-		// if(!this.state.autoSave){
-		// 	if(this.autoSaveInterval){
-		// 		clearInterval(this.autoSaveInterval);
-		// 	}
-		// 	this.autoSaveInterval = setInterval(this.trySave, 10000);
-		// 	return;
-		// };
 		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
 		if(this.hasChanges()){
 			this.debounceSave();
@@ -340,6 +338,18 @@ const EditPage = createClass({
 			</Nav.item>;
 		}
 
+		if(this.state.autoSaveWarning){
+			setTimeout(()=>this.setState({ autoSaveWarning: false }), 4000);
+			this.setAutosaveWarning();
+
+			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
+			Reminder...
+				<div className='errorContainer'>
+					Autosave has been turned off, and you haven't saved for {Math.round((new Date() - new Date(this.props.brew.updatedAt)) / 1000 / 60)} minutes.
+				</div>
+			</Nav.item>;
+		}
+
 		if(this.state.isSaving){
 			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
 		}
@@ -355,12 +365,18 @@ const EditPage = createClass({
 	},
 
 	handleAutoSave : function(){
+		if(this.warningTimer) clearTimeout(this.warningTimer);
 		this.setState((prevState)=>({
-			autoSave : !prevState.autoSave
+			autoSave        : !prevState.autoSave,
+			autoSaveWarning : prevState.autoSave
 		}), ()=>{
-			if(this.state.autoSave) this.trySave();
 			localStorage.setItem('AUTOSAVE_ON', JSON.stringify(this.state.autoSave));
 		});
+	},
+
+	setAutosaveWarning : function(){
+		this.warningTimer = setTimeout(()=>{this.setState({ autoSaveWarning: true });}, 15000);
+		this.warningTimer;
 	},
 
 	renderAutoSaveButton : function(){

@@ -55,11 +55,16 @@
 		text-align     : center;
 		text-transform : initial;
 	}
-	.save-menu .navItem i.fa-power-off {
-		color : red;
-		&.active {
-			color : rgb(0, 182, 52);
-			filter : drop-shadow(0 0 2px rgba(0, 182, 52, 0.765))
+	.save-menu {
+		.dropdown {
+			z-index: 1000;
+		}
+		.navItem i.fa-power-off {
+			color : red;
+			&.active {
+				color : rgb(0, 182, 52);
+				filter : drop-shadow(0 0 2px rgba(0, 182, 52, 0.765))
+			}
 		}
 	}
 	.patreon.navItem{
