@@ -64,7 +64,8 @@ const EditPage = createClass({
 			htmlErrors             : Markdown.validate(this.props.brew.text),
 			url                    : '',
 			autoSave               : true,
-			autoSaveWarning        : false
+			autoSaveWarning        : false,
+			unsavedTime            : new Date()
 		};
 	},
 	savedBrew : null,
@@ -73,6 +74,7 @@ const EditPage = createClass({
 		this.setState({
 			url : window.location.href
 		});
+
 
 		this.savedBrew = JSON.parse(JSON.stringify(this.props.brew)); //Deep copy
 
@@ -230,8 +232,9 @@ const EditPage = createClass({
 				editId 	 : this.savedBrew.editId,
 				shareId  : this.savedBrew.shareId
 			},
-			isPending : false,
-			isSaving  : false,
+			isPending   : false,
+			isSaving    : false,
+			unsavedTime : new Date()
 		}));
 	},
 
@@ -339,13 +342,14 @@ const EditPage = createClass({
 		}
 
 		if(this.state.autoSaveWarning){
+			console.log(this.state.unsavedTime);
 			setTimeout(()=>this.setState({ autoSaveWarning: false }), 4000);
 			this.setAutosaveWarning();
 
 			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
 			Reminder...
 				<div className='errorContainer'>
-					Autosave has been turned off, and you haven't saved for {Math.round((new Date() - new Date(this.props.brew.updatedAt)) / 1000 / 60)} minutes.
+					Autosave has been turned off, and you haven't saved for {Math.round((new Date() - this.state.unsavedTime) / 1000 / 60)} minutes.
 				</div>
 			</Nav.item>;
 		}
