@@ -43,26 +43,28 @@ const AccountPage = createClass({
 
 	renderUiItems : function() {
 		// console.log(this.props.uiItems);
-		return [
-			<>
+		return 	<>
+			<div className='dataGroup'>
 				<h1>Account Information  <i className='fas fa-user'></i></h1>
 				<p><strong>Username: </strong> {this.props.uiItems.username || 'No user currently logged in'}</p>
 				<p><strong>Last Login: </strong> {moment(this.props.uiItems.issued).format('dddd, MMMM Do YYYY, h:mm:ss a ZZ') || '-'}</p>
-			</>,
-			<>
+			</div>
+			<div className='dataGroup'>
 				<h3>Homebrewery Information <NaturalCritIcon /></h3>
 				<p><strong>Brews on Homebrewery: </strong> {this.props.uiItems.mongoCount || '-'}</p>
-			</>,
-			<>
+			</div>
+			<div className='dataGroup'>
 				<h3>Google Information <i className='fab fa-google-drive'></i></h3>
 				<p><strong>Linked to Google: </strong> {this.props.uiItems.googleId ? 'YES' : 'NO'}</p>
 				{this.props.uiItems.googleId ? <p><strong>Brews on Google Drive: </strong> {this.props.uiItems.fileCount || '-'}</p> : '' }
-			</>
-		];
+			</div>
+		</>;
 	},
 
 	render : function(){
-		return <UIPage brew={this.props.brew} renderUiItems={this.renderUiItems} ></UIPage>;
+		return <UIPage brew={this.props.brew}>
+			{this.renderUiItems()}
+		</UIPage>;
 	}
 });
 

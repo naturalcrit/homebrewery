@@ -13,20 +13,6 @@ const Account = require('../../../navbar/account.navitem.jsx');
 const UIPage = createClass({
 	displayName : 'UIPage',
 
-	getDefaultProps : function(){
-		return {
-			renderUiItems : ()=>{
-				return <>
-					<h1>H1 Header</h1>
-					<h2>H2 Header</h2>
-					<h3>H3 Header</h3>
-					<h4>H4 Header</h4>
-					<p>This is some test text.</p>
-				</>;
-			}
-		};
-	},
-
 	render : function(){
 		return <div className='uiPage sitePage'>
 			<Navbar>
@@ -43,11 +29,7 @@ const UIPage = createClass({
 			</Navbar>
 
 			<div className='content'>
-				{this.props.renderUiItems().map((item, index)=>{
-					return <div className='dataGroup' key={index}>
-						{item}
-					</div>;
-				})}
+				{this.props.children}
 			</div>
 		</div>;
 	}
