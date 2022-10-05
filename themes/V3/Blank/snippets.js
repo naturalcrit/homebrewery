@@ -23,6 +23,11 @@ module.exports = [
 				gen  : '\n\\page\n'
 			},
 			{
+				name : 'Page Break with Footer',
+				icon : 'fas fa-file',
+				gen  : '\n{{footnote PART 1 | SECTION NAME}}\n{{pageNumber,auto}}\n\n\\page\n'
+			},
+			{
 				name : 'Vertical Spacing',
 				icon : 'fas fa-arrows-alt-v',
 				gen  : '\n::::\n'
