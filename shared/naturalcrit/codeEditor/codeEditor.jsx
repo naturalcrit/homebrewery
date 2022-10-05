@@ -252,7 +252,7 @@ const CodeEditor = createClass({
 
 		const cursorPos = this.codeMirror.getCursor();
 
-		const text = this.codeMirror.getValue().split('\n').slice(0, cursorPos.line).reverse().filter((line)=>{return line.slice(0, header.length) == header && line; })[0] || 'CHAPTER TITLE';
+		const text = this.codeMirror.getValue().split('\n').slice(0, cursorPos.line).reverse().filter((line)=>{return line.slice(0, header.length) == header && line; })[0] || 'PART 1 | SECTION NAME';
 
 		this.codeMirror.replaceSelection(`\n{{footnote ${text}}}\n{{pageNumber,auto}}\n\n\\page\n\n`, 'end');
 	},
