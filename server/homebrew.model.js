@@ -46,8 +46,6 @@ HomebrewSchema.statics.get = function(query, fields=null){
 				unzipped = zlib.inflateRawSync(brews[0].textBin);
 				brews[0].text = unzipped.toString();
 			}
-			if(!brews[0].renderer)
-				brews[0].renderer = 'legacy';
 			return resolve(brews[0]);
 		});
 	});
