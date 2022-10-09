@@ -9,6 +9,18 @@ const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
 
+const DEFAULT_BREW = {
+	title       : 'Untitled Brew',
+	description : '',
+	renderer    : 'V3',
+	tags        : [],
+	systems     : [],
+	thumbnail   : '',
+	published   : false,
+	pageCount   : 1,
+	theme       : '5ePHB'
+};
+
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
 // 		cb(brews);
@@ -66,6 +78,8 @@ const getBrew = (accessType)=>{
 		if(typeof stub.tags === 'string') {
 			stub.tags = [];
 		}
+
+		_.defaults(stub, DEFAULT_BREW);
 		req.brew = stub;
 
 		next();
@@ -130,6 +144,8 @@ const beforeNewSave = (account, brew)=>{
 
 	brew.authors = (account) ? [account.username] : [];
 	brew.text = mergeBrewText(brew);
+
+	_.defaults(brew, DEFAULT_BREW);
 };
 
 const newGoogleBrew = async (account, brew, res)=>{
