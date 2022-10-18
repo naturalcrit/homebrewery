@@ -657,71 +657,77 @@ body {
 //*****************************
 // *      TABLE OF CONTENTS
 // *****************************/
-.page .toc{
+.page {
+	&:has(.toc):after {
+		display: none;
+	}
+	.toc {
 	-webkit-column-break-inside : avoid;
 	page-break-inside           : avoid;
 	break-inside                : avoid;
-	h1 {
-		text-align    : center;
-		margin-bottom : 0.3cm;
-	}
-	a{
-		display         : inline;
-		color           : inherit;
-		text-decoration : none;
-		&:hover{
-			text-decoration : underline;
+		h1 {
+			text-align    : center;
+			margin-bottom : 0.3cm;
 		}
-	}
-	h4 {
-		margin-top  : 0.2cm;
-		line-height : 0.4cm;
-		& + ul li {
-			line-height: 1.2em;
+		a{
+			display         : inline;
+			color           : inherit;
+			text-decoration : none;
+			&:hover{
+				text-decoration : underline;
+			}
 		}
-	}
-	ul{
-		padding-left    : 0;
-		list-style-type : none;
-		li + li h3 {
-			margin-top  : 0.26cm;
-			line-height : 1em
+		h4 {
+			margin-top  : 0.2cm;
+			line-height : 0.4cm;
+			& + ul li {
+				line-height: 1.2em;
+			}
 		}
-		h3 span:first-child::after {
-			border : none;
-		}
-		span {
-			display : table-cell;
-			&:first-child {
-				position   :       relative;
-				overflow   :       hidden;
-				&::after {
+		ul{
+			padding-left    : 0;
+			list-style-type : none;
+			margin-top      : 0;
+			a {
+				width           : 100%;
+				display         : flex;
+				flex-flow       : row nowrap;
+				justify-content : space-between;
+			}
+			li + li h3 {
+				margin-top  : 0.26cm;
+				line-height : 1em
+			}
+			h3 span:first-child::after {
+				border : none;
+			}
+			span {
+				display : contents;
+				&:first-child::after {
 					content       : "";
-					position      : absolute;
 					bottom        : 0.08cm;
-					margin-left   : 0.06cm;        /* Spacing before dot leaders */
-					width         : 100%;
+					flex          : 1;
+					margin-left   : 0.08cm;        /* Spacing before dot leaders */
+					margin-right  : 0.16cm;
 					border-bottom : 0.05cm dotted #000;
+					margin-bottom : 0.08cm;
+				}
+				&:last-child {
+					display     : inline-block;
+					align-self  : flex-end;
+					font-family : "BookInsanityRemake";
+					font-size   : 0.34cm;
+					font-weight : normal;
+					color       : #000;
 				}
 			}
-			&:last-child {
-				font-family    : BookInsanityRemake;
-				font-size      : 0.34cm;
-				font-weight    : normal;
-				color          : black;
-				text-align     : right;
-				vertical-align : bottom; /* Keep page number bottom-aligned */
-				width          : 1%;
-				padding-left   : 0.06cm; /* Spacing after dot leaders */
-				/*white-space  : nowrap; /* Uncomment if needed */
+			ul { /*List indent*/
+				margin-left : 1em;
 			}
 		}
-		ul { /*List indent*/
-			margin-left : 1em;
+		&.wide{
+			.useColumns(0.96, @fillMode: balance);
 		}
-	}
-	&.wide{
-		.useColumns(0.96, @fillMode: balance);
 	}
 }
 
