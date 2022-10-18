@@ -235,6 +235,7 @@ const CodeEditor = createClass({
 			cm.setCursor(cm.getCursor('from'));
 		}
 		cm.replaceSelection(injectText, 'end');
+		cm.focus();
 	},
 
 	makeUnderline : function() {
