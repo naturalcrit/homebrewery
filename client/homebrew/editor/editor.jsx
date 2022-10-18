@@ -266,7 +266,7 @@ const Editor = createClass({
 
 	renderURLPreview : function(e){
 		if(e.target.classList.contains('cm-url')){
-			const url = e.target.innerText.match(/\w.*(\.jpg|.jpeg|\.png|\.gif|\.webm)/gm);
+			const url = e.target.innerText.match(/\w.*(\.jpg|.jpeg|\.png|\.gif|\.webp|\.svg|\.avif|\.apng)/gm);
 			if(!url) return;
 			const pos = this.refs.codeEditor.codeMirror.coordsChar({ left: e.clientX, top: e.clientY });
 			const el = Object.assign(document.createElement('div'), { className: 'url-preview' });
