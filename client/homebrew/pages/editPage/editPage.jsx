@@ -341,7 +341,7 @@ const EditPage = createClass({
 			</Nav.item>;
 		}
 
-		if(this.state.autoSaveWarning){
+		if(this.state.autoSaveWarning && this.hasChanges()){
 			this.setAutosaveWarning();
 			const elapsedTime = Math.round((new Date() - this.state.unsavedTime) / 1000 / 60);
 			const text = elapsedTime == 0 ? 'Autosave is OFF.' : `Autosave has been turned off, and you haven't saved for ${elapsedTime} minutes.`;
