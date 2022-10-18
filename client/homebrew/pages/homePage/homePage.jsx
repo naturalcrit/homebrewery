@@ -38,9 +38,7 @@ const HomePage = createClass({
 	},
 	handleSave : function(){
 		request.post('/api')
-			.send({
-				text : this.state.brew.text
-			})
+			.send(this.state.brew)
 			.end((err, res)=>{
 				if(err) return;
 				const brew = res.body;
