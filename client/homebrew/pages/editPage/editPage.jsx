@@ -379,8 +379,8 @@ const EditPage = createClass({
 	},
 
 	setAutosaveWarning : function(){
-		setTimeout(()=>this.setState({ autoSaveWarning: false }), 4000);
-		this.warningTimer = setTimeout(()=>{this.setState({ autoSaveWarning: true });}, 15000);
+		setTimeout(()=>this.setState({ autoSaveWarning: false }), 4000);                           // 4 seconds to display
+		this.warningTimer = setTimeout(()=>{this.setState({ autoSaveWarning: true });}, 900000);   // 15 minutes between warnings
 		this.warningTimer;
 	},
 
