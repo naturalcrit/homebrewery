@@ -265,13 +265,13 @@ const Editor = createClass({
 	},
 
 	renderURLPreview : function(e){
-		console.log(typeof e.target.innerText);
 		if(e.target.classList.contains('cm-url')){
+			const url = e.target.innerText.match(/\w.*(\.jpg|.jpeg|\.png|\.gif|\.webm)/gm);
+			if(!url) return;
 			const pos = this.refs.codeEditor.codeMirror.coordsChar({ left: e.clientX, top: e.clientY });
 			const el = Object.assign(document.createElement('div'), { className: 'url-preview' });
 			el.style.backgroundImage = `url${e.target.innerText}`;
 			this.refs.codeEditor.codeMirror.addWidget(pos, el);
-
 			e.target.addEventListener('mouseout', ()=>{el.remove();});
 		}
 	},
