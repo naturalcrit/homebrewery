@@ -78,7 +78,7 @@ const EditPage = createClass({
 
 		this.savedBrew = JSON.parse(JSON.stringify(this.props.brew)); //Deep copy
 
-		this.setState({ autoSave: JSON.parse(localStorage.getItem('AUTOSAVE_ON')) }, ()=>{
+		this.setState({ autoSave: localStorage.getItem('AUTOSAVE_ON') ? JSON.parse(localStorage.getItem('AUTOSAVE_ON')) : true }, ()=>{
 			if(this.state.autoSave){
 				this.trySave();
 			} else {
