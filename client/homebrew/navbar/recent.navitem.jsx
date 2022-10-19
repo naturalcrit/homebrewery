@@ -139,7 +139,7 @@ const RecentItems = createClass({
 	},
 
 	renderDropdown : function(){
-		// if(!this.state.showDropdown) return null;
+		if(!this.state.showDropdown) return null;
 
 		const makeItems = (brews)=>{
 			return _.map(brews, (brew, i)=>{
