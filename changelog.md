@@ -45,7 +45,7 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-### Friday 19/10/2022 - v3.2.2
+### Friday 19/10/2022 - v3.3.0
 {{taskList
 
 ##### Calculuschild
