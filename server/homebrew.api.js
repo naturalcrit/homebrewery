@@ -9,6 +9,7 @@ const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
 
+// Default brew properties in most cases
 const DEFAULT_BREW = {
 	title       : 'Untitled Brew',
 	description : '',
@@ -19,6 +20,11 @@ const DEFAULT_BREW = {
 	published   : false,
 	pageCount   : 1,
 	theme       : '5ePHB'
+};
+//  Default brew properties for loading
+const DEFAULT_BREW_LOAD = {
+	renderer  : 'legacy',
+	published : true
 };
 
 // const getTopBrews = (cb) => {
@@ -79,7 +85,11 @@ const getBrew = (accessType)=>{
 			stub.tags = [];
 		}
 
-		_.defaults(stub, DEFAULT_BREW);
+		// Use _.assignWith instead of _.defaults - does this need to be replicated at all other uses of _.defaults???
+		_.assignWith(stub, DEFAULT_BREW_LOAD, DEFAULT_BREW, (objValue, srcValue)=>{
+			if(typeof objValue === 'boolean') return objValue;
+			return objValue || srcValue;
+		});
 		req.brew = stub;
 
 		next();
