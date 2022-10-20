@@ -25,6 +25,14 @@ const template = async function(name, title='', props = {}){
 			thumbnail   : props.brew.thumbnail || null,
 			type        : 'article'
 		});
+	} else if(props.url.match(/\/user\//)){
+		Object.assign(ogMeta, {
+			siteName    : null,
+			title       : `${props.username} - The Homebrewery`,
+			description : `${props.username}'s user page.`,
+			thumbnail   : null,
+			type        : 'profile'
+		});
 	}
 
 	const ogTags = [];
