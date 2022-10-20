@@ -70,7 +70,7 @@ const Account = createClass({
 					{global.account.username}
 				</Nav.item>
 				<Nav.item
-					href={`/user/${global.account.username}`}
+					href={`/user/${encodeURI(global.account.username)}`}
 					color='yellow'
 					icon='fas fa-beer'
 				>
