@@ -147,8 +147,7 @@ const GoogleActions = {
 					editId    : brew.editId || nanoid(12),
 					pageCount : brew.pageCount,
 					renderer  : brew.renderer || 'legacy',
-					isStubbed : true,
-					thumbnail : brew.thumbnail
+					isStubbed : true
 				}
 			},
 			media : {
@@ -186,8 +185,7 @@ const GoogleActions = {
 				pageCount : brew.pageCount,
 				renderer  : brew.renderer || 'legacy',
 				isStubbed : true,
-				version   : 1,
-				thumbnail : brew.thumbnail || ''
+				version   : 1
 			}
 		};
 
@@ -267,7 +265,6 @@ const GoogleActions = {
 				views      : parseInt(obj.data.properties.views) || 0, //brews with no view parameter will return undefined
 				version    : parseInt(obj.data.properties.version) || 0,
 				renderer   : obj.data.properties.renderer ? obj.data.properties.renderer : 'legacy',
-				thumbnail  : obj.data.properties.thumbnail || '',
 
 				googleId : id
 			};

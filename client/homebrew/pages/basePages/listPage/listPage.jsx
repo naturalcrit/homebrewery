@@ -114,15 +114,17 @@ const ListPage = createClass({
 	},
 
 	renderSortOption : function(sortTitle, sortValue){
-		return <td>
-				  <button
-					  value={`${sortValue}`}
-					  onClick={this.handleSortOptionChange}
-					  className={`${(this.state.sortType == sortValue ? 'active' : '')}`}
-				  >
-  					{`${sortTitle}`}
-		 		  </button>
-		  </td>;
+		return <div className={`sort-option ${(this.state.sortType == sortValue ? 'active' : '')}`}>
+			<button
+				value={`${sortValue}`}
+				onClick={this.state.sortType == sortValue ? this.handleSortDirChange : this.handleSortOptionChange}
+			>
+				{`${sortTitle}`}
+			</button>
+			{this.state.sortType == sortValue &&
+				<i className={`sortDir fas ${this.state.sortDir == 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`}></i>
+			}
+		  </div>;
 	},
 
 	handleFilterTextChange : function(e){
@@ -150,7 +152,7 @@ const ListPage = createClass({
 	},
 
 	renderFilterOption : function(){
-		return <td>
+		return <div className='filter-option'>
 			<label>
 				<i className='fas fa-search'></i>
 				<input
@@ -160,37 +162,22 @@ const ListPage = createClass({
 					value={this.state.filterString}
 				/>
 			</label>
-		</td>;
+		</div>;
 	},
 
 	renderSortOptions : function(){
 		return <div className='sort-container'>
-			<table>
-				<tbody>
-					<tr>
-						<td>
-							<h6>Sort by :</h6>
-						</td>
-						{this.renderSortOption('Title', 'alpha')}
-						{this.renderSortOption('Created Date', 'created')}
-						{this.renderSortOption('Updated Date', 'updated')}
-						{this.renderSortOption('Views', 'views')}
-						{/* {this.renderSortOption('Latest', 'latest')} */}
-				    	<td>
-							<h6>Direction :</h6>
-						</td>
-						<td>
-							<button
-								onClick={this.handleSortDirChange}
-								className='sortDir'
-							>
-								{`${(this.state.sortDir == 'asc' ? '\u25B2 ASC' : '\u25BC DESC')}`}
-							</button>
-						</td>
-						{this.renderFilterOption()}
-					</tr>
-				</tbody>
-			</table>
+			<h6>Sort by :</h6>
+			{this.renderSortOption('Title', 'alpha')}
+			{this.renderSortOption('Created Date', 'created')}
+			{this.renderSortOption('Updated Date', 'updated')}
+			{this.renderSortOption('Views', 'views')}
+			{/* {this.renderSortOption('Latest', 'latest')} */}
+
+			{this.renderFilterOption()}
+
+
+
 		</div>;
 	},
 
@@ -233,10 +220,10 @@ const ListPage = createClass({
 		return <div className='listPage sitePage'>
 			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet'/>
 			{this.props.navItems}
+			{this.renderSortOptions()}
 
 			<div className='content V3'>
 				<div className='phb page'>
-					{this.renderSortOptions()}
 					{this.renderBrewCollection(this.state.brewCollection)}
 				</div>
 			</div>
