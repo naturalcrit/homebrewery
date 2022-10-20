@@ -14,15 +14,15 @@ const template = async function(name, title='', props = {}){
 			siteName    : null,
 			title       : props.brew.title || 'Homebrewery - Untitled Brew',
 			description : props.brew.description || 'No description.',
-			thumbnail   : props.brew.thumbnail || null,
+			image       : props.brew.thumbnail || null,
 			type        : 'article'
 		});
 	} else if(props.url.match(/\/print\/|\/source\//)){
 		Object.assign(ogMeta, {
 			siteName    : null,
-			title       : `${props.brew.title} - ${props.url.match(/\/print\/|\/source\//)}` || 'Homebrewery - Untitled Brew',
+			title       : props.brew.title ? `${props.brew.title} - ${props.url.match(/\/print\/|\/source\//)}` : 'Homebrewery - Untitled Brew',
 			description : props.brew.description || 'No description.',
-			thumbnail   : props.brew.thumbnail || null,
+			image       : props.brew.thumbnail || null,
 			type        : 'article'
 		});
 	} else if(props.url.match(/\/user\//)){
@@ -30,7 +30,7 @@ const template = async function(name, title='', props = {}){
 			siteName    : null,
 			title       : `${props.username} - The Homebrewery`,
 			description : `${props.username}'s user page.`,
-			thumbnail   : null,
+			image       : null,
 			type        : 'profile'
 		});
 	}
