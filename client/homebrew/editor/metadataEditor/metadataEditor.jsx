@@ -56,6 +56,7 @@ const MetadataEditor = createClass({
 			...this.props.metadata,
 			[name] : e.target.value
 		});
+		console.log(this.props.metadata[name]);
 	},
 	handleSystem : function(system, e){
 		if(e.target.checked){

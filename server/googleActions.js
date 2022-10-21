@@ -147,7 +147,8 @@ const GoogleActions = {
 					editId    : brew.editId || nanoid(12),
 					pageCount : brew.pageCount,
 					renderer  : brew.renderer || 'legacy',
-					isStubbed : true
+					isStubbed : true,
+					lang      : brew.lang || 'en'
 				}
 			},
 			media : {
@@ -185,7 +186,8 @@ const GoogleActions = {
 				pageCount : brew.pageCount,
 				renderer  : brew.renderer || 'legacy',
 				isStubbed : true,
-				version   : 1
+				version   : 1,
+				lang      : brew.lang || 'en'
 			}
 		};
 

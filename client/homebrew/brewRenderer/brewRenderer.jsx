@@ -58,6 +58,10 @@ const BrewRenderer = createClass({
 	height     : 0,
 	lastRender : <div></div>,
 
+	componentDidMount : function(){
+		console.log(this.props);
+	},
+
 	componentWillUnmount : function() {
 		window.removeEventListener('resize', this.updateSize);
 	},
@@ -189,10 +193,9 @@ const BrewRenderer = createClass({
 		//Also render dummy page while iframe is mounting.
 		const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
 		const themePath    = this.props.theme ?? '5ePHB';
-		const language = this.props.lang;
-		console.log(language);
 		const baseThemePath = Themes[rendererPath][themePath].baseTheme;
-
+		const language = 'fr';
+		console.log(this);
 		return (
 			<React.Fragment>
 				{!this.state.isMounted
@@ -225,7 +228,7 @@ const BrewRenderer = createClass({
 							&&
 							<>
 								{this.renderStyle()}
-								<div className='pages' ref='pages' lang={language}>
+								<div className='pages' ref='pages' lang={`${this.props.lang}`}>
 									{this.renderPages()}
 								</div>
 							</>

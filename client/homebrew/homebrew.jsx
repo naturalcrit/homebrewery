@@ -46,6 +46,7 @@ const Homebrew = createClass({
 				editId    : null,
 				createdAt : null,
 				updatedAt : null,
+				lang      : ''
 			}
 		};
 	},
