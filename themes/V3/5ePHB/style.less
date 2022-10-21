@@ -77,9 +77,12 @@ body {
 	text-rendering    : optimizeLegibility;
 	page-break-before : always;
 	page-break-after  : always;
+}
 	//*****************************
 	// *            BASE
 	// *****************************/
+
+:where(.page){
 	p{
 		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
 		display       : block;
@@ -175,12 +178,20 @@ body {
 		font-size     : 0.575cm;
 		border-bottom : 2px solid var(--HB_Color_HeaderUnderline);;
 		line-height   : 0.995em; //Font is misaligned. Shift up slightly
+		margin-top    : 0.13cm; //(0.3 - 0.17)
+		& + * {
+			margin-top: 0.17cm;
+		}
 	}
 	h4{
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.02cm;
 		font-size     : 0.458cm;
 		line-height   : 0.971em; //Font is misaligned. Shift up slightly
+		margin-top    : 0.21cm; //(0.3 - 0.09)
+		& + * {
+			margin-top: 0.09cm;
+		}
 	}
 	h5{
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
@@ -207,15 +218,17 @@ body {
 			font-weight : 800;
 			th{
 				vertical-align : bottom;
-				padding        : 0.14em 0.4em;
+				//padding        : 0.14em 0.4em;
+				padding : 0px 1.5px;   // Both of these are temporary, just to force
+				//height  : 16px;        // PDF to render at same height until Chrome 108
 			}
 		}
 		tbody{
 			tr{
 				td{
 					//padding : 0.14em 0.4em;
-					padding : 0px 5px;   // Both of these are temporary, just to force
-          height  : 16px;        // PDF to render at same height until Chrome 108
+					padding : 0px 1.5px;   // Both of these are temporary, just to force
+          //height  : 16px;        // PDF to render at same height until Chrome 108
 				}
 				&:nth-child(odd){
 					background-color : var(--HB_Color_Accent);
@@ -578,7 +591,7 @@ body {
 //*****************************
 // *         SPELL LIST
 // *****************************/
-.page .spellList{
+:where(.page) .spellList{
 	.useSansSerif();
 	column-count        : 2;
 	ul+h5{
@@ -605,7 +618,7 @@ body {
 //*****************************
 // *       CLASS TABLE
 // *****************************/
-.page .classTable{
+:where(.page) .classTable{
 	th[colspan]:not([rowspan]) {
 		white-space : nowrap;
 	}
@@ -626,6 +639,9 @@ body {
 		border-image-width  : 47px;
 		&.wide:first-child {
 			margin-top: 0.12cm;
+		}
+		& + * {
+			margin-top: 0;
 		}
 	}
 	&.decoration {
@@ -659,7 +675,7 @@ body {
 //*****************************
 // *      TABLE OF CONTENTS
 // *****************************/
-.page {
+:where(.page) {
 	&:has(.toc):after {
 		display: none;
 	}
@@ -734,27 +750,9 @@ body {
 }
 
 //*****************************
-// *    MUSTACHE DIVS/SPANS
-// *****************************/
-.page {
-	.block {
-		break-inside      : avoid;
-		display           : inline-block;
-		.page :where(&) {
-			width             : 100%;
-		}
-		//-webkit-transform : translateZ(0); //Prevents shadows from breaking across columns
-	}
-	.inline-block {
-		display : inline-block;
-		text-indent : initial;
-	}
-}
-
-//*****************************
 // *    DEFINITION LISTS
 // *****************************/
-.page {
+:where(.page) {
 	dl {
 		line-height  : 1.25em;
 		padding-left : 1em;
@@ -784,7 +782,7 @@ body {
 //*****************************
 // *    BLANK LINE
 // *****************************/
-.page {
+:where(.page) {
 	.blank {
 		height     : 1em;
 		margin-top : 0;
@@ -794,7 +792,7 @@ body {
 //*****************************
 // *         WIDE
 // *****************************/
-.page .wide{
+:where(.page) .wide{
 	column-span         : all;
 	-webkit-column-span : all;
 	-moz-column-span    : all;
