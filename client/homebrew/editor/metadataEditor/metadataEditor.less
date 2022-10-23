@@ -28,10 +28,14 @@
 		gap: 10px;
 		
 	}
+
+
+
 	.field{
 		display       : flex;
 		width         : 100%;
 		min-width     : 200px;
+		position      : relative;
 		&>label{
 			width          : 80px;
 			font-size      : 11px;
@@ -42,6 +46,17 @@
 		&>.value{
 			flex           : 1 1 auto;
 			width          : 50px;
+			&:valid ~ .validity  {
+				display: none;
+			}
+			&:invalid ~ .validity {
+				display   : block;
+				color     : #ffdddd;
+				position  : absolute;
+				bottom    : -1em;
+				right     : 0;
+				font-size : .6em;
+			}
 		}
 		&.thumbnail{
 			height      : 1.4em;

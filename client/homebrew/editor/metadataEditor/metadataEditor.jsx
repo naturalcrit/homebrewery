@@ -28,7 +28,7 @@ const MetadataEditor = createClass({
 				systems     : [],
 				renderer    : 'legacy',
 				theme       : '5ePHB',
-				lang        : ''
+				lang        : 'en'
 			},
 			onChange : ()=>{}
 		};
@@ -56,8 +56,8 @@ const MetadataEditor = createClass({
 			...this.props.metadata,
 			[name] : e.target.value
 		});
-		console.log(this.props.metadata[name]);
 	},
+
 	handleSystem : function(system, e){
 		if(e.target.checked){
 			this.props.metadata.systems.push(system);
@@ -101,6 +101,32 @@ const MetadataEditor = createClass({
 			.end(function(err, res){
 				window.location.href = '/';
 			});
+	},
+
+	constructLanguageRegExp : function(){
+		const grandfathered = '(' +
+		/* irregular */ '(en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE)' +
+		'|' +
+		/* regular */ '(art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang)' +
+		')';
+		const langtag = '(' +
+			'(' + (
+			'([A-Za-z]{2,3}(-' +
+				'([A-Za-z]{3}(-[A-Za-z]{3}){0,2})' +
+				')?)|[A-Za-z]{4}|[A-Za-z]{5,8})'
+		) +
+			'(-' + '([A-Za-z]{4})' + ')?' +
+			'(-' + '([A-Za-z]{2}|[0-9]{3})' + ')?' +
+			'(-' + '([A-Za-z0-9]{5,8}|[0-9][A-Za-z0-9]{3})' + ')*' +
+			'(-' + '(' + (
+			/* singleton */ '[0-9A-WY-Za-wy-z]' +
+				'(-[A-Za-z0-9]{2,8})+)'
+		) +
+			')*' +
+			'(-' + '(x(-[A-Za-z0-9]{1,8})+)' + ')?' +
+			')';
+		return  '^(' + grandfathered + '|' + langtag + '|' + '(x(-[A-Za-z0-9]{1,8})+)' + ')$';
+
 	},
 
 	renderSystems : function(){
@@ -225,6 +251,32 @@ const MetadataEditor = createClass({
 		</div>;
 	},
 
+	renderLanguageDropdown : function(){
+		const langCodes = ['en', 'de', 'fr', 'ja', 'es', 'it'];
+		const listLanguages = ()=>{
+			return _.map(langCodes, (code)=>{
+				const languageNames = new Intl.DisplayNames([code], { type: 'language' });
+				return <option value={`${code}`}>{`${languageNames.of(code)}`}</option>;
+			});
+		};
+
+
+
+		return <div className='field language'>
+			<label>language</label>
+			<input type='text' className='value'
+				value={this.props.metadata.lang}
+				onChange={(e)=>this.handleFieldChange('lang', e)}
+				list='languageList'
+				pattern='[a-zA-Z]{2,3}(-.*)?' />
+			<datalist id='languageList'>
+				{listLanguages()}
+			</datalist>
+			<span class='validity'>Must be 2-3 letters, optionally followed by '-...'</span>
+		</div>;
+	},
+
+
 	render : function(){
 		return <div className='metadataEditor'>
 			<div className='field title'>
@@ -269,12 +321,7 @@ const MetadataEditor = createClass({
 				</div>
 			</div>
 
-			<div className='field language'>
-				<label>language</label>
-				<input type='text' className='value'
-					value={this.props.metadata.lang}
-					onChange={(e)=>this.handleFieldChange('lang', e)} />
-			</div>
+			{this.renderLanguageDropdown()}
 
 			{this.renderThemeDropdown()}
 
