@@ -183,7 +183,7 @@ body {
 		}
 	}
 	* + h3 {
-		margin-top    : 0.13cm; //(0.3 - 0.17)
+		margin-top    : 0.155cm; //(0.325 - 0.17)
 	}
 	h4{
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
@@ -195,7 +195,7 @@ body {
 		}
 	}
 	* + h4 {
-		margin-top    : 0.21cm; //(0.3 - 0.09)
+		margin-top    : 0.235cm; //(0.325 - 0.09)
 	}
 	h5{
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
@@ -211,9 +211,6 @@ body {
 	//*****************************
 	// *          TABLE
 	// *****************************/
-	div:has(table) {
-		display:block; // Inline-block divs tend to add ~5px when containing tables. Block Divs are fine (but don't work for everything else)
-	}
 	table{
 		.useSansSerif();
 		width         : 100%;
@@ -242,6 +239,9 @@ body {
 				}
 			}
 		}
+	}
+	div table:has(~table) {			// Divs with side-by-side tables add an extra line
+		margin-bottom: -0.325cm;	// of vertical space at bottom. This works around it.
 	}
 	//*****************************
 	// *            NOTE
@@ -790,7 +790,7 @@ body {
 // *         WIDE
 // *****************************/
 :where(.page) .wide{
-	margin-bottom       : 0.3cm;
+	margin-bottom       : 0.325cm;
 }
 
 :where(.page) h1 + *{
