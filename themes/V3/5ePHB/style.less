@@ -158,9 +158,9 @@ body {
 			padding-bottom          : 2px;
 			margin-bottom           : -20px;
 			background-image        : linear-gradient(-45deg, #322814, #998250, #322814);
-	    background-clip         : text;
-	    -webkit-background-clip : text;
-	    color                   : rgba(0, 0, 0, 0);
+			background-clip         : text;
+			-webkit-background-clip : text;
+			color                   : rgba(0, 0, 0, 0);
 		}
 		&+p::first-line{
 			font-variant : small-caps;
@@ -178,20 +178,24 @@ body {
 		font-size     : 0.575cm;
 		border-bottom : 2px solid var(--HB_Color_HeaderUnderline);;
 		line-height   : 0.995em; //Font is misaligned. Shift up slightly
-		margin-top    : 0.13cm; //(0.3 - 0.17)
 		& + * {
 			margin-top: 0.17cm;
 		}
+	}
+	* + h3 {
+		margin-top    : 0.13cm; //(0.3 - 0.17)
 	}
 	h4{
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.02cm;
 		font-size     : 0.458cm;
 		line-height   : 0.971em; //Font is misaligned. Shift up slightly
-		margin-top    : 0.21cm; //(0.3 - 0.09)
 		& + * {
 			margin-top: 0.09cm;
 		}
+	}
+	* + h4 {
+		margin-top    : 0.21cm; //(0.3 - 0.09)
 	}
 	h5{
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
@@ -207,6 +211,9 @@ body {
 	//*****************************
 	// *          TABLE
 	// *****************************/
+	div:has(table) {
+		display:block; // Inline-block divs tend to add ~5px when containing tables. Block Divs are fine (but don't work for everything else)
+	}
 	table{
 		.useSansSerif();
 		width         : 100%;
@@ -219,16 +226,16 @@ body {
 			th{
 				vertical-align : bottom;
 				//padding        : 0.14em 0.4em;
-				padding : 0px 1.5px;   // Both of these are temporary, just to force
-				//height  : 16px;        // PDF to render at same height until Chrome 108
+				padding     : 0px 1.5px;   // Both of these are temporary, just to force
+				line-height : 16px;        // PDF to render at same height until Chrome 108
 			}
 		}
 		tbody{
 			tr{
 				td{
 					//padding : 0.14em 0.4em;
-					padding : 0px 1.5px;   // Both of these are temporary, just to force
-          //height  : 16px;        // PDF to render at same height until Chrome 108
+					padding     : 0px 1.5px;   // Both of these are temporary, just to force
+          line-height : 16px;        // PDF to render at same height until Chrome 108
 				}
 				&:nth-child(odd){
 					background-color : var(--HB_Color_Accent);
@@ -780,25 +787,12 @@ body {
 }
 
 //*****************************
-// *    BLANK LINE
-// *****************************/
-:where(.page) {
-	.blank {
-		height     : 1em;
-		margin-top : 0;
-	}
-}
-
-//*****************************
 // *         WIDE
 // *****************************/
 :where(.page) .wide{
-	column-span         : all;
-	-webkit-column-span : all;
-	-moz-column-span    : all;
-	display             : block;
-	margin-bottom       : 0.34cm;
-	&+* {
-		margin-top : 0;
-	}
+	margin-bottom       : 0.3cm;
+}
+
+:where(.page) h1 + *{
+	margin-top : 0;
 }

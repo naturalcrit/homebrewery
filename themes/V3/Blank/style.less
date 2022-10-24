@@ -77,11 +77,11 @@ body {
 	img{
 		z-index : -1;
 	}
-	:not(:where(.wide,.columnSplit,.blank,hr)) + :where(h1,h2,h3,h4,h5,h6,table,dl,.block) {
+	:not(:where(.wide,.columnSplit,.blank,hr,h1)) + :where(h2,h3,h4,h5,h6,table,dl,.block) {
 		margin-top : 0.3cm;  		//NOTE: MAKE ALL MARGINS TOP-ONLY FOR BEST RESULTS WITH COLUMN BREAKS. USE * + * STYLE SELECTORS
 	}
 
-	:where(h1,h3,h3,h4,h5,h6) + * {
+	:is(h1,h3,h3,h4,h5,h6) + * {
 		margin-top : 0;
 	}
 	//*****************************
@@ -192,6 +192,9 @@ body {
 		break-after                : always;
 		-moz-column-break-after    : always;
 		margin-top                 : 0;
+		& + * {
+			margin-top : 0;
+		}
 	}
 	//Avoid breaking up
 	blockquote,table{
