@@ -222,7 +222,7 @@ const BrewRenderer = createClass({
 							&&
 							<>
 								{this.renderStyle()}
-								<div className='pages' ref='pages' lang={`${this.props.lang}`}>
+								<div className='pages' ref='pages' lang={`${this.props.lang || 'en'}`}>
 									{this.renderPages()}
 								</div>
 							</>
