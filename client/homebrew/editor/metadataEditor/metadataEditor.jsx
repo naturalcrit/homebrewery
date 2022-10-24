@@ -254,13 +254,11 @@ const MetadataEditor = createClass({
 	renderLanguageDropdown : function(){
 		const langCodes = ['en', 'de', 'fr', 'ja', 'es', 'it'];
 		const listLanguages = ()=>{
-			return _.map(langCodes, (code)=>{
+			return _.map(langCodes.sort(), (code, index)=>{
 				const languageNames = new Intl.DisplayNames([code], { type: 'language' });
-				return <option value={`${code}`}>{`${languageNames.of(code)}`}</option>;
+				return <option key={index} value={`${code}`}>{`${languageNames.of(code)}`}</option>;
 			});
 		};
-
-
 
 		return <div className='field language'>
 			<label>language</label>
@@ -274,10 +272,9 @@ const MetadataEditor = createClass({
 			<datalist id='languageList'>
 				{listLanguages()}
 			</datalist>
-			<span class='validity'>Must be 2-3 letters, optionally followed by '-...'</span>
+			<span className='validity'>Must be 2-3 letters, optionally followed by '-...'</span>
 		</div>;
 	},
-
 
 	render : function(){
 		return <div className='metadataEditor'>
