@@ -269,7 +269,8 @@ const MetadataEditor = createClass({
 				onChange={(e)=>this.handleFieldChange('lang', e)}
 				list='languageList'
 				pattern='[a-zA-Z]{2,3}(-.*)?'
-				autoComplete='off' />
+				autoComplete='off'
+				placeholder={`'en', 'es', 'de' for example`} />
 			<datalist id='languageList'>
 				{listLanguages()}
 			</datalist>
