@@ -1,100 +1,175 @@
-# The Homebrewery
+```css
+.page #example + table td {
+	border:1px dashed #00000030;
+}
+.page {
+	padding-bottom : 1.1cm;
+}
+```
+
+# The Homebrewery *V3*
 Welcome traveler from an antique land. Please sit and tell us of what you have seen. The unheard of monsters, who slither and bite. Tell us of the wondrous items and and artifacts you have found, their mysteries yet to be unlocked. Of the vexing vocations and surprising skills you have seen.
 
 ### Homebrew D&D made easy
 The Homebrewery makes the creation and sharing of authentic looking Fifth-Edition homebrews easy. It uses [Markdown](https://help.github.com/articles/markdown-basics/) with a little CSS magic to make your brews come to life.
 
-**Try it!** Simply edit the text on the left and watch it *update live* on the right.
-
-
+**Try it!** Simply edit the text on the left and watch it *update live* on the right. Note that not every button is visible on this demo page. Click New {{fas,fa-plus-square}} in the navbar above to start brewing with all the features!
 
 ### Editing and Sharing
-When you create your own homebrew you will be given a *edit url* and a *share url*.  Any changes you make will be automatically saved to the database within a few seconds. Anyone with the edit url will be able to make edits to your homebrew. So be careful about who you share it with.
+When you create your own homebrew, you will be given a *edit url* and a *share url*.
+
+Any changes you make while on the *edit url* will be automatically saved to the database within a few seconds. Anyone with the edit url will be able to make edits to your homebrew, so be careful about who you share it with.
 
 Anyone with the *share url* will be able to access a read-only version of your homebrew.
 
-## Helping out
+{{note
+##### PDF Creation
+PDF Printing works best in Google Chrome. If you are having quality/consistency issues, try using Chrome to print instead.
+
+After clicking the "Print" item in the navbar a new page will open and a print dialog will pop-up.
+* Set the **Destination** to "Save as PDF"
+* Set **Paper Size** to "Letter"
+* If you are printing on A4 paper, make sure to have the **PRINT → {{far,fa-file}} A4 Pagesize** snippet in your brew
+* In **Options** make sure "Background Images" is selected.
+* Hit print and enjoy! You're done!
+
+If you want to save ink or have a monochrome printer, add the **PRINT → {{fas,fa-tint}} Ink Friendly** snippet to your brew!
+}}
+
+![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,bottom:20px,left:130px,width:220px}
+
+{{artist,bottom:160px,left:100px
+##### Homebrew Mug
+[naturalcrit](https://homebrew.naturalcrit.com)
+}}
+
+{{pageNumber 1}}
+{{footnote PART 1 | FANCINESS}}
+
+\column
+
+## New in V3.0.0
+We've implemented an extended Markdown-like syntax for block and span elements, plus a few other changes, eliminating the need for HTML tags like `div` and `span` in most cases. No raw HTML tags should be needed in a brew (*but can still be used if you insist*).
+
+Much of the syntax and styling has changed in V3, so converting a Legacy brew to V3 (or vice-versa) will require tweaking your document. *However*, all brews made prior to the release of v3.0.0 will still render normally, and you may switch between the "Legacy" brew renderer and the newer "V3" renderer via the {{fa,fa-info-circle}} **Properties** button on your brew at any time.
+
+Scroll down to the next page for a brief summary of the changes and new features available in V3!
+
+#### New Things All The Time!
+Check out the latest updates in the full changelog [here](/changelog).
+
+### Helping out
 Like this tool? Want to buy me a beer? [Head here](https://www.patreon.com/Naturalcrit) to help me keep the servers running.
 
 This tool will **always** be free, never have ads, and I will never offer any "premium" features or whatever.
 
-
-
->##### PDF Exporting
-> PDF Printing works best in Chrome. If you are having quality/consistency issues, try using Chrome to print instead.
->
-> After clicking the "Print" item in the navbar a new page will open and a print dialog will pop-up.
-> * Set the **Destination** to "Save as PDF"
-> * Set **Paper Size** to "Letter"
-> * If you are printing on A4 paper, make sure to have the "A4 page size snippet" in your brew
-> * In **Options** make sure "Background Images" is selected.
-> * Hit print and enjoy! You're done!
->
-> If you want to save ink or have a monochrome printer, add the **Ink Friendly** snippet to your brew before you print
-
-
-```
-```
-
-## V3.0.0 Released!
-With the latest major update to *The Homebrewery* we've implemented an extended Markdown-like syntax for block and span elements, plus a few other changes, eliminating the need for HTML tags like **div** and **span** in most cases. No raw HTML tags should be needed in a brew, and going forward, raw HTML will no longer receive debugging support (*but can still be used if you insist*).
-
-**You can enable V3 via the <span class="fa fa-info-circle" style="text-indent:0"></span> Properties button!**
-
-## New Things All The Time!
-What's new in the latest update? Check out the full changelog [here](/changelog)
-
 ### Bugs, Issues, Suggestions?
-Have an idea of how to make The Homebrewery better? Or did you find something that wasn't quite right? Head [here](https://www.reddit.com/r/homebrewery/submit?selftext=true&title=%5BIssue%5D%20Describe%20Your%20Issue%20Here) and let me know!.
+Take a quick look at our [Frequently Asked Questions page](/faq) to see if your question has a handy answer.
+
+Need help getting started or just the right look for your brew? Head to [r/Homebrewery](https://www.reddit.com/r/homebrewery/submit?selftext=true&title=%5BIssue%5D%20Describe%20Your%20Issue%20Here) and let us know!
+
+Have an idea to make The Homebrewery better? Or did you find something that wasn't quite right? Check out the [GitHub Repo](https://github.com/naturalcrit/homebrewery/) to report technical issues.
 
 ### Legal Junk
-The Homebrewery is licensed using the [MIT License](https://github.com/naturalcrit/homebrewery/blob/master/license). This means you are free to use The Homebrewery codebase any way that you want, except for claiming that you made it yourself.
+The Homebrewery is licensed using the [MIT License](https://github.com/naturalcrit/homebrewery/blob/master/license). Which means you are free to use The Homebrewery codebase any way that you want, except for claiming that you made it yourself.
 
-If you wish to sell or in some way gain profit for what you make on this site, it's your responsibility to ensure you have the proper licenses/rights for any images or resources used.
+If you wish to sell or in some way gain profit for what's created on this site, it's your responsibility to ensure you have the proper licenses/rights for any images or resources used.
 
-### More Resources
-If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/comments/3uwxx9/resources_open_to_the_community/).
+#### Crediting Me
+If you'd like to credit me in your brew, I'd be flattered! Just reference that you made it with The Homebrewery.
 
+### More Homebrew Resources
+<a href='https://discord.gg/by3deKx' target='_blank'><img src='/assets/discordOfManyThings.svg' alt='Discord of Many Things Logo' title='Discord of Many Things Logo' style='width:50px; float: right; padding-left: 10px;'/></a>
+If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/wiki/resources). The <a href='https://discord.gg/by3deKx' target='_blank' title='Discord of Many Things'>Discord of Many Things</a> is another great resource to connect with fellow homebrewers for help and feedback.
 
-
-<img src='https://i.imgur.com/hMna6G0.png' style='position:absolute;bottom:50px;right:30px;width:280px' />
-
-<div class='pageNumber'>1</div>
-<div class='footnote'>PART 1 | FANCINESS</div>
-
-
-
+{{position:absolute;top:20px;right:20px;width:auto
+<a href='https://discord.gg/by3deKx' target='_blank' title='Discord of Many Things' style='color: black;'><img src='/assets/discord.png' style='height:30px'/></a>
+<a href='https://github.com/naturalcrit/homebrewery' target='_blank' title='Github' style='color: black; padding-left: 5px;'><img src='/assets/github.png' style='height:30px'/></a>
+<a href='https://patreon.com/NaturalCrit' target='_blank' title='Patreon' style='color: black; padding-left: 5px;'><img src='/assets/patreon.png' style='height:30px'/></a>
+<a href='https://www.reddit.com/r/homebrewery/' target='_blank' title='Reddit' style='color: black; padding-left: 5px;'><img src='/assets/reddit.png' style='height:30px'/></a>
+}}
 
 \page
 
-# Appendix
+## Markdown+
+The Homebrewery aims to make homebrewing as simple as possible, providing a live editor with Markdown syntax that is more human-readable and faster to write with than raw HTML.
 
-### Not quite Markdown
-Although the Homebrewery uses Markdown, to get all the styling features from the PHB, we had to get a little creative. Some base HTML elements are not used as expected and I've had to include a few new keywords.
+In version 3.0.0, with a goal of adding maximum flexibility without users resorting to complex HTML to accomplish simple tasks, Homebrewery provides an extended verision of Markdown with additional syntax.
+**You can enable V3 via the {{fa,fa-info-circle}} Properties button!**
 
-___
-* **Horizontal Rules** are generally used to *modify* existing elements into a different style. For example, a horizontal rule before a blockquote will give it the style of a Monster Stat Block instead of a note.
-* **New Pages** are controlled by the author. It's impossible for the site to detect when the end of a page is reached, so indicate you'd like to start a new page, use the new page snippet to get the syntax.
-* **Code Blocks** are used only to indicate column breaks. Since they don't allow for styling within them, they weren't that useful to use.
-* **HTML** can be used to get *just* the right look for your homebrew. I've included some examples in the snippet icons above the editor.
+### Curly Brackets
+The biggest change in V3 is the replacement of `<span></span>` and `<div></div>` with `{{ }}` for a cleaner custom formatting.  Inline spans and block elements can be created and given ID's and Classes, as well as css properties, each of which are comma separated with no spaces. Use double quotes if a value requires spaces. Spans and Blocks start the same:
 
-
-
-```
-```
+#### Span
+My favorite author is {{pen,#author,color:orange,font-family:"trebuchet ms" Brandon Sanderson}}.  The orange text has a class of `pen`, an id of `author`, is colored orange, and given a new font. The first space outside of quotes marks the beginning of the content.
 
 
-### Images
-Images must be hosted online somewhere, like imgur. You use the address to that image to reference it in your brew. Images can be included 'inline' with the text using Markdown-style images. However for background images more control is needed.
+#### Block
+{{purple,#book,text-align:center,background:#aa88aa55
+My favorite book is Wheel of Time. This block has a class of `purple`, an id of `book`, and centered text with a colored background. The opening and closing brackets are on lines separate from the block contents.
+}}
 
-Background images should be included as HTML-style img tags. Using inline CSS you can precisely position your image where you'd like it to be. I have added both a inflow image snippet and a background image snippet to give you exmaples of how to do it.
+#### Injection
+For any element not inside a span or block, you can *inject* attributes using the same syntax but with single brackets in a single line immediately after the element.
 
+Inline elements like *italics* {color:#D35400} or images require the injection on the same line.
 
+Block elements like headers require the injection to start on the line immediately following.
 
-### Crediting Me
-If you'd like to credit The Homebrewery in your brew, I'd be flattered! Just reference that you made it with The Homebrewery.
+##### A Purple Header
+{color:purple,text-align:center}
 
+\* *this does not currently work for tables yet*
 
+### Vertical Spacing
+A blank line can be achieved with a run of one or more `:` alone on a line. More `:`'s will create more space.
 
-<div class='pageNumber'>2</div>
-<div class='footnote'>PART 2 | BORING STUFF</div>
+::
+
+Much nicer than `<br><br><br><br><br>`
+
+### Definition Lists
+**Example** :: V3 uses HTML *definition lists* to create "lists" with hanging indents.
+
+### Column Breaks
+Column and page breaks with `\column` and `\page`.
+
+\column
+
+### Tables
+Tables now allow column & row spanning between cells. This is included in some updated snippets, but a simplified example is given below.
+
+A cell can be spanned across columns by grouping multiple pipe `|` characters at the end of a cell.
+
+Row spanning is achieved by adding a `^` at the end of a cell just before the `|`.  
+
+These can be combined to span a cell across both columns and rows. Cells must have the same colspan if they are to be rowspan'd.
+
+##### Example
+| Head A | Spanned Header ||
+| Head B | Head C | Head D |
+|:-------|:------:|:------:|
+| 1A     |    1B  |    1C  |
+| 2A    ^|    2B  |    2C  |
+| 3A    ^|    3B       3C ||
+| 4A     |    4B       4C^||
+| 5A    ^|    5B  |    5C  |
+| 6A     |    6B ^|    6C  |
+
+## Images
+Images must be hosted online somewhere, like [Imgur](https://www.imgur.com). You use the address to that image to reference it in your brew\*.
+
+Using *Curly Injection* you can assign an id, classes, or inline CSS properties to the Markdown image syntax.
+
+![alt-text](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:100px,border:"2px solid",border-radius:10px}
+
+\* *When using Imgur-hosted images, use the "direct link", which can be found when you click into your image in the Imgur interace.*
+
+## Snippets
+Homebrewery comes with a series of *code snippets* found at the top of the editor pane that make it easy to create brews as quickly as possible.  Just set your cursor where you want the code to appear in the editor pane, choose a snippet, and make the adjustments you need.
+
+## Style Editor Panel
+{{fa,fa-paint-brush}} Technically released prior to v3 but still new to many users, check out the new **Style Editor** located on the right side of the Snippet bar.  This editor accepts CSS for styling without requiring `<style>` tags-- anything that would have gone inside style tags before can now be placed here, and snippets that insert CSS styles are now located on that tab.
+
+{{pageNumber 2}}
+{{footnote PART 2 | BORING STUFF}}

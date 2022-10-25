@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
 const createClass = require('create-react-class');
@@ -13,15 +14,19 @@ const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
 const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
 
+const Themes = require('themes/themes.json');
+
 const PAGE_HEIGHT = 1056;
 const PPR_THRESHOLD = 50;
 
 const BrewRenderer = createClass({
+	displayName     : 'BrewRenderer',
 	getDefaultProps : function() {
 		return {
 			text     : '',
 			style    : '',
 			renderer : 'legacy',
+			theme    : '5ePHB',
 			errors   : []
 		};
 	},
@@ -104,7 +109,12 @@ const BrewRenderer = createClass({
 
 	renderPageInfo : function(){
 		return <div className='pageInfo' ref='main'>
-			{this.state.viewablePageNumber + 1} / {this.state.pages.length}
+			<div>
+				{this.props.renderer}
+			</div>
+			<div>
+				{this.state.viewablePageNumber + 1} / {this.state.pages.length}
+			</div>
 		</div>;
 	},
 
@@ -112,12 +122,12 @@ const BrewRenderer = createClass({
 		if(!this.state.usePPR) return;
 
 		return <div className='ppr_msg'>
-			Partial Page Renderer enabled, because your brew is so large. May effect rendering.
+			Partial Page Renderer is enabled, because your brew is so large. May affect rendering.
 		</div>;
 	},
 
 	renderDummyPage : function(index){
-		return <div className='phb' id={`p${index + 1}`} key={index}>
+		return <div className='phb page' id={`p${index + 1}`} key={index}>
 			<i className='fas fa-spinner fa-spin' />
 		</div>;
 	},
@@ -176,6 +186,9 @@ const BrewRenderer = createClass({
 	render : function(){
 		//render in iFrame so broken code doesn't crash the site.
 		//Also render dummy page while iframe is mounting.
+		const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
+		const themePath    = this.props.theme ?? '5ePHB';
+		const baseThemePath = Themes[rendererPath][themePath].baseTheme;
 
 		return (
 			<React.Fragment>
@@ -187,8 +200,7 @@ const BrewRenderer = createClass({
 					</div>
 	        : null}
 
-				<Frame initialContent={this.state.initialContent}
-					head = <link href={`${this.props.renderer == 'legacy' ? '/themes/5ePhbLegacy.style.css' : '/themes/5ePhb.style.css'}`} rel='stylesheet'/>
+				<Frame id='BrewRenderer' initialContent={this.state.initialContent}
 					style={{ width: '100%', height: '100%', visibility: this.state.visibility }}
 					contentDidMount={this.frameDidMount}>
 					<div className={'brewRenderer'}
@@ -200,17 +212,21 @@ const BrewRenderer = createClass({
 							<RenderWarnings />
 							<NotificationPopup />
 						</div>
-
-						<div className='pages' ref='pages'>
-							{/* Apply CSS from Style tab and render pages from Markdown tab */}
-							{this.state.isMounted
-								&&
-								<>
-									{this.renderStyle()}
+						<link href={`/themes/${rendererPath}/Blank/style.css`} rel='stylesheet'/>
+						{baseThemePath &&
+							<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} rel='stylesheet'/>
+						}
+						<link href={`/themes/${rendererPath}/${themePath}/style.css`} rel='stylesheet'/>
+						{/* Apply CSS from Style tab and render pages from Markdown tab */}
+						{this.state.isMounted
+							&&
+							<>
+								{this.renderStyle()}
+								<div className='pages' ref='pages'>
 									{this.renderPages()}
-								</>
-							}
-						</div>
+								</div>
+							</>
+						}
 					</div>
 				</Frame>
 				{this.renderPageInfo()}

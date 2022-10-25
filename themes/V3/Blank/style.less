@@ -1,0 +1,275 @@
+@import (less) './themes/fonts/5e/fonts.less';
+@import (less) './themes/assets/assets.less';
+
+:root {
+	//Colors
+	--HB_Color_Background            : #FFFFFF; // White
+	--HB_Color_WatercolorStain       : #000000; // Black
+}
+
+@page { margin: 0; }
+body {
+	counter-reset : phb-page-numbers;
+}
+*{
+	-webkit-print-color-adjust : exact;
+}
+
+.useColumns(@multiplier : 1, @fillMode: balance){
+	column-fill          : @fillMode;
+	column-count         : 2;
+}
+.columnWrapper{
+	max-height        : 100%;
+	column-span       : all;
+	columns           : inherit;
+	column-gap        : inherit;
+}
+.page{
+	.useColumns();
+	height            : 279.4mm;
+	width             : 215.9mm;
+	padding           : 1.4cm 1.9cm 1.7cm;
+	counter-increment : phb-page-numbers;
+	background-color  : var(--HB_Color_Background);
+	position          : relative;
+	z-index           : 15;
+	box-sizing        : border-box;
+	overflow          : hidden;
+	text-rendering    : optimizeLegibility;
+	page-break-before : always;
+	page-break-after  : always;
+}
+	//*****************************
+	// *            BASE
+	// *****************************/
+:where(.page){
+	p{
+		overflow-wrap : break-word;
+		display       : block;
+	}
+	strong{
+		font-weight : bold;
+	}
+	em{
+		font-style : italic;
+	}
+	sup{
+		vertical-align : super;
+		font-size      : smaller;
+		line-height    : 0;
+	}
+	sub{
+		vertical-align : sub;
+		font-size      : smaller;
+		line-height    : 0;
+	}
+	ul {
+		list-style-position : outside; //Needed for multiline list items
+		list-style-type     : disc;
+		padding-left        : 1.4em;
+	}
+	ol {
+		list-style-position : outside;
+		list-style-type     : decimal;
+		padding-left        : 1.4em;
+	}
+	img{
+		z-index : -1;
+	}
+	:not(:where(.wide,.columnSplit,.blank,hr,h1)) + :where(h2,h3,h4,h5,h6,table,dl,.block) {
+		margin-top : 0.325cm;  		//NOTE: MAKE ALL MARGINS TOP-ONLY FOR BEST RESULTS WITH COLUMN BREAKS. USE * + * STYLE SELECTORS
+	}
+
+	:is(h1,h3,h3,h4,h5,h6) + * {
+		margin-top : 0;
+	}
+	//*****************************
+	// *           HEADERS
+	// *****************************/
+	h1,h2,h3,h4,h5,h6{
+		font-weight  : bold;
+		line-height  : 1.2em;
+	}
+	h1{
+		font-size : 2em;
+	}
+	h2{
+		font-size : 1.5em;
+	}
+	h3{
+		font-size : 1.17em;
+	}
+	h4{
+		font-size : 1em;
+	}
+	h5{
+		font-size : 0.83em;
+	}
+	//*****************************
+	// *          TABLE
+	// *****************************/
+	table{
+		width : 100%;
+		thead{
+			display     : table-row-group;
+			font-weight : bold;
+		}
+	}
+
+	/* Watermark */
+	.watermark {
+		display         : grid !important;
+		place-items     : center;
+		justify-content	: center;
+		position        : absolute;
+		margin          : 0;
+		top             : 0;
+		left            : 0;
+		width           : 100%;
+		height          : 100%;
+		font-size       : 120px;
+		text-transform	: uppercase;
+		color           : black;
+		mix-blend-mode  : overlay;
+		opacity         : 30%;
+		transform       : rotate(-45deg);
+		z-index         : 500;
+		p {
+			margin-bottom : none;
+		}
+	}
+
+	/* Watercolor */
+	[class*="watercolor"] {
+		position            : absolute;
+		width               : 2000px;    /* dimensions need to be real big so the user can set */
+		height              : 2000px;    /* height or width and the image will maintain aspect ratio */
+		-webkit-mask-image  : var(--wc);
+		-webkit-mask-size   : contain;
+		-webkit-mask-repeat : no-repeat;
+		mask-image          : var(--wc);
+		mask-size           : contain;
+		mask-repeat         : no-repeat;
+		background-size     : cover;
+		background-color    : var(--HB_Color_WatercolorStain);			/*default color*/
+		--wc                : @watercolor1;         /*default image*/
+		z-index             : -2;
+	}
+
+	.watercolor1  { --wc : @watercolor1; }
+	.watercolor2  { --wc : @watercolor2; }
+	.watercolor3  { --wc : @watercolor3; }
+	.watercolor4  { --wc : @watercolor4; }
+	.watercolor5  { --wc : @watercolor5; }
+	.watercolor6  { --wc : @watercolor6; }
+	.watercolor7  { --wc : @watercolor7; }
+	.watercolor8  { --wc : @watercolor8; }
+	.watercolor9  { --wc : @watercolor9; }
+	.watercolor10 { --wc : @watercolor10; }
+	.watercolor11 { --wc : @watercolor11; }
+	.watercolor12 { --wc : @watercolor12; }
+
+	//************************************
+	// *           CODE BLOCKS
+	// ************************************/
+	code{
+    font-family      : "Courier New", Courier, monospace;
+		white-space      : pre-wrap;
+		overflow-wrap    : break-word;
+	}
+
+	pre code{
+		width               : 100%;
+		display             : inline-block;
+	}
+	//*****************************
+	// *          EXTRAS
+	// *****************************/
+	.columnSplit {
+		visibility                 : hidden;
+		-webkit-column-break-after : always;
+		break-after                : always;
+		-moz-column-break-after    : always;
+		margin-top                 : 0;
+		& + * {
+			margin-top : 0;
+		}
+	}
+	//Avoid breaking up
+	blockquote,table{
+		z-index                     : 15;
+		-webkit-column-break-inside : avoid;
+		page-break-inside           : avoid;
+		break-inside                : avoid;
+	}
+	// Nested lists
+	ul ul,ol ol,ul ol,ol ul{
+		margin-bottom : 0px;
+		margin-left   : 1.5em;
+	}
+	li{
+		-webkit-column-break-inside : avoid;
+		page-break-inside           : avoid;
+		break-inside                : avoid;
+	}
+}
+
+//*****************************
+// *    MUSTACHE DIVS/SPANS
+// *****************************/
+:where(.page) {
+	.block {
+		break-inside      : avoid;
+		display           : inline-block;
+		width             : 100%;
+	}
+	.inline-block {
+		display     : inline-block;
+		text-indent : initial;
+	}
+}
+
+//*****************************
+// *    DEFINITION LISTS
+// *****************************/
+:where(.page) {
+	dl {
+		padding-left : 1em;
+		white-space  : pre-line;
+	}
+  dt {
+    display      : inline;
+    margin-right : 0.5ch;
+		margin-left  : -1em;
+  }
+  dd {
+		display     : inline;
+		margin-left : 0;
+		text-indent : 0;
+  }
+}
+
+//*****************************
+// *    BLANK LINE
+// *****************************/
+:where(.page) {
+	.blank {
+		height     : 1em;
+		margin-top : 0;
+	}
+}
+
+//*****************************
+// *         WIDE
+// *****************************/
+:where(.page) {
+	.wide{
+		column-span         : all;
+		display             : block;
+		margin-bottom       : 1em;
+		&+* {
+			margin-top : 0;
+		}
+	}
+}

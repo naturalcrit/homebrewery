@@ -1,5 +1,6 @@
+@import 'naturalcrit/styles/colors.less';
 @navbarHeight : 28px;
-@keyframes coloring {
+@keyframes pinkColoring {
 	//from {color: white;}
 	//to {color: red;}
 	0%   {color: pink;}
@@ -54,6 +55,18 @@
 		text-align     : center;
 		text-transform : initial;
 	}
+	.save-menu {
+		.dropdown {
+			z-index: 1000;
+		}
+		.navItem i.fa-power-off {
+			color : red;
+			&.active {
+				color : rgb(0, 182, 52);
+				filter : drop-shadow(0 0 2px rgba(0, 182, 52, 0.765))
+			}
+		}
+	}
 	.patreon.navItem{
 		border-left  : 1px solid #666;
 		border-right : 1px solid #666;
@@ -62,19 +75,23 @@
 		}
 		i{
 			.animate(color);
-			animation-name: coloring;
+			animation-name: pinkColoring;
 			animation-duration: 2s;
 			color: pink;
 		}
 	}
-	.recent.navItem{
+	.recent.navItem {
 		position : relative;
 		.dropdown{
-			position : absolute;
-			top      : 28px;
-			left     : 0px;
-			z-index  : 10000;
-			width    : 100%;
+			position   : absolute;
+			top        : 28px;
+			left       : 0px;
+			z-index    : 10000;
+			width      : 100%;
+			overflow   : hidden auto;
+			max-height : ~"calc(100vh - 28px)";
+			scrollbar-color : #666 #333;
+			scrollbar-width : thin;
 			h4{
 				display          : block;
 				box-sizing       : border-box;
@@ -88,11 +105,12 @@
 				&:nth-of-type(2){ background-color: darken(@purple, 30%); }
 			}
 			.item{
+				#backgroundColorsHover;
 				.animate(background-color);
 				position         : relative;
 				display          : block;
 				box-sizing       : border-box;
-				padding          : 13px 5px;
+				padding          : 8px 5px 13px;
 				background-color : #333;
 				color            : white;
 				text-decoration  : none;
@@ -137,5 +155,8 @@
 			background-color : #333;
 			text-align       : center;
 		}
+	}
+	.account.navItem{
+		min-width: 100px;
 	}
 }

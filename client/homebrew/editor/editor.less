@@ -4,42 +4,58 @@
 	width    : 100%;
 
 	.codeEditor{
-		height : 100%;
+		height            : 100%;
 		.pageLine{
-			background-color : fade(#333, 15%);
-			border-bottom    : #333 solid 1px;
+			background : #33333328;
+			border-top : #339 solid 1px;
+		}
+		.editor-page-count{
+			color : grey;
+			float : right;
 		}
 		.columnSplit{
-			font-style : italic;
-			color : grey;
-			background-color : fade(#299, 15%);
-			border-bottom    : #299 solid 1px;
+			font-style 			: italic;
+			color 				: grey;
+			background-color 	: fade(#299, 15%);
+			border-bottom    	: #299 solid 1px;
 		}
 		.block{
-			color : purple;
+			color 		: purple;
 			font-weight : bold;
 			//font-style: italic;
 		}
 		.inline-block{
-			color : red;
+			color 		: red;
 			font-weight : bold;
 			//font-style: italic;
 		}
 	}
 
 	.brewJump{
-		position: absolute;
-		background-color: @teal;
-		cursor: pointer;
-		width : 30px;
-		height : 30px;
-		display : flex;
-		align-items : center;
-		bottom : 20px;
-		right : 20px;
-		z-index: 1000000;
-		justify-content:center;
+		position			: absolute;
+		background-color	: @teal;
+		cursor				: pointer;
+		width 				: 30px;
+		height 				: 30px;
+		display 			: flex;
+		align-items 		: center;
+		bottom 				: 20px;
+		right 				: 20px;
+		z-index				: 1000000;
+		justify-content		: center;
 		.tooltipLeft("Jump to brew page");
+	}
+
+	.editorToolbar{
+		position: absolute;
+		top: 5px;
+		left: 50%;
+		color: black;
+		font-size: 13px;
+		z-index: 9;
+		span {
+			padding: 2px 5px;
+		}
 	}
 
 }

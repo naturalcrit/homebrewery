@@ -1,0 +1,104 @@
+
+.noColumns(){
+	column-count         : auto;
+	column-fill          : auto;
+	column-gap           : auto;
+	column-width         : auto;
+	-webkit-column-count : auto;
+	-moz-column-count    : auto;
+	-webkit-column-width : auto;
+	-moz-column-width    : auto;
+	-webkit-column-gap   : auto;
+	-moz-column-gap      : auto;
+}
+.listPage{
+	.content{
+		.phb{
+			.noColumns();
+			height     : auto;
+			min-height : 279.4mm;
+			margin     : 20px auto;
+			&::after{
+				display : none;
+			}
+			.noBrews{
+				margin     : 10px 0px;
+				font-size  : 1.3em;
+				font-style : italic;
+			}
+
+		}
+	}
+	.sort-container{
+		font-family        : 'Open Sans', sans-serif;
+		position           : sticky;
+		top                : 0;
+		left               : 0;
+		width              : 100%;
+		height             : 30px;
+		background-color   : #555;
+		border-top         : 1px solid #666;
+		border-bottom         : 1px solid #666;
+		color              : white;
+		text-align         : center;
+		z-index            : 500;
+		display            : flex;
+		justify-content    : center;
+		align-items        : baseline;
+		column-gap         : 15px;
+		row-gap            : 5px;
+		flex-wrap          : wrap;
+		h6{
+			text-transform : uppercase;
+			font-family    : 'Open Sans', sans-serif;
+			font-size      : 11px;
+			font-weight    : bold;
+		}
+		.sort-option {
+			display: flex;
+			align-items: center;
+			padding: 0 8px;
+			color: #ccc;
+			height: 100%;
+
+			&:hover{
+				background-color : #444;
+			}
+
+			&.active {
+			font-weight: bold;
+			color: #ddd;
+			background-color: #333;
+
+			button {
+				color: white;
+				font-weight: 800;
+				height: 100%;
+				& + .sortDir {
+					padding-left: 5px;
+				}
+			}
+		}
+
+		}
+		.filter-option {
+			margin-left: 20px;
+			background-color : transparent !important;
+			font-size        : 11px;
+			i{
+				padding-right : 5px;
+			}
+		}
+		button{
+				background-color : transparent;
+				font-family      : 'Open Sans', sans-serif;
+				text-transform   : uppercase;
+				font-weight      : normal;
+				font-size        : 11px;
+				color            : #ccc;
+				padding          : 0;
+			}
+
+
+	}
+}

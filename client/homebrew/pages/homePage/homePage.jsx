@@ -9,7 +9,7 @@ const { Meta } = require('vitreum/headtags');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
-const IssueNavItem = require('../../navbar/issue.navitem.jsx');
+const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
 
@@ -21,6 +21,7 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 
 const HomePage = createClass({
+	displayName     : 'HomePage',
 	getDefaultProps : function() {
 		return {
 			brew : {
@@ -37,9 +38,7 @@ const HomePage = createClass({
 	},
 	handleSave : function(){
 		request.post('/api')
-			.send({
-				text : this.state.brew.text
-			})
+			.send(this.state.brew)
 			.end((err, res)=>{
 				if(err) return;
 				const brew = res.body;
@@ -51,17 +50,14 @@ const HomePage = createClass({
 	},
 	handleTextChange : function(text){
 		this.setState((prevState)=>({
-			brew : _.merge({}, prevState.brew, { text: text })
+			brew : { ...prevState.brew, text: text }
 		}));
 	},
 	renderNavbar : function(){
 		return <Navbar ver={this.props.ver}>
 			<Nav.section>
 				<NewBrewItem />
-				<IssueNavItem />
-				<Nav.item newTab={true} href='/changelog' color='purple' icon='far fa-file-alt'>
-					Changelog
-				</Nav.item>
+				<HelpNavItem />
 				<RecentNavItem />
 				<AccountNavItem />
 			</Nav.section>

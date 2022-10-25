@@ -1,3 +1,4 @@
+@import 'naturalcrit/styles/colors.less';
 
 .metadataEditor{
 	position         : absolute;
@@ -6,31 +7,86 @@
 	width            : 100%;
 	padding          : 25px;
 	background-color : #999;
+	height           : calc(100vh - 54px); // 54px is the height of the navbar + snippet bar.  probably a better way to dynamic get this.
+	overflow-y       : auto;
+
+	& > div {
+		margin-bottom: 10px;
+	}
+
+	.field-group {
+		display: flex;
+		width: 100%;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+
+	.field-column {
+		display: flex;
+		flex-direction: column;
+		flex: 5 0 200px;
+		gap: 10px;
+		
+	}
 	.field{
 		display       : flex;
 		width         : 100%;
-		margin-bottom : 10px;
+		min-width     : 200px;
 		&>label{
-			display        : inline-block;
-			vertical-align : top;
 			width          : 80px;
-			font-size      : 0.7em;
+			font-size      : 11px;
 			font-weight    : 800;
 			line-height    : 1.8em;
 			text-transform : uppercase;
-			flex           : 0 0 auto;
 		}
 		&>.value{
 			flex           : 1 1 auto;
-			min-width      : 200px;
+			width          : 50px;
+		}
+		&.thumbnail{
+			height      : 1.4em;
+			label{
+				line-height: 2.0em;
+			}
+			.value{
+  				overflow: hidden;
+  				text-overflow: ellipsis;
+			}
+			button{
+				border: 1px solid #999;
+				color: white;
+				padding: 0px 5px;
+				background-color: black;
+				&:hover{
+					background-color: #777;
+				}
+			}
+		}
+
+		&.description {
+			flex: 1;
+			textarea.value {
+				resize      : none;
+				height      : auto;
+				font-family : 'Open Sans', sans-serif;
+				font-size   : 0.8em;
+			}
 		}
 	}
-	.description.field textarea.value{
-		resize      : none;
-		height      : 5em;
-		font-family : 'Open Sans', sans-serif;
-		font-size   : 0.8em;
+
+
+	.thumbnail-preview {
+		position: relative;
+		justify-self: center;
+		width: 80px;
+		height: min-content;
+		flex: 1 1;
+		max-height: 115px;
+		aspect-ratio: 1 / 1;
+		object-fit: contain;
+		background-color: #AAA;
 	}
+
 	.systems.field .value{
 		label{
 			vertical-align : middle;
@@ -77,13 +133,140 @@
 			.button(@red);
 		}
 	}
-	.reddit.field .value{
-		button{
-			.button(@purple);
-		}
-	}
 	.authors.field .value{
 		font-size: 0.8em;
 		line-height    : 1.5em;
+	}
+
+	.themes.field{
+		font-size : 13.33px;
+		.navDropdownContainer {
+			background-color	: white;
+			width				: 100%;
+			position			: relative;
+			z-index				: 500;
+			&.disabled {
+				font-style			:italic;
+				font-style			: italic;
+				background-color	: darkgray;
+				color				: dimgray;
+			}
+			&>div:first-child {
+				border 				: 2px solid rgb(118,118,118);
+				padding 			: 6px 3px;
+				background-color 	: inherit;
+				i {
+					float	: right;
+				}
+				&:hover {
+					background-color	: @blue;
+					color				: white;
+				}
+			}
+			.navDropdown {
+				box-shadow	: 0px 5px 10px rgba(0, 0, 0, 0.3);
+				position	: absolute;
+				width		: 100%;
+				.item {
+					padding				: 3px 3px;
+					border-top			: 1px solid rgb(118, 118, 118);
+					position			: relative;
+					overflow			: hidden;
+					background-color	: white;
+					&:hover {
+						background-color	: @blue;
+						color				: white;
+					}
+					img {
+						mask-image			: linear-gradient(90deg, transparent, black 20%);
+						-webkit-mask-image	: linear-gradient(90deg, transparent, black 20%);
+				    position	: absolute;
+				    left		: ~"max(100px, 100% - 300px)";
+				    top			: 0px;
+					}
+				}
+			}
+		}
+	}
+	.field .list {
+		display: flex;
+		flex-wrap: wrap;
+
+		> * {
+			flex: 0 0 auto;
+		}
+
+		#groupedIcon {
+			#backgroundColors;
+			display: inline-block;
+			height: ~"calc(100% + 0.6em)";
+			position: relative;
+			top: -0.3em;
+			right: -0.3em;
+			cursor: pointer;
+			min-width: 20px;
+			text-align: center;
+			color: white;
+
+			i {
+				position: relative;
+				top: 50%;
+				transform: translateY(-50%);
+			}
+
+			&:not(:last-child) {
+				border-right: 1px solid black;
+			}
+
+			&:last-child {
+				border-radius: 0 0.5em 0.5em 0;
+			}
+		}
+
+		.badge {
+			background-color: #dddddd;
+			border-radius: .5em;
+			font-size: .9em;
+			margin: 2px;
+			padding: .3em;
+
+			.icon {
+				#groupedIcon
+			}
+		}
+
+		.input-group {
+			height: ~"calc(.9em + 4px + .6em)";
+
+			input {
+				border-radius: .5em 0 0 .5em;
+			}
+
+			input:last-child {
+				border-radius: .5em;
+			}
+
+			.value {
+				width: 7.5vw;
+				min-width: 75px;
+				height: 100%;
+			}
+
+			.invalid:focus {
+				background-color: pink;
+			}
+
+			.icon {
+				#groupedIcon;
+				height: 97%;
+				font-size: .8em;
+				right: 1px;
+				top: -.54em;
+
+				i {
+					font-size: 1.125em;
+				}
+			}
+		}
 	}
 }

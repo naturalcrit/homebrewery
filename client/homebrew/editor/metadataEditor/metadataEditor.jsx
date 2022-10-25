@@ -1,33 +1,60 @@
+/* eslint-disable max-lines */
 require('./metadataEditor.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 const request = require('superagent');
+const Nav = require('naturalcrit/nav/nav.jsx');
+const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
+
+const Themes = require('themes/themes.json');
 
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
+const homebreweryThumbnail = require('../../thumbnail.png');
+
 const MetadataEditor = createClass({
+	displayName     : 'MetadataEditor',
 	getDefaultProps : function() {
 		return {
 			metadata : {
 				editId      : null,
 				title       : '',
 				description : '',
-				tags        : '',
+				tags        : [],
 				published   : false,
 				authors     : [],
 				systems     : [],
-				renderer    : 'legacy'
+				renderer    : 'legacy',
+				theme       : '5ePHB'
 			},
 			onChange : ()=>{}
 		};
 	},
 
+	getInitialState : function(){
+		return {
+			showThumbnail : true
+		};
+	},
+
+	toggleThumbnailDisplay : function(){
+		this.setState({
+			showThumbnail : !this.state.showThumbnail
+		});
+	},
+
+	renderThumbnail : function(){
+		if(!this.state.showThumbnail) return;
+		return <img className='thumbnail-preview' src={this.props.metadata.thumbnail || homebreweryThumbnail}></img>;
+	},
+
 	handleFieldChange : function(name, e){
-		this.props.onChange(_.merge({}, this.props.metadata, {
+		this.props.onChange({
+			...this.props.metadata,
 			[name] : e.target.value
-		}));
+		});
 	},
 	handleSystem : function(system, e){
 		if(e.target.checked){
@@ -40,13 +67,22 @@ const MetadataEditor = createClass({
 	handleRenderer : function(renderer, e){
 		if(e.target.checked){
 			this.props.metadata.renderer = renderer;
+			if(renderer == 'legacy')
+				this.props.metadata.theme = '5ePHB';
 		}
 		this.props.onChange(this.props.metadata);
 	},
 	handlePublish : function(val){
-		this.props.onChange(_.merge({}, this.props.metadata, {
+		this.props.onChange({
+			...this.props.metadata,
 			published : val
-		}));
+		});
+	},
+
+	handleTheme : function(theme){
+		this.props.metadata.renderer = theme.renderer;
+		this.props.metadata.theme    = theme.path;
+		this.props.onChange(this.props.metadata);
 	},
 
 	handleDelete : function(){
@@ -58,23 +94,11 @@ const MetadataEditor = createClass({
 			if(!confirm('Are you REALLY sure? You will lose editor access to this document.')) return;
 		}
 
-		request.delete(`/api/${this.props.metadata.editId}`)
+		request.delete(`/api/${this.props.metadata.googleId ?? ''}${this.props.metadata.editId}`)
 			.send()
 			.end(function(err, res){
 				window.location.href = '/';
 			});
-	},
-
-	getRedditLink : function(){
-		const meta = this.props.metadata;
-
-		const shareLink = (meta.googleId || '') + meta.shareId;
-		const title = `${meta.title} [${meta.systems.join(' ')}]`;
-		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
-
-**[Homebrewery Link](https://homebrewery.naturalcrit.com/share/${shareLink})**`;
-
-		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
 	},
 
 	renderSystems : function(){
@@ -127,18 +151,42 @@ const MetadataEditor = createClass({
 		</div>;
 	},
 
-	renderShareToReddit : function(){
-		if(!this.props.metadata.shareId) return;
+	renderThemeDropdown : function(){
+		if(!global.enable_themes) return;
 
-		return <div className='field reddit'>
-			<label>reddit</label>
-			<div className='value'>
-				<a href={this.getRedditLink()} target='_blank' rel='noopener noreferrer'>
-					<button className='publish'>
-						<i className='fab fa-reddit-alien' /> share to reddit
-					</button>
-				</a>
-			</div>
+		const listThemes = (renderer)=>{
+			return _.map(_.values(Themes[renderer]), (theme)=>{
+				return <div className='item' key={''} onClick={()=>this.handleTheme(theme)} title={''}>
+					{`${theme.renderer} : ${theme.name}`}
+					<img src={`/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`}/>
+				</div>;
+			});
+		};
+
+		const currentTheme = Themes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme];
+		let dropdown;
+
+		if(this.props.metadata.renderer == 'legacy') {
+			dropdown =
+				<Nav.dropdown className='disabled' trigger='disabled'>
+					<div>
+						{`Themes are not supported in the Legacy Renderer`} <i className='fas fa-caret-down'></i>
+					</div>
+				</Nav.dropdown>;
+		} else {
+			dropdown =
+				<Nav.dropdown trigger='click'>
+					<div>
+						{`${_.upperFirst(currentTheme.renderer)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
+					</div>
+					{/*listThemes('Legacy')*/}
+					{listThemes('V3')}
+				</Nav.dropdown>;
+		}
+
+		return <div className='field themes'>
+			<label>theme</label>
+			{dropdown}
 		</div>;
 	},
 
@@ -168,8 +216,8 @@ const MetadataEditor = createClass({
 					V3
 				</label>
 
-				<a href='/v3_preview' target='_blank' rel='noopener noreferrer'>
-					Click here for a quick intro to V3!
+				<a href='/legacy' target='_blank' rel='noopener noreferrer'>
+					Click here to see the demo page for the old Legacy renderer!
 				</a>
 			</div>
 		</div>;
@@ -183,18 +231,32 @@ const MetadataEditor = createClass({
 					value={this.props.metadata.title}
 					onChange={(e)=>this.handleFieldChange('title', e)} />
 			</div>
-			<div className='field description'>
-				<label>description</label>
-				<textarea value={this.props.metadata.description} className='value'
-					onChange={(e)=>this.handleFieldChange('description', e)} />
+			<div className='field-group'>
+				<div className='field-column'>
+					<div className='field description'>
+						<label>description</label>
+						<textarea value={this.props.metadata.description} className='value'
+							onChange={(e)=>this.handleFieldChange('description', e)} />
+					</div>
+					<div className='field thumbnail'>
+						<label>thumbnail</label>
+						<input type='text'
+							value={this.props.metadata.thumbnail}
+							placeholder='my.thumbnail.url'
+							className='value'
+							onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
+						<button className='display' onClick={this.toggleThumbnailDisplay}>
+							<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
+						</button>
+					</div>
+				</div>
+				{this.renderThumbnail()}
 			</div>
-			{/*}
-			<div className='field tags'>
-				<label>tags</label>
-				<textarea value={this.props.metadata.tags}
-					onChange={(e)=>this.handleFieldChange('tags', e)} />
-			</div>
-			*/}
+
+			<StringArrayEditor label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
+				placeholder='add tag' unique={true}
+				values={this.props.metadata.tags}
+				onChange={(e)=>this.handleFieldChange('tags', e)}/>
 
 			{this.renderAuthors()}
 
@@ -205,6 +267,8 @@ const MetadataEditor = createClass({
 				</div>
 			</div>
 
+			{this.renderThemeDropdown()}
+
 			{this.renderRenderOptions()}
 
 			<div className='field publish'>
@@ -214,8 +278,6 @@ const MetadataEditor = createClass({
 					<small>Published homebrews will be publicly viewable and searchable (eventually...)</small>
 				</div>
 			</div>
-
-			{this.renderShareToReddit()}
 
 			{this.renderDelete()}
 

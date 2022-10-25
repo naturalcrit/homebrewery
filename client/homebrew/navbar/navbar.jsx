@@ -6,6 +6,7 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 const PatreonNavItem = require('./patreon.navitem.jsx');
 
 const Navbar = createClass({
+	displayName     : 'Navbar',
 	getInitialState : function() {
 		return {
 			//showNonChromeWarning : false,
@@ -13,12 +14,10 @@ const Navbar = createClass({
 		};
 	},
 
-	componentDidMount : function() {
-		//const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
-		this.setState({
-			//showNonChromeWarning : !isChrome,
-			ver : window.version
-		});
+	getInitialState : function() {
+		return {
+			ver : global.version
+		};
 	},
 
 	/*
@@ -39,7 +38,9 @@ const Navbar = createClass({
 				<Nav.item href='/' className='homebrewLogo'>
 					<div>The Homebrewery</div>
 				</Nav.item>
-				<Nav.item>{`v${this.state.ver}`}</Nav.item>
+				<Nav.item newTab={true} href='/changelog' color='purple' icon='far fa-file-alt'>
+					{`v${this.state.ver}`}
+				</Nav.item>
 				<PatreonNavItem />
 				{/*this.renderChromeWarning()*/}
 			</Nav.section>
