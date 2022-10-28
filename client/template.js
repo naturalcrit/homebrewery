@@ -15,7 +15,7 @@ module.exports = async(name, title = '', props = {})=>{
 		<meta property="og:description" content="${props.brew?.description || 'No description.'}">
 		<meta property="og:site_name" content="The Homebrewery - Make your Homebrew content look legit!">
 		<meta property="og:type" content="article">
-		<meta name="twitter:card" content="summary_large_image">
+		<meta name="twitter:card" content="summary">
 		<title>${title.length ? `${title} - The Homebrewery`: 'The Homebrewery - NaturalCrit'}</title>
 	</head>
 	<body>
