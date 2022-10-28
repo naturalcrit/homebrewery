@@ -82,7 +82,7 @@ body {
 	// *            BASE
 	// *****************************/
 
-:where(.page){
+.page{
 	p{
 		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
 		display       : block;
@@ -214,6 +214,7 @@ body {
 	table{
 		.useSansSerif();
 		width         : 100%;
+		line-height   : 16px;
 		& + * {
 			margin-top : 0.325cm;
 		}
@@ -224,7 +225,7 @@ body {
 				vertical-align : bottom;
 				//padding        : 0.14em 0.4em;
 				padding     : 0px 1.5px;   // Both of these are temporary, just to force
-				line-height : 16px;        // PDF to render at same height until Chrome 108
+				//line-height : 16px;        // PDF to render at same height until Chrome 108
 			}
 		}
 		tbody{
@@ -598,7 +599,7 @@ body {
 //*****************************
 // *         SPELL LIST
 // *****************************/
-:where(.page) .spellList{
+.page .spellList{
 	.useSansSerif();
 	column-count        : 2;
 	ul+h5{
@@ -625,7 +626,7 @@ body {
 //*****************************
 // *       CLASS TABLE
 // *****************************/
-:where(.page) .classTable{
+.page .classTable{
 	th[colspan]:not([rowspan]) {
 		white-space : nowrap;
 	}
@@ -682,7 +683,7 @@ body {
 //*****************************
 // *      TABLE OF CONTENTS
 // *****************************/
-:where(.page) {
+.page {
 	&:has(.toc):after {
 		display: none;
 	}
@@ -759,7 +760,7 @@ body {
 //*****************************
 // *    DEFINITION LISTS
 // *****************************/
-:where(.page) {
+.page {
 	dl {
 		line-height  : 1.25em;
 		padding-left : 1em;
@@ -789,10 +790,10 @@ body {
 //*****************************
 // *         WIDE
 // *****************************/
-:where(.page) .wide{
+.page .wide{
 	margin-bottom       : 0.325cm;
 }
 
-:where(.page) h1 + *{
+.page h1 + *{
 	margin-top : 0;
 }
