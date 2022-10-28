@@ -110,6 +110,9 @@ body {
 			font-weight : bold;
 		}
 	}
+	div:not(.columnWrapper) > table + table {	// Side-by-side tables should not
+		margin-top : 0;	                        // have vertical spacing.
+	}
 
 	/* Watermark */
 	.watermark {
@@ -251,6 +254,9 @@ body {
 	.blank {
 		height     : 1em;
 		margin-top : 0;
+		& + * {
+			margin-top : 0;
+		}
 	}
 }
 
