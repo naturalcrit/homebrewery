@@ -1,8 +1,8 @@
 const HomebrewModel = require('./homebrew.model.js').model;
 const router = require('express').Router();
 const Moment = require('moment');
-//const render = require('vitreum/steps/render');
-const templateFn = require('../client/template.js');
+// const render = require('vitreum/steps/render');
+const templateFn = require('../client/adminTemplate.js');
 const zlib = require('zlib');
 
 process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
@@ -16,7 +16,7 @@ const mw = {
 				.status(401)
 				.send('Authorization Required');
 		}
-		const [username, password] = new Buffer(req.get('authorization').split(' ').pop(), 'base64')
+		const [username, password] = Buffer.from(req.get('authorization').split(' ').pop(), 'base64')
 			.toString('ascii')
 			.split(':');
 		if(process.env.ADMIN_USER === username && process.env.ADMIN_PASS === password){
@@ -104,7 +104,7 @@ router.get('/admin', mw.adminOnly, (req, res)=>{
 		url : req.originalUrl
 	})
 		.then((page)=>res.send(page))
-		.catch((err)=>res.sendStatus(500));
+		.catch((err)=>res.status(500).send(err));
 });
 
 module.exports = router;
