@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 
-DEFAULT_ACTIVITY_DELAY = 30 * 1000; // milliseconds
+const DEFAULT_ACTIVITY_DELAY = 30 * 1000; // milliseconds
 const DEFAULT_USER_OPTIONS = {
 	renderer : 'V3'
 };
