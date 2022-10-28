@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 
+DEFAULT_ACTIVITY_DELAY = 30 * 1000; // milliseconds
 const DEFAULT_USER_OPTIONS = {
 	renderer : 'V3'
 };
@@ -39,11 +40,17 @@ UserInfoSchema.statics.updateActivity = async function(username) {
 		user = new UserInfo;
 		user.username = username;
 	}
-	user.lastActivity = new Date();
-	await user.save()
-	.catch((err)=>{
-		return err;
-	});
+
+	const now = new Date();
+	if(!user.lastActivity || now.setTime(user.lastActivity.getTime() + DEFAULT_ACTIVITY_DELAY) < new Date) {
+		user.lastActivity = new Date;
+
+		await user.save()
+		.catch((err)=>{
+			return err;
+		});
+	}
+
 	return user;
 };
 
