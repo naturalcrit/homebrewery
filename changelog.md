@@ -54,6 +54,10 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 
 Fixes issues  [#2468](https://github.com/naturalcrit/homebrewery/issues/2468)
 
+##### Jeddai
+
+* [x] Reduce size of thumbnails on social media links
+
 }}
 
 ### Friday 19/10/2022 - v3.3.0
