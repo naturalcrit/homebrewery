@@ -69,6 +69,7 @@ app.use(homebrewApi);
 app.use(require('./admin.api.js'));
 
 const HomebrewModel     = require('./homebrew.model.js').model;
+const UserInfoModel     = require('./userinfo.model.js').model;
 const welcomeText       = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 const welcomeTextLegacy = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
 const migrateText       = require('fs').readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
@@ -281,6 +282,10 @@ if(isLocalEnvironment){
 //Render the page
 const templateFn = require('./../client/template.js');
 app.use(asyncHandler(async (req, res, next)=>{
+	// Update activity
+	if(req.account?.username) {
+		await UserInfoModel.updateActivity(req.account.username);
+	}
 	// Create configuration object
 	const configuration = {
 		local       : isLocalEnvironment,
