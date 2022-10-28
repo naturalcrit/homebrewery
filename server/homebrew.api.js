@@ -27,7 +27,7 @@ const getId = (req)=>{
 	return { id, googleId };
 };
 
-const getBrew = (accessType)=>{
+const getBrew = (accessType, fetchGoogle = true)=>{
 	// Create middleware with the accessType passed in as part of the scope
 	return async (req, res, next)=>{
 		// Get relevant IDs for the brew
@@ -45,7 +45,7 @@ const getBrew = (accessType)=>{
 		stub = stub?.toObject();
 
 		// If there is a google id, try to find the google brew
-		if(googleId || stub?.googleId) {
+		if(fetchGoogle && (googleId || stub?.googleId)) {
 			let googleError;
 			const googleBrew = await GoogleActions.getGoogleBrew(googleId || stub?.googleId, id, accessType)
 				.catch((err)=>{
@@ -327,8 +327,8 @@ const deleteBrew = async (req, res, next)=>{
 };
 
 router.post('/api', asyncHandler(newBrew));
-router.put('/api/:id', asyncHandler(getBrew('edit')), asyncHandler(updateBrew));
-router.put('/api/update/:id', asyncHandler(getBrew('edit')), asyncHandler(updateBrew));
+router.put('/api/:id', asyncHandler(getBrew('edit', false)), asyncHandler(updateBrew));
+router.put('/api/update/:id', asyncHandler(getBrew('edit', false)), asyncHandler(updateBrew));
 router.delete('/api/:id', asyncHandler(deleteBrew));
 router.get('/api/remove/:id', asyncHandler(deleteBrew));
 
