@@ -1,4 +1,5 @@
 const HomebrewModel = require('./homebrew.model.js').model;
+const UserInfoModel = require('./userinfo.model.js').model;
 const router = require('express').Router();
 const Moment = require('moment');
 // const render = require('vitreum/steps/render');
@@ -61,6 +62,15 @@ router.get('/admin/lookup/:id', mw.adminOnly, (req, res, next)=>{
 		{ shareId: { '$regex': req.params.id, '$options': 'i' } },
 	] }).exec((err, brew)=>{
 		return res.json(brew);
+	});
+});
+
+/* Searches for matching edit or share id, also attempts to partial match */
+router.get('/admin/userlookup/:id', mw.adminOnly, (req, res, next)=>{
+	UserInfoModel.findOne({ $or : [
+		{ username: { '$regex': req.params.id, '$options': 'i' } }
+	] }).exec((err, user)=>{
+		return res.json(user);
 	});
 });
 
