@@ -24,15 +24,32 @@ const Admin = createClass({
 				</div>
 			</header>
 			<div className='container'>
-				<Stats />
-				<hr />
-				<BrewLookup />
-				<hr />
-				<BrewCleanup />
-				<hr />
-				<BrewCompress />
-				<hr />
-				<UserLookup />
+				<table>
+					<th><td></td><td></td></th>
+					<tr>
+						<td>
+							<Stats />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<BrewLookup />
+						</td>
+						<td>
+							<UserLookup />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<BrewCleanup />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<BrewCompress />
+						</td>
+					</tr>
+				</table>
 			</div>
 		</div>;
 	}
