@@ -100,7 +100,7 @@ const BrewItem = createClass({
 		}
 		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
 
-		return <div className='brewItem'>
+		return <div className={`brewItem ${this.props.className}`}>
 			{brew.thumbnail &&
 				<div className='thumbnail' style={{ backgroundImage: `url(${brew.thumbnail})` }} >
 				</div>
