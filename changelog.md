@@ -1,6 +1,7 @@
 ```css
 h5 {
 	font-size: .35cm !important;
+	margin-top: 0.3cm;
 }
 
 .page ul ul {
@@ -12,6 +13,11 @@ h5 {
 	margin-left : -0.52cm;
 	transform: translateY(.05cm);
 	filter: brightness(1.1) drop-shadow(1px 2px 1px #222);
+}
+
+.taskList ul {
+	margin-bottom: 0px;
+	margin-top: 0px;
 }
 
 .taskList li input[checked] {
@@ -38,6 +44,81 @@ pre {
 
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
+
+### Thursday 28/10/2022 - v3.3.1
+{{taskList
+
+##### Calculuschild
+
+* [x] Fixes to several broken CSS styles from v3.3.0
+
+Fixes issues  [#2468](https://github.com/naturalcrit/homebrewery/issues/2468)
+
+##### Jeddai
+
+* [x] Reduce size of thumbnails on social media links
+
+}}
+
+### Friday 19/10/2022 - v3.3.0
+{{taskList
+
+##### Calculuschild
+
+* [x] Fix for tables broken by Chrome v106
+
+
+##### G-Ambatte:
+
+* [x] Fix Table of Contents broken by Chrome v106
+
+Fixes issues  [#2437](https://github.com/naturalcrit/homebrewery/issues/2437)
+
+* [x] Show brew thumbnails on user page
+
+Fixes issues  [#2331](https://github.com/naturalcrit/homebrewery/issues/2331)
+
+* [x] Allow longer URLs for brew thumbnails
+
+Fixes issues  [#2351](https://github.com/naturalcrit/homebrewery/issues/2351)
+
+* [x] Code no longer unfolds when inserting a snippet
+
+Fixes issues  [#2135](https://github.com/naturalcrit/homebrewery/issues/2135)
+
+* [x] Fix brew settings being lost on first save
+
+Fixes issues  [#2427](https://github.com/naturalcrit/homebrewery/issues/2427)
+
+
+##### Gazook:
+
+* [x] Several updates to bug reporting and error popups
+
+Fixes issues  [#2376](https://github.com/naturalcrit/homebrewery/issues/2376)
+
+* [x] Fixes to userpage search bar
+
+Fixes issues  [#1675](https://github.com/naturalcrit/homebrewery/issues/1675), [#2353](https://github.com/naturalcrit/homebrewery/issues/2353)
+
+* [x] Renderer *(legacy / V3)* now shown next to page #
+
+Fixes issues  [#1928](https://github.com/naturalcrit/homebrewery/issues/1928)
+
+* [x] Prevent text selection when moving divider bar
+
+Fixes issues  [#1632](https://github.com/naturalcrit/homebrewery/issues/1632)
+
+* [x] Tweak Monster Stat Block coloring
+
+Fixes issues  [#2123](https://github.com/naturalcrit/homebrewery/issues/2123)
+
+* [x] Added dropdown button to toggle autosave
+
+Fixes issues  [#1546](https://github.com/naturalcrit/homebrewery/issues/1546)
+
+}}
+
 
 ### Friday 08/09/2022 - v3.2.2
 {{taskList

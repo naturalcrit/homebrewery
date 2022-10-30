@@ -77,9 +77,12 @@ body {
 	text-rendering    : optimizeLegibility;
 	page-break-before : always;
 	page-break-after  : always;
+}
 	//*****************************
 	// *            BASE
 	// *****************************/
+
+.page{
 	p{
 		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
 		display       : block;
@@ -155,9 +158,9 @@ body {
 			padding-bottom          : 2px;
 			margin-bottom           : -20px;
 			background-image        : linear-gradient(-45deg, #322814, #998250, #322814);
-	    background-clip         : text;
-	    -webkit-background-clip : text;
-	    color                   : rgba(0, 0, 0, 0);
+			background-clip         : text;
+			-webkit-background-clip : text;
+			color                   : rgba(0, 0, 0, 0);
 		}
 		&+p::first-line{
 			font-variant : small-caps;
@@ -175,12 +178,24 @@ body {
 		font-size     : 0.575cm;
 		border-bottom : 2px solid var(--HB_Color_HeaderUnderline);;
 		line-height   : 0.995em; //Font is misaligned. Shift up slightly
+		& + * {
+			margin-top: 0.17cm;
+		}
+	}
+	* + h3 {
+		margin-top    : 0.155cm; //(0.325 - 0.17)
 	}
 	h4{
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.02cm;
 		font-size     : 0.458cm;
 		line-height   : 0.971em; //Font is misaligned. Shift up slightly
+		& + * {
+			margin-top: 0.09cm;
+		}
+	}
+	* + h4 {
+		margin-top    : 0.235cm; //(0.325 - 0.09)
 	}
 	h5{
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
@@ -199,6 +214,7 @@ body {
 	table{
 		.useSansSerif();
 		width         : 100%;
+		line-height   : 16px;
 		& + * {
 			margin-top : 0.325cm;
 		}
@@ -207,13 +223,17 @@ body {
 			font-weight : 800;
 			th{
 				vertical-align : bottom;
-				padding        : 0.14em 0.4em;
+				//padding        : 0.14em 0.4em;
+				padding     : 0px 1.5px;   // Both of these are temporary, just to force
+				//line-height : 16px;        // PDF to render at same height until Chrome 108
 			}
 		}
 		tbody{
 			tr{
 				td{
-					padding : 0.14em 0.4em;
+					//padding : 0.14em 0.4em;
+					padding     : 0px 1.5px;   // Both of these are temporary, just to force
+          //line-height : 16px;        // PDF to render at same height until Chrome 108
 				}
 				&:nth-child(odd){
 					background-color : var(--HB_Color_Accent);
@@ -625,6 +645,9 @@ body {
 		&.wide:first-child {
 			margin-top: 0.12cm;
 		}
+		& + * {
+			margin-top: 0;
+		}
 	}
 	&.decoration {
 		position:relative;
@@ -657,89 +680,77 @@ body {
 //*****************************
 // *      TABLE OF CONTENTS
 // *****************************/
-.page .toc{
+.page {
+	&:has(.toc):after {
+		display: none;
+	}
+	.toc {
 	-webkit-column-break-inside : avoid;
 	page-break-inside           : avoid;
 	break-inside                : avoid;
-	h1 {
-		text-align    : center;
-		margin-bottom : 0.3cm;
-	}
-	a{
-		display         : inline;
-		color           : inherit;
-		text-decoration : none;
-		&:hover{
-			text-decoration : underline;
+		h1 {
+			text-align    : center;
+			margin-bottom : 0.3cm;
 		}
-	}
-	h4 {
-		margin-top  : 0.2cm;
-		line-height : 0.4cm;
-		& + ul li {
-			line-height: 1.2em;
+		a{
+			display         : inline;
+			color           : inherit;
+			text-decoration : none;
+			&:hover{
+				text-decoration : underline;
+			}
 		}
-	}
-	ul{
-		padding-left    : 0;
-		list-style-type : none;
-		li + li h3 {
-			margin-top  : 0.26cm;
-			line-height : 1em
+		h4 {
+			margin-top  : 0.2cm;
+			line-height : 0.4cm;
+			& + ul li {
+				line-height: 1.2em;
+			}
 		}
-		h3 span:first-child::after {
-			border : none;
-		}
-		span {
-			display : table-cell;
-			&:first-child {
-				position   :       relative;
-				overflow   :       hidden;
-				&::after {
+		ul{
+			padding-left    : 0;
+			list-style-type : none;
+			margin-top      : 0;
+			a {
+				width           : 100%;
+				display         : flex;
+				flex-flow       : row nowrap;
+				justify-content : space-between;
+			}
+			li + li h3 {
+				margin-top  : 0.26cm;
+				line-height : 1em
+			}
+			h3 span:first-child::after {
+				border : none;
+			}
+			span {
+				display : contents;
+				&:first-child::after {
 					content       : "";
-					position      : absolute;
 					bottom        : 0.08cm;
-					margin-left   : 0.06cm;        /* Spacing before dot leaders */
-					width         : 100%;
+					flex          : 1;
+					margin-left   : 0.08cm;        /* Spacing before dot leaders */
+					margin-right  : 0.16cm;
 					border-bottom : 0.05cm dotted #000;
+					margin-bottom : 0.08cm;
+				}
+				&:last-child {
+					display     : inline-block;
+					align-self  : flex-end;
+					font-family : "BookInsanityRemake";
+					font-size   : 0.34cm;
+					font-weight : normal;
+					color       : #000;
 				}
 			}
-			&:last-child {
-				font-family    : BookInsanityRemake;
-				font-size      : 0.34cm;
-				font-weight    : normal;
-				color          : black;
-				text-align     : right;
-				vertical-align : bottom; /* Keep page number bottom-aligned */
-				width          : 1%;
-				padding-left   : 0.06cm; /* Spacing after dot leaders */
-				/*white-space  : nowrap; /* Uncomment if needed */
+			ul { /*List indent*/
+				margin-left : 1em;
 			}
 		}
-		ul { /*List indent*/
-			margin-left : 1em;
+		&.wide{
+			.useColumns(0.96, @fillMode: balance);
 		}
-	}
-	&.wide{
-		.useColumns(0.96, @fillMode: balance);
-	}
-}
-
-//*****************************
-// *    MUSTACHE DIVS/SPANS
-// *****************************/
-.page {
-	.block {
-		break-inside      : avoid;
-		display           : inline-block;
-		.page :where(&) {
-			width             : 100%;
-		}
-		//-webkit-transform : translateZ(0); //Prevents shadows from breaking across columns
-	}
-	.inline-block {
-		display : inline-block;
-		text-indent : initial;
 	}
 }
 
@@ -774,25 +785,12 @@ body {
 }
 
 //*****************************
-// *    BLANK LINE
-// *****************************/
-.page {
-	.blank {
-		height     : 1em;
-		margin-top : 0;
-	}
-}
-
-//*****************************
 // *         WIDE
 // *****************************/
 .page .wide{
-	column-span         : all;
-	-webkit-column-span : all;
-	-moz-column-span    : all;
-	display             : block;
-	margin-bottom       : 0.34cm;
-	&+* {
-		margin-top : 0;
-	}
+	margin-bottom       : 0.325cm;
+}
+
+.page h1 + *{
+	margin-top : 0;
 }
