@@ -8,6 +8,7 @@ const express = require('express');
 const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
+const dedent = require('dedent-tabs').default;
 
 const { homebrewApi, getBrew } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
@@ -109,6 +110,59 @@ app.get('/migrate', (req, res, next)=>{
 		renderer : 'V3'
 	};
 	splitTextStyleAndMetadata(req.brew);
+	return next();
+});
+
+//Account Information page
+app.get('/account', async (req, res, next)=>{
+	let text = dedent`
+	# Account Details
+	
+	Not logged in.`;
+
+	let auth;
+	let files;
+	if(req.account) {
+		if(req.account.googleId) {
+			try {
+				auth = await GoogleActions.authCheck(req.account, res);
+			} catch (e) {
+				auth = undefined;
+				console.log('Google auth check failed!');
+				console.log(e);
+			}
+			if(auth.credentials.access_token) {
+				try {
+					files = await GoogleActions.listGoogleBrews(auth);
+				} catch (e) {
+					files = undefined;
+					console.log('List Google files failed!');
+					console.log(e);
+				}
+			}
+		}
+
+		text = dedent`
+	# Account Details
+	:
+	{{wide,centered,text-align:center,border-color:#58180D,border-width:2px,border-style:solid,border-radius:10px,padding:10px
+	### Info
+	:
+	|||
+	|:-|:-|
+	|Username|${req.account.username}|
+	|Logged in at|${req.account.issued}|
+	|Linked to Google|${req.account.googleId ? 'YES' : 'NO'}|
+	${req.account.googleId ? `|Google auth check: ${auth.credentials.access_token ? '|YES|' : '|NO|'}` : ''}
+	${req.account.googleId ? `|Google file list count: ${files ? `|${files.length}|` : '|NO|'}` : ''}
+	}}`;
+	}
+
+	const brew = {
+		text     : text,
+		renderer : 'V3'
+	};
+	req.brew = brew;
 	return next();
 });
 
