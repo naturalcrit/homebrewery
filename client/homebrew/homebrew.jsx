@@ -73,7 +73,6 @@ const Homebrew = createClass({
 					<Route path='/print' element={<WithRoute el={PrintPage} />} />
 					<Route path='/changelog' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
 					<Route path='/faq' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
-					<Route path='/account' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
 					<Route path='/legacy' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
 					<Route path='/' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
 					<Route path='/*' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
