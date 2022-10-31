@@ -289,7 +289,8 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 			}
 		}
 
-		const brews = await HomebrewModel.getByUser(req.account.username, true, 'id')
+		const query = { authors: req.account.username, googleId: { $exists: false } };
+		const brews = await HomebrewModel.find(query, 'id')
 			.catch((err)=>{
 				console.log(err);
 			});
