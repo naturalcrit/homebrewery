@@ -91,6 +91,7 @@ const PrintPage = createClass({
 
 		return <div>
 			<Meta name='robots' content='noindex, nofollow' />
+			<link href={`/themes/${rendererPath}/Blank/style.css`} rel='stylesheet'/>
 			{baseThemePath &&
 				<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} rel='stylesheet'/>
 			}

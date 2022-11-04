@@ -52,7 +52,7 @@ const template = async function(name, title='', props = {}){
 			<link href=${`/${name}/bundle.css`} rel='stylesheet' />
 			<link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
 			${ogMetaTags}
-			<meta name="twitter:card" content="summary_large_image">
+			<meta name="twitter:card" content="summary">
 			<title>${title.length ? `${title} - The Homebrewery`: 'The Homebrewery - NaturalCrit'}</title>
 		</head>
 		<body>
