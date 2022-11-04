@@ -14,6 +14,17 @@ const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
 const homebreweryThumbnail = require('../../thumbnail.png');
 
+const validators = {
+	thumbnail : [
+		(value)=>{
+			return value?.length > 5 ? 'Max URL length of 5 characters' : null;
+		},
+		(value)=>{
+			return (value ?? '')[0] !== 'W' ? 'URL must start with W' : null;
+		}
+	]
+};
+
 const MetadataEditor = createClass({
 	displayName     : 'MetadataEditor',
 	getDefaultProps : function() {
@@ -35,7 +46,8 @@ const MetadataEditor = createClass({
 
 	getInitialState : function(){
 		return {
-			showThumbnail : true
+			showThumbnail   : true,
+			validationError : null
 		};
 	},
 
@@ -51,11 +63,23 @@ const MetadataEditor = createClass({
 	},
 
 	handleFieldChange : function(name, e){
-		this.props.onChange({
-			...this.props.metadata,
-			[name] : e.target.value
-		});
+		const inputRules = validators[name] ?? [];
+		const validationErr = inputRules.map((rule)=>rule(e.target.value)).filter(Boolean);
+		this.setState((prevState)=>({
+		    validationError : {
+				...(prevState.validationError ?? {}),
+				[name] : validationErr.length > 0 ? validationErr : undefined
+			}
+		}));
+		if(Object.values(this.state.validationError ?? {}).filter(Boolean).length === 0){
+			this.props.onChange({
+				...this.props.metadata,
+				[name] : e.target.value
+			});
+		}
+
 	},
+
 	handleSystem : function(system, e){
 		if(e.target.checked){
 			this.props.metadata.systems.push(system);
@@ -64,6 +88,7 @@ const MetadataEditor = createClass({
 		}
 		this.props.onChange(this.props.metadata);
 	},
+
 	handleRenderer : function(renderer, e){
 		if(e.target.checked){
 			this.props.metadata.renderer = renderer;
