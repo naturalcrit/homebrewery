@@ -56,6 +56,7 @@ const MetadataEditor = createClass({
 	},
 
 	handleFieldChange : function(name, e){
+		e.persist();
 		const inputRules = validations[name] ?? [];
 		const validationErr = inputRules.map((rule)=>rule(e.target.value)).filter(Boolean);
 		this.setState((prevState)=>({
@@ -63,20 +64,22 @@ const MetadataEditor = createClass({
 				...(prevState.errs ?? {}),
 				[name] : validationErr.length > 0 ? validationErr : undefined
 			}
-		}));
-		if(Object.values(this.state.errs ?? {}).filter(Boolean).length === 0){
-			e.target.setCustomValidity('');
-			this.props.onChange({
-				...this.props.metadata,
-				[name] : e.target.value
-			});
-		} else {
-			const errMessage = this.state.errs[name].map((err)=>{
-				return `- ${err}`;
-			}).join('\n');
-			e.target.setCustomValidity(errMessage);
-			e.target.reportValidity();
-		};
+		}), ()=>{
+			if(Object.values(this.state.errs ?? {}).filter(Boolean).length === 0){
+				e.target.setCustomValidity('');
+				this.props.onChange({
+					...this.props.metadata,
+					[name] : e.target.value
+				});
+			} else {
+				const errMessage = this.state.errs[name].map((err)=>{
+					return `- ${err}`;
+				}).join('\n');
+				e.target.setCustomValidity(errMessage);
+				e.target.reportValidity();
+			};
+		});
+
 
 	},
 
