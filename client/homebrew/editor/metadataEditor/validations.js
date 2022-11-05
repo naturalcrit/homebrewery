@@ -1,12 +1,12 @@
 module.exports = {
 	title : [
 		(value)=>{
-			return value?.length > 10 ? 'Max URL length of 10 characters' : null;
+			return value?.length > 10 ? 'Max title length of 10 characters' : null;
 		}
 	],
 	description : [
 		(value)=>{
-			return value?.length > 10 ? 'Max URL length of 10 characters' : null;
+			return value?.length > 10 ? 'Max description length of 10 characters' : null;
 		}
 	],
 	thumbnail : [

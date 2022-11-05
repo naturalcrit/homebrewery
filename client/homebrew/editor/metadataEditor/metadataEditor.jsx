@@ -65,7 +65,7 @@ const MetadataEditor = createClass({
 				[name] : validationErr.length > 0 ? validationErr : undefined
 			}
 		}), ()=>{
-			if(Object.values(this.state.errs ?? {}).filter(Boolean).length === 0){
+			if(Object.values(this.state.errs ?? {}).filter(Boolean).length === 0 || !this.state.errs[name]){
 				e.target.setCustomValidity('');
 				this.props.onChange({
 					...this.props.metadata,
