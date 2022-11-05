@@ -65,10 +65,17 @@ const MetadataEditor = createClass({
 			}
 		}));
 		if(Object.values(this.state.errs ?? {}).filter(Boolean).length === 0){
+			e.target.setCustomValidity('');
 			this.props.onChange({
 				...this.props.metadata,
 				[name] : e.target.value
 			});
+		} else {
+			const errMessage = this.state.errs[name].map((err)=>{
+				return `- ${err}`;
+			}).join('\n');
+			e.target.setCustomValidity(errMessage);
+			e.target.reportValidity();
 		};
 
 	},
@@ -241,25 +248,30 @@ const MetadataEditor = createClass({
 		</div>;
 	},
 
+	// renderErrors : function(){
+	// 	if(Object.values(this.state.errs ?? {}).filter(Boolean).length > 0) return;
+	// 	return <span className='validation-error'></span>
+	// },
+
 	render : function(){
 		return <div className='metadataEditor'>
 			<div className='field title'>
 				<label>title</label>
 				<input type='text' className='value'
-					value={this.props.metadata.title}
+					defaultValue={this.props.metadata.title}
 					onChange={(e)=>this.handleFieldChange('title', e)} />
 			</div>
 			<div className='field-group'>
 				<div className='field-column'>
 					<div className='field description'>
 						<label>description</label>
-						<textarea value={this.props.metadata.description} className='value'
+						<textarea defaultValue={this.props.metadata.description} className='value'
 							onChange={(e)=>this.handleFieldChange('description', e)} />
 					</div>
 					<div className='field thumbnail'>
 						<label>thumbnail</label>
 						<input type='text'
-							value={this.props.metadata.thumbnail}
+							defaultValue={this.props.metadata.thumbnail}
 							placeholder='my.thumbnail.url'
 							className='value'
 							onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
