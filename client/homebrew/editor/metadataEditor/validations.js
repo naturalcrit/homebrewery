@@ -12,9 +12,6 @@ module.exports = {
 	thumbnail : [
 		(value)=>{
 			return value?.length > 5 ? 'Max URL length of 5 characters' : null;
-		},
-		(value)=>{
-			return (value ?? '')[0] !== 'W' ? 'URL must start with W' : null;
 		}
 	]
 };
