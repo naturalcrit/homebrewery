@@ -275,7 +275,7 @@ const MetadataEditor = createClass({
 						<label>thumbnail</label>
 						<input type='text'
 							defaultValue={this.props.metadata.thumbnail}
-							placeholder='my.thumbnail.url'
+							placeholder='https://my.thumbnail.url'
 							className='value'
 							onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
 						<button className='display' onClick={this.toggleThumbnailDisplay}>

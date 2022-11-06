@@ -12,6 +12,14 @@ module.exports = {
 	thumbnail : [
 		(value)=>{
 			return value?.length > 256 ? 'Max URL length of 256 characters.' : null;
+		},
+		(value)=>{
+			try {
+				Boolean(new URL(value));
+				return null;
+			} catch (e) {
+				return 'Must be a valid URL';
+			}
 		}
 	],
 	language : [
