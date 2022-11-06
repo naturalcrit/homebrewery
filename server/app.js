@@ -1,4 +1,4 @@
-/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 400, "skipBlankLines": true, "skipComments": true}]*/
 // Set working directory to project root
 process.chdir(`${__dirname}/..`);
 
@@ -263,6 +263,54 @@ app.get('/print/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	next();
 });
 
+//Account Page
+app.get('/account', asyncHandler(async (req, res, next)=>{
+	const data = {};
+	data.title = 'Account Information Page';
+
+	let auth;
+	let files;
+	if(req.account) {
+		if(req.account.googleId) {
+			try {
+				auth = await GoogleActions.authCheck(req.account, res);
+			} catch (e) {
+				auth = undefined;
+				console.log('Google auth check failed!');
+				console.log(e);
+			}
+			if(auth.credentials.access_token) {
+				try {
+					files = await GoogleActions.listGoogleBrews(auth);
+				} catch (e) {
+					files = undefined;
+					console.log('List Google files failed!');
+					console.log(e);
+				}
+			}
+		}
+
+		const query = { authors: req.account.username, googleId: { $exists: false } };
+		const brews = await HomebrewModel.find(query, 'id')
+			.catch((err)=>{
+				console.log(err);
+			});
+
+		data.uiItems = {
+			username   : req.account.username,
+			issued     : req.account.issued,
+			mongoCount : brews.length,
+			googleId   : Boolean(req.account.googleId),
+			authCheck  : Boolean(req.account.googleId && auth.credentials.access_token),
+			fileCount  : files?.length || '-'
+		};
+	}
+
+	req.brew = data;
+	return next();
+}));
+
+
 const nodeEnv = config.get('node_env');
 const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
 // Local only
@@ -276,8 +324,6 @@ if(isLocalEnvironment){
 		return res.json(payload);
 	});
 }
-
-
 
 //Render the page
 const templateFn = require('./../client/template.js');
