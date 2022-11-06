@@ -1,40 +1,4 @@
 const template = async function(name, title='', props = {}){
-	// const HOMEBREWERY_PUBLIC_URL=props.config.publicUrl;
-
-	// const ogMeta = {
-	// 	siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
-	// 	title       : 'The Homebrewery',
-	// 	description : 'Homepage',
-	// 	thumbnail   : `${HOMEBREWERY_PUBLIC_URL}/thumbnail.png`,
-	// 	type        : 'website'
-	// };
-
-	// if(props.url.match(/\/share\/|\/edit\//)){
-	// 	Object.assign(ogMeta, {
-	// 		siteName    : null,
-	// 		title       : props.brew.title || 'Homebrewery - Untitled Brew',
-	// 		description : props.brew.description || 'No description.',
-	// 		image       : props.brew.thumbnail || null,
-	// 		type        : 'article'
-	// 	});
-	// } else if(props.url.match(/\/print\/|\/source\//)){
-	// 	Object.assign(ogMeta, {
-	// 		siteName    : null,
-	// 		title       : props.brew.title ? `${props.brew.title} - ${props.url.match(/\/print\/|\/source\//)}` : 'Homebrewery - Untitled Brew',
-	// 		description : props.brew.description || 'No description.',
-	// 		image       : props.brew.thumbnail || null,
-	// 		type        : 'article'
-	// 	});
-	// } else if(props.url.match(/\/user\//)){
-	// 	Object.assign(ogMeta, {
-	// 		siteName    : null,
-	// 		title       : `${props.username} - The Homebrewery`,
-	// 		description : `${props.username}'s user page.`,
-	// 		image       : null,
-	// 		type        : 'profile'
-	// 	});
-	// }
-
 	const ogTags = [];
 	Object.entries(props.ogMeta).forEach(([key, value])=>{
 		if(!value) return;
@@ -42,7 +6,6 @@ const template = async function(name, title='', props = {}){
 		ogTags.push(tag);
 	});
 	const ogMetaTags = ogTags.join('\n');
-
 
 	return `<!DOCTYPE html>
 	<html>

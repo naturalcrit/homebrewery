@@ -91,7 +91,7 @@ app.get('/', (req, res, next)=>{
 
 	req.ogMeta = {
 		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
-		title       : 'The Homebrewery - Homepage',
+		title       : 'Homepage',
 		description : 'Homepage',
 		thumbnail   : `${config.get('publicUrl')}/thumbnail.png`,
 		type        : 'website'
@@ -109,7 +109,7 @@ app.get('/legacy', (req, res, next)=>{
 
 	req.ogMeta = {
 		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
-		title       : 'The Homebrewery - Homepage (Legacy)',
+		title       : 'Homepage (Legacy)',
 		description : 'Homepage',
 		thumbnail   : `${config.get('publicUrl')}/thumbnail.png`,
 		type        : 'website'
@@ -127,7 +127,7 @@ app.get('/migrate', (req, res, next)=>{
 
 	req.ogMeta = {
 		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
-		title       : 'The Homebrewery - v3 Migration Guide',
+		title       : 'v3 Migration Guide',
 		description : 'A brief guide to converting Legacy documents to the v3 renderer.',
 		thumbnail   : `${config.get('publicUrl')}/thumbnail.png`,
 		type        : 'website'
@@ -146,9 +146,9 @@ app.get('/changelog', async (req, res, next)=>{
 
 	req.ogMeta = {
 		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
-		title       : 'The Homebrewery - Changelog',
+		title       : 'Changelog',
 		description : 'Development changelog.',
-		thumbnail   : `${config.get('publicUrl')}/thumbnail.png`,
+		thumbnail   : null,
 		type        : 'website'
 	};
 	splitTextStyleAndMetadata(req.brew);
@@ -165,7 +165,7 @@ app.get('/faq', async (req, res, next)=>{
 
 	req.ogMeta = {
 		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
-		title       : 'The Homebrewery - FAQ',
+		title       : 'FAQ',
 		description : 'Frequently Asked Questions',
 		thumbnail   : `${config.get('publicUrl')}/thumbnail.png`,
 		type        : 'website'
@@ -178,14 +178,6 @@ app.get('/faq', async (req, res, next)=>{
 //Source page
 app.get('/source/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	const { brew } = req;
-
-	req.ogMeta = {
-		siteName    : null,
-		title       : req.brew.title ? `${req.brew.title} - /source/` : 'Homebrewery - Untitled Brew',
-		description : req.brew.description || 'No description.',
-		image       : req.brew.thumbnail || null,
-		type        : 'article'
-	};
 
 	const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
 	let text = brew.text;
@@ -202,14 +194,6 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	sanitizeBrew(brew, 'share');
 	const prefix = 'HB - ';
 
-	req.ogMeta = {
-		siteName    : null,
-		title       : req.brew.title ? `${req.brew.title} - /download/` : 'Homebrewery - Untitled Brew',
-		description : req.brew.description || 'No description.',
-		image       : req.brew.thumbnail || null,
-		type        : 'article'
-	};
-
 	let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
 	if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };
 	res.set({
@@ -223,6 +207,14 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 //User Page
 app.get('/user/:username', async (req, res, next)=>{
 	const ownAccount = req.account && (req.account.username == req.params.username);
+
+	req.ogMeta = {
+		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+		title       : `${req.params.username}'s Collection`,
+		description : 'View my collection of homebrew on the Homebrewery.',
+		image       : null,
+		type        : 'website'  // or 'profile'?
+	};
 
 	const fields = [
 		'googleId',
@@ -283,8 +275,8 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
 
 	req.ogMeta = {
-		siteName    : null,
-		title       : req.brew.title || 'Homebrewery - Untitled Brew',
+		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+		title       : req.brew.title || 'Untitled Brew',
 		description : req.brew.description || 'No description.',
 		image       : req.brew.thumbnail || null,
 		type        : 'article'
@@ -300,6 +292,13 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	req.brew.title = `CLONE - ${req.brew.title}`;
+	req.ogMeta = {
+		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+		title       : 'New',
+		description : 'Start crafting your homebrew on the Homebrewery!',
+		image       : null,
+		type        : 'website'
+	};
 	return next();
 });
 
@@ -308,8 +307,8 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 	const { brew } = req;
 
 	req.ogMeta = {
-		siteName    : null,
-		title       : req.brew.title || 'Homebrewery - Untitled Brew',
+		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+		title       : req.brew.title || 'Untitled Brew',
 		description : req.brew.description || 'No description.',
 		image       : req.brew.thumbnail || null,
 		type        : 'article'
