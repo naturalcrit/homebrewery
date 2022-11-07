@@ -32,7 +32,8 @@ const mustacheSpans = {
 	start(src) { return src.match(/{{[^{]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeSpan = /^{{[^\n]*}}/;               // Regex for the complete token
-		const inlineRegex = /{{(?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])*\s*|}}/g;
+		const inlineRegex = /{{(?:(?=(:(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*))\1)*|}}/g;
+		// ^ *{{(?:(?=(:(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*))\1)* *$|^ *}}$
 		const match = completeSpan.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -82,7 +83,7 @@ const mustacheDivs = {
 	start(src) { return src.match(/\n *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeBlock = /^ *{{[^\n}]* *\n.*\n *}}/s;                // Regex for the complete token
-		const blockRegex = /^ *{{(?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])* *$|^ *}}$/gm;
+		const blockRegex = /^ *{{(?:(?=(:(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*))\1)* *$|^ *}}$/gm;
 		const match = completeBlock.exec(src);
 		if(match) {
 			//Find closing delimiter
