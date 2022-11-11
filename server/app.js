@@ -87,16 +87,32 @@ app.get('/', (req, res, next)=>{
 	req.brew = {
 		text     : welcomeText,
 		renderer : 'V3'
+	},
+
+	req.ogMeta = {
+		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+		title       : 'Homepage',
+		description : 'Homepage',
+		thumbnail   : `${config.get('publicUrl')}/thumbnail.png`,
+		type        : 'website'
 	};
 	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
 
-//Home page legacy
+//Home page Legacy
 app.get('/legacy', (req, res, next)=>{
 	req.brew = {
 		text     : welcomeTextLegacy,
 		renderer : 'legacy'
+	},
+
+	req.ogMeta = {
+		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+		title       : 'Homepage (Legacy)',
+		description : 'Homepage',
+		thumbnail   : `${config.get('publicUrl')}/thumbnail.png`,
+		type        : 'website'
 	};
 	splitTextStyleAndMetadata(req.brew);
 	return next();
@@ -107,6 +123,14 @@ app.get('/migrate', (req, res, next)=>{
 	req.brew = {
 		text     : migrateText,
 		renderer : 'V3'
+	},
+
+	req.ogMeta = {
+		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+		title       : 'v3 Migration Guide',
+		description : 'A brief guide to converting Legacy documents to the v3 renderer.',
+		thumbnail   : `${config.get('publicUrl')}/thumbnail.png`,
+		type        : 'website'
 	};
 	splitTextStyleAndMetadata(req.brew);
 	return next();
@@ -118,6 +142,14 @@ app.get('/changelog', async (req, res, next)=>{
 		title    : 'Changelog',
 		text     : changelogText,
 		renderer : 'V3'
+	},
+
+	req.ogMeta = {
+		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+		title       : 'Changelog',
+		description : 'Development changelog.',
+		thumbnail   : null,
+		type        : 'website'
 	};
 	splitTextStyleAndMetadata(req.brew);
 	return next();
@@ -129,7 +161,16 @@ app.get('/faq', async (req, res, next)=>{
 		title    : 'FAQ',
 		text     : faqText,
 		renderer : 'V3'
+	},
+
+	req.ogMeta = {
+		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+		title       : 'FAQ',
+		description : 'Frequently Asked Questions',
+		thumbnail   : `${config.get('publicUrl')}/thumbnail.png`,
+		type        : 'website'
 	};
+
 	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
@@ -166,6 +207,14 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 //User Page
 app.get('/user/:username', async (req, res, next)=>{
 	const ownAccount = req.account && (req.account.username == req.params.username);
+
+	req.ogMeta = {
+		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+		title       : `${req.params.username}'s Collection`,
+		description : 'View my collection of homebrew on the Homebrewery.',
+		image       : null,
+		type        : 'website'  // or 'profile'?
+	};
 
 	const fields = [
 		'googleId',
@@ -224,6 +273,14 @@ app.get('/user/:username', async (req, res, next)=>{
 //Edit Page
 app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
+
+	req.ogMeta = {
+		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+		title       : req.brew.title || 'Untitled Brew',
+		description : req.brew.description || 'No description.',
+		image       : req.brew.thumbnail || null,
+		type        : 'article'
+	};
 	sanitizeBrew(req.brew, 'edit');
 	splitTextStyleAndMetadata(req.brew);
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
@@ -235,12 +292,27 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	req.brew.title = `CLONE - ${req.brew.title}`;
+	req.ogMeta = {
+		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+		title       : 'New',
+		description : 'Start crafting your homebrew on the Homebrewery!',
+		image       : null,
+		type        : 'website'
+	};
 	return next();
 });
 
 //Share Page
 app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
 	const { brew } = req;
+
+	req.ogMeta = {
+		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+		title       : req.brew.title || 'Untitled Brew',
+		description : req.brew.description || 'No description.',
+		image       : req.brew.thumbnail || null,
+		type        : 'article'
+	};
 
 	if(req.params.id.length > 12 && !brew._id) {
 		const googleId = req.params.id.slice(0, -12);
@@ -342,7 +414,8 @@ app.use(asyncHandler(async (req, res, next)=>{
 		account       : req.account,
 		enable_v3     : config.get('enable_v3'),
 		enable_themes : config.get('enable_themes'),
-		config        : configuration
+		config        : configuration,
+		ogMeta        : req.ogMeta
 	};
 	const title = req.brew ? req.brew.title : '';
 	const page = await templateFn('homebrew', title, props)
