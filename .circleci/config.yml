@@ -5,7 +5,7 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@3.0.0
+  node: circleci/node@5.0.3
 
 jobs:
   build:
@@ -55,13 +55,13 @@ jobs:
           at: .
 
       # run tests!
-      - run: 
+      - run:
           name: Test - Basic
           command: npm run test:basic
-      - run: 
+      - run:
           name: Test - Mustache Spans
           command: npm run test:mustache-span
-      - run: 
+      - run:
           name: Test - Routes
           command: npm run test:route
 
