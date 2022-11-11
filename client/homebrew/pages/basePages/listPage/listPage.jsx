@@ -23,6 +23,11 @@ const BREW_ITEM_LIST = [
 		icon      : 'fa-th-large',
 		title     : 'Expanded',
 		className : 'expanded'
+	},
+	{
+		icon      : 'fa-bars',
+		title     : 'List',
+		className : 'list'
 	}
 ];
 

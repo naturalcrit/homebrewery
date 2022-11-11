@@ -23,6 +23,39 @@
 		margin-left: 15px;
 		padding : 5px 10px 2px 10px;
 	}
+	&.list {
+		width: 100%;
+		column-span: all;
+		display: flex;
+		border-color: black;
+		min-height: fit-content;
+		margin: 2px;
+		h2 {
+			color: #e0e0e0;
+			font-weight: 300;
+		}
+		.text {
+			min-height: unset;
+			width: 35%;
+			.description {
+				display: none;
+			}
+		}
+		.info {
+			display: flex;
+			justify-content: space-between;
+			width: 50%;
+			.brewTags {
+				width: 30%;
+			}
+		}
+		.links {
+			opacity: 1;
+			width: 100px;
+			display: flex;
+			justify-content: space-evenly;
+		}
+	}
 	.thumbnail  {
 		position: absolute;
     	width: 150px;
@@ -49,7 +82,10 @@
     	-webkit-mask-image: linear-gradient(360deg, #0000 10%, #050 60%);
 		opacity: 90%;
 		margin-bottom: -20px;
-	}		
+	}
+	&.list .thumbnail {
+		all: unset;
+	}	
 	.text {
 		min-height : 54px;
 		h4{

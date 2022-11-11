@@ -49,6 +49,16 @@
 					content: '\f105';
 				}
 			}
+			&:has(.list) {
+				width: 100%;
+				background-color: #404040;
+				background-image: none;
+				margin-top: 0px;
+				h1.active {
+					color: #e0e0e0;
+					font-weight: 300;
+				}
+			}
 		}
 	}
 	.sort-container{
@@ -133,6 +143,6 @@
 		border-radius: 50%;
 		padding: 5px;
 		margin: 5px;
-		z-index: 1;
+		z-index: 20;
 	}
 }
