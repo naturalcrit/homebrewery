@@ -92,7 +92,7 @@ app.get('/', (req, res, next)=>{
 	return next();
 });
 
-//Home page v3
+//Home page legacy
 app.get('/legacy', (req, res, next)=>{
 	req.brew = {
 		text     : welcomeTextLegacy,
