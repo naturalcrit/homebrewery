@@ -1,6 +1,7 @@
 const template = async function(name, title='', props = {}){
 	const ogTags = [];
-	Object.entries(props.ogMeta).forEach(([key, value])=>{
+	const ogMeta = props.ogMeta ?? {};
+	Object.entries(ogMeta).forEach(([key, value])=>{
 		if(!value) return;
 		const tag = `<meta property="og:${key}" content="${value}">`;
 		ogTags.push(tag);
