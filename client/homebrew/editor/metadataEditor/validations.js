@@ -14,6 +14,7 @@ module.exports = {
 			return value?.length > 256 ? 'Max URL length of 256 characters.' : null;
 		},
 		(value)=>{
+			if(value?.length == 0){return null;}
 			try {
 				Boolean(new URL(value));
 				return null;
