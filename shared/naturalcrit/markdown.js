@@ -32,7 +32,7 @@ const mustacheSpans = {
 	start(src) { return src.match(/{{[^{]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeSpan = /^{{[^\n]*}}/;               // Regex for the complete token
-		const inlineRegex = /{{(?:(?=(:(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*))\1)*|}}/g;
+		const inlineRegex = /{{(?:(?=(:(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*))\1)* *|}}/g;
 		const match = completeSpan.exec(src);
 		if(match) {
 			//Find closing delimiter
