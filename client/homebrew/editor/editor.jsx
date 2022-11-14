@@ -137,6 +137,24 @@ const Editor = createClass({
 							codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 						}
 
+						
+						if(line.includes('{') && line.includes('}')){
+							const regex = /{(?:(?=(:(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*))\1)*}/g;
+							let match;
+							let blockCount = 0;
+							while ((match = regex.exec(line)) != null) {
+								if(match[0].startsWith('{')) {
+									blockCount += 1;
+								} else {
+									blockCount -= 1;
+								}
+								if(blockCount < 0) {
+									blockCount = 0;
+									continue;
+								}
+								codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: 'injection' });
+							}
+						}
 						// Highlight inline spans {{content}}
 						if(line.includes('{{') && line.includes('}}')){
 							const regex = /{{(?:(?=(:(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*))\1)*|}}/g;
