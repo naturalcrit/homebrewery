@@ -20,6 +20,12 @@ module.exports = function(props){
 			rel='noopener noreferrer'>
 			report issue
 		</Nav.item>
+		<Nav.item color='green' icon='fas fa-question-circle'
+			href='/faq'
+			newTab={true}
+			rel='noopener noreferrer'>
+			FAQ
+		</Nav.item>
 		<Nav.item color='blue' icon='fas fa-fw fa-file-import'
 			href='/migrate'
 			newTab={true}
