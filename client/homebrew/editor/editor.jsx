@@ -139,7 +139,7 @@ const Editor = createClass({
 
 						
 						if(line.includes('{') && line.includes('}')){
-							const regex = /{(?:(?=(:(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*))\1)*}/g;
+							const regex = /(?<!{){(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1}/g;
 							let match;
 							let blockCount = 0;
 							while ((match = regex.exec(line)) != null) {
