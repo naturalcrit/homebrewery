@@ -43,6 +43,9 @@ const getBrew = (accessType, fetchGoogle = true)=>{
 				}
 			});
 		stub = stub?.toObject();
+		if(stub?.authors && !stub?.authors.includes(req.account.username)) {
+			throw 'Current logged in user does not have access to this brew.';
+		}
 
 		// If there is a google id, try to find the google brew
 		if(fetchGoogle && (googleId || stub?.googleId)) {
@@ -59,14 +62,14 @@ const getBrew = (accessType, fetchGoogle = true)=>{
 		}
 
 		// If after all of that we still don't have a brew, throw an exception
-		if(!stub) {
+		if(!stub && fetchGoogle) {
 			throw 'Brew not found in Homebrewery database or Google Drive';
 		}
 
-		if(typeof stub.tags === 'string') {
+		if(typeof stub?.tags === 'string') {
 			stub.tags = [];
 		}
-		req.brew = stub;
+		req.brew = stub || {};
 
 		next();
 	};
@@ -234,30 +237,31 @@ const updateBrew = async (req, res)=>{
 	if(req.account) {
 		brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
 	}
-
-	// Fetch the brew from the database again (if it existed there to begin with), and assign the existing brew to it
-	brew = _.assign(await HomebrewModel.findOne({ _id: brew._id }), brew);
-
-	if(!brew.markModified) {
-		// If it wasn't in the database, create a new db brew
-		brew = new HomebrewModel(brew);
+	// we need the tag type change in both getBrew and here to handle the case where we don't have a stub on which to perform the modification
+	if(typeof brew.tags === 'string') {
+		brew.tags = [];
 	}
 
-	brew.markModified('authors');
-	brew.markModified('systems');
-
-	// Save the database brew
-	const saved = await brew.save()
-		.catch((err)=>{
-			console.error(err);
-			res.status(err.status || 500).send(err.message || 'Unable to save brew to Homebrewery database');
-		});
+	// define a function to catch our save errors
+	const saveError = (err)=>{
+		console.error(err);
+		res.status(err.status || 500).send(err.message || 'Unable to save brew to Homebrewery database');
+	};
+	let saved;
+	if(!brew._id) {
+		// if the brew does not have a stub id, create and save it, then write the new value back to the brew.
+		saved = await new HomebrewModel(brew).save().catch(saveError);
+		brew = saved.toObject();
+	} else {
+		// if the brew does have a stub id, update it using the stub id as the key.
+		saved = await HomebrewModel.updateOne({ _id: brew._id }, brew).catch(saveError);
+	}
 	if(!saved) return;
 	// Call and wait for afterSave to complete
 	const after = await afterSave();
 	if(!after) return;
 
-	res.status(200).send(saved);
+	res.status(200).send(brew);
 };
 
 const deleteGoogleBrew = async (account, id, editId, res)=>{
