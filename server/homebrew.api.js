@@ -251,7 +251,7 @@ const updateBrew = async (req, res)=>{
 	if(!brew._id) {
 		// if the brew does not have a stub id, create and save it, then write the new value back to the brew.
 		saved = await new HomebrewModel(brew).save().catch(saveError);
-		brew = saved.toObject();
+		brew = saved?.toObject();
 	} else {
 		// if the brew does have a stub id, update it using the stub id as the key.
 		saved = await HomebrewModel.updateOne({ _id: brew._id }, brew).catch(saveError);
