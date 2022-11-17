@@ -26,7 +26,29 @@
 				font-size  : 1.3em;
 				font-style : italic;
 			}
-
+			.brewCollection {
+				h1:hover{
+					cursor: pointer;
+				}
+				.active::before, .inactive::before {
+					font-family: 'Font Awesome 5 Free';
+					font-weight: 900;
+					font-size: 0.6cm;
+					padding-right: 0.5em;
+				}
+				.active {
+					color: var(--HB_Color_HeaderText);
+				}
+				.active::before {
+					content: '\f107';
+				}
+				.inactive {
+					color: #707070;
+				}
+				.inactive::before {
+					content: '\f105';
+				}
+			}
 		}
 	}
 	.sort-container{
