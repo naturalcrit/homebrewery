@@ -376,10 +376,9 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 	req.brew = data;
 
 	req.ogMeta = { ...defaultMetaTags,
-		title       : `${req.params.username}'s Account`,
+		title       : `Account Page`,
 		description : null,
 		image       : null,
-		// type        :  could be 'profile'?
 	};
 
 	return next();
