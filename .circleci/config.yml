@@ -27,7 +27,7 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
 
-      - node/install-npm
+      - run: sudo npm install -g npm@8.10.0
       - node/install-packages:
           app-dir: ~/homebrewery
           cache-path: node_modules
@@ -55,13 +55,13 @@ jobs:
           at: .
 
       # run tests!
-      - run: 
+      - run:
           name: Test - Basic
           command: npm run test:basic
-      - run: 
+      - run:
           name: Test - Mustache Spans
           command: npm run test:mustache-span
-      - run: 
+      - run:
           name: Test - Routes
           command: npm run test:route
 
