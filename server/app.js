@@ -149,7 +149,7 @@ app.get('/changelog', async (req, res, next)=>{
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'Changelog',
 		description : 'Development changelog.',
-		thumbnail   : null,
+		thumbnail   : null
 	};
 
 	splitTextStyleAndMetadata(req.brew);
@@ -209,7 +209,7 @@ app.get('/user/:username', async (req, res, next)=>{
 	req.ogMeta = { ...defaultMetaTags,
 		title       : `${req.params.username}'s Collection`,
 		description : 'View my collection of homebrew on the Homebrewery.',
-		image       : null,
+		image       : null
 		// type        :  could be 'profile'?
 	};
 
@@ -378,7 +378,7 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 	req.ogMeta = { ...defaultMetaTags,
 		title       : `Account Page`,
 		description : null,
-		image       : null,
+		image       : null
 	};
 
 	return next();
