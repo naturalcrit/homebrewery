@@ -39,8 +39,7 @@ const MetadataEditor = createClass({
 
 	getInitialState : function(){
 		return {
-			showThumbnail : true,
-			errs          : null
+			showThumbnail : true
 		};
 	},
 
@@ -247,11 +246,6 @@ const MetadataEditor = createClass({
 			</div>
 		</div>;
 	},
-
-	// renderErrors : function(){
-	// 	if(Object.values(this.state.errs ?? {}).filter(Boolean).length > 0) return;
-	// 	return <span className='validation-error'></span>
-	// },
 
 	render : function(){
 		return <div className='metadataEditor'>
