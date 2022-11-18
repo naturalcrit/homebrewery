@@ -234,10 +234,6 @@ const updateBrew = async (req, res)=>{
 	if(req.account) {
 		brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
 	}
-	// we need the tag type change in both getBrew and here to handle the case where we don't have a stub on which to perform the modification
-	if(typeof brew.tags === 'string') {
-		brew.tags = [];
-	}
 
 	// define a function to catch our save errors
 	const saveError = (err)=>{
