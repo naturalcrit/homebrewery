@@ -15,8 +15,6 @@ const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
 const homebreweryThumbnail = require('../../thumbnail.png');
 
-
-
 const MetadataEditor = createClass({
 	displayName     : 'MetadataEditor',
 	getDefaultProps : function() {
