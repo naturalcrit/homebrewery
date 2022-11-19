@@ -46,17 +46,12 @@
 		&>.value{
 			flex           : 1 1 auto;
 			width          : 50px;
-			&:valid ~ .validity  {
-				display: none;
+			&:invalid {
+				background : #ffb9b9;
 			}
-			&:invalid ~ .validity {
-				display   : block;
-				color     : #ffdddd;
-				position  : absolute;
-				bottom    : -1em;
-				right     : 0;
-				font-size : .6em;
-			}
+		}
+		input[type='text'], textarea {
+			border : 1px solid gray;
 		}
 		&.thumbnail{
 			height      : 1.4em;

@@ -45,6 +45,21 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Thursday 28/10/2022 - v3.3.1
+{{taskList
+
+##### Calculuschild
+
+* [x] Fixes to several broken CSS styles from v3.3.0
+
+Fixes issues  [#2468](https://github.com/naturalcrit/homebrewery/issues/2468)
+
+##### Jeddai
+
+* [x] Reduce size of thumbnails on social media links
+
+}}
+
 ### Friday 19/10/2022 - v3.3.0
 {{taskList
 
@@ -74,8 +89,6 @@ Fixes issues  [#2135](https://github.com/naturalcrit/homebrewery/issues/2135)
 * [x] Fix brew settings being lost on first save
 
 Fixes issues  [#2427](https://github.com/naturalcrit/homebrewery/issues/2427)
-
-
 
 
 ##### Gazook:

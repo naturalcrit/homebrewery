@@ -9,6 +9,7 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
 
 const Themes = require('themes/themes.json');
+const validations = require('./validations.js')
 
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
@@ -22,6 +23,7 @@ const MetadataEditor = createClass({
 				editId      : null,
 				title       : '',
 				description : '',
+				thumbnail   : '',
 				tags        : [],
 				published   : false,
 				authors     : [],
@@ -52,10 +54,28 @@ const MetadataEditor = createClass({
 	},
 
 	handleFieldChange : function(name, e){
-		this.props.onChange({
-			...this.props.metadata,
-			[name] : e.target.value
-		});
+		e.persist();
+
+		// load validation rules, and check input value against them
+		const inputRules = validations[name] ?? [];
+		const validationErr = inputRules.map((rule)=>rule(e.target.value)).filter(Boolean);
+
+		// if no validation rules, save to props
+		if(validationErr.length === 0){
+			e.target.setCustomValidity('');
+			this.props.onChange({
+				...this.props.metadata,
+				[name] : e.target.value
+			});
+		} else {
+			// if validation issues, display built-in browser error popup with each error.
+			console.log(validationErr);
+			const errMessage = validationErr.map((err)=>{
+				return `- ${err}`;
+			}).join('\n');
+			e.target.setCustomValidity(errMessage);
+			e.target.reportValidity();
+		};
 	},
 
 	handleSystem : function(system, e){
@@ -66,6 +86,7 @@ const MetadataEditor = createClass({
 		}
 		this.props.onChange(this.props.metadata);
 	},
+
 	handleRenderer : function(renderer, e){
 		if(e.target.checked){
 			this.props.metadata.renderer = renderer;
@@ -255,21 +276,21 @@ const MetadataEditor = createClass({
 			<div className='field title'>
 				<label>title</label>
 				<input type='text' className='value'
-					value={this.props.metadata.title}
+					defaultValue={this.props.metadata.title}
 					onChange={(e)=>this.handleFieldChange('title', e)} />
 			</div>
 			<div className='field-group'>
 				<div className='field-column'>
 					<div className='field description'>
 						<label>description</label>
-						<textarea value={this.props.metadata.description} className='value'
+						<textarea defaultValue={this.props.metadata.description} className='value'
 							onChange={(e)=>this.handleFieldChange('description', e)} />
 					</div>
 					<div className='field thumbnail'>
 						<label>thumbnail</label>
 						<input type='text'
-							value={this.props.metadata.thumbnail}
-							placeholder='my.thumbnail.url'
+							defaultValue={this.props.metadata.thumbnail}
+							placeholder='https://my.thumbnail.url'
 							className='value'
 							onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
 						<button className='display' onClick={this.toggleThumbnailDisplay}>
