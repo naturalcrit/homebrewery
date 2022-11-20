@@ -25,7 +25,7 @@ module.exports = {
 	],
 	lang : [
 		(value)=>{
-			return new RegExp(/^[a-zA-z]{2,3}(-.*)?$/).test(value) === false && (value.length > 0) ? 'Invalid language code.' : null;
+			return new RegExp(/^([a-zA-Z]{2,3})(-[a-zA-Z]{4})?(-(?:[0-9]{3}|[a-zA-Z]{2}))?$/).test(value) === false && (value.length > 0) ? 'Invalid language code.' : null;
 		}
 	]
 };
