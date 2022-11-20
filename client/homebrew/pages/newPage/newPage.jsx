@@ -32,7 +32,8 @@ const NewPage = createClass({
 				title       : '',
 				description : '',
 				renderer    : 'V3',
-				theme       : '5ePHB'
+				theme       : '5ePHB',
+				lang        : 'en'
 			}
 		};
 	},
@@ -47,7 +48,8 @@ const NewPage = createClass({
 				title       : brew.title       ?? '',
 				description : brew.description ?? '',
 				renderer    : brew.renderer    ?? 'legacy',
-				theme       : brew.theme       ?? '5ePHB'
+				theme       : brew.theme       ?? '5ePHB',
+				lang        : brew.lang        ?? 'en'
 			};
 		}
 
@@ -76,6 +78,7 @@ const NewPage = createClass({
 			// brew.description = metaStorage?.description || this.state.brew.description;
 			brew.renderer = metaStorage?.renderer ?? brew.renderer;
 			brew.theme    = metaStorage?.theme    ?? brew.theme;
+			brew.lang     = metaStorage?.lang     ?? brew.lang;
 
 			this.setState({
 				brew : brew
@@ -84,7 +87,7 @@ const NewPage = createClass({
 
 		localStorage.setItem(BREWKEY, brew.text);
 		localStorage.setItem(STYLEKEY, brew.style);
-		localStorage.setItem(METAKEY, JSON.stringify({ 'renderer': brew.renderer, 'theme': brew.theme }));
+		localStorage.setItem(METAKEY, JSON.stringify({ 'renderer': brew.renderer, 'theme': brew.theme, 'lang': brew.lang }));
 	},
 	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
@@ -128,13 +131,16 @@ const NewPage = createClass({
 	handleMetaChange : function(metadata){
 		this.setState((prevState)=>({
 			brew : { ...prevState.brew, ...metadata },
-		}));
-		localStorage.setItem(METAKEY, JSON.stringify({
-			// 'title'       : this.state.brew.title,
-			// 'description' : this.state.brew.description,
-			'renderer' : this.state.brew.renderer,
-			'theme'    : this.state.brew.theme
-		}));
+		}), ()=>{
+			localStorage.setItem(METAKEY, JSON.stringify({
+				// 'title'       : this.state.brew.title,
+				// 'description' : this.state.brew.description,
+				'renderer' : this.state.brew.renderer,
+				'theme'    : this.state.brew.theme,
+				'lang'     : this.state.brew.lang
+			}));
+		});
+		;
 	},
 
 	clearErrors : function(){
@@ -291,7 +297,7 @@ const NewPage = createClass({
 						onMetaChange={this.handleMetaChange}
 						renderer={this.state.brew.renderer}
 					/>
-					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} theme={this.state.brew.theme} errors={this.state.htmlErrors}/>
+					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} theme={this.state.brew.theme} lang={this.state.brew.lang} errors={this.state.htmlErrors}/>
 				</SplitPane>
 			</div>
 		</div>;

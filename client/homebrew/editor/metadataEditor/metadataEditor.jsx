@@ -258,16 +258,14 @@ const MetadataEditor = createClass({
 		return <div className='field language'>
 			<label>language</label>
 			<input type='text' className='value'
-				value={this.props.metadata.lang}
+				defaultValue={this.props.metadata.lang || 'en'}
 				onChange={(e)=>this.handleFieldChange('lang', e)}
 				list='languageList'
-				pattern='[a-zA-Z]{2,3}(-.*)?'
 				autoComplete='off'
 				placeholder={`'en', 'es', 'de' for example`} />
 			<datalist id='languageList'>
 				{listLanguages()}
 			</datalist>
-			<span className='validity'>Must be 2-3 letters, optionally followed by '-...'</span>
 		</div>;
 	},
 
