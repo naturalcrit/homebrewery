@@ -69,10 +69,10 @@ const MetadataEditor = createClass({
 			});
 		} else {
 			// if validation issues, display built-in browser error popup with each error.
-			console.log(validationErr);
 			const errMessage = validationErr.map((err)=>{
 				return `- ${err}`;
 			}).join('\n');
+			console.log(`Input error ${errMessage}`);
 			e.target.setCustomValidity(errMessage);
 			e.target.reportValidity();
 		};
