@@ -23,9 +23,9 @@ module.exports = {
 			}
 		}
 	],
-	language : [
+	lang : [
 		(value)=>{
-			return new RegExp(/[a-z]{2,3}(-.*)?/).test(value || '') === false ? 'Invalid language code.' : null;
+			return new RegExp(/^[a-zA-z]{2,3}(-.*)?$/).test(value) === false && (value.length > 0) ? 'Invalid language code.' : null;
 		}
 	]
 };
