@@ -261,8 +261,9 @@ const MetadataEditor = createClass({
 				defaultValue={this.props.metadata.lang || 'en'}
 				onChange={(e)=>this.handleFieldChange('lang', e)}
 				list='languageList'
-				autoComplete='off'
-				placeholder={`'en', 'es', 'de' for example`} />
+				placeholder={`'en', 'es', 'de' for example`}
+				name='brewLanguage'
+			/>
 			<datalist id='languageList'>
 				{listLanguages()}
 			</datalist>
@@ -274,8 +275,10 @@ const MetadataEditor = createClass({
 			<div className='field title'>
 				<label>title</label>
 				<input type='text' className='value'
-					defaultValue={this.props.metadata.title}
-					onChange={(e)=>this.handleFieldChange('title', e)} />
+					value={this.props.metadata.title}
+					onChange={(e)=>this.handleFieldChange('title', e)}
+					name='brewTitle'
+					 />
 			</div>
 			<div className='field-group'>
 				<div className='field-column'>
