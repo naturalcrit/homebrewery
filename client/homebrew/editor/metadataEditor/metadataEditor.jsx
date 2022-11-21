@@ -247,7 +247,7 @@ const MetadataEditor = createClass({
 	},
 
 	renderLanguageDropdown : function(){
-		const langCodes = ['en', 'de', 'fr', 'ja', 'es', 'it', 'sv', 'ru', 'zh'];
+		const langCodes = ['en', 'de', 'de-ch', 'fr', 'ja', 'es', 'it', 'sv', 'ru', 'zh-Hans', 'zh-Hant'];
 		const listLanguages = ()=>{
 			return _.map(langCodes.sort(), (code, index)=>{
 				const languageNames = new Intl.DisplayNames([code], { type: 'language' });
