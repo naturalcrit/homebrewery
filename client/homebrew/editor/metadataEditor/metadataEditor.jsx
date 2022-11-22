@@ -6,6 +6,7 @@ const _     = require('lodash');
 const cx    = require('classnames');
 const request = require('superagent');
 const Nav = require('naturalcrit/nav/nav.jsx');
+const Dropdown = require('client/components/combobox.jsx');
 const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
 
 const Themes = require('themes/themes.json');
@@ -108,6 +109,11 @@ const MetadataEditor = createClass({
 		this.props.onChange(this.props.metadata);
 	},
 
+	handleLanguage : function(language){
+		this.props.metadata.lang = language;
+		this.props.onChange(this.props.metadata);
+	},
+
 	handleDelete : function(){
 		if(this.props.metadata.authors && this.props.metadata.authors.length <= 1){
 			if(!confirm('Are you sure you want to delete this brew? Because you are the only owner of this brew, the document will be deleted permanently.')) return;
@@ -191,20 +197,20 @@ const MetadataEditor = createClass({
 
 		if(this.props.metadata.renderer == 'legacy') {
 			dropdown =
-				<Nav.dropdown className='disabled' trigger='disabled'>
+				<Dropdown.combo className='disabled' trigger='disabled'>
 					<div>
 						{`Themes are not supported in the Legacy Renderer`} <i className='fas fa-caret-down'></i>
 					</div>
-				</Nav.dropdown>;
+				</Dropdown.combo>;
 		} else {
 			dropdown =
-				<Nav.dropdown trigger='click'>
+				<Dropdown.combo trigger='click'>
 					<div>
 						{`${_.upperFirst(currentTheme.renderer)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
 					</div>
 					{/*listThemes('Legacy')*/}
 					{listThemes('V3')}
-				</Nav.dropdown>;
+				</Dropdown.combo>;
 		}
 
 		return <div className='field themes'>
@@ -251,22 +257,22 @@ const MetadataEditor = createClass({
 		const listLanguages = ()=>{
 			return _.map(langCodes.sort(), (code, index)=>{
 				const languageNames = new Intl.DisplayNames([code], { type: 'language' });
-				return <option key={index} value={`${code}`}>{`${languageNames.of(code)}`}</option>;
+				return <div className='item' title={''} key={index} onClick={()=>this.handleLanguage(code)}>{`${code}`}</div>;
 			});
 		};
 
 		return <div className='field language'>
 			<label>language</label>
-			<input type='text' className='value'
-				defaultValue={this.props.metadata.lang || 'en'}
-				onChange={(e)=>this.handleFieldChange('lang', e)}
-				list='languageList'
-				placeholder={`'en', 'es', 'de' for example`}
-				name='brewLanguage'
-			/>
-			<datalist id='languageList'>
+			<Dropdown.combo trigger='hover'>
+				<div className='item'>
+					<input type='text'
+						defaultValue={this.props.metadata.lang || ''}
+						onChange={(e)=>this.handleFieldChange('lang', e)}
+						placeholder='en'
+					/>
+				</div>
 				{listLanguages()}
-			</datalist>
+			</Dropdown.combo>
 		</div>;
 	},
 
@@ -275,10 +281,8 @@ const MetadataEditor = createClass({
 			<div className='field title'>
 				<label>title</label>
 				<input type='text' className='value'
-					value={this.props.metadata.title}
-					onChange={(e)=>this.handleFieldChange('title', e)}
-					name='brewTitle'
-					 />
+					defaultValue={this.props.metadata.title}
+					onChange={(e)=>this.handleFieldChange('title', e)} />
 			</div>
 			<div className='field-group'>
 				<div className='field-column'>
