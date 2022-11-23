@@ -109,7 +109,12 @@ const BrewRenderer = createClass({
 
 	renderPageInfo : function(){
 		return <div className='pageInfo' ref='main'>
-			{this.state.viewablePageNumber + 1} / {this.state.pages.length}
+			<div>
+				{this.props.renderer}
+			</div>
+			<div>
+				{this.state.viewablePageNumber + 1} / {this.state.pages.length}
+			</div>
 		</div>;
 	},
 
@@ -117,7 +122,7 @@ const BrewRenderer = createClass({
 		if(!this.state.usePPR) return;
 
 		return <div className='ppr_msg'>
-			Partial Page Renderer enabled, because your brew is so large. May effect rendering.
+			Partial Page Renderer is enabled, because your brew is so large. May affect rendering.
 		</div>;
 	},
 

@@ -19,11 +19,6 @@ const DEFAULT_STYLE_TEXT = dedent`
 					color: black;
 				}`;
 
-const splice = function(str, index, inject){
-	return str.slice(0, index) + inject + str.slice(index);
-};
-
-
 
 const Editor = createClass({
 	displayName     : 'Editor',
@@ -80,19 +75,7 @@ const Editor = createClass({
 	},
 
 	handleInject : function(injectText){
-		let text;
-		if(this.isText())  text = this.props.brew.text;
-		if(this.isStyle()) text = this.props.brew.style ?? DEFAULT_STYLE_TEXT;
-
-		const lines = text.split('\n');
-		const cursorPos = this.refs.codeEditor.getCursorPosition();
-		lines[cursorPos.line] = splice(lines[cursorPos.line], cursorPos.ch, injectText);
-
-		const injectLines = injectText.split('\n');
-		this.refs.codeEditor.setCursorPosition(cursorPos.line + injectLines.length, cursorPos.ch  + injectLines[injectLines.length - 1].length);
-
-		if(this.isText())  this.props.onTextChange(lines.join('\n'));
-		if(this.isStyle()) this.props.onStyleChange(lines.join('\n'));
+		this.refs.codeEditor?.injectText(injectText, false);
 	},
 
 	handleViewChange : function(newView){
@@ -154,9 +137,17 @@ const Editor = createClass({
 							codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 						}
 
+						// Highlight injectors {style}
+						if(line.includes('{') && line.includes('}')){
+							const regex = /(?<!{){(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1}/g;
+							let match;
+							while ((match = regex.exec(line)) != null) {
+								codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: 'injection' });
+							}
+						}
 						// Highlight inline spans {{content}}
 						if(line.includes('{{') && line.includes('}}')){
-							const regex = /{{(?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])*\s*|}}/g;
+							const regex = /{{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1 *|}}/g;
 							let match;
 							let blockCount = 0;
 							while ((match = regex.exec(line)) != null) {
@@ -175,7 +166,7 @@ const Editor = createClass({
 							// Highlight block divs {{\n Content \n}}
 							let endCh = line.length+1;
 
-							const match = line.match(/^ *{{(?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])* *$|^ *}}$/);
+							const match = line.match(/^ *{{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1 *$|^ *}}$/);
 							if(match)
 								endCh = match.index+match[0].length;
 							codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });

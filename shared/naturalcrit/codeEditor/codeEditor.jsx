@@ -229,6 +229,15 @@ const CodeEditor = createClass({
 		this.codeMirror.replaceSelection('\n\\page\n\n', 'end');
 	},
 
+	injectText : function(injectText, overwrite=true) {
+		const cm = this.codeMirror;
+		if(!overwrite) {
+			cm.setCursor(cm.getCursor('from'));
+		}
+		cm.replaceSelection(injectText, 'end');
+		cm.focus();
+	},
+
 	makeUnderline : function() {
 		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 3) === '<u>' && selection.slice(-4) === '</u>';
 		this.codeMirror.replaceSelection(t ? selection.slice(3, -4) : `<u>${selection}</u>`, 'around');
@@ -355,12 +364,20 @@ const CodeEditor = createClass({
 				let text = '';
 				let currentLine = from.line;
 				const maxLength = 50;
+
+				let foldPreviewText = '';
 				while (currentLine <= to.line && text.length <= maxLength) {
-					text += this.codeMirror.getLine(currentLine);
-					if(currentLine < to.line)
-						text += ' ';
-					currentLine += 1;
+					const currentText = this.codeMirror.getLine(currentLine);
+					currentLine++;
+					if(currentText[0] == '#'){
+						foldPreviewText = currentText;
+						break;
+					}
+					if(!foldPreviewText && currentText != '\n') {
+						foldPreviewText = currentText;
+					}
 				}
+				text = foldPreviewText || `Lines ${from.line+1}-${to.line+1}`;
 
 				text = text.trim();
 				if(text.length > maxLength)

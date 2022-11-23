@@ -43,7 +43,7 @@ body {
 	//*****************************
 	// *            BASE
 	// *****************************/
-:where(.page){
+.page{
 	p{
 		overflow-wrap : break-word;
 		display       : block;
@@ -77,13 +77,7 @@ body {
 	img{
 		z-index : -1;
 	}
-	:not(:where(.wide,.columnSplit,.blank,hr)) + :where(h1,h2,h3,h4,h5,h6,table,dl,.block) {
-		margin-top : 1em;  		//NOTE: MAKE ALL MARGINS TOP-ONLY FOR BEST RESULTS WITH COLUMN BREAKS. USE * + * STYLE SELECTORS
-	}
 
-	:where(h1,h3,h3,h4,h5,h6) + * {
-		margin-top : 0;
-	}
 	//*****************************
 	// *           HEADERS
 	// *****************************/
@@ -115,6 +109,9 @@ body {
 			display     : table-row-group;
 			font-weight : bold;
 		}
+	}
+	div:not(.columnWrapper) > table + table {	// Side-by-side tables should not
+		margin-top : 0;	                        // have vertical spacing.
 	}
 
 	/* Watermark */
@@ -288,6 +285,10 @@ body {
 		-webkit-column-break-after : always;
 		break-after                : always;
 		-moz-column-break-after    : always;
+		margin-top                 : 0;
+		& + * {
+			margin-top : 0;
+		}
 	}
 	//Avoid breaking up
 	blockquote,table{
@@ -311,13 +312,11 @@ body {
 //*****************************
 // *    MUSTACHE DIVS/SPANS
 // *****************************/
-:where(.page) {
+.page {
 	.block {
 		break-inside      : avoid;
 		display           : inline-block;
-	}
-	& :where(.block) {
-		width      : 100%;
+		width             : 100%;
 	}
 	.inline-block {
 		display     : inline-block;
@@ -328,7 +327,7 @@ body {
 //*****************************
 // *    DEFINITION LISTS
 // *****************************/
-:where(.page) {
+.page {
 	dl {
 		padding-left : 1em;
 		white-space  : pre-line;
@@ -348,17 +347,20 @@ body {
 //*****************************
 // *    BLANK LINE
 // *****************************/
-:where(.page) {
+.page {
 	.blank {
 		height     : 1em;
 		margin-top : 0;
+		& + * {
+			margin-top : 0;
+		}
 	}
 }
 
 //*****************************
 // *         WIDE
 // *****************************/
-:where(.page) {
+.page {
 	.wide{
 		column-span         : all;
 		display             : block;

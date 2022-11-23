@@ -1,0 +1,17 @@
+name: Feature Request
+description: Have an idea to improve the Homebrewery? Let us know!
+labels: ["feature request"]
+body:
+  - type: markdown
+    attributes:
+      value: "We'd love to hear your idea!  Please be sure to [search the current Issues](https://github.com/naturalcrit/homebrewery/issues) for any duplicate requests."
+  - type: textarea
+    id: user-request
+    attributes:
+      label: "Your idea:"
+      description: The best feature requests provide an explanation of the current issue and then an explanation of how it could be improved.  Screenshots/images can be pasted right in as well!
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: "Please be sure to search for any close matches to your request in the GitHub Issues tracker before opening a new request, thanks!"

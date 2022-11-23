@@ -101,6 +101,10 @@ const BrewItem = createClass({
 		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
 
 		return <div className='brewItem'>
+			{brew.thumbnail &&
+				<div className='thumbnail' style={{ backgroundImage: `url(${brew.thumbnail})` }} >
+				</div>
+			}
 			<div className='text'>
 				<h2>{brew.title}</h2>
 				<p className='description'>{brew.description}</p>
@@ -113,7 +117,7 @@ const BrewItem = createClass({
 						<i className='fas fa-tags'/>
 						{brew.tags.map((tag, idx)=>{
 							const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
-							return <span className={matches[1]}>{matches[2]}</span>;
+							return <span key={idx} className={matches[1]}>{matches[2]}</span>;
 						})}
 					</div>
 				</> : <></>

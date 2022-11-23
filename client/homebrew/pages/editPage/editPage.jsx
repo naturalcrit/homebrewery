@@ -62,7 +62,10 @@ const EditPage = createClass({
 			confirmGoogleTransfer  : false,
 			errors                 : null,
 			htmlErrors             : Markdown.validate(this.props.brew.text),
-			url                    : ''
+			url                    : '',
+			autoSave               : true,
+			autoSaveWarning        : false,
+			unsavedTime            : new Date()
 		};
 	},
 	savedBrew : null,
@@ -72,9 +75,17 @@ const EditPage = createClass({
 			url : window.location.href
 		});
 
+
 		this.savedBrew = JSON.parse(JSON.stringify(this.props.brew)); //Deep copy
 
-		this.trySave();
+		this.setState({ autoSave: JSON.parse(localStorage.getItem('AUTOSAVE_ON')) ?? true }, ()=>{
+			if(this.state.autoSave){
+				this.trySave();
+			} else {
+				this.setState({ autoSaveWarning: true });
+			}
+		});
+
 		window.onbeforeunload = ()=>{
 			if(this.state.isSaving || this.state.isPending){
 				return 'You have unsaved changes!';
@@ -117,14 +128,14 @@ const EditPage = createClass({
 			brew       : { ...prevState.brew, text: text },
 			isPending  : true,
 			htmlErrors : htmlErrors
-		}), ()=>this.trySave());
+		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
 	handleStyleChange : function(style){
 		this.setState((prevState)=>({
 			brew      : { ...prevState.brew, style: style },
 			isPending : true
-		}), ()=>this.trySave());
+		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
 	handleMetaChange : function(metadata){
@@ -134,7 +145,7 @@ const EditPage = createClass({
 				...metadata
 			},
 			isPending : true,
-		}), ()=>this.trySave());
+		}), ()=>{if(this.state.autoSave) this.trySave();});
 
 	},
 
@@ -221,8 +232,9 @@ const EditPage = createClass({
 				editId 	 : this.savedBrew.editId,
 				shareId  : this.savedBrew.shareId
 			},
-			isPending : false,
-			isSaving  : false,
+			isPending   : false,
+			isSaving    : false,
+			unsavedTime : new Date()
 		}));
 	},
 
@@ -322,9 +334,22 @@ const EditPage = createClass({
 				<div className='errorContainer'>
 					Looks like there was a problem saving. <br />
 					Report the issue <a target='_blank' rel='noopener noreferrer'
-						href={`https://github.com/naturalcrit/homebrewery/issues/new?body=${encodeURIComponent(errMsg)}`}>
+						href={`https://github.com/naturalcrit/homebrewery/issues/new?template=save_issue.yml&error-code=${encodeURIComponent(errMsg)}`}>
 						here
 					</a>.
+				</div>
+			</Nav.item>;
+		}
+
+		if(this.state.autoSaveWarning && this.hasChanges()){
+			this.setAutosaveWarning();
+			const elapsedTime = Math.round((new Date() - this.state.unsavedTime) / 1000 / 60);
+			const text = elapsedTime == 0 ? 'Autosave is OFF.' : `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
+
+			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
+			Reminder...
+				<div className='errorContainer'>
+					{text}
 				</div>
 			</Nav.item>;
 		}
@@ -335,9 +360,34 @@ const EditPage = createClass({
 		if(this.state.isPending && this.hasChanges()){
 			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
 		}
+		if(!this.state.isPending && !this.state.isSaving && this.state.autoSave){
+			return <Nav.item className='save saved'>auto-saved.</Nav.item>;
+		}
 		if(!this.state.isPending && !this.state.isSaving){
 			return <Nav.item className='save saved'>saved.</Nav.item>;
 		}
+	},
+
+	handleAutoSave : function(){
+		if(this.warningTimer) clearTimeout(this.warningTimer);
+		this.setState((prevState)=>({
+			autoSave        : !prevState.autoSave,
+			autoSaveWarning : prevState.autoSave
+		}), ()=>{
+			localStorage.setItem('AUTOSAVE_ON', JSON.stringify(this.state.autoSave));
+		});
+	},
+
+	setAutosaveWarning : function(){
+		setTimeout(()=>this.setState({ autoSaveWarning: false }), 4000);                           // 4 seconds to display
+		this.warningTimer = setTimeout(()=>{this.setState({ autoSaveWarning: true });}, 900000);   // 15 minutes between warnings
+		this.warningTimer;
+	},
+
+	renderAutoSaveButton : function(){
+		return <Nav.item onClick={this.handleAutoSave}>
+			Autosave <i className={this.state.autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
+		</Nav.item>;
 	},
 
 	processShareId : function() {
@@ -378,7 +428,10 @@ const EditPage = createClass({
 
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
-				{this.renderSaveButton()}
+				<Nav.dropdown className='save-menu'>
+					{this.renderSaveButton()}
+					{this.renderAutoSaveButton()}
+				</Nav.dropdown>
 				<NewBrew />
 				<HelpNavItem/>
 				<Nav.dropdown>
