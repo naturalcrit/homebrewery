@@ -1,17 +1,25 @@
 .dropdown-container {
     position:relative;
+    flex: 1;
+    input {
+        width: 100%;
+    }
     .dropdown-options {
         position:absolute;
         background-color: rgb(227, 227, 227);
         z-index: 100;
         width: 100%;
         border: 1px solid gray;
+        overflow-y: scroll;
+        height: 200px;
         .item {
             position:relative;
             font-size: 14px;
             font-family: OpenSans;
             padding: 5px;
             cursor: default;
+            margin: 0 3px;
+            border-bottom: 1px solid darkgray;
             &:hover {
                 filter: brightness(120%);
                 background-color: rgb(163, 163, 163);
