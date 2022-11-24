@@ -6,7 +6,7 @@ const _     = require('lodash');
 const cx    = require('classnames');
 const request = require('superagent');
 const Nav = require('naturalcrit/nav/nav.jsx');
-const Dropdown = require('client/components/combobox.jsx');
+const Combobox = require('client/components/combobox.jsx');
 const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
 
 const Themes = require('themes/themes.json');
@@ -109,8 +109,8 @@ const MetadataEditor = createClass({
 		this.props.onChange(this.props.metadata);
 	},
 
-	handleLanguage : function(language){
-		this.props.metadata.lang = language;
+	handleLanguage : function(languageCode){
+		this.props.metadata.lang = languageCode;
 		this.props.onChange(this.props.metadata);
 	},
 
@@ -197,20 +197,20 @@ const MetadataEditor = createClass({
 
 		if(this.props.metadata.renderer == 'legacy') {
 			dropdown =
-				<Dropdown.combo className='disabled' trigger='disabled'>
+				<Combobox className='disabled' trigger='disabled'>
 					<div>
 						{`Themes are not supported in the Legacy Renderer`} <i className='fas fa-caret-down'></i>
 					</div>
-				</Dropdown.combo>;
+				</Combobox>;
 		} else {
 			dropdown =
-				<Dropdown.combo trigger='click'>
+				<Combobox trigger='click'>
 					<div>
 						{`${_.upperFirst(currentTheme.renderer)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
 					</div>
 					{/*listThemes('Legacy')*/}
 					{listThemes('V3')}
-				</Dropdown.combo>;
+				</Combobox>;
 		}
 
 		return <div className='field themes'>
@@ -257,22 +257,22 @@ const MetadataEditor = createClass({
 		const listLanguages = ()=>{
 			return _.map(langCodes.sort(), (code, index)=>{
 				const languageNames = new Intl.DisplayNames([code], { type: 'language' });
-				return <div className='item' title={''} key={index} onClick={()=>this.handleLanguage(code)}>{`${code}`}</div>;
+				return <div className='item' title={''} key={`${index}`} data-value={`${code}`}>
+					{`${code}`}
+					<div className='detail'>{`${languageNames.of(code)}`}</div>
+				</div>;
 			});
 		};
 
+
 		return <div className='field language'>
 			<label>language</label>
-			<Dropdown.combo trigger='hover'>
-				<div className='item'>
-					<input type='text'
-						defaultValue={this.props.metadata.lang || ''}
-						onChange={(e)=>this.handleFieldChange('lang', e)}
-						placeholder='en'
-					/>
-				</div>
-				{listLanguages()}
-			</Dropdown.combo>
+			<Combobox trigger='click'
+				default={this.props.metadata.lang || ''}
+				onSelect={(value)=>this.handleLanguage(value)}
+				onEntry={(e)=>{this.handleFieldChange('lang', e);}}
+				options={listLanguages()}>
+			</Combobox>
 		</div>;
 	},
 

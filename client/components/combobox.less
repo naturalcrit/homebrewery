@@ -5,13 +5,23 @@
         background-color: rgb(227, 227, 227);
         z-index: 100;
         width: 100%;
-        border: 1px solid #444;
+        border: 1px solid gray;
         .item {
-            font-size: 12px;
+            position:relative;
+            font-size: 14px;
             font-family: OpenSans;
             padding: 5px;
+            cursor: default;
             &:hover {
                 filter: brightness(120%);
+                background-color: rgb(163, 163, 163);
+            }
+            .detail {
+                width:100%;
+                text-align: right;
+                color: rgb(124, 124, 124);
+                font-style:italic;
+                font-size: 12px;
             }
         }
 

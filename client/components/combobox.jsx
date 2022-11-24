@@ -4,65 +4,90 @@ const _ = require('lodash');
 const cx = require('classnames');
 require('./combobox.less');
 
-const Dropdown = {
-	combo : createClass({
-		displayName     : 'Dropdown.combo',
-		getDefaultProps : function() {
-			return {
-				trigger : 'hover'
-			};
-		},
-		getInitialState : function() {
-			return {
-				showDropdown : false
-			};
-		},
-		componentDidMount : function() {
-			if(this.props.trigger == 'click')
-				document.addEventListener('click', this.handleClickOutside);
-		},
-		componentWillUnmount : function() {
-			if(this.props.trigger == 'click')
-				document.removeEventListener('click', this.handleClickOutside);
-		},
-		handleClickOutside : function(e){
-			// Close dropdown when clicked outside
-			if(this.refs.dropdown && !this.refs.dropdown.contains(e.target)) {
-				this.handleDropdown(false);
-			}
-		},
-		handleDropdown : function(show){
-			this.setState({
-				showDropdown : show
-			});
-		},
-		renderDropdown : function(dropdownChildren){
-			if(!this.state.showDropdown) return null;
-
-			return (
-				<div className='dropdown-options'>
-					{dropdownChildren}
-				</div>
-			);
-		},
-		render : function () {
-			const dropdownChildren = React.Children.map(this.props.children, (child, i)=>{
-				// Ignore the first child
-				if(i < 1) return;
-				return child;
-			});
-			return (
-				<div className={`dropdown-container ${this.props.className}`}
-					ref='dropdown'
-					onMouseEnter={this.props.trigger == 'hover' ? ()=>{this.handleDropdown(true);} : undefined}
-					onClick=     {this.props.trigger == 'click' ? ()=>{this.handleDropdown(true);} : undefined}
-					onMouseLeave={this.props.trigger == 'hover' ? ()=>{this.handleDropdown(false);} : undefined}>
-					{this.props.children[0] || this.props.children /*children is not an array when only one child*/}
-					{this.renderDropdown(dropdownChildren)}
-				</div>
-			);
+const Combobox = createClass({
+	displayName     : 'Combobox',
+	getDefaultProps : function() {
+		return {
+			trigger : 'hover',
+			default : ''
+		};
+	},
+	getInitialState : function() {
+		return {
+			showDropdown : false,
+			value        : '',
+			options      : [...this.props.options]
+		};
+	},
+	componentDidMount : function() {
+		if(this.props.trigger == 'click')
+			document.addEventListener('click', this.handleClickOutside);
+		this.setState({
+			value : this.props.default
+		});
+	},
+	componentWillUnmount : function() {
+		if(this.props.trigger == 'click')
+			document.removeEventListener('click', this.handleClickOutside);
+	},
+	handleClickOutside : function(e){
+		// Close dropdown when clicked outside
+		if(this.refs.dropdown && !this.refs.dropdown.contains(e.target)) {
+			this.handleDropdown(false);
 		}
-	})
-};
+	},
+	handleDropdown : function(show){
+		this.setState({
+			showDropdown : show
+		});
+	},
+	handleInput : function(e){
+		e.persist();
+		this.setState({
+			value : e.target.value
+		}, ()=>{
+			// const event = new Event('entry');
+			// console.log(eevent);
+			this.props.onEntry(e);
+		});
+	},
+	handleOption : function(e){
+		this.setState({
+			value : e.currentTarget.getAttribute('data-value')
+		}, ()=>{this.props.onSelect(this.state.value);});
+		;
+	},
+	renderTextInput : function(){
+		return (
+			<div className='dropdown-input item'
+				onMouseEnter={this.props.trigger == 'hover' ? ()=>{this.handleDropdown(true);} : undefined}
+				onClick=     {this.props.trigger == 'click' ? ()=>{this.handleDropdown(true);} : undefined}>
+				<input type='text' onChange={(e)=>this.handleInput(e)} value={this.state.value || ''} />
+			</div>
+		);
+	},
+	renderDropdown : function(dropdownChildren){
+		if(!this.state.showDropdown) return null;
+		return (
+			<div className='dropdown-options'>
+				{dropdownChildren}
+			</div>
+		);
+	},
+	render : function () {
+		const dropdownChildren = this.state.options.map((child, i)=>{
+			const clone = React.cloneElement(child, { onClick: (e)=>this.handleOption(e) });
+			return clone;
+		});
+		return (
+			<div className={`dropdown-container ${this.props.className}`}
+				ref='dropdown'
+				onMouseLeave={this.props.trigger == 'hover' ? ()=>{this.handleDropdown(false);} : undefined}>
+				{this.renderTextInput()}
+				{this.renderDropdown(dropdownChildren)}
+			</div>
+		);
+	}
+});
 
-module.exports = Dropdown;
+module.exports = Combobox;
