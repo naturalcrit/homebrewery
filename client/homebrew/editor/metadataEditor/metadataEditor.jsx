@@ -197,25 +197,49 @@ const MetadataEditor = createClass({
 
 		if(this.props.metadata.renderer == 'legacy') {
 			dropdown =
-				<Combobox className='disabled' trigger='disabled'>
+				<Nav.dropdown className='disabled' trigger='disabled'>
 					<div>
 						{`Themes are not supported in the Legacy Renderer`} <i className='fas fa-caret-down'></i>
 					</div>
-				</Combobox>;
+				</Nav.dropdown>;
 		} else {
 			dropdown =
-				<Combobox trigger='click'>
+				<Nav.dropdown trigger='click'>
 					<div>
 						{`${_.upperFirst(currentTheme.renderer)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
 					</div>
 					{/*listThemes('Legacy')*/}
 					{listThemes('V3')}
-				</Combobox>;
+				</Nav.dropdown>;
 		}
 
 		return <div className='field themes'>
 			<label>theme</label>
 			{dropdown}
+		</div>;
+	},
+
+	renderLanguageDropdown : function(){
+		const langCodes = ['en', 'de', 'de-ch', 'fr', 'ja', 'es', 'it', 'sv', 'ru', 'zh-Hans', 'zh-Hant'];
+		const listLanguages = ()=>{
+			return _.map(langCodes.sort(), (code, index)=>{
+				const languageNames = new Intl.DisplayNames([code], { type: 'language' });
+				return <div className='item' title={''} key={`${index}`} data-value={`${code}`}>
+					{`${code}`}
+					<div className='detail'>{`${languageNames.of(code)}`}</div>
+				</div>;
+			});
+		};
+
+
+		return <div className='field language'>
+			<label>language</label>
+			<Combobox trigger='click'
+				default={this.props.metadata.lang || ''}
+				onSelect={(value)=>this.handleLanguage(value)}
+				onEntry={(e)=>{this.handleFieldChange('lang', e);}}
+				options={listLanguages()}>
+			</Combobox>
 		</div>;
 	},
 
@@ -249,30 +273,6 @@ const MetadataEditor = createClass({
 					Click here to see the demo page for the old Legacy renderer!
 				</a>
 			</div>
-		</div>;
-	},
-
-	renderLanguageDropdown : function(){
-		const langCodes = ['en', 'de', 'de-ch', 'fr', 'ja', 'es', 'it', 'sv', 'ru', 'zh-Hans', 'zh-Hant'];
-		const listLanguages = ()=>{
-			return _.map(langCodes.sort(), (code, index)=>{
-				const languageNames = new Intl.DisplayNames([code], { type: 'language' });
-				return <div className='item' title={''} key={`${index}`} data-value={`${code}`}>
-					{`${code}`}
-					<div className='detail'>{`${languageNames.of(code)}`}</div>
-				</div>;
-			});
-		};
-
-
-		return <div className='field language'>
-			<label>language</label>
-			<Combobox trigger='click'
-				default={this.props.metadata.lang || ''}
-				onSelect={(value)=>this.handleLanguage(value)}
-				onEntry={(e)=>{this.handleFieldChange('lang', e);}}
-				options={listLanguages()}>
-			</Combobox>
 		</div>;
 	},
 
