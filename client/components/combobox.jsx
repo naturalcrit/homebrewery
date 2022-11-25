@@ -11,6 +11,7 @@ const Combobox = createClass({
 			className   : '',
 			trigger     : 'hover',
 			default     : '',
+			placeholder : '',
 			autoSuggest : {
 				clearAutoSuggestOnClick : true,
 				suggestMethod           : 'includes',
@@ -69,7 +70,12 @@ const Combobox = createClass({
 			<div className='dropdown-input item'
 				onMouseEnter={this.props.trigger == 'hover' ? ()=>{this.handleDropdown(true);} : undefined}
 				onClick=     {this.props.trigger == 'click' ? ()=>{this.handleDropdown(true);} : undefined}>
-				<input type='text' onChange={(e)=>this.handleInput(e)} value={this.state.value || ''} />
+				<input
+					type='text'
+					onChange={(e)=>this.handleInput(e)}
+					value={this.state.value || ''}
+					placeholder={this.props.placeholder}
+				/>
 			</div>
 		);
 	},
@@ -84,7 +90,6 @@ const Combobox = createClass({
 				value : item.props[filterOn]
 			}));
 			if(suggestMethod === 'includes'){
-				console.log('includes');
 				dropdownChildren = dropdownChildren.filter((item)=>item.value.includes(this.state.value));
 			} else if(suggestMethod === 'sequential'){
 				dropdownChildren = dropdownChildren.filter((item)=>item.value.startsWith(this.state.value));

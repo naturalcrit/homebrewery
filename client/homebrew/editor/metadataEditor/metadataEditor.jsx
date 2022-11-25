@@ -238,6 +238,7 @@ const MetadataEditor = createClass({
 				<Combobox trigger='click'
 					className='language-dropdown'
 					default={this.props.metadata.lang || ''}
+					placeholder='en'
 					onSelect={(value)=>this.handleLanguage(value)}
 					onEntry={(e)=>{this.handleFieldChange('lang', e);}}
 					options={listLanguages()}
