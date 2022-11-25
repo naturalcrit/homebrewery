@@ -8,6 +8,7 @@ const Combobox = createClass({
 	displayName     : 'Combobox',
 	getDefaultProps : function() {
 		return {
+			className   : '',
 			trigger     : 'hover',
 			default     : '',
 			autoSuggest : {

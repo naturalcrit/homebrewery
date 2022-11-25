@@ -224,7 +224,7 @@ const MetadataEditor = createClass({
 		const listLanguages = ()=>{
 			return _.map(langCodes.sort(), (code, index)=>{
 				const languageNames = new Intl.DisplayNames([code], { type: 'language' });
-				return <div className='item' title={''} key={`${index}`} data-value={`${code}`}>
+				return <div className='item' title={''} key={`${index}`} data-value={`${code}`} data-detail={`${languageNames.of(code)}`}>
 					{`${code}`}
 					<div className='detail'>{`${languageNames.of(code)}`}</div>
 				</div>;
@@ -234,13 +234,21 @@ const MetadataEditor = createClass({
 
 		return <div className='field language'>
 			<label>language</label>
-			<Combobox trigger='click'
-				default={this.props.metadata.lang || ''}
-				onSelect={(value)=>this.handleLanguage(value)}
-				onEntry={(e)=>{this.handleFieldChange('lang', e);}}
-				options={listLanguages()}
-				autoSuggest={{ suggestMethod: 'includes', clearAutoSuggestOnClick: true }}>
-			</Combobox>
+			<div className='value'>
+				<Combobox trigger='click'
+					className='language-dropdown'
+					default={this.props.metadata.lang || ''}
+					onSelect={(value)=>this.handleLanguage(value)}
+					onEntry={(e)=>{this.handleFieldChange('lang', e);}}
+					options={listLanguages()}
+					autoSuggest={{
+						suggestMethod           : 'includes',
+						clearAutoSuggestOnClick : true,
+						filterOn                : 'data-value'
+					}}>
+				</Combobox>
+			</div>
+
 		</div>;
 	},
 
