@@ -10,14 +10,20 @@ const Combobox = createClass({
 		return {
 			trigger     : 'hover',
 			default     : '',
-			autoSuggest : true
+			// autoSuggest             : true,
+			// clearAutoSuggestOnClick : true
+			autoSuggest : {
+				clearAutoSuggestOnClick : true,
+				suggestMethod           : 'includes'
+			},
 		};
 	},
 	getInitialState : function() {
 		return {
 			showDropdown : false,
 			value        : '',
-			options      : [...this.props.options]
+			options      : [...this.props.options],
+			inputFocused : false
 		};
 	},
 	componentDidMount : function() {
@@ -39,18 +45,20 @@ const Combobox = createClass({
 	},
 	handleDropdown : function(show){
 		this.setState({
-			showDropdown : show
+			showDropdown : show,
+			inputFocused : this.props.autoSuggest.clearAutoSuggestOnClick ? show : false
 		});
 	},
 	handleInput : function(e){
 		e.persist();
 		this.setState({
-			value : e.target.value
+			value        : e.target.value,
+			inputFocused : false
 		}, ()=>{
 			this.props.onEntry(e);
 		});
 	},
-	handleOption : function(e){
+	handleSelect : function(e){
 		this.setState({
 			value : e.currentTarget.getAttribute('data-value')
 		}, ()=>{this.props.onSelect(this.state.value);});
@@ -67,12 +75,22 @@ const Combobox = createClass({
 	},
 	renderDropdown : function(dropdownChildren){
 		if(!this.state.showDropdown) return null;
-		if(this.props.autoSuggest === true){
+
+		if(this.props.autoSuggest && !this.state.inputFocused){
+			const suggestMethod = this.props.autoSuggest.suggestMethod;
 			dropdownChildren = dropdownChildren.map((item)=>({
 				...item,
 				value : item.props['data-value']
-			})).filter((item)=>item.value.includes(this.state.value));
+			}));
+			if(suggestMethod === 'includes'){
+				console.log('includes');
+				dropdownChildren = dropdownChildren.filter((item)=>item.value.includes(this.state.value));
+			} else if(suggestMethod === 'sequential'){
+				dropdownChildren = dropdownChildren.filter((item)=>item.value.startsWith(this.state.value));
+			}
+
 		}
+
 
 		return (
 			<div className='dropdown-options'>
@@ -82,7 +100,7 @@ const Combobox = createClass({
 	},
 	render : function () {
 		const dropdownChildren = this.state.options.map((child, i)=>{
-			const clone = React.cloneElement(child, { onClick: (e)=>this.handleOption(e) });
+			const clone = React.cloneElement(child, { onClick: (e)=>this.handleSelect(e) });
 			return clone;
 		});
 		return (
