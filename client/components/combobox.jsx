@@ -10,11 +10,10 @@ const Combobox = createClass({
 		return {
 			trigger     : 'hover',
 			default     : '',
-			// autoSuggest             : true,
-			// clearAutoSuggestOnClick : true
 			autoSuggest : {
 				clearAutoSuggestOnClick : true,
-				suggestMethod           : 'includes'
+				suggestMethod           : 'includes',
+				filterOn                : 'data-value'  // should allow as array to filter on multiple attributes, or even custom filter
 			},
 		};
 	},
@@ -78,9 +77,10 @@ const Combobox = createClass({
 
 		if(this.props.autoSuggest && !this.state.inputFocused){
 			const suggestMethod = this.props.autoSuggest.suggestMethod;
+			const filterOn = this.props.autoSuggest.filterOn;
 			dropdownChildren = dropdownChildren.map((item)=>({
 				...item,
-				value : item.props['data-value']
+				value : item.props[filterOn]
 			}));
 			if(suggestMethod === 'includes'){
 				console.log('includes');
