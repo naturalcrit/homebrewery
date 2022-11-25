@@ -223,10 +223,11 @@ const MetadataEditor = createClass({
 		const langCodes = ['en', 'de', 'de-ch', 'fr', 'ja', 'es', 'it', 'sv', 'ru', 'zh-Hans', 'zh-Hant'];
 		const listLanguages = ()=>{
 			return _.map(langCodes.sort(), (code, index)=>{
-				const languageNames = new Intl.DisplayNames([code], { type: 'language' });
-				return <div className='item' title={''} key={`${index}`} data-value={`${code}`} data-detail={`${languageNames.of(code)}`}>
+				const localName = new Intl.DisplayNames([code], { type: 'language' });
+				const englishName = new Intl.DisplayNames('en', { type: 'language' });
+				return <div className='item' title={`${englishName.of(code)}`} key={`${index}`} data-value={`${code}`} data-detail={`${localName.of(code)}`}>
 					{`${code}`}
-					<div className='detail'>{`${languageNames.of(code)}`}</div>
+					<div className='detail'>{`${localName.of(code)}`}</div>
 				</div>;
 			});
 		};
