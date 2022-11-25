@@ -67,7 +67,6 @@ const Combobox = createClass({
 	},
 	renderDropdown : function(dropdownChildren){
 		if(!this.state.showDropdown) return null;
-		console.log(dropdownChildren);
 		if(this.props.autoSuggest === true){
 			dropdownChildren = dropdownChildren.map((item)=>({
 				...item,
