@@ -238,7 +238,8 @@ const MetadataEditor = createClass({
 				default={this.props.metadata.lang || ''}
 				onSelect={(value)=>this.handleLanguage(value)}
 				onEntry={(e)=>{this.handleFieldChange('lang', e);}}
-				options={listLanguages()}>
+				options={listLanguages()}
+				autoSuggest={true}>
 			</Combobox>
 		</div>;
 	},

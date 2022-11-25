@@ -8,8 +8,9 @@ const Combobox = createClass({
 	displayName     : 'Combobox',
 	getDefaultProps : function() {
 		return {
-			trigger : 'hover',
-			default : ''
+			trigger     : 'hover',
+			default     : '',
+			autoSuggest : true
 		};
 	},
 	getInitialState : function() {
@@ -46,8 +47,6 @@ const Combobox = createClass({
 		this.setState({
 			value : e.target.value
 		}, ()=>{
-			// const event = new Event('entry');
-			// console.log(eevent);
 			this.props.onEntry(e);
 		});
 	},
@@ -68,6 +67,14 @@ const Combobox = createClass({
 	},
 	renderDropdown : function(dropdownChildren){
 		if(!this.state.showDropdown) return null;
+		console.log(dropdownChildren);
+		if(this.props.autoSuggest === true){
+			dropdownChildren = dropdownChildren.map((item)=>({
+				...item,
+				value : item.props['data-value']
+			})).filter((item)=>item.value.includes(this.state.value));
+		}
+
 		return (
 			<div className='dropdown-options'>
 				{dropdownChildren}
