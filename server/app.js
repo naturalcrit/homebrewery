@@ -340,7 +340,7 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 	if(req.account) {
 		if(req.account.googleId) {
 			try {
-				auth = await GoogleActions.authCheck(req.account, res);
+				auth = await GoogleActions.authCheck(req.account, res, false);
 			} catch (e) {
 				auth = undefined;
 				console.log('Google auth check failed!');

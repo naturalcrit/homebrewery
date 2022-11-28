@@ -22,7 +22,7 @@ google.options({ auth: serviceAuth || config.get('google_api_key') });
 
 const GoogleActions = {
 
-	authCheck : (account, res)=>{
+	authCheck : (account, res, updateTokens=true)=>{
 		if(!account || !account.googleId){ // If not signed into Google
 			const err = new Error('Not Signed In');
 			err.status = 401;
@@ -40,7 +40,7 @@ const GoogleActions = {
 			refresh_token : account.googleRefreshToken
 		});
 
-		oAuth2Client.on('tokens', (tokens)=>{
+		updateTokens && oAuth2Client.on('tokens', (tokens)=>{
 			if(tokens.refresh_token) {
 				account.googleRefreshToken = tokens.refresh_token;
 			}
