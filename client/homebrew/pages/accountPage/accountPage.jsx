@@ -42,7 +42,6 @@ const AccountPage = createClass({
 	},
 
 	renderUiItems : function() {
-		// console.log(this.props.uiItems);
 		return 	<>
 			<div className='dataGroup'>
 				<h1>Account Information  <i className='fas fa-user'></i></h1>
@@ -56,7 +55,11 @@ const AccountPage = createClass({
 			<div className='dataGroup'>
 				<h3>Google Information <i className='fab fa-google-drive'></i></h3>
 				<p><strong>Linked to Google: </strong> {this.props.uiItems.googleId ? 'YES' : 'NO'}</p>
-				{this.props.uiItems.googleId ? <p><strong>Brews on Google Drive: </strong> {this.props.uiItems.fileCount || '-'}</p> : '' }
+				{this.props.uiItems.googleId &&
+					<p>
+						<strong>Brews on Google Drive: </strong> {this.props.uiItems.fileCount != '-' ? this.props.uiItems.fileCount : <>Unable to retrieve files - <a href='https://github.com/naturalcrit/homebrewery/discussions/1580'>follow these steps to renew your Google credentials.</a></>}
+					</p>
+				}
 			</div>
 		</>;
 	},
