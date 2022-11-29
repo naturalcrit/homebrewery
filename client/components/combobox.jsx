@@ -84,8 +84,7 @@ const Combobox = createClass({
 		if(!this.state.showDropdown) return null;
 		if(this.props.autoSuggest && !this.state.inputFocused){
 			const suggestMethod = this.props.autoSuggest.suggestMethod;
-			const filterOn = this.props.autoSuggest.filterOn;
-
+			const filterOn = _.isString(this.props.autoSuggest.filterOn) ? [this.props.autoSuggest.filterOn] : this.props.autoSuggest.filterOn;
 			const filteredArrays = filterOn.map((attr)=>{
 				const children = dropdownChildren.filter((item)=>{
 					if(suggestMethod === 'includes'){

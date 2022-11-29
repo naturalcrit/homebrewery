@@ -247,7 +247,8 @@ const MetadataEditor = createClass({
 						suggestMethod           : 'startsWith',
 						clearAutoSuggestOnClick : true,
 						filterOn                : ['data-value', 'data-detail', 'title']
-					}}>
+					}}
+				>
 				</Combobox>
 			</div>
 
