@@ -78,10 +78,10 @@ const faqText           = require('fs').readFileSync('faq.md', 'utf8');
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
 const defaultMetaTags = {
-	siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+	site_name   : 'The Homebrewery - Make your Homebrew content look legit!',
 	title       : 'The Homebrewery',
 	description : 'A NaturalCrit Tool for Homebrews',
-	thumbnail   : `${config.get('publicUrl')}/thumbnail.png`,
+	image       : `${config.get('publicUrl')}/thumbnail.png`,
 	type        : 'website'
 };
 
@@ -149,7 +149,7 @@ app.get('/changelog', async (req, res, next)=>{
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'Changelog',
 		description : 'Development changelog.',
-		thumbnail   : null
+		image   : null
 	};
 
 	splitTextStyleAndMetadata(req.brew);
