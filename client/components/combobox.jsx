@@ -2,6 +2,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
+const { filter } = require('lodash');
 require('./combobox.less');
 
 const Combobox = createClass({
@@ -15,7 +16,7 @@ const Combobox = createClass({
 			autoSuggest : {
 				clearAutoSuggestOnClick : true,
 				suggestMethod           : 'includes',
-				filterOn                : 'data-value'  // should allow as array to filter on multiple attributes, or even custom filter
+				filterOn                : []  // should allow as array to filter on multiple attributes, or even custom filter
 			},
 		};
 	},
@@ -81,22 +82,22 @@ const Combobox = createClass({
 	},
 	renderDropdown : function(dropdownChildren){
 		if(!this.state.showDropdown) return null;
-
 		if(this.props.autoSuggest && !this.state.inputFocused){
 			const suggestMethod = this.props.autoSuggest.suggestMethod;
 			const filterOn = this.props.autoSuggest.filterOn;
-			dropdownChildren = dropdownChildren.map((item)=>({
-				...item,
-				value : item.props[filterOn]
-			}));
-			if(suggestMethod === 'includes'){
-				dropdownChildren = dropdownChildren.filter((item)=>item.value.includes(this.state.value));
-			} else if(suggestMethod === 'sequential'){
-				dropdownChildren = dropdownChildren.filter((item)=>item.value.startsWith(this.state.value));
-			}
 
+			const filteredArrays = filterOn.map((attr)=>{
+				const children = dropdownChildren.filter((item)=>{
+					if(suggestMethod === 'includes'){
+						return item.props[attr].toLowerCase().includes(this.state.value.toLowerCase());
+					} else if(suggestMethod === 'startsWith'){
+						return item.props[attr].toLowerCase().startsWith(this.state.value.toLowerCase());
+					}
+				});
+				return children;
+			});
+			dropdownChildren = _.uniq(filteredArrays.flat(1));
 		}
-
 
 		return (
 			<div className='dropdown-options'>
