@@ -2,7 +2,6 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
-const { filter } = require('lodash');
 require('./combobox.less');
 
 const Combobox = createClass({
