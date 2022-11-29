@@ -15,8 +15,12 @@ try {
 		'https://www.googleapis.com/auth/drive'
 	];
 } catch (err) {
-	console.warn(err);
-	console.log('Please make sure that a Google Service Account is set up properly in your config files.');
+	if(!keys){
+		console.log('No Google Service Account in config files - Google Drive functionality will not function.');
+	} else {
+		console.warn(err);
+		console.log('Please make sure that a Google Service Account is set up properly in your config files.');
+	}
 }
 google.options({ auth: serviceAuth || config.get('google_api_key') });
 
