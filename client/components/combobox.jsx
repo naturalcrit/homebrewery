@@ -87,9 +87,9 @@ const Combobox = createClass({
 			const filteredArrays = filterOn.map((attr)=>{
 				const children = dropdownChildren.filter((item)=>{
 					if(suggestMethod === 'includes'){
-						return item.props[attr].toLowerCase().includes(this.state.value.toLowerCase());
+						return item.props[attr]?.toLowerCase().includes(this.state.value.toLowerCase());
 					} else if(suggestMethod === 'startsWith'){
-						return item.props[attr].toLowerCase().startsWith(this.state.value.toLowerCase());
+						return item.props[attr]?.toLowerCase().startsWith(this.state.value.toLowerCase());
 					}
 				});
 				return children;
