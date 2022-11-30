@@ -80,7 +80,7 @@ String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 const defaultMetaTags = {
 	site_name   : 'The Homebrewery - Make your Homebrew content look legit!',
 	title       : 'The Homebrewery',
-	description : 'A NaturalCrit Tool for Homebrews',
+	description : 'A NaturalCrit Tool for creating authentic Homebrews using Markdown.',
 	image       : `${config.get('publicUrl')}/thumbnail.png`,
 	type        : 'website'
 };
@@ -148,8 +148,7 @@ app.get('/changelog', async (req, res, next)=>{
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'Changelog',
-		description : 'Development changelog.',
-		image   : null
+		description : 'Development changelog.'
 	};
 
 	splitTextStyleAndMetadata(req.brew);
@@ -208,8 +207,7 @@ app.get('/user/:username', async (req, res, next)=>{
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : `${req.params.username}'s Collection`,
-		description : 'View my collection of homebrew on the Homebrewery.',
-		image       : null
+		description : 'View my collection of homebrew on the Homebrewery.'
 		// type        :  could be 'profile'?
 	};
 
@@ -274,7 +272,7 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',
 		description : req.brew.description || 'No description.',
-		image       : req.brew.thumbnail || null,
+		image       : req.brew.thumbnail || `${config.get('publicUrl')}/thumbnail.png`,
 		type        : 'article'
 	};
 
@@ -292,8 +290,7 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'New',
-		description : 'Start crafting your homebrew on the Homebrewery!',
-		image       : null
+		description : 'Start crafting your homebrew on the Homebrewery!'
 	};
 
 	return next();
@@ -306,7 +303,7 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',
 		description : req.brew.description || 'No description.',
-		image       : req.brew.thumbnail || null,
+		image       : req.brew.thumbnail || `${config.get('publicUrl')}/thumbnail.png`,
 		type        : 'article'
 	};
 
@@ -377,8 +374,7 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : `Account Page`,
-		description : null,
-		image       : null
+		description : null
 	};
 
 	return next();
