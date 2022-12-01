@@ -192,12 +192,19 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	sanitizeBrew(brew, 'share');
 	const prefix = 'HB - ';
 
+	const encodeRFC3986ValueChars = (str)=>{
+		return (
+			encodeURIComponent(str)
+				.replace(/[!'()*]/g, (char)=>{`%${char.charCodeAt(0).toString(16).toUpperCase()}`;})
+		);
+	};
+
 	let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
 	if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };
 	res.set({
 		'Cache-Control'       : 'no-cache',
 		'Content-Type'        : 'text/plain',
-		'Content-Disposition' : `attachment; filename="${fileName}.txt"`
+		'Content-Disposition' : `attachment; filename*=UTF-8''${encodeRFC3986ValueChars(fileName)}.txt`
 	});
 	res.status(200).send(brew.text);
 });
