@@ -272,7 +272,8 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',
 		description : req.brew.description || 'No description.',
-		image       : req.brew.thumbnail || `${config.get('publicUrl')}/thumbnail.png`,
+		image       : req.brew.thumbnail || defaultMetaTags.image,
+
 		type        : 'article'
 	};
 
