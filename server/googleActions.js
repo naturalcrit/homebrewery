@@ -5,23 +5,25 @@ const { nanoid } = require('nanoid');
 const token = require('./token.js');
 const config = require('./config.js');
 
-const keys = typeof(config.get('service_account')) == 'string' ?
-	JSON.parse(config.get('service_account')) :
-	config.get('service_account');
 let serviceAuth;
-try {
-	serviceAuth = google.auth.fromJSON(keys);
-	serviceAuth.scopes = [
-		'https://www.googleapis.com/auth/drive'
-	];
-} catch (err) {
-	if(!keys){
-		console.log('No Google Service Account in config files - Google Drive functionality will not function.');
-	} else {
+if(!config.get('service_account')){
+	console.log('No Google Service Account in config files - Google Drive functionality will not function.');
+} else  {
+	const keys = typeof(config.get('service_account')) == 'string' ?
+		JSON.parse(config.get('service_account')) :
+		config.get('service_account');
+
+	try {
+		serviceAuth = google.auth.fromJSON(keys);
+		serviceAuth.scopes = [
+			'https://www.googleapis.com/auth/drive'
+		];
+	} catch (err) {
 		console.warn(err);
 		console.log('Please make sure that a Google Service Account is set up properly in your config files.');
 	}
 }
+
 google.options({ auth: serviceAuth || config.get('google_api_key') });
 
 const GoogleActions = {
