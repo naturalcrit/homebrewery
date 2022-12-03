@@ -7,7 +7,7 @@ const config = require('./config.js');
 
 let serviceAuth;
 if(!config.get('service_account')){
-	console.log('No Google Service Account in config files - Google Drive functionality will not function.');
+	console.log('No Google Service Account in config files - Google Drive integration will not be available.');
 } else  {
 	const keys = typeof(config.get('service_account')) == 'string' ?
 		JSON.parse(config.get('service_account')) :
@@ -15,12 +15,10 @@ if(!config.get('service_account')){
 
 	try {
 		serviceAuth = google.auth.fromJSON(keys);
-		serviceAuth.scopes = [
-			'https://www.googleapis.com/auth/drive'
-		];
+		serviceAuth.scopes = ['https://www.googleapis.com/auth/drive'];
 	} catch (err) {
 		console.warn(err);
-		console.log('Please make sure that a Google Service Account is set up properly in your config files.');
+		console.log('Please make sure the Google Service Account is set up properly in your config files.');
 	}
 }
 
