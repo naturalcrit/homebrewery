@@ -139,7 +139,7 @@ const Editor = createClass({
 
 						// Highlight injectors {style}
 						if(line.includes('{') && line.includes('}')){
-							const regex = /(?:^|[^{|\n])({(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\2})/gm;
+							const regex = /(?:^|[^{\n])({(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\2})/gm;
 							let match;
 							while ((match = regex.exec(line)) != null) {
 								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length }, { className: 'injection' });
