@@ -247,14 +247,16 @@ const updateBrew = async (req, res)=>{
 		brew = saved?.toObject();
 	} else {
 		// if the brew does have a stub id, update it using the stub id as the key.
-		saved = await HomebrewModel.updateOne({ _id: brew._id }, brew).catch(saveError);
+		saved = await HomebrewModel.findOneAndUpdate({ _id: brew._id }, brew, {
+			returnOriginal : false
+		}).catch(saveError);
 	}
 	if(!saved) return;
 	// Call and wait for afterSave to complete
 	const after = await afterSave();
 	if(!after) return;
 
-	res.status(200).send(brew);
+	res.status(200).send(saved);
 };
 
 const deleteGoogleBrew = async (account, id, editId, res)=>{
