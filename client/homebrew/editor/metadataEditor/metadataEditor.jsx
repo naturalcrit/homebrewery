@@ -9,7 +9,7 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
 
 const Themes = require('themes/themes.json');
-const validations = require('./validations.js')
+const validations = require('./validations.js');
 
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
@@ -53,7 +53,13 @@ const MetadataEditor = createClass({
 	},
 
 	handleFieldChange : function(name, e){
-		e.persist();
+		const callIfExists = (val, fn, ...args)=>{
+			if(val[fn]) {
+				val[fn](...args);
+			}
+		};
+
+		callIfExists(e, 'persist');
 
 		// load validation rules, and check input value against them
 		const inputRules = validations[name] ?? [];
@@ -61,20 +67,19 @@ const MetadataEditor = createClass({
 
 		// if no validation rules, save to props
 		if(validationErr.length === 0){
-			e.target.setCustomValidity('');
+			callIfExists(e.target, 'setCustomValidity', '');
 			this.props.onChange({
 				...this.props.metadata,
 				[name] : e.target.value
 			});
 		} else {
 			// if validation issues, display built-in browser error popup with each error.
-			console.log(validationErr);
 			const errMessage = validationErr.map((err)=>{
 				return `- ${err}`;
 			}).join('\n');
-			e.target.setCustomValidity(errMessage);
-			e.target.reportValidity();
-		};
+			callIfExists(e.target, 'setCustomValidity', errMessage);
+			callIfExists(e.target, 'reportValidity');
+		}
 	},
 
 	handleSystem : function(system, e){
