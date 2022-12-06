@@ -1,7 +1,6 @@
 ```css
 h5 {
 	font-size: .35cm !important;
-	margin-top: 0.3cm;
 }
 
 .page ul ul {
@@ -44,6 +43,23 @@ pre {
 
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
+
+
+### Monday 05/12/2022 - v3.4.1
+{{taskList
+
+##### G-Ambatte
+
+* [x] Fix Account page incorrect last login time
+
+Fixes issues [#2521](https://github.com/naturalcrit/homebrewery/issues/2521)
+
+##### Gazook
+
+* [x] Fix crashing on iOS and Safari browsers
+
+Fixes issues [#2531](https://github.com/naturalcrit/homebrewery/issues/2531)
+}}
 
 ### Monday 28/11/2022 - v3.4.0
 {{taskList
