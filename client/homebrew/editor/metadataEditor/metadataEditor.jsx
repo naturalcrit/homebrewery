@@ -15,6 +15,12 @@ const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
 const homebreweryThumbnail = require('../../thumbnail.png');
 
+const callIfExists = (val, fn, ...args)=>{
+	if(val[fn]) {
+		val[fn](...args);
+	}
+};
+
 const MetadataEditor = createClass({
 	displayName     : 'MetadataEditor',
 	getDefaultProps : function() {
@@ -53,12 +59,6 @@ const MetadataEditor = createClass({
 	},
 
 	handleFieldChange : function(name, e){
-		const callIfExists = (val, fn, ...args)=>{
-			if(val[fn]) {
-				val[fn](...args);
-			}
-		};
-
 		callIfExists(e, 'persist');
 
 		// load validation rules, and check input value against them
