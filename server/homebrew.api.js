@@ -43,7 +43,7 @@ const getBrew = (accessType, fetchGoogle = true)=>{
 				}
 			});
 		stub = stub?.toObject();
-		if(stub?.authors && !stub?.authors.includes(req.account.username)) {
+		if(accessType === 'edit' && stub?.authors && !stub?.authors.includes(req.account.username)) {
 			throw 'Current logged in user does not have access to this brew.';
 		}
 
