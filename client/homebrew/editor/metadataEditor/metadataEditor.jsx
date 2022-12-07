@@ -59,8 +59,6 @@ const MetadataEditor = createClass({
 	},
 
 	handleFieldChange : function(name, e){
-		callIfExists(e, 'persist');
-
 		// load validation rules, and check input value against them
 		const inputRules = validations[name] ?? [];
 		const validationErr = inputRules.map((rule)=>rule(e.target.value)).filter(Boolean);
