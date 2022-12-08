@@ -42,6 +42,7 @@ const BrewRenderer = createClass({
 			viewablePageNumber : 0,
 			height             : 0,
 			isMounted          : false,
+			scale              : 1,
 
 			pages          : pages,
 			usePPR         : pages.length >= PPR_THRESHOLD,
@@ -107,8 +108,21 @@ const BrewRenderer = createClass({
 		return false;
 	},
 
+	changeZoom : function(direction=1){
+		const dir = direction / Math.abs(direction); // Get sign of direction
+
+		const newScale = (direction == 0) ? 1 : this.state.scale + (dir * 0.1);
+
+		this.setState({
+			scale : newScale
+		});
+	},
+
 	renderPageInfo : function(){
 		return <div className='pageInfo' ref='main'>
+			<button onClick={()=>{this.changeZoom(1);}}>+</button>
+			<button onClick={()=>{this.changeZoom(0);}}>0</button>
+			<button onClick={()=>{this.changeZoom(-1);}}>-</button>
 			<div>
 				{this.props.renderer}
 			</div>
@@ -205,7 +219,8 @@ const BrewRenderer = createClass({
 					contentDidMount={this.frameDidMount}>
 					<div className={'brewRenderer'}
 						onScroll={this.handleScroll}
-						style={{ height: this.state.height }}>
+						style={{ '--rendererScale': this.state.scale }}
+					>
 
 						<ErrorBar errors={this.props.errors} />
 						<div className='popups'>

@@ -1,8 +1,12 @@
 @import (multiple, less) 'shared/naturalcrit/styles/reset.less';
 
 .brewRenderer{
-	will-change : transform;
-	overflow-y  : scroll;
+	will-change      : transform;
+	overflow-y       : scroll;
+	scale            : var(--rendererScale);
+	transform-origin : top left;
+	height           : calc(100vh / var(--rendererScale));
+	width            : calc(100vw / var(--rendererScale));
 	.pages{
 		margin : 30px 0px;
 		&>.page{
