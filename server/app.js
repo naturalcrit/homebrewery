@@ -280,7 +280,6 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 		title       : req.brew.title || 'Untitled Brew',
 		description : req.brew.description || 'No description.',
 		image       : req.brew.thumbnail || defaultMetaTags.image,
-
 		type        : 'article'
 	};
 
@@ -341,7 +340,7 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 	data.title = 'Account Information Page';
 
 	let auth;
-	let files;
+	let googleCount = [];
 	if(req.account) {
 		if(req.account.googleId) {
 			try {
@@ -353,28 +352,39 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 			}
 			if(auth.credentials.access_token) {
 				try {
-					files = await GoogleActions.listGoogleBrews(auth);
+					googleCount = await GoogleActions.listGoogleBrews(auth);
 				} catch (e) {
-					files = undefined;
+					googleCount = undefined;
 					console.log('List Google files failed!');
 					console.log(e);
 				}
 			}
 		}
 
-		const query = { authors: req.account.username, googleId: { $exists: false } };
-		const brews = await HomebrewModel.find(query, 'id')
+		const aggregateQuery =[{
+			'$match' : {
+				'googleId' : {
+					'$exists' : false
+				},
+				'authors' : req.account.username
+			}
+		}, {
+			  '$count' : 'total'
+		}];
+		const mongoCount = [];
+		mongoCount.push(...await HomebrewModel.aggregate(aggregateQuery)
 			.catch((err)=>{
 				console.log(err);
-			});
+			}));
+		mongoCount.push({ total: 0 });
 
 		data.uiItems = {
-			username   : req.account.username,
-			issued     : req.account.issued,
-			mongoCount : brews.length,
-			googleId   : Boolean(req.account.googleId),
-			authCheck  : Boolean(req.account.googleId && auth.credentials.access_token),
-			fileCount  : files?.length || '-'
+			username    : req.account.username,
+			issued      : req.account.issued,
+			mongoCount  : mongoCount[0]?.total.toString(),
+			googleId    : Boolean(req.account.googleId),
+			authCheck   : Boolean(req.account.googleId && auth.credentials.access_token),
+			googleCount : googleCount?.length.toString() || null
 		};
 	}
 

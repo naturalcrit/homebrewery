@@ -50,14 +50,14 @@ const AccountPage = createClass({
 			</div>
 			<div className='dataGroup'>
 				<h3>Homebrewery Information <NaturalCritIcon /></h3>
-				<p><strong>Brews on Homebrewery: </strong> {this.props.uiItems.mongoCount || '-'}</p>
+				<p><strong>Brews on Homebrewery: </strong> {this.props.uiItems.mongoCount}</p>
 			</div>
 			<div className='dataGroup'>
 				<h3>Google Information <i className='fab fa-google-drive'></i></h3>
 				<p><strong>Linked to Google: </strong> {this.props.uiItems.googleId ? 'YES' : 'NO'}</p>
 				{this.props.uiItems.googleId &&
 					<p>
-						<strong>Brews on Google Drive: </strong> {this.props.uiItems.fileCount != '-' ? this.props.uiItems.fileCount : <>Unable to retrieve files - <a href='https://github.com/naturalcrit/homebrewery/discussions/1580'>follow these steps to renew your Google credentials.</a></>}
+						<strong>Brews on Google Drive: </strong> {this.props.uiItems.googleCount ? this.props.uiItems.googleCount : <>Unable to retrieve files - <a href='https://github.com/naturalcrit/homebrewery/discussions/1580'>follow these steps to renew your Google credentials.</a></>}
 					</p>
 				}
 			</div>
