@@ -60,10 +60,11 @@ const GoogleActions = {
 	},
 
 	getGoogleFolder : async (auth)=>{
+		const folderName = config.get('google_folder_name') || 'Homebrewery';
 		const drive = google.drive({ version: 'v3', auth });
 
 		fileMetadata = {
-			'name'     : 'Homebrewery',
+			'name'     : folderName,
 			'mimeType' : 'application/vnd.google-apps.folder'
 		};
 
