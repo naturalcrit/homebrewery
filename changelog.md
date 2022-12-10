@@ -44,6 +44,23 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Saturday 10/12/2022 - v3.4.2
+{{taskList
+
+##### Jeddai
+
+* [x] Fix broken tags editor
+
+* [x] Reduce server load to fix some saving issues
+
+Fixes issues [#2322](https://github.com/naturalcrit/homebrewery/issues/2322)
+
+##### Gazook
+
+* [x] Account page help link for Google Drive errors
+
+Fixes issues [#2520](https://github.com/naturalcrit/homebrewery/issues/2520)
+}}
 
 ### Monday 05/12/2022 - v3.4.1
 {{taskList
