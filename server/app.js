@@ -361,30 +361,20 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 			}
 		}
 
-		const aggregateQuery =[{
-			'$match' : {
-				'googleId' : {
-					'$exists' : false
-				},
-				'authors' : req.account.username
-			}
-		}, {
-			  '$count' : 'total'
-		}];
-		const mongoCount = [];
-		mongoCount.push(...await HomebrewModel.aggregate(aggregateQuery)
+		const query = { authors: req.account.username, googleId: { $exists: false } };
+		const mongoCount = await HomebrewModel.countDocuments(query)
 			.catch((err)=>{
+				mongoCount = 0;
 				console.log(err);
-			}));
-		mongoCount.push({ total: 0 });
+			});
 
 		data.uiItems = {
 			username    : req.account.username,
 			issued      : req.account.issued,
-			mongoCount  : mongoCount[0]?.total.toString(),
 			googleId    : Boolean(req.account.googleId),
 			authCheck   : Boolean(req.account.googleId && auth.credentials.access_token),
-			googleCount : googleCount?.length.toString() || null
+			mongoCount  : mongoCount,
+			googleCount : googleCount?.length
 		};
 	}
 

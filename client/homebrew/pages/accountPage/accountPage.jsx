@@ -57,7 +57,7 @@ const AccountPage = createClass({
 				<p><strong>Linked to Google: </strong> {this.props.uiItems.googleId ? 'YES' : 'NO'}</p>
 				{this.props.uiItems.googleId &&
 					<p>
-						<strong>Brews on Google Drive: </strong> {this.props.uiItems.googleCount ? this.props.uiItems.googleCount : <>Unable to retrieve files - <a href='https://github.com/naturalcrit/homebrewery/discussions/1580'>follow these steps to renew your Google credentials.</a></>}
+						<strong>Brews on Google Drive: </strong> {this.props.uiItems.googleCount ?? <>Unable to retrieve files - <a href='https://github.com/naturalcrit/homebrewery/discussions/1580'>follow these steps to renew your Google credentials.</a></>}
 					</p>
 				}
 			</div>
