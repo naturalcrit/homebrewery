@@ -7,6 +7,11 @@ h5 {
 	margin-left: 0px;
 }
 
+.page .taskList {
+	display:block;
+	break-inside:auto;
+}
+
 .taskList li input {
 	list-style-type : none;
 	margin-left : -0.52cm;
@@ -35,10 +40,20 @@ pre {
 	margin-top : 0.1cm;
 }
 
+.page ul + h5 {
+	margin-top: 0.25cm;
+}
+
+.page p + h5 {
+	margin-top: 0.25cm;
+}
+
 .page .openSans {
 	font-family: 'Open Sans';
 	font-size: 0.9em;
 }
+
+
 ```
 
 ## changelog
@@ -55,7 +70,7 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 
 Fixes issues [#2322](https://github.com/naturalcrit/homebrewery/issues/2322)
 
-##### Gazook
+##### G-Ambatte
 
 * [x] Account page help link for Google Drive errors
 
@@ -159,12 +174,7 @@ Fixes issues  [#2135](https://github.com/naturalcrit/homebrewery/issues/2135)
 * [x] Fix brew settings being lost on first save
 
 Fixes issues  [#2427](https://github.com/naturalcrit/homebrewery/issues/2427)
-}}
 
-\column
-
-
-{{taskList
 ##### Gazook:
 
 * [x] Several updates to bug reporting and error popups
@@ -214,6 +224,10 @@ Fixes issues  [#2317](https://github.com/naturalcrit/homebrewery/issues/2317), [
  Fixes issues:  [#1797](https://github.com/naturalcrit/homebrewery/issues/1797), [#2315](https://github.com/naturalcrit/homebrewery/issues/2315), [#2326](https://github.com/naturalcrit/homebrewery/issues/2326), [#2328](https://github.com/naturalcrit/homebrewery/issues/2328)
 }}
 
+
+
+\page
+
 ### Wednesday 31/08/2022 - v3.2.1
 {{taskList
 
@@ -239,8 +253,6 @@ Fixes issues  [#2317](https://github.com/naturalcrit/homebrewery/issues/2317), [
 
   Fixes issues: [#2301](https://github.com/naturalcrit/homebrewery/issues/2301), [#2303](https://github.com/naturalcrit/homebrewery/issues/2303), [#2121](https://github.com/naturalcrit/homebrewery/issues/2121)
 }}
-
-\page
 
 ### Saturday 27/08/2022 - v3.2.0
 {{taskList
