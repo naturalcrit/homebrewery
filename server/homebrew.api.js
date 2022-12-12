@@ -250,7 +250,6 @@ const updateBrew = async (req, res)=>{
 		brew = _.assign(await HomebrewModel.findOne({ _id: brew._id }), brew);
 		saved = await brew.save()
 		.catch(saveError);
-		});
 	}
 	if(!saved) return;
 	// Call and wait for afterSave to complete
