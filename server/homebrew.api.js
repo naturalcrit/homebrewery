@@ -27,7 +27,7 @@ const getId = (req)=>{
 	return { id, googleId };
 };
 
-const getBrew = (accessType, fetchGoogle = true)=>{
+const getBrew = (accessType, stubOnly = false)=>{
 	// Create middleware with the accessType passed in as part of the scope
 	return async (req, res, next)=>{
 		// Get relevant IDs for the brew
@@ -48,7 +48,7 @@ const getBrew = (accessType, fetchGoogle = true)=>{
 		}
 
 		// If there is a google id, try to find the google brew
-		if(fetchGoogle && (googleId || stub?.googleId)) {
+		if(!stubOnly && (googleId || stub?.googleId)) {
 			let googleError;
 			const googleBrew = await GoogleActions.getGoogleBrew(googleId || stub?.googleId, id, accessType)
 				.catch((err)=>{
@@ -62,7 +62,7 @@ const getBrew = (accessType, fetchGoogle = true)=>{
 		}
 
 		// If after all of that we still don't have a brew, throw an exception
-		if(!stub && fetchGoogle) {
+		if(!stub && !stubOnly) {
 			throw 'Brew not found in Homebrewery database or Google Drive';
 		}
 
@@ -237,10 +237,6 @@ const updateBrew = async (req, res)=>{
 	if(req.account) {
 		brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
 	}
-	// we need the tag type change in both getBrew and here to handle the case where we don't have a stub on which to perform the modification
-	if(typeof brew.tags === 'string') {
-		brew.tags = [];
-	}
 
 	// define a function to catch our save errors
 	const saveError = (err)=>{
@@ -254,14 +250,16 @@ const updateBrew = async (req, res)=>{
 		brew = saved?.toObject();
 	} else {
 		// if the brew does have a stub id, update it using the stub id as the key.
-		saved = await HomebrewModel.updateOne({ _id: brew._id }, brew).catch(saveError);
+		brew = _.assign(await HomebrewModel.findOne({ _id: brew._id }), brew);
+		saved = await brew.save()
+		.catch(saveError);
 	}
 	if(!saved) return;
 	// Call and wait for afterSave to complete
 	const after = await afterSave();
 	if(!after) return;
 
-	res.status(200).send(brew);
+	res.status(200).send(saved);
 };
 
 const deleteGoogleBrew = async (account, id, editId, res)=>{
@@ -331,8 +329,8 @@ const deleteBrew = async (req, res, next)=>{
 };
 
 router.post('/api', asyncHandler(newBrew));
-router.put('/api/:id', asyncHandler(getBrew('edit', false)), asyncHandler(updateBrew));
-router.put('/api/update/:id', asyncHandler(getBrew('edit', false)), asyncHandler(updateBrew));
+router.put('/api/:id', asyncHandler(getBrew('edit', true)), asyncHandler(updateBrew));
+router.put('/api/update/:id', asyncHandler(getBrew('edit', true)), asyncHandler(updateBrew));
 router.delete('/api/:id', asyncHandler(deleteBrew));
 router.get('/api/remove/:id', asyncHandler(deleteBrew));
 

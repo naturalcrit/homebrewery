@@ -5,24 +5,28 @@ const { nanoid } = require('nanoid');
 const token = require('./token.js');
 const config = require('./config.js');
 
-const keys = typeof(config.get('service_account')) == 'string' ?
-	JSON.parse(config.get('service_account')) :
-	config.get('service_account');
 let serviceAuth;
-try {
-	serviceAuth = google.auth.fromJSON(keys);
-	serviceAuth.scopes = [
-		'https://www.googleapis.com/auth/drive'
-	];
-} catch (err) {
-	console.warn(err);
-	console.log('Please make sure that a Google Service Account is set up properly in your config files.');
+if(!config.get('service_account')){
+	console.log('No Google Service Account in config files - Google Drive integration will not be available.');
+} else  {
+	const keys = typeof(config.get('service_account')) == 'string' ?
+		JSON.parse(config.get('service_account')) :
+		config.get('service_account');
+
+	try {
+		serviceAuth = google.auth.fromJSON(keys);
+		serviceAuth.scopes = ['https://www.googleapis.com/auth/drive'];
+	} catch (err) {
+		console.warn(err);
+		console.log('Please make sure the Google Service Account is set up properly in your config files.');
+	}
 }
+
 google.options({ auth: serviceAuth || config.get('google_api_key') });
 
 const GoogleActions = {
 
-	authCheck : (account, res)=>{
+	authCheck : (account, res, updateTokens=true)=>{
 		if(!account || !account.googleId){ // If not signed into Google
 			const err = new Error('Not Signed In');
 			err.status = 401;
@@ -40,7 +44,7 @@ const GoogleActions = {
 			refresh_token : account.googleRefreshToken
 		});
 
-		oAuth2Client.on('tokens', (tokens)=>{
+		updateTokens && oAuth2Client.on('tokens', (tokens)=>{
 			if(tokens.refresh_token) {
 				account.googleRefreshToken = tokens.refresh_token;
 			}
@@ -249,7 +253,6 @@ const GoogleActions = {
 				text    : file.data,
 
 				description : obj.data.description,
-				tags        : obj.data.properties.tags ? obj.data.properties.tags : '',
 				systems     : obj.data.properties.systems ? obj.data.properties.systems.split(',') : [],
 				authors     : [],
 				published   : obj.data.properties.published ? obj.data.properties.published == 'true' : false,
