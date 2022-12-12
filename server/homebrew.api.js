@@ -43,6 +43,9 @@ const getBrew = (accessType, stubOnly = false)=>{
 				}
 			});
 		stub = stub?.toObject();
+		if(accessType === 'edit' && stub?.authors?.length > 0 && !stub?.authors.includes(req.account?.username)) {
+			throw 'Current logged in user does not have access to this brew.';
+		}
 
 		// If there is a google id, try to find the google brew
 		if(!stubOnly && (googleId || stub?.googleId)) {
