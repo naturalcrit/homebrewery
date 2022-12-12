@@ -247,9 +247,9 @@ const updateBrew = async (req, res)=>{
 		brew = saved?.toObject();
 	} else {
 		// if the brew does have a stub id, update it using the stub id as the key.
-		saved = await HomebrewModel.findOneAndUpdate({ _id: brew._id }, brew, {
-			returnOriginal : false
-		}).catch(saveError);
+		brew = _.assign(await HomebrewModel.findOne({ _id: brew._id }), brew);
+		saved = await brew.save()
+		.catch(saveError);
 	}
 	if(!saved) return;
 	// Call and wait for afterSave to complete
