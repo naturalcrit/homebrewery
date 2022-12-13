@@ -253,7 +253,6 @@ const GoogleActions = {
 				text    : file.data,
 
 				description : obj.data.description,
-				tags        : obj.data.properties.tags ? obj.data.properties.tags : '',
 				systems     : obj.data.properties.systems ? obj.data.properties.systems.split(',') : [],
 				authors     : [],
 				published   : obj.data.properties.published ? obj.data.properties.published == 'true' : false,
