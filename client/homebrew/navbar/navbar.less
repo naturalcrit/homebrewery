@@ -115,8 +115,36 @@
 				color            : white;
 				text-decoration  : none;
 				border-top       : 1px solid #888;
+				overflow         : clip;
+				.clear{
+					display	         : none;
+					position         : absolute;
+					top              : 50%;
+					transform        : translateY(-50%);
+					right            : 0px;
+					width            : 20px;
+					height           : 100%;
+					background-color : #333;
+					opacity          : 70%;
+					border-radius    : 3px;
+					&:hover {
+						opacity : 100%;
+					}
+					i {
+						text-align : center;
+						font-size  : 10px;
+						margin     : 0;
+						height     :100%;
+						width      :100%;
+					}
+				}
 				&:hover{
 					background-color : @blue;
+					
+					.clear{
+						display       : grid;
+						place-content : center;
+					}
 				}
 				.title{
 					display       : inline-block;

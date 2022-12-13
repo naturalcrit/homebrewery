@@ -117,7 +117,7 @@ const BrewItem = createClass({
 						<i className='fas fa-tags'/>
 						{brew.tags.map((tag, idx)=>{
 							const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
-							return <span className={matches[1]}>{matches[2]}</span>;
+							return <span key={idx} className={matches[1]}>{matches[2]}</span>;
 						})}
 					</div>
 				</> : <></>

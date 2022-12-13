@@ -1,7 +1,6 @@
 ```css
 h5 {
 	font-size: .35cm !important;
-	margin-top: 0.3cm;
 }
 
 .page ul ul {
@@ -45,6 +44,75 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+
+### Monday 05/12/2022 - v3.4.1
+{{taskList
+
+##### G-Ambatte
+
+* [x] Fix Account page incorrect last login time
+
+Fixes issues [#2521](https://github.com/naturalcrit/homebrewery/issues/2521)
+
+##### Gazook
+
+* [x] Fix crashing on iOS and Safari browsers
+
+Fixes issues [#2531](https://github.com/naturalcrit/homebrewery/issues/2531)
+}}
+
+### Monday 28/11/2022 - v3.4.0
+{{taskList
+
+##### G-Ambatte
+
+* [x] Fix for Chrome v108 handling of page size
+
+Fixes issues [#2445](https://github.com/naturalcrit/homebrewery/issues/2445), [#2516](https://github.com/naturalcrit/homebrewery/issues/2516)
+
+* [x] New account page with some user info, at {{openSans **USERNAME {{fa,fa-user}} → ACCOUNT {{fa,fa-user}}**}}
+
+Fixes issues [#2049](https://github.com/naturalcrit/homebrewery/issues/2049), [#2043](https://github.com/naturalcrit/homebrewery/issues/2043)
+
+* [x] Fix "Published/Private Brews" buttons on userpage
+
+Fixes issues [#2449](https://github.com/naturalcrit/homebrewery/issues/2449)
+
+##### Gazook
+
+* [x] Make autosave default on for new users
+
+* [x] Added link to our FAQ at {{openSans **NEED HELP? {{fa,fa-question-circle}} → FAQ {{fa,fa-question-circle}}**}}
+
+* [x] Fix curly blocks freezing with long property lists
+
+Fixes issues [#2393](https://github.com/naturalcrit/homebrewery/issues/2393)
+
+* [x] Items can now be removed from {{openSans **RECENT BREWS** {{fas,fa-history}} }}
+
+Fixes issues [#1918](https://github.com/naturalcrit/homebrewery/issues/1918)
+
+* [x] Curly injector syntax `{blue}` highlighting in editor
+
+Fixes issues [#1670](https://github.com/naturalcrit/homebrewery/issues/1670)
+
+}}
+
+### Thursday 28/10/2022 - v3.3.1
+{{taskList
+
+##### Calculuschild
+
+* [x] Fixes to several broken CSS styles from v3.3.0
+
+Fixes issues  [#2468](https://github.com/naturalcrit/homebrewery/issues/2468)
+
+##### Jeddai
+
+* [x] Reduce size of thumbnails on social media links
+
+}}
+
 ### Friday 19/10/2022 - v3.3.0
 {{taskList
 
@@ -74,10 +142,12 @@ Fixes issues  [#2135](https://github.com/naturalcrit/homebrewery/issues/2135)
 * [x] Fix brew settings being lost on first save
 
 Fixes issues  [#2427](https://github.com/naturalcrit/homebrewery/issues/2427)
+}}
+
+\column
 
 
-
-
+{{taskList
 ##### Gazook:
 
 * [x] Several updates to bug reporting and error popups
