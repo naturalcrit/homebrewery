@@ -250,6 +250,8 @@ const MetadataEditor = createClass({
 
 	render : function(){
 		return <div className='metadataEditor'>
+			<h1 className='sectionHead'>Brew</h1>
+
 			<div className='field title'>
 				<label>title</label>
 				<input type='text' className='value'
@@ -283,8 +285,6 @@ const MetadataEditor = createClass({
 				values={this.props.metadata.tags}
 				onChange={(e)=>this.handleFieldChange('tags', e)}/>
 
-			{this.renderAuthors()}
-
 			<div className='field systems'>
 				<label>systems</label>
 				<div className='value'>
@@ -295,6 +295,23 @@ const MetadataEditor = createClass({
 			{this.renderThemeDropdown()}
 
 			{this.renderRenderOptions()}
+
+			<hr/>
+
+			<h1 className='sectionHead'>Authors</h1>
+
+			{this.renderAuthors()}
+
+			<StringArrayEditor label='invited authors' valuePatterns={[/.+/]}
+				validators={[(v)=>!this.props.metadata.authors.includes(v)]}
+				placeholder='invite author' unique={true}
+				values={this.props.metadata.invitedAuthors}
+				notes={['Invited authors are case sensitive.', 'After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.']}
+				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}/>
+
+			<hr/>
+
+			<h1 className='sectionHead'>Privacy</h1>
 
 			<div className='field publish'>
 				<label>publish</label>
