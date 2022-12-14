@@ -111,7 +111,7 @@ const excludePropsFromUpdate = (brew)=>{
 
 const excludeGoogleProps = (brew)=>{
 	const modified = _.clone(brew);
-	const propsToExclude = ['tags', 'systems', 'published', 'authors', 'owner', 'views', 'thumbnail'];
+	const propsToExclude = ['version', 'tags', 'systems', 'published', 'authors', 'owner', 'views', 'thumbnail'];
 	for (const prop of propsToExclude) {
 		delete modified[prop];
 	}
@@ -119,7 +119,7 @@ const excludeGoogleProps = (brew)=>{
 };
 
 const excludeStubProps = (brew)=>{
-	const propsToExclude = ['text', 'textBin', 'renderer', 'pageCount', 'version'];
+	const propsToExclude = ['text', 'textBin', 'renderer', 'pageCount'];
 	for (const prop of propsToExclude) {
 		brew[prop] = undefined;
 	}
@@ -187,7 +187,13 @@ const newBrew = async (req, res)=>{
 
 const updateBrew = async (req, res)=>{
 	// Initialize brew from request and body, destructure query params, set a constant for the google id, and set the initial value for the after-save method
-	let brew = _.assign(req.brew, excludePropsFromUpdate(req.body));
+	const updateBrew = excludePropsFromUpdate(req.body);
+	if(req.brew.version > updateBrew.version) {
+		res.setHeader('Content-Type', 'application/json');
+		return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
+	}
+
+	let brew = _.assign(req.brew, updateBrew);
 	const { saveToGoogle, removeFromGoogle } = req.query;
 	const googleId = brew.googleId;
 	let afterSave = async ()=>true;
@@ -233,6 +239,7 @@ const updateBrew = async (req, res)=>{
 		brew.text = undefined;
 	}
 	brew.updatedAt = new Date();
+	brew.version += 1;
 
 	if(req.account) {
 		brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
@@ -252,7 +259,7 @@ const updateBrew = async (req, res)=>{
 		// if the brew does have a stub id, update it using the stub id as the key.
 		brew = _.assign(await HomebrewModel.findOne({ _id: brew._id }), brew);
 		saved = await brew.save()
-		.catch(saveError);
+			.catch(saveError);
 	}
 	if(!saved) return;
 	// Call and wait for afterSave to complete
