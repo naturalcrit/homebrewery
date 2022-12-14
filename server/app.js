@@ -15,6 +15,8 @@ const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
 
+const { DEFAULT_BREW } = require('./brewDefaults.js');
+
 const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
 	if(brew.text.startsWith('```metadata')) {
@@ -405,6 +407,7 @@ if(isLocalEnvironment){
 //Render the page
 const templateFn = require('./../client/template.js');
 app.use(asyncHandler(async (req, res, next)=>{
+	const brew = _.defaults(req.brew, DEFAULT_BREW);
 	// Create configuration object
 	const configuration = {
 		local       : isLocalEnvironment,
@@ -414,7 +417,7 @@ app.use(asyncHandler(async (req, res, next)=>{
 	const props = {
 		version       : require('./../package.json').version,
 		url           : req.originalUrl,
-		brew          : req.brew,
+		brew          : brew,
 		brews         : req.brews,
 		googleBrews   : req.googleBrews,
 		account       : req.account,
