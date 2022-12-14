@@ -331,7 +331,6 @@ const EditPage = createClass({
 			}
 
 			if(this.state.errors.response.error.status === 409) {
-				console.log(this.state.errors.response);
 				const message = this.state.errors.response.body?.message;
 				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 					Oops!
