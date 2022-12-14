@@ -43,7 +43,9 @@ const getBrew = (accessType, stubOnly = false)=>{
 				}
 			});
 		stub = stub?.toObject();
-		if(accessType === 'edit' && stub?.authors?.length > 0 && !stub?.authors.includes(req.account?.username)) {
+		const authorsExistAndIsNotAuthor = stub?.authors?.length > 0 && !stub?.authors.includes(req.account?.username);
+		const isNotInvited = stub?.invitedAuthors?.length > 0 && !stub?.invitedAuthors.includes(req.account?.username);
+		if(accessType === 'edit' && authorsExistAndIsNotAuthor && isNotInvited) {
 			throw 'Current logged in user does not have access to this brew.';
 		}
 
@@ -243,6 +245,7 @@ const updateBrew = async (req, res)=>{
 
 	if(req.account) {
 		brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
+		brew.invitedAuthors = _.uniq(_.filter(brew.invitedAuthors, (a)=>req.account.username !== a));
 	}
 
 	// define a function to catch our save errors
