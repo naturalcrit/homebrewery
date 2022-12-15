@@ -26,6 +26,8 @@ const googleDriveInactive = require('../../googleDriveMono.png');
 
 const SAVE_TIMEOUT = 3000;
 
+let broadcastChannel;
+
 const EditPage = createClass({
 	displayName     : 'EditPage',
 	getDefaultProps : function() {
@@ -101,6 +103,7 @@ const EditPage = createClass({
 	componentWillUnmount : function() {
 		window.onbeforeunload = function(){};
 		document.removeEventListener('keydown', this.handleControlKeys);
+		broadcastChannel.close();
 	},
 
 	handleControlKeys : function(e){
@@ -236,6 +239,17 @@ const EditPage = createClass({
 			isSaving    : false,
 			unsavedTime : new Date()
 		}));
+
+		this.sendUpdate();
+	},
+
+	sendUpdate : function() {
+		const channelName = this.state.brew.shareId;
+		broadcastChannel = new window.BroadcastChannel(channelName);
+
+		const message = `brewUpdate:${this.state.brew.shareId}`;
+		// console.log(`SEND UPDATE: ${message} || ${channelName}`);
+		broadcastChannel.postMessage(message);
 	},
 
 	renderGoogleDriveIcon : function(){

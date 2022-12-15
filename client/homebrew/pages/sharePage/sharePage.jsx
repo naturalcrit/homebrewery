@@ -12,6 +12,7 @@ const Account = require('../../navbar/account.navitem.jsx');
 
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
+let broadcastChannel;
 
 const SharePage = createClass({
 	displayName     : 'SharePage',
@@ -32,10 +33,16 @@ const SharePage = createClass({
 
 	componentDidMount : function() {
 		document.addEventListener('keydown', this.handleControlKeys);
+
+		const channelName = this.props.brew.shareId;
+		broadcastChannel = new window.BroadcastChannel(channelName);
+		broadcastChannel.onmessage = (event)=>{this.messageReceived(event);};
 	},
 
 	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
+
+		broadcastChannel.close();
 	},
 
 	handleControlKeys : function(e){
@@ -45,6 +52,13 @@ const SharePage = createClass({
 			window.open(`/print/${this.processShareId()}?dialog=true`, '_blank').focus();
 			e.stopPropagation();
 			e.preventDefault();
+		}
+	},
+
+	messageReceived : function(e){
+		console.log(`Message RX: ${new Date}`);
+		if(e.origin === window.location.origin && e.data === `brewUpdate:${this.props.brew.shareId}`) {
+			window.location.reload();
 		}
 	},
 
