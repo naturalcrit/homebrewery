@@ -31,6 +31,12 @@ const SharePage = createClass({
 		};
 	},
 
+	getInitialState : function() {
+		return {
+			brew : this.props.brew
+		};
+	},
+
 	componentDidMount : function() {
 		document.addEventListener('keydown', this.handleControlKeys);
 
@@ -57,9 +63,10 @@ const SharePage = createClass({
 
 	messageReceived : function(e){
 		console.log(`Message RX: ${new Date}`);
-		if(e.origin === window.location.origin && e.data === `brewUpdate:${this.props.brew.shareId}`) {
-			window.location.reload();
-		}
+		console.log(JSON.parse(e.data));
+		this.setState({
+			brew : JSON.parse(e.data)
+		});
 	},
 
 	processShareId : function() {
@@ -73,7 +80,7 @@ const SharePage = createClass({
 			<Meta name='robots' content='noindex, nofollow' />
 			<Navbar>
 				<Nav.section>
-					<Nav.item className='brewTitle'>{this.props.brew.title}</Nav.item>
+					<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
 				</Nav.section>
 
 				<Nav.section>
@@ -100,7 +107,7 @@ const SharePage = createClass({
 			</Navbar>
 
 			<div className='content'>
-				<BrewRenderer text={this.props.brew.text} style={this.props.brew.style} renderer={this.props.brew.renderer} theme={this.props.brew.theme} />
+				<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} theme={this.state.brew.theme} />
 			</div>
 		</div>;
 	}

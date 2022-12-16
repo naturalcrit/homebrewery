@@ -247,7 +247,7 @@ const EditPage = createClass({
 		const channelName = this.state.brew.shareId;
 		broadcastChannel = new window.BroadcastChannel(channelName);
 
-		const message = `brewUpdate:${this.state.brew.shareId}`;
+		const message = JSON.stringify(this.state.brew);
 		// console.log(`SEND UPDATE: ${message} || ${channelName}`);
 		broadcastChannel.postMessage(message);
 	},
