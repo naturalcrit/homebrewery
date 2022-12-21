@@ -3,7 +3,7 @@ const UserInfoModel = require('./userinfo.model.js').model;
 const router = require('express').Router();
 const Moment = require('moment');
 // const render = require('vitreum/steps/render');
-const templateFn = require('../client/adminTemplate.js');
+const templateFn = require('../client/template.js');
 const zlib = require('zlib');
 
 process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
