@@ -43,11 +43,6 @@ const getBrew = (accessType, stubOnly = false)=>{
 				}
 			});
 		stub = stub?.toObject();
-		const authorsExistAndIsNotAuthor = stub?.authors?.length > 0 && !stub?.authors.includes(req.account?.username);
-		const isNotInvited = stub?.invitedAuthors?.length > 0 && !stub?.invitedAuthors.includes(req.account?.username);
-		if(accessType === 'edit' && authorsExistAndIsNotAuthor && isNotInvited) {
-			throw 'Current logged in user does not have access to this brew.';
-		}
 
 		// If there is a google id, try to find the google brew
 		if(!stubOnly && (googleId || stub?.googleId)) {
@@ -61,6 +56,14 @@ const getBrew = (accessType, stubOnly = false)=>{
 			if(!googleBrew) throw googleError;
 			// Combine the Homebrewery stub with the google brew, or if the stub doesn't exist just use the google brew
 			stub = stub ? _.assign({ ...excludeStubProps(stub), stubbed: true }, excludeGoogleProps(googleBrew)) : googleBrew;
+		}
+		const authorsExist = stub?.authors?.length > 0;
+		const isAuthor = (stub?.authors || [])?.includes(req.account?.username);
+		const isInvited = (stub?.invitedAuthors || []).includes(req.account?.username);
+		if(accessType === 'edit' && (authorsExist && (!isAuthor || !isInvited))) {
+			throw `The current logged in user does not have editor access to this brew.
+
+If you believe you should have access to this brew, ask the file owner to invite you as an author by opening the brew, viewing the Properties tab, and adding your username to the "invited authors" list. You can then try to access this document again.`;
 		}
 
 		// If after all of that we still don't have a brew, throw an exception
@@ -189,13 +192,13 @@ const newBrew = async (req, res)=>{
 
 const updateBrew = async (req, res)=>{
 	// Initialize brew from request and body, destructure query params, set a constant for the google id, and set the initial value for the after-save method
-	const updateBrew = excludePropsFromUpdate(req.body);
-	if(req.brew.version > updateBrew.version) {
+	const brewFromClient = excludePropsFromUpdate(req.body);
+	if(req.brew.version > brewFromClient.version) {
 		res.setHeader('Content-Type', 'application/json');
 		return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
 	}
 
-	let brew = _.assign(req.brew, updateBrew);
+	let brew = _.assign(req.brew, brewFromClient);
 	const { saveToGoogle, removeFromGoogle } = req.query;
 	const googleId = brew.googleId;
 	let afterSave = async ()=>true;
