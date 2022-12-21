@@ -58,8 +58,8 @@ const getBrew = (accessType, stubOnly = false)=>{
 			stub = stub ? _.assign({ ...excludeStubProps(stub), stubbed: true }, excludeGoogleProps(googleBrew)) : googleBrew;
 		}
 		const authorsExist = stub?.authors?.length > 0;
-		const isAuthor = (stub?.authors || [])?.includes(req.account?.username);
-		const isInvited = (stub?.invitedAuthors || []).includes(req.account?.username);
+		const isAuthor = stub?.authors?.includes(req.account?.username);
+		const isInvited = stub?.invitedAuthors?.includes(req.account?.username);
 		if(accessType === 'edit' && (authorsExist && (!isAuthor || !isInvited))) {
 			throw `The current logged in user does not have editor access to this brew.
 
