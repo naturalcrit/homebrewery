@@ -79,10 +79,10 @@ const faqText           = require('fs').readFileSync('faq.md', 'utf8');
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
 const defaultMetaTags = {
-	siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+	site_name   : 'The Homebrewery - Make your Homebrew content look legit!',
 	title       : 'The Homebrewery',
-	description : 'A NaturalCrit Tool for Homebrews',
-	thumbnail   : `${config.get('publicUrl')}/thumbnail.png`,
+	description : 'A NaturalCrit Tool for creating authentic Homebrews using Markdown.',
+	image       : `${config.get('publicUrl')}/thumbnail.png`,
 	type        : 'website'
 };
 
@@ -149,8 +149,7 @@ app.get('/changelog', async (req, res, next)=>{
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'Changelog',
-		description : 'Development changelog.',
-		thumbnail   : null
+		description : 'Development changelog.'
 	};
 
 	splitTextStyleAndMetadata(req.brew);
@@ -193,12 +192,19 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	sanitizeBrew(brew, 'share');
 	const prefix = 'HB - ';
 
+	const encodeRFC3986ValueChars = (str)=>{
+		return (
+			encodeURIComponent(str)
+				.replace(/[!'()*]/g, (char)=>{`%${char.charCodeAt(0).toString(16).toUpperCase()}`;})
+		);
+	};
+
 	let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
 	if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };
 	res.set({
 		'Cache-Control'       : 'no-cache',
 		'Content-Type'        : 'text/plain',
-		'Content-Disposition' : `attachment; filename="${fileName}.txt"`
+		'Content-Disposition' : `attachment; filename*=UTF-8''${encodeRFC3986ValueChars(fileName)}.txt`
 	});
 	res.status(200).send(brew.text);
 });
@@ -209,8 +215,7 @@ app.get('/user/:username', async (req, res, next)=>{
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : `${req.params.username}'s Collection`,
-		description : 'View my collection of homebrew on the Homebrewery.',
-		image       : null
+		description : 'View my collection of homebrew on the Homebrewery.'
 		// type        :  could be 'profile'?
 	};
 
@@ -275,7 +280,7 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',
 		description : req.brew.description || 'No description.',
-		image       : req.brew.thumbnail || null,
+		image       : req.brew.thumbnail || defaultMetaTags.image,
 		type        : 'article'
 	};
 
@@ -293,8 +298,7 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'New',
-		description : 'Start crafting your homebrew on the Homebrewery!',
-		image       : null
+		description : 'Start crafting your homebrew on the Homebrewery!'
 	};
 
 	return next();
@@ -307,7 +311,7 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',
 		description : req.brew.description || 'No description.',
-		image       : req.brew.thumbnail || null,
+		image       : req.brew.thumbnail || defaultMetaTags.image,
 		type        : 'article'
 	};
 
@@ -337,11 +341,11 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 	data.title = 'Account Information Page';
 
 	let auth;
-	let files;
+	let googleCount = [];
 	if(req.account) {
 		if(req.account.googleId) {
 			try {
-				auth = await GoogleActions.authCheck(req.account, res);
+				auth = await GoogleActions.authCheck(req.account, res, false);
 			} catch (e) {
 				auth = undefined;
 				console.log('Google auth check failed!');
@@ -349,9 +353,9 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 			}
 			if(auth.credentials.access_token) {
 				try {
-					files = await GoogleActions.listGoogleBrews(auth);
+					googleCount = await GoogleActions.listGoogleBrews(auth);
 				} catch (e) {
-					files = undefined;
+					googleCount = undefined;
 					console.log('List Google files failed!');
 					console.log(e);
 				}
@@ -359,18 +363,19 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 		}
 
 		const query = { authors: req.account.username, googleId: { $exists: false } };
-		const brews = await HomebrewModel.find(query, 'id')
+		const mongoCount = await HomebrewModel.countDocuments(query)
 			.catch((err)=>{
+				mongoCount = 0;
 				console.log(err);
 			});
 
 		data.uiItems = {
-			username   : req.account.username,
-			issued     : req.account.issued,
-			mongoCount : brews.length,
-			googleId   : Boolean(req.account.googleId),
-			authCheck  : Boolean(req.account.googleId && auth.credentials.access_token),
-			fileCount  : files?.length || '-'
+			username    : req.account.username,
+			issued      : req.account.issued,
+			googleId    : Boolean(req.account.googleId),
+			authCheck   : Boolean(req.account.googleId && auth.credentials.access_token),
+			mongoCount  : mongoCount,
+			googleCount : googleCount?.length
 		};
 	}
 
@@ -378,8 +383,7 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : `Account Page`,
-		description : null,
-		image       : null
+		description : null
 	};
 
 	return next();
