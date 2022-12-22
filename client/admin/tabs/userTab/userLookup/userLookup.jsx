@@ -46,6 +46,15 @@ const UserLookup = createClass({
 				{Object.entries(user.options).map((opt, idx)=>{
 					return <dd key={idx}>- {opt.join(' : ')}</dd>;
 				})}
+
+				{user.badges?.length > 0 && <>
+					<dt>Badges</dt>
+					{user.badges.map((badge, idx)=>{
+						return <dd key={idx}>{`- ${badge.type}; awarded ${Moment(badge.awardedAt).toLocaleString()}`}</dd>;
+					})}
+				</>
+				}
+
 			</dl>
 		</div>;
 	},

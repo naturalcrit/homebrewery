@@ -8,6 +8,7 @@ const DEFAULT_USER_OPTIONS = {
 
 const UserInfoSchema = mongoose.Schema({
 	options      : { type: Object, default: DEFAULT_USER_OPTIONS },
+	badges       : { type: Array, default: [] },
 	lastActivity : { type: Date, default: Date.now },
 	username     : { type: String, default: '' },
 	createdAt    : { type: Date, default: Date.now },
