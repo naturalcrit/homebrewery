@@ -1,0 +1,22 @@
+[
+    {
+        "title" : "Contributer",
+        "svgPath" : "ribbon.svg"
+    },
+    {
+        "title" : "Liker",
+        "svgPath" : "thumbsUp.svg"
+    },
+    {
+        "title" : "Developer",
+        "svgPath" : "shield.svg"
+    },
+    {
+        "title" : "King Amongst Men/Women",
+        "svgPath" : "crown.svg"
+    },
+    {
+        "title" : "God",
+        "svgPath" : "sun.svg"
+    }
+]

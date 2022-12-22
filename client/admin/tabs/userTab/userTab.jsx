@@ -2,6 +2,9 @@ const React = require('react');
 const createClass = require('create-react-class');
 
 const UserLookup = require('./userLookup/userLookup.jsx');
+const BadgeList = require('./badgeList/badgeList.jsx');
+
+const badgesJson = require('./badges.json');
 
 const UserTab = createClass({
 	getDefaultProps : function() {
@@ -15,6 +18,11 @@ const UserTab = createClass({
 					<tr>
 						<td>
 							<UserLookup />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<BadgeList badges={badgesJson} />
 						</td>
 					</tr>
 				</tbody>
