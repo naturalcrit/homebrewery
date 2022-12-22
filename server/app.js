@@ -404,11 +404,17 @@ if(isLocalEnvironment){
 	});
 }
 
+let lastActivity = new Date('Jan 01 1970 00:00:00.000');
+const DEFAULT_ACTIVITY_DELAY = 30 * 1000; //milliseconds
+
 //Render the page
 const templateFn = require('./../client/template.js');
 app.use(asyncHandler(async (req, res, next)=>{
 	// Update activity
-	if(req.account?.username) {
+	const now = new Date;
+	const shouldUpdateActivity = now.setTime(lastActivity.getTime() + DEFAULT_ACTIVITY_DELAY) < new Date;
+	if(req.account?.username && shouldUpdateActivity) {
+		lastActivity = new Date;
 		await UserInfoModel.updateActivity(req.account.username);
 	}
 	// Create configuration object

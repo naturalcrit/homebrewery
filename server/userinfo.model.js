@@ -42,15 +42,12 @@ UserInfoSchema.statics.updateActivity = async function(username) {
 		user.username = username;
 	}
 
-	const now = new Date();
-	if(!user.lastActivity || now.setTime(user.lastActivity.getTime() + DEFAULT_ACTIVITY_DELAY) < new Date) {
-		user.lastActivity = new Date;
+	user.lastActivity = new Date;
 
-		await user.save()
-		.catch((err)=>{
-			return err;
-		});
-	}
+	await user.save()
+	.catch((err)=>{
+		return err;
+	});
 
 	return user;
 };
