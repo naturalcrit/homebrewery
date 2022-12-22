@@ -60,7 +60,7 @@ const getBrew = (accessType, stubOnly = false)=>{
 		const authorsExist = stub?.authors?.length > 0;
 		const isAuthor = stub?.authors?.includes(req.account?.username);
 		const isInvited = stub?.invitedAuthors?.includes(req.account?.username);
-		if(accessType === 'edit' && (authorsExist && (!isAuthor || !isInvited))) {
+		if(accessType === 'edit' && (authorsExist && !(isAuthor || isInvited))) {
 			throw `The current logged in user does not have editor access to this brew.
 
 If you believe you should have access to this brew, ask the file owner to invite you as an author by opening the brew, viewing the Properties tab, and adding your username to the "invited authors" list. You can then try to access this document again.`;
