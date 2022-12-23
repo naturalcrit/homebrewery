@@ -9,6 +9,8 @@ const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
 
+const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
+
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
 // 		cb(brews);
@@ -30,7 +32,7 @@ const api = {
 		}
 		return { id, googleId };
 	},
-	getBrew : (accessType, fetchGoogle = true)=>{
+	getBrew : (accessType, stubOnly = false)=>{
 		// Create middleware with the accessType passed in as part of the scope
 		return async (req, res, next)=>{
 			// Get relevant IDs for the brew
@@ -46,12 +48,9 @@ const api = {
 					}
 				});
 			stub = stub?.toObject();
-			if(accessType === 'edit' && stub?.authors?.length > 0 && !stub?.authors.includes(req.account?.username)) {
-				throw 'Current logged in user does not have access to this brew.';
-			}
 
 			// If there is a google id, try to find the google brew
-			if(fetchGoogle && (googleId || stub?.googleId)) {
+			if(!stubOnly && (googleId || stub?.googleId)) {
 				let googleError;
 				const googleBrew = await GoogleActions.getGoogleBrew(googleId || stub?.googleId, id, accessType)
 					.catch((err)=>{
@@ -63,16 +62,30 @@ const api = {
 				// Combine the Homebrewery stub with the google brew, or if the stub doesn't exist just use the google brew
 				stub = stub ? _.assign({ ...api.excludeStubProps(stub), stubbed: true }, api.excludeGoogleProps(googleBrew)) : googleBrew;
 			}
+			const authorsExist = stub?.authors?.length > 0;
+			const isAuthor = stub?.authors?.includes(req.account?.username);
+			const isInvited = stub?.invitedAuthors?.includes(req.account?.username);
+			if(accessType === 'edit' && (authorsExist && !(isAuthor || isInvited))) {
+				throw `The current logged in user does not have editor access to this brew.
+
+If you believe you should have access to this brew, ask the file owner to invite you as an author by opening the brew, viewing the Properties tab, and adding your username to the "invited authors" list. You can then try to access this document again.`;
+			}
 
 			// If after all of that we still don't have a brew, throw an exception
-			if(!stub && fetchGoogle) {
+			if(!stub && !stubOnly) {
 				throw 'Brew not found in Homebrewery database or Google Drive';
 			}
 
 			if(typeof stub?.tags === 'string') {
 				stub.tags = [];
 			}
-			req.brew = stub || {};
+
+			// Use _.assignWith instead of _.defaults - does this need to be replicated at all other uses of _.defaults???
+			_.assignWith(stub, DEFAULT_BREW_LOAD, (objValue, srcValue)=>{
+				if(typeof objValue === 'boolean') return objValue;
+				return objValue || srcValue;
+			});
+			req.brew = stub;
 
 			next();
 		};
@@ -108,7 +121,7 @@ const api = {
 	},
 	excludeGoogleProps : (brew)=>{
 		const modified = _.clone(brew);
-		const propsToExclude = ['tags', 'systems', 'published', 'authors', 'owner', 'views', 'thumbnail'];
+		const propsToExclude = ['version', 'tags', 'systems', 'published', 'authors', 'owner', 'views', 'thumbnail'];
 		for (const prop of propsToExclude) {
 			delete modified[prop];
 		}
@@ -128,6 +141,8 @@ const api = {
 
 		brew.authors = (account) ? [account.username] : [];
 		brew.text = api.mergeBrewText(brew);
+
+		_.defaults(brew, DEFAULT_BREW);
 	},
 	newGoogleBrew : async (account, brew, res)=>{
 		const oAuth2Client = GoogleActions.authCheck(account, res);
@@ -179,7 +194,13 @@ const api = {
 	},
 	updateBrew : async (req, res)=>{
 		// Initialize brew from request and body, destructure query params, set a constant for the google id, and set the initial value for the after-save method
-		let brew = _.assign(req.brew, api.excludePropsFromUpdate(req.body));
+		const brewFromClient = api.excludePropsFromUpdate(req.body);
+		if(req.brew.version > brewFromClient.version) {
+			res.setHeader('Content-Type', 'application/json');
+			return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
+		}
+
+		let brew = _.assign(req.brew, brewFromClient);
 		const { saveToGoogle, removeFromGoogle } = req.query;
 		const googleId = brew.googleId;
 		let afterSave = async ()=>true;
@@ -225,13 +246,11 @@ const api = {
 			brew.text = undefined;
 		}
 		brew.updatedAt = new Date();
+		brew.version += 1;
 
 		if(req.account) {
 			brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
-		}
-		// we need the tag type change in both getBrew and here to handle the case where we don't have a stub on which to perform the modification
-		if(typeof brew.tags === 'string') {
-			brew.tags = [];
+			brew.invitedAuthors = _.uniq(_.filter(brew.invitedAuthors, (a)=>req.account.username !== a));
 		}
 
 		// define a function to catch our save errors
@@ -243,17 +262,18 @@ const api = {
 		if(!brew._id) {
 			// if the brew does not have a stub id, create and save it, then write the new value back to the brew.
 			saved = await new HomebrewModel(brew).save().catch(saveError);
-			brew = saved?.toObject();
 		} else {
 			// if the brew does have a stub id, update it using the stub id as the key.
-			saved = await HomebrewModel.updateOne({ _id: brew._id }, brew).catch(saveError);
+			brew = _.assign(await HomebrewModel.findOne({ _id: brew._id }), brew);
+			saved = await brew.save()
+				.catch(saveError);
 		}
 		if(!saved) return;
 		// Call and wait for afterSave to complete
 		const after = await afterSave();
 		if(!after) return;
 
-		res.status(200).send(brew);
+		res.status(200).send(saved);
 	},
 	deleteGoogleBrew : async (account, id, editId, res)=>{
 		const auth = await GoogleActions.authCheck(account, res);
@@ -322,8 +342,8 @@ const api = {
 };
 
 router.post('/api', asyncHandler(api.newBrew));
-router.put('/api/:id', asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
-router.put('/api/update/:id', asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
+router.put('/api/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
+router.put('/api/update/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
 router.delete('/api/:id', asyncHandler(api.deleteBrew));
 router.get('/api/remove/:id', asyncHandler(api.deleteBrew));
 
