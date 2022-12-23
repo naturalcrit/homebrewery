@@ -303,7 +303,7 @@ const MetadataEditor = createClass({
 			{this.renderAuthors()}
 
 			<StringArrayEditor label='invited authors' valuePatterns={[/.+/]}
-				validators={[(v)=>!this.props.metadata.authors.includes(v)]}
+				validators={[(v)=>!this.props.metadata.authors?.includes(v)]}
 				placeholder='invite author' unique={true}
 				values={this.props.metadata.invitedAuthors}
 				notes={['Invited authors are case sensitive.', 'After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.']}
