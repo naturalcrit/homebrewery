@@ -128,7 +128,7 @@ If you believe you should have access to this brew, ask the file owner to invite
 		return modified;
 	},
 	excludeStubProps : (brew)=>{
-		const propsToExclude = ['text', 'textBin', 'renderer', 'pageCount', 'version'];
+		const propsToExclude = ['text', 'textBin', 'renderer', 'pageCount'];
 		for (const prop of propsToExclude) {
 			brew[prop] = undefined;
 		}

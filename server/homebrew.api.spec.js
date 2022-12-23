@@ -1,18 +1,44 @@
 /* eslint-disable max-lines */
 
+const modelBrew = (brew, saveFunc = async function() {
+	return { ...this, _id: '1' };
+})=>({
+	...brew,
+	save     : saveFunc,
+	toObject : function() {
+		delete this.save;
+		delete this.toObject;
+		return this;
+	}
+});
+const modelBrewThrow = (brew)=>modelBrew(brew, async function() {
+	throw 'err';
+});
+
 describe('Tests for api', ()=>{
 	let api;
 	let google;
 	let model;
 	let hbBrew;
 	let googleBrew;
+	let res;
 
 	beforeEach(()=>{
 		google = require('./googleActions.js');
 		model = require('./homebrew.model.js').model;
 
 		jest.mock('./googleActions.js');
+		google.authCheck = jest.fn(()=>'client');
+		google.newGoogleBrew = jest.fn(()=>'id');
+		google.deleteGoogleBrew = jest.fn(()=>true);
+
 		jest.mock('./homebrew.model.js');
+		model.mockImplementation((brew)=>modelBrew(brew));
+
+		res = {
+			status : jest.fn(()=>res),
+			send   : jest.fn(()=>{})
+		};
 
 		api = require('./homebrew.api');
 
@@ -115,7 +141,7 @@ describe('Tests for api', ()=>{
 			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
 			model.get = jest.fn(()=>new Promise((_, rej)=>rej('Unable to find brew')));
 
-			const fn = api.getBrew('share', true);
+			const fn = api.getBrew('share', false);
 			const req = { brew: {} };
 			const next = jest.fn();
 			let err;
@@ -160,7 +186,9 @@ describe('Tests for api', ()=>{
 				err = e;
 			}
 
-			expect(err).toEqual('Current logged in user does not have access to this brew.');
+			expect(err).toEqual(`The current logged in user does not have editor access to this brew.
+
+If you believe you should have access to this brew, ask the file owner to invite you as an author by opening the brew, viewing the Properties tab, and adding your username to the "invited authors" list. You can then try to access this document again.`);
 		});
 
 		it('does not throw if no authors', async ()=>{
@@ -194,16 +222,28 @@ describe('Tests for api', ()=>{
 			model.get = jest.fn(()=>toBrewPromise(stubBrew));
 			google.getGoogleBrew = jest.fn(()=>new Promise((res)=>res(googleBrew)));
 
-			const fn = api.getBrew('share', true);
+			const fn = api.getBrew('share', false);
 			const req = { brew: {} };
 			const next = jest.fn();
 			await fn(req, null, next);
 
 			expect(req.brew).toEqual({
-				title   : 'test google brew',
-				authors : ['a'],
-				text    : 'brew text',
-				stubbed : true
+				title       : 'test google brew',
+				authors     : ['a'],
+				text        : 'brew text',
+				stubbed     : true,
+				description : '',
+				editId      : null,
+				pageCount   : 1,
+				published   : true,
+				renderer    : 'legacy',
+				shareId     : null,
+				systems     : [],
+				tags        : [],
+				theme       : '5ePHB',
+				thumbnail   : '',
+				textBin     : undefined,
+				version     : undefined
 			});
 			expect(next).toHaveBeenCalled();
 			expect(api.getId).toHaveBeenCalledWith(req);
@@ -301,6 +341,7 @@ brew`);
 			expect(result.owner).toBeUndefined();
 			expect(result.views).toBeUndefined();
 			expect(result.thumbnail).toBeUndefined();
+			expect(result.version).toBeUndefined();
 		});
 
 		it('excludeStubProps removes the correct keys from the original object', ()=>{
@@ -312,7 +353,6 @@ brew`);
 			expect(result.textBin).toBeUndefined();
 			expect(result.renderer).toBeUndefined();
 			expect(result.pageCount).toBeUndefined();
-			expect(result.version).toBeUndefined();
 		});
 	});
 
@@ -360,18 +400,110 @@ brew`);
 
 	describe('newGoogleBrew', ()=>{
 		it('should call the correct methods', ()=>{
-			google.authCheck = jest.fn().mockImplementation(()=>'client');
 			api.excludeGoogleProps = jest.fn(()=>'newBrew');
-			google.newGoogleBrew = jest.fn(()=>'id');
 
 			const acct = { username: 'test' };
 			const brew = { title: 'test title' };
-			const res = { send: jest.fn(()=>{}) };
 			api.newGoogleBrew(acct, brew, res);
 
 			expect(google.authCheck).toHaveBeenCalledWith(acct, res);
 			expect(api.excludeGoogleProps).toHaveBeenCalledWith(brew);
 			expect(google.newGoogleBrew).toHaveBeenCalledWith('client', 'newBrew');
+		});
+	});
+
+	describe('newBrew', ()=>{
+		it('should set up a default brew via Homebrew model', async ()=>{
+			await api.newBrew({ body: { text: 'asdf' }, query: {}, account: { username: 'test user' } }, res);
+
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith({
+				   _id         : '1',
+				   authors     : ['test user'],
+				   description : '',
+				   editId      : expect.any(String),
+				   pageCount   : 1,
+				   published   : false,
+				   renderer    : 'V3',
+				   shareId     : expect.any(String),
+				   systems     : [],
+				   tags        : [],
+				   text        : undefined,
+				   textBin     : expect.objectContaining({}),
+			       theme       : '5ePHB',
+				   thumbnail   : '',
+				   title       : 'asdf',
+			});
+		});
+
+		it('should remove edit/share/google ids', async ()=>{
+			await api.newBrew({ body: { editId: '1234', shareId: '1234', googleId: '1234', text: 'asdf', title: '' }, query: {} }, res);
+
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalled();
+			const sent = res.send.mock.calls[0][0];
+			expect(sent.editId).not.toEqual('1234');
+			expect(sent.shareId).not.toEqual('1234');
+			expect(sent.googleId).toBeUndefined();
+		});
+
+		it('should handle mongo error', async ()=>{
+			model.mockImplementation((brew)=>modelBrewThrow(brew));
+
+			let err;
+			try {
+				await api.newBrew({ body: { editId: '1234', shareId: '1234', googleId: '1234', text: 'asdf', title: '' }, query: {} }, res);
+			} catch (e) {
+				err = e;
+			}
+
+			expect(res.send).not.toHaveBeenCalled();
+			expect(err).not.toBeUndefined();
+		});
+
+		it('should save to google if requested', async()=>{
+			await api.newBrew({ body: { text: 'asdf', title: '' }, query: { saveToGoogle: true }, account: { username: 'test user' } }, res);
+
+			expect(google.newGoogleBrew).toHaveBeenCalled();
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith({
+				_id         : '1',
+				authors     : ['test user'],
+				description : '',
+				editId      : expect.any(String),
+				pageCount   : undefined,
+				published   : false,
+				renderer    : undefined,
+				shareId     : expect.any(String),
+				googleId    : expect.any(String),
+				systems     : [],
+				tags        : [],
+				text        : undefined,
+				textBin     : undefined,
+				theme       : '5ePHB',
+				thumbnail   : '',
+				title       : 'asdf',
+			});
+		});
+
+		it('should handle google error', async()=>{
+			google.newGoogleBrew = jest.fn(()=>{
+				throw 'err';
+			});
+			await api.newBrew({ body: { text: 'asdf', title: '' }, query: { saveToGoogle: true }, account: { username: 'test user' } }, res);
+
+			expect(res.status).toHaveBeenCalledWith(500);
+			expect(res.send).toHaveBeenCalledWith('err');
+		});
+	});
+
+	describe('deleteGoogleBrew', ()=>{
+		it('should check auth and delete brew', async ()=>{
+			const result = await api.deleteGoogleBrew({ username: 'test user' }, 'id', 'editId', res);
+
+			expect(result).toBe(true);
+			expect(google.authCheck).toHaveBeenCalledWith({ username: 'test user' }, expect.objectContaining({}));
+			expect(google.deleteGoogleBrew).toHaveBeenCalledWith('client', 'id', 'editId');
 		});
 	});
 });
