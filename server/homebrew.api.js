@@ -45,9 +45,6 @@ const getBrew = (accessType, stubOnly = false)=>{
 				}
 			});
 		stub = stub?.toObject();
-		if(accessType === 'edit' && stub?.authors?.length > 0 && !stub?.authors.includes(req.account?.username)) {
-			throw 'Current logged in user does not have access to this brew.';
-		}
 
 		// If there is a google id, try to find the google brew
 		if(!stubOnly && (googleId || stub?.googleId)) {
@@ -61,6 +58,14 @@ const getBrew = (accessType, stubOnly = false)=>{
 			if(!googleBrew) throw googleError;
 			// Combine the Homebrewery stub with the google brew, or if the stub doesn't exist just use the google brew
 			stub = stub ? _.assign({ ...excludeStubProps(stub), stubbed: true }, excludeGoogleProps(googleBrew)) : googleBrew;
+		}
+		const authorsExist = stub?.authors?.length > 0;
+		const isAuthor = stub?.authors?.includes(req.account?.username);
+		const isInvited = stub?.invitedAuthors?.includes(req.account?.username);
+		if(accessType === 'edit' && (authorsExist && !(isAuthor || isInvited))) {
+			throw `The current logged in user does not have editor access to this brew.
+
+If you believe you should have access to this brew, ask the file owner to invite you as an author by opening the brew, viewing the Properties tab, and adding your username to the "invited authors" list. You can then try to access this document again.`;
 		}
 
 		// If after all of that we still don't have a brew, throw an exception
@@ -119,7 +124,7 @@ const excludePropsFromUpdate = (brew)=>{
 
 const excludeGoogleProps = (brew)=>{
 	const modified = _.clone(brew);
-	const propsToExclude = ['tags', 'systems', 'published', 'authors', 'owner', 'views', 'thumbnail'];
+	const propsToExclude = ['version', 'tags', 'systems', 'published', 'authors', 'owner', 'views', 'thumbnail'];
 	for (const prop of propsToExclude) {
 		delete modified[prop];
 	}
@@ -127,7 +132,7 @@ const excludeGoogleProps = (brew)=>{
 };
 
 const excludeStubProps = (brew)=>{
-	const propsToExclude = ['text', 'textBin', 'renderer', 'pageCount', 'version'];
+	const propsToExclude = ['text', 'textBin', 'renderer', 'pageCount'];
 	for (const prop of propsToExclude) {
 		brew[prop] = undefined;
 	}
@@ -197,7 +202,13 @@ const newBrew = async (req, res)=>{
 
 const updateBrew = async (req, res)=>{
 	// Initialize brew from request and body, destructure query params, set a constant for the google id, and set the initial value for the after-save method
-	let brew = _.assign(req.brew, excludePropsFromUpdate(req.body));
+	const brewFromClient = excludePropsFromUpdate(req.body);
+	if(req.brew.version > brewFromClient.version) {
+		res.setHeader('Content-Type', 'application/json');
+		return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
+	}
+
+	let brew = _.assign(req.brew, brewFromClient);
 	const { saveToGoogle, removeFromGoogle } = req.query;
 	const googleId = brew.googleId;
 	let afterSave = async ()=>true;
@@ -243,9 +254,11 @@ const updateBrew = async (req, res)=>{
 		brew.text = undefined;
 	}
 	brew.updatedAt = new Date();
+	brew.version += 1;
 
 	if(req.account) {
 		brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
+		brew.invitedAuthors = _.uniq(_.filter(brew.invitedAuthors, (a)=>req.account.username !== a));
 	}
 
 	// define a function to catch our save errors
@@ -262,7 +275,7 @@ const updateBrew = async (req, res)=>{
 		// if the brew does have a stub id, update it using the stub id as the key.
 		brew = _.assign(await HomebrewModel.findOne({ _id: brew._id }), brew);
 		saved = await brew.save()
-		.catch(saveError);
+			.catch(saveError);
 	}
 	if(!saved) return;
 	// Call and wait for afterSave to complete

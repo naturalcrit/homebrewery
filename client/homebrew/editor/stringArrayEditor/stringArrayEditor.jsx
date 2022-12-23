@@ -9,7 +9,9 @@ const StringArrayEditor = createClass({
 			label         : '',
 			values        : [],
 			valuePatterns : null,
+			validators    : [],
 			placeholder   : '',
+			notes         : [],
 			unique        : false,
 			cannotEdit    : [],
 			onChange      : ()=>{}
@@ -83,7 +85,8 @@ const StringArrayEditor = createClass({
 		}
 		const matchesPatterns = !this.props.valuePatterns || this.props.valuePatterns.some((pattern)=>!!(value || '').match(pattern));
 		const uniqueIfSet = !this.props.unique || !values.includes(value);
-		return matchesPatterns && uniqueIfSet;
+		const passesValidators = !this.props.validators || this.props.validators.every((validator)=>validator(value));
+		return matchesPatterns && uniqueIfSet && passesValidators;
 	},
 
 	handleValueInputKeyDown : function(event, index) {
@@ -123,17 +126,21 @@ const StringArrayEditor = createClass({
 			</div>
 		);
 
-		return <div className='field values'>
+		return <div className='field'>
 			<label>{this.props.label}</label>
-			<div className='list'>
-				{valueElements}
-				<div className='input-group'>
-					<input type='text' className={`value ${this.valueIsValid(this.state.temporaryValue) ? '' : 'invalid'}`} placeholder={this.props.placeholder}
-						value={this.state.temporaryValue}
-						onKeyDown={(e)=>this.handleValueInputKeyDown(e)}
-						onChange={(e)=>this.setState({ temporaryValue: e.target.value })}/>
-					{this.valueIsValid(this.state.temporaryValue) ? <div className='icon steel' onClick={(e)=>{ e.stopPropagation(); this.addValue(this.state.temporaryValue); }}><i className='fa fa-check fa-fw'/></div> : null}
+			<div style={{ flex: '1 0' }}>
+				<div className='list'>
+					{valueElements}
+					<div className='input-group'>
+						<input type='text' className={`value ${this.valueIsValid(this.state.temporaryValue) ? '' : 'invalid'}`} placeholder={this.props.placeholder}
+							   value={this.state.temporaryValue}
+							   onKeyDown={(e)=>this.handleValueInputKeyDown(e)}
+							   onChange={(e)=>this.setState({ temporaryValue: e.target.value })}/>
+						{this.valueIsValid(this.state.temporaryValue) ? <div className='icon steel' onClick={(e)=>{ e.stopPropagation(); this.addValue(this.state.temporaryValue); }}><i className='fa fa-check fa-fw'/></div> : null}
+					</div>
 				</div>
+
+				{this.props.notes ? this.props.notes.map((n)=><p><small>{n}</small></p>) : null}
 			</div>
 		</div>;
 	}

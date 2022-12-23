@@ -215,7 +215,8 @@ const EditPage = createClass({
 			brew : { ...prevState.brew,
 				googleId : this.savedBrew.googleId ? this.savedBrew.googleId : null,
 				editId 	 : this.savedBrew.editId,
-				shareId  : this.savedBrew.shareId
+				shareId  : this.savedBrew.shareId,
+				version  : this.savedBrew.version
 			},
 			isPending   : false,
 			isSaving    : false,
@@ -310,6 +311,16 @@ const EditPage = createClass({
 						<div className='deny'>
 							Not Now
 						</div>
+					</div>
+				</Nav.item>;
+			}
+
+			if(this.state.errors.response.error.status === 409) {
+				const message = this.state.errors.response.body?.message;
+				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+					Oops!
+					<div className='errorContainer'>
+						{message ? message : 'Conflict: please refresh to get latest changes'}
 					</div>
 				</Nav.item>;
 			}
