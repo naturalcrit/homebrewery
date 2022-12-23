@@ -193,7 +193,7 @@ const newBrew = async (req, res)=>{
 const updateBrew = async (req, res)=>{
 	// Initialize brew from request and body, destructure query params, set a constant for the google id, and set the initial value for the after-save method
 	const brewFromClient = excludePropsFromUpdate(req.body);
-	if(req.brew.version > brewFromClient.version) {
+	if(req.brew.version && brewFromClient.version && req.brew.version > brewFromClient.version) {
 		res.setHeader('Content-Type', 'application/json');
 		return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
 	}
@@ -244,7 +244,7 @@ const updateBrew = async (req, res)=>{
 		brew.text = undefined;
 	}
 	brew.updatedAt = new Date();
-	brew.version += 1;
+	brew.version = (brew.version || 1) + 1;
 
 	if(req.account) {
 		brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
