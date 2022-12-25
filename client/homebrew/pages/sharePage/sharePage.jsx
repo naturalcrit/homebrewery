@@ -12,6 +12,7 @@ const Account = require('../../navbar/account.navitem.jsx');
 
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
+let broadcastChannel;
 
 const SharePage = createClass({
 	displayName     : 'SharePage',
@@ -30,12 +31,24 @@ const SharePage = createClass({
 		};
 	},
 
+	getInitialState : function() {
+		return {
+			brew : this.props.brew
+		};
+	},
+
 	componentDidMount : function() {
 		document.addEventListener('keydown', this.handleControlKeys);
+
+		const channelName = this.props.brew.shareId;
+		broadcastChannel = new window.BroadcastChannel(channelName);
+		broadcastChannel.onmessage = (event)=>{this.messageReceived(event);};
 	},
 
 	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
+
+		broadcastChannel.close();
 	},
 
 	handleControlKeys : function(e){
@@ -46,6 +59,14 @@ const SharePage = createClass({
 			e.stopPropagation();
 			e.preventDefault();
 		}
+	},
+
+	messageReceived : function(e){
+		console.log(`Message RX: ${new Date}`);
+		console.log(JSON.parse(e.data));
+		this.setState({
+			brew : JSON.parse(e.data)
+		});
 	},
 
 	processShareId : function() {
@@ -59,7 +80,7 @@ const SharePage = createClass({
 			<Meta name='robots' content='noindex, nofollow' />
 			<Navbar>
 				<Nav.section>
-					<Nav.item className='brewTitle'>{this.props.brew.title}</Nav.item>
+					<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
 				</Nav.section>
 
 				<Nav.section>
@@ -86,7 +107,7 @@ const SharePage = createClass({
 			</Navbar>
 
 			<div className='content'>
-				<BrewRenderer text={this.props.brew.text} style={this.props.brew.style} renderer={this.props.brew.renderer} theme={this.props.brew.theme} />
+				<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} theme={this.state.brew.theme} />
 			</div>
 		</div>;
 	}
