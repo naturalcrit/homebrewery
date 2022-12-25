@@ -10,6 +10,15 @@
 	height           : calc(100vh - 54px); // 54px is the height of the navbar + snippet bar.  probably a better way to dynamic get this.
 	overflow-y       : auto;
 
+	.sectionHead {
+		font-weight: 1000;
+		margin: 20px 0;
+
+		&:first-of-type {
+			margin-top: 0;
+		}
+	}
+
 	& > div {
 		margin-bottom: 10px;
 	}
@@ -30,6 +39,7 @@
 	}
 	.field{
 		display       : flex;
+		flex-wrap     : wrap;
 		width         : 100%;
 		min-width     : 200px;
 		&>label{
@@ -77,6 +87,11 @@
 				font-family : 'Open Sans', sans-serif;
 				font-size   : 0.8em;
 			}
+		}
+
+		small {
+			font-size  : 0.6em;
+			font-style : italic;
 		}
 	}
 
@@ -127,10 +142,6 @@
 		}
 		button.unpublish{
 			.button(@silver);
-		}
-		small{
-			font-size  : 0.6em;
-			font-style : italic;
 		}
 	}
 
@@ -196,6 +207,7 @@
 	}
 	.field .list {
 		display: flex;
+		flex: 1 0;
 		flex-wrap: wrap;
 
 		> * {
