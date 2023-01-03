@@ -52,12 +52,41 @@ pre {
 	font-family: 'Open Sans';
 	font-size: 0.9em;
 }
-
-
 ```
 
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
+
+### Friday 23/12/2022 - v3.5.0
+{{taskList
+
+##### Jeddai
+
+* [x] Only brew owners or invited authors can edit a brew
+
+  - Visiting an `/edit` page of a brew that does not list you as an author will result in an error page. Authors can be added to any brew by opening its {{fa,fa-info-circle}} **Properties** menu and typing the author's username (case-sensitive) into the **Invited Authors** bubble.
+  - Warn user if a newer brew version has been saved on another device
+
+Fixes issues [#1987](https://github.com/naturalcrit/homebrewery/issues/1987)
+}}
+
+\page
+
+### Monday 05/12/2022 - v3.4.1
+{{taskList
+
+##### G-Ambatte
+
+* [x] Fix Account page incorrect last login time
+
+Fixes issues [#2521](https://github.com/naturalcrit/homebrewery/issues/2521)
+
+##### Gazook
+
+* [x] Fix crashing on iOS and Safari browsers
+
+Fixes issues [#2531](https://github.com/naturalcrit/homebrewery/issues/2531)
+}}
 
 ### Saturday 10/12/2022 - v3.4.2
 {{taskList
