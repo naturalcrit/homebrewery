@@ -8,6 +8,7 @@ const Moment = require('moment');
 
 
 const NotificationLookup = createClass({
+	displayName : 'NotificationLookup',
 	getDefaultProps() {
 		return {};
 	},
