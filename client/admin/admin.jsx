@@ -27,7 +27,6 @@ const Admin = createClass({
 
 	render : function(){
 		return <div className='admin'>
-
 			<header>
 				<div className='container'>
 					<i className='fas fa-rocket' />
@@ -36,7 +35,7 @@ const Admin = createClass({
 			</header>
 			<div className='container'>
 				<div className='tabs'>
-					{tabGroups.map((tab, idx)=>{ return <button key={idx} onClick={()=>{ return this.handleClick(tab); }}>{tab.toUpperCase()}</button>; })}
+					{tabGroups.map((tab, idx)=>{ return <button className={tab===this.state.currentTab ? 'active' : ''} key={idx} onClick={()=>{ return this.handleClick(tab); }}>{tab.toUpperCase()}</button>; })}
 				</div>
 				{this.state.currentTab==='brew' && <BrewUtils />}
 				{this.state.currentTab==='notifications' && <NotificationUtils />}
