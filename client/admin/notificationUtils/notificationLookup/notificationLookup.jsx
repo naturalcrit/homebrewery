@@ -59,7 +59,7 @@ const NotificationLookup = createClass({
 
 	render(){
 		return <div className='notificationLookup'>
-			<h2>Notification Lookup</h2>
+			<h2>Lookup</h2>
 			<input type='text' value={this.state.query} onChange={this.handleChange} placeholder='notification key' />
 			<button onClick={this.lookup}>
 				<i className={cx('fas', {
