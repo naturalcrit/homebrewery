@@ -36,7 +36,7 @@ const Admin = createClass({
 			</header>
 			<div className='container'>
 				<div className='tabs'>
-					{tabGroups.map((tab)=>{ return <button onClick={()=>{ return this.handleClick(tab); }}>{tab.toUpperCase()}</button>; })}
+					{tabGroups.map((tab, idx)=>{ return <button key={idx} onClick={()=>{ return this.handleClick(tab); }}>{tab.toUpperCase()}</button>; })}
 				</div>
 				{this.state.currentTab==='brew' && <BrewUtils />}
 				{this.state.currentTab==='notifications' && <NotificationUtils />}
