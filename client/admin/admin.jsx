@@ -2,11 +2,7 @@ require('./admin.less');
 const React = require('react');
 const createClass = require('create-react-class');
 
-
-const BrewCleanup = require('./brewCleanup/brewCleanup.jsx');
-const BrewLookup = require('./brewLookup/brewLookup.jsx');
-const BrewCompress = require ('./brewCompress/brewCompress.jsx');
-const Stats = require('./stats/stats.jsx');
+const BrewUtils = require('./brewUtils/brewUtils.jsx');
 
 const Admin = createClass({
 	getDefaultProps : function() {
@@ -23,13 +19,7 @@ const Admin = createClass({
 				</div>
 			</header>
 			<div className='container'>
-				<Stats />
-				<hr />
-				<BrewLookup />
-				<hr />
-				<BrewCleanup />
-				<hr />
-				<BrewCompress />
+				<BrewUtils />
 			</div>
 		</div>;
 	}
