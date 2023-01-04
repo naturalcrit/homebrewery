@@ -407,7 +407,10 @@ if(isLocalEnvironment){
 //Render the page
 const templateFn = require('./../client/template.js');
 app.use(asyncHandler(async (req, res, next)=>{
+
+	// Assuming we have not received a brew yet, populate with default values
 	const brew = _.defaults(req.brew, DEFAULT_BREW);
+
 	// Create configuration object
 	const configuration = {
 		local       : isLocalEnvironment,
