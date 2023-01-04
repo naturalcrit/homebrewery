@@ -1,4 +1,5 @@
 const HomebrewModel = require('./homebrew.model.js').model;
+const NotificationModel = require('./notifications.model.js').model;
 const router = require('express').Router();
 const Moment = require('moment');
 //const render = require('vitreum/steps/render');
@@ -96,6 +97,15 @@ router.get('/admin/stats', mw.adminOnly, (req, res)=>{
 		return res.json({
 			totalBrews : count
 		});
+	});
+});
+
+/* Searches for matching edit or share id, also attempts to partial match */
+router.get('/admin/notification/lookup/:id', mw.adminOnly, (req, res, next)=>{
+	NotificationModel.findOne({ $or : [
+		{ dismissKey: { '$regex': req.params.id } },
+	] }).exec((err, notification)=>{
+		return res.json(notification);
 	});
 });
 
