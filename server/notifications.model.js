@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
-const { nanoid } = require('nanoid');
 const _ = require('lodash');
 
 const NotificationSchema = mongoose.Schema({
-	dissmissKey : { type: String, default: ()=>{return nanoid(12);}, index: { unique: true } },
+	dissmissKey : { type: String, index: { unique: true } },
 	title       : { type: String, default: '' },
 	text        : { type: String, default: '' },
 
