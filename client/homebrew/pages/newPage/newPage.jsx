@@ -17,6 +17,8 @@ const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
+const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
+
 const BREWKEY = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
 const METAKEY = 'homebrewery-new-meta';
@@ -26,30 +28,12 @@ const NewPage = createClass({
 	displayName     : 'NewPage',
 	getDefaultProps : function() {
 		return {
-			brew : {
-				text        : '',
-				style       : undefined,
-				title       : '',
-				description : '',
-				renderer    : 'V3',
-				theme       : '5ePHB'
-			}
+			brew : DEFAULT_BREW
 		};
 	},
 
 	getInitialState : function() {
-		let brew = this.props.brew;
-
-		if(this.props.brew.shareId) {
-			brew = {
-				text        : brew.text        ?? '',
-				style       : brew.style       ?? undefined,
-				title       : brew.title       ?? '',
-				description : brew.description ?? '',
-				renderer    : brew.renderer    ?? 'legacy',
-				theme       : brew.theme       ?? '5ePHB'
-			};
-		}
+		const brew = this.props.brew;
 
 		return {
 			brew       : brew,
@@ -83,7 +67,8 @@ const NewPage = createClass({
 		}
 
 		localStorage.setItem(BREWKEY, brew.text);
-		localStorage.setItem(STYLEKEY, brew.style);
+		if(brew.style)
+			localStorage.setItem(STYLEKEY, brew.style);
 		localStorage.setItem(METAKEY, JSON.stringify({ 'renderer': brew.renderer, 'theme': brew.theme }));
 	},
 	componentWillUnmount : function() {

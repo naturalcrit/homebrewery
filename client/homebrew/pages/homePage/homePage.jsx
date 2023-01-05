@@ -18,16 +18,14 @@ const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
-
+const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
 
 const HomePage = createClass({
 	displayName     : 'HomePage',
 	getDefaultProps : function() {
 		return {
-			brew : {
-				text : '',
-			},
-			ver : '0.0.0'
+			brew : DEFAULT_BREW,
+			ver  : '0.0.0'
 		};
 	},
 	getInitialState : function() {

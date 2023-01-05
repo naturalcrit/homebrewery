@@ -21,6 +21,8 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const Markdown = require('naturalcrit/markdown.js');
 
+const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
+
 const googleDriveActive = require('../../googleDrive.png');
 const googleDriveInactive = require('../../googleDriveMono.png');
 
@@ -30,24 +32,7 @@ const EditPage = createClass({
 	displayName     : 'EditPage',
 	getDefaultProps : function() {
 		return {
-			brew : {
-				text      : '',
-				style     : '',
-				shareId   : null,
-				editId    : null,
-				createdAt : null,
-				updatedAt : null,
-				gDrive    : false,
-				trashed   : false,
-
-				title       : '',
-				description : '',
-				tags        : '',
-				published   : false,
-				authors     : [],
-				systems     : [],
-				renderer    : 'legacy'
-			}
+			brew : DEFAULT_BREW_LOAD
 		};
 	},
 
