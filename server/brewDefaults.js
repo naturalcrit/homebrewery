@@ -2,7 +2,7 @@ const _ = require('lodash');
 
 // Default properties for newly-created brews
 const DEFAULT_BREW = {
-	title       : 'Untitled Brew',
+	title       : '',
 	text        : '',
 	style       : undefined,
 	description : '',
