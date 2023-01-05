@@ -408,9 +408,6 @@ if(isLocalEnvironment){
 const templateFn = require('./../client/template.js');
 app.use(asyncHandler(async (req, res, next)=>{
 
-	// Assuming we have not received a brew yet, populate with default values
-	const brew = _.defaults(req.brew, DEFAULT_BREW);
-
 	// Create configuration object
 	const configuration = {
 		local       : isLocalEnvironment,
@@ -420,7 +417,7 @@ app.use(asyncHandler(async (req, res, next)=>{
 	const props = {
 		version       : require('./../package.json').version,
 		url           : req.originalUrl,
-		brew          : brew,
+		brew          : req.brew,
 		brews         : req.brews,
 		googleBrews   : req.googleBrews,
 		account       : req.account,
