@@ -56,6 +56,9 @@ jobs:
 
       # run tests!
       - run:
+          name: Test - API Unit Tests
+          command: npm run test:unit
+      - run:
           name: Test - Basic
           command: npm run test:basic
       - run:
