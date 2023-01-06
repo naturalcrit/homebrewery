@@ -76,17 +76,12 @@ If you believe you should have access to this brew, ask the file owner to invite
 				throw 'Brew not found in Homebrewery database or Google Drive';
 			}
 
-			if(typeof stub?.tags === 'string') {
-				stub.tags = [];
-			}
+			// Clean up brew: fill in missing fields with defaults / fix old invalid values
+			stub.tags     = stub.tags     || undefined; // Clear empty strings
+			stub.renderer = stub.renderer || undefined; // Clear empty strings
+			stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
 
-			// Use _.assignWith instead of _.defaults - does this need to be replicated at all other uses of _.defaults???
-			_.assignWith(stub, DEFAULT_BREW_LOAD, (objValue, srcValue)=>{
-				if(typeof objValue === 'boolean') return objValue;
-				return objValue || srcValue;
-			});
 			req.brew = stub;
-
 			next();
 		};
 	},

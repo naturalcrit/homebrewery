@@ -1,26 +1,32 @@
 const _ = require('lodash');
 
-// Default brew properties in most cases
+// Default properties for newly-created brews
 const DEFAULT_BREW = {
+	title       : '',
 	text        : '',
-	editId      : null,
-	shareId     : null,
-	title       : 'Untitled Brew',
+	style       : undefined,
 	description : '',
+	editId      : undefined,
+	shareId     : undefined,
+	createdAt   : undefined,
+	updatedAt   : undefined,
 	renderer    : 'V3',
+	theme       : '5ePHB',
+	authors     : [],
 	tags        : [],
 	systems     : [],
 	thumbnail   : '',
 	published   : false,
 	pageCount   : 1,
-	theme       : '5ePHB'
+	gDrive      : false,
+	trashed     : false
+
 };
-//  Default brew properties for loading
-const DEFAULT_BREW_LOAD = {};
-_.defaults(DEFAULT_BREW_LOAD,
+// Default values for older brews with missing properties
+// e.g., missing "renderer" is assumed to be "legacy"
+const DEFAULT_BREW_LOAD = _.defaults(
 	{
-		renderer  : 'legacy',
-		published : true
+		renderer : 'legacy',
 	},
 	DEFAULT_BREW);
 
