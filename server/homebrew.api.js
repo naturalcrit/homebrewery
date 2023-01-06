@@ -9,6 +9,8 @@ const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
 
+const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
+
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
 // 		cb(brews);
@@ -71,11 +73,13 @@ If you believe you should have access to this brew, ask the file owner to invite
 			throw 'Brew not found in Homebrewery database or Google Drive';
 		}
 
-		if(typeof stub?.tags === 'string') {
-			stub.tags = [];
-		}
-		req.brew = stub || {};
+		// Clean up brew: fill in missing fields with defaults / fix old invalid values
+		stub.tags     = stub.tags     || undefined; // Clear empty strings
+		stub.renderer = stub.renderer || undefined; // Clear empty strings
+		stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
 
+
+		req.brew = stub;
 		next();
 	};
 };
@@ -138,6 +142,8 @@ const beforeNewSave = (account, brew)=>{
 
 	brew.authors = (account) ? [account.username] : [];
 	brew.text = mergeBrewText(brew);
+
+	_.defaults(brew, DEFAULT_BREW);
 };
 
 const newGoogleBrew = async (account, brew, res)=>{
