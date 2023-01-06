@@ -1,7 +1,5 @@
 /* eslint-disable max-lines */
 
-
-
 describe('Tests for api', ()=>{
 	let api;
 	let google;
@@ -170,7 +168,7 @@ describe('Tests for api', ()=>{
 		});
 
 		it('changes tags from string to array', async ()=>{
-			const testBrew = { title: 'test brew', authors: [], tags: 'tag' };
+			const testBrew = { title: 'test brew', authors: [], tags: '' };
 			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
 			model.get = jest.fn(()=>toBrewPromise(testBrew));
 
@@ -248,17 +246,22 @@ If you believe you should have access to this brew, ask the file owner to invite
 				text        : 'brew text',
 				stubbed     : true,
 				description : '',
-				editId      : null,
+				editId      : undefined,
 				pageCount   : 1,
-				published   : true,
+				published   : false,
 				renderer    : 'legacy',
-				shareId     : null,
+				shareId     : undefined,
 				systems     : [],
 				tags        : [],
 				theme       : '5ePHB',
 				thumbnail   : '',
 				textBin     : undefined,
-				version     : undefined
+				version     : undefined,
+				createdAt   : undefined,
+				gDrive      : false,
+				style       : undefined,
+				trashed     : false,
+				updatedAt   : undefined
 			});
 			expect(next).toHaveBeenCalled();
 			expect(api.getId).toHaveBeenCalledWith(req);
@@ -433,21 +436,26 @@ brew`);
 
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.send).toHaveBeenCalledWith({
-				   _id         : '1',
-				   authors     : ['test user'],
-				   description : '',
-				   editId      : expect.any(String),
-				   pageCount   : 1,
-				   published   : false,
-				   renderer    : 'V3',
-				   shareId     : expect.any(String),
-				   systems     : [],
-				   tags        : [],
-				   text        : undefined,
-				   textBin     : expect.objectContaining({}),
-			       theme       : '5ePHB',
-				   thumbnail   : '',
-				   title       : 'asdf',
+				_id         : '1',
+				authors     : ['test user'],
+				createdAt   : undefined,
+				description : '',
+				editId      : expect.any(String),
+				gDrive      : false,
+				pageCount   : 1,
+				published   : false,
+				renderer    : 'V3',
+				shareId     : expect.any(String),
+				style       : undefined,
+				systems     : [],
+				tags        : [],
+				text        : undefined,
+				textBin     : expect.objectContaining({}),
+				theme       : '5ePHB',
+				thumbnail   : '',
+				title       : 'asdf',
+				trashed     : false,
+				updatedAt   : undefined
 			});
 		});
 
@@ -487,13 +495,16 @@ brew`);
 			expect(res.send).toHaveBeenCalledWith({
 				_id         : '1',
 				authors     : ['test user'],
+				createdAt   : undefined,
 				description : '',
 				editId      : expect.any(String),
+				gDrive      : false,
 				pageCount   : undefined,
 				published   : false,
 				renderer    : undefined,
 				shareId     : expect.any(String),
 				googleId    : expect.any(String),
+				style       : undefined,
 				systems     : [],
 				tags        : [],
 				text        : undefined,
@@ -501,6 +512,8 @@ brew`);
 				theme       : '5ePHB',
 				thumbnail   : '',
 				title       : 'asdf',
+				trashed     : false,
+				updatedAt   : undefined
 			});
 		});
 
