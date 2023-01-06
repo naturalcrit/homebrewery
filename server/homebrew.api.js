@@ -304,7 +304,6 @@ If you believe you should have access to this brew, ask the file owner to invite
 			if(account) {
 				// Remove current user as author
 				brew.authors = _.pull(brew.authors, account.username);
-				brew.markModified('authors');
 			}
 
 			if(brew.authors.length === 0) {
