@@ -30,15 +30,17 @@ NotificationSchema.statics.getByKey = function(key, fields=null){
 	});
 };
 
-NotificationSchema.statics.addNotification = async function(title, text, startAt=new Date, stopAt=new Date){
+NotificationSchema.statics.addNotification = async function(dismissKey, text, title=null, startAt=new Date, stopAt=new Date){
 	const data = {
-		title   : title,
-		text    : text,
-		startAt : startAt,
-		stopAt  : stopAt
+		dismissKey : dismissKey,
+		title      : title,
+		text       : text,
+		startAt    : startAt,
+		stopAt     : stopAt
 	};
 	const newNotification = new Notification(data);
-	await newNotification.save();
+	await newNotification.save()
+	.catch((err)=>{return err;});
 
 	return newNotification;
 };
@@ -46,6 +48,9 @@ NotificationSchema.statics.addNotification = async function(title, text, startAt
 NotificationSchema.statics.updateNotification = async function(dismissKey, title=null, text=null, startAt=null, stopAt=null){
 	if(!dismissKey) return 'No key!';
 	if(!title && !text && !startAt && !stopAt) return 'No data!';
+	const filter = {
+		dismissKey : dismissKey
+	};
 	const data = {
 		title   : title,
 		text    : text,
@@ -56,7 +61,7 @@ NotificationSchema.statics.updateNotification = async function(dismissKey, title
 		if(value === null) delete data[key];
 	}
 
-	await Notification.updateOne(data)
+	await Notification.findOneAndUpdate(filter, data, { new: true })
 		.exec((err, notifications)=>{
 			if(err) return reject('Can not find notification');
 			return resolve(notifications);
