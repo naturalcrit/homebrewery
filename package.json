@@ -19,6 +19,8 @@
     "circleci": "npm test && eslint **/*.{js,jsx} --max-warnings=0",
     "verify": "npm run lint && npm test",
     "test": "jest",
+    "test:api-unit": "jest server/*.spec.js --verbose",
+    "test:coverage": "jest --coverage --silent",
     "test:dev": "jest --verbose --watch",
     "test:basic": "jest tests/markdown/basic.test.js --verbose",
     "test:mustache-span": "jest tests/markdown/mustache-span.test.js --verbose",
@@ -39,7 +41,21 @@
       "mode_modules",
       "shared",
       "server"
-    ]
+    ],
+    "coverageThreshold" : {
+      "global" : {
+        "statements" : 25,
+        "branches"   : 10,
+        "functions"  : 22,
+        "lines"      : 25
+      },
+      "server/homebrew.api.js" : {
+        "statements" : 71,
+        "branches"   : 54,
+        "functions"  : 66,
+        "lines"      : 73
+      }
+    }
   },
   "babel": {
     "presets": [
