@@ -15,6 +15,21 @@ body {
 	-webkit-print-color-adjust : exact;
 }
 
+//*****************************
+// *    MUSTACHE DIVS/SPANS
+// *****************************/
+.page {
+	.block {
+		break-inside      : avoid;
+		display           : inline-block;
+		width             : 100%;
+	}
+	.inline-block {
+		display     : inline-block;
+		text-indent : initial;
+	}
+}
+
 .useColumns(@multiplier : 1, @fillMode: balance){
 	column-fill          : @fillMode;
 	column-count         : 2;
@@ -25,6 +40,7 @@ body {
 	columns           : inherit;
 	column-gap        : inherit;
 }
+
 .page{
 	.useColumns();
 	height            : 279.4mm;
@@ -306,21 +322,6 @@ body {
 		-webkit-column-break-inside : avoid;
 		page-break-inside           : avoid;
 		break-inside                : avoid;
-	}
-}
-
-//*****************************
-// *    MUSTACHE DIVS/SPANS
-// *****************************/
-.page {
-	.block {
-		break-inside      : avoid;
-		display           : inline-block;
-		width             : 100%;
-	}
-	.inline-block {
-		display     : inline-block;
-		text-indent : initial;
 	}
 }
 
