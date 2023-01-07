@@ -1,9 +1,10 @@
 /* eslint-disable max-lines */
 require('./editPage.less');
+require('../../styles/nav-item-error-container.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
-const request = require('superagent');
+const request = require('../../utils/request-middleware.js');
 const { Meta } = require('vitreum/headtags');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
@@ -45,7 +46,7 @@ const EditPage = createClass({
 			alertLoginToTransfer   : false,
 			saveGoogle             : this.props.brew.googleId ? true : false,
 			confirmGoogleTransfer  : false,
-			errors                 : null,
+			error                  : null,
 			htmlErrors             : Markdown.validate(this.props.brew.text),
 			url                    : '',
 			autoSave               : true,
@@ -59,7 +60,6 @@ const EditPage = createClass({
 		this.setState({
 			url : window.location.href
 		});
-
 
 		this.savedBrew = JSON.parse(JSON.stringify(this.props.brew)); //Deep copy
 
@@ -157,7 +157,10 @@ const EditPage = createClass({
 		this.setState((prevState)=>({
 			confirmGoogleTransfer : !prevState.confirmGoogleTransfer
 		}));
-		this.clearErrors();
+		this.setState({
+			error    : null,
+			isSaving : false
+		});
 	},
 
 	closeAlerts : function(event){
@@ -173,16 +176,8 @@ const EditPage = createClass({
 		this.setState((prevState)=>({
 			saveGoogle : !prevState.saveGoogle,
 			isSaving   : false,
-			errors     : null
+			error      : null
 		}), ()=>this.save());
-	},
-
-	clearErrors : function(){
-		this.setState({
-			errors   : null,
-			isSaving : false
-
-		});
 	},
 
 	save : async function(){
@@ -190,7 +185,7 @@ const EditPage = createClass({
 
 		this.setState((prevState)=>({
 			isSaving   : true,
-			errors     : null,
+			error      : null,
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
@@ -205,8 +200,9 @@ const EditPage = createClass({
 			.send(brew)
 			.catch((err)=>{
 				console.log('Error Updating Local Brew');
-				this.setState({ errors: err });
+				this.setState({ error: err.response });
 			});
+		if(!res) return;
 
 		this.savedBrew = res.body;
 		history.replaceState(null, null, `/edit/${this.savedBrew.editId}`);
@@ -266,75 +262,8 @@ const EditPage = createClass({
 	},
 
 	renderSaveButton : function(){
-		if(this.state.errors){
-			let errMsg = '';
-			try {
-				errMsg += `${this.state.errors.toString()}\n\n`;
-				errMsg += `\`\`\`\n${this.state.errors.stack}\n`;
-				errMsg += `${JSON.stringify(this.state.errors.response.error, null, '  ')}\n\`\`\``;
-				console.log(errMsg);
-			} catch (e){}
-
-			// if(this.state.errors.status == '401'){
-			// 	return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-			// 		Oops!
-			// 		<div className='errorContainer' onClick={this.clearErrors}>
-			// 		You must be signed in to a Google account
-			// 			to save this to<br />Google Drive!<br />
-			// 			<a target='_blank' rel='noopener noreferrer'
-			// 				href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
-			// 				<div className='confirm'>
-			// 					Sign In
-			// 				</div>
-			// 			</a>
-			// 			<div className='deny'>
-			// 				Not Now
-			// 			</div>
-			// 		</div>
-			// 	</Nav.item>;
-			// }
-
-			if(this.state.errors.response.req.url.match(/^\/api.*Google.*$/m)){
-				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-					Oops!
-					<div className='errorContainer' onClick={this.clearErrors}>
-					Looks like your Google credentials have
-					expired! Visit our log in page to sign out
-					and sign back in with Google,
-					then try saving again!
-						<a target='_blank' rel='noopener noreferrer'
-							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
-							<div className='confirm'>
-								Sign In
-							</div>
-						</a>
-						<div className='deny'>
-							Not Now
-						</div>
-					</div>
-				</Nav.item>;
-			}
-
-			if(this.state.errors.response.error.status === 409) {
-				const message = this.state.errors.response.body?.message;
-				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-					Oops!
-					<div className='errorContainer'>
-						{message ? message : 'Conflict: please refresh to get latest changes'}
-					</div>
-				</Nav.item>;
-			}
-
-			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-				Oops!
-				<div className='errorContainer'>
-					Looks like there was a problem saving. <br />
-					Report the issue <a target='_blank' rel='noopener noreferrer'
-						href={`https://github.com/naturalcrit/homebrewery/issues/new?template=save_issue.yml&error-code=${encodeURIComponent(errMsg)}`}>
-						here
-					</a>.
-				</div>
-			</Nav.item>;
+		if(this.state.error){
+			return require('../../utils/render-error-nav-item.js')(this, this.state.error);
 		}
 
 		if(this.state.autoSaveWarning && this.hasChanges()){

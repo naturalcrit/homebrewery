@@ -1,9 +1,10 @@
 require('./homePage.less');
+require('../../styles/nav-item-error-container.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
-const request = require('superagent');
+const request = require('../../utils/request-middleware.js');
 const { Meta } = require('vitreum/headtags');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
@@ -31,14 +32,18 @@ const HomePage = createClass({
 	getInitialState : function() {
 		return {
 			brew        : this.props.brew,
-			welcomeText : this.props.brew.text
+			welcomeText : this.props.brew.text,
+			error       : undefined
 		};
 	},
 	handleSave : function(){
 		request.post('/api')
 			.send(this.state.brew)
 			.end((err, res)=>{
-				if(err) return;
+				if(err) {
+					this.setState({ error: err.response });
+					return;
+				}
 				const brew = res.body;
 				window.location = `/edit/${brew.editId}`;
 			});
@@ -51,9 +56,16 @@ const HomePage = createClass({
 			brew : { ...prevState.brew, text: text }
 		}));
 	},
+	renderSaveError : function(){
+		if(this.state.error) {
+			return require('../../utils/render-error-nav-item.js')(this, this.state.error);
+		}
+		return null;
+	},
 	renderNavbar : function(){
 		return <Navbar ver={this.props.ver}>
 			<Nav.section>
+				{this.renderSaveError()}
 				<NewBrewItem />
 				<HelpNavItem />
 				<RecentNavItem />
