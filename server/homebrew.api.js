@@ -47,7 +47,7 @@ const api = {
 						console.warn(err);
 					}
 				});
-			stub = stub?.toObject() || {};
+			stub = stub?.toObject();
 
 			// If there is a google id, try to find the google brew
 			if(!stubOnly && (googleId || stub?.googleId)) {
@@ -77,9 +77,11 @@ If you believe you should have access to this brew, ask the file owner to invite
 			}
 
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
-			stub.tags     = stub.tags     || undefined; // Clear empty strings
-			stub.renderer = stub.renderer || undefined; // Clear empty strings
-			stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
+			if(stub) {
+				stub.tags     = stub.tags     || undefined; // Clear empty strings
+				stub.renderer = stub.renderer || undefined; // Clear empty strings
+				stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
+			}
 
 			req.brew = stub;
 			next();
