@@ -192,8 +192,8 @@ If you believe you should have access to this brew, ask the file owner to invite
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
 		if(req.brew.version && brewFromClient.version && req.brew.version > brewFromClient.version) {
 			console.log(`Version mismatch on brew ${req.body.editId}`);
-			//	res.setHeader('Content-Type', 'application/json');
-			//	return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
+			res.setHeader('Content-Type', 'application/json');
+			return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
 		}
 
 		let brew = _.assign(req.brew, brewFromClient);
