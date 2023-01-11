@@ -54,11 +54,10 @@ const api = {
 				let googleError;
 				const googleBrew = await GoogleActions.getGoogleBrew(googleId || stub?.googleId, id, accessType)
 					.catch((err)=>{
-						console.warn(err);
 						googleError = err;
 					});
-				// If we can't find the google brew and there is a google id for the brew, throw an error.
-				if(!googleBrew) throw googleError;
+				// Throw any error caught while attempting to retrieve Google brew.
+				if(googleError) throw googleError;
 				// Combine the Homebrewery stub with the google brew, or if the stub doesn't exist just use the google brew
 				stub = stub ? _.assign({ ...api.excludeStubProps(stub), stubbed: true }, api.excludeGoogleProps(googleBrew)) : googleBrew;
 			}
