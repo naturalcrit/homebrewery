@@ -82,7 +82,7 @@ If you believe you should have access to this brew, ask the file owner to invite
 				stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
 			}
 
-			req.brew = stub;
+			req.brew = stub ?? {};
 			next();
 		};
 	},
