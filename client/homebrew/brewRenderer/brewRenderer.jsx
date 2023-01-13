@@ -49,7 +49,7 @@ const BrewRenderer = createClass({
 			initialContent : `<!DOCTYPE html><html><head>
 												<link href="//use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
 												<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
-												<link href='/homebrew/bundle.css' rel='stylesheet' />
+												<style>@import url("/homebrew/bundle.css") layer(bundle)</style>
 												<base target=_blank>
 												</head><body style='overflow: hidden'><div></div></body></html>`
 		};
@@ -134,7 +134,7 @@ const BrewRenderer = createClass({
 
 	renderStyle : function() {
 		if(!this.props.style) return;
-		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${this.props.style} </style>` }} />;
+		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${this.props.style}\n} </style>` }} />;
 	},
 
 	renderPage : function(pageText, index){
