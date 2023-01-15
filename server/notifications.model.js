@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 const _ = require('lodash');
 
 const NotificationSchema = mongoose.Schema({
-	dissmissKey : { type: String, index: { unique: true } },
-	title       : { type: String, default: '' },
-	text        : { type: String, default: '' },
+	dismissKey : { type: String, unique: true, required: true },
+	title      : { type: String, default: '' },
+	text       : { type: String, default: '' },
 
 	createdAt : { type: Date, default: Date.now },
 	startAt   : { type: Date, default: Date.now },
@@ -30,19 +30,23 @@ NotificationSchema.statics.getByKey = function(key, fields=null){
 	});
 };
 
-NotificationSchema.statics.addNotification = async function(dismissKey, text, title=null, startAt=new Date, stopAt=new Date){
-	const data = {
-		dismissKey : dismissKey,
-		title      : title,
-		text       : text,
-		startAt    : startAt,
-		stopAt     : stopAt
+NotificationSchema.statics.addNotification = async function(data){
+	// console.log('add notification');
+	if(!data.dismissKey) return 'Dismiss key is required!';
+	const defaults = {
+		title   : '',
+		text    : '',
+		startAt : new Date,
+		stopAt  : new Date
 	};
+	_.mergeWith(data, defaults, (item)=>{ if(!item) return undefined; });
 	const newNotification = new Notification(data);
-	await newNotification.save()
-	.catch((err)=>{return err;});
+	const savedNotification = await newNotification.save()
+		.catch((err)=>{
+			return { err: err };
+		});
 
-	return newNotification;
+	return savedNotification;
 };
 
 NotificationSchema.statics.updateNotification = async function(dismissKey, title=null, text=null, startAt=null, stopAt=null){

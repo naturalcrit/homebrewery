@@ -100,13 +100,18 @@ router.get('/admin/stats', mw.adminOnly, (req, res)=>{
 	});
 });
 
-/* Searches for matching edit or share id, also attempts to partial match */
+/* Searches for notification with matching key */
 router.get('/admin/notification/lookup/:id', mw.adminOnly, (req, res, next)=>{
-	NotificationModel.findOne({ $or : [
-		{ dismissKey: { '$regex': req.params.id } },
-	] }).exec((err, notification)=>{
-		return res.json(notification);
-	});
+	NotificationModel.findOne({ dismissKey: req.params.id })
+		.exec((err, notification)=>{
+			return res.json(notification);
+		});
+});
+
+/* Add new notification */
+router.post('/admin/notification/add', mw.adminOnly, async (req, res, next)=>{
+	const notification = await NotificationModel.addNotification(req.body);
+	return res.json(notification);
 });
 
 router.get('/admin', mw.adminOnly, (req, res)=>{
