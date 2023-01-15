@@ -57,7 +57,7 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-### v3.6.0
+### v3.6.1
 {{taskList
 ##### G-Ambatte
 
