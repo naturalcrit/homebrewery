@@ -59,6 +59,13 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 
 ### v3.6.0
 {{taskList
+##### G-Ambatte
+
+* [x] Add Themes directory to development server watchlist.
+}}
+
+### v3.6.0
+{{taskList
 ##### Jeddai
 
 * [x] Add unit tests with full coverage for the Homebrewery API
