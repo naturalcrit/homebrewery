@@ -39,7 +39,7 @@ NotificationSchema.statics.addNotification = async function(data){
 		startAt : new Date,
 		stopAt  : new Date
 	};
-	_.mergeWith(data, defaults, (item)=>{ if(!item) return undefined; });
+	_.defaults(data, defaults);
 	const newNotification = new Notification(data);
 	const savedNotification = await newNotification.save()
 		.catch((err)=>{
