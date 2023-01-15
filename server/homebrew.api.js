@@ -54,11 +54,10 @@ const api = {
 				let googleError;
 				const googleBrew = await GoogleActions.getGoogleBrew(googleId || stub?.googleId, id, accessType)
 					.catch((err)=>{
-						console.warn(err);
 						googleError = err;
 					});
-				// If we can't find the google brew and there is a google id for the brew, throw an error.
-				if(!googleBrew) throw googleError;
+				// Throw any error caught while attempting to retrieve Google brew.
+				if(googleError) throw googleError;
 				// Combine the Homebrewery stub with the google brew, or if the stub doesn't exist just use the google brew
 				stub = stub ? _.assign({ ...api.excludeStubProps(stub), stubbed: true }, api.excludeGoogleProps(googleBrew)) : googleBrew;
 			}
@@ -77,11 +76,13 @@ If you believe you should have access to this brew, ask the file owner to invite
 			}
 
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
-			stub.tags     = stub.tags     || undefined; // Clear empty strings
-			stub.renderer = stub.renderer || undefined; // Clear empty strings
-			stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
+			if(stub) {
+				stub.tags     = stub.tags     || undefined; // Clear empty strings
+				stub.renderer = stub.renderer || undefined; // Clear empty strings
+				stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
+			}
 
-			req.brew = stub;
+			req.brew = stub ?? {};
 			next();
 		};
 	},
@@ -192,8 +193,8 @@ If you believe you should have access to this brew, ask the file owner to invite
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
 		if(req.brew.version && brewFromClient.version && req.brew.version > brewFromClient.version) {
 			console.log(`Version mismatch on brew ${req.body.editId}`);
-			//	res.setHeader('Content-Type', 'application/json');
-			//	return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
+			res.setHeader('Content-Type', 'application/json');
+			return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
 		}
 
 		let brew = _.assign(req.brew, brewFromClient);
