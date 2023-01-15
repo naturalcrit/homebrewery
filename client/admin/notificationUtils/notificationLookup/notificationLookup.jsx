@@ -33,7 +33,7 @@ const NotificationLookup = createClass({
 	},
 
 	renderFoundNotification(){
-		const notification = this.state.foundnotification;
+		const notification = this.state.foundNotification;
 		return <div className='foundNotification'>
 			<dl>
 				<dt>Key</dt>
