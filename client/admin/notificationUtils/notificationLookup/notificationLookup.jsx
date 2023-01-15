@@ -32,6 +32,16 @@ const NotificationLookup = createClass({
 			.finally(()=>this.setState({ searching: false }));
 	},
 
+	deleteNotification : function(){
+		console.log('DELETE');
+		if(!confirm(`Really delete notification ${this.state.foundNotification.dismissKey} : ${this.state.foundNotification.title}?`)) {
+			console.log('CANCELLED');
+			return;
+		}
+		console.log('CONFIRMED');
+		return;
+	},
+
 	renderFoundNotification(){
 		const notification = this.state.foundNotification;
 		return <div className='foundNotification'>
@@ -46,14 +56,15 @@ const NotificationLookup = createClass({
 				<dd>{notification.text || 'No Text'}</dd>
 
 				<dt>Created</dt>
-				<dd>{Moment(notification.createdAt).fromNow()}</dd>
+				<dd>{Moment(notification.createdAt).toLocaleString()}</dd>
 
 				<dt>Start</dt>
-				<dd>{Moment(notification.startAt).fromNow() || 'No Start Time'}</dd>
+				<dd>{Moment(notification.startAt).toLocaleString() || 'No Start Time'}</dd>
 
-				<dt>Created</dt>
-				<dd>{Moment(notification.stopAt).fromNow() || 'No End Time'}</dd>
+				<dt>Stop</dt>
+				<dd>{Moment(notification.stopAt).toLocaleString() || 'No End Time'}</dd>
 			</dl>
+			<button onClick={this.deleteNotification}>DELETE</button>
 		</div>;
 	},
 
