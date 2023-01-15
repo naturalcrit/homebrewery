@@ -47,7 +47,6 @@ const NotificationAdd = createClass({
 			.then((response)=>{
 				return response.body;
 			});
-		console.log(notification);
 
 		const update = {
 			notificationResult : `Created notification: ${JSON.stringify(notification, null, 2)}`
@@ -62,8 +61,6 @@ const NotificationAdd = createClass({
 			update.startAt = '';
 			update.stopAt = '';
 		}
-
-		console.log(update);
 
 		this.setState(update);
 	},
