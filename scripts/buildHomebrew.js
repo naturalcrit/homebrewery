@@ -72,6 +72,7 @@ fs.emptyDirSync('./build');
 		themeData.path = dir;
 		themes.V3[dir] = (themeData);
 		fs.copy(`./themes/V3/${dir}/dropdownTexture.png`, `./build/themes/V3/${dir}/dropdownTexture.png`);
+		fs.copy(`./themes/V3/${dir}/dropdownPreview.jpg`, `./build/themes/V3/${dir}/dropdownPreview.jpg`);
 		const src = `./themes/V3/${dir}/style.less`;
 	  ((outputDirectory)=>{
 			less.render(fs.readFileSync(src).toString(), {
