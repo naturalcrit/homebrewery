@@ -14,6 +14,7 @@
     "quick": "node scripts/quick.js",
     "build": "node scripts/buildHomebrew.js",
     "buildall": "node scripts/buildHomebrew.js && node scripts/buildAdmin.js",
+    "builddev": "node scripts/buildHomebrew.js --dev",
     "lint": "eslint --fix **/*.{js,jsx}",
     "lint:dry": "eslint **/*.{js,jsx}",
     "circleci": "npm test && eslint **/*.{js,jsx} --max-warnings=0",

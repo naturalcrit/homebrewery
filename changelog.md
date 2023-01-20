@@ -68,6 +68,10 @@ Fixes issues [#2603](https://github.com/naturalcrit/homebrewery/issues/2603)
 ##### Jeddai
 
 * [x] Add unit tests with full coverage for the Homebrewery API
+
+##### G-Ambatte
+
+* [x] Add Themes directory to development server watchlist.
 }}
 
 ### Friday 23/12/2022 - v3.5.0
