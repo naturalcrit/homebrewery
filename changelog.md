@@ -59,6 +59,12 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 
 ### v3.6.0
 {{taskList
+##### calculuschild
+
+	* [x] Fix Google Drive brews sometimes duplicating
+
+Fixes issues [#2603](https://github.com/naturalcrit/homebrewery/issues/2603)
+
 ##### Jeddai
 
 * [x] Add unit tests with full coverage for the Homebrewery API
