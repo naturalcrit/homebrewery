@@ -342,9 +342,6 @@ brew`);
 			expect(result._id).toBeUndefined();
 			expect(result.views).toBeUndefined();
 			expect(result.lastViewed).toBeUndefined();
-			expect(result.editId).toBeUndefined();
-			expect(result.shareId).toBeUndefined();
-			expect(result.googleId).toBeUndefined();
 		});
 
 		it('excludeGoogleProps removes the correct keys', ()=>{

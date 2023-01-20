@@ -109,7 +109,7 @@ If you believe you should have access to this brew, ask the file owner to invite
 	excludePropsFromUpdate : (brew)=>{
 		// Remove undesired properties
 		const modified = _.clone(brew);
-		const propsToExclude = ['_id', 'views', 'lastViewed', 'editId', 'shareId', 'googleId'];
+		const propsToExclude = ['_id', 'views', 'lastViewed'];
 		for (const prop of propsToExclude) {
 			delete modified[prop];
 		}
@@ -189,17 +189,18 @@ If you believe you should have access to this brew, ask the file owner to invite
 		res.status(200).send(saved);
 	},
 	updateBrew : async (req, res)=>{
-		// Initialize brew from request and body, destructure query params, set a constant for the google id, and set the initial value for the after-save method
+		// Initialize brew from request and body, destructure query params, and set the initial value for the after-save method
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
-		if(req.brew.version && brewFromClient.version && req.brew.version > brewFromClient.version) {
-			console.log(`Version mismatch on brew ${req.body.editId}`);
+		const brewFromServer = req.brew;
+		if(brewFromServer.version && brewFromClient.version && brewFromServer.version > brewFromClient.version) {
+			console.log(`Version mismatch on brew ${brewFromClient.editId}`);
 			res.setHeader('Content-Type', 'application/json');
 			return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
 		}
 
-		let brew = _.assign(req.brew, brewFromClient);
-		const { saveToGoogle, removeFromGoogle } = req.query;
+		let brew = _.assign(brewFromServer, brewFromClient);
 		const googleId = brew.googleId;
+		const { saveToGoogle, removeFromGoogle } = req.query;
 		let afterSave = async ()=>true;
 
 		brew.text = api.mergeBrewText(brew);
