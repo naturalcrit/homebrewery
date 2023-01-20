@@ -62,6 +62,10 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 ##### Jeddai
 
 * [x] Add unit tests with full coverage for the Homebrewery API
+
+##### G-Ambatte
+
+* [x] Add Themes directory to development server watchlist.
 }}
 
 ### Friday 23/12/2022 - v3.5.0
