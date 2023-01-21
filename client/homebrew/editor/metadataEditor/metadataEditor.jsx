@@ -186,7 +186,7 @@ const MetadataEditor = createClass({
 					<img src={`/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`}/>
 					<div className='preview'>
 						<h6>{`${theme.name}`} preview</h6>
-						<img src={`/themes/${theme.renderer}/${theme.path}/dropdownPreview.jpg`}/>
+						<img src={`/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`}/>
 					</div>
 				</div>;
 			});
