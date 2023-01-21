@@ -14,6 +14,7 @@
     "quick": "node scripts/quick.js",
     "build": "node scripts/buildHomebrew.js",
     "buildall": "node scripts/buildHomebrew.js && node scripts/buildAdmin.js",
+    "builddev": "node scripts/buildHomebrew.js --dev",
     "lint": "eslint --fix **/*.{js,jsx}",
     "lint:dry": "eslint **/*.{js,jsx}",
     "circleci": "npm test && eslint **/*.{js,jsx} --max-warnings=0",
@@ -67,7 +68,7 @@
     ]
   },
   "dependencies": {
-    "@babel/core": "^7.20.7",
+    "@babel/core": "^7.20.12",
     "@babel/plugin-transform-runtime": "^7.19.6",
     "@babel/preset-env": "^7.19.4",
     "@babel/preset-react": "^7.18.6",
@@ -90,7 +91,7 @@
     "marked-extended-tables": "^1.0.5",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.29.4",
-    "mongoose": "^6.8.2",
+    "mongoose": "^6.8.3",
     "nanoid": "3.3.4",
     "nconf": "^0.12.0",
     "npm": "^8.10.0",
