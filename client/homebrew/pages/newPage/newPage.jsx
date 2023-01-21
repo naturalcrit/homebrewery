@@ -10,6 +10,7 @@ const Markdown = require('naturalcrit/markdown.js');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
+const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 
@@ -156,10 +157,6 @@ const NewPage = createClass({
 	},
 
 	renderSaveButton : function(){
-		if(this.state.error){
-			return require('../../utils/render-error-nav-item.jsx')(this, this.state.error);
-		}
-
 		if(this.state.isSaving){
 			return <Nav.item icon='fas fa-spinner fa-spin' className='save'>
 				save...
@@ -189,7 +186,10 @@ const NewPage = createClass({
 			</Nav.section>
 
 			<Nav.section>
-				{this.renderSaveButton()}
+				{this.state.error ?
+					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
+					this.renderSaveButton()
+				}
 				{this.renderLocalPrintButton()}
 				<HelpNavItem />
 				<RecentNavItem />

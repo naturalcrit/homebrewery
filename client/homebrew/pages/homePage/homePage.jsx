@@ -12,6 +12,7 @@ const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
+const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
@@ -55,16 +56,13 @@ const HomePage = createClass({
 			brew : { ...prevState.brew, text: text }
 		}));
 	},
-	renderSaveError : function(){
-		if(this.state.error) {
-			return require('../../utils/render-error-nav-item.jsx')(this, this.state.error);
-		}
-		return null;
-	},
 	renderNavbar : function(){
 		return <Navbar ver={this.props.ver}>
 			<Nav.section>
-				{this.renderSaveError()}
+				{this.state.error ?
+					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
+					null
+				}
 				<NewBrewItem />
 				<HelpNavItem />
 				<RecentNavItem />

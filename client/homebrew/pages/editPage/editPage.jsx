@@ -12,6 +12,7 @@ const Navbar = require('../../navbar/navbar.jsx');
 const NewBrew = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const PrintLink = require('../../navbar/print.navitem.jsx');
+const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 
@@ -261,10 +262,6 @@ const EditPage = createClass({
 	},
 
 	renderSaveButton : function(){
-		if(this.state.error){
-			return require('../../utils/render-error-nav-item.jsx')(this, this.state.error);
-		}
-
 		if(this.state.autoSaveWarning && this.hasChanges()){
 			this.setAutosaveWarning();
 			const elapsedTime = Math.round((new Date() - this.state.unsavedTime) / 1000 / 60);
@@ -352,10 +349,13 @@ const EditPage = createClass({
 
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
-				<Nav.dropdown className='save-menu'>
-					{this.renderSaveButton()}
-					{this.renderAutoSaveButton()}
-				</Nav.dropdown>
+				{this.state.error ?
+					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
+					<Nav.dropdown className='save-menu'>
+						{this.renderSaveButton()}
+						{this.renderAutoSaveButton()}
+					</Nav.dropdown>
+				}
 				<NewBrew />
 				<HelpNavItem/>
 				<Nav.dropdown>

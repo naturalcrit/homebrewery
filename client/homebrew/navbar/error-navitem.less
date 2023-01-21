@@ -1,11 +1,16 @@
 .navItem {
+  &.error {
+    position         : relative;
+    background-color : @red;
+  }
+
   .errorContainer{
     animation-name: glideDown;
     animation-duration: 0.4s;
     position         : absolute;
     top              : 100%;
     left             : 50%;
-    z-index          : 500;
+    z-index          : 1000;
     width            : 140px;
     padding          : 3px;
     color            : white;
