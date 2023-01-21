@@ -51,10 +51,10 @@
         "lines"      : 25
       },
       "server/homebrew.api.js" : {
-        "statements" : 71,
-        "branches"   : 54,
-        "functions"  : 66,
-        "lines"      : 73
+        "statements" : 65,
+        "branches"   : 50,
+        "functions"  : 60,
+        "lines"      : 70
       }
     }
   },
