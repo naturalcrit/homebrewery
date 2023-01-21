@@ -1,3 +1,4 @@
+require('./render-error-nav-item.less');
 const React = require('react');
 const Nav = require('naturalcrit/nav/nav.jsx');
 

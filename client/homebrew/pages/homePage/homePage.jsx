@@ -1,5 +1,4 @@
 require('./homePage.less');
-require('../../styles/nav-item-error-container.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
@@ -58,7 +57,7 @@ const HomePage = createClass({
 	},
 	renderSaveError : function(){
 		if(this.state.error) {
-			return require('../../utils/render-error-nav-item.js')(this, this.state.error);
+			return require('../../utils/render-error-nav-item.jsx')(this, this.state.error);
 		}
 		return null;
 	},

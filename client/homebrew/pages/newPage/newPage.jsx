@@ -1,6 +1,5 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./newPage.less');
-require('../../styles/nav-item-error-container.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
@@ -158,7 +157,7 @@ const NewPage = createClass({
 
 	renderSaveButton : function(){
 		if(this.state.error){
-			return require('../../utils/render-error-nav-item.js')(this, this.state.error);
+			return require('../../utils/render-error-nav-item.jsx')(this, this.state.error);
 		}
 
 		if(this.state.isSaving){
