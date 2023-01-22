@@ -57,7 +57,7 @@ git clone https://github.com/naturalcrit/homebrewery.git
 Second, you will need to add the environment variable `NODE_ENV=local` to allow
 the project to run locally.
 
-You can set this **temporarily** in your shell of choice:
+You can set this **temporarily** in your shell of choice with admin privileges:
 * Windows Powershell: `$env:NODE_ENV="local"`
 * Windows CMD: `set NODE_ENV=local`
 * Linux / macOS: `export NODE_ENV=local`
