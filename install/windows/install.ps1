@@ -1,5 +1,5 @@
-Write-Host Part One Install -BackgroundColor Black -ForegroundColor Yellow
-Write-Host ================ -BackgroundColor Black -ForegroundColor Yellow
+Write-Host Homebrewery Install -BackgroundColor Black -ForegroundColor Yellow
+Write-Host =================== -BackgroundColor Black -ForegroundColor Yellow
 Write-Host Install Chocolatey -BackgroundColor Black -ForegroundColor Yellow
 Write-Host Instructions from https://chocolate.org/install -BackgroundColor Black -ForegroundColor Yellow
 
@@ -17,7 +17,7 @@ Write-Host Install GIT -BackgroundColor Black -ForegroundColor Yellow
 
 choco install git -y
 
-Write-Host Refresh  -BackgroundColor Black -ForegroundColor Yellow
+Write-Host Refresh Environment -BackgroundColor Black -ForegroundColor Yellow
 
 Import-Module "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 Update-SessionEnvironment
