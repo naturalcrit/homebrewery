@@ -17,5 +17,5 @@ Write-Host Install GIT
 
 choco install git -y
 
-Write-Host PART ONE INSTALL
-Write-Host Close Powershell completely, open a new window, and then run Part Two
+Write-Host PART ONE INSTALL COMPLETE
+Write-Host Close Powershell completely, open a new shell, and then run Part Two

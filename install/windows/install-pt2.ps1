@@ -20,6 +20,10 @@ Write-Host Set install type to 'local'
 
 [System.Environment]::SetEnvironmentVariable('NODE_ENV', 'local')
 
+Write-Host PART TWO INSTALL COMPLETE
+Write-Host To start Homebrewery in the future, open a terminal in the Homebrewery directory and run npm start
+Write-Hose ==================================================================================================
+
 Write-Host Start Homebrewery
 
 npm start
