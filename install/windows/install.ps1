@@ -14,7 +14,7 @@ refreshenv
 mkdir C:\Hombrewery
 cd C:\Hombrewery
 
-git clone https://github.com/naturalcrit/homebrewery.github
+git clone https://github.com/naturalcrit/homebrewery.git
 
 cd homebrewery
 
