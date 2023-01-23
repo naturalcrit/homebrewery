@@ -110,6 +110,7 @@ router.get('/admin/notification/lookup/:id', mw.adminOnly, (req, res, next)=>{
 
 /* Add new notification */
 router.post('/admin/notification/add', mw.adminOnly, async (req, res, next)=>{
+	console.log(req.body);
 	const notification = await NotificationModel.addNotification(req.body);
 	return res.json(notification);
 });

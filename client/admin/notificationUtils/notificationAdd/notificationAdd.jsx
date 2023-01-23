@@ -38,8 +38,8 @@ const NotificationAdd = createClass({
 			dismissKey : this.state.dismissKey,
 			title      : this.state.title,
 			text       : this.state.text,
-			startAt    : this.state.startAt,
-			stopAt     : this.state.stopAt
+			startAt    : Date.parse(this.state.startAt),
+			stopAt     : Date.parse(this.state.stopAt)
 		};
 
 		const notification = await request.post('/admin/notification/add')
@@ -52,7 +52,10 @@ const NotificationAdd = createClass({
 			notificationResult : `Created notification: ${JSON.stringify(notification, null, 2)}`
 		};
 		if(notification.err) {
-			update.notificationResult = err;
+			update.notificationResult = JSON.stringify(notification.err);
+			if(notification.err.code == 11000) {
+				update.notificationResult = `Duplicate dismissKey error! ${this.state.dismissKey} already exists.`;
+			}
 		};
 		if(!notification.err) {
 			update.dismissKey = '';
@@ -61,6 +64,8 @@ const NotificationAdd = createClass({
 			update.startAt = '';
 			update.stopAt = '';
 		}
+
+		console.log(update);
 
 		this.setState(update);
 	},
@@ -74,7 +79,7 @@ const NotificationAdd = createClass({
 					<input className='fieldInput' type='text' value={this.state[field]} onChange={(e)=>this.handleChange(e, field)} placeholder={field} />
 				</div>;
 			})}
-			{this.state.notificationResult}
+			<div className='notificationResult'>{this.state.notificationResult}</div>
 			{/* <label>Dismiss Key:</label>
 			<input type='text' value={this.state.dismissKey} onChange={this.handleChange} placeholder='notification key' />
 			<label>Title:</label>

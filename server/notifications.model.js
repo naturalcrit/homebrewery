@@ -43,7 +43,7 @@ NotificationSchema.statics.addNotification = async function(data){
 	const newNotification = new Notification(data);
 	const savedNotification = await newNotification.save()
 		.catch((err)=>{
-			return { err: err };
+			return { err };
 		});
 
 	return savedNotification;
