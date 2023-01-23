@@ -4,7 +4,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
-const request = require('superagent');
+const request = require('../../utils/request-middleware.js');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
 
@@ -37,7 +37,8 @@ const MetadataEditor = createClass({
 				renderer    : 'legacy',
 				theme       : '5ePHB'
 			},
-			onChange : ()=>{}
+			onChange : ()=>{},
+			reportError : ()=>{}
 		};
 	},
 
@@ -121,8 +122,12 @@ const MetadataEditor = createClass({
 
 		request.delete(`/api/${this.props.metadata.googleId ?? ''}${this.props.metadata.editId}`)
 			.send()
-			.end(function(err, res){
-				window.location.href = '/';
+			.end((err, res)=>{
+				if(err) {
+					this.props.reportError(err.response);
+				} else {
+					window.location.href = '/';
+				}
 			});
 	},
 
