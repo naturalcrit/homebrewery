@@ -44,7 +44,7 @@ Write-Host Set install type to 'local' -BackgroundColor Black -ForegroundColor Y
 
 Write-Host INSTALL COMPLETE -BackgroundColor Black -ForegroundColor Yellow
 Write-Host To start Homebrewery in the future, open a terminal in the Homebrewery directory and run npm start -BackgroundColor Black -ForegroundColor Yellow
-Write-Hose ================================================================================================== -BackgroundColor Black -ForegroundColor Yellow
+Write-Host ================================================================================================== -BackgroundColor Black -ForegroundColor Yellow
 
 Write-Host Start Homebrewery -BackgroundColor Black -ForegroundColor Yellow
 
