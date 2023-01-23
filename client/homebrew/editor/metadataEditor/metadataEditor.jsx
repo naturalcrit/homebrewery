@@ -124,7 +124,7 @@ const MetadataEditor = createClass({
 			.send()
 			.end((err, res)=>{
 				if(err) {
-					this.props.reportError(err.response);
+					this.props.reportError(err);
 				} else {
 					window.location.href = '/';
 				}

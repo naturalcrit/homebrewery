@@ -22,13 +22,14 @@ const ErrorNavItem = createClass({
 		};
 
 		const error = this.props.error;
-		const status = error.status;
-		const message = error.body?.message;
+		const response = error.response;
+		const status = response.status;
+		const message = response.body?.message;
 		let errMsg = '';
 		try {
 			errMsg += `${error.toString()}\n\n`;
 			errMsg += `\`\`\`\n${error.stack}\n`;
-			errMsg += `${JSON.stringify(error.error, null, '  ')}\n\`\`\``;
+			errMsg += `${JSON.stringify(response.error, null, '  ')}\n\`\`\``;
 			console.log(errMsg);
 		} catch (e){}
 
@@ -48,7 +49,7 @@ const ErrorNavItem = createClass({
 			</Nav.item>;
 		}
 
-		if(error.req.url.match(/^\/api.*Google.*$/m)){
+		if(response.req.url.match(/^\/api.*Google.*$/m)){
 			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
 				<div className='errorContainer' onClick={clearError}>

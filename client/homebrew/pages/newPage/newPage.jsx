@@ -145,7 +145,7 @@ const NewPage = createClass({
 			.send(brew)
 			.catch((err)=>{
 				console.log(err);
-				this.setState({ isSaving: false, error: err.response });
+				this.setState({ isSaving: false, error: err });
 			});
 		if(!res) return;
 

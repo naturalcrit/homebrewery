@@ -200,7 +200,7 @@ const EditPage = createClass({
 			.send(brew)
 			.catch((err)=>{
 				console.log('Error Updating Local Brew');
-				this.setState({ error: err.response });
+				this.setState({ error: err });
 			});
 		if(!res) return;
 

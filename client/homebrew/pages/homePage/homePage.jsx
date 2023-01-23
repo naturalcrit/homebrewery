@@ -41,7 +41,7 @@ const HomePage = createClass({
 			.send(this.state.brew)
 			.end((err, res)=>{
 				if(err) {
-					this.setState({ error: err.response });
+					this.setState({ error: err });
 					return;
 				}
 				const brew = res.body;
