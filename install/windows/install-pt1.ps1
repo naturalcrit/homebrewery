@@ -1,3 +1,5 @@
+Write-Host Part One Install
+Write-Host ================
 Write-Host Install Chocolatey
 Write-Host Instructions from https://chocolate.org/install
 
@@ -15,30 +17,5 @@ Write-Host Install GIT
 
 choco install git -y
 
-Write-Host Refresh Environment
-
-refreshenv
-
-Write-Host Create directory
-
-mkdir C:\Hombrewery
-cd C:\Hombrewery
-
-Write-Host Download Homebrewery project files
-
-git clone https://github.com/naturalcrit/homebrewery.git
-
-Write-Host Install Homebrewery files
-
-cd homebrewery
-
-npm install
-npm audit fix
-
-Write-Host Set install type to 'local'
-
-[System.Environment]::SetEnvironmentVariable('NODE_ENV', 'local')
-
-Write-Host Start Homebrewery
-
-npm start
+Write-Host PART ONE INSTALL
+Write-Host Close Powershell completely, open a new window, and then run Part Two
