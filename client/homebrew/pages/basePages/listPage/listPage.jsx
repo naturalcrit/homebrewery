@@ -23,7 +23,8 @@ const ListPage = createClass({
 					brews : []
 				}
 			],
-			navItems : <></>
+			navItems    : <></>,
+			reportError : null
 		};
 	},
 	getInitialState : function() {
@@ -81,7 +82,7 @@ const ListPage = createClass({
 		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
 
 		return _.map(brews, (brew, idx)=>{
-			return <BrewItem brew={brew} key={idx}/>;
+			return <BrewItem brew={brew} key={idx} reportError={this.props.reportError}/>;
 		});
 	},
 
