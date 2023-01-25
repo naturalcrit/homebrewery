@@ -338,6 +338,7 @@ If you believe you should have access to this brew, ask the file owner to invite
 	}
 };
 
+router.use('/api', require('./middleware/check-client-version.js'));
 router.post('/api', asyncHandler(api.newBrew));
 router.put('/api/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
 router.put('/api/update/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));

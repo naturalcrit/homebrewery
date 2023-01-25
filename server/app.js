@@ -294,6 +294,7 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
+	req.brew.views = 0;
 	req.brew.title = `CLONE - ${req.brew.title}`;
 
 	req.ogMeta = { ...defaultMetaTags,
