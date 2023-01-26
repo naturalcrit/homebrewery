@@ -61,6 +61,15 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### V3.6.1
+{{taskList
+##### Jeddai
+
+* [X] Add content negotiation to exclude image requests from our API calls
+
+Fixes issue [#2595](https://github.com/naturalcrit/homebrewery/issues/2595)
+}}
+
 ### Friday 23/01/2023 - v3.6.0
 {{taskList
 ##### calculuschild
