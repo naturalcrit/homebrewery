@@ -32,6 +32,7 @@ const Editor = createClass({
 			onTextChange  : ()=>{},
 			onStyleChange : ()=>{},
 			onMetaChange  : ()=>{},
+			reportError   : ()=>{},
 
 			renderer : 'legacy'
 		};
@@ -291,7 +292,8 @@ const Editor = createClass({
 					rerenderParent={this.rerenderParent} />
 				<MetadataEditor
 					metadata={this.props.brew}
-					onChange={this.props.onMetaChange} />
+					onChange={this.props.onMetaChange}
+					reportError={this.props.reportError}/>
 			</>;
 		}
 	},

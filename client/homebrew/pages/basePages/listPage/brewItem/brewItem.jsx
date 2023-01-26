@@ -19,7 +19,7 @@ const BrewItem = createClass({
 				authors     : [],
 				stubbed     : true
 			},
-			reportError : null
+			reportError : ()=>{}
 		};
 	},
 
@@ -35,8 +35,8 @@ const BrewItem = createClass({
 		request.delete(`/api/${this.props.brew.googleId ?? ''}${this.props.brew.editId}`)
 			.send()
 			.end((err, res)=>{
-				if(err && this.props.reportError) {
-					this.props.reportError(err.response);
+				if(err) {
+					this.props.reportError(err);
 				} else {
 					location.reload();
 				}

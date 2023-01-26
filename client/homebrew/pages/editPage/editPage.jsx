@@ -200,7 +200,7 @@ const EditPage = createClass({
 			.send(brew)
 			.catch((err)=>{
 				console.log('Error Updating Local Brew');
-				this.setState({ error: err.response });
+				this.setState({ error: err });
 			});
 		if(!res) return;
 
@@ -305,6 +305,12 @@ const EditPage = createClass({
 		this.warningTimer;
 	},
 
+	errorReported : function(error) {
+		this.setState({
+			error
+		});
+	},
+
 	renderAutoSaveButton : function(){
 		return <Nav.item onClick={this.handleAutoSave}>
 			Autosave <i className={this.state.autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
@@ -393,6 +399,7 @@ const EditPage = createClass({
 						onTextChange={this.handleTextChange}
 						onStyleChange={this.handleStyleChange}
 						onMetaChange={this.handleMetaChange}
+						reportError={this.errorReported}
 						renderer={this.state.brew.renderer}
 					/>
 					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} theme={this.state.brew.theme} errors={this.state.htmlErrors} />
