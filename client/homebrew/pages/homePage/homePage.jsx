@@ -3,7 +3,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
-const request = require('superagent');
+const request = require('../../utils/request-middleware.js');
 const { Meta } = require('vitreum/headtags');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
@@ -12,6 +12,7 @@ const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
+const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
@@ -31,14 +32,18 @@ const HomePage = createClass({
 	getInitialState : function() {
 		return {
 			brew        : this.props.brew,
-			welcomeText : this.props.brew.text
+			welcomeText : this.props.brew.text,
+			error       : undefined
 		};
 	},
 	handleSave : function(){
 		request.post('/api')
 			.send(this.state.brew)
 			.end((err, res)=>{
-				if(err) return;
+				if(err) {
+					this.setState({ error: err });
+					return;
+				}
 				const brew = res.body;
 				window.location = `/edit/${brew.editId}`;
 			});
@@ -54,6 +59,10 @@ const HomePage = createClass({
 	renderNavbar : function(){
 		return <Navbar ver={this.props.ver}>
 			<Nav.section>
+				{this.state.error ?
+					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
+					null
+				}
 				<NewBrewItem />
 				<HelpNavItem />
 				<RecentNavItem />
