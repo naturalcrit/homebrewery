@@ -49,7 +49,7 @@ const BrewRenderer = createClass({
 			initialContent : `<!DOCTYPE html><html><head>
 												<link href="//use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
 												<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
-												<style>@import url("/homebrew/bundle.css") layer(bundle)</style>
+												<link href='/homebrew/bundle.css' rel='stylesheet' />
 												<base target=_blank>
 												</head><body style='overflow: hidden'><div></div></body></html>`
 		};

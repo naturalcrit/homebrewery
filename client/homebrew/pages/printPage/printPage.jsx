@@ -60,7 +60,7 @@ const PrintPage = createClass({
 
 	renderStyle : function() {
 		if(!this.state.brew.style) return;
-		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${this.state.brew.style} </style>` }} />;
+		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${this.state.brew.style}\n} </style>` }} />;
 	},
 
 	renderPages : function(){
