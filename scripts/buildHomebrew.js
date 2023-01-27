@@ -137,6 +137,6 @@ fs.emptyDirSync('./build');
 if(isDev){
 	livereload('./build');
 	watchFile('./server.js', {
-		watch : ['./client', './server'] // Watch additional folders if you want
+		watch : ['./client', './server', './themes'] // Watch additional folders if you want
 	});
 }
