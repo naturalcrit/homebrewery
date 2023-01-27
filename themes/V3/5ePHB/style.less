@@ -678,6 +678,137 @@ body {
 	}
 }
 //*****************************
+// *      COVER PAGE
+// *****************************/
+
+.page {
+	&:has(.coverPage):after {
+		display: none;
+	}
+	.coverPage {
+		position: absolute;
+		inset: 0;
+		padding: 90px 0px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+
+		p {
+			color: white;
+			font-size: 20px;
+		}
+		> p > img {
+			position: absolute;
+			inset: 0;
+			height: 100%;
+			min-width: 100%;
+		}
+		&:before {
+			background-image: @coverPageLogo;
+			background-position: center;
+			background-size: 60px;
+			background-repeat: no-repeat;
+			position: absolute;
+			top: 15px;
+			content: '';
+			display: block;
+			height: 70px;
+			width: 100%;
+			filter: drop-shadow(0 0 10px black);
+		}
+		h1 {
+			--shadow-x0: #000 0px 0px 3.5px;
+			--shadow-x1: var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
+			--shadow-x2: var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
+			--shadow-x3: var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
+			text-shadow: var(--shadow-x3), var(--shadow-x3), var(--shadow-x3);
+			text-transform: uppercase;
+			max-width: 18ch;
+			margin-top: 3px;
+			color: white;
+			font-family: NodestoCapsCondensed;
+			font-size: 6.6em;
+			font-weight: normal;
+			line-height: 72px;
+			word-break: break-word;
+			transform: scaleX(0.94);
+		}
+		hr {
+			position: relative;
+			top: -16px;
+			background-image: @coverPageHorizontalRule;
+			background-size: 100% 100%;
+			visibility: visible;
+			height: 64px;
+			width: 450px;
+			border: none;
+			margin: 2px auto -24px;
+		}
+		h2 {
+			--shadow-x0: #000 0px 0px 2.5px;
+			--shadow-x1: var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
+			--shadow-x2: var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
+			--shadow-x3: var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
+			text-shadow: var(--shadow-x3), var(--shadow-x3), var(--shadow-x3);
+			font-family: NodestoCapsCondensed;
+			font-weight: normal;
+			font-size: 2.5em;
+			letter-spacing: 0.5px;
+			max-width: 46ch;
+			color: white;
+		}
+		.banner {
+			filter: drop-shadow(2px 1px 5px #000);
+			position: absolute;
+			left: 0;
+			bottom: 157px;
+			background-image: @coverPageBanner;
+			background-position: left;
+			background-repeat: no-repeat;
+			background-size: 400px;
+			content: '';
+			display: block;
+			height: 67px;
+			width: 50%;
+			
+			p {
+				position: absolute;
+				top: 60%;
+				left: 0;
+				translate: 0 -50%;
+				width: 100%;
+				text-align: left;
+				padding-left: 50px;
+				font-family: NodestoCapsCondensed;
+				font-weight: normal;
+				font-size: 40px;
+				font-stretch: 200%;
+				letter-spacing: 0.5px;
+				transform: scaleY(0.7);
+			}
+		}
+
+		.footnote {
+			--shadow-x0: #000 0px 0px 1.8px;
+			--shadow-x1: var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
+			--shadow-x2: var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
+			text-shadow: var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
+			text-transform: none;
+			position: absolute;
+			bottom: 3.5em;
+			left: 0;
+			width: 100%;
+			font-family: VeraCruzBold;
+			text-align: center;
+			letter-spacing: 0.6px;
+			transform: scaleX(90%);
+		}
+
+	}
+}
+
+//*****************************
 // *      TABLE OF CONTENTS
 // *****************************/
 .page {
