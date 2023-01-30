@@ -21,7 +21,7 @@ below.
 First, install three programs that The Homebrewery requires to run and retrieve
 updates:
 
-1. install [node](https://nodejs.org/en/), any version is supported.
+1. install [node](https://nodejs.org/en/), version v16 or higher.
 1. install [mongodb](https://www.mongodb.com/try/download/community) (Community version)
 
     For the easiest installation, follow these steps:
@@ -39,8 +39,7 @@ updates:
     1. Click "OK" three times to close all the windows.
     1. In the second command prompt, run "mongo", which allows you to edit the database.
     1. Type `use homebrewery` to create The Homebrewery database. You should see `switched to db homebrewery`.
-    1. Type `db.brews.insert({"title":"test"})` to create a blank document. You should see `WriteResult({ "nInserted" : 1 })`.
-    1. If you use any version older than 6.0, use `db.brews.insertOne({"title":"test"})` instead. You should see `{
+    1. Type `db.brews.insertOne({"title":"test"})` to create a blank document. You should see `{
 acknowledged: true,
 insertedId: ObjectId("63c2fce9e5ac5a94fe2410cf")
 }`
@@ -57,7 +56,7 @@ git clone https://github.com/naturalcrit/homebrewery.git
 Second, you will need to add the environment variable `NODE_ENV=local` to allow
 the project to run locally.
 
-You can set this **temporarily** in your shell of choice with admin privileges:
+You can set this **temporarily** (until you close the terminal) in your shell of choice with admin privileges:
 * Windows Powershell: `$env:NODE_ENV="local"`
 * Windows CMD: `set NODE_ENV=local`
 * Linux / macOS: `export NODE_ENV=local`
@@ -80,9 +79,8 @@ You should now be able to go to [http://localhost:8000](http://localhost:8000)
 in your browser and use The Homebrewery offline.
 
 If you had any issue at all, here are some links that may be useful:
-- [Course](https://learn.mongodb.com/courses/m103-basic-cluster-administration) on cluster administration, in the mongodb web, useful for begginners
+- [Course](https://learn.mongodb.com/courses/m103-basic-cluster-administration) on cluster administration, useful for begginners
 - [Mongo community forums](https://www.mongodb.com/community/forums/)
-- After mongodb 6.0, which i reccomend, to run mongo commands, users will have to install MongoDB Shell [from this link](https://www.mongodb.com/try/download/shell).
 - Useful Stack Overflow links for your most probable errors: [1](https://stackoverflow.com/questions/44962540/mongod-and-mongo-commands-not-working-on-windows-10), [2](https://stackoverflow.com/questions/15053893/mongo-command-not-recognized-when-trying-to-connect-to-a-mongodb-server/41507803#41507803), [3](https://stackoverflow.com/questions/51224959/mongo-is-not-recognized-as-an-internal-or-external-command-operable-program-o)
 
 If you still have problems, post in [Our Subreddit](https://www.reddit.com/r/homebrewery/) and we will help you.
