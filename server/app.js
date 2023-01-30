@@ -294,13 +294,15 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
-	req.brew.published = false;
-	req.brew.createdAt = clock.now;
-	req.brew.updatedAt = clock.now;
-	req.brew.views = 1;
-	req.brew.lastViewed = clock.now;
-	
-	req.brew.title = `CLONE - ${req.brew.title}`;
+	const brew = {
+		shareId  : req.brew.shareId,
+		title    : `CLONE - ${req.brew.title}`,
+		text     : req.brew.text,
+		style    : req.brew.style,
+		renderer : req.brew.renderer,
+		theme    : req.brew.theme
+	};
+	req.brew = _.defaults(brew, DEFAULT_BREW);
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'New',
