@@ -79,7 +79,7 @@ You should now be able to go to [http://localhost:8000](http://localhost:8000)
 in your browser and use The Homebrewery offline.
 
 If you had any issue at all, here are some links that may be useful:
-- [Course](https://learn.mongodb.com/courses/m103-basic-cluster-administration) on cluster administration, useful for begginners
+- [Course](https://learn.mongodb.com/courses/m103-basic-cluster-administration) on cluster administration, useful for beginners
 - [Mongo community forums](https://www.mongodb.com/community/forums/)
 - Useful Stack Overflow links for your most probable errors: [1](https://stackoverflow.com/questions/44962540/mongod-and-mongo-commands-not-working-on-windows-10), [2](https://stackoverflow.com/questions/15053893/mongo-command-not-recognized-when-trying-to-connect-to-a-mongodb-server/41507803#41507803), [3](https://stackoverflow.com/questions/51224959/mongo-is-not-recognized-as-an-internal-or-external-command-operable-program-o)
 
