@@ -174,157 +174,157 @@
 			page-break-inside           : avoid;
 			break-inside                : avoid;
 		}
+
+		/* Watermark */
+		.watermark {
+			display         : grid !important;
+			place-items     : center;
+			justify-content	: center;
+			position        : absolute;
+			margin          : 0;
+			top             : 0;
+			left            : 0;
+			width           : 100%;
+			height          : 100%;
+			font-size       : 120px;
+			text-transform	: uppercase;
+			color           : black;
+			mix-blend-mode  : overlay;
+			opacity         : 30%;
+			transform       : rotate(-45deg);
+			z-index         : 500;
+			p {
+				margin-bottom : none;
+			}
+		}
+
+		/* Watercolor */
+		[class*="watercolor"] {
+			position            : absolute;
+			width               : 2000px;    /* dimensions need to be real big so the user can set */
+			height              : 2000px;    /* height or width and the image will maintain aspect ratio */
+			-webkit-mask-image  : var(--wc);
+			-webkit-mask-size   : contain;
+			-webkit-mask-repeat : no-repeat;
+			mask-image          : var(--wc);
+			mask-size           : contain;
+			mask-repeat         : no-repeat;
+			background-size     : cover;
+			background-color    : var(--HB_Color_WatercolorStain);			/*default color*/
+			--wc                : @watercolor1;         /*default image*/
+			z-index             : -2;
+		}
+
+		.watercolor1  { --wc : @watercolor1; }
+		.watercolor2  { --wc : @watercolor2; }
+		.watercolor3  { --wc : @watercolor3; }
+		.watercolor4  { --wc : @watercolor4; }
+		.watercolor5  { --wc : @watercolor5; }
+		.watercolor6  { --wc : @watercolor6; }
+		.watercolor7  { --wc : @watercolor7; }
+		.watercolor8  { --wc : @watercolor8; }
+		.watercolor9  { --wc : @watercolor9; }
+		.watercolor10 { --wc : @watercolor10; }
+		.watercolor11 { --wc : @watercolor11; }
+		.watercolor12 { --wc : @watercolor12; }
+
+		/* Image Masks */
+		[class*="imageMask"] {
+			position              : absolute;
+			height                : 200%;
+			width                 : 200%;
+			left                  : 50%;
+			bottom                : 50%;
+			--rotation            : 0;
+			--revealer            : none;
+			--checkerboard        : none;
+			--scaleX              : 1;
+			--scaleY              : 1;
+			-webkit-mask-image    : var(--wc), var(--revealer);
+			-webkit-mask-repeat   : repeat-x;
+			-webkit-mask-size     : 50%; //Scale only X to fit page width, leave height at aspect ratio, designed to hang off the edge
+			-webkit-mask-position : 50% calc(50% - var(--offset));
+			mask-image            : var(--wc);
+			mask-repeat           : repeat-x;
+			mask-size             : 50%;
+			mask-position         : 50% calc(50% - var(--offset));
+			background-image      : var(--checkerboard);
+			background-size       : 20px;
+			z-index               : -1;
+			transform             : translateY(50%) translateX(-50%) rotate(calc(1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));
+			transition            : transform 2s;
+			& > p:has(img) {
+				position   : absolute;
+				width      : 50%;
+				height     : 50%;
+				bottom     : 50%;
+				left       : 50%;
+				transform  : translateX(-50%) translateY(50%) rotate(calc(-1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));
+				transition : transform 2s;
+			}
+			& img {
+				position : absolute;
+				display  : block;
+				bottom   : 0;
+			}
+			&.bottom {
+				--rotation : 0;
+				& img {bottom: 0;}
+			}
+			&.top {
+				--rotation : 180;
+				& img {top: 0;}
+			}
+			&.left {
+				--rotation : 90;
+				& img {left: 0;}
+			}
+			&.right {
+				--rotation : -90;
+				& img {right: 0;}
+			}
+			&.revealImage {
+				--revealer : linear-gradient(0deg, rgba(0,0,0,.2) 0%, rgba(0,0,0,0.2));
+				--checkerboard : url(/assets/waterColorMasks/missingImage.png); //shows any masked regions not filled by image
+			}
+		}
+
+		.imageMask1  { --wc : url(/assets/waterColorMasks/edge/0001.webp); }
+		.imageMask2  { --wc : url(/assets/waterColorMasks/edge/0002.webp); }
+		.imageMask3  { --wc : url(/assets/waterColorMasks/edge/0003.webp); }
+		.imageMask4  { --wc : url(/assets/waterColorMasks/edge/0004.webp); }
+		.imageMask5  { --wc : url(/assets/waterColorMasks/edge/0005.webp); }
+		.imageMask6  { --wc : url(/assets/waterColorMasks/edge/0006.webp); }
+		.imageMask7  { --wc : url(/assets/waterColorMasks/edge/0007.webp); }
+		.imageMask8  { --wc : url(/assets/waterColorMasks/edge/0008.webp); }
+
+		[class*="imageMask_Corner"] {
+			-webkit-mask-size : 50% 50%; //Scale both dimensions to fit page size
+			&.bottom {
+				--rotation : 0;
+			}
+			&.top {
+				--rotation : 0;
+				--scaleY   : -1;
+			}
+			&.left {
+				--rotation : 0;
+			}
+			&.right {
+				--rotation : 0;
+				--scaleX   : -1;
+			}
+		}
+
+		.imageMask_Corner1  { --wc : url(/assets/waterColorMasks/corner/0005.webp); }
+		.imageMask_Corner2  { --wc : url(/assets/waterColorMasks/corner/0006.webp); }
+		.imageMask_Corner3  { --wc : url(/assets/waterColorMasks/corner/0007.webp); }
+		.imageMask_Corner4  { --wc : url(/assets/waterColorMasks/corner/0008.webp); }
+		.imageMask_Corner5  { --wc : url(/assets/waterColorMasks/corner/0009.webp); }
+		.imageMask_Corner6  { --wc : url(/assets/waterColorMasks/corner/0010.webp); }
+		.imageMask_Corner7  { --wc : url(/assets/waterColorMasks/corner/0016.webp); }
+		.imageMask_Corner8  { --wc : url(/assets/waterColorMasks/corner/0017.webp); }
 	}
-
-	/* Watermark */
-	.watermark {
-		display         : grid !important;
-		place-items     : center;
-		justify-content	: center;
-		position        : absolute;
-		margin          : 0;
-		top             : 0;
-		left            : 0;
-		width           : 100%;
-		height          : 100%;
-		font-size       : 120px;
-		text-transform	: uppercase;
-		color           : black;
-		mix-blend-mode  : overlay;
-		opacity         : 30%;
-		transform       : rotate(-45deg);
-		z-index         : 500;
-		p {
-			margin-bottom : none;
-		}
-	}
-
-	/* Watercolor */
-	[class*="watercolor"] {
-		position            : absolute;
-		width               : 2000px;    /* dimensions need to be real big so the user can set */
-		height              : 2000px;    /* height or width and the image will maintain aspect ratio */
-		-webkit-mask-image  : var(--wc);
-		-webkit-mask-size   : contain;
-		-webkit-mask-repeat : no-repeat;
-		mask-image          : var(--wc);
-		mask-size           : contain;
-		mask-repeat         : no-repeat;
-		background-size     : cover;
-		background-color    : var(--HB_Color_WatercolorStain);			/*default color*/
-		--wc                : @watercolor1;         /*default image*/
-		z-index             : -2;
-	}
-
-	.watercolor1  { --wc : @watercolor1; }
-	.watercolor2  { --wc : @watercolor2; }
-	.watercolor3  { --wc : @watercolor3; }
-	.watercolor4  { --wc : @watercolor4; }
-	.watercolor5  { --wc : @watercolor5; }
-	.watercolor6  { --wc : @watercolor6; }
-	.watercolor7  { --wc : @watercolor7; }
-	.watercolor8  { --wc : @watercolor8; }
-	.watercolor9  { --wc : @watercolor9; }
-	.watercolor10 { --wc : @watercolor10; }
-	.watercolor11 { --wc : @watercolor11; }
-	.watercolor12 { --wc : @watercolor12; }
-
-	/* Image Masks */
-	[class*="imageMask"] {
-		position              : absolute;
-		height                : 200%;
-		width                 : 200%;
-		left                  : 50%;
-		bottom                : 50%;
-		--rotation            : 0;
-		--revealer            : none;
-		--checkerboard        : none;
-		--scaleX              : 1;
-		--scaleY              : 1;
-		-webkit-mask-image    : var(--wc), var(--revealer);
-		-webkit-mask-repeat   : repeat-x;
-		-webkit-mask-size     : 50%; //Scale only X to fit page width, leave height at aspect ratio, designed to hang off the edge
-		-webkit-mask-position : 50% calc(50% - var(--offset));
-		mask-image            : var(--wc);
-		mask-repeat           : repeat-x;
-		mask-size             : 50%;
-		mask-position         : 50% calc(50% - var(--offset));
-		background-image      : var(--checkerboard);
-		background-size       : 20px;
-		z-index               : -1;
-		transform             : translateY(50%) translateX(-50%) rotate(calc(1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));
-		transition            : transform 2s;
-		& > p:has(img) {
-			position   : absolute;
-			width      : 50%;
-			height     : 50%;
-			bottom     : 50%;
-			left       : 50%;
-			transform  : translateX(-50%) translateY(50%) rotate(calc(-1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));
-			transition : transform 2s;
-		}
-		& img {
-			position : absolute;
-			display  : block;
-			bottom   : 0;
-		}
-		&.bottom {
-			--rotation : 0;
-			& img {bottom: 0;}
-		}
-		&.top {
-			--rotation : 180;
-			& img {top: 0;}
-		}
-		&.left {
-			--rotation : 90;
-			& img {left: 0;}
-		}
-		&.right {
-			--rotation : -90;
-			& img {right: 0;}
-		}
-		&.revealImage {
-			--revealer : linear-gradient(0deg, rgba(0,0,0,.2) 0%, rgba(0,0,0,0.2));
-			--checkerboard : url(/assets/waterColorMasks/missingImage.png); //shows any masked regions not filled by image
-		}
-	}
-
-	.imageMask1  { --wc : url(/assets/waterColorMasks/edge/0001.webp); }
-	.imageMask2  { --wc : url(/assets/waterColorMasks/edge/0002.webp); }
-	.imageMask3  { --wc : url(/assets/waterColorMasks/edge/0003.webp); }
-	.imageMask4  { --wc : url(/assets/waterColorMasks/edge/0004.webp); }
-	.imageMask5  { --wc : url(/assets/waterColorMasks/edge/0005.webp); }
-	.imageMask6  { --wc : url(/assets/waterColorMasks/edge/0006.webp); }
-	.imageMask7  { --wc : url(/assets/waterColorMasks/edge/0007.webp); }
-	.imageMask8  { --wc : url(/assets/waterColorMasks/edge/0008.webp); }
-
-	[class*="imageMask_Corner"] {
-		-webkit-mask-size : 50% 50%; //Scale both dimensions to fit page size
-		&.bottom {
-			--rotation : 0;
-		}
-		&.top {
-			--rotation : 0;
-			--scaleY   : -1;
-		}
-		&.left {
-			--rotation : 0;
-		}
-		&.right {
-			--rotation : 0;
-			--scaleX   : -1;
-		}
-	}
-
-	.imageMask_Corner1  { --wc : url(/assets/waterColorMasks/corner/0005.webp); }
-	.imageMask_Corner2  { --wc : url(/assets/waterColorMasks/corner/0006.webp); }
-	.imageMask_Corner3  { --wc : url(/assets/waterColorMasks/corner/0007.webp); }
-	.imageMask_Corner4  { --wc : url(/assets/waterColorMasks/corner/0008.webp); }
-	.imageMask_Corner5  { --wc : url(/assets/waterColorMasks/corner/0009.webp); }
-	.imageMask_Corner6  { --wc : url(/assets/waterColorMasks/corner/0010.webp); }
-	.imageMask_Corner7  { --wc : url(/assets/waterColorMasks/corner/0016.webp); }
-	.imageMask_Corner8  { --wc : url(/assets/waterColorMasks/corner/0017.webp); }
 
 	//*****************************
 	// *    DEFINITION LISTS
