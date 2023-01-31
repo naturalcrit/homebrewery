@@ -108,11 +108,11 @@ module.exports = [
 				icon : 'fas fa-fill-drip',
 				gen  : ImageMaskGen.edge,
 			},
-			{
-				name : 'Watercolor Image Mask Corner',
-				icon : 'fas fa-fill-drip',
-				gen  : ImageMaskGen.corner,
-			},
+			// {
+			// 	name : 'Watercolor Image Mask Corner',
+			// 	icon : 'fas fa-fill-drip',
+			// 	gen  : ImageMaskGen.corner,
+			// },
 			{
 				name : 'Watermark',
 				icon : 'fas fa-id-card',
