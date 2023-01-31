@@ -5,6 +5,7 @@ const ClassTableGen      = require('./snippets/classtable.gen.js');
 const MonsterBlockGen    = require('./snippets/monsterblock.gen.js');
 const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
 const CoverPageGen       = require('./snippets/coverpage.gen.js');
+const PartCoverPageGen   = require('./snippets/partcoverpage.gen.js');
 const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
 const dedent             = require('dedent-tabs').default;
 
@@ -172,6 +173,11 @@ module.exports = [
 				name : 'Cover Page',
 				icon : 'fas fa-file-word',
 				gen  : CoverPageGen,
+			},
+			{
+				name : 'Part Cover Page',
+				icon : 'fas fa-file-alt',
+				gen  : PartCoverPageGen,
 			},
 			{
 				name : 'Magic Item',

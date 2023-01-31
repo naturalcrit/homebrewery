@@ -795,4 +795,44 @@
 	.page h1 + *{
 		margin-top : 0;
 	}
+	//*****************************
+	// *         PART COVER
+	// *****************************/
+	.page .partCover {
+		background-image: @partCoverHeader;
+		background-repeat: no-repeat;
+		position: absolute;
+		background-size: 100%;
+		inset: 0;
+		img {
+			position: absolute;
+			inset: 0;
+			height:100%;
+			mask-image: @partCoverMask;
+			mask-size: 816px;
+			-webkit-mask-image: @partCoverMask;
+			-webkit-mask-size: 816px;
+		}
+		h1 {
+			text-align: center;
+			text-transform: uppercase;
+			font-size: 80px;
+			font-family: NodestoCapsCondensed;
+			font-variant: small-caps;
+			max-width: 7ch;
+			text-overflow: clip; 
+			white-space: nowrap;
+			overflow: hidden;
+			margin-inline: auto;
+		}
+		h2 {
+			text-align: center;
+			font-family: MartelSansBlack;
+			font-size: 18px;
+			position: relative;
+			max-width: 18ch;
+			margin-inline: auto;
+			margin-top: -5px;
+		}
+	}
 }
