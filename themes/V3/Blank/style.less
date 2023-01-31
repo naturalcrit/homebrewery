@@ -131,59 +131,6 @@
 			margin-top : 0;	                        // have vertical spacing.
 		}
 
-		/* Watermark */
-		.watermark {
-			display         : grid !important;
-			place-items     : center;
-			justify-content	: center;
-			position        : absolute;
-			margin          : 0;
-			top             : 0;
-			left            : 0;
-			width           : 100%;
-			height          : 100%;
-			font-size       : 120px;
-			text-transform	: uppercase;
-			color           : black;
-			mix-blend-mode  : overlay;
-			opacity         : 30%;
-			transform       : rotate(-45deg);
-			z-index         : 500;
-			p {
-				margin-bottom : none;
-			}
-		}
-
-		/* Watercolor */
-		[class*="watercolor"] {
-			position            : absolute;
-			width               : 2000px;    /* dimensions need to be real big so the user can set */
-			height              : 2000px;    /* height or width and the image will maintain aspect ratio */
-			-webkit-mask-image  : var(--wc);
-			-webkit-mask-size   : contain;
-			-webkit-mask-repeat : no-repeat;
-			mask-image          : var(--wc);
-			mask-size           : contain;
-			mask-repeat         : no-repeat;
-			background-size     : cover;
-			background-color    : var(--HB_Color_WatercolorStain);			/*default color*/
-			--wc                : @watercolor1;         /*default image*/
-			z-index             : -2;
-		}
-
-		.watercolor1  { --wc : @watercolor1; }
-		.watercolor2  { --wc : @watercolor2; }
-		.watercolor3  { --wc : @watercolor3; }
-		.watercolor4  { --wc : @watercolor4; }
-		.watercolor5  { --wc : @watercolor5; }
-		.watercolor6  { --wc : @watercolor6; }
-		.watercolor7  { --wc : @watercolor7; }
-		.watercolor8  { --wc : @watercolor8; }
-		.watercolor9  { --wc : @watercolor9; }
-		.watercolor10 { --wc : @watercolor10; }
-		.watercolor11 { --wc : @watercolor11; }
-		.watercolor12 { --wc : @watercolor12; }
-
 		//************************************
 		// *           CODE BLOCKS
 		// ************************************/
@@ -226,6 +173,29 @@
 			-webkit-column-break-inside : avoid;
 			page-break-inside           : avoid;
 			break-inside                : avoid;
+		}
+	}
+
+	/* Watermark */
+	.watermark {
+		display         : grid !important;
+		place-items     : center;
+		justify-content	: center;
+		position        : absolute;
+		margin          : 0;
+		top             : 0;
+		left            : 0;
+		width           : 100%;
+		height          : 100%;
+		font-size       : 120px;
+		text-transform	: uppercase;
+		color           : black;
+		mix-blend-mode  : overlay;
+		opacity         : 30%;
+		transform       : rotate(-45deg);
+		z-index         : 500;
+		p {
+			margin-bottom : none;
 		}
 	}
 
@@ -355,20 +325,6 @@
 	.imageMask_Corner6  { --wc : url(/assets/waterColorMasks/corner/0010.webp); }
 	.imageMask_Corner7  { --wc : url(/assets/waterColorMasks/corner/0016.webp); }
 	.imageMask_Corner8  { --wc : url(/assets/waterColorMasks/corner/0017.webp); }
-
-	//************************************
-	// *           CODE BLOCKS
-	// ************************************/
-	code{
-    font-family      : "Courier New", Courier, monospace;
-		white-space      : pre-wrap;
-		overflow-wrap    : break-word;
-	}
-
-	pre code{
-		width               : 100%;
-		display             : inline-block;
-	}
 
 	//*****************************
 	// *    DEFINITION LISTS
