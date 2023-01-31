@@ -4,7 +4,7 @@ const dedent = require('dedent-tabs').default;
 module.exports = {
 	edge : ()=>{
 		return dedent`
-			{{imageMask${_.random(1, 8)},--offset:0cm,--rotation:0
+			{{imageMaskEdge${_.random(1, 8)},--offset:0cm,--rotation:0
 			  ![](https://i.imgur.com/GZfjDWV.png){height:100%}
 			}}
 			<!-- Use --offset to shift the edge up or down from the page center.
@@ -13,7 +13,7 @@ module.exports = {
 
 	corner : ()=>{
 		return dedent`
-			{{imageMask_Corner${_.random(1, 8)},--offset:0cm,bottom,left
+			{{imageMaskCorner${_.random(1, 8)},--offset:0cm,bottom,left
 			  ![](https://i.imgur.com/1w5khYt.png){height:100%}
 			}}
 			<!-- Use offset to shift the edge up or down.
