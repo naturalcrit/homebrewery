@@ -10,6 +10,15 @@
 	height           : calc(100vh - 54px); // 54px is the height of the navbar + snippet bar.  probably a better way to dynamic get this.
 	overflow-y       : auto;
 
+	.sectionHead {
+		font-weight: 1000;
+		margin: 20px 0;
+
+		&:first-of-type {
+			margin-top: 0;
+		}
+	}
+
 	& > div {
 		margin-bottom: 10px;
 	}
@@ -26,10 +35,10 @@
 		flex-direction: column;
 		flex: 5 0 200px;
 		gap: 10px;
-		
 	}
 	.field{
 		display       : flex;
+		flex-wrap     : wrap;
 		width         : 100%;
 		min-width     : 200px;
 		&>label{
@@ -77,6 +86,11 @@
 				font-family : 'Open Sans', sans-serif;
 				font-size   : 0.8em;
 			}
+		}
+
+		small {
+			font-size  : 0.6em;
+			font-style : italic;
 		}
 	}
 
@@ -128,10 +142,6 @@
 		button.unpublish{
 			.button(@silver);
 		}
-		small{
-			font-size  : 0.6em;
-			font-style : italic;
-		}
 	}
 
 	.delete.field .value{
@@ -148,7 +158,6 @@
 		font-size : 13.33px;
 		.navDropdownContainer {
 			background-color	: white;
-			width				: 100%;
 			position			: relative;
 			z-index				: 500;
 			&.disabled {
@@ -171,24 +180,51 @@
 			}
 			.navDropdown {
 				box-shadow	: 0px 5px 10px rgba(0, 0, 0, 0.3);
-				position	: absolute;
-				width		: 100%;
+				position	  : absolute;
+				width		    : 100%;
 				.item {
-					padding				: 3px 3px;
-					border-top			: 1px solid rgb(118, 118, 118);
-					position			: relative;
-					overflow			: hidden;
+					padding           : 3px 3px;
+					border-top        : 1px solid rgb(118, 118, 118);
+					position          : relative;
+					overflow          : visible;
 					background-color	: white;
+					.preview {
+						display       : flex;
+  					flex-direction: column;
+						background    : #ccc;
+						border-radius : 5px;
+  					box-shadow    : 0 0 5px black;
+						width         : 200px;
+						color         :black;
+						position      : absolute;
+						top           : 0;
+						right         : 0;
+						opacity       : 0;
+						transition    : opacity 250ms ease;
+						z-index       : 1;
+						overflow      :hidden;
+						h6 {
+							font-weight   : 900;
+							padding-inline:1em;
+							padding-block :.5em;
+							border-bottom :2px solid hsl(0,0%,40%);
+						}
+					}
 					&:hover {
 						background-color	: @blue;
-						color				: white;
+						color				      : white;
 					}
-					img {
-						mask-image			: linear-gradient(90deg, transparent, black 20%);
+					&:hover > .preview {
+						opacity: 1;
+					}
+					>img {
+						mask-image			    : linear-gradient(90deg, transparent, black 20%);
 						-webkit-mask-image	: linear-gradient(90deg, transparent, black 20%);
-				    position	: absolute;
-				    left		: ~"max(100px, 100% - 300px)";
-				    top			: 0px;
+				    	position			    : absolute;
+				    	right				      : 0;
+				    	top					      : 0px;
+						width				        : 50%;
+						height				      : 100%;
 					}
 				}
 			}
@@ -196,6 +232,7 @@
 	}
 	.field .list {
 		display: flex;
+		flex: 1 0;
 		flex-wrap: wrap;
 
 		> * {
