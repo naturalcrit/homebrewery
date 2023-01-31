@@ -7,7 +7,7 @@ module.exports = {
 			{{imageMask${_.random(1, 8)},--offset:0cm,--rotation:0
 			  ![](https://assets1.ignimgs.com/2019/05/29/dndmobile-br-1559158957902_160w.jpg?width=1280){height:100%}
 
-			  <!-- Use offset to shift the edge up or down. Use rotation to set rotation angle in degrees. -->
+			  <!-- Use offset to shift the edge up or down from the page center. Use rotation to set rotation angle in degrees. -->
 			}}\n\n`;
 	},
 
