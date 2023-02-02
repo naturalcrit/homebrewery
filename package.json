@@ -12,8 +12,7 @@
   "scripts": {
     "dev": "node scripts/dev.js",
     "quick": "node scripts/quick.js",
-    "build": "node scripts/buildHomebrew.js",
-    "buildall": "node scripts/buildHomebrew.js && node scripts/buildAdmin.js",
+    "build": "node scripts/buildHomebrew.js && node scripts/buildAdmin.js",
     "builddev": "node scripts/buildHomebrew.js --dev",
     "lint": "eslint --fix **/*.{js,jsx}",
     "lint:dry": "eslint **/*.{js,jsx}",
@@ -28,7 +27,6 @@
     "test:route": "jest tests/routes/static-pages.test.js --verbose",
     "phb": "node scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
-    "postinstall": "npm run buildall",
     "start": "node server.js"
   },
   "author": "stolksdorf",
