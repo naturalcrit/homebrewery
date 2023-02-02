@@ -13,7 +13,7 @@ module.exports = {
 
 	corner : ()=>{
 		return dedent`
-			{{imageMaskCorner${_.random(1, 8)},--offsetX:0%,offsetY:0%
+			{{imageMaskCorner${_.random(1, 8)},--offsetX:0%,offsetY:0%,--rotation:0
 			  ![](https://i.imgur.com/1w5khYt.png){height:100%}
 			}}
 			<!-- Use --offsetX to shift the mask left or right (you can use cm instead of %)
