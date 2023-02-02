@@ -299,21 +299,36 @@
 		.imageMaskEdge8  { --wc : url(/assets/waterColorMasks/edge/0008.webp); }
 
 		[class*="imageMaskCorner"] {
-			-webkit-mask-size : 50% 50%; //Scale both dimensions to fit page size
-			&.bottom {
-				--rotation : 0;
+			height                : 100%;
+			width                 : 100%;
+			-webkit-mask-image    : var(--wc), var(--revealer);
+			-webkit-mask-repeat   : no-repeat;
+			-webkit-mask-size     : 200% 200%; //Scale both dimensions to fit page size
+			-webkit-mask-position : 50% 50%;
+			mask-image            : var(--wc), var(--revealer);
+			mask-repeat           : no-repeat;
+			mask-size             : 200% 200%; //Scale both dimensions to fit page size
+			mask-position         : 50% 50%;
+			transform             : translateY(calc(50% + var(--offsetY))) translateX(calc(-50% + var(--offsetX))) rotate(calc(1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));
+			& > p:has(img) {
+				width      : 100%;
+				height     : 100%; //Complex transform below to handle mix of % and cm offsets
+				transform  : rotate(calc(-1deg * var(--rotation))) translateX(calc(-1 * var(--offsetX))) translateY(calc(-1 * var(--offsetY))) rotate(calc(1deg * var(--rotation)))translateX(-50%) translateY(50%) rotate(calc(-1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));
 			}
-			&.top {
-				--rotation : 0;
-				--scaleY   : -1;
-			}
-			&.left {
-				--rotation : 0;
-			}
-			&.right {
-				--rotation : 0;
-				--scaleX   : -1;
-			}
+			// &.bottom {
+			// 	--rotation : 0;
+			// }
+			// &.top {
+			// 	--rotation : 0;
+			// 	--scaleY   : -1;
+			// }
+			// &.left {
+			// 	--rotation : 0;
+			// }
+			// &.right {
+			// 	--rotation : 0;
+			// 	--scaleX   : -1;
+			// }
 		}
 
 		.imageMaskCorner1  { --wc : url(/assets/waterColorMasks/corner/0005.webp); }
@@ -324,6 +339,7 @@
 		.imageMaskCorner6  { --wc : url(/assets/waterColorMasks/corner/0010.webp); }
 		.imageMaskCorner7  { --wc : url(/assets/waterColorMasks/corner/0016.webp); }
 		.imageMaskCorner8  { --wc : url(/assets/waterColorMasks/corner/0017.webp); }
+		.imageMaskCorner66  { --wc : url(/assets/waterColorMasks/corner/0066.png); }
 	}
 
 	//*****************************
