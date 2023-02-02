@@ -61,6 +61,15 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### XXXday DD/MM/2023 - v3.7.0
+{{taskList
+##### G-Ambatte
+
+* [x] Update server build scripts
+
+Fixes issues [#2657](https://github.com/naturalcrit/homebrewery/issues/2657)
+}}
+
 ### Friday 23/01/2023 - v3.6.0
 {{taskList
 ##### calculuschild
