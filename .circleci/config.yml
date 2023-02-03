@@ -33,8 +33,6 @@ jobs:
           cache-path: node_modules
           override-ci-command: npm i
 
-      - run: sudo npm audit fix
-
       - save_cache:
           paths:
             - node_modules
