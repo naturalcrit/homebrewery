@@ -27,6 +27,7 @@
     "test:route": "jest tests/routes/static-pages.test.js --verbose",
     "phb": "node scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
+    "postinstall": "npm run build",
     "start": "node server.js"
   },
   "author": "stolksdorf",
