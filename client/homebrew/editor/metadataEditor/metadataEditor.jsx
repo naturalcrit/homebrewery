@@ -37,7 +37,7 @@ const MetadataEditor = createClass({
 				renderer    : 'legacy',
 				theme       : '5ePHB'
 			},
-			onChange : ()=>{},
+			onChange    : ()=>{},
 			reportError : ()=>{}
 		};
 	},
