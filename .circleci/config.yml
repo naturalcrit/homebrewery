@@ -8,7 +8,7 @@ orbs:
   node: circleci/node@3.0.0
 
 jobs:
-  buildImage:
+  build:
     docker:
       - image: cimg/node:16.11.0
       - image: mongo:4.4
@@ -74,7 +74,7 @@ jobs:
 workflows:
   build_and_test:
     jobs:
-      - buildImage
+      - build
       - test:
           requires:
-            - buildImage
+            - build
