@@ -4,8 +4,6 @@ const WatercolorGen = require('./snippets/watercolor.gen.js');
 const ImageMaskGen  = require('./snippets/imageMask.gen.js');
 const dedent        = require('dedent-tabs').default;
 
-
-
 module.exports = [
 
 	{
@@ -108,11 +106,33 @@ module.exports = [
 				icon : 'fas fa-fill-drip',
 				gen  : ImageMaskGen.edge,
 			},
-			// {
-			// 	name : 'Watercolor Image Mask Corner',
-			// 	icon : 'fas fa-fill-drip',
-			// 	gen  : ImageMaskGen.corner,
-			// },
+			{
+				name : 'Watercolor Image Mask Corner',
+				icon : 'fas fa-fill-drip',
+				gen  : ImageMaskGen.corner,
+				subsnippets : [
+					{
+						name : 'Top-Left',
+						icon : 'fac position-top-left',
+						gen  : ImageMaskGen.edge,
+					},
+					{
+						name : 'Top-Right',
+						icon : 'fac position-top-right',
+						gen  : ImageMaskGen.edge,
+					},
+					{
+						name : 'Bottom-Left',
+						icon : 'fac position-bottom-left',
+						gen  : ImageMaskGen.edge,
+					},
+					{
+						name : 'Bottom-Right',
+						icon : 'fac position-bottom-right',
+						gen  : ImageMaskGen.edge,
+					}
+				]
+			},
 			{
 				name : 'Watermark',
 				icon : 'fas fa-id-card',
