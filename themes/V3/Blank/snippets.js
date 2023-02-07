@@ -102,9 +102,9 @@ module.exports = [
 				gen  : WatercolorGen,
 			},
 			{
-				name : 'Watercolor Image Mask Edge',
-				icon : 'fas fa-fill-drip',
-				gen  : ImageMaskGen.edge('bottom'),
+				name        : 'Watercolor Image Mask Edge',
+				icon        : 'fas fa-fill-drip',
+				gen         : ImageMaskGen.edge('bottom'),
 				subsnippets : [
 					{
 						name : 'Top',
@@ -129,29 +129,29 @@ module.exports = [
 				]
 			},
 			{
-				name : 'Watercolor Image Mask Corner',
-				icon : 'fas fa-fill-drip',
-				gen  : ImageMaskGen.corner,
+				name        : 'Watercolor Image Mask Corner',
+				icon        : 'fas fa-fill-drip',
+				gen         : ImageMaskGen.corner,
 				subsnippets : [
 					{
 						name : 'Top-Left',
 						icon : 'fac position-top-left',
-						gen  : ImageMaskGen.corner('top','left'),
+						gen  : ImageMaskGen.corner('top', 'left'),
 					},
 					{
 						name : 'Top-Right',
 						icon : 'fac position-top-right',
-						gen  : ImageMaskGen.corner('top','right'),
+						gen  : ImageMaskGen.corner('top', 'right'),
 					},
 					{
 						name : 'Bottom-Left',
 						icon : 'fac position-bottom-left',
-						gen  : ImageMaskGen.corner('bottom','left'),
+						gen  : ImageMaskGen.corner('bottom', 'left'),
 					},
 					{
 						name : 'Bottom-Right',
 						icon : 'fac position-bottom-right',
-						gen  : ImageMaskGen.corner('bottom','right'),
+						gen  : ImageMaskGen.corner('bottom', 'right'),
 					}
 				]
 			},
