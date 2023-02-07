@@ -103,7 +103,7 @@ module.exports = [
 			},
 			{
 				name        : 'Watercolor Image Mask Edge',
-				icon        : 'fas fa-fill-drip',
+				icon        : 'fac mask-edge',
 				gen         : ImageMaskGen.edge('bottom'),
 				subsnippets : [
 					{
@@ -130,7 +130,7 @@ module.exports = [
 			},
 			{
 				name        : 'Watercolor Image Mask Corner',
-				icon        : 'fas fa-fill-drip',
+				icon        : 'fac mask-corner',
 				gen         : ImageMaskGen.corner,
 				subsnippets : [
 					{
