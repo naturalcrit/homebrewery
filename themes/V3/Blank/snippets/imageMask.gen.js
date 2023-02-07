@@ -2,9 +2,16 @@ const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
 
 module.exports = {
-	edge : ()=>{
+	edge : (side = 'bottom')=>{
+		let rotation;
+		switch (side){
+			case 'bottom': rotation = 0; break;
+			case 'top'   : rotation = 180; break;
+			case 'left'  : rotation = 90; break;
+			case 'right' : rotation = 270; break;
+		}
 		return dedent`
-			{{imageMaskEdge${_.random(1, 8)},--offset:0cm,--rotation:0
+			{{imageMaskEdge${_.random(1, 8)},--offset:0cm,--rotation:${rotation};
 			  ![](https://i.imgur.com/GZfjDWV.png){height:100%}
 			}}
 			<!-- Use --offset to shift the edge up or down from the page center.

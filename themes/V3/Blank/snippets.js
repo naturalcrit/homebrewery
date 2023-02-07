@@ -104,7 +104,29 @@ module.exports = [
 			{
 				name : 'Watercolor Image Mask Edge',
 				icon : 'fas fa-fill-drip',
-				gen  : ImageMaskGen.edge,
+				gen  : ImageMaskGen.edge('bottom'),
+				subsnippets : [
+					{
+						name : 'Top',
+						icon : 'fac position-top',
+						gen  : ImageMaskGen.edge('top'),
+					},
+					{
+						name : 'Right',
+						icon : 'fac position-right',
+						gen  : ImageMaskGen.edge('right'),
+					},
+					{
+						name : 'Bottom',
+						icon : 'fac position-bottom',
+						gen  : ImageMaskGen.edge('bottom'),
+					},
+					{
+						name : 'Left',
+						icon : 'fac position-left',
+						gen  : ImageMaskGen.edge('left'),
+					},
+				]
 			},
 			{
 				name : 'Watercolor Image Mask Corner',
