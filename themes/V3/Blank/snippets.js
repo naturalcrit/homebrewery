@@ -114,22 +114,22 @@ module.exports = [
 					{
 						name : 'Top-Left',
 						icon : 'fac position-top-left',
-						gen  : ImageMaskGen.edge,
+						gen  : ImageMaskGen.corner('top','left'),
 					},
 					{
 						name : 'Top-Right',
 						icon : 'fac position-top-right',
-						gen  : ImageMaskGen.edge,
+						gen  : ImageMaskGen.corner('top','right'),
 					},
 					{
 						name : 'Bottom-Left',
 						icon : 'fac position-bottom-left',
-						gen  : ImageMaskGen.edge,
+						gen  : ImageMaskGen.corner('bottom','left'),
 					},
 					{
 						name : 'Bottom-Right',
 						icon : 'fac position-bottom-right',
-						gen  : ImageMaskGen.edge,
+						gen  : ImageMaskGen.corner('bottom','right'),
 					}
 				]
 			},
