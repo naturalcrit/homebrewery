@@ -71,7 +71,8 @@ describe('Tests for api', ()=>{
 			lastViewed  : new Date(),
 			version     : 1,
 			pageCount   : 1,
-			textBin     : ''
+			textBin     : '',
+			views       : 0
 		};
 		googleBrew = {
 			...hbBrew,
@@ -261,7 +262,8 @@ If you believe you should have access to this brew, ask the file owner to invite
 				gDrive      : false,
 				style       : undefined,
 				trashed     : false,
-				updatedAt   : undefined
+				updatedAt   : undefined,
+				views       : 0
 			});
 			expect(next).toHaveBeenCalled();
 			expect(api.getId).toHaveBeenCalledWith(req);
@@ -452,7 +454,8 @@ brew`);
 				thumbnail   : '',
 				title       : 'asdf',
 				trashed     : false,
-				updatedAt   : undefined
+				updatedAt   : undefined,
+				views       : 0
 			});
 		});
 
@@ -510,7 +513,8 @@ brew`);
 				thumbnail   : '',
 				title       : 'asdf',
 				trashed     : false,
-				updatedAt   : undefined
+				updatedAt   : undefined,
+				views       : 0
 			});
 		});
 
