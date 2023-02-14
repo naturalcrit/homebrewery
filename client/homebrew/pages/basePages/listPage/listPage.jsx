@@ -23,7 +23,8 @@ const ListPage = createClass({
 					brews : []
 				}
 			],
-			navItems : <></>
+			navItems    : <></>,
+			reportError : null
 		};
 	},
 	getInitialState : function() {
@@ -81,7 +82,7 @@ const ListPage = createClass({
 		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
 
 		return _.map(brews, (brew, idx)=>{
-			return <BrewItem brew={brew} key={idx}/>;
+			return <BrewItem brew={brew} key={idx} reportError={this.props.reportError}/>;
 		});
 	},
 
@@ -218,12 +219,13 @@ const ListPage = createClass({
 
 	render : function(){
 		return <div className='listPage sitePage'>
+			<style>@layer V3_5ePHB, bundle;</style>
 			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet'/>
 			{this.props.navItems}
 			{this.renderSortOptions()}
 
 			<div className='content V3'>
-				<div className='phb page'>
+				<div className='page'>
 					{this.renderBrewCollection(this.state.brewCollection)}
 				</div>
 			</div>

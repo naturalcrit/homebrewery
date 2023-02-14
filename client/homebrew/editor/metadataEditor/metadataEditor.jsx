@@ -4,7 +4,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
-const request = require('superagent');
+const request = require('../../utils/request-middleware.js');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
 
@@ -37,7 +37,8 @@ const MetadataEditor = createClass({
 				renderer    : 'legacy',
 				theme       : '5ePHB'
 			},
-			onChange : ()=>{}
+			onChange    : ()=>{},
+			reportError : ()=>{}
 		};
 	},
 
@@ -121,8 +122,12 @@ const MetadataEditor = createClass({
 
 		request.delete(`/api/${this.props.metadata.googleId ?? ''}${this.props.metadata.editId}`)
 			.send()
-			.end(function(err, res){
-				window.location.href = '/';
+			.end((err, res)=>{
+				if(err) {
+					this.props.reportError(err);
+				} else {
+					window.location.href = '/';
+				}
 			});
 	},
 
@@ -184,6 +189,10 @@ const MetadataEditor = createClass({
 				return <div className='item' key={''} onClick={()=>this.handleTheme(theme)} title={''}>
 					{`${theme.renderer} : ${theme.name}`}
 					<img src={`/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`}/>
+					<div className='preview'>
+						<h6>{`${theme.name}`} preview</h6>
+						<img src={`/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`}/>
+					</div>
 				</div>;
 			});
 		};
@@ -193,14 +202,14 @@ const MetadataEditor = createClass({
 
 		if(this.props.metadata.renderer == 'legacy') {
 			dropdown =
-				<Nav.dropdown className='disabled' trigger='disabled'>
+				<Nav.dropdown className='disabled value' trigger='disabled'>
 					<div>
 						{`Themes are not supported in the Legacy Renderer`} <i className='fas fa-caret-down'></i>
 					</div>
 				</Nav.dropdown>;
 		} else {
 			dropdown =
-				<Nav.dropdown trigger='click'>
+				<Nav.dropdown className='value' trigger='click'>
 					<div>
 						{`${_.upperFirst(currentTheme.renderer)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
 					</div>
