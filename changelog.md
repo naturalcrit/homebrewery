@@ -61,6 +61,16 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Friday 17/02/2023 - v3.6.1
+{{taskList
+##### G-Ambatte
+
+* [x] Fix users not being removed from Authors list correctly
+
+Fixes issues [#2674](https://github.com/naturalcrit/homebrewery/issues/2674)
+}}
+
+
 ### Friday 23/01/2023 - v3.6.0
 {{taskList
 ##### calculuschild
