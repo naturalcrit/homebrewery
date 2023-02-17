@@ -299,21 +299,28 @@
 		.imageMaskEdge8  { --wc : url(/assets/waterColorMasks/edge/0008.webp); }
 
 		[class*="imageMaskCorner"] {
-			height                : 100%;
-			width                 : 100%;
+			height                : 200%;
+			width                 : 200%;
+			left                  : calc(-50% + var(--offsetX));
+			bottom                : calc(-50% + var(--offsetY));
 			-webkit-mask-image    : var(--wc), var(--revealer);
 			-webkit-mask-repeat   : no-repeat;
-			-webkit-mask-size     : 200% 200%; //Scale both dimensions to fit page size
+			-webkit-mask-size     : 100% 100%; //Scale both dimensions to fit page size
 			-webkit-mask-position : 50% 50%;
 			mask-image            : var(--wc), var(--revealer);
 			mask-repeat           : no-repeat;
-			mask-size             : 200% 200%; //Scale both dimensions to fit page size
+			mask-size             : 100% 100%; //Scale both dimensions to fit page size
 			mask-position         : 50% 50%;
-			transform             : translateY(calc(50% + var(--offsetY))) translateX(calc(-50% + var(--offsetX))) rotate(calc(1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));
+			transform             : rotate(calc(1deg * var(--rotation)));
 			& > p:has(img) {
-				width      : 100%;
-				height     : 100%; //Complex transform below to handle mix of % and cm offsets
-				transform  : rotate(calc(-1deg * var(--rotation))) translateX(calc(-1 * var(--offsetX))) translateY(calc(-1 * var(--offsetY))) rotate(calc(1deg * var(--rotation)))translateX(-50%) translateY(50%) rotate(calc(-1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));
+				width      : 50%;
+				height     : 50%; //Complex transform below to handle mix of % and cm offsets
+				left       : 25%;
+				bottom     : 25%;
+				transform  : rotate(calc(-1deg * var(--rotation)))
+				             translateX(calc(-1 * var(--offsetX)))
+										 translateY(calc(1 * var(--offsetY)))
+										 scaleX(var(--scaleX)) scaleY(var(--scaleY));
 			}
 			// &.bottom {
 			// 	--rotation : 0;
@@ -331,15 +338,43 @@
 			// }
 		}
 
-		.imageMaskCorner1  { --wc : url(/assets/waterColorMasks/corner/0005.webp); }
-		.imageMaskCorner2  { --wc : url(/assets/waterColorMasks/corner/0006.webp); }
-		.imageMaskCorner3  { --wc : url(/assets/waterColorMasks/corner/0007.webp); }
-		.imageMaskCorner4  { --wc : url(/assets/waterColorMasks/corner/0008.webp); }
-		.imageMaskCorner5  { --wc : url(/assets/waterColorMasks/corner/0009.webp); }
-		.imageMaskCorner6  { --wc : url(/assets/waterColorMasks/corner/0010.webp); }
-		.imageMaskCorner7  { --wc : url(/assets/waterColorMasks/corner/0016.webp); }
-		.imageMaskCorner8  { --wc : url(/assets/waterColorMasks/corner/0017.webp); }
-		.imageMaskCorner66  { --wc : url(/assets/waterColorMasks/corner/0066.png); }
+		.imageMaskCorner1  { --wc : url(/assets/waterColorMasks/corner/0001.webp); }
+		.imageMaskCorner2  { --wc : url(/assets/waterColorMasks/corner/0002.webp); }
+		.imageMaskCorner3  { --wc : url(/assets/waterColorMasks/corner/0003.webp); }
+		.imageMaskCorner4  { --wc : url(/assets/waterColorMasks/corner/0004.webp); }
+		.imageMaskCorner5  { --wc : url(/assets/waterColorMasks/corner/0005.webp); }
+		.imageMaskCorner6  { --wc : url(/assets/waterColorMasks/corner/0006.webp); }
+		.imageMaskCorner7  { --wc : url(/assets/waterColorMasks/corner/0007.webp); }
+		.imageMaskCorner8  { --wc : url(/assets/waterColorMasks/corner/0008.webp); }
+		.imageMaskCorner9  { --wc : url(/assets/waterColorMasks/corner/0009.webp); }
+		.imageMaskCorner10 { --wc : url(/assets/waterColorMasks/corner/0010.webp); }
+		.imageMaskCorner11 { --wc : url(/assets/waterColorMasks/corner/0011.webp); }
+		.imageMaskCorner12 { --wc : url(/assets/waterColorMasks/corner/0012.webp); }
+		.imageMaskCorner13 { --wc : url(/assets/waterColorMasks/corner/0013.webp); }
+		.imageMaskCorner14 { --wc : url(/assets/waterColorMasks/corner/0014.webp); }
+		.imageMaskCorner15 { --wc : url(/assets/waterColorMasks/corner/0015.webp); }
+		.imageMaskCorner16 { --wc : url(/assets/waterColorMasks/corner/0016.webp); }
+		.imageMaskCorner17 { --wc : url(/assets/waterColorMasks/corner/0017.webp); }
+		.imageMaskCorner18 { --wc : url(/assets/waterColorMasks/corner/0018.webp); }
+		.imageMaskCorner19 { --wc : url(/assets/waterColorMasks/corner/0019.webp); }
+		.imageMaskCorner20 { --wc : url(/assets/waterColorMasks/corner/0020.webp); }
+		.imageMaskCorner21 { --wc : url(/assets/waterColorMasks/corner/0021.webp); }
+		.imageMaskCorner22 { --wc : url(/assets/waterColorMasks/corner/0022.webp); }
+		.imageMaskCorner23 { --wc : url(/assets/waterColorMasks/corner/0023.webp); }
+		.imageMaskCorner24 { --wc : url(/assets/waterColorMasks/corner/0024.webp); }
+		.imageMaskCorner25 { --wc : url(/assets/waterColorMasks/corner/0025.webp); }
+		.imageMaskCorner26 { --wc : url(/assets/waterColorMasks/corner/0026.webp); }
+		.imageMaskCorner27 { --wc : url(/assets/waterColorMasks/corner/0027.webp); }
+		.imageMaskCorner28 { --wc : url(/assets/waterColorMasks/corner/0028.webp); }
+		.imageMaskCorner29 { --wc : url(/assets/waterColorMasks/corner/0029.webp); }
+		.imageMaskCorner30 { --wc : url(/assets/waterColorMasks/corner/0030.webp); }
+		.imageMaskCorner31 { --wc : url(/assets/waterColorMasks/corner/0031.webp); }
+		.imageMaskCorner32 { --wc : url(/assets/waterColorMasks/corner/0032.webp); }
+		.imageMaskCorner33 { --wc : url(/assets/waterColorMasks/corner/0033.webp); }
+		.imageMaskCorner34 { --wc : url(/assets/waterColorMasks/corner/0034.webp); }
+		.imageMaskCorner35 { --wc : url(/assets/waterColorMasks/corner/0035.webp); }
+		.imageMaskCorner36 { --wc : url(/assets/waterColorMasks/corner/0036.webp); }
+		.imageMaskCorner37 { --wc : url(/assets/waterColorMasks/corner/0037.webp); }
 	}
 
 	//*****************************

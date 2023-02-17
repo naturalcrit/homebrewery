@@ -21,10 +21,10 @@ module.exports = {
 		const offsetX = (x == 'left' ? '-50%' : '50%');
 		const offsetY = (y == 'top'  ? '-50%' : '50%');
 		return dedent`
-			{{imageMaskCorner${_.random(1, 8)},--offsetX:${offsetX},--offsetY:${offsetY},--rotation:0
+			{{imageMaskCorner${_.random(1, 37)},--offsetX:${offsetX},--offsetY:${offsetY},--rotation:0
 			  ![](https://i.imgur.com/GZfjDWV.png){height:100%}
 			}}
-			<!-- Use --offsetX to shift the mask left or right (you can use cm instead of %)
+			<!-- Use --offsetX to shift the mask left or right (can use cm instead of %)
 			     Use --offsetY to shift the mask up or down
 			     Use --rotation to set rotation angle in degrees. -->\n\n`;
 	}
