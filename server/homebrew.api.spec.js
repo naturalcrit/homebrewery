@@ -11,6 +11,7 @@ describe('Tests for api', ()=>{
 	let modelBrew;
 	let saveFunc;
 	let removeFunc;
+	let markModifiedFunc;
 	let saved;
 
 	beforeEach(()=>{
@@ -20,12 +21,14 @@ describe('Tests for api', ()=>{
 			return saved;
 		});
 		removeFunc = jest.fn(async function() {});
+		markModifiedFunc = jest.fn(()=>true);
 
 		modelBrew = (brew)=>({
 			...brew,
-			save     : saveFunc,
-			remove   : removeFunc,
-			toObject : function() {
+			save         : saveFunc,
+			remove       : removeFunc,
+			markModified : markModifiedFunc,
+			toObject     : function() {
 				delete this.save;
 				delete this.toObject;
 				delete this.remove;
@@ -435,27 +438,28 @@ brew`);
 
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.send).toHaveBeenCalledWith({
-				_id         : '1',
-				authors     : ['test user'],
-				createdAt   : undefined,
-				description : '',
-				editId      : expect.any(String),
-				gDrive      : false,
-				pageCount   : 1,
-				published   : false,
-				renderer    : 'V3',
-				shareId     : expect.any(String),
-				style       : undefined,
-				systems     : [],
-				tags        : [],
-				text        : undefined,
-				textBin     : expect.objectContaining({}),
-				theme       : '5ePHB',
-				thumbnail   : '',
-				title       : 'asdf',
-				trashed     : false,
-				updatedAt   : undefined,
-				views       : 0
+				_id          : '1',
+				authors      : ['test user'],
+				createdAt    : undefined,
+				description  : '',
+				editId       : expect.any(String),
+				gDrive       : false,
+				markModified : expect.any(Function),
+				pageCount    : 1,
+				published    : false,
+				renderer     : 'V3',
+				shareId      : expect.any(String),
+				style        : undefined,
+				systems      : [],
+				tags         : [],
+				text         : undefined,
+				textBin      : expect.objectContaining({}),
+				theme        : '5ePHB',
+				thumbnail    : '',
+				title        : 'asdf',
+				trashed      : false,
+				updatedAt    : undefined,
+				views        : 0
 			});
 		});
 
@@ -493,28 +497,29 @@ brew`);
 			expect(google.newGoogleBrew).toHaveBeenCalled();
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.send).toHaveBeenCalledWith({
-				_id         : '1',
-				authors     : ['test user'],
-				createdAt   : undefined,
-				description : '',
-				editId      : expect.any(String),
-				gDrive      : false,
-				pageCount   : undefined,
-				published   : false,
-				renderer    : undefined,
-				shareId     : expect.any(String),
-				googleId    : expect.any(String),
-				style       : undefined,
-				systems     : [],
-				tags        : [],
-				text        : undefined,
-				textBin     : undefined,
-				theme       : '5ePHB',
-				thumbnail   : '',
-				title       : 'asdf',
-				trashed     : false,
-				updatedAt   : undefined,
-				views       : 0
+				_id          : '1',
+				authors      : ['test user'],
+				createdAt    : undefined,
+				description  : '',
+				editId       : expect.any(String),
+				gDrive       : false,
+				pageCount    : undefined,
+				published    : false,
+				renderer     : undefined,
+				shareId      : expect.any(String),
+				googleId     : expect.any(String),
+				markModified : expect.any(Function),
+				style        : undefined,
+				systems      : [],
+				tags         : [],
+				text         : undefined,
+				textBin      : undefined,
+				theme        : '5ePHB',
+				thumbnail    : '',
+				title        : 'asdf',
+				trashed      : false,
+				updatedAt    : undefined,
+				views        : 0
 			});
 		});
 
@@ -627,6 +632,7 @@ brew`);
 			await api.deleteBrew(req, res);
 
 			expect(api.getBrew).toHaveBeenCalled();
+			expect(markModifiedFunc).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
 			expect(removeFunc).not.toHaveBeenCalled();
 			expect(saveFunc).toHaveBeenCalled();
@@ -716,6 +722,7 @@ brew`);
 			await api.deleteBrew(req, res);
 
 			expect(api.getBrew).toHaveBeenCalled();
+			// expect(markModifiedFunc).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
 			expect(removeFunc).not.toHaveBeenCalled();
 			expect(api.deleteGoogleBrew).toHaveBeenCalled();
