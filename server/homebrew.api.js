@@ -323,7 +323,6 @@ If you believe you should have access to this brew, ask the file owner to invite
 				// Without it, starting with an array of ['A', 'B', 'C'] in the database:
 				//  - when reduced to ['A', 'B'] will result in ['A', 'B', 'C'] saved in the database
 				//  - when reduced to ['B', 'C'] will result in ['B', 'C', 'C'] saved in the database
-				if(!brew.markModified) { brew.markModified = ()=>{return true;}; };
 				brew.markModified('authors');
 				await brew.save()
 					.catch((err)=>{
