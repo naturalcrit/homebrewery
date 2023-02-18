@@ -317,13 +317,7 @@ If you believe you should have access to this brew, ask the file owner to invite
 					brew.textBin = zlib.deflateRawSync(brew.text);
 					brew.text = undefined;
 				}
-
-				// Otherwise, save the brew with updated author list
-				// markModified() is necessary to have Mongoose reduce the array length in the database
-				// Without it, starting with an array of ['A', 'B', 'C'] in the database:
-				//  - when reduced to ['A', 'B'] will result in ['A', 'B', 'C'] saved in the database
-				//  - when reduced to ['B', 'C'] will result in ['B', 'C', 'C'] saved in the database
-				brew.markModified('authors');
+				brew.markModified('authors'); //Mongo will not properly update arrays without markModified()
 				await brew.save()
 					.catch((err)=>{
 						throw { status: 500, message: err };

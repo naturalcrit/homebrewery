@@ -32,6 +32,7 @@ describe('Tests for api', ()=>{
 				delete this.save;
 				delete this.toObject;
 				delete this.remove;
+				delete this.markModified;
 				return this;
 			}
 		});
@@ -444,7 +445,6 @@ brew`);
 				description  : '',
 				editId       : expect.any(String),
 				gDrive       : false,
-				markModified : expect.any(Function),
 				pageCount    : 1,
 				published    : false,
 				renderer     : 'V3',
@@ -508,7 +508,6 @@ brew`);
 				renderer     : undefined,
 				shareId      : expect.any(String),
 				googleId     : expect.any(String),
-				markModified : expect.any(Function),
 				style        : undefined,
 				systems      : [],
 				tags         : [],
@@ -722,7 +721,7 @@ brew`);
 			await api.deleteBrew(req, res);
 
 			expect(api.getBrew).toHaveBeenCalled();
-			// expect(markModifiedFunc).toHaveBeenCalled();
+			expect(markModifiedFunc).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
 			expect(removeFunc).not.toHaveBeenCalled();
 			expect(api.deleteGoogleBrew).toHaveBeenCalled();
