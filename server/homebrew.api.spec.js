@@ -11,6 +11,7 @@ describe('Tests for api', ()=>{
 	let modelBrew;
 	let saveFunc;
 	let removeFunc;
+	let markModifiedFunc;
 	let saved;
 
 	beforeEach(()=>{
@@ -20,15 +21,18 @@ describe('Tests for api', ()=>{
 			return saved;
 		});
 		removeFunc = jest.fn(async function() {});
+		markModifiedFunc = jest.fn(()=>true);
 
 		modelBrew = (brew)=>({
 			...brew,
-			save     : saveFunc,
-			remove   : removeFunc,
-			toObject : function() {
+			save         : saveFunc,
+			remove       : removeFunc,
+			markModified : markModifiedFunc,
+			toObject     : function() {
 				delete this.save;
 				delete this.toObject;
 				delete this.remove;
+				delete this.markModified;
 				return this;
 			}
 		});
@@ -627,6 +631,7 @@ brew`);
 			await api.deleteBrew(req, res);
 
 			expect(api.getBrew).toHaveBeenCalled();
+			expect(markModifiedFunc).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
 			expect(removeFunc).not.toHaveBeenCalled();
 			expect(saveFunc).toHaveBeenCalled();
@@ -716,6 +721,7 @@ brew`);
 			await api.deleteBrew(req, res);
 
 			expect(api.getBrew).toHaveBeenCalled();
+			expect(markModifiedFunc).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
 			expect(removeFunc).not.toHaveBeenCalled();
 			expect(api.deleteGoogleBrew).toHaveBeenCalled();
