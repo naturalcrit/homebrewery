@@ -52,10 +52,49 @@ pre {
 	font-family: 'Open Sans';
 	font-size: 0.9em;
 }
+
+.page {
+	padding-bottom: 1.5cm;
+}
 ```
 
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
+
+### Saturday 18/02/2023 - v3.6.1
+{{taskList
+##### G-Ambatte
+
+* [x] Fix users not being removed from Authors list correctly
+
+Fixes issues [#2674](https://github.com/naturalcrit/homebrewery/issues/2674)
+}}
+
+
+### Friday 23/01/2023 - v3.6.0
+{{taskList
+##### calculuschild
+
+* [x] Fix Google Drive brews sometimes duplicating
+
+Fixes issues [#2603](https://github.com/naturalcrit/homebrewery/issues/2603)
+
+##### Jeddai
+
+* [x] Add unit tests with full coverage for the Homebrewery API
+
+* [x] Add message to refresh the browser if the user is missing an update to the Homebrewery
+
+Fixes issues [#2583](https://github.com/naturalcrit/homebrewery/issues/2583)
+
+##### G-Ambatte
+
+* [x] Auto-compile Themes CSS on development server
+
+##### 5e-Cleric
+
+* [x] Fix cloned brews inheriting the parent view count
+}}
 
 ### Friday 23/12/2022 - v3.5.0
 {{taskList
@@ -71,22 +110,6 @@ Fixes issues [#1987](https://github.com/naturalcrit/homebrewery/issues/1987)
 }}
 
 \page
-
-### Monday 05/12/2022 - v3.4.1
-{{taskList
-
-##### G-Ambatte
-
-* [x] Fix Account page incorrect last login time
-
-Fixes issues [#2521](https://github.com/naturalcrit/homebrewery/issues/2521)
-
-##### Gazook
-
-* [x] Fix crashing on iOS and Safari browsers
-
-Fixes issues [#2531](https://github.com/naturalcrit/homebrewery/issues/2531)
-}}
 
 ### Saturday 10/12/2022 - v3.4.2
 {{taskList

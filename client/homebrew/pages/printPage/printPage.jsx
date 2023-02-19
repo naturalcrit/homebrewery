@@ -29,9 +29,10 @@ const PrintPage = createClass({
 	getInitialState : function() {
 		return {
 			brew : {
-				text     : this.props.brew.text || '',
-				style    : this.props.brew.style || undefined,
-				renderer : this.props.brew.renderer || 'legacy'
+				text     : this.props.brew.text     || '',
+				style    : this.props.brew.style    || undefined,
+				renderer : this.props.brew.renderer || 'legacy',
+				theme    : this.props.brew.theme    || '5ePHB'
 			}
 		};
 	},
@@ -48,7 +49,7 @@ const PrintPage = createClass({
 						text     : brewStorage,
 						style    : styleStorage,
 						renderer : metaStorage?.renderer || 'legacy',
-						theme    : metaStorage?.theme || '5ePHB'
+						theme    : metaStorage?.theme    || '5ePHB'
 					}
 				};
 			});
@@ -59,7 +60,7 @@ const PrintPage = createClass({
 
 	renderStyle : function() {
 		if(!this.state.brew.style) return;
-		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${this.state.brew.style} </style>` }} />;
+		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${this.state.brew.style}\n} </style>` }} />;
 	},
 
 	renderPages : function(){

@@ -15,6 +15,8 @@ const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
 
+const { DEFAULT_BREW } = require('./brewDefaults.js');
+
 const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
 	if(brew.text.startsWith('```metadata')) {
@@ -29,7 +31,6 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
-	_.defaults(brew, { 'renderer': 'legacy', 'theme': '5ePHB' });
 };
 
 const sanitizeBrew = (brew, accessType)=>{
@@ -294,7 +295,15 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
-	req.brew.title = `CLONE - ${req.brew.title}`;
+	const brew = {
+		shareId  : req.brew.shareId,
+		title    : `CLONE - ${req.brew.title}`,
+		text     : req.brew.text,
+		style    : req.brew.style,
+		renderer : req.brew.renderer,
+		theme    : req.brew.theme
+	};
+	req.brew = _.defaults(brew, DEFAULT_BREW);
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'New',
@@ -410,6 +419,7 @@ const DEFAULT_ACTIVITY_DELAY = 30 * 1000; //milliseconds
 //Render the page
 const templateFn = require('./../client/template.js');
 app.use(asyncHandler(async (req, res, next)=>{
+
 	// Update activity
 	const now = new Date;
 	const shouldUpdateActivity = now.setTime(lastActivity.getTime() + DEFAULT_ACTIVITY_DELAY) < new Date;
@@ -417,7 +427,8 @@ app.use(asyncHandler(async (req, res, next)=>{
 		lastActivity = new Date;
 		await UserInfoModel.updateActivity(req.account.username);
 	}
-	// Create configuration object
+
+// Create configuration object
 	const configuration = {
 		local       : isLocalEnvironment,
 		publicUrl   : config.get('publicUrl') ?? '',
