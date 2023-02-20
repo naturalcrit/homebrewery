@@ -10,7 +10,7 @@ renderer.html = function (html) {
 		const openTag = html.substring(0, html.indexOf('>')+1);
 		html = html.substring(html.indexOf('>')+1);
 		html = html.substring(0, html.lastIndexOf('</div>'));
-		return `${openTag} ${Marked.parse(html)} </div>`;
+		return `${openTag} ${Marked.parse(html, { renderer: renderer })} </div>`;
 	}
 	return html;
 };
