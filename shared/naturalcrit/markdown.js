@@ -10,7 +10,7 @@ renderer.html = function (html) {
 		const openTag = html.substring(0, html.indexOf('>')+1);
 		html = html.substring(html.indexOf('>')+1);
 		html = html.substring(0, html.lastIndexOf('</div>'));
-		return `${openTag} ${Marked.parse(html, { renderer: renderer })} </div>`;
+		return `${openTag} ${Marked.parse(html)} </div>`;
 	}
 	return html;
 };
@@ -239,7 +239,7 @@ const definitionLists = {
 Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists] });
 Marked.use(MarkedExtendedTables());
 Marked.use(mustacheInjectBlock);
-Marked.use({ smartypants: true });
+Marked.use({ renderer: renderer, smartypants: true });
 
 //Fix local links in the Preview iFrame to link inside the frame
 renderer.link = function (href, title, text) {
