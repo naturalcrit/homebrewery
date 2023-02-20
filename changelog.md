@@ -61,6 +61,15 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Tuesday 21/02/2023 - v3.6.1
+{{taskList
+##### G-Ambatte
+
+* [x] Fix internal links inside `<div>` blocks not automatically receiving the `target=_self` attribute
+
+Fixes issues [#2680](https://github.com/naturalcrit/homebrewery/issues/2680)
+}}
+
 ### Saturday 18/02/2023 - v3.6.1
 {{taskList
 ##### G-Ambatte
