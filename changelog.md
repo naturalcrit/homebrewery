@@ -61,7 +61,7 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-### Tuesday 21/02/2023 - v3.6.1
+### Tuesday 21/02/2023 - v3.6.2
 {{taskList
 ##### G-Ambatte
 
