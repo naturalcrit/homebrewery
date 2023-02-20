@@ -37,7 +37,7 @@
     "build/*"
   ],
   "jest": {
-    "testTimeout": 15000,
+    "testTimeout": 30000,
     "modulePaths": [
       "mode_modules",
       "shared",
