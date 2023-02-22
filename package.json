@@ -68,7 +68,7 @@
     ]
   },
   "dependencies": {
-    "@babel/core": "^7.20.12",
+    "@babel/core": "^7.21.0",
     "@babel/plugin-transform-runtime": "^7.21.0",
     "@babel/preset-env": "^7.19.4",
     "@babel/preset-react": "^7.18.6",
