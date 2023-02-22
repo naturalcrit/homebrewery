@@ -10,16 +10,16 @@ module.exports = {
 			'right'  : 270
 		}[side];
 		return dedent`
-			{{imageMaskEdge${_.random(1, 8)},--offset:0cm,--rotation:${rotation};
+			{{imageMaskEdge${_.random(1, 8)},--offset:0cm,--rotation:${rotation}
 			  ![](https://i.imgur.com/GZfjDWV.png){height:100%}
 			}}
-			<!-- Use --offset to shift the edge up or down from the page center.
+			<!-- Use --offset to shift the mask toward or away from the page center.
 			     Use --rotation to set rotation angle in degrees. -->\n\n`;
 	},
 
 	corner : (y = 'top', x = 'left')=>{
 		const offsetX = (x == 'left' ? '-50%' : '50%');
-		const offsetY = (y == 'top'  ? '-50%' : '50%');
+		const offsetY = (y == 'top'  ? '50%' : '-50%');
 		return dedent`
 			{{imageMaskCorner${_.random(1, 37)},--offsetX:${offsetX},--offsetY:${offsetY},--rotation:0
 			  ![](https://i.imgur.com/GZfjDWV.png){height:100%}
