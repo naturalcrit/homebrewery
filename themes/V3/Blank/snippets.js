@@ -1,9 +1,8 @@
 /* eslint-disable max-lines */
 
-const WatercolorGen      = require('./snippets/watercolor.gen.js');
-const dedent             = require('dedent-tabs').default;
-
-
+const WatercolorGen = require('./snippets/watercolor.gen.js');
+const ImageMaskGen  = require('./snippets/imageMask.gen.js');
+const dedent        = require('dedent-tabs').default;
 
 module.exports = [
 
@@ -101,6 +100,60 @@ module.exports = [
 				name : 'Watercolor Splatter',
 				icon : 'fas fa-fill-drip',
 				gen  : WatercolorGen,
+			},
+			{
+				name        : 'Watercolor Image Mask Edge',
+				icon        : 'fac mask-edge',
+				gen         : ImageMaskGen.edge('bottom'),
+				subsnippets : [
+					{
+						name : 'Top',
+						icon : 'fac position-top',
+						gen  : ImageMaskGen.edge('top'),
+					},
+					{
+						name : 'Right',
+						icon : 'fac position-right',
+						gen  : ImageMaskGen.edge('right'),
+					},
+					{
+						name : 'Bottom',
+						icon : 'fac position-bottom',
+						gen  : ImageMaskGen.edge('bottom'),
+					},
+					{
+						name : 'Left',
+						icon : 'fac position-left',
+						gen  : ImageMaskGen.edge('left'),
+					},
+				]
+			},
+			{
+				name        : 'Watercolor Image Mask Corner',
+				icon        : 'fac mask-corner',
+				gen         : ImageMaskGen.corner,
+				subsnippets : [
+					{
+						name : 'Top-Left',
+						icon : 'fac position-top-left',
+						gen  : ImageMaskGen.corner('top', 'left'),
+					},
+					{
+						name : 'Top-Right',
+						icon : 'fac position-top-right',
+						gen  : ImageMaskGen.corner('top', 'right'),
+					},
+					{
+						name : 'Bottom-Left',
+						icon : 'fac position-bottom-left',
+						gen  : ImageMaskGen.corner('bottom', 'left'),
+					},
+					{
+						name : 'Bottom-Right',
+						icon : 'fac position-bottom-right',
+						gen  : ImageMaskGen.corner('bottom', 'right'),
+					}
+				]
 			},
 			{
 				name : 'Watermark',
