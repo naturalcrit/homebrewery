@@ -20,7 +20,8 @@ const transforms = {
 };
 
 const build = async ({ bundle, render, ssr })=>{
-	const css = await lessTransform.generate({ paths: './shared' });
+	let css = await lessTransform.generate({ paths: './shared' });
+	css = `@layer bundle {\n${css}\n}`;
 	await fs.outputFile('./build/homebrew/bundle.css', css);
 	await fs.outputFile('./build/homebrew/bundle.js', bundle);
 	await fs.outputFile('./build/homebrew/ssr.js', ssr);
@@ -96,6 +97,7 @@ fs.emptyDirSync('./build');
 	// Move assets
 	await fs.copy('./themes/fonts', './build/fonts');
 	await fs.copy('./themes/assets', './build/assets');
+	await fs.copy('./client/icons', './build/icons');
 
 	//v==----------------------------- BUNDLE PACKAGES --------------------------------==v//
 
