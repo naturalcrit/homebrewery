@@ -49,7 +49,7 @@ const titles = [
   "Zidane's Ghost",
 ];
 
-const subtitles = [
+const footnote = [
   "In an ominous universe, a botanist opposes terrorism.",
   "In a demon-haunted city, in an age of lies and hate, a physicist tries to find an ancient treasure and battles a mob of aliens.",
   "In a land of corruption, two cyberneticists and a dungeon delver search for freedom.",
@@ -98,25 +98,17 @@ const subtitles = [
 ];
 
 module.exports = () => {
-  return `
+  return `{{coverPage }}
 
-{{coverPage
-
-![image](https://i.imgur.com/Mqx8Vf7.png) {left:0px}
+![image](https://i.imgur.com/Mqx8Vf7.png) {}
 
 # ${_.sample(titles)}
-
-## ${_.sample(subtitles)}
 ___ 
 
-{{banner
-5e HOMEBREW
-}}
+{{banner 5e HOMEBREW}}
 
 {{footnote
-Everything a Homebrew needs to create a pretty document <br> for the world's greatest roleplaying game
-}}
-
+  ${_.sample(footnote)}
 }}
 
 \\page`;

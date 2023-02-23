@@ -680,132 +680,94 @@ h5 + table{
 //*****************************
 // *      COVER PAGE
 // *****************************/
-
-.page {
-&:has(.coverPage):after {
-	display: none;
-}
-.coverPage {
-	position: absolute;
-	inset: 0;
-	padding: 125px 0px;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	text-align: center;
-
-	p {
-		color: white;
-		font-size: 20px;
+.page:has(.coverPage) {
+	columns:1;
+	text-align:center;
+	&:after {
+		all: unset;
 	}
-	> p > img {
+	.coverPage {
+		background-image: @naturalCritLogo;
+    	background-position: center;
+    	background-size: 2cm;
+    	background-repeat: no-repeat;
+    	position: absolute;
+    	top: .6cm;
+		left: 0;
+    	display: block;
+    	height: 2.38cm;
+    	width: 100%;
+    	filter: drop-shadow(0 0 0.075cm black);
+	}
+	img {
 		position: absolute;
-		inset: 0;
+		bottom: 0;
+		left: 0;
 		height: 100%;
 		min-width: 100%;
-	}
-	&:before {
-		background-image: @homebreweryLogo;
-		background-position: center;
-		background-size: 75px;
-		background-repeat: no-repeat;
-		position: absolute;
-		top: 15px;
-		content: '';
-		display: block;
-		height: 90px;
-		width: 100%;
-		filter: drop-shadow(0 0 5px black);
+		z-index: -1;
 	}
 	h1 {
-		--shadow-x0: #000 0px 0px 3.5px;
+		--shadow-x0: #000 0px 0px 0.1cm;
 		--shadow-x1: var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
 		--shadow-x2: var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
 		--shadow-x3: var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
 		text-shadow: var(--shadow-x3), var(--shadow-x3), var(--shadow-x3);
 		text-transform: uppercase;
-		max-width: 18ch;
-		margin-top: 3px;
+		display:block;
+		margin-top:2.12cm;
 		color: white;
 		font-family: NodestoCapsCondensed;
-		font-size: 6.6em;
-		font-weight: normal;
-		line-height: 72px;
-		word-break: break-word;
-		transform: scaleX(0.94);
+		font-size: 2.245cm;
+		line-height: 0.85em;
 	}
 	hr {
+		display:block;
 		position: relative;
-		top: -16px;
+		top: 0.2cm;
 		background-image: @horizontalRule;
 		background-size: 100% 100%;
 		visibility: visible;
-		height: 64px;
-		width: 450px;
+		height: 0.5cm;
+		width: 12cm;
 		border: none;
-		margin: 2px auto -24px;
-		filter: drop-shadow(0 0 5px black);
-	}
-	h2 {
-		--shadow-x0: #000 0px 0px 2.5px;
-		--shadow-x1: var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
-		--shadow-x2: var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
-		--shadow-x3: var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
-		text-shadow: var(--shadow-x3), var(--shadow-x3), var(--shadow-x3);
-		font-family: NodestoCapsCondensed;
-		font-weight: normal;
-		font-size: 2.5em;
-		letter-spacing: 0.5px;
-		max-width: 46ch;
-		color: white;
+		margin: auto;
+		filter: drop-shadow(0 0 0.075cm black);
 	}
 	.banner {
-		filter: drop-shadow(2px 1px 5px #000);
+		filter: drop-shadow(0 0 0.13cm #000);
 		position: absolute;
 		left: 0;
-		bottom: 157px;
-		background-image: @coverPageBanner;
-		background-position: left;
-		background-repeat: no-repeat;
-		background-size: 400px;
-		content: '';
-		display: block;
-		height: 67px;
-		width: 50%;
-
-		p {
-			position: absolute;
-			top: 60%;
-			left: 0;
-			translate: 0 -50%;
-			width: 100%;
-			text-align: left;
-			padding-left: 50px;
-			font-family: NodestoCapsCondensed;
-			font-weight: normal;
-			font-size: 40px;
-			font-stretch: 200%;
-			letter-spacing: 0.5px;
-			transform: scaleY(0.7);
-		}
+		bottom: 4.2cm;
+		background-image: url('/assets/coverPageBanner.svg');
+		height: 1.7cm;
+		width: 9.67cm;
+		color:white;
+		font-family: NodestoCapsCondensed;
+		font-weight: normal;
+		font-size: 1cm;
+		letter-spacing: 0.014cm;
+		text-align: left;
+		padding-left:1cm;
+		line-height:2em;
 	}
-
 	.footnote {
-		--shadow-x0: #000 0px 0px 1.8px;
+		--shadow-x0: #000 0px 0px 0.05cm;
 		--shadow-x1: var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
 		--shadow-x2: var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
 		text-shadow: var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
-		text-transform: none;
 		position: absolute;
-		bottom: 3.5em;
-		left: 0;
-		width: 100%;
-		font-family: Alkalami;
 		text-align: center;
+		color: white;
+		font-size: 0.535cm;
+		bottom: 1.9cm;
+		left: 50%;
+		translate:-50% 0;
+		width: 70%;
+		font-family: Alkalami;
 	}
+}
 
-}
-}
 
 //*****************************
 // *      TABLE OF CONTENTS
