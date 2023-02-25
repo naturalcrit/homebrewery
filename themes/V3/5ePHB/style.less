@@ -798,48 +798,62 @@
 	//*****************************
 	// *         PART COVER
 	// *****************************/
-	.page {
+	.page:has(.partCover) {
+		padding-top: 0;
+
+		h1, h2 {
+			margin-inline: auto;
+			text-align: center;
+			column-span: all;
+		}
 		.partCover {
 			background-image: @partCoverHeader;
 			background-repeat: no-repeat;
 			position: absolute;
 			background-size: 100%;
-			inset: 0;
-
-			img {
-				position: absolute;
-				inset: 0;
-				height: 100%;
-				mask-image: @partCoverMaskOdd;
-				mask-size: 816px;
-				-webkit-mask-image: @partCoverMaskOdd;
-				-webkit-mask-size: 816px;
-			}
-
-			h1 {
-				text-align: center;
-				text-transform: uppercase;
-				font-size: 80px;
-				font-family: NodestoCapsCondensed;
-				font-variant: small-caps;
-				max-width: 7ch;
-				text-overflow: clip;
-				white-space: nowrap;
-				overflow: hidden;
-				margin-inline: auto;
-			}
-
-			h2 {
-				text-align: center;
-				font-family: MartelSansBlack;
-				font-size: 18px;
-				position: relative;
-				max-width: 18ch;
-				margin-inline: auto;
-				margin-top: -5px;
-			}
+			top: 0;
+			left: 0;
+			height: 6cm;
+			width:100%;
+			z-index:-1;
 		}
-		&:nth-child(even) .partCover img {
+
+		img {
+			position: absolute;
+			left: 0;
+			bottom: 0;
+			height: 100%;
+			mask-image: @partCoverMaskOdd;
+			mask-size: 215.9mm;
+			-webkit-mask-image: @partCoverMaskOdd;
+			-webkit-mask-size: 215.9mm;
+			z-index:-2;
+		}
+
+		h1 {
+			text-align: center;
+			text-transform: uppercase;
+			font-size: 2.1cm;
+			font-family: NodestoCapsCondensed;
+			max-width: 6cm;
+			text-overflow: clip;
+			white-space: nowrap;
+			overflow: hidden;
+			margin-inline: auto;
+		}
+
+		h2 {
+			text-align: center;
+			font-family: MartelSansBlack;
+			font-size: 0.48cm;
+			position: relative;
+			max-width: 5cm;
+			margin-inline: auto;
+			margin-top: -.4em;
+			line-height: 1.1em;
+		}
+
+		&:nth-child(even) img {
 			mask-image: @partCoverMaskEven;
 			-webkit-mask-image: @partCoverMaskEven;
 		}
