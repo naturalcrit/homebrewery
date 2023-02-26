@@ -134,7 +134,7 @@ const GoogleActions = {
 	},
 
 	updateGoogleBrew : async (brew)=>{
-		const drive = drive({ version: 'v3' });
+		const drive = drive({ version: 'v3', auth: serviceAuth || config.get('google_api_key') });
 
 		await drive.files.update({
 			fileId   : brew.googleId,
@@ -216,7 +216,7 @@ const GoogleActions = {
 	},
 
 	getGoogleBrew : async (id, accessId, accessType)=>{
-		const drive = drive({ version: 'v3' });
+		const drive = drive({ version: 'v3', auth: serviceAuth || config.get('google_api_key') });
 
 		const obj = await drive.files.get({
 			fileId : id,
@@ -298,7 +298,7 @@ const GoogleActions = {
 	},
 
 	increaseView : async (id, accessId, accessType, brew)=>{
-		const drive = drive({ version: 'v3' });
+		const drive = drive({ version: 'v3', auth: serviceAuth || config.get('google_api_key') });
 
 		await drive.files.update({
 			fileId   : brew.googleId,
