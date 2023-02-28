@@ -38,16 +38,15 @@ var titles = [
 ];
 
 module.exports = ()=>{
-	return `
-{{partCover
+	return `{{partCover}}
+
 # PART X
-## ${_.sample(titles)}
-        
+## Developing and Using NPCs
+
+{{imageMaskEdge5,--offset:-12cm,--rotation:0        
 ![Background](https://i.imgur.com/dpg5qPT.png)
 }}
-        
-{{pageNumber,auto}}
-{{footnote PART X | SECTION NAME}}
-
+<!-- Use --offset to shift the mask toward or away from the page center.
+     Use --rotation to set rotation angle in degrees. -->
 \\page`;
 };
