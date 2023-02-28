@@ -43,7 +43,7 @@ module.exports = ()=>{
 # PART X
 ## Developing and Using NPCs
 
-{{imageMaskEdge5,--offset:-12cm,--rotation:0        
+{{imageMaskEdge5,--offset:-10cm,--rotation:180        
 ![Background](https://i.imgur.com/dpg5qPT.png)
 }}
 <!-- Use --offset to shift the mask toward or away from the page center.
