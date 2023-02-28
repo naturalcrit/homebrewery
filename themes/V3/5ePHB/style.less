@@ -681,90 +681,106 @@ h5 + table{
 // *      COVER PAGE
 // *****************************/
 .page:has(.coverPage) {
-	columns:1;
-	text-align:center;
+	columns    : 1;
+	text-align : center;
 	&:after {
 		all: unset;
 	}
-	.coverPage {
-		background-image: @naturalCritLogo;
-    	background-position: center;
-    	background-size: 2cm;
-    	background-repeat: no-repeat;
-    	position: absolute;
-    	top: .6cm;
-		left: 0;
-    	display: block;
-    	height: 2.38cm;
-    	width: 100%;
-    	filter: drop-shadow(0 0 0.075cm black);
+	.logo {
+		position : absolute;
+		top      : 0.5cm;
+		left     : 0;
+		right    : 0;
+		filter   : drop-shadow(0 0 0.075cm black);
+		img {
+			height : 2cm;
+			width  : 100%;
+		}
 	}
-	img {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		height: 100%;
-		min-width: 100%;
-		z-index: -1;
+	.columnWrapper > p img {
+		position  : absolute;
+		bottom    : 0;
+		left      : 0;
+		height    : 100%;
+		min-width : 100%;
+		z-index   : -1;
 	}
 	h1 {
-		--shadow-x0: #000 0px 0px 0.1cm;
-		--shadow-x1: var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
-		--shadow-x2: var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
-		--shadow-x3: var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
-		text-shadow: var(--shadow-x3), var(--shadow-x3), var(--shadow-x3);
-		text-transform: uppercase;
-		display:block;
-		margin-top:2.12cm;
-		color: white;
-		font-family: NodestoCapsCondensed;
-		font-size: 2.245cm;
-		line-height: 0.85em;
+		--shadow-x0    : #000 0px 0px 0.1cm;
+		--shadow-x1    : var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
+		--shadow-x2    : var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
+		--shadow-x3    : var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
+		text-shadow    : var(--shadow-x3), var(--shadow-x3), var(--shadow-x3);
+		text-transform : uppercase;
+		font-weight    : normal;
+		display        : block;
+		margin-top     : 1.2cm;
+		margin-bottom  : 0;
+		color          : white;
+		font-family    : NodestoCapsCondensed;
+		font-size      : 2.245cm;
+		line-height    : 0.85em;
+	}
+	h2 {
+		--shadow-x0    : #000 0px 0px 2.5px;
+		--shadow-x1    : var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
+		--shadow-x2    : var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
+		--shadow-x3    : var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
+		text-shadow    : var(--shadow-x3), var(--shadow-x3), var(--shadow-x3);
+		font-family    : NodestoCapsCondensed;
+		font-weight    : normal;
+		font-size      : 0.85cm;
+		letter-spacing : 0.1cm;
+		color          : white;
 	}
 	hr {
-		display:block;
-		position: relative;
-		top: 0.2cm;
-		background-image: @horizontalRule;
-		background-size: 100% 100%;
-		visibility: visible;
-		height: 0.5cm;
-		width: 12cm;
-		border: none;
-		margin: auto;
-		filter: drop-shadow(0 0 0.075cm black);
+		display          : block;
+		position         : relative;
+		background-image : @horizontalRule;
+		background-size  : 100% 100%;
+		visibility       : visible;
+		height           : 0.5cm;
+		width            : 12cm;
+		border           : none;
+		margin           : auto;
+		filter           : drop-shadow(0 0 3px black);
 	}
 	.banner {
-		filter: drop-shadow(0 0 0.13cm #000);
-		position: absolute;
-		left: 0;
-		bottom: 4.2cm;
-		background-image: url('/assets/coverPageBanner.svg');
-		height: 1.7cm;
-		width: 9.67cm;
-		color:white;
-		font-family: NodestoCapsCondensed;
-		font-weight: normal;
-		font-size: 1cm;
-		letter-spacing: 0.014cm;
-		text-align: left;
-		padding-left:1cm;
-		line-height:2em;
+		filter           : drop-shadow(2px 2px 2px #000);
+		position         : absolute;
+		left             : 0;
+		bottom           : 4.2cm;
+		background-image : url('/assets/coverPageBanner.svg');
+		height           : 1.7cm;
+		width            : 10.5cm;
+		color            : white;
+		font-family      : NodestoCapsCondensed;
+		font-weight      : normal;
+		font-size        : 1cm;
+		letter-spacing   : 0.014cm;
+		text-align       : left;
+		padding-left     : 1cm;
+		display          : flex;
+		justify-content  : center;
+		flex-direction   : column;
+		padding-top      : 0.1cm;
 	}
 	.footnote {
-		--shadow-x0: #000 0px 0px 0.05cm;
-		--shadow-x1: var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
-		--shadow-x2: var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
-		text-shadow: var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
-		position: absolute;
-		text-align: center;
-		color: white;
-		font-size: 0.535cm;
-		bottom: 1.9cm;
-		left: 50%;
-		translate:-50% 0;
-		width: 70%;
-		font-family: Alkalami;
+		--shadow-x0 : #000 0px 0px 0.05cm;
+		--shadow-x1 : var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
+		--shadow-x2 : var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
+		text-shadow : var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
+		position     : absolute;
+		text-align   : center;
+		color        : white;
+		font-size    : 0.496cm;
+		bottom       : 1.3cm;
+		left         : 0;
+    right        : 0;
+    margin-left  : auto;
+    margin-right : auto;
+		width        : 70%;
+		font-family  : Overpass;
 	}
 }
 
