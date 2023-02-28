@@ -20,8 +20,8 @@ const transforms = {
 };
 
 const build = async ({ bundle, render, ssr })=>{
-	let css = await lessTransform.generate({ paths: './shared' });
-	css = `@layer bundle {\n${css}\n}`;
+	const css = await lessTransform.generate({ paths: './shared' });
+	//css = `@layer bundle {\n${css}\n}`;
 	await fs.outputFile('./build/homebrew/bundle.css', css);
 	await fs.outputFile('./build/homebrew/bundle.js', bundle);
 	await fs.outputFile('./build/homebrew/ssr.js', ssr);
