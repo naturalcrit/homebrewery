@@ -169,9 +169,10 @@ module.exports = [
 				gen  : MonsterBlockGen.monster('monster,frame,wide', 4),
 			},
 			{
-				name : 'Cover Page',
-				icon : 'fac fa-file-c',
-				gen  : CoverPageGen,
+				name         : 'Cover Page',
+				icon         : 'fac fa-file-c',
+				gen          : CoverPageGen,
+				experimental : true
 			},
 			{
 				name : 'Magic Item',
