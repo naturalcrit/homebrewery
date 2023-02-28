@@ -171,7 +171,7 @@ module.exports = [
 			},
 			{
 				name : 'Cover Page',
-				icon : 'fas fa-file-word',
+				icon : 'fac fa-file-c',
 				gen  : CoverPageGen,
 			},
 			{

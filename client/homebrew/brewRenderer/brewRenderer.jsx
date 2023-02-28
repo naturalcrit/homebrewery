@@ -134,7 +134,8 @@ const BrewRenderer = createClass({
 
 	renderStyle : function() {
 		if(!this.props.style) return;
-		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${this.props.style}\n} </style>` }} />;
+		//return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${this.props.style}\n} </style>` }} />;
+		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>\n${this.props.style}\n</style>` }} />;
 	},
 
 	renderPage : function(pageText, index){
