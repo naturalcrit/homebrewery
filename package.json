@@ -39,7 +39,7 @@
   "jest": {
     "testTimeout": 15000,
     "modulePaths": [
-      "mode_modules",
+      "node_modules",
       "shared",
       "server"
     ],
