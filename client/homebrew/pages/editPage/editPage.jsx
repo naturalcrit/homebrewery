@@ -24,8 +24,7 @@ const Markdown = require('naturalcrit/markdown.js');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
 
-const googleDriveActive = require('../../googleDrive.png');
-const googleDriveInactive = require('../../googleDriveMono.png');
+const googleDriveIcon = require('../../googleDrive.svg');
 
 const SAVE_TIMEOUT = 3000;
 
@@ -222,10 +221,7 @@ const EditPage = createClass({
 
 	renderGoogleDriveIcon : function(){
 		return <Nav.item className='googleDriveStorage' onClick={this.handleGoogleClick}>
-			{this.state.saveGoogle
-				? <img src={googleDriveActive} alt='googleDriveActive'/>
-				: <img src={googleDriveInactive} alt='googleDriveInactive'/>
-			}
+			<img src={googleDriveIcon} style={{ filter: `grayscale(${this.state.saveGoogle ? 0 : 1})` }} alt='Google Drive icon'/>
 
 			{this.state.confirmGoogleTransfer &&
 				<div className='errorContainer' onClick={this.closeAlerts}>
