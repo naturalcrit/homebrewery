@@ -1,10 +1,34 @@
 ```css
+.beta {
+	color         : white;
+	padding       : 4px 6px;
+	line-height   : 1em;
+	background    : grey;
+	border-radius : 12px;
+	font-family   : monospace;
+	font-size     : 10px;
+	font-weight   : 800;
+	margin-top    : -5px;
+	margin-bottom : -5px;
+}
+
+.fac {
+	height: 1em;
+	line-height: 2em;
+	margin-bottom: -0.05cm
+}
+
 h5 {
 	font-size: .35cm !important;
 }
 
 .page ul ul {
 	margin-left: 0px;
+}
+
+.page .taskList {
+	display:block;
+	break-inside:auto;
 }
 
 .taskList li input {
@@ -35,15 +59,122 @@ pre {
 	margin-top : 0.1cm;
 }
 
+.page ul + h5 {
+	margin-top: 0.25cm;
+}
+
+.page p + h5 {
+	margin-top: 0.25cm;
+}
+
 .page .openSans {
 	font-family: 'Open Sans';
 	font-size: 0.9em;
+}
+
+.page {
+	padding-bottom: 1.5cm;
 }
 ```
 
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+
+### Tuesday 28/02/2023 - v3.7.0
+{{taskList
+
+{{note
+**NOTE:** Some new snippets will now show a {{beta BETA}} tag. Feel free to use them, but be aware we may change how they work depending on your feedback.
+}}
+
+##### Calculuschild
+
+* [x] New {{openSans **IMAGES → WATERCOLOR EDGE** {{fac,mask-edge}} }} and {{openSans **WATERCOLOR CORNER** {{fac,mask-corner}} }} snippets for V3, which adds a stylish watercolor texture to the edge of your images! (Thanks to /u/flamableconcrete on Reddit for providing these image masks!)
+
+* [x] Fix site not displaying on iOS devices
+
+##### 5e-Cleric
+
+* [x] New {{openSans **PHB → COVER PAGE** {{fac,book-front-cover}} }} snippet for V3, which adds a stylish coverpage to your brew! (Thanks to /u/Kaiburr_Kath-Hound on Reddit for providing some of these resources!)
+
+##### MichielDeMey (new contribuor!)
+
+* [x] Fix typo in testing scripts
+* [x] Fix "mug" image not using HTTPS
+
+Fixes issues [#2687](https://github.com/naturalcrit/homebrewery/issues/2687)
+}}
+
+### Saturday 18/02/2023 - v3.6.1
+{{taskList
+##### G-Ambatte
+
+* [x] Fix users not being removed from Authors list correctly
+
+Fixes issues [#2674](https://github.com/naturalcrit/homebrewery/issues/2674)
+}}
+
+
+### Monday 23/01/2023 - v3.6.0
+{{taskList
+##### calculuschild
+
+* [x] Fix Google Drive brews sometimes duplicating
+
+Fixes issues [#2603](https://github.com/naturalcrit/homebrewery/issues/2603)
+
+##### Jeddai
+
+* [x] Add unit tests with full coverage for the Homebrewery API
+
+* [x] Add message to refresh the browser if the user is missing an update to the Homebrewery
+
+Fixes issues [#2583](https://github.com/naturalcrit/homebrewery/issues/2583)
+
+##### G-Ambatte
+
+* [x] Auto-compile Themes CSS on development server
+
+##### 5e-Cleric
+
+* [x] Fix cloned brews inheriting the parent view count
+}}
+
+\column
+
+### Friday 23/12/2022 - v3.5.0
+{{taskList
+
+##### Jeddai
+
+* [x] Only brew owners or invited authors can edit a brew
+
+  - Visiting an `/edit` page of a brew that does not list you as an author will result in an error page. Authors can be added to any brew by opening its {{fa,fa-info-circle}} **Properties** menu and typing the author's username (case-sensitive) into the **Invited Authors** bubble.
+  - Warn user if a newer brew version has been saved on another device
+
+Fixes issues [#1987](https://github.com/naturalcrit/homebrewery/issues/1987)
+}}
+
+\page
+
+### Saturday 10/12/2022 - v3.4.2
+{{taskList
+
+##### Jeddai
+
+* [x] Fix broken tags editor
+
+* [x] Reduce server load to fix some saving issues
+
+Fixes issues [#2322](https://github.com/naturalcrit/homebrewery/issues/2322)
+
+##### G-Ambatte
+
+* [x] Account page help link for Google Drive errors
+
+Fixes issues [#2520](https://github.com/naturalcrit/homebrewery/issues/2520)
+}}
 
 ### Monday 05/12/2022 - v3.4.1
 {{taskList
@@ -142,12 +273,7 @@ Fixes issues  [#2135](https://github.com/naturalcrit/homebrewery/issues/2135)
 * [x] Fix brew settings being lost on first save
 
 Fixes issues  [#2427](https://github.com/naturalcrit/homebrewery/issues/2427)
-}}
 
-\column
-
-
-{{taskList
 ##### Gazook:
 
 * [x] Several updates to bug reporting and error popups
@@ -197,6 +323,10 @@ Fixes issues  [#2317](https://github.com/naturalcrit/homebrewery/issues/2317), [
  Fixes issues:  [#1797](https://github.com/naturalcrit/homebrewery/issues/1797), [#2315](https://github.com/naturalcrit/homebrewery/issues/2315), [#2326](https://github.com/naturalcrit/homebrewery/issues/2326), [#2328](https://github.com/naturalcrit/homebrewery/issues/2328)
 }}
 
+
+
+\page
+
 ### Wednesday 31/08/2022 - v3.2.1
 {{taskList
 
@@ -222,8 +352,6 @@ Fixes issues  [#2317](https://github.com/naturalcrit/homebrewery/issues/2317), [
 
   Fixes issues: [#2301](https://github.com/naturalcrit/homebrewery/issues/2301), [#2303](https://github.com/naturalcrit/homebrewery/issues/2303), [#2121](https://github.com/naturalcrit/homebrewery/issues/2121)
 }}
-
-\page
 
 ### Saturday 27/08/2022 - v3.2.0
 {{taskList

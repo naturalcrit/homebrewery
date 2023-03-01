@@ -56,8 +56,14 @@ jobs:
 
       # run tests!
       - run:
+          name: Test - API Unit Tests
+          command: npm run test:api-unit
+      - run:
           name: Test - Basic
           command: npm run test:basic
+      - run:
+          name: Test - Coverage
+          command: npm run test:coverage
       - run:
           name: Test - Mustache Spans
           command: npm run test:mustache-span
