@@ -1,4 +1,4 @@
-# Ubuntu Installation Instructions
+# Windows Installation Instructions
 
 ## Before Installing
 
