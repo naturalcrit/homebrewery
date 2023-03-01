@@ -96,7 +96,7 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 
 ##### 5e-Cleric
 
-* [x] New {{openSans **PHB → COVER PAGE** {{fac,book-front-cover}} }} snippet for V3, which adds a stylish watercolor coverpage to your brew! (Thanks to /u/Kaiburr_Kath-Hound on Reddit for providing some of these resources!)
+* [x] New {{openSans **PHB → COVER PAGE** {{fac,book-front-cover}} }} snippet for V3, which adds a stylish coverpage to your brew! (Thanks to /u/Kaiburr_Kath-Hound on Reddit for providing some of these resources!)
 
 ##### MichielDeMey (new contribuor!)
 
