@@ -1,278 +1,410 @@
-@layer V3_Blank {
-	@import (less) './themes/fonts/5e/fonts.less';
-	@import (less) './themes/assets/assets.less';
+@import (less) './themes/fonts/5e/fonts.less';
+@import (less) './themes/assets/assets.less';
 
-	:root {
-		//Colors
-		--HB_Color_Background            : #FFFFFF; // White
-		--HB_Color_WatercolorStain       : #000000; // Black
+:root {
+	//Colors
+	--HB_Color_Background            : #FFFFFF; // White
+	--HB_Color_WatercolorStain       : #000000; // Black
+}
+
+@page { margin: 0; }
+body {
+	counter-reset : phb-page-numbers;
+}
+*{
+	-webkit-print-color-adjust : exact;
+}
+
+//*****************************
+// *    MUSTACHE DIVS/SPANS
+// *****************************/
+.page {
+	.block {
+		break-inside      : avoid;
+		display           : inline-block;
+		width             : 100%;
+	}
+	.inline-block {
+		display     : inline-block;
+		text-indent : initial;
+	}
+}
+
+.useColumns(@multiplier : 1, @fillMode: balance){
+	column-fill          : @fillMode;
+	column-count         : 2;
+}
+.columnWrapper{
+	max-height        : 100%;
+	column-span       : all;
+	columns           : inherit;
+	column-gap        : inherit;
+}
+.page{
+	.useColumns();
+	height            : 279.4mm;
+	width             : 215.9mm;
+	padding           : 1.4cm 1.9cm 1.7cm;
+	counter-increment : phb-page-numbers;
+	background-color  : var(--HB_Color_Background);
+	position          : relative;
+	z-index           : 15;
+	box-sizing        : border-box;
+	overflow          : hidden;
+	text-rendering    : optimizeLegibility;
+	page-break-before : always;
+	page-break-after  : always;
+	contain           : size;
+}
+	//*****************************
+	// *            BASE
+	// *****************************/
+.page{
+	p{
+		overflow-wrap : break-word;
+		display       : block;
+	}
+	strong{
+		font-weight : bold;
+	}
+	em{
+		font-style : italic;
+	}
+	sup{
+		vertical-align : super;
+		font-size      : smaller;
+		line-height    : 0;
+	}
+	sub{
+		vertical-align : sub;
+		font-size      : smaller;
+		line-height    : 0;
+	}
+	ul {
+		list-style-position : outside; //Needed for multiline list items
+		list-style-type     : disc;
+		padding-left        : 1.4em;
+	}
+	ol {
+		list-style-position : outside;
+		list-style-type     : decimal;
+		padding-left        : 1.4em;
+	}
+	img{
+		z-index : -1;
 	}
 
-	@page { margin: 0; }
-	body {
-		counter-reset : phb-page-numbers;
+	//*****************************
+	// *           HEADERS
+	// *****************************/
+	h1,h2,h3,h4,h5,h6{
+		font-weight  : bold;
+		line-height  : 1.2em;
 	}
-	*{
-		-webkit-print-color-adjust : exact;
+	h1{
+		font-size : 2em;
 	}
-
-	.useColumns(@multiplier : 1, @fillMode: balance){
-		column-fill          : @fillMode;
-		column-count         : 2;
+	h2{
+		font-size : 1.5em;
 	}
-	.columnWrapper{
-		max-height        : 100%;
-		column-span       : all;
-		columns           : inherit;
-		column-gap        : inherit;
+	h3{
+		font-size : 1.17em;
 	}
-	.page{
-		.useColumns();
-		height            : 279.4mm;
-		width             : 215.9mm;
-		padding           : 1.4cm 1.9cm 1.7cm;
-		counter-increment : phb-page-numbers;
-		background-color  : var(--HB_Color_Background);
-		position          : relative;
-		z-index           : 15;
-		box-sizing        : border-box;
-		overflow          : hidden;
-		text-rendering    : optimizeLegibility;
-		page-break-before : always;
-		page-break-after  : always;
-		contain           : size;
+	h4{
+		font-size : 1em;
 	}
-		//*****************************
-		// *            BASE
-		// *****************************/
-	.page{
-		p{
-			overflow-wrap : break-word;
-			display       : block;
-		}
-		strong{
+	h5{
+		font-size : 0.83em;
+	}
+	//*****************************
+	// *          TABLE
+	// *****************************/
+	table{
+		width : 100%;
+		thead{
+			display     : table-row-group;
 			font-weight : bold;
 		}
-		em{
-			font-style : italic;
-		}
-		sup{
-			vertical-align : super;
-			font-size      : smaller;
-			line-height    : 0;
-		}
-		sub{
-			vertical-align : sub;
-			font-size      : smaller;
-			line-height    : 0;
-		}
-		ul {
-			list-style-position : outside; //Needed for multiline list items
-			list-style-type     : disc;
-			padding-left        : 1.4em;
-		}
-		ol {
-			list-style-position : outside;
-			list-style-type     : decimal;
-			padding-left        : 1.4em;
-		}
-		img{
-			z-index : -1;
-		}
-
-		//*****************************
-		// *           HEADERS
-		// *****************************/
-		h1,h2,h3,h4,h5,h6{
-			font-weight  : bold;
-			line-height  : 1.2em;
-		}
-		h1{
-			font-size : 2em;
-		}
-		h2{
-			font-size : 1.5em;
-		}
-		h3{
-			font-size : 1.17em;
-		}
-		h4{
-			font-size : 1em;
-		}
-		h5{
-			font-size : 0.83em;
-		}
-		//*****************************
-		// *          TABLE
-		// *****************************/
-		table{
-			width : 100%;
-			thead{
-				display     : table-row-group;
-				font-weight : bold;
-			}
-		}
-		div:not(.columnWrapper) > table + table {	// Side-by-side tables should not
-			margin-top : 0;	                        // have vertical spacing.
-		}
-
-		/* Watermark */
-		.watermark {
-			display         : grid !important;
-			place-items     : center;
-			justify-content	: center;
-			position        : absolute;
-			margin          : 0;
-			top             : 0;
-			left            : 0;
-			width           : 100%;
-			height          : 100%;
-			font-size       : 120px;
-			text-transform	: uppercase;
-			color           : black;
-			mix-blend-mode  : overlay;
-			opacity         : 30%;
-			transform       : rotate(-45deg);
-			z-index         : 500;
-			p {
-				margin-bottom : none;
-			}
-		}
-
-		/* Watercolor */
-		[class*="watercolor"] {
-			position            : absolute;
-			width               : 2000px;    /* dimensions need to be real big so the user can set */
-			height              : 2000px;    /* height or width and the image will maintain aspect ratio */
-			-webkit-mask-image  : var(--wc);
-			-webkit-mask-size   : contain;
-			-webkit-mask-repeat : no-repeat;
-			mask-image          : var(--wc);
-			mask-size           : contain;
-			mask-repeat         : no-repeat;
-			background-size     : cover;
-			background-color    : var(--HB_Color_WatercolorStain);			/*default color*/
-			--wc                : @watercolor1;         /*default image*/
-			z-index             : -2;
-		}
-
-		.watercolor1  { --wc : @watercolor1; }
-		.watercolor2  { --wc : @watercolor2; }
-		.watercolor3  { --wc : @watercolor3; }
-		.watercolor4  { --wc : @watercolor4; }
-		.watercolor5  { --wc : @watercolor5; }
-		.watercolor6  { --wc : @watercolor6; }
-		.watercolor7  { --wc : @watercolor7; }
-		.watercolor8  { --wc : @watercolor8; }
-		.watercolor9  { --wc : @watercolor9; }
-		.watercolor10 { --wc : @watercolor10; }
-		.watercolor11 { --wc : @watercolor11; }
-		.watercolor12 { --wc : @watercolor12; }
-
-		//************************************
-		// *           CODE BLOCKS
-		// ************************************/
-		code{
-	    font-family      : "Courier New", Courier, monospace;
-			white-space      : pre-wrap;
-			overflow-wrap    : break-word;
-		}
-
-		pre code{
-			width               : 100%;
-			display             : inline-block;
-		}
-		//*****************************
-		// *          EXTRAS
-		// *****************************/
-		.columnSplit {
-			visibility                 : hidden;
-			-webkit-column-break-after : always;
-			break-after                : always;
-			-moz-column-break-after    : always;
-			margin-top                 : 0;
-			& + * {
-				margin-top : 0;
-			}
-		}
-		//Avoid breaking up
-		blockquote,table{
-			z-index                     : 15;
-			-webkit-column-break-inside : avoid;
-			page-break-inside           : avoid;
-			break-inside                : avoid;
-		}
-		// Nested lists
-		ul ul,ol ol,ul ol,ol ul{
-			margin-bottom : 0px;
-			margin-left   : 1.5em;
-		}
-		li{
-			-webkit-column-break-inside : avoid;
-			page-break-inside           : avoid;
-			break-inside                : avoid;
-		}
+	}
+	div:not(.columnWrapper) > table + table {	// Side-by-side tables should not
+		margin-top : 0;	                        // have vertical spacing.
 	}
 
-	//*****************************
-	// *    MUSTACHE DIVS/SPANS
-	// *****************************/
-	.page {
-		.block {
-			break-inside      : avoid;
-			display           : inline-block;
-			width             : 100%;
-		}
-		.inline-block {
-			display     : inline-block;
-			text-indent : initial;
-		}
+	//************************************
+	// *           CODE BLOCKS
+	// ************************************/
+	code{
+    font-family      : "Courier New", Courier, monospace;
+		white-space      : pre-wrap;
+		overflow-wrap    : break-word;
 	}
 
-	//*****************************
-	// *    DEFINITION LISTS
-	// *****************************/
-	.page {
-		dl {
-			padding-left : 1em;
-			white-space  : pre-line;
-		}
-	  dt {
-	    display      : inline;
-	    margin-right : 0.5ch;
-			margin-left  : -1em;
-	  }
-	  dd {
-			display     : inline;
-			margin-left : 0;
-			text-indent : 0;
-	  }
+	pre code{
+		width               : 100%;
+		display             : inline-block;
 	}
-
 	//*****************************
-	// *    BLANK LINE
+	// *          EXTRAS
 	// *****************************/
-	.page {
-		.blank {
-			height     : 1em;
+	.columnSplit {
+		visibility                 : hidden;
+		-webkit-column-break-after : always;
+		break-after                : always;
+		-moz-column-break-after    : always;
+		margin-top                 : 0;
+		& + * {
 			margin-top : 0;
-			& + * {
-				margin-top : 0;
-			}
+		}
+	}
+	//Avoid breaking up
+	blockquote,table{
+		z-index                     : 15;
+		-webkit-column-break-inside : avoid;
+		page-break-inside           : avoid;
+		break-inside                : avoid;
+	}
+	// Nested lists
+	ul ul,ol ol,ul ol,ol ul{
+		margin-bottom : 0px;
+		margin-left   : 1.5em;
+	}
+	li{
+		-webkit-column-break-inside : avoid;
+		page-break-inside           : avoid;
+		break-inside                : avoid;
+	}
+
+	/* Watermark */
+	.watermark {
+		display         : grid !important;
+		place-items     : center;
+		justify-content	: center;
+		position        : absolute;
+		margin          : 0;
+		top             : 0;
+		left            : 0;
+		width           : 100%;
+		height          : 100%;
+		font-size       : 120px;
+		text-transform	: uppercase;
+		color           : black;
+		mix-blend-mode  : overlay;
+		opacity         : 30%;
+		transform       : rotate(-45deg);
+		z-index         : 500;
+		p {
+			margin-bottom : none;
 		}
 	}
 
-	//*****************************
-	// *         WIDE
-	// *****************************/
-	.page {
-		.wide{
-			column-span         : all;
-			display             : block;
-			margin-bottom       : 1em;
-			&+* {
-				margin-top : 0;
-			}
+	/* Watercolor */
+	[class*="watercolor"] {
+		position            : absolute;
+		width               : 2000px;    /* dimensions need to be real big so the user can set */
+		height              : 2000px;    /* height or width and the image will maintain aspect ratio */
+		-webkit-mask-image  : var(--wc);
+		-webkit-mask-size   : contain;
+		-webkit-mask-repeat : no-repeat;
+		mask-image          : var(--wc);
+		mask-size           : contain;
+		mask-repeat         : no-repeat;
+		background-size     : cover;
+		background-color    : var(--HB_Color_WatercolorStain);			/*default color*/
+		--wc                : @watercolor1;         /*default image*/
+		z-index             : -2;
+	}
+
+	.watercolor1  { --wc : @watercolor1; }
+	.watercolor2  { --wc : @watercolor2; }
+	.watercolor3  { --wc : @watercolor3; }
+	.watercolor4  { --wc : @watercolor4; }
+	.watercolor5  { --wc : @watercolor5; }
+	.watercolor6  { --wc : @watercolor6; }
+	.watercolor7  { --wc : @watercolor7; }
+	.watercolor8  { --wc : @watercolor8; }
+	.watercolor9  { --wc : @watercolor9; }
+	.watercolor10 { --wc : @watercolor10; }
+	.watercolor11 { --wc : @watercolor11; }
+	.watercolor12 { --wc : @watercolor12; }
+
+	/* Image Masks */
+	[class*="imageMask"] {
+		position              : absolute;
+		height                : 200%;
+		width                 : 200%;
+		left                  : 50%;
+		bottom                : 50%;
+		--rotation            : 0;
+		--revealer            : none;
+		--checkerboard        : none;
+		--scaleX              : 1;
+		--scaleY              : 1;
+		-webkit-mask-image    : var(--wc), var(--revealer);
+		-webkit-mask-repeat   : repeat-x;
+		-webkit-mask-size     : 50%; //Scale only X to fit page width, leave height at aspect ratio, designed to hang off the edge
+		-webkit-mask-position : 50% calc(50% - var(--offset));
+		mask-image            : var(--wc);
+		mask-repeat           : repeat-x;
+		mask-size             : 50%;
+		mask-position         : 50% calc(50% - var(--offset));
+		background-image      : var(--checkerboard);
+		background-size       : 20px;
+		z-index               : -1;
+		transform             : translateY(50%) translateX(-50%) rotate(calc(1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));
+		transition            : transform 2s;
+		& > p:has(img) {
+			position   : absolute;
+			width      : 50%;
+			height     : 50%;
+			bottom     : 50%;
+			left       : 50%;
+			transform  : translateX(-50%) translateY(50%) rotate(calc(-1deg * var(--rotation))) scaleX(calc(1 / var(--scaleX))) scaleY(calc(1 / var(--scaleY)));
+			transition : transform 2s;
+		}
+		& img {
+			position : absolute;
+			display  : block;
+			bottom   : 0;
+		}
+		&.bottom {
+			--rotation : 0;
+			& img {bottom: 0;}
+		}
+		&.top {
+			--rotation : 180;
+			& img {top: 0;}
+		}
+		&.left {
+			--rotation : 90;
+			& img {left: 0;}
+		}
+		&.right {
+			--rotation : -90;
+			& img {right: 0;}
+		}
+		&.revealImage {
+			--revealer : linear-gradient(0deg, rgba(0,0,0,.2) 0%, rgba(0,0,0,0.2));
+			--checkerboard : url(/assets/waterColorMasks/missingImage.png); //shows any masked regions not filled by image
+		}
+	}
+
+	.imageMaskEdge1  { --wc : url(/assets/waterColorMasks/edge/0001.webp); }
+	.imageMaskEdge2  { --wc : url(/assets/waterColorMasks/edge/0002.webp); }
+	.imageMaskEdge3  { --wc : url(/assets/waterColorMasks/edge/0003.webp); }
+	.imageMaskEdge4  { --wc : url(/assets/waterColorMasks/edge/0004.webp); }
+	.imageMaskEdge5  { --wc : url(/assets/waterColorMasks/edge/0005.webp); }
+	.imageMaskEdge6  { --wc : url(/assets/waterColorMasks/edge/0006.webp); }
+	.imageMaskEdge7  { --wc : url(/assets/waterColorMasks/edge/0007.webp); }
+	.imageMaskEdge8  { --wc : url(/assets/waterColorMasks/edge/0008.webp); }
+
+	[class*="imageMaskCorner"] {
+		height                : 200%;
+		width                 : 200%;
+		left                  : calc(-50% + var(--offsetX));
+		bottom                : calc(-50% + var(--offsetY));
+		-webkit-mask-image    : var(--wc), var(--revealer);
+		-webkit-mask-repeat   : no-repeat;
+		-webkit-mask-size     : 100% 100%; //Scale both dimensions to fit page size
+		-webkit-mask-position : 50% 50%;
+		mask-image            : var(--wc), var(--revealer);
+		mask-repeat           : no-repeat;
+		mask-size             : 100% 100%; //Scale both dimensions to fit page size
+		mask-position         : 50% 50%;
+		transform             : rotate(calc(1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));;
+		& > p:has(img) {
+			width      : 50%;
+			height     : 50%; //Complex transform below to handle mix of % and cm offsets
+			left       : 25%;
+			bottom     : 25%;
+			transform  : scaleX(calc(1 / var(--scaleX))) scaleY(calc(1 / var(--scaleY)))
+									 rotate(calc(-1deg * var(--rotation)))
+			             translateX(calc(-1 * var(--offsetX)))
+									 translateY(calc(1 * var(--offsetY)));
+		}
+	}
+
+	.imageMaskCorner1  { --wc : url(/assets/waterColorMasks/corner/0001.webp); }
+	.imageMaskCorner2  { --wc : url(/assets/waterColorMasks/corner/0002.webp); }
+	.imageMaskCorner3  { --wc : url(/assets/waterColorMasks/corner/0003.webp); }
+	.imageMaskCorner4  { --wc : url(/assets/waterColorMasks/corner/0004.webp); }
+	.imageMaskCorner5  { --wc : url(/assets/waterColorMasks/corner/0005.webp); }
+	.imageMaskCorner6  { --wc : url(/assets/waterColorMasks/corner/0006.webp); }
+	.imageMaskCorner7  { --wc : url(/assets/waterColorMasks/corner/0007.webp); }
+	.imageMaskCorner8  { --wc : url(/assets/waterColorMasks/corner/0008.webp); }
+	.imageMaskCorner9  { --wc : url(/assets/waterColorMasks/corner/0009.webp); }
+	.imageMaskCorner10 { --wc : url(/assets/waterColorMasks/corner/0010.webp); }
+	.imageMaskCorner11 { --wc : url(/assets/waterColorMasks/corner/0011.webp); }
+	.imageMaskCorner12 { --wc : url(/assets/waterColorMasks/corner/0012.webp); }
+	.imageMaskCorner13 { --wc : url(/assets/waterColorMasks/corner/0013.webp); }
+	.imageMaskCorner14 { --wc : url(/assets/waterColorMasks/corner/0014.webp); }
+	.imageMaskCorner15 { --wc : url(/assets/waterColorMasks/corner/0015.webp); }
+	.imageMaskCorner16 { --wc : url(/assets/waterColorMasks/corner/0016.webp); }
+	.imageMaskCorner17 { --wc : url(/assets/waterColorMasks/corner/0017.webp); }
+	.imageMaskCorner18 { --wc : url(/assets/waterColorMasks/corner/0018.webp); }
+	.imageMaskCorner19 { --wc : url(/assets/waterColorMasks/corner/0019.webp); }
+	.imageMaskCorner20 { --wc : url(/assets/waterColorMasks/corner/0020.webp); }
+	.imageMaskCorner21 { --wc : url(/assets/waterColorMasks/corner/0021.webp); }
+	.imageMaskCorner22 { --wc : url(/assets/waterColorMasks/corner/0022.webp); }
+	.imageMaskCorner23 { --wc : url(/assets/waterColorMasks/corner/0023.webp); }
+	.imageMaskCorner24 { --wc : url(/assets/waterColorMasks/corner/0024.webp); }
+	.imageMaskCorner25 { --wc : url(/assets/waterColorMasks/corner/0025.webp); }
+	.imageMaskCorner26 { --wc : url(/assets/waterColorMasks/corner/0026.webp); }
+	.imageMaskCorner27 { --wc : url(/assets/waterColorMasks/corner/0027.webp); }
+	.imageMaskCorner28 { --wc : url(/assets/waterColorMasks/corner/0028.webp); }
+	.imageMaskCorner29 { --wc : url(/assets/waterColorMasks/corner/0029.webp); }
+	.imageMaskCorner30 { --wc : url(/assets/waterColorMasks/corner/0030.webp); }
+	.imageMaskCorner31 { --wc : url(/assets/waterColorMasks/corner/0031.webp); }
+	.imageMaskCorner32 { --wc : url(/assets/waterColorMasks/corner/0032.webp); }
+	.imageMaskCorner33 { --wc : url(/assets/waterColorMasks/corner/0033.webp); }
+	.imageMaskCorner34 { --wc : url(/assets/waterColorMasks/corner/0034.webp); }
+	.imageMaskCorner35 { --wc : url(/assets/waterColorMasks/corner/0035.webp); }
+	.imageMaskCorner36 { --wc : url(/assets/waterColorMasks/corner/0036.webp); }
+	.imageMaskCorner37 { --wc : url(/assets/waterColorMasks/corner/0037.webp); }
+}
+
+//*****************************
+// *    DEFINITION LISTS
+// *****************************/
+.page {
+	dl {
+		padding-left : 1em;
+		white-space  : pre-line;
+	}
+  dt {
+    display      : inline;
+    margin-right : 0.5ch;
+		margin-left  : -1em;
+  }
+  dd {
+		display     : inline;
+		margin-left : 0;
+		text-indent : 0;
+  }
+}
+
+//*****************************
+// *    BLANK LINE
+// *****************************/
+.page {
+	.blank {
+		height     : 1em;
+		margin-top : 0;
+		& + * {
+			margin-top : 0;
+		}
+	}
+}
+
+//*****************************
+// *         WIDE
+// *****************************/
+.page {
+	.wide{
+		column-span         : all;
+		display             : block;
+		margin-bottom       : 1em;
+		&+* {
+			margin-top : 0;
 		}
 	}
 }

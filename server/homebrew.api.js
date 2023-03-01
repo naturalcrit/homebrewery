@@ -317,8 +317,7 @@ If you believe you should have access to this brew, ask the file owner to invite
 					brew.textBin = zlib.deflateRawSync(brew.text);
 					brew.text = undefined;
 				}
-
-				// Otherwise, save the brew with updated author list
+				brew.markModified('authors'); //Mongo will not properly update arrays without markModified()
 				await brew.save()
 					.catch((err)=>{
 						throw { status: 500, message: err };
