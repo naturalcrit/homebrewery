@@ -102,7 +102,7 @@ module.exports = [
 				gen  : WatercolorGen,
 			},
 			{
-				name         : 'Watercolor Image Mask Edge',
+				name         : 'Watercolor Edge',
 				icon         : 'fac mask-edge',
 				gen          : ImageMaskGen.edge('bottom'),
 				experimental : true,
@@ -130,7 +130,7 @@ module.exports = [
 				]
 			},
 			{
-				name         : 'Watercolor Image Mask Corner',
+				name         : 'Watercolor Corner',
 				icon         : 'fac mask-corner',
 				gen          : ImageMaskGen.corner,
 				experimental : true,

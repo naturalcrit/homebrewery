@@ -170,7 +170,7 @@ module.exports = [
 			},
 			{
 				name         : 'Cover Page',
-				icon         : 'fac fa-file-c',
+				icon         : 'fac book-front-cover',
 				gen          : CoverPageGen,
 				experimental : true
 			},
