@@ -788,56 +788,58 @@ h5 + table{
 // *****************************/
 .page:has(.insideCover) {
 	h1 {
-		font-family: NodestoCapsCondensed;
-		font-weight: normal;
-		font-size: 2.1cm;
-		text-align: center;
-		text-transform: uppercase;
-		line-height: 2cm;
-		position: absolute;
-		top: 3.2cm;
-		left: 50%;
-		translate: -50% 0;
-		width: max-content;
+		font-family		: NodestoCapsCondensed;
+		font-weight		: normal;
+		font-size		: 2.1cm;
+		text-align		: center;
+		text-transform	: uppercase;
+		line-height		: 2cm;
+		position		: absolute;
+		top				: 3.2cm;
+		left			: 50%;
+		translate		: -50% 0;
+		width			: max-content;
 	}
 
 	hr {
-		visibility: visible;
-		height: 0.3cm;
-		width: 12cm;
-		position: absolute;
-		left: 50%;
-		top: 6cm;
-		translate: -50% 0;
-		background-image: @horizontalRule;
-		background-size: 100%;
-		border: none;
+		visibility			: visible;
+		height				: 0.3cm;
+		width				: 12cm;
+		position			: absolute;
+		left				: 50%;
+		top					: 6cm;
+		translate			: -50% 0;
+		background-image	: @horizontalRule;
+		background-size		: 100%;
+		border				: none;
 	}
 
-	img {
-		position: absolute;
-		left: 60%;
-		top: 20%;
-		translate: -50% 0;
-		min-width: 100%;
-		mask-image: @insideCoverMask;
-		mask-repeat: no-repeat;
-		-webkit-mask-image: @insideCoverMask;
-		-webkit-mask-repeat: no-repeat;
+	.columnWrapper > p img {
+		position			: absolute;
+		left				: 60%;
+		top					: 20%;
+		translate			: -50% 0;
+		min-width			: 100%;
+		mask-image			: @insideCoverMask;
+		mask-repeat			: no-repeat;
+		-webkit-mask-image	: @insideCoverMask;
+		-webkit-mask-repeat	: no-repeat;
 	}
 
 	.logo {
-		position: absolute;
-		bottom: 1cm;
-		left: 50%;
-		translate: -50% 0;
-		width: 2cm;
-		height: 2cm;
-		background-image: @naturalCritLogo;
+		position : absolute;
+		bottom   : 1cm;
+		left	 : 0;
+		right	 : 0;
+		height	 : 2cm;
+		img {
+			height : 2cm;
+			width  : 100%;
+		}
 	}
 
 	&::after {
-		all: unset;
+		all	: unset;
 	}
 }
 

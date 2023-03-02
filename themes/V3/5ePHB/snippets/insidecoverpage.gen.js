@@ -34,8 +34,7 @@ return dedent`{{insideCover}}
 ___
     
 ![image](https://i.imgur.com/dpg5qPT.png) {}
-    
-{{logo}}
-    
+
+{{logo ![](/assets/naturalCritLogo.svg)}}
 \page`;
 };
