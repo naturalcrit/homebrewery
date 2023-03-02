@@ -221,7 +221,7 @@ const EditPage = createClass({
 
 	renderGoogleDriveIcon : function(){
 		return <Nav.item className='googleDriveStorage' onClick={this.handleGoogleClick}>
-			<img src={googleDriveIcon} style={{ filter: `grayscale(${this.state.saveGoogle ? 0 : 1})` }} alt='Google Drive icon'/>
+			<img src={googleDriveIcon} className={this.state.saveGoogle ? '' : 'inactive'} alt='Google Drive icon'/>
 
 			{this.state.confirmGoogleTransfer &&
 				<div className='errorContainer' onClick={this.closeAlerts}>
