@@ -19,11 +19,6 @@ const DEFAULT_STYLE_TEXT = dedent`
 					color: black;
 				}`;
 
-const splice = function(str, index, inject){
-	return str.slice(0, index) + inject + str.slice(index);
-};
-
-
 
 const Editor = createClass({
 	displayName     : 'Editor',
@@ -37,6 +32,7 @@ const Editor = createClass({
 			onTextChange  : ()=>{},
 			onStyleChange : ()=>{},
 			onMetaChange  : ()=>{},
+			reportError   : ()=>{},
 
 			renderer : 'legacy'
 		};
@@ -61,8 +57,14 @@ const Editor = createClass({
 		window.removeEventListener('resize', this.updateEditorSize);
 	},
 
-	componentDidUpdate : function() {
+	componentDidUpdate : function(prevProps, prevState, snapshot) {
 		this.highlightCustomMarkdown();
+		if(prevProps.moveBrew !== this.props.moveBrew) {
+			this.brewJump();
+		};
+		if(prevProps.moveSource !== this.props.moveSource) {
+			this.sourceJump();
+		};
 	},
 
 	updateEditorSize : function() {
@@ -74,31 +76,24 @@ const Editor = createClass({
 	},
 
 	handleInject : function(injectText){
-		let text;
-		if(this.isText())  text = this.props.brew.text;
-		if(this.isStyle()) text = this.props.brew.style ?? DEFAULT_STYLE_TEXT;
-
-		const lines = text.split('\n');
-		const cursorPos = this.refs.codeEditor.getCursorPosition();
-		lines[cursorPos.line] = splice(lines[cursorPos.line], cursorPos.ch, injectText);
-
-		const injectLines = injectText.split('\n');
-		this.refs.codeEditor.setCursorPosition(cursorPos.line + injectLines.length, cursorPos.ch  + injectLines[injectLines.length - 1].length);
-
-		if(this.isText())  this.props.onTextChange(lines.join('\n'));
-		if(this.isStyle()) this.props.onStyleChange(lines.join('\n'));
+		this.refs.codeEditor?.injectText(injectText, false);
 	},
 
 	handleViewChange : function(newView){
+		this.props.setMoveArrows(newView === 'text');
 		this.setState({
 			view : newView
 		}, this.updateEditorSize);	//TODO: not sure if updateeditorsize needed
 	},
 
 	getCurrentPage : function(){
-		const lines = this.props.brew.text.split('\n').slice(0, this.cursorPosition.line + 1);
+		const lines = this.props.brew.text.split('\n').slice(0, this.refs.codeEditor.getCursorPosition().line + 1);
 		return _.reduce(lines, (r, line)=>{
-			if(line.indexOf('\\page') !== -1) r++;
+			if(
+				(this.props.renderer == 'legacy' && line.indexOf('\\page') !== -1)
+				||
+				(this.props.renderer == 'V3' && line.match(/^\\page$/))
+			) r++;
 			return r;
 		}, 1);
 	},
@@ -120,6 +115,7 @@ const Editor = createClass({
 					//reset custom line styles
 					codeMirror.removeLineClass(lineNumber, 'background', 'pageLine');
 					codeMirror.removeLineClass(lineNumber, 'text');
+					codeMirror.removeLineClass(lineNumber, 'wrap', 'sourceMoveFlash');
 
 					// Styling for \page breaks
 					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
@@ -142,9 +138,17 @@ const Editor = createClass({
 							codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 						}
 
+						// Highlight injectors {style}
+						if(line.includes('{') && line.includes('}')){
+							const regex = /(?:^|[^{\n])({(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\2})/gm;
+							let match;
+							while ((match = regex.exec(line)) != null) {
+								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length }, { className: 'injection' });
+							}
+						}
 						// Highlight inline spans {{content}}
 						if(line.includes('{{') && line.includes('}}')){
-							const regex = /{{(?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])*\s*|}}/g;
+							const regex = /{{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1 *|}}/g;
 							let match;
 							let blockCount = 0;
 							while ((match = regex.exec(line)) != null) {
@@ -163,7 +167,7 @@ const Editor = createClass({
 							// Highlight block divs {{\n Content \n}}
 							let endCh = line.length+1;
 
-							const match = line.match(/^ *{{(?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])* *$|^ *}}$/);
+							const match = line.match(/^ *{{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1 *$|^ *}}$/);
 							if(match)
 								endCh = match.index+match[0].length;
 							codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
@@ -174,9 +178,76 @@ const Editor = createClass({
 		}
 	},
 
-	brewJump : function(){
-		const currentPage = this.getCurrentPage();
-		window.location.hash = `p${currentPage}`;
+	brewJump : function(targetPage=this.getCurrentPage()){
+		if(!window) return;
+		// console.log(`Scroll to: p${targetPage}`);
+		const brewRenderer = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
+		const currentPos = brewRenderer.scrollTop;
+		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
+		const interimPos = targetPos >= 0 ? -30 : 30;
+
+		const bounceDelay = 100;
+		const scrollDelay = 500;
+
+		if(!this.throttleBrewMove) {
+			this.throttleBrewMove = _.throttle((currentPos, interimPos, targetPos)=>{
+				brewRenderer.scrollTo({ top: currentPos + interimPos, behavior: 'smooth' });
+				setTimeout(()=>{
+					brewRenderer.scrollTo({ top: currentPos + targetPos, behavior: 'smooth', block: 'start' });
+				}, bounceDelay);
+			}, scrollDelay, { leading: true, trailing: false });
+		};
+		this.throttleBrewMove(currentPos, interimPos, targetPos);
+
+		// const hashPage = (page != 1) ? `p${page}` : '';
+		// window.location.hash = hashPage;
+	},
+
+	sourceJump : function(targetLine=null){
+		if(this.isText()) {
+			if(targetLine == null) {
+				targetLine = 0;
+
+				const pageCollection = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('page');
+				const brewRendererHeight = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer').item(0).getBoundingClientRect().height;
+
+				let currentPage = 1;
+				for (const page of pageCollection) {
+					if(page.getBoundingClientRect().bottom > (brewRendererHeight / 2)) {
+						currentPage = parseInt(page.id.slice(1)) || 1;
+						break;
+					}
+				}
+
+				const textSplit = this.props.renderer == 'V3' ? /^\\page$/gm : /\\page/;
+				const textString = this.props.brew.text.split(textSplit).slice(0, currentPage-1).join(textSplit);
+				const textPosition = textString.length;
+				const lineCount = textString.match('\n') ? textString.slice(0, textPosition).split('\n').length : 0;
+
+				targetLine = lineCount - 1; //Scroll to `\page`, which is one line back.
+
+				let currentY = this.refs.codeEditor.codeMirror.getScrollInfo().top;
+				let targetY  = this.refs.codeEditor.codeMirror.heightAtLine(targetLine, 'local', true);
+
+				//Scroll 1/10 of the way every 10ms until 1px off.
+				const incrementalScroll = setInterval(()=>{
+					currentY += (targetY - currentY) / 10;
+					this.refs.codeEditor.codeMirror.scrollTo(null, currentY);
+
+					// Update target: target height is not accurate until within +-10 lines of the visible window
+					if(Math.abs(targetY - currentY > 100))
+						targetY = this.refs.codeEditor.codeMirror.heightAtLine(targetLine, 'local', true);
+
+					// End when close enough
+					if(Math.abs(targetY - currentY) < 1) {
+						this.refs.codeEditor.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
+						this.refs.codeEditor.setCursorPosition({ line: targetLine + 1, ch: 0 });
+						this.refs.codeEditor.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
+						clearInterval(incrementalScroll);
+					}
+				}, 10);
+			}
+		}
 	},
 
 	//Called when there are changes to the editor's dimensions
@@ -221,7 +292,8 @@ const Editor = createClass({
 					rerenderParent={this.rerenderParent} />
 				<MetadataEditor
 					metadata={this.props.brew}
-					onChange={this.props.onMetaChange} />
+					onChange={this.props.onMetaChange}
+					reportError={this.props.reportError}/>
 			</>;
 		}
 	},
@@ -248,6 +320,7 @@ const Editor = createClass({
 					onInject={this.handleInject}
 					showEditButtons={this.props.showEditButtons}
 					renderer={this.props.renderer}
+					theme={this.props.brew.theme}
 					undo={this.undo}
 					redo={this.redo}
 					historySize={this.historySize()} />

@@ -7,6 +7,8 @@ const { Meta } = require('vitreum/headtags');
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
 const Markdown = require('naturalcrit/markdown.js');
 
+const Themes = require('themes/themes.json');
+
 const BREWKEY = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
 const METAKEY = 'homebrewery-new-meta';
@@ -27,9 +29,10 @@ const PrintPage = createClass({
 	getInitialState : function() {
 		return {
 			brew : {
-				text     : this.props.brew.text || '',
-				style    : this.props.brew.style || undefined,
-				renderer : this.props.brew.renderer || 'legacy'
+				text     : this.props.brew.text     || '',
+				style    : this.props.brew.style    || undefined,
+				renderer : this.props.brew.renderer || 'legacy',
+				theme    : this.props.brew.theme    || '5ePHB'
 			}
 		};
 	},
@@ -45,7 +48,8 @@ const PrintPage = createClass({
 					brew : {
 						text     : brewStorage,
 						style    : styleStorage,
-						renderer : metaStorage.renderer || 'legacy'
+						renderer : metaStorage?.renderer || 'legacy',
+						theme    : metaStorage?.theme    || '5ePHB'
 					}
 				};
 			});
@@ -56,7 +60,8 @@ const PrintPage = createClass({
 
 	renderStyle : function() {
 		if(!this.state.brew.style) return;
-		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${this.state.brew.style} </style>` }} />;
+		//return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${this.state.brew.style}\n} </style>` }} />;
+		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>\n${this.state.brew.style}\n</style>` }} />;
 	},
 
 	renderPages : function(){
@@ -82,9 +87,17 @@ const PrintPage = createClass({
 	},
 
 	render : function(){
+		const rendererPath = this.state.brew.renderer == 'V3' ? 'V3' : 'Legacy';
+		const themePath    = this.state.brew.theme ?? '5ePHB';
+		const baseThemePath = Themes[rendererPath][themePath].baseTheme;
+
 		return <div>
 			<Meta name='robots' content='noindex, nofollow' />
-			<link href={`${this.state.brew.renderer == 'legacy' ? '/themes/5ePhbLegacy.style.css' : '/themes/5ePhb.style.css'}`} rel='stylesheet'/>
+			<link href={`/themes/${rendererPath}/Blank/style.css`} rel='stylesheet'/>
+			{baseThemePath &&
+				<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} rel='stylesheet'/>
+			}
+			<link href={`/themes/${rendererPath}/${themePath}/style.css`} rel='stylesheet'/>
 			{/* Apply CSS from Style tab */}
 			{this.renderStyle()}
 			<div className='pages' ref='pages'>

@@ -4,7 +4,7 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 const moment = require('moment');
-const request = require('superagent');
+const request = require('../../../../utils/request-middleware.js');
 
 const googleDriveIcon = require('../../../../googleDrive.png');
 const dedent = require('dedent-tabs').default;
@@ -16,9 +16,10 @@ const BrewItem = createClass({
 			brew : {
 				title       : '',
 				description : '',
-
-				authors : []
-			}
+				authors     : [],
+				stubbed     : true
+			},
+			reportError : ()=>{}
 		};
 	},
 
@@ -33,8 +34,12 @@ const BrewItem = createClass({
 
 		request.delete(`/api/${this.props.brew.googleId ?? ''}${this.props.brew.editId}`)
 			.send()
-			.end(function(err, res){
-				location.reload();
+			.end((err, res)=>{
+				if(err) {
+					this.props.reportError(err);
+				} else {
+					location.reload();
+				}
 			});
 	},
 
@@ -50,7 +55,7 @@ const BrewItem = createClass({
 		if(!this.props.brew.editId) return;
 
 		let editLink = this.props.brew.editId;
-		if(this.props.brew.googleId) {
+		if(this.props.brew.googleId && !this.props.brew.stubbed) {
 			editLink = this.props.brew.googleId + editLink;
 		}
 
@@ -63,7 +68,7 @@ const BrewItem = createClass({
 		if(!this.props.brew.shareId) return;
 
 		let shareLink = this.props.brew.shareId;
-		if(this.props.brew.googleId) {
+		if(this.props.brew.googleId && !this.props.brew.stubbed) {
 			shareLink = this.props.brew.googleId + shareLink;
 		}
 
@@ -76,7 +81,7 @@ const BrewItem = createClass({
 		if(!this.props.brew.shareId) return;
 
 		let shareLink = this.props.brew.shareId;
-		if(this.props.brew.googleId) {
+		if(this.props.brew.googleId && !this.props.brew.stubbed) {
 			shareLink = this.props.brew.googleId + shareLink;
 		}
 
@@ -86,7 +91,7 @@ const BrewItem = createClass({
 	},
 
 	renderGoogleDriveIcon : function(){
-		if(!this.props.brew.gDrive) return;
+		if(!this.props.brew.googleId) return;
 
 		return <span>
 			<img className='googleDriveIcon' src={googleDriveIcon} alt='googleDriveIcon' />
@@ -95,17 +100,35 @@ const BrewItem = createClass({
 
 	render : function(){
 		const brew = this.props.brew;
+		if(Array.isArray(brew.tags)) {               // temporary fix until dud tags are cleaned
+			brew.tags = brew.tags?.filter((tag)=>tag); //remove tags that are empty strings
+		}
 		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
 
 		return <div className='brewItem'>
+			{brew.thumbnail &&
+				<div className='thumbnail' style={{ backgroundImage: `url(${brew.thumbnail})` }} >
+				</div>
+			}
 			<div className='text'>
 				<h2>{brew.title}</h2>
 				<p className='description'>{brew.description}</p>
 			</div>
 			<hr />
 			<div className='info'>
-				<span title={`Authors:\n${brew.authors.join('\n')}`}>
-					<i className='fas fa-user'/> {brew.authors.join(', ')}
+
+				{brew.tags?.length ? <>
+					<div className='brewTags' title={`Tags:\n${brew.tags.join('\n')}`}>
+						<i className='fas fa-tags'/>
+						{brew.tags.map((tag, idx)=>{
+							const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
+							return <span key={idx} className={matches[1]}>{matches[2]}</span>;
+						})}
+					</div>
+				</> : <></>
+				}
+				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
+					<i className='fas fa-user'/> {brew.authors?.join(', ')}
 				</span>
 				<br />
 				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>

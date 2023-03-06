@@ -3,7 +3,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
-const request = require('superagent');
+const request = require('../../utils/request-middleware.js');
 const { Meta } = require('vitreum/headtags');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
@@ -12,37 +12,38 @@ const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
+const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
-
+const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
 
 const HomePage = createClass({
 	displayName     : 'HomePage',
 	getDefaultProps : function() {
 		return {
-			brew : {
-				text : '',
-			},
-			ver : '0.0.0'
+			brew : DEFAULT_BREW,
+			ver  : '0.0.0'
 		};
 	},
 	getInitialState : function() {
 		return {
 			brew        : this.props.brew,
-			welcomeText : this.props.brew.text
+			welcomeText : this.props.brew.text,
+			error       : undefined
 		};
 	},
 	handleSave : function(){
 		request.post('/api')
-			.send({
-				text : this.state.brew.text
-			})
+			.send(this.state.brew)
 			.end((err, res)=>{
-				if(err) return;
+				if(err) {
+					this.setState({ error: err });
+					return;
+				}
 				const brew = res.body;
 				window.location = `/edit/${brew.editId}`;
 			});
@@ -52,12 +53,16 @@ const HomePage = createClass({
 	},
 	handleTextChange : function(text){
 		this.setState((prevState)=>({
-			brew : _.merge({}, prevState.brew, { text: text })
+			brew : { ...prevState.brew, text: text }
 		}));
 	},
 	renderNavbar : function(){
 		return <Navbar ver={this.props.ver}>
 			<Nav.section>
+				{this.state.error ?
+					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
+					null
+				}
 				<NewBrewItem />
 				<HelpNavItem />
 				<RecentNavItem />

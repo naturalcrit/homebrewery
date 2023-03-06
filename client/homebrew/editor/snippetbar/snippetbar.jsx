@@ -4,9 +4,16 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
+//Import all themes
 
-const SnippetsLegacy = require('./snippetsLegacy/snippets.js');
-const SnippetsV3 = require('./snippets/snippets.js');
+const Themes = require('themes/themes.json');
+
+const ThemeSnippets = {};
+ThemeSnippets['Legacy_5ePHB'] = require('themes/Legacy/5ePHB/snippets.js');
+ThemeSnippets['V3_5ePHB']     = require('themes/V3/5ePHB/snippets.js');
+ThemeSnippets['V3_5eDMG']     = require('themes/V3/5eDMG/snippets.js');
+ThemeSnippets['V3_Journal']   = require('themes/V3/Journal/snippets.js');
+ThemeSnippets['V3_Blank']     = require('themes/V3/Blank/snippets.js');
 
 const execute = function(val, brew){
 	if(_.isFunction(val)) return val(brew);
@@ -32,8 +39,55 @@ const Snippetbar = createClass({
 
 	getInitialState : function() {
 		return {
-			renderer : this.props.renderer
+			renderer : this.props.renderer,
+			snippets : []
 		};
+	},
+
+	componentDidMount : async function() {
+		const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
+		const themePath    = this.props.theme ?? '5ePHB';
+		let snippets = _.cloneDeep(ThemeSnippets[`${rendererPath}_${themePath}`]);
+		snippets = this.compileSnippets(rendererPath, themePath, snippets);
+		this.setState({
+			snippets : snippets
+		});
+	},
+
+	componentDidUpdate : async function(prevProps) {
+		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme) {
+			const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
+			const themePath    = this.props.theme ?? '5ePHB';
+			let snippets = _.cloneDeep(ThemeSnippets[`${rendererPath}_${themePath}`]);
+			snippets = this.compileSnippets(rendererPath, themePath, snippets);
+			this.setState({
+				snippets : snippets
+			});
+		}
+	},
+
+	mergeCustomizer : function(valueA, valueB, key) {
+		if(key == 'snippets') {
+			const result = _.reverse(_.unionBy(_.reverse(valueB), _.reverse(valueA), 'name')); // Join snippets together, with preference for the current theme over the base theme
+			return _.filter(result, 'gen'); //Only keep snippets with a 'gen' property.
+		}
+	},
+
+	compileSnippets : function(rendererPath, themePath, snippets) {
+		let compiledSnippets = snippets;
+		const baseSnippetsPath = Themes[rendererPath][themePath].baseSnippets;
+
+		const objB = _.keyBy(compiledSnippets, 'groupName');
+
+		if(baseSnippetsPath) {
+			const objA = _.keyBy(_.cloneDeep(ThemeSnippets[`${rendererPath}_${baseSnippetsPath}`]), 'groupName');
+			compiledSnippets = _.values(_.mergeWith(objA, objB, this.mergeCustomizer));
+			compiledSnippets = this.compileSnippets(rendererPath, baseSnippetsPath, _.cloneDeep(compiledSnippets));
+		} else {
+			const objA = _.keyBy(_.cloneDeep(ThemeSnippets[`${rendererPath}_Blank`]), 'groupName');
+			compiledSnippets = _.values(_.mergeWith(objA, objB, this.mergeCustomizer));
+		}
+		return compiledSnippets;
 	},
 
 	handleSnippetClick : function(injectedText){
@@ -41,12 +95,7 @@ const Snippetbar = createClass({
 	},
 
 	renderSnippetGroups : function(){
-		let snippets = [];
-
-		if(this.props.renderer === 'V3')
-			snippets = SnippetsV3.filter((snippetGroup)=>snippetGroup.view === this.props.view);
-		else
-			snippets = SnippetsLegacy.filter((snippetGroup)=>snippetGroup.view === this.props.view);
+		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
 
 		return _.map(snippets, (snippetGroup)=>{
 			return <SnippetGroup
@@ -114,15 +163,23 @@ const SnippetGroup = createClass({
 			onSnippetClick : function(){},
 		};
 	},
-	handleSnippetClick : function(snippet){
+	handleSnippetClick : function(e, snippet){
+		e.stopPropagation();
 		this.props.onSnippetClick(execute(snippet.gen, this.props.brew));
 	},
-	renderSnippets : function(){
-		return _.map(this.props.snippets, (snippet)=>{
-			return <div className='snippet' key={snippet.name} onClick={()=>this.handleSnippetClick(snippet)}>
+	renderSnippets : function(snippets){
+		return _.map(snippets, (snippet)=>{
+			return <div className='snippet' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
 				<i className={snippet.icon} />
-				{snippet.name}
+				<span className='name'>{snippet.name}</span>
+				{snippet.experimental && <span className='beta'>beta</span>}
+				{snippet.subsnippets && <>
+					<i className='fas fa-caret-right'></i>
+					<div className='dropdown side'>
+						{this.renderSnippets(snippet.subsnippets)}
+					</div></>}
 			</div>;
+
 		});
 	},
 
@@ -133,7 +190,7 @@ const SnippetGroup = createClass({
 				<span className='groupName'>{this.props.groupName}</span>
 			</div>
 			<div className='dropdown'>
-				{this.renderSnippets()}
+				{this.renderSnippets(this.props.snippets)}
 			</div>
 		</div>;
 	},

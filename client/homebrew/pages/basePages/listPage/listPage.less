@@ -10,15 +10,14 @@
 	-moz-column-width    : auto;
 	-webkit-column-gap   : auto;
 	-moz-column-gap      : auto;
+	height               : auto;
+	min-height           : 279.4mm;
+	margin               : 20px auto;
 }
 .listPage{
 	.content{
-		overflow-y : scroll;
-		.phb{
-			.noColumns();
-			height     : auto;
-			min-height : 279.4mm;
-			margin     : 20px auto;
+		.page{
+			.noColumns() !important; //Needed to override PHB Theme since this is on a lower @layer
 			&::after{
 				display : none;
 			}
@@ -27,51 +26,101 @@
 				font-size  : 1.3em;
 				font-style : italic;
 			}
-
+			.brewCollection {
+				h1:hover{
+					cursor: pointer;
+				}
+				.active::before, .inactive::before {
+					font-family: 'Font Awesome 5 Free';
+					font-weight: 900;
+					font-size: 0.6cm;
+					padding-right: 0.5em;
+				}
+				.active {
+					color: var(--HB_Color_HeaderText);
+				}
+				.active::before {
+					content: '\f107';
+				}
+				.inactive {
+					color: #707070;
+				}
+				.inactive::before {
+					content: '\f105';
+				}
+			}
 		}
 	}
 	.sort-container{
 		font-family        : 'Open Sans', sans-serif;
-		position           : fixed;
-		top                : 35px;
-		left               : calc(50vw - 408px);
-		border             : 2px solid #58180D;
-		width              : 800px;
-		background-color   : #EEE5CE;
-		padding            : 2px;
+		position           : sticky;
+		top                : 0;
+		left               : 0;
+		width              : 100%;
+		height             : 30px;
+		background-color   : #555;
+		border-top         : 1px solid #666;
+		border-bottom         : 1px solid #666;
+		color              : white;
 		text-align         : center;
-		z-index            : 15;
+		z-index            : 500;
+		display            : flex;
+		justify-content    : center;
+		align-items        : baseline;
+		column-gap         : 15px;
+		row-gap            : 5px;
+		flex-wrap          : wrap;
 		h6{
 			text-transform : uppercase;
 			font-family    : 'Open Sans', sans-serif;
 			font-size      : 11px;
 			font-weight    : bold;
-			color          : #58180D;
 		}
-		table{
-			margin : 0px;
-			vertical-align : middle;
-			tbody tr{
-				background-color: transparent !important;
-				i{
-					padding-right : 5px
-				}
-			button{
-					background-color : transparent;
-					color            : #58180D;
-					font-family    : 'Open Sans', sans-serif;
-					font-size      : 11px;
-					text-transform : uppercase;
-					font-weight      : normal;
-					&.active{
-						font-weight : bold;
-						border      : 2px solid #58180D;
-					}
-					&.sortDir{
-						width : 75px;
-					}
+		.sort-option {
+			display: flex;
+			align-items: center;
+			padding: 0 8px;
+			color: #ccc;
+			height: 100%;
+
+			&:hover{
+				background-color : #444;
+			}
+
+			&.active {
+			font-weight: bold;
+			color: #ddd;
+			background-color: #333;
+
+			button {
+				color: white;
+				font-weight: 800;
+				height: 100%;
+				& + .sortDir {
+					padding-left: 5px;
 				}
 			}
 		}
+
+		}
+		.filter-option {
+			margin-left: 20px;
+			background-color : transparent !important;
+			font-size        : 11px;
+			i{
+				padding-right : 5px;
+			}
+		}
+		button{
+				background-color : transparent;
+				font-family      : 'Open Sans', sans-serif;
+				text-transform   : uppercase;
+				font-weight      : normal;
+				font-size        : 11px;
+				color            : #ccc;
+				padding          : 0;
+			}
+
+
 	}
 }

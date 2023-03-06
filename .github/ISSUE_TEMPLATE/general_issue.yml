@@ -1,0 +1,55 @@
+name: General Issue
+description: Report an issue unrelated to Saving
+body:
+  - type: markdown
+    attributes:
+      value: Please include as much information as possible.
+  - type: dropdown
+    id: renderer
+    attributes:
+      label: Renderer
+      description: Which renderer does this issue occur on?  If you are unsure, you can check the renderer in the Properties Editor (click the "i" in the Snippet Menu bar above the editor).
+      options:
+        - v3
+        - Legacy
+        - Both
+    validations:
+      required: true
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      description: Which browser were you using when the issue occurred?
+      options:
+        - Chrome
+        - Firefox
+        - Edge
+        - Safari
+        - other
+    validations:
+      required: true
+  - type: dropdown
+    id: operating-system
+    attributes:
+      label: Operating System
+      description: Which OS were you using when the issue occurred?
+      options:
+        - Windows
+        - MacOS
+        - Linux
+        - other
+    validations:
+      required: true
+  - type: textarea
+    id: user-description
+    attributes:
+      label: "What happened?"
+      description: Please include any steps you took leading up to the issue and if you can reproduce it.  Let us know what you expected to happen, and what did happen.
+    validations:
+      required: true
+  - type: textarea
+    id: code
+    attributes:
+      label: Code
+      description: Paste in any relevant code snippet below.
+      render: gfm

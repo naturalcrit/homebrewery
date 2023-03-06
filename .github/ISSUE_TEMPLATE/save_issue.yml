@@ -1,0 +1,26 @@
+name: Saving Issue
+description: Report an issue Saving
+labels: ["Saving"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Woops, sorry there was an issue Saving.  Please add any detail you can to this report and check back soon!
+  - type: textarea
+    id: error-code
+    attributes:
+      label: Error Code
+      render: shell
+  - type: textarea
+    id: user-description
+    attributes:
+      label: "Your description of what happened:"
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report.  Here are some steps that may help in the meantime:
+        1. Refreshing your Google credentials in Homebrewery by signing out, and back in (they expire after one year).
+        2. Waiting a few minutes and trying again - sometimes there is just a momentary blip in the server.
+        3. Check the Issues in Github or the /r/homebrewery subreddit to see if others are experiencing the same issue.

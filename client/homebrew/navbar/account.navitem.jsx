@@ -1,6 +1,7 @@
 const React = require('react');
 const createClass = require('create-react-class');
 const Nav = require('naturalcrit/nav/nav.jsx');
+const request = require('superagent');
 
 const Account = createClass({
 	displayName     : 'AccountNavItem',
@@ -36,7 +37,29 @@ const Account = createClass({
 		}
 	},
 
+	localLogin : async function(){
+		const username = prompt('Enter username:');
+		if(!username) {return;}
+
+		const expiry = new Date;
+		expiry.setFullYear(expiry.getFullYear() + 1);
+
+		const token = await request.post('/local/login')
+				.send({ username })
+				.then((response)=>{
+					return response.body;
+				})
+				.catch((err)=>{
+					console.warn(err);
+				});
+		if(!token) return;
+
+		document.cookie = `nc_session=${token};expires=${expiry};path=/;samesite=lax;${window.domain ? `domain=${window.domain}` : ''}`;
+		window.location.reload(true);
+	},
+
 	render : function(){
+		//  Logged in
 		if(global.account){
 			return <Nav.dropdown>
 				<Nav.item
@@ -47,11 +70,19 @@ const Account = createClass({
 					{global.account.username}
 				</Nav.item>
 				<Nav.item
-					href={`/user/${global.account.username}`}
+					href={`/user/${encodeURI(global.account.username)}`}
 					color='yellow'
 					icon='fas fa-beer'
 				>
 					brews
+				</Nav.item>
+				<Nav.item
+					className='account'
+					color='orange'
+					icon='fas fa-user'
+					href='/account'
+				>
+					account
 				</Nav.item>
 				<Nav.item
 					className='logout'
@@ -64,6 +95,16 @@ const Account = createClass({
 			</Nav.dropdown>;
 		}
 
+		//  Logged out
+		//  LOCAL ONLY
+		if(global.config.local) {
+			return <Nav.item color='teal' icon='fas fa-sign-in-alt' onClick={this.localLogin}>
+				login
+			</Nav.item>;
+		};
+
+		// Logged out
+		// Production site
 		return <Nav.item href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`} color='teal' icon='fas fa-sign-in-alt'>
 			login
 		</Nav.item>;
