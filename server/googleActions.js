@@ -22,6 +22,8 @@ if(!config.get('service_account')){
 	}
 }
 
+const defaultAuth = serviceAuth || config.get('google_api_key');
+
 const GoogleActions = {
 
 	authCheck : (account, res, updateTokens=true)=>{
@@ -134,7 +136,7 @@ const GoogleActions = {
 	},
 
 	updateGoogleBrew : async (brew)=>{
-		const drive = drive({ version: 'v3', auth: serviceAuth || config.get('google_api_key') });
+		const drive = drive({ version: 'v3', auth: defaultAuth });
 
 		await drive.files.update({
 			fileId   : brew.googleId,
@@ -216,7 +218,7 @@ const GoogleActions = {
 	},
 
 	getGoogleBrew : async (id, accessId, accessType)=>{
-		const drive = drive({ version: 'v3', auth: serviceAuth || config.get('google_api_key') });
+		const drive = drive({ version: 'v3', auth: defaultAuth });
 
 		const obj = await drive.files.get({
 			fileId : id,
@@ -298,7 +300,7 @@ const GoogleActions = {
 	},
 
 	increaseView : async (id, accessId, accessType, brew)=>{
-		const drive = drive({ version: 'v3', auth: serviceAuth || config.get('google_api_key') });
+		const drive = drive({ version: 'v3', auth: defaultAuth });
 
 		await drive.files.update({
 			fileId   : brew.googleId,
