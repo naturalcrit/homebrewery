@@ -1,3 +1,11 @@
-.printPage{
+// Prevent Mermaid source code from showing while loading and rendering
+pre.mermaid:not([data-processed='true']) {
+  visibility: hidden;
 
+  // Show a loading message
+  &::before {
+    content    : 'Loading graph...';
+    display    : block;
+    visibility : visible;
+  }
 }

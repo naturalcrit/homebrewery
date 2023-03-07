@@ -2,6 +2,7 @@
 const _ = require('lodash');
 const Marked = require('marked');
 const MarkedExtendedTables = require('marked-extended-tables');
+const MarkedMermaid = require('marked-mermaid');
 const renderer = new Marked.Renderer();
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
@@ -238,6 +239,36 @@ const definitionLists = {
 
 Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists] });
 Marked.use(MarkedExtendedTables());
+Marked.use(MarkedMermaid({
+	mermaid : {
+		theme          : 'base',
+		themeVariables : {
+			fontFamily         : 'BookInsanityRemake',
+			fontSize           : '12px',
+			background         : '#EEE5CE',
+			mainBkg            : '#faf7ea',
+			primaryColor       : '#faf7ea',
+			primaryTextColor   : '#000',
+			primaryBorderColor : '#c9ad6a',
+			lineColor          : '#c9ad6a',
+			secondaryColor     : '#E0E5C1',
+			noteBkgColor       : '#E0E5C1'
+		},
+		themeCSS : `
+			.node .nodeLabel p { inline-size: 320px; white-space: pre-wrap;  }
+			.node * { stroke-width: 2px !important; }
+		`,
+		flowchart : {
+			useMaxWidth    : true,
+			htmlLabels     : true,
+			curve          : 'linear',
+			diagramPadding : 2,
+			nodeSpacing    : 40,
+			rankSpacing    : 40,
+			padding        : 25,
+		}
+	}
+}));
 Marked.use(mustacheInjectBlock);
 Marked.use({ smartypants: true });
 
