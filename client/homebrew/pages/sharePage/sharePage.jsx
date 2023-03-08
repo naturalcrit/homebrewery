@@ -12,21 +12,13 @@ const Account = require('../../navbar/account.navitem.jsx');
 
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
+const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
 
 const SharePage = createClass({
 	displayName     : 'SharePage',
 	getDefaultProps : function() {
 		return {
-			brew : {
-				title     : '',
-				text      : '',
-				style     : '',
-				shareId   : null,
-				createdAt : null,
-				updatedAt : null,
-				views     : 0,
-				renderer  : ''
-			}
+			brew : DEFAULT_BREW_LOAD
 		};
 	},
 

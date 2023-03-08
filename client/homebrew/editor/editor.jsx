@@ -32,6 +32,7 @@ const Editor = createClass({
 			onTextChange  : ()=>{},
 			onStyleChange : ()=>{},
 			onMetaChange  : ()=>{},
+			reportError   : ()=>{},
 
 			renderer : 'legacy'
 		};
@@ -139,10 +140,10 @@ const Editor = createClass({
 
 						// Highlight injectors {style}
 						if(line.includes('{') && line.includes('}')){
-							const regex = /(?<!{){(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1}/g;
+							const regex = /(?:^|[^{\n])({(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\2})/gm;
 							let match;
 							while ((match = regex.exec(line)) != null) {
-								codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: 'injection' });
+								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length }, { className: 'injection' });
 							}
 						}
 						// Highlight inline spans {{content}}
@@ -291,7 +292,8 @@ const Editor = createClass({
 					rerenderParent={this.rerenderParent} />
 				<MetadataEditor
 					metadata={this.props.brew}
-					onChange={this.props.onMetaChange} />
+					onChange={this.props.onMetaChange}
+					reportError={this.props.reportError}/>
 			</>;
 		}
 	},

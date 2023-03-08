@@ -1,35 +1,39 @@
 /* eslint-disable max-lines */
 const _ = require('lodash');
-const { google } = require('googleapis');
+const googleDrive = require('@googleapis/drive');
 const { nanoid } = require('nanoid');
 const token = require('./token.js');
 const config = require('./config.js');
 
-const keys = typeof(config.get('service_account')) == 'string' ?
-	JSON.parse(config.get('service_account')) :
-	config.get('service_account');
 let serviceAuth;
-try {
-	serviceAuth = google.auth.fromJSON(keys);
-	serviceAuth.scopes = [
-		'https://www.googleapis.com/auth/drive'
-	];
-} catch (err) {
-	console.warn(err);
-	console.log('Please make sure that a Google Service Account is set up properly in your config files.');
+if(!config.get('service_account')){
+	console.log('No Google Service Account in config files - Google Drive integration will not be available.');
+} else  {
+	const keys = typeof(config.get('service_account')) == 'string' ?
+		JSON.parse(config.get('service_account')) :
+		config.get('service_account');
+
+	try {
+		serviceAuth = googleDrive.auth.fromJSON(keys);
+		serviceAuth.scopes = ['https://www.googleapis.com/auth/drive'];
+	} catch (err) {
+		console.warn(err);
+		console.log('Please make sure the Google Service Account is set up properly in your config files.');
+	}
 }
-google.options({ auth: serviceAuth || config.get('google_api_key') });
+
+const defaultAuth = serviceAuth || config.get('google_api_key');
 
 const GoogleActions = {
 
-	authCheck : (account, res)=>{
+	authCheck : (account, res, updateTokens=true)=>{
 		if(!account || !account.googleId){ // If not signed into Google
 			const err = new Error('Not Signed In');
 			err.status = 401;
 			throw (err);
 		}
 
-		const oAuth2Client = new google.auth.OAuth2(
+		const oAuth2Client = new googleDrive.auth.OAuth2(
 			config.get('google_client_id'),
 			config.get('google_client_secret'),
 			'/auth/google/redirect'
@@ -40,7 +44,7 @@ const GoogleActions = {
 			refresh_token : account.googleRefreshToken
 		});
 
-		oAuth2Client.on('tokens', (tokens)=>{
+		updateTokens && oAuth2Client.on('tokens', (tokens)=>{
 			if(tokens.refresh_token) {
 				account.googleRefreshToken = tokens.refresh_token;
 			}
@@ -56,7 +60,7 @@ const GoogleActions = {
 	},
 
 	getGoogleFolder : async (auth)=>{
-		const drive = google.drive({ version: 'v3', auth });
+		const drive = googleDrive.drive({ version: 'v3', auth });
 
 		fileMetadata = {
 			'name'     : 'Homebrewery',
@@ -93,7 +97,7 @@ const GoogleActions = {
 	},
 
 	listGoogleBrews : async (auth)=>{
-		const drive = google.drive({ version: 'v3', auth });
+		const drive = googleDrive.drive({ version: 'v3', auth });
 
 		const obj = await drive.files.list({
 			pageSize : 1000,
@@ -134,7 +138,7 @@ const GoogleActions = {
 	},
 
 	updateGoogleBrew : async (brew)=>{
-		const drive = google.drive({ version: 'v3' });
+		const drive = googleDrive.drive({ version: 'v3', auth: defaultAuth });
 
 		await drive.files.update({
 			fileId   : brew.googleId,
@@ -166,7 +170,7 @@ const GoogleActions = {
 	},
 
 	newGoogleBrew : async (auth, brew)=>{
-		const drive = google.drive({ version: 'v3', auth });
+		const drive = googleDrive.drive({ version: 'v3', auth });
 
 		const media = {
 			mimeType : 'text/plain',
@@ -218,7 +222,7 @@ const GoogleActions = {
 	},
 
 	getGoogleBrew : async (id, accessId, accessType)=>{
-		const drive = google.drive({ version: 'v3' });
+		const drive = googleDrive.drive({ version: 'v3', auth: defaultAuth });
 
 		const obj = await drive.files.get({
 			fileId : id,
@@ -253,7 +257,6 @@ const GoogleActions = {
 				text    : file.data,
 
 				description : obj.data.description,
-				tags        : obj.data.properties.tags ? obj.data.properties.tags : '',
 				systems     : obj.data.properties.systems ? obj.data.properties.systems.split(',') : [],
 				authors     : [],
 				lang        : obj.data.properties.lang,
@@ -276,7 +279,7 @@ const GoogleActions = {
 	},
 
 	deleteGoogleBrew : async (auth, id, accessId)=>{
-		const drive = google.drive({ version: 'v3', auth });
+		const drive = googleDrive.drive({ version: 'v3', auth });
 
 		const obj = await drive.files.get({
 			fileId : id,
@@ -302,7 +305,7 @@ const GoogleActions = {
 	},
 
 	increaseView : async (id, accessId, accessType, brew)=>{
-		const drive = google.drive({ version: 'v3' });
+		const drive = googleDrive.drive({ version: 'v3', auth: defaultAuth });
 
 		await drive.files.update({
 			fileId   : brew.googleId,

@@ -4,9 +4,9 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 const moment = require('moment');
-const request = require('superagent');
+const request = require('../../../../utils/request-middleware.js');
 
-const googleDriveIcon = require('../../../../googleDrive.png');
+const googleDriveIcon = require('../../../../googleDrive.svg');
 const dedent = require('dedent-tabs').default;
 
 const BrewItem = createClass({
@@ -18,7 +18,8 @@ const BrewItem = createClass({
 				description : '',
 				authors     : [],
 				stubbed     : true
-			}
+			},
+			reportError : ()=>{}
 		};
 	},
 
@@ -33,8 +34,12 @@ const BrewItem = createClass({
 
 		request.delete(`/api/${this.props.brew.googleId ?? ''}${this.props.brew.editId}`)
 			.send()
-			.end(function(err, res){
-				location.reload();
+			.end((err, res)=>{
+				if(err) {
+					this.props.reportError(err);
+				} else {
+					location.reload();
+				}
 			});
 	},
 

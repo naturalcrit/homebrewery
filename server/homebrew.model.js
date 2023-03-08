@@ -12,14 +12,15 @@ const HomebrewSchema = mongoose.Schema({
 	textBin   : { type: Buffer },
 	pageCount : { type: Number, default: 1 },
 
-	description : { type: String, default: '' },
-	tags        : [String],
-	systems     : [String],
-	lang        : { type: String, default: 'en' },
-	renderer    : { type: String, default: '' },
-	authors     : [String],
-	published   : { type: Boolean, default: false },
-	thumbnail   : { type: String, default: '' },
+	description    : { type: String, default: '' },
+	tags           : [String],
+	systems        : [String],
+	lang           : { type: String, default: 'en' },
+	renderer       : { type: String, default: '' },
+	authors        : [String],
+	invitedAuthors : [String],
+	published      : { type: Boolean, default: false },
+	thumbnail      : { type: String, default: '' },
 
 	createdAt  : { type: Date, default: Date.now },
 	updatedAt  : { type: Date, default: Date.now },
@@ -47,8 +48,6 @@ HomebrewSchema.statics.get = function(query, fields=null){
 				unzipped = zlib.inflateRawSync(brews[0].textBin);
 				brews[0].text = unzipped.toString();
 			}
-			if(!brews[0].renderer)
-				brews[0].renderer = 'legacy';
 			return resolve(brews[0]);
 		});
 	});
