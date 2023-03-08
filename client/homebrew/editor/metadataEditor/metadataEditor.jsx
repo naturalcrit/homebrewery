@@ -79,10 +79,6 @@ const MetadataEditor = createClass({
 				return `- ${err}`;
 			}).join('\n');
 
-			// 	console.log(`Input error ${errMessage}`);
-			// 	e.target.setCustomValidity(errMessage);
-			// 	e.target.reportValidity();
-			// };
 			callIfExists(e.target, 'setCustomValidity', errMessage);
 			callIfExists(e.target, 'reportValidity');
 		}
