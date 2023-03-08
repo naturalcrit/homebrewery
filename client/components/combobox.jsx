@@ -75,6 +75,13 @@ const Combobox = createClass({
 					onChange={(e)=>this.handleInput(e)}
 					value={this.state.value || ''}
 					placeholder={this.props.placeholder}
+					onBlur={(e)=>{
+						if(!e.target.checkValidity()){
+							this.setState({
+								value : this.props.default
+							}, ()=>this.props.onEntry(e));
+						}
+					}}
 				/>
 			</div>
 		);
