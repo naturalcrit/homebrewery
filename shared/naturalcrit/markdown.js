@@ -137,14 +137,13 @@ const mustacheInjectInline = {
 			if(!lastToken)
 				return false;
 
-			const tags = ` ${processStyleTags(match[1])}`;
 			lastToken.originalType = lastToken.type;
-			lastToken.type         = 'mustacheInjectInline';
-			lastToken.tags         = tags;
+			lastToken.tags         =  ` ${processStyleTags(match[1])}`;
+			const text = lastToken.originalType == 'text' ? match[0] : '';
 			return {
-				type : 'text',            // Should match "name" above
-				raw  : match[0],          // Text to consume from the source
-				text : ''
+				type : 'text',  // Should match "name" above
+				raw  : match[0],                // Text to consume from the source
+				text : text
 			};
 		}
 	},
@@ -172,14 +171,17 @@ const mustacheInjectBlock = {
 				if(!lastToken)
 					return false;
 
-				lastToken.originalType = 'mustacheInjectBlock';
+				lastToken.originalType = lastToken.type;
+				const text = lastToken.originalType == 'text' ? match[0] : '';
+				lastToken.type         = 'mustacheInjectBlock';
 				lastToken.tags         = ` ${processStyleTags(match[1])}`;
 				return {
-					type : 'mustacheInjectBlock', // Should match "name" above
-					raw  : match[0],              // Text to consume from the source
-					text : ''
+					type : 'text', 				// Should match "name" above
+					raw  : match[0],            // Text to consume from the source
+					text : text
 				};
 			}
+			console.log(tokens);
 		},
 		renderer(token) {
 			if(!token.originalType){
