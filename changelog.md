@@ -138,7 +138,6 @@ Fixes issues [#2687](https://github.com/naturalcrit/homebrewery/issues/2687)
 Fixes issues [#2674](https://github.com/naturalcrit/homebrewery/issues/2674)
 }}
 
-
 ### Monday 23/01/2023 - v3.6.0
 {{taskList
 ##### calculuschild
@@ -163,8 +162,6 @@ Fixes issues [#2583](https://github.com/naturalcrit/homebrewery/issues/2583)
 
 * [x] Fix cloned brews inheriting the parent view count
 }}
-
-\column
 
 ### Friday 23/12/2022 - v3.5.0
 {{taskList
