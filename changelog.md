@@ -80,6 +80,29 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Thursday 09/02/2023 - v3.7.1
+{{taskList
+
+##### Lucastucious (new contributor!)
+
+* [x] Changed `filter: drop-shadow` to `box-shadow` on text boxes, making text selectable in PDFs again.
+
+Fixes issues [#1569](https://github.com/naturalcrit/homebrewery/issues/1569)
+
+{{note
+**NOTE:** If you create your PDF on a computer with an old version of Mac Preview (v10 or older) you may see shadows appear as solid gray.
+}}
+
+##### MichielDeMey
+
+* [x] Updated the Google Drive icon
+* [x] Backend fix to unit tests failing intermittently
+
+##### Calculuschild
+
+* [x] Fix PDF pixelation on CoverPage text outlines
+}}
+
 
 ### Tuesday 28/02/2023 - v3.7.0
 {{taskList
