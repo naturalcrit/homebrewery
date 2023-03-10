@@ -124,11 +124,11 @@ const Editor = createClass({
 					
 
 					if(line.match(/^```$/)){
-						console.log(`${lineNumber} is a fence`);
 						codeFence = !codeFence;
 					};
 
 					if(codeFence == false){
+					
 						// Styling for \page breaks
 						if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
 							(this.props.renderer == 'V3'     && line.match(/^\\page$/))) {
