@@ -66,7 +66,7 @@ jobs:
           command: npm run test:coverage
       - run:
           name: Test - Mustache Spans
-          command: npm run test:mustache-span
+          command: npm run test:mustache-syntax
       - run:
           name: Test - Routes
           command: npm run test:route
