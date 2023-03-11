@@ -149,7 +149,6 @@ const mustacheInjectInline = {
 			lastToken.originalType = lastToken.type;
 			lastToken.type         = 'mustacheInjectInline';
 			lastToken.tags         = processTags(match[1], lastToken.tags);
-			console.log(lastToken.tags)
 			return {
 				type : 'mustacheInjectInline',            // Should match "name" above
 				raw  : match[0],                          // Text to consume from the source
@@ -186,7 +185,7 @@ const mustacheInjectBlock = {
 
 				lastToken.originalType = lastToken.type;
 				lastToken.type = 'mustacheInjectBlock';
-				lastToken.tags         = ` ${stringifyTags(match[1])}`;
+				lastToken.tags = processTags(match[1], lastToken.tags);
 				return {
 					type : 'mustacheInjectBlock', // Should match "name" above
 					raw  : match[0],              // Text to consume from the source
@@ -202,7 +201,7 @@ const mustacheInjectBlock = {
 			const text = this.parser.parse([token]);
 			const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
 			if(openingTag) {
-				return `${openingTag[1]} class="${token.tags}${openingTag[2]}`;
+				return `${openingTag[1]} ${stringifyTags(token.tags)}${openingTag[2]}`;
 			}
 			return text;
 		}
