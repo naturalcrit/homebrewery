@@ -94,9 +94,7 @@ const mustacheDivs = {
 			while (delim = blockRegex.exec(match[0])?.[0].trim()) {
 
 				// If there are no user-declared attributes, set the endTag delimiter
-				console.log(tags);
 				if(!tags) {
-					console.log('no user tags');
 					tags = processTags(delim.substring(2), { 'classes': ['block'] });
 					endTags = delim.length;
 				}
@@ -346,7 +344,6 @@ const processStyleTags = (tags)=>{
 
 const processTags = (string, defaults)=>{
 
-	console.log(string);
 	//split tags up. quotes can only occur right after colons.
 	//TODO: can we simplify to just split on commas?
 	let tags = string.match(/(?:[^, ":]+|:(?:"[^"]*"|))+/g);
@@ -366,8 +363,6 @@ const processTags = (string, defaults)=>{
 		'classes' : _.remove(tags, (tag)=>!tag.includes(':')),
 		'styles'  : tags.length > 0 ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;')) : null
 	};
-
-	console.log(userTags);
 
 	tags = _.mergeWith(defaults, userTags, customizer);
 	return tags;
