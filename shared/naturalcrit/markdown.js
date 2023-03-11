@@ -343,7 +343,8 @@ const voidTags = new Set([
 
 const stringifyTags = (tags)=>{
 	// bundle it up in a formatted string
-	const arr = [`${tags.classes ? `class="${tags.classes.join(' ')}"` : ''}`, `${tags.id ? `id="${tags.id[0]}"` : ''}`, `${tags.styles ? `style="${tags.styles.join(' ')}"` : ''}`];
+	console.log(tags.id);
+	const arr = [`${tags.classes.length > 0 ? `class="${tags.classes.join(' ')}"` : ''}`, `${tags.id.length > 0 ? `id="${tags.id[0]}"` : ''}`, `${tags.styles.length > 0 ? `style="${tags.styles.join(' ')}"` : ''}`];
 	return arr.join(' ') ;
 };
 
