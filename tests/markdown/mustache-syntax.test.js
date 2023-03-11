@@ -105,6 +105,56 @@ test('Renders a mustache span with text, id, class and a couple of css propertie
 	expect(rendered).toBe('<span class="inline-block pen" id="author" style="color:orange; font-family:trebuchet ms;">text</span>');
 });
 
+
+// MUSTACHE INJECTION SYNTAX
+
+test('Renders a span "text" with no injection', function() {
+	const source = '{{ text}}{}';
+	const rendered = Markdown.render(source);
+	expect(rendered).toBe('<span class="inline-block ">text</span>');
+});
+
+test('Renders a span "text" with injected Class name', function() {
+	const source = '{{ text}}{ClassName}';
+	const rendered = Markdown.render(source);
+	// FIXME: returns only "ClassName" for class attribute (replaces rather than appends)
+	expect(rendered).toBe('<span class="inline-block ClassName ">text</span>');
+});
+
+test('Renders a span "text" with injected style', function() {
+	const source = '{{ text}}{color:red}';
+	const rendered = Markdown.render(source);
+	// FIXME: returns empty class attribute.
+	expect(rendered).toBe('<span class="inline-block "  style="color:red;">text</span>');
+});
+
+test('Renders a span "text" with two injected styles', function() {
+	const source = '{{ text}}{color:red,background:blue}';
+	const rendered = Markdown.render(source);
+	// FIXME: returns empty class attribute.
+	expect(rendered).toBe('<span class="inline-block "  style="color:red;background:blue;">text</span>');
+});
+
+test('Renders an emphasis element with injected Class name', function() {
+	const source = '*emphasis*{big}';
+	const rendered = Markdown.render(source);
+	expect(rendered).toBe('<em class=" big">text</em>');
+});
+
+test('Renders a code element with injected style', function() {
+	const source = '`code`{background:gray}';
+	const rendered = Markdown.render(source);
+	// FIXME: returns empty class attribute.
+	expect(rendered).toBe('<code class="inline-block " style="background:gray;">code</code>');
+});
+
+test('Renders an element modified by only the first of two consecutive injections', function() {
+	const source = '{{ text}}{color:red}{background:blue}';
+	const rendered = Markdown.render(source);
+	// FIXME: returns empty class attribute.
+	expect(rendered).toBe('<span class="inline-block "  style="color:red;">text</span>');
+});
+
 // TODO: add tests for ID with accordance to CSS spec:
 //
 // From https://drafts.csswg.org/selectors/#id-selectors:
