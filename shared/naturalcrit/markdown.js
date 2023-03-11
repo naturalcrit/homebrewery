@@ -148,7 +148,8 @@ const mustacheInjectInline = {
 
 			lastToken.originalType = lastToken.type;
 			lastToken.type         = 'mustacheInjectInline';
-			lastToken.tags         = ` ${stringifyTags(match[1])}`;
+			lastToken.tags         = processTags(match[1], lastToken.tags);
+			console.log(lastToken.tags)
 			return {
 				type : 'mustacheInjectInline',            // Should match "name" above
 				raw  : match[0],                          // Text to consume from the source
@@ -164,7 +165,7 @@ const mustacheInjectInline = {
 		const text = this.parser.parseInline([token]);
 		const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
 		if(openingTag) {
-			return `${openingTag[1]} class="${token.tags}${openingTag[2]}`;
+			return `${openingTag[1]} ${stringifyTags(token.tags)}${openingTag[2]}`;
 		}
 		return text;
 	}
@@ -343,9 +344,8 @@ const voidTags = new Set([
 
 const stringifyTags = (tags)=>{
 	// bundle it up in a formatted string
-	console.log(tags.id);
 	const arr = [`${tags.classes.length > 0 ? `class="${tags.classes.join(' ')}"` : ''}`, `${tags.id.length > 0 ? `id="${tags.id[0]}"` : ''}`, `${tags.styles.length > 0 ? `style="${tags.styles.join(' ')}"` : ''}`];
-	return arr.join(' ') ;
+	return arr.join(' ');
 };
 
 const processTags = (string, defaults)=>{
@@ -367,7 +367,7 @@ const processTags = (string, defaults)=>{
 	const userTags = {
 		'id'      : _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1)),
 		'classes' : _.remove(tags, (tag)=>!tag.includes(':')),
-		'styles'  : tags.length > 0 ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;')) : null
+		'styles'  : _.remove(tags, (tag)=>tag.includes(':')).map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;'))
 	};
 
 	tags = _.mergeWith(defaults, userTags, customizer);
