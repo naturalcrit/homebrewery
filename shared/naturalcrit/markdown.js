@@ -87,15 +87,20 @@ const mustacheDivs = {
 		if(match) {
 			//Find closing delimiter
 			let blockCount = 0;
-			let tags = '';
+			let tags;
 			let endTags = 0;
 			let endToken = 0;
 			let delim;
 			while (delim = blockRegex.exec(match[0])?.[0].trim()) {
+
+				// If there are no user-declared attributes, set the endTag delimiter
+				console.log(tags);
 				if(!tags) {
-					tags = ` ${processStyleTags(delim.substring(2))}`;
+					console.log('no user tags');
+					tags = processTags(delim.substring(2), { 'classes': ['block'] });
 					endTags = delim.length;
 				}
+
 				if(delim.startsWith('{{')) {
 					blockCount++;
 				} else if(delim == '}}' && blockCount !== 0) {
@@ -115,13 +120,14 @@ const mustacheDivs = {
 					raw    : raw,                                 // Text to consume from the source
 					text   : text,                                // Additional custom properties
 					tags   : tags,
+					attrs  : processStyleTags(tags),
 					tokens : this.lexer.blockTokens(text)
 				};
 			}
 		}
 	},
 	renderer(token) {
-		return `<div class="block${token.tags}>${this.parser.parse(token.tokens)}</div>`; // parseInline to turn child tokens into HTML
+		return `<div ${token.attrs}>${this.parser.parse(token.tokens)}</div>`; // parseInline to turn child tokens into HTML
 	}
 };
 
@@ -332,17 +338,40 @@ const voidTags = new Set([
 	'input', 'keygen', 'link', 'meta', 'param', 'source'
 ]);
 
-const processStyleTags = (string)=>{
+const processStyleTags = (tags)=>{
+	// bundle it up in a formatted string
+	const arr = [`${tags.classes ? `class="${tags.classes.join(' ')}"` : ''}`, `${tags.id ? `id="${tags.id[0]}"` : ''}`, `${tags.styles ? `style="${tags.styles.join(' ')}"` : ''}`];
+	return arr.join(' ') ;
+};
+
+const processTags = (string, defaults)=>{
+
+	console.log(string);
 	//split tags up. quotes can only occur right after colons.
 	//TODO: can we simplify to just split on commas?
-	const tags = string.match(/(?:[^, ":]+|:(?:"[^"]*"|))+/g);
+	let tags = string.match(/(?:[^, ":]+|:(?:"[^"]*"|))+/g);
 
-	if(!tags)	return '"';
+	//  If user provides no tags, return only default tags
+	if(!tags)
+		return defaults;
 
-	const id      = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
-	const classes = _.remove(tags, (tag)=>!tag.includes(':'));
-	const styles  = tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;'));
-	return `${classes.join(' ')}" ${id ? `id="${id}"` : ''} ${styles.length ? `style="${styles.join(' ')}"` : ''}`;
+	const customizer = (objValue, srcValue)=>{
+		if(_.isArray(objValue)){
+			return objValue.concat(srcValue);
+		}
+	};
+
+	const userTags = {
+		'id'      : _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1)),
+		'classes' : _.remove(tags, (tag)=>!tag.includes(':')),
+		'styles'  : tags.length > 0 ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;')) : null
+	};
+
+	console.log(userTags);
+
+	tags = _.mergeWith(defaults, userTags, customizer);
+	return tags;
+
 };
 
 module.exports = {
