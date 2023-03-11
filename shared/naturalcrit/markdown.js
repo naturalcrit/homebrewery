@@ -42,10 +42,14 @@ const mustacheSpans = {
 			let endToken = 0;
 			let delim;
 			while (delim = inlineRegex.exec(match[0])) {
+
+				// Send the user-entered block attributes to be sorted into object
 				if(!tags) {
-					tags = ` ${processStyleTags(delim[0].substring(2))}`;
+					tags = processTags(delim[0].substring(2), { 'classes': ['inline-block'] });
 					endTags = delim[0].length;
 				}
+
+				// Find opening and closing brackets of the block
 				if(delim[0].startsWith('{{')) {
 					blockCount++;
 				} else if(delim[0] == '}}' && blockCount !== 0) {
@@ -72,7 +76,7 @@ const mustacheSpans = {
 		}
 	},
 	renderer(token) {
-		return `<span class="inline-block${token.tags}>${this.parser.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
+		return `<span ${stringifyTags(token.tags)}>${this.parser.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
 	}
 };
 
@@ -93,12 +97,13 @@ const mustacheDivs = {
 			let delim;
 			while (delim = blockRegex.exec(match[0])?.[0].trim()) {
 
-				// If there are no user-declared attributes, set the endTag delimiter
+				// Send the user-entered block attributes to be sorted into object
 				if(!tags) {
 					tags = processTags(delim.substring(2), { 'classes': ['block'] });
 					endTags = delim.length;
 				}
 
+				// Find opening and closing brackets of the block
 				if(delim.startsWith('{{')) {
 					blockCount++;
 				} else if(delim == '}}' && blockCount !== 0) {
@@ -110,6 +115,7 @@ const mustacheDivs = {
 				}
 			}
 
+			// Once a closing bracket is found, finalize the token
 			if(endToken) {
 				const raw = src.slice(0, endToken);
 				const text = raw.slice(endTags || -2, -2);
@@ -118,14 +124,13 @@ const mustacheDivs = {
 					raw    : raw,                                 // Text to consume from the source
 					text   : text,                                // Additional custom properties
 					tags   : tags,
-					attrs  : processStyleTags(tags),
 					tokens : this.lexer.blockTokens(text)
 				};
 			}
 		}
 	},
 	renderer(token) {
-		return `<div ${token.attrs}>${this.parser.parse(token.tokens)}</div>`; // parseInline to turn child tokens into HTML
+		return `<div ${stringifyTags(token.tags)}>${this.parser.parse(token.tokens)}</div>`; // parseInline to turn child tokens into HTML
 	}
 };
 
@@ -143,10 +148,10 @@ const mustacheInjectInline = {
 
 			lastToken.originalType = lastToken.type;
 			lastToken.type         = 'mustacheInjectInline';
-			lastToken.tags         = ` ${processStyleTags(match[1])}`
+			lastToken.tags         = ` ${stringifyTags(match[1])}`;
 			return {
 				type : 'mustacheInjectInline',            // Should match "name" above
-				raw  : match[0],          // Text to consume from the source
+				raw  : match[0],                          // Text to consume from the source
 				text : ''
 			};
 		}
@@ -180,7 +185,7 @@ const mustacheInjectBlock = {
 
 				lastToken.originalType = lastToken.type;
 				lastToken.type = 'mustacheInjectBlock';
-				lastToken.tags         = ` ${processStyleTags(match[1])}`;
+				lastToken.tags         = ` ${stringifyTags(match[1])}`;
 				return {
 					type : 'mustacheInjectBlock', // Should match "name" above
 					raw  : match[0],              // Text to consume from the source
@@ -336,7 +341,7 @@ const voidTags = new Set([
 	'input', 'keygen', 'link', 'meta', 'param', 'source'
 ]);
 
-const processStyleTags = (tags)=>{
+const stringifyTags = (tags)=>{
 	// bundle it up in a formatted string
 	const arr = [`${tags.classes ? `class="${tags.classes.join(' ')}"` : ''}`, `${tags.id ? `id="${tags.id[0]}"` : ''}`, `${tags.styles ? `style="${tags.styles.join(' ')}"` : ''}`];
 	return arr.join(' ') ;
