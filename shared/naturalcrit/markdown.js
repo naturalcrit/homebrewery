@@ -162,7 +162,7 @@ const mustacheInjectInline = {
 		}
 		token.type = token.originalType;
 		const text = this.parser.parseInline([token]);
-		const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
+		const openingTag = /(<[^\s<>]+).*(>+.*>.*)/s.exec(text);
 		if(openingTag) {
 			return `${openingTag[1]} ${stringifyTags(token.tags)}${openingTag[2]}`;
 		}
@@ -343,7 +343,7 @@ const voidTags = new Set([
 
 const stringifyTags = (tags)=>{
 	// bundle it up in a formatted string
-	const arr = [`${tags.classes.length > 0 ? `class="${tags.classes.join(' ')}"` : ''}`, `${tags.id.length > 0 ? `id="${tags.id[0]}"` : ''}`, `${tags.styles.length > 0 ? `style="${tags.styles.join(' ')}"` : ''}`];
+	const arr = _.compact([`${tags.classes?.length > 0 ? `class="${tags.classes.join(' ')}"` : ''}`, `${tags.id?.length > 0 ? `id="${tags.id[0]}"` : ''}`, `${tags.styles?.length > 0 ? `style="${tags.styles.join(' ')}"` : ''}`]);
 	return arr.join(' ');
 };
 
