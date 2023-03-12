@@ -1,4 +1,23 @@
 ```css
+.beta {
+	color         : white;
+	padding       : 4px 6px;
+	line-height   : 1em;
+	background    : grey;
+	border-radius : 12px;
+	font-family   : monospace;
+	font-size     : 10px;
+	font-weight   : 800;
+	margin-top    : -5px;
+	margin-bottom : -5px;
+}
+
+.fac {
+	height: 1em;
+	line-height: 2em;
+	margin-bottom: -0.05cm
+}
+
 h5 {
 	font-size: .35cm !important;
 }
@@ -61,6 +80,55 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Thursday 09/02/2023 - v3.7.1
+{{taskList
+
+##### Lucastucious (new contributor!)
+
+* [x] Changed `filter: drop-shadow` to `box-shadow` on text boxes, making text selectable in PDFs again.
+
+Fixes issues [#1569](https://github.com/naturalcrit/homebrewery/issues/1569)
+
+{{note
+**NOTE:** If you create your PDF on a computer with an old version of Mac Preview (v10 or older) you may see shadows appear as solid gray.
+}}
+
+##### MichielDeMey
+
+* [x] Updated the Google Drive icon
+* [x] Backend fix to unit tests failing intermittently
+
+##### Calculuschild
+
+* [x] Fix PDF pixelation on CoverPage text outlines
+}}
+
+
+### Tuesday 28/02/2023 - v3.7.0
+{{taskList
+
+{{note
+**NOTE:** Some new snippets will now show a {{beta BETA}} tag. Feel free to use them, but be aware we may change how they work depending on your feedback.
+}}
+
+##### Calculuschild
+
+* [x] New {{openSans **IMAGES → WATERCOLOR EDGE** {{fac,mask-edge}} }} and {{openSans **WATERCOLOR CORNER** {{fac,mask-corner}} }} snippets for V3, which adds a stylish watercolor texture to the edge of your images! (Thanks to /u/flamableconcrete on Reddit for providing these image masks!)
+
+* [x] Fix site not displaying on iOS devices
+
+##### 5e-Cleric
+
+* [x] New {{openSans **PHB → COVER PAGE** {{fac,book-front-cover}} }} snippet for V3, which adds a stylish coverpage to your brew! (Thanks to /u/Kaiburr_Kath-Hound on Reddit for providing some of these resources!)
+
+##### MichielDeMey (new contribuor!)
+
+* [x] Fix typo in testing scripts
+* [x] Fix "mug" image not using HTTPS
+
+Fixes issues [#2687](https://github.com/naturalcrit/homebrewery/issues/2687)
+}}
+
 ### Saturday 18/02/2023 - v3.6.1
 {{taskList
 ##### G-Ambatte
@@ -70,8 +138,7 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 Fixes issues [#2674](https://github.com/naturalcrit/homebrewery/issues/2674)
 }}
 
-
-### Friday 23/01/2023 - v3.6.0
+### Monday 23/01/2023 - v3.6.0
 {{taskList
 ##### calculuschild
 

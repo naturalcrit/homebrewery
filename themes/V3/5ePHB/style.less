@@ -253,7 +253,7 @@ body {
 		border-image-outset : 9px 0px;
 		border-image-width  : 11px;
 		padding             : 0.13cm 0.16cm;
-		filter              : drop-shadow(1px 4px 6px #888);
+		box-shadow          : 1px 4px 14px #888;
 		.page :where(&) {
 			margin-top        : 9px; //Prevent top border getting cut off on colbreak
 		}
@@ -282,7 +282,7 @@ body {
 		border-image        : @descriptiveBoxImage 12 stretch;
 		border-image-outset : 4px;
 		padding             : 0.1em;
-		filter              : drop-shadow(0 0 3px #faf7ea);
+		box-shadow          : 0 0 6px #faf7ea;
 		.page :where(&) {
 			margin-top        : 4px; //Prevent top border getting cut off on colbreak
 		}
@@ -397,7 +397,7 @@ body {
 			border-image-outset   : 0px 2px;
 			background-blend-mode : overlay;
 			background-attachment : fixed;
-			filter                : drop-shadow(1px 4px 6px #888);
+			box-shadow            : 1px 4px 14px #888;
 			padding               : 4px 2px;
 			margin-left           : -0.16cm;
 			margin-right          : -0.16cm;
@@ -624,134 +624,241 @@ body {
 // *       CLASS TABLE
 // *****************************/
 .page .classTable{
-	th[colspan]:not([rowspan]) {
-		white-space : nowrap;
+th[colspan]:not([rowspan]) {
+	white-space : nowrap;
+}
+&.frame {
+	margin-top          : 0.7cm;
+	margin-bottom       : 0.9cm;
+	margin-left         : -0.1cm;
+	margin-right        : -0.1cm;
+	width               : calc(100% + 0.2cm);
+	border-collapse     : separate;
+	background-color    : white;
+	border              : initial;
+	border-style        : solid;
+	border-image-outset : 0.4cm 0.3cm;
+	border-image-repeat : stretch;
+	border-image-slice  : 200;
+	border-image-source : @frameBorderImage;
+	border-image-width  : 47px;
+	&.wide:first-child {
+		margin-top: 0.12cm;
 	}
-	&.frame {
-		margin-top          : 0.7cm;
-		margin-bottom       : 0.9cm;
-		margin-left         : -0.1cm;
-		margin-right        : -0.1cm;
-		width               : calc(100% + 0.2cm);
-		border-collapse     : separate;
-		background-color    : white;
-		border              : initial;
-		border-style        : solid;
-		border-image-outset : 0.4cm 0.3cm;
-		border-image-repeat : stretch;
-		border-image-slice  : 200;
-		border-image-source : @frameBorderImage;
-		border-image-width  : 47px;
-		&.wide:first-child {
-			margin-top: 0.12cm;
-		}
-		& + * {
-			margin-top: 0;
-		}
-	}
-	&.decoration {
-		position:relative;
-	}
-	&.decoration::before {
-		content             :'';
-		position            : absolute;
-		background-image    : @classTableDecoration,
-		                      @classTableDecoration;
-		background-size     : contain, contain;
-		background-repeat   : no-repeat, no-repeat;
-		background-position : top, bottom;
-		width               : 7.75cm;
-		height              : calc(100% + 3.3cm);
-		top                 : 50%;
-		left                : 50%;
-		transform           : translateY(-50%) translateX(-50%);
-		filter              : drop-shadow(0px 0px 1px #C8C5C080);
-		z-index             : -1;
-	}
-	&.decoration.wide::before {
-		width               : calc(100% + 3.3cm);
-		height              : 7.75cm;
-		background-position : left, right;
-	}
-	h5 + table{
-		margin-top : 0.2cm;
+	& + * {
+		margin-top: 0;
 	}
 }
+&.decoration {
+	position:relative;
+}
+&.decoration::before {
+	content             :'';
+	position            : absolute;
+	background-image    : @classTableDecoration,
+	                      @classTableDecoration;
+	background-size     : contain, contain;
+	background-repeat   : no-repeat, no-repeat;
+	background-position : top, bottom;
+	width               : 7.75cm;
+	height              : calc(100% + 3.3cm);
+	top                 : 50%;
+	left                : 50%;
+	transform           : translateY(-50%) translateX(-50%);
+	filter              : drop-shadow(0px 0px 1px #C8C5C080);
+	z-index             : -1;
+}
+&.decoration.wide::before {
+	width               : calc(100% + 3.3cm);
+	height              : 7.75cm;
+	background-position : left, right;
+}
+h5 + table{
+	margin-top : 0.2cm;
+}
+}
+//*****************************
+// *      COVER PAGE
+// *****************************/
+.page:has(.coverPage) {
+	columns    : 1;
+	text-align : center;
+	&:after {
+		all: unset;
+	}
+	.logo {
+		position   : absolute;
+		top        : 0.5cm;
+		left       : 0;
+		right      : 0;
+		filter     :drop-shadow(0 0 0.075cm black);
+		img {
+			height : 2cm;
+			width  : 100%;
+		}
+	}
+	.columnWrapper > p img {
+		position  : absolute;
+		bottom    : 0;
+		left      : 0;
+		height    : 100%;
+		min-width : 100%;
+		z-index   : -1;
+	}
+	h1 {
+		text-shadow: unset;
+		filter         : drop-shadow(0 0 1.5px black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		text-transform : uppercase;
+		font-weight    : normal;
+		display        : block;
+		margin-top     : 1.2cm;
+		margin-bottom  : 0;
+		color          : white;
+		font-family    : NodestoCapsCondensed;
+		font-size      : 2.245cm;
+		line-height    : 0.85em;
+	}
+	h2 {
+		filter         : drop-shadow(0 0 1px black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		font-family    : NodestoCapsCondensed;
+		font-weight    : normal;
+		font-size      : 0.85cm;
+		letter-spacing : 0.1cm;
+		color          : white;
+	}
+	hr {
+		display          : block;
+		position         : relative;
+		background-image : @horizontalRule;
+		background-size  : 100% 100%;
+		visibility       : visible;
+		height           : 0.5cm;
+		width            : 12cm;
+		border           : none;
+		margin           : auto;
+		filter           : drop-shadow(0 0 3px black);
+	}
+	.banner {
+		filter           : drop-shadow(2px 2px 2px black);
+		position         : absolute;
+		left             : 0;
+		bottom           : 4.2cm;
+		background-image : url('/assets/coverPageBanner.svg');
+		height           : 1.7cm;
+		width            : 10.5cm;
+		color            : white;
+		font-family      : NodestoCapsCondensed;
+		font-weight      : normal;
+		font-size        : 1cm;
+		letter-spacing   : 0.014cm;
+		text-align       : left;
+		padding-left     : 1cm;
+		display          : flex;
+		justify-content  : center;
+		flex-direction   : column;
+		padding-top      : 0.1cm;
+	}
+	.footnote {
+		filter       : drop-shadow(0 0 0.7px black) drop-shadow(0 0 0 black)
+									 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+									 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+									 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		position     : absolute;
+		text-align   : center;
+		color        : white;
+		font-size    : 0.496cm;
+		bottom       : 1.3cm;
+		left         : 0;
+    right        : 0;
+    margin-left  : auto;
+    margin-right : auto;
+		width        : 70%;
+		font-family  : Overpass;
+	}
+}
+
+
 //*****************************
 // *      TABLE OF CONTENTS
 // *****************************/
 .page {
-	&:has(.toc):after {
-		display: none;
+&:has(.toc):after {
+	display: none;
+}
+.toc {
+-webkit-column-break-inside : avoid;
+page-break-inside           : avoid;
+break-inside                : avoid;
+	h1 {
+		text-align    : center;
+		margin-bottom : 0.3cm;
 	}
-	.toc {
-	-webkit-column-break-inside : avoid;
-	page-break-inside           : avoid;
-	break-inside                : avoid;
-		h1 {
-			text-align    : center;
-			margin-bottom : 0.3cm;
-		}
-		a{
-			display         : inline;
-			color           : inherit;
-			text-decoration : none;
-			&:hover{
-				text-decoration : underline;
-			}
-		}
-		h4 {
-			margin-top  : 0.2cm;
-			line-height : 0.4cm;
-			& + ul li {
-				line-height: 1.2em;
-			}
-		}
-		ul{
-			padding-left    : 0;
-			list-style-type : none;
-			margin-top      : 0;
-			a {
-				width           : 100%;
-				display         : flex;
-				flex-flow       : row nowrap;
-				justify-content : space-between;
-			}
-			li + li h3 {
-				margin-top  : 0.26cm;
-				line-height : 1em
-			}
-			h3 span:first-child::after {
-				border : none;
-			}
-			span {
-				display : contents;
-				&:first-child::after {
-					content       : "";
-					bottom        : 0.08cm;
-					flex          : 1;
-					margin-left   : 0.08cm;        /* Spacing before dot leaders */
-					margin-right  : 0.16cm;
-					border-bottom : 0.05cm dotted #000;
-					margin-bottom : 0.08cm;
-				}
-				&:last-child {
-					display     : inline-block;
-					align-self  : flex-end;
-					font-family : "BookInsanityRemake";
-					font-size   : 0.34cm;
-					font-weight : normal;
-					color       : #000;
-				}
-			}
-			ul { /*List indent*/
-				margin-left : 1em;
-			}
-		}
-		&.wide{
-			.useColumns(0.96, @fillMode: balance);
+	a{
+		display         : inline;
+		color           : inherit;
+		text-decoration : none;
+		&:hover{
+			text-decoration : underline;
 		}
 	}
+	h4 {
+		margin-top  : 0.2cm;
+		line-height : 0.4cm;
+		& + ul li {
+			line-height: 1.2em;
+		}
+	}
+	ul{
+		padding-left    : 0;
+		list-style-type : none;
+		margin-top      : 0;
+		a {
+			width           : 100%;
+			display         : flex;
+			flex-flow       : row nowrap;
+			justify-content : space-between;
+		}
+		li + li h3 {
+			margin-top  : 0.26cm;
+			line-height : 1em
+		}
+		h3 span:first-child::after {
+			border : none;
+		}
+		span {
+			display : contents;
+			&:first-child::after {
+				content       : "";
+				bottom        : 0.08cm;
+				flex          : 1;
+				margin-left   : 0.08cm;        /* Spacing before dot leaders */
+				margin-right  : 0.16cm;
+				border-bottom : 0.05cm dotted #000;
+				margin-bottom : 0.08cm;
+			}
+			&:last-child {
+				display     : inline-block;
+				align-self  : flex-end;
+				font-family : "BookInsanityRemake";
+				font-size   : 0.34cm;
+				font-weight : normal;
+				color       : #000;
+			}
+		}
+		ul { /*List indent*/
+			margin-left : 1em;
+		}
+	}
+	&.wide{
+		.useColumns(0.96, @fillMode: balance);
+	}
+}
 }
 
 //*****************************
