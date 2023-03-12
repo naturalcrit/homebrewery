@@ -2,158 +2,162 @@
 
 const Markdown = require('naturalcrit/markdown.js');
 
-test('Renders a mustache span with text only', function() {
-	const source = '{{ text}}';
-	const rendered = Markdown.render(source);
-	expect(rendered).toBe('<span class="inline-block ">text</span>');
-});
+describe('Inline: When using the Inline syntax ({{}})', ()=>{
+	it('Renders a mustache span with text only', function() {
+		const source = '{{ text}}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block">text</span>');
+	});
 
-test('Renders a mustache span with text only, but with spaces', function() {
-	const source = '{{ this is a text}}';
-	const rendered = Markdown.render(source);
-	expect(rendered).toBe('<span class="inline-block ">this is a text</span>');
-});
+	it('Renders a mustache span with text only, but with spaces', function() {
+		const source = '{{ this is a text}}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block">this is a text</span>');
+	});
 
-test('Renders an empty mustache span', function() {
-	const source = '{{}}';
-	const rendered = Markdown.render(source);
-	expect(rendered).toBe('<span class="inline-block "></span>');
-});
+	it('Renders an empty mustache span', function() {
+		const source = '{{}}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block"></span>');
+	});
 
-test('Renders a mustache span with just a space', function() {
-	const source = '{{ }}';
-	const rendered = Markdown.render(source);
-	expect(rendered).toBe('<span class="inline-block "></span>');
-});
+	it('Renders a mustache span with just a space', function() {
+		const source = '{{ }}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block"></span>');
+	});
 
-test('Renders a mustache span with a few spaces only', function() {
-	const source = '{{     }}';
-	const rendered = Markdown.render(source);
-	expect(rendered).toBe('<span class="inline-block "></span>');
-});
+	it('Renders a mustache span with a few spaces only', function() {
+		const source = '{{     }}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block"></span>');
+	});
 
-test('Renders a mustache span with text and class', function() {
-	const source = '{{my-class text}}';
-	const rendered = Markdown.render(source);
-	// FIXME: why do we have those two extra spaces after closing "?
-	expect(rendered).toBe('<span class="inline-block my-class"  >text</span>');
-});
+	it('Renders a mustache span with text and class', function() {
+		const source = '{{my-class text}}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block my-class">text</span>');
+	});
 
-test('Renders a mustache span with text and two classes', function() {
-	const source = '{{my-class,my-class2 text}}';
-	const rendered = Markdown.render(source);
-	// FIXME: why do we have those two extra spaces after closing "?
-	expect(rendered).toBe('<span class="inline-block my-class my-class2"  >text</span>');
-});
+	it('Renders a mustache span with text and two classes', function() {
+		const source = '{{my-class,my-class2 text}}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block my-class my-class2">text</span>');
+	});
 
-test('Renders a mustache span with text with spaces and class', function() {
-	const source = '{{my-class this is a text}}';
-	const rendered = Markdown.render(source);
-	// FIXME: why do we have those two extra spaces after closing "?
-	expect(rendered).toBe('<span class="inline-block my-class"  >this is a text</span>');
-});
+	it('Renders a mustache span with text with spaces and class', function() {
+		const source = '{{my-class this is a text}}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block my-class">this is a text</span>');
+	});
 
-test('Renders a mustache span with text and id', function() {
-	const source = '{{#my-span text}}';
-	const rendered = Markdown.render(source);
-	// FIXME: why do we have that one extra space after closing "?
-	expect(rendered).toBe('<span class="inline-block " id="my-span" >text</span>');
-});
+	it('Renders a mustache span with text and id', function() {
+		const source = '{{#my-span text}}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block" id="my-span">text</span>');
+	});
 
-test('Renders a mustache span with text and two ids', function() {
-	const source = '{{#my-span,#my-favorite-span text}}';
-	const rendered = Markdown.render(source);
-	// FIXME: do we need to report an error here somehow?
-	expect(rendered).toBe('<span class="inline-block " id="my-span" >text</span>');
-});
+	it('Renders a mustache span with text and two ids', function() {
+		const source = '{{#my-span,#my-favorite-span text}}';
+		const rendered = Markdown.render(source);
+		// FIXME: do we need to report an error here somehow?
+		expect(rendered).toBe('<span class="inline-block" id="my-span">text</span>');
+	});
 
-test('Renders a mustache span with text and css property', function() {
-	const source = '{{color:red text}}';
-	const rendered = Markdown.render(source);
-	expect(rendered).toBe('<span class="inline-block "  style="color:red;">text</span>');
-});
+	it('Renders a mustache span with text and css property', function() {
+		const source = '{{color:red text}}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block" style="color:red;">text</span>');
+	});
 
-test('Renders a mustache span with text and two css properties', function() {
-	const source = '{{color:red,padding:5px text}}';
-	const rendered = Markdown.render(source);
-	expect(rendered).toBe('<span class="inline-block "  style="color:red; padding:5px;">text</span>');
-});
+	it('Renders a mustache span with text and two css properties', function() {
+		const source = '{{color:red,padding:5px text}}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block" style="color:red; padding:5px;">text</span>');
+	});
 
-test('Renders a mustache span with text and css property which contains quotes', function() {
-	const source = '{{font:"trebuchet ms" text}}';
-	const rendered = Markdown.render(source);
-	// FIXME: is it correct to remove quotes surrounding css property value?
-	expect(rendered).toBe('<span class="inline-block "  style="font:trebuchet ms;">text</span>');
-});
+	it('Renders a mustache span with text and css property which contains quotes', function() {
+		const source = '{{font-family:"trebuchet ms" text}}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block" style="font-family:trebuchet ms;">text</span>');
+	});
 
-test('Renders a mustache span with text and two css properties which contains quotes', function() {
-	const source = '{{font:"trebuchet ms",padding:"5px 10px" text}}';
-	const rendered = Markdown.render(source);
-	expect(rendered).toBe('<span class="inline-block "  style="font:trebuchet ms; padding:5px 10px;">text</span>');
-});
+	it('Renders a mustache span with text and two css properties which contains quotes', function() {
+		const source = '{{font-family:"trebuchet ms",padding:"5px 10px" text}}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block" style="font-family:trebuchet ms; padding:5px 10px;">text</span>');
+	});
 
 
-test('Renders a mustache span with text with quotes and css property which contains quotes', function() {
-	const source = '{{font:"trebuchet ms" text "with quotes"}}';
-	const rendered = Markdown.render(source);
-	expect(rendered).toBe('<span class="inline-block "  style="font:trebuchet ms;">text “with quotes”</span>');
-});
+	it('Renders a mustache span with text with quotes and css property which contains quotes', function() {
+		const source = '{{font-family:"trebuchet ms" text "with quotes"}}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block" style="font-family:trebuchet ms;">text “with quotes”</span>');
+	});
 
-test('Renders a mustache span with text, id, class and a couple of css properties', function() {
-	const source = '{{pen,#author,color:orange,font-family:"trebuchet ms" text}}';
-	const rendered = Markdown.render(source);
-	expect(rendered).toBe('<span class="inline-block pen" id="author" style="color:orange; font-family:trebuchet ms;">text</span>');
-});
+	it('Renders a mustache span with text, id, class and a couple of css properties', function() {
+		const source = '{{pen,#author,color:orange,font-family:"trebuchet ms" text}}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block pen" id="author" style="color:orange; font-family:trebuchet ms;">text</span>');
+	});
+
+
+})
+
 
 
 // MUSTACHE INJECTION SYNTAX
 
-test('Renders a span "text" with no injection', function() {
-	const source = '{{ text}}{}';
-	const rendered = Markdown.render(source);
-	expect(rendered).toBe('<span class="inline-block ">text</span>');
+describe('Injection: When an injection tag follows an element', ()=>{
+	it('Renders a span "text" with no injection', function() {
+		const source = '{{ text}}{}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block">text</span>');
+	});
+
+	it('Renders a span "text" with injected Class name', function() {
+		const source = '{{ text}}{ClassName}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block ClassName">text</span>');
+	});
+
+	it('Renders a span "text" with injected style', function() {
+		const source = '{{ text}}{color:red}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block" style="color:red;">text</span>');
+	});
+
+	it('Renders a span "text" with two injected styles', function() {
+		const source = '{{ text}}{color:red,background:blue}';
+		const rendered = Markdown.render(source);
+		expect(rendered).toBe('<span class="inline-block" style="color:red; background:blue;">text</span>');
+	});
+
+	it('Renders an emphasis element with injected Class name', function() {
+		const source = '*emphasis*{big}';
+		const rendered = Markdown.render(source);
+		// fixme: not sure why it returns a new line (\n) at end of string?
+		expect(rendered).toBe('<p><em class="big">emphasis</em></p>\n');
+	});
+
+	it('Renders a code element with injected style', function() {
+		const source = '`code`{background:gray}';
+		const rendered = Markdown.render(source);
+		// fixme: not sure why it returns a new line (\n) at end of string?
+		expect(rendered).toBe('<p><code style="background:gray;">code</code></p>\n');
+	});
+
+	it('Renders an element modified by only the first of two consecutive injections', function() {
+		const source = '{{ text}}{color:red}{background:blue}';
+		const rendered = Markdown.render(source);
+		// fixme: not sure why it returns a new line (\n) at end of string?
+		expect(rendered).toBe('<p><span class="inline-block" style="color:red;">text</span>{background:blue}</p>\n');
+	});
 });
 
-test('Renders a span "text" with injected Class name', function() {
-	const source = '{{ text}}{ClassName}';
-	const rendered = Markdown.render(source);
-	// FIXME: returns only "ClassName" for class attribute (replaces rather than appends)
-	expect(rendered).toBe('<span class="inline-block ClassName ">text</span>');
-});
 
-test('Renders a span "text" with injected style', function() {
-	const source = '{{ text}}{color:red}';
-	const rendered = Markdown.render(source);
-	// FIXME: returns empty class attribute.
-	expect(rendered).toBe('<span class="inline-block "  style="color:red;">text</span>');
-});
 
-test('Renders a span "text" with two injected styles', function() {
-	const source = '{{ text}}{color:red,background:blue}';
-	const rendered = Markdown.render(source);
-	// FIXME: returns empty class attribute.
-	expect(rendered).toBe('<span class="inline-block "  style="color:red;background:blue;">text</span>');
-});
 
-test('Renders an emphasis element with injected Class name', function() {
-	const source = '*emphasis*{big}';
-	const rendered = Markdown.render(source);
-	expect(rendered).toBe('<em class=" big">text</em>');
-});
-
-test('Renders a code element with injected style', function() {
-	const source = '`code`{background:gray}';
-	const rendered = Markdown.render(source);
-	// FIXME: returns empty class attribute.
-	expect(rendered).toBe('<code class="inline-block " style="background:gray;">code</code>');
-});
-
-test('Renders an element modified by only the first of two consecutive injections', function() {
-	const source = '{{ text}}{color:red}{background:blue}';
-	const rendered = Markdown.render(source);
-	// FIXME: returns empty class attribute.
-	expect(rendered).toBe('<span class="inline-block "  style="color:red;">text</span>');
-});
 
 // TODO: add tests for ID with accordance to CSS spec:
 //
