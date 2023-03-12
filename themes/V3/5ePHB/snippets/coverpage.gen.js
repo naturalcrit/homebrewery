@@ -1,55 +1,46 @@
 const _ = require('lodash');
+const dedent = require('dedent-tabs').default;
 
 const titles = [
-	'The Burning Gallows',
-	'The Ring of Nenlast',
-	'Below the Blind Tavern',
-	'Below the Hungering River',
-	'Before Bahamut\'s Land',
-	'The Cruel Grave from Within',
-	'The Strength of Trade Road',
-	'Through The Raven Queen\'s Worlds',
-	'Within the Settlement',
-	'The Crown from Within',
-	'The Merchant Within the Battlefield',
-	'Ioun\'s Fading Traveler',
-	'The Legion Ingredient',
-	'The Explorer Lure',
-	'Before the Charming Badlands',
-	'The Living Dead Above the Fearful Cage',
-	'Vecna\'s Hidden Sage',
-	'Bahamut\'s Demonspawn',
-	'Across Gruumsh\'s Elemental Chaos',
-	'The Blade of Orcus',
-	'Beyond Revenge',
-	'Brain of Insanity',
-	'Breed Battle!, A New Beginning',
-	'Evil Lake, A New Beginning',
-	'Invasion of the Gigantic Cat, Part II',
-	'Kraken War 2020',
-	'The Body Whisperers',
-	'The Diabolical Tales of the Ape-Women',
-	'The Doctor Immortal',
-	'The Doctor from Heaven',
-	'The Graveyard',
-	'Azure Core',
-	'Core Battle',
-	'Core of Heaven: The Guardian of Amazement',
-	'Deadly Amazement III',
-	'Dry Chaos IX',
-	'Gate Thunder',
-	'Guardian: Skies of the Dark Wizard',
-	'Lute of Eternity',
-	'Mercury\'s Planet: Brave Evolution',
-	'Ruby of Atlantis: The Quake of Peace',
-	'Sky of Zelda: The Thunder of Force',
-	'Vyse\'s Skies',
-	'White Greatness III',
-	'Yellow Divinity',
-	'Zidane\'s Ghost'
+	'The Burning Gallows',                    'The Ring of Nenlast',
+	'Below the Blind Tavern',                 'Below the Hungering River',
+	'Before Bahamut\'s Land',                 'The Cruel Grave from Within',
+	'The Strength of Trade Road',             'Through The Raven Queen\'s Worlds',
+	'Within the Settlement',                  'The Crown from Within',
+	'The Merchant Within the Battlefield',    'Ioun\'s Fading Traveler',
+	'The Legion Ingredient',                  'The Explorer Lure',
+	'Before the Charming Badlands',           'Vecna\'s Hidden Sage',
+	'The Living Dead Above the Fearful Cage', 'Bahamut\'s Demonspawn',
+	'Across Gruumsh\'s Elemental Chaos',      'The Blade of Orcus',
+	'Beyond Revenge',                         'Brain of Insanity',
+	'Breed Battle!, A New Beginning',         'Evil Lake, A New Beginning',
+	'Invasion of the Gigantic Cat, Part II',  'Kraken War 2020',
+	'The Body Whisperers',                    'The Doctor from Heaven',
+	'The Diabolical Tales of the Ape-Women',  'The Doctor Immortal',
+	'Core of Heaven: Guardian of Amazement',  'The Graveyard',
+	'Guardian: Skies of the Dark Wizard',     'Lute of Eternity',
+	'Mercury\'s Planet: Brave Evolution',     'Azure Core',
+	'Sky of Zelda: The Thunder of Force',     'Core Battle',
+	'Ruby of Atlantis: The Quake of Peace',   'Deadly Amazement III',
+	'Dry Chaos IX',                           'Gate Thunder',
+	'Vyse\'s Skies',                          'White Greatness III',
+	'Yellow Divinity',                        'Zidane\'s Ghost'
 ];
 
 const subtitles = [
+	'Tomb of Shadows',                        'Dragon\'s Lair',
+	'Lost Caverns',                           'The Necromancer',
+	'Mystic Forest',                          'Cursed Ruins',
+	'The Dark Abyss',                         'Enchanted Maze',
+	'Haunted Castle',                         'Sands of Fate',
+	'Dragon\'s Hoard',                        'Undead Menace',
+	'Lost City Ruins',                        'Goblin Ambush',
+	'Enchanted Forest',                       'Darkness Rising',
+	'Quest for Glory',                        'Ancient Prophecy',
+	'Shadowy Depths',                         'Mystic Isles'
+];
+
+const footnote = [
 	'In an ominous universe, a botanist opposes terrorism.',
 	'In a demon-haunted city, in an age of lies and hate, a physicist tries to find an ancient treasure and battles a mob of aliens.',
 	'In a land of corruption, two cyberneticists and a dungeon delver search for freedom.',
@@ -74,51 +65,26 @@ const subtitles = [
 	'On a planet of mysticism, three travelers and a fire fighter quest for the ultimate weapon and oppose evil.',
 	'In a wicked universe, five seers fight lawlessness.',
 	'In a kingdom of death, in an era of illusion and blood, four colonists search for fame.',
-	'In an amazing kingdom, in an age of sorcery and lost souls, eight space pirates quest for freedom.',
-	'In a cursed empire, five inventors oppose terrorism.',
-	'On a crime-ridden planet of conspiracy, a watchman and an artificial intelligence try to find love and oppose lawlessness.',
-	'In a forgotten land, a reporter and a spy try to stop the apocalypse.',
-	'In a forbidden land of prophecy, a scientist and an archivist oppose a cabal of barbarians intent on stealing the souls of the innocent.',
-	'On an infernal world of illusion, a grave robber and a watchman try to find revenge and combat a syndicate of mages intent on stealing the source of all magic.',
-	'In a galaxy of dark magic, four fighters seek freedom.',
-	'In an empire of deception, six tomb-robbers quest for the ultimate weapon and combat an army of raiders.',
-	'In a kingdom of corruption and lost souls, in an age of panic, eight planetologists oppose evil.',
-	'In a galaxy of misery and hopelessness, in a time of agony and pain, five planetologists search for vengance.',
-	'In a universe of technology and insanity, in a time of sorcery, a computer techician quests for hope.',
-	'On a planet of dark magic and barbarism, in an age of horror and blasphemy, seven librarians search for fame.',
-	'In an empire of dark magic, in a time of blood and illusions, four monks try to find the ultimate weapon and combat terrorism.',
-	'In a forgotten empire of dark magic, six kings try to prevent the destruction of mankind.',
-	'In a galaxy of dark magic and horror, in an age of hopelessness, four marines and an outlaw combat evil.',
-	'In a mysterious city of illusion, in an age of computerization, a witch-hunter tries to find the ultimate weapon and opposes an evil corporation.',
-	'In a damned kingdom of technology, a virtual reality programmer and a fighter seek fame.',
-	'In a hellish kingdom, in an age of blasphemy and blasphemy, an astrologer searches for fame.',
-	'In a damned world of devils, an alien and a ranger quest for love and oppose a syndicate of demons.',
-	'In a cursed galaxy, in a time of pain, seven librarians hope to avert the apocalypse.',
-	'In a crime-infested galaxy, in an era of hopelessness and panic, three champions and a grave robber try to solve the ultimate crime.'
+	'In an amazing kingdom, in an age of sorcery and lost souls, eight space pirates quest for freedom.'
 ];
 
-
 module.exports = ()=>{
-	return `<style>
-  .page#p1{ text-align:center; counter-increment: none; }
-  .page#p1:after{ display:none; }
-  .page:nth-child(2n) .pageNumber { left: inherit !important; right: 2px !important; }
-  .page:nth-child(2n+1) .pageNumber { right: inherit !important; left: 2px !important; }
-  .page:nth-child(2n)::after { transform: scaleX(1); }
-  .page:nth-child(2n+1)::after { transform: scaleX(-1); }
-  .page:nth-child(2n) .footnote { left: inherit; text-align: right; }
-  .page:nth-child(2n+1) .footnote { left: 80px; text-align: left; }
-</style>
+	return dedent`
+  {{coverPage }}
 
-{{margin-top:225px}}
+  {{logo ![](/assets/naturalCritLogo.svg)}}
 
-# ${_.sample(titles)}
+  # ${_.sample(titles)}
+  ## ${_.sample(subtitles)}
+  __________
 
-{{margin-top:25px}}
+  {{banner HOMEBREW}}
 
-{{wide
-##### ${_.sample(subtitles)}
-}}
+  {{footnote
+    ${_.sample(footnote)}
+  }}
 
-\\page`;
+  ![background image](https://i.imgur.com/Mqx8Vf7.png)
+
+  \page`;
 };

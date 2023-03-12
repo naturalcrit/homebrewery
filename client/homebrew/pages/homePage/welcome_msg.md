@@ -36,7 +36,7 @@ After clicking the "Print" item in the navbar a new page will open and a print d
 If you want to save ink or have a monochrome printer, add the **PRINT → {{fas,fa-tint}} Ink Friendly** snippet to your brew!
 }}
 
-![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,bottom:20px,left:130px,width:220px}
+![homebrew mug](https://i.imgur.com/hMna6G0.png) {position:absolute,bottom:20px,left:130px,width:220px}
 
 {{artist,bottom:160px,left:100px
 ##### Homebrew Mug
