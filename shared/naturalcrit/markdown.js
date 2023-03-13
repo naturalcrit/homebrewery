@@ -199,7 +199,7 @@ const mustacheInjectBlock = {
 			}
 			token.type = token.originalType;
 			const text = this.parser.parse([token]);
-			const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
+			const openingTag = /(<[^\s<>]+)[^\n<>]*(>.*)/s.exec(text);
 			if(openingTag) {
 				return `${openingTag[1]} ${stringifyTags(token.tags)}${openingTag[2]}`;
 			}
