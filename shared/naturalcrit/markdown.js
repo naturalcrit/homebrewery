@@ -42,10 +42,14 @@ const mustacheSpans = {
 			let endToken = 0;
 			let delim;
 			while (delim = inlineRegex.exec(match[0])) {
+
+				// Send the user-entered block attributes to be sorted into object
 				if(!tags) {
-					tags = ` ${processStyleTags(delim[0].substring(2))}`;
+					tags = processTags(delim[0].substring(2), { 'classes': ['inline-block'] });
 					endTags = delim[0].length;
 				}
+
+				// Find opening and closing brackets of the block
 				if(delim[0].startsWith('{{')) {
 					blockCount++;
 				} else if(delim[0] == '}}' && blockCount !== 0) {
@@ -72,7 +76,7 @@ const mustacheSpans = {
 		}
 	},
 	renderer(token) {
-		return `<span class="inline-block${token.tags}>${this.parser.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
+		return `<span ${stringifyTags(token.tags)}>${this.parser.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
 	}
 };
 
@@ -87,15 +91,19 @@ const mustacheDivs = {
 		if(match) {
 			//Find closing delimiter
 			let blockCount = 0;
-			let tags = '';
+			let tags;
 			let endTags = 0;
 			let endToken = 0;
 			let delim;
 			while (delim = blockRegex.exec(match[0])?.[0].trim()) {
+
+				// Send the user-entered block attributes to be sorted into object
 				if(!tags) {
-					tags = ` ${processStyleTags(delim.substring(2))}`;
+					tags = processTags(delim.substring(2), { 'classes': ['block'] });
 					endTags = delim.length;
 				}
+
+				// Find opening and closing brackets of the block
 				if(delim.startsWith('{{')) {
 					blockCount++;
 				} else if(delim == '}}' && blockCount !== 0) {
@@ -107,6 +115,7 @@ const mustacheDivs = {
 				}
 			}
 
+			// Once a closing bracket is found, finalize the token
 			if(endToken) {
 				const raw = src.slice(0, endToken);
 				const text = raw.slice(endTags || -2, -2);
@@ -121,7 +130,7 @@ const mustacheDivs = {
 		}
 	},
 	renderer(token) {
-		return `<div class="block${token.tags}>${this.parser.parse(token.tokens)}</div>`; // parseInline to turn child tokens into HTML
+		return `<div ${stringifyTags(token.tags)}>${this.parser.parse(token.tokens)}</div>`; // parseInline to turn child tokens into HTML
 	}
 };
 
@@ -134,26 +143,28 @@ const mustacheInjectInline = {
 		const match = inlineRegex.exec(src);
 		if(match) {
 			const lastToken = tokens[tokens.length - 1];
-			if(!lastToken)
+			if(!lastToken || lastToken.type == 'mustacheInjectInline')
 				return false;
 
-			const tags = ` ${processStyleTags(match[1])}`;
 			lastToken.originalType = lastToken.type;
 			lastToken.type         = 'mustacheInjectInline';
-			lastToken.tags         = tags;
+			lastToken.tags         = processTags(match[1], lastToken.tags);
 			return {
-				type : 'text',            // Should match "name" above
-				raw  : match[0],          // Text to consume from the source
+				type : 'mustacheInjectInline',            // Should match "name" above
+				raw  : match[0],                          // Text to consume from the source
 				text : ''
 			};
 		}
 	},
 	renderer(token) {
+		if(!token.originalType){
+			return;
+		}
 		token.type = token.originalType;
 		const text = this.parser.parseInline([token]);
-		const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
+		const openingTag = /(<[^\s<>]+).*(>+.*>.*)/s.exec(text);
 		if(openingTag) {
-			return `${openingTag[1]} class="${token.tags}${openingTag[2]}`;
+			return `${openingTag[1]} ${stringifyTags(token.tags)}${openingTag[2]}`;
 		}
 		return text;
 	}
@@ -169,11 +180,12 @@ const mustacheInjectBlock = {
 			const match = inlineRegex.exec(src);
 			if(match) {
 				const lastToken = tokens[tokens.length - 1];
-				if(!lastToken)
+				if(!lastToken || lastToken.type == 'mustacheInjectBlock')
 					return false;
 
-				lastToken.originalType = 'mustacheInjectBlock';
-				lastToken.tags         = ` ${processStyleTags(match[1])}`;
+				lastToken.originalType = lastToken.type;
+				lastToken.type = 'mustacheInjectBlock';
+				lastToken.tags = processTags(match[1], lastToken.tags);
 				return {
 					type : 'mustacheInjectBlock', // Should match "name" above
 					raw  : match[0],              // Text to consume from the source
@@ -187,9 +199,9 @@ const mustacheInjectBlock = {
 			}
 			token.type = token.originalType;
 			const text = this.parser.parse([token]);
-			const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
+			const openingTag = /(<[^\s<>]+)[^\n<>]*(>.*)/s.exec(text);
 			if(openingTag) {
-				return `${openingTag[1]} class="${token.tags}${openingTag[2]}`;
+				return `${openingTag[1]} ${stringifyTags(token.tags)}${openingTag[2]}`;
 			}
 			return text;
 		}
@@ -329,17 +341,37 @@ const voidTags = new Set([
 	'input', 'keygen', 'link', 'meta', 'param', 'source'
 ]);
 
-const processStyleTags = (string)=>{
+const stringifyTags = (tags)=>{
+	// bundle it up in a formatted string
+	const arr = _.compact([`${tags.classes?.length > 0 ? `class="${tags.classes.join(' ')}"` : ''}`, `${tags.id?.length > 0 ? `id="${tags.id[0]}"` : ''}`, `${tags.styles?.length > 0 ? `style="${tags.styles.join(' ')}"` : ''}`]);
+	return arr.join(' ');
+};
+
+const processTags = (string, defaults)=>{
+
 	//split tags up. quotes can only occur right after colons.
 	//TODO: can we simplify to just split on commas?
-	const tags = string.match(/(?:[^, ":]+|:(?:"[^"]*"|))+/g);
+	let tags = string.match(/(?:[^, ":]+|:(?:"[^"]*"|))+/g);
 
-	if(!tags)	return '"';
+	//  If user provides no tags, return only default tags
+	if(!tags)
+		return defaults;
 
-	const id      = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
-	const classes = _.remove(tags, (tag)=>!tag.includes(':'));
-	const styles  = tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;'));
-	return `${classes.join(' ')}" ${id ? `id="${id}"` : ''} ${styles.length ? `style="${styles.join(' ')}"` : ''}`;
+	const customizer = (objValue, srcValue)=>{
+		if(_.isArray(objValue)){
+			return objValue.concat(srcValue);
+		}
+	};
+
+	const userTags = {
+		'id'      : _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1)),
+		'classes' : _.remove(tags, (tag)=>!tag.includes(':')),
+		'styles'  : _.remove(tags, (tag)=>tag.includes(':')).map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;'))
+	};
+
+	tags = _.mergeWith(defaults, userTags, customizer);
+	return tags;
+
 };
 
 module.exports = {
