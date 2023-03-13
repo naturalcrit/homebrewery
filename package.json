@@ -19,7 +19,7 @@
     "lint:dry": "eslint **/*.{js,jsx}",
     "circleci": "npm test && eslint **/*.{js,jsx} --max-warnings=0",
     "verify": "npm run lint && npm test",
-    "test": "jest",
+    "test": "jest --runInBand",
     "test:api-unit": "jest server/*.spec.js --verbose",
     "test:coverage": "jest --coverage --silent",
     "test:dev": "jest --verbose --watch",
