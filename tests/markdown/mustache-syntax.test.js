@@ -153,6 +153,12 @@ describe('Injection: When an injection tag follows an element', ()=>{
 			expect(rendered).toBe('<p><code style="background:gray;">code</code></p>');
 		});
 
+		it('Renders an image element with injected style', function() {
+			const source = '![alt text](http://i.imgur.com/hMna6G0.png){position:absolute}';
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered).toBe('<p><img src="http://i.imgur.com/hMna6G0.png" alt="homebrew mug" style="position:absolute;"></p>');
+		});
+
 		it('Renders an element modified by only the first of two consecutive injections', function() {
 			const source = '{{ text}}{color:red}{background:blue}';
 			const rendered = Markdown.render(source).trimReturns();
