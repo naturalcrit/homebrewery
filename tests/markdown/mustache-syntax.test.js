@@ -160,7 +160,7 @@ describe('Injection: When an injection tag follows an element', ()=>{
 		});
 	});
 
-	describe.only('and that element is a block', ()=>{
+	describe('and that element is a block', ()=>{
 		it('renders a div "text" with no injection', function() {
 			const source = '{{\ntext\n}}\n{}';
 			const rendered = Markdown.render(source).trimReturns();
