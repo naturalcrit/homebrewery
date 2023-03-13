@@ -48,7 +48,7 @@ jobs:
       - image: cimg/node:16.11.0
 
     working_directory: ~/homebrewery
-    parallelism: 4
+    parallelism: 1
 
     steps:
       - attach_workspace:
