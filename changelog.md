@@ -80,7 +80,19 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-### Thursday 09/02/2023 - v3.7.1
+### Monday 12/03/2023 - v3.7.2
+{{
+
+##### Gazook89
+
+* [x] Fixed crash when multiple injection blocks (\`{class}\`) used in a row.
+
+Fixes issue [#2712](https://github.com/naturalcrit/homebrewery/issues/2712)
+
+}}
+{taskList}
+
+### Thursday 09/03/2023 - v3.7.1
 {{taskList
 
 ##### Lucastucious (new contributor!)
