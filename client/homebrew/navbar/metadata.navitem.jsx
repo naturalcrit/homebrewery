@@ -1,6 +1,7 @@
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
+const Moment = require('moment');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 
@@ -54,6 +55,8 @@ const MetadataNav = createClass({
 			<p>{this.getTags()}</p>
 			<h4>Systems</h4>
 			<p>{this.getSystems()}</p>
+			<h4>Last Updated</h4>
+			<p>{Moment(this.props.brew.updatedAt).fromNow()}</p>
 		</div>;
 	},
 
