@@ -80,7 +80,15 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-### Thursday 09/02/2023 - v3.7.1
+### Monday 13/03/2023 - v3.7.2
+{{taskList
+
+##### Calculuschild
+
+* [x] Fix wide Monster Stat Blocks not spanning columns on Legacy
+}}
+
+### Thursday 09/03/2023 - v3.7.1
 {{taskList
 
 ##### Lucastucious (new contributor!)
