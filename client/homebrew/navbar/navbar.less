@@ -181,22 +181,29 @@
 			width      : 100%;
 			max-height : ~"calc(100vh - 28px)";
 			background-color : #333;
+    	    display: flex;
+			flex-flow: row wrap;
+			justify-content: flex-start;
+			align-content: baseline;
+			padding: 0px 10px;
+			border-radius: 5px;
 			h4{
-				display          : block;
-				box-sizing       : border-box;
-				padding          : 5px 0px;
-				font-size        : 0.8em;
-				color            : #bbb;
-				text-align       : center;
-				border           : 1px solid #888;
-				border-left      : 0px;
-				border-right     : 0px;
+				display: block;
+				box-sizing: border-box;
+				padding: 5px 0px;
+				color: #bbb;
+				text-align: center;
+				border-top: 1px solid #888;
+				flex-basis: 20%;
 			}
 			p{
 				font-family      : 'Open Sans', sans-serif;
-				font-size        : 12px;
+				font-size        : 10px;
 				font-weight      : normal;
 				text-transform 	 : initial;
+				padding: 5px 0;
+				flex-basis: 80%;
+				border-top: 1px solid #888;
 			}
 		}
 	}
