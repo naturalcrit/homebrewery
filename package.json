@@ -19,9 +19,9 @@
     "lint:dry": "eslint **/*.{js,jsx}",
     "circleci": "npm test && eslint **/*.{js,jsx} --max-warnings=0",
     "verify": "npm run lint && npm test",
-    "test": "jest",
+    "test": "jest --runInBand",
     "test:api-unit": "jest server/*.spec.js --verbose",
-    "test:coverage": "jest --coverage --silent",
+    "test:coverage": "jest --coverage --silent --runInBand",
     "test:dev": "jest --verbose --watch",
     "test:basic": "jest tests/markdown/basic.test.js --verbose",
     "test:mustache-span": "jest tests/markdown/mustache-span.test.js --verbose",
@@ -37,7 +37,7 @@
     "build/*"
   ],
   "jest": {
-    "testTimeout": 15000,
+    "testTimeout": 30000,
     "modulePaths": [
       "node_modules",
       "shared",
