@@ -706,11 +706,11 @@ h5 + table{
 		z-index   : -1;
 	}
 	h1 {
-		--shadow-x0    : #000 0px 0px 0.1cm;
-		--shadow-x1    : var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
-		--shadow-x2    : var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
-		--shadow-x3    : var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
-		text-shadow    : var(--shadow-x3), var(--shadow-x3), var(--shadow-x3);
+		text-shadow: unset;
+		filter         : drop-shadow(0 0 1.5px black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
 		text-transform : uppercase;
 		font-weight    : normal;
 		display        : block;
@@ -722,11 +722,10 @@ h5 + table{
 		line-height    : 0.85em;
 	}
 	h2 {
-		--shadow-x0    : #000 0px 0px 2.5px;
-		--shadow-x1    : var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
-		--shadow-x2    : var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
-		--shadow-x3    : var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
-		text-shadow    : var(--shadow-x3), var(--shadow-x3), var(--shadow-x3);
+		filter         : drop-shadow(0 0 1px black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
 		font-family    : NodestoCapsCondensed;
 		font-weight    : normal;
 		font-size      : 0.85cm;
@@ -766,10 +765,10 @@ h5 + table{
 		padding-top      : 0.1cm;
 	}
 	.footnote {
-		--shadow-x0 : #000 0px 0px 0.05cm;
-		--shadow-x1 : var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
-		--shadow-x2 : var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
-		text-shadow : var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
+		filter       : drop-shadow(0 0 0.7px black) drop-shadow(0 0 0 black)
+									 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+									 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+									 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
 		position     : absolute;
 		text-align   : center;
 		color        : white;
