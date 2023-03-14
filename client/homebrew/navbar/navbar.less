@@ -163,6 +163,35 @@
 			}
 		}
 	}
+	.metadata.navItem {
+		position : relative;
+		.dropdown{
+			position   : absolute;
+			top        : 28px;
+			left       : 0px;
+			z-index    : 10000;
+			width      : 350px;
+			max-height : ~"calc(100vh - 28px)";
+			background-color : #333;
+			h4{
+				display          : block;
+				box-sizing       : border-box;
+				padding          : 5px 0px;
+				font-size        : 0.8em;
+				color            : #bbb;
+				text-align       : center;
+				border           : 1px solid #888;
+				border-left      : 0px;
+				border-right     : 0px;
+			}
+			p{
+				font-family      : 'Open Sans', sans-serif;
+				font-size        : 12px;
+				font-weight      : normal;
+				text-transform 	 : initial;
+			}
+		}
+	}
 	.warning.navItem{
 		position         : relative;
 		background-color : @orange;
