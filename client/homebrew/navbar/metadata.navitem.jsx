@@ -14,17 +14,17 @@ const MetadataNav = createClass({
 
 	getInitialState : function() {
 		return {
-			showDropdown : false
+			showMetaWindow : false
 		};
 	},
 
 	componentDidMount : function() {
 	},
 
-	handleDropdown : function(show){
-		this.setState({
-			showDropdown : show
-		});
+	toggleMetaWindow : function(){
+		this.setState((prevProps)=>({
+			showMetaWindow : !prevProps.showMetaWindow
+		}));
 	},
 
 	getAuthors : function(){
@@ -42,8 +42,8 @@ const MetadataNav = createClass({
 		return this.props.brew.systems.join(', ');
 	},
 
-	renderDropdown : function(){
-		if(!this.state.showDropdown) return null;
+	renderMetaWindow : function(){
+		if(!this.state.showMetaWindow) return null;
 
 		return <div className='dropdown'>
 			<h4>Description</h4>
@@ -59,10 +59,9 @@ const MetadataNav = createClass({
 
 	render : function(){
 		return <Nav.item icon='fas fa-info-circle' color='grey' className='metadata'
-			onMouseEnter={()=>this.handleDropdown(true)}
-			onMouseLeave={()=>this.handleDropdown(false)}>
-			METADATA
-			{this.renderDropdown()}
+			onClick={()=>this.toggleMetaWindow()}>
+			{this.props.children}
+			{this.renderMetaWindow()}
 		</Nav.item>;
 	}
 

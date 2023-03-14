@@ -51,12 +51,13 @@ const SharePage = createClass({
 		return <div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
 			<Navbar>
-				<Nav.section>
-					<Nav.item className='brewTitle'>{this.props.brew.title}</Nav.item>
+				<Nav.section classes='titleSection'>
+					<MetadataNav brew={this.props.brew}>
+						<Nav.item className='brewTitle'>{this.props.brew.title}</Nav.item>
+					</MetadataNav>
 				</Nav.section>
 
 				<Nav.section>
-					<MetadataNav brew={this.props.brew} />
 					{this.props.brew.shareId && <>
 						<PrintLink shareId={this.processShareId()} />
 						<Nav.dropdown>

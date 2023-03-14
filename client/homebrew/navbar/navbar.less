@@ -28,7 +28,7 @@
 			width            : 250px;
 			margin           : 0;
 			padding          : 2px;
-			background-color : #444;
+			background-color : transparent;
 			font-family      : 'Open Sans', sans-serif;
 			font-size        : 12px;
 			font-weight      : 800;
@@ -54,6 +54,7 @@
 		color          : white;
 		text-align     : center;
 		text-transform : initial;
+		flex-grow      : 1;
 	}
 	.save-menu {
 		.dropdown {
@@ -165,12 +166,19 @@
 	}
 	.metadata.navItem {
 		position : relative;
+		padding: 0;
+		align-items: center;
+		display  : flex;
+		flex-grow: 1;
+		i{
+			margin-right: 10px;
+		}
 		.dropdown{
 			position   : absolute;
 			top        : 28px;
 			left       : 0px;
 			z-index    : 10000;
-			width      : 350px;
+			width      : 100%;
 			max-height : ~"calc(100vh - 28px)";
 			background-color : #333;
 			h4{
