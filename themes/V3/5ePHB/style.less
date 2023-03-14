@@ -902,3 +902,52 @@ break-inside                : avoid;
 .page h1 + *{
 	margin-top : 0;
 }
+
+//*****************************
+// *         SCRIPT
+// *****************************/
+.page {
+	.script {
+		margin-block: 0.7cm;
+		table {
+			tr {
+				background: unset !important;
+				th,
+				td {
+					width: 1.3cm;
+					height: 1.3cm;
+					vertical-align: middle !important;
+					font-family: BookInsanityRemake;
+					text-transform: uppercase;
+					outline: 1px solid #000;
+					font-size: 0.7cm;
+					font-weight: normal;
+				}
+			}
+		}
+	}
+
+	.scriptFrame {
+		border: initial;
+		border-style: solid;
+		border-image-outset: .45cm .35cm .4cm .4cm;
+		border-image-repeat: stretch;
+		border-image-slice: 170;
+		border-image-source: @scriptBorder;
+		border-image-width: 1.4cm;
+	}
+
+	.dwarvish td {
+		font-family: Davek !important;
+		font-size: .45cm !important;/*this should be fixed in the font*/
+	}
+
+	.elvish td {
+		font-family: Rellanic !important;
+	}
+
+	.draconic td {
+		font-family: Lokharic !important;
+	}
+}
+

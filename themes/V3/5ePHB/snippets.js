@@ -3,6 +3,7 @@
 const MagicGen           = require('./snippets/magic.gen.js');
 const ClassTableGen      = require('./snippets/classtable.gen.js');
 const MonsterBlockGen    = require('./snippets/monsterblock.gen.js');
+const scriptGen			 = require('./snippets/script.gen.js');
 const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
 const CoverPageGen       = require('./snippets/coverpage.gen.js');
 const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
@@ -167,6 +168,29 @@ module.exports = [
 				name : 'Wide Monster Stat Block',
 				icon : 'fas fa-dragon',
 				gen  : MonsterBlockGen.monster('monster,frame,wide', 4),
+			},
+			{
+				name         : 'Script Sample',
+				icon         : 'fac script',
+				gen          : scriptGen.dwarvish,
+				experimental : true,
+				subsnippets  : [
+					{
+						name : '5e Dwarvish',
+						icon : 'fac dwarvish',
+						gen  : scriptGen.dwarvish,
+					},
+					{
+						name : '5e Elvish',
+						icon : 'fac elvish',
+						gen  : scriptGen.elvish,
+					},
+					{
+						name : '5e Draconic',
+						icon : 'fac draconic',
+						gen  : scriptGen.draconic,
+					},
+				]
 			},
 			{
 				name         : 'Cover Page',
