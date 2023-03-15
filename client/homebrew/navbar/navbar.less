@@ -187,23 +187,30 @@
 			align-content: baseline;
 			padding: 10px 10px 0px;
 			border-radius: 5px;
-			h4{
-				display: block;
-				box-sizing: border-box;
-				padding: 5px 0px;
-				color: #bbb;
-				text-align: center;
-				border-top: 1px solid #888;
-				flex-basis: 20%;
-			}
-			p{
-				font-family      : 'Open Sans', sans-serif;
-				font-size        : 10px;
-				font-weight      : normal;
-				text-transform 	 : initial;
-				padding: 5px 0;
-				flex-basis: 80%;
-				border-top: 1px solid #888;
+			.row{
+				display   : flex;
+				flex-flow : row wrap;
+				width     : 100%;
+				h4{
+					display          : block;
+					box-sizing       : border-box;
+					padding          : 5px 0px;
+					color            : #bbb;
+					text-align       : center;
+					border-top       : 1px solid #888;
+					flex-basis       : 20%;
+					flex-grow        : 1;
+				}
+				p{
+					font-family      : 'Open Sans', sans-serif;
+					font-size        : 10px;
+					font-weight      : normal;
+					text-transform 	 : initial;
+					padding          : 5px 0;
+					flex-basis       : 80%;
+					flex-grow        : 1;
+					border-top       : 1px solid #888;
+				}
 			}
 		}
 	}
