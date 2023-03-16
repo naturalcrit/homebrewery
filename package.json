@@ -89,7 +89,7 @@
     "lodash": "^4.17.21",
     "marked": "4.2.12",
     "marked-extended-tables": "^1.0.5",
-    "marked-mermaid": "file:/Users/michiel/Documents/personal/repos/marked-mermaid",
+    "marked-mermaid": "^0.1.0",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.29.4",
     "mongoose": "^6.9.2",

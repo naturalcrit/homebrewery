@@ -5,6 +5,10 @@ const MarkedExtendedTables = require('marked-extended-tables');
 const MarkedMermaid = require('marked-mermaid');
 const renderer = new Marked.Renderer();
 
+const pageElem = global.document
+	? global.document.querySelector('.page')
+	: null;
+
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (html) {
 	if(_.startsWith(_.trim(html), '<div') && _.endsWith(_.trim(html), '</div>')){
@@ -240,6 +244,7 @@ const definitionLists = {
 Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists] });
 Marked.use(MarkedExtendedTables());
 Marked.use(MarkedMermaid({
+	// container : pageElem,
 	mermaid : {
 		theme          : 'base',
 		themeVariables : {
@@ -260,15 +265,37 @@ Marked.use(MarkedMermaid({
 		`,
 		flowchart : {
 			useMaxWidth    : true,
+			useWidth       : pageElem ? pageElem.clientWidth : 0,
 			htmlLabels     : true,
 			curve          : 'linear',
 			diagramPadding : 2,
 			nodeSpacing    : 40,
 			rankSpacing    : 40,
 			padding        : 25,
+		},
+		gantt : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		},
+		sequence : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		},
+		pie : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		},
+		requirement : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		},
+		c4 : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
 		}
 	}
 }));
+
 Marked.use(mustacheInjectBlock);
 Marked.use({ smartypants: true });
 
