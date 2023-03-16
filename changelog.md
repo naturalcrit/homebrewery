@@ -80,6 +80,37 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Monday 13/03/2023 - v3.7.2
+{{taskList
+
+##### Calculuschild
+
+* [x] Fix wide Monster Stat Blocks not spanning columns on Legacy
+}}
+
+### Thursday 09/03/2023 - v3.7.1
+{{taskList
+
+##### Lucastucious (new contributor!)
+
+* [x] Changed `filter: drop-shadow` to `box-shadow` on text boxes, making text selectable in PDFs again.
+
+Fixes issues [#1569](https://github.com/naturalcrit/homebrewery/issues/1569)
+
+{{note
+**NOTE:** If you create your PDF on a computer with an old version of Mac Preview (v10 or older) you may see shadows appear as solid gray.
+}}
+
+##### MichielDeMey
+
+* [x] Updated the Google Drive icon
+* [x] Backend fix to unit tests failing intermittently
+
+##### Calculuschild
+
+* [x] Fix PDF pixelation on CoverPage text outlines
+}}
+
 
 ### Tuesday 28/02/2023 - v3.7.0
 {{taskList
@@ -115,7 +146,6 @@ Fixes issues [#2687](https://github.com/naturalcrit/homebrewery/issues/2687)
 Fixes issues [#2674](https://github.com/naturalcrit/homebrewery/issues/2674)
 }}
 
-
 ### Monday 23/01/2023 - v3.6.0
 {{taskList
 ##### calculuschild
@@ -140,8 +170,6 @@ Fixes issues [#2583](https://github.com/naturalcrit/homebrewery/issues/2583)
 
 * [x] Fix cloned brews inheriting the parent view count
 }}
-
-\column
 
 ### Friday 23/12/2022 - v3.5.0
 {{taskList
