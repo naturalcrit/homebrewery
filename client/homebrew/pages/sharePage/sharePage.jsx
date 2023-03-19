@@ -51,7 +51,7 @@ const SharePage = createClass({
 		return <div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
 			<Navbar>
-				<Nav.section classes='titleSection'>
+				<Nav.section className='titleSection'>
 					<MetadataNav brew={this.props.brew}>
 						<Nav.item className='brewTitle'>{this.props.brew.title}</Nav.item>
 					</MetadataNav>
