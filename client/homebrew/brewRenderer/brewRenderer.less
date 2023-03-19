@@ -44,3 +44,16 @@
 	font-weight      : 800;
 	color            : white;
 }
+
+@media print {
+	.brewRenderer {
+		height: 100%;
+		overflow-y: unset;
+		.pages {
+			margin: 0px;
+			&>.page {
+			box-shadow: unset;
+			}
+		}
+	}
+}

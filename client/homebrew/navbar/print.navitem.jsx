@@ -1,9 +1,14 @@
 const React = require('react');
-const createClass = require('create-react-class');
 const Nav = require('naturalcrit/nav/nav.jsx');
 
-module.exports = function(props){
-	return <Nav.item newTab={true} href={`/print/${props.shareId}?dialog=true`} color='purple' icon='far fa-file-pdf'>
-		get PDF
+const PrintNavItem = function(props){
+	return <Nav.item
+		onClick={()=>{ return window.frames['BrewRenderer'].contentWindow.print(); }}
+		color='purple'
+		icon='far fa-file-pdf'
+	>
+		print
 	</Nav.item>;
 };
+
+module.exports = PrintNavItem;
