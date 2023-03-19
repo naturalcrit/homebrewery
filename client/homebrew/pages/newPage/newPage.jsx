@@ -11,6 +11,7 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
+const PrintNavItem = require('../../navbar/print.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 
@@ -172,12 +173,6 @@ const NewPage = createClass({
 		window.open('/print?dialog=true&local=print', '_blank');
 	},
 
-	renderLocalPrintButton : function(){
-		return <Nav.item color='purple' icon='far fa-file-pdf' onClick={this.print}>
-			get PDF
-		</Nav.item>;
-	},
-
 	renderNavbar : function(){
 		return <Navbar>
 
@@ -190,7 +185,7 @@ const NewPage = createClass({
 					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
 					this.renderSaveButton()
 				}
-				{this.renderLocalPrintButton()}
+				<PrintNavItem />
 				<HelpNavItem />
 				<RecentNavItem />
 				<AccountNavItem />
