@@ -245,6 +245,7 @@ const MetadataEditor = createClass({
 			});
 		};
 
+		const debouncedHandleFieldChange =  _.debounce(this.handleFieldChange, 500);
 
 		return <div className='field language'>
 			<label>language</label>
@@ -254,7 +255,9 @@ const MetadataEditor = createClass({
 					default={this.props.metadata.lang || ''}
 					placeholder='en'
 					onSelect={(value)=>this.handleLanguage(value)}
-					onEntry={(e)=>{this.handleFieldChange('lang', e);}}
+					onEntry={(e)=> {	e.target.setCustomValidity('');	//Clear the validation popup while typing
+														debouncedHandleFieldChange('lang', e);
+													}}
 					options={listLanguages()}
 					autoSuggest={{
 						suggestMethod           : 'startsWith',
