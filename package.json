@@ -43,6 +43,9 @@
       "shared",
       "server"
     ],
+    "coveragePathIgnorePatterns": [
+      "build/*"
+    ],
     "coverageThreshold" : {
       "global" : {
         "statements" : 25,
