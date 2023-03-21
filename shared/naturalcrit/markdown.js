@@ -2,7 +2,12 @@
 const _ = require('lodash');
 const Marked = require('marked');
 const MarkedExtendedTables = require('marked-extended-tables');
+const MarkedMermaid = require('marked-mermaid');
 const renderer = new Marked.Renderer();
+
+const pageElem = global.document
+	? global.document.querySelector('.page')
+	: null;
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (html) {
@@ -238,6 +243,59 @@ const definitionLists = {
 
 Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists] });
 Marked.use(MarkedExtendedTables());
+Marked.use(MarkedMermaid({
+	// container : pageElem,
+	mermaid : {
+		theme          : 'base',
+		themeVariables : {
+			fontFamily         : 'BookInsanityRemake',
+			fontSize           : '12px',
+			background         : '#EEE5CE',
+			mainBkg            : '#faf7ea',
+			primaryColor       : '#faf7ea',
+			primaryTextColor   : '#000',
+			primaryBorderColor : '#c9ad6a',
+			lineColor          : '#c9ad6a',
+			secondaryColor     : '#E0E5C1',
+			noteBkgColor       : '#E0E5C1'
+		},
+		themeCSS : `
+			.node .nodeLabel p { inline-size: 320px; white-space: pre-wrap;  }
+			.node * { stroke-width: 2px !important; }
+		`,
+		flowchart : {
+			useMaxWidth    : true,
+			useWidth       : pageElem ? pageElem.clientWidth : 0,
+			htmlLabels     : true,
+			curve          : 'linear',
+			diagramPadding : 2,
+			nodeSpacing    : 40,
+			rankSpacing    : 40,
+			padding        : 25,
+		},
+		gantt : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		},
+		sequence : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		},
+		pie : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		},
+		requirement : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		},
+		c4 : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		}
+	}
+}));
+
 Marked.use(mustacheInjectBlock);
 Marked.use({ smartypants: true });
 
