@@ -171,23 +171,23 @@ module.exports = [
 			},
 			{
 				name         : 'Script Sample',
-				icon         : 'fac script',
+				icon         : 'fas fa-language',
 				gen          : scriptGen.dwarvish,
 				experimental : true,
 				subsnippets  : [
 					{
 						name : '5e Dwarvish',
-						icon : 'fac dwarvish',
+						icon : 'fac davek',
 						gen  : scriptGen.dwarvish,
 					},
 					{
 						name : '5e Elvish',
-						icon : 'fac elvish',
+						icon : 'fac rellanic',
 						gen  : scriptGen.elvish,
 					},
 					{
 						name : '5e Draconic',
-						icon : 'fac draconic',
+						icon : 'fac lokharic',
 						gen  : scriptGen.draconic,
 					},
 				]
