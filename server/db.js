@@ -28,7 +28,7 @@ const disconnect = async ()=>{
 
 const connect = async (config)=>{
 	return await Mongoose.connect(getMongoDBURL(config), { retryWrites: false })
-		.catch(error=>handleConnectionError(error));
+		.catch((error)=>handleConnectionError(error));
 };
 
 module.exports = {

@@ -255,9 +255,10 @@ const MetadataEditor = createClass({
 					default={this.props.metadata.lang || ''}
 					placeholder='en'
 					onSelect={(value)=>this.handleLanguage(value)}
-					onEntry={(e)=> {	e.target.setCustomValidity('');	//Clear the validation popup while typing
-														debouncedHandleFieldChange('lang', e);
-													}}
+					onEntry={(e)=>{
+						e.target.setCustomValidity('');	//Clear the validation popup while typing
+						debouncedHandleFieldChange('lang', e);
+					}}
 					options={listLanguages()}
 					autoSuggest={{
 						suggestMethod           : 'startsWith',

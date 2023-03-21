@@ -42,7 +42,7 @@ HomebrewSchema.statics.increaseView = async function(query) {
 
 HomebrewSchema.statics.get = async function(query, fields=null){
 	const brew = await Homebrew.findOne(query, fields).orFail()
-		.catch(error=>{throw 'Can not find brew'});
+		.catch((error)=>{throw 'Can not find brew';});
 	if(!_.isNil(brew.textBin)) {			// Uncompress zipped text field
 		unzipped = zlib.inflateRawSync(brew.textBin);
 		brew.text = unzipped.toString();
@@ -56,7 +56,7 @@ HomebrewSchema.statics.getByUser = async function(username, allowAccess=false, f
 		delete query.published;
 	}
 	const brews = await Homebrew.find(query, fields).lean().exec() //lean() converts results to JSObjects
-		.catch(error=>{throw 'Can not find brews'});
+		.catch((error)=>{throw 'Can not find brews';});
 	return brews;
 };
 
