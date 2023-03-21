@@ -920,34 +920,45 @@ break-inside                : avoid;
 					font-family: BookInsanityRemake;
 					text-transform: uppercase;
 					outline: 1px solid #000;
-					font-size: 0.7cm;
+					
 					font-weight: normal;
 				}
+				th{
+					font-size: 0.45cm;
+				}
+				td {
+					font-size: 0.7cm;
+				}
+
 			}
+		}
+
+		&.frame {
+			border: initial;
+			border-style: solid;
+			border-image-outset: .45cm .35cm .4cm .4cm;
+			border-image-repeat: stretch;
+			border-image-slice: 170;
+			border-image-source: @scriptBorder;
+			border-image-width: 1.4cm;
+		}
+
+		&.dwarvish table tr td {
+			font-family: Davek;
+			font-size: .45cm;/*this should be fixed in the font*/
+		}
+	
+		&.elvish table tr td {
+			font-family: Rellanic;
+		}
+	
+		&.draconic table tr td {
+			font-family: Lokharic;
 		}
 	}
 
-	.scriptFrame {
-		border: initial;
-		border-style: solid;
-		border-image-outset: .45cm .35cm .4cm .4cm;
-		border-image-repeat: stretch;
-		border-image-slice: 170;
-		border-image-source: @scriptBorder;
-		border-image-width: 1.4cm;
-	}
+	
 
-	.dwarvish td {
-		font-family: Davek !important;
-		font-size: .45cm !important;/*this should be fixed in the font*/
-	}
-
-	.elvish td {
-		font-family: Rellanic !important;
-	}
-
-	.draconic td {
-		font-family: Lokharic !important;
-	}
+	
 }
 

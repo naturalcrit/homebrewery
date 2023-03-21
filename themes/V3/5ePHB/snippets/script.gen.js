@@ -4,7 +4,7 @@ const dedent = require('dedent-tabs').default;
 module.exports = {
     dwarvish: () => {
         return dedent `##### Dwarvish Script: Sample Alphabet
-            {{script,wide,scriptFrame,dwarvish
+            {{script,wide,frame,dwarvish
             | a | b | c | d | e | f | g | h | i | j | k | l | m |
             |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
             | a | b | c | d | e | f | g | h | i | j | k | l | m |
@@ -16,7 +16,7 @@ module.exports = {
     },
     elvish: () => {
         return dedent `##### Elvish Script: Sample Alphabet
-            {{script,wide,scriptFrame,elvish
+            {{script,wide,frame,elvish
             | a | b | c | d | e | f | g | h | i | j | k | l | m |
             |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
             | a | b | c | d | e | f | g | h | i | j | k | l | m |
@@ -28,7 +28,7 @@ module.exports = {
     },
     draconic: () => {
         return dedent `##### Draconic Script: Sample Alphabet
-            {{script,wide,scriptFrame,draconic
+            {{script,wide,frame,draconic
             | a | b | c | d | e | f | g | h | i | j | k | l | m |
             |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
             | a | b | c | d | e | f | g | h | i | j | k | l | m |
