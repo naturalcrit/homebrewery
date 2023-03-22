@@ -187,7 +187,7 @@ module.exports = [
 					},
 					{
 						name : '5e Draconic',
-						icon : 'fac lokharic',
+						icon : 'fac iokharic',
 						gen  : scriptGen.draconic,
 					},
 				]
