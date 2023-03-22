@@ -2,8 +2,8 @@ const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
 
 module.exports = {
-    dwarvish: () => {
-        return dedent `##### Dwarvish Runes: Sample Alphabet
+	dwarvish : ()=>{
+		return dedent `##### Dwarvish Runes: Sample Alphabet
             {{runeTable,wide,frame,font-family:Davek
             | a | b | c | d | e | f | g | h | i | j | k | l | m |
             |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
@@ -13,9 +13,9 @@ module.exports = {
             |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
             | n | o | p | q | r | s | t | u | v | w | x | y | z |
             }}`;
-    },
-    elvish: () => {
-        return dedent `##### Elvish Runes: Sample Alphabet
+	},
+	elvish : ()=>{
+		return dedent `##### Elvish Runes: Sample Alphabet
             {{runeTable,wide,frame,font-family:Rellanic
             | a | b | c | d | e | f | g | h | i | j | k | l | m |
             |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
@@ -25,9 +25,9 @@ module.exports = {
             |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
             | n | o | p | q | r | s | t | u | v | w | x | y | z |
             }}`;
-    },
-    draconic: () => {
-        return dedent `##### Draconic Runes: Sample Alphabet
+	},
+	draconic : ()=>{
+		return dedent `##### Draconic Runes: Sample Alphabet
             {{runeTable,wide,frame,font-family:Iokharic
             | a | b | c | d | e | f | g | h | i | j | k | l | m |
             |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
@@ -37,7 +37,7 @@ module.exports = {
             |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
             | n | o | p | q | r | s | t | u | v | w | x | y | z |
             }}`;
-    }
+	}
 
 
 };
