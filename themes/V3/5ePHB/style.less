@@ -903,32 +903,30 @@ break-inside                : avoid;
 }
 
 //*****************************
-// *         SCRIPT
+// *       RUNE TABLE
 // *****************************/
 .page {
-	.script {
+	.runeTable {
 		margin-block: 0.7cm;
 		table {
-			tr {
-				background: unset !important;
-				th,
-				td {
-					width: 1.3cm;
-					height: 1.3cm;
-					vertical-align: middle !important;
-					font-family: BookInsanityRemake;
-					text-transform: uppercase;
-					outline: 1px solid #000;
-					
-					font-weight: normal;
-				}
-				th{
-					font-size: 0.45cm;
-				}
-				td {
-					font-size: 0.7cm;
-				}
-
+			font-family : inherit;
+			tbody tr {
+				background: unset;
+			}
+			th, td {
+				width: 1.3cm;
+				height: 1.3cm;
+				vertical-align: middle;
+				text-transform: uppercase;
+				outline: 1px solid #000;
+				font-weight: normal;
+			}
+			th{
+				font-family: BookInsanityRemake;
+				font-size: 0.45cm;
+			}
+			td {
+				font-size: 0.7cm;
 			}
 		}
 
@@ -941,23 +939,5 @@ break-inside                : avoid;
 			border-image-source: @scriptBorder;
 			border-image-width: 1.4cm;
 		}
-
-		&.dwarvish table tr td {
-			font-family: Davek;
-			font-size: .45cm;/*this should be fixed in the font*/
-		}
-	
-		&.elvish table tr td {
-			font-family: Rellanic;
-		}
-	
-		&.draconic table tr td {
-			font-family: Iokharic;
-		}
 	}
-
-	
-
-	
 }
-

@@ -3,8 +3,8 @@ const dedent = require('dedent-tabs').default;
 
 module.exports = {
     dwarvish: () => {
-        return dedent `##### Dwarvish Script: Sample Alphabet
-            {{script,wide,frame,dwarvish
+        return dedent `##### Dwarvish Runes: Sample Alphabet
+            {{runeTable,wide,frame,font-family:Davek
             | a | b | c | d | e | f | g | h | i | j | k | l | m |
             |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
             | a | b | c | d | e | f | g | h | i | j | k | l | m |
@@ -15,8 +15,8 @@ module.exports = {
             }}`;
     },
     elvish: () => {
-        return dedent `##### Elvish Script: Sample Alphabet
-            {{script,wide,frame,elvish
+        return dedent `##### Elvish Runes: Sample Alphabet
+            {{runeTable,wide,frame,font-family:Rellanic
             | a | b | c | d | e | f | g | h | i | j | k | l | m |
             |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
             | a | b | c | d | e | f | g | h | i | j | k | l | m |
@@ -27,8 +27,8 @@ module.exports = {
             }}`;
     },
     draconic: () => {
-        return dedent `##### Draconic Script: Sample Alphabet
-            {{script,wide,frame,draconic
+        return dedent `##### Draconic Runes: Sample Alphabet
+            {{runeTable,wide,frame,font-family:Iokharic
             | a | b | c | d | e | f | g | h | i | j | k | l | m |
             |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
             | a | b | c | d | e | f | g | h | i | j | k | l | m |
@@ -42,7 +42,7 @@ module.exports = {
 
 };
 
-	
+
 ()=>{
 
 };

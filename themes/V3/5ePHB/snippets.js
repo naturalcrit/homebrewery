@@ -170,7 +170,7 @@ module.exports = [
 				gen  : MonsterBlockGen.monster('monster,frame,wide', 4),
 			},
 			{
-				name         : 'Script Sample',
+				name         : 'Rune Table',
 				icon         : 'fas fa-language',
 				gen          : scriptGen.dwarvish,
 				experimental : true,
