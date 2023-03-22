@@ -170,29 +170,6 @@ module.exports = [
 				gen  : MonsterBlockGen.monster('monster,frame,wide', 4),
 			},
 			{
-				name         : 'Rune Table',
-				icon         : 'fas fa-language',
-				gen          : scriptGen.dwarvish,
-				experimental : true,
-				subsnippets  : [
-					{
-						name : 'Dwarvish',
-						icon : 'fac davek',
-						gen  : scriptGen.dwarvish,
-					},
-					{
-						name : 'Elvish',
-						icon : 'fac rellanic',
-						gen  : scriptGen.elvish,
-					},
-					{
-						name : 'Draconic',
-						icon : 'fac iokharic',
-						gen  : scriptGen.draconic,
-					},
-				]
-			},
-			{
 				name         : 'Cover Page',
 				icon         : 'fac book-front-cover',
 				gen          : CoverPageGen,
@@ -256,7 +233,30 @@ module.exports = [
 				name : '1/3 Class Table (unframed)',
 				icon : 'fas fa-border-none',
 				gen  : ClassTableGen.third('classTable'),
-			}
+			},
+			{
+				name         : 'Rune Table',
+				icon         : 'fas fa-language',
+				gen          : scriptGen.dwarvish,
+				experimental : true,
+				subsnippets  : [
+					{
+						name : 'Dwarvish',
+						icon : 'fac davek',
+						gen  : scriptGen.dwarvish,
+					},
+					{
+						name : 'Elvish',
+						icon : 'fac rellanic',
+						gen  : scriptGen.elvish,
+					},
+					{
+						name : 'Draconic',
+						icon : 'fac iokharic',
+						gen  : scriptGen.draconic,
+					},
+				]
+			},
 		]
 	},
 

@@ -12,7 +12,7 @@ module.exports = {
             | n | o | p | q | r | s | t | u | v | w | x | y | z |
             |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
             | n | o | p | q | r | s | t | u | v | w | x | y | z |
-            }}`;
+            }}\n\n`;
 	},
 	elvish : ()=>{
 		return dedent `##### Elvish Runes: Sample Alphabet
@@ -24,7 +24,7 @@ module.exports = {
             | n | o | p | q | r | s | t | u | v | w | x | y | z |
             |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
             | n | o | p | q | r | s | t | u | v | w | x | y | z |
-            }}`;
+            }}\n\n`;
 	},
 	draconic : ()=>{
 		return dedent `##### Draconic Runes: Sample Alphabet
@@ -36,7 +36,7 @@ module.exports = {
             | n | o | p | q | r | s | t | u | v | w | x | y | z |
             |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
             | n | o | p | q | r | s | t | u | v | w | x | y | z |
-            }}`;
+            }}\n\n`;
 	}
 
 
