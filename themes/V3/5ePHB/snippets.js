@@ -176,17 +176,17 @@ module.exports = [
 				experimental : true,
 				subsnippets  : [
 					{
-						name : '5e Dwarvish',
+						name : 'Dwarvish',
 						icon : 'fac davek',
 						gen  : scriptGen.dwarvish,
 					},
 					{
-						name : '5e Elvish',
+						name : 'Elvish',
 						icon : 'fac rellanic',
 						gen  : scriptGen.elvish,
 					},
 					{
-						name : '5e Draconic',
+						name : 'Draconic',
 						icon : 'fac iokharic',
 						gen  : scriptGen.draconic,
 					},
