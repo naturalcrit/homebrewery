@@ -347,10 +347,7 @@ module.exports = {
 	render : (rawBrewText)=>{
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
-		return Marked.parse(
-			sanatizeScriptTags(rawBrewText),
-			{ renderer: renderer }
-		);
+		return Marked.parse(sanatizeScriptTags(rawBrewText));
 	},
 
 	validate : (rawBrewText)=>{
