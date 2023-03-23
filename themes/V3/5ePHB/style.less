@@ -901,3 +901,43 @@ break-inside                : avoid;
 .page h1 + *{
 	margin-top : 0;
 }
+
+//*****************************
+// *       RUNE TABLE
+// *****************************/
+.page {
+	.runeTable {
+		margin-block: 0.7cm;
+		table {
+			font-family : inherit;
+			tbody tr {
+				background: unset;
+			}
+			th, td {
+				width: 1.3cm;
+				height: 1.3cm;
+				vertical-align: middle;
+				text-transform: uppercase;
+				outline: 1px solid #000;
+				font-weight: normal;
+			}
+			th{
+				font-family: BookInsanityRemake;
+				font-size: 0.45cm;
+			}
+			td {
+				font-size: 0.7cm;
+			}
+		}
+
+		&.frame {
+			border: initial;
+			border-style: solid;
+			border-image-outset: .45cm .35cm .4cm .4cm;
+			border-image-repeat: stretch;
+			border-image-slice: 170;
+			border-image-source: @scriptBorder;
+			border-image-width: 1.4cm;
+		}
+	}
+}

@@ -80,7 +80,28 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-### Thursday 09/02/2023 - v3.7.1
+### XXXXday DD/MM/2023 - v3.8.0
+{{taskList
+##### G-Ambatte
+
+* [x] Update server build scripts to fix Admin page
+
+Fixes issues [#2657](https://github.com/naturalcrit/homebrewery/issues/2657)
+
+* [x] Fix internal links inside `<div>` blocks not automatically receiving the `target=_self` attribute
+
+Fixes issues [#2680](https://github.com/naturalcrit/homebrewery/issues/2680)
+}}
+
+### Monday 13/03/2023 - v3.7.2
+{{taskList
+
+##### Calculuschild
+
+* [x] Fix wide Monster Stat Blocks not spanning columns on Legacy
+}}
+
+### Thursday 09/03/2023 - v3.7.1
 {{taskList
 
 ##### Lucastucious (new contributor!)
