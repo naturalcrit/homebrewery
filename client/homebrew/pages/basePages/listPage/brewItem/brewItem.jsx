@@ -6,7 +6,7 @@ const cx    = require('classnames');
 const moment = require('moment');
 const request = require('../../../../utils/request-middleware.js');
 
-const googleDriveIcon = require('../../../../googleDrive.png');
+const googleDriveIcon = require('../../../../googleDrive.svg');
 const dedent = require('dedent-tabs').default;
 
 const BrewItem = createClass({

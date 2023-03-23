@@ -253,7 +253,7 @@ body {
 		border-image-outset : 9px 0px;
 		border-image-width  : 11px;
 		padding             : 0.13cm 0.16cm;
-		filter              : drop-shadow(1px 4px 6px #888);
+		box-shadow          : 1px 4px 14px #888;
 		.page :where(&) {
 			margin-top        : 9px; //Prevent top border getting cut off on colbreak
 		}
@@ -282,7 +282,7 @@ body {
 		border-image        : @descriptiveBoxImage 12 stretch;
 		border-image-outset : 4px;
 		padding             : 0.1em;
-		filter              : drop-shadow(0 0 3px #faf7ea);
+		box-shadow          : 0 0 6px #faf7ea;
 		.page :where(&) {
 			margin-top        : 4px; //Prevent top border getting cut off on colbreak
 		}
@@ -397,7 +397,7 @@ body {
 			border-image-outset   : 0px 2px;
 			background-blend-mode : overlay;
 			background-attachment : fixed;
-			filter                : drop-shadow(1px 4px 6px #888);
+			box-shadow            : 1px 4px 14px #888;
 			padding               : 4px 2px;
 			margin-left           : -0.16cm;
 			margin-right          : -0.16cm;
@@ -687,11 +687,11 @@ h5 + table{
 		all: unset;
 	}
 	.logo {
-		position : absolute;
-		top      : 0.5cm;
-		left     : 0;
-		right    : 0;
-		filter   : drop-shadow(0 0 0.075cm black);
+		position   : absolute;
+		top        : 0.5cm;
+		left       : 0;
+		right      : 0;
+		filter     :drop-shadow(0 0 0.075cm black);
 		img {
 			height : 2cm;
 			width  : 100%;
@@ -706,11 +706,11 @@ h5 + table{
 		z-index   : -1;
 	}
 	h1 {
-		--shadow-x0    : #000 0px 0px 0.1cm;
-		--shadow-x1    : var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
-		--shadow-x2    : var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
-		--shadow-x3    : var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
-		text-shadow    : var(--shadow-x3), var(--shadow-x3), var(--shadow-x3);
+		text-shadow: unset;
+		filter         : drop-shadow(0 0 1.5px black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
 		text-transform : uppercase;
 		font-weight    : normal;
 		display        : block;
@@ -722,11 +722,10 @@ h5 + table{
 		line-height    : 0.85em;
 	}
 	h2 {
-		--shadow-x0    : #000 0px 0px 2.5px;
-		--shadow-x1    : var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
-		--shadow-x2    : var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
-		--shadow-x3    : var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
-		text-shadow    : var(--shadow-x3), var(--shadow-x3), var(--shadow-x3);
+		filter         : drop-shadow(0 0 1px black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
 		font-family    : NodestoCapsCondensed;
 		font-weight    : normal;
 		font-size      : 0.85cm;
@@ -746,7 +745,7 @@ h5 + table{
 		filter           : drop-shadow(0 0 3px black);
 	}
 	.banner {
-		filter           : drop-shadow(2px 2px 2px #000);
+		filter           : drop-shadow(2px 2px 2px black);
 		position         : absolute;
 		left             : 0;
 		bottom           : 4.2cm;
@@ -766,10 +765,10 @@ h5 + table{
 		padding-top      : 0.1cm;
 	}
 	.footnote {
-		--shadow-x0 : #000 0px 0px 0.05cm;
-		--shadow-x1 : var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
-		--shadow-x2 : var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
-		text-shadow : var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
+		filter       : drop-shadow(0 0 0.7px black) drop-shadow(0 0 0 black)
+									 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+									 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+									 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
 		position     : absolute;
 		text-align   : center;
 		color        : white;
@@ -901,4 +900,44 @@ break-inside                : avoid;
 
 .page h1 + *{
 	margin-top : 0;
+}
+
+//*****************************
+// *       RUNE TABLE
+// *****************************/
+.page {
+	.runeTable {
+		margin-block: 0.7cm;
+		table {
+			font-family : inherit;
+			tbody tr {
+				background: unset;
+			}
+			th, td {
+				width: 1.3cm;
+				height: 1.3cm;
+				vertical-align: middle;
+				text-transform: uppercase;
+				outline: 1px solid #000;
+				font-weight: normal;
+			}
+			th{
+				font-family: BookInsanityRemake;
+				font-size: 0.45cm;
+			}
+			td {
+				font-size: 0.7cm;
+			}
+		}
+
+		&.frame {
+			border: initial;
+			border-style: solid;
+			border-image-outset: .45cm .35cm .4cm .4cm;
+			border-image-repeat: stretch;
+			border-image-slice: 170;
+			border-image-source: @scriptBorder;
+			border-image-width: 1.4cm;
+		}
+	}
 }
