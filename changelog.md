@@ -84,6 +84,10 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 {{taskList
 ##### G-Ambatte
 
+* [x] Update server build scripts to fix Admin page
+
+Fixes issues [#2657](https://github.com/naturalcrit/homebrewery/issues/2657)
+
 * [x] Fix internal links inside `<div>` blocks not automatically receiving the `target=_self` attribute
 
 Fixes issues [#2680](https://github.com/naturalcrit/homebrewery/issues/2680)
