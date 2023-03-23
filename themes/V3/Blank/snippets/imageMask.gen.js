@@ -4,7 +4,7 @@ const dedent = require('dedent-tabs').default;
 module.exports = {
 	center :()=>{
 		return dedent`
-			{{imageMaskCenter${_.random(1, 10)},--offsetX:0%,--offsetY:0%,--rotation:0;
+			{{imageMaskCenter${_.random(1, 16)},--offsetX:0%,--offsetY:0%,--rotation:0;
 			  ![](https://i.imgur.com/GZfjDWV.png){height:100%}
 			}}
 			<!-- Use --offsetX to shift the mask left or right (can use cm instead of %)
