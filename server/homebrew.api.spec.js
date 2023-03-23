@@ -11,6 +11,7 @@ describe('Tests for api', ()=>{
 	let modelBrew;
 	let saveFunc;
 	let removeFunc;
+	let markModifiedFunc;
 	let saved;
 
 	beforeEach(()=>{
@@ -20,15 +21,18 @@ describe('Tests for api', ()=>{
 			return saved;
 		});
 		removeFunc = jest.fn(async function() {});
+		markModifiedFunc = jest.fn(()=>true);
 
 		modelBrew = (brew)=>({
 			...brew,
-			save     : saveFunc,
-			remove   : removeFunc,
-			toObject : function() {
+			save         : saveFunc,
+			remove       : removeFunc,
+			markModified : markModifiedFunc,
+			toObject     : function() {
 				delete this.save;
 				delete this.toObject;
 				delete this.remove;
+				delete this.markModified;
 				return this;
 			}
 		});
@@ -58,6 +62,7 @@ describe('Tests for api', ()=>{
 			description : 'this is a description',
 			tags        : ['something', 'fun'],
 			systems     : ['D&D 5e'],
+			lang        : 'en',
 			renderer    : 'v3',
 			theme       : 'phb',
 			published   : true,
@@ -251,6 +256,7 @@ If you believe you should have access to this brew, ask the file owner to invite
 				pageCount   : 1,
 				published   : false,
 				renderer    : 'legacy',
+				lang        : 'en',
 				shareId     : undefined,
 				systems     : [],
 				tags        : [],
@@ -444,6 +450,7 @@ brew`);
 				pageCount   : 1,
 				published   : false,
 				renderer    : 'V3',
+				lang        : 'en',
 				shareId     : expect.any(String),
 				style       : undefined,
 				systems     : [],
@@ -502,6 +509,7 @@ brew`);
 				pageCount   : undefined,
 				published   : false,
 				renderer    : undefined,
+				lang        : 'en',
 				shareId     : expect.any(String),
 				googleId    : expect.any(String),
 				style       : undefined,
@@ -627,6 +635,7 @@ brew`);
 			await api.deleteBrew(req, res);
 
 			expect(api.getBrew).toHaveBeenCalled();
+			expect(markModifiedFunc).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
 			expect(removeFunc).not.toHaveBeenCalled();
 			expect(saveFunc).toHaveBeenCalled();
@@ -716,6 +725,7 @@ brew`);
 			await api.deleteBrew(req, res);
 
 			expect(api.getBrew).toHaveBeenCalled();
+			expect(markModifiedFunc).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
 			expect(removeFunc).not.toHaveBeenCalled();
 			expect(api.deleteGoogleBrew).toHaveBeenCalled();
