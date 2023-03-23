@@ -300,18 +300,20 @@ body {
 	}
 
 	[class*="imageMaskCenter"] {
-		width: 100%;
-		height: 100%;
-		bottom: 0;
-		left: 0;
-		transform: rotate(calc(1deg * var(--rotation)));
-		-webkit-mask-position: calc(0% + var(--offsetX)) calc(0% + var(--offsetY));
-		-webkit-mask-size: 100%;
-		-webkit-mask-repeat: no-repeat;
-		mask-position: center;
-		mask-size: 100%;
-		mask-repeat: no-repeat;
-		
+		width                 : 100%;
+		height                : 100%;
+		left                  : calc(var(--offsetX));
+		bottom                : calc(var(--offsetY));
+		-webkit-mask-image    : var(--wc), var(--revealer);
+		-webkit-mask-repeat   : no-repeat;
+		-webkit-mask-size     : 100% 100%; //Scale both dimensions to fit page size
+		-webkit-mask-position : 0% 0%;
+		mask-image            : var(--wc), var(--revealer);
+		mask-repeat           : no-repeat;
+		mask-size             : 100% 100%; //Scale both dimensions to fit page size
+		mask-position         : 50% 50%;
+		transform             : rotate(calc(1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));
+
 		& > p:has(img) {
 			position   : absolute;
 			width      : 100%;
@@ -319,7 +321,10 @@ body {
 			bottom     : 0;
 			left       : 0;
 			transform  : unset;
-			transition : transform 2s;
+			transform  : scaleX(calc(1 / var(--scaleX))) scaleY(calc(1 / var(--scaleY)))
+									 rotate(calc(-1deg * var(--rotation)))
+			             translateX(calc(-1 * var(--offsetX)))
+									 translateY(calc(1 * var(--offsetY)));
 		}
 	}
 
@@ -351,7 +356,7 @@ body {
 		mask-repeat           : no-repeat;
 		mask-size             : 100% 100%; //Scale both dimensions to fit page size
 		mask-position         : 50% 50%;
-		transform             : rotate(calc(1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));;
+		transform             : rotate(calc(1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));
 		& > p:has(img) {
 			width      : 50%;
 			height     : 50%; //Complex transform below to handle mix of % and cm offsets
@@ -359,7 +364,7 @@ body {
 			bottom     : 25%;
 			transform  : scaleX(calc(1 / var(--scaleX))) scaleY(calc(1 / var(--scaleY)))
 									 rotate(calc(-1deg * var(--rotation)))
-			             			 translateX(calc(-1 * var(--offsetX)))
+			             translateX(calc(-1 * var(--offsetX)))
 									 translateY(calc(1 * var(--offsetY)));
 		}
 	}
