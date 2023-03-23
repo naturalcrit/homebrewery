@@ -41,7 +41,7 @@ module.exports = ()=>{
 	return `{{partCover}}
 
 # PART X
-## Developing and Using NPCs
+## ${_.sample(titles)}
 
 {{imageMaskEdge5,--offset:10cm,--rotation:180        
 ![Background](https://i.imgur.com/dpg5qPT.png)
