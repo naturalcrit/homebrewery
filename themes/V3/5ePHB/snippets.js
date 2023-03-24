@@ -173,13 +173,13 @@ module.exports = [
 			{
 				name         : 'Cover Page',
 				icon         : 'fac book-front-cover',
-				gen          : CoverPageGen,
+				gen          : CoverPageGen.front,
 				experimental : true
 			},
 			{
 				name         : 'Inside Cover Page',
 				icon         : 'fac book-front-cover',
-				gen          : InsideCoverPageGen,
+				gen          : CoverPageGen.inside,
 				experimental : true
 			},
 			{

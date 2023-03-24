@@ -68,23 +68,42 @@ const footnote = [
 	'In an amazing kingdom, in an age of sorcery and lost souls, eight space pirates quest for freedom.'
 ];
 
-module.exports = ()=>{
-	return dedent`
-  {{coverPage }}
+module.exports = {
 
-  {{logo ![](/assets/naturalCritLogo.svg)}}
+	front : function() {
+		return dedent`
+		  {{coverPage }}
 
-  # ${_.sample(titles)}
-  ## ${_.sample(subtitles)}
-  __________
+		  {{logo ![](/assets/naturalCritLogo.svg)}}
 
-  {{banner HOMEBREW}}
+		  # ${_.sample(titles)}
+		  ## ${_.sample(subtitles)}
+		  __________
 
-  {{footnote
-    ${_.sample(footnote)}
-  }}
+		  {{banner HOMEBREW}}
 
-  ![background image](https://i.imgur.com/Mqx8Vf7.png)
+		  {{footnote
+		    ${_.sample(footnote)}
+		  }}
 
-  \page`;
+		  ![background image](https://i.imgur.com/Mqx8Vf7.png)
+
+		  \page`;
+	},
+
+	inside : function() {
+		return dedent`
+			{{insideCover}}
+
+			# ${_.sample(titles)}
+			___
+
+			{{imageMaskCenter${_.random(1, 16)},--offsetX:0%,--offsetY:0%,--rotation:0;
+			  ![](https://i.imgur.com/GZfjDWV.png){height:100%}
+			}}
+
+			{{logo ![](/assets/naturalCritLogo.svg)}}
+
+			\page`;
+	}
 };
