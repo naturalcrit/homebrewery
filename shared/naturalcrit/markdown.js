@@ -134,7 +134,7 @@ const mustacheInjectInline = {
 		const match = inlineRegex.exec(src);
 		if(match) {
 			const lastToken = tokens[tokens.length - 1];
-			if(!lastToken)
+			if(!lastToken || lastToken.type == 'mustacheInjectInline')
 				return false;
 
 			const tags = ` ${processStyleTags(match[1])}`;
@@ -169,7 +169,8 @@ const mustacheInjectBlock = {
 			const match = inlineRegex.exec(src);
 			if(match) {
 				const lastToken = tokens[tokens.length - 1];
-				if(!lastToken)
+				console.log(lastToken);
+				if(!lastToken || lastToken.type == 'mustacheInjectBlock')
 					return false;
 
 				lastToken.originalType = 'mustacheInjectBlock';
