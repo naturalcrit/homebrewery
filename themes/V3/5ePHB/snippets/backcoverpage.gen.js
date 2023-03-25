@@ -22,6 +22,6 @@ For use with the fifth edition manuals, existing and to exist.
 
 
 {{logo 
-Homebrewery.Naturlacrit.com
+Homebrewery.Naturalcrit.com
 }}`;
 };
