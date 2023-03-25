@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 const _ = require('lodash');
-const { google } = require('googleapis');
+const googleDrive = require('@googleapis/drive');
 const { nanoid } = require('nanoid');
 const token = require('./token.js');
 const config = require('./config.js');
@@ -14,7 +14,7 @@ if(!config.get('service_account')){
 		config.get('service_account');
 
 	try {
-		serviceAuth = google.auth.fromJSON(keys);
+		serviceAuth = googleDrive.auth.fromJSON(keys);
 		serviceAuth.scopes = ['https://www.googleapis.com/auth/drive'];
 	} catch (err) {
 		console.warn(err);
@@ -22,7 +22,7 @@ if(!config.get('service_account')){
 	}
 }
 
-google.options({ auth: serviceAuth || config.get('google_api_key') });
+const defaultAuth = serviceAuth || config.get('google_api_key');
 
 const GoogleActions = {
 
@@ -33,7 +33,7 @@ const GoogleActions = {
 			throw (err);
 		}
 
-		const oAuth2Client = new google.auth.OAuth2(
+		const oAuth2Client = new googleDrive.auth.OAuth2(
 			config.get('google_client_id'),
 			config.get('google_client_secret'),
 			'/auth/google/redirect'
@@ -60,7 +60,7 @@ const GoogleActions = {
 	},
 
 	getGoogleFolder : async (auth)=>{
-		const drive = google.drive({ version: 'v3', auth });
+		const drive = googleDrive.drive({ version: 'v3', auth });
 
 		fileMetadata = {
 			'name'     : 'Homebrewery',
@@ -97,7 +97,7 @@ const GoogleActions = {
 	},
 
 	listGoogleBrews : async (auth)=>{
-		const drive = google.drive({ version: 'v3', auth });
+		const drive = googleDrive.drive({ version: 'v3', auth });
 
 		const obj = await drive.files.list({
 			pageSize : 1000,
@@ -129,14 +129,16 @@ const GoogleActions = {
 				description : file.description,
 				views       : parseInt(file.properties.views),
 				published   : file.properties.published ? file.properties.published == 'true' : false,
-				systems     : []
+				systems     : [],
+				lang        : file.properties.lang,
+				thumbnail   : file.properties.thumbnail
 			};
 		});
 	  return brews;
 	},
 
 	updateGoogleBrew : async (brew)=>{
-		const drive = google.drive({ version: 'v3' });
+		const drive = googleDrive.drive({ version: 'v3', auth: defaultAuth });
 
 		await drive.files.update({
 			fileId   : brew.googleId,
@@ -149,7 +151,8 @@ const GoogleActions = {
 					editId    : brew.editId || nanoid(12),
 					pageCount : brew.pageCount,
 					renderer  : brew.renderer || 'legacy',
-					isStubbed : true
+					isStubbed : true,
+					lang      : brew.lang || 'en'
 				}
 			},
 			media : {
@@ -167,7 +170,7 @@ const GoogleActions = {
 	},
 
 	newGoogleBrew : async (auth, brew)=>{
-		const drive = google.drive({ version: 'v3', auth });
+		const drive = googleDrive.drive({ version: 'v3', auth });
 
 		const media = {
 			mimeType : 'text/plain',
@@ -187,7 +190,8 @@ const GoogleActions = {
 				pageCount : brew.pageCount,
 				renderer  : brew.renderer || 'legacy',
 				isStubbed : true,
-				version   : 1
+				version   : 1,
+				lang      : brew.lang || 'en'
 			}
 		};
 
@@ -218,7 +222,7 @@ const GoogleActions = {
 	},
 
 	getGoogleBrew : async (id, accessId, accessType)=>{
-		const drive = google.drive({ version: 'v3' });
+		const drive = googleDrive.drive({ version: 'v3', auth: defaultAuth });
 
 		const obj = await drive.files.get({
 			fileId : id,
@@ -255,6 +259,7 @@ const GoogleActions = {
 				description : obj.data.description,
 				systems     : obj.data.properties.systems ? obj.data.properties.systems.split(',') : [],
 				authors     : [],
+				lang        : obj.data.properties.lang,
 				published   : obj.data.properties.published ? obj.data.properties.published == 'true' : false,
 				trashed     : obj.data.trashed,
 
@@ -274,7 +279,7 @@ const GoogleActions = {
 	},
 
 	deleteGoogleBrew : async (auth, id, accessId)=>{
-		const drive = google.drive({ version: 'v3', auth });
+		const drive = googleDrive.drive({ version: 'v3', auth });
 
 		const obj = await drive.files.get({
 			fileId : id,
@@ -300,7 +305,7 @@ const GoogleActions = {
 	},
 
 	increaseView : async (id, accessId, accessType, brew)=>{
-		const drive = google.drive({ version: 'v3' });
+		const drive = googleDrive.drive({ version: 'v3', auth: defaultAuth });
 
 		await drive.files.update({
 			fileId   : brew.googleId,
