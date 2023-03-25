@@ -3,6 +3,7 @@
 const MagicGen           = require('./snippets/magic.gen.js');
 const ClassTableGen      = require('./snippets/classtable.gen.js');
 const MonsterBlockGen    = require('./snippets/monsterblock.gen.js');
+const scriptGen			 = require('./snippets/script.gen.js');
 const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
 const CoverPageGen       = require('./snippets/coverpage.gen.js');
 const PartCoverPageGen   = require('./snippets/partcoverpage.gen.js');
@@ -170,9 +171,10 @@ module.exports = [
 				gen  : MonsterBlockGen.monster('monster,frame,wide', 4),
 			},
 			{
-				name : 'Cover Page',
-				icon : 'fac fa-file-c',
-				gen  : CoverPageGen,
+				name         : 'Cover Page',
+				icon         : 'fac book-front-cover',
+				gen          : CoverPageGen,
+				experimental : true
 			},
 			{
 				name : 'Part Cover Page',
@@ -237,7 +239,30 @@ module.exports = [
 				name : '1/3 Class Table (unframed)',
 				icon : 'fas fa-border-none',
 				gen  : ClassTableGen.third('classTable'),
-			}
+			},
+			{
+				name         : 'Rune Table',
+				icon         : 'fas fa-language',
+				gen          : scriptGen.dwarvish,
+				experimental : true,
+				subsnippets  : [
+					{
+						name : 'Dwarvish',
+						icon : 'fac davek',
+						gen  : scriptGen.dwarvish,
+					},
+					{
+						name : 'Elvish',
+						icon : 'fac rellanic',
+						gen  : scriptGen.elvish,
+					},
+					{
+						name : 'Draconic',
+						icon : 'fac iokharic',
+						gen  : scriptGen.draconic,
+					},
+				]
+			},
 		]
 	},
 

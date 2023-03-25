@@ -101,276 +101,228 @@
 	// *            BASE
 	// *****************************/
 
-	.page {
-		p {
-			overflow-wrap: break-word; //TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
-			display: block;
-			line-height: 1.25em;
-
-			&+* {
-				margin-top: 0.325cm;
+.page{
+	p{
+		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
+		display       : block;
+		line-height   : 1.25em;
+		&+* {
+			margin-top : 0.325cm;
+		}
+		&+p{
+			margin-top : 0;
+		}
+	}
+	ul{
+		margin-bottom       : 0.8em;
+		padding-left        : 1.4em;
+		line-height         : 1.25em;
+		list-style-position : outside;
+		list-style-type     : disc;
+	}
+	ol{
+		margin-bottom       : 0.8em;
+		padding-left        : 1.4em;
+		line-height         : 1.25em;
+		list-style-position : outside;
+		list-style-type     : decimal;
+	}
+	//Indents after p or lists
+	p+p, ul+p, ol+p{
+		text-indent : 1em;
+	}
+	img{
+		z-index : -1;
+	}
+	strong{
+		font-weight    : bold;
+		letter-spacing : -0.02em;
+	}
+	em{
+		font-style : italic;
+	}
+	sup{
+		vertical-align : super;
+		font-size      : smaller;
+		line-height    : 0;
+	}
+	sub{
+		vertical-align : sub;
+		font-size      : smaller;
+		line-height    : 0;
+	}
+	//*****************************
+	// *           HEADERS
+	// *****************************/
+	h1,h2,h3,h4{
+		font-family   : MrEavesRemake;
+		font-weight   : 800;
+		color         : var(--HB_Color_HeaderText);
+	}
+	h1{
+		margin-bottom       : 0.18cm; //Margin-bottom only because this is WIDE
+		column-span         : all;
+		font-size           : 0.89cm;
+		line-height         : 1em;
+		-webkit-column-span : all;
+		-moz-column-span    : all;
+		&+p::first-letter{
+			float                   : left;
+			font-family             : SolberaImitationRemake;
+			line-height             : 1em;
+			font-size               : 3.5cm;
+			padding-left            : 40px; //Allow background color to extend into margins
+			margin-left             : -40px;
+			margin-top              : -0.3cm;
+			padding-bottom          : 2px;
+			margin-bottom           : -20px;
+			background-image        : linear-gradient(-45deg, #322814, #998250, #322814);
+			background-clip         : text;
+			-webkit-background-clip : text;
+			color                   : rgba(0, 0, 0, 0);
+		}
+		&+p::first-line{
+			font-variant : small-caps;
+		}
+	}
+	h2{
+		//margin-top    : 0px; //Font is misaligned. Shift up slightly
+		//margin-bottom : 0.05cm;
+		font-size     : 0.75cm;
+		line-height   : 0.988em; //Font is misaligned. Shift up slightly
+	}
+	h3{
+		//margin-top    : -0.1cm; //Font is misaligned. Shift up slightly
+		//margin-bottom : 0.1cm;
+		font-size     : 0.575cm;
+		border-bottom : 2px solid var(--HB_Color_HeaderUnderline);;
+		line-height   : 0.995em; //Font is misaligned. Shift up slightly
+		& + * {
+			margin-top: 0.17cm;
+		}
+	}
+	* + h3 {
+		margin-top    : 0.155cm; //(0.325 - 0.17)
+	}
+	h4{
+		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
+		//margin-bottom : 0.02cm;
+		font-size     : 0.458cm;
+		line-height   : 0.971em; //Font is misaligned. Shift up slightly
+		& + * {
+			margin-top: 0.09cm;
+		}
+	}
+	* + h4 {
+		margin-top    : 0.235cm; //(0.325 - 0.09)
+	}
+	h5{
+		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
+		//margin-bottom : 0.02cm;
+		font-family   : ScalySansSmallCapsRemake;
+		font-size     : 0.423cm;
+		font-weight   : 900;
+		line-height   : 0.951em; //Font is misaligned. Shift up slightly
+		& + * {
+			margin-top : 0.2cm;
+		}
+	}
+	//*****************************
+	// *          TABLE
+	// *****************************/
+	table{
+		.useSansSerif();
+		width         : 100%;
+		line-height   : 16px;
+		& + * {
+			margin-top : 0.325cm;
+		}
+		thead{
+			display: table-row-group;
+			font-weight : 800;
+			th{
+				vertical-align : bottom;
+				//padding        : 0.14em 0.4em;
+				padding     : 0px 1.5px;   // Both of these are temporary, just to force
+				//line-height : 16px;        // PDF to render at same height until Chrome 108
 			}
-
-			&+p {
-				margin-top: 0;
+		}
+		tbody{
+			tr{
+				td{
+					//padding : 0.14em 0.4em;
+					padding     : 0px 1.5px;   // Both of these are temporary, just to force
+          //line-height : 16px;        // PDF to render at same height until Chrome 108
+				}
+				&:nth-child(odd){
+					background-color : var(--HB_Color_Accent);
+				}
 			}
 		}
-
-		ul {
-			margin-bottom: 0.8em;
-			padding-left: 1.4em;
-			line-height: 1.25em;
-			list-style-position: outside;
-			list-style-type: disc;
+	}
+	//*****************************
+	// *            NOTE
+	// *****************************/
+	.note{
+		.useSansSerif();
+		background-color    : var(--HB_Color_Accent);
+		border-style        : solid;
+		border-width        : 1px;
+		border-image        : @noteBorderImage 12 stretch;
+		border-image-outset : 9px 0px;
+		border-image-width  : 11px;
+		padding             : 0.13cm 0.16cm;
+		box-shadow          : 1px 4px 14px #888;
+		.page :where(&) {
+			margin-top        : 9px; //Prevent top border getting cut off on colbreak
 		}
-
-		ol {
-			margin-bottom: 0.8em;
-			padding-left: 1.4em;
-			line-height: 1.25em;
-			list-style-position: outside;
-			list-style-type: decimal;
+		& + * {
+			margin-top : 0.45cm;
 		}
-
-		//Indents after p or lists
-		p+p,
-		ul+p,
-		ol+p {
-			text-indent: 1em;
-		}
-
-		img {
-			z-index: -1;
-		}
-
-		strong {
-			font-weight: bold;
-			letter-spacing: -0.02em;
-		}
-
-		em {
-			font-style: italic;
-		}
-
-		sup {
-			vertical-align: super;
-			font-size: smaller;
-			line-height: 0;
-		}
-
-		sub {
-			vertical-align: sub;
-			font-size: smaller;
-			line-height: 0;
-		}
-
-		//*****************************
-		// *           HEADERS
-		// *****************************/
-		h1,
-		h2,
-		h3,
-		h4 {
-			font-family: MrEavesRemake;
-			font-weight: 800;
-			color: var(--HB_Color_HeaderText);
-		}
-
-		h1 {
-			margin-bottom: 0.18cm; //Margin-bottom only because this is WIDE
-			column-span: all;
-			font-size: 0.89cm;
-			line-height: 1em;
-			-webkit-column-span: all;
-			-moz-column-span: all;
-
-			&+p::first-letter {
-				float: left;
-				font-family: SolberaImitationRemake;
-				line-height: 1em;
-				font-size: 3.5cm;
-				padding-left: 40px; //Allow background color to extend into margins
-				margin-left: -40px;
-				margin-top: -0.3cm;
-				padding-bottom: 2px;
-				margin-bottom: -20px;
-				background-image: linear-gradient(-45deg, #322814, #998250, #322814);
-				background-clip: text;
-				-webkit-background-clip: text;
-				color: rgba(0, 0, 0, 0);
-			}
-
-			&+p::first-line {
-				font-variant: small-caps;
-			}
-		}
-
-		h2 {
-			//margin-top    : 0px; //Font is misaligned. Shift up slightly
-			//margin-bottom : 0.05cm;
-			font-size: 0.75cm;
-			line-height: 0.988em; //Font is misaligned. Shift up slightly
-		}
-
-		h3 {
-			//margin-top    : -0.1cm; //Font is misaligned. Shift up slightly
-			//margin-bottom : 0.1cm;
-			font-size: 0.575cm;
-			border-bottom: 2px solid var(--HB_Color_HeaderUnderline);
-			;
-			line-height: 0.995em; //Font is misaligned. Shift up slightly
-
-			&+* {
-				margin-top: 0.17cm;
-			}
-		}
-
-		*+h3 {
-			margin-top: 0.155cm; //(0.325 - 0.17)
-		}
-
-		h4 {
-			//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
-			//margin-bottom : 0.02cm;
-			font-size: 0.458cm;
-			line-height: 0.971em; //Font is misaligned. Shift up slightly
-
-			&+* {
-				margin-top: 0.09cm;
-			}
-		}
-
-		*+h4 {
-			margin-top: 0.235cm; //(0.325 - 0.09)
-		}
-
 		h5 {
-			//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
-			//margin-bottom : 0.02cm;
-			font-family: ScalySansSmallCapsRemake;
-			font-size: 0.423cm;
-			font-weight: 900;
-			line-height: 0.951em; //Font is misaligned. Shift up slightly
-
-			&+* {
-				margin-top: 0.2cm;
-			}
+			font-size : 0.375cm;
 		}
-
-		//*****************************
-		// *          TABLE
-		// *****************************/
-		table {
-			.useSansSerif();
-			width: 100%;
-			line-height: 16px;
-
-			&+* {
-				margin-top: 0.325cm;
-			}
-
-			thead {
-				display: table-row-group;
-				font-weight: 800;
-
-				th {
-					vertical-align: bottom;
-					//padding        : 0.14em 0.4em;
-					padding: 0px 1.5px; // Both of these are temporary, just to force
-					//line-height : 16px;        // PDF to render at same height until Chrome 108
-				}
-			}
-
-			tbody {
-				tr {
-					td {
-						//padding : 0.14em 0.4em;
-						padding: 0px 1.5px; // Both of these are temporary, just to force
-						//line-height : 16px;        // PDF to render at same height until Chrome 108
-					}
-
-					&:nth-child(odd) {
-						background-color: var(--HB_Color_Accent);
-					}
-				}
-			}
+		p{
+			display        : block;
+			padding-bottom : 0px;
 		}
-
-		//*****************************
-		// *            NOTE
-		// *****************************/
-		.note {
-			.useSansSerif();
-			background-color: var(--HB_Color_Accent);
-			border-style: solid;
-			border-width: 1px;
-			border-image: @noteBorderImage 12 stretch;
-			border-image-outset: 9px 0px;
-			border-image-width: 11px;
-			padding: 0.13cm 0.16cm;
-			filter: drop-shadow(1px 4px 6px #888);
-
-			.page :where(&) {
-				margin-top: 9px; //Prevent top border getting cut off on colbreak
-			}
-
-			&+* {
-				margin-top: 0.45cm;
-			}
-
-			h5 {
-				font-size: 0.375cm;
-			}
-
-			p {
-				display: block;
-				padding-bottom: 0px;
-			}
-
-			:last-child {
-				margin-bottom: 0;
-			}
+		:last-child {
+			margin-bottom : 0;
 		}
-
-		//************************************
-		// *       DESCRIPTIVE TEXT BOX
-		// ************************************/
-		.descriptive {
-			.useSansSerif();
-			background-color: #faf7ea;
-			border-style: solid;
-			border-width: 7px;
-			border-image: @descriptiveBoxImage 12 stretch;
-			border-image-outset: 4px;
-			padding: 0.1em;
-			filter: drop-shadow(0 0 3px #faf7ea);
-
-			.page :where(&) {
-				margin-top: 4px; //Prevent top border getting cut off on colbreak
-			}
-
-			&+* {
-				margin-top: 0.45cm;
-			}
-
-			h5 {
-				font-size: 0.375cm;
-			}
-
-			p {
-				display: block;
-				padding-bottom: 0px;
-				line-height: 1.5em;
-			}
-
-			:last-child {
-				margin-bottom: 0;
-			}
+	}
+	//************************************
+	// *       DESCRIPTIVE TEXT BOX
+	// ************************************/
+	.descriptive{
+		.useSansSerif();
+		background-color    : #faf7ea;
+		border-style        : solid;
+		border-width        : 7px;
+		border-image        : @descriptiveBoxImage 12 stretch;
+		border-image-outset : 4px;
+		padding             : 0.1em;
+		box-shadow          : 0 0 6px #faf7ea;
+		.page :where(&) {
+			margin-top        : 4px; //Prevent top border getting cut off on colbreak
 		}
-
-		//*****************************
-		// *    Images Snippets
-		// *****************************/
+		& + * {
+			margin-top : 0.45cm;
+		}
+		h5 {
+			font-size : 0.375cm;
+		}
+		p{
+			display        : block;
+			padding-bottom : 0px;
+			line-height    : 1.5em;
+		}
+		:last-child {
+			margin-bottom : 0;
+		}
+	}
+	//*****************************
+	// *    Images Snippets
+	// *****************************/
 
 		/* Arist Credit */
 		.artist {
@@ -495,27 +447,26 @@
 			--wc: @watercolor12;
 		}
 
-		//*****************************
-		// *    MONSTER STAT BLOCK
-		// *****************************/
-		.monster {
-			.useSansSerif();
-
-			&.frame {
-				border-style: solid;
-				border-width: 7px 6px;
-				background-color: var(--HB_Color_MonsterStatBackground);
-				background-image: @monsterBlockBackground;
-				border-image: @monsterBorderImage 14 round;
-				border-image-outset: 0px 2px;
-				background-blend-mode: overlay;
-				background-attachment: fixed;
-				filter: drop-shadow(1px 4px 6px #888);
-				padding: 4px 2px;
-				margin-left: -0.16cm;
-				margin-right: -0.16cm;
-				width: calc(100% + 0.32cm);
-			}
+	//*****************************
+	// *    MONSTER STAT BLOCK
+	// *****************************/
+	.monster {
+		.useSansSerif();
+		&.frame {
+			border-style          : solid;
+			border-width          : 7px 6px;
+			background-color      : var(--HB_Color_MonsterStatBackground);
+			background-image      : @monsterBlockBackground;
+			border-image          : @monsterBorderImage 14 round;
+			border-image-outset   : 0px 2px;
+			background-blend-mode : overlay;
+			background-attachment : fixed;
+			box-shadow            : 1px 4px 14px #888;
+			padding               : 4px 2px;
+			margin-left           : -0.16cm;
+			margin-right          : -0.16cm;
+			width                 : calc(100% + 0.32cm);
+		}
 
 			position : relative;
 			padding : 0px;
@@ -824,186 +775,168 @@
 		}
 	}
 
-	//*****************************
-	// *       CLASS TABLE
-	// *****************************/
-	.page .classTable {
-		th[colspan]:not([rowspan]) {
-			white-space: nowrap;
-		}
-
-		&.frame {
-			margin-top: 0.7cm;
-			margin-bottom: 0.9cm;
-			margin-left: -0.1cm;
-			margin-right: -0.1cm;
-			width: calc(100% + 0.2cm);
-			border-collapse: separate;
-			background-color: white;
-			border: initial;
-			border-style: solid;
-			border-image-outset: 0.4cm 0.3cm;
-			border-image-repeat: stretch;
-			border-image-slice: 200;
-			border-image-source: @frameBorderImage;
-			border-image-width: 47px;
-
-			&.wide:first-child {
-				margin-top: 0.12cm;
-			}
-
-			&+* {
-				margin-top: 0;
-			}
-		}
-
-		&.decoration {
-			position: relative;
-		}
-
-		&.decoration::before {
-			content: '';
-			position: absolute;
-			background-image: @classTableDecoration,
-				@classTableDecoration;
-			background-size: contain, contain;
-			background-repeat: no-repeat, no-repeat;
-			background-position: top, bottom;
-			width: 7.75cm;
-			height: calc(100% + 3.3cm);
-			top: 50%;
-			left: 50%;
-			transform: translateY(-50%) translateX(-50%);
-			filter: drop-shadow(0px 0px 1px #C8C5C080);
-			z-index: -1;
-		}
-
-		&.decoration.wide::before {
-			width: calc(100% + 3.3cm);
-			height: 7.75cm;
-			background-position: left, right;
-		}
-
-		h5+table {
-			margin-top: 0.2cm;
+//*****************************
+// *       CLASS TABLE
+// *****************************/
+.page .classTable{
+th[colspan]:not([rowspan]) {
+	white-space : nowrap;
+}
+&.frame {
+	margin-top          : 0.7cm;
+	margin-bottom       : 0.9cm;
+	margin-left         : -0.1cm;
+	margin-right        : -0.1cm;
+	width               : calc(100% + 0.2cm);
+	border-collapse     : separate;
+	background-color    : white;
+	border              : initial;
+	border-style        : solid;
+	border-image-outset : 0.4cm 0.3cm;
+	border-image-repeat : stretch;
+	border-image-slice  : 200;
+	border-image-source : @frameBorderImage;
+	border-image-width  : 47px;
+	&.wide:first-child {
+		margin-top: 0.12cm;
+	}
+	& + * {
+		margin-top: 0;
+	}
+}
+&.decoration {
+	position:relative;
+}
+&.decoration::before {
+	content             :'';
+	position            : absolute;
+	background-image    : @classTableDecoration,
+	                      @classTableDecoration;
+	background-size     : contain, contain;
+	background-repeat   : no-repeat, no-repeat;
+	background-position : top, bottom;
+	width               : 7.75cm;
+	height              : calc(100% + 3.3cm);
+	top                 : 50%;
+	left                : 50%;
+	transform           : translateY(-50%) translateX(-50%);
+	filter              : drop-shadow(0px 0px 1px #C8C5C080);
+	z-index             : -1;
+}
+&.decoration.wide::before {
+	width               : calc(100% + 3.3cm);
+	height              : 7.75cm;
+	background-position : left, right;
+}
+h5 + table{
+	margin-top : 0.2cm;
+}
+}
+//*****************************
+// *      COVER PAGE
+// *****************************/
+.page:has(.coverPage) {
+	columns    : 1;
+	text-align : center;
+	&:after {
+		all: unset;
+	}
+	.logo {
+		position   : absolute;
+		top        : 0.5cm;
+		left       : 0;
+		right      : 0;
+		filter     :drop-shadow(0 0 0.075cm black);
+		img {
+			height : 2cm;
+			width  : 100%;
 		}
 	}
-
-	//*****************************
-	// *      COVER PAGE
-	// *****************************/
-	.page:has(.coverPage) {
-		columns: 1;
-		text-align: center;
-
-		&:after {
-			all: unset;
-		}
-
-		.logo {
-			position: absolute;
-			top: 0.5cm;
-			left: 0;
-			right: 0;
-			filter: drop-shadow(0 0 0.075cm black);
-
-			img {
-				height: 2cm;
-				width: 100%;
-			}
-		}
-
-		.columnWrapper>p img {
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			height: 100%;
-			min-width: 100%;
-			z-index: -1;
-		}
-
-		h1 {
-			--shadow-x0: #000 0px 0px 0.1cm;
-			--shadow-x1: var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
-			--shadow-x2: var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
-			--shadow-x3: var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
-			text-shadow: var(--shadow-x3), var(--shadow-x3), var(--shadow-x3);
-			text-transform: uppercase;
-			font-weight: normal;
-			display: block;
-			margin-top: 1.2cm;
-			margin-bottom: 0;
-			color: white;
-			font-family: NodestoCapsCondensed;
-			font-size: 2.245cm;
-			line-height: 0.85em;
-		}
-
-		h2 {
-			--shadow-x0: #000 0px 0px 2.5px;
-			--shadow-x1: var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
-			--shadow-x2: var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
-			--shadow-x3: var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
-			text-shadow: var(--shadow-x3), var(--shadow-x3), var(--shadow-x3);
-			font-family: NodestoCapsCondensed;
-			font-weight: normal;
-			font-size: 0.85cm;
-			letter-spacing: 0.1cm;
-			color: white;
-		}
-
-		hr {
-			display: block;
-			position: relative;
-			background-image: @horizontalRule;
-			background-size: 100% 100%;
-			visibility: visible;
-			height: 0.5cm;
-			width: 12cm;
-			border: none;
-			margin: auto;
-			filter: drop-shadow(0 0 3px black);
-		}
-
-		.banner {
-			filter: drop-shadow(2px 2px 2px #000);
-			position: absolute;
-			left: 0;
-			bottom: 4.2cm;
-			background-image: url('/assets/coverPageBanner.svg');
-			height: 1.7cm;
-			width: 10.5cm;
-			color: white;
-			font-family: NodestoCapsCondensed;
-			font-weight: normal;
-			font-size: 1cm;
-			letter-spacing: 0.014cm;
-			text-align: left;
-			padding-left: 1cm;
-			display: flex;
-			justify-content: center;
-			flex-direction: column;
-			padding-top: 0.1cm;
-		}
-
-		.footnote {
-			--shadow-x0: #000 0px 0px 0.05cm;
-			--shadow-x1: var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
-			--shadow-x2: var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
-			text-shadow: var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
-			position: absolute;
-			text-align: center;
-			color: white;
-			font-size: 0.496cm;
-			bottom: 1.3cm;
-			left: 0;
-			right: 0;
-			margin-left: auto;
-			margin-right: auto;
-			width: 70%;
-			font-family: Overpass;
-		}
+	.columnWrapper > p img {
+		position  : absolute;
+		bottom    : 0;
+		left      : 0;
+		height    : 100%;
+		min-width : 100%;
+		z-index   : -1;
 	}
+	h1 {
+		text-shadow: unset;
+		filter         : drop-shadow(0 0 1.5px black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		text-transform : uppercase;
+		font-weight    : normal;
+		display        : block;
+		margin-top     : 1.2cm;
+		margin-bottom  : 0;
+		color          : white;
+		font-family    : NodestoCapsCondensed;
+		font-size      : 2.245cm;
+		line-height    : 0.85em;
+	}
+	h2 {
+		filter         : drop-shadow(0 0 1px black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		font-family    : NodestoCapsCondensed;
+		font-weight    : normal;
+		font-size      : 0.85cm;
+		letter-spacing : 0.1cm;
+		color          : white;
+	}
+	hr {
+		display          : block;
+		position         : relative;
+		background-image : @horizontalRule;
+		background-size  : 100% 100%;
+		visibility       : visible;
+		height           : 0.5cm;
+		width            : 12cm;
+		border           : none;
+		margin           : auto;
+		filter           : drop-shadow(0 0 3px black);
+	}
+	.banner {
+		filter           : drop-shadow(2px 2px 2px black);
+		position         : absolute;
+		left             : 0;
+		bottom           : 4.2cm;
+		background-image : url('/assets/coverPageBanner.svg');
+		height           : 1.7cm;
+		width            : 10.5cm;
+		color            : white;
+		font-family      : NodestoCapsCondensed;
+		font-weight      : normal;
+		font-size        : 1cm;
+		letter-spacing   : 0.014cm;
+		text-align       : left;
+		padding-left     : 1cm;
+		display          : flex;
+		justify-content  : center;
+		flex-direction   : column;
+		padding-top      : 0.1cm;
+	}
+	.footnote {
+		filter       : drop-shadow(0 0 0.7px black) drop-shadow(0 0 0 black)
+									 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+									 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+									 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		position     : absolute;
+		text-align   : center;
+		color        : white;
+		font-size    : 0.496cm;
+		bottom       : 1.3cm;
+		left         : 0;
+    right        : 0;
+    margin-left  : auto;
+    margin-right : auto;
+		width        : 70%;
+		font-family  : Overpass;
+	}
+}
 
 
 	//*****************************
@@ -1142,7 +1075,46 @@
 		margin-bottom: 0.325cm;
 	}
 
-	.page h1+* {
-		margin-top: 0;
+.page h1 + *{
+	margin-top : 0;
+}
+
+//*****************************
+// *       RUNE TABLE
+// *****************************/
+.page {
+	.runeTable {
+		margin-block: 0.7cm;
+		table {
+			font-family : inherit;
+			tbody tr {
+				background: unset;
+			}
+			th, td {
+				width: 1.3cm;
+				height: 1.3cm;
+				vertical-align: middle;
+				text-transform: uppercase;
+				outline: 1px solid #000;
+				font-weight: normal;
+			}
+			th{
+				font-family: BookInsanityRemake;
+				font-size: 0.45cm;
+			}
+			td {
+				font-size: 0.7cm;
+			}
+		}
+
+		&.frame {
+			border: initial;
+			border-style: solid;
+			border-image-outset: .45cm .35cm .4cm .4cm;
+			border-image-repeat: stretch;
+			border-image-slice: 170;
+			border-image-source: @scriptBorder;
+			border-image-width: 1.4cm;
+		}
 	}
 }
