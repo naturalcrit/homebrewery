@@ -7,6 +7,7 @@ const scriptGen			 = require('./snippets/script.gen.js');
 const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
 const CoverPageGen       = require('./snippets/coverpage.gen.js');
 const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
+const indexGen 			 = require('./snippets/index.gen.js');
 const dedent             = require('dedent-tabs').default;
 
 
@@ -191,6 +192,11 @@ module.exports = [
 						}}
 						\n`;
 				},
+			},
+			{
+				name : 'Index',
+				icon : 'fas fa-bars',
+				gen  : indexGen,
 			},
 		]
 	},
