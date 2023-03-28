@@ -13,7 +13,7 @@ const titles = [
 	'The Living Dead Above the Fearful Cage', 'Bahamut\'s Demonspawn',
 	'Across Gruumsh\'s Elemental Chaos',      'The Blade of Orcus',
 	'Beyond Revenge',                         'Brain of Insanity',
-	'Breed Battle!, A New Beginning',         'Evil Lake, A New Beginning',
+	'A New Beginning',                        'Evil Lake of the Merfolk',
 	'Invasion of the Gigantic Cat, Part II',  'Kraken War 2020',
 	'The Body Whisperers',                    'The Doctor from Heaven',
 	'The Diabolical Tales of the Ape-Women',  'The Doctor Immortal',
@@ -78,7 +78,7 @@ module.exports = {
 
 		  # ${_.sample(titles)}
 		  ## ${_.sample(subtitles)}
-		  __________
+		  ___
 
 		  {{banner HOMEBREW}}
 
@@ -96,10 +96,11 @@ module.exports = {
 			{{insideCover}}
 
 			# ${_.sample(titles)}
+			## ${_.sample(subtitles)}
 			___
 
-			{{imageMaskCenter${_.random(1, 16)},--offsetX:0%,--offsetY:0%,--rotation:0;
-			  ![](https://i.imgur.com/GZfjDWV.png){height:100%}
+			{{imageMaskCenter${_.random(1, 16)},--offsetX:0%,--offsetY:0%,--rotation:0
+			  ![](https://i.imgur.com/IsfUnFR.jpg){height:100%}
 			}}
 
 			{{logo ![](/assets/naturalCritLogo.svg)}}
