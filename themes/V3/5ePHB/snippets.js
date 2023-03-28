@@ -3,10 +3,9 @@
 const MagicGen           = require('./snippets/magic.gen.js');
 const ClassTableGen      = require('./snippets/classtable.gen.js');
 const MonsterBlockGen    = require('./snippets/monsterblock.gen.js');
-const scriptGen			 = require('./snippets/script.gen.js');
+const scriptGen          = require('./snippets/script.gen.js');
 const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
 const CoverPageGen       = require('./snippets/coverpage.gen.js');
-const InsideCoverPageGen = require('./snippets/insidecoverpage.gen.js')
 const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
 const dedent             = require('dedent-tabs').default;
 
@@ -178,7 +177,7 @@ module.exports = [
 			},
 			{
 				name         : 'Inside Cover Page',
-				icon         : 'fac book-front-cover',
+				icon         : 'fac book-inside-cover',
 				gen          : CoverPageGen.inside,
 				experimental : true
 			},
