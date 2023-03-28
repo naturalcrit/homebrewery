@@ -686,25 +686,6 @@ h5 + table{
 	&:after {
 		all: unset;
 	}
-	.logo {
-		position   : absolute;
-		top        : 0.5cm;
-		left       : 0;
-		right      : 0;
-		filter     :drop-shadow(0 0 0.075cm black);
-		img {
-			height : 2cm;
-			width  : 100%;
-		}
-	}
-	.columnWrapper > p img {
-		position  : absolute;
-		bottom    : 0;
-		left      : 0;
-		height    : 100%;
-		min-width : 100%;
-		z-index   : -1;
-	}
 	h1 {
 		text-shadow: unset;
 		filter         : drop-shadow(0 0 1.5px black) drop-shadow(0 0 0 black)
@@ -781,50 +762,62 @@ h5 + table{
 		width        : 70%;
 		font-family  : Overpass;
 	}
+	.logo {
+		position   : absolute;
+		top        : 0.5cm;
+		left       : 0;
+		right      : 0;
+		filter     :drop-shadow(0 0 0.075cm black);
+		img {
+			height : 2cm;
+			width  : 100%;
+		}
+	}
+	.columnWrapper > p img {
+		position  : absolute;
+		bottom    : 0;
+		left      : 0;
+		height    : 100%;
+		min-width : 100%;
+		z-index   : -1;
+	}
 }
 //*****************************
 // *      INSIDE COVER PAGE
 // *****************************/
 .page:has(.insideCover) {
+	columns    : 1;
+	text-align : center;
+	&:after {
+		all	: unset;
+	}
 	h1 {
-		font-family		: NodestoCapsCondensed;
-		font-weight		: normal;
-		font-size		: 2.1cm;
-		text-align		: center;
-		text-transform	: uppercase;
-		line-height		: 2cm;
-		position		: absolute;
-		top				: 3.2cm;
-		left			: 50%;
-		translate		: -50% 0;
-		width			: max-content;
+		font-family		 : NodestoCapsCondensed;
+		font-weight		 : normal;
+		font-size		   : 2.1cm;
+		display        : block;
+		margin-top     : 1.2cm;
+		margin-bottom  : 0;
+		text-transform : uppercase;
+		line-height    : 0.85em;
 	}
-
+	h2 {
+		font-family    : NodestoCapsCondensed;
+		font-weight    : normal;
+		font-size      : 0.85cm;
+		letter-spacing : 0.1cm;
+	}
 	hr {
-		visibility			: visible;
-		height				: 0.3cm;
-		width				: 12cm;
-		position			: absolute;
-		left				: 50%;
-		top					: 6cm;
-		translate			: -50% 0;
-		background-image	: @horizontalRule;
-		background-size		: 100%;
-		border				: none;
+		display          : block;
+		position         : relative;
+		background-image : @horizontalRule;
+		background-size  : 100% 100%;
+		visibility       : visible;
+		height           : 0.5cm;
+		width            : 12cm;
+		border           : none;
+		margin           : auto;
 	}
-
-	.columnWrapper > p img {
-		position			: absolute;
-		left				: 60%;
-		top					: 20%;
-		translate			: -50% 0;
-		min-width			: 100%;
-		mask-image			: @insideCoverMask;
-		mask-repeat			: no-repeat;
-		-webkit-mask-image	: @insideCoverMask;
-		-webkit-mask-repeat	: no-repeat;
-	}
-
 	.logo {
 		position : absolute;
 		bottom   : 1cm;
@@ -836,13 +829,7 @@ h5 + table{
 			width  : 100%;
 		}
 	}
-
-	&::after {
-		all	: unset;
-	}
 }
-
-
 
 //*****************************
 // *      TABLE OF CONTENTS
