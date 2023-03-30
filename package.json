@@ -3,7 +3,7 @@
   "description": "Create authentic looking D&D homebrews using only markdown",
   "version": "3.7.2",
   "engines": {
-    "node": "16.11.x"
+    "node": "16.13.x"
   },
   "repository": {
     "type": "git",
