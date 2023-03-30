@@ -72,7 +72,7 @@ module.exports = {
 
 	front : function() {
 		return dedent`
-		  {{coverPage }}
+		  {{frontCover}}
 
 		  {{logo ![](/assets/naturalCritLogo.svg)}}
 
@@ -86,7 +86,7 @@ module.exports = {
 		    ${_.sample(footnote)}
 		  }}
 
-		  ![background image](https://i.imgur.com/Mqx8Vf7.png)
+		  ![background image](https://i.imgur.com/IwHRrbF.jpg){position:absolute,bottom:0,left:0,height:100%}
 
 		  \page`;
 	},
