@@ -23,7 +23,7 @@ const titles = [
 	'Sky of Zelda: The Thunder of Force',     'Core Battle',
 	'Ruby of Atlantis: The Quake of Peace',   'Deadly Amazement III',
 	'Dry Chaos IX',                           'Gate Thunder',
-	'Vyse\'s Skies',                          'White Greatness III',
+	'Vyse\'s Skies',                          'Blue Greatness III',
 	'Yellow Divinity',                        'Zidane\'s Ghost'
 ];
 
