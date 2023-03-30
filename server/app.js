@@ -285,6 +285,8 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 		type        : 'article'
 	};
 
+	req.editorTheme = 'base16-dark'; // TEST VALUE
+
 	sanitizeBrew(req.brew, 'edit');
 	splitTextStyleAndMetadata(req.brew);
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
@@ -421,7 +423,8 @@ app.use(asyncHandler(async (req, res, next)=>{
 	const configuration = {
 		local       : isLocalEnvironment,
 		publicUrl   : config.get('publicUrl') ?? '',
-		environment : nodeEnv
+		environment : nodeEnv,
+		editorTheme : req.editorTheme ?? ''
 	};
 	const props = {
 		version       : require('./../package.json').version,

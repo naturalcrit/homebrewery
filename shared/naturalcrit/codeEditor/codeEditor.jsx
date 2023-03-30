@@ -156,6 +156,7 @@ const CodeEditor = createClass({
 			autoCloseTags     : true,
 			styleActiveLine   : true,
 			showTrailingSpace : false,
+			theme             : global.config?.editorTheme || 'default',
 			// specialChars           : / /,
 			// specialCharPlaceholder : function(char) {
 			// 	const el = document.createElement('span');
