@@ -1,4 +1,4 @@
-FROM node:16.11-alpine
+FROM node:16.13-alpine
 RUN apk --no-cache add git
 
 ENV NODE_ENV=docker
