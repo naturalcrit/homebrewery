@@ -678,9 +678,9 @@ h5 + table{
 }
 }
 //*****************************
-// *      COVER PAGE
+// *    FRONT COVER PAGE
 // *****************************/
-.page:has(.coverPage) {
+.page:has(.frontCover) {
 	columns    : 1;
 	text-align : center;
 	&:after {
@@ -772,17 +772,9 @@ h5 + table{
 			width  : 100%;
 		}
 	}
-	.columnWrapper > p img {
-		position  : absolute;
-		bottom    : 0;
-		left      : 0;
-		height    : 100%;
-		min-width : 100%;
-		z-index   : -1;
-	}
 }
 //*****************************
-// *      INSIDE COVER PAGE
+// *    INSIDE COVER PAGE
 // *****************************/
 .page:has(.insideCover) {
 	columns    : 1;

@@ -2,7 +2,7 @@ const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
 
 module.exports = {
-	center :()=>{
+	center : ()=>{
 		return dedent`
 			{{imageMaskCenter${_.random(1, 16)},--offsetX:0%,--offsetY:0%,--rotation:0
 			  ![](https://i.imgur.com/GZfjDWV.png){height:100%}
