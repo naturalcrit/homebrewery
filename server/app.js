@@ -68,6 +68,10 @@ app.use((req, res, next)=>{
 	if(req.cookies.nc_config){
 		try {
 			req.userConfig = jwt.decode(req.cookies.nc_config, config.get('secret'));
+			const defaultConfig = {
+				editorTheme : 'default'
+			};
+			_.defaults(req.userConfig, defaultConfig);
 		} catch (e){}
 	}
 
@@ -293,11 +297,6 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 		type        : 'article'
 	};
 
-	req.editorTheme = 'default'; // TEST VALUE
-	if(req.userConfig?.editorTheme) {
-		req.editorTheme = req.userConfig.editorTheme;
-	}
-
 	sanitizeBrew(req.brew, 'edit');
 	splitTextStyleAndMetadata(req.brew);
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
@@ -443,7 +442,7 @@ app.use(asyncHandler(async (req, res, next)=>{
 		local       : isLocalEnvironment,
 		publicUrl   : config.get('publicUrl') ?? '',
 		environment : nodeEnv,
-		editorTheme : req.editorTheme ?? ''
+		editorTheme : req.userConfig.editorTheme
 	};
 	const props = {
 		version       : require('./../package.json').version,
