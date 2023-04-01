@@ -13,7 +13,7 @@ const titles = [
 	'The Living Dead Above the Fearful Cage', 'Bahamut\'s Demonspawn',
 	'Across Gruumsh\'s Elemental Chaos',      'The Blade of Orcus',
 	'Beyond Revenge',                         'Brain of Insanity',
-	'Breed Battle!, A New Beginning',         'Evil Lake, A New Beginning',
+	'A New Beginning',                        'Evil Lake of the Merfolk',
 	'Invasion of the Gigantic Cat, Part II',  'Kraken War 2020',
 	'The Body Whisperers',                    'The Doctor from Heaven',
 	'The Diabolical Tales of the Ape-Women',  'The Doctor Immortal',
@@ -23,7 +23,7 @@ const titles = [
 	'Sky of Zelda: The Thunder of Force',     'Core Battle',
 	'Ruby of Atlantis: The Quake of Peace',   'Deadly Amazement III',
 	'Dry Chaos IX',                           'Gate Thunder',
-	'Vyse\'s Skies',                          'White Greatness III',
+	'Vyse\'s Skies',                          'Blue Greatness III',
 	'Yellow Divinity',                        'Zidane\'s Ghost'
 ];
 
@@ -68,23 +68,43 @@ const footnote = [
 	'In an amazing kingdom, in an age of sorcery and lost souls, eight space pirates quest for freedom.'
 ];
 
-module.exports = ()=>{
-	return dedent`
-  {{coverPage }}
+module.exports = {
 
-  {{logo ![](/assets/naturalCritLogo.svg)}}
+	front : function() {
+		return dedent`
+		  {{frontCover}}
 
-  # ${_.sample(titles)}
-  ## ${_.sample(subtitles)}
-  __________
+		  {{logo ![](/assets/naturalCritLogo.svg)}}
 
-  {{banner HOMEBREW}}
+		  # ${_.sample(titles)}
+		  ## ${_.sample(subtitles)}
+		  ___
 
-  {{footnote
-    ${_.sample(footnote)}
-  }}
+		  {{banner HOMEBREW}}
 
-  ![background image](https://i.imgur.com/Mqx8Vf7.png)
+		  {{footnote
+		    ${_.sample(footnote)}
+		  }}
 
-  \page`;
+		  ![background image](https://i.imgur.com/IwHRrbF.jpg){position:absolute,bottom:0,left:0,height:100%}
+
+		  \page`;
+	},
+
+	inside : function() {
+		return dedent`
+			{{insideCover}}
+
+			# ${_.sample(titles)}
+			## ${_.sample(subtitles)}
+			___
+
+			{{imageMaskCenter${_.random(1, 16)},--offsetX:0%,--offsetY:0%,--rotation:0
+			  ![](https://i.imgur.com/IsfUnFR.jpg){height:100%}
+			}}
+
+			{{logo ![](/assets/naturalCritLogo.svg)}}
+
+			\page`;
+	}
 };
