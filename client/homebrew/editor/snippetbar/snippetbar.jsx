@@ -3,6 +3,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
+const request = require('superagent');
 
 //Import all themes
 
@@ -90,6 +91,28 @@ const Snippetbar = createClass({
 		return compiledSnippets;
 	},
 
+	selectTheme : async function(){
+		console.log('select theme');
+		const editorTheme = window.prompt('Enter theme name:', 'default');
+		if(!editorTheme) return;
+
+		const expiry = new Date;
+		expiry.setFullYear(expiry.getFullYear() + 1);
+
+		const token = await request.post('/config')
+				.send({ editorTheme })
+				.then((response)=>{
+					return response.body;
+				})
+				.catch((err)=>{
+					console.warn(err);
+				});
+		if(!token) return;
+
+		document.cookie = `nc_config=${token};expires=${expiry};path=/;samesite=lax;${window.domain ? `domain=${window.domain}` : ''}`;
+		window.location.reload(true);
+	},
+
 	handleSnippetClick : function(injectedText){
 		this.props.onInject(injectedText);
 	},
@@ -122,6 +145,10 @@ const Snippetbar = createClass({
 				<i className='fas fa-redo' />
 			</div>
 			<div className='divider'></div>
+			<div className={'editorTool palette'}
+				onClick={this.selectTheme} >
+				<i className='fas fa-palette' />
+			</div>
 			<div className={cx('text', { selected: this.props.view === 'text' })}
 				 onClick={()=>this.props.onViewChange('text')}>
 				<i className='fa fa-beer' />

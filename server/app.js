@@ -1,4 +1,4 @@
-/*eslint max-lines: ["warn", {"max": 400, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
 // Set working directory to project root
 process.chdir(`${__dirname}/..`);
 
@@ -51,18 +51,26 @@ app.use(require('./forcessl.mw.js'));
 
 //Account Middleware
 app.use((req, res, next)=>{
-	if(req.cookies && req.cookies.nc_session){
+	req.config = {
+		google_client_id     : config.get('google_client_id'),
+		google_client_secret : config.get('google_client_secret')
+	};
+
+	if(!req.cookies) return next();
+
+	if(req.cookies.nc_session){
 		try {
 			req.account = jwt.decode(req.cookies.nc_session, config.get('secret'));
 			//console.log("Just loaded up JWT from cookie:");
 			//console.log(req.account);
 		} catch (e){}
 	}
+	if(req.cookies.nc_config){
+		try {
+			req.userConfig = jwt.decode(req.cookies.nc_config, config.get('secret'));
+		} catch (e){}
+	}
 
-	req.config = {
-		google_client_id     : config.get('google_client_id'),
-		google_client_secret : config.get('google_client_secret')
-	};
 	return next();
 });
 
@@ -285,7 +293,10 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 		type        : 'article'
 	};
 
-	req.editorTheme = 'base16-dark'; // TEST VALUE
+	req.editorTheme = 'default'; // TEST VALUE
+	if(req.userConfig?.editorTheme) {
+		req.editorTheme = req.userConfig.editorTheme;
+	}
 
 	sanitizeBrew(req.brew, 'edit');
 	splitTextStyleAndMetadata(req.brew);
@@ -400,6 +411,14 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 	return next();
 }));
 
+// Config
+app.post('/config', (req, res)=>{
+	const editorTheme = req.body.editorTheme;
+	if(!editorTheme) return;
+
+	const payload = jwt.encode({ editorTheme: editorTheme, issued: new Date }, config.get('secret'));
+	return res.json(payload);
+});
 
 const nodeEnv = config.get('node_env');
 const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
