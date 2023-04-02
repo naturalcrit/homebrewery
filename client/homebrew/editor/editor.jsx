@@ -268,14 +268,9 @@ const Editor = createClass({
 		this.forceUpdate();
 	},
 
-	renderEditorCSSLink : function(){
-		return <link href={`../homebrew/cm-themes/${this.state.editorTheme}.css`} rel='stylesheet' />;
-	},
-
 	renderEditor : function(){
 		if(this.isText()){
 			return <>
-				{this.renderEditorCSSLink()}
 				<CodeEditor key='codeEditor'
 					ref='codeEditor'
 					language='gfm'
@@ -288,7 +283,6 @@ const Editor = createClass({
 		}
 		if(this.isStyle()){
 			return <>
-				{this.renderEditorCSSLink()}
 				<CodeEditor key='codeEditor'
 					ref='codeEditor'
 					language='css'

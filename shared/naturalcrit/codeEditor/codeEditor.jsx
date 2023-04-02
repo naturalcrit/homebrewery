@@ -396,7 +396,10 @@ const CodeEditor = createClass({
 	//----------------------//
 
 	render : function(){
-		return <div className='codeEditor' ref='editor' style={this.props.style}/>;
+		return <>
+			<link href={`../homebrew/cm-themes/${this.props.editorTheme}.css`} rel='stylesheet' />
+			<div className='codeEditor' ref='editor' style={this.props.style}/>
+		</>;
 	}
 });
 
