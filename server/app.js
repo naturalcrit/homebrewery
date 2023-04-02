@@ -17,6 +17,8 @@ const asyncHandler = require('express-async-handler');
 
 const { DEFAULT_BREW } = require('./brewDefaults.js');
 
+const codeMirrorThemes = require('../themes/codeMirror/editorThemes.json');
+
 const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
 	if(brew.text.startsWith('```metadata')) {
@@ -419,9 +421,10 @@ app.use(asyncHandler(async (req, res, next)=>{
 
 	// Create configuration object
 	const configuration = {
-		local       : isLocalEnvironment,
-		publicUrl   : config.get('publicUrl') ?? '',
-		environment : nodeEnv
+		local            : isLocalEnvironment,
+		publicUrl        : config.get('publicUrl') ?? '',
+		environment      : nodeEnv,
+		codeMirrorThemes : codeMirrorThemes
 	};
 	const props = {
 		version       : require('./../package.json').version,
