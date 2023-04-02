@@ -49,7 +49,8 @@ const CodeEditor = createClass({
 			value         : '',
 			wrap          : true,
 			onChange      : ()=>{},
-			enableFolding : true
+			enableFolding : true,
+			editorTheme   : 'default'
 		};
 	},
 
@@ -90,6 +91,10 @@ const CodeEditor = createClass({
 			this.codeMirror.setOption('foldOptions', this.foldOptions(this.codeMirror));
 		} else {
 			this.codeMirror.setOption('foldOptions', false);
+		}
+
+		if(prevProps.editorTheme !== this.props.editorTheme){
+			this.codeMirror.setOption('theme', this.props.editorTheme);
 		}
 	},
 
@@ -156,6 +161,7 @@ const CodeEditor = createClass({
 			autoCloseTags     : true,
 			styleActiveLine   : true,
 			showTrailingSpace : false,
+			theme             : this.props.editorTheme
 			// specialChars           : / /,
 			// specialCharPlaceholder : function(char) {
 			// 	const el = document.createElement('span');

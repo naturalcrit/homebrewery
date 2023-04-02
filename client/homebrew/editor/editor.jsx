@@ -34,12 +34,14 @@ const Editor = createClass({
 			onMetaChange  : ()=>{},
 			reportError   : ()=>{},
 
-			renderer : 'legacy'
+			editorTheme : 'default',
+			renderer    : 'legacy'
 		};
 	},
 	getInitialState : function() {
 		return {
-			view : 'text' //'text', 'style', 'meta'
+			editorTheme : this.props.editorTheme,
+			view        : 'text' //'text', 'style', 'meta'
 		};
 	},
 
@@ -255,25 +257,38 @@ const Editor = createClass({
 		this.refs.codeEditor?.updateSize();
 	},
 
+	updateEditorTheme : function(newTheme){
+		this.setState({
+			editorTheme : newTheme
+		});
+	},
+
 	//Called by CodeEditor after document switch, so Snippetbar can refresh UndoHistory
 	rerenderParent : function (){
 		this.forceUpdate();
 	},
 
+	renderEditorCSSLink : function(){
+		return <link href={`../homebrew/cm-themes/${this.state.editorTheme}.css`} rel='stylesheet' />;
+	},
+
 	renderEditor : function(){
 		if(this.isText()){
 			return <>
+				{this.renderEditorCSSLink()}
 				<CodeEditor key='codeEditor'
 					ref='codeEditor'
 					language='gfm'
 					view={this.state.view}
 					value={this.props.brew.text}
 					onChange={this.props.onTextChange}
+					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent} />
 			</>;
 		}
 		if(this.isStyle()){
 			return <>
+				{this.renderEditorCSSLink()}
 				<CodeEditor key='codeEditor'
 					ref='codeEditor'
 					language='css'
@@ -281,6 +296,7 @@ const Editor = createClass({
 					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
 					onChange={this.props.onStyleChange}
 					enableFolding={false}
+					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent} />
 			</>;
 		}
@@ -323,7 +339,8 @@ const Editor = createClass({
 					theme={this.props.brew.theme}
 					undo={this.undo}
 					redo={this.redo}
-					historySize={this.historySize()} />
+					historySize={this.historySize()}
+					updateEditorTheme={this.updateEditorTheme} />
 
 				{this.renderEditor()}
 			</div>

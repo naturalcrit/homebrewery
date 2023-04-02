@@ -24,16 +24,17 @@ const Snippetbar = createClass({
 	displayName     : 'SnippetBar',
 	getDefaultProps : function() {
 		return {
-			brew            : {},
-			view            : 'text',
-			onViewChange    : ()=>{},
-			onInject        : ()=>{},
-			onToggle        : ()=>{},
-			showEditButtons : true,
-			renderer        : 'legacy',
-			undo            : ()=>{},
-			redo            : ()=>{},
-			historySize     : ()=>{}
+			brew              : {},
+			view              : 'text',
+			onViewChange      : ()=>{},
+			onInject          : ()=>{},
+			onToggle          : ()=>{},
+			showEditButtons   : true,
+			renderer          : 'legacy',
+			undo              : ()=>{},
+			redo              : ()=>{},
+			historySize       : ()=>{},
+			updateEditorTheme : ()=>{}
 		};
 	},
 
@@ -94,6 +95,13 @@ const Snippetbar = createClass({
 		this.props.onInject(injectedText);
 	},
 
+	selectTheme : function(){
+		console.log('select theme');
+		const editorTheme = window.prompt('Enter theme name:', 'default');
+		if(!editorTheme) return;
+		this.props.updateEditorTheme(editorTheme);
+	},
+
 	renderSnippetGroups : function(){
 		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
 
@@ -122,6 +130,10 @@ const Snippetbar = createClass({
 				<i className='fas fa-redo' />
 			</div>
 			<div className='divider'></div>
+			<div className={'editorTool palette'}
+				onClick={this.selectTheme} >
+				<i className='fas fa-palette' />
+			</div>
 			<div className={cx('text', { selected: this.props.view === 'text' })}
 				 onClick={()=>this.props.onViewChange('text')}>
 				<i className='fa fa-beer' />
