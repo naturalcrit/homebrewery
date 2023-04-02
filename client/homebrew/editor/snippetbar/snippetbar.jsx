@@ -102,14 +102,6 @@ const Snippetbar = createClass({
 		});
 	},
 
-	selectTheme : function(){
-		console.log('select theme');
-		console.log(global.config);
-		const editorTheme = window.prompt('Enter theme name:', 'default');
-		if(!editorTheme) return;
-		this.props.updateEditorTheme(editorTheme);
-	},
-
 	changeTheme : function(e){
 		this.props.updateEditorTheme(e.target.value);
 
