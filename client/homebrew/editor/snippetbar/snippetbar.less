@@ -46,12 +46,33 @@
 					color : black;
 				}
 			}
+			&.editorTheme{
+				.tooltipLeft('Editor Themes');
+				font-size : 0.75em;
+				color     : black;
+				&.active{
+					color : white;
+					background-color: black;
+				}
+			}
 			&.divider {
 				background: linear-gradient(#000, #000) no-repeat center/1px 100%;
 				width: 5px;
 				&:hover{
 					background-color: inherit;
 				}
+			}
+		}
+		.themeSelector{
+			position: absolute;
+			left: -65px;
+			top: 30px;
+			z-index: 999;
+			width: 170px;
+			background-color: black;
+    		border-radius: 5px;
+			&>select{
+				width: auto;
 			}
 		}
 	}

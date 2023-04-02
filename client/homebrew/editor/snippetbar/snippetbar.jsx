@@ -40,8 +40,9 @@ const Snippetbar = createClass({
 
 	getInitialState : function() {
 		return {
-			renderer : this.props.renderer,
-			snippets : []
+			renderer      : this.props.renderer,
+			themeSelector : false,
+			snippets      : []
 		};
 	},
 
@@ -95,11 +96,36 @@ const Snippetbar = createClass({
 		this.props.onInject(injectedText);
 	},
 
+	toggleThemeSelector : function(){
+		this.setState({
+			themeSelector : !this.state.themeSelector
+		});
+	},
+
 	selectTheme : function(){
 		console.log('select theme');
+		console.log(global.config);
 		const editorTheme = window.prompt('Enter theme name:', 'default');
 		if(!editorTheme) return;
 		this.props.updateEditorTheme(editorTheme);
+	},
+
+	changeTheme : function(e){
+		this.props.updateEditorTheme(e.target.value);
+
+		this.setState({
+			showThemeSelector : false,
+		});
+	},
+
+	renderThemeSelector : function(){
+		return <div className='themeSelector'>
+			<select value={this.props.currentEditorTheme} onChange={this.changeTheme}>
+				{global.config.codeMirrorThemes.map((theme, key)=>{
+					return <option key={key} value={theme}>{theme}</option>;
+				})}
+			</select>
+		</div>;
 	},
 
 	renderSnippetGroups : function(){
@@ -130,10 +156,12 @@ const Snippetbar = createClass({
 				<i className='fas fa-redo' />
 			</div>
 			<div className='divider'></div>
-			<div className={'editorTool palette'}
-				onClick={this.selectTheme} >
+			<div className={`editorTool editorTheme ${this.state.themeSelector ? 'active' : ''}`}
+				onClick={this.toggleThemeSelector} >
 				<i className='fas fa-palette' />
 			</div>
+			{this.state.themeSelector && this.renderThemeSelector()}
+			<div className='divider'></div>
 			<div className={cx('text', { selected: this.props.view === 'text' })}
 				 onClick={()=>this.props.onViewChange('text')}>
 				<i className='fa fa-beer' />
