@@ -10,6 +10,8 @@ const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
 const SnippetBar = require('./snippetbar/snippetbar.jsx');
 const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
+const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
+
 const SNIPPETBAR_HEIGHT = 25;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
@@ -53,6 +55,13 @@ const Editor = createClass({
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
+
+		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
+		if(editorTheme) {
+			this.setState({
+				editorTheme : editorTheme
+			});
+		}
 	},
 
 	componentWillUnmount : function() {
@@ -258,6 +267,7 @@ const Editor = createClass({
 	},
 
 	updateEditorTheme : function(newTheme){
+		window.localStorage.setItem(EDITOR_THEME_KEY, newTheme);
 		this.setState({
 			editorTheme : newTheme
 		});
