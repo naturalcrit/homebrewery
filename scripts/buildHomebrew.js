@@ -101,7 +101,21 @@ fs.emptyDirSync('./build');
 
 	//v==---------------------------MOVE CM EDITOR THEMES -----------------------------==v//
 
+	editorThemeFiles = fs.readdirSync('./node_modules/codemirror/theme');
+
+	const editorThemeFile = './themes/codeMirror/editorThemes.json';
+	if(fs.existsSync(editorThemeFile)) fs.rmSync(editorThemeFile);
+	const stream = fs.createWriteStream(editorThemeFile, { flags: 'a' });
+	stream.write('[\n');
+
+	for (themeFile of editorThemeFiles) {
+		stream.write(`"${themeFile.slice(0, -4)}",\n`);
+	}
+	stream.write('"default"\n]\n');
+	stream.end();
+
 	await fs.copy('./node_modules/codemirror/theme', './build/homebrew/cm-themes');
+	// await fs.copy('./themes/codeMirror', './build/themes/codeMirror');
 
 	//v==----------------------------- BUNDLE PACKAGES --------------------------------==v//
 
