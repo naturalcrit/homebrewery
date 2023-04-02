@@ -334,6 +334,7 @@ const Editor = createClass({
 					undo={this.undo}
 					redo={this.redo}
 					historySize={this.historySize()}
+					currentEditorTheme={this.state.editorTheme}
 					updateEditorTheme={this.updateEditorTheme} />
 
 				{this.renderEditor()}
