@@ -99,6 +99,10 @@ fs.emptyDirSync('./build');
 	await fs.copy('./themes/assets', './build/assets');
 	await fs.copy('./client/icons', './build/icons');
 
+	//v==---------------------------MOVE CM EDITOR THEMES -----------------------------==v//
+
+	await fs.copy('./node_modules/codemirror/theme', './build/homebrew/cm-themes');
+
 	//v==----------------------------- BUNDLE PACKAGES --------------------------------==v//
 
 	const bundles = await pack('./client/homebrew/homebrew.jsx', {
