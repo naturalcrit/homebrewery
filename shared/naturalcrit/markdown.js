@@ -169,7 +169,6 @@ const mustacheInjectBlock = {
 			const match = inlineRegex.exec(src);
 			if(match) {
 				const lastToken = tokens[tokens.length - 1];
-				console.log(lastToken);
 				if(!lastToken || lastToken.type == 'mustacheInjectBlock')
 					return false;
 
