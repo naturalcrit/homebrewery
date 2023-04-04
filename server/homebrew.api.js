@@ -305,7 +305,7 @@ If you believe you should have access to this brew, ask the file owner to invite
 
 			if(brew.authors.length === 0) {
 				// Delete brew if there are no authors left
-				await brew.deleteOne()
+				await HomebrewModel.deleteOne({ _id: brew._id })
 					.catch((err)=>{
 						console.error(err);
 						throw { status: 500, message: 'Error while removing' };
