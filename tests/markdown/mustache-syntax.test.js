@@ -3,6 +3,12 @@
 const dedent = require('dedent-tabs').default;
 const Markdown = require('naturalcrit/markdown.js');
 
+// Marked.js adds line returns after closing tags on some default tokens.
+// This removes those line returns for comparison sake.
+String.prototype.trimReturns = function(){
+	return this.replace(/\r?\n|\r/g, '');
+};
+
 test('Renders a mustache span with text only', function() {
 	const source = '{{ text}}';
 	const rendered = Markdown.render(source);
