@@ -112,6 +112,8 @@ describe('Inline: When using the Inline syntax {{ }}', ()=>{
 	});
 });
 
+//  BLOCK SYNTAX
+
 describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 	it('Renders a div with text only', function() {
 		const source = dedent`{{
@@ -193,6 +195,140 @@ describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" id="cat"><p>Sample text.</p></div>`);
 	});
 });
+
+// MUSTACHE INJECTION SYNTAX
+
+describe('Injection: When an injection tag follows an element', ()=>{
+	describe('and that element is an inline-block', ()=>{
+		it('Renders a span "text" with no injection', function() {
+			const source = '{{ text}}{}';
+			const rendered = Markdown.render(source);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block">text</span>');
+		});
+
+		it('Renders a span "text" with injected Class name', function() {
+			const source = '{{ text}}{ClassName}';
+			const rendered = Markdown.render(source);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block ClassName">text</span>');
+		});
+
+		it('Renders a span "text" with injected style', function() {
+			const source = '{{ text}}{color:red}';
+			const rendered = Markdown.render(source);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" style="color:red;">text</span>');
+		});
+
+		it('Renders a span "text" with two injected styles', function() {
+			const source = '{{ text}}{color:red,background:blue}';
+			const rendered = Markdown.render(source);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" style="color:red; background:blue;">text</span>');
+		});
+
+		it('Renders an emphasis element with injected Class name', function() {
+			const source = '*emphasis*{big}';
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p><em class="big">emphasis</em></p>');
+		});
+
+		it('Renders a code element with injected style', function() {
+			const source = '`code`{background:gray}';
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p><code style="background:gray;">code</code></p>');
+		});
+
+		it('Renders an image element with injected style', function() {
+			const source = '![alt text](http://i.imgur.com/hMna6G0.png){position:absolute}';
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p><img src="http://i.imgur.com/hMna6G0.png" alt="homebrew mug" style="position:absolute;"></p>');
+		});
+
+		it('Renders an element modified by only the first of two consecutive injections', function() {
+			const source = '{{ text}}{color:red}{background:blue}';
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p><span class="inline-block" style="color:red;">text</span>{background:blue}</p>');
+		});
+	});
+
+	describe('and that element is a block', ()=>{
+		it('renders a div "text" with no injection', function() {
+			const source = '{{\ntext\n}}\n{}';
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block"><p>text</p></div>');
+		});
+
+		it('renders a div "text" with injected Class name', function() {
+			const source = '{{\ntext\n}}\n{ClassName}';
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block ClassName"><p>text</p></div>');
+		});
+
+		it('renders a div "text" with injected style', function() {
+			const source = '{{\ntext\n}}\n{color:red}';
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block" style="color:red;"><p>text</p></div>');
+		});
+
+		it('renders a div "text" with two injected styles', function() {
+			const source = dedent`{{
+			text
+			}}
+			{color:red,background:blue}`;
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block" style="color:red; background:blue;"><p>text</p></div>');
+		});
+
+		it('renders an h2 header "text" with injected class name', function() {
+			const source = dedent`## text
+			{ClassName}`;
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<h2 class="ClassName">text</h2>');
+		});
+
+		it('renders a table with injected class name', function() {
+			const source = dedent`| Experience Points | Level |
+			|:------------------|:-----:|
+			| 0                 | 1     |
+			| 300               | 2     |
+			
+			{ClassName}`;
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<table class="ClassName"><thead><tr><th align=left>Experience Points</th><th align=center>Level</th></tr></thead><tbody><tr><td align=left>0</td><td align=center>1</td></tr><tr><td align=left>300</td><td align=center>2</td></tr></tbody></table>`);
+		});
+
+		// it('renders a list with with a style injected into the <ul> tag', function() {
+		// 	const source = dedent`- Cursed Ritual of Bad Hair
+		// - Eliminate Vindictiveness in Gym Teacher
+		// - Ultimate Rite of the Confetti Angel
+		// - Dark Chant of the Dentists
+		// - Divine Spell of Crossdressing
+		// {color:red}`;
+		// 	const rendered = Markdown.render(source).trimReturns();
+		// 	expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`...`);   // FIXME: expect this to be injected into <ul>?  Currently injects into last <li>
+		// });
+
+		it('renders an h2 header "text" with injected class name, and "secondInjection" as regular text on the next line.', function() {
+			const source = dedent`## text
+			{ClassName}
+			{secondInjection}`;
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<h2 class="ClassName">text</h2><p>{secondInjection}</p>');
+		});
+
+		it('renders a div nested into another div, the inner with class=innerDiv and the other class=outerDiv', function() {
+			const source = dedent`{{
+			outer text
+			{{
+			inner text
+			}}
+			{innerDiv}
+			}}
+			{outerDiv}`;
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block outerDiv"><p>outer text</p><div class="block innerDiv"><p>inner text</p></div></div>');
+		});
+	});
+});
+
 
 // TODO: add tests for ID with accordance to CSS spec:
 //
