@@ -105,6 +105,22 @@ test('Renders a mustache span with text, id, class and a couple of css propertie
 	expect(rendered).toBe('<span class="inline-block pen" id="author" style="color:orange; font-family:trebuchet ms;">text</span>');
 });
 
+test('Two consecutive injections into Inline', function() {
+	const source = '{{dog Sample Text}}{cat}{toad}';
+	const rendered = Markdown.render(source);
+	// FIXME: Drops original attributes in favor of injection, rather than adding.
+	// FIXME: Doesn't keep the raw text of second injection.
+	// FIXME: Renders the extra class attribute (which is dropped by the browser).
+	expect(rendered).toBe('<p><span class=" cat"   class="inline-block cat"  >Sample Text</span></p>\n');
+});
+
+test('Two consecutive injections into Block', function() {
+	const source = '{{dog\nSample Text\n}}\n{cat}\n{toad}';
+	const rendered = Markdown.render(source);
+	// FIXME: Renders the extra class attribute (which is dropped by the browser).
+	expect(rendered).toBe('<div class=" cat"   class="block cat"  ><p>Sample Text</p>\n</div><p>{toad}</p>\n');
+});
+
 // TODO: add tests for ID with accordance to CSS spec:
 //
 // From https://drafts.csswg.org/selectors/#id-selectors:
