@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 
+const dedent = require('dedent-tabs').default;
 const Markdown = require('naturalcrit/markdown.js');
 
 test('Renders a mustache span with text only', function() {
