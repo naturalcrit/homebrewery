@@ -23,6 +23,7 @@
     "test:coverage": "jest --coverage --silent --runInBand",
     "test:dev": "jest --verbose --watch",
     "test:basic": "jest tests/markdown/basic.test.js --verbose",
+    "test:mustache-syntax": "jest '.*(mustache-syntax).*' --verbose --noStackTrace",
     "test:mustache-syntax:inline": "jest '.*(mustache-syntax).*' -t '^Inline:.*' --verbose --noStackTrace",
     "test:mustache-syntax:block": "jest '.*(mustache-syntax).*' -t '^Block:.*' --verbose --noStackTrace",
     "test:mustache-syntax:injection": "jest '.*(mustache-syntax).*' -t '^Injection:.*' --verbose --noStackTrace",
