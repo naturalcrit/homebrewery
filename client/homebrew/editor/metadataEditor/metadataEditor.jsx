@@ -6,6 +6,7 @@ const _     = require('lodash');
 const cx    = require('classnames');
 const request = require('../../utils/request-middleware.js');
 const Nav = require('naturalcrit/nav/nav.jsx');
+const Combobox = require('client/components/combobox.jsx');
 const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
 
 const Themes = require('themes/themes.json');
@@ -35,9 +36,10 @@ const MetadataEditor = createClass({
 				authors     : [],
 				systems     : [],
 				renderer    : 'legacy',
-				theme       : '5ePHB'
+				theme       : '5ePHB',
+				lang        : 'en'
 			},
-			onChange : ()=>{},
+			onChange    : ()=>{},
 			reportError : ()=>{}
 		};
 	},
@@ -76,6 +78,7 @@ const MetadataEditor = createClass({
 			const errMessage = validationErr.map((err)=>{
 				return `- ${err}`;
 			}).join('\n');
+
 			callIfExists(e.target, 'setCustomValidity', errMessage);
 			callIfExists(e.target, 'reportValidity');
 		}
@@ -108,6 +111,11 @@ const MetadataEditor = createClass({
 	handleTheme : function(theme){
 		this.props.metadata.renderer = theme.renderer;
 		this.props.metadata.theme    = theme.path;
+		this.props.onChange(this.props.metadata);
+	},
+
+	handleLanguage : function(languageCode){
+		this.props.metadata.lang = languageCode;
 		this.props.onChange(this.props.metadata);
 	},
 
@@ -189,6 +197,10 @@ const MetadataEditor = createClass({
 				return <div className='item' key={''} onClick={()=>this.handleTheme(theme)} title={''}>
 					{`${theme.renderer} : ${theme.name}`}
 					<img src={`/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`}/>
+					<div className='preview'>
+						<h6>{`${theme.name}`} preview</h6>
+						<img src={`/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`}/>
+					</div>
 				</div>;
 			});
 		};
@@ -198,14 +210,14 @@ const MetadataEditor = createClass({
 
 		if(this.props.metadata.renderer == 'legacy') {
 			dropdown =
-				<Nav.dropdown className='disabled' trigger='disabled'>
+				<Nav.dropdown className='disabled value' trigger='disabled'>
 					<div>
 						{`Themes are not supported in the Legacy Renderer`} <i className='fas fa-caret-down'></i>
 					</div>
 				</Nav.dropdown>;
 		} else {
 			dropdown =
-				<Nav.dropdown trigger='click'>
+				<Nav.dropdown className='value' trigger='click'>
 					<div>
 						{`${_.upperFirst(currentTheme.renderer)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
 					</div>
@@ -217,6 +229,47 @@ const MetadataEditor = createClass({
 		return <div className='field themes'>
 			<label>theme</label>
 			{dropdown}
+		</div>;
+	},
+
+	renderLanguageDropdown : function(){
+		const langCodes = ['en', 'de', 'de-ch', 'fr', 'ja', 'es', 'it', 'sv', 'ru', 'zh-Hans', 'zh-Hant'];
+		const listLanguages = ()=>{
+			return _.map(langCodes.sort(), (code, index)=>{
+				const localName = new Intl.DisplayNames([code], { type: 'language' });
+				const englishName = new Intl.DisplayNames('en', { type: 'language' });
+				return <div className='item' title={`${englishName.of(code)}`} key={`${index}`} data-value={`${code}`} data-detail={`${localName.of(code)}`}>
+					{`${code}`}
+					<div className='detail'>{`${localName.of(code)}`}</div>
+				</div>;
+			});
+		};
+
+		const debouncedHandleFieldChange =  _.debounce(this.handleFieldChange, 500);
+
+		return <div className='field language'>
+			<label>language</label>
+			<div className='value'>
+				<Combobox trigger='click'
+					className='language-dropdown'
+					default={this.props.metadata.lang || ''}
+					placeholder='en'
+					onSelect={(value)=>this.handleLanguage(value)}
+					onEntry={(e)=>{
+						e.target.setCustomValidity('');	//Clear the validation popup while typing
+						debouncedHandleFieldChange('lang', e);
+					}}
+					options={listLanguages()}
+					autoSuggest={{
+						suggestMethod           : 'startsWith',
+						clearAutoSuggestOnClick : true,
+						filterOn                : ['data-value', 'data-detail', 'title']
+					}}
+				>
+				</Combobox>
+				<small>Sets the HTML Lang property for your brew. May affect hyphenation or spellcheck.</small>
+			</div>
+
 		</div>;
 	},
 
@@ -297,6 +350,8 @@ const MetadataEditor = createClass({
 				</div>
 			</div>
 
+			{this.renderLanguageDropdown()}
+
 			{this.renderThemeDropdown()}
 
 			{this.renderRenderOptions()}
@@ -311,7 +366,7 @@ const MetadataEditor = createClass({
 				validators={[(v)=>!this.props.metadata.authors?.includes(v)]}
 				placeholder='invite author' unique={true}
 				values={this.props.metadata.invitedAuthors}
-				notes={['Invited authors are case sensitive.', 'After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.']}
+				notes={['Invited author usernames are case sensitive.', 'After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.']}
 				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}/>
 
 			<hr/>

@@ -163,15 +163,23 @@ const SnippetGroup = createClass({
 			onSnippetClick : function(){},
 		};
 	},
-	handleSnippetClick : function(snippet){
+	handleSnippetClick : function(e, snippet){
+		e.stopPropagation();
 		this.props.onSnippetClick(execute(snippet.gen, this.props.brew));
 	},
-	renderSnippets : function(){
-		return _.map(this.props.snippets, (snippet)=>{
-			return <div className='snippet' key={snippet.name} onClick={()=>this.handleSnippetClick(snippet)}>
+	renderSnippets : function(snippets){
+		return _.map(snippets, (snippet)=>{
+			return <div className='snippet' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
 				<i className={snippet.icon} />
-				{snippet.name}
+				<span className='name'>{snippet.name}</span>
+				{snippet.experimental && <span className='beta'>beta</span>}
+				{snippet.subsnippets && <>
+					<i className='fas fa-caret-right'></i>
+					<div className='dropdown side'>
+						{this.renderSnippets(snippet.subsnippets)}
+					</div></>}
 			</div>;
+
 		});
 	},
 
@@ -182,7 +190,7 @@ const SnippetGroup = createClass({
 				<span className='groupName'>{this.props.groupName}</span>
 			</div>
 			<div className='dropdown'>
-				{this.renderSnippets()}
+				{this.renderSnippets(this.props.snippets)}
 			</div>
 		</div>;
 	},

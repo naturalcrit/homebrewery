@@ -134,7 +134,7 @@ const mustacheInjectInline = {
 		const match = inlineRegex.exec(src);
 		if(match) {
 			const lastToken = tokens[tokens.length - 1];
-			if(!lastToken)
+			if(!lastToken || lastToken.type == 'mustacheInjectInline')
 				return false;
 
 			const tags = ` ${processStyleTags(match[1])}`;
@@ -169,7 +169,7 @@ const mustacheInjectBlock = {
 			const match = inlineRegex.exec(src);
 			if(match) {
 				const lastToken = tokens[tokens.length - 1];
-				if(!lastToken)
+				if(!lastToken || lastToken.type == 'mustacheInjectBlock')
 					return false;
 
 				lastToken.originalType = 'mustacheInjectBlock';
@@ -239,7 +239,7 @@ const definitionLists = {
 Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists] });
 Marked.use(MarkedExtendedTables());
 Marked.use(mustacheInjectBlock);
-Marked.use({ smartypants: true });
+Marked.use({ renderer: renderer, smartypants: true });
 
 //Fix local links in the Preview iFrame to link inside the frame
 renderer.link = function (href, title, text) {
@@ -347,10 +347,7 @@ module.exports = {
 	render : (rawBrewText)=>{
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
-		return Marked.parse(
-			sanatizeScriptTags(rawBrewText),
-			{ renderer: renderer }
-		);
+		return Marked.parse(sanatizeScriptTags(rawBrewText));
 	},
 
 	validate : (rawBrewText)=>{

@@ -219,12 +219,13 @@ const ListPage = createClass({
 
 	render : function(){
 		return <div className='listPage sitePage'>
+			{/*<style>@layer V3_5ePHB, bundle;</style>*/}
 			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet'/>
 			{this.props.navItems}
 			{this.renderSortOptions()}
 
 			<div className='content V3'>
-				<div className='phb page'>
+				<div className='page'>
 					{this.renderBrewCollection(this.state.brewCollection)}
 				</div>
 			</div>
