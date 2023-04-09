@@ -7,7 +7,7 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 
 
 const MetadataNav = createClass({
-	DisplayName     : 'MetadataNav',
+	displayName     : 'MetadataNav',
 	getDefaultProps : function() {
 		return {
 		};
@@ -30,7 +30,13 @@ const MetadataNav = createClass({
 
 	getAuthors : function(){
 		if(!this.props.brew.authors || this.props.brew.authors.length == 0) return 'No authors';
-		return this.props.brew.authors.join(', ');
+		return <>
+			{this.props.brew.authors.map((author, idx, arr)=>{
+				let spacer = <span>, </span>;
+				if(arr.length - 1 == idx) spacer = <></>;
+				return <span key={idx}><a className='userPageLink' href={`/user/${author}`}>{author}</a>{spacer}</span>;
+			})}
+		</>;
 	},
 
 	getTags : function(){
