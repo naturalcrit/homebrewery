@@ -29,12 +29,12 @@ const MetadataNav = createClass({
 	},
 
 	getAuthors : function(){
-		if(!this.props.brew.authors) return 'No authors';
+		if(!this.props.brew.authors || this.props.brew.authors.length == 0) return 'No authors';
 		return this.props.brew.authors.join(', ');
 	},
 
 	getTags : function(){
-		if(this.props.brew.tags.length == 0) return 'No tags';
+		if(!this.props.brew.tags || this.props.brew.tags.length == 0) return 'No tags';
 		return <>
 			{this.props.brew.tags.map((tag, idx)=>{
 				return <span className='tag' key={idx}>{tag}</span>;
@@ -43,7 +43,7 @@ const MetadataNav = createClass({
 	},
 
 	getSystems : function(){
-		if(!this.props.brew.systems) return 'No systems';
+		if(!this.props.brew.systems || this.props.brew.systems.length == 0) return 'No systems';
 		return this.props.brew.systems.join(', ');
 	},
 
