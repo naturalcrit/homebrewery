@@ -23,7 +23,6 @@ body {
 		break-inside      : avoid;
 		display           : inline-block;
 		width             : 100%;
-		isolation		  : isolate;
 	}
 	.inline-block {
 		display     : inline-block;
@@ -93,6 +92,9 @@ body {
 	}
 	img{
 		z-index : -1;
+	}
+	.block img {
+		z-index : 0;
 	}
 
 	//*****************************
