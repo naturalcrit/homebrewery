@@ -177,15 +177,9 @@
 		i{
 			margin-right: 10px;
 		}
-		// .windowWrapper{
-		// 	position: fixed;
-		// 	top: 18px;
-		// 	left: 0px;
-		// 	width: calc(100vw - 30px);
-		// 	z-index: -1;
 		.window{
 			position: absolute;
-			top: 100%;
+			bottom: 0;
 			width: 80%;
 			left: 10%;
 			max-height : ~"calc(100vh - 28px)";
@@ -197,6 +191,16 @@
 			padding: 0px 10px;
 			border-radius: 0 0 5px 5px;
 			margin: 0 auto;
+			z-index: -1;
+			transition: transform 0.5s, opacity 0.5s;
+			&.active{
+				transform: translateY(100%);
+				opacity: 1;
+			}
+			&.inactive{
+				transform: translateY(0%);
+				opacity: 0;
+			}
 			.row{
 				display   : flex;
 				flex-flow : row wrap;

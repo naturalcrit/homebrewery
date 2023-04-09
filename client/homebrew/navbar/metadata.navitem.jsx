@@ -48,9 +48,7 @@ const MetadataNav = createClass({
 	},
 
 	renderMetaWindow : function(){
-		if(!this.state.showMetaWindow) return null;
-
-		return <div className='window'>
+		return <div className={`window ${this.state.showMetaWindow ? 'active' : 'inactive'}`}>
 			<div className='row'>
 				<h4>Description</h4>
 				<p>{this.props.brew.description || 'No description.'}</p>
