@@ -192,7 +192,7 @@
 			border-radius: 0 0 5px 5px;
 			margin: 0 auto;
 			z-index: -1;
-			transition: transform 0.5s, opacity 0.5s;
+			transition: transform 0.4s, opacity 0.4s;
 			&.active{
 				transform: translateY(100%);
 				opacity: 1;
@@ -205,13 +205,13 @@
 				display   : flex;
 				flex-flow : row wrap;
 				width     : 100%;
+				// border-top       : 1px solid #888;
 				h4{
 					display          : block;
 					box-sizing       : border-box;
 					padding          : 5px 0px;
 					color            : #bbb;
 					text-align       : center;
-					border-top       : 1px solid #888;
 					flex-basis       : 20%;
 					flex-grow        : 1;
 					min-width        : 76px;
@@ -224,7 +224,6 @@
 					padding          : 5px 0;
 					flex-basis       : 80%;
 					flex-grow        : 1;
-					border-top       : 1px solid #888;
 					.tag{
 						border: 2px solid grey;
 						padding: 2px;
@@ -232,6 +231,9 @@
 						display: inline-block;
 						border-radius: 5px;
 					}
+				}
+				&:nth-of-type(even){
+					background-color: #555;
 				}
 			}
 			// }
