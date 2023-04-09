@@ -34,7 +34,7 @@ const MetadataNav = createClass({
 	},
 
 	getTags : function(){
-		if(!this.props.brew.tags) return 'No tags';
+		if(this.props.brew.tags.length == 0) return 'No tags';
 		return <>
 			{this.props.brew.tags.map((tag, idx)=>{
 				return <span className='tag' key={idx}>{tag}</span>;
