@@ -29,7 +29,7 @@ const Nav = {
 	section : createClass({
 		displayName : 'Nav.section',
 		render      : function(){
-			return <div className={this.props.className ? `navSection ${this.props.className}` : 'navSection'}>
+			return <div className={`navSection ${this.props.className ?? ''}`}>
 				{this.props.children}
 			</div>;
 		}
