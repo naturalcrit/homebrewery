@@ -24,7 +24,7 @@ module.exports = {
 		'react/jsx-no-bind'      : ['error', { allowArrowFunctions: true }],
 		'react/jsx-uses-react'   : 'error',
 		'react/prefer-es6-class' : ['error', 'never'],
-		// 'jest/valid-expect'      : ['error', { maxArgs: 2	}],
+		'jest/valid-expect'      : ['error', { maxArgs: 2	}],
 
 		/** Warnings **/
 		'max-lines' : ['warn', {
