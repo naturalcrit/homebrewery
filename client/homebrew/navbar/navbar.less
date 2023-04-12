@@ -143,7 +143,7 @@
 				}
 				&:hover{
 					background-color : @blue;
-					
+
 					.clear{
 						display       : grid;
 						place-content : center;
@@ -177,37 +177,36 @@
 			margin-right: 10px;
 		}
 		.window{
-			position: absolute;
-			bottom: 0;
-			min-width: 100px;
-			width: 80%;
-			max-width: 440px;
-			left: 0;
-			right : 0;
-			max-height : ~"calc(100vh - 28px)";
+			position         : absolute;
+			bottom           : 0;
+			width            : 440px;
+			left             : 50%;
+			max-height       : ~"calc(100vh - 28px)";
 			background-color : #333;
-			display: flex;
-			flex-flow: row wrap;
-			justify-content: flex-start;
-			align-content: baseline;
-			padding: 0px 10px 5px;
-			border-radius: 0 0 5px 5px;
-			margin: 0 auto;
-			z-index: -1;
-			transition: transform 0.4s, opacity 0.4s;
+			border           : 3px solid #444;
+			border-top       : unset;
+			border-radius    : 0 0 5px 5px;
+			box-shadow       : inset 0 7px 9px -7px #111;
+			display          : flex;
+			flex-flow        : row wrap;
+			justify-content  : flex-start;
+			align-content    : baseline;
+			padding          : 0px 10px 5px;
+			margin           : 0 auto;
+			z-index          : -1;
+			transition       : transform 0.4s, opacity 0.4s;
 			&.active{
-				transform: translateY(100%);
+				transform: translateX(-50%) translateY(100%);
 				opacity: 1;
 			}
 			&.inactive{
-				transform: translateY(0%);
+				transform: translateX(-50%) translateY(0%);
 				opacity: 0;
 			}
 			.row{
 				display   : flex;
 				flex-flow : row wrap;
 				width     : 100%;
-				// border-top       : 1px solid #888;
 				h4{
 					display          : block;
 					box-sizing       : border-box;
@@ -245,7 +244,6 @@
 					background-color: #555;
 				}
 			}
-			// }
 		}
 	}
 	.warning.navItem{
