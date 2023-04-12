@@ -116,13 +116,13 @@ describe('Inline: When using the Inline syntax {{ }}', ()=>{
 		const source = '{{font-family:"trebuchet ms" text "with quotes"}}';
 		const rendered = Markdown.render(source);
 		// FIXME: adds extra \s after class names
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" style="font-family:trebuchet ms;">text “with quotes”</span>');
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" style="font-family:trebuchet ms;">text “with quotes”</span>');
 	});
 
 	it('Renders a mustache span with text, id, class and a couple of css properties', function() {
 		const source = '{{pen,#author,color:orange,font-family:"trebuchet ms" text}}';
 		const rendered = Markdown.render(source);
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block pen" id="author" style="color:orange; font-family:trebuchet ms;">text</span>');
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block pen" id="author" style="color:orange; font-family:trebuchet ms;">text</span>');
 	});
 });
 
@@ -135,16 +135,16 @@ describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 		}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		// FIXME: adds extra \s after class names
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block"><p>text</p></div>`);
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block"><p>text</p></div>`);
 	});
 
 	it.failing('Renders an empty div', function() {
 		const source = dedent`{{
-		
+
 		}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		// FIXME: adds extra \s after class names
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block"></div>`);
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block"></div>`);
 	});
 
 	it('Renders a single paragraph with opening and closing brackets', function() {
@@ -152,16 +152,16 @@ describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 		}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		// this actually renders in HB as '{{ }}'...
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>{{}}</p>`);
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>{{}}</p>`);
 	});
 
 	it.failing('Renders a div with a single class', function() {
 		const source = dedent`{{cat
-		
+
 		}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		// FIXME: adds two extra \s before closing `>` in opening tag
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block cat"></div>`);
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block cat"></div>`);
 	});
 
 	it.failing('Renders a div with a single class and text', function() {
@@ -170,7 +170,7 @@ describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 		}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		// FIXME: adds two extra \s before closing `>` in opening tag
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block cat"><p>Sample text.</p></div>`);
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block cat"><p>Sample text.</p></div>`);
 	});
 
 	it.failing('Renders a div with two classes and text', function() {
@@ -179,7 +179,7 @@ describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 		}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		// FIXME: adds two extra \s before closing `>` in opening tag
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block cat dog"><p>Sample text.</p></div>`);
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block cat dog"><p>Sample text.</p></div>`);
 	});
 
 	it.failing('Renders a div with a style and text', function() {
@@ -312,7 +312,7 @@ describe('Injection: When an injection tag follows an element', ()=>{
 			|:------------------|:-----:|
 			| 0                 | 1     |
 			| 300               | 2     |
-			
+
 			{ClassName}`;
 			const rendered = Markdown.render(source).trimReturns();
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<table class="ClassName"><thead><tr><th align=left>Experience Points</th><th align=center>Level</th></tr></thead><tbody><tr><td align=left>0</td><td align=center>1</td></tr><tr><td align=left>300</td><td align=center>2</td></tr></tbody></table>`);
@@ -373,4 +373,3 @@ describe('Injection: When an injection tag follows an element', ()=>{
 // From: https://drafts.csswg.org/selectors/#class-html:
 //
 // > The class selector is given as a full stop (. U+002E) immediately followed by an identifier.
-
