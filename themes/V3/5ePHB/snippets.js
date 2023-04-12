@@ -170,7 +170,7 @@ module.exports = [
 				gen  : MonsterBlockGen.monster('monster,frame,wide', 4),
 			},
 			{
-				name         : 'Cover Page',
+				name         : 'Front Cover Page',
 				icon         : 'fac book-front-cover',
 				gen          : CoverPageGen.front,
 				experimental : true
