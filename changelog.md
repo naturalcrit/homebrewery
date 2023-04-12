@@ -82,6 +82,13 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 
 ### XXXXday DD/MM/2023 - v3.8.0
 {{taskList
+
+##### Jeddai
+
+* [X] Add content negotiation to exclude image requests from our API calls
+
+Fixes issue [#2595](https://github.com/naturalcrit/homebrewery/issues/2595)
+
 ##### G-Ambatte
 
 * [x] Update server build scripts to fix Admin page
