@@ -4,7 +4,7 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');	//Unused variable
 
-const DISMISS_KEY = 'dismiss_notification08-27-22';
+const DISMISS_KEY = 'dismiss_notification12-04-23';
 
 const NotificationPopup = createClass({
 	displayName     : 'NotificationPopup',
@@ -25,21 +25,14 @@ const NotificationPopup = createClass({
 			return (
 				<>
 					<li key='psa'>
-						<em>V3.2.0 Released!</em> <br />
-						We are happy to announce that after nearly a year of use by our many users,
-						we are making the V3 render mode the default setting for all new brews.
-						This mode has become quite popular, and has proven to be stable and powerful.
-						Of course, we will always keep the option to use the Legacy renderer for any
-						brew, which can still be accessed from the Properties menu.
-					</li>
-
-					<li key='stubs'>
-						<em>Change to Google Drive Storage!</em> <br />
-						We have made a change to the process of tranferring brews between Google
-						Drive and the Homebrewery storage. Starting now, any time a brew is
-						transferred, it will keep the same links instead of generating new ones!
-						We hope this change will help reduce issues where people "lost" their work
-						by trying to visit old links.
+						<em>Broken <b>CoverPage</b> snippet</em> <br />
+						Those of you who have been trying out our Cover Page snippet may
+						notice that the cover page no longer displays correctly. Due to some
+						small tweaks of this BETA feature, the CSS class has been renamed
+						from "coverPage" to "frontCover". Simply change the text to "frontCover"
+						and it should again function as before. Remember that any snippet
+						marked "beta" may have a similar change in the future as we
+						encounter any bugs or reworks.
 					</li>
 
 					<li key='googleDriveFolder'>
