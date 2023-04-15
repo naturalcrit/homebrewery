@@ -28,7 +28,7 @@
 			width            : 250px;
 			margin           : 0;
 			padding          : 2px;
-			background-color : #444;
+			background-color : transparent;
 			font-family      : 'Open Sans', sans-serif;
 			font-size        : 12px;
 			font-weight      : 800;
@@ -49,11 +49,14 @@
 		}
 	}
 	.brewTitle.navItem{
+		height: 100%;
 		font-size      : 12px;
 		font-weight    : 800;
 		color          : white;
 		text-align     : center;
 		text-transform : initial;
+		flex-grow      : 1;
+		background-color: transparent;
 	}
 	.save-menu {
 		.dropdown {
@@ -140,7 +143,7 @@
 				}
 				&:hover{
 					background-color : @blue;
-					
+
 					.clear{
 						display       : grid;
 						place-content : center;
@@ -159,6 +162,87 @@
 					bottom    : 2px;
 					font-size : 0.7em;
 					color     : #888;
+				}
+			}
+		}
+	}
+	.metadata.navItem {
+		position : relative;
+		padding: 0;
+		align-items: center;
+		display  : flex;
+		flex-grow: 1;
+		height: 100%;
+		i{
+			margin-right: 10px;
+		}
+		.window{
+			position         : absolute;
+			bottom           : 0;
+			width            : 440px;
+			left             : 50%;
+			max-height       : ~"calc(100vh - 28px)";
+			background-color : #333;
+			border           : 3px solid #444;
+			border-top       : unset;
+			border-radius    : 0 0 5px 5px;
+			box-shadow       : inset 0 7px 9px -7px #111;
+			display          : flex;
+			flex-flow        : row wrap;
+			justify-content  : flex-start;
+			align-content    : baseline;
+			padding          : 0px 10px 5px;
+			margin           : 0 auto;
+			z-index          : -1;
+			transition       : transform 0.4s, opacity 0.4s;
+			&.active{
+				transform: translateX(-50%) translateY(100%);
+				opacity: 1;
+			}
+			&.inactive{
+				transform: translateX(-50%) translateY(0%);
+				opacity: 0;
+			}
+			.row{
+				display   : flex;
+				flex-flow : row wrap;
+				width     : 100%;
+				h4{
+					display          : block;
+					box-sizing       : border-box;
+					padding          : 5px 0px;
+					color            : #bbb;
+					text-align       : center;
+					flex-basis       : 20%;
+					flex-grow        : 1;
+					min-width        : 76px;
+				}
+				p{
+					font-family      : 'Open Sans', sans-serif;
+					font-size        : 10px;
+					font-weight      : normal;
+					text-transform 	 : initial;
+					padding          : 5px 0;
+					flex-basis       : 80%;
+					flex-grow        : 1;
+					.tag{
+						border           : 2px solid grey;
+						padding          : 2px;
+						margin           : 2px 2px;
+						display          : inline-block;
+						border-radius    : 5px;
+						background-color : #444;
+					}
+					a.userPageLink{
+						text-decoration: none;
+						color: white;
+						&:hover{
+							text-decoration: underline;
+						}
+					}
+				}
+				&:nth-of-type(even){
+					background-color: #555;
 				}
 			}
 		}
