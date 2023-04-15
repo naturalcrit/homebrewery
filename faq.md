@@ -62,16 +62,13 @@ pre {
 ```
 
 # FAQ
-{{wide Updated Oct. 11, 2021}}
+{{wide Updated Apr. 15, 2023}}
 
 
 ### The site is down for me! Anyone else?
 
 You can check the site status here: [Everyone or Just Me](https://downforeveryoneorjustme.com/homebrewery.naturalcrit.com)
 
-### How do I log out?
-
-Go to https://homebrewery.naturalcrit.com/login, and hit the "*logout*" link.
 
 ### Why am I getting an error when trying to save, and my account is linked to Google?
 
