@@ -1,277 +1,278 @@
-@import 'naturalcrit/styles/colors.less';
+@import "naturalcrit/styles/colors.less";
 @navbarHeight : 28px;
 @keyframes pinkColoring {
-	//from {color: white;}
-	//to {color: red;}
-	0%   {color: pink;}
-	50%  {color: pink;}
-	75%  {color: red;}
-	100% {color: pink;}
+  0%   {color : pink;}
+  50%  {color : pink;}
+  75%  {color : red;}
+  100% {color : pink;}
 }
-.homebrew nav{
-	.homebrewLogo{
+.homebrew nav {
+	.homebrewLogo {
 		.animate(color);
 		font-family : CodeBold;
 		font-size   : 12px;
 		color       : white;
-		div{
+		div {
 			margin-top    : 2px;
 			margin-bottom : -2px;
 		}
-		&:hover{
+		&:hover {
 			color : @blue;
 		}
 	}
-	.editTitle.navItem{
+	.editTitle.navItem {
 		padding : 2px 12px;
-		input{
+		input {
+			font-family      : "Open Sans", sans-serif;
+			font-size        : 12px;
+			font-weight      : 800;
 			width            : 250px;
 			margin           : 0;
 			padding          : 2px;
-			background-color : transparent;
-			font-family      : 'Open Sans', sans-serif;
-			font-size        : 12px;
-			font-weight      : 800;
-			color            : white;
 			text-align       : center;
+			color            : white;
 			border           : 1px solid @blue;
 			outline          : none;
+			background-color : transparent;
 		}
-		.charCount{
+		.charCount {
 			display        : inline-block;
-			vertical-align : bottom;
 			margin-left    : 8px;
-			color          : #666;
 			text-align     : right;
-			&.max{
+			vertical-align : bottom;
+			color          : #666;
+			&.max {
 				color : @red;
 			}
 		}
 	}
-	.brewTitle.navItem{
-		height: 100%;
-		font-size      : 12px;
-		font-weight    : 800;
-		color          : white;
-		text-align     : center;
-		text-transform : initial;
-		flex-grow      : 1;
-		background-color: transparent;
+	.brewTitle.navItem {
+		font-size        : 12px;
+		font-weight      : 800;
+		height           : 100%;
+		text-align       : center;
+		text-transform   : initial;
+		color            : white;
+		background-color : transparent;
+		flex-grow        : 1;
 	}
 	.save-menu {
 		.dropdown {
-			z-index: 1000;
+			z-index : 1000;
 		}
 		.navItem i.fa-power-off {
 			color : red;
 			&.active {
-				color : rgb(0, 182, 52);
-				filter : drop-shadow(0 0 2px rgba(0, 182, 52, 0.765))
+				color  : rgb(0, 182, 52);
+				filter : drop-shadow(0 0 2px rgba(0, 182, 52, 0.765));
 			}
 		}
 	}
-	.patreon.navItem{
-		border-left  : 1px solid #666;
+	.patreon.navItem {
 		border-right : 1px solid #666;
+		border-left  : 1px solid #666;
 		&:hover i {
-			color: red;
+			color : red;
 		}
-		i{
+		i {
 			.animate(color);
-			animation-name: pinkColoring;
-			animation-duration: 2s;
-			color: pink;
+			animation-name     : pinkColoring;
+			animation-duration : 2s;
+			color              : pink;
 		}
 	}
 	.recent.navItem {
 		position : relative;
-		.dropdown{
-			position   : absolute;
-			top        : 28px;
-			left       : 0px;
-			z-index    : 10000;
-			width      : 100%;
-			overflow   : hidden auto;
-			max-height : ~"calc(100vh - 28px)";
+		.dropdown {
+			position        : absolute;
+			z-index         : 10000;
+			top             : 28px;
+			left            : 0;
+			overflow        : hidden auto;
+			width           : 100%;
+			max-height      : ~"calc(100vh - 28px)";
 			scrollbar-color : #666 #333;
 			scrollbar-width : thin;
-			h4{
+			h4 {
+				font-size        : 0.8em;
 				display          : block;
 				box-sizing       : border-box;
-				padding          : 5px 0px;
-				background-color : #333;
-				font-size        : 0.8em;
-				color            : #bbb;
+				padding          : 5px 0;
 				text-align       : center;
+				color            : #BBB;
 				border-top       : 1px solid #888;
-				&:nth-of-type(1){ background-color: darken(@teal, 20%); }
-				&:nth-of-type(2){ background-color: darken(@purple, 30%); }
+				background-color : #333;
+				&:nth-of-type(1) {
+					background-color : darken(@teal, 20%);
+				}
+				&:nth-of-type(2) {
+					background-color : darken(@purple, 30%);
+				}
 			}
-			.item{
+			.item {
 				#backgroundColorsHover;
 				.animate(background-color);
 				position         : relative;
 				display          : block;
+				overflow         : clip;
 				box-sizing       : border-box;
 				padding          : 8px 5px 13px;
-				background-color : #333;
-				color            : white;
 				text-decoration  : none;
+				color            : white;
 				border-top       : 1px solid #888;
-				overflow         : clip;
-				.clear{
-					display	         : none;
+				background-color : #333;
+				.clear {
 					position         : absolute;
 					top              : 50%;
-					transform        : translateY(-50%);
-					right            : 0px;
+					right            : 0;
+					display          : none;
 					width            : 20px;
 					height           : 100%;
-					background-color : #333;
+					transform        : translateY(-50%);
 					opacity          : 70%;
 					border-radius    : 3px;
+					background-color : #333;
 					&:hover {
 						opacity : 100%;
 					}
 					i {
-						text-align : center;
 						font-size  : 10px;
+						width      : 100%;
+						height     : 100%;
 						margin     : 0;
-						height     :100%;
-						width      :100%;
+						text-align : center;
 					}
 				}
-				&:hover{
+				&:hover {
 					background-color : @blue;
-
-					.clear{
+					.clear {
 						display       : grid;
 						place-content : center;
 					}
 				}
-				.title{
+				.title {
 					display       : inline-block;
 					overflow      : hidden;
 					width         : 100%;
-					text-overflow : ellipsis;
 					white-space   : nowrap;
+					text-overflow : ellipsis;
 				}
-				.time{
+				.time {
+					font-size : 0.7em;
 					position  : absolute;
 					right     : 2px;
 					bottom    : 2px;
-					font-size : 0.7em;
 					color     : #888;
 				}
 			}
 		}
 	}
 	.metadata.navItem {
-		position : relative;
-		padding: 0;
-		align-items: center;
-		display  : flex;
-		flex-grow: 1;
-		height: 100%;
-		i{
-			margin-right: 10px;
+		position    : relative;
+		display     : flex;
+		align-items : center;
+		height      : 100%;
+		padding     : 0;
+		flex-grow   : 1;
+		i {
+			margin-right : 10px;
 		}
-		.window{
+		.window {
 			position         : absolute;
+			z-index          : -1;
 			bottom           : 0;
-			width            : 440px;
 			left             : 50%;
+			display          : flex;
+			justify-content  : flex-start;
+			width            : 440px;
 			max-height       : ~"calc(100vh - 28px)";
-			background-color : #333;
+			margin           : 0 auto;
+			padding          : 0 10px 5px;
+			transition       : transform 0.4s, opacity 0.4s;
 			border           : 3px solid #444;
 			border-top       : unset;
 			border-radius    : 0 0 5px 5px;
+			background-color : #333;
 			box-shadow       : inset 0 7px 9px -7px #111;
-			display          : flex;
 			flex-flow        : row wrap;
-			justify-content  : flex-start;
 			align-content    : baseline;
-			padding          : 0px 10px 5px;
-			margin           : 0 auto;
-			z-index          : -1;
-			transition       : transform 0.4s, opacity 0.4s;
-			&.active{
-				transform: translateX(-50%) translateY(100%);
-				opacity: 1;
+			&.active {
+				transform : translateX(-50%) translateY(100%);
+				opacity   : 1;
 			}
-			&.inactive{
-				transform: translateX(-50%) translateY(0%);
-				opacity: 0;
+			&.inactive {
+				transform : translateX(-50%) translateY(0%);
+				opacity   : 0;
 			}
-			.row{
+			.row {
 				display   : flex;
-				flex-flow : row wrap;
 				width     : 100%;
-				h4{
-					display          : block;
-					box-sizing       : border-box;
-					padding          : 5px 0px;
-					color            : #bbb;
-					text-align       : center;
-					flex-basis       : 20%;
-					flex-grow        : 1;
-					min-width        : 76px;
+				flex-flow : row wrap;
+				h4 {
+					display    : block;
+					box-sizing : border-box;
+					min-width  : 76px;
+					padding    : 5px 0;
+					text-align : center;
+					color      : #BBB;
+					flex-basis : 20%;
+					flex-grow  : 1;
 				}
-				p{
-					font-family      : 'Open Sans', sans-serif;
-					font-size        : 10px;
-					font-weight      : normal;
-					text-transform 	 : initial;
-					padding          : 5px 0;
-					flex-basis       : 80%;
-					flex-grow        : 1;
-					.tag{
-						border           : 2px solid grey;
-						padding          : 2px;
-						margin           : 2px 2px;
+				p {
+					font-family    : "Open Sans", sans-serif;
+					font-size      : 10px;
+					font-weight    : normal;
+					padding        : 5px 0;
+					text-transform : initial;
+					flex-basis     : 80%;
+					flex-grow      : 1;
+					.tag {
 						display          : inline-block;
+						margin           : 2px 2px;
+						padding          : 2px;
+						border           : 2px solid grey;
 						border-radius    : 5px;
 						background-color : #444;
 					}
-					a.userPageLink{
-						text-decoration: none;
-						color: white;
-						&:hover{
-							text-decoration: underline;
+					a.userPageLink {
+						text-decoration : none;
+						color           : white;
+						&:hover {
+							text-decoration : underline;
 						}
 					}
 				}
-				&:nth-of-type(even){
-					background-color: #555;
+				&:nth-of-type(even) {
+					background-color : #555;
 				}
 			}
 		}
 	}
-	.warning.navItem{
+	.warning.navItem {
 		position         : relative;
-		background-color : @orange;
 		color            : white;
-		&:hover>.dropdown{
+		background-color : @orange;
+		&:hover > .dropdown {
 			visibility : visible;
 		}
-		.dropdown{
+		.dropdown {
 			position         : absolute;
-			display          : block;
-			top              : 28px;
-			left             : 0px;
-			visibility       : hidden;
 			z-index          : 10000;
+			top              : 28px;
+			left             : 0;
+			display          : block;
+			visibility       : hidden;
 			box-sizing       : border-box;
 			width            : 100%;
 			padding          : 13px 5px;
-			background-color : #333;
 			text-align       : center;
+			background-color : #333;
 		}
 	}
-	.account.navItem{
-		min-width: 100px;
+	.account.navItem {
+		min-width : 100px;
 	}
-	.account.username.navItem{
-		text-transform: none;
+	.account.username.navItem {
+		text-transform : none;
 	}
 }
