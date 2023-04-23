@@ -245,10 +245,15 @@ body {
 	// *            	QUOTE
 	// *****************************/
 	.quote {
-		
+
 		p {
 		font-style  :italic;
 		line-height :.5cm;
+
+			&::first-line {
+				text-transform: uppercase;
+				font-style: normal;
+			}
 		}
 
 		li {
