@@ -127,6 +127,27 @@ module.exports = [
 				gen  : ClassFeatureGen,
 			},
 			{
+				name : 'Quote',
+				icon : 'fas fa-quote-right',
+				gen  : function(){
+					return dedent`
+						{{quote
+						Stepping into the portal was like settling into a warm bath,
+						though the chill didn't jade from the air. At first everything
+						muted the roar of the river around the rocks below, the
+						chirping of frogs and crickets on shore, the evening bustle of
+						the town behind him . . . . A moment later, the world erupted
+						into vibrant life. Frogs and night birds sang a chorus; the air
+						was awash with autumn scents; the moonlight painted the
+						flo wers in iridescent blue, silver, and violet; and the rushing
+						of the river became a complex symphony.
+						
+						- James Wyatt, _Oath of Vigilance_
+						}}
+						\n`;
+				},
+			},
+			{
 				name : 'Note',
 				icon : 'fas fa-sticky-note',
 				gen  : function(){
