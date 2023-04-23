@@ -8,6 +8,18 @@
 	background-image : url(/assets/DMG_background.png);
 	background-size  : cover;
 
+	/*TABLES WITHIN NOTES*/
+	.page .note table tbody tr:nth-child(odd) {
+		background:#fff;
+	}
+
+	/*DROP CAP CHANGES*/
+	.page h1 + p::first-letter {
+		background-image: unset;
+		color:black;
+	}
+
+
 	&:after {
 		background-image : url(/assets/DMG_footerAccent.png);
 		height: 58px;
