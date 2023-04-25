@@ -1,0 +1,44 @@
+:root {
+	//Colors
+	--HB_Color_Background            : #fff; // Light parchment
+	--HB_Color_Accent                : #E0E5C1; // Pastel green
+	--HB_Color_HeaderUnderline       : #C0AD6A; // Gold
+	--HB_Color_HorizontalRule        : #9C2B1B; // Maroon
+	--HB_Color_HeaderText            : #411018; // Dark wine
+	--HB_Color_MonsterStatBackground : #F2E5B5; // Light orange parchment
+	--HB_Color_CaptionText           : #766649; // Brown
+	--HB_Color_WatercolorStain       : #BBAD82; // Light brown
+	--HB_Color_Footnotes             : #C9AD6A; // Gold
+}
+
+.page {
+	background-image : url(/assets/TCE_background.jpg);
+	background-size  : cover;
+
+    &:after {
+        background-image: url(/assets/TCE_footerAccent.png);
+        left: 0;
+        bottom: 0;
+        height: 1.9cm;
+        width: 108mm;
+        opacity: 80%;
+    }
+    &:nth-of-type(even):after {
+        right:0;
+        left:unset;
+    }
+
+	.footnote {
+		bottom : 40px;
+	}
+
+    &:has(.insideCover):after {
+        background-image: url(/assets/TCE_footerAccent.png);
+        left: 0;
+        bottom: 0;
+        height: 1.9cm;
+        width: 108mm;
+        opacity: 80%;
+
+    }
+}
