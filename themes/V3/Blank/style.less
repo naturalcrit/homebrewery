@@ -254,7 +254,6 @@ body {
 		background-size       : 20px;
 		z-index               : -1;
 		transform             : translateY(50%) translateX(-50%) rotate(calc(1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));
-		transition            : transform 2s;
 		& > p:has(img) {
 			position   : absolute;
 			width      : 50%;
@@ -262,7 +261,6 @@ body {
 			bottom     : 50%;
 			left       : 50%;
 			transform  : translateX(-50%) translateY(50%) rotate(calc(-1deg * var(--rotation))) scaleX(calc(1 / var(--scaleX))) scaleY(calc(1 / var(--scaleY)));
-			transition : transform 2s;
 		}
 		& img {
 			position : absolute;
