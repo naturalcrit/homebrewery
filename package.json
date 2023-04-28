@@ -99,7 +99,7 @@
     "marked-extended-tables": "^1.0.5",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.29.4",
-    "mongoose": "^7.0.4",
+    "mongoose": "^7.1.0",
     "nanoid": "3.3.4",
     "nconf": "^0.12.0",
     "npm": "^9.6.5",
