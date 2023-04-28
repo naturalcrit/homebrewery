@@ -183,6 +183,12 @@ module.exports = [
 				experimental : true
 			},
 			{
+				name         : 'Part Cover Page',
+				icon         : 'fac book-part-cover',
+				gen          : CoverPageGen.part,
+				experimental : true
+			},
+			{
 				name : 'Back Cover Page',
 				icon : 'fac book-back-cover',
 				gen  : BackCoverPageGen,

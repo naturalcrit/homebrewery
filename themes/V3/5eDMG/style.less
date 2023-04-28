@@ -1,3 +1,5 @@
+@import (less) './themes/assets/assets.less';
+
 :root {
 	//Colors
 	--HB_Color_Accent                : #EBCEC3; // Salmon
@@ -15,5 +17,12 @@
 
 	.footnote {
 		bottom : 40px;
+	}
+}
+
+.page:has(.partCover) {
+
+	.partCover {
+		background-image: @partCoverHeaderDMG;
 	}
 }
