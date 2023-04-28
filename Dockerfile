@@ -10,11 +10,11 @@ WORKDIR /usr/src/app
 # This improves caching so we don't have to download the dependencies every time the code changes
 COPY package.json ./
 # --ignore-scripts tells yarn not to run postbuild.  We run it explicitly later
-RUN yarn install --ignore-scripts
+RUN npm install --ignore-scripts
 
 # Bundle app source and build application
 COPY . .
-RUN yarn build
+RUN npm run build
 
 EXPOSE 8000
-CMD [ "yarn", "start" ]
+CMD [ "npm", "start" ]
