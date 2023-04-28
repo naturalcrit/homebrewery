@@ -129,16 +129,14 @@ module.exports = {
 
 		# Back cover
 
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+		Unlock your imagination and embark on epic adventures with the essential reference guide for every roleplayer. This handbook contains everything you need to create and advance your own unique character, from their background and skills to the equipment and spells they'll need to succeed.
 		:
-		Nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+		Venture into uncharted territories and discover hidden treasures, ancient ruins, and dangerous dungeons. But beware, fierce monsters and deadly enemies stand in your way. The more you explore, the stronger you'll become, gaining experience and power with every step.
 		:
-		Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-		:
-		Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+		Become a hero in your own story and answer the call of adventure. With the power of your imagination, anything is possible.
 		__________
 		
-		For use with the fifth edition manuals, existing and to exist.
+		For use with any fantasy roleplaying manuals, existing and to exist.
 
 
 		{{logo 
