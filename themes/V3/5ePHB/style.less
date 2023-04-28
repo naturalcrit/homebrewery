@@ -822,17 +822,12 @@ h5 + table{
 }
 
 //*****************************
-	// *         PART COVER
+	// *      PART COVER
 	// *****************************/
 	.page:has(.partCover) {
+		columns    : 1;
+		text-align : center;
 		padding-top: 0;
-
-		h1,
-		h2 {
-			margin-inline: auto;
-			text-align: center;
-			column-span: all;
-		}
 
 		.partCover {
 			background-image: @partCoverHeaderPHB;
@@ -845,37 +840,23 @@ h5 + table{
 			width: 100%;
 		}
 
-		img {
-			position: absolute;
-			left: 0;
-			top: 0;
-			height: 100%;
-			z-index: -1;
-		}
-
 		h1 {
 			position: relative;
 			text-align: center;
 			text-transform: uppercase;
 			font-size: 2.3cm;
 			font-family: NodestoCapsCondensed;
-			max-width: 6cm;
-			text-overflow: clip;
-			white-space: nowrap;
-			overflow: hidden;
-			margin-inline: auto;
 			margin-top: .4cm;
 		}
 
 		h2 {
-			text-align: center;
 			font-family: Overpass;
 			font-size: 0.45cm;
 			position: relative;
-			max-width: 5cm;
-			margin-inline: auto;
 			margin-top: -0.7em;
 			line-height: 1.1em;
+			margin-left  : auto;
+			margin-right : auto;
 		}
 	}
 
