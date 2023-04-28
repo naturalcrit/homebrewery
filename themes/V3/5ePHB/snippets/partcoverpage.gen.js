@@ -43,10 +43,8 @@ module.exports = ()=>{
 # PART X
 ## ${_.sample(titles)}
 
-{{imageMaskEdge5,--offset:10cm,--rotation:180        
-![Background](https://i.imgur.com/dpg5qPT.png)
+{{imageMaskEdge5,--offset:10cm,--rotation:180
+![Background](https://i.imgur.com/9TU96xY.jpg){height:100%}
 }}
-<!-- Use --offset to shift the mask toward or away from the page center.
-     Use --rotation to set rotation angle in degrees. -->
 \\page`;
 };

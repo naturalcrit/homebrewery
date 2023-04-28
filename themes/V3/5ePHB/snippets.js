@@ -183,9 +183,10 @@ module.exports = [
 				experimental : true
 			},
 			{
-				name : 'Part Cover Page',
-				icon : 'fas fa-file-alt',
-				gen  : PartCoverPageGen,
+				name         : 'Part Cover Page',
+				icon         : 'fac book-part-cover',
+				gen          : CoverPageGen.part,
+				experimental : true
 			},
 			{
 				name : 'Magic Item',
