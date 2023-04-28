@@ -125,7 +125,7 @@ module.exports = {
 	back : function() {
 		return dedent`{{backCover}}
 
-		![background image](https://i.imgur.com/Mqx8Vf7.png){right:-350px;}
+		![background image](https://i.imgur.com/IwHRrbF.jpg){right:-150px;}
 
 		# Back cover
 
