@@ -190,9 +190,10 @@ module.exports = [
 				experimental : true
 			},
 			{
-				name : 'Back Cover Page',
-				icon : 'fac book-back-cover',
-				gen  : BackCoverPageGen,
+				name 		 : 'Back Cover Page',
+				icon 		 : 'fac book-back-cover',
+				gen  		 : CoverPageGen.back,
+				experimental : true
 			},
 			{
 				name : 'Magic Item',
