@@ -43,8 +43,7 @@ const sanitizeBrew = (brew, accessType)=>{
 };
 
 app.use('/', serveCompressedStaticAssets(`build`));
-
-//app.use(express.static(`${__dirname}/build`));
+app.use(require('./middleware/content-negotiation.js'));
 app.use(require('body-parser').json({ limit: '25mb' }));
 app.use(require('cookie-parser')());
 app.use(require('./forcessl.mw.js'));

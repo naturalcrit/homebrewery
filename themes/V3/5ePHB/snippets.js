@@ -3,7 +3,7 @@
 const MagicGen           = require('./snippets/magic.gen.js');
 const ClassTableGen      = require('./snippets/classtable.gen.js');
 const MonsterBlockGen    = require('./snippets/monsterblock.gen.js');
-const scriptGen			 = require('./snippets/script.gen.js');
+const scriptGen          = require('./snippets/script.gen.js');
 const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
 const CoverPageGen       = require('./snippets/coverpage.gen.js');
 const PartCoverPageGen   = require('./snippets/partcoverpage.gen.js');
@@ -171,9 +171,15 @@ module.exports = [
 				gen  : MonsterBlockGen.monster('monster,frame,wide', 4),
 			},
 			{
-				name         : 'Cover Page',
+				name         : 'Front Cover Page',
 				icon         : 'fac book-front-cover',
-				gen          : CoverPageGen,
+				gen          : CoverPageGen.front,
+				experimental : true
+			},
+			{
+				name         : 'Inside Cover Page',
+				icon         : 'fac book-inside-cover',
+				gen          : CoverPageGen.inside,
 				experimental : true
 			},
 			{
