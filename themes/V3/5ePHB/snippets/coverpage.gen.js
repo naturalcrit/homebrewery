@@ -100,10 +100,24 @@ module.exports = {
 			___
 
 			{{imageMaskCenter${_.random(1, 16)},--offsetX:0%,--offsetY:0%,--rotation:0
-			  ![](https://i.imgur.com/IsfUnFR.jpg){height:100%}
+			  ![background image](https://i.imgur.com/IsfUnFR.jpg){position:absolute,bottom:0,left:0,height:100%}
 			}}
 
 			{{logo ![](/assets/naturalCritLogo.svg)}}
+
+			\page`;
+	},
+
+	part : function() {
+		return dedent`
+			{{partCover}}
+
+			# PART X
+			## ${_.sample(subtitles)}
+
+			{{imageMaskEdge${_.random(1, 8)},--offset:10cm,--rotation:180
+			  ![Background image](https://i.imgur.com/9TU96xY.jpg){position:absolute,bottom:0,left:0,height:100%}
+			}}
 
 			\page`;
 	}
