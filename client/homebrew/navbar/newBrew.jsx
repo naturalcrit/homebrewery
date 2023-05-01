@@ -1,11 +1,14 @@
 const React = require('react');
-const Nav = require('naturalcrit/nav/nav.jsx');
+import * as Toolbar from '@radix-ui/react-toolbar';
+
+
+
 
 module.exports = function(props){
-	return <Nav.item
+	return <Toolbar.Link
 		href='/new'
 		color='purple'
 		icon='fas fa-plus-square'>
 		new
-	</Nav.item>;
+	</Toolbar.Link>;
 };

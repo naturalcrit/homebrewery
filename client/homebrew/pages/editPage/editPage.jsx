@@ -8,8 +8,10 @@ const { Meta } = require('vitreum/headtags');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
+import * as Toolbar from '@radix-ui/react-toolbar';
 
-const NewBrew = require('../../navbar/newbrew.navitem.jsx');
+const BrewTitle = require('../../navbar/brewTitle.jsx');
+const NewBrew = require('../../navbar/newBrew.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const PrintLink = require('../../navbar/print.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
@@ -50,7 +52,8 @@ const EditPage = createClass({
 			url                    : '',
 			autoSave               : true,
 			autoSaveWarning        : false,
-			unsavedTime            : new Date()
+			unsavedTime            : new Date(),
+			narrowScreen           : false
 		};
 	},
 	savedBrew : null,
@@ -80,6 +83,13 @@ const EditPage = createClass({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
+		if(window.innerWidth < 900){
+			this.setState({
+				narrowScreen : true
+			});
+		};
+		window.addEventListener('resize', this.handleResize);
+
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
 	componentWillUnmount : function() {
@@ -96,6 +106,18 @@ const EditPage = createClass({
 		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
 			e.stopPropagation();
 			e.preventDefault();
+		}
+	},
+
+	handleResize : function() {
+		if(window.innerWidth < 600){
+			this.setState({
+				narrowScreen : true
+			});
+		} else {
+			this.setState({
+				narrowScreen : false
+			});
 		}
 	},
 
@@ -220,7 +242,7 @@ const EditPage = createClass({
 	},
 
 	renderGoogleDriveIcon : function(){
-		return <Nav.item className='googleDriveStorage' onClick={this.handleGoogleClick}>
+		return <Toolbar.Button className='googleDriveStorage' onClick={this.handleGoogleClick}>
 			<img src={googleDriveIcon} className={this.state.saveGoogle ? '' : 'inactive'} alt='Google Drive icon'/>
 
 			{this.state.confirmGoogleTransfer &&
@@ -263,7 +285,7 @@ const EditPage = createClass({
 					</div>
 				</div>
 			}
-		</Nav.item>;
+		</Toolbar.Button>;
 	},
 
 	renderSaveButton : function(){
@@ -340,51 +362,80 @@ const EditPage = createClass({
 		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
 	},
 
-	renderNavbar : function(){
-		const shareLink = this.processShareId();
+	renderNavbar : function(toolbar) {
+		// If the screen is 'full size'...
+		if(this.state.narrowScreen == false){
 
-		return <Navbar>
-			<Nav.section>
-				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
-			</Nav.section>
+			if(toolbar.location === 'bottom') return;
 
-			<Nav.section>
+			return <Navbar.Top>
+				<BrewTitle title={this.state.brew.title} />
 				{this.renderGoogleDriveIcon()}
-				{this.state.error ?
-					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
-					<Nav.dropdown className='save-menu'>
-						{this.renderSaveButton()}
-						{this.renderAutoSaveButton()}
-					</Nav.dropdown>
-				}
 				<NewBrew />
-				<HelpNavItem/>
-				<Nav.dropdown>
-					<Nav.item color='teal' icon='fas fa-share-alt'>
-						share
-					</Nav.item>
-					<Nav.item color='blue' href={`/share/${shareLink}`}>
-						view
-					</Nav.item>
-					<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.publicUrl}/share/${shareLink}`);}}>
-						copy url
-					</Nav.item>
-					<Nav.item color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
-						post to reddit
-					</Nav.item>
-				</Nav.dropdown>
-				<PrintLink shareId={this.processShareId()} />
-				<RecentNavItem brew={this.state.brew} storageKey='edit' />
-				<Account />
-			</Nav.section>
+				<Toolbar.Link href='/'>Link 3</Toolbar.Link>
+			</Navbar.Top>;
 
-		</Navbar>;
+		} else {    // If the screen is narrow (such as on mobile)...
+
+			if(toolbar.location === 'top'){
+				return <Navbar.Top>
+					<Toolbar.Link href='/'>Link 1</Toolbar.Link>
+					<Toolbar.Link href='/'>Link 2</Toolbar.Link>
+				</Navbar.Top>;
+			} else {
+				return <Navbar.Bottom>
+					<Toolbar.Link href='/'>Link 3</Toolbar.Link>
+				</Navbar.Bottom>;
+			}
+		}
+
 	},
+
+	// renderNavbar : function(){
+	// 	const shareLink = this.processShareId();
+
+	// 	return <Navbar>
+	// 		<Nav.section>
+	// 			<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
+	// 		</Nav.section>
+
+	// 		<Nav.section>
+	// 			{this.renderGoogleDriveIcon()}
+	// 			{this.state.error ?
+	// 				<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
+	// 				<Nav.dropdown className='save-menu'>
+	// 					{this.renderSaveButton()}
+	// 					{this.renderAutoSaveButton()}
+	// 				</Nav.dropdown>
+	// 			}
+	// 			<NewBrew />
+	// 			<HelpNavItem/>
+	// 			<Nav.dropdown>
+	// 				<Nav.item color='teal' icon='fas fa-share-alt'>
+	// 					share
+	// 				</Nav.item>
+	// 				<Nav.item color='blue' href={`/share/${shareLink}`}>
+	// 					view
+	// 				</Nav.item>
+	// 				<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.publicUrl}/share/${shareLink}`);}}>
+	// 					copy url
+	// 				</Nav.item>
+	// 				<Nav.item color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
+	// 					post to reddit
+	// 				</Nav.item>
+	// 			</Nav.dropdown>
+	// 			<PrintLink shareId={this.processShareId()} />
+	// 			<RecentNavItem brew={this.state.brew} storageKey='edit' />
+	// 			<Account />
+	// 		</Nav.section>
+
+	// 	</Navbar>;
+	// },
 
 	render : function(){
 		return <div className='editPage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
-			{this.renderNavbar()}
+			{this.renderNavbar({ location: 'top' })}
 
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
@@ -407,6 +458,7 @@ const EditPage = createClass({
 					/>
 				</SplitPane>
 			</div>
+			{this.renderNavbar({ location: 'bottom' })}
 		</div>;
 	}
 });

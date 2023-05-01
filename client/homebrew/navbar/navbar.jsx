@@ -1,52 +1,52 @@
 require('./navbar.less');
+import * as Toolbar from '@radix-ui/react-toolbar';
+import * as Portal from '@radix-ui/react-portal';
 const React = require('react');
 const createClass = require('create-react-class');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
-const PatreonNavItem = require('./patreon.navitem.jsx');
+const NaturalCritIcon = require('shared/naturalcrit/svg/naturalcrit.svg.jsx');
 
-const Navbar = createClass({
-	displayName     : 'Navbar',
-	getInitialState : function() {
-		return {
-			//showNonChromeWarning : false,
-			ver : '0.0.0'
-		};
-	},
+const Navbar = {
 
-	getInitialState : function() {
-		return {
-			ver : global.version
-		};
-	},
+	Top : createClass({
+		displayName : 'Nav.Top',
 
-	/*
-	renderChromeWarning : function(){
-		if(!this.state.showNonChromeWarning) return;
-		return <Nav.item className='warning' icon='fa-exclamation-triangle'>
-			Optimized for Chrome
-			<div className='dropdown'>
-				If you are experiencing rendering issues, use Chrome instead
-			</div>
-		</Nav.item>
-	},
-*/
-	render : function(){
-		return <Nav.base>
-			<Nav.section>
-				<Nav.logo />
-				<Nav.item href='/' className='homebrewLogo'>
-					<div>The Homebrewery</div>
-				</Nav.item>
-				<Nav.item newTab={true} href='/changelog' color='purple' icon='far fa-file-alt'>
-					{`v${this.state.ver}`}
-				</Nav.item>
-				<PatreonNavItem />
-				{/*this.renderChromeWarning()*/}
-			</Nav.section>
-			{this.props.children}
-		</Nav.base>;
-	}
-});
+		getInitialState : function() {
+			return {
+				ver : global.version
+			};
+		},
+
+		renderSitewideLinks : function() {
+			return <>
+				<Toolbar.Link href='https://www.naturalcrit.com/'>NaturalCrit</Toolbar.Link>
+				<Toolbar.Link href='/'>The Homebrewery</Toolbar.Link>
+				<Toolbar.Link href='/changelog'>{`v${this.state.ver}`}</Toolbar.Link>
+				<Toolbar.Link href='https://www.patreon.com/NaturalCrit'>Patreon</Toolbar.Link>
+			</>;
+		},
+
+		render : function(){
+			return <Toolbar.Root id='top-toolbar' className='toolbar'>
+				{this.renderSitewideLinks()}
+				{this.props.children}
+				<NaturalCritIcon />
+			</Toolbar.Root>;
+		}
+	}),
+
+	Bottom : createClass({
+		displayName : 'Nav.Bottom',
+
+		render : function(){
+			return <Toolbar.Root id='bottom-toolbar' className='toolbar'>
+				{this.props.children}
+			</Toolbar.Root>;
+		}
+	})
+
+
+};
+
 
 module.exports = Navbar;

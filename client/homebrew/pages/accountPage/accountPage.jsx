@@ -11,7 +11,7 @@ const Navbar = require('../../navbar/navbar.jsx');
 
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account = require('../../navbar/account.navitem.jsx');
-const NewBrew = require('../../navbar/newbrew.navitem.jsx');
+const NewBrew = require('../../navbar/newBrew.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 
 const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');

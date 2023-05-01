@@ -1,95 +1,95 @@
-@import '../styles/colors';
-@keyframes glideDropDown {
-	0%   {transform : translate(0px, -100%);
-				opacity   : 0;
-			  background-color: #333;}
-	100% {transform : translate(0px, 0px);
-				opacity   : 1;
-			  background-color: #333;}
-}
-nav{
-	background-color : #333;
-	.navContent{
-		position			  : relative;
-		display         : flex;
-		justify-content : space-between;
-		z-index         : 2;
-	}
-	.navSection{
-		display     : flex;
-		align-items : center;
-	}
-	.navLogo{
-		display         : block;
-		margin-top      : 0px;
-		margin-right    : 8px;
-		margin-left     : 8px;
-		color           : white;
-		text-decoration : none;
-		&:hover{
-			.name{ color : @orange; }
-			svg{ fill : @orange }
-		}
-		svg{
-			height       : 13px;
-			margin-right : 0.2em;
-			cursor       : pointer;
-			fill         : white;
-		}
-		span.name{
-			font-family : 'CodeLight';
-			font-size   : 15px;
-			span.crit{
-				font-family : 'CodeBold';
-			}
-			small{
-				font-family    : 'Open Sans';
-				font-size      : 0.3em;
-				font-weight    : 800;
-				text-transform : uppercase;
-			}
-		}
-	}
-	.navItem{
-		#backgroundColorsHover;
-		.animate(background-color);
-		padding          : 8px 12px;
-		cursor           : pointer;
-		background-color : #333;
-		font-size        : 10px;
-		font-weight      : 800;
-		color            : white;
-		text-decoration  : none;
-		text-transform   : uppercase;
-		line-height      : 13px;
-		i{
-			margin-left : 5px;
-			font-size   : 13px;
-			float       : right;
-		}
-	}
-	.navSection:last-child .navItem{
-		border-left : 1px solid #666;
-	}
-	.navDropdownContainer{
-		position: relative;
-		.navDropdown {
-			position : absolute;
-			top      : 28px;
-			left     : 0px;
-			z-index  : 10000;
-			width    : 100%;
-			.navItem{
-				animation-name: glideDropDown;
-				animation-duration: 0.4s;
-				position         : relative;
-				display          : block;
-				width            : 100%;
-				vertical-align   : middle;
-				padding          : 8px 5px;
-				border           : 1px solid #888;
-				border-bottom    : 0;
-			}
-		}
-	}
-}
+// @import '../styles/colors';
+// @keyframes glideDropDown {
+// 	0%   {transform : translate(0px, -100%);
+// 				opacity   : 0;
+// 			  background-color: #333;}
+// 	100% {transform : translate(0px, 0px);
+// 				opacity   : 1;
+// 			  background-color: #333;}
+// }
+// nav{
+// 	background-color : #333;
+// 	.navContent{
+// 		position			  : relative;
+// 		display         : flex;
+// 		justify-content : space-between;
+// 		z-index         : 2;
+// 	}
+// 	.navSection{
+// 		display     : flex;
+// 		align-items : center;
+// 	}
+// 	.navLogo{
+// 		display         : block;
+// 		margin-top      : 0px;
+// 		margin-right    : 8px;
+// 		margin-left     : 8px;
+// 		color           : white;
+// 		text-decoration : none;
+// 		&:hover{
+// 			.name{ color : @orange; }
+// 			svg{ fill : @orange }
+// 		}
+// 		svg{
+// 			height       : 13px;
+// 			margin-right : 0.2em;
+// 			cursor       : pointer;
+// 			fill         : white;
+// 		}
+// 		span.name{
+// 			font-family : 'CodeLight';
+// 			font-size   : 15px;
+// 			span.crit{
+// 				font-family : 'CodeBold';
+// 			}
+// 			small{
+// 				font-family    : 'Open Sans';
+// 				font-size      : 0.3em;
+// 				font-weight    : 800;
+// 				text-transform : uppercase;
+// 			}
+// 		}
+// 	}
+// 	.navItem{
+// 		#backgroundColorsHover;
+// 		.animate(background-color);
+// 		padding          : 8px 12px;
+// 		cursor           : pointer;
+// 		background-color : #333;
+// 		font-size        : 10px;
+// 		font-weight      : 800;
+// 		color            : white;
+// 		text-decoration  : none;
+// 		text-transform   : uppercase;
+// 		line-height      : 13px;
+// 		i{
+// 			margin-left : 5px;
+// 			font-size   : 13px;
+// 			float       : right;
+// 		}
+// 	}
+// 	.navSection:last-child .navItem{
+// 		border-left : 1px solid #666;
+// 	}
+// 	.navDropdownContainer{
+// 		position: relative;
+// 		.navDropdown {
+// 			position : absolute;
+// 			top      : 28px;
+// 			left     : 0px;
+// 			z-index  : 10000;
+// 			width    : 100%;
+// 			.navItem{
+// 				animation-name: glideDropDown;
+// 				animation-duration: 0.4s;
+// 				position         : relative;
+// 				display          : block;
+// 				width            : 100%;
+// 				vertical-align   : middle;
+// 				padding          : 8px 5px;
+// 				border           : 1px solid #888;
+// 				border-bottom    : 0;
+// 			}
+// 		}
+// 	}
+// }
