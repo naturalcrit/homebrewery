@@ -3,8 +3,10 @@
 const MagicGen           = require('./snippets/magic.gen.js');
 const ClassTableGen      = require('./snippets/classtable.gen.js');
 const MonsterBlockGen    = require('./snippets/monsterblock.gen.js');
+const scriptGen          = require('./snippets/script.gen.js');
 const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
 const CoverPageGen       = require('./snippets/coverpage.gen.js');
+const PartCoverPageGen   = require('./snippets/partcoverpage.gen.js');
 const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
 const dedent             = require('dedent-tabs').default;
 
@@ -169,9 +171,22 @@ module.exports = [
 				gen  : MonsterBlockGen.monster('monster,frame,wide', 4),
 			},
 			{
-				name : 'Cover Page',
-				icon : 'fas fa-file-word',
-				gen  : CoverPageGen,
+				name         : 'Front Cover Page',
+				icon         : 'fac book-front-cover',
+				gen          : CoverPageGen.front,
+				experimental : true
+			},
+			{
+				name         : 'Inside Cover Page',
+				icon         : 'fac book-inside-cover',
+				gen          : CoverPageGen.inside,
+				experimental : true
+			},
+			{
+				name         : 'Part Cover Page',
+				icon         : 'fac book-part-cover',
+				gen          : CoverPageGen.part,
+				experimental : true
 			},
 			{
 				name : 'Magic Item',
@@ -231,7 +246,30 @@ module.exports = [
 				name : '1/3 Class Table (unframed)',
 				icon : 'fas fa-border-none',
 				gen  : ClassTableGen.third('classTable'),
-			}
+			},
+			{
+				name         : 'Rune Table',
+				icon         : 'fas fa-language',
+				gen          : scriptGen.dwarvish,
+				experimental : true,
+				subsnippets  : [
+					{
+						name : 'Dwarvish',
+						icon : 'fac davek',
+						gen  : scriptGen.dwarvish,
+					},
+					{
+						name : 'Elvish',
+						icon : 'fac rellanic',
+						gen  : scriptGen.elvish,
+					},
+					{
+						name : 'Draconic',
+						icon : 'fac iokharic',
+						gen  : scriptGen.draconic,
+					},
+				]
+			},
 		]
 	},
 

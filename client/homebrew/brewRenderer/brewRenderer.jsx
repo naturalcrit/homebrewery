@@ -27,6 +27,7 @@ const BrewRenderer = createClass({
 			style    : '',
 			renderer : 'legacy',
 			theme    : '5ePHB',
+			lang     : '',
 			errors   : []
 		};
 	},
@@ -134,7 +135,8 @@ const BrewRenderer = createClass({
 
 	renderStyle : function() {
 		if(!this.props.style) return;
-		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${this.props.style}\n} </style>` }} />;
+		//return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${this.props.style}\n} </style>` }} />;
+		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>\n${this.props.style}\n</style>` }} />;
 	},
 
 	renderPage : function(pageText, index){
@@ -189,7 +191,6 @@ const BrewRenderer = createClass({
 		const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
 		const themePath    = this.props.theme ?? '5ePHB';
 		const baseThemePath = Themes[rendererPath][themePath].baseTheme;
-
 		return (
 			<React.Fragment>
 				{!this.state.isMounted
@@ -222,7 +223,7 @@ const BrewRenderer = createClass({
 							&&
 							<>
 								{this.renderStyle()}
-								<div className='pages' ref='pages'>
+								<div className='pages' ref='pages' lang={`${this.props.lang || 'en'}`}>
 									{this.renderPages()}
 								</div>
 							</>

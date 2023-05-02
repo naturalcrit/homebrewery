@@ -23,7 +23,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const index = brew.text.indexOf('```\n\n');
 		const metadataSection = brew.text.slice(12, index - 1);
 		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']));
+		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
 		brew.text = brew.text.slice(index + 5);
 	}
 	if(brew.text.startsWith('```css')) {
@@ -43,8 +43,7 @@ const sanitizeBrew = (brew, accessType)=>{
 };
 
 app.use('/', serveCompressedStaticAssets(`build`));
-
-//app.use(express.static(`${__dirname}/build`));
+app.use(require('./middleware/content-negotiation.js'));
 app.use(require('body-parser').json({ limit: '25mb' }));
 app.use(require('cookie-parser')());
 app.use(require('./forcessl.mw.js'));
@@ -225,6 +224,7 @@ app.get('/user/:username', async (req, res, next)=>{
 		'pageCount',
 		'description',
 		'authors',
+		'lang',
 		'published',
 		'views',
 		'shareId',

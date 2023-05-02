@@ -1,4 +1,23 @@
 ```css
+.beta {
+	color         : white;
+	padding       : 4px 6px;
+	line-height   : 1em;
+	background    : grey;
+	border-radius : 12px;
+	font-family   : monospace;
+	font-size     : 10px;
+	font-weight   : 800;
+	margin-top    : -5px;
+	margin-bottom : -5px;
+}
+
+.fac {
+	height: 1em;
+	line-height: 2em;
+	margin-bottom: -0.05cm
+}
+
 h5 {
 	font-size: .35cm !important;
 }
@@ -61,7 +80,135 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-### Friday 23/01/2023 - v3.6.0
+### Wednesday 12/04/2023 - v3.8.0
+{{taskList
+
+##### calculuschild
+
+* [x] Rename `{{coverPage}}` to `{{frontCover}}`. Those using this {{beta BETA}} feature will need to update that text to make the cover page appear again.
+
+* [x] Several background fixes to test scripts
+
+##### Jeddai
+
+* [X] Add content negotiation to exclude image requests from our API calls
+
+Fixes issue [#2595](https://github.com/naturalcrit/homebrewery/issues/2595)
+
+##### G-Ambatte
+
+* [x] Update server build scripts to fix Admin page
+
+Fixes issues [#2657](https://github.com/naturalcrit/homebrewery/issues/2657)
+
+* [x] Fix internal links inside `<div>` blocks not receiving the `target=_self` attribute
+
+Fixes issues [#2680](https://github.com/naturalcrit/homebrewery/issues/2680)
+
+* [x] See brew details on `/share` pages by clicking the brew title (author, last update, tags, etc.)
+
+Fixes issues [#1679](https://github.com/naturalcrit/homebrewery/issues/1679)
+
+* [x] Add local Windows install script via Chocolatey
+
+##### 5e-Clerc
+
+* [x] New {{openSans **TABLES → {{fas,fa-language}} RUNE TABLE**}} snippets for V3. Adds an alphabetic script translation table.
+
+* [x] New {{openSans **IMAGES → {{fac,mask-center}} WATERCOLOR CENTER**  }} snippets for V3, which adds a stylish watercolor texture to the center of your images!
+
+* [x] New {{openSans **PHB → {{fac,book-inside-cover}} INSIDE COVER PAGE**  }} snippet for V3! (Thanks to /u/Kaiburr_Kath-Hound on Reddit for providing some of these resources!)
+
+* [x] Add some missing characters {{font-family:scalySansRemake Ñ ñ ç Ç Ý ý # ^ ¿ ' " ¡ ·}} to the "scalySansRemake" font in V3.
+
+Fixes issues [#2280](https://github.com/naturalcrit/homebrewery/issues/2280)
+
+##### Gazook89
+
+* [x] Add "Language" selector in {{fa,fa-info-circle}} **Properties** menu. Sets the HTML Lang attribute for your brew to better handle hyphenation or spellcheck.
+
+Fixes issues [#1343](https://github.com/naturalcrit/homebrewery/issues/1343)
+
+* [x] Fix a crash when multiple `{injection}` tags appear in sequence
+
+Fixes issues [#2712](https://github.com/naturalcrit/homebrewery/issues/2712)
+
+##### MichielDeMey
+
+* [x] Remove all-caps display on Account button since usernames are case-sensitive.
+
+Fixes issues [#2731](https://github.com/naturalcrit/homebrewery/issues/2731)
+
+}}
+
+\page
+
+### Monday 13/03/2023 - v3.7.2
+{{taskList
+
+##### Calculuschild
+
+* [x] Fix wide Monster Stat Blocks not spanning columns on Legacy
+}}
+
+### Thursday 09/03/2023 - v3.7.1
+{{taskList
+
+##### Lucastucious (new contributor!)
+
+* [x] Changed `filter: drop-shadow` to `box-shadow` on text boxes, making PDF text selectable
+
+Fixes issues [#1569](https://github.com/naturalcrit/homebrewery/issues/1569)
+
+{{note
+**NOTE:** If you create your PDF on a computer with an old version of Mac Preview (v10 or older) you may see shadows appear as solid gray.
+}}
+
+##### MichielDeMey
+
+* [x] Updated the Google Drive icon
+* [x] Backend fix to unit tests failing intermittently
+
+##### Calculuschild
+
+* [x] Fix PDF pixelation on CoverPage text outlines
+}}
+
+### Tuesday 28/02/2023 - v3.7.0
+{{taskList
+
+{{note
+**NOTE:** Some new snippets will now show a {{beta BETA}} tag. Feel free to use them, but be aware we may change how they work depending on your feedback.
+}}
+
+##### Calculuschild
+
+* [x] New {{openSans **IMAGES → WATERCOLOR EDGE** {{fac,mask-edge}} }} and {{openSans **WATERCOLOR CORNER** {{fac,mask-corner}} }} snippets for V3, which adds a stylish watercolor texture to the edge of your images! (Thanks to /u/flamableconcrete on Reddit for providing these image masks!)
+
+* [x] Fix site not displaying on iOS devices
+
+##### 5e-Cleric
+
+* [x] New {{openSans **PHB → COVER PAGE** {{fac,book-front-cover}} }} snippet for V3, which adds a stylish coverpage to your brew! (Thanks to /u/Kaiburr_Kath-Hound on Reddit for providing some of these resources!)
+
+##### MichielDeMey (new contribuor!)
+
+* [x] Fix typo in testing scripts
+* [x] Fix "mug" image not using HTTPS
+
+Fixes issues [#2687](https://github.com/naturalcrit/homebrewery/issues/2687)
+}}
+
+### Saturday 18/02/2023 - v3.6.1
+{{taskList
+##### G-Ambatte
+
+* [x] Fix users not being removed from Authors list
+
+Fixes issues [#2674](https://github.com/naturalcrit/homebrewery/issues/2674)
+}}
+
+### Monday 23/01/2023 - v3.6.0
 {{taskList
 ##### calculuschild
 
@@ -86,6 +233,8 @@ Fixes issues [#2583](https://github.com/naturalcrit/homebrewery/issues/2583)
 * [x] Fix cloned brews inheriting the parent view count
 }}
 
+\page
+
 ### Friday 23/12/2022 - v3.5.0
 {{taskList
 
@@ -98,8 +247,6 @@ Fixes issues [#2583](https://github.com/naturalcrit/homebrewery/issues/2583)
 
 Fixes issues [#1987](https://github.com/naturalcrit/homebrewery/issues/1987)
 }}
-
-\page
 
 ### Saturday 10/12/2022 - v3.4.2
 {{taskList
