@@ -822,6 +822,45 @@ h5 + table{
 }
 
 //*****************************
+	// *      PART COVER
+	// *****************************/
+	.page:has(.partCover) {
+		columns    : 1;
+		text-align : center;
+		padding-top: 0;
+
+		.partCover {
+			background-image: @partCoverHeaderPHB;
+			background-repeat: no-repeat;
+			position: absolute;
+			background-size: 100%;
+			top: 0;
+			left: 0;
+			height: 6cm;
+			width: 100%;
+		}
+
+		h1 {
+			position: relative;
+			text-align: center;
+			text-transform: uppercase;
+			font-size: 2.3cm;
+			font-family: NodestoCapsCondensed;
+			margin-top: .4cm;
+		}
+
+		h2 {
+			font-family: Overpass;
+			font-size: 0.45cm;
+			position: relative;
+			margin-top: -0.7em;
+			line-height: 1.1em;
+			margin-left  : auto;
+			margin-right : auto;
+		}
+	}
+
+//*****************************
 // *      TABLE OF CONTENTS
 // *****************************/
 .page {
