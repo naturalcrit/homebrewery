@@ -123,24 +123,26 @@ module.exports = {
 	},
 
 	back : function() {
-		return dedent`{{backCover}}
+		return dedent`
+			{{backCover}}
 
-		![background image](https://i.imgur.com/IwHRrbF.jpg){right:-150px;}
+			# Back cover
 
-		# Back cover
+			Unlock your imagination and embark on epic adventures with the essential reference guide for every roleplayer. This handbook contains everything you need to create and advance your own unique character, from their background and skills to the equipment and spells they'll need to succeed.
+			:
+			Venture into uncharted territories and discover hidden treasures, ancient ruins, and dangerous dungeons. But beware, fierce monsters and deadly enemies stand in your way. The more you explore, the stronger you'll become, gaining experience and power with every step.
+			:
+			Become a hero in your own story and answer the call of adventure. With the power of your imagination, anything is possible.
+			__________
 
-		Unlock your imagination and embark on epic adventures with the essential reference guide for every roleplayer. This handbook contains everything you need to create and advance your own unique character, from their background and skills to the equipment and spells they'll need to succeed.
-		:
-		Venture into uncharted territories and discover hidden treasures, ancient ruins, and dangerous dungeons. But beware, fierce monsters and deadly enemies stand in your way. The more you explore, the stronger you'll become, gaining experience and power with every step.
-		:
-		Become a hero in your own story and answer the call of adventure. With the power of your imagination, anything is possible.
-		__________
-		
-		For use with any fantasy roleplaying manuals, existing and to exist.
+			For use with any fantasy roleplaying manuals, existing and to exist.
 
+			![background image](https://i.imgur.com/MJ4YHu7.jpg){position:absolute,bottom:0,left:0,height:100%}
 
-		{{logo 
-		Homebrewery.Naturalcrit.com
-		}}`;
+			{{logo
+			Homebrewery.Naturalcrit.com
+			}}
+
+			\page`;
 	}
 };
