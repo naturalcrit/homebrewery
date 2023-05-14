@@ -825,7 +825,14 @@ h5 + table{
 // *****************************/
 .page:has(.backCover) {
 	color: #fff;
-	padding: 2cm 13cm 0 1.2cm;
+	columns: 1;
+	padding: 2.25cm 1.3cm 2cm 1.3cm;
+	&:after {
+		all: unset;
+	}
+	.columnWrapper {
+		width: 7.6cm;
+	}
 	.backCover {
 		position: absolute;
 		inset: 0;
@@ -835,9 +842,13 @@ h5 + table{
 		background-size: contain;
 		z-index: -1;
 	}
+	.blank {
+		height: 1.4em;
+	}
 	h1 {
-		margin-bottom: .5cm;
-		font-size: 1.4cm;
+		margin-bottom: .3cm;
+		font-size: 1.35cm;
+		line-height: 0.95em;
 		font-family: NodestoCapsCondensed;
 		text-align: center;
 		color: #ED1C24;
@@ -853,10 +864,11 @@ h5 + table{
 		z-index: -2;
 	}
 	hr {
-		margin-left: .53cm;
-		margin-top: .53cm;
+		margin-left: auto;
+		margin-right: auto;
+		margin-top: 1.1cm;
 		height: .53cm;
-		width: 6cm;
+		width: 4.5cm;
 		visibility: visible;
 		background-image: @horizontalRule;
 		background-size: 100% 100%;
@@ -864,36 +876,37 @@ h5 + table{
 	}
 	p {
 		font-family: Overpass;
+		line-height: 1.5em;
+		font-size: 0.332cm;
 	}
 	hr+p {
-		padding: 0 1.2cm 0 .53cm;
-		font-family: Overpass;
 		text-align: center;
 		margin-top: .6cm;
 	}
 	.logo {
 		position: absolute;
-		left: 4cm;
-		bottom: 2cm;
+		z-index: 0;
 		height: 1.5cm;
-		width: 1.5cm;
-		background-image: @naturalCritLogo;
-		background-position: center;
-		filter: saturate(0%) brightness(1000%);
-		>p {
-			position: absolute;
-			top: 2cm;
-			left: 50%;
-			color: #fff;
-			font-family: NodestoCapsCondensed;
-			font-size: .4cm;
-			translate: -50% 0;
-			transform: scale(1.6, 1.0);
-			width: max-content;
+		left: 1.2cm;
+		bottom: 2cm;
+		width: 7.6cm;
+		img {
+			position: relative;
+			height : 1.5cm;
+			width  : 100%;
+			z-index : 0;
 		}
-	}
-	&:after {
-		all: unset;
+		p {
+			position: relative;
+			color: #fff;
+			font-family: NodestoCapsWide;
+			font-size: .4cm;
+			letter-spacing: 0.08em;
+			line-height: 1em;
+			text-align: center;
+			text-indent: 0;
+			width: 100%;
+		}
 	}
 }
 
