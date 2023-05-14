@@ -68,6 +68,16 @@ const footnote = [
 	'In an amazing kingdom, in an age of sorcery and lost souls, eight space pirates quest for freedom.'
 ];
 
+const coverText = [
+	'Embark on a thrilling journey across a vast and varied world, where magic and mystery await you at every turn. Encounter strange creatures and ancient secrets, and forge your own destiny with your choices. The world is yours to shape and explore.',
+	'Join a band of brave adventurers and set out to explore the unknown lands beyond the horizon. Along the way, you’ll face perilous challenges, make new friends and enemies, and uncover a plot that threatens to destroy everything you hold dear. The fate of the world rests in your hands.',
+	'Create your own character and enter a realm of endless possibilities, where you can be whoever you want to be. Whether you prefer to fight, sneak, charm, or craft your way through the game, you’ll find a style that suits you. The only limit is your imagination.',
+	'Experience a rich and immersive story that adapts to your actions and decisions. Every choice you make has consequences, for good or ill. Will you be a hero or a villain? A leader or a follower? A friend or a foe? The choice is yours.',
+	'Dive into a world of epic fantasy and adventure, where you can explore ancient civilizations, dark dungeons, and hidden secrets. Along the way, you’ll meet colorful characters, collect powerful items, and learn new skills. The more you play, the more you’ll discover.',
+	'Explore a vast and dynamic world that changes according to your actions. You can shape the environment, influence the politics, and alter the history of the game world. But be careful, as every change has a ripple effect that may have unforeseen consequences.',
+	'Enter a world of wonder and danger, where you can find allies and enemies among the various races and factions that inhabit it. You can choose to join or oppose any of them, or forge your own path. The game world is alive and responsive to your actions.'
+];
+
 module.exports = {
 
 	front : function() {
@@ -126,20 +136,18 @@ module.exports = {
 		return dedent`
 			{{backCover}}
 
-			# Back cover
+			# ${_.sample(subtitles)}
 
-			Unlock your imagination and embark on epic adventures with the essential reference guide for every roleplayer. This handbook contains everything you need to create and advance your own unique character, from their background and skills to the equipment and spells they'll need to succeed.
-			:
-			Venture into uncharted territories and discover hidden treasures, ancient ruins, and dangerous dungeons. But beware, fierce monsters and deadly enemies stand in your way. The more you explore, the stronger you'll become, gaining experience and power with every step.
-			:
-			Become a hero in your own story and answer the call of adventure. With the power of your imagination, anything is possible.
-			__________
+			${_.sampleSize(coverText, 3).join('\n:\n')}
+			___
 
-			For use with any fantasy roleplaying manuals, existing and to exist.
+			For use with any fantasy roleplaying ruleset. Play the best game of your life!
 
 			![background image](https://i.imgur.com/MJ4YHu7.jpg){position:absolute,bottom:0,left:0,height:100%}
 
 			{{logo
+			![](/assets/naturalCritLogoWhite.svg)
+
 			Homebrewery.Naturalcrit.com
 			}}
 
