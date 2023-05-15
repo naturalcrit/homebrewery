@@ -7,7 +7,7 @@ const cx = require('classnames');
 const dedent = require('dedent-tabs').default;
 
 import { Tabbed } from './editorTabs.jsx';
-
+import * as Tabs from '@radix-ui/react-tabs';
 
 const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
 const SnippetBar = require('./snippetbar/snippetbar.jsx');
@@ -42,7 +42,8 @@ const Editor = createClass({
 	},
 	getInitialState : function() {
 		return {
-			view : 'text' //'text', 'style', 'meta'
+			view   : 'text', //'text', 'style', 'meta'
+			height : 0
 		};
 	},
 
@@ -61,20 +62,29 @@ const Editor = createClass({
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
+		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		if(prevProps.moveBrew !== this.props.moveBrew) {
 			this.brewJump();
 		};
 		if(prevProps.moveSource !== this.props.moveSource) {
 			this.sourceJump();
-		};
+		}
+	},
+
+	getEditorHeight : function(){
+		if(this.refs.codeEditor) {
+			let paneHeight = this.refs.main.parentNode.clientHeight;
+			paneHeight -= SNIPPETBAR_HEIGHT + 1;
+			this.setState({
+				height : paneHeight
+			});
+		}
 	},
 
 	updateEditorSize : function() {
 		if(this.refs.codeEditor) {
-			let paneHeight = this.refs.main.parentNode.clientHeight;
-			paneHeight -= SNIPPETBAR_HEIGHT + 1;
-			this.refs.codeEditor.codeMirror.setSize(null, paneHeight);
+			this.refs.codeEditor.codeMirror.setSize(null, this.state.height);
 		}
 	},
 
@@ -86,7 +96,7 @@ const Editor = createClass({
 		this.props.setMoveArrows(newView === 'text');
 		this.setState({
 			view : newView
-		}, this.updateEditorSize);
+		}, this.getEditorHeight());
 	},
 
 	getCurrentPage : function(){
@@ -313,24 +323,51 @@ const Editor = createClass({
 		return this.refs.codeEditor?.undo();
 	},
 
+	renderTabList : function(){
+		return <Tabs.TabsList className='editors'>
+			<Tabs.Trigger className='text'
+				// onClick={()=>this.handleViewChange('text')}
+				value='text'>
+                Text
+				<i className='fa fa-beer' />
+			</Tabs.Trigger>
+			<Tabs.Trigger className='style'
+				// onClick={()=>this.handleViewChange('style')}
+				value='style'>
+                Style
+				<i className='fa fa-paint-brush' />
+			</Tabs.Trigger>
+			<Tabs.Trigger className='meta'
+				// onClick={()=>this.handleViewChange('meta')}
+				value='meta'>
+                Properties
+				<i className='fas fa-info-circle' />
+			</Tabs.Trigger>
+		</Tabs.TabsList>;
+	},
+
+	renderTabContent : function (){
+		return <Tabs.Content value={this.state.view}>
+			<SnippetBar
+				brew={this.props.brew}
+				onInject={this.handleInject}
+				showEditButtons={this.props.showEditButtons}
+				renderer={this.props.renderer}
+				theme={this.props.brew.theme}
+				undo={this.undo}
+				redo={this.redo}
+				historySize={this.historySize()} />
+
+			{this.renderEditor()}
+		</Tabs.Content>;
+	},
+
 	render : function(){
 		return (
-			<div className='editor' ref='main'>
-				<SnippetBar
-					brew={this.props.brew}
-					onInject={this.handleInject}
-					showEditButtons={this.props.showEditButtons}
-					renderer={this.props.renderer}
-					theme={this.props.brew.theme}
-					undo={this.undo}
-					redo={this.redo}
-					historySize={this.historySize()} />
-				<Tabbed
-					view={this.state.view}
-					onViewChange={this.handleViewChange}>
-					{this.renderEditor()}
-				</Tabbed>
-			</div>
+			<Tabs.Root className='editor' ref='main' defaultValue='text' onValueChange={(e)=>{this.handleViewChange(e)}}>
+				{this.renderTabContent()}
+				{this.renderTabList()}
+			</Tabs.Root>
 		);
 	}
 });
