@@ -2,6 +2,8 @@ const React = require('react');
 const createClass = require('create-react-class');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const request = require('superagent');
+import * as Menubar from '@radix-ui/react-menubar';
+import { LinkItem, ButtonItem } from './menubarExtensions.jsx';
 
 const Account = createClass({
 	displayName     : 'AccountNavItem',
@@ -61,47 +63,29 @@ const Account = createClass({
 	render : function(){
 		//  Logged in
 		if(global.account){
-			return <Nav.dropdown>
-				<Nav.item
-					className='account username'
-					color='orange'
-					icon='fas fa-user'
-				>
-					{global.account.username}
-				</Nav.item>
-				<Nav.item
-					href={`/user/${encodeURI(global.account.username)}`}
-					color='yellow'
-					icon='fas fa-beer'
-				>
-					brews
-				</Nav.item>
-				<Nav.item
-					className='account'
-					color='orange'
-					icon='fas fa-user'
-					href='/account'
-				>
-					account
-				</Nav.item>
-				<Nav.item
-					className='logout'
-					color='red'
-					icon='fas fa-power-off'
-					onClick={this.handleLogout}
-				>
-					logout
-				</Nav.item>
-			</Nav.dropdown>;
+			return <Menubar.Menu>
+				<Menubar.Trigger style={{ textTransform: 'none', fontVariant: 'small-caps' }}>{global.account.username}</Menubar.Trigger>
+				<Menubar.Portal>
+					<Menubar.Content>
+						<LinkItem href={`/user/${encodeURI(global.account.username)}`}>Library</LinkItem>
+						<LinkItem href='/account'>Account</LinkItem>
+						<ButtonItem onClick='this.handleLogout'>Logout</ButtonItem>
+					</Menubar.Content>
+				</Menubar.Portal>
+			</Menubar.Menu>;
 		}
 
 		//  Logged out
 		//  LOCAL ONLY
-		if(global.config.local) {
-			return <Nav.item color='teal' icon='fas fa-sign-in-alt' onClick={this.localLogin}>
-				login
-			</Nav.item>;
-		};
+		if(global.config.local){
+			return <button type='button' role='button' onClick={this.localLogin}>Log In</button>;
+		}
+
+		// if(global.config.local) {
+		// 	return <Nav.item color='teal' icon='fas fa-sign-in-alt' onClick={this.localLogin}>
+		// 		login
+		// 	</Nav.item>;
+		// };
 
 		// Logged out
 		// Production site

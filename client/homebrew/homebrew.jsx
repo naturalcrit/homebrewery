@@ -3,6 +3,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const { StaticRouter:Router } = require('react-router-dom/server');
 const { Route, Routes, useParams, useSearchParams } = require('react-router-dom');
+import getOS from './navbar/getOS.js';
 
 const HomePage = require('./pages/homePage/homePage.jsx');
 const EditPage = require('./pages/editPage/editPage.jsx');
@@ -60,6 +61,10 @@ const Homebrew = createClass({
 		global.config = this.props.config;
 
 		return {};
+	},
+
+	componentDidMount : function() {
+		global.device = { os: getOS() };
 	},
 
 	render : function (){

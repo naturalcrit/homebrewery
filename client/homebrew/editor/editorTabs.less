@@ -1,0 +1,44 @@
+
+
+.ui-EditorText() {
+    font-family: 'Open Sans', sans-serif;
+    font-size: .7rem;
+    font-weight: 800;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: black;
+}
+
+.ui-EditorTrigger() {
+    all: unset;
+    background: #DDD;
+    border-radius: 0 0 5px 5px;
+    padding: 3px 10px;
+    .ui-EditorText();
+    .highlighted {
+        background: #FFF;
+    }
+}
+
+[role='tablist'] {
+    display: flex;
+    gap: 2px;
+    height: 25px;
+    align-items: stretch;
+    border-top: 1px solid lightgray;
+}
+
+[role='tablist'] button {
+    .ui-EditorTrigger();
+    flex: 1;
+    display: flex;
+    align-items:center;
+    justify-content: space-between;
+    &[data-state='active'] {
+        .ui-EditorTrigger.highlighted();
+        border-top: 1px solid white;
+        position: relative;
+        top: -1px;
+    }
+}
+

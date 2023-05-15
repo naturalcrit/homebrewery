@@ -85,6 +85,8 @@
     "@radix-ui/react-menubar": "^1.0.2",
     "@radix-ui/react-navigation-menu": "^1.1.2",
     "@radix-ui/react-portal": "^1.0.2",
+    "@radix-ui/react-switch": "^1.0.2",
+    "@radix-ui/react-tabs": "^1.0.3",
     "@radix-ui/react-toggle": "^1.0.2",
     "@radix-ui/react-toolbar": "^1.0.3",
     "body-parser": "^1.20.2",

@@ -5,18 +5,23 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const request = require('../../utils/request-middleware.js');
 const { Meta } = require('vitreum/headtags');
+const Moment = require('moment');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 import * as Toolbar from '@radix-ui/react-toolbar';
+import * as Menubar from '@radix-ui/react-menubar';
+import * as Switch from '@radix-ui/react-switch';
+import { LinkItem, ButtonItem, Menu, SubMenu } from '../../navbar/menubarExtensions.jsx';
 
 const BrewTitle = require('../../navbar/brewTitle.jsx');
 const NewBrew = require('../../navbar/newBrew.jsx');
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
+const HelpItems = require('../../navbar/help.navitem.jsx');
 const PrintLink = require('../../navbar/print.navitem.jsx');
+const ShareMenu = require('../../navbar/share.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
+import { RecentItems } from '../../navbar/recent.navitem.jsx';
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
@@ -239,6 +244,8 @@ const EditPage = createClass({
 			isSaving    : false,
 			unsavedTime : new Date()
 		}));
+		console.log(this.state.saveGoogle);
+		console.log(`%cSaved at about ${Moment().format('h:mm:ss a')} to ${this.state.saveGoogle ? 'your Google Drive' : 'the Homebrewery database'}.`, 'color: goldenrod', ``);
 	},
 
 	renderGoogleDriveIcon : function(){
@@ -289,32 +296,37 @@ const EditPage = createClass({
 	},
 
 	renderSaveButton : function(){
-		if(this.state.autoSaveWarning && this.hasChanges()){
-			this.setAutosaveWarning();
-			const elapsedTime = Math.round((new Date() - this.state.unsavedTime) / 1000 / 60);
-			const text = elapsedTime == 0 ? 'Autosave is OFF.' : `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
-
-			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
-			Reminder...
-				<div className='errorContainer'>
-					{text}
-				</div>
-			</Nav.item>;
-		}
-
-		if(this.state.isSaving){
-			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
-		}
-		if(this.state.isPending && this.hasChanges()){
-			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
-		}
-		if(!this.state.isPending && !this.state.isSaving && this.state.autoSave){
-			return <Nav.item className='save saved'>auto-saved.</Nav.item>;
-		}
-		if(!this.state.isPending && !this.state.isSaving){
-			return <Nav.item className='save saved'>saved.</Nav.item>;
-		}
+		return <ButtonItem onClick={this.save} hotkeys={{ mac: ['⌘', 'S'], pc: ['Ctrl', 'S'] }}>Save</ButtonItem>;
 	},
+
+
+	// renderSaveButton : function(){
+	// 	if(this.state.autoSaveWarning && this.hasChanges()){
+	// 		this.setAutosaveWarning();
+	// 		const elapsedTime = Math.round((new Date() - this.state.unsavedTime) / 1000 / 60);
+	// 		const text = elapsedTime == 0 ? 'Autosave is OFF.' : `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
+
+	// 		return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
+	// 		Reminder...
+	// 			<div className='errorContainer'>
+	// 				{text}
+	// 			</div>
+	// 		</Nav.item>;
+	// 	}
+
+	// 	if(this.state.isSaving){
+	// 		return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
+	// 	}
+	// 	if(this.state.isPending && this.hasChanges()){
+	// 		return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
+	// 	}
+	// 	if(!this.state.isPending && !this.state.isSaving && this.state.autoSave){
+	// 		return <Nav.item className='save saved'>auto-saved.</Nav.item>;
+	// 	}
+	// 	if(!this.state.isPending && !this.state.isSaving){
+	// 		return <Nav.item className='save saved'>saved.</Nav.item>;
+	// 	}
+	// },
 
 	handleAutoSave : function(){
 		if(this.warningTimer) clearTimeout(this.warningTimer);
@@ -323,6 +335,7 @@ const EditPage = createClass({
 			autoSaveWarning : prevState.autoSave
 		}), ()=>{
 			localStorage.setItem('AUTOSAVE_ON', JSON.stringify(this.state.autoSave));
+			this.state.autoSave == true ? console.log('Autosave turned %cON', 'background: green; color: white; border-radius: 3px; padding: 0 5px') : console.log('Autosave turned %cOFF', 'background: red; color: white; border-radius: 3px; padding: 0 5px');
 		});
 	},
 
@@ -338,10 +351,20 @@ const EditPage = createClass({
 		});
 	},
 
+	// renderAutoSaveButton : function(){
+	// 	return <ButtonItem onClick={this.handleAutoSave}>
+	// 		Autosave <span className='right-slot'><i className={this.state.autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i></span>
+	// 	</ButtonItem>;
+	// },
+
 	renderAutoSaveButton : function(){
-		return <Nav.item onClick={this.handleAutoSave}>
-			Autosave <i className={this.state.autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
-		</Nav.item>;
+		return <Menubar.CheckboxItem
+			className='autosave-toggle switch'
+			checked={this.state.autoSave}
+			onCheckedChange={this.handleAutoSave}
+			onSelect={(e)=>{e.preventDefault();}}>
+			Autosave <span className='right-slot'><Menubar.ItemIndicator className='switch' forceMount={true}><span className='switch-thumb'></span></Menubar.ItemIndicator></span>
+		</Menubar.CheckboxItem>;
 	},
 
 	processShareId : function() {
@@ -350,41 +373,88 @@ const EditPage = createClass({
 					 this.state.brew.shareId;
 	},
 
-	getRedditLink : function(){
-
-		const shareLink = this.processShareId();
-		const systems = this.props.brew.systems.length > 0 ? ` [${this.props.brew.systems.join(' - ')}]` : '';
-		const title = `${this.props.brew.title} ${systems}`;
-		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
-
-**[Homebrewery Link](${global.config.publicUrl}/share/${shareLink})**`;
-
-		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
-	},
-
-	renderNavbar : function(toolbar) {
+	renderNavbar : function(menubar) {
 		// If the screen is 'full size'...
 		if(this.state.narrowScreen == false){
 
-			if(toolbar.location === 'bottom') return;
+			if(menubar.location === 'bottom') return;
 
 			return <Navbar.Top>
+				<Menu trigger='Brew'>
+					<NewBrew />
+					<SubMenu trigger='Save'>
+						{this.renderSaveButton()}
+						{this.renderAutoSaveButton()}
+					</SubMenu>
+					<Menubar.Separator />
+					<SubMenu trigger='Recently Edited'>
+						<RecentItems brew={this.state.brew} storageKey='edit' />
+					</SubMenu>
+					<SubMenu trigger='Recently Viewed'>
+						<RecentItems brew={this.state.brew} storageKey='view' />
+					</SubMenu>
+					{global.account ? <LinkItem href={`/user/${encodeURI(global.account.username)}`}>Library</LinkItem> : ''}
+					<Menubar.Separator />
+					<PrintLink shareId={this.processShareId()}>Print</PrintLink>
+				</Menu>
+				<Menu trigger='Help'>
+					<HelpItems.faq />
+					<HelpItems.migrate />
+					<Menubar.Separator />
+					<SubMenu trigger='Community'>
+						<HelpItems.rHomebrewery />
+						<HelpItems.DoMT />
+					</SubMenu>
+					<Menubar.Separator />
+					<SubMenu trigger='Report Issue'>
+						<HelpItems.issueToReddit />
+						<HelpItems.issueToGithub />
+					</SubMenu>
+				</Menu>
 				<BrewTitle title={this.state.brew.title} />
-				{this.renderGoogleDriveIcon()}
-				<NewBrew />
-				<Toolbar.Link href='/'>Link 3</Toolbar.Link>
+				<Account />
 			</Navbar.Top>;
 
 		} else {    // If the screen is narrow (such as on mobile)...
 
-			if(toolbar.location === 'top'){
+			if(menubar.location === 'top'){
 				return <Navbar.Top>
-					<Toolbar.Link href='/'>Link 1</Toolbar.Link>
-					<Toolbar.Link href='/'>Link 2</Toolbar.Link>
+					<BrewTitle title={this.state.brew.title} />
+					<Menu trigger='Help'>
+						<HelpItems.faq />
+						<HelpItems.migrate />
+						<Menubar.Separator />
+						<SubMenu trigger='Community'>
+							<HelpItems.rHomebrewery />
+							<HelpItems.DoMT />
+						</SubMenu>
+						<Menubar.Separator />
+						<SubMenu trigger='Report Issue'>
+							<HelpItems.issueToReddit />
+							<HelpItems.issueToGithub />
+						</SubMenu>
+					</Menu>
 				</Navbar.Top>;
 			} else {
 				return <Navbar.Bottom>
-					<Toolbar.Link href='/'>Link 3</Toolbar.Link>
+					<Menu trigger='Brew'>
+						<NewBrew />
+						<SubMenu trigger='Save'>
+							{this.renderSaveButton()}
+							{this.renderAutoSaveButton()}
+						</SubMenu>
+						<Menubar.Separator />
+						<SubMenu trigger='Recently Edited'>
+							<RecentItems brew={this.state.brew} storageKey='edit' />
+						</SubMenu>
+						<SubMenu trigger='Recently Viewed'>
+							<RecentItems brew={this.state.brew} storageKey='view' />
+						</SubMenu>
+						{global.account ? <LinkItem href={`/user/${encodeURI(global.account.username)}`}>Library</LinkItem> : ''}
+						<Menubar.Separator />
+						<PrintLink shareId={this.processShareId()}>Print</PrintLink>
+					</Menu>
+					<Account />
 				</Navbar.Bottom>;
 			}
 		}

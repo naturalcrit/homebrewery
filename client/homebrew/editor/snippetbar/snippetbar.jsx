@@ -109,38 +109,38 @@ const Snippetbar = createClass({
 		});
 	},
 
-	renderEditorButtons : function(){
-		if(!this.props.showEditButtons) return;
+	// renderEditorButtons : function(){
+	// 	if(!this.props.showEditButtons) return;
 
-		return <div className='editors'>
-			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
-				onClick={this.props.undo} >
-				<i className='fas fa-undo' />
-			</div>
-			<div className={`editorTool redo ${this.props.historySize.redo ? 'active' : ''}`}
-				onClick={this.props.redo} >
-				<i className='fas fa-redo' />
-			</div>
-			<div className='divider'></div>
-			<div className={cx('text', { selected: this.props.view === 'text' })}
-				 onClick={()=>this.props.onViewChange('text')}>
-				<i className='fa fa-beer' />
-			</div>
-			<div className={cx('style', { selected: this.props.view === 'style' })}
-				 onClick={()=>this.props.onViewChange('style')}>
-				<i className='fa fa-paint-brush' />
-			</div>
-			<div className={cx('meta', { selected: this.props.view === 'meta' })}
-				onClick={()=>this.props.onViewChange('meta')}>
-				<i className='fas fa-info-circle' />
-			</div>
-		</div>;
-	},
+	// 	return <div className='editors'>
+	// 		<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
+	// 			onClick={this.props.undo} >
+	// 			<i className='fas fa-undo' />
+	// 		</div>
+	// 		<div className={`editorTool redo ${this.props.historySize.redo ? 'active' : ''}`}
+	// 			onClick={this.props.redo} >
+	// 			<i className='fas fa-redo' />
+	// 		</div>
+	// 		<div className='divider'></div>
+	// 		<div className={cx('text', { selected: this.props.view === 'text' })}
+	// 			 onClick={()=>this.props.onViewChange('text')}>
+	// 			<i className='fa fa-beer' />
+	// 		</div>
+	// 		<div className={cx('style', { selected: this.props.view === 'style' })}
+	// 			 onClick={()=>this.props.onViewChange('style')}>
+	// 			<i className='fa fa-paint-brush' />
+	// 		</div>
+	// 		<div className={cx('meta', { selected: this.props.view === 'meta' })}
+	// 			onClick={()=>this.props.onViewChange('meta')}>
+	// 			<i className='fas fa-info-circle' />
+	// 		</div>
+	// 	</div>;
+	// },
 
 	render : function(){
 		return <div className='snippetBar'>
 			{this.renderSnippetGroups()}
-			{this.renderEditorButtons()}
+			{/* {this.renderEditorButtons()} */}
 		</div>;
 	}
 });

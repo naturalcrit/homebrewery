@@ -3,7 +3,7 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const Moment = require('moment');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
+import { LinkItem } from './menubarExtensions.jsx';
 
 const EDIT_KEY = 'homebrewery-recently-edited';
 const VIEW_KEY = 'homebrewery-recently-viewed';
@@ -14,16 +14,13 @@ const RecentItems = createClass({
 	getDefaultProps : function() {
 		return {
 			storageKey : '',
-			showEdit   : false,
-			showView   : false
 		};
 	},
 
 	getInitialState : function() {
 		return {
-			showDropdown : false,
-			edit         : [],
-			view         : []
+			edit : [],
+			view : []
 		};
 	},
 
@@ -113,11 +110,6 @@ const RecentItems = createClass({
 		}
 	},
 
-	handleDropdown : function(show){
-		this.setState({
-			showDropdown : show
-		});
-	},
 
 	removeItem : function(url, evt){
 		evt.preventDefault();
@@ -138,69 +130,22 @@ const RecentItems = createClass({
 
 	},
 
-	renderDropdown : function(){
-		if(!this.state.showDropdown) return null;
-
-		const makeItems = (brews)=>{
-			return _.map(brews, (brew, i)=>{
-				return <a href={brew.url} className='item' key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
-					<span className='title'>{brew.title || '[ no title ]'}</span>
-					<span className='time'>{Moment(brew.ts).fromNow()}</span>
-					<div className='clear' title='Remove from Recents' onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></div>
-				</a>;
-			});
-		};
-
-		return <div className='dropdown'>
-			{(this.props.showEdit && this.props.showView) ?
-				<h4>edited</h4> : null }
-			{this.props.showEdit ?
-				makeItems(this.state.edit) : null }
-			{(this.props.showEdit && this.props.showView) ?
-				<h4>viewed</h4>	: null }
-			{this.props.showView ?
-				makeItems(this.state.view) : null }
-		</div>;
+	renderItems : function(brews){
+		return _.map(brews, (brew, i)=>{
+			return <LinkItem href={brew.url} className='item' key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
+				<div className='title'>{brew.title || '[ no title ]'}</div>
+				<div className='time'>{Moment(brew.ts).fromNow()}</div>
+				<div className='clear' title='Remove from Recents' onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></div>
+			</LinkItem>;
+		});
 	},
 
 	render : function(){
-		return <Nav.item icon='fas fa-history' color='grey' className='recent'
-			onMouseEnter={()=>this.handleDropdown(true)}
-			onMouseLeave={()=>this.handleDropdown(false)}>
-			{this.props.text}
-			{this.renderDropdown()}
-		</Nav.item>;
+		return <div className={`recently-${this.props.storageKey}ed`}>
+			<h4>{`${this.props.storageKey}ed`}</h4>
+			{this.renderItems(this.state[this.props.storageKey])}
+		</div>;
 	}
-
 });
 
-module.exports = {
-
-	edited : (props)=>{
-		return <RecentItems
-			brew={props.brew}
-			storageKey={props.storageKey}
-			text='recently edited'
-			showEdit={true}
-		/>;
-	},
-
-	viewed : (props)=>{
-		return <RecentItems
-			brew={props.brew}
-			storageKey={props.storageKey}
-			text='recently viewed'
-			showView={true}
-		/>;
-	},
-
-	both : (props)=>{
-		return <RecentItems
-			brew={props.brew}
-			storageKey={props.storageKey}
-			text='recent brews'
-			showEdit={true}
-			showView={true}
-		/>;
-	}
-};
+module.exports = { RecentItems };

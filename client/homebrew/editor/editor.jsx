@@ -6,11 +6,14 @@ const _ = require('lodash');
 const cx = require('classnames');
 const dedent = require('dedent-tabs').default;
 
+import { Tabbed } from './editorTabs.jsx';
+
+
 const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
 const SnippetBar = require('./snippetbar/snippetbar.jsx');
 const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
-const SNIPPETBAR_HEIGHT = 25;
+const SNIPPETBAR_HEIGHT = 50;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
 				/* Any CSS here will apply to your document! */
@@ -83,7 +86,7 @@ const Editor = createClass({
 		this.props.setMoveArrows(newView === 'text');
 		this.setState({
 			view : newView
-		}, this.updateEditorSize);	//TODO: not sure if updateeditorsize needed
+		}, this.updateEditorSize);
 	},
 
 	getCurrentPage : function(){
@@ -315,8 +318,6 @@ const Editor = createClass({
 			<div className='editor' ref='main'>
 				<SnippetBar
 					brew={this.props.brew}
-					view={this.state.view}
-					onViewChange={this.handleViewChange}
 					onInject={this.handleInject}
 					showEditButtons={this.props.showEditButtons}
 					renderer={this.props.renderer}
@@ -324,8 +325,11 @@ const Editor = createClass({
 					undo={this.undo}
 					redo={this.redo}
 					historySize={this.historySize()} />
-
-				{this.renderEditor()}
+				<Tabbed
+					view={this.state.view}
+					onViewChange={this.handleViewChange}>
+					{this.renderEditor()}
+				</Tabbed>
 			</div>
 		);
 	}

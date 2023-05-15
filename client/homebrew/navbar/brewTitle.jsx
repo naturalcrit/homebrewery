@@ -1,10 +1,10 @@
 const React = require('react');
-import * as Toolbar from '@radix-ui/react-toolbar';
+import * as Menubar from '@radix-ui/react-menubar';
 
 const BrewTitle = function(props) {
-	return <Toolbar.Link asChild>
-		<div>{props.title}</div>
-	</Toolbar.Link>;
+	return <div role='menuitem' className='brew-title' data-radix-collection-item>
+		{props.title}
+	</div>;
 };
 
 module.exports = BrewTitle;

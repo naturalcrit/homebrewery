@@ -1,16 +1,33 @@
 @import "naturalcrit/styles/colors.less";
 @navbarHeight : 28px;
 
-.toolbar {
+@ui-font-size: .8rem;
+@ui-text-color: #eee;
+
+
+
+.menubar {
 	background-color: #333;
 	height: @navbarHeight;
-	font-size: 10px;
+	font-size: @ui-font-size;
 	font-family: 'Open Sans', sans-serif;
-	font-weight: 800;
 	text-transform: uppercase;
-	color: #EEE;
+	color: @ui-text-color;
 	display: flex;
-	padding-left: 40px;
+	justify-content: space-evenly;
+	& > button {
+		background: none;
+		border: none;
+		color: inherit;
+		font-family: inherit;
+		text-transform: inherit;
+		font-weight: inherit;
+		font-size: inherit;
+		&:hover, &:focus {
+			background-color: #5b5b5b;
+			outline: 1px solid @green;
+		}
+	}
 	& > * {
 		display: flex;
 		align-items: center;
@@ -20,9 +37,8 @@
 	}
 	svg {
 		width: auto;
-		height: 5em;
+		height: 100%;
 		align-self: center;
-		position: absolute;
 		left: -15px;
 		fill: #5b5b5b;
 		z-index: 0;
@@ -31,9 +47,167 @@
 		color: #EEE;
 		text-decoration: none;
 	}
-	.submenu-content, .menu-content {
-		background-color: #444;
-		z-index: 500;
+	.brew-title {
+		flex: 1;
+	}
+
+
+}
+
+[aria-haspopup='menu'][data-state='open'] {
+	background: #5b5b5b;
+}
+
+[data-highlighted]{
+	background: #5b5b5b;
+	outline: none;
+}
+
+[role='menu'] {
+	background-color: #444;
+	color: @ui-text-color;
+	font-family: 'Open Sans', sans-serif;
+	font-size: @ui-font-size;
+	min-width: 200px;
+	padding:  .5em;
+	text-transform: uppercase;
+	z-index: 500;
+	button {
+		background: none;
+		border: none;
+		font-size: inherit;
+		text-transform: inherit;
+		font-family: inherit;
+		line-height: inherit;
+	}
+	a, button {
+		color: @ui-text-color;
+		text-decoration: none;
+	}
+	[role='separator'] {
+		background: #5a5a5a;
+		width: 100%;
+		height: 1px;
+		position: relative;
+		margin: 2px 0;
+	}
+	[role='menuitem'], [role='menuitemcheckbox'] {
+		border-radius: 5px;
+		display:flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: .5em;
+		width: 100%;
+		.right-slot {
+			color: #888;
+			display: flex;
+			align-items: center;
+			gap: 3px;
+		}
+		.key {
+			aspect-ratio: 1;
+			border: 1px solid #888;
+			border-radius: 3px;
+			display: inline-block;
+			height: 1.2em;
+			text-align: center;
+		}
+		.switch {
+			background: rgb(97, 0, 0);
+			display: flex;
+			align-items: center;
+			justify-content: flex-start;
+			width: 2.4em;
+			height: 1.2em;
+			border-radius: 3px;
+			padding: 0 2px;
+			overflow:hidden;
+			box-shadow: inset 1px 0 2px black;
+			span {
+				display: block;
+				background: #EEE;
+				height: .9em;
+				width: .9em;
+				border-radius: 2px;
+				filter: drop-shadow(1px 0px 2px black);
+			}
+			&[data-state='checked'] {
+				justify-content: flex-end;
+				background: rgb(34, 97, 0);
+			}
+		}
+		// &:hover, &:focus {
+		// 	background-color: #5b5b5b;
+		// 	outline: 1px solid @green;
+		// }
+	}
+	.about {
+		border: 1px solid #5b5b5b;
+		padding: 1em .5em;
+		text-align: center;
+		.hb-heading {
+			font-weight: bold;
+			margin-bottom: .2em;
+		}
+		.naturalcrit-subheading {
+			font-size: .6rem;
+		}
+	}
+	.recent-lists-container {
+		display: flex;
+		gap: .6em;
+		& > div {
+			flex: 1 ;
+			min-width: 200px;
+		}
+		h4 {
+			border-bottom: 1px solid #EEE;
+			margin-bottom: .5em;
+			line-height: 1.4em;
+		}
+		.item {
+			position: relative;
+			text-transform: none;
+			display: block;
+			.title {
+				display: block;
+				width: 100%;
+				margin-bottom: .2em;
+			}
+			.time {
+				position: relative;
+				display: block;
+				width: 100%;
+				font-size: .6em;
+				color: #888;
+			}
+			.clear {
+				position         : absolute;
+				top              : 50%;
+				right            : 0;
+				display          : none;
+				width            : 20px;
+				height           : 100%;
+				transform        : translateY(-50%);
+				opacity          : 70%;
+				border-radius    : 3px;
+				background-color : #333;
+				&:hover {
+					opacity : 100%;
+				}
+				i {
+					font-size  : 10px;
+					width      : 100%;
+					height     : 100%;
+					margin     : 0;
+					text-align : center;
+				}
+			}
+			&:hover .clear {
+				display       : grid;
+				place-content : center;
+			}
+		}
 	}
 }
 
