@@ -3,7 +3,8 @@
     "plugins": [
       "stylelint-stylistic",
       "./stylelint_plugins/align-colons.js",
-      "./stylelint_plugins/declaration-block-multi-line-min-declarations"
+      "./stylelint_plugins/declaration-block-multi-line-min-declarations",
+      "./stylelint_plugins/declaration-colon-min-space-before"
     ],
     "customSyntax": "postcss-less",
     "rules": {
@@ -20,7 +21,7 @@
         "stylistic/selector-attribute-brackets-space-inside": "never",
         "stylistic/block-opening-brace-space-before": "always",
         "stylistic/declaration-block-trailing-semicolon": "always",
-        "stylistic/declaration-colon-space-before": "always",
+        "naturalcrit/declaration-colon-min-space-before": 1,
         "stylistic/declaration-colon-space-after": "always",
         "stylistic/number-leading-zero": "always",
         "function-url-quotes": "always",
