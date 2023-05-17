@@ -1,0 +1,41 @@
+{
+    "extends": ["stylelint-config-recess-order"],
+    "plugins": [
+      "stylelint-stylistic",
+      "./stylelint_plugins/align-colons.js",
+      "./stylelint_plugins/declaration-block-multi-line-min-declarations"
+    ],
+    "customSyntax": "postcss-less",
+    "rules": {
+        "stylistic/indentation": "tab",
+        "stylistic/string-quotes": "double",
+        "no-duplicate-selectors": true,
+        "stylistic/color-hex-case": "upper",
+        "color-hex-length": "long",
+        "stylistic/selector-combinator-space-after": "always",
+        "stylistic/selector-combinator-space-before": "always",
+        "selector-attribute-quotes": "always",
+        "stylistic/selector-attribute-operator-space-before": "always",
+        "stylistic/selector-attribute-operator-space-after": "always",
+        "stylistic/selector-attribute-brackets-space-inside": "never",
+        "stylistic/block-opening-brace-space-before": "always",
+        "stylistic/declaration-block-trailing-semicolon": "always",
+        "stylistic/declaration-colon-space-before": "always",
+        "stylistic/declaration-colon-space-after": "always",
+        "stylistic/number-leading-zero": "always",
+        "function-url-quotes": "always",
+        "function-url-scheme-disallowed-list": ["data"],
+        "font-weight-notation": "named-where-possible",
+        "font-family-name-quotes": "always-unless-keyword",
+        "comment-whitespace-inside": "always",
+        "selector-pseudo-element-colon-notation": "double",
+        "stylistic/selector-pseudo-class-parentheses-space-inside": "never",
+        "stylistic/media-feature-range-operator-space-before": "always",
+        "stylistic/media-feature-range-operator-space-after": "always",
+        "stylistic/media-feature-parentheses-space-inside": "never",
+        "stylistic/media-feature-colon-space-before": "always",
+        "stylistic/media-feature-colon-space-after": "always",
+        "naturalcrit/align-colons": true,
+        "naturalcrit/declaration-block-multi-line-min-declarations" : 1
+    }
+}
