@@ -10,13 +10,13 @@ module.exports = [
 			{
 				name : 'comment',
 				icon : 'fas fa-bookmark',
-				gen  : '{{comment Lorem ipsum dolor sit amet.\n\nTasha}}\n'
+				gen  : '{{comment\nLorem ipsum dolor sit amet.\n\nTasha\n}}\n'
 			},
 			{
-				name : 'Blue header',
-				icon : 'fas fa-sort-numeric-down',
-				gen  : '{{blueheader Header}}\n'
-			}
+				name : 'topStain',
+				icon : 'fas fa-bookmark',
+				gen  : '{{topStain${_.random(1, 5)}}}\n\n'
+			},
 		]
 	}
 ];
