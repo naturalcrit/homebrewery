@@ -1,3 +1,6 @@
+@import (less) './themes/fonts/5e/fonts.less';
+@import (less) './themes/assets/assets.less';
+
 :root {
 	//Colors
 	--HB_Color_Background            : #fff; // Light parchment
@@ -12,11 +15,11 @@
 }
 
 .page {
-	background-image : url(/assets/TCE_background.jpg);
+	background-image : @TCE_background;
 	background-size  : cover;
 
     &:after {
-        background-image: url(/assets/TCE_footerAccent.png);
+        background-image: @TCE_footerAccent;
         left: 0;
         bottom: 0;
         height: 1.9cm;
@@ -28,17 +31,291 @@
         left:unset;
     }
 
-	.footnote {
-		bottom : 40px;
-	}
-
     &:has(.insideCover):after {
-        background-image: url(/assets/TCE_footerAccent.png);
+        background-image: @TCE_footerAccent;
         left: 0;
         bottom: 0;
         height: 1.9cm;
         width: 108mm;
         opacity: 80%;
-
     }
+	
+	
+	:where(p, dl, ul, ol) {
+		color:#303030;
+	}
+	
+	& p+dl {
+		margin-top:0;
+	}
+	
+	& dl+p {
+		padding-left: 1ch;
+		margin-top: 0;
+	}
+	
+	& h1 {
+		color: #3e3a64;
+		font-size:28pt;
+		
+		+ p:first-letter {
+			font-family: oPTIBookmanBoldItaSwashSup;
+			line-height: 121px;
+			font-size: 68px;
+			float: left;
+			margin: -22px 12px -40px -35px;
+			color: #3e3a64;
+			--shadow-x0: #cfd7cb 0px 0px 2.5px;
+			--shadow-x1: var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
+			--shadow-x2: var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
+			--shadow-x3: var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
+			text-shadow: var(--shadow-x3), var(--shadow-x3), var(--shadow-x3);
+			text-transform	: uppercase;
+		}
+	}
+	
+	.smallCaps {
+		font-variant: small-caps;
+	}
+	
+	&:has(.frontCover) {
+		& p {
+			color:white;
+		}
+		
+		& h1 {
+			text-transform: unset;
+		}
+	}
+	
+	&:has(.insideCover,.toc):after {
+		display:block;
+	}
+	
+	.footnote,.pageNumber {
+		color: #47446a;
+	}
+
+	.footnote {
+		left: 2cm;
+		text-align:left;
+		width:7cm;
+		bottom:1cm;
+		letter-spacing:.1mm;
+	}
+	
+	.pageNumber {
+		left:1cm;
+		bottom:.9cm;
+		height:max-content;
+		line-height:1em;
+		text-align:left;
+		width:1cm;
+	}
+	
+	&:nth-child(even) {
+		.footnote {
+			left:unset;
+			right: 2cm;
+			text-align:right;
+		}
+		
+		.pageNumber {
+			left:unset;
+			right:1cm;
+			text-align:right;
+		}
+	}
+	
+	.credits {
+		& h1+p {
+			:first-line {
+				all:unset;
+			}
+			:first-letter {
+				all:unset;
+			}
+		}
+		& h5+* {
+			margin-top: .1cm;
+		}
+		
+		& p,a,dl,ul,ol {
+			font-family: MartelSansRegular;
+			font-size: 2.82mm;
+			line-height: 1.5em;
+		}
+		
+		& p {
+			margin-left: 1em;
+			
+			+ dl {
+				margin-top: 0;
+			}
+		}
+		
+		& strong {
+			font-family: MartelSansBlack;
+			font-weight:900;
+		}
+		
+		.frontCredit {
+			position: relative;
+			width:9.52cm;
+			height:6.12cm;
+			margin-top: 15px;
+			margin-bottom: 100px;
+			
+			&:before {
+				content:'';
+				position:absolute;
+				top:3px;
+				left:-20px;
+				height:100%;
+				width:100%;
+				background-image: @TCE_creditImageBorder;
+				background-size: 100% 100%;
+			}
+			
+			& img {
+				position: relative;
+				top: 10px;
+				left: 0px;
+				width: 312px;
+				height: 217px;
+				-webkit-mask-image: @TCE_creditImageMask;
+				-webkit-mask-position: top;
+				-webkit-mask-size: 100% 100%;
+				-webkit-mask-repeat: no-repeat;
+			}
+			
+			& h5 {
+				margin-top: .5cm;
+			}
+			
+			& p {
+				text-indent: 0em; 
+				margin-left: 0em;
+			}
+		}
+		
+		.footnote {
+			bottom: 20px;
+			left: 0px;
+			width: 100%;
+			font-size: 1em;
+			text-transform: none;
+			text-align: left;
+			color: black;
+			
+			& p {
+				padding: 4.5em;
+				text-indent: 0px;
+			}
+		}
+	}
+	
+	.toc {
+		&.wide {
+			columns: 3;
+		}
+		
+		& h1 {
+			text-align: left;
+			font-size: 40px;
+		}
+		
+		& ul h3 {
+			font-family: BookInsanityRemake;
+			font-size: 13.5px;
+			font-weight: 800;
+			letter-spacing: 0;
+			border-bottom: unset;
+			
+			& span:first-child:after {
+				border-bottom: .05cm dotted #000;
+			}
+		}
+		
+		& h4 {
+			margin-top: 2px;
+			margin-bottom: 0px;
+			font-family: BookInsanityRemake;
+			font-weight: 100;
+			color: black;
+			font-size: 13px;
+			letter-spacing: 0px;
+		}
+	}
+	
+	.comment {
+		font-size: 12px;
+		background-image: @TCE_noteBackground;
+		background-size: 100%;
+		padding: 0.92cm .4cm 1.04cm 0.66cm;
+		margin-left: -0.3cm;
+		margin-bottom: 15px;
+		box-shadow: 3px 4px 5px #888;
+		font-family: Finurlig DEMO;
+		font-size: 14.2px;
+		position:relative;
+		
+		&:before {
+			content: '';
+			position: absolute;
+			background-image: @TCE_noteIcon;
+			background-repeat: no-repeat;
+			background-size: contain;
+			width: 49px;
+			height: 80px;
+			top: 0px;
+			left: 2px;
+			z-index: 1;
+			opacity: 10%;
+		}
+		
+		& p {
+			text-indent:unset;
+			
+			&:last-child {
+				float:right;
+				text-transform: uppercase;
+			}
+		}
+	}
+	
+	:is(.note, .descriptive) {
+		background-color: #dbc4e3;
+	}
+	& table tr:nth-child(odd):not(:only-of-type) td {
+		background-color	: #bdd2e5;
+	}
+	
+	[class*="topStain"] {
+		position: absolute;
+		width: 100%;
+		height: 458px;
+		top: 0px;
+		left: 0px;
+		z-index: -1;
+		background-size: cover;
+		
+		&[class*="1"] {
+		background-image: @TCE_topStain1;
+		}
+		&[class*="2"] {
+		background-image: @TCE_topStain2;
+		}
+		&[class*="3"] {
+		background-image: @TCE_topStain3;
+		}
+		&[class*="4"] {
+		background-image: @TCE_topStain4;
+		}
+		&[class*="5"] {
+		background-image: @TCE_topStain5;
+		}
+	}
 }
+
+// TODO: imgur links to local, download fonts and do the same
