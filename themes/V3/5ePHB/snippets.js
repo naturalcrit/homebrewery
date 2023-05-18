@@ -6,7 +6,6 @@ const MonsterBlockGen    = require('./snippets/monsterblock.gen.js');
 const scriptGen          = require('./snippets/script.gen.js');
 const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
 const CoverPageGen       = require('./snippets/coverpage.gen.js');
-const PartCoverPageGen   = require('./snippets/partcoverpage.gen.js');
 const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
 const dedent             = require('dedent-tabs').default;
 
@@ -186,6 +185,12 @@ module.exports = [
 				name         : 'Part Cover Page',
 				icon         : 'fac book-part-cover',
 				gen          : CoverPageGen.part,
+				experimental : true
+			},
+			{
+				name 		 : 'Back Cover Page',
+				icon 		 : 'fac book-back-cover',
+				gen  		 : CoverPageGen.back,
 				experimental : true
 			},
 			{
