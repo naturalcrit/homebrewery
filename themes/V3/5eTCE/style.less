@@ -58,19 +58,20 @@
 		color: #3e3a64;
 		font-size:28pt;
 		
-		&+p::first-letter{
+		+p::first-letter {
 			font-family: CauldronSwash;
-			line-height: 121px;
-			font-size: 68px;
+			line-height: 1.4cm;
+			font-size: 1.7cm;
 			float: left;
-			margin: -22px 12px -40px -35px;
+			margin: 0 0 0 -1cm;
+			padding:0;
 			color: #3e3a64;
-			--shadow-x0: #cfd7cb 0px 0px 2.5px;
+			--shadow-x0: #cfd7cb 0 0 2.5px;
 			--shadow-x1: var(--shadow-x0), var(--shadow-x0), var(--shadow-x0);
 			--shadow-x2: var(--shadow-x1), var(--shadow-x1), var(--shadow-x1);
 			--shadow-x3: var(--shadow-x2), var(--shadow-x2), var(--shadow-x2);
-			text-shadow: var(--shadow-x3), var(--shadow-x3), var(--shadow-x3);
-			text-transform	: uppercase;
+			text-shadow: var(--shadow-x3),var(--shadow-x3),var(--shadow-x3);
+			text-transform: uppercase;
 		}
 	}
 
