@@ -4,7 +4,7 @@ const { isNumber } = require('stylelint/lib/utils/validateTypes');
 const { report, ruleMessages, validateOptions } = stylelint.utils;
 const ruleName = 'naturalcrit/declaration-block-multi-line-min-declarations';
 const messages = ruleMessages(ruleName, {
-   expected: (decls) => `Rule with ${decls} declaration${decls == 1 ? '' : 's'} should a single line`,
+   expected: (decls) => `Rule with ${decls} declaration${decls == 1 ? '' : 's'} should be single line`,
 });
 
 
