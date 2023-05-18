@@ -58,8 +58,8 @@
 		color: #3e3a64;
 		font-size:28pt;
 		
-		+ p:first-letter {
-			font-family: oPTIBookmanBoldItaSwashSup;
+		+ p::first-letter {
+			font-family: CauldronSwash;
 			line-height: 121px;
 			font-size: 68px;
 			float: left;
@@ -73,10 +73,7 @@
 			text-transform	: uppercase;
 		}
 	}
-	
-	.smallCaps {
-		font-variant: small-caps;
-	}
+
 	
 	&:has(.frontCover) {
 		& p {
@@ -249,15 +246,14 @@
 	}
 	
 	.comment {
-		font-size: 12px;
 		background-image: @TCE_noteBackground;
 		background-size: 100%;
 		padding: 0.92cm .4cm 1.04cm 0.66cm;
 		margin-left: -0.3cm;
 		margin-bottom: 15px;
 		box-shadow: 3px 4px 5px #888;
-		font-family: Finurlig DEMO;
-		font-size: 14.2px;
+		font-family: caveatBrush;
+		font-size: 16px;
 		position:relative;
 		
 		&:before {
@@ -266,7 +262,7 @@
 			background-image: @TCE_noteIcon;
 			background-repeat: no-repeat;
 			background-size: contain;
-			width: 49px;
+			width: 40px;
 			height: 80px;
 			top: 0px;
 			left: 2px;
@@ -317,5 +313,3 @@
 		}
 	}
 }
-
-// TODO: imgur links to local, download fonts and do the same
