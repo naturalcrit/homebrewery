@@ -104,7 +104,7 @@
     "mongoose": "^7.1.1",
     "nanoid": "3.3.4",
     "nconf": "^0.12.0",
-    "npm": "^9.6.6",
+    "npm": "^9.6.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-frame-component": "^4.1.3",
