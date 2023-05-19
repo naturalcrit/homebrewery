@@ -11,7 +11,7 @@ module.exports = {
 		browser : true,
 		node    : true
 	},
-	plugins : ['react'],
+	plugins : ['react', 'jest'],
 	rules   : {
 		/** Errors **/
 		'camelcase'              : ['error', { properties: 'never' }],
@@ -24,6 +24,7 @@ module.exports = {
 		'react/jsx-no-bind'      : ['error', { allowArrowFunctions: true }],
 		'react/jsx-uses-react'   : 'error',
 		'react/prefer-es6-class' : ['error', 'never'],
+		'jest/valid-expect'      : ['error', { maxArgs: 3	}],
 
 		/** Warnings **/
 		'max-lines' : ['warn', {

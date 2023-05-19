@@ -254,6 +254,15 @@ const EditPage = createClass({
 					</div>
 				</div>
 			}
+
+			{this.state.alertTrashedGoogleBrew &&
+				<div className='errorContainer' onClick={this.closeAlerts}>
+				This brew is currently in your Trash folder on Google Drive!<br />If you want to keep it, make sure to move it before it is deleted permanently!<br />
+					<div className='confirm'>
+						OK
+					</div>
+				</div>
+			}
 		</Nav.item>;
 	},
 
@@ -335,16 +344,6 @@ const EditPage = createClass({
 		const shareLink = this.processShareId();
 
 		return <Navbar>
-
-			{this.state.alertTrashedGoogleBrew &&
-				<div className='errorContainer' onClick={this.closeAlerts}>
-				This brew is currently in your Trash folder on Google Drive!<br />If you want to keep it, make sure to move it before it is deleted permanently!<br />
-					<div className='confirm'>
-						OK
-					</div>
-				</div>
-			}
-
 			<Nav.section>
 				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
 			</Nav.section>

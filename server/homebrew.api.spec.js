@@ -10,7 +10,6 @@ describe('Tests for api', ()=>{
 
 	let modelBrew;
 	let saveFunc;
-	let removeFunc;
 	let markModifiedFunc;
 	let saved;
 
@@ -20,18 +19,15 @@ describe('Tests for api', ()=>{
 			saved = { ...this, _id: '1' };
 			return saved;
 		});
-		removeFunc = jest.fn(async function() {});
 		markModifiedFunc = jest.fn(()=>true);
 
 		modelBrew = (brew)=>({
 			...brew,
 			save         : saveFunc,
-			remove       : removeFunc,
 			markModified : markModifiedFunc,
 			toObject     : function() {
 				delete this.save;
 				delete this.toObject;
-				delete this.remove;
 				delete this.markModified;
 				return this;
 			}
@@ -569,13 +565,14 @@ brew`);
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
+			model.deleteOne = jest.fn(async ()=>{});
 			const req = {};
 
 			await api.deleteBrew(req, res);
 
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
-			expect(removeFunc).toHaveBeenCalled();
+			expect(model.deleteOne).toHaveBeenCalled();
 		});
 
 		it('should throw on delete error', async ()=>{
@@ -587,7 +584,7 @@ brew`);
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
-			removeFunc = jest.fn(async ()=>{ throw 'err'; });
+			model.deleteOne = jest.fn(async ()=>{ throw 'err'; });
 			const req = {};
 
 			let err;
@@ -600,7 +597,7 @@ brew`);
 			expect(err).not.toBeUndefined();
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
-			expect(removeFunc).toHaveBeenCalled();
+			expect(model.deleteOne).toHaveBeenCalled();
 		});
 
 		it('should delete when one author', async ()=>{
@@ -612,13 +609,14 @@ brew`);
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
+			model.deleteOne = jest.fn(async ()=>{});
 			const req = { account: { username: 'test' } };
 
 			await api.deleteBrew(req, res);
 
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
-			expect(removeFunc).toHaveBeenCalled();
+			expect(model.deleteOne).toHaveBeenCalled();
 		});
 
 		it('should remove one author when multiple present', async ()=>{
@@ -630,6 +628,7 @@ brew`);
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
+			model.deleteOne = jest.fn(async ()=>{});
 			const req = { account: { username: 'test' } };
 
 			await api.deleteBrew(req, res);
@@ -637,7 +636,7 @@ brew`);
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(markModifiedFunc).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
-			expect(removeFunc).not.toHaveBeenCalled();
+			expect(model.deleteOne).not.toHaveBeenCalled();
 			expect(saveFunc).toHaveBeenCalled();
 			expect(saved.authors).toEqual(['test2']);
 		});
@@ -651,6 +650,7 @@ brew`);
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
+			model.deleteOne = jest.fn(async ()=>{});
 			saveFunc = jest.fn(async ()=>{ throw 'err'; });
 			const req = { account: { username: 'test' } };
 
@@ -664,7 +664,7 @@ brew`);
 			expect(err).not.toBeUndefined();
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
-			expect(removeFunc).not.toHaveBeenCalled();
+			expect(model.deleteOne).not.toHaveBeenCalled();
 			expect(saveFunc).toHaveBeenCalled();
 		});
 
@@ -677,6 +677,7 @@ brew`);
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
+			model.deleteOne = jest.fn(async ()=>{});
 			api.deleteGoogleBrew = jest.fn(async ()=>true);
 			const req = { account: { username: 'test' } };
 
@@ -684,7 +685,7 @@ brew`);
 
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
-			expect(removeFunc).toHaveBeenCalled();
+			expect(model.deleteOne).toHaveBeenCalled();
 			expect(api.deleteGoogleBrew).toHaveBeenCalled();
 		});
 
@@ -697,6 +698,7 @@ brew`);
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
+			model.deleteOne = jest.fn(async ()=>{});
 			api.deleteGoogleBrew = jest.fn(async ()=>{
 				 throw 'err';
 			});
@@ -706,7 +708,7 @@ brew`);
 
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
-			expect(removeFunc).toHaveBeenCalled();
+			expect(model.deleteOne).toHaveBeenCalled();
 			expect(api.deleteGoogleBrew).toHaveBeenCalled();
 		});
 
@@ -719,6 +721,7 @@ brew`);
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
+			model.deleteOne = jest.fn(async ()=>{});
 			api.deleteGoogleBrew = jest.fn(async ()=>true);
 			const req = { account: { username: 'test' } };
 
@@ -727,7 +730,7 @@ brew`);
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(markModifiedFunc).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
-			expect(removeFunc).not.toHaveBeenCalled();
+			expect(model.deleteOne).not.toHaveBeenCalled();
 			expect(api.deleteGoogleBrew).toHaveBeenCalled();
 			expect(saveFunc).toHaveBeenCalled();
 			expect(saved.authors).toEqual(['test2']);
@@ -745,6 +748,7 @@ brew`);
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
+			model.deleteOne = jest.fn(async ()=>{});
 			api.deleteGoogleBrew = jest.fn(async ()=>true);
 			const req = { account: { username: 'test2' } };
 
@@ -752,7 +756,7 @@ brew`);
 
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
-			expect(removeFunc).not.toHaveBeenCalled();
+			expect(model.deleteOne).not.toHaveBeenCalled();
 			expect(api.deleteGoogleBrew).not.toHaveBeenCalled();
 			expect(saveFunc).toHaveBeenCalled();
 			expect(saved.authors).toEqual(['test']);
