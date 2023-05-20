@@ -49,13 +49,15 @@ const CodeEditor = createClass({
 			value         : '',
 			wrap          : true,
 			onChange      : ()=>{},
-			enableFolding : true
+			enableFolding : true,
+			paneHeight    : 0
 		};
 	},
 
 	getInitialState : function() {
 		return {
-			docs : {}
+			docs : {},
+			// height : 0
 		};
 	},
 
@@ -63,9 +65,13 @@ const CodeEditor = createClass({
 		this.buildEditor();
 		const newDoc = CodeMirror.Doc(this.props.value, this.props.language);
 		this.codeMirror.swapDoc(newDoc);
+		this.codeMirror.setSize(null, this.props.paneHeight);
 	},
 
 	componentDidUpdate : function(prevProps) {
+		if(prevProps.paneHeight !== this.props.paneHeight){
+			this.codeMirror.setSize(null, this.props.paneHeight);
+		}
 		if(prevProps.view !== this.props.view){ //view changed; swap documents
 			let newDoc;
 

@@ -2,9 +2,16 @@
 .editor{
 	position : relative;
 	width    : 100%;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+
+	[role='tabpanel'] {
+		flex: 1 1 auto;
+	}
 
 	.codeEditor{
-		height            : 100%;
+		// height            : 100%;
 		.pageLine{
 			background : #33333328;
 			border-top : #339 solid 1px;

@@ -42,8 +42,8 @@ const Editor = createClass({
 	},
 	getInitialState : function() {
 		return {
-			view   : 'text', //'text', 'style', 'meta'
-			height : 0
+			view       : 'text', //'text', 'style', 'meta'
+			paneHeight : 0
 		};
 	},
 
@@ -52,17 +52,16 @@ const Editor = createClass({
 	isMeta  : function() {return this.state.view == 'meta';},
 
 	componentDidMount : function() {
-		this.updateEditorSize();
+		this.getEditorHeight();
 		this.highlightCustomMarkdown();
-		window.addEventListener('resize', this.updateEditorSize);
+		window.addEventListener('resize', this.getEditorHeight);
 	},
 
 	componentWillUnmount : function() {
-		window.removeEventListener('resize', this.updateEditorSize);
+		window.removeEventListener('resize', this.getEditorHeight);
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
-		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		if(prevProps.moveBrew !== this.props.moveBrew) {
 			this.brewJump();
@@ -77,14 +76,8 @@ const Editor = createClass({
 			let paneHeight = this.refs.main.parentNode.clientHeight;
 			paneHeight -= SNIPPETBAR_HEIGHT + 1;
 			this.setState({
-				height : paneHeight
+				paneHeight : paneHeight
 			});
-		}
-	},
-
-	updateEditorSize : function() {
-		if(this.refs.codeEditor) {
-			this.refs.codeEditor.codeMirror.setSize(null, this.state.height);
 		}
 	},
 
@@ -273,20 +266,36 @@ const Editor = createClass({
 		this.forceUpdate();
 	},
 
+	renderSnippetBar : function() {
+		return <SnippetBar
+		brew={this.props.brew}
+		onInject={this.handleInject}
+		showEditButtons={this.props.showEditButtons}
+		renderer={this.props.renderer}
+		theme={this.props.brew.theme}
+		undo={this.undo}
+		redo={this.redo}
+		historySize={this.historySize()} />
+	},
+
 	renderEditor : function(){
+		console.log(this.state.paneHeight)
 		if(this.isText()){
 			return <>
+				{this.renderSnippetBar()}
 				<CodeEditor key='codeEditor'
 					ref='codeEditor'
 					language='gfm'
 					view={this.state.view}
 					value={this.props.brew.text}
 					onChange={this.props.onTextChange}
-					rerenderParent={this.rerenderParent} />
+					rerenderParent={this.rerenderParent}
+					paneHeight={this.state.paneHeight} />
 			</>;
 		}
 		if(this.isStyle()){
 			return <>
+				{this.renderSnippetBar()}
 				<CodeEditor key='codeEditor'
 					ref='codeEditor'
 					language='css'
@@ -294,7 +303,8 @@ const Editor = createClass({
 					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
 					onChange={this.props.onStyleChange}
 					enableFolding={false}
-					rerenderParent={this.rerenderParent} />
+					rerenderParent={this.rerenderParent}
+					paneHeight={this.state.paneHeight} />
 			</>;
 		}
 		if(this.isMeta()){
@@ -306,7 +316,8 @@ const Editor = createClass({
 				<MetadataEditor
 					metadata={this.props.brew}
 					onChange={this.props.onMetaChange}
-					reportError={this.props.reportError}/>
+					reportError={this.props.reportError}
+					paneHeight={this.state.paneHeight} />
 			</>;
 		}
 	},
@@ -326,19 +337,16 @@ const Editor = createClass({
 	renderTabList : function(){
 		return <Tabs.TabsList className='editors'>
 			<Tabs.Trigger className='text'
-				// onClick={()=>this.handleViewChange('text')}
 				value='text'>
                 Text
 				<i className='fa fa-beer' />
 			</Tabs.Trigger>
 			<Tabs.Trigger className='style'
-				// onClick={()=>this.handleViewChange('style')}
 				value='style'>
                 Style
 				<i className='fa fa-paint-brush' />
 			</Tabs.Trigger>
 			<Tabs.Trigger className='meta'
-				// onClick={()=>this.handleViewChange('meta')}
 				value='meta'>
                 Properties
 				<i className='fas fa-info-circle' />
@@ -348,15 +356,6 @@ const Editor = createClass({
 
 	renderTabContent : function (){
 		return <Tabs.Content value={this.state.view}>
-			<SnippetBar
-				brew={this.props.brew}
-				onInject={this.handleInject}
-				showEditButtons={this.props.showEditButtons}
-				renderer={this.props.renderer}
-				theme={this.props.brew.theme}
-				undo={this.undo}
-				redo={this.redo}
-				historySize={this.historySize()} />
 
 			{this.renderEditor()}
 		</Tabs.Content>;
