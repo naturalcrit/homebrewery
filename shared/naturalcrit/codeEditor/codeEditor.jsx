@@ -99,6 +99,7 @@ const CodeEditor = createClass({
 			lineWrapping      : this.props.wrap,
 			indentWithTabs    : false,
 			tabSize           : 2,
+			smartIndent       : false,
 			historyEventDelay : 250,
 			scrollPastEnd     : true,
 			extraKeys         : {
