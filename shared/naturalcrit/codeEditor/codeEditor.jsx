@@ -97,11 +97,13 @@ const CodeEditor = createClass({
 		this.codeMirror = CodeMirror(this.refs.editor, {
 			lineNumbers       : true,
 			lineWrapping      : this.props.wrap,
-			indentWithTabs    : true,
+			indentWithTabs    : false,
 			tabSize           : 2,
 			historyEventDelay : 250,
 			scrollPastEnd     : true,
 			extraKeys         : {
+				'Tab'              : this.indent,
+				'Shift-Tab'        : this.dedent,
 				'Ctrl-B'           : this.makeBold,
 				'Cmd-B'            : this.makeBold,
 				'Ctrl-I'           : this.makeItalic,
@@ -169,6 +171,19 @@ const CodeEditor = createClass({
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
 		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
 		this.updateSize();
+	},
+
+	indent : function () {
+		const cm = this.codeMirror;
+			if (cm.somethingSelected()) {
+				cm.execCommand('indentMore');
+			} else {
+				cm.execCommand('insertSoftTab');
+			}
+	},
+
+	dedent : function () {
+		this.codeMirror.execCommand('indentLess');
 	},
 
 	makeHeader : function (number) {
