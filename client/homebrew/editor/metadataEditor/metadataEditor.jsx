@@ -307,7 +307,7 @@ const MetadataEditor = createClass({
 	},
 
 	render : function(){
-		return <div className='metadataEditor' style={{ height: `${this.props.paneHeight}px` }}>
+		return <div className='metadataEditor' style={{ height: `${this.props.tabPanelHeight}px` }}>
 			<h1 className='sectionHead'>Brew</h1>
 
 			<div className='field title'>
