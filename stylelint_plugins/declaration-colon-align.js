@@ -1,7 +1,7 @@
 const stylelint = require('stylelint');
 
 const { report, ruleMessages, validateOptions } = stylelint.utils;
-const ruleName = 'naturalcrit/align-colons';
+const ruleName = 'naturalcrit/declaration-colon-align';
 const messages = ruleMessages(ruleName, {
 	expected : (rule)=>`Expected colons aligned within rule "${rule}"`,
 });
