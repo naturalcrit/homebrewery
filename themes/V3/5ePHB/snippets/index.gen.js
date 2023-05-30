@@ -1,7 +1,7 @@
 const dedent = require('dedent-tabs').default;
 
-module.exports = () => {
-  return dedent`
+module.exports = ()=>{
+	return dedent`
 	{{index,wide,columns:5;
 	##### Index
 	- Ankhesh-Bort
