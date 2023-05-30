@@ -1111,16 +1111,21 @@ break-inside                : avoid;
 // *****************************/
 .page {
 	.index {
-		font-size:11px;
+		font-size : 0.218cm;
+
+		ul ul {
+			margin : 0;
+		}
 
 		ul {
-			margin-bottom: .5em;
-			padding-left: 1em;
-			text-indent: -1em;
-			list-style-type: none;
-			-webkit-column-break-inside: auto;
-			page-break-inside: auto;
-			break-inside: auto;
+			padding-left    : 0;
+			text-indent     : 0;
+			list-style-type : none;
+		}
+
+		& > ul > li {
+			text-indent  : -1.5em;
+			padding-left : 1.5em;
 		}
 	}
 }
