@@ -2,6 +2,8 @@
 const _ = require('lodash');
 const Marked = require('marked');
 const MarkedExtendedTables = require('marked-extended-tables');
+const {gfmHeadingId: MarkedGFMHeadingId} = require('marked-gfm-heading-id');
+const {markedSmartypants: MarkedSmartyPants} = require('marked-smartypants');
 const renderer = new Marked.Renderer();
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
@@ -237,9 +239,9 @@ const definitionLists = {
 };
 
 Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists] });
-Marked.use(MarkedExtendedTables());
 Marked.use(mustacheInjectBlock);
-Marked.use({ renderer: renderer, smartypants: true });
+Marked.use({ renderer: renderer, smartypants: true, mangle: false, smartypants: false });
+Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartyPants());
 
 //Fix local links in the Preview iFrame to link inside the frame
 renderer.link = function (href, title, text) {
