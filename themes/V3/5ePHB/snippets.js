@@ -33,6 +33,12 @@ module.exports = [
 				name : 'Table of Contents',
 				icon : 'fas fa-book',
 				gen  : TableOfContentsGen
+			},
+			{
+				name         : 'Index',
+				icon         : 'fas fa-bars',
+				gen          : indexGen,
+				experimental : true
 			}
 		]
 	},
@@ -210,13 +216,7 @@ module.exports = [
 						}}
 						\n`;
 				},
-			},
-			{
-				name         : 'Index',
-				icon         : 'fas fa-bars',
-				gen          : indexGen,
-				experimental : true
-			},
+			}
 		]
 	},
 
