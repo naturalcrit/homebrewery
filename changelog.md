@@ -101,7 +101,7 @@ Fixes issues [#2092](https://github.com/naturalcrit/homebrewery/issues/2092), [#
 
 Fixes issue [#2790](https://github.com/naturalcrit/homebrewery/issues/2790) 
 
-##### 5e-Clerc
+##### 5e-Cleric
 
 * [x] New {{openSans **PHB → {{fac,book-part-cover}} PART COVER PAGE**  }} snippet for V3!
 
@@ -145,7 +145,7 @@ Fixes issues [#1679](https://github.com/naturalcrit/homebrewery/issues/1679)
 
 * [x] Add local Windows install script via Chocolatey
 
-##### 5e-Clerc
+##### 5e-Cleric
 
 * [x] New {{openSans **TABLES → {{fas,fa-language}} RUNE TABLE**}} snippets for V3. Adds an alphabetic script translation table.
 
