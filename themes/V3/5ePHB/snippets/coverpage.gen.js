@@ -84,7 +84,7 @@ module.exports = {
 		return dedent`
 		  {{frontCover}}
 
-		  {{logo ![](/assets/naturalCritLogo.svg)}}
+		  {{logo ![](/assets/naturalCritLogoRed.svg)}}
 
 		  # ${_.sample(titles)}
 		  ## ${_.sample(subtitles)}
@@ -113,7 +113,7 @@ module.exports = {
 			  ![background image](https://i.imgur.com/IsfUnFR.jpg){position:absolute,bottom:0,left:0,height:100%}
 			}}
 
-			{{logo ![](/assets/naturalCritLogo.svg)}}
+			{{logo ![](/assets/naturalCritLogoRed.svg)}}
 
 			\page`;
 	},
