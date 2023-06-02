@@ -25,14 +25,13 @@ const NotificationPopup = createClass({
 			return (
 				<>
 					<li key='psa'>
-						<em>Broken <b>CoverPage</b> snippet</em> <br />
-						Those of you who have been trying out our Cover Page snippet may
-						notice that the cover page no longer displays correctly. Due to some
-						small tweaks of this BETA feature, the CSS class has been renamed
-						from "coverPage" to "frontCover". Simply change the text to "frontCover"
-						and it should again function as before. Remember that any snippet
-						marked "beta" may have a similar change in the future as we
-						encounter any bugs or reworks.
+						<em>Broken default logo on <b>CoverPage</b> </em> <br />
+						If you have used the Cover Page snippet and notice the Naturalcrit
+						logo is showing as a broken image, this is due to some small tweaks
+						of this BETA feature. To fix the logo in your cover page, rename
+						the image link <b>"/assets/naturalCritLogoRed.svg"</b>. Remember
+						that any snippet marked "BETA" may have a similar change in the
+						future as we encounter any bugs or reworks.
 					</li>
 
 					<li key='googleDriveFolder'>
