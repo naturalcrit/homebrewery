@@ -100,12 +100,12 @@ const GoogleActions = {
 		const drive = googleDrive.drive({ version: 'v3', auth });
 
 		const fileList = [];
-		let NextPageToken = "";
+		let NextPageToken = '';
 
 		do {
 			const obj = await drive.files.list({
 				pageSize  : 1000,
-				pageToken : NextPageToken || "",
+				pageToken : NextPageToken || '',
 				fields    : 'nextPageToken, files(id, name, description, createdTime, modifiedTime, properties)',
 				q         : 'mimeType != \'application/vnd.google-apps.folder\' and trashed = false'
 			})
