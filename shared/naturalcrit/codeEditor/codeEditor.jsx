@@ -145,20 +145,6 @@ const CodeEditor = createClass({
 				'Shift-Cmd-Enter'  : this.newColumn,
 				'Ctrl-Enter'       : this.newPage,
 				'Cmd-Enter'        : this.newPage,
-				'Ctrl-Alt-Enter'   : ()=>this.newPageWithFooter(),
-				'Cmd-Alt-Enter'    : ()=>this.newPageWithFooter(),
-				'Ctrl-Alt-1'       : ()=>this.newPageWithFooter(1),
-				'Cmd-Alt-1'        : ()=>this.newPageWithFooter(1),
-				'Ctrl-Alt-2'       : ()=>this.newPageWithFooter(2),
-				'Cmd-Alt-2'        : ()=>this.newPageWithFooter(2),
-				'Ctrl-Alt-3'       : ()=>this.newPageWithFooter(3),
-				'Cmd-Alt-3'        : ()=>this.newPageWithFooter(3),
-				'Ctrl-Alt-4'       : ()=>this.newPageWithFooter(4),
-				'Cmd-Alt-4'        : ()=>this.newPageWithFooter(4),
-				'Ctrl-Alt-5'       : ()=>this.newPageWithFooter(5),
-				'Cmd-Alt-5'        : ()=>this.newPageWithFooter(5),
-				'Ctrl-Alt-6'       : ()=>this.newPageWithFooter(6),
-				'Cmd-Alt-6'        : ()=>this.newPageWithFooter(6),
 				'Ctrl-F'           : 'findPersistent',
 				'Cmd-F'            : 'findPersistent',
 				'Shift-Enter'      : 'findPersistentPrevious',
@@ -257,23 +243,6 @@ const CodeEditor = createClass({
 
 	newPage : function() {
 		this.codeMirror.replaceSelection('\n\\page\n\n', 'end');
-	},
-
-	newPageWithFooter : function(headerSize=1) {
-		let header='';
-		while (header.length < headerSize) {
-			header = header.concat('#');
-		}
-		header = header.concat(' ');
-
-		const cursorPos = this.codeMirror.getCursor();
-
-		const cmText = this.codeMirror.getValue();
-		const cmTextArray = cmText.split('\n').slice(0, cursorPos.line).reverse();
-		const cmTextArrayFilter = cmTextArray.filter((line)=>{ return line.slice(0, header.length) == header; });
-		const text = cmTextArrayFilter[0].slice(header.length) || 'PART 1 | SECTION NAME';
-
-		this.codeMirror.replaceSelection(`\n{{footnote ${text}}}\n{{pageNumber,auto}}\n\n\\page\n\n`, 'end');
 	},
 
 	injectText : function(injectText, overwrite=true) {

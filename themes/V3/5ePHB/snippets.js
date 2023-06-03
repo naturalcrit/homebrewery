@@ -8,6 +8,7 @@ const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
 const CoverPageGen       = require('./snippets/coverpage.gen.js');
 const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
 const indexGen           = require('./snippets/index.gen.js');
+const FooterGen          = require('./snippets/footer.gen.js');
 const dedent             = require('dedent-tabs').default;
 
 
@@ -28,6 +29,11 @@ module.exports = [
 				name : 'Auto-incrementing Page Number',
 				icon : 'fas fa-sort-numeric-down',
 				gen  : '{{pageNumber,auto}}\n{{footnote PART 1 | SECTION NAME}}\n\n'
+			},
+			{
+				name : 'Footer',
+				icon : 'fas fa-sort-numeric-down',
+				gen  : FooterGen
 			},
 			{
 				name : 'Table of Contents',
