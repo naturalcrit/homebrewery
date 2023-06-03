@@ -9,8 +9,8 @@ describe('Tests for static pages', ()=>{
 		return app.get('/').expect(200);
 	});
 
-	it('Home page v3 works', ()=>{
-		return app.get('/v3_preview').expect(200);
+	it('Home page legacy works', ()=>{
+		return app.get('/legacy').expect(200);
 	});
 
 	it('Changelog page works', ()=>{

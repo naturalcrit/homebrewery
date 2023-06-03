@@ -1,4 +1,4 @@
-
+@import (less) './client/icons/customIcons.less';
 .snippetBar{
 	@menuHeight      : 25px;
 	position         : relative;
@@ -83,7 +83,7 @@
 	.snippetGroup{
 		border-right   : 1px solid black;
 		&:hover{
-			.dropdown{
+			&>.dropdown{
 				visibility : visible;
 			}
 		}
@@ -96,16 +96,47 @@
 			padding          : 0px;
 			background-color : #ddd;
 			.snippet{
+				position: relative;
 				.animate(background-color);
-				padding   : 5px;
-				cursor    : pointer;
-				font-size : 10px;
+				display     : flex;
+				align-items : center;
+				min-width   : max-content;
+				padding     : 5px;
+				cursor      : pointer;
+				font-size   : 10px;
 				i{
 					margin-right : 8px;
 					font-size    : 1.2em;
+					height       : 1.2em;
+					&~i{
+						margin-right: 0;
+						margin-left: 5px;
+					}
+				}
+				.name {
+					margin-right  : auto;
+				}
+				.beta {
+					color         : white;
+					padding       : 4px 6px;
+					line-height   : 1em;
+					margin-left   : 5px;
+					align-self    : center;
+					background    : grey;
+					border-radius : 12px;
+					font-family   : monospace;
 				}
 				&:hover{
 					background-color : #999;
+					&>.dropdown{
+						visibility : visible;
+						&.side {
+							left: 100%;
+							top: 0%;
+							margin-left:0;
+							box-shadow: -1px 1px 2px 0px #999;
+						}
+					}
 				}
 			}
 		}

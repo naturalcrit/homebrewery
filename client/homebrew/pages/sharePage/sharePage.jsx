@@ -5,6 +5,7 @@ const { Meta } = require('vitreum/headtags');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
+const MetadataNav = require('../../navbar/metadata.navitem.jsx');
 const PrintLink = require('../../navbar/print.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account = require('../../navbar/account.navitem.jsx');
@@ -12,21 +13,13 @@ const Account = require('../../navbar/account.navitem.jsx');
 
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
+const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
 
 const SharePage = createClass({
 	displayName     : 'SharePage',
 	getDefaultProps : function() {
 		return {
-			brew : {
-				title     : '',
-				text      : '',
-				style     : '',
-				shareId   : null,
-				createdAt : null,
-				updatedAt : null,
-				views     : 0,
-				renderer  : ''
-			}
+			brew : DEFAULT_BREW_LOAD
 		};
 	},
 
@@ -58,8 +51,10 @@ const SharePage = createClass({
 		return <div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
 			<Navbar>
-				<Nav.section>
-					<Nav.item className='brewTitle'>{this.props.brew.title}</Nav.item>
+				<Nav.section className='titleSection'>
+					<MetadataNav brew={this.props.brew}>
+						<Nav.item className='brewTitle'>{this.props.brew.title}</Nav.item>
+					</MetadataNav>
 				</Nav.section>
 
 				<Nav.section>

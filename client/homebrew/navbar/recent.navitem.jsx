@@ -119,6 +119,25 @@ const RecentItems = createClass({
 		});
 	},
 
+	removeItem : function(url, evt){
+		evt.preventDefault();
+
+		let edited = JSON.parse(localStorage.getItem(EDIT_KEY) || '[]');
+		let viewed = JSON.parse(localStorage.getItem(VIEW_KEY) || '[]');
+
+		edited = edited.filter((item)=>{ return (item.url !== url);});
+		viewed = viewed.filter((item)=>{ return (item.url !== url);});
+
+		localStorage.setItem(EDIT_KEY, JSON.stringify(edited));
+		localStorage.setItem(VIEW_KEY, JSON.stringify(viewed));
+
+		this.setState({
+			edit : edited,
+			view : viewed
+		});
+
+	},
+
 	renderDropdown : function(){
 		if(!this.state.showDropdown) return null;
 
@@ -127,6 +146,7 @@ const RecentItems = createClass({
 				return <a href={brew.url} className='item' key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
 					<span className='title'>{brew.title || '[ no title ]'}</span>
 					<span className='time'>{Moment(brew.ts).fromNow()}</span>
+					<div className='clear' title='Remove from Recents' onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></div>
 				</a>;
 			});
 		};

@@ -63,18 +63,26 @@ const Account = createClass({
 		if(global.account){
 			return <Nav.dropdown>
 				<Nav.item
-					className='account'
+					className='account username'
 					color='orange'
 					icon='fas fa-user'
 				>
 					{global.account.username}
 				</Nav.item>
 				<Nav.item
-					href={`/user/${global.account.username}`}
+					href={`/user/${encodeURI(global.account.username)}`}
 					color='yellow'
 					icon='fas fa-beer'
 				>
 					brews
+				</Nav.item>
+				<Nav.item
+					className='account'
+					color='orange'
+					icon='fas fa-user'
+					href='/account'
+				>
+					account
 				</Nav.item>
 				<Nav.item
 					className='logout'

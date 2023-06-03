@@ -21,6 +21,7 @@ const transforms = {
 
 const build = async ({ bundle, render, ssr })=>{
 	const css = await lessTransform.generate({ paths: './shared' });
+	//css = `@layer bundle {\n${css}\n}`;
 	await fs.outputFile('./build/homebrew/bundle.css', css);
 	await fs.outputFile('./build/homebrew/bundle.js', bundle);
 	await fs.outputFile('./build/homebrew/ssr.js', ssr);
@@ -72,6 +73,7 @@ fs.emptyDirSync('./build');
 		themeData.path = dir;
 		themes.V3[dir] = (themeData);
 		fs.copy(`./themes/V3/${dir}/dropdownTexture.png`, `./build/themes/V3/${dir}/dropdownTexture.png`);
+		fs.copy(`./themes/V3/${dir}/dropdownPreview.png`, `./build/themes/V3/${dir}/dropdownPreview.png`);
 		const src = `./themes/V3/${dir}/style.less`;
 	  ((outputDirectory)=>{
 			less.render(fs.readFileSync(src).toString(), {
@@ -95,6 +97,7 @@ fs.emptyDirSync('./build');
 	// Move assets
 	await fs.copy('./themes/fonts', './build/fonts');
 	await fs.copy('./themes/assets', './build/assets');
+	await fs.copy('./client/icons', './build/icons');
 
 	//v==----------------------------- BUNDLE PACKAGES --------------------------------==v//
 
@@ -135,7 +138,9 @@ fs.emptyDirSync('./build');
 //In development set up a watch server and livereload
 if(isDev){
 	livereload('./build');
-	watchFile('./server.js', {
-		watch : ['./client', './server'] // Watch additional folders if you want
+	watchFile('./server.js', { // Rebuild when change detected to this file or any nested directory from here
+		ignore : ['./build'],    // Ignore ./build or it will rebuild again
+		ext    : 'less',             // Other extensions to watch (only .js/.json/.jsx by default)
+		//watch: ['./client', './server', './themes'], // Watch additional folders if you want
 	});
 }
