@@ -31,9 +31,47 @@ module.exports = [
 				gen  : '{{pageNumber,auto}}\n{{footnote PART 1 | SECTION NAME}}\n\n'
 			},
 			{
-				name : 'Footer',
-				icon : 'fas fa-sort-numeric-down',
-				gen  : FooterGen
+				name        : 'Footer',
+				icon        : 'fas fa-shoe-prints',
+				gen         : FooterGen.createFooter,
+				subsnippets : [
+					{
+						name   : 'Footer from H1',
+						icon   : 'fas fa-dice-one',
+						gen    : FooterGen.createFooter,
+						params : { headerSize: 1 }
+					},
+					{
+						name   : 'Footer from H2',
+						icon   : 'fas fa-dice-two',
+						gen    : FooterGen.createFooter,
+						params : { headerSize: 2 }
+					},
+					{
+						name   : 'Footer from H3',
+						icon   : 'fas fa-dice-three',
+						gen    : FooterGen.createFooter,
+						params : { headerSize: 3 }
+					},
+					{
+						name   : 'Footer from H4',
+						icon   : 'fas fa-dice-four',
+						gen    : FooterGen.createFooter,
+						params : { headerSize: 4 }
+					},
+					{
+						name   : 'Footer from H5',
+						icon   : 'fas fa-dice-five',
+						gen    : FooterGen.createFooter,
+						params : { headerSize: 5 }
+					},
+					{
+						name   : 'Footer from H6',
+						icon   : 'fas fa-dice-six',
+						gen    : FooterGen.createFooter,
+						params : { headerSize: 6 }
+					}
+				]
 			},
 			{
 				name : 'Table of Contents',
