@@ -81,7 +81,6 @@ const Editor = createClass({
 		});
 
 		if(this.refs.codeEditor){
-			console.log('car');
 			const parentNode = this.refs.codeEditor.refs.editor.parentNode;
 			const siblingNodes = _.pull(Array.from(parentNode.children), this.refs.codeEditor.refs.editor);
 			const availableSpace = parentNode.offsetHeight - siblingNodes.map((el)=>{return el.offsetHeight}).reduce((a, b)=>{a + b, 0});
@@ -89,6 +88,8 @@ const Editor = createClass({
 			this.setState({
 				editorHeight : availableSpace
 			});
+
+			console.log(this.state.editorHeight)
 		}
 
 	},
