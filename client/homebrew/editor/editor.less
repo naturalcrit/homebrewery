@@ -1,25 +1,26 @@
 
-.editor{
-	position : relative;
-	width    : 100%;
-	display: flex;
-	flex-direction: column;
-	height: 100%;
+.tabs { height : 100%; }
 
-	[role='tabpanel'] {
-		flex: 1 1 auto;
-	}
+[role='tabpanel'] { flex : 1 1 auto; }
 
-	.codeEditor{
-		// height            : 100%;
-		flex: 1 1 auto;
-		.pageLine{
+.editor {
+	position       : relative;
+	display        : flex;
+	flex-direction : column;
+	width          : 100%;
+	height         : 100%;
+	
+
+	.codeEditor {
+		height            : 100%;
+		flex : 1 1 auto;
+		.pageLine {
 			background : #33333328;
 			border-top : #339 solid 1px;
 		}
-		.editor-page-count{
-			color : grey;
+		.editor-page-count {
 			float : right;
+			color : grey;
 		}
 		.columnSplit{
 			font-style 			: italic;

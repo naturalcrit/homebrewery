@@ -1,12 +1,12 @@
-/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 400, "skipBlankLines": true, "skipComments": true}]*/
 require('./editor.less');
+require('./editorTabs.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 const dedent = require('dedent-tabs').default;
 
-import { Tabbed } from './editorTabs.jsx';
 import * as Tabs from '@radix-ui/react-tabs';
 
 const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
@@ -42,9 +42,9 @@ const Editor = createClass({
 	},
 	getInitialState : function() {
 		return {
-			view         : 'text', //'text', 'style', 'meta'
-			tabPanelHeight   : 0,
-			editorHeight : 0,
+			view           : 'text', //'text', 'style', 'meta'
+			tabPanelHeight : 0,
+			editorHeight   : 0,
 		};
 	},
 
@@ -73,38 +73,39 @@ const Editor = createClass({
 	},
 
 	getTabHeight : function(){
-
-		const tabListHeight = this.refs.tablist.offsetHeight;
-		const tabPanelHeight = this.refs.main.parentNode.clientHeight;
+		const tabRootNode = this.refs.main;
+		const tabRootNodeHeight = tabRootNode.offsetHeight;
+		console.log(tabRootNodeHeight);
+		const tabListHeight = this.refs.tabList.offsetHeight;
 		this.setState({
-			tabPanelHeight : tabPanelHeight - tabListHeight
-		});
+			tabPanelHeight : tabRootNodeHeight - tabListHeight
+		}, ()=>{});
 
-		if(this.refs.codeEditor){
-			const parentNode = this.refs.codeEditor.refs.editor.parentNode;
-			const siblingNodes = _.pull(Array.from(parentNode.children), this.refs.codeEditor.refs.editor);
-			const availableSpace = parentNode.offsetHeight - siblingNodes.map((el)=>{return el.offsetHeight}).reduce((a, b)=>{a + b, 0});
-	
+
+		if(this.state.view == 'text' || this.state.view == 'style'){
+
+			// const tabRootNode = this.refs.main;
+			// const tabRootNodeHeight = tabRootNode.offsetHeight;
+			const tabPanelNode = this.refs.tabPanel;
+			// const tabPanelNodeHeight = tabPanelNode.offsetHeight;
+			const tabPanelNodeHeight = this.state.tabPanelHeight;
+			// const siblingNodes = _.remove(Array.from(tabPanelNode.children), (item)=>{item.className == 'codeEditor';});
+			// const siblingHeights = siblingNodes.map((el)=>{ return el.offsetHeight; });
+			// const totalSibHeights = siblingHeights.reduce((a, b)=>{ return a + b, 0; });
+
+			// const snippetBar = document.querySelector('.snippetBar');
+			const snippetBarHeight = 25;
+
+			console.log(snippetBarHeight);
+
+			console.log(`${tabPanelNodeHeight} - ${snippetBarHeight}`);
 			this.setState({
-				editorHeight : availableSpace
-			});
+				editorHeight : tabPanelNodeHeight - snippetBarHeight
+			}, ()=>{});
 
-			console.log(this.state.editorHeight)
 		}
 
 	},
-
-	// getMaxEditorHeight : function(){
-	// 	if(this.refs.codeEditor){
-	// 		const parentNode = this.refs.codeEditor.refs.editor.parentNode;
-	// 		const siblingNodes = _.pull(Array.from(parentNode.children), this.refs.codeEditor.refs.editor);
-	// 		const availableSpace = parentNode.offsetHeight - siblingNodes.map((el)=>{return el.offsetHeight}).reduce((a, b)=>{a + b, 0});
-
-	// 		this.setState({
-	// 			editorHeight : availableSpace
-	// 		}, ()=>{});
-	// 	}
-	// },
 
 	handleInject : function(injectText){
 		this.refs.codeEditor?.injectText(injectText, false);
@@ -114,7 +115,9 @@ const Editor = createClass({
 		this.props.setMoveArrows(newView === 'text');
 		this.setState({
 			view : newView
-		}, ()=>{ return newView !== 'meta' ? this.getTabHeight() : console.log('is meta') });
+		// }, ()=>{ return newView !== 'meta' ? this.getTabHeight() : console.log('is meta') });
+		}, ()=>{ return this.getTabHeight();});
+
 	},
 
 	getCurrentPage : function(){
@@ -293,6 +296,7 @@ const Editor = createClass({
 
 	renderSnippetBar : function() {
 		return <SnippetBar
+			ref='snippetBar'
 			brew={this.props.brew}
 			onInject={this.handleInject}
 			showEditButtons={this.props.showEditButtons}
@@ -306,7 +310,6 @@ const Editor = createClass({
 	renderEditor : function(){
 		if(this.isText()){
 			return <>
-				{this.renderSnippetBar()}
 				<CodeEditor key='codeEditor'
 					ref='codeEditor'
 					language='gfm'
@@ -319,7 +322,6 @@ const Editor = createClass({
 		}
 		if(this.isStyle()){
 			return <>
-				{this.renderSnippetBar()}
 				<CodeEditor key='codeEditor'
 					ref='codeEditor'
 					language='css'
@@ -359,19 +361,19 @@ const Editor = createClass({
 		return this.refs.codeEditor?.undo();
 	},
 
-	renderTabList : function(){
-		return <Tabs.TabsList className='editors' ref='tablist'>
-			<Tabs.Trigger className='text'
+	rendertabList : function(){
+		return <Tabs.TabsList className='tab-list' ref='tabList'>
+			<Tabs.Trigger className='text tab'
 				value='text'>
                 Text
 				<i className='fa fa-beer' />
 			</Tabs.Trigger>
-			<Tabs.Trigger className='style'
+			<Tabs.Trigger className='style tab'
 				value='style'>
                 Style
 				<i className='fa fa-paint-brush' />
 			</Tabs.Trigger>
-			<Tabs.Trigger className='meta'
+			<Tabs.Trigger className='meta tab'
 				value='meta'>
                 Properties
 				<i className='fas fa-info-circle' />
@@ -381,7 +383,7 @@ const Editor = createClass({
 
 	renderTabContent : function (){
 		return <Tabs.Content value={this.state.view} ref='tabPanel'>
-
+			{this.isText() || this.isStyle() ? this.renderSnippetBar() :  null}
 			{this.renderEditor()}
 		</Tabs.Content>;
 	},
@@ -390,7 +392,7 @@ const Editor = createClass({
 		return (
 			<Tabs.Root className='tabs' ref='main' defaultValue='text' onValueChange={(e)=>{this.handleViewChange(e)}}>
 				{this.renderTabContent()}
-				{this.renderTabList()}
+				{this.rendertabList()}
 			</Tabs.Root>
 		);
 	}
