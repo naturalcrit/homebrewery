@@ -99,7 +99,7 @@
     "lodash": "^4.17.21",
     "marked": "5.0.5",
     "marked-extended-tables": "^1.0.6",
-    "marked-gfm-heading-id": "^3.0.3",
+    "marked-gfm-heading-id": "^3.0.4",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.29.4",
     "mongoose": "^7.2.2",
