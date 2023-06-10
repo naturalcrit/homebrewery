@@ -13,7 +13,7 @@ const titles = [
 	'The Living Dead Above the Fearful Cage', 'Bahamut\'s Demonspawn',
 	'Across Gruumsh\'s Elemental Chaos',      'The Blade of Orcus',
 	'Beyond Revenge',                         'Brain of Insanity',
-	'Breed Battle!, A New Beginning',         'Evil Lake, A New Beginning',
+	'A New Beginning',                        'Evil Lake of the Merfolk',
 	'Invasion of the Gigantic Cat, Part II',  'Kraken War 2020',
 	'The Body Whisperers',                    'The Doctor from Heaven',
 	'The Diabolical Tales of the Ape-Women',  'The Doctor Immortal',
@@ -23,7 +23,7 @@ const titles = [
 	'Sky of Zelda: The Thunder of Force',     'Core Battle',
 	'Ruby of Atlantis: The Quake of Peace',   'Deadly Amazement III',
 	'Dry Chaos IX',                           'Gate Thunder',
-	'Vyse\'s Skies',                          'White Greatness III',
+	'Vyse\'s Skies',                          'Blue Greatness III',
 	'Yellow Divinity',                        'Zidane\'s Ghost'
 ];
 
@@ -68,23 +68,89 @@ const footnote = [
 	'In an amazing kingdom, in an age of sorcery and lost souls, eight space pirates quest for freedom.'
 ];
 
-module.exports = ()=>{
-	return dedent`
-  {{coverPage }}
+const coverText = [
+	'Embark on a thrilling journey across a vast and varied world, where magic and mystery await you at every turn. Encounter strange creatures and ancient secrets, and forge your own destiny with your choices. The world is yours to shape and explore.',
+	'Join a band of brave adventurers and set out to explore the unknown lands beyond the horizon. Along the way, you’ll face perilous challenges, make new friends and enemies, and uncover a plot that threatens to destroy everything you hold dear. The fate of the world rests in your hands.',
+	'Create your own character and enter a realm of endless possibilities, where you can be whoever you want to be. Whether you prefer to fight, sneak, charm, or craft your way through the game, you’ll find a style that suits you. The only limit is your imagination.',
+	'Experience a rich and immersive story that adapts to your actions and decisions. Every choice you make has consequences, for good or ill. Will you be a hero or a villain? A leader or a follower? A friend or a foe? The choice is yours.',
+	'Dive into a world of epic fantasy and adventure, where you can explore ancient civilizations, dark dungeons, and hidden secrets. Along the way, you’ll meet colorful characters, collect powerful items, and learn new skills. The more you play, the more you’ll discover.',
+	'Explore a vast and dynamic world that changes according to your actions. You can shape the environment, influence the politics, and alter the history of the game world. But be careful, as every change has a ripple effect that may have unforeseen consequences.',
+	'Enter a world of wonder and danger, where you can find allies and enemies among the various races and factions that inhabit it. You can choose to join or oppose any of them, or forge your own path. The game world is alive and responsive to your actions.'
+];
 
-  {{logo ![](/assets/naturalCritLogo.svg)}}
+module.exports = {
 
-  # ${_.sample(titles)}
-  ## ${_.sample(subtitles)}
-  __________
+	front : function() {
+		return dedent`
+		  {{frontCover}}
 
-  {{banner HOMEBREW}}
+		  {{logo ![](/assets/naturalCritLogoRed.svg)}}
 
-  {{footnote
-    ${_.sample(footnote)}
-  }}
+		  # ${_.sample(titles)}
+		  ## ${_.sample(subtitles)}
+		  ___
 
-  ![background image](https://i.imgur.com/Mqx8Vf7.png)
+		  {{banner HOMEBREW}}
 
-  \page`;
+		  {{footnote
+		    ${_.sample(footnote)}
+		  }}
+
+		  ![background image](https://i.imgur.com/IwHRrbF.jpg){position:absolute,bottom:0,left:0,height:100%}
+
+		  \page`;
+	},
+
+	inside : function() {
+		return dedent`
+			{{insideCover}}
+
+			# ${_.sample(titles)}
+			## ${_.sample(subtitles)}
+			___
+
+			{{imageMaskCenter${_.random(1, 16)},--offsetX:0%,--offsetY:0%,--rotation:0
+			  ![background image](https://i.imgur.com/IsfUnFR.jpg){position:absolute,bottom:0,left:0,height:100%}
+			}}
+
+			{{logo ![](/assets/naturalCritLogoRed.svg)}}
+
+			\page`;
+	},
+
+	part : function() {
+		return dedent`
+			{{partCover}}
+
+			# PART X
+			## ${_.sample(subtitles)}
+
+			{{imageMaskEdge${_.random(1, 8)},--offset:10cm,--rotation:180
+			  ![Background image](https://i.imgur.com/9TU96xY.jpg){position:absolute,bottom:0,left:0,height:100%}
+			}}
+
+			\page`;
+	},
+
+	back : function() {
+		return dedent`
+			{{backCover}}
+
+			# ${_.sample(subtitles)}
+
+			${_.sampleSize(coverText, 3).join('\n:\n')}
+			___
+
+			For use with any fantasy roleplaying ruleset. Play the best game of your life!
+
+			![background image](https://i.imgur.com/MJ4YHu7.jpg){position:absolute,bottom:0,left:0,height:100%}
+
+			{{logo
+			![](/assets/naturalCritLogoWhite.svg)
+
+			Homebrewery.Naturalcrit.com
+			}}
+
+			\page`;
+	}
 };

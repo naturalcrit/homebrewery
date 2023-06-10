@@ -102,6 +102,12 @@ module.exports = [
 				gen  : WatercolorGen,
 			},
 			{
+				name         : 'Watercolor Center',
+				icon         : 'fac mask-center',
+				gen          : ImageMaskGen.center,
+				experimental : true,
+			},
+			{
 				name         : 'Watercolor Edge',
 				icon         : 'fac mask-edge',
 				gen          : ImageMaskGen.edge('bottom'),
