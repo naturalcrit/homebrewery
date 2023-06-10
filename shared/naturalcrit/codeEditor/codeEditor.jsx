@@ -4,7 +4,8 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
-const closeTag = require('./close-tag');
+const closeTag = require('./helpers/close-tag');
+const { WIDGET_TYPE, FIELD_TYPE } = require('./helpers/widget-elements/constants');
 
 let CodeMirror;
 if(typeof navigator !== 'undefined'){
@@ -37,9 +38,35 @@ if(typeof navigator !== 'undefined'){
 	require('codemirror/addon/fold/xml-fold.js');
 	require('codemirror/addon/edit/closetag.js');
 
-	const foldCode = require('./fold-code');
+	const foldCode = require('./helpers/fold-code');
 	foldCode.registerHomebreweryHelper(CodeMirror);
 }
+
+const themeWidgets = [{
+	name    : 'monster',
+	type    : WIDGET_TYPE.SNIPPET,
+	classes : ['frame', 'wide']
+}, {
+	name    : 'classTable',
+	type    : WIDGET_TYPE.SNIPPET,
+	classes : ['frame', 'decoration', 'wide']
+}, {
+	name   : 'image',
+	type   : WIDGET_TYPE.IMAGE,
+	fields : []
+}, {
+	name   : 'artist',
+	type   : WIDGET_TYPE.SNIPPET,
+	fields : [{
+		name      : 'top',
+		type      : FIELD_TYPE.STYLE,
+		increment : 5,
+		lineBreak : true
+	}]
+}, { // catch all
+	name : '',
+	type : WIDGET_TYPE.SNIPPET
+}];
 
 const CodeEditor = createClass({
 	displayName     : 'CodeEditor',
@@ -49,13 +76,16 @@ const CodeEditor = createClass({
 			value         : '',
 			wrap          : true,
 			onChange      : ()=>{},
-			enableFolding : true
+			enableFolding : true,
+			theme         : null
 		};
 	},
 
 	getInitialState : function() {
 		return {
-			docs : {}
+			docs          : {},
+			widgetUtils   : {},
+			focusedWidget : null
 		};
 	},
 
@@ -91,6 +121,9 @@ const CodeEditor = createClass({
 		} else {
 			this.codeMirror.setOption('foldOptions', false);
 		}
+
+		this.state.widgetUtils.updateWidgetGutter();
+		this.state.widgetUtils.updateAllLineWidgets();
 	},
 
 	buildEditor : function() {
@@ -155,7 +188,7 @@ const CodeEditor = createClass({
 			},
 			foldGutter        : true,
 			foldOptions       : this.foldOptions(this.codeMirror),
-			gutters           : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+			gutters           : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'widget-gutter'],
 			autoCloseTags     : true,
 			styleActiveLine   : true,
 			showTrailingSpace : false,
@@ -169,9 +202,36 @@ const CodeEditor = createClass({
 		});
 		closeTag.autoCloseCurlyBraces(CodeMirror, this.codeMirror);
 
+		this.setState({
+			widgetUtils : require('./helpers/widgets')(CodeMirror, themeWidgets, this.codeMirror)
+		});
+
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
 		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
 		this.updateSize();
+
+		this.codeMirror.on('change', (cm)=>{
+			this.props.onChange(cm.getValue());
+
+			this.state.widgetUtils.updateWidgetGutter();
+		});
+
+		this.codeMirror.on('gutterClick', (cm, n)=>{
+			const { gutterMarkers } = this.codeMirror.lineInfo(n);
+
+			if(!!gutterMarkers && !!gutterMarkers['widget-gutter']) {
+				const { widgets } = this.codeMirror.lineInfo(n);
+				if(!widgets) {
+					this.state.widgetUtils.updateLineWidgets(n);
+				} else {
+					this.codeMirror.operation(()=>{
+						for (const widget of widgets) {
+							this.state.widgetUtils.removeLineWidgets(widget);
+						}
+					});
+				}
+			}
+		});
 	},
 
 	indent : function () {

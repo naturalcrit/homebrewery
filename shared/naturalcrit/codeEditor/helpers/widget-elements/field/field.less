@@ -1,0 +1,32 @@
+.widget-field {
+  display: inline-block;
+
+  >label {
+    display: inherit;
+    width: 50px;
+    margin: 0 0;
+  }
+
+  >input {
+
+  }
+
+  >.hints {
+    position: relative;
+    left: 50px;
+    max-height: 100px;
+    overflow-y: scroll;
+    background-color: white;
+
+    >.hint {
+      margin: 0 0;
+      padding: 2px;
+      cursor: default;
+
+      &:hover,
+      &.active {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+}
