@@ -1,4 +1,4 @@
-.codeEditor .CodeMirror {
+.editor .codeEditor .CodeMirror {
     // Themes with dark backgrounds
     &.cm-s-3024-night,
     &.cm-s-abbott,
@@ -49,8 +49,20 @@
     &.cm-s-yonce,
     &.cm-s-zenburn
      {
-        .CodeMirror-code .block:not(.cm-comment) {
-            color: magenta;
+        .CodeMirror-code {
+            .block:not(.cm-comment) {
+                color: magenta;
+            }
+            .columnSplit {
+                color: black;
+                background-color: rgba(35,153,153,0.5);
+            }
+            .pageLine {
+                background-color: rgba(255,255,255,0.75);
+                & ~ pre.CodeMirror-line {
+                    color: black;
+                }
+            }
         }
     }
 }
