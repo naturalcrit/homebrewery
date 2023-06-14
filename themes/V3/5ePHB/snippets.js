@@ -33,43 +33,37 @@ module.exports = [
 			{
 				name        : 'Footer',
 				icon        : 'fas fa-shoe-prints',
-				gen         : FooterGen.createFooter,
+				gen         : FooterGen.createFooterFunc(),
 				subsnippets : [
 					{
-						name   : 'Footer from H1',
-						icon   : 'fas fa-dice-one',
-						gen    : FooterGen.createFooter,
-						params : { headerSize: 1 }
+						name : 'Footer from H1',
+						icon : 'fas fa-dice-one',
+						gen  : FooterGen.createFooterFunc(1)
 					},
 					{
-						name   : 'Footer from H2',
-						icon   : 'fas fa-dice-two',
-						gen    : FooterGen.createFooter,
-						params : { headerSize: 2 }
+						name : 'Footer from H2',
+						icon : 'fas fa-dice-two',
+						gen  : FooterGen.createFooterFunc(2)
 					},
 					{
-						name   : 'Footer from H3',
-						icon   : 'fas fa-dice-three',
-						gen    : FooterGen.createFooter,
-						params : { headerSize: 3 }
+						name : 'Footer from H3',
+						icon : 'fas fa-dice-three',
+						gen  : FooterGen.createFooterFunc(3)
 					},
 					{
-						name   : 'Footer from H4',
-						icon   : 'fas fa-dice-four',
-						gen    : FooterGen.createFooter,
-						params : { headerSize: 4 }
+						name : 'Footer from H4',
+						icon : 'fas fa-dice-four',
+						gen  : FooterGen.createFooterFunc(4)
 					},
 					{
-						name   : 'Footer from H5',
-						icon   : 'fas fa-dice-five',
-						gen    : FooterGen.createFooter,
-						params : { headerSize: 5 }
+						name : 'Footer from H5',
+						icon : 'fas fa-dice-five',
+						gen  : FooterGen.createFooterFunc(5)
 					},
 					{
-						name   : 'Footer from H6',
-						icon   : 'fas fa-dice-six',
-						gen    : FooterGen.createFooter,
-						params : { headerSize: 6 }
+						name : 'Footer from H6',
+						icon : 'fas fa-dice-six',
+						gen  : FooterGen.createFooterFunc(6)
 					}
 				]
 			},

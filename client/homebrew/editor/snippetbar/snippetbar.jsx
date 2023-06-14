@@ -167,7 +167,7 @@ const SnippetGroup = createClass({
 	},
 	handleSnippetClick : function(e, snippet){
 		e.stopPropagation();
-		this.props.onSnippetClick(execute(snippet.gen, this.props.brew, { ...snippet.params, cursorPos: this.props.cursorPos }));
+		this.props.onSnippetClick(execute(snippet.gen, this.props));
 	},
 	renderSnippets : function(snippets){
 		return _.map(snippets, (snippet)=>{
