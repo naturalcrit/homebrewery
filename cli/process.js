@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('fs-extra');
 const config = require('nconf');
 
 const App = require('../server/app.js');
@@ -72,9 +72,9 @@ pages.forEach((page, index)=>{
 const htmlOutput = `<!DOCTYPE html>
 	<html>
 		<head>
-			<link href="//use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
-			<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
-			<link href='../build/homebrew/bundle.css' rel='stylesheet' />
+			<link href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
+			<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
+			<link href='/bundle.css' rel='stylesheet' />
 			<link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
 			<title>The Homebrewery - Local Output</title>
 		</head>
@@ -92,5 +92,9 @@ const htmlOutput = `<!DOCTYPE html>
 
 // Write everything to the output file
 fs.writeFileSync(config.get('output'), htmlOutput);
+fs.copyFileSync('../build/homebrew/bundle.css', '/bundle.css');
+// fs.copySync('../build/assets/', 'assets/');
+// fs.copySync('../build/themes/', 'themes/');
+
 
 console.log(`Output written to file: ${config.get('output')}`);
