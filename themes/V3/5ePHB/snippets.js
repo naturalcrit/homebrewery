@@ -8,7 +8,6 @@ const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
 const CoverPageGen       = require('./snippets/coverpage.gen.js');
 const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
 const indexGen           = require('./snippets/index.gen.js');
-const FooterGen          = require('./snippets/footer.gen.js');
 const dedent             = require('dedent-tabs').default;
 
 
@@ -20,53 +19,6 @@ module.exports = [
 		icon      : 'fas fa-pencil-alt',
 		view      : 'text',
 		snippets  : [
-			{
-				name : 'Page Number',
-				icon : 'fas fa-bookmark',
-				gen  : '{{pageNumber 1}}\n{{footnote PART 1 | SECTION NAME}}\n\n'
-			},
-			{
-				name : 'Auto-incrementing Page Number',
-				icon : 'fas fa-sort-numeric-down',
-				gen  : '{{pageNumber,auto}}\n{{footnote PART 1 | SECTION NAME}}\n\n'
-			},
-			{
-				name        : 'Footer',
-				icon        : 'fas fa-shoe-prints',
-				gen         : FooterGen.createFooterFunc(),
-				subsnippets : [
-					{
-						name : 'Footer from H1',
-						icon : 'fas fa-dice-one',
-						gen  : FooterGen.createFooterFunc(1)
-					},
-					{
-						name : 'Footer from H2',
-						icon : 'fas fa-dice-two',
-						gen  : FooterGen.createFooterFunc(2)
-					},
-					{
-						name : 'Footer from H3',
-						icon : 'fas fa-dice-three',
-						gen  : FooterGen.createFooterFunc(3)
-					},
-					{
-						name : 'Footer from H4',
-						icon : 'fas fa-dice-four',
-						gen  : FooterGen.createFooterFunc(4)
-					},
-					{
-						name : 'Footer from H5',
-						icon : 'fas fa-dice-five',
-						gen  : FooterGen.createFooterFunc(5)
-					},
-					{
-						name : 'Footer from H6',
-						icon : 'fas fa-dice-six',
-						gen  : FooterGen.createFooterFunc(6)
-					}
-				]
-			},
 			{
 				name : 'Table of Contents',
 				icon : 'fas fa-book',

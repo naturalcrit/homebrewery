@@ -2,6 +2,7 @@
 
 const WatercolorGen = require('./snippets/watercolor.gen.js');
 const ImageMaskGen  = require('./snippets/imageMask.gen.js');
+const FooterGen     = require('./snippets/footer.gen.js');
 const dedent        = require('dedent-tabs').default;
 
 module.exports = [
@@ -22,9 +23,51 @@ module.exports = [
 				gen  : '\n\\page\n'
 			},
 			{
-				name : 'Page Break with Footer',
-				icon : 'fas fa-file',
-				gen  : '\n{{footnote PART 1 | SECTION NAME}}\n{{pageNumber,auto}}\n\n\\page\n'
+				name : 'Page Number',
+				icon : 'fas fa-bookmark',
+				gen  : '{{pageNumber 1}}\n'
+			},
+			{
+				name : 'Auto-incrementing Page Number',
+				icon : 'fas fa-sort-numeric-down',
+				gen  : '{{pageNumber,auto}}\n'
+			},
+			{
+				name        : 'Footer',
+				icon        : 'fas fa-shoe-prints',
+				gen         : FooterGen.createFooterFunc(),
+				subsnippets : [
+					{
+						name : 'Footer from H1',
+						icon : 'fas fa-dice-one',
+						gen  : FooterGen.createFooterFunc(1)
+					},
+					{
+						name : 'Footer from H2',
+						icon : 'fas fa-dice-two',
+						gen  : FooterGen.createFooterFunc(2)
+					},
+					{
+						name : 'Footer from H3',
+						icon : 'fas fa-dice-three',
+						gen  : FooterGen.createFooterFunc(3)
+					},
+					{
+						name : 'Footer from H4',
+						icon : 'fas fa-dice-four',
+						gen  : FooterGen.createFooterFunc(4)
+					},
+					{
+						name : 'Footer from H5',
+						icon : 'fas fa-dice-five',
+						gen  : FooterGen.createFooterFunc(5)
+					},
+					{
+						name : 'Footer from H6',
+						icon : 'fas fa-dice-six',
+						gen  : FooterGen.createFooterFunc(6)
+					}
+				]
 			},
 			{
 				name : 'Vertical Spacing',
