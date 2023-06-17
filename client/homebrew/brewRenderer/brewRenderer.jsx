@@ -141,18 +141,20 @@ const BrewRenderer = createClass({
 
 	renderStyle : function() {
 		if(!this.props.style) return;
+		const cleanStyle = this.sanitizeScriptTags(this.props.style);
 		//return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${this.sanitizeScriptTags(this.props.style)}\n} </style>` }} />;
-    return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${this.sanitizeScriptTags(this.props.style)} </style>` }} />;
+		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${cleanStyle} </style>` }} />;
 	},
 
 	renderPage : function(pageText, index){
+		const cleanPageText = this.sanitizeScriptTags(pageText);
 		if(this.props.renderer == 'legacy')
-			return <div className='phb page' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(pageText) }} key={index} />;
+			return <div className='phb page' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(cleanPageText) }} key={index} />;
 		else {
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			return (
 				<div className='page' id={`p${index + 1}`} key={index} >
-					<div className='columnWrapper' dangerouslySetInnerHTML={{ __html: Markdown.render(pageText) }} />
+					<div className='columnWrapper' dangerouslySetInnerHTML={{ __html: Markdown.render(cleanPageText) }} />
 				</div>
 			);
 		}
