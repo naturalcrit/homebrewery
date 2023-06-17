@@ -2,6 +2,7 @@
 const _ = require('lodash');
 const Marked = require('marked');
 const MarkedExtendedTables = require('marked-extended-tables');
+const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
 const renderer = new Marked.Renderer();
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
@@ -32,7 +33,7 @@ const mustacheSpans = {
 	start(src) { return src.match(/{{[^{]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeSpan = /^{{[^\n]*}}/;               // Regex for the complete token
-		const inlineRegex = /{{(?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])*\s*|}}/g;
+		const inlineRegex = /{{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1 *|}}/g;
 		const match = completeSpan.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -82,7 +83,7 @@ const mustacheDivs = {
 	start(src) { return src.match(/\n *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeBlock = /^ *{{[^\n}]* *\n.*\n *}}/s;                // Regex for the complete token
-		const blockRegex = /^ *{{(?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])* *$|^ *}}$/gm;
+		const blockRegex = /^ *{{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1 *$|^ *}}$/gm;
 		const match = completeBlock.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -130,11 +131,11 @@ const mustacheInjectInline = {
 	level : 'inline',
 	start(src) { return src.match(/ *{[^{\n]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const inlineRegex = /^ *{((?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])*)}/g;
+		const inlineRegex = /^ *{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1}/g;
 		const match = inlineRegex.exec(src);
 		if(match) {
 			const lastToken = tokens[tokens.length - 1];
-			if(!lastToken)
+			if(!lastToken || lastToken.type == 'mustacheInjectInline')
 				return false;
 
 			const tags = ` ${processStyleTags(match[1])}`;
@@ -165,11 +166,11 @@ const mustacheInjectBlock = {
 		level : 'block',
 		start(src) { return src.match(/\n *{[^{\n]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 		tokenizer(src, tokens) {
-			const inlineRegex = /^ *{((?::(?:"[\w,\-()#%. ]*"|[\w\,\-()#%.]*)|[^"'{}\s])*)}/ym;
+			const inlineRegex = /^ *{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1}/ym;
 			const match = inlineRegex.exec(src);
 			if(match) {
 				const lastToken = tokens[tokens.length - 1];
-				if(!lastToken)
+				if(!lastToken || lastToken.type == 'mustacheInjectBlock')
 					return false;
 
 				lastToken.originalType = 'mustacheInjectBlock';
@@ -236,10 +237,49 @@ const definitionLists = {
 	}
 };
 
+const MarkedSmartyPantsLite = ()=>{
+	return {
+		tokenizer : {
+			inlineText(src) {
+				// don't escape inlineText
+				const cap = this.rules.inline.text.exec(src);
+
+				/* istanbul ignore next */
+				if(!cap) {
+					// should never happen
+					return;
+				}
+
+				const text = cap[0]
+					// em-dashes
+					.replace(/---/g, '\u2014')
+					// en-dashes
+					.replace(/--/g, '\u2013')
+					// opening singles
+					.replace(/(^|[-\u2014/(\[{"\s])'/g, '$1\u2018')
+					// closing singles & apostrophes
+					.replace(/'/g, '\u2019')
+					// opening doubles
+					.replace(/(^|[-\u2014/(\[{\u2018\s])"/g, '$1\u201c')
+					// closing doubles
+					.replace(/"/g, '\u201d')
+					// ellipses
+					.replace(/\.{3}/g, '\u2026');
+
+				return {
+					type : 'text',
+					raw  : cap[0],
+					text : text
+				};
+			}
+		}
+	};
+};
+
 Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists] });
-Marked.use(MarkedExtendedTables());
 Marked.use(mustacheInjectBlock);
-Marked.use({ smartypants: true });
+Marked.use({ renderer: renderer, mangle: false });
+Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartyPantsLite());
 
 //Fix local links in the Preview iFrame to link inside the frame
 renderer.link = function (href, title, text) {
@@ -347,10 +387,7 @@ module.exports = {
 	render : (rawBrewText)=>{
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
-		return Marked.parse(
-			sanatizeScriptTags(rawBrewText),
-			{ renderer: renderer }
-		);
+		return Marked.parse(sanatizeScriptTags(rawBrewText));
 	},
 
 	validate : (rawBrewText)=>{

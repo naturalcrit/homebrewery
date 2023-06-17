@@ -12,13 +12,15 @@ const HomebrewSchema = mongoose.Schema({
 	textBin   : { type: Buffer },
 	pageCount : { type: Number, default: 1 },
 
-	description : { type: String, default: '' },
-	tags        : [String],
-	systems     : [String],
-	renderer    : { type: String, default: '' },
-	authors     : [String],
-	published   : { type: Boolean, default: false },
-	thumbnail   : { type: String, default: '' },
+	description    : { type: String, default: '' },
+	tags           : [String],
+	systems        : [String],
+	lang           : { type: String, default: 'en' },
+	renderer       : { type: String, default: '' },
+	authors        : [String],
+	invitedAuthors : [String],
+	published      : { type: Boolean, default: false },
+	thumbnail      : { type: String, default: '' },
 
 	createdAt  : { type: Date, default: Date.now },
 	updatedAt  : { type: Date, default: Date.now },
@@ -38,32 +40,24 @@ HomebrewSchema.statics.increaseView = async function(query) {
 	return brew;
 };
 
-HomebrewSchema.statics.get = function(query, fields=null){
-	return new Promise((resolve, reject)=>{
-		Homebrew.find(query, fields, null, (err, brews)=>{
-			if(err || !brews.length) return reject('Can not find brew');
-			if(!_.isNil(brews[0].textBin)) {			// Uncompress zipped text field
-				unzipped = zlib.inflateRawSync(brews[0].textBin);
-				brews[0].text = unzipped.toString();
-			}
-			if(!brews[0].renderer)
-				brews[0].renderer = 'legacy';
-			return resolve(brews[0]);
-		});
-	});
+HomebrewSchema.statics.get = async function(query, fields=null){
+	const brew = await Homebrew.findOne(query, fields).orFail()
+		.catch((error)=>{throw 'Can not find brew';});
+	if(!_.isNil(brew.textBin)) {			// Uncompress zipped text field
+		unzipped = zlib.inflateRawSync(brew.textBin);
+		brew.text = unzipped.toString();
+	}
+	return brew;
 };
 
-HomebrewSchema.statics.getByUser = function(username, allowAccess=false, fields=null){
-	return new Promise((resolve, reject)=>{
-		const query = { authors: username, published: true };
-		if(allowAccess){
-			delete query.published;
-		}
-		Homebrew.find(query, fields).lean().exec((err, brews)=>{ //lean() converts results to JSObjects
-			if(err) return reject('Can not find brew');
-			return resolve(brews);
-		});
-	});
+HomebrewSchema.statics.getByUser = async function(username, allowAccess=false, fields=null){
+	const query = { authors: username, published: true };
+	if(allowAccess){
+		delete query.published;
+	}
+	const brews = await Homebrew.find(query, fields).lean().exec() //lean() converts results to JSObjects
+		.catch((error)=>{throw 'Can not find brews';});
+	return brews;
 };
 
 const Homebrew = mongoose.model('Homebrew', HomebrewSchema);

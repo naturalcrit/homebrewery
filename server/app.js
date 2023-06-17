@@ -1,4 +1,4 @@
-/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 400, "skipBlankLines": true, "skipComments": true}]*/
 // Set working directory to project root
 process.chdir(`${__dirname}/..`);
 
@@ -15,13 +15,15 @@ const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
 
+const { DEFAULT_BREW } = require('./brewDefaults.js');
+
 const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
 	if(brew.text.startsWith('```metadata')) {
 		const index = brew.text.indexOf('```\n\n');
 		const metadataSection = brew.text.slice(12, index - 1);
 		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']));
+		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
 		brew.text = brew.text.slice(index + 5);
 	}
 	if(brew.text.startsWith('```css')) {
@@ -29,7 +31,6 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
-	_.defaults(brew, { 'renderer': 'legacy', 'theme': '5ePHB' });
 };
 
 const sanitizeBrew = (brew, accessType)=>{
@@ -42,8 +43,7 @@ const sanitizeBrew = (brew, accessType)=>{
 };
 
 app.use('/', serveCompressedStaticAssets(`build`));
-
-//app.use(express.static(`${__dirname}/build`));
+app.use(require('./middleware/content-negotiation.js'));
 app.use(require('body-parser').json({ limit: '25mb' }));
 app.use(require('cookie-parser')());
 app.use(require('./forcessl.mw.js'));
@@ -77,6 +77,14 @@ const faqText           = require('fs').readFileSync('faq.md', 'utf8');
 
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
+const defaultMetaTags = {
+	site_name   : 'The Homebrewery - Make your Homebrew content look legit!',
+	title       : 'The Homebrewery',
+	description : 'A NaturalCrit Tool for creating authentic Homebrews using Markdown.',
+	image       : `${config.get('publicUrl')}/thumbnail.png`,
+	type        : 'website'
+};
+
 //Robots.txt
 app.get('/robots.txt', (req, res)=>{
 	return res.sendFile(`robots.txt`, { root: process.cwd() });
@@ -87,17 +95,29 @@ app.get('/', (req, res, next)=>{
 	req.brew = {
 		text     : welcomeText,
 		renderer : 'V3'
+	},
+
+	req.ogMeta = { ...defaultMetaTags,
+		title       : 'Homepage',
+		description : 'Homepage'
 	};
+
 	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
 
-//Home page v3
+//Home page Legacy
 app.get('/legacy', (req, res, next)=>{
 	req.brew = {
 		text     : welcomeTextLegacy,
 		renderer : 'legacy'
+	},
+
+	req.ogMeta = { ...defaultMetaTags,
+		title       : 'Homepage (Legacy)',
+		description : 'Homepage'
 	};
+
 	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
@@ -107,7 +127,13 @@ app.get('/migrate', (req, res, next)=>{
 	req.brew = {
 		text     : migrateText,
 		renderer : 'V3'
+	},
+
+	req.ogMeta = { ...defaultMetaTags,
+		title       : 'v3 Migration Guide',
+		description : 'A brief guide to converting Legacy documents to the v3 renderer.'
 	};
+
 	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
@@ -118,7 +144,13 @@ app.get('/changelog', async (req, res, next)=>{
 		title    : 'Changelog',
 		text     : changelogText,
 		renderer : 'V3'
+	},
+
+	req.ogMeta = { ...defaultMetaTags,
+		title       : 'Changelog',
+		description : 'Development changelog.'
 	};
+
 	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
@@ -129,7 +161,13 @@ app.get('/faq', async (req, res, next)=>{
 		title    : 'FAQ',
 		text     : faqText,
 		renderer : 'V3'
+	},
+
+	req.ogMeta = { ...defaultMetaTags,
+		title       : 'FAQ',
+		description : 'Frequently Asked Questions'
 	};
+
 	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
@@ -153,12 +191,19 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	sanitizeBrew(brew, 'share');
 	const prefix = 'HB - ';
 
+	const encodeRFC3986ValueChars = (str)=>{
+		return (
+			encodeURIComponent(str)
+				.replace(/[!'()*]/g, (char)=>{`%${char.charCodeAt(0).toString(16).toUpperCase()}`;})
+		);
+	};
+
 	let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
 	if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };
 	res.set({
 		'Cache-Control'       : 'no-cache',
 		'Content-Type'        : 'text/plain',
-		'Content-Disposition' : `attachment; filename="${fileName}.txt"`
+		'Content-Disposition' : `attachment; filename*=UTF-8''${encodeRFC3986ValueChars(fileName)}.txt`
 	});
 	res.status(200).send(brew.text);
 });
@@ -167,12 +212,19 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 app.get('/user/:username', async (req, res, next)=>{
 	const ownAccount = req.account && (req.account.username == req.params.username);
 
+	req.ogMeta = { ...defaultMetaTags,
+		title       : `${req.params.username}'s Collection`,
+		description : 'View my collection of homebrew on the Homebrewery.'
+		// type        :  could be 'profile'?
+	};
+
 	const fields = [
 		'googleId',
 		'title',
 		'pageCount',
 		'description',
 		'authors',
+		'lang',
 		'published',
 		'views',
 		'shareId',
@@ -224,6 +276,14 @@ app.get('/user/:username', async (req, res, next)=>{
 //Edit Page
 app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
+
+	req.ogMeta = { ...defaultMetaTags,
+		title       : req.brew.title || 'Untitled Brew',
+		description : req.brew.description || 'No description.',
+		image       : req.brew.thumbnail || defaultMetaTags.image,
+		type        : 'article'
+	};
+
 	sanitizeBrew(req.brew, 'edit');
 	splitTextStyleAndMetadata(req.brew);
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
@@ -234,13 +294,34 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
-	req.brew.title = `CLONE - ${req.brew.title}`;
+	const brew = {
+		shareId  : req.brew.shareId,
+		title    : `CLONE - ${req.brew.title}`,
+		text     : req.brew.text,
+		style    : req.brew.style,
+		renderer : req.brew.renderer,
+		theme    : req.brew.theme
+	};
+	req.brew = _.defaults(brew, DEFAULT_BREW);
+
+	req.ogMeta = { ...defaultMetaTags,
+		title       : 'New',
+		description : 'Start crafting your homebrew on the Homebrewery!'
+	};
+
 	return next();
 });
 
 //Share Page
 app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
 	const { brew } = req;
+
+	req.ogMeta = { ...defaultMetaTags,
+		title       : req.brew.title || 'Untitled Brew',
+		description : req.brew.description || 'No description.',
+		image       : req.brew.thumbnail || defaultMetaTags.image,
+		type        : 'article'
+	};
 
 	if(req.params.id.length > 12 && !brew._id) {
 		const googleId = req.params.id.slice(0, -12);
@@ -262,6 +343,61 @@ app.get('/print/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	next();
 });
 
+//Account Page
+app.get('/account', asyncHandler(async (req, res, next)=>{
+	const data = {};
+	data.title = 'Account Information Page';
+
+	let auth;
+	let googleCount = [];
+	if(req.account) {
+		if(req.account.googleId) {
+			try {
+				auth = await GoogleActions.authCheck(req.account, res, false);
+			} catch (e) {
+				auth = undefined;
+				console.log('Google auth check failed!');
+				console.log(e);
+			}
+			if(auth.credentials.access_token) {
+				try {
+					googleCount = await GoogleActions.listGoogleBrews(auth);
+				} catch (e) {
+					googleCount = undefined;
+					console.log('List Google files failed!');
+					console.log(e);
+				}
+			}
+		}
+
+		const query = { authors: req.account.username, googleId: { $exists: false } };
+		const mongoCount = await HomebrewModel.countDocuments(query)
+			.catch((err)=>{
+				mongoCount = 0;
+				console.log(err);
+			});
+
+		data.uiItems = {
+			username    : req.account.username,
+			issued      : req.account.issued,
+			googleId    : Boolean(req.account.googleId),
+			authCheck   : Boolean(req.account.googleId && auth.credentials.access_token),
+			mongoCount  : mongoCount,
+			googleCount : googleCount?.length
+		};
+	}
+
+	req.brew = data;
+
+	req.ogMeta = { ...defaultMetaTags,
+		title       : `Account Page`,
+		description : null
+	};
+
+	return next();
+}));
+
+
 const nodeEnv = config.get('node_env');
 const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
 // Local only
@@ -276,11 +412,10 @@ if(isLocalEnvironment){
 	});
 }
 
-
-
 //Render the page
 const templateFn = require('./../client/template.js');
 app.use(asyncHandler(async (req, res, next)=>{
+
 	// Create configuration object
 	const configuration = {
 		local       : isLocalEnvironment,
@@ -296,7 +431,8 @@ app.use(asyncHandler(async (req, res, next)=>{
 		account       : req.account,
 		enable_v3     : config.get('enable_v3'),
 		enable_themes : config.get('enable_themes'),
-		config        : configuration
+		config        : configuration,
+		ogMeta        : req.ogMeta
 	};
 	const title = req.brew ? req.brew.title : '';
 	const page = await templateFn('homebrew', title, props)

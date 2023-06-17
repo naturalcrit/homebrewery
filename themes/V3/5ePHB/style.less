@@ -77,9 +77,12 @@ body {
 	text-rendering    : optimizeLegibility;
 	page-break-before : always;
 	page-break-after  : always;
+}
 	//*****************************
 	// *            BASE
 	// *****************************/
+
+.page{
 	p{
 		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
 		display       : block;
@@ -155,9 +158,9 @@ body {
 			padding-bottom          : 2px;
 			margin-bottom           : -20px;
 			background-image        : linear-gradient(-45deg, #322814, #998250, #322814);
-	    background-clip         : text;
-	    -webkit-background-clip : text;
-	    color                   : rgba(0, 0, 0, 0);
+			background-clip         : text;
+			-webkit-background-clip : text;
+			color                   : rgba(0, 0, 0, 0);
 		}
 		&+p::first-line{
 			font-variant : small-caps;
@@ -175,12 +178,24 @@ body {
 		font-size     : 0.575cm;
 		border-bottom : 2px solid var(--HB_Color_HeaderUnderline);;
 		line-height   : 0.995em; //Font is misaligned. Shift up slightly
+		& + * {
+			margin-top: 0.17cm;
+		}
+	}
+	* + h3 {
+		margin-top    : 0.155cm; //(0.325 - 0.17)
 	}
 	h4{
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.02cm;
 		font-size     : 0.458cm;
 		line-height   : 0.971em; //Font is misaligned. Shift up slightly
+		& + * {
+			margin-top: 0.09cm;
+		}
+	}
+	* + h4 {
+		margin-top    : 0.235cm; //(0.325 - 0.09)
 	}
 	h5{
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
@@ -199,6 +214,7 @@ body {
 	table{
 		.useSansSerif();
 		width         : 100%;
+		line-height   : 16px;
 		& + * {
 			margin-top : 0.325cm;
 		}
@@ -207,13 +223,17 @@ body {
 			font-weight : 800;
 			th{
 				vertical-align : bottom;
-				padding        : 0.14em 0.4em;
+				//padding        : 0.14em 0.4em;
+				padding     : 0px 1.5px;   // Both of these are temporary, just to force
+				//line-height : 16px;        // PDF to render at same height until Chrome 108
 			}
 		}
 		tbody{
 			tr{
 				td{
-					padding : 0.14em 0.4em;
+					//padding : 0.14em 0.4em;
+					padding     : 0px 1.5px;   // Both of these are temporary, just to force
+          //line-height : 16px;        // PDF to render at same height until Chrome 108
 				}
 				&:nth-child(odd){
 					background-color : var(--HB_Color_Accent);
@@ -233,7 +253,7 @@ body {
 		border-image-outset : 9px 0px;
 		border-image-width  : 11px;
 		padding             : 0.13cm 0.16cm;
-		filter              : drop-shadow(1px 4px 6px #888);
+		box-shadow          : 1px 4px 14px #888;
 		.page :where(&) {
 			margin-top        : 9px; //Prevent top border getting cut off on colbreak
 		}
@@ -262,7 +282,7 @@ body {
 		border-image        : @descriptiveBoxImage 12 stretch;
 		border-image-outset : 4px;
 		padding             : 0.1em;
-		filter              : drop-shadow(0 0 3px #faf7ea);
+		box-shadow          : 0 0 6px #faf7ea;
 		.page :where(&) {
 			margin-top        : 4px; //Prevent top border getting cut off on colbreak
 		}
@@ -377,7 +397,7 @@ body {
 			border-image-outset   : 0px 2px;
 			background-blend-mode : overlay;
 			background-attachment : fixed;
-			filter                : drop-shadow(1px 4px 6px #888);
+			box-shadow            : 1px 4px 14px #888;
 			padding               : 4px 2px;
 			margin-left           : -0.16cm;
 			margin-right          : -0.16cm;
@@ -604,63 +624,342 @@ body {
 // *       CLASS TABLE
 // *****************************/
 .page .classTable{
-	th[colspan]:not([rowspan]) {
-		white-space : nowrap;
+th[colspan]:not([rowspan]) {
+	white-space : nowrap;
+}
+&.frame {
+	margin-top          : 0.7cm;
+	margin-bottom       : 0.9cm;
+	margin-left         : -0.1cm;
+	margin-right        : -0.1cm;
+	width               : calc(100% + 0.2cm);
+	border-collapse     : separate;
+	background-color    : white;
+	border              : initial;
+	border-style        : solid;
+	border-image-outset : 0.4cm 0.3cm;
+	border-image-repeat : stretch;
+	border-image-slice  : 200;
+	border-image-source : @frameBorderImage;
+	border-image-width  : 47px;
+	&.wide:first-child {
+		margin-top: 0.12cm;
 	}
-	&.frame {
-		margin-top          : 0.7cm;
-		margin-bottom       : 0.9cm;
-		margin-left         : -0.1cm;
-		margin-right        : -0.1cm;
-		width               : calc(100% + 0.2cm);
-		border-collapse     : separate;
-		background-color    : white;
-		border              : initial;
-		border-style        : solid;
-		border-image-outset : 0.4cm 0.3cm;
-		border-image-repeat : stretch;
-		border-image-slice  : 200;
-		border-image-source : @frameBorderImage;
-		border-image-width  : 47px;
-		&.wide:first-child {
-			margin-top: 0.12cm;
+	& + * {
+		margin-top: 0;
+	}
+}
+&.decoration {
+	position:relative;
+}
+&.decoration::before {
+	content             :'';
+	position            : absolute;
+	background-image    : @classTableDecoration,
+	                      @classTableDecoration;
+	background-size     : contain, contain;
+	background-repeat   : no-repeat, no-repeat;
+	background-position : top, bottom;
+	width               : 7.75cm;
+	height              : calc(100% + 3.3cm);
+	top                 : 50%;
+	left                : 50%;
+	transform           : translateY(-50%) translateX(-50%);
+	filter              : drop-shadow(0px 0px 1px #C8C5C080);
+	z-index             : -1;
+}
+&.decoration.wide::before {
+	width               : calc(100% + 3.3cm);
+	height              : 7.75cm;
+	background-position : left, right;
+}
+h5 + table{
+	margin-top : 0.2cm;
+}
+}
+//*****************************
+// *    FRONT COVER PAGE
+// *****************************/
+.page:has(.frontCover) {
+	columns    : 1;
+	text-align : center;
+	&:after {
+		all: unset;
+	}
+	h1 {
+		text-shadow: unset;
+		filter         : drop-shadow(0 0 1.5px black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		text-transform : uppercase;
+		font-weight    : normal;
+		margin-top     : 1.2cm;
+		margin-bottom  : 0;
+		color          : white;
+		font-family    : NodestoCapsCondensed;
+		font-size      : 2.245cm;
+		line-height    : 0.85em;
+	}
+	h2 {
+		filter         : drop-shadow(0 0 1px black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		font-family    : NodestoCapsCondensed;
+		font-weight    : normal;
+		font-size      : 0.85cm;
+		letter-spacing : 0.1cm;
+		color          : white;
+	}
+	hr {
+		display          : block;
+		position         : relative;
+		background-image : @horizontalRule;
+		background-size  : 100% 100%;
+		visibility       : visible;
+		height           : 0.5cm;
+		width            : 12cm;
+		border           : none;
+		margin           : auto;
+		filter           : drop-shadow(0 0 3px black);
+	}
+	.banner {
+		filter           : drop-shadow(2px 2px 2px black);
+		position         : absolute;
+		left             : 0;
+		bottom           : 4.2cm;
+		background-image : url('/assets/coverPageBanner.svg');
+		height           : 1.7cm;
+		width            : 10.5cm;
+		color            : white;
+		font-family      : NodestoCapsCondensed;
+		font-weight      : normal;
+		font-size        : 1cm;
+		letter-spacing   : 0.014cm;
+		text-align       : left;
+		padding-left     : 1cm;
+		display          : flex;
+		justify-content  : center;
+		flex-direction   : column;
+		padding-top      : 0.1cm;
+	}
+	.footnote {
+		filter       : drop-shadow(0 0 0.7px black) drop-shadow(0 0 0 black)
+									 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+									 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+									 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		position     : absolute;
+		text-align   : center;
+		color        : white;
+		font-size    : 0.496cm;
+		bottom       : 1.3cm;
+		left         : 0;
+    right        : 0;
+    margin-left  : auto;
+    margin-right : auto;
+		width        : 70%;
+		font-family  : Overpass;
+	}
+	.logo {
+		position   : absolute;
+		top        : 0.5cm;
+		left       : 0;
+		right      : 0;
+		filter     : drop-shadow(0 0 0.075cm black);
+		img {
+			height : 2cm;
+			width  : 100%;
 		}
-	}
-	&.decoration {
-		position:relative;
-	}
-	&.decoration::before {
-		content             :'';
-		position            : absolute;
-		background-image    : @classTableDecoration,
-		                      @classTableDecoration;
-		background-size     : contain, contain;
-		background-repeat   : no-repeat, no-repeat;
-		background-position : top, bottom;
-		width               : 7.75cm;
-		height              : calc(100% + 3.3cm);
-		top                 : 50%;
-		left                : 50%;
-		transform           : translateY(-50%) translateX(-50%);
-		filter              : drop-shadow(0px 0px 1px #C8C5C080);
-		z-index             : -1;
-	}
-	&.decoration.wide::before {
-		width               : calc(100% + 3.3cm);
-		height              : 7.75cm;
-		background-position : left, right;
-	}
-	h5 + table{
-		margin-top : 0.2cm;
 	}
 }
 //*****************************
+// *    INSIDE COVER PAGE
+// *****************************/
+.page:has(.insideCover) {
+	columns    : 1;
+	text-align : center;
+	&:after {
+		all	: unset;
+	}
+	h1 {
+		font-family		 : NodestoCapsCondensed;
+		font-weight		 : normal;
+		font-size		   : 2.1cm;
+		margin-top     : 1.2cm;
+		margin-bottom  : 0;
+		text-transform : uppercase;
+		line-height    : 0.85em;
+	}
+	h2 {
+		font-family    : NodestoCapsCondensed;
+		font-weight    : normal;
+		font-size      : 0.85cm;
+		letter-spacing : 0.5cm;
+	}
+	hr {
+		display          : block;
+		position         : relative;
+		background-image : @horizontalRule;
+		background-size  : 100% 100%;
+		visibility       : visible;
+		height           : 0.5cm;
+		width            : 12cm;
+		border           : none;
+		margin           : auto;
+	}
+	.logo {
+		position : absolute;
+		bottom   : 1cm;
+		left	   : 0;
+		right	   : 0;
+		height	 : 2cm;
+		img {
+			height : 2cm;
+			width  : 100%;
+		}
+	}
+}
+//*****************************
+// *      BACK COVER
+// *****************************/
+.page:has(.backCover) {
+	color: #fff;
+	columns: 1;
+	padding: 2.25cm 1.3cm 2cm 1.3cm;
+	&:after {
+		all: unset;
+	}
+	.columnWrapper {
+		width: 7.6cm;
+	}
+	.backCover {
+		position: absolute;
+		inset: 0;
+		width: 11cm;
+		background-image: @backCover;
+		background-repeat: no-repeat;
+		background-size: contain;
+		z-index: -1;
+	}
+	.blank {
+		height: 1.4em;
+	}
+	h1 {
+		margin-bottom: .3cm;
+		font-size: 1.35cm;
+		line-height: 0.95em;
+		font-family: NodestoCapsCondensed;
+		text-align: center;
+		color: #ED1C24;
+	}
+	h1+p::first-line,
+	h1+p::first-letter {
+		all: unset;
+	}
+	img {
+		position: absolute;
+		top: 0px;
+		height: 100%;
+		z-index: -2;
+	}
+	hr {
+		margin-left: auto;
+		margin-right: auto;
+		margin-top: 1.1cm;
+		height: .53cm;
+		width: 4.5cm;
+		visibility: visible;
+		background-image: @horizontalRule;
+		background-size: 100% 100%;
+		border: none;
+	}
+	p {
+		font-family: Overpass;
+		line-height: 1.5em;
+		font-size: 0.332cm;
+	}
+	hr+p {
+		text-align: center;
+		margin-top: .6cm;
+	}
+	.logo {
+		position: absolute;
+		z-index: 0;
+		height: 1.5cm;
+		left: 1.2cm;
+		bottom: 2cm;
+		width: 7.6cm;
+		img {
+			position: relative;
+			height : 1.5cm;
+			width  : 100%;
+			z-index : 0;
+		}
+		p {
+			position: relative;
+			color: #fff;
+			font-family: NodestoCapsWide;
+			font-size: .4cm;
+			letter-spacing: 0.08em;
+			line-height: 1em;
+			text-align: center;
+			text-indent: 0;
+			width: 100%;
+		}
+	}
+}
+
+//*****************************
+	// *      PART COVER
+	// *****************************/
+	.page:has(.partCover) {
+		columns    : 1;
+		text-align : center;
+		padding-top: 0;
+
+		.partCover {
+			background-image: @partCoverHeaderPHB;
+			background-repeat: no-repeat;
+			position: absolute;
+			background-size: 100%;
+			top: 0;
+			left: 0;
+			height: 6cm;
+			width: 100%;
+		}
+
+		h1 {
+			position: relative;
+			text-align: center;
+			text-transform: uppercase;
+			font-size: 2.3cm;
+			font-family: NodestoCapsCondensed;
+			margin-top: .4cm;
+		}
+
+		h2 {
+			font-family: Overpass;
+			font-size: 0.45cm;
+			position: relative;
+			margin-top: -0.7em;
+			line-height: 1.1em;
+			margin-left  : auto;
+			margin-right : auto;
+		}
+	}
+
+//*****************************
 // *      TABLE OF CONTENTS
 // *****************************/
-.page .toc{
-	-webkit-column-break-inside : avoid;
-	page-break-inside           : avoid;
-	break-inside                : avoid;
+.page {
+&:has(.toc):after {
+	display: none;
+}
+.toc {
+-webkit-column-break-inside : avoid;
+page-break-inside           : avoid;
+break-inside                : avoid;
 	h1 {
 		text-align    : center;
 		margin-bottom : 0.3cm;
@@ -683,6 +982,13 @@ body {
 	ul{
 		padding-left    : 0;
 		list-style-type : none;
+		margin-top      : 0;
+		a {
+			width           : 100%;
+			display         : flex;
+			flex-flow       : row nowrap;
+			justify-content : space-between;
+		}
 		li + li h3 {
 			margin-top  : 0.26cm;
 			line-height : 1em
@@ -691,29 +997,23 @@ body {
 			border : none;
 		}
 		span {
-			display : table-cell;
-			&:first-child {
-				position   :       relative;
-				overflow   :       hidden;
-				&::after {
-					content       : "";
-					position      : absolute;
-					bottom        : 0.08cm;
-					margin-left   : 0.06cm;        /* Spacing before dot leaders */
-					width         : 100%;
-					border-bottom : 0.05cm dotted #000;
-				}
+			display : contents;
+			&:first-child::after {
+				content       : "";
+				bottom        : 0.08cm;
+				flex          : 1;
+				margin-left   : 0.08cm;        /* Spacing before dot leaders */
+				margin-right  : 0.16cm;
+				border-bottom : 0.05cm dotted #000;
+				margin-bottom : 0.08cm;
 			}
 			&:last-child {
-				font-family    : BookInsanityRemake;
-				font-size      : 0.34cm;
-				font-weight    : normal;
-				color          : black;
-				text-align     : right;
-				vertical-align : bottom; /* Keep page number bottom-aligned */
-				width          : 1%;
-				padding-left   : 0.06cm; /* Spacing after dot leaders */
-				/*white-space  : nowrap; /* Uncomment if needed */
+				display     : inline-block;
+				align-self  : flex-end;
+				font-family : "BookInsanityRemake";
+				font-size   : 0.34cm;
+				font-weight : normal;
+				color       : #000;
 			}
 		}
 		ul { /*List indent*/
@@ -724,23 +1024,6 @@ body {
 		.useColumns(0.96, @fillMode: balance);
 	}
 }
-
-//*****************************
-// *    MUSTACHE DIVS/SPANS
-// *****************************/
-.page {
-	.block {
-		break-inside      : avoid;
-		display           : inline-block;
-		.page :where(&) {
-			width             : 100%;
-		}
-		//-webkit-transform : translateZ(0); //Prevents shadows from breaking across columns
-	}
-	.inline-block {
-		display : inline-block;
-		text-indent : initial;
-	}
 }
 
 //*****************************
@@ -774,25 +1057,75 @@ body {
 }
 
 //*****************************
-// *    BLANK LINE
-// *****************************/
-.page {
-	.blank {
-		height     : 1em;
-		margin-top : 0;
-	}
-}
-
-//*****************************
 // *         WIDE
 // *****************************/
 .page .wide{
-	column-span         : all;
-	-webkit-column-span : all;
-	-moz-column-span    : all;
-	display             : block;
-	margin-bottom       : 0.34cm;
-	&+* {
-		margin-top : 0;
+	margin-bottom       : 0.325cm;
+}
+
+.page h1 + *{
+	margin-top : 0;
+}
+
+//*****************************
+// *       RUNE TABLE
+// *****************************/
+.page {
+	.runeTable {
+		margin-block: 0.7cm;
+		table {
+			font-family : inherit;
+			tbody tr {
+				background: unset;
+			}
+			th, td {
+				width: 1.3cm;
+				height: 1.3cm;
+				vertical-align: middle;
+				text-transform: uppercase;
+				outline: 1px solid #000;
+				font-weight: normal;
+			}
+			th{
+				font-family: BookInsanityRemake;
+				font-size: 0.45cm;
+			}
+			td {
+				font-size: 0.7cm;
+			}
+		}
+
+		&.frame {
+			border: initial;
+			border-style: solid;
+			border-image-outset: .45cm .35cm .4cm .4cm;
+			border-image-repeat: stretch;
+			border-image-slice: 170;
+			border-image-source: @scriptBorder;
+			border-image-width: 1.4cm;
+		}
+	}
+}
+//*****************************
+// *       INDEX
+// *****************************/
+.page {
+	.index {
+		font-size : 0.218cm;
+
+		ul ul {
+			margin : 0;
+		}
+
+		ul {
+			padding-left    : 0;
+			text-indent     : 0;
+			list-style-type : none;
+		}
+
+		& > ul > li {
+			text-indent  : -1.5em;
+			padding-left : 1.5em;
+		}
 	}
 }

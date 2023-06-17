@@ -16,7 +16,7 @@ const mw = {
 				.status(401)
 				.send('Authorization Required');
 		}
-		const [username, password] = new Buffer(req.get('authorization').split(' ').pop(), 'base64')
+		const [username, password] = Buffer.from(req.get('authorization').split(' ').pop(), 'base64')
 			.toString('ascii')
 			.split(':');
 		if(process.env.ADMIN_USER === username && process.env.ADMIN_PASS === password){

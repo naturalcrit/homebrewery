@@ -97,11 +97,14 @@ const CodeEditor = createClass({
 		this.codeMirror = CodeMirror(this.refs.editor, {
 			lineNumbers       : true,
 			lineWrapping      : this.props.wrap,
-			indentWithTabs    : true,
+			indentWithTabs    : false,
 			tabSize           : 2,
+			smartIndent       : false,
 			historyEventDelay : 250,
 			scrollPastEnd     : true,
 			extraKeys         : {
+				'Tab'              : this.indent,
+				'Shift-Tab'        : this.dedent,
 				'Ctrl-B'           : this.makeBold,
 				'Cmd-B'            : this.makeBold,
 				'Ctrl-I'           : this.makeItalic,
@@ -171,6 +174,19 @@ const CodeEditor = createClass({
 		this.updateSize();
 	},
 
+	indent : function () {
+		const cm = this.codeMirror;
+		if (cm.somethingSelected()) {
+			cm.execCommand('indentMore');
+		} else {
+			cm.execCommand('insertSoftTab');
+		}
+	},
+
+	dedent : function () {
+		this.codeMirror.execCommand('indentLess');
+	},
+
 	makeHeader : function (number) {
 		const selection = this.codeMirror.getSelection();
 		const header = Array(number).fill('#').join('');
@@ -227,6 +243,15 @@ const CodeEditor = createClass({
 
 	newPage : function() {
 		this.codeMirror.replaceSelection('\n\\page\n\n', 'end');
+	},
+
+	injectText : function(injectText, overwrite=true) {
+		const cm = this.codeMirror;
+		if(!overwrite) {
+			cm.setCursor(cm.getCursor('from'));
+		}
+		cm.replaceSelection(injectText, 'end');
+		cm.focus();
 	},
 
 	makeUnderline : function() {

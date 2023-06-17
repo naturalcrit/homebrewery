@@ -10,14 +10,15 @@
 	-moz-column-width    : auto;
 	-webkit-column-gap   : auto;
 	-moz-column-gap      : auto;
+	height               : auto;
+	min-height           : 279.4mm;
+	margin               : 20px auto;
 }
 .listPage{
 	.content{
-		.phb{
-			.noColumns();
-			height     : auto;
-			min-height : 279.4mm;
-			margin     : 20px auto;
+		z-index : 1;
+		.page{
+			.noColumns() !important; //Needed to override PHB Theme since this is on a lower @layer
 			&::after{
 				display : none;
 			}
@@ -26,7 +27,29 @@
 				font-size  : 1.3em;
 				font-style : italic;
 			}
-
+			.brewCollection {
+				h1:hover{
+					cursor: pointer;
+				}
+				.active::before, .inactive::before {
+					font-family: 'Font Awesome 5 Free';
+					font-weight: 900;
+					font-size: 0.6cm;
+					padding-right: 0.5em;
+				}
+				.active {
+					color: var(--HB_Color_HeaderText);
+				}
+				.active::before {
+					content: '\f107';
+				}
+				.inactive {
+					color: #707070;
+				}
+				.inactive::before {
+					content: '\f105';
+				}
+			}
 		}
 	}
 	.sort-container{
@@ -41,7 +64,7 @@
 		border-bottom         : 1px solid #666;
 		color              : white;
 		text-align         : center;
-		z-index            : 500;
+		z-index            : 1;
 		display            : flex;
 		justify-content    : center;
 		align-items        : baseline;

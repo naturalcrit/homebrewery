@@ -3,7 +3,7 @@ require('./editPage.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
-const request = require('superagent');
+const request = require('../../utils/request-middleware.js');
 const { Meta } = require('vitreum/headtags');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
@@ -12,6 +12,7 @@ const Navbar = require('../../navbar/navbar.jsx');
 const NewBrew = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const PrintLink = require('../../navbar/print.navitem.jsx');
+const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 
@@ -21,8 +22,9 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const Markdown = require('naturalcrit/markdown.js');
 
-const googleDriveActive = require('../../googleDrive.png');
-const googleDriveInactive = require('../../googleDriveMono.png');
+const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
+
+const googleDriveIcon = require('../../googleDrive.svg');
 
 const SAVE_TIMEOUT = 3000;
 
@@ -30,24 +32,7 @@ const EditPage = createClass({
 	displayName     : 'EditPage',
 	getDefaultProps : function() {
 		return {
-			brew : {
-				text      : '',
-				style     : '',
-				shareId   : null,
-				editId    : null,
-				createdAt : null,
-				updatedAt : null,
-				gDrive    : false,
-				trashed   : false,
-
-				title       : '',
-				description : '',
-				tags        : '',
-				published   : false,
-				authors     : [],
-				systems     : [],
-				renderer    : 'legacy'
-			}
+			brew : DEFAULT_BREW_LOAD
 		};
 	},
 
@@ -60,9 +45,12 @@ const EditPage = createClass({
 			alertLoginToTransfer   : false,
 			saveGoogle             : this.props.brew.googleId ? true : false,
 			confirmGoogleTransfer  : false,
-			errors                 : null,
+			error                  : null,
 			htmlErrors             : Markdown.validate(this.props.brew.text),
-			url                    : ''
+			url                    : '',
+			autoSave               : true,
+			autoSaveWarning        : false,
+			unsavedTime            : new Date()
 		};
 	},
 	savedBrew : null,
@@ -74,7 +62,14 @@ const EditPage = createClass({
 
 		this.savedBrew = JSON.parse(JSON.stringify(this.props.brew)); //Deep copy
 
-		this.trySave();
+		this.setState({ autoSave: JSON.parse(localStorage.getItem('AUTOSAVE_ON')) ?? true }, ()=>{
+			if(this.state.autoSave){
+				this.trySave();
+			} else {
+				this.setState({ autoSaveWarning: true });
+			}
+		});
+
 		window.onbeforeunload = ()=>{
 			if(this.state.isSaving || this.state.isPending){
 				return 'You have unsaved changes!';
@@ -117,14 +112,14 @@ const EditPage = createClass({
 			brew       : { ...prevState.brew, text: text },
 			isPending  : true,
 			htmlErrors : htmlErrors
-		}), ()=>this.trySave());
+		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
 	handleStyleChange : function(style){
 		this.setState((prevState)=>({
 			brew      : { ...prevState.brew, style: style },
 			isPending : true
-		}), ()=>this.trySave());
+		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
 	handleMetaChange : function(metadata){
@@ -134,7 +129,7 @@ const EditPage = createClass({
 				...metadata
 			},
 			isPending : true,
-		}), ()=>this.trySave());
+		}), ()=>{if(this.state.autoSave) this.trySave();});
 
 	},
 
@@ -161,7 +156,10 @@ const EditPage = createClass({
 		this.setState((prevState)=>({
 			confirmGoogleTransfer : !prevState.confirmGoogleTransfer
 		}));
-		this.clearErrors();
+		this.setState({
+			error    : null,
+			isSaving : false
+		});
 	},
 
 	closeAlerts : function(event){
@@ -177,16 +175,8 @@ const EditPage = createClass({
 		this.setState((prevState)=>({
 			saveGoogle : !prevState.saveGoogle,
 			isSaving   : false,
-			errors     : null
+			error      : null
 		}), ()=>this.save());
-	},
-
-	clearErrors : function(){
-		this.setState({
-			errors   : null,
-			isSaving : false
-
-		});
 	},
 
 	save : async function(){
@@ -194,7 +184,7 @@ const EditPage = createClass({
 
 		this.setState((prevState)=>({
 			isSaving   : true,
-			errors     : null,
+			error      : null,
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
@@ -209,8 +199,9 @@ const EditPage = createClass({
 			.send(brew)
 			.catch((err)=>{
 				console.log('Error Updating Local Brew');
-				this.setState({ errors: err });
+				this.setState({ error: err });
 			});
+		if(!res) return;
 
 		this.savedBrew = res.body;
 		history.replaceState(null, null, `/edit/${this.savedBrew.editId}`);
@@ -219,19 +210,18 @@ const EditPage = createClass({
 			brew : { ...prevState.brew,
 				googleId : this.savedBrew.googleId ? this.savedBrew.googleId : null,
 				editId 	 : this.savedBrew.editId,
-				shareId  : this.savedBrew.shareId
+				shareId  : this.savedBrew.shareId,
+				version  : this.savedBrew.version
 			},
-			isPending : false,
-			isSaving  : false,
+			isPending   : false,
+			isSaving    : false,
+			unsavedTime : new Date()
 		}));
 	},
 
 	renderGoogleDriveIcon : function(){
 		return <Nav.item className='googleDriveStorage' onClick={this.handleGoogleClick}>
-			{this.state.saveGoogle
-				? <img src={googleDriveActive} alt='googleDriveActive'/>
-				: <img src={googleDriveInactive} alt='googleDriveInactive'/>
-			}
+			<img src={googleDriveIcon} className={this.state.saveGoogle ? '' : 'inactive'} alt='Google Drive icon'/>
 
 			{this.state.confirmGoogleTransfer &&
 				<div className='errorContainer' onClick={this.closeAlerts}>
@@ -264,67 +254,28 @@ const EditPage = createClass({
 					</div>
 				</div>
 			}
+
+			{this.state.alertTrashedGoogleBrew &&
+				<div className='errorContainer' onClick={this.closeAlerts}>
+				This brew is currently in your Trash folder on Google Drive!<br />If you want to keep it, make sure to move it before it is deleted permanently!<br />
+					<div className='confirm'>
+						OK
+					</div>
+				</div>
+			}
 		</Nav.item>;
 	},
 
 	renderSaveButton : function(){
-		if(this.state.errors){
-			let errMsg = '';
-			try {
-				errMsg += `${this.state.errors.toString()}\n\n`;
-				errMsg += `\`\`\`\n${this.state.errors.stack}\n`;
-				errMsg += `${JSON.stringify(this.state.errors.response.error, null, '  ')}\n\`\`\``;
-				console.log(errMsg);
-			} catch (e){}
+		if(this.state.autoSaveWarning && this.hasChanges()){
+			this.setAutosaveWarning();
+			const elapsedTime = Math.round((new Date() - this.state.unsavedTime) / 1000 / 60);
+			const text = elapsedTime == 0 ? 'Autosave is OFF.' : `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
 
-			// if(this.state.errors.status == '401'){
-			// 	return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-			// 		Oops!
-			// 		<div className='errorContainer' onClick={this.clearErrors}>
-			// 		You must be signed in to a Google account
-			// 			to save this to<br />Google Drive!<br />
-			// 			<a target='_blank' rel='noopener noreferrer'
-			// 				href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
-			// 				<div className='confirm'>
-			// 					Sign In
-			// 				</div>
-			// 			</a>
-			// 			<div className='deny'>
-			// 				Not Now
-			// 			</div>
-			// 		</div>
-			// 	</Nav.item>;
-			// }
-
-			if(this.state.errors.response.req.url.match(/^\/api.*Google.*$/m)){
-				return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-					Oops!
-					<div className='errorContainer' onClick={this.clearErrors}>
-					Looks like your Google credentials have
-					expired! Visit our log in page to sign out
-					and sign back in with Google,
-					then try saving again!
-						<a target='_blank' rel='noopener noreferrer'
-							href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
-							<div className='confirm'>
-								Sign In
-							</div>
-						</a>
-						<div className='deny'>
-							Not Now
-						</div>
-					</div>
-				</Nav.item>;
-			}
-
-			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-				Oops!
+			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
+			Reminder...
 				<div className='errorContainer'>
-					Looks like there was a problem saving. <br />
-					Report the issue <a target='_blank' rel='noopener noreferrer'
-						href={`https://github.com/naturalcrit/homebrewery/issues/new?template=save_issue.yml&error-code=${encodeURIComponent(errMsg)}`}>
-						here
-					</a>.
+					{text}
 				</div>
 			</Nav.item>;
 		}
@@ -335,9 +286,40 @@ const EditPage = createClass({
 		if(this.state.isPending && this.hasChanges()){
 			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
 		}
+		if(!this.state.isPending && !this.state.isSaving && this.state.autoSave){
+			return <Nav.item className='save saved'>auto-saved.</Nav.item>;
+		}
 		if(!this.state.isPending && !this.state.isSaving){
 			return <Nav.item className='save saved'>saved.</Nav.item>;
 		}
+	},
+
+	handleAutoSave : function(){
+		if(this.warningTimer) clearTimeout(this.warningTimer);
+		this.setState((prevState)=>({
+			autoSave        : !prevState.autoSave,
+			autoSaveWarning : prevState.autoSave
+		}), ()=>{
+			localStorage.setItem('AUTOSAVE_ON', JSON.stringify(this.state.autoSave));
+		});
+	},
+
+	setAutosaveWarning : function(){
+		setTimeout(()=>this.setState({ autoSaveWarning: false }), 4000);                           // 4 seconds to display
+		this.warningTimer = setTimeout(()=>{this.setState({ autoSaveWarning: true });}, 900000);   // 15 minutes between warnings
+		this.warningTimer;
+	},
+
+	errorReported : function(error) {
+		this.setState({
+			error
+		});
+	},
+
+	renderAutoSaveButton : function(){
+		return <Nav.item onClick={this.handleAutoSave}>
+			Autosave <i className={this.state.autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
+		</Nav.item>;
 	},
 
 	processShareId : function() {
@@ -362,23 +344,19 @@ const EditPage = createClass({
 		const shareLink = this.processShareId();
 
 		return <Navbar>
-
-			{this.state.alertTrashedGoogleBrew &&
-				<div className='errorContainer' onClick={this.closeAlerts}>
-				This brew is currently in your Trash folder on Google Drive!<br />If you want to keep it, make sure to move it before it is deleted permanently!<br />
-					<div className='confirm'>
-						OK
-					</div>
-				</div>
-			}
-
 			<Nav.section>
 				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
 			</Nav.section>
 
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
-				{this.renderSaveButton()}
+				{this.state.error ?
+					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
+					<Nav.dropdown className='save-menu'>
+						{this.renderSaveButton()}
+						{this.renderAutoSaveButton()}
+					</Nav.dropdown>
+				}
 				<NewBrew />
 				<HelpNavItem/>
 				<Nav.dropdown>
@@ -416,9 +394,17 @@ const EditPage = createClass({
 						onTextChange={this.handleTextChange}
 						onStyleChange={this.handleStyleChange}
 						onMetaChange={this.handleMetaChange}
+						reportError={this.errorReported}
 						renderer={this.state.brew.renderer}
 					/>
-					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} theme={this.state.brew.theme} errors={this.state.htmlErrors} />
+					<BrewRenderer
+						text={this.state.brew.text}
+						style={this.state.brew.style}
+						renderer={this.state.brew.renderer}
+						theme={this.state.brew.theme}
+						errors={this.state.htmlErrors}
+						lang={this.state.brew.lang}
+					/>
 				</SplitPane>
 			</div>
 		</div>;
