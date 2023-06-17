@@ -28,6 +28,7 @@ const UserPage = createClass({
 		const usernameWithS = this.props.username + (this.props.username.endsWith('s') ? `’` : `’s`);
 
 		const brews = _.groupBy(this.props.brews, (brew)=>{
+			brew.title = brew.title.trim();
 			return (brew.published ? 'published' : 'private');
 		});
 
