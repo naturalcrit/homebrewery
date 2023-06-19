@@ -397,6 +397,18 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 	return next();
 }));
 
+app.get('/error', (req, res, next)=>{
+	console.log('ERROR PAGE');
+	const errorCookie = JSON.parse(req.cookies['HOMEBREWERY_Error']) || {};
+	if(errorCookie){ res.cookie('HOMEBREWERY_Error', '', { maxAge: 0 }); }
+
+	console.log(errorCookie);
+
+	req.ogMeta = errorCookie.ogMeta;
+	req.brew = errorCookie.error;
+
+	return next();
+});
 
 const nodeEnv = config.get('node_env');
 const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
@@ -462,9 +474,24 @@ const getPureError = (error)=>{
 };
 
 app.use((err, req, res, next)=>{
-	const status = err.status || 500;
-	console.error(err);
-	res.status(status).send(getPureError(err));
+	console.log(err);
+	const status = err.status || err.code || 500;
+
+	const errorData = {
+		error : {
+			title  : 'Error - Something went wrong!',
+			text   : err.errors?.map((error)=>{return error.message;}).join('\n\n') || err.message || 'Unknown error!',
+			status : status
+		},
+		ogMeta : { ...defaultMetaTags,
+			title       : 'Error Page',
+			description : 'Something went wrong!'
+		}
+	};
+	res.cookie('HOMEBREWERY_Error', JSON.stringify(errorData), { maxAge: 300 * 1000 });
+
+	// res.status(status).send(getPureError(err));
+	res.redirect('/error');
 });
 
 app.use((req, res)=>{

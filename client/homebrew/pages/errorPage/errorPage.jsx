@@ -16,11 +16,11 @@ const ErrorPage = createClass({
 	getDefaultProps : function() {
 		return {
 			ver     : '0.0.0',
-			errorId : ''
+			errorId : '',
+			text    : '# Oops \n We could not find a brew with that id. **Sorry!**',
+			error   : {}
 		};
 	},
-
-	text : '# Oops \n We could not find a brew with that id. **Sorry!**',
 
 	render : function(){
 		return <div className='errorPage sitePage'>
@@ -39,7 +39,7 @@ const ErrorPage = createClass({
 			</Navbar>
 
 			<div className='content'>
-				<BrewRenderer text={this.text} />
+				<BrewRenderer text={this.props.brew.text} />
 			</div>
 		</div>;
 	}
