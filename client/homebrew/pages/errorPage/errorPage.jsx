@@ -4,15 +4,15 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
-const PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
+const UIPage = require('../basePages/uiPage/uiPage.jsx');
 
-const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
+const Markdown = require('../../../../shared/naturalcrit/markdown.js');
+
+const ErrorIndex = require('./errors/errorIndex.json');
 
 const ErrorPage = createClass({
+	displayName : 'ErrorPage',
+
 	getDefaultProps : function() {
 		return {
 			ver     : '0.0.0',
@@ -23,25 +23,14 @@ const ErrorPage = createClass({
 	},
 
 	render : function(){
-		return <div className='errorPage sitePage'>
-			<Navbar ver={this.props.ver}>
-				<Nav.section>
-					<Nav.item className='errorTitle'>
-						Crit Fail!
-					</Nav.item>
-				</Nav.section>
+		const errorText = ErrorIndex[this.props.brew.status.toString()] || '';
 
-				<Nav.section>
-					<PatreonNavItem />
-					<HelpNavItem />
-					<RecentNavItem />
-				</Nav.section>
-			</Navbar>
-
-			<div className='content'>
-				<BrewRenderer text={this.props.brew.text} />
-			</div>
-		</div>;
+		return <UIPage brew={{ title: 'Crit Fail!' }}>
+			<h1>{`Error ${this.props.brew.status || '000'}`}</h1>
+			<p>{this.props.brew.text || 'No error text'}</p>
+			<hr />
+			<div dangerouslySetInnerHTML={{ __html: Markdown.render(errorText) }} />
+		</UIPage>;
 	}
 });
 
