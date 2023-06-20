@@ -398,11 +398,8 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 }));
 
 app.get('/error', (req, res, next)=>{
-	console.log('ERROR PAGE');
-	const errorCookie = JSON.parse(req.cookies['HOMEBREWERY_Error']) || {};
+	const errorCookie = JSON.parse(req.cookies['HOMEBREWERY_Error']);
 	if(errorCookie){ res.cookie('HOMEBREWERY_Error', '', { maxAge: 0 }); }
-
-	console.log(errorCookie);
 
 	req.ogMeta = errorCookie.ogMeta;
 	req.brew = errorCookie.error;
