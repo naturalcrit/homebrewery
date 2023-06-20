@@ -162,7 +162,7 @@ describe('Tests for api', ()=>{
 				err = e;
 			}
 
-			expect(err).toEqual(notFoundError);
+			expect(err).toEqual({ 'message': notFoundError });
 			expect(req.brew).toEqual({});
 			expect(next).not.toHaveBeenCalled();
 			expect(api.getId).toHaveBeenCalledWith(req);
@@ -197,9 +197,9 @@ describe('Tests for api', ()=>{
 				err = e;
 			}
 
-			expect(err).toEqual(`The current logged in user does not have editor access to this brew.
+			expect(err).toEqual({ 'message' : `The current logged in user does not have editor access to this brew.
 
-If you believe you should have access to this brew, ask the file owner to invite you as an author by opening the brew, viewing the Properties tab, and adding your username to the "invited authors" list. You can then try to access this document again.`);
+If you believe you should have access to this brew, ask the file owner to invite you as an author by opening the brew, viewing the Properties tab, and adding your username to the "invited authors" list. You can then try to access this document again.` });
 		});
 
 		it('does not throw if no authors', async ()=>{
