@@ -5,7 +5,7 @@ const Markdown = require('naturalcrit/markdown.js');
 test('Escapes <script> tag', function() {
 	const source = '<script></script>';
 	const rendered = Markdown.render(source);
-	expect(rendered).toMatch('&lt;script&gt;&lt;/script&gt;');
+	expect(rendered).toMatch('<p>&lt;script>&lt;/script&gt;</p>\n');
 });
 
 test('Processes the markdown within an HTML block if its just a class wrapper', function() {

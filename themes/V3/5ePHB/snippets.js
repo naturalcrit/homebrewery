@@ -7,6 +7,7 @@ const scriptGen          = require('./snippets/script.gen.js');
 const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
 const CoverPageGen       = require('./snippets/coverpage.gen.js');
 const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
+const indexGen           = require('./snippets/index.gen.js');
 const dedent             = require('dedent-tabs').default;
 
 
@@ -32,6 +33,12 @@ module.exports = [
 				name : 'Table of Contents',
 				icon : 'fas fa-book',
 				gen  : TableOfContentsGen
+			},
+			{
+				name         : 'Index',
+				icon         : 'fas fa-bars',
+				gen          : indexGen,
+				experimental : true
 			}
 		]
 	},
@@ -182,6 +189,18 @@ module.exports = [
 				experimental : true
 			},
 			{
+				name         : 'Part Cover Page',
+				icon         : 'fac book-part-cover',
+				gen          : CoverPageGen.part,
+				experimental : true
+			},
+			{
+				name      		 : 'Back Cover Page',
+				icon      		 : 'fac book-back-cover',
+				gen       		 : CoverPageGen.back,
+				experimental : true
+			},
+			{
 				name : 'Magic Item',
 				icon : 'fas fa-hat-wizard',
 				gen  : MagicGen.item,
@@ -197,7 +216,7 @@ module.exports = [
 						}}
 						\n`;
 				},
-			},
+			}
 		]
 	},
 
