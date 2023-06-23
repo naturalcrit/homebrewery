@@ -397,16 +397,6 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 	return next();
 }));
 
-app.get('/error', (req, res, next)=>{
-	const errorCookie = JSON.parse(req.cookies['HOMEBREWERY_Error']);
-	if(errorCookie){ res.cookie('HOMEBREWERY_Error', '', { maxAge: 0 }); }
-
-	req.ogMeta = errorCookie.ogMeta;
-	req.brew = errorCookie.error;
-
-	return next();
-});
-
 const nodeEnv = config.get('node_env');
 const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
 // Local only
@@ -432,7 +422,7 @@ const renderPage = async (req, res) => {
 	};
 	const props = {
 		version       : require('./../package.json').version,
-		url           : req.originalUrl,
+		url           : req.customUrl || req.originalUrl,
 		brew          : req.brew,
 		brews         : req.brews,
 		googleBrews   : req.googleBrews,
@@ -446,11 +436,11 @@ const renderPage = async (req, res) => {
 	const page = await templateFn('homebrew', title, props)
 		.catch((err)=>{
 			console.log(err);
-			return res.sendStatus(500);
 		});
 	return page;
 };
 
+//Send rendered page
 app.use(asyncHandler(async (req, res, next)=>{
 	const page = await renderPage(req, res);
 	if(!page) return;
@@ -458,8 +448,8 @@ app.use(asyncHandler(async (req, res, next)=>{
 }));
 
 //v=====----- Error-Handling Middleware -----=====v//
-//Format Errors so all fields will be sent
-const replaceErrors = (key, value)=>{
+//Format Errors as plain objects so all fields will appear in the string sent
+const formatErrors = (key, value)=>{
 	if(value instanceof Error) {
 		const error = {};
 		Object.getOwnPropertyNames(value).forEach(function (key) {
@@ -471,28 +461,27 @@ const replaceErrors = (key, value)=>{
 };
 
 const getPureError = (error)=>{
-	return JSON.parse(JSON.stringify(error, replaceErrors));
+	return JSON.parse(JSON.stringify(error, formatErrors));
 };
 
-app.use((err, req, res, next)=>{
-	console.log(err);
+app.use(async (err, req, res, next)=>{
 	const status = err.status || err.code || 500;
+	console.error(err);
 
-	const errorData = {
-		error : {
-			title  : 'Error - Something went wrong!',
-			text   : err.errors?.map((error)=>{return error.message;}).join('\n\n') || err.message || 'Unknown error!',
-			status : status
-		},
-		ogMeta : { ...defaultMetaTags,
-			title       : 'Error Page',
-			description : 'Something went wrong!'
-		}
+	req.ogMeta = {...defaultMetaTags,
+		title       : 'Error Page',
+		description : 'Something went wrong!'
 	};
-	res.cookie('HOMEBREWERY_Error', JSON.stringify(errorData), { maxAge: 300 * 1000 });
+	req.brew = {
+		title  : 'Error - Something went wrong!',
+		text   : err.errors?.map((error)=>{return error.message;}).join('\n\n') || err.message || 'Unknown error!',
+		status : status
+	};
+	req.customUrl= '/error';
 
-	// res.status(status).send(getPureError(err));
-	res.redirect('/error');
+	const page = await renderPage(req, res);
+	if(!page) return;
+	res.send(page);
 });
 
 app.use((req, res)=>{
