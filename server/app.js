@@ -423,8 +423,7 @@ if(isLocalEnvironment){
 
 //Render the page
 const templateFn = require('./../client/template.js');
-app.use(asyncHandler(async (req, res, next)=>{
-
+const renderPage = async (req, res) => {
 	// Create configuration object
 	const configuration = {
 		local       : isLocalEnvironment,
@@ -449,6 +448,11 @@ app.use(asyncHandler(async (req, res, next)=>{
 			console.log(err);
 			return res.sendStatus(500);
 		});
+	return page;
+};
+
+app.use(asyncHandler(async (req, res, next)=>{
+	const page = await renderPage(req, res);
 	if(!page) return;
 	res.send(page);
 }));
