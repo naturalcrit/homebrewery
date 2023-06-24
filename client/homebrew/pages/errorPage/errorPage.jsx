@@ -26,10 +26,14 @@ const ErrorPage = createClass({
 		const errorText = ErrorIndex()[this.props.brew.status.toString()] || '';
 
 		return <UIPage brew={{ title: 'Crit Fail!' }}>
-			<h1>{`Error ${this.props.brew.status || '000'}`}</h1>
-			<p>{this.props.brew.text || 'No error text'}</p>
-			<hr />
-			<div dangerouslySetInnerHTML={{ __html: Markdown.render(errorText) }} />
+			<div className='dataGroup'>
+				<div className='errorTitle'>
+					<h1>{`Error ${this.props.brew.status || '000'}`}</h1>
+					<h4>{this.props.brew.text || 'No error text'}</h4>
+				</div>
+				<hr />
+				<div dangerouslySetInnerHTML={{ __html: Markdown.render(errorText) }} />
+			</div>
 		</UIPage>;
 	}
 });

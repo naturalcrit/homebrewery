@@ -1,6 +1,6 @@
 .uiPage{
 	.content{
-		overflow-y : hidden;
+		overflow-y : scroll;
 		width : 90vw;
 		background-color: #f0f0f0;
 		font-family: 'Open Sans';
@@ -21,6 +21,7 @@
 			text-transform: uppercase;
 			margin: 0.5em 30% 0.25em 0;
 			border-bottom: 2px solid slategrey;
+			width: 100%;
 		}
 		h1 {
 			font-size: 2em;
@@ -42,6 +43,20 @@
 		}
 		strong {
 			font-weight: bold;
+		}
+		em {
+			font-style:italic;
+		}
+		ul {
+			padding-left: 1.25em;
+			list-style: square;
+		}
+		.blank {
+			height     : 1em;
+			margin-top : 0;
+			& + * {
+				margin-top : 0;
+			}
 		}
 	}
 }
