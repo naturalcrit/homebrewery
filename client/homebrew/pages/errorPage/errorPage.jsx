@@ -8,7 +8,7 @@ const UIPage = require('../basePages/uiPage/uiPage.jsx');
 
 const Markdown = require('../../../../shared/naturalcrit/markdown.js');
 
-const ErrorIndex = require('./errors/errorIndex.json');
+const ErrorIndex = require('./errors/errorIndex.js');
 
 const ErrorPage = createClass({
 	displayName : 'ErrorPage',
@@ -23,7 +23,7 @@ const ErrorPage = createClass({
 	},
 
 	render : function(){
-		const errorText = ErrorIndex[this.props.brew.status.toString()] || '';
+		const errorText = ErrorIndex()[this.props.brew.status.toString()] || '';
 
 		return <UIPage brew={{ title: 'Crit Fail!' }}>
 			<h1>{`Error ${this.props.brew.status || '000'}`}</h1>
