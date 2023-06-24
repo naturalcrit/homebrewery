@@ -58,8 +58,8 @@ const api = {
 					});
 				// Throw any error caught while attempting to retrieve Google brew.
 				if(googleError) {
-					// console.log(googleError);
-					throw { ...new Error, ...googleError };
+					const reason = googleError.errors[0].reason;
+					throw { ...Error, ...googleError, HBErrorCode: reason == 'notFound' ? '02' : '01' };
 				}
 				// Combine the Homebrewery stub with the google brew, or if the stub doesn't exist just use the google brew
 				stub = stub ? _.assign({ ...api.excludeStubProps(stub), stubbed: true }, api.excludeGoogleProps(googleBrew)) : googleBrew;

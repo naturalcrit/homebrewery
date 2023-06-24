@@ -413,7 +413,7 @@ if(isLocalEnvironment){
 
 //Render the page
 const templateFn = require('./../client/template.js');
-const renderPage = async (req, res) => {
+const renderPage = async (req, res)=>{
 	// Create configuration object
 	const configuration = {
 		local       : isLocalEnvironment,
@@ -468,14 +468,16 @@ app.use(async (err, req, res, next)=>{
 	const status = err.status || err.code || 500;
 	console.error(err);
 
-	req.ogMeta = {...defaultMetaTags,
+	req.ogMeta = { ...defaultMetaTags,
 		title       : 'Error Page',
 		description : 'Something went wrong!'
 	};
 	req.brew = {
-		title  : 'Error - Something went wrong!',
-		text   : err.errors?.map((error)=>{return error.message;}).join('\n\n') || err.message || 'Unknown error!',
-		status : status
+		title       : 'Error - Something went wrong!',
+		text        : err.errors?.map((error)=>{return error.message;}).join('\n\n') || err.message || 'Unknown error!',
+		status      : status,
+		HBErrorCode : err.HBErrorCode ?? '00',
+		pureError   : getPureError(err)
 	};
 	req.customUrl= '/error';
 
