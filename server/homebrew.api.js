@@ -59,7 +59,7 @@ const api = {
 				// Throw any error caught while attempting to retrieve Google brew.
 				if(googleError) {
 					const reason = googleError.errors[0].reason;
-					throw { ...Error, ...googleError, HBErrorCode: reason == 'notFound' ? '02' : '01' };
+					throw { ...googleError, HBErrorCode: reason == 'notFound' ? '02' : '01' };
 				}
 				// Combine the Homebrewery stub with the google brew, or if the stub doesn't exist just use the google brew
 				stub = stub ? _.assign({ ...api.excludeStubProps(stub), stubbed: true }, api.excludeGoogleProps(googleBrew)) : googleBrew;
@@ -68,14 +68,12 @@ const api = {
 			const isAuthor = stub?.authors?.includes(req.account?.username);
 			const isInvited = stub?.invitedAuthors?.includes(req.account?.username);
 			if(accessType === 'edit' && (authorsExist && !(isAuthor || isInvited))) {
-				throw Error(`The current logged in user does not have editor access to this brew.
-
-If you believe you should have access to this brew, ask the file owner to invite you as an author by opening the brew, viewing the Properties tab, and adding your username to the "invited authors" list. You can then try to access this document again.`);
+				throw { name: 'Access Error', message: 'User is not an Author', status: 403, HBErrorCode: '03' };
 			}
 
 			// If after all of that we still don't have a brew, throw an exception
 			if(!stub && !stubOnly) {
-				throw Error('Brew not found in Homebrewery database or Google Drive');
+				throw { name: 'BrewLoad Error', message: 'Brew not found', status: 404, HBErrorCode: '04' };
 			}
 
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
@@ -184,7 +182,7 @@ If you believe you should have access to this brew, ask the file owner to invite
 		saved = await newHomebrew.save()
 			.catch((err)=>{
 				console.error(err, err.toString(), err.stack);
-				throw Error(`Error while creating new brew, ${err.toString()}`);
+				throw { name: 'BrewSave Error', message: `Error while creating new brew, ${err.toString()}`, status: 500, HBErrorCode: '05' };
 			});
 		if(!saved) return;
 		saved = saved.toObject();
@@ -311,7 +309,7 @@ If you believe you should have access to this brew, ask the file owner to invite
 				await HomebrewModel.deleteOne({ _id: brew._id })
 					.catch((err)=>{
 						console.error(err);
-						throw Error('Error while removing', { status: 500 });
+						throw { name: 'BrewDelete Error', message: 'Error while removing', status: 500, HBErrorCode: '06' };
 					});
 			} else {
 				if(shouldDeleteGoogleBrew) {
@@ -323,7 +321,7 @@ If you believe you should have access to this brew, ask the file owner to invite
 				brew.markModified('authors'); //Mongo will not properly update arrays without markModified()
 				await brew.save()
 					.catch((err)=>{
-						throw Error(err, { status: 500 });
+						throw { name: 'BrewAuthorDelete Error', message: err, status: 500, HBErrorCode: '07' };
 					});
 			}
 		}

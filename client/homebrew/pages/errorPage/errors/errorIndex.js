@@ -44,7 +44,32 @@ const errorIndex = ()=>{
 			:
 			Also note, if you prefer not to use your Google Drive for storage, you can always
 			change the storage location of a brew by clicking the Google drive icon by the
-			brew title and choosing *transfer my brew to/from Google Drive*.`
+			brew title and choosing *transfer my brew to/from Google Drive*.`,
+
+		'03' : dedent`
+		## The current logged in user does not have editor access to this brew.
+
+		If you believe you should have access to this brew, ask the file owner to invite you as an author by opening the brew, viewing the Properties tab, and adding your username to the "invited authors" list. You can then try to access this document again.`,
+
+		'04' : dedent`
+		## No Homebrewery document could be found.
+		
+		The server could not locate the Homebrewery document.`,
+
+		'05' : dedent`
+		## Unable to save Homebrewery document.
+		
+		An error occurred wil attempting to save the Homebrewery document.`,
+
+		'06' : dedent`
+		## Unable to delete Homebrewery document.
+		
+		An error occurred while attempting to remove the Homebrewery document.`,
+
+		'07' : dedent`
+		## Unable to remove user from Homebrewery document.
+		
+		An error occurred while attempting to remove the current user from the Homebrewery document author list!`
 	};
 };
 
