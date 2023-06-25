@@ -197,9 +197,7 @@ describe('Tests for api', ()=>{
 				err = e;
 			}
 
-			expect(err).toEqual({ 'message' : `The current logged in user does not have editor access to this brew.
-
-If you believe you should have access to this brew, ask the file owner to invite you as an author by opening the brew, viewing the Properties tab, and adding your username to the "invited authors" list. You can then try to access this document again.` });
+			expect(err).toEqual({ HBErrorCode: '03', message: 'User is not an Author', name: 'Access Error', status: 403 });
 		});
 
 		it('does not throw if no authors', async ()=>{
