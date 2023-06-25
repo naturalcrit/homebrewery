@@ -125,7 +125,7 @@ describe('Tests for api', ()=>{
 
 	describe('getBrew', ()=>{
 		const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
-		const notFoundError = { HBErrorCode: '04', message: 'Brew not found', name: 'BrewLoad Error', status: 404 };
+		const notFoundError = { HBErrorCode: '05', message: 'Brew not found', name: 'BrewLoad Error', status: 404 };
 
 		it('returns middleware', ()=>{
 			const getFn = api.getBrew('share');
