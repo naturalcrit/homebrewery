@@ -4,17 +4,20 @@ const loginUrl = 'https://www.naturalcrit.com/login';
 
 const errorIndex = (props)=>{
 	return {
+		// Default catch all
 		'00' : dedent`
 			## An unknown error occurred!
 			
 			We aren't sure what happened, but our server wasn't able to find what you
 			were looking for.`,
 
+		// General Google load error
 		'01' : dedent`
 			## An error occurred while retrieving this brew from Google Drive!
 			
 			Google reported an error while attempting to retrieve a brew from this link.`,
 
+		// Google Drive - 404 : brew deleted or access denied
 		'02' : dedent`
 			## We can't find this brew in your Google Drive!
 			
@@ -48,6 +51,7 @@ const errorIndex = (props)=>{
 			change the storage location of a brew by clicking the Google drive icon by the
 			brew title and choosing *transfer my brew to/from Google Drive*.`,
 
+		// User is not Authors list
 		'03' : dedent`
 		## The current logged in user does not have editor access to this brew.
 
@@ -62,30 +66,46 @@ const errorIndex = (props)=>{
 		${props.brew.authors?.map((author)=>{return `- ${author}`;}).join('\n') || 'Unable to list authors'}
 		`,
 
+		// User is not logged in
 		'04' : dedent`
 		## Not logged in
 		
 		User is not logged in. Please log in [here](${loginUrl}).`,
 
+		// Brew load error
 		'05' : dedent`
 		## No Homebrewery document could be found.
 		
-		The server could not locate the Homebrewery document.`,
+		The server could not locate the Homebrewery document.
+		
+		**Requested access:** ${props.brew.accessType}
 
+		**Brew ID:**  ${props.brew.brewId}
+		`,
+
+		// Brew save error
 		'06' : dedent`
 		## Unable to save Homebrewery document.
 		
 		An error occurred wil attempting to save the Homebrewery document.`,
 
+		// Brew delete error
 		'07' : dedent`
 		## Unable to delete Homebrewery document.
 		
-		An error occurred while attempting to remove the Homebrewery document.`,
+		An error occurred while attempting to remove the Homebrewery document.
+		
+		**Brew ID:**  ${props.brew.brewId}
+		`,
 
+		// Author delete error
 		'08' : dedent`
 		## Unable to remove user from Homebrewery document.
 		
-		An error occurred while attempting to remove the current user from the Homebrewery document author list!`,
+		An error occurred while attempting to remove the user from the Homebrewery document author list!
+		
+		**Brew ID:**  ${props.brew.brewId}
+		`,
 	};
 };
 

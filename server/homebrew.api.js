@@ -77,7 +77,7 @@ const api = {
 
 			// If after all of that we still don't have a brew, throw an exception
 			if(!stub && !stubOnly) {
-				throw { name: 'BrewLoad Error', message: 'Brew not found', status: 404, HBErrorCode: '05' };
+				throw { name: 'BrewLoad Error', message: 'Brew not found', status: 404, HBErrorCode: '05', accessType: accessType, brewId: id };
 			}
 
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
@@ -313,7 +313,7 @@ const api = {
 				await HomebrewModel.deleteOne({ _id: brew._id })
 					.catch((err)=>{
 						console.error(err);
-						throw { name: 'BrewDelete Error', message: 'Error while removing', status: 500, HBErrorCode: '07' };
+						throw { name: 'BrewDelete Error', message: 'Error while removing', status: 500, HBErrorCode: '07', brewId: brew._id };
 					});
 			} else {
 				if(shouldDeleteGoogleBrew) {
@@ -325,7 +325,7 @@ const api = {
 				brew.markModified('authors'); //Mongo will not properly update arrays without markModified()
 				await brew.save()
 					.catch((err)=>{
-						throw { name: 'BrewAuthorDelete Error', message: err, status: 500, HBErrorCode: '08' };
+						throw { name: 'BrewAuthorDelete Error', message: err, status: 500, HBErrorCode: '08', brewId: brew._id };
 					});
 			}
 		}
