@@ -288,10 +288,13 @@ const api = {
 		try {
 			await api.getBrew('edit')(req, res, ()=>{});
 		} catch (err) {
-			const { id, googleId } = api.getId(req);
-			console.warn(`No google brew found for id ${googleId}, the stub with id ${id} will be deleted.`);
-			await HomebrewModel.deleteOne({ editId: id });
-			return next();
+			// Only if the error code is HBErrorCode '02', that is, Google returned "404 - Not Found"
+			if(err.HBErrorCode == '02') {
+				const { id, googleId } = api.getId(req);
+				console.warn(`No google brew found for id ${googleId}, the stub with id ${id} will be deleted.`);
+				await HomebrewModel.deleteOne({ editId: id });
+				return next();
+			}
 		}
 
 		let brew = req.brew;
