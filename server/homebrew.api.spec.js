@@ -197,7 +197,7 @@ describe('Tests for api', ()=>{
 				err = e;
 			}
 
-			expect(err).toEqual({ HBErrorCode: '03', message: 'User is not an Author', name: 'Access Error', status: 403 });
+			expect(err).toEqual({ HBErrorCode: '03', authors: ['a'], message: 'User is not an Author', name: 'Access Error', status: 401 });
 		});
 
 		it('does not throw if no authors', async ()=>{
