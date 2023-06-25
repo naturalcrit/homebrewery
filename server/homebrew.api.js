@@ -68,14 +68,14 @@ const api = {
 			const isAuthor = stub?.authors?.includes(req.account?.username);
 			const isInvited = stub?.invitedAuthors?.includes(req.account?.username);
 			if(accessType === 'edit' && (authorsExist && !(isAuthor || isInvited))) {
-				throw { ...new Error, message : `The current logged in user does not have editor access to this brew.
+				throw Error(`The current logged in user does not have editor access to this brew.
 
-If you believe you should have access to this brew, ask the file owner to invite you as an author by opening the brew, viewing the Properties tab, and adding your username to the "invited authors" list. You can then try to access this document again.` };
+If you believe you should have access to this brew, ask the file owner to invite you as an author by opening the brew, viewing the Properties tab, and adding your username to the "invited authors" list. You can then try to access this document again.`);
 			}
 
 			// If after all of that we still don't have a brew, throw an exception
 			if(!stub && !stubOnly) {
-				throw { ...new Error, message: 'Brew not found in Homebrewery database or Google Drive' };
+				throw Error('Brew not found in Homebrewery database or Google Drive');
 			}
 
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
@@ -184,7 +184,7 @@ If you believe you should have access to this brew, ask the file owner to invite
 		saved = await newHomebrew.save()
 			.catch((err)=>{
 				console.error(err, err.toString(), err.stack);
-				throw { ...new Error, message: `Error while creating new brew, ${err.toString()}` };
+				throw Error(`Error while creating new brew, ${err.toString()}`);
 			});
 		if(!saved) return;
 		saved = saved.toObject();
@@ -311,7 +311,7 @@ If you believe you should have access to this brew, ask the file owner to invite
 				await HomebrewModel.deleteOne({ _id: brew._id })
 					.catch((err)=>{
 						console.error(err);
-						throw { ...new Error, status: 500, message: 'Error while removing' };
+						throw Error('Error while removing', { status: 500 });
 					});
 			} else {
 				if(shouldDeleteGoogleBrew) {
@@ -323,7 +323,7 @@ If you believe you should have access to this brew, ask the file owner to invite
 				brew.markModified('authors'); //Mongo will not properly update arrays without markModified()
 				await brew.save()
 					.catch((err)=>{
-						throw { ...new Error, status: 500, message: err };
+						throw Error(err, { status: 500 });
 					});
 			}
 		}
