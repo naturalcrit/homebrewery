@@ -125,7 +125,7 @@ describe('Tests for api', ()=>{
 
 	describe('getBrew', ()=>{
 		const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
-		const notFoundError = 'Brew not found in Homebrewery database or Google Drive';
+		const notFoundError = { HBErrorCode: '04', message: 'Brew not found', name: 'BrewLoad Error', status: 404 };
 
 		it('returns middleware', ()=>{
 			const getFn = api.getBrew('share');
@@ -162,7 +162,7 @@ describe('Tests for api', ()=>{
 				err = e;
 			}
 
-			expect(err).toEqual({ 'message': notFoundError });
+			expect(err).toEqual(notFoundError);
 			expect(req.brew).toEqual({});
 			expect(next).not.toHaveBeenCalled();
 			expect(api.getId).toHaveBeenCalledWith(req);
