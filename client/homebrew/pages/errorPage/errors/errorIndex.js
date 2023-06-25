@@ -1,6 +1,6 @@
 const dedent = require('dedent-tabs').default;
 
-const errorIndex = ()=>{
+const errorIndex = (props)=>{
 	return {
 		'00' : dedent`
 			## An unknown error occurred!
@@ -49,7 +49,14 @@ const errorIndex = ()=>{
 		'03' : dedent`
 		## The current logged in user does not have editor access to this brew.
 
-		If you believe you should have access to this brew, ask the file owner to invite you as an author by opening the brew, viewing the Properties tab, and adding your username to the "invited authors" list. You can then try to access this document again.`,
+		If you believe you should have access to this brew, ask the file owner to invite you
+		as an author by opening the brew, viewing the Properties tab, and adding your username
+		to the "invited authors" list. You can then try to access this document again.
+		
+		Current Authors:
+
+		${props.brew.authors?.map((author)=>{return `- ${author}`;}).join('\n') || 'Unable to list authors'}
+		`,
 
 		'04' : dedent`
 		## No Homebrewery document could be found.

@@ -473,6 +473,7 @@ app.use(async (err, req, res, next)=>{
 		description : 'Something went wrong!'
 	};
 	req.brew = {
+		...err,
 		title       : 'Error - Something went wrong!',
 		text        : err.errors?.map((error)=>{return error.message;}).join('\n\n') || err.message || 'Unknown error!',
 		status      : status,

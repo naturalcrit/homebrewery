@@ -68,7 +68,7 @@ const api = {
 			const isAuthor = stub?.authors?.includes(req.account?.username);
 			const isInvited = stub?.invitedAuthors?.includes(req.account?.username);
 			if(accessType === 'edit' && (authorsExist && !(isAuthor || isInvited))) {
-				throw { name: 'Access Error', message: 'User is not an Author', status: 401, HBErrorCode: '03' };
+				throw { name: 'Access Error', message: 'User is not an Author', status: 401, HBErrorCode: '03', authors: stub.authors };
 			}
 
 			// If after all of that we still don't have a brew, throw an exception

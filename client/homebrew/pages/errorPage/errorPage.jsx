@@ -23,7 +23,7 @@ const ErrorPage = createClass({
 	},
 
 	render : function(){
-		const errorText = ErrorIndex()[this.props.brew.HBErrorCode.toString()] || '';
+		const errorText = ErrorIndex(this.props)[this.props.brew.HBErrorCode.toString()] || '';
 
 		return <UIPage brew={{ title: 'Crit Fail!' }}>
 			<div className='dataGroup'>
