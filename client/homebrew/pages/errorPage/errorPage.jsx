@@ -31,6 +31,7 @@ const ErrorPage = createClass({
 					<h1>{`Error ${this.props.brew.status || '000'}`}</h1>
 					<h4>{this.props.brew.text || 'No error text'}</h4>
 				</div>
+				<hr />
 				<div dangerouslySetInnerHTML={{ __html: Markdown.render(errorText) }} />
 			</div>
 		</UIPage>;
