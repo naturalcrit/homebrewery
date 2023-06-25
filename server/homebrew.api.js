@@ -68,12 +68,15 @@ const api = {
 			const isAuthor = stub?.authors?.includes(req.account?.username);
 			const isInvited = stub?.invitedAuthors?.includes(req.account?.username);
 			if(accessType === 'edit' && (authorsExist && !(isAuthor || isInvited))) {
-				throw { name: 'Access Error', message: 'User is not an Author', status: 401, HBErrorCode: '03', authors: stub.authors };
+				if(req.account){
+					throw { name: 'Access Error', message: 'User is not an Author', status: 401, HBErrorCode: '03', authors: stub.authors };
+				}
+				throw { name: 'Access Error', message: 'User is not logged in', status: 401, HBErrorCode: '04' };
 			}
 
 			// If after all of that we still don't have a brew, throw an exception
 			if(!stub && !stubOnly) {
-				throw { name: 'BrewLoad Error', message: 'Brew not found', status: 404, HBErrorCode: '04' };
+				throw { name: 'BrewLoad Error', message: 'Brew not found', status: 404, HBErrorCode: '05' };
 			}
 
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
@@ -182,7 +185,7 @@ const api = {
 		saved = await newHomebrew.save()
 			.catch((err)=>{
 				console.error(err, err.toString(), err.stack);
-				throw { name: 'BrewSave Error', message: `Error while creating new brew, ${err.toString()}`, status: 500, HBErrorCode: '05' };
+				throw { name: 'BrewSave Error', message: `Error while creating new brew, ${err.toString()}`, status: 500, HBErrorCode: '06' };
 			});
 		if(!saved) return;
 		saved = saved.toObject();
@@ -309,7 +312,7 @@ const api = {
 				await HomebrewModel.deleteOne({ _id: brew._id })
 					.catch((err)=>{
 						console.error(err);
-						throw { name: 'BrewDelete Error', message: 'Error while removing', status: 500, HBErrorCode: '06' };
+						throw { name: 'BrewDelete Error', message: 'Error while removing', status: 500, HBErrorCode: '07' };
 					});
 			} else {
 				if(shouldDeleteGoogleBrew) {
@@ -321,7 +324,7 @@ const api = {
 				brew.markModified('authors'); //Mongo will not properly update arrays without markModified()
 				await brew.save()
 					.catch((err)=>{
-						throw { name: 'BrewAuthorDelete Error', message: err, status: 500, HBErrorCode: '07' };
+						throw { name: 'BrewAuthorDelete Error', message: err, status: 500, HBErrorCode: '08' };
 					});
 			}
 		}

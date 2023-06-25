@@ -1,5 +1,7 @@
 const dedent = require('dedent-tabs').default;
 
+const loginUrl = 'https://www.naturalcrit.com/login';
+
 const errorIndex = (props)=>{
 	return {
 		'00' : dedent`
@@ -59,24 +61,29 @@ const errorIndex = (props)=>{
 		`,
 
 		'04' : dedent`
+		## Not logged in
+		
+		User is not logged in. Please log in [here](${loginUrl}).`,
+
+		'05' : dedent`
 		## No Homebrewery document could be found.
 		
 		The server could not locate the Homebrewery document.`,
 
-		'05' : dedent`
+		'06' : dedent`
 		## Unable to save Homebrewery document.
 		
 		An error occurred wil attempting to save the Homebrewery document.`,
 
-		'06' : dedent`
+		'07' : dedent`
 		## Unable to delete Homebrewery document.
 		
 		An error occurred while attempting to remove the Homebrewery document.`,
 
-		'07' : dedent`
+		'08' : dedent`
 		## Unable to remove user from Homebrewery document.
 		
-		An error occurred while attempting to remove the current user from the Homebrewery document author list!`
+		An error occurred while attempting to remove the current user from the Homebrewery document author list!`,
 	};
 };
 
