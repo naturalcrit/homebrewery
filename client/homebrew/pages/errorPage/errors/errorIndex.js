@@ -55,7 +55,9 @@ const errorIndex = (props)=>{
 		as an author by opening the brew, viewing the Properties tab, and adding your username
 		to the "invited authors" list. You can then try to access this document again.
 		
-		Current Authors:
+		**Brew Title:** ${props.brew.brewTitle || 'Unable to show title'}
+
+		**Current Authors:**
 
 		${props.brew.authors?.map((author)=>{return `- ${author}`;}).join('\n') || 'Unable to list authors'}
 		`,
