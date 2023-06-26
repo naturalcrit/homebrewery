@@ -19,14 +19,23 @@ const errorIndex = (props)=>{
 
 		// Google Drive - 404 : brew deleted or access denied
 		'02' : dedent`
-			## We can't find this brew in your Google Drive!
+			## We can't find this brew in Google Drive!
 			
-			This error tells us your file was saved on your Google Drive, but the link
-			you tried to open doesn't work anymore. The Homebrewery cannot delete files
-			from your Google Drive on its own, so there are three most likely possibilities:
+			This error tells us the file was saved on Google Drive, but the link
+			you have tried to open doesn't work anymore. The Homebrewery cannot delete files
+			from Google Drive on its own, so there are three most likely possibilities:
 			:
-			- **You may have accidentally deleted the Google Drive files.** Look on 
-			${props.brew.authors?.length > 0 ? `the Google Drive account associated with the **${props.brew.authors[0]}** Homebrewery account` : 'your Google Drive account'}
+			- **The Google Drive files may have been accidentally deleted.** Look in 
+			${props.brew.authors?.length > 0
+				&&
+				(props.brew.authors[0] == props.brew.account
+					? 'your Google Drive account'
+					: dedent`the Google Drive account associated with the
+					**${props.brew.authors[0]}** Homebrewery account - you
+					are currently logged in with the **${props.brew.account}**
+					account -`)
+				||
+				'your Google Drive account'}
 			and make sure the Homebrewery folder is still there, and that it holds your brews
 			as text files.
 			- **You may have changed the sharing settings for your files.** If the files
