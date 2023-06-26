@@ -25,7 +25,8 @@ const errorIndex = (props)=>{
 			you tried to open doesn't work anymore. The Homebrewery cannot delete files
 			from your Google Drive on its own, so there are three most likely possibilities:
 			:
-			- **You may have accidentally deleted the Google Drive files.** Look on your Google Drive
+			- **You may have accidentally deleted the Google Drive files.** Look on 
+			${props.brew.authors?.length > 0 ? `the Google Drive account associated with the **${props.brew.authors[0]}** Homebrewery account` : 'your Google Drive account'}
 			and make sure the Homebrewery folder is still there, and that it holds your brews
 			as text files.
 			- **You may have changed the sharing settings for your files.** If the files
