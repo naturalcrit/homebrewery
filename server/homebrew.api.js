@@ -59,7 +59,12 @@ const api = {
 				// Throw any error caught while attempting to retrieve Google brew.
 				if(googleError) {
 					const reason = googleError.errors[0].reason;
-					throw { ...googleError, HBErrorCode: reason == 'notFound' ? '02' : '01', authors: stub?.authors, account: req.account.username };
+					if(reason == 'notFound') {
+						throw { ...googleError, HBErrorCode: '02', authors: stub?.authors, account: req.account?.username };
+					}
+					else {
+						throw { ...googleError, HBErrorCode: '01'};
+					}
 				}
 				// Combine the Homebrewery stub with the google brew, or if the stub doesn't exist just use the google brew
 				stub = stub ? _.assign({ ...api.excludeStubProps(stub), stubbed: true }, api.excludeGoogleProps(googleBrew)) : googleBrew;
