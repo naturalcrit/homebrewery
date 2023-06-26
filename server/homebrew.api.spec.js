@@ -543,8 +543,8 @@ brew`);
 
 	describe('deleteBrew', ()=>{
 		it('should handle case where fetching the brew returns an error', async ()=>{
-			api.getBrew = jest.fn(()=>async ()=>{ throw 'err'; });
-			api.getId = jest.fn(()=>({ id: '1', googleId: '2', HBErrorCode: '02' }));
+			api.getBrew = jest.fn(()=>async ()=>{ throw {message: 'err', HBErrorCode: '02' }; });
+			api.getId = jest.fn(()=>({ id: '1', googleId: '2' }));
 			model.deleteOne = jest.fn(async ()=>{});
 			const next = jest.fn(()=>{});
 
