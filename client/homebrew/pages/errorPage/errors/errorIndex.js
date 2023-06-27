@@ -44,8 +44,8 @@ const errorIndex = (props)=>{
 			- **You may have changed the sharing settings for your files.** If the files
 			are still on Google Drive, change all of them to be shared *with everyone who has
 			the link* so the Homebrewery can access them.
-			- **The Google Drive may be full**, or may be have been closed by
-			Google (for inactivity, violating some policy of theirs). Make sure the owner can
+			- **The Google Account may be closed.** Google may have removed the account
+			due to inactivity or violating a Google policy. Make sure the owner can
 			still access Google Drive normally and upload/download files to it.
 			:
 			If the file isn't found, Google Drive usually puts your file in your Trash folder for
