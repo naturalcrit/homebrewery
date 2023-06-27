@@ -197,7 +197,7 @@ describe('Tests for api', ()=>{
 				err = e;
 			}
 
-			expect(err).toEqual({ HBErrorCode: '04', message: 'User is not logged in', name: 'Access Error', status: 401 });
+			expect(err).toEqual({ HBErrorCode: '04', message: 'User is not logged in', name: 'Access Error', status: 401, authors: [ 'a' ], brewTitle: 'test brew' });
 		});
 
 		it('does not throw if no authors', async ()=>{
