@@ -58,7 +58,7 @@ const api = {
 					});
 				// Throw any error caught while attempting to retrieve Google brew.
 				if(googleError) {
-					const reason = googleError.errors[0].reason;
+					const reason = googleError.errors?.[0].reason;
 					if(reason == 'notFound') {
 						throw { ...googleError, HBErrorCode: '02', authors: stub?.authors, account: req.account?.username };
 					}
@@ -77,7 +77,7 @@ const api = {
 				if(req.account){
 					throw { ...accessError, message: 'User is not an Author', HBErrorCode: '03', authors: stub.authors, brewTitle: stub.title };
 				}
-				throw { ...accessError, message: 'User is not logged in', HBErrorCode: '04' };
+				throw { ...accessError, message: 'User is not logged in', HBErrorCode: '04', authors: stub.authors, brewTitle: stub.title };
 			}
 
 			// If after all of that we still don't have a brew, throw an exception

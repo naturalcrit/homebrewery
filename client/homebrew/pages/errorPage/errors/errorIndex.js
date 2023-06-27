@@ -21,37 +21,40 @@ const errorIndex = (props)=>{
 		'02' : dedent`
 			## We can't find this brew in Google Drive!
 			
-			This error tells us the file was saved on Google Drive, but the link
-			you have tried to open doesn't work anymore. The Homebrewery cannot delete files
-			from Google Drive on its own, so there are three most likely possibilities:
+			This file was saved on Google Drive, but this link doesn't work anymore.
+			${ props.brew.authors?.length > 0
+				? `Note that this brew belongs to the Homebrewery account **${ props.brew.authors[0] }**,
+				${ props.brew.account
+					? `which is
+						${props.brew.authors[0] == props.brew.account
+							? `your account.`
+							: `not your account (you are currently signed in as **${props.brew.account}**).`
+						}`
+					: 'and you are not currently signed in to any account.'
+				}`
+				: ''
+			}
+			The Homebrewery cannot delete files from Google Drive on its own, so there
+			are three most likely possibilities:
 			:
-			- **The Google Drive files may have been accidentally deleted.** Look in 
-			${props.brew.authors?.length > 0
-				&&
-				(props.brew.authors[0] == props.brew.account
-					? 'your Google Drive account'
-					: dedent`the Google Drive account associated with the
-					**${props.brew.authors[0]}** Homebrewery account - you
-					are currently logged in with the **${props.brew.account}**
-					account -`)
-				||
-				'your Google Drive account'}
+			- **The Google Drive files may have been accidentally deleted.** Look in
+			the Google Drive account that owns this brew (or ask the owner to do so),
 			and make sure the Homebrewery folder is still there, and that it holds your brews
 			as text files.
 			- **You may have changed the sharing settings for your files.** If the files
 			are still on Google Drive, change all of them to be shared *with everyone who has
 			the link* so the Homebrewery can access them.
-			- **Your Google Account may be full**, or may be have been closed by
-			Google (for inactivity, violating some policy of theirs). Make sure you can still
-			access your Google Drive normally and upload/download files to it.
+			- **The Google Drive may be full**, or may be have been closed by
+			Google (for inactivity, violating some policy of theirs). Make sure the owner can
+			still access Google Drive normally and upload/download files to it.
 			:
-			If you can't find it, Google Drive usually puts your file in your Trash folder for
-			30 days. Assuming you didn't empty the trash right after, it might be worth checking.
-			You can also look on the right side of the page while logged into Google Drive and
-			look at the Activity tab. This can help you pin down the exact date the brew was
-			deleted and by whom.
+			If the file isn't found, Google Drive usually puts your file in your Trash folder for
+			30 days. Assuming the trash hasn't been emptied yet, it might be worth checking.
+			You can also find the Activity tab on the right side of the Google Drive page, which
+			shows the recent activity on Google Drive. This can help you pin down the exact date
+			the brew was deleted or moved, and by whom.
 			:
-			If you *still* can't find it, some people have had success asking Google to recover
+			If the brew still isn't found, some people have had success asking Google to recover
 			accidentally deleted files at this link: 
 			https://support.google.com/drive/answer/1716222?hl=en&ref_topic=7000946.
 			At the bottom of the page there is a button that says *Send yourself an Email*
@@ -63,35 +66,38 @@ const errorIndex = (props)=>{
 
 		// User is not Authors list
 		'03' : dedent`
-		## The current logged in user does not have editor access to this brew.
+		## Current signed-in user does not have editor access to this brew.
 
-		If you believe you should have access to this brew, ask the file owner to invite you
-		as an author by opening the brew, viewing the Properties tab, and adding your username
-		to the "invited authors" list. You can then try to access this document again.
+		If you believe you should have access to this brew, ask one of its authors to invite you
+		as an author by opening the Edit page for the brew, viewing the {{fa,fa-info-circle}}
+		**Properties** tab, and adding your username to the "invited authors" list. You can
+		then try to access this document again.
 		
 		**Brew Title:** ${props.brew.brewTitle || 'Unable to show title'}
 
-		**Current Authors:**
+		**Current Authors:** ${props.brew.authors?.map((author)=>{return `${author}`;}).join(', ') || 'Unable to list authors'}`,
 
-		${props.brew.authors?.map((author)=>{return `- ${author}`;}).join('\n') || 'Unable to list authors'}
-		`,
-
-		// User is not logged in
+		// User is not signed in; must be a user on the Authors List
 		'04' : dedent`
-		## Not logged in
+		## Sign-in required to edit this brew.
 		
-		User is not logged in. Please log in [here](${loginUrl}).`,
+		You must be logged in to one of the accounts listed as an author of this brew.
+		User is not logged in. Please log in [here](${loginUrl}).
+		
+		**Brew Title:** ${props.brew.brewTitle || 'Unable to show title'}
+
+		**Current Authors:** ${props.brew.authors?.map((author)=>{return `${author}`;}).join(', ') || 'Unable to list authors'}`,
 
 		// Brew load error
 		'05' : dedent`
 		## No Homebrewery document could be found.
 		
-		The server could not locate the Homebrewery document.
+		The server could not locate the Homebrewery document. It was likely deleted by
+		its owner.
 		
 		**Requested access:** ${props.brew.accessType}
 
-		**Brew ID:**  ${props.brew.brewId}
-		`,
+		**Brew ID:**  ${props.brew.brewId}`,
 
 		// Brew save error
 		'06' : dedent`
@@ -105,8 +111,7 @@ const errorIndex = (props)=>{
 		
 		An error occurred while attempting to remove the Homebrewery document.
 		
-		**Brew ID:**  ${props.brew.brewId}
-		`,
+		**Brew ID:**  ${props.brew.brewId}`,
 
 		// Author delete error
 		'08' : dedent`
@@ -114,8 +119,7 @@ const errorIndex = (props)=>{
 		
 		An error occurred while attempting to remove the user from the Homebrewery document author list!
 		
-		**Brew ID:**  ${props.brew.brewId}
-		`,
+		**Brew ID:**  ${props.brew.brewId}`,
 	};
 };
 
