@@ -61,9 +61,8 @@ const api = {
 					const reason = googleError.errors?.[0].reason;
 					if(reason == 'notFound') {
 						throw { ...googleError, HBErrorCode: '02', authors: stub?.authors, account: req.account?.username };
-					}
-					else {
-						throw { ...googleError, HBErrorCode: '01'};
+					} else {
+						throw { ...googleError, HBErrorCode: '01' };
 					}
 				}
 				// Combine the Homebrewery stub with the google brew, or if the stub doesn't exist just use the google brew
