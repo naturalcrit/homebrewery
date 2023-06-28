@@ -72,7 +72,7 @@ const EditPage = createClass({
 
 		window.onbeforeunload = ()=>{
 			if(this.state.isSaving || this.state.isPending){
-				return 'You have unsaved changes!';
+				return 'Du hast ungespeicherte Änderungen!';
 			}
 		};
 
@@ -270,7 +270,7 @@ const EditPage = createClass({
 		if(this.state.autoSaveWarning && this.hasChanges()){
 			this.setAutosaveWarning();
 			const elapsedTime = Math.round((new Date() - this.state.unsavedTime) / 1000 / 60);
-			const text = elapsedTime == 0 ? 'Autosave is OFF.' : `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
+			const text = elapsedTime == 0 ? 'Auto-Save ist AUS.' : `Auto-Save ist AUS und du hast seit ${elapsedTime} Minutes nicht gespeichert.`;
 
 			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
 			Reminder...
@@ -281,16 +281,16 @@ const EditPage = createClass({
 		}
 
 		if(this.state.isSaving){
-			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
+			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>speichern...</Nav.item>;
 		}
 		if(this.state.isPending && this.hasChanges()){
-			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
+			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Jetzt speichern</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving && this.state.autoSave){
-			return <Nav.item className='save saved'>auto-saved.</Nav.item>;
+			return <Nav.item className='save saved'>auto-save.</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving){
-			return <Nav.item className='save saved'>saved.</Nav.item>;
+			return <Nav.item className='save saved'>gespeichert.</Nav.item>;
 		}
 	},
 
@@ -318,7 +318,7 @@ const EditPage = createClass({
 
 	renderAutoSaveButton : function(){
 		return <Nav.item onClick={this.handleAutoSave}>
-			Autosave <i className={this.state.autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
+			Auto-Save <i className={this.state.autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
 		</Nav.item>;
 	},
 
@@ -349,7 +349,7 @@ const EditPage = createClass({
 			</Nav.section>
 
 			<Nav.section>
-				{this.renderGoogleDriveIcon()}
+				{/*this.renderGoogleDriveIcon()*/}
 				{this.state.error ?
 					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
 					<Nav.dropdown className='save-menu'>
@@ -361,17 +361,18 @@ const EditPage = createClass({
 				<HelpNavItem/>
 				<Nav.dropdown>
 					<Nav.item color='teal' icon='fas fa-share-alt'>
-						share
+						Teilen
 					</Nav.item>
 					<Nav.item color='blue' href={`/share/${shareLink}`}>
-						view
+						Anschauen
 					</Nav.item>
 					<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.publicUrl}/share/${shareLink}`);}}>
-						copy url
+						URL kopieren
 					</Nav.item>
-					<Nav.item color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
+					{/*<Nav.item color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
 						post to reddit
 					</Nav.item>
+					*/}
 				</Nav.dropdown>
 				<PrintLink shareId={this.processShareId()} />
 				<RecentNavItem brew={this.state.brew} storageKey='edit' />

@@ -47,7 +47,7 @@ const BrewItem = createClass({
 		if(!this.props.brew.editId) return;
 
 		return <a className='deleteLink' onClick={this.deleteBrew}>
-			<i className='fas fa-trash-alt' title='Delete' />
+			<i className='fas fa-trash-alt' title='Löschen' />
 		</a>;
 	},
 
@@ -73,7 +73,7 @@ const BrewItem = createClass({
 		}
 
 		return <a className='shareLink' href={`/share/${shareLink}`} target='_blank' rel='noopener noreferrer'>
-			<i className='fas fa-share-alt' title='Share' />
+			<i className='fas fa-share-alt' title='Teilen' />
 		</a>;
 	},
 
@@ -144,7 +144,7 @@ const BrewItem = createClass({
 					Last updated: ${moment(brew.updatedAt).local().format(dateFormatString)}`}>
 					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
 				</span>
-				{this.renderGoogleDriveIcon()}
+				{/*this.renderGoogleDriveIcon()*/}
 			</div>
 
 			<div className='links'>

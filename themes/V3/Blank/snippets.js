@@ -12,27 +12,27 @@ module.exports = [
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'Column Break',
+				name : 'Spalten-Umbruch',
 				icon : 'fas fa-columns',
 				gen  : '\n\\column\n'
 			},
 			{
-				name : 'New Page',
+				name : 'Neue Seite',
 				icon : 'fas fa-file-alt',
 				gen  : '\n\\page\n'
 			},
 			{
-				name : 'Vertical Spacing',
+				name : 'Vertikaler Abstand',
 				icon : 'fas fa-arrows-alt-v',
 				gen  : '\n::::\n'
 			},
 			{
-				name : 'Horizontal Spacing',
+				name : 'Horizontaler Abstand',
 				icon : 'fas fa-arrows-alt-h',
 				gen  : ' {{width:100px}} '
 			},
 			{
-				name : 'Wide Block',
+				name : 'Breiter Block',
 				icon : 'fas fa-window-maximize',
 				gen  : dedent`\n
 					{{wide
@@ -54,12 +54,12 @@ module.exports = [
 				}
 			},
 			{
-				name : 'Link to page',
+				name : 'Link zu URL',
 				icon : 'fas fa-link',
 				gen  : '[Click here](#p3) to go to page 3\n'
 			},
 			{
-				name : 'Add Comment',
+				name : 'Kommentar hinzufügen',
 				icon : 'fas fa-code',
 				gen  : '<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->'
 			},
@@ -71,7 +71,7 @@ module.exports = [
 		view      : 'style',
 		snippets  : [
 			{
-				name : 'Add Comment',
+				name : 'Kommentar hinzufügen',
 				icon : 'fas fa-code',
 				gen  : '/* This is a comment that will not be rendered into your brew. */'
 			},

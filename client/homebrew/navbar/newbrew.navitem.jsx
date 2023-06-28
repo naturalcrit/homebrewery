@@ -6,6 +6,6 @@ module.exports = function(props){
 		href='/new'
 		color='purple'
 		icon='fas fa-plus-square'>
-		new
+		Neu
 	</Nav.item>;
 };

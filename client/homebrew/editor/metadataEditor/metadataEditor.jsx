@@ -12,7 +12,7 @@ const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
 const Themes = require('themes/themes.json');
 const validations = require('./validations.js');
 
-const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
+const SYSTEMS = ['Ilaris']; //['5e', '4e', '3.5e', 'Pathfinder'];
 
 const homebreweryThumbnail = require('../../thumbnail.png');
 
@@ -167,10 +167,10 @@ const MetadataEditor = createClass({
 		if(!this.props.metadata.editId) return;
 
 		return <div className='field delete'>
-			<label>delete</label>
+			<label>Löschen</label>
 			<div className='value'>
 				<button className='publish' onClick={this.handleDelete}>
-					<i className='fas fa-trash-alt' /> delete brew
+					<i className='fas fa-trash-alt' /> Gebräu löschen
 				</button>
 			</div>
 		</div>;
@@ -182,7 +182,7 @@ const MetadataEditor = createClass({
 			text = this.props.metadata.authors.join(', ');
 		}
 		return <div className='field authors'>
-			<label>authors</label>
+			<label>Autoren</label>
 			<div className='value'>
 				{text}
 			</div>
@@ -198,7 +198,7 @@ const MetadataEditor = createClass({
 					{`${theme.renderer} : ${theme.name}`}
 					<img src={`/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`}/>
 					<div className='preview'>
-						<h6>{`${theme.name}`} preview</h6>
+						<h6>{`${theme.name}`} Vorschau</h6>
 						<img src={`/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`}/>
 					</div>
 				</div>;
@@ -308,10 +308,10 @@ const MetadataEditor = createClass({
 
 	render : function(){
 		return <div className='metadataEditor'>
-			<h1 className='sectionHead'>Brew</h1>
+			<h1 className='sectionHead'>Gebräu</h1>
 
 			<div className='field title'>
-				<label>title</label>
+				<label>Titel</label>
 				<input type='text' className='value'
 					defaultValue={this.props.metadata.title}
 					onChange={(e)=>this.handleFieldChange('title', e)} />
@@ -319,12 +319,12 @@ const MetadataEditor = createClass({
 			<div className='field-group'>
 				<div className='field-column'>
 					<div className='field description'>
-						<label>description</label>
+						<label>Beschreibung</label>
 						<textarea defaultValue={this.props.metadata.description} className='value'
 							onChange={(e)=>this.handleFieldChange('description', e)} />
 					</div>
 					<div className='field thumbnail'>
-						<label>thumbnail</label>
+						<label>Thumbnail</label>
 						<input type='text'
 							defaultValue={this.props.metadata.thumbnail}
 							placeholder='https://my.thumbnail.url'
@@ -344,7 +344,7 @@ const MetadataEditor = createClass({
 				onChange={(e)=>this.handleFieldChange('tags', e)}/>
 
 			<div className='field systems'>
-				<label>systems</label>
+				<label>Systeme</label>
 				<div className='value'>
 					{this.renderSystems()}
 				</div>
@@ -358,7 +358,7 @@ const MetadataEditor = createClass({
 
 			<hr/>
 
-			<h1 className='sectionHead'>Authors</h1>
+			<h1 className='sectionHead'>Autoren</h1>
 
 			{this.renderAuthors()}
 
