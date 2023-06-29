@@ -143,6 +143,7 @@ const api = {
 		if(!brew.title) {
 			brew.title = api.getGoodBrewTitle(brew.text);
 		}
+		brew.title = brew.title.trim();
 
 		brew.authors = (account) ? [account.username] : [];
 		brew.text = api.mergeBrewText(brew);
@@ -212,6 +213,7 @@ const api = {
 		const { saveToGoogle, removeFromGoogle } = req.query;
 		let afterSave = async ()=>true;
 
+		brew.title = brew.title.trim();
 		brew.text = api.mergeBrewText(brew);
 
 		if(brew.googleId && removeFromGoogle) {
