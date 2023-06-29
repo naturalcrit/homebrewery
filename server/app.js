@@ -78,9 +78,9 @@ const faqText           = require('fs').readFileSync('faq.md', 'utf8');
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
 const defaultMetaTags = {
-	site_name   : 'The Homebrewery - Make your Homebrew content look legit!',
-	title       : 'The Homebrewery',
-	description : 'A NaturalCrit Tool for creating authentic Homebrews using Markdown.',
+	site_name   : 'Ilaris Brauerei - Erstelle Dokumente im Ilaris-Look!',
+	title       : 'Ilaris Brauerei',
+	description : 'Ein Online-Editor für das Erstellen von Abenteuern und Spielhilfen.',
 	image       : `${config.get('publicUrl')}/thumbnail.png`,
 	type        : 'website'
 };

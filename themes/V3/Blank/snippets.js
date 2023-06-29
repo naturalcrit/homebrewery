@@ -43,7 +43,7 @@ module.exports = [
 					}}
 					\n`
 			},
-			{
+			/*{
 				name : 'QR Code',
 				icon : 'fas fa-qrcode',
 				gen  : (brew)=>{
@@ -52,7 +52,7 @@ module.exports = [
 							`https://homebrewery.naturalcrit.com${brew.shareId ? `/share/${brew.shareId}` : ''}` +
 							`&amp;size=100x100) {width:100px;mix-blend-mode:multiply}`;
 				}
-			},
+			},*/
 			{
 				name : 'Link zu URL',
 				icon : 'fas fa-link',
@@ -80,18 +80,18 @@ module.exports = [
 
 	/*********************** IMAGES *******************/
 	{
-		groupName : 'Images',
+		groupName : 'Grafiken',
 		icon      : 'fas fa-images',
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'Image',
+				name : 'Bild',
 				icon : 'fas fa-image',
 				gen  : dedent`
 					![cat warrior](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:325px,mix-blend-mode:multiply}`
 			},
 			{
-				name : 'Background Image',
+				name : 'Hintergrundbild',
 				icon : 'fas fa-tree',
 				gen  : dedent`
 					![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,top:50px,right:30px,width:280px}`
@@ -175,7 +175,7 @@ module.exports = [
 	/*********************  TABLES *********************/
 
 	{
-		groupName : 'Tables',
+		groupName : 'Tabellen',
 		icon      : 'fas fa-table',
 		view      : 'text',
 		snippets  : [
