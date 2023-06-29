@@ -143,12 +143,14 @@ const api = {
 		if(!brew.title) {
 			brew.title = api.getGoodBrewTitle(brew.text);
 		}
-		brew.title = brew.title.trim();
 
 		brew.authors = (account) ? [account.username] : [];
 		brew.text = api.mergeBrewText(brew);
 
 		_.defaults(brew, DEFAULT_BREW);
+
+		brew.title = brew.title.trim();
+		brew.description = brew.description.trim();
 	},
 	newGoogleBrew : async (account, brew, res)=>{
 		const oAuth2Client = GoogleActions.authCheck(account, res);
@@ -214,6 +216,7 @@ const api = {
 		let afterSave = async ()=>true;
 
 		brew.title = brew.title.trim();
+		brew.description = brew.description.trim() || '';
 		brew.text = api.mergeBrewText(brew);
 
 		if(brew.googleId && removeFromGoogle) {
