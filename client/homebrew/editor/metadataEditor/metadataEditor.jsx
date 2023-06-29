@@ -36,8 +36,8 @@ const MetadataEditor = createClass({
 				authors     : [],
 				systems     : [],
 				renderer    : 'legacy',
-				theme       : '5ePHB',
-				lang        : 'en'
+				theme       : 'Ilaris',
+				lang        : 'de'
 			},
 			onChange    : ()=>{},
 			reportError : ()=>{}
@@ -97,7 +97,7 @@ const MetadataEditor = createClass({
 		if(e.target.checked){
 			this.props.metadata.renderer = renderer;
 			if(renderer == 'legacy')
-				this.props.metadata.theme = '5ePHB';
+				this.props.metadata.theme = 'Ilaris';
 		}
 		this.props.onChange(this.props.metadata);
 	},

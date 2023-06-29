@@ -26,7 +26,7 @@ const BrewRenderer = createClass({
 			text     : '',
 			style    : '',
 			renderer : 'legacy',
-			theme    : '5ePHB',
+			theme    : 'Ilaris',
 			lang     : '',
 			errors   : []
 		};
@@ -189,7 +189,7 @@ const BrewRenderer = createClass({
 		//render in iFrame so broken code doesn't crash the site.
 		//Also render dummy page while iframe is mounting.
 		const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
-		const themePath    = this.props.theme ?? '5ePHB';
+		const themePath    = this.props.theme ?? 'Ilaris';
 		const baseThemePath = Themes[rendererPath][themePath].baseTheme;
 		return (
 			<React.Fragment>
