@@ -1,4 +1,5 @@
 @import (less) './themes/fonts/5e/fonts.less';
+@import (less) './themes/fonts/ilaris/fonts.less';
 @import (less) './themes/assets/assets.less';
 
 :root {
@@ -142,11 +143,14 @@ body {
 	// *           HEADERS
 	// *****************************/
 	h1,h2,h3,h4{
-		font-family   : MrEavesRemake;
+		font-family   : Aniron;
 		font-weight   : 800;
 		color         : var(--HB_Color_HeaderText);
 	}
 	h1{
+		text-align:			center;
+		padding-bottom: 25px;
+
 		margin-bottom       : 0.18cm; //Margin-bottom only because this is WIDE
 		column-span         : all;
 		font-size           : 0.89cm;
@@ -172,10 +176,22 @@ body {
 			font-variant : small-caps;
 		}
 	}
+	h1::before {
+		content: url('/assets/ilaris/kapitel-kurz-links-40.png');
+		top: 10px;
+		position: relative;
+		right: 10px
+	}
+	h1::after{
+		content: url('/assets/ilaris/kapitel-kurz-rechts-40.png');
+		top: 10px;
+		position: relative;
+		left: 10px
+	}
 	h2{
 		//margin-top    : 0px; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.05cm;
-		font-size     : 0.75cm;
+		font-size     : 0.50cm;
 		line-height   : 0.988em; //Font is misaligned. Shift up slightly
 	}
 	h3{
