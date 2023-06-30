@@ -1,9 +1,18 @@
 const React = require('react');
 const ReactDOM = require('react-dom');
 const { PATTERNS, FIELD_TYPE } = require('./widget-elements/constants');
+require('./widget-elements/hints/hints.jsx');
 
-module.exports = function(CodeMirror, widgets, cm) {
-	const { cClass, field } = require('./widget-elements')(CodeMirror);
+module.exports = function(CodeMirror, widgets, cm, setHints) {
+	const hintsEl = document.createElement('ul');
+	hintsEl.id = 'hints';
+	hintsEl.role = 'listbox';
+	hintsEl.ariaExpanded = 'true';
+	hintsEl.className = 'CodeMirror-hints default';
+	hintsEl.style = 'display: none;';
+	document.body.append(hintsEl);
+
+	const { cClass, field } = require('./widget-elements')(CodeMirror, setHints);
 	const widgetOptions = widgets.map((widget)=>({
 		name         : widget.name,
 		pattern      : PATTERNS.widget[widget.type](widget.name),
@@ -18,8 +27,7 @@ module.exports = function(CodeMirror, widgets, cm) {
 				return field(cm, n, {
 					name      : style,
 					type      : FIELD_TYPE.STYLE,
-					increment : 5,
-					lineBreak : true
+					increment : 5
 				});
 			}).filter((s)=>!!s);
 
@@ -42,11 +50,11 @@ module.exports = function(CodeMirror, widgets, cm) {
 				widgetOption.createWidget(n, widget.node);
 			}
 		} else {
-			cm.addLineWidget(n, widgetOption.createWidget(n), {
+			return cm.addLineWidget(n, widgetOption.createWidget(n), {
 				above       : false,
 				coverGutter : false,
 				noHScroll   : true,
-				className   : `snippet-options-widget ${widgetOption.name}-widget`
+				className   : `snippet-options-widget ${widgetOption.name}-widget ${widgetOption.name}-widget-${n}`
 			});
 		}
 	};
@@ -59,8 +67,9 @@ module.exports = function(CodeMirror, widgets, cm) {
 		updateAllLineWidgets : ()=>{
 			for (let i = 0; i < cm.lineCount(); i++) {
 				const { widgets } = cm.lineInfo(i);
-				if(!!widgets)
+				if(!!widgets) {
 					updateLineWidgets(i);
+				}
 			}
 		},
 		updateWidgetGutter : ()=>{

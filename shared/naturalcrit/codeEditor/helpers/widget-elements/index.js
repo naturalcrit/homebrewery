@@ -1,12 +1,9 @@
 const React = require('react');
 const _ = require('lodash');
 const Field = require('./field/field.jsx');
-const { PATTERNS } = require('./constants');
+const { PATTERNS, UNITS, HINT_TYPE } = require('./constants');
 
-const makeTempCSSDoc = (CodeMirror, value)=>CodeMirror.Doc(`.selector {
-${value}
-}`, 'text/css');
-
+// See https://codemirror.net/5/addon/hint/css-hint.js for code reference
 const pseudoClasses = { 'active'           : 1, 'after'            : 1, 'before'           : 1, 'checked'          : 1, 'default'          : 1,
 	'disabled'         : 1, 'empty'            : 1, 'enabled'          : 1, 'first-child'      : 1, 'first-letter'     : 1,
 	'first-line'       : 1, 'first-of-type'    : 1, 'focus'            : 1, 'hover'            : 1, 'in-range'         : 1,
@@ -17,15 +14,17 @@ const pseudoClasses = { 'active'           : 1, 'after'            : 1, 'before'
 	'selection'        : 1, 'target'           : 1, 'valid'            : 1, 'visited'          : 1
 };
 
-module.exports = function(CodeMirror) {
+module.exports = function(CodeMirror, setHints) {
 	const spec = CodeMirror.resolveMode('text/css');
 	const headless = CodeMirror(()=>{});
 
+	const makeTempCSSDoc = (value)=>CodeMirror.Doc(`.selector {\n${value}\n}`, 'text/css');
+
 	// See https://codemirror.net/5/addon/hint/css-hint.js for code reference
 	const getStyleHints = (field, value)=>{
-		const tempDoc = makeTempCSSDoc(CodeMirror, `${field.name}:${value?.replaceAll(`'"`, '') ?? ''}`);
+		const tempDoc = makeTempCSSDoc(`${field.name}:${value?.replaceAll(`'"`, '') ?? ''}`);
 		headless.swapDoc(tempDoc);
-		const pos = CodeMirror.Pos(1, field.name.length + 1 + value?.length, false);
+		const pos = CodeMirror.Pos(1, field.name.length + 1 + (value?.length ?? 0), false);
 		const token = headless.getTokenAt(pos);
 		const inner = CodeMirror.innerMode(tempDoc.getMode(), token?.state);
 
@@ -40,7 +39,7 @@ module.exports = function(CodeMirror) {
 			word = ''; start = end = pos.ch;
 		}
 
-		const result = [];
+		let result = [];
 		const add = (keywords)=>{
 			for (const name in keywords)
 				if(!word || name.lastIndexOf(word, 0) === 0)
@@ -59,11 +58,22 @@ module.exports = function(CodeMirror) {
 			add(spec.mediaTypes);
 			add(spec.mediaFeatures);
 		}
+		result = result.map((h)=>({ hint: h, type: HINT_TYPE.VALUE }))
+			.filter((h)=>CSS.supports(field.name, h.hint));
+
+		const numberSuffix = word.slice(-4).replaceAll(/\d/g, '');
+		if(token.type === 'number' && !UNITS.includes(numberSuffix)) {
+			result.push(...UNITS
+				.filter((u)=>u.includes(numberSuffix) && CSS.supports(field.name, `${value.replaceAll(/\D/g, '') ?? ''}${u}`))
+				.map((u)=>({ hint: u, type: HINT_TYPE.NUMBER_SUFFIX }))
+			);
+		}
+
 		return result;
 	};
 
 	return {
-		cClass : (cm, n, prefix, cClass)=>{
+		cClass : function(cm, n, prefix, cClass) {
 			const { text } = cm.lineInfo(n);
 			const id = `${_.kebabCase(prefix.replace('{{', ''))}-${_.kebabCase(cClass)}-${n}`;
 			const frameChange = (e)=>{
@@ -82,11 +92,10 @@ module.exports = function(CodeMirror) {
 				<label htmlFor={id}>{_.startCase(cClass)}</label>
 			</React.Fragment>;
 		},
-		field : (cm, n, field)=>{
+		field : function(cm, n, field) {
 			const { text } = cm.lineInfo(n);
 			const pattern = PATTERNS.field[field.type](field.name);
 			const [_, __, value] = text.match(pattern) ?? [];
-			const hints = getStyleHints(field, value);
 
 			const inputChange = (e)=>{
 				const [_, label, current] = text.match(pattern) ?? [null, field.name, ''];
@@ -101,8 +110,7 @@ module.exports = function(CodeMirror) {
 				cm.replaceRange(value, CodeMirror.Pos(n, index), CodeMirror.Pos(n, index + current.length), '+insert');
 			};
 			return <React.Fragment key={`${field.name}-${n}`}>
-				<Field field={field} value={value} hints={hints} n={n} onChange={inputChange}/>
-				{!!field.lineBreak ? <br/> : null}
+				<Field field={field} value={value} n={n} onChange={inputChange} setHints={(f, h)=>setHints(h, f)} getStyleHints={getStyleHints}/>
 			</React.Fragment>;
 		}
 	};

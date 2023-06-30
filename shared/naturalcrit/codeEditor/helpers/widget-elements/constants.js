@@ -1,5 +1,10 @@
 export const UNITS = ['cm', 'mm', 'in', 'px', 'pt', 'pc', 'em', 'ex', 'ch', 'rem', 'vw', 'vh', 'vmin', 'vmax', '%'];
 
+export const HINT_TYPE = {
+	VALUE         : 0,
+	NUMBER_SUFFIX : 1
+};
+
 export const WIDGET_TYPE = {
 	SNIPPET        : 0,
 	INLINE_SNIPPET : 1,
@@ -17,7 +22,9 @@ export const PATTERNS = {
 		[WIDGET_TYPE.IMAGE]          : ()=>new RegExp(`^\\!\\[(?:[a-zA-Z -]+)?\\]\\(.*\\).*{[a-zA-Z0-9:, "'-]+}$`),
 	},
 	field : {
-		[FIELD_TYPE.STYLE] : (name)=>new RegExp(`[{,;](${name}):((?:"[^},;"]*")|(?:[^},;]*))`),
+		[FIELD_TYPE.STYLE] : (name)=>new RegExp(`[{,;](${name}):("[^},;"]*"|[^},;]*)`),
 	},
-	collectStyles : new RegExp(`(?:[{,;]([a-zA-Z-]+):)+`, 'g'),
+	collectStyles : new RegExp(`(?:([a-zA-Z-]+):)+`, 'g'),
 };
+
+export const NUMBER_PATTERN = new RegExp(`([^-\\d]*)([-\\d]+)(${UNITS.join('|')})?(.*)`);

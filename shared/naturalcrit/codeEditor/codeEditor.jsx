@@ -6,6 +6,7 @@ const _ = require('lodash');
 const cx = require('classnames');
 const closeTag = require('./helpers/close-tag');
 const { WIDGET_TYPE, FIELD_TYPE } = require('./helpers/widget-elements/constants');
+const Hints = require('./helpers/widget-elements/hints/hints.jsx');
 
 let CodeMirror;
 if(typeof navigator !== 'undefined'){
@@ -42,34 +43,11 @@ if(typeof navigator !== 'undefined'){
 	foldCode.registerHomebreweryHelper(CodeMirror);
 }
 
-const themeWidgets = [{
-	name    : 'monster',
-	type    : WIDGET_TYPE.SNIPPET,
-	classes : ['frame', 'wide']
-}, {
-	name    : 'classTable',
-	type    : WIDGET_TYPE.SNIPPET,
-	classes : ['frame', 'decoration', 'wide']
-}, {
-	name   : 'image',
-	type   : WIDGET_TYPE.IMAGE,
-	fields : []
-}, {
-	name   : 'artist',
-	type   : WIDGET_TYPE.SNIPPET,
-	fields : [{
-		name      : 'top',
-		type      : FIELD_TYPE.STYLE,
-		increment : 5,
-		lineBreak : true
-	}]
-}, { // catch all
-	name : '',
-	type : WIDGET_TYPE.SNIPPET
-}];
+const themeWidgets = require('../../../themes/V3/5ePHB/widgets');
 
 const CodeEditor = createClass({
 	displayName     : 'CodeEditor',
+	hintsRef        : React.createRef(),
 	getDefaultProps : function() {
 		return {
 			language      : '',
@@ -77,7 +55,6 @@ const CodeEditor = createClass({
 			wrap          : true,
 			onChange      : ()=>{},
 			enableFolding : true,
-			theme         : null
 		};
 	},
 
@@ -85,7 +62,10 @@ const CodeEditor = createClass({
 		return {
 			docs          : {},
 			widgetUtils   : {},
-			focusedWidget : null
+			widgets       : [],
+			focusedWidget : null,
+			hints         : [],
+			hintsField    : undefined,
 		};
 	},
 
@@ -203,7 +183,12 @@ const CodeEditor = createClass({
 		closeTag.autoCloseCurlyBraces(CodeMirror, this.codeMirror);
 
 		this.setState({
-			widgetUtils : require('./helpers/widgets')(CodeMirror, themeWidgets, this.codeMirror)
+			widgetUtils : require('./helpers/widgets')(CodeMirror, themeWidgets, this.codeMirror, (hints, field)=>{
+				this.setState({
+					hints,
+					hintsField : field
+				});
+			})
 		});
 
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
@@ -222,7 +207,12 @@ const CodeEditor = createClass({
 			if(!!gutterMarkers && !!gutterMarkers['widget-gutter']) {
 				const { widgets } = this.codeMirror.lineInfo(n);
 				if(!widgets) {
-					this.state.widgetUtils.updateLineWidgets(n);
+					const widget = this.state.widgetUtils.updateLineWidgets(n);
+					if(widget) {
+						this.setState({
+							widgets : [...this.state.widgets, widget]
+						});
+					}
 				} else {
 					this.codeMirror.operation(()=>{
 						for (const widget of widgets) {
@@ -463,10 +453,38 @@ const CodeEditor = createClass({
 			}
 		};
 	},
+	handleMouseDown : function(e) {
+		let target = e.target;
+		let found = false;
+		while (target.parentElement) {
+			target = target.parentElement;
+			if(target.classList.contains('CodeMirror-linewidget')) {
+				found = true;
+				break;
+			}
+		}
+		if(!found) {
+			for (const widget of this.state.widgets) {
+				this.state.widgetUtils.removeLineWidgets(widget);
+			}
+			this.setState({
+				widgets : []
+			});
+		}
+	},
+	keyDown : function(e) {
+		if(this.hintsRef.current) {
+			this.hintsRef.current.keyDown(e);
+		}
+	},
 	//----------------------//
 
 	render : function(){
-		return <div className='codeEditor' ref='editor' style={this.props.style}/>;
+		const { hints, hintsField } = this.state;
+		return <React.Fragment>
+			<div className='codeEditor' ref='editor' style={this.props.style} onMouseDown={this.handleMouseDown} onKeyDown={this.keyDown}/>
+			<Hints ref={this.hintsRef} hints={hints} field={hintsField}/>
+		</React.Fragment>;
 	}
 });
 
