@@ -269,7 +269,7 @@ const Editor = createClass({
 					view={this.state.view}
 					value={this.props.brew.text}
 					onChange={this.props.onTextChange}
-					rerenderParent={this.rerenderParent} />
+					rerenderParent={this.rerenderParent}/>
 			</>;
 		}
 		if(this.isStyle()){
