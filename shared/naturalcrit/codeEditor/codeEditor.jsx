@@ -60,12 +60,11 @@ const CodeEditor = createClass({
 
 	getInitialState : function() {
 		return {
-			docs          : {},
-			widgetUtils   : {},
-			widgets       : [],
-			focusedWidget : null,
-			hints         : [],
-			hintsField    : undefined,
+			docs        : {},
+			widgetUtils : {},
+			widgets     : [],
+			hints       : [],
+			hintsField  : undefined,
 		};
 	},
 

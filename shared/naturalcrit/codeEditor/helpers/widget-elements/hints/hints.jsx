@@ -87,8 +87,18 @@ const Hints = createClass({
 				let className = 'CodeMirror-hint';
 				if(activeHint === i) {
 					className += ' CodeMirror-hint-active';
+					return <li key={i}
+						className={className}
+						onMouseDown={(e)=>field.hintSelected(h, e)}
+						ref={this.activeHintRef}>
+						{h.hint}
+					</li>;
 				}
-				return <li key={i} className={className} onMouseDown={(e)=>field.hintSelected(h, e)}>{h.hint}</li>;
+				return <li key={i}
+					className={className}
+					onMouseDown={(e)=>field.hintSelected(h, e)}>
+					{h.hint}
+				</li>;
 			});
 
 		let style = {
@@ -103,7 +113,13 @@ const Hints = createClass({
 			};
 		}
 		return <React.Fragment>
-			<ul role={'listbox'} id={'hints'} aria-expanded={true} className={'CodeMirror-hints default'} style={style} onKeyDown={this.keyDown}>
+			<ul role={'listbox'}
+				id={'hints'}
+				aria-expanded={true}
+				className={'CodeMirror-hints default'}
+				style={style}
+				onKeyDown={this.keyDown}
+				ref={this.hintsRef}>
 				{hintElements}
 			</ul>
 		</React.Fragment>;
