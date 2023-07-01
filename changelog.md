@@ -80,6 +80,16 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Wednesday 28/06/2023 - v3.9.1
+{{taskList
+
+##### G-Ambatte
+
+* [x] Better error pages with more useful information
+
+Fixes issue [#1924](https://github.com/naturalcrit/homebrewery/issues/1924) 
+}}
+
 ### Friday 02/06/2023 - v3.9.0
 {{taskList
 
