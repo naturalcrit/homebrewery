@@ -90,11 +90,11 @@ const HomePage = createClass({
 			</div>
 
 			<div className={cx('floatingSaveButton', { show: this.state.welcomeText != this.state.brew.text })} onClick={this.handleSave}>
-				Save current <i className='fas fa-save' />
+				Jetzt speichern <i className='fas fa-save' />
 			</div>
 
 			<a href='/new' className='floatingNewButton'>
-				Create your own <i className='fas fa-magic' />
+				Brau dein eigenes! <i className='fas fa-magic' />
 			</a>
 		</div>;
 	}

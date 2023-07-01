@@ -180,7 +180,7 @@ module.exports = {
 		return <RecentItems
 			brew={props.brew}
 			storageKey={props.storageKey}
-			text='recently edited'
+			text='Zuletzt editiert'
 			showEdit={true}
 		/>;
 	},
@@ -189,7 +189,7 @@ module.exports = {
 		return <RecentItems
 			brew={props.brew}
 			storageKey={props.storageKey}
-			text='recently viewed'
+			text='Zuletzt angeschaut'
 			showView={true}
 		/>;
 	},
@@ -198,7 +198,7 @@ module.exports = {
 		return <RecentItems
 			brew={props.brew}
 			storageKey={props.storageKey}
-			text='recent brews'
+			text='Letzte Gebräue'
 			showEdit={true}
 			showView={true}
 		/>;

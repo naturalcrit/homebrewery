@@ -29,6 +29,13 @@
       "baseSnippets": false,
       "path": "Blank"
     },
+    "Ilaris": {
+      "name": "Ilaris",
+      "renderer": "V3",
+      "baseTheme": false,
+      "baseSnippets": false,
+      "path": "Ilaris"
+    },
     "Journal": {
       "name": "Journal",
       "renderer": "V3",

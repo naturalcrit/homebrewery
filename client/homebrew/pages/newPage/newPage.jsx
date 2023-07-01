@@ -178,7 +178,7 @@ const NewPage = createClass({
 
 	renderLocalPrintButton : function(){
 		return <Nav.item color='purple' icon='far fa-file-pdf' onClick={this.print}>
-			get PDF
+			PDF speichern
 		</Nav.item>;
 	},
 
