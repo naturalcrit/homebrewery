@@ -127,21 +127,21 @@ const BrewItem = createClass({
 					</div>
 				</> : <></>
 				}
-				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
+				<span title={`Autoren:\n${brew.authors?.join('\n')}`}>
 					<i className='fas fa-user'/> {brew.authors?.join(', ')}
 				</span>
 				<br />
-				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
+				<span title={`Zuletzt angesehen: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
 					<i className='fas fa-eye'/> {brew.views}
 				</span>
 				{brew.pageCount &&
-					<span title={`Page count: ${brew.pageCount}`}>
+					<span title={`Seitenzahl: ${brew.pageCount}`}>
 						<i className='far fa-file' /> {brew.pageCount}
 					</span>
 				}
 				<span title={dedent`
-					Created: ${moment(brew.createdAt).local().format(dateFormatString)}
-					Last updated: ${moment(brew.updatedAt).local().format(dateFormatString)}`}>
+					Erstellt: ${moment(brew.createdAt).local().format(dateFormatString)}
+					Bearbeitet: ${moment(brew.updatedAt).local().format(dateFormatString)}`}>
 					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
 				</span>
 				{/*this.renderGoogleDriveIcon()*/}
