@@ -65,62 +65,44 @@ pre {
 {{wide Updated Oct. 11, 2021}}
 
 
-### The site is down for me! Anyone else?
+### Die Seite ist offline! Nur bei mir?
 
-You can check the site status here: [Everyone or Just Me](https://downforeveryoneorjustme.com/homebrewery.naturalcrit.com)
+Du kannst den Online-Status der Seite hier überprüfen: [Everyone or Just Me](https://downforeveryoneorjustme.com/brauerei.ilaris-online.de)
 
-### How do I log out?
+### Wie melde ich mich an?
 
-Go to https://homebrewery.naturalcrit.com/login, and hit the "*logout*" link.
+Garnicht. Das heißt nicht direkt. Wenn du im selben Browser bei ilaris-online.de angemeldet bist, besteht die Möglichkeit die Links zum bearbeiten und anzeigen deiner Gebräue im Account zu speichern. Die projekte selbst liegen allerdings in einer seperaten Datenkbank und werden nicht auf ilaris online gespeichert. Dir stehen alle Funktionen auch ohne account zur Verfügung, indem du dir den Link zum bearbeiten abspeicherst. Jeder mit diesem Link kann das Gebräu bearbeiten.
 
-### Why am I getting an error when trying to save, and my account is linked to Google?
+### Ich hab ewig an meinem Gebräu gearbeitet und plötzlich ist alles weg!
 
-A sign-in with Google only lasts a year until the authentication expires.  You must go [here](https://www.naturalcrit.com/login), click the *Log-out* button, and then sign back in using your Google account.
-
-### I lost my password, how do I reset it?  How do I change my password?
-
-Homebrewery is specifically designed to not hold personal information as a measure to protect both users and admin, and does not require an email address.  Thus it would be difficult to send a new password to a user.  Reach out to the moderators on [the subreddit](https://www.reddit.com/r/homebrewery) with your Homebrewery username.  
-
-If you have linked your account with a Google account, you would change your password within Google.
-
-### Is there a way to restore a previous version of my brew?
-
-Currently, there is no way to do this through the site yourself. This would take too much of a toll on the amount of storage the homebrewery requires. However, we do have daily backups of our database that we keep for 8 days, and you can contact the moderators on [the subreddit](https://www.reddit.com/r/homebrewery) with your Homebrewery username, the name of the lost brew, and the last known time it was working properly. We can manually look through our backups and restore it if it exists.
-
-### I worked on a brew for X hours, and suddenly all the text disappeared!
-
-This usually happens if you accidentally drag-select all of your text and then start typing which overwrites the selection. Do not panic, and do not refresh the page or reload your brew quite yet as it is probably auto-saved in this state already. Simply press CTRL+Z as many times as needed to undo your last few changes and you will be back to where you were, then make sure to save your brew in the "good" state.
+Das passiert normalerweise wenn du versehentlich alles markiert hast und dann etwas getippt hast. Wenn du autosafe aktiviert hast, lade nicht die Seite neu! Keine Panik. Solange das Textfeld noch offen ist, kann der Browser die letzten eingaben rückgängig machen, wenn du entsprechend oft STR+Z drückst. Wenn es wieder in einem guten Zustand ist speichere es einmal manuell.
 
 \column
 
-### Why is only Chrome supported?
+### Warum ist nur Chrome supported?
 
-Different browsers have differing abilities to handle web styling (or "CSS").  For example, Firefox is not currently capable of handling column breaks well but Chrome has no problem.  Also, each browser has slight differences in how they display pages which can make it a nightmare to compensate for.  These capabilities change over time and we are hopeful that each browser update bridges these gaps and adds more features; until then, we will develop with one browser in mind.
+Verschiedene Browser haben verschiedene Möglichkeiten, für das Layout (CSS). Firefox zumbeispiel, hat Schwierigkeiten mit manuellen Spaltenumbrüchen. Da wir in einem Hobbyprojekt nicht genügend Zeit haben perfekte Lösungen für jeden Browser zu erarbeiten, fokussieren wir uns auf den kostenlosen Chrome Browser. Was nicht heißt, dass die Website in Zukunft nicht auch in anderen modernen Browsern funktionieren kann, wenn sie die entsprchenden Fähigkeiten in den nächsten Updates nachrüsten.
 
-### Both my friend and myself are using Chrome, but the brews still look different.  Why?
+### Warum muss ich manuell Seiten und Spalten umbrechen?
 
-A pixel can be rendered differently depending on the browser, operating system, computer, or screen.  Unless you and your friend have exactly the same setup, it is likely your online brew will have very tiny differences.  However, sometimes a few pixels is all it takes to create *big* differences....for example, an extra pixel can cause a whole line of text or even a monster stat block to run out of space in it's current column and be pushed to the next column or even off the page.  
+Ein Dokument oder Gebräu aus der Ilaris-Brauerei ist letztendlich ein HTML Dokument mit entsprechenden CSS, die das ganze wie ein Textdokument aussehen lassen (A4, Seitenränder, etc.. ). Das erleichtert das Anzeigen und bearbeiten im Browser, hat aber auch zur Folge, dass die Funktionen etwas eingeschränkter sind als die eines Textverarbeitungsprogrammes, das Wörter automatisch auf die passende Seite schreibt. Die manuellen Umbrüche sind unserer Meinung nach aber ein kleiner Preis, für die vielen Vorteile, die die Brauerei bietet.
 
-The best way to avoid this is to leave space at the end of a column equal to one or two lines of text.  Or, create a PDF from your document for sharing--- PDF's are designed to be rendered the same on all devices.
+### Woher bekomme ich Bilder?
 
-### Why do I need to manually create a new page?  Why doesn't text flow between pages?
-
-A Homebrewery document is at it's core an HTML & CSS document, and currently limited by the specs of those technologies.  It is currently not possible to flow content from inside one box ("page") to the inside of another box.  It seems likely that someday CSS will add this capability, and if/when that happens, Homebrewery will adopt it as soon as possible.
-
-### Where do I get images?
-The Homebrewery does not provide images for use besides some page elements and example images for snippets.  You will need to find your own images for use and be sure you are following the appropriate license requirements.  
-
-Once you have an image you would like to use, it is recommended to host it somewhere that won't disappear; commonly, people host their images on [Imgur](https://www.imgur.com).  Create an account and upload your images there, and use the *Direct Link* that is shown when you click into the image from the gallery in your Homebrewery document.
+Wir stellen einige Bilder über ilaris-online.de bereit (TODO: Link/Example), die ausschließlich für nicht-komerzielle Projekte mit Ilaris bezug verwendet werden dürfen (TODO: Details). Du kannst aber eigene Bilder zB auf [Imgur](https://www.imgur.com) hochladen und die url zum Bild dann benutzen um beliebige Bilder in deinem Gebräu anzuzeigen. Bitte achte selbstständig darauf, dass du entsprechende Rechte hast, das Bild zu verwenden.
 
 \page
 
 ### A particular font does not work for my language, what do I do?
-The fonts used were originally created for use with the English language, though revisions since then have added more support for other languages.  They are still not complete sets and may be missing a glyph/character you need.  Unfortunately, the volunteer group as it stands at the time of this writing does not have a font guru, so it would be difficult to add more glyphs (especially complicated glyphs).  Let us know which glyph is missing on the subreddit, but you may need to search [Google Fonts](https://fonts.google.com) for an alternative font if you need something fast.
+TODO: Font issues?
 
-### Whenever I click on the "Get PDF" button, instead of getting a download, it opens Print Preview in another tab.
-Yes, this is by design. In the print preview, select "Save as PDF" as the Destination, and then click "Save". There will be a normal download dialog where you can save your brew as a PDF.
+### PDF Speichern zeigt mir nur den Druck-Dialog an statt es herunterzuladen.
+
+Das ist richtig und beabsichtigt. Wir benutzen diesen Schritt um aus der angezeigten Version (HTML) eine PDF Datei zu erzeugen, die ggf. deutlich mehr Speicherplatz braucht. Im Druckfenster solltest du den Button "Als PDF speichern" finden und kannst dann auswählen wo und unter welchem Namen die fertige Datei auf deinem Computer gespeichert wird. Auf Ilaris-Online wird nur der Quelltext (linke Seite des Editors) gespeichert.
 
 ### The preview window is suddenly gone, I can only see the editor side of the Homebrewery (or the other way around).
+
+TODO: 
 
 1. Press `CTRL`+`SHIFT`+`i` (or right-click and select "Inspect") while in the Homebrewery.
 
@@ -148,5 +130,7 @@ The Homebrewery defaults to creating US Letter page sizes.  If you are printing 
 
 
 ### Typing `#### Adhesion` in the text editor doesn't show the header at all in the completed page?
+
+TODO: 
 
 Your ad-blocking software is mistakenly assuming your text to be an ad. Whitelist homebrewery.naturalcrit.com in your ad-blocking software.

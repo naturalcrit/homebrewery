@@ -24,31 +24,12 @@ const NotificationPopup = createClass({
 		psa : function(){
 			return (
 				<>
-					<li key='psa'>
-						<em>Broken default logo on <b>CoverPage</b> </em> <br />
-						If you have used the Cover Page snippet and notice the Naturalcrit
-						logo is showing as a broken image, this is due to some small tweaks
-						of this BETA feature. To fix the logo in your cover page, rename
-						the image link <b>"/assets/naturalCritLogoRed.svg"</b>. Remember
-						that any snippet marked "BETA" may have a similar change in the
-						future as we encounter any bugs or reworks.
-					</li>
-
-					<li key='googleDriveFolder'>
-						<em>Don't delete your Homebrewery folder on Google Drive!</em> <br />
-						We have had several reports of users losing their brews, not realizing
-						that they had deleted the files on their Google Drive. If you have a Homebrewery folder
-						on your Google Drive with *.txt files inside, <em>do not delete it</em>!
-						We cannot help you recover files that you have deleted from your own
-						Google Drive.
-					</li>
-
 					<li key='faq'>
-						<em>Protect your work! </em> <br />
-						If you opt not to use your Google Drive, keep in mind that we do not save a history of your projects. Please make frequent backups of your brews!&nbsp;
-						<a target='_blank' href='https://www.reddit.com/r/homebrewery/comments/adh6lh/faqs_psas_announcements/'>
-							See the FAQ
-						</a> to learn how to avoid losing your work!
+						<em>Sichere deine Arbeit! </em> <br />
+						Speichere deine Arbeit regelmäßig über den Speichern-Button. 
+						Auch bei uns auf dem Server können fehler passieren, kopiere 
+						bei aufwendigeren Projekten auf jedenfall auch den Rohtext 
+						in eine .txt oder .md Datei auf deinem Computer.&nbsp;
 					</li>
 				</>
 			);
@@ -73,8 +54,8 @@ const NotificationPopup = createClass({
 			<i className='fas fa-times dismiss' onClick={this.dismiss}/>
 			<i className='fas fa-info-circle info' />
 			<div className='header'>
-				<h3>Notice</h3>
-				<small>This website is always improving and we are still adding new features and squashing bugs. Keep the following in mind:</small>
+				<h3>Hinweis</h3>
+				<small>Diese Website befindet sich noch in arbeit, bitte beacht:</small>
 			</div>
 			<ul>{_.values(this.state.notifications)}</ul>
 		</div>;

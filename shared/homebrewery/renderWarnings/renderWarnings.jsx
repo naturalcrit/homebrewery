@@ -26,10 +26,10 @@ const RenderWarnings = createClass({
 			if(!isChrome){
 				return <li key='chrome'>
 					<em>Built for Chrome </em> <br />
-					Other browsers have not been tested for compatiblilty. If you
-					experience issues with your document not rendering or printing
-					properly, please try using the latest version of Chrome before
-					submitting a bug report.
+					Andere Browser werden nicht auf die Verfügbarkeit aller Funktionen getestet.
+					Wenn du Probleme beim Exportieren als PDF oder der Darstellung deiner Gebräue 
+					feststellst, versuche es doch erst einmal mit der neusten Version von Chrome,
+					bevor du einen Fehler meldest.
 				</li>;
 			}
 		},
