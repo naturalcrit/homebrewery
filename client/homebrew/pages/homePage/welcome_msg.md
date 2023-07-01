@@ -12,7 +12,7 @@ Hier kannst du ganz einfach ~Dokumente erstellen~ Gebräue zusammenkochen, die g
 
 {{note
 #### Alles nur Geklaut
-Wir betreiben nur den Ilaris-Fork des eigentlich englishsprachigen auf DnD ausgelegten [Homebrewery Projekts](https://homebrewery.naturalcrit.com). Gelegentlich hohlen wir uns auch einige neue Features, die dort Entwickelt werden. Hier gehts zum [Changelog des Hauptprojekts](https://homebrewery.naturalcrit.com/changelog)
+Wir betreiben nur den Ilaris-Fork des eigentlich englishsprachigen auf DnD ausgelegten [Homebrewery Projekts](https://homebrewery.naturalcrit.com). Gelegentlich hohlen wir uns auch einige neue Features, die dort entwickelt werden. Hier gehts zum [Changelog des Hauptprojekts](https://homebrewery.naturalcrit.com/changelog)
 
 }}
 
