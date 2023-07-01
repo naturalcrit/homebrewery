@@ -35,6 +35,13 @@
       "baseTheme": false,
       "baseSnippets": "5ePHB",
       "path": "Journal"
+    },
+    "LEO": {
+      "name": "LEO",
+      "renderer": "V3",
+      "baseTheme": false,
+      "baseSnippets": "Blank",
+      "path": "LEO"
     }
   }
 }
