@@ -36,9 +36,6 @@ const RecentItems = createClass({
 		//== Add current brew to appropriate recent items list (depending on storageKey) ==//
 		if(this.props.storageKey == 'edit'){
 			let editId = this.props.brew.editId;
-			if(this.props.brew.googleId){
-				editId = `${this.props.brew.googleId}${this.props.brew.editId}`;
-			}
 			edited = _.filter(edited, (brew)=>{
 				return brew.id !== editId;
 			});
@@ -51,9 +48,6 @@ const RecentItems = createClass({
 		}
 		if(this.props.storageKey == 'view'){
 			let shareId = this.props.brew.shareId;
-			if(this.props.brew.googleId){
-				shareId = `${this.props.brew.googleId}${this.props.brew.shareId}`;
-			}
 			viewed = _.filter(viewed, (brew)=>{
 				return brew.id !== shareId;
 			});
@@ -83,17 +77,11 @@ const RecentItems = createClass({
 	 		let edited = JSON.parse(localStorage.getItem(EDIT_KEY) || '[]');
 			if(this.props.storageKey == 'edit') {
 				let prevEditId = prevProps.brew.editId;
-				if(prevProps.brew.googleId){
-					prevEditId = `${prevProps.brew.googleId}${prevProps.brew.editId}`;
-				}
 
 				edited = _.filter(this.state.edit, (brew)=>{
 					return brew.id !== prevEditId;
 				});
 				let editId = this.props.brew.editId;
-				if(this.props.brew.googleId){
-					editId = `${this.props.brew.googleId}${this.props.brew.editId}`;
-				}
 				edited.unshift({
 					id    : editId,
 					title : this.props.brew.title,
@@ -146,7 +134,7 @@ const RecentItems = createClass({
 				return <a href={brew.url} className='item' key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
 					<span className='title'>{brew.title || '[ no title ]'}</span>
 					<span className='time'>{Moment(brew.ts).fromNow()}</span>
-					<div className='clear' title='Remove from Recents' onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></div>
+					<div className='clear' title='Aus zuletzt löschen' onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></div>
 				</a>;
 			});
 		};

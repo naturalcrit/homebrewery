@@ -39,7 +39,6 @@ const NewPage = createClass({
 		return {
 			brew       : brew,
 			isSaving   : false,
-			saveGoogle : (global.account && global.account.googleId ? true : false),
 			error      : null,
 			htmlErrors : Markdown.validate(brew.text)
 		};
@@ -145,7 +144,7 @@ const NewPage = createClass({
 		brew.pageCount=((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
 
 		const res = await request
-			.post(`/api${this.state.saveGoogle ? '?saveToGoogle=true' : ''}`)
+			.post('/api')
 			.send(brew)
 			.catch((err)=>{
 				console.log(err);

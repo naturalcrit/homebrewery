@@ -42,9 +42,7 @@ const SharePage = createClass({
 	},
 
 	processShareId : function() {
-		return this.props.brew.googleId && !this.props.brew.stubbed ?
-					 this.props.brew.googleId + this.props.brew.shareId :
-					 this.props.brew.shareId;
+		return this.props.brew.shareId;
 	},
 
 	render : function(){

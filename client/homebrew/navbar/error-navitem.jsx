@@ -49,27 +49,6 @@ const ErrorNavItem = createClass({
 			</Nav.item>;
 		}
 
-		if(response.req.url.match(/^\/api.*Google.*$/m)){
-			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-				Oops!
-				<div className='errorContainer' onClick={clearError}>
-					Looks like your Google credentials have
-					expired! Visit our log in page to sign out
-					and sign back in with Google,
-					then try saving again!
-					<a target='_blank' rel='noopener noreferrer'
-						href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
-						<div className='confirm'>
-							Sign In
-						</div>
-					</a>
-					<div className='deny'>
-						Not Now
-					</div>
-				</div>
-			</Nav.item>;
-		}
-
 		return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 			Oops!
 			<div className='errorContainer'>

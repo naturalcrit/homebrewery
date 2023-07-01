@@ -10,7 +10,6 @@ const app = express();
 const config = require('./config.js');
 
 const { homebrewApi, getBrew } = require('./homebrew.api.js');
-const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
@@ -53,15 +52,8 @@ app.use((req, res, next)=>{
 	if(req.cookies && req.cookies.nc_session){
 		try {
 			req.account = jwt.decode(req.cookies.nc_session, config.get('secret'));
-			//console.log("Just loaded up JWT from cookie:");
-			//console.log(req.account);
 		} catch (e){}
 	}
-
-	req.config = {
-		google_client_id     : config.get('google_client_id'),
-		google_client_secret : config.get('google_client_secret')
-	};
 	return next();
 });
 
@@ -70,8 +62,6 @@ app.use(require('./admin.api.js'));
 
 const HomebrewModel     = require('./homebrew.model.js').model;
 const welcomeText       = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
-const welcomeTextLegacy = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
-const migrateText       = require('fs').readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
 const changelogText     = require('fs').readFileSync('changelog.md', 'utf8');
 const faqText           = require('fs').readFileSync('faq.md', 'utf8');
 
@@ -219,7 +209,7 @@ app.get('/user/:username', async (req, res, next)=>{
 	};
 
 	const fields = [
-		'googleId',
+		'googleId',  // TODO: can this be removed?
 		'title',
 		'pageCount',
 		'description',
@@ -240,31 +230,6 @@ app.get('/user/:username', async (req, res, next)=>{
 	.catch((err)=>{
 		console.log(err);
 	});
-
-	if(ownAccount && req?.account?.googleId){
-		const auth = await GoogleActions.authCheck(req.account, res);
-		let googleBrews = await GoogleActions.listGoogleBrews(auth)
-			.catch((err)=>{
-				console.error(err);
-			});
-
-		if(googleBrews && googleBrews.length > 0) {
-			for (const brew of brews.filter((brew)=>brew.googleId)) {
-				const match = googleBrews.findIndex((b)=>b.editId === brew.editId);
-				if(match !== -1) {
-					brew.googleId = googleBrews[match].googleId;
-					brew.stubbed = true;
-					brew.pageCount = googleBrews[match].pageCount;
-					brew.renderer = googleBrews[match].renderer;
-					brew.version = googleBrews[match].version;
-					googleBrews.splice(match, 1);
-				}
-			}
-
-			googleBrews = googleBrews.map((brew)=>({ ...brew, authors: [req.account.username] }));
-			brews = _.concat(brews, googleBrews);
-		}
-	}
 
 	req.brews = _.map(brews, (brew)=>{
 		return sanitizeBrew(brew, ownAccount ? 'edit' : 'share');
@@ -323,14 +288,7 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 		type        : 'article'
 	};
 
-	if(req.params.id.length > 12 && !brew._id) {
-		const googleId = req.params.id.slice(0, -12);
-		const shareId = req.params.id.slice(-12);
-		await GoogleActions.increaseView(googleId, shareId, 'share', brew)
-			.catch((err)=>{next(err);});
-	} else {
-		await HomebrewModel.increaseView({ shareId: brew.shareId });
-	}
+	await HomebrewModel.increaseView({ shareId: brew.shareId });
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	return next();
@@ -349,28 +307,8 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 	data.title = 'Account Information Page';
 
 	let auth;
-	let googleCount = [];
 	if(req.account) {
-		if(req.account.googleId) {
-			try {
-				auth = await GoogleActions.authCheck(req.account, res, false);
-			} catch (e) {
-				auth = undefined;
-				console.log('Google auth check failed!');
-				console.log(e);
-			}
-			if(auth.credentials.access_token) {
-				try {
-					googleCount = await GoogleActions.listGoogleBrews(auth);
-				} catch (e) {
-					googleCount = undefined;
-					console.log('List Google files failed!');
-					console.log(e);
-				}
-			}
-		}
-
-		const query = { authors: req.account.username, googleId: { $exists: false } };
+		const query = { authors: req.account.username };
 		const mongoCount = await HomebrewModel.countDocuments(query)
 			.catch((err)=>{
 				mongoCount = 0;
@@ -380,10 +318,8 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 		data.uiItems = {
 			username    : req.account.username,
 			issued      : req.account.issued,
-			googleId    : Boolean(req.account.googleId),
-			authCheck   : Boolean(req.account.googleId && auth.credentials.access_token),
+			authCheck   : Boolean(auth.credentials.access_token),
 			mongoCount  : mongoCount,
-			googleCount : googleCount?.length
 		};
 	}
 
@@ -425,7 +361,6 @@ const renderPage = async (req, res)=>{
 		url           : req.customUrl || req.originalUrl,
 		brew          : req.brew,
 		brews         : req.brews,
-		googleBrews   : req.googleBrews,
 		account       : req.account,
 		enable_v3     : config.get('enable_v3'),
 		enable_themes : config.get('enable_themes'),

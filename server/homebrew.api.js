@@ -3,7 +3,6 @@ const _ = require('lodash');
 const HomebrewModel = require('./homebrew.model.js').model;
 const router = require('express').Router();
 const zlib = require('zlib');
-const GoogleActions = require('./googleActions.js');
 const Markdown = require('../shared/naturalcrit/markdown.js');
 const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
@@ -22,52 +21,22 @@ const MAX_TITLE_LENGTH = 100;
 const api = {
 	homebrewApi : router,
 	getId       : (req)=>{
-		// Set the id and initial potential google id, where the google id is present on the existing brew.
-		let id = req.params.id, googleId = req.body?.googleId;
-
-		// If the id is longer than 12, then it's a google id + the edit id. This splits the longer id up.
-		if(id.length > 12) {
-			googleId = id.slice(0, -12);
-			id = id.slice(-12);
-		}
-		return { id, googleId };
+		let id = req.params.id;
+		return {id: id};
 	},
 	getBrew : (accessType, stubOnly = false)=>{
 		// Create middleware with the accessType passed in as part of the scope
 		return async (req, res, next)=>{
 			// Get relevant IDs for the brew
-			const { id, googleId } = api.getId(req);
+			const { id } = api.getId(req);
 
 			// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine.
 			let stub = await HomebrewModel.get(accessType === 'edit' ? { editId: id } : { shareId: id })
 				.catch((err)=>{
-					if(googleId) {
-						console.warn(`Unable to find document stub for ${accessType}Id ${id}`);
-					} else {
-						console.warn(err);
-					}
+					console.warn(err);
 				});
 			stub = stub?.toObject();
 
-			// If there is a google id, try to find the google brew
-			if(!stubOnly && (googleId || stub?.googleId)) {
-				let googleError;
-				const googleBrew = await GoogleActions.getGoogleBrew(googleId || stub?.googleId, id, accessType)
-					.catch((err)=>{
-						googleError = err;
-					});
-				// Throw any error caught while attempting to retrieve Google brew.
-				if(googleError) {
-					const reason = googleError.errors?.[0].reason;
-					if(reason == 'notFound') {
-						throw { ...googleError, HBErrorCode: '02', authors: stub?.authors, account: req.account?.username };
-					} else {
-						throw { ...googleError, HBErrorCode: '01' };
-					}
-				}
-				// Combine the Homebrewery stub with the google brew, or if the stub doesn't exist just use the google brew
-				stub = stub ? _.assign({ ...api.excludeStubProps(stub), stubbed: true }, api.excludeGoogleProps(googleBrew)) : googleBrew;
-			}
 			const authorsExist = stub?.authors?.length > 0;
 			const isAuthor = stub?.authors?.includes(req.account?.username);
 			const isInvited = stub?.invitedAuthors?.includes(req.account?.username);
@@ -149,20 +118,13 @@ const api = {
 
 		_.defaults(brew, DEFAULT_BREW);
 	},
-	newGoogleBrew : async (account, brew, res)=>{
-		const oAuth2Client = GoogleActions.authCheck(account, res);
-
-		const newBrew = api.excludeGoogleProps(brew);
-
-		return await GoogleActions.newGoogleBrew(oAuth2Client, newBrew);
-	},
 	newBrew : async (req, res)=>{
 		const brew = req.body;
-		const { saveToGoogle } = req.query;
+		// const { saveToGoogle } = req.query;
 
 		delete brew.editId;
 		delete brew.shareId;
-		delete brew.googleId;
+		// delete brew.googleId;
 
 		api.beforeNewSave(req.account, brew);
 
@@ -170,22 +132,12 @@ const api = {
 		newHomebrew.editId = nanoid(12);
 		newHomebrew.shareId = nanoid(12);
 
-		let googleId, saved;
-		if(saveToGoogle) {
-			googleId = await api.newGoogleBrew(req.account, newHomebrew, res)
-				.catch((err)=>{
-					console.error(err);
-					res.status(err?.status || err?.response?.status || 500).send(err?.message || err);
-				});
-			if(!googleId) return;
-			api.excludeStubProps(newHomebrew);
-			newHomebrew.googleId = googleId;
-		} else {
-			// Compress brew text to binary before saving
-			newHomebrew.textBin = zlib.deflateRawSync(newHomebrew.text);
-			// Delete the non-binary text field since it's not needed anymore
-			newHomebrew.text = undefined;
-		}
+		let saved;
+
+		// Compress brew text to binary before saving
+		newHomebrew.textBin = zlib.deflateRawSync(newHomebrew.text);
+		// Delete the non-binary text field since it's not needed anymore
+		newHomebrew.text = undefined;
 
 		saved = await newHomebrew.save()
 			.catch((err)=>{
@@ -208,50 +160,16 @@ const api = {
 		}
 
 		let brew = _.assign(brewFromServer, brewFromClient);
-		const googleId = brew.googleId;
-		const { saveToGoogle, removeFromGoogle } = req.query;
+		// const { saveToGoogle, removeFromGoogle } = req.query;
 		let afterSave = async ()=>true;
 
 		brew.text = api.mergeBrewText(brew);
 
-		if(brew.googleId && removeFromGoogle) {
-			// If the google id exists and we're removing it from google, set afterSave to delete the google brew and mark the brew's google id as undefined
-			afterSave = async ()=>{
-				return await api.deleteGoogleBrew(req.account, googleId, brew.editId, res)
-					.catch((err)=>{
-						console.error(err);
-						res.status(err?.status || err?.response?.status || 500).send(err.message || err);
-					});
-			};
-
-			brew.googleId = undefined;
-		} else if(!brew.googleId && saveToGoogle) {
-			// If we don't have a google id and the user wants to save to google, create the google brew and set the google id on the brew
-			brew.googleId = await api.newGoogleBrew(req.account, api.excludeGoogleProps(brew), res)
-				.catch((err)=>{
-					console.error(err);
-					res.status(err.status || err.response.status).send(err.message || err);
-				});
-			if(!brew.googleId) return;
-		} else if(brew.googleId) {
-			// If the google id exists and no other actions are being performed, update the google brew
-			const updated = await GoogleActions.updateGoogleBrew(api.excludeGoogleProps(brew))
-				.catch((err)=>{
-					console.error(err);
-					res.status(err?.response?.status || 500).send(err);
-				});
-			if(!updated) return;
-		}
-
-		if(brew.googleId) {
-			// If the google id exists after all those actions, exclude the props that are stored in google and aren't needed for rendering the brew items
-			api.excludeStubProps(brew);
-		} else {
-			// Compress brew text to binary before saving
-			brew.textBin = zlib.deflateRawSync(brew.text);
-			// Delete the non-binary text field since it's not needed anymore
-			brew.text = undefined;
-		}
+		// Compress brew text to binary before saving
+		brew.textBin = zlib.deflateRawSync(brew.text);
+		// Delete the non-binary text field since it's not needed anymore
+		brew.text = undefined;
+		
 		brew.updatedAt = new Date();
 		brew.version = (brew.version || 1) + 1;
 
@@ -282,31 +200,20 @@ const api = {
 
 		res.status(200).send(saved);
 	},
-	deleteGoogleBrew : async (account, id, editId, res)=>{
-		const auth = await GoogleActions.authCheck(account, res);
-		await GoogleActions.deleteGoogleBrew(auth, id, editId);
-		return true;
-	},
 	deleteBrew : async (req, res, next)=>{
 		// Delete an orphaned stub if its Google brew doesn't exist
 		try {
 			await api.getBrew('edit')(req, res, ()=>{});
 		} catch (err) {
 			// Only if the error code is HBErrorCode '02', that is, Google returned "404 - Not Found"
-			if(err.HBErrorCode == '02') {
-				const { id, googleId } = api.getId(req);
-				console.warn(`No google brew found for id ${googleId}, the stub with id ${id} will be deleted.`);
-				await HomebrewModel.deleteOne({ editId: id });
-				return next();
-			}
+			console.log(err);
+			// TODO: is this relevant without google stuff?
 		}
 
 		let brew = req.brew;
-		const { googleId, editId } = brew;
+		const { editId } = brew;
 		const account = req.account;
 		const isOwner = account && (brew.authors.length === 0 || brew.authors[0] === account.username);
-		// If the user is the owner and the file is saved to google, mark the google brew for deletion
-		const shouldDeleteGoogleBrew = googleId && isOwner;
 
 		if(brew._id) {
 			brew = _.assign(await HomebrewModel.findOne({ _id: brew._id }), brew);
@@ -323,12 +230,6 @@ const api = {
 						throw { name: 'BrewDelete Error', message: 'Error while removing', status: 500, HBErrorCode: '07', brewId: brew._id };
 					});
 			} else {
-				if(shouldDeleteGoogleBrew) {
-					// When there are still authors remaining, we delete the google brew but store the full brew in the Homebrewery database
-					brew.googleId = undefined;
-					brew.textBin = zlib.deflateRawSync(brew.text);
-					brew.text = undefined;
-				}
 				brew.markModified('authors'); //Mongo will not properly update arrays without markModified()
 				await brew.save()
 					.catch((err)=>{
@@ -336,15 +237,6 @@ const api = {
 					});
 			}
 		}
-		if(shouldDeleteGoogleBrew) {
-			const deleted = await api.deleteGoogleBrew(account, googleId, editId, res)
-				.catch((err)=>{
-					console.error(err);
-					res.status(500).send(err);
-				});
-			if(!deleted) return;
-		}
-
 		res.status(204).send();
 	}
 };

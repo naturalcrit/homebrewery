@@ -24,7 +24,6 @@ const Markdown = require('naturalcrit/markdown.js');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
 
-const googleDriveIcon = require('../../googleDrive.svg');
 
 const SAVE_TIMEOUT = 3000;
 
@@ -41,10 +40,7 @@ const EditPage = createClass({
 			brew                   : this.props.brew,
 			isSaving               : false,
 			isPending              : false,
-			alertTrashedGoogleBrew : this.props.brew.trashed,
 			alertLoginToTransfer   : false,
-			saveGoogle             : this.props.brew.googleId ? true : false,
-			confirmGoogleTransfer  : false,
 			error                  : null,
 			htmlErrors             : Markdown.validate(this.props.brew.text),
 			url                    : '',
@@ -146,38 +142,13 @@ const EditPage = createClass({
 		}
 	},
 
-	handleGoogleClick : function(){
-		if(!global.account?.googleId) {
-			this.setState({
-				alertLoginToTransfer : true
-			});
-			return;
-		}
-		this.setState((prevState)=>({
-			confirmGoogleTransfer : !prevState.confirmGoogleTransfer
-		}));
-		this.setState({
-			error    : null,
-			isSaving : false
-		});
-	},
-
 	closeAlerts : function(event){
 		event.stopPropagation();	//Only handle click once so alert doesn't reopen
 		this.setState({
-			alertTrashedGoogleBrew : false,
 			alertLoginToTransfer   : false,
-			confirmGoogleTransfer  : false
 		});
 	},
 
-	toggleGoogleStorage : function(){
-		this.setState((prevState)=>({
-			saveGoogle : !prevState.saveGoogle,
-			isSaving   : false,
-			error      : null
-		}), ()=>this.save());
-	},
 
 	save : async function(){
 		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
@@ -188,12 +159,10 @@ const EditPage = createClass({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
-		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
-
 		const brew = this.state.brew;
 		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
 
-		const params = `${transfer ? `?${this.state.saveGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : ''}`;
+		const params = '';
 		const res = await request
 			.put(`/api/update/${brew.editId}${params}`)
 			.send(brew)
@@ -208,7 +177,6 @@ const EditPage = createClass({
 
 		this.setState((prevState)=>({
 			brew : { ...prevState.brew,
-				googleId : this.savedBrew.googleId ? this.savedBrew.googleId : null,
 				editId 	 : this.savedBrew.editId,
 				shareId  : this.savedBrew.shareId,
 				version  : this.savedBrew.version
@@ -219,52 +187,6 @@ const EditPage = createClass({
 		}));
 	},
 
-	renderGoogleDriveIcon : function(){
-		return <Nav.item className='googleDriveStorage' onClick={this.handleGoogleClick}>
-			<img src={googleDriveIcon} className={this.state.saveGoogle ? '' : 'inactive'} alt='Google Drive icon'/>
-
-			{this.state.confirmGoogleTransfer &&
-				<div className='errorContainer' onClick={this.closeAlerts}>
-					{ this.state.saveGoogle
-						?	`Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?`
-						: `Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?`
-					}
-					<br />
-					<div className='confirm' onClick={this.toggleGoogleStorage}>
-						Yes
-					</div>
-					<div className='deny'>
-						No
-					</div>
-				</div>
-			}
-
-			{this.state.alertLoginToTransfer &&
-				<div className='errorContainer' onClick={this.closeAlerts}>
-					You must be signed in to a Google account to transfer
-					between the homebrewery and Google Drive!
-					<a target='_blank' rel='noopener noreferrer'
-						href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
-						<div className='confirm'>
-							Sign In
-						</div>
-					</a>
-					<div className='deny'>
-						Not Now
-					</div>
-				</div>
-			}
-
-			{this.state.alertTrashedGoogleBrew &&
-				<div className='errorContainer' onClick={this.closeAlerts}>
-				This brew is currently in your Trash folder on Google Drive!<br />If you want to keep it, make sure to move it before it is deleted permanently!<br />
-					<div className='confirm'>
-						OK
-					</div>
-				</div>
-			}
-		</Nav.item>;
-	},
 
 	renderSaveButton : function(){
 		if(this.state.autoSaveWarning && this.hasChanges()){
@@ -323,9 +245,7 @@ const EditPage = createClass({
 	},
 
 	processShareId : function() {
-		return this.state.brew.googleId && !this.state.brew.stubbed ?
-					 this.state.brew.googleId + this.state.brew.shareId :
-					 this.state.brew.shareId;
+		return this.state.brew.shareId;
 	},
 
 	getRedditLink : function(){
@@ -337,7 +257,7 @@ const EditPage = createClass({
 
 **[Brauerei Link](${global.config.publicUrl}/share/${shareLink})**`;
 
-		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
+		return `https://www.reddit.com/r/Ilaris/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
 	},
 
 	renderNavbar : function(){
@@ -349,7 +269,6 @@ const EditPage = createClass({
 			</Nav.section>
 
 			<Nav.section>
-				{/*this.renderGoogleDriveIcon()*/}
 				{this.state.error ?
 					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
 					<Nav.dropdown className='save-menu'>
