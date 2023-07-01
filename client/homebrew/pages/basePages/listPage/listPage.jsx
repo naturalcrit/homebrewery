@@ -220,7 +220,7 @@ const ListPage = createClass({
 	render : function(){
 		return <div className='listPage sitePage'>
 			{/*<style>@layer V3_5ePHB, bundle;</style>*/}
-			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet'/>
+			<link href='/themes/V3/Ilaris/style.css' rel='stylesheet'/>
 			{this.props.navItems}
 			{this.renderSortOptions()}
 

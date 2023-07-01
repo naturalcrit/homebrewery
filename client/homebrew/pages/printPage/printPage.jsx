@@ -32,7 +32,7 @@ const PrintPage = createClass({
 				text     : this.props.brew.text     || '',
 				style    : this.props.brew.style    || undefined,
 				renderer : this.props.brew.renderer || 'legacy',
-				theme    : this.props.brew.theme    || '5ePHB'
+				theme    : this.props.brew.theme    || 'Ilaris'
 			}
 		};
 	},
@@ -49,7 +49,7 @@ const PrintPage = createClass({
 						text     : brewStorage,
 						style    : styleStorage,
 						renderer : metaStorage?.renderer || 'legacy',
-						theme    : metaStorage?.theme    || '5ePHB'
+						theme    : metaStorage?.theme    || 'Ilaris'
 					}
 				};
 			});
@@ -88,7 +88,7 @@ const PrintPage = createClass({
 
 	render : function(){
 		const rendererPath = this.state.brew.renderer == 'V3' ? 'V3' : 'Legacy';
-		const themePath    = this.state.brew.theme ?? '5ePHB';
+		const themePath    = this.state.brew.theme ?? 'Ilaris';
 		const baseThemePath = Themes[rendererPath][themePath].baseTheme;
 
 		return <div>

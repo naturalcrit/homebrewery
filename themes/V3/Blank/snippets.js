@@ -12,27 +12,27 @@ module.exports = [
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'Column Break',
+				name : 'Spalten-Umbruch',
 				icon : 'fas fa-columns',
 				gen  : '\n\\column\n'
 			},
 			{
-				name : 'New Page',
+				name : 'Neue Seite',
 				icon : 'fas fa-file-alt',
 				gen  : '\n\\page\n'
 			},
 			{
-				name : 'Vertical Spacing',
+				name : 'Vertikaler Abstand',
 				icon : 'fas fa-arrows-alt-v',
 				gen  : '\n::::\n'
 			},
 			{
-				name : 'Horizontal Spacing',
+				name : 'Horizontaler Abstand',
 				icon : 'fas fa-arrows-alt-h',
 				gen  : ' {{width:100px}} '
 			},
 			{
-				name : 'Wide Block',
+				name : 'Breiter Block',
 				icon : 'fas fa-window-maximize',
 				gen  : dedent`\n
 					{{wide
@@ -43,7 +43,7 @@ module.exports = [
 					}}
 					\n`
 			},
-			{
+			/*{
 				name : 'QR Code',
 				icon : 'fas fa-qrcode',
 				gen  : (brew)=>{
@@ -52,14 +52,14 @@ module.exports = [
 							`https://homebrewery.naturalcrit.com${brew.shareId ? `/share/${brew.shareId}` : ''}` +
 							`&amp;size=100x100) {width:100px;mix-blend-mode:multiply}`;
 				}
-			},
+			},*/
 			{
-				name : 'Link to page',
+				name : 'Link zu URL',
 				icon : 'fas fa-link',
 				gen  : '[Click here](#p3) to go to page 3\n'
 			},
 			{
-				name : 'Add Comment',
+				name : 'Kommentar hinzufügen',
 				icon : 'fas fa-code',
 				gen  : '<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->'
 			},
@@ -71,7 +71,7 @@ module.exports = [
 		view      : 'style',
 		snippets  : [
 			{
-				name : 'Add Comment',
+				name : 'Kommentar hinzufügen',
 				icon : 'fas fa-code',
 				gen  : '/* This is a comment that will not be rendered into your brew. */'
 			},
@@ -80,18 +80,18 @@ module.exports = [
 
 	/*********************** IMAGES *******************/
 	{
-		groupName : 'Images',
+		groupName : 'Grafiken',
 		icon      : 'fas fa-images',
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'Image',
+				name : 'Bild',
 				icon : 'fas fa-image',
 				gen  : dedent`
 					![cat warrior](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:325px,mix-blend-mode:multiply}`
 			},
 			{
-				name : 'Background Image',
+				name : 'Hintergrundbild',
 				icon : 'fas fa-tree',
 				gen  : dedent`
 					![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,top:50px,right:30px,width:280px}`
@@ -175,7 +175,7 @@ module.exports = [
 	/*********************  TABLES *********************/
 
 	{
-		groupName : 'Tables',
+		groupName : 'Tabellen',
 		icon      : 'fas fa-table',
 		view      : 'text',
 		snippets  : [

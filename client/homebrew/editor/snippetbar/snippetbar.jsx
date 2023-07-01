@@ -12,6 +12,7 @@ const ThemeSnippets = {};
 ThemeSnippets['Legacy_5ePHB'] = require('themes/Legacy/5ePHB/snippets.js');
 ThemeSnippets['V3_5ePHB']     = require('themes/V3/5ePHB/snippets.js');
 ThemeSnippets['V3_5eDMG']     = require('themes/V3/5eDMG/snippets.js');
+ThemeSnippets['V3_Ilaris']   = require('themes/V3/Ilaris/snippets.js');
 ThemeSnippets['V3_Journal']   = require('themes/V3/Journal/snippets.js');
 ThemeSnippets['V3_Blank']     = require('themes/V3/Blank/snippets.js');
 
@@ -46,7 +47,7 @@ const Snippetbar = createClass({
 
 	componentDidMount : async function() {
 		const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
-		const themePath    = this.props.theme ?? '5ePHB';
+		const themePath    = this.props.theme ?? 'Ilaris';
 		let snippets = _.cloneDeep(ThemeSnippets[`${rendererPath}_${themePath}`]);
 		snippets = this.compileSnippets(rendererPath, themePath, snippets);
 		this.setState({
@@ -57,7 +58,7 @@ const Snippetbar = createClass({
 	componentDidUpdate : async function(prevProps) {
 		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme) {
 			const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
-			const themePath    = this.props.theme ?? '5ePHB';
+			const themePath    = this.props.theme ?? 'Ilaris';
 			let snippets = _.cloneDeep(ThemeSnippets[`${rendererPath}_${themePath}`]);
 			snippets = this.compileSnippets(rendererPath, themePath, snippets);
 			this.setState({

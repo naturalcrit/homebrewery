@@ -78,9 +78,9 @@ const faqText           = require('fs').readFileSync('faq.md', 'utf8');
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
 const defaultMetaTags = {
-	site_name   : 'The Homebrewery - Make your Homebrew content look legit!',
-	title       : 'The Homebrewery',
-	description : 'A NaturalCrit Tool for creating authentic Homebrews using Markdown.',
+	site_name   : 'Ilaris Brauerei - Erstelle Dokumente im Ilaris-Look!',
+	title       : 'Ilaris Brauerei',
+	description : 'Ein Online-Editor für das Erstellen von Abenteuern und Spielhilfen.',
 	image       : `${config.get('publicUrl')}/thumbnail.png`,
 	type        : 'website'
 };
@@ -305,8 +305,8 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	req.brew = _.defaults(brew, DEFAULT_BREW);
 
 	req.ogMeta = { ...defaultMetaTags,
-		title       : 'New',
-		description : 'Start crafting your homebrew on the Homebrewery!'
+		title       : 'Neu',
+		description : 'Köchel dir ein neues Gebräu zusammen!'
 	};
 
 	return next();
@@ -317,8 +317,8 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 	const { brew } = req;
 
 	req.ogMeta = { ...defaultMetaTags,
-		title       : req.brew.title || 'Untitled Brew',
-		description : req.brew.description || 'No description.',
+		title       : req.brew.title || 'Unbenanntes Gebräu',
+		description : req.brew.description || 'Keine Beschreibung',
 		image       : req.brew.thumbnail || defaultMetaTags.image,
 		type        : 'article'
 	};
@@ -490,7 +490,7 @@ app.use(async (err, req, res, next)=>{
 app.use((req, res)=>{
 	if(!res.headersSent) {
 		console.error('Headers have not been sent, responding with a server error.', req.url);
-		res.status(500).send('An error occurred and the server did not send a response. The error has been logged, please note the time this occurred and report this issue.');
+		res.status(500).send('Es ist ein Fehler aufgetreten. Der Server antwortet nicht. Wenn der Fehler erneut auftritt kontaktiere einen Entwickler.');
 	}
 });
 //^=====--------------------------------------=====^//

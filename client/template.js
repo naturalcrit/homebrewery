@@ -17,7 +17,7 @@ const template = async function(name, title='', props = {}){
 			<link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
 			${ogMetaTags}
 			<meta name="twitter:card" content="summary">
-			<title>${title.length ? `${title} - The Homebrewery`: 'The Homebrewery - NaturalCrit'}</title>
+			<title>${title.length ? `${title} - Ilaris Brauerei`: 'Ilaris Brauerei - Online-Editor'}</title>
 		</head>
 		<body>
 			<main id="reactRoot">${require(`../build/${name}/ssr.js`)(props)}</main>

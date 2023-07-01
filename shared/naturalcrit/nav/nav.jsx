@@ -18,10 +18,10 @@ const Nav = {
 		}
 	}),
 	logo : function(){
-		return <a className='navLogo' href='https://www.naturalcrit.com'>
-			<NaturalCritIcon />
+		return <a className='navLogo' href='https://ilaris-online.de/'>
+			{/*<NaturalCritIcon />*/}
 			<span className='name'>
-				Natural<span className='crit'>Crit</span>
+				<span className='crit'>Ilaris</span>Online
 			</span>
 		</a>;
 	},
