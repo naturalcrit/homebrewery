@@ -141,6 +141,6 @@ if(isDev){
 	watchFile('./server.js', { // Rebuild when change detected to this file or any nested directory from here
 		ignore : ['./build'],    // Ignore ./build or it will rebuild again
 		ext    : 'less',             // Other extensions to watch (only .js/.json/.jsx by default)
-		//watch: ['./client', './server', './themes'], // Watch additional folders if you want
+		watch: ['./client', './server', './themes'], // Watch additional folders if you want
 	});
 }
