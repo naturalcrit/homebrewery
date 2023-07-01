@@ -88,10 +88,9 @@ module.exports = {
 
 		  # ${_.sample(titles)}
 		  ## ${_.sample(subtitles)}
-		  ___
+		  <!-- ___ -->
 
-		  {{banner HOMEBREW}}
-
+		  <!-- {{banner HOMEBREW}} -->
 		  {{footnote
 		    ${_.sample(footnote)}
 		  }}
@@ -107,7 +106,7 @@ module.exports = {
 
 			# ${_.sample(titles)}
 			## ${_.sample(subtitles)}
-			___
+			<!-- ___ -->
 
 			{{imageMaskCenter${_.random(1, 16)},--offsetX:0%,--offsetY:0%,--rotation:0
 			  ![background image](https://i.imgur.com/IsfUnFR.jpg){position:absolute,bottom:0,left:0,height:100%}
