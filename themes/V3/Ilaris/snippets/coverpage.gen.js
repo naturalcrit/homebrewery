@@ -84,7 +84,7 @@ module.exports = {
 		return dedent`
 		  {{frontCover}}
 
-		  {{logo ![](/assets/naturalCritLogoRed.svg)}}
+		  {{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_rot.png)}}
 
 		  # ${_.sample(titles)}
 		  ## ${_.sample(subtitles)}

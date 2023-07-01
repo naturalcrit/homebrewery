@@ -150,6 +150,12 @@ body {
 	h1{
 		text-align:			center;
 		padding-bottom: 25px;
+		display:flex;
+		max-width: max-content;
+		margin-left: auto;
+    	margin-right: auto;
+		min-width: min-content;
+		
 
 		margin-bottom       : 0.18cm; //Margin-bottom only because this is WIDE
 		column-span         : all;
@@ -178,15 +184,21 @@ body {
 	}
 	h1::before {
 		content: url('/assets/ilaris/kapitel-kurz-links-40-75.png');
-		top: 7px;
+		//top: 7px;
 		position: relative;
-		right: 10px
+		right: 10px;
+		vertical-align: middle;
+		margin-top: auto;
+    	margin-bottom: auto;
 	}
 	h1::after{
 		content: url('/assets/ilaris/kapitel-kurz-rechts-40-75.png');
-		top: 7px;
+		//top: 7px;
 		position: relative;
-		left: 10px
+		left: 10px;
+		vertical-align: middle;
+		margin-top: auto;
+    	margin-bottom: auto;
 	}
 	h2{
 		//margin-top    : 0px; //Font is misaligned. Shift up slightly
@@ -716,12 +728,18 @@ h5 + table{
 										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
 		text-transform : uppercase;
 		font-weight    : normal;
-		margin-top     : 1.2cm;
+		margin-top     : 1.75cm;
 		margin-bottom  : 0;
 		color          : white;
 		font-family    : Aniron;
-		font-size      : 2.245cm;
+		font-size      : 1.000cm;
 		line-height    : 0.85em;
+	}
+	h1::before {
+		content: '';
+	}
+	h1::after{
+		content: '';
 	}
 	h2 {
 		filter         : drop-shadow(0 0 1px black) drop-shadow(0 0 0 black)
@@ -785,13 +803,13 @@ h5 + table{
 	}
 	.logo {
 		position   : absolute;
-		top        : 0.5cm;
+		top        : 1.0cm;
 		left       : 0;
 		right      : 0;
 		filter     : drop-shadow(0 0 0.075cm black);
 		img {
-			height : 2cm;
-			width  : 100%;
+			height : 3cm;
+			//width  : 100%;
 		}
 	}
 }
