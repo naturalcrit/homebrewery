@@ -1,11 +1,3 @@
-```css
-.page #example + table td {
-	border:1px dashed #00000030;
-}
-.page {
-	padding-bottom : 1.1cm;
-}
-```
 # Die Ilaris-Brauerei
 
 Hier kannst du ganz einfach ~Dokumente erstellen~ Gebräue zusammenkochen, die gut zum Ilaris-Stil passen. Benutze den Button "[Neu+](https://brauerei.ilaris-online.de/new)" um direkt mit einem leeren Editor zu Starten. Es lassen sich einfache Notizen im intuitiven und einfach zu lernenden Markdown-Format schreiben. Alle Besonderheiten wie Tabellen, Kästen, Statblöcke usw können auch als Beispiel aus dem Menü über dem Editor Fenster geladen werden. 
