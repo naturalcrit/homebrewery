@@ -2,10 +2,16 @@
 @import (less) './themes/fonts/ilaris/fonts.less';
 @import (less) './themes/assets/assets.less';
 
+@footerPageNumber: url('/assets/ilaris/pagenumber-trans.png');
+@topBanner: url('/assets/ilaris/trenner.png');
+@leftBanner: url('/assets/ilaris/Seitenteil_high_res.png');
+@separator: url('/assets/ilaris/trenner.png');
+@backCover: url('/assets/ilaris/backcovermask_modified.png');
+
 :root {
 	//Colors
 	--HB_Color_Background            : #EEE5CE; // Light parchment
-	--HB_Color_Accent                : #E0E5C1; // Pastel green
+	--HB_Color_Accent                : #e6d0b2; // Pastel green
 	--HB_Color_HeaderUnderline       : #C0AD6A; // Gold
 	--HB_Color_HorizontalRule        : #9C2B1B; // Maroon
 	--HB_Color_HeaderText            : #58180D; // Dark Maroon
@@ -78,7 +84,7 @@ body {
 
 	background-color  : var(--HB_Color_Background);
 	background-image  : @backgroundImage;
-	padding           : 1.4cm 1.9cm 1.7cm;
+	padding           : 1.7cm 1.9cm 1.7cm;
 	font-family       : BookInsanityRemake;
 	font-size         : 0.34cm;
 	text-rendering    : optimizeLegibility;
@@ -514,38 +520,67 @@ body {
 	//*****************************
 	// *           FOOTER
 	// *****************************/
-	&:after{
+	&:has(.pageNumber):after{
+		
 		content          : "";
 		position         : absolute;
-		bottom           : 0px;
-		left             : 0px;
+		bottom           : 12px;
+		left             : 3px;
 		z-index          : 100;
 		height           : 50px;
 		width            : 100%;
-		background-image : @footerAccentImage;
-		background-size  : cover;
+		background-image : @footerPageNumber;
+		background-size  : contain;
+		background-repeat: no-repeat;
+		background-position: center;
+		opacity: 40%;
+    	filter: sepia(100%);
+		//transform: rotate(187deg);
+		
 	}
-	&:nth-child(even){
+	/*&:nth-child(even){
 		&:after{
-			transform : scaleX(-1);
+			//transform : scaleX(-1);
 		}
 		.pageNumber{
-			left : 2px;
+			//left : 2px;
 		}
 		.footnote{
 			left       : 80px;
 			text-align : left;
 		}
-	}
+	}*/
 	.pageNumber{
+		/* background */
+		/*height           : 50px;
+		width            : 100%;
+		background-image : @footerPageNumber;
+		background-size  : contain;
+		background-repeat: no-repeat;
+		background-position: center;*/
+
 		position    : absolute;
-		right       : 2px;
-		bottom      : 22px;
-		width       : 50px;
+		//right       : 2px;
+		left : 2px;
+		z-index: 200;
+		bottom      : 29px;
+		width       : 100%;
 		font-size   : 0.9em;
-		color       : var(--HB_Color_Footnotes);
+		//color       : var(--HB_Color_Accent);
 		text-align  : center;
 		text-indent : 0;
+		margin-left: auto;
+		margin-right: auto;
+		filter: drop-shadow(0 0 0.8px var(--HB_Color_Background)) 
+			drop-shadow(0 0 0 var(--HB_Color_Background)) 
+			drop-shadow(0 0 0 var(--HB_Color_Background)) 
+			drop-shadow(0 0 0 var(--HB_Color_Background)) 
+			drop-shadow(0 0 0 var(--HB_Color_Background)) 
+			drop-shadow(0 0 0 var(--HB_Color_Background)) 
+			drop-shadow(0 0 0 var(--HB_Color_Background)) 
+			drop-shadow(0 0 0 var(--HB_Color_Background));
+		padding-top: 19px;
+
 		&.auto::after {
 			content : counter(phb-page-numbers);
 		}
@@ -559,6 +594,19 @@ body {
 		font-size  : 0.8em;
 		color      : var(--HB_Color_Footnotes);
 		text-align : right;
+	}
+	.pageheader{
+		position   : absolute;
+		top     : 24px;
+		left: 0px;
+		width      : 100%;
+		font-size  : 1em;
+		font-family: CinzelMedium;
+		color      : var(--HB_Color_HeaderText);
+		text-align  : center;
+		text-indent : 0;
+		margin-left: auto;
+		margin-right: auto;
 	}
 	//************************************
 	// *           CODE BLOCKS
@@ -720,6 +768,38 @@ h5 + table{
 	&:after {
 		all: unset;
 	}
+	&:has(.topbanner):after {
+		content          : "";
+		position         : absolute;
+		top           : 0px;
+		left             : 0px;
+		z-index          : 100;
+		height           : 92px;
+		width            : 100%;
+		background-image : @topBanner;
+		background-size  : cover;
+		background-repeat: no-repeat;
+		background-position: center;
+		//opacity: 40%;
+    	//filter: sepia(100%);
+		//transform: rotate(187deg);
+	}
+	&:has(.leftbanner):after {
+		content          : "";
+		position         : absolute;
+		top           : -11px;
+		left             : -8px;
+		z-index          : 100;
+		height           : 102%;
+		width            : 127px;
+		background-image : @leftBanner;
+		background-size  : cover;
+		background-repeat: no-repeat;
+		background-position: center;
+		//opacity: 40%;
+    	//filter: sepia(100%);
+		//transform: rotate(187deg);
+	}
 	h1 {
 		text-shadow: unset;
 		filter         : drop-shadow(0 0 1.5px black) drop-shadow(0 0 0 black)
@@ -728,7 +808,7 @@ h5 + table{
 										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
 		//text-transform : uppercase;
 		font-weight    : normal;
-		margin-top     : 3.5cm;
+		margin-top     : 3.2cm;
 		margin-bottom  : 0;
 		color          : white;
 		font-family    : CinzelMedium;
@@ -822,7 +902,39 @@ h5 + table{
 	columns    : 1;
 	text-align : center;
 	&:after {
-		all	: unset;
+		all: unset;
+	}
+	&:has(.topbanner):after {
+		content          : "";
+		position         : absolute;
+		top           : 0px;
+		left             : 0px;
+		z-index          : 100;
+		height           : 92px;
+		width            : 100%;
+		background-image : @topBanner;
+		background-size  : cover;
+		background-repeat: no-repeat;
+		background-position: center;
+		//opacity: 40%;
+    	//filter: sepia(100%);
+		//transform: rotate(187deg);
+	}
+	&:has(.leftbanner):after {
+		content          : "";
+		position         : absolute;
+		top           : -11px;
+		left             : -8px;
+		z-index          : 100;
+		height           : 102%;
+		width            : 127px;
+		background-image : @leftBanner;
+		background-size  : cover;
+		background-repeat: no-repeat;
+		background-position: center;
+		//opacity: 40%;
+    	//filter: sepia(100%);
+		//transform: rotate(187deg);
 	}
 	h1 {
 		font-family		 : CinzelMedium;
@@ -893,7 +1005,7 @@ h5 + table{
 .page:has(.backCover) {
 	color: #fff;
 	columns: 1;
-	padding: 2.25cm 1.3cm 2cm 1.3cm;
+	padding: 1.75cm 1.3cm 2cm 1.3cm;
 	&:after {
 		all: unset;
 	}
@@ -903,11 +1015,13 @@ h5 + table{
 	.backCover {
 		position: absolute;
 		inset: 0;
-		width: 11cm;
 		background-image: @backCover;
-		background-repeat: no-repeat;
-		background-size: contain;
 		z-index: -1;
+		background-repeat: no-repeat;
+		background-size: cover;
+		height: 100%;
+		width: 82%;
+		left: -75px;
 	}
 	.blank {
 		height: 1.4em;
@@ -916,9 +1030,16 @@ h5 + table{
 		margin-bottom: .3cm;
 		font-size: 1.35cm;
 		line-height: 0.95em;
-		font-family: NodestoCapsCondensed;
+		font-family: CinzelMedium;
 		text-align: center;
 		color: #ED1C24;
+		padding-bottom: 0px;
+	}
+	h1::before {
+		content: '';
+	}
+	h1::after{
+		content: '';
 	}
 	h1+p::first-line,
 	h1+p::first-letter {
@@ -933,11 +1054,11 @@ h5 + table{
 	hr {
 		margin-left: auto;
 		margin-right: auto;
-		margin-top: 1.1cm;
+		margin-top: 0.2cm;
 		height: .53cm;
-		width: 4.5cm;
+		//width: 4.5cm;
 		visibility: visible;
-		background-image: @horizontalRule;
+		background-image: @separator;
 		background-size: 100% 100%;
 		border: none;
 	}
