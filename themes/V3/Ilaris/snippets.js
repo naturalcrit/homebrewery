@@ -177,13 +177,13 @@ module.exports = [
 				gen  : MonsterBlockGen.monster('monster,frame,wide', 4),
 			},
 			{
-				name         : 'Front Cover Page',
+				name         : 'Deckblatt - Vollbild',
 				icon         : 'fac book-front-cover',
 				gen          : CoverPageGen.front,
 				experimental : true
 			},
 			{
-				name         : 'Inside Cover Page',
+				name         : 'Deckblatt - Teilbild',
 				icon         : 'fac book-inside-cover',
 				gen          : CoverPageGen.inside,
 				experimental : true
@@ -195,7 +195,7 @@ module.exports = [
 				experimental : true
 			},
 			{
-				name      		 : 'Back Cover Page',
+				name      		 : 'Rückseite',
 				icon      		 : 'fac book-back-cover',
 				gen       		 : CoverPageGen.back,
 				experimental : true

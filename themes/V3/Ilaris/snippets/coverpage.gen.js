@@ -90,12 +90,18 @@ module.exports = {
 		  ## ${_.sample(subtitles)}
 		  <!-- ___ -->
 
-		  <!-- {{banner HOMEBREW}} -->
+		  <!-- {{banner HOMEBREW}} 
 		  {{footnote
 		    ${_.sample(footnote)}
 		  }}
+		  -->
 
 		  ![background image](https://i.imgur.com/IwHRrbF.jpg){position:absolute,bottom:0,left:0,height:100%}
+
+		  
+		  {{footnote 
+		    Ilaris - Schlanke Regeln für Aventurien
+		  }}
 
 		  \page`;
 	},
@@ -104,15 +110,24 @@ module.exports = {
 		return dedent`
 			{{insideCover}}
 
+			{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_rot.png)}}
+
 			# ${_.sample(titles)}
 			## ${_.sample(subtitles)}
 			<!-- ___ -->
 
-			{{imageMaskCenter${_.random(1, 16)},--offsetX:0%,--offsetY:0%,--rotation:0
+			<!--{{imageMaskCenter${_.random(1, 16)},--offsetX:0%,--offsetY:0%,--rotation:0
+			  ![background image](https://i.imgur.com/IsfUnFR.jpg){position:absolute,bottom:0,left:0,height:100%}
+			}}-->
+
+			{{imageMaskCenter11,--offsetX:0%,--offsetY:-10%,--rotation:0
 			  ![background image](https://i.imgur.com/IsfUnFR.jpg){position:absolute,bottom:0,left:0,height:100%}
 			}}
 
-			{{logo ![](/assets/naturalCritLogoRed.svg)}}
+			
+			{{footnote 
+			  Ilaris - Schlanke Regeln für Aventurien
+			}}
 
 			\page`;
 	},
@@ -136,7 +151,8 @@ module.exports = {
 			{{backCover}}
 
 			# ${_.sample(subtitles)}
-
+			___
+			
 			${_.sampleSize(coverText, 3).join('\n:\n')}
 			___
 
