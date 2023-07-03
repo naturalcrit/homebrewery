@@ -169,5 +169,86 @@ module.exports = {
 			![](/assets/ilaris/maskotchen-kopie-2.webp)
 			}}
 			`;
+	},
+
+	cards3x3 : function() {
+		return dedent`
+			\page
+			{{pageheader Karten}}
+			{{cards}}
+
+			{{card,border:"3px solid red"
+			<!-- #123 Magie, #234 Karmal, #345 Kampf ... -->
+			#### Kartentitel
+			##### Kartenuntertitel
+			Kartentext oder Tabellen oder Bilder...
+			###### Fußnote
+			}}
+
+			{{card,border:"3px solid red"
+			<!-- #123 Magie, #234 Karmal, #345 Kampf ... -->
+			#### Kartentitel
+			##### Kartenuntertitel
+			Kartentext oder Tabellen oder Bilder...
+			###### Fußnote
+			}}
+
+			{{card,border:"3px solid red"
+			<!-- #123 Magie, #234 Karmal, #345 Kampf ... -->
+			#### Kartentitel
+			##### Kartenuntertitel
+			Kartentext oder Tabellen oder Bilder...
+			###### Fußnote
+			}}
+
+			{{card,border:"3px solid red"
+			<!-- #123 Magie, #234 Karmal, #345 Kampf ... -->
+			#### Kartentitel
+			##### Kartenuntertitel
+			Kartentext oder Tabellen oder Bilder...
+			###### Fußnote
+			}}
+
+			{{card,border:"3px solid red"
+			<!-- #123 Magie, #234 Karmal, #345 Kampf ... -->
+			#### Kartentitel
+			##### Kartenuntertitel
+			Kartentext oder Tabellen oder Bilder...
+			###### Fußnote
+			}}
+
+			{{card,border:"3px solid red"
+			<!-- #123 Magie, #234 Karmal, #345 Kampf ... -->
+			#### Kartentitel
+			##### Kartenuntertitel
+			Kartentext oder Tabellen oder Bilder...
+			###### Fußnote
+			}}
+
+			{{card,border:"3px solid red"
+			<!-- #123 Magie, #234 Karmal, #345 Kampf ... -->
+			#### Kartentitel
+			##### Kartenuntertitel
+			Kartentext oder Tabellen oder Bilder...
+			###### Fußnote
+			}}
+
+			{{card,border:"3px solid red"
+			<!-- #123 Magie, #234 Karmal, #345 Kampf ... -->
+			#### Kartentitel
+			##### Kartenuntertitel
+			Kartentext oder Tabellen oder Bilder...
+			###### Fußnote
+			}}
+
+			{{card,border:"3px solid red"
+			<!-- #123 Magie, #234 Karmal, #345 Kampf ... -->
+			#### Kartentitel
+			##### Kartenuntertitel
+			Kartentext oder Tabellen oder Bilder...
+			###### Fußnote
+			}}
+			{{pageNumber x}}
+			`;
 	}
 };

@@ -201,6 +201,12 @@ module.exports = [
 				experimental : true
 			},
 			{
+				name      		 : 'Karten (3x3)',
+				icon      		 : 'fac cards',
+				gen       		 : CoverPageGen.cards3x3,
+				experimental : false
+			},
+			{
 				name : 'Magic Item',
 				icon : 'fas fa-hat-wizard',
 				gen  : MagicGen.item,
