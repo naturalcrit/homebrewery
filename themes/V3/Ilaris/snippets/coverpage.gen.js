@@ -103,7 +103,8 @@ module.exports = {
 		    Ilaris - Schlanke Regeln für Aventurien
 		  }}
 
-		  \page`;
+		  \page
+		  `;
 	},
 
 	inside : function() {
@@ -129,7 +130,8 @@ module.exports = {
 			  Ilaris - Schlanke Regeln für Aventurien
 			}}
 
-			\page`;
+			\page
+			`;
 	},
 
 	part : function() {
@@ -148,6 +150,7 @@ module.exports = {
 
 	back : function() {
 		return dedent`
+			\page
 			{{backCover}}
 
 			# ${_.sample(subtitles)}
@@ -165,7 +168,6 @@ module.exports = {
 			ilaris-online.de
 			![](/assets/ilaris/maskotchen-kopie-2.webp)
 			}}
-
-			\page`;
+			`;
 	}
 };
