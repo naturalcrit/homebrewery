@@ -191,12 +191,12 @@ module.exports = {
 			- \`#C19758\`: Liturgien 
 			- \`#CB1C7C\`: Anrufungen 
 			}}
-
+			
 			{{card,border:0px
 			##### Randlose Karte
-			Setz border:0px um den Rand der Karte wegzulassen.
+			Setze \`border:0px\` um den Rand der Karte wegzulassen.
 			}}
-
+			
 			{{card,
 			#### Kartentitel
 			##### Kartenuntertitel
@@ -204,13 +204,13 @@ module.exports = {
 			Hier können auch andere Layoutelemente innerhalb einer Karte genutzt werden.
 			###### Fußnote
 			}}
-
-			{{card,
+			
+			{{card,border-color:#984806
 			#### Kartentitel
 			Text...
 			###### Fußnote
 			}}
-
+			
 			{{card,
 			#### Kartentitel
 			##### Kartenuntertitel
@@ -223,19 +223,19 @@ module.exports = {
 			Text...
 			###### Fußnote
 			}}
-
+			
+			{{card,border-color:#5F4778
+			#### Kartentitel
+			Text...
+			###### Fußnote
+			}}
+			
 			{{card,
 			#### Kartentitel
 			Text...
 			###### Fußnote
 			}}
-
-			{{card,
-			#### Kartentitel
-			Text...
-			###### Fußnote
-			}}
-
+			
 			{{card,
 			#### Kartentitel
 			Text...

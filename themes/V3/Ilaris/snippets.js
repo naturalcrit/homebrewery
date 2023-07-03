@@ -119,22 +119,22 @@ module.exports = [
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'Spell',
+				name : 'Zauber',
 				icon : 'fas fa-magic',
 				gen  : MagicGen.spell,
 			},
 			{
-				name : 'Spell List',
+				name : 'Zauberliste',
 				icon : 'fas fa-scroll',
 				gen  : MagicGen.spellList,
 			},
 			{
-				name : 'Class Feature',
+				name : 'Klassenfähgikeit',
 				icon : 'fas fa-mask',
 				gen  : ClassFeatureGen,
 			},
 			{
-				name : 'Note',
+				name : 'Notiz',
 				icon : 'fas fa-sticky-note',
 				gen  : function(){
 					return dedent`
@@ -148,7 +148,7 @@ module.exports = [
 				},
 			},
 			{
-				name : 'Descriptive Text Box',
+				name : 'Textbox',
 				icon : 'fas fa-comment-alt',
 				gen  : function(){
 					return dedent`
@@ -162,17 +162,17 @@ module.exports = [
 				},
 			},
 			{
-				name : 'Monster Stat Block (unframed)',
+				name : 'Kreatur (randlos)',
 				icon : 'fas fa-paw',
 				gen  : MonsterBlockGen.monster('monster', 2),
 			},
 			{
-				name : 'Monster Stat Block',
+				name : 'Kreatur',
 				icon : 'fas fa-spider',
 				gen  : MonsterBlockGen.monster('monster,frame', 2),
 			},
 			{
-				name : 'Wide Monster Stat Block',
+				name : 'Kreatur (breit)',
 				icon : 'fas fa-dragon',
 				gen  : MonsterBlockGen.monster('monster,frame,wide', 4),
 			},
@@ -188,12 +188,12 @@ module.exports = [
 				gen          : CoverPageGen.inside,
 				experimental : true
 			},
-			{
-				name         : 'Part Cover Page',
-				icon         : 'fac book-part-cover',
-				gen          : CoverPageGen.part,
-				experimental : true
-			},
+			// {
+			// 	name         : 'Part Cover Page',
+			// 	icon         : 'fac book-part-cover',
+			// 	gen          : CoverPageGen.part,
+			// 	experimental : true
+			// },
 			{
 				name      		 : 'Rückseite',
 				icon      		 : 'fac book-back-cover',
@@ -201,18 +201,32 @@ module.exports = [
 				experimental : true
 			},
 			{
+				name: 'Karte',
+				icon: 'far fa-square',
+				gen : function(){
+					return dedent`
+						{{card
+						#### Kartentitel
+						##### Untertitel
+						Kartentext oder Inhalte
+						##### Fußzeile
+						}}
+						\n`;
+				},
+			},
+			{
 				name      		 : 'Karten (3x3)',
-				icon      		 : 'fac cards',
+				icon      		 : 'fas fa-th',
 				gen       		 : CoverPageGen.cards3x3,
 				experimental : false
 			},
 			{
-				name : 'Magic Item',
+				name : 'Artefakt',
 				icon : 'fas fa-hat-wizard',
 				gen  : MagicGen.item,
 			},
 			{
-				name : 'Artist Credit',
+				name : 'Künstler Credit',
 				icon : 'fas fa-signature',
 				gen  : function(){
 					return dedent`
