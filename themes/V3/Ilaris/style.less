@@ -61,6 +61,18 @@ body {
 	-webkit-column-gap   : 0.9cm;
 	-moz-column-gap      : 0.9cm;
 }
+.useThreeColumns(@multiplier : 1, @fillMode: balance){
+	column-count         : 3;
+	column-fill          : @fillMode;
+	column-gap           : 0.9cm;
+	column-width         : 5cm * @multiplier;
+	-webkit-column-count : 3;
+	-moz-column-count    : 3;
+	-webkit-column-width : 5cm * @multiplier;
+	-moz-column-width    : 5cm * @multiplier;
+	-webkit-column-gap   : 0.9cm;
+	-moz-column-gap      : 0.9cm;
+}
 .columnWrapper{
 	max-height        : 100%;
 	column-span       : all;
@@ -78,7 +90,7 @@ body {
 	height            : 279.4mm;
 	width             : 215.9mm;
 	*/
-	/* A4 Page Size */
+	/* DINA4 Page Size */
 	width  : 210mm;
 	height : 296.8mm;
 
@@ -256,7 +268,7 @@ body {
 			margin-top : 0.2cm;
 		}
 	}
-	.spielkarte{
+	.card{
 		width: 2.5in;
 		height: 3.5in;
 		padding-top: 4mm;
@@ -266,6 +278,11 @@ body {
 		background-size: 2.5in 3.5in;
 		//font-size: 10px;
 		line-height: 1;
+		margin: 1mm -4mm;
+		h4 {
+			font-size: 0.55cm;
+			text-align: center;
+		}
 	}
 	.versalie {
 		float                   : left;
@@ -792,6 +809,10 @@ th[colspan]:not([rowspan]) {
 h5 + table{
 	margin-top : 0.2cm;
 }
+}
+.page:has(.cards) {
+	.useThreeColumns();
+	padding           : 1.0cm 1.0cm 1.0cm;
 }
 //*****************************
 // *    FRONT COVER PAGE
