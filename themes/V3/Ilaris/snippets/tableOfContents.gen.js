@@ -76,7 +76,7 @@ module.exports = function(brew){
 
 	return dedent`
 		{{toc,wide
-		# Table Of Contents
+		# Inhalt
 
 		${markdown}
 		}}
