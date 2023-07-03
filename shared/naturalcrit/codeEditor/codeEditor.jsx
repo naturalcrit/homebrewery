@@ -453,16 +453,8 @@ const CodeEditor = createClass({
 		};
 	},
 	handleMouseDown : function(e) {
-		let target = e.target;
-		let found = false;
-		while (target.parentElement) {
-			target = target.parentElement;
-			if(target.classList.contains('CodeMirror-linewidget')) {
-				found = true;
-				break;
-			}
-		}
-		if(!found) {
+		// Close open widgets if click outside of a widget
+		if(!e.target.matches('.CodeMirror-linewidget *')) {
 			for (const widget of this.state.widgets) {
 				this.state.widgetUtils.removeLineWidgets(widget);
 			}
