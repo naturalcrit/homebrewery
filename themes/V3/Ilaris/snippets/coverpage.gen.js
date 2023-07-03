@@ -154,6 +154,7 @@ module.exports = {
 			___
 			
 			${_.sampleSize(coverText, 3).join('\n:\n')}
+			:
 			___
 
 			For use with any fantasy roleplaying ruleset. Play the best game of your life!
@@ -161,9 +162,8 @@ module.exports = {
 			![background image](https://i.imgur.com/MJ4YHu7.jpg){position:absolute,bottom:0,left:0,height:100%}
 
 			{{logo
-			![](/assets/naturalCritLogoWhite.svg)
-
-			Homebrewery.Naturalcrit.com
+			ilaris-online.de
+			![](/assets/ilaris/maskotchen-kopie-2.webp)
 			}}
 
 			\page`;
