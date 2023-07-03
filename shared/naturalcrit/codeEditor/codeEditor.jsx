@@ -191,19 +191,16 @@ const CodeEditor = createClass({
 		});
 
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
-		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
-		this.updateSize();
-
 		this.codeMirror.on('change', (cm)=>{
 			this.props.onChange(cm.getValue());
-
 			this.state.widgetUtils.updateWidgetGutter();
 		});
 
-		this.codeMirror.on('gutterClick', (cm, n)=>{
-			const { gutterMarkers } = this.codeMirror.lineInfo(n);
+		this.updateSize();
 
-			if(!!gutterMarkers && !!gutterMarkers['widget-gutter']) {
+		this.codeMirror.on('gutterClick', (cm, n)=>{
+			// Open line widgets when 'widget-gutter' marker clicked
+			if(this.codeMirror.lineInfo(n).gutterMarkers?.['widget-gutter']) {
 				const { widgets } = this.codeMirror.lineInfo(n);
 				if(!widgets) {
 					const widget = this.state.widgetUtils.updateLineWidgets(n);
@@ -212,12 +209,6 @@ const CodeEditor = createClass({
 							widgets : [...this.state.widgets, widget]
 						});
 					}
-				} else {
-					this.codeMirror.operation(()=>{
-						for (const widget of widgets) {
-							this.state.widgetUtils.removeLineWidgets(widget);
-						}
-					});
 				}
 			}
 		});
