@@ -1,0 +1,152 @@
+.page {
+	font-family : 'synonym';
+	background  : #B3C1D1;
+	h1 {
+		display             : inline-block;
+		width               : 400px;
+		font-family         : "chillax";
+		font-size           : 40px;
+		font-weight         : bold;
+		color               : rgb(255, 212, 59);
+		text-transform      : uppercase;
+		filter              : drop-shadow(-2px 2px 0px rgb(226, 73, 0));
+		-webkit-text-stroke : 1px rgb(226, 73, 0);
+		column-span         : all;
+	}
+
+	h2, h3 {
+		position       : relative;
+		padding        : 0 0.2em;
+		font-family    : 'chillax';
+		font-weight    : 600;
+		text-transform : uppercase;
+		letter-spacing : 0.05em;
+	}
+
+	h2 {
+		margin         : 0.2em 0;
+		font-size      : 1.3em;
+		background     : rgb(255, 212, 59);
+		border-bottom  : 2px solid black;
+		border-left    : 2px solid black;
+	}
+
+	h3 {
+		margin        : 1em 0;
+		font-size     : 1em;
+		border-bottom : 3px dashed rgb(255, 212, 59);
+	} 
+
+	p {
+		padding     : 0 10px;
+		font-size   : 14px;
+		line-height : 1.2em;
+		text-align  : start;
+		& + p { margin-top : 1em; }
+	}
+
+	.note {
+		padding   : 10px;
+		margin    : 16px 0;
+		font-size : 16px;
+		p { line-height : 1.5em; }
+		&.emphasis {
+			position     : relative;
+			padding-left : 20px;
+			border-left  : 2px solid black;
+			&::after {
+				position     : absolute;
+				top          : 0;
+				left         : 0;
+				width        : 10px;
+				height       : 100%;
+				content      : '';
+				background   : rgb(255, 212, 59);
+				border-right : 1px solid black;
+			}
+			p { font-style : italic; }
+		}
+		&.subdued {
+			position     : relative;
+			padding      : 5px 0;
+			background   : #B3C1D1;
+			border-top   : 1px dashed #444444;
+			border-right : 1px dashed #444444;
+			&::before {
+				position   : absolute;
+				top        : 5px;
+				left       : -5px;
+				z-index    : -1;
+				width      : 100%;
+				height     : 100%;
+				content    : '';
+				background : rgba(226, 73, 0, 0.2);
+			}
+			p {
+				font-variant : small-caps;
+				color        : #444444;
+				text-align   : center;
+			}
+		}
+	}
+
+	.pageNumber {
+		position        : absolute;
+		bottom          : -10px;
+		left            : 50%;
+		z-index         : 5;
+		display         : flex;
+		align-items     : center;
+		justify-content : center;
+		width           : 80px;
+		height          : 80px;
+		font-family     : 'chillax';
+		font-size       : 16px;
+		font-weight     : bold;
+		color           : rgb(226, 73, 0);
+		transform       : translateX(-50%);
+		&::before {
+			position      : absolute;
+			bottom        : 0px;
+			z-index       : -1;
+			display       : block;
+			width         : 80px;
+			height        : 80px;
+			content       : '';
+			background    : rgb(255, 212, 59);
+			filter        : drop-shadow(-2px 3px 0px rgb(226, 73, 0));
+			border        : 1px solid rgb(226, 73, 0);
+			border-radius : 50%;
+		}
+	}
+
+	hr.topHR {
+		width       : 140%;
+		border      : 1px solid black;
+		column-span : all;
+	}
+
+	.borderedImage {
+		position        : relative;
+		display         : flex;
+		align-items     : center;
+		justify-content : center;
+		&::before {
+			position         : absolute;
+			top              : 50%;
+			left             : 50%;
+			width            : 40%;
+			aspect-ratio     : 1 / 1;
+			content          : '';
+			background-color : rgba(60, 59, 125, 1);
+			border-radius    : 50%;
+			transform        : translateX(-50%) translateY(-50%);
+		}
+		p {
+			flex       : 1 1 100%;
+			text-align : center;
+			img { position : relative; }
+		}
+	}
+
+}
