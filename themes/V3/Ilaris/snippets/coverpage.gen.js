@@ -2,80 +2,82 @@ const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
 
 const titles = [
-	'The Burning Gallows',                    'The Ring of Nenlast',
-	'Below the Blind Tavern',                 'Below the Hungering River',
-	'Before Bahamut\'s Land',                 'The Cruel Grave from Within',
-	'The Strength of Trade Road',             'Through The Raven Queen\'s Worlds',
-	'Within the Settlement',                  'The Crown from Within',
-	'The Merchant Within the Battlefield',    'Ioun\'s Fading Traveler',
-	'The Legion Ingredient',                  'The Explorer Lure',
-	'Before the Charming Badlands',           'Vecna\'s Hidden Sage',
-	'The Living Dead Above the Fearful Cage', 'Bahamut\'s Demonspawn',
-	'Across Gruumsh\'s Elemental Chaos',      'The Blade of Orcus',
-	'Beyond Revenge',                         'Brain of Insanity',
-	'A New Beginning',                        'Evil Lake of the Merfolk',
-	'Invasion of the Gigantic Cat, Part II',  'Kraken War 2020',
-	'The Body Whisperers',                    'The Doctor from Heaven',
-	'The Diabolical Tales of the Ape-Women',  'The Doctor Immortal',
-	'Core of Heaven: Guardian of Amazement',  'The Graveyard',
-	'Guardian: Skies of the Dark Wizard',     'Lute of Eternity',
-	'Mercury\'s Planet: Brave Evolution',     'Azure Core',
-	'Sky of Zelda: The Thunder of Force',     'Core Battle',
-	'Ruby of Atlantis: The Quake of Peace',   'Deadly Amazement III',
-	'Dry Chaos IX',                           'Gate Thunder',
-	'Vyse\'s Skies',                          'Blue Greatness III',
-	'Yellow Divinity',                        'Zidane\'s Ghost'
+	"Elfenohren und Orkennasen", 
+	"Zauberhaftes Kochbuch", 
+	"Die Kunst des Schwertkampfs", 
+	"Goblins und Gekicher", 
+	"Die geheime Sprache der Zwerge", 
+	"Drachen zähmen leichtgemacht", 
+	"Der perfekte Bardenauftritt", 
+	"Einhornreiten für Wagemutige", 
+	"Die Kunst des Diebstahls", 
+	"Zaubertränke selbstgemacht", 
+	"Orakel und Wahrsagerei", 
+	"Der Dungeon-Entdecker", 
+	"Fabelhafte Geschichten erfinden", 
+	"Die Flora der Fantasywelt", 
+	"Alchemistisches Experimentieren", 
+	"Die Kunst des Pfeilewerfens", 
+	"Götter und Göttinnen", 
+	"Die hohe Kunst des Fechtens", 
+	"Der Weg des Friedens", 
+	"Die Sprache der Magie", 
+	"Die verrückte Welt der Trolle", 
+	"Das ABC der Zauberschulen", 
+	"Die Kunst des Überlebens", 
+	"Feen, Elfen und Kobolde", 
+	"Die geheime Welt der Schatzkarten", 
+	"Kochen mit Monstern", 
+	"Die Kunst des Schleichen und Verbergens", 
+	"Der sagenhafte Tierführer", 
+	"Die Rätsel der Zwerge", 
+	"Heldenhafter Humor", 
 ];
 
 const subtitles = [
-	'Tomb of Shadows',                        'Dragon\'s Lair',
-	'Lost Caverns',                           'The Necromancer',
-	'Mystic Forest',                          'Cursed Ruins',
-	'The Dark Abyss',                         'Enchanted Maze',
-	'Haunted Castle',                         'Sands of Fate',
-	'Dragon\'s Hoard',                        'Undead Menace',
-	'Lost City Ruins',                        'Goblin Ambush',
-	'Enchanted Forest',                       'Darkness Rising',
-	'Quest for Glory',                        'Ancient Prophecy',
-	'Shadowy Depths',                         'Mystic Isles'
+	"Ein Leitfaden für fantastische Verkleidungen",
+	"Magische Rezepte für hungrige Abenteurer",
+	"Für Tollpatsche",
+	"Ein Handbuch für den Umgang mit Kobolden",
+	"Ein Guide für linguistische Abenteurer",
+	"Tipps und Tricks für mutige Helden",
+	"Wie man das Publikum verzaubert",
+	"Ein Handbuch für Abenteurer",
+	"Anleitungen für schelmische Schurken",
+	"Brauen Sie Ihre eigenen Tränke",
+	"Eine Einführung in die mystische Kunst",
+	"Wie man verborgene Schätze findet",
+	"Ein Leitfaden für angehende Spielleiter",
+	"Eine Sammlung kurioser Pflanzen",
+	"Gefahr und Spaß in einem",
+	"Bogenschießen für Tollpatsche",
+	"Ein Handbuch für theologisch interessierte Abenteurer",
+	"Ein Leitfaden für tapfere Schwertkämpfer",
+	"Wie man Feinde mit Worten besiegt",
+	"Zaubersprüche und ihre Bedeutung",
+	"Ein Kompendium über diese eigenwilligen Wesen",
+	"Eine Einführung in die magischen Künste",
+	"Tipps für heldenhafte Abenteurer",
+	"Eine Reise ins Reich der Fabelwesen",
+	"Ein Guide für Schatzsucher",
+	"Unkonventionelle Rezepte für mutige Köche",
+	"Ein Leitfaden für Schattenmeister",
+	"Magische Kreaturen und wie man sie zähmt",
+	"Knifflige Aufgaben für kluge Köpfe",
+	"Witze und Spaß für tapfere Abenteurer",
 ];
 
 const footnote = [
-	'In an ominous universe, a botanist opposes terrorism.',
-	'In a demon-haunted city, in an age of lies and hate, a physicist tries to find an ancient treasure and battles a mob of aliens.',
-	'In a land of corruption, two cyberneticists and a dungeon delver search for freedom.',
-	'In an evil empire of horror, two rangers battle the forces of hell.',
-	'In a lost city, in an age of sorcery, a librarian quests for revenge.',
-	'In a universe of illusions and danger, three time travellers and an adventurer search for justice.',
-	'In a forgotten universe of barbarism, in an era of terror and mysticism, a virtual reality programmer and a spy try to find vengance and battle crime.',
-	'In a universe of demons, in an era of insanity and ghosts, three bodyguards and a bodyguard try to find vengance.',
-	'In a kingdom of corruption and battle, seven artificial intelligences try to save the last living fertile woman.',
-	'In a universe of virutal reality and agony, in an age of ghosts and ghosts, a fortune-teller and a wanderer try to avert the apocalypse.',
-	'In a crime-infested kingdom, three martial artists quest for the truth and oppose evil.',
-	'In a terrifying universe of lost souls, in an era of lost souls, eight dancers fight evil.',
-	'In a galaxy of confusion and insanity, three martial artists and a duke battle a mob of psychics.',
-	'In an amazing kingdom, a wizard and a secretary hope to prevent the destruction of mankind.',
-	'In a kingdom of deception, a reporter searches for fame.',
-	'In a hellish empire, a swordswoman and a duke try to find the ultimate weapon and battle a conspiracy.',
-	'In an evil galaxy of illusion, in a time of technology and misery, seven psychiatrists battle crime.',
-	'In a dark city of confusion, three swordswomen and a singer battle lawlessness.',
-	'In an ominous empire, in an age of hate, two philosophers and a student try to find justice and battle a mob of mages intent on stealing the souls of the innocent.',
-	'In a kingdom of panic, six adventurers oppose lawlessness.',
-	'In a land of dreams and hopelessness, three hackers and a cyborg search for justice.',
-	'On a planet of mysticism, three travelers and a fire fighter quest for the ultimate weapon and oppose evil.',
-	'In a wicked universe, five seers fight lawlessness.',
-	'In a kingdom of death, in an era of illusion and blood, four colonists search for fame.',
-	'In an amazing kingdom, in an age of sorcery and lost souls, eight space pirates quest for freedom.'
+	"Beispielfußnote"
 ];
 
-const coverText = [
-	'Embark on a thrilling journey across a vast and varied world, where magic and mystery await you at every turn. Encounter strange creatures and ancient secrets, and forge your own destiny with your choices. The world is yours to shape and explore.',
-	'Join a band of brave adventurers and set out to explore the unknown lands beyond the horizon. Along the way, you’ll face perilous challenges, make new friends and enemies, and uncover a plot that threatens to destroy everything you hold dear. The fate of the world rests in your hands.',
-	'Create your own character and enter a realm of endless possibilities, where you can be whoever you want to be. Whether you prefer to fight, sneak, charm, or craft your way through the game, you’ll find a style that suits you. The only limit is your imagination.',
-	'Experience a rich and immersive story that adapts to your actions and decisions. Every choice you make has consequences, for good or ill. Will you be a hero or a villain? A leader or a follower? A friend or a foe? The choice is yours.',
-	'Dive into a world of epic fantasy and adventure, where you can explore ancient civilizations, dark dungeons, and hidden secrets. Along the way, you’ll meet colorful characters, collect powerful items, and learn new skills. The more you play, the more you’ll discover.',
-	'Explore a vast and dynamic world that changes according to your actions. You can shape the environment, influence the politics, and alter the history of the game world. But be careful, as every change has a ripple effect that may have unforeseen consequences.',
-	'Enter a world of wonder and danger, where you can find allies and enemies among the various races and factions that inhabit it. You can choose to join or oppose any of them, or forge your own path. The game world is alive and responsive to your actions.'
+const coverText = [    
+	"Tauchen Sie ein in eine Welt voller Magie, Abenteuer und faszinierender Kreaturen. Dieses Buch entführt Sie in eine epische Fantasywelt, in der tapfere Helden gegen finstere Mächte antreten. Begleiten Sie sie auf ihren gefährlichen Reisen, während sie Geheimnisse lüften, Schätze entdecken und sich den Herausforderungen stellen, die ihnen begegnen. Ein unvergessliches Abenteuer wartet auf Sie!",
+	"Betreten Sie eine fesselnde Fantasywelt, in der die Grenzen der Vorstellungskraft verschwimmen. Tauchen Sie ein in ein Reich voller Magie, in dem mystische Wesen die Lande durchstreifen und uralte Prophezeiungen das Schicksal der Welt bestimmen. Erleben Sie die Spannung und den Nervenkitzel, wenn mutige Helden gegen dunkle Bedrohungen kämpfen und das Gleichgewicht wiederherstellen. Eine unvergessliche Reise erwartet Sie!",
+	"Willkommen in einer fantastischen Welt, in der die Grenzen zwischen Realität und Mythos verschwimmen. Erleben Sie den Zauber einer vergessenen Ära, in der tapfere Krieger, weise Zauberer und geheimnisvolle Wesen Seite an Seite existieren. Entdecken Sie uralte Relikte, ergründen Sie geheime Mysterien und setzen Sie Ihre Fähigkeiten ein, um das Unmögliche zu erreichen. Eine packende Reise in die Welt der Fantasie erwartet Sie!",
+	"Bereiten Sie sich vor, in eine fantastische Welt einzutauchen, in der Abenteuer an jeder Ecke lauern. Tauchen Sie ein in eine Geschichte voller Magie, Intrigen und heldenhafter Taten. Begegnen Sie faszinierenden Charakteren, während Sie in eine Welt eintauchen, in der nichts unmöglich scheint. Lassen Sie sich von der Macht der Fantasie verführen und entdecken Sie eine Geschichte, die Sie bis zur letzten Seite in ihren Bann ziehen wird.",
+	"Willkommen in einer Welt, in der das Unvorstellbare Wirklichkeit wird. Hier treffen furchtlose Krieger auf finstere Kreaturen, Magie durchdringt jeden Winkel und Abenteuer warten hinter jeder Tür. Erleben Sie eine atemberaubende Reise in ein Land der Fantasie, in dem das Schicksal auf dem Spiel steht und der Mut eines Einzelnen die Welt verändern kann. Treten Sie ein und lassen Sie sich verzaubern!",
+	"Entfliehen Sie dem Alltag und tauchen Sie ein in eine Welt voller Fantasy und Phantasie. Erleben Sie den Nervenkitzel des Unbekannten, wenn Sie in eine Welt eintauchen, in der Hexen und Zauberer, Elfen und Orks die Lande bevölkern. Begleiten Sie furchtlose Helden auf ihren gefährlichen Abenteuern."
 ];
 
 module.exports = {
@@ -90,10 +92,8 @@ module.exports = {
 		  ## ${_.sample(subtitles)}
 		  <!-- ___ -->
 
-		  <!-- {{banner HOMEBREW}} 
-		  {{footnote
-		    ${_.sample(footnote)}
-		  }}
+		  <!-- 
+		  {{banner FANSPIELHILFE}} 
 		  -->
 
 		  ![background image](https://i.imgur.com/IwHRrbF.jpg){position:absolute,bottom:0,left:0,height:100%}
@@ -160,7 +160,7 @@ module.exports = {
 			:
 			___
 
-			For use with any fantasy roleplaying ruleset. Play the best game of your life!
+			Zur Benutzung mit dem Ilaris-Regelwerk. Spiel das beste Spiel deines Lebens!
 
 			![background image](https://i.imgur.com/MJ4YHu7.jpg){position:absolute,bottom:0,left:0,height:100%}
 
@@ -177,78 +177,72 @@ module.exports = {
 			{{pageheader Karten}}
 			{{cards}}
 
-			{{card,border:"3px solid red"
-			<!-- #123 Magie, #234 Karmal, #345 Kampf ... -->
+			{{card,border-color:#000000
+			#### Randfarben
+			Benutze border-color: um den Rand zu färben.
+			Farbcodes für Manöverkarten:
+			- \`#000000\`: Proben & Profanes 
+			- \`#632423\`: Gesundheit 
+			- \`#984806\`: Kampf 
+			- \`#5F4778\`: Magie 
+			- \`#C19758\`: Karma 
+			- \`#CB1C7C\`: Paktierer 
+			- \`#5F4778\`: Zauber 
+			- \`#C19758\`: Liturgien 
+			- \`#CB1C7C\`: Anrufungen 
+			}}
+			
+			{{card,border:0px
+			##### Randlose Karte
+			Setze \`border:0px\` um den Rand der Karte wegzulassen.
+			}}
+			
+			{{card,
+			#### Kartentitel
+			##### Kartenuntertitel
+			Kartentext oder Tabellen oder Bilder...
+			Hier können auch andere Layoutelemente innerhalb einer Karte genutzt werden.
+			###### Fußnote
+			}}
+			
+			{{card,border-color:#984806
+			#### Kartentitel
+			Text...
+			###### Fußnote
+			}}
+			
+			{{card,
 			#### Kartentitel
 			##### Kartenuntertitel
 			Kartentext oder Tabellen oder Bilder...
 			###### Fußnote
 			}}
-
-			{{card,border:"3px solid red"
-			<!-- #123 Magie, #234 Karmal, #345 Kampf ... -->
+			
+			{{card,
 			#### Kartentitel
-			##### Kartenuntertitel
-			Kartentext oder Tabellen oder Bilder...
+			Text...
 			###### Fußnote
 			}}
-
-			{{card,border:"3px solid red"
-			<!-- #123 Magie, #234 Karmal, #345 Kampf ... -->
+			
+			{{card,border-color:#5F4778
 			#### Kartentitel
-			##### Kartenuntertitel
-			Kartentext oder Tabellen oder Bilder...
+			Text...
 			###### Fußnote
 			}}
-
-			{{card,border:"3px solid red"
-			<!-- #123 Magie, #234 Karmal, #345 Kampf ... -->
+			
+			{{card,
 			#### Kartentitel
-			##### Kartenuntertitel
-			Kartentext oder Tabellen oder Bilder...
+			Text...
 			###### Fußnote
 			}}
-
-			{{card,border:"3px solid red"
-			<!-- #123 Magie, #234 Karmal, #345 Kampf ... -->
+			
+			{{card,
 			#### Kartentitel
-			##### Kartenuntertitel
-			Kartentext oder Tabellen oder Bilder...
+			Text...
 			###### Fußnote
 			}}
-
-			{{card,border:"3px solid red"
-			<!-- #123 Magie, #234 Karmal, #345 Kampf ... -->
-			#### Kartentitel
-			##### Kartenuntertitel
-			Kartentext oder Tabellen oder Bilder...
-			###### Fußnote
-			}}
-
-			{{card,border:"3px solid red"
-			<!-- #123 Magie, #234 Karmal, #345 Kampf ... -->
-			#### Kartentitel
-			##### Kartenuntertitel
-			Kartentext oder Tabellen oder Bilder...
-			###### Fußnote
-			}}
-
-			{{card,border:"3px solid red"
-			<!-- #123 Magie, #234 Karmal, #345 Kampf ... -->
-			#### Kartentitel
-			##### Kartenuntertitel
-			Kartentext oder Tabellen oder Bilder...
-			###### Fußnote
-			}}
-
-			{{card,border:"3px solid red"
-			<!-- #123 Magie, #234 Karmal, #345 Kampf ... -->
-			#### Kartentitel
-			##### Kartenuntertitel
-			Kartentext oder Tabellen oder Bilder...
-			###### Fußnote
-			}}
-			{{pageNumber x}}
+			
+			{{pageNumber ??}}
 			`;
 	}
 };
