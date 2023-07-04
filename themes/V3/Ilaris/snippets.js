@@ -201,15 +201,17 @@ module.exports = [
 				experimental : true
 			},
 			{
-				name: 'Karte',
+				name: 'Einzelkarte',
 				icon: 'far fa-square',
 				gen : function(){
 					return dedent`
-						{{card
+						\page
+						{{einzelkarte}}
+						{{karte
 						#### Kartentitel
 						##### Untertitel
 						Kartentext oder Inhalte
-						##### Fußzeile
+						###### Fußzeile
 						}}
 						\n`;
 				},
@@ -250,53 +252,53 @@ module.exports = [
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'Class Table',
+				name : 'Klassentabelle',
 				icon : 'fas fa-table',
 				gen  : ClassTableGen.full('classTable,frame,decoration,wide'),
 			},
 			{
-				name : 'Class Table (unframed)',
+				name : 'Klassentabelle (randlos)',
 				icon : 'fas fa-border-none',
 				gen  : ClassTableGen.full('classTable,wide'),
 			},
 			{
-				name : '1/2 Class Table',
+				name : '1/2 Klassentabelle',
 				icon : 'fas fa-list-alt',
 				gen  : ClassTableGen.half('classTable,decoration,frame'),
 			},
 			{
-				name : '1/2 Class Table (unframed)',
+				name : '1/2 Klassentabelle (randlos)',
 				icon : 'fas fa-border-none',
 				gen  : ClassTableGen.half('classTable'),
 			},
 			{
-				name : '1/3 Class Table',
+				name : '1/3 Klassentabelle',
 				icon : 'fas fa-border-all',
 				gen  : ClassTableGen.third('classTable,frame'),
 			},
 			{
-				name : '1/3 Class Table (unframed)',
+				name : '1/3 Klassentabelle (randlos)',
 				icon : 'fas fa-border-none',
 				gen  : ClassTableGen.third('classTable'),
 			},
 			{
-				name         : 'Rune Table',
+				name         : 'Runen',
 				icon         : 'fas fa-language',
 				gen          : scriptGen.dwarvish,
 				experimental : true,
 				subsnippets  : [
 					{
-						name : 'Dwarvish',
+						name : 'Zwergisch',
 						icon : 'fac davek',
 						gen  : scriptGen.dwarvish,
 					},
 					{
-						name : 'Elvish',
+						name : 'Elfisch',
 						icon : 'fac rellanic',
 						gen  : scriptGen.elvish,
 					},
 					{
-						name : 'Draconic',
+						name : 'Drachisch',
 						icon : 'fac iokharic',
 						gen  : scriptGen.draconic,
 					},

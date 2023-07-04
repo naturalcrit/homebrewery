@@ -268,7 +268,7 @@ body {
 			margin-top : 0.2cm;
 		}
 	}
-	.card{
+	.card, .karte{
 		width: 2.5in;
 		height: 3.5in;
 		padding-top: 4mm;
@@ -827,10 +827,19 @@ h5 + table{
 	margin-top : 0.2cm;
 }
 }
-.page:has(.cards) {
+.page:has(.karten) {
 	.useThreeColumns();
 	padding           : 1.0cm 1.0cm 1.0cm;
 }
+.page:has(.einzelkarte) {
+	width  : 2.5in;
+	height : 3.5in;
+	padding: 0px;
+	.karte, .card {
+		margin: 0px;
+	}
+}
+
 //*****************************
 // *    FRONT COVER PAGE
 // *****************************/

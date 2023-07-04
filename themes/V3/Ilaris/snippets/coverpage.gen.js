@@ -175,9 +175,9 @@ module.exports = {
 		return dedent`
 			\page
 			{{pageheader Karten}}
-			{{cards}}
+			{{karten}}
 
-			{{card,border-color:#000000
+			{{karte,border-color:#000000
 			#### Randfarben
 			Benutze border-color: um den Rand zu färben.
 			Farbcodes für Manöverkarten:
@@ -192,12 +192,12 @@ module.exports = {
 			- \`#CB1C7C\`: Anrufungen 
 			}}
 			
-			{{card,border:0px
+			{{karte,border:0px
 			##### Randlose Karte
 			Setze \`border:0px\` um den Rand der Karte wegzulassen.
 			}}
 			
-			{{card,
+			{{karte,
 			#### Kartentitel
 			##### Kartenuntertitel
 			Kartentext oder Tabellen oder Bilder...
@@ -205,38 +205,38 @@ module.exports = {
 			###### Fußnote
 			}}
 			
-			{{card,border-color:#984806
+			{{karte,border-color:#984806
 			#### Kartentitel
 			Text...
 			###### Fußnote
 			}}
 			
-			{{card,
+			{{karte,
 			#### Kartentitel
 			##### Kartenuntertitel
 			Kartentext oder Tabellen oder Bilder...
 			###### Fußnote
 			}}
 			
-			{{card,
+			{{karte,
 			#### Kartentitel
 			Text...
 			###### Fußnote
 			}}
 			
-			{{card,border-color:#5F4778
+			{{karte,border-color:#5F4778
 			#### Kartentitel
 			Text...
 			###### Fußnote
 			}}
 			
-			{{card,
+			{{karte,
 			#### Kartentitel
 			Text...
 			###### Fußnote
 			}}
 			
-			{{card,
+			{{karte,
 			#### Kartentitel
 			Text...
 			###### Fußnote
