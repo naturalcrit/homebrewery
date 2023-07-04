@@ -73,11 +73,13 @@ module.exports = function(CodeMirror, setHints) {
 	};
 
 	return {
+		// checkbox widget
 		cClass : function(cm, n, prefix, cClass) {
 			const { text } = cm.lineInfo(n);
-			const id = `${_.kebabCase(prefix.replace('{{', ''))}-${_.kebabCase(cClass)}-${n}`;
-			const frameChange = (e)=>{
-				if(!!e.target && e.target.checked)
+			const id = _.kebabCase(prefix + '-' + cClass + '-' + n);
+			prefix = `{{${prefix}`;
+			const handleChange = (e)=>{
+				if(e.target?.checked)
 					cm.replaceRange(`,${cClass}`, CodeMirror.Pos(n, prefix.length), CodeMirror.Pos(n, prefix.length), '+insert');
 				else {
 					const start = text.indexOf(`,${cClass}`);
@@ -87,8 +89,8 @@ module.exports = function(CodeMirror, setHints) {
 						e.target.checked = true;
 				}
 			};
-			return <React.Fragment key={`${_.kebabCase(prefix)}-${cClass}-${n}`}>
-				<input type='checkbox' id={id} onChange={frameChange} checked={_.includes(text, `,${cClass}`)}/>
+			return <React.Fragment key={id}>
+				<input type='checkbox' id={id} onChange={handleChange} checked={_.includes(text, `,${cClass}`)}/>
 				<label htmlFor={id}>{_.startCase(cClass)}</label>
 			</React.Fragment>;
 		},

@@ -464,7 +464,7 @@ const CodeEditor = createClass({
 		}
 		if(!found) {
 			for (const widget of this.state.widgets) {
-				this.state.widgetUtils.removeLineWidgets(widget);
+				widget.clear();
 			}
 			this.setState({
 				widgets : []
