@@ -456,7 +456,7 @@ const CodeEditor = createClass({
 		// Close open widgets if click outside of a widget
 		if(!e.target.matches('.CodeMirror-linewidget *')) {
 			for (const widget of this.state.widgets) {
-				this.state.widgetUtils.removeLineWidgets(widget);
+				widget.clear();
 			}
 			this.setState({
 				widgets : []

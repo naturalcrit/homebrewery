@@ -18,7 +18,7 @@ module.exports = function(CodeMirror, widgets, cm, setHints) {
 		pattern      : PATTERNS.widget[widget.type](widget.name),
 		createWidget : (n, node)=>{
 			const parent = document.createElement('div');
-			const classes = (widget.classes || []).map((c, i)=>cClass(cm, n, `{{${widget.name}`, c));
+			const classes = (widget.classes || []).map((c, i)=>cClass(cm, n, `${widget.name}`, c));
 			const fieldNames = (widget.fields || []).map((f)=>f.name);
 			const fields = (widget.fields || []).map((f, i)=>field(cm, n, f)).filter((f)=>!!f);
 			const { text } = cm.lineInfo(n);
