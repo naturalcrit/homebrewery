@@ -843,7 +843,8 @@ h5 + table{
 //*****************************
 // *    FRONT COVER PAGE
 // *****************************/
-.page:has(.frontCover) {
+.page:has(.frontCover),
+.page:has(.titelseite) {
 	columns    : 1;
 	text-align : center;
 	&:after {
@@ -1099,11 +1100,10 @@ h5 + table{
 //*****************************
 // *      BACK COVER
 // *****************************/
-.page:has(.backcover) {
-	color: #fff;
+.page:has(.backcover), 
+.page:has(.rueckseite){
 	columns: 1;
 	padding: 1.75cm 1.3cm 2cm 1.3cm;
-
 	color: black;
 	
 	&:after {
@@ -1115,7 +1115,8 @@ h5 + table{
 	.columnWrapper:has(.logo) {
 		padding-bottom: 3cm;
 	}
-	.backcover {
+	.backcover, 
+	.rueckseite{
 		position: absolute;
 		inset: 0;
 		//background-image: @backCover;
@@ -1254,45 +1255,91 @@ h5 + table{
 		font-weight: 800;
 	}
 }
+.page:has(.dunkel) {
+	color: #fff;
+	background-image: url('/assets/ilaris/hintergrund_schwarz.jpg');
+	
+	h1 {
+		text-shadow: unset;
+		filter         : drop-shadow(0 0 1.5px black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		//text-transform : uppercase;
+		font-weight    : normal;
+		margin-top     : 3.2cm;
+		margin-bottom  : 0;
+		color          : white;
+		font-family    : Cinzel;
+		font-weight: bold;
+
+		font-size      : 2.1cm;
+		//line-height    : 0.85em;
+	}
+	h1::before {
+		content: '';
+	}
+	h1::after{
+		content: '';
+	}
+	h2 {
+		filter         : drop-shadow(0 0 1px black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		font-family    : Cinzel;
+		font-weight    : normal;
+		font-size      : 0.85cm;
+		letter-spacing : 0.25cm;
+		color          : white;
+	}
+	.logo p {
+		color: #fff;
+	}
+	table tbody tr:nth-child(odd) {
+		background-color: #463d31;
+	}
+}
 
 //*****************************
-	// *      PART COVER
-	// *****************************/
-	.page:has(.partCover) {
-		columns    : 1;
-		text-align : center;
-		padding-top: 0;
+// *      PART COVER
+// *****************************/
+.page:has(.partCover) {
+	columns    : 1;
+	text-align : center;
+	padding-top: 0;
 
-		.partCover {
-			background-image: @partCoverHeaderPHB;
-			background-repeat: no-repeat;
-			position: absolute;
-			background-size: 100%;
-			top: 0;
-			left: 0;
-			height: 6cm;
-			width: 100%;
-		}
-
-		h1 {
-			position: relative;
-			text-align: center;
-			text-transform: uppercase;
-			font-size: 2.3cm;
-			font-family: NodestoCapsCondensed;
-			margin-top: .4cm;
-		}
-
-		h2 {
-			font-family: Overpass;
-			font-size: 0.45cm;
-			position: relative;
-			margin-top: -0.7em;
-			line-height: 1.1em;
-			margin-left  : auto;
-			margin-right : auto;
-		}
+	.partCover {
+		background-image: @partCoverHeaderPHB;
+		background-repeat: no-repeat;
+		position: absolute;
+		background-size: 100%;
+		top: 0;
+		left: 0;
+		height: 6cm;
+		width: 100%;
 	}
+
+	h1 {
+		position: relative;
+		text-align: center;
+		text-transform: uppercase;
+		font-size: 2.3cm;
+		font-family: NodestoCapsCondensed;
+		margin-top: .4cm;
+	}
+
+	h2 {
+		font-family: Overpass;
+		font-size: 0.45cm;
+		position: relative;
+		margin-top: -0.7em;
+		line-height: 1.1em;
+		margin-left  : auto;
+		margin-right : auto;
+	}
+}
+
 
 //*****************************
 // *      TABLE OF CONTENTS
