@@ -80,6 +80,19 @@ const coverText = [
 	"Entfliehen Sie dem Alltag und tauchen Sie ein in eine Welt voller Fantasy und Phantasie. Erleben Sie den Nervenkitzel des Unbekannten, wenn Sie in eine Welt eintauchen, in der Hexen und Zauberer, Elfen und Orks die Lande bevölkern. Begleiten Sie furchtlose Helden auf ihren gefährlichen Abenteuern."
 ];
 
+const coverTextShort = [
+	"Stürze dich in eine epische Fantasy-Welt voller Gefahren und Abenteuer!",
+    "Entfessele deine Macht und werde zum Helden einer magischen Prophezeiung.",
+    "Erkunde eine postapokalyptische Wüste und kämpfe ums Überleben in einer brutalen Welt.",
+    "Tauche ein in die düstere Atmosphäre eines Noir-Krimis und löse mysteriöse Fälle.",
+    "Reise durch die Zeit und erlebe historische Ereignisse hautnah in einem actiongeladenen RPG.",
+    "Schließe dich einer Gruppe von Rebellen an und stürze das korrupte Imperium.",
+    "Begib dich auf eine intergalaktische Odyssee und erkunde fremde Planeten voller Gefahren.",
+    "Werde zum mächtigsten Zauberer und besiege dunkle Kreaturen in einer Welt voller Magie.",
+    "Erschaffe deine eigene Legende und werde zum legendären Krieger in einer epischen Schlacht.",
+    "Enthülle das Geheimnis einer verfluchten Insel und kämpfe gegen übernatürliche Bedrohungen."
+]
+
 module.exports = {
 
 	front : function() {
@@ -159,7 +172,7 @@ module.exports = {
 			:
 			___
 			
-			${_.sampleSize(coverText, 2).join('\n:\n')}
+			${_.sampleSize(coverTextShort, 3).join('\n:\n')}
 			:
 			___
 			:
@@ -181,7 +194,7 @@ module.exports = {
 			![](/assets/ilaris/maskotchen-kopie-2.webp)
 			}}
 			
-			{{imageMaskEdge5,--offset:5%,--rotation:270
+			{{imageMaskEdge5,--offset:17%,--rotation:270
 			![](https://i.imgur.com/GZfjDWV.png){height:100%}
 			}}
 			<!-- Use --offset to shift the mask away from page center (can use cm instead of %)
