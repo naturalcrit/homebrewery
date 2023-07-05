@@ -204,7 +204,7 @@ const api = {
 		if(brewFromServer.version && brewFromClient.version && brewFromServer.version > brewFromClient.version) {
 			console.log(`Version mismatch on brew ${brewFromClient.editId}`);
 			res.setHeader('Content-Type', 'application/json');
-			return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
+			return res.status(409).send(JSON.stringify({ message: `Dies Gebräu wurde in der Zwischenzeit woanders bearbeitet. Speichere deine Änderungen irgendwo zwischen und lade die Seite neu um die geänderte Version zu laden.` }));
 		}
 
 		let brew = _.assign(brewFromServer, brewFromClient);
