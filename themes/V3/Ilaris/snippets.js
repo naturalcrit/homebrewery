@@ -195,17 +195,17 @@ module.exports = [
 			// 	experimental : true
 			// },
 			{
-				name      		 : 'Rückseite - Vollbild',
+				name      		 : 'Rückseite - Bild rechts',
 				icon      		 : 'fac book-back-cover',
-				gen       		 : CoverPageGen.back,
+				gen       		 : CoverPageGen.backRight,
 				experimental : true
 			},
-			// {
-			// 	name      		 : 'Rückseite - Teilbild',
-			// 	icon      		 : 'fac book-back-cover',
-			// 	gen       		 : CoverPageGen.backPartial,
-			// 	experimental : true
-			// },
+			{
+				name      		 : 'Rückseite - Bild oben',
+				icon      		 : 'fac book-back-cover',
+				gen       		 : CoverPageGen.backTop,
+				experimental : true
+			},
 			{
 				name: 'Einzelkarte',
 				icon: 'far fa-square',

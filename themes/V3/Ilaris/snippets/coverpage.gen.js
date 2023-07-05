@@ -161,13 +161,13 @@ module.exports = {
 			\page`;
 	},
 
-	back : function() {
+	backRight : function() {
 		return dedent`
 			\page
 			{{backcover}}
 
 			# ${_.sample(subtitles)}
-
+			:
 			## ${_.sample(subtitles)}
 			:
 			___
@@ -185,11 +185,11 @@ module.exports = {
 			| Benötigt                 | Ilaris GRW ||||
 			| Komplexität Spieler   | {{punkt,voll}} | {{punkt,leer}} | {{punkt,leer}} | {{punkt,leer}} |
 			| Komplexität Meister   | {{punkt,voll}} | {{punkt,voll}} | {{punkt,leer}} | {{punkt,leer}} |
-			| Erfahrung             | {{punkt,voll}} | {{punkt,voll}} | {{punkt,voll}} | {{punkt,leer}} |
+			| Erfahrungsgrad        | {{punkt,voll}} | {{punkt,voll}} | {{punkt,voll}} | {{punkt,leer}} |
 			| Kampf                 | {{punkt,voll}} | {{punkt,voll}} | {{punkt,voll}} | {{punkt,voll}} |
 			| Soziale Fertigkeiten  | {{punkt,leer}} | {{punkt,leer}} | {{punkt,leer}} | {{punkt,leer}} |
 
-			{{logo,left:60px;
+			{{logo,left:110px;
 			ilaris-online.de
 			![](/assets/ilaris/maskotchen-kopie-2.webp)
 			}}
@@ -202,30 +202,44 @@ module.exports = {
 			`;
 	},
 
-	backPartial : function() {
+	backTop : function() {
 		return dedent`
 			\page
-			{{backcover}}
-			{{backcoverpartial}}
+			{{backcover,top}}
 
 			# ${_.sample(subtitles)}
-
+			:
 			## ${_.sample(subtitles)}
 			:
 			___
-			
-			${_.sampleSize(coverText, 3).join('\n:\n')}
+			${_.sample(coverTextShort)}
 			:
-			___
-
-			Zur Benutzung mit dem Ilaris-Regelwerk. Spiel das beste Spiel deines Lebens!
-
-			![background image](https://i.imgur.com/MJ4YHu7.jpg){position:absolute,bottom:0,left:0,height:100%}
-
-			{{logo
+			${_.sampleSize(coverText, 1).join('\n:\n')}
+			:
+			{{wide,width:50%,position:absolute,bottom:10px,left:1.5cm
+			##### Auf einen Blick
+			| | | | | |
+			|:-----|:-:|:-:|:-:|:-:|
+			| Genre                 | Attentat, Rätsel ||||
+			| Ort                 | Beliebig ||||
+			| Zeit                 | Beliebig ||||
+			| Benötigt                 | Ilaris GRW ||||
+			| Komplexität Spieler   | {{punkt,voll}} | {{punkt,leer}} | {{punkt,leer}} | {{punkt,leer}} |
+			| Komplexität Meister   | {{punkt,voll}} | {{punkt,voll}} | {{punkt,leer}} | {{punkt,leer}} |
+			| Erfahrungsgrad        | {{punkt,voll}} | {{punkt,voll}} | {{punkt,voll}} | {{punkt,leer}} |
+			| Kampf                 | {{punkt,voll}} | {{punkt,voll}} | {{punkt,voll}} | {{punkt,voll}} |
+			| Soziale Fertigkeiten  | {{punkt,leer}} | {{punkt,leer}} | {{punkt,leer}} | {{punkt,leer}} |
+			}}
+			{{logo,right:26px;left:unset
 			ilaris-online.de
 			![](/assets/ilaris/maskotchen-kopie-2.webp)
 			}}
+
+			{{imageMaskEdge5,--offset:40%,--rotation:180
+			![](https://i.imgur.com/GZfjDWV.png){height:100%}
+			}}
+			<!-- Use --offset to shift the mask away from page center (can use cm instead of %)
+				Use --rotation to set rotation angle in degrees. -->
 			`;
 	},
 

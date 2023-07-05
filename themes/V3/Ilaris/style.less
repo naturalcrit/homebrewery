@@ -1130,7 +1130,7 @@ h5 + table{
 		height: 1.4em;
 	}
 	h1 {
-		margin-bottom: .3cm;
+		//margin-bottom: .3cm;
 		font-size: 1.35cm;
 		line-height: 0.95em;
 		font-family: Cinzel;
@@ -1212,6 +1212,7 @@ h5 + table{
 		img {
 			position: relative;
 			height : 4.0cm;
+			left: 26px;
 			width  : 100%;
 			z-index : 0;
 		}
@@ -1229,8 +1230,15 @@ h5 + table{
 		}
 	}
 }
-.page:has(.backcover):has(.backcoverpartial) {
-	width: 100%;
+.page:has(.backcover):has(.top) {
+	//width: 100%;
+	.columnWrapper {
+		padding-top: 6cm;
+		width: 100%;
+	}
+	hr {
+		height: 1.8cm;
+	}
 }
 
 //*****************************
