@@ -124,7 +124,7 @@
     "postcss-less": "^6.0.0",
     "stylelint": "^15.9.0",
     "stylelint-config-recess-order": "^4.2.0",
-    "stylelint-config-recommended": "^12.0.0",
+    "stylelint-config-recommended": "^13.0.0",
     "stylelint-stylistic": "^0.4.2",
     "supertest": "^6.3.3"
   }
