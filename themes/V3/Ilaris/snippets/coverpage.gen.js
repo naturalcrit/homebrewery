@@ -151,9 +151,54 @@ module.exports = {
 	back : function() {
 		return dedent`
 			\page
-			{{backCover}}
+			{{backcover}}
 
 			# ${_.sample(subtitles)}
+
+			## ${_.sample(subtitles)}
+			:
+			___
+			
+			${_.sampleSize(coverText, 2).join('\n:\n')}
+			:
+			___
+			:
+			##### Auf einen Blick
+			| | | | | |
+			|:-----|:-:|:-:|:-:|:-:|
+			| Genre                 | Attentat, Rätsel ||||
+			| Ort                 | Beliebig ||||
+			| Zeit                 | Beliebig ||||
+			| Benötigt                 | Ilaris GRW ||||
+			| Komplexität Spieler   | {{punkt,voll}} | {{punkt,leer}} | {{punkt,leer}} | {{punkt,leer}} |
+			| Komplexität Meister   | {{punkt,voll}} | {{punkt,voll}} | {{punkt,leer}} | {{punkt,leer}} |
+			| Erfahrung             | {{punkt,voll}} | {{punkt,voll}} | {{punkt,voll}} | {{punkt,leer}} |
+			| Kampf                 | {{punkt,voll}} | {{punkt,voll}} | {{punkt,voll}} | {{punkt,voll}} |
+			| Soziale Fertigkeiten  | {{punkt,leer}} | {{punkt,leer}} | {{punkt,leer}} | {{punkt,leer}} |
+
+			{{logo,left:60px;
+			ilaris-online.de
+			![](/assets/ilaris/maskotchen-kopie-2.webp)
+			}}
+			
+			{{imageMaskEdge5,--offset:5%,--rotation:270
+			![](https://i.imgur.com/GZfjDWV.png){height:100%}
+			}}
+			<!-- Use --offset to shift the mask away from page center (can use cm instead of %)
+				Use --rotation to set rotation angle in degrees. -->
+			`;
+	},
+
+	backPartial : function() {
+		return dedent`
+			\page
+			{{backcover}}
+			{{backcoverpartial}}
+
+			# ${_.sample(subtitles)}
+
+			## ${_.sample(subtitles)}
+			:
 			___
 			
 			${_.sampleSize(coverText, 3).join('\n:\n')}

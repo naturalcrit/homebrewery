@@ -1090,20 +1090,26 @@ h5 + table{
 //*****************************
 // *      BACK COVER
 // *****************************/
-.page:has(.backCover) {
+.page:has(.backcover) {
 	color: #fff;
 	columns: 1;
 	padding: 1.75cm 1.3cm 2cm 1.3cm;
+
+	color: black;
+	
 	&:after {
 		all: unset;
 	}
 	.columnWrapper {
 		width: 7.6cm;
 	}
-	.backCover {
+	.columnWrapper:has(.logo) {
+		padding-bottom: 3cm;
+	}
+	.backcover {
 		position: absolute;
 		inset: 0;
-		background-image: @backCover;
+		//background-image: @backCover;
 		z-index: -1;
 		background-repeat: no-repeat;
 		background-size: cover;
@@ -1120,7 +1126,8 @@ h5 + table{
 		line-height: 0.95em;
 		font-family: Cinzel;
 		text-align: center;
-		color: #ED1C24;
+		//color: #ED1C24;
+		color: var(--HB_Color_HeaderText);
 		padding-bottom: 0px;
 	}
 	h1::before {
@@ -1133,6 +1140,13 @@ h5 + table{
 	h1+p::first-letter {
 		all: unset;
 	}
+	h2 {
+		text-align: center;
+		color: black;
+	}
+	h5 {
+		font-family: Cinzel;
+	}
 	img {
 		position: absolute;
 		top: 0px;
@@ -1143,7 +1157,7 @@ h5 + table{
 		margin-left: auto;
 		margin-right: auto;
 		margin-top: 0.2cm;
-		height: .53cm;
+		height: 0.8cm;
 		//width: 4.5cm;
 		visibility: visible;
 		background-image: @separator;
@@ -1151,19 +1165,38 @@ h5 + table{
 		border: none;
 	}
 	p {
-		font-family: Overpass;
-		line-height: 1.5em;
-		font-size: 0.332cm;
+		font-family: Cinzel;
+		line-height: 1.3em;
+		font-size: 0.4cm;
+		font-weight: 600;
 	}
 	hr+p {
 		text-align: center;
 		margin-top: .6cm;
 	}
+	.punkt {
+		background-image: url("/assets/ilaris/icon_rot.png");
+		background-size: contain;
+		background-repeat: no-repeat;
+		width: 20px;
+		height: 20px;
+		vertical-align: middle;
+		&.leer {
+			opacity:40%;
+		}
+	}
+	td {
+		font-family: 'Cinzel';
+		font-size: 0.45cm;
+		font-weight: 600;
+		font-variant-caps: petite-caps;
+		vertical-align: middle;
+	}
 	.logo {
 		position: absolute;
 		z-index: 0;
 		//height: 1.5cm;
-		left: 1.2cm;
+		left: 60px;
 		bottom: -0.1cm;
 		width: 7.6cm;
 		img {
@@ -1174,9 +1207,10 @@ h5 + table{
 		}
 		p {
 			position: relative;
-			color: #fff;
-			font-family: NodestoCapsWide;
-			font-size: .4cm;
+			color: #000;
+			font-family: var(--HB_Color_HeaderText);
+			font-size: .6cm;
+			font-variant-caps: small-caps;
 			letter-spacing: 0.08em;
 			line-height: 1em;
 			text-align: center;
@@ -1184,6 +1218,9 @@ h5 + table{
 			width: 100%;
 		}
 	}
+}
+.page:has(.backcover):has(.backcoverpartial) {
+	width: 100%;
 }
 
 //*****************************
