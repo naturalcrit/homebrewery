@@ -112,7 +112,7 @@ const api = {
 	},
 	getGoodBrewTitle : (text)=>{
 		const tokens = Markdown.marked.lexer(text);
-		return (tokens.find((token)=>token.type === 'heading' || token.type === 'paragraph')?.text || 'No Title')
+		return (tokens.find((token)=>token.type === 'heading' || token.type === 'paragraph')?.text || 'Kein Titel')
 			.slice(0, MAX_TITLE_LENGTH);
 	},
 	excludePropsFromUpdate : (brew)=>{
