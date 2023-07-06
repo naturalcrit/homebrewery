@@ -43,25 +43,15 @@ module.exports = [
 					}}
 					\n`
 			},
-			/*{
-				name : 'QR Code',
-				icon : 'fas fa-qrcode',
-				gen  : (brew)=>{
-					return `![]` +
-							`(https://api.qrserver.com/v1/create-qr-code/?data=` +
-							`https://homebrewery.naturalcrit.com${brew.shareId ? `/share/${brew.shareId}` : ''}` +
-							`&amp;size=100x100) {width:100px;mix-blend-mode:multiply}`;
-				}
-			},*/
 			{
 				name : 'Link zu URL',
 				icon : 'fas fa-link',
-				gen  : '[Click here](#p3) to go to page 3\n'
+				gen  : '[Hier klicken](#p3) um auf Seite 3 zu gehen\n'
 			},
 			{
 				name : 'Kommentar hinzufügen',
 				icon : 'fas fa-code',
-				gen  : '<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->'
+				gen  : '<!-- Dies ist ein Kommentar, der nicht im Gebräu angezeigt wird. Hotkey (Strg/Cmd + /). -->'
 			},
 		]
 	},
@@ -73,7 +63,7 @@ module.exports = [
 			{
 				name : 'Kommentar hinzufügen',
 				icon : 'fas fa-code',
-				gen  : '/* This is a comment that will not be rendered into your brew. */'
+				gen  : '/* Dies ist ein Kommentar, der nicht im Gebräu angezeigt wird. */'
 			},
 		]
 	},
@@ -180,7 +170,7 @@ module.exports = [
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'Table',
+				name : 'Tabelle',
 				icon : 'fas fa-th-list',
 				gen  : function(){
 					return dedent`
@@ -197,7 +187,7 @@ module.exports = [
 				}
 			},
 			{
-				name : 'Wide Table',
+				name : 'Breite Tabelle',
 				icon : 'fas fa-list',
 				gen  : function(){
 					return dedent`
@@ -218,7 +208,7 @@ module.exports = [
 				}
 			},
 			{
-				name : 'Split Table',
+				name : 'Geteilte Tabelle',
 				icon : 'fas fa-th-large',
 				gen  : function(){
 					return dedent`
@@ -245,21 +235,21 @@ module.exports = [
 	/**************** PAGE *************/
 
 	{
-		groupName : 'Print',
+		groupName : 'Druck',
 		icon      : 'fas fa-print',
 		view      : 'style',
 		snippets  : [
+			// {
+			// 	name : 'A4 Page Size',
+			// 	icon : 'far fa-file',
+			// 	gen  : dedent`/* A4 Page Size */
+			// 		.page{
+			// 			width  : 210mm;
+			// 			height : 296.8mm;
+			// 		}\n\n`
+			// },
 			{
-				name : 'A4 Page Size',
-				icon : 'far fa-file',
-				gen  : dedent`/* A4 Page Size */
-					.page{
-						width  : 210mm;
-						height : 296.8mm;
-					}\n\n`
-			},
-			{
-				name : 'Square Page Size',
+				name : 'Quadratische Seitengröße',
 				icon : 'far fa-file',
 				gen  : dedent`/* Square Page Size */
 					.page {
@@ -270,7 +260,7 @@ module.exports = [
 					}\n\n`
 			},
 			{
-				name : 'Ink Friendly',
+				name : 'Toner-schonend',
 				icon : 'fas fa-tint',
 				gen  : dedent`
 					/* Ink Friendly */

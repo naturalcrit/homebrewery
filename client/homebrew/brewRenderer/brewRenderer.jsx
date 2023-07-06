@@ -111,9 +111,6 @@ const BrewRenderer = createClass({
 	renderPageInfo : function(){
 		return <div className='pageInfo' ref='main'>
 			<div>
-				{this.props.renderer}
-			</div>
-			<div>
 				{this.state.viewablePageNumber + 1} / {this.state.pages.length}
 			</div>
 		</div>;

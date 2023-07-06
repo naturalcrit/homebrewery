@@ -216,7 +216,10 @@ module.exports = [
 				gen : function () {
 					return dedent`
 					{{credit
-					#### Artwork © 2023 Ulisses Spiele.  
+					#### Artwork ©` +
+					" " + new Date().getFullYear() + " " +
+					dedent`
+					Ulisses Spiele.  
 					DAS SCHWARZE AUGE, AVENTURIEN, DERE, MYRANOR, THARUN, UTHURIA, RIESLAND 
 					und THE DARK EYE sind eingetragene Marken der Ulisses Spiele GmbH, Waldems. 
 					Die Verwendung der Grafiken erfolgt unter den von Ulisses Spiele erlaubten Richtlinien. 
