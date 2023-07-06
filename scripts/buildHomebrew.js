@@ -2,7 +2,7 @@ const fs = require('fs-extra');
 const zlib = require('zlib');
 const Proj = require('./project.json');
 
-const { pack, watchFile } = require('vitreum');
+const { pack, watchFile, livereload } = require('vitreum');
 const isDev = !!process.argv.find((arg)=>arg=='--dev');
 
 const lessTransform  = require('vitreum/transforms/less.js');
@@ -135,8 +135,9 @@ fs.emptyDirSync('./build');
 
 })().catch(console.error);
 
-//In development, set up a watch server (uses Nodemon)
+//In development, set up LiveReload (refreshes browser), and Nodemon (restarts server)
 if(isDev){
+	livereload('./build');     // Install the Chrome extension LiveReload to automatically refresh the browser
 	watchFile('./server.js', { // Restart server when change detected to this file or any nested directory from here
 		ignore : ['./build', './client', './themes'],  // Ignore folders that are not running server code / avoids unneeded restarts
 		ext    : 'js json'                             // Extensions to watch (only .js/.json by default)
