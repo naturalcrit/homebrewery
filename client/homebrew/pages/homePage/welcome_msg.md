@@ -1,22 +1,22 @@
 # Die Ilaris-Brauerei
 
-Hier kannst du ganz einfach ~Dokumente erstellen~ Gebräue zusammenkochen, die gut zum Ilaris-Stil passen. Benutze den Button "[Neu+](https://brauerei.ilaris-online.de/new)" um direkt mit einem leeren Editor zu Starten. Es lassen sich einfache Notizen im intuitiven und einfach zu lernenden Markdown-Format schreiben. Alle Besonderheiten wie Tabellen, Kästen, Statblöcke usw können auch als Beispiel aus dem Menü über dem Editor Fenster geladen werden. 
+{{versalie H}}ier kannst du ganz einfach ~Dokumente erstellen~ Gebräue zusammenkochen, die gut zum Ilaris-Stil passen. 
+Dank Markdown-Format kannst du ohne Umwege anfangen zu Tippen. In der Menüzeile gibt es einige Designelemente die du in einem [neuen Gebräu](https://brauerei.ilaris-online.de/new) ausprobieren kannst um die Notizen in eine schicke Spielhilfe zu verwandeln. Du kannst auch direkt [mit unserer Beispielhilfe starten](https://brauerei.ilaris-online.de/new/thZtbIr1lFHh) und den Inhalt so anpassen wie es dir beliebt.
 
-:::
+### Features
+- Schnell und unkompliziert im Browser
+- Keine Anmeldung, Installation oder Werbung
+- Zusammenarbeit und Vorschau per URL
+- Zugriff auf Ilaris-Illustrationen und assets
+- Automatisch ins tolle Ilaris-Design
+
+::
 {{note
 #### Alles nur Geklaut
 Wir betreiben nur den Ilaris-Fork des eigentlich englishsprachigen auf DnD ausgelegten [Homebrewery Projekts](https://homebrewery.naturalcrit.com). Gelegentlich hohlen wir uns auch einige neue Features, die dort entwickelt werden. Hier gehts zum [Changelog des Hauptprojekts](https://homebrewery.naturalcrit.com/changelog)
 
 }}
 
-
-
-::::
-
-### Das Design
-Wir orientieren uns grob am Layout des Ilaris-Regelbuchs, haben aber einige Änderungen zur Abgrenzung und zur Vereinfachung vorgenommen.
-
-:::
 ![Lagerfeuer](https://github.com/Ilaris-Tools/IlarisTex/blob/main/bilder/einleitung.jpg?raw=true) {width:670px,mix-blend-mode:multiply}
 
 
@@ -28,9 +28,8 @@ Wir orientieren uns grob am Layout des Ilaris-Regelbuchs, haben aber einige Änd
 Wer sich lieber mit LaTex auseinandersetzen möchte, mehr Freiheiten beim Erstellen benötigt oder einfach lieber offline Arbeitet, kann sich vielleicht mit der [LaTex-Klasse für Ilaris](https://github.com/Ilaris-Tools/IlarisTex) anfreunden.
 
 
-
+::
 ### Kontakt
-Du hast ein Problem, Feedback, Bugreport oder Interesse Mitzumachen? Meld dich doch gerne.
 
 | Platform | Schwerpunkte | 
 |:------------------|:-----|
