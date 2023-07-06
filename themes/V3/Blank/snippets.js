@@ -87,7 +87,7 @@ module.exports = [
 					![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,top:50px,right:30px,width:280px}`
 			},
 			{
-				name : 'Watercolor Splatter',
+				name : 'Wasserflecken',
 				icon : 'fas fa-fill-drip',
 				gen  : WatercolorGen,
 			},
@@ -154,10 +154,10 @@ module.exports = [
 				]
 			},
 			{
-				name : 'Watermark',
+				name : 'Wasserzeichen',
 				icon : 'fas fa-id-card',
 				gen  : dedent`
-				{{watermark Homebrewery}}\n`
+				{{watermark Ilaris}}\n`
 			},
 		]
 	},
