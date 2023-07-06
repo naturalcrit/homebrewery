@@ -1,4 +1,4 @@
-> This is a Fork of the awesome [Homebrewery](https://homebrewery.naturalcrit.com) project. We provide a self hosted german fork with layout and needs targeted to the community driven pnp rules "Ilaris". If you are searching for a tool for making authntic looking [D&D content](https://dnd.wizards.com/products/tabletop-games/rpg-products/rpg_playershandbook) using [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet). Checkout the original project. Themes for other games are available as well.
+> This is a Fork of the awesome [Homebrewery](https://homebrewery.naturalcrit.com) project. We provide a self hosted german fork with layout and needs targeted to the community driven pnp rules "Ilaris". If you are searching for a tool for making authentic looking [D&D content](https://dnd.wizards.com/products/tabletop-games/rpg-products/rpg_playershandbook) using [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet). Checkout the original project. Themes for other games are available as well.
  
 # Die Ilaris-Brauerei
 
