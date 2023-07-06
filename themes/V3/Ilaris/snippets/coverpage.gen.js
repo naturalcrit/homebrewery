@@ -97,54 +97,44 @@ module.exports = {
 
 	front : function() {
 		return dedent`
-		  {{frontCover}}
+		  {{vorderseite}}
+		  {{dunkel}}
 
 		  {{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_rot.png)}}
 
 		  # ${_.sample(titles)}
 		  ## ${_.sample(subtitles)}
-		  <!-- ___ -->
-
-		  <!-- 
-		  {{banner FANSPIELHILFE}} 
-		  -->
 
 		  ![background image](https://i.imgur.com/IwHRrbF.jpg){position:absolute,bottom:0,left:0,height:100%}
 
-		  
-		  {{footnote 
+		  {{fusszeile 
 		    Ilaris - Schlanke Regeln für Aventurien
 		  }}
 
 		  \page
-		  `;
+		  \n`;
 	},
 
-	inside : function() {
+	frontPart : function() {
 		return dedent`
-			{{insideCover}}
+			{{vorderseite}}
+			{{maskemitte}}
 
 			{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_rot.png)}}
 
 			# ${_.sample(titles)}
 			## ${_.sample(subtitles)}
-			<!-- ___ -->
-
-			<!--{{imageMaskCenter${_.random(1, 16)},--offsetX:0%,--offsetY:0%,--rotation:0
-			  ![background image](https://i.imgur.com/IsfUnFR.jpg){position:absolute,bottom:0,left:0,height:100%}
-			}}-->
 
 			{{imageMaskCenter11,--offsetX:0%,--offsetY:-10%,--rotation:0
 			  ![background image](https://i.imgur.com/IsfUnFR.jpg){position:absolute,bottom:0,left:0,height:100%}
 			}}
 
-			
-			{{footnote 
+			{{fusszeile 
 			  Ilaris - Schlanke Regeln für Aventurien
 			}}
 
 			\page
-			`;
+			\n`;
 	},
 
 	part : function() {
@@ -164,7 +154,7 @@ module.exports = {
 	backRight : function() {
 		return dedent`
 			\page
-			{{backcover}}
+			{{rueckseite}}
 
 			# ${_.sample(subtitles)}
 			:
@@ -205,7 +195,7 @@ module.exports = {
 	backTop : function() {
 		return dedent`
 			\page
-			{{backcover,top}}
+			{{rueckseite,oben}}
 
 			# ${_.sample(subtitles)}
 			:
@@ -243,78 +233,4 @@ module.exports = {
 			`;
 	},
 
-	cards3x3 : function() {
-		return dedent`
-			\page
-			{{pageheader Karten}}
-			{{karten}}
-
-			{{karte,border-color:#000000
-			#### Randfarben
-			Benutze border-color: um den Rand zu färben.
-			Farbcodes für Manöverkarten:
-			- \`#000000\`: Proben & Profanes 
-			- \`#632423\`: Gesundheit 
-			- \`#984806\`: Kampf 
-			- \`#5F4778\`: Magie 
-			- \`#C19758\`: Karma 
-			- \`#CB1C7C\`: Paktierer 
-			- \`#5F4778\`: Zauber 
-			- \`#C19758\`: Liturgien 
-			- \`#CB1C7C\`: Anrufungen 
-			}}
-			
-			{{karte,border:0px
-			##### Randlose Karte
-			Setze \`border:0px\` um den Rand der Karte wegzulassen.
-			}}
-			
-			{{karte,
-			#### Kartentitel
-			##### Kartenuntertitel
-			Kartentext oder Tabellen oder Bilder...
-			Hier können auch andere Layoutelemente innerhalb einer Karte genutzt werden.
-			###### Fußnote
-			}}
-			
-			{{karte,border-color:#984806
-			#### Kartentitel
-			Text...
-			###### Fußnote
-			}}
-			
-			{{karte,
-			#### Kartentitel
-			##### Kartenuntertitel
-			Kartentext oder Tabellen oder Bilder...
-			###### Fußnote
-			}}
-			
-			{{karte,
-			#### Kartentitel
-			Text...
-			###### Fußnote
-			}}
-			
-			{{karte,border-color:#5F4778
-			#### Kartentitel
-			Text...
-			###### Fußnote
-			}}
-			
-			{{karte,
-			#### Kartentitel
-			Text...
-			###### Fußnote
-			}}
-			
-			{{karte,
-			#### Kartentitel
-			Text...
-			###### Fußnote
-			}}
-			
-			{{pageNumber ??}}
-			`;
-	}
 };

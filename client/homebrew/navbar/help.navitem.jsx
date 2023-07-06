@@ -11,14 +11,10 @@ module.exports = function(props){
 			Hilfe
 		</Nav.item>
 		<Nav.item color='red' icon='fas fa-fw fa-bug'
-			href={`https://www.reddit.com/r/homebrewery/submit?selftext=true&text=${encodeURIComponent(dedent`
-			- **Browser(s)** :
-			- **Operating System** :  
-			- **Legacy or v3 Renderer** :
-			- **Issue** :  `)}`}
+			href={'https://discord.gg/tffY7ssZuB'}
 			newTab={true}
 			rel='noopener noreferrer'>
-			Problem melden
+			Bug melden
 		</Nav.item>
 		<Nav.item color='green' icon='fas fa-question-circle'
 			href='/faq'
@@ -26,11 +22,10 @@ module.exports = function(props){
 			rel='noopener noreferrer'>
 			FAQ
 		</Nav.item>
-		<Nav.item color='blue' icon='fas fa-fw fa-file-import'
-			href='/migrate'
-			newTab={true}
+		<Nav.item color='orange' icon='fas fa-question-circle'
+			href='https://brauerei.ilaris-online.de/new/thZtbIr1lFHh'
 			rel='noopener noreferrer'>
-			Migrieren
+			Beispiel
 		</Nav.item>
 	</Nav.dropdown>;
 };

@@ -180,5 +180,31 @@ module.exports = {
 			${_.times(_.random(genLines, genLines + 2), function(){return genAction();}).join('\n:\n')}
 			}}
 			\n`;
+	},
+	creature : function(){
+		return dedent`
+			{{kreatur
+			## Randomici
+			*Eine Kreatur mit zufälligen Werten*
+			___
+			**Wundschwelle:** :: ${_.random(4, 9)}
+			**Initiative:**  :: ${_.random(1, 6)}
+			___
+			|  KK  |  KO  |  KL  |  IN  |  FF  |  WE  |
+			|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|
+			|${_.random(4, 9)}|${_.random(4, 9)}|${_.random(4, 9)}|${_.random(4, 9)}|${_.random(4, 9)}|${_.random(4, 9)}|
+			___
+			**Beschreibung:** :: Das 7 Beinige Wesen, wirkt unberechenbar. Es ist schwer vorherzusehen, was es als nächstes tut.
+			**Kurzlebig:** :: Die Lebensdauer ist kurz und meist auf Experimente in der Brauerei begrenzt. Verlassen tut sie die Brauerei eher selten.
+			___
+			**Quelle:** Die Ilaris-Brauerei
+			}}
+			\n`;
+	},
+	humanoid: function(){
+		return dedent`
+		{{kreatur
+		}}
+		`
 	}
 };

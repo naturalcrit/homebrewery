@@ -35,6 +35,22 @@ module.exports = [
 				gen  : TableOfContentsGen
 			},
 			{
+				name         : 'Kopfzeile',
+				icon         : 'fas fa-minus',
+				gen          : function() {
+					return dedent`
+					{{kopfzeile Dies ist eine Kopfzeile}}`
+				},
+			},
+			{
+				name         : 'Fußzeile',
+				icon         : 'fas fa-minus',
+				gen          : function() {
+					return dedent`
+					{{fusszeile Dies ist eine Fußzeile}}`
+				},
+			},
+			{
 				name         : 'Index',
 				icon         : 'fas fa-bars',
 				gen          : indexGen,
@@ -110,14 +126,19 @@ module.exports = [
 		]
 	},
 
-
-	/************************* PHB ********************/
-
+	/************************* ILARIS ********************/
 	{
 		groupName : 'Ilaris',
 		icon      : 'fas fa-book',
 		view      : 'text',
 		snippets  : [
+			{
+				name : 'Versalie',
+				icon : 'fas fa-square-h',
+				gen  : function() {
+					return '{{versalie A}}';
+				},
+			},
 			{
 				name : 'Zauber',
 				icon : 'fas fa-magic',
@@ -162,71 +183,15 @@ module.exports = [
 				},
 			},
 			{
-				name : 'Kreatur (randlos)',
-				icon : 'fas fa-paw',
-				gen  : MonsterBlockGen.monster('monster', 2),
-			},
-			{
 				name : 'Kreatur',
-				icon : 'fas fa-spider',
-				gen  : MonsterBlockGen.monster('monster,frame', 2),
-			},
-			{
-				name : 'Kreatur (breit)',
-				icon : 'fas fa-dragon',
-				gen  : MonsterBlockGen.monster('monster,frame,wide', 4),
-			},
-			{
-				name         : 'Deckblatt - Vollbild',
-				icon         : 'fac book-front-cover',
-				gen          : CoverPageGen.front,
+				icon : 'fas fa-paw',
+				gen  : MonsterBlockGen.creature(),
 				experimental : true
 			},
 			{
-				name         : 'Deckblatt - Teilbild',
-				icon         : 'fac book-inside-cover',
-				gen          : CoverPageGen.inside,
-				experimental : true
-			},
-			// {
-			// 	name         : 'Part Cover Page',
-			// 	icon         : 'fac book-part-cover',
-			// 	gen          : CoverPageGen.part,
-			// 	experimental : true
-			// },
-			{
-				name      		 : 'Rückseite - Bild rechts',
-				icon      		 : 'fac book-back-cover',
-				gen       		 : CoverPageGen.backRight,
-				experimental : true
-			},
-			{
-				name      		 : 'Rückseite - Bild oben',
-				icon      		 : 'fac book-back-cover',
-				gen       		 : CoverPageGen.backTop,
-				experimental : true
-			},
-			{
-				name: 'Einzelkarte',
-				icon: 'far fa-square',
-				gen : function(){
-					return dedent`
-						\page
-						{{einzelkarte}}
-						{{karte
-						#### Kartentitel
-						##### Untertitel
-						Kartentext oder Inhalte
-						###### Fußzeile
-						}}
-						\n`;
-				},
-			},
-			{
-				name      		 : 'Karten (3x3)',
-				icon      		 : 'fas fa-th',
-				gen       		 : CoverPageGen.cards3x3,
-				experimental : false
+				name : 'NSC',
+				icon : 'fas fa-user-secret',  // fa-masks-theater
+				gen  : MonsterBlockGen.humanoid(),
 			},
 			{
 				name : 'Artefakt',
@@ -247,25 +212,24 @@ module.exports = [
 			},
 			{
 				name: 'Ulisses Disclaimer',
-				icon: 'fas fa-section',
+				icon: 'fas fa-signature',
 				gen : function () {
 					return dedent`
-					Artwork © 2023 Ulisses Spiele.  
+					{{credit
+					#### Artwork © 2023 Ulisses Spiele.  
 					DAS SCHWARZE AUGE, AVENTURIEN, DERE, MYRANOR, THARUN, UTHURIA, RIESLAND 
 					und THE DARK EYE sind eingetragene Marken der Ulisses Spiele GmbH, Waldems. 
 					Die Verwendung der Grafiken erfolgt unter den von Ulisses Spiele erlaubten Richtlinien. 
 					Eine Verwendung über diese Richtlinien hinaus darf nur nach vorheriger schriftlicher 
 					Genehmigung der Ulisses Medien und Spiel Distribution GmbH erfolgen.
+					}}
 					\n`;
 				},
 			}
 		]
 	},
 
-
-
 	/*********************  TABLES *********************/
-
 	{
 		groupName : 'Tabellen',
 		icon      : 'fas fa-table',
@@ -323,6 +287,129 @@ module.exports = [
 						gen  : scriptGen.draconic,
 					},
 				]
+			},
+		]
+	},
+
+	/*********************  Seiten *********************/
+	{
+		groupName : 'Seiten',
+		icon      : 'fas fa-table',
+		view      : 'text',
+		snippets  : [
+			{
+				name         : 'Vorderseite - Vollbild',
+				icon         : 'fac book-front-cover',
+				gen          : CoverPageGen.front,
+			},
+			{
+				name         : 'Vorderseite - Teilbild',
+				icon         : 'fac book-part-cover',
+				gen          : CoverPageGen.frontPart,
+			},
+			{
+				name      		 : 'Rückseite - Teilbild',
+				icon      		 : 'fac book-back-cover',
+				gen       		 : CoverPageGen.backRight,
+			},
+			{
+				name      		 : 'Rückseite - Bild oben',
+				icon      		 : 'fac book-back-cover',
+				gen       		 : CoverPageGen.backTop,
+			},
+			{
+				name: 'Einzelkarte',
+				icon: 'far fa-square',
+				gen : function(){
+					return dedent`
+						\page
+						{{einzelkarte}}
+						{{karte
+						#### Kartentitel
+						##### Untertitel
+						Kartentext oder Inhalte
+						###### Fußzeile
+						}}
+						\n`;
+				},
+			},
+			{
+				name      		 : 'Karten (3x3)',
+				icon      		 : 'fas fa-th',
+				gen       		 : function() {
+					return dedent`
+						\page
+						{{pageheader Karten}}
+						{{karten}}
+			
+						{{karte,border-color:#000000
+						#### Randfarben
+						Benutze border-color: um den Rand zu färben.
+						Farbcodes für Manöverkarten:
+						- \`#000000\`: Proben & Profanes 
+						- \`#632423\`: Gesundheit 
+						- \`#984806\`: Kampf 
+						- \`#5F4778\`: Magie 
+						- \`#C19758\`: Karma 
+						- \`#CB1C7C\`: Paktierer 
+						- \`#5F4778\`: Zauber 
+						- \`#C19758\`: Liturgien 
+						- \`#CB1C7C\`: Anrufungen 
+						}}
+						
+						{{karte,border:0px
+						##### Randlose Karte
+						Setze \`border:0px\` um den Rand der Karte wegzulassen.
+						}}
+						
+						{{karte,
+						#### Kartentitel
+						##### Kartenuntertitel
+						Kartentext oder Tabellen oder Bilder...
+						Hier können auch andere Layoutelemente innerhalb einer Karte genutzt werden.
+						###### Fußnote
+						}}
+						
+						{{karte,border-color:#984806
+						#### Kartentitel
+						Text...
+						###### Fußnote
+						}}
+						
+						{{karte,
+						#### Kartentitel
+						##### Kartenuntertitel
+						Kartentext oder Tabellen oder Bilder...
+						###### Fußnote
+						}}
+						
+						{{karte,
+						#### Kartentitel
+						Text...
+						###### Fußnote
+						}}
+						
+						{{karte,border-color:#5F4778
+						#### Kartentitel
+						Text...
+						###### Fußnote
+						}}
+						
+						{{karte,
+						#### Kartentitel
+						Text...
+						###### Fußnote
+						}}
+						
+						{{karte,
+						#### Kartentitel
+						Text...
+						###### Fußnote
+						}}
+						
+						{{pageNumber ??}}
+						\n`;
+				},
 			},
 		]
 	},

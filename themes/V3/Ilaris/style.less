@@ -103,10 +103,10 @@ body {
 	page-break-before : always;
 	page-break-after  : always;
 }
-	//*****************************
-	// *            BASE
-	// *****************************/
 
+//*****************************
+// *            BASE
+// *****************************/
 .page{
 	p{
 		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
@@ -165,12 +165,11 @@ body {
 		font-weight   : 800;
 		color         : var(--HB_Color_HeaderText);
 	}
-	h2,h3,h4{
+	h2,h3,h4,h5{
 		font-family   : Cinzel;
 		font-weight   : 800;
 		color         : var(--HB_Color_HeaderText);
 	}
-	
 	h1{
 		text-align:			center;
 		padding-bottom: 25px;
@@ -260,10 +259,9 @@ body {
 	h5{
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.02cm;
-		font-family   : ScalySansSmallCapsRemake;
 		font-size     : 0.423cm;
 		font-weight   : 900;
-		line-height   : 0.951em; //Font is misaligned. Shift up slightly
+		//line-height   : 0.951em; //Font is misaligned. Shift up slightly
 		& + * {
 			margin-top : 0.2cm;
 		}
@@ -316,9 +314,6 @@ body {
 			-webkit-background-clip : text;
 			color                   : rgba(0, 0, 0, 0);
 	}
-	//*****************************
-	// *          TABLE
-	// *****************************/
 	table{
 		.useSansSerif();
 		width         : 100%;
@@ -349,9 +344,6 @@ body {
 			}
 		}
 	}
-	//*****************************
-	// *            NOTE
-	// *****************************/
 	.note{
 		.useSansSerif();
 		background-color    : var(--HB_Color_Accent);
@@ -379,9 +371,6 @@ body {
 			margin-bottom : 0;
 		}
 	}
-	//************************************
-	// *       DESCRIPTIVE TEXT BOX
-	// ************************************/
 	.descriptive{
 		.useSansSerif();
 		background-color    : #faf7ea;
@@ -438,6 +427,9 @@ body {
 			}
 		}
 	}
+	.credit {
+		text-align: center;
+	}
 
 	/* Watermark */
 	.watermark {
@@ -492,63 +484,41 @@ body {
 	.watercolor12 { --wc : @watercolor12; }
 
 	//*****************************
-	// *    MONSTER STAT BLOCK
+	// *    Kreaturen
 	// *****************************/
+	.kreatur,
 	.monster {
-		.useSansSerif();
-		&.frame {
-			border-style          : solid;
-			border-width          : 7px 6px;
-			background-color      : var(--HB_Color_MonsterStatBackground);
-			background-image      : @monsterBlockBackground;
-			border-image          : @monsterBorderImage 14 round;
-			border-image-outset   : 0px 2px;
-			background-blend-mode : overlay;
-			background-attachment : fixed;
-			box-shadow            : 1px 4px 14px #888;
-			padding               : 4px 2px;
-			margin-left           : -0.16cm;
-			margin-right          : -0.16cm;
-			width                 : calc(100% + 0.32cm);
-		}
 
 		position          : relative;
-		padding           : 0px;
+		padding           : 8px;
 		margin-bottom     : 0.325cm;
+		background-color: #ffe3c8;
 
-		//Headers
+		//Header
 		h2{
 			font-size     : 0.62cm;
 			line-height   : 1em;
 			margin        : 0;
+			background-color: none;
 			&+p {
 				font-size     : 0.304cm; //Monster size and type subtext
 				margin-bottom : 0;
+				background-color: none;
 			}
 		}
-		h3{
-			font-family    : ScalySansRemake;
-			font-weight    : 800;
-			font-variant   : small-caps;
-			border-bottom  : 2px solid var(--HB_Color_HeaderText);
-			// margin-top     : 0.05cm;  //Font is misaligned. Shift up slightly
-  		padding-bottom : 0.05cm;
-		}
-
-		//Triangle dividers
 		hr{
 			visibility       : visible;
-			height           : 6px;
-			margin           : 0.12cm 0cm;
-			background-image : @redTriangleImage;
-			background-size  : 100% 100%;
-			border           : none;
+			height           : 2px;
+			margin           : 0.12cm -8px;
+			background-color: darkred;
+			color: darkred;
+			border-width: 0;
 		}
 
 		//Attribute Lists - All text between HRs is red
-		hr ~ :is(dl,p) {
-			color : var(--HB_Color_HeaderText);
-		}
+		// hr ~ :is(dl,p) {
+		// 	color : var(--HB_Color_HeaderText);
+		// }
 		hr:last-of-type {
 			& ~ :is(dl,p) {
 				color : inherit; // After the HRs, reset text to black
@@ -580,15 +550,12 @@ body {
 		}
 	}
 
-	//Full Width
-	.monster.wide{
-		.useColumns(0.96, @fillMode: balance);
-	}
 
 	//*****************************
-	// *           FOOTER
+	// *           Footer
 	// *****************************/
-	&:has(.pageNumber):after{
+	&:has(.pageNumber):after,
+	&:has(.seitenzahl):after {
 		
 		content          : "";
 		position         : absolute;
@@ -618,7 +585,8 @@ body {
 			text-align : left;
 		}
 	}*/
-	.pageNumber{
+	.pageNumber,
+	.seitenzahl{
 		/* background */
 		/*height           : 50px;
 		width            : 100%;
@@ -653,7 +621,8 @@ body {
 			content : counter(phb-page-numbers);
 		}
 	}
-	.footnote{
+	.footnote,
+	.fusszeile{
 		position   : absolute;
 		right      : 80px;
 		bottom     : 32px;
@@ -663,7 +632,8 @@ body {
 		color      : var(--HB_Color_Footnotes);
 		text-align : right;
 	}
-	.pageheader{
+	.pageheader,
+	.kopfzeile{
 		position   : absolute;
 		top     : 24px;
 		left: 0px;
@@ -743,10 +713,12 @@ body {
 		break-inside                : avoid;
 	}
 }
+
 //*****************************
-// *         SPELL LIST
+// *     Zauberliste
 // *****************************/
-.page .spellList{
+.page .spellList,
+.page .zauberliste{
 	.useSansSerif();
 	column-count        : 2;
 	ul+h5{
@@ -771,9 +743,10 @@ body {
 }
 
 //*****************************
-// *       CLASS TABLE
+// *      TABELLEN
 // *****************************/
-.page .classTable{
+.page .classTable,
+.page .klassentabelle {
 th[colspan]:not([rowspan]) {
 	white-space : nowrap;
 }
@@ -827,6 +800,10 @@ h5 + table{
 	margin-top : 0.2cm;
 }
 }
+
+//**************************
+// *       KARTEN
+// **************************/
 .page:has(.karten) {
 	.useThreeColumns();
 	padding           : 1.0cm 1.0cm 1.0cm;
@@ -841,10 +818,49 @@ h5 + table{
 }
 
 //*****************************
-// *    FRONT COVER PAGE
+// *   DUNKEL THEME
+// *****************************/
+.page:has(.dunkel),
+.page:has(.dark),
+.page:has(.vorderseite):has(.dunkel) {
+	color: #fff;
+	background-image: url('/assets/ilaris/hintergrund_schwarz.jpg');
+	h1 {
+		text-shadow: unset;
+		color: white;
+		filter: drop-shadow(0 0 1.5px black) drop-shadow(0 0 0 black)
+				drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+				drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+				drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+	}
+	h2 {
+		text-shadow: unset;
+		filter: drop-shadow(0 0 1px black) drop-shadow(0 0 0 black)
+				drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+				drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+				drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		color: white;
+	}
+	.logo p {
+		color: #fff;
+	}
+	table tbody tr:nth-child(odd) {
+		background-color: #463d31;
+	}
+	.fusszeile,
+	.footnote {
+		color : white;
+		filter: drop-shadow(0 0 0.7px black) drop-shadow(0 0 0 black)
+				drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+				drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
+				drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+	}
+}
+//*****************************
+// *    VORDERSEITE
 // *****************************/
 .page:has(.frontCover),
-.page:has(.titelseite) {
+.page:has(.vorderseite) {
 	columns    : 1;
 	text-align : center;
 	&:after {
@@ -883,21 +899,26 @@ h5 + table{
 		//transform: rotate(187deg);
 	}
 	h1 {
-		text-shadow: unset;
-		filter         : drop-shadow(0 0 1.5px black) drop-shadow(0 0 0 black)
-										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
 		//text-transform : uppercase;
 		font-weight    : normal;
 		margin-top     : 3.2cm;
 		margin-bottom  : 0;
-		color          : white;
 		font-family    : Cinzel;
 		font-weight: bold;
-
 		font-size      : 2.1cm;
-		//line-height    : 0.85em;
+		// in coverPart sligthly different:
+		// margin-top     : 3.5cm;
+		margin-bottom  : 0;
+		// theme
+		text-shadow: unset;
+		filter: drop-shadow(0 0 0.5px #eae1ce) 
+				drop-shadow(0 0 0.5px #eae1ce)
+				drop-shadow(0 0 1.5px #eae1ce)
+				drop-shadow(0 0 0.5px #eae1ce)
+				drop-shadow(0 0 2.5px #eae1ce)
+				drop-shadow(0 0 0.5px #eae1ce)
+				drop-shadow(0 0 6.5px #eae1ce)
+				drop-shadow(0 0 1.5px #eae1ce);
 	}
 	h1::before {
 		content: '';
@@ -906,15 +927,22 @@ h5 + table{
 		content: '';
 	}
 	h2 {
-		filter         : drop-shadow(0 0 1px black) drop-shadow(0 0 0 black)
-										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		// general settings
 		font-family    : Cinzel;
 		font-weight    : normal;
 		font-size      : 0.85cm;
 		letter-spacing : 0.25cm;
-		color          : white;
+
+		// default light theme (overwritten by .dunkel)
+		text-shadow: unset;
+		filter: drop-shadow(0 0 0.5px #eae1ce) 
+				drop-shadow(0 0 0.5px #eae1ce)
+				drop-shadow(0 0 1.5px #eae1ce)
+				drop-shadow(0 0 0.5px #eae1ce)
+				drop-shadow(0 0 2.5px #eae1ce)
+				drop-shadow(0 0 0.5px #eae1ce)
+				drop-shadow(0 0 6.5px #eae1ce)
+				drop-shadow(0 0 1.5px #eae1ce);
 	}
 	hr {
 		display          : block;
@@ -948,157 +976,45 @@ h5 + table{
 		flex-direction   : column;
 		padding-top      : 0.1cm;
 	}
-	.footnote {
-		filter       : drop-shadow(0 0 0.7px black) drop-shadow(0 0 0 black)
-									 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-									 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-									 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+	.footnote,
+	.fusszeile {
+		// general section
 		position     : absolute;
 		text-align   : center;
-		color        : white;
 		font-size    : 0.496cm;
 		bottom       : 1.3cm;
 		left         : 0;
-    right        : 0;
-    margin-left  : auto;
-    margin-right : auto;
+		right        : 0;
+		margin-left  : auto;
+		margin-right : auto;
 		width        : 70%;
 		font-family  : Aniron;
-	}
-	.logo {
-		position   : absolute;
-		top        : 1.2cm;
-		left       : 0;
-		right      : 0;
-		filter     : drop-shadow(0 0 0.075cm black);
-		img {
-			height : 3cm;
-			//width  : 100%;
-		}
-	}
-}
-//*****************************
-// *    INSIDE COVER PAGE
-// *****************************/
-.page:has(.insideCover) {
-	columns    : 1;
-	text-align : center;
-	&:after {
-		all: unset;
-	}
-	&:has(.topbanner):after {
-		content          : "";
-		position         : absolute;
-		top           : 0px;
-		left             : 0px;
-		z-index          : 100;
-		height           : 92px;
-		width            : 100%;
-		background-image : @topBanner;
-		background-size  : cover;
-		background-repeat: no-repeat;
-		background-position: center;
-		//opacity: 40%;
-    	//filter: sepia(100%);
-		//transform: rotate(187deg);
-	}
-	&:has(.leftbanner):after {
-		content          : "";
-		position         : absolute;
-		top           : -11px;
-		left             : -8px;
-		z-index          : 100;
-		height           : 102%;
-		width            : 127px;
-		background-image : @leftBanner;
-		background-size  : cover;
-		background-repeat: no-repeat;
-		background-position: center;
-		//opacity: 40%;
-    	//filter: sepia(100%);
-		//transform: rotate(187deg);
-	}
-	h1 {
-		font-family		 : Cinzel;
-		font-weight		 : normal;
-		font-size		   : 2.1cm;
-		margin-top     : 3.5cm;
-		margin-bottom  : 0;
-		//text-transform : uppercase;
-		//line-height    : 0.85em;
-		font-weight: bold;
-		filter: drop-shadow(0 0 0.5px #eae1ce) 
-				drop-shadow(0 0 0.5px #eae1ce)
-				drop-shadow(0 0 1.5px #eae1ce)
-				drop-shadow(0 0 0.5px #eae1ce)
-				drop-shadow(0 0 2.5px #eae1ce)
-				drop-shadow(0 0 0.5px #eae1ce)
-				drop-shadow(0 0 6.5px #eae1ce)
-				drop-shadow(0 0 1.5px #eae1ce);
-	}
-	h1::before {
-		content: '';
-	}
-	h1::after{
-		content: '';
-	}
-	h2 {
-		font-family    : Cinzel;
-		font-weight    : normal;
-		font-size      : 0.85cm;
-		letter-spacing : 0.25cm;
-		filter: drop-shadow(0 0 0.5px #eae1ce) 
-				drop-shadow(0 0 0.5px #eae1ce)
-				drop-shadow(0 0 1.5px #eae1ce)
-				drop-shadow(0 0 0.5px #eae1ce)
-				drop-shadow(0 0 2.5px #eae1ce)
-				drop-shadow(0 0 0.5px #eae1ce)
-				drop-shadow(0 0 6.5px #eae1ce)
-				drop-shadow(0 0 1.5px #eae1ce);
-	}
-	hr {
-		display          : block;
-		position         : relative;
-		background-image : @horizontalRule;
-		background-size  : 100% 100%;
-		visibility       : visible;
-		height           : 0.5cm;
-		width            : 12cm;
-		border           : none;
-		margin           : auto;
-	}
-	.logo {
-		position   : absolute;
-		top        : 1.2cm;
-		left       : 0;
-		right      : 0;
-		filter     : drop-shadow(0 0 0.075cm black);
-		img {
-			height : 3cm;
-			//width  : 100%;
-		}
-	}
-	.footnote {
-		filter       : drop-shadow(0 0 0.7px #eae1ce) drop-shadow(0 0 0 #eae1ce)
-									 drop-shadow(0 0 0 #eae1ce) drop-shadow(0 0 0 #eae1ce)
-									 drop-shadow(0 0 0 #eae1ce) drop-shadow(0 0 0 #eae1ce)
-									 drop-shadow(0 0 0 #eae1ce) drop-shadow(0 0 0 #eae1ce);
-		
-		position     : absolute;
-		text-align   : center;
+
+		// theme default (light)
 		color        : var(--HB_Color_HeaderText);
-		font-size    : 0.496cm;
-		bottom       : 1.3cm;
-		left         : 0;
-    right        : 0;
-    margin-left  : auto;
-    margin-right : auto;
-		width        : 70%;
-		font-family  : Aniron;
+		filter: 
+			drop-shadow(0 0 0.7px #eae1ce) drop-shadow(0 0 0 #eae1ce)
+			drop-shadow(0 0 0 #eae1ce) drop-shadow(0 0 0 #eae1ce)
+			drop-shadow(0 0 0 #eae1ce) drop-shadow(0 0 0 #eae1ce)
+			drop-shadow(0 0 0 #eae1ce) drop-shadow(0 0 0 #eae1ce);
+	}
+	.logo {
+		position   : absolute;
+		top        : 1.2cm;
+		left       : 0;
+		right      : 0;
+		filter     : drop-shadow(0 0 0.075cm black);
+		img {
+			height : 3cm;
+		}
 	}
 }
+
+
+
+
 //*****************************
-// *      BACK COVER
+// *      RUECKSEITE
 // *****************************/
 .page:has(.backcover), 
 .page:has(.rueckseite){
@@ -1233,7 +1149,8 @@ h5 + table{
 		}
 	}
 }
-.page:has(.backcover):has(.top) {
+.page:has(.backcover):has(.top),
+.page:has(.rueckseite):has(.oben) {
 	//width: 100%;
 	.columnWrapper {
 		padding-top: 6cm;
@@ -1255,51 +1172,7 @@ h5 + table{
 		font-weight: 800;
 	}
 }
-.page:has(.dunkel) {
-	color: #fff;
-	background-image: url('/assets/ilaris/hintergrund_schwarz.jpg');
-	
-	h1 {
-		text-shadow: unset;
-		filter         : drop-shadow(0 0 1.5px black) drop-shadow(0 0 0 black)
-										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
-		//text-transform : uppercase;
-		font-weight    : normal;
-		margin-top     : 3.2cm;
-		margin-bottom  : 0;
-		color          : white;
-		font-family    : Cinzel;
-		font-weight: bold;
 
-		font-size      : 2.1cm;
-		//line-height    : 0.85em;
-	}
-	h1::before {
-		content: '';
-	}
-	h1::after{
-		content: '';
-	}
-	h2 {
-		filter         : drop-shadow(0 0 1px black) drop-shadow(0 0 0 black)
-										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-										 drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
-		font-family    : Cinzel;
-		font-weight    : normal;
-		font-size      : 0.85cm;
-		letter-spacing : 0.25cm;
-		color          : white;
-	}
-	.logo p {
-		color: #fff;
-	}
-	table tbody tr:nth-child(odd) {
-		background-color: #463d31;
-	}
-}
 
 //*****************************
 // *      PART COVER
@@ -1340,9 +1213,8 @@ h5 + table{
 	}
 }
 
-
 //*****************************
-// *      TABLE OF CONTENTS
+// *      INHALTSVERZEICHNIS
 // *****************************/
 .page {
 &:has(.toc):after {
@@ -1465,7 +1337,7 @@ break-inside                : avoid;
 }
 
 //*****************************
-// *       RUNE TABLE
+// *       RUNEN
 // *****************************/
 .page {
 	.runeTable {
@@ -1503,6 +1375,7 @@ break-inside                : avoid;
 		}
 	}
 }
+
 //*****************************
 // *       INDEX
 // *****************************/
@@ -1526,3 +1399,102 @@ break-inside                : avoid;
 		}
 	}
 }
+
+//*****************************
+// *       MASKEN
+// *****************************/
+.page {
+	.maske {
+		position              : absolute;
+		height                : 200%;
+		width                 : 200%;
+		left                  : 50%;
+		bottom                : 50%;
+		--rotation            : 0;
+		--revealer            : none;
+		--checkerboard        : none;
+		--scaleX              : 1;
+		--scaleY              : 1;
+		-webkit-mask-image    : var(--wc), var(--revealer);
+		-webkit-mask-repeat   : repeat-x;
+		-webkit-mask-size     : 50%; //Scale only X to fit page width, leave height at aspect ratio, designed to hang off the edge
+		-webkit-mask-position : 50% calc(50% - var(--offset));
+		mask-image            : var(--wc);
+		mask-repeat           : repeat-x;
+		mask-size             : 50%;
+		mask-position         : 50% calc(50% - var(--offset));
+		background-image      : var(--checkerboard);
+		background-size       : 20px;
+		z-index               : -1;
+		transform             : translateY(50%) translateX(-50%) rotate(calc(1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));
+		& > p:has(img) {
+			position   : absolute;
+			width      : 50%;
+			height     : 50%;
+			bottom     : 50%;
+			left       : 50%;
+			transform  : translateX(-50%) translateY(50%) rotate(calc(-1deg * var(--rotation))) scaleX(calc(1 / var(--scaleX))) scaleY(calc(1 / var(--scaleY)));
+		}
+		& img {
+			position : absolute;
+			display  : block;
+			bottom   : 0;
+		}
+		&.unten {
+			--rotation : 0;
+			& img {bottom: 0;}
+		}
+		&.oben {
+			--rotation : 180;
+			& img {top: 0;}
+		}
+		&.links {
+			--rotation : 90;
+			& img {left: 0;}
+		}
+		&.rechts {
+			--rotation : -90;
+			& img {right: 0;}
+		}
+		&.revealImage {
+			--revealer : linear-gradient(0deg, rgba(0,0,0,.2) 0%, rgba(0,0,0,0.2));
+			--checkerboard : url(/assets/waterColorMasks/missingImage.png); //shows any masked regions not filled by image
+		}
+	}
+
+	.mitte {
+		width                 : 100%;
+		height                : 100%;
+		left                  : calc(var(--offsetX));
+		bottom                : calc(var(--offsetY));
+		-webkit-mask-image    : var(--wc), var(--revealer);
+		-webkit-mask-repeat   : no-repeat;
+		-webkit-mask-size     : 100% 100%; //Scale both dimensions to fit page size
+		-webkit-mask-position : 0% 0%;
+		mask-image            : var(--wc), var(--revealer);
+		mask-repeat           : no-repeat;
+		mask-size             : 100% 100%; //Scale both dimensions to fit page size
+		mask-position         : 50% 50%;
+		transform             : rotate(calc(1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));
+		// from editor snippet on cover
+		--offsetX:0%;
+		--offsetY:-10%;
+		--rotation:0;
+		// selected mask center 11
+		--wc : url(/assets/waterColorMasks/center/0011.webp);
+
+		& > p:has(img) {
+			position   : absolute;
+			width      : 100%;
+			height     : 100%;
+			bottom     : 0;
+			left       : 0;
+			transform  : unset;
+			transform  : scaleX(calc(1 / var(--scaleX))) scaleY(calc(1 / var(--scaleY)))
+									rotate(calc(-1deg * var(--rotation)))
+						translateX(calc(-1 * var(--offsetX)))
+									translateY(calc(1 * var(--offsetY)));
+		}
+	}
+}
+
