@@ -385,7 +385,11 @@ module.exports = [
 						
 						{{karte,
 						#### Kartentitel
-						Text...
+						Mit Bild...
+						
+						![cat warrior](/assets/ilaris/Kraeuterkopf.png) {position:absolute,left:0.7cm,bottom:1cm,width:80%,mix-blend-mode:multiply}
+						
+						
 						###### Fußnote
 						}}
 						
@@ -398,8 +402,19 @@ module.exports = [
 						{{karte,
 						#### Kartentitel
 						Text...
+						
+						##### Tabelle auf Karte
+						| Spezies | Hintergrund | Fähigkeiten |
+						|:------------------|:-----:|:-----------------:|
+						| Menschen                 | Krieger     | Schwertkampf, Taktik, Ausdauer                |
+						| Elfen               | Magier     | Elementarmagie, Heilung, Illusion                |
+						| Zwerge             | Krieger     | Hammerkampf, Schmiedekunst                |
+						| Orks             | Berserker     | Raserei, Widerstand                |
+						| Gnome            | Schurke     | Schleichen, Diebeskunst, Fallen entschärfen                |
+						
 						###### Fußnote
 						}}
+							
 						
 						{{karte,kleinertitel,kleinertext
 						#### Sehr kleiner Kartentitel
