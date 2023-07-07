@@ -401,9 +401,16 @@ module.exports = [
 						###### Fußnote
 						}}
 						
-						{{karte,
-						#### Kartentitel
-						Text...
+						{{karte,kleinertitel,kleinertext
+						#### Sehr kleiner Kartentitel
+						
+						Und äußerst kleiner Text...
+						:
+						In den weiten und magischen Landen erhob sich eine düstere Bedrohung, die das Gleichgewicht der Welt zu zerstören drohte. Verzweifelt versammelten sich tapfere Helden aus allen Ecken des Landes, bereit, sich der Herausforderung entgegenzustellen. 
+						
+						Gemeinsam durchstreiften sie gefährliche Wälder, uralte Verliese und unbekannte Reiche, um die Rätsel vergessener Artefakte zu lösen. In epischen Schlachten trafen sie auf mächtige Kreaturen und dunkle Magier, während sie ihre Entschlossenheit und Tapferkeit unter Beweis stellten. Schließlich erreichten sie den finsteren Meister des Bösen, um sich ihm in einem alles entscheidenden Kampf zu stellen.
+						
+						Mit vereinten Kräften und der Macht des Glaubens gelang es den Helden, das Licht über die Dunkelheit siegen zu lassen und die Welt vor ihrem sicheren Untergang zu bewahren.
 						###### Fußnote
 						}}
 						
