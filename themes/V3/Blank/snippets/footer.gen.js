@@ -1,10 +1,9 @@
+const Markdown = require('../../../../shared/naturalcrit/markdown.js');
+
 module.exports = {
 	createFooterFunc : function(headerSize=1){
 		return (props)=>{
 			const cursorPos = props.cursorPos;
-			const renderer = props.brew.renderer || 'V3';
-
-			const Markdown = renderer == 'V3' ? require('../../../../shared/naturalcrit/markdown.js') : require('../../../../shared/naturalcrit/markdownLegacy.js');
 
 			const markdownText = props.brew.text.split('\n').slice(0, cursorPos.line).join('\n');
 			const markdownTokens = Markdown.marked.lexer(markdownText);
