@@ -90,12 +90,6 @@ const escape = function (html, encode) {
 	return html;
 };
 
-const sanatizeScriptTags = (content)=>{
-	return content
-		.replace(/<script/ig, '&lt;script')
-		.replace(/<\/script>/ig, '&lt;/script&gt;');
-};
-
 const tagTypes = ['div', 'span', 'a'];
 const tagRegex = new RegExp(`(${
 	_.map(tagTypes, (type)=>{
@@ -113,7 +107,7 @@ module.exports = {
 	marked : Markdown,
 	render : (rawBrewText)=>{
 		return Markdown(
-			sanatizeScriptTags(rawBrewText),
+			rawBrewText,
 			{ renderer: renderer }
 		);
 	},
