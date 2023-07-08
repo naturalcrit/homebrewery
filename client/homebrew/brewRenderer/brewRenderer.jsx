@@ -185,6 +185,12 @@ const BrewRenderer = createClass({
 		}, 100);
 	},
 
+	emitClick : function(){
+		// console.log('iFrame clicked');
+		if(!window || !document) return;
+		document.dispatchEvent(new MouseEvent('click'));
+	},
+
 	render : function(){
 		//render in iFrame so broken code doesn't crash the site.
 		//Also render dummy page while iframe is mounting.
@@ -203,7 +209,9 @@ const BrewRenderer = createClass({
 
 				<Frame id='BrewRenderer' initialContent={this.state.initialContent}
 					style={{ width: '100%', height: '100%', visibility: this.state.visibility }}
-					contentDidMount={this.frameDidMount}>
+					contentDidMount={this.frameDidMount}
+					onClick={()=>{this.emitClick();}}
+				>
 					<div className={'brewRenderer'}
 						onScroll={this.handleScroll}
 						style={{ height: this.state.height }}>

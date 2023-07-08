@@ -243,9 +243,9 @@ const GoogleActions = {
 
 		if(obj) {
 			if(accessType == 'edit' && obj.data.properties.editId != accessId){
-				throw ('Edit ID does not match');
+				throw ({ message: 'Edit ID does not match' });
 			} else if(accessType == 'share' && obj.data.properties.shareId != accessId){
-				throw ('Share ID does not match');
+				throw ({ message: 'Share ID does not match' });
 			}
 
 			const file = await drive.files.get({

@@ -121,6 +121,7 @@ const RecentItems = createClass({
 
 	removeItem : function(url, evt){
 		evt.preventDefault();
+		evt.stopPropagation();
 
 		let edited = JSON.parse(localStorage.getItem(EDIT_KEY) || '[]');
 		let viewed = JSON.parse(localStorage.getItem(VIEW_KEY) || '[]');
@@ -139,11 +140,11 @@ const RecentItems = createClass({
 	},
 
 	renderDropdown : function(){
-		if(!this.state.showDropdown) return null;
+		// if(!this.state.showDropdown) return null;
 
 		const makeItems = (brews)=>{
 			return _.map(brews, (brew, i)=>{
-				return <a href={brew.url} className='item' key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
+				return <a className='navItem' href={brew.url} key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
 					<span className='title'>{brew.title || '[ no title ]'}</span>
 					<span className='time'>{Moment(brew.ts).fromNow()}</span>
 					<div className='clear' title='Remove from Recents' onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></div>
@@ -151,25 +152,25 @@ const RecentItems = createClass({
 			});
 		};
 
-		return <div className='dropdown'>
+		return <>
 			{(this.props.showEdit && this.props.showView) ?
-				<h4>edited</h4> : null }
+				<Nav.item className='header'>edited</Nav.item> : null }
 			{this.props.showEdit ?
 				makeItems(this.state.edit) : null }
 			{(this.props.showEdit && this.props.showView) ?
-				<h4>viewed</h4>	: null }
+				<Nav.item className='header'>viewed</Nav.item>	: null }
 			{this.props.showView ?
 				makeItems(this.state.view) : null }
-		</div>;
+		</>;
 	},
 
 	render : function(){
-		return <Nav.item icon='fas fa-history' color='grey' className='recent'
-			onMouseEnter={()=>this.handleDropdown(true)}
-			onMouseLeave={()=>this.handleDropdown(false)}>
-			{this.props.text}
+		return <Nav.dropdown className='recent'>
+			<Nav.item icon='fas fa-history' color='grey' >
+				{this.props.text}
+			</Nav.item>
 			{this.renderDropdown()}
-		</Nav.item>;
+		</Nav.dropdown>;
 	}
 
 });
