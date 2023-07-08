@@ -1,5 +1,6 @@
 require('./nav.less');
 const React = require('react');
+const { useState, useRef, useEffect } = React;
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
@@ -71,71 +72,49 @@ const Nav = {
 		}
 	}),
 
-	dropdown : createClass({
-		displayName     : 'Nav.dropdown',
-		getDefaultProps : function() {
-			return {
-				trigger : 'hover'
-			};
-		},
-		getInitialState : function() {
-			return {
-				showFromClick : false,
-				showDropdown  : false
-			};
-		},
-		componentDidMount : function() {
-			document.addEventListener('click', this.handleClickOutside);
-		},
-		componentWillUnmount : function() {
-			document.removeEventListener('click', this.handleClickOutside);
-		},
-		handleClickOutside : function(e){
-			// Close dropdown when clicked outside
-			if(this.refs.dropdown && !this.refs.dropdown.contains(e.target)) {
-				this.handleClickInside(false);
-			}
-		},
-		handleClickInside : function(state){
-			const newState = state != undefined ? state : !this.state.showFromClick;
-			this.setState({
-				showFromClick : newState
-			});
-			this.handleDropdown(newState);
-		},
-		handleDropdown : function(show){
-			this.setState({
-				showDropdown : show
-			});
-		},
-		renderDropdown : function(dropdownChildren){
-			if(!this.state.showDropdown) return null;
+	dropdown : function dropdown(props) {
+		props = Object.assign({}, props, {
+			trigger : 'hover click'
+		});
 
-			return (
-				<div className='navDropdown'>
-					{dropdownChildren}
-				</div>
-			);
-		},
-		render : function () {
-			const dropdownChildren = React.Children.map(this.props.children, (child, i)=>{
-				// Ignore the first child
-				if(i < 1) return;
-				return child;
-			});
-			return (
-				<div className={`navDropdownContainer ${this.props.className}`}
-					ref='dropdown'
-					onMouseEnter={this.props.trigger == 'hover' ? ()=>{this.handleDropdown(true);} : undefined}
-					onClick=     {()=>this.handleClickInside()}
-					onMouseLeave={this.props.trigger == 'hover' && !this.state.showFromClick ? ()=>{this.handleDropdown(false);} : undefined}
-				>
-					{this.props.children[0] || this.props.children /*children is not an array when only one child*/}
-					{this.renderDropdown(dropdownChildren)}
-				</div>
-			);
+		const myRef = useRef(null);
+		const [showDropdown, setShowDropdown] = useState(false);
+
+		useEffect(()=>{
+			document.addEventListener('click', handleClickOutside);
+			return ()=>{
+				document.removeEventListener('click', handleClickOutside);
+			};
+		}, []);
+
+		function handleClickOutside(e) {
+			// Close dropdown when clicked outside
+			if(!myRef.current?.contains(e.target)) {
+				handleDropdown(false);
+			}
 		}
-	})
+
+		function handleDropdown(show) {
+			setShowDropdown(show ?? !showDropdown);
+		}
+
+		const dropdownChildren = React.Children.map(props.children, (child, i)=>{
+			if(i < 1) return;
+			return child;
+		});
+
+		return (
+			<div className={`navDropdownContainer ${props.className}`}
+				ref={myRef}
+				onMouseEnter = { props.trigger.includes('hover') ? ()=>handleDropdown(true)  : undefined }
+				onMouseLeave = { props.trigger.includes('hover') ? ()=>handleDropdown(false) : undefined }
+				onClick      = { props.trigger.includes('click') ? ()=>handleDropdown(true)  : undefined }
+			>
+				{props.children[0] || props.children /*children is not an array when only one child*/}
+				{showDropdown && <div className='navDropdown'>{dropdownChildren}</div>}
+			</div>
+		);
+	}
 
 };
 
