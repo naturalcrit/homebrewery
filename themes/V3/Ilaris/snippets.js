@@ -183,6 +183,21 @@ module.exports = [
 				},
 			},
 			{
+				name : 'Kasten - Brief',
+				icon : 'fa-solid fa-envelope',
+				gen  : function(){
+					return dedent`
+					{{kasten,handschrift
+					Edle Helden,
+					<br>
+					warum in die Ferne schweifen, wenn das größte Abenteuer direkt vor eurer Nase liegt.
+					
+					{{rechtsbuendig -- Niemand}}
+					}}
+					\n`;
+				},
+			},
+			{
 				name : 'Kreatur',
 				icon : 'fas fa-paw',
 				gen  : MonsterBlockGen.creature(),
