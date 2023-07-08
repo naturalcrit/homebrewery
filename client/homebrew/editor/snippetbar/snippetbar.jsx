@@ -15,8 +15,8 @@ ThemeSnippets['V3_5eDMG']     = require('themes/V3/5eDMG/snippets.js');
 ThemeSnippets['V3_Journal']   = require('themes/V3/Journal/snippets.js');
 ThemeSnippets['V3_Blank']     = require('themes/V3/Blank/snippets.js');
 
-const execute = function(val, brew, params){
-	if(_.isFunction(val)) return val(brew, params);
+const execute = function(val, props){
+	if(_.isFunction(val)) return val(props);
 	return val;
 };
 
