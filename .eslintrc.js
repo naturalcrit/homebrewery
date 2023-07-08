@@ -15,7 +15,7 @@ module.exports = {
 	rules   : {
 		/** Errors **/
 		'camelcase'              : ['error', { properties: 'never' }],
-		'func-style'             : ['error', 'expression', { allowArrowFunctions: true }],
+		//'func-style'             : ['error', 'expression', { allowArrowFunctions: true }],
 		'no-array-constructor'   : 'error',
 		'no-iterator'            : 'error',
 		'no-nested-ternary'      : 'error',

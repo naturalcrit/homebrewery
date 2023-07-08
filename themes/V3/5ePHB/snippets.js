@@ -20,16 +20,6 @@ module.exports = [
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'Page Number',
-				icon : 'fas fa-bookmark',
-				gen  : '{{pageNumber 1}}\n{{footnote PART 1 | SECTION NAME}}\n\n'
-			},
-			{
-				name : 'Auto-incrementing Page Number',
-				icon : 'fas fa-sort-numeric-down',
-				gen  : '{{pageNumber,auto}}\n{{footnote PART 1 | SECTION NAME}}\n\n'
-			},
-			{
 				name : 'Table of Contents',
 				icon : 'fas fa-book',
 				gen  : TableOfContentsGen
