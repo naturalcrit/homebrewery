@@ -121,7 +121,7 @@ module.exports = [
 				name : 'Wasserzeichen',
 				icon : 'fas fa-id-card',
 				gen  : dedent`
-				{{watermark Homebrewery}}\n`
+				{{watermark Ilaris}}\n`
 			},
 		]
 	},
@@ -183,6 +183,21 @@ module.exports = [
 				},
 			},
 			{
+				name : 'Kasten - Brief',
+				icon : 'fa-solid fa-envelope',
+				gen  : function(){
+					return dedent`
+					{{kasten,handschrift
+					Edle Helden,
+					<br>
+					warum in die Ferne schweifen, wenn das größte Abenteuer direkt vor eurer Nase liegt.
+					
+					{{rechtsbuendig -- Niemand}}
+					}}
+					\n`;
+				},
+			},
+			{
 				name : 'Kreatur',
 				icon : 'fas fa-paw',
 				gen  : MonsterBlockGen.creature(),
@@ -216,10 +231,7 @@ module.exports = [
 				gen : function () {
 					return dedent`
 					{{credit
-					#### Artwork ©` +
-					" " + new Date().getFullYear() + " " +
-					dedent`
-					Ulisses Spiele.  
+					#### Artwork © ${new Date().getFullYear()} Ulisses Spiele.  
 					DAS SCHWARZE AUGE, AVENTURIEN, DERE, MYRANOR, THARUN, UTHURIA, RIESLAND 
 					und THE DARK EYE sind eingetragene Marken der Ulisses Spiele GmbH, Waldems. 
 					Die Verwendung der Grafiken erfolgt unter den von Ulisses Spiele erlaubten Richtlinien. 
@@ -388,7 +400,11 @@ module.exports = [
 						
 						{{karte,
 						#### Kartentitel
-						Text...
+						Mit Bild...
+						
+						![cat warrior](/assets/ilaris/Kraeuterkopf.png) {position:absolute,left:0.7cm,bottom:1cm,width:80%,mix-blend-mode:multiply}
+						
+						
 						###### Fußnote
 						}}
 						
@@ -401,12 +417,30 @@ module.exports = [
 						{{karte,
 						#### Kartentitel
 						Text...
+						
+						##### Tabelle auf Karte
+						| Spezies | Hintergrund | Fähigkeiten |
+						|:------------------|:-----:|:-----------------:|
+						| Menschen                 | Krieger     | Schwertkampf, Taktik, Ausdauer                |
+						| Elfen               | Magier     | Elementarmagie, Heilung, Illusion                |
+						| Zwerge             | Krieger     | Hammerkampf, Schmiedekunst                |
+						| Orks             | Berserker     | Raserei, Widerstand                |
+						| Gnome            | Schurke     | Schleichen, Diebeskunst, Fallen entschärfen                |
+						
 						###### Fußnote
 						}}
+							
 						
-						{{karte,
-						#### Kartentitel
-						Text...
+						{{karte,kleinertitel,kleinertext
+						#### Sehr kleiner Kartentitel
+						##### Mini-Untertitel
+						Und äußerst kleiner Text...
+						:
+						In den weiten und magischen Landen erhob sich eine düstere Bedrohung, die das Gleichgewicht der Welt zu zerstören drohte. Verzweifelt versammelten sich tapfere Helden aus allen Ecken des Landes, bereit, sich der Herausforderung entgegenzustellen. 
+						
+						Gemeinsam durchstreiften sie gefährliche Wälder, uralte Verliese und unbekannte Reiche, um die Rätsel vergessener Artefakte zu lösen. In epischen Schlachten trafen sie auf mächtige Kreaturen und dunkle Magier, während sie ihre Entschlossenheit und Tapferkeit unter Beweis stellten. Schließlich erreichten sie den finsteren Meister des Bösen, um sich ihm in einem alles entscheidenden Kampf zu stellen.
+						
+						Mit vereinten Kräften gelang es den Helden, die Welt vor ihrem sicheren Untergang zu bewahren.
 						###### Fußnote
 						}}
 						

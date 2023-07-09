@@ -277,7 +277,13 @@ body {
 		border: 4px solid rgb(255, 255, 255);
 		position: relative;
 		//font-size: 10px;
-		line-height: 1;
+		img {
+			max-width: 100%;
+    		max-height: 100%;
+		}
+		p {
+			line-height: 1;
+		}
 		margin: 1mm -4mm;
 		h4 {
 			font-size: 0.55cm;
@@ -297,6 +303,16 @@ body {
 			right: 3mm;
 			text-align: center;
 			font-family: Cinzel;
+		}
+		&.kleinertitel, &.smalltitle {
+			h4, h5 {
+				font-size: 0.35cm;
+			}
+		}
+		&.kleinertext, &.smalltext {
+			p {
+				font-size: 0.29cm;
+			}
 		}
 	}
 	.versalie {
@@ -441,11 +457,11 @@ body {
 		left            : 0;
 		width           : 100%;
 		height          : 100%;
-		font-size       : 120px;
+		font-size       : 260px;
 		text-transform	: uppercase;
 		color           : black;
 		mix-blend-mode  : overlay;
-		opacity         : 30%;
+		opacity         : 60%;
 		transform       : rotate(-45deg);
 		z-index         : 500;
 		p {
@@ -492,7 +508,7 @@ body {
 		position          : relative;
 		padding           : 8px;
 		margin-bottom     : 0.325cm;
-		background-color: #ffe3c8;
+		background-color: var(--HB_Color_Accent);
 
 		//Header
 		h2{
@@ -645,6 +661,25 @@ body {
 		text-indent : 0;
 		margin-left: auto;
 		margin-right: auto;
+	}
+	.kasten {
+		// border-style: solid;
+		// border-width: 7px;
+		// border-image: url("/assets/ilaris/Kasten3_high_res.jpg") 12 stretch;
+		// border-image-outset: 4px;
+
+		padding:20px;
+		background-image: url(/assets/ilaris/Kasten3_trans_hell.png);
+		background-size: cover;
+		background-repeat: round;
+	}
+	.handschrift {
+		font-family: Ephesis;
+		font-size: 0.6cm;
+	}
+	.rechtsbuendig {
+		text-align: right;
+		width: 100%;
 	}
 	//************************************
 	// *           CODE BLOCKS
@@ -902,11 +937,12 @@ h5 + table{
 	h1 {
 		//text-transform : uppercase;
 		font-weight    : normal;
-		margin-top     : 3.2cm;
+		margin-top     : 2.5cm;
 		margin-bottom  : 0;
 		font-family    : Cinzel;
 		font-weight: bold;
 		font-size      : 2.1cm;
+		line-height: 1.1em;
 		// in coverPart sligthly different:
 		// margin-top     : 3.5cm;
 		margin-bottom  : 0;
