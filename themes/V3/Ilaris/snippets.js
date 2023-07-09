@@ -191,7 +191,7 @@ module.exports = [
 		snippets  : [
 			{
 				name : 'Versalie',
-				icon : 'fas fa-a',
+				icon : 'fas fa-archway',
 				gen  : function() {
 					return '{{versalie A}}';
 				},
@@ -231,7 +231,7 @@ module.exports = [
 			},
 			{
 				name : 'Kasten - Brief',
-				icon : 'fas fa-note-sticky',
+				icon : 'fas fa-envelope',
 				gen  : function(){
 					return dedent`
 					{{kasten,handschrift
@@ -269,7 +269,7 @@ module.exports = [
 			},
 			{
 				name: 'Ulisses Disclaimer',
-				icon: 'fas fa-section',
+				icon: 'far fa-copyright',
 				gen : function () {
 					return dedent`
 					{{credit
