@@ -4,9 +4,16 @@ Wir betreiben nur den Ilaris-Fork des eigentlich englishsprachigen auf DnD ausge
 
 
 ### V0.1
-- Startseite und Changelog (lukr)
-- Schriftarten und Stile (lobo)
-- Hosting auf dem [ilaris-online](ilaris-online.de) Server (lukr)
-- Zwei verschiedene Titel- und Rückseiten (lobo)
-- Hintergrundtextur (lobo)
-- Übersetzung der meisten Buttons (lobo)
+- Layout
+  - Schriftarten, Farben und Stile
+  - Seitenlayout, Überschriften und Hintergrund
+  - Ilaris Assets (Kästen, Logos, etc.)
+  - Verschiedene Vor- und Rückseiten
+  - Manöver- bzw. Spielkarten
+- Inhalte
+  - Startseite und Changelog
+  - Deutsche Übersetzung vom UI und css Klassen
+  - Angepasste Menüs mit eigenen Beispielen
+  - Eine Spielhilfe als Beispiel/Vorlage
+  - Template-Menu
+- Hosting auf dem [ilaris-online](ilaris-online.de) Server
