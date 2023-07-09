@@ -122,6 +122,64 @@ module.exports = [
 				gen  : dedent`
 				{{watermark Ilaris}}\n`
 			},
+			{
+				name: 'Logo',
+				icon: 'fas fa-dice-d20',
+				gen  : function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_rot.png)}}\n'; },
+				subsnippets  : [
+					{
+						name : 'Würfel Rot',
+						icon : 'fas fa-dice-d20',
+						color: 'red',
+						gen  : function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_rot.png)}}\n'; }
+					},
+					{
+						name : 'Würfel Braun',
+						icon : 'fas fa-dice-d20',
+						gen  : function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_braun.png)}}\n'; }
+					},
+					{
+						name : 'Würfel Orange',
+						icon : 'fas fa-dice-d20',
+						gen  : function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_orange.png)}}\n'; }
+					},
+					{
+						name : 'Würfel Gelb',
+						icon : 'fas fa-dice-d20',
+						gen  : function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_gelb.png)}}\n'; }
+					},
+					{
+						name : 'Würfel Hellgrün',
+						icon : 'fas fa-dice-d20',
+						gen  : function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_hellgruen.png)}}\n'; }
+					},
+					{
+						name : 'Würfel Grün',
+						icon : 'fas fa-dice-d20',
+						gen  : function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_gruen.png)}}\n'; }
+					},
+					{
+						name : 'Würfel Blau',
+						icon : 'fas fa-dice-d20',
+						gen  : function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_blau.png)}}\n'; }
+					},
+					{
+						name : 'Würfel Hellblau',
+						icon : 'fas fa-dice-d20',
+						gen  : function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_hellblau.png)}}\n'; }
+					},
+					{
+						name : 'Würfel Lila',
+						icon : 'fas fa-dice-d20',
+						gen  : function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_lila.png)}}\n'; }
+					},
+					{
+						name : 'Würfel Pink',
+						icon : 'fas fa-dice-d20',
+						gen  : function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_pink.png)}}\n'; }
+					},
+				]
+			}
 		]
 	},
 
@@ -133,7 +191,7 @@ module.exports = [
 		snippets  : [
 			{
 				name : 'Versalie',
-				icon : 'fas square-h',
+				icon : 'fas fa-a',
 				gen  : function() {
 					return '{{versalie A}}';
 				},
@@ -173,7 +231,7 @@ module.exports = [
 			},
 			{
 				name : 'Kasten - Brief',
-				icon : 'fas fa-envelope',
+				icon : 'fas fa-note-sticky',
 				gen  : function(){
 					return dedent`
 					{{kasten,handschrift
@@ -211,7 +269,7 @@ module.exports = [
 			},
 			{
 				name: 'Ulisses Disclaimer',
-				icon: 'fas fa-signature',
+				icon: 'fas fa-section',
 				gen : function () {
 					return dedent`
 					{{credit
