@@ -366,20 +366,20 @@ module.exports = [
 						##### Kartenuntertitel
 						Kartentext oder Tabellen oder Bilder...
 						Hier können auch andere Layoutelemente innerhalb einer Karte genutzt werden.
-						###### Fußnote
+						###### Fußzeile
 						}}
 						
 						{{karte,border-color:#984806
 						#### Kartentitel
 						Text...
-						###### Fußnote
+						###### Fußzeile
 						}}
 						
 						{{karte,
 						#### Kartentitel
 						##### Kartenuntertitel
 						Kartentext oder Tabellen oder Bilder...
-						###### Fußnote
+						###### Fußzeile
 						}}
 						
 						{{karte,
@@ -389,13 +389,13 @@ module.exports = [
 						![cat warrior](/assets/ilaris/Kraeuterkopf.png) {position:absolute,left:0.7cm,bottom:1cm,width:80%,mix-blend-mode:multiply}
 						
 						
-						###### Fußnote
+						###### Fußzeile
 						}}
 						
 						{{karte,border-color:#5F4778
 						#### Kartentitel
 						Text...
-						###### Fußnote
+						###### Fußzeile
 						}}
 						
 						{{karte,
@@ -411,7 +411,7 @@ module.exports = [
 						| Orks             | Berserker     | Raserei, Widerstand                |
 						| Gnome            | Schurke     | Schleichen, Diebeskunst, Fallen entschärfen                |
 						
-						###### Fußnote
+						###### Fußzeile
 						}}
 							
 						
@@ -425,7 +425,7 @@ module.exports = [
 						Gemeinsam durchstreiften sie gefährliche Wälder, uralte Verliese und unbekannte Reiche, um die Rätsel vergessener Artefakte zu lösen. In epischen Schlachten trafen sie auf mächtige Kreaturen und dunkle Magier, während sie ihre Entschlossenheit und Tapferkeit unter Beweis stellten. Schließlich erreichten sie den finsteren Meister des Bösen, um sich ihm in einem alles entscheidenden Kampf zu stellen.
 						
 						Mit vereinten Kräften gelang es den Helden, die Welt vor ihrem sicheren Untergang zu bewahren.
-						###### Fußnote
+						###### Fußzeile
 						}}
 						
 						{{pageNumber ??}}
