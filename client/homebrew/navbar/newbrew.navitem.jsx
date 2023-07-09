@@ -16,14 +16,14 @@ module.exports = function(props){
 			Leer
 		</Nav.item>
 		<Nav.item
-			color='purple'
+			color='red'
 			href='/new/EGy1wlD7TRl7'
 			icon='fas fa-plus-square'>
 			Abenteuer
 		</Nav.item>
 		<Nav.item
 		href='/new/GiL_1PHMlYZ5'
-		color='blue'
+		color='orange'
 		icon='fas fa-plus-square'>
 			Spielhilfe
 		</Nav.item>
