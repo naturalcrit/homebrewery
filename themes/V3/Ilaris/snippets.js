@@ -338,27 +338,27 @@ module.exports = [
 				gen       		 : function() {
 					return dedent`
 						\page
-						{{pageheader Karten}}
+						{{kopfzeile Karten}}
 						{{karten}}
 			
-						{{karte,border-color:#000000
+						{{karte,schwarz
 						#### Randfarben
-						Benutze border-color: um den Rand zu färben.
+						Gib eine Farbe für Rand und Überschrift an.
 						Farbcodes für Manöverkarten:
-						- \`#000000\`: Proben & Profanes 
-						- \`#632423\`: Gesundheit 
-						- \`#984806\`: Kampf 
-						- \`#5F4778\`: Magie 
-						- \`#C19758\`: Karma 
-						- \`#CB1C7C\`: Paktierer 
-						- \`#5F4778\`: Zauber 
-						- \`#C19758\`: Liturgien 
-						- \`#CB1C7C\`: Anrufungen 
+						- \`schwarz\`: Proben & Profanes 
+						- \`rot\`: Gesundheit 
+						- \`braun\`: Kampf 
+						- \`lila\`: Magie, Zauber
+						- \`gold\`: Karma, Liturgie
+						- \`pink\`: Pakt, Anrufung
+						**Experte:** :: Eigene Farben können als Hex wie folgt angegeben werden: \`border-color:#7352A1\`
 						}}
 						
-						{{karte,border:0px
+						{{karte,randlos
 						##### Randlose Karte
-						Setze \`border:0px\` um den Rand der Karte wegzulassen.
+						Setze \`randlos\` um den Rand der Karte wegzulassen. 
+						
+						**Experte:** :: Du kannst mit CSS auch eigene Randdicken wie zum Beispiel \`border:7mm;\` setzen.
 						}}
 						
 						{{karte,
@@ -386,7 +386,7 @@ module.exports = [
 						#### Kartentitel
 						Mit Bild...
 						
-						![cat warrior](/assets/ilaris/Kraeuterkopf.png) {position:absolute,left:0.7cm,bottom:1cm,width:80%,mix-blend-mode:multiply}
+						![Kraeuterkopf](/assets/ilaris/Kraeuterkopf.png) {position:absolute,left:0.7cm,bottom:1cm,width:80%,mix-blend-mode:multiply}
 						
 						
 						###### Fußzeile
@@ -428,7 +428,7 @@ module.exports = [
 						###### Fußzeile
 						}}
 						
-						{{pageNumber ??}}
+						{{seitenzahl,auto}}
 						\n`;
 				},
 			},

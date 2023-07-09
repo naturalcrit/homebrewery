@@ -315,6 +315,7 @@ body {
 			}
 		}
 	}
+
 	.versalie {
 		float                   : left;
 			font-family             : SolberaImitationRemake;
@@ -750,34 +751,6 @@ body {
 }
 
 //*****************************
-// *     Zauberliste
-// *****************************/
-.page .spellList,
-.page .zauberliste{
-	.useSansSerif();
-	column-count        : 2;
-	ul+h5{
-		margin-top : 15px;
-	}
-	p, ul{
-		font-size   : 0.352cm;
-		line-height : 1.265em;
-	}
-	ul{
-		margin-bottom               : 0.5em;
-		padding-left                : 1em;
-		text-indent                 : -1em;
-		list-style-type             : none;
-		-webkit-column-break-inside : auto;
-		page-break-inside           : auto;
-		break-inside                : auto;
-	}
-	&.wide{
-		column-count : 4;
-	}
-}
-
-//*****************************
 // *      TABELLEN
 // *****************************/
 .page .classTable,
@@ -839,6 +812,47 @@ h5 + table{
 //**************************
 // *       KARTEN
 // **************************/
+.page {
+	.karte.schwarz, .karte.profan {
+		border-color: #000000; // Proben & Profanes
+		h4 {
+			color: #000000;
+		}
+	}
+	.karte.rot, .karte.gesundheit {
+		border-color: #632423; // Gesundheit 
+		h4 {
+			color: #632423;
+		}
+	}
+	.karte.braun, .karte.kampf {
+		border-color: #984806; // Kampf 
+		h4 {
+			color: #984806;
+		}
+	}
+	.karte.lila, .karte.magie, .karte.zauber {
+		border-color: #5F4778; // Magie
+		h4 {
+			color: #5F4778;
+		}
+	}
+	.karte.gold, .karte.karma, .karte.liturgie {
+		border-color: #C19758; // Karma 
+		h4 {
+			color: #C19758;
+		}
+	}
+	.karte.pink, .karte.pakt, .karte.anrufung {
+		border-color: #CB1C7C; // Paktierer
+		h4 {
+			color: #CB1C7C;
+		}
+	}
+	.randlos {
+		border: 0px;
+	}
+}
 .page:has(.karten) {
 	.useThreeColumns();
 	padding           : 1.0cm 1.0cm 1.0cm;
