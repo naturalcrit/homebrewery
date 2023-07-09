@@ -4,7 +4,6 @@ const MagicGen           = require('./snippets/magic.gen.js');
 const ClassTableGen      = require('./snippets/classtable.gen.js');
 const MonsterBlockGen    = require('./snippets/monsterblock.gen.js');
 const scriptGen          = require('./snippets/script.gen.js');
-const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
 const CoverPageGen       = require('./snippets/coverpage.gen.js');
 const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
 const indexGen           = require('./snippets/index.gen.js');
@@ -134,7 +133,7 @@ module.exports = [
 		snippets  : [
 			{
 				name : 'Versalie',
-				icon : 'fas fa-square-h',
+				icon : 'fas square-h',
 				gen  : function() {
 					return '{{versalie A}}';
 				},
@@ -143,16 +142,6 @@ module.exports = [
 				name : 'Zauber',
 				icon : 'fas fa-magic',
 				gen  : MagicGen.spell,
-			},
-			{
-				name : 'Zauberliste',
-				icon : 'fas fa-scroll',
-				gen  : MagicGen.spellList,
-			},
-			{
-				name : 'Klassenfähgikeit',
-				icon : 'fas fa-mask',
-				gen  : ClassFeatureGen,
 			},
 			{
 				name : 'Notiz',
@@ -184,7 +173,7 @@ module.exports = [
 			},
 			{
 				name : 'Kasten - Brief',
-				icon : 'fa-solid fa-envelope',
+				icon : 'fas fa-envelope',
 				gen  : function(){
 					return dedent`
 					{{kasten,handschrift
@@ -207,11 +196,6 @@ module.exports = [
 				name : 'NSC',
 				icon : 'fas fa-user-secret',  // fa-masks-theater
 				gen  : MonsterBlockGen.humanoid(),
-			},
-			{
-				name : 'Artefakt',
-				icon : 'fas fa-hat-wizard',
-				gen  : MagicGen.item,
 			},
 			{
 				name : 'Künstler Credit',
