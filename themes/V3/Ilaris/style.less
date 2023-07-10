@@ -1374,10 +1374,12 @@ h5 + table{
 // *      INHALTSVERZEICHNIS
 // *****************************/
 .page {
-&:has(.toc):after {
+&:has(.toc):after,
+&:has(.inhaltsverzeichnis):after {
 	display: none;
 }
-.toc {
+.toc,
+.inhaltsverzeichnis {
 -webkit-column-break-inside : avoid;
 page-break-inside           : avoid;
 break-inside                : avoid;

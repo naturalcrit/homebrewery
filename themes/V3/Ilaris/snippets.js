@@ -277,11 +277,15 @@ module.exports = [
 				icon : 'fas fa-comment-alt',
 				gen  : function(){
 					return dedent`
-						{{descriptive
-						##### Time to Drop Knowledge
-						Use descriptive boxes to highlight text that should be read aloud.
+						{{textbox
+						##### Hier kann was wichtiges stehen
+						Besonders wichtige Hinweise oder SL infos.
 
-						**Tables and lists** both work within a descriptive box.
+						- Tabellen
+						- Listen
+						- Bilder
+						
+						können auch in diese Box.
 						}}
 						\n`;
 				},
