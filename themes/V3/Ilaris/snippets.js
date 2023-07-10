@@ -123,6 +123,63 @@ module.exports = [
 				{{watermark Ilaris}}\n`
 			},
 			{
+				name: 'Icons',
+				icon: 'fas fa-icons',
+				gen: function() {return "{{symbol}}";},
+				subsnippets : [
+					{
+						name: "Königin",
+						icon: 'fas fa-chess-queen',
+						gen: function() {return "{{symbol,koenigin}}";}
+					},
+					{
+						name: "Springer",
+						icon: 'fas fa-chess-knight',
+						gen: function() {return "{{symbol,springer}}";}
+					},
+					{
+						name: "Bauer",
+						icon: 'fas fa-chess-pawn',
+						gen: function() {return "{{symbol,bauer}}";}
+					},
+					{
+						name: "Feder",
+						icon: 'fas fa-feather',
+						gen: function() {return "{{symbol,feder}}";}
+					},
+					{
+						name: "Medalie",
+						icon: 'fas fa-medal',
+						gen: function() {return "{{symbol,medalie}}";}
+					},
+					{
+						name: "Helm",
+						icon: 'fas fa-hard-hat',
+						gen: function() {return "{{symbol,helm}}";}
+					},
+					{
+						name: "Schubkarre",
+						icon: 'fas fa-shopping-cart',
+						gen: function() {return "{{symbol,schubkarre}}";}
+					},
+					{
+						name: "Kompass",
+						icon: 'far fa-compass',
+						gen: function() {return "{{symbol,kompass}}";}
+					},
+					{
+						name: "Turm",
+						icon: 'fas fa-gopuram',
+						gen: function() {return "{{symbol,turm}}";}
+					},
+					{
+						name: "Schatz",
+						icon: 'far fa-gem',
+						gen: function() {return "{{symbol,schatz}}";}
+					},
+				]
+			},
+			{
 				name: 'Logo',
 				icon: 'fas fa-dice-d20',
 				gen  : function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_rot.png)}}\n'; },
@@ -373,6 +430,17 @@ module.exports = [
 				name      		 : 'Rückseite - Bild oben',
 				icon      		 : 'fac book-back-cover',
 				gen       		 : CoverPageGen.backTop,
+			},
+			{
+				name: "Dank und Copyright",
+				icon: "fas fa-copyright",
+				gen: dedent`
+				#### Icons von [game-icons.net](https://game-icons.net/) unter [CC by 3.0](https://creativecommons.org/licenses/by/3.0/)
+				Chess queen, Chess pawn, Chess knight, Open treasure chest von Skoll
+				Feather, Compass, Medal skull, Locked fortress von Lorc
+				Weight, Wheelbarrow von Delapouite
+				Warlord helmet von Caro Asercion
+				`
 			},
 			{
 				name: 'Einzelkarte',

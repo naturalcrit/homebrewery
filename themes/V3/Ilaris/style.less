@@ -210,6 +210,10 @@ body {
 		font-family   : Cinzel;
 		font-weight   : 800;
 		color         : var(--HB_Color_HeaderText);
+
+		.symbol {
+			background-color: var(--HB_Color_HeaderText);
+		}
 	}
 	h1{
 		text-align:			center;
@@ -307,6 +311,66 @@ body {
 			margin-top : 0.2cm;
 		}
 	}
+	.symbol {
+		display: inline-block;
+		width: 1em;
+		height: 1em;
+		// background-image: url(/assets/ilaris/icons/chess-pawn.svg);
+		// filter: brightness(0.5) sepia(1) hue-rotate(-70deg) saturate(5);
+		-webkit-mask-size: cover;
+		mask-size: cover;
+		background-color: black;
+		-webkit-mask: url(/assets/ilaris/icons/chess-pawn.svg) no-repeat 100% 100%;
+		mask: url(/assets/ilaris/icons/chess-pawn.svg) no-repeat 100% 100%;
+
+	}
+	.symbol.koenig,
+	.symbol.koenigin,
+	.symbol.queen {
+		-webkit-mask: url(/assets/ilaris/icons/chess-queen.svg) no-repeat 100% 100%;
+		// mask: url(/assets/ilaris/icons/chess-queen.svg) no-repeat 100% 100%;
+	} 
+	.symbol.springer,
+	.symbol.pferd,
+	.symbol.knight {
+		-webkit-mask: url(/assets/ilaris/icons/chess-knight.svg) no-repeat 100% 100%;
+	}
+	.symbol.bauer {
+		-webkit-mask: url(/assets/ilaris/icons/chess-pawn.svg) no-repeat 100% 100%;
+	}
+	.symbol.leicht,
+	.symbol.feder {
+		-webkit-mask: url(/assets/ilaris/icons/feather.svg) no-repeat 100% 100%;
+	}
+	.symbol.schwer,
+	.symbol.medalie {
+		-webkit-mask: url(/assets/ilaris/icons/medal-skull.svg) no-repeat 100% 100%;
+	}
+	.symbol.helm{
+		-webkit-mask: url(/assets/ilaris/icons/warlord-helmet.svg) no-repeat 100% 100%;
+	}
+	.symbol.schubkarre {
+		-webkit-mask: url(/assets/ilaris/icons/wheelbarrow.svg) no-repeat 100% 100%;
+	}
+	.symbol.kompass {
+		-webkit-mask: url(/assets/ilaris/icons/compass.svg) no-repeat 100% 100%;
+	}
+	.symbol.schatz {
+		-webkit-mask: url(/assets/ilaris/icons/open-treasure-chest.svg) no-repeat 100% 100%;
+	}
+	.symbol.turm {
+		-webkit-mask: url(/assets/ilaris/icons/locked-fortress.svg) no-repeat 100% 100%;
+	}
+	.symbol.gruen {
+		background-color: darkgreen;
+	}
+	.symbol.rot {
+		background-color: darkred;
+	}
+
+	// .symbol.custom {
+	// 	-webkit-mask: url(var(--url)) no-repeat 100% 100%;
+	// }
 	.card, .karte{
 		width: 2.5in;
 		height: 3.5in;
@@ -429,7 +493,8 @@ body {
 			margin-bottom : 0;
 		}
 	}
-	.descriptive{
+	.descriptive,
+	.textbox {
 		.useSansSerif();
 		background-color    : #faf7ea;
 		border-style        : solid;
