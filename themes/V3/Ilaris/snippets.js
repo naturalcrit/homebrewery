@@ -466,6 +466,7 @@ module.exports = [
 						\page
 						{{kopfzeile Karten}}
 						{{karten}}
+						{{blank}}
 			
 						{{karte,schwarz
 						#### Randfarben
