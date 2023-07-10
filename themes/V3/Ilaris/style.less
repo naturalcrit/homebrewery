@@ -19,6 +19,37 @@
 	--HB_Color_CaptionText           : #766649; // Brown
 	--HB_Color_WatercolorStain       : #BBAD82; // Light brown
 	--HB_Color_Footnotes             : #C9AD6A; // Gold
+
+	//Manoeverkarten
+	--MK_Rot: #632423;  // Gesundheit
+	--MK_Schwarz: #000;  // Profan
+	--MK_Braun: #984806;  // Kampf
+	--MK_Lila: #5F4778;  // Magie
+	--MK_Gold: #C19758;  // Karma 
+	--MK_Pink: #CB1C7C;  // Paktierer
+
+	//VTT
+	--VTT_Orange: #c86400;  // Kampf
+	--VTT_HellOrange: #fedbb4;
+	--VTT_Grau: #655743;  // Profan
+	--VTT_HellGrau: #e0dbcf;
+	--VTT_Blau: #425a66;  // Magie
+	--VTT_HellBlau: #ced9e0;
+	--VTT_Lila: #8e5d6f;  // Karma
+	--VTT_HellLila: #fde1fc;
+
+	//Latex
+	--LT_Dunkelrot: #450c15;  // titel
+	--LT_Braun: #6f5843;  // Linien?
+	--LT_DunkelBraun: #39220d;
+	--LT_Beige: #e7d1b3;  // Kastenhintergrund
+	--LT_Orange: #c86400;  // = VTT
+	--LT_Grau: #655743;  // = VTT
+	--LT_Blau: #425a66;  // = VTT
+	--LT_Lila: #8e5d6f;  // = VTT
+
+	//Ilaris-Regelwerk
+	// IR
 }
 
 @page { margin: 0; }
@@ -124,7 +155,17 @@ body {
 		padding-left        : 1.4em;
 		line-height         : 1.25em;
 		list-style-position : outside;
-		list-style-type     : disc;
+		list-style     : none;
+		// list-style-image: url();
+	}
+	li {
+		// margin: 0;
+		padding-left: 22px;
+		list-style: none;
+		background-image: url("/assets/ilaris/stichpunkt.png");
+		background-repeat: no-repeat;
+		background-position: left 4px;
+		background-size: 10px;
 	}
 	ol{
 		margin-bottom       : 0.8em;
