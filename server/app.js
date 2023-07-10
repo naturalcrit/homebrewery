@@ -326,8 +326,8 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 	};
 
 	if(req.params.id.length > 12 && !brew._id) {
-		const googleId = req.params.id.slice(0, -12);
-		const shareId = req.params.id.slice(-12);
+		const googleId = brew.googleId;
+		const shareId = brew.shareId;
 		await GoogleActions.increaseView(googleId, shareId, 'share', brew)
 			.catch((err)=>{next(err);});
 	} else {

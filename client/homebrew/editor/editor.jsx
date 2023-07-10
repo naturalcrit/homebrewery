@@ -345,7 +345,8 @@ const Editor = createClass({
 					redo={this.redo}
 					historySize={this.historySize()}
 					currentEditorTheme={this.state.editorTheme}
-					updateEditorTheme={this.updateEditorTheme} />
+					updateEditorTheme={this.updateEditorTheme}
+					cursorPos={this.refs.codeEditor?.getCursorPosition() || {}} />
 
 				{this.renderEditor()}
 			</div>
