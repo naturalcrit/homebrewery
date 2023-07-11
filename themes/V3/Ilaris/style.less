@@ -10,154 +10,176 @@
 
 :root {
 	//Colors
-	--HB_Color_Background            : #EEE5CE; // Light parchment
-	--HB_Color_Accent                : #e6d0b2; // Pastel green
-	--HB_Color_HeaderUnderline       : #C0AD6A; // Gold
-	--HB_Color_HorizontalRule        : #9C2B1B; // Maroon
-	--HB_Color_HeaderText            : #58180D; // Dark Maroon
-	--HB_Color_MonsterStatBackground : #F2E5B5; // Light orange parchment
-	--HB_Color_CaptionText           : #766649; // Brown
-	--HB_Color_WatercolorStain       : #BBAD82; // Light brown
-	--HB_Color_Footnotes             : #C9AD6A; // Gold
+	--HB_Color_Background: #EEE5CE; // Light parchment
+	--HB_Color_Accent: #e6d0b2; // Pastel green
+	--HB_Color_HeaderUnderline: #C0AD6A; // Gold
+	--HB_Color_HorizontalRule: #9C2B1B; // Maroon
+	--HB_Color_HeaderText: #58180D; // Dark Maroon
+	--HB_Color_MonsterStatBackground: #F2E5B5; // Light orange parchment
+	--HB_Color_CaptionText: #766649; // Brown
+	--HB_Color_WatercolorStain: #BBAD82; // Light brown
+	--HB_Color_Footnotes: #C9AD6A; // Gold
 
 	//Manoeverkarten
-	--MK_Rot: #632423;  // Gesundheit
-	--MK_Schwarz: #000;  // Profan
-	--MK_Braun: #984806;  // Kampf
-	--MK_Lila: #5F4778;  // Magie
-	--MK_Gold: #C19758;  // Karma 
-	--MK_Pink: #CB1C7C;  // Paktierer
+	--MK_Rot: #632423; // Gesundheit
+	--MK_Schwarz: #000; // Profan
+	--MK_Braun: #984806; // Kampf
+	--MK_Lila: #5F4778; // Magie
+	--MK_Gold: #C19758; // Karma 
+	--MK_Pink: #CB1C7C; // Paktierer
 
 	//VTT
-	--VTT_Orange: #c86400;  // Kampf
+	--VTT_Orange: #c86400; // Kampf
 	--VTT_HellOrange: #fedbb4;
-	--VTT_Grau: #655743;  // Profan
+	--VTT_Grau: #655743; // Profan
 	--VTT_HellGrau: #e0dbcf;
-	--VTT_Blau: #425a66;  // Magie
+	--VTT_Blau: #425a66; // Magie
 	--VTT_HellBlau: #ced9e0;
-	--VTT_Lila: #8e5d6f;  // Karma
+	--VTT_Lila: #8e5d6f; // Karma
 	--VTT_HellLila: #fde1fc;
 
 	//Latex
-	--LT_Dunkelrot: #450c15;  // titel
-	--LT_Braun: #6f5843;  // Linien?
+	--LT_Dunkelrot: #450c15; // titel
+	--LT_Braun: #6f5843; // Linien?
 	--LT_DunkelBraun: #39220d;
-	--LT_Beige: #e7d1b3;  // Kastenhintergrund
-	--LT_Orange: #c86400;  // = VTT
-	--LT_Grau: #655743;  // = VTT
-	--LT_Blau: #425a66;  // = VTT
-	--LT_Lila: #8e5d6f;  // = VTT
+	--LT_Beige: #e7d1b3; // Kastenhintergrund
+	--LT_Orange: #c86400; // = VTT
+	--LT_Grau: #655743; // = VTT
+	--LT_Blau: #425a66; // = VTT
+	--LT_Lila: #8e5d6f; // = VTT
 
 	//Ilaris-Regelwerk
 	// IR
 }
 
-@page { margin: 0; }
+@page {
+	margin: 0;
+}
+
 body {
-	counter-reset : phb-page-numbers;
+	counter-reset: phb-page-numbers;
 }
-*{
-	-webkit-print-color-adjust : exact;
+
+* {
+	-webkit-print-color-adjust: exact;
 }
-.useSansSerif(){
-	font-family : ScalySansRemake;
-	font-size   : 0.318cm;
-	line-height : 1.2em;
-	p,dl,ul,ol {
-		line-height : 1.2em;
+
+.useSansSerif() {
+	font-family: ScalySansRemake;
+	font-size: 0.318cm;
+	line-height: 1.2em;
+
+	p,
+	dl,
+	ul,
+	ol {
+		line-height: 1.2em;
 	}
-	ul, ol {
-		padding-left : 1em;
+
+	ul,
+	ol {
+		padding-left: 1em;
 	}
-	em{
-		font-style  : italic;
+
+	em {
+		font-style: italic;
 	}
-	strong{
-		font-weight    : 800;
-		letter-spacing : -0.02em;
+
+	strong {
+		font-weight: 800;
+		letter-spacing: -0.02em;
 	}
-	h5 + * {
-		margin-top : 0.1cm;
+
+	h5+* {
+		margin-top: 0.1cm;
 	}
 }
-.useColumns(@multiplier : 1, @fillMode: balance){
-	column-count         : 2;
-	column-fill          : @fillMode;
-	column-gap           : 0.9cm;
-	column-width         : 8cm * @multiplier;
-	-webkit-column-count : 2;
-	-moz-column-count    : 2;
-	-webkit-column-width : 8cm * @multiplier;
-	-moz-column-width    : 8cm * @multiplier;
-	-webkit-column-gap   : 0.9cm;
-	-moz-column-gap      : 0.9cm;
+
+.useColumns(@multiplier : 1, @fillMode: balance) {
+	column-count: 2;
+	column-fill: @fillMode;
+	column-gap: 0.9cm;
+	column-width: 8cm * @multiplier;
+	-webkit-column-count: 2;
+	-moz-column-count: 2;
+	-webkit-column-width: 8cm * @multiplier;
+	-moz-column-width: 8cm * @multiplier;
+	-webkit-column-gap: 0.9cm;
+	-moz-column-gap: 0.9cm;
 }
-.useThreeColumns(@multiplier : 1, @fillMode: balance){
-	column-count         : 3;
-	column-fill          : @fillMode;
-	column-gap           : 0.9cm;
-	column-width         : 5cm * @multiplier;
-	-webkit-column-count : 3;
-	-moz-column-count    : 3;
-	-webkit-column-width : 5cm * @multiplier;
-	-moz-column-width    : 5cm * @multiplier;
-	-webkit-column-gap   : 0.9cm;
-	-moz-column-gap      : 0.9cm;
+
+.useThreeColumns(@multiplier : 1, @fillMode: balance) {
+	column-count: 3;
+	column-fill: @fillMode;
+	column-gap: 0.9cm;
+	column-width: 5cm * @multiplier;
+	-webkit-column-count: 3;
+	-moz-column-count: 3;
+	-webkit-column-width: 5cm * @multiplier;
+	-moz-column-width: 5cm * @multiplier;
+	-webkit-column-gap: 0.9cm;
+	-moz-column-gap: 0.9cm;
 }
-.columnWrapper{
-	max-height        : 100%;
-	column-span       : all;
-	columns           : inherit;
-	column-gap        : inherit;
+
+.columnWrapper {
+	max-height: 100%;
+	column-span: all;
+	columns: inherit;
+	column-gap: inherit;
 }
-.page{
+
+.page {
 	.useColumns();
-	counter-increment : phb-page-numbers;
-	position          : relative;
-	z-index           : 15;
-	box-sizing        : border-box;
-	overflow          : hidden;
+	counter-increment: phb-page-numbers;
+	position: relative;
+	z-index: 15;
+	box-sizing: border-box;
+	overflow: hidden;
 	/*
 	height            : 279.4mm;
 	width             : 215.9mm;
 	*/
 	/* DINA4 Page Size */
-	width  : 210mm;
-	height : 297mm;
+	width: 210mm;
+	height: 297mm;
 
-	background-color  : var(--HB_Color_Background);
-	background-image  : @backgroundImage;
-	padding           : 1.7cm 1.9cm 1.7cm;
-	font-family       : CrimsonProMedium;
-	font-size         : 0.35cm;
-	text-rendering    : optimizeLegibility;
-	page-break-before : always;
-	page-break-after  : always;
+	background-color: var(--HB_Color_Background);
+	background-image: @backgroundImage;
+	padding: 1.7cm 1.9cm 1.7cm;
+	font-family: CrimsonProMedium;
+	font-size: 0.35cm;
+	text-rendering: optimizeLegibility;
+	page-break-before: always;
+	page-break-after: always;
 }
 
 //*****************************
 // *            BASE
 // *****************************/
-.page{
-	p{
-		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
-		display       : block;
-		line-height   : 1.25em;
+.page {
+	p {
+		overflow-wrap: break-word; //TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
+		display: block;
+		line-height: 1.25em;
+
 		&+* {
-			margin-top : 0.325cm;
+			margin-top: 0.325cm;
 		}
-		&+p{
-			margin-top : 0;
+
+		&+p {
+			margin-top: 0;
 		}
 	}
-	ul{
-		margin-bottom       : 0.8em;
-		padding-left        : 1.4em;
-		line-height         : 1.25em;
-		list-style-position : outside;
-		list-style     : none;
+
+	ul {
+		margin-bottom: 0.8em;
+		padding-left: 1.4em;
+		line-height: 1.25em;
+		list-style-position: outside;
+		list-style: none;
 		// list-style-image: url();
 	}
+
 	li {
 		// margin: 0;
 		padding-left: 22px;
@@ -167,70 +189,85 @@ body {
 		background-position: left 4px;
 		background-size: 10px;
 	}
-	ol{
-		margin-bottom       : 0.8em;
-		padding-left        : 1.4em;
-		line-height         : 1.25em;
-		list-style-position : outside;
-		list-style-type     : decimal;
+
+	ol {
+		margin-bottom: 0.8em;
+		padding-left: 1.4em;
+		line-height: 1.25em;
+		list-style-position: outside;
+		list-style-type: decimal;
 	}
+
 	//Indents after p or lists
-	p+p, ul+p, ol+p{
-		text-indent : 1em;
+	p+p,
+	ul+p,
+	ol+p {
+		text-indent: 1em;
 	}
-	img{
-		z-index : -1;
+
+	img {
+		z-index: -1;
 	}
-	strong{
-		font-weight    : bold;
-		letter-spacing : -0.02em;
+
+	strong {
+		font-weight: bold;
+		letter-spacing: -0.02em;
 	}
-	em{
-		font-style : italic;
+
+	em {
+		font-style: italic;
 	}
-	sup{
-		vertical-align : super;
-		font-size      : smaller;
-		line-height    : 0;
+
+	sup {
+		vertical-align: super;
+		font-size: smaller;
+		line-height: 0;
 	}
-	sub{
-		vertical-align : sub;
-		font-size      : smaller;
-		line-height    : 0;
+
+	sub {
+		vertical-align: sub;
+		font-size: smaller;
+		line-height: 0;
 	}
+
 	//*****************************
 	// *           HEADERS
 	// *****************************/
-	h1{
-		font-family   : Aniron;
-		font-weight   : 800;
-		color         : var(--HB_Color_HeaderText);
+	h1 {
+		font-family: Aniron;
+		font-weight: 800;
+		color: var(--HB_Color_HeaderText);
 	}
-	h2,h3,h4,h5{
-		font-family   : Cinzel;
-		font-weight   : 800;
-		color         : var(--HB_Color_HeaderText);
+
+	h2,
+	h3,
+	h4,
+	h5 {
+		font-family: Cinzel;
+		font-weight: 800;
+		color: var(--HB_Color_HeaderText);
 
 		.symbol {
 			background-color: var(--HB_Color_HeaderText);
 		}
 	}
-	h1{
-		text-align:			center;
+
+	h1 {
+		text-align: center;
 		padding-bottom: 25px;
-		display:flex;
+		display: flex;
 		max-width: max-content;
 		margin-left: auto;
-    	margin-right: auto;
+		margin-right: auto;
 		min-width: min-content;
-		
 
-		margin-bottom       : 0.18cm; //Margin-bottom only because this is WIDE
-		column-span         : all;
-		font-size           : 0.89cm;
-		line-height         : 1.4em;
-		-webkit-column-span : all;
-		-moz-column-span    : all;
+
+		margin-bottom: 0.18cm; //Margin-bottom only because this is WIDE
+		column-span: all;
+		font-size: 0.89cm;
+		line-height: 1.4em;
+		-webkit-column-span: all;
+		-moz-column-span: all;
 		/*
 		&+p::first-letter{
 			float                   : left;
@@ -252,6 +289,7 @@ body {
 		}
 		*/
 	}
+
 	h1::before {
 		content: url('/assets/ilaris/kapitel-kurz-links-40-75.png');
 		//top: 7px;
@@ -259,58 +297,69 @@ body {
 		right: 10px;
 		vertical-align: middle;
 		margin-top: auto;
-    	margin-bottom: auto;
+		margin-bottom: auto;
 	}
-	h1::after{
+
+	h1::after {
 		content: url('/assets/ilaris/kapitel-kurz-rechts-40-75.png');
 		//top: 7px;
 		position: relative;
 		left: 10px;
 		vertical-align: middle;
 		margin-top: auto;
-    	margin-bottom: auto;
+		margin-bottom: auto;
 	}
-	h2{
+
+	h2 {
 		//margin-top    : 0px; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.05cm;
-		font-size     : 0.60cm;
-		line-height   : 0.988em; //Font is misaligned. Shift up slightly
+		font-size: 0.60cm;
+		line-height: 0.988em; //Font is misaligned. Shift up slightly
 	}
-	h3{
+
+	h3 {
 		//margin-top    : -0.1cm; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.1cm;
-		font-size     : 0.5cm;
-		border-bottom : 2px solid var(--HB_Color_HeaderUnderline);
-		line-height   : 0.995em; //Font is misaligned. Shift up slightly
-		& + * {
+		font-size: 0.5cm;
+		border-bottom: 2px solid var(--HB_Color_HeaderUnderline);
+		line-height: 0.995em; //Font is misaligned. Shift up slightly
+
+		&+* {
 			margin-top: 0.17cm;
 		}
 	}
-	* + h3 {
-		margin-top    : 0.155cm; //(0.325 - 0.17)
+
+	*+h3 {
+		margin-top: 0.155cm; //(0.325 - 0.17)
 	}
-	h4{
+
+	h4 {
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.02cm;
-		font-size     : 0.458cm;
-		line-height   : 0.971em; //Font is misaligned. Shift up slightly
-		& + * {
+		font-size: 0.458cm;
+		line-height: 0.971em; //Font is misaligned. Shift up slightly
+
+		&+* {
 			margin-top: 0.09cm;
 		}
 	}
-	* + h4 {
-		margin-top    : 0.235cm; //(0.325 - 0.09)
+
+	*+h4 {
+		margin-top: 0.235cm; //(0.325 - 0.09)
 	}
-	h5{
+
+	h5 {
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.02cm;
-		font-size     : 0.423cm;
-		font-weight   : 900;
+		font-size: 0.423cm;
+		font-weight: 900;
+
 		//line-height   : 0.951em; //Font is misaligned. Shift up slightly
-		& + * {
-			margin-top : 0.2cm;
+		&+* {
+			margin-top: 0.2cm;
 		}
 	}
+
 	.symbol {
 		display: inline-block;
 		width: 1em;
@@ -324,46 +373,58 @@ body {
 		mask: url(/assets/ilaris/icons/chess-pawn.svg) no-repeat 100% 100%;
 
 	}
+
 	.symbol.koenig,
 	.symbol.koenigin,
 	.symbol.queen {
 		-webkit-mask: url(/assets/ilaris/icons/chess-queen.svg) no-repeat 100% 100%;
 		// mask: url(/assets/ilaris/icons/chess-queen.svg) no-repeat 100% 100%;
-	} 
+	}
+
 	.symbol.springer,
 	.symbol.pferd,
 	.symbol.knight {
 		-webkit-mask: url(/assets/ilaris/icons/chess-knight.svg) no-repeat 100% 100%;
 	}
+
 	.symbol.bauer {
 		-webkit-mask: url(/assets/ilaris/icons/chess-pawn.svg) no-repeat 100% 100%;
 	}
+
 	.symbol.leicht,
 	.symbol.feder {
 		-webkit-mask: url(/assets/ilaris/icons/feather.svg) no-repeat 100% 100%;
 	}
+
 	.symbol.schwer,
 	.symbol.medalie {
 		-webkit-mask: url(/assets/ilaris/icons/medal-skull.svg) no-repeat 100% 100%;
 	}
-	.symbol.helm{
+
+	.symbol.helm {
 		-webkit-mask: url(/assets/ilaris/icons/warlord-helmet.svg) no-repeat 100% 100%;
 	}
+
 	.symbol.schubkarre {
 		-webkit-mask: url(/assets/ilaris/icons/wheelbarrow.svg) no-repeat 100% 100%;
 	}
+
 	.symbol.kompass {
 		-webkit-mask: url(/assets/ilaris/icons/compass.svg) no-repeat 100% 100%;
 	}
+
 	.symbol.schatz {
 		-webkit-mask: url(/assets/ilaris/icons/open-treasure-chest.svg) no-repeat 100% 100%;
 	}
+
 	.symbol.turm {
 		-webkit-mask: url(/assets/ilaris/icons/locked-fortress.svg) no-repeat 100% 100%;
 	}
+
 	.symbol.gruen {
 		background-color: darkgreen;
 	}
+
 	.symbol.rot {
 		background-color: darkred;
 	}
@@ -371,7 +432,8 @@ body {
 	// .symbol.custom {
 	// 	-webkit-mask: url(var(--url)) no-repeat 100% 100%;
 	// }
-	.card, .karte{
+	.card,
+	.karte {
 		width: 2.5in;
 		height: 3.5in;
 		padding-top: 4mm;
@@ -381,26 +443,32 @@ body {
 		background-size: 100% 100%;
 		border: 4px solid rgb(255, 255, 255);
 		position: relative;
+
 		//font-size: 10px;
 		img {
 			max-width: 100%;
-    		max-height: 100%;
+			max-height: 100%;
 		}
+
 		p {
 			line-height: 1;
 		}
+
 		margin: 1mm -4mm;
+
 		h4 {
 			font-size: 0.55cm;
 			text-align: center;
 			font-family: Aniron;
 		}
+
 		h5 {
 			text-align: center;
 			font-family: Cinzel;
 			font-weight: 650;
 
 		}
+
 		h6 {
 			position: absolute;
 			bottom: 3mm;
@@ -409,12 +477,18 @@ body {
 			text-align: center;
 			font-family: Cinzel;
 		}
-		&.kleinertitel, &.smalltitle {
-			h4, h5 {
+
+		&.kleinertitel,
+		&.smalltitle {
+
+			h4,
+			h5 {
 				font-size: 0.35cm;
 			}
 		}
-		&.kleinertext, &.smalltext {
+
+		&.kleinertext,
+		&.smalltext {
 			p {
 				font-size: 0.29cm;
 			}
@@ -422,189 +496,254 @@ body {
 	}
 
 	.versalie {
-		float                   : left;
-			font-family             : SolberaImitationRemake;
-			line-height             : 1em;
-			font-size               : 3.5cm;
-			padding-left            : 40px; //Allow background color to extend into margins
-			margin-left             : -40px;
-			margin-top              : -0.3cm;
-			padding-bottom          : 2px;
-			margin-bottom           : -20px;
-			background-image        : linear-gradient(-45deg, #322814, #998250, #322814);
-			background-clip         : text;
-			-webkit-background-clip : text;
-			color                   : rgba(0, 0, 0, 0);
+		float: left;
+		font-family: SolberaImitationRemake;
+		line-height: 1em;
+		font-size: 3.5cm;
+		padding-left: 40px; //Allow background color to extend into margins
+		margin-left: -40px;
+		margin-top: -0.3cm;
+		padding-bottom: 2px;
+		margin-bottom: -20px;
+		background-image: linear-gradient(-45deg, #322814, #998250, #322814);
+		background-clip: text;
+		-webkit-background-clip: text;
+		color: rgba(0, 0, 0, 0);
 	}
-	table{
+
+	table {
 		.useSansSerif();
-		width         : 100%;
-		line-height   : 16px;
-		& + * {
-			margin-top : 0.325cm;
+		width: 100%;
+		line-height: 16px;
+
+		&+* {
+			margin-top: 0.325cm;
 		}
-		thead{
+
+		thead {
 			display: table-row-group;
-			font-weight : 800;
-			th{
-				vertical-align : bottom;
+			font-weight: 800;
+
+			th {
+				vertical-align: bottom;
 				//padding        : 0.14em 0.4em;
-				padding     : 0px 1.5px;   // Both of these are temporary, just to force
+				padding: 0px 1.5px; // Both of these are temporary, just to force
 				//line-height : 16px;        // PDF to render at same height until Chrome 108
 			}
 		}
-		tbody{
-			tr{
-				td{
+
+		tbody {
+			tr {
+				td {
 					//padding : 0.14em 0.4em;
-					padding     : 0px 1.5px;   // Both of these are temporary, just to force
-          //line-height : 16px;        // PDF to render at same height until Chrome 108
+					padding: 0px 1.5px; // Both of these are temporary, just to force
+					//line-height : 16px;        // PDF to render at same height until Chrome 108
 				}
-				&:nth-child(odd){
-					background-color : var(--HB_Color_Accent);
+
+				&:nth-child(odd) {
+					background-color: var(--HB_Color_Accent);
 				}
 			}
 		}
 	}
-	.note{
+
+	.note {
 		.useSansSerif();
-		background-color    : var(--HB_Color_Accent);
-		border-style        : solid;
-		border-width        : 1px;
-		border-image        : @noteBorderImage 12 stretch;
-		border-image-outset : 9px 0px;
-		border-image-width  : 11px;
-		padding             : 0.13cm 0.16cm;
-		box-shadow          : 1px 4px 14px #888;
+		background-color: var(--HB_Color_Accent);
+		border-style: solid;
+		border-width: 1px;
+		border-image: @noteBorderImage 12 stretch;
+		border-image-outset: 9px 0px;
+		border-image-width: 11px;
+		padding: 0.13cm 0.16cm;
+		box-shadow: 1px 4px 14px #888;
+
 		.page :where(&) {
-			margin-top        : 9px; //Prevent top border getting cut off on colbreak
+			margin-top: 9px; //Prevent top border getting cut off on colbreak
 		}
-		& + * {
-			margin-top : 0.45cm;
+
+		&+* {
+			margin-top: 0.45cm;
 		}
+
 		h5 {
-			font-size : 0.375cm;
+			font-size: 0.375cm;
 		}
-		p{
-			display        : block;
-			padding-bottom : 0px;
+
+		p {
+			display: block;
+			padding-bottom: 0px;
 		}
+
 		:last-child {
-			margin-bottom : 0;
+			margin-bottom: 0;
 		}
 	}
+
 	.descriptive,
 	.textbox {
 		.useSansSerif();
-		background-color    : #faf7ea;
-		border-style        : solid;
-		border-width        : 7px;
-		border-image        : @descriptiveBoxImage 12 stretch;
-		border-image-outset : 4px;
-		padding             : 0.1em;
-		box-shadow          : 0 0 6px #faf7ea;
+		background-color: #faf7ea;
+		border-style: solid;
+		border-width: 7px;
+		border-image: @descriptiveBoxImage 12 stretch;
+		border-image-outset: 4px;
+		padding: 0.1em;
+		box-shadow: 0 0 6px #faf7ea;
+
 		.page :where(&) {
-			margin-top        : 4px; //Prevent top border getting cut off on colbreak
+			margin-top: 4px; //Prevent top border getting cut off on colbreak
 		}
-		& + * {
-			margin-top : 0.45cm;
+
+		&+* {
+			margin-top: 0.45cm;
 		}
+
 		h5 {
-			font-size : 0.375cm;
+			font-size: 0.375cm;
 		}
-		p{
-			display        : block;
-			padding-bottom : 0px;
-			line-height    : 1.5em;
+
+		p {
+			display: block;
+			padding-bottom: 0px;
+			line-height: 1.5em;
 		}
+
 		:last-child {
-			margin-bottom : 0;
+			margin-bottom: 0;
 		}
 	}
+
 	//*****************************
 	// *    Images Snippets
 	// *****************************/
 
 	/* Arist Credit */
 	.artist {
-		position    : absolute;
-		width       : auto;
-		text-align  : center;
-		font-family : WalterTurncoat;
-		font-size   : 0.27cm;
-		color       : var(--HB_Color_CaptionText);
-		p, p + p {
-			margin      : unset;
-			text-indent : unset;
-			line-height : 1em;
+		position: absolute;
+		width: auto;
+		text-align: center;
+		font-family: WalterTurncoat;
+		font-size: 0.27cm;
+		color: var(--HB_Color_CaptionText);
+
+		p,
+		p+p {
+			margin: unset;
+			text-indent: unset;
+			line-height: 1em;
 		}
-	 	h5 {
-			font-size   : 1.3em;
-			font-family : WalterTurncoat;
+
+		h5 {
+			font-size: 1.3em;
+			font-family: WalterTurncoat;
 		}
-		a{
-			color           : inherit;
-			text-decoration : unset;
+
+		a {
+			color: inherit;
+			text-decoration: unset;
+
 			&:hover {
-				text-decoration : underline;
+				text-decoration: underline;
 			}
 		}
 	}
+
 	.credit {
 		text-align: center;
 	}
 
 	/* Watermark */
 	.watermark {
-		display         : grid !important;
-		place-items     : center;
-		justify-content	: center;
-		position        : absolute;
-		top             : 0;
-		left            : 0;
-		width           : 100%;
-		height          : 100%;
-		font-size       : 260px;
-		text-transform	: uppercase;
-		color           : black;
-		mix-blend-mode  : overlay;
-		opacity         : 60%;
-		transform       : rotate(-45deg);
-		z-index         : 500;
+		display: grid !important;
+		place-items: center;
+		justify-content: center;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		font-size: 260px;
+		text-transform: uppercase;
+		color: black;
+		mix-blend-mode: overlay;
+		opacity: 60%;
+		transform: rotate(-45deg);
+		z-index: 500;
+
 		p {
-			margin-bottom : none;
+			margin-bottom: none;
 		}
 	}
 
 	/* Watercolor */
 	[class*="watercolor"] {
-		position            : absolute;
-		width               : 2000px;    /* dimensions need to be real big so the user can set */
-		height              : 2000px;    /* height or width and the image will maintain aspect ratio */
-		-webkit-mask-image  : var(--wc);
-		-webkit-mask-size   : contain;
-		-webkit-mask-repeat : no-repeat;
-		mask-image          : var(--wc);
-		mask-size           : contain;
-		mask-repeat         : no-repeat;
-		background-size     : cover;
-		background-color    : var(--HB_Color_WatercolorStain);			/*default color*/
-		--wc                : @watercolor1;         /*default image*/
-		z-index             : -2;
+		position: absolute;
+		width: 2000px;
+		/* dimensions need to be real big so the user can set */
+		height: 2000px;
+		/* height or width and the image will maintain aspect ratio */
+		-webkit-mask-image: var(--wc);
+		-webkit-mask-size: contain;
+		-webkit-mask-repeat: no-repeat;
+		mask-image: var(--wc);
+		mask-size: contain;
+		mask-repeat: no-repeat;
+		background-size: cover;
+		background-color: var(--HB_Color_WatercolorStain);
+		/*default color*/
+		--wc: @watercolor1;
+		/*default image*/
+		z-index: -2;
 	}
 
-	.watercolor1  { --wc : @watercolor1; }
-	.watercolor2  { --wc : @watercolor2; }
-	.watercolor3  { --wc : @watercolor3; }
-	.watercolor4  { --wc : @watercolor4; }
-	.watercolor5  { --wc : @watercolor5; }
-	.watercolor6  { --wc : @watercolor6; }
-	.watercolor7  { --wc : @watercolor7; }
-	.watercolor8  { --wc : @watercolor8; }
-	.watercolor9  { --wc : @watercolor9; }
-	.watercolor10 { --wc : @watercolor10; }
-	.watercolor11 { --wc : @watercolor11; }
-	.watercolor12 { --wc : @watercolor12; }
+	.watercolor1 {
+		--wc: @watercolor1;
+	}
+
+	.watercolor2 {
+		--wc: @watercolor2;
+	}
+
+	.watercolor3 {
+		--wc: @watercolor3;
+	}
+
+	.watercolor4 {
+		--wc: @watercolor4;
+	}
+
+	.watercolor5 {
+		--wc: @watercolor5;
+	}
+
+	.watercolor6 {
+		--wc: @watercolor6;
+	}
+
+	.watercolor7 {
+		--wc: @watercolor7;
+	}
+
+	.watercolor8 {
+		--wc: @watercolor8;
+	}
+
+	.watercolor9 {
+		--wc: @watercolor9;
+	}
+
+	.watercolor10 {
+		--wc: @watercolor10;
+	}
+
+	.watercolor11 {
+		--wc: @watercolor11;
+	}
+
+	.watercolor12 {
+		--wc: @watercolor12;
+	}
 
 	//*****************************
 	// *    Kreaturen
@@ -612,27 +751,29 @@ body {
 	.kreatur,
 	.monster {
 
-		position          : relative;
-		padding           : 8px;
-		margin-bottom     : 0.325cm;
+		position: relative;
+		padding: 8px;
+		margin-bottom: 0.325cm;
 		background-color: var(--HB_Color_Accent);
 
 		//Header
-		h2{
-			font-size     : 0.62cm;
-			line-height   : 1em;
-			margin        : 0;
+		h2 {
+			font-size: 0.62cm;
+			line-height: 1em;
+			margin: 0;
 			background-color: none;
+
 			&+p {
-				font-size     : 0.304cm; //Monster size and type subtext
-				margin-bottom : 0;
+				font-size: 0.304cm; //Monster size and type subtext
+				margin-bottom: 0;
 				background-color: none;
 			}
 		}
-		hr{
-			visibility       : visible;
-			height           : 2px;
-			margin           : 0.12cm -8px;
+
+		hr {
+			visibility: visible;
+			height: 2px;
+			margin: 0.12cm -8px;
 			background-color: darkred;
 			color: darkred;
 			border-width: 0;
@@ -643,33 +784,37 @@ body {
 		// 	color : var(--HB_Color_HeaderText);
 		// }
 		hr:last-of-type {
-			& ~ :is(dl,p) {
-				color : inherit; // After the HRs, reset text to black
+			&~ :is(dl, p) {
+				color: inherit; // After the HRs, reset text to black
 			}
-			& + * {
-				margin-top : 0.325cm; // Space after last HR
+
+			&+* {
+				margin-top: 0.325cm; // Space after last HR
 			}
 		}
 
 		// Monster Ability table
-		hr + table:first-of-type{
-			margin              : 0;
-			column-span         : none;
-			color               : var(--HB_Color_HeaderText);
-			background-color    : transparent;
-			border-style        : none;
-			border-image        : none;
-			-webkit-column-span : none;
+		hr+table:first-of-type {
+			margin: 0;
+			column-span: none;
+			color: var(--HB_Color_HeaderText);
+			background-color: transparent;
+			border-style: none;
+			border-image: none;
+			-webkit-column-span: none;
+
 			tr {
-				background-color : transparent;
+				background-color: transparent;
 			}
-			td,th {
+
+			td,
+			th {
 				padding: 0px;
 			}
 		}
 
 		:last-child {
-			margin-bottom : 0;
+			margin-bottom: 0;
 		}
 	}
 
@@ -679,23 +824,24 @@ body {
 	// *****************************/
 	&:has(.pageNumber):after,
 	&:has(.seitenzahl):after {
-		
-		content          : "";
-		position         : absolute;
-		bottom           : 12px;
-		left             : 3px;
-		z-index          : 100;
-		height           : 50px;
-		width            : 100%;
-		background-image : @footerPageNumber;
-		background-size  : contain;
+
+		content: "";
+		position: absolute;
+		bottom: 12px;
+		left: 3px;
+		z-index: 100;
+		height: 50px;
+		width: 100%;
+		background-image: @footerPageNumber;
+		background-size: contain;
 		background-repeat: no-repeat;
 		background-position: center;
 		opacity: 40%;
-    	filter: sepia(100%);
+		filter: sepia(100%);
 		//transform: rotate(187deg);
-		
+
 	}
+
 	/*&:nth-child(even){
 		&:after{
 			//transform : scaleX(-1);
@@ -709,7 +855,7 @@ body {
 		}
 	}*/
 	.pageNumber,
-	.seitenzahl{
+	.seitenzahl {
 		/* background */
 		/*height           : 50px;
 		width            : 100%;
@@ -718,141 +864,152 @@ body {
 		background-repeat: no-repeat;
 		background-position: center;*/
 
-		position    : absolute;
+		position: absolute;
 		//right       : 2px;
-		left : 2px;
+		left: 2px;
 		z-index: 200;
-		bottom      : 29px;
-		width       : 100%;
-		font-size   : 0.9em;
+		bottom: 29px;
+		width: 100%;
+		font-size: 0.9em;
 		//color       : var(--HB_Color_Accent);
-		text-align  : center;
-		text-indent : 0;
+		text-align: center;
+		text-indent: 0;
 		margin-left: auto;
 		margin-right: auto;
-		filter: drop-shadow(0 0 0.8px var(--HB_Color_Background)) 
-			drop-shadow(0 0 0 var(--HB_Color_Background)) 
-			drop-shadow(0 0 0 var(--HB_Color_Background)) 
-			drop-shadow(0 0 0 var(--HB_Color_Background)) 
-			drop-shadow(0 0 0 var(--HB_Color_Background)) 
-			drop-shadow(0 0 0 var(--HB_Color_Background)) 
-			drop-shadow(0 0 0 var(--HB_Color_Background)) 
-			drop-shadow(0 0 0 var(--HB_Color_Background));
+		filter: drop-shadow(0 0 0.8px var(--HB_Color_Background)) drop-shadow(0 0 0 var(--HB_Color_Background)) drop-shadow(0 0 0 var(--HB_Color_Background)) drop-shadow(0 0 0 var(--HB_Color_Background)) drop-shadow(0 0 0 var(--HB_Color_Background)) drop-shadow(0 0 0 var(--HB_Color_Background)) drop-shadow(0 0 0 var(--HB_Color_Background)) drop-shadow(0 0 0 var(--HB_Color_Background));
 		padding-top: 19px;
 
 		&.auto::after {
-			content : counter(phb-page-numbers);
+			content: counter(phb-page-numbers);
 		}
 	}
+
 	.footnote,
-	.fusszeile{
-		position   : absolute;
-		right      : 80px;
-		bottom     : 32px;
-		z-index    : 150;
-		width      : 200px;
-		font-size  : 0.8em;
-		color      : var(--HB_Color_Footnotes);
-		text-align : right;
+	.fusszeile {
+		position: absolute;
+		right: 80px;
+		bottom: 32px;
+		z-index: 150;
+		width: 200px;
+		font-size: 0.8em;
+		color: var(--HB_Color_Footnotes);
+		text-align: right;
 	}
+
 	.pageheader,
-	.kopfzeile{
-		position   : absolute;
-		top     : 24px;
+	.kopfzeile {
+		position: absolute;
+		top: 24px;
 		left: 0px;
-		width      : 100%;
-		font-size  : 1em;
+		width: 100%;
+		font-size: 1em;
 		font-family: Cinzel;
-		color      : var(--HB_Color_HeaderText);
-		text-align  : center;
-		text-indent : 0;
+		color: var(--HB_Color_HeaderText);
+		text-align: center;
+		text-indent: 0;
 		margin-left: auto;
 		margin-right: auto;
 	}
+
 	.kasten {
 		// border-style: solid;
 		// border-width: 7px;
 		// border-image: url("/assets/ilaris/Kasten3_high_res.jpg") 12 stretch;
 		// border-image-outset: 4px;
 
-		padding:20px;
+		padding: 20px;
 		background-image: url(/assets/ilaris/Kasten3_trans_hell.png);
 		background-size: cover;
 		background-repeat: round;
 	}
+
 	.handschrift {
 		font-family: Ephesis;
 		font-size: 0.6cm;
 	}
+
 	.rechtsbuendig {
 		text-align: right;
 		width: 100%;
 	}
+
 	//************************************
 	// *           CODE BLOCKS
 	// ************************************/
-	code{
-    font-family      : "Courier New", Courier, monospace;
-		font-size        : 0.325;
-		padding          : 0px 4px;
-		color            : #58180d;
-		background-color : #faf7ea;
-		border-radius    : 4px;
-		white-space      : pre-wrap;
-		overflow-wrap    : break-word;
+	code {
+		font-family: "Courier New", Courier, monospace;
+		font-size: 0.325;
+		padding: 0px 4px;
+		color: #58180d;
+		background-color: #faf7ea;
+		border-radius: 4px;
+		white-space: pre-wrap;
+		overflow-wrap: break-word;
 	}
 
-	pre code{
-		width               : 100%;
-		display             : inline-block;
-		border-style        : solid;
-		border-width        : 1px;
-		border-image        : @codeBorderImage 26 stretch;
-		border-image-width  : 10px;
-		border-image-outset : 2px;
-		border-radius       : 12px;
-		margin-bottom       : 2px;
-		padding             : 0.15cm;
+	pre code {
+		width: 100%;
+		display: inline-block;
+		border-style: solid;
+		border-width: 1px;
+		border-image: @codeBorderImage 26 stretch;
+		border-image-width: 10px;
+		border-image-outset: 2px;
+		border-radius: 12px;
+		margin-bottom: 2px;
+		padding: 0.15cm;
+
 		.page :where(&) {
-			margin-top        : 2px; //Prevent top border getting cut off on colbreak
+			margin-top: 2px; //Prevent top border getting cut off on colbreak
 		}
-		& + * {
-			margin-top : 0.325cm;
+
+		&+* {
+			margin-top: 0.325cm;
 		}
 	}
+
 	//*****************************
 	// *          EXTRAS
 	// *****************************/
-	hr{
-		visibility : hidden;
-		margin     : 0px;
+	hr {
+		visibility: hidden;
+		margin: 0px;
 	}
+
 	.columnSplit {
-		visibility                 : hidden;
-		-webkit-column-break-after : always;
-		break-after                : always;
-		-moz-column-break-after    : always;
+		visibility: hidden;
+		-webkit-column-break-after: always;
+		break-after: always;
+		-moz-column-break-after: always;
 	}
+
 	//Avoid breaking up
-	blockquote,table{
-		z-index                     : 15;
-		-webkit-column-break-inside : avoid;
-		page-break-inside           : avoid;
-		break-inside                : avoid;
+	blockquote,
+	table {
+		z-index: 15;
+		-webkit-column-break-inside: avoid;
+		page-break-inside: avoid;
+		break-inside: avoid;
 	}
+
 	//Text indent right after table
-	table+p{
-		text-indent : 1em;
+	table+p {
+		text-indent: 1em;
 	}
+
 	// Nested lists
-	ul ul,ol ol,ul ol,ol ul{
-		margin-bottom : 0px;
-		margin-left   : 1.5em;
+	ul ul,
+	ol ol,
+	ul ol,
+	ol ul {
+		margin-bottom: 0px;
+		margin-left: 1.5em;
 	}
-	li{
-		-webkit-column-break-inside : avoid;
-		page-break-inside           : avoid;
-		break-inside                : avoid;
+
+	li {
+		-webkit-column-break-inside: avoid;
+		page-break-inside: avoid;
+		break-inside: avoid;
 	}
 }
 
@@ -861,123 +1018,156 @@ body {
 // *****************************/
 .page .classTable,
 .page .klassentabelle {
-th[colspan]:not([rowspan]) {
-	white-space : nowrap;
-}
-&.frame {
-	margin-top          : 0.7cm;
-	margin-bottom       : 0.9cm;
-	margin-left         : -0.1cm;
-	margin-right        : -0.1cm;
-	width               : calc(100% + 0.2cm);
-	border-collapse     : separate;
-	background-color    : white;
-	border              : initial;
-	border-style        : solid;
-	border-image-outset : 0.4cm 0.3cm;
-	border-image-repeat : stretch;
-	border-image-slice  : 200;
-	border-image-source : @frameBorderImage;
-	border-image-width  : 47px;
-	&.wide:first-child {
-		margin-top: 0.12cm;
+	th[colspan]:not([rowspan]) {
+		white-space: nowrap;
 	}
-	& + * {
-		margin-top: 0;
+
+	&.frame {
+		margin-top: 0.7cm;
+		margin-bottom: 0.9cm;
+		margin-left: -0.1cm;
+		margin-right: -0.1cm;
+		width: calc(100% + 0.2cm);
+		border-collapse: separate;
+		background-color: white;
+		border: initial;
+		border-style: solid;
+		border-image-outset: 0.4cm 0.3cm;
+		border-image-repeat: stretch;
+		border-image-slice: 200;
+		border-image-source: @frameBorderImage;
+		border-image-width: 47px;
+
+		&.wide:first-child {
+			margin-top: 0.12cm;
+		}
+
+		&+* {
+			margin-top: 0;
+		}
 	}
-}
-&.decoration {
-	position:relative;
-}
-&.decoration::before {
-	content             :'';
-	position            : absolute;
-	background-image    : @classTableDecoration,
-	                      @classTableDecoration;
-	background-size     : contain, contain;
-	background-repeat   : no-repeat, no-repeat;
-	background-position : top, bottom;
-	width               : 7.75cm;
-	height              : calc(100% + 3.3cm);
-	top                 : 50%;
-	left                : 50%;
-	transform           : translateY(-50%) translateX(-50%);
-	filter              : drop-shadow(0px 0px 1px #C8C5C080);
-	z-index             : -1;
-}
-&.decoration.wide::before {
-	width               : calc(100% + 3.3cm);
-	height              : 7.75cm;
-	background-position : left, right;
-}
-h5 + table{
-	margin-top : 0.2cm;
-}
+
+	&.decoration {
+		position: relative;
+	}
+
+	&.decoration::before {
+		content: '';
+		position: absolute;
+		background-image: @classTableDecoration,
+			@classTableDecoration;
+		background-size: contain, contain;
+		background-repeat: no-repeat, no-repeat;
+		background-position: top, bottom;
+		width: 7.75cm;
+		height: calc(100% + 3.3cm);
+		top: 50%;
+		left: 50%;
+		transform: translateY(-50%) translateX(-50%);
+		filter: drop-shadow(0px 0px 1px #C8C5C080);
+		z-index: -1;
+	}
+
+	&.decoration.wide::before {
+		width: calc(100% + 3.3cm);
+		height: 7.75cm;
+		background-position: left, right;
+	}
+
+	h5+table {
+		margin-top: 0.2cm;
+	}
 }
 
 //**************************
 // *       KARTEN
 // **************************/
 .page {
-	.karte.schwarz, .karte.profan {
+
+	.karte.schwarz,
+	.karte.profan {
 		border-color: #000000; // Proben & Profanes
+
 		h4 {
 			color: #000000;
 		}
 	}
-	.karte.rot, .karte.gesundheit {
+
+	.karte.rot,
+	.karte.gesundheit {
 		border-color: #632423; // Gesundheit 
+
 		h4 {
 			color: #632423;
 		}
 	}
-	.karte.braun, .karte.kampf {
+
+	.karte.braun,
+	.karte.kampf {
 		border-color: #984806; // Kampf 
+
 		h4 {
 			color: #984806;
 		}
 	}
-	.karte.lila, .karte.magie, .karte.zauber {
+
+	.karte.lila,
+	.karte.magie,
+	.karte.zauber {
 		border-color: #5F4778; // Magie
+
 		h4 {
 			color: #5F4778;
 		}
 	}
-	.karte.gold, .karte.karma, .karte.liturgie {
+
+	.karte.gold,
+	.karte.karma,
+	.karte.liturgie {
 		border-color: #C19758; // Karma 
+
 		h4 {
 			color: #C19758;
 		}
 	}
-	.karte.pink, .karte.pakt, .karte.anrufung {
+
+	.karte.pink,
+	.karte.pakt,
+	.karte.anrufung {
 		border-color: #CB1C7C; // Paktierer
+
 		h4 {
 			color: #CB1C7C;
 		}
 	}
+
 	.randlos {
 		border: 0px;
 	}
 }
+
 .page:has(.karten) {
 	.useThreeColumns();
-	padding           : 1.0cm 1.0cm 1.0cm;
+	padding: 1.0cm 1.0cm 1.0cm;
 }
+
 .page:has(.einzelkarte) {
-	width  : 2.5in;
-	height : 3.5in;
+	width: 2.5in;
+	height: 3.5in;
 	padding: 0px;
-	.karte, .card {
+
+	.karte,
+	.card {
 		margin: 0px;
 	}
 }
 
-.page:has(.blank),
 .page:has(.leer),
-.page:has(.ohnehintergrund) {
+.page:has(.keinhintergrund) {
 	background-image: none;
 	background-color: white;
 }
+
 //*****************************
 // *   DUNKEL THEME
 // *****************************/
@@ -987,188 +1177,180 @@ h5 + table{
 .page:has(.rueckseite):has(.dunkel) {
 	color: #fff;
 	background-image: url('/assets/ilaris/hintergrund_schwarz.jpg');
+
 	h1 {
 		text-shadow: unset;
 		color: white;
-		filter: drop-shadow(0 0 1.5px black) drop-shadow(0 0 0 black)
-				drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-				drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-				drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		filter: drop-shadow(0 0 1.5px black) drop-shadow(0 0 0 black) drop-shadow(0 0 0 black) drop-shadow(0 0 0 black) drop-shadow(0 0 0 black) drop-shadow(0 0 0 black) drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
 	}
+
 	h2 {
 		text-shadow: unset;
-		filter: drop-shadow(0 0 1px black) drop-shadow(0 0 0 black)
-				drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-				drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-				drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		filter: drop-shadow(0 0 1px black) drop-shadow(0 0 0 black) drop-shadow(0 0 0 black) drop-shadow(0 0 0 black) drop-shadow(0 0 0 black) drop-shadow(0 0 0 black) drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
 		color: white;
 	}
+
 	.logo p {
 		color: #fff;
 	}
+
 	table tbody tr:nth-child(odd) {
 		background-color: #463d31;
 	}
+
 	.fusszeile,
 	.footnote {
-		color : white;
-		filter: drop-shadow(0 0 0.7px black) drop-shadow(0 0 0 black)
-				drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-				drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-				drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		color: white;
+		filter: drop-shadow(0 0 0.7px black) drop-shadow(0 0 0 black) drop-shadow(0 0 0 black) drop-shadow(0 0 0 black) drop-shadow(0 0 0 black) drop-shadow(0 0 0 black) drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
 	}
 }
+
 //*****************************
 // *    VORDERSEITE
 // *****************************/
 .page:has(.frontCover),
 .page:has(.vorderseite) {
-	columns    : 1;
-	text-align : center;
+	columns: 1;
+	text-align: center;
+
 	&:after {
 		all: unset;
 	}
+
 	&:has(.topbanner):after {
-		content          : "";
-		position         : absolute;
-		top           : 0px;
-		left             : 0px;
-		z-index          : 100;
-		height           : 92px;
-		width            : 100%;
-		background-image : @topBanner;
-		background-size  : cover;
+		content: "";
+		position: absolute;
+		top: 0px;
+		left: 0px;
+		z-index: 100;
+		height: 92px;
+		width: 100%;
+		background-image: @topBanner;
+		background-size: cover;
 		background-repeat: no-repeat;
 		background-position: center;
 		//opacity: 40%;
-    	//filter: sepia(100%);
+		//filter: sepia(100%);
 		//transform: rotate(187deg);
 	}
+
 	&:has(.leftbanner):after {
-		content          : "";
-		position         : absolute;
-		top           : -11px;
-		left             : -8px;
-		z-index          : 100;
-		height           : 102%;
-		width            : 127px;
-		background-image : @leftBanner;
-		background-size  : cover;
+		content: "";
+		position: absolute;
+		top: -11px;
+		left: -8px;
+		z-index: 100;
+		height: 102%;
+		width: 127px;
+		background-image: @leftBanner;
+		background-size: cover;
 		background-repeat: no-repeat;
 		background-position: center;
 		//opacity: 40%;
-    	//filter: sepia(100%);
+		//filter: sepia(100%);
 		//transform: rotate(187deg);
 	}
+
 	h1 {
 		//text-transform : uppercase;
-		font-weight    : normal;
-		margin-top     : 2.5cm;
-		margin-bottom  : 0;
-		font-family    : Cinzel;
+		font-weight: normal;
+		margin-top: 2.5cm;
+		margin-bottom: 0;
+		font-family: Cinzel;
 		font-weight: bold;
-		font-size      : 2.1cm;
+		font-size: 2.1cm;
 		line-height: 1.1em;
 		// in coverPart sligthly different:
 		// margin-top     : 3.5cm;
-		margin-bottom  : 0;
+		margin-bottom: 0;
 		// theme
 		text-shadow: unset;
-		filter: drop-shadow(0 0 0.5px #eae1ce) 
-				drop-shadow(0 0 0.5px #eae1ce)
-				drop-shadow(0 0 1.5px #eae1ce)
-				drop-shadow(0 0 0.5px #eae1ce)
-				drop-shadow(0 0 2.5px #eae1ce)
-				drop-shadow(0 0 0.5px #eae1ce)
-				drop-shadow(0 0 6.5px #eae1ce)
-				drop-shadow(0 0 1.5px #eae1ce);
+		filter: drop-shadow(0 0 0.5px #eae1ce) drop-shadow(0 0 0.5px #eae1ce) drop-shadow(0 0 1.5px #eae1ce) drop-shadow(0 0 0.5px #eae1ce) drop-shadow(0 0 2.5px #eae1ce) drop-shadow(0 0 0.5px #eae1ce) drop-shadow(0 0 6.5px #eae1ce) drop-shadow(0 0 1.5px #eae1ce);
 	}
+
 	h1::before {
 		content: '';
 	}
-	h1::after{
+
+	h1::after {
 		content: '';
 	}
+
 	h2 {
 		// general settings
-		font-family    : Cinzel;
-		font-weight    : normal;
-		font-size      : 0.85cm;
-		letter-spacing : 0.25cm;
+		font-family: Cinzel;
+		font-weight: normal;
+		font-size: 0.85cm;
+		letter-spacing: 0.25cm;
 
 		// default light theme (overwritten by .dunkel)
 		text-shadow: unset;
-		filter: drop-shadow(0 0 0.5px #eae1ce) 
-				drop-shadow(0 0 0.5px #eae1ce)
-				drop-shadow(0 0 1.5px #eae1ce)
-				drop-shadow(0 0 0.5px #eae1ce)
-				drop-shadow(0 0 2.5px #eae1ce)
-				drop-shadow(0 0 0.5px #eae1ce)
-				drop-shadow(0 0 6.5px #eae1ce)
-				drop-shadow(0 0 1.5px #eae1ce);
+		filter: drop-shadow(0 0 0.5px #eae1ce) drop-shadow(0 0 0.5px #eae1ce) drop-shadow(0 0 1.5px #eae1ce) drop-shadow(0 0 0.5px #eae1ce) drop-shadow(0 0 2.5px #eae1ce) drop-shadow(0 0 0.5px #eae1ce) drop-shadow(0 0 6.5px #eae1ce) drop-shadow(0 0 1.5px #eae1ce);
 	}
+
 	hr {
-		display          : block;
-		position         : relative;
-		background-image : @horizontalRule;
-		background-size  : 100% 100%;
-		visibility       : visible;
-		height           : 0.5cm;
-		width            : 12cm;
-		border           : none;
-		margin           : auto;
-		filter           : drop-shadow(0 0 3px black);
+		display: block;
+		position: relative;
+		background-image: @horizontalRule;
+		background-size: 100% 100%;
+		visibility: visible;
+		height: 0.5cm;
+		width: 12cm;
+		border: none;
+		margin: auto;
+		filter: drop-shadow(0 0 3px black);
 	}
+
 	.banner {
-		filter           : drop-shadow(2px 2px 2px black);
-		position         : absolute;
-		left             : 0;
-		bottom           : 4.2cm;
-		background-image : url('/assets/coverPageBanner.svg');
-		height           : 1.7cm;
-		width            : 10.5cm;
-		color            : white;
-		font-family      : NodestoCapsCondensed;
-		font-weight      : normal;
-		font-size        : 1cm;
-		letter-spacing   : 0.014cm;
-		text-align       : left;
-		padding-left     : 1cm;
-		display          : flex;
-		justify-content  : center;
-		flex-direction   : column;
-		padding-top      : 0.1cm;
+		filter: drop-shadow(2px 2px 2px black);
+		position: absolute;
+		left: 0;
+		bottom: 4.2cm;
+		background-image: url('/assets/coverPageBanner.svg');
+		height: 1.7cm;
+		width: 10.5cm;
+		color: white;
+		font-family: NodestoCapsCondensed;
+		font-weight: normal;
+		font-size: 1cm;
+		letter-spacing: 0.014cm;
+		text-align: left;
+		padding-left: 1cm;
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+		padding-top: 0.1cm;
 	}
+
 	.footnote,
 	.fusszeile {
 		// general section
-		position     : absolute;
-		text-align   : center;
-		font-size    : 0.496cm;
-		bottom       : 1.3cm;
-		left         : 0;
-		right        : 0;
-		margin-left  : auto;
-		margin-right : auto;
-		width        : 70%;
-		font-family  : Aniron;
+		position: absolute;
+		text-align: center;
+		font-size: 0.496cm;
+		bottom: 1.3cm;
+		left: 0;
+		right: 0;
+		margin-left: auto;
+		margin-right: auto;
+		width: 70%;
+		font-family: Aniron;
 
 		// theme default (light)
-		color        : var(--HB_Color_HeaderText);
-		filter: 
-			drop-shadow(0 0 0.7px #eae1ce) drop-shadow(0 0 0 #eae1ce)
-			drop-shadow(0 0 0 #eae1ce) drop-shadow(0 0 0 #eae1ce)
-			drop-shadow(0 0 0 #eae1ce) drop-shadow(0 0 0 #eae1ce)
-			drop-shadow(0 0 0 #eae1ce) drop-shadow(0 0 0 #eae1ce);
+		color: var(--HB_Color_HeaderText);
+		filter:
+			drop-shadow(0 0 0.7px #eae1ce) drop-shadow(0 0 0 #eae1ce) drop-shadow(0 0 0 #eae1ce) drop-shadow(0 0 0 #eae1ce) drop-shadow(0 0 0 #eae1ce) drop-shadow(0 0 0 #eae1ce) drop-shadow(0 0 0 #eae1ce) drop-shadow(0 0 0 #eae1ce);
 	}
+
 	.logo {
-		position   : absolute;
-		top        : 1.2cm;
-		left       : 0;
-		right      : 0;
-		filter     : drop-shadow(0 0 0.075cm black);
+		position: absolute;
+		top: 1.2cm;
+		left: 0;
+		right: 0;
+		filter: drop-shadow(0 0 0.075cm black);
+
 		img {
-			height : 3cm;
+			height: 3cm;
 		}
 	}
 }
@@ -1179,23 +1361,26 @@ h5 + table{
 //*****************************
 // *      RUECKSEITE
 // *****************************/
-.page:has(.backcover), 
-.page:has(.rueckseite){
+.page:has(.backcover),
+.page:has(.rueckseite) {
 	columns: 1;
 	padding: 1.75cm 1.3cm 2cm 1.3cm;
 	color: black;
-	
+
 	&:after {
 		all: unset;
 	}
+
 	.columnWrapper {
 		width: 11cm;
 	}
+
 	.columnWrapper:has(.logo) {
 		padding-bottom: 3cm;
 	}
-	.backcover, 
-	.rueckseite{
+
+	.backcover,
+	.rueckseite {
 		position: absolute;
 		inset: 0;
 		//background-image: @backCover;
@@ -1206,9 +1391,11 @@ h5 + table{
 		width: 82%;
 		left: -75px;
 	}
+
 	.blank {
 		height: 1.4em;
 	}
+
 	h1 {
 		//margin-bottom: .3cm;
 		font-size: 1.35cm;
@@ -1219,29 +1406,36 @@ h5 + table{
 		color: var(--HB_Color_HeaderText);
 		padding-bottom: 0px;
 	}
+
 	h1::before {
 		content: '';
 	}
-	h1::after{
+
+	h1::after {
 		content: '';
 	}
+
 	h1+p::first-line,
 	h1+p::first-letter {
 		all: unset;
 	}
+
 	h2 {
 		text-align: center;
 		color: black;
 	}
+
 	h5 {
 		font-family: Cinzel;
 	}
+
 	img {
 		position: absolute;
 		top: 0px;
 		height: 100%;
 		z-index: -2;
 	}
+
 	hr {
 		margin-left: auto;
 		margin-right: auto;
@@ -1253,18 +1447,21 @@ h5 + table{
 		background-size: 100% 100%;
 		border: none;
 	}
+
 	p {
 		font-family: Cinzel;
 		line-height: 1.3em;
 		font-size: 0.45cm;
 		font-weight: 500;
 	}
+
 	hr+p {
 		font-family: Cinzel;
 		text-align: center;
 		margin-top: .6cm;
 		font-weight: 800;
 	}
+
 	.punkt {
 		background-image: url("/assets/ilaris/icon_rot.png");
 		background-size: contain;
@@ -1272,10 +1469,12 @@ h5 + table{
 		width: 20px;
 		height: 20px;
 		vertical-align: middle;
+
 		&.leer {
-			opacity:40%;
+			opacity: 40%;
 		}
 	}
+
 	td {
 		font-family: 'Cinzel';
 		font-size: 0.45cm;
@@ -1284,6 +1483,7 @@ h5 + table{
 		vertical-align: middle;
 		padding: 2px 1.5px;
 	}
+
 	.logo {
 		position: absolute;
 		z-index: 0;
@@ -1291,13 +1491,15 @@ h5 + table{
 		left: 118px;
 		bottom: -0.2cm;
 		width: 7.6cm;
+
 		img {
 			position: relative;
-			height : 4.0cm;
+			height: 4.0cm;
 			left: 26px;
-			width  : 100%;
-			z-index : 0;
+			width: 100%;
+			z-index: 0;
 		}
+
 		p {
 			position: relative;
 			color: #000;
@@ -1312,22 +1514,27 @@ h5 + table{
 		}
 	}
 }
+
 .page:has(.backcover):has(.top),
 .page:has(.rueckseite):has(.oben) {
+
 	//width: 100%;
 	.columnWrapper {
 		padding-top: 6cm;
 		width: 100%;
 	}
+
 	hr {
 		height: 1.8cm;
 	}
+
 	p {
 		font-family: CrimsonProMedium;
 		line-height: 1.3em;
 		font-size: 0.5cm;
 		font-weight: 500;
 	}
+
 	hr+p {
 		font-family: Cinzel;
 		text-align: center;
@@ -1341,8 +1548,8 @@ h5 + table{
 // *      PART COVER
 // *****************************/
 .page:has(.partCover) {
-	columns    : 1;
-	text-align : center;
+	columns: 1;
+	text-align: center;
 	padding-top: 0;
 
 	.partCover {
@@ -1371,8 +1578,8 @@ h5 + table{
 		position: relative;
 		margin-top: -0.7em;
 		line-height: 1.1em;
-		margin-left  : auto;
-		margin-right : auto;
+		margin-left: auto;
+		margin-right: auto;
 	}
 }
 
@@ -1380,88 +1587,108 @@ h5 + table{
 // *      INHALTSVERZEICHNIS
 // *****************************/
 .page {
-&:has(.toc):after,
-&:has(.inhaltsverzeichnis):after {
-	display: none;
-}
-.toc,
-.inhaltsverzeichnis {
--webkit-column-break-inside : avoid;
-page-break-inside           : avoid;
-break-inside                : avoid;
-	h1 {
-		text-align    : center;
-		margin-bottom : 0.3cm;
+
+	&:has(.toc):after,
+	&:has(.inhaltsverzeichnis):after {
+		display: none;
 	}
-	a{
-		display         : inline;
-		color           : inherit;
-		text-decoration : none;
-		&:hover{
-			text-decoration : underline;
+
+	.toc,
+	.inhaltsverzeichnis {
+		-webkit-column-break-inside: avoid;
+		page-break-inside: avoid;
+		break-inside: avoid;
+
+		h1 {
+			text-align: center;
+			margin-bottom: 0.3cm;
 		}
-	}
-	h4 {
-		font-family: Cinzel;
-		margin-top  : 0.2cm;
-		line-height : 0.4cm;
-		& + ul li {
-			line-height: 1.2em;
-			font-family: CrimsonProMedium;
-		}
-	}
-	h3 {
-		font-family: Cinzel;
-	}
-	ul{
-		padding-left    : 0;
-		list-style-type : none;
-		margin-top      : 0;
+
 		a {
-			width           : 100%;
-			display         : flex;
-			flex-flow       : row nowrap;
-			justify-content : space-between;
-		}
-		li + li h3 {
-			margin-top  : 0.26cm;
-			line-height : 1em;
-		}
-		h3 span:first-child::after {
-			border : none;
-		}
-		span {
-			display : contents;
-			&:first-child::after {
-				content       : "";
-				bottom        : 0.08cm;
-				flex          : 1;
-				margin-left   : 0.08cm;        /* Spacing before dot leaders */
-				margin-right  : 0.16cm;
-				border-bottom : 0.05cm dotted #000;
-				margin-bottom : 0.08cm;
-			}
-			&:last-child {
-				display     : inline-block;
-				align-self  : flex-end;
-				font-family : "CrimsonProMedium";
-				font-size   : 0.34cm;
-				font-weight : normal;
-				color       : #000;
+			display: inline;
+			color: inherit;
+			text-decoration: none;
+
+			&:hover {
+				text-decoration: underline;
 			}
 		}
-		ul { /*List indent*/
-			margin-left : 1em;
+
+		h4 {
+			font-family: Cinzel;
+			margin-top: 0.2cm;
+			line-height: 0.4cm;
+
+			&+ul li {
+				line-height: 1.2em;
+				font-family: CrimsonProMedium;
+			}
+		}
+
+		h3 {
+			font-family: Cinzel;
+		}
+
+		ul {
+			padding-left: 0;
+			list-style-type: none;
+			margin-top: 0;
+
+			a {
+				width: 100%;
+				display: flex;
+				flex-flow: row nowrap;
+				justify-content: space-between;
+			}
+
+			li+li h3 {
+				margin-top: 0.26cm;
+				line-height: 1em;
+			}
+
+			h3 span:first-child::after {
+				border: none;
+			}
+
+			span {
+				display: contents;
+
+				&:first-child::after {
+					content: "";
+					bottom: 0.08cm;
+					flex: 1;
+					margin-left: 0.08cm;
+					/* Spacing before dot leaders */
+					margin-right: 0.16cm;
+					border-bottom: 0.05cm dotted #000;
+					margin-bottom: 0.08cm;
+				}
+
+				&:last-child {
+					display: inline-block;
+					align-self: flex-end;
+					font-family: "CrimsonProMedium";
+					font-size: 0.34cm;
+					font-weight: normal;
+					color: #000;
+				}
+			}
+
+			ul {
+				/*List indent*/
+				margin-left: 1em;
+			}
+		}
+
+		li {
+			background-image: none;
+			padding-left: 0px;
+		}
+
+		&.wide {
+			.useColumns(0.96, @fillMode: balance);
 		}
 	}
-	li {
-		background-image: none;
-		padding-left: 0px;
-	}
-	&.wide{
-		.useColumns(0.96, @fillMode: balance);
-	}
-}
 }
 
 //*****************************
@@ -1469,40 +1696,45 @@ break-inside                : avoid;
 // *****************************/
 .page {
 	dl {
-		line-height  : 1.25em;
-		padding-left : 1em;
-		white-space  : pre-line;
-		& + * {
-			margin-top : 0.28cm;
+		line-height: 1.25em;
+		padding-left: 1em;
+		white-space: pre-line;
+
+		&+* {
+			margin-top: 0.28cm;
 		}
 	}
-	dl + * {
-  	margin-top : 0.17cm;
-  }
-	p + dl {
+
+	dl+* {
 		margin-top: 0.17cm;
 	}
-  dt {
-    display      : inline;
-    margin-right : 5px;
-		margin-left  : -1em;
-  }
-  dd {
-		display     : inline;
-		margin-left : 0px;
-		text-indent : 0px;
-  }
+
+	p+dl {
+		margin-top: 0.17cm;
+	}
+
+	dt {
+		display: inline;
+		margin-right: 5px;
+		margin-left: -1em;
+	}
+
+	dd {
+		display: inline;
+		margin-left: 0px;
+		text-indent: 0px;
+	}
 }
 
 //*****************************
 // *         WIDE
 // *****************************/
-.page .wide{
-	margin-bottom       : 0.325cm;
+.page .wide {
+	margin-bottom: 0.325cm;
 }
 
-.page h1 + *{
-	margin-top : 0;
+.page h1+* {
+	margin-top: 0;
 }
 
 //*****************************
@@ -1511,12 +1743,16 @@ break-inside                : avoid;
 .page {
 	.runeTable {
 		margin-block: 0.7cm;
+
 		table {
-			font-family : inherit;
+			font-family: inherit;
+
 			tbody tr {
 				background: unset;
 			}
-			th, td {
+
+			th,
+			td {
 				width: 1.3cm;
 				height: 1.3cm;
 				vertical-align: middle;
@@ -1524,10 +1760,12 @@ break-inside                : avoid;
 				outline: 1px solid #000;
 				font-weight: normal;
 			}
-			th{
+
+			th {
 				font-family: CrimsonProMedium;
 				font-size: 0.45cm;
 			}
+
 			td {
 				font-size: 0.7cm;
 			}
@@ -1550,21 +1788,21 @@ break-inside                : avoid;
 // *****************************/
 .page {
 	.index {
-		font-size : 0.218cm;
+		font-size: 0.218cm;
 
 		ul ul {
-			margin : 0;
+			margin: 0;
 		}
 
 		ul {
-			padding-left    : 0;
-			text-indent     : 0;
-			list-style-type : none;
+			padding-left: 0;
+			text-indent: 0;
+			list-style-type: none;
 		}
 
-		& > ul > li {
-			text-indent  : -1.5em;
-			padding-left : 1.5em;
+		&>ul>li {
+			text-indent: -1.5em;
+			padding-left: 1.5em;
 		}
 	}
 }
@@ -1574,96 +1812,111 @@ break-inside                : avoid;
 // *****************************/
 .page {
 	.maske {
-		position              : absolute;
-		height                : 200%;
-		width                 : 200%;
-		left                  : 50%;
-		bottom                : 50%;
-		--rotation            : 0;
-		--revealer            : none;
-		--checkerboard        : none;
-		--scaleX              : 1;
-		--scaleY              : 1;
-		-webkit-mask-image    : var(--wc), var(--revealer);
-		-webkit-mask-repeat   : repeat-x;
-		-webkit-mask-size     : 50%; //Scale only X to fit page width, leave height at aspect ratio, designed to hang off the edge
-		-webkit-mask-position : 50% calc(50% - var(--offset));
-		mask-image            : var(--wc);
-		mask-repeat           : repeat-x;
-		mask-size             : 50%;
-		mask-position         : 50% calc(50% - var(--offset));
-		background-image      : var(--checkerboard);
-		background-size       : 20px;
-		z-index               : -1;
-		transform             : translateY(50%) translateX(-50%) rotate(calc(1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));
-		& > p:has(img) {
-			position   : absolute;
-			width      : 50%;
-			height     : 50%;
-			bottom     : 50%;
-			left       : 50%;
-			transform  : translateX(-50%) translateY(50%) rotate(calc(-1deg * var(--rotation))) scaleX(calc(1 / var(--scaleX))) scaleY(calc(1 / var(--scaleY)));
+		position: absolute;
+		height: 200%;
+		width: 200%;
+		left: 50%;
+		bottom: 50%;
+		--rotation: 0;
+		--revealer: none;
+		--checkerboard: none;
+		--scaleX: 1;
+		--scaleY: 1;
+		-webkit-mask-image: var(--wc), var(--revealer);
+		-webkit-mask-repeat: repeat-x;
+		-webkit-mask-size: 50%; //Scale only X to fit page width, leave height at aspect ratio, designed to hang off the edge
+		-webkit-mask-position: 50% calc(50% - var(--offset));
+		mask-image: var(--wc);
+		mask-repeat: repeat-x;
+		mask-size: 50%;
+		mask-position: 50% calc(50% - var(--offset));
+		background-image: var(--checkerboard);
+		background-size: 20px;
+		z-index: -1;
+		transform: translateY(50%) translateX(-50%) rotate(calc(1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));
+
+		&>p:has(img) {
+			position: absolute;
+			width: 50%;
+			height: 50%;
+			bottom: 50%;
+			left: 50%;
+			transform: translateX(-50%) translateY(50%) rotate(calc(-1deg * var(--rotation))) scaleX(calc(1 / var(--scaleX))) scaleY(calc(1 / var(--scaleY)));
 		}
+
 		& img {
-			position : absolute;
-			display  : block;
-			bottom   : 0;
+			position: absolute;
+			display: block;
+			bottom: 0;
 		}
+
 		&.unten {
-			--rotation : 0;
-			& img {bottom: 0;}
+			--rotation: 0;
+
+			& img {
+				bottom: 0;
+			}
 		}
+
 		&.oben {
-			--rotation : 180;
-			& img {top: 0;}
+			--rotation: 180;
+
+			& img {
+				top: 0;
+			}
 		}
+
 		&.links {
-			--rotation : 90;
-			& img {left: 0;}
+			--rotation: 90;
+
+			& img {
+				left: 0;
+			}
 		}
+
 		&.rechts {
-			--rotation : -90;
-			& img {right: 0;}
+			--rotation: -90;
+
+			& img {
+				right: 0;
+			}
 		}
+
 		&.revealImage {
-			--revealer : linear-gradient(0deg, rgba(0,0,0,.2) 0%, rgba(0,0,0,0.2));
-			--checkerboard : url(/assets/waterColorMasks/missingImage.png); //shows any masked regions not filled by image
+			--revealer: linear-gradient(0deg, rgba(0, 0, 0, .2) 0%, rgba(0, 0, 0, 0.2));
+			--checkerboard: url(/assets/waterColorMasks/missingImage.png); //shows any masked regions not filled by image
 		}
 	}
 
 	.mitte {
-		width                 : 100%;
-		height                : 100%;
-		left                  : calc(var(--offsetX));
-		bottom                : calc(var(--offsetY));
-		-webkit-mask-image    : var(--wc), var(--revealer);
-		-webkit-mask-repeat   : no-repeat;
-		-webkit-mask-size     : 100% 100%; //Scale both dimensions to fit page size
-		-webkit-mask-position : 0% 0%;
-		mask-image            : var(--wc), var(--revealer);
-		mask-repeat           : no-repeat;
-		mask-size             : 100% 100%; //Scale both dimensions to fit page size
-		mask-position         : 50% 50%;
-		transform             : rotate(calc(1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));
+		width: 100%;
+		height: 100%;
+		left: calc(var(--offsetX));
+		bottom: calc(var(--offsetY));
+		-webkit-mask-image: var(--wc), var(--revealer);
+		-webkit-mask-repeat: no-repeat;
+		-webkit-mask-size: 100% 100%; //Scale both dimensions to fit page size
+		-webkit-mask-position: 0% 0%;
+		mask-image: var(--wc), var(--revealer);
+		mask-repeat: no-repeat;
+		mask-size: 100% 100%; //Scale both dimensions to fit page size
+		mask-position: 50% 50%;
+		transform: rotate(calc(1deg * var(--rotation))) scaleX(var(--scaleX)) scaleY(var(--scaleY));
 		// from editor snippet on cover
-		--offsetX:0%;
-		--offsetY:-10%;
-		--rotation:0;
+		--offsetX: 0%;
+		--offsetY: -10%;
+		--rotation: 0;
 		// selected mask center 11
-		--wc : url(/assets/waterColorMasks/center/0011.webp);
+		--wc: url(/assets/waterColorMasks/center/0011.webp);
 
-		& > p:has(img) {
-			position   : absolute;
-			width      : 100%;
-			height     : 100%;
-			bottom     : 0;
-			left       : 0;
-			transform  : unset;
-			transform  : scaleX(calc(1 / var(--scaleX))) scaleY(calc(1 / var(--scaleY)))
-									rotate(calc(-1deg * var(--rotation)))
-						translateX(calc(-1 * var(--offsetX)))
-									translateY(calc(1 * var(--offsetY)));
+		&>p:has(img) {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			bottom: 0;
+			left: 0;
+			transform: unset;
+			transform: scaleX(calc(1 / var(--scaleX))) scaleY(calc(1 / var(--scaleY))) rotate(calc(-1deg * var(--rotation))) translateX(calc(-1 * var(--offsetX))) translateY(calc(1 * var(--offsetY)));
 		}
 	}
 }
-
