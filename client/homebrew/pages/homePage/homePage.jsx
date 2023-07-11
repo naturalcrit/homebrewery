@@ -11,7 +11,7 @@ const Navbar = require('../../navbar/navbar.jsx');
 const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const AccountNavItem = require('../../navbar/account.navitem.jsx');
+//const AccountNavItem = require('../../navbar/account.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 
 
@@ -66,7 +66,6 @@ const HomePage = createClass({
 				<NewBrewItem />
 				<HelpNavItem />
 				<RecentNavItem />
-				<AccountNavItem />
 			</Nav.section>
 		</Navbar>;
 	},

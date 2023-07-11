@@ -8,7 +8,7 @@ const Navbar = require('../../navbar/navbar.jsx');
 const MetadataNav = require('../../navbar/metadata.navitem.jsx');
 const PrintLink = require('../../navbar/print.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const Account = require('../../navbar/account.navitem.jsx');
+//const Account = require('../../navbar/account.navitem.jsx');
 
 
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');

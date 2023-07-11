@@ -7,7 +7,8 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 
 module.exports = function(props){
 	return <Nav.dropdown>
-		<Nav.item color='grey' icon='fas fa-question-circle'>
+		<Nav.item color='grey' icon='fas fa-question-circle'
+		className="helpNavButton">
 			Hilfe
 		</Nav.item>
 		<Nav.item color='red' icon='fas fa-fw fa-bug'
