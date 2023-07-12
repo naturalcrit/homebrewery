@@ -7,7 +7,7 @@ const Navbar = require('../../../navbar/navbar.jsx');
 const NewBrewItem = require('../../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../../navbar/help.navitem.jsx');
 const RecentNavItem = require('../../../navbar/recent.navitem.jsx').both;
-//const Account = require('../../../navbar/account.navitem.jsx');
+const Account = require('../../../navbar/account.navitem.jsx');
 
 
 const UIPage = createClass({
@@ -24,7 +24,6 @@ const UIPage = createClass({
 					<NewBrewItem />
 					<HelpNavItem />
 					<RecentNavItem />
-					<Account />
 				</Nav.section>
 			</Navbar>
 

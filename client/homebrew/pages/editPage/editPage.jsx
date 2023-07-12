@@ -13,7 +13,7 @@ const NewBrew = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const PrintLink = require('../../navbar/print.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
-//const Account = require('../../navbar/account.navitem.jsx');
+const Account = require('../../navbar/account.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
@@ -376,7 +376,6 @@ const EditPage = createClass({
 				</Nav.dropdown>
 				<PrintLink shareId={this.processShareId()} />
 				<RecentNavItem brew={this.state.brew} storageKey='edit' />
-				<Account />
 			</Nav.section>
 
 		</Navbar>;

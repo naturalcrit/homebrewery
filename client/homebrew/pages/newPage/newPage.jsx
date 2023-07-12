@@ -9,7 +9,7 @@ const Markdown = require('naturalcrit/markdown.js');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
-//const AccountNavItem = require('../../navbar/account.navitem.jsx');
+const AccountNavItem = require('../../navbar/account.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
@@ -39,7 +39,7 @@ const NewPage = createClass({
 		return {
 			brew       : brew,
 			isSaving   : false,
-			saveGoogle : (global.account && global.account.googleId ? true : false),
+			saveGoogle : false,
 			error      : null,
 			htmlErrors : Markdown.validate(brew.text)
 		};
