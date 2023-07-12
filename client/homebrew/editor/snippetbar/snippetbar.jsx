@@ -104,6 +104,7 @@ const Snippetbar = createClass({
 	},
 
 	changeTheme : function(e){
+		if(e.target.value == this.props.currentEditorTheme) return;
 		this.props.updateEditorTheme(e.target.value);
 
 		this.setState({
@@ -113,7 +114,7 @@ const Snippetbar = createClass({
 
 	renderThemeSelector : function(){
 		return <div className='themeSelector'>
-			<select value={this.props.currentEditorTheme} onChange={this.changeTheme}>
+			<select value={this.props.currentEditorTheme} onChange={this.changeTheme} onMouseDown={(this.changeTheme)}>
 				{global.config.codeMirrorThemes.map((theme, key)=>{
 					return <option key={key} value={theme}>{theme}</option>;
 				})}
