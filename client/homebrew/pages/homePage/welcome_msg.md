@@ -13,7 +13,7 @@ Dank Markdown-Format kannst du ohne Umwege anfangen zu Tippen. In der Menüzeile
 ::
 {{note
 #### Alles nur Geklaut
-Wir betreiben nur den Ilaris-Fork des eigentlich englishsprachigen auf DnD ausgelegten [Homebrewery Projekts](https://homebrewery.naturalcrit.com). Gelegentlich hohlen wir uns auch einige neue Features, die dort entwickelt werden. Hier gehts zum [Changelog des Hauptprojekts](https://homebrewery.naturalcrit.com/changelog)
+Wir betreiben nur den Ilaris-Fork des eigentlich englischsprachigen auf DnD ausgelegten [Homebrewery Projekts](https://homebrewery.naturalcrit.com). Gelegentlich hohlen wir uns auch einige neue Features, die dort entwickelt werden. Hier gehts zum [Changelog des Hauptprojekts](https://homebrewery.naturalcrit.com/changelog)
 
 }}
 
@@ -25,7 +25,7 @@ Wir betreiben nur den Ilaris-Fork des eigentlich englishsprachigen auf DnD ausge
 \column
 
 ### Alternativen?
-Wer sich lieber mit LaTex auseinandersetzen möchte, mehr Freiheiten beim Erstellen benötigt oder einfach lieber offline Arbeitet, kann sich vielleicht mit der [LaTex-Klasse für Ilaris](https://github.com/Ilaris-Tools/IlarisTex) anfreunden.
+Wer sich lieber mit LaTex auseinandersetzen möchte, mehr Freiheiten beim Erstellen benötigt oder einfach lieber offline arbeitet, kann sich vielleicht mit der [LaTex-Klasse für Ilaris](https://github.com/Ilaris-Tools/IlarisTex) anfreunden.
 
 
 ::
@@ -41,8 +41,7 @@ Wer sich lieber mit LaTex auseinandersetzen möchte, mehr Freiheiten beim Erstel
 
 {{descriptive
 #### § Rechtliches
-Der Quellcode des Projektes ist auf GitHub unter der MIT-Lizenz als Fork von Homebrewery veröffentlicht.
+Der Quellcode des Projekts ist auf [GitHub](https://github.com/Ilaris-Tools/IlarisBrauerei) unter der MIT-Lizenz als Fork von [Homebrewery](https://github.com/naturalcrit/homebrewery) veröffentlicht.
 Die Illustrationen und andere Assets die hier bereitgestellt werden, dürfen für nicht-komerzielle Veröffentlichungen von Ilaris-Fanprodukten verwendet werden.
 Wenn du eigene Bilder aus externen Quellen hinzufügst, stelle bitte sicher, dass du über alle nötigen Rechte der Bilder verfügst, bevor du den Link oder die erstellte PDF verbreitest.
-
 }}
