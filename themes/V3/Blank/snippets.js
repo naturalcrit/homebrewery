@@ -44,6 +44,21 @@ module.exports = [
 					\n`
 			},
 			{
+				name : 'Linksbündig',
+				icon : 'fas fa-align-left',
+				gen  : ' {{linksbuendig Dies steht links}} '
+			},
+			{
+				name : 'Zentriert',
+				icon : 'fas fa-align-center',
+				gen  : ' {{zentriert Dies steht mittig}} '
+			},
+			{
+				name : 'Rechtsbündig',
+				icon : 'fas fa-align-right',
+				gen  : ' {{rechtsbuendig Dies steht rechts}} '
+			},
+			{
 				name : 'Link zu URL',
 				icon : 'fas fa-link',
 				gen  : '[Hier klicken](#p3) um auf Seite 3 zu gehen\n'
