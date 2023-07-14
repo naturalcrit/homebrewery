@@ -19,14 +19,14 @@ module.exports = [
 		view: 'text',
 		snippets: [
 			{
-				name: 'Seitennummer',
+				name: 'Manuelle Seitenzahl',
 				icon: 'fas fa-bookmark',
-				gen: '{{pageNumber 1}}\n{{footnote PART 1 | SECTION NAME}}\n\n'
+				gen: '{{seitenzahl 1}}\n{{fusszeile PART 1 | SECTION NAME}}\n\n'
 			},
 			{
 				name: 'Selbstzählende Seitennummer',
 				icon: 'fas fa-sort-numeric-down',
-				gen: '{{pageNumber,auto}}\n{{footnote PART 1 | SECTION NAME}}\n\n'
+				gen: '{{seitenzahl,auto}}\n{{fusszeile PART 1 | SECTION NAME}}\n\n'
 			},
 			{
 				name: 'Inhaltsverzeichnis',
@@ -38,7 +38,7 @@ module.exports = [
 				icon: 'fas fa-minus',
 				gen: function () {
 					return dedent`
-					{{kopfzeile Dies ist eine Kopfzeile}}`
+					{{kopfzeile Dies ist eine Kopfzeile}}`;
 				},
 			},
 			{
@@ -46,7 +46,7 @@ module.exports = [
 				icon: 'fas fa-minus',
 				gen: function () {
 					return dedent`
-					{{fusszeile Dies ist eine Fußzeile}}`
+					{{fusszeile Dies ist eine Fußzeile}}`;
 				},
 			},
 			{
@@ -62,29 +62,29 @@ module.exports = [
 		icon: 'fas fa-pencil-alt',
 		view: 'style',
 		snippets: [
-			{
-				name: 'Remove Drop Cap',
-				icon: 'fas fa-remove-format',
-				gen: dedent`/* Removes Drop Caps */
-						.page h1+p:first-letter {
-							all: unset;
-						}\n\n
-						/* Removes Small-Caps in first line */
-						.page h1+p:first-line {
-							all: unset;
-						}`
-			},
-			{
-				name: 'Tweak Drop Cap',
-				icon: 'fas fa-sliders-h',
-				gen: dedent`/* Drop Cap settings */
-						.page h1 + p::first-letter {
-							font-family: SolberaImitationRemake;
-							font-size: 3.5cm;
-							background-image: linear-gradient(-45deg, #322814, #998250, #322814);
-							line-height: 1em;
-						}\n\n`
-			}
+			// {
+			// 	name: 'Remove Drop Cap',
+			// 	icon: 'fas fa-remove-format',
+			// 	gen: dedent`/* Removes Drop Caps */
+			// 			.page h1+p:first-letter {
+			// 				all: unset;
+			// 			}\n\n
+			// 			/* Removes Small-Caps in first line */
+			// 			.page h1+p:first-line {
+			// 				all: unset;
+			// 			}`
+			// },
+			// {
+			// 	name: 'Tweak Drop Cap',
+			// 	icon: 'fas fa-sliders-h',
+			// 	gen: dedent`/* Drop Cap settings */
+			// 			.page h1 + p::first-letter {
+			// 				font-family: SolberaImitationRemake;
+			// 				font-size: 3.5cm;
+			// 				background-image: linear-gradient(-45deg, #322814, #998250, #322814);
+			// 				line-height: 1em;
+			// 			}\n\n`
+			// }
 		]
 	},
 
@@ -263,11 +263,11 @@ module.exports = [
 				icon: 'fas fa-sticky-note',
 				gen: function () {
 					return dedent`
-						{{note
-						##### Time to Drop Knowledge
-						Use notes to point out some interesting information.
+						{{notiz
+						##### Eine kleine Randnotiz
+						SL-Infos oder andere Randbemerkungen passen doch gut in so einen Kasten.
 
-						**Tables and lists** both work within a note.
+						**Tabellen und Listen** funktionieren hier auch..
 						}}
 						\n`;
 				},
@@ -595,7 +595,7 @@ module.exports = [
 				icon: 'fas fa-tint',
 				gen: dedent`
 					/* Ink Friendly */
-					*:is(.page,.monster,.note,.descriptive) {
+					*:is(.page,.notiz,.textbox) {
 						background : white !important;
 						filter : drop-shadow(0px 0px 3px #888) !important;
 					}

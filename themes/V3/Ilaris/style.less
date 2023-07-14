@@ -556,7 +556,8 @@ body {
 		}
 	}
 
-	.note {
+	.note,
+	.notiz {
 		.useSansSerif();
 		background-color: var(--HB_Color_Accent);
 		border-style: solid;
@@ -1105,7 +1106,8 @@ body {
 		border-image-source: @frameBorderImage;
 		border-image-width: 47px;
 
-		&.wide:first-child {
+		&.wide:first-child,
+		&.weit:first-child {
 			margin-top: 0.12cm;
 		}
 
@@ -1135,7 +1137,8 @@ body {
 		z-index: -1;
 	}
 
-	&.decoration.wide::before {
+	&.decoration.wide::before,
+	&.decoration.weit::before {
 		width: calc(100% + 3.3cm);
 		height: 7.75cm;
 		background-position: left, right;
@@ -1821,7 +1824,8 @@ body {
 			padding-left: 0px;
 		}
 
-		&.wide {
+		&.wide,
+		&.weit {
 			.useColumns(0.96, @fillMode: balance);
 		}
 	}
@@ -1865,7 +1869,8 @@ body {
 //*****************************
 // *         WIDE
 // *****************************/
-.page .wide {
+.page .wide,
+.page .weit {
 	margin-bottom: 0.325cm;
 }
 
