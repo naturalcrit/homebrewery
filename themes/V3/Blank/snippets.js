@@ -22,6 +22,12 @@ module.exports = [
 				gen  : '\n\\page\n'
 			},
 			{
+				name : 'Querformat',
+				icon : 'icon-landscape',
+				gen  : '\n{{querformat}}\n'
+			},
+			
+			{
 				name : 'Vertikaler Abstand',
 				icon : 'fas fa-arrows-alt-v',
 				gen  : '\n::::\n'

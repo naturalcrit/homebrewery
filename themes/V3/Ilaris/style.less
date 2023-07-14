@@ -8,6 +8,9 @@
 @separator: url('/assets/ilaris/trenner.png');
 @backCover: url('/assets/ilaris/backcovermask_modified.png');
 
+@dina4Width: 210mm;
+@dina4Height: 297mm;
+
 :root {
 	//Colors
 	--HB_Color_Background: #EEE5CE; // Light parchment
@@ -140,8 +143,8 @@ body {
 	width             : 215.9mm;
 	*/
 	/* DINA4 Page Size */
-	width: 210mm;
-	height: 297mm;
+	width: @dina4Width;
+	height: @dina4Height;
 
 	background-color: var(--HB_Color_Background);
 	background-image: @backgroundImage;
@@ -1259,6 +1262,12 @@ body {
 .page:has(.keinhintergrund) {
 	background-image: none;
 	background-color: white;
+}
+
+
+.page:has(.querformat) {
+	width: @dina4Height;
+	height: @dina4Width;
 }
 
 //*****************************
