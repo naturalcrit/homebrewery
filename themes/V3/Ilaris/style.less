@@ -52,7 +52,9 @@
 	--LT_Lila: #8e5d6f; // = VTT
 
 	//Ilaris-Regelwerk
-	// IR
+	//--IR_Dunkelrot: #450c15;  // todo: update
+	--IR_Dunkelrot: var(--MK_Rot);  // todo: update
+	--IR_Beige: #efd0b3; // todo: update?
 }
 
 @page {
@@ -757,11 +759,14 @@ body {
 	// *****************************/
 	.kreatur,
 	.monster {
-
 		position: relative;
 		padding: 8px;
+		padding-top: 6px;
 		margin-bottom: 0.325cm;
-		background-color: var(--HB_Color_Accent);
+		background: url(/assets/ilaris/kreaturen/tier.png) 0px 0px, linear-gradient(rgba(0,0,0,0) 64px, 65px, var(--IR_Beige));
+		background-size: 64px, auto;
+		background-repeat: no-repeat;
+		background-position-x: right;
 
 		//Header
 		h2 {
@@ -769,11 +774,15 @@ body {
 			line-height: 1em;
 			margin: 0;
 			background-color: none;
+			color: var(--IR_Dunkelrot);
 
-			&+p {
+			&+p { //paragraph after h2 (description)
 				font-size: 0.304cm; //Monster size and type subtext
 				margin-bottom: 0;
 				background-color: none;
+				margin-right: 64px;
+				height: 29px;
+				overflow:hidden;
 			}
 		}
 
@@ -781,8 +790,8 @@ body {
 			visibility: visible;
 			height: 2px;
 			margin: 0.12cm -8px;
-			background-color: darkred;
-			color: darkred;
+			background-color: var(--IR_Dunkelrot);
+			color: var(--IR_Dunkelrot);
 			border-width: 0;
 		}
 
@@ -800,17 +809,16 @@ body {
 			}
 		}
 
-		// Monster Ability table
-		hr+table:first-of-type {
+		table {
 			margin: 0;
 			column-span: none;
-			color: var(--HB_Color_HeaderText);
+			//color: var(--IR_Dunkelrot);
 			background-color: transparent;
 			border-style: none;
 			border-image: none;
 			-webkit-column-span: none;
 
-			tr {
+			tr:nth-child(odd) {
 				background-color: transparent;
 			}
 
@@ -824,7 +832,33 @@ body {
 			margin-bottom: 0;
 		}
 	}
-
+	.monster.tier{
+		background: url(/assets/ilaris/kreaturen/tier.png) 0px 0px, linear-gradient(rgba(0,0,0,0) 64px, 65px, var(--IR_Beige));
+	}
+	.monster.humanoid{
+		background-image: url(/assets/ilaris/kreaturen/tier.png) 0px 0px, linear-gradient(rgba(0,0,0,0) 64px, 65px, var(--IR_Beige));
+	}
+	.monster.daemon{
+		background-image: url(/assets/ilaris/kreaturen/daemon.png) 0px 0px, linear-gradient(rgba(0,0,0,0) 64px, 65px, var(--IR_Beige));
+	}
+	.monster.daimonid{
+		background-image: url(/assets/ilaris/kreaturen/daimonid.png) 0px 0px, linear-gradient(rgba(0,0,0,0) 64px, 65px, var(--IR_Beige));
+	}
+	.monster.elementar{
+		background-image: url(/assets/ilaris/kreaturen/elementar.png) 0px 0px, linear-gradient(rgba(0,0,0,0) 64px, 65px, var(--IR_Beige));
+	}
+	.monster.fee{
+		background-image: url(/assets/ilaris/kreaturen/fee.png) 0px 0px, linear-gradient(rgba(0,0,0,0) 64px, 65px, var(--IR_Beige));
+	}
+	.monster.geist{
+		background-image: url(/assets/ilaris/kreaturen/geist.png) 0px 0px, linear-gradient(rgba(0,0,0,0) 64px, 65px, var(--IR_Beige));
+	}
+	.monster.mythen{
+		background-image: url(/assets/ilaris/kreaturen/mythen.png) 0px 0px, linear-gradient(rgba(0,0,0,0) 64px, 65px, var(--IR_Beige));
+	}
+	.monster.untod{
+		background-image: url(/assets/ilaris/kreaturen/untod.png) 0px 0px, linear-gradient(rgba(0,0,0,0) 64px, 65px, var(--IR_Beige));
+	}
 
 	//*****************************
 	// *           Footer
