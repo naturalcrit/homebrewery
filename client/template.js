@@ -11,8 +11,7 @@ const template = async function(name, title='', props = {}){
 	return `<!DOCTYPE html>
 	<html>
 		<head>
-			<link href="//use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
-			<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
+			<link href="/assets/fontawesome/css/all.min.css" rel="stylesheet" />
 			<link href=${`/${name}/bundle.css`} rel='stylesheet' />
 			<link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
 			${ogMetaTags}
