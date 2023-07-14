@@ -6,10 +6,9 @@ const errorIndex = (props)=>{
 	return {
 		// Default catch all
 		'00' : dedent`
-			## An unknown error occurred!
+			## Unbekannter Fehler!
 			
-			We aren't sure what happened, but our server wasn't able to find what you
-			were looking for.`,
+			Es ist unklar, was passiert ist, aber der server konnte nicht finden, was du suchst.`,
 
 		// General Google load error
 		'01' : dedent`
@@ -90,10 +89,9 @@ const errorIndex = (props)=>{
 
 		// Brew load error
 		'05' : dedent`
-		## No Homebrewery document could be found.
+		## Es konnte kein Gebräu gefunden werden.
 		
-		The server could not locate the Homebrewery document. It was likely deleted by
-		its owner.
+		Der Server konnte kein Gebräu finden. Es wurde womöglich vom Autoren gelöscht.
 		
 		**Requested access:** ${props.brew.accessType}
 
@@ -101,23 +99,23 @@ const errorIndex = (props)=>{
 
 		// Brew save error
 		'06' : dedent`
-		## Unable to save Homebrewery document.
+		## Das Gebräu konnte nicht gespeichert werden.
 		
-		An error occurred wil attempting to save the Homebrewery document.`,
+		Beim Speichern des Gebräus trat ein Fehler auf.`,
 
 		// Brew delete error
 		'07' : dedent`
-		## Unable to delete Homebrewery document.
+		## Das Gebräu konnte nicht gelöscht werden.
 		
-		An error occurred while attempting to remove the Homebrewery document.
+		Beim Löschen des Gebräus trat ein Fehler auf.
 		
 		**Brew ID:**  ${props.brew.brewId}`,
 
 		// Author delete error
 		'08' : dedent`
-		## Unable to remove user from Homebrewery document.
+		## Benutzers konnte nicht aus der Autorenliste des Gebräus gelöscht werden.
 		
-		An error occurred while attempting to remove the user from the Homebrewery document author list!
+		Beim Löschen des Benutzers aus der Autorenliste des Gebräus trat ein Fehler auf!
 		
 		**Brew ID:**  ${props.brew.brewId}`,
 	};
