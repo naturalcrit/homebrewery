@@ -11,13 +11,13 @@ Dank Markdown-Format kannst du ohne Umwege anfangen zu Tippen. In der Menüzeile
 - Automatisch ins tolle Ilaris-Design
 
 ::
-{{note
+{{notiz
 #### Alles nur Geklaut
-Wir betreiben nur den Ilaris-Fork des eigentlich englischsprachigen auf DnD ausgelegten [Homebrewery Projekts](https://homebrewery.naturalcrit.com). Gelegentlich hohlen wir uns auch einige neue Features, die dort entwickelt werden. Hier gehts zum [Changelog des Hauptprojekts](https://homebrewery.naturalcrit.com/changelog)
+Wir betreiben nur den Ilaris-Fork des eigentlich englischsprachigen, auf DnD ausgelegten [Homebrewery Projekts](https://homebrewery.naturalcrit.com). Gelegentlich hohlen wir uns auch einige neue Features, die dort entwickelt werden. Hier gehts zum [Changelog des Hauptprojekts](https://homebrewery.naturalcrit.com/changelog)
 
 }}
 
-![Lagerfeuer](https://github.com/Ilaris-Tools/IlarisTex/blob/main/bilder/einleitung.jpg?raw=true) {width:670px,mix-blend-mode:multiply}
+![Bierelementar](/assets/ilaris/lebewesen/baromna.png) {width:270px,mix-blend-mode:multiply}
 
 
 
@@ -39,7 +39,7 @@ Wer sich lieber mit LaTex auseinandersetzen möchte, mehr Freiheiten beim Erstel
 
 ::::
 
-{{descriptive
+{{textbox
 #### § Rechtliches
 Der Quellcode des Projekts ist auf [GitHub](https://github.com/Ilaris-Tools/IlarisBrauerei) unter der MIT-Lizenz als Fork von [Homebrewery](https://github.com/naturalcrit/homebrewery) veröffentlicht.
 Die Illustrationen und andere Assets die hier bereitgestellt werden, dürfen für nicht-komerzielle Veröffentlichungen von Ilaris-Fanprodukten verwendet werden.

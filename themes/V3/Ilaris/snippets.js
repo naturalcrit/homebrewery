@@ -182,58 +182,58 @@ module.exports = [
 			{
 				name: 'Logo',
 				icon: 'fas fa-dice-d20',
-				gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_rot.png)}}\n'; },
+				gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/logo/icon_rot.png)}}\n'; },
 				subsnippets: [
 					{
 						name: 'Würfel Rot',
 						icon: 'fas fa-dice-d20',
 						color: 'red',
-						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_rot.png)}}\n'; }
+						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/logo/icon_rot.png)}}\n'; }
 					},
 					{
 						name: 'Würfel Braun',
 						icon: 'fas fa-dice-d20',
-						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_braun.png)}}\n'; }
+						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/logo/icon_braun.png)}}\n'; }
 					},
 					{
 						name: 'Würfel Orange',
 						icon: 'fas fa-dice-d20',
-						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_orange.png)}}\n'; }
+						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/logo/icon_orange.png)}}\n'; }
 					},
 					{
 						name: 'Würfel Gelb',
 						icon: 'fas fa-dice-d20',
-						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_gelb.png)}}\n'; }
+						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/logo/icon_gelb.png)}}\n'; }
 					},
 					{
 						name: 'Würfel Hellgrün',
 						icon: 'fas fa-dice-d20',
-						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_hellgruen.png)}}\n'; }
+						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/logo/icon_hellgruen.png)}}\n'; }
 					},
 					{
 						name: 'Würfel Grün',
 						icon: 'fas fa-dice-d20',
-						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_gruen.png)}}\n'; }
+						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/logo/icon_gruen.png)}}\n'; }
 					},
 					{
 						name: 'Würfel Blau',
 						icon: 'fas fa-dice-d20',
-						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_blau.png)}}\n'; }
+						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/logo/icon_blau.png)}}\n'; }
 					},
 					{
 						name: 'Würfel Hellblau',
 						icon: 'fas fa-dice-d20',
-						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_hellblau.png)}}\n'; }
+						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/logo/icon_hellblau.png)}}\n'; }
 					},
 					{
 						name: 'Würfel Lila',
 						icon: 'fas fa-dice-d20',
-						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_lila.png)}}\n'; }
+						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/logo/icon_lila.png)}}\n'; }
 					},
 					{
 						name: 'Würfel Pink',
 						icon: 'fas fa-dice-d20',
-						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_pink.png)}}\n'; }
+						gen: function () { return '{{logo ![Ilaris Würfel-Logo](/assets/ilaris/logo/icon_pink.png)}}\n'; }
 					},
 				]
 			}
@@ -531,7 +531,7 @@ module.exports = [
 						#### Kartentitel
 						Mit Bild...
 						
-						![Kraeuterkopf](/assets/ilaris/Kraeuterkopf.png) {position:absolute,left:0.7cm,bottom:1cm,width:80%,mix-blend-mode:multiply}
+						![Kraeuterkopf](/assets/ilaris/lebewesen/kraeuterkopf.png) {position:absolute,left:0.7cm,bottom:1cm,width:80%,mix-blend-mode:multiply}
 						
 						
 						###### Fußzeile
