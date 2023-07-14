@@ -291,7 +291,7 @@ module.exports = [
 				},
 			},
 			{
-				name: 'Kasten - Brief',
+				name: 'Kasten - Brief in Handschrift',
 				icon: 'fas fa-envelope',
 				gen: function () {
 					return dedent`
@@ -301,6 +301,20 @@ module.exports = [
 					warum in die Ferne schweifen, wenn das größte Abenteuer direkt vor eurer Nase liegt.
 					
 					{{rechtsbuendig -- Niemand}}
+					}}
+					\n`;
+				},
+			},
+			{
+				name: 'Kasten - Brief in Krakelschrift',
+				icon: 'fas fa-envelope',
+				gen: function () {
+					return dedent`
+					{{kasten,krakelschrift
+					Menschen,
+					<br>
+					haut ab oder Ork euch zerschmettern!
+					
 					}}
 					\n`;
 				},

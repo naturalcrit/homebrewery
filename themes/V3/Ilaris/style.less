@@ -8,6 +8,9 @@
 @separator: url('/assets/ilaris/trenner.png');
 @backCover: url('/assets/ilaris/backcovermask_modified.png');
 
+@dina4Width: 210mm;
+@dina4Height: 297mm;
+
 :root {
 	//Colors
 	--HB_Color_Background: #EEE5CE; // Light parchment
@@ -142,8 +145,8 @@ body {
 	width             : 215.9mm;
 	*/
 	/* DINA4 Page Size */
-	width: 210mm;
-	height: 297mm;
+	width: @dina4Width;
+	height: @dina4Height;
 
 	background-color: var(--HB_Color_Background);
 	background-image: @backgroundImage;
@@ -514,7 +517,10 @@ body {
 	}
 
 	table {
-		.useSansSerif();
+		//.useSansSerif();
+		font-family: Montserrat;
+		font-size: 0.3cm;
+		letter-spacing: -0.016cm;
 		width: 100%;
 		line-height: 16px;
 
@@ -527,6 +533,7 @@ body {
 			font-weight: 800;
 
 			th {
+				font-family: Cinzel;
 				vertical-align: bottom;
 				//padding        : 0.14em 0.4em;
 				padding: 0px 1.5px; // Both of these are temporary, just to force
@@ -962,9 +969,35 @@ body {
 		font-size: 0.6cm;
 	}
 
+	.krakelschrift {
+		font-family: Nanum;
+		font-size: 0.6cm;
+	}
+
+	.leftaligned,
+	.linksbuendig {
+		text-align: left;
+		width: 100%;
+	}
+
+	.center,
+	.centered,
+	.zentriert {
+		text-align: center;
+		width: 100%;
+	}
+
+	.rightaligned,
 	.rechtsbuendig {
 		text-align: right;
 		width: 100%;
+	}
+
+	a {
+		color: var(--HB_Color_HeaderText);
+	}
+	a:visited {
+		color: var(--HB_Color_HeaderText);
 	}
 
 	//************************************
@@ -1263,6 +1296,12 @@ body {
 .page:has(.keinhintergrund) {
 	background-image: none;
 	background-color: white;
+}
+
+
+.page:has(.querformat) {
+	width: @dina4Height;
+	height: @dina4Width;
 }
 
 //*****************************

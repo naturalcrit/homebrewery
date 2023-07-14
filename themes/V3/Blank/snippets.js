@@ -22,6 +22,12 @@ module.exports = [
 				gen  : '\n\\page\n'
 			},
 			{
+				name : 'Querformat',
+				icon : 'icon-landscape',
+				gen  : '\n{{querformat}}\n'
+			},
+			
+			{
 				name : 'Vertikaler Abstand',
 				icon : 'fas fa-arrows-alt-v',
 				gen  : '\n::::\n'
@@ -42,6 +48,21 @@ module.exports = [
 					surrounding text flow with this wide block the way you want.
 					}}
 					\n`
+			},
+			{
+				name : 'Linksbündig',
+				icon : 'fas fa-align-left',
+				gen  : ' {{linksbuendig Dies steht links}} '
+			},
+			{
+				name : 'Zentriert',
+				icon : 'fas fa-align-center',
+				gen  : ' {{zentriert Dies steht mittig}} '
+			},
+			{
+				name : 'Rechtsbündig',
+				icon : 'fas fa-align-right',
+				gen  : ' {{rechtsbuendig Dies steht rechts}} '
 			},
 			{
 				name : 'Link zu URL',
