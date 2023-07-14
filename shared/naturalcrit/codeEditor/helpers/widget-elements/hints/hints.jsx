@@ -1,7 +1,5 @@
 const React = require('react');
-const ReactDOM = require('react-dom');
 const createClass = require('create-react-class');
-const _ = require('lodash');
 const { NUMBER_PATTERN } = require('../constants');
 
 const Hints = createClass({
@@ -42,24 +40,23 @@ const Hints = createClass({
 		}
 	},
 
-	componentDidMount : function() {
-	},
+	componentDidMount : function() {},
 
 	keyDown : function(e) {
 		const { code } = e;
 		const { activeHint } = this.state;
 		const { hints, field } = this.props;
-		const match = field.state.value.match(NUMBER_PATTERN);
+		const match = field?.state?.value?.match(NUMBER_PATTERN);
 		if(code === 'ArrowDown') {
 			e.preventDefault();
-			if(!match) {
+			if(!match || !match?.at(3)) {
 				this.setState({
 					activeHint : activeHint === hints.length - 1 ? 0 : activeHint + 1
 				});
 			}
 		} else if(code === 'ArrowUp') {
 			e.preventDefault();
-			if(!match) {
+			if(!match || !match?.at(3)) {
 				this.setState({
 					activeHint : activeHint === 0 ? hints.length - 1 : activeHint - 1
 				});
@@ -79,7 +76,8 @@ const Hints = createClass({
 		const { activeHint } = this.state;
 		const { hints, field } = this.props;
 		if(!field) return null;
-		const bounds = field.fieldRef[field.state.id].current?.getBoundingClientRect();
+		const bounds = field.fieldRef[field.state.id]?.current?.getBoundingClientRect();
+		if(!bounds) return null;
 
 		const hintElements = hints
 			.filter((h)=>h.hint !== field.state.value)
@@ -88,6 +86,7 @@ const Hints = createClass({
 				if(activeHint === i) {
 					className += ' CodeMirror-hint-active';
 					return <li key={i}
+						role={'option'}
 						className={className}
 						onMouseDown={(e)=>field.hintSelected(h, e)}
 						ref={this.activeHintRef}>
@@ -95,6 +94,7 @@ const Hints = createClass({
 					</li>;
 				}
 				return <li key={i}
+					role={'option'}
 					className={className}
 					onMouseDown={(e)=>field.hintSelected(h, e)}>
 					{h.hint}
@@ -104,7 +104,7 @@ const Hints = createClass({
 		let style = {
 			display : 'none'
 		};
-		if(hintElements.length > 1) {
+		if(hintElements.length > 0) {
 			style = {
 				...style,
 				display : 'block',
@@ -118,7 +118,6 @@ const Hints = createClass({
 				aria-expanded={true}
 				className={'CodeMirror-hints default'}
 				style={style}
-				onKeyDown={this.keyDown}
 				ref={this.hintsRef}>
 				{hintElements}
 			</ul>

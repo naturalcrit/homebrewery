@@ -1,9 +1,8 @@
 require('./field.less');
 const React = require('react');
-const ReactDOM = require('react-dom');
 const createClass = require('create-react-class');
 const _ = require('lodash');
-const { NUMBER_PATTERN, HINT_TYPE } = require('../constants');
+const { NUMBER_PATTERN, HINT_TYPE, PATTERNS } = require('../constants');
 
 const DEFAULT_WIDTH = '30px';
 
@@ -17,8 +16,8 @@ const Field = createClass({
 	getDefaultProps : function() {
 		return {
 			field         : {},
+			text          : '',
 			n             : 0,
-			value         : '',
 			setHints      : ()=>{},
 			onChange      : ()=>{},
 			getStyleHints : ()=>{}
@@ -33,26 +32,32 @@ const Field = createClass({
 		};
 	},
 
-	componentDidUpdate : function(_, { value }) {
-		if(this.state.value !== this.props.value) {
+	componentDidUpdate : function({ text }, { value }) {
+		if(this.props.text !== text) {
+			const { field, n } = this.props;
+			const pattern = PATTERNS.field[field.type](field.name);
+			const [_, __, value] = this.props.text.match(pattern) ?? [];
 			this.setState({
-				value : this.props.value,
-				style : STYLE_FN(this.props.value),
-				id    : `${this.props.field?.name}-${this.props.n}`
+				value : value,
+				style : STYLE_FN(value),
+				id    : `${field?.name}-${n}`
 			});
-			return;
 		}
 
 		if(this.state.value !== value) {
-			this.props.setHints(this, this.props.getStyleHints(this.props.field, this.state.value));
+			const { field } = this.props;
+			this.props.setHints(this, this.props.getStyleHints(field, field.hints ? this.state.value : []));
 		}
 	},
 
 	componentDidMount : function() {
-		const id = `${this.props.field?.name}-${this.props.n}`;
+		const { field, text, n } = this.props;
+		const id = `${field?.name}-${n}`;
+		const pattern = PATTERNS.field[field.type](field.name);
+		const [_, __, value] = text.match(pattern) ?? [];
 		this.setState({
-			value : this.props.value,
-			style : STYLE_FN(this.props.value),
+			value : value,
+			style : STYLE_FN(value),
 			id
 		});
 		this.fieldRef[id] = React.createRef();
@@ -61,19 +66,13 @@ const Field = createClass({
 	componentWillUnmount : function() {
 		this.fieldRef = undefined;
 		this.fieldRef = {};
-	},
-
-	change : function(e) {
-		this.props.onChange(e);
-		this.setState({
-			value : e.target.value,
-			style : STYLE_FN(e.target.value)
-		});
+		this.fieldRef[this.state.id]?.remove();
 	},
 
 	setFocus : function(e) {
 		const { type } = e;
-		this.props.setHints(this, type === 'focus' ? this.props.getStyleHints(this.props.field, this.state.value) : []);
+		const { field } = this.props;
+		this.props.setHints(this, type === 'focus' && field.hints ? this.props.getStyleHints(field, this.state.value) : []);
 	},
 
 	hintSelected : function(h, e) {
@@ -90,7 +89,7 @@ const Field = createClass({
 			}
 			value = `${match?.at(1) ?? ''}${match?.at(2) ?? ''}${h.hint}${suffix}`;
 		}
-		this.change({
+		this.onChange({
 			target : {
 				value
 			}
@@ -98,21 +97,22 @@ const Field = createClass({
 	},
 	keyDown : function(e) {
 		const { code } = e;
-		const { field, value } = this.props;
+		const { field } = this.props;
+		const { value } = this.state;
 		const match = value.match(NUMBER_PATTERN);
 		if(code === 'ArrowDown') {
-			if(match && match[3]) {
+			if(match && match[3] && CSS.supports(field.name, value)) {
 				e.preventDefault();
-				this.change({
+				this.onChange({
 					target : {
 						value : `${match.at(1) ?? ''}${Number(match[2]) - field.increment}${match[3]}${match.at(4) ?? ''}`
 					}
 				});
 			}
 		} else if(code === 'ArrowUp') {
-			if(match && match[3]) {
+			if(match && match[3] && CSS.supports(field.name, value)) {
 				e.preventDefault();
-				this.change({
+				this.onChange({
 					target : {
 						value : `${match.at(1) ?? ''}${Number(match[2]) + field.increment}${match[3]}${match.at(4) ?? ''}`
 					}
@@ -120,18 +120,35 @@ const Field = createClass({
 			}
 		}
 	},
+	onChange : function (e){
+		const { cm, text, field, n, CodeMirror } = this.props;
+		const pattern = PATTERNS.field[field.type](field.name);
+		const [_, label, current] = text.match(pattern) ?? [null, field.name, ''];
+		let index = text.indexOf(`${label}:${current}`);
+		let value = e.target.value;
+		if(index === -1) {
+			index = text.length;
+			value = `,${field.name}:${value}`;
+		} else {
+			index = index + 1 + field.name.length;
+		}
+		cm.replaceRange(value, CodeMirror.Pos(n, index), CodeMirror.Pos(n, index + current.length), '+insert');
+		this.setState({
+			value : e.target.value,
+			style : STYLE_FN(e.target.value)
+		});
+	},
 	render : function() {
-		const { value, id } = this.state;
+		const { value, id, style } = this.state;
 		const { field } = this.props;
 
 		return <React.Fragment>
 			<div className='widget-field'>
-				<label htmlFor={id}>{_.startCase(field.name)}:</label>
+				<label htmlFor={id}>{field.name}:</label>
 				<input id={id} type='text' value={value}
-					   step={field.increment || 1}
-					   style={this.state.style}
+					   style={style}
 					   ref={this.fieldRef[id]}
-					   onChange={this.change}
+					   onChange={this.onChange}
 					   onFocus={this.setFocus}
 					   onBlur={this.setFocus}
 					   onKeyDown={this.keyDown}/>
