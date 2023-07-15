@@ -287,7 +287,7 @@ const EditPage = createClass({
 			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Jetzt speichern</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving && this.state.autoSave){
-			return <Nav.item className='save saved'>Auto-Speichern.</Nav.item>;
+			return <Nav.item className='save saved'>Auto-Speichern</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving){
 			return <Nav.item className='save saved'>gespeichert.</Nav.item>;
@@ -355,6 +355,9 @@ const EditPage = createClass({
 					<Nav.dropdown className='save-menu'>
 						{this.renderSaveButton()}
 						{this.renderAutoSaveButton()}
+						<Nav.item color='blue' href={`/download/${this.processShareId()}`}>
+							download
+						</Nav.item>
 					</Nav.dropdown>
 				}
 				<NewBrew />

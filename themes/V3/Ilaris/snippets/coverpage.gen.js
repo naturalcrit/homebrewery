@@ -100,7 +100,7 @@ module.exports = {
 		  {{vorderseite}}
 		  {{dunkel}}
 
-		  {{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_rot.png)}}
+		  {{logo ![Ilaris Würfel-Logo](/assets/ilaris/logo/icon_rot.png)}}
 
 		  # ${_.sample(titles)}
 		  ## ${_.sample(subtitles)}
@@ -120,7 +120,7 @@ module.exports = {
 			{{vorderseite}}
 			{{maskemitte}}
 
-			{{logo ![Ilaris Würfel-Logo](/assets/ilaris/icon_rot.png)}}
+			{{logo ![Ilaris Würfel-Logo](/assets/ilaris/logo/icon_rot.png)}}
 
 			# ${_.sample(titles)}
 			## ${_.sample(subtitles)}
