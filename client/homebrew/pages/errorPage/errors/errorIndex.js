@@ -89,25 +89,21 @@ const errorIndex = (props)=>{
 
 		// Brew load error
 		'05' : dedent`
-		## Es konnte kein Gebräu gefunden werden.
+		## So ein Gebräu haben wir nicht.
 		
-		Der Server konnte kein Gebräu finden. Es wurde womöglich vom Autoren gelöscht.
-		
-		**Requested access:** ${props.brew.accessType}
-
-		**Brew ID:**  ${props.brew.brewId}`,
+		Ganz ehrlich. Ich hab alles durchsucht. Kein einziges Gebräu mit dieser **ID**: ${props.brew.brewId} (${props.brew.accessType}).`,
 
 		// Brew save error
 		'06' : dedent`
-		## Das Gebräu konnte nicht gespeichert werden.
+		## Ich konnte das Gebräu nicht sichern.
 		
-		Beim Speichern des Gebräus trat ein Fehler auf.`,
+		Ohje, ich habe versucht es abzuspeichern, aber leider hats nicht geklappt. Ich weiß auch nicht warum.. *Hicks*`,
 
 		// Brew delete error
 		'07' : dedent`
-		## Das Gebräu konnte nicht gelöscht werden.
+		## Ich konnte das Gebräu nicht entfernen.
 		
-		Beim Löschen des Gebräus trat ein Fehler auf.
+		Bei meinem Versuch ist ein Fehler aufgetreten. Es tut mir Leid.
 		
 		**Brew ID:**  ${props.brew.brewId}`,
 
