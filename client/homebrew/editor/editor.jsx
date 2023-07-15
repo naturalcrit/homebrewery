@@ -323,7 +323,8 @@ const Editor = createClass({
 					theme={this.props.brew.theme}
 					undo={this.undo}
 					redo={this.redo}
-					historySize={this.historySize()} />
+					historySize={this.historySize()}
+					cursorPos={this.refs.codeEditor?.getCursorPosition() || {}} />
 
 				{this.renderEditor()}
 			</div>

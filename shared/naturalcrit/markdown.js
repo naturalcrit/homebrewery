@@ -313,12 +313,6 @@ const escape = function (html, encode) {
 	return html;
 };
 
-const sanatizeScriptTags = (content)=>{
-	return content
-		.replace(/<script/ig, '&lt;script')
-		.replace(/<\/script>/ig, '&lt;/script&gt;');
-};
-
 const tagTypes = ['div', 'span', 'a'];
 const tagRegex = new RegExp(`(${
 	_.map(tagTypes, (type)=>{
@@ -349,7 +343,7 @@ module.exports = {
 	render : (rawBrewText)=>{
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
-		return Marked.parse(sanatizeScriptTags(rawBrewText));
+		return Marked.parse(rawBrewText);
 	},
 
 	validate : (rawBrewText)=>{
