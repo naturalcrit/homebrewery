@@ -17,18 +17,18 @@ module.exports = function(props){
 		</Nav.item>
 		<Nav.item
 			color='red'
-			href='/new/EGy1wlD7TRl7'
+			href='/new/T12ZtZptD5p-'
 			icon='fas fa-plus-square'>
 			Abenteuer
 		</Nav.item>
 		<Nav.item
-		href='/new/GiL_1PHMlYZ5'
+		href='/new/8J58qMYgARSj' 
 		color='orange'
 		icon='fas fa-plus-square'>
 			Spielhilfe
 		</Nav.item>
 		<Nav.item
-		href='/new/GiL_1PHMlYZ5'
+		href='/new/4s58mLt3Tkeg'
 		color='orange'
 		icon='fas fa-plus-square'>
 			Kartendeck
