@@ -1,6 +1,7 @@
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
+require('./checkbox.less');
 
 const Checkbox = createClass({
 	getDefaultProps : function() {
@@ -31,8 +32,10 @@ const Checkbox = createClass({
 		const { text } = cm.lineInfo(n);
 		const id = [prefix, value, n].join('-');
 		return <React.Fragment>
-			<input type='checkbox' id={id} onChange={this.handleChange} checked={_.includes(text, `,${value}`)}/>
-			<label htmlFor={id}>{_.startCase(value)}</label>
+			<div className='widget-checkbox'>
+				<input type='checkbox' id={id} onChange={this.handleChange} checked={_.includes(text, `,${value}`)}/>
+				<label htmlFor={id}>{_.startCase(value)}</label>
+			</div>
 		</React.Fragment>;
 	}
 });

@@ -2,7 +2,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const { PATTERNS, FIELD_TYPE, HINT_TYPE, UNITS } = require('./widget-elements/constants');
 require('./widget-elements/hints/hints.jsx');
-const { Checkbox, Field } = require('./widget-elements');
+const { Field, Checkbox } = require('./widget-elements');
 
 // See https://codemirror.net/5/addon/hint/css-hint.js for code reference
 const pseudoClasses = { 'active'           : 1, 'after'            : 1, 'before'           : 1, 'checked'          : 1, 'default'          : 1,
@@ -75,7 +75,6 @@ module.exports = function(CodeMirror, widgets, cm, setHints) {
 		return result;
 	};
 
-	const { Field, Checkbox } = require('./widget-elements');
 	const widgetOptions = widgets.map((widget)=>({
 		name         : widget.name,
 		pattern      : PATTERNS.snippet[widget.type](widget.name),
