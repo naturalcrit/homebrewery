@@ -3,6 +3,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const { NUMBER_PATTERN, HINT_TYPE, PATTERNS } = require('../constants');
+const CodeMirror = require('../../../code-mirror.js');
 
 const DEFAULT_WIDTH = '30px';
 
@@ -121,7 +122,7 @@ const Text = createClass({
 		}
 	},
 	onChange : function (e){
-		const { cm, text, field, n, CodeMirror } = this.props;
+		const { cm, text, field, n } = this.props;
 		const pattern = PATTERNS.field[field.type](field.name);
 		const [_, label, current] = text.match(pattern) ?? [null, field.name, ''];
 		let index = text.indexOf(`${label}:${current}`);

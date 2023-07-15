@@ -2,20 +2,20 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 require('./checkbox.less');
+const CodeMirror = require('../../../code-mirror.js');
 
 const Checkbox = createClass({
 	getDefaultProps : function() {
 		return {
-			CodeMirror : {},
-			value      : '',
-			prefix     : '',
-			cm         : {},
-			n          : -1
+			value  : '',
+			prefix : '',
+			cm     : {},
+			n      : -1
 		};
 	},
 
 	handleChange : function (e) {
-		const { cm, n, value, prefix, CodeMirror } = this.props;
+		const { cm, n, value, prefix } = this.props;
 		const { text } = cm.lineInfo(n);
 		const updatedPrefix = `{{${prefix}`;
 		if(e.target?.checked)
