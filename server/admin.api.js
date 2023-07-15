@@ -40,36 +40,42 @@ const uncompressedBrewQuery = HomebrewModel.find({
 	'text' : { '$exists': true }
 }).lean().limit(10000).select('_id');
 
-router.get('/admin/cleanup', mw.adminOnly, (req, res)=>{
-	junkBrewQuery.exec((err, objs)=>{
-		if(err) return res.status(500).send(err);
+router.get('/admin/cleanup', mw.adminOnly, async (req, res)=>{
+	junkBrewQuery.exec().then((objs)=>{
 		return res.json({ count: objs.length });
+	}).catch((err)=>{
+		return res.status(500).send(err);
 	});
 });
+
 /* Removes all empty brews that are older than 3 days and that are shorter than a tweet */
-router.post('/admin/cleanup', mw.adminOnly, (req, res)=>{
-	junkBrewQuery.remove().exec((err, objs)=>{
-		if(err) return res.status(500).send(err);
+router.post('/admin/cleanup', mw.adminOnly, async (req, res)=>{
+	junkBrewQuery.remove().exec().than((objs)=>{
 		return res.json({ count: objs.length });
+	}).catch((err)=>{
+		return res.status(500).send(err);
 	});
 });
 
 /* Searches for matching edit or share id, also attempts to partial match */
-router.get('/admin/lookup/:id', mw.adminOnly, (req, res, next)=>{
+router.get('/admin/lookup/:id', mw.adminOnly, async (req, res, next)=>{
 	HomebrewModel.findOne({ $or : [
 		{ editId: { '$regex': req.params.id, '$options': 'i' } },
 		{ shareId: { '$regex': req.params.id, '$options': 'i' } },
-	] }).exec((err, brew)=>{
+	] }).exec().then((brew, err)=>{
 		return res.json(brew);
+	}).catch((err)=>{
+		return res.send(err);
 	});
 });
 
 /* Find 50 brews that aren't compressed yet */
-router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{
-	uncompressedBrewQuery.exec((err, objs)=>{
-		if(err) return res.status(500).send(err);
+router.get('/admin/finduncompressed', mw.adminOnly, async (req, res)=>{
+	uncompressedBrewQuery.exec().then((objs)=>{
 		objs = objs.map((obj)=>{return obj._id;});
 		return res.json({ count: objs.length, ids: objs });
+	}).catch((err)=>{
+		return res.status(500).send(err);
 	});
 });
 
@@ -91,11 +97,13 @@ router.put('/admin/compress/:id', (req, res)=>{
 		});
 });
 
-router.get('/admin/stats', mw.adminOnly, (req, res)=>{
-	HomebrewModel.count({}, (err, count)=>{
+router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
+	HomebrewModel.count().then((count)=>{
 		return res.json({
 			totalBrews : count
 		});
+	}).catch((err) => {
+		return res.send(err);
 	});
 });
 
