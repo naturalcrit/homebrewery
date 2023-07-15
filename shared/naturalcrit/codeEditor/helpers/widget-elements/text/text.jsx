@@ -100,7 +100,7 @@ const Text = createClass({
 		const { code } = e;
 		const { field } = this.props;
 		const { value } = this.state;
-		const match = value.match(NUMBER_PATTERN);
+		const match = value?.match(NUMBER_PATTERN);
 		if(code === 'ArrowDown') {
 			if(match && match[3] && CSS.supports(field.name, value)) {
 				e.preventDefault();

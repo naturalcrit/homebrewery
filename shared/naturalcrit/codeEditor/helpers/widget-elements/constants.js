@@ -23,7 +23,7 @@ export const PATTERNS = {
 		[SNIPPET_TYPE.INJECTOR] : ()=>new RegExp(`^\\!\\[(?:[a-zA-Z -]+)?\\]\\(.*\\).*{[a-zA-Z0-9:, "'-]+}$`),
 	},
 	field : {
-		[FIELD_TYPE.TEXT] : (name)=>new RegExp(`[{,;](${name}):("[^},;"]*"|[^},;]*)`),
+		[FIELD_TYPE.TEXT] : (name)=>new RegExp(`[{,;](${name}):([^};,"\\(]*\\((?!,)[^};"\\)]*\\)|"[^},;"]*"|[^},;]*)`),
 	},
 	collectStyles : new RegExp(`(?:([a-zA-Z-]+):(?!\\/))+`, 'g'),
 };

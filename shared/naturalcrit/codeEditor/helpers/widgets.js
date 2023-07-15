@@ -63,7 +63,7 @@ module.exports = function(widgets, cm, setHints) {
 			add(spec.mediaFeatures);
 		}
 		result = result.map((h)=>({ hint: h, type: HINT_TYPE.VALUE }))
-			.filter((h)=>CSS.supports(field.name, h.hint));
+			.filter((h)=>CSS.supports(field.name, h.hint) && h.hint.includes(value ?? ''));
 
 		const numberSuffix = word.slice(-4).replaceAll(/\d/g, '');
 		if(token.type === 'number' && !UNITS.includes(numberSuffix)) {
