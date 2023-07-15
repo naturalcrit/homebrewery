@@ -2,7 +2,7 @@ const React = require('react');
 const ReactDOM = require('react-dom');
 const { PATTERNS, FIELD_TYPE, HINT_TYPE, UNITS } = require('./widget-elements/constants');
 require('./widget-elements/hints/hints.jsx');
-const { Field, Checkbox } = require('./widget-elements');
+const { Text, Checkbox } = require('./widget-elements');
 
 // See https://codemirror.net/5/addon/hint/css-hint.js for code reference
 const pseudoClasses = { 'active'           : 1, 'after'            : 1, 'before'           : 1, 'checked'          : 1, 'default'          : 1,
@@ -87,7 +87,7 @@ module.exports = function(CodeMirror, widgets, cm, setHints) {
 				if(field.type === FIELD_TYPE.CHECKBOX) {
 					return <Checkbox key={genKey(widget.name, n, field.name)} cm={cm} CodeMirror={CodeMirror} n={n} prefix={widget.name} value={field.name}/>;
 				} else if(field.type === FIELD_TYPE.TEXT) {
-					return <Field key={genKey(widget.name, n, field.name)} cm={cm} CodeMirror={CodeMirror} field={field} n={n} text={text} setHints={(f, h)=>setHints(h, f)} getStyleHints={getStyleHints}/>;
+					return <Text key={genKey(widget.name, n, field.name)} cm={cm} CodeMirror={CodeMirror} field={field} n={n} text={text} setHints={(f, h)=>setHints(h, f)} getStyleHints={getStyleHints}/>;
 				} else {
 					return null;
 				}
@@ -101,7 +101,7 @@ module.exports = function(CodeMirror, widgets, cm, setHints) {
 					increment : 5,
 					hints     : true,
 				};
-				return <Field key={genKey(widget.name, n, style)} cm={cm} CodeMirror={CodeMirror} field={field} n={n} text={text} setHints={(f, h)=>setHints(h, f)} getStyleHints={getStyleHints}/>;
+				return <Text key={genKey(widget.name, n, style)} cm={cm} CodeMirror={CodeMirror} field={field} n={n} text={text} setHints={(f, h)=>setHints(h, f)} getStyleHints={getStyleHints}/>;
 			}).filter(Boolean);
 
 			ReactDOM.render(<React.Fragment>

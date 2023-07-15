@@ -1,7 +1,7 @@
-const Field = require('./field/field.jsx');
+const Text = require('./text/text.jsx');
 const Checkbox = require('./checkbox/checkbox.jsx');
 
 module.exports = {
-	Field    : Field,
+	Text     : Text,
 	Checkbox : Checkbox,
 };

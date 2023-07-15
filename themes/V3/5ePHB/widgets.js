@@ -2,7 +2,7 @@ const { SNIPPET_TYPE, FIELD_TYPE } = require('../../../shared/naturalcrit/codeEd
 
 module.exports = [{
 	name   : 'monster',
-	type   : SNIPPET_TYPE.DEFAULT,
+	type   : SNIPPET_TYPE.BLOCK,
 	fields : [{
 		name : 'frame',
 		type : FIELD_TYPE.CHECKBOX
@@ -12,7 +12,7 @@ module.exports = [{
 	}]
 }, {
 	name   : 'classTable',
-	type   : SNIPPET_TYPE.DEFAULT,
+	type   : SNIPPET_TYPE.BLOCK,
 	fields : [{
 		name : 'frame',
 		type : FIELD_TYPE.CHECKBOX
@@ -25,11 +25,11 @@ module.exports = [{
 	}]
 }, {
 	name   : 'image',
-	type   : SNIPPET_TYPE.IMAGE,
+	type   : SNIPPET_TYPE.INJECTOR,
 	fields : []
 }, {
 	name   : 'artist',
-	type   : SNIPPET_TYPE.DEFAULT,
+	type   : SNIPPET_TYPE.BLOCK,
 	fields : [{
 		name      : 'top',
 		type      : FIELD_TYPE.TEXT,

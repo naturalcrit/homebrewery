@@ -6,9 +6,9 @@ export const HINT_TYPE = {
 };
 
 export const SNIPPET_TYPE = {
-	DEFAULT        : 0,
-	INLINE_SNIPPET : 1,
-	IMAGE          : 2,
+	BLOCK    : 0,
+	INLINE   : 1,
+	INJECTOR : 2,
 };
 
 export const FIELD_TYPE = {
@@ -18,9 +18,9 @@ export const FIELD_TYPE = {
 
 export const PATTERNS = {
 	snippet : {
-		[SNIPPET_TYPE.DEFAULT]        : (name)=>new RegExp(`^{{${name}(?:[^a-zA-Z].*)?`),
-		[SNIPPET_TYPE.INLINE_SNIPPET] : (name)=>new RegExp(`{{${name}`),
-		[SNIPPET_TYPE.IMAGE]          : ()=>new RegExp(`^\\!\\[(?:[a-zA-Z -]+)?\\]\\(.*\\).*{[a-zA-Z0-9:, "'-]+}$`),
+		[SNIPPET_TYPE.BLOCK]    : (name)=>new RegExp(`^{{${name}(?:[^a-zA-Z].*)?`),
+		[SNIPPET_TYPE.INLINE]   : (name)=>new RegExp(`{{${name}`),
+		[SNIPPET_TYPE.INJECTOR] : ()=>new RegExp(`^\\!\\[(?:[a-zA-Z -]+)?\\]\\(.*\\).*{[a-zA-Z0-9:, "'-]+}$`),
 	},
 	field : {
 		[FIELD_TYPE.TEXT] : (name)=>new RegExp(`[{,;](${name}):("[^},;"]*"|[^},;]*)`),

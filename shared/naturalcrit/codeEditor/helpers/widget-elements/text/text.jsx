@@ -1,4 +1,4 @@
-require('./field.less');
+require('./text.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
@@ -10,7 +10,7 @@ const STYLE_FN = (value)=>({
 	width : `calc(${value?.length ?? 0}ch + ${value?.length ? `${DEFAULT_WIDTH} / 2` : DEFAULT_WIDTH})`
 });
 
-const Field = createClass({
+const Text = createClass({
 	fieldRef : {},
 
 	getDefaultProps : function() {
@@ -157,4 +157,4 @@ const Field = createClass({
 	}
 });
 
-module.exports = Field;
+module.exports = Text;
