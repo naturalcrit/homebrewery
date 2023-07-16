@@ -47,7 +47,7 @@ const Text = createClass({
 
 		if(this.state.value !== value) {
 			const { field } = this.props;
-			this.props.setHints(this, this.props.getStyleHints(field, field.hints ? this.state.value : []));
+			this.props.setHints(this, field.hints ? this.props.getStyleHints(field, this.state.value) : []);
 		}
 	},
 

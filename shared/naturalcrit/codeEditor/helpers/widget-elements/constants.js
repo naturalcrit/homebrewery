@@ -12,8 +12,9 @@ export const SNIPPET_TYPE = {
 };
 
 export const FIELD_TYPE = {
-	TEXT     : 0,
-	CHECKBOX : 1
+	TEXT           : 0,
+	CHECKBOX       : 1,
+	IMAGE_SELECTOR : 2,
 };
 
 export const PATTERNS = {
@@ -23,7 +24,8 @@ export const PATTERNS = {
 		[SNIPPET_TYPE.INJECTOR] : ()=>new RegExp(`^\\!\\[(?:[a-zA-Z -]+)?\\]\\(.*\\).*{[a-zA-Z0-9:, "'-]+}$`),
 	},
 	field : {
-		[FIELD_TYPE.TEXT] : (name)=>new RegExp(`[{,;](${name}):([^};,"\\(]*\\((?!,)[^};"\\)]*\\)|"[^},;"]*"|[^},;]*)`),
+		[FIELD_TYPE.TEXT]           : (name)=>new RegExp(`[{,;](${name}):([^};,"\\(]*\\((?!,)[^};"\\)]*\\)|"[^},;"]*"|[^},;]*)`),
+		[FIELD_TYPE.IMAGE_SELECTOR] : (name)=>new RegExp(`{{(${name})(\\d*)`),
 	},
 	collectStyles : new RegExp(`(?:([a-zA-Z-]+):(?!\\/))+`, 'g'),
 };

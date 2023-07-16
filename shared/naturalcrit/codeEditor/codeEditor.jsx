@@ -165,7 +165,7 @@ const CodeEditor = createClass({
 			const { line } = cm.getCursor();
 			for (const key in this.state.widgets) {
 				if(key != line) {
-					this.state.widgets[key]?.clear();
+					this.state.widgetUtils.removeLineWidget(key, this.state.widgets[key]);
 				}
 			}
 			const { widgets } = this.codeMirror.lineInfo(line);
@@ -196,7 +196,7 @@ const CodeEditor = createClass({
 					}
 				} else {
 					for (const widget of widgets) {
-						widget.clear();
+						this.state.widgetUtils.removeLineWidget(n, widget);
 					}
 				}
 			}

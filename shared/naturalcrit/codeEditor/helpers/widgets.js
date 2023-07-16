@@ -1,8 +1,8 @@
 const React = require('react');
-const ReactDOM = require('react-dom');
+const ReactDOMClient = require('react-dom/client');
 const { PATTERNS, FIELD_TYPE, HINT_TYPE, UNITS } = require('./widget-elements/constants');
 require('./widget-elements/hints/hints.jsx');
-const { Text, Checkbox } = require('./widget-elements');
+const { Text, Checkbox, ImageSelector } = require('./widget-elements');
 const CodeMirror = require('../code-mirror.js');
 
 // See https://codemirror.net/5/addon/hint/css-hint.js for code reference
@@ -19,6 +19,7 @@ const pseudoClasses = { 'active'           : 1, 'after'            : 1, 'before'
 const genKey = (...args)=>args.join('-');
 
 module.exports = function(widgets, cm, setHints) {
+	const roots = {};
 	const spec = CodeMirror.resolveMode('text/css');
 	const headless = CodeMirror(()=>{});
 
@@ -80,15 +81,22 @@ module.exports = function(widgets, cm, setHints) {
 		name         : widget.name,
 		pattern      : PATTERNS.snippet[widget.type](widget.name),
 		renderWidget : (n, node)=>{
+			roots[n] = roots[n] ?? {};
 			const parent = document.createElement('div');
+			const id = `${widget.name}-${n}`;
+			parent.id = id;
+
 			const textFieldNames = (widget.fields || []).filter((f)=>f.type === FIELD_TYPE.TEXT).map((f)=>f.name);
 			const { text } = cm.lineInfo(n);
 
 			const fields = (widget.fields || []).map((field)=>{
+				const key = genKey(widget.name, n, field.name);
 				if(field.type === FIELD_TYPE.CHECKBOX) {
-					return <Checkbox key={genKey(widget.name, n, field.name)} cm={cm} CodeMirror={CodeMirror} n={n} prefix={widget.name} value={field.name}/>;
+					return <Checkbox key={key} cm={cm} CodeMirror={CodeMirror} n={n} prefix={widget.name} value={field.name}/>;
 				} else if(field.type === FIELD_TYPE.TEXT) {
-					return <Text key={genKey(widget.name, n, field.name)} cm={cm} CodeMirror={CodeMirror} field={field} n={n} text={text} setHints={(f, h)=>setHints(h, f)} getStyleHints={getStyleHints}/>;
+					return <Text key={key} cm={cm} CodeMirror={CodeMirror} field={field} n={n} text={text} setHints={(f, h)=>setHints(h, f)} getStyleHints={getStyleHints}/>;
+				} else if(field.type === FIELD_TYPE.IMAGE_SELECTOR) {
+					return <ImageSelector key={key} field={field} cm={cm} n={n}/>;
 				} else {
 					return null;
 				}
@@ -105,10 +113,12 @@ module.exports = function(widgets, cm, setHints) {
 				return <Text key={genKey(widget.name, n, style)} cm={cm} CodeMirror={CodeMirror} field={field} n={n} text={text} setHints={(f, h)=>setHints(h, f)} getStyleHints={getStyleHints}/>;
 			}).filter(Boolean);
 
-			ReactDOM.render(<React.Fragment>
+			const root = roots[n][id] ?? ReactDOMClient.createRoot(node || parent);
+			root.render(<React.Fragment>
 				{fields}
 				{styles}
-			</React.Fragment>, node || parent);
+			</React.Fragment>);
+			roots[n][id] = root;
 
 			return node || parent;
 		}
@@ -133,8 +143,11 @@ module.exports = function(widgets, cm, setHints) {
 	};
 
 	return {
-		removeLineWidget : (widget)=>{
-			cm.removeLineWidget(widget);
+		roots,
+		removeLineWidget : (n, widget)=>{
+			roots[n][widget.node.id]?.unmount();
+			delete roots[n][widget.node.id];
+			widget?.clear();
 		},
 		updateLineWidgets,
 		updateAllLineWidgets : ()=>{
