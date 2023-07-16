@@ -5,43 +5,8 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 const closeTag = require('./helpers/close-tag');
-const { WIDGET_TYPE, FIELD_TYPE } = require('./helpers/widget-elements/constants');
 const Hints = require('./helpers/widget-elements/hints/hints.jsx');
-
-let CodeMirror;
-if(typeof navigator !== 'undefined'){
-	CodeMirror = require('codemirror');
-
-	//Language Modes
-	require('codemirror/mode/gfm/gfm.js'); //Github flavoured markdown
-	require('codemirror/mode/css/css.js');
-	require('codemirror/mode/javascript/javascript.js');
-
-	//Addons
-	//Code folding
-	require('codemirror/addon/fold/foldcode.js');
-	require('codemirror/addon/fold/foldgutter.js');
-	//Search and replace
-	require('codemirror/addon/search/search.js');
-	require('codemirror/addon/search/searchcursor.js');
-	require('codemirror/addon/search/jump-to-line.js');
-	require('codemirror/addon/search/match-highlighter.js');
-	require('codemirror/addon/search/matchesonscrollbar.js');
-	require('codemirror/addon/dialog/dialog.js');
-	//Trailing space highlighting
-	// require('codemirror/addon/edit/trailingspace.js');
-	//Active line highlighting
-	// require('codemirror/addon/selection/active-line.js');
-	//Scroll past last line
-	require('codemirror/addon/scroll/scrollpastend.js');
-	//Auto-closing
-	//XML code folding is a requirement of the auto-closing tag feature and is not enabled
-	require('codemirror/addon/fold/xml-fold.js');
-	require('codemirror/addon/edit/closetag.js');
-
-	const foldCode = require('./helpers/fold-code');
-	foldCode.registerHomebreweryHelper(CodeMirror);
-}
+const CodeMirror = require('./code-mirror.js');
 
 const themeWidgets = require('../../../themes/V3/5ePHB/widgets');
 
@@ -62,7 +27,7 @@ const CodeEditor = createClass({
 		return {
 			docs        : {},
 			widgetUtils : {},
-			widgets     : [],
+			widgets     : {},
 			hints       : [],
 			hintsField  : undefined,
 		};
@@ -182,7 +147,7 @@ const CodeEditor = createClass({
 		closeTag.autoCloseCurlyBraces(CodeMirror, this.codeMirror);
 
 		this.setState({
-			widgetUtils : require('./helpers/widgets')(CodeMirror, themeWidgets, this.codeMirror, (hints, field)=>{
+			widgetUtils : require('./helpers/widgets')(themeWidgets, this.codeMirror, (hints, field)=>{
 				this.setState({
 					hints,
 					hintsField : field
@@ -196,6 +161,26 @@ const CodeEditor = createClass({
 			this.state.widgetUtils.updateWidgetGutter();
 		});
 
+		this.codeMirror.on('cursorActivity', (cm)=>{
+			const { line } = cm.getCursor();
+			for (const key in this.state.widgets) {
+				if(key != line) {
+					this.state.widgets[key]?.clear();
+				}
+			}
+			const { widgets } = this.codeMirror.lineInfo(line);
+			if(!widgets) {
+				const widget = this.state.widgetUtils.updateLineWidgets(line);
+				if(widget) {
+					this.setState({
+						widgets : {
+							[line] : widget
+						}
+					});
+				}
+			}
+		});
+
 		this.updateSize();
 
 		this.codeMirror.on('gutterClick', (cm, n)=>{
@@ -206,8 +191,12 @@ const CodeEditor = createClass({
 					const widget = this.state.widgetUtils.updateLineWidgets(n);
 					if(widget) {
 						this.setState({
-							widgets : [...this.state.widgets, widget]
+							widgets : { ...this.state.widgets, [n]: widget }
 						});
+					}
+				} else {
+					for (const widget of widgets) {
+						widget.clear();
 					}
 				}
 			}
@@ -443,17 +432,6 @@ const CodeEditor = createClass({
 			}
 		};
 	},
-	handleMouseDown : function(e) {
-		// Close open widgets if click outside of a widget
-		if(!e.target.matches('.CodeMirror-linewidget *')) {
-			for (const widget of this.state.widgets) {
-				widget.clear();
-			}
-			this.setState({
-				widgets : []
-			});
-		}
-	},
 	keyDown : function(e) {
 		if(this.hintsRef.current) {
 			this.hintsRef.current.keyDown(e);
@@ -464,7 +442,7 @@ const CodeEditor = createClass({
 	render : function(){
 		const { hints, hintsField } = this.state;
 		return <React.Fragment>
-			<div className='codeEditor' ref='editor' style={this.props.style} onMouseDown={this.handleMouseDown} onKeyDown={this.keyDown}/>
+			<div className='codeEditor' ref='editor' style={this.props.style} onKeyDown={this.keyDown}/>
 			<Hints ref={this.hintsRef} hints={hints} field={hintsField}/>
 		</React.Fragment>;
 	}

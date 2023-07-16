@@ -81,20 +81,70 @@
 			color              : pink;
 		}
 	}
-	.recent.navItem {
+	.recent.navDropdownContainer {
 		position : relative;
-		.dropdown {
-			position        : absolute;
-			z-index         : 10000;
-			top             : 28px;
-			left            : 0;
+		.navDropdown .navItem {
 			overflow        : hidden auto;
-			width           : 100%;
 			max-height      : ~"calc(100vh - 28px)";
 			scrollbar-color : #666 #333;
 			scrollbar-width : thin;
-			h4 {
-				font-size        : 0.8em;
+			
+
+			#backgroundColorsHover;
+			.animate(background-color);
+			position         : relative;
+			display          : block;
+			overflow         : clip;
+			box-sizing       : border-box;
+			padding          : 8px 5px 13px;
+			text-decoration  : none;
+			color            : white;
+			border-top       : 1px solid #888;
+			background-color : #333;
+			.clear {
+				position         : absolute;
+				top              : 50%;
+				right            : 0;
+				display          : none;
+				width            : 20px;
+				height           : 100%;
+				transform        : translateY(-50%);
+				opacity          : 70%;
+				border-radius    : 3px;
+				background-color : #333;
+				&:hover {
+					opacity : 100%;
+				}
+				i {
+					font-size  : 10px;
+					width      : 100%;
+					height     : 100%;
+					margin     : 0;
+					text-align : center;
+				}
+			}
+			&:hover {
+				background-color : @blue;
+				.clear {
+					display       : grid;
+					place-content : center;
+				}
+			}
+			.title {
+				display       : inline-block;
+				overflow      : hidden;
+				width         : 100%;
+				white-space   : nowrap;
+				text-overflow : ellipsis;
+			}
+			.time {
+				font-size : 0.7em;
+				position  : absolute;
+				right     : 2px;
+				bottom    : 2px;
+				color     : #888;
+			}
+			&.header {
 				display          : block;
 				box-sizing       : border-box;
 				padding          : 5px 0;
@@ -107,62 +157,6 @@
 				}
 				&:nth-of-type(2) {
 					background-color : darken(@purple, 30%);
-				}
-			}
-			.item {
-				#backgroundColorsHover;
-				.animate(background-color);
-				position         : relative;
-				display          : block;
-				overflow         : clip;
-				box-sizing       : border-box;
-				padding          : 8px 5px 13px;
-				text-decoration  : none;
-				color            : white;
-				border-top       : 1px solid #888;
-				background-color : #333;
-				.clear {
-					position         : absolute;
-					top              : 50%;
-					right            : 0;
-					display          : none;
-					width            : 20px;
-					height           : 100%;
-					transform        : translateY(-50%);
-					opacity          : 70%;
-					border-radius    : 3px;
-					background-color : #333;
-					&:hover {
-						opacity : 100%;
-					}
-					i {
-						font-size  : 10px;
-						width      : 100%;
-						height     : 100%;
-						margin     : 0;
-						text-align : center;
-					}
-				}
-				&:hover {
-					background-color : @blue;
-					.clear {
-						display       : grid;
-						place-content : center;
-					}
-				}
-				.title {
-					display       : inline-block;
-					overflow      : hidden;
-					width         : 100%;
-					white-space   : nowrap;
-					text-overflow : ellipsis;
-				}
-				.time {
-					font-size : 0.7em;
-					position  : absolute;
-					right     : 2px;
-					bottom    : 2px;
-					color     : #888;
 				}
 			}
 		}
