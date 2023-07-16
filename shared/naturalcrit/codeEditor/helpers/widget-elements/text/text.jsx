@@ -78,9 +78,9 @@ const Text = createClass({
 
 	hintSelected : function(h, e) {
 		let value;
-		if(h.type === HINT_TYPE.VALUE) {
+		if(h?.type === HINT_TYPE.VALUE) {
 			value = h.hint;
-		} else if(h.type === HINT_TYPE.NUMBER_SUFFIX) {
+		} else if(h?.type === HINT_TYPE.NUMBER_SUFFIX) {
 			const match = this.state.value.match(NUMBER_PATTERN);
 			let suffix = match?.at(4) ?? '';
 			for (const char of h.hint) {
@@ -102,20 +102,20 @@ const Text = createClass({
 		const { value } = this.state;
 		const match = value?.match(NUMBER_PATTERN);
 		if(code === 'ArrowDown') {
-			if(match && match[3] && CSS.supports(field.name, value)) {
+			if(match && CSS.supports(field.name, value)) {
 				e.preventDefault();
 				this.onChange({
 					target : {
-						value : `${match.at(1) ?? ''}${Number(match[2]) - field.increment}${match[3]}${match.at(4) ?? ''}`
+						value : `${match.at(1) ?? ''}${Number(match[2]) - field.increment}${match[3] ?? ''}${match.at(4) ?? ''}`
 					}
 				});
 			}
 		} else if(code === 'ArrowUp') {
-			if(match && match[3] && CSS.supports(field.name, value)) {
+			if(match && CSS.supports(field.name, value)) {
 				e.preventDefault();
 				this.onChange({
 					target : {
-						value : `${match.at(1) ?? ''}${Number(match[2]) + field.increment}${match[3]}${match.at(4) ?? ''}`
+						value : `${match.at(1) ?? ''}${Number(match[2]) + field.increment}${match[3] ?? ''}${match.at(4) ?? ''}`
 					}
 				});
 			}
@@ -133,6 +133,7 @@ const Text = createClass({
 		} else {
 			index = index + 1 + field.name.length;
 		}
+		if(!value) return;
 		cm.replaceRange(value, CodeMirror.Pos(n, index), CodeMirror.Pos(n, index + current.length), '+insert');
 		this.setState({
 			value : e.target.value,

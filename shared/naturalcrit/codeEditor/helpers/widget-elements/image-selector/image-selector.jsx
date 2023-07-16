@@ -66,7 +66,6 @@ const ImageSelector = createClass({
 		const currentText = `${label}${current ?? ''}`;
 		const index = 2;
 		const value = label + this.state.selected;
-		console.log(text, pattern, currentText, value, fullmatch, label, current);
 		cm.replaceRange(value, CodeMirror.Pos(n, index), CodeMirror.Pos(n, index + currentText.length), '+insert');
 	},
 
