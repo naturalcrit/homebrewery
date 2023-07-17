@@ -20,7 +20,4 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for the report.  Here are some steps that may help in the meantime:
-        1. Refreshing your Google credentials in Homebrewery by signing out, and back in (they expire after one year).
-        2. Waiting a few minutes and trying again - sometimes there is just a momentary blip in the server.
-        3. Check the Issues in Github or the /r/homebrewery subreddit to see if others are experiencing the same issue.
+        Danke für die Meldung.

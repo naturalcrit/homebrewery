@@ -120,11 +120,9 @@ const api = {
 	},
 	newBrew : async (req, res)=>{
 		const brew = req.body;
-		// const { saveToGoogle } = req.query;
 
 		delete brew.editId;
 		delete brew.shareId;
-		// delete brew.googleId;
 
 		api.beforeNewSave(req.account, brew);
 
@@ -160,7 +158,6 @@ const api = {
 		}
 
 		let brew = _.assign(brewFromServer, brewFromClient);
-		// const { saveToGoogle, removeFromGoogle } = req.query;
 		let afterSave = async ()=>true;
 
 		brew.text = api.mergeBrewText(brew);
@@ -201,13 +198,10 @@ const api = {
 		res.status(200).send(saved);
 	},
 	deleteBrew : async (req, res, next)=>{
-		// Delete an orphaned stub if its Google brew doesn't exist
 		try {
 			await api.getBrew('edit')(req, res, ()=>{});
 		} catch (err) {
-			// Only if the error code is HBErrorCode '02', that is, Google returned "404 - Not Found"
 			console.log(err);
-			// TODO: is this relevant without google stuff?
 		}
 
 		let brew = req.brew;

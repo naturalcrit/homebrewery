@@ -209,7 +209,6 @@ app.get('/user/:username', async (req, res, next)=>{
 	};
 
 	const fields = [
-		'googleId',  // TODO: can this be removed?
 		'title',
 		'pageCount',
 		'description',
