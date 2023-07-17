@@ -203,10 +203,10 @@ const EditPage = createClass({
 		}
 
 		if(this.state.isSaving){
-			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>speichern...</Nav.item>;
+			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>speichere...</Nav.item>;
 		}
 		if(this.state.isPending && this.hasChanges()){
-			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Jetzt speichern</Nav.item>;
+			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>speichern</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving && this.state.autoSave){
 			return <Nav.item className='save saved'>Auto-Speichern</Nav.item>;
