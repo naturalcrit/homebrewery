@@ -93,44 +93,18 @@ Wir stellen einige Bilder über ilaris-online.de bereit (TODO: Link/Example), di
 
 \page
 
-### A particular font does not work for my language, what do I do?
-TODO: Font issues?
 
 ### PDF Speichern zeigt mir nur den Druck-Dialog an statt es herunterzuladen.
 
 Das ist richtig und beabsichtigt. Wir benutzen diesen Schritt um aus der angezeigten Version (HTML) eine PDF Datei zu erzeugen, die ggf. deutlich mehr Speicherplatz braucht. Im Druckfenster solltest du den Button "Als PDF speichern" finden und kannst dann auswählen wo und unter welchem Namen die fertige Datei auf deinem Computer gespeichert wird. Auf Ilaris-Online wird nur der Quelltext (linke Seite des Editors) gespeichert.
 
-### The preview window is suddenly gone, I can only see the editor side of the Homebrewery (or the other way around).
-
-TODO: 
-
-1. Press `CTRL`+`SHIFT`+`i` (or right-click and select "Inspect") while in the Homebrewery.
-
-2. Expand...
-```
-	- `body` 
-	- `main`
-	- `div class="homebrew"`
-	- `div class="editPage page"`
-	- `div class="content"`
-	- `div class="splitPane"`
-```
-
-There you will find 3 divs: `div class="pane" [...]`, `div class="divider" [...]`, and `div class="pane" [...]`.
-
-The `class="pane"` looks similar to this: `div class="pane" data-reactid="36" style="flex: 0 0 auto; width: 925px;"`.
-
-Change whatever stands behind width: to something smaller than your display width. 
-
-### I have white borders on the bottom/sides of the print preview.
-
-The Homebrewery paper size and your print paper size do not match.
-
-The Homebrewery defaults to creating US Letter page sizes.  If you are printing with A4 size paper, you must add the "A4 Page Size" snippet.  In the "Print" dialog be sure your Paper Size matches the page size in Homebrewery.
 
 
-### Typing `#### Adhesion` in the text editor doesn't show the header at all in the completed page?
+### Ich habe weiße Ränder in der Druckvorschau.
 
-TODO: 
+Der Hintergrund und das Seitenlayout sind für A4 Papier ausgelegt. Eventuell, hast du in deiner Druckvorschau ein unpassendes Papierformat wie zum Beispiel US Letter ausgewählt. Wenn du es auf A4 änderst, sollte es richtig angezeigt werden.
 
-Your ad-blocking software is mistakenly assuming your text to be an ad. Whitelist homebrewery.naturalcrit.com in your ad-blocking software.
+
+### Bereiche werden nicht richtig oder garnicht im Vorschaufenster angezeigt.
+
+Es kann sein, dass dein Werbeblocker Überschriften oder bestimmte Bereiche für Werbung hält. Um sicherzugehen, kannst du brauerei.ilaris-online.de als Ausnahme hinzufügen. Schaden tut es nicht, den (bezahlte) Werbung wirst du hier eh nicht finden.
