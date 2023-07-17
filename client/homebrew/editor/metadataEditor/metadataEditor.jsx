@@ -177,7 +177,7 @@ const MetadataEditor = createClass({
 	},
 
 	renderAuthors : function(){
-		let text = 'None.';
+		let text = 'Niemand.';
 		if(this.props.metadata.authors && this.props.metadata.authors.length){
 			text = this.props.metadata.authors.join(', ');
 		}
@@ -248,7 +248,7 @@ const MetadataEditor = createClass({
 		const debouncedHandleFieldChange =  _.debounce(this.handleFieldChange, 500);
 
 		return <div className='field language'>
-			<label>language</label>
+			<label>Sprache</label>
 			<div className='value'>
 				<Combobox trigger='click'
 					className='language-dropdown'
@@ -267,7 +267,7 @@ const MetadataEditor = createClass({
 					}}
 				>
 				</Combobox>
-				<small>Sets the HTML Lang property for your brew. May affect hyphenation or spellcheck.</small>
+				<small>Setzt die HTML-Sprachen-Eigenschaft für dein Gebräu. Kann Worttrennung und Rechtschreibprüfung beeinflussen.</small>
 			</div>
 
 		</div>;
@@ -319,7 +319,7 @@ const MetadataEditor = createClass({
 			<div className='field-group'>
 				<div className='field-column'>
 					<div className='field description'>
-						<label>Beschreibung</label>
+						<label>Beschrei-bung</label>
 						<textarea defaultValue={this.props.metadata.description} className='value'
 							onChange={(e)=>this.handleFieldChange('description', e)} />
 					</div>
@@ -339,7 +339,7 @@ const MetadataEditor = createClass({
 			</div>
 
 			<StringArrayEditor label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
-				placeholder='add tag' unique={true}
+				placeholder='Tag eintragen' unique={true}
 				values={this.props.metadata.tags}
 				onChange={(e)=>this.handleFieldChange('tags', e)}/>
 
@@ -354,32 +354,30 @@ const MetadataEditor = createClass({
 
 			{this.renderThemeDropdown()}
 
-			{this.renderRenderOptions()}
-
 			<hr/>
 
-			<h1 className='sectionHead'>Autoren</h1>
+			{/*<h1 className='sectionHead'>Autoren</h1>
 
 			{this.renderAuthors()}
 
-			<StringArrayEditor label='invited authors' valuePatterns={[/.+/]}
+			<StringArrayEditor label='Eingeladene Autoren' valuePatterns={[/.+/]}
 				validators={[(v)=>!this.props.metadata.authors?.includes(v)]}
-				placeholder='invite author' unique={true}
+				placeholder='Autor einladen' unique={true}
 				values={this.props.metadata.invitedAuthors}
-				notes={['Invited author usernames are case sensitive.', 'After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.']}
+				notes={['Beachte Groß-/Kleinschreibung.', 'Schicke eingeladenen Autoren den Editieren-Link. Sie können die Einladung dort akzeptieren oder ablehnen.']}
 				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}/>
 
-			<hr/>
+			<hr/>*/}
 
-			<h1 className='sectionHead'>Privacy</h1>
+			{/*<h1 className='sectionHead'>Privacy</h1>*/}
 
-			<div className='field publish'>
-				<label>publish</label>
+			{/* <div className='field publish'>
+				<label>Veröffent-lichen</label>
 				<div className='value'>
 					{this.renderPublish()}
-					<small>Published homebrews will be publicly viewable and searchable (eventually...)</small>
+					<small>Veröffentlichte Gebräue sind öffentlich einseh- und auffindbar (irgendwann...)</small>
 				</div>
-			</div>
+			</div> */}
 
 			{this.renderDelete()}
 

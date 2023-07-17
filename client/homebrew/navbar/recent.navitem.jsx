@@ -131,8 +131,8 @@ const RecentItems = createClass({
 
 		const makeItems = (brews)=>{
 			return _.map(brews, (brew, i)=>{
-				return <a href={brew.url} className='item' key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
-					<span className='title'>{brew.title || '[ no title ]'}</span>
+				return <a href={brew.url} className='item' key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ Kein Titel ]'}>
+					<span className='title'>{brew.title || '[ Kein Titel ]'}</span>
 					<span className='time'>{Moment(brew.ts).fromNow()}</span>
 					<div className='clear' title='Aus zuletzt löschen' onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></div>
 				</a>;

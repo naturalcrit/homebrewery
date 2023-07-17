@@ -68,7 +68,6 @@ const UserPage = createClass({
 				<NewBrew />
 				<HelpNavItem />
 				<RecentNavItem />
-				<Account />
 			</Nav.section>
 		</Navbar>;
 	},

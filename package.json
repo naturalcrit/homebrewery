@@ -1,13 +1,13 @@
 {
   "name": "homebrewery",
-  "description": "Create authentic looking D&D homebrews using only markdown",
-  "version": "3.9.1",
+  "description": "Erstelle eigene Spielhilfen im Ilaris-Stil",
+  "version": "0.1",
   "engines": {
     "node": ">=18.16.x"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/naturalcrit/homebrewery.git"
+    "url": "git://github.com/ilaris-tools/ilarisBrauerei.git"
   },
   "scripts": {
     "dev": "node scripts/dev.js",
@@ -35,7 +35,7 @@
     "postinstall": "npm run build",
     "start": "node server.js"
   },
-  "author": "stolksdorf",
+  "author": "lobo",
   "license": "MIT",
   "eslintIgnore": [
     "build/*"

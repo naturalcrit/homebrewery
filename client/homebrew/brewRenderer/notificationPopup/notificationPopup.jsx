@@ -25,11 +25,11 @@ const NotificationPopup = createClass({
 			return (
 				<>
 					<li key='faq'>
-						<em>Sichere deine Arbeit! </em> <br />
-						Speichere deine Arbeit regelmäßig über den Speichern-Button. 
-						Auch bei uns auf dem Server können fehler passieren, kopiere 
-						bei aufwendigeren Projekten auf jedenfall auch den Rohtext 
-						in eine .txt oder .md Datei auf deinem Computer.&nbsp;
+						<em>Sichere deine Werke regelmäßig! </em> <br />
+						Bitte bedenke, dass die Links der einzige Zugang zu deinen Gebräuen ist.
+						Wenn du diese verlierst und sie auch nicht mehr unter "Letzte Gebräue" auftauchen,
+						können wir nichts mehr für dich tun.
+						Also speichere sie dir gut, zum Beispiel als Bookmarks, und mache auch regelmäßig lokale Backups der Inhalte.
 					</li>
 				</>
 			);

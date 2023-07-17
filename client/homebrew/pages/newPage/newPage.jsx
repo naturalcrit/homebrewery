@@ -162,11 +162,11 @@ const NewPage = createClass({
 	renderSaveButton : function(){
 		if(this.state.isSaving){
 			return <Nav.item icon='fas fa-spinner fa-spin' className='save'>
-				save...
+				speichern...
 			</Nav.item>;
 		} else {
 			return <Nav.item icon='fas fa-save' className='save' onClick={this.save}>
-				save
+				speichern
 			</Nav.item>;
 		}
 	},
@@ -196,7 +196,6 @@ const NewPage = createClass({
 				{this.renderLocalPrintButton()}
 				<HelpNavItem />
 				<RecentNavItem />
-				<AccountNavItem />
 			</Nav.section>
 		</Navbar>;
 	},

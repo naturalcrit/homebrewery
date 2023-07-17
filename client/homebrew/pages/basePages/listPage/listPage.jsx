@@ -87,7 +87,7 @@ const ListPage = createClass({
 	},
 
 	sortBrewOrder : function(brew){
-		if(!brew.title){brew.title = 'No Title';}
+		if(!brew.title){brew.title = 'Kein Titel';}
 		const mapping = {
 			'alpha'   : _.deburr(brew.title.toLowerCase()),
 			'created' : moment(brew.createdAt).format(),
@@ -211,7 +211,7 @@ const ListPage = createClass({
 		</div>;
 		return _.map(brewCollection, (brewGroup, idx)=>{
 			return <div key={idx} className={`brewCollection ${brewGroup.class ?? ''}`}>
-				<h1 className={brewGroup.visible ? 'active' : 'inactive'} onClick={()=>{this.toggleBrewCollectionState(brewGroup.class);}}>{brewGroup.title || 'No Title'}</h1>
+				<h1 className={brewGroup.visible ? 'active' : 'inactive'} onClick={()=>{this.toggleBrewCollectionState(brewGroup.class);}}>{brewGroup.title || 'Kein Titel'}</h1>
 				{brewGroup.visible ? this.renderBrews(this.getSortedBrews(brewGroup.brews)) : <></>}
 			</div>;
 		});

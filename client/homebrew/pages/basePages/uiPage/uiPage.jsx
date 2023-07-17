@@ -24,7 +24,6 @@ const UIPage = createClass({
 					<NewBrewItem />
 					<HelpNavItem />
 					<RecentNavItem />
-					<Account />
 				</Nav.section>
 			</Navbar>
 

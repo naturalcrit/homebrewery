@@ -66,7 +66,6 @@ const HomePage = createClass({
 				<NewBrewItem />
 				<HelpNavItem />
 				<RecentNavItem />
-				<AccountNavItem />
 			</Nav.section>
 		</Navbar>;
 	},

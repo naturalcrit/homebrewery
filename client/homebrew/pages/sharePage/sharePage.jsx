@@ -74,7 +74,6 @@ const SharePage = createClass({
 						</Nav.dropdown>
 					</>}
 					<RecentNavItem brew={this.props.brew} storageKey='view' />
-					<Account />
 				</Nav.section>
 			</Navbar>
 
