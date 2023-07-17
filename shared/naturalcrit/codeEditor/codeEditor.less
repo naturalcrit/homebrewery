@@ -3,6 +3,7 @@
 @import (less) 'codemirror/addon/search/matchesonscrollbar.css';
 @import (less) 'codemirror/addon/dialog/dialog.css';
 @import (less) 'codemirror/addon/hint/show-hint.css';
+@import 'naturalcrit/styles/colors.less';
 
 @keyframes sourceMoveAnimation {
 	50%  {background-color: red;   color: white;}
@@ -50,6 +51,32 @@
 
     input {
       max-width: 10vw;
+    }
+  }
+
+  .widget-field {
+    border: 2px solid #ddd;
+
+    &.default {
+      background-color: @purple;
+      border: 2px solid @purple;
+      color: white;
+
+      >input {
+        background-color: @purple;
+        color: white;
+      }
+    }
+
+    &.suggested {
+      background-color: #ddd;
+      border: 2px dashed grey;
+      color: grey;
+
+      >input {
+        background-color: #ddd;
+        color: black;
+      }
     }
   }
 }

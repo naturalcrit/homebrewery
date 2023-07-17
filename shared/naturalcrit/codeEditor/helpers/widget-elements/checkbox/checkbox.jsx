@@ -7,10 +7,11 @@ const CodeMirror = require('../../../code-mirror.js');
 const Checkbox = createClass({
 	getDefaultProps : function() {
 		return {
-			value  : '',
-			prefix : '',
-			cm     : {},
-			n      : -1
+			value   : '',
+			prefix  : '',
+			cm      : {},
+			n       : -1,
+			default : false
 		};
 	},
 
@@ -28,11 +29,15 @@ const Checkbox = createClass({
 	},
 
 	render : function() {
-		const { cm, n, value, prefix } = this.props;
+		const { cm, n, value, prefix, def } = this.props;
 		const { text } = cm.lineInfo(n);
 		const id = [prefix, value, n].join('-');
+		let className = 'widget-field widget-checkbox';
+		if(def) {
+			className += ' default';
+		}
 		return <React.Fragment>
-			<div className='widget-checkbox'>
+			<div className={className}>
 				<input type='checkbox' id={id} onChange={this.handleChange} checked={_.includes(text, `,${value}`)}/>
 				<label htmlFor={id}>{_.startCase(value)}</label>
 			</div>

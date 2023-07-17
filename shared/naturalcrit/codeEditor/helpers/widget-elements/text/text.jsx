@@ -2,14 +2,8 @@ require('./text.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
-const { NUMBER_PATTERN, HINT_TYPE, PATTERNS } = require('../constants');
+const { NUMBER_PATTERN, HINT_TYPE, PATTERNS, STYLE_FN } = require('../constants');
 const CodeMirror = require('../../../code-mirror.js');
-
-const DEFAULT_WIDTH = '30px';
-
-const STYLE_FN = (value)=>({
-	width : `calc(${value?.length ?? 0}ch + ${value?.length ? `${DEFAULT_WIDTH} / 2` : DEFAULT_WIDTH})`
-});
 
 const Text = createClass({
 	fieldRef : {},
@@ -21,14 +15,14 @@ const Text = createClass({
 			n             : 0,
 			setHints      : ()=>{},
 			onChange      : ()=>{},
-			getStyleHints : ()=>{}
+			getStyleHints : ()=>{},
+			def           : false
 		};
 	},
 
 	getInitialState : function() {
 		return {
 			value : '',
-			style : STYLE_FN(),
 			id    : ''
 		};
 	},
@@ -40,7 +34,6 @@ const Text = createClass({
 			const [_, __, value] = this.props.text.match(pattern) ?? [];
 			this.setState({
 				value : value,
-				style : STYLE_FN(value),
 				id    : `${field?.name}-${n}`
 			});
 		}
@@ -58,7 +51,6 @@ const Text = createClass({
 		const [_, __, value] = text.match(pattern) ?? [];
 		this.setState({
 			value : value,
-			style : STYLE_FN(value),
 			id
 		});
 		this.fieldRef[id] = React.createRef();
@@ -133,19 +125,26 @@ const Text = createClass({
 		} else {
 			index = index + 1 + field.name.length;
 		}
-		if(!value) return;
 		cm.replaceRange(value, CodeMirror.Pos(n, index), CodeMirror.Pos(n, index + current.length), '+insert');
 		this.setState({
 			value : e.target.value,
-			style : STYLE_FN(e.target.value)
 		});
 	},
 	render : function() {
-		const { value, id, style } = this.state;
-		const { field } = this.props;
-
+		const { value, id } = this.state;
+		const { field, text, def } = this.props;
+		const style = STYLE_FN(value);
+		const pattern = PATTERNS.field[field.type](field.name);
+		const [_, label, __] = text.match(pattern) ?? [null, undefined, ''];
+		let className = 'widget-field';
+		if(!label) {
+			className += ' suggested';
+		}
+		if(def) {
+			className += ' default';
+		}
 		return <React.Fragment>
-			<div className='widget-field'>
+			<div className={className}>
 				<label htmlFor={id}>{field.name}:</label>
 				<input id={id} type='text' value={value}
 					   style={style}

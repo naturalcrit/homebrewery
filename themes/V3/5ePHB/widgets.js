@@ -1,10 +1,5 @@
 const _ = require('lodash');
-const { SNIPPET_TYPE, FIELD_TYPE } = require('../../../shared/naturalcrit/codeEditor/helpers/widget-elements/constants');
-
-const fourDigitNumberFromValue = (value)=>typeof value === 'number' ? (()=>{
-	const str = String(value);
-	return _.range(0, 4 - str.length).map(()=>'0').join('') + str;
-})() : value;
+const { SNIPPET_TYPE, FIELD_TYPE, fourDigitNumberFromValue } = require('../../../shared/naturalcrit/codeEditor/helpers/widget-elements/constants');
 
 module.exports = [{
 	name   : 'monster',
@@ -93,6 +88,9 @@ module.exports = [{
 		name      : 'opacity',
 		type      : FIELD_TYPE.TEXT,
 		increment : 5
+	}, {
+		name : 'background-color',
+		type : FIELD_TYPE.COLOR_SELECTOR,
 	}]
 }, {
 	name   : 'imageMaskCenter',

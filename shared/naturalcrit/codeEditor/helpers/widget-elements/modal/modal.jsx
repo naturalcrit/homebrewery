@@ -1,5 +1,6 @@
 require('./modal.less');
 const React = require('react');
+const ReactDOMClient = require('react-dom/client');
 const createClass = require('create-react-class');
 
 const Modal = createClass({
@@ -46,4 +47,29 @@ const Modal = createClass({
 	}
 });
 
-module.exports = Modal;
+module.exports = {
+	/*
+	* Requirements:
+	* - modalRef member variable
+	* - should be re-rendered via `this.state.modalRoot?.render` in `componentDidUpdate`
+	*/
+	Modal,
+	modalHelpers : {
+		// should be called in `componentDidMount`
+		// `self` should be passed as the component instance (`this`)
+		mount : (self)=>{
+			const el = document.createElement('div');
+			const root = ReactDOMClient.createRoot(el);
+			document.querySelector('body').append(el);
+			self.setState({
+				el,
+				modalRoot : root
+			});
+		},
+		// should be called in `componentWillUnmount`
+		// `self` should be passed as the component instance (`this`)
+		unmount : (self)=>{
+			self.state.el.remove();
+		}
+	}
+};

@@ -1,8 +1,7 @@
 require('./image-selector.less');
 const React = require('react');
-const ReactDOMClient = require('react-dom/client');
 const createClass = require('create-react-class');
-const Modal = require('../modal/modal.jsx');
+const { Modal, modalHelpers } = require('../modal/modal.jsx');
 const { PATTERNS } = require('../constants.js');
 const CodeMirror = require('../../../code-mirror.js');
 const _ = require('lodash');
@@ -25,13 +24,7 @@ const ImageSelector = createClass({
 	},
 
 	componentDidMount : function() {
-		const el = document.createElement('div');
-		const root = ReactDOMClient.createRoot(el);
-		document.querySelector('body').append(el);
-		this.setState({
-			el,
-			modalRoot : root
-		});
+		modalHelpers.mount(this);
 	},
 
 	componentDidUpdate : function() {
@@ -39,7 +32,7 @@ const ImageSelector = createClass({
 		const { selected } = this.state;
 
 		const images = values.map((v, i)=>{
-			const className = selected === v ? 'selected' : '';
+			const className = String(selected) === String(v) ? 'selected' : '';
 			return <img key={i} className={className} src={preview(v)} alt={`${name} image ${v}`} onClick={()=>this.select(v)}/>;
 		});
 
@@ -51,7 +44,7 @@ const ImageSelector = createClass({
 	},
 
 	componentWillUnmount : function() {
-		this.state.el.remove();
+		modalHelpers.unmount(this);
 	},
 
 	save : function() {
@@ -75,9 +68,23 @@ const ImageSelector = createClass({
 		});
 	},
 
+	showModal : function() {
+		const { cm, field, n } = this.props;
+		const { text } = cm.lineInfo(n);
+		const pattern = PATTERNS.field[field.type](field.name);
+		const [fullmatch, _, current] = text.match(pattern);
+		if(!fullmatch) {
+			return;
+		}
+		this.setState({
+			selected : current
+		});
+		this.modalRef.current.setVisible(true);
+	},
+
 	render : function () {
 		return <React.Fragment>
-			<button onClick={()=>this.modalRef.current.setVisible(true)}>Select Image</button>
+			<button onClick={this.showModal}>Select Image</button>
 		</React.Fragment>;
 	}
 });

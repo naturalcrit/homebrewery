@@ -2,7 +2,7 @@ const React = require('react');
 const ReactDOMClient = require('react-dom/client');
 const { PATTERNS, FIELD_TYPE, HINT_TYPE, UNITS } = require('./widget-elements/constants');
 require('./widget-elements/hints/hints.jsx');
-const { Text, Checkbox, ImageSelector } = require('./widget-elements');
+const { Text, Checkbox, ImageSelector, ColorSelector } = require('./widget-elements');
 const CodeMirror = require('../code-mirror.js');
 
 // See https://codemirror.net/5/addon/hint/css-hint.js for code reference
@@ -86,17 +86,19 @@ module.exports = function(widgets, cm, setHints) {
 			const id = `${widget.name}-${n}`;
 			parent.id = id;
 
-			const textFieldNames = (widget.fields || []).filter((f)=>f.type === FIELD_TYPE.TEXT).map((f)=>f.name);
+			const textFieldNames = (widget.fields || []).filter((f)=>f.type === FIELD_TYPE.TEXT || f.type === FIELD_TYPE.COLOR_SELECTOR).map((f)=>f.name);
 			const { text } = cm.lineInfo(n);
 
 			const fields = (widget.fields || []).map((field)=>{
 				const key = genKey(widget.name, n, field.name);
 				if(field.type === FIELD_TYPE.CHECKBOX) {
-					return <Checkbox key={key} cm={cm} CodeMirror={CodeMirror} n={n} prefix={widget.name} value={field.name}/>;
+					return <Checkbox key={key} cm={cm} n={n} prefix={widget.name} value={field.name} def={true}/>;
 				} else if(field.type === FIELD_TYPE.TEXT) {
-					return <Text key={key} cm={cm} CodeMirror={CodeMirror} field={field} n={n} text={text} setHints={(f, h)=>setHints(h, f)} getStyleHints={getStyleHints}/>;
+					return <Text key={key} field={field} cm={cm} n={n} text={text} setHints={(f, h)=>setHints(h, f)} getStyleHints={getStyleHints} def={true}/>;
 				} else if(field.type === FIELD_TYPE.IMAGE_SELECTOR) {
 					return <ImageSelector key={key} field={field} cm={cm} n={n}/>;
+				} else if(field.type === FIELD_TYPE.COLOR_SELECTOR) {
+					return <ColorSelector key={key} field={field} cm={cm} n={n} text={text} def={true}/>;
 				} else {
 					return null;
 				}
@@ -110,7 +112,11 @@ module.exports = function(widgets, cm, setHints) {
 					increment : 5,
 					hints     : true,
 				};
-				return <Text key={genKey(widget.name, n, style)} cm={cm} CodeMirror={CodeMirror} field={field} n={n} text={text} setHints={(f, h)=>setHints(h, f)} getStyleHints={getStyleHints}/>;
+				const key = genKey(widget.name, n, style);
+				if(style.includes('color')) {
+					return <ColorSelector key={key} field={field} cm={cm} n={n} text={text}/>;
+				}
+				return <Text key={key} field={field} cm={cm} n={n} text={text} setHints={(f, h)=>setHints(h, f)} getStyleHints={getStyleHints}/>;
 			}).filter(Boolean);
 
 			const root = roots[n][id] ?? ReactDOMClient.createRoot(node || parent);
