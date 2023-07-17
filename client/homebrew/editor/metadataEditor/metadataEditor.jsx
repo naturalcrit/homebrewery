@@ -356,7 +356,7 @@ const MetadataEditor = createClass({
 
 			<hr/>
 
-			<h1 className='sectionHead'>Autoren</h1>
+			{/*<h1 className='sectionHead'>Autoren</h1>
 
 			{this.renderAuthors()}
 
@@ -367,17 +367,17 @@ const MetadataEditor = createClass({
 				notes={['Beachte Groß-/Kleinschreibung.', 'Schicke eingeladenen Autoren den Editieren-Link. Sie können die Einladung dort akzeptieren oder ablehnen.']}
 				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}/>
 
-			<hr/>
+			<hr/>*/}
 
-			<h1 className='sectionHead'>Privacy</h1>
+			{/*<h1 className='sectionHead'>Privacy</h1>*/}
 
-			<div className='field publish'>
+			{/* <div className='field publish'>
 				<label>Veröffent-lichen</label>
 				<div className='value'>
 					{this.renderPublish()}
 					<small>Veröffentlichte Gebräue sind öffentlich einseh- und auffindbar (irgendwann...)</small>
 				</div>
-			</div>
+			</div> */}
 
 			{this.renderDelete()}
 
