@@ -176,7 +176,7 @@ const CodeEditor = createClass({
 
 	indent : function () {
 		const cm = this.codeMirror;
-		if (cm.somethingSelected()) {
+		if(cm.somethingSelected()) {
 			cm.execCommand('indentMore');
 		} else {
 			cm.execCommand('insertSoftTab');

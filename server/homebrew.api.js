@@ -27,8 +27,13 @@ const api = {
 
 		// If the id is longer than 12, then it's a google id + the edit id. This splits the longer id up.
 		if(id.length > 12) {
-			googleId = id.slice(0, -12);
-			id = id.slice(-12);
+			if(id.length >= (33 + 12)) {    // googleId is minimum 33 chars (may increase)
+				googleId = id.slice(0, -12);  // current editId is 12 chars
+			} else {                        // old editIds used to be 10 chars;
+				googleId = id.slice(0, -10);  // if total string is too short, must be old brew
+				console.log('Old brew, using 10-char Id');
+			}
+			id = id.slice(googleId.length);
 		}
 		return { id, googleId };
 	},
