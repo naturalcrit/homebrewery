@@ -23,30 +23,26 @@
         left: 0;
         mix-blend-mode: darken;
 		height: 3cm;
-		bottom: 0cm;
+		bottom: -4mm;
 		width: 9cm;
 		background-position:right;
     }
     &:nth-of-type(even):after {
+		transform:none;
         right:0;
         left:unset;
 		background-position:left;
     }
 
-    &:has(.insideCover):after {
-		background-image: @TCE_footerAccent;
-        left: 0;
-        mix-blend-mode: darken;
-		height:3cm;
-		bottom:0cm;
-		width:9cm;
-		background-position:right;
-    }
-	&:has(.insideCover):nth-of-type(even):after {
-        right:0;
-        left:unset;
-		background-position:left;
-    }
+	&:has(.insideCover,.Credits) {
+
+		h1 {
+			color: var(--HB_Color_HeaderText);
+		}
+
+	}
+
+
 	
 	
 	:where(p, dl, ul, ol) {
