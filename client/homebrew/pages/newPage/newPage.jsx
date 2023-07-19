@@ -23,7 +23,7 @@ const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
 const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
 const METAKEY  = 'homebrewery-new-meta';
-const SAVEKEY  = 'HOMEBREWERY-DEFAULT-SAVE-LOCATION';
+let SAVEKEY;
 
 
 const NewPage = createClass({
@@ -55,6 +55,8 @@ const NewPage = createClass({
 			const brewStorage  = localStorage.getItem(BREWKEY);
 			const styleStorage = localStorage.getItem(STYLEKEY);
 			const metaStorage = JSON.parse(localStorage.getItem(METAKEY));
+
+			SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${global.account.username}`;
 			const saveStorage = localStorage.getItem(SAVEKEY);
 
 			brew.text  = brewStorage  ?? brew.text;

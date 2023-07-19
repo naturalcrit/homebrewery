@@ -16,7 +16,7 @@ const HelpNavItem = require('../../navbar/help.navitem.jsx');
 
 const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
 
-const saveLocationKey = 'HOMEBREWERY-DEFAULT-SAVE-LOCATION';
+let SAVEKEY = '';
 
 const AccountPage = createClass({
 	displayName     : 'AccountPage',
@@ -32,8 +32,9 @@ const AccountPage = createClass({
 		};
 	},
 	componentDidMount : function(){
-		if(!this.state.saveLocation) {
-			const saveLocation =  window.localStorage.getItem(saveLocationKey) || '';
+		if(!this.state.saveLocation && this.props.uiItems.username) {
+			SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${this.props.uiItems.username}`;
+			const saveLocation =  window.localStorage.getItem(SAVEKEY) || '';
 			if(saveLocation == '') {
 				// TO DO: Implement logic to determine the appropriate location given current state
 				console.log(this.state.uiItems);
@@ -46,7 +47,7 @@ const AccountPage = createClass({
 
 	makeActive : function(newSelection){
 		if(this.state.saveLocation == newSelection) return;
-		window.localStorage.setItem(saveLocationKey, newSelection);
+		window.localStorage.setItem(SAVEKEY, newSelection);
 		this.setState({
 			saveLocation : newSelection
 		});
