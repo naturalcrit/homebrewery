@@ -16,6 +16,8 @@ const HelpNavItem = require('../../navbar/help.navitem.jsx');
 
 const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
 
+const saveLocationKey = 'HOMEBREWERY-DEFAULT-SAVE-LOCATION';
+
 const AccountPage = createClass({
 	displayName     : 'AccountPage',
 	getDefaultProps : function() {
@@ -28,6 +30,31 @@ const AccountPage = createClass({
 		return {
 			uiItems : this.props.uiItems
 		};
+	},
+	componentDidMount : function(){
+		if(!this.state.saveLocation) {
+			const saveLocation =  window.localStorage.getItem(saveLocationKey) || '';
+			if(saveLocation == '') {
+				// TO DO: Implement logic to determine the appropriate location given current state
+				console.log(this.state.uiItems);
+			};
+			this.setState({
+				saveLocation : saveLocation
+			});
+		}
+	},
+
+	makeActive : function(newSelection){
+		if(this.state.saveLocation == newSelection) return;
+		window.localStorage.setItem(saveLocationKey, newSelection);
+		this.setState({
+			saveLocation : newSelection
+		});
+	},
+
+	renderButton : function(name, key, condition=true){
+		if(!condition) return;
+		return <button className={this.state.saveLocation==key ? 'active' :	''}	onClick={()=>{this.makeActive(key);}}>{name}</button>;
 	},
 
 	renderNavItems : function() {
@@ -47,6 +74,13 @@ const AccountPage = createClass({
 				<h1>Account Information  <i className='fas fa-user'></i></h1>
 				<p><strong>Username: </strong> {this.props.uiItems.username || 'No user currently logged in'}</p>
 				<p><strong>Last Login: </strong> {moment(this.props.uiItems.issued).format('dddd, MMMM Do YYYY, h:mm:ss a ZZ') || '-'}</p>
+			</div>
+			<div className='dataGroup'>
+				<h4>Default Save Location</h4>
+				{/* <button className={this.state.saveLocation=='HOMEBREWERY' ? 'active' : ''} onClick={()=>{this.makeActive('HOMEBREWERY');}}>Homebrewery</button> */}
+				{this.renderButton('Homebrewery', 'HOMEBREWERY')}
+				{/* {this.state.uiItems.googleId ? <button className={this.state.saveLocation=='GOOGLE-DRIVE' ? 'active' : ''} onClick={()=>{this.makeActive('GOOGLE-DRIVE');}}>Google Drive</button> : <></>} */}
+				{this.renderButton('Google Drive', 'GOOGLE-DRIVE', this.state.uiItems.username)}
 			</div>
 			<div className='dataGroup'>
 				<h3>Homebrewery Information <NaturalCritIcon /></h3>
