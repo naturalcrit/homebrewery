@@ -1,7 +1,7 @@
 require('./color-selector.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const { PATTERNS, STYLE_FN } = require('../constants');
+const { PATTERNS, STYLE_FN, SNIPPET_TYPE } = require('../constants');
 const CodeMirror = require('../../../code-mirror');
 const debounce = require('lodash.debounce');
 
@@ -39,7 +39,7 @@ const ColorSelector = createClass({
 		}
 	},
 	onChange : function(e) {
-		const { cm, text, field, n } = this.props;
+		const { cm, text, field, n, snippetType } = this.props;
 		const pattern = PATTERNS.field[field.type](field.name);
 		const [_, label, current] = text.match(pattern) ?? [null, field.name, ''];
 		let index = text.indexOf(`${label}:${current}`);
@@ -48,7 +48,10 @@ const ColorSelector = createClass({
 		}
 		let value = e.target.value;
 		if(index === -1) {
-			index = text.length;
+			if(snippetType === SNIPPET_TYPE.INLINE) {
+				index = text.indexOf('}');
+			}
+			index = index === -1 ? text.length : index;
 			value = `,${field.name}:${value}`;
 		} else {
 			index = index + 1 + field.name.length;

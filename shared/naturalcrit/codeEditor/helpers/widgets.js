@@ -94,11 +94,11 @@ module.exports = function(widgets, cm, setHints) {
 				if(field.type === FIELD_TYPE.CHECKBOX) {
 					return <Checkbox key={key} cm={cm} n={n} prefix={widget.name} value={field.name} def={true}/>;
 				} else if(field.type === FIELD_TYPE.TEXT) {
-					return <Text key={key} field={field} cm={cm} n={n} text={text} setHints={(f, h)=>setHints(h, f)} getStyleHints={getStyleHints} def={true}/>;
+					return <Text key={key} field={field} cm={cm} n={n} text={text} setHints={(f, h)=>setHints(h, f)} getStyleHints={getStyleHints} def={true} snippetType={widget.type}/>;
 				} else if(field.type === FIELD_TYPE.IMAGE_SELECTOR) {
 					return <ImageSelector key={key} field={field} cm={cm} n={n}/>;
 				} else if(field.type === FIELD_TYPE.COLOR_SELECTOR) {
-					return <ColorSelector key={key} field={field} cm={cm} n={n} text={text} def={true}/>;
+					return <ColorSelector key={key} field={field} cm={cm} n={n} text={text} def={true} snippetType={widget.type}/>;
 				} else {
 					return null;
 				}
@@ -114,9 +114,9 @@ module.exports = function(widgets, cm, setHints) {
 				};
 				const key = genKey(widget.name, n, style);
 				if(style.includes('color')) {
-					return <ColorSelector key={key} field={field} cm={cm} n={n} text={text}/>;
+					return <ColorSelector key={key} field={field} cm={cm} n={n} text={text} snippetType={widget.type}/>;
 				}
-				return <Text key={key} field={field} cm={cm} n={n} text={text} setHints={(f, h)=>setHints(h, f)} getStyleHints={getStyleHints}/>;
+				return <Text key={key} field={field} cm={cm} n={n} text={text} setHints={(f, h)=>setHints(h, f)} getStyleHints={getStyleHints} snippetType={widget.type}/>;
 			}).filter(Boolean);
 
 			const root = roots[n][id] ?? ReactDOMClient.createRoot(node || parent);

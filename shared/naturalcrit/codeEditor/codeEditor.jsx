@@ -168,6 +168,10 @@ const CodeEditor = createClass({
 					this.state.widgetUtils.removeLineWidget(key, this.state.widgets[key]);
 				}
 			}
+			this.setState({
+				hints      : [],
+				hintsField : undefined
+			});
 			const { widgets } = this.codeMirror.lineInfo(line);
 			if(!widgets) {
 				const widget = this.state.widgetUtils.updateLineWidgets(line);
@@ -198,6 +202,10 @@ const CodeEditor = createClass({
 					for (const widget of widgets) {
 						this.state.widgetUtils.removeLineWidget(n, widget);
 					}
+					this.setState({
+						hints      : [],
+						hintsField : undefined
+					});
 				}
 			}
 		});

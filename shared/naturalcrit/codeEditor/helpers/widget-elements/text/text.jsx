@@ -2,7 +2,7 @@ require('./text.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
-const { NUMBER_PATTERN, HINT_TYPE, PATTERNS, STYLE_FN } = require('../constants');
+const { NUMBER_PATTERN, HINT_TYPE, PATTERNS, STYLE_FN, FIELD_TYPE, SNIPPET_TYPE } = require('../constants');
 const CodeMirror = require('../../../code-mirror.js');
 
 const Text = createClass({
@@ -16,7 +16,8 @@ const Text = createClass({
 			setHints      : ()=>{},
 			onChange      : ()=>{},
 			getStyleHints : ()=>{},
-			def           : false
+			def           : false,
+			snippetType   : -1
 		};
 	},
 
@@ -114,13 +115,16 @@ const Text = createClass({
 		}
 	},
 	onChange : function (e){
-		const { cm, text, field, n } = this.props;
+		const { cm, text, field, n, snippetType } = this.props;
 		const pattern = PATTERNS.field[field.type](field.name);
 		const [_, label, current] = text.match(pattern) ?? [null, field.name, ''];
 		let index = text.indexOf(`${label}:${current}`);
 		let value = e.target.value;
 		if(index === -1) {
-			index = text.length;
+			if(snippetType === SNIPPET_TYPE.INLINE) {
+				index = text.indexOf('}');
+			}
+			index = index === -1 ? text.length : index;
 			value = `,${field.name}:${value}`;
 		} else {
 			index = index + 1 + field.name.length;
