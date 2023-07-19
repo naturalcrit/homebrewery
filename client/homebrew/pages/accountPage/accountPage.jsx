@@ -76,13 +76,6 @@ const AccountPage = createClass({
 				<p><strong>Last Login: </strong> {moment(this.props.uiItems.issued).format('dddd, MMMM Do YYYY, h:mm:ss a ZZ') || '-'}</p>
 			</div>
 			<div className='dataGroup'>
-				<h4>Default Save Location</h4>
-				{/* <button className={this.state.saveLocation=='HOMEBREWERY' ? 'active' : ''} onClick={()=>{this.makeActive('HOMEBREWERY');}}>Homebrewery</button> */}
-				{this.renderButton('Homebrewery', 'HOMEBREWERY')}
-				{/* {this.state.uiItems.googleId ? <button className={this.state.saveLocation=='GOOGLE-DRIVE' ? 'active' : ''} onClick={()=>{this.makeActive('GOOGLE-DRIVE');}}>Google Drive</button> : <></>} */}
-				{this.renderButton('Google Drive', 'GOOGLE-DRIVE', this.state.uiItems.username)}
-			</div>
-			<div className='dataGroup'>
 				<h3>Homebrewery Information <NaturalCritIcon /></h3>
 				<p><strong>Brews on Homebrewery: </strong> {this.props.uiItems.mongoCount}</p>
 			</div>
@@ -94,6 +87,11 @@ const AccountPage = createClass({
 						<strong>Brews on Google Drive: </strong> {this.props.uiItems.googleCount ?? <>Unable to retrieve files - <a href='https://github.com/naturalcrit/homebrewery/discussions/1580'>follow these steps to renew your Google credentials.</a></>}
 					</p>
 				}
+			</div>
+			<div className='dataGroup'>
+				<h4>Default Save Location</h4>
+				{this.renderButton('Homebrewery', 'HOMEBREWERY')}
+				{this.renderButton('Google Drive', 'GOOGLE-DRIVE', this.state.uiItems.googleId)}
 			</div>
 		</>;
 	},
