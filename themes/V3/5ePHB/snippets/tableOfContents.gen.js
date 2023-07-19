@@ -29,21 +29,23 @@ const getTOC = (pages)=>{
 
 	const res = [];
 	_.each(pages, (page, pageNum)=>{
-		const lines = page.split('\n');
-		_.each(lines, (line)=>{
-			if(_.startsWith(line, '# ')){
-				const title = line.replace('# ', '');
-				add1(title, pageNum);
-			}
-			if(_.startsWith(line, '## ')){
-				const title = line.replace('## ', '');
-				add2(title, pageNum);
-			}
-			if(_.startsWith(line, '### ')){
-				const title = line.replace('### ', '');
-				add3(title, pageNum);
-			}
-		});
+		if(!page.includes("{{frontCover}}") && !page.includes("{{insideCover}}") && !page.includes("{{partCover}}") && !page.includes("{{backCover}}")) {
+			const lines = page.split('\n');
+			_.each(lines, (line)=>{
+				if(_.startsWith(line, '# ')){
+					const title = line.replace('# ', '');
+					add1(title, pageNum);
+				}
+				if(_.startsWith(line, '## ')){
+					const title = line.replace('## ', '');
+					add2(title, pageNum);
+				}
+				if(_.startsWith(line, '### ')){
+					const title = line.replace('### ', '');
+					add3(title, pageNum);
+				}
+			});
+		}
 	});
 	return res;
 };
