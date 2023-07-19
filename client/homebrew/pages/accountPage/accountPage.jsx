@@ -34,10 +34,12 @@ const AccountPage = createClass({
 	componentDidMount : function(){
 		if(!this.state.saveLocation && this.props.uiItems.username) {
 			SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${this.props.uiItems.username}`;
-			const saveLocation =  window.localStorage.getItem(SAVEKEY) || '';
+			let saveLocation =  window.localStorage.getItem(SAVEKEY) || '';
 			if(saveLocation == '') {
-				// TO DO: Implement logic to determine the appropriate location given current state
-				console.log(this.state.uiItems);
+				saveLocation = 'HOMEBREWERY';
+				if(this.state.uiItems.googleId) {
+					saveLocation = 'GOOGLE-DRIVE';
+				}
 			};
 			this.setState({
 				saveLocation : saveLocation
