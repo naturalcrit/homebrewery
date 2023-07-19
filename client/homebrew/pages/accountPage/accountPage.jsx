@@ -41,9 +41,7 @@ const AccountPage = createClass({
 					saveLocation = 'GOOGLE-DRIVE';
 				}
 			};
-			this.setState({
-				saveLocation : saveLocation
-			});
+			this.makeActive(saveLocation);
 		}
 	},
 
