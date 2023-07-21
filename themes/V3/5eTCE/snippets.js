@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 const _ = require('lodash');
 
-const dedent             = require('dedent-tabs').default;
+const dedent = require('dedent-tabs').default;
 const CreditGen = require('./snippets/credit.gen.js');
 const DescriptionGen = require('./snippets/description.gen.js');
 const CommentGen = require('./snippets/comment.gen.js');
@@ -21,7 +21,7 @@ module.exports = [
 			{
 				name : 'topStain',
 				icon : 'fas fa-bookmark',
-				gen  : '{{topStain${_.random(1, 5)}}}\n\n',
+				gen  :  dedent`{{topStain${_.random(1, 5)}}}\n\n`,
 				experimental : true
 			},
 			{

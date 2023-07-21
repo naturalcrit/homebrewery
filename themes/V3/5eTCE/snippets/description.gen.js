@@ -7,5 +7,4 @@ The potion stash of a random witch, where we can see many magical brewings in th
 }}
 <!-- Use --offsetX to shift the mask left or right (can use cm instead of %)
      Use --offsetY to shift the mask up or down
-     Use --rotation to set rotation angle in degrees. -->\n\n`;
-};
+     Use --rotation to set rotation angle in degrees. -->\n\n`};
