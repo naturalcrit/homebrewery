@@ -189,11 +189,9 @@
 	
 	
 	.toc {
-		&.wide {
-			columns: 3;
-		}
 		
 		& h1 {
+			color:var(--HB_Color_HeaderText);
 			text-align: left;
 			font-size: 40px;
 		}
@@ -287,5 +285,15 @@
 		&[class*="5"] {
 		background-image: @TCE_topStain5;
 		}
+	}
+
+
+	.description {
+		height:300px;
+		width:300px;
+		box-sizing:border-box;
+		aspect-ratio:1;
+		padding:120px 60px;
+		background:white;
 	}
 }

@@ -1,6 +1,8 @@
 /* eslint-disable max-lines */
 const dedent             = require('dedent-tabs').default;
 const CreditGen = require('./snippets/credit.gen.js');
+const DescriptionGen = require('./snippets/description.gen.js');
+const CommentGen = require('./snippets/comment.gen.js');
 
 module.exports = [
     {
@@ -11,7 +13,7 @@ module.exports = [
 			{
 				name : 'comment',
 				icon : 'fas fa-comment',
-				gen  : '{{comment\nLorem ipsum dolor sit amet.\n\nTasha\n}}\n'
+				gen  : CommentGen
 			},
 			{
 				name : 'topStain',
@@ -23,6 +25,11 @@ module.exports = [
 				icon : 'fas fa-users',
 				gen  : CreditGen
 			},
+			{
+				name : 'Image Description',
+				icon : 'fas fa-message',
+				gen  : DescriptionGen
+			}
 		]
 	}
 ];
