@@ -1,4 +1,6 @@
 /* eslint-disable max-lines */
+const _ = require('lodash');
+
 const dedent             = require('dedent-tabs').default;
 const CreditGen = require('./snippets/credit.gen.js');
 const DescriptionGen = require('./snippets/description.gen.js');
@@ -13,23 +15,27 @@ module.exports = [
 			{
 				name : 'comment',
 				icon : 'fas fa-comment',
-				gen  : CommentGen
+				gen  : CommentGen,
+				experimental : true
 			},
 			{
 				name : 'topStain',
 				icon : 'fas fa-bookmark',
-				gen  : '{{topStain${_.random(1, 5)}}}\n\n'
+				gen  : '{{topStain${_.random(1, 5)}}}\n\n',
+				experimental : true
 			},
 			{
 				name : 'Credits',
 				icon : 'fas fa-users',
-				gen  : CreditGen
+				gen  : CreditGen,
+				experimental : true
 			},
 			{
 				name : 'Image Description',
-				icon : 'fas fa-message',
-				gen  : DescriptionGen
-			}
+				icon : 'fas fa-align-justify',
+				gen  : DescriptionGen,
+				experimental : true
+			},
 		]
 	}
 ];

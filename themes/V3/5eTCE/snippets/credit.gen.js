@@ -66,6 +66,5 @@ The black dragon Christopher Roland The third is about to eat a delicious advent
 Disclaimer: Prepare for boundless creativity, as Dungeon Masters weave magical tales with their sorcery, and you embark on epic quests. No real creatures were harmed here; it's all imagination. Stealthy rogues, beware the consequences of mischief! Quest obsession may arise; enjoy the laughter-filled journey. Our books aren't fire-resistant, so guard against dragon breath. Embrace chaos, celebrate absurdity, and let imagination soar. Happy adventuring!
 }}
 
-\page
-`;
+\page`;
 };
