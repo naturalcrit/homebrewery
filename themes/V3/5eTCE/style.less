@@ -131,7 +131,10 @@
 	
 
 	&:has(.credits) {
-
+		& strong {
+			-webkit-text-stroke:0.2px;
+		
+		}
 		columns:1;
 
 		& h1+p {
@@ -159,7 +162,20 @@
 				margin-top: 0;
 			}
 		}
+
+		.blank + p {
+			margin-left:0;
+		}
 		
+		.disclaimer {
+			font-style:italic;
+			margin-top:1em;
+			
+			& p {
+			font-size:8px;
+			}
+
+		}
 
 		.frame {
 			position:relative;
