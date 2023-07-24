@@ -73,34 +73,12 @@ const Editor = createClass({
 	},
 
 	getTabHeight : function(){
-		const tabRootNode = this.refs.main;
-		const tabRootNodeHeight = tabRootNode.offsetHeight;
-		console.log(tabRootNodeHeight);
-		const tabListHeight = this.refs.tabList.offsetHeight;
-		this.setState({
-			tabPanelHeight : tabRootNodeHeight - tabListHeight
-		}, ()=>{});
-
-
 		if(this.state.view == 'text' || this.state.view == 'style'){
-
-			// const tabRootNode = this.refs.main;
-			// const tabRootNodeHeight = tabRootNode.offsetHeight;
-			const tabPanelNode = this.refs.tabPanel;
-			// const tabPanelNodeHeight = tabPanelNode.offsetHeight;
-			const tabPanelNodeHeight = this.state.tabPanelHeight;
-			// const siblingNodes = _.remove(Array.from(tabPanelNode.children), (item)=>{item.className == 'codeEditor';});
-			// const siblingHeights = siblingNodes.map((el)=>{ return el.offsetHeight; });
-			// const totalSibHeights = siblingHeights.reduce((a, b)=>{ return a + b, 0; });
-
-			// const snippetBar = document.querySelector('.snippetBar');
-			const snippetBarHeight = 25;
-
-			console.log(snippetBarHeight);
-
-			console.log(`${tabPanelNodeHeight} - ${snippetBarHeight}`);
+			const tabsAreaHeight = document.querySelector('.splitPane').getBoundingClientRect().height;
+			const tabListHeight = this.refs.tabList.getBoundingClientRect().height;
+			const snippetBarHeight = document.querySelector('.snippetBar').getBoundingClientRect().height;
 			this.setState({
-				editorHeight : tabPanelNodeHeight - snippetBarHeight
+				editorHeight : tabsAreaHeight - snippetBarHeight - tabListHeight
 			}, ()=>{});
 
 		}
@@ -115,7 +93,6 @@ const Editor = createClass({
 		this.props.setMoveArrows(newView === 'text');
 		this.setState({
 			view : newView
-		// }, ()=>{ return newView !== 'meta' ? this.getTabHeight() : console.log('is meta') });
 		}, ()=>{ return this.getTabHeight();});
 
 	},
@@ -361,7 +338,7 @@ const Editor = createClass({
 		return this.refs.codeEditor?.undo();
 	},
 
-	rendertabList : function(){
+	renderTabList : function(){
 		return <Tabs.TabsList className='tab-list' ref='tabList'>
 			<Tabs.Trigger className='text tab'
 				value='text'>
@@ -383,7 +360,8 @@ const Editor = createClass({
 
 	renderTabContent : function (){
 		return <Tabs.Content value={this.state.view} ref='tabPanel'>
-			{this.isText() || this.isStyle() ? this.renderSnippetBar() :  null}
+			{/* {( this.isText() || this.isStyle() ) ? this.renderSnippetBar() :  null} */}
+			{this.renderSnippetBar()}
 			{this.renderEditor()}
 		</Tabs.Content>;
 	},
@@ -392,7 +370,7 @@ const Editor = createClass({
 		return (
 			<Tabs.Root className='tabs' ref='main' defaultValue='text' onValueChange={(e)=>{this.handleViewChange(e)}}>
 				{this.renderTabContent()}
-				{this.rendertabList()}
+				{this.renderTabList()}
 			</Tabs.Root>
 		);
 	}
