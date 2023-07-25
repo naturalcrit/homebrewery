@@ -73,10 +73,16 @@ const Editor = createClass({
 	},
 
 	getTabHeight : function(){
+		let snippetBarHeight = 0;
 		if(this.state.view == 'text' || this.state.view == 'style'){
 			const tabsAreaHeight = document.querySelector('.splitPane').getBoundingClientRect().height;
 			const tabListHeight = this.refs.tabList.getBoundingClientRect().height;
-			const snippetBarHeight = document.querySelector('.snippetBar').getBoundingClientRect().height;
+			if(this.state.view !== 'meta'){
+				console.log('poop');
+				snippetBarHeight = document.querySelector('.snippetBar').getBoundingClientRect().height;
+			}
+
+			console.log(`tabsAreaHeight: ${tabsAreaHeight} - snippetBarHeight: ${snippetBarHeight} - tabListHeight: ${tabListHeight}`)
 			this.setState({
 				editorHeight : tabsAreaHeight - snippetBarHeight - tabListHeight
 			}, ()=>{});
@@ -93,7 +99,7 @@ const Editor = createClass({
 		this.props.setMoveArrows(newView === 'text');
 		this.setState({
 			view : newView
-		}, ()=>{ return this.getTabHeight();});
+		}, this.getTabHeight());
 
 	},
 
@@ -275,13 +281,16 @@ const Editor = createClass({
 		return <SnippetBar
 			ref='snippetBar'
 			brew={this.props.brew}
+			view={this.state.view}
+			onViewChange={this.handleViewChange}
 			onInject={this.handleInject}
 			showEditButtons={this.props.showEditButtons}
 			renderer={this.props.renderer}
 			theme={this.props.brew.theme}
 			undo={this.undo}
 			redo={this.redo}
-			historySize={this.historySize()} />;
+			historySize={this.historySize()} 
+			cursorPos={this.refs.codeEditor?.getCursorPosition() || {}} />;
 	},
 
 	renderEditor : function(){
@@ -315,13 +324,13 @@ const Editor = createClass({
 				<CodeEditor key='codeEditor'
 					view={this.state.view}
 					style={{ display: 'none' }}
-					rerenderParent={this.rerenderParent}
-					editorHeight={this.state.editorHeight} />
+					rerenderParent={this.rerenderParent} />
 				<MetadataEditor
+					ref='metaEditor'
 					metadata={this.props.brew}
 					onChange={this.props.onMetaChange}
 					reportError={this.props.reportError}
-					tabPanelHeight={this.state.tabPanelHeight} />
+					editorHeight={this.state.editorHeight} />
 			</>;
 		}
 	},
@@ -360,8 +369,7 @@ const Editor = createClass({
 
 	renderTabContent : function (){
 		return <Tabs.Content value={this.state.view} ref='tabPanel'>
-			{/* {( this.isText() || this.isStyle() ) ? this.renderSnippetBar() :  null} */}
-			{this.renderSnippetBar()}
+			{( this.isText() || this.isStyle() ) ? this.renderSnippetBar() :  null}
 			{this.renderEditor()}
 		</Tabs.Content>;
 	},
