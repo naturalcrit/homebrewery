@@ -1,44 +1,42 @@
 
 
 .ui-EditorText() {
-    font-family: 'Open Sans', sans-serif;
-    font-size: .7rem;
-    font-weight: 800;
-    letter-spacing: .05em;
-    text-transform: uppercase;
-    color: black;
+	font-family    : 'Open Sans', sans-serif;
+	font-size      : 0.7rem;
+	font-weight    : 800;
+	color          : black;
+	text-transform : uppercase;
+	letter-spacing : 0.05em;
 }
 
 .ui-EditorTrigger() {
-    all: unset;
-    background: #DDD;
-    border-radius: 0 0 5px 5px;
-    padding: 3px 10px;
-    .ui-EditorText();
-    .highlighted {
-        background: #FFF;
-    }
+	all           : unset;
+	padding       : 3px 10px;
+	background    : #DDDDDD;
+	border-radius : 0 0 5px 5px;
+	.ui-EditorText();
+	.highlighted { background : #FFFFFF; }
 }
 
 [role='tablist'] {
-    display: flex;
-    gap: 2px;
-    height: 25px;
-    align-items: stretch;
-    border-top: 1px solid lightgray;
+	display     : flex;
+	gap         : 2px;
+	align-items : stretch;
+	height      : 25px;
+	border-top  : 1px solid lightgray;
 }
 
 [role='tablist'] button {
-    .ui-EditorTrigger();
-    flex: 1;
-    display: flex;
-    align-items:center;
-    justify-content: space-between;
-    &[data-state='active'] {
-        .ui-EditorTrigger.highlighted();
-        border-top: 1px solid white;
-        position: relative;
-        top: -1px;
-    }
+	.ui-EditorTrigger();
+	display         : flex;
+	flex            : 1;
+	align-items     : center;
+	justify-content : space-between;
+	&[data-state='active'] {
+		.ui-EditorTrigger.highlighted();
+		position   : relative;
+		top        : -1px;
+		border-top : 1px solid white;
+	}
 }
 
