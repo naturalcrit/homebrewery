@@ -57,7 +57,7 @@ const api = {
 			// If there is a google id, try to find the google brew
 			if(!stubOnly && (googleId || stub?.googleId)) {
 				let googleError;
-				const googleBrew = await GoogleActions.getGoogleBrew(googleId || stub?.googleId, id, accessType)
+				const googleBrew = await GoogleActions.getGoogleBrew(googleId || stub?.googleId, id, accessType, api.getGoogleAuth(req.account, res))
 					.catch((err)=>{
 						googleError = err;
 					});
@@ -287,8 +287,12 @@ const api = {
 
 		res.status(200).send(saved);
 	},
+	getGoogleAuth : function(account, res){
+		const auth = GoogleActions.authCheck(account, res);
+		return auth;
+	},
 	deleteGoogleBrew : async (account, id, editId, res)=>{
-		const auth = await GoogleActions.authCheck(account, res);
+		const auth = api.getGoogleAuth(account, res);
 		await GoogleActions.deleteGoogleBrew(auth, id, editId);
 		return true;
 	},
