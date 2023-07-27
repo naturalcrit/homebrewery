@@ -17,7 +17,7 @@
     "lint": "eslint --fix **/*.{js,jsx}",
     "lint:dry": "eslint **/*.{js,jsx}",
     "stylelint": "stylelint --fix \"**/*.less\"",
-    "stylelint:dry": "stylelint **/*.less",
+    "stylelint:dry": "stylelint \"**/*.less\"",
     "circleci": "npm test && eslint **/*.{js,jsx} --max-warnings=0",
     "verify": "npm run lint && npm test",
     "test": "jest --runInBand",
