@@ -299,7 +299,8 @@ const api = {
 	deleteBrew : async (req, res, next)=>{
 		// Delete an orphaned stub if its Google brew doesn't exist
 		try {
-			const auth = api.getGoogleAuth(req.account, res);
+			const { googleId } = api.getId(req);
+			const auth = googleId ? api.getGoogleAuth(req.account, res) : undefined;
 			await api.getBrew('edit', false, auth)(req, res, ()=>{});
 		} catch (err) {
 			// Only if the error code is HBErrorCode '02', that is, Google returned "404 - Not Found"
