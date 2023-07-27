@@ -37,7 +37,7 @@ const api = {
 		}
 		return { id, googleId };
 	},
-	getBrew : (accessType, stubOnly = false)=>{
+	getBrew : (accessType, stubOnly = false, auth = undefined)=>{
 		// Create middleware with the accessType passed in as part of the scope
 		return async (req, res, next)=>{
 			// Get relevant IDs for the brew
@@ -57,7 +57,7 @@ const api = {
 			// If there is a google id, try to find the google brew
 			if(!stubOnly && (googleId || stub?.googleId)) {
 				let googleError;
-				const googleBrew = await GoogleActions.getGoogleBrew(googleId || stub?.googleId, id, accessType, api.getGoogleAuth(req.account, res))
+				const googleBrew = await GoogleActions.getGoogleBrew(googleId || stub?.googleId, id, accessType, auth)
 					.catch((err)=>{
 						googleError = err;
 					});
@@ -299,7 +299,8 @@ const api = {
 	deleteBrew : async (req, res, next)=>{
 		// Delete an orphaned stub if its Google brew doesn't exist
 		try {
-			await api.getBrew('edit')(req, res, ()=>{});
+			const auth = api.getGoogleAuth(req.account, res);
+			await api.getBrew('edit', false, auth)(req, res, ()=>{});
 		} catch (err) {
 			// Only if the error code is HBErrorCode '02', that is, Google returned "404 - Not Found"
 			if(err.HBErrorCode == '02') {
