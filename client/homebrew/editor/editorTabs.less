@@ -1,5 +1,14 @@
 
 
+.tabs {
+	display        : flex;
+	flex-direction : column;
+	height         : 100%;
+}
+
+
+
+
 .ui-EditorText() {
 	font-family    : 'Open Sans', sans-serif;
 	font-size      : 0.7rem;
@@ -18,8 +27,11 @@
 	.highlighted { background : #FFFFFF; }
 }
 
+[role='tabpanel'] { flex       : 1 1 auto; overflow-y : auto; }
+
 [role='tablist'] {
 	display     : flex;
+	flex        : 0 0 25px;
 	gap         : 2px;
 	align-items : stretch;
 	height      : 25px;
