@@ -4,6 +4,11 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
+
+import * as Menubar from '@radix-ui/react-menubar';
+import { LinkItem, ButtonItem, Menu, SubMenu } from '../../navbar/menubarExtensions.jsx';
+
+
 //Import all themes
 
 const Themes = require('themes/themes.json');
@@ -109,39 +114,11 @@ const Snippetbar = createClass({
 		});
 	},
 
-	// renderEditorButtons : function(){
-	// 	if(!this.props.showEditButtons) return;
-
-	// 	return <div className='editors'>
-	// 		<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
-	// 			onClick={this.props.undo} >
-	// 			<i className='fas fa-undo' />
-	// 		</div>
-	// 		<div className={`editorTool redo ${this.props.historySize.redo ? 'active' : ''}`}
-	// 			onClick={this.props.redo} >
-	// 			<i className='fas fa-redo' />
-	// 		</div>
-	// 		<div className='divider'></div>
-	// 		<div className={cx('text', { selected: this.props.view === 'text' })}
-	// 			 onClick={()=>this.props.onViewChange('text')}>
-	// 			<i className='fa fa-beer' />
-	// 		</div>
-	// 		<div className={cx('style', { selected: this.props.view === 'style' })}
-	// 			 onClick={()=>this.props.onViewChange('style')}>
-	// 			<i className='fa fa-paint-brush' />
-	// 		</div>
-	// 		<div className={cx('meta', { selected: this.props.view === 'meta' })}
-	// 			onClick={()=>this.props.onViewChange('meta')}>
-	// 			<i className='fas fa-info-circle' />
-	// 		</div>
-	// 	</div>;
-	// },
 
 	render : function(){
-		return <div className='snippetBar'>
+		return <Menubar.Root className='snippet-bar' id='snippetBar'>
 			{this.renderSnippetGroups()}
-			{/* {this.renderEditorButtons()} */}
-		</div>;
+		</Menubar.Root >;
 	}
 });
 
@@ -169,30 +146,25 @@ const SnippetGroup = createClass({
 	},
 	renderSnippets : function(snippets){
 		return _.map(snippets, (snippet)=>{
-			return <div className='snippet' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
-				<i className={snippet.icon} />
-				<span className='name'>{snippet.name}</span>
-				{snippet.experimental && <span className='beta'>beta</span>}
-				{snippet.subsnippets && <>
-					<i className='fas fa-caret-right'></i>
-					<div className='dropdown side'>
-						{this.renderSnippets(snippet.subsnippets)}
-					</div></>}
-			</div>;
+			if(!snippet.subsnippets){
+				return <ButtonItem className='snippet' key={snippet.name} onSelect={(e)=>this.handleSnippetClick(e, snippet)}>
+				 	<i className={snippet.icon} />
+				 	<span className='name'>{snippet.name}</span>
+				 	{snippet.experimental && <span className='beta'>beta</span>}
+				</ButtonItem>
+			} else if(snippet.subsnippets){
+				return <SubMenu className='snippet-menu' trigger={snippet.name} key={snippet.name}>
+			 			{this.renderSnippets(snippet.subsnippets)}
+				</SubMenu>
+			}
 
 		});
 	},
 
 	render : function(){
-		return <div className='snippetGroup snippetBarButton'>
-			<div className='text'>
-				<i className={this.props.icon} />
-				<span className='groupName'>{this.props.groupName}</span>
-			</div>
-			<div className='dropdown'>
-				{this.renderSnippets(this.props.snippets)}
-			</div>
-		</div>;
+		return <Menu className='snippet-menu' trigger={this.props.groupName}>  	{/* needs icons added back in before being finished */}
+			{this.renderSnippets(this.props.snippets)}
+		</Menu>;
 	},
 
 });

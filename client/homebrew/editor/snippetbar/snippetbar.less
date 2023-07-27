@@ -1,54 +1,16 @@
 @import (less) './client/icons/customIcons.less';
-.snippetBar {
+.snippet-bar {
 	@menuHeight      : 25px;
 	position         : relative;
 	flex             : 0 0 25px;
 	height           : @menuHeight;
 	background-color : #DDDDDD;
-	.editors {
-		position        : absolute;
-		top             : 0px;
-		right           : 0px;
-		display         : flex;
-		justify-content : space-between;
-		width           : 125px;
-		height          : @menuHeight;
-		& > div {
-			width       : @menuHeight;
-			height      : @menuHeight;
-			line-height : @menuHeight;
-			text-align  : center;
-			cursor      : pointer;
-			&:hover,&.selected { background-color : #999999; }
-			&.text {
-				.tooltipLeft('Brew Editor');
-			}
-			&.style {
-				.tooltipLeft('Style Editor');
-			}
-			&.meta {
-				.tooltipLeft('Properties');
-			}
-			&.undo {
-				.tooltipLeft('Undo');
-				font-size : 0.75em;
-				color     : grey;
-				&.active { color : black; }
-			}
-			&.redo {
-				.tooltipLeft('Redo');
-				font-size : 0.75em;
-				color     : grey;
-				&.active { color : black; }
-			}
-			&.divider {
-				width      : 5px;
-				background : linear-gradient(#000000, #000000) no-repeat center/1px 100%;
-				&:hover { background-color : inherit; }
-			}
-		}
-	}
-	.snippetBarButton {
+	display: flex;
+	gap: 1px;
+	
+	.snippet-menu  {
+		flex: 1 0 auto;
+		min-width: 60px;
 		display        : inline-block;
 		height         : @menuHeight;
 		padding        : 0px 5px;
@@ -56,6 +18,7 @@
 		font-weight    : 800;
 		line-height    : @menuHeight;
 		text-transform : uppercase;
+		border : none;
 		cursor         : pointer;
 		&:hover, &.selected { background-color : #999999; }
 		i {
@@ -64,68 +27,43 @@
 			vertical-align : middle;
 		}
 	}
-	.toggleMeta {
-		position     : absolute;
-		top          : 0px;
-		right        : 0px;
-		border-left  : 1px solid black;
-		.tooltipLeft('Edit Brew Properties');
-	}
-	.snippetGroup {
-		border-right   : 1px solid black;
-		&:hover {
-			& > .dropdown { visibility : visible; }
-		}
-		.dropdown {
-			position         : absolute;
-			top              : 100%;
-			z-index          : 1000;
-			padding          : 0px;
-			margin-left      : -5px;
-			visibility       : hidden;
-			background-color : #DDDDDD;
-			.snippet {
-				position    : relative;
-				display     : flex;
-				align-items : center;
-				min-width   : max-content;
-				padding     : 5px;
-				font-size   : 10px;
-				cursor      : pointer;
-				.animate(background-color);
-				i {
-					height       : 1.2em;
-					margin-right : 8px;
-					font-size    : 1.2em;
-					& ~ i {
-						margin-right : 0;
-						margin-left  : 5px;
-					}
-				}
-				.name { margin-right  : auto; }
-				.beta {
-					align-self    : center;
-					padding       : 4px 6px;
-					margin-left   : 5px;
-					font-family   : monospace;
-					line-height   : 1em;
-					color         : white;
-					background    : grey;
-					border-radius : 12px;
-				}
-				&:hover {
-					background-color : #999999;
-					& > .dropdown {
-						visibility : visible;
-						&.side {
-							top         : 0%;
-							left        : 100%;
-							margin-left : 0;
-							box-shadow  : -1px 1px 2px 0px #999999;
-						}
-					}
-				}
+}
+
+.snippet-menu.menu-content {
+	background-color: #EFEFEF;
+	[role='menuitem'] {
+		color: black;
+		position    : relative;
+		display     : flex;
+		align-items : center;
+		min-width   : max-content;
+		padding     : 5px;
+		font-size   : 10px;
+		cursor      : pointer;
+		.animate(background-color);
+		i {
+			height       : 1.2em;
+			margin-right : 8px;
+			font-size    : 1.2em;
+			& ~ i {
+				margin-right : 0;
+				margin-left  : 5px;
 			}
+		}
+		.name { margin-right  : auto; }
+		.beta {
+			align-self    : center;
+			padding       : 4px 6px;
+			margin-left   : 5px;
+			font-family   : monospace;
+			line-height   : 1em;
+			color         : white;
+			background    : grey;
+			border-radius : 12px;
+		}
+		&:hover {
+			background-color : #999999;
 		}
 	}
 }
+

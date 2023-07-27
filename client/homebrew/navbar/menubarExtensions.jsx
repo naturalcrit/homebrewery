@@ -20,11 +20,8 @@ const LinkItem = React.forwardRef(({ hotkeys, children, href, ...props }, forwar
 ));
 LinkItem.displayName = 'LinkItem';
 
-
 const ButtonItem = React.forwardRef(({ hotkeys, children, ...props }, forwardedRef)=>(
-	<MenubarPrimitive.Item asChild>
-		<button type='button' {...props} ref={forwardedRef}>{children}{renderHotkeys(hotkeys)}</button>
-	</MenubarPrimitive.Item>
+	<MenubarPrimitive.Item {...props} ref={forwardedRef}>{children}{renderHotkeys(hotkeys)}</MenubarPrimitive.Item>
 ));
 ButtonItem.displayName = 'ButtonItem';
 
@@ -39,9 +36,9 @@ const Menu = createClass({
 
 	render : function(){
 		return <MenubarPrimitive.Menu>
-			<MenubarPrimitive.Trigger>{this.props.trigger}</MenubarPrimitive.Trigger>
+			<MenubarPrimitive.Trigger className={this.props.className}>{this.props.trigger}</MenubarPrimitive.Trigger>
 			<MenubarPrimitive.Portal>
-				<MenubarPrimitive.Content>
+				<MenubarPrimitive.Content className={`${this.props.className} menu-content`}>
 					{this.props.children}
 				</MenubarPrimitive.Content>
 			</MenubarPrimitive.Portal>
@@ -61,7 +58,7 @@ const SubMenu = createClass({
 		return <MenubarPrimitive.Sub>
 			<MenubarPrimitive.SubTrigger>{this.props.trigger}<span className='right-slot'><i className='fas fa-chevron-right'></i></span></MenubarPrimitive.SubTrigger>
 			<MenubarPrimitive.Portal>
-				<MenubarPrimitive.SubContent>
+				<MenubarPrimitive.SubContent className={`${this.props.className} menu-content sub-menu`}>
 					{this.props.children}
 				</MenubarPrimitive.SubContent>
 			</MenubarPrimitive.Portal>
