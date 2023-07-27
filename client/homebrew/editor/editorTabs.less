@@ -23,11 +23,19 @@
 	padding       : 3px 10px;
 	background    : #DDDDDD;
 	border-radius : 0 0 5px 5px;
+	&:last-child {
+		border-bottom-right-radius: 0px;
+	}
 	.ui-EditorText();
 	.highlighted { background : #FFFFFF; }
 }
 
-[role='tabpanel'] { flex       : 1 1 auto; overflow-y : auto; }
+[role='tabpanel'] { 
+	flex       : 1 1 auto; 
+	overflow-y : auto;
+	display: flex;
+	flex-direction: column;
+}
 
 [role='tablist'] {
 	display     : flex;
