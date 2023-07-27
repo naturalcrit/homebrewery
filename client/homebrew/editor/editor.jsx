@@ -40,26 +40,13 @@ const Editor = createClass({
 			renderer : 'legacy'
 		};
 	},
-	getInitialState : function() {
-		return {
-			view           : 'text', //'text', 'style', 'meta'
-			tabPanelHeight : 0,
-			editorHeight   : 0,
-		};
-	},
 
-	isText  : function() {return this.state.view == 'text';},
-	isStyle : function() {return this.state.view == 'style';},
-	isMeta  : function() {return this.state.view == 'meta';},
+	isText  : function() {return this.props.view == 'text';},
+	isStyle : function() {return this.props.view == 'style';},
+	isMeta  : function() {return this.props.view == 'meta';},
 
 	componentDidMount : function() {
-		this.getTabHeight();
 		this.highlightCustomMarkdown();
-		window.addEventListener('resize', this.getTabHeight);
-	},
-
-	componentWillUnmount : function() {
-		window.removeEventListener('resize', this.getTabHeight);
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
@@ -72,35 +59,8 @@ const Editor = createClass({
 		}
 	},
 
-	getTabHeight : function(){
-		let snippetBarHeight = 0;
-		if(this.state.view == 'text' || this.state.view == 'style'){
-			const tabsAreaHeight = document.querySelector('.splitPane').getBoundingClientRect().height;
-			const tabListHeight = this.refs.tabList.getBoundingClientRect().height;
-			if(this.state.view !== 'meta'){
-				console.log('poop');
-				snippetBarHeight = document.querySelector('.snippetBar').getBoundingClientRect().height;
-			}
-
-			console.log(`tabsAreaHeight: ${tabsAreaHeight} - snippetBarHeight: ${snippetBarHeight} - tabListHeight: ${tabListHeight}`)
-			this.setState({
-				editorHeight : tabsAreaHeight - snippetBarHeight - tabListHeight
-			}, ()=>{});
-
-		}
-
-	},
-
 	handleInject : function(injectText){
 		this.refs.codeEditor?.injectText(injectText, false);
-	},
-
-	handleViewChange : function(newView){
-		this.props.setMoveArrows(newView === 'text');
-		this.setState({
-			view : newView
-		}, this.getTabHeight());
-
 	},
 
 	getCurrentPage : function(){
@@ -117,7 +77,7 @@ const Editor = createClass({
 
 	highlightCustomMarkdown : function(){
 		if(!this.refs.codeEditor) return;
-		if(this.state.view === 'text')  {
+		if(this.props.view === 'text')  {
 			const codeMirror = this.refs.codeEditor.codeMirror;
 
 			codeMirror.operation(()=>{ // Batch CodeMirror styling
@@ -281,7 +241,7 @@ const Editor = createClass({
 		return <SnippetBar
 			ref='snippetBar'
 			brew={this.props.brew}
-			view={this.state.view}
+			view={this.props.view}
 			onViewChange={this.handleViewChange}
 			onInject={this.handleInject}
 			showEditButtons={this.props.showEditButtons}
@@ -296,41 +256,42 @@ const Editor = createClass({
 	renderEditor : function(){
 		if(this.isText()){
 			return <>
+				{this.renderSnippetBar()}
 				<CodeEditor key='codeEditor'
 					ref='codeEditor'
 					language='gfm'
-					view={this.state.view}
+					view={this.props.view}
 					value={this.props.brew.text}
 					onChange={this.props.onTextChange}
 					rerenderParent={this.rerenderParent}
-					editorHeight={this.state.editorHeight} />
+					editorHeight={this.props.editorHeight} />
 			</>;
 		}
 		if(this.isStyle()){
 			return <>
+				{this.renderSnippetBar()}
 				<CodeEditor key='codeEditor'
 					ref='codeEditor'
 					language='css'
-					view={this.state.view}
+					view={this.props.view}
 					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
 					onChange={this.props.onStyleChange}
 					enableFolding={false}
 					rerenderParent={this.rerenderParent}
-					editorHeight={this.state.editorHeight} />
+					editorHeight={this.props.editorHeight} />
 			</>;
 		}
 		if(this.isMeta()){
 			return <>
 				<CodeEditor key='codeEditor'
-					view={this.state.view}
+					view={this.props.view}
 					style={{ display: 'none' }}
 					rerenderParent={this.rerenderParent} />
 				<MetadataEditor
 					ref='metaEditor'
 					metadata={this.props.brew}
 					onChange={this.props.onMetaChange}
-					reportError={this.props.reportError}
-					editorHeight={this.state.editorHeight} />
+					reportError={this.props.reportError} />
 			</>;
 		}
 	},
@@ -347,39 +308,13 @@ const Editor = createClass({
 		return this.refs.codeEditor?.undo();
 	},
 
-	renderTabList : function(){
-		return <Tabs.TabsList className='tab-list' ref='tabList'>
-			<Tabs.Trigger className='text tab'
-				value='text'>
-                Text
-				<i className='fa fa-beer' />
-			</Tabs.Trigger>
-			<Tabs.Trigger className='style tab'
-				value='style'>
-                Style
-				<i className='fa fa-paint-brush' />
-			</Tabs.Trigger>
-			<Tabs.Trigger className='meta tab'
-				value='meta'>
-                Properties
-				<i className='fas fa-info-circle' />
-			</Tabs.Trigger>
-		</Tabs.TabsList>;
-	},
 
-	renderTabContent : function (){
-		return <Tabs.Content value={this.state.view} ref='tabPanel'>
-			{( this.isText() || this.isStyle() ) ? this.renderSnippetBar() :  null}
-			{this.renderEditor()}
-		</Tabs.Content>;
-	},
 
 	render : function(){
 		return (
-			<Tabs.Root className='tabs' ref='main' defaultValue='text' onValueChange={(e)=>{this.handleViewChange(e)}}>
-				{this.renderTabContent()}
-				{this.renderTabList()}
-			</Tabs.Root>
+			<>
+				{this.renderEditor()}
+			</>
 		);
 	}
 });

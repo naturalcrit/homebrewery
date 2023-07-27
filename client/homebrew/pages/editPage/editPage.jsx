@@ -24,8 +24,10 @@ const Account = require('../../navbar/account.navitem.jsx');
 import { RecentItems } from '../../navbar/recent.navitem.jsx';
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
-const Editor = require('../../editor/editor.jsx');
+
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
+
+const Tabs = require('../../editor/editorTabs.jsx')
 
 const Markdown = require('naturalcrit/markdown.js');
 
@@ -126,9 +128,7 @@ const EditPage = createClass({
 		}
 	},
 
-	handleSplitMove : function(){
-		this.refs.editor.update();
-	},
+
 
 	handleTextChange : function(text){
 		//If there are errors, run the validator on every change to give quick feedback
@@ -461,47 +461,6 @@ const EditPage = createClass({
 
 	},
 
-	// renderNavbar : function(){
-	// 	const shareLink = this.processShareId();
-
-	// 	return <Navbar>
-	// 		<Nav.section>
-	// 			<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
-	// 		</Nav.section>
-
-	// 		<Nav.section>
-	// 			{this.renderGoogleDriveIcon()}
-	// 			{this.state.error ?
-	// 				<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
-	// 				<Nav.dropdown className='save-menu'>
-	// 					{this.renderSaveButton()}
-	// 					{this.renderAutoSaveButton()}
-	// 				</Nav.dropdown>
-	// 			}
-	// 			<NewBrew />
-	// 			<HelpNavItem/>
-	// 			<Nav.dropdown>
-	// 				<Nav.item color='teal' icon='fas fa-share-alt'>
-	// 					share
-	// 				</Nav.item>
-	// 				<Nav.item color='blue' href={`/share/${shareLink}`}>
-	// 					view
-	// 				</Nav.item>
-	// 				<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.publicUrl}/share/${shareLink}`);}}>
-	// 					copy url
-	// 				</Nav.item>
-	// 				<Nav.item color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
-	// 					post to reddit
-	// 				</Nav.item>
-	// 			</Nav.dropdown>
-	// 			<PrintLink shareId={this.processShareId()} />
-	// 			<RecentNavItem brew={this.state.brew} storageKey='edit' />
-	// 			<Account />
-	// 		</Nav.section>
-
-	// 	</Navbar>;
-	// },
-
 	render : function(){
 		return <div className='editPage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
@@ -509,14 +468,13 @@ const EditPage = createClass({
 
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
-					<Editor
-						ref='editor'
+					<Tabs
 						brew={this.state.brew}
 						onTextChange={this.handleTextChange}
 						onStyleChange={this.handleStyleChange}
 						onMetaChange={this.handleMetaChange}
 						reportError={this.errorReported}
-						renderer={this.state.brew.renderer}
+						renderer={this.state.brew.renderer} 
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}
