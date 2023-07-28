@@ -20,7 +20,6 @@ const Tabbed = createClass({
 		}
 	},
 
-
 	isText  : function() {return this.state.view == 'text';},
 	isStyle : function() {return this.state.view == 'style';},
 	isMeta  : function() {return this.state.view == 'meta';},
@@ -48,8 +47,6 @@ const Tabbed = createClass({
 				snippetBarHeight = 25;
 
 			}
-
-			console.log(`tabsAreaHeight: ${tabsAreaHeight} - snippetBarHeight: ${snippetBarHeight} - tabListHeight: ${tabListHeight}`)
 			this.setState({
 				editorHeight : tabsAreaHeight - snippetBarHeight - tabListHeight
 			}, ()=>{});
@@ -58,8 +55,6 @@ const Tabbed = createClass({
 
 	},
 
-
-
 	handleViewChange : function(newView){
 		this.props.setMoveArrows(newView === 'text');
 		this.setState({
@@ -67,7 +62,6 @@ const Tabbed = createClass({
 		}, ()=>{this.getTabHeight()});
 
 	},
-
 
 	renderTabList : function(){
 		return <Tabs.TabsList className='tab-list' ref='tabList'>
