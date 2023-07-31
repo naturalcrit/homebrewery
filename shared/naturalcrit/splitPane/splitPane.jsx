@@ -61,7 +61,8 @@ const SplitPane = createClass({
 		return result;
 	},
 
-	handleUp : function(){
+	handleUp : function(e){
+		e.preventDefault();
 		if(this.state.isDragging){
 			this.props.onDragFinish(this.state.currentDividerPos);
 			window.localStorage.setItem(this.props.storageKey, this.state.currentDividerPos);
@@ -76,6 +77,8 @@ const SplitPane = createClass({
 	},
 
 	handleMove : function(e){
+
+		e.preventDefault();
 		if(!this.state.isDragging) return;
 
 		const newSize = this.limitPosition(e.pageX);
