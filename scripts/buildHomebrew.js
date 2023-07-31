@@ -135,12 +135,12 @@ fs.emptyDirSync('./build');
 
 })().catch(console.error);
 
-//In development set up a watch server and livereload
+//In development, set up LiveReload (refreshes browser), and Nodemon (restarts server)
 if(isDev){
-	livereload('./build');
-	watchFile('./server.js', { // Rebuild when change detected to this file or any nested directory from here
-		ignore : ['./build'],    // Ignore ./build or it will rebuild again
-		ext    : 'less',             // Other extensions to watch (only .js/.json/.jsx by default)
-		//watch: ['./client', './server', './themes'], // Watch additional folders if you want
+	livereload('./build');     // Install the Chrome extension LiveReload to automatically refresh the browser
+	watchFile('./server.js', { // Restart server when change detected to this file or any nested directory from here
+		ignore : ['./build', './client', './themes'],  // Ignore folders that are not running server code / avoids unneeded restarts
+		ext    : 'js json'                             // Extensions to watch (only .js/.json by default)
+		//watch : ['./server', './themes'],            // Watch additional folders if needed
 	});
 }

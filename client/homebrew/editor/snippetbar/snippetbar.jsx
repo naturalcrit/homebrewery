@@ -20,8 +20,8 @@ ThemeSnippets['V3_5eDMG']     = require('themes/V3/5eDMG/snippets.js');
 ThemeSnippets['V3_Journal']   = require('themes/V3/Journal/snippets.js');
 ThemeSnippets['V3_Blank']     = require('themes/V3/Blank/snippets.js');
 
-const execute = function(val, brew){
-	if(_.isFunction(val)) return val(brew);
+const execute = function(val, props){
+	if(_.isFunction(val)) return val(props);
 	return val;
 };
 
@@ -38,7 +38,8 @@ const Snippetbar = createClass({
 			renderer        : 'legacy',
 			undo            : ()=>{},
 			redo            : ()=>{},
-			historySize     : ()=>{}
+			historySize     : ()=>{},
+			cursorPos       : {}
 		};
 	},
 
@@ -110,6 +111,7 @@ const Snippetbar = createClass({
 				snippets={snippetGroup.snippets}
 				key={snippetGroup.groupName}
 				onSnippetClick={this.handleSnippetClick}
+				cursorPos={this.props.cursorPos}
 			/>;
 		});
 	},
@@ -142,7 +144,7 @@ const SnippetGroup = createClass({
 	},
 	handleSnippetClick : function(e, snippet){
 		e.stopPropagation();
-		this.props.onSnippetClick(execute(snippet.gen, this.props.brew));
+		this.props.onSnippetClick(execute(snippet.gen, this.props));
 	},
 	renderSnippets : function(snippets){
 		return _.map(snippets, (snippet)=>{

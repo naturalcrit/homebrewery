@@ -113,6 +113,7 @@ const RecentItems = createClass({
 
 	removeItem : function(url, evt){
 		evt.preventDefault();
+		evt.stopPropagation();
 
 		let edited = JSON.parse(localStorage.getItem(EDIT_KEY) || '[]');
 		let viewed = JSON.parse(localStorage.getItem(VIEW_KEY) || '[]');
