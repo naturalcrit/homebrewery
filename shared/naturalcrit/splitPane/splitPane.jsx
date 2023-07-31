@@ -61,7 +61,8 @@ const SplitPane = createClass({
 		return result;
 	},
 
-	handleUp : function(){
+	handleUp : function(e){
+		e.preventDefault();
 		if(this.state.isDragging){
 			this.props.onDragFinish(this.state.currentDividerPos);
 			window.localStorage.setItem(this.props.storageKey, this.state.currentDividerPos);
@@ -76,6 +77,8 @@ const SplitPane = createClass({
 	},
 
 	handleMove : function(e){
+
+		e.preventDefault();
 		if(!this.state.isDragging) return;
 
 		const newSize = this.limitPosition(e.pageX);
@@ -123,7 +126,7 @@ const SplitPane = createClass({
 		return <>
 			{this.renderMoveArrows()}
 			<div className='divider'
-				onMouseDown={this.handleDown}
+				onPointerDown={this.handleDown}
 				role='separator'
 				aria-valuenow={(this.state.currentDividerPos / this.state.windowWidth).toFixed(2)}
 				aria-valuemin='0'
@@ -140,7 +143,7 @@ const SplitPane = createClass({
 	},
 
 	render : function(){
-		return <div className='splitPane' onMouseMove={this.handleMove} onMouseUp={this.handleUp}>
+		return <div className='splitPane' onPointerMove={this.handleMove} onPointerUp={this.handleUp}>
 			<Pane
 				ref='pane1'
 				width={this.state.currentDividerPos}
