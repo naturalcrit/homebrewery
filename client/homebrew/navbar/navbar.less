@@ -16,6 +16,7 @@
 	display: flex;
 	justify-content: space-evenly;
 	& > button {
+		position:relative;
 		background: none;
 		border: none;
 		color: inherit;
@@ -23,6 +24,7 @@
 		text-transform: inherit;
 		font-weight: inherit;
 		font-size: inherit;
+		min-width: 50px;
 		&:hover, &:focus {
 			background-color: #5b5b5b;
 			outline: 1px solid @green;
@@ -36,11 +38,11 @@
 		z-index: 1;
 	}
 	svg {
+		position: absolute;
 		width: auto;
-		height: 100%;
+		height: 150%;
 		align-self: center;
-		left: -15px;
-		fill: #5b5b5b;
+		fill: #8b8b8b;
 		z-index: 0;
 	}
 	a {
