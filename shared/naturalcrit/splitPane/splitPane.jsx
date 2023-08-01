@@ -80,7 +80,6 @@ const SplitPane = createClass({
 	},
 
 	handleMove : function(e){
-
 		e.preventDefault();
 
 		console.log('move');
