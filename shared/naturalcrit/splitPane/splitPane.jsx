@@ -126,7 +126,7 @@ const SplitPane = createClass({
 		return <>
 			{this.renderMoveArrows()}
 			<div className='divider'
-				onPointerDown={this.handleDown}
+				onPointerDown={this.handleDown} onPointerMove={this.handleMove} onPointerUp={this.handleUp}
 				role='separator'
 				aria-valuenow={(this.state.currentDividerPos / this.state.windowWidth).toFixed(2)}
 				aria-valuemin='0'
@@ -143,7 +143,7 @@ const SplitPane = createClass({
 	},
 
 	render : function(){
-		return <div className='splitPane' onPointerMove={this.handleMove} onPointerUp={this.handleUp}>
+		return <div className='splitPane' >
 			<Pane
 				ref='pane1'
 				width={this.state.currentDividerPos}
