@@ -84,7 +84,7 @@ const Tabbed = createClass({
 	},
 
 	renderTabContent : function (){
-		return <Tabs.Content value={this.state.view} ref='tabPanel'>
+		return <Tabs.Content value={this.state.view} ref='tabPanel' style={this.state.view == 'meta' ? {overflowY: 'auto'} : null}>
 			<Editor
 					ref='editor'
 					editorHeight={this.state.editorHeight}
