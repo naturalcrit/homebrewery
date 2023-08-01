@@ -43,7 +43,7 @@ const Tabbed = createClass({
 			const tabsAreaHeight = document.querySelector('.splitPane').getBoundingClientRect().height;
 			const tabListHeight = this.refs.tabList.getBoundingClientRect().height;
 			if(this.state.view !== 'meta'){
-				// snippetBarHeight = document.querySelector('.snippetBar').getBoundingClientRect().height;
+				// snippetBarHeight = document.querySelector('.snippetBar').getBoundingClientRect().height; // how to get snippetbar height with setting a specific height...?
 				snippetBarHeight = 25;
 
 			}
