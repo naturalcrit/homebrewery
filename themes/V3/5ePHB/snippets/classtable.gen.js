@@ -40,66 +40,84 @@ const levels = ['1st', '2nd', '3rd', '4th', '5th',
 
 const profBonus = [2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6];
 
-const maxes = [4, 3, 3, 3, 3, 2, 2, 1, 1];
-
-const drawSlots = function(Slots, rows, padding){
-	let slots = Number(Slots);
-	return _.times(rows, function(i){
-		const max = maxes[i];
-		if(slots < 1) return _.pad('—', padding);
-		const res = _.min([max, slots]);
-		slots -= res;
-		return _.pad(res.toString(), padding);
-	}).join(' | ');
-};
-
 module.exports = {
-	full : function(classes){
+	non : function(classes){
 		const classname = _.sample(classnames);
 
-
-		let cantrips = 3;
-		let spells = 1;
-		let slots = 2;
 		return `{{${classes}\n##### The ${classname}\n` +
-		`| Level | Proficiency | Features     | Cantrips | Spells | --- Spell Slots Per Spell Level ---|||||||||\n`+
-		`|      ^| Bonus      ^|             ^| Known   ^| Known ^|1st |2nd |3rd |4th |5th |6th |7th |8th |9th |\n`+
-		`|:-----:|:-----------:|:-------------|:--------:|:------:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|\n${
+		`| Level | Proficiency | Features     |\n`+
+		`|      ^| Bonus      ^|             ^|\n`+
+		`|:-----:|:-----------:|:-------------|\n${
 			_.map(levels, function(levelName, level){
 				const res = [
 					_.pad(levelName, 5),
 					_.pad(`+${profBonus[level]}`, 2),
 					_.padEnd(_.sample(features), 21),
-					_.pad(cantrips.toString(), 8),
-					_.pad(spells.toString(), 6),
-					drawSlots(slots, 9, 2),
 				].join(' | ');
+				return `| ${res} |`;
+			}).join('\n')}\n}}\n\n`;
+	},
 
-				cantrips += _.random(0, 1);
-				spells += _.random(0, 1);
-				slots += _.random(0, 2);
+	full : function(classes){
+		const classname = _.sample(classnames);
 
+		const cantripsKnown = [2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4];
+		const spells = [
+			[2, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+			['—', '—', 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+			['—', '—', '—', '—', 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+			['—', '—', '—', '—', '—', '—', 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3],
+			['—', '—', '—', '—', '—', '—', '—', '—', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2],
+			['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', 1, 1, 1, 1, 1, 1, 1, 1, 2, 2],
+			['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', 1, 1, 1, 1, 1, 1, 1, 2],
+			['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', 1, 1, 1, 1, 1, 1],
+			['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', 1, 1, 1, 1],
+		];
+
+		return `{{${classes}\n##### The ${classname}\n` +
+		`| Level | Proficiency | Features     | Cantrips | --- Spell Slots Per Spell Level ---|||||||||\n`+
+		`|      ^| Bonus      ^|             ^| Known   ^|1st |2nd |3rd |4th |5th |6th |7th |8th |9th |\n`+
+		`|:-----:|:-----------:|:-------------|:--------:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|\n${
+			_.map(levels, function(levelName, level){
+				const res = [
+					_.pad(levelName, 5),
+					_.pad(`+${profBonus[level]}`, 2),
+					_.padEnd(_.sample(features), 21),
+					_.pad(cantripsKnown[level].toString(), 8),
+					spells.map((spellList)=>{
+						return _.pad(spellList[level].toString(), 2);
+					}).join(' | '),
+				].join(' | ');
 				return `| ${res} |`;
 			}).join('\n')}\n}}\n\n`;
 	},
 
 	half : function(classes){
-		const classname =  _.sample(classnames);
+		const classname = _.sample(classnames);
 
-		let featureScore = 1;
+		const spellsKnown = ['—', 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11];
+		const spells = [
+			['—', 2, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+			['—', '—', '—', '—', 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+			['—', '—', '—', '—', '—', '—', '—', '—', 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+			['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', 1, 1, 2, 2, 3, 3, 3, 3],
+			['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', 1, 1, 2, 2],
+		];
+
 		return `{{${classes}\n##### The ${classname}\n` +
-		`| Level | Proficiency Bonus | Features | ${_.pad(_.sample(features), 21)} |\n` +
-		`|:-----:|:-----------------:|:---------|:---------------------:|\n${
+		`| Level | Proficiency | Features     | Spells | --- Spell Slots Per Spell Level ---|||||\n`+
+		`|      ^| Bonus      ^|             ^| Known ^|1st |2nd |3rd |4th |5th |\n`+
+		`|:-----:|:-----------:|:-------------|:------:|:--:|:--:|:--:|:--:|:--:|\n${
 			_.map(levels, function(levelName, level){
 				const res = [
 					_.pad(levelName, 5),
 					_.pad(`+${profBonus[level]}`, 2),
-					_.padEnd(_.sample(features), 23),
-					_.pad(`+${featureScore}`, 21),
+					_.padEnd(_.sample(features), 21),
+					_.pad(spellsKnown[level].toString(), 6),
+					spells.map((spellList)=>{
+						return _.pad(spellList[level].toString(), 2);
+					}).join(' | '),
 				].join(' | ');
-
-				featureScore += _.random(0, 1);
-
 				return `| ${res} |`;
 			}).join('\n')}\n}}\n\n`;
 	},
@@ -107,25 +125,29 @@ module.exports = {
 	third : function(classes){
 		const classname = _.sample(classnames);
 
-		let cantrips = 3;
-		let spells = 1;
-		let slots = 2;
+		const thirdLevels = levels.slice(2);
+		const cantripsKnown = [2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3];
+		const spellsKnown = [3, 4, 4, 4, 5, 6, 6, 7, 8, 8, 9, 10, 10, 11, 11, 11, 12, 13];
+		const spells = [
+			[2, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
+			['—', '—', '—', '—', 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+			['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', 2, 2, 2, 3, 3, 3, 3, 3],
+			['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', 1, 1],
+		];
+
 		return `{{${classes}\n##### ${classname} Spellcasting\n` +
-		`| Class  | Cantrips | Spells  |--- Spells Slots per Spell Level ---||||\n` +
-		`| Level ^| Known   ^| Known  ^|   1st   |   2nd   |   3rd   |   4th   |\n` +
-		`|:------:|:--------:|:-------:|:-------:|:-------:|:-------:|:-------:|\n${
-			_.map(levels, function(levelName, level){
+		`| Level | Cantrips | Spells |--- Spells Slots per Spell Level ---||||\n` +
+		`|      ^| Known   ^| Known ^|   1st   |   2nd   |   3rd   |   4th   |\n` +
+		`|:-----:|:--------:|:------:|:-------:|:-------:|:-------:|:-------:|\n${
+			_.map(thirdLevels, function(levelName, level){
 				const res = [
-					_.pad(levelName, 6),
-					_.pad(cantrips.toString(), 8),
-					_.pad(spells.toString(), 7),
-					drawSlots(slots, 4, 7),
+					_.pad(levelName, 5),
+					_.pad(cantripsKnown[level].toString(), 8),
+					_.pad(spellsKnown[level].toString(), 6),
+					spells.map((spellList)=>{
+						return _.pad(spellList[level].toString(), 7);
+					}).join(' | '),
 				].join(' | ');
-
-				cantrips += _.random(0, 1);
-				spells += _.random(0, 1);
-				slots += _.random(0, 1);
-
 				return `| ${res} |`;
 			}).join('\n')}\n}}\n\n`;
 	}
