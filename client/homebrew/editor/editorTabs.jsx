@@ -2,6 +2,7 @@ require('./editorTabs.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const cx = require('classnames');
+const _ = require('lodash');
 import * as Tabs from '@radix-ui/react-tabs';
 
 const Editor = require('../editor/editor.jsx');
@@ -26,7 +27,8 @@ const Tabbed = createClass({
 	
 	componentDidMount : function() {
 		this.getTabHeight();
-		window.addEventListener('resize', this.getTabHeight);
+		window.addEventListener('resize', _.throttle(this.getTabHeight, 100));
+
 	},
 
 	componentWillUnmount : function() {
