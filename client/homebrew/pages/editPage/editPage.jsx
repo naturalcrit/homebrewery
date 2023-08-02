@@ -66,6 +66,10 @@ const EditPage = createClass({
 	savedBrew : null,
 
 	componentDidMount : function(){
+
+		document.documentElement.style.setProperty('height', window.innerHeight + 'px');
+		window.addEventListener('resize', ()=>{document.documentElement.style.setProperty('height', window.innerHeight + 'px')})
+
 		this.setState({
 			url : window.location.href
 		});
