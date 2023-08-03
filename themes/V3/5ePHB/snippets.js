@@ -227,12 +227,12 @@ module.exports = [
 					{
 						name : 'Martial Class Table',
 						icon : 'fas fa-table',
-						gen  : ClassTableGen.non('classTable,frame,decoration,wide'),
+						gen  : ClassTableGen.non('classTable,frame,decoration'),
 					},
 					{
 						name : 'Martial Class Table (unframed)',
 						icon : 'fas fa-border-none',
-						gen  : ClassTableGen.non('classTable,wide'),
+						gen  : ClassTableGen.non('classTable'),
 					},
 					{
 						name : 'Full Caster Class Table',
@@ -247,7 +247,7 @@ module.exports = [
 					{
 						name : 'Half Caster Class Table',
 						icon : 'fas fa-list-alt',
-						gen  : ClassTableGen.half('classTable,decoration,frame,wide'),
+						gen  : ClassTableGen.half('classTable,frame,decoration,wide'),
 					},
 					{
 						name : 'Half Caster Class Table (unframed)',
@@ -257,7 +257,7 @@ module.exports = [
 					{
 						name : 'Third Caster Spell Table',
 						icon : 'fas fa-border-all',
-						gen  : ClassTableGen.third('classTable,frame'),
+						gen  : ClassTableGen.third('classTable,frame,decoration'),
 					},
 					{
 						name : 'Third Caster Spell Table (unframed)',
