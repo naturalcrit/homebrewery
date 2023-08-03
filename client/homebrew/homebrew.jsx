@@ -70,7 +70,7 @@ const Homebrew = createClass({
 	render : function (){
 		return (
 			<Router location={this.props.url}>
-				<div className='homebrew'>
+				<div className={`homebrew${this.state.isNarrowScreen ? ' mobile' : ''}`}>
 					<Routes>
 						<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={this.props.brew} />} />
 						<Route path='/share/:id' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
