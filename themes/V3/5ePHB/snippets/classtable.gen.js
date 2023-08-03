@@ -24,10 +24,10 @@ const levels = ['1st',  '2nd',  '3rd',  '4th',  '5th',
 const profBonus = [2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6];
 
 module.exports = {
-	non : function(classes){
+	non : function(snippetClasses){
 		const classname = _.sample(classnames);
 
-		return `{{${classes}\n##### The ${classname}\n` +
+		return `{{${snippetClasses}\n##### The ${classname}\n` +
 		`| Level | Proficiency | Features     |\n`+
 		`|      ^| Bonus      ^|             ^|\n`+
 		`|:-----:|:-----------:|:-------------|\n${
@@ -41,7 +41,7 @@ module.exports = {
 			}).join('\n')}\n}}\n\n`;
 	},
 
-	full : function(classes){
+	full : function(snippetClasses){
 		const classname = _.sample(classnames);
 
 		const cantripsKnown = [2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4];
@@ -57,7 +57,7 @@ module.exports = {
 			['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', 1, 1, 1, 1],
 		];
 
-		return `{{${classes}\n##### The ${classname}\n` +
+		return `{{${snippetClasses}\n##### The ${classname}\n` +
 		`| Level | Proficiency | Features     | Cantrips | --- Spell Slots Per Spell Level ---|||||||||\n`+
 		`|      ^| Bonus      ^|             ^| Known   ^|1st |2nd |3rd |4th |5th |6th |7th |8th |9th |\n`+
 		`|:-----:|:-----------:|:-------------|:--------:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|\n${
@@ -75,7 +75,7 @@ module.exports = {
 			}).join('\n')}\n}}\n\n`;
 	},
 
-	half : function(classes){
+	half : function(snippetClasses){
 		const classname = _.sample(classnames);
 
 		const spellsKnown = ['—', 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11];
@@ -87,7 +87,7 @@ module.exports = {
 			['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', 1, 1, 2, 2],
 		];
 
-		return `{{${classes}\n##### The ${classname}\n` +
+		return `{{${snippetClasses}\n##### The ${classname}\n` +
 		`| Level | Proficiency | Features     | Spells | --- Spell Slots Per Spell Level ---|||||\n`+
 		`|      ^| Bonus      ^|             ^| Known ^|1st |2nd |3rd |4th |5th |\n`+
 		`|:-----:|:-----------:|:-------------|:------:|:--:|:--:|:--:|:--:|:--:|\n${
@@ -105,7 +105,7 @@ module.exports = {
 			}).join('\n')}\n}}\n\n`;
 	},
 
-	third : function(classes){
+	third : function(snippetClasses){
 		const classname = _.sample(classnames);
 
 		const thirdLevels = levels.slice(2);
@@ -118,7 +118,7 @@ module.exports = {
 			['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', 1, 1],
 		];
 
-		return `{{${classes}\n##### ${classname} Spellcasting\n` +
+		return `{{${snippetClasses}\n##### ${classname} Spellcasting\n` +
 		`| Level | Cantrips | Spells |--- Spells Slots per Spell Level ---||||\n` +
 		`|      ^| Known   ^| Known ^|   1st   |   2nd   |   3rd   |   4th   |\n` +
 		`|:-----:|:--------:|:------:|:-------:|:-------:|:-------:|:-------:|\n${
