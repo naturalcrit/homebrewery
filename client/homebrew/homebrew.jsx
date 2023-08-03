@@ -3,6 +3,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const { StaticRouter:Router } = require('react-router-dom/server');
 const { Route, Routes, useParams, useSearchParams } = require('react-router-dom');
+const _ = require('lodash');
 import getOS from './navbar/getOS.js';
 
 const HomePage = require('./pages/homePage/homePage.jsx');
@@ -59,12 +60,28 @@ const Homebrew = createClass({
 		global.enable_v3 = this.props.enable_v3;
 		global.enable_themes = this.props.enable_themes;
 		global.config = this.props.config;
-
-		return {};
+		return {
+			isNarrowScreen : false
+		};
 	},
 
 	componentDidMount : function() {
 		global.device = { os: getOS() };
+		
+		this.handleResize();
+		window.addEventListener('resize', _.throttle(this.handleResize, 100));
+	},
+
+	handleResize : function() {
+		if(window.innerWidth < 600){
+			this.setState({
+				isNarrowScreen : true
+			});
+		} else {
+			this.setState({
+				isNarrowScreen : false
+			});
+		}
 	},
 
 	render : function (){
@@ -72,7 +89,7 @@ const Homebrew = createClass({
 			<Router location={this.props.url}>
 				<div className={`homebrew${this.state.isNarrowScreen ? ' mobile' : ''}`}>
 					<Routes>
-						<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={this.props.brew} />} />
+						<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={this.props.brew} isNarrowScreen={this.state.isNarrowScreen} />} />
 						<Route path='/share/:id' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
 						<Route path='/new/:id' element={<WithRoute el={NewPage} brew={this.props.brew} />} />
 						<Route path='/new' element={<WithRoute el={NewPage}/>} />
