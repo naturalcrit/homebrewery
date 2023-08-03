@@ -27,10 +27,13 @@ module.exports = {
 	non : function(snippetClasses){
 		const classname = _.sample(classnames);
 
-		return `{{${snippetClasses}\n##### The ${classname}\n` +
-		`| Level | Proficiency | Features     |\n`+
-		`|      ^| Bonus      ^|             ^|\n`+
-		`|:-----:|:-----------:|:-------------|\n${
+		return dedent`
+		{{${snippetClasses}
+		##### The ${classname}
+		| Level | Proficiency | Features     |
+		|      ^| Bonus      ^|             ^|
+		|:-----:|:-----------:|:-------------|
+		${
 			_.map(levels, function(levelName, level){
 				const res = [
 					_.pad(levelName, 5),
@@ -38,7 +41,9 @@ module.exports = {
 					_.padEnd(_.sample(features), 21),
 				].join(' | ');
 				return `| ${res} |`;
-			}).join('\n')}\n}}\n\n`;
+			}).join('\n')
+		}
+		}}\n\n`;
 	},
 
 	full : function(snippetClasses){
@@ -57,10 +62,13 @@ module.exports = {
 			['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', 1, 1, 1, 1],
 		];
 
-		return `{{${snippetClasses}\n##### The ${classname}\n` +
-		`| Level | Proficiency | Features     | Cantrips | --- Spell Slots Per Spell Level ---|||||||||\n`+
-		`|      ^| Bonus      ^|             ^| Known   ^|1st |2nd |3rd |4th |5th |6th |7th |8th |9th |\n`+
-		`|:-----:|:-----------:|:-------------|:--------:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|\n${
+		return dedent`
+		{{${snippetClasses}
+		##### The ${classname}
+		| Level | Proficiency | Features     | Cantrips | --- Spell Slots Per Spell Level ---|||||||||
+		|      ^| Bonus      ^|             ^| Known   ^|1st |2nd |3rd |4th |5th |6th |7th |8th |9th |
+		|:-----:|:-----------:|:-------------|:--------:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|:--:|
+		${
 			_.map(levels, function(levelName, level){
 				const res = [
 					_.pad(levelName, 5),
@@ -72,7 +80,9 @@ module.exports = {
 					}).join(' | '),
 				].join(' | ');
 				return `| ${res} |`;
-			}).join('\n')}\n}}\n\n`;
+			}).join('\n')
+		}
+		}}\n\n`;
 	},
 
 	half : function(snippetClasses){
@@ -87,10 +97,13 @@ module.exports = {
 			['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', 1, 1, 2, 2],
 		];
 
-		return `{{${snippetClasses}\n##### The ${classname}\n` +
-		`| Level | Proficiency | Features     | Spells | --- Spell Slots Per Spell Level ---|||||\n`+
-		`|      ^| Bonus      ^|             ^| Known ^|1st |2nd |3rd |4th |5th |\n`+
-		`|:-----:|:-----------:|:-------------|:------:|:--:|:--:|:--:|:--:|:--:|\n${
+		return dedent`
+		{{${snippetClasses}
+		##### The ${classname}
+		| Level | Proficiency | Features     | Spells | --- Spell Slots Per Spell Level ---|||||
+		|      ^| Bonus      ^|             ^| Known ^|1st |2nd |3rd |4th |5th |
+		|:-----:|:-----------:|:-------------|:------:|:--:|:--:|:--:|:--:|:--:|
+		${
 			_.map(levels, function(levelName, level){
 				const res = [
 					_.pad(levelName, 5),
@@ -102,7 +115,9 @@ module.exports = {
 					}).join(' | '),
 				].join(' | ');
 				return `| ${res} |`;
-			}).join('\n')}\n}}\n\n`;
+			}).join('\n')
+		}
+		}}\n\n`;
 	},
 
 	third : function(snippetClasses){
@@ -118,10 +133,13 @@ module.exports = {
 			['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', 1, 1],
 		];
 
-		return `{{${snippetClasses}\n##### ${classname} Spellcasting\n` +
-		`| Level | Cantrips | Spells |--- Spells Slots per Spell Level ---||||\n` +
-		`|      ^| Known   ^| Known ^|   1st   |   2nd   |   3rd   |   4th   |\n` +
-		`|:-----:|:--------:|:------:|:-------:|:-------:|:-------:|:-------:|\n${
+		return dedent`
+		{{${snippetClasses}
+		##### ${classname} Spellcasting
+		| Level | Cantrips | Spells |--- Spells Slots per Spell Level ---||||
+		|      ^| Known   ^| Known ^|   1st   |   2nd   |   3rd   |   4th   |
+		|:-----:|:--------:|:------:|:-------:|:-------:|:-------:|:-------:|
+		${
 			_.map(thirdLevels, function(levelName, level){
 				const res = [
 					_.pad(levelName, 5),
@@ -132,6 +150,8 @@ module.exports = {
 					}).join(' | '),
 				].join(' | ');
 				return `| ${res} |`;
-			}).join('\n')}\n}}\n\n`;
+			}).join('\n')
+		}
+		}}\n\n`;
 	}
 };
