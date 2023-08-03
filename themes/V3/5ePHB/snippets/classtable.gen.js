@@ -1,33 +1,15 @@
 const _ = require('lodash');
 
 const features = [
-	'Astrological Botany',
-	'Biochemical Sorcery',
-	'Civil Divination',
-	'Consecrated Augury',
-	'Demonic Anthropology',
-	'Divinatory Mineralogy',
-	'Exo Interfacer',
-	'Genetic Banishing',
-	'Gunpowder Torturer',
-	'Gunslinger Corruptor',
-	'Hermetic Geography',
-	'Immunological Cultist',
-	'Malefic Chemist',
-	'Mathematical Pharmacy',
-	'Nuclear Biochemistry',
-	'Orbital Gravedigger',
-	'Pharmaceutical Outlaw',
-	'Phased Linguist',
-	'Plasma Gunslinger',
-	'Police Necromancer',
-	'Ritual Astronomy',
-	'Sixgun Poisoner',
-	'Seismological Alchemy',
-	'Spiritual Illusionism',
-	'Statistical Occultism',
-	'Spell Analyst',
-	'Torque Interfacer'
+	'Astrological Botany',   'Biochemical Sorcery',   'Civil Divination',
+	'Consecrated Augury',    'Demonic Anthropology',  'Divinatory Mineralogy',
+	'Exo Interfacer',        'Genetic Banishing',     'Gunpowder Torturer',
+	'Gunslinger Corruptor',  'Hermetic Geography',    'Immunological Cultist',
+	'Malefic Chemist',       'Mathematical Pharmacy', 'Nuclear Biochemistry',
+	'Orbital Gravedigger',   'Pharmaceutical Outlaw', 'Phased Linguist',
+	'Plasma Gunslinger',     'Police Necromancer',    'Ritual Astronomy',
+	'Sixgun Poisoner',       'Seismological Alchemy', 'Spiritual Illusionism',
+	'Statistical Occultism', 'Spell Analyst',         'Torque Interfacer'
 ];
 
 const classnames = ['Ackerman', 'Berserker-Typist', 'Concierge', 'Fishmonger',
