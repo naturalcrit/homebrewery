@@ -38,7 +38,7 @@ const SplitPane = createClass({
 				userSetDividerPos : window.innerWidth / 2
 			});
 		}
-		window.addEventListener('resize', this.handleWindowResize);
+		window.addEventListener('resize', _.throttle(this.handleWindowResize, 100));
 	},
 
 	componentWillUnmount : function() {

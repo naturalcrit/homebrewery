@@ -68,7 +68,7 @@ const EditPage = createClass({
 	componentDidMount : function(){
 
 		document.documentElement.style.setProperty('height', window.innerHeight + 'px');
-		window.addEventListener('resize', ()=>{document.documentElement.style.setProperty('height', window.innerHeight + 'px')})
+		window.addEventListener('resize', _.throttle(()=>{document.documentElement.style.setProperty('height', window.innerHeight + 'px')}, 500))
 
 		this.setState({
 			url : window.location.href
@@ -99,7 +99,7 @@ const EditPage = createClass({
 				narrowScreen : true
 			});
 		};
-		window.addEventListener('resize', this.handleResize);
+		window.addEventListener('resize', _.throttle(this.handleResize, 100));
 
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
