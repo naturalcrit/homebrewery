@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const dedent = require('dedent-tabs').default;
 
 const features = [
 	'Astrological Botany',   'Biochemical Sorcery',   'Civil Divination',
@@ -13,12 +14,12 @@ const features = [
 ];
 
 const classnames = ['Ackerman', 'Berserker-Typist', 'Concierge', 'Fishmonger',
-	                  'Haberdasher', 'Manicurist', 'Netrunner', 'Weirkeeper'];
+                    'Haberdasher', 'Manicurist', 'Netrunner', 'Weirkeeper'];
 
-const levels = ['1st', '2nd', '3rd', '4th', '5th',
-              	'6th', '7th', '8th', '9th', '10th',
-	              '11th', '12th', '13th', '14th', '15th',
-              	'16th', '17th', '18th', '19th', '20th'];
+const levels = ['1st',  '2nd',  '3rd',  '4th',  '5th',
+                '6th',  '7th',  '8th',  '9th',  '10th',
+                '11th', '12th', '13th', '14th', '15th',
+                '16th', '17th', '18th', '19th', '20th'];
 
 const profBonus = [2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6];
 
