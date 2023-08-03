@@ -68,7 +68,7 @@ const EditPage = createClass({
 	componentDidMount : function(){
 
 		document.documentElement.style.setProperty('height', window.innerHeight + 'px');
-		window.addEventListener('resize', _.throttle(()=>{document.documentElement.style.setProperty('height', window.innerHeight + 'px')}, 500))
+		window.addEventListener('resize', _.throttle(()=>{document.documentElement.style.setProperty('height', window.innerHeight + 'px')}, 100))
 
 		this.setState({
 			url : window.location.href
