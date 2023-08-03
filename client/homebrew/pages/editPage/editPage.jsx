@@ -59,8 +59,7 @@ const EditPage = createClass({
 			url                    : '',
 			autoSave               : true,
 			autoSaveWarning        : false,
-			unsavedTime            : new Date(),
-			narrowScreen           : false
+			unsavedTime            : new Date()
 		};
 	},
 	savedBrew : null,
@@ -94,8 +93,7 @@ const EditPage = createClass({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
-		this.handleResize();
-		window.addEventListener('resize', _.throttle(this.handleResize, 100));
+
 
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
@@ -115,20 +113,6 @@ const EditPage = createClass({
 			e.preventDefault();
 		}
 	},
-
-	handleResize : function() {
-		if(window.innerWidth < 600){
-			this.setState({
-				narrowScreen : true
-			});
-		} else {
-			this.setState({
-				narrowScreen : false
-			});
-		}
-	},
-
-
 
 	handleTextChange : function(text){
 		//If there are errors, run the validator on every change to give quick feedback
@@ -375,7 +359,7 @@ const EditPage = createClass({
 
 	renderNavbar : function(menubar) {
 		// If the screen is 'full size'...
-		if(this.state.narrowScreen == false){
+		if(this.props.isNarrowScreen == false){
 
 			if(menubar.location === 'bottom') return;
 
