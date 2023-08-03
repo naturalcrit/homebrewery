@@ -94,11 +94,7 @@ const EditPage = createClass({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
-		if(window.innerWidth < 900){
-			this.setState({
-				narrowScreen : true
-			});
-		};
+		this.handleResize();
 		window.addEventListener('resize', _.throttle(this.handleResize, 100));
 
 		document.addEventListener('keydown', this.handleControlKeys);
