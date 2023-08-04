@@ -92,31 +92,37 @@ module.exports = {
 
 		const spellsKnown = ['—', 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11];
 		const spells = [
-			['—', 2, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-			['—', '—', '—', '—', 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-			['—', '—', '—', '—', '—', '—', '—', '—', 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-			['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', 1, 1, 2, 2, 3, 3, 3, 3],
-			['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', 1, 1, 2, 2],
+			'  —   |   —   |   —   |   —   |   —  ',
+			'  2   |   —   |   —   |   —   |   —  ',
+			'  3   |   —   |   —   |   —   |   —  ',
+			'  3   |   —   |   —   |   —   |   —  ',
+			'  4   |   2   |   —   |   —   |   —  ',
+			'  4   |   2   |   —   |   —   |   —  ',
+			'  4   |   3   |   —   |   —   |   —  ',
+			'  4   |   3   |   —   |   —   |   —  ',
+			'  4   |   3   |   2   |   —   |   —  ',
+			'  4   |   3   |   2   |   —   |   —  ',
+			'  4   |   3   |   3   |   —   |   —  ',
+			'  4   |   3   |   3   |   —   |   —  ',
+			'  4   |   3   |   3   |   1   |   —  ',
+			'  4   |   3   |   3   |   1   |   —  ',
+			'  4   |   3   |   3   |   2   |   —  ',
+			'  4   |   3   |   3   |   2   |   —  ',
+			'  4   |   3   |   3   |   3   |   1  ',
+			'  4   |   3   |   3   |   3   |   1  ',
+			'  4   |   3   |   3   |   3   |   2  ',
+			'  4   |   3   |   3   |   3   |   2  '
 		];
 
 		return dedent`
 		{{${snippetClasses}
 		##### The ${classname}
-		| Level | Proficiency | Features     | Spells | --- Spell Slots Per Spell Level ---|||||
-		|      ^| Bonus      ^|             ^| Known ^|1st |2nd |3rd |4th |5th |
-		|:-----:|:-----------:|:-------------|:------:|:--:|:--:|:--:|:--:|:--:|
+		| Level | Proficiency | Features     | Spells |--- Spell Slots Per Spell Level ---|||||
+		|      ^| Bonus      ^|             ^| Known ^|  1st  |  2nd  |  3rd  |  4th  |  5th  |
+		|:-----:|:-----------:|:-------------|:------:|:-----:|:-----:|:-----:|:-----:|:-----:|
 		${
-			_.map(levels, function(levelName, level){
-				const res = [
-					_.pad(levelName, 5),
-					_.pad(`+${profBonus[level]}`, 2),
-					_.padEnd(_.sample(features), 21),
-					_.pad(spellsKnown[level].toString(), 6),
-					spells.map((spellList)=>{
-						return _.pad(spellList[level].toString(), 2);
-					}).join(' | '),
-				].join(' | ');
-				return `| ${res} |`;
+			_.map(levels, function(level, idx){
+				return `| ${_.pad(level, 5)} | +${profBonus[idx]} | ${_.padEnd(_.sample(features), 21)} | ${_.pad(spellsKnown[idx], 6)} | ${spells[idx]} |`;
 			}).join('\n')
 		}
 		}}\n\n`;
