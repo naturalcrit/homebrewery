@@ -131,14 +131,27 @@ module.exports = {
 	third : function(snippetClasses){
 		const classname = _.sample(classnames);
 
-		const thirdLevels = levels.slice(2);
 		const cantripsKnown = [2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3];
 		const spellsKnown = [3, 4, 4, 4, 5, 6, 6, 7, 8, 8, 9, 10, 10, 11, 11, 11, 12, 13];
 		const spells = [
-			[2, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-			['—', '—', '—', '—', 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
-			['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', 2, 2, 2, 3, 3, 3, 3, 3],
-			['—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', '—', 1, 1],
+			'   2    |    —    |    —    |    —   ',
+			'   3    |    —    |    —    |    —   ',
+			'   3    |    —    |    —    |    —   ',
+			'   3    |    —    |    —    |    —   ',
+			'   4    |    2    |    —    |    —   ',
+			'   4    |    2    |    —    |    —   ',
+			'   4    |    2    |    —    |    —   ',
+			'   4    |    3    |    —    |    —   ',
+			'   4    |    3    |    —    |    —   ',
+			'   4    |    3    |    —    |    —   ',
+			'   4    |    3    |    2    |    —   ',
+			'   4    |    3    |    2    |    —   ',
+			'   4    |    3    |    2    |    —   ',
+			'   4    |    3    |    3    |    —   ',
+			'   4    |    3    |    3    |    —   ',
+			'   4    |    3    |    3    |    —   ',
+			'   4    |    3    |    3    |    1   ',
+			'   4    |    3    |    3    |    1   '
 		];
 
 		return dedent`
@@ -148,16 +161,8 @@ module.exports = {
 		|      ^| Known   ^| Known ^|   1st   |   2nd   |   3rd   |   4th   |
 		|:-----:|:--------:|:------:|:-------:|:-------:|:-------:|:-------:|
 		${
-			_.map(thirdLevels, function(levelName, level){
-				const res = [
-					_.pad(levelName, 5),
-					_.pad(cantripsKnown[level].toString(), 8),
-					_.pad(spellsKnown[level].toString(), 6),
-					spells.map((spellList)=>{
-						return _.pad(spellList[level].toString(), 7);
-					}).join(' | '),
-				].join(' | ');
-				return `| ${res} |`;
+			_.map(levels.slice(2), function(level, idx){
+				return `| ${_.pad(level, 5)} | ${_.pad(cantripsKnown[idx], 8)} | ${_.pad(spellsKnown[idx], 6)} | ${spells[idx]} |`;
 			}).join('\n')
 		}
 		}}\n\n`;
