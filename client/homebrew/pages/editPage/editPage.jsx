@@ -359,7 +359,7 @@ const EditPage = createClass({
 
 	renderNavbar : function(menubar) {
 		// If the screen is 'full size'...
-		if(this.props.isNarrowScreen == false){
+		if(this.props.isNarrow == false){
 
 			if(menubar.location === 'bottom') return;
 

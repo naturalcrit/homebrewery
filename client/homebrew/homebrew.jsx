@@ -6,6 +6,8 @@ const { Route, Routes, useParams, useSearchParams } = require('react-router-dom'
 const _ = require('lodash');
 import getOS from './navbar/getOS.js';
 
+import { useState, useEffect } from 'react';
+
 const HomePage = require('./pages/homePage/homePage.jsx');
 const EditPage = require('./pages/editPage/editPage.jsx');
 const UserPage = require('./pages/userPage/userPage.jsx');
@@ -15,10 +17,32 @@ const ErrorPage = require('./pages/errorPage/errorPage.jsx');
 const PrintPage = require('./pages/printPage/printPage.jsx');
 const AccountPage = require('./pages/accountPage/accountPage.jsx');
 
+
+const useWindowSize = function() {
+	const [isNarrow, setIsNarrow] = useState(false);
+	useEffect(()=>{
+		function handleResize() {
+			if(window.innerWidth < 600){
+				setIsNarrow(true);
+			} else {
+				setIsNarrow(false);
+			}
+		}
+		window.addEventListener('resize', handleResize);
+		handleResize();
+
+		return ()=> window.removeEventListener('resize', handleResize);
+	}, [])
+
+	return isNarrow;
+}
+
 const WithRoute = (props)=>{
 	const params = useParams();
 	const [searchParams] = useSearchParams();
 	const queryParams = {};
+	const isNarrow = useWindowSize();
+
 	for (const [key, value] of searchParams?.entries() || []) {
 		queryParams[key] = value;
 	}
@@ -27,8 +51,11 @@ const WithRoute = (props)=>{
 		...props,
 		...params,
 		query : queryParams,
-		el    : undefined
+		el    : undefined,
+		isNarrow : isNarrow
 	};
+
+	
 	return <Element {...allProps} />;
 };
 
@@ -60,36 +87,21 @@ const Homebrew = createClass({
 		global.enable_v3 = this.props.enable_v3;
 		global.enable_themes = this.props.enable_themes;
 		global.config = this.props.config;
-		return {
-			isNarrowScreen : false
-		};
+		return {};
 	},
 
 	componentDidMount : function() {
 		global.device = { os: getOS() };
-		
-		this.handleResize();
-		window.addEventListener('resize', _.throttle(this.handleResize, 100));
 	},
 
-	handleResize : function() {
-		if(window.innerWidth < 600){
-			this.setState({
-				isNarrowScreen : true
-			});
-		} else {
-			this.setState({
-				isNarrowScreen : false
-			});
-		}
-	},
+	
 
 	render : function (){
 		return (
 			<Router location={this.props.url}>
-				<div className={`homebrew${this.state.isNarrowScreen ? ' mobile' : ''}`}>
+				<div className={`homebrew`}>
 					<Routes>
-						<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={this.props.brew} isNarrowScreen={this.state.isNarrowScreen} />} />
+						<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={this.props.brew} />} />
 						<Route path='/share/:id' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
 						<Route path='/new/:id' element={<WithRoute el={NewPage} brew={this.props.brew} />} />
 						<Route path='/new' element={<WithRoute el={NewPage}/>} />
