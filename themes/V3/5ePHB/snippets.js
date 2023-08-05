@@ -220,34 +220,51 @@ module.exports = [
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'Class Table',
-				icon : 'fas fa-table',
-				gen  : ClassTableGen.full('classTable,frame,decoration,wide'),
-			},
-			{
-				name : 'Class Table (unframed)',
-				icon : 'fas fa-border-none',
-				gen  : ClassTableGen.full('classTable,wide'),
-			},
-			{
-				name : '1/2 Class Table',
-				icon : 'fas fa-list-alt',
-				gen  : ClassTableGen.half('classTable,decoration,frame'),
-			},
-			{
-				name : '1/2 Class Table (unframed)',
-				icon : 'fas fa-border-none',
-				gen  : ClassTableGen.half('classTable'),
-			},
-			{
-				name : '1/3 Class Table',
-				icon : 'fas fa-border-all',
-				gen  : ClassTableGen.third('classTable,frame'),
-			},
-			{
-				name : '1/3 Class Table (unframed)',
-				icon : 'fas fa-border-none',
-				gen  : ClassTableGen.third('classTable'),
+				name        : 'Class Tables',
+				icon        : 'fas fa-table',
+				gen         : ClassTableGen.full('classTable,frame,decoration,wide'),
+				subsnippets : [
+					{
+						name : 'Martial Class Table',
+						icon : 'fas fa-table',
+						gen  : ClassTableGen.non('classTable,frame,decoration'),
+					},
+					{
+						name : 'Martial Class Table (unframed)',
+						icon : 'fas fa-border-none',
+						gen  : ClassTableGen.non('classTable'),
+					},
+					{
+						name : 'Full Caster Class Table',
+						icon : 'fas fa-table',
+						gen  : ClassTableGen.full('classTable,frame,decoration,wide'),
+					},
+					{
+						name : 'Full Caster Class Table (unframed)',
+						icon : 'fas fa-border-none',
+						gen  : ClassTableGen.full('classTable,wide'),
+					},
+					{
+						name : 'Half Caster Class Table',
+						icon : 'fas fa-list-alt',
+						gen  : ClassTableGen.half('classTable,frame,decoration,wide'),
+					},
+					{
+						name : 'Half Caster Class Table (unframed)',
+						icon : 'fas fa-border-none',
+						gen  : ClassTableGen.half('classTable,wide'),
+					},
+					{
+						name : 'Third Caster Spell Table',
+						icon : 'fas fa-border-all',
+						gen  : ClassTableGen.third('classTable,frame,decoration'),
+					},
+					{
+						name : 'Third Caster Spell Table (unframed)',
+						icon : 'fas fa-border-none',
+						gen  : ClassTableGen.third('classTable'),
+					}
+				]
 			},
 			{
 				name         : 'Rune Table',
