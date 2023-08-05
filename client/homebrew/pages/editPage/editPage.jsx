@@ -7,11 +7,9 @@ const request = require('../../utils/request-middleware.js');
 const { Meta } = require('vitreum/headtags');
 const Moment = require('moment');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 import * as Toolbar from '@radix-ui/react-toolbar';
 import * as Menubar from '@radix-ui/react-menubar';
-import * as Switch from '@radix-ui/react-switch';
 import { LinkItem, ButtonItem, Menu, SubMenu } from '../../navbar/menubarExtensions.jsx';
 
 const BrewTitle = require('../../navbar/brewTitle.jsx');

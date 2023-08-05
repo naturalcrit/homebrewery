@@ -3,12 +3,17 @@ const React = require('react');
 const createClass = require('create-react-class');
 const { Meta } = require('vitreum/headtags');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
-const MetadataNav = require('../../navbar/metadata.navitem.jsx');
+import * as Menubar from '@radix-ui/react-menubar';
+import { LinkItem, Menu, SubMenu } from '../../navbar/menubarExtensions.jsx';
+
+const BrewTitle = require('../../navbar/brewTitle.jsx');
+const NewBrew = require('../../navbar/newBrew.jsx');
+const HelpItems = require('../../navbar/help.navitem.jsx');
 const PrintLink = require('../../navbar/print.navitem.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
+const { SourceItems } = require('../../navbar/source.navitem.jsx')
 const Account = require('../../navbar/account.navitem.jsx');
+import { RecentItems } from '../../navbar/recent.navitem.jsx';
 
 
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
@@ -47,42 +52,96 @@ const SharePage = createClass({
 					 this.props.brew.shareId;
 	},
 
+	renderNavbar : function(menubar) {
+		// If the screen is 'full size'...
+		if(this.props.isNarrow == false){
+
+			if(menubar.location === 'bottom') return;
+
+			return <Navbar.Top>
+				<Menu trigger='Brew'>
+					<NewBrew />
+					<Menubar.Separator />
+					<SubMenu trigger='Source'>
+						<SourceItems.view shareId={this.processShareId()} />
+						<SourceItems.download shareId={this.processShareId()} />
+						<SourceItems.clone shareId={this.processShareId()} />
+					</SubMenu>
+					<Menubar.Separator />
+					<SubMenu trigger='Recently Viewed'>
+						<RecentItems brew={this.props.brew} storageKey='view' />
+					</SubMenu>
+					{global.account ? <LinkItem href={`/user/${encodeURI(global.account.username)}`}>Library</LinkItem> : ''}
+					<Menubar.Separator />
+					<PrintLink shareId={this.processShareId()}>Print</PrintLink>
+				</Menu>
+				<Menu trigger='Help'>
+					<SubMenu trigger='Community'>
+						<HelpItems.rHomebrewery />
+						<HelpItems.DoMT />
+					</SubMenu>
+					<Menubar.Separator />
+					<SubMenu trigger='Report Issue'>
+						<HelpItems.issueToReddit />
+						<HelpItems.issueToGithub />
+					</SubMenu>
+				</Menu>
+				<BrewTitle title={this.props.brew.title} />
+				<Account />
+			</Navbar.Top>;
+
+		} 
+		else {    // If the screen is narrow (such as on mobile)...
+
+			if(menubar.location === 'top'){
+				return <Navbar.Top>
+					<BrewTitle title={this.props.brew.title} />
+					<Menu trigger='Help'>
+						<SubMenu trigger='Community'>
+							<HelpItems.rHomebrewery />
+							<HelpItems.DoMT />
+						</SubMenu>
+						<Menubar.Separator />
+						<SubMenu trigger='Report Issue'>
+							<HelpItems.issueToReddit />
+							<HelpItems.issueToGithub />
+						</SubMenu>
+					</Menu>
+				</Navbar.Top>;
+			} else {
+				return <Navbar.Bottom>
+					<Menu trigger='Brew'>
+						<NewBrew />
+						<Menubar.Separator />
+					<SubMenu trigger='Source'>
+						<SourceItems.view shareId={this.processShareId()} />
+						<SourceItems.download shareId={this.processShareId()} />
+						<SourceItems.clone shareId={this.processShareId()} />
+					</SubMenu>
+					<Menubar.Separator />
+						<SubMenu trigger='Recently Viewed'>
+							<RecentItems brew={this.props.brew} storageKey='view' />
+						</SubMenu>
+						{global.account ? <LinkItem href={`/user/${encodeURI(global.account.username)}`}>Library</LinkItem> : ''}
+						<Menubar.Separator />
+						<PrintLink shareId={this.processShareId()}>Print</PrintLink>
+					</Menu>
+					<Account />
+				</Navbar.Bottom>;
+			}
+		}
+
+	},
+
 	render : function(){
 		return <div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
-			<Navbar>
-				<Nav.section className='titleSection'>
-					<MetadataNav brew={this.props.brew}>
-						<Nav.item className='brewTitle'>{this.props.brew.title}</Nav.item>
-					</MetadataNav>
-				</Nav.section>
-
-				<Nav.section>
-					{this.props.brew.shareId && <>
-						<PrintLink shareId={this.processShareId()} />
-						<Nav.dropdown>
-							<Nav.item color='red' icon='fas fa-code'>
-								source
-							</Nav.item>
-							<Nav.item color='blue' href={`/source/${this.processShareId()}`}>
-								view
-							</Nav.item>
-							<Nav.item color='blue' href={`/download/${this.processShareId()}`}>
-								download
-							</Nav.item>
-							<Nav.item color='blue' href={`/new/${this.processShareId()}`}>
-								clone to new
-							</Nav.item>
-						</Nav.dropdown>
-					</>}
-					<RecentNavItem brew={this.props.brew} storageKey='view' />
-					<Account />
-				</Nav.section>
-			</Navbar>
-
+			{this.renderNavbar({ location: 'top' })}
 			<div className='content'>
 				<BrewRenderer text={this.props.brew.text} style={this.props.brew.style} renderer={this.props.brew.renderer} theme={this.props.brew.theme} />
 			</div>
+
+			{this.renderNavbar({ location: 'bottom' })}
 		</div>;
 	}
 });
