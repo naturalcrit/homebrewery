@@ -194,9 +194,8 @@ const BrewRenderer = createClass({
 	},
 
 	emitClick : function(){
-		// console.log('iFrame clicked');
 		if(!window || !document) return;
-		document.dispatchEvent(new MouseEvent('click'));
+		document.dispatchEvent(new PointerEvent('pointerdown'));
 	},
 
 	render : function(){
