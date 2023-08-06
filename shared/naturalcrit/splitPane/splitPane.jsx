@@ -4,6 +4,8 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 
+import DividerSVG from '../../../client/homebrew/dividerbar.jsx';
+
 const SplitPane = createClass({
 	displayName     : 'SplitPane',
 	getDefaultProps : function() {
@@ -124,12 +126,9 @@ const SplitPane = createClass({
 	renderDivider : function(){
 		return <>
 			{this.renderMoveArrows()}
-			<div className='divider' onPointerDown={this.handleDown} >
-				<div className='dots'>
-					<i className='fas fa-circle' />
-					<i className='fas fa-circle' />
-					<i className='fas fa-circle' />
-				</div>
+			<div className='divider-container'>
+				<DividerSVG  onPointerDown={this.handleDown} />
+				{/* <div className='divider'></div> */}
 			</div>
 		</>;
 	},
