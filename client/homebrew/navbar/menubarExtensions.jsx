@@ -3,7 +3,7 @@ const createClass = require('create-react-class');
 import * as MenubarPrimitive from '@radix-ui/react-menubar';
 
 const renderHotkeys = function(hotkeysObject) {
-	if(!hotkeysObject) return;
+	if(!hotkeysObject || global.device.os == 'iphone') return;
 	const keyArray = global.device.os == 'mac' ? hotkeysObject.mac : hotkeysObject.pc;
 	const hotkeySpans = keyArray.map((key, i)=>{
 		return <span key={i} className='key'>{key}</span>;
