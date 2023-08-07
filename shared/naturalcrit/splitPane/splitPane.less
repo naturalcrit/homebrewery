@@ -17,6 +17,11 @@
 		height: 100%;
 		position: relative;
 		z-index: 100;
+		.touch-area {   /* necessary to prevent touch issues over iframe when moving divider */
+			position: absolute;
+			width: 30px;   /* should match or slightly exceed divider toolbar tab width (not counting drop shadow) */
+			height: 100%;
+		}
 		svg#divider-bar {
 			position : absolute;
 			top : 0;

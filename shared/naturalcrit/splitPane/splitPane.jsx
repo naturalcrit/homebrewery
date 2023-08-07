@@ -125,6 +125,7 @@ const SplitPane = createClass({
 	renderDivider : function(){
 		return <>
 			<div className='divider-container'>
+				<div className='touch-area'></div>
 				<DividerSVG  id='divider-bar' onPointerDown={this.handleDown} />
 				{this.renderMoveArrows()}
 			</div>
