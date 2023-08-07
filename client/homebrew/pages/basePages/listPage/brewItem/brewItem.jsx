@@ -7,6 +7,7 @@ const moment = require('moment');
 const request = require('../../../../utils/request-middleware.js');
 
 const googleDriveIcon = require('../../../../googleDrive.svg');
+const homebreweryIcon = require('../../../../thumbnail.png');
 const dedent = require('dedent-tabs').default;
 
 const BrewItem = createClass({
@@ -90,10 +91,12 @@ const BrewItem = createClass({
 		</a>;
 	},
 
-	renderGoogleDriveIcon : function(){
-		if(!this.props.brew.googleId) return;
+	renderStorageIcon : function(){
+		if(!this.props.brew.googleId) return <span title='Internal Homebrewery Database'>
+			<img className='homebreweryIcon' src={homebreweryIcon} alt='homebreweryIcon' />
+		</span>;
 
-		return <span>
+		return <span title='Google Drive Storage'>
 			<a href={this.props.brew.webViewLink} target='_blank'>
 				<img className='googleDriveIcon' src={googleDriveIcon} alt='googleDriveIcon' />
 			</a>
@@ -146,7 +149,7 @@ const BrewItem = createClass({
 					Last updated: ${moment(brew.updatedAt).local().format(dateFormatString)}`}>
 					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
 				</span>
-				{this.renderGoogleDriveIcon()}
+				{this.renderStorageIcon()}
 			</div>
 
 			<div className='links'>
