@@ -94,7 +94,9 @@ const BrewItem = createClass({
 		if(!this.props.brew.googleId) return;
 
 		return <span>
-			<img className='googleDriveIcon' src={googleDriveIcon} alt='googleDriveIcon' />
+			<a href={this.props.brew.webViewLink} target='_blank'>
+				<img className='googleDriveIcon' src={googleDriveIcon} alt='googleDriveIcon' />
+			</a>
 		</span>;
 	},
 
