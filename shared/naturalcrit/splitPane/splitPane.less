@@ -5,6 +5,7 @@
 	height         : 100%;
 	outline        : none;
 	flex-direction : row;
+	touch-action     : none;
 	.pane{
 		overflow-x : hidden;
 		overflow-y : hidden;
@@ -16,8 +17,7 @@
 		height: 100%;
 		position: relative;
 		z-index: 100;
-		touch-action     : none;
-		svg {
+		svg#divider-bar {
 			position : absolute;
 			top : 0;
 			left : 0;
@@ -36,31 +36,38 @@
 				}
 			}
 		}
+		div#divider-toolbar {
+			touch-action     : none;
+			display: flex;
+			flex-direction: column;
+			gap: 2px;
+			position: relative;
+			height: 50px;
+			width: 20px;
+			left: 3px;
+			top: 3px;
+			z-index: 5;
+			.arrow {
+				width: auto;
+				aspect-ratio: 1 / 1;
+				border: 1px solid #bbb;
+				text-align: center;
+				font-size: 0em;
+				cursor: pointer;
+				border: 1px solid #999;
+				&.left{
+					.tooltipLeft('Jump to location in Editor');
+				}
+				&.right{
+					.tooltipRight('Jump to location in Preview');
+				}
+				&:hover{
+					background-color: #666;
+				}
+			}
+		}
 		
 	}
 	
-	.arrow{
-		position         : absolute;
-		width            : 25px;
-		height           : 25px;
-		border           : 2px solid #bbb;
-		border-radius    : 15px;
-		text-align       : center;
-		font-size        : 1.2em;
-		cursor           : pointer;
-		background-color : #ddd;
-		z-index          : 400;
-		box-shadow      : 0 4px 5px #0000007f;
-		&.left{
-			.tooltipLeft('Jump to location in Editor');
-			top : 30px;
-		}
-		&.right{
-			.tooltipRight('Jump to location in Preview');
-			top : 60px;
-		}
-		&:hover{
-			background-color: #666;
-		}
-	}
+	
 }

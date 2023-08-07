@@ -5,6 +5,7 @@ const _ = require('lodash');
 const cx = require('classnames');
 
 import DividerSVG from '../../../client/homebrew/dividerbar.jsx';
+import ScrollJumpSVG from '../../../client/homebrew/scrollJump.jsx';
 
 const SplitPane = createClass({
 	displayName     : 'SplitPane',
@@ -108,27 +109,24 @@ const SplitPane = createClass({
 
 	renderMoveArrows : function(){
 		if(this.state.showMoveArrows) {
-			return <>
+			return <div id='divider-toolbar' className='toolbar'>
 				<div className='arrow left'
-					style={{ left: this.state.currentDividerPos-4 }}
 					onClick={()=>this.setState({ moveSource: !this.state.moveSource })} >
-					<i className='fas fa-arrow-left' />
+					<ScrollJumpSVG />
 				</div>
 				<div className='arrow right'
-					style={{ left: this.state.currentDividerPos-4 }}
 					onClick={()=>this.setState({ moveBrew: !this.state.moveBrew })} >
-					<i className='fas fa-arrow-right' />
+					<ScrollJumpSVG style={{ transform : 'scaleX(-1)' }} />
 				</div>
-			</>;
+			</div>;
 		}
 	},
 
 	renderDivider : function(){
 		return <>
-			{this.renderMoveArrows()}
 			<div className='divider-container'>
-				<DividerSVG  onPointerDown={this.handleDown} />
-				{/* <div className='divider'></div> */}
+				<DividerSVG  id='divider-bar' onPointerDown={this.handleDown} />
+				{this.renderMoveArrows()}
 			</div>
 		</>;
 	},
