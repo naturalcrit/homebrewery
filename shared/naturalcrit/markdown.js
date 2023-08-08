@@ -2,6 +2,8 @@
 const _ = require('lodash');
 const Marked = require('marked');
 const MarkedExtendedTables = require('marked-extended-tables');
+const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartypants-lite');
+const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
 const renderer = new Marked.Renderer();
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
@@ -237,9 +239,9 @@ const definitionLists = {
 };
 
 Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists] });
-Marked.use(MarkedExtendedTables());
 Marked.use(mustacheInjectBlock);
-Marked.use({ renderer: renderer, smartypants: true });
+Marked.use({ renderer: renderer, mangle: false });
+Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
 
 //Fix local links in the Preview iFrame to link inside the frame
 renderer.link = function (href, title, text) {
@@ -311,12 +313,6 @@ const escape = function (html, encode) {
 	return html;
 };
 
-const sanatizeScriptTags = (content)=>{
-	return content
-		.replace(/<script/ig, '&lt;script')
-		.replace(/<\/script>/ig, '&lt;/script&gt;');
-};
-
 const tagTypes = ['div', 'span', 'a'];
 const tagRegex = new RegExp(`(${
 	_.map(tagTypes, (type)=>{
@@ -347,7 +343,7 @@ module.exports = {
 	render : (rawBrewText)=>{
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
-		return Marked.parse(sanatizeScriptTags(rawBrewText));
+		return Marked.parse(rawBrewText);
 	},
 
 	validate : (rawBrewText)=>{
