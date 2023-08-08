@@ -44,8 +44,10 @@ module.exports = () => {
   return `
 {{quote
 ${_.sample(quotes)}
-				
-- ${_.sample(authors)}, _${_.sample(books)}_
+
+:
+{{attribution ${_.sample(authors)}, *${_.sample(books)}*}}
+
 }}
 \n`;
 };

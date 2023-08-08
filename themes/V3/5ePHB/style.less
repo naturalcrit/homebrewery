@@ -250,16 +250,24 @@ body {
 		font-style  :italic;
 		line-height :.5cm;
 
-			&::first-line {
+			&:first-child::first-line {
 				font-variant : small-caps;
 				font-style: normal;
 			}
 		}
 
-		li {
-			list-style-type : "---";
-			float   :right;
+		.attribution {
+			font-style: normal;
+			display: block;
+			text-align: right;
+
+			&:before {
+				content: '---';
+				margin-right: .2em;
+			}
 		}
+
+		
 	}
 
 
