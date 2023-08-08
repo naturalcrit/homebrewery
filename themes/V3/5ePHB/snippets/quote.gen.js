@@ -47,7 +47,6 @@ ${_.sample(quotes)}
 
 :
 {{attribution ${_.sample(authors)}, *${_.sample(books)}*}}
-
 }}
 \n`;
 };
