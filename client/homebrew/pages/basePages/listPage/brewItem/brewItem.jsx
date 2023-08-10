@@ -92,14 +92,16 @@ const BrewItem = createClass({
 	},
 
 	renderStorageIcon : function(){
-		if(!this.props.brew.googleId) return <span title='Internal Homebrewery Database'>
-			<img className='homebreweryIcon' src={homebreweryIcon} alt='homebreweryIcon' />
-		</span>;
+		if(this.props.brew.googleId) {
+			return <span title={this.props.brew.webViewLink ? 'Your Google Drive Storage': 'Another User\'s Google Drive Storage'}>
+				<a href={this.props.brew.webViewLink} target='_blank'>
+					<img className='googleDriveIcon' src={googleDriveIcon} alt='googleDriveIcon' />
+				</a>
+			</span>;
+		}
 
-		return <span title='Google Drive Storage'>
-			<a href={this.props.brew.webViewLink} target='_blank'>
-				<img className='googleDriveIcon' src={googleDriveIcon} alt='googleDriveIcon' />
-			</a>
+		return <span title='Homebrewery Storage'>
+			<img className='homebreweryIcon' src={homebreweryIcon} alt='homebreweryIcon' />
 		</span>;
 	},
 
