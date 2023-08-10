@@ -34,13 +34,8 @@ const AccountPage = createClass({
 	componentDidMount : function(){
 		if(!this.state.saveLocation && this.props.uiItems.username) {
 			SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${this.props.uiItems.username}`;
-			let saveLocation =  window.localStorage.getItem(SAVEKEY) || '';
-			if(saveLocation == '') {
-				saveLocation = 'HOMEBREWERY';
-				if(this.state.uiItems.googleId) {
-					saveLocation = 'GOOGLE-DRIVE';
-				}
-			};
+			let saveLocation =  window.localStorage.getItem(SAVEKEY);
+			saveLocation = saveLocation ?? this.state.uiItems.googleId ? 'GOOGLE-DRIVE' : 'HOMEBREWERY';
 			this.makeActive(saveLocation);
 		}
 	},
