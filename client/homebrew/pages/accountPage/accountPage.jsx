@@ -48,8 +48,8 @@ const AccountPage = createClass({
 		});
 	},
 
-	renderButton : function(name, key, condition=true){
-		if(!condition) return;
+	renderButton : function(name, key, shouldRender=true){
+		if(!shouldRender) return;
 		return <button className={this.state.saveLocation==key ? 'active' :	''}	onClick={()=>{this.makeActive(key);}}>{name}</button>;
 	},
 
