@@ -78,9 +78,9 @@
     ]
   },
   "dependencies": {
-    "@babel/core": "^7.22.9",
-    "@babel/plugin-transform-runtime": "^7.22.9",
-    "@babel/preset-env": "^7.22.9",
+    "@babel/core": "^7.22.10",
+    "@babel/plugin-transform-runtime": "^7.22.10",
+    "@babel/preset-env": "^7.22.10",
     "@babel/preset-react": "^7.22.5",
     "@googleapis/drive": "^5.1.0",
     "body-parser": "^1.20.2",
@@ -99,7 +99,7 @@
     "lodash": "^4.17.21",
     "marked": "5.1.1",
     "marked-extended-tables": "^1.0.6",
-    "marked-gfm-heading-id": "^3.0.4",
+    "marked-gfm-heading-id": "^3.0.6",
     "marked-smartypants-lite": "^1.0.0",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.29.4",
