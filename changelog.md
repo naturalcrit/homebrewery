@@ -80,6 +80,51 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### XXXday XX/XX/2023 - v3.9.2
+{{taskList
+
+##### Calculuschild
+
+* [x] Fix everything, literally ALL THE THINGS
+
+##### G-Ambatte
+
+* [x] Menus now open on click, and internally consistent
+
+Fixes issue [#2702](https://github.com/naturalcrit/homebrewery/issues/2702), [#2782](https://github.com/naturalcrit/homebrewery/issues/2782) 
+
+* [x] Add smarter footer snippet
+
+Fixes issue [#2289](https://github.com/naturalcrit/homebrewery/issues/2289) 
+
+* [x] Add sanitization in Style editor
+
+Fixes issue [#1437](https://github.com/naturalcrit/homebrewery/issues/1437) 
+
+* [x] Rework class table snippets to remove unnecessary randomness
+
+Fixes issue [#2964](https://github.com/naturalcrit/homebrewery/issues/2964) 
+
+* [x] Add User Page link to Google Drive file for file owners, add icons for additional storage locations
+
+Fixes issue [#2954](https://github.com/naturalcrit/homebrewery/issues/2954) 
+
+* [x] Add default save location selection to Account Page
+
+Fixes issue [#2943](https://github.com/naturalcrit/homebrewery/issues/2943) 
+
+##### 5e-Cleric
+
+* [x] Exclude cover pages from Table of Content generation
+
+Fixes issue [#2920](https://github.com/naturalcrit/homebrewery/issues/2920) 
+
+##### Gazook89
+
+* [x] Adjustments to improve mobile viewing
+
+}}
+
 ### Wednesday 28/06/2023 - v3.9.1
 {{taskList
 
