@@ -80,12 +80,14 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-### XXXday XX/XX/2023 - v3.9.2
+### Thursday 17/08/2023 - v3.9.2
 {{taskList
 
 ##### Calculuschild
 
-* [x] Fix everything, literally ALL THE THINGS
+* [x] Fix links to certain old Google Drive files
+
+Fixes issue [#2917](https://github.com/naturalcrit/homebrewery/issues/2917)
 
 ##### G-Ambatte
 
@@ -115,7 +117,7 @@ Fixes issue [#2943](https://github.com/naturalcrit/homebrewery/issues/2943)
 
 ##### 5e-Cleric
 
-* [x] Exclude cover pages from Table of Content generation
+* [x] Exclude cover pages from Table of Content generation (editing on mobile is still not recommended)
 
 Fixes issue [#2920](https://github.com/naturalcrit/homebrewery/issues/2920) 
 
