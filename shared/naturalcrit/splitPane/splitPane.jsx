@@ -77,9 +77,9 @@ const SplitPane = createClass({
 	},
 
 	handleMove : function(e){
-		e.preventDefault();
 		if(!this.state.isDragging) return;
 
+		e.preventDefault();
 		const newSize = this.limitPosition(e.pageX);
 		this.setState({
 			currentDividerPos : newSize,
