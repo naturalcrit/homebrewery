@@ -56,9 +56,6 @@ const NewPage = createClass({
 			const styleStorage = localStorage.getItem(STYLEKEY);
 			const metaStorage = JSON.parse(localStorage.getItem(METAKEY));
 
-			SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${global.account?.username || ''}`;
-			const saveStorage = localStorage.getItem(SAVEKEY) || 'HOMEBREWERY';
-
 			brew.text  = brewStorage  ?? brew.text;
 			brew.style = styleStorage ?? brew.style;
 			// brew.title = metaStorage?.title || this.state.brew.title;
@@ -66,12 +63,15 @@ const NewPage = createClass({
 			brew.renderer = metaStorage?.renderer ?? brew.renderer;
 			brew.theme    = metaStorage?.theme    ?? brew.theme;
 			brew.lang     = metaStorage?.lang     ?? brew.lang;
-
-			this.setState({
-				brew       : brew,
-				saveGoogle : (saveStorage == 'GOOGLE-DRIVE' && this.state.saveGoogle)
-			});
 		}
+
+		SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${global.account?.username || ''}`;
+		const saveStorage = localStorage.getItem(SAVEKEY) || 'HOMEBREWERY';
+
+		this.setState({
+			brew       : brew,
+			saveGoogle : (saveStorage == 'GOOGLE-DRIVE' && this.state.saveGoogle)
+		});
 
 		localStorage.setItem(BREWKEY, brew.text);
 		if(brew.style)
