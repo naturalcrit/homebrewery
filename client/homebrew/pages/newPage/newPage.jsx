@@ -56,7 +56,7 @@ const NewPage = createClass({
 			const styleStorage = localStorage.getItem(STYLEKEY);
 			const metaStorage = JSON.parse(localStorage.getItem(METAKEY));
 
-			SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${global.account.username}`;
+			SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${global.account?.username || ''}`;
 			const saveStorage = localStorage.getItem(SAVEKEY) || 'HOMEBREWERY';
 
 			brew.text  = brewStorage  ?? brew.text;
