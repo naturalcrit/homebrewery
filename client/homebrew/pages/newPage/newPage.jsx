@@ -50,14 +50,12 @@ const NewPage = createClass({
 		document.addEventListener('keydown', this.handleControlKeys);
 
 		const brew = this.state.brew;
+		const output = {};
 
 		if(!this.props.brew.shareId && typeof window !== 'undefined') { //Load from localStorage if in client browser
 			const brewStorage  = localStorage.getItem(BREWKEY);
 			const styleStorage = localStorage.getItem(STYLEKEY);
 			const metaStorage = JSON.parse(localStorage.getItem(METAKEY));
-
-			SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${global.account?.username || ''}`;
-			const saveStorage = localStorage.getItem(SAVEKEY) || 'HOMEBREWERY';
 
 			brew.text  = brewStorage  ?? brew.text;
 			brew.style = styleStorage ?? brew.style;
@@ -67,11 +65,14 @@ const NewPage = createClass({
 			brew.theme    = metaStorage?.theme    ?? brew.theme;
 			brew.lang     = metaStorage?.lang     ?? brew.lang;
 
-			this.setState({
-				brew       : brew,
-				saveGoogle : (saveStorage == 'GOOGLE-DRIVE' && this.state.saveGoogle)
-			});
+			output.brew = brew;
 		}
+
+		SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${global.account?.username || ''}`;
+		const saveStorage = localStorage.getItem(SAVEKEY) || 'HOMEBREWERY';
+		output.saveGoogle = (saveStorage == 'GOOGLE-DRIVE' && this.state.saveGoogle);
+
+		this.setState(output);
 
 		localStorage.setItem(BREWKEY, brew.text);
 		if(brew.style)
