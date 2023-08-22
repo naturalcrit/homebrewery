@@ -1,4 +1,4 @@
-/*eslint max-lines: ["warn", {"max": 400, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
 // Set working directory to project root
 process.chdir(`${__dirname}/..`);
 
@@ -257,6 +257,7 @@ app.get('/user/:username', async (req, res, next)=>{
 					brew.pageCount = googleBrews[match].pageCount;
 					brew.renderer = googleBrews[match].renderer;
 					brew.version = googleBrews[match].version;
+					brew.webViewLink = googleBrews[match].webViewLink;
 					googleBrews.splice(match, 1);
 				}
 			}
@@ -324,8 +325,8 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 	};
 
 	if(req.params.id.length > 12 && !brew._id) {
-		const googleId = req.params.id.slice(0, -12);
-		const shareId = req.params.id.slice(-12);
+		const googleId = brew.googleId;
+		const shareId = brew.shareId;
 		await GoogleActions.increaseView(googleId, shareId, 'share', brew)
 			.catch((err)=>{next(err);});
 	} else {
@@ -397,7 +398,6 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 	return next();
 }));
 
-
 const nodeEnv = config.get('node_env');
 const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
 // Local only
@@ -414,8 +414,7 @@ if(isLocalEnvironment){
 
 //Render the page
 const templateFn = require('./../client/template.js');
-app.use(asyncHandler(async (req, res, next)=>{
-
+const renderPage = async (req, res)=>{
 	// Create configuration object
 	const configuration = {
 		local       : isLocalEnvironment,
@@ -424,7 +423,7 @@ app.use(asyncHandler(async (req, res, next)=>{
 	};
 	const props = {
 		version       : require('./../package.json').version,
-		url           : req.originalUrl,
+		url           : req.customUrl || req.originalUrl,
 		brew          : req.brew,
 		brews         : req.brews,
 		googleBrews   : req.googleBrews,
@@ -438,15 +437,20 @@ app.use(asyncHandler(async (req, res, next)=>{
 	const page = await templateFn('homebrew', title, props)
 		.catch((err)=>{
 			console.log(err);
-			return res.sendStatus(500);
 		});
+	return page;
+};
+
+//Send rendered page
+app.use(asyncHandler(async (req, res, next)=>{
+	const page = await renderPage(req, res);
 	if(!page) return;
 	res.send(page);
 }));
 
 //v=====----- Error-Handling Middleware -----=====v//
-//Format Errors so all fields will be sent
-const replaceErrors = (key, value)=>{
+//Format Errors as plain objects so all fields will appear in the string sent
+const formatErrors = (key, value)=>{
 	if(value instanceof Error) {
 		const error = {};
 		Object.getOwnPropertyNames(value).forEach(function (key) {
@@ -458,13 +462,30 @@ const replaceErrors = (key, value)=>{
 };
 
 const getPureError = (error)=>{
-	return JSON.parse(JSON.stringify(error, replaceErrors));
+	return JSON.parse(JSON.stringify(error, formatErrors));
 };
 
-app.use((err, req, res, next)=>{
-	const status = err.status || 500;
+app.use(async (err, req, res, next)=>{
+	const status = err.status || err.code || 500;
 	console.error(err);
-	res.status(status).send(getPureError(err));
+
+	req.ogMeta = { ...defaultMetaTags,
+		title       : 'Error Page',
+		description : 'Something went wrong!'
+	};
+	req.brew = {
+		...err,
+		title       : 'Error - Something went wrong!',
+		text        : err.errors?.map((error)=>{return error.message;}).join('\n\n') || err.message || 'Unknown error!',
+		status      : status,
+		HBErrorCode : err.HBErrorCode ?? '00',
+		pureError   : getPureError(err)
+	};
+	req.customUrl= '/error';
+
+	const page = await renderPage(req, res);
+	if(!page) return;
+	res.send(page);
 });
 
 app.use((req, res)=>{
