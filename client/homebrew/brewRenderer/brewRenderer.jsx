@@ -147,11 +147,11 @@ const BrewRenderer = createClass({
 	},
 
 	renderPage : function(pageText, index){
-		const cleanPageText = this.sanitizeScriptTags(pageText);
+		let cleanPageText = this.sanitizeScriptTags(pageText);
 		if(this.props.renderer == 'legacy')
 			return <div className='phb page' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(cleanPageText) }} key={index} />;
 		else {
-			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
+			cleanPageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			return (
 				<div className='page' id={`p${index + 1}`} key={index} >
 					<div className='columnWrapper' dangerouslySetInnerHTML={{ __html: Markdown.render(cleanPageText) }} />
