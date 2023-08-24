@@ -20,9 +20,10 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
 
-const BREWKEY = 'homebrewery-new';
+const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
-const METAKEY = 'homebrewery-new-meta';
+const METAKEY  = 'homebrewery-new-meta';
+let SAVEKEY;
 
 
 const NewPage = createClass({
@@ -62,11 +63,15 @@ const NewPage = createClass({
 			brew.renderer = metaStorage?.renderer ?? brew.renderer;
 			brew.theme    = metaStorage?.theme    ?? brew.theme;
 			brew.lang     = metaStorage?.lang     ?? brew.lang;
-
-			this.setState({
-				brew : brew
-			});
 		}
+
+		SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${global.account?.username || ''}`;
+		const saveStorage = localStorage.getItem(SAVEKEY) || 'HOMEBREWERY';
+
+		this.setState({
+			brew       : brew,
+			saveGoogle : (saveStorage == 'GOOGLE-DRIVE' && this.state.saveGoogle)
+		});
 
 		localStorage.setItem(BREWKEY, brew.text);
 		if(brew.style)
