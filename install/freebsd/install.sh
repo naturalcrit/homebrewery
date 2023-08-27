@@ -13,7 +13,7 @@ npm install
 npm audit fix
 npm run postinstall
 
-cp freebsd/rc.d/homebrewery /usr/local/etc/rc.d/
+cp install/freebsd/rc.d/homebrewery /usr/local/etc/rc.d/
 chmod +x /usr/local/etc/rc.d/homebrewery
 
 sysrc homebrewery_enable=YES
