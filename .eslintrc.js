@@ -11,11 +11,11 @@ module.exports = {
 		browser : true,
 		node    : true
 	},
-	plugins : ['react'],
+	plugins : ['react', 'jest'],
 	rules   : {
 		/** Errors **/
 		'camelcase'              : ['error', { properties: 'never' }],
-		'func-style'             : ['error', 'expression', { allowArrowFunctions: true }],
+		//'func-style'             : ['error', 'expression', { allowArrowFunctions: true }],
 		'no-array-constructor'   : 'error',
 		'no-iterator'            : 'error',
 		'no-nested-ternary'      : 'error',
@@ -24,6 +24,7 @@ module.exports = {
 		'react/jsx-no-bind'      : ['error', { allowArrowFunctions: true }],
 		'react/jsx-uses-react'   : 'error',
 		'react/prefer-es6-class' : ['error', 'never'],
+		'jest/valid-expect'      : ['error', { maxArgs: 3	}],
 
 		/** Warnings **/
 		'max-lines' : ['warn', {

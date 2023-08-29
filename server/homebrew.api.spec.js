@@ -10,7 +10,6 @@ describe('Tests for api', ()=>{
 
 	let modelBrew;
 	let saveFunc;
-	let removeFunc;
 	let markModifiedFunc;
 	let saved;
 
@@ -20,18 +19,15 @@ describe('Tests for api', ()=>{
 			saved = { ...this, _id: '1' };
 			return saved;
 		});
-		removeFunc = jest.fn(async function() {});
 		markModifiedFunc = jest.fn(()=>true);
 
 		modelBrew = (brew)=>({
 			...brew,
 			save         : saveFunc,
-			remove       : removeFunc,
 			markModified : markModifiedFunc,
 			toObject     : function() {
 				delete this.save;
 				delete this.toObject;
-				delete this.remove;
 				delete this.markModified;
 				return this;
 			}
@@ -62,6 +58,7 @@ describe('Tests for api', ()=>{
 			description : 'this is a description',
 			tags        : ['something', 'fun'],
 			systems     : ['D&D 5e'],
+			lang        : 'en',
 			renderer    : 'v3',
 			theme       : 'phb',
 			published   : true,
@@ -114,21 +111,32 @@ describe('Tests for api', ()=>{
 			expect(googleId).toEqual('12345');
 		});
 
-		it('should return id and google id from params', ()=>{
+		it('should return 12-char id and google id from params', ()=>{
 			const { id, googleId } = api.getId({
 				params : {
-					id : '123456789012abcdefghijkl'
+					id : '123456789012345678901234567890123abcdefghijkl'
 				}
 			});
-
+			
+			expect(googleId).toEqual('123456789012345678901234567890123');
 			expect(id).toEqual('abcdefghijkl');
-			expect(googleId).toEqual('123456789012');
+		});
+
+		it('should return 10-char id and google id from params', ()=>{
+			const { id, googleId } = api.getId({
+				params : {
+					id : '123456789012345678901234567890123abcdefghij'
+				}
+			});
+			
+			expect(googleId).toEqual('123456789012345678901234567890123');
+			expect(id).toEqual('abcdefghij');
 		});
 	});
 
 	describe('getBrew', ()=>{
 		const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
-		const notFoundError = 'Brew not found in Homebrewery database or Google Drive';
+		const notFoundError = { HBErrorCode: '05', message: 'Brew not found', name: 'BrewLoad Error', status: 404, accessType: 'share', brewId: '1' };
 
 		it('returns middleware', ()=>{
 			const getFn = api.getBrew('share');
@@ -186,7 +194,7 @@ describe('Tests for api', ()=>{
 			expect(next).toHaveBeenCalled();
 		});
 
-		it('throws if invalid author', async ()=>{
+		it('throws if not logged in as author', async ()=>{
 			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
 			model.get = jest.fn(()=>toBrewPromise({ title: 'test brew', authors: ['a'] }));
 
@@ -200,9 +208,24 @@ describe('Tests for api', ()=>{
 				err = e;
 			}
 
-			expect(err).toEqual(`The current logged in user does not have editor access to this brew.
+			expect(err).toEqual({ HBErrorCode: '04', message: 'User is not logged in', name: 'Access Error', status: 401, brewTitle: 'test brew', authors: ['a'] });
+		});
 
-If you believe you should have access to this brew, ask the file owner to invite you as an author by opening the brew, viewing the Properties tab, and adding your username to the "invited authors" list. You can then try to access this document again.`);
+		it('throws if logged in as invalid author', async ()=>{
+			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
+			model.get = jest.fn(()=>toBrewPromise({ title: 'test brew', authors: ['a'] }));
+
+			const fn = api.getBrew('edit', true);
+			const req = { brew: {}, account: { username: 'b' } };
+
+			let err;
+			try {
+				await fn(req, null, null);
+			} catch (e) {
+				err = e;
+			}
+
+			expect(err).toEqual({ HBErrorCode: '03', message: 'User is not an Author', name: 'Access Error', status: 401, brewTitle: 'test brew', authors: ['a'] });
 		});
 
 		it('does not throw if no authors', async ()=>{
@@ -255,6 +278,7 @@ If you believe you should have access to this brew, ask the file owner to invite
 				pageCount   : 1,
 				published   : false,
 				renderer    : 'legacy',
+				lang        : 'en',
 				shareId     : undefined,
 				systems     : [],
 				tags        : [],
@@ -448,6 +472,7 @@ brew`);
 				pageCount   : 1,
 				published   : false,
 				renderer    : 'V3',
+				lang        : 'en',
 				shareId     : expect.any(String),
 				style       : undefined,
 				systems     : [],
@@ -506,6 +531,7 @@ brew`);
 				pageCount   : undefined,
 				published   : false,
 				renderer    : undefined,
+				lang        : 'en',
 				shareId     : expect.any(String),
 				googleId    : expect.any(String),
 				style       : undefined,
@@ -545,7 +571,7 @@ brew`);
 
 	describe('deleteBrew', ()=>{
 		it('should handle case where fetching the brew returns an error', async ()=>{
-			api.getBrew = jest.fn(()=>async ()=>{ throw 'err'; });
+			api.getBrew = jest.fn(()=>async ()=>{ throw { message: 'err', HBErrorCode: '02' }; });
 			api.getId = jest.fn(()=>({ id: '1', googleId: '2' }));
 			model.deleteOne = jest.fn(async ()=>{});
 			const next = jest.fn(()=>{});
@@ -565,13 +591,14 @@ brew`);
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
+			model.deleteOne = jest.fn(async ()=>{});
 			const req = {};
 
 			await api.deleteBrew(req, res);
 
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
-			expect(removeFunc).toHaveBeenCalled();
+			expect(model.deleteOne).toHaveBeenCalled();
 		});
 
 		it('should throw on delete error', async ()=>{
@@ -583,7 +610,7 @@ brew`);
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
-			removeFunc = jest.fn(async ()=>{ throw 'err'; });
+			model.deleteOne = jest.fn(async ()=>{ throw 'err'; });
 			const req = {};
 
 			let err;
@@ -596,7 +623,7 @@ brew`);
 			expect(err).not.toBeUndefined();
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
-			expect(removeFunc).toHaveBeenCalled();
+			expect(model.deleteOne).toHaveBeenCalled();
 		});
 
 		it('should delete when one author', async ()=>{
@@ -608,13 +635,14 @@ brew`);
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
+			model.deleteOne = jest.fn(async ()=>{});
 			const req = { account: { username: 'test' } };
 
 			await api.deleteBrew(req, res);
 
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
-			expect(removeFunc).toHaveBeenCalled();
+			expect(model.deleteOne).toHaveBeenCalled();
 		});
 
 		it('should remove one author when multiple present', async ()=>{
@@ -626,6 +654,7 @@ brew`);
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
+			model.deleteOne = jest.fn(async ()=>{});
 			const req = { account: { username: 'test' } };
 
 			await api.deleteBrew(req, res);
@@ -633,7 +662,7 @@ brew`);
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(markModifiedFunc).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
-			expect(removeFunc).not.toHaveBeenCalled();
+			expect(model.deleteOne).not.toHaveBeenCalled();
 			expect(saveFunc).toHaveBeenCalled();
 			expect(saved.authors).toEqual(['test2']);
 		});
@@ -647,6 +676,7 @@ brew`);
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
+			model.deleteOne = jest.fn(async ()=>{});
 			saveFunc = jest.fn(async ()=>{ throw 'err'; });
 			const req = { account: { username: 'test' } };
 
@@ -660,7 +690,7 @@ brew`);
 			expect(err).not.toBeUndefined();
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
-			expect(removeFunc).not.toHaveBeenCalled();
+			expect(model.deleteOne).not.toHaveBeenCalled();
 			expect(saveFunc).toHaveBeenCalled();
 		});
 
@@ -673,6 +703,7 @@ brew`);
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
+			model.deleteOne = jest.fn(async ()=>{});
 			api.deleteGoogleBrew = jest.fn(async ()=>true);
 			const req = { account: { username: 'test' } };
 
@@ -680,7 +711,7 @@ brew`);
 
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
-			expect(removeFunc).toHaveBeenCalled();
+			expect(model.deleteOne).toHaveBeenCalled();
 			expect(api.deleteGoogleBrew).toHaveBeenCalled();
 		});
 
@@ -693,6 +724,7 @@ brew`);
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
+			model.deleteOne = jest.fn(async ()=>{});
 			api.deleteGoogleBrew = jest.fn(async ()=>{
 				 throw 'err';
 			});
@@ -702,7 +734,7 @@ brew`);
 
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
-			expect(removeFunc).toHaveBeenCalled();
+			expect(model.deleteOne).toHaveBeenCalled();
 			expect(api.deleteGoogleBrew).toHaveBeenCalled();
 		});
 
@@ -715,6 +747,7 @@ brew`);
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
+			model.deleteOne = jest.fn(async ()=>{});
 			api.deleteGoogleBrew = jest.fn(async ()=>true);
 			const req = { account: { username: 'test' } };
 
@@ -723,7 +756,7 @@ brew`);
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(markModifiedFunc).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
-			expect(removeFunc).not.toHaveBeenCalled();
+			expect(model.deleteOne).not.toHaveBeenCalled();
 			expect(api.deleteGoogleBrew).toHaveBeenCalled();
 			expect(saveFunc).toHaveBeenCalled();
 			expect(saved.authors).toEqual(['test2']);
@@ -741,6 +774,7 @@ brew`);
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
+			model.deleteOne = jest.fn(async ()=>{});
 			api.deleteGoogleBrew = jest.fn(async ()=>true);
 			const req = { account: { username: 'test2' } };
 
@@ -748,7 +782,7 @@ brew`);
 
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(model.findOne).toHaveBeenCalled();
-			expect(removeFunc).not.toHaveBeenCalled();
+			expect(model.deleteOne).not.toHaveBeenCalled();
 			expect(api.deleteGoogleBrew).not.toHaveBeenCalled();
 			expect(saveFunc).toHaveBeenCalled();
 			expect(saved.authors).toEqual(['test']);

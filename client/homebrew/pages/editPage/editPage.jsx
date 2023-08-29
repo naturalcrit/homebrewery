@@ -24,8 +24,7 @@ const Markdown = require('naturalcrit/markdown.js');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
 
-const googleDriveActive = require('../../googleDrive.png');
-const googleDriveInactive = require('../../googleDriveMono.png');
+const googleDriveIcon = require('../../googleDrive.svg');
 
 const SAVE_TIMEOUT = 3000;
 
@@ -222,10 +221,7 @@ const EditPage = createClass({
 
 	renderGoogleDriveIcon : function(){
 		return <Nav.item className='googleDriveStorage' onClick={this.handleGoogleClick}>
-			{this.state.saveGoogle
-				? <img src={googleDriveActive} alt='googleDriveActive'/>
-				: <img src={googleDriveInactive} alt='googleDriveInactive'/>
-			}
+			<img src={googleDriveIcon} className={this.state.saveGoogle ? '' : 'inactive'} alt='Google Drive icon'/>
 
 			{this.state.confirmGoogleTransfer &&
 				<div className='errorContainer' onClick={this.closeAlerts}>
@@ -255,6 +251,15 @@ const EditPage = createClass({
 					</a>
 					<div className='deny'>
 						Not Now
+					</div>
+				</div>
+			}
+
+			{this.state.alertTrashedGoogleBrew &&
+				<div className='errorContainer' onClick={this.closeAlerts}>
+				This brew is currently in your Trash folder on Google Drive!<br />If you want to keep it, make sure to move it before it is deleted permanently!<br />
+					<div className='confirm'>
+						OK
 					</div>
 				</div>
 			}
@@ -339,16 +344,6 @@ const EditPage = createClass({
 		const shareLink = this.processShareId();
 
 		return <Navbar>
-
-			{this.state.alertTrashedGoogleBrew &&
-				<div className='errorContainer' onClick={this.closeAlerts}>
-				This brew is currently in your Trash folder on Google Drive!<br />If you want to keep it, make sure to move it before it is deleted permanently!<br />
-					<div className='confirm'>
-						OK
-					</div>
-				</div>
-			}
-
 			<Nav.section>
 				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
 			</Nav.section>
@@ -402,7 +397,14 @@ const EditPage = createClass({
 						reportError={this.errorReported}
 						renderer={this.state.brew.renderer}
 					/>
-					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} theme={this.state.brew.theme} errors={this.state.htmlErrors} />
+					<BrewRenderer
+						text={this.state.brew.text}
+						style={this.state.brew.style}
+						renderer={this.state.brew.renderer}
+						theme={this.state.brew.theme}
+						errors={this.state.htmlErrors}
+						lang={this.state.brew.lang}
+					/>
 				</SplitPane>
 			</div>
 		</div>;

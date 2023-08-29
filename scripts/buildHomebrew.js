@@ -20,8 +20,8 @@ const transforms = {
 };
 
 const build = async ({ bundle, render, ssr })=>{
-	let css = await lessTransform.generate({ paths: './shared' });
-	css = `@layer bundle {\n${css}\n}`;
+	const css = await lessTransform.generate({ paths: './shared' });
+	//css = `@layer bundle {\n${css}\n}`;
 	await fs.outputFile('./build/homebrew/bundle.css', css);
 	await fs.outputFile('./build/homebrew/bundle.js', bundle);
 	await fs.outputFile('./build/homebrew/ssr.js', ssr);
@@ -135,10 +135,12 @@ fs.emptyDirSync('./build');
 
 })().catch(console.error);
 
-//In development set up a watch server and livereload
+//In development, set up LiveReload (refreshes browser), and Nodemon (restarts server)
 if(isDev){
-	livereload('./build');
-	watchFile('./server.js', {
-		watch : ['./client', './server', './themes'] // Watch additional folders if you want
+	livereload('./build');     // Install the Chrome extension LiveReload to automatically refresh the browser
+	watchFile('./server.js', { // Restart server when change detected to this file or any nested directory from here
+		ignore : ['./build', './client', './themes'],  // Ignore folders that are not running server code / avoids unneeded restarts
+		ext    : 'js json'                             // Extensions to watch (only .js/.json by default)
+		//watch : ['./server', './themes'],            // Watch additional folders if needed
 	});
 }

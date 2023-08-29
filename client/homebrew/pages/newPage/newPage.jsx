@@ -20,9 +20,10 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
 
-const BREWKEY = 'homebrewery-new';
+const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
-const METAKEY = 'homebrewery-new-meta';
+const METAKEY  = 'homebrewery-new-meta';
+let SAVEKEY;
 
 
 const NewPage = createClass({
@@ -61,16 +62,21 @@ const NewPage = createClass({
 			// brew.description = metaStorage?.description || this.state.brew.description;
 			brew.renderer = metaStorage?.renderer ?? brew.renderer;
 			brew.theme    = metaStorage?.theme    ?? brew.theme;
-
-			this.setState({
-				brew : brew
-			});
+			brew.lang     = metaStorage?.lang     ?? brew.lang;
 		}
+
+		SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${global.account?.username || ''}`;
+		const saveStorage = localStorage.getItem(SAVEKEY) || 'HOMEBREWERY';
+
+		this.setState({
+			brew       : brew,
+			saveGoogle : (saveStorage == 'GOOGLE-DRIVE' && this.state.saveGoogle)
+		});
 
 		localStorage.setItem(BREWKEY, brew.text);
 		if(brew.style)
 			localStorage.setItem(STYLEKEY, brew.style);
-		localStorage.setItem(METAKEY, JSON.stringify({ 'renderer': brew.renderer, 'theme': brew.theme }));
+		localStorage.setItem(METAKEY, JSON.stringify({ 'renderer': brew.renderer, 'theme': brew.theme, 'lang': brew.lang }));
 	},
 	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
@@ -114,13 +120,16 @@ const NewPage = createClass({
 	handleMetaChange : function(metadata){
 		this.setState((prevState)=>({
 			brew : { ...prevState.brew, ...metadata },
-		}));
-		localStorage.setItem(METAKEY, JSON.stringify({
-			// 'title'       : this.state.brew.title,
-			// 'description' : this.state.brew.description,
-			'renderer' : this.state.brew.renderer,
-			'theme'    : this.state.brew.theme
-		}));
+		}), ()=>{
+			localStorage.setItem(METAKEY, JSON.stringify({
+				// 'title'       : this.state.brew.title,
+				// 'description' : this.state.brew.description,
+				'renderer' : this.state.brew.renderer,
+				'theme'    : this.state.brew.theme,
+				'lang'     : this.state.brew.lang
+			}));
+		});
+		;
 	},
 
 	save : async function(){
@@ -211,7 +220,7 @@ const NewPage = createClass({
 						onMetaChange={this.handleMetaChange}
 						renderer={this.state.brew.renderer}
 					/>
-					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} theme={this.state.brew.theme} errors={this.state.htmlErrors}/>
+					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} theme={this.state.brew.theme} lang={this.state.brew.lang} errors={this.state.htmlErrors}/>
 				</SplitPane>
 			</div>
 		</div>;

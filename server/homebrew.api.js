@@ -27,8 +27,13 @@ const api = {
 
 		// If the id is longer than 12, then it's a google id + the edit id. This splits the longer id up.
 		if(id.length > 12) {
-			googleId = id.slice(0, -12);
-			id = id.slice(-12);
+			if(id.length >= (33 + 12)) {    // googleId is minimum 33 chars (may increase)
+				googleId = id.slice(0, -12);  // current editId is 12 chars
+			} else {                        // old editIds used to be 10 chars;
+				googleId = id.slice(0, -10);  // if total string is too short, must be old brew
+				console.log('Old brew, using 10-char Id');
+			}
+			id = id.slice(googleId.length);
 		}
 		return { id, googleId };
 	},
@@ -57,7 +62,14 @@ const api = {
 						googleError = err;
 					});
 				// Throw any error caught while attempting to retrieve Google brew.
-				if(googleError) throw googleError;
+				if(googleError) {
+					const reason = googleError.errors?.[0].reason;
+					if(reason == 'notFound') {
+						throw { ...googleError, HBErrorCode: '02', authors: stub?.authors, account: req.account?.username };
+					} else {
+						throw { ...googleError, HBErrorCode: '01' };
+					}
+				}
 				// Combine the Homebrewery stub with the google brew, or if the stub doesn't exist just use the google brew
 				stub = stub ? _.assign({ ...api.excludeStubProps(stub), stubbed: true }, api.excludeGoogleProps(googleBrew)) : googleBrew;
 			}
@@ -65,14 +77,16 @@ const api = {
 			const isAuthor = stub?.authors?.includes(req.account?.username);
 			const isInvited = stub?.invitedAuthors?.includes(req.account?.username);
 			if(accessType === 'edit' && (authorsExist && !(isAuthor || isInvited))) {
-				throw `The current logged in user does not have editor access to this brew.
-
-If you believe you should have access to this brew, ask the file owner to invite you as an author by opening the brew, viewing the Properties tab, and adding your username to the "invited authors" list. You can then try to access this document again.`;
+				const accessError = { name: 'Access Error', status: 401 };
+				if(req.account){
+					throw { ...accessError, message: 'User is not an Author', HBErrorCode: '03', authors: stub.authors, brewTitle: stub.title };
+				}
+				throw { ...accessError, message: 'User is not logged in', HBErrorCode: '04', authors: stub.authors, brewTitle: stub.title };
 			}
 
 			// If after all of that we still don't have a brew, throw an exception
 			if(!stub && !stubOnly) {
-				throw 'Brew not found in Homebrewery database or Google Drive';
+				throw { name: 'BrewLoad Error', message: 'Brew not found', status: 404, HBErrorCode: '05', accessType: accessType, brewId: id };
 			}
 
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
@@ -181,7 +195,7 @@ If you believe you should have access to this brew, ask the file owner to invite
 		saved = await newHomebrew.save()
 			.catch((err)=>{
 				console.error(err, err.toString(), err.stack);
-				throw `Error while creating new brew, ${err.toString()}`;
+				throw { name: 'BrewSave Error', message: `Error while creating new brew, ${err.toString()}`, status: 500, HBErrorCode: '06' };
 			});
 		if(!saved) return;
 		saved = saved.toObject();
@@ -283,10 +297,13 @@ If you believe you should have access to this brew, ask the file owner to invite
 		try {
 			await api.getBrew('edit')(req, res, ()=>{});
 		} catch (err) {
-			const { id, googleId } = api.getId(req);
-			console.warn(`No google brew found for id ${googleId}, the stub with id ${id} will be deleted.`);
-			await HomebrewModel.deleteOne({ editId: id });
-			return next();
+			// Only if the error code is HBErrorCode '02', that is, Google returned "404 - Not Found"
+			if(err.HBErrorCode == '02') {
+				const { id, googleId } = api.getId(req);
+				console.warn(`No google brew found for id ${googleId}, the stub with id ${id} will be deleted.`);
+				await HomebrewModel.deleteOne({ editId: id });
+				return next();
+			}
 		}
 
 		let brew = req.brew;
@@ -305,10 +322,10 @@ If you believe you should have access to this brew, ask the file owner to invite
 
 			if(brew.authors.length === 0) {
 				// Delete brew if there are no authors left
-				await brew.remove()
+				await HomebrewModel.deleteOne({ _id: brew._id })
 					.catch((err)=>{
 						console.error(err);
-						throw { status: 500, message: 'Error while removing' };
+						throw { name: 'BrewDelete Error', message: 'Error while removing', status: 500, HBErrorCode: '07', brewId: brew._id };
 					});
 			} else {
 				if(shouldDeleteGoogleBrew) {
@@ -320,7 +337,7 @@ If you believe you should have access to this brew, ask the file owner to invite
 				brew.markModified('authors'); //Mongo will not properly update arrays without markModified()
 				await brew.save()
 					.catch((err)=>{
-						throw { status: 500, message: err };
+						throw { name: 'BrewAuthorDelete Error', message: err, status: 500, HBErrorCode: '08', brewId: brew._id };
 					});
 			}
 		}

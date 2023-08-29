@@ -15,6 +15,7 @@ const DEFAULT_BREW = {
 	authors     : [],
 	tags        : [],
 	systems     : [],
+	lang        : 'en',
 	thumbnail   : '',
 	views       : 0,
 	published   : false,

@@ -5,6 +5,7 @@ const { Meta } = require('vitreum/headtags');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
+const MetadataNav = require('../../navbar/metadata.navitem.jsx');
 const PrintLink = require('../../navbar/print.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account = require('../../navbar/account.navitem.jsx');
@@ -50,8 +51,10 @@ const SharePage = createClass({
 		return <div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
 			<Navbar>
-				<Nav.section>
-					<Nav.item className='brewTitle'>{this.props.brew.title}</Nav.item>
+				<Nav.section className='titleSection'>
+					<MetadataNav brew={this.props.brew}>
+						<Nav.item className='brewTitle'>{this.props.brew.title}</Nav.item>
+					</MetadataNav>
 				</Nav.section>
 
 				<Nav.section>

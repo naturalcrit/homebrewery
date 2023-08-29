@@ -36,11 +36,15 @@
 		flex: 5 0 200px;
 		gap: 10px;
 	}
+
+
+
 	.field{
 		display       : flex;
 		flex-wrap     : wrap;
 		width         : 100%;
 		min-width     : 200px;
+		position      : relative;
 		&>label{
 			width          : 80px;
 			font-size      : 11px;
@@ -57,6 +61,9 @@
 		}
 		input[type='text'], textarea {
 			border : 1px solid gray;
+			&:focus {
+				outline: 1px solid #444;
+			}
 		}
 		&.thumbnail{
 			height      : 1.4em;
@@ -88,9 +95,15 @@
 			}
 		}
 
+		&.language .language-dropdown {
+			max-width : 150px;
+			z-index   : 200;
+		}
 		small {
-			font-size  : 0.6em;
-			font-style : italic;
+			font-size   : 0.6em;
+			font-style  : italic;
+			line-height : 1.4em;
+			display     : inline-block;
 		}
 	}
 
@@ -159,7 +172,7 @@
 		.navDropdownContainer {
 			background-color	: white;
 			position			: relative;
-			z-index				: 500;
+			z-index				: 100;
 			&.disabled {
 				font-style			:italic;
 				font-style			: italic;

@@ -61,7 +61,8 @@ const SplitPane = createClass({
 		return result;
 	},
 
-	handleUp : function(){
+	handleUp : function(e){
+		e.preventDefault();
 		if(this.state.isDragging){
 			this.props.onDragFinish(this.state.currentDividerPos);
 			window.localStorage.setItem(this.props.storageKey, this.state.currentDividerPos);
@@ -78,6 +79,7 @@ const SplitPane = createClass({
 	handleMove : function(e){
 		if(!this.state.isDragging) return;
 
+		e.preventDefault();
 		const newSize = this.limitPosition(e.pageX);
 		this.setState({
 			currentDividerPos : newSize,
@@ -122,7 +124,7 @@ const SplitPane = createClass({
 	renderDivider : function(){
 		return <>
 			{this.renderMoveArrows()}
-			<div className='divider' onMouseDown={this.handleDown} >
+			<div className='divider' onPointerDown={this.handleDown} >
 				<div className='dots'>
 					<i className='fas fa-circle' />
 					<i className='fas fa-circle' />
@@ -133,7 +135,7 @@ const SplitPane = createClass({
 	},
 
 	render : function(){
-		return <div className='splitPane' onMouseMove={this.handleMove} onMouseUp={this.handleUp}>
+		return <div className='splitPane' onPointerMove={this.handleMove} onPointerUp={this.handleUp}>
 			<Pane
 				ref='pane1'
 				width={this.state.currentDividerPos}
