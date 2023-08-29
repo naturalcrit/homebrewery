@@ -427,7 +427,7 @@ const renderPage = async (req, res)=>{
 		lastActivity = new Date;
 		await UserInfoModel.updateActivity(req.account.username);
 	}
-  
+
 	// Create configuration object
 	const configuration = {
 		local       : isLocalEnvironment,
