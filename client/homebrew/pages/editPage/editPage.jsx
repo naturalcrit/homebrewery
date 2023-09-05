@@ -91,7 +91,7 @@ const EditPage = createClass({
 		if(!(e.ctrlKey || e.metaKey)) return;
 		const S_KEY = 83;
 		const P_KEY = 80;
-		if(e.keyCode == S_KEY) this.save();
+		if(e.keyCode == S_KEY) this.trySave(true);
 		if(e.keyCode == P_KEY) window.open(`/print/${this.processShareId()}?dialog=true`, '_blank').focus();
 		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
 			e.stopPropagation();
@@ -137,13 +137,14 @@ const EditPage = createClass({
 		return !_.isEqual(this.state.brew, this.savedBrew);
 	},
 
-	trySave : function(){
+	trySave : function(immediate=false){
 		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
 		if(this.hasChanges()){
 			this.debounceSave();
 		} else {
 			this.debounceSave.cancel();
 		}
+		if(immediate) this.debounceSave.flush();
 	},
 
 	handleGoogleClick : function(){
