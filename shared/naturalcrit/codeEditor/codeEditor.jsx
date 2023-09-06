@@ -4,58 +4,32 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
-const closeTag = require('./close-tag');
+const closeTag = require('./helpers/close-tag');
+const Hints = require('./helpers/widget-elements/hints/hints.jsx');
+const CodeMirror = require('./code-mirror.js');
 
-let CodeMirror;
-if(typeof navigator !== 'undefined'){
-	CodeMirror = require('codemirror');
-
-	//Language Modes
-	require('codemirror/mode/gfm/gfm.js'); //Github flavoured markdown
-	require('codemirror/mode/css/css.js');
-	require('codemirror/mode/javascript/javascript.js');
-
-	//Addons
-	//Code folding
-	require('codemirror/addon/fold/foldcode.js');
-	require('codemirror/addon/fold/foldgutter.js');
-	//Search and replace
-	require('codemirror/addon/search/search.js');
-	require('codemirror/addon/search/searchcursor.js');
-	require('codemirror/addon/search/jump-to-line.js');
-	require('codemirror/addon/search/match-highlighter.js');
-	require('codemirror/addon/search/matchesonscrollbar.js');
-	require('codemirror/addon/dialog/dialog.js');
-	//Trailing space highlighting
-	// require('codemirror/addon/edit/trailingspace.js');
-	//Active line highlighting
-	// require('codemirror/addon/selection/active-line.js');
-	//Scroll past last line
-	require('codemirror/addon/scroll/scrollpastend.js');
-	//Auto-closing
-	//XML code folding is a requirement of the auto-closing tag feature and is not enabled
-	require('codemirror/addon/fold/xml-fold.js');
-	require('codemirror/addon/edit/closetag.js');
-
-	const foldCode = require('./fold-code');
-	foldCode.registerHomebreweryHelper(CodeMirror);
-}
+const themeWidgets = require('../../../themes/V3/5ePHB/widgets');
 
 const CodeEditor = createClass({
 	displayName     : 'CodeEditor',
+	hintsRef        : React.createRef(),
 	getDefaultProps : function() {
 		return {
 			language      : '',
 			value         : '',
 			wrap          : true,
 			onChange      : ()=>{},
-			enableFolding : true
+			enableFolding : true,
 		};
 	},
 
 	getInitialState : function() {
 		return {
-			docs : {}
+			docs        : {},
+			widgetUtils : {},
+			widgets     : {},
+			hints       : [],
+			hintsField  : undefined,
 		};
 	},
 
@@ -91,6 +65,9 @@ const CodeEditor = createClass({
 		} else {
 			this.codeMirror.setOption('foldOptions', false);
 		}
+
+		this.state.widgetUtils.updateWidgetGutter();
+		this.state.widgetUtils.updateAllLineWidgets();
 	},
 
 	buildEditor : function() {
@@ -155,7 +132,7 @@ const CodeEditor = createClass({
 			},
 			foldGutter        : true,
 			foldOptions       : this.foldOptions(this.codeMirror),
-			gutters           : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+			gutters           : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'widget-gutter'],
 			autoCloseTags     : true,
 			styleActiveLine   : true,
 			showTrailingSpace : false,
@@ -169,9 +146,69 @@ const CodeEditor = createClass({
 		});
 		closeTag.autoCloseCurlyBraces(CodeMirror, this.codeMirror);
 
+		this.setState({
+			widgetUtils : require('./helpers/widgets')(themeWidgets, this.codeMirror, (hints, field)=>{
+				this.setState({
+					hints,
+					hintsField : field
+				});
+			})
+		});
+
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
-		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
+		this.codeMirror.on('change', (cm)=>{
+			this.props.onChange(cm.getValue());
+			this.state.widgetUtils.updateWidgetGutter();
+		});
+
+		this.codeMirror.on('cursorActivity', (cm)=>{
+			const { line } = cm.getCursor();
+			for (const key in this.state.widgets) {
+				if(key != line) {
+					this.state.widgetUtils.removeLineWidget(key, this.state.widgets[key]);
+				}
+			}
+			this.setState({
+				hints      : [],
+				hintsField : undefined
+			});
+			const { widgets } = this.codeMirror.lineInfo(line);
+			if(!widgets) {
+				const widget = this.state.widgetUtils.updateLineWidgets(line);
+				if(widget) {
+					this.setState({
+						widgets : {
+							[line] : widget
+						}
+					});
+				}
+			}
+		});
+
 		this.updateSize();
+
+		this.codeMirror.on('gutterClick', (cm, n)=>{
+			// Open line widgets when 'widget-gutter' marker clicked
+			if(this.codeMirror.lineInfo(n).gutterMarkers?.['widget-gutter']) {
+				const { widgets } = this.codeMirror.lineInfo(n);
+				if(!widgets) {
+					const widget = this.state.widgetUtils.updateLineWidgets(n);
+					if(widget) {
+						this.setState({
+							widgets : { ...this.state.widgets, [n]: widget }
+						});
+					}
+				} else {
+					for (const widget of widgets) {
+						this.state.widgetUtils.removeLineWidget(n, widget);
+					}
+					this.setState({
+						hints      : [],
+						hintsField : undefined
+					});
+				}
+			}
+		});
 	},
 
 	indent : function () {
@@ -403,10 +440,19 @@ const CodeEditor = createClass({
 			}
 		};
 	},
+	keyDown : function(e) {
+		if(this.hintsRef.current) {
+			this.hintsRef.current.keyDown(e);
+		}
+	},
 	//----------------------//
 
 	render : function(){
-		return <div className='codeEditor' ref='editor' style={this.props.style}/>;
+		const { hints, hintsField } = this.state;
+		return <React.Fragment>
+			<div className='codeEditor' ref='editor' style={this.props.style} onKeyDown={this.keyDown}/>
+			<Hints ref={this.hintsRef} hints={hints} field={hintsField}/>
+		</React.Fragment>;
 	}
 });
 

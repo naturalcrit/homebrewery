@@ -1,0 +1,23 @@
+.images {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-height: 60vh;
+  overflow-y: scroll;
+
+  img {
+    flex: 0 0 auto;
+    max-width: 10vw;
+    max-height: 20vh;
+    border-radius: 10px;
+
+    &:hover {
+      background-color: rgba(0, 0, 0, .1);
+    }
+
+    &.selected {
+      background-color: rgba(0, 0, 0, .175);
+    }
+  }
+}
+

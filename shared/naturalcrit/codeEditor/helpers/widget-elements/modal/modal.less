@@ -1,0 +1,58 @@
+@import 'naturalcrit/styles/colors.less';
+
+.bg-cover {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  z-index: 10000000;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, .5);
+}
+
+.modal {
+  position: absolute;
+  top: 10vh;
+  left: 25vw;
+  width: 50vw;
+  min-height: 50vh;
+  max-height: 80vh;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 5px 5px 50px black;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  h1 {
+    margin-top: 5px;
+    margin-left: 5px;
+    font-size: 2em;
+  }
+
+  >* {
+    flex: 0 0 auto;
+  }
+
+  .action-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: left;
+
+    >* {
+      flex: 0 0 auto;
+      margin-left: 5px;
+    }
+  }
+
+  button {
+    &#cancel {
+      background-color: @redLight;
+
+      &:hover {
+        background-color: @red;
+      }
+    }
+  }
+}

@@ -2,6 +2,8 @@
 @import (less) 'codemirror/addon/fold/foldgutter.css';
 @import (less) 'codemirror/addon/search/matchesonscrollbar.css';
 @import (less) 'codemirror/addon/dialog/dialog.css';
+@import (less) 'codemirror/addon/hint/show-hint.css';
+@import 'naturalcrit/styles/colors.less';
 
 @keyframes sourceMoveAnimation {
 	50%  {background-color: red;   color: white;}
@@ -17,7 +19,7 @@
     text-shadow: none;
     font-weight: 600;
     color: grey;
-}
+  }
 
   .sourceMoveFlash .CodeMirror-line{
     animation-name: sourceMoveAnimation;
@@ -33,4 +35,51 @@
   //    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAQAgMAAABW5NbuAAAACVBMVEVHcEwAAAAAAAAWawmTAAAAA3RSTlMAPBJ6PMxpAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAFUlEQVQI12NgwACcCQysASAEZGAAACMuAX06aCQUAAAAAElFTkSuQmCC) no-repeat right;
   //  }
   //}
+
+  .widget-gutter {
+    width: .7em;
+  }
+
+  .snippet-options-widget {
+    padding: 2px 0;
+
+    >div {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    * {
+      margin: 0 2px 2px 2px;
+    }
+
+    input {
+      max-width: 10vw;
+    }
+  }
+
+  .widget-field {
+    border: 2px solid #ddd;
+
+    &.default {
+      background-color: @purple;
+      border: 2px solid @purple;
+      color: white;
+
+      >input {
+        background-color: @purple;
+        color: white;
+      }
+    }
+
+    &.suggested {
+      background-color: #ddd;
+      border: 2px dashed grey;
+      color: grey;
+
+      >input {
+        background-color: #ddd;
+        color: black;
+      }
+    }
+  }
 }
