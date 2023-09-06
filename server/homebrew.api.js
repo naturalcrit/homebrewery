@@ -153,6 +153,9 @@ const api = {
 		brew.text = api.mergeBrewText(brew);
 
 		_.defaults(brew, DEFAULT_BREW);
+
+		brew.title = brew.title.trim();
+		brew.description = brew.description.trim();
 	},
 	newGoogleBrew : async (account, brew, res)=>{
 		const oAuth2Client = GoogleActions.authCheck(account, res);
@@ -217,6 +220,8 @@ const api = {
 		const { saveToGoogle, removeFromGoogle } = req.query;
 		let afterSave = async ()=>true;
 
+		brew.title = brew.title.trim();
+		brew.description = brew.description.trim() || '';
 		brew.text = api.mergeBrewText(brew);
 
 		if(brew.googleId && removeFromGoogle) {
