@@ -106,12 +106,12 @@ fs.emptyDirSync('./build');
 	const editorThemeFile = './themes/codeMirror/editorThemes.json';
 	if(fs.existsSync(editorThemeFile)) fs.rmSync(editorThemeFile);
 	const stream = fs.createWriteStream(editorThemeFile, { flags: 'a' });
-	stream.write('[\n');
+	stream.write('[\n"default"');
 
 	for (themeFile of editorThemeFiles) {
-		stream.write(`"${themeFile.slice(0, -4)}",\n`);
+		stream.write(`,\n"${themeFile.slice(0, -4)}"`);
 	}
-	stream.write('"default"\n]\n');
+	stream.write('\n]\n');
 	stream.end();
 
 	await fs.copy('./node_modules/codemirror/theme', './build/homebrew/cm-themes');
