@@ -99,6 +99,24 @@ fs.emptyDirSync('./build');
 	await fs.copy('./themes/assets', './build/assets');
 	await fs.copy('./client/icons', './build/icons');
 
+	//v==---------------------------MOVE CM EDITOR THEMES -----------------------------==v//
+
+	editorThemeFiles = fs.readdirSync('./node_modules/codemirror/theme');
+
+	const editorThemeFile = './themes/codeMirror/editorThemes.json';
+	if(fs.existsSync(editorThemeFile)) fs.rmSync(editorThemeFile);
+	const stream = fs.createWriteStream(editorThemeFile, { flags: 'a' });
+	stream.write('[\n"default"');
+
+	for (themeFile of editorThemeFiles) {
+		stream.write(`,\n"${themeFile.slice(0, -4)}"`);
+	}
+	stream.write('\n]\n');
+	stream.end();
+
+	await fs.copy('./node_modules/codemirror/theme', './build/homebrew/cm-themes');
+	await fs.copy('./themes/codeMirror', './build/homebrew/codeMirror');
+
 	//v==----------------------------- BUNDLE PACKAGES --------------------------------==v//
 
 	const bundles = await pack('./client/homebrew/homebrew.jsx', {
@@ -135,12 +153,12 @@ fs.emptyDirSync('./build');
 
 })().catch(console.error);
 
-//In development set up a watch server and livereload
+//In development, set up LiveReload (refreshes browser), and Nodemon (restarts server)
 if(isDev){
-	livereload('./build');
-	watchFile('./server.js', { // Rebuild when change detected to this file or any nested directory from here
-		ignore : ['./build'],    // Ignore ./build or it will rebuild again
-		ext    : 'less',             // Other extensions to watch (only .js/.json/.jsx by default)
-		//watch: ['./client', './server', './themes'], // Watch additional folders if you want
+	livereload('./build');     // Install the Chrome extension LiveReload to automatically refresh the browser
+	watchFile('./server.js', { // Restart server when change detected to this file or any nested directory from here
+		ignore : ['./build', './client', './themes'],  // Ignore folders that are not running server code / avoids unneeded restarts
+		ext    : 'js json'                             // Extensions to watch (only .js/.json by default)
+		//watch : ['./server', './themes'],            // Watch additional folders if needed
 	});
 }
