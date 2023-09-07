@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 250, "skipBlankLines": true, "skipComments": true}]*/
 require('./snippetbar.less');
 const React = require('react');
 const createClass = require('create-react-class');
@@ -15,7 +16,6 @@ ThemeSnippets['V3_5eDMG']     = require('themes/V3/5eDMG/snippets.js');
 ThemeSnippets['V3_Journal']   = require('themes/V3/Journal/snippets.js');
 ThemeSnippets['V3_Blank']     = require('themes/V3/Blank/snippets.js');
 
-// const EditorThemes = require('../themes/codeMirror/editorThemes.json');
 const EditorThemes = require('build/homebrew/codeMirror/editorThemes.json');
 
 const execute = function(val, props){
