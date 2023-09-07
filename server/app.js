@@ -259,6 +259,7 @@ app.get('/user/:username', async (req, res, next)=>{
 					brew.pageCount = googleBrews[match].pageCount;
 					brew.renderer = googleBrews[match].renderer;
 					brew.version = googleBrews[match].version;
+					brew.webViewLink = googleBrews[match].webViewLink;
 					googleBrews.splice(match, 1);
 				}
 			}
