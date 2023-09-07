@@ -15,6 +15,9 @@ ThemeSnippets['V3_5eDMG']     = require('themes/V3/5eDMG/snippets.js');
 ThemeSnippets['V3_Journal']   = require('themes/V3/Journal/snippets.js');
 ThemeSnippets['V3_Blank']     = require('themes/V3/Blank/snippets.js');
 
+// const EditorThemes = require('../themes/codeMirror/editorThemes.json');
+const EditorThemes = require('build/homebrew/codeMirror/editorThemes.json');
+
 const execute = function(val, props){
 	if(_.isFunction(val)) return val(props);
 	return val;
@@ -115,7 +118,7 @@ const Snippetbar = createClass({
 	renderThemeSelector : function(){
 		return <div className='themeSelector'>
 			<select value={this.props.currentEditorTheme} onChange={this.changeTheme} onMouseDown={(this.changeTheme)}>
-				{global.config.codeMirrorThemes.map((theme, key)=>{
+				{EditorThemes.map((theme, key)=>{
 					return <option key={key} value={theme}>{theme}</option>;
 				})}
 			</select>
@@ -229,5 +232,4 @@ const SnippetGroup = createClass({
 			</div>
 		</div>;
 	},
-
 });

@@ -115,7 +115,7 @@ fs.emptyDirSync('./build');
 	stream.end();
 
 	await fs.copy('./node_modules/codemirror/theme', './build/homebrew/cm-themes');
-	// await fs.copy('./themes/codeMirror', './build/themes/codeMirror');
+	await fs.copy('./themes/codeMirror', './build/homebrew/codeMirror');
 
 	//v==----------------------------- BUNDLE PACKAGES --------------------------------==v//
 
