@@ -106,7 +106,7 @@ const GoogleActions = {
 			const obj = await drive.files.list({
 				pageSize  : 1000,
 				pageToken : NextPageToken || '',
-				fields    : 'nextPageToken, files(id, name, description, createdTime, modifiedTime, properties)',
+				fields    : 'nextPageToken, files(id, name, description, createdTime, modifiedTime, properties, webViewLink)',
 				q         : 'mimeType != \'application/vnd.google-apps.folder\' and trashed = false'
 			})
 			.catch((err)=>{
@@ -139,7 +139,8 @@ const GoogleActions = {
 				published   : file.properties.published ? file.properties.published == 'true' : false,
 				systems     : [],
 				lang        : file.properties.lang,
-				thumbnail   : file.properties.thumbnail
+				thumbnail   : file.properties.thumbnail,
+				webViewLink : file.webViewLink
 			};
 		});
 	  return brews;

@@ -33,7 +33,7 @@ body {
 	}
 }
 
-.useColumns(@multiplier : 1, @fillMode: balance){
+.useColumns(@multiplier : 1, @fillMode: auto){
 	column-fill          : @fillMode;
 	column-count         : 2;
 }
@@ -42,6 +42,7 @@ body {
 	column-span       : all;
 	columns           : inherit;
 	column-gap        : inherit;
+	column-fill       : inherit;
 }
 .page{
 	.useColumns();

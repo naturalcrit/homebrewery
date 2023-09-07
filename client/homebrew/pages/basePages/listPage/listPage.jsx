@@ -89,7 +89,7 @@ const ListPage = createClass({
 	sortBrewOrder : function(brew){
 		if(!brew.title){brew.title = 'No Title';}
 		const mapping = {
-			'alpha'   : _.deburr(brew.title.toLowerCase()),
+			'alpha'   : _.deburr(brew.title.trim().toLowerCase()),
 			'created' : moment(brew.createdAt).format(),
 			'updated' : moment(brew.updatedAt).format(),
 			'views'   : brew.views,

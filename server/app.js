@@ -257,6 +257,7 @@ app.get('/user/:username', async (req, res, next)=>{
 					brew.pageCount = googleBrews[match].pageCount;
 					brew.renderer = googleBrews[match].renderer;
 					brew.version = googleBrews[match].version;
+					brew.webViewLink = googleBrews[match].webViewLink;
 					googleBrews.splice(match, 1);
 				}
 			}
@@ -267,6 +268,9 @@ app.get('/user/:username', async (req, res, next)=>{
 	}
 
 	req.brews = _.map(brews, (brew)=>{
+		// Clean up brew data
+		brew.title = brew.title?.trim();
+		brew.description = brew.description?.trim();
 		return sanitizeBrew(brew, ownAccount ? 'edit' : 'share');
 	});
 
