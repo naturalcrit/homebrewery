@@ -101,7 +101,10 @@ fs.emptyDirSync('./build');
 
 	//v==---------------------------MOVE CM EDITOR THEMES -----------------------------==v//
 
-	editorThemeFiles = fs.readdirSync('./node_modules/codemirror/theme');
+	const editorThemesBuildDir = './build/homebrew/cm-themes';
+	await fs.copy('./node_modules/codemirror/theme', editorThemesBuildDir);
+	await fs.copy('./themes/codeMirror/customThemes', editorThemesBuildDir);
+	editorThemeFiles = fs.readdirSync(editorThemesBuildDir);
 
 	const editorThemeFile = './themes/codeMirror/editorThemes.json';
 	if(fs.existsSync(editorThemeFile)) fs.rmSync(editorThemeFile);
@@ -114,7 +117,7 @@ fs.emptyDirSync('./build');
 	stream.write('\n]\n');
 	stream.end();
 
-	await fs.copy('./node_modules/codemirror/theme', './build/homebrew/cm-themes');
+	
 	await fs.copy('./themes/codeMirror', './build/homebrew/codeMirror');
 
 	//v==----------------------------- BUNDLE PACKAGES --------------------------------==v//
