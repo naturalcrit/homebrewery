@@ -10,6 +10,8 @@ const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
 const SnippetBar = require('./snippetbar/snippetbar.jsx');
 const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
+const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
+
 const SNIPPETBAR_HEIGHT = 25;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
@@ -34,12 +36,14 @@ const Editor = createClass({
 			onMetaChange  : ()=>{},
 			reportError   : ()=>{},
 
-			renderer : 'legacy'
+			editorTheme : 'default',
+			renderer    : 'legacy'
 		};
 	},
 	getInitialState : function() {
 		return {
-			view : 'text' //'text', 'style', 'meta'
+			editorTheme : this.props.editorTheme,
+			view        : 'text' //'text', 'style', 'meta'
 		};
 	},
 
@@ -51,6 +55,13 @@ const Editor = createClass({
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
+
+		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
+		if(editorTheme) {
+			this.setState({
+				editorTheme : editorTheme
+			});
+		}
 	},
 
 	componentWillUnmount : function() {
@@ -255,6 +266,13 @@ const Editor = createClass({
 		this.refs.codeEditor?.updateSize();
 	},
 
+	updateEditorTheme : function(newTheme){
+		window.localStorage.setItem(EDITOR_THEME_KEY, newTheme);
+		this.setState({
+			editorTheme : newTheme
+		});
+	},
+
 	//Called by CodeEditor after document switch, so Snippetbar can refresh UndoHistory
 	rerenderParent : function (){
 		this.forceUpdate();
@@ -269,6 +287,7 @@ const Editor = createClass({
 					view={this.state.view}
 					value={this.props.brew.text}
 					onChange={this.props.onTextChange}
+					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent} />
 			</>;
 		}
@@ -281,6 +300,7 @@ const Editor = createClass({
 					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
 					onChange={this.props.onStyleChange}
 					enableFolding={false}
+					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent} />
 			</>;
 		}
@@ -324,6 +344,8 @@ const Editor = createClass({
 					undo={this.undo}
 					redo={this.redo}
 					historySize={this.historySize()}
+					currentEditorTheme={this.state.editorTheme}
+					updateEditorTheme={this.updateEditorTheme}
 					cursorPos={this.refs.codeEditor?.getCursorPosition() || {}} />
 
 				{this.renderEditor()}
