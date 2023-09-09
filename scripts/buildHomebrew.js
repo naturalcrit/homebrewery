@@ -117,7 +117,7 @@ fs.emptyDirSync('./build');
 	stream.write('\n]\n');
 	stream.end();
 
-	
+
 	await fs.copy('./themes/codeMirror', './build/homebrew/codeMirror');
 
 	//v==----------------------------- BUNDLE PACKAGES --------------------------------==v//
