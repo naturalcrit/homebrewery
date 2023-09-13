@@ -1,19 +1,19 @@
-    /* Main BG color and normal text color */
-    .CodeMirror {
+/* Main BG color and normal text color */
+.CodeMirror {
     background: #293134;
     color: #91A6AA;
 }
 
 /* Brew BG */
-    .brewRenderer {
+.brewRenderer {
     background-color: #293134;
 }
 /* Blinking cursor */
-    .CodeMirror-cursor {
+.CodeMirror-cursor {
     border-left: 1px solid #e0e2e4;
 }
 /* Bars at the top */
-    .snippetBar {
+.snippetBar {
     background-color: #2F393C;
     color: white;
 }
@@ -22,6 +22,10 @@ nav {
 }
 nav .navItem {
     background-color: #293134;
+}
+/* Fix for Homebrewery custom Snippet icons */
+.snippetBar .fac {
+    filter: invert(1);
 }
 .snippetBar .snippetGroup .dropdown {
     background-color: #2F393C;
