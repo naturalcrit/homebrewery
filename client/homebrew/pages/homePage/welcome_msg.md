@@ -18,7 +18,7 @@ The Homebrewery makes the creation and sharing of authentic looking Fifth-Editio
 ### Editing and Sharing
 When you create your own homebrew, you will be given a *edit url* and a *share url*.
 
-Any changes you make while on the *edit url* will be automatically saved to the database within a few seconds. No one can edit your brew even if you share the edit link, unless you add them as an author via the {{fa,fa-info-circle}} **Properties** tab.
+By default, any changes you make while on the *edit url* will be automatically saved to the database within a few seconds. Once you edit a brew while logged into an account, you are added as the brew's author, and no one else can edit your brew even if you share the edit link, unless you also add them as an author via the {{fa,fa-info-circle}} **Properties** tab. Brews without any author can still be edited by anyone with the edit link, so be careful about who you share it with if you prefer to work without an account.
 
 Anyone with the *share url* will be able to access a read-only version of your homebrew.
 
@@ -49,9 +49,9 @@ If you want to save ink or have a monochrome printer, add the **PRINT → {{fas,
 \column
 
 ## V3 vs Legacy
-The Homebrewery has two renderers: Legacy and V3. The V3 renderer is recommended and will receive updates, while the Legacy renderer will not. Legacy mode is still available for older brews and veteran users, but won't be updated.
-:
-V3 uses curly brackets instead of HTML tags, though HTML tags can still be used. Converting between Legacy and V3 may require tweaking the document. However, all legacy brews will still render normally. Both renderers can be accessed via the {{fa,fa-info-circle}} **Properties** button on your brew at any time.
+The Homebrewery has two renderers: Legacy and V3. The V3 renderer is recommended for all users because it is more powerful, more customizable, and continues to receive new feature updates while Legacy does not. However Legacy mode will remain available for older brews and veteran users.
+	
+At any time, any individual brew can be changed to your renderer of choice via the {{fa,fa-info-circle}} **Properties** tab on your brew. However, converting between Legacy and V3 may require heavily tweaking the document; while both renderers can use raw HTML, V3 prefers a streamlined curly bracket syntax that avoids the complex HTML structures required by Legacy.
 
 
 Scroll down to the next page for a brief summary of the changes and features available in V3!
@@ -59,7 +59,8 @@ Scroll down to the next page for a brief summary of the changes and features ava
 Check out the latest updates in the full changelog [here](/changelog).
 
 ### Helping out
-Like this tool? Want to buy us a beer? [Head here](https://www.patreon.com/Naturalcrit) to help us keep the servers running.
+Like this tool? Head over to our [Patreon](https://www.patreon.com/Naturalcrit) to help us keep the servers running.
+
 
 This tool will **always** be free, never have ads, and we will never offer any "premium" features or whatever.
 
@@ -103,7 +104,7 @@ The Homebrewery aims to make homebrewing as simple as possible, providing a live
 From version 3.0.0, with a goal of adding maximum flexibility without users resorting to complex HTML to accomplish simple tasks, Homebrewery provides an extended verision of Markdown with additional syntax.
 
 ### Curly Brackets
-Markdown is a simplified version of HTML, as such there are equivalences like the replacement of `<span></span>` and `<div></div>` with `{{ }}` for a cleaner custom formatting. Inline spans and block elements can be created and given ID's and Classes, as well as css properties, each of which are comma separated with no spaces. Use double quotes if a value requires spaces. Spans and Blocks start the same:
+Standard Markdown lacks several equivalences to HTML. Hence, we have introduced `{{ }}` as a replacement for `<span></span>` and `<div></div>` for a cleaner custom formatting. Inline spans and block elements can be created and given ID's and Classes, as well as CSS properties, each of which are comma separated with no spaces. Use double quotes if a value requires spaces. Spans and Blocks start the same:
 
 #### Span
 My favorite author is {{pen,#author,color:orange,font-family:"trebuchet ms" Brandon Sanderson}}.  The orange text has a class of `pen`, an id of `author`, is colored orange, and given a new font. The first space outside of quotes marks the beginning of the content.
