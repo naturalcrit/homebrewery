@@ -10,9 +10,8 @@
 	background-image : url(/assets/DMG_background.png);
 	background-size  : cover;
 
-	.quote p::first-line {
-		font-variant : normal;
-		font-style: italic;
+	.quote p:first-child::first-line  {
+		all: unset;
 	}
 
 	&:after {

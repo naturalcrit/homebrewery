@@ -246,16 +246,23 @@ body {
 	// *****************************/
 	.quote {
 
-		p {
-		line-height :.5cm;
+		&>p {
+		line-height :.54cm;
+		font-style: italic;
 
 			&:first-child::first-line {
 				font-variant : small-caps;
 				font-style: normal;
+				font-size: 0.38cm;
 			}
 		}
 
+		p+.attribution {
+			margin-top: 0;
+		}
+
 		.attribution {
+			line-height: 0.54cm;
 			font-style: normal;
 			display: block;
 			text-align: right;
@@ -266,6 +273,9 @@ body {
 			}
 		}
 
+		&+* {
+			margin-top: 0.54cm;
+		}
 		
 	}
 
