@@ -99,6 +99,24 @@ fs.emptyDirSync('./build');
 	await fs.copy('./themes/assets', './build/assets');
 	await fs.copy('./client/icons', './build/icons');
 
+	//v==---------------------------MOVE CM EDITOR THEMES -----------------------------==v//
+
+	editorThemeFiles = fs.readdirSync('./node_modules/codemirror/theme');
+
+	const editorThemeFile = './themes/codeMirror/editorThemes.json';
+	if(fs.existsSync(editorThemeFile)) fs.rmSync(editorThemeFile);
+	const stream = fs.createWriteStream(editorThemeFile, { flags: 'a' });
+	stream.write('[\n"default"');
+
+	for (themeFile of editorThemeFiles) {
+		stream.write(`,\n"${themeFile.slice(0, -4)}"`);
+	}
+	stream.write('\n]\n');
+	stream.end();
+
+	await fs.copy('./node_modules/codemirror/theme', './build/homebrew/cm-themes');
+	await fs.copy('./themes/codeMirror', './build/homebrew/codeMirror');
+
 	//v==----------------------------- BUNDLE PACKAGES --------------------------------==v//
 
 	const bundles = await pack('./client/homebrew/homebrew.jsx', {

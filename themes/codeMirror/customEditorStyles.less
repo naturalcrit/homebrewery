@@ -1,0 +1,88 @@
+.editor .codeEditor .CodeMirror {
+    // Themes with dark backgrounds
+    &.cm-s-3024-night,
+    &.cm-s-abbott,
+    &.cm-s-abcdef,
+    &.cm-s-ambiance,
+    &.cm-s-ayu-dark,
+    &.cm-s-ayu-mirage,
+    &.cm-s-base16-dark,
+    &.cm-s-bespin,
+    &.cm-s-blackboard,
+    &.cm-s-cobalt,
+    &.cm-s-colorforth,
+    &.cm-s-darcula,
+    &.cm-s-dracula,
+    &.cm-s-duotone-dark,
+    &.cm-s-erlang-dark,
+    &.cm-s-gruvbox-dark,
+    &.cm-s-hopscotch,
+    &.cm-s-icecoder,
+    &.cm-s-isotope,
+    &.cm-s-lesser-dark,
+    &.cm-s-liquibyte,
+    &.cm-s-lucario,
+    &.cm-s-material,
+    &.cm-s-material-darker,
+    &.cm-s-material-ocean,
+    &.cm-s-material-palenight,
+    &.cm-s-mbo,
+    &.cm-s-midnight,
+    &.cm-s-monokai,
+    &.cm-s-moxer,
+    &.cm-s-night,
+    &.cm-s-nord,
+    &.cm-s-oceanic-next,
+    &.cm-s-panda-syntax,
+    &.cm-s-paraiso-dark,
+    &.cm-s-pastel-on-dark,
+    &.cm-s-railscasts,
+    &.cm-s-rubyblue,
+    &.cm-s-seti,
+    &.cm-s-shadowfox,
+    &.cm-s-the-matrix,
+    &.cm-s-tomorrow-night-bright,
+    &.cm-s-tomorrow-night-eighties,
+    &.cm-s-twilight,
+    &.cm-s-vibrant-ink,
+    &.cm-s-xq-dark,
+    &.cm-s-yonce,
+    &.cm-s-zenburn
+     {
+        .CodeMirror-code {
+            .block:not(.cm-comment) {
+                color: magenta;
+            }
+            .columnSplit {
+                color: black;
+                background-color: rgba(35,153,153,0.5);
+            }
+            .pageLine {
+                background-color: rgba(255,255,255,0.75);
+                & ~ pre.CodeMirror-line {
+                    color: black;
+                }
+            }
+        }
+    }
+    // Themes with light backgrounds
+    &.cm-s-default,
+    &.cm-s-3024-day,
+    &.cm-s-ambiance-mobile,
+    &.cm-s-base16-light,
+    &.cm-s-duotone-light,
+    &.cm-s-eclipse,
+    &.cm-s-elegant,
+    &.cm-s-juejin,
+    &.cm-s-neat,
+    &.cm-s-neo,
+    &.cm-s-paraiso-lightm
+    &.cm-s-solarized,
+    &.cm-s-ssms,
+    &.cm-s-ttcn,
+    &.cm-s-xq-light,
+    &.cm-s-yeti {
+        // Future styling for themes with light backgrounds
+        --dummyVar: 'currently unused';
+    }
+}
