@@ -16,9 +16,9 @@ The Homebrewery makes the creation and sharing of authentic looking Fifth-Editio
 **Try it!** Simply edit the text on the left and watch it *update live* on the right. Note that not every button is visible on this demo page. Click New {{fas,fa-plus-square}} in the navbar above to start brewing with all the features!
 
 ### Editing and Sharing
-When you create your own homebrew, you will be given a *edit url* and a *share url*.
+When you create a new homebrew document ("brew"), your document will be given a *edit link* and a *share link*.
 
-By default, any changes you make while on the *edit url* will be automatically saved to the database within a few seconds. Once you edit a brew while logged into an account, you are added as the brew's author, and no one else can edit your brew even if you share the edit link, unless you also add them as an author via the {{fa,fa-info-circle}} **Properties** tab. Brews without any author can still be edited by anyone with the edit link, so be careful about who you share it with if you prefer to work without an account.
+The *edit link* is where you write your brew. If you edit a brew while logged in, you are added as one of the brew's authors, and no one else can edit that brew until you add them as a new author via the {{fa,fa-info-circle}} **Properties** tab. Brews without any author can still be edited by anyone with the *edit link*, so be careful about who you share it with if you prefer to work without an account.
 
 Anyone with the *share url* will be able to access a read-only version of your homebrew.
 
