@@ -62,16 +62,13 @@ pre {
 ```
 
 # FAQ
-{{wide Updated Oct. 11, 2021}}
+{{wide Updated Apr. 15, 2023}}
 
 
 ### The site is down for me! Anyone else?
 
 You can check the site status here: [Everyone or Just Me](https://downforeveryoneorjustme.com/homebrewery.naturalcrit.com)
 
-### How do I log out?
-
-Go to https://homebrewery.naturalcrit.com/login, and hit the "*logout*" link.
 
 ### Why am I getting an error when trying to save, and my account is linked to Google?
 
@@ -119,26 +116,6 @@ The fonts used were originally created for use with the English language, though
 
 ### Whenever I click on the "Get PDF" button, instead of getting a download, it opens Print Preview in another tab.
 Yes, this is by design. In the print preview, select "Save as PDF" as the Destination, and then click "Save". There will be a normal download dialog where you can save your brew as a PDF.
-
-### The preview window is suddenly gone, I can only see the editor side of the Homebrewery (or the other way around).
-
-1. Press `CTRL`+`SHIFT`+`i` (or right-click and select "Inspect") while in the Homebrewery.
-
-2. Expand...
-```
-	- `body` 
-	- `main`
-	- `div class="homebrew"`
-	- `div class="editPage page"`
-	- `div class="content"`
-	- `div class="splitPane"`
-```
-
-There you will find 3 divs: `div class="pane" [...]`, `div class="divider" [...]`, and `div class="pane" [...]`.
-
-The `class="pane"` looks similar to this: `div class="pane" data-reactid="36" style="flex: 0 0 auto; width: 925px;"`.
-
-Change whatever stands behind width: to something smaller than your display width. 
 
 ### I have white borders on the bottom/sides of the print preview.
 
