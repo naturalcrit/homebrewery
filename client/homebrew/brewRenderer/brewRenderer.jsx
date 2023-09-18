@@ -108,6 +108,12 @@ const BrewRenderer = createClass({
 		return false;
 	},
 
+	sanitizeScriptTags : function(content) {
+		return content
+			.replace(/<script/ig, '&lt;script')
+			.replace(/<\/script>/ig, '&lt;/script&gt;');
+	},
+
 	renderPageInfo : function(){
 		return <div className='pageInfo' ref='main'>
 			<div>
@@ -135,18 +141,20 @@ const BrewRenderer = createClass({
 
 	renderStyle : function() {
 		if(!this.props.style) return;
-		//return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${this.props.style}\n} </style>` }} />;
-		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>\n${this.props.style}\n</style>` }} />;
+		const cleanStyle = this.sanitizeScriptTags(this.props.style);
+		//return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${this.sanitizeScriptTags(this.props.style)}\n} </style>` }} />;
+		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${cleanStyle} </style>` }} />;
 	},
 
 	renderPage : function(pageText, index){
+		let cleanPageText = this.sanitizeScriptTags(pageText);
 		if(this.props.renderer == 'legacy')
-			return <div className='phb page' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(pageText) }} key={index} />;
+			return <div className='phb page' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(cleanPageText) }} key={index} />;
 		else {
-			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
+			cleanPageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			return (
 				<div className='page' id={`p${index + 1}`} key={index} >
-					<div className='columnWrapper' dangerouslySetInnerHTML={{ __html: Markdown.render(pageText) }} />
+					<div className='columnWrapper' dangerouslySetInnerHTML={{ __html: Markdown.render(cleanPageText) }} />
 				</div>
 			);
 		}
@@ -185,6 +193,12 @@ const BrewRenderer = createClass({
 		}, 100);
 	},
 
+	emitClick : function(){
+		// console.log('iFrame clicked');
+		if(!window || !document) return;
+		document.dispatchEvent(new MouseEvent('click'));
+	},
+
 	render : function(){
 		//render in iFrame so broken code doesn't crash the site.
 		//Also render dummy page while iframe is mounting.
@@ -203,7 +217,9 @@ const BrewRenderer = createClass({
 
 				<Frame id='BrewRenderer' initialContent={this.state.initialContent}
 					style={{ width: '100%', height: '100%', visibility: this.state.visibility }}
-					contentDidMount={this.frameDidMount}>
+					contentDidMount={this.frameDidMount}
+					onClick={()=>{this.emitClick();}}
+				>
 					<div className={'brewRenderer'}
 						onScroll={this.handleScroll}
 						style={{ height: this.state.height }}>

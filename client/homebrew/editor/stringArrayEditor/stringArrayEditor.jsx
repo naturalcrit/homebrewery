@@ -140,7 +140,7 @@ const StringArrayEditor = createClass({
 					</div>
 				</div>
 
-				{this.props.notes ? this.props.notes.map((n)=><p><small>{n}</small></p>) : null}
+				{this.props.notes ? this.props.notes.map((n, index)=><p key={index}><small>{n}</small></p>) : null}
 			</div>
 		</div>;
 	}

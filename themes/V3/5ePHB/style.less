@@ -42,7 +42,7 @@ body {
 		margin-top : 0.1cm;
 	}
 }
-.useColumns(@multiplier : 1, @fillMode: balance){
+.useColumns(@multiplier : 1, @fillMode: auto){
 	column-count         : 2;
 	column-fill          : @fillMode;
 	column-gap           : 0.9cm;
@@ -82,7 +82,7 @@ body {
 	// *            BASE
 	// *****************************/
 
-.page{
+.page {
 	p{
 		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
 		display       : block;
@@ -241,6 +241,46 @@ body {
 			}
 		}
 	}
+	//*****************************
+	// *            	QUOTE
+	// *****************************/
+	.quote {
+
+		&>p {
+		line-height :.54cm;
+		font-style: italic;
+
+			&:first-child::first-line {
+				font-variant : small-caps;
+				font-style: normal;
+				font-size: 0.38cm;
+			}
+		}
+
+		p+.attribution {
+			margin-top: 0;
+		}
+
+		.attribution {
+			line-height: 0.54cm;
+			font-style: normal;
+			display: block;
+			text-align: right;
+
+			&:before {
+				content: '---';
+				margin-right: .2em;
+			}
+		}
+
+		&+* {
+			margin-top: 0.54cm;
+		}
+		
+	}
+
+
+
 	//*****************************
 	// *            NOTE
 	// *****************************/
@@ -820,6 +860,134 @@ h5 + table{
 		}
 	}
 }
+//*****************************
+// *      BACK COVER
+// *****************************/
+.page:has(.backCover) {
+	color: #fff;
+	columns: 1;
+	padding: 2.25cm 1.3cm 2cm 1.3cm;
+	&:after {
+		all: unset;
+	}
+	.columnWrapper {
+		width: 7.6cm;
+	}
+	.backCover {
+		position: absolute;
+		inset: 0;
+		width: 11cm;
+		background-image: @backCover;
+		background-repeat: no-repeat;
+		background-size: contain;
+		z-index: -1;
+	}
+	.blank {
+		height: 1.4em;
+	}
+	h1 {
+		margin-bottom: .3cm;
+		font-size: 1.35cm;
+		line-height: 0.95em;
+		font-family: NodestoCapsCondensed;
+		text-align: center;
+		color: #ED1C24;
+	}
+	h1+p::first-line,
+	h1+p::first-letter {
+		all: unset;
+	}
+	img {
+		position: absolute;
+		top: 0px;
+		height: 100%;
+		z-index: -2;
+	}
+	hr {
+		margin-left: auto;
+		margin-right: auto;
+		margin-top: 1.1cm;
+		height: .53cm;
+		width: 4.5cm;
+		visibility: visible;
+		background-image: @horizontalRule;
+		background-size: 100% 100%;
+		border: none;
+	}
+	p {
+		font-family: Overpass;
+		line-height: 1.5em;
+		font-size: 0.332cm;
+	}
+	hr+p {
+		text-align: center;
+		margin-top: .6cm;
+	}
+	.logo {
+		position: absolute;
+		z-index: 0;
+		height: 1.5cm;
+		left: 1.2cm;
+		bottom: 2cm;
+		width: 7.6cm;
+		img {
+			position: relative;
+			height : 1.5cm;
+			width  : 100%;
+			z-index : 0;
+		}
+		p {
+			position: relative;
+			color: #fff;
+			font-family: NodestoCapsWide;
+			font-size: .4cm;
+			letter-spacing: 0.08em;
+			line-height: 1em;
+			text-align: center;
+			text-indent: 0;
+			width: 100%;
+		}
+	}
+}
+
+//*****************************
+	// *      PART COVER
+	// *****************************/
+	.page:has(.partCover) {
+		columns    : 1;
+		text-align : center;
+		padding-top: 0;
+
+		.partCover {
+			background-image: @partCoverHeaderPHB;
+			background-repeat: no-repeat;
+			position: absolute;
+			background-size: 100%;
+			top: 0;
+			left: 0;
+			height: 6cm;
+			width: 100%;
+		}
+
+		h1 {
+			position: relative;
+			text-align: center;
+			text-transform: uppercase;
+			font-size: 2.3cm;
+			font-family: NodestoCapsCondensed;
+			margin-top: .4cm;
+		}
+
+		h2 {
+			font-family: Overpass;
+			font-size: 0.45cm;
+			position: relative;
+			margin-top: -0.7em;
+			line-height: 1.1em;
+			margin-left  : auto;
+			margin-right : auto;
+		}
+	}
 
 //*****************************
 // *      TABLE OF CONTENTS
@@ -975,6 +1143,29 @@ break-inside                : avoid;
 			border-image-slice: 170;
 			border-image-source: @scriptBorder;
 			border-image-width: 1.4cm;
+		}
+	}
+}
+//*****************************
+// *       INDEX
+// *****************************/
+.page {
+	.index {
+		font-size : 0.218cm;
+
+		ul ul {
+			margin : 0;
+		}
+
+		ul {
+			padding-left    : 0;
+			text-indent     : 0;
+			list-style-type : none;
+		}
+
+		& > ul > li {
+			text-indent  : -1.5em;
+			padding-left : 1.5em;
 		}
 	}
 }

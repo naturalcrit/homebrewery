@@ -1,3 +1,5 @@
+@import (less) './themes/assets/assets.less';
+
 :root {
 	//Colors
 	--HB_Color_Accent                : #EBCEC3; // Salmon
@@ -19,6 +21,9 @@
 		color:black;
 	}
 
+	.quote p:first-child::first-line  {
+		all: unset;
+	}
 
 	&:after {
 		background-image : url(/assets/DMG_footerAccent.png);
@@ -27,5 +32,12 @@
 
 	.footnote {
 		bottom : 40px;
+	}
+}
+
+.page:has(.partCover) {
+
+	.partCover {
+		background-image: @partCoverHeaderDMG;
 	}
 }
