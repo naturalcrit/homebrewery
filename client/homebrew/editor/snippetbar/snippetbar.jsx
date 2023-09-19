@@ -150,7 +150,7 @@ const SnippetGroup = createClass({
 		return _.map(snippets, (snippet)=>{
 			if(!snippet.subsnippets){
 				return <ButtonItem className='snippet' key={snippet.name} onSelect={(e)=>this.handleSnippetClick(e, snippet)}>
-				 	<i className={snippet.icon} />
+				 	<span className='left-slot'><i className={snippet.icon} /></span>
 				 	<span className='name'>{snippet.name}</span>
 				 	{snippet.experimental && <span className='beta'>beta</span>}
 				</ButtonItem>

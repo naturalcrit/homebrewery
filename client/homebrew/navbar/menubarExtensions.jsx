@@ -21,7 +21,7 @@ const LinkItem = React.forwardRef(({ hotkeys, children, href, ...props }, forwar
 LinkItem.displayName = 'LinkItem';
 
 const ButtonItem = React.forwardRef(({ hotkeys, children, ...props }, forwardedRef)=>(
-	<MenubarPrimitive.Item {...props} ref={forwardedRef}><button>{children}{renderHotkeys(hotkeys)}</button></MenubarPrimitive.Item>
+	<MenubarPrimitive.Item {...props} ref={forwardedRef}>{children}{renderHotkeys(hotkeys)}</MenubarPrimitive.Item>
 ));
 ButtonItem.displayName = 'ButtonItem';
 
@@ -56,7 +56,7 @@ const SubMenu = createClass({
 
 	render : function(){
 		return <MenubarPrimitive.Sub>
-			<MenubarPrimitive.SubTrigger>{this.props.trigger}<span className='right-slot'><i className='fas fa-chevron-right'></i></span></MenubarPrimitive.SubTrigger>
+			<MenubarPrimitive.SubTrigger><span className='left-slot'></span><span className='name'>{this.props.trigger}</span><span className='right-slot'><i className='fas fa-chevron-right'></i></span></MenubarPrimitive.SubTrigger>
 			<MenubarPrimitive.Portal>
 				<MenubarPrimitive.SubContent className={`${this.props.className} menu-content sub-menu`}>
 					{this.props.children}

@@ -104,11 +104,19 @@
 		padding: .5em;
 		width: 100%;
 		cursor: pointer;
+		.left-slot {
+			width : 0em;
+			flex  : 0 0 auto;
+		}
+		.name {
+			flex : 1;
+		}
 		.right-slot {
 			color: #888;
 			display: flex;
 			align-items: center;
 			gap: 3px;
+			flex: 0 0 auto;
 		}
 		.key {
 			aspect-ratio: 1;
@@ -117,6 +125,7 @@
 			display: inline-block;
 			height: 1.2em;
 			text-align: center;
+			flex: 1;
 		}
 		.switch {
 			background: rgb(97, 0, 0);
