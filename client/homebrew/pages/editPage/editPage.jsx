@@ -11,15 +11,16 @@ const Navbar = require('../../navbar/navbar.jsx');
 import * as Toolbar from '@radix-ui/react-toolbar';
 import * as Menubar from '@radix-ui/react-menubar';
 import { LinkItem, ButtonItem, Menu, SubMenu } from '../../navbar/menubarExtensions.jsx';
+import { getRedditLink } from '../../navbar/getRedditLink.jsx';
 
 const BrewTitle = require('../../navbar/brewTitle.jsx');
 const NewBrew = require('../../navbar/newBrew.jsx');
 const HelpItems = require('../../navbar/help.navitem.jsx');
 const PrintLink = require('../../navbar/print.navitem.jsx');
-const ShareMenu = require('../../navbar/share.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
 import { RecentItems } from '../../navbar/recent.navitem.jsx';
+import { Link } from 'react-router-dom';
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 
@@ -377,6 +378,15 @@ const EditPage = createClass({
 					</SubMenu>
 					{global.account ? <LinkItem href={`/user/${encodeURI(global.account.username)}`}>Library</LinkItem> : ''}
 					<Menubar.Separator />
+					<SubMenu trigger='Share'>
+						<LinkItem href={`/share/${this.processShareId()}`}
+							target='_blank'
+							rel='noopener noreferrer'>Go To Share Page</LinkItem>
+						<LinkItem href={getRedditLink(this.state.brew)}
+							target='_blank'
+							rel='noopener noreferrer'>Share On Reddit</LinkItem>
+						<ButtonItem onClick={()=>{navigator.clipboard.writeText(`${global.config.publicUrl}/share/${this.processShareId()}`);}}>Copy Share URL</ButtonItem>
+					</SubMenu>
 					<PrintLink shareId={this.processShareId()}>Print</PrintLink>
 				</Menu>
 				<Menu trigger='Help'>
