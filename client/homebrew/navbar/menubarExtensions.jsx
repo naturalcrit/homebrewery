@@ -21,7 +21,7 @@ const LinkItem = React.forwardRef(({ hotkeys, children, href, ...props }, forwar
 LinkItem.displayName = 'LinkItem';
 
 const ButtonItem = React.forwardRef(({ hotkeys, children, ...props }, forwardedRef)=>(
-	<MenubarPrimitive.Item {...props} ref={forwardedRef}>{children}{renderHotkeys(hotkeys)}</MenubarPrimitive.Item>
+	<MenubarPrimitive.Item {...props} ref={forwardedRef}><button>{children}{renderHotkeys(hotkeys)}</button></MenubarPrimitive.Item>
 ));
 ButtonItem.displayName = 'ButtonItem';
 
