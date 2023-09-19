@@ -58,6 +58,7 @@ const Tabbed = createClass({
 	},
 
 	handleViewChange : function(newView){
+		console.log('test')
 		this.props.setMoveArrows(newView === 'text');
 		this.setState({
 			view : newView
@@ -88,16 +89,17 @@ const Tabbed = createClass({
 	renderTabContent : function (){
 		return <Tabs.Content value={this.state.view} ref='tabPanel' style={this.state.view == 'meta' ? {overflowY: 'auto'} : null}>
 			<Editor
-					ref='editor'
-					editorHeight={this.state.editorHeight}
-					view={this.state.view}
-					{...this.props}
-				/>
+				ref='editor'
+				editorHeight={this.state.editorHeight}
+				view={this.state.view}
+				{...this.props}
+			/>
 		</Tabs.Content>;
 	},
 
 	render : function(){
-		return 	<Tabs.Root className='tabs' ref='main' defaultValue='text' onValueChange={(e)=>{this.handleViewChange(e)}}>
+		console.log(`rendering ${this.state.view} tab`)
+		return 	<Tabs.Root className='tabs' ref='main' defaultValue={this.state.view} onValueChange={this.handleViewChange}>
 			{this.renderTabContent()}
 			{this.renderTabList()}
 		</Tabs.Root>;
