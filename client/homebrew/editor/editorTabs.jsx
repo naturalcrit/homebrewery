@@ -98,7 +98,6 @@ const Tabbed = createClass({
 	},
 
 	render : function(){
-		console.log(`rendering ${this.state.view} tab`)
 		return 	<Tabs.Root className='tabs' ref='main' defaultValue={this.state.view} onValueChange={this.handleViewChange}>
 			{this.renderTabContent()}
 			{this.renderTabList()}
