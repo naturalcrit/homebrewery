@@ -302,6 +302,8 @@ const api = {
 		return true;
 	},
 	deleteBrew : async (req, res, next)=>{
+		if(!req.brew) return;
+
 		// Delete an orphaned stub if its Google brew doesn't exist
 		try {
 			const { googleId } = api.getId(req);
