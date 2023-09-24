@@ -1,7 +1,10 @@
 /* eslint-disable max-lines */
 
+const GoogleActions = require('./googleActions.js');
+
 describe('Tests for api', ()=>{
 	let api;
+	let GoogleActions;
 	let google;
 	let model;
 	let hbBrew;
