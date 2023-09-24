@@ -53,6 +53,7 @@ describe('Tests for api', ()=>{
 		};
 
 		api = require('./homebrew.api');
+		GoogleActions = {};
 
 		hbBrew = {
 			text        : `brew text`,
