@@ -10,6 +10,17 @@
 	background-image : url(/assets/DMG_background.png);
 	background-size  : cover;
 
+	/*TABLES WITHIN NOTES*/
+	.note table tbody tr:nth-child(odd) {
+		background:#fff;
+	}
+
+	/*DROP CAP*/
+	h1 + p::first-letter {
+		background-image: unset;
+		color:black;
+	}
+
 	.quote p:first-child::first-line  {
 		all: unset;
 	}
