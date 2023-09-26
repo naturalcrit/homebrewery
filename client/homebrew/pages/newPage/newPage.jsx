@@ -1,7 +1,7 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./newPage.less');
 const React = require('react');
-const createClass = require('create-react-class');
+import PropTypes from 'prop-types';
 const _ = require('lodash');
 const request = require('../../utils/request-middleware.js');
 
@@ -36,28 +36,26 @@ const BREWKEY = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
 const METAKEY = 'homebrewery-new-meta';
 
+class NewPage extends React.Component {
+	constructor(props) {
+		super(props)
+	}
+	static propTypes = {
+		brew: PropTypes.object
+	}
+	static defaultProps = {
+		brew : DEFAULT_BREW
+	}
+	state = {
+		brew       : this.props.brew,
+		isSaving   : false,
+		saveGoogle : (global.account && global.account.googleId ? true : false),
+		error      : null,
+		htmlErrors : Markdown.validate(this.props.brew.text)
+	}
 
-const NewPage = createClass({
-	displayName     : 'NewPage',
-	getDefaultProps : function() {
-		return {
-			brew : DEFAULT_BREW
-		};
-	},
 
-	getInitialState : function() {
-		const brew = this.props.brew;
-
-		return {
-			brew       : brew,
-			isSaving   : false,
-			saveGoogle : (global.account && global.account.googleId ? true : false),
-			error      : null,
-			htmlErrors : Markdown.validate(brew.text)
-		};
-	},
-
-	componentDidMount : function() {
+	componentDidMount() {
 		document.addEventListener('keydown', this.handleControlKeys);
 
 		const brew = this.state.brew;
@@ -84,12 +82,13 @@ const NewPage = createClass({
 		if(brew.style)
 			localStorage.setItem(STYLEKEY, brew.style);
 		localStorage.setItem(METAKEY, JSON.stringify({ 'renderer': brew.renderer, 'theme': brew.theme, 'lang': brew.lang }));
-	},
-	componentWillUnmount : function() {
-		document.removeEventListener('keydown', this.handleControlKeys);
-	},
+	}
 
-	handleControlKeys : function(e){
+	componentWillUnmount() {
+		document.removeEventListener('keydown', this.handleControlKeys);
+	}
+
+	handleControlKeys = (e)=>{
 		if(!(e.ctrlKey || e.metaKey)) return;
 		const S_KEY = 83;
 		const P_KEY = 80;
@@ -99,13 +98,13 @@ const NewPage = createClass({
 			e.stopPropagation();
 			e.preventDefault();
 		}
-	},
+	}
 
-	handleSplitMove : function(){
+	handleSplitMove = ()=>{
 		this.refs.editor.update();
-	},
+	}
 
-	handleTextChange : function(text){
+	handleTextChange = (text)=>{
 		//If there are errors, run the validator on every change to give quick feedback
 		let htmlErrors = this.state.htmlErrors;
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
@@ -115,16 +114,16 @@ const NewPage = createClass({
 			htmlErrors : htmlErrors
 		}));
 		localStorage.setItem(BREWKEY, text);
-	},
+	}
 
-	handleStyleChange : function(style){
+	handleStyleChange = (style)=>{
 		this.setState((prevState)=>({
 			brew : { ...prevState.brew, style: style },
 		}));
 		localStorage.setItem(STYLEKEY, style);
-	},
+	}
 
-	handleMetaChange : function(metadata){
+	handleMetaChange = (metadata)=>{
 		this.setState((prevState)=>({
 			brew : { ...prevState.brew, ...metadata },
 		}), ()=>{
@@ -137,9 +136,9 @@ const NewPage = createClass({
 			}));
 		});
 		;
-	},
+	}
 
-	save : async function(){
+	save = async function(){
 		this.setState({
 			isSaving : true
 		});
@@ -170,7 +169,7 @@ const NewPage = createClass({
 		localStorage.removeItem(STYLEKEY);
 		localStorage.removeItem(METAKEY);
 		window.location = `/edit/${brew.editId}`;
-	},
+	}
 
 	// renderSaveButton : function(){
 	// 	if(this.state.isSaving){
@@ -184,9 +183,9 @@ const NewPage = createClass({
 	// 	}
 	// },
 
-	print : function(){
+	print = ()=>{
 		window.open('/print?dialog=true&local=print', '_blank');
-	},
+	}
 
 	// renderLocalPrintButton : function(){
 	// 	return <Nav.item color='purple' icon='far fa-file-pdf' onClick={this.print}>
@@ -196,11 +195,11 @@ const NewPage = createClass({
 
 
 
-	renderSaveButton : function(){
+	renderSaveButton = ()=>{
 		return <ButtonItem onClick={this.save} hotkeys={{ mac: ['⌘', 'S'], pc: ['Ctrl', 'S'] }}>Save</ButtonItem>;
-	},
+	}
 
-	handleAutoSave : function(){
+	handleAutoSave = ()=>{
 		if(this.warningTimer) clearTimeout(this.warningTimer);
 		this.setState((prevState)=>({
 			autoSave        : !prevState.autoSave,
@@ -209,15 +208,15 @@ const NewPage = createClass({
 			localStorage.setItem('AUTOSAVE_ON', JSON.stringify(this.state.autoSave));
 			this.state.autoSave == true ? console.log('Autosave turned %cON', 'background: green; color: white; border-radius: 3px; padding: 0 5px') : console.log('Autosave turned %cOFF', 'background: red; color: white; border-radius: 3px; padding: 0 5px');
 		});
-	},
+	}
 
-	setAutosaveWarning : function(){
+	setAutosaveWarning = ()=>{
 		setTimeout(()=>this.setState({ autoSaveWarning: false }), 4000);                           // 4 seconds to display
 		this.warningTimer = setTimeout(()=>{this.setState({ autoSaveWarning: true });}, 900000);   // 15 minutes between warnings
 		this.warningTimer;
-	},
+	}
 
-	renderAutoSaveButton : function(){
+	renderAutoSaveButton = ()=>{
 		return <Menubar.CheckboxItem
 			className='autosave-toggle switch'
 			checked={this.state.autoSave}
@@ -225,15 +224,15 @@ const NewPage = createClass({
 			onSelect={(e)=>{e.preventDefault();}}>
 			Autosave <span className='right-slot'><Menubar.ItemIndicator className='switch' forceMount={true}><span className='switch-thumb'></span></Menubar.ItemIndicator></span>
 		</Menubar.CheckboxItem>;
-	},
+	}
 
-	processShareId : function() {
+	processShareId = ()=>{
 		return this.state.brew.googleId && !this.state.brew.stubbed ?
 					 this.state.brew.googleId + this.state.brew.shareId :
 					 this.state.brew.shareId;
-	},
+	}
 
-	renderNavbar : function(menubar) {
+	renderNavbar = (menubar)=>{
 		// If the screen is 'full size'...
 		if(this.props.isNarrow == false){
 
@@ -328,9 +327,9 @@ const NewPage = createClass({
 			}
 		}
 
-	},
+	}
 
-	render : function(){
+	render(){
 		return <div className='newPage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
 			{this.renderNavbar({ location: 'top' })}
@@ -357,6 +356,6 @@ const NewPage = createClass({
 			{this.renderNavbar({ location: 'bottom' })}
 		</div>;
 	}
-});
+};
 
 module.exports = NewPage;
