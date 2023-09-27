@@ -112,18 +112,29 @@ describe('Inline: When using the Inline syntax {{ }}', ()=>{
 	});
 
 
-	it.failing('Renders a mustache span with text with quotes and css property which contains quotes', function() {
+	it.failing('Renders a mustache span with text with quotes and css property which contains double quotes', function() {
 		const source = '{{font-family:"trebuchet ms" text "with quotes"}}';
 		const rendered = Markdown.render(source);
 		// FIXME: adds extra \s after class names
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" style="font-family:trebuchet ms;">text “with quotes”</span>');
 	});
 
+
+	it.failing('Renders a mustache span with text with quotes and css property which contains double and simple quotes', function() {
+		const source = `{{--stringVariable:"'string'" text "with quotes"}}`;
+		const rendered = Markdown.render(source);
+		// FIXME: adds extra \s after class names
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<span class="inline-block" style="--stringVariable:'string';">text “with quotes”</span>`);
+	});
+
+
 	it('Renders a mustache span with text, id, class and a couple of css properties', function() {
 		const source = '{{pen,#author,color:orange,font-family:"trebuchet ms" text}}';
 		const rendered = Markdown.render(source);
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block pen" id="author" style="color:orange; font-family:trebuchet ms;">text</span>');
 	});
+
+
 });
 
 //  BLOCK SYNTAX
@@ -191,6 +202,15 @@ describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" style="color:red;"><p>Sample text.</p></div>`);
 	});
 
+	it.failing('Renders a div with a style that has a string variable, and text', function() {
+		const source = dedent`{{--stringVariable:"'string'"
+		Sample text.
+		}}`;
+		const rendered = Markdown.render(source).trimReturns();
+		// FIXME: adds two extra \s before closing `>` in opening tag
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" style="--stringVariable:'string';"><p>Sample text.</p></div>`);
+	});
+
 	it.failing('Renders a div with a class, style and text', function() {
 		const source = dedent`{{cat,color:red
 		Sample text.
@@ -239,6 +259,12 @@ describe('Injection: When an injection tag follows an element', ()=>{
 			const source = '{{ text}}{color:red}';
 			const rendered = Markdown.render(source);
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" style="color:red;">text</span>');
+		});
+
+		it.failing('Renders a span "text" with injected style using a string variable', function() {
+			const source = `{{ text}}{--stringVariable:"'string'"}`;
+			const rendered = Markdown.render(source);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<span class="inline-block" style="--stringVariable:'string';">text</span>`);
 		});
 
 		it.failing('Renders a span "text" with two injected styles', function() {
@@ -291,13 +317,13 @@ describe('Injection: When an injection tag follows an element', ()=>{
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block" style="color:red;"><p>text</p></div>');
 		});
 
-		it.failing('renders a div "text" with two injected styles', function() {
+		it.failing('renders a div "text" with two injected styles,included quotes', function() {
 			const source = dedent`{{
 			text
 			}}
-			{color:red,background:blue}`;
+			{color:red,--stringVariable:"'string'"}`;
 			const rendered = Markdown.render(source).trimReturns();
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block" style="color:red; background:blue;"><p>text</p></div>');
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" style="color:red; --stringVariable:'string'"><p>text</p></div>`);
 		});
 
 		it.failing('renders an h2 header "text" with injected class name', function() {
