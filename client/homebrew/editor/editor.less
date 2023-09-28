@@ -19,6 +19,20 @@
 			background-color 	: fade(#299, 15%);
 			border-bottom    	: #299 solid 1px;
 		}
+		.define {
+			&:not(.term):not(.definition){
+				color: #949494;
+				font-weight: bold;
+				background: #e5e5e5;
+				border-radius: 3px;
+			}
+			&.term {
+				color: rgb(96, 117, 143);
+			}
+			&.definition {
+				color: rgb(97, 57, 178);
+			}
+		}
 		.block:not(.cm-comment){
 			color 		: purple;
 			font-weight : bold;
