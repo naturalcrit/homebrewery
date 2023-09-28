@@ -1,79 +1,73 @@
 @import 'themes/codeMirror/customEditorStyles.less';
-.editor{
+.editor {
 	position : relative;
 	width    : 100%;
 
-	.codeEditor{
+	.codeEditor {
 		height            : 100%;
-		.pageLine{
+		.pageLine {
 			background : #33333328;
-			border-top : #339 solid 1px;
+			border-top : #333399 solid 1px;
 		}
-		.editor-page-count{
-			color : grey;
+		.editor-page-count {
 			float : right;
+			color : grey;
 		}
-		.columnSplit{
-			font-style 			: italic;
-			color 				: grey;
-			background-color 	: fade(#299, 15%);
-			border-bottom    	: #299 solid 1px;
+		.columnSplit {
+			font-style        : italic;
+			color             : grey;
+			background-color  : fade(#229999, 15%);
+			border-bottom     : #229999 solid 1px;
 		}
 		.define {
-			&:not(.term):not(.definition){
-				color: #949494;
-				font-weight: bold;
-				background: #e5e5e5;
-				border-radius: 3px;
+			&:not(.term):not(.definition) {
+				font-weight   : bold;
+				color         : #949494;
+				background    : #E5E5E5;
+				border-radius : 3px;
 			}
-			&.term {
-				color: rgb(96, 117, 143);
-			}
-			&.definition {
-				color: rgb(97, 57, 178);
-			}
+			&.term { color : rgb(96, 117, 143); }
+			&.definition { color : rgb(97, 57, 178); }
 		}
-		.block:not(.cm-comment){
-			color 		: purple;
+		.block:not(.cm-comment) {
 			font-weight : bold;
+			color       : purple;
 			//font-style: italic;
 		}
-		.inline-block:not(.cm-comment){
-			color 		: red;
+		.inline-block:not(.cm-comment) {
 			font-weight : bold;
+			color       : red;
 			//font-style: italic;
 		}
-		.injection:not(.cm-comment){
+		.injection:not(.cm-comment) {
+			font-weight : bold;
 			color       : green;
-			font-weight : bold;
 		}
 	}
 
-	.brewJump{
-		position			: absolute;
-		background-color	: @teal;
-		cursor				: pointer;
-		width 				: 30px;
-		height 				: 30px;
-		display 			: flex;
-		align-items 		: center;
-		bottom 				: 20px;
-		right 				: 20px;
-		z-index				: 1000000;
-		justify-content		: center;
-		.tooltipLeft("Jump to brew page");
+	.brewJump {
+		position         : absolute;
+		right            : 20px;
+		bottom           : 20px;
+		z-index          : 1000000;
+		display          : flex;
+		align-items      : center;
+		justify-content  : center;
+		width            : 30px;
+		height           : 30px;
+		cursor           : pointer;
+		background-color : @teal;
+		.tooltipLeft('Jump to brew page');
 	}
 
-	.editorToolbar{
-		position: absolute;
-		top: 5px;
-		left: 50%;
-		color: black;
-		font-size: 13px;
-		z-index: 9;
-		span {
-			padding: 2px 5px;
-		}
+	.editorToolbar {
+		position  : absolute;
+		top       : 5px;
+		left      : 50%;
+		z-index   : 9;
+		font-size : 13px;
+		color     : black;
+		span { padding : 2px 5px; }
 	}
 
 }
