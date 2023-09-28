@@ -183,6 +183,13 @@ const EditPage = createClass({
 	save : async function(){
 		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
 
+		if(this.state.brew.authors.includes(window.localStorage.getItem('username') || '') == false){
+			console.log('not logged in');
+			return;
+		};
+
+
+
 		this.setState((prevState)=>({
 			isSaving   : true,
 			error      : null,

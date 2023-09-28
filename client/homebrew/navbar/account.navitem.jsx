@@ -32,6 +32,7 @@ const Account = createClass({
 				}
 				domain = domainArray.join('.');
 			}
+			window.localStorage.removeItem('username');
 			document.cookie = `nc_session=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;samesite=lax;${domain ? `domain=${domain}` : ''}`;
 			window.location = '/';
 		}
@@ -53,7 +54,7 @@ const Account = createClass({
 					console.warn(err);
 				});
 		if(!token) return;
-
+		window.localStorage.setItem('username', username);
 		document.cookie = `nc_session=${token};expires=${expiry};path=/;samesite=lax;${window.domain ? `domain=${window.domain}` : ''}`;
 		window.location.reload(true);
 	},
