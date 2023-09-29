@@ -330,6 +330,14 @@ const Editor = createClass({
 		return this.refs.codeEditor?.undo();
 	},
 
+	foldCode : function(){
+		return this.refs.codeEditor?.foldAllCode();
+	},
+
+	unfoldCode : function(){
+		return this.refs.codeEditor?.unfoldAllCode();
+	},
+
 	render : function(){
 		return (
 			<div className='editor' ref='main'>
@@ -343,6 +351,8 @@ const Editor = createClass({
 					theme={this.props.brew.theme}
 					undo={this.undo}
 					redo={this.redo}
+					foldCode={this.foldCode}
+					unfoldCode={this.unfoldCode}
 					historySize={this.historySize()}
 					currentEditorTheme={this.state.editorTheme}
 					updateEditorTheme={this.updateEditorTheme}

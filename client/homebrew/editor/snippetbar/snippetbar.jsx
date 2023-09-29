@@ -37,6 +37,8 @@ const Snippetbar = createClass({
 			undo              : ()=>{},
 			redo              : ()=>{},
 			historySize       : ()=>{},
+			foldCode          : ()=>{},
+			unfoldCode        : ()=>{},
 			updateEditorTheme : ()=>{},
 			cursorPos         : {}
 		};
@@ -46,7 +48,7 @@ const Snippetbar = createClass({
 		return {
 			renderer      : this.props.renderer,
 			themeSelector : false,
-			snippets      : []
+			snippets      : [],
 		};
 	},
 
@@ -144,6 +146,22 @@ const Snippetbar = createClass({
 	renderEditorButtons : function(){
 		if(!this.props.showEditButtons) return;
 
+		let foldButtons;
+		if(this.props.view == 'text'){
+			foldButtons =
+				<>
+					<div className={`editorTool foldAll ${this.props.foldCode ? 'active' : ''}`}
+						onClick={this.props.foldCode} >
+						<i className='fas fa-compress-alt' />
+					</div>
+					<div className={`editorTool unfoldAll ${this.props.unfoldCode ? 'active' : ''}`}
+						onClick={this.props.unfoldCode} >
+						<i className='fas fa-expand' />
+					</div>
+				</>
+
+		}
+
 		return <div className='editors'>
 			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
 				onClick={this.props.undo} >
@@ -154,6 +172,7 @@ const Snippetbar = createClass({
 				<i className='fas fa-redo' />
 			</div>
 			<div className='divider'></div>
+			{foldButtons}
 			<div className={`editorTool editorTheme ${this.state.themeSelector ? 'active' : ''}`}
 				onClick={this.toggleThemeSelector} >
 				<i className='fas fa-palette' />
