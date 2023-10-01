@@ -213,8 +213,6 @@ app.get('/css/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	const { brew } = req;
 	splitTextStyleAndMetadata(brew);
 
-	console.log(brew);
-
 	res.set({
 		'Cache-Control' : 'no-cache',
 		'Content-Type'  : 'text/css'
