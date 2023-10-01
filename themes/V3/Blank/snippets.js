@@ -111,6 +111,22 @@ module.exports = [
 				icon : 'fas fa-code',
 				gen  : '<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->'
 			},
+			{
+				name : 'Homebrewery Credit',
+				icon : 'fas fa-dice-d20',
+				gen  : function(){
+					return dedent`
+						{{homebreweryCredits
+						Made With
+						
+						{{homebreweryIcon,gold}}
+						
+						The Homebrewery  
+						[Homebrewery.NaturalCrit.com](https://homebrewery.naturalcrit.com)
+						}}						
+						\n`;
+				},
+			}
 		]
 	},
 	{
