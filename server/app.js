@@ -208,6 +208,20 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	res.status(200).send(brew.text);
 });
 
+//Serve brew styling
+app.get('/css/:id', asyncHandler(getBrew('share')), (req, res)=>{
+	const { brew } = req;
+	splitTextStyleAndMetadata(brew);
+
+	console.log(brew);
+
+	res.set({
+		'Cache-Control' : 'no-cache',
+		'Content-Type'  : 'text/css'
+	});
+	res.status(200).send(brew.style);
+});
+
 //User Page
 app.get('/user/:username', async (req, res, next)=>{
 	const ownAccount = req.account && (req.account.username == req.params.username);
