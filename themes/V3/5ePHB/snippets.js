@@ -212,6 +212,21 @@ module.exports = [
 						}}
 						\n`;
 				},
+			},
+			{
+				name : 'Homebrewery Credit',
+				icon : 'fas fa-dice-d20',
+				gen  : function(){
+					return dedent`
+						{{homebreweryCredits
+						Made With
+						
+						{{homebreweryIcon,gold}}
+						
+						Homebrewery.Naturalcrit.com
+						}}						
+						\n`;
+				},
 			}
 		]
 	},
