@@ -424,7 +424,10 @@ body { counter-reset : phb-page-numbers; }
 		}
 
 		//Attribute Lists - All text between HRs is red
-		hr ~ :is(dl,p) { color : var(--HB_Color_HeaderText); }
+		hr ~ :is(dl,p) { 
+			color : var(--HB_Color_HeaderText);
+			text-indent: 0;
+		 }
 		hr:last-of-type {
 			& ~ :is(dl,p) {
 				color : inherit; // After the HRs, reset text to black
