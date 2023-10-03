@@ -14,13 +14,6 @@
 	--HB_Color_Footnotes             : #C9AD6A; // Gold
 }
 
-@page { margin: 0; }
-body {
-	counter-reset : phb-page-numbers;
-}
-*{
-	-webkit-print-color-adjust : exact;
-}
 .useSansSerif(){
 	font-family : ScalySansRemake;
 	font-size   : 0.318cm;
@@ -43,8 +36,6 @@ body {
 	}
 }
 .useColumns(@multiplier : 1, @fillMode: auto){
-	column-count         : 2;
-	column-fill          : @fillMode;
 	column-gap           : 0.9cm;
 	column-width         : 8cm * @multiplier;
 	-webkit-column-count : 2;
@@ -54,29 +45,11 @@ body {
 	-webkit-column-gap   : 0.9cm;
 	-moz-column-gap      : 0.9cm;
 }
-.columnWrapper{
-	max-height        : 100%;
-	column-span       : all;
-	columns           : inherit;
-	column-gap        : inherit;
-}
 .page{
 	.useColumns();
-	counter-increment : phb-page-numbers;
-	position          : relative;
-	z-index           : 15;
-	box-sizing        : border-box;
-	overflow          : hidden;
-	height            : 279.4mm;
-	width             : 215.9mm;
-	background-color  : var(--HB_Color_Background);
 	background-image  : @backgroundImage;
-	padding           : 1.4cm 1.9cm 1.7cm;
 	font-family       : BookInsanityRemake;
 	font-size         : 0.34cm;
-	text-rendering    : optimizeLegibility;
-	page-break-before : always;
-	page-break-after  : always;
 }
 	//*****************************
 	// *            BASE
@@ -85,7 +58,6 @@ body {
 .page{
 	p{
 		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
-		display       : block;
 		line-height   : 1.25em;
 		&+* {
 			margin-top : 0.325cm;
@@ -96,17 +68,11 @@ body {
 	}
 	ul{
 		margin-bottom       : 0.8em;
-		padding-left        : 1.4em;
 		line-height         : 1.25em;
-		list-style-position : outside;
-		list-style-type     : disc;
 	}
 	ol{
 		margin-bottom       : 0.8em;
-		padding-left        : 1.4em;
 		line-height         : 1.25em;
-		list-style-position : outside;
-		list-style-type     : decimal;
 	}
 	//Indents after p or lists
 	p+p, ul+p, ol+p{
@@ -116,21 +82,7 @@ body {
 		z-index : -1;
 	}
 	strong{
-		font-weight    : bold;
 		letter-spacing : -0.02em;
-	}
-	em{
-		font-style : italic;
-	}
-	sup{
-		vertical-align : super;
-		font-size      : smaller;
-		line-height    : 0;
-	}
-	sub{
-		vertical-align : sub;
-		font-size      : smaller;
-		line-height    : 0;
 	}
 	//*****************************
 	// *           HEADERS
@@ -213,13 +165,11 @@ body {
 	// *****************************/
 	table{
 		.useSansSerif();
-		width         : 100%;
 		line-height   : 16px;
 		& + * {
 			margin-top : 0.325cm;
 		}
 		thead{
-			display: table-row-group;
 			font-weight : 800;
 			th{
 				vertical-align : bottom;
@@ -333,43 +283,11 @@ body {
 
 	/* Watermark */
 	.watermark {
-		display         : grid !important;
-		place-items     : center;
-		justify-content	: center;
-		position        : absolute;
-		top             : 0;
-		left            : 0;
-		width           : 100%;
-		height          : 100%;
-		font-size       : 120px;
-		text-transform	: uppercase;
 		color           : black;
-		mix-blend-mode  : overlay;
-		opacity         : 30%;
-		transform       : rotate(-45deg);
-		z-index         : 500;
-		p {
-			margin-bottom : none;
-		}
 	}
 
 	/* Watercolor */
-	[class*="watercolor"] {
-		position            : absolute;
-		width               : 2000px;    /* dimensions need to be real big so the user can set */
-		height              : 2000px;    /* height or width and the image will maintain aspect ratio */
-		-webkit-mask-image  : var(--wc);
-		-webkit-mask-size   : contain;
-		-webkit-mask-repeat : no-repeat;
-		mask-image          : var(--wc);
-		mask-size           : contain;
-		mask-repeat         : no-repeat;
-		background-size     : cover;
-		background-color    : var(--HB_Color_WatercolorStain);			/*default color*/
-		--wc                : @watercolor1;         /*default image*/
-		z-index             : -2;
-	}
-
+	
 	.watercolor1  { --wc : @watercolor1; }
 	.watercolor2  { --wc : @watercolor2; }
 	.watercolor3  { --wc : @watercolor3; }
@@ -530,19 +448,14 @@ body {
 	// *           CODE BLOCKS
 	// ************************************/
 	code{
-    font-family      : "Courier New", Courier, monospace;
-		font-size        : 0.325;
+		font-size        : 0.325cm;
 		padding          : 0px 4px;
 		color            : #58180d;
 		background-color : #faf7ea;
 		border-radius    : 4px;
-		white-space      : pre-wrap;
-		overflow-wrap    : break-word;
 	}
 
 	pre code{
-		width               : 100%;
-		display             : inline-block;
 		border-style        : solid;
 		border-width        : 1px;
 		border-image        : @codeBorderImage 26 stretch;
@@ -565,19 +478,6 @@ body {
 		visibility : hidden;
 		margin     : 0px;
 	}
-	.columnSplit {
-		visibility                 : hidden;
-		-webkit-column-break-after : always;
-		break-after                : always;
-		-moz-column-break-after    : always;
-	}
-	//Avoid breaking up
-	blockquote,table{
-		z-index                     : 15;
-		-webkit-column-break-inside : avoid;
-		page-break-inside           : avoid;
-		break-inside                : avoid;
-	}
 	//Text indent right after table
 	table+p{
 		text-indent : 1em;
@@ -586,11 +486,6 @@ body {
 	ul ul,ol ol,ul ol,ol ul{
 		margin-bottom : 0px;
 		margin-left   : 1.5em;
-	}
-	li{
-		-webkit-column-break-inside : avoid;
-		page-break-inside           : avoid;
-		break-inside                : avoid;
 	}
 }
 //*****************************
@@ -1032,8 +927,6 @@ break-inside                : avoid;
 .page {
 	dl {
 		line-height  : 1.25em;
-		padding-left : 1em;
-		white-space  : pre-line;
 		& + * {
 			margin-top : 0.28cm;
 		}
@@ -1045,14 +938,8 @@ break-inside                : avoid;
 		margin-top: 0.17cm;
 	}
   dt {
-    display      : inline;
     margin-right : 5px;
 		margin-left  : -1em;
-  }
-  dd {
-		display     : inline;
-		margin-left : 0px;
-		text-indent : 0px;
   }
 }
 
