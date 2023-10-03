@@ -16,6 +16,8 @@ const HelpNavItem = require('../../navbar/help.navitem.jsx');
 
 const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
 
+let SAVEKEY = '';
+
 const AccountPage = createClass({
 	displayName     : 'AccountPage',
 	getDefaultProps : function() {
@@ -28,6 +30,27 @@ const AccountPage = createClass({
 		return {
 			uiItems : this.props.uiItems
 		};
+	},
+	componentDidMount : function(){
+		if(!this.state.saveLocation && this.props.uiItems.username) {
+			SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${this.props.uiItems.username}`;
+			let saveLocation =  window.localStorage.getItem(SAVEKEY);
+			saveLocation = saveLocation ?? (this.state.uiItems.googleId ? 'GOOGLE-DRIVE' : 'HOMEBREWERY');
+			this.makeActive(saveLocation);
+		}
+	},
+
+	makeActive : function(newSelection){
+		if(this.state.saveLocation == newSelection) return;
+		window.localStorage.setItem(SAVEKEY, newSelection);
+		this.setState({
+			saveLocation : newSelection
+		});
+	},
+
+	renderButton : function(name, key, shouldRender=true){
+		if(!shouldRender) return;
+		return <button className={this.state.saveLocation==key ? 'active' :	''}	onClick={()=>{this.makeActive(key);}}>{name}</button>;
 	},
 
 	renderNavItems : function() {
@@ -60,6 +83,11 @@ const AccountPage = createClass({
 						<strong>Brews on Google Drive: </strong> {this.props.uiItems.googleCount ?? <>Unable to retrieve files - <a href='https://github.com/naturalcrit/homebrewery/discussions/1580'>follow these steps to renew your Google credentials.</a></>}
 					</p>
 				}
+			</div>
+			<div className='dataGroup'>
+				<h4>Default Save Location</h4>
+				{this.renderButton('Homebrewery', 'HOMEBREWERY')}
+				{this.renderButton('Google Drive', 'GOOGLE-DRIVE', this.state.uiItems.googleId)}
 			</div>
 		</>;
 	},

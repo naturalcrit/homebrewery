@@ -49,7 +49,8 @@ const CodeEditor = createClass({
 			value         : '',
 			wrap          : true,
 			onChange      : ()=>{},
-			enableFolding : true
+			enableFolding : true,
+			editorTheme   : 'default'
 		};
 	},
 
@@ -91,17 +92,24 @@ const CodeEditor = createClass({
 		} else {
 			this.codeMirror.setOption('foldOptions', false);
 		}
+
+		if(prevProps.editorTheme !== this.props.editorTheme){
+			this.codeMirror.setOption('theme', this.props.editorTheme);
+		}
 	},
 
 	buildEditor : function() {
 		this.codeMirror = CodeMirror(this.refs.editor, {
 			lineNumbers       : true,
 			lineWrapping      : this.props.wrap,
-			indentWithTabs    : true,
+			indentWithTabs    : false,
 			tabSize           : 2,
+			smartIndent       : false,
 			historyEventDelay : 250,
 			scrollPastEnd     : true,
 			extraKeys         : {
+				'Tab'              : this.indent,
+				'Shift-Tab'        : this.dedent,
 				'Ctrl-B'           : this.makeBold,
 				'Cmd-B'            : this.makeBold,
 				'Ctrl-I'           : this.makeItalic,
@@ -156,6 +164,7 @@ const CodeEditor = createClass({
 			autoCloseTags     : true,
 			styleActiveLine   : true,
 			showTrailingSpace : false,
+			theme             : this.props.editorTheme
 			// specialChars           : / /,
 			// specialCharPlaceholder : function(char) {
 			// 	const el = document.createElement('span');
@@ -169,6 +178,19 @@ const CodeEditor = createClass({
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
 		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
 		this.updateSize();
+	},
+
+	indent : function () {
+		const cm = this.codeMirror;
+		if(cm.somethingSelected()) {
+			cm.execCommand('indentMore');
+		} else {
+			cm.execCommand('insertSoftTab');
+		}
+	},
+
+	dedent : function () {
+		this.codeMirror.execCommand('indentLess');
 	},
 
 	makeHeader : function (number) {
@@ -390,7 +412,10 @@ const CodeEditor = createClass({
 	//----------------------//
 
 	render : function(){
-		return <div className='codeEditor' ref='editor' style={this.props.style}/>;
+		return <>
+			<link href={`../homebrew/cm-themes/${this.props.editorTheme}.css`} rel='stylesheet' />
+			<div className='codeEditor' ref='editor' style={this.props.style}/>
+		</>;
 	}
 });
 

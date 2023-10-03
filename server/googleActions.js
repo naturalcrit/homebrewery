@@ -99,23 +99,31 @@ const GoogleActions = {
 	listGoogleBrews : async (auth)=>{
 		const drive = googleDrive.drive({ version: 'v3', auth });
 
-		const obj = await drive.files.list({
-			pageSize : 1000,
-			fields   : 'nextPageToken, files(id, name, description, createdTime, modifiedTime, properties)',
-			q        : 'mimeType != \'application/vnd.google-apps.folder\' and trashed = false'
-		})
-		.catch((err)=>{
-			console.log(`Error Listing Google Brews`);
-			console.error(err);
-			throw (err);
-			//TODO: Should break out here, but continues on for some reason.
-		});
+		const fileList = [];
+		let NextPageToken = '';
 
-		if(!obj.data.files.length) {
+		do {
+			const obj = await drive.files.list({
+				pageSize  : 1000,
+				pageToken : NextPageToken || '',
+				fields    : 'nextPageToken, files(id, name, description, createdTime, modifiedTime, properties, webViewLink)',
+				q         : 'mimeType != \'application/vnd.google-apps.folder\' and trashed = false'
+			})
+			.catch((err)=>{
+				console.log(`Error Listing Google Brews`);
+				console.error(err);
+				throw (err);
+				//TODO: Should break out here, but continues on for some reason.
+			});
+			fileList.push(...obj.data.files);
+			NextPageToken = obj.data.nextPageToken;
+		} while (NextPageToken);
+
+		if(!fileList.length) {
 			console.log('No files found.');
 		}
 
-		const brews = obj.data.files.map((file)=>{
+		const brews = fileList.map((file)=>{
 			return {
 				text        : '',
 				shareId     : file.properties.shareId,
@@ -131,7 +139,8 @@ const GoogleActions = {
 				published   : file.properties.published ? file.properties.published == 'true' : false,
 				systems     : [],
 				lang        : file.properties.lang,
-				thumbnail   : file.properties.thumbnail
+				thumbnail   : file.properties.thumbnail,
+				webViewLink : file.webViewLink
 			};
 		});
 	  return brews;
@@ -235,9 +244,9 @@ const GoogleActions = {
 
 		if(obj) {
 			if(accessType == 'edit' && obj.data.properties.editId != accessId){
-				throw ('Edit ID does not match');
+				throw ({ message: 'Edit ID does not match' });
 			} else if(accessType == 'share' && obj.data.properties.shareId != accessId){
-				throw ('Share ID does not match');
+				throw ({ message: 'Share ID does not match' });
 			}
 
 			const file = await drive.files.get({
