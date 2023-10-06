@@ -3,8 +3,8 @@
   "description": "Create authentic looking D&D homebrews using only markdown",
   "version": "3.9.2",
   "engines": {
-		"npm": "^10.1.x",
-    "node": ">=20.7.x"
+		"npm": "^10.2.x",
+    "node": ">=20.8.x"
   },
   "repository": {
     "type": "git",
