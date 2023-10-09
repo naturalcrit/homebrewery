@@ -7,14 +7,44 @@ const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
 const renderer = new Marked.Renderer();
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
-renderer.html = function (html) {
-	if(_.startsWith(_.trim(html), '<div') && _.endsWith(_.trim(html), '</div>')){
-		const openTag = html.substring(0, html.indexOf('>')+1);
-		html = html.substring(html.indexOf('>')+1);
-		html = html.substring(0, html.lastIndexOf('</div>'));
-		return `${openTag} ${Marked.parse(html)} </div>`;
+// renderer.html = function (html) {
+// 	if(_.startsWith(_.trim(html), '<div') && _.endsWith(_.trim(html), '</div>')){
+// 		const openTag = html.substring(0, html.indexOf('>')+1);
+// 		html = html.substring(html.indexOf('>')+1);
+// 		html = html.substring(0, html.lastIndexOf('</div>'));
+// 		return `${openTag} ${html} </div>`;
+// 	}
+// 	return html;
+// };
+
+//Processes the markdown within an HTML block if it's just a class-wrapper
+const htmlDiv = {
+	name  : 'htmlDiv',
+	level : 'block',
+	tokenizer(src, tokens) {
+		let html = src;
+		if(_.startsWith(_.trim(html), '<div') && _.endsWith(_.trim(html), '</div>')){
+			const openTag = html.substring(0, html.indexOf('>')+1);
+			html = html.substring(html.indexOf('>')+1);
+			html = html.substring(0, html.lastIndexOf('</div>'));
+
+			const item = {                                                  // Token to generate
+				type    : 'htmlDiv',                                        // Should match "name" above
+				raw     : src.substring(0, src.indexOf('</div>')+6),        // Text to consume from the source
+				text    : html,                                             // Additional custom properties
+				openTag : openTag,
+				tokens  : []
+			};
+
+			this.lexer.blockTokens(html, item.tokens);
+
+			return item;
+		}
+		return false;
+	},
+	renderer(token) {
+		return `${token.openTag} ${this.parser.parse(token.tokens)} </div>`;
 	}
-	return html;
 };
 
 // Don't wrap {{ Divs or {{ empty Spans in <p> tags
@@ -247,13 +277,13 @@ const pageBlocks = {
 	tokenizer(src, tokens) {
 		if(!pageBlockTopLevel) return false;
 		const pageArray = src.split(/^\\page$/gm);
-		if(this.lexer.tokens.length == 0) pageBlockNumber = 0;
+		if(this.lexer.tokens.length == 0 && this.lexer.state.top) pageBlockNumber = 0;
 		pageBlockNumber++;
 
 		const token = {
 			type       : 'pageBlock',
 			raw        : `${pageArray[0]}\\page`,
-			text       : pageArray[0] || '',
+			text       : pageArray[0],
 			pageNumber : pageBlockNumber,
 			tokens     : []
 		};
@@ -269,7 +299,7 @@ const pageBlocks = {
 	}
 };
 
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, pageBlocks] });
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, htmlDiv, pageBlocks] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
