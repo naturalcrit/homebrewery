@@ -145,7 +145,7 @@ module.exports = [
 			},
 
 			{
-				name : 'WoTC Fan Content Policy',
+				name : 'GNU General Public License',
 				icon : 'fas fa-w',
 				gen	 : LicenseGen.GNU,
 			}
