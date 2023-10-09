@@ -238,7 +238,38 @@ const definitionLists = {
 	}
 };
 
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists] });
+let pageBlockTopLevel = true;
+let pageBlockNumber = 0;
+const pageBlocks = {
+	name  : 'pageBlock',
+	level : 'block',
+	start(src) { return pageBlockTopLevel; },
+	tokenizer(src, tokens) {
+		if(!pageBlockTopLevel) return false;
+		const pageArray = src.split(/^\\page$/gm);
+		if(this.lexer.tokens.length == 0) pageBlockNumber = 0;
+		pageBlockNumber++;
+
+		const token = {
+			type       : 'pageBlock',
+			raw        : `${pageArray[0]}\\page`,
+			text       : pageArray[0] || '',
+			pageNumber : pageBlockNumber,
+			tokens     : []
+		};
+
+		pageBlockTopLevel = false;
+		this.lexer.blockTokens(token.text, token.tokens);
+		pageBlockTopLevel = true;
+
+		return token;
+	},
+	renderer(token) {
+		return `<div class='page' id='p${token.pageNumber}'>\n${this.parser.parse(token.tokens)}</div>`;
+	}
+};
+
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, pageBlocks] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());

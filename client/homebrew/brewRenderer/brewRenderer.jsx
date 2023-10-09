@@ -36,7 +36,8 @@ const BrewRenderer = createClass({
 		if(this.props.renderer == 'legacy') {
 			pages = this.props.text.split('\\page');
 		} else {
-			pages = this.props.text.split(/^\\page$/gm);
+			// pages = this.props.text.split(/^\\page$/gm);
+			pages = [this.props.text];
 		}
 
 		return {
@@ -68,7 +69,7 @@ const BrewRenderer = createClass({
 			if(this.props.renderer == 'legacy') {
 				pages = this.props.text.split('\\page');
 			} else {
-				pages = this.props.text.split(/^\\page$/gm);
+				pages = [this.props.text];
 			}
 			this.setState({
 				pages  : pages,
@@ -149,13 +150,11 @@ const BrewRenderer = createClass({
 	renderPage : function(pageText, index){
 		let cleanPageText = this.sanitizeScriptTags(pageText);
 		if(this.props.renderer == 'legacy')
-			return <div className='phb page' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(cleanPageText) }} key={index} />;
+			return <div className='pages' ref='pages' lang={`${this.props.lang || 'en'}`}><div className='phb page' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(cleanPageText) }} key={index} /></div>;
 		else {
 			cleanPageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			return (
-				<div className='page' id={`p${index + 1}`} key={index} >
-					<div className='columnWrapper' dangerouslySetInnerHTML={{ __html: Markdown.render(cleanPageText) }} />
-				</div>
+				<div className='pages' ref='pages' lang={`${this.props.lang || 'en'}`} dangerouslySetInnerHTML={{ __html: Markdown.render(cleanPageText || ' ') }} />
 			);
 		}
 	},
@@ -239,9 +238,7 @@ const BrewRenderer = createClass({
 							&&
 							<>
 								{this.renderStyle()}
-								<div className='pages' ref='pages' lang={`${this.props.lang || 'en'}`}>
-									{this.renderPages()}
-								</div>
+								{this.renderPages()}
 							</>
 						}
 					</div>
