@@ -270,6 +270,8 @@ const definitionLists = {
 
 let pageBlockTopLevel = true;
 let pageBlockNumber = 0;
+let targetPage = -1;
+let targetRange = 0;
 const pageBlocks = {
 	name  : 'pageBlock',
 	level : 'block',
@@ -285,8 +287,13 @@ const pageBlocks = {
 			raw        : `${pageArray[0]}\\page`,
 			text       : pageArray[0],
 			pageNumber : pageBlockNumber,
+			prune      : false,
 			tokens     : []
 		};
+
+		if(targetPage > 0 && (token.pageNumber < (targetPage - targetRange) || token.pageNumber > (targetPage + targetRange))) {
+			token.prune = true;
+		}
 
 		pageBlockTopLevel = false;
 		this.lexer.blockTokens(token.text, token.tokens);
@@ -295,7 +302,8 @@ const pageBlocks = {
 		return token;
 	},
 	renderer(token) {
-		return `<div class='page' id='p${token.pageNumber}'>\n${this.parser.parse(token.tokens)}</div>`;
+		if(token.prune) { return `<div class='page' id='p${token.pageNumber}' key=${token.pageNumber}>\n<i className='fas fa-spinner fa-spin' />\n</div>`; };
+		return `<div class='page' id='p${token.pageNumber}' key=${token.pageNumber}>\n${this.parser.parse(token.tokens)}</div>`;
 	}
 };
 
@@ -401,9 +409,11 @@ const processStyleTags = (string)=>{
 
 module.exports = {
 	marked : Marked,
-	render : (rawBrewText)=>{
+	render : (rawBrewText, pageToRender = -1, pageRange = 0)=>{
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
+		targetPage = pageToRender;
+		targetRange = pageRange;
 		return Marked.parse(rawBrewText);
 	},
 
