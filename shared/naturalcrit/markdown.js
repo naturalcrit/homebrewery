@@ -313,6 +313,7 @@ const pageBlocks = {
 	}],
 	walkTokens(token) {
 		const permittedTypes = ['heading', 'html', 'mustacheDivs', 'pageBlock'];
+		const stopPruningTypes = ['heading'];
 
 		if(token.prune) {
 			token.tokens?.forEach((childToken)=>{
@@ -320,7 +321,7 @@ const pageBlocks = {
 					childToken.originalType = childToken.type;
 					childToken.type = 'hiddenBlock';
 				};
-				childToken.prune = (childToken.type != 'heading');
+				childToken.prune = (!stopPruningTypes.includes(childToken.type));
 			});
 		}
 	}
