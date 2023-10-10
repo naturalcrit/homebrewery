@@ -268,46 +268,66 @@ const definitionLists = {
 	}
 };
 
-let pageBlockTopLevel = true;
+let hasPageBlockParent = false;
 let pageBlockNumber = 0;
 let targetPage = -1;
 let targetRange = 0;
 const pageBlocks = {
-	name  : 'pageBlock',
-	level : 'block',
-	start(src) { return pageBlockTopLevel; },
-	tokenizer(src, tokens) {
-		if(!pageBlockTopLevel) return false;
-		const pageArray = src.split(/^\\page$/gm);
-		if(this.lexer.tokens.length == 0 && this.lexer.state.top) pageBlockNumber = 0;
-		pageBlockNumber++;
+	extensions : [{
+		name  : 'pageBlock',
+		level : 'block',
+		tokenizer(src, tokens) {
+			if(hasPageBlockParent) return false;
+			const pageArray = src.split(/^\\page$/gm, 1);
+			if(this.lexer.tokens?.length == 0 && this.lexer.state.top) pageBlockNumber = 0;
+			pageBlockNumber++;
 
-		const token = {
-			type       : 'pageBlock',
-			raw        : `${pageArray[0]}\\page`,
-			text       : pageArray[0],
-			pageNumber : pageBlockNumber,
-			prune      : false,
-			tokens     : []
-		};
+			const token = {
+				type       : 'pageBlock',
+				raw        : `${pageArray[0]}\\page`,
+				text       : pageArray[0],
+				pageNumber : pageBlockNumber,
+				prune      : false,
+				tokens     : []
+			};
 
-		if(targetPage > 0 && (token.pageNumber < (targetPage - targetRange) || token.pageNumber > (targetPage + targetRange))) {
-			token.prune = true;
+			if(targetPage > 0 && (token.pageNumber < (targetPage - targetRange) || token.pageNumber > (targetPage + targetRange))) {
+				token.prune = true;
+			}
+
+			hasPageBlockParent = true;
+			this.lexer.blockTokens(token.text, token.tokens);
+			hasPageBlockParent = false;
+
+			return token;
+		},
+		renderer(token) {
+			return `<div class='page' id='p${token.pageNumber}' key=${token.pageNumber}>\n${this.parser.parse(token.tokens)}</div>`;
 		}
+	}, {
+		name  : 'hiddenBlock',
+		level : 'block',
+		renderer(token) {
+			return token.tokens?.length > 0 && this.parser.parse(token.tokens);
+		}
+	}],
+	walkTokens(token) {
+		const permittedTypes = ['heading', 'html', 'mustacheDivs', 'pageBlock'];
 
-		pageBlockTopLevel = false;
-		this.lexer.blockTokens(token.text, token.tokens);
-		pageBlockTopLevel = true;
-
-		return token;
-	},
-	renderer(token) {
-		if(token.prune) { return `<div class='page' id='p${token.pageNumber}' key=${token.pageNumber}>\n<i className='fas fa-spinner fa-spin' />\n</div>`; };
-		return `<div class='page' id='p${token.pageNumber}' key=${token.pageNumber}>\n${this.parser.parse(token.tokens)}</div>`;
+		if(token.prune) {
+			token.tokens?.forEach((childToken)=>{
+				if(!permittedTypes.includes(childToken.type)) {
+					childToken.originalType = childToken.type;
+					childToken.type = 'hiddenBlock';
+				};
+				childToken.prune = (childToken.type != 'heading');
+			});
+		}
 	}
 };
 
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, htmlDiv, pageBlocks] });
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, htmlDiv] });
+Marked.use(pageBlocks);
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
@@ -414,6 +434,8 @@ module.exports = {
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
 		targetPage = pageToRender;
 		targetRange = pageRange;
+		targetPage = 6;
+		targetRange = 2;
 		return Marked.parse(rawBrewText);
 	},
 
