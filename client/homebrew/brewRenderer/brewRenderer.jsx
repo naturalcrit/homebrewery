@@ -33,20 +33,24 @@ const BrewRenderer = createClass({
 	},
 	getInitialState : function() {
 		let pages;
+		let pageCount;
 		if(this.props.renderer == 'legacy') {
 			pages = this.props.text.split('\\page');
+			pageCount = pages.length;
 		} else {
 			// pages = this.props.text.split(/^\\page$/gm);
 			pages = [this.props.text];
+			pageCount = this.props.text.split(/^\\page$/gm).length;
 		}
 
 		return {
-			viewablePageNumber : 0,
+			viewablePageNumber : 1,
 			height             : 0,
 			isMounted          : false,
 
 			pages          : pages,
-			usePPR         : pages.length >= PPR_THRESHOLD,
+			pageCount      : pageCount,
+			usePPR         : pageCount >= PPR_THRESHOLD,
 			visibility     : 'hidden',
 			initialContent : `<!DOCTYPE html><html><head>
 												<link href="//use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
@@ -66,14 +70,18 @@ const BrewRenderer = createClass({
 	componentDidUpdate : function(prevProps) {
 		if(prevProps.text !== this.props.text) {
 			let pages;
+			let pageCount;
 			if(this.props.renderer == 'legacy') {
 				pages = this.props.text.split('\\page');
+				pageCount = pages.length;
 			} else {
 				pages = [this.props.text];
+				pageCount = this.props.text.split(/^\\page$/gm).length;
 			}
 			this.setState({
-				pages  : pages,
-				usePPR : pages.length >= PPR_THRESHOLD
+				pages     : pages,
+				pageCount : pageCount,
+				usePPR    : pageCount >= PPR_THRESHOLD
 			});
 		}
 	},
@@ -85,9 +93,21 @@ const BrewRenderer = createClass({
 	},
 
 	handleScroll : function(e){
-		const target = e.target;
+		let currentPage = 1;
+		if(window) {
+			const pageCollection = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('page');
+			const brewRendererHeight = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer').item(0).getBoundingClientRect().height;
+
+			for (const page of pageCollection) {
+				if(page.getBoundingClientRect().bottom > (brewRendererHeight / 2)) {
+					currentPage = parseInt(page.id.slice(1)) || 1;
+					break;
+				}
+			}
+		}
+
 		this.setState((prevState)=>({
-			viewablePageNumber : Math.floor(target.scrollTop / target.scrollHeight * prevState.pages.length)
+			viewablePageNumber : currentPage
 		}));
 	},
 
@@ -121,7 +141,7 @@ const BrewRenderer = createClass({
 				{this.props.renderer}
 			</div>
 			<div>
-				{this.state.viewablePageNumber + 1} / {this.state.pages.length}
+				{this.state.viewablePageNumber} / {this.state.pageCount}
 			</div>
 		</div>;
 	},
@@ -154,7 +174,7 @@ const BrewRenderer = createClass({
 		else {
 			cleanPageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			return (
-				<div className='pages' ref='pages' lang={`${this.props.lang || 'en'}`} dangerouslySetInnerHTML={{ __html: Markdown.render(cleanPageText || ' ') }} />
+				<div className='pages' ref='pages' lang={`${this.props.lang || 'en'}`} dangerouslySetInnerHTML={{ __html: Markdown.render(cleanPageText || ' ', this.state.usePPR ? this.state.viewablePageNumber : -1, 2) }} />
 			);
 		}
 	},
