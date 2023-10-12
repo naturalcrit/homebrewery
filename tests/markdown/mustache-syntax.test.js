@@ -122,7 +122,7 @@ describe('Inline: When using the Inline syntax {{ }}', ()=>{
 	it('Renders a mustache span with text, id, class and a couple of css properties', function() {
 		const source = '{{pen,#author,color:orange,font-family:"trebuchet ms" text}}';
 		const rendered = Markdown.render(source);
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block pen" id="author" style="color:orange; font-family:trebuchet ms;">text</span>');
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class=\'page\' id=\'p1\' key=1>\n<span class="inline-block pen" id="author" style="color:orange; font-family:trebuchet ms;">text</span></div>');
 	});
 });
 
@@ -152,7 +152,7 @@ describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 		}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		// this actually renders in HB as '{{ }}'...
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>{{}}</p>`);
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class='page' id='p1' key=1><p>{{}}</p></div>`);
 	});
 
 	it.failing('Renders a div with a single class', function() {
@@ -170,7 +170,7 @@ describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 		}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		// FIXME: adds two extra \s before closing `>` in opening tag
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block cat"><p>Sample text.</p></div>`);
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class='page' id='p1' key=1><div class="block cat"><p>Sample text.</p></div></div>`);
 	});
 
 	it.failing('Renders a div with two classes and text', function() {
@@ -205,7 +205,7 @@ describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 		Sample text.
 		}}`;
 		const rendered = Markdown.render(source).trimReturns();
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block cat" id="dog" style="color:red;"><p>Sample text.</p></div>`);
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class='page' id='p1' key=1><div class="block cat" id="dog" style="color:red;"><p>Sample text.</p></div></div>`);
 	});
 
 	it.failing('Renders a div with a single ID', function() {
