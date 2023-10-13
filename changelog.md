@@ -83,10 +83,6 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 ### Friday 13/10/2023 - v3.10.0
 {{taskList
 
-##### Calculuschild
-
-
-
 ##### G-Ambatte
 
 * [x] Fix user preferred save location being ignored
