@@ -80,6 +80,56 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Friday 13/10/2023 - v3.10.0
+{{taskList
+
+##### G-Ambatte
+
+* [x] Fix user preferred save location being ignored
+
+Fixes issue [#2993](https://github.com/naturalcrit/homebrewery/issues/2993)
+
+* [x] Fix crash to white screen when starting new brews while not signed in
+
+Fixes issue [#2999](https://github.com/naturalcrit/homebrewery/issues/2999)
+
+* [x] Fix FreeBSD install script 
+
+Fixes issue [#3005](https://github.com/naturalcrit/homebrewery/issues/3005)
+
+* [x] Fix *"This brew has been changed on another device"* triggering when manually saving during auto-save
+
+Fixes issue [#2641](https://github.com/naturalcrit/homebrewery/issues/2641)
+
+* [x] Fix Firefox different column-flow behavior
+
+Fixes issue [#2982](https://github.com/naturalcrit/homebrewery/issues/2982)
+
+* [x] Fix brew titles being mis-sorted on user page
+
+Fixes issue [#2775](https://github.com/naturalcrit/homebrewery/issues/2775)
+
+* [x] Text Editor themes now available via new drop-down
+
+Fixes issue [#362](https://github.com/naturalcrit/homebrewery/issues/362)
+
+##### 5e-Cleric
+
+* [x] New {{openSans **PHB → {{fas,fa-quote-right}} QUOTE**  }} snippet for V3!
+
+Fixes issue [#2920](https://github.com/naturalcrit/homebrewery/issues/2920)
+
+* [x] Several updates and fixes to FAQ and Welcome page
+
+Fixes issue [#2729](https://github.com/naturalcrit/homebrewery/issues/2729),
+[#2787](https://github.com/naturalcrit/homebrewery/issues/2787)
+
+##### Gazook89
+
+* [x] Add syntax highlighting for Definition Lists <code>:\:</code>
+}}
+
+
 ### Thursday 17/08/2023 - v3.9.2
 {{taskList
 
@@ -119,13 +169,14 @@ Fixes issue [#2943](https://github.com/naturalcrit/homebrewery/issues/2943)
 
 * [x] Exclude cover pages from Table of Content generation (editing on mobile is still not recommended)
 
-Fixes issue [#2920](https://github.com/naturalcrit/homebrewery/issues/2920) 
+Fixes issue [#2920](https://github.com/naturalcrit/homebrewery/issues/2920)
 
 ##### Gazook89
 
 * [x] Adjustments to improve mobile viewing
-
 }}
+
+
 
 ### Wednesday 28/06/2023 - v3.9.1
 {{taskList
@@ -170,6 +221,8 @@ Fixes issue [#2790](https://github.com/naturalcrit/homebrewery/issues/2790)
 
 Fixes issue [#2784](https://github.com/naturalcrit/homebrewery/issues/2784) 
 }}
+
+\page
 
 ### Wednesday 12/04/2023 - v3.8.0
 {{taskList
@@ -231,8 +284,6 @@ Fixes issues [#2712](https://github.com/naturalcrit/homebrewery/issues/2712)
 Fixes issues [#2731](https://github.com/naturalcrit/homebrewery/issues/2731)
 
 }}
-
-\page
 
 ### Monday 13/03/2023 - v3.7.2
 {{taskList
@@ -314,7 +365,11 @@ Fixes issues [#2603](https://github.com/naturalcrit/homebrewery/issues/2603)
 * [x] Add message to refresh the browser if the user is missing an update to the Homebrewery
 
 Fixes issues [#2583](https://github.com/naturalcrit/homebrewery/issues/2583)
+}}
 
+\page
+
+{{taskList
 ##### G-Ambatte
 
 * [x] Auto-compile Themes CSS on development server
@@ -324,7 +379,6 @@ Fixes issues [#2583](https://github.com/naturalcrit/homebrewery/issues/2583)
 * [x] Fix cloned brews inheriting the parent view count
 }}
 
-\page
 
 ### Friday 23/12/2022 - v3.5.0
 {{taskList
