@@ -328,7 +328,7 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 	};
 
 	// increase visitor view count, do not include visits by author(s)
-	if(brew.authors.includes(req.account.username) === false){
+	if(!brew.authors.includes(req.account?.username)){
 		if(req.params.id.length > 12 && !brew._id) {
 			const googleId = brew.googleId;
 			const shareId = brew.shareId;
