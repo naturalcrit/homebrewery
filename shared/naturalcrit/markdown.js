@@ -320,7 +320,7 @@ const pageBlocks = {
 
 		if(token.prune) {
 			token.tokens?.forEach((childToken)=>{
-				if(!permittedTypes.includes(childToken.type) ||	(childToken.type == 'html' && !(childToken.text?.match('id=') || childToken.text?.startsWith('<style')))) {
+				if(!permittedTypes.includes(childToken.type) ||	(childToken.type == 'html' && !(childToken.text?.match(/id=/i) || childToken.text?.startsWith('<style')))) {
 					childToken.originalType = childToken.type;
 					childToken.type = 'hiddenBlock';
 				};
