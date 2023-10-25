@@ -206,6 +206,32 @@ const mustacheInjectBlock = {
 	}
 };
 
+const indexAnchors = {
+	extensions : [{
+		name  : 'indexAnchor',
+		level : 'inline',
+		start(src) {return src.match(/@((?:\\.|[^\[\]\\^@^\)])+)@\(((?:\\.|[^\[\]\\^@^\)])+)\)/)?.index;}, // Hint to Marked.js to stop and check for a match
+		tokenizer(src, tokens) {
+			const inlineRegex = /@((?:\\.|[^\[\]\\^@^\)])+)@\(((?:\\.|[^\[\]\\^@^\)])+)\)/ym;
+			const anchor = {};
+			const match = inlineRegex.exec(src);
+			if(match) {
+				anchor.lookup = match[1].trim();
+				anchor.parent = match[2].trim();
+				return {
+					type : 'indexAnchor',
+					text : src,
+					raw  : match[0],
+					anchor
+				};
+			}
+		},
+		renderer(token) {
+			return `<a href="#${token.anchor.lookup.replace(/\s/g,'').toLowerCase()}" parent="${token.anchor.parent}" lookup="${token.anchor.lookup}" />`;
+		}
+	}]
+};
+
 const definitionLists = {
 	name  : 'definitionLists',
 	level : 'block',
@@ -239,6 +265,7 @@ const definitionLists = {
 };
 
 Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists] });
+Marked.use(indexAnchors);
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
