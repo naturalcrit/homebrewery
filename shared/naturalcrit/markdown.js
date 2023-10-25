@@ -306,7 +306,8 @@ const pageBlocks = {
 		renderer(token) {
 			return `<div class='page' id='p${token.pageNumber}' key=${token.pageNumber}>\n${this.parser.parse(token.tokens)}</div>`;
 		}
-	}, {
+	},
+	{
 		name  : 'hiddenBlock',
 		level : 'block',
 		renderer(token) {
@@ -319,7 +320,7 @@ const pageBlocks = {
 
 		if(token.prune) {
 			token.tokens?.forEach((childToken)=>{
-				if(!permittedTypes.includes(childToken.type)) {
+				if(!permittedTypes.includes(childToken.type) ||	(childToken.type == 'html' && !(childToken.text?.match('id=') || childToken.text?.startsWith('<style')))) {
 					childToken.originalType = childToken.type;
 					childToken.type = 'hiddenBlock';
 				};
