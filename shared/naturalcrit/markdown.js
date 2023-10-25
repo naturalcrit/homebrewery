@@ -282,9 +282,11 @@ const pageBlocks = {
 			if(this.lexer.tokens?.length == 0 && this.lexer.state.top) pageBlockNumber = 0;
 			pageBlockNumber++;
 
+			const rawText = src.length > pageArray[0].length ? `${pageArray[0]}\\page` : pageArray[0];
+
 			const token = {
 				type       : 'pageBlock',
-				raw        : `${pageArray[0]}\\page`,
+				raw        : rawText,
 				text       : pageArray[0],
 				pageNumber : pageBlockNumber,
 				prune      : false,
