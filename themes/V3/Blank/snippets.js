@@ -4,6 +4,7 @@ const WatercolorGen = require('./snippets/watercolor.gen.js');
 const ImageMaskGen  = require('./snippets/imageMask.gen.js');
 const FooterGen     = require('./snippets/footer.gen.js');
 const dedent        = require('dedent-tabs').default;
+const richIndexGen  = require('./snippets/richIndex.gen.js');
 
 module.exports = [
 
@@ -111,6 +112,13 @@ module.exports = [
 				icon : 'fas fa-code',
 				gen  : '<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->'
 			},
+			{
+				name         : 'Rich Index',
+				icon         : 'fas fa-bars',
+				gen          : richIndexGen,
+				experimental : true
+			}
+
 		]
 	},
 	{

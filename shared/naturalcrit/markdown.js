@@ -210,9 +210,9 @@ const indexAnchors = {
 	extensions : [{
 		name  : 'indexAnchor',
 		level : 'inline',
-		start(src) {return src.match(/@((?:\\.|[^\[\]\\^@^\)])+)@\(((?:\\.|[^\[\]\\^@^\)])+)\)/)?.index;}, // Hint to Marked.js to stop and check for a match
+		start(src) {return src.match(/@((?:\\.|[^\[\]\\^@^\)])*)@\(((?:\\.|[^\[\]\\^@^\)])*)\)/)?.index;}, // Hint to Marked.js to stop and check for a match
 		tokenizer(src, tokens) {
-			const inlineRegex = /@((?:\\.|[^\[\]\\^@^\)])+)@\(((?:\\.|[^\[\]\\^@^\)])+)\)/ym;
+			const inlineRegex = /@((?:\\.|[^\[\]\\^@^\)])*)@\(((?:\\.|[^\[\]\\^@^\)])*)\)/ym;
 			const anchor = {};
 			const match = inlineRegex.exec(src);
 			if(match) {
@@ -227,7 +227,13 @@ const indexAnchors = {
 			}
 		},
 		renderer(token) {
-			return `<a href="#${token.anchor.lookup.replace(/\s/g,'').toLowerCase()}" parent="${token.anchor.parent}" lookup="${token.anchor.lookup}" />`;
+			// This is a Rich Index Anchor entry
+			if(token.anchor.lookup) {
+				return `<a href="#${token.anchor.lookup.replace(/\s/g,'').toLowerCase()}" parent="${token.anchor.parent}" lookup="${token.anchor.lookup}" />`;
+			} else {
+				// This is a basic index entry
+				return '';
+			}
 		}
 	}]
 };
