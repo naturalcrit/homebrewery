@@ -97,7 +97,7 @@ const markup = (index)=>{
 			if(parentPages.hasOwnProperty('rich')) {
 				results = results.concat('[', parseInt(pageNumber+1), `](#${child.toLowerCase().replace(' ', '')})`);
 			} else {
-				results = results.concat('[', parseInt(pageNumber+1), `](#page${pageNumber})`);
+				results = results.concat('[', parseInt(pageNumber+1), `](#p${pageNumber})`);
 			}
 			if(k < (parentPages.pages.length - 1)) {
 				results = results.concat(`, `);
