@@ -29,7 +29,6 @@ const findIndexTerms = (pages, terms, results)=>{
 	for (const [pageNumber, page] of pages.entries()) {
 		const lowerPage = page.toLowerCase();
 		for (const [term, lt] of lowerTerms.entries()) {
-			// convert to a regex to gain some regex benefits over a straight up match.
 			const regExTerm = new RegExp(lt.replace(' ', '\s').replace(/\n/g, '\s'));
 			if(lowerPage.match(regExTerm)) {
 				if(results.has(terms[term])) {
@@ -133,7 +132,6 @@ module.exports = function (props) {
 	const richIndexEntries = findRichTags(pages, indexMarkdownRegex);
 
 	if(indexTag.length > 0) {
-		// We have search terms!
 		findIndexTerms(pages, indexTag.split('|'), index);
 	}
 
@@ -143,7 +141,6 @@ module.exports = function (props) {
 
 	const markdown = markup(index);
 
-//	return dedent``;
 	return dedent`
 		{{index,wide
 		##### Index
