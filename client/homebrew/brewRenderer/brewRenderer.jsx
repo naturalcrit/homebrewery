@@ -113,6 +113,7 @@ const BrewRenderer = createClass({
 
 	shouldRender : function(pageText, index){
 		if(!this.state.isMounted) return false;
+		if(this.props.renderer == 'V3') return true;
 
 		const viewIndex = this.state.viewablePageNumber;
 		if(index == viewIndex - 3) return true;
@@ -172,9 +173,10 @@ const BrewRenderer = createClass({
 		if(this.props.renderer == 'legacy')
 			return <div className='pages' ref='pages' lang={`${this.props.lang || 'en'}`}><div className='phb page' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(cleanPageText) }} key={index} /></div>;
 		else {
-			cleanPageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
+			cleanPageText = cleanPageText.split(/^\\page$/gm).join(`\n\n&nbsp;\n\\column\n&nbsp;\n\\page\n`); //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
+
 			return (
-				<div className='pages' ref='pages' lang={`${this.props.lang || 'en'}`} dangerouslySetInnerHTML={{ __html: Markdown.render(cleanPageText || ' ', this.state.usePPR ? this.state.viewablePageNumber : -1, 2) }} />
+				<div className='pages' ref='pages' lang={`${this.props.lang || 'en'}`} dangerouslySetInnerHTML={{ __html: Markdown.render(cleanPageText || ' ', this.state.usePPR ? this.state.viewablePageNumber : -1, 3) }} />
 			);
 		}
 	},
