@@ -117,7 +117,9 @@ const api = {
 	},
 	getGoodBrewTitle : (text)=>{
 		let tokens = Markdown.marked.lexer(text);
-		if(tokens[0].type == 'pageBlock') { tokens = tokens[0].tokens; };
+		while (tokens[0].type == 'pageBlock'){
+			tokens = tokens[0].tokens;
+		};
 		return (tokens.find((token)=>token.type === 'heading' || token.type === 'paragraph')?.text || 'No Title')
 			.slice(0, MAX_TITLE_LENGTH);
 	},
