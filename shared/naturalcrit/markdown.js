@@ -229,7 +229,7 @@ const indexAnchors = {
 		renderer(token) {
 			// This is a Rich Index Anchor entry
 			if(token.anchor.lookup) {
-				return `<a href="#${token.anchor.lookup.replace(/\s/g,'').toLowerCase()}" parent="${token.anchor.parent}" lookup="${token.anchor.lookup}" />`;
+				return `<a href="#${token.anchor.lookup.replace(/\s/g, '').toLowerCase()}" parent="${token.anchor.parent}" lookup="${token.anchor.lookup}"></a>`;
 			} else {
 				// This is a basic index entry
 				return '';

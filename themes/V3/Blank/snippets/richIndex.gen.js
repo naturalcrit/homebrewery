@@ -66,8 +66,9 @@ const addRichIndexes = (richEntries, results)=>{
 							const childMap = new Map();
 							childMap.set(richTags[1], [entryPageNumber]);
 							results.set(parent, {
-								pages: [],
-								children: childMap
+								pages    : [],
+								children : childMap,
+								rich     : true
 							});
 						}
 					}
@@ -88,7 +89,11 @@ const markup = (index)=>{
 	for (const [parent, parentPages] of sortedIndex) {
 		results = results.concat(`- `, parent, parentPages.pages.length > 0 ? ' ... pg. ':'');
 		for (const [k, pageNumber] of parentPages.pages.entries()) {
-			results = results.concat(parseInt(pageNumber+1));
+			if(parentPages.hasOwnProperty('rich')) {
+				results = results.concat('[', parseInt(pageNumber+1), `](#${child.toLowerCase().replace(' ', '')})`);
+			} else {
+				results = results.concat('[', parseInt(pageNumber+1), `](#page${pageNumber})`);
+			}
 			if(k < (parentPages.pages.length - 1)) {
 				results = results.concat(`, `);
 			}
@@ -99,7 +104,7 @@ const markup = (index)=>{
 			for (const [child, childPages] of sortedChildren){
 				results = results.concat('  - ', child, ' ... pg. ');
 				for (const [k, pageNumber] of childPages.entries()) {
-					results = results.concat(parseInt(pageNumber+1));
+					results = results.concat('[', parseInt(pageNumber+1), `](#${child.toLowerCase().replace(' ', '')})`);
 					if(k < (childPages.length - 1)) {
 						results = results.concat(`, `);
 					}
