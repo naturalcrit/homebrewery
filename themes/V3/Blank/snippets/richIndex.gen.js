@@ -79,7 +79,13 @@ const addRichIndexes = (richEntries, results)=>{
 };
 
 const sortMap = (m)=> {
-	return (new Map([...m.entries()].sort()));
+	return (new Map([...m.entries()].sort((a, b)=>{
+		const lowA = a[0].toLowerCase();
+		const lowB = b[0].toLowerCase();
+		if(lowA == lowB) return 0;
+		if(lowA > lowB) return 1;
+		return -1;
+	})));
 };
 
 const markup = (index)=>{
