@@ -433,7 +433,7 @@ const processStyleTags = (string)=>{
 
 module.exports = {
 	marked : Marked,
-	render : (rawBrewText, pageToRender = -1, pageRange = 2)=>{
+	render : (rawBrewText, pageToRender = -1, pageRange = 3)=>{
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
 		targetPage = pageToRender;
