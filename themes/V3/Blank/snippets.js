@@ -114,7 +114,7 @@ module.exports = [
 			},
 			{
 				name         : 'Rich Index',
-				icon         : 'fas fa-bars',
+				icon         : 'fas fa-indent',
 				gen          : richIndexGen,
 				experimental : true
 			}

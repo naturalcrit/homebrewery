@@ -1,3 +1,4 @@
+/* eslint-disable max-depth */
 const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
 
@@ -12,8 +13,14 @@ const findBasicIndex = (pages, theRegex)=>{
 
 const findRichTags = (pages, theRegex)=>{
 	return (pages.map(function(page) {
-		const richIndex=theRegex.exec(page);
-		if(richIndex) { return richIndex; };
+		const results = [];
+		let richIndex;
+		while (richIndex=theRegex.exec(page)) {
+			if(richIndex[1].trim().length>0) {
+				results.push(richIndex);
+			}
+		}
+		return (results);
 	}));
 };
 
@@ -24,11 +31,7 @@ const findIndexTerms = (pages, terms, results)=>{
 		for (const [term, lt] of lowerTerms.entries()) {
 			// convert to a regex to gain some regex benefits over a straight up match.
 			const regExTerm = new RegExp(lt.replace(' ', '\s').replace(/\n/g, '\s'));
-			console.log(regExTerm);
-			console.log(lowerPage);
 			if(lowerPage.match(regExTerm)) {
-				console.log(`Found the term ${lt}`);
-				console.log(`Mapping to ${terms[term]}`);
 				if(results.has(terms[term])) {
 					const currentEntry = results.get(terms[term]);
 					currentEntry.pages.push(pageNumber);
@@ -39,7 +42,72 @@ const findIndexTerms = (pages, terms, results)=>{
 			}
 		}
 	}
-	console.log(results);
+	return results;
+};
+
+const addRichIndexes = (richEntries, results)=>{
+	for (const [entryPageNumber, richEntriesOnPage] of richEntries.entries()) {
+		if(richEntriesOnPage.length>0) {
+			for (const richTags of richEntriesOnPage) {
+				const parents = richTags[2].split('|');
+				if(parents.length>0){
+					for (const parent of parents) {
+						if(results.has(parent)){
+							const entry = results.get(parent);
+							if(!entry.children.has(richTags[1])){
+								entry.children.set(richTags[1], [entryPageNumber]);
+							} else {
+								const children = entry.children.get(richTags[1]);
+								children.push(entryPageNumber);
+								entry.children.set(richTags[1], children);
+							}
+							results.set(parent, entry);
+						} else {
+							const childMap = new Map();
+							childMap.set(richTags[1], [entryPageNumber]);
+							results.set(parent, {
+								pages: [],
+								children: childMap
+							});
+						}
+					}
+				}
+			}
+		}
+	}
+};
+
+const sortMap = (m)=> {
+	return (new Map([...m.entries()].sort()));
+};
+
+const markup = (index)=>{
+	const sortedIndex = sortMap(index);
+	let results = '';
+
+	for (const [parent, parentPages] of sortedIndex) {
+		results = results.concat(`- `, parent, parentPages.pages.length > 0 ? ' ... pg. ':'');
+		for (const [k, pageNumber] of parentPages.pages.entries()) {
+			results = results.concat(parseInt(pageNumber+1));
+			if(k < (parentPages.pages.length - 1)) {
+				results = results.concat(`, `);
+			}
+		}
+		results = results.concat('\n');
+		if(parentPages.hasOwnProperty('children')) {
+			const sortedChildren = sortMap(parentPages.children);
+			for (const [child, childPages] of sortedChildren){
+				results = results.concat('  - ', child, ' ... pg. ');
+				for (const [k, pageNumber] of childPages.entries()) {
+					results = results.concat(parseInt(pageNumber+1));
+					if(k < (childPages.length - 1)) {
+						results = results.concat(`, `);
+					}
+				}
+				results = results.concat('\n');
+			}
+		}
+	}
 	return results;
 };
 
@@ -55,23 +123,20 @@ module.exports = function (props) {
 
 	if(indexTag.length > 0) {
 		// We have search terms!
-		console.log('We found the index tag in a page.');
-		console.log(indexTag);
-
 		findIndexTerms(pages, indexTag.split('|'), index);
 	}
 
-	console.log(index);
-	console.log(`Found ${richIndexEntries.length} rich tags`);
-	console.log(richIndexEntries);
+	if(richIndexEntries.length>0) {
+		addRichIndexes(richIndexEntries, index);
+	}
 
+	const markdown = markup(index);
 
-	return dedent``;
-	// return dedent`
-	// 	{{index,wide
-	// 	##### Index
+//	return dedent``;
+	return dedent`
+		{{index,wide
+		##### Index
 
-	// 	$markdown
-	// 	}}
-	// \n`;
+		${markdown}
+		}}`;
 };
