@@ -489,6 +489,12 @@ app.use(async (err, req, res, next)=>{
 	};
 	req.customUrl= '/error';
 
+	if(req.originalUrl.startsWith('/api/')) {
+		console.log('api error');
+		res.status(err?.status || err?.response?.status || 500).send(err.message || err);
+		return;
+	}
+
 	const page = await renderPage(req, res);
 	if(!page) return;
 	res.send(page);
