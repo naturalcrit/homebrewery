@@ -474,6 +474,14 @@ const getPureError = (error)=>{
 app.use(async (err, req, res, next)=>{
 	err.originalUrl = req.originalUrl;
 	console.error(err);
+
+	if(err.originalUrl?.startsWith('/api/')) {
+		// console.log('API error');
+		res.status(err?.status || err?.response?.status || 500).send(err.message || err);
+		return;
+	}
+
+	// console.log('non-API error');
 	const status = err.status || err.code || 500;
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -489,12 +497,6 @@ app.use(async (err, req, res, next)=>{
 		pureError   : getPureError(err)
 	};
 	req.customUrl= '/error';
-
-	if(req.originalUrl.startsWith('/api/')) {
-		// console.log('api error');
-		res.status(err?.status || err?.response?.status || 500).send(err.message || err);
-		return;
-	}
 
 	const page = await renderPage(req, res);
 	if(!page) return;
