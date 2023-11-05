@@ -139,7 +139,7 @@ const mustacheInjectInline = {
 			if(!lastToken || lastToken.type == 'mustacheInjectInline')
 				return false;
 
-			const tags = ` ${processStyleTags(match[1])}`;
+			const tags = ` ${processStyleTags(processStyleMacros(match[1], lastToken))}`;
 			lastToken.originalType = lastToken.type;
 			lastToken.type         = 'mustacheInjectInline';
 			lastToken.tags         = tags;
@@ -324,6 +324,14 @@ const voidTags = new Set([
 	'area', 'base', 'br', 'col', 'command', 'hr', 'img',
 	'input', 'keygen', 'link', 'meta', 'param', 'source'
 ]);
+
+const processStyleMacros = (string, lastToken)=>{
+
+	const substitutions = string.replace('$swl', `shape-outside:url(${lastToken.href}),float:left`)
+		.replace('$swr', `shape-outside:url(${lastToken.href}),float:right`);
+
+	return substitutions;
+};
 
 const processStyleTags = (string)=>{
 	//split tags up. quotes can only occur right after colons.

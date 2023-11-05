@@ -127,3 +127,20 @@ The Homebrewery defaults to creating US Letter page sizes.  If you are printing 
 ### Typing `#### Adhesion` in the text editor doesn't show the header at all in the completed page?
 
 Your ad-blocking software is mistakenly assuming your text to be an ad. Whitelist homebrewery.naturalcrit.com in your ad-blocking software.
+
+### How do I do a shaped wrap around my image?
+
+Styling supports this via the shape-outside property. This feature works best with images with transparent backgrounds, automatically determining the wrap shape from a provided file. If you want an alternate shape, you may wish to use a tool such as [Clippy](https://bennettfeely.com/clippy/) to build a polygon wrap. If you need to tweak the space around the wrap, use shape-margin.
+
+To simplify this process, homebrewery has the ***$swr*** and ***$swl*** macros which adds the **shape-outside: url()** style property along with the respective **float: right** or **float: left** style property.
+
+```md
+// Example Wrap, Float Left, additional 5px margin
+
+![homebrew mug](https://i.imgur.com/hMna6G0.png){$swl,shape-margin:5px}
+
+// Example Wrap, Float right
+
+![homebrew mug](https://i.imgur.com/hMna6G0.png){$swr}
+
+```
