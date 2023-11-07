@@ -218,8 +218,9 @@ const definitionLists = {
 		while (match = regex.exec(src)) {
 			definitions.push({
 				dt : this.lexer.inlineTokens(match[1].trim()),
-				dd : this.lexer.inlineTokens(match[2].trim())
+				dd : match[2].split('::').map((s)=>this.lexer.inlineTokens(s.trim()))
 			});
+			console.log(match.splice(2).map((s)=>s.trim()));
 			endIndex = regex.lastIndex;
 		}
 		if(definitions.length) {
@@ -232,8 +233,9 @@ const definitionLists = {
 	},
 	renderer(token) {
 		return `<dl>${token.definitions.reduce((html, def)=>{
-			return `${html}<dt>${this.parser.parseInline(def.dt)}</dt>`
-			            + `<dd>${this.parser.parseInline(def.dd)}</dd>\n`;
+			const dds = def.dd.map((s)=>`<dd>${this.parser.parseInline(s)}</dd>`).join('\n');
+			return `${html}<dt>${this.parser.parseInline(def.dt)}</dt>
+				${dds}`;
 		}, '')}</dl>`;
 	}
 };
