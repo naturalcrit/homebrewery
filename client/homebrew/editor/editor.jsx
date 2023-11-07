@@ -162,7 +162,7 @@ const Editor = createClass({
 
 						// Highlight injectors {style}
 						if(line.includes('{') && line.includes('}')){
-							const regex = /(?:^|[^{\n])({(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\2})/gm;
+							const regex = /(?:^|[^{\n])({(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\n\r\t\f]*)*))\2})/gm;
 							let match;
 							while ((match = regex.exec(line)) != null) {
 								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length }, { className: 'injection' });
@@ -170,7 +170,7 @@ const Editor = createClass({
 						}
 						// Highlight inline spans {{content}}
 						if(line.includes('{{') && line.includes('}}')){
-							const regex = /{{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1 *|}}/g;
+							const regex = /{{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\n\r\t\f]*)*))\1 *|}}/g;
 							let match;
 							let blockCount = 0;
 							while ((match = regex.exec(line)) != null) {
@@ -189,7 +189,7 @@ const Editor = createClass({
 							// Highlight block divs {{\n Content \n}}
 							let endCh = line.length+1;
 
-							const match = line.match(/^ *{{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1 *$|^ *}}$/);
+							const match = line.match(/^ *{{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\n\r\t\f]*)*))\1 *$|^ *}}$/);
 							if(match)
 								endCh = match.index+match[0].length;
 							codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });

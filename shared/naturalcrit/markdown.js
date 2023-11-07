@@ -132,7 +132,7 @@ const mustacheInjectInline = {
 	level : 'inline',
 	start(src) { return src.match(/ *{[^{\n]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const inlineRegex = /^ *{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1}/g;
+		const inlineRegex = /^ *{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\n\r\t\f]*)*))\1}/g;
 		const match = inlineRegex.exec(src);
 		if(match) {
 			const lastToken = tokens[tokens.length - 1];
@@ -167,7 +167,7 @@ const mustacheInjectBlock = {
 		level : 'block',
 		start(src) { return src.match(/\n *{[^{\n]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 		tokenizer(src, tokens) {
-			const inlineRegex = /^ *{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1}/ym;
+			const inlineRegex = /^ *{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\n\r\t\f]*)*))\1}/ym;
 			const match = inlineRegex.exec(src);
 			if(match) {
 				const lastToken = tokens[tokens.length - 1];
@@ -328,14 +328,23 @@ const voidTags = new Set([
 const processStyleTags = (string)=>{
 	//split tags up. quotes can only occur right after colons.
 	//TODO: can we simplify to just split on commas?
-	const tags = string.match(/(?:[^, ":]+|:(?:"[^"]*"|))+/g);
+	const tags = string.match(/(?:[^,":]+|:(?:"[^"]*"|))+/g);
 
 	if(!tags)	return '"';
 
-	const id      = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
-	const classes = _.remove(tags, (tag)=>!tag.includes(':'));
-	const styles  = tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;'));
-	return `${classes.join(' ')}" ${id ? `id="${id}"` : ''} ${styles.length ? `style="${styles.join(' ')}"` : ''}`;
+	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
+	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('=')));
+	let attributes   = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('#')));
+	const styles     = tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim());
+
+	if(attributes.length) {
+		attributes = attributes.map((attribute)=>attribute.replace(/(\w+)=(.+)/, '$1="$2"'));
+	}
+
+	return `${classes.join(' ')}" ` +
+		`${id ? `id="${id}"` : ''} ` +
+		`${styles.length ? `style="${styles.join(' ')}"` : ''} ` +
+		`${attributes.length ? attributes.join(' ') : ''}`;
 };
 
 module.exports = {
