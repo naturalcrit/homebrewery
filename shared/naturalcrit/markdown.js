@@ -338,13 +338,13 @@ const processStyleTags = (string)=>{
 	const styles     = tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim());
 
 	if(attributes.length) {
-		attributes = attributes.map((attribute)=>attribute.replace(/(\w+)=(.+)/, '$1="$2"'));
+		attributes = attributes.map((attribute)=>attribute.replace(/(\w+)=(.+)/, ' $1="$2"'));
 	}
 
 	return `${classes.join(' ')}" ` +
 		`${id ? `id="${id}"` : ''} ` +
-		`${styles.length ? `style="${styles.join(' ')}"` : ''} ` +
-		`${attributes.length ? attributes.join(' ') : ''}`;
+		`${styles.length ? `style="${styles.join(' ')}"` : ''}` +
+		`${attributes.length ? attributes.join('') : ''}`;
 };
 
 module.exports = {

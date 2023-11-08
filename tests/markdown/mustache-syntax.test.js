@@ -124,6 +124,12 @@ describe('Inline: When using the Inline syntax {{ }}', ()=>{
 		const rendered = Markdown.render(source);
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block pen" id="author" style="color:orange; font-family:trebuchet ms;">text</span>');
 	});
+
+	it('Renders an image with added attributes', function() {
+		const source = dedent`![homebrew mug](https://i.imgur.com/hMna6G0.png) {position:absolute,bottom:20px,left:130px,width:220px,a=b and c,d=e}`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p><img class=" "  style="position:absolute; bottom:20px; left:130px; width:220px;" a="b and c" d="e" src="https://i.imgur.com/hMna6G0.png" alt="homebrew mug"></p>`);
+	});
 });
 
 //  BLOCK SYNTAX
@@ -216,6 +222,7 @@ describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 		// FIXME: adds extra \s before closing `>` in opening tag, and another after class names
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" id="cat"><p>Sample text.</p></div>`);
 	});
+
 });
 
 // MUSTACHE INJECTION SYNTAX
