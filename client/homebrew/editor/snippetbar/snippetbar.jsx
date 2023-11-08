@@ -156,7 +156,7 @@ const Snippetbar = createClass({
 					</div>
 					<div className={`editorTool unfoldAll ${this.props.unfoldCode ? 'active' : ''}`}
 						onClick={this.props.unfoldCode} >
-						<i className='fas fa-expand' />
+						<i className='fas fa-expand-alt' />
 					</div>
 				</>
 
