@@ -206,6 +206,50 @@ const mustacheInjectBlock = {
 	}
 };
 
+const superScripts = {
+	name  : 'superScriptsInjectInline',
+	level : 'inline',
+	start(src) { return src.match(/.*\^\^(.+)\^\^/)?.index; },  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const inlineRegex = /.*\^\^(.+)\^\^/y;
+		const match = inlineRegex.exec(src);
+		if(match) {
+			const tags = ` ${processStyleTags(match[1])}`;
+			return {
+				type : 'text',            // Should match "name" above
+				raw  : match[0],          // Text to consume from the source
+				text : '',
+				tags
+			};
+		}
+	},
+	renderer(token) {
+		return `<sup>${token.tags}</sup>`;
+	}
+};
+
+const subScripts = {
+	name  : 'subScriptsInjectInline',
+	level : 'inline',
+	start(src) { return src.match(/.*\^\^\^(.+)\^\^\^/)?.index; },  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const inlineRegex = /.*\^\^\^(.+)\^\^\^/y;
+		const match = inlineRegex.exec(src);
+		if(match) {
+			const tags = ` ${processStyleTags(match[1])}`;
+			return {
+				type : 'text',            // Should match "name" above
+				raw  : match[0],          // Text to consume from the source
+				text : '',
+				tags
+			};
+		}
+	},
+	renderer(token) {
+		return `<sub>${token.tags}</sub>`;
+	}
+};
+
 const definitionLists = {
 	name  : 'definitionLists',
 	level : 'block',
@@ -238,7 +282,7 @@ const definitionLists = {
 	}
 };
 
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists] });
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, subScripts, superScripts] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
