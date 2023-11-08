@@ -211,8 +211,8 @@ const superSubScripts = {
 	level : 'inline',
 	start(src) { return src.match(/.*\^\^(.+)\^\^/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const superRegex = /.*\^\^(.+)\^\^/y;
-		const subRegex = /.*\^\^\^(.+)\^\^\^/y;
+		const superRegex = /\^\^(.+)\^\^/y;
+		const subRegex = /\^\^\^(.+)\^\^\^/y;
 		let isSuper = false;
 		let match = subRegex.exec(src);
 		if(!match){
@@ -220,10 +220,7 @@ const superSubScripts = {
 			if(match) {
 				isSuper = true;
 			}
-		} else {
-			console.log(src);
 		}
-
 		if(match?.length) {
 			const tags = this.lexer.inlineTokens(match[1]);
 			return {
