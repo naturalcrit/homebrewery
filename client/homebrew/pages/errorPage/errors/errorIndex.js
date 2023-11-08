@@ -20,20 +20,20 @@ const errorIndex = (props)=>{
 		// Google Drive - 404 : brew deleted or access denied
 		'02' : dedent`
 			## We can't find this brew in Google Drive!
-			
+				
 			This file was saved on Google Drive, but this link doesn't work anymore.
-			${props.brew.authors?.length > 0
-		? `Note that this brew belongs to the Homebrewery account **${props.brew.authors[0]}**,
-				${props.brew.account
-		? `which is
+			${ props.brew.authors?.length > 0
+				? `Note that this brew belongs to the Homebrewery account **${ props.brew.authors[0] }**,
+				${ props.brew.account
+					? `which is
 						${props.brew.authors[0] == props.brew.account
-		? `your account.`
-		: `not your account (you are currently signed in as **${props.brew.account}**).`
-}`
-		: 'and you are not currently signed in to any account.'
-}`
-		: ''
-}
+							? `your account.`
+							: `not your account (you are currently signed in as **${props.brew.account}**).`
+						}`
+					: 'and you are not currently signed in to any account.'
+				}`
+				: ''
+			}
 			The Homebrewery cannot delete files from Google Drive on its own, so there
 			are three most likely possibilities:
 			:
@@ -75,9 +75,7 @@ const errorIndex = (props)=>{
 		
 		**Brew Title:** ${props.brew.brewTitle || 'Unable to show title'}
 
-		**Current Authors:** ${props.brew.authors?.map((author)=>{return `${author}`;}).join(', ') || 'Unable to list authors'}
-		
-		[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`,
+		**Current Authors:** ${props.brew.authors?.map((author)=>{return `${author}`;}).join(', ') || 'Unable to list authors'}`,
 
 		// User is not signed in; must be a user on the Authors List
 		'04' : dedent`
