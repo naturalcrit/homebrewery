@@ -206,47 +206,38 @@ const mustacheInjectBlock = {
 	}
 };
 
-const superScripts = {
-	name  : 'superScriptsInjectInline',
+const superSubScripts = {
+	name  : 'superSubScripts',
 	level : 'inline',
 	start(src) { return src.match(/.*\^\^(.+)\^\^/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const inlineRegex = /.*\^\^(.+)\^\^/y;
-		const match = inlineRegex.exec(src);
-		if(match) {
-			const tags = ` ${processStyleTags(match[1])}`;
-			return {
-				type : 'text',            // Should match "name" above
-				raw  : match[0],          // Text to consume from the source
-				text : '',
-				tags
-			};
+		const superRegex = /.*\^\^(.+)\^\^/y;
+		const subRegex = /.*\^\^\^(.+)\^\^\^/y;
+		let isSuper = false;
+		let match = subRegex.exec(src);
+		if(!match){
+			match = superRegex.exec(src);
+			if(match) {
+				isSuper = true;
+			}
+		} else {
+			console.log(src);
 		}
-	},
-	renderer(token) {
-		return `<sup>${token.tags}</sup>`;
-	}
-};
 
-const subScripts = {
-	name  : 'subScriptsInjectInline',
-	level : 'inline',
-	start(src) { return src.match(/.*\^\^\^(.+)\^\^\^/)?.index; },  // Hint to Marked.js to stop and check for a match
-	tokenizer(src, tokens) {
-		const inlineRegex = /.*\^\^\^(.+)\^\^\^/y;
-		const match = inlineRegex.exec(src);
-		if(match) {
-			const tags = ` ${processStyleTags(match[1])}`;
+		if(match?.length) {
+			const tags = this.lexer.inlineTokens(match[1]);
 			return {
-				type : 'text',            // Should match "name" above
-				raw  : match[0],          // Text to consume from the source
-				text : '',
+				type  : 'superSubScripts', // Should match "name" above
+				raw   : match[0],          // Text to consume from the source
+				text  : src,
+				super : isSuper,
 				tags
 			};
 		}
 	},
 	renderer(token) {
-		return `<sub>${token.tags}</sub>`;
+		const tag = token.super ? 'sup' : 'sub';
+		return `<${tag}>${this.parser.parseInline(token.tags)}</${tag}>`;
 	}
 };
 
@@ -282,7 +273,7 @@ const definitionLists = {
 	}
 };
 
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, subScripts, superScripts] });
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
