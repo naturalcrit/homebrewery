@@ -8,6 +8,7 @@ const express = require('express');
 const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
+const fs = require('fs');
 
 const { homebrewApi, getBrew } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
@@ -416,6 +417,9 @@ if(isLocalEnvironment){
 		const payload = jwt.encode({ username: username, issued: new Date }, config.get('secret'));
 		return res.json(payload);
 	});
+	// Add Static Local Paths
+	app.use('/staticImages', express.static(config.get('hb_images') && fs.existsSync(config.get('hb_images')) ? config.get('hb_images') :'staticImages'));
+	app.use(express.static(config.get('hb_fonts')  && fs.existsSync(config.get('hb_fonts')) ? config.get('hb_fonts'):'staticFonts'));
 }
 
 //Render the page
