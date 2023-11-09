@@ -48,7 +48,7 @@ const Snippetbar = createClass({
 		return {
 			renderer      : this.props.renderer,
 			themeSelector : false,
-			snippets      : [],
+			snippets      : []
 		};
 	},
 
