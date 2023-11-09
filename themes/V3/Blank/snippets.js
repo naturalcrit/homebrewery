@@ -3,6 +3,12 @@
 const WatercolorGen = require('./snippets/watercolor.gen.js');
 const ImageMaskGen  = require('./snippets/imageMask.gen.js');
 const FooterGen     = require('./snippets/footer.gen.js');
+const LicenseGenCC  = require('./snippets/licenseCC.gen.js');
+const LicenseGenWotC = require('./snippets/licenseWotC.gen.js');
+const LicenseGenORC = require('./snippets/licenseOrc.gen.js');
+const LicenseGenGNU = require('./snippets/licenseGNU.gen.js');
+const LicenseGen = require('./snippets/license.gen.js');
+
 const dedent        = require('dedent-tabs').default;
 
 module.exports = [
@@ -114,6 +120,130 @@ module.exports = [
 		]
 	},
 	{
+		groupName : 'License',
+		icon	  : 'fas fa-copyright',
+		view	  : 'text',
+		snippets  : [
+			{
+				name        : 'Creative Commons',
+				icon        : 'fab fa-creative-commons',
+				subsnippets : [
+
+					{
+						name : 'CC0 4.0',
+						icon : 'fab fa-creative-commons',
+						gen	 : LicenseGenCC.zero,
+					},
+
+					{
+						name : 'CC-BY-4.0',
+						icon : 'fab fa-creative-commons',
+						gen	 : LicenseGenCC.by,
+					},
+
+					{
+						name : 'CC-BY-SA 4.0',
+						icon : 'fab fa-creative-commons',
+						gen	 : LicenseGenCC.bysa,
+					},
+
+					{
+						name : 'CC-BY-NC 4.0',
+						icon : 'fab fa-creative-commons',
+						gen	 : LicenseGenCC.bync,
+					},
+
+					{
+						name : 'CC-BY-NC-SA 4.0',
+						icon : 'fab fa-creative-commons',
+						gen	 : LicenseGenCC.byncsa,
+					},
+
+					{
+						name : 'CC-BY-ND 4.0',
+						icon : 'fab fa-creative-commons',
+						gen	 : LicenseGenCC.bynd,
+					},
+
+					{
+						name : 'CC-BY-NC-ND 4.0',
+						icon : 'fab fa-creative-commons',
+						gen	 : LicenseGenCC.byncnd,
+					},
+				]
+			},
+
+			{
+				name        : 'GNU',
+				icon        : 'fas fa-w',
+				subsnippets : [
+
+					{
+						name : 'GNU Free Documentation License',
+						icon : 'fas fa-w',
+						gen	 : LicenseGenGNU.gfdl,
+					},
+
+					{
+						name : 'GNU FDL Title Page',
+						icon : 'fas fa-w',
+						gen	 : LicenseGenGNU.gfdltitle,
+					},
+
+					{
+						name : 'GNU FDL Title Page w/alterations',
+						icon : 'fas fa-w',
+						gen	 : LicenseGenGNU.gfdltitleinvariant,
+					},
+
+					{
+						name : 'GNU General Public License v3',
+						icon : 'fas fa-w',
+						gen	 : LicenseGenGNU.gpl3,
+					},
+
+					{
+						name : 'GNU GPLv3 Title Page',
+						icon : 'fas fa-w',
+						gen	 : LicenseGenGNU.gpl3title,
+					},
+				]
+			},
+
+			{
+				name        : 'Wizards of the Coast',
+				icon        : 'fab fa-wizards-of-the-coast',
+				subsnippets : [
+
+					{
+						name : 'OGL 1.0 A',
+						icon : 'fab fa-wizards-of-the-coast',
+						gen	 : LicenseGenWotC.ogl1a,
+					},
+
+					{
+						name : 'WoTC Fan Content Policy',
+						icon : 'fas fa-w',
+						gen	 : LicenseGenWotC.fcp,
+					},
+				]
+			},
+
+			{
+				name : 'MIT License',
+				icon : 'fas fa-mit',
+				gen  : LicenseGen.mit,
+			},
+
+			{
+				name : 'ORC License',
+				icon : 'fas fa-Paizo',
+				gen	 : LicenseGenORC.orc1,
+			},
+
+		]
+	},
+	{
 		groupName : 'Style Editor',
 		icon      : 'fas fa-pencil-alt',
 		view      : 'style',
@@ -125,7 +255,6 @@ module.exports = [
 			},
 		]
 	},
-
 	/*********************** IMAGES *******************/
 	{
 		groupName : 'Images',

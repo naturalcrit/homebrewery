@@ -463,3 +463,32 @@ body {
 		}
 	}
 }
+
+//*******************************
+// * Ordered List Type Overrides
+// *****************************/
+.page{
+	.ol-ccby ol {
+		list-style-type: lower-alpha;
+	  }
+	  
+	  .ol-ccby ol ol{
+		padding-left: 0px !important;
+		list-style-type: greek;
+	  }
+	  
+	  .ol-ccby ol ol ol {
+		padding-left: 0px !important;
+		list-style-type: upper-alpha;
+	  }
+	  
+	  .ol-ccby ol ol ol ol {
+		padding-left: 0px !important;
+		list-style-type: lower-roman;
+	  }
+	  
+	  .ol-ccby p {
+		padding-left: 25px;
+		text-indent: 0em !important;
+	  }
+}
