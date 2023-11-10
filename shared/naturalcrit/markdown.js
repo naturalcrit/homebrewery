@@ -220,7 +220,6 @@ const definitionLists = {
 				dt : this.lexer.inlineTokens(match[1].trim()),
 				dd : match[2].split('::').map((s)=>this.lexer.inlineTokens(s.trim()))
 			});
-			console.log(match.splice(2).map((s)=>s.trim()));
 			endIndex = regex.lastIndex;
 		}
 		if(definitions.length) {
