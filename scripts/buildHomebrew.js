@@ -154,14 +154,14 @@ fs.emptyDirSync('./build');
 	// build(bundles);
 	//
 
-})().catch(console.error);
+	//In development, set up LiveReload (refreshes browser), and Nodemon (restarts server)
+	if(isDev){
+		livereload('./build');     // Install the Chrome extension LiveReload to automatically refresh the browser
+		watchFile('./server.js', { // Restart server when change detected to this file or any nested directory from here
+			ignore : ['./build', './client', './themes'],  // Ignore folders that are not running server code / avoids unneeded restarts
+			ext    : 'js json'                             // Extensions to watch (only .js/.json by default)
+			//watch : ['./server', './themes'],            // Watch additional folders if needed
+		});
+	}
 
-//In development, set up LiveReload (refreshes browser), and Nodemon (restarts server)
-if(isDev){
-	livereload('./build');     // Install the Chrome extension LiveReload to automatically refresh the browser
-	watchFile('./server.js', { // Restart server when change detected to this file or any nested directory from here
-		ignore : ['./build', './client', './themes'],  // Ignore folders that are not running server code / avoids unneeded restarts
-		ext    : 'js json'                             // Extensions to watch (only .js/.json by default)
-		//watch : ['./server', './themes'],            // Watch additional folders if needed
-	});
-}
+})().catch(console.error);
