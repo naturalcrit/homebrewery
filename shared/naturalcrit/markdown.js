@@ -211,7 +211,7 @@ const superSubScripts = {
 	level : 'inline',
 	start(src) { return src.match(/\^\^[^\s].+[^\s]\^\^/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const superRegex = /^\^\^([^\s\^][^\^]*[^\s\^])\^\^/m;
+		const superRegex = /^\^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^\^/m;
 		const subRegex = /^\^\^\^([^\s\^][^\^]*[^\s\^])\^\^\^/m;
 		let isSuper = false;
 		let match = subRegex.exec(src);
