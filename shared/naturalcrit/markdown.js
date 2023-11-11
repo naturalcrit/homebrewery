@@ -331,13 +331,13 @@ const processStyleTags = (string)=>{
 
 	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
 	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('=')));
-	const attributes = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('#')));
+	const attributes = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('#'))).map((attr)=>attr.replace(/="?([^"]*)"?/g, '="$1"'));;
 	const styles     = tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim());
 
 	return `${classes.join(' ')}" ` +
 		`${id ? `id="${id}"` : ''} ` +
 		`${styles.length ? `style="${styles.join(' ')}"` : ''}` +
-		`${attributes.length ? attributes.join('') : ''}`;
+		`${attributes.length ? ` ${attributes.join(' ')}` : ''}`;
 };
 
 module.exports = {

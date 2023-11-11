@@ -126,7 +126,7 @@ describe('Inline: When using the Inline syntax {{ }}', ()=>{
 	});
 
 	it('Renders an image with added attributes', function() {
-		const source = dedent`![homebrew mug](https://i.imgur.com/hMna6G0.png) {position:absolute,bottom:20px,left:130px,width:220px,a=b and c,d=e}`;
+		const source = dedent`![homebrew mug](https://i.imgur.com/hMna6G0.png) {position:absolute,bottom:20px,left:130px,width:220px,a="b and c",d=e}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p><img class=" "  style="position:absolute; bottom:20px; left:130px; width:220px;" a="b and c" d="e" src="https://i.imgur.com/hMna6G0.png" alt="homebrew mug"></p>`);
 	});
