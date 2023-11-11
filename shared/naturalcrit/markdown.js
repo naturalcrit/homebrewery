@@ -233,8 +233,7 @@ const definitionLists = {
 	renderer(token) {
 		return `<dl>${token.definitions.reduce((html, def)=>{
 			const dds = def.dd.map((s)=>`<dd>${this.parser.parseInline(s)}</dd>`).join('\n');
-			return `${html}<dt>${this.parser.parseInline(def.dt)}</dt>
-				${dds}`;
+			return `${html}<dt>${this.parser.parseInline(def.dt)}</dt>${dds}`;
 		}, '')}</dl>`;
 	}
 };
