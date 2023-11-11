@@ -102,7 +102,7 @@ The best way to avoid this is to leave space at the end of a column equal to one
 
 ### Why do I need to manually create a new page?  Why doesn't text flow between pages?
 
-A Homebrewery document is at it's core an HTML & CSS document, and currently limited by the specs of those technologies.  It is currently not possible to flow content from inside one box ("page") to the inside of another box.  It seems likely that someday CSS will add this capability, and if/when that happens, Homebrewery will adopt it as soon as possible.
+A Homebrewery document is at its core an HTML & CSS document, and currently limited by the specs of those technologies.  It is currently not possible to flow content from inside one box ("page") to the inside of another box.  It seems likely that someday CSS will add this capability, and if/when that happens, Homebrewery will adopt it as soon as possible.
 
 ### Where do I get images?
 The Homebrewery does not provide images for use besides some page elements and example images for snippets.  You will need to find your own images for use and be sure you are following the appropriate license requirements.  
