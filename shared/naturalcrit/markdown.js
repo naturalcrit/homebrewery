@@ -84,7 +84,7 @@ const mustacheDivs = {
 	start(src) { return src.match(/\n *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeBlock = /^ *{{[^\n}]* *\n.*\n *}}/s;                // Regex for the complete token
-		const blockRegex = /^ *{{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1 *$|^ *}}$/gm;
+		const blockRegex = /^ *{{(?=((?:[=:](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"'=:{}\s]*)*))\1 *$|^ *}}$/gm;
 		const match = completeBlock.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -331,13 +331,17 @@ const processStyleTags = (string)=>{
 
 	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
 	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('=')));
-	const attributes = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('#'))).map((attr)=>attr.replace(/="?([^"]*)"?/g, '="$1"'));;
-	const styles     = tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim());
+	let attributes = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('#')));
+	const styles     = tags?.length ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim()) : [];
+
+	if(attributes) {
+		attributes = attributes.map((attr)=>attr.replace(/="?([^"]*)"?/g, '="$1"'));
+	}
 
 	return `${classes.join(' ')}" ` +
 		`${id ? `id="${id}"` : ''} ` +
-		`${styles.length ? `style="${styles.join(' ')}"` : ''}` +
-		`${attributes.length ? ` ${attributes.join(' ')}` : ''}`;
+		`${styles?.length ? `style="${styles.join(' ')}"` : ''}` +
+		`${attributes?.length ? ` ${attributes.join(' ')}` : ''}`;
 };
 
 module.exports = {
