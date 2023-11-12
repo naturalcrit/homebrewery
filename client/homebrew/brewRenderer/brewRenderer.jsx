@@ -39,6 +39,8 @@ const BrewRenderer = createClass({
 			pages = this.props.text.split(/^\\page$/gm);
 		}
 
+		Markdown.renderOptions({ engine: this.props.renderer }, false);
+
 		return {
 			viewablePageNumber : 0,
 			height             : 0,

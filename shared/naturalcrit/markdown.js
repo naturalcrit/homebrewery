@@ -339,6 +339,13 @@ const processStyleTags = (string)=>{
 };
 
 module.exports = {
+	renderOptions : (renderOptionsObject, reset)=>{
+		if((reset) || (!Marked.defaults.extensionOptions)) {
+			Marked.use({ extensionOptions: renderOptionsObject });
+		} else {
+			Marked.use({ extensionOptions: _.merge(Marked.defaults.extensionOptions, renderOptionsObject) });
+		}
+	},
 	marked : Marked,
 	render : (rawBrewText)=>{
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
