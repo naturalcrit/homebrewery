@@ -421,9 +421,7 @@ body { counter-reset : phb-page-numbers; }
 		}
 
 		//Attribute Lists - All text between HRs is red
-		hr ~ :is(dl,p) { 
-			color : var(--HB_Color_HeaderText);
-		}
+		hr ~ :is(dl,p) { color : var(--HB_Color_HeaderText); }
 		hr:last-of-type {
 			& ~ :is(dl,p) {
 				color : inherit; // After the HRs, reset text to black
@@ -448,9 +446,7 @@ body { counter-reset : phb-page-numbers; }
 			td,th { padding : 0px; }
 		}
 		//indent fix after bulleted lists
-		:is(ul,ol) + p {
-			text-indent:0;
-		}
+		:is(ul,ol) + p { text-indent : 0; }
 
 		:last-child { margin-bottom : 0; }
 	}
