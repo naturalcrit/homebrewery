@@ -438,7 +438,16 @@ module.exports = {
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
 		targetPage = pageToRender;
 		targetRange = pageRange;
-		return Marked.parse(rawBrewText);
+
+		//v=======------Split Markdown parsing into 5 manual steps------=======v//
+		const opts = Marked.defaults;
+
+		rawBrewText = opts.hooks.preprocess(rawBrewText); // 1) Preprocess String
+		const tokens = Marked.lexer(rawBrewText, opts);   // 2) String to Token Tree
+		Marked.walkTokens(tokens, opts.walkTokens);       // 3) Walk Tokens
+		const html = Marked.parser(tokens, opts);         // 4) Token Tree to HTML
+		return opts.hooks.postprocess(html);              // 5) Postprocess HTML
+		//^=======------------------------------------------------------=======^//
 	},
 
 	validate : (rawBrewText)=>{
