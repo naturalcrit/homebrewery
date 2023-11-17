@@ -7,44 +7,16 @@ const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
 const renderer = new Marked.Renderer();
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
-// renderer.html = function (html) {
-// 	if(_.startsWith(_.trim(html), '<div') && _.endsWith(_.trim(html), '</div>')){
-// 		const openTag = html.substring(0, html.indexOf('>')+1);
-// 		html = html.substring(html.indexOf('>')+1);
-// 		html = html.substring(0, html.lastIndexOf('</div>'));
-// 		return `${openTag} ${html} </div>`;
-// 	}
-// 	return html;
-// };
-
-//Processes the markdown within an HTML block if it's just a class-wrapper
-const htmlDiv = {
-	name  : 'htmlDiv',
-	level : 'block',
-	tokenizer(src, tokens) {
-		let html = src;
-		if(_.startsWith(_.trim(html), '<div') && _.endsWith(_.trim(html), '</div>')){
-			const openTag = html.substring(0, html.indexOf('>')+1);
-			html = html.substring(html.indexOf('>')+1);
-			html = html.substring(0, html.lastIndexOf('</div>'));
-
-			const item = {                                                  // Token to generate
-				type    : 'htmlDiv',                                        // Should match "name" above
-				raw     : src.substring(0, src.indexOf('</div>')+6),        // Text to consume from the source
-				text    : html,                                             // Additional custom properties
-				openTag : openTag,
-				tokens  : []
-			};
-
-			this.lexer.blockTokens(html, item.tokens);
-
-			return item;
-		}
-		return false;
-	},
-	renderer(token) {
-		return `${token.openTag} ${this.parser.parse(token.tokens)} </div>`;
+renderer.html = function (html) {
+	if(_.startsWith(_.trim(html), '<div') && _.endsWith(_.trim(html), '</div>')){
+		const openTag = html.substring(0, html.indexOf('>')+1);
+		html = html.substring(html.indexOf('>')+1);
+		html = html.substring(0, html.lastIndexOf('</div>'));
+		hasPageBlockParent = true;
+		html = `${openTag} ${Marked.parse(html)} </div>`;
+		hasPageBlockParent = false;
 	}
+	return html;
 };
 
 // Don't wrap {{ Divs or {{ empty Spans in <p> tags
@@ -57,6 +29,36 @@ renderer.paragraph = function(text){
 	} else
 		return `<p>${text}</p>\n`;
 };
+
+//Processes the markdown within an HTML block if it's just a class-wrapper
+// const htmlDiv = {
+// 	name  : 'htmlDiv',
+// 	level : 'block',
+// 	tokenizer(src, tokens) {
+// 		let html = src;
+// 		if(_.startsWith(_.trim(html), '<div') && _.endsWith(_.trim(html), '</div>')){
+// 			const openTag = html.substring(0, html.indexOf('>')+1);
+// 			html = html.substring(html.indexOf('>')+1);
+// 			html = html.substring(0, html.lastIndexOf('</div>'));
+
+// 			const item = {                                                  // Token to generate
+// 				type    : 'htmlDiv',                                        // Should match "name" above
+// 				raw     : src.substring(0, src.indexOf('</div>')+6),        // Text to consume from the source
+// 				text    : html,                                             // Additional custom properties
+// 				openTag : openTag,
+// 				tokens  : []
+// 			};
+
+// 			this.lexer.blockTokens(html, item.tokens);
+
+// 			return item;
+// 		}
+// 		return false;
+// 	},
+// 	renderer(token) {
+// 		return `${token.openTag} ${this.parser.parse(token.tokens)} </div>`;
+// 	}
+// };
 
 const mustacheSpans = {
 	name  : 'mustacheSpans',
@@ -330,7 +332,7 @@ const pageBlocks = {
 	}
 };
 
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, htmlDiv] });
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists] });
 Marked.use(pageBlocks);
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, mangle: false });
