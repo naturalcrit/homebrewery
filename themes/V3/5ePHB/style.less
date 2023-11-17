@@ -443,6 +443,8 @@ body { counter-reset : phb-page-numbers; }
 			tr { background-color : transparent; }
 			td,th { padding : 0px; }
 		}
+		//indent fix after bulleted lists
+		:is(ul,ol) + p { text-indent : 0; }
 
 		:last-child { margin-bottom : 0; }
 	}
