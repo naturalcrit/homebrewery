@@ -295,7 +295,7 @@ const pageBlocks = {
 				tokens     : []
 			};
 
-			if(targetPage > 0 && (token.pageNumber < (targetPage - targetRange) || token.pageNumber > (targetPage + targetRange))) {
+			if(targetPage > 0 && Math.abs(targetPage- token.pageNumber) > targetRange) {
 				token.prune = true;
 			}
 
