@@ -12,9 +12,9 @@ renderer.html = function (html) {
 		const openTag = html.substring(0, html.indexOf('>')+1);
 		html = html.substring(html.indexOf('>')+1);
 		html = html.substring(0, html.lastIndexOf('</div>'));
-		hasPageBlockParent = true;
+		isInsidePageBlock = true;
 		html = `${openTag} ${Marked.parse(html)} </div>`;
-		hasPageBlockParent = false;
+		isInsidePageBlock = false;
 	}
 	return html;
 };
@@ -270,7 +270,7 @@ const definitionLists = {
 	}
 };
 
-let hasPageBlockParent = false;
+let isInsidePageBlock = false;
 let pageBlockNumber = 0;
 let targetPage = -1;
 let targetRange = 0;
@@ -279,12 +279,12 @@ const pageBlocks = {
 		name  : 'pageBlock',
 		level : 'block',
 		tokenizer(src, tokens) {
-			if(hasPageBlockParent) return false;
-			const pageArray = src.split(/^\\page$/gm, 1);
-			if(this.lexer.tokens?.length == 0 && this.lexer.state.top) pageBlockNumber = 0;
+			if(isInsidePageBlock) return false;
+			const pageArray = src.split(/^(\\page)$/gm, 2);
+			if(tokens?.length == 0 && this.lexer.state.top) pageBlockNumber = 0;
 			pageBlockNumber++;
 
-			const rawText = src.length > pageArray[0].length ? `${pageArray[0]}\\page` : pageArray[0];
+			const rawText = pageArray.join();
 
 			const token = {
 				type       : 'pageBlock',
@@ -299,9 +299,9 @@ const pageBlocks = {
 				token.prune = true;
 			}
 
-			hasPageBlockParent = true;
+			isInsidePageBlock = true;
 			this.lexer.blockTokens(token.text, token.tokens);
-			hasPageBlockParent = false;
+			isInsidePageBlock = false;
 
 			return token;
 		},
