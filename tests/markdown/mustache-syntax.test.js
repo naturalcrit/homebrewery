@@ -223,6 +223,14 @@ describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" id="cat"><p>Sample text.</p></div>`);
 	});
 
+	it('Renders a div with an ID, class, style and text, and a variable assignment', function() {
+		const source = dedent`{{color:red,cat,#dog,a="b and c",d="e"
+		Sample text.
+		}}`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class=\"block cat\" id=\"dog\" style=\"color:red;\" a=\"b and c\" d=\"e\"><p>Sample text.</p></div>`);
+	});
+
 });
 
 // MUSTACHE INJECTION SYNTAX
@@ -240,6 +248,12 @@ describe('Injection: When an injection tag follows an element', ()=>{
 			const source = '{{ text}}{ClassName}';
 			const rendered = Markdown.render(source);
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block ClassName">text</span>');
+		});
+
+		it.failing('Renders a span "text" with injected attribute', function() {
+			const source = '{{ text}}{a="b and c"}';
+			const rendered = Markdown.render(source);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span a="b and c" class="inline-block ">text</span>');
 		});
 
 		it.failing('Renders a span "text" with injected style', function() {
