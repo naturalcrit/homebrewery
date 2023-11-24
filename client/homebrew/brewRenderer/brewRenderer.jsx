@@ -20,17 +20,17 @@ const PAGE_HEIGHT = 1056;
 const PPR_THRESHOLD = 50;
 
 const BrewPage = createClass({
-	displayName : `BrewPage`,
+	displayName     : `BrewPage`,
 	getDefaultProps : function() {
 		return {
 			contents : '',
-			index : 0
-		}
+			index    : 0
+		};
 	},
 	render : function() {
 		return <div className='page' id={`p${this.props.index + 1}`} >
 			<div className='columnWrapper' dangerouslySetInnerHTML={{ __html: this.props.contents }} />
-		</div>
+		</div>;
 	}
 });
 
@@ -70,8 +70,8 @@ const BrewRenderer = createClass({
 												</head><body style='overflow: hidden'><div></div></body></html>`
 		};
 	},
-	height     : 0,
-	lastRender : <div></div>,
+	height        : 0,
+	lastRender    : <div></div>,
 	renderedPages : [],
 
 	componentWillUnmount : function() {
