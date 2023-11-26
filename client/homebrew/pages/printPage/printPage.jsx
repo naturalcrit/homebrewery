@@ -13,6 +13,11 @@ const BREWKEY = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
 const METAKEY = 'homebrewery-new-meta';
 
+import { jsPDF } from 'jspdf';
+import * as html2canvas from "html2canvas"
+
+
+
 const PrintPage = createClass({
 	displayName     : 'PrintPage',
 	getDefaultProps : function() {
@@ -54,8 +59,35 @@ const PrintPage = createClass({
 				};
 			});
 		}
-
-		if(this.props.query.dialog) window.print();
+		window.html2canvas = html2canvas;
+		const pages = document.getElementsByClassName('pages')[0];
+		console.log(pages);
+		const doc = new jsPDF({
+			orientation      : 'p',
+			unit             : 'pt',
+			format           : 'letter',
+			putOnlyUsedFonts : true,
+		});
+		doc.html(pages, {
+			callback : function(doc) {
+				console.log('Trying to save!');
+				doc.save('test.pdf');
+			},
+			html2canvas : {
+				allowTaint      : true,
+				useCORS: true,
+				backgroundColor : null,
+				logging         : true,
+				dpi             : 300,
+				letterRendering : true,
+				width           : doc.internal.pageSize.getWidth(),
+				height          : doc.internal.pageSize.getHeight(),
+				scale           : .75,
+				x               : 0,
+				y               : 0
+			},
+			windowWidth : getComputedStyle(pages.children[0]).width
+		});
 	},
 
 	renderStyle : function() {
