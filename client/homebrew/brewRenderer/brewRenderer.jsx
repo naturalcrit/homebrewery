@@ -19,20 +19,16 @@ const Themes = require('themes/themes.json');
 const PAGE_HEIGHT = 1056;
 const PPR_THRESHOLD = 50;
 
-const BrewPage = createClass({
-	displayName     : `BrewPage`,
-	getDefaultProps : function() {
-		return {
-			contents : '',
-			index    : 0
-		};
-	},
-	render : function() {
-		return <div className='page' id={`p${this.props.index + 1}`} >
-			<div className='columnWrapper' dangerouslySetInnerHTML={{ __html: this.props.contents }} />
-		</div>;
-	}
-});
+const BrewPage = (props)=>{
+	props = {
+		contents : '',
+		index    : 0,
+		...props
+	};
+	return <div className='page' id={`p${props.index + 1}`} >
+	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: props.contents }} />
+	       </div>;
+};
 
 const BrewRenderer = createClass({
 	displayName     : 'BrewRenderer',
