@@ -19,6 +19,17 @@ const Themes = require('themes/themes.json');
 const PAGE_HEIGHT = 1056;
 const PPR_THRESHOLD = 50;
 
+const BrewPage = (props)=>{
+	props = {
+		contents : '',
+		index    : 0,
+		...props
+	};
+	return <div className='page' id={`p${props.index + 1}`} >
+	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: props.contents }} />
+	       </div>;
+};
+
 const BrewRenderer = createClass({
 	displayName     : 'BrewRenderer',
 	getDefaultProps : function() {
@@ -55,8 +66,9 @@ const BrewRenderer = createClass({
 												</head><body style='overflow: hidden'><div></div></body></html>`
 		};
 	},
-	height     : 0,
-	lastRender : <div></div>,
+	height        : 0,
+	lastRender    : <div></div>,
+	renderedPages : [],
 
 	componentWillUnmount : function() {
 		window.removeEventListener('resize', this.updateSize);
@@ -152,23 +164,21 @@ const BrewRenderer = createClass({
 			return <div className='phb page' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(cleanPageText) }} key={index} />;
 		else {
 			cleanPageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
+			const html = Markdown.render(cleanPageText);
 			return (
-				<div className='page' id={`p${index + 1}`} key={index} >
-					<div className='columnWrapper' dangerouslySetInnerHTML={{ __html: Markdown.render(cleanPageText) }} />
-				</div>
+				<BrewPage index={index} key={index} contents={html} />
 			);
 		}
 	},
 
 	renderPages : function(){
 		if(this.state.usePPR){
-			return _.map(this.state.pages, (page, index)=>{
-				if(this.shouldRender(page, index) && typeof window !== 'undefined'){
-					return this.renderPage(page, index);
-				} else {
-					return this.renderDummyPage(index);
+			_.forEach(this.state.pages, (page, index)=>{
+				if((this.shouldRender(page, index) || !this.renderedPages[index]) && typeof window !== 'undefined'){
+					this.renderedPages[index] = this.renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range
 				}
 			});
+			return this.renderedPages;
 		}
 		if(this.props.errors && this.props.errors.length) return this.lastRender;
 		this.lastRender = _.map(this.state.pages, (page, index)=>{
