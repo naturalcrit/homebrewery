@@ -206,6 +206,78 @@ const mustacheInjectBlock = {
 	}
 };
 
+const processBrewMacros = new Map();
+
+// Quiet output. Used as a "last" item on a multi-operation row if you don't want output for that variable block.
+processBrewMacros.set('q', (lexer, macroString)=>{
+	return {
+		silent : true,
+		output : ''
+	};
+});
+
+const parseUserBrewVariablesOperations = (lexer, varOperations, raw)=>{
+	let lastOutput = '';
+	let silent = false;
+	for (let operation of varOperations) {
+		operation = operation.replace(/;$/, '');
+		if(operation.indexOf('=') > -1){
+			const assignSplit = operation.split('=');
+			lexer.tokens.links[assignSplit[0].replace(/^\$/, '')] = {
+				title      : assignSplit[1].replace(/^"|"$/, '').replace(/"$/, ''),
+				formatting : {},
+			};
+			lastOutput = assignSplit[1].replace(/^"/, '').replace(/"$/, '');
+		} else if(operation[0] === ':') {
+			const macro = processBrewMacros.get(operation.substring(1).split()[0]);
+			if(macro) {
+				const macroResult = macro(lexer, operation.substring(1));
+				if(macroResult?.silent) { silent = true; }
+				lastOutput = macroResult.output;
+			}
+		} else {
+			// This is a formatted variable
+			const brewVariable = operation.replace(/^\$/, '');
+			if(lexer.tokens.links[brewVariable].hasOwnProperty('formatting')){
+				lastOutput = lexer.tokens.links[brewVariable]?.title;
+			} else {
+				lastOutput = lexer.tokens.links[brewVariable]?.href;
+			}
+		}
+	};
+	const token = {
+		type   : 'text',
+		raw    : raw,
+		text   : silent ? '' : lastOutput,
+		tokens : lexer.inlineTokens(silent ? '' : lastOutput)
+	};
+
+	return token;
+};
+
+const userBrewVariables = {
+	name  : 'userBrewVariables',
+	level : 'inline',
+	start(src) { return src.match(/\[\[([\S ]+)\]\]\s*/gm)?.index; },
+	tokenizer(src, tokens) {
+		const variableNameRegex = /\[\[([\S ]+)\]\]\s*/gm;
+		const match = variableNameRegex.exec(src);
+		if(match) {
+			// Test for different display scenarios
+			const varOperationsRegex = /(\$\w+=\"[^\"]*\");*|(\$\w=\w+);*|([^\s\";]+);*/gm;
+			const varOperations = match[1].match(varOperationsRegex);
+			if(varOperations) {
+				return parseUserBrewVariablesOperations(this.lexer, varOperations, match[0]);
+			}
+		}
+		return false;
+	},
+	renderer(token) {
+		return `${token?.text}`;
+	}
+};
+
+
 const definitionLists = {
 	name  : 'definitionLists',
 	level : 'block',
@@ -238,7 +310,7 @@ const definitionLists = {
 	}
 };
 
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists] });
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists,userBrewVariables] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
