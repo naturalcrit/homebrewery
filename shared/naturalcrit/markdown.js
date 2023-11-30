@@ -227,7 +227,7 @@ const parseUserBrewVariablesOperations = (lexer, varOperations, raw)=>{
 				title      : assignSplit[1].replace(/^"|"$/, '').replace(/"$/, ''),
 				formatting : {},
 			};
-			lastOutput = assignSplit[1].replace(/^"/, '').replace(/"$/, '');
+			lastOutput = assignSplit[0].replace(/^\$/, ''); // assignSplit[1].replace(/^"/, '').replace(/"$/, '');
 		} else if(operation[0] === ':') {
 			const macro = processBrewMacros.get(operation.substring(1).split()[0]);
 			if(macro) {
@@ -236,20 +236,13 @@ const parseUserBrewVariablesOperations = (lexer, varOperations, raw)=>{
 				lastOutput = macroResult.output;
 			}
 		} else {
-			// This is a formatted variable
-			const brewVariable = operation.replace(/^\$/, '');
-			if(lexer.tokens.links[brewVariable].hasOwnProperty('formatting')){
-				lastOutput = lexer.tokens.links[brewVariable]?.title;
-			} else {
-				lastOutput = lexer.tokens.links[brewVariable]?.href;
-			}
+			lastOutput = operation.replace(/^\$/, '');
 		}
 	};
 	const token = {
-		type   : 'text',
-		raw    : raw,
-		text   : silent ? '' : lastOutput,
-		tokens : lexer.inlineTokens(silent ? '' : lastOutput)
+		type : 'userBrewVariables',
+		raw  : raw,
+		text : silent ? '' : lastOutput,
 	};
 
 	return token;
@@ -273,7 +266,14 @@ const userBrewVariables = {
 		return false;
 	},
 	renderer(token) {
-		return `${token?.text}`;
+		if(token?.text) {
+			if(globalLinks[token.text]?.hasOwnProperty('formatting')) {
+				return `${globalLinks[token.text].title}`;
+			} else {
+				return `${globalLinks[token.text].href}`;
+			}
+		}
+		return ``;
 	}
 };
 
@@ -410,12 +410,21 @@ const processStyleTags = (string)=>{
 	return `${classes.join(' ')}" ${id ? `id="${id}"` : ''} ${styles.length ? `style="${styles.join(' ')}"` : ''}`;
 };
 
+let globalLinks = {};
+
 module.exports = {
 	marked : Marked,
 	render : (rawBrewText)=>{
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
-		return Marked.parse(rawBrewText);
+		const opts = Marked.defaults;
+
+		rawBrewText = opts.hooks.preprocess(rawBrewText);
+		const tokens = Marked.lexer(rawBrewText, opts);
+		Object.assign(globalLinks, tokens.links);
+		Marked.walkTokens(tokens, opts.walkTokens);
+		const html = Marked.parser(tokens, opts);
+		return opts.hooks.postprocess(html);
 	},
 
 	validate : (rawBrewText)=>{
