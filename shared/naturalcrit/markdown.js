@@ -318,8 +318,10 @@ const userBrewVariables = {
 		if(token?.text) {
 			if(globalLinks[token.text]?.hasOwnProperty('formatting')) {
 				return `${globalLinks[token.text].title}`;
-			} else {
+			} else if(globalLinks.hasOwnProperty(token.text)) {
 				return `${globalLinks[token.text].href}`;
+			} else {
+				return `${token.raw}`;
 			}
 		}
 		return ``;
@@ -369,7 +371,7 @@ renderer.link = function (href, title, text) {
 	let self = false;
 
 	if(!globalLinks[text]) {
-		return text;
+		return `[${text}]`;
 	}
 
 	href = globalLinks[text].href;
@@ -468,34 +470,6 @@ const processStyleTags = (string)=>{
 	return `${classes.join(' ')}" ${id ? `id="${id}"` : ''} ${styles.length ? `style="${styles.join(' ')}"` : ''}`;
 };
 
-// Straight outta Marked
-const outputLink = (cap, link, raw, lex) => {
-	const href = link.href;
-	const title = link.title ? escape(link.title) : null;
-	const text = cap[1].replace(/\\([\[\]])/g, '$1');
-
-	if(cap[0].charAt(0) !== '!') {
-	  lex.state.inLink = true;
-	  const token = {
-			type   : 'link',
-			raw,
-			href,
-			title,
-			text,
-			tokens : lex.inlineTokens(text)
-	  };
-	  lex.state.inLink = false;
-	  return token;
-	}
-	return {
-	  type : 'image',
-	  raw,
-	  href,
-	  title,
-	  text : escape(text)
-	};
-};
-
 const globalLinks = {};
 
 module.exports = {
@@ -510,6 +484,11 @@ module.exports = {
 		Object.assign(globalLinks, tokens.links);
 		Marked.walkTokens(tokens, opts.walkTokens);
 		const html = Marked.parser(tokens, opts);
+		for (const [key, value] of Object.entries(tokens.links)) {
+			if((key[0] == '_') && (globalLinks.hasOwnProperty(key))) {
+				delete globalLinks[key];
+			}
+		}
 		return opts.hooks.postprocess(html);
 	},
 
