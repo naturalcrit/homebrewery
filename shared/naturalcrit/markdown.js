@@ -370,12 +370,13 @@ Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite()
 renderer.link = function (href, title, text) {
 	let self = false;
 
-	if(!globalLinks[text]) {
-		return `[${text}]`;
+	if(!href.length) {
+		if(!globalLinks[text]) {
+			return `[${text}]`;
+		}
+		href = globalLinks[text].href;
+		title = globalLinks[text].title;
 	}
-
-	href = globalLinks[text].href;
-	title = globalLinks[text].title;
 
 	if((href) && (href[0] == '#')) {
 		self = true;
