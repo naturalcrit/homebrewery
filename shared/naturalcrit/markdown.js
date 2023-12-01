@@ -5,6 +5,7 @@ const MarkedExtendedTables = require('marked-extended-tables');
 const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartypants-lite');
 const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
 const renderer = new Marked.Renderer();
+const tokenizer = new Marked.Tokenizer();
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (html) {
@@ -15,6 +16,54 @@ renderer.html = function (html) {
 		return `${openTag} ${Marked.parse(html)} </div>`;
 	}
 	return html;
+};
+
+
+const edit = function (regex, opt) {
+	const caret = /(^|[^\[])\^/g;
+	regex = typeof regex === 'string' ? regex : regex.source;
+	opt = opt || '';
+	const obj = {
+	  replace : (name, val) => {
+			val = typeof val === 'object' && 'source' in val ? val.source : val;
+			val = val.replace(caret, '$1');
+			regex = regex.replace(name, val);
+			return obj;
+	  },
+	  getRegex : ()=>{
+			return new RegExp(regex, opt);
+	  }
+	};
+	return obj;
+};
+
+// Lifted liberally from marked
+tokenizer.reflink = function (src, links) {
+	let cap;
+	let reflink = /^!?\[(label)\]\[(ref)\]/;
+	let nolink =  /^!?\[(ref)\](?:\[\])?/;
+	const inlinelabel = /(?:\[(?:\\.|[^\[\]\\])*\]|\\.|`[^`]*`|[^\[\]\\`])*?/;
+	const blocklabel = /(?!\s*\])(?:\\.|[^\[\]\\])+/;
+
+	reflink = edit(reflink)
+		.replace('label', inlinelabel)
+		.replace('ref', blocklabel)
+		.getRegex();
+
+	nolink = edit(nolink)
+		.replace('ref', blocklabel)
+		.getRegex();
+
+	if((cap = reflink.exec(src)) || (cap = nolink.exec(src))) {
+		const text = cap[0].replace(/^\[/, '').replace(/\]$/, '');
+		return {
+			type : 'link',
+			raw  : cap[0],
+			text,
+			tokens : this.lexer.inlineTokens(text)
+		};
+	}
+	return '';
 };
 
 // Don't wrap {{ Divs or {{ empty Spans in <p> tags
@@ -216,14 +265,14 @@ processBrewMacros.set('q', (lexer, macroString)=>{
 	};
 });
 
-const parseUserBrewVariablesOperations = (lexer, varOperations, raw)=>{
+const parseUserBrewVariablesOperations = (lex, varOperations, raw)=>{
 	let lastOutput = '';
 	let silent = false;
 	for (let operation of varOperations) {
 		operation = operation.replace(/;$/, '');
 		if(operation.indexOf('=') > -1){
 			const assignSplit = operation.split('=');
-			lexer.tokens.links[assignSplit[0].replace(/^\$/, '')] = {
+			lex.tokens.links[assignSplit[0].replace(/^\$/, '')] = {
 				title      : assignSplit[1].replace(/^"|"$/, '').replace(/"$/, ''),
 				formatting : {},
 			};
@@ -231,7 +280,7 @@ const parseUserBrewVariablesOperations = (lexer, varOperations, raw)=>{
 		} else if(operation[0] === ':') {
 			const macro = processBrewMacros.get(operation.substring(1).split()[0]);
 			if(macro) {
-				const macroResult = macro(lexer, operation.substring(1));
+				const macroResult = macro(lex, operation.substring(1));
 				if(macroResult?.silent) { silent = true; }
 				lastOutput = macroResult.output;
 			}
@@ -312,15 +361,24 @@ const definitionLists = {
 
 Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists,userBrewVariables] });
 Marked.use(mustacheInjectBlock);
-Marked.use({ renderer: renderer, mangle: false });
+Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
 
 //Fix local links in the Preview iFrame to link inside the frame
 renderer.link = function (href, title, text) {
 	let self = false;
-	if(href[0] == '#') {
+
+	if(!globalLinks[text]) {
+		return text;
+	}
+
+	href = globalLinks[text].href;
+	title = globalLinks[text].title;
+
+	if((href) && (href[0] == '#')) {
 		self = true;
 	}
+
 	href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
 
 	if(href === null) {
@@ -410,7 +468,35 @@ const processStyleTags = (string)=>{
 	return `${classes.join(' ')}" ${id ? `id="${id}"` : ''} ${styles.length ? `style="${styles.join(' ')}"` : ''}`;
 };
 
-let globalLinks = {};
+// Straight outta Marked
+const outputLink = (cap, link, raw, lex) => {
+	const href = link.href;
+	const title = link.title ? escape(link.title) : null;
+	const text = cap[1].replace(/\\([\[\]])/g, '$1');
+
+	if(cap[0].charAt(0) !== '!') {
+	  lex.state.inLink = true;
+	  const token = {
+			type   : 'link',
+			raw,
+			href,
+			title,
+			text,
+			tokens : lex.inlineTokens(text)
+	  };
+	  lex.state.inLink = false;
+	  return token;
+	}
+	return {
+	  type : 'image',
+	  raw,
+	  href,
+	  title,
+	  text : escape(text)
+	};
+};
+
+const globalLinks = {};
 
 module.exports = {
 	marked : Marked,
