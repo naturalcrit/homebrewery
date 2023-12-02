@@ -46,7 +46,7 @@ const BrewItem = createClass({
 	},
 
 	updateFilter : function(type, term){
-		console.log(`BrewItem: TYPE: ${type}; TERM: ${term}`);
+		// console.log(`BrewItem: TYPE: ${type}; TERM: ${term}`);
 		this.props.updateListFilter(type, term);
 	},
 

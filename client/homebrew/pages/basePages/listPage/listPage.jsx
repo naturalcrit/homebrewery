@@ -82,7 +82,7 @@ const ListPage = createClass({
 		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
 
 		return _.map(brews, (brew, idx)=>{
-			return <BrewItem brew={brew} key={idx} reportError={this.props.reportError}/>;
+			return <BrewItem brew={brew} key={idx} reportError={this.props.reportError} updateListFilter={this.updateListFilter}/>;
 		});
 	},
 
@@ -129,11 +129,18 @@ const ListPage = createClass({
 	},
 
 	handleFilterTextChange : function(e){
+		// console.log(e);
 		this.setState({
 			filterString : e.target.value,
 		});
 		this.updateUrl(e.target.value, this.state.sortType, this.state.sortDir);
 		return;
+	},
+
+	updateListFilter : function(type, term){
+		// console.log(`ListPage: TYPE: ${type}; TERM: ${term}`);
+		const e = { target: { value: term } };
+		this.handleFilterTextChange(e);
 	},
 
 	updateUrl : function(filterTerm, sortType, sortDir){
