@@ -36,6 +36,7 @@ const ListPage = createClass({
 
 		return {
 			filterString   : this.props.query?.filter || '',
+			filterTags     : [],
 			sortType       : this.props.query?.sort || null,
 			sortDir        : this.props.query?.dir || null,
 			query          : this.props.query,
@@ -138,17 +139,30 @@ const ListPage = createClass({
 	},
 
 	updateListFilter : function(type, term){
-		// console.log(`ListPage: TYPE: ${type}; TERM: ${term}`);
-		const e = { target: { value: term } };
-		this.handleFilterTextChange(e);
+		this.updateUrl(this.state.filterString, this.state.sortType, this.state.sortDir, term);
 	},
 
-	updateUrl : function(filterTerm, sortType, sortDir){
+	updateUrl : function(filterTerm, sortType, sortDir, filterTag=''){
 		const url = new URL(window.location.href);
 		const urlParams = new URLSearchParams(url.search);
 
 		urlParams.set('sort', sortType);
 		urlParams.set('dir', sortDir);
+
+		let filterTags = urlParams.getAll('tag');
+		if(filterTag != '') {
+			if(!filterTags.includes(filterTag)){
+				filterTags.push(filterTag);
+			} else {
+				filterTags = filterTags.filter((tag)=>{ return tag != filterTag; });
+			}
+		}
+		urlParams.delete('tag');
+		filterTags.forEach((tag)=>{ urlParams.append('tag', tag); });
+
+		this.setState({
+			filterTags
+		});
 
 		if(!filterTerm)
 			urlParams.delete('filter');
@@ -201,6 +215,15 @@ const ListPage = createClass({
 
 			return brewStrings.includes(testString);
 		});
+
+		if(this.state.filterTags.length > 0) {
+			brews = _.filter(brews, (brew)=>{
+				return this.state.filterTags.some((tag)=>{
+					return brew.tags?.includes(tag);
+				});
+			});
+		}
+
 		return _.orderBy(brews, (brew)=>{ return this.sortBrewOrder(brew); }, this.state.sortDir);
 	},
 
