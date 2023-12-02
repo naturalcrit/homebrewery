@@ -218,7 +218,7 @@ const ListPage = createClass({
 
 		if(this.state.filterTags.length > 0) {
 			brews = _.filter(brews, (brew)=>{
-				return this.state.filterTags.some((tag)=>{
+				return this.state.filterTags.every((tag)=>{
 					return brew.tags?.includes(tag);
 				});
 			});
