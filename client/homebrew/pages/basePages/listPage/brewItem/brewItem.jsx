@@ -20,7 +20,8 @@ const BrewItem = createClass({
 				authors     : [],
 				stubbed     : true
 			},
-			reportError : ()=>{}
+			updateListFilter : ()=>{},
+			reportError      : ()=>{}
 		};
 	},
 
@@ -42,6 +43,11 @@ const BrewItem = createClass({
 					location.reload();
 				}
 			});
+	},
+
+	updateFilter : function(type, term){
+		console.log(`BrewItem: TYPE: ${type}; TERM: ${term}`);
+		this.props.updateListFilter(type, term);
 	},
 
 	renderDeleteBrewLink : function(){
@@ -129,7 +135,7 @@ const BrewItem = createClass({
 						<i className='fas fa-tags'/>
 						{brew.tags.map((tag, idx)=>{
 							const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
-							return <span key={idx} className={matches[1]}>{matches[2]}</span>;
+							return <span key={idx} className={matches[1]} onClick={()=>{this.updateFilter('tag', matches[2]);}}>{matches[2]}</span>;
 						})}
 					</div>
 				</> : <></>
