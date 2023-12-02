@@ -370,7 +370,7 @@ Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite()
 renderer.link = function (href, title, text) {
 	let self = false;
 
-	if(!href.length) {
+	if(!href?.length) {
 		if(!globalLinks[text]) {
 			return `[${text}]`;
 		}
@@ -474,6 +474,9 @@ const processStyleTags = (string)=>{
 const globalLinks = {};
 
 module.exports = {
+	resetBrewVars : ()=>{
+		globalLinks = {};
+	},
 	marked : Marked,
 	render : (rawBrewText)=>{
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)

@@ -163,6 +163,7 @@ const BrewRenderer = createClass({
 	renderPages : function(){
 		if(this.state.usePPR){
 			return _.map(this.state.pages, (page, index)=>{
+				if(index == 0) { Markdown.resetBrewVars(); }
 				if(this.shouldRender(page, index) && typeof window !== 'undefined'){
 					return this.renderPage(page, index);
 				} else {
