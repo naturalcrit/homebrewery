@@ -219,8 +219,8 @@ const ListPage = createClass({
 			// Filter by user selected tags
 			let filterTagTest = true;
 			if(this.state.filterTags.length > 0){
-				filterTagTest = this.state.filterTags.every((tag)=>{
-					if(typeof brew.tags == 'string') return false;
+				filterTagTest = this.state.filterTags?.every((tag)=>{
+					if(!Array.isArray(brew.tags)) return false;
 					return brew.tags.findIndex((brewTag)=>{
 						return brewTag.toLowerCase() == tag.toLowerCase();
 					}) >= 0;
