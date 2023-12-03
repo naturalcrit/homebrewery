@@ -116,7 +116,7 @@ const BrewItem = createClass({
 		if(Array.isArray(brew.tags)) {               // temporary fix until dud tags are cleaned
 			brew.tags = brew.tags?.filter((tag)=>tag); //remove tags that are empty strings
 			brew.tags.sort((a, b)=>{
-				return a.indexOf(':') - b.indexOf(':') != 0 ? a.indexOf(':') - b.indexOf(':') : a.localeCompare(b);
+				return a.indexOf(':') - b.indexOf(':') != 0 ? a.indexOf(':') - b.indexOf(':') : a.toLowerCase().localeCompare(b.toLowerCase());
 			});
 		}
 		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
