@@ -207,22 +207,28 @@ const ListPage = createClass({
 		const testString = _.deburr(this.state.filterString).toLowerCase();
 
 		brews = _.filter(brews, (brew)=>{
+			// Filter by user entered text
 			const brewStrings = _.deburr([
 				brew.title,
 				brew.description,
 				brew.tags].join('\n')
 				.toLowerCase());
 
-			return brewStrings.includes(testString);
-		});
+			const filterTextTest = brewStrings.includes(testString);
 
-		if(this.state.filterTags.length > 0) {
-			brews = _.filter(brews, (brew)=>{
-				return this.state.filterTags.every((tag)=>{
-					return brew.tags?.includes(tag);
+			// Filter by user selected tags
+			let filterTagTest = true;
+			if(this.state.filterTags.length > 0){
+				filterTagTest = this.state.filterTags.every((tag)=>{
+					if(typeof brew.tags == 'string') return false;
+					return brew.tags.findIndex((brewTag)=>{
+						return brewTag.toLowerCase() == tag.toLowerCase();
+					}) >= 0;
 				});
-			});
-		}
+			}
+
+			return filterTextTest && filterTagTest;
+		});
 
 		return _.orderBy(brews, (brew)=>{ return this.sortBrewOrder(brew); }, this.state.sortDir);
 	},
