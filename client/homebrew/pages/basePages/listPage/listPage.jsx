@@ -151,10 +151,10 @@ const ListPage = createClass({
 
 		let filterTags = urlParams.getAll('tag');
 		if(filterTag != '') {
-			if(!filterTags.includes(filterTag)){
+			if(filterTags.findIndex((tag)=>{return tag.toLowerCase()==filterTag.toLowerCase();}) == -1){
 				filterTags.push(filterTag);
 			} else {
-				filterTags = filterTags.filter((tag)=>{ return tag != filterTag; });
+				filterTags = filterTags.filter((tag)=>{ return tag.toLowerCase() != filterTag.toLowerCase(); });
 			}
 		}
 		urlParams.delete('tag');
