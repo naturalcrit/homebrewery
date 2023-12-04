@@ -88,7 +88,7 @@ const BrewRenderer = (props)=>{
 		}));
 	};
 
-	const shouldRender = (pageText, index)=>{
+	const shouldRender = (index)=>{
 		if(!state.isMounted) return false;
 
 		if(Math.abs(index - state.viewablePageNumber) <= 3)
@@ -128,7 +128,6 @@ const BrewRenderer = (props)=>{
 	};
 
 	const renderPage = (pageText, index)=>{
-		console.log(`renderPage ${index}`);
 		let cleanPageText = sanitizeScriptTags(pageText);
 		if(props.renderer == 'legacy') {
 			const html = MarkdownLegacy.render(cleanPageText);
@@ -145,7 +144,7 @@ const BrewRenderer = (props)=>{
 			return renderedPages;
 
 		_.forEach(rawPages, (page, index)=>{
-			if((shouldRender(page, index) || !renderedPages[index]) && typeof window !== 'undefined'){
+			if((shouldRender(index) || !renderedPages[index]) && typeof window !== 'undefined'){
 				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range
 			}
 		});
