@@ -158,7 +158,12 @@ const ListPage = createClass({
 			}
 		}
 		urlParams.delete('tag');
+		// Add tags to URL in the order they were clicked
 		filterTags.forEach((tag)=>{ urlParams.append('tag', tag); });
+		// Sort tags before updating state
+		filterTags.sort((a, b)=>{
+			return a.indexOf(':') - b.indexOf(':') != 0 ? a.indexOf(':') - b.indexOf(':') : a.toLowerCase().localeCompare(b.toLowerCase());
+		});
 
 		this.setState({
 			filterTags
@@ -187,6 +192,17 @@ const ListPage = createClass({
 		</div>;
 	},
 
+	renderTagsOptions : function(){
+		if(this.state.filterTags?.length == 0) return;
+		console.log('renderTags');
+		return <div className='tags-container'>
+			{_.map(this.state.filterTags, (tag, idx)=>{
+				const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
+				return <span key={idx} className={matches[1]} onClick={()=>{this.updateListFilter('tag', tag);}}>{matches[2]}</span>;
+			})}
+		</div>;
+	},
+
 	renderSortOptions : function(){
 		return <div className='sort-container'>
 			<h6>Sort by :</h6>
@@ -197,9 +213,6 @@ const ListPage = createClass({
 			{/* {this.renderSortOption('Latest', 'latest')} */}
 
 			{this.renderFilterOption()}
-
-
-
 		</div>;
 	},
 
@@ -258,6 +271,7 @@ const ListPage = createClass({
 			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet'/>
 			{this.props.navItems}
 			{this.renderSortOptions()}
+			{this.renderTagsOptions()}
 
 			<div className='content V3'>
 				<div className='page'>
