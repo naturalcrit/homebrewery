@@ -160,6 +160,24 @@ const Editor = createClass({
 							}
 						}
 
+						// Superscript
+						if(line.includes('\^')) {
+							const regex = /\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^/g;
+							let match;
+							while ((match = regex.exec(line)) != null) {
+								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) - 1 }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length + 1 }, { className: 'superscript' });
+							}
+						}
+
+						// Subscript
+						if(line.includes('^^')) {
+							const regex = /\^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^\^/g;
+							let match;
+							while ((match = regex.exec(line)) != null) {
+								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) - 2 }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length + 2 }, { className: 'subscript' });
+							}
+						}
+
 						// Highlight injectors {style}
 						if(line.includes('{') && line.includes('}')){
 							const regex = /(?:^|[^{\n])({(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\2})/gm;
@@ -341,6 +359,14 @@ const Editor = createClass({
 		return this.refs.codeEditor?.undo();
 	},
 
+	foldCode : function(){
+		return this.refs.codeEditor?.foldAllCode();
+	},
+
+	unfoldCode : function(){
+		return this.refs.codeEditor?.unfoldAllCode();
+	},
+
 	render : function(){
 		return (
 			<div className='editor' ref='main'>
@@ -354,6 +380,8 @@ const Editor = createClass({
 					theme={this.props.brew.theme}
 					undo={this.undo}
 					redo={this.redo}
+					foldCode={this.foldCode}
+					unfoldCode={this.unfoldCode}
 					historySize={this.historySize()}
 					currentEditorTheme={this.state.editorTheme}
 					updateEditorTheme={this.updateEditorTheme}
