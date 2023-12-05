@@ -8,7 +8,7 @@ const express = require('express');
 const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
-const fs = require('fs');
+const fs = require('fs-extra');
 
 const { homebrewApi, getBrew } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
