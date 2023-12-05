@@ -112,10 +112,10 @@ const CodeEditor = createClass({
 				'Shift-Tab'        : this.dedent,
 				'Ctrl-B'           : this.makeBold,
 				'Cmd-B'            : this.makeBold,
-				'Ctrl-6'           : this.makeSuper,
-				'Cmd-6'            : this.makeSuper,
-				'Ctrl-7'           : this.makeSub,
-				'Cmd-7'            : this.makeSub,
+				'Shift-Ctrl-='     : this.makeSuper,
+				'Shift-Cmd-='      : this.makeSuper,
+				'Ctrl-='           : this.makeSub,
+				'Cmd-='            : this.makeSub,
 				'Ctrl-I'           : this.makeItalic,
 				'Cmd-I'            : this.makeItalic,
 				'Ctrl-U'           : this.makeUnderline,
@@ -224,20 +224,20 @@ const CodeEditor = createClass({
 	},
 
 	makeSuper : function() {
+		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 1) === '^' && selection.slice(-1) === '^';
+		this.codeMirror.replaceSelection(t ? selection.slice(1, -1) : `^${selection}^`, 'around');
+		if(selection.length === 0){
+			const cursor = this.codeMirror.getCursor();
+			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 1 });
+		}
+	},
+
+	makeSub : function() {
 		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 2) === '^^' && selection.slice(-2) === '^^';
 		this.codeMirror.replaceSelection(t ? selection.slice(2, -2) : `^^${selection}^^`, 'around');
 		if(selection.length === 0){
 			const cursor = this.codeMirror.getCursor();
 			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 2 });
-		}
-	},
-
-	makeSub : function() {
-		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 3) === '^^^' && selection.slice(-3) === '^^^';
-		this.codeMirror.replaceSelection(t ? selection.slice(3, -3) : `^^^${selection}^^^`, 'around');
-		if(selection.length === 0){
-			const cursor = this.codeMirror.getCursor();
-			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 3 });
 		}
 	},
 
