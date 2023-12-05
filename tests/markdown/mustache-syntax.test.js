@@ -317,13 +317,22 @@ describe('Injection: When an injection tag follows an element', ()=>{
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block" style="color:red;"><p>text</p></div>');
 		});
 
-		it.failing('renders a div "text" with two injected styles,included quotes', function() {
+		it.failing('renders a div "text" with two injected styles', function() {
 			const source = dedent`{{
 			text
 			}}
-			{color:red,--stringVariable:"'string'"}`;
+			{color:red,background:blue}`;
 			const rendered = Markdown.render(source).trimReturns();
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" style="color:red; --stringVariable:'string'"><p>text</p></div>`);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" style="color:red; background:blue"><p>text</p></div>`);
+		});
+
+		it.failing('renders a div "text" with injected variable string', function() {
+			const source = dedent`{{
+			text
+			}}
+			{--stringVariable:"'string'"}`;
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" style="--stringVariable:'string'"><p>text</p></div>`);
 		});
 
 		it.failing('renders an h2 header "text" with injected class name', function() {
