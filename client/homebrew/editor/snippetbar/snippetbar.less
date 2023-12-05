@@ -10,7 +10,6 @@
 		top             : 0px;
 		right           : 0px;
 		height          : @menuHeight;
-		width           : 125px;
 		justify-content : space-between;
 		&>div{
 			height      : @menuHeight;
@@ -40,6 +39,22 @@
 			}
 			&.redo{
 				.tooltipLeft('Redo');
+				font-size : 0.75em;
+				color     : grey;
+				&.active{
+					color : black;
+				}
+			}
+			&.foldAll{
+				.tooltipLeft('Fold All');
+				font-size : 0.75em;
+				color     : grey;
+				&.active{
+					color : black;
+				}
+			}
+			&.unfoldAll{
+				.tooltipLeft('Unfold All');
 				font-size : 0.75em;
 				color     : grey;
 				&.active{
