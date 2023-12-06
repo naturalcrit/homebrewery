@@ -119,12 +119,11 @@ module.exports = [
 						{{homebreweryCredits
 						Made With
 						
-						{{homebreweryIcon,gold}}
+						{{homebreweryIcon}}
 						
 						The Homebrewery  
 						[Homebrewery.NaturalCrit.com](https://homebrewery.naturalcrit.com)
-						}}						
-						\n`;
+						}}\n\n`;
 				},
 			}
 		]
