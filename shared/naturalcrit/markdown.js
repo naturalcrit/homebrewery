@@ -37,6 +37,33 @@ const edit = function (regex, opt) {
 	return obj;
 };
 
+const outputLink = (cap, link, raw, lexer)=>{
+	const href = link.href;
+	const title = link.title ? escape(link.title) : null;
+	const text = cap[1].replace(/\\([\[\]])/g, '$1');
+
+	if(cap[0].charAt(0) !== '!') {
+	  lexer.state.inLink = true;
+	  const token = {
+			type   : 'link',
+			raw,
+			href,
+			title,
+			text,
+			tokens : lexer.inlineTokens(text)
+	  };
+	  lexer.state.inLink = false;
+	  return token;
+	}
+	return {
+	  type : 'image',
+	  raw,
+	  href,
+	  title,
+	  text : escape(text)
+	};
+};
+
 // Lifted liberally from marked
 tokenizer.reflink = function (src, links) {
 	let cap;
@@ -44,6 +71,10 @@ tokenizer.reflink = function (src, links) {
 	let nolink =  /^!?\[(ref)\](?:\[\])?/;
 	const inlinelabel = /(?:\[(?:\\.|[^\[\]\\])*\]|\\.|`[^`]*`|[^\[\]\\`])*?/;
 	const blocklabel = /(?!\s*\])(?:\\.|[^\[\]\\])+/;
+
+	if(!Object.keys(this.lexer.tokens.links).length < Object.keys(globalLinks).length) {
+		Object.assign(this.lexer.tokens.links, globalLinks);
+	}
 
 	reflink = edit(reflink)
 		.replace('label', inlinelabel)
@@ -55,14 +86,18 @@ tokenizer.reflink = function (src, links) {
 		.getRegex();
 
 	if((cap = reflink.exec(src)) || (cap = nolink.exec(src))) {
-		const text = cap[0].replace(/^\[/, '').replace(/\]$/, '');
-		return {
-			type : 'link',
-			raw  : cap[0],
-			text,
-			tokens : this.lexer.inlineTokens(text)
-		};
-	}
+		let link = (cap[2] || cap[1]).replace(/\s+/g, ' ');
+		link = links[link.toLowerCase()];
+		if(!link) {
+		  const text = cap[0].charAt(0);
+		  return {
+			type : 'text',
+			raw  : text,
+			text
+		  };
+		}
+		return outputLink(cap, link, cap[0], this.lexer);
+	  }
 	return '';
 };
 
@@ -271,12 +306,15 @@ const parseUserBrewVariablesOperations = (lex, varOperations, raw)=>{
 	for (let operation of varOperations) {
 		operation = operation.replace(/;$/, '');
 		if(operation.indexOf('=') > -1){
+			console.log('assignment');
+			console.log(lex.tokens.links);
 			const assignSplit = operation.split('=');
 			lex.tokens.links[assignSplit[0].replace(/^\$/, '')] = {
 				title      : assignSplit[1].replace(/^"|"$/, '').replace(/"$/, ''),
 				formatting : {},
 			};
-			lastOutput = assignSplit[0].replace(/^\$/, ''); // assignSplit[1].replace(/^"/, '').replace(/"$/, '');
+			console.log(lex.tokens.links);
+			lastOutput = assignSplit[1].replace(/^"/, '').replace(/"$/, '');
 		} else if(operation[0] === ':') {
 			const macro = processBrewMacros.get(operation.substring(1).split()[0]);
 			if(macro) {
@@ -285,14 +323,27 @@ const parseUserBrewVariablesOperations = (lex, varOperations, raw)=>{
 				lastOutput = macroResult.output;
 			}
 		} else {
-			lastOutput = operation.replace(/^\$/, '');
+			if(!lex.tokens.links[operation.replace(/^\$/, '')]) {
+				console.log(lex.tokens.links[operation.replace(/^\$/, '')]);
+				console.log('raw');
+				lastOutput = raw;
+			} else {
+				console.log(`Output for variable ${operation}`);
+				console.log(lex.tokens.links[operation.replace(/^\$/, '')]);
+				lastOutput = lex.tokens.links[operation.replace(/^\$/, '')]?.hasOwnProperty('formatting') ?
+					lex.tokens.links[operation.replace(/^\$/, '')].title :
+					lex.tokens.links[operation.replace(/^\$/, '')].href;
+			}
 		}
 	};
+	console.log(`Last Output ${lastOutput} `);
 	const token = {
 		type : 'userBrewVariables',
 		raw  : raw,
 		text : silent ? '' : lastOutput,
 	};
+
+	console.log(token);
 
 	return token;
 };
@@ -303,12 +354,18 @@ const userBrewVariables = {
 	start(src) { return src.match(/\[\[([\S ]+)\]\]\s*/gm)?.index; },
 	tokenizer(src, tokens) {
 		const variableNameRegex = /\[\[([\S ]+)\]\]\s*/gm;
+
+		if(!Object.keys(this.lexer.tokens.links).length < Object.keys(globalLinks).length) {
+			Object.assign(this.lexer.tokens.links, globalLinks);
+		}
+
 		const match = variableNameRegex.exec(src);
 		if(match) {
 			// Test for different display scenarios
 			const varOperationsRegex = /(\$\w+=\"[^\"]*\");*|(\$\w=\w+);*|([^\s\";]+);*/gm;
 			const varOperations = match[1].match(varOperationsRegex);
 			if(varOperations) {
+				console.log(varOperations);
 				return parseUserBrewVariablesOperations(this.lexer, varOperations, match[0]);
 			}
 		}
@@ -316,15 +373,10 @@ const userBrewVariables = {
 	},
 	renderer(token) {
 		if(token?.text) {
-			if(globalLinks[token.text]?.hasOwnProperty('formatting')) {
-				return `${globalLinks[token.text].title}`;
-			} else if(globalLinks.hasOwnProperty(token.text)) {
-				return `${globalLinks[token.text].href}`;
-			} else {
-				return `${token.raw}`;
-			}
+			return `${token.text}`;
+		} else {
+			return `${token.raw}`;
 		}
-		return ``;
 	}
 };
 
@@ -369,14 +421,6 @@ Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite()
 //Fix local links in the Preview iFrame to link inside the frame
 renderer.link = function (href, title, text) {
 	let self = false;
-
-	if(!href?.length) {
-		if(!globalLinks[text]) {
-			return `[${text}]`;
-		}
-		href = globalLinks[text].href;
-		title = globalLinks[text].title;
-	}
 
 	if((href) && (href[0] == '#')) {
 		self = true;
@@ -471,7 +515,7 @@ const processStyleTags = (string)=>{
 	return `${classes.join(' ')}" ${id ? `id="${id}"` : ''} ${styles.length ? `style="${styles.join(' ')}"` : ''}`;
 };
 
-const globalLinks = {};
+let globalLinks = {};
 
 module.exports = {
 	resetBrewVars : ()=>{
@@ -485,7 +529,7 @@ module.exports = {
 
 		rawBrewText = opts.hooks.preprocess(rawBrewText);
 		const tokens = Marked.lexer(rawBrewText, opts);
-		Object.assign(globalLinks, tokens.links);
+		globalLinks = Object.assign({}, tokens.links);
 		Marked.walkTokens(tokens, opts.walkTokens);
 		const html = Marked.parser(tokens, opts);
 		for (const [key, value] of Object.entries(tokens.links)) {
