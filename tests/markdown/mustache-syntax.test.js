@@ -130,6 +130,18 @@ describe('Inline: When using the Inline syntax {{ }}', ()=>{
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p><img class=" "  style="position:absolute; bottom:20px; left:130px; width:220px;" a="b and c" d="e" src="https://i.imgur.com/hMna6G0.png" alt="homebrew mug"></p>`);
 	});
+
+	it('Render a span with added attributes', function() {
+		const source = 'Text and {{pen,#author,color:orange,font-family:"trebuchet ms",a="b and c",d=e, text}} and more text!';
+		const rendered = Markdown.render(source);
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>Text and <span class="inline-block pen" id="author" style="color:orange; font-family:trebuchet ms;" a="b and c" d="e">text</span> and more text!</p>\n');
+	});
+
+	it('Render a div with added attributes', function() {
+		const source = '{{pen,#author,color:orange,font-family:"trebuchet ms",a="b and c",d=e\nText and text and more text!\n}}\n';
+		const rendered = Markdown.render(source);
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block pen" id="author" style="color:orange; font-family:trebuchet ms;" a="b and c" d="e"><p>Text and text and more text!</p>\n</div>');
+	});
 });
 
 //  BLOCK SYNTAX

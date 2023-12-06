@@ -359,6 +359,7 @@ const processStyleTags = (string)=>{
 
 	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
 	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('=')));
+	console.log(classes);
 	let attributes = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('#')));
 	const styles     = tags?.length ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim()) : [];
 
@@ -366,10 +367,10 @@ const processStyleTags = (string)=>{
 		attributes = attributes.map((attr)=>attr.replace(/="?([^"]*)"?/g, '="$1"'));
 	}
 
-	return `${classes.join(' ')}" ` +
+	return `${classes.join(' ').trim()}" ` +
 		`${id ? `id="${id}"` : ''} ` +
-		`${styles?.length ? `style="${styles.join(' ')}"` : ''}` +
-		`${attributes?.length ? ` ${attributes.join(' ')}` : ''}`;
+		`${styles?.length ? `style="${styles.join(' ').trim()}"` : ''}` +
+		`${attributes?.length ? ` ${attributes.join(' ').trim()}` : ''}`;
 };
 
 module.exports = {
