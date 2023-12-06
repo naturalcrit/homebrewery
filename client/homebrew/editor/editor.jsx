@@ -165,6 +165,24 @@ const Editor = createClass({
 							}
 						}
 
+						// Superscript
+						if(line.includes('\^')) {
+							const regex = /\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^/g;
+							let match;
+							while ((match = regex.exec(line)) != null) {
+								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) - 1 }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length + 1 }, { className: 'superscript' });
+							}
+						}
+
+						// Subscript
+						if(line.includes('^^')) {
+							const regex = /\^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^\^/g;
+							let match;
+							while ((match = regex.exec(line)) != null) {
+								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) - 2 }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length + 2 }, { className: 'subscript' });
+							}
+						}
+
 						// Highlight injectors {style}
 						if(line.includes('{') && line.includes('}')){
 							const regex = /(?:^|[^{\n])({(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\2})/gm;
