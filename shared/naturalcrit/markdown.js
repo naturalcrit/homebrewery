@@ -24,7 +24,7 @@ const edit = function (regex, opt) {
 	regex = typeof regex === 'string' ? regex : regex.source;
 	opt = opt || '';
 	const obj = {
-	  replace : (name, val) => {
+	  replace : (name, val)=>{
 			val = typeof val === 'object' && 'source' in val ? val.source : val;
 			val = val.replace(caret, '$1');
 			regex = regex.replace(name, val);
@@ -91,9 +91,9 @@ tokenizer.reflink = function (src, links) {
 		if(!link) {
 		  const text = cap[0].charAt(0);
 		  return {
-			type : 'text',
-			raw  : text,
-			text
+				type : 'text',
+				raw  : text,
+				text
 		  };
 		}
 		return outputLink(cap, link, cap[0], this.lexer);
@@ -290,93 +290,52 @@ const mustacheInjectBlock = {
 	}
 };
 
-const processBrewMacros = new Map();
-
-// Quiet output. Used as a "last" item on a multi-operation row if you don't want output for that variable block.
-processBrewMacros.set('q', (lexer, macroString)=>{
-	return {
-		silent : true,
-		output : ''
-	};
-});
-
-const parseUserBrewVariablesOperations = (lex, varOperations, raw)=>{
-	let lastOutput = '';
-	let silent = false;
-	for (let operation of varOperations) {
-		operation = operation.replace(/;$/, '');
-		if(operation.indexOf('=') > -1){
-			console.log('assignment');
-			console.log(lex.tokens.links);
-			const assignSplit = operation.split('=');
-			lex.tokens.links[assignSplit[0].replace(/^\$/, '')] = {
-				title      : assignSplit[1].replace(/^"|"$/, '').replace(/"$/, ''),
-				formatting : {},
-			};
-			console.log(lex.tokens.links);
-			lastOutput = assignSplit[1].replace(/^"/, '').replace(/"$/, '');
-		} else if(operation[0] === ':') {
-			const macro = processBrewMacros.get(operation.substring(1).split()[0]);
-			if(macro) {
-				const macroResult = macro(lex, operation.substring(1));
-				if(macroResult?.silent) { silent = true; }
-				lastOutput = macroResult.output;
-			}
-		} else {
-			if(!lex.tokens.links[operation.replace(/^\$/, '')]) {
-				console.log(lex.tokens.links[operation.replace(/^\$/, '')]);
-				console.log('raw');
-				lastOutput = raw;
-			} else {
-				console.log(`Output for variable ${operation}`);
-				console.log(lex.tokens.links[operation.replace(/^\$/, '')]);
-				lastOutput = lex.tokens.links[operation.replace(/^\$/, '')]?.hasOwnProperty('formatting') ?
-					lex.tokens.links[operation.replace(/^\$/, '')].title :
-					lex.tokens.links[operation.replace(/^\$/, '')].href;
-			}
-		}
-	};
-	console.log(`Last Output ${lastOutput} `);
-	const token = {
-		type : 'userBrewVariables',
-		raw  : raw,
-		text : silent ? '' : lastOutput,
-	};
-
-	console.log(token);
-
-	return token;
-};
-
 const userBrewVariables = {
 	name  : 'userBrewVariables',
 	level : 'inline',
-	start(src) { return src.match(/\[\[([\S ]+)\]\]\s*/gm)?.index; },
+	start(src) { return src.match(/\$\[([\S]+)\](\([\S ]+\))?\s*/gm)?.index; },
 	tokenizer(src, tokens) {
-		const variableNameRegex = /\[\[([\S ]+)\]\]\s*/gm;
+		const variableNameRegex = /\$\[([\S]+)\](\([\S ]+\))?\s*/gm;
 
 		if(!Object.keys(this.lexer.tokens.links).length < Object.keys(globalLinks).length) {
 			Object.assign(this.lexer.tokens.links, globalLinks);
 		}
 
+		let lastOutput = '';
+		let assignment = false;
 		const match = variableNameRegex.exec(src);
 		if(match) {
-			// Test for different display scenarios
-			const varOperationsRegex = /(\$\w+=\"[^\"]*\");*|(\$\w=\w+);*|([^\s\";]+);*/gm;
-			const varOperations = match[1].match(varOperationsRegex);
-			if(varOperations) {
-				console.log(varOperations);
-				return parseUserBrewVariablesOperations(this.lexer, varOperations, match[0]);
+			if(match[2]) {
+				this.lexer.tokens.links[match[1]] = {
+					title      : match[2].replace(/^\(/, '').replace(/\)$/, ''),
+					formatting : {},
+				};
+				assignment = true;
+			} else {
+				if(!this.lexer.tokens.links[match[1]]) {
+					lastOutput = match[0];
+				} else {
+					lastOutput = this.lexer.tokens.links[match[1]]?.hasOwnProperty('formatting') ?
+						this.lexer.tokens.links[match[1]].title :
+						this.lexer.tokens.links[match[1]].href;
+				}
 			}
+			const token = {
+				type : 'userBrewVariables',
+				raw  : match[0],
+				text : lastOutput,
+				assignment
+			};
+
+			return token;
+
 		}
 		return false;
 	},
 	renderer(token) {
-		if(token?.text) {
-			return `${token.text}`;
-		} else {
-			return `${token.raw}`;
-		}
+		const showRaw = !token?.assignment ? token.raw : '';
+
+		return `${token?.text ? token?.text : showRaw}`;
 	}
 };
 
@@ -413,7 +372,7 @@ const definitionLists = {
 	}
 };
 
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists,userBrewVariables] });
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, userBrewVariables] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
