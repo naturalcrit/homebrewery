@@ -8,6 +8,7 @@ const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
 const CoverPageGen       = require('./snippets/coverpage.gen.js');
 const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
 const indexGen           = require('./snippets/index.gen.js');
+const QuoteGen 			 = require('./snippets/quote.gen.js');
 const dedent             = require('dedent-tabs').default;
 
 
@@ -122,6 +123,11 @@ module.exports = [
 				name : 'Class Feature',
 				icon : 'fas fa-mask',
 				gen  : ClassFeatureGen,
+			},
+			{
+				name : 'Quote',
+				icon : 'fas fa-quote-right',
+				gen  : QuoteGen,
 			},
 			{
 				name : 'Note',
