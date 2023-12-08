@@ -333,7 +333,7 @@ const userBrewVariables = {
 		return false;
 	},
 	renderer(token) {
-		const silentOrRaw = token?.silent ? `` : token.raw;
+		const silentOrRaw = token?.assignment ? `` : token.raw;
 
 		return `${token?.text ? token?.text : silentOrRaw}`;
 	}
@@ -455,7 +455,7 @@ const definitionLists = {
 	}
 };
 
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, 
+Marked.use({ extensions : [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists,
 	superSubScripts, userBrewVariables, userBrewVarMacros] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
@@ -576,7 +576,7 @@ module.exports = {
 		Marked.walkTokens(tokens, opts.walkTokens);
 		const html = Marked.parser(tokens, opts);
 		for (const [key, value] of Object.entries(tokens.links)) {
-			if((key[0] == '_') && (globalLinks.hasOwnProperty(key))) {
+			if((key[0] == '$') && (globalLinks.hasOwnProperty(key))) {
 				delete globalLinks[key];
 			}
 		}

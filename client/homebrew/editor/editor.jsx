@@ -160,6 +160,16 @@ const Editor = createClass({
 							}
 						}
 
+						// Brew User Variables and Macros
+
+						if(line.includes('[') && line.includes(']')) {
+							const regex = /[\$:]\[([\S]+)\](\([\S ]+\))?\s*/gm;
+							let match;
+							while ((match = regex.exec(line)) !=null) {
+								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[0]) }, { line: lineNumber, ch: line.indexOf(match[0]) + 1 }, { className: 'cm-link' });
+							}
+						}
+
 						// Superscript
 						if(line.includes('\^')) {
 							const regex = /\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^/g;
