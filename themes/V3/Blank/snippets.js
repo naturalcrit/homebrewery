@@ -122,7 +122,7 @@ module.exports = [
 						{{homebreweryIcon}}
 						
 						The Homebrewery  
-						[Homebrewery.NaturalCrit.com](https://homebrewery.naturalcrit.com)
+						[Homebrewery.Naturalcrit.com](https://homebrewery.naturalcrit.com)
 						}}\n\n`;
 				},
 			}
