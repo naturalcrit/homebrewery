@@ -333,9 +333,9 @@ const userBrewVariables = {
 		return false;
 	},
 	renderer(token) {
-		const showRaw = !token?.assignment ? token.raw : '';
+		const silentOrRaw = token?.silent ? `` : token.raw;
 
-		return `${token?.text ? token?.text : showRaw}`;
+		return `${token?.text ? token?.text : silentOrRaw}`;
 	}
 };
 
