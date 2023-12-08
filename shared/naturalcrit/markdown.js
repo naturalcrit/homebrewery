@@ -339,6 +339,61 @@ const userBrewVariables = {
 	}
 };
 
+const processBrewMacros = new Map();
+
+// Quiet output. Used as a "last" item on a multi-operation row if you don't want output for that variable block.
+processBrewMacros.set('q', (lexer, macroString)=>{
+	return {
+		silent : true,
+		output : ''
+	};
+});
+// Echo Parameters -
+processBrewMacros.set('echo', (lexer, macroString)=>{
+	return {
+		silent : false,
+		output : `${macroString.replace(/^\(/, '').replace(/\)$/, '')}`
+	};
+});
+
+const userBrewVarMacros = {
+	name  : 'userBrewVarMacros',
+	level : 'inline',
+	start(src) { return src.match(/\:\[([\S]+)\](\([\S ]+\))\s*/gm)?.index; },
+	tokenizer(src, tokens) {
+		const variableNameRegex = /\:\[([\S]+)\](\([\S ]+\))\s*/gm;
+
+		if(!Object.keys(this.lexer.tokens.links).length < Object.keys(globalLinks).length) {
+			Object.assign(this.lexer.tokens.links, globalLinks);
+		}
+
+		let lastOutput = '';
+		const match = variableNameRegex.exec(src);
+		if(match) {
+			if(!match[1]) {
+				lastOutput = match[0];
+			} else {
+				const macro = processBrewMacros.get(match[1]);
+				if(macro) {
+					const macroResult = macro(this.lexer, match[2]);
+					lastOutput = macroResult;
+				}
+			}
+			const token = {
+				type        : 'userBrewVarMacros',
+				raw         : match[0],
+				macroResult : lastOutput,
+			};
+			return token;
+		}
+		return false;
+	},
+	renderer(token) {
+		const silentOrRaw = token?.macroResult.silent ? `` : token.raw;
+		return `${token?.macroResult.output ? token?.macroResult.output : silentOrRaw}`;
+	}
+};
+
 
 const superSubScripts = {
 	name  : 'superSubScript',
@@ -400,7 +455,8 @@ const definitionLists = {
 	}
 };
 
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts, userBrewVariables] });
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, 
+	superSubScripts, userBrewVariables, userBrewVarMacros] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());

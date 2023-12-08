@@ -139,25 +139,6 @@ const BrewRenderer = (props)=>{
 		}
 	};
 
-<<<<<<< HEAD
-	renderPages : function(){
-		if(this.state.usePPR){
-			return _.map(this.state.pages, (page, index)=>{
-				if(index == 0) { Markdown.resetBrewVars(); }
-				if(this.shouldRender(page, index) && typeof window !== 'undefined'){
-					return this.renderPage(page, index);
-				} else {
-					return this.renderDummyPage(index);
-				}
-			});
-		}
-		if(this.props.errors && this.props.errors.length) return this.lastRender;
-		this.lastRender = _.map(this.state.pages, (page, index)=>{
-			if(typeof window !== 'undefined') {
-				return this.renderPage(page, index);
-			} else {
-				return this.renderDummyPage(index);
-=======
 	const renderPages = ()=>{
 		if(props.errors && props.errors.length)
 			return renderedPages;
@@ -165,7 +146,6 @@ const BrewRenderer = (props)=>{
 		_.forEach(rawPages, (page, index)=>{
 			if((shouldRender(index) || !renderedPages[index]) && typeof window !== 'undefined'){
 				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range
->>>>>>> master
 			}
 		});
 		return renderedPages;
