@@ -143,6 +143,7 @@ const BrewRenderer = (props)=>{
 		if(props.errors && props.errors.length)
 			return renderedPages;
 
+		Markdown.resetBrewVars({});
 		_.forEach(rawPages, (page, index)=>{
 			if((shouldRender(index) || !renderedPages[index]) && typeof window !== 'undefined'){
 				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range

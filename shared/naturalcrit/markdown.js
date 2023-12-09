@@ -301,8 +301,8 @@ const findVariables = function (lexer, vars) {
 
 	for (const v in varList) {
 		if(varList[v][0] == '$') {
-			if(lexer.tokens.links[varList[v].replace(/^\$/, '')]?.formatting) {
-				returnObj[varList[v].replace(/^\$/, '')] = lexer.tokens.links[varList[v].replace(/^\$/, '')].title;
+			if(lexer.tokens.links[varList[v]]?.formatting) {
+				returnObj[varList[v]] = lexer.tokens.links[varList[v]].title;
 			}
 		}
 	}
@@ -313,9 +313,9 @@ const findVariables = function (lexer, vars) {
 const userBrewVariables = {
 	name  : 'userBrewVariables',
 	level : 'inline',
-	start(src) { return src.match(/\$\[([\S]+)\](\([\S ]+\))?\s*/gm)?.index; },
+	start(src) { return src.match(/\$\[([\S]+)\](\([\S ]+\))?\s*/g)?.index; },
 	tokenizer(src, tokens) {
-		const variableNameRegex = /\$\[([\S]+)\](\([\S ]+\))?\s*/gm;
+		const variableNameRegex = /\$\[([\S]+)\](\([\S ]+\))?\s*/g;
 
 		if(!Object.keys(this.lexer.tokens.links).length < Object.keys(globalLinks).length) {
 			Object.assign(this.lexer.tokens.links, globalLinks);
@@ -333,8 +333,13 @@ const userBrewVariables = {
 					for (const k in subVariables) {
 						value = value.replace(`\$${k}`, k);
 					}
-					const computation = mathjs.parse(value);
-					value = computation.evaluate(subVariables).toString();
+					try {
+						const computation = mathjs.parse(value);
+						const result = computation.evaluate(subVariables);
+						if(result) { value = result.toString(); } else { value = match[0]; }
+					} catch (error) {
+						value = match[0];
+					}
 				}
 				this.lexer.tokens.links[match[1]] = {
 					title      : value,
@@ -386,12 +391,28 @@ processBrewMacros.set('echo', (lexer, macroString)=>{
 	};
 });
 
+processBrewMacros.set('copy', (lexer, macroString)=>{
+	const fromTo = macroString.replace(/^\(/, '').replace(/\)$/, '').split(/[ ,]/);
+	if((lexer.tokens.links[fromTo[0]]?.hasOwnProperty('formatting')) && (lexer.tokens.links[fromTo[1]]?.hasOwnProperty('formatting'))) {
+		lexer.tokens.links[fromTo[1]].title = lexer.tokens.links[fromTo[0]].title;
+		return {
+			silent : true,
+			output : ''
+		};
+	} else {
+		return {
+			silent : false,
+			output : macroString
+		};
+	}
+});
+
 const userBrewVarMacros = {
 	name  : 'userBrewVarMacros',
 	level : 'inline',
-	start(src) { return src.match(/\:\[([\S]+)\](\([\S ]+\))\s*/gm)?.index; },
+	start(src) { return src.match(/\:\[([\S]+)\](\([\S ]+\))\s*/g)?.index; },
 	tokenizer(src, tokens) {
-		const variableNameRegex = /\:\[([\S]+)\](\([\S ]+\))\s*/gm;
+		const variableNameRegex = /\:\[([\S]+)\](\([\S ]+\))\s*/g;
 
 		if(!Object.keys(this.lexer.tokens.links).length < Object.keys(globalLinks).length) {
 			Object.assign(this.lexer.tokens.links, globalLinks);
@@ -591,8 +612,8 @@ const processStyleTags = (string)=>{
 let globalLinks = {};
 
 module.exports = {
-	resetBrewVars : ()=>{
-		globalLinks = {};
+	resetBrewVars : (defaultVars)=>{
+		globalLinks = defaultVars;
 	},
 	marked : Marked,
 	render : (rawBrewText)=>{
