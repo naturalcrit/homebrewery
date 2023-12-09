@@ -6,6 +6,7 @@ const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartyp
 const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
 const renderer = new Marked.Renderer();
 const tokenizer = new Marked.Tokenizer();
+const mathjs = require('mathjs');
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (html) {
@@ -290,6 +291,25 @@ const mustacheInjectBlock = {
 	}
 };
 
+// Return an object of all variables from another array
+
+const findVariables = function (lexer, vars) {
+	const returnObj = {
+	};
+
+	const varList = typeof vars == 'string' ? [vars] : vars;
+
+	for (const v in varList) {
+		if(varList[v][0] == '$') {
+			if(lexer.tokens.links[varList[v].replace(/^\$/, '')]?.formatting) {
+				returnObj[varList[v].replace(/^\$/, '')] = lexer.tokens.links[varList[v].replace(/^\$/, '')].title;
+			}
+		}
+	}
+
+	return returnObj;
+};
+
 const userBrewVariables = {
 	name  : 'userBrewVariables',
 	level : 'inline',
@@ -306,8 +326,18 @@ const userBrewVariables = {
 		const match = variableNameRegex.exec(src);
 		if(match) {
 			if(match[2]) {
+				let value = match[2].replace(/^\(/, '').replace(/\)$/, '').trim();
+				if(value[0] == '=') {
+					value = value.replace(/=/, '');
+					const subVariables = findVariables(this.lexer, value.split(' '));
+					for (const k in subVariables) {
+						value = value.replace(`\$${k}`, k);
+					}
+					const computation = mathjs.parse(value);
+					value = computation.evaluate(subVariables).toString();
+				}
 				this.lexer.tokens.links[match[1]] = {
-					title      : match[2].replace(/^\(/, '').replace(/\)$/, ''),
+					title      : value,
 					formatting : {},
 				};
 				assignment = true;
