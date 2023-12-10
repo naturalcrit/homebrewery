@@ -65,6 +65,12 @@ const outputLink = (cap, link, raw, lexer)=>{
 	};
 };
 
+const upsertLinks = function(lexer) {
+	if(!Object.keys(lexer.tokens.links).length < Object.keys(globalLinks).length) {
+		Object.assign(lexer.tokens.links, globalLinks);
+	}
+}
+
 // Lifted liberally from marked
 tokenizer.reflink = function (src, links) {
 	let cap;
@@ -73,9 +79,7 @@ tokenizer.reflink = function (src, links) {
 	const inlinelabel = /(?:\[(?:\\.|[^\[\]\\])*\]|\\.|`[^`]*`|[^\[\]\\`])*?/;
 	const blocklabel = /(?!\s*\])(?:\\.|[^\[\]\\])+/;
 
-	if(!Object.keys(this.lexer.tokens.links).length < Object.keys(globalLinks).length) {
-		Object.assign(this.lexer.tokens.links, globalLinks);
-	}
+	upsertLinks(this.lexer);
 
 	reflink = edit(reflink)
 		.replace('label', inlinelabel)
@@ -313,14 +317,11 @@ const findVariables = function (lexer, vars) {
 const userBrewVariables = {
 	name  : 'userBrewVariables',
 	level : 'inline',
-	start(src) { return src.match(/\$\[([\S]+)\](\([\S ]+\))?\s*/g)?.index; },
+	start(src) { return src.match(/\$\[([\S]+?)\]((?:\()([\S ]+)(?:\)))?/)?.index; },
 	tokenizer(src, tokens) {
-		const variableNameRegex = /\$\[([\S]+)\](\([\S ]+\))?\s*/g;
+		const variableNameRegex = /^\$\[([\S]+?)\]((?:\()([\S ]+)(?:\)))?/;
 
-		if(!Object.keys(this.lexer.tokens.links).length < Object.keys(globalLinks).length) {
-			Object.assign(this.lexer.tokens.links, globalLinks);
-		}
-
+		upsertLinks(this.lexer);
 		let lastOutput = '';
 		let assignment = false;
 		const match = variableNameRegex.exec(src);
@@ -360,8 +361,8 @@ const userBrewVariables = {
 				raw  : match[0],
 				text : lastOutput,
 				assignment
-			};
 
+			};
 			return token;
 
 		}
@@ -410,14 +411,11 @@ processBrewMacros.set('copy', (lexer, macroString)=>{
 const userBrewVarMacros = {
 	name  : 'userBrewVarMacros',
 	level : 'inline',
-	start(src) { return src.match(/\:\[([\S]+)\](\([\S ]+\))\s*/g)?.index; },
+	start(src) { return src.match(/\:\[([\S]+)\](\([\S ]+\))*/g)?.index; },
 	tokenizer(src, tokens) {
-		const variableNameRegex = /\:\[([\S]+)\](\([\S ]+\))\s*/g;
+		const variableNameRegex = /^\:\[([\S]+)\](\([\S ]+\))*/g;
 
-		if(!Object.keys(this.lexer.tokens.links).length < Object.keys(globalLinks).length) {
-			Object.assign(this.lexer.tokens.links, globalLinks);
-		}
-
+		upsertLinks(this.lexer);
 		let lastOutput = '';
 		const match = variableNameRegex.exec(src);
 		if(match) {
