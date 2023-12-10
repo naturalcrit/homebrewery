@@ -323,10 +323,10 @@ const subUserVariablesInString = function(lexer, src, raw){
 		math = true;
 	}
 	const subVariables = findVariables(lexer, src.split(' '));
-	for (const k in subVariables) {
-		src = src.replace(`\$${k}`, k);
-	}
 	if(math){
+		for (const k in subVariables) {
+			src = src.replace(`\$${k}`, k);
+		}
 		try {
 			const computation = mathjs.parse(src);
 			const result = computation.evaluate(subVariables);
@@ -335,6 +335,12 @@ const subUserVariablesInString = function(lexer, src, raw){
 			value = raw;
 		}
 	} else {
+		for (const k in subVariables) {
+			const swap = lexer.tokens.links[k]?.hasOwnProperty('formatting') ?
+				lexer.tokens.links[k].title :
+				lexer.tokens.links[k].href;
+			src = src.replace(`\$${k}`, swap);
+		}
 		value = `${src}`;
 	}
 	return value;
