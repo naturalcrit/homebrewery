@@ -69,7 +69,7 @@ const upsertLinks = function(lexer) {
 	if(!Object.keys(lexer.tokens.links).length < Object.keys(globalLinks).length) {
 		Object.assign(lexer.tokens.links, globalLinks);
 	}
-}
+};
 
 // Lifted liberally from marked
 tokenizer.reflink = function (src, links) {
@@ -305,13 +305,39 @@ const findVariables = function (lexer, vars) {
 
 	for (const v in varList) {
 		if(varList[v][0] == '$') {
-			if(lexer.tokens.links[varList[v]]?.formatting) {
-				returnObj[varList[v]] = lexer.tokens.links[varList[v]].title;
+			const vSub = varList[v].replace(/^\$/, '');
+			if(lexer.tokens.links[vSub]?.formatting) {
+				returnObj[vSub] = lexer.tokens.links[vSub].title;
 			}
 		}
 	}
 
 	return returnObj;
+};
+
+const subUserVariablesInString = function(lexer, src, raw){
+	let math = false;
+	let value = '';
+	if(src[0] == '=') {
+		src =src.replace(/^=/, '');
+		math = true;
+	}
+	const subVariables = findVariables(lexer, src.split(' '));
+	for (const k in subVariables) {
+		src = src.replace(`\$${k}`, k);
+	}
+	if(math){
+		try {
+			const computation = mathjs.parse(src);
+			const result = computation.evaluate(subVariables);
+			if(result) { value = result.toString(); } else { value = raw; }
+		} catch (error) {
+			value = raw;
+		}
+	} else {
+		value = `${src}`;
+	}
+	return value;
 };
 
 const userBrewVariables = {
@@ -327,23 +353,10 @@ const userBrewVariables = {
 		const match = variableNameRegex.exec(src);
 		if(match) {
 			if(match[2]) {
-				let value = match[2].replace(/^\(/, '').replace(/\)$/, '').trim();
-				if(value[0] == '=') {
-					value = value.replace(/=/, '');
-					const subVariables = findVariables(this.lexer, value.split(' '));
-					for (const k in subVariables) {
-						value = value.replace(`\$${k}`, k);
-					}
-					try {
-						const computation = mathjs.parse(value);
-						const result = computation.evaluate(subVariables);
-						if(result) { value = result.toString(); } else { value = match[0]; }
-					} catch (error) {
-						value = match[0];
-					}
-				}
+				const value = match[2].replace(/^\(/, '').replace(/\)$/, '').trim();
+				const subVariables = value.match(/\$/) || value.match(/=/) ? subUserVariablesInString(this.lexer, value, match[0]) : value;
 				this.lexer.tokens.links[match[1]] = {
-					title      : value,
+					title      : subVariables,
 					formatting : {},
 				};
 				assignment = true;
