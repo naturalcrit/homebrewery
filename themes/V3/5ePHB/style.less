@@ -51,10 +51,8 @@
 
 .page {
 	p {
-		display       : block;
 		line-height   : 1.25em;
-		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
-		& + * { margin-top : 0.325cm; }
+		& + * { margin-top : 0.325cm; }  //TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
 		& + p { margin-top : 0; }
 	}
 	ul {
