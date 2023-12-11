@@ -14,7 +14,7 @@
 	--HB_Color_Footnotes             : #C9AD6A; // Gold
 }
 
-.useSansSerif(){
+.useSansSerif() {
 	font-family : 'ScalySansRemake';
 	font-size   : 0.318cm;
 	line-height : 1.2em;
@@ -39,11 +39,11 @@
 	-webkit-column-gap   : 0.9cm;
 	-moz-column-gap      : 0.9cm;
 }
-.page{
+.page {
 	.useColumns();
-	background-image  : @backgroundImage;
-	font-family       : BookInsanityRemake;
+	font-family       : 'BookInsanityRemake';
 	font-size         : 0.34cm;
+	background-image  : @backgroundImage;
 }
 //*****************************
 // *            BASE
@@ -58,13 +58,13 @@
 		& + p { margin-top : 0; }
 	}
 	ul {
-		margin-bottom       : 0.8em;
 		padding-left        : 1.4em;
+		margin-bottom       : 0.8em;
 		line-height         : 1.25em;
 	}
 	ol {
-		margin-bottom       : 0.8em;
 		padding-left        : 1.4em;
+		margin-bottom       : 0.8em;
 		line-height         : 1.25em;
 	}
 	//Indents after p or lists
@@ -149,8 +149,8 @@
 		.useSansSerif();
 		line-height   : 16px;
 		& + * { margin-top : 0.325cm; }
-		thead{
-			display: table-row-group;
+		thead {
+			display     : table-row-group;
 			font-weight : 800;
 			th {
 				//padding        : 0.14em 0.4em;
@@ -283,9 +283,7 @@
 	}
 
 	/* Watermark */
-	.watermark {
-		color           : black;
-	}
+	.watermark { color           : black; }
 
 	/* Watercolor */
 	
@@ -434,22 +432,22 @@
 	// *           CODE BLOCKS
 	// ************************************/
 	code {
-		font-size        : 0.325cm;
 		padding          : 0px 4px;
-		color            : #58180d;
-		background-color : #faf7ea;
+		font-size        : 0.325cm;
+		color            : #58180D;
+		background-color : #FAF7EA;
 		border-radius    : 4px;
 	}
 
-	pre code{
+	pre code {
+		padding             : 0.15cm;
+		margin-bottom       : 2px;
 		border-style        : solid;
 		border-width        : 1px;
 		border-radius       : 12px;
 		border-image        : @codeBorderImage 26 stretch;
 		border-image-width  : 10px;
 		border-image-outset : 2px;
-		margin-bottom: 2px;
-		padding: 0.15cm;
 		.page :where(&) {
 			margin-top        : 2px; //Prevent top border getting cut off on colbreak
 		}
@@ -875,16 +873,13 @@
 .page {
 	dl {
 		line-height  : 1.25em;
-		& + * {	margin-top : 0.28cm; }
+		& + * {	margin-top : 0.17cm; }
 	}
-	dl + * {
-  	margin-top : 0.17cm;
-  }
-	p + dl { margin-top: 0.17cm; }
-  dt {
-    margin-right : 5px;
+	p + dl { margin-top : 0.17cm; }
+	dt {
+		margin-right : 5px;
 		margin-left  : -1em;
-  }
+	}
 }
 
 //*****************************
