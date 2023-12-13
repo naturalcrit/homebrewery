@@ -297,7 +297,7 @@ const mustacheInjectBlock = {
 
 // Return an object of all variables from another array
 
-const findVariables = function (lexer, vars) {
+const findVariables = function (vars) {
 	const returnObj = {
 	};
 
@@ -306,8 +306,8 @@ const findVariables = function (lexer, vars) {
 	for (const v in varList) {
 		if(varList[v][0] == '$') {
 			const vSub = varList[v].replace(/^\$/, '');
-			if(lexer.tokens.links[vSub]?.formatting) {
-				returnObj[vSub] = lexer.tokens.links[vSub].title;
+			if(globalUserVars.hasOwnProperty(vSub)) {
+				returnObj[vSub] = globalUserVars[vSub].value;
 			}
 		}
 	}
@@ -315,14 +315,14 @@ const findVariables = function (lexer, vars) {
 	return returnObj;
 };
 
-const subUserVariablesInString = function(lexer, src, raw){
+const subUserVariablesInString = function(src, raw){
 	let math = false;
 	let value = '';
 	if(src[0] == '=') {
 		src =src.replace(/^=/, '');
 		math = true;
 	}
-	const subVariables = findVariables(lexer, src.split(' '));
+	const subVariables = findVariables(src.split(' '));
 	if(math){
 		for (const k in subVariables) {
 			src = src.replace(`\$${k}`, k);
@@ -336,10 +336,9 @@ const subUserVariablesInString = function(lexer, src, raw){
 		}
 	} else {
 		for (const k in subVariables) {
-			const swap = lexer.tokens.links[k]?.hasOwnProperty('formatting') ?
-				lexer.tokens.links[k].title :
-				lexer.tokens.links[k].href;
-			src = src.replace(`\$${k}`, swap);
+			if(globalUserVars?.hasOwnProperty(k)) {
+				src = src.replace(`\$${k}`, globalUserVars[k].value);
+			}
 		}
 		value = `${src}`;
 	}
@@ -360,19 +359,18 @@ const userBrewVariables = {
 		if(match) {
 			if(match[2]) {
 				const value = match[2].replace(/^\(/, '').replace(/\)$/, '').trim();
-				const subVariables = value.match(/\$/) || value.match(/=/) ? subUserVariablesInString(this.lexer, value, match[0]) : value;
-				this.lexer.tokens.links[match[1]] = {
-					title      : subVariables,
+				const subVariables = value.match(/\$/) || value.match(/=/) ? subUserVariablesInString(value, match[0]) : value;
+				globalUserVars[ match[1] ] = {
+					value      : subVariables,
 					formatting : {},
 				};
 				assignment = true;
+				lastOutput = subVariables;
 			} else {
-				if(!this.lexer.tokens.links[match[1]]) {
+				if(!globalUserVars.hasOwnProperty([match[1]])) {
 					lastOutput = match[0];
 				} else {
-					lastOutput = this.lexer.tokens.links[match[1]]?.hasOwnProperty('formatting') ?
-						this.lexer.tokens.links[match[1]].title :
-						this.lexer.tokens.links[match[1]].href;
+					lastOutput = globalUserVars[match[1]].value;
 				}
 			}
 			const token = {
@@ -397,24 +395,24 @@ const userBrewVariables = {
 const processBrewMacros = new Map();
 
 // Quiet output. Used as a "last" item on a multi-operation row if you don't want output for that variable block.
-processBrewMacros.set('q', (lexer, macroString)=>{
+processBrewMacros.set('q', (macroString)=>{
 	return {
 		silent : true,
 		output : ''
 	};
 });
 // Echo Parameters -
-processBrewMacros.set('echo', (lexer, macroString)=>{
+processBrewMacros.set('echo', (macroString)=>{
 	return {
 		silent : false,
 		output : `${macroString.replace(/^\(/, '').replace(/\)$/, '')}`
 	};
 });
 
-processBrewMacros.set('copy', (lexer, macroString)=>{
+processBrewMacros.set('copy', (macroString)=>{
 	const fromTo = macroString.replace(/^\(/, '').replace(/\)$/, '').split(/[ ,]/);
-	if((lexer.tokens.links[fromTo[0]]?.hasOwnProperty('formatting')) && (lexer.tokens.links[fromTo[1]]?.hasOwnProperty('formatting'))) {
-		lexer.tokens.links[fromTo[1]].title = lexer.tokens.links[fromTo[0]].title;
+	if((globalUserVars[fromTo[0]]?.hasOwnProperty('formatting')) && (globalUserVars[fromTo[1]]?.hasOwnProperty('formatting'))) {
+		globalUserVars[fromTo[1]].value = globalUserVars[fromTo[0]].value;
 		return {
 			silent : true,
 			output : ''
@@ -443,7 +441,7 @@ const userBrewVarMacros = {
 			} else {
 				const macro = processBrewMacros.get(match[1]);
 				if(macro) {
-					const macroResult = macro(this.lexer, match[2]);
+					const macroResult = macro(match[2]);
 					lastOutput = macroResult;
 				}
 			}
@@ -627,10 +625,12 @@ const processStyleTags = (string)=>{
 };
 
 let globalLinks = {};
+let globalUserVars = {};
 
 module.exports = {
 	resetBrewVars : (defaultVars)=>{
-		globalLinks = defaultVars;
+		globalLinks = {};
+		globalUserVars = defaultVars;
 	},
 	marked : Marked,
 	render : (rawBrewText)=>{
@@ -643,9 +643,9 @@ module.exports = {
 		globalLinks = Object.assign({}, tokens.links);
 		Marked.walkTokens(tokens, opts.walkTokens);
 		const html = Marked.parser(tokens, opts);
-		for (const [key, value] of Object.entries(tokens.links)) {
-			if((key[0] == '$') && (globalLinks.hasOwnProperty(key))) {
-				delete globalLinks[key];
+		for (const [key, value] of Object.entries(globalUserVars)) {
+			if(key[0] == '$') {
+				delete globalUserVars[key];
 			}
 		}
 		return opts.hooks.postprocess(html);
