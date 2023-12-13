@@ -6,6 +6,7 @@ const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartyp
 const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
 const renderer = new Marked.Renderer();
 const tokenizer = new Marked.Tokenizer();
+const lexer = new Marked.Lexer();
 const mathjs = require('mathjs');
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
@@ -66,8 +67,8 @@ const outputLink = (cap, link, raw, lexer)=>{
 };
 
 const upsertLinks = function(lexer) {
-	if(!Object.keys(lexer.tokens.links).length < Object.keys(globalLinks).length) {
-		Object.assign(lexer.tokens.links, globalLinks);
+	if(Object.keys(lexer.tokens.links).length < Object.keys(globalLinks).length) {
+		lexer.tokens.links = Object.assign(lexer.tokens.links, globalLinks);
 	}
 };
 
@@ -352,7 +353,6 @@ const userBrewVariables = {
 	tokenizer(src, tokens) {
 		const variableNameRegex = /^\$\[([\S]+?)\]((?:\()([\S ]+)(?:\)))?/;
 
-		upsertLinks(this.lexer);
 		let lastOutput = '';
 		let assignment = false;
 		const match = variableNameRegex.exec(src);
@@ -432,7 +432,6 @@ const userBrewVarMacros = {
 	tokenizer(src, tokens) {
 		const variableNameRegex = /^\:\[([\S]+)\](\([\S ]+\))*/g;
 
-		upsertLinks(this.lexer);
 		let lastOutput = '';
 		const match = variableNameRegex.exec(src);
 		if(match) {
@@ -524,12 +523,14 @@ const definitionLists = {
 Marked.use({ extensions : [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists,
 	superSubScripts, userBrewVariables, userBrewVarMacros] });
 Marked.use(mustacheInjectBlock);
-Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
+Marked.use({ renderer: renderer, lexer: lexer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
 
 //Fix local links in the Preview iFrame to link inside the frame
 renderer.link = function (href, title, text) {
 	let self = false;
+
+	upsertLinks(lexer);
 
 	if((href) && (href[0] == '#')) {
 		self = true;
