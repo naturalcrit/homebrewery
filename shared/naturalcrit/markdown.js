@@ -5,6 +5,8 @@ const MarkedExtendedTables = require('marked-extended-tables');
 const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartypants-lite');
 const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
 const renderer = new Marked.Renderer();
+const tokenizer = new Marked.Tokenizer();
+const lexer = new Marked.Lexer();
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (html) {
@@ -15,6 +17,92 @@ renderer.html = function (html) {
 		return `${openTag} ${Marked.parse(html)} </div>`;
 	}
 	return html;
+};
+
+const edit = function (regex, opt) {
+	const caret = /(^|[^\[])\^/g;
+	regex = typeof regex === 'string' ? regex : regex.source;
+	opt = opt || '';
+	const obj = {
+	  replace : (name, val)=>{
+			val = typeof val === 'object' && 'source' in val ? val.source : val;
+			val = val.replace(caret, '$1');
+			regex = regex.replace(name, val);
+			return obj;
+	  },
+	  getRegex : ()=>{
+			return new RegExp(regex, opt);
+	  }
+	};
+	return obj;
+};
+
+const outputLink = (cap, link, raw, lexer)=>{
+	const href = link.href;
+	const title = link.title ? escape(link.title) : null;
+	const text = cap[1].replace(/\\([\[\]])/g, '$1');
+
+	if(cap[0].charAt(0) !== '!') {
+	  lexer.state.inLink = true;
+	  const token = {
+			type   : 'link',
+			raw,
+			href,
+			title,
+			text,
+			tokens : lexer.inlineTokens(text)
+	  };
+	  lexer.state.inLink = false;
+	  return token;
+	}
+	return {
+	  type : 'image',
+	  raw,
+	  href,
+	  title,
+	  text : escape(text)
+	};
+};
+
+const upsertLinks = function(lexer) {
+	if(Object.keys(lexer.tokens.links).length < Object.keys(globalLinks).length) {
+		lexer.tokens.links = Object.assign(lexer.tokens.links, globalLinks);
+	}
+};
+
+// Lifted liberally from marked
+tokenizer.reflink = function (src, links) {
+	let cap;
+	let reflink = /^!?\[(label)\]\[(ref)\]/;
+	let nolink =  /^!?\[(ref)\](?:\[\])?/;
+	const inlinelabel = /(?:\[(?:\\.|[^\[\]\\])*\]|\\.|`[^`]*`|[^\[\]\\`])*?/;
+	const blocklabel = /(?!\s*\])(?:\\.|[^\[\]\\])+/;
+
+	upsertLinks(this.lexer);
+
+	reflink = edit(reflink)
+		.replace('label', inlinelabel)
+		.replace('ref', blocklabel)
+		.getRegex();
+
+	nolink = edit(nolink)
+		.replace('ref', blocklabel)
+		.getRegex();
+
+	if((cap = reflink.exec(src)) || (cap = nolink.exec(src))) {
+		let link = (cap[2] || cap[1]).replace(/\s+/g, ' ');
+		link = links[link.toLowerCase()];
+		if(!link) {
+		  const text = cap[0].charAt(0);
+		  return {
+				type : 'text',
+				raw  : text,
+				text
+		  };
+		}
+		return outputLink(cap, link, cap[0], this.lexer);
+	  }
+	return '';
 };
 
 // Don't wrap {{ Divs or {{ empty Spans in <p> tags
@@ -268,15 +356,19 @@ const definitionLists = {
 
 Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts] });
 Marked.use(mustacheInjectBlock);
-Marked.use({ renderer: renderer, mangle: false });
+Marked.use({ renderer: renderer, lexer: lexer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
 
 //Fix local links in the Preview iFrame to link inside the frame
 renderer.link = function (href, title, text) {
 	let self = false;
-	if(href[0] == '#') {
+
+	upsertLinks(lexer);
+
+	if((href) && (href[0] == '#')) {
 		self = true;
 	}
+
 	href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
 
 	if(href === null) {
@@ -366,12 +458,21 @@ const processStyleTags = (string)=>{
 	return `${classes.join(' ')}" ${id ? `id="${id}"` : ''} ${styles.length ? `style="${styles.join(' ')}"` : ''}`;
 };
 
+let globalLinks = {};
+
 module.exports = {
 	marked : Marked,
 	render : (rawBrewText)=>{
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
-		return Marked.parse(rawBrewText);
+		const opts = Marked.defaults;
+
+		rawBrewText = opts.hooks.preprocess(rawBrewText);
+		const tokens = Marked.lexer(rawBrewText, opts);
+		globalLinks = Object.assign({}, tokens.links);
+		Marked.walkTokens(tokens, opts.walkTokens);
+		const html = Marked.parser(tokens, opts);
+		return opts.hooks.postprocess(html);
 	},
 
 	validate : (rawBrewText)=>{
