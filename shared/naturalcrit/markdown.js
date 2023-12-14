@@ -354,24 +354,23 @@ const voidTags = new Set([
 ]);
 
 const processStyleTags = (string)=>{
-	//split tags up. quotes can only occur right after colons.
+	//split tags up. quotes can only occur right after : or =.
 	//TODO: can we simplify to just split on commas?
-	const tags = string.match(/(?:[^,":=]+|[:=](?:"[^"]*"|))+/g);
+	const tags = string.match(/(?:[^, ":=]+|[:=](?:"[^"]*"|))+/g);
 
 	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
 	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('=')));
-	console.log(classes);
-	let attributes = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('#')));
+	let attributes   = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('#')));
 	const styles     = tags?.length ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim()) : [];
 
 	if(attributes) {
 		attributes = attributes.map((attr)=>attr.replace(/="?([^"]*)"?/g, '="$1"'));
 	}
 
-	return `${classes.join(' ').trim()}" ` +
-		`${id ? `id="${id}"` : ''} ` +
-		`${styles?.length ? `style="${styles.join(' ').trim()}"` : ''}` +
-		`${attributes?.length ? ` ${attributes.join(' ').trim()}` : ''}`;
+	return `${classes?.length ? ` ${classes.join(' ')}`        : ''}"` +
+		`${id                   ? ` id="${id}"`                  : ''}` +
+		`${styles?.length       ? ` style="${styles.join(' ')}"` : ''}` +
+		`${attributes?.length   ? ` ${attributes.join(' ')}`     : ''}`;
 };
 
 module.exports = {
