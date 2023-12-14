@@ -360,12 +360,8 @@ const processStyleTags = (string)=>{
 
 	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
 	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('=')));
-	let attributes   = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('#')));
+	const attributes = _.remove(tags, (tag)=>(tag.includes('='))).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'));
 	const styles     = tags?.length ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim()) : [];
-
-	if(attributes) {
-		attributes = attributes.map((attr)=>attr.replace(/="?([^"]*)"?/g, '="$1"'));
-	}
 
 	return `${classes?.length ? ` ${classes.join(' ')}`        : ''}"` +
 		`${id                   ? ` id="${id}"`                  : ''}` +
