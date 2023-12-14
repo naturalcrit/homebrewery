@@ -237,9 +237,9 @@ const superSubScripts = {
 const underline = {
 	name  : 'underline',
 	level : 'inline',
-	start(src) { return src.match(/\w_[^_]_/m)?.index;},
+	start(src) { return src.match(/\b_(?![_\s])(.*?[^_\s])_\b/m)?.index;},
 	tokenizer(src, tokens) {
-		const uRegex = /^_([^_]*)_/m;
+		const uRegex = /^\b_(?![_\s])(.*?[^_\s])_\b/m;
 	    const match = uRegex.exec(src);
 		console.log('Looking');
 		if(match?.length) {
