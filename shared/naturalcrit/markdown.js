@@ -273,10 +273,7 @@ const highlight = {
 	tokenizer(src, tokens) {
 		const uRegex = /^\b__(?![_\s])(.*?[^_\s])__\b/m;
 	    const match = uRegex.exec(src);
-		console.log('Looking');
 		if(match?.length) {
-			console.log('found!');
-			console.log(match);
 			return {
 				type   : 'highlight',
 				raw    : match[0],
