@@ -34,7 +34,7 @@ const mustacheSpans = {
 	start(src) { return src.match(/{{[^{]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeSpan = /^{{[^\n]*}}/;               // Regex for the complete token
-		const inlineRegex = /{{(?=((?::(?:"['\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1 *|}}/g;
+		const inlineRegex = /{{(?=((?:[:=](?:"['\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *|}}/g;
 		const match = completeSpan.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -84,7 +84,7 @@ const mustacheDivs = {
 	start(src) { return src.match(/\n *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeBlock = /^ *{{[^\n}]* *\n.*\n *}}/s;                // Regex for the complete token
-		const blockRegex = /^ *{{(?=((?::(?:"['\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1 *$|^ *}}$/gm;
+		const blockRegex = /^ *{{(?=((?:[:=](?:"['\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *$|^ *}}$/gm;
 		const match = completeBlock.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -132,7 +132,7 @@ const mustacheInjectInline = {
 	level : 'inline',
 	start(src) { return src.match(/ *{[^{\n]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const inlineRegex = /^ *{(?=((?::(?:"['\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1}/g;
+		const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/g;
 		const match = inlineRegex.exec(src);
 		if(match) {
 			const lastToken = tokens[tokens.length - 1];
@@ -167,7 +167,7 @@ const mustacheInjectBlock = {
 		level : 'block',
 		start(src) { return src.match(/\n *{[^{\n]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 		tokenizer(src, tokens) {
-			const inlineRegex = /^ *{(?=((?::(?:"['\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1}/ym;
+			const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/ym;
 			const match = inlineRegex.exec(src);
 			if(match) {
 				const lastToken = tokens[tokens.length - 1];
@@ -354,16 +354,19 @@ const voidTags = new Set([
 ]);
 
 const processStyleTags = (string)=>{
-	//split tags up. quotes can only occur right after colons.
+	//split tags up. quotes can only occur right after : or =.
 	//TODO: can we simplify to just split on commas?
-	const tags = string.match(/(?:[^, ":]+|:(?:"[^"]*"|))+/g);
+	const tags = string.match(/(?:[^, ":=]+|[:=](?:"[^"]*"|))+/g);
 
-	if(!tags)	return '"';
+	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
+	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('=')));
+	const attributes = _.remove(tags, (tag)=>(tag.includes('='))).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'));
+	const styles     = tags?.length ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim()) : [];
 
-	const id      = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
-	const classes = _.remove(tags, (tag)=>!tag.includes(':'));
-	const styles  = tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;'));
-	return `${classes.length ? ` ${classes.join(' ')}` : ''}"${id ? ` id="${id}"` : ''}${styles.length ? ` style="${styles.join(' ')}"` : ''}`;
+	return `${classes?.length ? ` ${classes.join(' ')}`        : ''}"` +
+		`${id                   ? ` id="${id}"`                  : ''}` +
+		`${styles?.length       ? ` style="${styles.join(' ')}"` : ''}` +
+		`${attributes?.length   ? ` ${attributes.join(' ')}`     : ''}`;
 };
 
 module.exports = {
