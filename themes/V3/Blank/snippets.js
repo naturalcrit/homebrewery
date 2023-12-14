@@ -117,6 +117,21 @@ module.exports = [
 				icon         : 'fas fa-indent',
 				gen          : richIndexGen,
 				experimental : true
+			},
+			{
+				name : 'Homebrewery Credit',
+				icon : 'fas fa-dice-d20',
+				gen  : function(){
+					return dedent`
+						{{homebreweryCredits
+						Made With
+						
+						{{homebreweryIcon}}
+						
+						The Homebrewery  
+						[Homebrewery.Naturalcrit.com](https://homebrewery.naturalcrit.com)
+						}}\n\n`;
+				},
 			}
 
 		]
