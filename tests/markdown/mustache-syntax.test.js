@@ -109,6 +109,12 @@ describe('Inline: When using the Inline syntax {{ }}', ()=>{
 		const rendered = Markdown.render(source);
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block pen" id="author" style="color:orange; font-family:trebuchet ms;">text</span>');
 	});
+
+	it('Renders a span with added attributes', function() {
+		const source = 'Text and {{pen,#author,color:orange,font-family:"trebuchet ms",a="b and c",d=e, text}} and more text!';
+		const rendered = Markdown.render(source);
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>Text and <span class="inline-block pen" id="author" style="color:orange; font-family:trebuchet ms;" a="b and c" d="e">text</span> and more text!</p>\n');
+	});
 });
 
 //  BLOCK SYNTAX
@@ -192,6 +198,20 @@ describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" id="cat"><p>Sample text.</p></div>`);
 	});
+
+	it('Renders a div with an ID, class, style and text, and a variable assignment', function() {
+		const source = dedent`{{color:red,cat,#dog,a="b and c",d="e"
+		Sample text.
+		}}`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class=\"block cat\" id=\"dog\" style=\"color:red;\" a=\"b and c\" d=\"e\"><p>Sample text.</p></div>`);
+	});
+
+	it('Renders a div with added attributes', function() {
+		const source = '{{pen,#author,color:orange,font-family:"trebuchet ms",a="b and c",d=e\nText and text and more text!\n}}\n';
+		const rendered = Markdown.render(source);
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block pen" id="author" style="color:orange; font-family:trebuchet ms;" a="b and c" d="e"><p>Text and text and more text!</p>\n</div>');
+	});
 });
 
 // MUSTACHE INJECTION SYNTAX
@@ -209,6 +229,12 @@ describe('Injection: When an injection tag follows an element', ()=>{
 			const source = '{{ text}}{ClassName}';
 			const rendered = Markdown.render(source);
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block ClassName">text</span>');
+		});
+
+		it.failing('Renders a span "text" with injected attribute', function() {
+			const source = '{{ text}}{a="b and c"}';
+			const rendered = Markdown.render(source);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span a="b and c" class="inline-block ">text</span>');
 		});
 
 		it.failing('Renders a span "text" with injected style', function() {
@@ -245,6 +271,12 @@ describe('Injection: When an injection tag follows an element', ()=>{
 			const source = '{{ text}}{color:red}{background:blue}';
 			const rendered = Markdown.render(source).trimReturns();
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p><span class="inline-block" style="color:red;">text</span>{background:blue}</p>');
+		});
+
+		it('Renders an image with added attributes', function() {
+			const source = `![homebrew mug](https://i.imgur.com/hMna6G0.png) {position:absolute,bottom:20px,left:130px,width:220px,a="b and c",d=e}`;
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p><img class="" style="position:absolute; bottom:20px; left:130px; width:220px;" a="b and c" d="e" src="https://i.imgur.com/hMna6G0.png" alt="homebrew mug"></p>`);
 		});
 	});
 
