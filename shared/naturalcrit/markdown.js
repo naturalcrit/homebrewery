@@ -206,7 +206,6 @@ const mustacheInjectBlock = {
 	}
 };
 
-<<<<<<< HEAD
 const indexAnchors = {
 	extensions : [{
 		name  : 'indexAnchor',
@@ -237,7 +236,8 @@ const indexAnchors = {
 			}
 		}
 	}]
-=======
+};
+
 const superSubScripts = {
 	name  : 'superSubScript',
 	level : 'inline',
@@ -264,7 +264,6 @@ const superSubScripts = {
 	renderer(token) {
 		return `<${token.tag}>${this.parser.parseInline(token.tokens)}</${token.tag}>`;
 	}
->>>>>>> master
 };
 
 const definitionLists = {
@@ -299,12 +298,7 @@ const definitionLists = {
 	}
 };
 
-<<<<<<< HEAD
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists] });
-Marked.use(indexAnchors);
-=======
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts] });
->>>>>>> master
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts, indexAnchors] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
