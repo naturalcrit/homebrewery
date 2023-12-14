@@ -45,7 +45,7 @@ const mustacheSpans = {
 			let delim;
 			while (delim = inlineRegex.exec(match[0])) {
 				if(!tags) {
-					tags = ` ${processStyleTags(delim[0].substring(2))}`;
+					tags = `${processStyleTags(delim[0].substring(2))}`;
 					endTags = delim[0].length;
 				}
 				if(delim[0].startsWith('{{')) {
@@ -95,7 +95,7 @@ const mustacheDivs = {
 			let delim;
 			while (delim = blockRegex.exec(match[0])?.[0].trim()) {
 				if(!tags) {
-					tags = ` ${processStyleTags(delim.substring(2))}`;
+					tags = `${processStyleTags(delim.substring(2))}`;
 					endTags = delim.length;
 				}
 				if(delim.startsWith('{{')) {
@@ -139,7 +139,7 @@ const mustacheInjectInline = {
 			if(!lastToken || lastToken.type == 'mustacheInjectInline')
 				return false;
 
-			const tags = ` ${processStyleTags(match[1])}`;
+			const tags = `${processStyleTags(match[1])}`;
 			lastToken.originalType = lastToken.type;
 			lastToken.type         = 'mustacheInjectInline';
 			lastToken.tags         = tags;
@@ -175,7 +175,7 @@ const mustacheInjectBlock = {
 					return false;
 
 				lastToken.originalType = 'mustacheInjectBlock';
-				lastToken.tags         = ` ${processStyleTags(match[1])}`;
+				lastToken.tags         = `${processStyleTags(match[1])}`;
 				return {
 					type : 'mustacheInjectBlock', // Should match "name" above
 					raw  : match[0],              // Text to consume from the source
@@ -363,7 +363,7 @@ const processStyleTags = (string)=>{
 	const id      = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
 	const classes = _.remove(tags, (tag)=>!tag.includes(':'));
 	const styles  = tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;'));
-	return `${classes.join(' ')}" ${id ? `id="${id}"` : ''} ${styles.length ? `style="${styles.join(' ')}"` : ''}`;
+	return `${classes.length ? ` ${classes.join(' ')}` : ''}"${id ? ` id="${id}"` : ''}${styles.length ? ` style="${styles.join(' ')}"` : ''}`;
 };
 
 module.exports = {
