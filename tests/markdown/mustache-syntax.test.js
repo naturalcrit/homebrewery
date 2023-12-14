@@ -105,10 +105,9 @@ describe('Inline: When using the Inline syntax {{ }}', ()=>{
 	});
 
 
-	it.failing('Renders a mustache span with text with quotes and css property which contains double and simple quotes', function() {
+	it('Renders a mustache span with text with quotes and css property which contains double and simple quotes', function() {
 		const source = `{{--stringVariable:"'string'" text "with quotes"}}`;
 		const rendered = Markdown.render(source);
-		// FIXME: adds extra \s after class names
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<span class="inline-block" style="--stringVariable:'string';">text “with quotes”</span>`);
 	});
 
@@ -118,8 +117,6 @@ describe('Inline: When using the Inline syntax {{ }}', ()=>{
 		const rendered = Markdown.render(source);
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block pen" id="author" style="color:orange; font-family:trebuchet ms;">text</span>');
 	});
-
-
 });
 
 //  BLOCK SYNTAX
@@ -180,12 +177,11 @@ describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" style="color:red;"><p>Sample text.</p></div>`);
 	});
 
-	it.failing('Renders a div with a style that has a string variable, and text', function() {
+	it('Renders a div with a style that has a string variable, and text', function() {
 		const source = dedent`{{--stringVariable:"'string'"
 		Sample text.
 		}}`;
 		const rendered = Markdown.render(source).trimReturns();
-		// FIXME: adds two extra \s before closing `>` in opening tag
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" style="--stringVariable:'string';"><p>Sample text.</p></div>`);
 	});
 
@@ -194,7 +190,6 @@ describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 		Sample text.
 		}}`;
 		const rendered = Markdown.render(source).trimReturns();
-		// FIXME: adds two extra \s before closing `>` in opening tag
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" style="--stringVariable:'string';"><p>Sample text.</p></div>`);
 	});
 
