@@ -10,14 +10,15 @@
 	-moz-column-width    : auto;
 	-webkit-column-gap   : auto;
 	-moz-column-gap      : auto;
+	height               : auto;
+	min-height           : 279.4mm;
+	margin               : 20px auto;
 }
 .listPage{
 	.content{
-		.phb{
-			.noColumns();
-			height     : auto;
-			min-height : 279.4mm;
-			margin     : 20px auto;
+		z-index : 1;
+		.page{
+			.noColumns() !important; //Needed to override PHB Theme since this is on a lower @layer
 			&::after{
 				display : none;
 			}
@@ -73,7 +74,7 @@
 		border-bottom         : 1px solid #666;
 		color              : white;
 		text-align         : center;
-		z-index            : 500;
+		z-index            : 1;
 		display            : flex;
 		justify-content    : center;
 		align-items        : baseline;

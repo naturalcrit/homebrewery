@@ -1,6 +1,7 @@
 const template = async function(name, title='', props = {}){
 	const ogTags = [];
-	Object.entries(props.ogMeta).forEach(([key, value])=>{
+	const ogMeta = props.ogMeta ?? {};
+	Object.entries(ogMeta).forEach(([key, value])=>{
 		if(!value) return;
 		const tag = `<meta property="og:${key}" content="${value}">`;
 		ogTags.push(tag);
@@ -10,6 +11,7 @@ const template = async function(name, title='', props = {}){
 	return `<!DOCTYPE html>
 	<html>
 		<head>
+			<meta name="viewport" content="width=device-width, initial-scale=1, height=device-height, interactive-widget=resizes-visual" />
 			<link href="//use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
 			<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
 			<link href=${`/${name}/bundle.css`} rel='stylesheet' />

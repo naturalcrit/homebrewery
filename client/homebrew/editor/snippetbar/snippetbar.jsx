@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 250, "skipBlankLines": true, "skipComments": true}]*/
 require('./snippetbar.less');
 const React = require('react');
 const createClass = require('create-react-class');
@@ -15,8 +16,10 @@ ThemeSnippets['V3_5eDMG']     = require('themes/V3/5eDMG/snippets.js');
 ThemeSnippets['V3_Journal']   = require('themes/V3/Journal/snippets.js');
 ThemeSnippets['V3_Blank']     = require('themes/V3/Blank/snippets.js');
 
-const execute = function(val, brew){
-	if(_.isFunction(val)) return val(brew);
+const EditorThemes = require('build/homebrew/codeMirror/editorThemes.json');
+
+const execute = function(val, props){
+	if(_.isFunction(val)) return val(props);
 	return val;
 };
 
@@ -24,23 +27,28 @@ const Snippetbar = createClass({
 	displayName     : 'SnippetBar',
 	getDefaultProps : function() {
 		return {
-			brew            : {},
-			view            : 'text',
-			onViewChange    : ()=>{},
-			onInject        : ()=>{},
-			onToggle        : ()=>{},
-			showEditButtons : true,
-			renderer        : 'legacy',
-			undo            : ()=>{},
-			redo            : ()=>{},
-			historySize     : ()=>{}
+			brew              : {},
+			view              : 'text',
+			onViewChange      : ()=>{},
+			onInject          : ()=>{},
+			onToggle          : ()=>{},
+			showEditButtons   : true,
+			renderer          : 'legacy',
+			undo              : ()=>{},
+			redo              : ()=>{},
+			historySize       : ()=>{},
+			foldCode          : ()=>{},
+			unfoldCode        : ()=>{},
+			updateEditorTheme : ()=>{},
+			cursorPos         : {}
 		};
 	},
 
 	getInitialState : function() {
 		return {
-			renderer : this.props.renderer,
-			snippets : []
+			renderer      : this.props.renderer,
+			themeSelector : false,
+			snippets      : []
 		};
 	},
 
@@ -94,6 +102,31 @@ const Snippetbar = createClass({
 		this.props.onInject(injectedText);
 	},
 
+	toggleThemeSelector : function(){
+		this.setState({
+			themeSelector : !this.state.themeSelector
+		});
+	},
+
+	changeTheme : function(e){
+		if(e.target.value == this.props.currentEditorTheme) return;
+		this.props.updateEditorTheme(e.target.value);
+
+		this.setState({
+			showThemeSelector : false,
+		});
+	},
+
+	renderThemeSelector : function(){
+		return <div className='themeSelector'>
+			<select value={this.props.currentEditorTheme} onChange={this.changeTheme} onMouseDown={(this.changeTheme)}>
+				{EditorThemes.map((theme, key)=>{
+					return <option key={key} value={theme}>{theme}</option>;
+				})}
+			</select>
+		</div>;
+	},
+
 	renderSnippetGroups : function(){
 		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
 
@@ -105,12 +138,29 @@ const Snippetbar = createClass({
 				snippets={snippetGroup.snippets}
 				key={snippetGroup.groupName}
 				onSnippetClick={this.handleSnippetClick}
+				cursorPos={this.props.cursorPos}
 			/>;
 		});
 	},
 
 	renderEditorButtons : function(){
 		if(!this.props.showEditButtons) return;
+
+		let foldButtons;
+		if(this.props.view == 'text'){
+			foldButtons =
+				<>
+					<div className={`editorTool foldAll ${this.props.foldCode ? 'active' : ''}`}
+						onClick={this.props.foldCode} >
+						<i className='fas fa-compress-alt' />
+					</div>
+					<div className={`editorTool unfoldAll ${this.props.unfoldCode ? 'active' : ''}`}
+						onClick={this.props.unfoldCode} >
+						<i className='fas fa-expand-alt' />
+					</div>
+				</>
+
+		}
 
 		return <div className='editors'>
 			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
@@ -121,6 +171,13 @@ const Snippetbar = createClass({
 				onClick={this.props.redo} >
 				<i className='fas fa-redo' />
 			</div>
+			<div className='divider'></div>
+			{foldButtons}
+			<div className={`editorTool editorTheme ${this.state.themeSelector ? 'active' : ''}`}
+				onClick={this.toggleThemeSelector} >
+				<i className='fas fa-palette' />
+			</div>
+			{this.state.themeSelector && this.renderThemeSelector()}
 			<div className='divider'></div>
 			<div className={cx('text', { selected: this.props.view === 'text' })}
 				 onClick={()=>this.props.onViewChange('text')}>
@@ -163,15 +220,23 @@ const SnippetGroup = createClass({
 			onSnippetClick : function(){},
 		};
 	},
-	handleSnippetClick : function(snippet){
-		this.props.onSnippetClick(execute(snippet.gen, this.props.brew));
+	handleSnippetClick : function(e, snippet){
+		e.stopPropagation();
+		this.props.onSnippetClick(execute(snippet.gen, this.props));
 	},
-	renderSnippets : function(){
-		return _.map(this.props.snippets, (snippet)=>{
-			return <div className='snippet' key={snippet.name} onClick={()=>this.handleSnippetClick(snippet)}>
+	renderSnippets : function(snippets){
+		return _.map(snippets, (snippet)=>{
+			return <div className='snippet' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
 				<i className={snippet.icon} />
-				{snippet.name}
+				<span className='name'>{snippet.name}</span>
+				{snippet.experimental && <span className='beta'>beta</span>}
+				{snippet.subsnippets && <>
+					<i className='fas fa-caret-right'></i>
+					<div className='dropdown side'>
+						{this.renderSnippets(snippet.subsnippets)}
+					</div></>}
 			</div>;
+
 		});
 	},
 
@@ -182,9 +247,8 @@ const SnippetGroup = createClass({
 				<span className='groupName'>{this.props.groupName}</span>
 			</div>
 			<div className='dropdown'>
-				{this.renderSnippets()}
+				{this.renderSnippets(this.props.snippets)}
 			</div>
 		</div>;
 	},
-
 });

@@ -1,4 +1,4 @@
-/*eslint max-lines: ["warn", {"max": 400, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
 // Set working directory to project root
 process.chdir(`${__dirname}/..`);
 
@@ -15,13 +15,15 @@ const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
 
+const { DEFAULT_BREW } = require('./brewDefaults.js');
+
 const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
 	if(brew.text.startsWith('```metadata')) {
 		const index = brew.text.indexOf('```\n\n');
 		const metadataSection = brew.text.slice(12, index - 1);
 		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']));
+		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
 		brew.text = brew.text.slice(index + 5);
 	}
 	if(brew.text.startsWith('```css')) {
@@ -29,7 +31,6 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
-	_.defaults(brew, { 'renderer': 'legacy', 'theme': '5ePHB' });
 };
 
 const sanitizeBrew = (brew, accessType)=>{
@@ -42,8 +43,7 @@ const sanitizeBrew = (brew, accessType)=>{
 };
 
 app.use('/', serveCompressedStaticAssets(`build`));
-
-//app.use(express.static(`${__dirname}/build`));
+app.use(require('./middleware/content-negotiation.js'));
 app.use(require('body-parser').json({ limit: '25mb' }));
 app.use(require('cookie-parser')());
 app.use(require('./forcessl.mw.js'));
@@ -77,6 +77,14 @@ const faqText           = require('fs').readFileSync('faq.md', 'utf8');
 
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
+const defaultMetaTags = {
+	site_name   : 'The Homebrewery - Make your Homebrew content look legit!',
+	title       : 'The Homebrewery',
+	description : 'A NaturalCrit Tool for creating authentic Homebrews using Markdown.',
+	image       : `${config.get('publicUrl')}/thumbnail.png`,
+	type        : 'website'
+};
+
 //Robots.txt
 app.get('/robots.txt', (req, res)=>{
 	return res.sendFile(`robots.txt`, { root: process.cwd() });
@@ -89,13 +97,11 @@ app.get('/', (req, res, next)=>{
 		renderer : 'V3'
 	},
 
-	req.ogMeta = {
-		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+	req.ogMeta = { ...defaultMetaTags,
 		title       : 'Homepage',
-		description : 'Homepage',
-		thumbnail   : `${config.get('publicUrl')}/thumbnail.png`,
-		type        : 'website'
+		description : 'Homepage'
 	};
+
 	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
@@ -107,13 +113,11 @@ app.get('/legacy', (req, res, next)=>{
 		renderer : 'legacy'
 	},
 
-	req.ogMeta = {
-		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+	req.ogMeta = { ...defaultMetaTags,
 		title       : 'Homepage (Legacy)',
-		description : 'Homepage',
-		thumbnail   : `${config.get('publicUrl')}/thumbnail.png`,
-		type        : 'website'
+		description : 'Homepage'
 	};
+
 	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
@@ -125,13 +129,11 @@ app.get('/migrate', (req, res, next)=>{
 		renderer : 'V3'
 	},
 
-	req.ogMeta = {
-		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+	req.ogMeta = { ...defaultMetaTags,
 		title       : 'v3 Migration Guide',
-		description : 'A brief guide to converting Legacy documents to the v3 renderer.',
-		thumbnail   : `${config.get('publicUrl')}/thumbnail.png`,
-		type        : 'website'
+		description : 'A brief guide to converting Legacy documents to the v3 renderer.'
 	};
+
 	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
@@ -144,13 +146,11 @@ app.get('/changelog', async (req, res, next)=>{
 		renderer : 'V3'
 	},
 
-	req.ogMeta = {
-		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+	req.ogMeta = { ...defaultMetaTags,
 		title       : 'Changelog',
-		description : 'Development changelog.',
-		thumbnail   : null,
-		type        : 'website'
+		description : 'Development changelog.'
 	};
+
 	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
@@ -163,12 +163,9 @@ app.get('/faq', async (req, res, next)=>{
 		renderer : 'V3'
 	},
 
-	req.ogMeta = {
-		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+	req.ogMeta = { ...defaultMetaTags,
 		title       : 'FAQ',
-		description : 'Frequently Asked Questions',
-		thumbnail   : `${config.get('publicUrl')}/thumbnail.png`,
-		type        : 'website'
+		description : 'Frequently Asked Questions'
 	};
 
 	splitTextStyleAndMetadata(req.brew);
@@ -194,12 +191,19 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	sanitizeBrew(brew, 'share');
 	const prefix = 'HB - ';
 
+	const encodeRFC3986ValueChars = (str)=>{
+		return (
+			encodeURIComponent(str)
+				.replace(/[!'()*]/g, (char)=>{`%${char.charCodeAt(0).toString(16).toUpperCase()}`;})
+		);
+	};
+
 	let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
 	if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };
 	res.set({
 		'Cache-Control'       : 'no-cache',
 		'Content-Type'        : 'text/plain',
-		'Content-Disposition' : `attachment; filename="${fileName}.txt"`
+		'Content-Disposition' : `attachment; filename*=UTF-8''${encodeRFC3986ValueChars(fileName)}.txt`
 	});
 	res.status(200).send(brew.text);
 });
@@ -208,12 +212,10 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 app.get('/user/:username', async (req, res, next)=>{
 	const ownAccount = req.account && (req.account.username == req.params.username);
 
-	req.ogMeta = {
-		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+	req.ogMeta = { ...defaultMetaTags,
 		title       : `${req.params.username}'s Collection`,
-		description : 'View my collection of homebrew on the Homebrewery.',
-		image       : null,
-		type        : 'website'  // or 'profile'?
+		description : 'View my collection of homebrew on the Homebrewery.'
+		// type        :  could be 'profile'?
 	};
 
 	const fields = [
@@ -222,6 +224,7 @@ app.get('/user/:username', async (req, res, next)=>{
 		'pageCount',
 		'description',
 		'authors',
+		'lang',
 		'published',
 		'views',
 		'shareId',
@@ -254,6 +257,7 @@ app.get('/user/:username', async (req, res, next)=>{
 					brew.pageCount = googleBrews[match].pageCount;
 					brew.renderer = googleBrews[match].renderer;
 					brew.version = googleBrews[match].version;
+					brew.webViewLink = googleBrews[match].webViewLink;
 					googleBrews.splice(match, 1);
 				}
 			}
@@ -264,6 +268,9 @@ app.get('/user/:username', async (req, res, next)=>{
 	}
 
 	req.brews = _.map(brews, (brew)=>{
+		// Clean up brew data
+		brew.title = brew.title?.trim();
+		brew.description = brew.description?.trim();
 		return sanitizeBrew(brew, ownAccount ? 'edit' : 'share');
 	});
 
@@ -274,13 +281,13 @@ app.get('/user/:username', async (req, res, next)=>{
 app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
 
-	req.ogMeta = {
-		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',
 		description : req.brew.description || 'No description.',
-		image       : req.brew.thumbnail || null,
+		image       : req.brew.thumbnail || defaultMetaTags.image,
 		type        : 'article'
 	};
+
 	sanitizeBrew(req.brew, 'edit');
 	splitTextStyleAndMetadata(req.brew);
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
@@ -291,14 +298,21 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
-	req.brew.title = `CLONE - ${req.brew.title}`;
-	req.ogMeta = {
-		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
-		title       : 'New',
-		description : 'Start crafting your homebrew on the Homebrewery!',
-		image       : null,
-		type        : 'website'
+	const brew = {
+		shareId  : req.brew.shareId,
+		title    : `CLONE - ${req.brew.title}`,
+		text     : req.brew.text,
+		style    : req.brew.style,
+		renderer : req.brew.renderer,
+		theme    : req.brew.theme
 	};
+	req.brew = _.defaults(brew, DEFAULT_BREW);
+
+	req.ogMeta = { ...defaultMetaTags,
+		title       : 'New',
+		description : 'Start crafting your homebrew on the Homebrewery!'
+	};
+
 	return next();
 });
 
@@ -306,22 +320,24 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
 	const { brew } = req;
 
-	req.ogMeta = {
-		siteName    : 'The Homebrewery - Make your Homebrew content look legit!',
+	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',
 		description : req.brew.description || 'No description.',
-		image       : req.brew.thumbnail || null,
+		image       : req.brew.thumbnail || defaultMetaTags.image,
 		type        : 'article'
 	};
 
-	if(req.params.id.length > 12 && !brew._id) {
-		const googleId = req.params.id.slice(0, -12);
-		const shareId = req.params.id.slice(-12);
-		await GoogleActions.increaseView(googleId, shareId, 'share', brew)
-			.catch((err)=>{next(err);});
-	} else {
-		await HomebrewModel.increaseView({ shareId: brew.shareId });
-	}
+	// increase visitor view count, do not include visits by author(s)
+	if(!brew.authors.includes(req.account?.username)){
+		if(req.params.id.length > 12 && !brew._id) {
+			const googleId = brew.googleId;
+			const shareId = brew.shareId;
+			await GoogleActions.increaseView(googleId, shareId, 'share', brew)
+				.catch((err)=>{next(err);});
+		} else {
+			await HomebrewModel.increaseView({ shareId: brew.shareId });
+		}
+	};
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	return next();
@@ -340,11 +356,11 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 	data.title = 'Account Information Page';
 
 	let auth;
-	let files;
+	let googleCount = [];
 	if(req.account) {
 		if(req.account.googleId) {
 			try {
-				auth = await GoogleActions.authCheck(req.account, res);
+				auth = await GoogleActions.authCheck(req.account, res, false);
 			} catch (e) {
 				auth = undefined;
 				console.log('Google auth check failed!');
@@ -352,9 +368,9 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 			}
 			if(auth.credentials.access_token) {
 				try {
-					files = await GoogleActions.listGoogleBrews(auth);
+					googleCount = await GoogleActions.listGoogleBrews(auth);
 				} catch (e) {
-					files = undefined;
+					googleCount = undefined;
 					console.log('List Google files failed!');
 					console.log(e);
 				}
@@ -362,25 +378,31 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 		}
 
 		const query = { authors: req.account.username, googleId: { $exists: false } };
-		const brews = await HomebrewModel.find(query, 'id')
+		const mongoCount = await HomebrewModel.countDocuments(query)
 			.catch((err)=>{
+				mongoCount = 0;
 				console.log(err);
 			});
 
 		data.uiItems = {
-			username   : req.account.username,
-			issued     : req.account.issued,
-			mongoCount : brews.length,
-			googleId   : Boolean(req.account.googleId),
-			authCheck  : Boolean(req.account.googleId && auth.credentials.access_token),
-			fileCount  : files?.length || '-'
+			username    : req.account.username,
+			issued      : req.account.issued,
+			googleId    : Boolean(req.account.googleId),
+			authCheck   : Boolean(req.account.googleId && auth.credentials.access_token),
+			mongoCount  : mongoCount,
+			googleCount : googleCount?.length
 		};
 	}
 
 	req.brew = data;
+
+	req.ogMeta = { ...defaultMetaTags,
+		title       : `Account Page`,
+		description : null
+	};
+
 	return next();
 }));
-
 
 const nodeEnv = config.get('node_env');
 const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
@@ -398,7 +420,7 @@ if(isLocalEnvironment){
 
 //Render the page
 const templateFn = require('./../client/template.js');
-app.use(asyncHandler(async (req, res, next)=>{
+const renderPage = async (req, res)=>{
 	// Create configuration object
 	const configuration = {
 		local       : isLocalEnvironment,
@@ -407,7 +429,7 @@ app.use(asyncHandler(async (req, res, next)=>{
 	};
 	const props = {
 		version       : require('./../package.json').version,
-		url           : req.originalUrl,
+		url           : req.customUrl || req.originalUrl,
 		brew          : req.brew,
 		brews         : req.brews,
 		googleBrews   : req.googleBrews,
@@ -421,15 +443,20 @@ app.use(asyncHandler(async (req, res, next)=>{
 	const page = await templateFn('homebrew', title, props)
 		.catch((err)=>{
 			console.log(err);
-			return res.sendStatus(500);
 		});
+	return page;
+};
+
+//Send rendered page
+app.use(asyncHandler(async (req, res, next)=>{
+	const page = await renderPage(req, res);
 	if(!page) return;
 	res.send(page);
 }));
 
 //v=====----- Error-Handling Middleware -----=====v//
-//Format Errors so all fields will be sent
-const replaceErrors = (key, value)=>{
+//Format Errors as plain objects so all fields will appear in the string sent
+const formatErrors = (key, value)=>{
 	if(value instanceof Error) {
 		const error = {};
 		Object.getOwnPropertyNames(value).forEach(function (key) {
@@ -441,13 +468,30 @@ const replaceErrors = (key, value)=>{
 };
 
 const getPureError = (error)=>{
-	return JSON.parse(JSON.stringify(error, replaceErrors));
+	return JSON.parse(JSON.stringify(error, formatErrors));
 };
 
-app.use((err, req, res, next)=>{
-	const status = err.status || 500;
+app.use(async (err, req, res, next)=>{
+	const status = err.status || err.code || 500;
 	console.error(err);
-	res.status(status).send(getPureError(err));
+
+	req.ogMeta = { ...defaultMetaTags,
+		title       : 'Error Page',
+		description : 'Something went wrong!'
+	};
+	req.brew = {
+		...err,
+		title       : 'Error - Something went wrong!',
+		text        : err.errors?.map((error)=>{return error.message;}).join('\n\n') || err.message || 'Unknown error!',
+		status      : status,
+		HBErrorCode : err.HBErrorCode ?? '00',
+		pureError   : getPureError(err)
+	};
+	req.customUrl= '/error';
+
+	const page = await renderPage(req, res);
+	if(!page) return;
+	res.send(page);
 });
 
 app.use((req, res)=>{

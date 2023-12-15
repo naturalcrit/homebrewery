@@ -42,7 +42,8 @@ const ListPage = createClass({
 					brews : []
 				}
 			],
-			navItems : <></>
+			navItems    : <></>,
+			reportError : null
 		};
 	},
 	getInitialState : function() {
@@ -105,14 +106,14 @@ const ListPage = createClass({
 		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
 
 		return _.map(brews, (brew, idx)=>{
-			return <BrewItem className={BREW_ITEM_LIST[this.state.brewItemIndex].className} brew={brew} key={idx}/>;
+			return <BrewItem className={BREW_ITEM_LIST[this.state.brewItemIndex].className} brew={brew} key={idx} reportError={this.props.reportError}/>;
 		});
 	},
 
 	sortBrewOrder : function(brew){
 		if(!brew.title){brew.title = 'No Title';}
 		const mapping = {
-			'alpha'   : _.deburr(brew.title.toLowerCase()),
+			'alpha'   : _.deburr(brew.title.trim().toLowerCase()),
 			'created' : moment(brew.createdAt).format(),
 			'updated' : moment(brew.updatedAt).format(),
 			'views'   : brew.views,
@@ -257,13 +258,14 @@ const ListPage = createClass({
 
 	render : function(){
 		return <div className='listPage sitePage'>
+			{/*<style>@layer V3_5ePHB, bundle;</style>*/}
 			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet'/>
 			{this.props.navItems}
 			{this.renderSortOptions()}
 			{this.renderBrewItemSwitch()}
 
 			<div className='content V3'>
-				<div className='phb page'>
+				<div className='page'>
 					{this.renderBrewCollection(this.state.brewCollection)}
 				</div>
 			</div>

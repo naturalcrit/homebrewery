@@ -12,6 +12,7 @@ const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account = require('../../navbar/account.navitem.jsx');
 const NewBrew = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
+const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 
 const UserPage = createClass({
 	displayName     : 'UserPage',
@@ -19,7 +20,8 @@ const UserPage = createClass({
 		return {
 			username : '',
 			brews    : [],
-			query    : ''
+			query    : '',
+			error    : null
 		};
 	},
 	getInitialState : function() {
@@ -50,10 +52,19 @@ const UserPage = createClass({
 			brewCollection : brewCollection
 		};
 	},
+	errorReported : function(error) {
+		this.setState({
+			error
+		});
+	},
 
 	navItems : function() {
 		return <Navbar>
 			<Nav.section>
+				{this.state.error ?
+					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
+					null
+				}
 				<NewBrew />
 				<HelpNavItem />
 				<RecentNavItem />
@@ -63,7 +74,7 @@ const UserPage = createClass({
 	},
 
 	render : function(){
-		return <ListPage brewCollection={this.state.brewCollection} navItems={this.navItems()} query={this.props.query}></ListPage>;
+		return <ListPage brewCollection={this.state.brewCollection} navItems={this.navItems()} query={this.props.query} reportError={this.errorReported}></ListPage>;
 	}
 });
 

@@ -4,9 +4,10 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 const moment = require('moment');
-const request = require('superagent');
+const request = require('../../../../utils/request-middleware.js');
 
-const googleDriveIcon = require('../../../../googleDrive.png');
+const googleDriveIcon = require('../../../../googleDrive.svg');
+const homebreweryIcon = require('../../../../thumbnail.png');
 const dedent = require('dedent-tabs').default;
 
 const BrewItem = createClass({
@@ -18,7 +19,8 @@ const BrewItem = createClass({
 				description : '',
 				authors     : [],
 				stubbed     : true
-			}
+			},
+			reportError : ()=>{}
 		};
 	},
 
@@ -33,8 +35,12 @@ const BrewItem = createClass({
 
 		request.delete(`/api/${this.props.brew.googleId ?? ''}${this.props.brew.editId}`)
 			.send()
-			.end(function(err, res){
-				location.reload();
+			.end((err, res)=>{
+				if(err) {
+					this.props.reportError(err);
+				} else {
+					location.reload();
+				}
 			});
 	},
 
@@ -85,11 +91,17 @@ const BrewItem = createClass({
 		</a>;
 	},
 
-	renderGoogleDriveIcon : function(){
-		if(!this.props.brew.googleId) return;
+	renderStorageIcon : function(){
+		if(this.props.brew.googleId) {
+			return <span title={this.props.brew.webViewLink ? 'Your Google Drive Storage': 'Another User\'s Google Drive Storage'}>
+				<a href={this.props.brew.webViewLink} target='_blank'>
+					<img className='googleDriveIcon' src={googleDriveIcon} alt='googleDriveIcon' />
+				</a>
+			</span>;
+		}
 
-		return <span>
-			<img className='googleDriveIcon' src={googleDriveIcon} alt='googleDriveIcon' />
+		return <span title='Homebrewery Storage'>
+			<img className='homebreweryIcon' src={homebreweryIcon} alt='homebreweryIcon' />
 		</span>;
 	},
 
@@ -139,7 +151,7 @@ const BrewItem = createClass({
 					Last updated: ${moment(brew.updatedAt).local().format(dateFormatString)}`}>
 					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
 				</span>
-				{this.renderGoogleDriveIcon()}
+				{this.renderStorageIcon()}
 			</div>
 
 			<div className='links'>

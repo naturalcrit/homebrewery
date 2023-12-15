@@ -13,6 +13,7 @@ nav{
 		position			  : relative;
 		display         : flex;
 		justify-content : space-between;
+		z-index         : 2;
 	}
 	.navSection{
 		display     : flex;
@@ -78,6 +79,8 @@ nav{
 			left     : 0px;
 			z-index  : 10000;
 			width    : 100%;
+			overflow : hidden auto;
+			max-height : calc(100vh - 28px);
 			.navItem{
 				animation-name: glideDropDown;
 				animation-duration: 0.4s;

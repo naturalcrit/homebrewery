@@ -63,7 +63,7 @@ const Account = createClass({
 		if(global.account){
 			return <Nav.dropdown>
 				<Nav.item
-					className='account'
+					className='account username'
 					color='orange'
 					icon='fas fa-user'
 				>

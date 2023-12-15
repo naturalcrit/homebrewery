@@ -21,6 +21,7 @@ const transforms = {
 
 const build = async ({ bundle, render, ssr })=>{
 	const css = await lessTransform.generate({ paths: './shared' });
+	//css = `@layer bundle {\n${css}\n}`;
 	await fs.outputFile('./build/homebrew/bundle.css', css);
 	await fs.outputFile('./build/homebrew/bundle.js', bundle);
 	await fs.outputFile('./build/homebrew/ssr.js', ssr);
@@ -72,6 +73,7 @@ fs.emptyDirSync('./build');
 		themeData.path = dir;
 		themes.V3[dir] = (themeData);
 		fs.copy(`./themes/V3/${dir}/dropdownTexture.png`, `./build/themes/V3/${dir}/dropdownTexture.png`);
+		fs.copy(`./themes/V3/${dir}/dropdownPreview.png`, `./build/themes/V3/${dir}/dropdownPreview.png`);
 		const src = `./themes/V3/${dir}/style.less`;
 	  ((outputDirectory)=>{
 			less.render(fs.readFileSync(src).toString(), {
@@ -95,6 +97,28 @@ fs.emptyDirSync('./build');
 	// Move assets
 	await fs.copy('./themes/fonts', './build/fonts');
 	await fs.copy('./themes/assets', './build/assets');
+	await fs.copy('./client/icons', './build/icons');
+
+	//v==---------------------------MOVE CM EDITOR THEMES -----------------------------==v//
+
+	const editorThemesBuildDir = './build/homebrew/cm-themes';
+	await fs.copy('./node_modules/codemirror/theme', editorThemesBuildDir);
+	await fs.copy('./themes/codeMirror/customThemes', editorThemesBuildDir);
+	editorThemeFiles = fs.readdirSync(editorThemesBuildDir);
+
+	const editorThemeFile = './themes/codeMirror/editorThemes.json';
+	if(fs.existsSync(editorThemeFile)) fs.rmSync(editorThemeFile);
+	const stream = fs.createWriteStream(editorThemeFile, { flags: 'a' });
+	stream.write('[\n"default"');
+
+	for (themeFile of editorThemeFiles) {
+		stream.write(`,\n"${themeFile.slice(0, -4)}"`);
+	}
+	stream.write('\n]\n');
+	stream.end();
+
+
+	await fs.copy('./themes/codeMirror', './build/homebrew/codeMirror');
 
 	//v==----------------------------- BUNDLE PACKAGES --------------------------------==v//
 
@@ -130,12 +154,14 @@ fs.emptyDirSync('./build');
 	// build(bundles);
 	//
 
-})().catch(console.error);
+	//In development, set up LiveReload (refreshes browser), and Nodemon (restarts server)
+	if(isDev){
+		livereload('./build');     // Install the Chrome extension LiveReload to automatically refresh the browser
+		watchFile('./server.js', { // Restart server when change detected to this file or any nested directory from here
+			ignore : ['./build', './client', './themes'],  // Ignore folders that are not running server code / avoids unneeded restarts
+			ext    : 'js json'                             // Extensions to watch (only .js/.json by default)
+			//watch : ['./server', './themes'],            // Watch additional folders if needed
+		});
+	}
 
-//In development set up a watch server and livereload
-if(isDev){
-	livereload('./build');
-	watchFile('./server.js', {
-		watch : ['./client', './server'] // Watch additional folders if you want
-	});
-}
+})().catch(console.error);

@@ -1,9 +1,9 @@
 /* eslint-disable max-lines */
 
-const WatercolorGen      = require('./snippets/watercolor.gen.js');
-const dedent             = require('dedent-tabs').default;
-
-
+const WatercolorGen = require('./snippets/watercolor.gen.js');
+const ImageMaskGen  = require('./snippets/imageMask.gen.js');
+const FooterGen     = require('./snippets/footer.gen.js');
+const dedent        = require('dedent-tabs').default;
 
 module.exports = [
 
@@ -21,6 +21,53 @@ module.exports = [
 				name : 'New Page',
 				icon : 'fas fa-file-alt',
 				gen  : '\n\\page\n'
+			},
+			{
+				name : 'Page Number',
+				icon : 'fas fa-bookmark',
+				gen  : '{{pageNumber 1}}\n'
+			},
+			{
+				name : 'Auto-incrementing Page Number',
+				icon : 'fas fa-sort-numeric-down',
+				gen  : '{{pageNumber,auto}}\n'
+			},
+			{
+				name        : 'Footer',
+				icon        : 'fas fa-shoe-prints',
+				gen         : FooterGen.createFooterFunc(),
+				subsnippets : [
+					{
+						name : 'Footer from H1',
+						icon : 'fas fa-dice-one',
+						gen  : FooterGen.createFooterFunc(1)
+					},
+					{
+						name : 'Footer from H2',
+						icon : 'fas fa-dice-two',
+						gen  : FooterGen.createFooterFunc(2)
+					},
+					{
+						name : 'Footer from H3',
+						icon : 'fas fa-dice-three',
+						gen  : FooterGen.createFooterFunc(3)
+					},
+					{
+						name : 'Footer from H4',
+						icon : 'fas fa-dice-four',
+						gen  : FooterGen.createFooterFunc(4)
+					},
+					{
+						name : 'Footer from H5',
+						icon : 'fas fa-dice-five',
+						gen  : FooterGen.createFooterFunc(5)
+					},
+					{
+						name : 'Footer from H6',
+						icon : 'fas fa-dice-six',
+						gen  : FooterGen.createFooterFunc(6)
+					}
+				]
 			},
 			{
 				name : 'Vertical Spacing',
@@ -64,6 +111,21 @@ module.exports = [
 				icon : 'fas fa-code',
 				gen  : '<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->'
 			},
+			{
+				name : 'Homebrewery Credit',
+				icon : 'fas fa-dice-d20',
+				gen  : function(){
+					return dedent`
+						{{homebreweryCredits
+						Made With
+						
+						{{homebreweryIcon}}
+						
+						The Homebrewery  
+						[Homebrewery.Naturalcrit.com](https://homebrewery.naturalcrit.com)
+						}}\n\n`;
+				},
+			}
 		]
 	},
 	{
@@ -101,6 +163,68 @@ module.exports = [
 				name : 'Watercolor Splatter',
 				icon : 'fas fa-fill-drip',
 				gen  : WatercolorGen,
+			},
+			{
+				name         : 'Watercolor Center',
+				icon         : 'fac mask-center',
+				gen          : ImageMaskGen.center,
+				experimental : true,
+			},
+			{
+				name         : 'Watercolor Edge',
+				icon         : 'fac mask-edge',
+				gen          : ImageMaskGen.edge('bottom'),
+				experimental : true,
+				subsnippets  : [
+					{
+						name : 'Top',
+						icon : 'fac position-top',
+						gen  : ImageMaskGen.edge('top'),
+					},
+					{
+						name : 'Right',
+						icon : 'fac position-right',
+						gen  : ImageMaskGen.edge('right'),
+					},
+					{
+						name : 'Bottom',
+						icon : 'fac position-bottom',
+						gen  : ImageMaskGen.edge('bottom'),
+					},
+					{
+						name : 'Left',
+						icon : 'fac position-left',
+						gen  : ImageMaskGen.edge('left'),
+					},
+				]
+			},
+			{
+				name         : 'Watercolor Corner',
+				icon         : 'fac mask-corner',
+				gen          : ImageMaskGen.corner,
+				experimental : true,
+				subsnippets  : [
+					{
+						name : 'Top-Left',
+						icon : 'fac position-top-left',
+						gen  : ImageMaskGen.corner('top', 'left'),
+					},
+					{
+						name : 'Top-Right',
+						icon : 'fac position-top-right',
+						gen  : ImageMaskGen.corner('top', 'right'),
+					},
+					{
+						name : 'Bottom-Left',
+						icon : 'fac position-bottom-left',
+						gen  : ImageMaskGen.corner('bottom', 'left'),
+					},
+					{
+						name : 'Bottom-Right',
+						icon : 'fac position-bottom-right',
+						gen  : ImageMaskGen.corner('bottom', 'right'),
+					}
+				]
 			},
 			{
 				name : 'Watermark',
