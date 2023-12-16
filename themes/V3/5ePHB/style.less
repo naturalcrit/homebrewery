@@ -14,16 +14,13 @@
 	--HB_Color_Footnotes             : #C9AD6A; // Gold
 }
 
-@page { margin : 0; }
-body { counter-reset : phb-page-numbers; }
-* { -webkit-print-color-adjust : exact; }
 .useSansSerif() {
-	font-family : "ScalySansRemake";
+	font-family : 'ScalySansRemake';
 	font-size   : 0.318cm;
 	line-height : 1.2em;
 	p,dl,ul,ol { line-height : 1.2em; }
 	ul, ol { padding-left : 1em; }
-	em { font-style  : italic; }
+	em { font-style : italic; }
 	strong {
 		font-weight    : 800;
 		letter-spacing : -0.02em;
@@ -42,55 +39,31 @@ body { counter-reset : phb-page-numbers; }
 	-webkit-column-gap   : 0.9cm;
 	-moz-column-gap      : 0.9cm;
 }
-.columnWrapper {
-	column-gap        : inherit;
-	max-height        : 100%;
-	column-span       : all;
-	columns           : inherit;
-}
 .page {
 	.useColumns();
-	position          : relative;
-	z-index           : 15;
-	box-sizing        : border-box;
-	width             : 215.9mm;
-	height            : 279.4mm;
-	padding           : 1.4cm 1.9cm 1.7cm;
-	overflow          : hidden;
-	font-family       : "BookInsanityRemake";
-	font-size         : 0.34cm;
-	counter-increment : phb-page-numbers;
-	background-color  : var(--HB_Color_Background);
-	background-image  : @backgroundImage;
-	text-rendering    : optimizeLegibility;
-	page-break-before : always;
-	page-break-after  : always;
+	font-family      : 'BookInsanityRemake';
+	font-size        : 0.34cm;
+	background-image : @backgroundImage;
 }
-//*****************************
+// *****************************
 // *            BASE
-	// *****************************/
+// *****************************/
 
 .page {
 	p {
-		display       : block;
-		line-height   : 1.25em;
-		overflow-wrap : break-word;		//TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
-		& + * { margin-top : 0.325cm; }
+		line-height : 1.25em;
+		& + * { margin-top : 0.325cm; }  //TODO: MAKE ALL MARGINS TOP-ONLY. USE * + * STYLE SELECTORS
 		& + p { margin-top : 0; }
 	}
 	ul {
-		padding-left        : 1.4em;
-		margin-bottom       : 0.8em;
-		line-height         : 1.25em;
-		list-style-position : outside;
-		list-style-type     : disc;
+		padding-left  : 1.4em;
+		margin-bottom : 0.8em;
+		line-height   : 1.25em;
 	}
 	ol {
-		padding-left        : 1.4em;
-		margin-bottom       : 0.8em;
-		line-height         : 1.25em;
-		list-style-position : outside;
-		list-style-type     : decimal;
+		padding-left  : 1.4em;
+		margin-bottom : 0.8em;
+		line-height   : 1.25em;
 	}
 	//Indents after p or lists
 	p + p, ul + p, ol + p { text-indent : 1em; }
@@ -99,24 +72,12 @@ body { counter-reset : phb-page-numbers; }
 		font-weight    : bold;
 		letter-spacing : -0.02em;
 	}
-	em { font-style : italic; }
-	sup {
-		font-size      : smaller;
-		line-height    : 0;
-		vertical-align : super;
-	}
-	sub {
-		font-size      : smaller;
-		line-height    : 0;
-		vertical-align : sub;
-	}
-	//*****************************
+	// *****************************
 	// *           HEADERS
 	// *****************************/
 	h1,h2,h3,h4 {
-		font-family   : "MrEavesRemake";
-		font-weight   : 800;
-		color         : var(--HB_Color_HeaderText);
+		font-family : 'MrEavesRemake';
+		color       : var(--HB_Color_HeaderText);
 	}
 	h1 {
 		margin-bottom       : 0.18cm; //Margin-bottom only because this is WIDE
@@ -132,7 +93,7 @@ body { counter-reset : phb-page-numbers; }
 			margin-top              : -0.3cm;
 			margin-bottom           : -20px;
 			margin-left             : -40px;
-			font-family             : "SolberaImitationRemake";
+			font-family             : 'SolberaImitationRemake';
 			font-size               : 3.5cm;
 			line-height             : 1em;
 			color                   : rgba(0, 0, 0, 0);
@@ -145,8 +106,8 @@ body { counter-reset : phb-page-numbers; }
 	h2 {
 		//margin-top    : 0px; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.05cm;
-		font-size     : 0.75cm;
-		line-height   : 0.988em; //Font is misaligned. Shift up slightly
+		font-size   : 0.75cm;
+		line-height : 0.988em; //Font is misaligned. Shift up slightly
 	}
 	h3 {
 		//margin-top    : -0.1cm; //Font is misaligned. Shift up slightly
@@ -162,8 +123,8 @@ body { counter-reset : phb-page-numbers; }
 	h4 {
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.02cm;
-		font-size     : 0.458cm;
-		line-height   : 0.971em; //Font is misaligned. Shift up slightly
+		font-size   : 0.458cm;
+		line-height : 0.971em; //Font is misaligned. Shift up slightly
 		& + * { margin-top : 0.09cm; }
 	}
 	* + h4 {
@@ -172,19 +133,17 @@ body { counter-reset : phb-page-numbers; }
 	h5 {
 		//margin-top    : -0.02cm; //Font is misaligned. Shift up slightly
 		//margin-bottom : 0.02cm;
-		font-family   : "ScalySansSmallCapsRemake";
-		font-size     : 0.423cm;
-		font-weight   : 900;
-		line-height   : 0.951em; //Font is misaligned. Shift up slightly
+		font-family : 'ScalySansSmallCapsRemake';
+		font-size   : 0.423cm;
+		line-height : 0.951em; //Font is misaligned. Shift up slightly
 		& + * { margin-top : 0.2cm; }
 	}
-	//*****************************
+	// *****************************
 	// *          TABLE
 	// *****************************/
 	table {
 		.useSansSerif();
-		width         : 100%;
-		line-height   : 16px;
+		line-height : 16px;
 		& + * { margin-top : 0.325cm; }
 		thead {
 			display     : table-row-group;
@@ -200,15 +159,15 @@ body { counter-reset : phb-page-numbers; }
 			tr {
 				td {
 					//padding : 0.14em 0.4em;
-					padding     : 0px 1.5px;   // Both of these are temporary, just to force
+					padding : 0px 1.5px;   // Both of these are temporary, just to force
 					//line-height : 16px;        // PDF to render at same height until Chrome 108
 				}
 				&:nth-child(odd) { background-color : var(--HB_Color_Accent); }
 			}
 		}
 	}
-	//*****************************
-	// *            	QUOTE
+	// *****************************
+	// *          QUOTE
 	// *****************************/
 	.quote {
 
@@ -241,9 +200,7 @@ body { counter-reset : phb-page-numbers; }
 		
 	}
 
-
-
-	//*****************************
+	// *****************************
 	// *            NOTE
 	// *****************************/
 	.note {
@@ -257,7 +214,7 @@ body { counter-reset : phb-page-numbers; }
 		border-image-outset : 9px 0px;
 		box-shadow          : 1px 4px 14px #888888;
 		.page :where(&) {
-			margin-top        : 9px; //Prevent top border getting cut off on colbreak
+			margin-top : 9px; //Prevent top border getting cut off on colbreak
 		}
 		& + * { margin-top : 0.45cm; }
 		h5 { font-size : 0.375cm; }
@@ -267,7 +224,7 @@ body { counter-reset : phb-page-numbers; }
 		}
 		:last-child { margin-bottom : 0; }
 	}
-	//************************************
+	// ************************************
 	// *       DESCRIPTIVE TEXT BOX
 	// ************************************/
 	.descriptive {
@@ -291,7 +248,7 @@ body { counter-reset : phb-page-numbers; }
 		}
 		:last-child { margin-bottom : 0; }
 	}
-	//*****************************
+	// *****************************
 	// *    Images Snippets
 	// *****************************/
 
@@ -299,7 +256,7 @@ body { counter-reset : phb-page-numbers; }
 	.artist {
 		position    : absolute;
 		width       : auto;
-		font-family : "WalterTurncoat";
+		font-family : 'WalterTurncoat';
 		font-size   : 0.27cm;
 		color       : var(--HB_Color_CaptionText);
 		text-align  : center;
@@ -309,7 +266,7 @@ body { counter-reset : phb-page-numbers; }
 			text-indent : unset;
 		}
 		h5 {
-			font-family : "WalterTurncoat";
+			font-family : 'WalterTurncoat';
 			font-size   : 1.3em;
 		}
 		a {
@@ -320,42 +277,10 @@ body { counter-reset : phb-page-numbers; }
 	}
 
 	/* Watermark */
-	.watermark {
-		position        : absolute;
-		top             : 0;
-		left            : 0;
-		z-index         : 500;
-		display         : grid !important;
-		place-items     : center;
-		justify-content : center;
-		width           : 100%;
-		height          : 100%;
-		font-size       : 120px;
-		color           : black;
-		text-transform  : uppercase;
-		mix-blend-mode  : overlay;
-		opacity         : 30%;
-		transform       : rotate(-45deg);
-		p { margin-bottom : none; }
-	}
+	.watermark { color : black; }
 
 	/* Watercolor */
-	[class*='watercolor'] {
-		position            : absolute;
-		z-index             : -2;
-		width               : 2000px;    /* dimensions need to be real big so the user can set */
-		height              : 2000px;    /* height or width and the image will maintain aspect ratio */
-		background-color    : var(--HB_Color_WatercolorStain);			/* default color */
-		background-size     : cover;
-		-webkit-mask-image  : var(--wc);
-		-webkit-mask-size   : contain;
-		-webkit-mask-repeat : no-repeat;
-		mask-image          : var(--wc);
-		mask-size           : contain;
-		mask-repeat         : no-repeat;
-		--wc                : @watercolor1;         /* default image */
-	}
-
+	
 	.watercolor1 { --wc : @watercolor1; }
 	.watercolor2 { --wc : @watercolor2; }
 	.watercolor3 { --wc : @watercolor3; }
@@ -369,7 +294,7 @@ body { counter-reset : phb-page-numbers; }
 	.watercolor11 { --wc : @watercolor11; }
 	.watercolor12 { --wc : @watercolor12; }
 
-	//*****************************
+	// *****************************
 	// *    MONSTER STAT BLOCK
 	// *****************************/
 	.monster {
@@ -390,27 +315,24 @@ body { counter-reset : phb-page-numbers; }
 			box-shadow            : 1px 4px 14px #888888;
 		}
 
-		position          : relative;
-		padding           : 0px;
-		margin-bottom     : 0.325cm;
+		position      : relative;
+		padding       : 0px;
+		margin-bottom : 0.325cm;
 
 		//Headers
 		h2 {
-			margin        : 0;
-			font-size     : 0.62cm;
-			line-height   : 1em;
+			margin      : 0;
+			font-size   : 0.62cm;
+			line-height : 1em;
 			& + p {
 				margin-bottom : 0;
 				font-size     : 0.304cm; //Monster size and type subtext
 			}
 		}
 		h3 {
-			// margin-top     : 0.05cm;  //Font is misaligned. Shift up slightly
-			padding-bottom : 0.05cm;
-			font-family    : "ScalySansRemake";
-			font-weight    : 800;
-			font-variant   : small-caps;
-			border-bottom  : 2px solid var(--HB_Color_HeaderText);
+			font-family   : 'ScalySansSmallCapsRemake';
+			font-size     : 0.45cm;
+			border-bottom : 1.5px solid var(--HB_Color_HeaderText);
 		}
 
 		//Triangle dividers
@@ -446,6 +368,8 @@ body { counter-reset : phb-page-numbers; }
 			tr { background-color : transparent; }
 			td,th { padding : 0px; }
 		}
+		//indent fix after bulleted lists
+		:is(ul,ol) + p { text-indent : 0; }
 
 		:last-child { margin-bottom : 0; }
 	}
@@ -455,10 +379,10 @@ body { counter-reset : phb-page-numbers; }
 		.useColumns(0.96, @fillMode: balance);
 	}
 
-	//*****************************
+	// *****************************
 	// *           FOOTER
 	// *****************************/
-	&:after {
+	&::after {
 		position         : absolute;
 		bottom           : 0px;
 		left             : 0px;
@@ -498,23 +422,18 @@ body { counter-reset : phb-page-numbers; }
 		color      : var(--HB_Color_Footnotes);
 		text-align : right;
 	}
-	//************************************
+	// ************************************
 	// *           CODE BLOCKS
 	// ************************************/
 	code {
 		padding          : 0px 4px;
-		font-family      : 'Courier New', "Courier", monospace;
-		font-size        : 0.325;
+		font-size        : 0.325cm;
 		color            : #58180D;
-		overflow-wrap    : break-word;
-		white-space      : pre-wrap;
 		background-color : #FAF7EA;
 		border-radius    : 4px;
 	}
 
 	pre code {
-		display             : inline-block;
-		width               : 100%;
 		padding             : 0.15cm;
 		margin-bottom       : 2px;
 		border-style        : solid;
@@ -528,25 +447,12 @@ body { counter-reset : phb-page-numbers; }
 		}
 		& + * { margin-top : 0.325cm; }
 	}
-	//*****************************
+	// *****************************
 	// *          EXTRAS
 	// *****************************/
 	hr {
 		margin     : 0px;
 		visibility : hidden;
-	}
-	.columnSplit {
-		visibility                 : hidden;
-		-webkit-column-break-after : always;
-		break-after                : always;
-		-moz-column-break-after    : always;
-	}
-	//Avoid breaking up
-	blockquote,table {
-		z-index                     : 15;
-		-webkit-column-break-inside : avoid;
-		page-break-inside           : avoid;
-		break-inside                : avoid;
 	}
 	//Text indent right after table
 	table + p { text-indent : 1em; }
@@ -555,18 +461,13 @@ body { counter-reset : phb-page-numbers; }
 		margin-bottom : 0px;
 		margin-left   : 1.5em;
 	}
-	li {
-		-webkit-column-break-inside : avoid;
-		page-break-inside           : avoid;
-		break-inside                : avoid;
-	}
 }
-//*****************************
+// *****************************
 // *         SPELL LIST
 // *****************************/
 .page .spellList {
 	.useSansSerif();
-	column-count        : 2;
+	column-count : 2;
 	ul + h5 { margin-top : 15px; }
 	p, ul {
 		font-size   : 0.352cm;
@@ -584,7 +485,7 @@ body { counter-reset : phb-page-numbers; }
 	&.wide { column-count : 4; }
 }
 
-//*****************************
+// *****************************
 // *       CLASS TABLE
 // *****************************/
 .page .classTable {
@@ -631,7 +532,7 @@ body { counter-reset : phb-page-numbers; }
 	}
 	h5 + table { margin-top : 0.2cm; }
 }
-//*****************************
+// *****************************
 // *    FRONT COVER PAGE
 // *****************************/
 .page:has(.frontCover) {
@@ -641,7 +542,7 @@ body { counter-reset : phb-page-numbers; }
 	h1 {
 		margin-top     : 1.2cm;
 		margin-bottom  : 0;
-		font-family    : "NodestoCapsCondensed";
+		font-family    : 'NodestoCapsCondensed';
 		font-size      : 2.245cm;
 		font-weight    : normal;
 		line-height    : 0.85em;
@@ -654,7 +555,7 @@ body { counter-reset : phb-page-numbers; }
 			drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
 	}
 	h2 {
-		font-family    : "NodestoCapsCondensed";
+		font-family    : 'NodestoCapsCondensed';
 		font-size      : 0.85cm;
 		font-weight    : normal;
 		color          : white;
@@ -687,7 +588,7 @@ body { counter-reset : phb-page-numbers; }
 		height           : 1.7cm;
 		padding-top      : 0.1cm;
 		padding-left     : 1cm;
-		font-family      : "NodestoCapsCondensed";
+		font-family      : 'NodestoCapsCondensed';
 		font-size        : 1cm;
 		font-weight      : normal;
 		color            : white;
@@ -704,7 +605,7 @@ body { counter-reset : phb-page-numbers; }
 		width        : 70%;
 		margin-right : auto;
 		margin-left  : auto;
-		font-family  : "Overpass";
+		font-family  : 'Overpass';
 		font-size    : 0.496cm;
 		color        : white;
 		text-align   : center;
@@ -725,7 +626,7 @@ body { counter-reset : phb-page-numbers; }
 		}
 	}
 }
-//*****************************
+// *****************************
 // *    INSIDE COVER PAGE
 // *****************************/
 .page:has(.insideCover) {
@@ -735,14 +636,14 @@ body { counter-reset : phb-page-numbers; }
 	h1 {
 		margin-top     : 1.2cm;
 		margin-bottom  : 0;
-		font-family    : "NodestoCapsCondensed";
+		font-family    : 'NodestoCapsCondensed';
 		font-size      : 2.1cm;
 		font-weight    : normal;
 		line-height    : 0.85em;
 		text-transform : uppercase;
 	}
 	h2 {
-		font-family    : "NodestoCapsCondensed";
+		font-family    : 'NodestoCapsCondensed';
 		font-size      : 0.85cm;
 		font-weight    : normal;
 		letter-spacing : 0.5cm;
@@ -770,7 +671,7 @@ body { counter-reset : phb-page-numbers; }
 		}
 	}
 }
-//*****************************
+// *****************************
 // *      BACK COVER
 // *****************************/
 .page:has(.backCover) {
@@ -791,7 +692,7 @@ body { counter-reset : phb-page-numbers; }
 	.blank { height : 1.4em; }
 	h1 {
 		margin-bottom : 0.3cm;
-		font-family   : "NodestoCapsCondensed";
+		font-family   : 'NodestoCapsCondensed';
 		font-size     : 1.35cm;
 		line-height   : 0.95em;
 		color         : #ED1C24;
@@ -817,7 +718,7 @@ body { counter-reset : phb-page-numbers; }
 		border           : none;
 	}
 	p {
-		font-family : "Overpass";
+		font-family : 'Overpass';
 		font-size   : 0.332cm;
 		line-height : 1.5em;
 	}
@@ -841,7 +742,7 @@ body { counter-reset : phb-page-numbers; }
 		p {
 			position       : relative;
 			width          : 100%;
-			font-family    : "NodestoCapsWide";
+			font-family    : 'NodestoCapsWide';
 			font-size      : 0.4cm;
 			line-height    : 1em;
 			color          : #FFFFFF;
@@ -852,10 +753,10 @@ body { counter-reset : phb-page-numbers; }
 	}
 }
 
-//*****************************
+// *****************************
 // *      PART COVER
-	// *****************************/
-	.page:has(.partCover) {
+// *****************************/
+.page:has(.partCover) {
 	padding-top : 0;
 	text-align  : center;
 	columns     : 1;
@@ -874,7 +775,7 @@ body { counter-reset : phb-page-numbers; }
 	h1 {
 		position       : relative;
 		margin-top     : 0.4cm;
-		font-family    : "NodestoCapsCondensed";
+		font-family    : 'NodestoCapsCondensed';
 		font-size      : 2.3cm;
 		text-align     : center;
 		text-transform : uppercase;
@@ -885,13 +786,13 @@ body { counter-reset : phb-page-numbers; }
 		margin-top   : -0.7em;
 		margin-right : auto;
 		margin-left  : auto;
-		font-family  : "Overpass";
+		font-family  : 'Overpass';
 		font-size    : 0.45cm;
 		line-height  : 1.1em;
 	}
 }
 
-//*****************************
+// *****************************
 // *      TABLE OF CONTENTS
 // *****************************/
 .page {
@@ -960,34 +861,25 @@ body { counter-reset : phb-page-numbers; }
 	}
 }
 
-//*****************************
+// *****************************
 // *    DEFINITION LISTS
 // *****************************/
 .page {
 	dl {
-		padding-left : 1em;
 		line-height  : 1.25em;
-		white-space  : pre-line;
-		& + * { margin-top : 0.28cm; }
+		& + * {	margin-top : 0.17cm; }
 	}
-	dl + * { margin-top : 0.17cm; }
 	p + dl { margin-top : 0.17cm; }
 	dt {
-		display      : inline;
 		margin-right : 5px;
 		margin-left  : -1em;
 	}
-	dd {
-		display     : inline;
-		margin-left : 0px;
-		text-indent : 0px;
-	}
 }
 
-//*****************************
+// *****************************
 // *         WIDE
 // *****************************/
-.page .wide { margin-bottom       : 0.325cm; }
+.page .wide { margin-bottom : 0.325cm; }
 
 .page h1 + * { margin-top : 0; }
 
@@ -1009,7 +901,7 @@ body { counter-reset : phb-page-numbers; }
 				outline        : 1px solid #000000;
 			}
 			th {
-				font-family : "BookInsanityRemake";
+				font-family : 'BookInsanityRemake';
 				font-size   : 0.45cm;
 			}
 			td { font-size : 0.7cm; }
@@ -1026,7 +918,7 @@ body { counter-reset : phb-page-numbers; }
 		}
 	}
 }
-//*****************************
+// *****************************
 // *       INDEX
 // *****************************/
 .page {
