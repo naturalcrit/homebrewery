@@ -919,6 +919,263 @@
 	}
 }
 // *****************************
+// *       TIMELINE
+// *****************************/
+.page {
+	.timeline {
+		--resolution:1px;
+		--w: calc((var(--end) - var(--start, 0))*var(--resolution));
+		--text: "hello";
+		--unit:' AC';
+
+		counter-reset: start var(--start, 0) end var(--end);
+		display: block;
+		position: relative;
+		width: var(--w, 500px);
+		height: 10px;
+		background-image: linear-gradient(0deg, var(--borderColor, #c0ad6a) 0%,var(--borderColor, #c0ad6a)  2px, var(--lineColor, white)3px, var(--lineColor, white) 7px,var(--borderColor, #c0ad6a)  7px, var(--borderColor, #c0ad6a)  100%);
+		background-size: 100% 100%;
+		margin-block: 100px;
+		margin-inline:auto;
+		column-span:all;
+
+		&:before, &:after {
+			display: block;
+			position: absolute;
+			top: 50%;
+			width: max-content;
+			height: 1em;
+			padding: 0.3em;
+			background: var(--lineColor, white);
+			border: 3px solid var(--borderColor, #c0ad6a);
+			border-radius: 100px;
+			font-weight: 900;
+			z-index: -1;
+		}
+		  
+		&:before {
+			right: 100%;
+			translate: 3px -50%;
+			content: counter(start) var(--unit,' DC');
+		}
+		  
+		&:after {
+			right: 0;
+			translate: calc(100% - 3px) -50%;
+			content: counter(end) var(--unit,' DC');
+		}
+		  
+		&.onlyStart {
+			
+			&:after {
+			  display:none;
+			}
+		}
+		  
+		&.onlyEnd:before {
+			display:none;
+		}
+		  
+		& p:has(.event) {
+			  line-height: unset;
+		} 
+		  
+		.event {
+			margin: 0;
+			position: absolute;
+			width: max-content;
+			height: max-content;
+			word-break:break-word;
+			top: var(--space, 2em);
+			left: calc((var(--date) - var(--start, 0))*var(--resolution));
+			translate: -50%;
+			text-align: center;
+			z-index:-1;
+			
+			&:before {
+			  counter-reset: date var(--date);
+			  display: block;
+			  position: absolute;
+			  top: calc((var(--space)* -1) - 1.6em);
+			  left: 50%;
+			  translate: -50%;
+			  width: max-content;
+			  height: 1em;
+			  font-weight: 900;
+			  color: #58180d;
+			  content: counter(date) var(--unit,' DC');
+			}
+			
+			&:after {
+			  display: block;
+			  position: absolute;
+			  top:  calc((var(--space)* -1) - 0.35em);
+			  left: 50%;
+			  translate: -50%;
+			  width: 15px;
+			  height: 25px;
+			  background: #c0ad6a;
+			  clip-path: polygon(0% 0%, 100% 0%, 100% 10%, 60% 20%, 100% 50%, 50% 100%, 0% 50%, 40% 20%, 0% 10%);
+			  content: '';
+			  z-index: -2;
+			}
+			
+			&.reverse {
+			  top: unset;
+			  bottom: var(--space);
+			  
+			  &:before {
+				top: unset;
+				bottom: calc((var(--space)* -1) - 1.6em);
+			  }
+			  
+			  &:after {
+				top: unset;
+				bottom:  calc((var(--space)* -1) - 0.35em);
+				scale: 1 -1;
+			  }
+			}
+			
+			& p+p {
+			  text-indent: 0;
+			}
+		}
+		  
+		.range {
+			height:6px;
+			width:calc((var(--dateEnd) - var(--dateStart))*var(--resolution));
+			position:absolute;
+			top:50%;
+			translate:0 -50%;
+			left: calc((var(--dateStart) - var(--start, 0))*var(--resolution));
+			
+			&.round {
+			  border-radius:100px;
+			}
+		}
+		  
+		.point {
+			height:6px;
+			width:6px;
+			position:absolute;
+			top:50%;
+			translate:0 -50%;
+			left: calc((var(--date) - var(--start, 0))*var(--resolution));
+			
+			&.round {
+			  border-radius:100px;
+			}
+		}
+		  
+		+.timeline {
+			margin-top: 130px;
+		}
+
+		&.vertical {
+			width: 10px;
+			height: var(--w, 500px);
+			background-image: linear-gradient(90deg, var(--borderColor, #c0ad6a) 0%,var(--borderColor, #c0ad6a)  2px, var(--lineColor, white)3px, var(--lineColor, white) 7px,var(--borderColor, #c0ad6a)  7px, var(--borderColor, #c0ad6a)  100%);
+			margin-block: 50px;
+			margin-left: 150px;
+			column-span: none;
+
+			&:before, &:after {
+				left: 50%;
+			}
+
+			&:before {
+				top: 0;
+				translate: -50% calc(-100% + 2.5px);
+			}
+			  
+			&:after {
+				top:unset;
+				bottom: 0;
+				translate:  -50% calc(100% - 3px);
+			}
+
+			.event {
+				top: calc((var(--date) - var(--start, 0))*var(--resolution));
+				left: 30px;
+				translate: 0 -0.5em;
+				text-align: left;
+				
+				&:before {
+				  top: 2px;
+				  left: -95px;
+				  translate: 0 0;
+				}
+				
+				&:after {
+				  top: -5px;
+				  left: -29px;
+				  translate: 0 0;
+				  rotate: -90deg;
+				}
+				
+				&.reverse {
+				  top: calc((var(--date) - var(--start, 0))*var(--resolution));
+				  left:unset;
+				  right: 30px;
+				  text-align: right;
+				  bottom:unset;
+				  
+				  &:before {
+					left: unset;
+					right:-95px;
+				  }
+				  
+				  &:after {
+					left: unset;
+					right: -29px;
+				  }
+				}
+			}
+			.range {
+				height: calc((var(--dateEnd) - var(--dateStart))*var(--resolution));
+				width: 6px;
+				top: calc((var(--dateStart) - var(--start, 0))*var(--resolution));
+				left: 50%;
+				translate:-50% 0;
+			}
+			  
+			.point {
+				top: calc((var(--date) - var(--start, 0))*var(--resolution));
+				translate: -50%;
+				left: 50%;    
+			}
+		}
+	
+	}
+}
+
+.page .legend {
+	padding:.3cm .2cm .2cm;
+	background-image: url('/assets/parchmentBackground.jpg');
+	margin-block:10px;
+	border: 4px solid;
+	border-image: radial-gradient(circle, #c0ad6a 0%, #bda656 11%, #dcc677 28%, #e0ca7c 36%, #d9c374 63%, #bda656 77%);
+	border-image-slice: 10;
+	box-shadow:2px 2px 8px black;
+  
+	& p:has(.ref) {
+	  text-indent: 0;
+	  
+	  .ref {
+		width:40px;
+		height:1em;
+		box-shadow:0 0 2px 1px black;
+		position:relative;
+		top:2px;
+		margin-right:5px;
+		margin-top:5px;
+	  }
+	}
+}
+
+
+
+// *****************************
 // *       INDEX
 // *****************************/
 .page {

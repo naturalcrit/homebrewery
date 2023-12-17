@@ -9,6 +9,7 @@ const CoverPageGen       = require('./snippets/coverpage.gen.js');
 const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
 const indexGen           = require('./snippets/index.gen.js');
 const QuoteGen 			 = require('./snippets/quote.gen.js');
+const timelineGen		 = require('./snippets/timeline.gen.js');
 const dedent             = require('dedent-tabs').default;
 
 
@@ -30,7 +31,25 @@ module.exports = [
 				icon         : 'fas fa-bars',
 				gen          : indexGen,
 				experimental : true
-			}
+			},
+			{
+				name         : 'Timeline',
+				icon         : 'fas fa-clock',
+				gen          : timelineGen.horizontal,
+				experimental : true,
+				subsnippets  : [
+					{
+						name : 'Horizontal Timeline',
+						icon : 'fas fa-ruler-horizontal',
+						gen  : timelineGen.horizontal,
+					},
+					{
+						name : 'Vertical Timeline',
+						icon : 'fas fa-ruler-vertical',
+						gen  : timelineGen.vertical,
+					},
+				]
+			},
 		]
 	},
 	{
