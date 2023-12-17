@@ -7,7 +7,7 @@ const cx = require('classnames');
 const closeTag = require('./close-tag');
 
 let CodeMirror;
-if(typeof navigator !== 'undefined'){
+if(typeof window !== 'undefined'){
 	CodeMirror = require('codemirror');
 
 	//Language Modes
