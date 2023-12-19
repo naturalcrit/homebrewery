@@ -369,12 +369,21 @@ const processStyleTags = (string)=>{
 		`${attributes?.length   ? ` ${attributes.join(' ')}`     : ''}`;
 };
 
+let globalLinks = {};
+
 module.exports = {
 	marked : Marked,
 	render : (rawBrewText)=>{
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
-		return Marked.parse(rawBrewText);
+		const opts = Marked.defaults;
+
+		rawBrewText = opts.hooks.preprocess(rawBrewText);
+		const tokens = Marked.lexer(rawBrewText, opts);
+		globalLinks = Object.assign({}, tokens.links);
+		Marked.walkTokens(tokens, opts.walkTokens);
+		const html = Marked.parser(tokens, opts);
+		return opts.hooks.postprocess(html);
 	},
 
 	validate : (rawBrewText)=>{
