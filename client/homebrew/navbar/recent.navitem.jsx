@@ -8,6 +8,7 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 const EDIT_KEY = 'homebrewery-recently-edited';
 const VIEW_KEY = 'homebrewery-recently-viewed';
 
+const translateOpts = ['nav', 'recentBrewsdropdown'];
 
 const RecentItems = createClass({
 	DisplayName     : 'RecentItems',
@@ -154,11 +155,15 @@ const RecentItems = createClass({
 
 		return <>
 			{(this.props.showEdit && this.props.showView) ?
-				<Nav.item className='header'>edited</Nav.item> : null }
+				<Nav.item className='header'>
+					{'edited'.translate(translateOpts)}
+				</Nav.item> : null }
 			{this.props.showEdit ?
 				makeItems(this.state.edit) : null }
 			{(this.props.showEdit && this.props.showView) ?
-				<Nav.item className='header'>viewed</Nav.item>	: null }
+				<Nav.item className='header'>
+					{'viewed'.translate(translateOpts)}
+				</Nav.item>	: null }
 			{this.props.showView ?
 				makeItems(this.state.view) : null }
 		</>;
@@ -181,7 +186,7 @@ module.exports = {
 		return <RecentItems
 			brew={props.brew}
 			storageKey={props.storageKey}
-			text='recently edited'
+			text={'recently edited'.translate(translateOpts)}
 			showEdit={true}
 		/>;
 	},
@@ -190,7 +195,7 @@ module.exports = {
 		return <RecentItems
 			brew={props.brew}
 			storageKey={props.storageKey}
-			text='recently viewed'
+			text={'recently viewed'.translate(translateOpts)}
 			showView={true}
 		/>;
 	},
@@ -199,7 +204,7 @@ module.exports = {
 		return <RecentItems
 			brew={props.brew}
 			storageKey={props.storageKey}
-			text='recent brews'
+			text={'recent brews'.translate(translateOpts)}
 			showEdit={true}
 			showView={true}
 		/>;
