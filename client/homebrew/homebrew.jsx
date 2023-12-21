@@ -13,6 +13,8 @@ const ErrorPage = require('./pages/errorPage/errorPage.jsx');
 const PrintPage = require('./pages/printPage/printPage.jsx');
 const AccountPage = require('./pages/accountPage/accountPage.jsx');
 
+const Translate = require('translation/translation.js');
+
 const WithRoute = (props)=>{
 	const params = useParams();
 	const [searchParams] = useSearchParams();
@@ -58,6 +60,8 @@ const Homebrew = createClass({
 		global.enable_v3 = this.props.enable_v3;
 		global.enable_themes = this.props.enable_themes;
 		global.config = this.props.config;
+
+		Translate.addTranslationFunc(this.props.config.translationData);
 
 		return {};
 	},

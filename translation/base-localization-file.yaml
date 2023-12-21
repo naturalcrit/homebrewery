@@ -1,0 +1,199 @@
+# string translation template
+yes: yes
+no:  no
+
+nav:
+  helpOut: help out
+  storageMsg: 
+    notsignedin: youmust be signed in to a google account to transfer between the homebrewery and google drive!
+    signin: sign in
+    notnow: not now
+    fromgoogletohb: would you like to transfer this brew from your google drive storage back to the homebrewery?
+    fromhbtogoogle: would you like to transfer this brew from the homebrewery to your personal google drive storage?
+  saveDropdown:
+    autosaved: auto-saved
+    saving: saving
+    reminder: reminder...
+    autoSave: autosave
+    saved: saved
+    autoSaveMsg: autosave is off and you haven't saved for n minute/hour/day/month/year.
+
+  newDoc:  
+  helpDropdown:
+    needHelp: need help?
+    report: report issue
+    faq:  
+    migrate:  
+
+  shareDropdown:
+    share: 
+    view: 
+    copyUrl: copy url
+    postToReddit: post to reddit
+
+  getPdf: get pdf
+
+  recentBrewsdropdown:
+    recentBrews: recent brews
+    edited: 
+    viewed: 
+
+    buttonTitleAttr: Remove from Recents
+
+  usernameDropdown:
+    brews: 
+    account: 
+    login: 
+    localLoginPrompt:  "Enter username:"
+    logout: 
+    logoutMsg: Are you sure you want to log out?
+
+userPage:
+
+  filters:
+    sortBy:  
+    title:  
+    createdDate:  
+    updatedDate:  
+    views:  
+    searchPlaceholder: filter title/description
+
+  sectionTitles:
+    <user-name>'s published brews:  
+    <user-name>'s unpublished brews:  
+
+  brewInfo:
+    singularDate: a minute/an hour/a day/a month/a year ago
+    secondsDate: a few seconds ago
+    pluralDate: n minutes/hours/days/months/years ago 
+    buttons:
+      authors:
+      lastViewed:
+      page count:
+      created:
+      share:
+      edit:
+      download:
+      delete:
+
+editorPage:
+  editorGroup:
+    toolsGroup:
+      undo:  
+      redo: 
+      brew editor:  
+      style editor: 
+      properties: 
+
+    buttonsGroup:
+      jump to location in editor:  
+      jump to location in preview:
+
+    brewEditorTab: 
+      brewEditor:
+      snippetsGroup:
+
+        textEditorDropdown:
+          textEditor:
+          column break: 
+          new page: 
+          vertical spacing: 
+          wide block: 
+          image: 
+          background image: 
+          page number: 
+          auto-incrementing page number: 
+          link to page: 
+          table of contents: 
+          add comment:
+
+        phbDropdown:  
+          phb:
+          spell: 
+          spell list: 
+          class feature: 
+          note: 
+          descriptive text box: 
+          monster stat block: 
+          wide monster stat block: 
+          cover page: 
+          artist credit: 
+
+        tablesDropdown: 
+          tables: 
+          class table: 
+          half class table: 
+          table: 
+          wide table: 
+          split table: 
+
+    styleEditorTab: 
+      snippetsGroup: 
+        styleEditorDropdown:  
+          styleEditor:
+          removeDropCap: 
+          tweakDropCap: 
+          addComment: 
+
+        printDropdown:
+          print: 
+          a4PageSize: 
+          squarePageSize: 
+          inkFriendly:
+
+    propertiesTab:
+      properties:
+      brewGroup:
+        brew: 
+        title: 
+        description: 
+        thumbnail: 
+        tags: 
+        add tag: 
+        systems: 
+        5e: 
+        4e: 
+        3.5e: 
+        pathfinder: 
+        renderer: 
+        legacy: 
+        v3: 
+        legacyDemoLink: click here to see the demo page for the old legacy renderer!
+
+      authorsGroup: 
+        authors: 
+        none: 
+        invitedAuthors: 
+        inviteAuthor: 
+        invitedMsg1: invited authors are case sensitive.
+        invitedMsg2: after adding an invited author, send them the edit link. there, they can choose to accept or decline the invitation.
+
+      privacyGroup: 
+        privacy: 
+        publish: 
+        publishedMsg: published homebrews will be publicly viewable and searchable (eventually...)
+        delete: 
+        delete brew: 
+
+  rendererGroup: 
+    legacy: 
+    v3: 
+
+sharePage:
+  sourceDropdown:
+    source:
+    view:  
+    download:  
+    clone: clone to new
+
+accountInfoPage: 
+  accountInfo:  
+  username: 
+  lastLogin: 
+  homebreweryInfo:  
+  brewsOnHomebrewery:
+  googleInfo:
+  linkedToGoogle: 
+  brewsOnGoogleDrive: 
+
+ 

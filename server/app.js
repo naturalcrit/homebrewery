@@ -75,6 +75,9 @@ const migrateText       = require('fs').readFileSync('client/homebrew/pages/home
 const changelogText     = require('fs').readFileSync('changelog.md', 'utf8');
 const faqText           = require('fs').readFileSync('faq.md', 'utf8');
 
+const translationFile   = require('fs').readFileSync('translation/base-localization-file.yaml', 'utf8');
+const translationData   = yaml.load(translationFile);
+
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
 const defaultMetaTags = {
@@ -425,7 +428,8 @@ const renderPage = async (req, res)=>{
 	const configuration = {
 		local       : isLocalEnvironment,
 		publicUrl   : config.get('publicUrl') ?? '',
-		environment : nodeEnv
+		environment : nodeEnv,
+		translationData
 	};
 	const props = {
 		version       : require('./../package.json').version,
