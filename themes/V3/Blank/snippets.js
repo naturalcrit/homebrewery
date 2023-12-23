@@ -304,6 +304,104 @@ module.exports = [
 			}
 		]
 	},
+	/**************** FONTS *************/
+	{
+		groupName : 'Fonts',
+		icon	  : 'fas fa-keyboard',
+		view	  : 'text',
+		snippets  : [
+			{
+				name : 'Open Sans',
+				icon : 'OpenSans',
+				gen	 : dedent`{{OpenSans Dummy Text}}`
+			},
+			{
+				name : 'Code Bold',
+				icon : 'CodeBold',
+				gen	 : dedent`{{CodeBold Dummy Text}}`
+			},
+			{
+				name : 'Code Light',
+				icon : 'CodeLight',
+				gen	 : dedent`{{CodeLight Dummy Text}}`
+			},
+			{
+				name : 'Scaly Sans Remake',
+				icon : 'ScalySansRemake',
+				gen	 : dedent`{{ScalySansRemake Dummy Text}}`
+			},
+			{
+				name : 'Book Insanity Remake',
+				icon : 'BookInsanityRemake',
+				gen	 : dedent`{{BookInsanityRemake Dummy Text}}`
+			},
+			{
+				name : 'Mr Eaves Remake',
+				icon : 'MrEavesRemake',
+				gen	 : dedent`{{MrEavesRemake Dummy Text}}`
+			},
+			{
+				name : 'Mr Eaves Remake',
+				icon : 'MrEavesRemake',
+				gen	 : dedent`{{MrEavesRemake Dummy Text}}`
+			},
+			{
+				name: 'Solbera Imitation Remake',
+				icon: 'SolberaImitationRemake',
+				gen: dedent`{{SolberaImitationRemake Dummy Text}}`
+			  },
+			  {
+				name: 'Scaly Sans Small Caps Remake',
+				icon: 'ScalySansSmallCapsRemake',
+				gen: dedent`{{ScalySansSmallCapsRemake Dummy Text}}`
+			  },
+			  {
+				name: 'Walter Turncoat',
+				icon: 'WalterTurncoat',
+				gen: dedent`{{WalterTurncoat Dummy Text}}`
+			  },
+			  {
+				name: 'Lato',
+				icon: 'Lato',
+				gen: dedent`{{Lato Dummy Text}}`
+			  },
+			  {
+				name: 'Courier',
+				icon: 'Courier',
+				gen: dedent`{{Courier Dummy Text}}`
+			  },
+			  {
+				name: 'Nodesto Caps Condensed',
+				icon: 'NodestoCapsCondensed',
+				gen: dedent`{{NodestoCapsCondensed Dummy Text}}`
+			  },
+			  {
+				name: 'Overpass',
+				icon: 'Overpass',
+				gen: dedent`{{Overpass Dummy Text}}`
+			  },
+			  {
+				name: 'Davek',
+				icon: 'Davek',
+				gen: dedent`{{Davek Dummy Text}}`
+			  },
+			  {
+				name: 'Iokharic',
+				icon: 'Iokharic',
+				gen: dedent`{{Iokharic Dummy Text}}`
+			  },
+			  {
+				name: 'Rellanic',
+				icon: 'Rellanic',
+				gen: dedent`{{Rellanic Dummy Text}}`
+			  },
+			  {
+				name: 'Times New Roman',
+				icon: 'TimesNewRoman',
+				gen: dedent`{{TimesNewRoman Dummy Text}}`
+			  }
+		]
+	},
 
 	/**************** PAGE *************/
 
