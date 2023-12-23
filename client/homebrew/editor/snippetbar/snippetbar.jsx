@@ -176,8 +176,9 @@ const Snippetbar = createClass({
 			<div className={`editorTool editorTheme ${this.state.themeSelector ? 'active' : ''}`}
 				onClick={this.toggleThemeSelector} >
 				<i className='fas fa-palette' />
+				{this.state.themeSelector && this.renderThemeSelector()}
 			</div>
-			{this.state.themeSelector && this.renderThemeSelector()}
+			
 			<div className='divider'></div>
 			<div className={cx('text', { selected: this.props.view === 'text' })}
 				 onClick={()=>this.props.onViewChange('text')}>

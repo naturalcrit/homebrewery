@@ -61,13 +61,14 @@
 					color : black;
 				}
 			}
-			&.editorTheme{
+			&.editorTheme {
 				.tooltipLeft('Editor Themes');
 				font-size : 0.75em;
 				color     : black;
-				&.active{
-					color : white;
-					background-color: black;
+				&.active {
+					position         : relative;
+					color            : white;
+					background-color : black;
 				}
 			}
 			&.divider {
@@ -78,14 +79,17 @@
 				}
 			}
 		}
-		.themeSelector{
-			position: absolute;
-			left: -65px;
-			top: 30px;
-			z-index: 999;
-			width: 170px;
-			background-color: black;
-    		border-radius: 5px;
+		.themeSelector {
+			position : absolute;
+			top : 25px;
+			right : 0;
+			z-index : 1;
+			display : flex;
+			align-items : center;
+			justify-content : center;
+			width : 170px;
+			height : inherit;
+			background-color : inherit;
 		}
 	}
 	.snippetBarButton{
