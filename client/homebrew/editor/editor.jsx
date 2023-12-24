@@ -151,7 +151,7 @@ const Editor = createClass({
 
 						// definition lists
 						if(line.includes('::')){
-							const regex = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym;
+							const regex = /^([^\n]*?\s)::(\s[^\n]*)(?:\n|$)/ym;
 							let match;
 							while ((match = regex.exec(line)) != null){
 								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[0]) }, { line: lineNumber, ch: line.indexOf(match[0]) + match[0].length }, { className: 'define' });
