@@ -151,12 +151,12 @@ const Editor = createClass({
 
 						// definition lists
 						if(line.includes('::')){
-							const regex = /^([^\n]*?\s)::(\s[^\n]*)(?:\n|$)/ym;
+							const regex = /^([^\n:]+?)::([^\n]*)(?:\n|$)/ymd;
 							let match;
 							while ((match = regex.exec(line)) != null){
 								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[0]) }, { line: lineNumber, ch: line.indexOf(match[0]) + match[0].length }, { className: 'define' });
 								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length }, { className: 'term' });
-								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[2]) }, { line: lineNumber, ch: line.indexOf(match[2]) + match[2].length }, { className: 'definition' });
+								codeMirror.markText({ line: lineNumber, ch: match.indices[2][0] }, { line: lineNumber, ch: match.indices[2][1] }, { className: 'definition' });
 							}
 						}
 
