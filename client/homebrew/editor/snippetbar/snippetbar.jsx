@@ -100,7 +100,7 @@ const Snippetbar = createClass({
 
 	compileSnippets : function(rendererPath, themePath, snippets) {
 		let compiledSnippets = snippets;
-		const baseSnippetsPath = Themes[rendererPath][themePath].baseSnippets;
+		const baseSnippetsPath = Themes[rendererPath][themePath]?.baseSnippets;
 
 		const objB = _.keyBy(compiledSnippets, 'groupName');
 

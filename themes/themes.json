@@ -13,23 +13,9 @@
       "renderer": "V3",
       "baseTheme": "5ePHB",
       "baseSnippets": "5ePHB",
-      "path": "5eDMG/latest"
+      "path": "5eDMG"
     },
-    "Blank": {
-      "name": "Blank",
-      "renderer": "V3",
-      "baseTheme": false,
-      "baseSnippets": false,
-      "path": "Blank/latest"
-    },
-    "Journal": {
-      "name": "Journal",
-      "renderer": "V3",
-      "baseTheme": false,
-      "baseSnippets": "5ePHB",
-      "path": "Journal/latest"
-    },
-    "hbtheme-5ePHB": {
+    "5ePHB": {
       "name": "5e PHB",
       "renderer": "V3",
       "baseTheme": false,
@@ -48,7 +34,21 @@
         "of",
         "people"
       ],
-      "path": "hbtheme-5ePHB/v3.1"
+      "path": "5ePHB"
+    },
+    "Blank": {
+      "name": "Blank",
+      "renderer": "V3",
+      "baseTheme": false,
+      "baseSnippets": false,
+      "path": "Blank"
+    },
+    "Journal": {
+      "name": "Journal",
+      "renderer": "V3",
+      "baseTheme": false,
+      "baseSnippets": "5ePHB",
+      "path": "Journal"
     }
   }
 }

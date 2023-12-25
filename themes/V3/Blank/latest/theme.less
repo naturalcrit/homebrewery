@@ -1,5 +1,5 @@
-@import (less) './themes/fonts/5e/fonts.less';
-@import (less) './themes/assets/assets.less';
+@import (less) './fonts/fonts.less';
+@import (less) './assets/assets.less';
 
 :root {
 	//Colors
@@ -258,19 +258,19 @@ body { counter-reset : phb-page-numbers; }
 		}
 		&.revealImage {
 			--revealer     : linear-gradient(0deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.2));
-			--checkerboard : url("/assets/waterColorMasks/missingImage.png"); //shows any masked regions not filled by image
+			--checkerboard : url("./assets/waterColorMasks/missingImage.png"); //shows any masked regions not filled by image
 		}
 	}
 
 	.imageMaskEdge {
-		&1 { --wc : url("/assets/waterColorMasks/edge/0001.webp"); }
-		&2 { --wc : url("/assets/waterColorMasks/edge/0002.webp"); }
-		&3 { --wc : url("/assets/waterColorMasks/edge/0003.webp"); }
-		&4 { --wc : url("/assets/waterColorMasks/edge/0004.webp"); }
-		&5 { --wc : url("/assets/waterColorMasks/edge/0005.webp"); }
-		&6 { --wc : url("/assets/waterColorMasks/edge/0006.webp"); }
-		&7 { --wc : url("/assets/waterColorMasks/edge/0007.webp"); }
-		&8 { --wc : url("/assets/waterColorMasks/edge/0008.webp"); }
+		&1 { --wc : url("./assets/waterColorMasks/edge/0001.webp"); }
+		&2 { --wc : url("./assets/waterColorMasks/edge/0002.webp"); }
+		&3 { --wc : url("./assets/waterColorMasks/edge/0003.webp"); }
+		&4 { --wc : url("./assets/waterColorMasks/edge/0004.webp"); }
+		&5 { --wc : url("./assets/waterColorMasks/edge/0005.webp"); }
+		&6 { --wc : url("./assets/waterColorMasks/edge/0006.webp"); }
+		&7 { --wc : url("./assets/waterColorMasks/edge/0007.webp"); }
+		&8 { --wc : url("./assets/waterColorMasks/edge/0008.webp"); }
 	}
 
 	[class*='imageMaskCenter'] {
@@ -303,23 +303,23 @@ body { counter-reset : phb-page-numbers; }
 	}
 
 	.imageMaskCenter {
-		&1 { --wc : url("/assets/waterColorMasks/center/0001.webp"); }
-		&2 { --wc : url("/assets/waterColorMasks/center/0002.webp"); }
-		&3 { --wc : url("/assets/waterColorMasks/center/0003.webp"); }
-		&4 { --wc : url("/assets/waterColorMasks/center/0004.webp"); }
-		&5 { --wc : url("/assets/waterColorMasks/center/0005.webp"); }
-		&6 { --wc : url("/assets/waterColorMasks/center/0006.webp"); }
-		&7 { --wc : url("/assets/waterColorMasks/center/0007.webp"); }
-		&8 { --wc : url("/assets/waterColorMasks/center/0008.webp"); }
-		&9 { --wc : url("/assets/waterColorMasks/center/0009.webp"); }
-		&10 { --wc : url("/assets/waterColorMasks/center/0010.webp"); }
-		&11 { --wc : url("/assets/waterColorMasks/center/0011.webp"); }
-		&12 { --wc : url("/assets/waterColorMasks/center/0012.webp"); }
-		&13 { --wc : url("/assets/waterColorMasks/center/0013.webp"); }
-		&14 { --wc : url("/assets/waterColorMasks/center/0014.webp"); }
-		&15 { --wc : url("/assets/waterColorMasks/center/0015.webp"); }
-		&16 { --wc : url("/assets/waterColorMasks/center/0016.webp"); }
-		&special { --wc : url("/assets/waterColorMasks/center/special.webp"); }
+		&1 { --wc : url("./assets/waterColorMasks/center/0001.webp"); }
+		&2 { --wc : url("./assets/waterColorMasks/center/0002.webp"); }
+		&3 { --wc : url("./assets/waterColorMasks/center/0003.webp"); }
+		&4 { --wc : url("./assets/waterColorMasks/center/0004.webp"); }
+		&5 { --wc : url("./assets/waterColorMasks/center/0005.webp"); }
+		&6 { --wc : url("./assets/waterColorMasks/center/0006.webp"); }
+		&7 { --wc : url("./assets/waterColorMasks/center/0007.webp"); }
+		&8 { --wc : url("./assets/waterColorMasks/center/0008.webp"); }
+		&9 { --wc : url("./assets/waterColorMasks/center/0009.webp"); }
+		&10 { --wc : url("./assets/waterColorMasks/center/0010.webp"); }
+		&11 { --wc : url("./assets/waterColorMasks/center/0011.webp"); }
+		&12 { --wc : url("./assets/waterColorMasks/center/0012.webp"); }
+		&13 { --wc : url("./assets/waterColorMasks/center/0013.webp"); }
+		&14 { --wc : url("./assets/waterColorMasks/center/0014.webp"); }
+		&15 { --wc : url("./assets/waterColorMasks/center/0015.webp"); }
+		&16 { --wc : url("./assets/waterColorMasks/center/0016.webp"); }
+		&special { --wc : url("./assets/waterColorMasks/center/special.webp"); }
 	}
 
 
@@ -349,43 +349,43 @@ body { counter-reset : phb-page-numbers; }
 		}
 	}
 	.imageMaskCorner {
-		&1 { --wc : url("/assets/waterColorMasks/corner/0001.webp"); }
-		&2 { --wc : url("/assets/waterColorMasks/corner/0002.webp"); }
-		&3 { --wc : url("/assets/waterColorMasks/corner/0003.webp"); }
-		&4 { --wc : url("/assets/waterColorMasks/corner/0004.webp"); }
-		&5 { --wc : url("/assets/waterColorMasks/corner/0005.webp"); }
-		&6 { --wc : url("/assets/waterColorMasks/corner/0006.webp"); }
-		&7 { --wc : url("/assets/waterColorMasks/corner/0007.webp"); }
-		&8 { --wc : url("/assets/waterColorMasks/corner/0008.webp"); }
-		&9 { --wc : url("/assets/waterColorMasks/corner/0009.webp"); }
-		&10 { --wc : url("/assets/waterColorMasks/corner/0010.webp"); }
-		&11 { --wc : url("/assets/waterColorMasks/corner/0011.webp"); }
-		&12 { --wc : url("/assets/waterColorMasks/corner/0012.webp"); }
-		&13 { --wc : url("/assets/waterColorMasks/corner/0013.webp"); }
-		&14 { --wc : url("/assets/waterColorMasks/corner/0014.webp"); }
-		&15 { --wc : url("/assets/waterColorMasks/corner/0015.webp"); }
-		&16 { --wc : url("/assets/waterColorMasks/corner/0016.webp"); }
-		&17 { --wc : url("/assets/waterColorMasks/corner/0017.webp"); }
-		&18 { --wc : url("/assets/waterColorMasks/corner/0018.webp"); }
-		&19 { --wc : url("/assets/waterColorMasks/corner/0019.webp"); }
-		&20 { --wc : url("/assets/waterColorMasks/corner/0020.webp"); }
-		&21 { --wc : url("/assets/waterColorMasks/corner/0021.webp"); }
-		&22 { --wc : url("/assets/waterColorMasks/corner/0022.webp"); }
-		&23 { --wc : url("/assets/waterColorMasks/corner/0023.webp"); }
-		&24 { --wc : url("/assets/waterColorMasks/corner/0024.webp"); }
-		&25 { --wc : url("/assets/waterColorMasks/corner/0025.webp"); }
-		&26 { --wc : url("/assets/waterColorMasks/corner/0026.webp"); }
-		&27 { --wc : url("/assets/waterColorMasks/corner/0027.webp"); }
-		&28 { --wc : url("/assets/waterColorMasks/corner/0028.webp"); }
-		&29 { --wc : url("/assets/waterColorMasks/corner/0029.webp"); }
-		&30 { --wc : url("/assets/waterColorMasks/corner/0030.webp"); }
-		&31 { --wc : url("/assets/waterColorMasks/corner/0031.webp"); }
-		&32 { --wc : url("/assets/waterColorMasks/corner/0032.webp"); }
-		&33 { --wc : url("/assets/waterColorMasks/corner/0033.webp"); }
-		&34 { --wc : url("/assets/waterColorMasks/corner/0034.webp"); }
-		&35 { --wc : url("/assets/waterColorMasks/corner/0035.webp"); }
-		&36 { --wc : url("/assets/waterColorMasks/corner/0036.webp"); }
-		&37 { --wc : url("/assets/waterColorMasks/corner/0037.webp"); }
+		&1 { --wc : url("./assets/waterColorMasks/corner/0001.webp"); }
+		&2 { --wc : url("./assets/waterColorMasks/corner/0002.webp"); }
+		&3 { --wc : url("./assets/waterColorMasks/corner/0003.webp"); }
+		&4 { --wc : url("./assets/waterColorMasks/corner/0004.webp"); }
+		&5 { --wc : url("./assets/waterColorMasks/corner/0005.webp"); }
+		&6 { --wc : url("./assets/waterColorMasks/corner/0006.webp"); }
+		&7 { --wc : url("./assets/waterColorMasks/corner/0007.webp"); }
+		&8 { --wc : url("./assets/waterColorMasks/corner/0008.webp"); }
+		&9 { --wc : url("./assets/waterColorMasks/corner/0009.webp"); }
+		&10 { --wc : url("./assets/waterColorMasks/corner/0010.webp"); }
+		&11 { --wc : url("./assets/waterColorMasks/corner/0011.webp"); }
+		&12 { --wc : url("./assets/waterColorMasks/corner/0012.webp"); }
+		&13 { --wc : url("./assets/waterColorMasks/corner/0013.webp"); }
+		&14 { --wc : url("./assets/waterColorMasks/corner/0014.webp"); }
+		&15 { --wc : url("./assets/waterColorMasks/corner/0015.webp"); }
+		&16 { --wc : url("./assets/waterColorMasks/corner/0016.webp"); }
+		&17 { --wc : url("./assets/waterColorMasks/corner/0017.webp"); }
+		&18 { --wc : url("./assets/waterColorMasks/corner/0018.webp"); }
+		&19 { --wc : url("./assets/waterColorMasks/corner/0019.webp"); }
+		&20 { --wc : url("./assets/waterColorMasks/corner/0020.webp"); }
+		&21 { --wc : url("./assets/waterColorMasks/corner/0021.webp"); }
+		&22 { --wc : url("./assets/waterColorMasks/corner/0022.webp"); }
+		&23 { --wc : url("./assets/waterColorMasks/corner/0023.webp"); }
+		&24 { --wc : url("./assets/waterColorMasks/corner/0024.webp"); }
+		&25 { --wc : url("./assets/waterColorMasks/corner/0025.webp"); }
+		&26 { --wc : url("./assets/waterColorMasks/corner/0026.webp"); }
+		&27 { --wc : url("./assets/waterColorMasks/corner/0027.webp"); }
+		&28 { --wc : url("./assets/waterColorMasks/corner/0028.webp"); }
+		&29 { --wc : url("./assets/waterColorMasks/corner/0029.webp"); }
+		&30 { --wc : url("./assets/waterColorMasks/corner/0030.webp"); }
+		&31 { --wc : url("./assets/waterColorMasks/corner/0031.webp"); }
+		&32 { --wc : url("./assets/waterColorMasks/corner/0032.webp"); }
+		&33 { --wc : url("./assets/waterColorMasks/corner/0033.webp"); }
+		&34 { --wc : url("./assets/waterColorMasks/corner/0034.webp"); }
+		&35 { --wc : url("./assets/waterColorMasks/corner/0035.webp"); }
+		&36 { --wc : url("./assets/waterColorMasks/corner/0036.webp"); }
+		&37 { --wc : url("./assets/waterColorMasks/corner/0037.webp"); }
 	}
 }
 
@@ -454,8 +454,8 @@ body { counter-reset : phb-page-numbers; }
 		height           : 1.5cm;
 		margin           : 0 auto;
 		background-color : black;
-		-webkit-mask     : url("/assets/naturalCritLogoWhite.svg") center / contain no-repeat;
-		mask             : url("/assets/naturalCritLogoWhite.svg") center / contain no-repeat;
+		-webkit-mask     : url("./assets/naturalCritLogoWhite.svg") center / contain no-repeat;
+		mask             : url("./assets/naturalCritLogoWhite.svg") center / contain no-repeat;
 	}
 	.homebreweryIcon.red { background-color : red; }
 	.homebreweryIcon.gold { background-image : linear-gradient(to top left, brown 22.5%, gold 40%, white 60%, gold 67.5%, brown 82.5%); }

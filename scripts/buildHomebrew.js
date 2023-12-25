@@ -80,10 +80,10 @@ fs.emptyDirSync('./build');
 				fs.copy(`./themes/V3/${dir}/${versionDir}/dropdownTexture.png`, `./build/themes/V3/${dir}/${versionDir}/dropdownTexture.png`);
 				fs.copy(`./themes/V3/${dir}/${versionDir}/dropdownPreview.png`, `./build/themes/V3/${dir}/${versionDir}/dropdownPreview.png`);
 				if(fs.pathExistsSync(`./themes/V3/${dir}/${versionDir}/fonts`)) {
-					await fs.copy(`./themes/V3/${dir}/${versionDir}/fonts`, `./build/V3/${dir}/${versionDir}/fonts`);
+					fs.copySync(`./themes/V3/${dir}/${versionDir}/fonts`, `./build/themes/V3/${dir}/${versionDir}/fonts`);
 				}
 				if(fs.pathExistsSync(`./themes/V3/${dir}/${versionDir}/assets`)) {
-					await fs.copy(`./themes/V3/${dir}/${versionDir}/assets`, `./build/V3/${dir}/${versionDir}/assets`);
+					await fs.copySync(`./themes/V3/${dir}/${versionDir}/assets`, `./build/themes/V3/${dir}/${versionDir}/assets`);
 				}
 				const src = `./themes/V3/${dir}/${versionDir}/theme.less`;
 	  			((outputDirectory)=>{
