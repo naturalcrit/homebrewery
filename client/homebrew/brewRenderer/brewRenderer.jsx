@@ -170,8 +170,10 @@ const BrewRenderer = (props)=>{
 	};
 
 	const rendererPath  = props.renderer == 'V3' ? 'V3' : 'Legacy';
-	const themePath     = props.theme ?? '5ePHB';
-	const baseThemePath = Themes[rendererPath][themePath].baseTheme;
+	const themePath        = this.state.brew.theme ?? '5ePHB';
+	const themeVersion     = this.state.brew.themeVersion ?? 'latest';
+	const baseThemePath    = Themes[rendererPath][themePath].baseTheme;
+	const baseThemeVersion = Themes[rendererPath][themePath].baseThemeVersion ?? 'latest';
 
 	return (
 		<>
@@ -201,9 +203,9 @@ const BrewRenderer = (props)=>{
 					</div>
 					<link href={`/themes/${rendererPath}/Blank/style.css`} rel='stylesheet'/>
 					{baseThemePath &&
-						<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} rel='stylesheet'/>
+						<link href={`/themes/${rendererPath}/${baseThemePath}/${baseThemeVersion}/style.css`} rel='stylesheet'/>
 					}
-					<link href={`/themes/${rendererPath}/${themePath}/style.css`} rel='stylesheet'/>
+					<link href={`/themes/${rendererPath}/${themePath}/${themeVersion}/style.css`} rel='stylesheet'/>
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted

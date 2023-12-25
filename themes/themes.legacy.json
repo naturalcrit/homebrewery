@@ -1,0 +1,10 @@
+{
+  "Legacy": {
+  "5ePHB": {
+    "name": "5e PHB",
+    "renderer": "legacy",
+    "baseTheme": false,
+    "path": "5ePHB"
+   }
+  }
+}

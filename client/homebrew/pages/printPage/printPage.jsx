@@ -87,17 +87,19 @@ const PrintPage = createClass({
 	},
 
 	render : function(){
-		const rendererPath = this.state.brew.renderer == 'V3' ? 'V3' : 'Legacy';
-		const themePath    = this.state.brew.theme ?? '5ePHB';
-		const baseThemePath = Themes[rendererPath][themePath].baseTheme;
+		const rendererPath     = this.state.brew.renderer == 'V3' ? 'V3' : 'Legacy';
+		const themePath        = this.state.brew.theme ?? '5ePHB';
+		const themeVersion     = this.state.brew.themeVersion ?? 'latest';
+		const baseThemePath    = Themes[rendererPath][themePath].baseTheme;
+		const baseThemeVersion = Themes[rendererPath][themePath].baseThemeVersion ?? 'latest';
 
 		return <div>
 			<Meta name='robots' content='noindex, nofollow' />
 			<link href={`/themes/${rendererPath}/Blank/style.css`} rel='stylesheet'/>
 			{baseThemePath &&
-				<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} rel='stylesheet'/>
+				<link href={`/themes/${rendererPath}/${baseThemePath}/${baseThemeVersion}/style.css`} rel='stylesheet'/>
 			}
-			<link href={`/themes/${rendererPath}/${themePath}/style.css`} rel='stylesheet'/>
+			<link href={`/themes/${rendererPath}/${themePath}/${themeVersion}/style.css`} rel='stylesheet'/>
 			{/* Apply CSS from Style tab */}
 			{this.renderStyle()}
 			<div className='pages' ref='pages'>

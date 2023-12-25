@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
 const zlib = require('zlib');
 const Proj = require('./project.json');
+const path = require('path');
 
 const { pack, watchFile, livereload } = require('vitreum');
 const isDev = !!process.argv.find((arg)=>arg=='--dev');
@@ -69,19 +70,32 @@ fs.emptyDirSync('./build');
 
 	themeFiles = fs.readdirSync('./themes/V3');
 	for (dir of themeFiles) {
-		const themeData = JSON.parse(fs.readFileSync(`./themes/V3/${dir}/settings.json`).toString());
-		themeData.path = dir;
-		themes.V3[dir] = (themeData);
-		fs.copy(`./themes/V3/${dir}/dropdownTexture.png`, `./build/themes/V3/${dir}/dropdownTexture.png`);
-		fs.copy(`./themes/V3/${dir}/dropdownPreview.png`, `./build/themes/V3/${dir}/dropdownPreview.png`);
-		const src = `./themes/V3/${dir}/style.less`;
-	  ((outputDirectory)=>{
-			less.render(fs.readFileSync(src).toString(), {
-				compress : !isDev
-			}, function(e, output) {
-				fs.outputFile(outputDirectory, output.css);
-			});
-		})(`./build/themes/V3/${dir}/style.css`);
+		const stats = fs.lstatSync(`./themes/V3/${dir}`);
+		if(stats.isDirectory()) {
+			const themeVerions = fs.readdirSync(`./themes/V3/${dir}`);
+			for (versionDir of themeVerions) {
+				const themeData = JSON.parse(fs.readFileSync(`./themes/V3/${dir}/${versionDir}/settings.json`).toString());
+				themeData.path = `${dir}/${versionDir}`;
+				themes.V3[dir] = (themeData);
+				fs.copy(`./themes/V3/${dir}/${versionDir}/dropdownTexture.png`, `./build/themes/V3/${dir}/${versionDir}/dropdownTexture.png`);
+				fs.copy(`./themes/V3/${dir}/${versionDir}/dropdownPreview.png`, `./build/themes/V3/${dir}/${versionDir}/dropdownPreview.png`);
+				if(fs.pathExistsSync(`./themes/V3/${dir}/${versionDir}/fonts`)) {
+					await fs.copy(`./themes/V3/${dir}/${versionDir}/fonts`, `./build/V3/${dir}/${versionDir}/fonts`);
+				}
+				if(fs.pathExistsSync(`./themes/V3/${dir}/${versionDir}/assets`)) {
+					await fs.copy(`./themes/V3/${dir}/${versionDir}/assets`, `./build/V3/${dir}/${versionDir}/assets`);
+				}
+				const src = `./themes/V3/${dir}/${versionDir}/theme.less`;
+	  			((outputDirectory)=>{
+					less.render(fs.readFileSync(src).toString(), {
+						compress : !isDev,
+						filename : path.resolve(src)
+					}, function(e, output) {
+						fs.outputFile(outputDirectory, output.css);
+					});
+				})(`./build/themes/V3/${dir}/${versionDir}/style.css`);
+			}
+		}
 	}
 
 	await fs.outputFile('./themes/themes.json', JSON.stringify(themes, null, 2));
