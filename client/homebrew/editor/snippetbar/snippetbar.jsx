@@ -4,6 +4,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
+//const fs = require('fs-extra');
 
 //Import all themes
 
@@ -11,10 +12,26 @@ const Themes = require('themes/themes.json');
 
 const ThemeSnippets = {};
 ThemeSnippets['Legacy_5ePHB'] = require('themes/Legacy/5ePHB/snippets.js');
-ThemeSnippets['V3_5ePHB']     = require('themes/V3/5ePHB/snippets.js');
-ThemeSnippets['V3_5eDMG']     = require('themes/V3/5eDMG/snippets.js');
-ThemeSnippets['V3_Journal']   = require('themes/V3/Journal/snippets.js');
-ThemeSnippets['V3_Blank']     = require('themes/V3/Blank/snippets.js');
+ThemeSnippets['V3_5ePHB']     = require('themes/V3/hbtheme-5ePHB/latest/snippets.js');
+ThemeSnippets['V3_5eDMG']     = require('themes/V3/5eDMG/latest/snippets.js');
+ThemeSnippets['V3_Journal']   = require('themes/V3/Journal/latest/snippets.js');
+ThemeSnippets['V3_Blank']     = require('themes/V3/Blank/latest/snippets.js');
+
+// const findThemes = function() {
+// 	themeFiles = fs.readdirSync('themes/V3');
+// 	for (dir of themeFiles) {
+// 		const stats = fs.lstatSync(`themes/V3/${dir}`);
+// 		if(stats.isDirectory()) {
+// 			const themeVerions = fs.readdirSync(`themes/V3/${dir}`);
+// 			for (versionDir of themeVerions) {
+// 				const themeData = JSON.parse(fs.readFileSync(`themes/V3/${dir}/${versionDir}/settings.json`).toString());
+// 				ThemeSnippets[`V3_${themeData.name}_${versionDir}`] = require(`themes/V3/${dir}/${versionDir}/snippets.js`);
+// 			}
+// 		}
+// 	}
+// 	console.log(ThemeSnippets);
+// };
+
 
 const EditorThemes = require('build/homebrew/codeMirror/editorThemes.json');
 

@@ -170,7 +170,7 @@ const BrewRenderer = (props)=>{
 	};
 
 	const rendererPath  = props.renderer == 'V3' ? 'V3' : 'Legacy';
-	const themePath        = this.state.brew.theme ?? '5ePHB';
+	const themePath        = this.state.brew.theme ?? 'Blank';
 	const themeVersion     = this.state.brew.themeVersion ?? 'latest';
 	const baseThemePath    = Themes[rendererPath][themePath].baseTheme;
 	const baseThemeVersion = Themes[rendererPath][themePath].baseThemeVersion ?? 'latest';

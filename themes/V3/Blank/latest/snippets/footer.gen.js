@@ -1,4 +1,4 @@
-const Markdown = require('../../../../shared/naturalcrit/markdown.js');
+const Markdown = require('../../../../../shared/naturalcrit/markdown.js');
 
 module.exports = {
 	createFooterFunc : function(headerSize=1){
