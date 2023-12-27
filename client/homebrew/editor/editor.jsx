@@ -151,7 +151,7 @@ const Editor = createClass({
 
 						// definition lists
 						if(line.includes('::')){
-							const regex = /^([^\n:]+?)::([^\n]*)(?:\n|$)/ymd;
+							const regex = /^([^\n:]+?)::([^\n]*)(?:\n|$)/ymd;  // the `d` flag, for match indices, throws an ESLint error.
 							let match;
 							while ((match = regex.exec(line)) != null){
 								codeMirror.markText({ line: lineNumber, ch: match.indices[0][0] }, { line: lineNumber, ch: match.indices[0][1] }, { className: 'define' });
