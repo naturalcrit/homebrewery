@@ -80,6 +80,15 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### DATE - VERSION
+{{taskList
+
+##### Gazook89
+
+* [x] Fix definition list syntax highlighting
+
+}}
+
 ### Thursday 17/08/2023 - v3.9.2
 {{taskList
 
