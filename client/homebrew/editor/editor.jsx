@@ -154,8 +154,8 @@ const Editor = createClass({
 							const regex = /^([^\n:]+?)::([^\n]*)(?:\n|$)/ymd;
 							let match;
 							while ((match = regex.exec(line)) != null){
-								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[0]) }, { line: lineNumber, ch: line.indexOf(match[0]) + match[0].length }, { className: 'define' });
-								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length }, { className: 'term' });
+								codeMirror.markText({ line: lineNumber, ch: match.indices[0][0] }, { line: lineNumber, ch: match.indices[0][1] }, { className: 'define' });
+								codeMirror.markText({ line: lineNumber, ch: match.indices[1][0] }, { line: lineNumber, ch: match.indices[1][1] }, { className: 'term' });
 								codeMirror.markText({ line: lineNumber, ch: match.indices[2][0] }, { line: lineNumber, ch: match.indices[2][1] }, { className: 'definition' });
 							}
 						}
