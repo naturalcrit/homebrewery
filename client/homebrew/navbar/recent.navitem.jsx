@@ -21,6 +21,7 @@ const RecentItems = createClass({
 	},
 
 	getInitialState : function() {
+		''.setTranslationDefaults(translateOpts);
 		return {
 			showDropdown : false,
 			edit         : [],
@@ -156,13 +157,13 @@ const RecentItems = createClass({
 		return <>
 			{(this.props.showEdit && this.props.showView) ?
 				<Nav.item className='header'>
-					{'edited'.translate(translateOpts)}
+					{'edited'.translate()}
 				</Nav.item> : null }
 			{this.props.showEdit ?
 				makeItems(this.state.edit) : null }
 			{(this.props.showEdit && this.props.showView) ?
 				<Nav.item className='header'>
-					{'viewed'.translate(translateOpts)}
+					{'viewed'.translate()}
 				</Nav.item>	: null }
 			{this.props.showView ?
 				makeItems(this.state.view) : null }
@@ -186,7 +187,7 @@ module.exports = {
 		return <RecentItems
 			brew={props.brew}
 			storageKey={props.storageKey}
-			text={'recently edited'.translate(translateOpts)}
+			text={'recently edited'.translate()}
 			showEdit={true}
 		/>;
 	},
@@ -195,7 +196,7 @@ module.exports = {
 		return <RecentItems
 			brew={props.brew}
 			storageKey={props.storageKey}
-			text={'recently viewed'.translate(translateOpts)}
+			text={'recently viewed'.translate()}
 			showView={true}
 		/>;
 	},
@@ -204,7 +205,7 @@ module.exports = {
 		return <RecentItems
 			brew={props.brew}
 			storageKey={props.storageKey}
-			text={'recent brews'.translate(translateOpts)}
+			text={'recent brews'.translate()}
 			showEdit={true}
 			showView={true}
 		/>;

@@ -8,6 +8,7 @@ const translateOpts = ['nav', 'usernameDropdown'];
 const Account = createClass({
 	displayName     : 'AccountNavItem',
 	getInitialState : function() {
+		''.setTranslationDefaults(translateOpts);
 		return {
 			url : ''
 		};
@@ -22,7 +23,7 @@ const Account = createClass({
 	},
 
 	handleLogout : function(){
-		if(confirm('logoutMsg'.translate(translateOpts))) {
+		if(confirm('logoutMsg'.translate())) {
 			// Reset divider position
 			window.localStorage.removeItem('naturalcrit-pane-split');
 			// Clear login cookie
@@ -40,7 +41,7 @@ const Account = createClass({
 	},
 
 	localLogin : async function(){
-		const username = prompt('localLoginPrompt'.translate(translateOpts));
+		const username = prompt('localLoginPrompt'.translate());
 		if(!username) {return;}
 
 		const expiry = new Date;
@@ -76,7 +77,7 @@ const Account = createClass({
 					color='yellow'
 					icon='fas fa-beer'
 				>
-					{'brews'.translate(translateOpts)}
+					{'brews'.translate()}
 				</Nav.item>
 				<Nav.item
 					className='account'
@@ -84,7 +85,7 @@ const Account = createClass({
 					icon='fas fa-user'
 					href='/account'
 				>
-					{'account'.translate(translateOpts)}
+					{'account'.translate()}
 				</Nav.item>
 				<Nav.item
 					className='logout'
@@ -92,7 +93,7 @@ const Account = createClass({
 					icon='fas fa-power-off'
 					onClick={this.handleLogout}
 				>
-					{'logout'.translate(translateOpts)}
+					{'logout'.translate()}
 				</Nav.item>
 			</Nav.dropdown>;
 		}
@@ -101,14 +102,14 @@ const Account = createClass({
 		//  LOCAL ONLY
 		if(global.config.local) {
 			return <Nav.item color='teal' icon='fas fa-sign-in-alt' onClick={this.localLogin}>
-				{'login'.translate(translateOpts)}
+				{'login'.translate()}
 			</Nav.item>;
 		};
 
 		// Logged out
 		// Production site
 		return <Nav.item href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`} color='teal' icon='fas fa-sign-in-alt'>
-			{'login'.translate(translateOpts)}
+			{'login'.translate()}
 		</Nav.item>;
 	}
 });
