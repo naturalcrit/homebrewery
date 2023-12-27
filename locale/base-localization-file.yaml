@@ -19,6 +19,7 @@ nav:
     autoSaveMsg: autosave is off and you haven't saved for n minute/hour/day/month/year.
 
   newDoc:  
+    new: 
   helpDropdown:
     needHelp: need help?
     report: report issue

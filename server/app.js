@@ -75,8 +75,8 @@ const migrateText       = require('fs').readFileSync('client/homebrew/pages/home
 const changelogText     = require('fs').readFileSync('changelog.md', 'utf8');
 const faqText           = require('fs').readFileSync('faq.md', 'utf8');
 
-const translationFile   = require('fs').readFileSync('translation/base-localization-file.yaml', 'utf8');
-const translationData   = yaml.load(translationFile);
+const localeFile   = require('fs').readFileSync('locale/base-localization-file.yaml', 'utf8');
+const localeData   = yaml.load(localeFile);
 
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
@@ -429,7 +429,7 @@ const renderPage = async (req, res)=>{
 		local       : isLocalEnvironment,
 		publicUrl   : config.get('publicUrl') ?? '',
 		environment : nodeEnv,
-		translationData
+		localeData
 	};
 	const props = {
 		version       : require('./../package.json').version,

@@ -13,7 +13,7 @@ const ErrorPage = require('./pages/errorPage/errorPage.jsx');
 const PrintPage = require('./pages/printPage/printPage.jsx');
 const AccountPage = require('./pages/accountPage/accountPage.jsx');
 
-const Translate = require('translation/translation.js');
+const Localize = require('locale/localization.js');
 
 const WithRoute = (props)=>{
 	const params = useParams();
@@ -61,7 +61,7 @@ const Homebrew = createClass({
 		global.enable_themes = this.props.enable_themes;
 		global.config = this.props.config;
 
-		Translate.addTranslationFunc(this.props.config.translationData);
+		Localize.addTranslationFunc(this.props.config.localeData);
 
 		return {};
 	},
@@ -83,8 +83,8 @@ const Homebrew = createClass({
 						<Route path='/account' element={<WithRoute el={AccountPage} brew={this.props.brew} uiItems={this.props.brew.uiItems} />} />
 						<Route path='/legacy' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
 						<Route path='/error' element={<WithRoute el={ErrorPage} brew={this.props.brew} />} />
-					  	<Route path='/' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
-					  	<Route path='/*' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
+						<Route path='/' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
+						<Route path='/*' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
 					</Routes>
 				</div>
 			</Router>
