@@ -341,11 +341,6 @@ module.exports = [
 				gen	 : dedent`{{MrEavesRemake Dummy Text}}`
 			},
 			{
-				name : 'Mr Eaves Remake',
-				icon : 'MrEavesRemake',
-				gen	 : dedent`{{MrEavesRemake Dummy Text}}`
-			},
-			{
 				name: 'Solbera Imitation Remake',
 				icon: 'SolberaImitationRemake',
 				gen: dedent`{{SolberaImitationRemake Dummy Text}}`
