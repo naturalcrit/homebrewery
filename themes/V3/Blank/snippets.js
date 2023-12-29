@@ -312,87 +312,87 @@ module.exports = [
 		snippets  : [
 			{
 				name : 'Open Sans',
-				icon : 'OpenSans',
+				icon : 'font OpenSans',
 				gen	 : dedent`{{OpenSans Dummy Text}}`
 			},
 			{
 				name : 'Code Bold',
-				icon : 'CodeBold',
+				icon : 'font CodeBold',
 				gen	 : dedent`{{CodeBold Dummy Text}}`
 			},
 			{
 				name : 'Code Light',
-				icon : 'CodeLight',
+				icon : 'font CodeLight',
 				gen	 : dedent`{{CodeLight Dummy Text}}`
 			},
 			{
 				name : 'Scaly Sans Remake',
-				icon : 'ScalySansRemake',
+				icon : 'font ScalySansRemake',
 				gen	 : dedent`{{ScalySansRemake Dummy Text}}`
 			},
 			{
 				name : 'Book Insanity Remake',
-				icon : 'BookInsanityRemake',
+				icon : 'font BookInsanityRemake',
 				gen	 : dedent`{{BookInsanityRemake Dummy Text}}`
 			},
 			{
 				name : 'Mr Eaves Remake',
-				icon : 'MrEavesRemake',
+				icon : 'font MrEavesRemake',
 				gen	 : dedent`{{MrEavesRemake Dummy Text}}`
 			},
 			{
 				name: 'Solbera Imitation Remake',
-				icon: 'SolberaImitationRemake',
+				icon: 'font SolberaImitationRemake',
 				gen: dedent`{{SolberaImitationRemake Dummy Text}}`
 			  },
 			  {
 				name: 'Scaly Sans Small Caps Remake',
-				icon: 'ScalySansSmallCapsRemake',
+				icon: 'font ScalySansSmallCapsRemake',
 				gen: dedent`{{ScalySansSmallCapsRemake Dummy Text}}`
 			  },
 			  {
 				name: 'Walter Turncoat',
-				icon: 'WalterTurncoat',
+				icon: 'font WalterTurncoat',
 				gen: dedent`{{WalterTurncoat Dummy Text}}`
 			  },
 			  {
 				name: 'Lato',
-				icon: 'Lato',
+				icon: 'font Lato',
 				gen: dedent`{{Lato Dummy Text}}`
 			  },
 			  {
 				name: 'Courier',
-				icon: 'Courier',
+				icon: 'font Courier',
 				gen: dedent`{{Courier Dummy Text}}`
 			  },
 			  {
 				name: 'Nodesto Caps Condensed',
-				icon: 'NodestoCapsCondensed',
+				icon: 'font NodestoCapsCondensed',
 				gen: dedent`{{NodestoCapsCondensed Dummy Text}}`
 			  },
 			  {
 				name: 'Overpass',
-				icon: 'Overpass',
+				icon: 'font Overpass',
 				gen: dedent`{{Overpass Dummy Text}}`
 			  },
 			  {
 				name: 'Davek',
-				icon: 'Davek',
+				icon: 'font Davek',
 				gen: dedent`{{Davek Dummy Text}}`
 			  },
 			  {
 				name: 'Iokharic',
-				icon: 'Iokharic',
+				icon: 'font Iokharic',
 				gen: dedent`{{Iokharic Dummy Text}}`
 			  },
 			  {
 				name: 'Rellanic',
-				icon: 'Rellanic',
+				icon: 'font Rellanic',
 				gen: dedent`{{Rellanic Dummy Text}}`
 			  },
 			  {
 				name: 'Times New Roman',
-				icon: 'TimesNewRoman',
+				icon: 'font TimesNewRoman',
 				gen: dedent`{{TimesNewRoman Dummy Text}}`
 			  }
 		]

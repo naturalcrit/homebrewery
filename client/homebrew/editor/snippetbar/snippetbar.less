@@ -131,28 +131,6 @@
 			margin-right: 3px;
 			font-size: 1.4em;
 		}
-		/* Fonts */
-		& i {
-			&.OpenSans+span {font-family: 'OpenSans';}
-			&.CodeBold+span {font-family: 'CodeBold';}
-			&.CodeLight+span {font-family: 'CodeLight';}
-			&.ScalySansRemake+span {font-family: 'ScalySansRemake';}
-			&.BookInsanityRemake+span {font-family: 'BookInsanityRemake';}
-			&.MrEavesRemake+span {font-family: 'MrEavesRemake';}
-			&.SolberaImitationRemake+span {font-family: 'SolberaImitationRemake';}
-			&.ScalySansSmallCapsRemake+span {font-family: 'ScalySansSmallCapsRemake';}
-			&.WalterTurncoat+span {font-family: 'WalterTurncoat';}
-			&.Lato+span {font-family: 'Lato';}
-			&.Courier+span {font-family: 'Courier';}
-			&.NodestoCapsCondensed+span {font-family: 'NodestoCapsCondensed';}
-			&.Overpass+span {font-family: 'Overpass';}
-			&.Davek+span {font-family: 'Davek';}
-			&.Iokharic+span {font-family: 'Iokharic';}
-			&.Rellanic+span {font-family: 'Rellanic';}
-			&.TimesNewRoman+span {font-family: 'Times New Roman';}
-
-			&:is(.OpenSans,.CodeBold,.CodeLight,.ScalySansRemake,.BookInsanityRemake,.MrEavesRemake,.SolberaImitationRemake,.ScalySansSmallCapsRemake,.WalterTurncoat,.Lato,.Courier,.NodestoCapsCondensed,.Overpass,.Davek,.Iokharic,.Rellanic,.TimesNewRoman) { font-size:12px}
-		}
 	}
 
 	.toggleMeta {
@@ -199,6 +177,34 @@
 					&~i {
 						margin-right: 0;
 						margin-left: 5px;
+					}
+
+					/* Fonts */
+					&.font {
+						height:auto;
+						
+						&::before {
+							content:'F';
+							font-size:1.4em;
+						}
+
+						&.OpenSans {font-family: 'OpenSans';}
+						&.CodeBold {font-family: 'CodeBold';}
+						&.CodeLight {font-family: 'CodeLight';}
+						&.ScalySansRemake {font-family: 'ScalySansRemake';}
+						&.BookInsanityRemake {font-family: 'BookInsanityRemake';}
+						&.MrEavesRemake {font-family: 'MrEavesRemake';}
+						&.SolberaImitationRemake {font-family: 'SolberaImitationRemake';}
+						&.ScalySansSmallCapsRemake {font-family: 'ScalySansSmallCapsRemake';}
+						&.WalterTurncoat {font-family: 'WalterTurncoat';}
+						&.Lato {font-family: 'Lato';}
+						&.Courier {font-family: 'Courier';}
+						&.NodestoCapsCondensed {font-family: 'NodestoCapsCondensed';}
+						&.Overpass {font-family: 'Overpass';}
+						&.Davek {font-family: 'Davek';}
+						&.Iokharic {font-family: 'Iokharic';}
+						&.Rellanic {font-family: 'Rellanic';}
+						&.TimesNewRoman {font-family: 'Times New Roman';}
 					}
 				}
 
