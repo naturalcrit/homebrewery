@@ -13,7 +13,21 @@
       "renderer": "V3",
       "baseTheme": "5ePHB",
       "baseSnippets": "5ePHB",
-      "path": "5eDMG"
+      "licenseType": "OGL 1.0a",
+      "description": "This is our version of the 5e DMG Styles.",
+      "commonTags": [
+        "OGL",
+        "5e",
+        "DMG"
+      ],
+      "homeRepository": "git@github.com:dbolack-ab/hbtheme-5eDMG.git",
+      "credits": [
+        "A",
+        "list",
+        "of",
+        "people"
+      ],
+      "path": "5eDMG/latest"
     },
     "5ePHB": {
       "name": "5e PHB",
@@ -34,21 +48,34 @@
         "of",
         "people"
       ],
-      "path": "5ePHB"
+      "path": "5ePHB/v3.2"
     },
     "Blank": {
       "name": "Blank",
       "renderer": "V3",
       "baseTheme": false,
       "baseSnippets": false,
-      "path": "Blank"
+      "path": "Blank/latest"
     },
     "Journal": {
       "name": "Journal",
       "renderer": "V3",
       "baseTheme": false,
       "baseSnippets": "5ePHB",
-      "path": "Journal"
+      "licenseType": "",
+      "description": "This is a blank Journal",
+      "commonTags": [
+        "Journal",
+        "Blank"
+      ],
+      "homeRepository": "git@github.com:dbolack-ab/hbtheme-Journal.git",
+      "credits": [
+        "A",
+        "list",
+        "of",
+        "people"
+      ],
+      "path": "Journal/latest"
     }
   }
 }

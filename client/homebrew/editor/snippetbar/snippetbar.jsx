@@ -4,34 +4,14 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
+const path = require('path');
 //const fs = require('fs-extra');
 
 //Import all themes
 
 const Themes = require('themes/themes.json');
 
-const ThemeSnippets = {};
-ThemeSnippets['Legacy_5ePHB'] = require('themes/Legacy/5ePHB/snippets.js');
-ThemeSnippets['V3_5ePHB']     = require('themes/V3/hbtheme-5ePHB/latest/snippets.js');
-ThemeSnippets['V3_5eDMG']     = require('themes/V3/5eDMG/latest/snippets.js');
-ThemeSnippets['V3_Journal']   = require('themes/V3/Journal/latest/snippets.js');
-ThemeSnippets['V3_Blank']     = require('themes/V3/Blank/latest/snippets.js');
-
-// const findThemes = function() {
-// 	themeFiles = fs.readdirSync('themes/V3');
-// 	for (dir of themeFiles) {
-// 		const stats = fs.lstatSync(`themes/V3/${dir}`);
-// 		if(stats.isDirectory()) {
-// 			const themeVerions = fs.readdirSync(`themes/V3/${dir}`);
-// 			for (versionDir of themeVerions) {
-// 				const themeData = JSON.parse(fs.readFileSync(`themes/V3/${dir}/${versionDir}/settings.json`).toString());
-// 				ThemeSnippets[`V3_${themeData.name}_${versionDir}`] = require(`themes/V3/${dir}/${versionDir}/snippets.js`);
-// 			}
-// 		}
-// 	}
-// 	console.log(ThemeSnippets);
-// };
-
+const ThemeSnippets = require('themes/themeSnippets.js');
 
 const EditorThemes = require('build/homebrew/codeMirror/editorThemes.json');
 
@@ -70,10 +50,11 @@ const Snippetbar = createClass({
 	},
 
 	componentDidMount : async function() {
-		const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
-		const themePath    = this.props.theme ?? '5ePHB';
-		let snippets = _.cloneDeep(ThemeSnippets[`${rendererPath}_${themePath}`]);
-		snippets = this.compileSnippets(rendererPath, themePath, snippets);
+		const rendererVersion    = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
+		const themeSlug       = this.props.theme ?? '5ePHB';
+		const themeVersion    = this.props?.themeVersion ?? 'latest';
+		let snippets = _.cloneDeep(ThemeSnippets[`${rendererVersion}_${themeSlug}_${themeVersion}`]);
+		snippets = this.compileSnippets(rendererVersion, themeSlug, themeVersion, snippets);
 		this.setState({
 			snippets : snippets
 		});
@@ -81,10 +62,11 @@ const Snippetbar = createClass({
 
 	componentDidUpdate : async function(prevProps) {
 		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme) {
-			const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
-			const themePath    = this.props.theme ?? '5ePHB';
-			let snippets = _.cloneDeep(ThemeSnippets[`${rendererPath}_${themePath}`]);
-			snippets = this.compileSnippets(rendererPath, themePath, snippets);
+			const rendererVersion = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
+			const themeSlug       = this.props.theme ?? '5ePHB';
+			const themeVersion    = this.props?.themeVersion ?? 'latest';
+			let snippets = _.cloneDeep(ThemeSnippets[`${rendererVersion}_${themeSlug}_${themeVersion}`]);
+			snippets = this.compileSnippets(rendererVersion, themeSlug, themeVersions, snippets);
 			this.setState({
 				snippets : snippets
 			});
@@ -98,18 +80,18 @@ const Snippetbar = createClass({
 		}
 	},
 
-	compileSnippets : function(rendererPath, themePath, snippets) {
+	compileSnippets : function(rendererVersion, themePath, themeVersion, snippets) {
 		let compiledSnippets = snippets;
-		const baseSnippetsPath = Themes[rendererPath][themePath]?.baseSnippets;
+		const baseSnippetsPath = Themes[rendererVersion][themePath]?.baseSnippets;
 
 		const objB = _.keyBy(compiledSnippets, 'groupName');
 
 		if(baseSnippetsPath) {
-			const objA = _.keyBy(_.cloneDeep(ThemeSnippets[`${rendererPath}_${baseSnippetsPath}`]), 'groupName');
+			const objA = _.keyBy(_.cloneDeep(ThemeSnippets[`${rendererVersion}_${baseSnippetsPath}_${themeVersion}`]), 'groupName');
 			compiledSnippets = _.values(_.mergeWith(objA, objB, this.mergeCustomizer));
-			compiledSnippets = this.compileSnippets(rendererPath, baseSnippetsPath, _.cloneDeep(compiledSnippets));
+			compiledSnippets = this.compileSnippets(rendererVersion, baseSnippetsPath, _.cloneDeep(compiledSnippets));
 		} else {
-			const objA = _.keyBy(_.cloneDeep(ThemeSnippets[`${rendererPath}_Blank`]), 'groupName');
+			const objA = _.keyBy(_.cloneDeep(ThemeSnippets[`${rendererVersion}_Blank_latest`]), 'groupName');
 			compiledSnippets = _.values(_.mergeWith(objA, objB, this.mergeCustomizer));
 		}
 		return compiledSnippets;

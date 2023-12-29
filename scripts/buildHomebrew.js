@@ -91,6 +91,9 @@ fs.emptyDirSync('./build');
 						compress : !isDev,
 						filename : path.resolve(src)
 					}, function(e, output) {
+						if(e) {
+							console.log(e);
+						}
 						fs.outputFile(outputDirectory, output.css);
 					});
 				})(`./build/themes/V3/${dir}/${versionDir}/style.css`);
