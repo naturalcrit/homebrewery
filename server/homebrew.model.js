@@ -22,6 +22,9 @@ const HomebrewSchema = mongoose.Schema({
 	published      : { type: Boolean, default: false },
 	thumbnail      : { type: String, default: '' },
 
+	theme        : { type: String },
+	themeVersion : { type: String },
+
 	createdAt  : { type: Date, default: Date.now },
 	updatedAt  : { type: Date, default: Date.now },
 	lastViewed : { type: Date, default: Date.now },

@@ -27,17 +27,18 @@ const MetadataEditor = createClass({
 	getDefaultProps : function() {
 		return {
 			metadata : {
-				editId      : null,
-				title       : '',
-				description : '',
-				thumbnail   : '',
-				tags        : [],
-				published   : false,
-				authors     : [],
-				systems     : [],
-				renderer    : 'legacy',
-				theme       : '5ePHB',
-				lang        : 'en'
+				editId       : null,
+				title        : '',
+				description  : '',
+				thumbnail    : '',
+				tags         : [],
+				published    : false,
+				authors      : [],
+				systems      : [],
+				renderer     : 'legacy',
+				theme        : '5ePHB',
+				themeVersion : 'latest',
+				lang         : 'en'
 			},
 			onChange    : ()=>{},
 			reportError : ()=>{}
@@ -111,6 +112,11 @@ const MetadataEditor = createClass({
 	handleTheme : function(theme){
 		this.props.metadata.renderer = theme.renderer;
 		this.props.metadata.theme    = theme.path;
+		this.props.onChange(this.props.metadata);
+	},
+
+	handleThemeVersion : function(version){
+		this.props.metadata.themeVersion = version;
 		this.props.onChange(this.props.metadata);
 	},
 
@@ -196,39 +202,58 @@ const MetadataEditor = createClass({
 			return _.map(_.values(Themes[renderer]), (theme)=>{
 				return <div className='item' key={''} onClick={()=>this.handleTheme(theme)} title={''}>
 					{`${theme.renderer} : ${theme.name}`}
-					<img src={`/themes/${theme.renderer}/${theme.path}/latest/dropdownTexture.png`}/>
+				</div>;
+			});
+		};
+
+		const listThemeVersions = (renderer, theme)=>{
+			const whichList = _.compact(_.concat(['latest'], Themes[renderer][theme]?.versions));
+			return _.map(_.values(whichList), (version)=>{
+				return <div className='item' key={''} onClick={()=>this.handleThemeVersion(version)} title={''}>
+					{`${version}`}
+					<img src={`/themes/${renderer}/${Themes[renderer][theme].path}/${version}/dropdownTexture.png`}/>
 					<div className='preview'>
-						<h6>{`${theme.name}`} preview</h6>
-						<img src={`/themes/${theme.renderer}/${theme.path}/latest/dropdownPreview.png`}/>
+						<h6>{`${theme} : ${version}`} preview</h6>
+						<img src={`/themes/${renderer}/${Themes[renderer][theme].path}/${version}/dropdownPreview.png`}/>
 					</div>
 				</div>;
 			});
 		};
 
 		const currentTheme = Themes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme];
-		let dropdown;
+		const currentVersion = this.props.metadata.themeVersion ?? 'latest';
+		let themeDropdown;
+		let versionDropdown;
 
 		if(this.props.metadata.renderer == 'legacy') {
-			dropdown =
+			themeDropdown =
 				<Nav.dropdown className='disabled value' trigger='disabled'>
 					<div>
 						{`Themes are not supported in the Legacy Renderer`} <i className='fas fa-caret-down'></i>
 					</div>
 				</Nav.dropdown>;
 		} else {
-			dropdown =
+			themeDropdown =
 				<Nav.dropdown className='value' trigger='click'>
 					<div>
 						{`${_.upperFirst(currentTheme.renderer)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
 					</div>
-					{/*listThemes('Legacy')*/}
 					{listThemes('V3')}
+				</Nav.dropdown>;
+			versionDropdown =
+				<Nav.dropdown className='value' trigger='click'>
+					<div>
+						{`${currentVersion}`} <i className='fas fa-caret-down'></i>
+					</div>
+					{listThemeVersions(_.upperFirst(currentTheme.renderer), this.props.metadata.theme)}
 				</Nav.dropdown>;
 		}
 
 		return <div className='field themes'>
-			<label>theme</label>
-			{dropdown}
+			<label>Theme</label>
+			{themeDropdown}
+			<label>Version</label>
+			{versionDropdown}
 		</div>;
 	},
 

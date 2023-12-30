@@ -27,7 +27,7 @@
         "of",
         "people"
       ],
-      "path": "5eDMG/latest"
+      "path": "5eDMG"
     },
     "5ePHB": {
       "name": "5e PHB",
@@ -48,14 +48,17 @@
         "of",
         "people"
       ],
-      "path": "5ePHB/v3.2"
+      "path": "5ePHB",
+      "versions": [
+        "v3.2"
+      ]
     },
     "Blank": {
       "name": "Blank",
       "renderer": "V3",
       "baseTheme": false,
       "baseSnippets": false,
-      "path": "Blank/latest"
+      "path": "Blank"
     },
     "Journal": {
       "name": "Journal",
@@ -75,7 +78,7 @@
         "of",
         "people"
       ],
-      "path": "Journal/latest"
+      "path": "Journal"
     }
   }
 }

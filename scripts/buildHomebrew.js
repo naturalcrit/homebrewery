@@ -73,10 +73,17 @@ fs.emptyDirSync('./build');
 		const stats = fs.lstatSync(`./themes/V3/${dir}`);
 		if(stats.isDirectory()) {
 			const themeVerions = fs.readdirSync(`./themes/V3/${dir}`);
+			const themeData = JSON.parse(fs.readFileSync(`./themes/V3/${dir}/latest/settings.json`).toString());
+			themeData.path = `${dir}`;
+			themes.V3[dir] = (themeData);
 			for (versionDir of themeVerions) {
-				const themeData = JSON.parse(fs.readFileSync(`./themes/V3/${dir}/${versionDir}/settings.json`).toString());
-				themeData.path = `${dir}/${versionDir}`;
-				themes.V3[dir] = (themeData);
+				if(versionDir != 'latest') {
+					if(!themes.V3[dir]?.versions) {
+						themes.V3[dir].versions = [versionDir];
+					} else {
+						themes.V3[dir].versions.push(versionDir);
+					}
+				}
 				fs.copy(`./themes/V3/${dir}/${versionDir}/dropdownTexture.png`, `./build/themes/V3/${dir}/${versionDir}/dropdownTexture.png`);
 				fs.copy(`./themes/V3/${dir}/${versionDir}/dropdownPreview.png`, `./build/themes/V3/${dir}/${versionDir}/dropdownPreview.png`);
 				if(fs.pathExistsSync(`./themes/V3/${dir}/${versionDir}/fonts`)) {

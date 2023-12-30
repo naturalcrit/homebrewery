@@ -23,7 +23,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const index = brew.text.indexOf('```\n\n');
 		const metadataSection = brew.text.slice(12, index - 1);
 		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
+		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'themeVersion', 'lang']));
 		brew.text = brew.text.slice(index + 5);
 	}
 	if(brew.text.startsWith('```css')) {
@@ -299,12 +299,13 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	const brew = {
-		shareId  : req.brew.shareId,
-		title    : `CLONE - ${req.brew.title}`,
-		text     : req.brew.text,
-		style    : req.brew.style,
-		renderer : req.brew.renderer,
-		theme    : req.brew.theme
+		shareId      : req.brew.shareId,
+		title        : `CLONE - ${req.brew.title}`,
+		text         : req.brew.text,
+		style        : req.brew.style,
+		renderer     : req.brew.renderer,
+		theme        : req.brew.theme,
+		themeVersion : req.brew.themeVersion
 	};
 	req.brew = _.defaults(brew, DEFAULT_BREW);
 

@@ -108,7 +108,7 @@ const api = {
 				`\`\`\`\n\n` +
 				`${text}`;
 		}
-		const metadata = _.pick(brew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']);
+		const metadata = _.pick(brew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'themeVersion', 'lang']);
 		text = `\`\`\`metadata\n` +
 			`${yaml.dump(metadata)}\n` +
 			`\`\`\`\n\n` +
