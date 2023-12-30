@@ -8,6 +8,7 @@ const request = require('../../utils/request-middleware.js');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Combobox = require('client/components/combobox.jsx');
 const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
+const html2canvas = require('html2canvas');
 
 const Themes = require('themes/themes.json');
 const validations = require('./validations.js');
@@ -31,6 +32,8 @@ const MetadataEditor = createClass({
 				title       : '',
 				description : '',
 				thumbnail   : '',
+				thumbnailSm : null,
+				thumbnailLg : null,
 				tags        : [],
 				published   : false,
 				authors     : [],
@@ -56,9 +59,25 @@ const MetadataEditor = createClass({
 		});
 	},
 
+
+	ThumbnailCapture : function() {
+		const bR = parent.document.getElementById('BrewRenderer');
+		const brewRenderer = bR.contentDocument || bR.contentWindow.document;
+
+		const topPage = brewRenderer.getElementsByClassName('page')[0];
+		const props = this.props;
+		html2canvas(topPage).then(function(canvas){
+			const img = canvas.toDataURL('image/webp');
+			props.metadata.thumbnail = 'Page 1';
+			props.metadata.thumbnailSm = img;
+			props.onChange(props.metadata);
+		});
+	},
+
 	renderThumbnail : function(){
 		if(!this.state.showThumbnail) return;
-		return <img className='thumbnail-preview' src={this.props.metadata.thumbnail || homebreweryThumbnail}></img>;
+		const imgURL = this.props.metadata.thumbnail.startsWith('Page 1') ? this.props.metadata.thumbnailSm : this.props.metadata.thumbnail;
+		return <img className='thumbnail-preview' src={imgURL || homebreweryThumbnail}></img>;
 	},
 
 	handleFieldChange : function(name, e){
@@ -332,6 +351,9 @@ const MetadataEditor = createClass({
 							onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
 						<button className='display' onClick={this.toggleThumbnailDisplay}>
 							<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
+						</button>
+						<button className='display' onClick={this.ThumbnailCapture}>
+							<i className={`fas fa-image`} />
 						</button>
 					</div>
 				</div>
