@@ -10,7 +10,6 @@
 		top             : 0px;
 		right           : 0px;
 		height          : @menuHeight;
-		width           : 125px;
 		justify-content : space-between;
 		&>div{
 			height      : @menuHeight;
@@ -46,6 +45,31 @@
 					color : black;
 				}
 			}
+			&.foldAll{
+				.tooltipLeft('Fold All');
+				font-size : 0.75em;
+				color     : grey;
+				&.active{
+					color : black;
+				}
+			}
+			&.unfoldAll{
+				.tooltipLeft('Unfold All');
+				font-size : 0.75em;
+				color     : grey;
+				&.active{
+					color : black;
+				}
+			}
+			&.editorTheme{
+				.tooltipLeft('Editor Themes');
+				font-size : 0.75em;
+				color     : black;
+				&.active{
+					color : white;
+					background-color: black;
+				}
+			}
 			&.divider {
 				background: linear-gradient(#000, #000) no-repeat center/1px 100%;
 				width: 5px;
@@ -53,6 +77,15 @@
 					background-color: inherit;
 				}
 			}
+		}
+		.themeSelector{
+			position: absolute;
+			left: -65px;
+			top: 30px;
+			z-index: 999;
+			width: 170px;
+			background-color: black;
+    		border-radius: 5px;
 		}
 	}
 	.snippetBarButton{

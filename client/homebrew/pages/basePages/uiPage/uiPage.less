@@ -16,6 +16,23 @@
 				margin        : 5px 0px;
 				border        : 2px solid black;
 				border-radius : 5px;
+				button {
+					background-color : transparent;
+					border           : 1px solid black;
+					border-radius    : 5px;
+					width            : 125px;
+					color            : black;
+					margin-right     : 5px;
+					&.active {
+						background-color: #0007;
+						color: white;
+						&:before {
+							content: '\f00c';
+    						font-family: 'FONT AWESOME 5 FREE';
+    						margin-right: 5px;
+						}
+					}
+				}
 			}
 			h1, h2, h3, h4 {
 				width          : 100%;

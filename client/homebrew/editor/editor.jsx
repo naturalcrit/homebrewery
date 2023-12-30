@@ -10,6 +10,8 @@ const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
 const SnippetBar = require('./snippetbar/snippetbar.jsx');
 const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
+const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
+
 const SNIPPETBAR_HEIGHT = 25;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
@@ -34,12 +36,14 @@ const Editor = createClass({
 			onMetaChange  : ()=>{},
 			reportError   : ()=>{},
 
-			renderer : 'legacy'
+			editorTheme : 'default',
+			renderer    : 'legacy'
 		};
 	},
 	getInitialState : function() {
 		return {
-			view : 'text' //'text', 'style', 'meta'
+			editorTheme : this.props.editorTheme,
+			view        : 'text' //'text', 'style', 'meta'
 		};
 	},
 
@@ -51,6 +55,13 @@ const Editor = createClass({
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
+
+		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
+		if(editorTheme) {
+			this.setState({
+				editorTheme : editorTheme
+			});
+		}
 	},
 
 	componentWillUnmount : function() {
@@ -138,9 +149,38 @@ const Editor = createClass({
 							codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 						}
 
+						// definition lists
+						if(line.includes('::')){
+							const regex = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym;
+							let match;
+							while ((match = regex.exec(line)) != null){
+								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[0]) }, { line: lineNumber, ch: line.indexOf(match[0]) + match[0].length }, { className: 'define' });
+								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length }, { className: 'term' });
+								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[2]) }, { line: lineNumber, ch: line.indexOf(match[2]) + match[2].length }, { className: 'definition' });
+							}
+						}
+
+						// Superscript
+						if(line.includes('\^')) {
+							const regex = /\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^/g;
+							let match;
+							while ((match = regex.exec(line)) != null) {
+								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) - 1 }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length + 1 }, { className: 'superscript' });
+							}
+						}
+
+						// Subscript
+						if(line.includes('^^')) {
+							const regex = /\^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^\^/g;
+							let match;
+							while ((match = regex.exec(line)) != null) {
+								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) - 2 }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length + 2 }, { className: 'subscript' });
+							}
+						}
+
 						// Highlight injectors {style}
 						if(line.includes('{') && line.includes('}')){
-							const regex = /(?:^|[^{\n])({(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\2})/gm;
+							const regex = /(?:^|[^{\n])({(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\2})/gm;
 							let match;
 							while ((match = regex.exec(line)) != null) {
 								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length }, { className: 'injection' });
@@ -148,7 +188,7 @@ const Editor = createClass({
 						}
 						// Highlight inline spans {{content}}
 						if(line.includes('{{') && line.includes('}}')){
-							const regex = /{{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1 *|}}/g;
+							const regex = /{{(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\1 *|}}/g;
 							let match;
 							let blockCount = 0;
 							while ((match = regex.exec(line)) != null) {
@@ -167,7 +207,7 @@ const Editor = createClass({
 							// Highlight block divs {{\n Content \n}}
 							let endCh = line.length+1;
 
-							const match = line.match(/^ *{{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1 *$|^ *}}$/);
+							const match = line.match(/^ *{{(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\1 *$|^ *}}$/);
 							if(match)
 								endCh = match.index+match[0].length;
 							codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
@@ -255,6 +295,13 @@ const Editor = createClass({
 		this.refs.codeEditor?.updateSize();
 	},
 
+	updateEditorTheme : function(newTheme){
+		window.localStorage.setItem(EDITOR_THEME_KEY, newTheme);
+		this.setState({
+			editorTheme : newTheme
+		});
+	},
+
 	//Called by CodeEditor after document switch, so Snippetbar can refresh UndoHistory
 	rerenderParent : function (){
 		this.forceUpdate();
@@ -269,6 +316,7 @@ const Editor = createClass({
 					view={this.state.view}
 					value={this.props.brew.text}
 					onChange={this.props.onTextChange}
+					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent} />
 			</>;
 		}
@@ -281,6 +329,7 @@ const Editor = createClass({
 					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
 					onChange={this.props.onStyleChange}
 					enableFolding={false}
+					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent} />
 			</>;
 		}
@@ -310,6 +359,14 @@ const Editor = createClass({
 		return this.refs.codeEditor?.undo();
 	},
 
+	foldCode : function(){
+		return this.refs.codeEditor?.foldAllCode();
+	},
+
+	unfoldCode : function(){
+		return this.refs.codeEditor?.unfoldAllCode();
+	},
+
 	render : function(){
 		return (
 			<div className='editor' ref='main'>
@@ -323,7 +380,12 @@ const Editor = createClass({
 					theme={this.props.brew.theme}
 					undo={this.undo}
 					redo={this.redo}
-					historySize={this.historySize()} />
+					foldCode={this.foldCode}
+					unfoldCode={this.unfoldCode}
+					historySize={this.historySize()}
+					currentEditorTheme={this.state.editorTheme}
+					updateEditorTheme={this.updateEditorTheme}
+					cursorPos={this.refs.codeEditor?.getCursorPosition() || {}} />
 
 				{this.renderEditor()}
 			</div>

@@ -111,15 +111,26 @@ describe('Tests for api', ()=>{
 			expect(googleId).toEqual('12345');
 		});
 
-		it('should return id and google id from params', ()=>{
+		it('should return 12-char id and google id from params', ()=>{
 			const { id, googleId } = api.getId({
 				params : {
-					id : '123456789012abcdefghijkl'
+					id : '123456789012345678901234567890123abcdefghijkl'
 				}
 			});
-
+			
+			expect(googleId).toEqual('123456789012345678901234567890123');
 			expect(id).toEqual('abcdefghijkl');
-			expect(googleId).toEqual('123456789012');
+		});
+
+		it('should return 10-char id and google id from params', ()=>{
+			const { id, googleId } = api.getId({
+				params : {
+					id : '123456789012345678901234567890123abcdefghij'
+				}
+			});
+			
+			expect(googleId).toEqual('123456789012345678901234567890123');
+			expect(id).toEqual('abcdefghij');
 		});
 	});
 
