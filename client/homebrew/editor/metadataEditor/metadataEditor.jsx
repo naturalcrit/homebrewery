@@ -8,8 +8,7 @@ const request = require('../../utils/request-middleware.js');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Combobox = require('client/components/combobox.jsx');
 const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
-const html2canvas = require('html2canvas');
-
+const htmlimg = require('html-to-image');
 const Themes = require('themes/themes.json');
 const validations = require('./validations.js');
 
@@ -60,16 +59,15 @@ const MetadataEditor = createClass({
 	},
 
 
-	ThumbnailCapture : function() {
+	ThumbnailCapture : async function() {
 		const bR = parent.document.getElementById('BrewRenderer');
 		const brewRenderer = bR.contentDocument || bR.contentWindow.document;
-
 		const topPage = brewRenderer.getElementsByClassName('page')[0];
 		const props = this.props;
-		html2canvas(topPage).then(function(canvas){
-			const img = canvas.toDataURL('image/webp');
+
+		htmlimg.toPng(topPage, { preferredFontFormat: 'woff2' }).then(function(dataURL){
 			props.metadata.thumbnail = 'Page 1';
-			props.metadata.thumbnailSm = img;
+			props.metadata.thumbnailSm = dataURL;
 			props.onChange(props.metadata);
 		});
 	},
