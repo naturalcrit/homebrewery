@@ -59,7 +59,7 @@ describe('Tests for api', ()=>{
 			tags        : ['something', 'fun'],
 			systems     : ['D&D 5e'],
 			lang        : 'en',
-			renderer    : 'v3',
+			renderer    : 'v4',
 			theme       : 'phb',
 			published   : true,
 			authors     : ['1', '2'],
@@ -282,7 +282,7 @@ describe('Tests for api', ()=>{
 				shareId     : undefined,
 				systems     : [],
 				tags        : [],
-				theme       : '5ePHB',
+				theme       : 'Blank',
 				thumbnail   : '',
 				textBin     : undefined,
 				version     : undefined,
@@ -308,7 +308,7 @@ describe('Tests for api', ()=>{
 				description : 'this is a description',
 				tags        : ['something', 'fun'],
 				systems     : ['D&D 5e'],
-				renderer    : 'v3',
+				renderer    : 'v4',
 				theme       : 'phb',
 				googleId    : '12345'
 			});
@@ -321,7 +321,7 @@ tags:
   - fun
 systems:
   - D&D 5e
-renderer: v3
+renderer: v4
 theme: phb
 
 \`\`\`
@@ -337,7 +337,7 @@ brew`);
 				description : 'this is a description',
 				tags        : ['something', 'fun'],
 				systems     : ['D&D 5e'],
-				renderer    : 'v3',
+				renderer    : 'v4',
 				theme       : 'phb',
 				googleId    : '12345'
 			});
@@ -350,7 +350,7 @@ tags:
   - fun
 systems:
   - D&D 5e
-renderer: v3
+renderer: v4
 theme: phb
 
 \`\`\`
@@ -471,7 +471,7 @@ brew`);
 				gDrive      : false,
 				pageCount   : 1,
 				published   : false,
-				renderer    : 'V3',
+				renderer    : 'V4',
 				lang        : 'en',
 				shareId     : expect.any(String),
 				style       : undefined,
@@ -479,7 +479,7 @@ brew`);
 				tags        : [],
 				text        : undefined,
 				textBin     : expect.objectContaining({}),
-				theme       : '5ePHB',
+				theme       : 'Blank',
 				thumbnail   : '',
 				title       : 'asdf',
 				trashed     : false,
@@ -539,7 +539,7 @@ brew`);
 				tags        : [],
 				text        : undefined,
 				textBin     : undefined,
-				theme       : '5ePHB',
+				theme       : 'Blank',
 				thumbnail   : '',
 				title       : 'asdf',
 				trashed     : false,
