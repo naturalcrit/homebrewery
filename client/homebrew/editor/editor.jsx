@@ -37,7 +37,7 @@ const Editor = createClass({
 			reportError   : ()=>{},
 
 			editorTheme : 'default',
-			renderer    : 'legacy'
+			renderer    : 'V3'
 		};
 	},
 	getInitialState : function() {
@@ -103,7 +103,7 @@ const Editor = createClass({
 			if(
 				(this.props.renderer == 'legacy' && line.indexOf('\\page') !== -1)
 				||
-				(this.props.renderer == 'V3' && line.match(/^\\page$/))
+				(this.props.renderer != 'legacy' && line.match(/^\\page$/))
 			) r++;
 			return r;
 		}, 1);
@@ -130,7 +130,7 @@ const Editor = createClass({
 
 					// Styling for \page breaks
 					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
-				     (this.props.renderer == 'V3'     && line.match(/^\\page$/))) {
+				     (this.props.renderer != 'legacy'     && line.match(/^\\page$/))) {
 
 						// add back the original class 'background' but also add the new class '.pageline'
 						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
@@ -143,8 +143,8 @@ const Editor = createClass({
 						editorPageCount += 1;
 					};
 
-					// New Codemirror styling for V3 renderer
-					if(this.props.renderer == 'V3') {
+					// New Codemirror styling for post-legacy renderer
+					if(this.props.renderer != 'legacy') {
 						if(line.match(/^\\column$/)){
 							codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 						}
@@ -259,7 +259,7 @@ const Editor = createClass({
 					}
 				}
 
-				const textSplit = this.props.renderer == 'V3' ? /^\\page$/gm : /\\page/;
+				const textSplit = this.props.renderer != 'legacy' ? /^\\page$/gm : /\\page/;
 				const textString = this.props.brew.text.split(textSplit).slice(0, currentPage-1).join(textSplit);
 				const textPosition = textString.length;
 				const lineCount = textString.match('\n') ? textString.slice(0, textPosition).split('\n').length : 0;

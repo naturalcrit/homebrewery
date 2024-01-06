@@ -87,7 +87,7 @@ const PrintPage = createClass({
 	},
 
 	render : function(){
-		const rendererPath     = this.state.brew.renderer == 'V3' ? 'V3' : 'Legacy';
+		const rendererPath     = this.state.brew.renderer == 'V4' ? 'V4' : 'V3';
 		const themePath        = this.state.brew.theme ?? '5ePHB';
 		const themeVersion     = this.state.brew.themeVersion ?? 'latest';
 		const baseThemePath    = Themes[rendererPath][themePath].baseTheme;

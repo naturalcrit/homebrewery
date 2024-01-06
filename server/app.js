@@ -436,6 +436,7 @@ const renderPage = async (req, res)=>{
 		googleBrews   : req.googleBrews,
 		account       : req.account,
 		enable_v3     : config.get('enable_v3'),
+		enable_v4     : config.get('enable_v4'),
 		enable_themes : config.get('enable_themes'),
 		config        : configuration,
 		ogMeta        : req.ogMeta

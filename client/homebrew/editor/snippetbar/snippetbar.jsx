@@ -50,7 +50,7 @@ const Snippetbar = createClass({
 	},
 
 	componentDidMount : async function() {
-		const rendererVersion    = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
+		const rendererVersion    = this.props.renderer == 'V4' ? 'V4' : 'V3';
 		const themeSlug       = this.props.theme ?? '5ePHB';
 		const themeVersion    = this.props?.themeVersion ?? 'latest';
 		let snippets = _.cloneDeep(ThemeSnippets[`${rendererVersion}_${themeSlug}_${themeVersion}`]);
@@ -62,7 +62,7 @@ const Snippetbar = createClass({
 
 	componentDidUpdate : async function(prevProps) {
 		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme) {
-			const rendererVersion = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
+			const rendererVersion = this.props.renderer == 'V4' ? 'V4' : 'V3';
 			const themeSlug       = this.props.theme ?? '5ePHB';
 			const themeVersion    = this.props?.themeVersion ?? 'latest';
 			let snippets = _.cloneDeep(ThemeSnippets[`${rendererVersion}_${themeSlug}_${themeVersion}`]);

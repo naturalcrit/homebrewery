@@ -38,11 +38,11 @@ const BrewPage = (props)=>{
 	       </div>;
 };
 
-const getThemePathByName = (themeName, defaultVal)=>{
+const getThemePathByName = (themeName, renderEngine, defaultVal)=>{
 	const defaultValPath = defaultVal == 'Blank' ? 'Blank' : getThemePathByName(defaultVal, 'Blank');
 	if(!themeName) { return defaultValPath; }
-	for (const theme in Themes['V3']) {
-		// this needs to look at Themes['V3'][theme].name in the future.
+	for (const theme in Themes[renderEngine]) {
+		// this needs to look at Themes[renderEngine][theme].name in the future.
 		if(theme == themeName) {
 			return theme;
 		}
@@ -180,8 +180,8 @@ const BrewRenderer = (props)=>{
 		document.dispatchEvent(new MouseEvent('click'));
 	};
 
-	const rendererPath  = props.renderer == 'V3' ? 'V3' : 'Legacy';
-	const themePath        = getThemePathByName(this?.state.brew.theme, '5ePHB');
+	const rendererPath  = props.renderer == 'V4' ? 'V4' : 'V3';
+	const themePath        = getThemePathByName(this?.state.brew.theme, rendererPath, '5ePHB');
 	const themeVersion     = this?.state.brew.themeVersion ?? 'latest';
 	const baseThemePath    = Themes[rendererPath][themePath]?.baseTheme;
 	const baseThemeVersion = Themes[rendererPath][themePath]?.baseThemeVersion ?? 'latest';

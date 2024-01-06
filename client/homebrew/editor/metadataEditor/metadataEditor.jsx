@@ -238,7 +238,7 @@ const MetadataEditor = createClass({
 					<div>
 						{`${_.upperFirst(currentTheme.renderer)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
 					</div>
-					{listThemes('V3')}
+					{listThemes(this.props.metadata.renderer)}
 				</Nav.dropdown>;
 			versionDropdown =
 				<Nav.dropdown className='value' trigger='click'>
@@ -299,7 +299,7 @@ const MetadataEditor = createClass({
 	},
 
 	renderRenderOptions : function(){
-		if(!global.enable_v3) return;
+		if((!global.enable_v3) && (!global.enable_v4)) return;
 
 		return <div className='field systems'>
 			<label>Renderer</label>
@@ -322,6 +322,16 @@ const MetadataEditor = createClass({
 						checked={this.props.metadata.renderer === 'V3'}
 						onChange={(e)=>this.handleRenderer('V3', e)} />
 					V3
+				</label>
+
+				<label key='V4'>
+					<input
+						type='radio'
+						value = 'V4'
+						name = 'renderer'
+						checked={this.props.metadata.renderer === 'V4'}
+						onChange={(e)=>this.handleRenderer('V4', e)} />
+					V4
 				</label>
 
 				<a href='/legacy' target='_blank' rel='noopener noreferrer'>
