@@ -40,7 +40,7 @@
   "V4": {
     "5eDMG": {
       "name": "5e DMG",
-      "renderer": "V3",
+      "renderer": "V4",
       "baseTheme": "5ePHB",
       "baseSnippets": "5ePHB",
       "licenseType": "OGL 1.0a",
@@ -61,7 +61,7 @@
     },
     "5ePHB": {
       "name": "5e PHB",
-      "renderer": "V3",
+      "renderer": "V4",
       "baseTheme": false,
       "baseSnippets": false,
       "licenseType": "OGL 1.0a",
@@ -92,7 +92,7 @@
     },
     "Journal": {
       "name": "Journal",
-      "renderer": "V3",
+      "renderer": "V4",
       "baseTheme": false,
       "baseSnippets": "5ePHB",
       "licenseType": "",

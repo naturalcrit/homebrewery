@@ -39,7 +39,7 @@ const BrewPage = (props)=>{
 };
 
 const getThemePathByName = (themeName, renderEngine, defaultVal)=>{
-	const defaultValPath = defaultVal == 'Blank' ? 'Blank' : getThemePathByName(defaultVal, 'Blank');
+	const defaultValPath = defaultVal == 'Blank' ? 'Blank' : getThemePathByName(defaultVal, renderEngine, 'Blank');
 	if(!themeName) { return defaultValPath; }
 	for (const theme in Themes[renderEngine]) {
 		// this needs to look at Themes[renderEngine][theme].name in the future.
@@ -185,6 +185,8 @@ const BrewRenderer = (props)=>{
 	const themeVersion     = this?.state.brew.themeVersion ?? 'latest';
 	const baseThemePath    = Themes[rendererPath][themePath]?.baseTheme;
 	const baseThemeVersion = Themes[rendererPath][themePath]?.baseThemeVersion ?? 'latest';
+	const themeLatestPathStub  = props.renderer == 'V4' ? `/${baseThemeVersion}/` : '/';
+	const themeversionPathStub = props.renderer == 'V4' ? `/${themeVersion}/` : '/';
 
 	return (
 		<>
@@ -212,11 +214,11 @@ const BrewRenderer = (props)=>{
 						<RenderWarnings />
 						<NotificationPopup />
 					</div>
-					<link href={`/themes/${rendererPath}/Blank/latest/style.css`} rel='stylesheet'/>
+					<link href={`/themes/${rendererPath}/Blank${themeLatestPathStub}style.css`} rel='stylesheet'/>
 					{baseThemePath &&
-						<link href={`/themes/${rendererPath}/${baseThemePath}/${baseThemeVersion}/style.css`} rel='stylesheet'/>
+						<link href={`/themes/${rendererPath}/${baseThemePath}${themeversionPathStub}style.css`} rel='stylesheet'/>
 					}
-					<link href={`/themes/${rendererPath}/${themePath}/${themeVersion}/style.css`} rel='stylesheet'/>
+					<link href={`/themes/${rendererPath}/${themePath}${themeversionPathStub}style.css`} rel='stylesheet'/>
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted

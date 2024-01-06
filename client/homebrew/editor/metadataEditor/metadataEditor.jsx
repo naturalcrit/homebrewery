@@ -240,13 +240,22 @@ const MetadataEditor = createClass({
 					</div>
 					{listThemes(this.props.metadata.renderer)}
 				</Nav.dropdown>;
-			versionDropdown =
-				<Nav.dropdown className='value' trigger='click'>
+			if(this.props.metadata.renderer != 'V3') {
+				versionDropdown =
+					<Nav.dropdown className='value' trigger='click'>
+						<div>
+							{`${currentVersion}`} <i className='fas fa-caret-down'></i>
+						</div>
+						{listThemeVersions(_.upperFirst(currentTheme.renderer), this.props.metadata.theme)}
+					</Nav.dropdown>;
+			} else {
+				versionDropdown =
+				<Nav.dropdown className='disabled value' trigger='disabled'>
 					<div>
-						{`${currentVersion}`} <i className='fas fa-caret-down'></i>
+						{`Themes are not versioned in the V3 Renderer`} <i className='fas fa-caret-down'></i>
 					</div>
-					{listThemeVersions(_.upperFirst(currentTheme.renderer), this.props.metadata.theme)}
 				</Nav.dropdown>;
+			}
 		}
 
 		return <div className='field themes'>
