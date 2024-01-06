@@ -207,35 +207,33 @@ const mustacheInjectBlock = {
 };
 
 const indexAnchors = {
-	extensions : [{
-		name  : 'indexAnchor',
-		level : 'inline',
-		start(src) {return src.match(/@((?:\\.|[^\[\]\\^@^\)])*)@\(((?:\\.|[^\[\]\\^@^\)])*)\)/)?.index;}, // Hint to Marked.js to stop and check for a match
-		tokenizer(src, tokens) {
-			const inlineRegex = /@((?:\\.|[^\[\]\\^@^\)])*)@\(((?:\\.|[^\[\]\\^@^\)])*)\)/ym;
-			const anchor = {};
-			const match = inlineRegex.exec(src);
-			if(match) {
-				anchor.lookup = match[1].trim();
-				anchor.parent = match[2].trim();
-				return {
-					type : 'indexAnchor',
-					text : src,
-					raw  : match[0],
-					anchor
-				};
-			}
-		},
-		renderer(token) {
-			// This is a Rich Index Anchor entry
-			if(token.anchor.lookup) {
-				return `<a href="#${token.anchor.lookup.replace(/\s/g, '').toLowerCase()}" parent="${token.anchor.parent}" lookup="${token.anchor.lookup}"></a>`;
-			} else {
-				// This is a basic index entry
-				return '';
-			}
+	name  : 'indexAnchor',
+	level : 'inline',
+	start(src) {return src.match(/@((?:\\.|[^\[\]\\^@^\)])*)@\(((?:\\.|[^\[\]\\^@^\)])*)\)/)?.index;}, // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const inlineRegex = /@((?:\\.|[^\[\]\\^@^\)])*)@\(((?:\\.|[^\[\]\\^@^\)])*)\)/ym;
+		const anchor = {};
+		const match = inlineRegex.exec(src);
+		if(match) {
+			anchor.lookup = match[1].trim();
+			anchor.parent = match[2].trim();
+			return {
+				type : 'indexAnchor',
+				text : src,
+				raw  : match[0],
+				anchor
+			};
 		}
-	}]
+	},
+	renderer(token) {
+		// This is a Rich Index Anchor entry
+		if(token.anchor.lookup) {
+			return `<a href="#${token.anchor.lookup.replace(/\s/g, '').toLowerCase()}" parent="${token.anchor.parent}" lookup="${token.anchor.lookup}"></a>`;
+		} else {
+			// This is a basic index entry
+			return '';
+		}
+	}
 };
 
 const superSubScripts = {
