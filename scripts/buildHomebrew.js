@@ -49,7 +49,7 @@ fs.emptyDirSync('./build');
 	//v==----------------------------- COMPILE THEMES --------------------------------==v//
 
 	// Update list of all Theme files
-	const themes = { Legacy: {}, V3: {} };
+	const themes = { Legacy: {}, V3: {}, V4: {} };
 
 	let themeFiles = fs.readdirSync('./themes/Legacy');
 	for (dir of themeFiles) {
@@ -70,29 +70,47 @@ fs.emptyDirSync('./build');
 
 	themeFiles = fs.readdirSync('./themes/V3');
 	for (dir of themeFiles) {
-		const stats = fs.lstatSync(`./themes/V3/${dir}`);
+		const themeData = JSON.parse(fs.readFileSync(`./themes/V3/${dir}/settings.json`).toString());
+		themeData.path = dir;
+		themes.V3[dir] = (themeData);
+		fs.copy(`./themes/V3/${dir}/dropdownTexture.png`, `./build/themes/V3/${dir}/dropdownTexture.png`);
+		fs.copy(`./themes/V3/${dir}/dropdownPreview.png`, `./build/themes/V3/${dir}/dropdownPreview.png`);
+		const src = `./themes/V3/${dir}/style.less`;
+	  ((outputDirectory)=>{
+			less.render(fs.readFileSync(src).toString(), {
+				compress : !isDev
+			}, function(e, output) {
+				if(e) { console.error(e);}
+				fs.outputFile(outputDirectory, output.css);
+			});
+		})(`./build/themes/V3/${dir}/style.css`);
+	}	
+
+	themeFiles = fs.readdirSync('./themes/V4');
+	for (dir of themeFiles) {
+		const stats = fs.lstatSync(`./themes/V4/${dir}`);
 		if(stats.isDirectory()) {
-			const themeVerions = fs.readdirSync(`./themes/V3/${dir}`);
-			const themeData = JSON.parse(fs.readFileSync(`./themes/V3/${dir}/latest/settings.json`).toString());
+			const themeVerions = fs.readdirSync(`./themes/V4/${dir}`);
+			const themeData = JSON.parse(fs.readFileSync(`./themes/V4/${dir}/latest/settings.json`).toString());
 			themeData.path = `${dir}`;
-			themes.V3[dir] = (themeData);
+			themes.V4[dir] = (themeData);
 			for (versionDir of themeVerions) {
 				if(versionDir != 'latest') {
-					if(!themes.V3[dir]?.versions) {
-						themes.V3[dir].versions = [versionDir];
+					if(!themes.V4[dir]?.versions) {
+						themes.V4[dir].versions = [versionDir];
 					} else {
-						themes.V3[dir].versions.push(versionDir);
+						themes.V4[dir].versions.push(versionDir);
 					}
 				}
-				fs.copy(`./themes/V3/${dir}/${versionDir}/dropdownTexture.png`, `./build/themes/V3/${dir}/${versionDir}/dropdownTexture.png`);
-				fs.copy(`./themes/V3/${dir}/${versionDir}/dropdownPreview.png`, `./build/themes/V3/${dir}/${versionDir}/dropdownPreview.png`);
-				if(fs.pathExistsSync(`./themes/V3/${dir}/${versionDir}/fonts`)) {
-					fs.copySync(`./themes/V3/${dir}/${versionDir}/fonts`, `./build/themes/V3/${dir}/${versionDir}/fonts`);
+				fs.copy(`./themes/V4/${dir}/${versionDir}/dropdownTexture.png`, `./build/themes/V4/${dir}/${versionDir}/dropdownTexture.png`);
+				fs.copy(`./themes/V4/${dir}/${versionDir}/dropdownPreview.png`, `./build/themes/V4/${dir}/${versionDir}/dropdownPreview.png`);
+				if(fs.pathExistsSync(`./themes/V4/${dir}/${versionDir}/fonts`)) {
+					fs.copySync(`./themes/V4/${dir}/${versionDir}/fonts`, `./build/themes/V4/${dir}/${versionDir}/fonts`);
 				}
-				if(fs.pathExistsSync(`./themes/V3/${dir}/${versionDir}/assets`)) {
-					await fs.copySync(`./themes/V3/${dir}/${versionDir}/assets`, `./build/themes/V3/${dir}/${versionDir}/assets`);
+				if(fs.pathExistsSync(`./themes/V4/${dir}/${versionDir}/assets`)) {
+					await fs.copySync(`./themes/V4/${dir}/${versionDir}/assets`, `./build/themes/V4/${dir}/${versionDir}/assets`);
 				}
-				const src = `./themes/V3/${dir}/${versionDir}/theme.less`;
+				const src = `./themes/V4/${dir}/${versionDir}/theme.less`;
 	  			((outputDirectory)=>{
 					less.render(fs.readFileSync(src).toString(), {
 						compress : !isDev,
@@ -103,7 +121,7 @@ fs.emptyDirSync('./build');
 						}
 						fs.outputFile(outputDirectory, output.css);
 					});
-				})(`./build/themes/V3/${dir}/${versionDir}/style.css`);
+				})(`./build/themes/V4/${dir}/${versionDir}/style.css`);
 			}
 		}
 	}

@@ -25,14 +25,14 @@ for (const renderVersion in Themes) {
 }
 
 Promise.all(checkoutPromises).then((results) => {
-	const renderEngines = ['Legacy', 'V3'];
+	const renderEngines = ['Legacy', 'V3', 'V4'];
 	for (const renderVersion in renderEngines ) {
 		const engine = renderEngines[renderVersion];
 		themeFiles = fs.readdirSync(`./themes/${engine}`);
 		for (const theme of themeFiles) {
 			const stats = fs.lstatSync(`./themes/${engine}/${theme}`);
 			if(stats.isDirectory()) {
-				if(engine == 'Legacy') {
+				if(engine != 'V4') {
 					snippets.push(`'${engine}_${theme}' : require('themes/${engine}/${theme}/snippets.js')`);
 				} else {
 					const themeVerions = fs.readdirSync(`./themes/${engine}/${theme}`);
