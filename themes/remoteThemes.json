@@ -1,14 +1,14 @@
 {
   "V4": {
     "5eDMG": {
-      "homeRepository": "git@github.com:dbolack-ab/hbtheme-5eDMG.git"
+      "homeRepository": "https://github.com/dbolack-ab/hbtheme-5eDMG.git"
     },
     "5ePHB": {
-      "homeRepository":"git@github.com:dbolack-ab/hbtheme-5ePHB.git",
+      "homeRepository":"https://github.com/dbolack-ab/hbtheme-5ePHB.git",
       "versions" : [ "v3.2"]
     },
     "Journal": {
-      "homeRepository":"git@github.com:dbolack-ab/hbtheme-Journal.git"
+      "homeRepository":"https://github.com/dbolack-ab/hbtheme-Journal.git"
     }
   }
 }
