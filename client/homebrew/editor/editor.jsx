@@ -151,7 +151,8 @@ const Editor = createClass({
 
 						// definition lists
 						if(line.includes('::')){
-							const regex = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym;
+							// const regex = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym;
+							const regex = /^([^\n:]*?)::(.*)(?:\n|$)/ym;
 							let match;
 							while ((match = regex.exec(line)) != null){
 
