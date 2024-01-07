@@ -66,7 +66,7 @@ const Snippetbar = createClass({
 			const themeSlug       = this.props.theme ?? '5ePHB';
 			const themeVersion    = this.props?.themeVersion ?? 'latest';
 			let snippets = _.cloneDeep(ThemeSnippets[`${rendererVersion}_${themeSlug}_${themeVersion}`]);
-			snippets = this.compileSnippets(rendererVersion, themeSlug, themeVersions, snippets);
+			snippets = this.compileSnippets(rendererVersion, themeSlug, themeVersion, snippets);
 			this.setState({
 				snippets : snippets
 			});
