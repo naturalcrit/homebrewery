@@ -344,6 +344,8 @@ const EditPage = createClass({
 	renderNavbar : function(){
 		const shareLink = this.processShareId();
 
+		''.setTranslationDefaults(['nav', 'shareDropdown']);
+
 		return <Navbar>
 			<Nav.section>
 				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
@@ -362,16 +364,16 @@ const EditPage = createClass({
 				<HelpNavItem/>
 				<Nav.dropdown>
 					<Nav.item color='teal' icon='fas fa-share-alt'>
-						share
+						{'share'.translate()}
 					</Nav.item>
 					<Nav.item color='blue' href={`/share/${shareLink}`}>
-						view
+						{'view'.translate()}
 					</Nav.item>
 					<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.publicUrl}/share/${shareLink}`);}}>
-						copy url
+						{'copyUrl'.translate()}
 					</Nav.item>
 					<Nav.item color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
-						post to reddit
+						{'postToReddit'.translate()}
 					</Nav.item>
 				</Nav.dropdown>
 				<PrintLink shareId={this.processShareId()} />
