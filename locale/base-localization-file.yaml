@@ -5,7 +5,7 @@ no:  no
 nav:
   helpOut: help out
   storageMsg: 
-    notsignedin: youmust be signed in to a google account to transfer between the homebrewery and google drive!
+    notsignedin: you must be signed in to a google account to transfer between the homebrewery and google drive!
     signin: sign in
     notnow: not now
     fromgoogletohb: would you like to transfer this brew from your google drive storage back to the homebrewery?
