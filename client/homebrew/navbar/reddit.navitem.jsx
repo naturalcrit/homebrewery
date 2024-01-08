@@ -6,7 +6,7 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 const MAX_URL_SIZE = 2083;
 const MAIN_URL = 'https://www.reddit.com/r/UnearthedArcana/submit?selftext=true';
 
-const translateOpts = ['nav'];
+const translateOpts = ['nav', 'shareDropdown'];
 
 
 const RedditShare = createClass({
