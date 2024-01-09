@@ -5,10 +5,12 @@ const _     = require('lodash');
 const cx    = require('classnames');	//Unused variable
 
 const DISMISS_KEY = 'dismiss_notification12-04-23';
+const translateOpts = ['notificationPopup'];
 
 const NotificationPopup = createClass({
 	displayName     : 'NotificationPopup',
 	getInitialState : function() {
+		''.setTranslationDefaults(translateOpts);
 		return {
 			notifications : {}
 		};
@@ -21,6 +23,7 @@ const NotificationPopup = createClass({
 		window.removeEventListener('resize', this.checkNotifications);
 	},
 	notifications : {
+		// as the following is a text that is supposed to recieve updates usually, we will keep it untranslated by now.
 		psa : function(){
 			return (
 				<>
@@ -73,8 +76,8 @@ const NotificationPopup = createClass({
 			<i className='fas fa-times dismiss' onClick={this.dismiss}/>
 			<i className='fas fa-info-circle info' />
 			<div className='header'>
-				<h3>Notice</h3>
-				<small>This website is always improving and we are still adding new features and squashing bugs. Keep the following in mind:</small>
+				<h3>{'Notice'.translate()}</h3>
+				<small>{'keepInMind'.translate()}</small>
 			</div>
 			<ul>{_.values(this.state.notifications)}</ul>
 		</div>;

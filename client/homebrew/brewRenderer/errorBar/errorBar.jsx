@@ -4,9 +4,12 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
+const translateOpts = ['htmlError'];
+
 const ErrorBar = createClass({
 	displayName     : 'ErrorBar',
 	getDefaultProps : function() {
+		''.setTranslationDefaults(translateOpts);
 		return {
 			errors : []
 		};
@@ -27,7 +30,7 @@ const ErrorBar = createClass({
 			if(err.id == 'CLOSE') this.hasCloseError = true;
 			if(err.id == 'MISMATCH') this.hasMatchError = true;
 			return <li key={idx}>
-				Line {err.line} : {err.text}, '{err.type}' tag
+				{'Line'.translate()} {err.line} : {err.text}, '{err.type}' {'tag'.translate()}
 			</li>;
 		});
 
@@ -38,23 +41,23 @@ const ErrorBar = createClass({
 		const msg = [];
 		if(this.hasOpenError){
 			msg.push(<div>
-				An unmatched opening tag means there's an opened tag that isn't closed. You need to close your tags, like this {'</div>'}. Make sure to match types!
+				{'openTag'.translate()}
 			</div>);
 		}
 
 		if(this.hasCloseError){
 			msg.push(<div>
-				An unmatched closing tag means you closed a tag without opening it. Either remove it, or check to where you think you opened it.
+				{'closeTag'.translate()}
 			</div>);
 		}
 
 		if(this.hasMatchError){
 			msg.push(<div>
-				A type mismatch means you closed a tag, but the last open tag was a different type.
+				{'missmatchTag'.translate()}
 			</div>);
 		}
 		return <div className='protips'>
-			<h4>Protips!</h4>
+			<h4>{'Protips!'.translate()}</h4>
 			{msg}
 		</div>;
 	},
@@ -64,8 +67,8 @@ const ErrorBar = createClass({
 
 		return <div className='errorBar'>
 			<i className='fas fa-exclamation-triangle' />
-			<h3> There are HTML errors in your markup</h3>
-			<small>If these aren't fixed your brew will not render properly when you print it to PDF or share it</small>
+			<h3> {'h3Title'.translate()}</h3>
+			<small>{'descriptionText'.translate()}</small>
 			{this.renderErrors()}
 			<hr />
 			{this.renderProtip()}
