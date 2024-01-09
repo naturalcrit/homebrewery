@@ -4,11 +4,12 @@ const _ = require('lodash');
 const Moment = require('moment');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
-
+const translateOpts = ['nav', 'errorMsg'];
 
 const MetadataNav = createClass({
 	displayName     : 'MetadataNav',
 	getDefaultProps : function() {
+		''.setTranslationDefaults(translateOpts);
 		return {
 		};
 	},
@@ -29,7 +30,7 @@ const MetadataNav = createClass({
 	},
 
 	getAuthors : function(){
-		if(!this.props.brew.authors || this.props.brew.authors.length == 0) return 'No authors';
+		if(!this.props.brew.authors || this.props.brew.authors.length == 0) return 'noAuthors'.translate();
 		return <>
 			{this.props.brew.authors.map((author, idx, arr)=>{
 				const spacer = arr.length - 1 == idx ? <></> : <span>, </span>;
@@ -39,7 +40,7 @@ const MetadataNav = createClass({
 	},
 
 	getTags : function(){
-		if(!this.props.brew.tags || this.props.brew.tags.length == 0) return 'No tags';
+		if(!this.props.brew.tags || this.props.brew.tags.length == 0) return 'noTags'.translate();
 		return <>
 			{this.props.brew.tags.map((tag, idx)=>{
 				return <span className='tag' key={idx}>{tag}</span>;
@@ -48,30 +49,30 @@ const MetadataNav = createClass({
 	},
 
 	getSystems : function(){
-		if(!this.props.brew.systems || this.props.brew.systems.length == 0) return 'No systems';
+		if(!this.props.brew.systems || this.props.brew.systems.length == 0) return 'noSystems'.translate();
 		return this.props.brew.systems.join(', ');
 	},
 
 	renderMetaWindow : function(){
 		return <div className={`window ${this.state.showMetaWindow ? 'active' : 'inactive'}`}>
 			<div className='row'>
-				<h4>Description</h4>
-				<p>{this.props.brew.description || 'No description.'}</p>
+				<h4>{'description'.translate()}</h4>
+				<p>{this.props.brew.description || 'noDescription'.translate()}</p>
 			</div>
 			<div className='row'>
-				<h4>Authors</h4>
+				<h4>{'authors'.translate()}</h4>
 				<p>{this.getAuthors()}</p>
 			</div>
 			<div className='row'>
-				<h4>Tags</h4>
+				<h4>{'tags'.translate()}</h4>
 				<p>{this.getTags()}</p>
 			</div>
 			<div className='row'>
-				<h4>Systems</h4>
+				<h4>{'systems'.translate()}</h4>
 				<p>{this.getSystems()}</p>
 			</div>
 			<div className='row'>
-				<h4>Updated</h4>
+				<h4>{'updated'.translate()}</h4>
 				<p>{Moment(this.props.brew.updatedAt).fromNow()}</p>
 			</div>
 		</div>;
