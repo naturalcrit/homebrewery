@@ -319,8 +319,9 @@ const EditPage = createClass({
 	},
 
 	renderAutoSaveButton : function(){
+		''.setTranslationDefaults(['nav', 'saveDropdown']);
 		return <Nav.item onClick={this.handleAutoSave}>
-			Autosave <i className={this.state.autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
+			{'autosave'.translate()} <i className={this.state.autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
 		</Nav.item>;
 	},
 
