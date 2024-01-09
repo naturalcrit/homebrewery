@@ -7,6 +7,6 @@ const translateOpts = ['nav'];
 module.exports = function(props){
 	''.setTranslationDefaults(translateOpts);
 	return <Nav.item newTab={true} href={`/print/${props.shareId}?dialog=true`} color='purple' icon='far fa-file-pdf'>
-		{'getPdf'.translate()}
+		{'get pdf'.translate()}
 	</Nav.item>;
 };

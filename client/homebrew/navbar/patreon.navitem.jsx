@@ -11,6 +11,6 @@ module.exports = function(props){
 		href='https://www.patreon.com/NaturalCrit'
 		color='green'
 		icon='fas fa-heart'>
-		{'helpOut'.translate()}
+		{'help out'.translate()}
 	</Nav.item>;
 };

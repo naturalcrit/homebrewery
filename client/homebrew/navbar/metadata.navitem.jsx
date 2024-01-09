@@ -30,7 +30,7 @@ const MetadataNav = createClass({
 	},
 
 	getAuthors : function(){
-		if(!this.props.brew.authors || this.props.brew.authors.length == 0) return 'noAuthors'.translate();
+		if(!this.props.brew.authors || this.props.brew.authors.length == 0) return 'no authors'.translate();
 		return <>
 			{this.props.brew.authors.map((author, idx, arr)=>{
 				const spacer = arr.length - 1 == idx ? <></> : <span>, </span>;
@@ -40,7 +40,7 @@ const MetadataNav = createClass({
 	},
 
 	getTags : function(){
-		if(!this.props.brew.tags || this.props.brew.tags.length == 0) return 'noTags'.translate();
+		if(!this.props.brew.tags || this.props.brew.tags.length == 0) return 'no tags'.translate();
 		return <>
 			{this.props.brew.tags.map((tag, idx)=>{
 				return <span className='tag' key={idx}>{tag}</span>;
@@ -49,30 +49,30 @@ const MetadataNav = createClass({
 	},
 
 	getSystems : function(){
-		if(!this.props.brew.systems || this.props.brew.systems.length == 0) return 'noSystems'.translate();
+		if(!this.props.brew.systems || this.props.brew.systems.length == 0) return 'no systems'.translate();
 		return this.props.brew.systems.join(', ');
 	},
 
 	renderMetaWindow : function(){
 		return <div className={`window ${this.state.showMetaWindow ? 'active' : 'inactive'}`}>
 			<div className='row'>
-				<h4>{'description'.translate()}</h4>
-				<p>{this.props.brew.description || 'noDescription'.translate()}</p>
+				<h4>{'Description'.translate()}</h4>
+				<p>{this.props.brew.description || 'No description.'.translate()}</p>
 			</div>
 			<div className='row'>
-				<h4>{'authors'.translate()}</h4>
+				<h4>{'Authors'.translate()}</h4>
 				<p>{this.getAuthors()}</p>
 			</div>
 			<div className='row'>
-				<h4>{'tags'.translate()}</h4>
+				<h4>{'Tags'.translate()}</h4>
 				<p>{this.getTags()}</p>
 			</div>
 			<div className='row'>
-				<h4>{'systems'.translate()}</h4>
+				<h4>{'Systems'.translate()}</h4>
 				<p>{this.getSystems()}</p>
 			</div>
 			<div className='row'>
-				<h4>{'updated'.translate()}</h4>
+				<h4>{'Updated'.translate()}</h4>
 				<p>{Moment(this.props.brew.updatedAt).fromNow()}</p>
 			</div>
 		</div>;

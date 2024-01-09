@@ -40,7 +40,7 @@ const RedditShare = createClass({
 	render : function(){
 		''.setTranslationDefaults(translateOpts);
 		return <Nav.item icon='fa-reddit-alien' color='red' onClick={this.handleClick}>
-			{'postToReddit'.translate()}
+			{'share on Reddit'.translate()}
 		</Nav.item>;
 	},
 
