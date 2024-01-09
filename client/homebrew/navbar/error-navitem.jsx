@@ -38,14 +38,14 @@ const ErrorNavItem = createClass({
 
 		if(status === 409) {
 			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-				{'oops'.translate()}
+				{'Oops!'.translate()}
 				<div className='errorContainer' onClick={clearError}>
 					{message ?? 'conflict'.translate()}
 				</div>
 			</Nav.item>;
 		} else if(status === 412) {
 			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-				{'oops'.translate()}
+				{'Oops!'.translate()}
 				<div className='errorContainer' onClick={clearError}>
 					{message ?? 'outOfDate'.translate()}
 				</div>
@@ -54,27 +54,27 @@ const ErrorNavItem = createClass({
 
 		if(response.req.url.match(/^\/api.*Google.*$/m)){
 			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-				{'oops'.translate()}
+				{'Oops!'.translate()}
 				<div className='errorContainer' onClick={clearError}>
 					{'expiredCredentials'.translate()}
 					<a target='_blank' rel='noopener noreferrer'
 						href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
 						<div className='confirm'>
-							{'signIn'.translate()}
+							{'sign in'.translate()}
 						</div>
 					</a>
 					<div className='deny'>
-						{'notNow'.translate()}
+						{'not now'.translate()}
 					</div>
 				</div>
 			</Nav.item>;
 		}
 
 		return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-			{'oops'.translate()}
+			{'Oops!'.translate()}
 			<div className='errorContainer'>
 				{'problemSaving'.translate()}<a target='_blank' rel='noopener noreferrer' href={`https://github.com/naturalcrit/homebrewery/issues/new?template=save_issue.yml&error-code=${encodeURIComponent(errMsg)}`}>
-				{'problemSaving2'.translate()}
+				{'here'.translate()}
 				</a>.
 			</div>
 		</Nav.item>;

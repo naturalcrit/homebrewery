@@ -21,7 +21,7 @@ module.exports = function(props){
 			- **Issue** :  `)}`}
 			newTab={true}
 			rel='noopener noreferrer'>
-			{'report'.translate()}
+			{'report issue'.translate()}
 		</Nav.item>
 		<Nav.item color='green' icon='fas fa-question-circle'
 			href='/faq'
