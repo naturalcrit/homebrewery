@@ -1,75 +1,81 @@
 # string translation template
 yes: yes
-no:  no
+no: no
 
 nav:
-  helpOut: help out
-  storageMsg: 
-    notsignedin: you must be signed in to a google account to transfer between the homebrewery and google drive!
-    signin: sign in
-    notnow: not now
-    fromgoogletohb: would you like to transfer this brew from your google drive storage back to the homebrewery?
-    fromhbtogoogle: would you like to transfer this brew from the homebrewery to your personal google drive storage?
+  help out: help out
+  storageMsg:
+    notSignedIn: you must be signed in to a google account to transfer between the homebrewery and google drive!
+    fromGoogleToHb: would you like to transfer this brew from your google drive storage back to the homebrewery?
+    fromHbToGoogle: would you like to transfer this brew from the homebrewery to your personal google drive storage?
   saveDropdown:
-    autosaved: auto-saved.
-    saving: saving...
-    reminder: reminder...
-    autoSave: autosave
-    saveNow: Save Now
-    saved: saved.
+    auto-saved.: auto-saved.
+    saving...: saving...
+    reminder...: reminder...
+    autosave: autosave
+    Save Now: Save Now
+    saved.: saved.
     autoSaveMsg: Autosave is OFF, and you haven't saved for
-    autoSaveMsgDuration: 'minutes.'
+    autoSaveMsgDuration: "minutes."
     autoSaveOff: Autosave is OFF.
+  errorMsg:
+    Oops!:
+    conflict: "Conflict: please refresh to get latest change"
+    outOfDate: Your client is out of date. Please save your changes elsewhere and refresh.
+    expiredCredentials: Looks like your Google credentials have expired! Visit our log in page to sign out and sign back in with Google, then try saving again!
+    sign in:
+    not now:
+    problemSaving: Looks like there was a problem saving. <br /> Report the issue
+    here:
 
-  newDoc:  
-    new: 
+  newDoc:
+    new:
   helpDropdown:
-    needHelp: need help?
-    report: report issue
-    faq:  
-    migrate:  
+    need help?:
+    report issue:
+    faq:
+    migrate:
 
   shareDropdown:
-    share: 
-    view: 
-    copyUrl: copy url
-    postToReddit: share on reddit
+    share:
+    view:
+    copy url:
+    share on reddit:
 
-  getPdf: get pdf
+  get pdf:
 
   recentBrewsdropdown:
-    recentBrews: recent brews
-    edited: 
-    viewed: 
+    recent brews:
+    edited:
+    viewed:
 
-    buttonTitleAttr: Remove from Recents
+    removeRecents: Remove from Recents
 
   usernameDropdown:
-    brews: 
-    account: 
-    login: 
-    localLoginPrompt:  "Enter username:"
-    logout: 
+    brews:
+    account:
+    login:
+    localLoginPrompt: "Enter username:"
+    logout:
     logoutMsg: Are you sure you want to log out?
 
 userPage:
-
   filters:
-    sortBy:  
-    title:  
-    createdDate:  
-    updatedDate:  
-    views:  
+    sortBy:
+    title:
+    createdDate:
+    updatedDate:
+    views:
     searchPlaceholder: filter title/description
 
   sectionTitles:
-    <user-name>'s published brews:  
-    <user-name>'s unpublished brews:  
+    <user-name>'s published brews:
+    <user-name>'s unpublished brews:
 
   brewInfo:
     singularDate: a minute/an hour/a day/a month/a year ago
     secondsDate: a few seconds ago
-    pluralDate: n minutes/hours/days/months/years ago 
+    pluralDate: n minutes/hours/days/months/years ago
     buttons:
       authors:
       lastViewed:
@@ -83,121 +89,129 @@ userPage:
 editorPage:
   editorGroup:
     toolsGroup:
-      undo:  
-      redo: 
-      brew editor:  
-      style editor: 
-      properties: 
+      undo:
+      redo:
+      brew editor:
+      style editor:
+      properties:
 
     buttonsGroup:
-      jump to location in editor:  
+      jump to location in editor:
       jump to location in preview:
 
-    brewEditorTab: 
+    brewEditorTab:
       brewEditor:
       snippetsGroup:
-
         textEditorDropdown:
           textEditor:
-          column break: 
-          new page: 
-          vertical spacing: 
-          wide block: 
-          image: 
-          background image: 
-          page number: 
-          auto-incrementing page number: 
-          link to page: 
-          table of contents: 
+          column break:
+          new page:
+          vertical spacing:
+          wide block:
+          image:
+          background image:
+          page number:
+          auto-incrementing page number:
+          link to page:
+          table of contents:
           add comment:
 
-        phbDropdown:  
+        phbDropdown:
           phb:
-          spell: 
-          spell list: 
-          class feature: 
-          note: 
-          descriptive text box: 
-          monster stat block: 
-          wide monster stat block: 
-          cover page: 
-          artist credit: 
+          spell:
+          spell list:
+          class feature:
+          note:
+          descriptive text box:
+          monster stat block:
+          wide monster stat block:
+          cover page:
+          artist credit:
 
-        tablesDropdown: 
-          tables: 
-          class table: 
-          half class table: 
-          table: 
-          wide table: 
-          split table: 
+        tablesDropdown:
+          tables:
+          class table:
+          half class table:
+          table:
+          wide table:
+          split table:
 
-    styleEditorTab: 
-      snippetsGroup: 
-        styleEditorDropdown:  
+    styleEditorTab:
+      snippetsGroup:
+        styleEditorDropdown:
           styleEditor:
-          removeDropCap: 
-          tweakDropCap: 
-          addComment: 
+          removeDropCap:
+          tweakDropCap:
+          addComment:
 
         printDropdown:
-          print: 
-          a4PageSize: 
-          squarePageSize: 
+          print:
+          a4PageSize:
+          squarePageSize:
           inkFriendly:
 
     propertiesTab:
       properties:
       brewGroup:
-        brew: 
-        title: 
-        description: 
-        thumbnail: 
-        tags: 
-        add tag: 
-        systems: 
-        5e: 
-        4e: 
-        3.5e: 
-        pathfinder: 
-        renderer: 
-        legacy: 
-        v3: 
+        brew:
+        title:
+        description:
+        thumbnail:
+        tags:
+        add tag:
+        systems:
+        5e:
+        4e:
+        3.5e:
+        pathfinder:
+        renderer:
+        legacy:
+        v3:
         legacyDemoLink: click here to see the demo page for the old legacy renderer!
 
-      authorsGroup: 
-        authors: 
-        none: 
-        invitedAuthors: 
-        inviteAuthor: 
+      authorsGroup:
+        authors:
+        none:
+        invitedAuthors:
+        inviteAuthor:
         invitedMsg1: invited authors are case sensitive.
         invitedMsg2: after adding an invited author, send them the edit link. there, they can choose to accept or decline the invitation.
 
-      privacyGroup: 
-        privacy: 
-        publish: 
+      privacyGroup:
+        privacy:
+        publish:
         publishedMsg: published homebrews will be publicly viewable and searchable (eventually...)
-        delete: 
-        delete brew: 
+        delete:
+        delete brew:
 
-  rendererGroup: 
-    legacy: 
-    v3: 
+  rendererGroup:
+    legacy:
+    v3:
 
 sharePage:
+  metadataWindow:
+    Authors:
+    no authors:
+    Systems:
+    no systems:
+    Tags:
+    no tags:
+    Description:
+    No description.:
+    updated:
+
   sourceDropdown:
     source:
-    view:  
-    download:  
+    view:
+    download:
     clone: clone to new
 
-accountInfoPage: 
-  accountInfo:  
-  username: 
-  lastLogin: 
-  homebreweryInfo:  
+accountInfoPage:
+  accountInfo:
+  username:
+  lastLogin:
+  homebreweryInfo:
   brewsOnHomebrewery:
   googleInfo:
-  linkedToGoogle: 
-  brewsOnGoogleDrive: 
-
- 
+  linkedToGoogle:
+  brewsOnGoogleDrive:
