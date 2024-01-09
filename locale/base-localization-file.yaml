@@ -40,14 +40,16 @@ nav:
     share:
     view:
     copy url:
-    share on reddit:
+    share on Reddit:
 
   get pdf:
 
   recentBrewsdropdown:
     recent brews:
     edited:
+    recently edited:
     viewed:
+    recently viewed:
 
     removeRecents: Remove from Recents
 
@@ -86,55 +88,52 @@ userPage:
       download:
       delete:
 
-editorPage:
-  editorGroup:
-    toolsGroup:
-      undo:
-      redo:
-      brew editor:
-      style editor:
-      properties:
+editPage:
+  tools:
+    undo:
+    redo:
+    Editor Themes:
+    Brew Editor:
+    Style Editor:
+    Properties:
+    jump to location in editor:
+    jump to location in preview:
 
-    buttonsGroup:
-      jump to location in editor:
-      jump to location in preview:
+  brewEditor:
+    snippetsGroup:
+      textEditorDropdown:
+        textEditor:
+        column break:
+        new page:
+        vertical spacing:
+        wide block:
+        image:
+        background image:
+        page number:
+        auto-incrementing page number:
+        link to page:
+        table of contents:
+        add comment:
 
-    brewEditorTab:
-      brewEditor:
-      snippetsGroup:
-        textEditorDropdown:
-          textEditor:
-          column break:
-          new page:
-          vertical spacing:
-          wide block:
-          image:
-          background image:
-          page number:
-          auto-incrementing page number:
-          link to page:
-          table of contents:
-          add comment:
+      phbDropdown:
+        phb:
+        spell:
+        spell list:
+        class feature:
+        note:
+        descriptive text box:
+        monster stat block:
+        wide monster stat block:
+        cover page:
+        artist credit:
 
-        phbDropdown:
-          phb:
-          spell:
-          spell list:
-          class feature:
-          note:
-          descriptive text box:
-          monster stat block:
-          wide monster stat block:
-          cover page:
-          artist credit:
-
-        tablesDropdown:
-          tables:
-          class table:
-          half class table:
-          table:
-          wide table:
-          split table:
+      tablesDropdown:
+        tables:
+        class table:
+        half class table:
+        table:
+        wide table:
+        split table:
 
     styleEditorTab:
       snippetsGroup:
@@ -151,42 +150,43 @@ editorPage:
           inkFriendly:
 
     propertiesTab:
-      properties:
-      brewGroup:
-        brew:
-        title:
-        description:
-        thumbnail:
-        tags:
-        add tag:
-        systems:
-        5e:
-        4e:
-        3.5e:
-        pathfinder:
-        renderer:
-        legacy:
-        v3:
-        legacyDemoLink: click here to see the demo page for the old legacy renderer!
+      brew:
+      title:
+      description:
+      thumbnail:
+      tags:
+      add tag:
+      systems:
+      5e:
+      4e:
+      3.5e:
+      pathfinder:
+      language:
+      languageSub: Sets the HTML Lang property for your brew. May affect hyphenation or spellcheck.
+      theme:
+      renderer:
+      Legacy:
+      v3:
+      legacyDemoLink: click here to see the demo page for the old legacy renderer!
 
-      authorsGroup:
-        authors:
-        none:
-        invitedAuthors:
-        inviteAuthor:
-        invitedMsg1: invited authors are case sensitive.
-        invitedMsg2: after adding an invited author, send them the edit link. there, they can choose to accept or decline the invitation.
+      authors: Authors
+      None.:
+      invited authors:
+      invite author:
+      invitedSub1: Invited authors are case sensitive.
+      invitedSub2: After adding an invited author, send them the edit link. there, they can choose to accept or decline the invitation.
 
-      privacyGroup:
-        privacy:
-        publish:
-        publishedMsg: published homebrews will be publicly viewable and searchable (eventually...)
-        delete:
-        delete brew:
-
-  rendererGroup:
-    legacy:
-    v3:
+      privacy:
+      publish:
+      unpublish:
+      publishedSub: published homebrews will be publicly viewable and searchable (eventually...)
+      delete:
+      delete brew:
+      onlyAuthorDelete: Are you sure you want to delete this brew? Because you are the only owner of this brew, the document will be deleted permanently
+      confirm1: Are you REALLY sure? You will not be able to recover the document.
+      multipleAuthorDelete: Are you sure you want to remove this brew from your collection? This will remove you as an editor, but other owners will still be able to access the document.
+      confirm2: Are you REALLY sure? You will lose editor access to this document.
+      themesLegacy: Themes are not supported in the Legacy Renderer
 
 sharePage:
   metadataWindow:
@@ -198,7 +198,7 @@ sharePage:
     no tags:
     Description:
     No description.:
-    updated:
+    Updated:
 
   sourceDropdown:
     source:
@@ -215,3 +215,17 @@ accountInfoPage:
   googleInfo:
   linkedToGoogle:
   brewsOnGoogleDrive:
+
+htmlError:
+  Line:
+  tag:
+  openTag: An unmatched opening tag means there's an opened tag that isn't closed. You need to close your tags, like this {'</div>'}. Make sure to match types!
+  closeTag: An unmatched closing tag means you closed a tag without opening it. Either remove it, or check to where you think you opened it.
+  missmatchTag: A type mismatch means you closed a tag, but the last open tag was a different type.
+  Protips!:
+  h3Title: There are HTML errors in your markup
+  descriptionText: If these aren't fixed your brew will not render properly when you print it to PDF or share it.
+
+notificationPopup:
+  Notice:
+  keepInMind: "This website is always improving and we are still adding new features and squashing bugs. Keep the following in mind:"
