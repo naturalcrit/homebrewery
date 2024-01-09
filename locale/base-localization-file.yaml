@@ -17,7 +17,7 @@ nav:
     autoSave: autosave
     saveNow: Save Now
     saved: saved.
-    autoSaveMsg: `Autosave is OFF, and you haven't saved for `
+    autoSaveMsg: Autosave is OFF, and you haven't saved for
     autoSaveMsgDuration: 'minutes.'
     autoSaveOff: Autosave is OFF.
 
