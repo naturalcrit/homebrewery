@@ -11,12 +11,15 @@ nav:
     fromgoogletohb: would you like to transfer this brew from your google drive storage back to the homebrewery?
     fromhbtogoogle: would you like to transfer this brew from the homebrewery to your personal google drive storage?
   saveDropdown:
-    autosaved: auto-saved
-    saving: saving
+    autosaved: auto-saved.
+    saving: saving...
     reminder: reminder...
     autoSave: autosave
-    saved: saved
-    autoSaveMsg: autosave is off and you haven't saved for n minute/hour/day/month/year.
+    saveNow: Save Now
+    saved: saved.
+    autoSaveMsg: `Autosave is OFF, and you haven't saved for `
+    autoSaveMsgDuration: 'minutes.'
+    autoSaveOff: Autosave is OFF.
 
   newDoc:  
     new: 
