@@ -143,6 +143,9 @@ const BrewRenderer = (props)=>{
 		if(props.errors && props.errors.length)
 			return renderedPages;
 
+		if(rawPages.length < renderedPages.length) // Remove out-of-view pages when page length changes
+			renderedPages.length = rawPages.length;
+
 		_.forEach(rawPages, (page, index)=>{
 			if((shouldRender(index) || !renderedPages[index]) && typeof window !== 'undefined'){
 				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range
