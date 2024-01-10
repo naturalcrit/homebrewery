@@ -120,7 +120,7 @@ const BrewItem = createClass({
 			{brew.thumbnail &&
 				<div className='thumbnail' style={{ backgroundImage: `url(${brew.thumbnail})` }} >
 				</div>
-			}y
+			}
 			<div className='text'>
 				<h2>{brew.title}</h2>
 				<p className='description'>{brew.description}</p>
