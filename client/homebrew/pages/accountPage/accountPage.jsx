@@ -17,6 +17,7 @@ const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
 
 let SAVEKEY = '';
+const languageKey = 'HOMEBREWERY-LANG';
 
 const AccountPage = createClass({
 	displayName     : 'AccountPage',
@@ -28,10 +29,14 @@ const AccountPage = createClass({
 	},
 	getInitialState : function() {
 		return {
-			uiItems : this.props.uiItems
+			uiItems : this.props.uiItems,
+			lang    : 'en-US'
 		};
 	},
 	componentDidMount : function(){
+		const lang = window.localStorage.getItem(languageKey) || undefined;
+		if(lang != this.state.lang){ this.setState({ lang }); }
+
 		if(!this.state.saveLocation && this.props.uiItems.username) {
 			SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${this.props.uiItems.username}`;
 			let saveLocation =  window.localStorage.getItem(SAVEKEY);
@@ -40,12 +45,29 @@ const AccountPage = createClass({
 		}
 	},
 
+	updateLang : function(lang){
+		if(this.state.lang == lang) return;
+		window.localStorage.setItem(languageKey, lang);
+		this.setState({
+			lang : lang
+		});
+	},
+
 	makeActive : function(newSelection){
 		if(this.state.saveLocation == newSelection) return;
 		window.localStorage.setItem(SAVEKEY, newSelection);
 		this.setState({
 			saveLocation : newSelection
 		});
+	},
+
+	renderLanguageDropdown : function(){
+		const languageOptions = ['en-US', 'fr-FR'];
+		return <div>
+			<select onChange={(e)=>{ this.updateLang(e.target.value); }} value={this.state.lang}>
+				{_.map(languageOptions, (lang, key)=>{ return <option key={key} value={lang}>{lang}</option>; })}
+			</select>
+		</div>;
 	},
 
 	renderButton : function(name, key, shouldRender=true){
@@ -88,6 +110,10 @@ const AccountPage = createClass({
 				<h4>Default Save Location</h4>
 				{this.renderButton('Homebrewery', 'HOMEBREWERY')}
 				{this.renderButton('Google Drive', 'GOOGLE-DRIVE', this.state.uiItems.googleId)}
+			</div>
+			<div className='dataGroup'>
+				<h4>Language Selection <i className='fas fa-language'></i></h4>
+				{this.renderLanguageDropdown()}
 			</div>
 		</>;
 	},
