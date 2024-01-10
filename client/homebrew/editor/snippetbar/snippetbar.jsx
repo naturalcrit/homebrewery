@@ -158,7 +158,7 @@ const Snippetbar = createClass({
 						onClick={this.props.unfoldCode} >
 						<i className='fas fa-expand-alt' />
 					</div>
-				</>
+				</>;
 
 		}
 

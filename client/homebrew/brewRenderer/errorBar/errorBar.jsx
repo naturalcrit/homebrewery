@@ -9,7 +9,6 @@ const translateOpts = ['htmlError'];
 const ErrorBar = createClass({
 	displayName     : 'ErrorBar',
 	getDefaultProps : function() {
-		''.setTranslationDefaults(translateOpts);
 		return {
 			errors : []
 		};
@@ -63,6 +62,7 @@ const ErrorBar = createClass({
 	},
 
 	render : function(){
+		''.setTranslationDefaults(translateOpts);
 		if(!this.props.errors.length) return null;
 
 		return <div className='errorBar'>

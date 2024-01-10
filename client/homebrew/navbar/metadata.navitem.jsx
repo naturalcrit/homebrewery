@@ -9,7 +9,6 @@ const translateOpts = ['nav', 'errorMsg'];
 const MetadataNav = createClass({
 	displayName     : 'MetadataNav',
 	getDefaultProps : function() {
-		''.setTranslationDefaults(translateOpts);
 		return {
 		};
 	},
@@ -79,6 +78,7 @@ const MetadataNav = createClass({
 	},
 
 	render : function(){
+		''.setTranslationDefaults(translateOpts);
 		return <Nav.item icon='fas fa-info-circle' color='grey' className='metadata'
 			onClick={()=>this.toggleMetaWindow()}>
 			{this.props.children}

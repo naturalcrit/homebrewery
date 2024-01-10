@@ -7,13 +7,13 @@ const translateOpts = ['nav', 'errorMsg'];
 
 const ErrorNavItem = createClass({
 	getDefaultProps : function() {
-		''.setTranslationDefaults(translateOpts);
 		return {
 			error  : '',
 			parent : null
 		};
 	},
 	render : function() {
+		''.setTranslationDefaults(translateOpts);
 		const clearError = ()=>{
 			const state = {
 				error : null
@@ -74,7 +74,7 @@ const ErrorNavItem = createClass({
 			{'Oops!'.translate()}
 			<div className='errorContainer'>
 				{'problemSaving'.translate()}<a target='_blank' rel='noopener noreferrer' href={`https://github.com/naturalcrit/homebrewery/issues/new?template=save_issue.yml&error-code=${encodeURIComponent(errMsg)}`}>
-				{'here'.translate()}
+					{'here'.translate()}
 				</a>.
 			</div>
 		</Nav.item>;

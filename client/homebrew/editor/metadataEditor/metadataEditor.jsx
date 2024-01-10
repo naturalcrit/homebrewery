@@ -26,7 +26,6 @@ const callIfExists = (val, fn, ...args)=>{
 const MetadataEditor = createClass({
 	displayName     : 'MetadataEditor',
 	getDefaultProps : function() {
-		''.setTranslationDefaults(translateOpts);
 		return {
 			metadata : {
 				editId      : null,
@@ -309,6 +308,7 @@ const MetadataEditor = createClass({
 	},
 
 	render : function(){
+		''.setTranslationDefaults(translateOpts);
 		return <div className='metadataEditor'>
 			<h1 className='sectionHead'>{'Brew'.translate()}</h1>
 
