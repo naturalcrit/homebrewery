@@ -69,7 +69,7 @@ const BrewRenderer = (props)=>{
 		rawPages = props.text.split(/^\\page$/gm);
 	}
 
-	Markdown.renderOptions({ engine: this.props.renderer }, false);
+	Markdown.renderOptions({ engine: props.renderer }, false);
 
 	useEffect(()=>{ // Unmounting steps
 		return ()=>{window.removeEventListener('resize', updateSize);};
