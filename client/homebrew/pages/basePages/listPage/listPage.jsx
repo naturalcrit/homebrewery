@@ -220,6 +220,7 @@ const ListPage = createClass({
 	},
 
 	render : function(){
+		''.setTranslationDefaults(translateOpts);
 		return <div className='listPage sitePage'>
 			{/*<style>@layer V3_5ePHB, bundle;</style>*/}
 			<link href='/themes/V3/Blank/style.css' rel='stylesheet'/>
