@@ -206,15 +206,22 @@ sharePage:
     download:
     clone: clone to new
 
-accountInfoPage:
-  accountInfo:
-  username:
-  lastLogin:
-  homebreweryInfo:
-  brewsOnHomebrewery:
-  googleInfo:
-  linkedToGoogle:
-  brewsOnGoogleDrive:
+accountPage:
+  Account Information:
+  username: "Username:"
+  noUser: No user currently logged in
+  lastLogin: "Last Login:"
+  Homebrewery Information:
+  brewsOnHomebrewery: "Brews on Homebrewery:"
+  Google Information:
+  linkedToGoogle: "Linked to Google:"
+  brewsOnGoogleDrive: "Brews on Google Drive:"
+  noFiles: Unable to retrieve files
+  followSteps: follow these steps to renew your Google credentials.
+  Default Save Location:
+  Homebrewery:
+  Google Drive:
+  Language Selection:
 
 htmlError:
   Line:
