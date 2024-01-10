@@ -482,7 +482,7 @@ const varDefInline = {
 		if(!parseVars)	//Don't re-parse variable defs inside of another variable call
 			return;
 		//                   [ variable name (spaces allowed) ]: Any text, including into newlines (but no fully blank lines)
-		const regex = /^\n?([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:\((.*?)\)/;
+		const regex = /^\n?([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:\((.+?)\)/;
 		const match = regex.exec(src);
 		if(match) {
 			const label   = match[2] ? match[2].trim().toLowerCase().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
