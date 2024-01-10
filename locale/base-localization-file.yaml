@@ -67,6 +67,8 @@ nav:
 userPage:
   No Brews.:
   No Title:
+  published brews:
+  unpublished brews:
 
   filters:
     sortBy: "Sort By:"
@@ -75,10 +77,6 @@ userPage:
     updated date:
     views:
     searchPlaceholder: filter title/description
-
-  sectionTitles:
-    <user-name>'s published brews:
-    <user-name>'s unpublished brews:
 
   brewInfo:
     authors: "Authors:"
