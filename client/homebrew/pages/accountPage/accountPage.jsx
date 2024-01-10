@@ -34,7 +34,7 @@ const AccountPage = createClass({
 		};
 	},
 	componentDidMount : function(){
-		const lang = window.localStorage.getItem(languageKey) || undefined;
+		const lang = window.localStorage.getItem(languageKey);
 		if(lang != this.state.lang){ this.setState({ lang }); }
 
 		if(!this.state.saveLocation && this.props.uiItems.username) {
