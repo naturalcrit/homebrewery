@@ -69,6 +69,7 @@ app.use(homebrewApi);
 app.use(require('./admin.api.js'));
 
 const HomebrewModel     = require('./homebrew.model.js').model;
+const UserInfoModel     = require('./userinfo.model.js').model;
 const welcomeText       = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 const welcomeTextLegacy = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
 const migrateText       = require('fs').readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
@@ -418,9 +419,21 @@ if(isLocalEnvironment){
 	});
 }
 
+let lastActivity = new Date('Jan 01 1970 00:00:00.000');
+const DEFAULT_ACTIVITY_DELAY = 30 * 1000; //milliseconds
+
 //Render the page
 const templateFn = require('./../client/template.js');
+
 const renderPage = async (req, res)=>{
+	// Update activity
+	const now = new Date;
+	const shouldUpdateActivity = now.setTime(lastActivity.getTime() + DEFAULT_ACTIVITY_DELAY) < new Date;
+	if(req.account?.username && shouldUpdateActivity) {
+		lastActivity = new Date;
+		await UserInfoModel.updateActivity(req.account.username);
+	}
+
 	// Create configuration object
 	const configuration = {
 		local       : isLocalEnvironment,

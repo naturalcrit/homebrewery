@@ -1,7 +1,8 @@
 const HomebrewModel = require('./homebrew.model.js').model;
+const UserInfoModel = require('./userinfo.model.js').model;
 const router = require('express').Router();
 const Moment = require('moment');
-//const render = require('vitreum/steps/render');
+// const render = require('vitreum/steps/render');
 const templateFn = require('../client/template.js');
 const zlib = require('zlib');
 
@@ -64,6 +65,15 @@ router.get('/admin/lookup/:id', mw.adminOnly, (req, res, next)=>{
 	});
 });
 
+/* Searches for matching edit or share id, also attempts to partial match */
+router.get('/admin/userlookup/:id', mw.adminOnly, (req, res, next)=>{
+	UserInfoModel.findOne({ $or : [
+		{ username: { '$regex': req.params.id, '$options': 'i' } }
+	] }).exec((err, user)=>{
+		return res.json(user);
+	});
+});
+
 /* Find 50 brews that aren't compressed yet */
 router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{
 	uncompressedBrewQuery.exec((err, objs)=>{
@@ -104,7 +114,7 @@ router.get('/admin', mw.adminOnly, (req, res)=>{
 		url : req.originalUrl
 	})
 		.then((page)=>res.send(page))
-		.catch((err)=>res.sendStatus(500));
+		.catch((err)=>res.status(500).send(err));
 });
 
 module.exports = router;

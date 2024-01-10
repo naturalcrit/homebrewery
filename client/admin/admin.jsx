@@ -2,15 +2,44 @@ require('./admin.less');
 const React = require('react');
 const createClass = require('create-react-class');
 
-
-const BrewCleanup = require('./brewCleanup/brewCleanup.jsx');
-const BrewLookup = require('./brewLookup/brewLookup.jsx');
-const BrewCompress = require ('./brewCompress/brewCompress.jsx');
-const Stats = require('./stats/stats.jsx');
+const BrewTab = require('./tabs/brewTab/brewTab.jsx');
+const UserTab = require('./tabs/userTab/userTab.jsx');
 
 const Admin = createClass({
 	getDefaultProps : function() {
-		return {};
+		return {
+			tab : 'brew',
+
+			tabObject : {
+				brew : <BrewTab></BrewTab>,
+				user : <UserTab></UserTab>
+			}
+		};
+	},
+
+	getInitialState : function() {
+		return {
+			tab : this.props.tab
+		};
+	},
+
+	handleTabChange : function(newTab){
+		if(this.state.tab === newTab) return;
+		this.setState({
+			tab : newTab
+		});
+	},
+
+	renderButton : function(label){
+		if(!label) return;
+		return <button className={`tab ${this.state.tab===label ? 'active' : ''}`} onClick={()=>this.handleTabChange(label)}>{label.toUpperCase()}</button>;
+	},
+
+	renderTabs : function(){
+		return <div className='container tabContainer'>
+			{this.renderButton('brew')}
+			{this.renderButton('user')}
+		</div>;
 	},
 
 	render : function(){
@@ -22,15 +51,8 @@ const Admin = createClass({
 					homebrewery admin
 				</div>
 			</header>
-			<div className='container'>
-				<Stats />
-				<hr />
-				<BrewLookup />
-				<hr />
-				<BrewCleanup />
-				<hr />
-				<BrewCompress />
-			</div>
+			{this.renderTabs()}
+			{this.props.tabObject[this.state.tab]}
 		</div>;
 	}
 });
