@@ -2,20 +2,21 @@
 yes: yes
 no: no
 dateFormat: YYYY-MM-DD HH:mm:ss
+OK:
 
 nav:
   help out: help out
   storageMsg:
-    notSignedIn: you must be signed in to a google account to transfer between the homebrewery and google drive!
-    fromGoogleToHb: would you like to transfer this brew from your google drive storage back to the homebrewery?
-    fromHbToGoogle: would you like to transfer this brew from the homebrewery to your personal google drive storage?
+    notSignedIn: You must be signed in to a Google account to transfer between the homebrewery and Google Drive!
+    fromGoogleToHb: Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?
+    fromHbToGoogle: Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?
   saveDropdown:
-    auto-saved.: auto-saved.
-    saving...: saving...
-    reminder...: reminder...
+    autosaved: autosaved.
+    saving: saving...
+    reminder: reminder...
     autosave: autosave
     Save Now: Save Now
-    saved.: saved.
+    saved: saved.
     autoSaveMsg: Autosave is OFF, and you haven't saved for
     autoSaveMsgDuration: "minutes."
     autoSaveOff: Autosave is OFF.
@@ -24,10 +25,11 @@ nav:
     conflict: "Conflict: please refresh to get latest change"
     outOfDate: Your client is out of date. Please save your changes elsewhere and refresh.
     expiredCredentials: Looks like your Google credentials have expired! Visit our log in page to sign out and sign back in with Google, then try saving again!
-    sign in:
-    not now:
+    Sign In: Sign In
+    Not Now:
     problemSaving: Looks like there was a problem saving. <br /> Report the issue
     here:
+    deletedBrew: This brew is currently in your Trash folder on Google Drive!<br />If you want to keep it, make sure to move it before it is deleted permanently!<br />
 
   newDoc:
     new:

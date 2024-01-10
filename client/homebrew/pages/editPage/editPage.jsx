@@ -26,6 +26,8 @@ const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
 
 const googleDriveIcon = require('../../googleDrive.svg');
 
+const translateOpts = ['userPage','brewInfo'];
+
 const SAVE_TIMEOUT = 3000;
 
 const EditPage = createClass({
@@ -221,46 +223,46 @@ const EditPage = createClass({
 	},
 
 	renderGoogleDriveIcon : function(){
+		''.setTranslationDefaults(['nav', 'storageMsg']);
 		return <Nav.item className='googleDriveStorage' onClick={this.handleGoogleClick}>
 			<img src={googleDriveIcon} className={this.state.saveGoogle ? '' : 'inactive'} alt='Google Drive icon'/>
 
 			{this.state.confirmGoogleTransfer &&
 				<div className='errorContainer' onClick={this.closeAlerts}>
 					{ this.state.saveGoogle
-						?	`Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?`
-						: `Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?`
+						? 'fromGoogletoHB'.translate()
+						: 'fromHBtoGoogle'.translate()
 					}
 					<br />
 					<div className='confirm' onClick={this.toggleGoogleStorage}>
-						Yes
+						{'Yes'.translate()}
 					</div>
 					<div className='deny'>
-						No
+						{'No'.translate()}
 					</div>
 				</div>
 			}
 
 			{this.state.alertLoginToTransfer &&
 				<div className='errorContainer' onClick={this.closeAlerts}>
-					You must be signed in to a Google account to transfer
-					between the homebrewery and Google Drive!
+					{'notSignedIn'.translate()}
 					<a target='_blank' rel='noopener noreferrer'
 						href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
 						<div className='confirm'>
-							Sign In
+							{'Sign In'.translate(['nav','errorMSG'])}
 						</div>
 					</a>
 					<div className='deny'>
-						Not Now
+						{'Not Now'.translate(['nav','errorMSG'])}
 					</div>
 				</div>
 			}
 
 			{this.state.alertTrashedGoogleBrew &&
 				<div className='errorContainer' onClick={this.closeAlerts}>
-				This brew is currently in your Trash folder on Google Drive!<br />If you want to keep it, make sure to move it before it is deleted permanently!<br />
+					{'deletedBrew'.translate(['nav','errorMSG'])}
 					<div className='confirm'>
-						OK
+						{'OK'.translate()}
 					</div>
 				</div>
 			}
@@ -286,7 +288,7 @@ const EditPage = createClass({
 			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>{'saving'.translate()}</Nav.item>;
 		}
 		if(this.state.isPending && this.hasChanges()){
-			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>{'saveNow'.translate()}</Nav.item>;
+			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>{'Save Now'.translate()}</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving && this.state.autoSave){
 			return <Nav.item className='save saved'>{'autosaved'.translate()}</Nav.item>;
