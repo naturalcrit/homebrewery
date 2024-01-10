@@ -222,6 +222,7 @@ accountPage:
   Homebrewery:
   Google Drive:
   Language Selection:
+  langSub: This option selects your language exclusively for the user Interface, and not for your brews. You can change brew language in their properties tab.
 
 htmlError:
   Line:

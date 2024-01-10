@@ -69,6 +69,8 @@ const AccountPage = createClass({
 			<select onChange={(e)=>{ this.updateLang(e.target.value); }} value={this.state.lang}>
 				{_.map(languageOptions, (lang, key)=>{ return <option key={key} value={lang}>{lang}</option>; })}
 			</select>
+			<br />
+			<sub style="font-size:smaller">{'langSub'.translate()}</sub>
 		</div>;
 	},
 
