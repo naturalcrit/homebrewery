@@ -24,19 +24,19 @@ const findRichTags = (pages, theRegex)=>{
 	}));
 };
 
-const findIndexTerms = (pages, terms, results)=>{
+const findSubjectHeadings = (pages, terms, results)=>{
 	const lowerTerms = terms.map((term)=>term.toLowerCase());
 	for (const [pageNumber, page] of pages.entries()) {
 		const lowerPage = page.toLowerCase();
 		for (const [term, lt] of lowerTerms.entries()) {
-			const regExTerm = new RegExp(lt.replace(' ', '\s').replace(/\n/g, '\s'));
+			const regExTerm = new RegExp(lt);
 			if(lowerPage.match(regExTerm)) {
 				if(results.has(terms[term])) {
 					const currentEntry = results.get(terms[term]);
 					currentEntry.pages.push(pageNumber);
 					results.set(terms[term], currentEntry);
 				} else {
-					results.set(terms[term], { pages: [pageNumber], children: [] });
+					results.set(terms[term], { pages: [pageNumber], entries: [] });
 				}
 			}
 		}
@@ -48,26 +48,26 @@ const addRichIndexes = (richEntries, results)=>{
 	for (const [entryPageNumber, richEntriesOnPage] of richEntries.entries()) {
 		if(richEntriesOnPage.length>0) {
 			for (const richTags of richEntriesOnPage) {
-				const parents = richTags[2].split('|');
-				if(parents.length>0){
-					for (const parent of parents) {
-						if(results.has(parent)){
-							const entry = results.get(parent);
-							if(!entry.children.has(richTags[1])){
-								entry.children.set(richTags[1], [entryPageNumber]);
+				const subjectHeadings = richTags[2].split('|');
+				if(subjectHeadings.length>0){
+					for (const subjectHeading of subjectHeadings) {
+						if(results.has(subjectHeading)){
+							const currentSubjectHeading = results.get(subjectHeading);
+							if(!currentSubjectHeading.entries.has(richTags[1])){
+								currentSubjectHeading.entries.set(richTags[1], [entryPageNumber]);
 							} else {
-								const children = entry.children.get(richTags[1]);
-								children.push(entryPageNumber);
-								entry.children.set(richTags[1], children);
+								const entries = currentSubjectHeading.entries.get(richTags[1]);
+								entries.push(entryPageNumber);
+								currentSubjectHeading.entries.set(richTags[1], entries);
 							}
-							results.set(parent, entry);
+							results.set(subjectHeading, currentSubjectHeading);
 						} else {
-							const childMap = new Map();
-							childMap.set(richTags[1], [entryPageNumber]);
-							results.set(parent, {
-								pages    : [],
-								children : childMap,
-								rich     : true
+							const entriesMap = new Map();
+							entriesMap.set(richTags[1], [entryPageNumber]);
+							results.set(subjectHeading, {
+								pages   : [],
+								entries : entriesMap,
+								rich    : true
 							});
 						}
 					}
@@ -91,26 +91,24 @@ const markup = (index)=>{
 	const sortedIndex = sortMap(index);
 	let results = '';
 
-	for (const [parent, parentPages] of sortedIndex) {
-		results = results.concat(`- `, parent, parentPages.pages.length > 0 ? ' ... pg. ':'');
-		for (const [k, pageNumber] of parentPages.pages.entries()) {
-			if(parentPages.hasOwnProperty('rich')) {
-				results = results.concat('[', parseInt(pageNumber+1), `](#${child.toLowerCase().replace(' ', '')})`);
-			} else {
+	for (const [subjectHeading, subjectHeadingPages] of sortedIndex) {
+		results = results.concat(`- `, subjectHeading, subjectHeadingPages.pages.length > 0 ? ' ... pg. ':'');
+		for (const [k, pageNumber] of subjectHeadingPages.pages.entries()) {
+			if(!subjectHeadingPages.hasOwnProperty('rich')) {
 				results = results.concat('[', parseInt(pageNumber+1), `](#p${pageNumber})`);
 			}
-			if(k < (parentPages.pages.length - 1)) {
+			if(k < (subjectHeadingPages.pages.length - 1)) {
 				results = results.concat(`, `);
 			}
 		}
 		results = results.concat('\n');
-		if(parentPages.hasOwnProperty('children')) {
-			const sortedChildren = sortMap(parentPages.children);
-			for (const [child, childPages] of sortedChildren){
-				results = results.concat('  - ', child, ' ... pg. ');
-				for (const [k, pageNumber] of childPages.entries()) {
-					results = results.concat('[', parseInt(pageNumber+1), `](#${child.toLowerCase().replace(' ', '')})`);
-					if(k < (childPages.length - 1)) {
+		if(subjectHeadingPages.hasOwnProperty('entries')) {
+			const sortedEntries = sortMap(subjectHeadingPages.entries);
+			for (const [entry, entryPages] of sortedEntries){
+				results = results.concat('  - ', entry, ' ... pg. ');
+				for (const [k, pageNumber] of entryPages.entries()) {
+					results = results.concat('[', parseInt(pageNumber+1), `](#${entry.toLowerCase().replace(' ', '')})`);
+					if(k < (entryPages.length - 1)) {
 						results = results.concat(`, `);
 					}
 				}
@@ -132,7 +130,7 @@ module.exports = function (props) {
 	const richIndexEntries = findRichTags(pages, indexMarkdownRegex);
 
 	if(indexTag.length > 0) {
-		findIndexTerms(pages, indexTag.split('|'), index);
+		findSubjectHeadings(pages, indexTag.split('|'), index);
 	}
 
 	if(richIndexEntries.length>0) {

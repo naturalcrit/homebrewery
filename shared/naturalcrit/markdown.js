@@ -212,23 +212,23 @@ const indexAnchors = {
 	start(src) {return src.match(/@\[((?:\\.|[^\[\]\\^@^\)])*)\]\(((?:\\.|[^\[\]\\^@^\)])*)\)/)?.index;}, // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const inlineRegex = /@\[((?:\\.|[^\[\]\\^@^\)])*)\]\(((?:\\.|[^\[\]\\^@^\)])*)\)/ym;
-		const anchor = {};
+		const indexEntry = {};
 		const match = inlineRegex.exec(src);
 		if(match) {
-			anchor.lookup = match[1].trim();
-			anchor.parent = match[2].trim();
+			indexEntry.entries = match[1].trim();
+			indexEntry.subjectHeading = match[2].trim();
 			return {
 				type : 'indexAnchor',
 				text : src,
 				raw  : match[0],
-				anchor
+				indexEntry
 			};
 		}
 	},
 	renderer(token) {
-		// This is a Rich Index Anchor entry
-		if(token.anchor?.lookup) {
-			return `<a href="#${token.anchor.lookup.replace(/\s/g, '').toLowerCase()}" parent="${token.anchor.parent}" lookup="${token.anchor.lookup}"></a>`;
+		// This is a Rich Index entry
+		if(token.indexEntry?.entries) {
+			return `<a href="#${token.indexEntry.entries.replace(/\s/g, '').toLowerCase()}" subjectHeading="${token.indexEntry.subjectHeading}" entry="${token.indexEntry.entries}"></a>`;
 		} else {
 			// This is a basic index entry
 			return '';
