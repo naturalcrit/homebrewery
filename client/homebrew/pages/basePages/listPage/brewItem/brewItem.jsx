@@ -10,6 +10,8 @@ const googleDriveIcon = require('../../../../googleDrive.svg');
 const homebreweryIcon = require('../../../../thumbnail.png');
 const dedent = require('dedent-tabs').default;
 
+const translateOpts = ['userPage','brewInfo'];
+
 const BrewItem = createClass({
 	displayName     : 'BrewItem',
 	getDefaultProps : function() {
@@ -25,12 +27,13 @@ const BrewItem = createClass({
 	},
 
 	deleteBrew : function(){
+
 		if(this.props.brew.authors.length <= 1){
-			if(!confirm('Are you sure you want to delete this brew? Because you are the only owner of this brew, the document will be deleted permanently.')) return;
-			if(!confirm('Are you REALLY sure? You will not be able to recover the document.')) return;
+			if(!confirm('onlyAuthorDelete'.translate(['editPage', 'propertiesTab']))) return;
+			if(!confirm('confirm1'.translate(['editPage', 'propertiesTab']))) return;
 		} else {
-			if(!confirm('Are you sure you want to remove this brew from your collection? This will remove you as an editor, but other owners will still be able to access the document.')) return;
-			if(!confirm('Are you REALLY sure? You will lose editor access to this document.')) return;
+			if(!confirm('multipleAuthorDelete'.translate(['editPage', 'propertiesTab']))) return;
+			if(!confirm('confirm2'.translate(['editPage', 'propertiesTab']))) return;
 		}
 
 		request.delete(`/api/${this.props.brew.googleId ?? ''}${this.props.brew.editId}`)
@@ -48,7 +51,7 @@ const BrewItem = createClass({
 		if(!this.props.brew.editId) return;
 
 		return <a className='deleteLink' onClick={this.deleteBrew}>
-			<i className='fas fa-trash-alt' title='Delete' />
+			<i className='fas fa-trash-alt' title={'Delete'.translate()} />
 		</a>;
 	},
 
@@ -61,7 +64,7 @@ const BrewItem = createClass({
 		}
 
 		return <a className='editLink' href={`/edit/${editLink}`} target='_blank' rel='noopener noreferrer'>
-			<i className='fas fa-pencil-alt' title='Edit' />
+			<i className='fas fa-pencil-alt' title={'Edit'.translate()} />
 		</a>;
 	},
 
@@ -74,7 +77,7 @@ const BrewItem = createClass({
 		}
 
 		return <a className='shareLink' href={`/share/${shareLink}`} target='_blank' rel='noopener noreferrer'>
-			<i className='fas fa-share-alt' title='Share' />
+			<i className='fas fa-share-alt' title={'Share'.translate()} />
 		</a>;
 	},
 
@@ -87,13 +90,13 @@ const BrewItem = createClass({
 		}
 
 		return <a className='downloadLink' href={`/download/${shareLink}`}>
-			<i className='fas fa-download' title='Download' />
+			<i className='fas fa-download' title={'Download'.translate()} />
 		</a>;
 	},
 
 	renderStorageIcon : function(){
 		if(this.props.brew.googleId) {
-			return <span title={this.props.brew.webViewLink ? 'Your Google Drive Storage': 'Another User\'s Google Drive Storage'}>
+			return <span title={this.props.brew.webViewLink ? 'gdTitle'.translate(): 'gdTitle2'.translate()}>
 				<a href={this.props.brew.webViewLink} target='_blank'>
 					<img className='googleDriveIcon' src={googleDriveIcon} alt='googleDriveIcon' />
 				</a>
@@ -106,17 +109,18 @@ const BrewItem = createClass({
 	},
 
 	render : function(){
+		''.setTranslationDefaults(translateOpts);
 		const brew = this.props.brew;
 		if(Array.isArray(brew.tags)) {               // temporary fix until dud tags are cleaned
 			brew.tags = brew.tags?.filter((tag)=>tag); //remove tags that are empty strings
 		}
-		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
+		const dateFormatString = 'dateFormat'.translate();
 
 		return <div className='brewItem'>
 			{brew.thumbnail &&
 				<div className='thumbnail' style={{ backgroundImage: `url(${brew.thumbnail})` }} >
 				</div>
-			}
+			}y
 			<div className='text'>
 				<h2>{brew.title}</h2>
 				<p className='description'>{brew.description}</p>
@@ -134,21 +138,21 @@ const BrewItem = createClass({
 					</div>
 				</> : <></>
 				}
-				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
+				<span title={`${'Authors'.translate()}\n${brew.authors?.join('\n')}`}>
 					<i className='fas fa-user'/> {brew.authors?.join(', ')}
 				</span>
 				<br />
-				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
+				<span title={`${'lastViewed'.translate()} ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
 					<i className='fas fa-eye'/> {brew.views}
 				</span>
 				{brew.pageCount &&
-					<span title={`Page count: ${brew.pageCount}`}>
+					<span title={`${'pageCount'.translate()}} ${brew.pageCount}`}>
 						<i className='far fa-file' /> {brew.pageCount}
 					</span>
 				}
 				<span title={dedent`
-					Created: ${moment(brew.createdAt).local().format(dateFormatString)}
-					Last updated: ${moment(brew.updatedAt).local().format(dateFormatString)}`}>
+					${'created'.translate()} ${moment(brew.createdAt).local().format(dateFormatString)}
+					${'lastUpdated'.translate()} ${moment(brew.updatedAt).local().format(dateFormatString)}`}>
 					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
 				</span>
 				{this.renderStorageIcon()}

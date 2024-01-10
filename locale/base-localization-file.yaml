@@ -1,6 +1,7 @@
 # string translation template
 yes: yes
 no: no
+dateFormat: YYYY-MM-DD HH:mm:ss
 
 nav:
   help out: help out
@@ -62,11 +63,14 @@ nav:
     logoutMsg: Are you sure you want to log out?
 
 userPage:
+  No Brews.:
+  No Title:
+
   filters:
-    sortBy:
+    sortBy: "Sort By:"
     title:
-    createdDate:
-    updatedDate:
+    created date:
+    updated date:
     views:
     searchPlaceholder: filter title/description
 
@@ -75,18 +79,17 @@ userPage:
     <user-name>'s unpublished brews:
 
   brewInfo:
-    singularDate: a minute/an hour/a day/a month/a year ago
-    secondsDate: a few seconds ago
-    pluralDate: n minutes/hours/days/months/years ago
-    buttons:
-      authors:
-      lastViewed:
-      page count:
-      created:
-      share:
-      edit:
-      download:
-      delete:
+    authors: "Authors:"
+    lastViewed: "Last viewed:"
+    pageCount: "Page count"
+    created: "Created:"
+    lastUpdated: "Last updated:"
+    Share:
+    Edit:
+    Download:
+    Delete:
+    gdTitle: Your Google Drive Storage
+    gdTitle2: Another User\'s Google Drive Storage
 
 editPage:
   tools:
@@ -99,94 +102,89 @@ editPage:
     jump to location in editor:
     jump to location in preview:
 
-  brewEditor:
-    snippetsGroup:
-      textEditorDropdown:
-        textEditor:
-        column break:
-        new page:
-        vertical spacing:
-        wide block:
-        image:
-        background image:
-        page number:
-        auto-incrementing page number:
-        link to page:
-        table of contents:
-        add comment:
+  brewTab:
+    snippets:
+      textEditor:
+      column break:
+      new page:
+      vertical spacing:
+      wide block:
+      image:
+      background image:
+      page number:
+      auto-incrementing page number:
+      link to page:
+      table of contents:
+      add comment:
 
-      phbDropdown:
-        phb:
-        spell:
-        spell list:
-        class feature:
-        note:
-        descriptive text box:
-        monster stat block:
-        wide monster stat block:
-        cover page:
-        artist credit:
+      phb:
+      spell:
+      spell list:
+      class feature:
+      note:
+      descriptive text box:
+      monster stat block:
+      wide monster stat block:
+      cover page:
+      artist credit:
 
-      tablesDropdown:
-        tables:
-        class table:
-        half class table:
-        table:
-        wide table:
-        split table:
+      tables:
+      class table:
+      half class table:
+      table:
+      wide table:
+      split table:
 
-    styleEditorTab:
-      snippetsGroup:
-        styleEditorDropdown:
-          styleEditor:
-          removeDropCap:
-          tweakDropCap:
-          addComment:
+  styleTab:
+    snippets:
+      styleEditor:
+      removeDropCap:
+      tweakDropCap:
+      addComment:
 
-        printDropdown:
-          print:
-          a4PageSize:
-          squarePageSize:
-          inkFriendly:
+      print:
+      a4PageSize:
+      squarePageSize:
+      inkFriendly:
 
-    propertiesTab:
-      brew:
-      title:
-      description:
-      thumbnail:
-      tags:
-      add tag:
-      systems:
-      5e:
-      4e:
-      3.5e:
-      pathfinder:
-      language:
-      languageSub: Sets the HTML Lang property for your brew. May affect hyphenation or spellcheck.
-      theme:
-      renderer:
-      Legacy:
-      v3:
-      legacyDemoLink: click here to see the demo page for the old legacy renderer!
+  propertiesTab:
+    brew:
+    title:
+    description:
+    thumbnail:
+    tags:
+    add tag:
+    systems:
+    5e:
+    4e:
+    3.5e:
+    pathfinder:
+    language:
+    languageSub: Sets the HTML Lang property for your brew. May affect hyphenation or spellcheck.
+    theme:
+    renderer:
+    Legacy:
+    v3:
+    legacyDemoLink: click here to see the demo page for the old legacy renderer!
 
-      authors: Authors
-      None.:
-      invited authors:
-      invite author:
-      invitedSub1: Invited authors are case sensitive.
-      invitedSub2: After adding an invited author, send them the edit link. there, they can choose to accept or decline the invitation.
+    authors: Authors
+    None.:
+    invited authors:
+    invite author:
+    invitedSub1: Invited authors are case sensitive.
+    invitedSub2: After adding an invited author, send them the edit link. there, they can choose to accept or decline the invitation.
 
-      privacy:
-      publish:
-      unpublish:
-      publishedSub: published homebrews will be publicly viewable and searchable (eventually...)
-      delete:
-      delete brew:
-      onlyAuthorDelete: Are you sure you want to delete this brew? Because you are the only owner of this brew, the document will be deleted permanently
-      confirm1: Are you REALLY sure? You will not be able to recover the document.
-      multipleAuthorDelete: Are you sure you want to remove this brew from your collection? This will remove you as an editor, but other owners will still be able to access the document.
-      confirm2: Are you REALLY sure? You will lose editor access to this document.
-      themesLegacy: Themes are not supported in the Legacy Renderer
+    privacy:
+    publish:
+    unpublish:
+    publishedSub: published homebrews will be publicly viewable and searchable (eventually...)
+    delete:
+    delete brew:
+    onlyAuthorDelete: Are you sure you want to delete this brew? Because you are the only owner of this brew, the document will be deleted permanently
+    confirm1: Are you REALLY sure? You will not be able to recover the document.
+    multipleAuthorDelete: Are you sure you want to remove this brew from your collection? This will remove you as an editor, but other owners will still be able to access the document.
+    confirm2: Are you REALLY sure? You will lose editor access to this document.
+    themesLegacy: Themes are not supported in the Legacy Renderer
 
 sharePage:
   metadataWindow:

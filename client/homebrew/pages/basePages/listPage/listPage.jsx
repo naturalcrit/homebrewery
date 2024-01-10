@@ -12,6 +12,8 @@ const USERPAGE_KEY_PREFIX = 'HOMEBREWERY-LISTPAGE';
 const DEFAULT_SORT_TYPE = 'alpha';
 const DEFAULT_SORT_DIR = 'asc';
 
+const translateOpts = ['userPage','brewInfo'];
+
 const ListPage = createClass({
 	displayName     : 'ListPage',
 	getDefaultProps : function() {
@@ -79,7 +81,7 @@ const ListPage = createClass({
 	},
 
 	renderBrews : function(brews){
-		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
+		if(!brews || !brews.length) return <div className='noBrews'>{'No Brews.'.translate()}</div>;
 
 		return _.map(brews, (brew, idx)=>{
 			return <BrewItem brew={brew} key={idx} reportError={this.props.reportError}/>;
@@ -87,7 +89,7 @@ const ListPage = createClass({
 	},
 
 	sortBrewOrder : function(brew){
-		if(!brew.title){brew.title = 'No Title';}
+		if(!brew.title){brew.title = 'No Title'.translate();}
 		const mapping = {
 			'alpha'   : _.deburr(brew.title.trim().toLowerCase()),
 			'created' : moment(brew.createdAt).format(),
@@ -158,7 +160,7 @@ const ListPage = createClass({
 				<i className='fas fa-search'></i>
 				<input
 					type='search'
-					placeholder='filter title/description'
+					placeholder={'searchPlaceholder'.translate()}
 					onChange={this.handleFilterTextChange}
 					value={this.state.filterString}
 				/>
@@ -168,11 +170,11 @@ const ListPage = createClass({
 
 	renderSortOptions : function(){
 		return <div className='sort-container'>
-			<h6>Sort by :</h6>
-			{this.renderSortOption('Title', 'alpha')}
-			{this.renderSortOption('Created Date', 'created')}
-			{this.renderSortOption('Updated Date', 'updated')}
-			{this.renderSortOption('Views', 'views')}
+			<h6>{'sortyBy'.translate()}</h6>
+			{this.renderSortOption('title'.translate(['userpage','filters']), 'alpha')}
+			{this.renderSortOption('created date'.translate(['userpage','filters']), 'created')}
+			{this.renderSortOption('updated date'.translate(['userpage','filters']), 'updated')}
+			{this.renderSortOption('views'.translate(['userpage','filters']), 'views')}
 			{/* {this.renderSortOption('Latest', 'latest')} */}
 
 			{this.renderFilterOption()}
@@ -207,11 +209,11 @@ const ListPage = createClass({
 
 	renderBrewCollection : function(brewCollection){
 		if(brewCollection == []) return <div className='brewCollection'>
-			<h1>No Brews</h1>
+			<h1>{'No Brews'.translate(['userPage'])}</h1>
 		</div>;
 		return _.map(brewCollection, (brewGroup, idx)=>{
 			return <div key={idx} className={`brewCollection ${brewGroup.class ?? ''}`}>
-				<h1 className={brewGroup.visible ? 'active' : 'inactive'} onClick={()=>{this.toggleBrewCollectionState(brewGroup.class);}}>{brewGroup.title || 'No Title'}</h1>
+				<h1 className={brewGroup.visible ? 'active' : 'inactive'} onClick={()=>{this.toggleBrewCollectionState(brewGroup.class);}}>{brewGroup.title || 'No Title'.translate()}</h1>
 				{brewGroup.visible ? this.renderBrews(this.getSortedBrews(brewGroup.brews)) : <></>}
 			</div>;
 		});
