@@ -1,4 +1,5 @@
 const HomebrewModel = require('./homebrew.model.js').model;
+const NotificationModel = require('./notifications.model.js').model;
 const router = require('express').Router();
 const Moment = require('moment');
 //const render = require('vitreum/steps/render');
@@ -97,6 +98,21 @@ router.get('/admin/stats', mw.adminOnly, (req, res)=>{
 			totalBrews : count
 		});
 	});
+});
+
+/* Searches for notification with matching key */
+router.get('/admin/notification/lookup/:id', mw.adminOnly, (req, res, next)=>{
+	NotificationModel.findOne({ dismissKey: req.params.id })
+		.exec((err, notification)=>{
+			return res.json(notification);
+		});
+});
+
+/* Add new notification */
+router.post('/admin/notification/add', mw.adminOnly, async (req, res, next)=>{
+	console.log(req.body);
+	const notification = await NotificationModel.addNotification(req.body);
+	return res.json(notification);
 });
 
 router.get('/admin', mw.adminOnly, (req, res)=>{
