@@ -52,7 +52,8 @@ const EditPage = createClass({
 			url                    : '',
 			autoSave               : true,
 			autoSaveWarning        : false,
-			unsavedTime            : new Date()
+			unsavedTime            : new Date(),
+			currentEditorPage      : 0
 		};
 	},
 	savedBrew : null,
@@ -111,9 +112,10 @@ const EditPage = createClass({
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 
 		this.setState((prevState)=>({
-			brew       : { ...prevState.brew, text: text },
-			isPending  : true,
-			htmlErrors : htmlErrors
+			brew              : { ...prevState.brew, text: text },
+			isPending         : true,
+			htmlErrors        : htmlErrors,
+			currentEditorPage : this.refs.editor.getCurrentPage()
 		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
@@ -411,6 +413,7 @@ const EditPage = createClass({
 						theme={this.state.brew.theme}
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
+						currentEditorPage={this.state.currentEditorPage}
 					/>
 				</SplitPane>
 			</div>
