@@ -341,7 +341,7 @@ const MetadataEditor = createClass({
 			</div>
 
 			<StringArrayEditor label={'tags'.translate()} valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
-				placeholder='add tag' unique={true}
+				placeholder={'add tag'.translate()} unique={true}
 				values={this.props.metadata.tags}
 				onChange={(e)=>this.handleFieldChange('tags', e)}/>
 

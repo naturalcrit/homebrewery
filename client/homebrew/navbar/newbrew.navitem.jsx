@@ -1,7 +1,7 @@
 const React = require('react');
 const Nav = require('naturalcrit/nav/nav.jsx');
 
-const translateOpts = ['nav', 'newDoc'];
+const translateOpts = ['nav'];
 
 module.exports = function(props){
 	''.setTranslationDefaults(translateOpts);

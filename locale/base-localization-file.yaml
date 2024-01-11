@@ -32,8 +32,7 @@ nav:
     here:
     deletedBrew: This brew is currently in your Trash folder on Google Drive!<br />If you want to keep it, make sure to move it before it is deleted permanently!<br />
 
-  newDoc:
-    new:
+  new:
   helpDropdown:
     need help?:
     report issue:
@@ -155,11 +154,6 @@ editPage:
     thumbnail:
     tags:
     add tag:
-    systems:
-    5e:
-    4e:
-    3.5e:
-    pathfinder:
     language:
     languageSub: Sets the HTML Lang property for your brew. May affect hyphenation or spellcheck.
     theme:
