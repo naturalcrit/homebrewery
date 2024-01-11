@@ -203,7 +203,7 @@ sharePage:
     source:
     view:
     download:
-    clone: clone to new
+    clone to new:
 
 accountPage:
   Account Information:

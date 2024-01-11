@@ -4,7 +4,7 @@ const _ = require('lodash');
 const Moment = require('moment');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
-const translateOpts = ['nav', 'errorMsg'];
+const translateOpts = ['sharePage', 'metadataWindow'];
 
 const MetadataNav = createClass({
 	displayName     : 'MetadataNav',
