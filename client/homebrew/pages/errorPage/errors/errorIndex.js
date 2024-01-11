@@ -46,7 +46,7 @@ const errorIndex = (props)=>{
 		**${'Current Authors'.translate()}:** ${props.brew.authors?.map((author)=>{return `${author}`;}).join(', ') || 'unableAuthors'.translate()}`,
 
 		// Brew load error
-		'05' : dedent`${'brewLoadError'}
+		'05' : dedent`${'brewLoadError'.translate()}
 		
 		**${'Requested access'.translate()}:** ${props.brew.accessType}
 

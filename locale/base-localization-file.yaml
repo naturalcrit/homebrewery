@@ -11,6 +11,7 @@ nav:
     fromGoogleToHb: Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?
     fromHbToGoogle: Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?
   saveDropdown:
+    save: guardar
     autosaved: autosaved.
     saving: saving...
     reminder: reminder...
@@ -223,7 +224,6 @@ accountPage:
   langSub: This option selects your language exclusively for the user Interface, and not for your brews. You can change brew language in their properties tab.
 
 errorCodes:
-  Oops: "# Oops \n We could not find a brew with that id. **Sorry!**"
   Crit Fail!:
   error:
   No error text:

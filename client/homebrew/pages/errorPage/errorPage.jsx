@@ -19,7 +19,7 @@ const ErrorPage = createClass({
 		return {
 			ver     : '0.0.0',
 			errorId : '',
-			text    : 'Oops'.translate(),
+			text    : '# Oops \n We could not find a brew with that id. **Sorry!**',
 			error   : {}
 		};
 	},
