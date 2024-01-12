@@ -15,8 +15,8 @@ module.exports = {
 				break;
 			}
 
-			if(obj[text] && obj[text].length > 0) return obj[text];
-			return text;
+			if(obj[text] && obj[text].length > 0) return `=${obj[text]}=`;
+			return localeData[text]?.length > 0 ? `!${localeData[text]}!` : `-${text}-`;
 		};
 
 		// Add defaults
@@ -25,6 +25,7 @@ module.exports = {
 		};
 		String.prototype.setTranslationDefaults = function(_groups=[]) {
 			String.prototype.translationDefaults = _groups;
+			return true;
 		};
 	}
 };
