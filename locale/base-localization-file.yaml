@@ -60,7 +60,7 @@ nav:
     brews:
     account:
     login:
-    localLoginPrompt: "Enter username:"
+    localLoginPrompt: Enter username
     logout:
     logoutMsg: Are you sure you want to log out?
 
@@ -71,7 +71,7 @@ userPage:
   unpublished brews:
 
   filters:
-    sortBy: "Sort By:"
+    sortBy: Sort By
     title:
     created date:
     updated date:
@@ -79,11 +79,11 @@ userPage:
     searchPlaceholder: filter title/description
 
   brewInfo:
-    authors: "Authors:"
-    lastViewed: "Last viewed:"
-    pageCount: "Page count"
-    created: "Created:"
-    lastUpdated: "Last updated:"
+    Authors:
+    Last viewed:
+    Page count:
+    Created:
+    Last updated:
     Share:
     Edit:
     Download:
@@ -201,14 +201,14 @@ sharePage:
 
 accountPage:
   Account Information:
-  username: "Username:"
+  username: Username
   noUser: No user currently logged in
-  lastLogin: "Last Login:"
+  lastLogin: Last Login
   Homebrewery Information:
-  brewsOnHomebrewery: "Brews on Homebrewery:"
+  brewsOnHomebrewery: Brews on Homebrewery
   Google Information:
-  linkedToGoogle: "Linked to Google:"
-  brewsOnGoogleDrive: "Brews on Google Drive:"
+  linkedToGoogle: Linked to Google
+  brewsOnGoogleDrive: Brews on Google Drive
   noFiles: Unable to retrieve files
   followSteps: follow these steps to renew your Google credentials.
   Default Save Location:
@@ -308,4 +308,4 @@ htmlError:
 
 notificationPopup:
   Notice:
-  keepInMind: "This website is always improving and we are still adding new features and squashing bugs. Keep the following in mind:"
+  keepInMind: This website is always improving and we are still adding new features and squashing bugs. Keep the following in mind

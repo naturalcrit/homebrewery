@@ -94,19 +94,19 @@ const AccountPage = createClass({
 		return 	<>
 			<div className='dataGroup'>
 				<h1>{'Account Information'.translate()}  <i className='fas fa-user'></i></h1>
-				<p><strong>{'username'.translate()} </strong> {this.props.uiItems.username || 'noUser'.translate()}</p>
-				<p><strong>{'lastLogin'.translate()} </strong> {moment(this.props.uiItems.issued).format('dddd, MMMM Do YYYY, h:mm:ss a ZZ') || '-'}</p>
+				<p><strong>{'username'.translate()}:</strong> {this.props.uiItems.username || 'noUser'.translate()}</p>
+				<p><strong>{'lastLogin'.translate()}:</strong> {moment(this.props.uiItems.issued).format('dddd, MMMM Do YYYY, h:mm:ss a ZZ') || '-'}</p>
 			</div>
 			<div className='dataGroup'>
 				<h3>{'Homebrewery Information'.translate()} <NaturalCritIcon /></h3>
-				<p><strong>{'brewsOnHomebrewery'.translate()} </strong> {this.props.uiItems.mongoCount}</p>
+				<p><strong>{'brewsOnHomebrewery'.translate()}:</strong> {this.props.uiItems.mongoCount}</p>
 			</div>
 			<div className='dataGroup'>
 				<h3>{'Google Information'.translate()} <i className='fab fa-google-drive'></i></h3>
-				<p><strong>{'linkedToGoogle'.translate()} </strong> {this.props.uiItems.googleId ? 'yes'.translate() : 'no'.translate()}</p>
+				<p><strong>{'linkedToGoogle'.translate()}:</strong> {this.props.uiItems.googleId ? 'yes'.translate() : 'no'.translate()}</p>
 				{this.props.uiItems.googleId &&
 					<p>
-						<strong>{'brewsOnDrive'.translate()} </strong> {this.props.uiItems.googleCount ?? <> {'noFiles'.translate()} - <a href='https://github.com/naturalcrit/homebrewery/discussions/1580'>{'followSteps'.translate()}</a></>}
+						<strong>{'brewsOnDrive'.translate()}:</strong> {this.props.uiItems.googleCount ?? <> {'noFiles'.translate()} - <a href='https://github.com/naturalcrit/homebrewery/discussions/1580'>{'followSteps'.translate()}</a></>}
 					</p>
 				}
 			</div>

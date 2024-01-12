@@ -41,7 +41,7 @@ const Account = createClass({
 	},
 
 	localLogin : async function(){
-		const username = prompt('localLoginPrompt'.translate());
+		const username = prompt('localLoginPrompt'.translate()+':');
 		if(!username) {return;}
 
 		const expiry = new Date;
