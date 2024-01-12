@@ -15,6 +15,8 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
 
+const translateOpts = ['sharePage','sourceDropdown']
+
 const SharePage = createClass({
 	displayName     : 'SharePage',
 	getDefaultProps : function() {
@@ -48,6 +50,7 @@ const SharePage = createClass({
 	},
 
 	render : function(){
+		''.setTranslationDefaults(translateOpts);
 		return <div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
 			<Navbar>
@@ -62,16 +65,16 @@ const SharePage = createClass({
 						<PrintLink shareId={this.processShareId()} />
 						<Nav.dropdown>
 							<Nav.item color='red' icon='fas fa-code'>
-								source
+								{'source'.translate()}
 							</Nav.item>
 							<Nav.item color='blue' href={`/source/${this.processShareId()}`}>
-								view
+								{'view'.translate()}
 							</Nav.item>
 							<Nav.item color='blue' href={`/download/${this.processShareId()}`}>
-								download
+								{'download'.translate()}
 							</Nav.item>
 							<Nav.item color='blue' href={`/new/${this.processShareId()}`}>
-								clone to new
+								{'clone to new'.translate()}
 							</Nav.item>
 						</Nav.dropdown>
 					</>}

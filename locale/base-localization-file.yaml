@@ -11,6 +11,7 @@ nav:
     fromGoogleToHb: Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?
     fromHbToGoogle: Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?
   saveDropdown:
+    save:
     autosaved: autosaved.
     saving: saving...
     reminder: reminder...
@@ -31,8 +32,7 @@ nav:
     here:
     deletedBrew: This brew is currently in your Trash folder on Google Drive!<br />If you want to keep it, make sure to move it before it is deleted permanently!<br />
 
-  newDoc:
-    new:
+  new:
   helpDropdown:
     need help?:
     report issue:
@@ -154,11 +154,6 @@ editPage:
     thumbnail:
     tags:
     add tag:
-    systems:
-    5e:
-    4e:
-    3.5e:
-    pathfinder:
     language:
     languageSub: Sets the HTML Lang property for your brew. May affect hyphenation or spellcheck.
     theme:
@@ -202,7 +197,7 @@ sharePage:
     source:
     view:
     download:
-    clone: clone to new
+    clone to new:
 
 accountPage:
   Account Information:
@@ -221,6 +216,85 @@ accountPage:
   Google Drive:
   Language Selection:
   langSub: This option selects your language exclusively for the user Interface, and not for your brews. You can change brew language in their properties tab.
+
+errorCodes:
+  Crit Fail!:
+  error:
+  No error text:
+  unkownError: "## An unknown error occurred! \n\n We aren't sure what happened, but our server wasn't able to find what you were looking for."
+  googleError: "## An error occurred while retrieving this brew from Google Drive! \n\n Google reported an error while attempting to retrieve a brew from this link."
+  gd404: "## We can't find this brew in Google Drive! \n\nThis file was saved on Google Drive, but this link doesn't work anymore."
+  gd4042: "Note that this brew belongs to the Homebrewery account"
+  gd4043: which is
+  gd4044: your account.
+  gd4045: not your account (you are currently signed in as
+  gd4046: and you are not currently signed in to any account.
+  gd404longText: |
+    The Homebrewery cannot delete files from Google Drive on its own, so there
+    are three most likely possibilities:
+    :
+    - **The Google Drive files may have been accidentally deleted.** Look in
+    the Google Drive account that owns this brew (or ask the owner to do so),
+    and make sure the Homebrewery folder is still there, and that it holds your brews
+    as text files.
+    - **You may have changed the sharing settings for your files.** If the files
+    are still on Google Drive, change all of them to be shared *with everyone who has
+    the link* so the Homebrewery can access them.
+    - **The Google Account may be closed.** Google may have removed the account
+    due to inactivity or violating a Google policy. Make sure the owner can
+    still access Google Drive normally and upload/download files to it.
+    :
+    If the file isn't found, Google Drive usually puts your file in your Trash folder for
+    30 days. Assuming the trash hasn't been emptied yet, it might be worth checking.
+    You can also find the Activity tab on the right side of the Google Drive page, which
+    shows the recent activity on Google Drive. This can help you pin down the exact date
+    the brew was deleted or moved, and by whom.
+    :
+    If the brew still isn't found, some people have had success asking Google to recover
+    accidentally deleted files at this link: 
+    https://support.google.com/drive/answer/1716222?hl=en&ref_topic=7000946.
+    At the bottom of the page there is a button that says *Send yourself an Email*
+    and you will receive instructions on how to request the files be restored.
+    :
+    Also note, if you prefer not to use your Google Drive for storage, you can always
+    change the storage location of a brew by clicking the Google drive icon by the
+    brew title and choosing *transfer my brew to/from Google Drive*.
+  userIsNotAuthor: |
+    ## Current signed-in user does not have editor access to this brew.
+
+    If you believe you should have access to this brew, ask one of its authors to invite you
+    as an author by opening the Edit page for the brew, viewing the {{fa,fa-info-circle}}
+    **Properties** tab, and adding your username to the "invited authors" list. You can
+    then try to access this document again.
+  Brew Title: Brew Title
+  unableTitle: Unable to show title
+  Current Authors:
+  unableAuthors: Unable to list authors
+  clickRedirect: Click here to be redirected to the brew's share page.
+  notSignedIn: |
+    ## Sign-in required to edit this brew.
+
+    You must be logged in to one of the accounts listed as an author of this brew.
+    User is not logged in. Please log in [here]
+  brewLoadError: |
+    ## No Homebrewery document could be found.
+
+    The server could not locate the Homebrewery document. It was likely deleted by
+    its owner.
+  Requested access:
+  Brew ID:
+  brewSaveError: |
+    ## Unable to save Homebrewery document.
+      
+    An error occurred wil attempting to save the Homebrewery document.
+  brewDeleteError: |
+    ## Unable to delete Homebrewery document.
+
+    An error occurred while attempting to remove the Homebrewery document.
+  authorDeleteError: |
+    ## Unable to remove user from Homebrewery document.
+
+    An error occurred while attempting to remove the user from the Homebrewery document author list!
 
 htmlError:
   Line:
