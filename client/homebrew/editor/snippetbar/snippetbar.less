@@ -1,4 +1,6 @@
 @import (less) './client/icons/customIcons.less';
+@import (less) '././././themes/fonts/5e/fonts.less';
+
 .snippetBar{
 	@menuHeight      : 25px;
 	position         : relative;
@@ -22,16 +24,16 @@
 			&:hover,&.selected{
 				background-color : #999;
 			}
-			&.text{
+			&.text {
 				.tooltipLeft('Brew Editor');
 			}
-			&.style{
+			&.style {
 				.tooltipLeft('Style Editor');
 			}
-			&.meta{
+			&.meta {
 				.tooltipLeft('Properties');
 			}
-			&.undo{
+			&.undo {
 				.tooltipLeft('Undo');
 				font-size : 0.75em;
 				color     : grey;
@@ -39,7 +41,7 @@
 					color : inherit;
 				}
 			}
-			&.redo{
+			&.redo {
 				.tooltipLeft('Redo');
 				font-size : 0.75em;
 				color     : grey;
@@ -47,12 +49,12 @@
 					color : inherit;
 				}
 			}
-			&.foldAll{
+			&.foldAll {
 				.tooltipLeft('Fold All');
 				font-size : 0.75em;
 				color     : inherit;
 			}
-			&.unfoldAll{
+			&.unfoldAll {
 				.tooltipLeft('Unfold All');
 				font-size : 0.75em;
 				color     : inherit;
@@ -69,7 +71,7 @@
 			&.divider {
 				background: linear-gradient(currentColor, currentColor) no-repeat center/1px 100%;
 				width: 5px;
-				&:hover{
+				&:hover {
 					background-color: inherit;
 				}
 			}
@@ -87,29 +89,29 @@
 			background-color : inherit;
 		}
 	}
-	.snippetBarButton{
-		height         : @menuHeight;
-		line-height    : @menuHeight;
-		display        : inline-block;
-		padding        : 0px 5px;
-		font-weight    : 800;
-		font-size      : 0.625em;
-		text-transform : uppercase;
-		cursor         : pointer;
-		&:hover, &.selected{
-			background-color : #999;
+	.snippetBarButton {
+		height: @menuHeight;
+		line-height: @menuHeight;
+		display: inline-block;
+		padding: 0px 5px;
+		font-weight: 800;
+		font-size: 0.625em;
+		text-transform: uppercase;
+		cursor: pointer;
+		&:hover, &.selected {
+			background-color: #999;
 		}
-		i{
-			vertical-align : middle;
-			margin-right   : 3px;
-			font-size      : 1.4em;
+		i {
+			vertical-align: middle;
+			margin-right: 3px;
+			font-size: 1.4em;
 		}
 	}
-	.toggleMeta{
-		position     : absolute;
-		top          : 0px;
-		right        : 0px;
-		border-left  : 1px solid black;
+	.toggleMeta {
+		position: absolute;
+		top: 0px;
+		right: 0px;
+		border-left: 1px solid black;
 		.tooltipLeft("Edit Brew Properties");
 	}
 	.snippetGroup{
@@ -119,53 +121,79 @@
 				visibility : visible;
 			}
 		}
-		.dropdown{
-			position         : absolute;
-			top              : 100%;
-			visibility       : hidden;
-			z-index          : 1000;
-			margin-left      : -5px;
-			padding          : 0px;
-			background-color : #ddd;
-			.snippet{
+		.dropdown {
+			position: absolute;
+			top: 100%;
+			visibility: hidden;
+			z-index: 1000;
+			margin-left: -5px;
+			padding: 0px;
+			background-color: #ddd;
+			.snippet {
 				position: relative;
 				.animate(background-color);
-				display     : flex;
-				align-items : center;
-				min-width   : max-content;
-				padding     : 5px;
-				cursor      : pointer;
-				font-size   : 10px;
-				i{
-					margin-right : 8px;
-					font-size    : 1.2em;
-					height       : 1.2em;
-					&~i{
+				display: flex;
+				align-items: center;
+				min-width: max-content;
+				padding: 5px;
+				cursor: pointer;
+				font-size: 10px;
+				i {
+					margin-right: 8px;
+					font-size: 1.2em;
+					height: 1.2em;
+					&~i {
 						margin-right: 0;
 						margin-left: 5px;
 					}
+					/* Fonts */
+					&.font {
+						height:auto;
+						&::before {
+							content:'F';
+							font-size:1.4em;
+						}
+
+						&.OpenSans {font-family: 'OpenSans';}
+						&.CodeBold {font-family: 'CodeBold';}
+						&.CodeLight {font-family: 'CodeLight';}
+						&.ScalySansRemake {font-family: 'ScalySansRemake';}
+						&.BookInsanityRemake {font-family: 'BookInsanityRemake';}
+						&.MrEavesRemake {font-family: 'MrEavesRemake';}
+						&.SolberaImitationRemake {font-family: 'SolberaImitationRemake';}
+						&.ScalySansSmallCapsRemake {font-family: 'ScalySansSmallCapsRemake';}
+						&.WalterTurncoat {font-family: 'WalterTurncoat';}
+						&.Lato {font-family: 'Lato';}
+						&.Courier {font-family: 'Courier';}
+						&.NodestoCapsCondensed {font-family: 'NodestoCapsCondensed';}
+						&.Overpass {font-family: 'Overpass';}
+						&.Davek {font-family: 'Davek';}
+						&.Iokharic {font-family: 'Iokharic';}
+						&.Rellanic {font-family: 'Rellanic';}
+						&.TimesNewRoman {font-family: 'Times New Roman';}
+					}
 				}
 				.name {
-					margin-right  : auto;
+					margin-right: auto;
 				}
 				.beta {
-					color         : white;
-					padding       : 4px 6px;
-					line-height   : 1em;
-					margin-left   : 5px;
-					align-self    : center;
-					background    : grey;
-					border-radius : 12px;
-					font-family   : monospace;
+					color: white;
+					padding: 4px 6px;
+					line-height: 1em;
+					margin-left: 5px;
+					align-self: center;
+					background: grey;
+					border-radius: 12px;
+					font-family: monospace;
 				}
-				&:hover{
-					background-color : #999;
-					&>.dropdown{
-						visibility : visible;
+				&:hover {
+					background-color: #999;
+					&>.dropdown {
+						visibility: visible;
 						&.side {
 							left: 100%;
 							top: 0%;
-							margin-left:0;
+							margin-left: 0;
 							box-shadow: -1px 1px 2px 0px #999;
 						}
 					}
