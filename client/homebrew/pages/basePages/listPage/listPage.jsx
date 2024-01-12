@@ -169,12 +169,13 @@ const ListPage = createClass({
 	},
 
 	renderSortOptions : function(){
+		''.setTranslationDefaults(['userpage','filters']);
 		return <div className='sort-container'>
-			<h6>{'sortyBy'.translate()}</h6>
-			{this.renderSortOption('title'.translate(['userpage','filters']), 'alpha')}
-			{this.renderSortOption('created date'.translate(['userpage','filters']), 'created')}
-			{this.renderSortOption('updated date'.translate(['userpage','filters']), 'updated')}
-			{this.renderSortOption('views'.translate(['userpage','filters']), 'views')}
+			<h6>{'sortyBy'.translate()}:</h6>
+			{this.renderSortOption('title'.translate(), 'alpha')}
+			{this.renderSortOption('created date'.translate(), 'created')}
+			{this.renderSortOption('updated date'.translate(), 'updated')}
+			{this.renderSortOption('views'.translate(), 'views')}
 			{/* {this.renderSortOption('Latest', 'latest')} */}
 
 			{this.renderFilterOption()}

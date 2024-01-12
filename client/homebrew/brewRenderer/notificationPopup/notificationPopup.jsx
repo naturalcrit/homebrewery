@@ -77,7 +77,7 @@ const NotificationPopup = createClass({
 			<i className='fas fa-info-circle info' />
 			<div className='header'>
 				<h3>{'Notice'.translate()}</h3>
-				<small>{'keepInMind'.translate()}</small>
+				<small>{'keepInMind'.translate()}:</small>
 			</div>
 			<ul>{_.values(this.state.notifications)}</ul>
 		</div>;
