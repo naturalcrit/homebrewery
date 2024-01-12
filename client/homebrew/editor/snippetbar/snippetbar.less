@@ -1,26 +1,28 @@
 @import (less) './client/icons/customIcons.less';
 @import (less) '././././themes/fonts/5e/fonts.less';
 
-.snippetBar {
-	@menuHeight : 25px;
-	position: relative;
-	height: @menuHeight;
-	background-color: #ddd;
-	.editors {
-		position: absolute;
-		display: flex;
-		top: 0px;
-		right: 0px;
-		height: @menuHeight;
-		justify-content: space-between;
-		&>div {
-			height: @menuHeight;
-			width: @menuHeight;
-			cursor: pointer;
-			line-height: @menuHeight;
-			text-align: center;
-			&:hover, &.selected {
-				background-color: #999;
+.snippetBar{
+	@menuHeight      : 25px;
+	position         : relative;
+	height           : @menuHeight;
+	background-color : #ddd;
+	color			 : black;
+
+	.editors{
+		position        : absolute;
+		display         : flex;
+		top             : 0px;
+		right           : 0px;
+		height          : @menuHeight;
+		justify-content : space-between;
+		&>div{
+			height      : @menuHeight;
+			width       : @menuHeight;
+			cursor      : pointer;
+			line-height : @menuHeight;
+			text-align  : center;
+			&:hover,&.selected{
+				background-color : #999;
 			}
 			&.text {
 				.tooltipLeft('Brew Editor');
@@ -33,47 +35,41 @@
 			}
 			&.undo {
 				.tooltipLeft('Undo');
-				font-size: 0.75em;
-				color: grey;
-				&.active {
-					color: black;
+				font-size : 0.75em;
+				color     : grey;
+				&.active{
+					color : inherit;
 				}
 			}
 			&.redo {
 				.tooltipLeft('Redo');
-				font-size: 0.75em;
-				color: grey;
-				&.active {
-					color: black;
+				font-size : 0.75em;
+				color     : grey;
+				&.active{
+					color : inherit;
 				}
 			}
 			&.foldAll {
 				.tooltipLeft('Fold All');
-				font-size: 0.75em;
-				color: grey;
-				&.active {
-					color: black;
-				}
+				font-size : 0.75em;
+				color     : inherit;
 			}
 			&.unfoldAll {
 				.tooltipLeft('Unfold All');
-				font-size: 0.75em;
-				color: grey;
-				&.active {
-					color: black;
-				}
+				font-size : 0.75em;
+				color     : inherit;
 			}
 			&.editorTheme {
 				.tooltipLeft('Editor Themes');
-				font-size: 0.75em;
-				color: black;
+				font-size : 0.75em;
+				color     : black;
 				&.active {
-					color: white;
-					background-color: black;
+					position         : relative;
+					background-color : #999;
 				}
 			}
 			&.divider {
-				background: linear-gradient(#000, #000) no-repeat center/1px 100%;
+				background: linear-gradient(currentColor, currentColor) no-repeat center/1px 100%;
 				width: 5px;
 				&:hover {
 					background-color: inherit;
@@ -81,13 +77,16 @@
 			}
 		}
 		.themeSelector {
-			position: absolute;
-			left: -65px;
-			top: 30px;
-			z-index: 999;
-			width: 170px;
-			background-color: black;
-			border-radius: 5px;
+			position : absolute;
+			top : 25px;
+			right : 0;
+			z-index : 1;
+			display : flex;
+			align-items : center;
+			justify-content : center;
+			width : 170px;
+			height : inherit;
+			background-color : inherit;
 		}
 	}
 	.snippetBarButton {
@@ -115,11 +114,11 @@
 		border-left: 1px solid black;
 		.tooltipLeft("Edit Brew Properties");
 	}
-	.snippetGroup {
-		border-right: 1px solid black;
-		&:hover {
-			&>.dropdown {
-				visibility: visible;
+	.snippetGroup{
+		border-right   : 1px solid currentColor;
+		&:hover{
+			&>.dropdown{
+				visibility : visible;
 			}
 		}
 		.dropdown {
