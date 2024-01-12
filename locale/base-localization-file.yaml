@@ -19,7 +19,7 @@ nav:
     Save Now: Save Now
     saved: saved.
     autoSaveMsg: Autosave is OFF, and you haven't saved for
-    autoSaveMsgDuration: "minutes."
+    autoSaveMsgDuration: minutes.
     autoSaveOff: Autosave is OFF.
   errorMsg:
     Oops!:
@@ -65,7 +65,7 @@ nav:
     logoutMsg: Are you sure you want to log out?
 
 userPage:
-  No Brews.:
+  No Brews:
   No Title:
   published brews:
   unpublished brews:
@@ -93,14 +93,14 @@ userPage:
 
 editPage:
   tools:
-    undo:
-    redo:
+    undo: Undo
+    redo: Redo
     Editor Themes:
     Brew Editor:
     Style Editor:
     Properties:
-    jump to location in editor:
-    jump to location in preview:
+    Jump to location in Editor:
+    Jump to location in Preview:
 
   brewTab:
     snippets:
@@ -163,7 +163,7 @@ editPage:
     legacyDemoLink: click here to see the demo page for the old legacy renderer!
 
     authors: Authors
-    None.:
+    None:
     invited authors:
     invite author:
     invitedSub1: Invited authors are case sensitive.
@@ -172,7 +172,7 @@ editPage:
     privacy:
     publish:
     unpublish:
-    publishedSub: published homebrews will be publicly viewable and searchable (eventually...)
+    publishedSub: Published homebrews will be publicly viewable and searchable (eventually...)
     delete:
     delete brew:
     onlyAuthorDelete: Are you sure you want to delete this brew? Because you are the only owner of this brew, the document will be deleted permanently

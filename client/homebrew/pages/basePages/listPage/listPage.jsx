@@ -81,7 +81,7 @@ const ListPage = createClass({
 	},
 
 	renderBrews : function(brews){
-		if(!brews || !brews.length) return <div className='noBrews'>{'No Brews.'.translate()}</div>;
+		if(!brews || !brews.length) return <div className='noBrews'>{'No Brews'.translate()}.</div>;
 
 		return _.map(brews, (brew, idx)=>{
 			return <BrewItem brew={brew} key={idx} reportError={this.props.reportError}/>;
@@ -210,7 +210,7 @@ const ListPage = createClass({
 
 	renderBrewCollection : function(brewCollection){
 		if(brewCollection == []) return <div className='brewCollection'>
-			<h1>{'No Brews'.translate(['userPage'])}</h1>
+			<h1>{'No Brews'.translate(['userPage'])}.</h1>
 		</div>;
 		return _.map(brewCollection, (brewGroup, idx)=>{
 			return <div key={idx} className={`brewCollection ${brewGroup.class ?? ''}`}>

@@ -64,13 +64,13 @@ const AccountPage = createClass({
 	},
 
 	renderLanguageDropdown : function(){
-		const languageOptions = ['en-US', 'fr-FR'];
+		const languageOptions = ['en-US', 'fr-FR', 'es-ES'];
 		return <div>
 			<select onChange={(e)=>{ this.updateLang(e.target.value); }} value={this.state.lang}>
 				{_.map(languageOptions, (lang, key)=>{ return <option key={key} value={lang}>{lang}</option>; })}
 			</select>
 			<br />
-			<sub style="font-size:smaller">{'langSub'.translate()}</sub>
+			<small>{'langSub'.translate()}</small>
 		</div>;
 	},
 

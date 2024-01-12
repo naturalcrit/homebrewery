@@ -178,7 +178,7 @@ const MetadataEditor = createClass({
 	},
 
 	renderAuthors : function(){
-		let text = 'None.'.translate();
+		let text = 'None'.translate()+'.';
 		if(this.props.metadata.authors && this.props.metadata.authors.length){
 			text = this.props.metadata.authors.join(', ');
 		}
