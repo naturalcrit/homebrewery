@@ -15,7 +15,7 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
 
-const translateOpts = ['sharePage','sourceDropdown']
+const translateOpts = ['sharePage', 'sourceDropdown'];
 
 const SharePage = createClass({
 	displayName     : 'SharePage',

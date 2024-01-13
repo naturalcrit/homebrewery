@@ -10,7 +10,7 @@ const googleDriveIcon = require('../../../../googleDrive.svg');
 const homebreweryIcon = require('../../../../thumbnail.png');
 const dedent = require('dedent-tabs').default;
 
-const translateOpts = ['userPage','brewInfo'];
+const translateOpts = ['userPage', 'brewInfo'];
 
 const BrewItem = createClass({
 	displayName     : 'BrewItem',
