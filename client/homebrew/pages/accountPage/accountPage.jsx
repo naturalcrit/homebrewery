@@ -70,7 +70,7 @@ const AccountPage = createClass({
 				{_.map(languageOptions, (lang, key)=>{ return <option key={key} value={lang}>{lang}</option>; })}
 			</select>
 			<br />
-			<sub style="font-size:smaller">{'langSub'.translate()}</sub>
+			<sub style='font-size:smaller'>{'langSub'.translate()}</sub>
 		</div>;
 	},
 

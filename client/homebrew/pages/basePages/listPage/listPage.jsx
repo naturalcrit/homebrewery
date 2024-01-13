@@ -12,7 +12,7 @@ const USERPAGE_KEY_PREFIX = 'HOMEBREWERY-LISTPAGE';
 const DEFAULT_SORT_TYPE = 'alpha';
 const DEFAULT_SORT_DIR = 'asc';
 
-const translateOpts = ['userPage','brewInfo'];
+const translateOpts = ['userPage', 'brewInfo'];
 
 const ListPage = createClass({
 	displayName     : 'ListPage',
@@ -169,7 +169,7 @@ const ListPage = createClass({
 	},
 
 	renderSortOptions : function(){
-		''.setTranslationDefaults(['userpage','filters']);
+		''.setTranslationDefaults(['userpage', 'filters']);
 		return <div className='sort-container'>
 			<h6>{'sortyBy'.translate()}:</h6>
 			{this.renderSortOption('title'.translate(), 'alpha')}

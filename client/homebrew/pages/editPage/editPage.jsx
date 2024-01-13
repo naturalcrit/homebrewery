@@ -26,7 +26,7 @@ const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
 
 const googleDriveIcon = require('../../googleDrive.svg');
 
-const translateOpts = ['userPage','brewInfo'];
+// const translateOpts = ['userPage', 'brewInfo'];
 
 const SAVE_TIMEOUT = 3000;
 
@@ -251,18 +251,18 @@ const EditPage = createClass({
 					<a target='_blank' rel='noopener noreferrer'
 						href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
 						<div className='confirm'>
-							{'Sign In'.translate(['nav','errorMSG'])}
+							{'Sign In'.translate(['nav', 'errorMSG'])}
 						</div>
 					</a>
 					<div className='deny'>
-						{'Not Now'.translate(['nav','errorMSG'])}
+						{'Not Now'.translate(['nav', 'errorMSG'])}
 					</div>
 				</div>
 			}
 
 			{this.state.alertTrashedGoogleBrew &&
 				<div className='errorContainer' onClick={this.closeAlerts}>
-					{'deletedBrew'.translate(['nav','errorMSG'])}
+					{'deletedBrew'.translate(['nav', 'errorMSG'])}
 					<div className='confirm'>
 						{'OK'.translate()}
 					</div>
