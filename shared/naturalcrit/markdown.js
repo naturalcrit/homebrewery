@@ -243,17 +243,19 @@ const definitionLists = {
 		let match;
 		const endIndex = src.match(`\n\n`)?.index + 2;
 		const allDefinitions = [];
-		let currentDefinition = [];
+		let currentDefinition = {};
 		while (match = regex.exec(src)) {
 			if(match[1].trim()?.length) {
 				if(currentDefinition?.dt?.length) {
 					allDefinitions.push(currentDefinition);
-					currentDefinition = [];
+					currentDefinition = {};
 				}
 				currentDefinition = {
 					dt : this.lexer.inlineTokens(match[1].trim()),
 					dd : []
 				};
+			} else if(_.isEmpty(currentDefinition)) {
+				return;
 			}
 			currentDefinition.dd = currentDefinition.dd.concat(match[2].split('::').filter((item)=>item).map((s)=>this.lexer.inlineTokens(s.trim())));
 			if(!currentDefinition.dd?.length) {
@@ -273,7 +275,7 @@ const definitionLists = {
 		let returnVal = `<dl>`;
 		token.definitions.forEach((def)=>{
 			const dds = def.dd.map((s)=>`<dd>${this.parser.parseInline(s)}</dd>`).join('\n');
-			returnVal += `<div><dt>${this.parser.parseInline(def.dt)}</dt>${dds}</div>`;
+			returnVal += `<dt>${this.parser.parseInline(def.dt)}</dt>\n${dds}\n`;
 		});
 		return `${returnVal}</dl>`;
 	}
