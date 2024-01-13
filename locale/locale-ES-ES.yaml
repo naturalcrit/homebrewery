@@ -1,0 +1,320 @@
+# string translation template
+yes: yes
+no: no
+dateFormat: YYYY-MM-DD HH:mm:ss
+OK:
+
+nav:
+  help out: Ayúdanos
+  storageMsg:
+    notSignedIn: ¡Debes iniciar sesión en una cuenta de Google para realizar transferencias entre Homebrewery y Google Drive!
+    fromGoogleToHb: ¿Te gustaría transferir este brew desde tu almacenamiento de Google Drive a Homebrewery?
+    fromHbToGoogle: ¿Te gustaría transferir este brew desde Homebrewery a tu almacenamiento de Google Drive?
+  saveDropdown:
+    save: guardar
+    autosaved: autoguardado.
+    saving: guardando...
+    reminder: recordatorio...
+    autosave: autoguardado
+    Save Now: Guardar ahora
+    saved: guardado.
+    autoSaveMsg: El autoguardado está desactivado, y no has guardado en
+    autoSaveMsgDuration: minutos.
+    autoSaveOff: El autoguardado está desactivado.
+  errorMsg:
+    Oops!: Ups!
+    conflict: "Conflicto: porfavor, recarga para obtener el último cambio"
+    outOfDate: Tu cliente está desfasado. Guarda tus cambios en algun otro sitio y recarga la página.
+    expiredCredentials: Parece que tus credenciales de Google han expirado! Visita nuestra página de inicio de sesión, cierra sesión, y vuelve a iniciar sesión con Google, y vuelve a intentar guardar!
+    Sign In: Iniciar sesión
+    Not Now: Ahora no
+    problemSaving: Parece que ha habido un problema guardando. <br /> Reporta el error
+    here: aquí
+    deletedBrew: Este brew está actualmente en la papelera de tu cuenta de Google Drive!<br />Si quieres mantenerlo, asegúrate de restaurarlo antes de que sea borrado permanentemente!<br />
+
+  new: nuevo
+  helpDropdown:
+    need help?: Necesitas ayuda?
+    report issue: reportar un error
+    faq: Preguntas Frecuentes
+    migrate: migrar
+
+  shareDropdown:
+    share: compartir
+    view: ver
+    copy url: copiar enlace
+    share on Reddit: compartir en Reddit
+
+  get pdf: hacer pdf
+
+  recentBrewsdropdown:
+    recent brews: brews recientes
+    edited: editados
+    recently edited: recientemente editado
+    viewed: vistos
+    recently viewed: recientemente visto
+
+    removeRecents: Quitar de documentos recientes
+
+  usernameDropdown:
+    brews:
+    account: cuenta
+    login: iniciar sesión
+    localLoginPrompt: Introduzca su nombre de usuario
+    logout: cerrar sesión
+    logoutMsg: Estas seguro de que quieres cerrar sesión?
+
+userPage:
+  No Brews: No hay brews
+  No Title: Sin título
+  published brews: Brews Publicados
+  unpublished brews: Brews sin publicar
+
+  filters:
+    sortBy: Ordenar por
+    title: Título
+    created date: Fecha de creación
+    updated date: Fecha de actualización
+    views: vistas
+    searchPlaceholder: filtrar título/descripción
+
+  brewInfo:
+    Authors: Autores
+    Last viewed: Última vez visto
+    Page count: Número de páginas
+    Created: Creado
+    Last updated: Actualizado por última vez
+    Share: Abrir página para compartir
+    Edit: Editar
+    Download: Descargar
+    Delete: Eliminar
+    gdTitle: Tu almacenamiento de Google Drive
+    gdTitle2: El almacenamiento de Google Drive de otro usuario
+
+editPage:
+  tools:
+    undo: Deshacer
+    redo: Rehacer
+    Editor Themes: Temas del editor
+    Brew Editor: Editor de brew
+    Style Editor: Editor de estilo
+    Properties: Propiedades
+    Jump to location in Editor: Saltar a la ubicación en el Editor
+    Jump to location in Preview: Saltar a la ubicación en la Vista Previa
+
+  brewTab:
+    snippets:
+      textEditor:
+      column break:
+      new page:
+      vertical spacing:
+      wide block:
+      image:
+      background image:
+      page number:
+      auto-incrementing page number:
+      link to page:
+      table of contents:
+      add comment:
+
+      phb:
+      spell:
+      spell list:
+      class feature:
+      note:
+      descriptive text box:
+      monster stat block:
+      wide monster stat block:
+      cover page:
+      artist credit:
+
+      tables:
+      class table:
+      half class table:
+      table:
+      wide table:
+      split table:
+
+  styleTab:
+    snippets:
+      styleEditor:
+      removeDropCap:
+      tweakDropCap:
+      addComment:
+
+      print:
+      a4PageSize:
+      squarePageSize:
+      inkFriendly:
+
+  propertiesTab:
+    brew:
+    title: título
+    description: descripción
+    thumbnail: miniatura
+    tags: etiquetas
+    add tag: añadir etiqueta
+    language: idioma
+    languageSub: Establece el idioma del documento en el HTML. Puede afectar a la corrección gramatical.
+    theme: tema
+    renderer: renderizador
+    Legacy: Legado
+    v3:
+    legacyDemoLink: haz clic aquí para ver la página demo para el renderizador de legado!
+
+    authors: Autores
+    None: Niguno
+    invited authors: autores invitados
+    invite author: invita a un autor
+    invitedSub1: Los usuarios distinguen entre mayúsculas y minúsculas.
+    invitedSub2: Despues de invitar a un autor, envíale el link para editar el brew. Al abrirlo pueden escoger aceptar o denegar la invitación.
+
+    privacy: Privacidad
+    publish: publicar
+    unpublish: despublicar
+    publishedSub: Los documentos publicados serán públicamente visibles y buscables (eventualmente...)
+    delete: Eliminar
+    delete brew: Eliminar brew
+    onlyAuthorDelete: ¿Estás seguro de que quieres eliminar este brew? Ya que eres el único propietario del brew, se eliminará permanentemente.
+    confirm1: ¿Estas REALMENTE seguro? No podrás recuperar el documento.
+    multipleAuthorDelete: ¿Estás seguro de que quieres eliminar este brew de tu colección? Esto te eliminará como editor, pero otros propietarios aún podrán acceder al documento.
+    confirm2: ¿Estas REALMENTE seguro? Perderás accesos de editor a este documento.
+    themesLegacy: Los temas no están en el Renderizador de Legado
+
+sharePage:
+  metadataWindow:
+    Authors: Autores
+    no authors: No hay autores
+    Systems: Sistemas
+    no systems: Ningún sistema
+    Tags: Etiquetas
+    no tags: Sin etiquetas
+    Description: Descripción
+    No description: Sin descripción
+    Updated: Actualizado
+
+  sourceDropdown:
+    source: Código fuente
+    view: vista previa
+    download: descargar
+    clone to new: clonar como nuevo
+
+accountPage:
+  Account Information: Información de cuenta
+  username: Nombre de usuario
+  noUser: Actualmente no hay ningún usuario con sesión iniciada
+  lastLogin: Último inicio de sesión
+  Homebrewery Information: Información de Homebrewery
+  brewsOnHomebrewery: Brews en Homebrewery
+  Google Information: Información de Google
+  linkedToGoogle: Cuenta vinculada a Google
+  brewsOnGoogleDrive: Brews en Google Drive
+  noFiles: No encontramos ningún documento
+  followSteps: Sigue estos pasos para renovar tus credenciales de google.
+  Default Save Location: Ubicación de guardado predeterminada
+  Homebrewery:
+  Google Drive:
+  Language Selection: Selección de Idioma
+  langSub: Esta opción selecciona tu idioma exclusivamente para la interfaz de usuario y no para tus brews. Puedes cambiar el idioma de los documentos en su pestaña de propiedades.
+
+errorCodes:
+  Crit Fail!: Fallo Crítico!
+  error:
+  No error text: No hay texto de error
+  unkownError: |
+    ## ¡Ha ocurrido un error desconocido!
+
+    No estamos seguros de lo que ha pasado, pero nuestro servidor no ha podido encontrar lo que estabas buscando.
+  googleError: |
+    ## ¡Se ha producido un error al recuperar este brew de Google Drive!
+
+    Google informa de un error al intentar recuperar un brew desde este enlace.
+  gd404: |
+    ## ¡No podemos encontrar este brew en Google Drive!
+
+    Este archivo estaba guaradado en Google Drive, pero el enlace ya no funciona.
+  gd4042: Ten en cuenta que este brew pertenece a la cuenta
+  gd4043: ",la cual"
+  gd4044: es tu cuenta.
+  gd4045: no es tu cuenta (has iniciado sesión como
+  gd4046: Y no has iniciado sesión en nignuna cuenta.
+  gd404longText: |
+    La Homebrewery no puede eliminar archivos de Google Drive por sí sola, por lo que hay tres posibilidades más probables:
+    :
+    - **Es posible que los archivos de Google Drive se hayan eliminado accidentalmente.** 
+    Busca en la cuenta de Google Drive que tenía este documento (o pregunta al dueño),
+    y asegúrate de que la carpeta "Homebrewery" sigue estando allí, y que los documentos 
+    están dentro como archivos de texto.
+    - **Es posible que hayas cambiado la configuración de uso compartido de tus documentos.**
+    Si los archivos aún están en Google Drive, cámbialos todos a compartir con *Cualquiera 
+    que tenga el enlace* para que la Homebrewery pueda acceder.
+    - **La cuenta de Google puede estar cerrada.** Google puede haber borrado la cuenta 
+    debido a la inactividad o por violar una política de Google. Asegúrate de que el propietario
+    aún puede acceder a Google Drive de manera normal y subir/bajar archivos.
+    :
+    Si no encuentras el archivo, revisa la papelera, Google preserva los archivos en la 
+    papelera durante 30 dias. Asumiendo que la papelera no haya sido vaciada todavía, 
+    puede valer la pena comprobarlo. También puedes acceder a la pestaña de Actividad en 
+    el lado derecho de la página, que enseña la actividad reciente en Google Drive.
+    Esto te puede ayudar a determinar la fecha exacta en la que el brew ha sido movido o 
+    borrado, y quién es responsable.
+    :
+    Si aún así no encuentras el documento, algunos usuarios han tenido éxito pidiendo a 
+    Google que recupere archivos borrados accidentalmente usando este enlace:
+    https://support.google.com/drive/answer/1716222?hl=en&ref_topic=7000946.
+    Al final de la página hay un botón que dice: *Envíate un correo a ti mismo*
+    y recibirás instrucciones sobre como solicitar la restauración de los archivos.
+    :
+    También ten en cuenta que, si prefieres no usar Google Drive para el almacenamiento,
+    siempre puededs cambiar la ubicación de almacenamiento de un brew haciendo clic en el
+    icono de Google Drive junto al título del brew y eligiendo *transferir mi brew a/desde Google Drive*
+  userIsNotAuthor: |
+    ##El usuario actualmente registrado no tiene acceso de edición a este brew.
+
+    Si crees que deberías tener acceso a este brew, pídele a uno de sus autores 
+    que te invite como autor, abriendo la página de edición del brew, abriendo 
+    la pestaña {{fa,fa-info-circle}} Propiedades, y agregando tu nombre de usuario 
+    a la lista de "autores invitados". Luego, puedes intentar acceder a este documento nuevamente.
+  Brew Title: Título del brew
+  unableTitle: No podemos enseñar el título
+  Current Authors: Autores actuales
+  unableAuthors: No podemos enseñar los autores
+  clickRedirect: Haz clic aquí para ser redirigido a la página de vista previa del documento.
+  notSignedIn: |
+    ## Inicio de sesión requerido para editar este brew.
+
+    Debes iniciar sesión en una de las cuentas listadas como autores de este documento.
+    No has iniciado sesión. Por favor inicia sesión [aquí]
+  brewLoadError: |
+    ## No encontramos este documento en Homebrewery.
+
+    Nuestro servidor no ha podido localizar el documento de Homebrewery. 
+    Probablemente fuera borrado por su dueño.
+  Requested access: Acceso solicitado
+  Brew ID: ID del brew
+  brewSaveError: |
+    ## No hemos podido guardar el documento.
+
+    Ha ocurrido un error mientras intentábamos guardar el documento.
+  brewDeleteError: |
+    ## No hemos podido borrar el documento.
+
+    Ha ocurrido un error mientras intentábamos eliminar el documento.
+  authorDeleteError: |
+    ## No hemos podido borrar al autor del documento.
+
+    ¡Ha ocurrido un error mientras intentábamos eliminar al usuario de la lista de autores del documento!
+
+htmlError:
+  Line: Línea
+  tag: elemento
+  openTag: Tienes un elemento abierto pero sin cerrar en tu documento. Debes cerrar todos los elementos de HTML para que tu documento funcione correctamente. Por ejemplo, un elemento {'<div>'} se cierra {'</div>'}.¡Asegúrate de que el nombre del elemento coincide!
+  closeTag: Tienes un elemento cerrado pero sin abrir en tu documento. Bórralo, o comprueba donde crees que lo has abierto.
+  missmatchTag: Esto quiere decir que has cerrado un elemento, pero el último elemento abierto era uno diferente.
+  Protips!: Consejos!
+  h3Title: Hay errores de HTML en tu markup
+  descriptionText: Si no los arreglas, tu documento no se renderizará correctamente al guardar como PDF o compartirlo.
+
+notificationPopup:
+  Notice: Aviso
+  keepInMind: Esta web siempre está mejorando y vamos añadiendo nuevas características y corriegiendo bugs. Ten en cuenta lo siguiente
