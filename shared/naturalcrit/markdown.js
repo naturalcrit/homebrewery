@@ -218,9 +218,10 @@ const indexAnchors = {
 			indexEntry.entries = match[1].trim();
 			indexEntry.subjectHeading = match[2].trim();
 			return {
-				type : 'indexAnchor',
-				text : src,
-				raw  : match[0],
+				type       : 'indexAnchor',
+				text       : src,
+				raw        : match[0],
+				pageNumber : 0, // Need to pull this from somewhere.
 				indexEntry
 			};
 		}
@@ -228,7 +229,7 @@ const indexAnchors = {
 	renderer(token) {
 		// This is a Rich Index entry
 		if(token.indexEntry?.entries) {
-			return `<a href="#${token.indexEntry.entries.replace(/\s/g, '').toLowerCase()}" subjectHeading="${token.indexEntry.subjectHeading}" entry="${token.indexEntry.entries}"></a>`;
+			return `<a href="#p${token.pageNumber}_${token.indexEntry.entries.replace(/\s/g, '').toLowerCase()}" subjectHeading="${token.indexEntry.subjectHeading}" entry="${token.indexEntry.entries}"></a>`;
 		} else {
 			// This is a basic index entry
 			return '';

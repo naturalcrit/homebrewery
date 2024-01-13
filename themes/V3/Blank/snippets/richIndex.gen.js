@@ -3,12 +3,20 @@ const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
 
 const findBasicIndex = (pages, theRegex)=>{
-	for (const page of pages) {
+	const results = new Map();
+	for (const [pageNumber, page] of pages.entries()) {
+		const basics = [];
 		if(page.match(theRegex)) {
-			return (theRegex.exec(page)[2].trim());
+			let match;
+			while (match = theRegex.exec(page)){
+				basics.push(match[2].trim());
+			}
+		}
+		if(basics.length > 0) {
+			results.set(pageNumber, basics);
 		}
 	};
-	return '';
+	return results;
 };
 
 const findRichTags = (pages, theRegex)=>{
@@ -25,23 +33,31 @@ const findRichTags = (pages, theRegex)=>{
 };
 
 const findSubjectHeadings = (pages, terms, results)=>{
-	const lowerTerms = terms.map((term)=>term.toLowerCase());
-	for (const [pageNumber, page] of pages.entries()) {
-		const lowerPage = page.toLowerCase();
-		for (const [term, lt] of lowerTerms.entries()) {
-			const regExTerm = new RegExp(lt);
-			if(lowerPage.match(regExTerm)) {
-				if(results.has(terms[term])) {
-					const currentEntry = results.get(terms[term]);
+	for (const [entryCount, entry] of terms.entries()) {
+		for (const pageNumber in entry) {
+			const termList = entry[pageNumber].split('|');
+			for (const term in termList) {
+				if(results.has(termList[term])) {
+					const currentEntry = results.get(termList[term]);
 					currentEntry.pages.push(pageNumber);
-					results.set(terms[term], currentEntry);
+					results.set(termList[term], currentEntry);
 				} else {
-					results.set(terms[term], { pages: [pageNumber], entries: [] });
+					results.set(termList[term], { pages: [pageNumber], entries: {} });
 				}
 			}
 		}
 	}
 	return results;
+};
+
+const newRichEntry = (firstTag, pageNumber)=>{
+	const entriesMap = new Map();
+	entriesMap.set(firstTag, [pageNumber]);
+	return {
+		pages   : [],
+		entries : entriesMap,
+		rich    : true
+	};
 };
 
 const addRichIndexes = (richEntries, results)=>{
@@ -52,23 +68,25 @@ const addRichIndexes = (richEntries, results)=>{
 				if(subjectHeadings.length>0){
 					for (const subjectHeading of subjectHeadings) {
 						if(results.has(subjectHeading)){
-							const currentSubjectHeading = results.get(subjectHeading);
-							if(!currentSubjectHeading.entries.has(richTags[1])){
-								currentSubjectHeading.entries.set(richTags[1], [entryPageNumber]);
+							const currentSubjectHeadingObj = results.get(subjectHeading);
+							if(currentSubjectHeadingObj.entries.size) {
+								if(currentSubjectHeadingObj.entries?.has(richTags[1])){
+									const entries = currentSubjectHeadingObj.entries.get(richTags[1]);
+									entries.push(entryPageNumber);
+									results.get(subjectHeading).entries.set(richTags[1], entries);
+								} else {
+
+									currentSubjectHeadingObj.entries.set(richTags[1], [entryPageNumber]);
+								}
+								results.set(subjectHeading, currentSubjectHeadingObj);
 							} else {
-								const entries = currentSubjectHeading.entries.get(richTags[1]);
-								entries.push(entryPageNumber);
-								currentSubjectHeading.entries.set(richTags[1], entries);
+								const entriesMap = new Map();
+								entriesMap.set(richTags[1], [entryPageNumber]);
+								currentSubjectHeadingObj.entries = Object.assign(entriesMap);
 							}
-							results.set(subjectHeading, currentSubjectHeading);
+							results.set(subjectHeading, currentSubjectHeadingObj);
 						} else {
-							const entriesMap = new Map();
-							entriesMap.set(richTags[1], [entryPageNumber]);
-							results.set(subjectHeading, {
-								pages   : [],
-								entries : entriesMap,
-								rich    : true
-							});
+							results.set(subjectHeading, newRichEntry(richTags[1], entryPageNumber));
 						}
 					}
 				}
@@ -102,12 +120,12 @@ const markup = (index)=>{
 			}
 		}
 		results = results.concat('\n');
-		if(subjectHeadingPages.hasOwnProperty('entries')) {
+		if(subjectHeadingPages.hasOwnProperty('entries') && subjectHeadingPages.entries.size) {
 			const sortedEntries = sortMap(subjectHeadingPages.entries);
 			for (const [entry, entryPages] of sortedEntries){
 				results = results.concat('  - ', entry, ' ... pg. ');
 				for (const [k, pageNumber] of entryPages.entries()) {
-					results = results.concat('[', parseInt(pageNumber+1), `](#${entry.toLowerCase().replace(' ', '')})`);
+					results = results.concat('[', parseInt(pageNumber+1), `](#p${parseInt(pageNumber+1)}_${entry.toLowerCase().replace(' ', '')})`);
 					if(k < (entryPages.length - 1)) {
 						results = results.concat(`, `);
 					}
@@ -124,13 +142,13 @@ module.exports = function (props) {
 
 	const pages = props.brew.text.split('\\page');
 	const indexMarkdownRegex = /@\[((?:\\.|[^\[\]\\^@^\)])*)\]\(((?:\\.|[^\[\]\\^@^\)])*)\)/gm;
-	const indexMarkdownRegexBasic = /@\[(\W*)\]\(((?:\\.|[^\[\]\\^@^\)])+)\)/m;
+	const indexMarkdownRegexBasic = /@\[(\W*)\]\(((?:\\.|[^\[\]\\^@^\)])+)\)/gm;
 
-	const indexTag = findBasicIndex(pages, indexMarkdownRegexBasic);
+	const basicIndexEntries = findBasicIndex(pages, indexMarkdownRegexBasic);
 	const richIndexEntries = findRichTags(pages, indexMarkdownRegex);
 
-	if(indexTag.length > 0) {
-		findSubjectHeadings(pages, indexTag.split('|'), index);
+	if(basicIndexEntries.size > 0) {
+		findSubjectHeadings(pages, basicIndexEntries, index);
 	}
 
 	if(richIndexEntries.length>0) {
