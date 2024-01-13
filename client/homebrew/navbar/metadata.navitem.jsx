@@ -56,7 +56,7 @@ const MetadataNav = createClass({
 		return <div className={`window ${this.state.showMetaWindow ? 'active' : 'inactive'}`}>
 			<div className='row'>
 				<h4>{'Description'.translate()}</h4>
-				<p>{this.props.brew.description || 'No description.'.translate()}</p>
+				<p>{this.props.brew.description || `${'No description'.translate()}.`}</p>
 			</div>
 			<div className='row'>
 				<h4>{'Authors'.translate()}</h4>

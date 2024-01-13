@@ -190,7 +190,7 @@ sharePage:
     Tags:
     no tags:
     Description:
-    No description.:
+    No description:
     Updated:
 
   sourceDropdown:
@@ -221,9 +221,18 @@ errorCodes:
   Crit Fail!:
   error:
   No error text:
-  unkownError: "## An unknown error occurred! \n\n We aren't sure what happened, but our server wasn't able to find what you were looking for."
-  googleError: "## An error occurred while retrieving this brew from Google Drive! \n\n Google reported an error while attempting to retrieve a brew from this link."
-  gd404: "## We can't find this brew in Google Drive! \n\nThis file was saved on Google Drive, but this link doesn't work anymore."
+  unkownError: |
+    ## An unknown error occurred!
+
+    We aren't sure what happened, but our server wasn't able to find what you were looking for.
+  googleError: |
+    ## An error occurred while retrieving this brew from Google Drive!
+
+    Google reported an error while attempting to retrieve a brew from this link.
+  gd404: |
+    ## We can't find this brew in Google Drive!
+
+    This file was saved on Google Drive, but this link doesn't work anymore.
   gd4042: "Note that this brew belongs to the Homebrewery account"
   gd4043: which is
   gd4044: your account.
