@@ -1,0 +1,129 @@
+/* Main BG color and normal text color */
+.CodeMirror {
+    background: #293134;
+    color: #91A6AA;
+}
+
+/* Brew BG */
+.brewRenderer {
+    background-color: #293134;
+}
+/* Blinking cursor */
+.CodeMirror-cursor {
+    border-left: 1px solid #e0e2e4;
+}
+
+/* HB DARK NAV START*/
+
+/* Bars at the top */
+.snippetBar {
+    background-color: #2F393C;
+    color: white;
+}
+nav {
+    background-color: #293134;
+}
+nav .navItem {
+    background-color: #293134;
+}
+/* Fix for Homebrewery custom Snippet icons */
+.snippetBar .fac {
+    filter: invert(1);
+}
+.snippetBar .snippetGroup .dropdown {
+    background-color: #2F393C;
+}
+/* HB DARK NAV END */
+
+/* Line number stuff */
+.CodeMirror-gutter-elt {
+    color: #81969A;
+}
+.CodeMirror-linenumber {
+    background-color: #293134;
+}
+.CodeMirror-gutter {
+    background-color: #293134;
+}
+/* column splits */
+.editor .codeEditor .columnSplit {
+    font-style: italic;
+    color: inherit;
+    background-color:#1f5763;
+    border-bottom: #299 solid 1px;
+}
+
+/* Colors for headings and such */
+/* ###Headings */
+.cm-s-default .cm-header {
+    color: #c51b1b;
+    -webkit-text-stroke-width: 0.1px; 
+    -webkit-text-stroke-color: #000; 
+}
+/* bold points */
+.cm-header, .cm-strong {
+    font-weight: bold;
+    color: #309dd2;
+}
+/* Link headings */
+.cm-s-default .cm-link {
+    color: #dd6300;
+}
+/* links */
+.cm-s-default .cm-string {
+    color: #aa8261;
+}
+/*@import*/
+.cm-s-default .cm-def {
+    color:#2986cc;
+}
+/* Bullets and such */
+.cm-s-default .cm-variable-2 {
+    color: #3cbf30;
+}
+/* blocks */
+.editor .codeEditor .block:not(.cm-comment) {
+    color: #e3e3e3;
+}
+/* inline blocks */
+.editor .codeEditor .inline-block {
+    color: #e3e3e3;
+}
+/* Tags (divs) */
+.cm-s-default .cm-tag {
+    color: #e3ff00;
+}
+.cm-s-default .cm-attribute {
+    color: #e3ff00;
+}
+.cm-s-default .cm-atom {
+    color:#000;
+}
+.cm-s-default .cm-qualifier{
+    color:#ee1919;
+}
+.cm-s-default .cm-comment{
+    color:#bbc700;
+}
+.cm-s-default .cm-keyword {
+    color:#c302df;
+    background-color:#b1b1b1;
+}
+.cm-s-default .cm-property.cm-error {
+    color:#c50202;
+}
+
+.CodeMirror-foldmarker {
+    color:#f0ff00;
+}
+
+/* New page  */
+.editor .codeEditor .pageLine {
+    background: #000;
+    color:#000;
+    border-bottom: 1px solid #fff;
+}
+
+.cm-s-default .cm-builtin {
+    color:#fff;
+}
