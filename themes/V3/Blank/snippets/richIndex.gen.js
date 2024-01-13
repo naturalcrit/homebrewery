@@ -75,7 +75,6 @@ const addRichIndexes = (richEntries, results)=>{
 									entries.push(entryPageNumber);
 									results.get(subjectHeading).entries.set(richTags[1], entries);
 								} else {
-
 									currentSubjectHeadingObj.entries.set(richTags[1], [entryPageNumber]);
 								}
 								results.set(subjectHeading, currentSubjectHeadingObj);
