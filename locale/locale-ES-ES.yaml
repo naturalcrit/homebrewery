@@ -1,7 +1,7 @@
 # string translation template
-yes: yes
+yes: sí
 no: no
-dateFormat: YYYY-MM-DD HH:mm:ss
+dateFormat: DD-MM-YYYY HH:mm:ss
 OK:
 
 nav:
