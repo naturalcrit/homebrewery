@@ -221,7 +221,7 @@ const indexAnchors = {
 				type       : 'indexAnchor',
 				text       : src,
 				raw        : match[0],
-				pageNumber : 0, // Need to pull this from somewhere.
+				pageNumber : Marked.defaults.extensionOptions?.pageNumber, // Need to pull this from somewhere. Currently assuming from markded_brew_options
 				indexEntry
 			};
 		}
