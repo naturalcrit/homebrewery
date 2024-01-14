@@ -257,9 +257,12 @@ const definitionLists = {
 			} else if(_.isEmpty(currentDefinition)) {
 				return;
 			}
-			currentDefinition.dd = currentDefinition.dd.concat(match[2].split('::').filter((item)=>item).map((s)=>this.lexer.inlineTokens(s.trim())));
-			if(!currentDefinition.dd?.length) {
-				currentDefinition.dd = [this.lexer.inlineTokens('')];
+			const newDefinitions = match[2].split('::').filter((item)=>item).map((s)=>this.lexer.inlineTokens(s.trim()));
+			console.log(newDefinitions);
+			if(newDefinitions?.length) {
+				currentDefinition.dd.push(newDefinitions);
+			} else {
+			 	currentDefinition.dd.push([this.lexer.inlineTokens('')]);
 			}
 		}
 		if(currentDefinition.hasOwnProperty('dt')) { allDefinitions.push(currentDefinition); }
@@ -274,8 +277,10 @@ const definitionLists = {
 	renderer(token) {
 		let returnVal = `<dl>`;
 		token.definitions.forEach((def)=>{
-			const dds = def.dd.map((s)=>`<dd>${this.parser.parseInline(s)}</dd>`).join('\n');
-			returnVal += `<dt>${this.parser.parseInline(def.dt)}</dt>\n${dds}\n`;
+			const dds = def.dd.map((ddef)=>{
+				return ddef.map((s)=>`<dd>${this.parser.parseInline(s)}</dd>`).join('');
+			}).join('\n');
+			returnVal += `<dt>${this.parser.parseInline(def.dt)}</dt>${dds.indexOf('\n') > -1 ? '\n' : ''}${dds}\n`;
 		});
 		return `${returnVal}</dl>`;
 	}
