@@ -184,7 +184,7 @@ const mustacheDivs = {
 			while (delim = blockRegex.exec(match[0])?.[0].trim()) {
 				if(!tags) {
 					tags = `${processStyleTags(delim.substring(2))}`;
-					endTags = delim.length;
+					endTags = delim.length + src.indexOf(delim);
 				}
 				if(delim.startsWith('{{')) {
 					blockCount++;
