@@ -64,9 +64,13 @@ const outputLink = (cap, link, raw, lexer)=>{
 	};
 };
 
-const upsertLinks = function(lexer) {
-	if(Object.keys(lexer.tokens.links).length < Object.keys(globalLinks).length) {
-		lexer.tokens.links = Object.assign(lexer.tokens.links, globalLinks);
+
+const upsertLinks = function(links) {
+	if(Object.keys(globalLinks).length == 0) {
+		return;
+	}
+	if(!Object.keys(links).includes(Object.keys(globalLinks)[0])){
+		links = _.merge(links, globalLinks);
 	}
 };
 
@@ -78,8 +82,6 @@ tokenizer.reflink = function (src, links) {
 	const inlinelabel = /(?:\[(?:\\.|[^\[\]\\])*\]|\\.|`[^`]*`|[^\[\]\\`])*?/;
 	const blocklabel = /(?!\s*\])(?:\\.|[^\[\]\\])+/;
 
-	upsertLinks(this.lexer);
-
 	reflink = edit(reflink)
 		.replace('label', inlinelabel)
 		.replace('ref', blocklabel)
@@ -90,6 +92,7 @@ tokenizer.reflink = function (src, links) {
 		.getRegex();
 
 	if((cap = reflink.exec(src)) || (cap = nolink.exec(src))) {
+		upsertLinks(links);
 		let link = (cap[2] || cap[1]).replace(/\s+/g, ' ');
 		link = links[link.toLowerCase()];
 		if(!link) {
@@ -472,9 +475,9 @@ module.exports = {
 
 		rawBrewText = opts.hooks.preprocess(rawBrewText);
 		const tokens = Marked.lexer(rawBrewText, opts);
-		globalLinks = Object.assign({}, tokens.links);
 		Marked.walkTokens(tokens, opts.walkTokens);
 		const html = Marked.parser(tokens, opts);
+		globalLinks = Object.assign({}, tokens.links);
 		return opts.hooks.postprocess(html);
 	},
 
