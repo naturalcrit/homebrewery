@@ -126,6 +126,6 @@
     "stylelint-config-recess-order": "^4.4.0",
     "stylelint-config-recommended": "^13.0.0",
     "stylelint-stylistic": "^0.4.3",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.4"
   }
 }
