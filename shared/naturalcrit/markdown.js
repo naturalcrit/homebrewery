@@ -239,7 +239,7 @@ const definitionLists = {
 	level : 'block',
 	start(src) { return src.match(/^.*?::.*\n\n/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const regex = /^([^\n:]*?)::(.*)(?:\n|$)/ym;
+		const regex = /^([^:\n]*?)[\n]?::(.*)(?:\n|$)/ym;
 		let match;
 		const endIndex = src.match(`\n\n`)?.index + 2;
 		const allDefinitions = [];
@@ -258,7 +258,6 @@ const definitionLists = {
 				return;
 			}
 			const newDefinitions = match[2].split('::').filter((item)=>item).map((s)=>this.lexer.inlineTokens(s.trim()));
-			console.log(newDefinitions);
 			if(newDefinitions?.length) {
 				currentDefinition.dd.push(newDefinitions);
 			} else {
@@ -277,11 +276,13 @@ const definitionLists = {
 	renderer(token) {
 		let returnVal = `<dl>`;
 		token.definitions.forEach((def)=>{
-			const dds = def.dd.map((ddef)=>{
+			let dds = def.dd.map((ddef)=>{
 				return ddef.map((s)=>`<dd>${this.parser.parseInline(s)}</dd>`).join('');
 			}).join('\n');
+			dds = dds.trim();
 			returnVal += `<dt>${this.parser.parseInline(def.dt)}</dt>${dds.indexOf('\n') > -1 ? '\n' : ''}${dds}\n`;
 		});
+		returnVal = returnVal.trim();
 		return `${returnVal}</dl>`;
 	}
 };
