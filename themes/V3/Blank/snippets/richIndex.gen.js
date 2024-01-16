@@ -112,7 +112,7 @@ const markup = (index)=>{
 		results = results.concat(`- `, subjectHeading, subjectHeadingPages.pages.length > 0 ? ' ... pg. ':'');
 		for (const [k, pageNumber] of subjectHeadingPages.pages.entries()) {
 			if(!subjectHeadingPages.hasOwnProperty('rich')) {
-				results = results.concat('[', parseInt(pageNumber+1), `](#p${pageNumber})`);
+				results = results.concat('[', parseInt(pageNumber+1), `](#p${parseInt(pageNumber+1)})`);
 			}
 			if(k < (subjectHeadingPages.pages.length - 1)) {
 				results = results.concat(`, `);

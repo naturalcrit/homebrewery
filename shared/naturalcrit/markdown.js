@@ -221,7 +221,7 @@ const indexAnchors = {
 				type       : 'indexAnchor',
 				text       : src,
 				raw        : match[0],
-				pageNumber : Marked.defaults.extensionOptions?.pageNumber, // Need to pull this from somewhere. Currently assuming from markded_brew_options
+				pageNumber : markedRenderVars?.pageNumber || 0, // Need to pull this from somewhere. Currently assuming from markded_brew_options
 				indexEntry
 			};
 		}
@@ -400,9 +400,12 @@ const processStyleTags = (string)=>{
 		`${attributes?.length   ? ` ${attributes.join(' ')}`     : ''}`;
 };
 
+let markedRenderVars = {};
+
 module.exports = {
 	marked : Marked,
-	render : (rawBrewText)=>{
+	render : (rawBrewText, runtimeVars)=>{
+		Object.assign(markedRenderVars, runtimeVars);
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
 		return Marked.parse(rawBrewText);
