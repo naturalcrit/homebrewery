@@ -292,21 +292,14 @@ const api = {
 
 		res.status(200).send(saved);
 	},
-	getGoogleAuth : function(account, res){
-		const auth = GoogleActions.authCheck(account, res);
-		return auth;
-	},
 	deleteGoogleBrew : async (account, id, editId, res)=>{
-		const auth = api.getGoogleAuth(account, res);
-		await GoogleActions.deleteGoogleBrew(auth, id, editId);
-		return true;
+		const auth = GoogleActions.authCheck(account, res);
+		return await GoogleActions.deleteGoogleBrew(auth, id, editId);
 	},
 	deleteBrew : async (req, res, next)=>{
 		// Delete an orphaned stub if its Google brew doesn't exist
 		try {
-			const { googleId } = api.getId(req);
-			const auth = googleId ? GoogleActions.authCheck(req.account, res) : undefined;
-			await api.getBrew('edit', false, auth)(req, res, ()=>{});
+			await api.getBrew('edit')(req, res, ()=>{});
 		} catch (err) {
 			// Only if the error code is HBErrorCode '02', that is, Google returned "404 - Not Found"
 			if(err.HBErrorCode == '02') {
