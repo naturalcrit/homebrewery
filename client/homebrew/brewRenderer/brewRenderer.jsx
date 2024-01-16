@@ -56,12 +56,13 @@ let rawPages      = [];
 
 const BrewRenderer = (props)=>{
 	props = {
-		text     : '',
-		style    : '',
-		renderer : 'legacy',
-		theme    : '5ePHB',
-		lang     : '',
-		errors   : [],
+		text              : '',
+		style             : '',
+		renderer          : 'legacy',
+		theme             : '5ePHB',
+		lang              : '',
+		errors            : [],
+		currentEditorPage : 0,
 		...props
 	};
 
@@ -103,6 +104,9 @@ const BrewRenderer = (props)=>{
 		if(!state.isMounted) return false;
 
 		if(Math.abs(index - state.viewablePageNumber) <= 3)
+			return true;
+
+		if(index + 1 == props.currentEditorPage)
 			return true;
 
 		return false;
@@ -153,6 +157,9 @@ const BrewRenderer = (props)=>{
 	const renderPages = ()=>{
 		if(props.errors && props.errors.length)
 			return renderedPages;
+
+		if(rawPages.length != renderedPages.length) // Re-render all pages when page count changes
+			renderedPages.length = 0;
 
 		_.forEach(rawPages, (page, index)=>{
 			if((shouldRender(index) || !renderedPages[index]) && typeof window !== 'undefined'){
