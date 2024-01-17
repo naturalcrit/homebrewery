@@ -350,6 +350,13 @@ app.get('/print/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	next();
 });
 
+//Create PDF Page
+app.get('/pdf/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
+	sanitizeBrew(req.brew, 'share');
+	splitTextStyleAndMetadata(req.brew);
+
+});
+
 //Account Page
 app.get('/account', asyncHandler(async (req, res, next)=>{
 	const data = {};
