@@ -27,6 +27,28 @@ const getTOC = (pages)=>{
 		});
 	};
 
+	const add4 = (title, page)=>{
+		if(!_.last(res)) add1(null, page);
+		if(!_.last(_.last(res).children)) add2(null, page);
+		if(!_.last(_.last(_.last(res).children))) add3(null, page);
+		_.last(_.last(_.last(res).children).children).children.push({
+			title    : title,
+			page     : page + 1,
+			children : []
+		});
+	};
+
+	const add5 = (title, page)=>{
+		if(!_.last(res)) add1(null, page);
+		if(!_.last(_.last(res).children)) add2(null, page);
+		if(!_.last(_.last(_.last(res).children))) add3(null, page);
+		if(!_.last(_.last(_.last(_.last(res).children)))) add4(null, page);
+		_.last(_.last(_.last(_.last(res).children).children).children).children.push({
+			title    : title,
+			page     : page + 1,
+			children : []
+		});
+	};
 	const res = [];
 	_.each(pages, (page, pageNum)=>{
 		if(!page.includes("{{frontCover}}") && !page.includes("{{insideCover}}") && !page.includes("{{partCover}}") && !page.includes("{{backCover}}")) {
@@ -44,36 +66,46 @@ const getTOC = (pages)=>{
 					const title = line.replace('### ', '');
 					add3(title, pageNum);
 				}
+				if(_.startsWith(line, '#### ')){
+					const title = line.replace('#### ', '');
+					add4(title, pageNum);
+				}
+				if(_.startsWith(line, '##### ')){
+					const title = line.replace('##### ', '');
+					add5(title, pageNum);
+				}
 			});
 		}
 	});
 	return res;
 };
 
-module.exports = function(props){
-	const pages = props.brew.text.split('\\page');
-	const TOC = getTOC(pages);
-	const markdown = _.reduce(TOC, (r, g1, idx1)=>{
-		if(g1.title !== null) {
-			r.push(`- ### [{{ ${g1.title}}}{{ ${g1.page}}}](#p${g1.page})`);
-		}
-		if(g1.children.length){
-			_.each(g1.children, (g2, idx2)=>{
-				if(g2.title !== null) {
-					r.push(`  - #### [{{ ${g2.title}}}{{ ${g2.page}}}](#p${g2.page})`);
-				}
-				if(g2.children.length){
-					_.each(g2.children, (g3, idx3)=>{
-						if(g2.title !== null) {
-							r.push(`    - [{{ ${g3.title}}}{{ ${g3.page}}}](#p${g3.page})`);
-						} else { // Don't over-indent if no level-2 parent entry
-							r.push(`  - [{{ ${g3.title}}}{{ ${g3.page}}}](#p${g3.page})`);
-						}
-					});
+const ToCIterate = (entries, maxDepth, curDepth=1)=>{
+	const levelPad = ['- ###', '- ####', '  -', '    -', '      -', '        -'];
+	const toc = [];
+	if(entries.title !== null){
+		toc.push(`${levelPad[curDepth]} [{{ ${entries.title}}}{{ ${entries.page}}}](#p${entries.page})`);
+	}
+	// console.log(entries);
+	if(entries.children.length) {
+		if(curDepth < maxDepth) {
+			_.each(entries.children, (entry, idx)=>{
+				const children = ToCIterate(entry, maxDepth, curDepth+1);
+				if(children.length) {
+					toc.push(...children);
 				}
 			});
 		}
-		return r;
+	}
+	return toc;
+};
+
+const tableOfContents = (props, maxDepth)=>{
+	const pages = props.brew.text.split('\\page');
+	const TOC = getTOC(pages);
+	const markdown = _.reduce(TOC, (r, g1, idx1)=>{
+		const res = ToCIterate(g1, maxDepth, 1);
+		return res;
 	}, []).join('\n');
 
 	return dedent`
@@ -83,4 +115,17 @@ module.exports = function(props){
 		${markdown}
 		}}
 		\n`;
+};
+
+
+module.exports = {
+	tableOfContentsGen3 : (props)=>{
+		return tableOfContents(props, 3);
+	},
+	tableOfContentsGen4 : (props)=>{
+		return tableOfContents(props, 4);
+	},
+	tableOfContentsGen5 : (props)=>{
+		return tableOfContents(props, 5);
+	}
 };
