@@ -34,7 +34,7 @@ const mustacheSpans = {
 	start(src) { return src.match(/{{[^{]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeSpan = /^{{[^\n]*}}/;               // Regex for the complete token
-		const inlineRegex = /{{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1 *|}}/g;
+		const inlineRegex = /{{(?=((?:[:=](?:"['\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *|}}/g;
 		const match = completeSpan.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -45,7 +45,7 @@ const mustacheSpans = {
 			let delim;
 			while (delim = inlineRegex.exec(match[0])) {
 				if(!tags) {
-					tags = ` ${processStyleTags(delim[0].substring(2))}`;
+					tags = `${processStyleTags(delim[0].substring(2))}`;
 					endTags = delim[0].length;
 				}
 				if(delim[0].startsWith('{{')) {
@@ -84,7 +84,7 @@ const mustacheDivs = {
 	start(src) { return src.match(/\n *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeBlock = /^ *{{[^\n}]* *\n.*\n *}}/s;                // Regex for the complete token
-		const blockRegex = /^ *{{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1 *$|^ *}}$/gm;
+		const blockRegex = /^ *{{(?=((?:[:=](?:"['\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *$|^ *}}$/gm;
 		const match = completeBlock.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -95,8 +95,8 @@ const mustacheDivs = {
 			let delim;
 			while (delim = blockRegex.exec(match[0])?.[0].trim()) {
 				if(!tags) {
-					tags = ` ${processStyleTags(delim.substring(2))}`;
-					endTags = delim.length;
+					tags = `${processStyleTags(delim.substring(2))}`;
+					endTags = delim.length + src.indexOf(delim);
 				}
 				if(delim.startsWith('{{')) {
 					blockCount++;
@@ -132,14 +132,14 @@ const mustacheInjectInline = {
 	level : 'inline',
 	start(src) { return src.match(/ *{[^{\n]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const inlineRegex = /^ *{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1}/g;
+		const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/g;
 		const match = inlineRegex.exec(src);
 		if(match) {
 			const lastToken = tokens[tokens.length - 1];
 			if(!lastToken || lastToken.type == 'mustacheInjectInline')
 				return false;
 
-			const tags = ` ${processStyleTags(match[1])}`;
+			const tags = `${processStyleTags(match[1])}`;
 			lastToken.originalType = lastToken.type;
 			lastToken.type         = 'mustacheInjectInline';
 			lastToken.tags         = tags;
@@ -167,7 +167,7 @@ const mustacheInjectBlock = {
 		level : 'block',
 		start(src) { return src.match(/\n *{[^{\n]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 		tokenizer(src, tokens) {
-			const inlineRegex = /^ *{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1}/ym;
+			const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/ym;
 			const match = inlineRegex.exec(src);
 			if(match) {
 				const lastToken = tokens[tokens.length - 1];
@@ -175,7 +175,7 @@ const mustacheInjectBlock = {
 					return false;
 
 				lastToken.originalType = 'mustacheInjectBlock';
-				lastToken.tags         = ` ${processStyleTags(match[1])}`;
+				lastToken.tags         = `${processStyleTags(match[1])}`;
 				return {
 					type : 'mustacheInjectBlock', // Should match "name" above
 					raw  : match[0],              // Text to consume from the source
@@ -203,6 +203,34 @@ const mustacheInjectBlock = {
 			token.originalType = token.type;
 			token.type         = 'mustacheInjectBlock';
 		}
+	}
+};
+
+const superSubScripts = {
+	name  : 'superSubScript',
+	level : 'inline',
+	start(src) { return src.match(/\^/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const superRegex = /^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^/m;
+		const subRegex   = /^\^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^\^/m;
+		let isSuper = false;
+		let match = subRegex.exec(src);
+		if(!match){
+			match = superRegex.exec(src);
+			if(match)
+				isSuper = true;
+		}
+		if(match?.length) {
+			return {
+				type   : 'superSubScript', // Should match "name" above
+				raw    : match[0],          // Text to consume from the source
+				tag    : isSuper ? 'sup' : 'sub',
+				tokens : this.lexer.inlineTokens(match[1])
+			};
+		}
+	},
+	renderer(token) {
+		return `<${token.tag}>${this.parser.parseInline(token.tokens)}</${token.tag}>`;
 	}
 };
 
@@ -238,7 +266,7 @@ const definitionLists = {
 	}
 };
 
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists] });
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
@@ -326,16 +354,19 @@ const voidTags = new Set([
 ]);
 
 const processStyleTags = (string)=>{
-	//split tags up. quotes can only occur right after colons.
+	//split tags up. quotes can only occur right after : or =.
 	//TODO: can we simplify to just split on commas?
-	const tags = string.match(/(?:[^, ":]+|:(?:"[^"]*"|))+/g);
+	const tags = string.match(/(?:[^, ":=]+|[:=](?:"[^"]*"|))+/g);
 
-	if(!tags)	return '"';
+	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
+	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('=')));
+	const attributes = _.remove(tags, (tag)=>(tag.includes('='))).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'));
+	const styles     = tags?.length ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim()) : [];
 
-	const id      = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
-	const classes = _.remove(tags, (tag)=>!tag.includes(':'));
-	const styles  = tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;'));
-	return `${classes.join(' ')}" ${id ? `id="${id}"` : ''} ${styles.length ? `style="${styles.join(' ')}"` : ''}`;
+	return `${classes?.length ? ` ${classes.join(' ')}`        : ''}"` +
+		`${id                   ? ` id="${id}"`                  : ''}` +
+		`${styles?.length       ? ` style="${styles.join(' ')}"` : ''}` +
+		`${attributes?.length   ? ` ${attributes.join(' ')}`     : ''}`;
 };
 
 module.exports = {
