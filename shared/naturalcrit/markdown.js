@@ -239,24 +239,9 @@ const underline = {
 	level : 'inline',
 	start(src) { return src.match(/\w_[^_]_/m)?.index;},
 	tokenizer(src, tokens) {
-		const uRegex = /^_([^_]*)_/m;
-	    const match = uRegex.exec(src);
-		console.log('Looking');
-		if(match?.length) {
-			console.log('found!');
-			console.log(match);
-			return {
-				type   : 'underline',
-				raw    : match[0],
-				tokens : this.lexer.inlineTokens(match[1])
-			};
-		}
-	},
-	renderer(token) {
-		console.log()
-		return  `<u>${this.parser.parseInline(token.tokens)}</u>`;
+		const uRegex = /^_(?!\s)(?=([^_]*[^\s]))\1\^/m;
 	}
-};
+}
 
 const definitionLists = {
 	name  : 'definitionLists',
@@ -290,7 +275,7 @@ const definitionLists = {
 	}
 };
 
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts, underline] });
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
