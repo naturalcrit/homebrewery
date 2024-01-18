@@ -234,15 +234,6 @@ const superSubScripts = {
 	}
 };
 
-const underline = {
-	name  : 'underline',
-	level : 'inline',
-	start(src) { return src.match(/\w_[^_]_/m)?.index;},
-	tokenizer(src, tokens) {
-		const uRegex = /^_(?!\s)(?=([^_]*[^\s]))\1\^/m;
-	}
-}
-
 const definitionLists = {
 	name  : 'definitionLists',
 	level : 'block',
