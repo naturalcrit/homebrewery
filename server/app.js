@@ -477,7 +477,7 @@ app.use(async (err, req, res, next)=>{
 
 	if(err.originalUrl?.startsWith('/api/')) {
 		// console.log('API error');
-		res.status(err.status || err.response?.status || 500).send(err.message || err);
+		res.status(err.status || err.response?.status || 500).send(err);
 		return;
 	}
 
