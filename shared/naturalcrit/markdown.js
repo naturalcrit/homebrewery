@@ -241,7 +241,10 @@ const underline = {
 	tokenizer(src, tokens) {
 		const uRegex = /^\b_(?![_\s])(.*?[^_\s])_\b/m;
 	    const match = uRegex.exec(src);
+		console.log('Looking');
 		if(match?.length) {
+			console.log('found!');
+			console.log(match);
 			return {
 				type   : 'underline',
 				raw    : match[0],
@@ -250,6 +253,7 @@ const underline = {
 		}
 	},
 	renderer(token) {
+		console.log()
 		return  `<u>${this.parser.parseInline(token.tokens)}</u>`;
 	}
 };
