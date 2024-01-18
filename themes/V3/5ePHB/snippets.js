@@ -21,9 +21,26 @@ module.exports = [
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'Table of Contents',
-				icon : 'fas fa-book',
-				gen  : TableOfContentsGen
+				name        : 'Table of Contents',
+				icon        : 'fas fa-book',
+				gen	        : TableOfContentsGen.tableOfContentsGen3,
+				subsnippets : [
+					{
+						name : 'Table of Contents 1-3',
+						icon : 'fas fa-book',
+						gen  : TableOfContentsGen.tableOfContentsGen3
+					},
+					{
+						name : 'Table of Contents 1-4',
+						icon : 'fas fa-book',
+						gen  : TableOfContentsGen.tableOfContentsGen4
+					},
+					{
+						name : 'Table of Contents 1-5',
+						icon : 'fas fa-book',
+						gen  : TableOfContentsGen.tableOfContentsGen5
+					},
+				]
 			},
 			{
 				name         : 'Index',
