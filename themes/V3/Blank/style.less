@@ -5,7 +5,8 @@
 	//Colors
 	--HB_Color_Background            : #FFFFFF; // White
 	--HB_Color_WatercolorStain       : #000000; // Black
-	--HB_Page_NumberStyle            : 'decimal';
+	--HB_Page_Number_Style           : 'decimal';
+	--HB_Section_Label               : '';
 }
 
 @page { margin : 0; }
@@ -18,10 +19,12 @@ body { counter-reset : phb-page-numbers; }
 
 .index {
 	counter-reset: phb-page-numbers;
+	--HB_Section_Label: 'Index';
 }
 
 .appendix {
 	counter-reset: phb-page-numbers;
+	--HB_Section_Label: 'Appendix';
 }
 
 .chapter {
@@ -30,6 +33,7 @@ body { counter-reset : phb-page-numbers; }
 
 .frontmatter {
 	counter-reset: phb-page-numbers;
+	--HB_Page_Number_Style: lower-roman;
 }
 
 //*****************************
