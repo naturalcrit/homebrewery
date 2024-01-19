@@ -5,11 +5,32 @@
 	//Colors
 	--HB_Color_Background            : #FFFFFF; // White
 	--HB_Color_WatercolorStain       : #000000; // Black
+	--HB_Page_NumberStyle            : 'decimal';
 }
 
 @page { margin : 0; }
 body { counter-reset : phb-page-numbers; }
 * { -webkit-print-color-adjust : exact; }
+
+/*********************************
+* Sections Proof of concept
+*********************************/
+
+.index {
+	counter-reset: phb-page-numbers;
+}
+
+.appendix {
+	counter-reset: phb-page-numbers;
+}
+
+.chapter {
+	counter-reset: phb-page-numbers;
+}
+
+.frontmatter {
+	counter-reset: phb-page-numbers;
+}
 
 //*****************************
 // *    MUSTACHE DIVS/SPANS
