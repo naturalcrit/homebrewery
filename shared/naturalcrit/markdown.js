@@ -279,7 +279,7 @@ const replaceVar = function(input, hoist=false) {
 	const match = regex.exec(input);
 
 	const prefix = match[1];
-	const label = match[2];
+	const label = match[2].toLowerCase();
 
 	let missingValues = [];
 
@@ -485,8 +485,8 @@ const varDefInline = {
 		const regex = /^\n?([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:\((.+?)\)/;
 		const match = regex.exec(src);
 		if(match) {
-			const label   = match[2] ? match[2].trim().toLowerCase().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-			const content = match[3] ? match[3].trim().toLowerCase().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+			const label   = match[2] ? match[2].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+			const content = match[3] ? match[3].trim().replace(/\s+/g, ' ')               : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
 			return {
 				type    : 'varDefInline',
