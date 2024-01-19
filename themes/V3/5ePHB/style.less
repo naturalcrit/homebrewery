@@ -411,7 +411,7 @@
 		color       : var(--HB_Color_Footnotes);
 		text-align  : center;
 		text-indent : 0;
-		&.auto::after { content : counter(phb-page-numbers, var(--HB_Page_NumberStyle, 'decimal')); }
+		&.auto::after { content : counter(phb-page-numbers, var(--HB_Page_Number_Style, 'decimal')); }
 	}
 	.footnote {
 		position   : absolute;
