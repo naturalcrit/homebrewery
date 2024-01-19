@@ -20,28 +20,24 @@ body { counter-reset : phb-page-numbers; }
 .index {
 	--HB_Section_Label     : 'Index';
 	--HB_Page_Number_Style : 'decimal';
-	counter-reset          : section-count;
 }
 
 .appendix {
 	--HB_Section_Label     : 'Appendix';
 	--HB_Page_Number_Style : 'decimal';
-	counter-reset          : section-count;
 }
 
-.chapter {
+.text {
 	--HB_Section_Label     : '';
 	--HB_Page_Number_Style : 'decimal';
-	counter-reset          : section-count;
 }
 
 .frontmatter {
 	--HB_Section_Label     : '';
 	--HB_Page_Number_Style : lower-roman;
-	counter-reset          : section-count;
 }
 
-.index:nth-of-type(1), .appendix:nth-of-type(1), .chapter:nth-of-type(1),  .frontmatter:nth-of-type(1) {
+.index:nth-of-type(1), .appendix:nth-of-type(1), .chapter:nth-of-type(1),  .frontmatter:nth-of-type(1), .text:nth-of-type(1){
 	counter-reset: phb-page-numbers;
 }
 
