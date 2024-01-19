@@ -18,22 +18,19 @@ body { counter-reset : phb-page-numbers; }
 *********************************/
 
 .index {
-	counter-reset: phb-page-numbers;
 	--HB_Section_Label: 'Index';
 }
 
 .appendix {
-	counter-reset: phb-page-numbers;
 	--HB_Section_Label: 'Appendix';
 }
 
-.chapter {
-	counter-reset: phb-page-numbers;
+.frontmatter {
+	--HB_Page_Number_Style: lower-roman;
 }
 
-.frontmatter {
+.index:nth-of-type(1), .appendix:nth-of-type(1), .chapter:nth-of-type(1),  .frontmatter:nth-of-type(1) {
 	counter-reset: phb-page-numbers;
-	--HB_Page_Number_Style: lower-roman;
 }
 
 //*****************************
