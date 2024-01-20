@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
 
-const getTOC = (pages)=>{
+const getTOC = ()=>{
 	const add1 = (title, page)=>{
 		res.push({
 			title    : title,
@@ -27,32 +27,45 @@ const getTOC = (pages)=>{
 		});
 	};
 
+	const getParentPageNumber = (e)=>{
+		let tE = e;
+		while (tE?.tagName != 'BODY') {
+			if((tE.className == 'page') || (tE.className.split(' ')?.includes('Page'))) {
+				// Test for excluded pages here.
+				return parseInt(tE.id.replace(/^p/, ''));
+			}
+			tE = tE.parentElement;
+		}
+		return -1;
+	};
+
 	const res = [];
-	_.each(pages, (page, pageNum)=>{
-		if(!page.includes("{{frontCover}}") && !page.includes("{{insideCover}}") && !page.includes("{{partCover}}") && !page.includes("{{backCover}}")) {
-			const lines = page.split('\n');
-			_.each(lines, (line)=>{
-				if(_.startsWith(line, '# ')){
-					const title = line.replace('# ', '');
-					add1(title, pageNum);
+	const iframe = document.getElementById('BrewRenderer');
+	const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+	const headings = iframeDocument.querySelectorAll('h1, h2, h3');
+
+	_.each(headings, (heading)=>{
+		const onPage = getParentPageNumber(heading);
+		if(getComputedStyle(heading).getPropertyValue('--TOC') != 'exclude') {
+			if(onPage != -1) {
+				const headingText =  heading.innerText;
+				if(heading.tagName == 'H1') {
+					add1(headingText, onPage);
 				}
-				if(_.startsWith(line, '## ')){
-					const title = line.replace('## ', '');
-					add2(title, pageNum);
+				if(heading.tagName == 'H2') {
+					add2(headingText, onPage);
 				}
-				if(_.startsWith(line, '### ')){
-					const title = line.replace('### ', '');
-					add3(title, pageNum);
+				if(heading.tagName == 'H3') {
+					add3(headingText, onPage);
 				}
-			});
+			}
 		}
 	});
 	return res;
 };
 
 module.exports = function(props){
-	const pages = props.brew.text.split('\\page');
-	const TOC = getTOC(pages);
+	const TOC = getTOC();
 	const markdown = _.reduce(TOC, (r, g1, idx1)=>{
 		if(g1.title !== null) {
 			r.push(`- ### [{{ ${g1.title}}}{{ ${g1.page}}}](#p${g1.page})`);
