@@ -29,22 +29,46 @@ const getTOC = (pages)=>{
 
 	const res = [];
 	_.each(pages, (page, pageNum)=>{
+		function inStash(page, lookFor, staches) {
+			for (let stache=0; stache< staches.length; stache+=2) {
+				const at = page.indexOf(lookFor);
+				if((at >= staches[stache].index) && (at <= staches[stache+1].index)) {
+					return staches[stache][1].split(',');
+				}
+			}
+			return [];
+		}
+		const completeBlock = /^ *{{(?=((?:[:=](?:"['\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *$|^ *}}$/gm;
+		const sellecks = [...page.matchAll(completeBlock)];
 		if(!page.includes("{{frontCover}}") && !page.includes("{{insideCover}}") && !page.includes("{{partCover}}") && !page.includes("{{backCover}}")) {
 			const lines = page.split('\n');
-			_.each(lines, (line)=>{
-				if(_.startsWith(line, '# ')){
-					const title = line.replace('# ', '');
-					add1(title, pageNum);
+			for (let ln=0; ln<lines.length;ln++) {
+				if(lines[ln].indexOf('#') < 0) {
+					continue;
 				}
-				if(_.startsWith(line, '## ')){
-					const title = line.replace('## ', '');
-					add2(title, pageNum);
+				const comb = [lines[ln-1], lines[ln], ln+1<lines.length ? lines[ln+1] : ''].join('\n');
+				const whiskers = inStash(page, comb, sellecks);
+				if(!whiskers?.includes('!toc')){
+					if(_.startsWith(lines[ln], '# ')){
+						if(!whiskers?.includes('!h1')) {
+							const title = lines[ln].replace('# ', '');
+							add1(title, pageNum);
+						}
+					}
+					if(_.startsWith(lines[ln], '## ')){
+						if(!whiskers?.includes('!h2')) {
+							const title = lines[ln].replace('## ', '');
+							add2(title, pageNum);
+						}
+					}
+					if(_.startsWith(lines[ln], '### ')){
+						if(!whiskers.includes('!h3')) {
+							const title = lines[ln].replace('### ', '');
+							add3(title, pageNum);
+						}
+					}
 				}
-				if(_.startsWith(line, '### ')){
-					const title = line.replace('### ', '');
-					add3(title, pageNum);
-				}
-			});
+			};
 		}
 	});
 	return res;

@@ -160,12 +160,12 @@ module.exports = [
 			{
 				name : 'Monster Stat Block (unframed)',
 				icon : 'fas fa-paw',
-				gen  : MonsterBlockGen.monster('monster', 2),
+				gen  : MonsterBlockGen.monster('monster,!toc', 2),
 			},
 			{
 				name : 'Monster Stat Block',
 				icon : 'fas fa-spider',
-				gen  : MonsterBlockGen.monster('monster,frame', 2),
+				gen  : MonsterBlockGen.monster('monster,frame,!h3,!h4,!h5', 2),
 			},
 			{
 				name : 'Wide Monster Stat Block',
