@@ -27,26 +27,15 @@ const getTOC = ()=>{
 		});
 	};
 
-	const getParentPageNumber = (e)=>{
-		let tE = e;
-		while (tE?.tagName != 'BODY') {
-			if((tE.className == 'page') || (tE.className.split(' ')?.includes('Page'))) {
-				// Test for excluded pages here.
-				return parseInt(tE.id.replace(/^p/, ''));
-			}
-			tE = tE.parentElement;
-		}
-		return -1;
-	};
-
 	const res = [];
 	const iframe = document.getElementById('BrewRenderer');
 	const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
 	const headings = iframeDocument.querySelectorAll('h1, h2, h3');
 
 	_.each(headings, (heading)=>{
-		const onPage = getParentPageNumber(heading);
-		if(getComputedStyle(heading).getPropertyValue('--TOC') != 'exclude') {
+		const onPage = parseInt(heading.closest('.page,.phb').id.replace(/^p/, ''));
+		const ToCExclude = getComputedStyle(heading).getPropertyValue('--TOC');
+		if(ToCExclude != '"exclude"') {
 			if(onPage != -1) {
 				const headingText =  heading.innerText;
 				if(heading.tagName == 'H1') {

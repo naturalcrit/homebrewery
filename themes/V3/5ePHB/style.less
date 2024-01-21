@@ -799,6 +799,16 @@
 // *****************************
 // *      TABLE OF CONTENTS
 // *****************************/
+
+.page:has(.frontCover), 
+.page:has(.backCover), 
+.page:has(.insideCover), 
+.page:has(.partCover), 
+.monster h3, 
+.monster h4, 
+h5, h6, 
+.toc { --TOC: exclude; }
+
 .page {
 	&:has(.toc)::after { display : none; }
 	.toc {
