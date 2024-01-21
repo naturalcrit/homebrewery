@@ -314,7 +314,6 @@
 			border-image          : @monsterBorderImage 14 round;
 			border-image-outset   : 0px 2px;
 			box-shadow            : 1px 4px 14px #888888;
-			--TOC                 : "exclude";
 		}
 
 		position      : relative;
@@ -330,13 +329,11 @@
 				margin-bottom : 0;
 				font-size     : 0.304cm; //Monster size and type subtext
 			}
-			--TOC                 : "exclude";
 		}
 		h3 {
 			font-family   : 'ScalySansSmallCapsRemake';
 			font-size     : 0.45cm;
 			border-bottom : 1.5px solid var(--HB_Color_HeaderText);
-			--TOC                 : "exclude";
 		}
 
 		//Triangle dividers
@@ -800,14 +797,21 @@
 // *      TABLE OF CONTENTS
 // *****************************/
 
+// Default Exclusions
 .page:has(.frontCover), 
 .page:has(.backCover), 
 .page:has(.insideCover), 
 .page:has(.partCover), 
-.monster h3, 
-.monster h4, 
-h5, h6, 
+.monster,
+.noToC,
 .toc { --TOC: exclude; }
+
+// Manual Inclusion classes
+
+.addToC,
+.addh1, .addh2, .addh3, .addh4, .addh5, .addh6, .addh1h2 h1, .addh1h2 h2,
+.addh1h3 h1, .addh1h3 h2, .addh1h3 h3,  .addh1h4 h1, .addh1h4 h2, .addh1h4 h3, .addh1h4 h4, 
+.addh1h5 h1, .addh1h5 h2, .addh1h5 h3, .addh1h5 h4, .addh1h5 h5 { --TOC: include; }
 
 .page {
 	&:has(.toc)::after { display : none; }
