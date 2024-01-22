@@ -552,6 +552,27 @@ const varCallInline = {
 };
 //^=====--------------------< Variable Handling >-------------------=====^//
 
+function MarkedVariables() {
+  return {
+    hooks: {
+      preprocess(src) {
+				const blockDefRegex = /^\n?([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:\((.+?)\)/;
+
+
+				let match = blockDefRegex.exec(src);
+				if(match) {
+					const label   = match[2] ? match[2].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+					const content = match[3] ? match[3].trim().replace(/\s+/g, ' ')               : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+				//Block definitions
+        const regex = /cow/g;
+				src = src.replace(regex,"replaced");
+        return src;
+      }
+    }
+  };
+}
+
+Marked.use(MarkedVariables())
 Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts, varCallInline, varDefInline, varCallBlock, varDefBlock] });
 Marked.use(mustacheInjectBlock, walkVariableTokens);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
