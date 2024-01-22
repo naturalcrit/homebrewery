@@ -64,6 +64,13 @@ router.get('/admin/lookup/:id', mw.adminOnly, (req, res, next)=>{
 	});
 });
 
+/* Searches for matching title, also attempts to partial match */
+router.get('/admin/lookup/:id', mw.adminOnly, (req, res, next)=>{
+	HomebrewModel.findOne({ $or : { title: { '$regex': /./, '$options': 'i' } } }).exec((err, brew)=>{
+		return res.json(brew);
+	});
+});
+
 /* Find 50 brews that aren't compressed yet */
 router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{
 	uncompressedBrewQuery.exec((err, objs)=>{
@@ -91,13 +98,36 @@ router.put('/admin/compress/:id', (req, res)=>{
 		});
 });
 
-router.get('/admin/stats', mw.adminOnly, (req, res)=>{
-	HomebrewModel.count({}, (err, count)=>{
-		return res.json({
-			totalBrews : count
-		});
-	});
+router.get('/admin/stats', mw.adminOnly, async (req, res) => {
+	try {
+	  const totalBrewsCount = await HomebrewModel.countDocuments({});
+	  const publishedBrewsCount = await HomebrewModel.countDocuments({ published: true });
+  
+	  return res.json({
+		totalBrews: totalBrewsCount,
+		totalPublishedBrews: publishedBrewsCount
+	  });
+	} catch (error) {
+	  console.error(error);
+	  return res.status(500).json({ error: 'Internal Server Error' });
+	}
 });
+  
+
+
+/*
+router.get('/admin/stats', mw.adminOnly, async (req, res) => {
+	try {
+	  const count = await HomebrewModel.countDocuments({});
+	  return res.json({
+		totalBrews: count
+	  });
+	} catch (error) {
+	  console.error(error);
+	  return res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+*/
 
 router.get('/admin', mw.adminOnly, (req, res)=>{
 	templateFn('admin', {
