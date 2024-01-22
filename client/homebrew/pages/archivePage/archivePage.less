@@ -57,7 +57,7 @@
                     height:76.8vh;
                     
                     .title {
-                        height:20%;
+                        height:100px;
                         background-color: #333;
                         display:grid;
                         place-items: center;
@@ -70,12 +70,25 @@
                     }
                     
                     .foundBrews {
+                        background-color: #2C3E50;
                         display:flex;
-                        flex-direction: column;
+                        flex-direction: row;
+                        flex-wrap:wrap;
                         width:100%;
+                        min-height:500px;
+                        height:max-content;
+                        padding:50px;
+                        padding-bottom:unset;
+                        overflow-y:scroll;
                         
                         .brewItem {
-                            width:200px;
+                            background-image: url('/assets/parchmentBackground.jpg');
+                            width:500px;
+                            height:auto;
+                            min-height:unset;
+                            overflow:visible;
+                            margin-right:50px;
+                            
                             
                             dt {
                                 font-size:20px;

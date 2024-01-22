@@ -55,7 +55,16 @@ const ArchivePage = createClass({
                   <dd>{brew.title}</dd>
       
                   <dt>Authors:</dt>
-                  <dd>{brew.authors.join(', ')}</dd>
+                  <dd>
+                    {brew.authors.map((author, index) => (
+                        <span key={index}>
+                        <a href={`/user/${author}`} target='_blank' rel='noopener noreferrer'>
+                            {author}
+                        </a>
+                        {index < brew.authors.length - 1 && ', '}
+                        </span>
+                    ))}
+                    </dd>
       
                   <a href={`/share/${brew.shareId}`}>Check the brew</a>
       
