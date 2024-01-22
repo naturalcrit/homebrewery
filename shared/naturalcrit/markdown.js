@@ -266,9 +266,26 @@ const definitionLists = {
 	}
 };
 
+const uniqueHeaderIDs = (html)=>{
+	const tempBody = document.createElement('div');
+	tempBody.innerHTML = html;
+
+	const headers = tempBody.querySelectorAll('h1, h2, h3, h4, h5, h6, h7');
+	headers.forEach((header)=>{
+		const id = header.id;
+		header.id = `p${brewGlobalProperties?.pageNumber}-${header.tagName}-${id}`;
+	});
+	return tempBody.innerHTML;
+};
+
+const postprocess = (html)=>{
+	return uniqueHeaderIDs(html);
+};
+
 Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, mangle: false });
+Marked.use({ hooks: { postprocess } });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
 
 //Fix local links in the Preview iFrame to link inside the frame
@@ -369,9 +386,12 @@ const processStyleTags = (string)=>{
 		`${attributes?.length   ? ` ${attributes.join(' ')}`     : ''}`;
 };
 
+let brewGlobalProperties = {};
+
 module.exports = {
 	marked : Marked,
-	render : (rawBrewText)=>{
+	render : (rawBrewText, brewProperties)=>{
+		brewProperties = Object.assign(brewGlobalProperties, brewProperties);
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
 		return Marked.parse(rawBrewText);
