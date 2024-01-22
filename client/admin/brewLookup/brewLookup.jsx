@@ -66,14 +66,6 @@ const BrewLookup = createClass({
 					'fa-spin fa-spinner' : this.state.searching,
 				})} />
 			</button>
-			<input type='text' value={this.state.query} onChange={this.handleChange} placeholder='title' />
-			<button onClick={this.lookup}>
-				<i className={cx('fas', {
-					'fa-search'          : !this.state.searching,
-					'fa-spin fa-spinner' : this.state.searching,
-				})} />
-			</button>
-
 
 			{this.state.error
 				&& <div className='error'>{this.state.error.toString()}</div>

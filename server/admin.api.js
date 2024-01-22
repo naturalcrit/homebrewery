@@ -55,22 +55,31 @@ router.post('/admin/cleanup', mw.adminOnly, (req, res)=>{
 });
 
 /* Searches for matching edit or share id, also attempts to partial match */
-router.get('/admin/lookup/:id', mw.adminOnly, (req, res, next)=>{
-	HomebrewModel.findOne({ $or : [
-		{ editId: { '$regex': req.params.id, '$options': 'i' } },
-		{ shareId: { '$regex': req.params.id, '$options': 'i' } },
-	] }).exec((err, brew)=>{
-		return res.json(brew);
-	});
+
+router.get('/admin/lookup/:id', mw.adminOnly, async (req, res, next) => {
+	try {
+	  const brew = await HomebrewModel.findOne({
+		$or: [
+		  { editId: { $regex: req.params.id, $options: 'i' } },
+		  { shareId: { $regex: req.params.id, $options: 'i' } },
+		]
+	  }).exec();
+  
+	  if (!brew) {
+		// No document found
+		return res.status(404).json({ error: 'Document not found' });
+	  }
+  
+	  return res.json(brew);
+	} catch (error) {
+	  console.error(error);
+	  return res.status(500).json({ error: 'Internal Server Error' });
+	}
 });
 
-/* Searches for matching title, also attempts to partial match */
-router.get('/admin/lookup/:id', mw.adminOnly, (req, res, next)=>{
-	HomebrewModel.findOne({ $or : { title: { '$regex': /./, '$options': 'i' } } }).exec((err, brew)=>{
-		return res.json(brew);
-	});
-});
 
+
+  
 /* Find 50 brews that aren't compressed yet */
 router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{
 	uncompressedBrewQuery.exec((err, objs)=>{
