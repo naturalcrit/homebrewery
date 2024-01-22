@@ -3,7 +3,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _         = require('lodash');
 const cx        = require('classnames');
-const moment = require('moment');
+const Moment = require('moment');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
@@ -13,21 +13,19 @@ const Account = require('../../navbar/account.navitem.jsx');
 const NewBrew = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 
-const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
+const request = require('superagent');
 
 const ArchivePage = createClass({
     displayName : 'ArchivePage',
     getDefaultProps : function() {
-        return {
-            query     : '',
-			foundBrew : null,
-			searching : false,
-			error     : null
-        };
+        return {};
     },
     getInitialState : function() {
         return {
-            uiItems : this.props.uiItems
+            query     : '',
+			foundBrews : null,
+			searching : false,
+			error     : null
         };
     },
     handleChange(e){
@@ -36,35 +34,42 @@ const ArchivePage = createClass({
 	lookup(){
 		this.setState({ searching: true, error: null });
 
-		request.get(`/admin/lookup/${this.state.query}`)
-			.then((res)=>this.setState({ foundBrew: res.body }))
+		request.get(`/admin/archive/${this.state.query}`)
+			.then((res)=>this.setState({ foundBrews: res.body }))
 			.catch((err)=>this.setState({ error: err }))
 			.finally(()=>this.setState({ searching: false }));
 	},
-    renderFoundBrew(){
-		const brew = this.state.foundBrew;
-		return <div className='foundBrew'>
-			<dl>
-				<dt>Title</dt>
-				<dd>{brew.title}</dd>
-
-				<dt>Authors</dt>
-				<dd>{brew.authors.join(', ')}</dd>
-
-				<dt>Edit Link</dt>
-				<dd><a href={`/edit/${brew.editId}`} target='_blank' rel='noopener noreferrer'>/edit/{brew.editId}</a></dd>
-
-				<dt>Share Link</dt>
-				<dd><a href={`/share/${brew.shareId}`} target='_blank' rel='noopener noreferrer'>/share/{brew.shareId}</a></dd>
-
-				<dt>Last Updated</dt>
-				<dd>{Moment(brew.updatedAt).fromNow()}</dd>
-
-				<dt>Num of Views</dt>
-				<dd>{brew.views}</dd>
-			</dl>
-		</div>;
-	},
+    renderFoundBrews() {
+        const brews = this.state.foundBrews;
+      
+        if (!brews || brews.length === 0) {
+          return <div>No brews found.</div>;
+        }
+      
+        return (
+          <div className='foundBrews'>
+            {brews.map((brew, index) => (
+              <div key={index} className='brewItem'>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>{brew.title}</dd>
+      
+                  <dt>Authors:</dt>
+                  <dd>{brew.authors.join(', ')}</dd>
+      
+                  <a href={`/share/${brew.shareId}`}>Check the brew</a>
+      
+                  <dt>Last Updated</dt>
+                  <dd>{Moment(brew.updatedAt).fromNow()}</dd>
+      
+                  <dt>Num of Views</dt>
+                  <dd>{brew.views}</dd>
+                </dl>
+              </div>
+            ))}
+          </div>
+        );
+      },
 
     renderForm: function() {
         return <div className='brewLookup'>
@@ -79,15 +84,6 @@ const ArchivePage = createClass({
                     'fa-spin fa-spinner' : this.state.searching,
                 })} />
             </button>
-
-            {this.state.error
-                && <div className='error'>{this.state.error.toString()}</div>
-            }
-
-            {this.state.foundBrew
-                ? this.renderFoundBrew()
-                : <div className='noBrew'>No brew found.</div>
-            }
         </div>;
     },
 
@@ -121,8 +117,9 @@ const ArchivePage = createClass({
                     <div className='resultsContainer dataGroup'>
                         <div className='title'>
                             <h2>Your results, my lordship</h2>
-                            {this.renderResults()}
+                            
                         </div>
+                        {this.renderFoundBrews()}
                     </div>
                 </div>
             </div>
