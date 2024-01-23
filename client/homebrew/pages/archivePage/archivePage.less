@@ -1,121 +1,243 @@
-.archivePage {
-    height:100%;
-    background-color: #2C3E50;
+body {
+    height: 100vh;
+
     .content {
-        display:grid;
+        height: 100%;
+    }
+}
+
+.archivePage {
+    overflow-y: hidden;
+    height: 100%;
+    background-color: #2C3E50;
+
+    .content {
+        display: grid;
         grid-template-rows: 20vh 1fr;
-        
+
         .welcome {
-            display:grid;
+            display: grid;
             place-items: center;
             background: url('https://i.imgur.com/MJ4YHu7.jpg');
-            background-size:100%;
-            background-position:center;
-            height:20vh;
-            border-bottom:5px solid #333;
-    
+            background-size: 100%;
+            background-position: center;
+            height: 20vh;
+            border-bottom: 5px solid #333;
+
             h1 {
-                font-size:40px;
-                font-weight:900;
-                color:white;
+                font-size: 40px;
+                font-weight: 900;
+                color: white;
                 filter: drop-shadow(0 0 5px black);
             }
         }
-    
+
         .flexGroup {
-            height:100%;
-            display:grid;
-            grid-template-columns:1fr 2fr;
-        
+            height: 100%;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+
             .dataGroup {
-                width:100%;
-                height:100%;
-                background:white;
-                
+                width: 100%;
+                height: 100%;
+                background: white;
+
                 &.form .brewLookup {
-                    padding:50px;
-                    
+                    padding: 50px;
+
                     h2 {
-                        font-size:30px;
+                        font-size: 30px;
                         font-weight: 900;
-                        border-bottom:2px solid;
+                        border-bottom: 2px solid;
                         margin-block: 20px;
                     }
-                    
+
                     label {
-                        margin-right:10px;
+                        margin-right: 10px;
                     }
+
                     input+button {
-                        margin-left:20px;
+                        margin-left: 20px;
                     }
                 }
-                
+
                 &.resultsContainer {
-                    display:flex;
+                    display: flex;
                     flex-direction: column;
-                    border-left:2px solid;
-                    height:76.8vh;
-                    
+                    border-left: 2px solid;
+                    height: 100%;
+
                     .title {
-                        height:100px;
+                        height: 100px;
                         background-color: #333;
-                        display:grid;
+                        display: grid;
                         place-items: center;
-                        
+
                         h2 {
-                            font-size:30px;
-                            color:white;
-                            font-weight:900;
+                            font-size: 30px;
+                            color: white;
+                            font-weight: 900;
                         }
                     }
-                    
+
                     .foundBrews {
                         background-color: #2C3E50;
-                        display:flex;
-                        flex-direction:column;
-                        width:100%;
-                        min-height:500px;
-                        height:max-content;
-                        padding:50px;
-                        padding-bottom:unset;
-                        
+                        display: flex;
+                        flex-direction: column;
+                        width: 100%;
+                        min-height: 500px;
+                        height: 100%;
+                        padding: 50px;
+                        padding-bottom: unset;
+
                         .brewItem {
-                            height:50px;
-                            min-height:unset;
-                            width:100%;
-                            display:flex;
-                            color:white;
-                            background:#707070;
+                            height: 50px;
+                            min-height: unset;
+                            width: 100%;
+                            display: flex;
+                            color: white;
+                            background: #707070;
+                            overflow: visible;
+
                             .text {
-                                min-height:unset;
-                                width:20vw;
-                                text-overflow: ellipsis;
-                                overflow:hidden;
-                                white-space: nowrap;
-                                display:grid;
-                                align-content:center;
+                                min-height: unset;
+                                width: 20vw;
+                                padding-inline:10px;
+                                
+                                display: grid;
+                                align-content: center;
+
                                 h2 {
+                                    text-overflow: ellipsis;
+                                overflow: hidden;
+                                white-space: nowrap;
                                     font-size: 20px;
-                                    font-weight:900;
-                                    
+                                    font-weight: 900;
+
                                 }
                             }
+
                             hr {
-                                display:none;
+                                display: none;
                             }
+
                             .info {
-                                width:100%;
-                                display:grid;
-                                grid-template-columns: 3fr 1fr 70px 70px  150px 50px;
-                                align-items:center;
-                                
+                                width: 100%;
+                                display: grid;
+                                grid-template-areas: "tags authors views pages update storage";
+                                justify-content: end;
+                                align-content: space-around;
+                                grid-template-columns: 3fr 150px 70px 70px 200px 50px;
                                 br {
-                                    display:none;
+                                    display: none;
                                 }
-                                &:not(:has(.brewTags)) {
-                                    grid-template-columns:3fr 70px 70px 150px 50px;
+                                .brewTags{
+                                    display:inline-block;
+                                    grid-area: tags;
+                                }
+                                [title*="Authors:"] {
+                                    display:inline-block;
+                                    grid-area: authors;
+                                }
+                                [title*="Last"] {
+                                    display:inline-block;
+                                    grid-area: views;
+                                }
+                                [title*="Page"] {
+                                    display:inline-block;
+                                    grid-area: pages;
+                                }
+                                [title*="Created"] {
+                                    display:inline-block;
+                                    grid-area: update;
                                 }
                                 
+                                [title*="Storage"] {
+                                    display:inline-block;
+                                    grid-area: storage;
+                                    filter:drop-shadow(0 0 10px white);
+                                }
+                                
+                                .brewTags {
+                                    padding-left: 10px;
+                                }
+
+                                .brewTags:has(span:nth-of-type(4)) {
+                                    position: relative;
+                                    overflow: hidden;
+                                    display: flex;
+                                    flex-wrap: wrap;
+                                    
+
+                                    span:nth-of-type(n+2) {
+                                        display: none;
+                                    }
+
+                                    &:hover {
+                                        overflow: visible;
+                                        position: absolute;
+                                        top: 0;
+                                        background:#707070;
+                                        height: max-content;
+                                        z-index: 100;
+                                        width:min-content;
+
+                                        span:nth-of-type(n+4) {
+                                            display: block;
+                                        }
+
+                                        &:after {
+                                            position: absolute;
+                                            top: 48px;
+                                            right: 0;
+                                            left:0;
+                                            bottom:0;
+                                            content: '';
+                                            display: block;
+                                            height: calc(100% - 48px);
+                                            background: #707070;
+                                            border-inline: 1px solid gold;
+                                            border-bottom: 1px solid gold;
+                                            border-bottom-left-radius: 5px;
+                                            border-bottom-right-radius: 5px;
+                                            z-index: -1;
+                                        }
+                                    }
+                                }
+
+
+
+                            }
+
+                            .links {
+                                opacity: 1;
+                                background: none;
+                                position: relative;
+                                display: grid;
+                                grid-template-columns: 1fr 1fr;
+                                height: 100%;
+                                width: 100px;
+
+                                .editLink,
+                                .deleteLink {
+                                    display: none;
+                                }
+
+                                >a {
+                                    opacity: .8;
+
+                                    &:hover {
+                                        opacity: 1;
+                                    }
+                                }
+
+                                .shareLink {
+                                    color: deepskyblue;
+                                }
+
+                                .downloadLink {
+                                    color: coral;
+                                }
                             }
                         }
                     }
@@ -124,11 +246,3 @@
         }
     }
 }
-
-
-
-
-
-
-    
-
