@@ -10,7 +10,7 @@ const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account       = require('../../navbar/account.navitem.jsx');
 const NewBrew       = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem   = require('../../navbar/help.navitem.jsx');
-const ListPage      = require('../basePages/listPage/listPage.jsx');
+const BrewItem      = require('../basePages/listPage/brewItem/brewItem.jsx');
 
 const request = require('superagent');
 
@@ -21,34 +21,26 @@ const ArchivePage = createClass({
   },
   getInitialState: function () {
     return {
-      query      : '',
+      title      : this.props.query.title || '',
       brewCollection : null,
       searching  : false,
       error      : null,
     };
   },
-  componentDidMount: function () {
-    const url = new URL(window.location.href);
-    const pathSegments = url.pathname.split('/');
-
-    // Check if there's a path parameter after /archive/
-    if (pathSegments.length > 2 && pathSegments[1] === 'archive') {
-        const pathQuery = pathSegments[2];
-        console.log(pathQuery);
-        this.setState({ query: pathQuery }, () => {
-            this.lookup();
-        });
-    }
+  componentDidMount : function() {
+    console.log(this.state.title);
+    this.lookup();
   },
+  
 
   handleChange(e) {
-    this.setState({ query: e.target.value });
+    this.setState({ title: e.target.value });
   },
   lookup() {
     this.setState({ searching: true, error: null });
 
     request
-      .get(`/archive/${this.state.query}`)
+      .get(`/archive/${this.state.title}`)
       .then((res) => this.setState({ brewCollection: res.body }))
       .catch((err) => this.setState({ error: err }))
       .finally(() => this.setState({ searching: false }));
@@ -61,8 +53,8 @@ const ArchivePage = createClass({
     urlParams.delete('dir');
     urlParams.delete('filter');
 
-    // Set the pathname to '/archive/query'
-    url.pathname = `/archive/${this.state.query}`;
+    // Set the pathname to '/archive/?query'
+    urlParams.set('title', this.state.title);
 
     url.search = urlParams;
     window.history.replaceState(null, null, url);
@@ -73,9 +65,13 @@ const ArchivePage = createClass({
     if (!brews || brews.length === 0) {
       return <div>No brews found.</div>;
     }
-    console.table(brews);
     this.updateUrl();
-      return <ListPage brewCollection={this.state.brewCollection} /*navItems={this.navItems()}*/ reportError={this.errorReported}></ListPage>;
+      return <div className="foundBrews">
+        {brews.map((brew, index) => (
+        <BrewItem brew={brew} key={index} reportError={this.props.reportError}/>
+        ))}
+      </div>
+       
     
   },
 
@@ -86,7 +82,7 @@ const ArchivePage = createClass({
         <label>Title of the brew</label>
         <input
           type='text'
-          value={this.state.query}
+          value={this.state.title}
           onChange={this.handleChange}
           placeholder='v3 Reference Document'
         />
