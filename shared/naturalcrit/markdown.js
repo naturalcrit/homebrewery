@@ -28,6 +28,28 @@ renderer.paragraph = function(text){
 		return `<p>${text}</p>\n`;
 };
 
+//Fix local links in the Preview iFrame to link inside the frame
+renderer.link = function (href, title, text) {
+	let self = false;
+	if(href[0] == '#') {
+		self = true;
+	}
+	href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+
+	if(href === null) {
+		return text;
+	}
+	let out = `<a href="${escape(href)}"`;
+	if(title) {
+		out += ` title="${title}"`;
+	}
+	if(self) {
+		out += ' target="_self"';
+	}
+	out += `>${text}</a>`;
+	return out;
+};
+
 const mustacheSpans = {
 	name  : 'mustacheSpans',
 	level : 'inline',                                   // Is this a block-level or inline-level tokenizer?
@@ -290,28 +312,6 @@ Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, mangle: false });
 Marked.use({ hooks: { postprocess } });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId({ prefix: 'Hugbees-' }), MarkedSmartypantsLite());
-
-//Fix local links in the Preview iFrame to link inside the frame
-renderer.link = function (href, title, text) {
-	let self = false;
-	if(href[0] == '#') {
-		self = true;
-	}
-	href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
-
-	if(href === null) {
-		return text;
-	}
-	let out = `<a href="${escape(href)}"`;
-	if(title) {
-		out += ` title="${title}"`;
-	}
-	if(self) {
-		out += ' target="_self"';
-	}
-	out += `>${text}</a>`;
-	return out;
-};
 
 const nonWordAndColonTest = /[^\w:]/g;
 const cleanUrl = function (sanitize, base, href) {
