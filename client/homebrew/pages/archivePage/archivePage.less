@@ -72,27 +72,50 @@
                     .foundBrews {
                         background-color: #2C3E50;
                         display:flex;
-                        flex-direction: row;
-                        flex-wrap:wrap;
+                        flex-direction:column;
                         width:100%;
                         min-height:500px;
                         height:max-content;
                         padding:50px;
                         padding-bottom:unset;
-                        overflow-y:scroll;
                         
                         .brewItem {
-                            background-image: url('/assets/parchmentBackground.jpg');
-                            width:450px;
-                            height:auto;
+                            height:50px;
                             min-height:unset;
-                            overflow:visible;
-                            margin-right:50px;
-                            
-                            
-                            dt {
-                                font-size:20px;
-                                font-weight:900;
+                            width:100%;
+                            display:flex;
+                            color:white;
+                            background:#707070;
+                            .text {
+                                min-height:unset;
+                                width:20vw;
+                                text-overflow: ellipsis;
+                                overflow:hidden;
+                                white-space: nowrap;
+                                display:grid;
+                                align-content:center;
+                                h2 {
+                                    font-size: 20px;
+                                    font-weight:900;
+                                    
+                                }
+                            }
+                            hr {
+                                display:none;
+                            }
+                            .info {
+                                width:100%;
+                                display:grid;
+                                grid-template-columns: 3fr 1fr 70px 70px  150px 50px;
+                                align-items:center;
+                                
+                                br {
+                                    display:none;
+                                }
+                                &:not(:has(.brewTags)) {
+                                    grid-template-columns:3fr 70px 70px 150px 50px;
+                                }
+                                
                             }
                         }
                     }
@@ -101,8 +124,6 @@
         }
     }
 }
-
-
 
 
 
