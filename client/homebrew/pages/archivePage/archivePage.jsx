@@ -27,6 +27,20 @@ const ArchivePage = createClass({
       error      : null,
     };
   },
+  componentDidMount: function () {
+    const url = new URL(window.location.href);
+    const pathSegments = url.pathname.split('/');
+
+    // Check if there's a path parameter after /archive/
+    if (pathSegments.length > 2 && pathSegments[1] === 'archive') {
+        const pathQuery = pathSegments[2];
+        console.log(pathQuery);
+        this.setState({ query: pathQuery }, () => {
+            this.lookup();
+        });
+    }
+  },
+
   handleChange(e) {
     this.setState({ query: e.target.value });
   },
@@ -39,13 +53,28 @@ const ArchivePage = createClass({
       .catch((err) => this.setState({ error: err }))
       .finally(() => this.setState({ searching: false }));
   },
+  updateUrl: function(query) {
+    const url = new URL(window.location.href);
+    const urlParams = new URLSearchParams(url.search);
+    // Clear existing parameters
+    urlParams.delete('sort');
+    urlParams.delete('dir');
+    urlParams.delete('filter');
+
+    // Set the pathname to '/archive/query'
+    url.pathname = `/archive/${this.state.query}`;
+
+    url.search = urlParams;
+    window.history.replaceState(null, null, url);
+},
   renderFoundBrews() {
     const brews = this.state.brewCollection;
 
     if (!brews || brews.length === 0) {
       return <div>No brews found.</div>;
     }
-
+    console.table(brews);
+    this.updateUrl();
       return <ListPage brewCollection={this.state.brewCollection} /*navItems={this.navItems()}*/ reportError={this.errorReported}></ListPage>;
     
   },
@@ -76,7 +105,7 @@ const ArchivePage = createClass({
     );
   },
 
-  renderResults: function () {},
+  
 
   renderNavItems: function () {
     return (

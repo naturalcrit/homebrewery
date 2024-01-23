@@ -17,7 +17,6 @@ const archive = {
             // No published documents found with the given title
             return res.status(404).json({ error: 'Published documents not found' });
           }
-      
           return res.json(brews);
         } catch (error) {
           console.error(error);
@@ -28,4 +27,4 @@ const archive = {
 router.get('/archive/:query', asyncHandler(archive.findBrews));
 
 
-module.exports = archive;
+module.exports = router;
