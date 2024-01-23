@@ -76,28 +76,6 @@ router.get('/admin/lookup/:id', mw.adminOnly, async (req, res, next) => {
 	  return res.status(500).json({ error: 'Internal Server Error' });
 	}
 });
-
-
-/* Searches for matching title, also attempts to partial match */
-router.get('/admin/archive/:title', mw.adminOnly, async (req, res, next) => {
-	try {
-	  const brews = await HomebrewModel.find({
-		title: { $regex: req.params.title, $options: 'i' },
-		published: true
-	  }).exec();
-  
-	  if (!brews || brews.length === 0) {
-		// No published documents found with the given title
-		return res.status(404).json({ error: 'Published documents not found' });
-	  }
-  
-	  return res.json(brews);
-	} catch (error) {
-	  console.error(error);
-	  return res.status(500).json({ error: 'Internal Server Error' });
-	}
-  });
-  
   
 /* Find 50 brews that aren't compressed yet */
 router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{
