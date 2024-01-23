@@ -272,8 +272,11 @@ const uniqueHeaderIDs = (html)=>{
 
 	const headers = tempBody.querySelectorAll('h1, h2, h3, h4, h5, h6, h7');
 	headers.forEach((header)=>{
-		const id = header.id;
-		header.id = `p${brewGlobalProperties?.pageNumber}-${header.tagName}-${id}`;
+		if(header.id.indexOf('Hugbees-') == 0) {
+			const id = header.id.replace(/^Hugbees-/, '');
+			const pageNumber = brewGlobalProperties.hasOwnProperty('pageNumber') ? parseInt(brewGlobalProperties.pageNumber) + 1 : 0;
+			header.id = `p${pageNumber}-${header.tagName}-${id}`;
+		}
 	});
 	return tempBody.innerHTML;
 };
@@ -286,7 +289,7 @@ Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, def
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, mangle: false });
 Marked.use({ hooks: { postprocess } });
-Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
+Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId({ prefix: 'Hugbees-' }), MarkedSmartypantsLite());
 
 //Fix local links in the Preview iFrame to link inside the frame
 renderer.link = function (href, title, text) {
