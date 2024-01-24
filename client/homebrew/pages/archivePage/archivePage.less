@@ -35,7 +35,7 @@ body {
         .flexGroup {
             height: 100%;
             display: grid;
-            grid-template-columns: 1fr 2fr;
+            grid-template-columns: 500px 2fr;
 
             .dataGroup {
                 width: 100%;
@@ -81,6 +81,7 @@ body {
                     }
 
                     .foundBrews {
+                        position:relative;
                         background-color: #2C3E50;
                         display: flex;
                         flex-direction: column;
@@ -90,6 +91,22 @@ body {
                         padding: 50px;
                         padding-bottom: unset;
 
+                        .limit {
+                            position:fixed;
+                            bottom:0;
+                            left:502px;
+                            font-size: 11px;
+                            font-weight: 800;
+                            color:white;
+                            background-color: #333;
+                            padding: 8px 10px;
+                            z-index: 1000;
+
+                            &:has(p:empty) {
+                                display:none;
+                            }
+                        }
+                        
                         .brewItem {
                             height: 50px;
                             min-height: unset;
@@ -103,14 +120,15 @@ body {
                                 min-height: unset;
                                 width: 20vw;
                                 padding-inline:10px;
+                                height: 1.5em;
                                 
                                 display: grid;
                                 align-content: center;
 
                                 h2 {
                                     text-overflow: ellipsis;
-                                overflow: hidden;
-                                white-space: nowrap;
+                                    overflow: hidden;
+                                    white-space: nowrap;
                                     font-size: 20px;
                                     font-weight: 900;
 
@@ -181,6 +199,7 @@ body {
                                         height: max-content;
                                         z-index: 100;
                                         width:min-content;
+                                        padding:10px;
 
                                         span:nth-of-type(n+4) {
                                             display: block;

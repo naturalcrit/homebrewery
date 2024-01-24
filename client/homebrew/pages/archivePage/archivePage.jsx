@@ -25,6 +25,7 @@ const ArchivePage = createClass({
       brewCollection : null,
       searching  : false,
       error      : null,
+      limit      : '',
     };
   },
   componentDidMount : function() {
@@ -38,10 +39,9 @@ const ArchivePage = createClass({
   },
   lookup() {
     this.setState({ searching: true, error: null });
-
     request
       .get(`/archive/${this.state.title}`)
-      .then((res) => this.setState({ brewCollection: res.body }))
+      .then((res) => this.setState({ brewCollection: res.body.brews }, this.setState({ limit: res.body.message})))
       .catch((err) => this.setState({ error: err }))
       .finally(() => this.setState({ searching: false }));
   },
@@ -67,6 +67,9 @@ const ArchivePage = createClass({
     }
     this.updateUrl();
       return <div className="foundBrews">
+        <div className="limit">
+          <p>{this.state.limit}</p>
+        </div>
         {brews.map((brew, index) => (
         <BrewItem brew={brew} key={index} reportError={this.props.reportError}/>
         ))}
@@ -84,11 +87,14 @@ const ArchivePage = createClass({
           type='text'
           value={this.state.title}
           onChange={this.handleChange}
+          onKeyDown={(e) => e.key === 'Enter' && this.lookup()}
           placeholder='v3 Reference Document'
         />
         {/* In the future, we should be able to filter the results by adding tags.
             <label>Tags</label><input type='text' value={this.state.query} placeholder='add a tag to filter'/>
+            <input type="checkbox" id="v3" /><label>v3 only</label>
             */}
+            
         <button onClick={this.lookup}>
           <i
             className={cx('fas', {
