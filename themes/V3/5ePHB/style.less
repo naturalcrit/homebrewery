@@ -813,6 +813,11 @@
 .addh1h3 h1, .addh1h3 h2, .addh1h3 h3,  .addh1h4 h1, .addh1h4 h2, .addh1h4 h3, .addh1h4 h4, 
 .addh1h5 h1, .addh1h5 h2, .addh1h5 h3, .addh1h5 h4, .addh1h5 h5 { --TOC: include; }
 
+// Manual Exclusion classes
+.noh1, .noh2, .noh3, .noh4, .noh5, .noh6, .noh1h2 h1, .noh1h2 h2,
+.noh1h3 h1, .noh1h3 h2, .noh1h3 h3,  .noh1h4 h1, .noh1h4 h2, .noh1h4 h3, .noh1h4 h4, 
+.noh1h5 h1, .noh1h5 h2, .noh1h5 h3, .noh1h5 h4, .noh1h5 h5 { --TOC: exclude; }
+
 .page {
 	&:has(.toc)::after { display : none; }
 	.toc {
