@@ -135,7 +135,7 @@ const BrewItem = createClass({
 				</> : <></>
 				}
 				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
-					<i className='fas fa-user'/> {brew.authors.map((item) => <a href={`/share/${item}`}>{item}</a>)}
+					<i className='fas fa-user'/> {brew.authors.map((item) => <a href={`/user/${item}`}>{item}</a>)}
 				</span>
 				<br />
 				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
