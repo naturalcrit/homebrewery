@@ -29,7 +29,7 @@ const mw = {
 
 /* Search for brews that are older than 3 days and that are shorter than a tweet */
 const junkBrewQuery = HomebrewModel.find({
-    text: { $exists: true, $not: { $type: 10 } }, // $type 10 corresponds to null/undefined
+    '$where'  : 'this.textBin.length < 140',
     createdAt: {
         $lt: Moment().subtract(30, 'days').toDate()
     }
