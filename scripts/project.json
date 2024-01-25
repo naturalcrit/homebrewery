@@ -26,7 +26,6 @@
 		"codemirror/addon/edit/trailingspace.js",
 		"codemirror/addon/selection/active-line.js",
 		"moment",
-		"superagent",
-		"marked"
+		"superagent"
 	]
 }
