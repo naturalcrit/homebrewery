@@ -26,118 +26,115 @@ const mw = {
 	}
 };
 
-
-/* Search for brews that are older than 3 days and that are shorter than a tweet */
-const junkBrewQuery = HomebrewModel.find({
-    '$where'  : 'this.textBin.length < 140',
-    createdAt: {
-        $lt: Moment().subtract(30, 'days').toDate()
-    }
-}).limit(100).maxTime(60000);
-
+const junkBrewPipeline = [
+	{	$match : {
+		updatedAt  : { $lt: Moment().subtract(30, 'days').toDate() },
+		lastViewed : { $lt: Moment().subtract(30, 'days').toDate() }
+	}},
+	{ $project: { textBinSize: { $binarySize: '$textBin' } } },
+	{ $match: { textBinSize: { $lt: 140 } } },
+	{ $limit: 100 }
+];
 
 /* Search for brews that aren't compressed (missing the compressed text field) */
 const uncompressedBrewQuery = HomebrewModel.find({
 	'text' : { '$exists': true }
 }).lean().limit(10000).select('_id');
 
-router.get('/admin/cleanup', mw.adminOnly, (req, res) => {
-	// Search for brews that are older than 3 days and shorter than 140 characters
-	const query = junkBrewQuery.clone();
-	
-	query.exec()
-	  .then((objs) => res.json({ count: objs.length }))
-	  .catch((error) => {
-		console.error(error);
-		res.status(500).json({ error: 'Internal Server Error' });
-	  });
+// Search for up to 100 brews that have not been viewed or updated in 30 days and are shorter than 140 bytes
+router.get('/admin/cleanup', mw.adminOnly, (req, res)=>{
+	HomebrewModel.aggregate(junkBrewPipeline).option({ maxTimeMS: 60000 })
+		.then((objs)=>res.json({ count: objs.length }))
+		.catch((error)=>{
+			console.error(error);
+			res.status(500).json({ error: 'Internal Server Error' });
+		});
 });
-  
-router.post('/admin/cleanup', mw.adminOnly, (req, res) => {
-	// Remove all brews that are older than 3 days and shorter than 140 characters
-	const query = junkBrewQuery.clone();
-	
-	query.remove().exec()
-	  .then((result) => res.json({ count: result.n }))
-	  .catch((error) => {
-		console.error(error);
-		res.status(500).json({ error: 'Internal Server Error' });
-	  });
+
+// Delete up to 100 brews that have not been viewed or updated in 30 days and are shorter than 140 bytes
+router.post('/admin/cleanup', mw.adminOnly, (req, res)=>{
+	HomebrewModel.aggregate(junkBrewPipeline).option({ maxTimeMS: 60000 })
+		.then((docs)=>{
+			const ids = docs.map((doc)=>doc._id);
+			return HomebrewModel.deleteMany({ _id: { $in: ids } });
+		}).then((result)=>{
+			res.json({ count: result.deletedCount });
+		}).catch((error)=>{
+			console.error(error);
+			res.status(500).json({ error: 'Internal Server Error' });
+		});
 });
 
 /* Searches for matching edit or share id, also attempts to partial match */
-router.get('/admin/lookup/:id', mw.adminOnly, async (req, res, next) => {
-	try {
-	  const brew = await HomebrewModel.findOne({
-		$or: [
-		  { editId: { $regex: req.params.id, $options: 'i' } },
-		  { shareId: { $regex: req.params.id, $options: 'i' } },
+router.get('/admin/lookup/:id', mw.adminOnly, async (req, res, next)=>{
+	HomebrewModel.findOne({
+		$or : [
+			{ editId: { $regex: req.params.id, $options: 'i' } },
+			{ shareId: { $regex: req.params.id, $options: 'i' } },
 		]
-	  }).exec();
-  
-	  if (!brew) {
-		// No document found
-		return res.status(404).json({ error: 'Document not found' });
-	  }
-  
-	  return res.json(brew);
-	} catch (error) {
-	  console.error(error);
-	  return res.status(500).json({ error: 'Internal Server Error' });
-	}
-});
-  
-/* Find 50 brews that aren't compressed yet */
-router.get('/admin/finduncompressed', mw.adminOnly, (req, res) => {
-	const query = uncompressedBrewQuery.clone();
-  
-	query.exec()
-	  .then((objs) => {
-		const ids = objs.map((obj) => obj._id);
-		res.json({ count: ids.length, ids });
-	  })
-	  .catch((err) => {
+	}).exec()
+	.then((brew)=>{
+		if(!brew)	// No document found
+			return res.status(404).json({ error: 'Document not found' });
+		else
+			return res.json(brew);
+	})
+	.catch((err)=>{
 		console.error(err);
-		res.status(500).send(err.message || 'Internal Server Error');
-	  });
-  });
-  
+		return res.status(500).json({ error: 'Internal Server Error' });
+	});
+});
+
+/* Find 50 brews that aren't compressed yet */
+router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{
+	const query = uncompressedBrewQuery.clone();
+
+	query.exec()
+		.then((objs)=>{
+			const ids = objs.map((obj)=>obj._id);
+			res.json({ count: ids.length, ids });
+		})
+		.catch((err)=>{
+			console.error(err);
+			res.status(500).send(err.message || 'Internal Server Error');
+		});
+});
+
 
 /* Compresses the "text" field of a brew to binary */
-router.put('/admin/compress/:id', (req, res) => {
+router.put('/admin/compress/:id', (req, res)=>{
 	HomebrewModel.findOne({ _id: req.params.id })
-	  .then((brew) => {
-		if (!brew) {
-		  return res.status(404).send('Brew not found');
-		}
-  
-		if (brew.text) {
-			brew.textBin = zlib.deflateRawSync(brew.text);
-			brew.text = undefined;
-		}
-  
-		return brew.save();
-	  })
-	  .then((obj) => res.status(200).send(obj))
-	  .catch((err) => {
-		console.error(err);
-		res.status(500).send('Error while saving');
-	  });
+		.then((brew)=>{
+			if(!brew)
+				return res.status(404).send('Brew not found');
+
+			if(brew.text) {
+				brew.textBin = brew.textBin || zlib.deflateRawSync(brew.text);	//Don't overwrite textBin if exists
+				brew.text = undefined;
+			}
+
+			return brew.save();
+		})
+		.then((obj)=>res.status(200).send(obj))
+		.catch((err)=>{
+			console.error(err);
+			res.status(500).send('Error while saving');
+		});
 });
 
 
-router.get('/admin/stats', mw.adminOnly, async (req, res) => {
+router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 	try {
-	  const totalBrewsCount = await HomebrewModel.countDocuments({});
-	  const publishedBrewsCount = await HomebrewModel.countDocuments({ published: true });
-  
-	  return res.json({
-		totalBrews: totalBrewsCount,
-		totalPublishedBrews: publishedBrewsCount
-	  });
+		const totalBrewsCount = await HomebrewModel.countDocuments({});
+		const publishedBrewsCount = await HomebrewModel.countDocuments({ published: true });
+
+		return res.json({
+			totalBrews          : totalBrewsCount,
+			totalPublishedBrews : publishedBrewsCount
+		});
 	} catch (error) {
-	  console.error(error);
-	  return res.status(500).json({ error: 'Internal Server Error' });
+		console.error(error);
+		return res.status(500).json({ error: 'Internal Server Error' });
 	}
 });
 
@@ -145,8 +142,8 @@ router.get('/admin', mw.adminOnly, (req, res)=>{
 	templateFn('admin', {
 		url : req.originalUrl
 	})
-		.then((page)=>res.send(page))
-		.catch((err)=>res.sendStatus(500));
+	.then((page)=>res.send(page))
+	.catch((err)=>res.sendStatus(500));
 });
 
 module.exports = router;
