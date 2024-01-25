@@ -19,7 +19,6 @@ const translateOpts = ['accountPage'];
 
 
 let SAVEKEY = '';
-const languageKey = 'HOMEBREWERY-LANG';
 
 const AccountPage = createClass({
 	displayName     : 'AccountPage',
@@ -32,12 +31,12 @@ const AccountPage = createClass({
 	getInitialState : function() {
 		return {
 			uiItems : this.props.uiItems,
-			lang    : 'en-US'
+			lang    : 'en-US',
 		};
 	},
 	componentDidMount : function(){
-		const lang = window.localStorage.getItem(languageKey);
-		if(lang != this.state.lang){ this.setState({ lang }); }
+		const lang = window.localStorage.getItem('languageKey');
+		if(lang != this.state.lang){ this.setState({ lang });}
 
 		if(!this.state.saveLocation && this.props.uiItems.username) {
 			SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${this.props.uiItems.username}`;
@@ -48,11 +47,16 @@ const AccountPage = createClass({
 	},
 
 	updateLang : function(lang){
+		const expiry = new Date;
+		expiry.setFullYear(expiry.getFullYear() + 1);
+
 		if(this.state.lang == lang) return;
-		window.localStorage.setItem(languageKey, lang);
+		document.cookie = `languageKey=${lang};expires=${expiry}; path=/;`;
+		window.localStorage.setItem('languageKey', lang);
 		this.setState({
 			lang : lang
 		});
+		window.location.reload(true);
 	},
 
 	makeActive : function(newSelection){
@@ -66,7 +70,7 @@ const AccountPage = createClass({
 	renderLanguageDropdown : function(){
 		const languageOptions = ['en-US', 'fr-FR', 'es-ES'];
 		return <div>
-			<select onChange={(e)=>{ this.updateLang(e.target.value); }} value={this.state.lang}>
+			<select onChange={(e)=>{ this.updateLang(e.target.value);}} value={this.state.lang}>
 				{_.map(languageOptions, (lang, key)=>{ return <option key={key} value={lang}>{lang}</option>; })}
 			</select>
 			<br />

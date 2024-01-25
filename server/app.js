@@ -75,8 +75,15 @@ const migrateText       = require('fs').readFileSync('client/homebrew/pages/home
 const changelogText     = require('fs').readFileSync('changelog.md', 'utf8');
 const faqText           = require('fs').readFileSync('faq.md', 'utf8');
 
-const localeFile   = require('fs').readFileSync('locale/base-localization-file.yaml', 'utf8');
-const localeData   = yaml.load(localeFile);
+app.use((req, res, next)=>{
+	if(req.cookies && req.cookies.languageKey){
+		try {
+			req.language = req.cookies.languageKey;
+		} catch (e){}
+	}
+	return next();
+});
+
 
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
@@ -425,6 +432,11 @@ if(isLocalEnvironment){
 const templateFn = require('./../client/template.js');
 const renderPage = async (req, res)=>{
 	// Create configuration object
+
+	const langPreference = req.language || `en-US`;
+	const localeFile   = require('fs').readFileSync(`locale/locale-${langPreference}.yaml`, 'utf8');
+	const localeData   = yaml.load(localeFile);
+
 	const configuration = {
 		local       : isLocalEnvironment,
 		publicUrl   : config.get('publicUrl') ?? '',
@@ -448,6 +460,10 @@ const renderPage = async (req, res)=>{
 		.catch((err)=>{
 			console.log(err);
 		});
+	
+		
+	
+
 	return page;
 };
 

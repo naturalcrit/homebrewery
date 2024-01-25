@@ -1,0 +1,319 @@
+# Chaîne de traduction modèle
+yes: oui
+no: non
+dateFormat: DD-MM-YYYY HH:mm:ss
+OK:
+
+nav:
+  help out: Aidez-nous
+  storageMsg:
+    notSignedIn: Vous devez vous connecter à un compte Google pour effectuer des transferts entre Homebrewery et Google Drive!
+    fromGoogleToHb: Souhaitez-vous transférer cette brasserie depuis votre stockage Google Drive vers Homebrewery?
+    fromHbToGoogle: Souhaitez-vous transférer cette brasserie depuis Homebrewery vers votre stockage Google Drive?
+  saveDropdown:
+    save: enregistrer
+    autosaved: sauvegarde automatique.
+    saving: sauvegarde en cours...
+    reminder: rappel...
+    autosave: sauvegarde automatique
+    Save Now: Enregistrer maintenant
+    saved: enregistré.
+    autoSaveMsg: La sauvegarde automatique est désactivée, et vous n'avez pas enregistré depuis
+    autoSaveMsgDuration: minutes.
+    autoSaveOff: La sauvegarde automatique est désactivée.
+  errorMsg:
+    Oops!: Oups!
+    conflict: "Conflit : veuillez recharger pour obtenir la dernière modification"
+    outOfDate: Votre client est obsolète. Enregistrez vos modifications ailleurs et rechargez la page.
+    expiredCredentials: Il semble que vos identifiants Google aient expiré ! Visitez notre page de connexion, déconnectez-vous, puis reconnectez-vous avec Google, et réessayez d'enregistrer !
+    Sign In: Se connecter
+    Not Now: Pas maintenant
+    problemSaving: Il semble y avoir un problème lors de l'enregistrement. <br /> Signalez l'erreur
+    here: ici
+    deletedBrew: Cette brasserie est actuellement dans la corbeille de votre compte Google Drive!<br />Si vous souhaitez la conserver, assurez-vous de la restaurer avant qu'elle ne soit définitivement supprimée!<br />
+
+  new: nouveau
+  helpDropdown:
+    need help?: Besoin d'aide?
+    report issue: signaler un problème
+    faq: Foire aux questions
+    migrate: migrer
+
+  shareDropdown:
+    share: partager
+    view: voir
+    copy url: copier le lien
+    share on Reddit: partager sur Reddit
+
+  get pdf: obtenir le PDF
+
+  recentBrewsdropdown:
+    recent brews: brassins récents
+    edited: édités
+    recently edited: récemment édités
+    viewed: consultés
+    recently viewed: récemment consultés
+
+    removeRecents: Retirer des documents récents
+
+  usernameDropdown:
+    brews:
+    account: compte
+    login: connexion
+    localLoginPrompt: Entrez votre nom d'utilisateur
+    logout: déconnexion
+    logoutMsg: Êtes-vous sûr de vouloir vous déconnecter?
+
+userPage:
+  No Brews: Aucun brassin
+  No Title: Pas de titre
+  published brews: Brassins publiés
+  unpublished brews: Brassins non publiés
+
+  filters:
+    sortBy: Trier par
+    title: Titre
+    created date: Date de création
+    updated date: Date de mise à jour
+    views: vues
+    searchPlaceholder: filtrer par titre/description
+
+  brewInfo:
+    Authors: Auteurs
+    Last viewed: Dernière consultation
+    Page count: Nombre de pages
+    Created: Créé
+    Last updated: Dernière mise à jour
+    Share: Ouvrir la page pour partager
+    Edit: Éditer
+    Download: Télécharger
+    Delete: Supprimer
+    gdTitle: Votre stockage Google Drive
+    gdTitle2: Le stockage Google Drive d'un autre utilisateur
+
+editPage:
+  tools:
+    undo: Annuler
+    redo: Refaire
+    Editor Themes: Thèmes de l'éditeur
+    Brew Editor: Éditeur de brassin
+    Style Editor: Éditeur de style
+    Properties: Propriétés
+    Jump to location in Editor: Aller à l'emplacement dans l'éditeur
+    Jump to location in Preview: Aller à l'emplacement dans l'aperçu
+
+  brewTab:
+    snippets:
+      textEditor:
+      column break:
+      new page:
+      vertical spacing:
+      wide block:
+      image:
+      background image:
+      page number:
+      auto-incrementing page number:
+      link to page:
+      table of contents:
+      add comment:
+
+      phb:
+      spell:
+      spell list:
+      class feature:
+      note:
+      descriptive text box:
+      monster stat block:
+      wide monster stat block:
+      cover page:
+      artist credit:
+
+      tables:
+      class table:
+      half class table:
+      table:
+      wide table:
+      split table:
+
+  styleTab:
+    snippets:
+      styleEditor:
+      removeDropCap:
+      tweakDropCap:
+      addComment:
+
+      print:
+      a4PageSize:
+      squarePageSize:
+      inkFriendly:
+
+  propertiesTab:
+    brew:
+    title: titre
+    description: description
+    thumbnail: miniature
+    tags: tags
+    add tag: ajouter un tag
+    language: langue
+    languageSub: Définir la langue du document dans le HTML. Peut affecter la correction grammaticale.
+    theme: thème
+    renderer: rendu
+    Legacy: Héritage
+    v3:
+    legacyDemoLink: cliquez ici pour voir la page de démo du rendu hérité!
+
+    authors: Auteurs
+    None: Aucun
+    invited authors: auteurs invités
+    invite author: inviter un auteur
+    invitedSub1: Les utilisateurs distinguent la casse.
+    invitedSub2: Après avoir invité un auteur, envoyez-lui le lien pour éditer le brassin. À l'ouverture, ils peuvent accepter ou refuser l'invitation.
+
+    privacy: Confidentialité
+    publish: publier
+    unpublish: dépublier
+    publishedSub: Les documents publiés seront visibles et recherchables publiquement (éventuellement...)
+    delete: Supprimer
+    delete brew: Supprimer le brassin
+    onlyAuthorDelete: Êtes-vous sûr de vouloir supprimer ce brassin? Étant donné que vous êtes le seul propriétaire du brassin, il sera supprimé définitivement.
+    confirm1: Êtes-vous VRAIMENT sûr? Vous ne pourrez pas récupérer le document.
+    multipleAuthorDelete: Êtes-vous sûr de vouloir supprimer ce brassin de votre collection? Cela vous retirera en tant qu'éditeur, mais les autres propriétaires pourront toujours accéder au document.
+    confirm2: Êtes-vous VRAIMENT sûr? Vous perdrez les droits d'édition sur ce document.
+    themesLegacy: Les thèmes ne sont pas disponibles dans le rendu hérité
+
+sharePage:
+  metadataWindow:
+    Authors: Auteurs
+    no authors: Aucun auteur
+    Systems: Systèmes
+    no systems: Aucun système
+    Tags: Étiquettes
+    no tags: Aucune étiquette
+    Description: Description
+    No description: Aucune description
+    Updated: Mis à jour
+
+  sourceDropdown:
+    source: Code source
+    view: aperçu
+    download: télécharger
+    clone to new: cloner comme nouveau
+
+accountPage:
+  Account Information: Informations sur le compte
+  username: Nom d'utilisateur
+  noUser: Aucun utilisateur actuellement connecté
+  lastLogin: Dernière connexion
+  Homebrewery Information: Informations sur Homebrewery
+  brewsOnHomebrewery: Brassins sur Homebrewery
+  Google Information: Informations sur Google
+  linkedToGoogle: Compte lié à Google
+  brewsOnGoogleDrive: Brassins sur Google Drive
+  noFiles: Aucun document trouvé
+  followSteps: Suivez ces étapes pour renouveler vos identifiants Google.
+  Default Save Location: Emplacement de sauvegarde par défaut
+  Homebrewery:
+  Google Drive:
+  Language Selection: Sélection de la langue
+  langSub: Cette option sélectionne exclusivement la langue de l'interface utilisateur et non celle de vos brassins. Vous pouvez changer la langue des documents dans leur onglet Propriétés.
+
+errorCodes:
+  Crit Fail!: Échec critique!
+  error:
+  No error text: Aucun texte d'erreur
+  unkownError: |
+    ## Une erreur inconnue s'est produite !
+
+    Nous ne sommes pas sûrs de ce qui s'est passé, mais notre serveur n'a pas pu trouver ce que vous recherchiez.
+  googleError: |
+    ## Une erreur s'est produite lors de la récupération de ce brassin depuis Google Drive !
+
+    Google signale une erreur en essayant de récupérer un brassin depuis ce lien.
+  gd404: |
+    ## Nous ne pouvons pas trouver ce brassin sur Google Drive !
+
+    Ce fichier était enregistré sur Google Drive, mais le lien ne fonctionne plus.
+  gd4042: Notez que ce brassin appartient au compte
+  gd4043: ", qui"
+  gd4044: est votre compte.
+  gd4045: n'est pas votre compte (vous êtes connecté en tant que
+  gd4046: Et vous n'êtes connecté à aucun compte.
+  gd404longText: |
+    Homebrewery ne peut pas supprimer les fichiers de Google Drive par elle-même, donc il y a trois possibilités les plus probables :
+    :
+    - **Il est possible que les fichiers de Google Drive aient été supprimés accidentellement.** 
+    Recherchez dans le compte Google Drive qui avait ce document (ou demandez au propriétaire),
+    assurez-vous que le dossier "Homebrewery" est toujours là et que les documents 
+    sont à l'intérieur en tant que fichiers texte.
+    - **Il est possible que vous ayez modifié les paramètres de partage de vos documents.**
+    Si les fichiers sont toujours sur Google Drive, modifiez-les tous pour les partager avec *Tout le monde avec le lien* afin que Homebrewery puisse y accéder.
+    - **Le compte Google peut être fermé.** Google peut avoir supprimé le compte 
+    en raison de l'inactivité ou pour avoir enfreint une politique de Google. Assurez-vous que le propriétaire
+    peut toujours accéder à Google Drive normalement et télécharger/téléverser des fichiers.
+    :
+    Si vous ne trouvez pas le fichier, vérifiez la corbeille, Google conserve les fichiers dans la 
+    corbeille pendant 30 jours. En supposant que la corbeille n'ait pas encore été vidée, 
+    cela vaut peut-être la peine de vérifier. Vous pouvez également accéder à l'onglet Activité en 
+    haut à droite de la page, qui montre l'activité récente sur Google Drive.
+    Cela peut vous aider à déterminer la date exacte à laquelle le brassin a été déplacé ou 
+    supprimé, et qui en est responsable.
+    :
+    Si vous ne trouvez toujours pas le document, certains utilisateurs ont réussi en demandant à 
+    Google de récupérer des fichiers supprimés accidentellement en utilisant ce lien :
+    https://support.google.com/drive/answer/1716222?hl=en&ref_topic=7000946.
+    En bas de la page, il y a un bouton qui dit : *Envoyez-vous un e-mail*
+    et vous recevrez des instructions sur la façon de demander la restauration des fichiers.
+    :
+    Veuillez également noter que si vous préférez ne pas utiliser Google Drive pour le stockage,
+    vous pouvez toujours changer l'emplacement de stockage d'un brassin en cliquant sur
+    l'icône de Google Drive à côté du titre du brassin et en choisissant *transférer mon brassin vers/depuis Google Drive*
+  userIsNotAuthor: |
+    ## L'utilisateur actuellement connecté n'a pas d'accès d'édition à ce brassin.
+
+    Si vous pensez que vous devriez avoir accès à ce brassin, demandez à l'un de ses auteurs 
+    de vous inviter en tant qu'auteur, en ouvrant la page d'édition du brassin, en ouvrant 
+    l'onglet {{fa,fa-info-circle}} Propriétés, et en ajoutant votre nom d'utilisateur 
+    à la liste des "auteurs invités". Ensuite, vous pouvez essayer d'accéder à ce document à nouveau.
+  Brew Title: Titre du brassin
+  unableTitle: Nous ne pouvons pas afficher le titre
+  Current Authors: Auteurs actuels
+  unableAuthors: Nous ne pouvons pas afficher les auteurs
+  clickRedirect: Cliquez ici pour être redirigé vers la page d'aperçu du document.
+  notSignedIn: |
+    ## Connexion requise pour modifier ce brassin.
+
+    Vous devez vous connecter à l'un des comptes répertoriés en tant qu'auteurs de ce document.
+    Vous n'êtes pas connecté. Veuillez vous connecter [ici]
+  brewLoadError: |
+    ## Nous ne trouvons pas ce document dans Homebrewery.
+
+    Notre serveur n'a pas pu localiser le document de Homebrewery. 
+    Il a probablement été supprimé par son propriétaire.
+  Requested access: Accès demandé
+  Brew ID: ID du brassin
+  brewSaveError: |
+    ## Nous n'avons pas pu enregistrer le document.
+
+    Une erreur s'est produite lors de la tentative d'enregistrement du document.
+  brewDeleteError: |
+    ## Nous n'avons pas pu supprimer le document.
+
+    Une erreur s'est produite lors de la tentative de suppression du document.
+  authorDeleteError: |
+    ## Nous n'avons pas pu supprimer l'auteur du document.
+
+    Une erreur s'est produite lors de la tentative de suppression de l'utilisateur de la liste des auteurs du document !
+
+htmlError:
+  Line: Ligne
+  tag: balise
+  openTag: Vous avez une balise ouverte mais non fermée dans votre document. Vous devez fermer toutes les balises HTML pour que votre document fonctionne correctement. Par exemple, une balise {'<div>'} se ferme {'</div>'}. Assurez-vous que le nom de la balise correspond !
+  closeTag: Vous avez une balise fermée mais non ouverte dans votre document. Supprimez-la ou vérifiez où vous pensez l'avoir ouverte.
+  missmatchTag: Cela signifie que vous avez fermé une balise, mais la dernière balise ouverte était différente.
+  Protips!: Conseils !
+  h3Title: Il y a des erreurs HTML dans votre balisage
+  descriptionText: Si vous ne les corrigez pas, votre document ne se rendra pas correctement lors de l'enregistrement en PDF ou de son partage.
+
+notificationPopup:
+  Notice: Avis
+  keepInMind: Ce site s'améliore toujours en ajoutant de nouvelles fonctionnalités et en corrigeant les bugs. Gardez à l'esprit ce qui suit

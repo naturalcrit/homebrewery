@@ -15,8 +15,8 @@ module.exports = {
 				break;
 			}
 
-			if(obj[text] && obj[text].length > 0) return `=${obj[text]}=`;
-			return localeData[text]?.length > 0 ? `!${localeData[text]}!` : `-${text}-`;
+			if(obj[text] && obj[text].length > 0) return `${obj[text]}`;
+			return localeData[text]?.length > 0 ? `${localeData[text]}` : `${text}`;
 		};
 
 		// Add defaults
