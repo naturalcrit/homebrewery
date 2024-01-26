@@ -8,7 +8,6 @@ const translateOpts = ['nav', 'usernameDropdown'];
 const Account = createClass({
 	displayName     : 'AccountNavItem',
 	getInitialState : function() {
-		''.setTranslationDefaults(translateOpts);
 		return {
 			url : ''
 		};
@@ -62,6 +61,7 @@ const Account = createClass({
 	},
 
 	render : function(){
+		''.setTranslationDefaults(translateOpts);
 		//  Logged in
 		if(global.account){
 			return <Nav.dropdown>

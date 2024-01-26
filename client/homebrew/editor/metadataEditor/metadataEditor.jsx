@@ -278,7 +278,7 @@ const MetadataEditor = createClass({
 		if(!global.enable_v3) return;
 
 		return <div className='field systems'>
-			<label>Renderer</label>
+			<label>{'renderer'.translate()}</label>
 			<div className='value'>
 				<label key='legacy'>
 					<input

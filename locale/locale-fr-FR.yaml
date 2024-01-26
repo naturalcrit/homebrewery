@@ -154,6 +154,7 @@ editPage:
     thumbnail: miniature
     tags: tags
     add tag: ajouter un tag
+    systems:
     language: langue
     languageSub: Définir la langue du document dans le HTML. Peut affecter la correction grammaticale.
     theme: thème

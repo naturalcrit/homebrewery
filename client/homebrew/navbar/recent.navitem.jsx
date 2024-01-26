@@ -21,7 +21,7 @@ const RecentItems = createClass({
 	},
 
 	getInitialState : function() {
-		''.setTranslationDefaults(translateOpts);
+		
 		return {
 			showDropdown : false,
 			edit         : [],
@@ -143,7 +143,7 @@ const RecentItems = createClass({
 
 	renderDropdown : function(){
 		// if(!this.state.showDropdown) return null;
-
+		''.setTranslationDefaults(translateOpts);
 		const makeItems = (brews)=>{
 			return _.map(brews, (brew, i)=>{
 				return <a className='navItem' href={brew.url} key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
@@ -183,7 +183,6 @@ const RecentItems = createClass({
 });
 
 module.exports = {
-
 	edited : (props)=>{
 		return <RecentItems
 			brew={props.brew}
@@ -203,6 +202,7 @@ module.exports = {
 	},
 
 	both : (props)=>{
+		''.setTranslationDefaults(translateOpts);
 		return <RecentItems
 			brew={props.brew}
 			storageKey={props.storageKey}
