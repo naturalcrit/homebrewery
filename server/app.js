@@ -453,7 +453,8 @@ const renderPage = async (req, res)=>{
 		enable_v3     : config.get('enable_v3'),
 		enable_themes : config.get('enable_themes'),
 		config        : configuration,
-		ogMeta        : req.ogMeta
+		ogMeta        : req.ogMeta,
+		uiLanguage    : langPreference
 	};
 	const title = req.brew ? req.brew.title : '';
 	const page = await templateFn('homebrew', title, props)

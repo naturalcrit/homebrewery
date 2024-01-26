@@ -8,8 +8,10 @@ const template = async function(name, title='', props = {}){
 	});
 	const ogMetaTags = ogTags.join('\n');
 
+	const lang = props.uiLanguage.split('-');
+
 	return `<!DOCTYPE html>
-	<html>
+	<html lang=${lang[0]}>
 		<head>
 			<meta name="viewport" content="width=device-width, initial-scale=1, height=device-height, interactive-widget=resizes-visual" />
 			<link href="//use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
