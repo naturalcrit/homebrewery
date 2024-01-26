@@ -2,7 +2,12 @@ const dedent = require('dedent-tabs').default;
 
 const loginUrl = 'https://www.naturalcrit.com/login';
 
+const lazySantizize = (s)=>{
+	return s.replace('<', '&lt;');
+};
+
 const errorIndex = (props)=>{
+	const cleanBrewTitle = lazySantizize(props.brew.brewTitle);
 	return {
 		// Default catch all
 		'00' : dedent`
@@ -73,7 +78,7 @@ const errorIndex = (props)=>{
 		**Properties** tab, and adding your username to the "invited authors" list. You can
 		then try to access this document again.
 		
-		**Brew Title:** ${props.brew.brewTitle || 'Unable to show title'}
+		**Brew Title:** ${cleanBrewTitle || 'Unable to show title'}
 
 		**Current Authors:** ${props.brew.authors?.map((author)=>{return `${author}`;}).join(', ') || 'Unable to list authors'}
 		
@@ -86,7 +91,7 @@ const errorIndex = (props)=>{
 		You must be logged in to one of the accounts listed as an author of this brew.
 		User is not logged in. Please log in [here](${loginUrl}).
 		
-		**Brew Title:** ${props.brew.brewTitle || 'Unable to show title'}
+		**Brew Title:** ${cleanBrewTitle || 'Unable to show title'}
 
 		**Current Authors:** ${props.brew.authors?.map((author)=>{return `${author}`;}).join(', ') || 'Unable to list authors'}`,
 
