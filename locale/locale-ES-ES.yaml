@@ -34,10 +34,10 @@ nav:
 
   new: nuevo
   helpDropdown:
-    need help?: Necesitas ayuda?
-    report issue: reportar un error
+    need help?: ¿Necesitas ayuda?
+    report issue: Teportar un error
     faq: Preguntas Frecuentes
-    migrate: migrar
+    migrate: Migrar
 
   shareDropdown:
     share: compartir

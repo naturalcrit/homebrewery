@@ -171,6 +171,7 @@ const RecentItems = createClass({
 	},
 
 	render : function(){
+		''.setTranslationDefaults(translateOpts);
 		return <Nav.dropdown className='recent'>
 			<Nav.item icon='fas fa-history' color='grey' >
 				{this.props.text}

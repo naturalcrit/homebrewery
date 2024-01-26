@@ -11,7 +11,7 @@ module.exports = function(props){
 	''.setTranslationDefaults(translateOpts);
 	return <Nav.dropdown>
 		<Nav.item color='grey' icon='fas fa-question-circle'>
-			{'needHelp'.translate()}
+			{'need help?'.translate()}
 		</Nav.item>
 		<Nav.item color='red' icon='fas fa-fw fa-bug'
 			href={`https://www.reddit.com/r/homebrewery/submit?selftext=true&text=${encodeURIComponent(dedent`
