@@ -7,6 +7,7 @@ module.exports = function(props){
 	''.setTranslationDefaults(translateOpts);
 	return <Nav.item
 		href='/new'
+		newTab={true}
 		color='purple'
 		icon='fas fa-plus-square'>
 		{'new'.translate()}
