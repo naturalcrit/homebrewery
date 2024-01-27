@@ -41,7 +41,7 @@ const ArchivePage = createClass({
     this.setState({ searching: true, error: null });
     request
       .get(`/archive/${this.state.title}`)
-      .then((res) => this.setState({ brewCollection: res.body.simplifiedBrews }, this.setState({ limit: res.body.message})))
+      .then((res) => this.setState({ brewCollection: res.body.brews }, this.setState({ limit: res.body.message})))
       .catch((err) => this.setState({ error: err }))
       .finally(() => this.setState({ searching: false }));
   },
