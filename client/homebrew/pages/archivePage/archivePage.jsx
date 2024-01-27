@@ -45,7 +45,7 @@ const ArchivePage = createClass({
       .catch((err) => this.setState({ error: err }))
       .finally(() => this.setState({ searching: false }));
   },
-  updateUrl: function(query) {
+  updateUrl: function() {
     const url = new URL(window.location.href);
     const urlParams = new URLSearchParams(url.search);
     // Clear existing parameters
@@ -88,7 +88,12 @@ const ArchivePage = createClass({
           type='text'
           value={this.state.title}
           onChange={this.handleChange}
-          onKeyDown={(e) => e.key === 'Enter' && this.lookup()}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              this.handleChange(e);
+              this.lookup();
+            }
+          }}
           placeholder='v3 Reference Document'
         />
         {/* In the future, we should be able to filter the results by adding tags.
@@ -96,7 +101,7 @@ const ArchivePage = createClass({
             <input type="checkbox" id="v3" /><label>v3 only</label>
             */}
             
-        <button onClick={this.lookup}>
+            <button onClick={() => { this.handleChange({ target: { value: this.state.title } }); this.lookup(); }}>
           <i
             className={cx('fas', {
               'fa-search': !this.state.searching,
