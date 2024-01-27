@@ -10,11 +10,13 @@ const archive = {
             const limit = 2000;
             const brews = await HomebrewModel.find({
                 title: { $regex: req.params.query, $options: 'i' },
+                published: true
+            },
+            {
                 editId:0,
                 googleId:0,
                 text:0,
                 textBin:0,
-                published: true
             })
             .limit(limit)
             .maxTimeMS(10000)
