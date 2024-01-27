@@ -19,7 +19,7 @@ const archive = {
                 title           : brew.title,
                 description     : brew.description,
                 authors         : brew.authors,
-                invitedauthors  : brew.invitedauthors,
+                invitedAuthors  : brew.invitedAuthors,
                 tags            : brew.tags,
                 pageCount       : brew.pageCount,
                 systems         : brew.systems,
