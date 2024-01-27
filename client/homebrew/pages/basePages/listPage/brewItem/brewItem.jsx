@@ -137,7 +137,7 @@ const BrewItem = createClass({
 				</> : <></>
 				}
 				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
-				<i className='fas fa-user'/> {authors.isArray(authors) ? (
+				<i className='fas fa-user'/> {Array.isArray(authors) ? (
   					<span>
     					{authors.map((author, index) => (
       					<span key={index}>
