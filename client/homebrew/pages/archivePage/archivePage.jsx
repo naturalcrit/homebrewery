@@ -1,4 +1,5 @@
 require('./archivePage.less');
+
 const React       = require('react');
 const createClass = require('create-react-class');
 const _           = require('lodash');
@@ -29,7 +30,6 @@ const ArchivePage = createClass({
     };
   },
   componentDidMount : function() {
-    console.log(this.state.title);
     this.lookup();
   },
   
@@ -41,7 +41,7 @@ const ArchivePage = createClass({
     this.setState({ searching: true, error: null });
     request
       .get(`/archive/${this.state.title}`)
-      .then((res) => this.setState({ brewCollection: res.body.brews }, this.setState({ limit: res.body.message})))
+      .then((res) => this.setState({ brewCollection: res.body.simplifiedBrews }, this.setState({ limit: res.body.message})))
       .catch((err) => this.setState({ error: err }))
       .finally(() => this.setState({ searching: false }));
   },
@@ -61,6 +61,7 @@ const ArchivePage = createClass({
 },
   renderFoundBrews() {
     const brews = this.state.brewCollection;
+    console.log('brews: ',brews);
 
     if (!brews || brews.length === 0) {
       return <div>No brews found.</div>;
@@ -125,6 +126,8 @@ const ArchivePage = createClass({
   render: function () {
     return (
       <div className='archivePage'>
+        <link href='/themes/V3/Blank/style.css' rel='stylesheet'/>
+			  <link href='/themes/V3/5ePHB/style.css' rel='stylesheet'/>
         {this.renderNavItems()}
 
         <div className='content'>
