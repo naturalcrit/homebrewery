@@ -7,7 +7,7 @@ const archive = {
     /* Searches for matching title, also attempts to partial match */
     findBrews: async (req, res, next) => {
         try {
-            const limit = 100;
+            const limit = 3000;
             const brews = await HomebrewModel.find({
                 title: { $regex: req.params.query, $options: 'i' },
                 published: true
