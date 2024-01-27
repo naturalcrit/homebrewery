@@ -19,7 +19,6 @@ const archive = {
                 title           : brew.title,
                 description     : brew.description,
                 authors         : brew.authors,
-                invitedAuthors  : brew.invitedAuthors,
                 tags            : brew.tags,
                 pageCount       : brew.pageCount,
                 systems         : brew.systems,
