@@ -65,7 +65,7 @@ const ArchivePage = createClass({
 
     if (this.state.title == '') {
       return(
-        <div className="foundBrews noBrewsyet">
+        <div className="foundBrews noBrews">
           <h3>Whenever you want, just start typing...</h3>
       </div>
       );
