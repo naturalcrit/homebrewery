@@ -93,10 +93,8 @@ const ArchivePage = createClass({
     }
     this.updateUrl();
       return <div className="foundBrews">
-        <div className="brewCount">{brews.length} Brews Found</div>
-        <div className="limit">
-          <p>{this.state.limit}</p>
-        </div>
+        <span className="brewCount">{brews.length} Brews Found</span>
+        <span className="limit">{this.state.limit}</span>
         {brews.map((brew, index) => (
         <BrewItem brew={brew} key={index} reportError={this.props.reportError}/>
         ))}
