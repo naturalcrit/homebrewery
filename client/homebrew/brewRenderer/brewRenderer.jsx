@@ -1,9 +1,8 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
-const createClass = require('create-react-class');
+const { useState, useRef, useEffect } = React;
 const _ = require('lodash');
-const cx = require('classnames');
 
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
 const Markdown = require('naturalcrit/markdown.js');
@@ -13,244 +12,221 @@ const ErrorBar = require('./errorBar/errorBar.jsx');
 const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
 const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
+const dedent = require('dedent-tabs').default;
 
 const Themes = require('themes/themes.json');
 
 const PAGE_HEIGHT = 1056;
-const PPR_THRESHOLD = 50;
 
-const BrewRenderer = createClass({
-	displayName     : 'BrewRenderer',
-	getDefaultProps : function() {
-		return {
-			text     : '',
-			style    : '',
-			renderer : 'legacy',
-			theme    : '5ePHB',
-			lang     : '',
-			errors   : []
-		};
-	},
-	getInitialState : function() {
-		let pages;
-		if(this.props.renderer == 'legacy') {
-			pages = this.props.text.split('\\page');
-		} else {
-			pages = this.props.text.split(/^\\page$/gm);
-		}
+const INITIAL_CONTENT = dedent`
+	<!DOCTYPE html><html><head>
+	<link href="//use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
+	<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
+	<link href='/homebrew/bundle.css' rel='stylesheet' />
+	<base target=_blank>
+	</head><body style='overflow: hidden'><div></div></body></html>`;
 
-		return {
-			viewablePageNumber : 0,
-			height             : 0,
-			isMounted          : false,
+//v=====----------------------< Brew Page Component >---------------------=====v//
+const BrewPage = (props)=>{
+	props = {
+		contents : '',
+		index    : 0,
+		...props
+	};
+	return <div className={props.className} id={`p${props.index + 1}`} >
+	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: props.contents }} />
+	       </div>;
+};
 
-			pages          : pages,
-			usePPR         : pages.length >= PPR_THRESHOLD,
-			visibility     : 'hidden',
-			initialContent : `<!DOCTYPE html><html><head>
-												<link href="//use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
-												<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
-												<link href='/homebrew/bundle.css' rel='stylesheet' />
-												<base target=_blank>
-												</head><body style='overflow: hidden'><div></div></body></html>`
-		};
-	},
-	height     : 0,
-	lastRender : <div></div>,
 
-	componentWillUnmount : function() {
-		window.removeEventListener('resize', this.updateSize);
-	},
+//v=====--------------------< Brew Renderer Component >-------------------=====v//
+const renderedPages = [];
+let rawPages      = [];
 
-	componentDidUpdate : function(prevProps) {
-		if(prevProps.text !== this.props.text) {
-			let pages;
-			if(this.props.renderer == 'legacy') {
-				pages = this.props.text.split('\\page');
-			} else {
-				pages = this.props.text.split(/^\\page$/gm);
-			}
-			this.setState({
-				pages  : pages,
-				usePPR : pages.length >= PPR_THRESHOLD
-			});
-		}
-	},
+const BrewRenderer = (props)=>{
+	props = {
+		text              : '',
+		style             : '',
+		renderer          : 'legacy',
+		theme             : '5ePHB',
+		lang              : '',
+		errors            : [],
+		currentEditorPage : 0,
+		...props
+	};
 
-	updateSize : function() {
-		this.setState({
-			height : this.refs.main.parentNode.clientHeight,
-		});
-	},
+	const [state, setState] = useState({
+		viewablePageNumber : 0,
+		height             : PAGE_HEIGHT,
+		isMounted          : false,
+		visibility         : 'hidden',
+	});
 
-	handleScroll : function(e){
-		const target = e.target;
-		this.setState((prevState)=>({
-			viewablePageNumber : Math.floor(target.scrollTop / target.scrollHeight * prevState.pages.length)
+	const mainRef  = useRef(null);
+
+	if(props.renderer == 'legacy') {
+		rawPages = props.text.split('\\page');
+	} else {
+		rawPages = props.text.split(/^\\page$/gm);
+	}
+
+	useEffect(()=>{ // Unmounting steps
+		return ()=>{window.removeEventListener('resize', updateSize);};
+	}, []);
+
+	const updateSize = ()=>{
+		setState((prevState)=>({
+			...prevState,
+			height : mainRef.current.parentNode.clientHeight,
 		}));
-	},
+	};
 
-	shouldRender : function(pageText, index){
-		if(!this.state.isMounted) return false;
+	const handleScroll = (e)=>{
+		const target = e.target;
+		setState((prevState)=>({
+			...prevState,
+			viewablePageNumber : Math.floor(target.scrollTop / target.scrollHeight * rawPages.length)
+		}));
+	};
 
-		const viewIndex = this.state.viewablePageNumber;
-		if(index == viewIndex - 3) return true;
-		if(index == viewIndex - 2) return true;
-		if(index == viewIndex - 1) return true;
-		if(index == viewIndex)     return true;
-		if(index == viewIndex + 1) return true;
-		if(index == viewIndex + 2) return true;
-		if(index == viewIndex + 3) return true;
+	const shouldRender = (index)=>{
+		if(!state.isMounted) return false;
 
-		//Check for style tages
-		if(pageText.indexOf('<style>') !== -1) return true;
+		if(Math.abs(index - state.viewablePageNumber) <= 3)
+			return true;
+
+		if(index + 1 == props.currentEditorPage)
+			return true;
 
 		return false;
-	},
+	};
 
-	sanitizeScriptTags : function(content) {
+	const sanitizeScriptTags = (content)=>{
 		return content
 			.replace(/<script/ig, '&lt;script')
 			.replace(/<\/script>/ig, '&lt;/script&gt;');
-	},
+	};
 
-	renderPageInfo : function(){
-		return <div className='pageInfo' ref='main'>
+	const renderPageInfo = ()=>{
+		return <div className='pageInfo' ref={mainRef}>
 			<div>
-				{this.props.renderer}
+				{props.renderer}
 			</div>
 			<div>
-				{this.state.viewablePageNumber + 1} / {this.state.pages.length}
+				{state.viewablePageNumber + 1} / {rawPages.length}
 			</div>
 		</div>;
-	},
+	};
 
-	renderPPRmsg : function(){
-		if(!this.state.usePPR) return;
-
-		return <div className='ppr_msg'>
-			Partial Page Renderer is enabled, because your brew is so large. May affect rendering.
-		</div>;
-	},
-
-	renderDummyPage : function(index){
+	const renderDummyPage = (index)=>{
 		return <div className='phb page' id={`p${index + 1}`} key={index}>
 			<i className='fas fa-spinner fa-spin' />
 		</div>;
-	},
+	};
 
-	renderStyle : function() {
-		if(!this.props.style) return;
-		const cleanStyle = this.sanitizeScriptTags(this.props.style);
-		//return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${this.sanitizeScriptTags(this.props.style)}\n} </style>` }} />;
+	const renderStyle = ()=>{
+		if(!props.style) return;
+		const cleanStyle = sanitizeScriptTags(props.style);
+		//return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${sanitizeScriptTags(props.style)}\n} </style>` }} />;
 		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${cleanStyle} </style>` }} />;
-	},
+	};
 
-	renderPage : function(pageText, index){
-		let cleanPageText = this.sanitizeScriptTags(pageText);
-		if(this.props.renderer == 'legacy')
-			return <div className='phb page' id={`p${index + 1}`} dangerouslySetInnerHTML={{ __html: MarkdownLegacy.render(cleanPageText) }} key={index} />;
-		else {
+	const renderPage = (pageText, index)=>{
+		let cleanPageText = sanitizeScriptTags(pageText);
+		if(props.renderer == 'legacy') {
+			const html = MarkdownLegacy.render(cleanPageText);
+			return <BrewPage className='page phb' index={index} key={index} contents={html} />;
+		} else {
 			cleanPageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
-			return (
-				<div className='page' id={`p${index + 1}`} key={index} >
-					<div className='columnWrapper' dangerouslySetInnerHTML={{ __html: Markdown.render(cleanPageText) }} />
-				</div>
-			);
+			const html = Markdown.render(cleanPageText);
+			return <BrewPage className='page' index={index} key={index} contents={html} />;
 		}
-	},
+	};
 
-	renderPages : function(){
-		if(this.state.usePPR){
-			return _.map(this.state.pages, (page, index)=>{
-				if(this.shouldRender(page, index) && typeof window !== 'undefined'){
-					return this.renderPage(page, index);
-				} else {
-					return this.renderDummyPage(index);
-				}
-			});
-		}
-		if(this.props.errors && this.props.errors.length) return this.lastRender;
-		this.lastRender = _.map(this.state.pages, (page, index)=>{
-			if(typeof window !== 'undefined') {
-				return this.renderPage(page, index);
-			} else {
-				return this.renderDummyPage(index);
+	const renderPages = ()=>{
+		if(props.errors && props.errors.length)
+			return renderedPages;
+
+		if(rawPages.length != renderedPages.length) // Re-render all pages when page count changes
+			renderedPages.length = 0;
+
+		_.forEach(rawPages, (page, index)=>{
+			if((shouldRender(index) || !renderedPages[index]) && typeof window !== 'undefined'){
+				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range
 			}
 		});
-		return this.lastRender;
-	},
+		return renderedPages;
+	};
 
-	frameDidMount : function(){	//This triggers when iFrame finishes internal "componentDidMount"
+	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
-			this.updateSize();
-			window.addEventListener('resize', this.updateSize);
-			this.renderPages(); //Make sure page is renderable before showing
-			this.setState({
+			updateSize();
+			window.addEventListener('resize', updateSize);
+			renderPages(); //Make sure page is renderable before showing
+			setState((prevState)=>({
+				...prevState,
 				isMounted  : true,
 				visibility : 'visible'
-			});
+			}));
 		}, 100);
-	},
+	};
 
-	emitClick : function(){
-		// console.log('iFrame clicked');
+	const emitClick = ()=>{ // Allow clicks inside iFrame to interact with dropdowns, etc. from outside
 		if(!window || !document) return;
 		document.dispatchEvent(new MouseEvent('click'));
-	},
+	};
 
-	render : function(){
-		//render in iFrame so broken code doesn't crash the site.
-		//Also render dummy page while iframe is mounting.
-		const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
-		const themePath    = this.props.theme ?? '5ePHB';
-		const baseThemePath = Themes[rendererPath][themePath].baseTheme;
-		return (
-			<React.Fragment>
-				{!this.state.isMounted
-					? <div className='brewRenderer' onScroll={this.handleScroll}>
-						<div className='pages' ref='pages'>
-							{this.renderDummyPage(1)}
-						</div>
+	const rendererPath  = props.renderer == 'V3' ? 'V3' : 'Legacy';
+	const themePath     = props.theme ?? '5ePHB';
+	const baseThemePath = Themes[rendererPath][themePath].baseTheme;
+
+	return (
+		<>
+			{/*render dummy page while iFrame is mounting.*/}
+			{!state.isMounted
+				? <div className='brewRenderer' onScroll={handleScroll}>
+					<div className='pages'>
+						{renderDummyPage(1)}
 					</div>
-	        : null}
+				</div>
+				: null}
 
-				<Frame id='BrewRenderer' initialContent={this.state.initialContent}
-					style={{ width: '100%', height: '100%', visibility: this.state.visibility }}
-					contentDidMount={this.frameDidMount}
-					onClick={()=>{this.emitClick();}}
-				>
-					<div className={'brewRenderer'}
-						onScroll={this.handleScroll}
-						style={{ height: this.state.height }}>
+			{/*render in iFrame so broken code doesn't crash the site.*/}
+			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
+				style={{ width: '100%', height: '100%', visibility: state.visibility }}
+				contentDidMount={frameDidMount}
+				onClick={()=>{emitClick();}}
+			>
+				<div className={'brewRenderer'}
+					onScroll={handleScroll}
+					style={{ height: state.height }}>
 
-						<ErrorBar errors={this.props.errors} />
-						<div className='popups'>
-							<RenderWarnings />
-							<NotificationPopup />
-						</div>
-						<link href={`/themes/${rendererPath}/Blank/style.css`} rel='stylesheet'/>
-						{baseThemePath &&
-							<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} rel='stylesheet'/>
-						}
-						<link href={`/themes/${rendererPath}/${themePath}/style.css`} rel='stylesheet'/>
-						{/* Apply CSS from Style tab and render pages from Markdown tab */}
-						{this.state.isMounted
-							&&
-							<>
-								{this.renderStyle()}
-								<div className='pages' ref='pages' lang={`${this.props.lang || 'en'}`}>
-									{this.renderPages()}
-								</div>
-							</>
-						}
+					<ErrorBar errors={props.errors} />
+					<div className='popups'>
+						<RenderWarnings />
+						<NotificationPopup />
 					</div>
-				</Frame>
-				{this.renderPageInfo()}
-				{this.renderPPRmsg()}
-			</React.Fragment>
-		);
-	}
-});
+					<link href={`/themes/${rendererPath}/Blank/style.css`} rel='stylesheet'/>
+					{baseThemePath &&
+						<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} rel='stylesheet'/>
+					}
+					<link href={`/themes/${rendererPath}/${themePath}/style.css`} rel='stylesheet'/>
+
+					{/* Apply CSS from Style tab and render pages from Markdown tab */}
+					{state.isMounted
+						&&
+						<>
+							{renderStyle()}
+							<div className='pages' lang={`${props.lang || 'en'}`}>
+								{renderPages()}
+							</div>
+						</>
+					}
+				</div>
+			</Frame>
+			{renderPageInfo()}
+		</>
+	);
+};
 
 module.exports = BrewRenderer;

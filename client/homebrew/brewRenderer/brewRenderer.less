@@ -1,46 +1,44 @@
 @import (multiple, less) 'shared/naturalcrit/styles/reset.less';
 
-.brewRenderer{
+.brewRenderer {
 	will-change : transform;
 	overflow-y  : scroll;
-	.pages{
+	:where(.pages) {
 		margin : 30px 0px;
-		&>.page{
+		& > :where(.page) {
+			width         : 215.9mm;
+			height        : 279.4mm;
 			margin-right  : auto;
 			margin-bottom : 30px;
 			margin-left   : auto;
-			box-shadow    : 1px 4px 14px #000;
+			box-shadow    : 1px 4px 14px #000000;
 		}
 	}
 }
-.pane{
-	position : relative;
-}
-.pageInfo{
+.pane { position : relative; }
+.pageInfo {
 	position         : absolute;
 	right            : 17px;
 	bottom           : 0;
 	z-index          : 1000;
-	background-color : #333;
 	font-size        : 10px;
 	font-weight      : 800;
 	color            : white;
+	background-color : #333333;
 	div {
-		display: inline-block;
+		display          : inline-block;
 		padding          : 8px 10px;
-		&:not(:last-child){
-			border-right: 1px solid #666;
-		}
+		&:not(:last-child) { border-right : 1px solid #666666; }
 	}
 }
-.ppr_msg{
+.ppr_msg {
 	position         : absolute;
-	left             : 0px;
 	bottom           : 0;
+	left             : 0px;
 	z-index          : 1000;
 	padding          : 8px 10px;
-	background-color : #333;
 	font-size        : 10px;
 	font-weight      : 800;
 	color            : white;
+	background-color : #333333;
 }
