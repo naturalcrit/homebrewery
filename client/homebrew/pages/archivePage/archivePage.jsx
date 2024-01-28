@@ -65,8 +65,12 @@ const ArchivePage = createClass({
     if (this.state.error !== null) {
       return(
         <div className="foundBrews noBrews">
-        <h2>I'm sorry, your request didn't work</h2>
-        <p>Your search is not enough specific, too many brews meet this criteria for us to forward them.</p>
+          <div>
+            <h3>I'm sorry, your request didn't work</h3>
+            <br />
+            <p>Your search is not enough specific, too many brews meet this criteria for us to forward them.</p>
+        </div>
+        
       </div>
       );
     }
@@ -74,7 +78,7 @@ const ArchivePage = createClass({
     if (!brews || brews.length === 0) {
       return(
       <div className="foundBrews noBrews">
-        <h2>We haven't found brews meeting your request.</h2>
+        <h3>We haven't found brews meeting your request.</h3>
       </div>
        
       );
