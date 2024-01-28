@@ -80,6 +80,32 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Tuesday 07/11/2023 
+
+{{ taskList
+
+##### abquintic
+
+* [x] Add user requested feature for definition lists with multiple definitions. 
+
+This implements issue [#2340](https://github.com/naturalcrit/homebrewery/issues/2340) by extending the existing syntax pattern. Additional definitions must be on the same line.
+
+```
+Dictionary Term :: Definition One :: Definition Two :: Definition Three
+```
+Example:
+```
+Egg::Came before the Chicken::Python Packaging Format::Over Easy isn't
+
+Egg
+  Came before the Chicken
+  Python Packaging Format
+  Over Easy isn't
+```
+
+
+}}
+
 ### Friday 13/10/2023 - v3.10.0
 {{taskList
 

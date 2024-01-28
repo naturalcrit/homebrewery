@@ -259,32 +259,53 @@ const superSubScripts = {
 const definitionLists = {
 	name  : 'definitionLists',
 	level : 'block',
-	start(src) { return src.match(/^.*?::.*/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	start(src) { return src.match(/^.*?::.*\n\n/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const regex = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym;
+		const regex = /^([^:\n]*?)[\n]?::(.*)(?:\n|$)/ym;
 		let match;
-		let endIndex = 0;
-		const definitions = [];
+		const endIndex = src.match(`\n\n`)?.index + 2;
+		const allDefinitions = [];
+		let currentDefinition = {};
 		while (match = regex.exec(src)) {
-			definitions.push({
-				dt : this.lexer.inlineTokens(match[1].trim()),
-				dd : this.lexer.inlineTokens(match[2].trim())
-			});
-			endIndex = regex.lastIndex;
+			if(match[1].trim()?.length) {
+				if(currentDefinition?.dt?.length) {
+					allDefinitions.push(currentDefinition);
+					currentDefinition = {};
+				}
+				currentDefinition = {
+					dt : this.lexer.inlineTokens(match[1].trim()),
+					dd : []
+				};
+			} else if(_.isEmpty(currentDefinition)) {
+				return;
+			}
+			const newDefinitions = match[2].split('::').filter((item)=>item).map((s)=>this.lexer.inlineTokens(s.trim()));
+			if(newDefinitions?.length) {
+				currentDefinition.dd.push(newDefinitions);
+			} else {
+			 	currentDefinition.dd.push([this.lexer.inlineTokens('')]);
+			}
 		}
-		if(definitions.length) {
+		if(currentDefinition.hasOwnProperty('dt')) { allDefinitions.push(currentDefinition); }
+		if(allDefinitions.length) {
 			return {
-				type : 'definitionLists',
-				raw  : src.slice(0, endIndex),
-				definitions
+				type        : 'definitionLists',
+				raw         : src.slice(0, endIndex),
+				definitions : allDefinitions
 			};
 		}
 	},
 	renderer(token) {
-		return `<dl>${token.definitions.reduce((html, def)=>{
-			return `${html}<dt>${this.parser.parseInline(def.dt)}</dt>`
-			            + `<dd>${this.parser.parseInline(def.dd)}</dd>\n`;
-		}, '')}</dl>`;
+		let returnVal = `<dl>`;
+		token.definitions.forEach((def)=>{
+			let dds = def.dd.map((ddef)=>{
+				return ddef.map((s)=>`<dd>${this.parser.parseInline(s)}</dd>`).join('');
+			}).join('\n');
+			dds = dds.trim();
+			returnVal += `<dt>${this.parser.parseInline(def.dt)}</dt>${dds.indexOf('\n') > -1 ? '\n' : ''}${dds}\n`;
+		});
+		returnVal = returnVal.trim();
+		return `${returnVal}</dl>`;
 	}
 };
 
