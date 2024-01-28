@@ -81,6 +81,7 @@ const ArchivePage = createClass({
     }
     this.updateUrl();
       return <div className="foundBrews">
+        <div className="brewCount">{brews.length} Brews Found</div>
         <div className="limit">
           <p>{this.state.limit}</p>
         </div>
