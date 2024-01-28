@@ -79,7 +79,6 @@ const ArchivePage = createClass({
             <br />
             <p>Your search is not enough specific, too many brews meet this criteria for us to forward them.</p>
         </div>
-        
       </div>
       );
     }
