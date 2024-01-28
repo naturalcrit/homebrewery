@@ -62,6 +62,15 @@ const ArchivePage = createClass({
   renderFoundBrews() {
     const brews = this.state.brewCollection;
     console.log('brews: ',brews);
+
+    if (this.state.title == '') {
+      return(
+        <div className="foundBrews noBrewsyet">
+          <h3>Whenever you want, just start typing...</h3>
+      </div>
+      );
+    }
+
     if (this.state.error !== null) {
       return(
         <div className="foundBrews noBrews">
