@@ -41,7 +41,7 @@ const ArchivePage = createClass({
     this.setState({ searching: true, error: null });
     request
       .get(`/archive/${this.state.title}`)
-      .then((res) => this.setState({ brewCollection: res.body.brews }, this.setState({ limit: res.body.message})))
+      .then((res) => this.setState({ brewCollection: res.body.brews }, this.setState({ limit: res.body.message}, this.setState({ error: null}))))
       .catch((err) => this.setState({ error: err }))
       .finally(() => this.setState({ searching: false }));
   },
@@ -62,6 +62,14 @@ const ArchivePage = createClass({
   renderFoundBrews() {
     const brews = this.state.brewCollection;
     console.log('brews: ',brews);
+    if (this.state.error !== null) {
+      return(
+        <div className="foundBrews noBrews">
+        <h2>I'm sorry, your request didn't work</h2>
+        <p>Your search is not enough specific, too many brews meet this criteria for us to forward them.</p>
+      </div>
+      );
+    }
 
     if (!brews || brews.length === 0) {
       return(
