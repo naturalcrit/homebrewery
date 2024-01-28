@@ -11,6 +11,13 @@ body {
     height: 100%;
     background-color: #2C3E50;
 
+    h1,h2,h3 {
+        font-family: 'Open Sans';
+        font-size: 30px;
+        color: white;
+        font-weight: 900;
+    }
+
     .content {
         display: grid;
         grid-template-rows: 20vh 1fr;
@@ -26,8 +33,6 @@ body {
 
             h1 {
                 font-size: 40px;
-                font-weight: 900;
-                color: white;
                 filter:drop-shadow(0 0 5px black);
             }
         }
@@ -47,7 +52,6 @@ body {
 
                     h2 {
                         font-size: 30px;
-                        font-weight: 900;
                         border-bottom: 2px solid;
                         margin-block: 20px;
                     }
@@ -77,8 +81,6 @@ body {
 
                         h2 {
                             font-size: 30px;
-                            color: white;
-                            font-weight: 900;
                         }
                     }
                     .foundBrews {
@@ -89,6 +91,15 @@ body {
                         height: 66.7vh;
                         padding: 50px;
                         overflow-y:scroll;
+
+                        &.noBrews {
+                            display:grid;
+                            place-items:center;
+
+                            h3 {
+                                font-size: 25px;
+                            }
+                        }
 
                         .limit {
                             position: fixed;

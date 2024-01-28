@@ -64,7 +64,12 @@ const ArchivePage = createClass({
     console.log('brews: ',brews);
 
     if (!brews || brews.length === 0) {
-      return <div>No brews found.</div>;
+      return(
+      <div className="foundBrews noBrews">
+        <h2>We haven't found brews meeting your request.</h2>
+      </div>
+       
+      );
     }
     this.updateUrl();
       return <div className="foundBrews">
@@ -118,6 +123,9 @@ const ArchivePage = createClass({
   renderNavItems: function () {
     return (
       <Navbar>
+        <Nav.section>
+					<Nav.item className='brewTitle'>Archive: Search for brews</Nav.item>
+				</Nav.section>
         <Nav.section>
           <NewBrew />
           <HelpNavItem />
