@@ -19,15 +19,15 @@
 			background-color  : fade(#229999, 15%);
 			border-bottom     : #229999 solid 1px;
 		}
-		.define {
-			&:not(.term):not(.definition) {
+		.dl-highlight {
+			&.dl-colon-highlight {
 				font-weight   : bold;
 				color         : #949494;
 				background    : #E5E5E5;
 				border-radius : 3px;
 			}
-			&.term { color : rgb(96, 117, 143); }
-			&.definition { color : rgb(97, 57, 178); }
+			&.dt-highlight { color : rgb(96, 117, 143); }
+			&.dd-highlight { color : rgb(97, 57, 178); }
 		}
 		.block:not(.cm-comment) {
 			font-weight : bold;
