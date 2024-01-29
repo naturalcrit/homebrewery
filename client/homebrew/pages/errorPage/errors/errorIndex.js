@@ -3,7 +3,19 @@ const dedent = require('dedent-tabs').default;
 const loginUrl = 'https://www.naturalcrit.com/login';
 
 const lazySantizize = (s)=>{
-	return s.replace('<', '&lt;');
+	const replaceStrings = {
+	  '&' : '&amp;',
+	  '<' : '&lt;',
+	  '>' : '&gt;',
+	  '[' : '\[',
+	  ']' : '\]',
+	  '{' : '\{',
+	  '}' : '\}',
+	  ':' : '\:'
+	};
+	for (const replaceStr in replaceStrings) {
+		s = s.replaceAll(replaceStr, replaceStrings[replaceStr]);
+	}
 };
 
 const errorIndex = (props)=>{
