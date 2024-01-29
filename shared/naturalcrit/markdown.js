@@ -9,10 +9,19 @@ const renderer = new Marked.Renderer();
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (html) {
 	if(_.startsWith(_.trim(html), '<div') && _.endsWith(_.trim(html), '</div>')){
-		const openTag = html.substring(0, html.indexOf('>')+1);
-		html = html.substring(html.indexOf('>')+1);
-		html = html.substring(0, html.lastIndexOf('</div>'));
-		return `${openTag} ${Marked.parse(html)} </div>`;
+		const theDivs = _.compact(_.trim(html).split('</div>'));
+		const preTag = html.substring(0, html.indexOf('<'));
+		const postTag = html.substring(html.lastIndexOf('</div>'),html.length);
+		let resultHtml = '';
+		
+		theDivs.forEach((div)=>{ 
+			let trueDiv = `${div}</div>`;
+			const openTag = trueDiv.substring(0, trueDiv.indexOf('>')+1);
+			trueDiv = trueDiv.substring(trueDiv.indexOf('>')+1);
+			trueDiv = trueDiv.substring(0, trueDiv.lastIndexOf('</div>'));
+			resultHtml += `${openTag} ${Marked.parse(trueDiv)} </div>`
+		});
+		return `${preTag}${resultHtml}${postTag}`;
 	}
 	return html;
 };
