@@ -150,6 +150,7 @@ const Editor = createClass({
 						}
 
 						// definition lists
+						if(line.includes('::') && (/^:*$/.test(line) == false)){
 							const regex = /^([^\n:]*?)(::[^\n]*)(?:\n|$)/ymd;  // the `d` flag, for match indices, throws an ESLint error.
 							let match;
 							while ((match = regex.exec(line)) != null){
