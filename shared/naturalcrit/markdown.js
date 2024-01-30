@@ -11,9 +11,8 @@ renderer.html = function (html) {
 	if(_.startsWith(_.trim(html), '<div') && _.endsWith(_.trim(html), '</div>')){
 		const theDivs = _.compact(_.trim(html).split('</div>'));
 		const preTag = html.substring(0, html.indexOf('<'));
-		const postTag = html.substring(html.lastIndexOf('</div>'),html.length);
+		const postTag = html.substring(html.lastIndexOf('</div>')+6, html.length);
 		let resultHtml = '';
-		
 		theDivs.forEach((div)=>{ 
 			let trueDiv = `${div}</div>`;
 			const openTag = trueDiv.substring(0, trueDiv.indexOf('>')+1);
