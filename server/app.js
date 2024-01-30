@@ -433,8 +433,13 @@ if(isLocalEnvironment){
 const templateFn = require('./../client/template.js');
 const renderPage = async (req, res)=>{
 	// Create configuration object
+	const languageOptions = ['pt-BR','en-US', 'es-ES', 'fr-FR'];
+	const langCodeCorrect =()=> {
+		if (languageOptions.indexOf(req.language) > -1) {return req.language;}
+		return 'en-US';
+	};
 
-	const langPreference = req.language || `en-US`;
+	const langPreference = langCodeCorrect();
 	const localeFile   = require('fs').readFileSync(`locale/locale-${langPreference}.yaml`, 'utf8');
 	const localeData   = yaml.load(localeFile);
 
