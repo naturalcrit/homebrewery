@@ -320,6 +320,30 @@
 		padding       : 0px;
 		margin-bottom : 0.325cm;
 
+		dl {
+			padding: 0px;
+		}
+
+		dt::before {
+			display: block;
+		}		
+
+		dt:nth-child(1n+2)::before {
+			content: "";
+			display: block;
+		}
+
+		dt {
+			display: inline;
+			margin-right : 5px;
+			margin-left  : 0em;
+			padding: 0px;
+		}
+
+		dd { 
+			display: inline;
+		}
+
 		//Headers
 		h2 {
 			margin      : 0;
@@ -869,6 +893,8 @@
 	dl {
 		line-height  : 1.25em;
 		& + * {	margin-top : 0.17cm; }
+		white-space: normal !important;
+
 	}
 	p + dl { margin-top : 0.17cm; }
   dt {
