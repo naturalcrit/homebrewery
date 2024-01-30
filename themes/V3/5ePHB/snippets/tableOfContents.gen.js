@@ -33,10 +33,10 @@ const getTOC = ()=>{
 	const headings = iframeDocument.querySelectorAll('h1, h2, h3');
 
 	_.each(headings, (heading)=>{
-		const onPage = parseInt(heading.closest('.page,.phb').id.replace(/^p/, ''));
+		const onPage = parseInt(heading.closest('.page,.phb').id?.replace(/^p/, ''));
 		const ToCExclude = getComputedStyle(heading).getPropertyValue('--TOC');
 		if(ToCExclude != '"exclude"') {
-			if(onPage != -1) {
+			if(!isNaN(onPage)) {
 				const headingText =  heading.innerText;
 				if(heading.tagName == 'H1') {
 					add1(headingText, onPage);
