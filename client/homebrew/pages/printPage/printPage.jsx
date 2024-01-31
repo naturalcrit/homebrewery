@@ -93,11 +93,11 @@ const PrintPage = createClass({
 
 		return <div>
 			<Meta name='robots' content='noindex, nofollow' />
-			<link href={`/themes/${rendererPath}/Blank/style.css`} rel='stylesheet'/>
+			<link href={`/themes/${rendererPath}/Blank/style.css`} type="text/css" rel='stylesheet'/>
 			{baseThemePath &&
-				<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} rel='stylesheet'/>
+				<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} type="text/css" rel='stylesheet'/>
 			}
-			<link href={`/themes/${rendererPath}/${themePath}/style.css`} rel='stylesheet'/>
+			<link href={`/themes/${rendererPath}/${themePath}/style.css`} type="text/css" rel='stylesheet'/>
 			{/* Apply CSS from Style tab */}
 			{this.renderStyle()}
 			<div className='pages' ref='pages'>

@@ -20,9 +20,9 @@ const PAGE_HEIGHT = 1056;
 
 const INITIAL_CONTENT = dedent`
 	<!DOCTYPE html><html><head>
-	<link href="//use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
+	<link href="//use.fontawesome.com/releases/v5.15.1/css/all.css" type="text/css" rel="stylesheet" />
 	<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
-	<link href='/homebrew/bundle.css' rel='stylesheet' />
+	<link href='/homebrew/bundle.css' type="text/css" rel='stylesheet' />
 	<base target=_blank>
 	</head><body style='overflow: hidden'><div></div></body></html>`;
 
@@ -206,11 +206,11 @@ const BrewRenderer = (props)=>{
 						<RenderWarnings />
 						<NotificationPopup />
 					</div>
-					<link href={`/themes/${rendererPath}/Blank/style.css`} rel='stylesheet'/>
+					<link href={`/themes/${rendererPath}/Blank/style.css`} type="text/css" rel='stylesheet'/>
 					{baseThemePath &&
-						<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} rel='stylesheet'/>
+						<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} type="text/css" rel='stylesheet'/>
 					}
-					<link href={`/themes/${rendererPath}/${themePath}/style.css`} rel='stylesheet'/>
+					<link href={`/themes/${rendererPath}/${themePath}/style.css`} type="text/css" rel='stylesheet'/>
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted
