@@ -263,10 +263,11 @@ const definitionLists = {
 	tokenizer(src, tokens) {
 		const regex = /^([^:\n]*?)[\n]?::(.*)(?:\n|$)/ym;
 		let match;
-		const endIndex = src.match(`\n\n`)?.index + 2;
+		let endIndex = 0;
 		const allDefinitions = [];
 		let currentDefinition = {};
 		while (match = regex.exec(src)) {
+			endIndex += match[0].length;
 			if(match[1].trim()?.length) {
 				if(currentDefinition?.dt?.length) {
 					allDefinitions.push(currentDefinition);
