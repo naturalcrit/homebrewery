@@ -2,9 +2,9 @@
 yes: sim
 no: não
 dateFormat: YYYY-MM-DD HH:mm:ss
-OK: 
+OK:
 
-nav: 
+nav:
   help out: Ajude-nos!
   storageMsg:
     notSignedIn: Você deve estar logado em uma conta Google para transferir do Homebrewery para o Google Drive!
@@ -12,14 +12,14 @@ nav:
     fromHbToGoogle: Você gostaria de transferir este arquivo do Homebrewery para o seu armazenamento Google Drive?
   saveDropdown:
     save: salvar
-    autosaved: salvo autom.
-    saving: salvando...
-    reminder: lembrete...
-    autosave: salvar automaticamente.
+    autosaved: salvo autom
+    saving: salvando
+    reminder: lembrete
+    autosave: salvar automaticamente
     Save Now: Salve Agora
-    saved: salvo.
+    saved: salvo
     autoSaveMsg: Salvamento Autom. está desligado, e você não salvou nos últimos
-    autoSaveMsgDuration: minutos.
+    autoSaveMsgDuration: minutos
     autoSaveOff: Salvamento Autom. está desligado
   errorMsg:
     Oops!:
@@ -36,7 +36,7 @@ nav:
   helpDropdown:
     need help?: precisa de ajuda?
     report issue: Relatar um problema?
-    faq: 
+    faq:
     migrate: Migrando
 
   shareDropdown:
@@ -170,7 +170,7 @@ editPage:
     invitedSub1: Nomes de autores convidados diferenciam maiúsculas de minúsculas.
     invitedSub2: Após adicionar um autor convidado, envie-lhe o link de edição. Lá, eles podem optar por aceitar ou recusar o convite.
 
-    privacy: Privacidade 
+    privacy: Privacidade
     publish: Publicar
     unpublish: Despublicar
     publishedSub: Arquivos publicados serão visíveis e pesquisáveis publicamente (eventualmente...)
@@ -209,11 +209,11 @@ accountPage:
   brewsOnHomebrewery: Arquivos no Homebrewery
   Google Information: Informação do Google
   linkedToGoogle: Conectado ao Google
-  brewsOnGoogleDrive: Arquivos no Google Drive
+  brewsOnDrive: Arquivos no Google Drive
   noFiles: Não foi possível recuperar os arquivos
   followSteps: Siga estas etapas para renovar suas credenciais do Google.
   Default Save Location: Local Padrão para Salvar
-  Homebrewery: 
+  Homebrewery:
   Google Drive:
   Language Selection: Seleção de Idioma
   langSub: Esta opção seleciona seu idioma exclusivamente para a interface do site, e não para seus arquivos. Você pode alterar o idioma do arquivo na aba Propriedades.
@@ -221,7 +221,7 @@ accountPage:
 errorCodes:
   Crit Fail!: Falha Crítica!
   error: Erro
-  No error text: 
+  No error text:
   unkownError: |
     ## Aconteceu um erro desconhecido!
 
@@ -308,7 +308,7 @@ errorCodes:
     Aconteceu um erro ao tentar remover o usuário da lista de autores do documento Homebrewery!
 
 htmlError:
-  Line: Linha 
+  Line: Linha
   tag: Tag
   openTag: Uma tag de abertura sem correspondência significa que há uma tag aberta que não está fechada. Você precisa fechar suas tags, assim {'</div>'}. Certifique-se de combinar os tipos!
   closeTag: Uma tag de fechamento sem correspondência significa que você fechou uma tag sem abri-la. Remova-a ou verifique onde ela pode estar aberta.

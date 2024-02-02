@@ -276,10 +276,10 @@ const EditPage = createClass({
 		if(this.state.autoSaveWarning && this.hasChanges()){
 			this.setAutosaveWarning();
 			const elapsedTime = Math.round((new Date() - this.state.unsavedTime) / 1000 / 60);
-			const text = elapsedTime == 0 ? 'autoSaveOff'.translate() : `${'autoSaveMsg'.translate()} ${elapsedTime} ${'autoSaveMsgDuration'.translate()}.`;
+			const text = elapsedTime == 0 ? `${'autoSaveOff'.translate()}.` : `${'autoSaveMsg'.translate()} ${elapsedTime} ${'autoSaveMsgDuration'.translate()}.`;
 
 			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
-				{'reminder'.translate()}
+				{'reminder'.translate()}...
 				<div className='errorContainer'>
 					{text}
 				</div>
@@ -287,16 +287,16 @@ const EditPage = createClass({
 		}
 
 		if(this.state.isSaving){
-			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>{'saving'.translate()}</Nav.item>;
+			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>{'saving'.translate(['nav', 'saveDropdown'])}...</Nav.item>;
 		}
 		if(this.state.isPending && this.hasChanges()){
 			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>{'Save Now'.translate()}</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving && this.state.autoSave){
-			return <Nav.item className='save saved'>{'autosaved'.translate()}</Nav.item>;
+			return <Nav.item className='save saved'>{'autosaved'.translate()}.</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving){
-			return <Nav.item className='save saved'>{'saved'.translate()}</Nav.item>;
+			return <Nav.item className='save saved'>{'saved'.translate()}.</Nav.item>;
 		}
 	},
 

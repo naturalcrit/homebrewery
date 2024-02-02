@@ -12,15 +12,15 @@ nav:
     fromHbToGoogle: Souhaitez-vous transférer cette brasserie depuis Homebrewery vers votre stockage Google Drive?
   saveDropdown:
     save: enregistrer
-    autosaved: sauvegarde automatique.
-    saving: sauvegarde en cours...
-    reminder: rappel...
+    autosaved: sauvegarde automatique
+    saving: sauvegarde en cours
+    reminder: rappel
     autosave: sauvegarde automatique
     Save Now: Enregistrer maintenant
-    saved: enregistré.
+    saved: enregistré
     autoSaveMsg: La sauvegarde automatique est désactivée, et vous n'avez pas enregistré depuis
-    autoSaveMsgDuration: minutes.
-    autoSaveOff: La sauvegarde automatique est désactivée.
+    autoSaveMsgDuration: minutes
+    autoSaveOff: La sauvegarde automatique est désactivée
   errorMsg:
     Oops!: Oups!
     conflict: "Conflit : veuillez recharger pour obtenir la dernière modification"
@@ -209,7 +209,7 @@ accountPage:
   brewsOnHomebrewery: Brassins sur Homebrewery
   Google Information: Informations sur Google
   linkedToGoogle: Compte lié à Google
-  brewsOnGoogleDrive: Brassins sur Google Drive
+  brewsOnDrive: Brassins sur Google Drive
   noFiles: Aucun document trouvé
   followSteps: Suivez ces étapes pour renouveler vos identifiants Google.
   Default Save Location: Emplacement de sauvegarde par défaut

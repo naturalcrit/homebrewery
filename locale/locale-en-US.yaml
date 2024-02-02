@@ -12,15 +12,15 @@ nav:
     fromHbToGoogle: Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?
   saveDropdown:
     save:
-    autosaved: autosaved.
-    saving: saving...
-    reminder: reminder...
+    autosaved: autosaved
+    saving: saving
+    reminder: reminder
     autosave: autosave
     Save Now: Save Now
-    saved: saved.
+    saved: saved
     autoSaveMsg: Autosave is OFF, and you haven't saved for
-    autoSaveMsgDuration: minutes.
-    autoSaveOff: Autosave is OFF.
+    autoSaveMsgDuration: minutes
+    autoSaveOff: Autosave is OFF
   errorMsg:
     Oops!:
     conflict: "Conflict: please refresh to get latest change"
@@ -209,7 +209,7 @@ accountPage:
   brewsOnHomebrewery: Brews on Homebrewery
   Google Information:
   linkedToGoogle: Linked to Google
-  brewsOnGoogleDrive: Brews on Google Drive
+  brewsOnDrive: Brews on Google Drive
   noFiles: Unable to retrieve files
   followSteps: follow these steps to renew your Google credentials.
   Default Save Location:

@@ -81,7 +81,7 @@ const ListPage = createClass({
 	},
 
 	renderBrews : function(brews){
-		if(!brews || !brews.length) return <div className='noBrews'>{'No Brews'.translate()}.</div>;
+		if(!brews || !brews.length) return <div className='noBrews'>{'No Brews'.translate(['userPage'])}.</div>;
 
 		return _.map(brews, (brew, idx)=>{
 			return <BrewItem brew={brew} key={idx} reportError={this.props.reportError}/>;
@@ -169,9 +169,9 @@ const ListPage = createClass({
 	},
 
 	renderSortOptions : function(){
-		''.setTranslationDefaults(['userpage', 'filters']);
+		''.setTranslationDefaults(['userPage', 'filters']);
 		return <div className='sort-container'>
-			<h6>{'sortyBy'.translate()}:</h6>
+			<h6>{'sortBy'.translate()}:</h6>
 			{this.renderSortOption('title'.translate(), 'alpha')}
 			{this.renderSortOption('created date'.translate(), 'created')}
 			{this.renderSortOption('updated date'.translate(), 'updated')}

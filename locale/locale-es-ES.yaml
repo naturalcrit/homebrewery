@@ -12,15 +12,15 @@ nav:
     fromHbToGoogle: ¿Te gustaría transferir este brew desde Homebrewery a tu almacenamiento de Google Drive?
   saveDropdown:
     save: guardar
-    autosaved: autoguardado.
-    saving: guardando...
-    reminder: recordatorio...
+    autosaved: autoguardado
+    saving: guardando
+    reminder: recordatorio
     autosave: autoguardado
     Save Now: Guardar ahora
-    saved: guardado.
+    saved: guardado
     autoSaveMsg: El autoguardado está desactivado, y no has guardado en
-    autoSaveMsgDuration: minutos.
-    autoSaveOff: El autoguardado está desactivado.
+    autoSaveMsgDuration: minutos
+    autoSaveOff: El autoguardado está desactivado
   errorMsg:
     Oops!: Ups!
     conflict: "Conflicto: porfavor, recarga para obtener el último cambio"
@@ -62,7 +62,7 @@ nav:
     login: iniciar sesión
     localLoginPrompt: Introduzca su nombre de usuario
     logout: cerrar sesión
-    logoutMsg: Estas seguro de que quieres cerrar sesión?
+    logoutMsg: ¿Estas seguro de que quieres cerrar sesión?
 
 userPage:
   No Brews: No hay brews
@@ -209,7 +209,7 @@ accountPage:
   brewsOnHomebrewery: Brews en Homebrewery
   Google Information: Información de Google
   linkedToGoogle: Cuenta vinculada a Google
-  brewsOnGoogleDrive: Brews en Google Drive
+  brewsOnDrive: Brews en Google Drive
   noFiles: No encontramos ningún documento
   followSteps: Sigue estos pasos para renovar tus credenciales de google.
   Default Save Location: Ubicación de guardado predeterminada
