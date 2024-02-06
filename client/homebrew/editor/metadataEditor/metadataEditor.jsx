@@ -62,16 +62,24 @@ const MetadataEditor = createClass({
 	},
 
 	handleFieldChange : function(name, e){
+		
+		const trimmedValue = (()=> {
+			if(e.target.value.length === 0) {
+				return e.target.value;
+			}
+			return [...e.target.value.slice(0, -1),e.target.value[e.target.value.length - 1].trim()]; // remove trailing whitespace from last item in list
+		})();
+
 		// load validation rules, and check input value against them
 		const inputRules = validations[name] ?? [];
-		const validationErr = inputRules.map((rule)=>rule(e.target.value)).filter(Boolean);
+		const validationErr = inputRules.map((rule)=>rule(trimmedValue)).filter(Boolean);
 
 		// if no validation rules, save to props
 		if(validationErr.length === 0){
 			callIfExists(e.target, 'setCustomValidity', '');
 			this.props.onChange({
 				...this.props.metadata,
-				[name] : e.target.value
+				[name] : trimmedValue
 			});
 		} else {
 			// if validation issues, display built-in browser error popup with each error.
