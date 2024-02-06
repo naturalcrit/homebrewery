@@ -69,6 +69,8 @@ const MetadataEditor = createClass({
 			}
 			return [...e.target.value.slice(0, -1),e.target.value[e.target.value.length - 1].trim()]; // remove trailing whitespace from last item in list
 		})();
+		console.log('e.target.value is :',e.target.value, 'at handleFieldChange L72');
+		console.log('trimmedValue is: ',trimmedValue);
 
 		// load validation rules, and check input value against them
 		const inputRules = validations[name] ?? [];
