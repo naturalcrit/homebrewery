@@ -256,41 +256,96 @@ const superSubScripts = {
 	}
 };
 
-const definitionLists = {
-	name  : 'definitionLists',
+const inlineDefinitionLists = {
+	name  : 'inlineDefinitionLists',  // Inline because the styles for *this* set should be display: inline
+	level : 'block',
+	start(src) { return src.match(/^.*?::.*/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const regex = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym;
+		let match;
+		let endIndex = 0;
+		const definitions = [];
+		while (match = regex.exec(src)) {
+			definitions.push({
+				dt : this.lexer.inlineTokens(match[1].trim()),
+				dd : this.lexer.inlineTokens(match[2].trim())
+			});
+			endIndex = regex.lastIndex;
+		}
+		if(definitions.length) {
+			return {
+				type : 'inlineDefinitionLists',
+				raw  : src.slice(0, endIndex),
+				definitions
+			};
+		}
+	},
+	renderer(token) {
+		return `<dl>${token.definitions.reduce((html, def)=>{
+			return `${html}<dt>${this.parser.parseInline(def.dt)}</dt>`
+			            + `<dd>${this.parser.parseInline(def.dd)}</dd>\n`;
+		}, '')}</dl>`;
+	}
+};
+
+const blockDefinitionLists = {
+	name  : 'blockDefinitionLists', // Block because style display: block
 	level : 'block',
 	start(src) { return src.match(/^.*?::.*\n\n/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const regex = /^([^:\n]*?)[\n]?::(.*)(?:\n|$)/ym;
+		const regex = /^([^:\n]*?)[\n]?::(.*)(?:\n|$)|^.*(?:\n|$)/ym;
 		let match;
 		let endIndex = 0;
 		const allDefinitions = [];
 		let currentDefinition = {};
+		let inList = false;
+		let lastEmpty = false;
 		while (match = regex.exec(src)) {
 			endIndex += match[0].length;
-			if(match[1].trim()?.length) {
-				if(currentDefinition?.dt?.length) {
-					allDefinitions.push(currentDefinition);
-					currentDefinition = {};
+			if(match[0].indexOf(':') > -1) {
+				inList = true;
+				if(match[1].trim()?.length) {
+					if(currentDefinition?.dt?.length) {
+						allDefinitions.push(currentDefinition);
+						currentDefinition = {};
+					}
+					currentDefinition = {
+						dt  : this.lexer.inlineTokens(match[1].trim()),
+						dd  : [],
+						ddo : []
+					};
+				} else if(_.isEmpty(currentDefinition)) {
+					return;
 				}
-				currentDefinition = {
-					dt : this.lexer.inlineTokens(match[1].trim()),
-					dd : []
-				};
-			} else if(_.isEmpty(currentDefinition)) {
-				return;
-			}
-			const newDefinitions = match[2].split('::').filter((item)=>item).map((s)=>this.lexer.inlineTokens(s.trim()));
-			if(newDefinitions?.length) {
-				currentDefinition.dd.push(newDefinitions);
-			} else {
-			 	currentDefinition.dd.push([this.lexer.inlineTokens('')]);
+				const newDefinitions = _.flatten(match[2].split('::').filter((item)=>item).map((s)=>s.trim()));
+				if(newDefinitions?.length) {
+					currentDefinition.dd = currentDefinition.dd.concat(newDefinitions);
+				} else {
+					currentDefinition.dd.push('');
+				}
+				lastEmpty = false;
+			} else if(inList) {
+				if(match[0].trim().length == 0) {
+					if(lastEmpty) {
+						break;
+					} else {
+						lastEmpty = true;
+					}
+				} else {
+					lastEmpty = false;
+					currentDefinition.dd[currentDefinition.dd.length - 1] = `${currentDefinition.dd[ currentDefinition.dd.length - 1 ]} ${match[0].trim()}`;
+				}
 			}
 		}
-		if(currentDefinition.hasOwnProperty('dt')) { allDefinitions.push(currentDefinition); }
+		if(currentDefinition.hasOwnProperty('dt')) {
+			currentDefinition.dd.forEach((dd)=>{
+				currentDefinition.ddo.push(this.lexer.inlineTokens(dd));
+			});
+			allDefinitions.push(currentDefinition);
+		}
 		if(allDefinitions.length) {
 			return {
-				type        : 'definitionLists',
+				type        : 'blockDefinitionLists',
 				raw         : src.slice(0, endIndex),
 				definitions : allDefinitions
 			};
@@ -299,18 +354,20 @@ const definitionLists = {
 	renderer(token) {
 		let returnVal = `<dl>`;
 		token.definitions.forEach((def)=>{
-			let dds = def.dd.map((ddef)=>{
-				return ddef.map((s)=>`<dd>${this.parser.parseInline(s)}</dd>`).join('');
+			console.log(def.ddo);
+			let dds = def.ddo.map((s)=>{
+				return `<dd>${this.parser.parseInline(s)}</dd>`;
 			}).join('\n');
 			dds = dds.trim();
 			returnVal += `<dt>${this.parser.parseInline(def.dt)}</dt>${dds.indexOf('\n') > -1 ? '\n' : ''}${dds}\n`;
 		});
 		returnVal = returnVal.trim();
+		console.log(returnVal);
 		return `${returnVal}</dl>`;
 	}
 };
 
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts] });
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, blockDefinitionLists, superSubScripts] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
