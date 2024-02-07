@@ -47,7 +47,7 @@ body { counter-reset : phb-page-numbers; }
 	height            : 279.4mm;
 	padding           : 1.4cm 1.9cm 1.7cm;
 	overflow          : hidden;
-	counter-increment : phb-page-numbers;
+	counter-increment : page-numbers;
 	background-color  : var(--HB_Color_Background);
 	text-rendering    : optimizeLegibility;
 	contain           : size;
@@ -459,4 +459,25 @@ body { counter-reset : phb-page-numbers; }
 	}
 	.homebreweryIcon.red { background-color : red; }
 	.homebreweryIcon.gold { background-image : linear-gradient(to top left, brown 22.5%, gold 40%, white 60%, gold 67.5%, brown 82.5%); }
+}
+//*****************************
+//*        Page Number
+//*****************************/
+
+.page {
+
+
+	.pageNumber {
+		position    : absolute;
+		right       : 2px;
+		bottom      : 22px;
+		width       : 50px;
+		font-size   : 0.9em;
+		text-align  : center;
+		&.auto::after { content : counter(page-numbers); }
+	}
+
+	&:nth-child(even) {
+		.pageNumber { left : 2px; }
+	}
 }
