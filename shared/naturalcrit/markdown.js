@@ -355,8 +355,15 @@ const voidTags = new Set([
 
 const processStyleMacros = (string, lastToken)=>{
 
-	const substitutions = string.replace('$swl', `shape-outside:url(${lastToken.href}),float:left`)
-		.replace('$swr', `shape-outside:url(${lastToken.href}),float:right`);
+	let substitutions = string;
+
+	const textWrapRegex = /\$(tw[lr])(-(\d*\.?\d+))?/;
+	const twMatch = textWrapRegex.exec(substitutions);
+
+	if(twMatch) {
+		substitutions = substitutions.replace(twMatch[0],
+			`float:${twMatch[1] == 'twl' ? 'left' : 'right'},shape-outside:url(${lastToken.href})${twMatch[3]?.length > 0 ? `shape-image-threshold:${twMatch[3]}` : ''}`);
+	}
 
 	return substitutions;
 };
