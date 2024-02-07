@@ -896,13 +896,32 @@
 		white-space: normal !important;
 
 	}
+
+	dd {
+		display: block
+	}
+
 	p + dl { margin-top : 0.17cm; }
+
   dt {
 		display      : inline;
 		margin-right : 5px;
 		margin-left  : -1em;
 	}
 }
+
+// *****************************
+// * Inline Definition Lists
+// *****************************/
+.inlineDL dd {
+	display: inline !important
+ }
+ 
+ .inlineDL dd:after{
+   display: block;
+   content: '';
+ }
+
 
 // *****************************
 // *         WIDE

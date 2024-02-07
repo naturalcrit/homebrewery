@@ -300,12 +300,23 @@ const blockDefinitionLists = {
 		let currentDefinition = {};
 		let inList = false;
 		let lastEmpty = false;
+		let inlineDefinitions = false;
 		while (match = regex.exec(src)) {
+			// If we aren't actively in a DL and we match just text, bail.
+			// If the last loop bailed with lastEmpty and we match just text, bail
+			if(((!inList) || (lastEmpty)) && (typeof match[1] == 'undefined') && (typeof match[2] == 'undefined')) {
+				break;
+			}
 			endIndex += match[0].length;
-			if(match[0].indexOf(':') > -1) {
+			// Check to see if this a match containing the start of a DD.
+			if(match[0].indexOf('::') > -1) {
 				inList = true;
-				if(match[1].trim()?.length) {
+				// Check for a DT value.
+				if(match[1]?.trim()?.length>0) {
 					if(currentDefinition?.dt?.length) {
+						currentDefinition.dd.forEach((dd)=>{
+							currentDefinition.ddo.push(this.lexer.inlineTokens(dd));
+						});
 						allDefinitions.push(currentDefinition);
 						currentDefinition = {};
 					}
@@ -317,23 +328,42 @@ const blockDefinitionLists = {
 				} else if(_.isEmpty(currentDefinition)) {
 					return;
 				}
-				const newDefinitions = _.flatten(match[2].split('::').filter((item)=>item).map((s)=>s.trim()));
-				if(newDefinitions?.length) {
-					currentDefinition.dd = currentDefinition.dd.concat(newDefinitions);
+				// Test for a DD value.
+				if(match[2].trim().length>0) {
+					if((match[1]?.length > 0) && (match[0].indexOf('\n') > match[1]?.length)) { // Inline Style DD
+						currentDefinition.dd = currentDefinition.dd.concat([match[2].trim()]);
+						currentDefinition.dd.forEach((dd)=>{
+							currentDefinition.ddo.push(this.lexer.inlineTokens(dd));
+						});
+						allDefinitions.push(currentDefinition);
+						inlineDefinitions = true;
+						currentDefinition = {};
+						continue;
+					}
+					// Multi-line style DDs
+					const newDefinitions = _.flatten(match[2].split('::').filter((item)=>item).map((s)=>s.trim()));
+					if(newDefinitions?.length) {
+						currentDefinition.dd = currentDefinition.dd.concat(newDefinitions);
+					}
 				} else {
 					currentDefinition.dd.push('');
 				}
 				lastEmpty = false;
-			} else if(inList) {
+			} else if(inList) { // Regular line that might mark the end of a line.
+				if(inlineDefinitions) {
+					endIndex -= match[0].length;
+					break;
+				}
 				if(match[0].trim().length == 0) {
 					if(lastEmpty) {
-						break;
+						continue;
 					} else {
 						lastEmpty = true;
 					}
 				} else {
 					lastEmpty = false;
-					currentDefinition.dd[currentDefinition.dd.length - 1] = `${currentDefinition.dd[ currentDefinition.dd.length - 1 ]} ${match[0].trim()}`;
+					const lastPos = typeof currentDefinition.dd.length !== 'undefined' ? currentDefinition.dd.length - 1 : 0;
+					currentDefinition.dd[lastPos] = `${currentDefinition.dd[lastPos]} ${match[0].trim()}`;
 				}
 			}
 		}
@@ -347,22 +377,20 @@ const blockDefinitionLists = {
 			return {
 				type        : 'blockDefinitionLists',
 				raw         : src.slice(0, endIndex),
+				inlineDefinitions,
 				definitions : allDefinitions
 			};
 		}
 	},
 	renderer(token) {
-		let returnVal = `<dl>`;
+		let returnVal = `<dl${token.inlineDefinitions ? ' class="inlineDL"' : ''}>`;
 		token.definitions.forEach((def)=>{
-			console.log(def.ddo);
 			let dds = def.ddo.map((s)=>{
 				return `<dd>${this.parser.parseInline(s)}</dd>`;
 			}).join('\n');
-			dds = dds.trim();
 			returnVal += `<dt>${this.parser.parseInline(def.dt)}</dt>${dds.indexOf('\n') > -1 ? '\n' : ''}${dds}\n`;
 		});
 		returnVal = returnVal.trim();
-		console.log(returnVal);
 		return `${returnVal}</dl>`;
 	}
 };
