@@ -160,8 +160,8 @@ const Editor = createClass({
 								codeMirror.markText({ line: lineNumber, ch: match.indices[2][0] }, { line: lineNumber, ch: match.indices[2][1] }, { className: 'dd-highlight' });
 								const ddIndex = match.indices[2][0];
 								let colons = /::/g;
-								let colonMatches;
-								while((colonMatches = colons.exec(match[2])) !== null){
+								let colonMatches = colons.exec(match[2]);
+								if(colonMatches !== null){
 									codeMirror.markText({ line: lineNumber, ch: colonMatches.index + ddIndex }, { line: lineNumber, ch: colonMatches.index + colonMatches[0].length + ddIndex }, { className: 'dl-colon-highlight'} )
 								}
 							}

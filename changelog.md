@@ -80,7 +80,7 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-### Tuesday 07/11/2023 
+### Tuesday 02/07/2024 
 
 {{ taskList
 
@@ -88,22 +88,37 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 
 * [x] Add user requested feature for definition lists with multiple definitions. 
 
-This implements issue [#2340](https://github.com/naturalcrit/homebrewery/issues/2340) by extending the existing syntax pattern. Additional definitions must be on the same line.
+This implements issue [#2340](https://github.com/naturalcrit/homebrewery/issues/2340) by extending the existing syntax pattern. 
+
+Multiple Definition Description (\<dd\>) terms must go on the following line with a blank line between definition sets. Additionally, Descriptions may be multi-line, if desired. Multi-line descriptions will be concatenated into a single Description on render.
+
+The previous, inline system has not been removed, however, the two forms may not be intermixed.
 
 ```
-Dictionary Term :: Definition One :: Definition Two :: Definition Three
+Dictionary Term 
+:: Definition One 
+:: Definition Two 
+:: Definition Three
 ```
 Example:
 ```
-Egg::Came before the Chicken::Python Packaging Format::Over Easy isn't
-
 Egg
-  Came before the Chicken
-  Python Packaging Format
-  Over Easy isn't
+::Came before the Chicken
+::Python Packaging Format
+::Over
+Easy
+isn't
 ```
 
-
+Results:
+```
+<dl>
+<dt>Egg</dt>
+<dd>Came before the Chicken</dd>
+<dd>Python Packaging Format</dd>
+<dd>Over Easy isn't</dd>
+</dl>
+```
 }}
 
 ### Friday 13/10/2023 - v3.10.0
