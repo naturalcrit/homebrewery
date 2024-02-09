@@ -345,10 +345,10 @@ const replaceVar = function(input, hoist=false) {
 	let value;
 
 	if(!prefix[0] && href)   // Link
-		value = `[${label}](${href} ${title ? title : ''})`;
+		value = `[${label}](${href}${title ? ` ${title}` : ''})`;
 
 	if(prefix[0] == '!' && href)  // Image
-		value = `![${label}](${href} ${title ? title : ''})`;
+		value = `![${label}](${href} ${title ? ` ${title}` : ''})`;
 	
 	if(prefix[0] == '$')          // Variable
 		value = foundVar.content;
@@ -376,30 +376,59 @@ const lookupVar = function(label, index, hoist=false) {
 const processVariableQueue = function() {
 	let resolvedOne = true;
 	let finalLoop   = false;
-	let newQueue = [];
+
 	while (resolvedOne || finalLoop) { // Loop through queue until no more variable calls can be resolved
-		newQueue = [];
 		resolvedOne = false;
+
 		for (const item of linksQueue) {
-			const value = replaceVar(item.match, true);
+			if(item.type == 'text')
+				continue;
 
-			if(value.missingValues.length > 0 && !finalLoop) { // Variable not found; try again next loop.
-				newQueue.push(item);                              // If previous loops could not resolve any new vars,
-				continue;                                         // final loop will just use the best value so far
-			}                                                   // (may be only partially resolved)
+			if(item.type == 'varDefBlock' || item.type == 'varDefInline') {
+				const regex = /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g;
+				let match;
+				let resolved = true;
+				let tempContent = item.content;
+				while (match = regex.exec(item.content)) { // regex to find variable calls
+					const value = replaceVar(match[0], true);
 
-			resolvedOne = true;
+					if(value.missingValues.length > 0) {
+						resolved = false;
+					} else {
+						item.content = item.content.replaceAll(match[0], value.value);
+					}
+				}
 
-			item.token.content = item.token.content.replace(item.match, value.value);
-
-			if(item.token.type == 'varDefBlock' || item.token.type == 'varDefInline') {
-				globalLinks[globalPageNumber][item.token.label] = {
-					content  : item.token.content,
-					resolved : true
-				};
+				if(resolved == true || item.content != tempContent) {
+					resolvedOne = true;
+					globalLinks[globalPageNumber][item.varName] = {
+						content  : item.content,
+						resolved : resolved
+					};
+				}
+				if(item.type == 'varDefBlock' && resolved){
+					item.type = 'resolved';
+				}
+				if(item.type == 'varDefInline' && resolved){
+					item.type = 'text';
+				}
 			}
+
+			if(item.type == 'varCallBlock' || item.type == 'varCallInline') {
+				const value = replaceVar(item.match, true);
+
+				if(value.missingValues.length > 0 && !finalLoop) {  // Variable not found or not fully resolved; try again next loop.
+					continue;                                         // final loop will just use the best value so far
+				}
+	
+				resolvedOne = true;
+				item.content = item.content.replace(item.match, value.value);
+				item.type    = 'text';
+			}
+			//resolvedOne = false;
 		}
-		linksQueue = newQueue;
+		linksQueue = linksQueue.filter(item => {item.type !== 'resolved' && item.type !== 'varDefBlock'});
+
 		if(finalLoop)
 			break;
 		if(!resolvedOne)
@@ -407,174 +436,106 @@ const processVariableQueue = function() {
 	}
 };
 
-const walkVariableTokens = {
-	walkTokens(token) {
-		if(token.type == 'varDefBlock' || token.type == 'varDefInline') {
-
-			const regex = /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g;
-			let match;
-			let resolved = true;
-			while (match = regex.exec(token.content)) { // regex to find variable calls
-				const value = replaceVar(match[0]);
-
-				if(value.missingValues.length > 0) {
-					for (let i = 0; i < value.missingValues.length; i++) {
-						linksQueue.push({ token: token, match: match[0], varName: value.missingValues[i] });
-					}
-					resolved = false;
-				} else {
-					token.content = token.content.replace(match[0], value.value);
-				}
-			}
-
-			globalLinks[globalPageNumber][token.label] = {
-				content  : token.content,
-				resolved : resolved
-			};
-			if(token.type == 'varDefInline')	//Inline definitions are also inline calls; after storing the value, change type so it can be displayed
-				token.type = 'varCallInline';
-		}
-		if(token.type == 'varCallBlock' || token.type == 'varCallInline' || token.originalType == 'varCallBlock' || token.originalType == 'varCallInline') {
-			const value = replaceVar(token.raw);
-			if(value.missingValues.length > 0) {
-
-				for (let i = 0; i < value.missingValues.length; i++) {
-					linksQueue.push({ token: token, match: token.raw, varName: value.missingValues[i] });
-				}
-				return;
-			}
-
-			token.content = token.content.replace(token.content, value.value);
-		}
-	}
-};
-
-const varDefBlock = {
-	name  : 'varDefBlock',
-	level : 'block',
-	start(src) {return src.match(/\n {0,3}[!$]?\[(?!\s*\])(?:\\.|[^\[\]\\])+\]:/m)?.index; },
-	tokenizer(src, tokens) {
-		//                   [ variable name (spaces allowed) ]: Any text, including into newlines (but no fully blank lines)
-		const regex = /^ {0,3}[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:(?!\() *((?:\n? *[^\s].*)+)(?=\n+|$)/;
-		const match = regex.exec(src);
-		if(match) {
-			const label   = match[1] ? match[1].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-			const content = match[2] ? match[2].trim().replace(/[ \t]+/g, ' ')            : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-
-			return {
-				type    : 'varDefBlock',
-				raw     : match[0],
-				label   : label,
-				content : content
-			};
-		}
-	},
-	renderer(token){
-		return;
-	}
-};
-
-const varDefInline = {
-	name  : 'varDefInline',
-	level : 'inline',
-	start(src) {return src.match(/\n?[!$]?\[(?!\s*\])(?:\\.|[^\[\]\\])+\]:\(.*\)/m)?.index;},
-	tokenizer(src, tokens) {
-		if(!parseVars)	//Don't re-parse variable defs inside of another variable call
-			return;
-		//                   [ variable name (spaces allowed) ]: Any text, including into newlines (but no fully blank lines)
-		const regex = /^\n?([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:\((.+?)\)/;
-		const match = regex.exec(src);
-		if(match) {
-			const label   = match[2] ? match[2].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-			const content = match[3] ? match[3].trim().replace(/\s+/g, ' ')               : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-
-			return {
-				type    : 'varDefInline',
-				raw     : match[0],
-				label   : label,
-				content : content
-			};
-		}
-	},
-	renderer(token) {
-		return;
-	}
-};
-
-const varCallBlock = {
-	name  : 'varCallBlock',
-	level : 'block',
-	start(src) {return src.match(/\n[!$]?\[(?!\s*\])(?:\\.|[^\[\]\\])+\]/m)?.index;},
-	tokenizer(src, tokens) {
-		if(!parseVars)	//Don't re-parse variable calls inside of another variable call
-			return;
-
-		//                      [ variable name (spaces allowed) ] no following text allowed
-		const regex = /^([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?=\n|$)/;
-		const match = regex.exec(src);
-		if(match) {
-			return {
-				type    : 'varCallBlock',
-				raw     : match[0],
-				content : match[0]
-			};
-		}
-	},
-	renderer(token){
-		const tokens = new Marked.Lexer(Marked.defaults).lex(token.content);
-		return this.parser.parse(tokens);
-	}
-};
-
-const varCallInline = {
-	name  : 'varCallInline',
-	level : 'inline',
-	start(src) {return src.match(/[!$]?\[(?!\s*\])(?:\\.|[^\[\]\\])+\]/m)?.index;},
-	tokenizer(src, tokens) {
-		if(!parseVars)	//Don't re-parse variable calls inside of another variable call
-			return;
-
-		//                   [ variable name (spaces allowed) ]: Any text, including into newlines (but no fully blank lines)
-		const regex = /^([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?!\()/; // Do not allow `(` after, since that is needed for normal images/links
-		const match = regex.exec(src);
-		if(match) {
-			return {
-				type    : 'varCallInline',
-				raw     : match[0],
-				content : match[0]
-			};
-		}
-	},
-	renderer(token){
-		const tokens = new Marked.Lexer(Marked.defaults).inlineTokens(token.content);
-		return this.parser.parseInline(tokens);
-	}
-};
 //^=====--------------------< Variable Handling >-------------------=====^//
 
 function MarkedVariables() {
   return {
     hooks: {
       preprocess(src) {
-				const blockDefRegex = /^\n?([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:\((.+?)\)/;
+				const blockDefRegex   = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:(?!\() *((?:\n? *[^\s].*)+)(?=\n+|$)/; //Matches 1, [2]:3
+				const blockCallRegex  = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?=\n|$)/;                              //Matches 4, [5]
+				const inlineDefRegex  =  /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]\(([^\n]+?)\)/;                         //Matches 6, [7](8)
+				const inlineCallRegex =  /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?!\()/;                                //Matches 9, [10]
 
+				// Combine regexes like so: (regex1)|(regex2)|(regex3)|(regex4)
+				let combinedRegex = new RegExp([blockDefRegex, blockCallRegex, inlineDefRegex, inlineCallRegex].map(s => `(${s.source})`).join('|'), 'gm');
 
-				let match = blockDefRegex.exec(src);
-				if(match) {
-					const label   = match[2] ? match[2].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-					const content = match[3] ? match[3].trim().replace(/\s+/g, ' ')               : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-				//Block definitions
-        const regex = /cow/g;
-				src = src.replace(regex,"replaced");
-        return src;
+				let lastIndex = 0;
+				let match;
+				while ((match = combinedRegex.exec(src)) !== null) {
+						// Form any matches into tokens and store
+						if (match.index > lastIndex) {
+							linksQueue.push(
+								{ type    : 'text',
+								  match   : src.slice(lastIndex, match.index),
+									varName : null,
+									content : src.slice(lastIndex, match.index)
+							});
+						}
+						if(match[1]) { // Block Definition
+							const label   = match[2] ? match[2].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+							const content = match[3] ? match[3].trim().replace(/\s+/g, ' ')               : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+
+							linksQueue.push(
+								{ type    : 'varDefBlock',
+									match   : match[0],
+									varName : label,
+									content : content
+								});
+						}
+						if(match[4]) { // Block Call
+							const label = match[5] ? match[5].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+
+							linksQueue.push(
+								{ type    : 'varCallBlock',
+									match   : match[0],
+									varName : label,
+									content : match[0]
+								});
+						}
+						if(match[6]) { // Inline Definition
+							const label   = match[7] ? match[7].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+							const content = match[8] ? match[8].trim().replace(/\s+/g, ' ')               : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+
+							linksQueue.push(
+								{ type    : 'varDefInline',
+									match   : match[0],
+									varName : label,
+									content : content
+								});
+						}
+						if(match[9]) { // Inline Call
+							const label = match[10] ? match[10].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+
+							linksQueue.push(
+								{ type    : 'varCallInline',
+									match   : match[0],
+									varName : label,
+									content : match[0]
+								});
+						}
+						lastIndex = combinedRegex.lastIndex;
+				}
+
+				if (lastIndex < src.length) {
+					linksQueue.push(
+						{ type    : 'text',
+							match   : src.slice(lastIndex),
+							varName : null,
+							content : src.slice(lastIndex)
+					});
+				}
+
+				console.log(`Page ${globalPageNumber}`)
+				console.log("Found Tokens:");
+				console.log(linksQueue);
+
+				processVariableQueue();
+
+				console.log("Final Tokens:");
+				console.log(linksQueue);
+
+				const output = linksQueue.map(item => item.content).join('');
+				linksQueue = []; // Must clear linksQueue because custom HTML renderer uses Marked.parse which will preprocess again without clearing the array
+				return output;
       }
     }
   };
-}
+};
 
 Marked.use(MarkedVariables())
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts, varCallInline, varDefInline, varCallBlock, varDefBlock] });
-Marked.use(mustacheInjectBlock, walkVariableTokens);
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts] });
+Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
 
@@ -685,7 +646,7 @@ module.exports = {
 	marked : Marked,
 	render : (rawBrewText, pageNumber=1)=>{
 		globalLinks[pageNumber] = {};						//Reset global links for current page, to ensure values are parsed in order
-		linksQueue              = [];
+		linksQueue              = [];						//Could move into MarkedVariables()
 		globalPageNumber        = pageNumber;
 
 		parseVars = true;
@@ -698,9 +659,9 @@ module.exports = {
 		const tokens = Marked.lexer(rawBrewText, opts);
 
 		Marked.walkTokens(tokens, opts.walkTokens);
-		processVariableQueue();
 
 		parseVars = false;
+		console.log(tokens)
 		const html = Marked.parser(tokens, opts);
 		return opts.hooks.postprocess(html);
 	},
