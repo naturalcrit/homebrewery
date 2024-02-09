@@ -4,8 +4,38 @@ const Marked = require('marked');
 const MarkedExtendedTables = require('marked-extended-tables');
 const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartypants-lite');
 const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
+const MathParser = require('expr-eval').Parser;
 const renderer = new Marked.Renderer();
 const tokenizer = new Marked.Tokenizer();
+
+//Limit math features to simple items
+const mathParser = new MathParser({
+	operators: {
+		// These default to true, but are included to be explicit
+		add         : true,
+		subtract    : true,
+		multiply    : true,
+		divide      : true,
+		power       : true,
+		round       : true,
+
+		sin   : false, cos    : false, tan    : false, asin : false, acos  : false,
+		atan  : false, sinh   : false, cosh   : false, tanh : false, asinh : false,
+		acosh : false, atanh  : false, sqrt   : false, cbrt : false, log   : false,
+		log2  : false, ln     : false, lg     : false, log10: false, expm1 : false,
+		log1p : false, abs    : false, ceil   : false, floor: false, trunc : false,
+		'-'   : false, '+'    : false, exp    : false, not  : false, length: false,
+		'!'   : false, sign   : false, random : false, fac  : false, min   : false,
+		max   : false, hypot  : false, pyt    : false, pow  : false, atan2 : false,
+		'if'  : false, gamma  : false, roundTo: false, map  : false, fold  : false,
+		filter: false, indexOf: false, join   : false, sum  : false,
+
+		remainder   : false, factorial   : false,
+		comparison  : false, concatenate : false,
+		logical     : false, assignment  : false,
+		array       : false, fndef       : false
+	}
+}); 
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (html) {
@@ -29,9 +59,26 @@ renderer.paragraph = function(text){
 		return `<p>${text}</p>\n`;
 };
 
-//TODO: may not be needed
-// Disable default reflink definitions
-tokenizer.def = function(){
+//Fix local links in the Preview iFrame to link inside the frame
+renderer.link = function (href, title, text) {
+	let self = false;
+	if(href[0] == '#') {
+		self = true;
+	}
+	href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+
+	if(href === null) {
+		return text;
+	}
+	let out = `<a href="${escape(href)}"`;
+	if(title) {
+		out += ` title="${title}"`;
+	}
+	if(self) {
+		out += ' target="_self"';
+	}
+	out += `>${text}</a>`;
+	return out;
 };
 
 const mustacheSpans = {
@@ -273,7 +320,7 @@ const definitionLists = {
 };
 
 
-//v=====--------------------< Variable Handling >-------------------=====v// 295 lines
+//v=====--------------------< Variable Handling >-------------------=====v// 258 lines
 const replaceVar = function(input, hoist=false) {
 	const regex = /([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)/g;
 	const match = regex.exec(input);
@@ -284,36 +331,31 @@ const replaceVar = function(input, hoist=false) {
 	let missingValues = [];
 
 	//v=====--------------------< HANDLE MATH >-------------------=====v//
-	const mathRegex = /[^+\-*\/]+|[+\-*\/]/g;
-	let mathLabels = label.match(mathRegex).map((s)=>s.trim());
+	const variableRegex = /[a-zA-Z_][a-zA-Z0-9_]*(?=\s*(?:[+\-*\/()]|$))/g; // Capture only variables, ignore mathy stuff
+	let mathVars = label.match(variableRegex)?.map((s)=>s.trim());
 
-	if(mathLabels.length > 2 && mathLabels.length % 2 == 1) {
+	let replacedLabel = label;
 
-		const valid = mathLabels.every((val, i)=>{  // Math must alternate between operators and values
-			const isOperator = '+-*/'.includes(val);
-			return (i % 2 === 0 ? !isOperator : isOperator);
-		});
-		if(!valid)
-			return { value: input, missingValues: missingValues };
-
-		mathLabels = mathLabels.map((str)=>{
-			if(!isNaN(str))
-				return Number(str);
-
-			if('+-*/'.includes(str))
-				return str;
-
-			const foundVar = lookupVar(str, globalPageNumber, hoist);
-			if(foundVar && foundVar.resolved && foundVar.content) // Only subsitute math values if fully resolved and not empty strings
-				return foundVar.content;
-
-			return str;
+	if(mathVars?.[0] !== label.trim())  {// If there was mathy stuff not captured, let's do math!
+		mathVars?.forEach((variable) => {
+			const foundVar = lookupVar(variable, globalPageNumber, hoist);
+			if(foundVar && foundVar.resolved && foundVar.content && !isNaN(foundVar.content)) { // Only subsitute math values if fully resolved, not empty strings, and numbers
+				replacedLabel = replacedLabel.replaceAll(variable, foundVar.content);
+			}
+			else {
+				missingValues.push(foundVar);
+			}
 		});
 
-		missingValues = mathLabels.filter((x)=>isNaN(x) && !'+-*/'.includes(x));
+		let result;
+		try {
+			result = mathParser.evaluate(replacedLabel);
+		} catch (error) {
+			result = input;
+		}
 
 		return {
-			value         : missingValues.length > 0 ? input : eval(mathLabels.join('')),
+			value         : result,
 			missingValues : missingValues
 		};
 	}
@@ -345,10 +387,10 @@ const replaceVar = function(input, hoist=false) {
 	let value;
 
 	if(!prefix[0] && href)   // Link
-		value = `[${label}](${href} ${title ? title : ''})`;
+		value = `[${label}](${href}${title ? ` ${title}` : ''})`;
 
 	if(prefix[0] == '!' && href)  // Image
-		value = `![${label}](${href} ${title ? title : ''})`;
+		value = `![${label}](${href} ${title ? ` ${title}` : ''})`;
 	
 	if(prefix[0] == '$')          // Variable
 		value = foundVar.content;
@@ -376,208 +418,168 @@ const lookupVar = function(label, index, hoist=false) {
 const processVariableQueue = function() {
 	let resolvedOne = true;
 	let finalLoop   = false;
-	let newQueue = [];
+
 	while (resolvedOne || finalLoop) { // Loop through queue until no more variable calls can be resolved
-		newQueue = [];
 		resolvedOne = false;
+
 		for (const item of linksQueue) {
-			const value = replaceVar(item.match, true);
+			if(item.type == 'text')
+				continue;
 
-			if(value.missingValues.length > 0 && !finalLoop) { // Variable not found; try again next loop.
-				newQueue.push(item);                              // If previous loops could not resolve any new vars,
-				continue;                                         // final loop will just use the best value so far
-			}                                                   // (may be only partially resolved)
+			if(item.type == 'varDefBlock' || item.type == 'varDefInline') {
+				const regex = /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g;
+				let match;
+				let resolved = true;
+				let tempContent = item.content;
+				while (match = regex.exec(item.content)) { // regex to find variable calls
+					const value = replaceVar(match[0], true);
 
-			resolvedOne = true;
+					if(value.missingValues.length > 0) {
+						resolved = false;
+					} else {
+						item.content = item.content.replaceAll(match[0], value.value);
+					}
+				}
 
-			item.token.content = item.token.content.replace(item.match, value.value);
+				if(resolved == true || item.content != tempContent) {
+					resolvedOne = true;
+				}
 
-			if(item.token.type == 'varDefBlock' || item.token.type == 'varDefInline') {
-				globalLinks[globalPageNumber][item.token.label] = {
-					content  : item.token.content,
-					resolved : true
+				globalLinks[globalPageNumber][item.varName] = {
+					content  : item.content,
+					resolved : resolved
 				};
+
+				if(item.type == 'varDefBlock' && resolved){
+					item.type = 'resolved';
+				}
+				if(item.type == 'varDefInline' && resolved){
+					item.type = 'text';
+				}
+			}
+
+			if(item.type == 'varCallBlock' || item.type == 'varCallInline') {
+				const value = replaceVar(item.match, true);
+
+				if(value.missingValues.length > 0 && !finalLoop) {  // Variable not found or not fully resolved; try again next loop.
+					continue;                                         // final loop will just use the best value so far
+				}
+	
+				resolvedOne = true;
+				item.content = item.content.replace(item.match, value.value);
+				item.type    = 'text';
 			}
 		}
-		linksQueue = newQueue;
+		linksQueue = linksQueue.filter(item => item.type !== 'resolved'); // Remove any fully-resolved variables
+
 		if(finalLoop)
 			break;
 		if(!resolvedOne)
 			finalLoop   = true;
 	}
+	linksQueue = linksQueue.filter(item => item.type !== 'varDefBlock');
 };
 
-const walkVariableTokens = {
-	walkTokens(token) {
-		if(token.type == 'varDefBlock' || token.type == 'varDefInline') {
+function MarkedVariables() {
+  return {
+    hooks: {
+      preprocess(src) {
+				const blockDefRegex   = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:(?!\() *((?:\n? *[^\s].*)+)(?=\n+|$)/; //Matches 1, [2]:3
+				const blockCallRegex  = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?=\n|$)/;                              //Matches 4, [5]
+				const inlineDefRegex  =  /([!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\])\(([^\n]+?)\)/;                       //Matches 6, 7[8](9)
+				const inlineCallRegex =  /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?!\()/;                                //Matches 10, [11]
 
-			const regex = /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g;
-			let match;
-			let resolved = true;
-			while (match = regex.exec(token.content)) { // regex to find variable calls
-				const value = replaceVar(match[0]);
+				// Combine regexes like so: (regex1)|(regex2)|(regex3)|(regex4)
+				let combinedRegex = new RegExp([blockDefRegex, blockCallRegex, inlineDefRegex, inlineCallRegex].map(s => `(${s.source})`).join('|'), 'gm');
 
-				if(value.missingValues.length > 0) {
-					for (let i = 0; i < value.missingValues.length; i++) {
-						linksQueue.push({ token: token, match: match[0], varName: value.missingValues[i] });
-					}
-					resolved = false;
-				} else {
-					token.content = token.content.replace(match[0], value.value);
+				let lastIndex = 0;
+				let match;
+				while ((match = combinedRegex.exec(src)) !== null) {
+						// Form any matches into tokens and store
+						if (match.index > lastIndex) {
+							linksQueue.push(
+								{ type    : 'text',
+								  match   : src.slice(lastIndex, match.index),
+									varName : null,
+									content : src.slice(lastIndex, match.index)
+							});
+						}
+						if(match[1]) { // Block Definition
+							const label   = match[2] ? match[2].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+							const content = match[3] ? match[3].trim().replace(/\s+/g, ' ')               : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+
+							linksQueue.push(
+								{ type    : 'varDefBlock',
+									match   : match[0],
+									varName : label,
+									content : content
+								});
+						}
+						if(match[4]) { // Block Call
+							const label = match[5] ? match[5].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+
+							linksQueue.push(
+								{ type    : 'varCallBlock',
+									match   : match[0],
+									varName : label,
+									content : match[0]
+								});
+						}
+						if(match[6]) { // Inline Definition
+							const label   = match[8] ? match[8].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+							const content = match[9] ? match[9].trim().replace(/\s+/g, ' ')               : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+
+							linksQueue.push(
+								{ type    : 'varDefBlock',
+									match   : match[0],
+									varName : label,
+									content : content
+								});
+							linksQueue.push(
+								{ type    : 'varCallInline',
+									match   : match[7],
+									varName : label,
+									content : match[7]
+								});
+						}
+						if(match[10]) { // Inline Call
+							const label = match[11] ? match[11].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+
+							linksQueue.push(
+								{ type    : 'varCallInline',
+									match   : match[0],
+									varName : label,
+									content : match[0]
+								});
+						}
+						lastIndex = combinedRegex.lastIndex;
 				}
-			}
 
-			globalLinks[globalPageNumber][token.label] = {
-				content  : token.content,
-				resolved : resolved
-			};
-			if(token.type == 'varDefInline')	//Inline definitions are also inline calls; after storing the value, change type so it can be displayed
-				token.type = 'varCallInline';
-		}
-		if(token.type == 'varCallBlock' || token.type == 'varCallInline' || token.originalType == 'varCallBlock' || token.originalType == 'varCallInline') {
-			const value = replaceVar(token.raw);
-			if(value.missingValues.length > 0) {
-
-				for (let i = 0; i < value.missingValues.length; i++) {
-					linksQueue.push({ token: token, match: token.raw, varName: value.missingValues[i] });
+				if (lastIndex < src.length) {
+					linksQueue.push(
+						{ type    : 'text',
+							match   : src.slice(lastIndex),
+							varName : null,
+							content : src.slice(lastIndex)
+					});
 				}
-				return;
-			}
 
-			token.content = token.content.replace(token.content, value.value);
-		}
-	}
-};
+				processVariableQueue();
 
-const varDefBlock = {
-	name  : 'varDefBlock',
-	level : 'block',
-	start(src) {return src.match(/\n {0,3}[!$]?\[(?!\s*\])(?:\\.|[^\[\]\\])+\]:/m)?.index; },
-	tokenizer(src, tokens) {
-		//                   [ variable name (spaces allowed) ]: Any text, including into newlines (but no fully blank lines)
-		const regex = /^ {0,3}[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:(?!\() *((?:\n? *[^\s].*)+)(?=\n+|$)/;
-		const match = regex.exec(src);
-		if(match) {
-			const label   = match[1] ? match[1].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-			const content = match[2] ? match[2].trim().replace(/[ \t]+/g, ' ')            : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-
-			return {
-				type    : 'varDefBlock',
-				raw     : match[0],
-				label   : label,
-				content : content
-			};
-		}
-	},
-	renderer(token){
-		return;
-	}
-};
-
-const varDefInline = {
-	name  : 'varDefInline',
-	level : 'inline',
-	start(src) {return src.match(/\n?[!$]?\[(?!\s*\])(?:\\.|[^\[\]\\])+\]:\(.*\)/m)?.index;},
-	tokenizer(src, tokens) {
-		if(!parseVars)	//Don't re-parse variable defs inside of another variable call
-			return;
-		//                   [ variable name (spaces allowed) ]: Any text, including into newlines (but no fully blank lines)
-		const regex = /^\n?([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:\((.+?)\)/;
-		const match = regex.exec(src);
-		if(match) {
-			const label   = match[2] ? match[2].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-			const content = match[3] ? match[3].trim().replace(/\s+/g, ' ')               : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-
-			return {
-				type    : 'varDefInline',
-				raw     : match[0],
-				label   : label,
-				content : content
-			};
-		}
-	},
-	renderer(token) {
-		return;
-	}
-};
-
-const varCallBlock = {
-	name  : 'varCallBlock',
-	level : 'block',
-	start(src) {return src.match(/\n[!$]?\[(?!\s*\])(?:\\.|[^\[\]\\])+\]/m)?.index;},
-	tokenizer(src, tokens) {
-		if(!parseVars)	//Don't re-parse variable calls inside of another variable call
-			return;
-
-		//                      [ variable name (spaces allowed) ] no following text allowed
-		const regex = /^([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?=\n|$)/;
-		const match = regex.exec(src);
-		if(match) {
-			return {
-				type    : 'varCallBlock',
-				raw     : match[0],
-				content : match[0]
-			};
-		}
-	},
-	renderer(token){
-		const tokens = new Marked.Lexer(Marked.defaults).lex(token.content);
-		return this.parser.parse(tokens);
-	}
-};
-
-const varCallInline = {
-	name  : 'varCallInline',
-	level : 'inline',
-	start(src) {return src.match(/[!$]?\[(?!\s*\])(?:\\.|[^\[\]\\])+\]/m)?.index;},
-	tokenizer(src, tokens) {
-		if(!parseVars)	//Don't re-parse variable calls inside of another variable call
-			return;
-
-		//                   [ variable name (spaces allowed) ]: Any text, including into newlines (but no fully blank lines)
-		const regex = /^([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?!\()/; // Do not allow `(` after, since that is needed for normal images/links
-		const match = regex.exec(src);
-		if(match) {
-			return {
-				type    : 'varCallInline',
-				raw     : match[0],
-				content : match[0]
-			};
-		}
-	},
-	renderer(token){
-		const tokens = new Marked.Lexer(Marked.defaults).inlineTokens(token.content);
-		return this.parser.parseInline(tokens);
-	}
+				const output = linksQueue.map(item => item.content).join('');
+				linksQueue = []; // Must clear linksQueue because custom HTML renderer uses Marked.parse which will preprocess again without clearing the array
+				return output;
+      }
+    }
+  };
 };
 //^=====--------------------< Variable Handling >-------------------=====^//
 
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts, varCallInline, varDefInline, varCallBlock, varDefBlock] });
-Marked.use(mustacheInjectBlock, walkVariableTokens);
+Marked.use(MarkedVariables())
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts] });
+Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
-
-//Fix local links in the Preview iFrame to link inside the frame
-renderer.link = function (href, title, text) {
-	let self = false;
-	if(href[0] == '#') {
-		self = true;
-	}
-	href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
-
-	if(href === null) {
-		return text;
-	}
-	let out = `<a href="${escape(href)}"`;
-	if(title) {
-		out += ` title="${title}"`;
-	}
-	if(self) {
-		out += ' target="_self"';
-	}
-	out += `>${text}</a>`;
-	return out;
-};
 
 const nonWordAndColonTest = /[^\w:]/g;
 const cleanUrl = function (sanitize, base, href) {
@@ -664,7 +666,7 @@ module.exports = {
 	marked : Marked,
 	render : (rawBrewText, pageNumber=1)=>{
 		globalLinks[pageNumber] = {};						//Reset global links for current page, to ensure values are parsed in order
-		linksQueue              = [];
+		linksQueue              = [];						//Could move into MarkedVariables()
 		globalPageNumber        = pageNumber;
 
 		parseVars = true;
@@ -677,9 +679,9 @@ module.exports = {
 		const tokens = Marked.lexer(rawBrewText, opts);
 
 		Marked.walkTokens(tokens, opts.walkTokens);
-		processVariableQueue();
 
 		parseVars = false;
+
 		const html = Marked.parser(tokens, opts);
 		return opts.hooks.postprocess(html);
 	},
