@@ -301,6 +301,7 @@ const blockDefinitionLists = {
 		let inList = false;
 		let lastEmpty = false;
 		let inlineDefinitions = false;
+		let appending = false;
 		while (match = regex.exec(src)) {
 			// If we aren't actively in a DL and we match just text, bail.
 			// If the last loop bailed with lastEmpty and we match just text, bail
@@ -308,9 +309,17 @@ const blockDefinitionLists = {
 				break;
 			}
 			endIndex += match[0].length;
+
 			// Check to see if this a match containing the start of a DD.
 			if(match[0].indexOf('::') > -1) {
 				inList = true;
+				// Check and see if we are currently in line appending mode
+				if(appending) {
+					const lastPos = typeof currentDefinition.dd.length !== 'undefined' ? currentDefinition.dd.length - 1 : 0;
+					currentDefinition.dd[lastPos] = `${currentDefinition.dd[lastPos]} ${match[1]?.trim()}`;
+					match[1] = '';
+				}
+				appending = false;
 				// Check for a DT value.
 				if(match[1]?.trim()?.length>0) {
 					if(currentDefinition?.dt?.length) {
@@ -341,7 +350,7 @@ const blockDefinitionLists = {
 						continue;
 					}
 					// Multi-line style DDs
-					const newDefinitions = _.flatten(match[2].split('::').filter((item)=>item).map((s)=>s.trim()));
+					const newDefinitions = _.flatten(match[2].split('\n::').filter((item)=>item).map((s)=>s.trim()));
 					if(newDefinitions?.length) {
 						currentDefinition.dd = currentDefinition.dd.concat(newDefinitions);
 					}
@@ -364,6 +373,7 @@ const blockDefinitionLists = {
 					lastEmpty = false;
 					const lastPos = typeof currentDefinition.dd.length !== 'undefined' ? currentDefinition.dd.length - 1 : 0;
 					currentDefinition.dd[lastPos] = `${currentDefinition.dd[lastPos]} ${match[0].trim()}`;
+					appending = true;
 				}
 			}
 		}
