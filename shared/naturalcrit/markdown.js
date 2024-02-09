@@ -506,7 +506,7 @@ function MarkedVariables() {
 						}
 						if(match[1]) { // Block Definition
 							const label   = match[2] ? match[2].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-							const content = match[3] ? match[3].trim().replace(/\s+/g, ' ')               : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+							const content = match[3] ? match[3].trim().replace(/[ \t]+/g, ' ')            : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
 							linksQueue.push(
 								{ type    : 'varDefBlock',
