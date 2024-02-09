@@ -313,7 +313,8 @@ const blockDefinitionLists = {
 			// Check to see if this a match containing the start of a DD.
 			if(match[0].indexOf('::') > -1) {
 				inList = true;
-				// Check and see if we are currently in line appending mode
+				// Check and see if we are currently in line appending mode, if so, match[1] should be
+				// appended to the last entry instead of being used as the next DT.
 				if(appending) {
 					const lastPos = typeof currentDefinition.dd.length !== 'undefined' ? currentDefinition.dd.length - 1 : 0;
 					currentDefinition.dd[lastPos] = `${currentDefinition.dd[lastPos]} ${match[1]?.trim()}`;
@@ -359,6 +360,7 @@ const blockDefinitionLists = {
 				}
 				lastEmpty = false;
 			} else if(inList) { // Regular line that might mark the end of a line.
+				appending = false;
 				if(inlineDefinitions) {
 					endIndex -= match[0].length;
 					break;
