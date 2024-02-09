@@ -11,6 +11,25 @@ const USERPAGE_KEY_PREFIX = 'HOMEBREWERY-LISTPAGE';
 
 const DEFAULT_SORT_TYPE = 'alpha';
 const DEFAULT_SORT_DIR = 'asc';
+const DEFAULT_BREW_INDEX = 0;
+
+const BREW_ITEM_LIST = [
+	{
+		icon      : 'fa-th',
+		title     : 'Compact',
+		className : 'compact'
+	},
+	{
+		icon      : 'fa-th-large',
+		title     : 'Expanded',
+		className : 'expanded'
+	},
+	{
+		icon      : 'fa-bars',
+		title     : 'List',
+		className : 'list'
+	}
+];
 
 const ListPage = createClass({
 	displayName     : 'ListPage',
@@ -39,7 +58,8 @@ const ListPage = createClass({
 			sortType       : this.props.query?.sort || null,
 			sortDir        : this.props.query?.dir || null,
 			query          : this.props.query,
-			brewCollection : brewCollection
+			brewCollection : brewCollection,
+			brewItemIndex  : DEFAULT_BREW_INDEX
 		};
 	},
 
@@ -58,10 +78,13 @@ const ListPage = createClass({
 				return brewGroup;
 			});
 
+			const newBrewItemIndex = Number(localStorage.getItem(`${USERPAGE_KEY_PREFIX}-BREWINDEX`)) || DEFAULT_BREW_INDEX;
+
 			this.setState({
 				brewCollection : brewCollection,
 				sortType       : newSortType,
-				sortDir        : newSortDir
+				sortDir        : newSortDir,
+				brewItemIndex  : newBrewItemIndex
 			});
 		};
 	},
@@ -76,13 +99,14 @@ const ListPage = createClass({
 		});
 		localStorage.setItem(`${USERPAGE_KEY_PREFIX}-SORTTYPE`, this.state.sortType);
 		localStorage.setItem(`${USERPAGE_KEY_PREFIX}-SORTDIR`, this.state.sortDir);
+		localStorage.setItem(`${USERPAGE_KEY_PREFIX}-BREWINDEX`, this.state.brewItemIndex);
 	},
 
 	renderBrews : function(brews){
 		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
 
 		return _.map(brews, (brew, idx)=>{
-			return <BrewItem brew={brew} key={idx} reportError={this.props.reportError}/>;
+			return <BrewItem className={BREW_ITEM_LIST[this.state.brewItemIndex].className} brew={brew} key={idx} reportError={this.props.reportError}/>;
 		});
 	},
 
@@ -205,6 +229,13 @@ const ListPage = createClass({
 		}));
 	},
 
+	handleBrewItemSwitch : function() {
+		const newIndex = this.state.brewItemIndex + 1 < BREW_ITEM_LIST.length ? this.state.brewItemIndex + 1 : 0;
+		this.setState({
+			brewItemIndex : newIndex
+		});
+	},
+
 	renderBrewCollection : function(brewCollection){
 		if(brewCollection == []) return <div className='brewCollection'>
 			<h1>No Brews</h1>
@@ -217,6 +248,14 @@ const ListPage = createClass({
 		});
 	},
 
+	renderBrewItemSwitch : function(){
+		return <div className='brewItemSwitch'>
+			<button onClick={this.handleBrewItemSwitch} className='brewItemSwitchButton' title={BREW_ITEM_LIST[this.state.brewItemIndex].title}>
+				<i className={`fas ${BREW_ITEM_LIST[this.state.brewItemIndex].icon}`} />
+			</button>
+		</div>;
+	},
+
 	render : function(){
 		return <div className='listPage sitePage'>
 			{/*<style>@layer V3_5ePHB, bundle;</style>*/}
@@ -224,6 +263,7 @@ const ListPage = createClass({
 			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet'/>
 			{this.props.navItems}
 			{this.renderSortOptions()}
+			{this.renderBrewItemSwitch()}
 
 			<div className='content V3'>
 				<div className='page'>
