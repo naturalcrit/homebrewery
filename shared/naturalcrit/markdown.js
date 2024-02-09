@@ -4,8 +4,38 @@ const Marked = require('marked');
 const MarkedExtendedTables = require('marked-extended-tables');
 const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartypants-lite');
 const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
+const MathParser = require('expr-eval').Parser;
 const renderer = new Marked.Renderer();
 const tokenizer = new Marked.Tokenizer();
+
+//Limit math features to simple items
+const mathParser = new MathParser({
+	operators: {
+		// These default to true, but are included to be explicit
+		add         : true,
+		subtract    : true,
+		multiply    : true,
+		divide      : true,
+		power       : true,
+		round       : true,
+
+		sin   : false, cos    : false, tan    : false, asin : false, acos  : false,
+		atan  : false, sinh   : false, cosh   : false, tanh : false, asinh : false,
+		acosh : false, atanh  : false, sqrt   : false, cbrt : false, log   : false,
+		log2  : false, ln     : false, lg     : false, log10: false, expm1 : false,
+		log1p : false, abs    : false, ceil   : false, floor: false, trunc : false,
+		'-'   : false, '+'    : false, exp    : false, not  : false, length: false,
+		'!'   : false, sign   : false, random : false, fac  : false, min   : false,
+		max   : false, hypot  : false, pyt    : false, pow  : false, atan2 : false,
+		'if'  : false, gamma  : false, roundTo: false, map  : false, fold  : false,
+		filter: false, indexOf: false, join   : false, sum  : false,
+
+		remainder   : false, factorial   : false,
+		comparison  : false, concatenate : false,
+		logical     : false, assignment  : false,
+		array       : false, fndef       : false
+	}
+}); 
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (html) {
@@ -290,7 +320,7 @@ const definitionLists = {
 };
 
 
-//v=====--------------------< Variable Handling >-------------------=====v// 295 lines
+//v=====--------------------< Variable Handling >-------------------=====v// 258 lines
 const replaceVar = function(input, hoist=false) {
 	const regex = /([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)/g;
 	const match = regex.exec(input);
@@ -301,36 +331,31 @@ const replaceVar = function(input, hoist=false) {
 	let missingValues = [];
 
 	//v=====--------------------< HANDLE MATH >-------------------=====v//
-	const mathRegex = /[^+\-*\/]+|[+\-*\/]/g;
-	let mathLabels = label.match(mathRegex).map((s)=>s.trim());
+	const variableRegex = /[a-zA-Z_][a-zA-Z0-9_]*(?=\s*(?:[+\-*\/()]|$))/g; // Capture only variables, ignore mathy stuff
+	let mathVars = label.match(variableRegex)?.map((s)=>s.trim());
 
-	if(mathLabels.length > 2 && mathLabels.length % 2 == 1) {
+	let replacedLabel = label;
 
-		const valid = mathLabels.every((val, i)=>{  // Math must alternate between operators and values
-			const isOperator = '+-*/'.includes(val);
-			return (i % 2 === 0 ? !isOperator : isOperator);
-		});
-		if(!valid)
-			return { value: input, missingValues: missingValues };
-
-		mathLabels = mathLabels.map((str)=>{
-			if(!isNaN(str))
-				return Number(str);
-
-			if('+-*/'.includes(str))
-				return str;
-
-			const foundVar = lookupVar(str, globalPageNumber, hoist);
-			if(foundVar && foundVar.resolved && foundVar.content) // Only subsitute math values if fully resolved and not empty strings
-				return foundVar.content;
-
-			return str;
+	if(mathVars?.[0] !== label.trim())  {// If there was mathy stuff not captured, let's do math!
+		mathVars?.forEach((variable) => {
+			const foundVar = lookupVar(variable, globalPageNumber, hoist);
+			if(foundVar && foundVar.resolved && foundVar.content && !isNaN(foundVar.content)) { // Only subsitute math values if fully resolved, not empty strings, and numbers
+				replacedLabel = replacedLabel.replaceAll(variable, foundVar.content);
+			}
+			else {
+				missingValues.push(foundVar);
+			}
 		});
 
-		missingValues = mathLabels.filter((x)=>isNaN(x) && !'+-*/'.includes(x));
+		let result;
+		try {
+			result = mathParser.evaluate(replacedLabel);
+		} catch (error) {
+			result = input;
+		}
 
 		return {
-			value         : missingValues.length > 0 ? input : eval(mathLabels.join('')),
+			value         : result,
 			missingValues : missingValues
 		};
 	}
@@ -418,11 +443,13 @@ const processVariableQueue = function() {
 
 				if(resolved == true || item.content != tempContent) {
 					resolvedOne = true;
-					globalLinks[globalPageNumber][item.varName] = {
-						content  : item.content,
-						resolved : resolved
-					};
 				}
+
+				globalLinks[globalPageNumber][item.varName] = {
+					content  : item.content,
+					resolved : resolved
+				};
+
 				if(item.type == 'varDefBlock' && resolved){
 					item.type = 'resolved';
 				}
@@ -442,18 +469,16 @@ const processVariableQueue = function() {
 				item.content = item.content.replace(item.match, value.value);
 				item.type    = 'text';
 			}
-			//resolvedOne = false;
 		}
-		linksQueue = linksQueue.filter(item => {item.type !== 'resolved' && item.type !== 'varDefBlock'});
+		linksQueue = linksQueue.filter(item => item.type !== 'resolved'); // Remove any fully-resolved variables
 
 		if(finalLoop)
 			break;
 		if(!resolvedOne)
 			finalLoop   = true;
 	}
+	linksQueue = linksQueue.filter(item => item.type !== 'varDefBlock');
 };
-
-//^=====--------------------< Variable Handling >-------------------=====^//
 
 function MarkedVariables() {
   return {
@@ -461,8 +486,8 @@ function MarkedVariables() {
       preprocess(src) {
 				const blockDefRegex   = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:(?!\() *((?:\n? *[^\s].*)+)(?=\n+|$)/; //Matches 1, [2]:3
 				const blockCallRegex  = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?=\n|$)/;                              //Matches 4, [5]
-				const inlineDefRegex  =  /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]\(([^\n]+?)\)/;                         //Matches 6, [7](8)
-				const inlineCallRegex =  /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?!\()/;                                //Matches 9, [10]
+				const inlineDefRegex  =  /([!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\])\(([^\n]+?)\)/;                       //Matches 6, 7[8](9)
+				const inlineCallRegex =  /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?!\()/;                                //Matches 10, [11]
 
 				// Combine regexes like so: (regex1)|(regex2)|(regex3)|(regex4)
 				let combinedRegex = new RegExp([blockDefRegex, blockCallRegex, inlineDefRegex, inlineCallRegex].map(s => `(${s.source})`).join('|'), 'gm');
@@ -501,18 +526,24 @@ function MarkedVariables() {
 								});
 						}
 						if(match[6]) { // Inline Definition
-							const label   = match[7] ? match[7].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-							const content = match[8] ? match[8].trim().replace(/\s+/g, ' ')               : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+							const label   = match[8] ? match[8].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+							const content = match[9] ? match[9].trim().replace(/\s+/g, ' ')               : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
 							linksQueue.push(
-								{ type    : 'varDefInline',
+								{ type    : 'varDefBlock',
 									match   : match[0],
 									varName : label,
 									content : content
 								});
+							linksQueue.push(
+								{ type    : 'varCallInline',
+									match   : match[7],
+									varName : label,
+									content : match[7]
+								});
 						}
-						if(match[9]) { // Inline Call
-							const label = match[10] ? match[10].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						if(match[10]) { // Inline Call
+							const label = match[11] ? match[11].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
 							linksQueue.push(
 								{ type    : 'varCallInline',
@@ -533,14 +564,7 @@ function MarkedVariables() {
 					});
 				}
 
-				console.log(`Page ${globalPageNumber}`)
-				console.log("Found Tokens:");
-				console.log(linksQueue);
-
 				processVariableQueue();
-
-				console.log("Final Tokens:");
-				console.log(linksQueue);
 
 				const output = linksQueue.map(item => item.content).join('');
 				linksQueue = []; // Must clear linksQueue because custom HTML renderer uses Marked.parse which will preprocess again without clearing the array
@@ -549,6 +573,7 @@ function MarkedVariables() {
     }
   };
 };
+//^=====--------------------< Variable Handling >-------------------=====^//
 
 Marked.use(MarkedVariables())
 Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts] });
@@ -656,7 +681,7 @@ module.exports = {
 		Marked.walkTokens(tokens, opts.walkTokens);
 
 		parseVars = false;
-		console.log(tokens)
+
 		const html = Marked.parser(tokens, opts);
 		return opts.hooks.postprocess(html);
 	},
