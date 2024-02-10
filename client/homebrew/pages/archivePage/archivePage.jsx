@@ -24,84 +24,94 @@ const ArchivePage = createClass({
     return {
       title      : this.props.query.title || '',
       brewCollection : null,
+      page       : 1,
+      totalPages : 1,
       searching  : false,
       error      : null,
-      limit      : '',
     };
   },
   componentDidMount : function() {
-    this.lookup();
+    this.loadPage(1);
   },
-  
-
   handleChange(e) {
     this.setState({ title: e.target.value });
   },
-  lookup() {
-    this.setState({ searching: true, error: null });
-    request
-      .get(`/archive/${this.state.title}`)
-      .then((res) => this.setState({ brewCollection: res.body.brews }, this.setState({ limit: res.body.message}, this.setState({ error: null}))))
-      .catch((err) => this.setState({ error: err }))
-      .finally(() => this.setState({ searching: false }));
+
+  updateStateWithBrews : (brews, page, totalPages) => {
+    this.setState({
+      brewCollection: brews,
+      page: page,
+      totalPages: totalPages,
+      searching: false
+    });
+  },
+  loadPage: async function(pageNumber) {
+    try {
+      this.updateUrl();
+      this.setState({ searching: true, error: null });
+      const title = encodeURIComponent(this.state.title);
+      const response = await fetch(`/archive?title=${title}&page=${pageNumber}`);
+
+  
+      if (response.ok) {
+        const res = await response.json();
+        this.updateStateWithBrews(res.brews, pageNumber, res.totalPages);
+      }
+
+    } catch (error) {
+      console.log("LoadPage error: " + error);
+    }
   },
   updateUrl: function() {
     const url = new URL(window.location.href);
     const urlParams = new URLSearchParams(url.search);
-    // Clear existing parameters
-    urlParams.delete('sort');
-    urlParams.delete('dir');
-    urlParams.delete('filter');
-
-    // Set the pathname to '/archive/?query'
+  
+    // Set the title and page parameters
     urlParams.set('title', this.state.title);
-
-    url.search = urlParams;
+    urlParams.set('page', this.state.page);
+  
+    url.search = urlParams.toString(); // Convert URLSearchParams to string
     window.history.replaceState(null, null, url);
-},
+  },
+  
   renderFoundBrews() {
-    const brews = this.state.brewCollection;
-    console.log('brews: ',brews);
+    const { title, brewCollection, page, totalPages, error } = this.state;
 
-    if (this.state.title == '') {
-      return(
-        <div className="foundBrews noBrews">
-          <h3>Whenever you want, just start typing...</h3>
-      </div>
-      );
-    }
+    if (title === '') {return (<div className="foundBrews noBrews"><h3>Whenever you want, just start typing...</h3></div>);}
 
-    if (this.state.error !== null) {
-      return(
+    if (error !== null) { return (
         <div className="foundBrews noBrews">
-          <div>
-            <h3>I'm sorry, your request didn't work</h3>
-            <br />
-            <p>Your search is not enough specific, too many brews meet this criteria for us to forward them.</p>
+          <div><h3>I'm sorry, your request didn't work</h3>
+            <br /><p>Your search is not specific enough. Too many brews meet this criteria for us to display them.</p>
+          </div></div>
+    );}
+
+    if (!brewCollection || brewCollection.length === 0) { return (
+        <div className="foundBrews noBrews">
+          <h3>We haven't found brews meeting your request.</h3>
+        </div>
+      );}
+
+    return (
+      <div className="foundBrews">
+        <span className="brewCount">{`Brews Found: ${brewCollection.length}`}</span>
+
+        {brewCollection.map((brew, index) => (
+          <BrewItem brew={brew} key={index} reportError={this.props.reportError} />
+        ))}
+        <div className="paginationControls">
+          {page > 1 && (
+            <button onClick={() => this.loadPage(page - 1)}>Previous Page</button>
+          )}
+          <span className="currentPage">Page {page}</span>
+          {page < totalPages && (
+            <button onClick={() => this.loadPage(page + 1)}>Next Page</button>
+          )}
         </div>
       </div>
-      );
-    }
-
-    if (!brews || brews.length === 0) {
-      return(
-      <div className="foundBrews noBrews">
-        <h3>We haven't found brews meeting your request.</h3>
-      </div>
-       
-      );
-    }
-    this.updateUrl();
-      return <div className="foundBrews">
-        <span className="brewCount">{brews.length} Brews Found</span>
-        <span className="limit">{this.state.limit}</span>
-        {brews.map((brew, index) => (
-        <BrewItem brew={brew} key={index} reportError={this.props.reportError}/>
-        ))}
-      </div>
-       
-    
+    );
   },
+
 
   renderForm: function () {
     return (
@@ -115,7 +125,7 @@ const ArchivePage = createClass({
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
               this.handleChange(e);
-              this.lookup();
+              this.loadPage(1);
             }
           }}
           placeholder='v3 Reference Document'
@@ -125,7 +135,7 @@ const ArchivePage = createClass({
             <input type="checkbox" id="v3" /><label>v3 only</label>
             */}
             
-            <button onClick={() => { this.handleChange({ target: { value: this.state.title } }); this.lookup(); }}>
+            <button onClick={() => { this.handleChange({ target: { value: this.state.title } }); this.loadPage(1); }}>
           <i
             className={cx('fas', {
               'fa-search': !this.state.searching,

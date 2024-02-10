@@ -7,40 +7,46 @@ const archive = {
     /* Searches for matching title, also attempts to partial match */
     findBrews: async (req, res, next) => {
         try {
-            const limit = 1000;
-            const brews = await HomebrewModel.find({
-                title: { $regex: req.params.query, $options: 'i' },
+            const page = parseInt(req.params.page) || 1;
+            console.log('try:',page);
+            const pageSize = 10; // Set a default page size
+            const skip = (page - 1) * pageSize;
+
+            const title = {
+                title: { $regex: decodeURIComponent(req.params.title), $options: 'i' },
                 published: true
-            },
-            {
-                editId:0,
-                googleId:0,
-                text:0,
-                textBin:0,
-            })
-            .limit(limit)
-            .maxTimeMS(10000)
-            .exec();
+            };
+
+            const projection = {
+                editId: 0,
+                googleId: 0,
+                text: 0,
+                textBin: 0,
+            };
+
+            const brews = await HomebrewModel.find(title, projection)
+                .skip(skip)
+                .limit(pageSize)
+                .maxTimeMS(5000)
+                .exec();
 
             if (!brews || brews.length === 0) {
                 // No published documents found with the given title
                 return res.status(404).json({ error: 'Published documents not found' });
             }
 
-            let message = '';
-            if (brews.length === limit) {
-                // If the limit has been reached, include a message in the response
-                message = `You've reached the limit of ${limit} documents, you can try being more specific in your search.`;
-            }
+            const totalDocuments = await HomebrewModel.countDocuments(title);
 
-            return res.json({ brews, message });
+            const totalPages = Math.ceil(totalDocuments / pageSize);
+
+            return res.json({ brews, page, totalPages});
         } catch (error) {
             console.error(error);
             return res.status(500).json({ error: 'Internal Server Error' });
         }
     }
-}
+};
 
-router.get('/archive/:query', asyncHandler(archive.findBrews));
+router.get('/archive/:title/:page', asyncHandler(archive.findBrews));
 
 module.exports = router;
