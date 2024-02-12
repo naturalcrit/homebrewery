@@ -336,7 +336,7 @@ const replaceVar = function(input, hoist=false) {
 	// Split the string into separate expressions
 
 	//const variableRegex = /[a-zA-Z_][a-zA-Z0-9_]*(?=\s*(?:[+\-*\/)]|$))/g; 
-	let mathRegex = /[a-z]+\(|[+\-*/()]/g;
+	let mathRegex = /[a-z]+\(|[+\-*/^()]/g;
 	let matches = label.split(mathRegex)
 	let mathVars = matches.filter(match => isNaN(match))?.map((s)=>s.trim()); // Capture any variable names
 
