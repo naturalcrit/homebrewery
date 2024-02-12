@@ -9,7 +9,7 @@ const archive = {
 		try {
 			const title = req.query.title || '';
 			const page = parseInt(req.query.page) || 1;
-			console.log('try:', page);
+			console.log('trying page ', page);
 			const pageSize = 10; // Set a default page size
 			const skip = (page - 1) * pageSize;
 
@@ -17,29 +17,28 @@ const archive = {
 				title     : { $regex: decodeURIComponent(title), $options: 'i' },
 				published : true
 			};
-
 			const projection = {
 				editId   : 0,
 				googleId : 0,
 				text     : 0,
 				textBin  : 0,
 			};
-
 			const brews = await HomebrewModel.find(titleQuery, projection)
                 .skip(skip)
                 .limit(pageSize)
                 .maxTimeMS(5000)
                 .exec();
+            console.log(brews.length);
 
 			if(!brews || brews.length === 0) {
 				// No published documents found with the given title
 				return res.status(404).json({ error: 'Published documents not found' });
 			}
-
-			const totalDocuments = await HomebrewModel.countDocuments(title);
-
+			const totalDocuments = await HomebrewModel.countDocuments(titleQuery, projection);
+            
 			const totalPages = Math.ceil(totalDocuments / pageSize);
-
+            console.log('Total brews: ', totalDocuments);
+            console.log('Total pages: ', totalPages);
 			return res.json({ brews, page, totalPages });
 		} catch (error) {
 			console.error(error);
