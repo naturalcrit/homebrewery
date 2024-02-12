@@ -13,7 +13,7 @@ const NewBrew       = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem   = require('../../navbar/help.navitem.jsx');
 const BrewItem      = require('../basePages/listPage/brewItem/brewItem.jsx');
 
-const request = require('superagent');
+const request = require('../../utils/request-middleware.js');
 
 const ArchivePage = createClass({
 	displayName     : 'ArchivePage',
@@ -37,14 +37,15 @@ const ArchivePage = createClass({
 		this.setState({ title: e.target.value });
 	},
 
-	updateStateWithBrews : (brews, page, totalPages)=>{
+	updateStateWithBrews : function (brews, page, totalPages) {
 		this.setState({
-			brewCollection : brews,
-			page           : page,
-			totalPages     : totalPages,
+			brewCollection : brews || null,
+			page           : page || 1,
+			totalPages     : totalPages || 1,
 			searching      : false
 		});
 	},
+
 	loadPage : async function(page) {
 		if(this.state.title == '') {} else {
 
@@ -52,19 +53,18 @@ const ArchivePage = createClass({
 				//this.updateUrl();
 				this.setState({ searching: true, error: null });
 				const title = encodeURIComponent(this.state.title);
-				const response = await fetch(`/archive?title=${title}&page=${page}`);
-
-
-				if(response.ok) {
-					const res = await response.json();
-					this.updateStateWithBrews(res.brews, page, res.totalPages);
-				}
-
+				await request.get(`/api/archive?title=${title}&page=${page}`)
+                    .then((response)=>{
+                    	if(response.ok) {
+                    		this.updateStateWithBrews(response.body.brews, page, response.body.totalPages);
+                    	}
+                    });
 			} catch (error) {
 				console.log(`LoadPage error: ${error}`);
 			}
 		}
 	},
+
 	updateUrl : function() {
 		const url = new URL(window.location.href);
 		const urlParams = new URLSearchParams(url.search);
