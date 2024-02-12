@@ -48,6 +48,6 @@ const archive = {
 	}
 };
 
-router.get('/archive', asyncHandler(archive.findBrews));
+router.get('/api/archive', asyncHandler(archive.findBrews));
 
 module.exports = router;
