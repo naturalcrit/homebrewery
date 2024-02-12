@@ -34,7 +34,7 @@ const PrintPage = createClass({
 				style    : this.props.brew.style    || undefined,
 				renderer : this.props.brew.renderer || 'legacy',
 				theme    : this.props.brew.theme    || '5ePHB',
-				lang	 : this.props.brew.lang     || 'en-US'
+				lang	 : this.props.brew.lang     || 'en'
 			}
 		};
 	},
@@ -52,7 +52,7 @@ const PrintPage = createClass({
 						style    : styleStorage,
 						renderer : metaStorage?.renderer || 'legacy',
 						theme    : metaStorage?.theme    || '5ePHB',
-						lang	 : metaStorage?.lang	 || 'en-US'
+						lang	 : metaStorage?.lang	 || 'en'
 					}
 				};
 			});
