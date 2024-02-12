@@ -101,18 +101,16 @@ const ArchivePage = createClass({
 
 		return (
 			<div className='foundBrews'>
-				<span className='brewCount'>{`Brews Found: ${brewCollection.length}`}</span>
-
 				{brewCollection.map((brew, index)=>(
 					<BrewItem brew={brew} key={index} reportError={this.props.reportError} />
 				))}
 				<div className='paginationControls'>
 					{page > 1 && (
-						<button onClick={()=>this.loadPage(page - 1)}>Previous Page</button>
+						<button className='previousPage' onClick={()=>this.loadPage(page - 1)}>Previous Page</button>
 					)}
 					<span className='currentPage'>Page {page}</span>
 					{page < totalPages && (
-						<button onClick={()=>this.loadPage(page + 1)}>Next Page</button>
+						<button className='nextPage' onClick={()=>this.loadPage(page + 1)}>Next Page</button>
 					)}
 				</div>
 			</div>
