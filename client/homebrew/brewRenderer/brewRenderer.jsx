@@ -150,6 +150,8 @@ const BrewRenderer = (props)=>{
 		if(rawPages.length != renderedPages.length) // Re-render all pages when page count changes
 			renderedPages.length = 0;
 
+			//TODO ALWAYS RENDER CURRENT EDITOR PAGE FIRST SO CHANGES CAN POPOGATE OUT. MOVE OUT OF "SHOULDRENDER"
+
 		_.forEach(rawPages, (page, index)=>{
 			if((shouldRender(index) || !renderedPages[index]) && typeof window !== 'undefined'){
 				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range

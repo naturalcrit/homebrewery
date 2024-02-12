@@ -331,20 +331,22 @@ const replaceVar = function(input, hoist=false) {
 	let missingValues = [];
 
 	//v=====--------------------< HANDLE MATH >-------------------=====v//
-	const variableRegex = /[a-zA-Z_][a-zA-Z0-9_]*(?=\s*(?:[+\-*\/()]|$))/g; // Capture only variables, ignore mathy stuff
-	let mathVars = label.match(variableRegex)?.map((s)=>s.trim());
+	// Split the string into separate expressions
+
+	//const variableRegex = /[a-zA-Z_][a-zA-Z0-9_]*(?=\s*(?:[+\-*\/)]|$))/g; 
+	let mathRegex = /[a-z]+\(|[+\-*/()]/g;
+	let matches = label.split(mathRegex)
+	let mathVars = matches.filter(match => isNaN(match))?.map((s)=>s.trim()); // Capture any variable names
 
 	let replacedLabel = label;
 
 	if(mathVars?.[0] !== label.trim())  {// If there was mathy stuff not captured, let's do math!
 		mathVars?.forEach((variable) => {
 			const foundVar = lookupVar(variable, globalPageNumber, hoist);
-			if(foundVar && foundVar.resolved && foundVar.content && !isNaN(foundVar.content)) { // Only subsitute math values if fully resolved, not empty strings, and numbers
+			if(foundVar && foundVar.resolved && foundVar.content && !isNaN(foundVar.content)) // Only subsitute math values if fully resolved, not empty strings, and numbers
 				replacedLabel = replacedLabel.replaceAll(variable, foundVar.content);
-			}
-			else {
-				missingValues.push(foundVar);
-			}
+			else
+				missingValues.push(variable);
 		});
 
 		let result;
@@ -386,7 +388,7 @@ const replaceVar = function(input, hoist=false) {
 
 	let value;
 
-	if(!prefix[0] && href)   // Link
+	if(!prefix[0] && href)        // Link
 		value = `[${label}](${href}${title ? ` ${title}` : ''})`;
 
 	if(prefix[0] == '!' && href)  // Image
@@ -406,9 +408,8 @@ const lookupVar = function(label, index, hoist=false) {
 		index = Object.keys(globalLinks).length;
 
 	while (index >= 0) {
-		if(globalLinks[index]?.[label] !== undefined) {
+		if(globalLinks[index]?.[label] !== undefined)
 			return globalLinks[index][label];
-		}
 		index--;
 	}
 
