@@ -47,21 +47,19 @@ const ArchivePage = createClass({
 	},
 
 	loadPage : async function(page) {
-		if(this.state.title == '') {} else {
-
-			try {
-				//this.updateUrl();
-				this.setState({ searching: true, error: null });
-				const title = encodeURIComponent(this.state.title);
-				await request.get(`/api/archive?title=${title}&page=${page}`)
-                    .then((response)=>{
-                    	if(response.ok) {
-                    		this.updateStateWithBrews(response.body.brews, page, response.body.totalPages);
-                    	}
-                    });
-			} catch (error) {
-				console.log(`LoadPage error: ${error}`);
-			}
+    this.updateUrl();
+		try {
+			//this.updateUrl();
+			this.setState({ searching: true, error: null });
+			const title = encodeURIComponent(this.state.title);
+			await request.get(`/api/archive?title=${title}&page=${page}`)
+                  .then((response)=>{
+                  	if(response.ok) {
+                  		this.updateStateWithBrews(response.body.brews, page, response.body.totalPages);
+                  	}
+                  });
+		} catch (error) {
+			console.log(`LoadPage error: ${error}`);
 		}
 	},
 
