@@ -7,13 +7,14 @@ const archive = {
     /* Searches for matching title, also attempts to partial match */
     findBrews: async (req, res, next) => {
         try {
-            const page = parseInt(req.params.page) || 1;
+            const title = req.query.title || '';
+            const page = parseInt(req.query.page) || 1;
             console.log('try:',page);
             const pageSize = 10; // Set a default page size
             const skip = (page - 1) * pageSize;
 
-            const title = {
-                title: { $regex: decodeURIComponent(req.params.title), $options: 'i' },
+            const titleQuery = {
+                title: { $regex: decodeURIComponent(title), $options: 'i' },
                 published: true
             };
 
@@ -24,7 +25,7 @@ const archive = {
                 textBin: 0,
             };
 
-            const brews = await HomebrewModel.find(title, projection)
+            const brews = await HomebrewModel.find(titleQuery, projection)
                 .skip(skip)
                 .limit(pageSize)
                 .maxTimeMS(5000)
@@ -47,6 +48,6 @@ const archive = {
     }
 };
 
-router.get('/archive/:title/:page', asyncHandler(archive.findBrews));
+router.get('/archive', asyncHandler(archive.findBrews));
 
 module.exports = router;

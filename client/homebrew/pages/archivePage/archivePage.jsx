@@ -31,7 +31,7 @@ const ArchivePage = createClass({
     };
   },
   componentDidMount : function() {
-    this.loadPage(1);
+
   },
   handleChange(e) {
     this.setState({ title: e.target.value });
@@ -45,21 +45,24 @@ const ArchivePage = createClass({
       searching: false
     });
   },
-  loadPage: async function(pageNumber) {
-    try {
-      this.updateUrl();
-      this.setState({ searching: true, error: null });
-      const title = encodeURIComponent(this.state.title);
-      const response = await fetch(`/archive?title=${title}&page=${pageNumber}`);
+  loadPage: async function(page) {
+    if(this.state.title == '') {} else {
+
+      try {
+        //this.updateUrl();
+        this.setState({ searching: true, error: null });
+        const title = encodeURIComponent(this.state.title);
+        const response = await fetch(`/archive?title=${title}&page=${page}`);
 
   
-      if (response.ok) {
-        const res = await response.json();
-        this.updateStateWithBrews(res.brews, pageNumber, res.totalPages);
-      }
+        if (response.ok) {
+          const res = await response.json();
+          this.updateStateWithBrews(res.brews, page, res.totalPages);
+        }
 
-    } catch (error) {
-      console.log("LoadPage error: " + error);
+      } catch (error) {
+        console.log("LoadPage error: " + error);
+      }
     }
   },
   updateUrl: function() {
