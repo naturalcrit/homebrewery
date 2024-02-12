@@ -140,7 +140,7 @@ body {
                             margin-right: 40px;
                             color: black;
 
-                            &:nth-child(even) {
+                            &:nth-child(even of .brewItem) {
                                 margin-right: 0;
                             }
                             h2 {
@@ -159,6 +159,34 @@ body {
                                     margin-right: 12px;
                                     line-height: 1.5em;
                                 }
+                            }
+                        }
+
+                        .paginationControls {
+                            position: absolute;
+                            left: 50%;
+                            translate: -50%;
+                            width: 500px;
+                            display: grid;
+                            grid-template-areas: "previousPage currentPage nextPage";
+                            
+                            .currentPage {
+                                grid-area: currentPage;
+                                height: 100%;
+                                width: 100%;
+                                display: block;
+                                text-align: center;
+                                color: white;
+                                font-family: Open Sans;
+                                font-weight: 900;
+                                padding: 5px 8px;
+                            }
+                            
+                            button.previousPage {
+                                grid-area: previousPage;
+                            }
+                            button.nextPage {
+                                grid-area: nextPage;
                             }
                         }
 
