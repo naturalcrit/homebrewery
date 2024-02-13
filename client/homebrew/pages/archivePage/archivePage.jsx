@@ -129,7 +129,7 @@ const ArchivePage = createClass({
 				{brewCollection.map((brew, index)=>(
 					<BrewItem brew={brew} key={index} reportError={this.props.reportError} />
 				))}
-				{this.renderPagination()}
+				{this.renderPaginationControls()}
 			</div>
 		);
 	},
