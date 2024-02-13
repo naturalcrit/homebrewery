@@ -322,7 +322,7 @@ const definitionLists = {
 };
 
 
-//v=====--------------------< Variable Handling >-------------------=====v// 258 lines
+//v=====--------------------< Variable Handling >-------------------=====v// 254 lines
 const replaceVar = function(input, hoist=false) {
 	const regex = /([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)/g;
 	const match = regex.exec(input);
@@ -406,8 +406,8 @@ const replaceVar = function(input, hoist=false) {
 };
 
 const lookupVar = function(label, index, hoist=false) {
-	if(hoist)
-		index = Object.keys(globalLinks).length;
+	if(hoist) 
+		index = Object.keys(globalLinks).length; // Move index to start from last page
 
 	while (index >= 0) {
 		if(globalLinks[index]?.[label] !== undefined)
@@ -429,7 +429,7 @@ const processVariableQueue = function() {
 			if(item.type == 'text')
 				continue;
 
-			if(item.type == 'varDefBlock' || item.type == 'varDefInline') {
+			if(item.type == 'varDefBlock') {
 				const regex = /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g;
 				let match;
 				let resolved = true;
@@ -455,9 +455,6 @@ const processVariableQueue = function() {
 
 				if(item.type == 'varDefBlock' && resolved){
 					item.type = 'resolved';
-				}
-				if(item.type == 'varDefInline' && resolved){
-					item.type = 'text';
 				}
 			}
 
@@ -487,19 +484,20 @@ function MarkedVariables() {
   return {
     hooks: {
       preprocess(src) {
-				const blockDefRegex   = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:(?!\() *((?:\n? *[^\s].*)+)(?=\n+|$)/; //Matches 1, [2]:3
-				const blockCallRegex  = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?=\n|$)/;                              //Matches 4, [5]
-				const inlineDefRegex  =  /([!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\])\(([^\n]+?)\)/;                       //Matches 6, 7[8](9)
-				const inlineCallRegex =  /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?!\()/;                                //Matches 10, [11]
+				const blockSkip       = /^(?: {4}[^\n]+(?:\n(?: *(?:\n|$))*)?)+|^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})(?:[^\n]*)(?:\n|$)(?:|(?:[\s\S]*?)(?:\n|$))(?: {0,3}\1[~`]* *(?=\n|$)|$)|`[^`]*?`/;
+				const blockDefRegex   = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:(?!\() *((?:\n? *[^\s].*)+)(?=\n+|$)/; //Matches 3, [4]:5
+				const blockCallRegex  = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?=\n|$)/;                              //Matches 6, [7]
+				const inlineDefRegex  = /([!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\])\(([^\n]+)\)/;  //Matches 8, 9[10](11)
+				const inlineCallRegex =  /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?!\()/;                                //Matches 12, [13]
 
 				// Combine regexes like so: (regex1)|(regex2)|(regex3)|(regex4)
-				let combinedRegex = new RegExp([blockDefRegex, blockCallRegex, inlineDefRegex, inlineCallRegex].map(s => `(${s.source})`).join('|'), 'gm');
+				let combinedRegex = new RegExp([blockSkip, blockDefRegex, blockCallRegex, inlineDefRegex, inlineCallRegex].map(s => `(${s.source})`).join('|'), 'gm');
 
 				let lastIndex = 0;
 				let match;
 				while ((match = combinedRegex.exec(src)) !== null) {
 						// Form any matches into tokens and store
-						if (match.index > lastIndex) {
+						if (match.index > lastIndex) { // Any non-variable stuff
 							linksQueue.push(
 								{ type    : 'text',
 								  match   : src.slice(lastIndex, match.index),
@@ -507,9 +505,17 @@ function MarkedVariables() {
 									content : src.slice(lastIndex, match.index)
 							});
 						}
-						if(match[1]) { // Block Definition
-							const label   = match[2] ? match[2].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-							const content = match[3] ? match[3].trim().replace(/[ \t]+/g, ' ')            : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						if(match[1]) {
+							linksQueue.push(
+								{ type    : 'text',
+								  match   : match[0],
+									varName : null,
+									content : match[0]
+							});
+						}
+						if(match[3]) { // Block Definition
+							const label   = match[4] ? match[4].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+							const content = match[5] ? match[5].trim().replace(/[ \t]+/g, ' ')            : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
 							linksQueue.push(
 								{ type    : 'varDefBlock',
@@ -518,8 +524,8 @@ function MarkedVariables() {
 									content : content
 								});
 						}
-						if(match[4]) { // Block Call
-							const label = match[5] ? match[5].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						if(match[6]) { // Block Call
+							const label = match[7] ? match[7].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
 							linksQueue.push(
 								{ type    : 'varCallBlock',
@@ -528,9 +534,32 @@ function MarkedVariables() {
 									content : match[0]
 								});
 						}
-						if(match[6]) { // Inline Definition
-							const label   = match[8] ? match[8].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-							const content = match[9] ? match[9].trim().replace(/\s+/g, ' ')               : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						if(match[8]) { // Inline Definition
+							const label   = match[10] ? match[10].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+							let content = match[11];// ? match[11].trim().replace(/\s+/g, ' ')               : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+
+							let level = 0;
+							let i;
+							for (i = 0; i < content.length; i++) {
+								if (content[i] === '\\') {
+									i++;
+								} else if (content[i] === '(') {
+									level++;
+								} else if (content[i] === ')') {
+									level--;
+									if (level < 0) {
+										break;
+									}
+								}
+							}
+							console.log(content)
+							if (i > -1) {
+								console.log(match.lastIndex)
+								combinedRegex.lastIndex = combinedRegex.lastIndex - (content.length - i);
+								console.log(match.lastIndex)
+								content = content.slice(0,i).trim().replace(/\s+/g, ' ');
+							}
+							console.log(content)
 
 							linksQueue.push(
 								{ type    : 'varDefBlock',
@@ -540,13 +569,13 @@ function MarkedVariables() {
 								});
 							linksQueue.push(
 								{ type    : 'varCallInline',
-									match   : match[7],
+									match   : match[8],
 									varName : label,
-									content : match[7]
+									content : match[8]
 								});
 						}
-						if(match[10]) { // Inline Call
-							const label = match[11] ? match[11].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						if(match[12]) { // Inline Call
+							const label = match[13] ? match[13].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
 							linksQueue.push(
 								{ type    : 'varCallInline',
