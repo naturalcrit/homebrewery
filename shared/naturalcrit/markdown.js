@@ -83,6 +83,11 @@ renderer.link = function (href, title, text) {
 	return out;
 };
 
+// Disable default reflink behavior, as it steps on our variables extension
+tokenizer.def = function () {
+	return undefined;
+};
+
 const mustacheSpans = {
 	name  : 'mustacheSpans',
 	level : 'inline',                                   // Is this a block-level or inline-level tokenizer?
