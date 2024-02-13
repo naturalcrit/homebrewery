@@ -60,6 +60,7 @@ const ArchivePage = createClass({
                   });
 		} catch (error) {
 			console.log(`LoadPage error: ${error}`);
+			this.updateStateWithBrews([], 1, 1);
 		}
 	},
 
