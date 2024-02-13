@@ -421,10 +421,10 @@ const lookupVar = function(label, index, hoist=false) {
 const processVariableQueue = function() {
 	let resolvedOne = true;
 	let finalLoop   = false;
-
+	let loopcount   = 0;
 	while (resolvedOne || finalLoop) { // Loop through queue until no more variable calls can be resolved
 		resolvedOne = false;
-
+		loopcount += 1;
 		for (const item of linksQueue) {
 			if(item.type == 'text')
 				continue;
@@ -440,13 +440,15 @@ const processVariableQueue = function() {
 					if(value.missingValues.length > 0) {
 						resolved = false;
 					} else {
-						item.content = item.content.replaceAll(match[0], value.value);
+						tempContent = tempContent.replaceAll(match[0], value.value);
 					}
 				}
 
 				if(resolved == true || item.content != tempContent) {
 					resolvedOne = true;
+					item.content = tempContent;
 				}
+				
 
 				globalLinks[globalPageNumber][item.varName] = {
 					content  : item.content,
@@ -552,14 +554,10 @@ function MarkedVariables() {
 									}
 								}
 							}
-							console.log(content)
 							if (i > -1) {
-								console.log(match.lastIndex)
 								combinedRegex.lastIndex = combinedRegex.lastIndex - (content.length - i);
-								console.log(match.lastIndex)
 								content = content.slice(0,i).trim().replace(/\s+/g, ' ');
 							}
-							console.log(content)
 
 							linksQueue.push(
 								{ type    : 'varDefBlock',
