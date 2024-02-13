@@ -166,28 +166,49 @@ body {
                             position: absolute;
                             left: 50%;
                             translate: -50%;
-                            width: 500px;
+                            width: auto;
                             display: grid;
+                            place-items: center;
                             grid-template-areas: "previousPage currentPage nextPage";
+                            grid-template-columns: 50px 1fr 50px;
                             
-                            .currentPage {
+                            .pages {
                                 grid-area: currentPage;
                                 height: 100%;
                                 width: 100%;
-                                display: block;
+                                display: flex;
+                                justify-content:space-evenly;
                                 text-align: center;
-                                color: white;
-                                font-family: Open Sans;
-                                font-weight: 900;
                                 padding: 5px 8px;
+
+                                .pageNumber {
+                                    color: white;
+                                    font-family: Open Sans;
+                                    font-weight: 900;
+                                    text-underline-position: under;
+                                    margin-inline:10px;
+                                    cursor: pointer;
+
+                                    &.currentPage {
+                                        color:gold;
+                                        text-decoration:underline;
+                                        pointer-events:none;
+                                    }
+                                }
+                            }
+                            button {
+                                width:max-content;
+                                border-radius:5px;
+
+                                &.previousPage {
+                                    grid-area: previousPage;
+                                }
+
+                                &.nextPage {
+                                    grid-area: nextPage;
+                                }
                             }
                             
-                            button.previousPage {
-                                grid-area: previousPage;
-                            }
-                            button.nextPage {
-                                grid-area: nextPage;
-                            }
                         }
 
                         hr {

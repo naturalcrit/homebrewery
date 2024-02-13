@@ -75,6 +75,32 @@ const ArchivePage = createClass({
 		window.history.replaceState(null, null, url);
 	},
 
+	renderPaginationControls() {
+		const { title, brewCollection, page, totalPages, error } = this.state;
+		const pages = new Array(totalPages).fill().map((_, index) => (
+			<li key={index} className={`pageNumber ${page === index + 1 ? 'currentPage' : ''}`} onClick={() => this.loadPage(index+1)}>{index + 1}</li>
+		));
+	
+		return (
+		  	<div className="paginationControls">
+				{page > 1 && (
+			  		<button
+						className="previousPage"
+						onClick={() => this.loadPage(page - 1)}
+			  		>
+						&lt;&lt;
+			  		</button>
+				)}
+				<ol className='pages'>{pages}</ol>
+				{page < totalPages && (
+			  		<button className="nextPage" onClick={() => this.loadPage(page + 1)}>
+						&gt;&gt;
+			  		</button>
+				)}
+		  </div>
+		);
+	},
+
 	renderFoundBrews() {
 		const { title, brewCollection, page, totalPages, error } = this.state;
 
@@ -102,15 +128,7 @@ const ArchivePage = createClass({
 				{brewCollection.map((brew, index)=>(
 					<BrewItem brew={brew} key={index} reportError={this.props.reportError} />
 				))}
-				<div className='paginationControls'>
-					{page > 1 && (
-						<button className='previousPage' onClick={()=>this.loadPage(page - 1)}>Previous Page</button>
-					)}
-					<span className='currentPage'>Page {page}</span>
-					{page < totalPages && (
-						<button className='nextPage' onClick={()=>this.loadPage(page + 1)}>Next Page</button>
-					)}
-				</div>
+				{this.renderPagination()}
 			</div>
 		);
 	},
