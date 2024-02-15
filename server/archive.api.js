@@ -8,9 +8,10 @@ const archive = {
 	findBrews  : async (req, res, next)=>{
 		try {
 			const title = req.query.title || '';
-			const page = parseInt(req.query.page) || 1;
+			const page = Math.max(parseInt(req.query.page) || 1, 1);
 			console.log('trying page ', page);
-			const pageSize = 10; // Set a default page size
+			const minPageSize = 6; 
+			const pageSize = Math.max(parseInt(req.query.size) || 10, minPageSize);  
 			const skip = (page - 1) * pageSize;
 
 			const titleQuery = {

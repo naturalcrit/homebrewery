@@ -25,6 +25,7 @@ const ArchivePage = createClass({
 			title          : this.props.query.title || '',
 			brewCollection : null,
 			page           : 1,
+			pageSize	   : 10,
 			totalPages     : 1,
 			totalBrews	   : 0,
 			searching      : false,
@@ -34,8 +35,9 @@ const ArchivePage = createClass({
 	componentDidMount : function() {
 
 	},
-	handleChange(e) {
-		this.setState({ title: e.target.value });
+	handleChange(inputName, e) {
+
+		this.setState({ [inputName]: e.target.value });
 	},
 
 	updateStateWithBrews : function (brews, page, totalPages, totalBrews) {
@@ -53,7 +55,8 @@ const ArchivePage = createClass({
 		try {
 			this.setState({ searching: true, error: null });
 			const title = encodeURIComponent(this.state.title);
-			await request.get(`/api/archive?title=${title}&page=${page}`)
+			const size = parseInt(this.state.pageSize);
+			await request.get(`/api/archive?title=${title}&page=${page}&size=${size}`)
                   .then((response)=>{
                   	if(response.ok) {
                   		this.updateStateWithBrews(response.body.brews, page, response.body.totalPages, response.body.totalBrews);
@@ -140,33 +143,54 @@ const ArchivePage = createClass({
 	renderForm : function () {
 		return (
 			<div className='brewLookup'>
-				<h2>Brew Lookup</h2>
-				<label>Title of the brew</label>
-				<input
-					type='text'
-					value={this.state.title}
-					onChange={this.handleChange}
-					onKeyDown={(e)=>{
-						if(e.key === 'Enter') {
-							this.handleChange(e);
-							this.loadPage(1);
-						}
-					}}
-					placeholder='v3 Reference Document'
-				/>
-				{/* In the future, we should be able to filter the results by adding tags.
-            <label>Tags</label><input type='text' value={this.state.query} placeholder='add a tag to filter'/>
-            <input type="checkbox" id="v3" /><label>v3 only</label>
-            */}
+				<h2 className='formTitle'>Brew Lookup</h2>
+				<div className="formContents">
+					<label>
+						Title of the brew 
+						<input
+							type='text'
+							name='title'
+							value={this.state.title}
+							onChange={(e) => this.handleChange('title', e)}
+                    		onKeyDown={(e) => {
+                        		if (e.key === 'Enter') {
+                            		this.handleChange('title', e);
+                            		this.loadPage(1);
+                        		}
+                    		}}
+							placeholder='v3 Reference Document'
+						/>
+					</label>
+				
+					<label>
+						Results per page
+						<input
+							type="number"
+							min="6"step="2"max="30"
+							name="pageSize"
+							onChange={(e) => this.handleChange('pageSize', e)}
+						/>
+					</label>
+					{/* In the future, we should be able to filter the results by adding tags.
+            		<label>Tags</label><input type='text' value={this.state.query} placeholder='add a tag to filter'/>
+            		<input type="checkbox" id="v3" /><label>v3 only</label>
+            		*/}
 
-				<button onClick={()=>{ this.handleChange({ target: { value: this.state.title } }); this.loadPage(1); }}>
-					<i
-						className={cx('fas', {
+					<button
+						className='search'
+						onClick={()=>{ 
+							this.handleChange('title', { target: { value: this.state.title } });
+							this.loadPage(1);
+						}}>
+						Search
+						<i
+							className={cx('fas', {
 							'fa-search'          : !this.state.searching,
 							'fa-spin fa-spinner' : this.state.searching,
-						})}
-					/>
-				</button>
+							})}
+						/>
+					</button>
+				</div>
 			</div>
 		);
 	},

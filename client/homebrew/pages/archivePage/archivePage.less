@@ -48,20 +48,35 @@ body {
                 background: white;
 
                 &.form .brewLookup {
+                    position: relative;
                     padding: 50px;
 
-                    h2 {
+                    .formTitle {
+                        color:black;
                         font-size: 30px;
                         border-bottom: 2px solid;
-                        margin-block: 20px;
+                        margin: 20px 0;
+                        text-align: center;
                     }
 
+                    .formContents {
+                        display: flex;
+                        flex-direction: column;
+                    }
                     label {
-                        margin-right: 10px;
+                        margin: 10px 0;
                     }
+                    input {
+                        margin: 0 10px;
+                    }
+                    .search {
+                        position:absolute;
+                        right:10px;
+                        bottom:20px;
 
-                    input+button {
-                        margin-left: 20px;
+                        i {
+                            margin-left: 10px;
+                        }
                     }
                 }
 
