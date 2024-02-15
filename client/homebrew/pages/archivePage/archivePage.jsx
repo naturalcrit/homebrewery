@@ -257,6 +257,7 @@ const ArchivePage = createClass({
 		if(title === '') {return (<div className='foundBrews noBrews'><h3>Whenever you want, just start typing...</h3></div>);}
 
 		if (error) {
+			console.log(error.errorCode);
 			let errorMessage;
 			switch (error.errorCode) {
 				case '404':
