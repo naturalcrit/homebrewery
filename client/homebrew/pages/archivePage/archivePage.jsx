@@ -253,6 +253,7 @@ const ArchivePage = createClass({
 					</div></div>
 			);
 		};
+		console.log(searching, !brewCollection, error);
 		console.log('404: ', searching === false && (!brewCollection || error === 'Error: Not found'))
 		if(searching === false && (!brewCollection || error === 'Error: Not found')) {
 			return (
