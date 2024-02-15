@@ -41,7 +41,7 @@ const ArchivePage = createClass({
 		};
 	},
 	componentDidMount : function() {
-		
+		this.loadPage(this.state.page, false);
 	},
 
 	updateStateWithBrews : function (brews, page, totalPages, totalBrews) {
@@ -55,19 +55,47 @@ const ArchivePage = createClass({
 	},
 
 	updateStateWithForm : function() {
+		const title = document.getElementById( 'title' ).value || "";
+		const size = document.getElementById( 'size' ).value || 10;
+		const page = 1;
+		const v3 = document.getElementById('v3').checked;
+		const legacy = document.getElementById('legacy').checked;
+
 		this.setState({
-			title: document.getElementById( 'title' ).value || "",
-			pageSize: document.getElementById( 'size' ).value || 10,
-			v3: document.getElementById('v3').checked,
-			legacy: document.getElementById('legacy').checked,
+			title: title,
+			pageSize: size,
+			v3: v3,
+			legacy: legacy
 		});
+		this.updateUrl(title, page, size, v3, legacy);
+	},
+
+
+	updateUrl : function(title, page, size, v3, legacy) {
+		const url = new URL(window.location.href);
+		const urlParams = new URLSearchParams(url.search);
+
+		//clean all params
+		urlParams.delete('title');
+		urlParams.delete('page');
+		urlParams.delete('size');
+		urlParams.delete('v3');
+		urlParams.delete('legacy');
+		
+		urlParams.set('title', title);
+		urlParams.set('page', page);
+		urlParams.set('size', size);
+		urlParams.set('v3', v3);
+		urlParams.set('legacy', legacy);
+		
+
+		url.search = urlParams.toString(); // Convert URLSearchParams to string
+		window.history.replaceState(null, null, url);
 	},
 
 	loadPage : async function(page, update) {
-		console.log(update);
 		if(update === true) {
 			this.updateStateWithForm();
-			this.updateUrl();
 		};
 
 		try {
@@ -89,27 +117,108 @@ const ArchivePage = createClass({
 		}
 	},
 
-	updateUrl : function() {
-		const url = new URL(window.location.href);
-		const urlParams = new URLSearchParams(url.search);
-		
-		urlParams.set('title', this.state.title);
-		urlParams.set('page', this.state.page);
-		urlParams.set('pageSize', this.state.pageSize);
-		urlParams.set('v3', this.state.v3);
-		urlParams.set('legacy', this.state.legacy);
-		
+	renderNavItems : function () {
+		return (
+			<Navbar>
+				<Nav.section>
+					<Nav.item className='brewTitle'>Archive: Search for brews</Nav.item>
+				</Nav.section>
+				<Nav.section>
+					<NewBrew />
+					<HelpNavItem />
+					<RecentNavItem />
+					<Account />
+				</Nav.section>
+			</Navbar>
+		);
+	},
 
-		url.search = urlParams.toString(); // Convert URLSearchParams to string
-		window.history.replaceState(null, null, url);
+	renderForm : function () {
+		return (
+			<div className='brewLookup'>
+				<h2 className='formTitle'>Brew Lookup</h2>
+				<div className="formContents">
+					<label>
+						Title of the brew 
+						<input
+							id='title'
+							type='text'
+							name='title'
+							defaultValue={this.state.title}
+                    		onKeyDown={(e) => {
+                        		if (e.key === 'Enter') {
+                            		this.loadPage(1, true);
+                        		}
+                    		}}
+							placeholder='v3 Reference Document'
+						/>
+					</label>
+				
+					<label>
+						Results per page
+						<input
+							id='size'
+							type="number"
+							min="6"step="2"max="30"
+							name="pageSize"
+						/>
+					</label>
+
+					<label>
+						<input 
+							id='v3'
+							type="checkbox"
+							defaultChecked={this.state.v3}
+						/>
+						Search for v3 brews
+					</label>
+
+					<label>
+						<input 
+							id='legacy'
+							type="checkbox"
+							defaultChecked={this.state.legacy}
+						/>
+						Search for legacy brews
+					</label>
+					
+
+					{/* In the future, we should be able to filter the results by adding tags.
+            		<<StringArrayEditor label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
+					placeholder='add tag' unique={true}
+					values={this.state.tags}
+					onChange={(e)=>this.handleChange('tags', e)}/>
+
+					check metadataEditor.jsx L65
+            		*/}
+
+					<button
+						className='search'
+						onClick={()=>{
+							this.loadPage(1, true);
+						}}>
+						Search
+						<i
+							className={cx('fas', {
+							'fa-search'          : !this.state.searching,
+							'fa-spin fa-spinner' : this.state.searching,
+							})}
+						/>
+					</button>
+				</div>
+			</div>
+		);
 	},
 
 	renderPaginationControls() {
-		const { page, totalPages} = this.state;
+		const title = encodeURIComponent(this.state.title);
+		const size = parseInt(this.state.pageSize);
+		const {page, totalPages, legacy, v3} = this.state;
+		console.log('page: ', page);
 		const pages = new Array(totalPages).fill().map((_, index) => (
-			<li key={index} className={`pageNumber ${page === index + 1 ? 'currentPage' : ''}`} onClick={() => this.loadPage(index + 1, false)}>{index + 1}</li>
+			<a key={index} className={`pageNumber ${page == index + 1 ? 'currentPage' : ''}`} href={`/archive?title=${title}&page=${index+1}&size=${size}&v3=${v3}&legacy=${legacy}`}>{index + 1}</a>
 		));
-
+		
 		if(totalPages === null) {return;}
 	
 		return (
@@ -170,105 +279,6 @@ const ArchivePage = createClass({
 				))}
 				{this.renderPaginationControls()}
 			</div>
-		);
-	},
-
-
-	renderForm : function () {
-		const v3 = (this.state.v3 === 'true');
-		const legacy = (this.state.legacy === 'true');
-
-		return (
-			<div className='brewLookup'>
-				<h2 className='formTitle'>Brew Lookup</h2>
-				<div className="formContents">
-					<label>
-						Title of the brew 
-						<input
-							id='title'
-							type='text'
-							name='title'
-							defaultValue={this.state.title}
-                    		onKeyDown={(e) => {
-                        		if (e.key === 'Enter') {
-                            		this.loadPage(1, true);
-                        		}
-                    		}}
-							placeholder='v3 Reference Document'
-						/>
-					</label>
-				
-					<label>
-						Results per page
-						<input
-							id='size'
-							type="number"
-							min="6"step="2"max="30"
-							name="pageSize"
-						/>
-					</label>
-
-					<label>
-						<input 
-							id='v3'
-							type="checkbox"
-							defaultChecked={v3}
-						/>
-						Search for v3 brews
-					</label>
-
-					<label>
-						<input 
-							id='legacy'
-							type="checkbox"
-							defaultChecked={legacy}
-						/>
-						Search for legacy brews
-					</label>
-					
-
-					{/* In the future, we should be able to filter the results by adding tags.
-            		<<StringArrayEditor label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
-					placeholder='add tag' unique={true}
-					values={this.state.tags}
-					onChange={(e)=>this.handleChange('tags', e)}/>
-
-					check metadataEditor.jsx L65
-            		*/}
-
-					<button
-						className='search'
-						onClick={()=>{
-							this.loadPage(1, true);
-						}}>
-						Search
-						<i
-							className={cx('fas', {
-							'fa-search'          : !this.state.searching,
-							'fa-spin fa-spinner' : this.state.searching,
-							})}
-						/>
-					</button>
-				</div>
-			</div>
-		);
-	},
-
-
-
-	renderNavItems : function () {
-		return (
-			<Navbar>
-				<Nav.section>
-					<Nav.item className='brewTitle'>Archive: Search for brews</Nav.item>
-				</Nav.section>
-				<Nav.section>
-					<NewBrew />
-					<HelpNavItem />
-					<RecentNavItem />
-					<Account />
-				</Nav.section>
-			</Navbar>
 		);
 	},
 
