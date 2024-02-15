@@ -47,9 +47,8 @@ const ArchivePage = createClass({
 	},
 
 	loadPage : async function(page) {
-    this.updateUrl();
+    	this.updateUrl();
 		try {
-			//this.updateUrl();
 			this.setState({ searching: true, error: null });
 			const title = encodeURIComponent(this.state.title);
 			await request.get(`/api/archive?title=${title}&page=${page}`)
@@ -60,7 +59,7 @@ const ArchivePage = createClass({
                   });
 		} catch (error) {
 			console.log(`LoadPage error: ${error}`);
-			this.setState({ error: {error} });
+			this.setState({ error: `${error}` });
 			this.updateStateWithBrews([], 1, 1);
 		}
 	},
