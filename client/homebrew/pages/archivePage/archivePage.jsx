@@ -12,6 +12,7 @@ const Account       = require('../../navbar/account.navitem.jsx');
 const NewBrew       = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem   = require('../../navbar/help.navitem.jsx');
 const BrewItem      = require('../basePages/listPage/brewItem/brewItem.jsx');
+//const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
 
 const request = require('../../utils/request-middleware.js');
 
@@ -22,12 +23,20 @@ const ArchivePage = createClass({
 	},
 	getInitialState : function () {
 		return {
+			//request
 			title          : this.props.query.title || '',
-			brewCollection : null,
-			page           : 1,
+			//tags		     : {},
+			legacy		   : true,
+			v3			   : true,
 			pageSize	   : 10,
-			totalPages     : 1,
-			totalBrews	   : 0,
+			page           : 1,
+
+			//response
+			brewCollection : null,
+			totalPages     : null,
+			totalBrews	   : null,
+
+
 			searching      : false,
 			error          : null,
 		};
@@ -36,7 +45,6 @@ const ArchivePage = createClass({
 
 	},
 	handleChange(inputName, e) {
-
 		this.setState({ [inputName]: e.target.value });
 	},
 
@@ -54,9 +62,11 @@ const ArchivePage = createClass({
     	this.updateUrl();
 		try {
 			this.setState({ searching: true, error: null });
+			
 			const title = encodeURIComponent(this.state.title);
 			const size = parseInt(this.state.pageSize);
-			await request.get(`/api/archive?title=${title}&page=${page}&size=${size}`)
+			const {legacy, v3} = this.state;
+			await request.get(`/api/archive?title=${title}&page=${page}&size=${size}&v3=${v3}&legacy=${legacy}`)
                   .then((response)=>{
                   	if(response.ok) {
                   		this.updateStateWithBrews(response.body.brews, page, response.body.totalPages, response.body.totalBrews);
@@ -75,16 +85,22 @@ const ArchivePage = createClass({
 		
 		urlParams.set('title', this.state.title);
 		urlParams.set('page', this.state.page);
+		urlParams.set('pageSize', this.state.pageSize);
+		urlParams.set('v3', this.state.v3);
+		urlParams.set('legacy', this.state.legacy);
+		
 
 		url.search = urlParams.toString(); // Convert URLSearchParams to string
 		window.history.replaceState(null, null, url);
 	},
 
 	renderPaginationControls() {
-		const { title, brewCollection, page, totalPages, error } = this.state;
+		const { page, totalPages,} = this.state;
 		const pages = new Array(totalPages).fill().map((_, index) => (
 			<li key={index} className={`pageNumber ${page === index + 1 ? 'currentPage' : ''}`} onClick={() => this.loadPage(index+1)}>{index + 1}</li>
 		));
+
+		if(totalPages === null) {return;}
 	
 		return (
 		  	<div className="paginationControls">
@@ -171,9 +187,33 @@ const ArchivePage = createClass({
 							onChange={(e) => this.handleChange('pageSize', e)}
 						/>
 					</label>
+
+					<label>
+						<input 
+							type="checkbox"
+							onChange={()=>{this.setState({v3: !this.state.v3})}}
+							checked={this.state.v3}
+						/>
+						Search for v3 brews
+					</label>
+
+					<label>
+						<input 
+							type="checkbox"
+							onChange={()=>{this.setState({legacy: !this.state.legacy})}}
+							checked={this.state.legacy}
+						/>
+						Search for legacy brews
+					</label>
+					
+
 					{/* In the future, we should be able to filter the results by adding tags.
-            		<label>Tags</label><input type='text' value={this.state.query} placeholder='add a tag to filter'/>
-            		<input type="checkbox" id="v3" /><label>v3 only</label>
+            		<<StringArrayEditor label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
+					placeholder='add tag' unique={true}
+					values={this.state.tags}
+					onChange={(e)=>this.handleChange('tags', e)}/>
+
+					check metadataEditor.jsx L65
             		*/}
 
 					<button

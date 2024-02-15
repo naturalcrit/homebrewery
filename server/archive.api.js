@@ -7,17 +7,28 @@ const archive = {
 	/* Searches for matching title, also attempts to partial match */
 	findBrews  : async (req, res, next)=>{
 		try {
+			console.table(req.query);
+
 			const title = req.query.title || '';
 			const page = Math.max(parseInt(req.query.page) || 1, 1);
-			console.log('trying page ', page);
 			const minPageSize = 6; 
 			const pageSize = Math.max(parseInt(req.query.size) || 10, minPageSize);  
 			const skip = (page - 1) * pageSize;
-
+			
 			const titleQuery = {
 				title     : { $regex: decodeURIComponent(title), $options: 'i' },
+				$or: [],
 				published : true
 			};
+
+			if (req.query.legacy === 'true') {
+                titleQuery.$or.push({ renderer: 'legacy' });
+            };
+
+            if (req.query.v3 === 'true') {
+                titleQuery.$or.push({ renderer: 'V3' });
+            };
+
 			const projection = {
 				editId   : 0,
 				googleId : 0,
@@ -29,7 +40,7 @@ const archive = {
                 .limit(pageSize)
                 .maxTimeMS(5000)
                 .exec();
-            console.log(brews.length);
+            //console.log(brews.length);
 
 			if(!brews || brews.length === 0) {
 				// No published documents found with the given title
@@ -38,8 +49,8 @@ const archive = {
 			const totalBrews = await HomebrewModel.countDocuments(titleQuery, projection);
             
 			const totalPages = Math.ceil(totalBrews / pageSize);
-            console.log('Total brews: ', totalBrews);
-            console.log('Total pages: ', totalPages);
+            //console.log('Total brews: ', totalBrews);
+            //console.log('Total pages: ', totalPages);
 			return res.json({ brews, page, totalPages, totalBrews});
 		} catch (error) {
 			console.error(error);
