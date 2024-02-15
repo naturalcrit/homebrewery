@@ -49,7 +49,7 @@ const archive = {
 			return res.json({ brews, page, totalPages, totalBrews});
 		} catch (error) {
 			console.error(error);
-			console.log(error.response.status);
+			console.log(error.response);
 			if (error.response && error.response.status === 404) {
                 return res.status(404).json({ errorCode: '404', message: 'Brews not found' });
             }
