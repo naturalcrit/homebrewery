@@ -97,11 +97,12 @@ body {
                         }
 
                         &.noBrews {
-                            display:grid;
-                            place-items:center;
+                            display: grid;
+                            place-items: center;
+                            color: white;
                         }
 
-                        .brewCount {
+                        .totalBrews {
                             position: fixed;
                             bottom: 0;
                             right: 17px;
@@ -112,27 +113,6 @@ body {
                             padding: 8px 10px;
                             z-index: 1000;
                             font-family: 'Open Sans';
-                            
-                            &:empty {
-                                display: none;
-                            }
-                        }
-
-                        .limit {
-                            position: fixed;
-                            bottom: 0;
-                            left: 502px;
-                            font-size: 11px;
-                            font-weight: 800;
-                            color: white;
-                            background-color: #333;
-                            padding: 8px 10px;
-                            z-index: 1000;
-                            font-family: 'Open Sans';
-                            
-                            &:empty {
-                                display: none;
-                            }
                         }
                         .brewItem {
                             background-image: url('/assets/parchmentBackground.jpg');
