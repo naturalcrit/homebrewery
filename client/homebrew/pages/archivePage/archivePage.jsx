@@ -60,6 +60,7 @@ const ArchivePage = createClass({
                   });
 		} catch (error) {
 			console.log(`LoadPage error: ${error}`);
+			this.setState({ error: {error} });
 			this.updateStateWithBrews([], 1, 1);
 		}
 	},
@@ -67,8 +68,7 @@ const ArchivePage = createClass({
 	updateUrl : function() {
 		const url = new URL(window.location.href);
 		const urlParams = new URLSearchParams(url.search);
-
-		// Set the title and page parameters
+		
 		urlParams.set('title', this.state.title);
 		urlParams.set('page', this.state.page);
 
@@ -107,7 +107,7 @@ const ArchivePage = createClass({
 
 		if(title === '') {return (<div className='foundBrews noBrews'><h3>Whenever you want, just start typing...</h3></div>);}
 
-		if(error !== null) {
+		if(error === 'Error: Service Unavailable') {
 			return (
 				<div className='foundBrews noBrews'>
 					<div><h3>I'm sorry, your request didn't work</h3>
@@ -116,7 +116,7 @@ const ArchivePage = createClass({
 			);
 		}
 
-		if(!brewCollection || brewCollection.length === 0) {
+		if(!brewCollection || brewCollection.length === 0 || error === 'Error: Not found') {
 			return (
 				<div className='foundBrews noBrews'>
 					<h3>We haven't found brews meeting your request.</h3>
