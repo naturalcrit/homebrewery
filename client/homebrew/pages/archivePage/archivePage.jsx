@@ -243,7 +243,6 @@ const ArchivePage = createClass({
 
 	renderFoundBrews() {
 		const { title, brewCollection, page, totalPages, error, searching } = this.state;
-		console.log(searching === false && !brewCollection);
 		if(searching === false && title === '' && error === null) {return (<div className='foundBrews noBrews'><h3>Whenever you want, just start typing...</h3></div>);}
 
 		if(searching === false && error === 'Error: Service Unavailable') {
@@ -254,7 +253,7 @@ const ArchivePage = createClass({
 					</div></div>
 			);
 		};
-		
+		console.log('404: ', searching === false && (!brewCollection || error === 'Error: Not found'))
 		if(searching === false && (!brewCollection || error === 'Error: Not found')) {
 			return (
 				<div className='foundBrews noBrews'>
