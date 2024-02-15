@@ -34,12 +34,12 @@ const archive = {
 				// No published documents found with the given title
 				return res.status(404).json({ error: 'Published documents not found' });
 			}
-			const totalDocuments = await HomebrewModel.countDocuments(titleQuery, projection);
+			const totalBrews = await HomebrewModel.countDocuments(titleQuery, projection);
             
-			const totalPages = Math.ceil(totalDocuments / pageSize);
-            console.log('Total brews: ', totalDocuments);
+			const totalPages = Math.ceil(totalBrews / pageSize);
+            console.log('Total brews: ', totalBrews);
             console.log('Total pages: ', totalPages);
-			return res.json({ brews, page, totalPages });
+			return res.json({ brews, page, totalPages, totalBrews});
 		} catch (error) {
 			console.error(error);
 			return res.status(500).json({ error: 'Internal Server Error' });

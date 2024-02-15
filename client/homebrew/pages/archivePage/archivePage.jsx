@@ -26,6 +26,7 @@ const ArchivePage = createClass({
 			brewCollection : null,
 			page           : 1,
 			totalPages     : 1,
+			totalBrews	   : 0,
 			searching      : false,
 			error          : null,
 		};
@@ -37,11 +38,12 @@ const ArchivePage = createClass({
 		this.setState({ title: e.target.value });
 	},
 
-	updateStateWithBrews : function (brews, page, totalPages) {
+	updateStateWithBrews : function (brews, page, totalPages, totalBrews) {
 		this.setState({
 			brewCollection : brews || null,
 			page           : page || 1,
 			totalPages     : totalPages || 1,
+			totalBrews	   : totalBrews,
 			searching      : false
 		});
 	},
@@ -54,7 +56,7 @@ const ArchivePage = createClass({
 			await request.get(`/api/archive?title=${title}&page=${page}`)
                   .then((response)=>{
                   	if(response.ok) {
-                  		this.updateStateWithBrews(response.body.brews, page, response.body.totalPages);
+                  		this.updateStateWithBrews(response.body.brews, page, response.body.totalPages, response.body.totalBrews);
                   	}
                   });
 		} catch (error) {
@@ -125,6 +127,7 @@ const ArchivePage = createClass({
 
 		return (
 			<div className='foundBrews'>
+				<span className='totalBrews'>Brews found: {this.state.totalBrews}</span>
 				{brewCollection.map((brew, index)=>(
 					<BrewItem brew={brew} key={index} reportError={this.props.reportError} />
 				))}
