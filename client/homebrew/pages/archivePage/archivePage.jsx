@@ -114,10 +114,7 @@ const ArchivePage = createClass({
                   	}
                   });
 		} catch (error) {
-            if (error.response && error.response.status === 503) {
-                console.log('loadPage 503');
-            }
-			this.setState({ error: `${error}` })
+			this.setState({ error: `${error.response.status}` })
 			this.updateStateWithBrews([], 1, 1, 0);
 		}
 	},
