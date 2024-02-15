@@ -122,7 +122,15 @@ body {
                             place-items: center;
                             color: white;
 
-                            h3.searchAnim {
+                            h3 { position: relative;}
+                            h3.searchAnim::after {
+                                content: "";
+                                width: max-content;
+                                height: 1em;
+                                position: absolute;
+                                right: 0;
+                                top: 50%;
+                                translate: 100% -50%;
                                 animation: trailingDots 2s ease infinite;
                             }
                         }
@@ -229,13 +237,13 @@ body {
 
 @keyframes trailingDots {
     0%,32% {
-        clip-path:inset(0 66% 0 0);
+        content:'.';
     }
     
     33%, 65% {
-        clip-path:inset(0 33% 0 0);
+        content:'..';
     }
     66%,100% {
-        clip-path:inset(0 0% 0 0);
+        content:'...';
     }
 }

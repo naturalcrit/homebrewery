@@ -247,7 +247,7 @@ const ArchivePage = createClass({
 		if(searching) {
 			return (
 				<div className='foundBrews searching'>
-					<span><h3>Searching</h3><h3 className='searchAnim'>...</h3></span>
+					<h3 className='searchAnim'>Searching</h3>
 				</div>
 			);
 		};
