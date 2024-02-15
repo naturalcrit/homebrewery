@@ -100,8 +100,8 @@ const ArchivePage = createClass({
 		if(update === true) {
 			this.updateStateWithForm();
 		};
-
-		try {
+		if (title !== '') {
+			try {
 			this.setState({ searching: true, error: null });
 			
 			const title = encodeURIComponent(this.state.title);
@@ -117,6 +117,12 @@ const ArchivePage = createClass({
 			this.setState({ error: `${error.response.status}` })
 			this.updateStateWithBrews([], 1, 1, 0);
 		}
+			console.log(!this.state.brewCollection || brewCollection.length === 0);
+		if(!this.state.brewCollection) {
+			this.setState({ error: '404'});
+		}
+		}
+		
 	},
 
 	renderNavItems : function () {
@@ -253,8 +259,16 @@ const ArchivePage = createClass({
 			);
 		};
 
-		if(title === '') {return (<div className='foundBrews noBrews'><h3>Whenever you want, just start typing...</h3></div>);}
 
+
+		if(title === '') {return (<div className='foundBrews noBrews'><h3>Whenever you want, just start typing...</h3></div>);}
+		if (!brewCollection || brewCollection.length === 0) {
+			return (
+				<div className='foundBrews noBrews'>
+					<h3>No brews found</h3>
+				</div>
+			);
+		};
 		if (error) {
 			console.log('render Error: ', error);
 			let errorMessage;
@@ -277,13 +291,7 @@ const ArchivePage = createClass({
 			);
 		};
 	
-		if (!brewCollection || brewCollection.length === 0) {
-			return (
-				<div className='foundBrews noBrews'>
-					<h3>No brews found</h3>
-				</div>
-			);
-		};
+		
 		
 		return (
 			<div className='foundBrews'>
