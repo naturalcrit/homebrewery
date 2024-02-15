@@ -111,6 +111,8 @@ const BrewItem = createClass({
 			brew.tags = brew.tags?.filter((tag)=>tag); //remove tags that are empty strings
 		}
 		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
+		const authors = brew.authors.length > 0 ? brew.authors : 'No authors';
+
 
 		return <div className='brewItem'>
 			{brew.thumbnail &&
@@ -135,7 +137,18 @@ const BrewItem = createClass({
 				</> : <></>
 				}
 				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
-					<i className='fas fa-user'/> {brew.authors.map((item) => <a href={`/user/${item}`}>{item}</a>)}
+				<i className='fas fa-user'/> {Array.isArray(authors) ? (
+  					<span>
+    					{authors.map((author, index) => (
+      					<span key={index}>
+        					<a href={`/share/${author}`}>{author}</a>
+        					{index < authors.length - 1 && ', '}
+      					</span>
+    					))}
+  					</span>
+					) : (
+  					<span>{authors}</span>
+					)}
 				</span>
 				<br />
 				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
