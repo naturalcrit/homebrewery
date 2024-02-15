@@ -125,7 +125,7 @@ const ArchivePage = createClass({
 	renderFoundBrews() {
 		const { title, brewCollection, page, totalPages, error } = this.state;
 
-		if(title === '') {return (<div className='foundBrews noBrews'><h3>Whenever you want, just start typing...</h3></div>);}
+		if(title === '' && error === null) {return (<div className='foundBrews noBrews'><h3>Whenever you want, just start typing...</h3></div>);}
 
 		if(error === 'Error: Service Unavailable') {
 			return (
