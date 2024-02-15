@@ -243,27 +243,8 @@ const ArchivePage = createClass({
 
 	renderFoundBrews() {
 		const { title, brewCollection, page, totalPages, error, searching } = this.state;
-		if(searching === false && title === '' && error === null) {return (<div className='foundBrews noBrews'><h3>Whenever you want, just start typing...</h3></div>);}
-
-		if(searching === false && error === 'Error: Service Unavailable') {
-			return (
-				<div className='foundBrews noBrews'>
-					<div><h3>I'm sorry, your request didn't work</h3>
-						<br /><p>Your search is not specific enough. Too many brews meet this criteria for us to display them.</p>
-					</div></div>
-			);
-		};
-		console.log(searching, !brewCollection, error);
-		console.log('404: ', searching === false && (!brewCollection || error === 'Error: Not found'))
-		if(searching === false && (!brewCollection || error === 'Error: Not found')) {
-			return (
-				<div className='foundBrews noBrews'>
-					<h3>We haven't found brews meeting your request.</h3>
-				</div>
-			);
-		};
-
-		if(searching === true) {
+		
+		if(searching) {
 			return (
 				<div className='foundBrews searching'>
 					<span><h3>Searching</h3><h3 className='searchAnim'>...</h3></span>
@@ -271,6 +252,37 @@ const ArchivePage = createClass({
 			);
 		};
 
+		if(title === '') {return (<div className='foundBrews noBrews'><h3>Whenever you want, just start typing...</h3></div>);}
+
+		if (error) {
+			let errorMessage;
+			switch (error.errorCode) {
+				case '404':
+					errorMessage = "We didn't find any brew";
+					break;
+				case '503':
+					errorMessage = 'Your search is not specific enough. Too many brews meet this criteria for us to display them.';
+					break;
+				case '500':
+				default:
+					errorMessage = 'An unexpected error occurred';
+			}
+	
+			return (
+				<div className='foundBrews noBrews'>
+					<h3>Error: {errorMessage}</h3>
+				</div>
+			);
+		};
+	
+		if (!brewCollection || brewCollection.length === 0) {
+			return (
+				<div className='foundBrews noBrews'>
+					<h3>No brews found</h3>
+				</div>
+			);
+		};
+		
 		return (
 			<div className='foundBrews'>
 				<span className='totalBrews'>Brews found: {this.state.totalBrews}</span>
