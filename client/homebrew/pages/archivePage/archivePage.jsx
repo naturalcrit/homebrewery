@@ -41,7 +41,10 @@ const ArchivePage = createClass({
 		};
 	},
 	componentDidMount : function() {
-		this.loadPage(this.state.page, false);
+		if (this.state.title !== '') {
+			this.loadPage(this.state.page, false);
+		}
+		
 	},
 
 	updateStateWithBrews : function (brews, page, totalPages, totalBrews) {
