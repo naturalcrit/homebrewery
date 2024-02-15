@@ -40,15 +40,6 @@ const archive = {
                 .limit(pageSize)
                 .maxTimeMS(5000)
                 .exec();
-            //console.log(brews.length);
-
-			if(!brews || brews.length === 0) {
-				// No published documents found with the given title
-				return res.status(404).json({ error: 'Published documents not found' });
-			}
-			if (!brews || brews.length === 0) {
-                return res.status(404).json({ errorCode: '404', message: 'Published documents not found' });
-            }
 
 			const totalBrews = await HomebrewModel.countDocuments(titleQuery, projection);
             
@@ -58,6 +49,9 @@ const archive = {
 			return res.json({ brews, page, totalPages, totalBrews});
 		} catch (error) {
 			console.error(error);
+			if (error.response && error.response.status === 404) {
+                return res.status(404).json({ errorCode: '404', message: 'Brews not found' });
+            }
             if (error.response && error.response.status === 503) {
                 return res.status(503).json({ errorCode: '503', message: 'Service Unavailable' });
             } else {

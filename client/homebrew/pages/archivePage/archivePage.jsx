@@ -214,7 +214,6 @@ const ArchivePage = createClass({
 		const title = encodeURIComponent(this.state.title);
 		const size = parseInt(this.state.pageSize);
 		const {page, totalPages, legacy, v3} = this.state;
-		console.log('page: ', page);
 		const pages = new Array(totalPages).fill().map((_, index) => (
 			<a key={index} className={`pageNumber ${page == index + 1 ? 'currentPage' : ''}`} href={`/archive?title=${title}&page=${index+1}&size=${size}&v3=${v3}&legacy=${legacy}`}>{index + 1}</a>
 		));
