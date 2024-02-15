@@ -26,26 +26,22 @@ const ArchivePage = createClass({
 			//request
 			title          : this.props.query.title || '',
 			//tags		     : {},
-			legacy		   : true,
-			v3			   : true,
-			pageSize	   : 10,
-			page           : 1,
+			legacy		   : `${this.props.query.legacy === 'false' ? false : true }`,
+			v3			   : `${this.props.query.v3 === 'false' ? false : true }`,
+			pageSize	   : this.props.query.size || 10,
+			page           : this.props.query.page || 1,
 
 			//response
 			brewCollection : null,
 			totalPages     : null,
 			totalBrews	   : null,
 
-
 			searching      : false,
 			error          : null,
 		};
 	},
 	componentDidMount : function() {
-
-	},
-	handleChange(inputName, e) {
-		this.setState({ [inputName]: e.target.value });
+		
 	},
 
 	updateStateWithBrews : function (brews, page, totalPages, totalBrews) {
@@ -58,8 +54,22 @@ const ArchivePage = createClass({
 		});
 	},
 
-	loadPage : async function(page) {
-    	this.updateUrl();
+	updateStateWithForm : function() {
+		this.setState({
+			title: document.getElementById( 'title' ).value || "",
+			pageSize: document.getElementById( 'size' ).value || 10,
+			v3: document.getElementById('v3').checked,
+			legacy: document.getElementById('legacy').checked,
+		});
+	},
+
+	loadPage : async function(page, update) {
+		console.log(update);
+		if(update === true) {
+			this.updateStateWithForm();
+			this.updateUrl();
+		};
+
 		try {
 			this.setState({ searching: true, error: null });
 			
@@ -75,7 +85,7 @@ const ArchivePage = createClass({
 		} catch (error) {
 			console.log(`LoadPage error: ${error}`);
 			this.setState({ error: `${error}` });
-			this.updateStateWithBrews([], 1, 1);
+			this.updateStateWithBrews([], 1, 1, 0);
 		}
 	},
 
@@ -95,9 +105,9 @@ const ArchivePage = createClass({
 	},
 
 	renderPaginationControls() {
-		const { page, totalPages,} = this.state;
+		const { page, totalPages} = this.state;
 		const pages = new Array(totalPages).fill().map((_, index) => (
-			<li key={index} className={`pageNumber ${page === index + 1 ? 'currentPage' : ''}`} onClick={() => this.loadPage(index+1)}>{index + 1}</li>
+			<li key={index} className={`pageNumber ${page === index + 1 ? 'currentPage' : ''}`} onClick={() => this.loadPage(index + 1, false)}>{index + 1}</li>
 		));
 
 		if(totalPages === null) {return;}
@@ -107,14 +117,14 @@ const ArchivePage = createClass({
 				{page > 1 && (
 			  		<button
 						className="previousPage"
-						onClick={() => this.loadPage(page - 1)}
+						onClick={() => this.loadPage(page - 1, false)}
 			  		>
 						&lt;&lt;
 			  		</button>
 				)}
 				<ol className='pages'>{pages}</ol>
 				{page < totalPages && (
-			  		<button className="nextPage" onClick={() => this.loadPage(page + 1)}>
+			  		<button className="nextPage" onClick={() => this.loadPage(page + 1, false)}>
 						&gt;&gt;
 			  		</button>
 				)}
@@ -123,26 +133,34 @@ const ArchivePage = createClass({
 	},
 
 	renderFoundBrews() {
-		const { title, brewCollection, page, totalPages, error } = this.state;
+		const { title, brewCollection, page, totalPages, error, searching } = this.state;
+		console.log(searching === false && !brewCollection);
+		if(searching === false && title === '' && error === null) {return (<div className='foundBrews noBrews'><h3>Whenever you want, just start typing...</h3></div>);}
 
-		if(title === '' && error === null) {return (<div className='foundBrews noBrews'><h3>Whenever you want, just start typing...</h3></div>);}
-
-		if(error === 'Error: Service Unavailable') {
+		if(searching === false && error === 'Error: Service Unavailable') {
 			return (
 				<div className='foundBrews noBrews'>
 					<div><h3>I'm sorry, your request didn't work</h3>
 						<br /><p>Your search is not specific enough. Too many brews meet this criteria for us to display them.</p>
 					</div></div>
 			);
-		}
-
-		if(!brewCollection || brewCollection.length === 0 || error === 'Error: Not found') {
+		};
+		
+		if(searching === false && (!brewCollection || error === 'Error: Not found')) {
 			return (
 				<div className='foundBrews noBrews'>
 					<h3>We haven't found brews meeting your request.</h3>
 				</div>
 			);
-		}
+		};
+
+		if(searching === true) {
+			return (
+				<div className='foundBrews searching'>
+					<span><h3>Searching</h3><h3 className='searchAnim'>...</h3></span>
+				</div>
+			);
+		};
 
 		return (
 			<div className='foundBrews'>
@@ -157,6 +175,9 @@ const ArchivePage = createClass({
 
 
 	renderForm : function () {
+		const v3 = (this.state.v3 === 'true');
+		const legacy = (this.state.legacy === 'true');
+
 		return (
 			<div className='brewLookup'>
 				<h2 className='formTitle'>Brew Lookup</h2>
@@ -164,14 +185,13 @@ const ArchivePage = createClass({
 					<label>
 						Title of the brew 
 						<input
+							id='title'
 							type='text'
 							name='title'
-							value={this.state.title}
-							onChange={(e) => this.handleChange('title', e)}
+							defaultValue={this.state.title}
                     		onKeyDown={(e) => {
                         		if (e.key === 'Enter') {
-                            		this.handleChange('title', e);
-                            		this.loadPage(1);
+                            		this.loadPage(1, true);
                         		}
                     		}}
 							placeholder='v3 Reference Document'
@@ -181,27 +201,27 @@ const ArchivePage = createClass({
 					<label>
 						Results per page
 						<input
+							id='size'
 							type="number"
 							min="6"step="2"max="30"
 							name="pageSize"
-							onChange={(e) => this.handleChange('pageSize', e)}
 						/>
 					</label>
 
 					<label>
 						<input 
+							id='v3'
 							type="checkbox"
-							onChange={()=>{this.setState({v3: !this.state.v3})}}
-							checked={this.state.v3}
+							defaultChecked={v3}
 						/>
 						Search for v3 brews
 					</label>
 
 					<label>
 						<input 
+							id='legacy'
 							type="checkbox"
-							onChange={()=>{this.setState({legacy: !this.state.legacy})}}
-							checked={this.state.legacy}
+							defaultChecked={legacy}
 						/>
 						Search for legacy brews
 					</label>
@@ -218,9 +238,8 @@ const ArchivePage = createClass({
 
 					<button
 						className='search'
-						onClick={()=>{ 
-							this.handleChange('title', { target: { value: this.state.title } });
-							this.loadPage(1);
+						onClick={()=>{
+							this.loadPage(1, true);
 						}}>
 						Search
 						<i

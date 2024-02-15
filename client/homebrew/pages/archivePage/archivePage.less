@@ -117,6 +117,16 @@ body {
                             color: white;
                         }
 
+                        &.searching {
+                            display: grid;
+                            place-items: center;
+                            color: white;
+
+                            h3.searchAnim {
+                                animation: trailingDots 2s ease infinite;
+                            }
+                        }
+
                         .totalBrews {
                             position: fixed;
                             bottom: 0;
@@ -213,5 +223,19 @@ body {
                 }
             }
         }
+    }
+}
+
+
+@keyframes trailingDots {
+    0%,32% {
+        clip-path:inset(0 66% 0 0);
+    }
+    
+    33%, 65% {
+        clip-path:inset(0 33% 0 0);
+    }
+    66%,100% {
+        clip-path:inset(0 0% 0 0);
     }
 }
