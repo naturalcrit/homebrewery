@@ -205,6 +205,60 @@ const api = {
 
 		res.status(200).send(saved);
 	},
+	getBrewTheme : async (req, res)=>{
+		req.brew.text = req.brew.text.replaceAll('\r\n', '\n');
+		if(req.brew.text.startsWith('```metadata')) {
+			const index = req.brew.text.indexOf('```\n\n');
+			const metadataSection = req.brew.text.slice(12, index - 1);
+			const metadata = yaml.load(metadataSection);
+			Object.assign(req.brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
+			req.brew.text = req.brew.text.slice(index + 5);
+		}
+		if(req.brew.text.startsWith('```css')) {
+			const index = req.brew.text.indexOf('```\n\n');
+			req.brew.style = req.brew.text.slice(7, index - 1);
+			req.brew.text = req.brew.text.slice(index + 5);
+		}
+		return res.status(200).send(JSON.stringify({
+			parent : req.brew.theme,
+			theme  : req.brew.style
+		}));
+	},
+	getBrewThemeAsCSS : async (req, res)=>{
+		req.brew.text = req.brew.text.replaceAll('\r\n', '\n');
+		if(req.brew.text.startsWith('```metadata')) {
+			const index = req.brew.text.indexOf('```\n\n');
+			const metadataSection = req.brew.text.slice(12, index - 1);
+			const metadata = yaml.load(metadataSection);
+			Object.assign(req.brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
+			req.brew.text = req.brew.text.slice(index + 5);
+		}
+		if(req.brew.text.startsWith('```css')) {
+			const index = req.brew.text.indexOf('```\n\n');
+			req.brew.style = req.brew.text.slice(7, index - 1);
+			req.brew.text = req.brew.text.slice(index + 5);
+		}
+		res.setHeader('Content-Type', 'text/css');
+		return res.status(200).send(req.brew.style);
+	},
+	getBrewThemeWithCSS : async (req, res)=>{
+		req.brew.text = req.brew.text.replaceAll('\r\n', '\n');
+		if(req.brew.text.startsWith('```metadata')) {
+			const index = req.brew.text.indexOf('```\n\n');
+			const metadataSection = req.brew.text.slice(12, index - 1);
+			const metadata = yaml.load(metadataSection);
+			Object.assign(req.brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
+			req.brew.text = req.brew.text.slice(index + 5);
+		}
+		if(req.brew.text.startsWith('```css')) {
+			const index = req.brew.text.indexOf('```\n\n');
+			req.brew.style = req.brew.text.slice(7, index - 1);
+			req.brew.text = req.brew.text.slice(index + 5);
+		}
+		res.setHeader('Content-Type', 'text/css');
+		const parentThemeImport = `@import /themes/${req.brew.renderer}/${req.brew.theme}/styles.css\n\n`;
+		return res.status(200).send(`${req.brew.renderer != 'legacy' ? '' : parentThemeImport}${req.brew.style}`);
+	},
 	updateBrew : async (req, res)=>{
 		// Initialize brew from request and body, destructure query params, and set the initial value for the after-save method
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
@@ -365,5 +419,9 @@ router.put('/api/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api
 router.put('/api/update/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
 router.delete('/api/:id', asyncHandler(api.deleteBrew));
 router.get('/api/remove/:id', asyncHandler(api.deleteBrew));
+router.get('/api/theme/:id', asyncHandler(api.getBrew('edit', true)),  asyncHandler(api.getBrewTheme));
+router.get('/api/css/:id', asyncHandler(api.getBrew('edit', true)),  asyncHandler(api.getBrewThemeAsCSS));
+router.get('/api/csstheme/:id', asyncHandler(api.getBrew('edit', true)),  asyncHandler(api.getBrewThemeWithCSS));
+
 
 module.exports = api;
