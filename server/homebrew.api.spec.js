@@ -569,6 +569,78 @@ brew`);
 		});
 	});
 
+	describe('getBrewTheme', ()=>{
+		it('should collect parent theme and brew style', async ()=>{
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			model.get = jest.fn(()=>toBrewPromise({ title: 'test brew', style: 'I Have a style!' }));
+			const brewResults = {
+				authors     : [],
+				createdAt   : undefined,
+				description : '',
+				editId      : undefined,
+				gDrive      : false,
+				lang        : 'en',
+				pageCount   : 1,
+				published   : false,
+				renderer    : 'legacy',
+				shareId     : undefined,
+				style       : 'I Have a style!',
+				systems     : [],
+				tags        : [],
+				text        : '',
+				theme       : '5ePHB',
+				thumbnail   : '',
+				title       : 'test brew',
+				trashed     : false,
+				updatedAt   : undefined,
+				views       : 0
+			};
+			const fn = api.getBrew('share', true);
+			const req = { brew: {} };
+			const next = jest.fn();
+			await fn(req, null, next);
+
+			api.getBrewTheme(req, res);
+			const sent = res.send.mock.calls[0][0];
+			expect(req.brew).toStrictEqual(brewResults);
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(sent.parent).toBe('5ePHB');
+			expect(sent.theme).toBe('I Have a style!');
+		});
+	});
+
+	describe('getBrewAsThemeCSS', ()=>{
+		it('should collect the brew style - returning as css', async ()=>{
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			model.get = jest.fn(()=>toBrewPromise({ title: 'test brew', style: 'I Have a style!' }));
+			const fn = api.getBrew('share', true);
+			const req = { brew: {} };
+			const next = jest.fn();
+			await fn(req, null, next);
+
+			api.getBrewThemeAsCSS(req, res);
+			const sent = res.send.mock.calls[0][0];
+			expect(sent).toBe('I Have a style!');
+			expect(res.status).toHaveBeenCalledWith(200);
+		});
+	});
+
+	describe('getBrewThemeWithCSS', ()=>{
+		it('should collect parent theme and brew style - returning as css with parent imported.', async ()=>{
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			model.get = jest.fn(()=>toBrewPromise({ title: 'test brew', renderer: 'V3', style: 'I Have a style!' }));
+			const fn = api.getBrew('share', true);
+			const req = { brew: {} };
+			const next = jest.fn();
+			await fn(req, null, next);
+
+			api.getBrewThemeWithCSS(req, res);
+			const sent = res.send.mock.calls[0][0];
+			expect(sent).toBe(`@import /themes/V3/5ePHB/styles.css\n\nI Have a style!`);
+			expect(res.status).toHaveBeenCalledWith(200);
+		});
+	});
+
 	describe('deleteBrew', ()=>{
 		it('should handle case where fetching the brew returns an error', async ()=>{
 			api.getBrew = jest.fn(()=>async ()=>{ throw { message: 'err', HBErrorCode: '02' }; });
