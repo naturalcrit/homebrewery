@@ -650,7 +650,6 @@ const processStyleTags = (string)=>{
 const globalVarsList    = {};
 let varsQueue       = [];
 let globalPageNumber = 0;
-let parseVars        = true;
 
 module.exports = {
 	marked : Marked,
@@ -658,8 +657,6 @@ module.exports = {
 		globalVarsList[pageNumber] = {};						//Reset global links for current page, to ensure values are parsed in order
 		varsQueue              = [];						//Could move into MarkedVariables()
 		globalPageNumber        = pageNumber;
-
-		parseVars = true;
 
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
@@ -669,8 +666,6 @@ module.exports = {
 		const tokens = Marked.lexer(rawBrewText, opts);
 
 		Marked.walkTokens(tokens, opts.walkTokens);
-
-		parseVars = false;
 
 		const html = Marked.parser(tokens, opts);
 		return opts.hooks.postprocess(html);
