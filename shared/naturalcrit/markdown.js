@@ -399,11 +399,9 @@ const lookupVar = function(label, index, hoist=false) {
 const processVariableQueue = function() {
 	let resolvedOne = true;
 	let finalLoop   = false;
-	let loopcount   = 0;
 	while (resolvedOne || finalLoop) { // Loop through queue until no more variable calls can be resolved
 		resolvedOne = false;
-		loopcount += 1;
-		for (const item of linksQueue) {
+		for (const item of varsQueue) {
 			if(item.type == 'text')
 				continue;
 
@@ -448,14 +446,14 @@ const processVariableQueue = function() {
 				item.type    = 'text';
 			}
 		}
-		linksQueue = linksQueue.filter(item => item.type !== 'resolved'); // Remove any fully-resolved variable definitions
+		varsQueue = varsQueue.filter(item => item.type !== 'resolved'); // Remove any fully-resolved variable definitions
 
 		if(finalLoop)
 			break;
 		if(!resolvedOne)
 			finalLoop   = true;
 	}
-	linksQueue = linksQueue.filter(item => item.type !== 'varDefBlock');
+	varsQueue = varsQueue.filter(item => item.type !== 'varDefBlock');
 };
 
 function MarkedVariables() {
@@ -476,14 +474,14 @@ function MarkedVariables() {
 				while ((match = combinedRegex.exec(src)) !== null) {
 						// Form any matches into tokens and store
 						if (match.index > lastIndex) { // Any non-variable stuff
-							linksQueue.push(
+							varsQueue.push(
 								{ type    : 'text',
 									varName : null,
 									content : src.slice(lastIndex, match.index)
 							});
 						}
 						if(match[1]) {
-							linksQueue.push(
+							varsQueue.push(
 								{ type    : 'text',
 									varName : null,
 									content : match[0]
@@ -493,7 +491,7 @@ function MarkedVariables() {
 							const label   = match[4] ? match[4].trim().replace(/\s+/g, ' ')    : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 							const content = match[5] ? match[5].trim().replace(/[ \t]+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
-							linksQueue.push(
+							varsQueue.push(
 								{ type    : 'varDefBlock',
 									varName : label,
 									content : content
@@ -502,7 +500,7 @@ function MarkedVariables() {
 						if(match[6]) { // Block Call
 							const label = match[7] ? match[7].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
-							linksQueue.push(
+							varsQueue.push(
 								{ type    : 'varCallBlock',
 									varName : label,
 									content : match[0]
@@ -532,12 +530,12 @@ function MarkedVariables() {
 								content = content.slice(0,i).trim().replace(/\s+/g, ' ');
 							}
 
-							linksQueue.push(
+							varsQueue.push(
 								{ type    : 'varDefBlock',
 									varName : label,
 									content : content
 								});
-							linksQueue.push(
+							varsQueue.push(
 								{ type    : 'varCallInline',
 									varName : label,
 									content : match[9]
@@ -546,7 +544,7 @@ function MarkedVariables() {
 						if(match[12]) { // Inline Call
 							const label = match[13] ? match[13].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
-							linksQueue.push(
+							varsQueue.push(
 								{ type    : 'varCallInline',
 									varName : label,
 									content : match[0]
@@ -556,7 +554,7 @@ function MarkedVariables() {
 				}
 
 				if (lastIndex < src.length) {
-					linksQueue.push(
+					varsQueue.push(
 						{ type    : 'text',
 							varName : null,
 							content : src.slice(lastIndex)
@@ -565,8 +563,8 @@ function MarkedVariables() {
 
 				processVariableQueue();
 
-				const output = linksQueue.map(item => item.content).join('');
-				linksQueue = []; // Must clear linksQueue because custom HTML renderer uses Marked.parse which will preprocess again without clearing the array
+				const output = varsQueue.map(item => item.content).join('');
+				varsQueue = []; // Must clear varsQueue because custom HTML renderer uses Marked.parse which will preprocess again without clearing the array
 				return output;
       }
     }
@@ -657,7 +655,7 @@ const processStyleTags = (string)=>{
 };
 
 const globalVarsList    = {};
-let linksQueue       = [];
+let varsQueue       = [];
 let globalPageNumber = 0;
 let parseVars        = true;
 
@@ -665,7 +663,7 @@ module.exports = {
 	marked : Marked,
 	render : (rawBrewText, pageNumber=1)=>{
 		globalVarsList[pageNumber] = {};						//Reset global links for current page, to ensure values are parsed in order
-		linksQueue              = [];						//Could move into MarkedVariables()
+		varsQueue              = [];						//Could move into MarkedVariables()
 		globalPageNumber        = pageNumber;
 
 		parseVars = true;
