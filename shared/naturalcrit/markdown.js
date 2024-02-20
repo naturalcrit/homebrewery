@@ -329,11 +329,11 @@ const definitionLists = {
 
 //v=====--------------------< Variable Handling >-------------------=====v// 254 lines
 const replaceVar = function(input, hoist=false) {
-	const regex = /([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)/g;
+	const regex = /([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g;
 	const match = regex.exec(input);
 
 	const prefix = match[1];
-	const label = match[2].toLowerCase();
+	const label  = match[2];
 
 	let missingValues = [];
 
@@ -396,10 +396,10 @@ const replaceVar = function(input, hoist=false) {
 	let value;
 
 	if(!prefix[0] && href)        // Link
-		value = `[${label}](${href}${title ? ` ${title}` : ''})`;
+		value = `[${label}](${href}${title ? ` "${title}"` : ''})`;
 
 	if(prefix[0] == '!' && href)  // Image
-		value = `![${label}](${href} ${title ? ` ${title}` : ''})`;
+		value = `![${label}](${href} ${title ? ` "${title}"` : ''})`;
 	
 	if(prefix[0] == '$')          // Variable
 		value = foundVar.content;
@@ -494,7 +494,7 @@ function MarkedVariables() {
 				const blockSkip       = /^(?: {4}[^\n]+(?:\n(?: *(?:\n|$))*)?)+|^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})(?:[^\n]*)(?:\n|$)(?:|(?:[\s\S]*?)(?:\n|$))(?: {0,3}\2[~`]* *(?=\n|$))|`[^`]*?`/;
 				const blockDefRegex   = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:(?!\() *((?:\n? *[^\s].*)+)(?=\n+|$)/; //Matches 3, [4]:5
 				const blockCallRegex  = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?=\n|$)/;                              //Matches 6, [7]
-				const inlineDefRegex  = /([!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\])\(([^\n]+)\)/;  //Matches 8, 9[10](11)
+				const inlineDefRegex  = /([!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\])\(([^\n]+)\)/;                         //Matches 8, 9[10](11)
 				const inlineCallRegex =  /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?!\()/;                                //Matches 12, [13]
 
 				// Combine regexes like so: (regex1)|(regex2)|(regex3)|(regex4)
@@ -521,8 +521,8 @@ function MarkedVariables() {
 							});
 						}
 						if(match[3]) { // Block Definition
-							const label   = match[4] ? match[4].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-							const content = match[5] ? match[5].trim().replace(/[ \t]+/g, ' ')            : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+							const label   = match[4] ? match[4].trim().replace(/\s+/g, ' ')    : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+							const content = match[5] ? match[5].trim().replace(/[ \t]+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
 							linksQueue.push(
 								{ type    : 'varDefBlock',
@@ -532,7 +532,7 @@ function MarkedVariables() {
 								});
 						}
 						if(match[6]) { // Block Call
-							const label = match[7] ? match[7].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+							const label = match[7] ? match[7].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
 							linksQueue.push(
 								{ type    : 'varCallBlock',
@@ -542,7 +542,7 @@ function MarkedVariables() {
 								});
 						}
 						if(match[8]) { // Inline Definition
-							const label   = match[10] ? match[10].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+							const label   = match[10] ? match[10].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 							let content = match[11];// ? match[11].trim().replace(/\s+/g, ' ')               : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
 							let level = 0;
@@ -572,13 +572,13 @@ function MarkedVariables() {
 								});
 							linksQueue.push(
 								{ type    : 'varCallInline',
-									match   : match[8],
+									match   : match[9],
 									varName : label,
-									content : match[8]
+									content : match[9]
 								});
 						}
 						if(match[12]) { // Inline Call
-							const label = match[13] ? match[13].trim().replace(/\s+/g, ' ').toLowerCase() : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+							const label = match[13] ? match[13].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
 							linksQueue.push(
 								{ type    : 'varCallInline',
