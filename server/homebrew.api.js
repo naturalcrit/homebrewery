@@ -220,8 +220,9 @@ const api = {
 			req.brew.text = req.brew.text.slice(index + 5);
 		}
 		return res.status(200).send({
-			parent : req.brew.theme,
-			theme  : req.brew.style
+			parent    : req.brew.theme,
+			theme     : req.brew.style,
+			themeName : req.brew.title
 		});
 	},
 	getBrewThemeAsCSS : async (req, res)=>{
@@ -241,7 +242,7 @@ const api = {
 		if(res.hasOwnProperty('set')) {
 			res.set('Content-Type', 'text/css');
 		}
-		return res.status(200).send(req.brew.style);
+		return res.status(200).send(`// From Theme: ${req.brew.title}\n\n${req.brew.style}`);
 	},
 	getBrewThemeWithCSS : async (req, res)=>{
 		req.brew.text = req.brew.text.replaceAll('\r\n', '\n');
@@ -260,7 +261,7 @@ const api = {
 		if(res.hasOwnProperty('set')) {
 			res.set('Content-Type', 'text/css');
 		}
-		const parentThemeImport = `@import /themes/${req.brew.renderer}/${req.brew.theme}/styles.css\n\n`;
+		const parentThemeImport = `// From Theme: ${req.brew.title}\n\n@import /themes/${req.brew.renderer}/${req.brew.theme}/styles.css\n\n`;
 		return res.status(200).send(`${req.brew.renderer == 'legacy' ? '' : parentThemeImport}${req.brew.style}`);
 	},
 	updateBrew : async (req, res)=>{
