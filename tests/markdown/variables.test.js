@@ -95,6 +95,16 @@ describe('Block-level variables', ()=>{
 		const rendered = Markdown.render(source).replace(/\s/g,' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>Welcome, Mr. Bob Jacobson!</p>');
 	});
+
+	it("Ignores undefined variables that can't be hoisted", function() {
+		const source = dedent`
+			$[var](My name is $[first] $[last])
+
+			$[last]: Jones
+			`;
+		const rendered = Markdown.render(source).replace(/\s/g,' ').trimReturns();
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>My name is $[first] Jones</p>`.trimReturns());
+	});
 });
 
 describe('Inline-level variables', ()=>{
@@ -108,7 +118,7 @@ describe('Inline-level variables', ()=>{
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>string</p><p>string</p>');
 	});
 
-	it('Hoists undefined variables', function() {
+	it('Hoists undefined variables when possible', function() {
 		const source = dedent`
 			$[var](My name is $[name] Jones)
 
@@ -127,6 +137,7 @@ describe('Inline-level variables', ()=>{
 		const rendered = Markdown.render(source).replace(/\s/g,' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>My name is Bill Jones</p> <p>Bob</p>`.trimReturns());
 	});
+
 });
 
 describe('Math', ()=>{

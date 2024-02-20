@@ -327,20 +327,15 @@ const definitionLists = {
 };
 
 
-//v=====--------------------< Variable Handling >-------------------=====v// 254 lines
-const replaceVar = function(input, hoist=false) {
+//v=====--------------------< Variable Handling >-------------------=====v// 245 lines
+const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 	const regex = /([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g;
 	const match = regex.exec(input);
 
 	const prefix = match[1];
 	const label  = match[2];
 
-	let missingValues = [];
-
 	//v=====--------------------< HANDLE MATH >-------------------=====v//
-	// Split the string into separate expressions
-
-	//const variableRegex = /[a-zA-Z_][a-zA-Z0-9_]*(?=\s*(?:[+\-*\/)]|$))/g; 
 	let mathRegex = /[a-z]+\(|[+\-*/^()]/g;
 	let matches = label.split(mathRegex)
 	let mathVars = matches.filter(match => isNaN(match))?.map((s)=>s.trim()); // Capture any variable names
@@ -352,46 +347,27 @@ const replaceVar = function(input, hoist=false) {
 			const foundVar = lookupVar(variable, globalPageNumber, hoist);
 			if(foundVar && foundVar.resolved && foundVar.content && !isNaN(foundVar.content)) // Only subsitute math values if fully resolved, not empty strings, and numbers
 				replacedLabel = replacedLabel.replaceAll(variable, foundVar.content);
-			else
-				missingValues.push(variable);
 		});
 
-		let result;
 		try {
-			result = mathParser.evaluate(replacedLabel);
+			return mathParser.evaluate(replacedLabel);
 		} catch (error) {
-			result = input;
+			return undefined;		// Return undefined if invalid math result
 		}
-
-		return {
-			value         : result,
-			missingValues : missingValues
-		};
 	}
 	//^=====--------------------< HANDLE MATH >-------------------=====^//
 
 	const foundVar = lookupVar(label, globalPageNumber, hoist);
-	if(foundVar == undefined) {
-		return {
-			value         : input,
-			missingValues : [label]
-		};
-	}
 
-	if(!foundVar.resolved) {
-		missingValues = [label];
-	}
+	if(!foundVar || (!foundVar.resolved && !allowUnresolved)) 
+		return undefined;			// Return undefined if not found, or parially-resolved vars are not allowed
 
 	//                    url or <url>            "title"    or   'title'     or  (title)
 	const linkRegex =  /^([^<\s][^\s]*|<.*?>)(?: ("(?:\\"|[^"])*"|'(?:\\'|[^'])*'|\((?:\\\(|\\\)|[^()])*\)))?$/m;
 	const linkMatch = linkRegex.exec(foundVar.content);
 
-	let href  = null;
-	let title = null;
-	if(linkMatch) {
-		href  = linkMatch[1]; //TODO: TRIM OFF < > IF PRESENT
-		title = linkMatch[2]?.slice(1, -1);
-	}
+	let href  = linkMatch ? linkMatch[1]               : null; //TODO: TRIM OFF < > IF PRESENT
+	let title = linkMatch ? linkMatch[2]?.slice(1, -1) : null;
 
 	let value;
 
@@ -404,10 +380,7 @@ const replaceVar = function(input, hoist=false) {
 	if(prefix[0] == '$')          // Variable
 		value = foundVar.content;
 
-	return {
-		value         : value,
-		missingValues : missingValues
-	};
+	return value;
 };
 
 const lookupVar = function(label, index, hoist=false) {
@@ -442,10 +415,10 @@ const processVariableQueue = function() {
 				while (match = regex.exec(item.content)) { // regex to find variable calls
 					const value = replaceVar(match[0], true);
 
-					if(value.missingValues.length > 0) {
+					if(value == undefined) {
 						resolved = false;
 					} else {
-						tempContent = tempContent.replaceAll(match[0], value.value);
+						tempContent = tempContent.replaceAll(match[0], value);
 					}
 				}
 
@@ -453,31 +426,29 @@ const processVariableQueue = function() {
 					resolvedOne = true;
 					item.content = tempContent;
 				}
-				
 
 				globalVarsList[globalPageNumber][item.varName] = {
 					content  : item.content,
 					resolved : resolved
 				};
 
-				if(item.type == 'varDefBlock' && resolved){
+				if(resolved){
 					item.type = 'resolved';
 				}
 			}
 
 			if(item.type == 'varCallBlock' || item.type == 'varCallInline') {
-				const value = replaceVar(item.content, true);
+				const value = replaceVar(item.content, true, finalLoop); // final loop will just use the best value so far
 
-				if(value.missingValues.length > 0 && !finalLoop) {  // Variable not found or not fully resolved; try again next loop.
-					continue;                                         // final loop will just use the best value so far
-				}
+				if(value == undefined)
+					continue;            
 	
 				resolvedOne  = true;
-				item.content = value.value;
+				item.content = value;
 				item.type    = 'text';
 			}
 		}
-		linksQueue = linksQueue.filter(item => item.type !== 'resolved'); // Remove any fully-resolved variables
+		linksQueue = linksQueue.filter(item => item.type !== 'resolved'); // Remove any fully-resolved variable definitions
 
 		if(finalLoop)
 			break;
@@ -491,14 +462,14 @@ function MarkedVariables() {
   return {
     hooks: {
       preprocess(src) {
-				const blockSkip       = /^(?: {4}[^\n]+(?:\n(?: *(?:\n|$))*)?)+|^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})(?:[^\n]*)(?:\n|$)(?:|(?:[\s\S]*?)(?:\n|$))(?: {0,3}\2[~`]* *(?=\n|$))|`[^`]*?`/;
+				const codeBlockSkip   = /^(?: {4}[^\n]+(?:\n(?: *(?:\n|$))*)?)+|^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})(?:[^\n]*)(?:\n|$)(?:|(?:[\s\S]*?)(?:\n|$))(?: {0,3}\2[~`]* *(?=\n|$))|`[^`]*?`/;
 				const blockDefRegex   = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:(?!\() *((?:\n? *[^\s].*)+)(?=\n+|$)/; //Matches 3, [4]:5
 				const blockCallRegex  = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?=\n|$)/;                              //Matches 6, [7]
 				const inlineDefRegex  = /([!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\])\(([^\n]+)\)/;                         //Matches 8, 9[10](11)
 				const inlineCallRegex =  /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?!\()/;                                //Matches 12, [13]
 
-				// Combine regexes like so: (regex1)|(regex2)|(regex3)|(regex4)
-				let combinedRegex = new RegExp([blockSkip, blockDefRegex, blockCallRegex, inlineDefRegex, inlineCallRegex].map(s => `(${s.source})`).join('|'), 'gm');
+				// Combine regexes and wrap in parens like so: (regex1)|(regex2)|(regex3)|(regex4)
+				let combinedRegex = new RegExp([codeBlockSkip, blockDefRegex, blockCallRegex, inlineDefRegex, inlineCallRegex].map(s => `(${s.source})`).join('|'), 'gm');
 
 				let lastIndex = 0;
 				let match;
@@ -541,6 +512,7 @@ function MarkedVariables() {
 							const label = match[10] ? match[10].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 							let content = match[11] ? match[11].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
+							// In case of nested (), find the correct matching end )
 							let level = 0;
 							let i;
 							for (i = 0; i < content.length; i++) {
