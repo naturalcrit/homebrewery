@@ -138,6 +138,23 @@ describe('Inline-level variables', ()=>{
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>My name is Bill Jones</p> <p>Bob</p>`.trimReturns());
 	});
 
+	it('Only captures nested parens if balanced', function() {
+		const source = dedent`
+			$[var1](A variable (with nested parens) inside)
+
+			$[var1]
+
+			$[var2](A variable ) with unbalanced parens)
+
+			$[var2]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
+		<p>A variable (with nested parens) inside</p>
+		<p>A variable (with nested parens) inside</p>
+		<p>A variable with unbalanced parens)</p>
+		<p>A variable</p>
+		`.trimReturns());
+	});
 });
 
 describe('Math', ()=>{

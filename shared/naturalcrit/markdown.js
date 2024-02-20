@@ -327,7 +327,7 @@ const definitionLists = {
 };
 
 
-//v=====--------------------< Variable Handling >-------------------=====v// 245 lines
+//v=====--------------------< Variable Handling >-------------------=====v// 236 lines
 const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 	const regex = /([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g;
 	const match = regex.exec(input);
@@ -369,18 +369,14 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 	let href  = linkMatch ? linkMatch[1]               : null; //TODO: TRIM OFF < > IF PRESENT
 	let title = linkMatch ? linkMatch[2]?.slice(1, -1) : null;
 
-	let value;
-
 	if(!prefix[0] && href)        // Link
-		value = `[${label}](${href}${title ? ` "${title}"` : ''})`;
+		return `[${label}](${href}${title ? ` "${title}"` : ''})`;
 
 	if(prefix[0] == '!' && href)  // Image
-		value = `![${label}](${href} ${title ? ` "${title}"` : ''})`;
+		return `![${label}](${href} ${title ? ` "${title}"` : ''})`;
 	
 	if(prefix[0] == '$')          // Variable
-		value = foundVar.content;
-
-	return value;
+		return foundVar.content;
 };
 
 const lookupVar = function(label, index, hoist=false) {
@@ -413,11 +409,10 @@ const processVariableQueue = function() {
 				while (match = regex.exec(item.content)) { // regex to find variable calls
 					const value = replaceVar(match[0], true);
 
-					if(value == undefined) {
+					if(value == undefined)
 						resolved = false;
-					} else {
+					else
 						tempContent = tempContent.replaceAll(match[0], value);
-					}
 				}
 
 				if(resolved == true || item.content != tempContent) {
@@ -430,9 +425,8 @@ const processVariableQueue = function() {
 					resolved : resolved
 				};
 
-				if(resolved){
+				if(resolved)
 					item.type = 'resolved';
-				}
 			}
 
 			if(item.type == 'varCallBlock' || item.type == 'varCallInline') {
@@ -472,7 +466,7 @@ function MarkedVariables() {
 				let lastIndex = 0;
 				let match;
 				while ((match = combinedRegex.exec(src)) !== null) {
-						// Form any matches into tokens and store
+						// Format any matches into tokens and store
 						if (match.index > lastIndex) { // Any non-variable stuff
 							varsQueue.push(
 								{ type    : 'text',
@@ -520,9 +514,8 @@ function MarkedVariables() {
 									level++;
 								} else if (content[i] === ')') {
 									level--;
-									if (level < 0) {
+									if (level < 0)
 										break;
-									}
 								}
 							}
 							if (i > -1) {
