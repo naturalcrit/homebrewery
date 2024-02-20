@@ -412,11 +412,11 @@ const replaceVar = function(input, hoist=false) {
 
 const lookupVar = function(label, index, hoist=false) {
 	if(hoist) 
-		index = Object.keys(globalLinks).length; // Move index to start from last page
+		index = Object.keys(globalVarsList).length; // Move index to start from last page
 
 	while (index >= 0) {
-		if(globalLinks[index]?.[label] !== undefined)
-			return globalLinks[index][label];
+		if(globalVarsList[index]?.[label] !== undefined)
+			return globalVarsList[index][label];
 		index--;
 	}
 
@@ -455,7 +455,7 @@ const processVariableQueue = function() {
 				}
 				
 
-				globalLinks[globalPageNumber][item.varName] = {
+				globalVarsList[globalPageNumber][item.varName] = {
 					content  : item.content,
 					resolved : resolved
 				};
@@ -466,14 +466,14 @@ const processVariableQueue = function() {
 			}
 
 			if(item.type == 'varCallBlock' || item.type == 'varCallInline') {
-				const value = replaceVar(item.match, true);
+				const value = replaceVar(item.content, true);
 
 				if(value.missingValues.length > 0 && !finalLoop) {  // Variable not found or not fully resolved; try again next loop.
 					continue;                                         // final loop will just use the best value so far
 				}
 	
-				resolvedOne = true;
-				item.content = item.content.replace(item.match, value.value);
+				resolvedOne  = true;
+				item.content = value.value;
 				item.type    = 'text';
 			}
 		}
@@ -507,7 +507,6 @@ function MarkedVariables() {
 						if (match.index > lastIndex) { // Any non-variable stuff
 							linksQueue.push(
 								{ type    : 'text',
-								  match   : src.slice(lastIndex, match.index),
 									varName : null,
 									content : src.slice(lastIndex, match.index)
 							});
@@ -515,7 +514,6 @@ function MarkedVariables() {
 						if(match[1]) {
 							linksQueue.push(
 								{ type    : 'text',
-								  match   : match[0],
 									varName : null,
 									content : match[0]
 							});
@@ -526,7 +524,6 @@ function MarkedVariables() {
 
 							linksQueue.push(
 								{ type    : 'varDefBlock',
-									match   : match[0],
 									varName : label,
 									content : content
 								});
@@ -536,14 +533,13 @@ function MarkedVariables() {
 
 							linksQueue.push(
 								{ type    : 'varCallBlock',
-									match   : match[0],
 									varName : label,
 									content : match[0]
 								});
 						}
 						if(match[8]) { // Inline Definition
-							const label   = match[10] ? match[10].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-							let content = match[11];// ? match[11].trim().replace(/\s+/g, ' ')               : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+							const label = match[10] ? match[10].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+							let content = match[11] ? match[11].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
 							let level = 0;
 							let i;
@@ -566,13 +562,11 @@ function MarkedVariables() {
 
 							linksQueue.push(
 								{ type    : 'varDefBlock',
-									match   : match[0],
 									varName : label,
 									content : content
 								});
 							linksQueue.push(
 								{ type    : 'varCallInline',
-									match   : match[9],
 									varName : label,
 									content : match[9]
 								});
@@ -582,7 +576,6 @@ function MarkedVariables() {
 
 							linksQueue.push(
 								{ type    : 'varCallInline',
-									match   : match[0],
 									varName : label,
 									content : match[0]
 								});
@@ -593,7 +586,6 @@ function MarkedVariables() {
 				if (lastIndex < src.length) {
 					linksQueue.push(
 						{ type    : 'text',
-							match   : src.slice(lastIndex),
 							varName : null,
 							content : src.slice(lastIndex)
 					});
@@ -692,7 +684,7 @@ const processStyleTags = (string)=>{
 		`${attributes?.length   ? ` ${attributes.join(' ')}`     : ''}`;
 };
 
-const globalLinks    = {};
+const globalVarsList    = {};
 let linksQueue       = [];
 let globalPageNumber = 0;
 let parseVars        = true;
@@ -700,7 +692,7 @@ let parseVars        = true;
 module.exports = {
 	marked : Marked,
 	render : (rawBrewText, pageNumber=1)=>{
-		globalLinks[pageNumber] = {};						//Reset global links for current page, to ensure values are parsed in order
+		globalVarsList[pageNumber] = {};						//Reset global links for current page, to ensure values are parsed in order
 		linksQueue              = [];						//Could move into MarkedVariables()
 		globalPageNumber        = pageNumber;
 
