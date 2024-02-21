@@ -327,7 +327,7 @@ const definitionLists = {
 };
 
 
-//v=====--------------------< Variable Handling >-------------------=====v// 236 lines
+//v=====--------------------< Variable Handling >-------------------=====v// 242 lines
 const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 	const regex = /([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g;
 	const match = regex.exec(input);
