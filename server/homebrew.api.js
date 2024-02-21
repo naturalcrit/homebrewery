@@ -255,7 +255,7 @@ const api = {
 				res.set('Content-Type', 'text/css');
 			}
 			const parentTheme = themeParent ? `@import /api/css/${req.params.engine}/${themeParent}\n` : '';
-			return res.status(200).send(`${parentTheme}@import /themes/${req.params.engine}/${req.params.id}\n`);
+			return res.status(200).send(`${parentTheme}@import /themes/${req.params.engine}/${req.params.id}/style.css\n`);
 		}
 	},
 	updateBrew : async (req, res)=>{
