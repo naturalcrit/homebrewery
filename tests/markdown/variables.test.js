@@ -9,6 +9,16 @@ String.prototype.trimReturns = function(){
 	return this.replace(/\r?\n|\r/g, '').trim();
 };
 
+renderAllPages = function(pages){
+	const outputs = [];
+	pages.forEach((page, index) => {
+		const output = Markdown.render(page, index);
+		outputs.push(output);
+	});
+
+	return outputs;
+};
+
 // Adding `.failing()` method to `describe` or `it` will make failing tests "pass" as long as they continue to fail.
 // Remove the `.failing()` method once you have fixed the issue.
 
@@ -94,6 +104,36 @@ describe('Block-level variables', ()=>{
 			`;
 		const rendered = Markdown.render(source).replace(/\s/g,' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>Welcome, Mr. Bob Jacobson!</p>');
+	});
+
+	it('Handles variable reassignment', function() {
+		const source = dedent`
+			[var]: one
+
+			$[var]
+
+			[var]: two
+
+			$[var]
+			`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>one</p><p>two</p>'.trimReturns());
+	});
+
+	it('Handles variable reassignment with hoisting', function() {
+		const source = dedent`
+			$[var]
+		
+			[var]: one
+
+			$[var]
+
+			[var]: two
+
+			$[var]
+			`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>two</p><p>one</p><p>two</p>'.trimReturns());
 	});
 
 	it("Ignores undefined variables that can't be hoisted", function() {
@@ -307,23 +347,27 @@ describe('Normal Links and Images', ()=>{
 	});
 });
 
-// TODO: add tests for ID with accordance to CSS spec:
-//
-// From https://drafts.csswg.org/selectors/#id-selectors:
-//
-// > An ID selector consists of a “number sign” (U+0023, #) immediately followed by the ID value, which must be a CSS identifier.
-//
-// From: https://www.w3.org/TR/CSS21/syndata.html#value-def-identifier:
-//
-// > In CSS, identifiers (including element names, classes, and IDs in selectors) can contain only the characters [a-zA-Z0-9]
-// > and ISO 10646 characters U+00A0 and higher, plus the hyphen (-) and the underscore (_);
-// > they cannot start with a digit, two hyphens, or a hyphen followed by a digit.
-// > Identifiers can also contain escaped characters and any ISO 10646 character as a numeric code (see next item).
-// > For instance, the identifier "B&W?" may be written as "B\&W\?" or "B\26 W\3F".
-// > Note that Unicode is code-by-code equivalent to ISO 10646 (see [UNICODE] and [ISO10646]).
+describe('Cross-page variables', ()=>{
+	it('Handles variable assignment and recall across pages', function() {
+		const source0 = `[var]: string`;
+		const source1 = `$[var]`;
+		const rendered = renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();
+		expect(rendered, `Input:\n${[source0,source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('\\page<p>string</p>');
+	});
 
-// TODO: add tests for class with accordance to CSS spec:
-//
-// From: https://drafts.csswg.org/selectors/#class-html:
-//
-// > The class selector is given as a full stop (. U+002E) immediately followed by an identifier.
+	it('Handles hoisting across pages', function() {
+		const source0 = `$[var]`;
+		const source1 = `[var]: string`;
+		renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();	//Requires one full render of document before hoisting is picked up
+		const rendered = renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();
+		expect(rendered, `Input:\n${[source0,source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>string</p>\\page');
+	});
+
+	it('Handles reassignment and hoisting across pages', function() {
+		const source0 = `$[var]\n\n[var]: one\n\n$[var]`;
+		const source1 = `[var]: two\n\n$[var]`;
+		renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();	//Requires one full render of document before hoisting is picked up
+		const rendered = renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();
+		expect(rendered, `Input:\n${[source0,source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>two</p><p>one</p>\\page<p>two</p>');
+	});
+});

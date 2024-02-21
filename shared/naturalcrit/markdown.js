@@ -380,13 +380,19 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 };
 
 const lookupVar = function(label, index, hoist=false) {
-	if(hoist) 
-		index = Object.keys(globalVarsList).length; // Move index to start from last page
-
 	while (index >= 0) {
 		if(globalVarsList[index]?.[label] !== undefined)
 			return globalVarsList[index][label];
 		index--;
+	}
+
+	if(hoist) {	//If normal lookup failed, attempt hoisting
+		index = Object.keys(globalVarsList).length; // Move index to start from last page
+		while (index >= 0) {
+			if(globalVarsList[index]?.[label] !== undefined)
+				return globalVarsList[index][label];
+			index--;
+		}
 	}
 
 	return undefined;
