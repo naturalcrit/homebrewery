@@ -10,34 +10,34 @@ const tokenizer = new Marked.Tokenizer();
 
 //Limit math features to simple items
 const mathParser = new MathParser({
-	operators: {
+	operators : {
 		// These default to true, but are included to be explicit
-		add         : true,
-		subtract    : true,
-		multiply    : true,
-		divide      : true,
-		power       : true,
-		round       : true,
-		floor       : true,
-		ceil        : true,
+		add      : true,
+		subtract : true,
+		multiply : true,
+		divide   : true,
+		power    : true,
+		round    : true,
+		floor    : true,
+		ceil     : true,
 
-		sin   : false, cos    : false, tan    : false, asin : false, acos  : false,
-		atan  : false, sinh   : false, cosh   : false, tanh : false, asinh : false,
-		acosh : false, atanh  : false, sqrt   : false, cbrt : false, log   : false,
-		log2  : false, ln     : false, lg     : false, log10: false, expm1 : false,
-		log1p : false, abs    : false, trunc  : false, join : false, sum   : false,
-		'-'   : false, '+'    : false, exp    : false, not  : false, length: false,
-		'!'   : false, sign   : false, random : false, fac  : false, min   : false,
-		max   : false, hypot  : false, pyt    : false, pow  : false, atan2 : false,
-		'if'  : false, gamma  : false, roundTo: false, map  : false, fold  : false,
-		filter: false, indexOf: false, 
+		sin     : false, cos     : false, tan     : false, asin    : false, acos    : false,
+		atan    : false, sinh    : false, cosh    : false, tanh    : false, asinh   : false,
+		acosh   : false, atanh   : false, sqrt    : false, cbrt    : false, log     : false,
+		log2    : false, ln      : false, lg      : false, log10   : false, expm1   : false,
+		log1p   : false, abs     : false, trunc   : false, join    : false, sum     : false,
+		'-'     : false, '+'     : false, exp     : false, not     : false, length  : false,
+		'!'     : false, sign    : false, random  : false, fac     : false, min     : false,
+		max     : false, hypot   : false, pyt     : false, pow     : false, atan2   : false,
+		'if'    : false, gamma   : false, roundTo : false, map     : false, fold    : false,
+		filter  : false, indexOf : false,
 
 		remainder   : false, factorial   : false,
 		comparison  : false, concatenate : false,
 		logical     : false, assignment  : false,
 		array       : false, fndef       : false
 	}
-}); 
+});
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (html) {
@@ -336,14 +336,14 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 	const label  = match[2];
 
 	//v=====--------------------< HANDLE MATH >-------------------=====v//
-	let mathRegex = /[a-z]+\(|[+\-*/^()]/g;
-	let matches = label.split(mathRegex)
-	let mathVars = matches.filter(match => isNaN(match))?.map((s)=>s.trim()); // Capture any variable names
+	const mathRegex = /[a-z]+\(|[+\-*/^()]/g;
+	const matches = label.split(mathRegex);
+	const mathVars = matches.filter((match)=>isNaN(match))?.map((s)=>s.trim()); // Capture any variable names
 
 	let replacedLabel = label;
 
 	if(mathVars?.[0] !== label.trim())  {// If there was mathy stuff not captured, let's do math!
-		mathVars?.forEach((variable) => {
+		mathVars?.forEach((variable)=>{
 			const foundVar = lookupVar(variable, globalPageNumber, hoist);
 			if(foundVar && foundVar.resolved && foundVar.content && !isNaN(foundVar.content)) // Only subsitute math values if fully resolved, not empty strings, and numbers
 				replacedLabel = replacedLabel.replaceAll(variable, foundVar.content);
@@ -359,22 +359,22 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 
 	const foundVar = lookupVar(label, globalPageNumber, hoist);
 
-	if(!foundVar || (!foundVar.resolved && !allowUnresolved)) 
+	if(!foundVar || (!foundVar.resolved && !allowUnresolved))
 		return undefined;			// Return undefined if not found, or parially-resolved vars are not allowed
 
 	//                    url or <url>            "title"    or   'title'     or  (title)
 	const linkRegex =  /^([^<\s][^\s]*|<.*?>)(?: ("(?:\\"|[^"])*"|'(?:\\'|[^'])*'|\((?:\\\(|\\\)|[^()])*\)))?$/m;
 	const linkMatch = linkRegex.exec(foundVar.content);
 
-	let href  = linkMatch ? linkMatch[1]               : null; //TODO: TRIM OFF < > IF PRESENT
-	let title = linkMatch ? linkMatch[2]?.slice(1, -1) : null;
+	const href  = linkMatch ? linkMatch[1]               : null; //TODO: TRIM OFF < > IF PRESENT
+	const title = linkMatch ? linkMatch[2]?.slice(1, -1) : null;
 
 	if(!prefix[0] && href)        // Link
 		return `[${label}](${href}${title ? ` "${title}"` : ''})`;
 
 	if(prefix[0] == '!' && href)  // Image
 		return `![${label}](${href} ${title ? ` "${title}"` : ''})`;
-	
+
 	if(prefix[0] == '$')          // Variable
 		return foundVar.content;
 };
@@ -439,27 +439,27 @@ const processVariableQueue = function() {
 				const value = replaceVar(item.content, true, finalLoop); // final loop will just use the best value so far
 
 				if(value == undefined)
-					continue;            
-	
+					continue;
+
 				resolvedOne  = true;
 				item.content = value;
 				item.type    = 'text';
 			}
 		}
-		varsQueue = varsQueue.filter(item => item.type !== 'resolved'); // Remove any fully-resolved variable definitions
+		varsQueue = varsQueue.filter((item)=>item.type !== 'resolved'); // Remove any fully-resolved variable definitions
 
 		if(finalLoop)
 			break;
 		if(!resolvedOne)
 			finalLoop   = true;
 	}
-	varsQueue = varsQueue.filter(item => item.type !== 'varDefBlock');
+	varsQueue = varsQueue.filter((item)=>item.type !== 'varDefBlock');
 };
 
 function MarkedVariables() {
-  return {
-    hooks: {
-      preprocess(src) {
+	return {
+		hooks : {
+			preprocess(src) {
 				const codeBlockSkip   = /^(?: {4}[^\n]+(?:\n(?: *(?:\n|$))*)?)+|^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})(?:[^\n]*)(?:\n|$)(?:|(?:[\s\S]*?)(?:\n|$))(?: {0,3}\2[~`]* *(?=\n|$))|`[^`]*?`/;
 				const blockDefRegex   = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:(?!\() *((?:\n? *[^\s].*)+)(?=\n+|$)/; //Matches 3, [4]:5
 				const blockCallRegex  = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?=\n|$)/;                              //Matches 6, [7]
@@ -467,111 +467,111 @@ function MarkedVariables() {
 				const inlineCallRegex =  /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?!\()/;                                //Matches 12, [13]
 
 				// Combine regexes and wrap in parens like so: (regex1)|(regex2)|(regex3)|(regex4)
-				let combinedRegex = new RegExp([codeBlockSkip, blockDefRegex, blockCallRegex, inlineDefRegex, inlineCallRegex].map(s => `(${s.source})`).join('|'), 'gm');
+				const combinedRegex = new RegExp([codeBlockSkip, blockDefRegex, blockCallRegex, inlineDefRegex, inlineCallRegex].map((s)=>`(${s.source})`).join('|'), 'gm');
 
 				let lastIndex = 0;
 				let match;
 				while ((match = combinedRegex.exec(src)) !== null) {
-						// Format any matches into tokens and store
-						if (match.index > lastIndex) { // Any non-variable stuff
-							varsQueue.push(
-								{ type    : 'text',
-									varName : null,
-									content : src.slice(lastIndex, match.index)
+					// Format any matches into tokens and store
+					if(match.index > lastIndex) { // Any non-variable stuff
+						varsQueue.push(
+							{ type    : 'text',
+								varName : null,
+								content : src.slice(lastIndex, match.index)
 							});
-						}
-						if(match[1]) {
-							varsQueue.push(
-								{ type    : 'text',
-									varName : null,
-									content : match[0]
+					}
+					if(match[1]) {
+						varsQueue.push(
+							{ type    : 'text',
+								varName : null,
+								content : match[0]
 							});
-						}
-						if(match[3]) { // Block Definition
-							const label   = match[4] ? match[4].trim().replace(/\s+/g, ' ')    : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-							const content = match[5] ? match[5].trim().replace(/[ \t]+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+					}
+					if(match[3]) { // Block Definition
+						const label   = match[4] ? match[4].trim().replace(/\s+/g, ' ')    : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						const content = match[5] ? match[5].trim().replace(/[ \t]+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
-							varsQueue.push(
-								{ type    : 'varDefBlock',
-									varName : label,
-									content : content
-								});
-						}
-						if(match[6]) { // Block Call
-							const label = match[7] ? match[7].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						varsQueue.push(
+							{ type    : 'varDefBlock',
+								varName : label,
+								content : content
+							});
+					}
+					if(match[6]) { // Block Call
+						const label = match[7] ? match[7].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
-							varsQueue.push(
-								{ type    : 'varCallBlock',
-									varName : label,
-									content : match[0]
-								});
-						}
-						if(match[8]) { // Inline Definition
-							const label = match[10] ? match[10].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-							let content = match[11] ? match[11].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						varsQueue.push(
+							{ type    : 'varCallBlock',
+								varName : label,
+								content : match[0]
+							});
+					}
+					if(match[8]) { // Inline Definition
+						const label = match[10] ? match[10].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						let content = match[11] ? match[11].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
 
-							// In case of nested (), find the correct matching end )
-							let level = 0;
-							let i;
-							for (i = 0; i < content.length; i++) {
-								if (content[i] === '\\') {
-									i++;
-								} else if (content[i] === '(') {
-									level++;
-								} else if (content[i] === ')') {
-									level--;
-									if (level < 0)
-										break;
-								}
+						// In case of nested (), find the correct matching end )
+						let level = 0;
+						let i;
+						for (i = 0; i < content.length; i++) {
+							if(content[i] === '\\') {
+								i++;
+							} else if(content[i] === '(') {
+								level++;
+							} else if(content[i] === ')') {
+								level--;
+								if(level < 0)
+									break;
 							}
-							if (i > -1) {
-								combinedRegex.lastIndex = combinedRegex.lastIndex - (content.length - i);
-								content = content.slice(0,i).trim().replace(/\s+/g, ' ');
-							}
-
-							varsQueue.push(
-								{ type    : 'varDefBlock',
-									varName : label,
-									content : content
-								});
-							varsQueue.push(
-								{ type    : 'varCallInline',
-									varName : label,
-									content : match[9]
-								});
 						}
-						if(match[12]) { // Inline Call
-							const label = match[13] ? match[13].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-
-							varsQueue.push(
-								{ type    : 'varCallInline',
-									varName : label,
-									content : match[0]
-								});
+						if(i > -1) {
+							combinedRegex.lastIndex = combinedRegex.lastIndex - (content.length - i);
+							content = content.slice(0, i).trim().replace(/\s+/g, ' ');
 						}
-						lastIndex = combinedRegex.lastIndex;
+
+						varsQueue.push(
+							{ type    : 'varDefBlock',
+								varName : label,
+								content : content
+							});
+						varsQueue.push(
+							{ type    : 'varCallInline',
+								varName : label,
+								content : match[9]
+							});
+					}
+					if(match[12]) { // Inline Call
+						const label = match[13] ? match[13].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+
+						varsQueue.push(
+							{ type    : 'varCallInline',
+								varName : label,
+								content : match[0]
+							});
+					}
+					lastIndex = combinedRegex.lastIndex;
 				}
 
-				if (lastIndex < src.length) {
+				if(lastIndex < src.length) {
 					varsQueue.push(
 						{ type    : 'text',
 							varName : null,
 							content : src.slice(lastIndex)
-					});
+						});
 				}
 
 				processVariableQueue();
 
-				const output = varsQueue.map(item => item.content).join('');
+				const output = varsQueue.map((item)=>item.content).join('');
 				varsQueue = []; // Must clear varsQueue because custom HTML renderer uses Marked.parse which will preprocess again without clearing the array
 				return output;
-      }
-    }
-  };
+			}
+		}
+	};
 };
 //^=====--------------------< Variable Handling >-------------------=====^//
 
-Marked.use(MarkedVariables())
+Marked.use(MarkedVariables());
 Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });

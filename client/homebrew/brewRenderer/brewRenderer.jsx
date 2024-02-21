@@ -152,7 +152,7 @@ const BrewRenderer = (props)=>{
 			renderedPages.length = 0;
 
 		// Render currently-edited page first so cross-page effects (variables, links) can propagate out first
-		renderedPages[props.currentEditorPage] = renderPage(rawPages[props.currentEditorPage], props.currentEditorPage)
+		renderedPages[props.currentEditorPage] = renderPage(rawPages[props.currentEditorPage], props.currentEditorPage);
 
 		_.forEach(rawPages, (page, index)=>{
 			if((isInView(index) || !renderedPages[index]) && typeof window !== 'undefined'){

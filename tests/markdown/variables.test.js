@@ -11,7 +11,7 @@ String.prototype.trimReturns = function(){
 
 renderAllPages = function(pages){
 	const outputs = [];
-	pages.forEach((page, index) => {
+	pages.forEach((page, index)=>{
 		const output = Markdown.render(page, index);
 		outputs.push(output);
 	});
@@ -40,7 +40,7 @@ describe('Block-level variables', ()=>{
 			lines
 
 			$[var]`;
-		const rendered = Markdown.render(source).replace(/\s/g,' ').trimReturns();
+		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>string across multiple lines</p>');
 	});
 
@@ -71,7 +71,7 @@ describe('Block-level variables', ()=>{
 			$[var]
 
 			[var]: string`;
-		const rendered = Markdown.render(source).replace(/\s/g,' ').trimReturns();
+		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>string</p>');
 	});
 
@@ -82,7 +82,7 @@ describe('Block-level variables', ()=>{
 			[var]: string
 
 			[var]: new string`;
-		const rendered = Markdown.render(source).replace(/\s/g,' ').trimReturns();
+		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>new string</p>');
 	});
 
@@ -102,7 +102,7 @@ describe('Block-level variables', ()=>{
 
 			[lastName]: $[lastName]son
 			`;
-		const rendered = Markdown.render(source).replace(/\s/g,' ').trimReturns();
+		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>Welcome, Mr. Bob Jacobson!</p>');
 	});
 
@@ -136,13 +136,13 @@ describe('Block-level variables', ()=>{
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>two</p><p>one</p><p>two</p>'.trimReturns());
 	});
 
-	it("Ignores undefined variables that can't be hoisted", function() {
+	it('Ignores undefined variables that can\'t be hoisted', function() {
 		const source = dedent`
 			$[var](My name is $[first] $[last])
 
 			$[last]: Jones
 			`;
-		const rendered = Markdown.render(source).replace(/\s/g,' ').trimReturns();
+		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>My name is $[first] Jones</p>`.trimReturns());
 	});
 });
@@ -163,7 +163,7 @@ describe('Inline-level variables', ()=>{
 			$[var](My name is $[name] Jones)
 
 			[name]: Bob`;
-		const rendered = Markdown.render(source).replace(/\s/g,' ').trimReturns();
+		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>My name is Bob Jones</p>');
 	});
 
@@ -174,7 +174,7 @@ describe('Inline-level variables', ()=>{
 			$[name](Bob)
 
 			[name]: Bill`;
-		const rendered = Markdown.render(source).replace(/\s/g,' ').trimReturns();
+		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>My name is Bill Jones</p> <p>Bob</p>`.trimReturns());
 	});
 
@@ -209,28 +209,28 @@ describe('Math', ()=>{
 	it('Handles round function', function() {
 		const source = dedent`
 			$[round(1/4)]`;
-		const rendered = Markdown.render(source).replace(/\s/g,' ').trimReturns();
+		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>0</p>');
 	});
 
 	it('Handles floor function', function() {
 		const source = dedent`
 			$[floor(0.6)]`;
-		const rendered = Markdown.render(source).replace(/\s/g,' ').trimReturns();
+		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>0</p>');
 	});
 
 	it('Handles ceil function', function() {
 		const source = dedent`
 			$[ceil(0.2)]`;
-		const rendered = Markdown.render(source).replace(/\s/g,' ').trimReturns();
+		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>1</p>');
 	});
 
 	it('Handles nested functions', function() {
 		const source = dedent`
 			$[ceil(floor(round(0.6)))]`;
-		const rendered = Markdown.render(source).replace(/\s/g,' ').trimReturns();
+		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>1</p>');
 	});
 
@@ -352,7 +352,7 @@ describe('Cross-page variables', ()=>{
 		const source0 = `[var]: string`;
 		const source1 = `$[var]`;
 		const rendered = renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();
-		expect(rendered, `Input:\n${[source0,source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('\\page<p>string</p>');
+		expect(rendered, `Input:\n${[source0, source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('\\page<p>string</p>');
 	});
 
 	it('Handles hoisting across pages', function() {
@@ -360,7 +360,7 @@ describe('Cross-page variables', ()=>{
 		const source1 = `[var]: string`;
 		renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();	//Requires one full render of document before hoisting is picked up
 		const rendered = renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();
-		expect(rendered, `Input:\n${[source0,source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>string</p>\\page');
+		expect(rendered, `Input:\n${[source0, source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>string</p>\\page');
 	});
 
 	it('Handles reassignment and hoisting across pages', function() {
@@ -368,6 +368,6 @@ describe('Cross-page variables', ()=>{
 		const source1 = `[var]: two\n\n$[var]`;
 		renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();	//Requires one full render of document before hoisting is picked up
 		const rendered = renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();
-		expect(rendered, `Input:\n${[source0,source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>two</p><p>one</p>\\page<p>two</p>');
+		expect(rendered, `Input:\n${[source0, source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>two</p><p>one</p>\\page<p>two</p>');
 	});
 });
