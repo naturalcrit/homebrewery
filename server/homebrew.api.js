@@ -11,6 +11,19 @@ const { nanoid } = require('nanoid');
 
 const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
 
+const themes = require('../themes/themes.json');
+
+const isStaticTheme = (engine, themeName)=>{
+	if(!themes.hasOwnProperty(engine)) {
+		return undefined;
+	}
+	if(themes[engine].hasOwnProperty(themeName)) {
+		return themes[engine][themeName].baseTheme;
+	} else {
+		return undefined;
+	}
+};
+
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
 // 		cb(brews);
@@ -18,6 +31,22 @@ const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
 // };
 
 const MAX_TITLE_LENGTH = 100;
+
+const splitTextStyleAndMetadata = (brew)=>{
+	brew.text = brew.text.replaceAll('\r\n', '\n');
+	if(brew.text.startsWith('```metadata')) {
+		const index = brew.text.indexOf('```\n\n');
+		const metadataSection = brew.text.slice(12, index - 1);
+		const metadata = yaml.load(metadataSection);
+		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
+		brew.text = brew.text.slice(index + 5);
+	}
+	if(brew.text.startsWith('```css')) {
+		const index = brew.text.indexOf('```\n\n');
+		brew.style = brew.text.slice(7, index - 1);
+		brew.text = brew.text.slice(index + 5);
+	}
+};
 
 const api = {
 	homebrewApi : router,
@@ -40,6 +69,7 @@ const api = {
 	getBrew : (accessType, stubOnly = false)=>{
 		// Create middleware with the accessType passed in as part of the scope
 		return async (req, res, next)=>{
+
 			// Get relevant IDs for the brew
 			const { id, googleId } = api.getId(req);
 
@@ -205,64 +235,28 @@ const api = {
 
 		res.status(200).send(saved);
 	},
-	getBrewTheme : async (req, res)=>{
-		req.brew.text = req.brew.text.replaceAll('\r\n', '\n');
-		if(req.brew.text.startsWith('```metadata')) {
-			const index = req.brew.text.indexOf('```\n\n');
-			const metadataSection = req.brew.text.slice(12, index - 1);
-			const metadata = yaml.load(metadataSection);
-			Object.assign(req.brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
-			req.brew.text = req.brew.text.slice(index + 5);
-		}
-		if(req.brew.text.startsWith('```css')) {
-			const index = req.brew.text.indexOf('```\n\n');
-			req.brew.style = req.brew.text.slice(7, index - 1);
-			req.brew.text = req.brew.text.slice(index + 5);
-		}
-		return res.status(200).send({
-			parent    : req.brew.theme,
-			theme     : req.brew.style,
-			themeName : req.brew.title
-		});
-	},
-	getBrewThemeAsCSS : async (req, res)=>{
-		req.brew.text = req.brew.text.replaceAll('\r\n', '\n');
-		if(req.brew.text.startsWith('```metadata')) {
-			const index = req.brew.text.indexOf('```\n\n');
-			const metadataSection = req.brew.text.slice(12, index - 1);
-			const metadata = yaml.load(metadataSection);
-			Object.assign(req.brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
-			req.brew.text = req.brew.text.slice(index + 5);
-		}
-		if(req.brew.text.startsWith('```css')) {
-			const index = req.brew.text.indexOf('```\n\n');
-			req.brew.style = req.brew.text.slice(7, index - 1);
-			req.brew.text = req.brew.text.slice(index + 5);
-		}
-		if(res.hasOwnProperty('set')) {
-			res.set('Content-Type', 'text/css');
-		}
-		return res.status(200).send(`// From Theme: ${req.brew.title}\n\n${req.brew.style}`);
-	},
 	getBrewThemeWithCSS : async (req, res)=>{
-		req.brew.text = req.brew.text.replaceAll('\r\n', '\n');
-		if(req.brew.text.startsWith('```metadata')) {
-			const index = req.brew.text.indexOf('```\n\n');
-			const metadataSection = req.brew.text.slice(12, index - 1);
-			const metadata = yaml.load(metadataSection);
-			Object.assign(req.brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
-			req.brew.text = req.brew.text.slice(index + 5);
-		}
-		if(req.brew.text.startsWith('```css')) {
-			const index = req.brew.text.indexOf('```\n\n');
-			req.brew.style = req.brew.text.slice(7, index - 1);
-			req.brew.text = req.brew.text.slice(index + 5);
-		}
+		const brew = req.brew;
+		splitTextStyleAndMetadata(brew);
 		if(res.hasOwnProperty('set')) {
 			res.set('Content-Type', 'text/css');
 		}
-		const parentThemeImport = `// From Theme: ${req.brew.title}\n\n@import /themes/${req.brew.renderer}/${req.brew.theme}/styles.css\n\n`;
+		const staticTheme = `/api/css/${req.brew.renderer}/${req.brew.theme}/styles.css`;
+		const userTheme = `/api/css/${req.brew.theme.slice(1)}`;
+		const parentThemeImport = `// From Theme: ${req.brew.title}\n\n@import ${req.brew.theme[0] != '#' ? staticTheme : userTheme}\n\n`;
 		return res.status(200).send(`${req.brew.renderer == 'legacy' ? '' : parentThemeImport}${req.brew.style}`);
+	},
+	getStaticTheme : async(req, res)=>{
+		const themeParent = isStaticTheme(req.params.engine, req.params.id);
+		if(themeParent === undefined){
+			res.status(404).send(`Invalid Theme - Engine: ${req.params.engine}, Name: ${req.params.id}`);
+		} else {
+			if(res.hasOwnProperty('set')) {
+				res.set('Content-Type', 'text/css');
+			}
+			const parentTheme = themeParent ? `@import /api/css/${req.params.engine}/${themeParent}\n` : '';
+			return res.status(200).send(`${parentTheme}@import /themes/${req.params.engine}/${req.params.id}\n`);
+		}
 	},
 	updateBrew : async (req, res)=>{
 		// Initialize brew from request and body, destructure query params, and set the initial value for the after-save method
@@ -424,9 +418,7 @@ router.put('/api/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api
 router.put('/api/update/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
 router.delete('/api/:id', asyncHandler(api.deleteBrew));
 router.get('/api/remove/:id', asyncHandler(api.deleteBrew));
-router.get('/api/theme/:id', asyncHandler(api.getBrew('edit', true)),  asyncHandler(api.getBrewTheme));
-router.get('/api/css/:id', asyncHandler(api.getBrew('edit', true)),  asyncHandler(api.getBrewThemeAsCSS));
-router.get('/api/csstheme/:id', asyncHandler(api.getBrew('edit', true)),  asyncHandler(api.getBrewThemeWithCSS));
-
+router.get('/api/css/:id', asyncHandler(api.getBrew('edit', true)),  asyncHandler(api.getBrewThemeWithCSS));
+router.get('/api/css/:engine/:id/', asyncHandler(api.getStaticTheme));
 
 module.exports = api;
