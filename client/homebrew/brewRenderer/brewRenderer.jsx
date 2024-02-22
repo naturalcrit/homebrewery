@@ -104,8 +104,9 @@ const BrewRenderer = (props)=>{
 
 	const sanitizeScriptTags = (content)=>{
 		return content
-			.replace(/<script/ig, '&lt;script')
-			.replace(/<\/script>/ig, '&lt;/script&gt;');
+			?.replace(/<script/ig, '&lt;script')
+			.replace(/<\/script>/ig, '&lt;/script&gt;')
+			|| '';
 	};
 
 	const renderPageInfo = ()=>{
