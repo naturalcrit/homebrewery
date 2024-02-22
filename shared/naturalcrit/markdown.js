@@ -342,7 +342,7 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 
 	let replacedLabel = label;
 
-	if(mathVars?.[0] !== label.trim())  {// If there was mathy stuff not captured, let's do math!
+	if(prefix[0] == '$' && mathVars?.[0] !== label.trim())  {// If there was mathy stuff not captured, let's do math!
 		mathVars?.forEach((variable)=>{
 			const foundVar = lookupVar(variable, globalPageNumber, hoist);
 			if(foundVar && foundVar.resolved && foundVar.content && !isNaN(foundVar.content)) // Only subsitute math values if fully resolved, not empty strings, and numbers
