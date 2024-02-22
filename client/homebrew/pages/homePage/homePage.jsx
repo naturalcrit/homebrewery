@@ -31,9 +31,10 @@ const HomePage = createClass({
 	},
 	getInitialState : function() {
 		return {
-			brew        : this.props.brew,
-			welcomeText : this.props.brew.text,
-			error       : undefined
+			brew              : this.props.brew,
+			welcomeText       : this.props.brew.text,
+			error             : undefined,
+			currentEditorPage : 0
 		};
 	},
 	handleSave : function(){
@@ -53,7 +54,8 @@ const HomePage = createClass({
 	},
 	handleTextChange : function(text){
 		this.setState((prevState)=>({
-			brew : { ...prevState.brew, text: text }
+			brew              : { ...prevState.brew, text: text },
+			currentEditorPage : this.refs.editor.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
 		}));
 	},
 	renderNavbar : function(){
@@ -85,7 +87,12 @@ const HomePage = createClass({
 						renderer={this.state.brew.renderer}
 						showEditButtons={false}
 					/>
-					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer}/>
+					<BrewRenderer
+						text={this.state.brew.text}
+						style={this.state.brew.style}
+						renderer={this.state.brew.renderer}
+						currentEditorPage={this.state.currentEditorPage}
+					/>
 				</SplitPane>
 			</div>
 
