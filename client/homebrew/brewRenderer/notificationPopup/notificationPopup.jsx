@@ -25,13 +25,10 @@ const NotificationPopup = createClass({
 			return (
 				<>
 					<li key='psa'>
-						<em>Broken default logo on <b>CoverPage</b> </em> <br />
-						If you have used the Cover Page snippet and notice the Naturalcrit
-						logo is showing as a broken image, this is due to some small tweaks
-						of this BETA feature. To fix the logo in your cover page, rename
-						the image link <b>"/assets/naturalCritLogoRed.svg"</b>. Remember
-						that any snippet marked "BETA" may have a similar change in the
-						future as we encounter any bugs or reworks.
+						<em>Don't store IMAGES in Google Drive</em><br />
+						Google Drive is not an image service, and will block images from being used 
+						in brews if they get more views than expected. Google has confirmed they won't fix 
+						this, so we recommend you look for another image hosting service such as imgur, ImgBB or Google Photos.
 					</li>
 
 					<li key='googleDriveFolder'>
