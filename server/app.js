@@ -9,7 +9,7 @@ const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
 
-const { homebrewApi, getBrew, getBrewThemeWithCSS, getStaticTheme} = require('./homebrew.api.js');
+const { homebrewApi, getBrew, getBrewThemeWithCSS, getStaticTheme } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
