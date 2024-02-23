@@ -21,10 +21,11 @@ const ErrorNavItem = createClass({
 			this.props.parent.setState(state);
 		};
 
-		const error = this.props.error;
-		const response = error.response;
-		const status = response.status;
-		const message = response.body?.message;
+		const error       = this.props.error;
+		const response    = error.response;
+		const status      = response.status;
+		const HBErrorCode = response.body?.HBErrorCode;
+		const message     = response.body?.message;
 		let errMsg = '';
 		try {
 			errMsg += `${error.toString()}\n\n`;
@@ -40,13 +41,45 @@ const ErrorNavItem = createClass({
 					{message ?? 'Conflict: please refresh to get latest changes'}
 				</div>
 			</Nav.item>;
-		} else if(status === 412) {
+		}
+		
+		if(status === 412) {
 			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
 				<div className='errorContainer' onClick={clearError}>
 					{message ?? 'Your client is out of date. Please save your changes elsewhere and refresh.'}
 				</div>
 			</Nav.item>;
+		}
+		
+		if(HBErrorCode === '04') {
+			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+				Oops!
+				<div className='errorContainer' onClick={clearError}>
+					You are no longer signed in as an author of
+					this brew! Were you signed out from a different
+					window? Visit our log in page, then try again!
+					<br></br>
+					<a target='_blank' rel='noopener noreferrer'
+						href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
+						<div className='confirm'>
+							Sign In
+						</div>
+					</a>
+					<div className='deny'>
+						Not Now
+					</div>
+				</div>
+			</Nav.item>;
+		}
+
+		if(response.body?.errors?.[0].reason == 'storageQuotaExceeded') {
+			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+			Oops!
+			<div className='errorContainer' onClick={clearError}>
+				Can't save because your Google Drive seems to be full!
+			</div>
+		</Nav.item>;
 		}
 
 		if(response.req.url.match(/^\/api.*Google.*$/m)){
@@ -57,6 +90,7 @@ const ErrorNavItem = createClass({
 					expired! Visit our log in page to sign out
 					and sign back in with Google,
 					then try saving again!
+					<br></br>
 					<a target='_blank' rel='noopener noreferrer'
 						href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
 						<div className='confirm'>
