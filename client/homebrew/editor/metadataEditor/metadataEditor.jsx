@@ -8,6 +8,8 @@ const request = require('../../utils/request-middleware.js');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Combobox = require('client/components/combobox.jsx');
 const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
+const HomebrewModel     = require('../../../../server/homebrew.model.js').model;
+
 
 const Themes = require('themes/themes.json');
 const validations = require('./validations.js');
@@ -192,20 +194,23 @@ const MetadataEditor = createClass({
 	renderThemeDropdown : function(){
 		if(!global.enable_themes) return;
 
+		const mergedThemes = { ...Themes, ...this.props.metadata.userThemes };
+
 		const listThemes = (renderer)=>{
-			return _.map(_.values(Themes[renderer]), (theme)=>{
-				return <div className='item' key={''} onClick={()=>this.handleTheme(theme)} title={''}>
-					{`${theme.renderer} : ${theme.name}`}
+			return _.map(_.values(mergedThemes[renderer]), (theme)=>{
+				const preview = theme?.thumbnail ? theme.thumbnail : `/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`;
+				return <div className='item' key={`${renderer}_${theme.name}`} onClick={()=>this.handleTheme(theme)} title={''}>
+					{`${renderer} : ${theme.name}`}
 					<img src={`/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`}/>
 					<div className='preview'>
 						<h6>{`${theme.name}`} preview</h6>
-						<img src={`/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`}/>
+						<img src={`${preview}`}/>
 					</div>
 				</div>;
 			});
 		};
 
-		const currentTheme = Themes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme];
+		const currentTheme = mergedThemes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme];
 		let dropdown;
 
 		if(this.props.metadata.renderer == 'legacy') {
@@ -223,6 +228,7 @@ const MetadataEditor = createClass({
 					</div>
 					{/*listThemes('Legacy')*/}
 					{listThemes('V3')}
+					{listThemes('Brew')}
 				</Nav.dropdown>;
 		}
 

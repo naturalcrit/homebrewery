@@ -42,6 +42,36 @@ const sanitizeBrew = (brew, accessType)=>{
 	return brew;
 };
 
+const getUsersBrewThemes = async (username)=>{
+	const fields = [
+		'title',
+		'tags',
+		'editId',
+		'thumbnail'
+	];
+	const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme'] } }) //lean() converts results to JSObjects
+		.catch((error)=>{throw 'Can not find brews';});
+
+	const userThemes = {
+		Brew : {
+
+		}
+	};
+
+	brews.forEach((brew)=>{
+		userThemes.Brew[brew.editId] = {
+			name         : brew.title,
+			renderer     : 'V3',
+			baseTheme    : false,
+			baseSnippets : false,
+			path         : `#${brew.editId}`,
+			thumbnail    : brew.thumbnail
+		};
+	});
+
+	return userThemes;
+};
+
 app.use('/', serveCompressedStaticAssets(`build`));
 app.use(require('./middleware/content-negotiation.js'));
 app.use(require('body-parser').json({ limit: '25mb' }));
@@ -278,7 +308,7 @@ app.get('/user/:username', async (req, res, next)=>{
 });
 
 //Edit Page
-app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
+app.get('/edit/:id', asyncHandler(getBrew('edit')), async(req, res, next)=>{
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -288,6 +318,7 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 		type        : 'article'
 	};
 
+	req.brew.userThemes = await getUsersBrewThemes(req.account.username);
 	sanitizeBrew(req.brew, 'edit');
 	splitTextStyleAndMetadata(req.brew);
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
