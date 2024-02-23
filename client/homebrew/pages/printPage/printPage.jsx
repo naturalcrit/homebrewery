@@ -21,7 +21,8 @@ const PrintPage = createClass({
 			brew  : {
 				text     : '',
 				style    : '',
-				renderer : 'legacy'
+				renderer : 'legacy',
+				lang     : ''
 			}
 		};
 	},
@@ -32,7 +33,8 @@ const PrintPage = createClass({
 				text     : this.props.brew.text     || '',
 				style    : this.props.brew.style    || undefined,
 				renderer : this.props.brew.renderer || 'legacy',
-				theme    : this.props.brew.theme    || '5ePHB'
+				theme    : this.props.brew.theme    || '5ePHB',
+				lang	 : this.props.brew.lang     || 'en'
 			}
 		};
 	},
@@ -49,7 +51,8 @@ const PrintPage = createClass({
 						text     : brewStorage,
 						style    : styleStorage,
 						renderer : metaStorage?.renderer || 'legacy',
-						theme    : metaStorage?.theme    || '5ePHB'
+						theme    : metaStorage?.theme    || '5ePHB',
+						lang	 : metaStorage?.lang	 || 'en'
 					}
 				};
 			});
@@ -100,7 +103,7 @@ const PrintPage = createClass({
 			<link href={`/themes/${rendererPath}/${themePath}/style.css`} type="text/css" rel='stylesheet'/>
 			{/* Apply CSS from Style tab */}
 			{this.renderStyle()}
-			<div className='pages' ref='pages'>
+			<div className='pages' ref='pages' lang={this.state.brew.lang}>
 				{this.renderPages()}
 			</div>
 		</div>;
