@@ -42,7 +42,7 @@ const sanitizeBrew = (brew, accessType)=>{
 	return brew;
 };
 
-const getUsersBrewThemes = async (username)=>{
+const getUsersBrewThemes = async (username,id)=>{
 	const fields = [
 		'title',
 		'tags',
@@ -59,14 +59,16 @@ const getUsersBrewThemes = async (username)=>{
 	};
 
 	brews.forEach((brew)=>{
-		userThemes.Brew[brew.editId] = {
-			name         : brew.title,
-			renderer     : 'V3',
-			baseTheme    : false,
-			baseSnippets : false,
-			path         : `#${brew.editId}`,
-			thumbnail    : brew.thumbnail
-		};
+		if(id!=brew.editId) {
+			userThemes.Brew[brew.editId] = {
+				name         : brew.title,
+				renderer     : 'V3',
+				baseTheme    : false,
+				baseSnippets : false,
+				path         : `#${brew.editId}`,
+				thumbnail    : brew.thumbnail
+			};
+		}
 	});
 
 	return userThemes;
@@ -324,7 +326,7 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), async(req, res, next)=>{
 		type        : 'article'
 	};
 
-	req.brew.userThemes = await getUsersBrewThemes(req.account.username);
+	req.brew.userThemes = await getUsersBrewThemes(req.account.username, req.brew.editId);
 	sanitizeBrew(req.brew, 'edit');
 	splitTextStyleAndMetadata(req.brew);
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
