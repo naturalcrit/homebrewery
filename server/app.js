@@ -9,7 +9,7 @@ const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
 
-const { homebrewApi, getBrew } = require('./homebrew.api.js');
+const { homebrewApi, getBrew, getBrewThemeWithCSS, getStaticTheme} = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
@@ -119,6 +119,12 @@ const defaultMetaTags = {
 app.get('/robots.txt', (req, res)=>{
 	return res.sendFile(`robots.txt`, { root: process.cwd() });
 });
+
+// Theme
+
+app.get('/css/:id', asyncHandler(getBrew('edit', true)),  asyncHandler(getBrewThemeWithCSS));
+app.get('/css/:engine/:id/', asyncHandler(getStaticTheme));
+
 
 //Home page
 app.get('/', (req, res, next)=>{

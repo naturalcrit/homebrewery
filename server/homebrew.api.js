@@ -238,12 +238,12 @@ const api = {
 	getBrewThemeWithCSS : async (req, res)=>{
 		const brew = req.brew;
 		splitTextStyleAndMetadata(brew);
-		if(res.hasOwnProperty('set')) {
-			res.set('Content-Type', 'text/css');
-		}
+		// if(res.hasOwnProperty('set')) {
+		// 	res.set('Content-Type', 'text/css');
+		// }
 		const staticTheme = `/api/css/${req.brew.renderer}/${req.brew.theme}/styles.css`;
 		const userTheme = `/api/css/${req.brew.theme.slice(1)}`;
-		const parentThemeImport = `// From Theme: ${req.brew.title}\n\n@import ${req.brew.theme[0] != '#' ? staticTheme : userTheme}\n\n`;
+		const parentThemeImport = `@import url(\"${req.brew.theme[0] != '#' ? staticTheme : userTheme}\");\n\n// From Theme: ${req.brew.title}\n\n`;
 		return res.status(200).send(`${req.brew.renderer == 'legacy' ? '' : parentThemeImport}${req.brew.style}`);
 	},
 	getStaticTheme : async(req, res)=>{
@@ -251,11 +251,11 @@ const api = {
 		if(themeParent === undefined){
 			res.status(404).send(`Invalid Theme - Engine: ${req.params.engine}, Name: ${req.params.id}`);
 		} else {
-			if(res.hasOwnProperty('set')) {
-				res.set('Content-Type', 'text/css');
-			}
-			const parentTheme = themeParent ? `@import /api/css/${req.params.engine}/${themeParent}\n` : '';
-			return res.status(200).send(`${parentTheme}@import /themes/${req.params.engine}/${req.params.id}/style.css\n`);
+			// if(res.hasOwnProperty('set')) {
+			// 	res.set('Content-Type', 'text/css');
+			// }
+			const parentTheme = themeParent ? `@import url(\"/css/${req.params.engine}/${themeParent}\");\n` : '';
+			return res.status(200).send(`${parentTheme}@import url(\"/themes/${req.params.engine}/${req.params.id}/style.css\");\n`);
 		}
 	},
 	updateBrew : async (req, res)=>{
@@ -418,7 +418,5 @@ router.put('/api/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api
 router.put('/api/update/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
 router.delete('/api/:id', asyncHandler(api.deleteBrew));
 router.get('/api/remove/:id', asyncHandler(api.deleteBrew));
-router.get('/api/css/:id', asyncHandler(api.getBrew('edit', true)),  asyncHandler(api.getBrewThemeWithCSS));
-router.get('/api/css/:engine/:id/', asyncHandler(api.getStaticTheme));
 
 module.exports = api;

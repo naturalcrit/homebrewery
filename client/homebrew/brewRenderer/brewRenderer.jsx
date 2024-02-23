@@ -176,9 +176,18 @@ const BrewRenderer = (props)=>{
 		document.dispatchEvent(new MouseEvent('click'));
 	};
 
-	const rendererPath  = props.renderer == 'V3' ? 'V3' : 'Legacy';
+	let rendererPath  = props.renderer == 'V3' ? 'V3' : 'Legacy';
 	const themePath     = props.theme ?? '5ePHB';
 	const baseThemePath = Themes[rendererPath][themePath].baseTheme;
+
+	// Override static theme values if a Brew theme.
+
+	if(themePath[0] == '#') {
+		themePath.slice(1);
+		rendererPath = '';
+	} else {
+		rendererPath += '/';
+	}
 
 	return (
 		<>
@@ -206,11 +215,11 @@ const BrewRenderer = (props)=>{
 						<RenderWarnings />
 						<NotificationPopup />
 					</div>
-					<link href={`/themes/${rendererPath}/Blank/style.css`} rel='stylesheet'/>
+					<link href={`/css/${rendererPath}Blank`} rel='stylesheet'/>
 					{baseThemePath &&
-						<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} rel='stylesheet'/>
+						<link href={`/css/${rendererPath}${baseThemePath}`} rel='stylesheet'/>
 					}
-					<link href={`/themes/${rendererPath}/${themePath}/style.css`} rel='stylesheet'/>
+					<link href={`/css/${rendererPath}${themePath}`} rel='stylesheet'/>
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted
