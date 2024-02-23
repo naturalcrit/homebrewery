@@ -89,13 +89,14 @@ const BrewRenderer = (props)=>{
 		}));
 	};
 
-	const shouldRender = (index)=>{
-		if(!state.isMounted) return false;
+	const isInView = (index)=>{
+		if(!state.isMounted)
+			return false;
+
+		if(index == props.currentEditorPage)	//Already rendered before this step
+			return false;
 
 		if(Math.abs(index - state.viewablePageNumber) <= 3)
-			return true;
-
-		if(index + 1 == props.currentEditorPage)
 			return true;
 
 		return false;
@@ -103,8 +104,9 @@ const BrewRenderer = (props)=>{
 
 	const sanitizeScriptTags = (content)=>{
 		return content
-			.replace(/<script/ig, '&lt;script')
-			.replace(/<\/script>/ig, '&lt;/script&gt;');
+			?.replace(/<script/ig, '&lt;script')
+			.replace(/<\/script>/ig, '&lt;/script&gt;')
+			|| '';
 	};
 
 	const renderPageInfo = ()=>{
@@ -138,7 +140,7 @@ const BrewRenderer = (props)=>{
 			return <BrewPage className='page phb' index={index} key={index} contents={html} />;
 		} else {
 			cleanPageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
-			const html = Markdown.render(cleanPageText);
+			const html = Markdown.render(cleanPageText, index);
 			return <BrewPage className='page' index={index} key={index} contents={html} />;
 		}
 	};
@@ -150,8 +152,11 @@ const BrewRenderer = (props)=>{
 		if(rawPages.length != renderedPages.length) // Re-render all pages when page count changes
 			renderedPages.length = 0;
 
+		// Render currently-edited page first so cross-page effects (variables, links) can propagate out first
+		renderedPages[props.currentEditorPage] = renderPage(rawPages[props.currentEditorPage], props.currentEditorPage);
+
 		_.forEach(rawPages, (page, index)=>{
-			if((shouldRender(index) || !renderedPages[index]) && typeof window !== 'undefined'){
+			if((isInView(index) || !renderedPages[index]) && typeof window !== 'undefined'){
 				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range
 			}
 		});
