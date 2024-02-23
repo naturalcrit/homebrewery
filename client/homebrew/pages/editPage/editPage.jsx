@@ -115,7 +115,7 @@ const EditPage = createClass({
 			brew              : { ...prevState.brew, text: text },
 			isPending         : true,
 			htmlErrors        : htmlErrors,
-			currentEditorPage : this.refs.editor.getCurrentPage()
+			currentEditorPage : this.refs.editor.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
 		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
