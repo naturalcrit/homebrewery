@@ -79,7 +79,7 @@ const api = {
 			if(accessType === 'edit' && (authorsExist && !(isAuthor || isInvited))) {
 				const accessError = { name: 'Access Error', status: 401 };
 				if(req.account){
-					throw { ...accessError, message: 'User is not an Author', HBErrorCode: '03', authors: stub.authors, brewTitle: stub.title };
+					throw { ...accessError, message: 'User is not an Author', HBErrorCode: '03', authors: stub.authors, brewTitle: stub.title, shareId: stub.shareId };
 				}
 				throw { ...accessError, message: 'User is not logged in', HBErrorCode: '04', authors: stub.authors, brewTitle: stub.title };
 			}
@@ -153,6 +153,9 @@ const api = {
 		brew.text = api.mergeBrewText(brew);
 
 		_.defaults(brew, DEFAULT_BREW);
+
+		brew.title = brew.title.trim();
+		brew.description = brew.description.trim();
 	},
 	newGoogleBrew : async (account, brew, res)=>{
 		const oAuth2Client = GoogleActions.authCheck(account, res);
@@ -217,6 +220,8 @@ const api = {
 		const { saveToGoogle, removeFromGoogle } = req.query;
 		let afterSave = async ()=>true;
 
+		brew.title = brew.title.trim();
+		brew.description = brew.description.trim() || '';
 		brew.text = api.mergeBrewText(brew);
 
 		if(brew.googleId && removeFromGoogle) {

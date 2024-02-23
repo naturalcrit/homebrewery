@@ -20,9 +20,10 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
 
-const BREWKEY = 'homebrewery-new';
+const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
-const METAKEY = 'homebrewery-new-meta';
+const METAKEY  = 'homebrewery-new-meta';
+let SAVEKEY;
 
 
 const NewPage = createClass({
@@ -37,11 +38,12 @@ const NewPage = createClass({
 		const brew = this.props.brew;
 
 		return {
-			brew       : brew,
-			isSaving   : false,
-			saveGoogle : (global.account && global.account.googleId ? true : false),
-			error      : null,
-			htmlErrors : Markdown.validate(brew.text)
+			brew              : brew,
+			isSaving          : false,
+			saveGoogle        : (global.account && global.account.googleId ? true : false),
+			error             : null,
+			htmlErrors        : Markdown.validate(brew.text),
+			currentEditorPage : 0
 		};
 	},
 
@@ -62,11 +64,15 @@ const NewPage = createClass({
 			brew.renderer = metaStorage?.renderer ?? brew.renderer;
 			brew.theme    = metaStorage?.theme    ?? brew.theme;
 			brew.lang     = metaStorage?.lang     ?? brew.lang;
-
-			this.setState({
-				brew : brew
-			});
 		}
+
+		SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${global.account?.username || ''}`;
+		const saveStorage = localStorage.getItem(SAVEKEY) || 'HOMEBREWERY';
+
+		this.setState({
+			brew       : brew,
+			saveGoogle : (saveStorage == 'GOOGLE-DRIVE' && this.state.saveGoogle)
+		});
 
 		localStorage.setItem(BREWKEY, brew.text);
 		if(brew.style)
@@ -99,8 +105,9 @@ const NewPage = createClass({
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 
 		this.setState((prevState)=>({
-			brew       : { ...prevState.brew, text: text },
-			htmlErrors : htmlErrors
+			brew              : { ...prevState.brew, text: text },
+			htmlErrors        : htmlErrors,
+			currentEditorPage : this.refs.editor.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
 		}));
 		localStorage.setItem(BREWKEY, text);
 	},
@@ -215,7 +222,15 @@ const NewPage = createClass({
 						onMetaChange={this.handleMetaChange}
 						renderer={this.state.brew.renderer}
 					/>
-					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} theme={this.state.brew.theme} lang={this.state.brew.lang} errors={this.state.htmlErrors}/>
+					<BrewRenderer
+						text={this.state.brew.text}
+						style={this.state.brew.style}
+						renderer={this.state.brew.renderer}
+						theme={this.state.brew.theme}
+						errors={this.state.htmlErrors}
+						lang={this.state.brew.lang}
+						currentEditorPage={this.state.currentEditorPage}
+					/>
 				</SplitPane>
 			</div>
 		</div>;

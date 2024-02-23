@@ -257,6 +257,7 @@ app.get('/user/:username', async (req, res, next)=>{
 					brew.pageCount = googleBrews[match].pageCount;
 					brew.renderer = googleBrews[match].renderer;
 					brew.version = googleBrews[match].version;
+					brew.webViewLink = googleBrews[match].webViewLink;
 					googleBrews.splice(match, 1);
 				}
 			}
@@ -267,6 +268,9 @@ app.get('/user/:username', async (req, res, next)=>{
 	}
 
 	req.brews = _.map(brews, (brew)=>{
+		// Clean up brew data
+		brew.title = brew.title?.trim();
+		brew.description = brew.description?.trim();
 		return sanitizeBrew(brew, ownAccount ? 'edit' : 'share');
 	});
 
@@ -300,7 +304,8 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 		text     : req.brew.text,
 		style    : req.brew.style,
 		renderer : req.brew.renderer,
-		theme    : req.brew.theme
+		theme    : req.brew.theme,
+		tags     : req.brew.tags
 	};
 	req.brew = _.defaults(brew, DEFAULT_BREW);
 
@@ -323,14 +328,17 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 		type        : 'article'
 	};
 
-	if(req.params.id.length > 12 && !brew._id) {
-		const googleId = brew.googleId;
-		const shareId = brew.shareId;
-		await GoogleActions.increaseView(googleId, shareId, 'share', brew)
-			.catch((err)=>{next(err);});
-	} else {
-		await HomebrewModel.increaseView({ shareId: brew.shareId });
-	}
+	// increase visitor view count, do not include visits by author(s)
+	if(!brew.authors.includes(req.account?.username)){
+		if(req.params.id.length > 12 && !brew._id) {
+			const googleId = brew.googleId;
+			const shareId = brew.shareId;
+			await GoogleActions.increaseView(googleId, shareId, 'share', brew)
+				.catch((err)=>{next(err);});
+		} else {
+			await HomebrewModel.increaseView({ shareId: brew.shareId });
+		}
+	};
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	return next();
@@ -465,8 +473,17 @@ const getPureError = (error)=>{
 };
 
 app.use(async (err, req, res, next)=>{
-	const status = err.status || err.code || 500;
+	err.originalUrl = req.originalUrl;
 	console.error(err);
+
+	if(err.originalUrl?.startsWith('/api/')) {
+		// console.log('API error');
+		res.status(err.status || err.response?.status || 500).send(err);
+		return;
+	}
+
+	// console.log('non-API error');
+	const status = err.status || err.code || 500;
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'Error Page',

@@ -7,6 +7,7 @@ const moment = require('moment');
 const request = require('../../../../utils/request-middleware.js');
 
 const googleDriveIcon = require('../../../../googleDrive.svg');
+const homebreweryIcon = require('../../../../thumbnail.png');
 const dedent = require('dedent-tabs').default;
 
 const BrewItem = createClass({
@@ -90,11 +91,17 @@ const BrewItem = createClass({
 		</a>;
 	},
 
-	renderGoogleDriveIcon : function(){
-		if(!this.props.brew.googleId) return;
+	renderStorageIcon : function(){
+		if(this.props.brew.googleId) {
+			return <span title={this.props.brew.webViewLink ? 'Your Google Drive Storage': 'Another User\'s Google Drive Storage'}>
+				<a href={this.props.brew.webViewLink} target='_blank'>
+					<img className='googleDriveIcon' src={googleDriveIcon} alt='googleDriveIcon' />
+				</a>
+			</span>;
+		}
 
-		return <span>
-			<img className='googleDriveIcon' src={googleDriveIcon} alt='googleDriveIcon' />
+		return <span title='Homebrewery Storage'>
+			<img className='homebreweryIcon' src={homebreweryIcon} alt='homebreweryIcon' />
 		</span>;
 	},
 
@@ -118,7 +125,7 @@ const BrewItem = createClass({
 			<div className='info'>
 
 				{brew.tags?.length ? <>
-					<div className='brewTags' title={`Tags:\n${brew.tags.join('\n')}`}>
+					<div className='brewTags' title={`${brew.tags.length} tags:\n${brew.tags.join('\n')}`}>
 						<i className='fas fa-tags'/>
 						{brew.tags.map((tag, idx)=>{
 							const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
@@ -128,7 +135,11 @@ const BrewItem = createClass({
 				</> : <></>
 				}
 				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
-					<i className='fas fa-user'/> {brew.authors?.join(', ')}
+					<i className='fas fa-user'/> {brew.authors?.map((author, index)=>(
+  					<>
+    					<a key={index} href={`/user/${author}`}>{author}</a>
+    					{index < brew.authors.length - 1 && ', '}
+  					</>))}
 				</span>
 				<br />
 				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
@@ -144,7 +155,7 @@ const BrewItem = createClass({
 					Last updated: ${moment(brew.updatedAt).local().format(dateFormatString)}`}>
 					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
 				</span>
-				{this.renderGoogleDriveIcon()}
+				{this.renderStorageIcon()}
 			</div>
 
 			<div className='links'>

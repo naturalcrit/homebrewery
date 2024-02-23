@@ -50,7 +50,8 @@ const EditPage = createClass({
 			url                    : '',
 			autoSave               : true,
 			autoSaveWarning        : false,
-			unsavedTime            : new Date()
+			unsavedTime            : new Date(),
+			currentEditorPage      : 0
 		};
 	},
 	savedBrew : null,
@@ -91,7 +92,7 @@ const EditPage = createClass({
 		if(!(e.ctrlKey || e.metaKey)) return;
 		const S_KEY = 83;
 		const P_KEY = 80;
-		if(e.keyCode == S_KEY) this.save();
+		if(e.keyCode == S_KEY) this.trySave(true);
 		if(e.keyCode == P_KEY) window.open(`/print/${this.processShareId()}?dialog=true`, '_blank').focus();
 		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
 			e.stopPropagation();
@@ -109,9 +110,10 @@ const EditPage = createClass({
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 
 		this.setState((prevState)=>({
-			brew       : { ...prevState.brew, text: text },
-			isPending  : true,
-			htmlErrors : htmlErrors
+			brew              : { ...prevState.brew, text: text },
+			isPending         : true,
+			htmlErrors        : htmlErrors,
+			currentEditorPage : this.refs.editor.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
 		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
@@ -137,13 +139,14 @@ const EditPage = createClass({
 		return !_.isEqual(this.state.brew, this.savedBrew);
 	},
 
-	trySave : function(){
+	trySave : function(immediate=false){
 		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
 		if(this.hasChanges()){
 			this.debounceSave();
 		} else {
 			this.debounceSave.cancel();
 		}
+		if(immediate) this.debounceSave.flush();
 	},
 
 	handleGoogleClick : function(){
@@ -404,6 +407,7 @@ const EditPage = createClass({
 						theme={this.state.brew.theme}
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
+						currentEditorPage={this.state.currentEditorPage}
 					/>
 				</SplitPane>
 			</div>

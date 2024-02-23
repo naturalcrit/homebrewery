@@ -75,10 +75,285 @@ pre {
 .page {
 	padding-bottom: 1.5cm;
 }
+
+.varSyntaxTable th:first-of-type {
+  width:6cm;
+}
 ```
 
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
+
+### Wednesday 21/2/2024 - v3.11.0
+{{taskList
+
+##### Gazook89
+
+* [x] Brew view count no longer increases when viewed by owner
+
+Fixes issue [#3037](https://github.com/naturalcrit/homebrewery/issues/3037)
+
+* [x] Small tweak to PHB H3 sizing
+
+Fixes issue [#2989](https://github.com/naturalcrit/homebrewery/issues/2989)
+
+* [x] Add **Fold/Unfold All** {{fas,fa-compress-alt}} / {{fas,fa-expand-alt}} buttons to editor bar 
+
+Fixes issue [#2965](https://github.com/naturalcrit/homebrewery/issues/2965)
+
+
+##### G-Ambatte
+
+* [x] Share link added to Editor Access error page
+
+Fixes issue [#3086](https://github.com/naturalcrit/homebrewery/issues/3086)
+
+* [x] Add Darkbrewery theme to Editor theme selector {{fas,fa-palette}}
+
+Fixes issue [#3034](https://github.com/naturalcrit/homebrewery/issues/3034)
+
+* [x] Fix Firefox prints with alternating blank pages
+
+Fixes issue [#3115](https://github.com/naturalcrit/homebrewery/issues/3115)
+
+* [x] Admin page working again
+
+Fixes issue [#2657](https://github.com/naturalcrit/homebrewery/issues/2657)
+
+
+##### 5e-Cleric
+
+* [x] Fix indenting issue with Monster Blocks and italics in Class Feature
+
+Fixes issues [#527](https://github.com/naturalcrit/homebrewery/issues/527),
+[#3247](https://github.com/naturalcrit/homebrewery/issues/3247)
+
+* [x] Allow CSS vars in curly syntax to be formatted as strings using single quotes
+
+`{{--customVar:"'a string'"}}`
+
+Fixes issue [#3066](https://github.com/naturalcrit/homebrewery/issues/3066)
+
+* [x] Add *Elderberry Inn* icons {{ei,action}} `{{ei,icon-name}}`
+
+Fixes issue [#3171](https://github.com/naturalcrit/homebrewery/issues/3171)
+
+* [x] New {{openSans **{{fas,fa-keyboard}} FONTS**  }} snippets!
+
+Fixes issue [#3171](https://github.com/naturalcrit/homebrewery/issues/3171)
+
+* [x] New page now opens in a new tab
+
+
+##### abquintic (new contributor!)
+
+* [x] Add ^super^ `^abc^` and ^^sub^^ `^^abc^^` syntax.
+ 
+Fixes issue [#2171](https://github.com/naturalcrit/homebrewery/issues/2171)
+
+* [x] Add HTML tag assignment to curly syntax `{{tag=value}}`
+ 
+Fixes issue [1488](https://github.com/naturalcrit/homebrewery/issues/1488)
+
+* [x] {{openSans **Brew → Clone to New**}} now clones tags
+ 
+Fixes issue [1488](https://github.com/naturalcrit/homebrewery/issues/1488)
+
+##### calculuschild
+
+* [x] Better error messages for "Out of Google Drive Storage" and "Not logged in to edit"
+
+Fixes issues [2510](https://github.com/naturalcrit/homebrewery/issues/2510),
+[2975](https://github.com/naturalcrit/homebrewery/issues/2975)
+
+* [x] New Variables syntax. See below for details.
+}}
+
+{{wide
+
+### Brew Variable Syntax
+
+You may already be familiar with `[link](url)` and `![image](url)` syntax. We have expanded this to include a third `$[variable](text)` syntax. All three of these syntaxes now share a common set of features:
+
+{{varSyntaxTable
+| syntax | description |
+|:-------|-------------|
+| `[var]:content`  | Assigns a variable (must start on a line by itself, and ends at the next blank line) |
+| `[var](content)` | Assigns a variable and outputs it (can be inline) |
+| `[var]`  | Outputs the variable contents as a link, if formatted as a valid link |
+| `![var]` | Outputs as an image, if formatted as a valid image                    |
+| `$[var]` | Outputs as Markdown                                          |
+| `$[var1 + var2 - 2 * var3]` | Performs math operations and outputs result if all variables are valid numbers                                     |
+}}
+
+}}
+
+{{wide,margin-top:0,margin-bottom:0
+### Examples
+}}
+
+{{wide,columns:2,margin-top:0,margin-bottom:0
+
+```
+[first]: Bob
+
+[last]: Jones
+
+My name is $[first] $[last].
+```
+
+\column
+
+[first]: Bob
+
+[last]: Jones
+
+My name is $[first] $[last].
+
+}}
+
+{{wide,columns:2,margin-top:0,margin-bottom:0
+
+```
+[myTable]:
+| h1 | h2 |
+|----|----|
+| c1 | c2 |
+
+Here is my table:
+$[myTable]
+```
+
+\column
+
+[myTable]:
+| h1 | h2 |
+|----|----|
+| c1 | c2 |
+
+Here is my table:
+$[myTable]
+}}
+
+{{wide,columns:2,margin-top:0,margin-bottom:0
+
+```
+There are $[TableNum] tables total.
+
+#### Table $[TableNum](1): Horses
+
+#### Table $[TableNum]($[TableNum + 1]): Cows
+```
+
+\column
+
+There are $[TableNum] tables in this document. *(note: final value of `$[TableNum]` gets hoisted up if available)*
+
+
+#### Table $[TableNum](1): Horses
+
+#### Table $[TableNum]($[TableNum + 1]): Cows
+}}
+
+\page
+
+### Friday 13/10/2023 - v3.10.0
+{{taskList
+
+##### G-Ambatte
+
+* [x] Fix user preferred save location being ignored
+
+Fixes issue [#2993](https://github.com/naturalcrit/homebrewery/issues/2993)
+
+* [x] Fix crash to white screen when starting new brews while not signed in
+
+Fixes issue [#2999](https://github.com/naturalcrit/homebrewery/issues/2999)
+
+* [x] Fix FreeBSD install script 
+
+Fixes issue [#3005](https://github.com/naturalcrit/homebrewery/issues/3005)
+
+* [x] Fix *"This brew has been changed on another device"* triggering when manually saving during auto-save
+
+Fixes issue [#2641](https://github.com/naturalcrit/homebrewery/issues/2641)
+
+* [x] Fix Firefox different column-flow behavior
+
+Fixes issue [#2982](https://github.com/naturalcrit/homebrewery/issues/2982)
+
+* [x] Fix brew titles being mis-sorted on user page
+
+Fixes issue [#2775](https://github.com/naturalcrit/homebrewery/issues/2775)
+
+* [x] Text Editor themes now available via new drop-down
+
+Fixes issue [#362](https://github.com/naturalcrit/homebrewery/issues/362)
+
+##### 5e-Cleric
+
+* [x] New {{openSans **PHB → {{fas,fa-quote-right}} QUOTE**  }} snippet for V3!
+
+Fixes issue [#2920](https://github.com/naturalcrit/homebrewery/issues/2920)
+
+* [x] Several updates and fixes to FAQ and Welcome page
+
+Fixes issue [#2729](https://github.com/naturalcrit/homebrewery/issues/2729),
+[#2787](https://github.com/naturalcrit/homebrewery/issues/2787)
+
+##### Gazook89
+
+* [x] Add syntax highlighting for Definition Lists <code>:\:</code>
+}}
+
+
+### Thursday 17/08/2023 - v3.9.2
+{{taskList
+
+##### Calculuschild
+
+* [x] Fix links to certain old Google Drive files
+
+Fixes issue [#2917](https://github.com/naturalcrit/homebrewery/issues/2917)
+
+##### G-Ambatte
+
+* [x] Menus now open on click, and internally consistent
+
+Fixes issue [#2702](https://github.com/naturalcrit/homebrewery/issues/2702), [#2782](https://github.com/naturalcrit/homebrewery/issues/2782) 
+
+* [x] Add smarter footer snippet
+
+Fixes issue [#2289](https://github.com/naturalcrit/homebrewery/issues/2289) 
+
+* [x] Add sanitization in Style editor
+
+Fixes issue [#1437](https://github.com/naturalcrit/homebrewery/issues/1437) 
+
+* [x] Rework class table snippets to remove unnecessary randomness
+
+Fixes issue [#2964](https://github.com/naturalcrit/homebrewery/issues/2964) 
+
+* [x] Add User Page link to Google Drive file for file owners, add icons for additional storage locations
+
+Fixes issue [#2954](https://github.com/naturalcrit/homebrewery/issues/2954) 
+
+* [x] Add default save location selection to Account Page
+
+Fixes issue [#2943](https://github.com/naturalcrit/homebrewery/issues/2943) 
+
+##### 5e-Cleric
+
+* [x] Exclude cover pages from Table of Content generation (editing on mobile is still not recommended)
+
+Fixes issue [#2920](https://github.com/naturalcrit/homebrewery/issues/2920)
+
+##### Gazook89
+
+* [x] Adjustments to improve mobile viewing
+}}
+
+
 
 ### Wednesday 28/06/2023 - v3.9.1
 {{taskList
@@ -123,6 +398,8 @@ Fixes issue [#2790](https://github.com/naturalcrit/homebrewery/issues/2790)
 
 Fixes issue [#2784](https://github.com/naturalcrit/homebrewery/issues/2784) 
 }}
+
+\page
 
 ### Wednesday 12/04/2023 - v3.8.0
 {{taskList
@@ -184,8 +461,6 @@ Fixes issues [#2712](https://github.com/naturalcrit/homebrewery/issues/2712)
 Fixes issues [#2731](https://github.com/naturalcrit/homebrewery/issues/2731)
 
 }}
-
-\page
 
 ### Monday 13/03/2023 - v3.7.2
 {{taskList
@@ -267,7 +542,11 @@ Fixes issues [#2603](https://github.com/naturalcrit/homebrewery/issues/2603)
 * [x] Add message to refresh the browser if the user is missing an update to the Homebrewery
 
 Fixes issues [#2583](https://github.com/naturalcrit/homebrewery/issues/2583)
+}}
 
+\page
+
+{{taskList
 ##### G-Ambatte
 
 * [x] Auto-compile Themes CSS on development server
@@ -277,7 +556,6 @@ Fixes issues [#2583](https://github.com/naturalcrit/homebrewery/issues/2583)
 * [x] Fix cloned brews inheriting the parent view count
 }}
 
-\page
 
 ### Friday 23/12/2022 - v3.5.0
 {{taskList

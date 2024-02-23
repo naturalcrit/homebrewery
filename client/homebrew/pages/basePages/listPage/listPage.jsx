@@ -89,7 +89,7 @@ const ListPage = createClass({
 	sortBrewOrder : function(brew){
 		if(!brew.title){brew.title = 'No Title';}
 		const mapping = {
-			'alpha'   : _.deburr(brew.title.toLowerCase()),
+			'alpha'   : _.deburr(brew.title.trim().toLowerCase()),
 			'created' : moment(brew.createdAt).format(),
 			'updated' : moment(brew.updatedAt).format(),
 			'views'   : brew.views,
@@ -220,6 +220,7 @@ const ListPage = createClass({
 	render : function(){
 		return <div className='listPage sitePage'>
 			{/*<style>@layer V3_5ePHB, bundle;</style>*/}
+			<link href='/themes/V3/Blank/style.css' rel='stylesheet'/>
 			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet'/>
 			{this.props.navItems}
 			{this.renderSortOptions()}
