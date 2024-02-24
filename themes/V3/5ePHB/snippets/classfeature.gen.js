@@ -42,8 +42,8 @@ module.exports = function(classname){
 
 		#### Equipment
 		You start with the following equipment, in addition to the equipment granted by your background:
-		- *(a)* a martial weapon and a shield or *(b)* two martial weapons
-		- *(a)* five javelins or *(b)* any simple melee weapon
+		- (*a*) a martial weapon and a shield or (*b*) two martial weapons
+		- (*a*) five javelins or (*b*) any simple melee weapon
 		- ${_.sample(['10 lint fluffs', '1 button', 'a cherished lost sock'])}
 		`;
 };

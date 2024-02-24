@@ -304,7 +304,8 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 		text     : req.brew.text,
 		style    : req.brew.style,
 		renderer : req.brew.renderer,
-		theme    : req.brew.theme
+		theme    : req.brew.theme,
+		tags     : req.brew.tags
 	};
 	req.brew = _.defaults(brew, DEFAULT_BREW);
 
@@ -472,8 +473,17 @@ const getPureError = (error)=>{
 };
 
 app.use(async (err, req, res, next)=>{
-	const status = err.status || err.code || 500;
+	err.originalUrl = req.originalUrl;
 	console.error(err);
+
+	if(err.originalUrl?.startsWith('/api/')) {
+		// console.log('API error');
+		res.status(err.status || err.response?.status || 500).send(err);
+		return;
+	}
+
+	// console.log('non-API error');
+	const status = err.status || err.code || 500;
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'Error Page',
