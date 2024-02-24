@@ -8,104 +8,114 @@
     background-color: #0C0C0C;
 }
 
-/* Blinking cursor and selection */
-.cm-s-darkvision .CodeMirror-cursor {
-    border-left: 1px solid #B9BDB6;
-}
-.cm-s-darkvision .CodeMirror-selected {
-	background: #E0E8FF40;
+.cm-s-darkvision {
+    /* Blinking cursor and selection */
+    .CodeMirror-cursor {
+        border-left: 1px solid #B9BDB6;
+    }
+    .CodeMirror-selected {
+        background: #E0E8FF40;
+    }
+
+    /* Line number stuff */
+    .CodeMirror-gutter-elt {
+        color: #81969A;
+    }
+    .CodeMirror-linenumber {
+        background-color: #0C0C0C;
+    }
+    .CodeMirror-gutter {
+        background-color: #0C0C0C;
+    }
+
+    /* column splits */
+    .editor .codeEditor .columnSplit {
+        font-style: italic;
+        color: inherit;
+        background-color:#1F5763;
+        border-bottom: #299 solid 1px;
+    }
+
+    /* # headings */
+    .cm-header {
+        color: #C51B1B;
+        -webkit-text-stroke-width: 0.1px; 
+    }
+    /* bold points */
+    .cm-strong {
+        font-weight: bold;
+        color: #309DD2;
+    }
+    /* Link headings */
+    .cm-link {
+        color: #DD6300;
+    }
+    /* links */
+    .cm-string {
+        color: #5CE638;
+    }
+    /*@import*/
+    .cm-def {
+        color: #2986CC;
+    }
+    /* Bullets and such */
+    .cm-variable-2 {
+        color: #3CBF30;
+    }
+
+    /* Tags (divs) */
+    .cm-tag {
+        color: #E3FF00;
+    }
+    .cm-attribute {
+        color: #E3FF00;
+    }
+    .cm-atom {
+        color: #CF7EA9;
+    }
+    .cm-qualifier {
+        color: #EE1919;
+    }
+    .cm-comment {
+        color: #BBC700;
+    }
+    .cm-keyword {
+        color: #CC66FF;
+    }
+    .cm-property {
+        color: aqua;
+    }
+    .cm-error {
+        color: #C50202;
+    }
+    .CodeMirror-foldmarker {
+        color: #F0FF00;
+    }
+    /* New page  */
+    .cm-builtin {
+        color: #FFF;
+    }
 }
 
-/* Line number stuff */
-.cm-s-darkvision .CodeMirror-gutter-elt {
-    color: #81969A;
-}
-.cm-s-darkvision .CodeMirror-linenumber {
-    background-color: #0C0C0C;
-}
-.cm-s-darkvision .CodeMirror-gutter {
-    background-color: #0C0C0C;
-}
-
-/* column splits */
-.cm-s-darkvision .editor .codeEditor .columnSplit {
-    font-style: italic;
-    color: inherit;
-    background-color:#1F5763;
-    border-bottom: #299 solid 1px;
-}
-
-/* # headings */
-.cm-s-darkvision .cm-header {
-    color: #C51B1B;
-    -webkit-text-stroke-width: 0.1px; 
-}
-/* bold points */
-.cm-s-darkvision .cm-strong {
-    font-weight: bold;
-    color: #309DD2;
-}
-/* Link headings */
-.cm-s-darkvision .cm-link {
-    color: #DD6300;
-}
-/* links */
-.cm-s-darkvision .cm-string {
-    color: #5CE638;
-}
-/*@import*/
-.cm-s-darkvision .cm-def {
-    color:#2986CC;
-}
-/* Bullets and such */
-.cm-s-darkvision .cm-variable-2 {
-    color: #3CBF30;
-}
-/* blocks */
-.editor .codeEditor .block:not(.cm-comment) {
-    color: magenta !important;
-}
-
-/* definition lists */
-.editor .codeEditor .define.definition {
-	color: #FFAA3E !important;
-}
-.editor .codeEditor .define.term {
-	color: #7290d9 !important;
-}
- 
-/* Tags (divs) */
-.cm-s-darkvision .cm-tag {
-    color: #E3FF00;
-}
-.cm-s-darkvision .cm-attribute {
-    color: #E3FF00;
-}
-.cm-s-darkvision .cm-atom {
-    color:#CF7EA9;
-}
-.cm-s-darkvision .cm-qualifier {
-    color:#EE1919;
-}
-.cm-s-darkvision .cm-comment {
-    color:#BBC700;
-}
-.cm-s-darkvision .cm-keyword {
-    color:#CC66FF;
-}
-.cm-s-darkvision .cm-property.cm-error {
-    color:#C50202;
-}
-.cm-s-darkvision .CodeMirror-foldmarker {
-    color:#F0FF00;
-}
-
-/* New page  */
-.editor .codeEditor .pageLine {
-    background: #000;
-    color:#000;
-    border-bottom: 1px solid #FFF;
-}
-.cm-s-darkvision .cm-builtin {
-    color:#FFF;
+.editor .codeEditor {
+    /* blocks */
+    .block:not(.cm-comment) {
+        color: magenta;
+    }    
+    /* definition lists */
+    .define.definition {
+        color: #FFAA3E;
+    }
+    .define.term {
+        color: #7290d9;
+    }
+    .define:not(.term):not(.definition) {
+        background: #333;
+    }
+    /* New page  */
+    .pageLine {
+        background: #000;
+        color: #000;
+        border-bottom: 1px solid #FFF;
+    }
 }
