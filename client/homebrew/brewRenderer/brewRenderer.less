@@ -3,9 +3,9 @@
 .brewRenderer {
 	will-change : transform;
 	overflow-y  : scroll;
-	.pages {
+	:where(.pages) {
 		margin : 30px 0px;
-		& > .page {
+		& > :where(.page) {
 			width         : 215.9mm;
 			height        : 279.4mm;
 			margin-right  : auto;

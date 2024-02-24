@@ -125,7 +125,7 @@ const BrewItem = createClass({
 			<div className='info'>
 
 				{brew.tags?.length ? <>
-					<div className='brewTags' title={`Tags:\n${brew.tags.join('\n')}`}>
+					<div className='brewTags' title={`${brew.tags.length} tags:\n${brew.tags.join('\n')}`}>
 						<i className='fas fa-tags'/>
 						{brew.tags.map((tag, idx)=>{
 							const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
@@ -135,7 +135,11 @@ const BrewItem = createClass({
 				</> : <></>
 				}
 				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
-					<i className='fas fa-user'/> {brew.authors?.join(', ')}
+					<i className='fas fa-user'/> {brew.authors?.map((author, index)=>(
+  					<>
+    					<a key={index} href={`/user/${author}`}>{author}</a>
+    					{index < brew.authors.length - 1 && ', '}
+  					</>))}
 				</span>
 				<br />
 				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
