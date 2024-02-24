@@ -130,7 +130,6 @@ const ListPage = createClass({
 	},
 
 	handleFilterTextChange : function(e){
-		// console.log(e);
 		this.setState({
 			filterString : e.target.value,
 		});
@@ -194,7 +193,6 @@ const ListPage = createClass({
 
 	renderTagsOptions : function(){
 		if(this.state.filterTags?.length == 0) return;
-		console.log('renderTags');
 		return <div className='tags-container'>
 			{_.map(this.state.filterTags, (tag, idx)=>{
 				const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
