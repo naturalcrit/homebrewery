@@ -1,158 +1,186 @@
 @import (less) './client/icons/customIcons.less';
-.snippetBar{
+@import (less) '././././themes/fonts/5e/fonts.less';
+
+.snippetBar {
 	@menuHeight      : 25px;
 	position         : relative;
 	height           : @menuHeight;
-	background-color : #ddd;
-	.editors{
+	color            : black;
+	background-color : #DDDDDD;
+
+	.editors {
 		position        : absolute;
-		display         : flex;
 		top             : 0px;
 		right           : 0px;
-		height          : @menuHeight;
-		width           : 125px;
+		display         : flex;
 		justify-content : space-between;
-		&>div{
-			height      : @menuHeight;
+		height          : @menuHeight;
+		& > div {
 			width       : @menuHeight;
-			cursor      : pointer;
+			height      : @menuHeight;
 			line-height : @menuHeight;
 			text-align  : center;
-			&:hover,&.selected{
-				background-color : #999;
-			}
-			&.text{
+			cursor      : pointer;
+			&:hover,&.selected { background-color : #999999; }
+			&.text {
 				.tooltipLeft('Brew Editor');
 			}
-			&.style{
+			&.style {
 				.tooltipLeft('Style Editor');
 			}
-			&.meta{
+			&.meta {
 				.tooltipLeft('Properties');
 			}
-			&.undo{
+			&.undo {
 				.tooltipLeft('Undo');
 				font-size : 0.75em;
 				color     : grey;
-				&.active{
-					color : black;
-				}
+				&.active { color : inherit; }
 			}
-			&.redo{
+			&.redo {
 				.tooltipLeft('Redo');
 				font-size : 0.75em;
 				color     : grey;
-				&.active{
-					color : black;
-				}
+				&.active { color : inherit; }
 			}
-			&.editorTheme{
+			&.foldAll {
+				.tooltipLeft('Fold All');
+				font-size : 0.75em;
+				color     : inherit;
+			}
+			&.unfoldAll {
+				.tooltipLeft('Unfold All');
+				font-size : 0.75em;
+				color     : inherit;
+			}
+			&.editorTheme {
 				.tooltipLeft('Editor Themes');
 				font-size : 0.75em;
 				color     : black;
-				&.active{
-					color : white;
-					background-color: black;
+				&.active {
+					position         : relative;
+					background-color : #999999;
 				}
 			}
 			&.divider {
-				background: linear-gradient(#000, #000) no-repeat center/1px 100%;
-				width: 5px;
-				&:hover{
-					background-color: inherit;
-				}
+				width      : 5px;
+				background : linear-gradient(currentColor, currentColor) no-repeat center/1px 100%;
+				&:hover { background-color : inherit; }
 			}
 		}
-		.themeSelector{
-			position: absolute;
-			left: -65px;
-			top: 30px;
-			z-index: 999;
-			width: 170px;
-			background-color: black;
-    		border-radius: 5px;
+		.themeSelector {
+			position         : absolute;
+			top              : 25px;
+			right            : 0;
+			z-index          : 10;
+			display          : flex;
+			align-items      : center;
+			justify-content  : center;
+			width            : 170px;
+			height           : inherit;
+			background-color : inherit;
 		}
 	}
-	.snippetBarButton{
-		height         : @menuHeight;
-		line-height    : @menuHeight;
+	.snippetBarButton {
 		display        : inline-block;
+		height         : @menuHeight;
 		padding        : 0px 5px;
-		font-weight    : 800;
 		font-size      : 0.625em;
+		font-weight    : 800;
+		line-height    : @menuHeight;
 		text-transform : uppercase;
 		cursor         : pointer;
-		&:hover, &.selected{
-			background-color : #999;
-		}
-		i{
-			vertical-align : middle;
+		&:hover, &.selected { background-color : #999999; }
+		i {
 			margin-right   : 3px;
 			font-size      : 1.4em;
+			vertical-align : middle;
 		}
 	}
-	.toggleMeta{
-		position     : absolute;
-		top          : 0px;
-		right        : 0px;
-		border-left  : 1px solid black;
-		.tooltipLeft("Edit Brew Properties");
+	.toggleMeta {
+		position    : absolute;
+		top         : 0px;
+		right       : 0px;
+		border-left : 1px solid black;
+		.tooltipLeft('Edit Brew Properties');
 	}
-	.snippetGroup{
-		border-right   : 1px solid black;
-		&:hover{
-			&>.dropdown{
-				visibility : visible;
-			}
+	.snippetGroup {
+		border-right   : 1px solid currentColor;
+		&:hover {
+			& > .dropdown { visibility : visible; }
 		}
-		.dropdown{
+		.dropdown {
 			position         : absolute;
 			top              : 100%;
-			visibility       : hidden;
 			z-index          : 1000;
-			margin-left      : -5px;
 			padding          : 0px;
-			background-color : #ddd;
-			.snippet{
-				position: relative;
-				.animate(background-color);
+			margin-left      : -5px;
+			visibility       : hidden;
+			background-color : #DDDDDD;
+			.snippet {
+				position    : relative;
 				display     : flex;
 				align-items : center;
 				min-width   : max-content;
 				padding     : 5px;
-				cursor      : pointer;
 				font-size   : 10px;
-				i{
+				cursor      : pointer;
+				.animate(background-color);
+				i {
+					height       : 1.2em;
 					margin-right : 8px;
 					font-size    : 1.2em;
-					height       : 1.2em;
-					&~i{
-						margin-right: 0;
-						margin-left: 5px;
+					& ~ i {
+						margin-right : 0;
+						margin-left  : 5px;
+					}
+					/* Fonts */
+					&.font {
+						height : auto;
+						&::before {
+							font-size : 1.4em;
+							content   : 'ABC';
+						}
+
+						&.OpenSans {font-family : 'OpenSans';}
+						&.CodeBold {font-family : 'CodeBold';}
+						&.CodeLight {font-family : 'CodeLight';}
+						&.ScalySansRemake {font-family : 'ScalySansRemake';}
+						&.BookInsanityRemake {font-family : 'BookInsanityRemake';}
+						&.MrEavesRemake {font-family : 'MrEavesRemake';}
+						&.SolberaImitationRemake {font-family : 'SolberaImitationRemake';}
+						&.ScalySansSmallCapsRemake {font-family : 'ScalySansSmallCapsRemake';}
+						&.WalterTurncoat {font-family : 'WalterTurncoat';}
+						&.Lato {font-family : 'Lato';}
+						&.Courier {font-family : 'Courier';}
+						&.NodestoCapsCondensed {font-family : 'NodestoCapsCondensed';}
+						&.Overpass {font-family : 'Overpass';}
+						&.Davek {font-family : 'Davek';}
+						&.Iokharic {font-family : 'Iokharic';}
+						&.Rellanic {font-family : 'Rellanic';}
+						&.TimesNewRoman {font-family : 'Times New Roman';}
 					}
 				}
-				.name {
-					margin-right  : auto;
-				}
+				.name { margin-right : auto; }
 				.beta {
-					color         : white;
-					padding       : 4px 6px;
-					line-height   : 1em;
-					margin-left   : 5px;
 					align-self    : center;
+					padding       : 4px 6px;
+					margin-left   : 5px;
+					font-family   : monospace;
+					line-height   : 1em;
+					color         : white;
 					background    : grey;
 					border-radius : 12px;
-					font-family   : monospace;
 				}
-				&:hover{
-					background-color : #999;
-					&>.dropdown{
+				&:hover {
+					background-color : #999999;
+					& > .dropdown {
 						visibility : visible;
 						&.side {
-							left: 100%;
-							top: 0%;
-							margin-left:0;
-							box-shadow: -1px 1px 2px 0px #999;
+							top         : 0%;
+							left        : 100%;
+							margin-left : 0;
+							box-shadow  : -1px 1px 2px 0px #999999;
 						}
 					}
 				}
