@@ -122,6 +122,16 @@ const errorIndex = (props)=>{
 		An error occurred while attempting to remove the user from the Homebrewery document author list!
 		
 		**Brew ID:**  ${props.brew.brewId}`,
+
+		// Brew locked by Administrators error
+		'100' : dedent`
+		## This brew has been locked.
+		
+		Please contact the Administrators to unlock this document.
+		
+		**Brew ID:**  ${props.brew.brewId}
+		
+		**Brew Title:** ${props.brew.brewTitle}`,
 	};
 };
 

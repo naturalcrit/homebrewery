@@ -54,6 +54,13 @@ const api = {
 				});
 			stub = stub?.toObject();
 
+			if(stub.lock?.state) {
+				// State 1 : Locked for everything
+				// State 2 : Edit only
+				if(stub.lock.state == 1 || (stub.lock.state == 2 && accessType != 'edit'))
+					throw { HBErrorCode: '100', code: stub.lock.code, message: stub.lock.message, brewId: accessType === 'edit' ? stub.editId : stub.shareId, brewTitle: stub.title };
+			}
+
 			// If there is a google id, try to find the google brew
 			if(!stubOnly && (googleId || stub?.googleId)) {
 				let googleError;
