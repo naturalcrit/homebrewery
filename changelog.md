@@ -84,49 +84,6 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-<<<<<<< HEAD
-### Tuesday 02/07/2024 
-
-{{ taskList
-
-##### abquintic
-
-* [x] Add user requested feature for definition lists with multiple definitions. 
-
-This implements issue [#2340](https://github.com/naturalcrit/homebrewery/issues/2340) by extending the existing syntax pattern. 
-
-Multiple Definition Description (\<dd\>) terms must go on the following line with a blank line between definition sets. Additionally, Descriptions may be multi-line, if desired. Multi-line descriptions will be concatenated into a single Description on render.
-
-The previous, inline system has not been removed, however, the two forms may not be intermixed.
-
-```
-Dictionary Term 
-:: Definition One 
-:: Definition Two 
-:: Definition Three
-```
-Example:
-```
-Egg
-::Came before the Chicken
-::Python Packaging Format
-::Over
-Easy
-isn't
-```
-
-Results:
-```
-<dl>
-<dt>Egg</dt>
-<dd>Came before the Chicken</dd>
-<dd>Python Packaging Format</dd>
-<dd>Over Easy isn't</dd>
-</dl>
-```
-}}
-
-=======
 ### Wednesday 21/2/2024 - v3.11.0
 {{taskList
 
@@ -300,7 +257,6 @@ There are $[TableNum] tables in this document. *(note: final value of `$[TableNu
 
 \page
 
->>>>>>> master
 ### Friday 13/10/2023 - v3.10.0
 {{taskList
 
