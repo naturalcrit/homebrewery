@@ -75,11 +75,16 @@ pre {
 .page {
 	padding-bottom: 1.5cm;
 }
+
+.varSyntaxTable th:first-of-type {
+  width:6cm;
+}
 ```
 
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+<<<<<<< HEAD
 ### Tuesday 02/07/2024 
 
 {{ taskList
@@ -121,6 +126,181 @@ Results:
 ```
 }}
 
+=======
+### Wednesday 21/2/2024 - v3.11.0
+{{taskList
+
+##### Gazook89
+
+* [x] Brew view count no longer increases when viewed by owner
+
+Fixes issue [#3037](https://github.com/naturalcrit/homebrewery/issues/3037)
+
+* [x] Small tweak to PHB H3 sizing
+
+Fixes issue [#2989](https://github.com/naturalcrit/homebrewery/issues/2989)
+
+* [x] Add **Fold/Unfold All** {{fas,fa-compress-alt}} / {{fas,fa-expand-alt}} buttons to editor bar 
+
+Fixes issue [#2965](https://github.com/naturalcrit/homebrewery/issues/2965)
+
+
+##### G-Ambatte
+
+* [x] Share link added to Editor Access error page
+
+Fixes issue [#3086](https://github.com/naturalcrit/homebrewery/issues/3086)
+
+* [x] Add Darkbrewery theme to Editor theme selector {{fas,fa-palette}}
+
+Fixes issue [#3034](https://github.com/naturalcrit/homebrewery/issues/3034)
+
+* [x] Fix Firefox prints with alternating blank pages
+
+Fixes issue [#3115](https://github.com/naturalcrit/homebrewery/issues/3115)
+
+* [x] Admin page working again
+
+Fixes issue [#2657](https://github.com/naturalcrit/homebrewery/issues/2657)
+
+
+##### 5e-Cleric
+
+* [x] Fix indenting issue with Monster Blocks and italics in Class Feature
+
+Fixes issues [#527](https://github.com/naturalcrit/homebrewery/issues/527),
+[#3247](https://github.com/naturalcrit/homebrewery/issues/3247)
+
+* [x] Allow CSS vars in curly syntax to be formatted as strings using single quotes
+
+`{{--customVar:"'a string'"}}`
+
+Fixes issue [#3066](https://github.com/naturalcrit/homebrewery/issues/3066)
+
+* [x] Add *Elderberry Inn* icons {{ei,action}} `{{ei,icon-name}}`
+
+Fixes issue [#3171](https://github.com/naturalcrit/homebrewery/issues/3171)
+
+* [x] New {{openSans **{{fas,fa-keyboard}} FONTS**  }} snippets!
+
+Fixes issue [#3171](https://github.com/naturalcrit/homebrewery/issues/3171)
+
+* [x] New page now opens in a new tab
+
+
+##### abquintic (new contributor!)
+
+* [x] Add ^super^ `^abc^` and ^^sub^^ `^^abc^^` syntax.
+ 
+Fixes issue [#2171](https://github.com/naturalcrit/homebrewery/issues/2171)
+
+* [x] Add HTML tag assignment to curly syntax `{{tag=value}}`
+ 
+Fixes issue [1488](https://github.com/naturalcrit/homebrewery/issues/1488)
+
+* [x] {{openSans **Brew → Clone to New**}} now clones tags
+ 
+Fixes issue [1488](https://github.com/naturalcrit/homebrewery/issues/1488)
+
+##### calculuschild
+
+* [x] Better error messages for "Out of Google Drive Storage" and "Not logged in to edit"
+
+Fixes issues [2510](https://github.com/naturalcrit/homebrewery/issues/2510),
+[2975](https://github.com/naturalcrit/homebrewery/issues/2975)
+
+* [x] New Variables syntax. See below for details.
+}}
+
+{{wide
+
+### Brew Variable Syntax
+
+You may already be familiar with `[link](url)` and `![image](url)` syntax. We have expanded this to include a third `$[variable](text)` syntax. All three of these syntaxes now share a common set of features:
+
+{{varSyntaxTable
+| syntax | description |
+|:-------|-------------|
+| `[var]:content`  | Assigns a variable (must start on a line by itself, and ends at the next blank line) |
+| `[var](content)` | Assigns a variable and outputs it (can be inline) |
+| `[var]`  | Outputs the variable contents as a link, if formatted as a valid link |
+| `![var]` | Outputs as an image, if formatted as a valid image                    |
+| `$[var]` | Outputs as Markdown                                          |
+| `$[var1 + var2 - 2 * var3]` | Performs math operations and outputs result if all variables are valid numbers                                     |
+}}
+
+}}
+
+{{wide,margin-top:0,margin-bottom:0
+### Examples
+}}
+
+{{wide,columns:2,margin-top:0,margin-bottom:0
+
+```
+[first]: Bob
+
+[last]: Jones
+
+My name is $[first] $[last].
+```
+
+\column
+
+[first]: Bob
+
+[last]: Jones
+
+My name is $[first] $[last].
+
+}}
+
+{{wide,columns:2,margin-top:0,margin-bottom:0
+
+```
+[myTable]:
+| h1 | h2 |
+|----|----|
+| c1 | c2 |
+
+Here is my table:
+$[myTable]
+```
+
+\column
+
+[myTable]:
+| h1 | h2 |
+|----|----|
+| c1 | c2 |
+
+Here is my table:
+$[myTable]
+}}
+
+{{wide,columns:2,margin-top:0,margin-bottom:0
+
+```
+There are $[TableNum] tables total.
+
+#### Table $[TableNum](1): Horses
+
+#### Table $[TableNum]($[TableNum + 1]): Cows
+```
+
+\column
+
+There are $[TableNum] tables in this document. *(note: final value of `$[TableNum]` gets hoisted up if available)*
+
+
+#### Table $[TableNum](1): Horses
+
+#### Table $[TableNum]($[TableNum + 1]): Cows
+}}
+
+\page
+
+>>>>>>> master
 ### Friday 13/10/2023 - v3.10.0
 {{taskList
 

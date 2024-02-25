@@ -38,11 +38,12 @@ const NewPage = createClass({
 		const brew = this.props.brew;
 
 		return {
-			brew       : brew,
-			isSaving   : false,
-			saveGoogle : (global.account && global.account.googleId ? true : false),
-			error      : null,
-			htmlErrors : Markdown.validate(brew.text)
+			brew              : brew,
+			isSaving          : false,
+			saveGoogle        : (global.account && global.account.googleId ? true : false),
+			error             : null,
+			htmlErrors        : Markdown.validate(brew.text),
+			currentEditorPage : 0
 		};
 	},
 
@@ -104,8 +105,9 @@ const NewPage = createClass({
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 
 		this.setState((prevState)=>({
-			brew       : { ...prevState.brew, text: text },
-			htmlErrors : htmlErrors
+			brew              : { ...prevState.brew, text: text },
+			htmlErrors        : htmlErrors,
+			currentEditorPage : this.refs.editor.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
 		}));
 		localStorage.setItem(BREWKEY, text);
 	},
@@ -220,7 +222,15 @@ const NewPage = createClass({
 						onMetaChange={this.handleMetaChange}
 						renderer={this.state.brew.renderer}
 					/>
-					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer} theme={this.state.brew.theme} lang={this.state.brew.lang} errors={this.state.htmlErrors}/>
+					<BrewRenderer
+						text={this.state.brew.text}
+						style={this.state.brew.style}
+						renderer={this.state.brew.renderer}
+						theme={this.state.brew.theme}
+						errors={this.state.htmlErrors}
+						lang={this.state.brew.lang}
+						currentEditorPage={this.state.currentEditorPage}
+					/>
 				</SplitPane>
 			</div>
 		</div>;
