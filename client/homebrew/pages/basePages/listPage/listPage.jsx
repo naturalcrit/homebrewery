@@ -137,7 +137,7 @@ const ListPage = createClass({
 		return;
 	},
 
-	updateListFilter : function(type, term){
+	updateListFilter : function(term){
 		this.updateUrl(this.state.filterString, this.state.sortType, this.state.sortDir, term);
 	},
 
@@ -196,7 +196,7 @@ const ListPage = createClass({
 		return <div className='tags-container'>
 			{_.map(this.state.filterTags, (tag, idx)=>{
 				const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
-				return <span key={idx} className={matches[1]} onClick={()=>{this.updateListFilter('tag', tag);}}>{matches[2]}</span>;
+				return <span key={idx} className={matches[1]} onClick={()=>{this.updateListFilter(tag);}}>{matches[2]}</span>;
 			})}
 		</div>;
 	},
