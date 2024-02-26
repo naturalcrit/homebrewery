@@ -83,7 +83,7 @@ const ListPage = createClass({
 		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
 
 		return _.map(brews, (brew, idx)=>{
-			return <BrewItem brew={brew} key={idx} reportError={this.props.reportError} updateListFilter={this.updateListFilter}/>;
+			return <BrewItem brew={brew} key={idx} reportError={this.props.reportError} updateListFilter={ (tag)=>{ this.updateUrl(this.state.filterString, this.state.sortType, this.state.sortDir, tag); }}/>;
 		});
 	},
 
@@ -135,10 +135,6 @@ const ListPage = createClass({
 		});
 		this.updateUrl(e.target.value, this.state.sortType, this.state.sortDir);
 		return;
-	},
-
-	updateListFilter : function(term){
-		this.updateUrl(this.state.filterString, this.state.sortType, this.state.sortDir, term);
 	},
 
 	updateUrl : function(filterTerm, sortType, sortDir, filterTag=''){
@@ -196,7 +192,7 @@ const ListPage = createClass({
 		return <div className='tags-container'>
 			{_.map(this.state.filterTags, (tag, idx)=>{
 				const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
-				return <span key={idx} className={matches[1]} onClick={()=>{this.updateListFilter(tag);}}>{matches[2]}</span>;
+				return <span key={idx} className={matches[1]} onClick={()=>{ this.updateUrl(this.state.filterString, this.state.sortType, this.state.sortDir, tag); }}>{matches[2]}</span>;
 			})}
 		</div>;
 	},
