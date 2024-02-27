@@ -6,7 +6,7 @@ const dedent = require('dedent-tabs').default;
 const Nav = require('naturalcrit/nav/nav.jsx');
 
 module.exports = function(props){
-	return <Nav.dropdown>
+	return <Nav.dropdown className="help">
 		<Nav.item color='grey' icon='fas fa-question-circle'>
 			need help?
 		</Nav.item>

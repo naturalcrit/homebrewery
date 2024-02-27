@@ -61,7 +61,7 @@ const Account = createClass({
 	render : function(){
 		//  Logged in
 		if(global.account){
-			return <Nav.dropdown>
+			return <Nav.dropdown className="account">
 				<Nav.item
 					className='account username'
 					color='orange'

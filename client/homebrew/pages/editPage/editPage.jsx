@@ -362,7 +362,7 @@ const EditPage = createClass({
 				}
 				<NewBrew />
 				<HelpNavItem/>
-				<Nav.dropdown>
+				<Nav.dropdown className="share">
 					<Nav.item color='teal' icon='fas fa-share-alt'>
 						share
 					</Nav.item>
