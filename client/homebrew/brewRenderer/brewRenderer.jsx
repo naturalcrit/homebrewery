@@ -14,7 +14,7 @@ const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
 
-const Themes = require('themes/themes.json');
+const staticThemes = require('themes/themes.json');
 
 const PAGE_HEIGHT = 1056;
 
@@ -182,16 +182,32 @@ const BrewRenderer = (props)=>{
 	};
 
 	let rendererPath  = props.renderer == 'V3' ? 'V3' : 'Legacy';
-	const themePath     = props.theme ?? '5ePHB';
-	const baseThemePath = Themes[rendererPath][themePath].baseTheme;
+	let baseRendererPath = props.renderer == 'V3' ? 'V3' : 'Legacy';
+	const blankRendererPath = props.renderer == 'V3' ? 'V3' : 'Legacy';
+	if(props.theme[0] === '#') {
+		rendererPath = 'Brew';
+	}
+	let themePath     = props.theme ?? '5ePHB';
+	console.log(`props.userThemes`);
+	console.log(props);
+	console.log(`props.userThemes`);
+	const Themes = { ...staticThemes, ...props.userThemes };
+	let baseThemePath = Themes[rendererPath][themePath]?.baseTheme;
 
 	// Override static theme values if a Brew theme.
 
 	if(themePath[0] == '#') {
-		themePath.slice(1);
+		themePath = themePath.slice(1);
 		rendererPath = '';
 	} else {
 		rendererPath += '/';
+	}
+
+	if(baseThemePath && baseThemePath[0] == '#') {
+		baseThemePath = baseThemePath.slice(1);
+		baseRendererPath = '';
+	} else {
+		baseRendererPath += '/';
 	}
 
 	return (
@@ -220,9 +236,9 @@ const BrewRenderer = (props)=>{
 						<RenderWarnings />
 						<NotificationPopup />
 					</div>
-					<link href={`/css/${rendererPath}Blank`} rel='stylesheet'/>
+					<link href={`/css/${blankRendererPath}/Blank`} rel='stylesheet'/>
 					{baseThemePath &&
-						<link href={`/css/${rendererPath}${baseThemePath}`} rel='stylesheet'/>
+						<link href={`/css/${baseRendererPath}${baseThemePath}`} rel='stylesheet'/>
 					}
 					<link href={`/css/${rendererPath}${themePath}`} rel='stylesheet'/>
 

@@ -378,6 +378,7 @@ const Editor = createClass({
 					showEditButtons={this.props.showEditButtons}
 					renderer={this.props.renderer}
 					theme={this.props.brew.theme}
+					userThemes={this.props.brew.userThemes}
 					undo={this.undo}
 					redo={this.redo}
 					foldCode={this.foldCode}

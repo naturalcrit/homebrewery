@@ -42,38 +42,6 @@ const sanitizeBrew = (brew, accessType)=>{
 	return brew;
 };
 
-const getUsersBrewThemes = async (username,id)=>{
-	const fields = [
-		'title',
-		'tags',
-		'editId',
-		'thumbnail'
-	];
-	const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme'] } }) //lean() converts results to JSObjects
-		.catch((error)=>{throw 'Can not find brews';});
-
-	const userThemes = {
-		Brew : {
-
-		}
-	};
-
-	brews.forEach((brew)=>{
-		if(id!=brew.editId) {
-			userThemes.Brew[brew.editId] = {
-				name         : brew.title,
-				renderer     : 'V3',
-				baseTheme    : false,
-				baseSnippets : false,
-				path         : `#${brew.editId}`,
-				thumbnail    : brew.thumbnail
-			};
-		}
-	});
-
-	return userThemes;
-};
-
 app.use('/', serveCompressedStaticAssets(`build`));
 app.use(require('./middleware/content-negotiation.js'));
 app.use(require('body-parser').json({ limit: '25mb' }));
@@ -318,6 +286,9 @@ app.get('/user/:username', async (req, res, next)=>{
 //Edit Page
 app.get('/edit/:id', asyncHandler(getBrew('edit')), async(req, res, next)=>{
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
+	console.log('edit');
+	console.log(req);
+	console.log('edit');
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',
@@ -326,7 +297,6 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), async(req, res, next)=>{
 		type        : 'article'
 	};
 
-	req.brew.userThemes = await getUsersBrewThemes(req.account.username, req.brew.editId);
 	sanitizeBrew(req.brew, 'edit');
 	splitTextStyleAndMetadata(req.brew);
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
@@ -344,7 +314,7 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 		style    : req.brew.style,
 		renderer : req.brew.renderer,
 		theme    : req.brew.theme,
-		tags     : req.brew.tags
+		tags     : req.brew.tags,
 	};
 	req.brew = _.defaults(brew, DEFAULT_BREW);
 
@@ -378,13 +348,15 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 			await HomebrewModel.increaseView({ shareId: brew.shareId });
 		}
 	};
+	req.brew.userThemes = await getUsersBrewThemes(req.account.username, req.brew.editId);
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	return next();
 }));
 
 //Print Page
-app.get('/print/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
+app.get('/print/:id', asyncHandler(getBrew('share')), async (req, res, next)=>{
+	req.brew.userThemes = await getUsersBrewThemes(req.account.username, req.brew.editId);
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	next();
@@ -477,7 +449,8 @@ const renderPage = async (req, res)=>{
 		enable_v3     : config.get('enable_v3'),
 		enable_themes : config.get('enable_themes'),
 		config        : configuration,
-		ogMeta        : req.ogMeta
+		ogMeta        : req.ogMeta,
+		userThemes    : req.userThemes
 	};
 	const title = req.brew ? req.brew.title : '';
 	const page = await templateFn('homebrew', title, props)

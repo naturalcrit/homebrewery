@@ -38,6 +38,7 @@ const MetadataEditor = createClass({
 				authors     : [],
 				systems     : [],
 				renderer    : 'legacy',
+				themeClass  : 'V3',
 				theme       : '5ePHB',
 				lang        : 'en'
 			},
@@ -110,8 +111,9 @@ const MetadataEditor = createClass({
 		});
 	},
 
-	handleTheme : function(theme){
+	handleTheme : function(theme, themeClass){
 		this.props.metadata.renderer = theme.renderer;
+		this.props.metadata.themeClass = themeClass;
 		this.props.metadata.theme    = theme.path;
 		this.props.onChange(this.props.metadata);
 	},
@@ -199,7 +201,7 @@ const MetadataEditor = createClass({
 		const listThemes = (renderer)=>{
 			return _.map(_.values(mergedThemes[renderer]), (theme)=>{
 				const preview = theme?.thumbnail ? theme.thumbnail : `/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`;
-				return <div className='item' key={`${renderer}_${theme.name}`} onClick={()=>this.handleTheme(theme)} title={''}>
+				return <div className='item' key={`${renderer}_${theme.name}`} onClick={()=>this.handleTheme(theme, renderer)} title={''}>
 					{`${renderer} : ${theme.name}`}
 					<img src={`/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`}/>
 					<div className='preview'>
@@ -210,7 +212,7 @@ const MetadataEditor = createClass({
 			});
 		};
 
-		const currentTheme = mergedThemes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme];
+		const currentTheme = mergedThemes[`${_.upperFirst(this.props.metadata.themeClass?this.props.metadata.themeClass:this.props.metadata.renderer)}`][this.props.metadata.theme];
 		let dropdown;
 
 		if(this.props.metadata.renderer == 'legacy') {
@@ -224,7 +226,7 @@ const MetadataEditor = createClass({
 			dropdown =
 				<Nav.dropdown className='value' trigger='click'>
 					<div>
-						{`${_.upperFirst(currentTheme.renderer)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
+						{`${_.upperFirst(this.props.metadata.themeClass?this.props.metadata.themeClass:this.props.metadata.renderer)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
 					</div>
 					{/*listThemes('Legacy')*/}
 					{listThemes('V3')}

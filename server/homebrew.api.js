@@ -46,7 +46,53 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
+	console.log(brew.theme);
 };
+
+const getUsersBrewThemes = async (username, id)=>{
+	console.log(username);
+	console.log(id);
+	const fields = [
+		'title',
+		'tags',
+		'editId',
+		'thumbnail',
+		'textBin'
+	];
+	const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme'] } }) //lean() converts results to JSObjects
+		.catch((error)=>{throw 'Can not find brews';});
+
+	const userThemes = {
+		Brew : {
+
+		}
+	};
+
+	console.log(`Length of user brews ${brews.size}`);
+
+	brews.forEach(async (brew)=>{
+		b = await HomebrewModel.get({ editId: brew.editId }, ['textBin']);
+		splitTextStyleAndMetadata(b);
+		console.log(`whee!!!! ${b.theme}`);
+		console.log(id);
+		console.log(brew.editId);
+		if(id!=brew.editId) {
+
+			userThemes.Brew[`#${brew.editId}`] = {
+				name         : brew.title,
+				renderer     : 'V3',
+				baseTheme    : b.theme,
+				baseSnippets : false,
+				path         : `#${brew.editId}`,
+				thumbnail    : brew.thumbnail.length > 0 ? brew.thumbnail : '/assets/naturalCritLogoWhite.svg'
+			};
+			console.log(`Wheee! ${userThemes.Brew[`#${brew.editId}`].baseTheme}`);
+		}
+	});
+
+	return userThemes;
+};
+
 
 const api = {
 	homebrewApi : router,
@@ -119,11 +165,14 @@ const api = {
 				throw { name: 'BrewLoad Error', message: 'Brew not found', status: 404, HBErrorCode: '05', accessType: accessType, brewId: id };
 			}
 
+			const userID = accessType === 'edit' ? req.account.username : stub.authors.split(',')[0];
+
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
 			if(stub) {
 				stub.tags     = stub.tags     || undefined; // Clear empty strings
 				stub.renderer = stub.renderer || undefined; // Clear empty strings
 				stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
+				stub.userThemes = await getUsersBrewThemes(userID, id);
 			}
 
 			req.brew = stub ?? {};
@@ -239,8 +288,8 @@ const api = {
 		const brew = req.brew;
 		splitTextStyleAndMetadata(brew);
 		res.set('Content-Type', 'text/css');
-		const staticTheme = `/api/css/${req.brew.renderer}/${req.brew.theme}/styles.css`;
-		const userTheme = `/api/css/${req.brew.theme.slice(1)}`;
+		const staticTheme = `/css/${req.brew.renderer}/${req.brew.theme}`;
+		const userTheme = `/css/${req.brew.theme.slice(1)}`;
 		const parentThemeImport = `@import url(\"${req.brew.theme[0] != '#' ? staticTheme : userTheme}\");\n\n/* From Brew: ${req.brew.title}*/\n\n`;
 		return res.status(200).send(`${req.brew.renderer == 'legacy' ? '' : parentThemeImport}${req.brew.style}`);
 	},
@@ -273,6 +322,9 @@ const api = {
 		brew.title = brew.title.trim();
 		brew.description = brew.description.trim() || '';
 		brew.text = api.mergeBrewText(brew);
+		const userID = req?.account?.username ? req.account.username : brew.authors.split(',')[0];
+		brew.userThemes = await getUsersBrewThemes(userID, brew.editId);
+
 
 		if(brew.googleId && removeFromGoogle) {
 			// If the google id exists and we're removing it from google, set afterSave to delete the google brew and mark the brew's google id as undefined
