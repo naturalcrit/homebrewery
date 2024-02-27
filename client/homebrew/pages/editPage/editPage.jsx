@@ -37,6 +37,9 @@ const EditPage = createClass({
 	},
 
 	getInitialState : function() {
+		console.log('Edit Initial');
+		console.log(this.props);
+		console.log('Edit Initial');
 		return {
 			brew                   : this.props.brew,
 			isSaving               : false,
@@ -51,7 +54,8 @@ const EditPage = createClass({
 			autoSave               : true,
 			autoSaveWarning        : false,
 			unsavedTime            : new Date(),
-			currentEditorPage      : 0
+			currentEditorPage      : 0,
+			userThemes             : this.props.brew.userThemes
 		};
 	},
 	savedBrew : null,
@@ -388,10 +392,6 @@ const EditPage = createClass({
 		return <div className='editPage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
 			{this.renderNavbar()}
-			{console.log('state')}
-			{console.log(this.state)}
-			{console.log('props')}
-			{console.log(this.props)}
 
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
@@ -411,8 +411,7 @@ const EditPage = createClass({
 						theme={this.state.brew.theme}
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
-						userThemes={this.props.brew.userThemes}
-						themeClass={this.state.brew.themeClass}
+						userThemes={this.state.brew.userThemes}
 						currentEditorPage={this.state.currentEditorPage}
 					/>
 				</SplitPane>

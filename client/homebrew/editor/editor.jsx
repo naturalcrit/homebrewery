@@ -339,6 +339,9 @@ const Editor = createClass({
 					view={this.state.view}
 					style={{ display: 'none' }}
 					rerenderParent={this.rerenderParent} />
+				{console.log('Metadata')}
+				{console.log(this.props)}
+				{console.log('Metadata')}
 				<MetadataEditor
 					metadata={this.props.brew}
 					onChange={this.props.onMetaChange}

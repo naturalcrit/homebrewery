@@ -8,7 +8,6 @@ const request = require('../../utils/request-middleware.js');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Combobox = require('client/components/combobox.jsx');
 const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
-const HomebrewModel     = require('../../../../server/homebrew.model.js').model;
 
 
 const Themes = require('themes/themes.json');
