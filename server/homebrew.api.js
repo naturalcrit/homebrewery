@@ -46,12 +46,9 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
-	console.log(brew.theme);
 };
 
 const getUsersBrewThemes = async (username, id)=>{
-	console.log(username);
-	console.log(id);
 	const fields = [
 		'title',
 		'tags',
@@ -59,7 +56,7 @@ const getUsersBrewThemes = async (username, id)=>{
 		'thumbnail',
 		'textBin'
 	];
-	const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme'] } }) //lean() converts results to JSObjects
+	const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme'] }, editId: { $ne: id } }) //lean() converts results to JSObjects
 		.catch((error)=>{throw 'Can not find brews';});
 
 	const userThemes = {
@@ -68,26 +65,17 @@ const getUsersBrewThemes = async (username, id)=>{
 		}
 	};
 
-	console.log(`Length of user brews ${brews.size}`);
-
 	brews.forEach(async (brew)=>{
-		b = await HomebrewModel.get({ editId: brew.editId }, ['textBin']);
-		splitTextStyleAndMetadata(b);
-		console.log(`whee!!!! ${b.theme}`);
-		console.log(id);
-		console.log(brew.editId);
-		if(id!=brew.editId) {
-
-			userThemes.Brew[`#${brew.editId}`] = {
-				name         : brew.title,
-				renderer     : 'V3',
-				baseTheme    : b.theme,
-				baseSnippets : false,
-				path         : `#${brew.editId}`,
-				thumbnail    : brew.thumbnail.length > 0 ? brew.thumbnail : '/assets/naturalCritLogoWhite.svg'
-			};
-			console.log(`Wheee! ${userThemes.Brew[`#${brew.editId}`].baseTheme}`);
-		}
+		const brewTheme = await HomebrewModel.get({ editId: brew.editId }, ['textBin']);
+		splitTextStyleAndMetadata(brewTheme);
+		userThemes.Brew[`#${brew.editId}`] = {
+			name         : brew.title,
+			renderer     : 'V3',
+			baseTheme    : brewTheme.theme,
+			baseSnippets : false,
+			path         : `#${brew.editId}`,
+			thumbnail    : brew.thumbnail.length > 0 ? brew.thumbnail : '/assets/naturalCritLogoWhite.svg'
+		};
 	});
 
 	return userThemes;
