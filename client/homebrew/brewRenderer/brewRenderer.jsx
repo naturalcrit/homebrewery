@@ -193,14 +193,14 @@ const BrewRenderer = (props)=>{
 
 	// Override static theme values if a Brew theme.
 
-	if(themePath[0] == '#') {
+	if(themePath && themePath[0] === '#') {
 		themePath = themePath.slice(1);
 		rendererPath = '';
 	} else {
 		rendererPath += '/';
 	}
 
-	if(baseThemePath && baseThemePath[0] == '#') {
+	if(baseThemePath && baseThemePath[0] === '#') {
 		baseThemePath = baseThemePath.slice(1);
 		baseRendererPath = '';
 	} else {
