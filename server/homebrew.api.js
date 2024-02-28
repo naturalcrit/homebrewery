@@ -277,7 +277,7 @@ const api = {
 	getBrewThemeWithCSS : async (req, res)=>{
 		const brew = req.brew;
 		splitTextStyleAndMetadata(brew);
-		res.set('Content-Type', 'text/css');
+		res.setHeader('Content-Type', 'text/css');
 		const staticTheme = `/css/${req.brew.renderer}/${req.brew.theme}`;
 		const userTheme = `/css/${req.brew.theme.slice(1)}`;
 		const parentThemeImport = `@import url(\"${req.brew.theme[0] != '#' ? staticTheme : userTheme}\");\n\n/* From Brew: ${req.brew.title}*/\n\n`;
