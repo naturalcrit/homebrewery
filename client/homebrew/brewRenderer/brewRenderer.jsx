@@ -188,9 +188,6 @@ const BrewRenderer = (props)=>{
 		rendererPath = 'Brew';
 	}
 	let themePath     = props.theme ?? '5ePHB';
-	console.log(`props.userThemes`);
-	console.log(props);
-	console.log(`props.userThemes`);
 	const Themes = { ...staticThemes, ...props.userThemes };
 	let baseThemePath = Themes[rendererPath][themePath]?.baseTheme;
 

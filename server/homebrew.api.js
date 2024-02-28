@@ -49,9 +49,6 @@ const splitTextStyleAndMetadata = (brew)=>{
 };
 
 const getUsersBrewThemes = async (username, id)=>{
-	console.log('getUsersBrewThemes');
-	console.log(username);
-	console.log(id);
 	const fields = [
 		'title',
 		'tags',
@@ -82,7 +79,6 @@ const getUsersBrewThemes = async (username, id)=>{
 		};
 	};
 
-	console.log('getUsersBrewThemes end');
 	return userThemes;
 };
 
@@ -158,10 +154,6 @@ const api = {
 				throw { name: 'BrewLoad Error', message: 'Brew not found', status: 404, HBErrorCode: '05', accessType: accessType, brewId: id };
 			}
 
-			console.log(`print`);
-			console.log(accessType);
-			console.log(stub);
-			console.log(`print`);
 			const userID = accessType === 'edit' ? req.account.username : stub.authors[0];
 
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
@@ -173,11 +165,6 @@ const api = {
 				stub.userThemes = userThemes;
 			}
 
-
-			console.log('stub.userThemes');
-			console.log(stub.userThemes);
-			console.log(stub.userThemes);
-			console.log('stub.userThemes');
 			req.brew = stub ?? {};
 			next();
 		};

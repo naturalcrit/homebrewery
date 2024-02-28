@@ -37,9 +37,6 @@ const EditPage = createClass({
 	},
 
 	getInitialState : function() {
-		console.log('Edit Initial');
-		console.log(this.props);
-		console.log('Edit Initial');
 		return {
 			brew                   : this.props.brew,
 			isSaving               : false,

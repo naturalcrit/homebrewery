@@ -98,9 +98,6 @@ const PrintPage = createClass({
 			rendererPath = 'Brew';
 		}
 		let themePath     = this.state.brew.theme ?? '5ePHB';
-		console.log(`this.state.brew.userThemes`);
-		console.log(this.state.brew);
-		console.log(`this.state.brew.userThemes`);
 		const Themes = { ...staticThemes, ...this.state.brew.userThemes };
 		let baseThemePath = Themes[rendererPath][themePath]?.baseTheme;
 
