@@ -286,6 +286,9 @@ app.get('/user/:username', async (req, res, next)=>{
 //Edit Page
 app.get('/edit/:id', asyncHandler(getBrew('edit')), async(req, res, next)=>{
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
+	console.log('Load Edit');
+	console.log(req.brew);
+	console.log('Load Edit');
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',

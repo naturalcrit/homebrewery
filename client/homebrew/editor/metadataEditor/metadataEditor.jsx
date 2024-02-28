@@ -211,7 +211,10 @@ const MetadataEditor = createClass({
 			});
 		};
 
-		const currentTheme = mergedThemes[`${_.upperFirst(this.props.metadata.themeClass?this.props.metadata.themeClass:this.props.metadata.renderer)}`][this.props.metadata.theme];
+		const currentTheme = mergedThemes[`${_.upperFirst(this.props.metadata.theme[0] === '#' ? 'Brew' : this.props.metadata.renderer)}`][this.props.metadata.theme];
+		console.log('currentTheme');
+		console.log(this.props.metadata.themeClass);
+		console.log('currentTheme');
 		let dropdown;
 
 		if(this.props.metadata.renderer == 'legacy') {

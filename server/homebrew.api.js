@@ -49,6 +49,9 @@ const splitTextStyleAndMetadata = (brew)=>{
 };
 
 const getUsersBrewThemes = async (username, id)=>{
+	console.log('getUsersBrewThemes');
+	console.log(username);
+	console.log(id);
 	const fields = [
 		'title',
 		'tags',
@@ -56,6 +59,7 @@ const getUsersBrewThemes = async (username, id)=>{
 		'thumbnail',
 		'textBin'
 	];
+
 	const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme'] }, editId: { $ne: id } }) //lean() converts results to JSObjects
 		.catch((error)=>{throw 'Can not find brews';});
 
@@ -65,7 +69,7 @@ const getUsersBrewThemes = async (username, id)=>{
 		}
 	};
 
-	brews.forEach(async (brew)=>{
+	for await (const brew of brews) {
 		const brewTheme = await HomebrewModel.get({ editId: brew.editId }, ['textBin']);
 		splitTextStyleAndMetadata(brewTheme);
 		userThemes.Brew[`#${brew.editId}`] = {
@@ -76,8 +80,9 @@ const getUsersBrewThemes = async (username, id)=>{
 			path         : `#${brew.editId}`,
 			thumbnail    : brew.thumbnail.length > 0 ? brew.thumbnail : '/assets/naturalCritLogoWhite.svg'
 		};
-	});
+	};
 
+	console.log('getUsersBrewThemes end');
 	return userThemes;
 };
 
@@ -156,13 +161,19 @@ const api = {
 			const userID = accessType === 'edit' ? req.account.username : stub.authors.split(',')[0];
 
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
+			const userThemes = await getUsersBrewThemes(userID, id);
 			if(stub) {
 				stub.tags     = stub.tags     || undefined; // Clear empty strings
 				stub.renderer = stub.renderer || undefined; // Clear empty strings
 				stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
-				stub.userThemes = await getUsersBrewThemes(userID, id);
+				stub.userThemes = userThemes;
 			}
 
+
+			console.log('stub.userThemes');
+			console.log(stub.userThemes);
+			console.log(stub.userThemes);
+			console.log('stub.userThemes');
 			req.brew = stub ?? {};
 			next();
 		};
