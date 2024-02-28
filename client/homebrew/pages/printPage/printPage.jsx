@@ -7,7 +7,7 @@ const { Meta } = require('vitreum/headtags');
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
 const Markdown = require('naturalcrit/markdown.js');
 
-const Themes = require('themes/themes.json');
+const staticThemes = require('themes/themes.json');
 
 const BREWKEY = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
@@ -30,11 +30,12 @@ const PrintPage = createClass({
 	getInitialState : function() {
 		return {
 			brew : {
-				text     : this.props.brew.text     || '',
-				style    : this.props.brew.style    || undefined,
-				renderer : this.props.brew.renderer || 'legacy',
-				theme    : this.props.brew.theme    || '5ePHB',
-				lang	 : this.props.brew.lang     || 'en'
+				text       : this.props.brew.text     || '',
+				style      : this.props.brew.style    || undefined,
+				renderer   : this.props.brew.renderer || 'legacy',
+				theme      : this.props.brew.theme    || '5ePHB',
+				lang       : this.props.brew.lang     || 'en',
+				userThemes : this.props.brew.userThemes
 			}
 		};
 	},
@@ -90,17 +91,43 @@ const PrintPage = createClass({
 	},
 
 	render : function(){
-		const rendererPath = this.state.brew.renderer == 'V3' ? 'V3' : 'Legacy';
-		const themePath    = this.state.brew.theme ?? '5ePHB';
-		const baseThemePath = Themes[rendererPath][themePath].baseTheme;
+		let rendererPath  = this.state.brew.renderer == 'V3' ? 'V3' : 'Legacy';
+		let baseRendererPath = this.state.brew.renderer == 'V3' ? 'V3' : 'Legacy';
+		const blankRendererPath = this.state.brew.renderer == 'V3' ? 'V3' : 'Legacy';
+		if(this.state.brew.theme[0] === '#') {
+			rendererPath = 'Brew';
+		}
+		let themePath     = this.state.brew.theme ?? '5ePHB';
+		console.log(`this.state.brew.userThemes`);
+		console.log(this.state.brew);
+		console.log(`this.state.brew.userThemes`);
+		const Themes = { ...staticThemes, ...this.state.brew.userThemes };
+		let baseThemePath = Themes[rendererPath][themePath]?.baseTheme;
+
+		// Override static theme values if a Brew theme.
+
+		if(themePath[0] == '#') {
+			themePath = themePath.slice(1);
+			rendererPath = '';
+		} else {
+			rendererPath += '/';
+		}
+
+		if(baseThemePath && baseThemePath[0] == '#') {
+			baseThemePath = baseThemePath.slice(1);
+			baseRendererPath = '';
+		} else {
+			baseRendererPath += '/';
+		}
+
 
 		return <div>
 			<Meta name='robots' content='noindex, nofollow' />
-			<link href={`/themes/${rendererPath}/Blank/style.css`} rel='stylesheet'/>
+			<link href={`/css/${blankRendererPath}/Blank`} rel='stylesheet'/>
 			{baseThemePath &&
-				<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} rel='stylesheet'/>
+				<link href={`/css/${baseRendererPath}${baseThemePath}`} rel='stylesheet'/>
 			}
-			<link href={`/themes/${rendererPath}/${themePath}/style.css`} rel='stylesheet'/>
+			<link href={`/css/${rendererPath}${themePath}`} rel='stylesheet'/>
 			{/* Apply CSS from Style tab */}
 			{this.renderStyle()}
 			<div className='pages' ref='pages' lang={this.state.brew.lang}>

@@ -348,7 +348,6 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 			await HomebrewModel.increaseView({ shareId: brew.shareId });
 		}
 	};
-	req.brew.userThemes = await getUsersBrewThemes(req.account.username, req.brew.editId);
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	return next();
@@ -356,7 +355,6 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 
 //Print Page
 app.get('/print/:id', asyncHandler(getBrew('share')), async (req, res, next)=>{
-	req.brew.userThemes = await getUsersBrewThemes(req.account.username, req.brew.editId);
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	next();

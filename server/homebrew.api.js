@@ -158,7 +158,11 @@ const api = {
 				throw { name: 'BrewLoad Error', message: 'Brew not found', status: 404, HBErrorCode: '05', accessType: accessType, brewId: id };
 			}
 
-			const userID = accessType === 'edit' ? req.account.username : stub.authors.split(',')[0];
+			console.log(`print`);
+			console.log(accessType);
+			console.log(stub);
+			console.log(`print`);
+			const userID = accessType === 'edit' ? req.account.username : stub.authors[0];
 
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
 			const userThemes = await getUsersBrewThemes(userID, id);
