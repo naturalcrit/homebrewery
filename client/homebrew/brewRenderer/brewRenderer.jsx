@@ -184,7 +184,7 @@ const BrewRenderer = (props)=>{
 	let rendererPath  = props.renderer == 'V3' ? 'V3' : 'Legacy';
 	let baseRendererPath = props.renderer == 'V3' ? 'V3' : 'Legacy';
 	const blankRendererPath = props.renderer == 'V3' ? 'V3' : 'Legacy';
-	if(props.theme[0] === '#') {
+	if(props?.theme && (props?.theme[0] === '#')) {
 		rendererPath = 'Brew';
 	}
 	let themePath     = props.theme ?? '5ePHB';
