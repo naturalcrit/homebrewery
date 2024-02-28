@@ -54,7 +54,7 @@ const api = {
 				});
 			stub = stub?.toObject();
 
-			if(stub.lock?.state) {
+			if(stub?.lock?.state) {
 				// State 1 : Locked for everything
 				// State 2 : Edit only
 				if(stub.lock.state == 1 || (stub.lock.state == 2 && accessType != 'edit'))
