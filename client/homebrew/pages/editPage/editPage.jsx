@@ -26,6 +26,8 @@ const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
 
 const googleDriveIcon = require('../../googleDrive.svg');
 
+// const translateOpts = ['userPage', 'brewInfo'];
+
 const SAVE_TIMEOUT = 3000;
 
 const EditPage = createClass({
@@ -223,46 +225,46 @@ const EditPage = createClass({
 	},
 
 	renderGoogleDriveIcon : function(){
+		''.setTranslationDefaults(['nav', 'storageMsg']);
 		return <Nav.item className='googleDriveStorage' onClick={this.handleGoogleClick}>
 			<img src={googleDriveIcon} className={this.state.saveGoogle ? '' : 'inactive'} alt='Google Drive icon'/>
 
 			{this.state.confirmGoogleTransfer &&
 				<div className='errorContainer' onClick={this.closeAlerts}>
 					{ this.state.saveGoogle
-						?	`Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?`
-						: `Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?`
+						? 'fromGoogletoHB'.translate()
+						: 'fromHBtoGoogle'.translate()
 					}
 					<br />
 					<div className='confirm' onClick={this.toggleGoogleStorage}>
-						Yes
+						{'Yes'.translate()}
 					</div>
 					<div className='deny'>
-						No
+						{'No'.translate()}
 					</div>
 				</div>
 			}
 
 			{this.state.alertLoginToTransfer &&
 				<div className='errorContainer' onClick={this.closeAlerts}>
-					You must be signed in to a Google account to transfer
-					between the homebrewery and Google Drive!
+					{'notSignedIn'.translate()}
 					<a target='_blank' rel='noopener noreferrer'
 						href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
 						<div className='confirm'>
-							Sign In
+							{'Sign In'.translate(['nav', 'errorMSG'])}
 						</div>
 					</a>
 					<div className='deny'>
-						Not Now
+						{'Not Now'.translate(['nav', 'errorMSG'])}
 					</div>
 				</div>
 			}
 
 			{this.state.alertTrashedGoogleBrew &&
 				<div className='errorContainer' onClick={this.closeAlerts}>
-				This brew is currently in your Trash folder on Google Drive!<br />If you want to keep it, make sure to move it before it is deleted permanently!<br />
+					{'deletedBrew'.translate(['nav', 'errorMSG'])}
 					<div className='confirm'>
-						OK
+						{'OK'.translate()}
 					</div>
 				</div>
 			}
@@ -270,13 +272,14 @@ const EditPage = createClass({
 	},
 
 	renderSaveButton : function(){
+		''.setTranslationDefaults(['nav', 'saveDropdown']);
 		if(this.state.autoSaveWarning && this.hasChanges()){
 			this.setAutosaveWarning();
 			const elapsedTime = Math.round((new Date() - this.state.unsavedTime) / 1000 / 60);
-			const text = elapsedTime == 0 ? 'Autosave is OFF.' : `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
+			const text = elapsedTime == 0 ? `${'autoSaveOff'.translate()}.` : `${'autoSaveMsg'.translate()} ${elapsedTime} ${'autoSaveMsgDuration'.translate()}.`;
 
 			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
-			Reminder...
+				{'reminder'.translate()}...
 				<div className='errorContainer'>
 					{text}
 				</div>
@@ -284,16 +287,16 @@ const EditPage = createClass({
 		}
 
 		if(this.state.isSaving){
-			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
+			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>{'saving'.translate(['nav', 'saveDropdown'])}...</Nav.item>;
 		}
 		if(this.state.isPending && this.hasChanges()){
-			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
+			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>{'Save Now'.translate()}</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving && this.state.autoSave){
-			return <Nav.item className='save saved'>auto-saved.</Nav.item>;
+			return <Nav.item className='save saved'>{'autosaved'.translate()}.</Nav.item>;
 		}
 		if(!this.state.isPending && !this.state.isSaving){
-			return <Nav.item className='save saved'>saved.</Nav.item>;
+			return <Nav.item className='save saved'>{'saved'.translate()}.</Nav.item>;
 		}
 	},
 
@@ -320,8 +323,9 @@ const EditPage = createClass({
 	},
 
 	renderAutoSaveButton : function(){
+		''.setTranslationDefaults(['nav', 'saveDropdown']);
 		return <Nav.item onClick={this.handleAutoSave}>
-			Autosave <i className={this.state.autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
+			{'autosave'.translate()} <i className={this.state.autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
 		</Nav.item>;
 	},
 
@@ -346,6 +350,8 @@ const EditPage = createClass({
 	renderNavbar : function(){
 		const shareLink = this.processShareId();
 
+		''.setTranslationDefaults(['nav', 'shareDropdown']);
+
 		return <Navbar>
 			<Nav.section>
 				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
@@ -364,16 +370,16 @@ const EditPage = createClass({
 				<HelpNavItem/>
 				<Nav.dropdown>
 					<Nav.item color='teal' icon='fas fa-share-alt'>
-						share
+						{'share'.translate()}
 					</Nav.item>
 					<Nav.item color='blue' href={`/share/${shareLink}`}>
-						view
+						{'view'.translate()}
 					</Nav.item>
 					<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.publicUrl}/share/${shareLink}`);}}>
-						copy url
+						{'copyUrl'.translate()}
 					</Nav.item>
 					<Nav.item color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
-						post to reddit
+						{'postToReddit'.translate()}
 					</Nav.item>
 				</Nav.dropdown>
 				<PrintLink shareId={this.processShareId()} />

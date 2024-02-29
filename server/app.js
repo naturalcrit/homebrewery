@@ -75,6 +75,16 @@ const migrateText       = require('fs').readFileSync('client/homebrew/pages/home
 const changelogText     = require('fs').readFileSync('changelog.md', 'utf8');
 const faqText           = require('fs').readFileSync('faq.md', 'utf8');
 
+app.use((req, res, next)=>{
+	if(req.cookies && req.cookies.languageKey){
+		try {
+			req.language = req.cookies.languageKey;
+		} catch (e){}
+	}
+	return next();
+});
+
+
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
 const defaultMetaTags = {
@@ -423,10 +433,21 @@ if(isLocalEnvironment){
 const templateFn = require('./../client/template.js');
 const renderPage = async (req, res)=>{
 	// Create configuration object
+	const languageOptions = ['pt-BR','en-US', 'es-ES', 'fr-FR'];
+	const langCodeCorrect =()=> {
+		if (languageOptions.indexOf(req.language) > -1) {return req.language;}
+		return 'en-US';
+	};
+
+	const langPreference = langCodeCorrect();
+	const localeFile   = require('fs').readFileSync(`locale/locale-${langPreference}.yaml`, 'utf8');
+	const localeData   = yaml.load(localeFile);
+
 	const configuration = {
 		local       : isLocalEnvironment,
 		publicUrl   : config.get('publicUrl') ?? '',
-		environment : nodeEnv
+		environment : nodeEnv,
+		localeData
 	};
 	const props = {
 		version       : require('./../package.json').version,
@@ -438,13 +459,18 @@ const renderPage = async (req, res)=>{
 		enable_v3     : config.get('enable_v3'),
 		enable_themes : config.get('enable_themes'),
 		config        : configuration,
-		ogMeta        : req.ogMeta
+		ogMeta        : req.ogMeta,
+		uiLanguage    : langPreference
 	};
 	const title = req.brew ? req.brew.title : '';
 	const page = await templateFn('homebrew', title, props)
 		.catch((err)=>{
 			console.log(err);
 		});
+	
+		
+	
+
 	return page;
 };
 

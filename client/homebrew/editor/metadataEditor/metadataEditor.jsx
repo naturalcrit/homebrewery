@@ -15,6 +15,7 @@ const validations = require('./validations.js');
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
 const homebreweryThumbnail = require('../../thumbnail.png');
+const translateOpts = ['editPage', 'propertiesTab'];
 
 const callIfExists = (val, fn, ...args)=>{
 	if(val[fn]) {
@@ -121,11 +122,11 @@ const MetadataEditor = createClass({
 
 	handleDelete : function(){
 		if(this.props.metadata.authors && this.props.metadata.authors.length <= 1){
-			if(!confirm('Are you sure you want to delete this brew? Because you are the only owner of this brew, the document will be deleted permanently.')) return;
-			if(!confirm('Are you REALLY sure? You will not be able to recover the document.')) return;
+			if(!confirm('onlyAuthorDelete'.translate())) return;
+			if(!confirm('confirm1'.translate())) return;
 		} else {
-			if(!confirm('Are you sure you want to remove this brew from your collection? This will remove you as an editor, but other owners will still be able to access the document.')) return;
-			if(!confirm('Are you REALLY sure? You will lose editor access to this document.')) return;
+			if(!confirm('multipleAuthorDelete'.translate())) return;
+			if(!confirm('confirm2'.translate())) return;
 		}
 
 		request.delete(`/api/${this.props.metadata.googleId ?? ''}${this.props.metadata.editId}`)
@@ -154,11 +155,11 @@ const MetadataEditor = createClass({
 	renderPublish : function(){
 		if(this.props.metadata.published){
 			return <button className='unpublish' onClick={()=>this.handlePublish(false)}>
-				<i className='fas fa-ban' /> unpublish
+				<i className='fas fa-ban' /> {'unpublish'.translate()}
 			</button>;
 		} else {
 			return <button className='publish' onClick={()=>this.handlePublish(true)}>
-				<i className='fas fa-globe' /> publish
+				<i className='fas fa-globe' /> {'publish'.translate()}
 			</button>;
 		}
 	},
@@ -167,22 +168,22 @@ const MetadataEditor = createClass({
 		if(!this.props.metadata.editId) return;
 
 		return <div className='field delete'>
-			<label>delete</label>
+			<label>{'delete'.translate()}</label>
 			<div className='value'>
 				<button className='publish' onClick={this.handleDelete}>
-					<i className='fas fa-trash-alt' /> delete brew
+					<i className='fas fa-trash-alt' /> {'delete brew'.translate()}
 				</button>
 			</div>
 		</div>;
 	},
 
 	renderAuthors : function(){
-		let text = 'None.';
+		let text = 'None'.translate()+'.';
 		if(this.props.metadata.authors && this.props.metadata.authors.length){
 			text = this.props.metadata.authors.join(', ');
 		}
 		return <div className='field authors'>
-			<label>authors</label>
+			<label>{'authors'.translate()}</label>
 			<div className='value'>
 				{text}
 			</div>
@@ -212,7 +213,7 @@ const MetadataEditor = createClass({
 			dropdown =
 				<Nav.dropdown className='disabled value' trigger='disabled'>
 					<div>
-						{`Themes are not supported in the Legacy Renderer`} <i className='fas fa-caret-down'></i>
+						{'themesLegacy'.translate()} <i className='fas fa-caret-down'></i>
 					</div>
 				</Nav.dropdown>;
 		} else {
@@ -227,7 +228,7 @@ const MetadataEditor = createClass({
 		}
 
 		return <div className='field themes'>
-			<label>theme</label>
+			<label>{'theme'.translate()}</label>
 			{dropdown}
 		</div>;
 	},
@@ -248,7 +249,7 @@ const MetadataEditor = createClass({
 		const debouncedHandleFieldChange =  _.debounce(this.handleFieldChange, 500);
 
 		return <div className='field language'>
-			<label>language</label>
+			<label>{'language'.translate()}</label>
 			<div className='value'>
 				<Combobox trigger='click'
 					className='language-dropdown'
@@ -267,7 +268,7 @@ const MetadataEditor = createClass({
 					}}
 				>
 				</Combobox>
-				<small>Sets the HTML Lang property for your brew. May affect hyphenation or spellcheck.</small>
+				<small>{'languageSub'.translate()}</small>
 			</div>
 
 		</div>;
@@ -277,7 +278,7 @@ const MetadataEditor = createClass({
 		if(!global.enable_v3) return;
 
 		return <div className='field systems'>
-			<label>Renderer</label>
+			<label>{'renderer'.translate()}</label>
 			<div className='value'>
 				<label key='legacy'>
 					<input
@@ -286,7 +287,7 @@ const MetadataEditor = createClass({
 						name = 'renderer'
 						checked={this.props.metadata.renderer === 'legacy'}
 						onChange={(e)=>this.handleRenderer('legacy', e)} />
-					Legacy
+					{'Legacy'.translate()}
 				</label>
 
 				<label key='V3'>
@@ -296,22 +297,23 @@ const MetadataEditor = createClass({
 						name = 'renderer'
 						checked={this.props.metadata.renderer === 'V3'}
 						onChange={(e)=>this.handleRenderer('V3', e)} />
-					V3
+					{'v3'.translate()}
 				</label>
 
 				<a href='/legacy' target='_blank' rel='noopener noreferrer'>
-					Click here to see the demo page for the old Legacy renderer!
+					{'legacyDemoLink'.translate()}
 				</a>
 			</div>
 		</div>;
 	},
 
 	render : function(){
+		''.setTranslationDefaults(translateOpts);
 		return <div className='metadataEditor'>
-			<h1 className='sectionHead'>Brew</h1>
+			<h1 className='sectionHead'>{'Brew'.translate()}</h1>
 
 			<div className='field title'>
-				<label>title</label>
+				<label>{'title'.translate()}</label>
 				<input type='text' className='value'
 					defaultValue={this.props.metadata.title}
 					onChange={(e)=>this.handleFieldChange('title', e)} />
@@ -319,12 +321,12 @@ const MetadataEditor = createClass({
 			<div className='field-group'>
 				<div className='field-column'>
 					<div className='field description'>
-						<label>description</label>
+						<label>{'description'.translate()}</label>
 						<textarea defaultValue={this.props.metadata.description} className='value'
 							onChange={(e)=>this.handleFieldChange('description', e)} />
 					</div>
 					<div className='field thumbnail'>
-						<label>thumbnail</label>
+						<label>{'thumbnail'.translate()}</label>
 						<input type='text'
 							defaultValue={this.props.metadata.thumbnail}
 							placeholder='https://my.thumbnail.url'
@@ -338,13 +340,13 @@ const MetadataEditor = createClass({
 				{this.renderThumbnail()}
 			</div>
 
-			<StringArrayEditor label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
-				placeholder='add tag' unique={true}
+			<StringArrayEditor label={'tags'.translate()} valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
+				placeholder={'add tag'.translate()} unique={true}
 				values={this.props.metadata.tags}
 				onChange={(e)=>this.handleFieldChange('tags', e)}/>
 
 			<div className='field systems'>
-				<label>systems</label>
+				<label>{'systems'.translate()}</label>
 				<div className='value'>
 					{this.renderSystems()}
 				</div>
@@ -358,15 +360,15 @@ const MetadataEditor = createClass({
 
 			<hr/>
 
-			<h1 className='sectionHead'>Authors</h1>
+			<h1 className='sectionHead'>{'authors'.translate()}</h1>
 
 			{this.renderAuthors()}
 
-			<StringArrayEditor label='invited authors' valuePatterns={[/.+/]}
+			<StringArrayEditor label={'invited authors'.translate()} valuePatterns={[/.+/]}
 				validators={[(v)=>!this.props.metadata.authors?.includes(v)]}
-				placeholder='invite author' unique={true}
+				placeholder={'invite author'.translate()} unique={true}
 				values={this.props.metadata.invitedAuthors}
-				notes={['Invited author usernames are case sensitive.', 'After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.']}
+				notes={['invitedSub1'.translate(), 'invitedSub2'.translate()]}
 				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}/>
 
 			<hr/>
@@ -374,10 +376,10 @@ const MetadataEditor = createClass({
 			<h1 className='sectionHead'>Privacy</h1>
 
 			<div className='field publish'>
-				<label>publish</label>
+				<label>{'publish'.translate()}</label>
 				<div className='value'>
 					{this.renderPublish()}
-					<small>Published homebrews will be publicly viewable and searchable (eventually...)</small>
+					<small>{'publishedSub'.translate()}</small>
 				</div>
 			</div>
 

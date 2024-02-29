@@ -3,6 +3,8 @@ const createClass = require('create-react-class');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const request = require('superagent');
 
+const translateOpts = ['nav', 'usernameDropdown'];
+
 const Account = createClass({
 	displayName     : 'AccountNavItem',
 	getInitialState : function() {
@@ -20,7 +22,7 @@ const Account = createClass({
 	},
 
 	handleLogout : function(){
-		if(confirm('Are you sure you want to log out?')) {
+		if(confirm('logoutMsg'.translate())) {
 			// Reset divider position
 			window.localStorage.removeItem('naturalcrit-pane-split');
 			// Clear login cookie
@@ -38,7 +40,7 @@ const Account = createClass({
 	},
 
 	localLogin : async function(){
-		const username = prompt('Enter username:');
+		const username = prompt(`${'localLoginPrompt'.translate()}:`);
 		if(!username) {return;}
 
 		const expiry = new Date;
@@ -59,6 +61,7 @@ const Account = createClass({
 	},
 
 	render : function(){
+		''.setTranslationDefaults(translateOpts);
 		//  Logged in
 		if(global.account){
 			return <Nav.dropdown>
@@ -74,7 +77,7 @@ const Account = createClass({
 					color='yellow'
 					icon='fas fa-beer'
 				>
-					brews
+					{'brews'.translate()}
 				</Nav.item>
 				<Nav.item
 					className='account'
@@ -82,7 +85,7 @@ const Account = createClass({
 					icon='fas fa-user'
 					href='/account'
 				>
-					account
+					{'account'.translate()}
 				</Nav.item>
 				<Nav.item
 					className='logout'
@@ -90,7 +93,7 @@ const Account = createClass({
 					icon='fas fa-power-off'
 					onClick={this.handleLogout}
 				>
-					logout
+					{'logout'.translate()}
 				</Nav.item>
 			</Nav.dropdown>;
 		}
@@ -99,14 +102,14 @@ const Account = createClass({
 		//  LOCAL ONLY
 		if(global.config.local) {
 			return <Nav.item color='teal' icon='fas fa-sign-in-alt' onClick={this.localLogin}>
-				login
+				{'login'.translate()}
 			</Nav.item>;
 		};
 
 		// Logged out
 		// Production site
 		return <Nav.item href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`} color='teal' icon='fas fa-sign-in-alt'>
-			login
+			{'login'.translate()}
 		</Nav.item>;
 	}
 });

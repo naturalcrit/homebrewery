@@ -6,6 +6,8 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 const MAX_URL_SIZE = 2083;
 const MAIN_URL = 'https://www.reddit.com/r/UnearthedArcana/submit?selftext=true';
 
+const translateOpts = ['nav', 'shareDropdown'];
+
 
 const RedditShare = createClass({
 	displayName     : 'RedditShareNavItem',
@@ -36,8 +38,9 @@ const RedditShare = createClass({
 
 
 	render : function(){
+		''.setTranslationDefaults(translateOpts);
 		return <Nav.item icon='fa-reddit-alien' color='red' onClick={this.handleClick}>
-			share on reddit
+			{'share on Reddit'.translate()}
 		</Nav.item>;
 	},
 

@@ -8,6 +8,7 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 const EDIT_KEY = 'homebrewery-recently-edited';
 const VIEW_KEY = 'homebrewery-recently-viewed';
 
+const translateOpts = ['nav', 'recentBrewsdropdown'];
 
 const RecentItems = createClass({
 	DisplayName     : 'RecentItems',
@@ -20,6 +21,7 @@ const RecentItems = createClass({
 	},
 
 	getInitialState : function() {
+		
 		return {
 			showDropdown : false,
 			edit         : [],
@@ -141,30 +143,35 @@ const RecentItems = createClass({
 
 	renderDropdown : function(){
 		// if(!this.state.showDropdown) return null;
-
+		''.setTranslationDefaults(translateOpts);
 		const makeItems = (brews)=>{
 			return _.map(brews, (brew, i)=>{
 				return <a className='navItem' href={brew.url} key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
 					<span className='title'>{brew.title || '[ no title ]'}</span>
 					<span className='time'>{Moment(brew.ts).fromNow()}</span>
-					<div className='clear' title='Remove from Recents' onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></div>
+					<div className='clear' title={'removeRecents'.translate()} onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></div>
 				</a>;
 			});
 		};
 
 		return <>
 			{(this.props.showEdit && this.props.showView) ?
-				<Nav.item className='header'>edited</Nav.item> : null }
+				<Nav.item className='header'>
+					{'edited'.translate()}
+				</Nav.item> : null }
 			{this.props.showEdit ?
 				makeItems(this.state.edit) : null }
 			{(this.props.showEdit && this.props.showView) ?
-				<Nav.item className='header'>viewed</Nav.item>	: null }
+				<Nav.item className='header'>
+					{'viewed'.translate()}
+				</Nav.item>	: null }
 			{this.props.showView ?
 				makeItems(this.state.view) : null }
 		</>;
 	},
 
 	render : function(){
+		''.setTranslationDefaults(translateOpts);
 		return <Nav.dropdown className='recent'>
 			<Nav.item icon='fas fa-history' color='grey' >
 				{this.props.text}
@@ -176,12 +183,11 @@ const RecentItems = createClass({
 });
 
 module.exports = {
-
 	edited : (props)=>{
 		return <RecentItems
 			brew={props.brew}
 			storageKey={props.storageKey}
-			text='recently edited'
+			text={'recently edited'.translate()}
 			showEdit={true}
 		/>;
 	},
@@ -190,16 +196,17 @@ module.exports = {
 		return <RecentItems
 			brew={props.brew}
 			storageKey={props.storageKey}
-			text='recently viewed'
+			text={'recently viewed'.translate()}
 			showView={true}
 		/>;
 	},
 
 	both : (props)=>{
+		''.setTranslationDefaults(translateOpts);
 		return <RecentItems
 			brew={props.brew}
 			storageKey={props.storageKey}
-			text='recent brews'
+			text={'recent brews'.translate()}
 			showEdit={true}
 			showView={true}
 		/>;

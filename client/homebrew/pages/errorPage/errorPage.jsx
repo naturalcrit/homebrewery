@@ -8,7 +8,9 @@ const UIPage = require('../basePages/uiPage/uiPage.jsx');
 
 const Markdown = require('../../../../shared/naturalcrit/markdown.js');
 
+const translateOpts = ['errorCodes'];
 const ErrorIndex = require('./errors/errorIndex.js');
+
 
 const ErrorPage = createClass({
 	displayName : 'ErrorPage',
@@ -23,13 +25,14 @@ const ErrorPage = createClass({
 	},
 
 	render : function(){
+		''.setTranslationDefaults(translateOpts);
 		const errorText = ErrorIndex(this.props)[this.props.brew.HBErrorCode.toString()] || '';
 
-		return <UIPage brew={{ title: 'Crit Fail!' }}>
+		return <UIPage brew={{ title: 'Crit Fail!'.translate() }}>
 			<div className='dataGroup'>
 				<div className='errorTitle'>
-					<h1>{`Error ${this.props.brew.status || '000'}`}</h1>
-					<h4>{this.props.brew.text || 'No error text'}</h4>
+					<h1>{`${'Error'.translate()} ${this.props.brew.status || '000'}`}</h1>
+					<h4>{this.props.brew.text || 'No error text'.translate()}</h4>
 				</div>
 				<hr />
 				<div dangerouslySetInnerHTML={{ __html: Markdown.render(errorText) }} />

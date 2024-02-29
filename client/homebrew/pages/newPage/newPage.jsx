@@ -25,6 +25,7 @@ const STYLEKEY = 'homebrewery-new-style';
 const METAKEY  = 'homebrewery-new-meta';
 let SAVEKEY;
 
+const translateOpts = ['nav', 'saveDropdown'];
 
 const NewPage = createClass({
 	displayName     : 'NewPage',
@@ -170,11 +171,11 @@ const NewPage = createClass({
 	renderSaveButton : function(){
 		if(this.state.isSaving){
 			return <Nav.item icon='fas fa-spinner fa-spin' className='save'>
-				save...
+				{'saving'.translate()}
 			</Nav.item>;
 		} else {
 			return <Nav.item icon='fas fa-save' className='save' onClick={this.save}>
-				save
+				{'save'.translate()}
 			</Nav.item>;
 		}
 	},
@@ -185,7 +186,7 @@ const NewPage = createClass({
 
 	renderLocalPrintButton : function(){
 		return <Nav.item color='purple' icon='far fa-file-pdf' onClick={this.print}>
-			get PDF
+			{'get PDF'.translate(['nav'])}
 		</Nav.item>;
 	},
 
@@ -210,6 +211,7 @@ const NewPage = createClass({
 	},
 
 	render : function(){
+		''.setTranslationDefaults(translateOpts);
 		return <div className='newPage sitePage'>
 			{this.renderNavbar()}
 			<div className='content'>

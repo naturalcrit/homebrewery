@@ -1,0 +1,321 @@
+# string translation template
+yes: yes
+no: no
+dateFormat: YYYY-MM-DD HH:mm:ss
+OK:
+
+nav:
+  help out: help out
+  storageMsg:
+    notSignedIn: You must be signed in to a Google account to transfer between the homebrewery and Google Drive!
+    fromGoogleToHb: Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?
+    fromHbToGoogle: Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?
+  saveDropdown:
+    save:
+    autosaved: autosaved
+    saving: saving
+    reminder: reminder
+    autosave: autosave
+    Save Now: Save Now
+    saved: saved
+    autoSaveMsg: Autosave is OFF, and you haven't saved for
+    autoSaveMsgDuration: minutes
+    autoSaveOff: Autosave is OFF
+  errorMsg:
+    Oops!:
+    conflict: "Conflict: please refresh to get latest change"
+    outOfDate: Your client is out of date. Please save your changes elsewhere and refresh.
+    expiredCredentials: Looks like your Google credentials have expired! Visit our log in page to sign out and sign back in with Google, then try saving again!
+    Sign In: Sign In
+    Not Now:
+    problemSaving: Looks like there was a problem saving. <br /> Report the issue
+    here:
+    deletedBrew: This brew is currently in your Trash folder on Google Drive!<br />If you want to keep it, make sure to move it before it is deleted permanently!<br />
+
+  new:
+  helpDropdown:
+    need help?:
+    report issue:
+    faq:
+    migrate:
+
+  shareDropdown:
+    share:
+    view:
+    copy url:
+    share on Reddit:
+
+  get pdf:
+
+  recentBrewsdropdown:
+    recent brews:
+    edited:
+    recently edited:
+    viewed:
+    recently viewed:
+
+    removeRecents: Remove from Recents
+
+  usernameDropdown:
+    brews:
+    account:
+    login:
+    localLoginPrompt: Enter username
+    logout:
+    logoutMsg: Are you sure you want to log out?
+
+userPage:
+  No Brews:
+  No Title:
+  published brews:
+  unpublished brews:
+
+  filters:
+    sortBy: Sort By
+    title:
+    created date:
+    updated date:
+    views:
+    searchPlaceholder: filter title/description
+
+  brewInfo:
+    Authors:
+    Last viewed:
+    Page count:
+    Created:
+    Last updated:
+    Share:
+    Edit:
+    Download:
+    Delete:
+    gdTitle: Your Google Drive Storage
+    gdTitle2: Another User\'s Google Drive Storage
+
+editPage:
+  tools:
+    undo: Undo
+    redo: Redo
+    Editor Themes:
+    Brew Editor:
+    Style Editor:
+    Properties:
+    Jump to location in Editor:
+    Jump to location in Preview:
+
+  brewTab:
+    snippets:
+      textEditor:
+      column break:
+      new page:
+      vertical spacing:
+      wide block:
+      image:
+      background image:
+      page number:
+      auto-incrementing page number:
+      link to page:
+      table of contents:
+      add comment:
+
+      phb:
+      spell:
+      spell list:
+      class feature:
+      note:
+      descriptive text box:
+      monster stat block:
+      wide monster stat block:
+      cover page:
+      artist credit:
+
+      tables:
+      class table:
+      half class table:
+      table:
+      wide table:
+      split table:
+
+  styleTab:
+    snippets:
+      styleEditor:
+      removeDropCap:
+      tweakDropCap:
+      addComment:
+
+      print:
+      a4PageSize:
+      squarePageSize:
+      inkFriendly:
+
+  propertiesTab:
+    brew:
+    title:
+    description:
+    thumbnail:
+    tags:
+    add tag:
+    systems:
+    language:
+    languageSub: Sets the HTML Lang property for your brew. May affect hyphenation or spellcheck.
+    theme:
+    renderer:
+    Legacy:
+    v3:
+    legacyDemoLink: click here to see the demo page for the old legacy renderer!
+
+    authors: Authors
+    None:
+    invited authors:
+    invite author:
+    invitedSub1: Invited authors are case sensitive.
+    invitedSub2: After adding an invited author, send them the edit link. there, they can choose to accept or decline the invitation.
+
+    privacy:
+    publish:
+    unpublish:
+    publishedSub: Published homebrews will be publicly viewable and searchable (eventually...)
+    delete:
+    delete brew:
+    onlyAuthorDelete: Are you sure you want to delete this brew? Because you are the only owner of this brew, the document will be deleted permanently
+    confirm1: Are you REALLY sure? You will not be able to recover the document.
+    multipleAuthorDelete: Are you sure you want to remove this brew from your collection? This will remove you as an editor, but other owners will still be able to access the document.
+    confirm2: Are you REALLY sure? You will lose editor access to this document.
+    themesLegacy: Themes are not supported in the Legacy Renderer
+
+sharePage:
+  metadataWindow:
+    Authors:
+    no authors:
+    Systems:
+    no systems:
+    Tags:
+    no tags:
+    Description:
+    No description:
+    Updated:
+
+  sourceDropdown:
+    source:
+    view:
+    download:
+    clone to new:
+
+accountPage:
+  Account Information:
+  username: Username
+  noUser: No user currently logged in
+  lastLogin: Last Login
+  Homebrewery Information:
+  brewsOnHomebrewery: Brews on Homebrewery
+  Google Information:
+  linkedToGoogle: Linked to Google
+  brewsOnDrive: Brews on Google Drive
+  noFiles: Unable to retrieve files
+  followSteps: follow these steps to renew your Google credentials.
+  Default Save Location:
+  Homebrewery:
+  Google Drive:
+  Language Selection:
+  langSub: This option selects your language exclusively for the user Interface, and not for your brews. You can change brew language in their properties tab.
+
+errorCodes:
+  Crit Fail!:
+  error:
+  No error text:
+  unkownError: |
+    ## An unknown error occurred!
+
+    We aren't sure what happened, but our server wasn't able to find what you were looking for.
+  googleError: |
+    ## An error occurred while retrieving this brew from Google Drive!
+
+    Google reported an error while attempting to retrieve a brew from this link.
+  gd404: |
+    ## We can't find this brew in Google Drive!
+
+    This file was saved on Google Drive, but this link doesn't work anymore.
+  gd4042: "Note that this brew belongs to the Homebrewery account"
+  gd4043: which is
+  gd4044: your account.
+  gd4045: not your account (you are currently signed in as
+  gd4046: and you are not currently signed in to any account.
+  gd404longText: |
+    The Homebrewery cannot delete files from Google Drive on its own, so there
+    are three most likely possibilities:
+    :
+    - **The Google Drive files may have been accidentally deleted.** Look in
+    the Google Drive account that owns this brew (or ask the owner to do so),
+    and make sure the Homebrewery folder is still there, and that it holds your brews
+    as text files.
+    - **You may have changed the sharing settings for your files.** If the files
+    are still on Google Drive, change all of them to be shared *with everyone who has
+    the link* so the Homebrewery can access them.
+    - **The Google Account may be closed.** Google may have removed the account
+    due to inactivity or violating a Google policy. Make sure the owner can
+    still access Google Drive normally and upload/download files to it.
+    :
+    If the file isn't found, Google Drive usually puts your file in your Trash folder for
+    30 days. Assuming the trash hasn't been emptied yet, it might be worth checking.
+    You can also find the Activity tab on the right side of the Google Drive page, which
+    shows the recent activity on Google Drive. This can help you pin down the exact date
+    the brew was deleted or moved, and by whom.
+    :
+    If the brew still isn't found, some people have had success asking Google to recover
+    accidentally deleted files at this link: 
+    https://support.google.com/drive/answer/1716222?hl=en&ref_topic=7000946.
+    At the bottom of the page there is a button that says *Send yourself an Email*
+    and you will receive instructions on how to request the files be restored.
+    :
+    Also note, if you prefer not to use your Google Drive for storage, you can always
+    change the storage location of a brew by clicking the Google drive icon by the
+    brew title and choosing *transfer my brew to/from Google Drive*.
+  userIsNotAuthor: |
+    ## Current signed-in user does not have editor access to this brew.
+
+    If you believe you should have access to this brew, ask one of its authors to invite you
+    as an author by opening the Edit page for the brew, viewing the {{fa,fa-info-circle}}
+    **Properties** tab, and adding your username to the "invited authors" list. You can
+    then try to access this document again.
+  Brew Title: Brew Title
+  unableTitle: Unable to show title
+  Current Authors:
+  unableAuthors: Unable to list authors
+  clickRedirect: Click here to be redirected to the brew's share page.
+  notSignedIn: |
+    ## Sign-in required to edit this brew.
+
+    You must be logged in to one of the accounts listed as an author of this brew.
+    User is not logged in. Please log in [here]
+  brewLoadError: |
+    ## No Homebrewery document could be found.
+
+    The server could not locate the Homebrewery document. It was likely deleted by
+    its owner.
+  Requested access:
+  Brew ID:
+  brewSaveError: |
+    ## Unable to save Homebrewery document.
+      
+    An error occurred wil attempting to save the Homebrewery document.
+  brewDeleteError: |
+    ## Unable to delete Homebrewery document.
+
+    An error occurred while attempting to remove the Homebrewery document.
+  authorDeleteError: |
+    ## Unable to remove user from Homebrewery document.
+
+    An error occurred while attempting to remove the user from the Homebrewery document author list!
+
+htmlError:
+  Line:
+  tag:
+  openTag: An unmatched opening tag means there's an opened tag that isn't closed. You need to close your tags, like this {'</div>'}. Make sure to match types!
+  closeTag: An unmatched closing tag means you closed a tag without opening it. Either remove it, or check to where you think you opened it.
+  missmatchTag: A type mismatch means you closed a tag, but the last open tag was a different type.
+  Protips!:
+  h3Title: There are HTML errors in your markup
+  descriptionText: If these aren't fixed your brew will not render properly when you print it to PDF or share it.
+
+notificationPopup:
+  Notice:
+  keepInMind: This website is always improving and we are still adding new features and squashing bugs. Keep the following in mind

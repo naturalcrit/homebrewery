@@ -1,0 +1,320 @@
+# string translation template
+yes: sì
+no: no
+dateFormat: DD-MM-YYYY HH:mm:ss
+OK:
+
+nav:
+  help out: Aiuto
+  storageMsg:
+    notSignedIn: Devi essere registrato su un account Google per il trasferimento file tra Homebrewery e Google Drive!
+    fromGoogleToHb: Vuoi trasferire questa bozza dal tuo Google Drive ad Homebrewery?
+    fromHbToGoogle: Vuoi trasferire questa bozza da Homebrewery al tuo account Google Drive?
+  saveDropdown:
+    save: salva
+    autosaved: salvato automaticamente
+    saving: salvataggio
+    reminder: reminder
+    autosave: autosalvataggio
+    Save Now: Salva Adesso
+    saved: salvato
+    autoSaveMsg: Autosalvataggio è DISATTIVATO, e tu non hai salvato
+    autoSaveMsgDuration: minuti
+    autoSaveOff: Autosalvataggio è DISATTIVATO
+  errorMsg:
+    Oops!:
+    conflict: "Conflitto: si prega di ricaricare la pagina per ottenere l'ultimo aggiornamento"
+    outOfDate: Il tuo client non è aggiornato. Si prega di salvare i cambiamenti altrove e ricaricare la pagina.
+    expiredCredentials: Sembra che le tue credenziali Google siano scadute! Fai logout e rientra con Google, dopoodiché prova di nuovo a salvare!
+    Sign In: Registrati
+    Not Now: Non Adesso
+    problemSaving: Sembra che ci sia un problema con il salvataggio. <br /> Segnala il problema.
+    here: Qui
+    deletedBrew: Questa bozza si trova attualmente nella cartella Cestino del tuo Google Drive!<br />Se vuoi conservarla, assicurati di spostarla da lì prima di cancellarla definitivamente!<br />
+
+  new: nuova
+  helpDropdown:
+    need help?: hai bisogno di aiuto?
+    report issue: segnala problema
+    faq: FAQ
+    migrate: sposta
+
+  shareDropdown:
+    share: Condividi
+    view: Vedi
+    copy url: Copia URL
+    share on Reddit: Condividi su Reddit
+
+  get pdf: Ottieni PDF
+
+  recentBrewsdropdown:
+    recent brews: bozze recenti
+    edited: modificato
+    recently edited: modificato di recente
+    viewed: visto
+    recently viewed: visto di recente
+
+    removeRecents: Rimuovi dai Recenti
+
+  usernameDropdown:
+    brews: Bozze
+    account: Account
+    login: Accedi
+    localLoginPrompt: Inserisci nome utente
+    logout: Esci
+    logoutMsg: Sei sicuro di volerti disconnettere?
+
+userPage:
+  No Brews: Nessuna bozza
+  No Title: Nessun titolo
+  published brews: Bozze pubblicate
+  unpublished brews: Bozze non pubblicate
+
+  filters:
+    sortBy: Ordina per
+    title: Titolo
+    created date: Data di creazione
+    updated date: Data di aggiornamento
+    views: Visualizzazioni
+    searchPlaceholder: filtrare titolo/descrizione
+
+  brewInfo:
+    Authors: Autori
+    Last viewed: Ultima visualizzazione
+    Page count: Numero di pagine
+    Created: Creato il
+    Last updated: Ultimo aggiornamento
+    Share: Condividi
+    Edit: Modifica
+    Download: Scarica
+    Delete: Elimina
+    gdTitle: Il tuo archivio Google Drive
+    gdTitle2: L'archivio Google Drive di un altro utente
+
+editPage:
+  tools:
+    undo: Annulla
+    redo: Ripeti
+    Editor Themes: Tema dell'editore
+    Brew Editor: Editor della bozza
+    Style Editor: Editore dello stile
+    Properties: Proprietà
+    Jump to location in Editor: Vai alla posizione nell'editor
+    Jump to location in Preview: Passa alla posizione in Anteprima
+
+  brewTab:
+    snippets:
+      textEditor: Editor testuale
+      column break: Spezzare colonna
+      new page: Nuova pagina
+      vertical spacing: Spazio verticale
+      wide block: Testo ampio
+      image: Immagine
+      background image: Immagine di background
+      page number: Numero di pagina
+      auto-incrementing page number: Conta automatica numero pagine
+      link to page: Link alla pagina
+      table of contents: Tabella dei contenuti
+      add comment: Aggiungi commento
+
+      phb: Manuale del giocatore
+      spell: Incantensimo
+      spell list: Lista incantesimi
+      class feature: Privilegio di classe
+      note: Nota
+      descriptive text box: Nota descrittiva
+      monster stat block: Statistiche mostro
+      wide monster stat block: Statistiche mostro estesse
+      cover page: Pagina di copertina
+      artist credit: Menzione agli artisti
+
+      tables: Tabelle
+      class table: Tabella di classe
+      half class table: Tabella di classe dimezzata
+      table: Tabella
+      wide table: Tabella estesa
+      split table: Dividi tabella
+
+  styleTab:
+    snippets:
+      styleEditor: Editore dello stile
+      removeDropCap: togliere la capolettera
+      tweakDropCap: modificare la capolettera
+      addComment: Aggiungi commento
+
+      print: Stampa
+      a4PageSize: Pagina formato A4
+      squarePageSize: Pagina quadrata
+      inkFriendly: meno inchiostro
+
+  propertiesTab:
+    brew: Bozza
+    title: Titolo
+    description: Descrizione
+    thumbnail: Anteprima
+    tags: Etichetta
+    add tag: Aggiungere etichetta
+    systems: Sistemi
+    language: Linguaggio
+    languageSub: Imposta la proprietà HTML Lang per la bozza. Potrebbe influire sulla sillabazione o sul controllo ortografico.
+    theme: Tema
+    renderer: Visualizzatore
+    Legacy:
+    v3:
+    legacyDemoLink: Clicca qui per vedere la pagina dimostrativa per il vecchio visualizzatore Legacy!
+
+    authors: Autori
+    None: Nessuno
+    invited authors: Autori invitati
+    invite author: Autore invitato
+    invitedSub1: Gli autori invitati fanno distinzione tra maiuscole e minuscole.
+    invitedSub2: Dopo avere aggiunto un autore invitato, inviagli il link di editing. Da qui, possono decidere di accettare o rifiutare l'invito.
+
+    privacy: Privato
+    publish: Pubblica
+    unpublish: Annulla pubblicazione
+    publishedSub: Gli homebrew verranno pubblicati e resi visibili per la ricerca (prima o poi...)
+    delete: Cancella
+    delete brew: Cancella bozza
+    onlyAuthorDelete: Sei davvero sicuro di voler cancellare questa bozza? Poiché sei l'unico proprietario di questo documento, esso sarà cancellato definitivamente
+    confirm1: Sei DAVVERO sicuro? Non sarai in grado di recuperare il documento.
+    multipleAuthorDelete: Sei sicuro di voler rimuvoere questa bozza dalla tua collezione? Questo ti rimuoverà come editor al file associato, ma gli altri proprietari potranno ancora avere accesso al documento.
+    confirm2: Sei DAVVERO sicuro? Perderai i tuoi privilegi da editor per questo documento.
+    themesLegacy: I temi non sono supportati sul Visualizzatore Legacy
+
+sharePage:
+  metadataWindow:
+    Authors: Autori
+    no authors: No autori
+    Systems: Sistemi
+    no systems: Nessun sistema
+    Tags: Etichette
+    no tags: Nessuna etichetta
+    Description: Descrizione
+    No description: Nessuna descrizione
+    Updated: Aggiornato
+
+  sourceDropdown:
+    source: Fonte
+    view: Vedi
+    download: Scarica
+    clone to new: Clona come nuovo
+
+accountPage:
+  Account Information: Informazione account
+  username: Nome utente
+  noUser: Nessun utente è attualmente collegato
+  lastLogin: Ultimo login
+  Homebrewery Information: Informazione su Homebrewery
+  brewsOnHomebrewery: Bozze su Homebrewery
+  Google Information: Informativa Google
+  linkedToGoogle: Linka a Google
+  brewsOnGoogleDrive: Bozze su Google Drive
+  noFiles: Impossibile ritrovare i file
+  followSteps: Segui queste indicazioni per recupreare le tue credenziali Google.
+  Default Save Location: Posizione predefinita di salvataggio
+  Homebrewery:
+  Google Drive:
+  Language Selection: Seleziona lingua
+  langSub: Questa opzione seleziona la lingua esclusivamente per l'interfaccia utente, non per le tue bozze. Puoi cambiare le lingue delle bozze nella tabella proprietà a loro dedicata.
+
+errorCodes:
+  Crit Fail!: Fallimento critico!
+  error: Errore
+  No error text: Nessun errore di testo
+  unkownError: |
+    ## Si è verificato un errore sconosciuto!
+
+    Non siamo sicuri cosa sia successo, ma il nostro server non è stato capace di trovare quello che cercavi.
+  googleError: |
+    ## Si è verificato un errore mentre recuperavi questa bozza da Google Drive!
+
+    Google ha segnalato un errore mentre cercavi di ritrovare una bozza da questo link.
+  gd404: |
+    ## Non possiamo trovare questa bozza su Google Drive!
+
+    Questo documento era stato salvato su Google Drive, ma il link non funziona più.
+  gd4042: "Ricorda che questa bozza appartiene all'account"
+  gd4043: che
+  gd4044: è il tuo account.
+  gd4045: non è il tuo account (attualmente hai effettuato l'accesso come
+  gd4046: e al momento non hai effettuato l'accesso a nessun account.
+  gd404longText: |
+    Homebrewery non può cancellare i file da Google Drive, quindi
+    ci sono tre possibilità:
+    :
+    - **I file su Google Drive sono stati accidentalmente eliminati.** Cerca la bozza sul
+    tuo account di Google Drive associato (o chiedi al proprietario di farlo),
+    assicurati che la cartella Homebrewery è ancora lì e che conservi le tue bozze
+    come file di testo.
+    - **Puoi avere modificato le impostazioni di condivisione per i tuoi file.** Se questi file
+    sono ancora su Google Drive, puoi cambiare la condivisione *con chiunque abbia il link*
+    in maniera tale che Homebrewery possa accedervi.
+    - **L'account Google può essere stato chiuso.** Google potrebbe avere rimosso 
+    per inattività o per aver violato una norma di Google. Assicurati che il proprieario possa
+    avere ancora accesso su Google Drive e caricare/scaricare i file da lì.
+    :
+    Se il file non viene trovato, Google Drive in genere inserisce il file nella cartella Cestino per
+    30 giorni. Supponendo che il cestino non sia stato ancora svuotato, potrebbe valere la pena controllarlo.
+    Puoi anche trovare la scheda Attività sul lato destro della pagina di Google Drive, che
+    mostra l'attività recente su Google Drive. Questo può aiutarti a stabilire la data esatta
+    la bozza è stata cancellata o spostata e da chi.
+    :
+    Se il problema non viene ancora trovato, alcune persone sono riuscite a chiedere a Google 
+    di recuperare i file cancellati accidentalmente a questo link:
+    https://support.google.com/drive/answer/1716222?hl=it&ref_topic=7000946.
+    Nella parte inferiore della pagina c'è un pulsante che dice *Invia un'e-mail* e riceverai 
+    istruzioni su come richiedere il ripristino dei file.
+    :
+    Tieni inoltre presente che, se preferisci non utilizzare Google Drive per l'archiviazione, 
+    puoi sempre modificare la posizione di archiviazione di una bozza facendo clic sull'icona 
+    di Google Drive accanto al titolo della bozza e scegliendo *trasferisci la mia bozza a/da Google Drive*.
+  userIsNotAuthor: |
+    ## L'utente che ha effettuato l'accesso non possiede l'accesso all'editor per questa bozza.
+
+    Se ritieni di dover avere accesso a questa bozza, chiedi a uno dei suoi autori di invitarti 
+    come autore aprendo la pagina Modifica della bozza, visualizzando la scheda {{fa,fa-info-circle}} 
+    **Proprietà** e aggiungendo il tuo nome utente all'elenco degli "autori invitati". Puoi quindi 
+    provare ad accedere nuovamente a questo documento.
+  Brew Title: Titolo della Bozza
+  unableTitle: Incapace di mostrare titolo
+  Current Authors: autori attuali
+  unableAuthors: Impossibile elencare gli autori
+  clickRedirect: Clicca qui per essere reindirizzato sulla pagina condivisa della bozza.
+  notSignedIn: |
+    ## La registrazione è necessaria per editare questo documeto.
+
+    Devi loggarti in uno degli account segnati come autore di questa bozza.
+    L'utente non è loggato. Si prega di loggare [qui]
+  brewLoadError: |
+    ## Nessun documento Homebrewery è stato trovato.
+
+    Il server non ha potuto localizzare il documento. Sembra sia stato eliminato
+    dal suo proprietario.
+  Requested access: Accesso richiesto
+  Brew ID: ID della Bozza
+  brewSaveError: |
+    ## Impossibile salvare il documento Homebrewery.
+      
+    Si è verificato un errore  mentre tentavi di salvarlo.
+  brewDeleteError: |
+    ## Impossibile rimuovere il documento da Homebrewery.
+
+    Si è verificato un errore  mentre tentavi di rimuoverlo.
+  authorDeleteError: |
+    ## Impossibile rimuovere l'utente dal documento Homebrewery.
+
+    Si è verificato un errore mentre tentavi di rimuovere l'utente dalla lista degli autori per questo documento!
+
+htmlError:
+  Line: Linea
+  tag: elemento
+  closeTag: Un elemento di chiusura senza corrispondenza significa che hai chiuso un elemento senza aprirlo. Rimuovilo o controlla dove pensi di averlo aperto.
+  missmatchTag: Una mancata corrispondenza del tipo significa che hai chiuso un elemento, ma l'ultimo elemento aperto era di tipo diverso.
+  Protips!: Suggerimenti!
+  h3Title: Questi sono errori HTML nel tuo codice
+  descriptionText: Se questi problemi non vengono risolti, la tua bozza non verrà visualizzata correttamente quando la stampi in PDF o la condividi.
+
+notificationPopup:
+  Notice: Avviso
+  keepInMind: Questo sito è sempre in aggiornamento, aggiungiamo nuove funzioni e risolviamo bug. Tenetelo presente.

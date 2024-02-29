@@ -3,6 +3,8 @@ const React = require('react');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const createClass = require('create-react-class');
 
+const translateOpts = ['nav', 'errorMsg'];
+
 const ErrorNavItem = createClass({
 	getDefaultProps : function() {
 		return {
@@ -11,6 +13,7 @@ const ErrorNavItem = createClass({
 		};
 	},
 	render : function() {
+		''.setTranslationDefaults(translateOpts);
 		const clearError = ()=>{
 			const state = {
 				error : null
@@ -36,18 +39,18 @@ const ErrorNavItem = createClass({
 
 		if(status === 409) {
 			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-				Oops!
+				{'Oops!'.translate()}
 				<div className='errorContainer' onClick={clearError}>
-					{message ?? 'Conflict: please refresh to get latest changes'}
+					{message ?? 'conflict'.translate()}
 				</div>
 			</Nav.item>;
 		}
 		
 		if(status === 412) {
 			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-				Oops!
+				{'Oops!'.translate()}
 				<div className='errorContainer' onClick={clearError}>
-					{message ?? 'Your client is out of date. Please save your changes elsewhere and refresh.'}
+					{message ?? 'outOfDate'.translate()}
 				</div>
 			</Nav.item>;
 		}
@@ -84,32 +87,28 @@ const ErrorNavItem = createClass({
 
 		if(response.req.url.match(/^\/api.*Google.*$/m)){
 			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-				Oops!
+				{'Oops!'.translate()}
 				<div className='errorContainer' onClick={clearError}>
-					Looks like your Google credentials have
-					expired! Visit our log in page to sign out
-					and sign back in with Google,
-					then try saving again!
-					<br></br>
+					{'expiredCredentials'.translate()}
+          <br />
 					<a target='_blank' rel='noopener noreferrer'
 						href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
 						<div className='confirm'>
-							Sign In
+							{'sign in'.translate()}
 						</div>
 					</a>
 					<div className='deny'>
-						Not Now
+						{'not now'.translate()}
 					</div>
 				</div>
 			</Nav.item>;
 		}
 
 		return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-			Oops!
+			{'Oops!'.translate()}
 			<div className='errorContainer'>
-				Looks like there was a problem saving. <br />
-				Report the issue <a target='_blank' rel='noopener noreferrer' href={`https://github.com/naturalcrit/homebrewery/issues/new?template=save_issue.yml&error-code=${encodeURIComponent(errMsg)}`}>
-				here
+				{'problemSaving'.translate()}<a target='_blank' rel='noopener noreferrer' href={`https://github.com/naturalcrit/homebrewery/issues/new?template=save_issue.yml&error-code=${encodeURIComponent(errMsg)}`}>
+					{'here'.translate()}
 				</a>.
 			</div>
 		</Nav.item>;
