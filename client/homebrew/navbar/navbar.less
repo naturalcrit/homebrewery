@@ -29,322 +29,317 @@
 		z-index         : 2;
 		display         : flex;
 		justify-content : space-between;
-		.navSection {
+	}
+	.navSection {
+		display     : flex;
+		align-items : center;
+		&:last-child .navItem { border-left : 1px solid #666666; }
+	}
+	// "NaturalCrit" logo
+	.navLogo {
+		display         : block;
+		margin-top      : 0px;
+		margin-right    : 8px;
+		margin-left     : 8px;
+		color           : white;
+		text-decoration : none;
+		&:hover {
+			.name { color : @orange; }
+			svg { fill : @orange; }
+		}
+		svg {
+			height       : 13px;
+			margin-right : 0.2em;
+			cursor       : pointer;
+			fill         : white;
+		}
+		span.name {
+			font-family : 'CodeLight';
+			font-size   : 15px;
+			span.crit { font-family : 'CodeBold'; }
+			small {
+				font-family    : 'Open Sans';
+				font-size      : 0.3em;
+				font-weight    : 800;
+				text-transform : uppercase;
+			}
+		}
+	}
+	.navItem {
+		#backgroundColorsHover;
+		.animate(background-color);
+		padding          : 8px 12px;
+		font-size        : 10px;
+		font-weight      : 800;
+		line-height      : 13px;
+		color            : white;
+		text-decoration  : none;
+		text-transform   : uppercase;
+		cursor           : pointer;
+		background-color : #333333;
+		i {
+			float       : right;
+			margin-left : 5px;
+			font-size   : 13px;
+		}
+		&.patreon {
+			border-right : 1px solid #666666;
+			border-left  : 1px solid #666666;
+			&:hover i { color : red; }
+			i {
+				color              : pink;
+				.animate(color);
+				animation-name     : pinkColoring;
+				animation-duration : 2s;
+			}
+		}
+		&.editTitle {  // this is not needed at all currently - you used to be able to edit the title via the navbar.
+			padding : 2px 12px;
+			input {
+				width            : 250px;
+				padding          : 2px;
+				margin           : 0;
+				font-family      : 'Open Sans', sans-serif;
+				font-size        : 12px;
+				font-weight      : 800;
+				color            : white;
+				text-align       : center;
+				background-color : transparent;
+				border           : 1px solid @blue;
+				outline          : none;
+			}
+			.charCount {
+				display        : inline-block;
+				margin-left    : 8px;
+				color          : #666666;
+				text-align     : right;
+				vertical-align : bottom;
+				&.max { color : @red; }
+			}
+		}
+		&.brewTitle {
+			flex-grow        : 1;
+			font-size        : 12px;
+			font-weight      : 800;
+			color            : white;
+			text-align       : center;
+			text-transform   : initial;
+			background-color : transparent;
+		}
+		// "The Homebrewery" logo
+		&.homebrewLogo {
+			.animate(color);
+			font-family : 'CodeBold';
+			font-size   : 12px;
+			color       : white;
+			div {
+				margin-top    : 2px;
+				margin-bottom : -2px;
+			}
+			&:hover { color : @blue; }
+		}
+		&.metadata {
+			position    : relative;
 			display     : flex;
+			flex-grow   : 1;
 			align-items : center;
-			// "NaturalCrit" logo
-			.navLogo {
-				display         : block;
-				margin-top      : 0px;
-				margin-right    : 8px;
-				margin-left     : 8px;
-				color           : white;
-				text-decoration : none;
-				&:hover {
-					.name { color : @orange; }
-					svg { fill : @orange; }
+			height      : 100%;
+			padding     : 0;
+			i { margin-right : 10px;}
+			.window {
+				position         : absolute;
+				bottom           : 0;
+				left             : 50%;
+				z-index          : -1;
+				display          : flex;
+				flex-flow        : row wrap;
+				align-content    : baseline;
+				justify-content  : flex-start;
+				width            : 440px;
+				max-height       : ~"calc(100vh - 28px)";
+				padding          : 0 10px 5px;
+				margin           : 0 auto;
+				background-color : #333333;
+				border           : 3px solid #444444;
+				border-top       : unset;
+				border-radius    : 0 0 5px 5px;
+				box-shadow       : inset 0 7px 9px -7px #111111;
+				transition       : transform 0.4s, opacity 0.4s;
+				&.active {
+					opacity   : 1;
+					transform : translateX(-50%) translateY(100%);
 				}
-				svg {
-					height       : 13px;
-					margin-right : 0.2em;
-					cursor       : pointer;
-					fill         : white;
+				&.inactive {
+					opacity   : 0;
+					transform : translateX(-50%) translateY(0%);
 				}
-				span.name {
-					font-family : 'CodeLight';
-					font-size   : 15px;
-					span.crit { font-family : 'CodeBold'; }
-					small {
-						font-family    : 'Open Sans';
-						font-size      : 0.3em;
-						font-weight    : 800;
-						text-transform : uppercase;
+				.row {
+					display   : flex;
+					flex-flow : row wrap;
+					width     : 100%;
+					h4 {
+						box-sizing : border-box;
+						display    : block;
+						flex-basis : 20%;
+						flex-grow  : 1;
+						min-width  : 76px;
+						padding    : 5px 0;
+						color      : #BBBBBB;
+						text-align : center;
 					}
+					p {
+						flex-basis     : 80%;
+						flex-grow      : 1;
+						padding        : 5px 0;
+						font-family    : 'Open Sans', sans-serif;
+						font-size      : 10px;
+						font-weight    : normal;
+						text-transform : initial;
+						.tag {
+							display          : inline-block;
+							padding          : 2px;
+							margin           : 2px 2px;
+							background-color : #444444;
+							border           : 2px solid grey;
+							border-radius    : 5px;
+						}
+						a.userPageLink {
+							color           : white;
+							text-decoration : none;
+							&:hover { text-decoration : underline; }
+						}
+					}
+					&:nth-of-type(even) { background-color : #555555; }
 				}
 			}
-			&:last-child .navItem { border-left : 1px solid #666666; }
+		}
+		&.warning {
+			position         : relative;
+			color            : white;
+			background-color : @orange;
+			&:hover > .dropdown { visibility : visible; }
+			.dropdown {
+				position         : absolute;
+				top              : 28px;
+				left             : 0;
+				z-index          : 10000;
+				box-sizing       : border-box;
+				display          : block;
+				width            : 100%;
+				padding          : 13px 5px;
+				text-align       : center;
+				visibility       : hidden;
+				background-color : #333333;
+			}
+		}
+		&.account {
+			min-width : 100px;
+			&.username { text-transform : none;}
+		}
+	}
+	.navDropdownContainer {
+		position : relative;
+		.navDropdown {
+			position   : absolute;
+			top        : 28px;
+			left       : 0px;
+			z-index    : 10000;
+			width      : 100%;
+			max-height : calc(100vh - 28px);
+			overflow   : hidden auto;
 			.navItem {
+				position           : relative;
+				display            : block;
+				width              : 100%;
+				padding            : 8px 5px;
+				border             : 1px solid #888888;
+				border-bottom      : 0;
+				animation-name     : glideDropDown;
+				animation-duration : 0.4s;
+			}
+		}
+		&.recent {
+			position : relative;
+			.navDropdown .navItem {
 				#backgroundColorsHover;
 				.animate(background-color);
-				padding          : 8px 12px;
-				font-size        : 10px;
-				font-weight      : 800;
-				line-height      : 13px;
+				position         : relative;
+				box-sizing       : border-box;
+				display          : block;
+				max-height       : ~"calc(100vh - 28px)";  // I don't think is correct syntax, but leaving it in for now... (Gazook89)
+				padding          : 8px 5px 13px;
+				overflow         : hidden auto;
 				color            : white;
 				text-decoration  : none;
-				text-transform   : uppercase;
-				cursor           : pointer;
 				background-color : #333333;
-				i {
-					float       : right;
-					margin-left : 5px;
-					font-size   : 13px;
-				}
-				&.patreon {
-					border-right : 1px solid #666666;
-					border-left  : 1px solid #666666;
-					&:hover i { color : red; }
+				border-top       : 1px solid #888888;
+				scrollbar-color  : #666666 #333333;
+				scrollbar-width  : thin;
+				.clear {
+					position         : absolute;
+					top              : 50%;
+					right            : 0;
+					display          : none;
+					width            : 20px;
+					height           : 100%;
+					background-color : #333333;
+					border-radius    : 3px;
+					opacity          : 70%;
+					transform        : translateY(-50%);
+					&:hover { opacity : 100%; }
 					i {
-						color              : pink;
-						.animate(color);
-						animation-name     : pinkColoring;
-						animation-duration : 2s;
+						width      : 100%;
+						height     : 100%;
+						margin     : 0;
+						font-size  : 10px;
+						text-align : center;
 					}
 				}
-				&.editTitle {  // this is not needed at all currently - you used to be able to edit the title via the navbar.
-					padding : 2px 12px;
-					input {
-						width            : 250px;
-						padding          : 2px;
-						margin           : 0;
-						font-family      : 'Open Sans', sans-serif;
-						font-size        : 12px;
-						font-weight      : 800;
-						color            : white;
-						text-align       : center;
-						background-color : transparent;
-						border           : 1px solid @blue;
-						outline          : none;
-					}
-					.charCount {
-						display        : inline-block;
-						margin-left    : 8px;
-						color          : #666666;
-						text-align     : right;
-						vertical-align : bottom;
-						&.max { color : @red; }
+				&:hover {
+					background-color : @blue;
+					.clear {
+						display       : grid;
+						place-content : center;
 					}
 				}
-				&.brewTitle {
-					flex-grow        : 1;
-					font-size        : 12px;
-					font-weight      : 800;
-					color            : white;
+				.title {
+					display       : inline-block;
+					width         : 100%;
+					overflow      : hidden auto;
+					text-overflow : ellipsis;
+					white-space   : nowrap;
+				}
+				.time {
+					position  : absolute;
+					right     : 2px;
+					bottom    : 2px;
+					font-size : 0.7em;
+					color     : #888888;
+				}
+				&.header {
+					box-sizing       : border-box;
+					display          : block;
+					padding          : 5px 0;
+					color            : #BBBBBB;
 					text-align       : center;
-					text-transform   : initial;
-					background-color : transparent;
-				}
-				// "The Homebrewery" logo
-				&.homebrewLogo {
-					.animate(color);
-					font-family : 'CodeBold';
-					font-size   : 12px;
-					color       : white;
-					div {
-						margin-top    : 2px;
-						margin-bottom : -2px;
-					}
-					&:hover { color : @blue; }
-				}
-				&.metadata {
-					position    : relative;
-					display     : flex;
-					flex-grow   : 1;
-					align-items : center;
-					height      : 100%;
-					padding     : 0;
-					i { margin-right : 10px;}
-					.window {
-						position         : absolute;
-						bottom           : 0;
-						left             : 50%;
-						z-index          : -1;
-						display          : flex;
-						flex-flow        : row wrap;
-						align-content    : baseline;
-						justify-content  : flex-start;
-						width            : 440px;
-						max-height       : ~"calc(100vh - 28px)";
-						padding          : 0 10px 5px;
-						margin           : 0 auto;
-						background-color : #333333;
-						border           : 3px solid #444444;
-						border-top       : unset;
-						border-radius    : 0 0 5px 5px;
-						box-shadow       : inset 0 7px 9px -7px #111111;
-						transition       : transform 0.4s, opacity 0.4s;
-						&.active {
-							opacity   : 1;
-							transform : translateX(-50%) translateY(100%);
-						}
-						&.inactive {
-							opacity   : 0;
-							transform : translateX(-50%) translateY(0%);
-						}
-						.row {
-							display   : flex;
-							flex-flow : row wrap;
-							width     : 100%;
-							h4 {
-								box-sizing : border-box;
-								display    : block;
-								flex-basis : 20%;
-								flex-grow  : 1;
-								min-width  : 76px;
-								padding    : 5px 0;
-								color      : #BBBBBB;
-								text-align : center;
-							}
-							p {
-								flex-basis     : 80%;
-								flex-grow      : 1;
-								padding        : 5px 0;
-								font-family    : 'Open Sans', sans-serif;
-								font-size      : 10px;
-								font-weight    : normal;
-								text-transform : initial;
-								.tag {
-									display          : inline-block;
-									padding          : 2px;
-									margin           : 2px 2px;
-									background-color : #444444;
-									border           : 2px solid grey;
-									border-radius    : 5px;
-								}
-								a.userPageLink {
-									color           : white;
-									text-decoration : none;
-									&:hover { text-decoration : underline; }
-								}
-							}
-							&:nth-of-type(even) { background-color : #555555; }
-						}
-					}
-				}
-				&.warning {
-					position         : relative;
-					color            : white;
-					background-color : @orange;
-					&:hover > .dropdown { visibility : visible; }
-					.dropdown {
-						position         : absolute;
-						top              : 28px;
-						left             : 0;
-						z-index          : 10000;
-						box-sizing       : border-box;
-						display          : block;
-						width            : 100%;
-						padding          : 13px 5px;
-						text-align       : center;
-						visibility       : hidden;
-						background-color : #333333;
-					}
-				}
-				&.account {
-					min-width : 100px;
-					&.username { text-transform : none;}
-				}
-			}
-			.navDropdownContainer {
-				position : relative;
-				.navDropdown {
-					position   : absolute;
-					top        : 28px;
-					left       : 0px;
-					z-index    : 10000;
-					width      : 100%;
-					max-height : calc(100vh - 28px);
-					overflow   : hidden auto;
-					.navItem {
-						position           : relative;
-						display            : block;
-						width              : 100%;
-						padding            : 8px 5px;
-						border             : 1px solid #888888;
-						border-bottom      : 0;
-						animation-name     : glideDropDown;
-						animation-duration : 0.4s;
-					}
-				}
-				&.recent {
-					position : relative;
-					.navDropdown .navItem {
-						#backgroundColorsHover;
-						.animate(background-color);
-						position         : relative;
-						box-sizing       : border-box;
-						display          : block;
-						max-height       : ~"calc(100vh - 28px)";  // I don't think is correct syntax, but leaving it in for now... (Gazook89)
-						padding          : 8px 5px 13px;
-						overflow         : hidden auto;
-						color            : white;
-						text-decoration  : none;
-						background-color : #333333;
-						border-top       : 1px solid #888888;
-						scrollbar-color  : #666666 #333333;
-						scrollbar-width  : thin;
-						.clear {
-							position         : absolute;
-							top              : 50%;
-							right            : 0;
-							display          : none;
-							width            : 20px;
-							height           : 100%;
-							background-color : #333333;
-							border-radius    : 3px;
-							opacity          : 70%;
-							transform        : translateY(-50%);
-							&:hover { opacity : 100%; }
-							i {
-								width      : 100%;
-								height     : 100%;
-								margin     : 0;
-								font-size  : 10px;
-								text-align : center;
-							}
-						}
-						&:hover {
-							background-color : @blue;
-							.clear {
-								display       : grid;
-								place-content : center;
-							}
-						}
-						.title {
-							display       : inline-block;
-							width         : 100%;
-							overflow      : hidden auto;
-							text-overflow : ellipsis;
-							white-space   : nowrap;
-						}
-						.time {
-							position  : absolute;
-							right     : 2px;
-							bottom    : 2px;
-							font-size : 0.7em;
-							color     : #888888;
-						}
-						&.header {
-							box-sizing       : border-box;
-							display          : block;
-							padding          : 5px 0;
-							color            : #BBBBBB;
-							text-align       : center;
-							background-color : #333333;
-							border-top       : 1px solid #888888;
-							&:nth-of-type(1) { background-color : darken(@teal, 20%); }
-							&:nth-of-type(2) { background-color : darken(@purple, 30%); }
-						}
-					}
+					background-color : #333333;
+					border-top       : 1px solid #888888;
+					&:nth-of-type(1) { background-color : darken(@teal, 20%); }
+					&:nth-of-type(2) { background-color : darken(@purple, 30%); }
 				}
 			}
 		}
 	}
+}
 
-	// this should likely be refactored into .navDropdownContainer
-	.save-menu {
-		.dropdown { z-index : 1000; }
-		.navItem i.fa-power-off {
-			color : red;
-			&.active {
-				color  : rgb(0, 182, 52);
-				filter : drop-shadow(0 0 2px rgba(0, 182, 52, 0.765));
-			}
+// this should likely be refactored into .navDropdownContainer
+.save-menu {
+	.dropdown { z-index : 1000; }
+	.navItem i.fa-power-off {
+		color : red;
+		&.active {
+			color  : rgb(0, 182, 52);
+			filter : drop-shadow(0 0 2px rgba(0, 182, 52, 0.765));
 		}
 	}
-
-
-	
-	
-
 }
