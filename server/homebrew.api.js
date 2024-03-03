@@ -8,6 +8,7 @@ const Markdown = require('../shared/naturalcrit/markdown.js');
 const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
+const s3 = require('./aws_s3');
 
 const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
 
@@ -72,6 +73,9 @@ const api = {
 				}
 				// Combine the Homebrewery stub with the google brew, or if the stub doesn't exist just use the google brew
 				stub = stub ? _.assign({ ...api.excludeStubProps(stub), stubbed: true }, api.excludeGoogleProps(googleBrew)) : googleBrew;
+			} else if(s3.s3Active()) {
+				const fileFromS3 = await s3.s3GetText(id);
+				stub.text = fileFromS3;
 			}
 			const authorsExist = stub?.authors?.length > 0;
 			const isAuthor = stub?.authors?.includes(req.account?.username);
@@ -259,6 +263,9 @@ const api = {
 		} else {
 			// Compress brew text to binary before saving
 			brew.textBin = zlib.deflateRawSync(brew.text);
+			if(await s3.s3PutText(brew.editId, brew.text)) {
+				brew.textBin = undefined;
+			}
 			// Delete the non-binary text field since it's not needed anymore
 			brew.text = undefined;
 		}

@@ -6,5 +6,6 @@
 	"enable_v3" : true,
 	"local_environments" : ["docker", "local"],
 	"publicUrl" : "https://homebrewery.naturalcrit.com",
-	"use_s3" : true
+	"enable_s3" : true,
+	"s3_bucket" : "homebrewery"
 }
