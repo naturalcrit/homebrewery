@@ -1,0 +1,121 @@
+.CodeMirror {
+	background: #0C0C0C;
+	color: #B9BDB6;
+}
+
+/* Brew BG */
+.brewRenderer {
+    background-color: #0C0C0C;
+}
+
+.cm-s-darkvision {
+    /* Blinking cursor and selection */
+    .CodeMirror-cursor {
+        border-left: 1px solid #B9BDB6;
+    }
+    .CodeMirror-selected {
+        background: #E0E8FF40;
+    }
+
+    /* Line number stuff */
+    .CodeMirror-gutter-elt {
+        color: #81969A;
+    }
+    .CodeMirror-linenumber {
+        background-color: #0C0C0C;
+    }
+    .CodeMirror-gutter {
+        background-color: #0C0C0C;
+    }
+
+    /* column splits */
+    .editor .codeEditor .columnSplit {
+        font-style: italic;
+        color: inherit;
+        background-color:#1F5763;
+        border-bottom: #299 solid 1px;
+    }
+
+    /* # headings */
+    .cm-header {
+        color: #C51B1B;
+        -webkit-text-stroke-width: 0.1px; 
+    }
+    /* bold points */
+    .cm-strong {
+        font-weight: bold;
+        color: #309DD2;
+    }
+    /* Link headings */
+    .cm-link {
+        color: #DD6300;
+    }
+    /* links */
+    .cm-string {
+        color: #5CE638;
+    }
+    /*@import*/
+    .cm-def {
+        color: #2986CC;
+    }
+    /* Bullets and such */
+    .cm-variable-2 {
+        color: #3CBF30;
+    }
+
+    /* Tags (divs) */
+    .cm-tag {
+        color: #E3FF00;
+    }
+    .cm-attribute {
+        color: #E3FF00;
+    }
+    .cm-atom {
+        color: #CF7EA9;
+    }
+    .cm-qualifier {
+        color: #EE1919;
+    }
+    .cm-comment {
+        color: #BBC700;
+    }
+    .cm-keyword {
+        color: #CC66FF;
+    }
+    .cm-property {
+        color: aqua;
+    }
+    .cm-error {
+        color: #C50202;
+    }
+    .CodeMirror-foldmarker {
+        color: #F0FF00;
+    }
+    /* New page  */
+    .cm-builtin {
+        color: #FFF;
+    }
+}
+
+.editor .codeEditor {
+    /* blocks */
+    .block:not(.cm-comment) {
+        color: magenta;
+    }    
+    /* definition lists */
+    .define.definition {
+        color: #FFAA3E;
+    }
+    .define.term {
+        color: #7290d9;
+    }
+    .define:not(.term):not(.definition) {
+        background: #333;
+    }
+    /* New page  */
+    .pageLine {
+        background: #000;
+        color: #000;
+        border-bottom: 1px solid #FFF;
+    }
+}
