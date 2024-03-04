@@ -1,4 +1,4 @@
-require('./nav.less');
+require('client/homebrew/navbar/navbar.less');
 const React = require('react');
 const { useState, useRef, useEffect } = React;
 const createClass = require('create-react-class');
