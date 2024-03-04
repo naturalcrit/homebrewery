@@ -65,7 +65,11 @@ const MetadataEditor = createClass({
 		const topPage = brewRenderer.getElementsByClassName('page')[0];
 		const props = this.props;
 
-		htmlimg.toPng(topPage, { preferredFontFormat: 'woff2' }).then(function(dataURL){
+		htmlimg.toPng(topPage, {
+			preferredFontFormat : 'woff2',
+			style               : { margin: 'unset' },
+		    cacheBust           : true
+		  }).then(function(dataURL){
 			props.metadata.thumbnail = 'Page 1';
 			props.metadata.thumbnailSm = dataURL;
 			props.onChange(props.metadata);
@@ -351,7 +355,7 @@ const MetadataEditor = createClass({
 							<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
 						</button>
 						<button className='display' onClick={this.ThumbnailCapture}>
-							<i className={`fas fa-image`} />
+							<i className={`fas fa-camera`} />
 						</button>
 					</div>
 				</div>
