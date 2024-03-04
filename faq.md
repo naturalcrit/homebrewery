@@ -132,15 +132,18 @@ Your ad-blocking software is mistakenly assuming your text to be an ad. Whitelis
 
 Styling supports this via the shape-outside property. This feature works best with images with transparent backgrounds, automatically determining the wrap shape from a provided file. If you want an alternate shape, you may wish to use a tool such as [Clippy](https://bennettfeely.com/clippy/) to build a polygon wrap. If you need to tweak the space around the wrap, use shape-margin.
 
-To simplify this process, homebrewery has the ***$swr*** and ***$swl*** macros which adds the **shape-outside: url()** style property along with the respective **float: right** or **float: left** style property.
+To simplify this process, homebrewery has the ***$twr*** and ***$twl*** macros which adds the **shape-outside: url()** style property along with the respective **float: right** or **float: left** style property. Additionally, you can set the wrap margin by appending it to the macro as ***$twr-5px*** using either percent or CSS recognized unit of choice. If you prefer to set the wrap distance using shape-image-threshold, you can use the corresponding ***$twtr*** and ***$twtl*** macros.
 
 ```md
 // Example Wrap, Float Left, additional 5px margin
 
-![homebrew mug](https://i.imgur.com/hMna6G0.png){$swl,shape-margin:5px}
+![homebrew mug](https://i.imgur.com/hMna6G0.png){$twl-5px}
 
 // Example Wrap, Float right
 
-![homebrew mug](https://i.imgur.com/hMna6G0.png){$swr}
+![homebrew mug](https://i.imgur.com/hMna6G0.png){$twr}
 
+// Example Wrap, Float right, image-threshold of .035
+
+![homebrew mug](https://i.imgur.com/hMna6G0.png){$twtr-0.35}
 ```
