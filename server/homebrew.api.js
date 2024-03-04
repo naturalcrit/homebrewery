@@ -263,7 +263,7 @@ const api = {
 		} else {
 			// Compress brew text to binary before saving
 			brew.textBin = zlib.deflateRawSync(brew.text);
-			if(await s3.s3PutText(brew.editId, brew.text)) {
+			if(await s3.s3PutText(brew.editId, brew.textBin)) {
 				brew.textBin = undefined;
 			}
 			// Delete the non-binary text field since it's not needed anymore

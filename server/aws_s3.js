@@ -3,49 +3,37 @@ const config = require('./config.js');
 const zlib = require('zlib');
 
 let s3Client;
+let s3Active = false;
 
 const awsS3Helpers = {
-	s3Client : s3Client,
-	active   : false,
-	init     : async ()=>{
-		if(config.get('enable_s3') && config.get('s3_bucket')) {
-			this.s3Check();
-		}
-	},
-	s3Active : ()=>{ return this.active; },
-	s3Check  : async ()=>{
-		this.s3Client = new S3Client({
-			region      : process.env.AWS_REGION,
-			credentials : {
-				accessKeyId     : process.env.AWS_ACCESS_KEY_ID,
-				secretAccessKey : process.env.AWS_SECRET_ACCESS_KEY
-			}
-		});
+	s3Active : ()=>{ return s3Active; },
+	s3Check  : async (client)=>{
 
 		const checkForFiles = new ListObjectsV2Command({
 			Bucket : config.get('s3_bucket'),
 		});
 
 		try {
-			const { Contents, IsTruncated, NextContinuationToken } = await this.s3Client.send(checkForFiles);
+			const { Contents, IsTruncated, NextContinuationToken } = await s3Client.send(checkForFiles);
 			// We don't care about the results, just that it doesn't throw an exception.
-			this.active = true;
+			s3Active = true;
 		} catch (err){
 			console.error(`Unable to connect to S3 as expected.`);
 			console.error(err);
-			this.active = false;
+			s3Active = false;
 		}
 	},
 	s3GetText : async(id)=>{
-		if(this.active) {
+		if(s3Active) {
 			const getCommand = new GetObjectCommand({
 				Bucket : config.get('s3_bucket'),
 				Key    : id
 			});
 			try {
-				const response = await this.s3Client.send(getCommand);
-				const results = await response.Body.transformToString();
-				return results;
+				const response = await s3Client.send(getCommand);
+				const results = await response.Body.transformToByteArray();
+				unzipped = zlib.inflateRawSync(Buffer.from(results)).toString();
+				return unzipped;
 			} catch (err) {
 				console.error(`Unable to retrieve ${id} from bucket ${config.get('s3_bucket')}.`);
 				console.error(err);
@@ -55,14 +43,14 @@ const awsS3Helpers = {
 		return false;
 	},
 	s3PutText : async(id, brewObjectText)=>{
-		if(this.active) {
+		if(s3Active) {
 			const putCommand = new PutObjectCommand({
 				Bucket : config.get('s3_bucket'),
 				Key    : id,
 				Body   : brewObjectText
 			});
 			try {
-				const response = await this.s3Client.send(putCommand);
+				const response = await s3Client.send(putCommand);
 				return true;
 			} catch (err) {
 				console.error(`Unable to write ${id} to ${config.get('s3_bucket')}.`);
@@ -74,9 +62,15 @@ const awsS3Helpers = {
 	}
 };
 
-if(config.get('enable_s3')) {
-	awsS3Helpers.activeS3 = awsS3Helpers.s3Check();
+if(config.get('enable_s3') && config.get('s3_bucket')) {
+	s3Client = new S3Client({
+		region      : process.env.AWS_REGION,
+		credentials : {
+			accessKeyId     : process.env.AWS_ACCESS_KEY_ID,
+			secretAccessKey : process.env.AWS_SECRET_ACCESS_KEY
+		}
+	});
+	awsS3Helpers.activeS3 = awsS3Helpers.s3Check(s3Client);
 }
-
 
 module.exports = awsS3Helpers;
