@@ -160,21 +160,21 @@ const Editor = createClass({
 							}
 						}
 
-						// Superscript
-						if(line.includes('\^')) {
-							const regex = /\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^/g;
-							let match;
-							while ((match = regex.exec(line)) != null) {
-								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) - 1 }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length + 1 }, { className: 'superscript' });
-							}
-						}
-
-						// Subscript
-						if(line.includes('^^')) {
-							const regex = /\^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^\^/g;
-							let match;
-							while ((match = regex.exec(line)) != null) {
-								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) - 2 }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length + 2 }, { className: 'subscript' });
+						// Subscript & Superscript
+						if(line.includes('^')) {
+							let startIndex = line.indexOf('^');
+							const superRegex = /\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^/gy;
+							const subRegex   = /\^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^\^/gy;
+							
+							while (startIndex >= 0) {
+								superRegex.lastIndex = subRegex.lastIndex = startIndex;
+								let isSuper = false;
+								let match = subRegex.exec(line) || superRegex.exec(line);
+								if (match) {
+									isSuper = !subRegex.lastIndex;
+									codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: isSuper ? 'superscript' : 'subscript' });
+								}
+								startIndex = line.indexOf('^', Math.max(startIndex + 1, subRegex.lastIndex, superRegex.lastIndex));
 							}
 						}
 
