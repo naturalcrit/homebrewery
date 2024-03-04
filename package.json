@@ -80,11 +80,13 @@
     ]
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.525.0",
     "@babel/core": "^7.23.9",
     "@babel/plugin-transform-runtime": "^7.23.9",
     "@babel/preset-env": "^7.23.9",
     "@babel/preset-react": "^7.23.3",
     "@googleapis/drive": "^8.7.0",
+    "aws-sdk": "^2.1568.0",
     "body-parser": "^1.20.2",
     "classnames": "^2.3.2",
     "codemirror": "^5.65.6",
