@@ -20,7 +20,7 @@ const PAGE_HEIGHT = 1056;
 
 const INITIAL_CONTENT = dedent`
 	<!DOCTYPE html><html><head>
-	<link href="//use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
+	<link href="//use.fontawesome.com/releases/v6.5.1/css/all.css" rel="stylesheet" />
 	<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
 	<link href='/homebrew/bundle.css' rel='stylesheet' />
 	<base target=_blank>
