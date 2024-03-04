@@ -27,17 +27,17 @@ module.exports = [
 				subsnippets : [
 					{
 						name : 'Table of Contents 1-3',
-						icon : 'fas fa-book',
+						icon : 'fas fa-heading',
 						gen  : TableOfContentsGen.tableOfContentsGen3
 					},
 					{
 						name : 'Table of Contents 1-4',
-						icon : 'fas fa-book',
+						icon : 'fas fa-heading',
 						gen  : TableOfContentsGen.tableOfContentsGen4
 					},
 					{
 						name : 'Table of Contents 1-5',
-						icon : 'fas fa-book',
+						icon : 'fas fa-heading',
 						gen  : TableOfContentsGen.tableOfContentsGen5
 					},
 				]
