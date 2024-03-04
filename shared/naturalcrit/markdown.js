@@ -691,12 +691,11 @@ let globalPageNumber = 0;
 
 module.exports = {
 	marked : Marked,
-	render : (rawBrewText, runtimeVars = { pageNumber: 1 })=>{
-		Object.assign(markedRenderVars, runtimeVars);
-		globalVarsList[markedRenderVars['pageNumber']] = {};						//Reset global links for current page, to ensure values are parsed in order
+	render : (rawBrewText, pageNumber=1)=>{
+		globalVarsList[pageNumber] = {};						//Reset global links for current page, to ensure values are parsed in order
 		varsQueue              = [];						//Could move into MarkedVariables()
-		globalPageNumber        = markedRenderVars['pageNumber'];
-		console.log(globalPageNumber);
+		globalPageNumber        = pageNumber;
+		markedRenderVars['pageNumber'] = pageNumber;
 
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);

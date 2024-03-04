@@ -140,7 +140,7 @@ const BrewRenderer = (props)=>{
 			return <BrewPage className='page phb' index={index} key={index} contents={html} />;
 		} else {
 			cleanPageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
-			const html = Markdown.render(cleanPageText, { pageNumber: index });
+			const html = Markdown.render(cleanPageText, index);
 			return <BrewPage className='page' index={index} key={index} contents={html} />;
 		}
 	};
