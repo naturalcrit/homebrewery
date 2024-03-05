@@ -6,6 +6,7 @@ const _ = require('lodash');
 const jwt = require('jwt-simple');
 const express = require('express');
 const yaml = require('js-yaml');
+const cors = require('cors');
 const app = express();
 const config = require('./config.js');
 
@@ -41,6 +42,10 @@ const sanitizeBrew = (brew, accessType)=>{
 	}
 	return brew;
 };
+
+app.use(cors({
+	origin : '*',
+}));
 
 app.use('/', serveCompressedStaticAssets(`build`));
 app.use(require('./middleware/content-negotiation.js'));

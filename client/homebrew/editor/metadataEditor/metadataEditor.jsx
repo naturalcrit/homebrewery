@@ -62,7 +62,22 @@ const MetadataEditor = createClass({
 	ThumbnailCapture : async function() {
 		const bR = parent.document.getElementById('BrewRenderer');
 		const brewRenderer = bR.contentDocument || bR.contentWindow.document;
-		const topPage = brewRenderer.getElementsByClassName('page')[0];
+		const topPage = brewRenderer.getElementsByClassName('page')[0].cloneNode(true);
+		// Walk through Top Page's Source and convert all Images to inline data *in* topPage.
+		const srcImages = brewRenderer.getElementsByClassName('page')[0].getElementsByTagName('img');
+		const topImages = topPage.getElementsByTagName('img');
+		// These two should start off with identical contents.
+		for (let imgPos = 0; imgPos < srcImages.length; imgPos++) {
+			const imgCanvas = document.createElement('canvas');
+			const imgConext = imgCanvas.getContext('2d');
+			imgCanvas.width = srcImages[imgPos].width;
+			imgCanvas.height = srcImages[imgPos].height;
+			const newImage = new Image();
+			newImage.crossOrigin = 'anonymous';
+			newImage.src = srcImages[imgPos].src;
+			imgConext.drawImage(newImage, 0, 0, srcImages[imgPos].width, srcImages[imgPos].height);
+			topImages[imgPos].src = imgCanvas.toDataURL('image/png');
+		}
 		const props = this.props;
 
 		htmlimg.toPng(topPage, {

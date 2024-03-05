@@ -211,7 +211,7 @@ const BrewRenderer = (props)=>{
 						<RenderWarnings />
 						<NotificationPopup />
 					</div>
-					<link href={`/themes/${rendererPath}/Blank/style.css`} rel='stylesheet'/>
+					<link href={`/themes/${rendererPath}/Blank/style.css`} rel='stylesheet'  />
 					{baseThemePath &&
 						<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} rel='stylesheet'/>
 					}
