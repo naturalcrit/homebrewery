@@ -9,7 +9,7 @@ const STYLEKEY = 'homebrewery-new-style';
 const METAKEY  = 'homebrewery-new-meta';
 
 const NewBrew = () => {
-    const inputRef = useRef(null);
+
     
     const [brew, setBrew] = useState({
         text: '',
@@ -84,8 +84,8 @@ const NewBrew = () => {
             <Nav.item
                 color='purple'
                 icon='fas fa-plus-square'
-                onClick={() => { inputRef.current.click(); }}>
-                <input className='newFromLocal' type="file" ref={inputRef} onChange={handleFileChange} style={{ display: 'none' }} />
+                onClick={() => { document.getElementById('uploadTxt').click(); }}>
+                <input id="uploadTxt" className='newFromLocal' type="file" onChange={handleFileChange} style={{ display: 'none' }} />
                 New From Local File
             </Nav.item>
         </Nav.dropdown>
