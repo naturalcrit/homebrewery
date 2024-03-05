@@ -92,7 +92,7 @@
     "create-react-class": "^15.7.0",
     "dedent-tabs": "^0.10.3",
     "expr-eval": "^2.0.2",
-    "express": "^4.18.2",
+    "express": "^4.18.3",
     "express-async-handler": "^1.2.0",
     "express-static-gzip": "2.1.7",
     "fs-extra": "11.2.0",
