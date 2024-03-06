@@ -72,7 +72,8 @@ const api = {
 			'tags',
 			'editId',
 			'thumbnail',
-			'textBin'
+			'textBin',
+			'text'
 		];
 
 		const userThemes = {
@@ -86,7 +87,7 @@ const api = {
 		}
 
 		console.log(`Looking for Theme Brews for ${username} that aren't ${id}`);
-		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme'] }, editId: { $ne: id } }) //lean() converts results to JSObjects
+		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme'] }}) //lean() converts results to JSObjects
 			.catch((error)=>{throw 'Can not find brews';});
 		console.log(brews);
 
