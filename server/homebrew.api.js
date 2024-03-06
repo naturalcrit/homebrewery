@@ -90,6 +90,7 @@ const api = {
 			.catch((error)=>{throw 'Can not find brews';});
 
 		console.log(brews);
+		console.log(brews.length);
 		for await (const brew of brews) {
 			const foo = api.getBrew('themes', req=req, res=res, next=next);
 			const brewTheme = req.brew;
