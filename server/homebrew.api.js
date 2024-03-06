@@ -48,45 +48,6 @@ const splitTextStyleAndMetadata = (brew)=>{
 	}
 };
 
-const getUsersBrewThemes = async (username, id)=>{
-	const fields = [
-		'title',
-		'tags',
-		'editId',
-		'thumbnail',
-		'textBin'
-	];
-
-	const userThemes = {
-		Brew : {
-
-		}
-	};
-
-	if(!username || !id) {
-		return userThemes;
-	}
-
-	const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme'] }, editId: { $ne: id } }) //lean() converts results to JSObjects
-		.catch((error)=>{throw 'Can not find brews';});
-
-	for await (const brew of brews) {
-		const brewTheme = await HomebrewModel.get({ editId: brew.editId }, ['textBin']);
-		splitTextStyleAndMetadata(brewTheme);
-		userThemes.Brew[`#${brew.editId}`] = {
-			name         : brew.title,
-			renderer     : 'V3',
-			baseTheme    : brewTheme.theme,
-			baseSnippets : false,
-			path         : `#${brew.editId}`,
-			thumbnail    : brew.thumbnail.length > 0 ? brew.thumbnail : '/assets/naturalCritLogoWhite.svg'
-		};
-	};
-
-	return userThemes;
-};
-
-
 const api = {
 	homebrewApi : router,
 	getId       : (req)=>{
@@ -104,6 +65,46 @@ const api = {
 			id = id.slice(googleId.length);
 		}
 		return { id, googleId };
+	},
+	getUsersBrewThemes : async (username, id, req, res, next)=>{
+		const fields = [
+			'title',
+			'tags',
+			'editId',
+			'thumbnail',
+			'textBin'
+		];
+
+		const userThemes = {
+			Brew : {
+
+			}
+		};
+
+		if(!username || !id) {
+			return userThemes;
+		}
+
+		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme'] }, editId: { $ne: id } }) //lean() converts results to JSObjects
+			.catch((error)=>{throw 'Can not find brews';});
+
+		for await (const brew of brews) {
+			api.getBrew('themes', req=req, res=res, next=next);
+			const brewTheme = req.brew;
+			if(brewTheme) {
+				splitTextStyleAndMetadata(brewTheme);
+				userThemes.Brew[`#${brew.editId}`] = {
+					name         : brew.title,
+					renderer     : 'V3',
+					baseTheme    : brewTheme.theme,
+					baseSnippets : false,
+					path         : `#${brew.editId}`,
+					thumbnail    : brew.thumbnail.length > 0 ? brew.thumbnail : '/assets/naturalCritLogoWhite.svg'
+				};
+			}
+		};
+
+		return userThemes;
 	},
 	getBrew : (accessType, stubOnly = false)=>{
 		// Create middleware with the accessType passed in as part of the scope
@@ -161,7 +162,7 @@ const api = {
 			const userID = req?.account?.username && (accessType === 'edit') ? req.account.username : stub.authors[0];
 
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
-			const userThemes = await getUsersBrewThemes(userID, id);
+			const userThemes = accessType != 'themes' ? await api.getUsersBrewThemes(userID, id, req, res, next) : '';
 			if(stub) {
 				stub.tags     = stub.tags     || undefined; // Clear empty strings
 				stub.renderer = stub.renderer || undefined; // Clear empty strings
@@ -317,7 +318,7 @@ const api = {
 		brew.description = brew.description.trim() || '';
 		brew.text = api.mergeBrewText(brew);
 		const userID = req?.account?.username ? req.account.username : brew.authors.split(',')[0];
-		brew.userThemes = await getUsersBrewThemes(userID, brew.editId);
+		brew.userThemes = await api.getUsersBrewThemes(userID, brew.editId, req, res, null);
 
 
 		if(brew.googleId && removeFromGoogle) {
