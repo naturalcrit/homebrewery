@@ -33,7 +33,7 @@ const NewBrew = () => {
     };
 
     return (
-        <Nav.dropdown>
+        <Nav.dropdown className='new'>
             <Nav.item
                 className='new'
                 color='purple'
