@@ -240,19 +240,23 @@
 	.navDropdownContainer {
 		position : relative;
 		.navDropdown {
-			position   : absolute;
-			top        : 28px;
-			right      : 0px;
-			z-index    : 10000;
-			width      : fit-content;
-			max-height : calc(100vh - 28px);
-			overflow   : hidden auto;
+			position: absolute;
+			top: 28px;
+			right: 0px;
+			z-index: 10000;
+			width: fit-content;
+			max-height: calc(100vh - 28px);
+			overflow: hidden auto;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-end;
 			.navItem {
 				position           : relative;
 				display            : flex;
 				justify-content    : space-between;
 				align-items        : center;
 				width              : 100%;
+				text-wrap		   : nowrap;
 				border             : 1px solid #888888;
 				border-bottom      : 0;
 				animation-name     : glideDropDown;
