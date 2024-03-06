@@ -86,16 +86,12 @@ const api = {
 			return userThemes;
 		}
 
-		console.log(`Looking for Theme Brews for ${username} that aren't ${id}`);
 		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme'] }, editId: { $ne: id }  }) //lean() converts results to JSObjects
 			.catch((error)=>{throw 'Can not find brews';});
-		console.log(brews);
 
 		for await (const brew of brews) {
 			const foo = api.getBrew('themes', req=req, res=res, next=next);
 			const brewTheme = req.brew;
-			console.log(req);
-			console.log(foo);
 			if(brewTheme) {
 				splitTextStyleAndMetadata(brewTheme);
 				userThemes.Brew[`#${brew.editId}`] = {
@@ -108,8 +104,6 @@ const api = {
 				};
 			}
 		};
-		console.log('We found themes!');
-		console.log(userThemes);
 		return userThemes;
 	},
 	getBrew : (accessType, stubOnly = false)=>{
@@ -167,10 +161,8 @@ const api = {
 
 			const userID = req?.account?.username && (accessType === 'edit') ? req.account.username : stub.authors[0];
 
-			console.log('Preparing to load user themes.');
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
 			const userThemes = accessType != 'themes' ? await api.getUsersBrewThemes(userID, id, req, res, next) : '';
-			console.log('Made it past userThemes');
 			if(stub) {
 				stub.tags     = stub.tags     || undefined; // Clear empty strings
 				stub.renderer = stub.renderer || undefined; // Clear empty strings
