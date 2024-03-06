@@ -57,14 +57,18 @@ const getUsersBrewThemes = async (username, id)=>{
 		'textBin'
 	];
 
-	const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme'] }, editId: { $ne: id } }) //lean() converts results to JSObjects
-		.catch((error)=>{throw 'Can not find brews';});
-
 	const userThemes = {
 		Brew : {
 
 		}
 	};
+
+	if(!username || !id) {
+		return userThemes;
+	}
+
+	const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme'] }, editId: { $ne: id } }) //lean() converts results to JSObjects
+		.catch((error)=>{throw 'Can not find brews';});
 
 	for await (const brew of brews) {
 		const brewTheme = await HomebrewModel.get({ editId: brew.editId }, ['textBin']);
