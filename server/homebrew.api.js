@@ -89,7 +89,7 @@ const api = {
 			const foo = api.getBrew('themes', req=req, res=res, next=next);
 			const brewTheme = req.brew;
 			console.log(`Looking at themes.`);
-			console.log(brewTheme);
+			console.log(foo);
 			console.log(`Looked at themes.`);
 			if(brewTheme) {
 				splitTextStyleAndMetadata(brewTheme);
