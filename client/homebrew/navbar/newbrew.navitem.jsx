@@ -74,19 +74,21 @@ const NewBrew = () => {
                 new
             </Nav.item>
             <Nav.item
+                className='fromBlank'
                 href='/new'
                 newTab={true}
                 color='purple'
                 icon='fas fa-plus-square'>
-                new
+                from blank
             </Nav.item>
 
             <Nav.item
+                className='fromFile'
                 color='purple'
                 icon='fas fa-plus-square'
                 onClick={() => { document.getElementById('uploadTxt').click(); }}>
                 <input id="uploadTxt" className='newFromLocal' type="file" onChange={handleFileChange} style={{ display: 'none' }} />
-                New From Local File
+                from file
             </Nav.item>
         </Nav.dropdown>
     );
