@@ -103,7 +103,8 @@ const api = {
 				};
 			}
 		};
-
+		console.log('We found themes!');
+		console.log(userThemes);
 		return userThemes;
 	},
 	getBrew : (accessType, stubOnly = false)=>{
@@ -163,6 +164,7 @@ const api = {
 
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
 			const userThemes = accessType != 'themes' ? await api.getUsersBrewThemes(userID, id, req, res, next) : '';
+			console('Made it past userThemes');
 			if(stub) {
 				stub.tags     = stub.tags     || undefined; // Clear empty strings
 				stub.renderer = stub.renderer || undefined; // Clear empty strings
