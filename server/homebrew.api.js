@@ -82,10 +82,6 @@ const api = {
 			}
 		};
 
-		if(!username || !id) {
-			return userThemes;
-		}
-
 		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme', 'type:theme', 'type:Theme'] }, editId: { $ne: id }  }) //lean() converts results to JSObjects
 			.catch((error)=>{throw 'Can not find brews';});
 
