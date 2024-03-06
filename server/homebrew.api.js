@@ -162,6 +162,7 @@ const api = {
 
 			const userID = req?.account?.username && (accessType === 'edit') ? req.account.username : stub.authors[0];
 
+			console.log('Preparing to load user themes.');
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
 			const userThemes = accessType != 'themes' ? await api.getUsersBrewThemes(userID, id, req, res, next) : '';
 			console('Made it past userThemes');
