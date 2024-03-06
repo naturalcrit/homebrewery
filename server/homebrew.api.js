@@ -86,10 +86,10 @@ const api = {
 			.catch((error)=>{throw 'Can not find brews';});
 
 		for await (const brew of brews) {
-			const foo = api.getBrew('themes', req=req, res=res, next=next);
+			api.getBrew('themes', req=req, res=res, next=next);
 			const brewTheme = req.brew;
 			console.log(`Looking at themes.`);
-			console.log(foo);
+			console.log(req);
 			console.log(`Looked at themes.`);
 			if(brewTheme) {
 				splitTextStyleAndMetadata(brewTheme);
@@ -111,6 +111,7 @@ const api = {
 
 			// Get relevant IDs for the brew
 			const { id, googleId } = api.getId(req);
+			console.log(`id: ${id}`);
 
 			// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine.
 			let stub = await HomebrewModel.get(accessType === 'edit' ? { editId: id } : { shareId: id })
