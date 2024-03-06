@@ -170,6 +170,10 @@ const api = {
 				stub.userThemes = userThemes;
 			}
 
+			if ( accessType == 'themes' ) {
+				console.log('Themes loaded');
+				console.log(stub);
+			}
 			req.brew = stub ?? {};
 			next();
 		};
