@@ -88,6 +88,9 @@ const api = {
 		for await (const brew of brews) {
 			const foo = api.getBrew('themes', req=req, res=res, next=next);
 			const brewTheme = req.brew;
+			console.log(`Looking at themes.`);
+			console.log(brewTheme);
+			console.log(`Looked at themes.`);
 			if(brewTheme) {
 				splitTextStyleAndMetadata(brewTheme);
 				userThemes.Brew[`#${brew.editId}`] = {
