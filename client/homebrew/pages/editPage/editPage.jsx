@@ -355,14 +355,14 @@ const EditPage = createClass({
 				{this.renderGoogleDriveIcon()}
 				{this.state.error ?
 					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
-					<Nav.dropdown className='save-menu'>
+					<Nav.dropdown>
 						{this.renderSaveButton()}
 						{this.renderAutoSaveButton()}
 					</Nav.dropdown>
 				}
 				<NewBrew />
 				<HelpNavItem/>
-				<Nav.dropdown className="share">
+				<Nav.dropdown>
 					<Nav.item color='teal' icon='fas fa-share-alt'>
 						share
 					</Nav.item>

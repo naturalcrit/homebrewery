@@ -165,7 +165,7 @@ const RecentItems = createClass({
 	},
 
 	render : function(){
-		return <Nav.dropdown className='recent'>
+		return <Nav.dropdown>
 			<Nav.item icon='fas fa-history' color='grey' >
 				{this.props.text}
 			</Nav.item>
