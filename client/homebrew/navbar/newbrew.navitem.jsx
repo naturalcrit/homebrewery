@@ -10,11 +10,7 @@ const METAKEY  = 'homebrewery-new-meta';
 
 const NewBrew = () => {
 
-    
-    const [brew, setBrew] = useState({
-        text: '',
-        style: ''
-    });
+   
 
     const splitTextStyleAndMetadata = (brewContent) => {
         let updatedBrew = { ...brewContent };
@@ -50,8 +46,6 @@ const NewBrew = () => {
                 };
 				if(fileContent.startsWith('```metadata')) {
 					const updatedBrew = splitTextStyleAndMetadata(newBrew);
-					console.log(updatedBrew);
-					setBrew(updatedBrew);
 					localStorage.setItem(BREWKEY, updatedBrew.text);
 					localStorage.setItem(STYLEKEY, updatedBrew.style);
 					localStorage.setItem(METAKEY, JSON.stringify(_.pick(updatedBrew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang'])));
