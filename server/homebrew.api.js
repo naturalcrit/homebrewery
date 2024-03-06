@@ -89,8 +89,6 @@ const api = {
 		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme', 'type:theme', 'type:Theme'] }, editId: { $ne: id }  }) //lean() converts results to JSObjects
 			.catch((error)=>{throw 'Can not find brews';});
 
-		console.log(brews);
-		console.log(brews.length);
 		for await (const brew of brews) {
 			const foo = api.getBrew('themes', req=req, res=res, next=next);
 			const brewTheme = req.brew;
@@ -164,7 +162,8 @@ const api = {
 			const userID = req?.account?.username && (accessType === 'edit') ? req.account.username : stub.authors[0];
 
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
-			const userThemes = accessType != 'themes' ? await api.getUsersBrewThemes(userID, id, req, res, next) : '';
+			const userThemes = accessType != 'themes' ? await api.getUsersBrewThemes(userID, id, req, res, next) : {};
+			console.log(userThemes);
 			if(stub) {
 				stub.tags     = stub.tags     || undefined; // Clear empty strings
 				stub.renderer = stub.renderer || undefined; // Clear empty strings
