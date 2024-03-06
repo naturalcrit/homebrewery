@@ -6,5 +6,5 @@
 	"enable_v3" : true,
 	"enable_themes" : true,
 	"local_environments" : ["docker", "local"],
-	"publicUrl" : "https://homebrewery.naturalcrit.com",
+	"publicUrl" : "https://homebrewery.naturalcrit.com"
 }
