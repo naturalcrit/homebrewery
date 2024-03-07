@@ -9,7 +9,7 @@ const findBasicIndex = (pages, theRegex)=>{
 		if(page.match(theRegex)) {
 			let match;
 			while (match = theRegex.exec(page)){
-				basics.push(match[2].trim());
+				basics.push(match[1].trim());
 			}
 		}
 		if(basics.length > 0) {
@@ -24,7 +24,7 @@ const findRichTags = (pages, theRegex)=>{
 		const results = [];
 		let richIndex;
 		while (richIndex=theRegex.exec(page)) {
-			if(richIndex[1].trim().length>0) {
+			if(richIndex[3]?.trim().length>0) {
 				results.push(richIndex);
 			}
 		}
@@ -64,14 +64,14 @@ const addRichIndexes = (richEntries, results)=>{
 	for (const [entryPageNumber, richEntriesOnPage] of richEntries.entries()) {
 		if(richEntriesOnPage.length>0) {
 			for (const richTags of richEntriesOnPage) {
-				const subjectHeadings = richTags[2].split('|');
+				const subjectHeadings = richTags[1].split('|');
 				if(subjectHeadings.length>0){
 					for (const subjectHeading of subjectHeadings) {
 						if(results.has(subjectHeading)){
 							const currentSubjectHeadingObj = results.get(subjectHeading);
 							if(currentSubjectHeadingObj.entries.size) {
-								if(currentSubjectHeadingObj.entries?.has(richTags[1])){
-									const entries = currentSubjectHeadingObj.entries.get(richTags[1]);
+								if(currentSubjectHeadingObj.entries?.has(richTags[3])){
+									const entries = currentSubjectHeadingObj.entries.get(richTags[3]);
 									entries.push(entryPageNumber);
 									results.get(subjectHeading).entries.set(richTags[1], entries);
 								} else {
@@ -80,12 +80,12 @@ const addRichIndexes = (richEntries, results)=>{
 								results.set(subjectHeading, currentSubjectHeadingObj);
 							} else {
 								const entriesMap = new Map();
-								entriesMap.set(richTags[1], [entryPageNumber]);
+								entriesMap.set(richTags[3], [entryPageNumber]);
 								currentSubjectHeadingObj.entries = Object.assign(entriesMap);
 							}
 							results.set(subjectHeading, currentSubjectHeadingObj);
 						} else {
-							results.set(subjectHeading, newRichEntry(richTags[1], entryPageNumber));
+							results.set(subjectHeading, newRichEntry(richTags[3], entryPageNumber));
 						}
 					}
 				}
@@ -140,8 +140,8 @@ module.exports = function (props) {
 	const index = new Map();
 
 	const pages = props.brew.text.split('\\page');
-	const indexMarkdownRegex = /@\[((?:\\.|[^\[\]\\^@^\)])*)\]\(((?:\\.|[^\[\]\\^@^\)])*)\)/gm;
-	const indexMarkdownRegexBasic = /@\[(\W*)\]\(((?:\\.|[^\[\]\\^@^\)])+)\)/gm;
+	const indexMarkdownRegex = /@\[((?:\\.|[^\[\]\\^@^\)])*)\](\((((?:\\.|[^\[\]\\^@^\)])*))\))?/gm;
+	const indexMarkdownRegexBasic = /@\[((?:\\.|[^\[\]\\^@^\)])*)\][^\(]/gm;
 
 	const basicIndexEntries = findBasicIndex(pages, indexMarkdownRegexBasic);
 	const richIndexEntries = findRichTags(pages, indexMarkdownRegex);

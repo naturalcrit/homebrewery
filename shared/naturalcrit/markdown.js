@@ -269,14 +269,14 @@ const mustacheInjectBlock = {
 const indexAnchors = {
 	name  : 'indexAnchor',
 	level : 'inline',
-	start(src) {return src.match(/@\[((?:\\.|[^\[\]\\^@^\)])*)\]\(((?:\\.|[^\[\]\\^@^\)])*)\)/)?.index;}, // Hint to Marked.js to stop and check for a match
+	start(src) {return src.match(/@\[((?:\\.|[^\[\]\\^@^\)])*)\]/)?.index;}, // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const inlineRegex = /@\[((?:\\.|[^\[\]\\^@^\)])*)\]\(((?:\\.|[^\[\]\\^@^\)])*)\)/ym;
+		const inlineRegex = /@\[((?:\\.|[^\[\]\\^@^\)])*)\](\((((?:\\.|[^\[\]\\^@^\)])*))\))?/ym;
 		const indexEntry = {};
 		const match = inlineRegex.exec(src);
 		if(match) {
-			indexEntry.entries = match[1].trim();
-			indexEntry.subjectHeading = match[2].trim();
+			indexEntry.entries = match[3] ? match[3].trim() : undefined;
+			indexEntry.subjectHeading = match[1].trim();
 			return {
 				type       : 'indexAnchor',
 				text       : src,
