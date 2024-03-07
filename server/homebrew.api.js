@@ -271,6 +271,8 @@ const api = {
 		res.status(200).send(saved);
 	},
 	getBrewThemeWithCSS : async (req, res)=>{
+		console.log('I made it out!');
+		console.log(req.brew);
 		const brew = req.brew;
 		splitTextStyleAndMetadata(brew);
 		res.setHeader('Content-Type', 'text/css');
