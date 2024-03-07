@@ -117,7 +117,7 @@ const PrintPage = createClass({
 			baseRendererPath += '/';
 		}
 
-		const staticOrUserParent = this.state.brew.theme[0] == '#' ? `/cssParent/${themePath}` : `/css/${baseRendererPath}${baseThemePath}`;
+		const staticOrUserParent = (this.state.brew.theme && this.state.brew?.theme[0] == '#') ? `/cssParent/${themePath}` : `/css/${baseRendererPath}${baseThemePath}`;
 
 		return <div>
 			<Meta name='robots' content='noindex, nofollow' />

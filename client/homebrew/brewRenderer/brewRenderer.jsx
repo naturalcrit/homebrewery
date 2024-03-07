@@ -207,7 +207,7 @@ const BrewRenderer = (props)=>{
 		baseRendererPath += '/';
 	}
 
-	const staticOrUserParent = props?.theme[0] == '#' ? `/cssParent/${themePath}` : `/css/${baseRendererPath}${baseThemePath}`;
+	const staticOrUserParent = (props.theme && props?.theme[0] == '#') ? `/cssParent/${themePath}` : `/css/${baseRendererPath}${baseThemePath}`;
 
 	return (
 		<>

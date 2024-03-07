@@ -82,8 +82,7 @@ const api = {
 			}
 		};
 
-		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme', 'type:theme', 'type:Theme'] }, editId: { $ne: id }  }) //lean() converts results to JSObjects
-			.catch((error)=>{throw 'Can not find brews';});
+		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme', 'type:theme', 'type:Theme'] }, editId: { $ne: id }  });
 
 		for await (const brew of brews) {
 			userThemes.Brew[`#${brew.editId}`] = {
@@ -150,7 +149,8 @@ const api = {
 				throw { name: 'BrewLoad Error', message: 'Brew not found', status: 404, HBErrorCode: '05', accessType: accessType, brewId: id };
 			}
 
-			const userID = req?.account?.username && (accessType === 'edit') ? req.account.username : stub.authors[0];
+			const mainAuthor = stub.authors ? stub.authors[0] : '';
+			const userID = req?.account?.username && (accessType === 'edit') ? req.account.username : mainAuthor;
 
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
 			const userThemes = accessType != 'themes' ? await api.getUsersBrewThemes(userID, id, req, res, next) : {};

@@ -45,8 +45,9 @@ describe('Tests for api', ()=>{
 		model.mockImplementation((brew)=>modelBrew(brew));
 
 		res = {
-			status : jest.fn(()=>res),
-			send   : jest.fn(()=>{})
+			status    : jest.fn(()=>res),
+			send      : jest.fn(()=>{}),
+			setHeader : jest.fn(()=>{})
 		};
 
 		api = require('./homebrew.api');
@@ -611,7 +612,7 @@ brew`);
 			};
 			api.getStaticTheme(req, res);
 			const sent = res.send.mock.calls[0][0];
-			expect(sent).toBe('@import /themes/V3/5ePHB/style.css\n');
+			expect(sent).toBe('@import url("/themes/V3/5ePHB/style.css");\n/* Static Theme 5e PHB */\n');
 			expect(res.status).toHaveBeenCalledWith(200);
 		});
 		it('should return an import of the theme including a parent.', async ()=>{
@@ -623,7 +624,7 @@ brew`);
 			};
 			api.getStaticTheme(req, res);
 			const sent = res.send.mock.calls[0][0];
-			expect(sent).toBe('@import /api/css/V3/5ePHB\n@import /themes/V3/5eDMG/style.css\n');
+			expect(sent).toBe('@import url("/css/V3/5ePHB");\n/* Static Theme 5e PHB */\n@import url("/themes/V3/5eDMG/style.css");\n/* Static Theme 5e DMG */\n');
 			expect(res.status).toHaveBeenCalledWith(200);
 		});
 		it('should fail for an invalid static theme.', async()=>{
