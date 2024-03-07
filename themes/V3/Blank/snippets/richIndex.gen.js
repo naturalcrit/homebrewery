@@ -16,6 +16,7 @@ const findBasicIndex = (pages, theRegex)=>{
 			results.set(pageNumber, basics);
 		}
 	};
+	console.log(results);
 	return results;
 };
 
@@ -33,16 +34,18 @@ const findRichTags = (pages, theRegex)=>{
 };
 
 const findSubjectHeadings = (pages, terms, results)=>{
-	for (const [entryCount, entry] of terms.entries()) {
-		for (const pageNumber in entry) {
-			const termList = entry[pageNumber].split('|');
+	for (const [pageCount, entry] of terms.entries()) {
+
+		for (const e in entry) {
+			const termList = entry[e].split('|');
 			for (const term in termList) {
+				console.log(term);
 				if(results.has(termList[term])) {
 					const currentEntry = results.get(termList[term]);
-					currentEntry.pages.push(pageNumber);
+					currentEntry.pages.push(pageCount);
 					results.set(termList[term], currentEntry);
 				} else {
-					results.set(termList[term], { pages: [pageNumber], entries: {} });
+					results.set(termList[term], { pages: [pageCount], entries: {} });
 				}
 			}
 		}
@@ -108,6 +111,9 @@ const markup = (index)=>{
 	const sortedIndex = sortMap(index);
 	let results = '';
 
+	console.log(index);
+	console.log(sortedIndex);
+
 	for (const [subjectHeading, subjectHeadingPages] of sortedIndex) {
 		results = results.concat(`- `, subjectHeading, subjectHeadingPages.pages.length > 0 ? ' ... pg. ':'');
 		for (const [k, pageNumber] of subjectHeadingPages.pages.entries()) {
@@ -124,7 +130,7 @@ const markup = (index)=>{
 			for (const [entry, entryPages] of sortedEntries){
 				results = results.concat('  - ', entry, ' ... pg. ');
 				for (const [k, pageNumber] of entryPages.entries()) {
-					results = results.concat('[', parseInt(pageNumber+1), `](#p${parseInt(pageNumber+1)}_${entry.toLowerCase().replace(' ', '')})`);
+					results = results.concat('[', parseInt(pageNumber+1), `](#p${parseInt(pageNumber+1)}_${entry.toLowerCase().replaceAll(' ', '')})`);
 					if(k < (entryPages.length - 1)) {
 						results = results.concat(`, `);
 					}
