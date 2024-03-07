@@ -9,6 +9,7 @@ const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
 
+
 const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
 
 const themes = require('../themes/themes.json');
@@ -66,7 +67,7 @@ const api = {
 		}
 		return { id, googleId };
 	},
-	getUsersBrewThemes : async (username, id, req, res, next)=>{
+	getUsersBrewThemes : async (username, id)=>{
 		const fields = [
 			'title',
 			'tags',
@@ -84,16 +85,19 @@ const api = {
 
 		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme', 'type:theme', 'type:Theme'] }, editId: { $ne: id }  });
 
-		for await (const brew of brews) {
-			userThemes.Brew[`#${brew.editId}`] = {
-				name         : brew.title,
-				renderer     : 'V3',
-				baseTheme    : '',
-				baseSnippets : false,
-				path         : `#${brew.editId}`,
-				thumbnail    : brew.thumbnail.length > 0 ? brew.thumbnail : '/assets/naturalCritLogoWhite.svg'
-			};
+		if(brews) {
+			for await (const brew of brews) {
+				userThemes.Brew[`#${brew.editId}`] = {
+					name         : brew.title,
+					renderer     : 'V3',
+					baseTheme    : '',
+					baseSnippets : false,
+					path         : `#${brew.editId}`,
+					thumbnail    : brew.thumbnail.length > 0 ? brew.thumbnail : '/assets/naturalCritLogoWhite.svg'
+				};
+			}
 		}
+
 		return userThemes;
 	},
 	getBrew : (accessType, stubOnly = false)=>{

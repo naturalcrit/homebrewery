@@ -287,6 +287,9 @@ describe('Tests for api', ()=>{
 				thumbnail   : '',
 				textBin     : undefined,
 				version     : undefined,
+				userThemes  : {
+					Brew: {}
+				},
 				createdAt   : undefined,
 				gDrive      : false,
 				style       : undefined,
@@ -581,7 +584,7 @@ brew`);
 
 			api.getBrewThemeWithCSS(req, res);
 			const sent = res.send.mock.calls[0][0];
-			expect(sent).toBe(`// From Theme: test brew\n\n@import /api/css/V3/5ePHB/styles.css\n\nI Have a style!`);
+			expect(sent).toBe(`@import url("/css/V3/5ePHB");\n\n/* From Brew: test brew*/\n\nI Have a style!`);
 			expect(res.status).toHaveBeenCalledWith(200);
 		});
 	});
@@ -597,7 +600,7 @@ brew`);
 
 			api.getBrewThemeWithCSS(req, res);
 			const sent = res.send.mock.calls[0][0];
-			expect(sent).toBe(`// From Theme: test brew\n\n@import /api/css/IamATheme\n\nI Have a style!`);
+			expect(sent).toBe(`@import url("/css/IamATheme");\n\n/* From Brew: test brew*/\n\nI Have a style!`);
 			expect(res.status).toHaveBeenCalledWith(200);
 		});
 	});
