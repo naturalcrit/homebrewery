@@ -9,7 +9,7 @@ const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
 
-const { homebrewApi, getBrew, getBrewThemeWithCSS, getStaticTheme } = require('./homebrew.api.js');
+const { homebrewApi, getBrew, getBrewThemeWithCSS, getStaticTheme, getBrewThemeParent } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
@@ -94,6 +94,7 @@ app.get('/robots.txt', (req, res)=>{
 
 app.get('/css/:id', asyncHandler(getBrew('edit', true)),  asyncHandler(getBrewThemeWithCSS));
 app.get('/css/:engine/:id/', asyncHandler(getStaticTheme));
+app.get('/cssParent/:id', asyncHandler(getBrew('theme', false)), asyncHandler(getBrewThemeParent));
 
 
 //Home page

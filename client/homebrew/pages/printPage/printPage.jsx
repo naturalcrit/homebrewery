@@ -110,19 +110,20 @@ const PrintPage = createClass({
 			rendererPath += '/';
 		}
 
-		if(baseThemePath && baseThemePath[0] == '#') {
-			baseThemePath = baseThemePath.slice(1);
+		if(rendererPath == '') {
+			baseThemePath = 'Brew';
 			baseRendererPath = '';
 		} else {
 			baseRendererPath += '/';
 		}
-
+	
+		const staticOrUserParent = this.state.brew.theme[0] == '#' ? `/cssParent/${themePath}` : `/css/${baseRendererPath}${baseThemePath}`;
 
 		return <div>
 			<Meta name='robots' content='noindex, nofollow' />
 			<link href={`/css/${blankRendererPath}/Blank`} rel='stylesheet'/>
 			{baseThemePath &&
-				<link href={`/css/${baseRendererPath}${baseThemePath}`} rel='stylesheet'/>
+				<link href={staticOrUserParent} rel='stylesheet'/>
 			}
 			<link href={`/css/${rendererPath}${themePath}`} rel='stylesheet'/>
 			{/* Apply CSS from Style tab */}

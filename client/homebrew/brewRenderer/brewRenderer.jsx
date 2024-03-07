@@ -200,12 +200,14 @@ const BrewRenderer = (props)=>{
 		rendererPath += '/';
 	}
 
-	if(baseThemePath && baseThemePath[0] === '#') {
-		baseThemePath = baseThemePath.slice(1);
+	if(rendererPath == '') {
+		baseThemePath = 'Brew';
 		baseRendererPath = '';
 	} else {
 		baseRendererPath += '/';
 	}
+
+	const staticOrUserParent = props?.theme[0] == '#' ? `/cssParent/${themePath}` : `/css/${baseRendererPath}${baseThemePath}`;
 
 	return (
 		<>
@@ -235,7 +237,7 @@ const BrewRenderer = (props)=>{
 					</div>
 					<link href={`/css/${blankRendererPath}/Blank`} rel='stylesheet'/>
 					{baseThemePath &&
-						<link href={`/css/${baseRendererPath}${baseThemePath}`} rel='stylesheet'/>
+						<link href={staticOrUserParent} rel='stylesheet'/>
 					}
 					<link href={`/css/${rendererPath}${themePath}`} rel='stylesheet'/>
 

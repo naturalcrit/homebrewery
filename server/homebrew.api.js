@@ -86,23 +86,15 @@ const api = {
 			.catch((error)=>{throw 'Can not find brews';});
 
 		for await (const brew of brews) {
-			api.getBrew('themes', req=req, res=res, next=next);
-			const brewTheme = req.brew;
-			console.log(`Looking at themes.`);
-			console.log(req);
-			console.log(`Looked at themes.`);
-			if(brewTheme) {
-				splitTextStyleAndMetadata(brewTheme);
-				userThemes.Brew[`#${brew.editId}`] = {
-					name         : brew.title,
-					renderer     : 'V3',
-					baseTheme    : brewTheme.theme,
-					baseSnippets : false,
-					path         : `#${brew.editId}`,
-					thumbnail    : brew.thumbnail.length > 0 ? brew.thumbnail : '/assets/naturalCritLogoWhite.svg'
-				};
-			}
-		};
+			userThemes.Brew[`#${brew.editId}`] = {
+				name         : brew.title,
+				renderer     : 'V3',
+				baseTheme    : '',
+				baseSnippets : false,
+				path         : `#${brew.editId}`,
+				thumbnail    : brew.thumbnail.length > 0 ? brew.thumbnail : '/assets/naturalCritLogoWhite.svg'
+			};
+		}
 		return userThemes;
 	},
 	getBrew : (accessType, stubOnly = false)=>{
@@ -111,10 +103,9 @@ const api = {
 
 			// Get relevant IDs for the brew
 			const { id, googleId } = api.getId(req);
-			console.log(`id: ${id}`);
 
 			// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine.
-			let stub = await HomebrewModel.get(accessType === 'edit' ? { editId: id } : { shareId: id })
+			let stub = await HomebrewModel.get((accessType === 'edit') || (accessType === 'theme') ? { editId: id } : { shareId: id })
 				.catch((err)=>{
 					if(googleId) {
 						console.warn(`Unable to find document stub for ${accessType}Id ${id}`);
@@ -163,7 +154,6 @@ const api = {
 
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
 			const userThemes = accessType != 'themes' ? await api.getUsersBrewThemes(userID, id, req, res, next) : {};
-			console.log(userThemes);
 			if(stub) {
 				stub.tags     = stub.tags     || undefined; // Clear empty strings
 				stub.renderer = stub.renderer || undefined; // Clear empty strings
@@ -171,10 +161,6 @@ const api = {
 				stub.userThemes = userThemes;
 			}
 
-			if ( accessType == 'themes' ) {
-				console.log('Themes loaded');
-				console.log(stub);
-			}
 			req.brew = stub ?? {};
 			next();
 		};
@@ -292,6 +278,15 @@ const api = {
 		const userTheme = `/css/${req.brew.theme.slice(1)}`;
 		const parentThemeImport = `@import url(\"${req.brew.theme[0] != '#' ? staticTheme : userTheme}\");\n\n/* From Brew: ${req.brew.title}*/\n\n`;
 		return res.status(200).send(`${req.brew.renderer == 'legacy' ? '' : parentThemeImport}${req.brew.style}`);
+	},
+	getBrewThemeParent : async (req, res)=>{
+		const brew = req.brew;
+		splitTextStyleAndMetadata(brew);
+		res.setHeader('Content-Type', 'text/css');
+		const staticTheme = `/css/${req.brew.renderer}/${req.brew.theme}`;
+		const userTheme = `/css/${req.brew.theme.slice(1)}`;
+		const parentThemeImport = `@import url(\"${req.brew.theme[0] != '#' ? staticTheme : userTheme}\");\n\n/* From Brew: ${req.brew.title}*/\n\n`;
+		return res.status(200).send(`${req.brew.renderer == 'legacy' ? '' : parentThemeImport}`);
 	},
 	getStaticTheme : async(req, res)=>{
 		const themeParent = isStaticTheme(req.params.engine, req.params.id);
