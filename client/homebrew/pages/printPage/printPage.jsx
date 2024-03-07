@@ -53,7 +53,7 @@ const PrintPage = createClass({
 						style    : styleStorage,
 						renderer : metaStorage?.renderer || 'legacy',
 						theme    : metaStorage?.theme    || '5ePHB',
-						lang	 : metaStorage?.lang	 || 'en'
+						lang     : metaStorage?.lang	 || 'en'
 					}
 				};
 			});
@@ -116,7 +116,7 @@ const PrintPage = createClass({
 		} else {
 			baseRendererPath += '/';
 		}
-	
+
 		const staticOrUserParent = this.state.brew.theme[0] == '#' ? `/cssParent/${themePath}` : `/css/${baseRendererPath}${baseThemePath}`;
 
 		return <div>
