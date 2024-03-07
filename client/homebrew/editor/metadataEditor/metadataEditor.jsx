@@ -226,7 +226,7 @@ const MetadataEditor = createClass({
 			dropdown =
 				<Nav.dropdown className='value' trigger='click'>
 					<div>
-						{`${_.upperFirst(this.props.metadata.themeClass?this.props.metadata.themeClass:this.props.metadata.renderer)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
+						{`${_.upperFirst(currentThemePath)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
 					</div>
 					{/*listThemes('Legacy')*/}
 					{listThemes('V3')}
