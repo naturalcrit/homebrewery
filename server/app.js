@@ -92,7 +92,7 @@ app.get('/robots.txt', (req, res)=>{
 
 // Theme
 
-app.get('/css/:id', asyncHandler(getBrew('theme', true)),  asyncHandler(getBrewThemeWithCSS));
+app.get('/css/:id', asyncHandler(getBrew('theme', false)),  asyncHandler(getBrewThemeWithCSS));
 app.get('/css/:engine/:id/', asyncHandler(getStaticTheme));
 app.get('/cssParent/:id', asyncHandler(getBrew('theme', false)), asyncHandler(getBrewThemeParent));
 
