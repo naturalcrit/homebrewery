@@ -401,12 +401,12 @@ const definitionLists = {
 		}
 	},
 	renderer(token) {
-		let returnVal = `<dl${token.inlineDefinitions ? ' class="inlineDL"' : ''}>`;
+		let returnVal = `<dl>`;
 		token.definitions.forEach((def)=>{
 			let dds = def.ddo.map((s)=>{
-				return `<dd>${this.parser.parseInline(s).trim()}</dd>`;
-			}).join('\n');
-			returnVal += `<dt>${this.parser.parseInline(def.dt)}</dt>${dds.indexOf('\n') > -1 ? '\n' : ''}${dds}\n`;
+				return `${token.inlineDefinitions ? '' : '\n'}<dd>${this.parser.parseInline(s).trim()}</dd>`;
+			}).join('');
+			returnVal += `<dt>${this.parser.parseInline(def.dt)}</dt>${dds}\n`;
 		});
 		returnVal = returnVal.trim();
 		return `${returnVal}</dl>`;
