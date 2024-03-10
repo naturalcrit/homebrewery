@@ -413,8 +413,6 @@ const definitionLists = {
 	}
 };
 
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts] });
-
 //v=====--------------------< Variable Handling >-------------------=====v// 242 lines
 const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 	const regex = /([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g;
@@ -660,7 +658,7 @@ function MarkedVariables() {
 //^=====--------------------< Variable Handling >-------------------=====^//
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, superSubScripts] });
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
