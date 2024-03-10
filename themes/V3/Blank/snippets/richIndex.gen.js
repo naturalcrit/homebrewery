@@ -141,8 +141,8 @@ module.exports = function (props) {
 	const index = new Map();
 
 	const pages = props.brew.text.split('\\page');
-	const indexMarkdownRegex = /@\[((?:\\.|[^\[\]\\^@^\)])*)\](\((((?:\\.|[^\[\]\\^@^\)])*))\))?/gm;
-	const indexMarkdownRegexBasic = /@\[((?:\\.|[^\[\]\\^@^\)])*)\][^\(]/gm;
+	const indexMarkdownRegex = /@\[((?:\\.|[^\[\]\\^@^\)])*)\](\((((?:\\.|[^\[\]\\^@^\)])*))\))?/m;
+	const indexMarkdownRegexBasic = /@\[((?:\\.|[^\[\]\\^@^\)])*)\][^\(]/m;
 
 	const basicIndexEntries = findBasicIndex(pages, indexMarkdownRegexBasic);
 	const richIndexEntries = findRichTags(pages, indexMarkdownRegex);

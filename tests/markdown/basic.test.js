@@ -15,7 +15,7 @@ test('Check markdown is using the custom renderer; specifically that it adds tar
 });
 
 test('Check Index Anchors in custom renderer', function() {
-	const source=`@[hereweare](there)Welcome traveler from an antique land. Please sit and tell us of what you have seen. The unheard of monsters, who slither and bite. @[hereWeWere](there)Tell us of the wondrous items and and artifacts you have found, their mysteries yet to be unlocked. Of the vexing vocations and surprising skills you have seen.@[here We Shall be](there)`;
+	const source=`@[there](hereweare)Welcome traveler from an antique land. Please sit and tell us of what you have seen. The unheard of monsters, who slither and bite. @[there](hereWeWere)Tell us of the wondrous items and and artifacts you have found, their mysteries yet to be unlocked. Of the vexing vocations and surprising skills you have seen.@[there](here We Shall be)\n`;
 	const rendered = Markdown.render(source);
 	expect(rendered).toBe('<p><a href="#p1_hereweare" subjectHeading="there" entry="hereweare"></a>Welcome traveler from an antique land. Please sit and tell us of what you have seen. The unheard of monsters, who slither and bite. <a href="#p1_herewewere" subjectHeading="there" entry="hereWeWere"></a>Tell us of the wondrous items and and artifacts you have found, their mysteries yet to be unlocked. Of the vexing vocations and surprising skills you have seen.<a href="#p1_hereweshallbe" subjectHeading="there" entry="here We Shall be"></a></p>\n');
 });
