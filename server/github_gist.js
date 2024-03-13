@@ -3,6 +3,8 @@ const { createTokenAuth } = require('@octokit/auth-token');
 
 const config = require('./config.js');
 
+let gistsActive;
+
 const gistHelpers = {
 	gistsActive : ()=>{ return gistsActive; },
 	findGist    : async (octo, brew)=>{
