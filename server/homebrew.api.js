@@ -12,6 +12,7 @@ const gists = require('./github_gist.js');
 
 const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
 
+const testToken ='';
 
 
 // const getTopBrews = (cb) => {
@@ -196,6 +197,7 @@ const api = {
 			api.excludeStubProps(newHomebrew);
 			newHomebrew.googleId = googleId;
 		} else if(gists.gistsActive() && testToken) {
+			newHomebrew.ghToken = testToken;
 			const fileSaved = await gists.gistPutText(newHomebrew);
 			if(fileSaved) return;
 		} else {
@@ -267,6 +269,7 @@ const api = {
 			// If the google id exists after all those actions, exclude the props that are stored in google and aren't needed for rendering the brew items
 			api.excludeStubProps(brew);
 		} else if(gists.gistsActive() && testToken) {
+			brew.ghToken = testToken;
 			const fileSaved = await gists.gistPutText(brew);
 			if(!fileSaved) return;
 			brew.text = undefined;
@@ -331,6 +334,7 @@ const api = {
 		const isOwner = account && (brew.authors.length === 0 || brew.authors[0] === account.username);
 		// If the user is the owner and the file is saved to google, mark the google brew for deletion
 		const shouldDeleteGoogleBrew = googleId && isOwner;
+		const shouldDeleteGistBrew   = gists.gistsActive() && testToken;
 
 		if(brew._id) {
 			brew = _.assign(await HomebrewModel.findOne({ _id: brew._id }), brew);
@@ -359,6 +363,10 @@ const api = {
 						throw { name: 'BrewAuthorDelete Error', message: err, status: 500, HBErrorCode: '08', brewId: brew._id };
 					});
 			}
+		}
+		if(shouldDeleteGistBrew) {
+			const deleted = await gists.deleteGist(brew);
+			if(!deleted) return;
 		}
 		if(shouldDeleteGoogleBrew) {
 			const deleted = await api.deleteGoogleBrew(account, googleId, editId, res)

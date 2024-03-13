@@ -1,4 +1,6 @@
 const { Octokit } = require('octokit');
+const { createTokenAuth } = require('@octokit/auth-token');
+
 const config = require('./config.js');
 
 const gistHelpers = {
@@ -12,7 +14,6 @@ const gistHelpers = {
 			}
 		  });
 		if(findRes.status == 200) {
-			console.log(findRes.data);
 			for (gist of findRes.data) {
 				if(gist.files.hasOwnProperty(brew.editId)) {
 					brew.gistId = gist.id;
@@ -22,36 +23,39 @@ const gistHelpers = {
 	},
 	gistGetText : async (brew)=>{
 		const octo = new Octokit({
-			token : brew.ghToken
+			auth : brew.ghToken
 		});
+
+		const {
+			data: { login },
+		} = await octo.rest.users.getAuthenticated();
+
 
 		if(!brew.hasOwnProperty('gistId')){
 			await gistHelpers.findGist(octo, brew);
 		}
 
 		if(!brew.hasOwnProperty('gistId')){
-			console.log(`Unable to find Gist Id for read.`);
+			console.warn(`Unable to find Gist Id for read for brew ${brew.editId}`);
 			return undefined;
 		}
 
-		const res = await octo.request(`GET /gists/${gistId}`, {
-			gist_id : gistId,
+		const res = await octo.request(`GET /gists/${brew.gistId}`, {
+			gist_id : brew.gistId,
 			headers : {
 			  'X-GitHub-Api-Version' : '2022-11-28'
 			}
 		  });
-		console.log(res.data.files['gistfile1.txt'].content);
-		return res.data.files['gistfile1.txt'].content;
-		// await gists.get(gistID).then((res)=>{
-		// 	console.log(res);
-		// 	return res;
-		// }).catch((err)=>{ console.log(err); return undefined; });
-
+		return res.data.files[brew.editId].content;
 	},
 	gistPutText : async(brew)=>{
 		const octo = new Octokit({
-			token : brew.ghToken
+			auth : brew.ghToken
 		});
+
+		const {
+			data: { login },
+		} = await octo.rest.users.getAuthenticated();
 
 		if(!brew.hasOwnProperty('gistId')){
 			await gistHelpers.findGist(octo, brew);
@@ -71,7 +75,7 @@ const gistHelpers = {
 				},
 				files
 			});
-			if(patchRes.status != 200) {
+			if((patchRes.status != 200) || (patchRes.status != 201)) {
 				console.log(`Unable to save new brew. Status: ${patchRes.status}`);
 				return false;
 			}
@@ -110,6 +114,41 @@ const gistHelpers = {
 			console.log(`Unable to verify Gist. Status ${res.status}`);
 			return false;
 		}
+	},
+	deleteGist : async (brew)=>{
+		console.log(`Using ${brew.ghToken}`);
+		const octo = new Octokit({
+			auth : brew.ghToken
+		});
+
+		const {
+			data: { login },
+		} = await octo.rest.users.getAuthenticated();
+
+		console.log(`confirmed used: ${login}`);
+
+		if(!brew.hasOwnProperty('gistId')){
+			await gistHelpers.findGist(octo, brew);
+		}
+
+		if(!brew.hasOwnProperty('gistId')) {
+			console.log('Unable to find gist for brew ${brew.editId}');
+			return false;
+		}
+
+		const delResults = await octo.request(`DELETE /gists/${brew.gistId}`, {
+			gist_id : brew.gistId,
+			headers : {
+			  'X-GitHub-Api-Version' : '2022-11-28'
+			}
+		  });
+
+		if(delResults.status == 204) return true;
+
+		console.log(`Unable to remove gist for ${brew.editId}: ${delResults.status}`);
+
+		return false;
+
 	}
 };
 
