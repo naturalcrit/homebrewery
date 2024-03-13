@@ -8,8 +8,11 @@ const Markdown = require('../shared/naturalcrit/markdown.js');
 const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
+const gists = require('./github_gist.js');
 
 const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
+
+
 
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
@@ -72,6 +75,10 @@ const api = {
 				}
 				// Combine the Homebrewery stub with the google brew, or if the stub doesn't exist just use the google brew
 				stub = stub ? _.assign({ ...api.excludeStubProps(stub), stubbed: true }, api.excludeGoogleProps(googleBrew)) : googleBrew;
+			} else if(gists.gistsActive() && testToken) {
+				stub.ghToken = testToken;
+				const fileFromGist = await gists.gistGetText(stub);
+				stub.text = fileFromGist;
 			}
 			const authorsExist = stub?.authors?.length > 0;
 			const isAuthor = stub?.authors?.includes(req.account?.username);
@@ -188,6 +195,9 @@ const api = {
 			if(!googleId) return;
 			api.excludeStubProps(newHomebrew);
 			newHomebrew.googleId = googleId;
+		} else if(gists.gistsActive() && testToken) {
+			const fileSaved = await gists.gistPutText(newHomebrew);
+			if(fileSaved) return;
 		} else {
 			// Compress brew text to binary before saving
 			newHomebrew.textBin = zlib.deflateRawSync(newHomebrew.text);
@@ -256,6 +266,10 @@ const api = {
 		if(brew.googleId) {
 			// If the google id exists after all those actions, exclude the props that are stored in google and aren't needed for rendering the brew items
 			api.excludeStubProps(brew);
+		} else if(gists.gistsActive() && testToken) {
+			const fileSaved = await gists.gistPutText(brew);
+			if(!fileSaved) return;
+			brew.text = undefined;
 		} else {
 			// Compress brew text to binary before saving
 			brew.textBin = zlib.deflateRawSync(brew.text);
