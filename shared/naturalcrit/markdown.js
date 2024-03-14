@@ -294,117 +294,74 @@ const superSubScripts = {
 	}
 };
 
-const definitionLists = {
-	name  : 'definitionLists', // Block because style display: block
+const definitionListsInline = {
+	name  : 'definitionListsInline',
 	level : 'block',
-	start(src) { return src.match(/^.*?::.*\n\n/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	start(src) { return src.match(/^[^\n]*?::[^\n]*/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const regex = /^([^\n]*?:?)\n?::(.*)(?:\n|$)|^.*(?:\n|$)/ym;
+		const regex = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym;
 		let match;
 		let endIndex = 0;
-		const allDefinitions = [];
-		let currentDefinition = {};
-		let inList = false;
-		let lastEmpty = false;
-		let inlineDefinitions = false;
-		let appending = false;
+		const definitions = [];
 		while (match = regex.exec(src)) {
-			// If we aren't actively in a DL and we match just text, bail.
-			// If the last loop bailed with lastEmpty and we match just text, bail
-			if(((!inList) || (lastEmpty)) && (typeof match[1] == 'undefined') && (typeof match[2] == 'undefined')) {
-				break;
-			}
-			endIndex += match[0].length;
-
-			// Check to see if this a match containing the start of a DD.
-			if(match[0].indexOf('::') > -1) {
-				inList = true;
-				// Check and see if we are currently in line appending mode, if so, match[1] should be
-				// appended to the last entry instead of being used as the next DT.
-				if(appending) {
-					const lastPos = typeof currentDefinition.dd.length !== 'undefined' ? currentDefinition.dd.length - 1 : 0;
-					currentDefinition.dd[lastPos] = `${currentDefinition.dd[lastPos]} ${match[1]?.trim()}`;
-					match[1] = '';
-				}
-				appending = false;
-				// Check for a DT value.
-				if(match[1]?.trim()?.length>0) {
-					if(currentDefinition?.dt?.length) {
-						currentDefinition.dd.forEach((dd)=>{
-							currentDefinition.ddo.push(this.lexer.inlineTokens(dd));
-						});
-						allDefinitions.push(currentDefinition);
-						currentDefinition = {};
-					}
-					currentDefinition = {
-						dt  : this.lexer.inlineTokens(match[1].trim()),
-						dd  : [],
-						ddo : []
-					};
-				} else if(_.isEmpty(currentDefinition)) {
-					return;
-				}
-				// Test for a DD value.
-				if(match[2].trim().length>0) {
-					if((match[1]?.length > 0) && (match[0].indexOf('\n') > match[1]?.length)) { // Inline Style DD
-						currentDefinition.dd = currentDefinition.dd.concat([match[2].trim()]);
-						currentDefinition.dd.forEach((dd)=>{
-							currentDefinition.ddo.push(this.lexer.inlineTokens(dd));
-						});
-						allDefinitions.push(currentDefinition);
-						inlineDefinitions = true;
-						currentDefinition = {};
-						continue;
-					}
-					// Multi-line style DDs
-					const newDefinitions = _.flatten(match[2].split('\n::').filter((item)=>item).map((s)=>s.trim()));
-					if(newDefinitions?.length) {
-						currentDefinition.dd = currentDefinition.dd.concat(newDefinitions);
-					}
-				} else {
-					currentDefinition.dd.push('');
-				}
-				lastEmpty = false;
-			} else if(inList) { // Regular line that might mark the end of a line.
-				appending = false;
-				if(inlineDefinitions) {
-					endIndex -= match[0].length;
-					break;
-				}
-				if(match[0].trim().length == 0) {
-					if(lastEmpty) {
-						continue;
-					} else {
-						lastEmpty = true;
-					}
-				} else {
-					lastEmpty = false;
-					const lastPos = typeof currentDefinition.dd.length !== 'undefined' ? currentDefinition.dd.length - 1 : 0;
-					currentDefinition.dd[lastPos] = `${currentDefinition.dd[lastPos]} ${match[0].trim()}`;
-					appending = true;
-				}
-			}
-		}
-		if(currentDefinition.hasOwnProperty('dt')) {
-			currentDefinition.dd.forEach((dd)=>{
-				currentDefinition.ddo.push(this.lexer.inlineTokens(dd));
+			definitions.push({
+				dt : this.lexer.inlineTokens(match[1].trim()),
+				dd : this.lexer.inlineTokens(match[2].trim())
 			});
-			allDefinitions.push(currentDefinition);
+			endIndex = regex.lastIndex;
 		}
-		if(allDefinitions.length) {
+		if(definitions.length) {
 			return {
-				type        : 'definitionLists',
-				raw         : src.slice(0, endIndex),
-				inlineDefinitions,
-				definitions : allDefinitions
+				type : 'definitionListsInline',
+				raw  : src.slice(0, endIndex),
+				definitions
+			};
+		}
+	},
+	renderer(token) {
+		return `<dl>${token.definitions.reduce((html, def)=>{
+			return `${html}<dt>${this.parser.parseInline(def.dt)}</dt>`
+			            + `<dd>${this.parser.parseInline(def.dd)}</dd>`;
+		}, '')}</dl>`;
+	}
+};
+
+const definitionListsMultiline = {
+	name  : 'definitionListsMultiline',
+	level : 'block',
+	start(src) { return src.match(/^[^\n]*\n::/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const regex = /(\n?\n?(?!::)[^\n]+?(?=\n::))|\n::(.(?:.|\n)*?(?=(?:\n::)|(?:\n\n)|$))/y;
+		let match;
+		let endIndex = 0;
+		const definitions = [];
+		while (match = regex.exec(src)) {
+			if(match[1]) {
+				definitions.push({
+					dt  : this.lexer.inlineTokens(match[1].trim()),
+					dds : []
+				});
+			}
+			if(match[2]) {
+				definitions[definitions.length - 1].dds.push(
+					this.lexer.inlineTokens(match[2].trim().replace(/\s/g,' '))
+				)
+			}
+			endIndex = regex.lastIndex;
+		}
+		if(definitions.length) {
+			return {
+				type : 'definitionListsMultiline',
+				raw  : src.slice(0, endIndex),
+				definitions
 			};
 		}
 	},
 	renderer(token) {
 		let returnVal = `<dl>`;
 		token.definitions.forEach((def)=>{
-			let dds = def.ddo.map((s)=>{
-				return `${token.inlineDefinitions ? '' : '\n'}<dd>${this.parser.parseInline(s).trim()}</dd>`;
+			let dds = def.dds.map((s)=>{
+				return `\n<dd>${this.parser.parseInline(s).trim()}</dd>`;
 			}).join('');
 			returnVal += `<dt>${this.parser.parseInline(def.dt)}</dt>${dds}\n`;
 		});
@@ -658,7 +615,7 @@ function MarkedVariables() {
 //^=====--------------------< Variable Handling >-------------------=====^//
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts] });
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionListsInline, definitionListsMultiline, superSubScripts] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
