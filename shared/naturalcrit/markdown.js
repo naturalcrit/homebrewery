@@ -294,10 +294,10 @@ const superSubScripts = {
 	}
 };
 
-const definitionLists = {
-	name  : 'definitionLists',
+const definitionListsInline = {
+	name  : 'definitionListsInline',
 	level : 'block',
-	start(src) { return src.match(/^.*?::.*/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	start(src) { return src.match(/^[^\n]*?::[^\n]*/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const regex = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym;
 		let match;
@@ -312,7 +312,7 @@ const definitionLists = {
 		}
 		if(definitions.length) {
 			return {
-				type : 'definitionLists',
+				type : 'definitionListsInline',
 				raw  : src.slice(0, endIndex),
 				definitions
 			};
@@ -321,11 +321,54 @@ const definitionLists = {
 	renderer(token) {
 		return `<dl>${token.definitions.reduce((html, def)=>{
 			return `${html}<dt>${this.parser.parseInline(def.dt)}</dt>`
-			            + `<dd>${this.parser.parseInline(def.dd)}</dd>\n`;
+			            + `<dd>${this.parser.parseInline(def.dd)}</dd>`;
 		}, '')}</dl>`;
 	}
 };
 
+const definitionListsMultiline = {
+	name  : 'definitionListsMultiline',
+	level : 'block',
+	start(src) { return src.match(/^[^\n]*\n::/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const regex = /(\n?\n?(?!::)[^\n]+?(?=\n::))|\n::(.(?:.|\n)*?(?=(?:\n::)|(?:\n\n)|$))/y;
+		let match;
+		let endIndex = 0;
+		const definitions = [];
+		while (match = regex.exec(src)) {
+			if(match[1]) {
+				definitions.push({
+					dt  : this.lexer.inlineTokens(match[1].trim()),
+					dds : []
+				});
+			}
+			if(match[2]) {
+				definitions[definitions.length - 1].dds.push(
+					this.lexer.inlineTokens(match[2].trim().replace(/\s/g, ' '))
+				);
+			}
+			endIndex = regex.lastIndex;
+		}
+		if(definitions.length) {
+			return {
+				type : 'definitionListsMultiline',
+				raw  : src.slice(0, endIndex),
+				definitions
+			};
+		}
+	},
+	renderer(token) {
+		let returnVal = `<dl>`;
+		token.definitions.forEach((def)=>{
+			const dds = def.dds.map((s)=>{
+				return `\n<dd>${this.parser.parseInline(s).trim()}</dd>`;
+			}).join('');
+			returnVal += `<dt>${this.parser.parseInline(def.dt)}</dt>${dds}\n`;
+		});
+		returnVal = returnVal.trim();
+		return `${returnVal}</dl>`;
+	}
+};
 
 //v=====--------------------< Variable Handling >-------------------=====v// 242 lines
 const replaceVar = function(input, hoist=false, allowUnresolved=false) {
@@ -572,7 +615,7 @@ function MarkedVariables() {
 //^=====--------------------< Variable Handling >-------------------=====^//
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionLists, superSubScripts] });
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionListsInline, definitionListsMultiline, superSubScripts] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
