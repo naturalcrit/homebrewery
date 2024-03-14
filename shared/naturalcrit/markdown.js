@@ -344,8 +344,8 @@ const definitionListsMultiline = {
 			}
 			if(match[2]) {
 				definitions[definitions.length - 1].dds.push(
-					this.lexer.inlineTokens(match[2].trim().replace(/\s/g,' '))
-				)
+					this.lexer.inlineTokens(match[2].trim().replace(/\s/g, ' '))
+				);
 			}
 			endIndex = regex.lastIndex;
 		}
@@ -360,7 +360,7 @@ const definitionListsMultiline = {
 	renderer(token) {
 		let returnVal = `<dl>`;
 		token.definitions.forEach((def)=>{
-			let dds = def.dds.map((s)=>{
+			const dds = def.dds.map((s)=>{
 				return `\n<dd>${this.parser.parseInline(s).trim()}</dd>`;
 			}).join('');
 			returnVal += `<dt>${this.parser.parseInline(def.dt)}</dt>${dds}\n`;
