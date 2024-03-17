@@ -1,7 +1,10 @@
 /* eslint-disable max-lines */
 
+const GoogleActions = require('./googleActions.js');
+
 describe('Tests for api', ()=>{
 	let api;
+	let GoogleActions;
 	let google;
 	let model;
 	let hbBrew;
@@ -50,6 +53,7 @@ describe('Tests for api', ()=>{
 		};
 
 		api = require('./homebrew.api');
+		GoogleActions = {};
 
 		hbBrew = {
 			text        : `brew text`,
@@ -296,7 +300,7 @@ describe('Tests for api', ()=>{
 			expect(next).toHaveBeenCalled();
 			expect(api.getId).toHaveBeenCalledWith(req);
 			expect(model.get).toHaveBeenCalledWith({ shareId: '1' });
-			expect(google.getGoogleBrew).toHaveBeenCalledWith('2', '1', 'share');
+			expect(google.getGoogleBrew).toHaveBeenCalledWith('2', '1', 'share', undefined);
 		});
 	});
 
@@ -573,6 +577,7 @@ brew`);
 		it('should handle case where fetching the brew returns an error', async ()=>{
 			api.getBrew = jest.fn(()=>async ()=>{ throw { message: 'err', HBErrorCode: '02' }; });
 			api.getId = jest.fn(()=>({ id: '1', googleId: '2' }));
+			GoogleActions.authCheck = jest.fn(()=>{ return undefined; });
 			model.deleteOne = jest.fn(async ()=>{});
 			const next = jest.fn(()=>{});
 
