@@ -1,4 +1,3 @@
-@import (less) './themes/fonts/5e/fonts.less';
 @import (less) './themes/assets/assets.less';
 @import (less) './themes/fonts/icon fonts/font-icons.less';
 
@@ -402,15 +401,9 @@
 		}
 	}
 	.pageNumber {
-		position    : absolute;
 		right       : 2px;
 		bottom      : 22px;
-		width       : 50px;
-		font-size   : 0.9em;
 		color       : var(--HB_Color_Footnotes);
-		text-align  : center;
-		text-indent : 0;
-		&.auto::after { content : counter(phb-page-numbers); }
 	}
 	.footnote {
 		position   : absolute;

@@ -151,30 +151,37 @@ const Editor = createClass({
 
 						// definition lists
 						if(line.includes('::')){
-							const regex = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym;
+							if(/^:*$/.test(line) == true){ return };
+							const regex = /^([^\n]*?:?\s?)(::[^\n]*)(?:\n|$)/ymd;  // the `d` flag, for match indices, throws an ESLint error.
 							let match;
 							while ((match = regex.exec(line)) != null){
-								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[0]) }, { line: lineNumber, ch: line.indexOf(match[0]) + match[0].length }, { className: 'define' });
-								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length }, { className: 'term' });
-								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[2]) }, { line: lineNumber, ch: line.indexOf(match[2]) + match[2].length }, { className: 'definition' });
+								codeMirror.markText({ line: lineNumber, ch: match.indices[0][0] }, { line: lineNumber, ch: match.indices[0][1] }, { className: 'dl-highlight' });
+								codeMirror.markText({ line: lineNumber, ch: match.indices[1][0] }, { line: lineNumber, ch: match.indices[1][1] }, { className: 'dt-highlight' });
+								codeMirror.markText({ line: lineNumber, ch: match.indices[2][0] }, { line: lineNumber, ch: match.indices[2][1] }, { className: 'dd-highlight' });
+								const ddIndex = match.indices[2][0];
+								let colons = /::/g;
+								let colonMatches = colons.exec(match[2]);
+								if(colonMatches !== null){
+									codeMirror.markText({ line: lineNumber, ch: colonMatches.index + ddIndex }, { line: lineNumber, ch: colonMatches.index + colonMatches[0].length + ddIndex }, { className: 'dl-colon-highlight'} )
+								}
 							}
 						}
 
-						// Superscript
-						if(line.includes('\^')) {
-							const regex = /\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^/g;
-							let match;
-							while ((match = regex.exec(line)) != null) {
-								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) - 1 }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length + 1 }, { className: 'superscript' });
-							}
-						}
-
-						// Subscript
-						if(line.includes('^^')) {
-							const regex = /\^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^\^/g;
-							let match;
-							while ((match = regex.exec(line)) != null) {
-								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) - 2 }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length + 2 }, { className: 'subscript' });
+						// Subscript & Superscript
+						if(line.includes('^')) {
+							let startIndex = line.indexOf('^');
+							const superRegex = /\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^/gy;
+							const subRegex   = /\^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^\^/gy;
+							
+							while (startIndex >= 0) {
+								superRegex.lastIndex = subRegex.lastIndex = startIndex;
+								let isSuper = false;
+								let match = subRegex.exec(line) || superRegex.exec(line);
+								if (match) {
+									isSuper = !subRegex.lastIndex;
+									codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: isSuper ? 'superscript' : 'subscript' });
+								}
+								startIndex = line.indexOf('^', Math.max(startIndex + 1, subRegex.lastIndex, superRegex.lastIndex));
 							}
 						}
 
