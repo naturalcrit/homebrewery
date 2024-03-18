@@ -18,7 +18,7 @@ describe('Inline Definition Lists', ()=>{
 	test('Multiple Definition Terms', function() {
 		const source = 'Term 1::Definition of Term 1\nTerm 2::Definition of Term 2\n\n';
 		const rendered = Markdown.render(source).trim();
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<dl><dt>Term 1</dt><dd>Definition of Term 1</dd><dt>Term 2</dt><dd>Definition of Term 2</dd></dl>');
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<dl><dt>Term 1</dt><dd>Definition of Term 1</dd>\n<dt>Term 2</dt><dd>Definition of Term 2</dd></dl>');
 	});
 });
 
