@@ -6,19 +6,19 @@ describe('Inline Definition Lists', ()=>{
 	test('No Term 1 Definition', function() {
 		const source = ':: My First Definition\n\n';
 		const rendered = Markdown.render(source).trim();
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<dl><dt></dt><dd>My First Definition</dd></dl>');
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<dl><dt></dt><dd>My First Definition</dd>\n</dl>');
 	});
 
 	test('Single Definition Term', function() {
 		const source = 'My term :: My First Definition\n\n';
 		const rendered = Markdown.render(source).trim();
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<dl><dt>My term</dt><dd>My First Definition</dd></dl>');
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<dl><dt>My term</dt><dd>My First Definition</dd>\n</dl>');
 	});
 
 	test('Multiple Definition Terms', function() {
 		const source = 'Term 1::Definition of Term 1\nTerm 2::Definition of Term 2\n\n';
 		const rendered = Markdown.render(source).trim();
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<dl><dt>Term 1</dt><dd>Definition of Term 1</dd><dt>Term 2</dt><dd>Definition of Term 2</dd></dl>');
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<dl><dt>Term 1</dt><dd>Definition of Term 1</dd>\n<dt>Term 2</dt><dd>Definition of Term 2</dd>\n</dl>');
 	});
 });
 
@@ -68,7 +68,7 @@ describe('Multiline Definition Lists', ()=>{
 	test('Multiple Term, Single multi-line definition, followed by an inline dl', function() {
 		const source = 'Term 1\n::Definition 1\nand more and more\n\nTerm 2\n::Definition 1\n::Definition 2\n\n::Inline Definition (no term)';
 		const rendered = Markdown.render(source).trim();
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<dl><dt>Term 1</dt>\n<dd>Definition 1 and more and more</dd>\n<dt>Term 2</dt>\n<dd>Definition 1</dd>\n<dd>Definition 2</dd></dl><dl><dt></dt><dd>Inline Definition (no term)</dd></dl>');
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<dl><dt>Term 1</dt>\n<dd>Definition 1 and more and more</dd>\n<dt>Term 2</dt>\n<dd>Definition 1</dd>\n<dd>Definition 2</dd></dl><dl><dt></dt><dd>Inline Definition (no term)</dd>\n</dl>');
 	});
 
 	test('Multiple Term, Single multi-line definition, followed by paragraph', function() {
