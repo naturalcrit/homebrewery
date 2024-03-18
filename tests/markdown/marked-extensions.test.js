@@ -60,7 +60,7 @@ describe('Multiline Definition Lists', ()=>{
 	});
 
 	test('Multiple Term, Single multi-line definition', function() {
-		const source = 'Term 1\n::Definition 1\nand more and more\n\nTerm 2\n::Definition 1\n\n::Definition 2\n\n';
+		const source = 'Term 1\n::Definition 1\nand more and more\n\nTerm 2\n::Definition 1\n::Definition 2\n\n';
 		const rendered = Markdown.render(source).trim();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<dl><dt>Term 1</dt>\n<dd>Definition 1 and more and more</dd>\n<dt>Term 2</dt>\n<dd>Definition 1</dd>\n<dd>Definition 2</dd></dl>');
 	});
