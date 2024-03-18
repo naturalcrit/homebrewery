@@ -321,7 +321,7 @@ const definitionListsInline = {
 	renderer(token) {
 		return `<dl>${token.definitions.reduce((html, def)=>{
 			return `${html}<dt>${this.parser.parseInline(def.dt)}</dt>`
-			            + `<dd>${this.parser.parseInline(def.dd)}</dd>`;
+			            + `<dd>${this.parser.parseInline(def.dd)}</dd>\n`;
 		}, '')}</dl>`;
 	}
 };
