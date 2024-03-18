@@ -31,7 +31,7 @@
     "test:mustache-syntax:inline": "jest '.*(mustache-syntax).*' -t '^Inline:.*' --verbose --noStackTrace",
     "test:mustache-syntax:block": "jest '.*(mustache-syntax).*' -t '^Block:.*' --verbose --noStackTrace",
     "test:mustache-syntax:injection": "jest '.*(mustache-syntax).*' -t '^Injection:.*' --verbose --noStackTrace",
-    "test:marked-extensions": "jest tests/markdown/marked-extensions.test.js --verbose --noStackTrace", 
+    "test:definition-lists": "jest tests/markdown/definition-lists.test.js --verbose --noStackTrace", 
     "test:route": "jest tests/routes/static-pages.test.js --verbose",
     "phb": "node scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
