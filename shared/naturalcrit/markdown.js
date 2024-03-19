@@ -337,12 +337,14 @@ const definitionListsMultiline = {
 		const definitions = [];
 		while (match = regex.exec(src)) {
 			if(match[1]) {
+				if(this.lexer.blockTokens(match[1].trim())[0].type !== 'paragraph') // DT must not be another block-level token besides <p>
+					break;
 				definitions.push({
 					dt  : this.lexer.inlineTokens(match[1].trim()),
 					dds : []
 				});
 			}
-			if(match[2]) {
+			if(match[2] && definitions.length) {
 				definitions[definitions.length - 1].dds.push(
 					this.lexer.inlineTokens(match[2].trim().replace(/\s/g, ' '))
 				);
@@ -615,7 +617,7 @@ function MarkedVariables() {
 //^=====--------------------< Variable Handling >-------------------=====^//
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionListsInline, definitionListsMultiline, superSubScripts] });
+Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionListsMultiline, definitionListsInline, superSubScripts] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
