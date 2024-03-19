@@ -76,4 +76,10 @@ describe('Multiline Definition Lists', ()=>{
 		const rendered = Markdown.render(source).trim();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<dl><dt>Term 1</dt>\n<dd>Definition 1 and more and more</dd>\n<dt>Term 2</dt>\n<dd>Definition 1</dd>\n<dd>Definition 2</dd></dl><p>Paragraph</p>');
 	});
+
+	test('Block Token cannot be the Term of a multi-line definition', function() {
+		const source = '## Header\n::Definition 1 of a single-line DL\n::Definition 1 of another single-line DL';
+		const rendered = Markdown.render(source).trim();
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<h2 id="header">Header</h2>\n<dl><dt></dt><dd>Definition 1 of a single-line DL</dd>\n<dt></dt><dd>Definition 1 of another single-line DL</dd>\n</dl>');
+	});
 });
