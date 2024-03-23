@@ -8,7 +8,10 @@ const findBasicIndex = (pages, theRegex)=>{
 		const basics = [];
 		if(page.match(theRegex)) {
 			let match;
-			while (match = theRegex.exec(page)){
+			console.log(page);
+			while ((match = theRegex.exec(page)) !== null){
+				console.log('Matched');
+				console.log(match);
 				basics.push(match[1].trim());
 			}
 		}
@@ -138,29 +141,37 @@ const markup = (index)=>{
 };
 
 module.exports = function (props) {
-	const index = new Map();
+	const indexes = new Map();
 
 	const pages = props.brew.text.split('\\page');
 	const indexMarkdownRegex = /@\[((?:\\.|[^\[\]\\^@^\)])*)\](\((((?:\\.|[^\[\]\\^@^\)])*))\))?/m;
-	const indexMarkdownRegexBasic = /@\[((?:\\.|[^\[\]\\^@^\)])*)\][^\(]/m;
+	//const indexMarkdownRegexBasic = /@\[((?:\\.|[^\[\]\\^@^\)])*)\][^\(]/m;
+	const indexMarkdownRegexBasic = /#([^/]+)(\/\/(.+))?/ym;
 
 	const basicIndexEntries = findBasicIndex(pages, indexMarkdownRegexBasic);
-	const richIndexEntries = findRichTags(pages, indexMarkdownRegex);
+//	const richIndexEntries = findRichTags(pages, indexMarkdownRegex);
 
 	if(basicIndexEntries.size > 0) {
-		findSubjectHeadings(pages, basicIndexEntries, index);
+		findSubjectHeadings(pages, basicIndexEntries, indexes);
 	}
 
-	if(richIndexEntries.length>0) {
-		addRichIndexes(richIndexEntries, index);
-	}
+	// if(richIndexEntries.length>0) {
+	// 	addRichIndexes(richIndexEntries, index);
+	// }
 
-	const markdown = markup(index);
 
-	return dedent`
+	let  resultIndexes = '';
+
+	for (const index of indexes) {
+		const markdown = markup(index);
+		resultIndexes +=dedent`
 		{{index,wide
 		##### Index
 
 		${markdown}
-		}}`;
+		}}
+		/page`;
+	};
+
+	return resultIndexes;
 };
