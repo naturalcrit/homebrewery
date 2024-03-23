@@ -65,6 +65,12 @@ jobs:
           name: Test - Mustache Spans
           command: npm run test:mustache-syntax
       - run:
+          name: Test - Definition Lists
+          command: npm run test:definition-lists
+      - run:
+          name: Test - Variables
+          command: npm run test:variables
+      - run:
           name: Test - Routes
           command: npm run test:route
       - run:
