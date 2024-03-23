@@ -80,7 +80,7 @@ module.exports = function(props){
 
 	return dedent`
 		{{toc,wide
-		# Table Of Contents
+		# Contents
 
 		${markdown}
 		}}

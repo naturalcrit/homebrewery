@@ -240,18 +240,23 @@
 	.navDropdownContainer {
 		position : relative;
 		.navDropdown {
-			position   : absolute;
-			top        : 28px;
-			left       : 0px;
-			z-index    : 10000;
-			width      : 100%;
-			max-height : calc(100vh - 28px);
-			overflow   : hidden auto;
+			position: absolute;
+			top: 28px;
+			right: 0px;
+			z-index: 10000;
+			width: max-content;
+			min-width:100%;
+			max-height: calc(100vh - 28px);
+			overflow: hidden auto;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-end;
 			.navItem {
 				position           : relative;
-				display            : block;
+				display            : flex;
+				justify-content    : space-between;
+				align-items        : center;
 				width              : 100%;
-				padding            : 8px 5px;
 				border             : 1px solid #888888;
 				border-bottom      : 0;
 				animation-name     : glideDropDown;
@@ -266,7 +271,8 @@
 				position         : relative;
 				box-sizing       : border-box;
 				display          : block;
-				max-height       : ~'calc(100vh - 28px)';
+				max-width        : 15em;
+				max-height       : ~'calc(100vh - 28px)';			
 				padding          : 8px 5px 13px;
 				overflow         : hidden auto;
 				color            : white;
