@@ -82,4 +82,10 @@ describe('Multiline Definition Lists', ()=>{
 		const rendered = Markdown.render(source).trim();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<h2 id="header">Header</h2>\n<dl><dt></dt><dd>Definition 1 of a single-line DL</dd>\n<dt></dt><dd>Definition 1 of another single-line DL</dd>\n</dl>');
 	});
+
+	test('Inline DL has priority over Multiline', function() {
+		const source = 'Term 1 :: Inline definition 1\n:: Inline definition 2 (no DT)';
+		const rendered = Markdown.render(source).trim();
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<dl><dt>Term 1</dt><dd>Inline definition 1</dd>\n<dt></dt><dd>Inline definition 2 (no DT)</dd>\n</dl>');
+	});
 });
