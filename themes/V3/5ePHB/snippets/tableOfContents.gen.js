@@ -5,7 +5,7 @@ const getTOC = ()=>{
 	const add1 = (title, page)=>{
 		res.push({
 			title    : title,
-			page     : page + 1,
+			page     : page,
 			children : []
 		});
 	};
@@ -13,7 +13,7 @@ const getTOC = ()=>{
 		if(!_.last(res)) add1(null, page);
 		_.last(res).children.push({
 			title    : title,
-			page     : page + 1,
+			page     : page,
 			children : []
 		});
 	};
@@ -22,7 +22,7 @@ const getTOC = ()=>{
 		if(!_.last(_.last(res).children)) add2(null, page);
 		_.last(_.last(res).children).children.push({
 			title    : title,
-			page     : page + 1,
+			page     : page,
 			children : []
 		});
 	};
@@ -35,7 +35,7 @@ const getTOC = ()=>{
 	_.each(headings, (heading)=>{
 		const onPage = parseInt(heading.closest('.page,.phb').id?.replace(/^p/, ''));
 		const ToCExclude = getComputedStyle(heading).getPropertyValue('--TOC');
-		if(ToCExclude != '"exclude"') {
+		if(ToCExclude != 'exclude') {
 			if(!isNaN(onPage)) {
 				const headingText =  heading.innerText;
 				if(heading.tagName == 'H1') {
