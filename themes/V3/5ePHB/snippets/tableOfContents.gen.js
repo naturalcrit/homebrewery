@@ -110,33 +110,33 @@ module.exports = function(props){
 					_.each(g2.children, (g3, idx3)=>{
 						if(g3.title !== null) {
 							if(g2.title !== null) {
-								r.push(`    - [{{ ${g3.title}}}{{ ${g3.page}}}](#p${g3.page})`);
+								r.push(`    - #### [{{ ${g3.title}}}{{ ${g3.page}}}](#p${g3.page})`);
 							} else { // Don't over-indent if no level-2 parent entry
-								r.push(`  - [{{ ${g3.title}}}{{ ${g3.page}}}](#p${g3.page})`);
+								r.push(`  - #### [{{ ${g3.title}}}{{ ${g3.page}}}](#p${g3.page})`);
 							}
 						}
 						_.each(g3.children, (g4, idx4)=>{
 							if(g4.title !== null) {
 								if(g3.title !== null) {
-									r.push(`      - [{{ ${g4.title}}}{{ ${g4.page}}}](#p${g4.page})`);
+									r.push(`      - #### [{{ ${g4.title}}}{{ ${g4.page}}}](#p${g4.page})`);
 								} else { // Don't over-indent if no level-3 parent entry
-									r.push(`    - [{{ ${g4.title}}}{{ ${g4.page}}}](#p${g4.page})`);
+									r.push(`    - #### [{{ ${g4.title}}}{{ ${g4.page}}}](#p${g4.page})`);
 								}
 							}
 							_.each(g4.children, (g5, idx5)=>{
 								if(g5.title !== null) {
 									if(g4.title !== null) {
-										r.push(`        - [{{ ${g5.title}}}{{ ${g5.page}}}](#p${g5.page})`);
+										r.push(`        - #### [{{ ${g5.title}}}{{ ${g5.page}}}](#p${g5.page})`);
 									} else { // Don't over-indent if no level-4 parent entry
-										r.push(`      - [{{ ${g5.title}}}{{ ${g5.page}}}](#p${g5.page})`);
+										r.push(`      - #### [{{ ${g5.title}}}{{ ${g5.page}}}](#p${g5.page})`);
 									}
 								}
 								_.each(g5.children, (g6, idx6)=>{
 									if(g6.title !== null) {
 										if(g5.title !== null) {
-											r.push(`        - [{{ ${g6.title}}}{{ ${g6.page}}}](#p${g6.page})`);
+											r.push(`          - #### [{{ ${g6.title}}}{{ ${g6.page}}}](#p${g6.page})`);
 										} else { // Don't over-indent if no level-5 parent entry
-											r.push(`      - [{{ ${g6.title}}}{{ ${g6.page}}}](#p${g6.page})`);
+											r.push(`        - #### [{{ ${g6.title}}}{{ ${g6.page}}}](#p${g6.page})`);
 										}
 									}
 								});
