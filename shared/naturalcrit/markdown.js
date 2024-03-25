@@ -266,6 +266,50 @@ const mustacheInjectBlock = {
 	}
 };
 
+const indexesDuplicates = (indexEntry)=>{
+	let count = 0;
+	for (const ie of indexes) {
+		if((ie.topic === indexEntry.topic) && (ie.subtopics === indexEntry.subtopics) && (ie.index === indexEntry.index)) {
+			count++;
+		}
+	}
+	indexes.push({ ...indexEntry });
+	return count == 0 ? '' : count;
+};
+
+const indexAnchors = {
+	name  : 'indexAnchor',
+	level : 'inline',
+	start(src) {return src.match(/^#([^/]+)(\/\/(.+))?/)?.index;}, // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const inlineRegex = /^#([^/]+)(\/\/(.+))?/y;
+		const indexEntry = {};
+		const match = inlineRegex.exec(src);
+		if(match) {
+			indexEntry.subtopics = match[3] ? match[3].trim() : undefined;
+			indexEntry.topic = match[1].slice(match[1].indexOf(' ')).trim();
+			indexEntry.index = match[1].slice(0, match[1].indexOf(' ')).trim();
+			indexEntry.instance = indexesDuplicates(indexEntry);
+			return {
+				type       : 'indexAnchor',
+				text       : src,
+				raw        : match[0],
+				pageNumber : markedRenderVars?.pageNumber || 0, // Need to pull this from somewhere. Currently assuming from markded_brew_options
+				indexEntry
+			};
+		}
+	},
+	renderer(token) {
+		// This is a Subtopic entry
+		if(token.indexEntry?.entries) {
+			return `<a href="#p${token.pageNumber}_${token.indexEntry.subtopics.replace(/\s/g, '').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-subtopic="${token.indexEntry.subtopics}" data-index="${token.indexEntry.index}"></a>`;
+		} else {
+			// This is a Topic entry
+			return `<a href="#p${token.pageNumber}_${token.indexEntry.topic.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-index="${token.indexEntry.index}"></a>`;
+		}
+	}
+};
+
 const superSubScripts = {
 	name  : 'superSubScript',
 	level : 'inline',
@@ -616,8 +660,9 @@ function MarkedVariables() {
 };
 //^=====--------------------< Variable Handling >-------------------=====^//
 
+Marked.use({ extensions : [indexAnchors, mustacheSpans, mustacheDivs, mustacheInjectInline, definitionListsMultiline,
+	definitionListsInline, superSubScripts, ] });
 Marked.use(MarkedVariables());
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionListsMultiline, definitionListsInline, superSubScripts] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
@@ -698,16 +743,20 @@ const processStyleTags = (string)=>{
 		`${attributes?.length   ? ` ${attributes.join(' ')}`     : ''}`;
 };
 
+let markedRenderVars = {};
 const globalVarsList    = {};
 let varsQueue       = [];
 let globalPageNumber = 0;
+let indexes = [];
 
 module.exports = {
 	marked : Marked,
 	render : (rawBrewText, pageNumber=1)=>{
 		globalVarsList[pageNumber] = {};						//Reset global links for current page, to ensure values are parsed in order
 		varsQueue              = [];						//Could move into MarkedVariables()
+		indexes = [];
 		globalPageNumber        = pageNumber;
+		markedRenderVars['pageNumber'] = pageNumber;
 
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
 														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
