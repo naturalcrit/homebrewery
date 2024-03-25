@@ -2,52 +2,18 @@ const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
 
 const getTOC = (pages)=>{
-	const add1 = (title, page)=>{
-		res.push({
-			title    : title,
-			page     : page + 1,
-			children : []
-		});
-	};
-	const add2 = (title, page)=>{
-		if(!_.last(res)) add1(null, page);
-		_.last(res).children.push({
-			title    : title,
-			page     : page + 1,
-			children : []
-		});
-	};
-	const add3 = (title, page)=>{
-		if(!_.last(res)) add1(null, page);
-		if(!_.last(_.last(res).children)) add2(null, page);
-		_.last(_.last(res).children).children.push({
-			title    : title,
-			page     : page + 1,
-			children : []
-		});
-	};
 
-	const add4 = (title, page)=>{
-		if(!_.last(res)) add1(null, page);
-		if(!_.last(_.last(res).children)) add2(null, page);
-		if(!_.last(_.last(_.last(res).children))) add3(null, page);
-		_.last(_.last(_.last(res).children).children).children.push({
-			title    : title,
-			page     : page + 1,
-			children : []
-		});
-	};
-
-	const add5 = (title, page)=>{
-		if(!_.last(res)) add1(null, page);
-		if(!_.last(_.last(res).children)) add2(null, page);
-		if(!_.last(_.last(_.last(res).children))) add3(null, page);
-		if(!_.last(_.last(_.last(_.last(res).children)))) add4(null, page);
-		_.last(_.last(_.last(_.last(res).children).children).children).children.push({
-			title    : title,
-			page     : page + 1,
-			children : []
-		});
+	const recursiveAdd = (title, page, targetDepth, curDepth=0)=>{
+		if(curDepth == targetDepth) {
+			res.push({
+				title    : title,
+				page     : page + 1,
+				children : []
+			});
+		} else {
+			if(!_last(res)) recursiveAdd(null, page);
+			recursiveAdd(title, page, targetDepth, curDepth+1);
+		}
 	};
 
 	const res = [];
@@ -58,23 +24,23 @@ const getTOC = (pages)=>{
 			_.each(lines, (line)=>{
 				if(_.startsWith(line, '# ')){
 					const title = line.replace('# ', '');
-					add1(title, pageNum);
+					recursiveAdd(title, pageNum, 0);
 				}
 				if(_.startsWith(line, '## ')){
 					const title = line.replace('## ', '');
-					add2(title, pageNum);
+					recursiveAdd(title, pageNum, 1);
 				}
 				if(_.startsWith(line, '### ')){
 					const title = line.replace('### ', '');
-					add3(title, pageNum);
+					recursiveAdd(title, pageNum, 2);
 				}
 				if(_.startsWith(line, '#### ')){
 					const title = line.replace('#### ', '');
-					add4(title, pageNum);
+					recursiveAdd(title, pageNum, 3);
 				}
 				if(_.startsWith(line, '##### ')){
 					const title = line.replace('##### ', '');
-					add5(title, pageNum);
+					recursiveAdd(title, pageNum, 4);
 				}
 			});
 		}
