@@ -70,7 +70,7 @@ const getTOC = ()=>{
 		const ToCExclude = getComputedStyle(heading).getPropertyValue('--TOC');
 		if(ToCExclude != 'exclude') {
 			if(!isNaN(onPage)) {
-				const headingText =  heading.innerText;
+				const headingText =  heading.innerText.trim();
 				if(heading.tagName == 'H1') {
 					add1(headingText, onPage);
 				}
