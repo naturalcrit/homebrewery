@@ -791,6 +791,9 @@
 // *****************************/
 
 // Default Exclusions
+h4,
+h5,
+h6,
 .page:has(.frontCover), 
 .page:has(.backCover), 
 .page:has(.insideCover), 
@@ -798,6 +801,19 @@
 .monster,
 .noToC,
 .toc { --TOC: exclude; }
+
+.tocH4 {
+	h4 { --TOC: include; }
+}
+.tocH5 {
+	h4 { --TOC: include; }
+	h5 { --TOC: include; }
+}
+.tocH6 {
+	h4 { --TOC: include; }
+	h5 { --TOC: include; }
+	h6 { --TOC: include; }
+}
 
 .page {
 	&:has(.toc)::after { display : none; }
