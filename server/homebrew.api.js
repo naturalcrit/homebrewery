@@ -54,6 +54,10 @@ const api = {
 				});
 			stub = stub?.toObject();
 
+			if(stub?.lock?.locked && accessType != 'edit') {
+				throw { HBErrorCode: '100', code: stub.lock.code, message: stub.lock.message, brewId: stub.shareId, brewTitle: stub.title };
+			}
+
 			// If there is a google id, try to find the google brew
 			if(!stubOnly && (googleId || stub?.googleId)) {
 				let googleError;

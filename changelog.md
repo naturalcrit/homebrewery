@@ -84,7 +84,70 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-### Wednesday 21/2/2024 - v3.11.0
+### Monday 18/3/2024 - v3.12.0
+{{taskList
+
+##### 5e-Cleric
+
+* [x] Fix language-specific hyphenation on print page
+
+Fixes issue [#3294](https://github.com/naturalcrit/homebrewery/issues/3294)
+
+* [x] Upgrade Font-Awesome to v6.51
+
+* [x] Allow downloaded files to be uploaded via {{openSans **NEW {{fa,fa-plus-square}} → FROM UPLOAD {{fa,fa-upload}}**}}
+
+##### G-Ambatte
+
+* [x] Fix an edge case crash with empty documents
+
+Fixes issue [#3315](https://github.com/naturalcrit/homebrewery/issues/3315)
+
+* [x] Brews on the user page can be searched by tag; clicking a tag adds it to the filter
+
+Fixes issue [#3164](https://github.com/naturalcrit/homebrewery/issues/3164)
+
+* [x] Add *DiceFont* icons {{df,d20-20}} `{{df,icon-name}}`
+
+##### abquintic
+
+* [x] Fix ^super^ and ^^sub^^ highlighting in the text editor
+
+* [x] Add new syntax for multiline Definition Lists:
+
+
+```
+Term
+::Definition 1
+::Definition 2
+with more text
+```
+
+produces:
+
+Term
+::Definition 1
+::Definition 2
+with more text
+
+Fixes issue [#2340](https://github.com/naturalcrit/homebrewery/issues/2340)
+
+##### RKuerten :
+* [x] Fix monster stat block backgrounds on print page
+
+Fixes issue [#3275](https://github.com/naturalcrit/homebrewery/issues/3275)
+
+* [x] Added new text editor theme: "Darkvision".
+
+##### calculuschild, G-Ambatte, 5e-Cleric
+
+* [x] Codebase and UI cleanup
+}}
+
+\page
+
+
+### Friday 21/2/2024 - v3.11.0
 {{taskList
 
 ##### Gazook89
@@ -166,14 +229,16 @@ Fixes issue [1488](https://github.com/naturalcrit/homebrewery/issues/1488)
 Fixes issues [2510](https://github.com/naturalcrit/homebrewery/issues/2510),
 [2975](https://github.com/naturalcrit/homebrewery/issues/2975)
 
-* [x] New Variables syntax. See below for details.
+* [x] Brew Variables
 }}
+
+\
 
 {{wide
 
 ### Brew Variable Syntax
 
-You may already be familiar with `[link](url)` and `![image](url)` syntax. We have expanded this to include a third `$[variable](text)` syntax. All three of these syntaxes now share a common set of features:
+You may already be familiar with `[link](url)` and `![image](url)` synax. We have expanded this to include a third `$[variable](text)` syntax. All three of these syntaxes now share a common set of features:
 
 {{varSyntaxTable
 | syntax | description |
@@ -1512,7 +1577,7 @@ myStyle {color: black}
 ### Sunday, 29/05/2016 - v2.1.0
 - Finally added a syntax for doing spell lists. A bit in-depth about why this took so long. Essentially I'm running out of syntax to use in stardard Markdown. There are too many unique elements in the PHB-style to be mapped. I solved this earlier by stacking certain elements together (eg. an `<hr>` before a `blockquote` turns it into moster state block), but those are getting unweildly. I would like to simply wrap these in `div`s with classes, but unfortunately Markdown stops processing when within HTML blocks. To get around this I wrote my own override to the Markdown parser and lexer to process Markdown within a simple div class wrapper. This should open the door for more unique syntaxes in the future. Big step!
 - Override Ctrl+P (and cmd+P) to launch to the print page. Many people try to just print either the editing or share page to get a PDF. While this dones;t make much sense, I do get a ton of issues about it. So now if you try to do this, it'll just bring you imediately to the print page. Everybody wins!
-- The onboarding flow has also been confusing a few users (Homepage -> new -> save -> edit page). If you edit the Homepage text now, a Call to Action to save your work will pop-up.
+- The onboarding flow has also been confusing a few users (Homepage → new → save → edit page). If you edit the Homepage text now, a Call to Action to save your work will pop-up.
 - Added a 'Recently Edited' and 'Recently Viewed' nav item to the edit and share page respectively. Each will remember the last 8 items you edited or viewed and when you viewed it. Makes use of the new title attribute of brews to easy navigatation.
 - Paragraphs now indent properly after lists (thanks u/slitjen!)
 
