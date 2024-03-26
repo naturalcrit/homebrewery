@@ -95,57 +95,27 @@ const getTOC = ()=>{
 	return res;
 };
 
+const ToCIterate = (entries, curDepth=0)=>{
+	const levelPad = ['- ###', '  - ####', '    - ####', '      - ####', '        - ####', '          - ####'];
+	const toc = [];
+	if(entries.title !== null){
+		toc.push(`${levelPad[curDepth]} [{{ ${entries.title}}}{{ ${entries.page}}}](#p${entries.page})`);
+	}
+	if(entries.children.length) {
+		_.each(entries.children, (entry, idx)=>{
+			const children = ToCIterate(entry, curDepth+1);
+			if(children.length) {
+				toc.push(...children);
+			}
+		});
+	}
+	return toc;
+};
+
 module.exports = function(props){
 	const TOC = getTOC();
 	const markdown = _.reduce(TOC, (r, g1, idx1)=>{
-		if(g1.title !== null) {
-			r.push(`- ### [{{ ${g1.title}}}{{ ${g1.page}}}](#p${g1.page})`);
-		}
-		if(g1.children.length){
-			_.each(g1.children, (g2, idx2)=>{
-				if(g2.title !== null) {
-					r.push(`  - #### [{{ ${g2.title}}}{{ ${g2.page}}}](#p${g2.page})`);
-				}
-				if(g2.children.length){
-					_.each(g2.children, (g3, idx3)=>{
-						if(g3.title !== null) {
-							if(g2.title !== null) {
-								r.push(`    - #### [{{ ${g3.title}}}{{ ${g3.page}}}](#p${g3.page})`);
-							} else { // Don't over-indent if no level-2 parent entry
-								r.push(`  - #### [{{ ${g3.title}}}{{ ${g3.page}}}](#p${g3.page})`);
-							}
-						}
-						_.each(g3.children, (g4, idx4)=>{
-							if(g4.title !== null) {
-								if(g3.title !== null) {
-									r.push(`      - #### [{{ ${g4.title}}}{{ ${g4.page}}}](#p${g4.page})`);
-								} else { // Don't over-indent if no level-3 parent entry
-									r.push(`    - #### [{{ ${g4.title}}}{{ ${g4.page}}}](#p${g4.page})`);
-								}
-							}
-							_.each(g4.children, (g5, idx5)=>{
-								if(g5.title !== null) {
-									if(g4.title !== null) {
-										r.push(`        - #### [{{ ${g5.title}}}{{ ${g5.page}}}](#p${g5.page})`);
-									} else { // Don't over-indent if no level-4 parent entry
-										r.push(`      - #### [{{ ${g5.title}}}{{ ${g5.page}}}](#p${g5.page})`);
-									}
-								}
-								_.each(g5.children, (g6, idx6)=>{
-									if(g6.title !== null) {
-										if(g5.title !== null) {
-											r.push(`          - #### [{{ ${g6.title}}}{{ ${g6.page}}}](#p${g6.page})`);
-										} else { // Don't over-indent if no level-5 parent entry
-											r.push(`        - #### [{{ ${g6.title}}}{{ ${g6.page}}}](#p${g6.page})`);
-										}
-									}
-								});
-							});
-						});
-					});
-				}
-			});
-		}
+		r.push(ToCIterate(g1).join('\n'));
 		return r;
 	}, []).join('\n');
 
