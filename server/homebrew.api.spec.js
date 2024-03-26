@@ -118,7 +118,7 @@ describe('Tests for api', ()=>{
 					id : '123456789012345678901234567890123abcdefghijkl'
 				}
 			});
-			
+
 			expect(googleId).toEqual('123456789012345678901234567890123');
 			expect(id).toEqual('abcdefghijkl');
 		});
@@ -129,7 +129,7 @@ describe('Tests for api', ()=>{
 					id : '123456789012345678901234567890123abcdefghij'
 				}
 			});
-			
+
 			expect(googleId).toEqual('123456789012345678901234567890123');
 			expect(id).toEqual('abcdefghij');
 		});
@@ -301,6 +301,18 @@ describe('Tests for api', ()=>{
 			expect(api.getId).toHaveBeenCalledWith(req);
 			expect(model.get).toHaveBeenCalledWith({ shareId: '1' });
 			expect(google.getGoogleBrew).toHaveBeenCalledWith('2', '1', 'share');
+		});
+
+		it('access is denied to a locked brew', async()=>{
+			const lockBrew = { title: 'test brew', shareId: '1', lock: { locked: true, code: 404, message: 'brew locked' } };
+			model.get = jest.fn(()=>toBrewPromise(lockBrew));
+			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
+
+			const fn = api.getBrew('share', false);
+			const req = { brew: {} };
+			const next = jest.fn();
+
+			await expect(fn(req, null, next)).rejects.toEqual({ 'HBErrorCode': '100', 'brewId': '1', 'brewTitle': 'test brew', 'code': 404, 'message': 'brew locked' });
 		});
 	});
 
