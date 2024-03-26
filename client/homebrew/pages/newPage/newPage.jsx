@@ -150,7 +150,7 @@ const NewPage = createClass({
 		}
 
 		brew.pageCount=((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
-
+		console.log('Running post.');
 		const res = await request
 			.post(`/api${this.state.saveGoogle ? '?saveToGoogle=true' : ''}`)
 			.send(brew)
@@ -158,7 +158,9 @@ const NewPage = createClass({
 				console.log(err);
 				this.setState({ isSaving: false, error: err });
 			});
-		if(!res) return;
+			console.log('Post completed');
+			if(!res) return;
+			console.log('Had results!');
 
 		brew = res.body;
 		localStorage.removeItem(BREWKEY);

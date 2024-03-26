@@ -81,7 +81,7 @@ const SharePage = createClass({
 			</Navbar>
 
 			<div className='content'>
-				<BrewRenderer text={this.props.brew.text} style={this.props.brew.style} renderer={this.props.brew.renderer} theme={this.props.brew.theme} />
+				<BrewRenderer text={this.props.brew.text} style={this.props.brew.style} renderer={this.props.brew.renderer} theme={this.props.brew.theme} userThemes={this.props.brew.userThemes}/>
 			</div>
 		</div>;
 	}

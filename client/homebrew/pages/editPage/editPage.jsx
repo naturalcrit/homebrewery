@@ -51,7 +51,8 @@ const EditPage = createClass({
 			autoSave               : true,
 			autoSaveWarning        : false,
 			unsavedTime            : new Date(),
-			currentEditorPage      : 0
+			currentEditorPage      : 0,
+			userThemes             : this.props.brew.userThemes
 		};
 	},
 	savedBrew : null,
@@ -407,6 +408,7 @@ const EditPage = createClass({
 						theme={this.state.brew.theme}
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
+						userThemes={this.state.brew.userThemes}
 						currentEditorPage={this.state.currentEditorPage}
 					/>
 				</SplitPane>

@@ -14,7 +14,7 @@ const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
 
-const Themes = require('themes/themes.json');
+const staticThemes = require('themes/themes.json');
 
 const PAGE_HEIGHT = 1056;
 
@@ -181,9 +181,33 @@ const BrewRenderer = (props)=>{
 		document.dispatchEvent(new MouseEvent('click'));
 	};
 
-	const rendererPath  = props.renderer == 'V3' ? 'V3' : 'Legacy';
-	const themePath     = props.theme ?? '5ePHB';
-	const baseThemePath = Themes[rendererPath][themePath].baseTheme;
+	let rendererPath  = props.renderer == 'V3' ? 'V3' : 'Legacy';
+	let baseRendererPath = props.renderer == 'V3' ? 'V3' : 'Legacy';
+	const blankRendererPath = props.renderer == 'V3' ? 'V3' : 'Legacy';
+	if(props?.theme && (props?.theme[0] === '#')) {
+		rendererPath = 'Brew';
+	}
+	let themePath     = props.theme ?? '5ePHB';
+	const Themes = { ...staticThemes, ...props.userThemes };
+	let baseThemePath = Themes[rendererPath][themePath]?.baseTheme;
+
+	// Override static theme values if a Brew theme.
+
+	if(themePath && themePath[0] === '#') {
+		themePath = themePath.slice(1);
+		rendererPath = '';
+	} else {
+		rendererPath += '/';
+	}
+
+	if(rendererPath == '') {
+		baseThemePath = 'Brew';
+		baseRendererPath = '';
+	} else {
+		baseRendererPath += '/';
+	}
+
+	const staticOrUserParent = (props.theme && props?.theme[0] == '#') ? `/cssParent/${themePath}` : `/css/${baseRendererPath}${baseThemePath}`;
 
 	return (
 		<>
@@ -211,11 +235,11 @@ const BrewRenderer = (props)=>{
 						<RenderWarnings />
 						<NotificationPopup />
 					</div>
-					<link href={`/themes/${rendererPath}/Blank/style.css`} type="text/css" rel='stylesheet'/>
+					<link href={`/css/${blankRendererPath}/Blank`} rel='stylesheet'/>
 					{baseThemePath &&
-						<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} type="text/css" rel='stylesheet'/>
+						<link href={staticOrUserParent} rel='stylesheet'/>
 					}
-					<link href={`/themes/${rendererPath}/${themePath}/style.css`} type="text/css" rel='stylesheet'/>
+					<link href={`/css/${rendererPath}${themePath}`} rel='stylesheet'/>
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted

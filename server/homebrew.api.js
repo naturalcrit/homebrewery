@@ -9,7 +9,21 @@ const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
 
+
 const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
+
+const themes = require('../themes/themes.json');
+
+const isStaticTheme = (engine, themeName)=>{
+	if(!themes.hasOwnProperty(engine)) {
+		return undefined;
+	}
+	if(themes[engine].hasOwnProperty(themeName)) {
+		return themes[engine][themeName].baseTheme;
+	} else {
+		return undefined;
+	}
+};
 
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
@@ -18,6 +32,22 @@ const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
 // };
 
 const MAX_TITLE_LENGTH = 100;
+
+const splitTextStyleAndMetadata = (brew)=>{
+	brew.text = brew.text.replaceAll('\r\n', '\n');
+	if(brew.text.startsWith('```metadata')) {
+		const index = brew.text.indexOf('```\n\n');
+		const metadataSection = brew.text.slice(12, index - 1);
+		const metadata = yaml.load(metadataSection);
+		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
+		brew.text = brew.text.slice(index + 5);
+	}
+	if(brew.text.startsWith('```css')) {
+		const index = brew.text.indexOf('```\n\n');
+		brew.style = brew.text.slice(7, index - 1);
+		brew.text = brew.text.slice(index + 5);
+	}
+};
 
 const api = {
 	homebrewApi : router,
@@ -37,14 +67,48 @@ const api = {
 		}
 		return { id, googleId };
 	},
+	getUsersBrewThemes : async (username, id)=>{
+		const fields = [
+			'title',
+			'tags',
+			'editId',
+			'thumbnail',
+			'textBin',
+			'text'
+		];
+
+		const userThemes = {
+			Brew : {
+
+			}
+		};
+
+		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme', 'type:theme', 'type:Theme'] }, editId: { $ne: id }  });
+
+		if(brews) {
+			for await (const brew of brews) {
+				userThemes.Brew[`#${brew.editId}`] = {
+					name         : brew.title,
+					renderer     : 'V3',
+					baseTheme    : '',
+					baseSnippets : false,
+					path         : `#${brew.editId}`,
+					thumbnail    : brew.thumbnail.length > 0 ? brew.thumbnail : '/assets/naturalCritLogoWhite.svg'
+				};
+			}
+		}
+
+		return userThemes;
+	},
 	getBrew : (accessType, stubOnly = false)=>{
 		// Create middleware with the accessType passed in as part of the scope
 		return async (req, res, next)=>{
+
 			// Get relevant IDs for the brew
 			const { id, googleId } = api.getId(req);
 
 			// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine.
-			let stub = await HomebrewModel.get(accessType === 'edit' ? { editId: id } : { shareId: id })
+			let stub = await HomebrewModel.get((accessType === 'edit') || (accessType === 'theme') ? { editId: id } : { shareId: id })
 				.catch((err)=>{
 					if(googleId) {
 						console.warn(`Unable to find document stub for ${accessType}Id ${id}`);
@@ -93,11 +157,16 @@ const api = {
 				throw { name: 'BrewLoad Error', message: 'Brew not found', status: 404, HBErrorCode: '05', accessType: accessType, brewId: id };
 			}
 
+			const mainAuthor = stub.authors ? stub.authors[0] : '';
+			const userID = req?.account?.username && (accessType === 'edit') ? req.account.username : mainAuthor;
+
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
+			const userThemes = accessType != 'themes' ? await api.getUsersBrewThemes(userID, id, req, res, next) : {};
 			if(stub) {
 				stub.tags     = stub.tags     || undefined; // Clear empty strings
 				stub.renderer = stub.renderer || undefined; // Clear empty strings
 				stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
+				stub.userThemes = userThemes;
 			}
 
 			req.brew = stub ?? {};
@@ -209,6 +278,35 @@ const api = {
 
 		res.status(200).send(saved);
 	},
+	getBrewThemeWithCSS : async (req, res)=>{
+		const brew = req.brew;
+		splitTextStyleAndMetadata(brew);
+		res.setHeader('Content-Type', 'text/css');
+		const staticTheme = `/css/${req.brew.renderer}/${req.brew.theme}`;
+		const userTheme = `/css/${req.brew.theme.slice(1)}`;
+		const parentThemeImport = `@import url(\"${req.brew.theme[0] != '#' ? staticTheme : userTheme}\");\n\n/* From Brew: ${req.brew.title}*/\n\n`;
+		return res.status(200).send(`${req.brew.renderer == 'legacy' ? '' : parentThemeImport}${req.brew.style}`);
+	},
+	getBrewThemeParent : async (req, res)=>{
+		const brew = req.brew;
+		splitTextStyleAndMetadata(brew);
+		res.setHeader('Content-Type', 'text/css');
+		const staticTheme = `/css/${req.brew.renderer}/${req.brew.theme}`;
+		const userTheme = `/css/${req.brew.theme.slice(1)}`;
+		const parentThemeImport = `@import url(\"${req.brew.theme[0] != '#' ? staticTheme : userTheme}\");\n\n/* From Brew: ${req.brew.title}*/\n\n`;
+		return res.status(200).send(`${req.brew.renderer == 'legacy' ? '' : parentThemeImport}`);
+	},
+	getStaticTheme : async(req, res)=>{
+		const themeParent = isStaticTheme(req.params.engine, req.params.id);
+		if(themeParent === undefined){
+			res.status(404).send(`Invalid Theme - Engine: ${req.params.engine}, Name: ${req.params.id}`);
+		} else {
+			res.setHeader('Content-Type', 'text/css');
+			res.setHeader('Cache-Control', 'public, max-age: 43200, must-revalidate');
+			const parentTheme = themeParent ? `@import url(\"/css/${req.params.engine}/${themeParent}\");\n/* Static Theme ${themes[req.params.engine][themeParent].name} */\n` : '';
+			return res.status(200).send(`${parentTheme}@import url(\"/themes/${req.params.engine}/${req.params.id}/style.css\");\n/* Static Theme ${themes[req.params.engine][req.params.id].name} */\n`);
+		}
+	},
 	updateBrew : async (req, res)=>{
 		// Initialize brew from request and body, destructure query params, and set the initial value for the after-save method
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
@@ -227,6 +325,9 @@ const api = {
 		brew.title = brew.title.trim();
 		brew.description = brew.description.trim() || '';
 		brew.text = api.mergeBrewText(brew);
+		const userID = req?.account?.username ? req.account.username : brew.authors.split(',')[0];
+		brew.userThemes = await api.getUsersBrewThemes(userID, brew.editId, req, res, null);
+
 
 		if(brew.googleId && removeFromGoogle) {
 			// If the google id exists and we're removing it from google, set afterSave to delete the google brew and mark the brew's google id as undefined
