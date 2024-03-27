@@ -617,7 +617,7 @@ function MarkedVariables() {
 //^=====--------------------< Variable Handling >-------------------=====^//
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionListsMultiline, definitionListsInline, superSubScripts] });
+Marked.use({ extensions: [definitionListsMultiline, definitionListsInline, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
