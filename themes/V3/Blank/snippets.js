@@ -3,6 +3,7 @@
 const WatercolorGen = require('./snippets/watercolor.gen.js');
 const ImageMaskGen  = require('./snippets/imageMask.gen.js');
 const FooterGen     = require('./snippets/footer.gen.js');
+const LicenseGen    = require('./snippets/license.gen.js');
 const dedent        = require('dedent-tabs').default;
 
 module.exports = [
@@ -128,6 +129,44 @@ module.exports = [
 			}
 		]
 	},
+
+	{
+		groupName : 'License',
+		icon	  : 'fas fa-copyright',
+		view	  : 'text',
+		snippets  : [
+			{
+				name : 'CC BY 4.0',
+				icon : 'fab fa-creative-commons',
+				gen	 : LicenseGen.cc,
+			},
+
+			{
+				name : 'OGL 1.0 A',
+				icon : 'fab fa-wizards-of-the-coast',
+				gen	 : LicenseGen.OGL1,
+			},
+
+			{
+				name : 'WoTC Fan Content Policy',
+				icon : 'fas fa-w',
+				gen	 : LicenseGen.FCP,
+			},
+
+			{
+				name : 'ORC License',
+				icon : 'fas fa-Paizo',
+				gen	 : LicenseGen.ORC,
+			},
+
+			{
+				name : 'GNU General Public License',
+				icon : 'fas fa-w',
+				gen	 : LicenseGen.GNU,
+			}
+		]
+	},
+
 	{
 		groupName : 'Style Editor',
 		icon      : 'fas fa-pencil-alt',
@@ -140,7 +179,7 @@ module.exports = [
 			},
 		]
 	},
-
+	
 	/*********************** IMAGES *******************/
 	{
 		groupName : 'Images',
