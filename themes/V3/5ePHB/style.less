@@ -789,6 +789,34 @@
 // *****************************
 // *      TABLE OF CONTENTS
 // *****************************/
+
+// Default Exclusions
+h4,
+h5,
+h6,
+.page:has(.frontCover), 
+.page:has(.backCover), 
+.page:has(.insideCover), 
+.page:has(.partCover), 
+.monster,
+.noToC,
+.toc { --TOC: exclude; }
+
+.tocH4 {
+	h4 { --TOC: include; }
+}
+.tocH5 {
+	h4 { --TOC: include; }
+	h5 { --TOC: include; }
+}
+.tocH6 {
+	h4 { --TOC: include; }
+	h5 { --TOC: include; }
+	h6 { --TOC: include; }
+}
+
+.addToC { --TOC: include; }
+
 .page {
 	&:has(.toc)::after { display : none; }
 	.toc {
@@ -804,6 +832,9 @@
 			color           : inherit;
 			text-decoration : none;
 			&:hover { text-decoration : underline; }
+		}
+		h1, h2, h3, h4, h5, h6 {
+			--TOC: exclude;
 		}
 		h4 {
 			margin-top  : 0.2cm;
