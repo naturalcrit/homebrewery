@@ -83,6 +83,8 @@ const StringArrayEditor = createClass({
 		if(index !== undefined) {
 			values.splice(index, 1);
 		}
+		console.log(this.props);
+		console.log('values is:',values);
 		const matchesPatterns = !this.props.valuePatterns || this.props.valuePatterns.some((pattern)=>!!(value || '').match(pattern));
 		const uniqueIfSet = !this.props.unique || !values.includes(value);
 		const passesValidators = !this.props.validators || this.props.validators.every((validator)=>validator(value));
