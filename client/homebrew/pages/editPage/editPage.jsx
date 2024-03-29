@@ -20,6 +20,8 @@ const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
+const LockNotification = require('./lockNotification/lockNotification.jsx');
+
 const Markdown = require('naturalcrit/markdown.js');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
@@ -51,7 +53,8 @@ const EditPage = createClass({
 			autoSave               : true,
 			autoSaveWarning        : false,
 			unsavedTime            : new Date(),
-			currentEditorPage      : 0
+			currentEditorPage      : 0,
+			displayLockMessage     : this.props.brew.lock || false
 		};
 	},
 	savedBrew : null,
@@ -390,26 +393,30 @@ const EditPage = createClass({
 			{this.renderNavbar()}
 
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
-					<Editor
-						ref='editor'
-						brew={this.state.brew}
-						onTextChange={this.handleTextChange}
-						onStyleChange={this.handleStyleChange}
-						onMetaChange={this.handleMetaChange}
-						reportError={this.errorReported}
-						renderer={this.state.brew.renderer}
-					/>
-					<BrewRenderer
-						text={this.state.brew.text}
-						style={this.state.brew.style}
-						renderer={this.state.brew.renderer}
-						theme={this.state.brew.theme}
-						errors={this.state.htmlErrors}
-						lang={this.state.brew.lang}
-						currentEditorPage={this.state.currentEditorPage}
-					/>
-				</SplitPane>
+				{this.state.displayLockMessage ?
+					<LockNotification message={this.props.brew.lock.message} disableLock={()=>this.setState({ displayLockMessage: false })}/>
+					:
+					<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
+						<Editor
+							ref='editor'
+							brew={this.state.brew}
+							onTextChange={this.handleTextChange}
+							onStyleChange={this.handleStyleChange}
+							onMetaChange={this.handleMetaChange}
+							reportError={this.errorReported}
+							renderer={this.state.brew.renderer}
+						/>
+						<BrewRenderer
+							text={this.state.brew.text}
+							style={this.state.brew.style}
+							renderer={this.state.brew.renderer}
+							theme={this.state.brew.theme}
+							errors={this.state.htmlErrors}
+							lang={this.state.brew.lang}
+							currentEditorPage={this.state.currentEditorPage}
+						/>
+					</SplitPane>
+				}
 			</div>
 		</div>;
 	}
