@@ -280,33 +280,49 @@ const indexesDuplicates = (indexEntry)=>{
 const indexAnchors = {
 	name  : 'indexAnchor',
 	level : 'inline',
-	start(src) {return src.match(/^#([^/]+)(\/\/(.+))?/)?.index;}, // Hint to Marked.js to stop and check for a match
+	// ^#([^/]+)(\/\/(.+))?
+	start(src) {return src.match(/^#(.+)(?<!\\):([^/]+)((?<!\\)\/([^/]+))?/)?.index;}, // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const inlineRegex = /^#([^/]+)(\/\/(.+))?/y;
+		//		const inlineRegex = /^#([^/]+)(\/\/(.+))?/y;
+		const inlineRegex = /^#(.+)(?<!\\):([^/]+)(?:(?<!\\)\/([^/]+))/gm;
+		const addressRegEx = /^#(.+)(?<!\\):([^/]+)(?:(?<!\\)\/([^/]+))/gm;
+		const crossReferenceSplit = /(?<!\\)\|/g;
+
 		const indexEntry = {};
-		const match = inlineRegex.exec(src);
-		if(match) {
-			indexEntry.subtopics = match[3] ? match[3].trim() : undefined;
-			indexEntry.topic = match[1].slice(match[1].indexOf(' ')).trim();
-			indexEntry.index = match[1].slice(0, match[1].indexOf(' ')).trim();
-			indexEntry.instance = indexesDuplicates(indexEntry);
-			return {
-				type       : 'indexAnchor',
-				text       : src,
-				raw        : match[0],
-				pageNumber : markedRenderVars?.pageNumber || 0, // Need to pull this from somewhere. Currently assuming from markded_brew_options
-				indexEntry
-			};
+
+		const srcMatch = inlineRegex.exec(src);
+		if(srcMatch){
+			const indexSplit = srcMatch[0].split(crossReferenceSplit);
+			if(indexSplit.length>1) {
+				indexEntry.crossReference = true;
+			}
+			const entryMatch = addressRegEx.exec(indexSplit[0]);
+			if(entryMatch) {
+				indexEntry.subtopic = entryMatch[3] ? entryMatch[3].trim() : undefined;
+				indexEntry.topic = entryMatch[2].trim();
+				indexEntry.index = entryMatch[1].trim();
+				indexEntry.instance = indexesDuplicates(indexEntry);
+				return {
+					type       : 'indexAnchor',
+					text       : src,
+					raw        : srcMatch[0],
+					pageNumber : markedRenderVars?.pageNumber || 0, // Need to pull this from somewhere. Currently assuming from markded_brew_options
+					indexEntry : indexEntry
+				};
+			}
 		}
 	},
 	renderer(token) {
-		// This is a Subtopic entry
-		if(token.indexEntry?.entries) {
-			return `<a href="#p${token.pageNumber}_${token.indexEntry.subtopics.replace(/\s/g, '').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-subtopic="${token.indexEntry.subtopics}" data-index="${token.indexEntry.index}"></a>`;
-		} else {
-			// This is a Topic entry
-			return `<a href="#p${token.pageNumber}_${token.indexEntry.topic.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-index="${token.indexEntry.index}"></a>`;
+		if(!token.indexEntry?.crossReference) {
+			if(token.indexEntry?.subtopic) {
+				// This is a Subtopic entry
+				return `<a href="#p${token.pageNumber}_${token.indexEntry.subtopic.replace(/\s/g, '').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-subtopic="${token.indexEntry.subtopic}" data-index="${token.indexEntry.index}"></a>`;
+			} else {
+				// This is a Topic entry
+				return `<a href="#p${token.pageNumber}_${token.indexEntry.topic.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-index="${token.indexEntry.index}"></a>`;
+			}
 		}
+		return false;
 	}
 };
 
@@ -660,8 +676,9 @@ function MarkedVariables() {
 };
 //^=====--------------------< Variable Handling >-------------------=====^//
 
+//Marked.use(indexCrossReferences());
 Marked.use({ extensions : [indexAnchors, mustacheSpans, mustacheDivs, mustacheInjectInline, definitionListsMultiline,
-	definitionListsInline, superSubScripts, ] });
+	definitionListsInline, superSubScripts] });
 Marked.use(MarkedVariables());
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
