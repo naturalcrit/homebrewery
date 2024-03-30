@@ -12,8 +12,9 @@ DB.connect(config).then(()=>{
 		const cyan = '\x1b[36m'; // Cyan color
 		const underline = '\x1b[4m'; // Underlined style
 
-		console.log(`\n\tserver on port: ${PORT}`);
-		console.log(`\t${underline}${bright}${cyan}Open in browser: http://localhost:${PORT}${reset}`)
+		console.log(`\n\tserver started at: ${new Date().toLocaleString()}`);
+		console.log(`\tserver on port: ${PORT}`);
+		console.log(`\t${bright + cyan}Open in browser: ${reset}${underline + bright + cyan}http://localhost:${PORT}${reset}\n\n`)
 
 	});
 });
