@@ -2,6 +2,59 @@
 const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
 
+const setCrossRefAnchor = (indexes, pageRef)=>{
+	// Set a flag to generate a reflink at the topic or subtopic.
+	let index;
+
+	if(indexes.has(pageRef[1])) {
+		index = indexes.get(pageRef[1].trim());
+	} else {
+		index = new Map();
+	}
+
+	// If the Topic doesn't exist yet....
+	if(!index?.has(pageRef[2].trim())){
+		const topic = new Map();
+		topic.set('entries', new Map());
+		const subEntries = topic.get('entries');
+		if(pageRef[3].trim().length > 0) {
+			const subTopicMap = new Map();
+			subTopicMap.set('pages', []);
+			subTopicMap.set('setAnchor', true);
+			subEntries.set(pageRef[3].trim(), subTopicMap);
+		} else {
+			const subTopicMap = subEntries.get(pageRef[3].trim());
+			subTopicMap.set('setAnchor', true);
+			subEntries.set(pageRef[3].trim(), subTopicMap);
+		}
+		topic.set('entries', subEntries);
+		index.set(pageRef[2].trim(), topic);
+		return;
+	}
+
+	const topic = index.get(pageRef[2].trim());
+	if(pageRef[3].trim().length > 0) {
+		const subEntries = topic.get('entries');
+		let subTopicMap;
+		// If the subtopic doesn't exist
+		if(!subEntries.has(pageRef[3].trim())){
+			subTopicMap = new Map();
+			subTopicMap.set('pages', []);
+			subTopicMap.set('setAnchor', true);
+		} else {
+			subTopicMap = subEntries.get(pageRef[3].trim());
+			subTopicMap.set('pages', []);
+			subTopicMap.set('setAnchor', true);
+		}
+		subEntries.set(pageRef[3].trim(), subTopicMap);
+		topic.set('entries', subEntries);
+	} else {
+		topic.set('setAnchor', true);
+	}
+	index.set(pageRef[2], topic);
+	indexes.set(pageRef[1], index);
+};
+
 const insertIndex = (indexes, entry, pageNumber, runningErrors)=> {
 	const addressRegEx = /^(.+)(?<!\\):([^/]+)(?:(?<!\\)\/([^|]+))/gm;
 	const crossReferenceSplit = /(?<!\\)\|/g;
@@ -17,7 +70,7 @@ const insertIndex = (indexes, entry, pageNumber, runningErrors)=> {
 	addressRegEx.lastIndex = 0;
 	const pageRef = ((crossReference.length>1) && (crossReference[1].length>0)) ? addressRegEx.exec(crossReference[1]) : pageNumber;
 	if(typeof pageRef !== 'number') {
-		setCrossRefAnchor(pageRef);
+		setCrossRefAnchor(indexes, pageRef);
 	}
 
 	const topic = entryMatch[2].trim();
@@ -29,8 +82,8 @@ const insertIndex = (indexes, entry, pageNumber, runningErrors)=> {
 		// This is a new Topic, initialize it.
 		activeIndex.set(topic, new Map());
 		activeTopic = activeIndex.get(topic);
+		activeTopic.set('pages', []);
 		activeTopic.set('entries', new Map());
-		activeTopic.set('rich', true);
 	} else {
 		activeTopic = activeIndex.get(topic);
 	}
@@ -69,52 +122,7 @@ const findIndexEntries = (pages, indexes, runningErrors)=>{
 	};
 };
 
-
-const newRichEntry = (firstTag, pageNumber)=>{
-	const entriesMap = new Map();
-	entriesMap.set(firstTag, [pageNumber]);
-	return {
-		pages   : [],
-		entries : entriesMap,
-		rich    : true
-	};
-};
-
-const addRichIndexes = (richEntries, results)=>{
-	for (const [entryPageNumber, richEntriesOnPage] of richEntries.entries()) {
-		if(richEntriesOnPage.length>0) {
-			for (const richTags of richEntriesOnPage) {
-				const subjectHeadings = richTags[1].split('|');
-				if(subjectHeadings.length>0){
-					for (const subjectHeading of subjectHeadings) {
-						if(results.has(subjectHeading)){
-							const currentSubjectHeadingObj = results.get(subjectHeading);
-							if(currentSubjectHeadingObj.entries.size) {
-								if(currentSubjectHeadingObj.entries?.has(richTags[3])){
-									const entries = currentSubjectHeadingObj.entries.get(richTags[3]);
-									entries.push(entryPageNumber);
-									results.get(subjectHeading).entries.set(richTags[3], entries);
-								} else {
-									currentSubjectHeadingObj.entries.set(richTags[3], [entryPageNumber]);
-								}
-								results.set(subjectHeading, currentSubjectHeadingObj);
-							} else {
-								const entriesMap = new Map();
-								entriesMap.set(richTags[3], [entryPageNumber]);
-								currentSubjectHeadingObj.entries = Object.assign(entriesMap);
-							}
-							results.set(subjectHeading, currentSubjectHeadingObj);
-						} else {
-							results.set(subjectHeading, newRichEntry(richTags[3], entryPageNumber));
-						}
-					}
-				}
-			}
-		}
-	}
-};
-
-const sortMap = (m)=> {
+const sortMap = (m)=>{
 	return (new Map([...m.entries()].sort((a, b)=>{
 		const lowA = a[0].toLowerCase();
 		const lowB = b[0].toLowerCase();
@@ -124,32 +132,69 @@ const sortMap = (m)=> {
 	})));
 };
 
-const markup = (index)=>{
+
+// Processes a list of Index Marker targets, either as page numbers or as Cross References
+const formatIndexLocations = (pagesArray)=>{
+	let results = '';
+	const seeRef = [];
+	const seeAlsoRef = [];
+	const seeUnderRef = [];
+	const seeAlsoUnderRef = [];
+
+	for (const [k, pageNumber] of pagesArray.entries()) {
+		if(typeof pageNumber == 'number') {
+			if(results.length == 0 ) results = ' ... pg. ';
+			results = results.concat('[', parseInt(pageNumber+1), `](#p${parseInt(pageNumber+1)}_${entry.toLowerCase().replaceAll(' ', '')}), `);
+		} else {
+			const cRef = pageNumber[0];
+			let targetIndex = cRef[1].length > 0 ? cRef[1].trim() : 'Index:';
+			const targetTopic = cRef[2].trim();
+			const targetSubtopic = cRef[3].trim();
+
+			const seeUnderFlag = targetIndex[0] == '+';
+			const seeAlsoFlag = targetIndex[0] == '|';
+			const seeAlsoUnderFlag = targetIndex[0] == '|' && targetIndex[1] == '+';
+
+			targetIndex = targetIndex.replace(/^\|/).replace(/^\+/);
+
+			const topicOrSubtopic = targetSubtopic.length > 0 ? targetSubtopic : targetTopic;
+			const crossRef = `[${targetTopic}${targetSubtopic.length > 0 ? `: ${targetSubtopic}` : ''}](#idx_${targetIndex}_${topicOrSubtopic.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()})`;
+			if(seeAlsoUnderFlag) seeAlsoUnderRef.push(crossRef);
+			else if(seeAlsoFlag) seeAlsoRef.push(crossRef);
+			else if(seeUnderFlag) seeUnderRef.push(crossRef);
+			else seeRef.push(crossRef);
+		}
+		if(results[results.length - 1] == ',') results = results.slice(-1);
+		if(seeRef.length > 0) results += `\n    see ${seeRef.join(';')}`;
+		if(seeUnderRef.length > 0) results += `\n    see under ${seeUnderRef.join(';')}`;
+		if(seeAlsoRef.length > 0) results += `\n    see also ${seeAlsoRef.join(';')}`;
+		if(seeAlsoUnderRef.length > 0) results += `\n    see also under ${seeAlsoUnderRef.join(';')}`;
+	}
+	results = results.concat('\n');
+	return results;
+};
+
+const markup = (indexName, index)=>{
 	const sortedIndex = sortMap(index);
 	let results = '';
 
-	for (const [subjectHeading, subjectHeadingPages] of sortedIndex) {
-		results = results.concat(`- `, subjectHeading, subjectHeadingPages.pages.length > 0 ? ' ... pg. ':'');
-		for (const [k, pageNumber] of subjectHeadingPages.pages.entries()) {
-			if(!subjectHeadingPages.hasOwnProperty('rich')) {
-				results = results.concat('[', parseInt(pageNumber+1), `](#p${parseInt(pageNumber+1)})`);
-			}
-			if(k < (subjectHeadingPages.pages.length - 1)) {
-				results = results.concat(`, `);
-			}
+	for (const [subjectHeading, subjectHeadingContents] of sortedIndex) {
+		const subjectHeadingPages = subjectHeadingContents.get('pages');
+		let setAnchor = '';
+		if(subjectHeadingContents.has('setAnchor')) {
+			setAnchor = `[#idx_${indexName}_${subjectHeading.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}]"/>`;
 		}
-		results = results.concat('\n');
-		if(subjectHeadingPages.hasOwnProperty('entries') && subjectHeadingPages.entries.size) {
-			const sortedEntries = sortMap(subjectHeadingPages.entries);
+		results = results.concat(`- `, setAnchor, subjectHeading);
+		results += formatIndexLocations(subjectHeadingPages);
+		const subEntries = subjectHeadingContents.get('entries');
+		if(subEntries.size) {
+			const sortedEntries = sortMap(subEntries);
 			for (const [entry, entryPages] of sortedEntries){
-				results = results.concat('  - ', entry, ' ... pg. ');
-				for (const [k, pageNumber] of entryPages.entries()) {
-					results = results.concat('[', parseInt(pageNumber+1), `](#p${parseInt(pageNumber+1)}_${entry.toLowerCase().replaceAll(' ', '')})`);
-					if(k < (entryPages.length - 1)) {
-						results = results.concat(`, `);
-					}
+				if(sortedEntries.get(entry).has('setAnchor')) {
+					setAnchor = `[#idx_${indexName}_${entry.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}]"/>`;
 				}
-				results = results.concat('\n');
+				results = results.concat('  - ', entry);
+				results += formatIndexLocations(entryPages);
 			}
 		}
 	}
@@ -165,19 +210,23 @@ module.exports = function (props) {
 	const runningErrors = [];
 	findIndexEntries(pages, indexes, runningErrors);
 
-	// let  resultIndexes = '';
+	let  resultIndexes = '';
 
-	// for (const index of indexes) {
-	// 	const markdown = markup(index);
-	// 	resultIndexes +=dedent`
-	// 	{{index,wide
-	// 	##### Index
+	if(indexes.get('Index:').size == 0) indexes.delete('Index:');
 
-	// 	${markdown}
-	// 	}}
-	// 	/page`;
-	// };
+	for (const [indexName, index] of indexes) {
+		const markdown = markup(indexName.replace(/[^\w\s\']|_/g, '').replace(/\s+/g, ''), index);
+		resultIndexes +=dedent`
+		{{index,wide
+		##### ${indexName}
 
-	// return resultIndexes;
-	return '';
+		${markdown}
+		}}
+		\page
+
+		`;
+		resultIndexes += '\n';
+	};
+
+	return resultIndexes;
 };
