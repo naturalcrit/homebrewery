@@ -281,11 +281,11 @@ const indexAnchors = {
 	name  : 'indexAnchor',
 	level : 'inline',
 	// ^#([^/]+)(\/\/(.+))?
-	start(src) {return src.match(/^#(.+)(?<!\\):([^/]+)((?<!\\)\/([^/]+))?/)?.index;}, // Hint to Marked.js to stop and check for a match
+	start(src) {return src.match(/^#(.+)(?<!\\):([^/]+)((?<!\\)\/([^|]+))?/)?.index;}, // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		//		const inlineRegex = /^#([^/]+)(\/\/(.+))?/y;
-		const inlineRegex = /^#(.+)(?<!\\):([^/]+)(?:(?<!\\)\/([^/]+))/gm;
-		const addressRegEx = /^#(.+)(?<!\\):([^/]+)(?:(?<!\\)\/([^/]+))/gm;
+		const inlineRegex =  /^#(.+)(?<!\\):([^/]+)(?:(?<!\\)\/([^|]+))/gm;
+		const addressRegEx = /^#(.+)(?<!\\):([^/]+)(?:(?<!\\)\/([^|]+))/gm;
 		const crossReferenceSplit = /(?<!\\)\|/g;
 
 		const indexEntry = {};
@@ -293,7 +293,7 @@ const indexAnchors = {
 		const srcMatch = inlineRegex.exec(src);
 		if(srcMatch){
 			const indexSplit = srcMatch[0].split(crossReferenceSplit);
-			if(indexSplit.length>1) {
+			if((indexSplit.length>1) && (indexSplit[1].length > 1)){
 				indexEntry.crossReference = true;
 			}
 			const entryMatch = addressRegEx.exec(indexSplit[0]);

@@ -2,57 +2,73 @@
 const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
 
-const findBasicIndex = (pages, theRegex)=>{
-	const results = new Map();
+const insertIndex = (indexes, entry, pageNumber, runningErrors)=> {
+	const addressRegEx = /^(.+)(?<!\\):([^/]+)(?:(?<!\\)\/([^|]+))/gm;
+	const crossReferenceSplit = /(?<!\\)\|/g;
+
+	const crossReference = entry.split(crossReferenceSplit);
+	const entryMatch = addressRegEx.exec(crossReference[0]);
+
+	const useIndex = entryMatch[1].trim().length > 0 ? entryMatch[1].trim() : 'Index:';
+	if(!indexes.has(useIndex)) {
+		indexes.set(useIndex, new Map());
+	}
+
+	addressRegEx.lastIndex = 0;
+	const pageRef = ((crossReference.length>1) && (crossReference[1].length>0)) ? addressRegEx.exec(crossReference[1]) : pageNumber;
+	if(typeof pageRef !== 'number') {
+		setCrossRefAnchor(pageRef);
+	}
+
+	const topic = entryMatch[2].trim();
+	const subTopic = entryMatch[3]?.length > 0 ? entryMatch[3].trim() : '';
+
+	const activeIndex = indexes.get(useIndex);
+	let activeTopic;
+	if(!activeIndex.has(topic)) {
+		// This is a new Topic, initialize it.
+		activeIndex.set(topic, new Map());
+		activeTopic = activeIndex.get(topic);
+		activeTopic.set('entries', new Map());
+		activeTopic.set('rich', true);
+	} else {
+		activeTopic = activeIndex.get(topic);
+	}
+
+	if(subTopic.length>0) {
+		const subEntries = activeTopic.get('entries');
+		if((!subEntries.size > 0) || (!subEntries.has(subTopic))) {
+			// This is a new Subtopic, initialize it.
+			const subTopicMap = new Map();
+			subTopicMap.set('pages', [pageRef]);
+			subEntries.set(subTopic, subTopicMap);
+		} else {
+			const subTopicEntry = subEntries.get(subTopic);
+			const pageArray = subTopicEntry.get('pages');
+			pageArray.push(pageRef);
+			subTopicEntry.set('pages', pageArray);
+		}
+	} else {
+		const pageArray = activeTopic.get(pages);
+		pageArray.push(pageRef);
+		activeTopic.set('pages', pageArray);
+	}
+
+	activeIndex.set(topic, activeTopic);
+};
+
+const findIndexEntries = (pages, indexes, runningErrors)=>{
+	const theRegex = /#(.+)(?<!\\):(.+)(?:(?<!\\)\/(.+))\n/mg;
 	for (const [pageNumber, page] of pages.entries()) {
-		const basics = [];
 		if(page.match(theRegex)) {
 			let match;
-			console.log(page);
 			while ((match = theRegex.exec(page)) !== null){
-				console.log('Matched');
-				console.log(match);
-				basics.push(match[1].trim());
+				insertIndex(indexes, match[0].slice(1), pageNumber, runningErrors);
 			}
-		}
-		if(basics.length > 0) {
-			results.set(pageNumber, basics);
 		}
 	};
-	return results;
 };
 
-const findRichTags = (pages, theRegex)=>{
-	return (pages.map(function(page) {
-		const results = [];
-		let richIndex;
-		while (richIndex=theRegex.exec(page)) {
-			if(richIndex[3]?.trim().length>0) {
-				results.push(richIndex);
-			}
-		}
-		return (results);
-	}));
-};
-
-const findSubjectHeadings = (pages, terms, results)=>{
-	for (const [pageCount, entry] of terms.entries()) {
-
-		for (const e in entry) {
-			const termList = entry[e].split('|');
-			for (const term in termList) {
-				if(results.has(termList[term])) {
-					const currentEntry = results.get(termList[term]);
-					currentEntry.pages.push(pageCount);
-					results.set(termList[term], currentEntry);
-				} else {
-					results.set(termList[term], { pages: [pageCount], entries: {} });
-				}
-			}
-		}
-	}
-	return results;
-};
 
 const newRichEntry = (firstTag, pageNumber)=>{
 	const entriesMap = new Map();
@@ -142,36 +158,26 @@ const markup = (index)=>{
 
 module.exports = function (props) {
 	const indexes = new Map();
+	indexes.set('Index:', new Map());
 
 	const pages = props.brew.text.split('\\page');
-	const indexMarkdownRegex = /@\[((?:\\.|[^\[\]\\^@^\)])*)\](\((((?:\\.|[^\[\]\\^@^\)])*))\))?/m;
-	//const indexMarkdownRegexBasic = /@\[((?:\\.|[^\[\]\\^@^\)])*)\][^\(]/m;
-	const indexMarkdownRegexBasic = /#([^/]+)(\/\/(.+))?/ym;
 
-	const basicIndexEntries = findBasicIndex(pages, indexMarkdownRegexBasic);
-//	const richIndexEntries = findRichTags(pages, indexMarkdownRegex);
+	const runningErrors = [];
+	findIndexEntries(pages, indexes, runningErrors);
 
-	if(basicIndexEntries.size > 0) {
-		findSubjectHeadings(pages, basicIndexEntries, indexes);
-	}
+	// let  resultIndexes = '';
 
-	// if(richIndexEntries.length>0) {
-	// 	addRichIndexes(richIndexEntries, index);
-	// }
+	// for (const index of indexes) {
+	// 	const markdown = markup(index);
+	// 	resultIndexes +=dedent`
+	// 	{{index,wide
+	// 	##### Index
 
+	// 	${markdown}
+	// 	}}
+	// 	/page`;
+	// };
 
-	let  resultIndexes = '';
-
-	for (const index of indexes) {
-		const markdown = markup(index);
-		resultIndexes +=dedent`
-		{{index,wide
-		##### Index
-
-		${markdown}
-		}}
-		/page`;
-	};
-
-	return resultIndexes;
+	// return resultIndexes;
+	return '';
 };
