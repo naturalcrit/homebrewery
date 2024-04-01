@@ -148,10 +148,9 @@ const formatIndexLocations = (pagesArray)=>{
 			if(results.length == 0 ) results = ' ... pg. ';
 			results = results.concat('[', parseInt(pageNumber+1), `](#p${parseInt(pageNumber+1)}_${entry.toLowerCase().replaceAll(' ', '')}), `);
 		} else {
-			const cRef = pageNumber[0];
-			let targetIndex = cRef[1].length > 0 ? cRef[1].trim() : 'Index:';
-			const targetTopic = cRef[2].trim();
-			const targetSubtopic = cRef[3].trim();
+			let targetIndex = pageNumber[1].length > 0 ? pageNumber[1].trim() : 'Index:';
+			const targetTopic = pageNumber[2].trim();
+			const targetSubtopic = pageNumber[3].trim();
 
 			const seeUnderFlag = targetIndex[0] == '+';
 			const seeAlsoFlag = targetIndex[0] == '|';
