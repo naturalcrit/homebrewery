@@ -9,7 +9,6 @@ const setCrossRefAnchor = (indexes, pageRef)=>{
 	if(indexes.has(pageRef[1])) {
 		index = indexes.get(pageRef[1].trim());
 	} else {
-		console.log(`Creating the new index. ${pageRef[1].trim()}`);
 		index = new Map();
 	}
 
@@ -32,7 +31,6 @@ const setCrossRefAnchor = (indexes, pageRef)=>{
 		topic.set('entries', subEntries);
 		index.set(pageRef[2].trim(), topic);
 		indexes.set(pageRef[1].trim(), index);
-		console.log(indexes);
 		return;
 	}
 
@@ -139,7 +137,6 @@ const sortMap = (m)=>{
 
 // Processes a list of Index Marker targets, either as page numbers or as Cross References
 const formatIndexLocations = (pagesArray)=>{
-	console.log(pagesArray);
 	let results = '';
 	const seeRef = [];
 	const seeAlsoRef = [];
@@ -190,20 +187,15 @@ const markup = (indexName, index)=>{
 			setAnchor = `[#idx_${indexName}_${subjectHeading.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}]"/>`;
 		}
 		results = results.concat(`- `, setAnchor, subjectHeading);
-		console.log(subjectHeadingPages);
-		console.log(`top ${subjectHeading}`);
 		results += formatIndexLocations(subjectHeadingPages);
 		const subEntries = subjectHeadingContents.get('entries');
 		if(subEntries.size) {
 			const sortedEntries = sortMap(subEntries);
-			console.log(sortedEntries);
 			for (const [entry, entryPages] of sortedEntries){
 				if(sortedEntries.get(entry).has('setAnchor')) {
 					setAnchor = `[#idx_${indexName}_${entry.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}]"/>`;
 				}
 				results = results.concat('  - ', entry);
-				console.log(entryPages);
-				console.log(`sub ${entry} - ${entryPages.length}`);
 				results += formatIndexLocations(entryPages.get('pages'));
 			}
 		}
