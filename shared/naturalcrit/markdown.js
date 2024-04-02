@@ -337,7 +337,7 @@ const definitionListsMultiline = {
 		const definitions = [];
 		while (match = regex.exec(src)) {
 			if(match[1]) {
-				if(this.lexer.blockTokens(match[1].trim())[0].type !== 'paragraph') // DT must not be another block-level token besides <p>
+				if(this.lexer.blockTokens(match[1].trim())[0]?.type !== 'paragraph') // DT must not be another block-level token besides <p>
 					break;
 				definitions.push({
 					dt  : this.lexer.inlineTokens(match[1].trim()),
@@ -617,7 +617,7 @@ function MarkedVariables() {
 //^=====--------------------< Variable Handling >-------------------=====^//
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions: [mustacheSpans, mustacheDivs, mustacheInjectInline, definitionListsMultiline, definitionListsInline, superSubScripts] });
+Marked.use({ extensions: [definitionListsMultiline, definitionListsInline, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
