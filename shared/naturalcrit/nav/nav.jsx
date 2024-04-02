@@ -1,4 +1,4 @@
-require('./nav.less');
+require('client/homebrew/navbar/navbar.less');
 const React = require('react');
 const { useState, useRef, useEffect } = React;
 const createClass = require('create-react-class');
@@ -104,7 +104,7 @@ const Nav = {
 		});
 
 		return (
-			<div className={`navDropdownContainer ${props.className}`}
+			<div className={`navDropdownContainer ${props.className ?? ''}`}
 				ref={myRef}
 				onMouseEnter = { props.trigger.includes('hover') ? ()=>handleDropdown(true)  : undefined }
 				onMouseLeave = { props.trigger.includes('hover') ? ()=>handleDropdown(false) : undefined }
