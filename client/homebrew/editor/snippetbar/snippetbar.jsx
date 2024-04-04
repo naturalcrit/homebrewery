@@ -233,7 +233,7 @@ const SnippetGroup = createClass({
 			return <div className='snippet' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
 				<i className={snippet.icon} />
 				<span className='name'title={snippet.name}>{snippet.name}</span>
-				{snippet.experimental && <span className='beta'>beta</span>}
+				{snippet.experimental && <span className='beta'><a href={snippet.experimental.url} target="_blank" rel="noopener noreferrer">beta</a></span>}
 				<i className='fas fa-caret-right' style={snippet.subsnippets ? null : { visibility : 'hidden' }}></i>
 				<div className='dropdown side'>
 					{snippet.subsnippets ? this.renderSnippets(snippet.subsnippets) : null}

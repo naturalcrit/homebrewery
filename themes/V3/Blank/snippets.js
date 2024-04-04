@@ -168,13 +168,13 @@ module.exports = [
 				name         : 'Watercolor Center',
 				icon         : 'fac mask-center',
 				gen          : ImageMaskGen.center,
-				experimental : true,
+				experimental : { url: 'https://github.com/naturalcrit/homebrewery/pull/2373' },
 			},
 			{
 				name         : 'Watercolor Edge',
 				icon         : 'fac mask-edge',
 				gen          : ImageMaskGen.edge('bottom'),
-				experimental : true,
+				experimental : { url: 'https://github.com/naturalcrit/homebrewery/pull/2373' },
 				subsnippets  : [
 					{
 						name : 'Top',
@@ -202,7 +202,7 @@ module.exports = [
 				name         : 'Watercolor Corner',
 				icon         : 'fac mask-corner',
 				gen          : ImageMaskGen.corner,
-				experimental : true,
+				experimental : { url: 'https://github.com/naturalcrit/homebrewery/pull/2373' },
 				subsnippets  : [
 					{
 						name : 'Top-Left',

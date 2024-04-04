@@ -171,8 +171,16 @@
 					font-family   : monospace;
 					line-height   : 1em;
 					color         : white;
-					background    : grey;
+					background-color    : grey;
 					border-radius : 12px;
+					transition: background-color 0.3s ease;
+					&:hover  {
+						background-color: rgb(190, 190, 190);
+						transition: background-color 0.3s ease;
+					}
+					a, a:visited {
+						color: inherit;
+					}
 				}
 				&:hover {
 					background-color : #999999;
