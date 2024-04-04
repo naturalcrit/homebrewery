@@ -29,7 +29,7 @@ module.exports = [
 				name         : 'Index',
 				icon         : 'fas fa-bars',
 				gen          : indexGen,
-				experimental : true
+				experimental : { url: 'https://github.com/naturalcrit/homebrewery/pull/2755' }
 			}
 		]
 	},
