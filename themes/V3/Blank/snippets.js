@@ -307,8 +307,8 @@ module.exports = [
 	/**************** FONTS *************/
 	{
 		groupName : 'Fonts',
-		icon   	  : 'fas fa-keyboard',
-		view   	  : 'text',
+		icon	  : 'fas fa-keyboard',
+		view	  : 'text',
 		snippets  : [
 			{
 				name : 'Open Sans',
@@ -326,74 +326,74 @@ module.exports = [
 				gen	 : dedent`{{font-family:CodeLight Dummy Text}}`
 			},
 			{
-				name : 'Scaly Sans Remake',
+				name : 'Scaly Sans',
 				icon : 'font ScalySansRemake',
 				gen	 : dedent`{{font-family:ScalySansRemake Dummy Text}}`
 			},
 			{
-				name : 'Book Insanity Remake',
+				name : 'Book Insanity',
 				icon : 'font BookInsanityRemake',
 				gen	 : dedent`{{font-family:BookInsanityRemake Dummy Text}}`
 			},
 			{
-				name : 'Mr Eaves Remake',
+				name : 'Mr Eaves',
 				icon : 'font MrEavesRemake',
 				gen	 : dedent`{{font-family:MrEavesRemake Dummy Text}}`
 			},
 			{
-				name : 'Solbera Imitation Remake',
-				icon : 'font SolberaImitationRemake',
-				gen  : dedent`{{font-family:SolberaImitationRemake Dummy Text}}`
+				name: 'Solbera Imitation',
+				icon: 'font SolberaImitationRemake',
+				gen: dedent`{{font-family:SolberaImitationRemake Dummy Text}}`
 			  },
 			  {
-				name : 'Scaly Sans Small Caps Remake',
-				icon : 'font ScalySansSmallCapsRemake',
-				gen  : dedent`{{font-family:ScalySansSmallCapsRemake Dummy Text}}`
+				name: 'Scaly Sans Small Caps',
+				icon: 'font ScalySansSmallCapsRemake',
+				gen: dedent`{{font-family:ScalySansSmallCapsRemake Dummy Text}}`
 			  },
 			  {
-				name : 'Walter Turncoat',
-				icon : 'font WalterTurncoat',
-				gen  : dedent`{{font-family:WalterTurncoat Dummy Text}}`
+				name: 'Walter Turncoat',
+				icon: 'font WalterTurncoat',
+				gen: dedent`{{font-family:WalterTurncoat Dummy Text}}`
 			  },
 			  {
-				name : 'Lato',
-				icon : 'font Lato',
-				gen  : dedent`{{font-family:Lato Dummy Text}}`
+				name: 'Lato',
+				icon: 'font Lato',
+				gen: dedent`{{font-family:Lato Dummy Text}}`
 			  },
 			  {
-				name : 'Courier',
-				icon : 'font Courier',
-				gen  : dedent`{{font-family:Courier Dummy Text}}`
+				name: 'Courier',
+				icon: 'font Courier',
+				gen: dedent`{{font-family:Courier Dummy Text}}`
 			  },
 			  {
-				name : 'Nodesto Caps Condensed',
-				icon : 'font NodestoCapsCondensed',
-				gen  : dedent`{{font-family:NodestoCapsCondensed Dummy Text}}`
+				name: 'Nodesto Caps Condensed',
+				icon: 'font NodestoCapsCondensed',
+				gen: dedent`{{font-family:NodestoCapsCondensed Dummy Text}}`
 			  },
 			  {
-				name : 'Overpass',
-				icon : 'font Overpass',
-				gen  : dedent`{{font-family:Overpass Dummy Text}}`
+				name: 'Overpass',
+				icon: 'font Overpass',
+				gen: dedent`{{font-family:Overpass Dummy Text}}`
 			  },
 			  {
-				name : 'Davek',
-				icon : 'font Davek',
-				gen  : dedent`{{font-family:Davek Dummy Text}}`
+				name: 'Davek',
+				icon: 'font Davek',
+				gen: dedent`{{font-family:Davek Dummy Text}}`
 			  },
 			  {
-				name : 'Iokharic',
-				icon : 'font Iokharic',
-				gen  : dedent`{{font-family:Iokharic Dummy Text}}`
+				name: 'Iokharic',
+				icon: 'font Iokharic',
+				gen: dedent`{{font-family:Iokharic Dummy Text}}`
 			  },
 			  {
-				name : 'Rellanic',
-				icon : 'font Rellanic',
-				gen  : dedent`{{font-family:Rellanic Dummy Text}}`
+				name: 'Rellanic',
+				icon: 'font Rellanic',
+				gen: dedent`{{font-family:Rellanic Dummy Text}}`
 			  },
 			  {
-				name : 'Times New Roman',
-				icon : 'font TimesNewRoman',
-				gen  : dedent`{{font-family:"Times New Roman" Dummy Text}}`
+				name: 'Times New Roman',
+				icon: 'font TimesNewRoman',
+				gen: dedent`{{font-family:"Times New Roman" Dummy Text}}`
 			  }
 		]
 	},
