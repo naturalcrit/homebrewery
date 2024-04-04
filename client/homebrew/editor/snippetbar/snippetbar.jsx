@@ -234,11 +234,10 @@ const SnippetGroup = createClass({
 				<i className={snippet.icon} />
 				<span className='name'title={snippet.name}>{snippet.name}</span>
 				{snippet.experimental && <span className='beta'>beta</span>}
-				{snippet.subsnippets && <>
-					<i className='fas fa-caret-right'></i>
-					<div className='dropdown side'>
-						{this.renderSnippets(snippet.subsnippets)}
-					</div></>}
+				<i className='fas fa-caret-right' style={snippet.subsnippets ? null : { visibility : 'hidden' }}></i>
+				<div className='dropdown side'>
+					{snippet.subsnippets ? this.renderSnippets(snippet.subsnippets) : null}
+				</div>
 			</div>;
 
 		});
