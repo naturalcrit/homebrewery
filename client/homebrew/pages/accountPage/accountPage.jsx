@@ -1,18 +1,8 @@
 const React = require('react');
 const createClass = require('create-react-class');
-const _     = require('lodash');
-const cx    = require('classnames');
 const moment = require('moment');
 
 const UIPage = require('../basePages/uiPage/uiPage.jsx');
-
-const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
-
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const Account = require('../../navbar/account.navitem.jsx');
-const NewBrew = require('../../navbar/newbrew.navitem.jsx');
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
 
 const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
 
@@ -51,17 +41,6 @@ const AccountPage = createClass({
 	renderButton : function(name, key, shouldRender=true){
 		if(!shouldRender) return;
 		return <button className={this.state.saveLocation==key ? 'active' :	''}	onClick={()=>{this.makeActive(key);}}>{name}</button>;
-	},
-
-	renderNavItems : function() {
-		return <Navbar>
-			<Nav.section>
-				<NewBrew />
-				<HelpNavItem />
-				<RecentNavItem />
-				<Account />
-			</Nav.section>
-		</Navbar>;
 	},
 
 	renderUiItems : function() {
