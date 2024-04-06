@@ -39,7 +39,7 @@ const AccountPage = (props)=>{
 		);
 	};
 
-	const renderUiItems = ()=>{
+	const renderAccountPage = ()=>{
 		return (
 			<>
 				<div className='dataGroup'>
@@ -75,7 +75,7 @@ const AccountPage = (props)=>{
 
 	return (
 		<UIPage brew={props.brew}>
-			{renderUiItems()}
+			{renderAccountPage()}
 		</UIPage>);
 };
 
