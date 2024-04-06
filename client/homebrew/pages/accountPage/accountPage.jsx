@@ -8,23 +8,29 @@ const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
 let SAVEKEY = '';
 
 const AccountPage = (props)=>{
+	// State for the save location
 	const [saveLocation, setSaveLocation] = React.useState('');
 
+	// initialize save location from local storage based on user id
 	React.useEffect(()=>{
 		if(!saveLocation && props.uiItems.username) {
 			SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${props.uiItems.username}`;
+			// if no SAVEKEY in local storage, default save location to Google Drive.
 			let saveLocation = window.localStorage.getItem(SAVEKEY);
 			saveLocation = saveLocation ?? (props.uiItems.googleId ? 'GOOGLE-DRIVE' : 'HOMEBREWERY');
 			makeActive(saveLocation);
 		}
 	}, []);
 
+	// function to set the active save location
 	const makeActive = (newSelection)=>{
 		if(saveLocation === newSelection) return;
 		window.localStorage.setItem(SAVEKEY, newSelection);
 		setSaveLocation(newSelection);
 	};
 
+	// render a button for setting save locations. 
+	// todo: should this be a set of radio buttons (well styled) since it's either/or choice?
 	const renderButton = (name, key, shouldRender = true)=>{
 		if(!shouldRender) return null;
 		return (
@@ -39,6 +45,7 @@ const AccountPage = (props)=>{
 		);
 	};
 
+	// render the entirety of the account page content
 	const renderAccountPage = ()=>{
 		return (
 			<>
@@ -73,6 +80,7 @@ const AccountPage = (props)=>{
 		);
 	};
 
+	// return the account page inside the base layout wrapper (with navbar etc).
 	return (
 		<UIPage brew={props.brew}>
 			{renderAccountPage()}
