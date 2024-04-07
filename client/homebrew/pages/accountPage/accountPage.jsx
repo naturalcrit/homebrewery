@@ -33,7 +33,7 @@ const AccountPage = (props)=>{
 		setSaveLocation(newSelection);
 	};
 
-	// render a button for setting save locations. 
+	// render a button for setting save locations.
 	// todo: should this be a set of radio buttons (well styled) since it's either/or choice?
 	const renderButton = (name, key, shouldRender = true)=>{
 		if(!shouldRender) return null;
