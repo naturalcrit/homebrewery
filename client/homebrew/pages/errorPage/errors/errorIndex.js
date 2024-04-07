@@ -77,7 +77,7 @@ const errorIndex = (props)=>{
 
 		**Brew Title:** ${props.brew.brewTitle || 'Unable to show title'}
 
-		**Current Authors:** ${props.brew.authors?.map((author)=>{return `${author}`;}).join(', ') || 'Unable to list authors'}
+		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
 		
 		${props.brew.published ? `[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`: 
 		'This brew is unpublished, therefore we cannot grant you its share page URL.'}`,
@@ -93,10 +93,11 @@ const errorIndex = (props)=>{
 
 		**Brew Title:** ${props.brew.brewTitle || 'Unable to show title'}
 
-		**Current Authors:** ${props.brew.authors?.map((author)=>{return `${author}`;}).join(', ') || 'Unable to list authors'}
+		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
 
 		${props.brew.published ? `[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`: 
 		'This brew is unpublished, therefore we cannot grant you its share page URL.'}`,
+		
 
 		// Brew load error
 		'05' : dedent`

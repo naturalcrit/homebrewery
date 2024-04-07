@@ -81,7 +81,7 @@ const Editor = createClass({
 	updateEditorSize : function() {
 		if(this.refs.codeEditor) {
 			let paneHeight = this.refs.main.parentNode.clientHeight;
-			paneHeight -= SNIPPETBAR_HEIGHT + 1;
+			paneHeight -= SNIPPETBAR_HEIGHT;
 			this.refs.codeEditor.codeMirror.setSize(null, paneHeight);
 		}
 	},
