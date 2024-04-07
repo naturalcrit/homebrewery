@@ -73,11 +73,14 @@ const errorIndex = (props)=>{
 		**Properties** tab, and adding your username to the "invited authors" list. You can
 		then try to access this document again.
 		
+		:
+
 		**Brew Title:** ${props.brew.brewTitle || 'Unable to show title'}
 
 		**Current Authors:** ${props.brew.authors?.map((author)=>{return `${author}`;}).join(', ') || 'Unable to list authors'}
 		
-		[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`,
+		${props.brew.published ? `[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`: 
+		'This brew is unpublished, therefore we cannot grant you its share page URL.'}`,
 
 		// User is not signed in; must be a user on the Authors List
 		'04' : dedent`
@@ -86,9 +89,14 @@ const errorIndex = (props)=>{
 		You must be logged in to one of the accounts listed as an author of this brew.
 		User is not logged in. Please log in [here](${loginUrl}).
 		
+		:
+
 		**Brew Title:** ${props.brew.brewTitle || 'Unable to show title'}
 
-		**Current Authors:** ${props.brew.authors?.map((author)=>{return `${author}`;}).join(', ') || 'Unable to list authors'}`,
+		**Current Authors:** ${props.brew.authors?.map((author)=>{return `${author}`;}).join(', ') || 'Unable to list authors'}
+
+		${props.brew.published ? `[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`: 
+		'This brew is unpublished, therefore we cannot grant you its share page URL.'}`,
 
 		// Brew load error
 		'05' : dedent`
@@ -97,6 +105,8 @@ const errorIndex = (props)=>{
 		The server could not locate the Homebrewery document. It was likely deleted by
 		its owner.
 		
+		:
+
 		**Requested access:** ${props.brew.accessType}
 
 		**Brew ID:**  ${props.brew.brewId}`,
@@ -113,6 +123,8 @@ const errorIndex = (props)=>{
 		
 		An error occurred while attempting to remove the Homebrewery document.
 		
+		:
+
 		**Brew ID:**  ${props.brew.brewId}`,
 
 		// Author delete error
@@ -121,6 +133,8 @@ const errorIndex = (props)=>{
 		
 		An error occurred while attempting to remove the user from the Homebrewery document author list!
 		
+		:
+
 		**Brew ID:**  ${props.brew.brewId}`,
 
 		// Brew locked by Administrators error
@@ -129,6 +143,8 @@ const errorIndex = (props)=>{
 		
 		Please contact the Administrators to unlock this document.
 		
+		:
+
 		**Brew ID:**  ${props.brew.brewId}
 		
 		**Brew Title:** ${props.brew.brewTitle}`,
