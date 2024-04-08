@@ -7,7 +7,7 @@ const cx = require('classnames');
 const dedent = require('dedent-tabs').default;
 
 const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
-const snippetBar = require('./snippetBar/snippetBar.jsx');
+const SnippetBar = require('./snippetbar/snippetbar.jsx');
 const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
 const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
