@@ -1,8 +1,6 @@
-const React = require('react');
+const React  = require('react');
 const moment = require('moment');
-
 const UIPage = require('../basePages/uiPage/uiPage.jsx');
-
 const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
 
 let SAVEKEY = '';
@@ -11,7 +9,6 @@ const AccountPage = (props)=>{
 	// destructure props
 	const { accountDetails, brew } = props;
 
-
 	// State for the save location
 	const [saveLocation, setSaveLocation] = React.useState('');
 
@@ -19,15 +16,15 @@ const AccountPage = (props)=>{
 	React.useEffect(()=>{
 		if(!saveLocation && accountDetails.username) {
 			SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${accountDetails.username}`;
-			// if no SAVEKEY in local storage, default save location to Google Drive.
+			// if no SAVEKEY in local storage, default save location to Google Drive if user has Google account.
 			let saveLocation = window.localStorage.getItem(SAVEKEY);
 			saveLocation = saveLocation ?? (accountDetails.googleId ? 'GOOGLE-DRIVE' : 'HOMEBREWERY');
-			makeActive(saveLocation);
+			setActiveSaveLocation(saveLocation);
 		}
 	}, []);
 
 	// function to set the active save location
-	const makeActive = (newSelection)=>{
+	const setActiveSaveLocation = (newSelection)=>{
 		if(saveLocation === newSelection) return;
 		window.localStorage.setItem(SAVEKEY, newSelection);
 		setSaveLocation(newSelection);
@@ -35,15 +32,10 @@ const AccountPage = (props)=>{
 
 	// render a button for setting save locations.
 	// todo: should this be a set of radio buttons (well styled) since it's either/or choice?
-	const renderButton = (name, key, shouldRender = true)=>{
+	const renderSaveLocationButton = (name, key, shouldRender = true)=>{
 		if(!shouldRender) return null;
 		return (
-			<button
-				className={saveLocation === key ? 'active' : ''}
-				onClick={()=>{
-					makeActive(key);
-				}}
-			>
+			<button className={saveLocation === key ? 'active' : ''} onClick={()=>{setActiveSaveLocation(key);}}>
 				{name}
 			</button>
 		);
@@ -77,8 +69,8 @@ const AccountPage = (props)=>{
 				</div>
 				<div className='dataGroup'>
 					<h4>Default Save Location</h4>
-					{renderButton('Homebrewery', 'HOMEBREWERY')}
-					{renderButton('Google Drive', 'GOOGLE-DRIVE', accountDetails.googleId)}
+					{renderSaveLocationButton('Homebrewery', 'HOMEBREWERY')}
+					{renderSaveLocationButton('Google Drive', 'GOOGLE-DRIVE', accountDetails.googleId)}
 				</div>
 			</>
 		);
