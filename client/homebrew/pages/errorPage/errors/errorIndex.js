@@ -79,8 +79,7 @@ const errorIndex = (props)=>{
 
 		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
 		
-		${props.brew.published ? `[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`: 
-		'This brew is unpublished, therefore we cannot grant you its share page URL.'}`,
+		[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`,
 
 		// User is not signed in; must be a user on the Authors List
 		'04' : dedent`
@@ -95,8 +94,7 @@ const errorIndex = (props)=>{
 
 		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
 
-		${props.brew.published ? `[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`: 
-		'This brew is unpublished, therefore we cannot grant you its share page URL.'}`,
+		[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`,
 		
 
 		// Brew load error
