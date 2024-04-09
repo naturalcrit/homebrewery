@@ -40,7 +40,7 @@ body {
 	-webkit-column-gap   : 1cm;
 	-moz-column-gap      : 1cm;
 }
-.phb{
+.phb, .page{
 	.useColumns();
 	counter-increment : phb-page-numbers;
 	position          : relative;
@@ -59,6 +59,9 @@ body {
 	page-break-before : always;
 	page-break-after  : always;
 	contain           : size;
+}
+
+.phb{
 	//*****************************
 	// *            BASE
 	// *****************************/

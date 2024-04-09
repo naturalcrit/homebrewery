@@ -17,21 +17,8 @@ const asyncHandler = require('express-async-handler');
 
 const { DEFAULT_BREW } = require('./brewDefaults.js');
 
-const splitTextStyleAndMetadata = (brew)=>{
-	brew.text = brew.text.replaceAll('\r\n', '\n');
-	if(brew.text.startsWith('```metadata')) {
-		const index = brew.text.indexOf('```\n\n');
-		const metadataSection = brew.text.slice(12, index - 1);
-		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
-		brew.text = brew.text.slice(index + 5);
-	}
-	if(brew.text.startsWith('```css')) {
-		const index = brew.text.indexOf('```\n\n');
-		brew.style = brew.text.slice(7, index - 1);
-		brew.text = brew.text.slice(index + 5);
-	}
-};
+const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
+
 
 const sanitizeBrew = (brew, accessType)=>{
 	brew._id = undefined;
@@ -304,7 +291,8 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 		text     : req.brew.text,
 		style    : req.brew.style,
 		renderer : req.brew.renderer,
-		theme    : req.brew.theme
+		theme    : req.brew.theme,
+		tags     : req.brew.tags
 	};
 	req.brew = _.defaults(brew, DEFAULT_BREW);
 
@@ -384,7 +372,7 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 				console.log(err);
 			});
 
-		data.uiItems = {
+		data.accountDetails = {
 			username    : req.account.username,
 			issued      : req.account.issued,
 			googleId    : Boolean(req.account.googleId),
@@ -472,8 +460,17 @@ const getPureError = (error)=>{
 };
 
 app.use(async (err, req, res, next)=>{
-	const status = err.status || err.code || 500;
+	err.originalUrl = req.originalUrl;
 	console.error(err);
+
+	if(err.originalUrl?.startsWith('/api/')) {
+		// console.log('API error');
+		res.status(err.status || err.response?.status || 500).send(err);
+		return;
+	}
+
+	// console.log('non-API error');
+	const status = err.status || err.code || 500;
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'Error Page',

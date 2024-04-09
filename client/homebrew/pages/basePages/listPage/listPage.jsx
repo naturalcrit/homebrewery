@@ -36,6 +36,7 @@ const ListPage = createClass({
 
 		return {
 			filterString   : this.props.query?.filter || '',
+			filterTags     : [],
 			sortType       : this.props.query?.sort || null,
 			sortDir        : this.props.query?.dir || null,
 			query          : this.props.query,
@@ -82,7 +83,7 @@ const ListPage = createClass({
 		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
 
 		return _.map(brews, (brew, idx)=>{
-			return <BrewItem brew={brew} key={idx} reportError={this.props.reportError}/>;
+			return <BrewItem brew={brew} key={idx} reportError={this.props.reportError} updateListFilter={ (tag)=>{ this.updateUrl(this.state.filterString, this.state.sortType, this.state.sortDir, tag); }}/>;
 		});
 	},
 
@@ -136,12 +137,32 @@ const ListPage = createClass({
 		return;
 	},
 
-	updateUrl : function(filterTerm, sortType, sortDir){
+	updateUrl : function(filterTerm, sortType, sortDir, filterTag=''){
 		const url = new URL(window.location.href);
 		const urlParams = new URLSearchParams(url.search);
 
 		urlParams.set('sort', sortType);
 		urlParams.set('dir', sortDir);
+
+		let filterTags = urlParams.getAll('tag');
+		if(filterTag != '') {
+			if(filterTags.findIndex((tag)=>{return tag.toLowerCase()==filterTag.toLowerCase();}) == -1){
+				filterTags.push(filterTag);
+			} else {
+				filterTags = filterTags.filter((tag)=>{ return tag.toLowerCase() != filterTag.toLowerCase(); });
+			}
+		}
+		urlParams.delete('tag');
+		// Add tags to URL in the order they were clicked
+		filterTags.forEach((tag)=>{ urlParams.append('tag', tag); });
+		// Sort tags before updating state
+		filterTags.sort((a, b)=>{
+			return a.indexOf(':') - b.indexOf(':') != 0 ? a.indexOf(':') - b.indexOf(':') : a.toLowerCase().localeCompare(b.toLowerCase());
+		});
+
+		this.setState({
+			filterTags
+		});
 
 		if(!filterTerm)
 			urlParams.delete('filter');
@@ -166,6 +187,16 @@ const ListPage = createClass({
 		</div>;
 	},
 
+	renderTagsOptions : function(){
+		if(this.state.filterTags?.length == 0) return;
+		return <div className='tags-container'>
+			{_.map(this.state.filterTags, (tag, idx)=>{
+				const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
+				return <span key={idx} className={matches[1]} onClick={()=>{ this.updateUrl(this.state.filterString, this.state.sortType, this.state.sortDir, tag); }}>{matches[2]}</span>;
+			})}
+		</div>;
+	},
+
 	renderSortOptions : function(){
 		return <div className='sort-container'>
 			<h6>Sort by :</h6>
@@ -176,9 +207,6 @@ const ListPage = createClass({
 			{/* {this.renderSortOption('Latest', 'latest')} */}
 
 			{this.renderFilterOption()}
-
-
-
 		</div>;
 	},
 
@@ -186,14 +214,28 @@ const ListPage = createClass({
 		const testString = _.deburr(this.state.filterString).toLowerCase();
 
 		brews = _.filter(brews, (brew)=>{
+			// Filter by user entered text
 			const brewStrings = _.deburr([
 				brew.title,
 				brew.description,
 				brew.tags].join('\n')
 				.toLowerCase());
 
-			return brewStrings.includes(testString);
+			const filterTextTest = brewStrings.includes(testString);
+
+			// Filter by user selected tags
+			let filterTagTest = true;
+			if(this.state.filterTags.length > 0){
+				filterTagTest = Array.isArray(brew.tags) && this.state.filterTags?.every((tag)=>{
+					return brew.tags.findIndex((brewTag)=>{
+						return brewTag.toLowerCase() == tag.toLowerCase();
+					}) >= 0;
+				});
+			}
+
+			return filterTextTest && filterTagTest;
 		});
+
 		return _.orderBy(brews, (brew)=>{ return this.sortBrewOrder(brew); }, this.state.sortDir);
 	},
 
@@ -220,9 +262,11 @@ const ListPage = createClass({
 	render : function(){
 		return <div className='listPage sitePage'>
 			{/*<style>@layer V3_5ePHB, bundle;</style>*/}
-			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet'/>
+			<link href='/themes/V3/Blank/style.css' type="text/css" rel='stylesheet'/>
+			<link href='/themes/V3/5ePHB/style.css' type="text/css" rel='stylesheet'/>
 			{this.props.navItems}
 			{this.renderSortOptions()}
+			{this.renderTagsOptions()}
 
 			<div className='content V3'>
 				<div className='page'>

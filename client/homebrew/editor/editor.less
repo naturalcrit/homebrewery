@@ -43,6 +43,28 @@
 			font-weight : bold;
 			color       : green;
 		}
+		.superscript:not(.cm-comment) {
+			font-weight    : bold;
+			color          : goldenrod;
+			vertical-align : super;
+			font-size      : 0.9em;
+		}
+		.subscript:not(.cm-comment) {
+			font-weight    : bold;
+			color          : rgb(123, 123, 15);
+			vertical-align : sub;
+			font-size      : 0.9em;
+		}
+		.dl-highlight {
+			&.dl-colon-highlight {
+				font-weight   : bold;
+				color         : #949494;
+				background    : #E5E5E5;
+				border-radius : 3px;
+			}
+			&.dt-highlight { color : rgb(96, 117, 143); }
+			&.dd-highlight { color : rgb(97, 57, 178); }
+		}		
 	}
 
 	.brewJump {
