@@ -6,10 +6,8 @@ const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
 let SAVEKEY = '';
 
 const AccountPage = (props)=>{
-	// destructure props
+	// destructure props and set state for save location
 	const { accountDetails, brew } = props;
-
-	// State for the save location
 	const [saveLocation, setSaveLocation] = React.useState('');
 
 	// initialize save location from local storage based on user id
@@ -23,14 +21,12 @@ const AccountPage = (props)=>{
 		}
 	}, []);
 
-	// function to set the active save location
 	const setActiveSaveLocation = (newSelection)=>{
 		if(saveLocation === newSelection) return;
 		window.localStorage.setItem(SAVEKEY, newSelection);
 		setSaveLocation(newSelection);
 	};
 
-	// render a button for setting save locations.
 	// todo: should this be a set of radio buttons (well styled) since it's either/or choice?
 	const renderSaveLocationButton = (name, key, shouldRender = true)=>{
 		if(!shouldRender) return null;
