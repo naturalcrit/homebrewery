@@ -134,9 +134,43 @@ const sortMap = (m)=>{
 	})));
 };
 
+const sanityCheckUnders = (indexes, entryAddress)=>{
+	// Return undefined if the target does not exist.
+	// Return true if the target exists and is a topic and has an assigned page
+	// Return true if the target exists and is the subtopic of an entry with more than one subtopic and has an assigned page
+	// Return false if the target exists and does not have an assigned page
+	// Return false if the target exists and the topic has less than two subtopics.
+
+	// Verify the index exists
+	console.log('1');
+	if(indexes.get(entryAddress[1])==undefined) return undefined;
+	console.log('2');
+	// Verify the topic exists
+	const topic=indexes.get(entryAddress[1]).get(entryAddress[2].trim());
+	const topicPages = topic.get('pages');
+	if((topic==undefined) || ((topicPages?.length<1) && (topic.get('entries').size<1))) return undefined;
+	console.log('3');
+	// Verify the subtopic exists if needed
+	if(!entryAddress[3].trim()) return true;
+	const entries = topic.get('entries');
+	console.log(entries);
+	const subtopic = entries.get(entryAddress[3].trim());
+	console.log(subtopic);
+	if(subtopic==undefined) return undefined;
+	console.log('4');
+	const pages=subtopic.get('pages');
+	console.log(topicPages?.length);
+	console.log(pages.length);
+	if((topicPages?.length<1) && (pages.length<1)) return undefined;
+	console.log('5');
+	if(pages.length < 1) return false;
+	console.log(`Returning true`);
+	return true;
+};
+
 
 // Processes a list of Index Marker targets, either as page numbers or as Cross References
-const formatIndexLocations = (pagesArray)=>{
+const formatIndexLocations = (indexes, pagesArray, entry, runningErrors)=>{
 	let results = '';
 	const seeRef = [];
 	const seeAlsoRef = [];
@@ -145,8 +179,8 @@ const formatIndexLocations = (pagesArray)=>{
 
 	for (const [k, pageNumber] of pagesArray.entries()) {
 		if(typeof pageNumber == 'number') {
-			if(results.length == 0 ) results = ' ... pg. ';
-			results = results.concat('[', parseInt(pageNumber+1), `](#p${parseInt(pageNumber+1)}_${entry.toLowerCase().replaceAll(' ', '')}), `);
+			if(results.length == 0) results = ' ... pg. ';
+			results = results.concat('[', parseInt(pageNumber+1), `](#p${parseInt(pageNumber)}_${entry.toLowerCase().replaceAll(' ', '')}), `);
 		} else {
 			let targetIndex = pageNumber[1].length > 0 ? pageNumber[1].trim() : 'Index:';
 			const targetTopic = pageNumber[2].trim();
@@ -158,12 +192,20 @@ const formatIndexLocations = (pagesArray)=>{
 
 			targetIndex = targetIndex.replace(/^\|/).replace(/^\+/);
 
-			const topicOrSubtopic = targetSubtopic.length > 0 ? targetSubtopic : targetTopic;
-			const crossRef = `[${targetTopic}${targetSubtopic.length > 0 ? `: ${targetSubtopic}` : ''}](#idx_${targetIndex}_${topicOrSubtopic.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()})`;
-			if(seeAlsoUnderFlag) seeAlsoUnderRef.push(crossRef);
-			else if(seeAlsoFlag) seeAlsoRef.push(crossRef);
-			else if(seeUnderFlag) seeUnderRef.push(crossRef);
-			else seeRef.push(crossRef);
+			const useSubtopic = sanityCheckUnders(indexes, pageNumber);
+			console.log(pageNumber);
+			console.log(useSubtopic);
+
+			if(useSubtopic !== undefined){
+				const topicOrSubtopic = (targetSubtopic.length > 0) && (useSubtopic) ? targetSubtopic : targetTopic;
+				const crossRef = `[${targetTopic}${(useSubtopic) && (targetSubtopic.length > 0) ? `: ${targetSubtopic}` : ''}](#idx_${targetIndex}_${topicOrSubtopic.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()})`;
+				if(seeAlsoUnderFlag) seeAlsoUnderRef.push(crossRef);
+				else if(seeAlsoFlag) seeAlsoRef.push(crossRef);
+				else if(seeUnderFlag) seeUnderRef.push(crossRef);
+				else seeRef.push(crossRef);
+			} else {
+				runningErrors.push(`Unable to create crossreference to ${targetIndex}: ${targetTopic} - ${targetSubtopic}`);
+			}
 		}
 		if(results[results.length - 1] == ',') results = results.slice(-1);
 		if(seeRef.length > 0) results += `\n    see ${seeRef.join(';')}`;
@@ -175,28 +217,36 @@ const formatIndexLocations = (pagesArray)=>{
 	return results;
 };
 
-const markup = (indexName, index)=>{
+const markup = (indexes, indexName, index, runningErrors)=>{
 	const sortedIndex = sortMap(index);
 	let results = '';
 
 	for (const [subjectHeading, subjectHeadingContents] of sortedIndex) {
+		let topicResults = '';
+		let subtopicResults = '';
 		const subjectHeadingPages = subjectHeadingContents.get('pages');
-		let setAnchor = '';
+		let setAnchor = [];
 		if(subjectHeadingContents.has('setAnchor')) {
-			setAnchor = `[#idx_${indexName}_${subjectHeading.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}]"/>`;
+			setAnchor.push(`[idx_${indexName}_${subjectHeading.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}]`);
 		}
-		results = results.concat(`- `, setAnchor, subjectHeading);
-		results += formatIndexLocations(subjectHeadingPages);
+		const topicLocations = formatIndexLocations(indexes, subjectHeadingPages, subjectHeading, runningErrors);
 		const subEntries = subjectHeadingContents.get('entries');
 		if(subEntries.size) {
 			const sortedEntries = sortMap(subEntries);
 			for (const [entry, entryPages] of sortedEntries){
 				if(sortedEntries.get(entry).has('setAnchor')) {
-					setAnchor = `[#idx_${indexName}_${entry.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}]"/>`;
+					setAnchor.push(`[idx_${indexName}_${entry.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}]`);
 				}
-				results = results.concat('  - ', entry);
-				results += formatIndexLocations(entryPages.get('pages'));
+				const subtopicLocations = formatIndexLocations(indexes, entryPages.get('pages'), entry, runningErrors);
+				if(subtopicLocations.length > 1) {
+					subtopicResults = subtopicResults.concat('  - ', entry, subtopicLocations);
+				}
 			}
+		}
+		if((topicLocations.length>1) || (subtopicResults.length > 0)) {
+			// eslint-disable-next-line max-lines
+			topicResults = topicResults.concat(`- `, setAnchor.join(''), subjectHeading, topicLocations, subtopicResults);
+			results = results.concat(topicResults);
 		}
 	}
 	return results;
@@ -204,6 +254,7 @@ const markup = (indexName, index)=>{
 
 module.exports = function (props) {
 	const indexes = new Map();
+	// eslint-disable-next-line max-lines
 	indexes.set('Index:', new Map());
 
 	const pages = props.brew.text.split('\\page');
@@ -219,7 +270,7 @@ module.exports = function (props) {
 
 
 	for (const [indexName, index] of sortedIndexes) {
-		const markdown = markup(indexName.replace(/[^\w\s\']|_/g, '').replace(/\s+/g, ''), index);
+		const markdown = markup(indexes, indexName.replace(/[^\w\s\']|_/g, '').replace(/\s+/g, ''), index, runningErrors);
 		resultIndexes +=dedent`
 		{{index,wide
 		##### ${indexName}

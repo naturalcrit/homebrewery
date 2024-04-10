@@ -277,49 +277,68 @@ const indexesDuplicates = (indexEntry)=>{
 	return count == 0 ? '' : count;
 };
 
+const splitKludge = (src)=>{
+	const splits = src.split('|');
+	for (const s in splits) {
+		if((s > 1) && (splits[s - 1][splits[s -1].length - 1] === '\\')) {
+			splits[s - 1] = splits[s - 1].concat('|', splits[s]);
+			splits[s] = undefined;
+		}
+	}
+	return _.compact(splits);
+};
+
 const indexAnchors = {
 	name  : 'indexAnchor',
 	level : 'inline',
 	// ^#([^/]+)(\/\/(.+))?
 	start(src) {return src.match(/^#(.+)(?<!\\):([^/]+)((?<!\\)\/([^|]+))?/)?.index;}, // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
+		console.log(src);
 		//		const inlineRegex = /^#([^/]+)(\/\/(.+))?/y;
-		const inlineRegex =  /^#(.+)(?<!\\):([^/]+)(?:(?<!\\)\/([^|]+))/gm;
-		const addressRegEx = /^#(.+)(?<!\\):([^/]+)(?:(?<!\\)\/([^|]+))/gm;
-		const crossReferenceSplit = /(?<!\\)\|/g;
+		//const inlineRegex =  /^#(.+)(?<!\\):([^/]+)(?:(?<!\\)\/([^|]+))/gm;
+		//const inlineRegex =  /^#(.+)(?<!\\):([^/\n]+)((?:(?<!\\)\/([^|\n]+)))?/gm;
+		const inlineRegex = /^#[^|]+(\|[^\n]+)?/gm;
+		//const addressRegEx = /^(.+)(?<!\\):([^/]+)(?:(?<!\\)\/([^|]+))/gm;
+		const addressRegEx = /^(.+)(?<!\\):([^/\n]+)(?:(?<!\\)(\/([^|\n]+)))?/gm;
+		const crossReferenceRegex = /(.+)(?<!\\)\|(.+)/g;
 
 		const indexEntry = {};
 
 		const srcMatch = inlineRegex.exec(src);
 		if(srcMatch){
-			const indexSplit = srcMatch[0].split(crossReferenceSplit);
-			if((indexSplit.length>1) && (indexSplit[1].length > 1)){
+			console.log(srcMatch);
+			const indexSplit = splitKludge(srcMatch[0]);
+ 			//= crossReferenceRegex.exec(srcMatch[0]);
+			console.log('indexSplit');
+			console.log(indexSplit);
+			console.log('indexSplit');
+			const entryMatch = addressRegEx.exec(indexSplit[0]);
+			console.log(entryMatch);
+			indexEntry.subtopic = entryMatch[4] ? entryMatch[4].trim() : undefined;
+			indexEntry.topic = entryMatch[2].trim();
+			indexEntry.index = entryMatch[1].trim();
+			indexEntry.instance = indexesDuplicates(indexEntry);
+			if(indexSplit.length > 1) {
 				indexEntry.crossReference = true;
 			}
-			const entryMatch = addressRegEx.exec(indexSplit[0]);
-			if(entryMatch) {
-				indexEntry.subtopic = entryMatch[3] ? entryMatch[3].trim() : undefined;
-				indexEntry.topic = entryMatch[2].trim();
-				indexEntry.index = entryMatch[1].trim();
-				indexEntry.instance = indexesDuplicates(indexEntry);
-				return {
-					type       : 'indexAnchor',
-					text       : src,
-					raw        : srcMatch[0],
-					pageNumber : markedRenderVars?.pageNumber || 0, // Need to pull this from somewhere. Currently assuming from markded_brew_options
-					indexEntry : indexEntry
-				};
-			}
+			return {
+				type       : 'indexAnchor',
+				text       : src,
+				raw        : srcMatch[0],
+				pageNumber : markedRenderVars?.pageNumber || 0, // Need to pull this from somewhere. Currently assuming from markded_brew_options
+				indexEntry : indexEntry
+			};
 		}
 	},
 	renderer(token) {
 		if(!token.indexEntry?.crossReference) {
 			if(token.indexEntry?.subtopic) {
 				// This is a Subtopic entry
-				return `<a href="#p${token.pageNumber}_${token.indexEntry.subtopic.replace(/\s/g, '').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-subtopic="${token.indexEntry.subtopic}" data-index="${token.indexEntry.index}"></a>`;
+				return `<a id="p${token.pageNumber}_${token.indexEntry.subtopic.replace(/\s/g, '').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-subtopic="${token.indexEntry.subtopic}" data-index="${token.indexEntry.index}"></a>`;
 			} else {
 				// This is a Topic entry
-				return `<a href="#p${token.pageNumber}_${token.indexEntry.topic.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-index="${token.indexEntry.index}"></a>`;
+				return `<a id="p${token.pageNumber}_${token.indexEntry.topic.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-index="${token.indexEntry.index}"></a>`;
 			}
 		}
 		return false;
