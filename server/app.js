@@ -372,7 +372,7 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 				console.log(err);
 			});
 
-		data.uiItems = {
+		data.accountDetails = {
 			username    : req.account.username,
 			issued      : req.account.issued,
 			googleId    : Boolean(req.account.googleId),
