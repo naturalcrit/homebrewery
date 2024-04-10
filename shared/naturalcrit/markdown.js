@@ -4,9 +4,13 @@ const Marked = require('marked');
 const MarkedExtendedTables = require('marked-extended-tables');
 const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartypants-lite');
 const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
+const { markedEmoji: MarkedEmojis} = require('marked-emoji');
+const dicefont = require('../../themes/fonts/icon fonts/dicefont.js');
 const MathParser = require('expr-eval').Parser;
 const renderer = new Marked.Renderer();
 const tokenizer = new Marked.Tokenizer();
+
+console.log(dicefont)
 
 //Limit math features to simple items
 const mathParser = new MathParser({
@@ -659,11 +663,21 @@ function MarkedVariables() {
 };
 //^=====--------------------< Variable Handling >-------------------=====^//
 
+// Emoji options
+const MarkedEmojiOptions = {
+	emojis: {
+		...dicefont,
+		"heart": "fa-solid fa-heart",
+		"star": "fa-solid fa-star"
+	},
+	renderer: (token) => `<i class="${token.emoji}"></i>`
+};
+
 Marked.use(MarkedVariables());
 Marked.use({ extensions: [definitionListsMultiLine, definitionListsSingleLine, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
-Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
+Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
 const nonWordAndColonTest = /[^\w:]/g;
 const cleanUrl = function (sanitize, base, href) {
