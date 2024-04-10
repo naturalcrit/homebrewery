@@ -294,27 +294,17 @@ const indexAnchors = {
 	// ^#([^/]+)(\/\/(.+))?
 	start(src) {return src.match(/^#(.+)(?<!\\):([^/]+)((?<!\\)\/([^|]+))?/)?.index;}, // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		console.log(src);
-		//		const inlineRegex = /^#([^/]+)(\/\/(.+))?/y;
-		//const inlineRegex =  /^#(.+)(?<!\\):([^/]+)(?:(?<!\\)\/([^|]+))/gm;
-		//const inlineRegex =  /^#(.+)(?<!\\):([^/\n]+)((?:(?<!\\)\/([^|\n]+)))?/gm;
 		const inlineRegex = /^#[^|]+(\|[^\n]+)?/gm;
-		//const addressRegEx = /^(.+)(?<!\\):([^/]+)(?:(?<!\\)\/([^|]+))/gm;
 		const addressRegEx = /^(.+)(?<!\\):([^/\n]+)(?:(?<!\\)(\/([^|\n]+)))?/gm;
-		const crossReferenceRegex = /(.+)(?<!\\)\|(.+)/g;
 
 		const indexEntry = {};
 
 		const srcMatch = inlineRegex.exec(src);
 		if(srcMatch){
-			console.log(srcMatch);
+			// I was unable to figure make this work with regex so I cheated.
+			// If you can replace it with a split or regex match, be my guest. :)
 			const indexSplit = splitKludge(srcMatch[0]);
- 			//= crossReferenceRegex.exec(srcMatch[0]);
-			console.log('indexSplit');
-			console.log(indexSplit);
-			console.log('indexSplit');
 			const entryMatch = addressRegEx.exec(indexSplit[0]);
-			console.log(entryMatch);
 			indexEntry.subtopic = entryMatch[4] ? entryMatch[4].trim() : undefined;
 			indexEntry.topic = entryMatch[2].trim();
 			indexEntry.index = entryMatch[1].trim();
