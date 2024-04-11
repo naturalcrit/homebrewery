@@ -1,82 +1,110 @@
+/* eslint-disable max-lines */
 /* eslint-disable max-depth */
 const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
 
 const setCrossRefAnchor = (indexes, pageRef)=>{
 	// Set a flag to generate a reflink at the topic or subtopic.
-	let index;
+	let index, topic;
 
-	if(indexes.has(pageRef[1])) {
-		index = indexes.get(pageRef[1].trim());
+	if(indexes.has(pageRef.index)) {
+		index = indexes.get(pageRef.index);
 	} else {
 		index = new Map();
 	}
 
 	// If the Topic doesn't exist yet....
-	if(!index?.has(pageRef[2].trim())){
-		const topic = new Map();
+	if(!index?.has(pageRef.topic.trim())){
+		topic = new Map();
 		topic.set('pages', []);
 		topic.set('entries', new Map());
-		const subEntries = topic.get('entries');
-		if(pageRef[3].trim().length > 0) {
-			const subTopicMap = new Map();
-			subTopicMap.set('pages', []);
-			subTopicMap.set('setAnchor', true);
-			subEntries.set(pageRef[3].trim(), subTopicMap);
-		} else {
-			const subTopicMap = subEntries.get(pageRef[3].trim());
-			subTopicMap.set('setAnchor', true);
-			subEntries.set(pageRef[3].trim(), subTopicMap);
-		}
-		topic.set('entries', subEntries);
-		index.set(pageRef[2].trim(), topic);
-		indexes.set(pageRef[1].trim(), index);
-		return;
+		index.set(pageRef.topic.trim(), topic);
+		indexes.set(pageRef.index.trim(), index);
+	} else {
+		topic = index.get(pageRef.topic.trim());
 	}
 
-	const topic = index.get(pageRef[2].trim());
-	if(pageRef[3].trim().length > 0) {
+	if(pageRef.subtopic?.length > 0) {
 		const subEntries = topic.get('entries');
 		let subTopicMap;
 		// If the subtopic doesn't exist
-		if(!subEntries.has(pageRef[3].trim())){
+		if(!subEntries.has(pageRef.subtopic.trim())){
 			subTopicMap = new Map();
 			subTopicMap.set('pages', []);
 			subTopicMap.set('setAnchor', true);
 		} else {
-			subTopicMap = subEntries.get(pageRef[3].trim());
+			subTopicMap = subEntries.get(pageRef.subtopic.trim());
 			subTopicMap.set('pages', []);
 			subTopicMap.set('setAnchor', true);
 		}
-		subEntries.set(pageRef[3].trim(), subTopicMap);
+		subEntries.set(pageRef.subtopic.trim(), subTopicMap);
 		topic.set('entries', subEntries);
 	} else {
 		topic.set('setAnchor', true);
 	}
-	index.set(pageRef[2], topic);
-	indexes.set(pageRef[1], index);
+	index.set(pageRef.topic, topic);
+	indexes.set(pageRef.index, index);
 };
 
-const insertIndex = (indexes, entry, pageNumber, runningErrors)=> {
-	const addressRegEx = /^(.+)(?<!\\):([^/]+)(?:(?<!\\)\/([^|]+))/gm;
+const indexSplit=(src)=>{
+	let index, topic, subtopic;
+	const indexSplit = /(?<!\\):/;
+	const subTopicSplit = /(?<!\\)\//;
+
+	let working = [];
+	if(src.search(indexSplit) < 0){
+		working[1] = src;
+		index = 'Index';
+	} else {
+		working = src.split(indexSplit);
+		index = working[0].trim();
+		if(!working[1].trim()>0) {
+			working.splice(1, 1);
+		}
+		working[1] = working[1].trim();
+	}
+
+	if(working[1]) {
+		if(working[1].search(subTopicSplit) < 0){
+			const topics = working[1].split(subTopicSplit);
+			topic = topics[0].trim();
+			if(topics[1]) { topics[1] = topics[1].trim(); }
+			if(topics[1]?.length>0) {
+				subtopic = topics[1].trim();
+			}
+		} else {
+			topic = working[1];
+		}
+	}
+
+	if(topic?.length>0) {
+		return { index: index, topic: topic, subtopic: subtopic };
+	} else {
+		return undefined;
+	}
+
+};
+
+
+const insertIndex = (indexes, entry, pageNumber, runningErrors)=>{
 	const crossReferenceSplit = /(?<!\\)\|/g;
 
 	const crossReference = entry.split(crossReferenceSplit);
-	const entryMatch = addressRegEx.exec(crossReference[0]);
 
-	const useIndex = entryMatch[1].trim().length > 0 ? entryMatch[1].trim() : 'Index:';
+	const entryMatch = indexSplit(crossReference[0]);
+
+	const useIndex = entryMatch.index;
 	if(!indexes.has(useIndex)) {
 		indexes.set(useIndex, new Map());
 	}
 
-	addressRegEx.lastIndex = 0;
-	const pageRef = ((crossReference.length>1) && (crossReference[1].length>0)) ? addressRegEx.exec(crossReference[1]) : pageNumber;
+	const pageRef = ((crossReference.length>1) && (crossReference[1].length>0)) ? indexSplit(crossReference[1].trim()) : pageNumber;
 	if(typeof pageRef !== 'number') {
 		setCrossRefAnchor(indexes, pageRef);
 	}
 
-	const topic = entryMatch[2].trim();
-	const subTopic = entryMatch[3]?.length > 0 ? entryMatch[3].trim() : '';
+	const topic = entryMatch.topic;
+	const subTopic = entryMatch.subtopic;
 
 	const activeIndex = indexes.get(useIndex);
 	let activeTopic;
@@ -90,7 +118,7 @@ const insertIndex = (indexes, entry, pageNumber, runningErrors)=> {
 		activeTopic = activeIndex.get(topic);
 	}
 
-	if(subTopic.length>0) {
+	if(subTopic?.length>0) {
 		const subEntries = activeTopic.get('entries');
 		if((!subEntries.size > 0) || (!subEntries.has(subTopic))) {
 			// This is a new Subtopic, initialize it.
@@ -104,7 +132,7 @@ const insertIndex = (indexes, entry, pageNumber, runningErrors)=> {
 			subTopicEntry.set('pages', pageArray);
 		}
 	} else {
-		const pageArray = activeTopic.get(pages);
+		const pageArray = activeTopic.get('pages');
 		pageArray.push(pageRef);
 		activeTopic.set('pages', pageArray);
 	}
@@ -142,29 +170,19 @@ const sanityCheckUnders = (indexes, entryAddress)=>{
 	// Return false if the target exists and the topic has less than two subtopics.
 
 	// Verify the index exists
-	console.log('1');
 	if(indexes.get(entryAddress[1])==undefined) return undefined;
-	console.log('2');
 	// Verify the topic exists
 	const topic=indexes.get(entryAddress[1]).get(entryAddress[2].trim());
 	const topicPages = topic.get('pages');
 	if((topic==undefined) || ((topicPages?.length<1) && (topic.get('entries').size<1))) return undefined;
-	console.log('3');
 	// Verify the subtopic exists if needed
 	if(!entryAddress[3].trim()) return true;
 	const entries = topic.get('entries');
-	console.log(entries);
 	const subtopic = entries.get(entryAddress[3].trim());
-	console.log(subtopic);
 	if(subtopic==undefined) return undefined;
-	console.log('4');
 	const pages=subtopic.get('pages');
-	console.log(topicPages?.length);
-	console.log(pages.length);
 	if((topicPages?.length<1) && (pages.length<1)) return undefined;
-	console.log('5');
 	if(pages.length < 1) return false;
-	console.log(`Returning true`);
 	return true;
 };
 
@@ -182,9 +200,9 @@ const formatIndexLocations = (indexes, pagesArray, entry, runningErrors)=>{
 			if(results.length == 0) results = ' ... pg. ';
 			results = results.concat('[', parseInt(pageNumber+1), `](#p${parseInt(pageNumber)}_${entry.toLowerCase().replaceAll(' ', '')}), `);
 		} else {
-			let targetIndex = pageNumber[1].length > 0 ? pageNumber[1].trim() : 'Index:';
-			const targetTopic = pageNumber[2].trim();
-			const targetSubtopic = pageNumber[3].trim();
+			let targetIndex = pageNumber[1]?.length > 0 ? pageNumber[1].trim() : 'Index:';
+			const targetTopic = pageNumber[2]?.trim();
+			const targetSubtopic = pageNumber[3]?.trim();
 
 			const seeUnderFlag = targetIndex[0] == '+';
 			const seeAlsoFlag = targetIndex[0] == '|';
@@ -193,8 +211,6 @@ const formatIndexLocations = (indexes, pagesArray, entry, runningErrors)=>{
 			targetIndex = targetIndex.replace(/^\|/).replace(/^\+/);
 
 			const useSubtopic = sanityCheckUnders(indexes, pageNumber);
-			console.log(pageNumber);
-			console.log(useSubtopic);
 
 			if(useSubtopic !== undefined){
 				const topicOrSubtopic = (targetSubtopic.length > 0) && (useSubtopic) ? targetSubtopic : targetTopic;
@@ -271,16 +287,18 @@ module.exports = function (props) {
 
 	for (const [indexName, index] of sortedIndexes) {
 		const markdown = markup(indexes, indexName.replace(/[^\w\s\']|_/g, '').replace(/\s+/g, ''), index, runningErrors);
-		resultIndexes +=dedent`
-		{{index,wide
-		##### ${indexName}
+		if(markdown.length > 0 ) {
+			resultIndexes +=dedent`
+			{{index,wide
+			##### ${indexName}
 
-		${markdown}
-		}}
-		\page
+			${markdown}
+			}}
+			\page
 
-		`;
-		resultIndexes += '\n';
+			`;
+			resultIndexes += '\n';
+		}
 	};
 
 	return resultIndexes;
