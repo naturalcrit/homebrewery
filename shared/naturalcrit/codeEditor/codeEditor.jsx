@@ -5,6 +5,7 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 const closeTag = require('./close-tag');
+const autoCompleteEmojis = require('./autocomplete-emoji');
 
 let CodeMirror;
 if(typeof window !== 'undefined'){
@@ -36,6 +37,8 @@ if(typeof window !== 'undefined'){
 	//XML code folding is a requirement of the auto-closing tag feature and is not enabled
 	require('codemirror/addon/fold/xml-fold.js');
 	require('codemirror/addon/edit/closetag.js');
+	//Autoccompletion
+	require('codemirror/addon/hint/show-hint.js');
 
 	const foldCode = require('./fold-code');
 	foldCode.registerHomebreweryHelper(CodeMirror);
@@ -177,7 +180,10 @@ const CodeEditor = createClass({
 			// 	return el;
 			// }
 		});
+		
+		// Add custom behaviors (auto-close curlies and auto-complete emojis)
 		closeTag.autoCloseCurlyBraces(CodeMirror, this.codeMirror);
+		autoCompleteEmojis.showEmojiAutocomplete(CodeMirror, this.codeMirror);
 
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
 		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
