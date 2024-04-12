@@ -10,8 +10,6 @@ const MathParser = require('expr-eval').Parser;
 const renderer = new Marked.Renderer();
 const tokenizer = new Marked.Tokenizer();
 
-console.log(dicefont)
-
 //Limit math features to simple items
 const mathParser = new MathParser({
 	operators : {
@@ -624,8 +622,8 @@ function MarkedVariables() {
 const MarkedEmojiOptions = {
 	emojis: {
 		...dicefont,
-		"heart": "fa-solid fa-heart",
-		"star": "fa-solid fa-star"
+		"fas-heart": "fa-solid fa-heart",
+		"fas-star": "fa-solid fa-star"
 	},
 	renderer: (token) => `<i class="${token.emoji}"></i>`
 };
