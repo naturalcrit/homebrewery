@@ -1,32 +1,24 @@
-require('./errorPage.less');
-const React = require('react');
-const createClass = require('create-react-class');
-const _ = require('lodash');
-const cx = require('classnames');
+import './errorPage.less';
+import React from 'react';
+import UIPage from '../basePages/uiPage/uiPage.jsx';
+import Markdown from '../../../../shared/naturalcrit/markdown.js';
+import ErrorIndex from './errors/errorIndex.js';
 
-const UIPage = require('../basePages/uiPage/uiPage.jsx');
+const ErrorPage = ({ brew })=>{
+	const errorText = ErrorIndex({ brew })[brew.HBErrorCode.toString()] || '';
 
-const Markdown = require('../../../../shared/naturalcrit/markdown.js');
-
-const ErrorIndex = require('./errors/errorIndex.js');
-
-const ErrorPage = createClass({
-	displayName : 'ErrorPage',
-
-	render : function(){
-		const errorText = ErrorIndex(this.props)[this.props.brew.HBErrorCode.toString()] || '';
-
-		return <UIPage brew={{ title: 'Crit Fail!' }}>
+	return (
+		<UIPage brew={{ title: 'Crit Fail!' }}>
 			<div className='dataGroup'>
 				<div className='errorTitle'>
-					<h1>{`Error ${this.props.brew.status || '000'}`}</h1>
-					<h4>{this.props.brew.text || 'No error text'}</h4>
+					<h1>{`Error ${brew?.status || '000'}`}</h1>
+					<h4>{brew?.text || 'No error text'}</h4>
 				</div>
 				<hr />
 				<div dangerouslySetInnerHTML={{ __html: Markdown.render(errorText) }} />
 			</div>
-		</UIPage>;
-	}
-});
+		</UIPage>
+	);
+};
 
 module.exports = ErrorPage;
