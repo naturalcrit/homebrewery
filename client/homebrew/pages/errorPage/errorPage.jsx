@@ -13,15 +13,6 @@ const ErrorIndex = require('./errors/errorIndex.js');
 const ErrorPage = createClass({
 	displayName : 'ErrorPage',
 
-	getDefaultProps : function() {
-		return {
-			ver     : '0.0.0',
-			errorId : '',
-			text    : '# Oops \n We could not find a brew with that id. **Sorry!**',
-			error   : {}
-		};
-	},
-
 	render : function(){
 		const errorText = ErrorIndex(this.props)[this.props.brew.HBErrorCode.toString()] || '';
 
