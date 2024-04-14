@@ -37,7 +37,7 @@ if(typeof window !== 'undefined'){
 	//XML code folding is a requirement of the auto-closing tag feature and is not enabled
 	require('codemirror/addon/fold/xml-fold.js');
 	require('codemirror/addon/edit/closetag.js');
-	//Autoccompletion
+	//Autocompletion
 	require('codemirror/addon/hint/show-hint.js');
 
 	const foldCode = require('./fold-code');
