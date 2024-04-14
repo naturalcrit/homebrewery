@@ -24,7 +24,6 @@ const showEmojiAutocomplete = function(CodeMirror, editor) {
 				}).map(function(emoji) {
 					return {
 						text: emoji + ":",
-						//displayText: `${emoji} - <i class="${emojis[emoji]}"></i>`,
 						render: function(element, self, data) {
 							const div = document.createElement('div');
 							div.innerHTML = `<i class="${emojis[emoji]}"></i> ${emoji}`;
@@ -50,7 +49,7 @@ const showEmojiAutocomplete = function(CodeMirror, editor) {
 		const textToCursor = line.slice(0, cursor.ch);
 	
 		// Check if the text ends with ':xyz'
-		if (/:\S+$/.test(textToCursor)) {
+		if (/:[^\s:]+$/.test(textToCursor)) {
 			CodeMirror.commands.autocomplete(editor);
 		}
 	});
