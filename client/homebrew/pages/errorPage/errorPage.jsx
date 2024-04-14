@@ -5,6 +5,7 @@ import Markdown from '../../../../shared/naturalcrit/markdown.js';
 import ErrorIndex from './errors/errorIndex.js';
 
 const ErrorPage = ({ brew })=>{
+	// Retrieving the error text based on the brew's error code from ErrorIndex
 	const errorText = ErrorIndex({ brew })[brew.HBErrorCode.toString()] || '';
 
 	return (
