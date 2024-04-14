@@ -21,10 +21,25 @@ const showEmojiAutocomplete = function(CodeMirror, editor) {
 	
 				const list = Object.keys(emojis).filter(function(emoji) {
 					return emoji.indexOf(currentWord) >= 0;
+				}).sort((a, b) => {																// Sort autocomplete options alphabetically, case-insensitive
+					let lowerA = a.toLowerCase();
+					let lowerB = b.toLowerCase();
+
+					lowerA = lowerA.replace(/\d+/g, function(match) {	// Temporarily convert any numbers in emoji string
+						return match.padStart(4, '0');									// to 4-digits, left-padded with 0's. To aid in
+					});																								// sorting numbers, i.e., "d6, d10, d20", not "d10, d20, d6"
+					lowerB = lowerB.replace(/\d+/g, function(match) {	
+						return match.padStart(4, '0');
+					});
+				
+					if (lowerA < lowerB)
+						return -1;
+
+					return 1;
 				}).map(function(emoji) {
 					return {
-						text: emoji + ":",
-						render: function(element, self, data) {
+						text: emoji + ":",														// Text to output to editor when option is selected
+						render: function(element, self, data) {				// How to display the option in the dropdown
 							const div = document.createElement('div');
 							div.innerHTML = `<i class="${emojis[emoji]}"></i> ${emoji}`;
 							element.appendChild(div);
