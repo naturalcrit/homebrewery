@@ -21,20 +21,16 @@ const showEmojiAutocomplete = function(CodeMirror, editor) {
 	
 				const list = Object.keys(emojis).filter(function(emoji) {
 					return emoji.indexOf(currentWord) >= 0;
-				}).sort((a, b) => {																// Sort autocomplete options alphabetically, case-insensitive
-					let lowerA = a.toLowerCase();
-					let lowerB = b.toLowerCase();
-
-					lowerA = lowerA.replace(/\d+/g, function(match) {	// Temporarily convert any numbers in emoji string
-						return match.padStart(4, '0');									// to 4-digits, left-padded with 0's. To aid in
-					});																								// sorting numbers, i.e., "d6, d10, d20", not "d10, d20, d6"
-					lowerB = lowerB.replace(/\d+/g, function(match) {	
+				}).sort((a, b) => {
+					const lowerA = a.replace(/\d+/g, function(match) {	// Temporarily convert any numbers in emoji string
+						return match.padStart(4, '0');										// to 4-digits, left-padded with 0's, to aid in
+					}).toLowerCase();																		// sorting numbers, i.e., "d6, d10, d20", not "d10, d20, d6"
+					const lowerB = b.replace(/\d+/g, function(match) {	// Also make lowercase for case-insensitive alpha sorting
 						return match.padStart(4, '0');
-					});
+					}).toLowerCase();
 				
 					if (lowerA < lowerB)
 						return -1;
-
 					return 1;
 				}).map(function(emoji) {
 					return {
