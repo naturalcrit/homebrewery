@@ -294,8 +294,8 @@ const superSubScripts = {
 	}
 };
 
-const definitionListsInline = {
-	name  : 'definitionListsInline',
+const definitionListsSingleLine = {
+	name  : 'definitionListsSingleLine',
 	level : 'block',
 	start(src) { return src.match(/^[^\n]*?::[^\n]*/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
@@ -312,7 +312,7 @@ const definitionListsInline = {
 		}
 		if(definitions.length) {
 			return {
-				type : 'definitionListsInline',
+				type : 'definitionListsSingleLine',
 				raw  : src.slice(0, endIndex),
 				definitions
 			};
@@ -326,8 +326,8 @@ const definitionListsInline = {
 	}
 };
 
-const definitionListsMultiline = {
-	name  : 'definitionListsMultiline',
+const definitionListsMultiLine = {
+	name  : 'definitionListsMultiLine',
 	level : 'block',
 	start(src) { return src.match(/^[^\n]*\n::/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
@@ -353,7 +353,7 @@ const definitionListsMultiline = {
 		}
 		if(definitions.length) {
 			return {
-				type : 'definitionListsMultiline',
+				type : 'definitionListsMultiLine',
 				raw  : src.slice(0, endIndex),
 				definitions
 			};
@@ -617,7 +617,7 @@ function MarkedVariables() {
 //^=====--------------------< Variable Handling >-------------------=====^//
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions: [definitionListsMultiline, definitionListsInline, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use({ extensions: [definitionListsMultiLine, definitionListsSingleLine, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
