@@ -297,7 +297,7 @@ const superSubScripts = {
 const definitionListsSingleLine = {
 	name  : 'definitionListsSingleLine',
 	level : 'block',
-	start(src) { return src.match(/^[^\n]*?::[^\n]*/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	start(src) { return src.match(/\n[^\n]*?::[^\n]*/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const regex = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym;
 		let match;
@@ -329,7 +329,7 @@ const definitionListsSingleLine = {
 const definitionListsMultiLine = {
 	name  : 'definitionListsMultiLine',
 	level : 'block',
-	start(src) { return src.match(/^[^\n]*\n::/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	start(src) { return src.match(/\n[^\n]*\n::/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const regex = /(\n?\n?(?!::)[^\n]+?(?=\n::))|\n::(.(?:.|\n)*?(?=(?:\n::)|(?:\n\n)|$))/y;
 		let match;
