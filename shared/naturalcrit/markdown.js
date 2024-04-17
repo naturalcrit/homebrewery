@@ -349,10 +349,19 @@ const definitionListsSingleLine = {
 		let endIndex = 0;
 		const definitions = [];
 		while (match = regex.exec(src)) {
-			definitions.push({
-				dt : this.lexer.inlineTokens(match[1].trim()),
-				dd : this.lexer.inlineTokens(match[2].trim())
-			});
+			let originalLine = match[0];											// This line and below to handle conflict with emojis
+			let firstLine = originalLine;											// Remove in V4 when definitionListsInline updated to
+			this.lexer.inlineTokens(firstLine.trim())					// require spaces around `::`
+				.filter(t => t.type == 'emoji')
+				.map(emoji => firstLine = firstLine.replace(emoji.raw, 'x'.repeat(emoji.raw.length)));
+
+			let newMatch = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym.exec(firstLine);
+			if(newMatch) {
+				definitions.push({
+					dt : this.lexer.inlineTokens(originalLine.slice(0, newMatch[1].length).trim()),
+					dd : this.lexer.inlineTokens(originalLine.slice(newMatch[1].length + 2).trim())
+				});
+			}																									// End of emoji hack.
 			endIndex = regex.lastIndex;
 		}
 		if(definitions.length) {
