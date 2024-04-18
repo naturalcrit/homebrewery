@@ -1,7 +1,7 @@
-const dicefont = require('../../../themes/fonts/icon fonts/dicefont.js');
+const diceFont = require('../../../themes/fonts/icon fonts/diceFont.js');
 
 const emojis = {
-	...dicefont,
+	...diceFont,
 	"fas-heart": "fa-solid fa-heart",
 	"fas-star": "fa-solid fa-star"
 };
