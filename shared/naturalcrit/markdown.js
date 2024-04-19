@@ -5,7 +5,11 @@ const MarkedExtendedTables = require('marked-extended-tables');
 const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartypants-lite');
 const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
 const { markedEmoji: MarkedEmojis} = require('marked-emoji');
+
+//Icon fonts included so they can appear in emoji autosuggest dropdown
 const diceFont = require('../../themes/fonts/icon fonts/diceFont.js');
+const elderberryInn = require('../../themes/fonts/icon fonts/elderberryInn.js');
+
 const MathParser = require('expr-eval').Parser;
 const renderer = new Marked.Renderer();
 const tokenizer = new Marked.Tokenizer();
@@ -674,6 +678,7 @@ function MarkedVariables() {
 const MarkedEmojiOptions = {
 	emojis: {
 		...diceFont,
+		...elderberryInn,
 		"fas-heart": "fa-solid fa-heart",
 		"fas-star": "fa-solid fa-star"
 	},

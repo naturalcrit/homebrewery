@@ -1,4 +1,4 @@
-const dicefont = {
+const diceFont = {
 	"df-F" : "df F",
 	"df-F-minus" : "df F-minus",
 	"df-F-plus" : "df F-plus",
@@ -90,7 +90,7 @@ const dicefont = {
 	"df-solid-small-dot-d6-3" : "df solid-small-dot-d6-3",
 	"df-solid-small-dot-d6-4" : "df solid-small-dot-d6-4",
 	"df-solid-small-dot-d6-5" : "df solid-small-dot-d6-5",
-	"df-solid-small-dot-d6-6" : "df solid-small-dot-d6-6",
+	"df-solid-small-dot-d6-6" : "df solid-small-dot-d6-6"
 }
 
-module.exports = dicefont;
+module.exports = diceFont;
