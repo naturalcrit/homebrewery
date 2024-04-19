@@ -1,5 +1,8 @@
 name: PR Check
-on: pull_request_target
+on:
+  pull_request:
+    types:
+      - opened
 env:
   GH_REPO: ${{ github.repository }}
   GH_NO_UPDATE_NOTIFIER: 1
