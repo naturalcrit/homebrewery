@@ -1,7 +1,9 @@
-const diceFont = require('../../../themes/fonts/icon fonts/diceFont.js');
+const diceFont      = require('../../../themes/fonts/icon fonts/diceFont.js');
+const elderberryInn = require('../../../themes/fonts/icon fonts/elderberryInn.js');
 
 const emojis = {
 	...diceFont,
+	...elderberryInn,
 	"fas-heart": "fa-solid fa-heart",
 	"fas-star": "fa-solid fa-star"
 };
@@ -20,7 +22,7 @@ const showEmojiAutocomplete = function(CodeMirror, editor) {
 				
 	
 				const list = Object.keys(emojis).filter(function(emoji) {
-					return emoji.indexOf(currentWord) >= 0;
+					return emoji.toLowerCase().indexOf(currentWord.toLowerCase()) >= 0;
 				}).sort((a, b) => {
 					const lowerA = a.replace(/\d+/g, function(match) {	// Temporarily convert any numbers in emoji string
 						return match.padStart(4, '0');										// to 4-digits, left-padded with 0's, to aid in
@@ -37,7 +39,7 @@ const showEmojiAutocomplete = function(CodeMirror, editor) {
 						text: emoji + ":",														// Text to output to editor when option is selected
 						render: function(element, self, data) {				// How to display the option in the dropdown
 							const div = document.createElement('div');
-							div.innerHTML = `<i class="${emojis[emoji]}"></i> ${emoji}`;
+							div.innerHTML = `<i class="emojiPreview ${emojis[emoji]}"></i> ${emoji}`;
 							element.appendChild(div);
 						}
 					};
