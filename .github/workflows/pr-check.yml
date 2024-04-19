@@ -1,26 +1,25 @@
 name: PR Check
-
-on:
-  pull_request:
-    types:
-      - opened
-
+on: pull_request_target
+env:
+  GH_REPO: ${{ github.repository }}
+  GH_NO_UPDATE_NOTIFIER: 1
+  GH_PROMPT_DISABLED: 1
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  statuses: write
 jobs:
-  check-pr:
+  limit-pull-requests:
+    if: always() && github.repository_owner == 'Homebrew'
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Get PR count
-        id: pr-count
-        run: |
-          PR_COUNT=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/naturalcrit/homebrewery/pulls? state=open&head=${{ github.actor }}:${{ github.head_ref }}" | jq '. | length')
-          echo "::set-output name=pr_count::$PR_COUNT"
-
-      - name: Update PR description
-        if: ${{ steps.pr_count.outputs.pr_count }} -ge 1
-        run: |
-          gh pr edit ${{ github.event.number }} --body "You already have ${{ steps.pr-count.outputs.pr_count }} PRs open. Consider completing some of your existing PRs before opening new ones."
+      - uses: Homebrew/actions/limit-pull-requests@master
+        with:
+          except-users: |
+            dependabot
+          comment-limit: 1
+          comment: |
+            Hi, thanks for your contribution to the Homebrewery! You already have >=3 open pull requests. Consider completing some of your existing PRs before opening new ones. Thanks!
+          close-limit: 5
+          close: false
