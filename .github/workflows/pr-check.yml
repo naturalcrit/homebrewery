@@ -22,7 +22,7 @@ jobs:
         with:
           except-users: |
             dependabot
-          comment-limit: 1
+          comment-limit: 3
           comment: |
             Hi, thanks for your contribution to the Homebrewery! You already have >=3 open pull requests. Consider completing some of your existing PRs before opening new ones. Thanks!
           close-limit: 5
