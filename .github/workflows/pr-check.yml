@@ -1,8 +1,5 @@
 name: PR Check
-on:
-  pull_request:
-    types:
-      - opened
+on: pull_request_target
 env:
   GH_REPO: ${{ github.repository }}
   GH_NO_UPDATE_NOTIFIER: 1
@@ -14,7 +11,7 @@ permissions:
   statuses: write
 jobs:
   limit-pull-requests:
-    if: always() && github.repository_owner == 'Homebrew'
+    if: always() && github.repository_owner == 'naturalcrit'
     runs-on: ubuntu-latest
     steps:
       - uses: ./.github/actions/limit-pull-requests
