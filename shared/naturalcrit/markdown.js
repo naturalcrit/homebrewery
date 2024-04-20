@@ -288,6 +288,53 @@ const splitKludge = (src)=>{
 	return _.compact(splits);
 };
 
+const splitAt = (index, xs)=>[xs.slice(0, index), xs.slice(index)];
+
+const indexSplit=(src)=>{
+	let index, topic, subtopic;
+	const indexSplitRegex = /(?<!\\):/;
+	const subTopicSplit = /(?<!\\)\//;
+
+	let working = [];
+	if(src.search(indexSplitRegex) < 0){
+		working[1] = src;
+		index = 'Index';
+	} else {
+		working = src.split(indexSplitRegex);
+		index = working[0].trim();
+		if(!working[1]?.trim()>0) {
+			working.splice(1, 1);
+		}
+		working[1] = working[1]?.trim();
+	}
+
+	// console.log('working');
+	// console.log(working);
+	// console.log('working');
+	if(working[1]) {
+		// console.log(working[1]);
+		if(working[1].search(subTopicSplit) !== -1){
+			// console.log('Found');
+			const topics = working[1].split(subTopicSplit);
+			// console.log(topics);
+			topic = topics[0].trim();
+			if(topics[1]) { topics[1] = topics[1].trim(); }
+			if(topics[1]?.length>0) {
+				subtopic = topics[1].trim();
+			}
+		} else {
+			topic = working[1];
+		}
+	}
+
+	if(topic?.length>0) {
+		return { index: index, topic: topic, subtopic: subtopic };
+	} else {
+		return undefined;
+	}
+
+};
+
 const indexAnchors = {
 	name  : 'indexAnchor',
 	level : 'inline',
@@ -303,13 +350,18 @@ const indexAnchors = {
 		if(srcMatch){
 			// I was unable to figure make this work with regex so I cheated.
 			// If you can replace it with a split or regex match, be my guest. :)
-			const indexSplit = splitKludge(srcMatch[0]);
-			const entryMatch = addressRegEx.exec(indexSplit[0]);
-			indexEntry.subtopic = entryMatch[4] ? entryMatch[4].trim() : undefined;
-			indexEntry.topic = entryMatch[2].trim();
-			indexEntry.index = entryMatch[1].trim();
+			// const crossReference = splitKludge(srcMatch[0]);
+			const crossReferenceSplit = /(?<!\\)\|/g;
+
+			const crossReference = srcMatch[0].split(crossReferenceSplit);
+			const entryMatch = indexSplit(crossReference[0].slice(1));
+			// console.log(entryMatch);
+			if(!entryMatch) { return; }
+			indexEntry.subtopic = entryMatch?.subtopic ? entryMatch.subtopic : undefined;
+			indexEntry.topic = entryMatch.topic;
+			indexEntry.index = entryMatch.index;
 			indexEntry.instance = indexesDuplicates(indexEntry);
-			if(indexSplit.length > 1) {
+			if(crossReference.length > 1) {
 				indexEntry.crossReference = true;
 			}
 			return {
@@ -322,8 +374,11 @@ const indexAnchors = {
 		}
 	},
 	renderer(token) {
+		// console.log(token);
 		if(!token.indexEntry?.crossReference) {
+			// console.log(token.indexEntry);
 			if(token.indexEntry?.subtopic) {
+				// console.log(token.indexEntry.subtopic);
 				// This is a Subtopic entry
 				return `<a id="p${token.pageNumber}_${token.indexEntry.subtopic.replace(/\s/g, '').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-subtopic="${token.indexEntry.subtopic}" data-index="${token.indexEntry.index}"></a>`;
 			} else {

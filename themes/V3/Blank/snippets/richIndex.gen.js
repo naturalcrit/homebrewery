@@ -7,8 +7,10 @@ const setCrossRefAnchor = (indexes, pageRef)=>{
 	// Set a flag to generate a reflink at the topic or subtopic.
 	let index, topic;
 
-	if(indexes.has(pageRef.index)) {
-		index = indexes.get(pageRef.index);
+	const cleanIndexName = pageRef.index.trim().replace(/^|/, '').replace(/^\+/, '');
+
+	if(indexes.has(cleanIndexName)) {
+		index = indexes.get(cleanIndexName);
 	} else {
 		index = new Map();
 	}
@@ -19,7 +21,7 @@ const setCrossRefAnchor = (indexes, pageRef)=>{
 		topic.set('pages', []);
 		topic.set('entries', new Map());
 		index.set(pageRef.topic.trim(), topic);
-		indexes.set(pageRef.index.trim(), index);
+		indexes.set(cleanIndexName, index);
 	} else {
 		topic = index.get(pageRef.topic.trim());
 	}
@@ -34,7 +36,6 @@ const setCrossRefAnchor = (indexes, pageRef)=>{
 			subTopicMap.set('setAnchor', true);
 		} else {
 			subTopicMap = subEntries.get(pageRef.subtopic.trim());
-			subTopicMap.set('pages', []);
 			subTopicMap.set('setAnchor', true);
 		}
 		subEntries.set(pageRef.subtopic.trim(), subTopicMap);
@@ -43,29 +44,29 @@ const setCrossRefAnchor = (indexes, pageRef)=>{
 		topic.set('setAnchor', true);
 	}
 	index.set(pageRef.topic, topic);
-	indexes.set(pageRef.index, index);
+	indexes.set(cleanIndexName, index);
 };
 
 const indexSplit=(src)=>{
 	let index, topic, subtopic;
-	const indexSplit = /(?<!\\):/;
+	const indexSplitRegex = /(?<!\\):/;
 	const subTopicSplit = /(?<!\\)\//;
 
 	let working = [];
-	if(src.search(indexSplit) < 0){
-		working[1] = src;
-		index = 'Index';
+	if(src.search(indexSplitRegex) < 0){
+		working[1] = src.trim();
+		index = 'Index:';
 	} else {
-		working = src.split(indexSplit);
-		index = working[0].trim();
-		if(!working[1].trim()>0) {
+		working = src.split(indexSplitRegex);
+		index = working[0].replace('\\:', ':').trim();
+		if(!working[1]?.trim()>0) {
 			working.splice(1, 1);
 		}
-		working[1] = working[1].trim();
+		working[1] = working[1]?.trim();
 	}
 
 	if(working[1]) {
-		if(working[1].search(subTopicSplit) < 0){
+		if(working[1].search(subTopicSplit) !== -1){
 			const topics = working[1].split(subTopicSplit);
 			topic = topics[0].trim();
 			if(topics[1]) { topics[1] = topics[1].trim(); }
@@ -87,15 +88,20 @@ const indexSplit=(src)=>{
 
 
 const insertIndex = (indexes, entry, pageNumber, runningErrors)=>{
-	const crossReferenceSplit = /(?<!\\)\|/g;
+	const crossReferenceSplit = /(?<!\\)\|/;
 
-	const crossReference = entry.split(crossReferenceSplit);
+	let crossReference = entry.split(crossReferenceSplit);
 
 	const entryMatch = indexSplit(crossReference[0]);
-
 	const useIndex = entryMatch.index;
 	if(!indexes.has(useIndex)) {
 		indexes.set(useIndex, new Map());
+	}
+
+	// Ugly, but functional. Maybe someone can make a smarter split
+	if(crossReference.length == 3) {
+		crossReference[2] = `|${crossReference[2]}`;
+		crossReference = _.compact(crossReference);
 	}
 
 	const pageRef = ((crossReference.length>1) && (crossReference[1].length>0)) ? indexSplit(crossReference[1].trim()) : pageNumber;
@@ -136,12 +142,12 @@ const insertIndex = (indexes, entry, pageNumber, runningErrors)=>{
 		pageArray.push(pageRef);
 		activeTopic.set('pages', pageArray);
 	}
-
 	activeIndex.set(topic, activeTopic);
+	indexes.set(useIndex, activeIndex);
 };
 
 const findIndexEntries = (pages, indexes, runningErrors)=>{
-	const theRegex = /#(.+)(?<!\\):(.+)(?:(?<!\\)\/(.+))\n/mg;
+	const theRegex = /#((.+)(?<!\\):)?(.+)((?:(?<!\\)\/(.+)))?\n/mg;
 	for (const [pageNumber, page] of pages.entries()) {
 		if(page.match(theRegex)) {
 			let match;
@@ -169,20 +175,21 @@ const sanityCheckUnders = (indexes, entryAddress)=>{
 	// Return false if the target exists and does not have an assigned page
 	// Return false if the target exists and the topic has less than two subtopics.
 
+
 	// Verify the index exists
-	if(indexes.get(entryAddress[1])==undefined) return undefined;
+	if(indexes.get(entryAddress.index)==undefined) return undefined;
 	// Verify the topic exists
-	const topic=indexes.get(entryAddress[1]).get(entryAddress[2].trim());
+	const topic=indexes.get(entryAddress.index).get(entryAddress.topic);
 	const topicPages = topic.get('pages');
 	if((topic==undefined) || ((topicPages?.length<1) && (topic.get('entries').size<1))) return undefined;
 	// Verify the subtopic exists if needed
-	if(!entryAddress[3].trim()) return true;
+	if(!entryAddress.subtopic) return true;
 	const entries = topic.get('entries');
-	const subtopic = entries.get(entryAddress[3].trim());
+	const subtopic = entries.get(entryAddress.subtopic);
 	if(subtopic==undefined) return undefined;
 	const pages=subtopic.get('pages');
 	if((topicPages?.length<1) && (pages.length<1)) return undefined;
-	if(pages.length < 1) return false;
+	if(entries.size < 2) return false;
 	return true;
 };
 
@@ -200,21 +207,21 @@ const formatIndexLocations = (indexes, pagesArray, entry, runningErrors)=>{
 			if(results.length == 0) results = ' ... pg. ';
 			results = results.concat('[', parseInt(pageNumber+1), `](#p${parseInt(pageNumber)}_${entry.toLowerCase().replaceAll(' ', '')}), `);
 		} else {
-			let targetIndex = pageNumber[1]?.length > 0 ? pageNumber[1].trim() : 'Index:';
-			const targetTopic = pageNumber[2]?.trim();
-			const targetSubtopic = pageNumber[3]?.trim();
+			let targetIndex = pageNumber.index?.length > 0 ? pageNumber.index : 'Index:';
+			const targetTopic = pageNumber.topic;
+			const targetSubtopic = pageNumber.subtopic;
 
 			const seeUnderFlag = targetIndex[0] == '+';
 			const seeAlsoFlag = targetIndex[0] == '|';
 			const seeAlsoUnderFlag = targetIndex[0] == '|' && targetIndex[1] == '+';
 
-			targetIndex = targetIndex.replace(/^\|/).replace(/^\+/);
+			targetIndex = targetIndex.replace(/^\|/, '').replace(/^\+/, '');
+			const useSubtopic = sanityCheckUnders(indexes, { index: targetIndex, topic: targetTopic, subtopic: targetSubtopic });
 
-			const useSubtopic = sanityCheckUnders(indexes, pageNumber);
 
 			if(useSubtopic !== undefined){
-				const topicOrSubtopic = (targetSubtopic.length > 0) && (useSubtopic) ? targetSubtopic : targetTopic;
-				const crossRef = `[${targetTopic}${(useSubtopic) && (targetSubtopic.length > 0) ? `: ${targetSubtopic}` : ''}](#idx_${targetIndex}_${topicOrSubtopic.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()})`;
+				const topicOrSubtopic = (targetSubtopic?.length > 0) && (useSubtopic) ? `${targetTopic}_${targetSubtopic}` : targetTopic;
+				const crossRef = `[${targetTopic}${(useSubtopic) && (targetSubtopic?.length > 0) ? `: ${targetSubtopic}` : ''}](#idx_${targetIndex.replaceAll(' ', '').replaceAll('|', '_').toLowerCase()}_${topicOrSubtopic.replaceAll(' ', '').replaceAll('|', '_').toLowerCase()})`;
 				if(seeAlsoUnderFlag) seeAlsoUnderRef.push(crossRef);
 				else if(seeAlsoFlag) seeAlsoRef.push(crossRef);
 				else if(seeUnderFlag) seeUnderRef.push(crossRef);
@@ -223,12 +230,12 @@ const formatIndexLocations = (indexes, pagesArray, entry, runningErrors)=>{
 				runningErrors.push(`Unable to create crossreference to ${targetIndex}: ${targetTopic} - ${targetSubtopic}`);
 			}
 		}
-		if(results[results.length - 1] == ',') results = results.slice(-1);
-		if(seeRef.length > 0) results += `\n    see ${seeRef.join(';')}`;
-		if(seeUnderRef.length > 0) results += `\n    see under ${seeUnderRef.join(';')}`;
-		if(seeAlsoRef.length > 0) results += `\n    see also ${seeAlsoRef.join(';')}`;
-		if(seeAlsoUnderRef.length > 0) results += `\n    see also under ${seeAlsoUnderRef.join(';')}`;
 	}
+	if(results[results.length - 1] == ',') results = results.slice(-1);
+	if(seeRef.length > 0) results += `\n    see ${seeRef.join(';')}`;
+	if(seeUnderRef.length > 0) results += `\n    see under ${seeUnderRef.join(';')}`;
+	if(seeAlsoRef.length > 0) results += `\n    see also ${seeAlsoRef.join(';')}`;
+	if(seeAlsoUnderRef.length > 0) results += `\n    see also under ${seeAlsoUnderRef.join(';')}`;
 	results = results.concat('\n');
 	return results;
 };
@@ -240,22 +247,22 @@ const markup = (indexes, indexName, index, runningErrors)=>{
 	for (const [subjectHeading, subjectHeadingContents] of sortedIndex) {
 		let topicResults = '';
 		let subtopicResults = '';
-		const subjectHeadingPages = subjectHeadingContents.get('pages');
-		let setAnchor = [];
+		const setAnchor = [];
 		if(subjectHeadingContents.has('setAnchor')) {
-			setAnchor.push(`[idx_${indexName}_${subjectHeading.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}]`);
+			setAnchor.push(`<a id="idx_${indexName.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}_${subjectHeading.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}"></a>`);
 		}
-		const topicLocations = formatIndexLocations(indexes, subjectHeadingPages, subjectHeading, runningErrors);
+		const topicLocations = formatIndexLocations(indexes, subjectHeadingContents.get('pages'), subjectHeading, runningErrors);
 		const subEntries = subjectHeadingContents.get('entries');
 		if(subEntries.size) {
 			const sortedEntries = sortMap(subEntries);
 			for (const [entry, entryPages] of sortedEntries){
+				const setSubAnchor = [];
 				if(sortedEntries.get(entry).has('setAnchor')) {
-					setAnchor.push(`[idx_${indexName}_${entry.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}]`);
+					setSubAnchor.push(`<a id="idx_${indexName.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}_${subjectHeading.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}_${entry.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}"></a>`);
 				}
 				const subtopicLocations = formatIndexLocations(indexes, entryPages.get('pages'), entry, runningErrors);
 				if(subtopicLocations.length > 1) {
-					subtopicResults = subtopicResults.concat('  - ', entry, subtopicLocations);
+					subtopicResults = subtopicResults.concat('  - ', setSubAnchor.join(''), entry, subtopicLocations);
 				}
 			}
 		}
@@ -284,10 +291,9 @@ module.exports = function (props) {
 
 	const sortedIndexes = sortMap(indexes);
 
-
 	for (const [indexName, index] of sortedIndexes) {
 		const markdown = markup(indexes, indexName.replace(/[^\w\s\']|_/g, '').replace(/\s+/g, ''), index, runningErrors);
-		if(markdown.length > 0 ) {
+		if(markdown.length > 0) {
 			resultIndexes +=dedent`
 			{{index,wide
 			##### ${indexName}
