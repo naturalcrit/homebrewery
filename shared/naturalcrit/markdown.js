@@ -269,26 +269,13 @@ const mustacheInjectBlock = {
 const indexesDuplicates = (indexEntry)=>{
 	let count = 0;
 	for (const ie of indexes) {
-		if((ie.topic === indexEntry.topic) && (ie.subtopics === indexEntry.subtopics) && (ie.index === indexEntry.index)) {
+		if((ie.topic === indexEntry.topic) && (ie.subtopic === indexEntry.subtopic) && (ie.index === indexEntry.index)) {
 			count++;
 		}
 	}
 	indexes.push({ ...indexEntry });
 	return count == 0 ? '' : count;
 };
-
-const splitKludge = (src)=>{
-	const splits = src.split('|');
-	for (const s in splits) {
-		if((s > 1) && (splits[s - 1][splits[s -1].length - 1] === '\\')) {
-			splits[s - 1] = splits[s - 1].concat('|', splits[s]);
-			splits[s] = undefined;
-		}
-	}
-	return _.compact(splits);
-};
-
-const splitAt = (index, xs)=>[xs.slice(0, index), xs.slice(index)];
 
 const indexSplit=(src)=>{
 	let index, topic, subtopic;
@@ -297,26 +284,20 @@ const indexSplit=(src)=>{
 
 	let working = [];
 	if(src.search(indexSplitRegex) < 0){
-		working[1] = src;
-		index = 'Index';
+		working[1] = src.trim();
+		index = 'Index:';
 	} else {
 		working = src.split(indexSplitRegex);
-		index = working[0].trim();
+		index = working[0].replace('\\:', ':').trim();
 		if(!working[1]?.trim()>0) {
 			working.splice(1, 1);
 		}
 		working[1] = working[1]?.trim();
 	}
 
-	// console.log('working');
-	// console.log(working);
-	// console.log('working');
 	if(working[1]) {
-		// console.log(working[1]);
 		if(working[1].search(subTopicSplit) !== -1){
-			// console.log('Found');
 			const topics = working[1].split(subTopicSplit);
-			// console.log(topics);
 			topic = topics[0].trim();
 			if(topics[1]) { topics[1] = topics[1].trim(); }
 			if(topics[1]?.length>0) {
@@ -338,24 +319,18 @@ const indexSplit=(src)=>{
 const indexAnchors = {
 	name  : 'indexAnchor',
 	level : 'inline',
-	// ^#([^/]+)(\/\/(.+))?
 	start(src) {return src.match(/^#(.+)(?<!\\):([^/]+)((?<!\\)\/([^|]+))?/)?.index;}, // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const inlineRegex = /^#[^|]+(\|[^\n]+)?/gm;
-		const addressRegEx = /^(.+)(?<!\\):([^/\n]+)(?:(?<!\\)(\/([^|\n]+)))?/gm;
+		const inlineRegex = /^#[^|]+(\|[^\n]+)?/gmy;
 
 		const indexEntry = {};
 
-		const srcMatch = inlineRegex.exec(src);
-		if(srcMatch){
-			// I was unable to figure make this work with regex so I cheated.
-			// If you can replace it with a split or regex match, be my guest. :)
-			// const crossReference = splitKludge(srcMatch[0]);
+		let srcMatch;
+		while (srcMatch = inlineRegex.exec(src)){
 			const crossReferenceSplit = /(?<!\\)\|/g;
 
 			const crossReference = srcMatch[0].split(crossReferenceSplit);
 			const entryMatch = indexSplit(crossReference[0].slice(1));
-			// console.log(entryMatch);
 			if(!entryMatch) { return; }
 			indexEntry.subtopic = entryMatch?.subtopic ? entryMatch.subtopic : undefined;
 			indexEntry.topic = entryMatch.topic;
@@ -374,11 +349,8 @@ const indexAnchors = {
 		}
 	},
 	renderer(token) {
-		// console.log(token);
 		if(!token.indexEntry?.crossReference) {
-			// console.log(token.indexEntry);
 			if(token.indexEntry?.subtopic) {
-				// console.log(token.indexEntry.subtopic);
 				// This is a Subtopic entry
 				return `<a id="p${token.pageNumber}_${token.indexEntry.subtopic.replace(/\s/g, '').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-subtopic="${token.indexEntry.subtopic}" data-index="${token.indexEntry.index}"></a>`;
 			} else {
