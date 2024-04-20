@@ -11,7 +11,7 @@ const LockNotification = createClass({
 	},
 
 	removeLock : function() {
-		alert('Not yet implented');
+		alert('Not yet implemented');
 	},
 
 	render : function(){
