@@ -10,11 +10,19 @@ const LockNotification = createClass({
 		};
 	},
 
+	removeLock : function() {
+		alert('Not yet implented');
+	},
+
 	render : function(){
 		return <div className='lockNotification'>
 			<h1>BREW LOCKED</h1>
+			<p>This brew been locked by the Administrators. It will not be accessible by any method other than the Editor until the lock is removed.</p>
+			<hr />
+			<p><strong>LOCK MESSAGE:</strong></p>
 			<p>{this.props.message || 'Unable to retrieve Lock Message'}</p>
-			<button onClick={()=>{this.props.disableLock();}}>CLICK TO UNLOCK</button>
+			<button onClick={()=>{this.props.disableLock();}}>CONTINUE TO EDITOR</button>
+			<button onClick={this.removeLock}>REQUEST LOCK REMOVAL</button>
 		</div>;
 	}
 });
