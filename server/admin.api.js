@@ -165,7 +165,7 @@ router.get('/admin/lock', mw.adminOnly, async (req, res)=>{
 	}
 });
 
-router.get('/admin/lockreviews', mw.adminOnly, async (req, res)=>{
+router.get('/admin/lock/reviews', mw.adminOnly, async (req, res)=>{
 	try {
 		const countReviewsPipeline = [
 			{
