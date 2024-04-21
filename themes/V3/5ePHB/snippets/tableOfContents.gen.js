@@ -1,99 +1,66 @@
 const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
 
-const getTOC = ()=>{
-	const add1 = (title, page)=>{
-		res.push({
-			title    : title,
-			page     : page,
-			children : []
-		});
-	};
-	const add2 = (title, page)=>{
-		if(!_.last(res)) add1(null, page);
-		_.last(res).children.push({
-			title    : title,
-			page     : page,
-			children : []
-		});
-	};
-	const add3 = (title, page)=>{
-		if(!_.last(res)) add1(null, page);
-		if(!_.last(_.last(res).children)) add2(null, page);
-		_.last(_.last(res).children).children.push({
-			title    : title,
-			page     : page,
-			children : []
-		});
-	};
-	const add4 = (title, page)=>{
-		if(!_.last(res)) add1(null, page);
-		if(!_.last(_.last(res).children)) add2(null, page);
-		if(!_.last(!_.last(_.last(res).children))) add3(null, page);
-		_.last(_.last(_.last(res).children).children).children.push({
-			title    : title,
-			page     : page,
-			children : []
-		});
-	};
-	const add5 = (title, page)=>{
-		if(!_.last(res)) add1(null, page);
-		if(!_.last(_.last(res).children)) add2(null, page);
-		if(!_.last(!_.last(_.last(res).children))) add3(null, page);
-		if(!_.last(!_.last(!_.last(_.last(res).children)))) add4(null, page);
-		_.last(_.last(_.last(_.last(res).children).children).children).children.push({
-			title    : title,
-			page     : page,
-			children : []
-		});
-	};
-	const add6 = (title, page)=>{
-		if(!_.last(res)) add1(null, page);
-		if(!_.last(_.last(res).children)) add2(null, page);
-		if(!_.last(!_.last(_.last(res).children))) add3(null, page);
-		if(!_.last(!_.last(!_.last(_.last(res).children)))) add4(null, page);
-		if(!_.last(!_.last(!_.last(!_.last(_.last(res).children))))) add5(null, page);
-		_.last(_.last(_.last(_.last(_.last(res).children).children).children).children).children.push({
-			title    : title,
-			page     : page,
-			children : []
-		});
+const getTOC = (pages)=>{
+
+	const recursiveAdd = (title, page, targetDepth, child, curDepth=0)=>{
+		console.log(curDepth);
+		if(curDepth > 5) return; // Something went wrong.
+		if(curDepth == targetDepth) {
+			child.push({
+				title    : title,
+				page     : page + 1,
+				children : []
+			});
+		} else {
+			console.log(typeof child);
+			child.push({
+				title    : null,
+				page     : page + 1,
+				children : []
+			});
+			console.log(_.last(child));
+			console.log(_.last(child).children);
+			recursiveAdd(title, page, targetDepth, _.last(child).children, curDepth+1,);
+		}
 	};
 
 	const res = [];
-	const iframe = document.getElementById('BrewRenderer');
-	const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-	const headings = iframeDocument.querySelectorAll('h1, h2, h3, h4, h5, h6');
 
-	_.each(headings, (heading)=>{
-		const onPage = parseInt(heading.closest('.page,.phb').id?.replace(/^p/, ''));
-		const ToCExclude = getComputedStyle(heading).getPropertyValue('--TOC');
-		if(ToCExclude != 'exclude') {
-			if(!isNaN(onPage)) {
-				const headingText =  heading.innerText.trim();
-				if(heading.tagName == 'H1') {
-					add1(headingText, onPage);
+	_.each(pages, (page, pageNum)=>{
+		if(!page.includes("{{frontCover}}") && !page.includes("{{insideCover}}") && !page.includes("{{partCover}}") && !page.includes("{{backCover}}")) {
+			const lines = page.split('\n');
+			_.each(lines, (line)=>{
+				if(_.startsWith(line, '# ')){
+					const title = line.replace('# ', '');
+					recursiveAdd(title, pageNum, 0, res);
 				}
-				if(heading.tagName == 'H2') {
-					add2(headingText, onPage);
+				if(_.startsWith(line, '## ')){
+					const title = line.replace('## ', '');
+					recursiveAdd(title, pageNum, 1, res);
 				}
-				if(heading.tagName == 'H3') {
-					add3(headingText, onPage);
+				if(_.startsWith(line, '### ')){
+					const title = line.replace('### ', '');
+					recursiveAdd(title, pageNum, 2, res);
 				}
-				if(heading.tagName == 'H4') {
-					add4(headingText, onPage);
+				if(_.startsWith(line, '#### ')){
+					const title = line.replace('#### ', '');
+					recursiveAdd(title, pageNum, 3, res);
 				}
-				if(heading.tagName == 'H5') {
-					add5(headingText, onPage);
+				if(_.startsWith(line, '##### ')){
+					const title = line.replace('##### ', '');
+					recursiveAdd(title, pageNum, 4, res);
 				}
-				if(heading.tagName == 'H6') {
-					add6(headingText, onPage);
+				if(_.startsWith(line, '##### ')){
+					const title = line.replace('##### ', '');
+					recursiveAdd(title, pageNum, 5, res);
 				}
-			}
+			});
 		}
 	});
 	return res;
 };
+
 
 const ToCIterate = (entries, curDepth=0)=>{
 	const levelPad = ['- ###', '  - ####', '    - ####', '      - ####', '        - ####', '          - ####'];
@@ -113,7 +80,8 @@ const ToCIterate = (entries, curDepth=0)=>{
 };
 
 module.exports = function(props){
-	const TOC = getTOC();
+	const pages = props.brew.text.split('\\page');
+	const TOC = getTOC(pages);
 	const markdown = _.reduce(TOC, (r, g1, idx1)=>{
 		r.push(ToCIterate(g1).join('\n'));
 		return r;
