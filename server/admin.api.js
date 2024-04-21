@@ -165,6 +165,27 @@ router.get('/admin/lock', mw.adminOnly, async (req, res)=>{
 	}
 });
 
+router.get('/admin/lockreviews', mw.adminOnly, async (req, res)=>{
+	try {
+		const countReviewsPipeline = [
+			{
+			  $match :
+				{
+				  'lock.locked'          : true,
+				  'lock.reviewRequested' : { '$exists': 1 }
+				},
+			}
+		];
+		const reviewDocuments = await HomebrewModel.getAggregate(countReviewsPipeline);
+		return res.json({
+			reviewDocuments
+		});
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ error: 'Unable to get lock count' });
+	}
+});
+
 router.get('/admin', mw.adminOnly, (req, res)=>{
 	templateFn('admin', {
 		url : req.originalUrl
