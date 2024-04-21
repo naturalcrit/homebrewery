@@ -186,6 +186,33 @@ router.get('/admin/lock/reviews', mw.adminOnly, async (req, res)=>{
 	}
 });
 
+router.get('/admin/lock/requestreview/:id', mw.adminOnly, async (req, res)=>{
+	try {
+		const filter = {
+			shareId       : req.params.id,
+			'lock.locked' : true
+		};
+
+		const brew = await HomebrewModel.findOne(filter).exec();
+		if(!brew) { return res.status(500).json({ error: `Brew ID ${req.params.id} is not locked!` }); };
+
+		brew.lock.reviewRequested = new Date();
+		brew.markModified('lock');
+
+		console.log(brew);
+
+		await brew.save()
+		.catch((err)=>{
+			return err;
+		});
+
+		return res.json(brew);
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ error: `Unable to set request for review on brew ID ${req.params.id}` });
+	}
+});
+
 router.get('/admin', mw.adminOnly, (req, res)=>{
 	templateFn('admin', {
 		url : req.originalUrl
