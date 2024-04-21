@@ -27,10 +27,12 @@ const mw = {
 };
 
 const junkBrewPipeline = [
-	{	$match : {
-		updatedAt  : { $lt: Moment().subtract(30, 'days').toDate() },
-		lastViewed : { $lt: Moment().subtract(30, 'days').toDate() }
-	}},
+	{	$match :
+		{
+			updatedAt  : { $lt: Moment().subtract(30, 'days').toDate() },
+			lastViewed : { $lt: Moment().subtract(30, 'days').toDate() }
+		}
+	},
 	{ $project: { textBinSize: { $binarySize: '$textBin' } } },
 	{ $match: { textBinSize: { $lt: 140 } } },
 	{ $limit: 100 }
@@ -135,6 +137,31 @@ router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 	} catch (error) {
 		console.error(error);
 		return res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+
+router.get('/admin/lock', mw.adminOnly, async (req, res)=>{
+	try {
+		const countLocksPipeline = [
+			{
+			  $match :
+				{
+				  'lock.locked' : true,
+				},
+			},
+			{
+			  $count :
+				'count',
+			}
+		];
+		const totalLockCount = await HomebrewModel.getAggregate(countLocksPipeline);
+		const count = totalLockCount[0].count;
+		return res.json({
+			count
+		});
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ error: 'Unable to get lock count' });
 	}
 });
 
