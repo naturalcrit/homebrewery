@@ -242,6 +242,30 @@ router.get('/admin/lock/review/request/:id', mw.adminOnly, async (req, res)=>{
 	}
 });
 
+router.get('/admin/lock/review/remove/:id', mw.adminOnly, async (req, res)=>{
+	try {
+		const filter = {
+			shareId                : req.params.id,
+			'lock.locked'          : true,
+			'lock.reviewRequested' : { '$exists': 1 }
+		};
+
+		const brew = await HomebrewModel.findOne(filter);
+		if(!brew) { return res.status(500).json({ error: `Brew ID ${req.params.id} does not have a review pending!` }); };
+
+		delete brew.lock.reviewRequested;
+		brew.markModified('lock');
+
+		await brew.save();
+
+		console.log(`Review request removed on brew ID ${brew.shareId} - ${brew.title}`);
+		return res.json(brew);
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ error: `Unable to remove request for review on brew ID ${req.params.id}` });
+	}
+});
+
 router.get('/admin', mw.adminOnly, (req, res)=>{
 	templateFn('admin', {
 		url : req.originalUrl
