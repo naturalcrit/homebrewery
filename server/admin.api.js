@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
 const HomebrewModel = require('./homebrew.model.js').model;
 const router = require('express').Router();
 const Moment = require('moment');
