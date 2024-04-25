@@ -211,7 +211,7 @@ router.get('/admin/lock/reviews', mw.adminOnly, async (req, res)=>{
 	}
 });
 
-router.get('/admin/lock/requestreview/:id', mw.adminOnly, async (req, res)=>{
+router.get('/admin/lock/review/request/:id', mw.adminOnly, async (req, res)=>{
 	try {
 		const filter = {
 			shareId       : req.params.id,
