@@ -165,6 +165,27 @@ router.get('/admin/lock', mw.adminOnly, async (req, res)=>{
 	}
 });
 
+router.post('/admin/lock/:id', mw.adminOnly, async (req, res)=>{
+	const lock = req.body;
+
+	try {
+		const filter = {
+			shareId : req.params.id
+		};
+
+		const brew = await HomebrewModel.findOne(filter);
+
+		brew.lock = lock;
+		brew.markModified('lock');
+
+		await brew.save();
+
+		console.log(`Lock applied to brew ID ${brew.shareId} - ${brew.title}`);
+	} catch {}
+
+	return;
+});
+
 router.get('/admin/lock/reviews', mw.adminOnly, async (req, res)=>{
 	try {
 		const countReviewsPipeline = [
