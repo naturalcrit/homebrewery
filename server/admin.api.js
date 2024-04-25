@@ -196,7 +196,10 @@ router.get('/admin/lock/requestreview/:id', mw.adminOnly, async (req, res)=>{
 		const brew = await HomebrewModel.findOne(filter);
 		if(!brew) { return res.status(500).json({ error: `Brew ID ${req.params.id} is not locked!` }); };
 
-		if(brew.lock.reviewRequested){ return res.status(500).json({ error: `Review already requested for brew ${brew.shareId} - ${brew.title}` }); };
+		if(brew.lock.reviewRequested){
+			console.log(`Review already requested for brew ${brew.shareId} - ${brew.title}`);
+			return res.status(500).json({ error: `Review already requested for brew ${brew.shareId} - ${brew.title}` });
+		};
 
 		brew.lock.reviewRequested = new Date();
 		brew.markModified('lock');
