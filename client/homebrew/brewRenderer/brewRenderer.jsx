@@ -106,13 +106,6 @@ const BrewRenderer = (props)=>{
 		return false;
 	};
 
-	const sanitizeScriptTags = (content)=>{
-		return content
-			?.replace(/<script/ig, '&lt;script')
-			.replace(/<\/script>/ig, '&lt;/script&gt;')
-			|| '';
-	};
-
 	const renderPageInfo = ()=>{
 		return <div className='pageInfo' ref={mainRef}>
 			<div>
