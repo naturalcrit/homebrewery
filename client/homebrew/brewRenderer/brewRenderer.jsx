@@ -15,7 +15,7 @@ const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
 
 const DOMPurify = require('dompurify');
-const purifyConfig = { FORCE_BODY: true, ADD_ATTR: ['style'] };
+const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
 
 const Themes = require('themes/themes.json');
 
