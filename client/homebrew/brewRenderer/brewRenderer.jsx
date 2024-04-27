@@ -15,6 +15,7 @@ const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
 
 const DOMPurify = require('dompurify');
+const purifyConfig = { FORCE_BODY: true, ADD_ATTR: ['style'] };
 
 const Themes = require('themes/themes.json');
 
@@ -35,8 +36,7 @@ const BrewPage = (props)=>{
 		index    : 0,
 		...props
 	};
-	const cleanText = DOMPurify.sanitize(props.contents);
-	// console.log(DOMPurify.removed);
+	const cleanText = DOMPurify.sanitize(props.contents, purifyConfig);
 	return <div className={props.className} id={`p${props.index + 1}`} >
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
@@ -125,8 +125,7 @@ const BrewRenderer = (props)=>{
 
 	const renderStyle = ()=>{
 		if(!props.style) return;
-		const cleanStyle = DOMPurify.sanitize(props.style);
-		// console.log(DOMPurify.removed);
+		const cleanStyle = DOMPurify.sanitize(props.style, purifyConfig);
 		//return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${sanitizeScriptTags(props.style)}\n} </style>` }} />;
 		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${cleanStyle} </style>` }} />;
 	};
