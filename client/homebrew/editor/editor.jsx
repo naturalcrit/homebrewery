@@ -228,6 +228,7 @@ const Editor = createClass({
 
 							while (startIndex >= 0) {
 								emojiRegex.lastIndex = startIndex;
+								let match = emojiRegex.exec(line);
 								if (match) {
 									let tokens = Markdown.marked.lexer(match[0]);
 									tokens = tokens[0].tokens.filter(t => t.type == 'emoji')
