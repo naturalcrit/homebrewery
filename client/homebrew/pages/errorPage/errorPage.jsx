@@ -1,8 +1,8 @@
-import './errorPage.less';
-import React from 'react';
-import UIPage from '../basePages/uiPage/uiPage.jsx';
-import Markdown from '../../../../shared/naturalcrit/markdown.js';
-import ErrorIndex from './errors/errorIndex.js';
+require('./errorPage.less');
+const React      = require('react');
+const UIPage     = require('../basePages/uiPage/uiPage.jsx');
+const Markdown   = require('../../../../shared/naturalcrit/markdown.js');
+const ErrorIndex = require('./errors/errorIndex.js');
 
 const ErrorPage = ({ brew })=>{
 	// Retrieving the error text based on the brew's error code from ErrorIndex
