@@ -53,6 +53,10 @@ renderer.html = function (html) {
 // Don't wrap {{ Divs or {{ empty Spans in <p> tags
 renderer.paragraph = function(text){
 	let match;
+	// Strip empty paragraphs
+	if(text.trim() == '') return '';
+	// Don't wrap index anchors
+	if(text.startsWith('<a') && (text.indexOf('data-topic') > 0)) return text;
 	if(text.startsWith('<div') || text.startsWith('</div'))
 		return `${text}`;
 	else if(match = text.match(/(^|^.*?\n)<span class="inline-block(.*?<\/span>)$/)) {
@@ -358,7 +362,7 @@ const indexAnchors = {
 				return `<a id="p${token.pageNumber}_${token.indexEntry.topic.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-index="${token.indexEntry.index}"></a>`;
 			}
 		}
-		return false;
+		return '';
 	}
 };
 
