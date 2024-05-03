@@ -241,7 +241,7 @@ const mustacheInjectInline = {
 				`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 				`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 				`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
-				`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
+				`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
 				`${openingTag[2]}`; // parse to turn child tokens into HTML
 		}
 		return text;
@@ -290,7 +290,7 @@ const mustacheInjectBlock = {
 					`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 					`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 					`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
-					`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
+					`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
 					`${openingTag[2]}`; // parse to turn child tokens into HTML
 			}
 			return text;

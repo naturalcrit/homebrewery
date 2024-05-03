@@ -243,13 +243,13 @@ describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 describe('Injection: When an injection tag follows an element', ()=>{
 	// FIXME: Most of these fail because injections currently replace attributes, rather than append to.  Or just minor extra whitespace issues.
 	describe('and that element is an inline-block', ()=>{
-		it.failing('Renders a span "text" with no injection', function() {
+		it('Renders a span "text" with no injection', function() {
 			const source = '{{ text}}{}';
 			const rendered = Markdown.render(source);
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block">text</span>');
 		});
 
-		it.failing('Renders a span "text" with injected Class name', function() {
+		it('Renders a span "text" with injected Class name', function() {
 			const source = '{{ text}}{ClassName}';
 			const rendered = Markdown.render(source);
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block ClassName">text</span>');
@@ -261,31 +261,31 @@ describe('Injection: When an injection tag follows an element', ()=>{
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span a="b and c" class="inline-block ">text</span>');
 		});
 
-		it.failing('Renders a span "text" with injected style', function() {
+		it('Renders a span "text" with injected style', function() {
 			const source = '{{ text}}{color:red}';
 			const rendered = Markdown.render(source);
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" style="color:red;">text</span>');
 		});
 
-		it.failing('Renders a span "text" with injected style using a string variable', function() {
+		it('Renders a span "text" with injected style using a string variable', function() {
 			const source = `{{ text}}{--stringVariable:"'string'"}`;
 			const rendered = Markdown.render(source);
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<span class="inline-block" style="--stringVariable:'string';">text</span>`);
 		});
 
-		it.failing('Renders a span "text" with two injected styles', function() {
+		it('Renders a span "text" with two injected styles', function() {
 			const source = '{{ text}}{color:red,background:blue}';
 			const rendered = Markdown.render(source);
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" style="color:red; background:blue;">text</span>');
 		});
 
-		it.failing('Renders an emphasis element with injected Class name', function() {
+		it('Renders an emphasis element with injected Class name', function() {
 			const source = '*emphasis*{big}';
 			const rendered = Markdown.render(source).trimReturns();
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p><em class="big">emphasis</em></p>');
 		});
 
-		it.failing('Renders a code element with injected style', function() {
+		it('Renders a code element with injected style', function() {
 			const source = '`code`{background:gray}';
 			const rendered = Markdown.render(source).trimReturns();
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p><code style="background:gray;">code</code></p>');
@@ -311,19 +311,19 @@ describe('Injection: When an injection tag follows an element', ()=>{
 	});
 
 	describe('and that element is a block', ()=>{
-		it.failing('renders a div "text" with no injection', function() {
+		it('renders a div "text" with no injection', function() {
 			const source = '{{\ntext\n}}\n{}';
 			const rendered = Markdown.render(source).trimReturns();
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block"><p>text</p></div>');
 		});
 
-		it.failing('renders a div "text" with injected Class name', function() {
+		it('renders a div "text" with injected Class name', function() {
 			const source = '{{\ntext\n}}\n{ClassName}';
 			const rendered = Markdown.render(source).trimReturns();
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block ClassName"><p>text</p></div>');
 		});
 
-		it.failing('renders a div "text" with injected style', function() {
+		it('renders a div "text" with injected style', function() {
 			const source = '{{\ntext\n}}\n{color:red}';
 			const rendered = Markdown.render(source).trimReturns();
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block" style="color:red;"><p>text</p></div>');
@@ -354,7 +354,7 @@ describe('Injection: When an injection tag follows an element', ()=>{
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<h2 class="ClassName">text</h2>');
 		});
 
-		it.failing('renders a table with injected class name', function() {
+		it('renders a table with injected class name', function() {
 			const source = dedent`| Experience Points | Level |
 			|:------------------|:-----:|
 			| 0                 | 1     |
@@ -384,7 +384,7 @@ describe('Injection: When an injection tag follows an element', ()=>{
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<h2 class="ClassName">text</h2><p>{secondInjection}</p>');
 		});
 
-		it.failing('renders a div nested into another div, the inner with class=innerDiv and the other class=outerDiv', function() {
+		it('renders a div nested into another div, the inner with class=innerDiv and the other class=outerDiv', function() {
 			const source = dedent`{{
 			outer text
 			{{
