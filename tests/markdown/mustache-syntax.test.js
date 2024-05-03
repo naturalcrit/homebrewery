@@ -306,7 +306,7 @@ describe('Injection: When an injection tag follows an element', ()=>{
 		it('Renders an image with added attributes', function() {
 			const source = `![homebrew mug](https://i.imgur.com/hMna6G0.png) {position:absolute,bottom:20px,left:130px,width:220px,a="b and c",d=e}`;
 			const rendered = Markdown.render(source).trimReturns();
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p><img class="" style="position:absolute; bottom:20px; left:130px; width:220px;" a="b and c" d="e" src="https://i.imgur.com/hMna6G0.png" alt="homebrew mug"></p>`);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p><img style="position:absolute; bottom:20px; left:130px; width:220px;" src="https://i.imgur.com/hMna6G0.png" alt="homebrew mug" a="b and c" d="e"></p>`);
 		});
 	});
 

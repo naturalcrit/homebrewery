@@ -135,12 +135,12 @@ const mustacheSpans = {
 	},
 	renderer(token) {
 		const tags = token.tags;
-		tags.classes = ['inline-block', tags.classes].join(' ');
+		tags.classes = ['inline-block', tags.classes].join(' ').trim();
 		return `<span` +
-			`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 			`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
+			`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 			`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
-			`${tags.attributes ? ` ${tags.attributes}`      : ''}` +
+			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
 			`>${this.parser.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
 	}
 };
@@ -191,13 +191,13 @@ const mustacheDivs = {
 	},
 	renderer(token) {
 		const tags = token.tags;
-		tags.classes = ['block', tags.classes].join(' ');
+		tags.classes = ['block', tags.classes].join(' ').trim();
 		return `<div` +
-		`${tags.id         ? ` id="${tags.id}"`         : ''}` +
-		`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
-		`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
-		`${tags.attributes ? ` ${tags.attributes}`      : ''}` +
-		`>${this.parser.parse(token.tokens)}</div>`; // parse to turn child tokens into HTML
+			`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
+			`${tags.id         ? ` id="${tags.id}"`         : ''}` +
+			`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
+			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
+			`>${this.parser.parse(token.tokens)}</div>`; // parse to turn child tokens into HTML
 	}
 };
 
@@ -230,18 +230,18 @@ const mustacheInjectInline = {
 		const originalTags = extractHTMLStyleTags(text);
 		const injectedTags = token.injectedTags;
 		const tags = {
-			id         : originalTags.id || injectedTags.id,
-			classes    : [originalTags.classes,    injectedTags.classes].join(' '),
-			styles     : [originalTags.styles,     injectedTags.styles].join(' '),
-			attributes : [originalTags.attributes, injectedTags.attributes].join(' ')
+			id         : injectedTags.id || originalTags.id || null,
+			classes    : [originalTags.classes,    injectedTags.classes].join(' ').trim() || null,
+			styles     : [originalTags.styles,     injectedTags.styles].join(' ').trim()  || null,
+			attributes : Object.assign(originalTags.attributes ?? {}, injectedTags.attributes ?? {})
 		};
-		const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
+		const openingTag = /(<[^\s<>]+)[^\n<>]*(>.*)/s.exec(text);
 		if(openingTag) {
 			return `${openingTag[1]}` +
-				`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 				`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
+				`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 				`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
-				`${tags.attributes ? ` ${tags.attributes}`      : ''}` +
+				`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
 				`${openingTag[2]}`; // parse to turn child tokens into HTML
 		}
 		return text;
@@ -279,18 +279,18 @@ const mustacheInjectBlock = {
 			const originalTags = extractHTMLStyleTags(text);
 			const injectedTags = token.injectedTags;
 			const tags = {
-				id         : originalTags.id || injectedTags.id,
-				classes    : [originalTags.classes,    injectedTags.classes].join(' '),
-				styles     : [originalTags.styles,     injectedTags.styles].join(' '),
-				attributes : [originalTags.attributes, injectedTags.attributes].join(' ')
+				id         : injectedTags.id || originalTags.id || null,
+				classes    : [originalTags.classes,    injectedTags.classes].join(' ').trim() || null,
+				styles     : [originalTags.styles,     injectedTags.styles].join(' ').trim()  || null,
+				attributes : Object.assign(originalTags.attributes ?? {}, injectedTags.attributes ?? {})
 			};
-			const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
+			const openingTag = /(<[^\s<>]+)[^\n<>]*(>.*)/s.exec(text);
 			if(openingTag) {
 				return `${openingTag[1]}` +
-					`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 					`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
+					`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 					`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
-					`${tags.attributes ? ` ${tags.attributes}`      : ''}` +
+					`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
 					`${openingTag[2]}`; // parse to turn child tokens into HTML
 			}
 			return text;
@@ -727,16 +727,23 @@ const processStyleTags = (string)=>{
 	//TODO: can we simplify to just split on commas?
 	const tags = string.match(/(?:[^, ":=]+|[:=](?:"[^"]*"|))+/g);
 
-	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
-	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('=')));
-	const attributes = _.remove(tags, (tag)=>(tag.includes('='))).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'));
-	const styles     = tags?.length ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim()) : [];
+	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0]        || null;
+	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('='))).join(' ') || null;
+	const attributes = _.remove(tags, (tag)=>(tag.includes('='))).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'))
+		?.filter(attr => !attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
+		.reduce((obj, attr) => {
+			let [key, value] = attr.split("=");
+			value = value.replace(/"/g, '');
+			obj[key] = value;
+			return obj;
+		}, {}) || null;
+	const styles     = tags?.length ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim()).join(' ') : null;
 
 	return {
 		id         : id,
-		classes    : classes.join(' '),
-		styles     : styles.join(' '),
-		attributes : attributes.join(' ')
+		classes    : classes,
+		styles     : styles,
+		attributes : _.isEmpty(attributes) ? null : attributes
 	};
 };
 
@@ -746,13 +753,18 @@ const extractHTMLStyleTags = (htmlString)=> {
 	const styles     = htmlString.match(/style="([^"]*)"/)?.[1] || null;
 	const attributes = htmlString.match(/([a-z]+="[^"]*)"/g)
 		?.filter(attr => !attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
-		.join(' ') || null;
+		.reduce((obj, attr) => {
+			let [key, value] = attr.split("=");
+			value = value.replace(/"/g, '');
+			obj[key] = value;
+			return obj;
+		}, {}) || null;
 
 	return {
-			id,
-			classes,
-			styles,
-			attributes
+		id         : id,
+		classes    : classes,
+		styles     : styles,
+		attributes : _.isEmpty(attributes) ? null : attributes
 	};
 };
 
