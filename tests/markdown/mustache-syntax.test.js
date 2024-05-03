@@ -255,10 +255,10 @@ describe('Injection: When an injection tag follows an element', ()=>{
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block ClassName">text</span>');
 		});
 
-		it.failing('Renders a span "text" with injected attribute', function() {
+		it('Renders a span "text" with injected attribute', function() {
 			const source = '{{ text}}{a="b and c"}';
 			const rendered = Markdown.render(source);
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span a="b and c" class="inline-block ">text</span>');
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" a="b and c">text</span>');
 		});
 
 		it('Renders a span "text" with injected style', function() {
@@ -291,16 +291,16 @@ describe('Injection: When an injection tag follows an element', ()=>{
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p><code style="background:gray;">code</code></p>');
 		});
 
-		it.failing('Renders an image element with injected style', function() {
+		it('Renders an image element with injected style', function() {
 			const source = '![alt text](http://i.imgur.com/hMna6G0.png){position:absolute}';
 			const rendered = Markdown.render(source).trimReturns();
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p><img src="http://i.imgur.com/hMna6G0.png" alt="homebrew mug" style="position:absolute;"></p>');
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p><img style="position:absolute;" src="http://i.imgur.com/hMna6G0.png" alt="alt text"></p>');
 		});
 
 		it.failing('Renders an element modified by only the first of two consecutive injections', function() {
 			const source = '{{ text}}{color:red}{background:blue}';
 			const rendered = Markdown.render(source).trimReturns();
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p><span class="inline-block" style="color:red;">text</span>{background:blue}</p>');
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" style="color:red;">text</span>{background:blue}');
 		});
 
 		it('Renders an image with added attributes', function() {
@@ -329,29 +329,29 @@ describe('Injection: When an injection tag follows an element', ()=>{
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block" style="color:red;"><p>text</p></div>');
 		});
 
-		it.failing('renders a div "text" with two injected styles', function() {
+		it('renders a div "text" with two injected styles', function() {
 			const source = dedent`{{
 			text
 			}}
 			{color:red,background:blue}`;
 			const rendered = Markdown.render(source).trimReturns();
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" style="color:red; background:blue"><p>text</p></div>`);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" style="color:red; background:blue;"><p>text</p></div>`);
 		});
 
-		it.failing('renders a div "text" with injected variable string', function() {
+		it('renders a div "text" with injected variable string', function() {
 			const source = dedent`{{
 			text
 			}}
 			{--stringVariable:"'string'"}`;
 			const rendered = Markdown.render(source).trimReturns();
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" style="--stringVariable:'string'"><p>text</p></div>`);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" style="--stringVariable:'string';"><p>text</p></div>`);
 		});
 
-		it.failing('renders an h2 header "text" with injected class name', function() {
+		it('renders an h2 header "text" with injected class name', function() {
 			const source = dedent`## text
 			{ClassName}`;
 			const rendered = Markdown.render(source).trimReturns();
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<h2 class="ClassName">text</h2>');
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<h2 class="ClassName" id="text">text</h2>');
 		});
 
 		it('renders a table with injected class name', function() {
@@ -376,12 +376,12 @@ describe('Injection: When an injection tag follows an element', ()=>{
 		// 	expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`...`);   // FIXME: expect this to be injected into <ul>?  Currently injects into last <li>
 		// });
 
-		it.failing('renders an h2 header "text" with injected class name, and "secondInjection" as regular text on the next line.', function() {
+		it('renders an h2 header "text" with injected class name, and "secondInjection" as regular text on the next line.', function() {
 			const source = dedent`## text
 			{ClassName}
 			{secondInjection}`;
 			const rendered = Markdown.render(source).trimReturns();
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<h2 class="ClassName">text</h2><p>{secondInjection}</p>');
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<h2 class="ClassName" id="text">text</h2><p>{secondInjection}</p>');
 		});
 
 		it('renders a div nested into another div, the inner with class=innerDiv and the other class=outerDiv', function() {
