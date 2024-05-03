@@ -130,8 +130,8 @@ describe('Inline: When using the Inline syntax {{ }}', ()=>{
 describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 	it('Renders a div with text only', function() {
 		const source = dedent`{{
-		text
-		}}`;
+													text
+													}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block"><p>text</p></div>`);
 	});
@@ -139,14 +139,14 @@ describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 	it('Renders an empty div', function() {
 		const source = dedent`{{
 
-		}}`;
+													}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block"></div>`);
 	});
 
 	it('Renders a single paragraph with opening and closing brackets', function() {
 		const source = dedent`{{
-		}}`;
+													}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>{{}}</p>`);
 	});
@@ -154,79 +154,79 @@ describe(`Block: When using the Block syntax {{tags\\ntext\\n}}`, ()=>{
 	it('Renders a div with a single class', function() {
 		const source = dedent`{{cat
 
-		}}`;
+													}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block cat"></div>`);
 	});
 
 	it('Renders a div with a single class and text', function() {
 		const source = dedent`{{cat
-		Sample text.
-		}}`;
+													Sample text.
+													}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block cat"><p>Sample text.</p></div>`);
 	});
 
 	it('Renders a div with two classes and text', function() {
 		const source = dedent`{{cat,dog
-		Sample text.
-		}}`;
+													Sample text.
+													}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block cat dog"><p>Sample text.</p></div>`);
 	});
 
 	it('Renders a div with a style and text', function() {
 		const source = dedent`{{color:red
-		Sample text.
-		}}`;
+													Sample text.
+													}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" style="color:red;"><p>Sample text.</p></div>`);
 	});
 
 	it('Renders a div with a style that has a string variable, and text', function() {
 		const source = dedent`{{--stringVariable:"'string'"
-		Sample text.
-		}}`;
+													Sample text.
+													}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" style="--stringVariable:'string';"><p>Sample text.</p></div>`);
 	});
 
 	it('Renders a div with a style that has a string variable, and text', function() {
 		const source = dedent`{{--stringVariable:"'string'"
-		Sample text.
-		}}`;
+													Sample text.
+													}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" style="--stringVariable:'string';"><p>Sample text.</p></div>`);
 	});
 
 	it('Renders a div with a class, style and text', function() {
 		const source = dedent`{{cat,color:red
-		Sample text.
-		}}`;
+													Sample text.
+													}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block cat" style="color:red;"><p>Sample text.</p></div>`);
 	});
 
 	it('Renders a div with an ID, class, style and text (different order)', function() {
 		const source = dedent`{{color:red,cat,#dog
-		Sample text.
-		}}`;
+													Sample text.
+													}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block cat" id="dog" style="color:red;"><p>Sample text.</p></div>`);
 	});
 
 	it('Renders a div with a single ID', function() {
 		const source = dedent`{{#cat,#dog
-		Sample text.
-		}}`;
+													Sample text.
+													}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" id="cat"><p>Sample text.</p></div>`);
 	});
 
 	it('Renders a div with an ID, class, style and text, and a variable assignment', function() {
 		const source = dedent`{{color:red,cat,#dog,a="b and c",d="e"
-		Sample text.
-		}}`;
+													Sample text.
+													}}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class=\"block cat\" id=\"dog\" style=\"color:red;\" a=\"b and c\" d=\"e\"><p>Sample text.</p></div>`);
 	});
@@ -331,9 +331,9 @@ describe('Injection: When an injection tag follows an element', ()=>{
 
 		it.failing('renders a div "text" with two injected styles', function() {
 			const source = dedent`{{
-			text
-			}}
-			{color:red,background:blue}`;
+														text
+														}}
+														{color:red,background:blue}`;
 			const rendered = Markdown.render(source).trimReturns();
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" style="color:red; background:blue"><p>text</p></div>`);
 		});
@@ -349,18 +349,18 @@ describe('Injection: When an injection tag follows an element', ()=>{
 
 		it.failing('renders an h2 header "text" with injected class name', function() {
 			const source = dedent`## text
-			{ClassName}`;
+														{ClassName}`;
 			const rendered = Markdown.render(source).trimReturns();
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<h2 class="ClassName">text</h2>');
 		});
 
 		it.failing('renders a table with injected class name', function() {
 			const source = dedent`| Experience Points | Level |
-			|:------------------|:-----:|
-			| 0                 | 1     |
-			| 300               | 2     |
+														|:------------------|:-----:|
+														| 0                 | 1     |
+														| 300               | 2     |
 
-			{ClassName}`;
+														{ClassName}`;
 			const rendered = Markdown.render(source).trimReturns();
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<table class="ClassName"><thead><tr><th align=left>Experience Points</th><th align=center>Level</th></tr></thead><tbody><tr><td align=left>0</td><td align=center>1</td></tr><tr><td align=left>300</td><td align=center>2</td></tr></tbody></table>`);
 		});
@@ -386,13 +386,13 @@ describe('Injection: When an injection tag follows an element', ()=>{
 
 		it.failing('renders a div nested into another div, the inner with class=innerDiv and the other class=outerDiv', function() {
 			const source = dedent`{{
-			outer text
-			{{
-			inner text
-			}}
-			{innerDiv}
-			}}
-			{outerDiv}`;
+														outer text
+														{{
+														inner text
+														}}
+														{innerDiv}
+														}}
+														{outerDiv}`;
 			const rendered = Markdown.render(source).trimReturns();
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block outerDiv"><p>outer text</p><div class="block innerDiv"><p>inner text</p></div></div>');
 		});
