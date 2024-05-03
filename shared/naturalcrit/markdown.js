@@ -218,13 +218,16 @@ const mustacheInjectInline = {
 			lastToken.type         = 'mustacheInjectInline';
 			lastToken.injectedTags = tags;
 			return {
-				type : 'text',            // Should match "name" above
+				type : 'mustacheInjectInline',            // Should match "name" above
 				raw  : match[0],          // Text to consume from the source
 				text : ''
 			};
 		}
 	},
 	renderer(token) {
+		if(!token.originalType){
+			return;
+		}
 		token.type = token.originalType;
 		const text = this.parser.parseInline([token]);
 		const originalTags = extractHTMLStyleTags(text);

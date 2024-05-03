@@ -297,10 +297,10 @@ describe('Injection: When an injection tag follows an element', ()=>{
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p><img style="position:absolute;" src="http://i.imgur.com/hMna6G0.png" alt="alt text"></p>');
 		});
 
-		it.failing('Renders an element modified by only the first of two consecutive injections', function() {
+		it('Renders an element modified by only the first of two consecutive injections', function() {
 			const source = '{{ text}}{color:red}{background:blue}';
 			const rendered = Markdown.render(source).trimReturns();
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" style="color:red;">text</span>{background:blue}');
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p><span class="inline-block" style="color:red;">text</span>{background:blue}</p>');
 		});
 
 		it('Renders an image with added attributes', function() {
