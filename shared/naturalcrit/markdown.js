@@ -50,7 +50,7 @@ renderer.html = function (html) {
 	return html;
 };
 
-// Don't wrap {{ Divs or {{ empty Spans in <p> tags
+// Don't wrap {{ Spans alone on a line, or {{ Divs in <p> tags
 renderer.paragraph = function(text){
 	let match;
 	if(text.startsWith('<div') || text.startsWith('</div'))
