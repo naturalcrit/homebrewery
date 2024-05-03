@@ -279,6 +279,36 @@ describe('Injection: When an injection tag follows an element', ()=>{
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" style="color:red; background:blue;">text</span>');
 		});
 
+		it('Renders a span "text" with its own ID, overwritten with an injected ID', function() {
+			const source = '{{#oldId text}}{#newId}';
+			const rendered = Markdown.render(source);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" id="newId">text</span>');
+		});
+
+		it('Renders a span "text" with its own attributes, overwritten with an injected attribute, plus a new one', function() {
+			const source = '{{attrA="old",attrB="old" text}}{attrA="new",attrC="new"}';
+			const rendered = Markdown.render(source);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" attrA="new" attrB="old" attrC="new">text</span>');
+		});
+
+		it('Renders a span "text" with its own attributes, overwritten with an injected attribute, ignoring "class", "style", and "id"', function() {
+			const source = '{{attrA="old",attrB="old" text}}{attrA="new",attrC="new",class="new",style="new",id="new"}';
+			const rendered = Markdown.render(source);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" attrA="new" attrB="old" attrC="new">text</span>');
+		});
+
+		it('Renders a span "text" with its own styles, appended with injected styles', function() {
+			const source = '{{color:blue,height:10px text}}{width:10px,color:red}';
+			const rendered = Markdown.render(source);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" style="color:blue; height:10px; width:10px; color:red;">text</span>');
+		});
+
+		it('Renders a span "text" with its own classes, appended with injected classes', function() {
+			const source = '{{classA,classB text}}{classA,classC}';
+			const rendered = Markdown.render(source);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block classA classB classA classC">text</span>');
+		});
+
 		it('Renders an emphasis element with injected Class name', function() {
 			const source = '*emphasis*{big}';
 			const rendered = Markdown.render(source).trimReturns();
@@ -340,11 +370,56 @@ describe('Injection: When an injection tag follows an element', ()=>{
 
 		it('renders a div "text" with injected variable string', function() {
 			const source = dedent`{{
-			text
-			}}
-			{--stringVariable:"'string'"}`;
+														text
+														}}
+														{--stringVariable:"'string'"}`;
 			const rendered = Markdown.render(source).trimReturns();
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<div class="block" style="--stringVariable:'string';"><p>text</p></div>`);
+		});
+
+		it('Renders a span "text" with its own ID, overwritten with an injected ID', function() {
+			const source = dedent`{{#oldId
+														text
+														}}
+														{#newId}`;
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block" id="newId"><p>text</p></div>');
+		});
+
+		it('Renders a span "text" with its own attributes, overwritten with an injected attribute, plus a new one', function() {
+			const source = dedent`{{attrA="old",attrB="old"
+														text
+														}}
+														{attrA="new",attrC="new"}`;
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block" attrA="new" attrB="old" attrC="new"><p>text</p></div>');
+		});
+
+		it('Renders a span "text" with its own attributes, overwritten with an injected attribute, ignoring "class", "style", and "id"', function() {
+			const source = dedent`{{attrA="old",attrB="old"
+														text
+														}}
+														{attrA="new",attrC="new",class="new",style="new",id="new"}`;
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block" attrA="new" attrB="old" attrC="new"><p>text</p></div>');
+		});
+
+		it('Renders a span "text" with its own styles, appended with injected styles', function() {
+			const source = dedent`{{color:blue,height:10px
+														text
+														}}
+														{width:10px,color:red}`;
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block" style="color:blue; height:10px; width:10px; color:red;"><p>text</p></div>');
+		});
+
+		it('Renders a span "text" with its own classes, appended with injected classes', function() {
+			const source = dedent`{{classA,classB
+														text
+														}}
+														{classA,classC}`;
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block classA classB classA classC"><p>text</p></div>');
 		});
 
 		it('renders an h2 header "text" with injected class name', function() {
