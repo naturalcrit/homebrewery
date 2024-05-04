@@ -1,0 +1,29 @@
+name: PR Check
+on: pull_request_target
+env:
+  GH_REPO: ${{ github.repository }}
+  GH_NO_UPDATE_NOTIFIER: 1
+  GH_PROMPT_DISABLED: 1
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  statuses: write
+jobs:
+  limit-pull-requests:
+    if: always() && github.repository_owner == 'naturalcrit'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name : Run limit-pull-requests action
+        uses: ./.github/actions/limit-pull-requests
+        with:
+          except-users: |
+            dependabot
+          comment-limit: 3
+          comment: |
+            Hi, thanks for your contribution to the Homebrewery! You already have >=3 open pull requests. Consider completing some of your existing PRs before opening new ones. Thanks!
+          close-limit: 5
+          close: false

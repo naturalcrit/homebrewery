@@ -17,11 +17,24 @@
 
 	&::-webkit-scrollbar {
 		width: 20px;
+		&:horizontal{
+			height: 20px;
+			width:auto;
+		}
+		&-thumb {
+			background: linear-gradient(90deg, #d3c1af 15px, #00000000 15px);
+			&:horizontal{
+				background: linear-gradient(0deg, #d3c1af 15px, #00000000 15px);
+			}
+		}
+		&-corner {
+			visibility: hidden;
+		}
 	}
-	&::-webkit-scrollbar-thumb {
-		width:20px;
-		background: linear-gradient(90deg, #d3c1af 15px, #00000000 15px);
-	}
+	
+
+
+
 
 }
 .pane { position : relative; }
