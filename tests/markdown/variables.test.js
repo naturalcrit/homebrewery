@@ -329,7 +329,7 @@ describe('Normal Links and Images', ()=>{
 		const source = `![alt text](url){width:100px}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
-			<p><img class="" style="width:100px;" src="url" alt="alt text"></p>`.trimReturns());
+			<p><img style="width:100px;" src="url" alt="alt text"></p>`.trimReturns());
 	});
 
 	it('Renders normal links', function() {
