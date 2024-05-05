@@ -8,8 +8,6 @@ const template = async function(name, title='', props = {}){
 	});
 	const ogMetaTags = ogTags.join('\n');
 
-	const cleanProps = JSON.stringify(props).replace(/<\/script/gi, '<\\\/script');
-
 	return `<!DOCTYPE html>
 	<html>
 		<head>
@@ -25,7 +23,7 @@ const template = async function(name, title='', props = {}){
 		<body>
 			<main id="reactRoot">${require(`../build/${name}/ssr.js`)(props)}</main>
 			<script src=${`/${name}/bundle.js`}></script>
-			<script>start_app(${cleanProps})</script>
+			<script>start_app(${JSON.stringify(props)})</script>
 		</body>
 	</html>
 	`;
