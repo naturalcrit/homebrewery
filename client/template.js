@@ -8,7 +8,7 @@ const template = async function(name, title='', props = {}){
 	});
 	const ogMetaTags = ogTags.join('\n');
 
-	const cleanProps = JSON.stringify(props).replace(/<\/script/g, '<\\\/script');
+	const cleanProps = JSON.stringify(props).replace(/<\/script/gi, '<\\\/script');
 
 	return `<!DOCTYPE html>
 	<html>
