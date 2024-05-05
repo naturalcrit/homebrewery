@@ -1,11 +1,11 @@
 const diceFont      = require('../../../themes/fonts/icon fonts/diceFont.js');
 const elderberryInn = require('../../../themes/fonts/icon fonts/elderberryInn.js');
+const fontAwesome   = require('../../../themes/fonts/icon fonts/fontAwesome.js');
 
 const emojis = {
 	...diceFont,
 	...elderberryInn,
-	"fas-heart": "fa-solid fa-heart",
-	"fas-star": "fa-solid fa-star"
+	...fontAwesome
 };
 
 const showEmojiAutocomplete = function(CodeMirror, editor) {

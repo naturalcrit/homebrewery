@@ -7,8 +7,9 @@ const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
 const { markedEmoji: MarkedEmojis} = require('marked-emoji');
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
-const diceFont = require('../../themes/fonts/icon fonts/diceFont.js');
+const diceFont      = require('../../themes/fonts/icon fonts/diceFont.js');
 const elderberryInn = require('../../themes/fonts/icon fonts/elderberryInn.js');
+const fontAwesome   = require('../../themes/fonts/icon fonts/fontAwesome.js');
 
 const MathParser = require('expr-eval').Parser;
 const renderer = new Marked.Renderer();
@@ -679,8 +680,7 @@ const MarkedEmojiOptions = {
 	emojis: {
 		...diceFont,
 		...elderberryInn,
-		"fas-heart": "fa-solid fa-heart",
-		"fas-star": "fa-solid fa-star"
+		...fontAwesome
 	},
 	renderer: (token) => `<i class="${token.emoji}"></i>`
 };
