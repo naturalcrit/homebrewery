@@ -290,6 +290,8 @@ const api = {
 	getBrewThemeParent : async (req, res)=>{
 		const brew = req.brew;
 		splitTextStyleAndMetadata(brew);
+		// Test Hard Ignoring 5ePHB and 5eBlank due to being used for editor theming.
+		if((req.brew.theme == '5ePHB') ||(req.brew.theme == 'Blank')) return res.status(200).send('');
 		res.setHeader('Content-Type', 'text/css');
 		const staticTheme = `/css/${req.brew.renderer}/${req.brew.theme}`;
 		const userTheme = `/css/${req.brew.theme.slice(1)}`;
