@@ -23,9 +23,9 @@ const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
 const sanitizeBrew = (brew, accessType)=>{
 	brew._id = undefined;
 	brew.__v = undefined;
-	if(accessType !== 'edit'){
+	if(accessType !== 'edit' && accessType !== 'shareAuthor') {
 		brew.editId = undefined;
-	}
+	}	
 	return brew;
 };
 
@@ -308,7 +308,6 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 //Share Page
 app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
 	const { brew } = req;
-
 	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',
 		description : req.brew.description || 'No description.',
@@ -327,7 +326,8 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 			await HomebrewModel.increaseView({ shareId: brew.shareId });
 		}
 	};
-	sanitizeBrew(req.brew, 'share');
+
+	brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	return next();
 }));
@@ -373,7 +373,7 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 				console.log(err);
 			});
 
-		data.uiItems = {
+		data.accountDetails = {
 			username    : req.account.username,
 			issued      : req.account.issued,
 			googleId    : Boolean(req.account.googleId),
