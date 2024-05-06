@@ -55,7 +55,7 @@ const SharePage = createClass({
 			editLink = this.props.brew.googleId + editLink;
 		}
 
-		return 	<Nav.item color='orange' href={`/edit/${editLink}`}>
+		return 	<Nav.item color='orange' icon='fas fa-pencil-alt' href={`/edit/${editLink}`}>
 					edit
 				</Nav.item>;
 	},
