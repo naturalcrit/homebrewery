@@ -263,24 +263,19 @@ const ArchivePage = createClass({
 
 
 		if(title === '') {return (<div className='foundBrews noBrews'><h3>Whenever you want, just start typing...</h3></div>);}
-		if (!brewCollection || brewCollection.length === 0) {
-			return (
-				<div className='foundBrews noBrews'>
-					<h3>No brews found</h3>
-				</div>
-			);
-		};
+
 		if (error) {
 			console.log('render Error: ', error);
 			let errorMessage;
 			switch (error.errorCode) {
 				case '404':
-					errorMessage = "We didn't find any brew";
+					errorMessage = "404 - We didn't find any brew";
 					break;
 				case '503':
-					errorMessage = 'Your search is not specific enough. Too many brews meet this criteria for us to display them.';
+					errorMessage = ' 503 - Your search is not specific enough. Too many brews meet this criteria for us to display them.';
 					break;
 				case '500':
+					errorMessage = "500 - We don't know what happened."
 				default:
 					errorMessage = 'An unexpected error occurred';
 			}
@@ -291,6 +286,15 @@ const ArchivePage = createClass({
 				</div>
 			);
 		};
+
+		if (!brewCollection || brewCollection.length === 0) {
+			return (
+				<div className='foundBrews noBrews'>
+					<h3>No brews found</h3>
+				</div>
+			);
+		};
+		
 	
 		
 		
