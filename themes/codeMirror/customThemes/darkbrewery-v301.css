@@ -127,3 +127,70 @@ nav .navItem {
 .cm-s-default .cm-builtin {
     color:#fff;
 }
+
+
+/*Style tab*/
+
+
+.CodeMirror-line > span {
+    color:white;
+}
+
+
+/*@rule*/
+.cm-def {
+    color:yellow;
+}
+
+/*url, font value, calc*/
+.cm-variable {
+    color: violet;
+}
+
+.cm-comment {
+    color:rgba(255,255,255,0.5);
+    
+}
+
+/*#id*/
+.cm-builtin {
+    color:rgb(14,187,228);
+}
+
+/*class*/
+.cm-qualifier {
+    color:orange;
+}
+
+.cm-tag {
+    color:lightgreen;
+}
+
+.cm-property, .cm-variable-2 {
+    color:rgb(41,165,205);
+}
+
+.cm-number {
+    color:rgb(238,234,128);
+}
+
+
+.cm-atom {
+    color:rgb(223,198,198);
+}
+
+
+.cm-meta {
+    color:yellow;
+}
+
+.cm-string {
+    color:pink;
+    text-decoration:underline;
+}
+
+
+
+
+
+
