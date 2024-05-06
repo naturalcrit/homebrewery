@@ -88,6 +88,7 @@ const archive = {
             return res.json({ brews, page, totalPages, totalBrews });
         } catch (error) {
             console.error(error);
+            console.log('error status number: ', error.response.status);
             if (error.response && error.response.status === 503) {
                 return res
                     .status(503)

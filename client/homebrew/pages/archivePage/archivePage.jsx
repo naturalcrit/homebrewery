@@ -249,6 +249,7 @@ const ArchivePage = createClass({
 	},
 
 	renderFoundBrews() {
+		console.table(this.state);
 		const { title, brewCollection, page, totalPages, error, searching } = this.state;
 		
 		if(searching) {
