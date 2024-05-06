@@ -47,6 +47,19 @@ const SharePage = createClass({
 					 this.props.brew.shareId;
 	},
 
+	renderEditLink : function(){
+		if(!this.props.brew.editId) return;
+
+		let editLink = this.props.brew.editId;
+		if(this.props.brew.googleId && !this.props.brew.stubbed) {
+			editLink = this.props.brew.googleId + editLink;
+		}
+
+		return 	<Nav.item color='orange' href={`/edit/${editLink}`}>
+					edit
+				</Nav.item>;
+	},
+
 	render : function(){
 		return <div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
@@ -67,6 +80,7 @@ const SharePage = createClass({
 							<Nav.item color='blue' icon='fas fa-eye' href={`/source/${this.processShareId()}`}>
 								view
 							</Nav.item>
+							{this.renderEditLink()}
 							<Nav.item color='blue' icon='fas fa-download' href={`/download/${this.processShareId()}`}>
 								download
 							</Nav.item>
