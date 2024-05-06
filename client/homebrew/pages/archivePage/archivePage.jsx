@@ -29,7 +29,7 @@ const ArchivePage = createClass({
 			legacy		   : `${this.props.query.legacy === 'false' ? false : true }`,
 			v3			   : `${this.props.query.v3 === 'false' ? false : true }`,
 			pageSize	   : this.props.query.size || 10,
-			page           : this.props.query.page || 1,
+			page           : parseInt(this.props.query.page) || 1,
 
 			//response
 			brewCollection : null,
@@ -50,7 +50,7 @@ const ArchivePage = createClass({
 	updateStateWithBrews : function (brews, page, totalPages, totalBrews) {
 		this.setState({
 			brewCollection : brews || null,
-			page           : page || 1,
+			page           : parseInt(page) || 1,
 			totalPages     : totalPages || 1,
 			totalBrews	   : totalBrews,
 			searching      : false
@@ -293,10 +293,7 @@ const ArchivePage = createClass({
 					<h3>No brews found</h3>
 				</div>
 			);
-		};
-		
-	
-		
+		};	
 		
 		return (
 			<div className='foundBrews'>
