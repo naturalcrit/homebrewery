@@ -47,6 +47,19 @@ const SharePage = createClass({
 					 this.props.brew.shareId;
 	},
 
+	renderEditLink : function(){
+		if(!this.props.brew.editId) return;
+
+		let editLink = this.props.brew.editId;
+		if(this.props.brew.googleId && !this.props.brew.stubbed) {
+			editLink = this.props.brew.googleId + editLink;
+		}
+
+		return 	<Nav.item color='orange' icon='fas fa-pencil-alt' href={`/edit/${editLink}`}>
+					edit
+				</Nav.item>;
+	},
+
 	render : function(){
 		return <div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
@@ -64,13 +77,14 @@ const SharePage = createClass({
 							<Nav.item color='red' icon='fas fa-code'>
 								source
 							</Nav.item>
-							<Nav.item color='blue' href={`/source/${this.processShareId()}`}>
+							<Nav.item color='blue' icon='fas fa-eye' href={`/source/${this.processShareId()}`}>
 								view
 							</Nav.item>
-							<Nav.item color='blue' href={`/download/${this.processShareId()}`}>
+							{this.renderEditLink()}
+							<Nav.item color='blue' icon='fas fa-download' href={`/download/${this.processShareId()}`}>
 								download
 							</Nav.item>
-							<Nav.item color='blue' href={`/new/${this.processShareId()}`}>
+							<Nav.item color='blue' icon='fas fa-clone' href={`/new/${this.processShareId()}`}>
 								clone to new
 							</Nav.item>
 						</Nav.dropdown>
