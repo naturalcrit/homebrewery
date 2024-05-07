@@ -8,6 +8,7 @@ const Markdown = require('../shared/naturalcrit/markdown.js');
 const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
+var url = require('url');
 
 
 const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
@@ -282,21 +283,21 @@ const api = {
 		const brew = req.brew;
 		splitTextStyleAndMetadata(brew);
 		res.setHeader('Content-Type', 'text/css');
-		const staticTheme = `/css/${req.brew.renderer}/${req.brew.theme}`;
-		const userTheme = `/css/${req.brew.theme.slice(1)}`;
-		const parentThemeImport = `@import url(\"${req.brew.theme[0] != '#' ? staticTheme : userTheme}\");\n\n/* From Brew: ${req.brew.title}*/\n\n`;
-		return res.status(200).send(`${req.brew.renderer == 'legacy' ? '' : parentThemeImport}${req.brew.style}`);
+		const themePath = req.brew.theme[0] != '#' ? `/css/${req.brew.renderer}/${req.brew.theme}` : `/css/${req.brew.theme.slice(1)}`;
+		// Drop Parent theme if it has already been loaded.
+		// This assumes the continued use of the V3/5ePHB and V3/Blank themes for the app.
+		const parentThemeImport = ((req.brew.theme != '5ePHB') && (req.brew.theme != 'Blank')) ? `@import url(\"${themePath}\");\n\n`:'';
+		const themeLocationComment = `/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.brew.shareId} */\n\n`;
+		return res.status(200).send(req.brew.renderer == 'legacy' ? '' : `${parentThemeImport}${themeLocationComment}${req.brew.style}`);
 	},
 	getBrewThemeParent : async (req, res)=>{
 		const brew = req.brew;
 		splitTextStyleAndMetadata(brew);
-		// Test Hard Ignoring 5ePHB and 5eBlank due to being used for editor theming.
-		if((req.brew.theme == '5ePHB') ||(req.brew.theme == 'Blank')) return res.status(200).send('');
 		res.setHeader('Content-Type', 'text/css');
-		const staticTheme = `/css/${req.brew.renderer}/${req.brew.theme}`;
-		const userTheme = `/css/${req.brew.theme.slice(1)}`;
-		const parentThemeImport = `@import url(\"${req.brew.theme[0] != '#' ? staticTheme : userTheme}\");\n\n/* From Brew: ${req.brew.title}*/\n\n`;
-		return res.status(200).send(`${req.brew.renderer == 'legacy' ? '' : parentThemeImport}`);
+		const themePath = req.brew.theme[0] != '#' ? `/css/${req.brew.renderer}/${req.brew.theme}` : `/css/${req.brew.theme.slice(1)}`;
+		const parentThemeImport = `@import url(\"${themePath}\");\n\n`;
+		const themeLocationComment = `/*  From Brew: ${req.protocol}://${req.get('host')}/share/${req.brew.shareId} */\n\n`;
+		return res.status(200).send(req.brew.renderer == 'legacy' ? '' : `${parentThemeImport}{themeLocationComment}`);
 	},
 	getStaticTheme : async(req, res)=>{
 		const themeParent = isStaticTheme(req.params.engine, req.params.id);
