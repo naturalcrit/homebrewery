@@ -114,6 +114,7 @@ const ArchivePage = createClass({
                         }
                     });
             } catch (error) {
+                console.log(response);
                 this.setState({ error: `${error.response.status}` });
                 this.updateStateWithBrews([], 1, 1, 0);
             }
