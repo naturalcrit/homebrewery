@@ -588,15 +588,15 @@ brew`);
 	describe('getBrewThemeWithStaticParent', ()=>{
 		it('should collect parent theme and brew style - returning as css with static parent imported.', async ()=>{
 			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
-			model.get = jest.fn(()=>toBrewPromise({ title: 'test brew', renderer: 'V3', style: 'I Have a style!' }));
+			model.get = jest.fn(()=>toBrewPromise({ title: 'test brew', renderer: 'V3', theme: '5eDMG', shareId: 'iAmAUserTheme', style: 'I Have a style!' }));
 			const fn = api.getBrew('share', true);
-			const req = { brew: {} };
+			const req = { brew: {}, get: ()=>{return 'localhost';}, protocol: 'https' };
 			const next = jest.fn();
 			await fn(req, null, next);
 
 			api.getBrewThemeWithCSS(req, res);
 			const sent = res.send.mock.calls[0][0];
-			expect(sent).toBe(`@import url("/css/V3/5ePHB");\n\n/* From Brew: test brew*/\n\nI Have a style!`);
+			expect(sent).toBe(`@import url("/css/V3/5eDMG");\n\n/* From Brew: https://localhost/share/iAmAUserTheme */\n\nI Have a style!`);
 			expect(res.status).toHaveBeenCalledWith(200);
 		});
 	});
@@ -604,15 +604,15 @@ brew`);
 	describe('getBrewThemeWithUserParent', ()=>{
 		it('should collect parent theme and brew style - returning as css with user-theme parent imported.', async ()=>{
 			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
-			model.get = jest.fn(()=>toBrewPromise({ title: 'test brew', renderer: 'V3', theme: '#IamATheme', style: 'I Have a style!' }));
+			model.get = jest.fn(()=>toBrewPromise({ title: 'test brew', renderer: 'V3',  shareId: 'iAmAUserTheme', theme: '#IamATheme', style: 'I Have a style!' }));
 			const fn = api.getBrew('share', true);
-			const req = { brew: {} };
+			const req = { brew: {}, get: ()=>{return 'localhost';}, protocol: 'https' };
 			const next = jest.fn();
 			await fn(req, null, next);
 
 			api.getBrewThemeWithCSS(req, res);
 			const sent = res.send.mock.calls[0][0];
-			expect(sent).toBe(`@import url("/css/IamATheme");\n\n/* From Brew: test brew*/\n\nI Have a style!`);
+			expect(sent).toBe(`@import url("/css/IamATheme");\n\n/* From Brew: https://localhost/share/iAmAUserTheme */\n\nI Have a style!`);
 			expect(res.status).toHaveBeenCalledWith(200);
 		});
 	});
