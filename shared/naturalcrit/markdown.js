@@ -676,12 +676,14 @@ function MarkedVariables() {
 //^=====--------------------< Variable Handling >-------------------=====^//
 
 // Emoji options
-// To add more icon fonts, need to do 4 things:
+// To add more icon fonts, need to do these things
 // 1) Add the font file as .woff2 to themes/fonts/iconFonts folder
 // 2) Create a .less file mapping CSS class names to the font character
 // 3) Create a .js file mapping Autosuggest names to CSS class names
-// 4) Import the .js file to shared/naturalcrit/codeEditor/autocompleteEmoji.js and add to `emojis` object
-// 5) Import the .js file here to markdown.js, and add to `emojis` object below
+// 4) Import the .less file into shared/naturalcrit/codeEditor/codeEditor.less
+// 5) Import the .less file into themes/V3/blank.style.less
+// 6) Import the .js file to shared/naturalcrit/codeEditor/autocompleteEmoji.js and add to `emojis` object
+// 7) Import the .js file here to markdown.js, and add to `emojis` object below
 const MarkedEmojiOptions = {
 	emojis: {
 		...diceFont,
