@@ -17,9 +17,11 @@ const archive = {
             */
 
             const bright = '\x1b[1m'; // Bright (bold) style
-		    const yellow = '\x1b[93m'; //  yellow color
+            const yellow = '\x1b[93m'; //  yellow color
             const reset = '\x1b[0m'; // Reset to default style
-            console.log(`Query as received in ${bright + yellow}archive api${reset}:`);
+            console.log(
+                `Query as received in ${bright + yellow}archive api${reset}:`
+            );
             console.table(req.query);
 
             const title = req.query.title || '';
@@ -60,9 +62,17 @@ const archive = {
             function buildTitleConditions(inputString) {
                 return [
                     {
-                        $text: {
-                            $search: inputString,
-                            $caseSensitive: false,
+                        $search: {
+                            'index': 'default', // optional, defaults to "default"
+                            'text': {
+                                'query': 'dragon',
+                                'path': 'title',
+                                'fuzzy': {
+                                    'maxEdits': 1,
+                                    'prefixLength': 0,
+                                    'maxExpansions': 50,
+                                },
+                            },
                         },
                     },
                 ];
@@ -94,10 +104,10 @@ const archive = {
             return res.json({ brews, page, totalPages, totalBrews });
         } catch (error) {
             console.error(error);
-        
+
             if (error.response && error.response.status) {
                 const status = error.response.status;
-        
+
                 if (status === 500) {
                     return res.status(500).json({
                         errorCode: '500',
