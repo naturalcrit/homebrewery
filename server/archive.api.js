@@ -65,8 +65,8 @@ const archive = {
                         $search: {
                             'index': 'default', // optional, defaults to "default"
                             'text': {
-                                'query': 'dragon',
-                                'path': 'title',
+                                'query': inputString,
+                                'path': 'title_text',
                                 'fuzzy': {
                                     'maxEdits': 1,
                                     'prefixLength': 0,
