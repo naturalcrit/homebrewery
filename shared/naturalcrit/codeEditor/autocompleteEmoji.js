@@ -1,6 +1,6 @@
-const diceFont      = require('../../../themes/fonts/icon fonts/diceFont.js');
-const elderberryInn = require('../../../themes/fonts/icon fonts/elderberryInn.js');
-const fontAwesome   = require('../../../themes/fonts/icon fonts/fontAwesome.js');
+const diceFont      = require('../../../themes/fonts/iconFonts/diceFont.js');
+const elderberryInn = require('../../../themes/fonts/iconFonts/elderberryInn.js');
+const fontAwesome   = require('../../../themes/fonts/iconFonts/fontAwesome.js');
 
 const emojis = {
 	...diceFont,
@@ -8,7 +8,7 @@ const emojis = {
 	...fontAwesome
 };
 
-const showEmojiAutocomplete = function(CodeMirror, editor) {
+const showAutocompleteEmoji = function(CodeMirror, editor) {
 	CodeMirror.commands.autocomplete = function(editor) {
 		editor.showHint({
 			completeSingle: false,
@@ -78,5 +78,5 @@ const showEmojiAutocomplete = function(CodeMirror, editor) {
 }
 
 module.exports = {
-  showEmojiAutocomplete
+  showAutocompleteEmoji
 };

@@ -7,9 +7,9 @@ const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
 const { markedEmoji: MarkedEmojis} = require('marked-emoji');
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
-const diceFont      = require('../../themes/fonts/icon fonts/diceFont.js');
-const elderberryInn = require('../../themes/fonts/icon fonts/elderberryInn.js');
-const fontAwesome   = require('../../themes/fonts/icon fonts/fontAwesome.js');
+const diceFont      = require('../../themes/fonts/iconFonts/diceFont.js');
+const elderberryInn = require('../../themes/fonts/iconFonts/elderberryInn.js');
+const fontAwesome   = require('../../themes/fonts/iconFonts/fontAwesome.js');
 
 const MathParser = require('expr-eval').Parser;
 const renderer = new Marked.Renderer();
@@ -676,6 +676,12 @@ function MarkedVariables() {
 //^=====--------------------< Variable Handling >-------------------=====^//
 
 // Emoji options
+// To add more icon fonts, need to do 4 things:
+// 1) Add the font file as .woff2 to themes/fonts/iconFonts folder
+// 2) Create a .less file mapping CSS class names to the font character
+// 3) Create a .js file mapping Autosuggest names to CSS class names
+// 4) Import the .js file to shared/naturalcrit/codeEditor/autocompleteEmoji.js and add to `emojis` object
+// 5) Import the .js file here to markdown.js, and add to `emojis` object below
 const MarkedEmojiOptions = {
 	emojis: {
 		...diceFont,
