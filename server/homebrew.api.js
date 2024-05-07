@@ -297,7 +297,7 @@ const api = {
 		const themePath = req.brew.theme[0] != '#' ? `/css/${req.brew.renderer}/${req.brew.theme}` : `/css/${req.brew.theme.slice(1)}`;
 		const parentThemeImport = `@import url(\"${themePath}\");\n\n`;
 		const themeLocationComment = `/*  From Brew: ${req.protocol}://${req.get('host')}/share/${req.brew.shareId} */\n\n`;
-		return res.status(200).send(req.brew.renderer == 'legacy' ? '' : `${parentThemeImport}{themeLocationComment}`);
+		return res.status(200).send(req.brew.renderer == 'legacy' ? '' : `${parentThemeImport}${themeLocationComment}`);
 	},
 	getStaticTheme : async(req, res)=>{
 		const themeParent = isStaticTheme(req.params.engine, req.params.id);
