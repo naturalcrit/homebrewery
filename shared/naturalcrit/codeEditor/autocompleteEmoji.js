@@ -61,10 +61,10 @@ const showAutocompleteEmoji = function(CodeMirror, editor) {
 		// Get the text from the start of the line to the cursor
 		const textToCursor = line.slice(0, cursor.ch);
 
-		// Do not autosuggest emojis in curly span/div properties
-		if(line.includes('{{')) {
-			const curlyToCursor = textToCursor.slice(textToCursor.indexOf(`{{`));
-			const curlySpanRegex = /{{(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\1$/g;
+		// Do not autosuggest emojis in curly span/div/injector properties
+		if(line.includes('{')) {
+			const curlyToCursor = textToCursor.slice(textToCursor.indexOf(`{`));
+			const curlySpanRegex = /{(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\1$/g;
 
 			if (regex.test(curlyToCursor))
 				return;
