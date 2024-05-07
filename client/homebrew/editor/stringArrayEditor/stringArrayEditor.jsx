@@ -99,6 +99,7 @@ const StringArrayEditor = createClass({
 					this.addValue(event.target.value);
 				}
 			}
+		} else if(event.key === 'Escape' && index) {
 			this.closeEditInput(index);
 		}
 	},
