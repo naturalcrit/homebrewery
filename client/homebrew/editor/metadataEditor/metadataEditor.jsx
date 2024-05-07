@@ -202,7 +202,9 @@ const MetadataEditor = createClass({
 				const preview = theme?.thumbnail ? theme.thumbnail : `/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`;
 				return <div className='item' key={`${renderer}_${theme.name}`} onClick={()=>this.handleTheme(theme, renderer)} title={''}>
 					{`${renderer} : ${theme.name}`}
-					<img src={`/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`}/>
+					<div className='texture-container'>
+						<img src={theme?.thumbnail ? theme.thumbnail : `/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`}/>
+					</div>
 					<div className='preview'>
 						<h6>{`${theme.name}`} preview</h6>
 						<img src={`${preview}`}/>
