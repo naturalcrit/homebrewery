@@ -139,8 +139,6 @@ const NewPage = createClass({
 			isSaving : true
 		});
 
-		console.log('saving new brew');
-
 		let brew = this.state.brew;
 		// Split out CSS to Style if CSS codefence exists
 		if(brew.text.startsWith('```css') && brew.text.indexOf('```\n\n') > 0) {
@@ -150,17 +148,13 @@ const NewPage = createClass({
 		}
 
 		brew.pageCount=((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
-		console.log('Running post.');
 		const res = await request
 			.post(`/api${this.state.saveGoogle ? '?saveToGoogle=true' : ''}`)
 			.send(brew)
 			.catch((err)=>{
-				console.log(err);
 				this.setState({ isSaving: false, error: err });
 			});
-			console.log('Post completed');
 			if(!res) return;
-			console.log('Had results!');
 
 		brew = res.body;
 		localStorage.removeItem(BREWKEY);
