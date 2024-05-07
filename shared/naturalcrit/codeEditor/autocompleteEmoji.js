@@ -66,7 +66,7 @@ const showAutocompleteEmoji = function(CodeMirror, editor) {
 			const curlyToCursor = textToCursor.slice(textToCursor.indexOf(`{`));
 			const curlySpanRegex = /{(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\1$/g;
 
-			if (regex.test(curlyToCursor))
+			if (curlySpanRegex.test(curlyToCursor))
 				return;
 		}
 		
