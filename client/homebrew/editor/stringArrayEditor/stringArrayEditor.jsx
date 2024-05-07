@@ -90,7 +90,8 @@ const StringArrayEditor = createClass({
 	},
 
 	handleValueInputKeyDown : function(event, index) {
-		if(event.key === 'Enter') {
+		if(_.includes(['Enter', ','], event.key)) {
+			event.preventDefault();
 			if(this.valueIsValid(event.target.value, index)) {
 				if(index !== undefined) {
 					this.updateValue(event.target.value, index);
@@ -98,7 +99,6 @@ const StringArrayEditor = createClass({
 					this.addValue(event.target.value);
 				}
 			}
-		} else if(event.key === 'Escape') {
 			this.closeEditInput(index);
 		}
 	},
