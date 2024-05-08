@@ -176,6 +176,7 @@ const ArchivePage = createClass({
                             min="6"
                             step="2"
                             max="30"
+                            defaultValue={this.state.pageSize}
                             name="pageSize"
                         />
                     </label>
