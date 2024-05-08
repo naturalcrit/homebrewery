@@ -211,7 +211,9 @@ router.get('/admin/lock/reviews', mw.adminOnly, async (req, res)=>{
 	}
 });
 
-router.get('/admin/lock/review/request/:id', mw.adminOnly, async (req, res)=>{
+router.get('/admin/lock/review/request/:id', async (req, res)=>{
+	// === This route is NOT Admin only ===
+	// Any user can request a review of their document
 	try {
 		const filter = {
 			shareId       : req.params.id,
