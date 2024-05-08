@@ -60,7 +60,7 @@ const archive = {
             const brews = result[0] ? result[0].data : [];
             const totalBrews = result[0] ? result[0].metadata.totalCount : 0;
 
-            return res.status(200).json({
+            return response.status(200).json({
                 success: true,
                 brews: {
                     metadata: { totalBrews, page, pageSize },
