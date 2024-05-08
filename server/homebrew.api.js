@@ -84,7 +84,7 @@ const api = {
 			}
 		};
 
-		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme', 'type:theme', 'type:Theme'] }, editId: { $ne: id }  });
+		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['theme', 'Theme', 'type:theme', 'type:Theme'] }, editId: { $ne: id }, renderer: { $ne: 'Legacy' } });
 
 		if(brews) {
 			for await (const brew of brews) {
