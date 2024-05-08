@@ -4,7 +4,7 @@ const Marked = require('marked');
 const MarkedExtendedTables = require('marked-extended-tables');
 const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartypants-lite');
 const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
-const { markedEmoji: MarkedEmojis} = require('marked-emoji');
+const { markedEmoji: MarkedEmojis } = require('marked-emoji');
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
 const diceFont      = require('../../themes/fonts/iconFonts/diceFont.js');
@@ -147,7 +147,7 @@ const mustacheSpans = {
 			`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 			`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 			`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
-			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
+			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
 			`>${this.parser.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
 	}
 };
@@ -203,7 +203,7 @@ const mustacheDivs = {
 			`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 			`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 			`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
-			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
+			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
 			`>${this.parser.parse(token.tokens)}</div>`; // parse to turn child tokens into HTML
 	}
 };
@@ -251,7 +251,7 @@ const mustacheInjectInline = {
 				`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 				`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 				`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
-				`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
+				`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
 				`${openingTag[2]}`; // parse to turn child tokens into HTML
 		}
 		return text;
@@ -300,7 +300,7 @@ const mustacheInjectBlock = {
 					`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 					`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 					`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
-					`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
+					`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
 					`${openingTag[2]}`; // parse to turn child tokens into HTML
 			}
 			return text;
@@ -354,13 +354,13 @@ const definitionListsSingleLine = {
 		let endIndex = 0;
 		const definitions = [];
 		while (match = regex.exec(src)) {
-			let originalLine = match[0];											// This line and below to handle conflict with emojis
+			const originalLine = match[0];											// This line and below to handle conflict with emojis
 			let firstLine = originalLine;											// Remove in V4 when definitionListsInline updated to
 			this.lexer.inlineTokens(firstLine.trim())					// require spaces around `::`
-				.filter(t => t.type == 'emoji')
-				.map(emoji => firstLine = firstLine.replace(emoji.raw, 'x'.repeat(emoji.raw.length)));
+				.filter((t)=>t.type == 'emoji')
+				.map((emoji)=>firstLine = firstLine.replace(emoji.raw, 'x'.repeat(emoji.raw.length)));
 
-			let newMatch = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym.exec(firstLine);
+			const newMatch = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym.exec(firstLine);
 			if(newMatch) {
 				definitions.push({
 					dt : this.lexer.inlineTokens(originalLine.slice(0, newMatch[1].length).trim()),
@@ -685,12 +685,12 @@ function MarkedVariables() {
 // 6) Import the .js file to shared/naturalcrit/codeEditor/autocompleteEmoji.js and add to `emojis` object
 // 7) Import the .js file here to markdown.js, and add to `emojis` object below
 const MarkedEmojiOptions = {
-	emojis: {
+	emojis : {
 		...diceFont,
 		...elderberryInn,
 		...fontAwesome
 	},
-	renderer: (token) => `<i class="${token.emoji}"></i>`
+	renderer : (token)=>`<i class="${token.emoji}"></i>`
 };
 
 Marked.use(MarkedVariables());
@@ -767,9 +767,9 @@ const processStyleTags = (string)=>{
 	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0]        || null;
 	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('='))).join(' ') || null;
 	const attributes = _.remove(tags, (tag)=>(tag.includes('='))).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'))
-		?.filter(attr => !attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
-		.reduce((obj, attr) => {
-			let [key, value] = attr.split("=");
+		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
+		.reduce((obj, attr)=>{
+			let [key, value] = attr.split('=');
 			value = value.replace(/"/g, '');
 			obj[key] = value;
 			return obj;
@@ -784,14 +784,14 @@ const processStyleTags = (string)=>{
 	};
 };
 
-const extractHTMLStyleTags = (htmlString)=> {
+const extractHTMLStyleTags = (htmlString)=>{
 	const id         = htmlString.match(/id="([^"]*)"/)?.[1]    || null;
 	const classes    = htmlString.match(/class="([^"]*)"/)?.[1] || null;
 	const styles     = htmlString.match(/style="([^"]*)"/)?.[1] || null;
 	const attributes = htmlString.match(/[a-zA-Z]+="[^"]*"/g)
-		?.filter(attr => !attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
-		.reduce((obj, attr) => {
-			let [key, value] = attr.split("=");
+		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
+		.reduce((obj, attr)=>{
+			let [key, value] = attr.split('=');
 			value = value.replace(/"/g, '');
 			obj[key] = value;
 			return obj;

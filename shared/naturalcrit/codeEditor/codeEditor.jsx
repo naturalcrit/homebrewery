@@ -180,7 +180,7 @@ const CodeEditor = createClass({
 			// 	return el;
 			// }
 		});
-		
+
 		// Add custom behaviors (auto-close curlies and auto-complete emojis)
 		closeTag.autoCloseCurlyBraces(CodeMirror, this.codeMirror);
 		autoCompleteEmoji.showAutocompleteEmoji(CodeMirror, this.codeMirror);
@@ -442,7 +442,7 @@ const CodeEditor = createClass({
 
 	render : function(){
 		return <>
-			<link href={`../homebrew/cm-themes/${this.props.editorTheme}.css`} type="text/css" rel='stylesheet' />
+			<link href={`../homebrew/cm-themes/${this.props.editorTheme}.css`} type='text/css' rel='stylesheet' />
 			<div className='codeEditor' ref='editor' style={this.props.style}/>
 		</>;
 	}
