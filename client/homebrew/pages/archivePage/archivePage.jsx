@@ -118,7 +118,7 @@ const ArchivePage = createClass({
                 this.setState({ error: `${error.response.status}` });
                 this.updateStateWithBrews([], 1, 1, 0);
             }
-            console.log("We've come up empty", 
+            console.log('a', 
                 !this.state.brewCollection || this.state.brewCollection.length === 0
             );
             if (!this.state.brewCollection) {
@@ -254,7 +254,7 @@ const ArchivePage = createClass({
                 {page > 1 && (
                     <button
                         className="previousPage"
-                        onClick={() => this.loadPage(page - 1, true)}
+                        onClick={() => this.loadPage(page - 1, false)}
                     >
                         &lt;&lt;
                     </button>
@@ -263,7 +263,7 @@ const ArchivePage = createClass({
                 {page < totalPages && (
                     <button
                         className="nextPage"
-                        onClick={() => this.loadPage(page + 1, true)}
+                        onClick={() => this.loadPage(page + 1, false)}
                     >
                         &gt;&gt;
                     </button>
