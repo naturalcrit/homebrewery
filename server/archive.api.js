@@ -44,7 +44,7 @@ const archive = {
                     $project: {
                         //page size and page are like a table tennis ball, from jsx to api back to jsx without changes, maybe i can avoid that
                         metadata: { totalCount: '$totalCount', page, pageSize },
-                        data: 1,
+                        brews: 1,
                     },
                 },
             ].filter(Boolean);
@@ -64,7 +64,7 @@ const archive = {
                 success: true,
                 brews: {
                     metadata: { totalBrews, page, pageSize },
-                    data: brews,
+                    brewCollection: brews,
                 },
             });
         } catch (error) {
