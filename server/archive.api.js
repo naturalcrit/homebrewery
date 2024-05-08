@@ -74,19 +74,19 @@ const archive = {
                 const status = error.response.status;
 
                 if (status === 500) {
-                    return res.status(500).json({
+                    return response.status(500).json({
                         errorCode: '500',
                         message: 'Internal Server Error',
                         log: error,
                     });
                 } else if (status === 503) {
-                    return res.status(503).json({
+                    return response.status(503).json({
                         errorCode: '503',
                         message: 'Service Unavailable',
                         log: error,
                     });
                 } else {
-                    return res.status(status).json({
+                    return response.status(status).json({
                         errorCode: status.toString(),
                         message: 'Internal Server Error',
                         log: error,
@@ -94,7 +94,9 @@ const archive = {
                 }
             } else {
                 console.log('what issue is this?' , error);
-                return error
+                return response.json ({
+                    log:error
+                })
             }
         }
     },
