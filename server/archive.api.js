@@ -18,6 +18,14 @@ const archive = {
             );
             const timeout = 5000;
 
+            const projection = {
+                editId: 0,
+                googleId: 0,
+                text: 0,
+                textBin: 0,
+            };
+
+
             // Define the aggregation pipeline
             const pipeline = [
                 // Match stage to filter brews based on searchText using $search
@@ -42,9 +50,10 @@ const archive = {
                 // Project stage to shape the output
                 {
                     $project: {
-                        //page size and page are like a table tennis ball, from jsx to api back to jsx without changes, maybe i can avoid that
-                        metadata: { totalCount: '$totalCount', page, pageSize },
-                        brews: 1,
+                            editId: 0,
+                            googleId: 0,
+                            text: 0,
+                            textBin: 0
                     },
                 },
             ].filter(Boolean);
@@ -52,7 +61,7 @@ const archive = {
             console.log('Aggregation Pipeline:', pipeline);
 
             // Execute the aggregation pipeline
-            const result = await HomebrewModel.aggregate(pipeline);
+            const result = await  HomebrewModel.aggregate(pipeline).maxTimeMS(timeout);
 
             console.log('Aggregation Result:', result);
 
