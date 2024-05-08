@@ -105,10 +105,12 @@ const ArchivePage = createClass({
                     )
                     .then((response) => {
                         if (response.ok) {
+                            const totalPages = Math.ceil(response.body.totalBrews / response.body.pageSize);
+
                             this.updateStateWithBrews(
                                 response.body.brews,
                                 page,
-                                response.body.totalPages,
+                                totalPages,
                                 response.body.totalBrews
                             );
                         }

@@ -3,25 +3,10 @@ const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
 
 const archive = {
-    archiveApi: router,
     /* Searches for matching title, also attempts to partial match */
     findBrews: async (req, res, next) => {
         try {
-            /*
-            //log db name and collection name, for local purposes
-            const dbName = HomebrewModel.db.name;
-            console.log("Database Name:", dbName);
-            const collectionName = HomebrewModel.collection.name;
-            console.log("Collection Name:", collectionName);
-            
-            */
-
-            const bright = '\x1b[1m'; // Bright (bold) style
-            const yellow = '\x1b[93m'; //  yellow color
-            const reset = '\x1b[0m'; // Reset to default style
-            console.log(
-                `Query as received in ${bright + yellow}archive api${reset}:`
-            );
+            console.log(`Query as received in archive api:`);
             console.table(req.query);
 
             const title = req.query.title || '';
@@ -31,83 +16,63 @@ const archive = {
                 parseInt(req.query.size) || 10,
                 minPageSize
             );
-            const skip = (page - 1) * pageSize;
+            const timeout = 5000;
 
-            const brewsQuery = {
-                $or: [],
-                published: true,
-            };
-
-            if (req.query.legacy === 'true') {
-                brewsQuery.$or.push({ renderer: 'legacy' });
-            }
-
-            if (req.query.v3 === 'true') {
-                brewsQuery.$or.push({ renderer: 'V3' });
-            }
-
-            // If user wants to use RegEx it needs to format like /text/
-            const titleConditionsArray =
-                title.startsWith('/') && title.endsWith('/')
-                    ? [
-                          {
-                              'title': {
-                                  $regex: title.slice(1, -1),
-                                  $options: 'i',
+            // Define the aggregation pipeline
+            const pipeline = [
+                // Match stage to filter brews based on searchText using $search
+                title
+                    ? {
+                          $search: {
+                              text: {
+                                  query: title,
+                                  path: ['title_text'], // Fields to search
                               },
                           },
-                      ]
-                    : buildTitleConditions(title);
+                      }
+                    : null,
 
-            function buildTitleConditions(inputString) {
-                return [
-                    {
-                        $search: {
-                            'index': 'default', // optional, defaults to "default"
-                            'text': {
-                                'query': inputString,
-                                'path': 'title_text',
-                                'fuzzy': {
-                                    'maxEdits': 1,
-                                    'prefixLength': 0,
-                                    'maxExpansions': 50,
-                                },
-                            },
-                        },
+                // Count stage to get the total number of brews
+                { $count: 'totalCount' },
+
+                // Skip and limit stage for pagination
+                { $skip: (page - 1) * pageSize },
+                { $limit: pageSize },
+
+                // Project stage to shape the output
+                {
+                    $project: {
+                        //page size and page are like a table tennis ball, from jsx to api back to jsx without changes, maybe i can avoid that
+                        metadata: { totalCount: '$totalCount', page, pageSize },
+                        data: 1,
                     },
-                ];
-            }
+                },
+            ].filter(Boolean);
 
-            const titleQuery = {
-                $and: [brewsQuery, ...titleConditionsArray],
-            };
+            console.log('Aggregation Pipeline:', pipeline);
 
-            const projection = {
-                editId: 0,
-                googleId: 0,
-                text: 0,
-                textBin: 0,
-            };
-            const brews = await HomebrewModel.find(titleQuery, projection)
-                .skip(skip)
-                .limit(pageSize)
-                .maxTimeMS(5000)
-                .exec();
+            // Execute the aggregation pipeline
+            const result = await HomebrewModel.aggregate(pipeline);
 
-            const totalBrews = await HomebrewModel.countDocuments(
-                titleQuery
-            ).maxTimeMS(5000);
+            console.log('Aggregation Result:', result);
 
-            const totalPages = Math.ceil(totalBrews / pageSize);
-            console.log('Total brews: ', totalBrews);
-            console.log('Total pages: ', totalPages);
-            return res.json({ brews, page, totalPages, totalBrews });
+            // Extract the result
+            const brews = result[0] ? result[0].data : [];
+            const totalBrews = result[0] ? result[0].metadata.totalCount : 0;
+
+            return res.status(200).json({
+                success: true,
+                brews: {
+                    metadata: { totalBrews, page, pageSize },
+                    data: brews,
+                },
+            });
         } catch (error) {
             console.error(error);
 
             if (error.response && error.response.status) {
                 const status = error.response.status;
-                
+
                 if (status === 500) {
                     return res.status(500).json({
                         errorCode: '500',
@@ -128,11 +93,8 @@ const archive = {
                     });
                 }
             } else {
-                return res.status(500).json({
-                    errorCode: '500',
-                    message: 'Internal Server Error',
-                    log: error,
-                });
+                console.log('what issue is this?' , error);
+                return error
             }
         }
     },
