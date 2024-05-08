@@ -118,7 +118,7 @@ const ArchivePage = createClass({
                 this.updateStateWithBrews([], 1, 1, 0);
             }
             console.log('a', 
-                !this.state.brewCollection || brewCollection.length === 0
+                !this.state.brewCollection || this.state.brewCollection.length === 0
             );
             if (!this.state.brewCollection) {
                 this.setState({ error: '404' });
