@@ -50,7 +50,7 @@ renderer.html = function (html) {
 	return html;
 };
 
-// Don't wrap {{ Divs or {{ empty Spans in <p> tags
+// Don't wrap {{ Spans alone on a line, or {{ Divs in <p> tags
 renderer.paragraph = function(text){
 	let match;
 	if(text.startsWith('<div') || text.startsWith('</div'))
@@ -99,13 +99,13 @@ const mustacheSpans = {
 		if(match) {
 			//Find closing delimiter
 			let blockCount = 0;
-			let tags = '';
+			let tags = {};
 			let endTags = 0;
 			let endToken = 0;
 			let delim;
 			while (delim = inlineRegex.exec(match[0])) {
-				if(!tags) {
-					tags = `${processStyleTags(delim[0].substring(2))}`;
+				if(_.isEmpty(tags)) {
+					tags = processStyleTags(delim[0].substring(2));
 					endTags = delim[0].length;
 				}
 				if(delim[0].startsWith('{{')) {
@@ -134,7 +134,14 @@ const mustacheSpans = {
 		}
 	},
 	renderer(token) {
-		return `<span class="inline-block${token.tags}>${this.parser.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
+		const tags = token.tags;
+		tags.classes = ['inline-block', tags.classes].join(' ').trim();
+		return `<span` +
+			`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
+			`${tags.id         ? ` id="${tags.id}"`         : ''}` +
+			`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
+			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
+			`>${this.parser.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
 	}
 };
 
@@ -149,13 +156,13 @@ const mustacheDivs = {
 		if(match) {
 			//Find closing delimiter
 			let blockCount = 0;
-			let tags = '';
+			let tags = {};
 			let endTags = 0;
 			let endToken = 0;
 			let delim;
 			while (delim = blockRegex.exec(match[0])?.[0].trim()) {
-				if(!tags) {
-					tags = `${processStyleTags(delim.substring(2))}`;
+				if(_.isEmpty(tags)) {
+					tags = processStyleTags(delim.substring(2));
 					endTags = delim.length + src.indexOf(delim);
 				}
 				if(delim.startsWith('{{')) {
@@ -183,7 +190,14 @@ const mustacheDivs = {
 		}
 	},
 	renderer(token) {
-		return `<div class="block${token.tags}>${this.parser.parse(token.tokens)}</div>`; // parseInline to turn child tokens into HTML
+		const tags = token.tags;
+		tags.classes = ['block', tags.classes].join(' ').trim();
+		return `<div` +
+			`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
+			`${tags.id         ? ` id="${tags.id}"`         : ''}` +
+			`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
+			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
+			`>${this.parser.parse(token.tokens)}</div>`; // parse to turn child tokens into HTML
 	}
 };
 
@@ -199,23 +213,39 @@ const mustacheInjectInline = {
 			if(!lastToken || lastToken.type == 'mustacheInjectInline')
 				return false;
 
-			const tags = `${processStyleTags(match[1])}`;
+			const tags = processStyleTags(match[1]);
 			lastToken.originalType = lastToken.type;
 			lastToken.type         = 'mustacheInjectInline';
-			lastToken.tags         = tags;
+			lastToken.injectedTags = tags;
 			return {
-				type : 'text',            // Should match "name" above
+				type : 'mustacheInjectInline',            // Should match "name" above
 				raw  : match[0],          // Text to consume from the source
 				text : ''
 			};
 		}
 	},
 	renderer(token) {
+		if(!token.originalType){
+			return;
+		}
 		token.type = token.originalType;
 		const text = this.parser.parseInline([token]);
-		const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
+		const originalTags = extractHTMLStyleTags(text);
+		const injectedTags = token.injectedTags;
+		const tags = {
+			id         : injectedTags.id || originalTags.id || null,
+			classes    : [originalTags.classes,    injectedTags.classes].join(' ').trim() || null,
+			styles     : [originalTags.styles,     injectedTags.styles].join(' ').trim()  || null,
+			attributes : Object.assign(originalTags.attributes ?? {}, injectedTags.attributes ?? {})
+		};
+		const openingTag = /(<[^\s<>]+)[^\n<>]*(>.*)/s.exec(text);
 		if(openingTag) {
-			return `${openingTag[1]} class="${token.tags}${openingTag[2]}`;
+			return `${openingTag[1]}` +
+				`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
+				`${tags.id         ? ` id="${tags.id}"`         : ''}` +
+				`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
+				`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
+				`${openingTag[2]}`; // parse to turn child tokens into HTML
 		}
 		return text;
 	}
@@ -235,7 +265,7 @@ const mustacheInjectBlock = {
 					return false;
 
 				lastToken.originalType = 'mustacheInjectBlock';
-				lastToken.tags         = `${processStyleTags(match[1])}`;
+				lastToken.injectedTags = processStyleTags(match[1]);
 				return {
 					type : 'mustacheInjectBlock', // Should match "name" above
 					raw  : match[0],              // Text to consume from the source
@@ -249,9 +279,22 @@ const mustacheInjectBlock = {
 			}
 			token.type = token.originalType;
 			const text = this.parser.parse([token]);
-			const openingTag = /(<[^\s<>]+)([^\n<>]*>.*)/s.exec(text);
+			const originalTags = extractHTMLStyleTags(text);
+			const injectedTags = token.injectedTags;
+			const tags = {
+				id         : injectedTags.id || originalTags.id || null,
+				classes    : [originalTags.classes,    injectedTags.classes].join(' ').trim() || null,
+				styles     : [originalTags.styles,     injectedTags.styles].join(' ').trim()  || null,
+				attributes : Object.assign(originalTags.attributes ?? {}, injectedTags.attributes ?? {})
+			};
+			const openingTag = /(<[^\s<>]+)[^\n<>]*(>.*)/s.exec(text);
 			if(openingTag) {
-				return `${openingTag[1]} class="${token.tags}${openingTag[2]}`;
+				return `${openingTag[1]}` +
+					`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
+					`${tags.id         ? ` id="${tags.id}"`         : ''}` +
+					`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
+					`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
+					`${openingTag[2]}`; // parse to turn child tokens into HTML
 			}
 			return text;
 		}
@@ -687,15 +730,45 @@ const processStyleTags = (string)=>{
 	//TODO: can we simplify to just split on commas?
 	const tags = string.match(/(?:[^, ":=]+|[:=](?:"[^"]*"|))+/g);
 
-	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0];
-	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('=')));
-	const attributes = _.remove(tags, (tag)=>(tag.includes('='))).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'));
-	const styles     = tags?.length ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim()) : [];
+	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0]        || null;
+	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('='))).join(' ') || null;
+	const attributes = _.remove(tags, (tag)=>(tag.includes('='))).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'))
+		?.filter(attr => !attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
+		.reduce((obj, attr) => {
+			let [key, value] = attr.split("=");
+			value = value.replace(/"/g, '');
+			obj[key] = value;
+			return obj;
+		}, {}) || null;
+	const styles     = tags?.length ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim()).join(' ') : null;
 
-	return `${classes?.length ? ` ${classes.join(' ')}`        : ''}"` +
-		`${id                   ? ` id="${id}"`                  : ''}` +
-		`${styles?.length       ? ` style="${styles.join(' ')}"` : ''}` +
-		`${attributes?.length   ? ` ${attributes.join(' ')}`     : ''}`;
+	return {
+		id         : id,
+		classes    : classes,
+		styles     : styles,
+		attributes : _.isEmpty(attributes) ? null : attributes
+	};
+};
+
+const extractHTMLStyleTags = (htmlString)=> {
+	const id         = htmlString.match(/id="([^"]*)"/)?.[1]    || null;
+	const classes    = htmlString.match(/class="([^"]*)"/)?.[1] || null;
+	const styles     = htmlString.match(/style="([^"]*)"/)?.[1] || null;
+	const attributes = htmlString.match(/[a-zA-Z]+="[^"]*"/g)
+		?.filter(attr => !attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
+		.reduce((obj, attr) => {
+			let [key, value] = attr.split("=");
+			value = value.replace(/"/g, '');
+			obj[key] = value;
+			return obj;
+		}, {}) || null;
+
+	return {
+		id         : id,
+		classes    : classes,
+		styles     : styles,
+		attributes : _.isEmpty(attributes) ? null : attributes
+	};
 };
 
 const globalVarsList    = {};
