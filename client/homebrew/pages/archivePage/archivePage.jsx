@@ -96,6 +96,7 @@ const ArchivePage = createClass({
         }
 
         if (title !== '') {
+            console.log('pagesize when querying: ', this.state.pageSize);
             try {
                 this.setState({ searching: true, error: null });
 
