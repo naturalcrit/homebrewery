@@ -165,7 +165,7 @@ const BrewRenderer = (props)=>{
 		renderedPages[props.currentEditorPage] = renderPage(rawPages[props.currentEditorPage], props.currentEditorPage);
 
 		_.forEach(rawPages, (page, index)=>{
-			if((isInView(index) || !renderedPages[index]) && typeof window !== 'undefined'){
+			if((!props.frame || isInView(index) || !renderedPages[index]) && typeof window !== 'undefined'){
 				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range
 			}
 		});
