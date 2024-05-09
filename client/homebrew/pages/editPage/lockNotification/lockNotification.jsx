@@ -3,7 +3,14 @@ const React = require('react');
 const createClass = require('create-react-class');
 
 const LockNotification = createClass({
-	displayName     : 'LockNotification',
+	displayName : 'LockNotification',
+
+	getDefaultProps : function() {
+		return {
+			shareId : 0
+		};
+	},
+
 	getInitialState : function() {
 		return {
 			disableLock : ()=>{}
@@ -11,7 +18,7 @@ const LockNotification = createClass({
 	},
 
 	removeLock : function() {
-		alert('Not yet implemented');
+		alert(`Not yet implemented - ID ${this.props.shareId}`);
 	},
 
 	render : function(){
