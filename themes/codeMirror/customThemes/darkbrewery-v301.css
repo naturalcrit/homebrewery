@@ -1,11 +1,11 @@
 /* Main BG color and normal text color */
-.CodeMirror {
+.CodeMirror, nav, .CodeMirror-linenumber,.CodeMirror-gutter {
     background: #293134;
     color: #91A6AA;
 }
 
 /* Brew BG */
-.brewRenderer {
+#BrewRenderer {
     background-color: #293134;
 }
 /* Blinking cursor */
@@ -13,37 +13,21 @@
     border-left: 1px solid #e0e2e4;
 }
 
-/* HB DARK NAV START*/
-
 /* Bars at the top */
-.snippetBar {
+.snippetBar, .snippetBar .snippetGroup .dropdown,.editorTool {
     background-color: #2F393C;
     color: white;
 }
-nav {
-    background-color: #293134;
-}
-nav .navItem {
-    background-color: #293134;
-}
+
 /* Fix for Homebrewery custom Snippet icons */
 .snippetBar .fac {
     filter: invert(1);
 }
-.snippetBar .snippetGroup .dropdown {
-    background-color: #2F393C;
-}
-/* HB DARK NAV END */
+
 
 /* Line number stuff */
 .CodeMirror-gutter-elt {
     color: #81969A;
-}
-.CodeMirror-linenumber {
-    background-color: #293134;
-}
-.CodeMirror-gutter {
-    background-color: #293134;
 }
 /* column splits */
 .editor .codeEditor .columnSplit {
@@ -55,7 +39,7 @@ nav .navItem {
 
 /* Colors for headings and such */
 /* ###Headings */
-.cm-s-default .cm-header {
+.cm-header {
     color: #c51b1b;
     -webkit-text-stroke-width: 0.1px; 
     -webkit-text-stroke-color: #000; 
@@ -66,19 +50,19 @@ nav .navItem {
     color: #309dd2;
 }
 /* Link headings */
-.cm-s-default .cm-link {
+.cm-link {
     color: #dd6300;
 }
 /* links */
-.cm-s-default .cm-string {
+.cm-string {
     color: #aa8261;
 }
 /*@import*/
-.cm-s-default .cm-def {
+.cm-def {
     color:#2986cc;
 }
 /* Bullets and such */
-.cm-s-default .cm-variable-2 {
+.cm-variable-2 {
     color: #3cbf30;
 }
 /* blocks */
@@ -90,26 +74,26 @@ nav .navItem {
     color: #e3e3e3;
 }
 /* Tags (divs) */
-.cm-s-default .cm-tag {
+.cm-tag {
     color: #e3ff00;
 }
-.cm-s-default .cm-attribute {
+.cm-attribute {
     color: #e3ff00;
 }
-.cm-s-default .cm-atom {
+.cm-atom {
     color:#000;
 }
-.cm-s-default .cm-qualifier{
+.cm-qualifier{
     color:#ee1919;
 }
-.cm-s-default .cm-comment{
+.cm-comment{
     color:#bbc700;
 }
-.cm-s-default .cm-keyword {
+.cm-keyword {
     color:#c302df;
     background-color:#b1b1b1;
 }
-.cm-s-default .cm-property.cm-error {
+.cm-property.cm-error {
     color:#c50202;
 }
 
@@ -124,7 +108,7 @@ nav .navItem {
     border-bottom: 1px solid #fff;
 }
 
-.cm-s-default .cm-builtin {
+.cm-builtin {
     color:#fff;
 }
 
