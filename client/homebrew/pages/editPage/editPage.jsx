@@ -394,7 +394,7 @@ const EditPage = createClass({
 
 			<div className='content'>
 				{this.state.displayLockMessage ?
-					<LockNotification message={this.props.brew.lock.editMessage} disableLock={()=>this.setState({ displayLockMessage: false })}/>
+					<LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} disableLock={()=>this.setState({ displayLockMessage: false })}/>
 					:
 					<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
 						<Editor
