@@ -24,7 +24,7 @@ const INITIAL_CONTENT = dedent`
 	<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
 	<link href='/homebrew/bundle.css' type="text/css" rel='stylesheet' />
 	<base target=_blank>
-	</head><body style='overflow: hidden'><div></div></body></html>`;
+	</head><body class='frameContent' style='overflow: hidden'><div></div></body></html>`;
 
 //v=====----------------------< Brew Page Component >---------------------=====v//
 const BrewPage = (props)=>{
@@ -52,6 +52,8 @@ const BrewRenderer = (props)=>{
 		lang              : '',
 		errors            : [],
 		currentEditorPage : 0,
+		frame             : true,
+		frameMounted      : ()=>{},
 		...props
 	};
 
@@ -71,8 +73,15 @@ const BrewRenderer = (props)=>{
 	}
 
 	useEffect(()=>{ // Unmounting steps
-		return ()=>{window.removeEventListener('resize', updateSize);};
+		!props.frame && frameDidMount();
+		return ()=>{
+			window.removeEventListener('resize', updateSize);
+		};
 	}, []);
+
+	useEffect(()=>{
+		state.isMounted && props.frameMounted();
+	}, [state.isMounted]);
 
 	const updateSize = ()=>{
 		setState((prevState)=>({
@@ -185,6 +194,35 @@ const BrewRenderer = (props)=>{
 	const themePath     = props.theme ?? '5ePHB';
 	const baseThemePath = Themes[rendererPath][themePath].baseTheme;
 
+	const renderBrew = ()=>{
+		return <div className={'brewRenderer'}
+			onScroll={handleScroll}
+			style={{ height: state.height }}>
+
+			<ErrorBar errors={props.errors} />
+			<div className='popups'>
+				<RenderWarnings />
+				<NotificationPopup />
+			</div>
+			<link href={`/themes/${rendererPath}/Blank/style.css`} type='text/css' rel='stylesheet'/>
+			{baseThemePath &&
+						<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} type='text/css' rel='stylesheet'/>
+			}
+			<link href={`/themes/${rendererPath}/${themePath}/style.css`} type='text/css' rel='stylesheet'/>
+
+			{/* Apply CSS from Style tab and render pages from Markdown tab */}
+			{state.isMounted
+						&&
+						<>
+							{renderStyle()}
+							<div className='pages' lang={`${props.lang || 'en'}`}>
+								{renderPages()}
+							</div>
+						</>
+			}
+		</div>;
+	};
+
 	return (
 		<>
 			{/*render dummy page while iFrame is mounting.*/}
@@ -197,38 +235,19 @@ const BrewRenderer = (props)=>{
 				: null}
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
-			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
-				style={{ width: '100%', height: '100%', visibility: state.visibility }}
-				contentDidMount={frameDidMount}
-				onClick={()=>{emitClick();}}
-			>
-				<div className={'brewRenderer'}
-					onScroll={handleScroll}
-					style={{ height: state.height }}>
-
-					<ErrorBar errors={props.errors} />
-					<div className='popups'>
-						<RenderWarnings />
-						<NotificationPopup />
-					</div>
-					<link href={`/themes/${rendererPath}/Blank/style.css`} type="text/css" rel='stylesheet'/>
-					{baseThemePath &&
-						<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} type="text/css" rel='stylesheet'/>
-					}
-					<link href={`/themes/${rendererPath}/${themePath}/style.css`} type="text/css" rel='stylesheet'/>
-
-					{/* Apply CSS from Style tab and render pages from Markdown tab */}
-					{state.isMounted
-						&&
-						<>
-							{renderStyle()}
-							<div className='pages' lang={`${props.lang || 'en'}`}>
-								{renderPages()}
-							</div>
-						</>
-					}
-				</div>
-			</Frame>
+			{props.frame ?
+				<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
+					style={{ width: '100%', height: '100%', visibility: state.visibility }}
+					contentDidMount={frameDidMount}
+					onClick={()=>{emitClick();}}
+				>
+					{renderBrew()}
+				</Frame> :
+				<div
+					style={{ width: '100%', height: '100%', visibility: state.visibility }}
+				>
+					{renderBrew()}
+				</div>}
 			{renderPageInfo()}
 		</>
 	);
