@@ -40,5 +40,25 @@ body{
 		margin : 30px 0px;
 	}
 
-
+	.container{
+		.tabs button{
+			background-color: #eee;
+			margin-left: 3px;
+			margin-right: 3px;
+			border: 1px solid #444;
+			border-radius: 5px;
+			color: black;
+			&:hover{
+				background-color: #444;
+				color: #eee;
+			}
+			&.active{
+				border: 2px solid #444;
+				text-decoration: underline;
+				margin-left: 2px;
+				margin-right: 2px;
+				background-color: #ccc;
+			}
+		}
+	}
 }
