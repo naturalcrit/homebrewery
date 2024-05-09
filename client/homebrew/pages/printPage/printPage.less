@@ -1,3 +1,20 @@
-.printPage{
+@media print {
+    .printPage{
+        .brewRenderer .pages {
+            margin: 0px;
+            &>.page {
+            box-shadow: unset;
+            }
+        }
+    }
+}
 
+.printPage{
+    .brewRenderer {
+        overflow-y: unset;
+        height: 100%;
+    }
+    .pageInfo {
+        display: none;
+    }
 }
