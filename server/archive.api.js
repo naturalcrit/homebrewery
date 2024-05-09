@@ -84,9 +84,7 @@ const archive = {
                 .maxTimeMS(5000)
                 .exec();
 
-            const totalBrews = await HomebrewModel.countDocuments(
-                titleQuery
-            ).maxTimeMS(5000);
+            const totalBrews = brews.length;
 
             const totalPages = Math.ceil(totalBrews / pageSize);
             console.log('Total brews: ', totalBrews);
