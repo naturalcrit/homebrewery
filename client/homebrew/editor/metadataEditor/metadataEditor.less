@@ -9,6 +9,8 @@
 	background-color : #999;
 	height           : calc(100vh - 54px); // 54px is the height of the navbar + snippet bar.  probably a better way to dynamic get this.
 	overflow-y       : auto;
+	font-size: 13px;
+	font-family : 'Open Sans', sans-serif;
 
 	.sectionHead {
 		font-weight: 1000;
@@ -90,8 +92,6 @@
 			textarea.value {
 				resize      : none;
 				height      : auto;
-				font-family : 'Open Sans', sans-serif;
-				font-size   : 0.8em;
 			}
 		}
 
@@ -100,7 +100,7 @@
 			z-index   : 200;
 		}
 		small {
-			font-size   : 0.6em;
+			font-size   : 0.8em;
 			font-style  : italic;
 			line-height : 1.4em;
 			display     : inline-block;
@@ -125,16 +125,12 @@
 			vertical-align : middle;
 			margin-right   : 15px;
 			cursor         : pointer;
-			font-size      : 0.7em;
-			font-weight    : 800;
 			user-select    : none;
 			white-space    : nowrap;
 			display        : inline-flex;
 			align-items    : center;
 		}
 		a {
-			font-size   : 0.7em;
-			font-weight : 800;
 			display     : inline-flex;
 		}
 		input{
@@ -163,12 +159,10 @@
 		}
 	}
 	.authors.field .value{
-		font-size: 0.8em;
 		line-height    : 1.5em;
 	}
 
 	.themes.field{
-		font-size : 13.33px;
 		.navDropdownContainer {
 			background-color	: white;
 			position			: relative;
@@ -247,60 +241,72 @@
 		display: flex;
 		flex: 1 0;
 		flex-wrap: wrap;
+		gap: 4px;
+		background: gray;
+		padding: 6px;
 
 		> * {
 			flex: 0 0 auto;
 		}
 
-		#groupedIcon {
-			#backgroundColors;
-			display: inline-block;
-			height: ~"calc(100% + 0.6em)";
-			position: relative;
-			top: -0.3em;
-			right: -0.3em;
-			cursor: pointer;
-			min-width: 20px;
-			text-align: center;
-			color: white;
-
-			i {
-				position: relative;
-				top: 50%;
-				transform: translateY(-50%);
-			}
-
-			&:not(:last-child) {
-				border-right: 1px solid black;
-			}
-
-			&:last-child {
-				border-radius: 0 0.5em 0.5em 0;
-			}
-		}
-
 		.tag {
-			background-color: #dddddd;
-			border-radius: .5em;
-			font-size: .9em;
-			margin: 2px;
-			padding: .3em;
+			background: lightgray;
+			display: flex;
+			align-items: center;
+			position: relative;
+			justify-content: space-between;
+
+			button {
+				flex: 0 0 20px;
+				
+				// position: absolute;
+				right: 0;
+				top: 0;
+				background-color: red;
+				padding: 0;
+				height: 100%;
+				min-width: 20px;
+
+
+			}
+
+			.tag-text {
+				flex: 1 0 auto;
+				position: relative;
+				width: 100%;
+				padding: 3px;
+				display: flex;
+				height: 100%;
+				button {
+					position:absolute;
+					right: 0;
+					top: 0;
+					height: 100%;
+					min-width: 20px;
+				}
+				
+			}
+
+			&.editable {
+				display: flex;
+				position: relative;
+				input {
+					border: none;
+				}
+			}
 
 			.icon {
-				#groupedIcon
-			}
-		}
-
-		.tag-input {
-			height: ~"calc(.9em + 4px + .6em)";
-
-			input {
-				border-radius: .5em 0 0 .5em;
+				visibility: hidden;
 			}
 
-			input:last-child {
-				border-radius: .5em;
+			&.editable .icon {
+				visibility: visible;
 			}
+
+			.hidden {
+				display: none;
+			}
+
 
 			.value {
 				width: 7.5vw;
@@ -312,17 +318,6 @@
 				background-color: pink;
 			}
 
-			.icon {
-				#groupedIcon;
-				height: 97%;
-				font-size: .8em;
-				right: 1px;
-				top: -.54em;
-
-				i {
-					font-size: 1.125em;
-				}
-			}
 		}
 	}
 }
