@@ -12,6 +12,10 @@
 	font-size: 13px;
 	font-family : 'Open Sans', sans-serif;
 
+	*:focus {
+		outline: 1px solid #444;
+	}
+
 	.sectionHead {
 		font-weight: 1000;
 		margin: 20px 0;
@@ -63,9 +67,6 @@
 		}
 		input[type='text'], textarea {
 			border : 1px solid gray;
-			&:focus {
-				outline: 1px solid #444;
-			}
 		}
 		&.thumbnail{
 			height      : 1.4em;
@@ -77,7 +78,6 @@
   				text-overflow: ellipsis;
 			}
 			button{
-				border: 1px solid #999;
 				color: white;
 				padding: 0px 5px;
 				background-color: black;
@@ -255,6 +255,7 @@
 			align-items: center;
 			position: relative;
 			justify-content: space-between;
+			border: 1px solid gray;
 
 			button {
 				flex: 0 0 20px;
@@ -262,7 +263,7 @@
 				// position: absolute;
 				right: 0;
 				top: 0;
-				background-color: red;
+				background-color: transparent;
 				padding: 0;
 				height: 100%;
 				min-width: 20px;
@@ -274,7 +275,7 @@
 				flex: 1 0 auto;
 				position: relative;
 				width: 100%;
-				padding: 3px;
+				padding: 3px 3px 3px 12px;
 				display: flex;
 				height: 100%;
 				button {
