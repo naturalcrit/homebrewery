@@ -113,8 +113,8 @@ const StringArrayEditor = createClass({
 	render : function() {
 		const valueElements = Object.values(this.state.valueContext).map((context, i)=>context.editing
 			? <React.Fragment key={i}>
-				<div className='input-group'>
-					<input type='text' className={`value ${this.valueIsValid(this.state.updateValue, i) ? '' : 'invalid'}`} autoFocus placeholder={this.props.placeholder}
+				<div className='tag-input'>
+					<input type='text' className={`value tag ${this.valueIsValid(this.state.updateValue, i) ? '' : 'invalid'}`} autoFocus placeholder={this.props.placeholder}
 						value={this.state.updateValue}
 						onKeyDown={(e)=>this.handleValueInputKeyDown(e, i)}
 						onChange={(e)=>this.setState({ updateValue: e.target.value })}/>
@@ -122,7 +122,7 @@ const StringArrayEditor = createClass({
 					{this.valueIsValid(this.state.updateValue, i) ? <div className='icon steel'  onClick={(e)=>{ e.stopPropagation(); this.updateValue(this.state.updateValue, i); }}><i className='fa fa-check fa-fw'/></div> : null}
 				</div>
 			</React.Fragment>
-			: <div className='badge' key={i} onClick={()=>this.editValue(i)}>{context.value}
+			: <div className='tag' key={i} onClick={()=>this.editValue(i)}>{context.value}
 				{!!this.props.cannotEdit && this.props.cannotEdit.includes(context.value) ? null : <div className='icon steel' onClick={(e)=>{ e.stopPropagation(); this.removeValue(i); }}><i className='fa fa-times fa-fw'/></div>}
 			</div>
 		);
@@ -130,15 +130,14 @@ const StringArrayEditor = createClass({
 		return <div className='field'>
 			<label>{this.props.label}</label>
 			<div style={{ flex: '1 0' }}>
-				<div className='list'>
+				<div className='tag-container'>
 					{valueElements}
-					<div className='input-group'>
-						<input type='text' className={`value ${this.valueIsValid(this.state.temporaryValue) ? '' : 'invalid'}`} placeholder={this.props.placeholder}
-							   value={this.state.temporaryValue}
-							   onKeyDown={(e)=>this.handleValueInputKeyDown(e)}
-							   onChange={(e)=>this.setState({ temporaryValue: e.target.value })}/>
-						{this.valueIsValid(this.state.temporaryValue) ? <div className='icon steel' onClick={(e)=>{ e.stopPropagation(); this.addValue(this.state.temporaryValue); }}><i className='fa fa-check fa-fw'/></div> : null}
-					</div>
+					<input type='text' className={`value ${this.valueIsValid(this.state.temporaryValue) ? '' : 'invalid'}`} placeholder={this.props.placeholder}
+						value={this.state.temporaryValue}
+						onKeyDown={(e)=>this.handleValueInputKeyDown(e)}
+						onChange={(e)=>this.setState({ temporaryValue: e.target.value })}/>
+					{this.valueIsValid(this.state.temporaryValue) ? <div className='icon steel' onClick={(e)=>{ e.stopPropagation(); this.addValue(this.state.temporaryValue); }}><i className='fa fa-check fa-fw'/></div> : null}
+
 				</div>
 
 				{this.props.notes ? this.props.notes.map((n, index)=><p key={index}><small>{n}</small></p>) : null}
