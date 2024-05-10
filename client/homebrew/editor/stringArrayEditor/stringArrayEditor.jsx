@@ -61,6 +61,7 @@ const StringArrayEditor = createClass({
 
 	removeValue : function(index){
 		this.handleChange(this.props.values.filter((_, i)=>i !== index));
+		this.newTagInput.current.focus();
 	},
 
 	updateValue : function(value, index){
