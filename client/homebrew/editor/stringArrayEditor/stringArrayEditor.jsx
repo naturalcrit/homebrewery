@@ -29,6 +29,10 @@ const StringArrayEditor = createClass({
 		};
 	},
 
+	componentDidMount : function() {
+		this.newTagInput = React.createRef();
+	},
+
 	componentDidUpdate : function(prevProps) {
 		if(!_.eq(this.props.values, prevProps.values)) {
 			this.setState({
@@ -91,6 +95,7 @@ const StringArrayEditor = createClass({
 
 	handleValueInputKeyDown : function(event, index) {
 		if(_.includes(['Enter', ','], event.key)) {
+			event.stopPropagation();
 			event.preventDefault();
 			if(this.valueIsValid(event.target.value, index)) {
 				if(index !== undefined) {
@@ -99,8 +104,12 @@ const StringArrayEditor = createClass({
 					this.addValue(event.target.value);
 				}
 			}
+			this.newTagInput.current.focus();
 		} else if(event.key === 'Escape' && index) {
 			this.closeEditInput(index);
+			event.target.parentNode.focus();
+		} else if(event.key === 'ArrowLeft' && event.target.value.length === 0){
+			event.target.previousElementSibling?.focus();
 		}
 	},
 
@@ -110,9 +119,28 @@ const StringArrayEditor = createClass({
 		this.setState({ valueContext, updateValue: '' });
 	},
 
+	handleTagKeyDown : function(event, index) {
+		if(_.includes(['Enter', 'Space'], event.code)){
+			event.preventDefault();
+			this.editValue(index);
+			setTimeout(()=>{
+				event.target.querySelector('input').focus();
+			}, 0);
+		} else if(_.includes(['Delete'], event.key)){
+			this.removeValue(index);
+		} else if(_.includes(['ArrowLeft'], event.key)){
+			event.target.previousElementSibling?.focus();
+		} else if(_.includes(['ArrowRight'], event.key)){
+			event.target.nextElementSibling?.focus();
+		}
+
+
+	},
+
 	render : function() {
 		const valueElements = Object.values(this.state.valueContext).map((context, i)=>{
 			return <React.Fragment key={i}>
+				<div className={`tag ${context.editing ? 'editable' : ''}`} tabIndex={0} onKeyDown={(e)=>this.handleTagKeyDown(e, i)}>
 					<span className={`tag-text ${context.editing ? 'hidden' : 'visible'}`} key={i} onClick={()=>this.editValue(i)}>{context.value}</span>
 					<input type='text' className={`value tag-input ${context.editing ? 'visible' : 'hidden'} ${this.valueIsValid(this.state.updateValue, i) ? '' : 'invalid'}`} placeholder={this.props.placeholder}
 						value={this.state.updateValue}
@@ -145,6 +173,7 @@ const StringArrayEditor = createClass({
 						onKeyDown={(e)=>this.handleValueInputKeyDown(e)}
 						onChange={(e)=>this.setState({ temporaryValue: e.target.value })}
 						list='tags_precoordinated'
+						ref={this.newTagInput}/>
 					<datalist id='tags_precoordinated'>
 						<option value='type:Map'></option>
 						<option value='type:NPC'></option>
