@@ -146,6 +146,7 @@ const StringArrayEditor = createClass({
 						value={this.state.updateValue}
 						onKeyDown={(e)=>this.handleValueInputKeyDown(e, i)}
 						onChange={(e)=>this.setState({ updateValue: e.target.value })}
+						onBlur={()=>this.closeEditInput(i)}
 						list='tags_precoordinated'/>
 					<datalist id='tags_precoordinated'>
 						<option value='type:Map'></option>
