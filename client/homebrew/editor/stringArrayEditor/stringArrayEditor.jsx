@@ -118,7 +118,19 @@ const StringArrayEditor = createClass({
 					<input type='text' className={`value tag-input ${context.editing ? 'visible' : 'hidden'} ${this.valueIsValid(this.state.updateValue, i) ? '' : 'invalid'}`} autoFocus placeholder={this.props.placeholder}
 						value={this.state.updateValue}
 						onKeyDown={(e)=>this.handleValueInputKeyDown(e, i)}
-						onChange={(e)=>this.setState({ updateValue: e.target.value })}/>
+						onChange={(e)=>this.setState({ updateValue: e.target.value })}
+						list='tags_precoordinated'/>
+					<datalist id='tags_precoordinated'>
+						<option value='type:Map'></option>
+						<option value='type:NPC'></option>
+						<option value='meta:Guide'></option>
+						<option value='meta:Template'></option>
+						<option value='meta:Theme'></option>
+						<option value='system:D&amp;D 3.5e'></option>
+						<option value='system:D&amp;D 4e'></option>
+						<option value='system:D&amp;D 5e'></option>
+						<option value='system:PathFinder'></option>
+					</datalist>
 					{<button className='icon' onClick={(e)=>{ e.stopPropagation(); this.closeEditInput(i); }}><i className='fa fa-undo fa-fw'/></button>}
 					{this.valueIsValid(this.state.updateValue, i) ? <button className='icon'  onClick={(e)=>{ e.stopPropagation(); this.updateValue(this.state.updateValue, i); }}><i className='fa fa-check fa-fw'/></button> : null}
 				</div>
@@ -136,7 +148,19 @@ const StringArrayEditor = createClass({
 					<input type='text' className={`value ${this.valueIsValid(this.state.temporaryValue) ? '' : 'invalid'}`} placeholder={this.props.placeholder}
 						value={this.state.temporaryValue}
 						onKeyDown={(e)=>this.handleValueInputKeyDown(e)}
-						onChange={(e)=>this.setState({ temporaryValue: e.target.value })}/>
+						onChange={(e)=>this.setState({ temporaryValue: e.target.value })}
+						list='tags_precoordinated'/>
+					<datalist id='tags_precoordinated'>
+						<option value='type:Map'></option>
+						<option value='type:NPC'></option>
+						<option value='meta:Guide'></option>
+						<option value='meta:Template'></option>
+						<option value='meta:Theme'></option>
+						<option value='system:D&amp;D 3.5e'></option>
+						<option value='system:D&amp;D 4e'></option>
+						<option value='system:D&amp;D 5e'></option>
+						<option value='system:PathFinder'></option>
+					</datalist>
 					{this.valueIsValid(this.state.temporaryValue) ? <div className='icon' onClick={(e)=>{ e.stopPropagation(); this.addValue(this.state.temporaryValue); }}><i className='fa fa-check fa-fw'/></div> : null}
 
 				</div>
