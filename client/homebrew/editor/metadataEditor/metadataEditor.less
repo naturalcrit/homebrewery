@@ -249,6 +249,11 @@
 			flex: 0 0 auto;
 		}
 
+
+		.invalid:focus {
+			background-color: pink;
+		}
+
 		.tag {
 			background: lightgray;
 			display: flex;
@@ -270,6 +275,10 @@
 				padding: 0;
 				height: 100%;
 				min-width: 20px;
+				&:hover{
+					background: red;
+					
+				}
 
 
 			}
@@ -278,7 +287,7 @@
 				flex: 1 0 auto;
 				position: relative;
 				display: block;
-				margin: 3px 0 3px 6px;
+				margin: 3px 3px 3px 6px;
 				
 			}
 			button {
@@ -318,9 +327,7 @@
 				height: 100%;
 			}
 
-			.invalid:focus {
-				background-color: pink;
-			}
+
 
 		}
 	}
