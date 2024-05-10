@@ -65,7 +65,7 @@ const StringArrayEditor = createClass({
 
 	updateValue : function(value, index){
 		const valueContext = this.state.valueContext;
-		valueContext[index].value = value;
+		valueContext[index].value = value.trim();
 		valueContext[index].editing = false;
 		this.handleChange(valueContext.map((context)=>context.value));
 		this.setState({ valueContext, updateValue: '' });
@@ -97,11 +97,11 @@ const StringArrayEditor = createClass({
 		if(_.includes(['Enter', ','], event.key)) {
 			event.stopPropagation();
 			event.preventDefault();
-			if(this.valueIsValid(event.target.value, index)) {
+			if(this.valueIsValid(event.target.value.trim(), index)) {
 				if(index !== undefined) {
-					this.updateValue(event.target.value, index);
+					this.updateValue(event.target.value.trim(), index);
 				} else {
-					this.addValue(event.target.value);
+					this.addValue(event.target.value.trim());
 				}
 			}
 			this.newTagInput.current.focus();
