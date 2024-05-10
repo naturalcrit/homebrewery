@@ -256,6 +256,9 @@
 			position: relative;
 			justify-content: space-between;
 			border: 1px solid gray;
+			&:focus {
+				background-color: #a8a8a8;
+			}
 
 			button {
 				flex: 0 0 20px;
@@ -274,35 +277,35 @@
 			.tag-text {
 				flex: 1 0 auto;
 				position: relative;
-				width: 100%;
-				padding: 3px 3px 3px 12px;
-				display: flex;
-				height: 100%;
-				button {
-					position:absolute;
-					right: 0;
-					top: 0;
-					height: 100%;
-					min-width: 20px;
-				}
+				display: block;
+				margin: 3px 0 3px 6px;
 				
+			}
+			button {
+				right: 0;
+				top: 0;
+				height: 100%;
+				min-width: 20px;
 			}
 
 			&.editable {
 				display: flex;
 				position: relative;
 				input {
+					// to prevent width shifting from non-editing tag to editing tag,
+					// need JS to get tag width (actually probably tag-text span width) and
+					// set the input width to match.
 					border: none;
+					flex: 1 0 100%;
+					&:focus {
+						outline: none;
+					}
+				}
+				button {
+					visibility: hidden;
 				}
 			}
 
-			.icon {
-				visibility: hidden;
-			}
-
-			&.editable .icon {
-				visibility: visible;
-			}
 
 			.hidden {
 				display: none;
