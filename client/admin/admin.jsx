@@ -8,7 +8,9 @@ const BrewLookup = require('./brewLookup/brewLookup.jsx');
 const BrewCompress = require ('./brewCompress/brewCompress.jsx');
 const Stats = require('./stats/stats.jsx');
 
-const tabGroups = ['brews'];
+const LockTools = require('./lockTools/lockTools.jsx');
+
+const tabGroups = ['brews', 'locks'];
 
 const Admin = createClass({
 	getDefaultProps : function() {
@@ -52,10 +54,11 @@ const Admin = createClass({
 			<div className='container'>
 				<div className='tabs'>
 					{tabGroups.map((name, idx)=>{
-						return <button className='tab' key={idx} onClick={()=>{return this.handleClick(name);}}>{name.toUpperCase()}</button>;
+						return <button className={`tab ${this.state.currentTab === name ? 'active' : ''}`} key={idx} onClick={()=>{return this.handleClick(name);}}>{name.toUpperCase()}</button>;
 					})}
 				</div>
 				{this.state.currentTab == 'brews' && this.renderBrewTools()}
+				{this.state.currentTab == 'locks' && <LockTools />}
 			</div>
 		</div>;
 	}
