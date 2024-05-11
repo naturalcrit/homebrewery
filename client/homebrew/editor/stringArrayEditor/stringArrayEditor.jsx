@@ -55,7 +55,7 @@ const StringArrayEditor = createClass({
 	},
 
 	addValue : function(value){
-		this.handleChange(_.uniq([...this.props.values, value]));
+		this.handleChange(_.uniq([...this.props.values, value.replace(/^(.*):/, (match)=>{return match.toLowerCase();})]));
 		this.setState({
 			temporaryValue : ''
 		});
@@ -68,6 +68,7 @@ const StringArrayEditor = createClass({
 
 	updateValue : function(value, index){
 		const valueContext = this.state.valueContext;
+		value = value.replace(/^(.*):/, (match)=>{return match.toLowerCase();});   // convert tag scheme (ex. 'meta:') to lowercase
 		valueContext[index].value = value.trim();
 		valueContext[index].editing = false;
 		this.handleChange(valueContext.map((context)=>context.value));
