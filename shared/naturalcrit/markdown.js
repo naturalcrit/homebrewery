@@ -4,6 +4,13 @@ const Marked = require('marked');
 const MarkedExtendedTables = require('marked-extended-tables');
 const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartypants-lite');
 const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
+const { markedEmoji: MarkedEmojis } = require('marked-emoji');
+
+//Icon fonts included so they can appear in emoji autosuggest dropdown
+const diceFont      = require('../../themes/fonts/iconFonts/diceFont.js');
+const elderberryInn = require('../../themes/fonts/iconFonts/elderberryInn.js');
+const fontAwesome   = require('../../themes/fonts/iconFonts/fontAwesome.js');
+
 const MathParser = require('expr-eval').Parser;
 const renderer = new Marked.Renderer();
 const tokenizer = new Marked.Tokenizer();
@@ -140,7 +147,7 @@ const mustacheSpans = {
 			`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 			`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 			`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
-			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
+			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
 			`>${this.parser.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
 	}
 };
@@ -196,7 +203,7 @@ const mustacheDivs = {
 			`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 			`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 			`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
-			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
+			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
 			`>${this.parser.parse(token.tokens)}</div>`; // parse to turn child tokens into HTML
 	}
 };
@@ -244,7 +251,7 @@ const mustacheInjectInline = {
 				`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 				`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 				`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
-				`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
+				`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
 				`${openingTag[2]}`; // parse to turn child tokens into HTML
 		}
 		return text;
@@ -293,7 +300,7 @@ const mustacheInjectBlock = {
 					`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 					`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 					`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
-					`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value]) => `${key}="${value}"`).join(' ')}` : ''}` +
+					`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
 					`${openingTag[2]}`; // parse to turn child tokens into HTML
 			}
 			return text;
@@ -347,10 +354,19 @@ const definitionListsSingleLine = {
 		let endIndex = 0;
 		const definitions = [];
 		while (match = regex.exec(src)) {
-			definitions.push({
-				dt : this.lexer.inlineTokens(match[1].trim()),
-				dd : this.lexer.inlineTokens(match[2].trim())
-			});
+			const originalLine = match[0];											// This line and below to handle conflict with emojis
+			let firstLine = originalLine;											// Remove in V4 when definitionListsInline updated to
+			this.lexer.inlineTokens(firstLine.trim())					// require spaces around `::`
+				.filter((t)=>t.type == 'emoji')
+				.map((emoji)=>firstLine = firstLine.replace(emoji.raw, 'x'.repeat(emoji.raw.length)));
+
+			const newMatch = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym.exec(firstLine);
+			if(newMatch) {
+				definitions.push({
+					dt : this.lexer.inlineTokens(originalLine.slice(0, newMatch[1].length).trim()),
+					dd : this.lexer.inlineTokens(originalLine.slice(newMatch[1].length + 2).trim())
+				});
+			}																									// End of emoji hack.
 			endIndex = regex.lastIndex;
 		}
 		if(definitions.length) {
@@ -659,11 +675,29 @@ function MarkedVariables() {
 };
 //^=====--------------------< Variable Handling >-------------------=====^//
 
+// Emoji options
+// To add more icon fonts, need to do these things
+// 1) Add the font file as .woff2 to themes/fonts/iconFonts folder
+// 2) Create a .less file mapping CSS class names to the font character
+// 3) Create a .js file mapping Autosuggest names to CSS class names
+// 4) Import the .less file into shared/naturalcrit/codeEditor/codeEditor.less
+// 5) Import the .less file into themes/V3/blank.style.less
+// 6) Import the .js file to shared/naturalcrit/codeEditor/autocompleteEmoji.js and add to `emojis` object
+// 7) Import the .js file here to markdown.js, and add to `emojis` object below
+const MarkedEmojiOptions = {
+	emojis : {
+		...diceFont,
+		...elderberryInn,
+		...fontAwesome
+	},
+	renderer : (token)=>`<i class="${token.emoji}"></i>`
+};
+
 Marked.use(MarkedVariables());
 Marked.use({ extensions: [definitionListsMultiLine, definitionListsSingleLine, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
-Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite());
+Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
 const nonWordAndColonTest = /[^\w:]/g;
 const cleanUrl = function (sanitize, base, href) {
@@ -733,9 +767,9 @@ const processStyleTags = (string)=>{
 	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0]        || null;
 	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('='))).join(' ') || null;
 	const attributes = _.remove(tags, (tag)=>(tag.includes('='))).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'))
-		?.filter(attr => !attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
-		.reduce((obj, attr) => {
-			let [key, value] = attr.split("=");
+		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
+		.reduce((obj, attr)=>{
+			let [key, value] = attr.split('=');
 			value = value.replace(/"/g, '');
 			obj[key] = value;
 			return obj;
@@ -750,14 +784,14 @@ const processStyleTags = (string)=>{
 	};
 };
 
-const extractHTMLStyleTags = (htmlString)=> {
+const extractHTMLStyleTags = (htmlString)=>{
 	const id         = htmlString.match(/id="([^"]*)"/)?.[1]    || null;
 	const classes    = htmlString.match(/class="([^"]*)"/)?.[1] || null;
 	const styles     = htmlString.match(/style="([^"]*)"/)?.[1] || null;
 	const attributes = htmlString.match(/[a-zA-Z]+="[^"]*"/g)
-		?.filter(attr => !attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
-		.reduce((obj, attr) => {
-			let [key, value] = attr.split("=");
+		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
+		.reduce((obj, attr)=>{
+			let [key, value] = attr.split('=');
 			value = value.replace(/"/g, '');
 			obj[key] = value;
 			return obj;
