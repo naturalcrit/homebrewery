@@ -106,6 +106,8 @@ const StringArrayEditor = createClass({
 				} else {
 					this.addValue(event.target.value.trim());
 				}
+			} else if(event.target.value.length == 0){
+				this.removeValue(index);
 			}
 			this.newTagInput.current.focus();
 		} else if(event.key === 'Escape' && index) {
