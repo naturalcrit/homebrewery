@@ -145,7 +145,7 @@ const StringArrayEditor = createClass({
 	render : function() {
 		const valueElements = Object.values(this.state.valueContext).map((context, i)=>{
 			return <React.Fragment key={i}>
-				<div className={`tag ${context.editing ? 'editable' : ''}`} tabIndex={0} onKeyDown={(e)=>this.handleTagKeyDown(e, i)}>
+				<div className={`tag ${context.editing ? 'editable' : ''}`} tabIndex={-1} onKeyDown={(e)=>this.handleTagKeyDown(e, i)}>
 					<span className={`tag-text ${context.editing ? 'hidden' : 'visible'}`} key={i} onClick={()=>this.editValue(i)}>{context.value}</span>
 					<input type='text' className={`value tag-input ${context.editing ? 'visible' : 'hidden'} ${this.valueIsValid(this.state.updateValue, i) ? '' : 'invalid'}`} placeholder={this.props.placeholder}
 						value={this.state.updateValue}
