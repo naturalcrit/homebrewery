@@ -8,6 +8,7 @@ const request = require('../../utils/request-middleware.js');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Combobox = require('client/components/combobox.jsx');
 const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
+const tagOptions = require('./tagDatalist.json');
 
 const Themes = require('themes/themes.json');
 const validations = require('./validations.js');
@@ -341,6 +342,7 @@ const MetadataEditor = createClass({
 			<StringArrayEditor label='tags' valuePatterns={[/^(?:(?:meta|system|type):)?[a-z0-9][a-z0-9 \/.\-&]{0,40}$/i]}
 				placeholder='add tag' unique={true}
 				values={this.props.metadata.tags}
+				options={tagOptions.options}
 				onChange={(e)=>this.handleFieldChange('tags', e)}/>
 
 			<div className='field systems'>

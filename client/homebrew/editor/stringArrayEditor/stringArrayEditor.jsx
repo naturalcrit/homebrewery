@@ -8,6 +8,7 @@ const StringArrayEditor = createClass({
 		return {
 			label         : '',
 			values        : [],
+			options       : [],
 			valuePatterns : null,
 			validators    : [],
 			placeholder   : '',
@@ -31,6 +32,7 @@ const StringArrayEditor = createClass({
 
 	componentDidMount : function() {
 		this.newTagInput = React.createRef();
+		this.uid = _.uniqueId();
 	},
 
 	componentDidUpdate : function(prevProps) {
@@ -148,17 +150,11 @@ const StringArrayEditor = createClass({
 						onKeyDown={(e)=>this.handleValueInputKeyDown(e, i)}
 						onChange={(e)=>this.setState({ updateValue: e.target.value })}
 						onBlur={()=>this.closeEditInput(i)}
-						list='tags_precoordinated'/>
-					<datalist id='tags_precoordinated'>
-						<option value='type:Map'></option>
-						<option value='type:NPC'></option>
-						<option value='meta:Guide'></option>
-						<option value='meta:Template'></option>
-						<option value='meta:Theme'></option>
-						<option value='system:D&amp;D 3.5e'></option>
-						<option value='system:D&amp;D 4e'></option>
-						<option value='system:D&amp;D 5e'></option>
-						<option value='system:PathFinder'></option>
+						list={`tags_precoordinated-${this.uid}`}/>
+					<datalist id={`tags_precoordinated-${this.uid}`}>
+						{this.props.options.map((option)=>{
+							return <option value={`${option}`}></option>
+						})}
 					</datalist>
 					{!!this.props.cannotEdit && this.props.cannotEdit.includes(context.value) ? null : <button className='tag-icon' onClick={(e)=>{ e.stopPropagation(); this.removeValue(i); }} tabIndex={-1}><i className='fa fa-times fa-fw'/></button>}
 				</div>
@@ -174,18 +170,12 @@ const StringArrayEditor = createClass({
 						value={this.state.temporaryValue}
 						onKeyDown={(e)=>this.handleValueInputKeyDown(e)}
 						onChange={(e)=>this.setState({ temporaryValue: e.target.value })}
-						list='tags_precoordinated'
+						list={`tags_precoordinated-${this.uid}`}
 						ref={this.newTagInput}/>
-					<datalist id='tags_precoordinated'>
-						<option value='type:Map'></option>
-						<option value='type:NPC'></option>
-						<option value='meta:Guide'></option>
-						<option value='meta:Template'></option>
-						<option value='meta:Theme'></option>
-						<option value='system:D&amp;D 3.5e'></option>
-						<option value='system:D&amp;D 4e'></option>
-						<option value='system:D&amp;D 5e'></option>
-						<option value='system:PathFinder'></option>
+					<datalist id={`tags_precoordinated-${this.uid}`}>
+						{this.props.options.map((option)=>{
+							return <option value={`${option}`}></option>
+						})}
 					</datalist>
 				</div>
 
