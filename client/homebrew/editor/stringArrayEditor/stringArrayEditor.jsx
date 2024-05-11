@@ -97,8 +97,8 @@ const StringArrayEditor = createClass({
 	},
 
 	handleValueInputKeyDown : function(event, index) {
+		event.stopPropagation();
 		if(_.includes(['Enter', ','], event.key)) {
-			event.stopPropagation();
 			event.preventDefault();
 			if(this.valueIsValid(event.target.value.trim(), index)) {
 				if(index !== undefined) {
