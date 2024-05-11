@@ -46,6 +46,11 @@ const StringArrayEditor = createClass({
 		}
 	},
 
+	cleanValue : function(value){
+		value = value.trim().replace(/^(.*):/, (match)=>{return match.toLowerCase();});   // convert tag scheme (ex. 'meta:') to lowercase
+		return value;
+	},
+
 	handleChange : function(value) {
 		this.props.onChange({
 			target : {
@@ -55,7 +60,7 @@ const StringArrayEditor = createClass({
 	},
 
 	addValue : function(value){
-		this.handleChange(_.uniq([...this.props.values, value.replace(/^(.*):/, (match)=>{return match.toLowerCase();})]));
+		this.handleChange(_.uniq([...this.props.values, this.cleanValue(value)]));
 		this.setState({
 			temporaryValue : ''
 		});
@@ -68,8 +73,7 @@ const StringArrayEditor = createClass({
 
 	updateValue : function(value, index){
 		const valueContext = this.state.valueContext;
-		value = value.replace(/^(.*):/, (match)=>{return match.toLowerCase();});   // convert tag scheme (ex. 'meta:') to lowercase
-		valueContext[index].value = value.trim();
+		valueContext[index].value = this.cleanValue(value);
 		valueContext[index].editing = false;
 		this.handleChange(valueContext.map((context)=>context.value));
 		this.setState({ valueContext, updateValue: '' });
