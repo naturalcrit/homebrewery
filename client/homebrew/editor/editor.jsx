@@ -5,6 +5,7 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 const dedent = require('dedent-tabs').default;
+const Markdown = require('../../../shared/naturalcrit/markdown.js');
 
 const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
 const SnippetBar = require('./snippetbar/snippetbar.jsx');
@@ -227,6 +228,34 @@ const Editor = createClass({
 							if(match)
 								endCh = match.index+match[0].length;
 							codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
+						}
+
+						// Emojis
+						if(line.match(/:[^\s:]+:/g)) {
+							let startIndex = line.indexOf(':');
+							const emojiRegex = /:[^\s:]+:/gy;
+
+							while (startIndex >= 0) {
+								emojiRegex.lastIndex = startIndex;
+								let match = emojiRegex.exec(line);
+								if (match) {
+									let tokens = Markdown.marked.lexer(match[0]);
+									tokens = tokens[0].tokens.filter(t => t.type == 'emoji')
+									if (!tokens.length)
+										return;
+
+									let startPos = { line: lineNumber, ch: match.index };
+									let endPos   = { line: lineNumber, ch: match.index + match[0].length };
+
+									// Iterate over conflicting marks and clear them
+									var marks = codeMirror.findMarks(startPos, endPos);
+									marks.forEach(function(marker) {
+										marker.clear();
+									});
+									codeMirror.markText(startPos, endPos, { className: 'emoji' });
+								}
+								startIndex = line.indexOf(':', Math.max(startIndex + 1, emojiRegex.lastIndex));
+							}
 						}
 					}
 				});
