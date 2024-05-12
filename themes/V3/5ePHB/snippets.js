@@ -31,29 +31,29 @@ module.exports = [
 						gen  : TableOfContentsGen,
 					},
 					{
-						name : 'Include up to H4',
-						icon : 'fas fa-dice-four',
-						gen  : dedent `{{addToCH4
-							}}`,
-					},
-					{
-						name : 'Include up to H5',
-						icon : 'fas fa-dice-five',
-						gen  : dedent `{{addToCH5
-							}}`,
-					},
-					{
-						name : 'Include up to H6',
-						icon : 'fas fa-dice-six',
-						gen  : dedent `{{addToCH6
-							}}`,
-					},
-					{
-						name : 'Include in ToC',
+						name : 'Include in ToC up to H3',
 						icon : 'fas fa-dice-six',
 						gen  : dedent `{{addToC
 							}}`,
 
+					},
+					{
+						name : 'Include in ToC up to H4',
+						icon : 'fas fa-dice-four',
+						gen  : dedent `{{addToC,tocH4
+							}}`,
+					},
+					{
+						name : 'Include in ToC up to H5',
+						icon : 'fas fa-dice-five',
+						gen  : dedent `{{addToC,tocH5
+							}}`,
+					},
+					{
+						name : 'Include in ToC up to H6',
+						icon : 'fas fa-dice-six',
+						gen  : dedent `{{addToC,tocH6
+							}}`,
 					}
 				]
 			},

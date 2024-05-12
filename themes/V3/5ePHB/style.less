@@ -794,20 +794,24 @@ h6,
 .noToC,
 .toc { --TOC: exclude; }
 
-.addToCH4 {
+.tocH4 {
 	h4 { --TOC: include; }
 }
-.addToCH5 {
+.tocH5 {
 	h4 { --TOC: include; }
 	h5 { --TOC: include; }
 }
-.addToCH6 {
+.tocH6 {
 	h4 { --TOC: include; }
 	h5 { --TOC: include; }
 	h6 { --TOC: include; }
 }
 
-.addToC { --TOC: include; }
+.addToC { 
+	h1 {--TOC: include; }
+	h2 {--TOC: include; }
+	h3 {--TOC: include; }
+}
 
 .page {
 	&:has(.toc)::after { display : none; }
