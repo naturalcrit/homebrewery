@@ -25,6 +25,7 @@
 		"codemirror/addon/edit/closetag.js",
 		"codemirror/addon/edit/trailingspace.js",
 		"codemirror/addon/selection/active-line.js",
+		"codemirror/addon/hint/show-hint.js",
 		"moment",
 		"superagent"
 	]
