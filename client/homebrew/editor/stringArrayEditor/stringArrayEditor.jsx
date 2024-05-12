@@ -152,7 +152,7 @@ const StringArrayEditor = createClass({
 			return <React.Fragment key={i}>
 				<div className={`tag ${context.editing ? 'editable' : ''}`} tabIndex={-1} onKeyDown={(e)=>this.handleTagKeyDown(e, i)}>
 					<span className={`tag-text ${context.editing ? 'hidden' : 'visible'}`} key={i} onClick={()=>this.editValue(i)}>{context.value}</span>
-					<input type='text' className={`value tag-input ${context.editing ? 'visible' : 'hidden'} ${this.valueIsValid(this.state.updateValue, i) ? '' : 'invalid'}`} placeholder={this.props.placeholder}
+					<input type='text' className={`value tag-input ${context.editing ? 'visible' : 'hidden'} ${this.valueIsValid(this.state.updateValue, i) || (this.state.updateValue == '') ? '' : 'invalid'}`} placeholder={this.props.placeholder}
 						value={this.state.updateValue}
 						onKeyDown={(e)=>this.handleValueInputKeyDown(e, i)}
 						onChange={(e)=>this.setState({ updateValue: e.target.value })}
@@ -173,7 +173,7 @@ const StringArrayEditor = createClass({
 			<div style={{ flex: '1 0' }}>
 				<div className='tag-container'>
 					{valueElements}
-					<input type='text' className={`value ${this.valueIsValid(this.state.temporaryValue) ? '' : 'invalid'}`} placeholder={this.props.placeholder}
+					<input type='text' className={`value ${this.valueIsValid(this.state.temporaryValue) || (this.state.temporaryValue == '') ? '' : 'invalid'}`} placeholder={this.props.placeholder}
 						value={this.state.temporaryValue}
 						onKeyDown={(e)=>this.handleValueInputKeyDown(e)}
 						onChange={(e)=>this.setState({ temporaryValue: e.target.value })}
