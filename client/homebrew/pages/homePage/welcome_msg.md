@@ -143,6 +143,7 @@ Much nicer than `<br><br><br><br><br>`
 ### Column Breaks
 Column and page breaks with `\column` and `\page`.
 
+\column
 ### Tables
 Tables now allow column & row spanning between cells. This is included in some updated snippets, but a simplified example is given below.
 
