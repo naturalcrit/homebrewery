@@ -343,7 +343,11 @@ const MetadataEditor = createClass({
 				placeholder='add tag' unique={true}
 				values={this.props.metadata.tags}
 				options={tagOptions.options}
-				onChange={(e)=>this.handleFieldChange('tags', e)}/>
+				onChange={(e)=>this.handleFieldChange('tags', e)}
+				modifySubmission={(value)=>{
+					value = value.trim().replace(/^(.*):/, (match)=>{return match.toLowerCase();});   // convert tag scheme (ex. 'meta:') to lowercase
+					return value;
+				}}/>
 
 			<div className='field systems'>
 				<label>systems</label>
