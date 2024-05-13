@@ -6,17 +6,18 @@ const StringArrayEditor = createClass({
 	displayName     : 'StringArrayEditor',
 	getDefaultProps : function() {
 		return {
-			id            : '',
-			label         : '',
-			values        : [],
-			options       : [],
-			valuePatterns : null,
-			validators    : [],
-			notes         : [],
-			unique        : false,
-			cannotEdit    : [],
-			onChange      : ()=>{}
+			id               : '',
+			label            : '',
+			values           : [],
+			options          : [],
+			valuePatterns    : null,
+			validators       : [],
 			modifySubmission : (value)=>{return value;},
+			placeholder      : '',
+			notes            : [],
+			unique           : false,
+			cannotEdit       : [],
+			onChange         : ()=>{}
 		};
 	},
 
