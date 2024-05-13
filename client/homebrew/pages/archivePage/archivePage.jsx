@@ -21,37 +21,37 @@ const ArchivePage = createClass({
     getDefaultProps: function () {
         return {};
     },
+
     getInitialState: function () {
         return {
-            //request
+            //# request
             title: this.props.query.title || '',
-            //tags		     : {},
+            //tags: {},
             legacy: `${this.props.query.legacy === 'false' ? false : true}`,
             v3: `${this.props.query.v3 === 'false' ? false : true}`,
             pageSize: this.props.query.size || 10,
             page: parseInt(this.props.query.page) || 1,
 
-            //response
+            //# response
             brewCollection: null,
-            totalPages: null,
             totalBrews: null,
 
             searching: false,
             error: null,
         };
     },
+
     componentDidMount: function () {
         if (this.state.title !== '') {
             this.loadPage(this.state.page, false);
         }
+        this.state.totalBrews || this.loadTotal(); // Load total if not already loaded
     },
 
-    updateStateWithBrews: function (brews, page, totalPages, totalBrews) {
+    updateStateWithBrews: function (brews, page) {
         this.setState({
             brewCollection: brews || null,
             page: parseInt(page) || 1,
-            totalPages: totalPages || 1,
-            totalBrews: totalBrews,
             searching: false,
         });
     },
@@ -78,6 +78,7 @@ const ArchivePage = createClass({
     },
 
     loadPage: async function (page, update) {
+        console.log('running loadPage');
         //load form data directly
         const title = document.getElementById('title').value || '';
         const size = document.getElementById('size').value || 10;
@@ -96,46 +97,58 @@ const ArchivePage = createClass({
         }
 
         if (title !== '') {
-            console.log('pagesize when querying: ', this.state.pageSize);
             try {
                 this.setState({ searching: true, error: null });
 
-                await request
-                    .get(
-                        `/api/archive?title=${title}&page=${page}&size=${size}&v3=${v3}&legacy=${legacy}`
-                    )
-                    .then((response) => {
-                        if (response.ok) {
-                            this.updateStateWithBrews(
-                                response.body.brews,
-                                page,
-                                response.body.totalPages,
-                                response.body.totalBrews
-                            );
-                        }
-                    });
+                await request.get(
+                    `/api/archive?title=${title}&page=${page}&size=${size}&v3=${v3}&legacy=${legacy}`
+                ).then((response) => {
+                    if (response.ok) {
+                        this.updateStateWithBrews(
+                            response.body.brews,
+                            page
+                        );
+                    }
+                });
             } catch (error) {
+                console.log('error at loadPage: ', error);
                 this.setState({ error: `${error.response.status}` });
-                this.updateStateWithBrews([], 1, 1, 0);
+                this.updateStateWithBrews([], 1);
             }
-            console.log('a', 
-                !this.state.brewCollection || this.state.brewCollection.length === 0
-            );
             if (!this.state.brewCollection) {
                 this.setState({ error: '404' });
             }
         }
+    },
 
-        
+    loadTotal: async function () {
+        console.log('running loadTotal');
+        const {title, v3, legacy} = this.state;
+
+        if (title !== '') {
+            
+            try {
+                await request
+                .get(
+                    `/api/archive/total?title=${title}&v3=${v3}&legacy=${legacy}`
+                ).then((response) => {
+                    if (response.ok) {
+                        this.setState({totalBrews : response.body.totalBrews});
+                    }
+                });
+            } catch (error) {
+                console.log('error at loadTotal: ', error);
+                this.setState({ error: `${error.response.status}` });
+                this.updateStateWithBrews([], 1);
+            }
+        }
     },
 
     renderNavItems: function () {
         return (
             <Navbar>
                 <Nav.section>
-                    <Nav.item className="brewTitle">
-                        Archive: Search for brews
-                    </Nav.item>
+                    <Nav.item className="brewTitle">Archive: Search for brews</Nav.item>
                 </Nav.section>
                 <Nav.section>
                     <NewBrew />
@@ -161,6 +174,7 @@ const ArchivePage = createClass({
                             defaultValue={this.state.title}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
+                                    this.loadTotal();
                                     this.loadPage(1, true);
                                 }
                             }}
@@ -211,6 +225,7 @@ const ArchivePage = createClass({
                     <button
                         className="search"
                         onClick={() => {
+                            this.loadTotal();
                             this.loadPage(1, true);
                         }}
                     >
@@ -228,53 +243,64 @@ const ArchivePage = createClass({
     },
 
     renderPaginationControls() {
-        const title = encodeURIComponent(this.state.title);
-        const size = parseInt(this.state.pageSize);
-        const { page, totalPages, legacy, v3 } = this.state;
-        const pages = new Array(totalPages).fill().map((_, index) => (
-            <a
-                key={index}
-                className={`pageNumber ${
-                    page == index + 1 ? 'currentPage' : ''
-                }`}
-                href={`/archive?title=${title}&page=${
-                    index + 1
-                }&size=${size}&v3=${v3}&legacy=${legacy}`}
-            >
-                {index + 1}
-            </a>
-        ));
+        if (this.state.totalBrews) {
+            const title = encodeURIComponent(this.state.title);
+            const size = parseInt(this.state.pageSize);
+            const { page, totalBrews} = this.state;
 
-        if (totalPages === null) {
-            return;
-        }
+            const totalPages = Math.ceil(totalBrews / size);
+    
+            const pages = new Array(totalPages).fill().map((_, index) => (
+                <a
+                    key={index}
+                    className={`pageNumber ${
+                        page == index + 1 ? 'currentPage' : ''
+                    }`}
+                    href={`/archive?title=${title}&page=${
+                        index + 1
+                    }&size=${size}&v3=${v3}&legacy=${legacy}`}
+                >
+                    {index + 1}
+                </a>
+            ));
+    
+            if (totalPages === null) {
+                return;
+            }
+    
+            return (
+                <div className="paginationControls">
+                    {page > 1 && (
+                        <button
+                            className="previousPage"
+                            onClick={() => this.loadPage(page - 1, false)}
+                        >
+                            &lt;&lt;
+                        </button>
+                    )}
+                    <ol className="pages">{pages}</ol>
+                    {page < totalPages && (
+                        <button
+                            className="nextPage"
+                            onClick={() => this.loadPage(page + 1, false)}
+                        >
+                            &gt;&gt;
+                        </button>
+                    )}
+                </div>
+            );
+        } else { return;}
 
-        return (
-            <div className="paginationControls">
-                {page > 1 && (
-                    <button
-                        className="previousPage"
-                        onClick={() => this.loadPage(page - 1, false)}
-                    >
-                        &lt;&lt;
-                    </button>
-                )}
-                <ol className="pages">{pages}</ol>
-                {page < totalPages && (
-                    <button
-                        className="nextPage"
-                        onClick={() => this.loadPage(page + 1, false)}
-                    >
-                        &gt;&gt;
-                    </button>
-                )}
-            </div>
-        );
+        
     },
 
     renderFoundBrews() {
         console.log('State when rendering:');
-        console.table(this.state);
+        const stateWithoutBrewCollection = { ...this.state };
+        delete stateWithoutBrewCollection.brewCollection;
+        console.table(stateWithoutBrewCollection);
+        console.table(this.state.brewCollection);
+
         const { title, brewCollection, page, totalPages, error, searching } =
             this.state;
 

@@ -100,7 +100,6 @@ router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{
 		});
 });
 
-
 /* Compresses the "text" field of a brew to binary */
 router.put('/admin/compress/:id', (req, res)=>{
 	HomebrewModel.findOne({ _id: req.params.id })
@@ -121,7 +120,6 @@ router.put('/admin/compress/:id', (req, res)=>{
 			res.status(500).send('Error while saving');
 		});
 });
-
 
 router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 	try {
