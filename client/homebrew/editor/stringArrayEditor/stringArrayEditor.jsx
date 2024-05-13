@@ -97,7 +97,7 @@ const StringArrayEditor = createClass({
 			values.splice(index, 1);
 		}
 		const matchesPatterns = !this.props.valuePatterns || this.props.valuePatterns.some((pattern)=>!!(value || '').match(pattern));
-		const uniqueIfSet = !this.props.unique || !values.includes(value);
+		const uniqueIfSet = !this.props.unique || !values.includes(value.trim());
 		const passesValidators = !this.props.validators || this.props.validators.every((validator)=>validator(value));
 		return matchesPatterns && uniqueIfSet && passesValidators;
 	},
