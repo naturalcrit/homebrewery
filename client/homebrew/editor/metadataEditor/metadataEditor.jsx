@@ -215,7 +215,8 @@ const MetadataEditor = createClass({
 		};
 
 		const currentThemePath = this.props.metadata?.theme && this.props.metadata.theme[0] === '#' ? 'Brew' : this.props.metadata.renderer;
-		const currentTheme = mergedThemes[`${_.upperFirst(currentThemePath)}`][this.props.metadata.theme];
+//		const currentTheme = mergedThemes[`${_.upperFirst(currentThemePath)}`][this.props.metadata.theme];
+		const currentTheme = mergedThemes[`${_.upperFirst(currentThemePath)}`].hasOwnProperty(this.props.metadata.theme) ? mergedThemes[`${_.upperFirst(currentThemePath)}`][this.props.metadata.theme] : { name: `!!! THEME MISSING !!! ID=${this.props.metadata.theme.slice(1)}`};
 		let dropdown;
 
 		if(this.props.metadata.renderer == 'legacy') {

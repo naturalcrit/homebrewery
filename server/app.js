@@ -300,6 +300,7 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 		renderer : req.brew.renderer,
 		theme    : req.brew.theme,
 		tags     : req.brew.tags,
+		userThemes : req.brew.userThemes
 	};
 	req.brew = _.defaults(brew, DEFAULT_BREW);
 

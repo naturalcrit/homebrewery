@@ -99,7 +99,7 @@ const PrintPage = createClass({
 		}
 		let themePath     = this.state.brew.theme ?? '5ePHB';
 		const Themes = { ...staticThemes, ...this.state.brew.userThemes };
-		let baseThemePath = Themes[rendererPath][themePath]?.baseTheme;
+		let baseThemePath = (themePath && themePath[0] !== '#') ? Themes[rendererPath][themePath]?.baseTheme : 'Brew';
 
 		// Override static theme values if a Brew theme.
 

@@ -189,7 +189,7 @@ const BrewRenderer = (props)=>{
 	}
 	let themePath     = props.theme ?? '5ePHB';
 	const Themes = { ...staticThemes, ...props.userThemes };
-	let baseThemePath = Themes[rendererPath][themePath]?.baseTheme;
+	let baseThemePath = (themePath && themePath[0] !== '#') ? Themes[rendererPath][themePath]?.baseTheme : 'Brew';
 
 	// Override static theme values if a Brew theme.
 
@@ -201,7 +201,6 @@ const BrewRenderer = (props)=>{
 	}
 
 	if(rendererPath == '') {
-		baseThemePath = 'Brew';
 		baseRendererPath = '';
 	} else {
 		baseRendererPath += '/';
