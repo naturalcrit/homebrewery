@@ -6,6 +6,7 @@ const StringArrayEditor = createClass({
 	displayName     : 'StringArrayEditor',
 	getDefaultProps : function() {
 		return {
+			id            : '',
 			label         : '',
 			values        : [],
 			options       : [],
@@ -147,6 +148,16 @@ const StringArrayEditor = createClass({
 
 	},
 
+	renderDatalist : function(){
+		if(this.props.options?.length > 0){
+			return <datalist id={`${this.props.id}__tags-precoordinated`}>
+				{this.props.options.map((option)=>{
+					return <option value={`${option}`}></option>;
+				})}
+			</datalist>;
+		}
+	},
+
 	render : function() {
 		const valueElements = Object.values(this.state.valueContext).map((context, i)=>{
 			return <React.Fragment key={i}>
@@ -157,12 +168,8 @@ const StringArrayEditor = createClass({
 						onKeyDown={(e)=>this.handleValueInputKeyDown(e, i)}
 						onChange={(e)=>this.setState({ updateValue: e.target.value })}
 						onBlur={()=>this.closeEditInput(i)}
-						list={`tags_precoordinated-${this.uid}`}/>
-					<datalist id={`tags_precoordinated-${this.uid}`}>
-						{this.props.options.map((option)=>{
-							return <option value={`${option}`}></option>
-						})}
-					</datalist>
+						list={this.props.options?.length > 0 ? `${this.props.id}__tags-precoordinated` : ''}/>
+					{this.renderDatalist()}
 					{!!this.props.cannotEdit && this.props.cannotEdit.includes(context.value) ? null : <button className='tag-icon' onClick={(e)=>{ e.stopPropagation(); this.removeValue(i); }} tabIndex={-1}><i className='fa fa-times fa-fw'/></button>}
 				</div>
 			</React.Fragment>;
@@ -177,13 +184,9 @@ const StringArrayEditor = createClass({
 						value={this.state.temporaryValue}
 						onKeyDown={(e)=>this.handleValueInputKeyDown(e)}
 						onChange={(e)=>this.setState({ temporaryValue: e.target.value })}
-						list={`tags_precoordinated-${this.uid}`}
+						list={this.props.options?.length > 0 ? `${this.props.id}__tags-precoordinated` : ''}
 						ref={this.newTagInput}/>
-					<datalist id={`tags_precoordinated-${this.uid}`}>
-						{this.props.options.map((option)=>{
-							return <option value={`${option}`}></option>
-						})}
-					</datalist>
+					{this.renderDatalist()}
 				</div>
 
 				{this.props.notes ? this.props.notes.map((n, index)=><p key={index}><small>{n}</small></p>) : null}

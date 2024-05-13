@@ -339,7 +339,7 @@ const MetadataEditor = createClass({
 				{this.renderThumbnail()}
 			</div>
 
-			<StringArrayEditor label='tags' valuePatterns={[/^(?:(?:meta|system|type):)?[\p{L}a-z0-9][\p{L}a-z0-9 \/.\-&]{0,40}$/iu]} // \p{L} allows unicode characters
+			<StringArrayEditor id='tag-input' label='tags' valuePatterns={[/^(?:(?:meta|system|type):)?[\p{L}a-z0-9][\p{L}a-z0-9 \/.\-&]{0,40}$/iu]} // \p{L} allows unicode characters
 				placeholder='add tag' unique={true}
 				values={this.props.metadata.tags}
 				options={tagOptions.options}
