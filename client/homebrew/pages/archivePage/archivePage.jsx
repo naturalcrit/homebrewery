@@ -100,16 +100,18 @@ const ArchivePage = createClass({
             try {
                 this.setState({ searching: true, error: null });
 
-                await request.get(
-                    `/api/archive?title=${title}&page=${page}&size=${size}&v3=${v3}&legacy=${legacy}`
-                ).then((response) => {
-                    if (response.ok) {
-                        this.updateStateWithBrews(
-                            response.body.brews,
-                            page
-                        );
-                    }
-                });
+                await request
+                    .get(
+                        `/api/archive?title=${title}&page=${page}&size=${size}&v3=${v3}&legacy=${legacy}`
+                    )
+                    .then((response) => {
+                        if (response.ok) {
+                            this.updateStateWithBrews(
+                                response.body.brews,
+                                page
+                            );
+                        }
+                    });
             } catch (error) {
                 console.log('error at loadPage: ', error);
                 this.setState({ error: `${error.response.status}` });
@@ -123,19 +125,21 @@ const ArchivePage = createClass({
 
     loadTotal: async function () {
         console.log('running loadTotal');
-        const {title, v3, legacy} = this.state;
+        const { title, v3, legacy } = this.state;
 
         if (title !== '') {
-            
             try {
                 await request
-                .get(
-                    `/api/archive/total?title=${title}&v3=${v3}&legacy=${legacy}`
-                ).then((response) => {
-                    if (response.ok) {
-                        this.setState({totalBrews : response.body.totalBrews});
-                    }
-                });
+                    .get(
+                        `/api/archive/total?title=${title}&v3=${v3}&legacy=${legacy}`
+                    )
+                    .then((response) => {
+                        if (response.ok) {
+                            this.setState({
+                                totalBrews: response.body.totalBrews,
+                            });
+                        }
+                    });
             } catch (error) {
                 console.log('error at loadTotal: ', error);
                 this.setState({ error: `${error.response.status}` });
@@ -148,7 +152,9 @@ const ArchivePage = createClass({
         return (
             <Navbar>
                 <Nav.section>
-                    <Nav.item className="brewTitle">Archive: Search for brews</Nav.item>
+                    <Nav.item className="brewTitle">
+                        Archive: Search for brews
+                    </Nav.item>
                 </Nav.section>
                 <Nav.section>
                     <NewBrew />
@@ -246,28 +252,36 @@ const ArchivePage = createClass({
         if (this.state.totalBrews) {
             const title = encodeURIComponent(this.state.title);
             const size = parseInt(this.state.pageSize);
-            const { page, totalBrews} = this.state;
+            const { page, totalBrews } = this.state;
 
             const totalPages = Math.ceil(totalBrews / size);
-    
-            const pages = new Array(totalPages).fill().map((_, index) => (
-                <a
-                    key={index}
-                    className={`pageNumber ${
-                        page == index + 1 ? 'currentPage' : ''
-                    }`}
-                    href={`/archive?title=${title}&page=${
-                        index + 1
-                    }&size=${size}&v3=${v3}&legacy=${legacy}`}
-                >
-                    {index + 1}
-                </a>
-            ));
-    
-            if (totalPages === null) {
-                return;
+
+            let startPage, endPage;
+            if (page <= 6) {
+                startPage = 1;
+                endPage = Math.min(totalPages, 10);
+            } else if (page + 4 >= totalPages) {
+                startPage = Math.max(1, totalPages - 9);
+                endPage = totalPages;
+            } else {
+                startPage = page - 5;
+                endPage = page + 4;
             }
-    
+
+            const pagesAroundCurrent = new Array(endPage - startPage + 1)
+                .fill()
+                .map((_, index) => (
+                    <a
+                        key={startPage + index}
+                        className={`pageNumber ${
+                            page === startPage + index ? 'currentPage' : ''
+                        }`}
+                        onClick={() => this.loadPage(startPage + index, false)}
+                    >
+                        {startPage + index}
+                    </a>
+                ));
+
             return (
                 <div className="paginationControls">
                     {page > 1 && (
@@ -278,7 +292,13 @@ const ArchivePage = createClass({
                             &lt;&lt;
                         </button>
                     )}
-                    <ol className="pages">{pages}</ol>
+                    <ol className="pages">
+                        {startPage > 1 && <a className="firstPage pageNumber">1 ...</a>}
+                        {pagesAroundCurrent}
+                        {endPage < totalPages && (
+                            <a className="lastPage pageNumber">... {totalPages}</a>
+                        )}
+                    </ol>
                     {page < totalPages && (
                         <button
                             className="nextPage"
@@ -289,18 +309,12 @@ const ArchivePage = createClass({
                     )}
                 </div>
             );
-        } else { return;}
-
-        
+        } else {
+            return null;
+        }
     },
 
     renderFoundBrews() {
-        console.log('State when rendering:');
-        const stateWithoutBrewCollection = { ...this.state };
-        delete stateWithoutBrewCollection.brewCollection;
-        console.table(stateWithoutBrewCollection);
-        console.table(this.state.brewCollection);
-
         const { title, brewCollection, page, totalPages, error, searching } =
             this.state;
 
