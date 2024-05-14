@@ -1,0 +1,103 @@
+name: Limit pull requests
+description: >
+  Limit the number of open pull requests to the repository created by a user
+author: ZhongRuoyu (from Homebrew repository)
+branding:
+  icon: alert-triangle
+  color: yellow
+
+inputs:
+  token:
+    description: GitHub token
+    required: false
+    default: ${{ github.token }}
+  except-users:
+    description: The users exempted from the limit, one per line
+    required: false
+  # https://docs.github.com/en/graphql/reference/enums#commentauthorassociation
+  except-author-associations:
+    description: The author associations exempted from the limit, one per line
+    required: false
+  comment-limit:
+    description: >
+      Post the comment when the user's number of open pull requests exceeds this
+      number and `comment` is not empty
+    required: true
+    default: "10"
+  comment:
+    description: The comment to post when the limit is reached
+    required: false
+  close-limit:
+    description: >
+      Close the pull request when the user's number of open pull requests
+      exceeds this number and `close` is set to `true`
+    required: true
+    default: "50"
+  close:
+    description: Whether to close the pull request when the limit is reached
+    required: true
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - name: Check the number of pull requests
+      id: count-pull-requests
+      run: |
+        # If the user is exempted, assume they have no pull requests.
+        if grep -Fiqx '${{ github.actor }}' <<<"$EXCEPT_USERS"; then
+          echo "::notice::@${{ github.actor }} is exempted from the limit."
+          echo "count=0" >>"$GITHUB_OUTPUT"
+          exit 0
+        fi
+        if grep -Fiqx '${{ github.event.pull_request.author_association }}' <<<"$EXCEPT_AUTHOR_ASSOCIATIONS"; then
+          echo "::notice::@{{ github.actor }} is a ${{ github.event.pull_request.author_association }} exempted from the limit."
+          echo "count=0" >>"$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        count="$(
+          gh api \
+            --method GET \
+            --header 'Accept: application/vnd.github+json' \
+            --header 'X-GitHub-Api-Version: 2022-11-28' \
+            --field state=open \
+            --paginate \
+            '/repos/{owner}/{repo}/pulls' |
+            jq \
+              --raw-output \
+              --arg USER '${{ github.actor }}' \
+              'map(select(.user.login == $USER)) | length'
+        )"
+        echo "::notice::@${{ github.actor }} has $count open pull request(s)."
+        echo "count=$count" >>"$GITHUB_OUTPUT"
+      env:
+        GH_REPO: ${{ github.repository }}
+        GH_TOKEN: ${{ inputs.token }}
+        EXCEPT_USERS: ${{ inputs.except-users }}
+        EXCEPT_AUTHOR_ASSOCIATIONS: ${{ inputs.except-author-associations }}
+      shell: bash
+
+    - name: Comment on pull request
+      if: >
+        fromJSON(steps.count-pull-requests.outputs.count) > fromJSON(inputs.comment-limit) &&
+        inputs.comment != ''
+      run: |
+        gh pr comment '${{ github.event.pull_request.number }}' \
+          --body="${COMMENT_BODY}"
+      env:
+        GH_REPO: ${{ github.repository }}
+        GH_TOKEN: ${{ inputs.token }}
+        COMMENT_BODY: ${{ inputs.comment }}
+      shell: bash
+
+    - name: Close pull request
+      if: >
+        fromJSON(steps.count-pull-requests.outputs.count) > fromJSON(inputs.close-limit) &&
+        inputs.close == 'true'
+      run: |
+        gh pr close '${{ github.event.pull_request.number }}'
+      env:
+        GH_REPO: ${{ github.repository }}
+        GH_TOKEN: ${{ inputs.token }}
+      shell: bash
