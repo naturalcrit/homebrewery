@@ -8,6 +8,7 @@ const { Meta } = require('vitreum/headtags');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
+const TutorialPopup = require('../../brewRenderer/tutorialPopup/tutorial.jsx');
 
 const NewBrew = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
@@ -388,7 +389,7 @@ const EditPage = createClass({
 		return <div className='editPage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
 			{this.renderNavbar()}
-
+			<TutorialPopup />
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
 					<Editor
