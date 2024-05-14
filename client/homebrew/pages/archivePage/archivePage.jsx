@@ -293,10 +293,10 @@ const ArchivePage = createClass({
                         </button>
                     )}
                     <ol className="pages">
-                        {startPage > 1 && <a className="firstPage pageNumber">1 ...</a>}
+                        {startPage > 1 && <a className="firstPage pageNumber" onClick={() => this.loadPage(1, false)}>1 ...</a>}
                         {pagesAroundCurrent}
                         {endPage < totalPages && (
-                            <a className="lastPage pageNumber">... {totalPages}</a>
+                            <a className="lastPage pageNumber" onClick={() => this.loadPage(totalPages, false)}>... {totalPages}</a>
                         )}
                     </ol>
                     {page < totalPages && (
