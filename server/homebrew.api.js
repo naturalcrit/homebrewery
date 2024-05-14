@@ -75,7 +75,8 @@ const api = {
 			'editId',
 			'thumbnail',
 			'textBin',
-			'text'
+			'text',
+			'authors'
 		];
 
 		const userThemes = {
@@ -93,6 +94,7 @@ const api = {
 					renderer     : 'V3',
 					baseTheme    : '',
 					baseSnippets : false,
+					author       : brew.authors[0],
 					path         : `#${brew.editId}`,
 					thumbnail    : brew.thumbnail.length > 0 ? brew.thumbnail : '/assets/naturalCritLogoWhite.svg'
 				};

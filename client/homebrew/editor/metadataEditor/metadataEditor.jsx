@@ -202,7 +202,7 @@ const MetadataEditor = createClass({
 				const preview = theme?.thumbnail ? theme.thumbnail : `/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`;
 				const texture = theme?.thumbnail ? theme.thumbnail : `/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`;
 				return <div className='item' key={`${renderer}_${theme.name}`} onClick={()=>this.handleTheme(theme, renderer)} title={''}>
-					{`${renderer} : ${theme.name}`}
+					{`${theme?.author ? theme.author : renderer} : ${theme.name}`}
 					<div className='texture-container'>
 						<img src={`${texture}`}/>
 					</div>
@@ -230,7 +230,7 @@ const MetadataEditor = createClass({
 			dropdown =
 				<Nav.dropdown className='value' trigger='click'>
 					<div>
-						{`${_.upperFirst(currentThemePath)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
+						{`${currentTheme?.author ? currentTheme.author : _.upperFirst(currentThemePath)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
 					</div>
 					{/*listThemes('Legacy')*/}
 					{listThemes('V3')}
