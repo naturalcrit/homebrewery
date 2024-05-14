@@ -13,6 +13,7 @@ const AccountNavItem = require('../../navbar/account.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
+const TutorialPopup = require('../../brewRenderer/tutorialPopup/tutorial.jsx');
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
@@ -212,6 +213,7 @@ const NewPage = createClass({
 	render : function(){
 		return <div className='newPage sitePage'>
 			{this.renderNavbar()}
+			<TutorialPopup />
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
 					<Editor
