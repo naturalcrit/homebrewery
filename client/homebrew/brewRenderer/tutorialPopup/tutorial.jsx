@@ -1,6 +1,7 @@
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
+require('./tutorial.less');
 
 const DISMISS_KEY = 'dismiss_tutorial';
 
@@ -10,7 +11,7 @@ const TutorialPopup = createClass({
     getInitialState: function () {
         return {
             steps: {},
-            currentStep: 'splitPane', // Initialize to the first step
+            currentStep: 'splitPaneStep', // Initialize to the first step
         };
     },
 
@@ -24,17 +25,21 @@ const TutorialPopup = createClass({
     },
 
     steps: {
-        splitPane: function () {
+        splitPaneStep: function () {
+            window.localStorage.setItem(
+                'naturalcrit-pane-split',
+                window.innerWidth / 2
+            );
             return (
-                <div>
+                <div className="content">
                     <div className="editor">
-                        <span className="paneName">
+                        <span className="explanation editor">
                             This is the Editor pane, where you edit your
                             document using Markdown
                         </span>
                     </div>
                     <div className="brew">
-                        <span className="paneName">
+                        <span className="explanation brew">
                             This is the Brew pane, it displays a preview of the
                             document
                         </span>
@@ -42,9 +47,10 @@ const TutorialPopup = createClass({
                 </div>
             );
         },
-        snippets: function () {
+        snippetsStep: function () {
             return (
-                <div>
+                <div className="content">
+                    <i className="fas fa-arrow-left"></i>
                     <span className="explanation">
                         This is the Snippet Bar, here you will find pieces of
                         code to help you write
@@ -56,19 +62,23 @@ const TutorialPopup = createClass({
                 </div>
             );
         },
-        beta: function () {
+        tabsStep: function () {
             return (
-                <div>
+                <div className="content">
                     <span className="explanation">
-                        This beta tag marks features that are quite new and
-                        susceptible to changes in the near future.
+                        These are the three tabs, Brew, Style and Properties
+                    </span>
+                    <span className="explanation">
+                        You can use each one to modify the text and structure,
+                        style and properties of the document, respecively
                     </span>
                 </div>
             );
         },
-        navigation: function () {
+        navigationStep: function () {
             return (
-                <div>
+                <div className="content">
+                    <i className="fas fa-arrow-right"></i>
                     <span className="explanation">
                         This is the navigation bar, here you will find different
                         options to help you navigate and find what you are
@@ -114,7 +124,7 @@ const TutorialPopup = createClass({
 
         if (nextStepIndex < steps.length) {
             return (
-                <div>
+                <div className="buttons">
                     <button className="dismiss" onClick={this.dismiss}>
                         Skip
                     </button>
@@ -125,9 +135,11 @@ const TutorialPopup = createClass({
             );
         } else {
             return (
-                <button className="dismiss" onClick={this.dismiss}>
-                    Finish
-                </button>
+                <div className="buttons">
+                    <button className="dismiss" onClick={this.dismiss}>
+                        Finish
+                    </button>
+                </div>
             );
         }
     },
@@ -140,7 +152,7 @@ const TutorialPopup = createClass({
         return (
             <div className={`tutorial ${currentStep}`}>
                 {steps[currentStep]}
-                {this.renderControls()};
+                {this.renderControls()}
             </div>
         );
     },

@@ -1,56 +1,191 @@
-.tutorial {
+.tutorial.tutorial {
+    --orange: #ff4900;
+    --blue: #0b6cc9;
+    --outline-width: 2px;
+
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20px;
-    border: 1px solid #ccc;
-    background-color: #fff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    inset: 0;
+    background: hsla(239, 0%, 12%, 0.23);
+    z-index: 6000;
+
+    .content {
+        height: auto;
+        color: white;
+        font-family: 'Open Sans';
+        font-weight: 900;
+        overflow: visible;
+
+        .fas {
+            position: absolute;
+            color: var(--orange);
+            filter: drop-shadow(0 0 2px black);
+        }
+    }
+
+    .buttons {
+        position: absolute;
+        bottom: 100px;
+        left: 50%;
+        translate: -50%;
+        display: flex;
+        justify-content: center;
+        gap: 100px;
+
+        & button {
+            width: 150px;
+            height: 50px;
+            font-size: 20px;
+            box-shadow: 0 0 10px black;
+            border-radius: 5px;
+            padding: 5px 10px;
+            border: none;
+            background-color: var(--blue);
+            color: #fff;
+            cursor: pointer;
+
+            &:hover {
+                background-color: var(--orange);
+            }
+
+            &:focus {
+                outline: none;
+            }
+        }
+    }
 }
 
-.tutorial .splitPane {
-    background-color: #f0f8ff; /* Light blue */
+.tutorial.splitPaneStep {
+    .content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        place-items: center;
+
+        >div {
+            height: 97vh;
+            margin-top: 3.4vh;
+            width: 100%;
+            display: grid;
+            place-items: center;
+            outline: var(--outline-width) dashed var(--orange);
+
+            >span {
+                background: var(--blue);
+                border-radius: 10px;
+                box-shadow: 0 0 10px black;
+                width: 350px;
+                height: 100px;
+                text-align: center;
+                display: grid;
+                place-items: center;
+                padding: 20px 10px;
+            }
+        }
+    }
+
 }
 
-.tutorial .snippets {
-    background-color: #ffe4b5; /* Moccasin */
+.tutorial.snippetsStep {
+    .content {
+        position: absolute;
+        top: 100px;
+        left: 400px;
+        background: var(--blue);
+        border-radius: 10px;
+        height: max-content;
+        width: fit-content;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 0 10px black;
+        padding: 10px;
+
+        .fa-arrow-left {
+            position: absolute;
+            top: -40px;
+            left: -50px;
+            content: '';
+            font-size: 50px;
+            color: var(--orange);
+            filter: drop-shadow(0 0 2px black);
+            rotate: 45deg;
+        }
+
+        &:before {
+            content: '';
+            position: fixed;
+            width: 330px;
+            height: 25px;
+            top: 29px;
+            left: var(--outline-width);
+            content: '';
+            font-size: 50px;
+            outline: var(--outline-width) solid var(--orange);
+            filter: drop-shadow(0 0 2px black);
+            backdrop-filter: brightness(140%) hue-rotate(-10deg);
+        }
+    }
 }
 
-.tutorial .beta {
-    background-color: #f4a460; /* Sandy brown */
+.tutorial.tabsStep {
+    .content {
+        top: 100px;
+        margin-inline: auto;
+        background: var(--blue);
+        border-radius: 10px;
+        height: max-content;
+        width: 900px;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 0 10px black;
+        padding: 10px;
+
+        &:before {
+            content: '';
+            position: fixed;
+            width: 75px;
+            height: 25px;
+            top: 29px;
+            left: 46.1vw;
+            content: '';
+            font-size: 50px;
+            outline: var(--outline-width) solid var(--orange);
+            filter: drop-shadow(0 0 2px black);
+            backdrop-filter: brightness(140%) hue-rotate(-10deg);
+        }
+    }
 }
 
-.tutorial .navigation {
-    background-color: #d3d3d3; /* Light gray */
-}
+.tutorial.navigationStep {
+    .content {
+        position: fixed;
+        top: 100px;
+        right: 100px;
+        background: var(--blue);
+        border-radius: 10px;
+        height: max-content;
+        width: 900px;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 0 10px black;
+        padding: 10px;
 
-.tutorial .dismiss,
-.tutorial .next {
-    margin-top: 10px;
-    padding: 5px 10px;
-    border: none;
-    background-color: #007bff; /* Blue */
-    color: #fff;
-    cursor: pointer;
-}
+        &:before {
+            content: '';
+            position: fixed;
+            width: 465px;
+            height: 25px;
+            top: var(--outline-width);
+            right: var(--outline-width);
+            content: '';
+            outline: var(--outline-width) solid var(--orange);
+            filter: drop-shadow(0 0 2px black);
+            backdrop-filter: brightness(140%) hue-rotate(-10deg);
+        }
 
-.tutorial .dismiss:hover,
-.tutorial .next:hover {
-    background-color: #0056b3; /* Darker blue */
-}
-
-.tutorial .dismiss {
-    margin-right: 10px;
-}
-
-.tutorial .dismiss:focus,
-.tutorial .next:focus {
-    outline: none;
-}
-
-.tutorial .paneName,
-.tutorial .explanation {
-    display: block;
-    margin-bottom: 10px;
+        .fa-arrow-right {
+            top: -60px;
+            right: 40%;
+            font-size: 50px;
+            rotate: -45deg;
+        }
+    }
 }
