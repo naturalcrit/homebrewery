@@ -6,21 +6,7 @@ const archive = {
     /* Searches for matching title, also attempts to partial match */
     findBrews: async (req, res, next) => {
         try {
-            /*
-            //log db name and collection name, for local purposes
-            const dbName = HomebrewModel.db.name;
-            console.log("Database Name:", dbName);
-            const collectionName = HomebrewModel.collection.name;
-            console.log("Collection Name:", collectionName);
-            
-            */
-
-            const bright = '\x1b[1m'; // Bright (bold) style
-            const yellow = '\x1b[93m'; //  yellow color
-            const reset = '\x1b[0m'; // Reset to default style
-            console.log(
-                `Query as received in ${bright + yellow}archive api${reset}:`
-            );
+            console.log(`Query as received in archive api:`);
             console.table(req.query);
 
             const title = req.query.title || '';
