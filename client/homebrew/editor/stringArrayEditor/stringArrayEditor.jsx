@@ -157,7 +157,7 @@ const StringArrayEditor = createClass({
 	render : function() {
 		const valueElements = Object.values(this.state.valueContext).map((context, i)=>{
 			return <React.Fragment key={i}>
-				<div className={`tag ${context.editing ? 'editable' : ''}`} tabIndex={-1} onKeyDown={(e)=>this.handleTagKeyDown(e, i)}>
+				<div aria-label={`tag ${context.value}`} className={`tag ${context.editing ? 'editable' : ''}`} tabIndex={-1} onKeyDown={(e)=>this.handleTagKeyDown(e, i)}>
 					<span className={`tag-text ${context.editing ? 'hidden' : 'visible'}`} key={i} onClick={()=>this.editValue(i)}>{context.value}</span>
 					<input type='text' className={`value tag-input ${context.editing ? 'visible' : 'hidden'} ${this.valueIsValid(this.state.updateValue, i) || (this.state.updateValue == '') ? '' : 'invalid'}`} placeholder={this.props.placeholder}
 						value={this.state.updateValue}
@@ -166,17 +166,18 @@ const StringArrayEditor = createClass({
 						onBlur={()=>this.closeEditInput(i)}
 						list={this.props.options?.length > 0 ? `${this.props.id}__tags-precoordinated` : ''}/>
 					{this.renderDatalist()}
-					{!!this.props.cannotEdit && this.props.cannotEdit.includes(context.value) ? null : <button className='tag-icon' onClick={(e)=>{ e.stopPropagation(); this.removeValue(i); }} tabIndex={-1}><i className='fa fa-times fa-fw'/></button>}
+					{!!this.props.cannotEdit && this.props.cannotEdit.includes(context.value) ? null : <button className='tag-icon' onClick={(e)=>{ e.stopPropagation(); this.removeValue(i); }} tabIndex={-1} aria-label={`delete tag ${context.value}`} aria-keyshortcuts='Delete'><i className='fa fa-times fa-fw'/></button>}
 				</div>
 			</React.Fragment>;
 		});
 
 		return <div className='field'>
-			<label>{this.props.label}</label>
-			<div style={{ flex: '1 0' }}>
+			<label htmlFor={`${this.props.label}-input`}>{this.props.label}</label>
+			<div id={`${this.props.label}-container`} role='presentation' className='value'>
 				<div className='tag-container'>
 					{valueElements}
-					<input type='text' className={`value ${this.valueIsValid(this.state.temporaryValue) || (this.state.temporaryValue == '') ? '' : 'invalid'}`} placeholder={this.props.placeholder}
+					<input type='text' id={`${this.props.label}-input`} className={`value ${this.valueIsValid(this.state.temporaryValue) || (this.state.temporaryValue == '') ? '' : 'invalid'}`}
+						placeholder={this.props.placeholder}
 						value={this.state.temporaryValue}
 						onKeyDown={(e)=>this.handleValueInputKeyDown(e)}
 						onChange={(e)=>this.setState({ temporaryValue: e.target.value })}
