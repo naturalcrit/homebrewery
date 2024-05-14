@@ -187,7 +187,7 @@ const ArchivePage = createClass({
                             placeholder="v3 Reference Document"
                         />
                     </label>
-
+                    <small>Tip! you can use <a href="https://regexlearn.com/learn">RegEx</a> if you format your query as <code>/title/</code></small>
                     <label>
                         Results per page
                         <input
@@ -244,6 +244,7 @@ const ArchivePage = createClass({
                         />
                     </button>
                 </div>
+                <small>Remember, you can only search brews with this tool if they are published</small>
             </div>
         );
     },
