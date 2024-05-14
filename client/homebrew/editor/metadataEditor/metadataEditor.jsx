@@ -202,7 +202,7 @@ const MetadataEditor = createClass({
 				const preview = theme?.thumbnail ? theme.thumbnail : `/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`;
 				const texture = theme?.thumbnail ? theme.thumbnail : `/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`;
 				return <div className='item' key={`${renderer}_${theme.name}`} onClick={()=>this.handleTheme(theme, renderer)} title={''}>
-					{`${theme?.author ? theme.author : renderer} : ${theme.name}`}
+					<p>{`${theme?.author ? theme.author : renderer} : ${theme.name}`}</p>
 					<div className='texture-container'>
 						<img src={`${texture}`}/>
 					</div>
