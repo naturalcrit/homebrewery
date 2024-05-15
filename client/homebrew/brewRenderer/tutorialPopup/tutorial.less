@@ -1,4 +1,4 @@
-.tutorial.tutorial {
+.tutorial {
     --orange: #ff4900;
     --blue: #0b6cc9;
     --outline-width: 2px;
@@ -9,11 +9,11 @@
     z-index: 6000;
 
     .content {
-        height: auto;
+        height: auto !important;
         color: white;
         font-family: 'Open Sans';
         font-weight: 900;
-        overflow: visible;
+        overflow: visible !important;
 
         .fas {
             position: absolute;
@@ -86,7 +86,7 @@
 
 .tutorial.snippetsStep {
     .content {
-        position: absolute;
+        position: absolute !important;
         top: 100px;
         left: 400px;
         background: var(--blue);
@@ -156,7 +156,7 @@
 
 .tutorial.navigationStep {
     .content {
-        position: fixed;
+        position: fixed !important;
         top: 100px;
         right: 100px;
         background: var(--blue);
