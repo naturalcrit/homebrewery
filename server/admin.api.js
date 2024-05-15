@@ -285,7 +285,7 @@ router.get('/admin/lock/review/remove/:id', mw.adminOnly, async (req, res)=>{
 		await brew.save();
 
 		// console.log(`Review request removed on brew ID ${brew.shareId} - ${brew.title}`);
-		return res.json({status: 'REVIEW REQUEST REMOVED', detail: `Review request removed for brew ID ${brew.shareId} - ${brew.title}` });
+		return res.json({ status: 'REVIEW REQUEST REMOVED', detail: `Review request removed for brew ID ${brew.shareId} - ${brew.title}` });
 	} catch (error) {
 		console.error(error);
 		return res.json({ status: 'ERROR', detail: `Unable to remove request for review on brew ID ${req.params.id}`, error });
