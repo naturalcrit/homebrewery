@@ -62,12 +62,6 @@ HomebrewSchema.statics.getByUser = async function(username, allowAccess=false, f
 	return brews;
 };
 
-HomebrewSchema.statics.getAggregate = async function(aggregate, options={}){
-	const output = await Homebrew.aggregate(aggregate, options)
-		.catch((error)=>{throw 'Can not get aggregate';});
-	return output;
-};
-
 const Homebrew = mongoose.model('Homebrew', HomebrewSchema);
 
 module.exports = {
