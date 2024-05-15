@@ -170,14 +170,18 @@ router.post('/admin/lock/:id', mw.adminOnly, async (req, res)=>{
 	const lock = req.body;
 	lock.applied = new Date;
 
+	let brew;
 	try {
 		const filter = {
 			shareId : req.params.id
 		};
 
-		const brew = await HomebrewModel.findOne(filter);
+		brew = await HomebrewModel.findOne(filter);
 
-		if(brew.lock) return res.json({ status: 'ALREADY LOCKED', detail: `Lock already exists on brew ${req.params.id} - ${brew.title}` });
+		if(brew.lock) {
+			console.log('ALREADY LOCKED');
+			return res.json({ status: 'ALREADY LOCKED', detail: `Lock already exists on brew ${req.params.id} - ${brew.title}` });
+		}
 
 		brew.lock = lock;
 		brew.markModified('lock');
@@ -187,7 +191,7 @@ router.post('/admin/lock/:id', mw.adminOnly, async (req, res)=>{
 		console.log(`Lock applied to brew ID ${brew.shareId} - ${brew.title}`);
 	} catch (error) {
 		console.error(error);
-		return res.json({ error, message: `Unable to set lock on brew ${req.params.id}` });
+		return res.json({ status: 'ERROR', error, message: `Unable to set lock on brew ${req.params.id}` });
 	}
 
 	return res.json({ status: 'LOCKED', detail: `Lock applied to brew ID ${brew.shareId} - ${brew.title}`, lock });
@@ -244,8 +248,8 @@ router.get('/admin/lock/review/request/:id', async (req, res)=>{
 	// Any user can request a review of their document
 	try {
 		const filter = {
-			shareId       : req.params.id,
-			'lock.locked' : true
+			shareId : req.params.id,
+			lock    : { $exists: 1 }
 		};
 
 		const brew = await HomebrewModel.findOne(filter);
@@ -283,7 +287,7 @@ router.get('/admin/lock/review/remove/:id', mw.adminOnly, async (req, res)=>{
 		const brew = await HomebrewModel.findOne(filter);
 		if(!brew) { return res.json({ status: 'NOT REMOVED', detail: `Brew ID ${req.params.id} does not have a review pending!` }); };
 
-		delete brew.lock.reviewRequested;
+		brew.lock.reviewRequested = undefined;
 		brew.markModified('lock');
 
 		await brew.save();
