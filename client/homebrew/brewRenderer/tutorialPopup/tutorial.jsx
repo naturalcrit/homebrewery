@@ -53,11 +53,11 @@ const TutorialPopup = createClass({
                     <i className="fas fa-arrow-left"></i>
                     <span className="explanation">
                         This is the Snippet Bar, here you will find pieces of
-                        code to help you write
+                        code to help you write your document.
                     </span>
                     <span>
                         Be sure to check on this every now and again, new
-                        snippets come every once in a while
+                        snippets come every once in a while.
                     </span>
                 </div>
             );
@@ -66,11 +66,10 @@ const TutorialPopup = createClass({
             return (
                 <div className="content">
                     <span className="explanation">
-                        These are the three tabs, Brew, Style and Properties
+                        There are 3 editors: Brew, Style, and Properties.
                     </span>
                     <span className="explanation">
-                        You can use each one to modify the text and structure,
-                        style and properties of the document, respecively
+                        Use each editor tab to edit your brew text (Markdown/HTML), styles (CSS), and properties.
                     </span>
                 </div>
             );
@@ -82,7 +81,7 @@ const TutorialPopup = createClass({
                     <span className="explanation">
                         This is the navigation bar, here you will find different
                         options to help you navigate and find what you are
-                        looking for
+                        looking for.
                     </span>
                 </div>
             );
