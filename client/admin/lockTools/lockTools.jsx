@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./lockTools.less');
 const React = require('react');
 const createClass = require('create-react-class');
