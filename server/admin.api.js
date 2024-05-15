@@ -155,8 +155,7 @@ router.get('/admin/lock', mw.adminOnly, async (req, res)=>{
 				'count'
 			}
 		];
-		const totalLockCount = await HomebrewModel.aggregate(countLocksPipeline);
-		const count = totalLockCount[0].count;
+		const count = await HomebrewModel.aggregate(countLocksPipeline);
 		return res.json({
 			count
 		});
@@ -167,16 +166,15 @@ router.get('/admin/lock', mw.adminOnly, async (req, res)=>{
 });
 
 router.post('/admin/lock/:id', mw.adminOnly, async (req, res)=>{
-	const lock = req.body;
-	lock.applied = new Date;
-
-	let brew;
 	try {
+		const lock = req.body;
+		lock.applied = new Date;
+
 		const filter = {
 			shareId : req.params.id
 		};
 
-		brew = await HomebrewModel.findOne(filter);
+		const brew = await HomebrewModel.findOne(filter);
 
 		if(brew.lock) {
 			// console.log('ALREADY LOCKED');
@@ -189,12 +187,11 @@ router.post('/admin/lock/:id', mw.adminOnly, async (req, res)=>{
 		await brew.save();
 
 		// console.log(`Lock applied to brew ID ${brew.shareId} - ${brew.title}`);
+		return res.json({ status: 'LOCKED', detail: `Lock applied to brew ID ${brew.shareId} - ${brew.title}`, lock });
 	} catch (error) {
 		console.error(error);
 		return res.json({ status: 'ERROR', error, message: `Unable to set lock on brew ${req.params.id}` });
 	}
-
-	return res.json({ status: 'LOCKED', detail: `Lock applied to brew ID ${brew.shareId} - ${brew.title}`, lock });
 });
 
 router.get('/admin/unlock/:id', mw.adminOnly, async (req, res)=>{
@@ -256,19 +253,16 @@ router.get('/admin/lock/review/request/:id', async (req, res)=>{
 
 		if(brew.lock.reviewRequested){
 			// console.log(`Review already requested for brew ${brew.shareId} - ${brew.title}`);
-			return res.json({ status: 'NOT REQUESTED', detail: `Review already requested for brew ${brew.shareId} - ${brew.title}` });
+			return res.json({ status: 'ALREADY REQUESTED', detail: `Review already requested for brew ${brew.shareId} - ${brew.title}` });
 		};
 
 		brew.lock.reviewRequested = new Date();
 		brew.markModified('lock');
 
-		await brew.save()
-		.catch((err)=>{
-			return err;
-		});
+		await brew.save();
 
 		// console.log(`Review requested on brew ${brew.shareId} - ${brew.title}`);
-		return res.json({ status: 'REVIEW REQUESTED', brew });
+		return res.json({ status: 'REVIEW REQUESTED', detail: `Review requested on brew ID ${brew.shareId} - ${brew.title}` });
 	} catch (error) {
 		console.error(error);
 		return res.json({ status: 'ERROR', detail: `Unable to set request for review on brew ID ${req.params.id}`, error });
@@ -279,12 +273,11 @@ router.get('/admin/lock/review/remove/:id', mw.adminOnly, async (req, res)=>{
 	try {
 		const filter = {
 			shareId                : req.params.id,
-			'lock.locked'          : true,
-			'lock.reviewRequested' : { '$exists': 1 }
+			'lock.reviewRequested' : { $exists: 1 }
 		};
 
 		const brew = await HomebrewModel.findOne(filter);
-		if(!brew) { return res.json({ status: 'NOT REMOVED', detail: `Brew ID ${req.params.id} does not have a review pending!` }); };
+		if(!brew) { return res.json({ status: 'REVIEW REQUEST NOT REMOVED', detail: `Brew ID ${req.params.id} does not have a review pending!` }); };
 
 		brew.lock.reviewRequested = undefined;
 		brew.markModified('lock');
@@ -292,10 +285,10 @@ router.get('/admin/lock/review/remove/:id', mw.adminOnly, async (req, res)=>{
 		await brew.save();
 
 		// console.log(`Review request removed on brew ID ${brew.shareId} - ${brew.title}`);
-		return res.json(brew);
+		return res.json({status: 'REVIEW REQUEST REMOVED', detail: `Review request removed for brew ID ${brew.shareId} - ${brew.title}` });
 	} catch (error) {
 		console.error(error);
-		return res.json({ error: `Unable to remove request for review on brew ID ${req.params.id}` });
+		return res.json({ status: 'ERROR', detail: `Unable to remove request for review on brew ID ${req.params.id}`, error });
 	}
 });
 
