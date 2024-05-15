@@ -34,12 +34,82 @@ const LockTools = createClass({
 			<hr />
 			<LockTable title='Brews Awaiting Review' resultName='reviewDocuments' fetchURL='/admin/lock/reviews' propertyNames={['shareId', 'title']} ></LockTable>
 			<hr />
-			<h2>Lock Brew</h2>
-			<LockLookup>NYI</LockLookup>
+			<LockBrew></LockBrew>
 			<hr />
 			<LockLookup title='Unlock Brew' fetchURL='/admin/unlock' updateFn={this.updateReviewCount}></LockLookup>
 			<hr />
 			<LockLookup title='Clear Review Request' fetchURL='/admin/lock/review/remove'></LockLookup>
+		</div>;
+	}
+});
+
+const LockBrew = createClass({
+	getInitialState : function() {
+		return {
+			brewId       : '',
+			code         : 1000,
+			editMessage  : '',
+			shareMessage : ''
+		};
+	},
+
+	handleChange : function(e, varName) {
+		const output = {};
+		output[varName] = e.target.value;
+		this.setState(output);
+	},
+
+	submit : function(e){
+		e.preventDefault();
+		if(!this.state.editMessage) return;
+		const newLock = {
+			code         : parseInt(this.state.code) || 100,
+			editMessage  : this.state.editMessage,
+			shareMessage : this.state.shareMessage,
+			applied      : new Date,
+			locked       : true
+		};
+
+		request.post(`/admin/lock/${this.state.brewId}`)
+			.send(newLock)
+			.set('Content-Type', 'application/json')
+			.then((response)=>{
+				console.log(response.body);
+			});
+	},
+
+	renderInput : function (name) {
+		return <input type='text' name={name} value={this.state[name]} onChange={(e)=>this.handleChange(e, name)} autoComplete='off' required/>;
+	},
+
+	render : function() {
+		return <div className='lockBrew'>
+			<h2>Lock Brew</h2>
+			<form onSubmit={this.submit}>
+				<label>
+                    ID:
+					{this.renderInput('brewId')}
+				</label>
+				<br />
+				<label>
+                    Error Code:
+					{this.renderInput('code')}
+				</label>
+				<br />
+				<label>
+                    Edit Message:
+					{this.renderInput('editMessage')}
+				</label>
+				<br />
+				<label>
+                    Share Message:
+					{this.renderInput('shareMessage')}
+				</label>
+				<br />
+				<label>
+				    <input type='submit' />
+				</label>
+			</form>
 		</div>;
 	}
 });
@@ -140,6 +210,7 @@ const LockLookup = createClass({
 	},
 
 	renderResult : function(){
+		console.log(this.state.result);
 		return <>
 			<h3>Result:</h3>
 			<table>
