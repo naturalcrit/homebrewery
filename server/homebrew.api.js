@@ -54,7 +54,7 @@ const api = {
 				});
 			stub = stub?.toObject();
 
-			if(stub?.lock?.locked && accessType != 'edit') {
+			if(stub?.lock && accessType != 'edit') {
 				throw { HBErrorCode: '100', code: stub.lock.code, message: stub.lock.message, brewId: stub.shareId, brewTitle: stub.title };
 			}
 
@@ -83,9 +83,9 @@ const api = {
 			if(accessType === 'edit' && (authorsExist && !(isAuthor || isInvited))) {
 				const accessError = { name: 'Access Error', status: 401 };
 				if(req.account){
-					throw { ...accessError, message: 'User is not an Author', HBErrorCode: '03', authors: stub.authors, brewTitle: stub.title, shareId: stub.shareId};
+					throw { ...accessError, message: 'User is not an Author', HBErrorCode: '03', authors: stub.authors, brewTitle: stub.title, shareId: stub.shareId };
 				}
-				throw { ...accessError, message: 'User is not logged in', HBErrorCode: '04', authors: stub.authors, brewTitle: stub.title, shareId: stub.shareId};
+				throw { ...accessError, message: 'User is not logged in', HBErrorCode: '04', authors: stub.authors, brewTitle: stub.title, shareId: stub.shareId };
 			}
 
 			// If after all of that we still don't have a brew, throw an exception
