@@ -14,6 +14,8 @@ const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
+const requests = require('request');
+
 
 const { DEFAULT_BREW } = require('./brewDefaults.js');
 
@@ -25,7 +27,7 @@ const sanitizeBrew = (brew, accessType)=>{
 	brew.__v = undefined;
 	if(accessType !== 'edit' && accessType !== 'shareAuthor') {
 		brew.editId = undefined;
-	}	
+	}
 	return brew;
 };
 
@@ -75,6 +77,36 @@ const defaultMetaTags = {
 //Robots.txt
 app.get('/robots.txt', (req, res)=>{
 	return res.sendFile(`robots.txt`, { root: process.cwd() });
+});
+
+// The proxy endpoint
+app.get('/xssp/:id', (req, res)=>{
+	// Presumably needs some sanitization
+	try {
+		// Test :id - aHR0cHM6Ly9zLW1lZGlhLWNhY2hlLWFrMC5waW5pbWcuY29tLzczNngvNGEvODEvNzkvNGE4MTc5NDYyY2ZkZjM5MDU0YTQxOGVmZDRjYjc0M2UuanBn
+		const decodedURL = Buffer.from(decodeURI(req.params.id), 'base64').toString('ascii');
+		const rOptions = {
+			host    : config.get('proxyHost'),
+			port    : config.get('proxyPort'),
+			timeout : 30000, // 30s
+			headers : {
+				'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:48.0) Gecko/20100101 Firefox/48.0'
+			},
+			url      : decodedURL,
+			encoding : null
+		};
+
+		requests(rOptions, function (error, response, body) {
+			res.set({
+				'Content-Type' : response.headers['content-type'],
+			});
+			res.body = response.body;
+			res.send(response.body);
+		});
+	} catch (e) {
+		console.log(e);
+		return;
+	}
 });
 
 //Home page
