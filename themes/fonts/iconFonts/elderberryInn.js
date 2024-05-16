@@ -29,7 +29,7 @@ const elderberryInn = {
 	'ei_slashing'    : 'ei slashing',
 	'ei_thunder'     : 'ei thunder',
 
-	/* DnD Donditions */
+	/* DnD Conditions */
 	'ei_blinded'       : 'ei blinded',
 	'ei_charmed'       : 'ei charmed',
 	'ei_deafened'      : 'ei deafened',
