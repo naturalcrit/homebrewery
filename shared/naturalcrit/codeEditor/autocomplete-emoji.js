@@ -1,11 +1,11 @@
 const diceFont      = require('../../../themes/fonts/icon fonts/diceFont.js');
 const elderberryInn = require('../../../themes/fonts/icon fonts/elderberryInn.js');
-const raRedux = require('../../../themes/fonts/icon fonts/raRedux.js');
+const gameIcons = require('../../../themes/fonts/iconFonts/gameIcons.js');
 
 const emojis = {
 	...diceFont,
 	...elderberryInn,
-	...raRedux,
+	...gameIcons,
 	"fas-heart": "fa-solid fa-heart",
 	"fas-star": "fa-solid fa-star"
 };
