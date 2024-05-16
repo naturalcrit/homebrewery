@@ -8,9 +8,11 @@ const request = require('../../utils/request-middleware.js');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Combobox = require('client/components/combobox.jsx');
 const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
-
+const htmlimg = require('html-to-image');
 const Themes = require('themes/themes.json');
 const validations = require('./validations.js');
+const base64url = require('base64-url');
+
 
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
@@ -31,6 +33,8 @@ const MetadataEditor = createClass({
 				title       : '',
 				description : '',
 				thumbnail   : '',
+				thumbnailSm : null,
+				thumbnailLg : null,
 				tags        : [],
 				published   : false,
 				authors     : [],
@@ -56,9 +60,36 @@ const MetadataEditor = createClass({
 		});
 	},
 
+
+	ThumbnailCapture : async function() {
+		const bR = parent.document.getElementById('BrewRenderer');
+		const brewRenderer = bR.contentDocument || bR.contentWindow.document;
+		const topPage = brewRenderer.getElementsByClassName('page')[0].cloneNode(true);
+		// Walk through Top Page's Source and convert all Images to inline data *in* topPage.
+		const srcImages = brewRenderer.getElementsByClassName('page')[0].getElementsByTagName('img');
+		const topImages = topPage.getElementsByTagName('img');
+		// These two should start off with identical contents.
+		for (let imgPos = 0; imgPos < srcImages.length; imgPos++) {
+			topImages[imgPos].src = `http://localhost:8000/xssp/${base64url.encode(srcImages[imgPos].src)}`;
+			console.log(`/xssp/${base64url.encode(srcImages[imgPos].src)}`);
+		}
+		const props = this.props;
+
+		htmlimg.toPng(topPage, {
+			preferredFontFormat : 'woff2',
+			style               : { margin: 'unset' },
+		    cacheBust           : true
+		  }).then(function(dataURL){
+			props.metadata.thumbnail = 'Page 1';
+			props.metadata.thumbnailSm = dataURL;
+			props.onChange(props.metadata);
+		});
+	},
+
 	renderThumbnail : function(){
 		if(!this.state.showThumbnail) return;
-		return <img className='thumbnail-preview' src={this.props.metadata.thumbnail || homebreweryThumbnail}></img>;
+		const imgURL = this.props.metadata.thumbnail.startsWith('Page 1') ? this.props.metadata.thumbnailSm : this.props.metadata.thumbnail;
+		return <img className='thumbnail-preview' src={imgURL || homebreweryThumbnail}></img>;
 	},
 
 	handleFieldChange : function(name, e){
@@ -332,6 +363,9 @@ const MetadataEditor = createClass({
 							onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
 						<button className='display' onClick={this.toggleThumbnailDisplay}>
 							<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
+						</button>
+						<button className='display' onClick={this.ThumbnailCapture}>
+							<i className={`fas fa-camera`} />
 						</button>
 					</div>
 				</div>

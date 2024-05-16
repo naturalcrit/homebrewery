@@ -15,7 +15,7 @@ const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
 const requests = require('request');
-
+const base64url = require('base64-url');
 
 const { DEFAULT_BREW } = require('./brewDefaults.js');
 
@@ -84,7 +84,8 @@ app.get('/xssp/:id', (req, res)=>{
 	// Presumably needs some sanitization
 	try {
 		// Test :id - aHR0cHM6Ly9zLW1lZGlhLWNhY2hlLWFrMC5waW5pbWcuY29tLzczNngvNGEvODEvNzkvNGE4MTc5NDYyY2ZkZjM5MDU0YTQxOGVmZDRjYjc0M2UuanBn
-		const decodedURL = Buffer.from(decodeURI(req.params.id), 'base64').toString('ascii');
+		const decodedURL = base64url.decode(req.params.id);
+		console.log(decodedURL);
 		const rOptions = {
 			host    : config.get('proxyHost'),
 			port    : config.get('proxyPort'),
@@ -100,7 +101,7 @@ app.get('/xssp/:id', (req, res)=>{
 			res.set({
 				'Content-Type' : response.headers['content-type'],
 			});
-			res.body = response.body;
+			console.log(response.headers['content-type']);
 			res.send(response.body);
 		});
 	} catch (e) {
