@@ -5,7 +5,7 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 const closeTag = require('./close-tag');
-const autoCompleteEmojis = require('./autocomplete-emoji');
+const autoCompleteEmoji = require('./autocompleteEmoji');
 
 let CodeMirror;
 if(typeof window !== 'undefined'){
@@ -180,10 +180,10 @@ const CodeEditor = createClass({
 			// 	return el;
 			// }
 		});
-		
+
 		// Add custom behaviors (auto-close curlies and auto-complete emojis)
 		closeTag.autoCloseCurlyBraces(CodeMirror, this.codeMirror);
-		autoCompleteEmojis.showEmojiAutocomplete(CodeMirror, this.codeMirror);
+		autoCompleteEmoji.showAutocompleteEmoji(CodeMirror, this.codeMirror);
 
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
 		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
@@ -442,7 +442,7 @@ const CodeEditor = createClass({
 
 	render : function(){
 		return <>
-			<link href={`../homebrew/cm-themes/${this.props.editorTheme}.css`} type="text/css" rel='stylesheet' />
+			<link href={`../homebrew/cm-themes/${this.props.editorTheme}.css`} type='text/css' rel='stylesheet' />
 			<div className='codeEditor' ref='editor' style={this.props.style}/>
 		</>;
 	}
