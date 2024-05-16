@@ -70,7 +70,7 @@ const PrintPage = createClass({
 				errors={undefined}
 				lang={this.state.brew.lang}
 				currentEditorPage={1}
-				frame={false}
+				useIFrame={false}
 				frameMounted={this.frameMounted}
 			/>
 		</div>;
