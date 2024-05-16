@@ -56,7 +56,7 @@ const BrewRenderer = (props)=>{
 		lang              : '',
 		errors            : [],
 		currentEditorPage : 0,
-		frame             : true,
+		useIFrame         : true,
 		frameMounted      : ()=>{},
 		...props
 	};
@@ -77,7 +77,7 @@ const BrewRenderer = (props)=>{
 	}
 
 	useEffect(()=>{ // Unmounting steps
-		!props.frame && frameDidMount();
+		!props.useIFrame && frameDidMount();
 		return ()=>{
 			window.removeEventListener('resize', updateSize);
 		};
@@ -161,7 +161,7 @@ const BrewRenderer = (props)=>{
 		renderedPages[props.currentEditorPage] = renderPage(rawPages[props.currentEditorPage], props.currentEditorPage);
 
 		_.forEach(rawPages, (page, index)=>{
-			if((!props.frame || isInView(index) || !renderedPages[index]) && typeof window !== 'undefined'){
+			if((!props.useIFrame || isInView(index) || !renderedPages[index]) && typeof window !== 'undefined'){
 				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range
 			}
 		});
@@ -231,7 +231,7 @@ const BrewRenderer = (props)=>{
 				: null}
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
-			{props.frame ?
+			{props.useIFrame ?
 				<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
 					style={{ width: '100%', height: '100%', visibility: state.visibility }}
 					contentDidMount={frameDidMount}
