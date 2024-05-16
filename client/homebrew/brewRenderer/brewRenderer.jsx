@@ -56,6 +56,7 @@ const BrewRenderer = (props)=>{
 		lang              : '',
 		errors            : [],
 		currentEditorPage : 0,
+		renderAllPages    : false,
 		useIFrame         : true,
 		frameMounted      : ()=>{},
 		...props
@@ -161,7 +162,7 @@ const BrewRenderer = (props)=>{
 		renderedPages[props.currentEditorPage] = renderPage(rawPages[props.currentEditorPage], props.currentEditorPage);
 
 		_.forEach(rawPages, (page, index)=>{
-			if((!props.useIFrame || isInView(index) || !renderedPages[index]) && typeof window !== 'undefined'){
+			if((props.renderAllPages || isInView(index) || !renderedPages[index]) && typeof window !== 'undefined'){
 				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range
 			}
 		});
