@@ -57,7 +57,7 @@ const PrintPage = createClass({
 		}
 	},
 
-	frameMounted : function() {
+	showPrintDialog : function() {
 		if(this.props.query.dialog) window.print();
 	},
 
@@ -73,7 +73,7 @@ const PrintPage = createClass({
 				lang={this.state.brew.lang}
 				currentEditorPage={1}
 				useIFrame={false}
-				frameMounted={this.frameMounted}
+				frameMounted={this.showPrintDialog}
 				renderAllPages={true}
 			/>
 		</div>;
