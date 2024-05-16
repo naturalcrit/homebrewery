@@ -3,6 +3,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
+const { Meta } = require('vitreum/headtags');
 
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
@@ -62,6 +63,7 @@ const PrintPage = createClass({
 
 	render : function(){
 		return <div className='printPage'>
+			<Meta name='robots' content='noindex, nofollow' />
 			<BrewRenderer
 				text={this.state.brew.text}
 				style={this.state.brew.style}
