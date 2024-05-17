@@ -3,12 +3,10 @@ require('./editor.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
-const cx = require('classnames');
 const dedent = require('dedent-tabs').default;
 const Markdown = require('../../../shared/naturalcrit/markdown.js');
 
 const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
-const SnippetBar = require('./snippetbar/snippetbar.jsx');
 const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
 const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
