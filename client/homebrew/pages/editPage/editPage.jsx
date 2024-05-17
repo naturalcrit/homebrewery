@@ -390,7 +390,7 @@ const EditPage = createClass({
 			{this.renderNavbar()}
 
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
+				<SplitPane onDragFinish={this.handleSplitMove}>
 					<Editor
 						ref='editor'
 						brew={this.state.brew}
