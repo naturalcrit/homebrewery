@@ -195,6 +195,26 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	res.status(200).send(brew.text);
 });
 
+
+app.get('/metadata/:id', asyncHandler(getBrew('share')), (req, res) => {
+	const { brew } = req;
+	sanitizeBrew(brew, 'share');
+  
+	const fields = [ 'title', 'pageCount', 'description', 'authors', 'lang', 
+	  'published', 'views', 'shareId', 'createdAt', 'updatedAt', 
+	  'lastViewed', 'thumbnail', 'tags'
+	];
+  
+	const metadata = fields.reduce((acc, field) => {
+	  if (brew[field] !== undefined) acc[field] = brew[field];
+	  return acc;
+	}, {});
+	console.log(metadata);
+	res.status(200).json(metadata);
+});
+  
+
+
 //User Page
 app.get('/user/:username', async (req, res, next)=>{
 	const ownAccount = req.account && (req.account.username == req.params.username);
