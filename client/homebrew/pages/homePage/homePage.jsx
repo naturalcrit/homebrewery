@@ -37,6 +37,9 @@ const HomePage = createClass({
 			currentEditorPage : 0
 		};
 	},
+
+	editor : React.createRef(null),
+
 	handleSave : function(){
 		request.post('/api')
 			.send(this.state.brew)
@@ -50,12 +53,12 @@ const HomePage = createClass({
 			});
 	},
 	handleSplitMove : function(){
-		this.refs.editor.update();
+		this.editor.current.update();
 	},
 	handleTextChange : function(text){
 		this.setState((prevState)=>({
 			brew              : { ...prevState.brew, text: text },
-			currentEditorPage : this.refs.editor.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
+			currentEditorPage : this.editor.current.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
 		}));
 	},
 	renderNavbar : function(){
@@ -81,7 +84,7 @@ const HomePage = createClass({
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove}>
 					<Editor
-						ref='editor'
+						ref={this.editor}
 						brew={this.state.brew}
 						onTextChange={this.handleTextChange}
 						renderer={this.state.brew.renderer}
