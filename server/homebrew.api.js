@@ -72,7 +72,7 @@ const api = {
 		const fields = [
 			'title',
 			'tags',
-			'editId',
+			'shareId',
 			'thumbnail',
 			'textBin',
 			'text',
@@ -85,17 +85,17 @@ const api = {
 			}
 		};
 
-		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] }, editId: { $ne: id }, renderer: { $ne: 'Legacy' } });
+		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] }, shareId: { $ne: id }, renderer: { $ne: 'Legacy' } });
 
 		if(brews) {
 			for await (const brew of brews) {
-				userThemes.Brew[`#${brew.editId}`] = {
+				userThemes.Brew[`#${brew.shareId}`] = {
 					name         : brew.title,
 					renderer     : 'V3',
 					baseTheme    : '',
 					baseSnippets : false,
 					author       : brew.authors[0],
-					path         : `#${brew.editId}`,
+					path         : `#${brew.shareId}`,
 					thumbnail    : brew.thumbnail.length > 0 ? brew.thumbnail : '/assets/naturalCritLogoWhite.svg'
 				};
 			}
@@ -111,7 +111,7 @@ const api = {
 			const { id, googleId } = api.getId(req);
 
 			// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine.
-			let stub = await HomebrewModel.get((accessType === 'edit') || (accessType === 'theme') ? { editId: id } : { shareId: id })
+			let stub = await HomebrewModel.get((accessType === 'edit') ? { editId: id } : { shareId: id })
 				.catch((err)=>{
 					if(googleId) {
 						console.warn(`Unable to find document stub for ${accessType}Id ${id}`);
