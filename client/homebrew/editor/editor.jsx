@@ -63,10 +63,17 @@ const Editor = createClass({
 				editorTheme : editorTheme
 			});
 		}
+		if(this.refs.codeEditor && this.getStoredCursorPosition(this.state.view)){
+			this.refs.codeEditor.codeMirror.focus();
+			this.refs.codeEditor.codeMirror.setCursor(this.getStoredCursorPosition(this.state.view))
+
+		}
+
 	},
 
 	componentWillUnmount : function() {
 		window.removeEventListener('resize', this.updateEditorSize);
+		this.setStoredCursorPosition(this.state.view);
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
