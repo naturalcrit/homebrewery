@@ -85,7 +85,6 @@ app.get('/xssp/:id', (req, res)=>{
 	try {
 		// Test :id - aHR0cHM6Ly9zLW1lZGlhLWNhY2hlLWFrMC5waW5pbWcuY29tLzczNngvNGEvODEvNzkvNGE4MTc5NDYyY2ZkZjM5MDU0YTQxOGVmZDRjYjc0M2UuanBn
 		const decodedURL = base64url.decode(req.params.id);
-		console.log(decodedURL);
 		const rOptions = {
 			host    : config.get('proxyHost'),
 			port    : config.get('proxyPort'),
@@ -101,7 +100,6 @@ app.get('/xssp/:id', (req, res)=>{
 			res.set({
 				'Content-Type' : response.headers['content-type'],
 			});
-			console.log(response.headers['content-type']);
 			res.send(response.body);
 		});
 	} catch (e) {

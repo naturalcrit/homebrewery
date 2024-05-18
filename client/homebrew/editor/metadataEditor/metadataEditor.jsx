@@ -68,11 +68,40 @@ const MetadataEditor = createClass({
 		// Walk through Top Page's Source and convert all Images to inline data *in* topPage.
 		const srcImages = brewRenderer.getElementsByClassName('page')[0].getElementsByTagName('img');
 		const topImages = topPage.getElementsByTagName('img');
+		const topLinks = brewRenderer.getElementsByTagName('link');
+		const topStyles = brewRenderer.getElementsByTagName('style');
 		// These two should start off with identical contents.
 		for (let imgPos = 0; imgPos < srcImages.length; imgPos++) {
 			topImages[imgPos].src = `http://localhost:8000/xssp/${base64url.encode(srcImages[imgPos].src)}`;
-			console.log(`/xssp/${base64url.encode(srcImages[imgPos].src)}`);
 		}
+		console.log(topImages);
+		for (let linkPos = 0; linkPos < topLinks.length; linkPos++) {
+			topLinks[linkPos].src = `http://localhost:8000/xssp/${base64url.encode(topLinks[linkPos].src)}`;
+		}
+		console.log(topLinks);
+		for (let stylePos = 0; stylePos < topStyles.length; stylePos++) {
+			const urlRegex = /url\(([^\'\"].*[^\'\"])\)/gs;
+			const urlRegexWrapped = /url\(\'(.*)\'\)/gs;
+			topStyles[stylePos].replace(urlRegex, function(urlMatch, url){
+				console.log(`url Match`);
+				console.log(urlMatch);
+				console.log(url);
+				console.log(base64url.encode(url));
+				return (`url(http://localhost:8000/xssp/${base64url.encode(url)})`);
+			});
+			console.log(topStyles[stylePos]);
+			topStyles[stylePos].replace(urlRegexWrapped, function(urllMatch, url){
+				console.log(`url Match`);
+				console.log(urlMatch);
+				console.log(url);
+				console.log(base64url.encode(url));
+				return (`url('http://localhost:8000/xssp/${base64url.encode(url)}')`);
+			});
+			console.log(topStyles[stylePos]);
+		}
+		console.log('topStyles');
+		console.log(topStyles);
+		console.log('topStyles');
 		const props = this.props;
 
 		htmlimg.toPng(topPage, {
