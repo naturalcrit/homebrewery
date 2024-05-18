@@ -402,7 +402,7 @@ const ArchivePage = createClass({
                         </div>
                         <div className="resultsContainer dataGroup">
                             <div className="title">
-                                <h2>Your results, my lordship</h2>
+                                <h2>Your searched returned these results</h2>
                             </div>
                             {this.renderFoundBrews()}
                         </div>
