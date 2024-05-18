@@ -121,9 +121,15 @@ const Editor = createClass({
 
 	handleViewChange : function(newView){
 		this.props.setMoveArrows(newView === 'text');
+		this.setStoredCursorPosition(this.state.view);
+		const tempCursor = this.getStoredCursorPosition(newView);
 		this.setState({
 			view : newView
-		}, this.updateEditorSize);	//TODO: not sure if updateeditorsize needed
+		}, ()=>{
+			this.updateEditorSize;
+			this.refs.codeEditor?.codeMirror.focus();
+			this.refs.codeEditor?.codeMirror.setCursor(tempCursor)
+		});	//TODO: not sure if updateeditorsize needed
 	},
 
 	getCurrentPage : function(){
