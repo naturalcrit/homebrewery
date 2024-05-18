@@ -92,6 +92,7 @@ const ArchivePage = createClass({
                 pageSize: size,
                 v3: v3,
                 legacy: legacy,
+                totalBrews: null,
             });
             this.updateUrl(title, page, size, v3, legacy);
         }
@@ -344,10 +345,10 @@ const ArchivePage = createClass({
                     break;
                 case '503':
                     errorMessage =
-                        ' 503 - Your search is not specific enough. Too many brews meet this criteria for us to display them.';
+                        ' 503 - Service Unavailable, try again later, sorry.';
                     break;
                 case '500':
-                    errorMessage = "500 - We don't know what happened.";
+                    errorMessage = "500 - We don't know what happened, go ahead and contact the mods or report as a mistake.";
                 default:
                     errorMessage = 'An unexpected error occurred';
             }
