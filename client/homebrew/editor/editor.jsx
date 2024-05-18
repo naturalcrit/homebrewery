@@ -22,6 +22,18 @@ const DEFAULT_STYLE_TEXT = dedent`
 					color: black;
 				}`;
 
+let lastPage = 0;
+let liveScroll = true;
+
+const isElementCodeMirror=(element)=>{
+	let el = element;
+	while( el.tagName != 'body' ) {
+		if( el.classList.contains('CodeMirror-code') || el.classList.contains('CodeMirror-line'))
+			return true;
+		el = el.parentNode;
+	}
+	return false;
+};
 
 const Editor = createClass({
 	displayName     : 'Editor',
@@ -57,6 +69,15 @@ const Editor = createClass({
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
 		document.addEventListener('keydown', this.handleControlKeys);
+		document.addEventListener('click', (e)=>{
+			if(isElementCodeMirror(e.target) && liveScroll ) {
+				const curPage = this.getCurrentPage();
+				if( curPage != lastPage ) {
+					this.brewJump();
+					lastPage = curPage;
+				}
+			}
+		});
 
 		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
 		if(editorTheme) {
@@ -81,10 +102,36 @@ const Editor = createClass({
 	},
 
 	handleControlKeys : function(e){
+		if(liveScroll) {
+			const movementKeys = [ 13, 33, 34, 37, 38, 39, 40 ];
+			if (movementKeys.includes(e.keyCode)) {
+				const curPage = this.getCurrentPage();
+				if( curPage != lastPage ) {
+					this.brewJump();
+					lastPage = curPage;
+				}
+			}
+		}
 		if(!(e.ctrlKey || e.metaKey)) return;
 		const J_KEY = 74;
+		const END_KEY = 35;
+		const HOME_KEY = 36;
+
+		// Handle CTRL-HOME and CTRL-END
+		if(((e.keyCode == END_KEY) || (e.keyCode == HOME_KEY)) && liveScroll) this.brewJump();
+
+		// Brew Jump on CTRL-J
 		if((!e.shiftKey) && (e.keyCode == J_KEY)) this.brewJump();
-		if (e.shiftKey && (e.keyCode == J_KEY)) this.sourceJump();
+		// Source Jump on Shift-CTRL-J
+		if ((e.shiftKey) && (!e.altKey) && (e.keyCode == J_KEY)) this.sourceJump();
+		// Toggle Live-scrolling on Shift-CTRL-ALT-J
+		if((e.shiftKey) && (e.altKey) && (e.keyCode == J_KEY)) {
+			console.log('Trying to flip the property?')
+			console.log(liveScroll);
+			liveScroll = !liveScroll;
+			console.log(liveScroll);
+		}
+
 		if( e.keyCode == J_KEY) {
 			e.stopPropagation();
 			e.preventDefault();
