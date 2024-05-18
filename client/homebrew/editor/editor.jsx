@@ -56,6 +56,7 @@ const Editor = createClass({
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
+		document.addEventListener('keydown', this.handleControlKeys);
 
 		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
 		if(editorTheme) {
@@ -78,6 +79,18 @@ const Editor = createClass({
 			this.sourceJump();
 		};
 	},
+
+	handleControlKeys : function(e){
+		if(!(e.ctrlKey || e.metaKey)) return;
+		const J_KEY = 74;
+		if((!e.shiftKey) && (e.keyCode == J_KEY)) this.brewJump();
+		if (e.shiftKey && (e.keyCode == J_KEY)) this.sourceJump();
+		if( e.keyCode == J_KEY) {
+			e.stopPropagation();
+			e.preventDefault();
+		}
+	},
+
 
 	updateEditorSize : function() {
 		if(this.refs.codeEditor) {
@@ -116,6 +129,7 @@ const Editor = createClass({
 			const codeMirror = this.refs.codeEditor.codeMirror;
 
 			codeMirror.operation(()=>{ // Batch CodeMirror styling
+
 				//reset custom text styles
 				const customHighlights = codeMirror.getAllMarks().filter((mark)=>!mark.__isFold); //Don't undo code folding
 				for (let i=customHighlights.length - 1;i>=0;i--) customHighlights[i].clear();
