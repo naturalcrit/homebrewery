@@ -2,21 +2,6 @@ const HomebrewModel = require('./homebrew.model.js').model;
 const router = require('express').Router();
 const asyncHandler = require('express-async-handler');
 
-const buildTitleConditionsArray = (title) => {
-    if (title.startsWith('/') && title.endsWith('/')) {
-        return [
-            {
-                title: {
-                    $regex: title.slice(1, -1),
-                    $options: 'i',
-                },
-            },
-        ];
-    } else {
-        return buildTitleConditions(title);
-    }
-};
-
 const buildTitleConditions = (inputString) => {
     return [
         {
@@ -80,7 +65,7 @@ const archive = {
             const skip = (page - 1) * pageSize;
 
             const brewsQuery = buildBrewsQuery(req.query.legacy, req.query.v3);
-            const titleConditionsArray = buildTitleConditionsArray(title);
+            const titleConditionsArray = buildTitleConditions(title);
 
             const titleQuery = {
                 $and: [brewsQuery, ...titleConditionsArray],
@@ -110,7 +95,7 @@ const archive = {
             const title = req.query.title || '';
 
             const brewsQuery = buildBrewsQuery(req.query.legacy, req.query.v3);
-            const titleConditionsArray = buildTitleConditionsArray(title);
+            const titleConditionsArray = buildTitleConditions(title);
 
             const titleQuery = {
                 $and: [brewsQuery, ...titleConditionsArray],

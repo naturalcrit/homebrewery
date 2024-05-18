@@ -187,7 +187,7 @@ const ArchivePage = createClass({
                             placeholder="v3 Reference Document"
                         />
                     </label>
-                    <small>Tip! you can use <a href="https://regexlearn.com/learn">RegEx</a> if you format your query as <code>/title/</code></small>
+                    <small>Tip! you can use <code>-</code> to negate words, and <code>"word"</code> to specify an exact string.</small>
                     <label>
                         Results per page
                         <input
