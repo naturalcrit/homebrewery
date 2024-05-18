@@ -79,6 +79,27 @@ const Editor = createClass({
 		};
 	},
 
+	/**
+	 *	Stores the current cursor position in local storage.
+	*	@param {string} view - The editor type ('text' or 'style').
+	*/
+	setStoredCursorPosition : function(view){
+		if(view === 'text' || view === 'style'){
+			const cursorPos = this.refs.codeEditor.codeMirror.getCursor();
+			window.localStorage.setItem(`CURSOR_POS-${view}`, JSON.stringify(cursorPos))
+		}
+	},
+
+	/**
+	 * Retrieves the stored cursor position from local storage.
+	 * @param {string} view - The editor type ('text' or 'style').
+	 * @returns {Object|null} - The cursor position object or null if not found.
+	 */
+	getStoredCursorPosition : function(view){
+		const cursorPos = JSON.parse(window.localStorage.getItem(`CURSOR_POS-${view}`));
+		return cursorPos;
+	},
+
 	updateEditorSize : function() {
 		if(this.refs.codeEditor) {
 			let paneHeight = this.refs.main.parentNode.clientHeight;
