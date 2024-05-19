@@ -126,6 +126,7 @@ const Editor = createClass({
 		if(e.keyCode == SCROLLLOCK_KEY) {
 			liveScroll = !liveScroll;
 		}
+		
 		if(!(e.ctrlKey || e.metaKey)) return;
 
 		// Handle CTRL-HOME and CTRL-END
