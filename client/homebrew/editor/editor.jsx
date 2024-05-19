@@ -82,10 +82,11 @@ const Editor = createClass({
 
 	handleControlKeys : function(e){
 		if(!(e.ctrlKey || e.metaKey)) return;
-		const J_KEY = 74;
-		if((!e.shiftKey) && (e.keyCode == J_KEY)) this.brewJump();
-		if (e.shiftKey && (e.keyCode == J_KEY)) this.sourceJump();
-		if( e.keyCode == J_KEY) {
+		console.log(e);
+		const M_KEY = 77;
+		if((!e.shiftKey) && (e.keyCode == M_KEY)) this.brewJump();
+		if (e.shiftKey && (e.keyCode == M_KEY)) this.sourceJump();
+		if( e.keyCode == M_KEY) {
 			e.stopPropagation();
 			e.preventDefault();
 		}
