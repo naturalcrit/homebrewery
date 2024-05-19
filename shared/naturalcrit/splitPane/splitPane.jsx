@@ -20,6 +20,7 @@ const SplitPane = createClass({
 			isDragging        : false,
 			moveSource        : false,
 			moveBrew          : false,
+			liveScroll        : true,
 			showMoveArrows    : true
 		};
 	},
@@ -117,6 +118,20 @@ const SplitPane = createClass({
 					onClick={()=>this.setState({ moveBrew: !this.state.moveBrew })} >
 					<i className='fas fa-arrow-right' />
 				</div>
+				<div id='scrollToggleDiv' className='arrow unlock'
+					style={{ left: this.state.currentDividerPos-4 }}
+					onClick={()=>{
+						this.setState({ liveScroll: !this.state.liveScroll });
+						if(document.getElementById('scrollToggle').classList.contains('fa-unlock')) {
+							document.getElementById('scrollToggle').className = 'fas fa-lock';
+							document.getElementById('scrollToggleDiv').className = 'arrow lock';
+						} else {
+							document.getElementById('scrollToggle').className = 'fas fa-unlock';
+							document.getElementById('scrollToggleDiv').className = 'arrow unlock';
+						}
+					}} >
+					<i id='scrollToggle' className='fas fa-unlock' />
+				</div>
 			</>;
 		}
 	},
@@ -143,6 +158,7 @@ const SplitPane = createClass({
 				{React.cloneElement(this.props.children[0], {
 					moveBrew      : this.state.moveBrew,
 					moveSource    : this.state.moveSource,
+					liveScroll    : this.state.liveScroll,
 					setMoveArrows : this.setMoveArrows
 				})}
 			</Pane>

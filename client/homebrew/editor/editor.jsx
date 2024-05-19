@@ -28,7 +28,8 @@ let liveScroll = true;
 const isElementCodeMirror=(element)=>{
 	let el = element;
 	while( el.tagName != 'body' ) {
-		if( el.classList.contains('CodeMirror-code') || el.classList.contains('CodeMirror-line'))
+		if ( !el?.classList ) return false
+		if( el?.classList?.contains('CodeMirror-code') || el.classList.contains('CodeMirror-line'))
 			return true;
 		el = el.parentNode;
 	}
@@ -43,6 +44,7 @@ const Editor = createClass({
 				text  : '',
 				style : ''
 			},
+			liveScroll : true,
 
 			onTextChange  : ()=>{},
 			onStyleChange : ()=>{},
@@ -99,6 +101,9 @@ const Editor = createClass({
 		if(prevProps.moveSource !== this.props.moveSource) {
 			this.sourceJump();
 		};
+		if(prevProps.liveScroll !== this.props.liveScroll) {
+			liveScroll = !liveScroll;
+		};
 	},
 
 	handleControlKeys : function(e){
@@ -126,10 +131,7 @@ const Editor = createClass({
 		if ((e.shiftKey) && (!e.altKey) && (e.keyCode == J_KEY)) this.sourceJump();
 		// Toggle Live-scrolling on Shift-CTRL-ALT-J
 		if((e.shiftKey) && (e.altKey) && (e.keyCode == J_KEY)) {
-			console.log('Trying to flip the property?')
-			console.log(liveScroll);
 			liveScroll = !liveScroll;
-			console.log(liveScroll);
 		}
 
 		if( e.keyCode == J_KEY) {
