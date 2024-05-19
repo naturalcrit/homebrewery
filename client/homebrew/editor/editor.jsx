@@ -117,24 +117,26 @@ const Editor = createClass({
 				}
 			}
 		}
-		if(!(e.ctrlKey || e.metaKey)) return;
-		const J_KEY = 74;
+		const M_KEY = 77;
 		const END_KEY = 35;
 		const HOME_KEY = 36;
+		const SCROLLLOCK_KEY = 145;
+
+		// Toggle Live-scrolling on Scroll Lock
+		if(e.keyCode == SCROLLLOCK_KEY) {
+			liveScroll = !liveScroll;
+		}
+		if(!(e.ctrlKey || e.metaKey)) return;
 
 		// Handle CTRL-HOME and CTRL-END
 		if(((e.keyCode == END_KEY) || (e.keyCode == HOME_KEY)) && liveScroll) this.brewJump();
 
 		// Brew Jump on CTRL-J
-		if((!e.shiftKey) && (e.keyCode == J_KEY)) this.brewJump();
+		if((!e.shiftKey) && (e.keyCode == M_KEY)) this.brewJump();
 		// Source Jump on Shift-CTRL-J
-		if ((e.shiftKey) && (!e.altKey) && (e.keyCode == J_KEY)) this.sourceJump();
-		// Toggle Live-scrolling on Shift-CTRL-ALT-J
-		if((e.shiftKey) && (e.altKey) && (e.keyCode == J_KEY)) {
-			liveScroll = !liveScroll;
-		}
+		if ((e.shiftKey) && (!e.altKey) && (e.keyCode == M_KEY)) this.sourceJump();
 
-		if( e.keyCode == J_KEY) {
+		if( e.keyCode == M_KEY) {
 			e.stopPropagation();
 			e.preventDefault();
 		}
