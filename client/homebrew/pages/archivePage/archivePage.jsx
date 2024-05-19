@@ -2,7 +2,6 @@ require('./archivePage.less');
 
 const React = require('react');
 const createClass = require('create-react-class');
-const _ = require('lodash');
 const cx = require('classnames');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
@@ -27,8 +26,8 @@ const ArchivePage = createClass({
             //# request
             title: this.props.query.title || '',
             //tags: {},
-            legacy: `${this.props.query.legacy === 'false' ? false : true}`,
-            v3: `${this.props.query.v3 === 'false' ? false : true}`,
+            legacy: this.props.query.legacy !== 'false',
+            v3: this.props.query.v3 !== 'false',
             pageSize: this.props.query.size || 10,
             page: parseInt(this.props.query.page) || 1,
 
@@ -100,19 +99,10 @@ const ArchivePage = createClass({
         if (title !== '') {
             try {
                 this.setState({ searching: true, error: null });
-
-                await request
-                    .get(
-                        `/api/archive?title=${title}&page=${page}&size=${size}&v3=${v3}&legacy=${legacy}`
-                    )
-                    .then((response) => {
-                        if (response.ok) {
-                            this.updateStateWithBrews(
-                                response.body.brews,
-                                page
-                            );
-                        }
-                    });
+                const response = await request.get(`/api/archive?title=${title}&page=${page}&size=${size}&v3=${v3}&legacy=${legacy}`);
+                if (response.ok) {
+                    this.updateStateWithBrews(response.body.brews, page);
+                }
             } catch (error) {
                 console.log('error at loadPage: ', error);
                 this.setState({ error: `${error.response.status}` });
@@ -252,7 +242,6 @@ const ArchivePage = createClass({
 
     renderPaginationControls() {
         if (this.state.totalBrews) {
-            const title = encodeURIComponent(this.state.title);
             const size = parseInt(this.state.pageSize);
             const { page, totalBrews } = this.state;
 
@@ -317,7 +306,7 @@ const ArchivePage = createClass({
     },
 
     renderFoundBrews() {
-        const { title, brewCollection, page, totalPages, error, searching } =
+        const { title, brewCollection, error, searching } =
             this.state;
 
         if (searching) {
@@ -344,11 +333,11 @@ const ArchivePage = createClass({
                     errorMessage = "404 - We didn't find any brew";
                     break;
                 case '503':
-                    errorMessage =
-                        ' 503 - Service Unavailable, try again later, sorry.';
+                    errorMessage = "503 - Service Unavailable, try again later, sorry.";
                     break;
                 case '500':
                     errorMessage = "500 - We don't know what happened, go ahead and contact the mods or report as a mistake.";
+                    break;
                 default:
                     errorMessage = 'An unexpected error occurred';
             }
