@@ -63,7 +63,7 @@ const Editor = createClass({
 				editorTheme : editorTheme
 			});
 		}
-		if(this.refs.codeEditor && this.getStoredCursorPosition(this.state.view)){
+		if(this.refs.codeEditor){
 			this.refs.codeEditor.codeMirror.focus();
 			this.refs.codeEditor.codeMirror.setCursor(this.getStoredCursorPosition(this.state.view))
 
@@ -100,10 +100,10 @@ const Editor = createClass({
 	/**
 	 * Retrieves the stored cursor position from local storage.
 	 * @param {string} view - The editor type ('text' or 'style').
-	 * @returns {Object|null} - The cursor position object or null if not found.
+	 * @returns {Object} - The cursor position object or { line: 0, ch: 0 } if not found.
 	 */
 	getStoredCursorPosition : function(view){
-		const cursorPos = JSON.parse(window.localStorage.getItem(`CURSOR_POS-${view}`));
+		const cursorPos = JSON.parse(window.localStorage.getItem(`CURSOR_POS-${view}`)) ?? { line: 0, ch: 0 };
 		return cursorPos;
 	},
 
