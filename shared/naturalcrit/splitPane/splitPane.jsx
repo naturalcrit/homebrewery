@@ -15,13 +15,14 @@ const SplitPane = createClass({
 
 	getInitialState : function() {
 		return {
-			currentDividerPos : null,
-			windowWidth       : 0,
-			isDragging        : false,
-			moveSource        : false,
-			moveBrew          : false,
-			liveScroll        : true,
-			showMoveArrows    : true
+			currentDividerPos  : null,
+			windowWidth        : 0,
+			isDragging         : false,
+			moveSource         : false,
+			moveBrew           : false,
+			liveScroll         : true,
+			viewablePageNumber : 0,
+			showMoveArrows     : true
 		};
 	},
 

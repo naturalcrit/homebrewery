@@ -94,6 +94,11 @@ const Editor = createClass({
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
+		console.log(this.props);
+		console.log(prevProps);
+		console.log(this.state);
+		console.log(prevState);
+
 		this.highlightCustomMarkdown();
 		if(prevProps.moveBrew !== this.props.moveBrew) {
 			this.brewJump();
@@ -126,7 +131,7 @@ const Editor = createClass({
 		if(e.keyCode == SCROLLLOCK_KEY) {
 			liveScroll = !liveScroll;
 		}
-		
+
 		if(!(e.ctrlKey || e.metaKey)) return;
 
 		// Handle CTRL-HOME and CTRL-END
