@@ -120,7 +120,7 @@ const ArchivePage = createClass({
         const title = document.getElementById('title').value || '';
         const v3 = document.getElementById('v3').checked;
         const legacy = document.getElementById('legacy').checked;
-        
+
         this.setState({
             totalBrews: null,
         });
@@ -164,6 +164,16 @@ const ArchivePage = createClass({
         );
     },
 
+    validateInput: function (e) {
+        const textInput = e.target
+        const submitButton = document.getElementById('searchButton');
+        if (textInput.value.length > 3) {
+            submitButton.disabled = false;
+        } else {
+            submitButton.disabled = true;
+        }
+    },
+
     renderForm: function () {
         return (
             <div className="brewLookup">
@@ -176,6 +186,9 @@ const ArchivePage = createClass({
                             type="text"
                             name="title"
                             defaultValue={this.state.title}
+                            onKeyUp={(e) => {
+                                this.validateInput(e);
+                            }}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                     this.loadTotal();
@@ -191,15 +204,14 @@ const ArchivePage = createClass({
                     </small>
                     <label>
                         Results per page
-                        <input
-                            id="size"
-                            type="number"
-                            min="6"
-                            step="2"
-                            max="30"
-                            defaultValue={this.state.pageSize}
-                            name="pageSize"
-                        />
+                        <select name="pageSize" id="size">
+                            <option value="6">6</option>
+                            <option value="10" default>10</option>
+                            <option value="16">16</option>
+                            <option value="20">20</option>
+                            <option value="24">24</option>
+                            <option value="30">30</option>
+                        </select>
                     </label>
 
                     <label>
@@ -230,11 +242,12 @@ const ArchivePage = createClass({
             		*/}
 
                     <button
-                        className="search"
+                        id="searchButton"
                         onClick={() => {
                             this.loadTotal();
                             this.loadPage(1, true);
                         }}
+                        disabled
                     >
                         Search
                         <i
