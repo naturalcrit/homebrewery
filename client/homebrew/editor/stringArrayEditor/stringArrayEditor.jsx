@@ -34,7 +34,6 @@ const StringArrayEditor = createClass({
 
 	componentDidMount : function() {
 		this.newTagInput = React.createRef();
-		this.uid = _.uniqueId();
 	},
 
 	componentDidUpdate : function(prevProps) {
