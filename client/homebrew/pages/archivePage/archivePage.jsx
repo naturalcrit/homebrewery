@@ -117,7 +117,9 @@ const ArchivePage = createClass({
 
     loadTotal: async function () {
         console.log('running loadTotal');
-        const { title, v3, legacy } = this.state;
+        const title = document.getElementById('title').value || '';
+        const v3 = document.getElementById('v3').checked;
+        const legacy = document.getElementById('legacy').checked;
         
         this.setState({
             totalBrews: null,
@@ -142,7 +144,6 @@ const ArchivePage = createClass({
                 this.updateStateWithBrews([], 1);
             }
         }
-        console.log('total brews in state in loadtotal: ', this.state.totalBrews);
     },
 
     renderNavItems: function () {
@@ -248,7 +249,6 @@ const ArchivePage = createClass({
                     Remember, you can only search brews with this tool if they
                     are published
                 </small>
-                <button onClick={console.log('total brews in state: ', this.state.totalBrews)}>Log total</button>
             </div>
         );
     },
