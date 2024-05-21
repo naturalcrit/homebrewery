@@ -43,7 +43,7 @@ const SplitPane = createClass({
 		window.addEventListener('resize', this.handleWindowResize);
 	},
 
-	componentWillUnmount : function() {
+componentWillUnmount : function() {
 		window.removeEventListener('resize', this.handleWindowResize);
 	},
 
@@ -123,12 +123,14 @@ const SplitPane = createClass({
 					style={{ left: this.state.currentDividerPos-4 }}
 					onClick={()=>{
 						this.setState({ liveScroll: !this.state.liveScroll });
-						if(document.getElementById('scrollToggle').classList.contains('fa-unlock')) {
-							document.getElementById('scrollToggle').className = 'fas fa-lock';
-							document.getElementById('scrollToggleDiv').className = 'arrow lock';
+						const toggle = document.getElementById('scrollToggle');
+						const toggleDiv = document.getElementById('scrollToggleDiv');
+						if(toggle.classList.contains('fa-unlock')) {
+							toggle.className = 'fas fa-lock';
+							toggleDiv.className = 'arrow lock';
 						} else {
-							document.getElementById('scrollToggle').className = 'fas fa-unlock';
-							document.getElementById('scrollToggleDiv').className = 'arrow unlock';
+							toggle.className = 'fas fa-unlock';
+							toggleDiv.className = 'arrow unlock';
 						}
 					}} >
 					<i id='scrollToggle' className='fas fa-unlock' />
