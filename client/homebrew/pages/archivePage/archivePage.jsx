@@ -91,7 +91,6 @@ const ArchivePage = createClass({
                 pageSize: size,
                 v3: v3,
                 legacy: legacy,
-                totalBrews: null,
             });
             this.updateUrl(title, page, size, v3, legacy);
         }
@@ -119,11 +118,11 @@ const ArchivePage = createClass({
     loadTotal: async function () {
         console.log('running loadTotal');
         const { title, v3, legacy } = this.state;
+        this.setState({
+            totalBrews: null,
+        });
 
         if (title !== '') {
-            this.setState({
-                totalBrews: null,
-            });
             try {
                 await request
                     .get(
