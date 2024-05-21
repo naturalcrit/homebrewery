@@ -57,7 +57,7 @@ const SharePage = createClass({
 
 		return 	<Nav.item color='orange' icon='fas fa-pencil-alt' href={`/edit/${editLink}`}>
 					edit
-				</Nav.item>;
+		</Nav.item>;
 	},
 
 	render : function(){
