@@ -118,6 +118,7 @@ const ArchivePage = createClass({
     loadTotal: async function () {
         console.log('running loadTotal');
         const { title, v3, legacy } = this.state;
+        
         this.setState({
             totalBrews: null,
         });
@@ -141,6 +142,7 @@ const ArchivePage = createClass({
                 this.updateStateWithBrews([], 1);
             }
         }
+        console.log('total brews in state in loadtotal: ', this.state.totalBrews);
     },
 
     renderNavItems: function () {
