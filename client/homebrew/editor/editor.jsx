@@ -48,8 +48,8 @@ const Editor = createClass({
 		};
 	},
 
-	editorWrapper : React.createRef(null),
-	editor        : React.createRef(null),
+	editor     : React.createRef(null),
+	codeEditor : React.createRef(null),
 
 	isText  : function() {return this.state.view == 'text';},
 	isStyle : function() {return this.state.view == 'style';},
@@ -83,15 +83,15 @@ const Editor = createClass({
 	},
 
 	updateEditorSize : function() {
-		if(this.editor.current) {
-			let paneHeight = this.editorWrapper.current.parentNode.clientHeight;
+		if(this.codeEditor.current) {
+			let paneHeight = this.editor.current.parentNode.clientHeight;
 			paneHeight -= SNIPPETBAR_HEIGHT;
-			this.editor.current.codeMirror.setSize(null, paneHeight);
+			this.codeEditor.current.codeMirror.setSize(null, paneHeight);
 		}
 	},
 
 	handleInject : function(injectText){
-		this.editor.current?.injectText(injectText, false);
+		this.codeEditor.current?.injectText(injectText, false);
 	},
 
 	handleViewChange : function(newView){
@@ -102,7 +102,7 @@ const Editor = createClass({
 	},
 
 	getCurrentPage : function(){
-		const lines = this.props.brew.text.split('\n').slice(0, this.editor.current.getCursorPosition().line + 1);
+		const lines = this.props.brew.text.split('\n').slice(0, this.codeEditor.current.getCursorPosition().line + 1);
 		return _.reduce(lines, (r, line)=>{
 			if(
 				(this.props.renderer == 'legacy' && line.indexOf('\\page') !== -1)
@@ -114,9 +114,9 @@ const Editor = createClass({
 	},
 
 	highlightCustomMarkdown : function(){
-		if(!this.editor.current) return;
+		if(!this.codeEditor.current) return;
 		if(this.state.view === 'text')  {
-			const codeMirror = this.editor.current.codeMirror;
+			const codeMirror = this.codeEditor.current.codeMirror;
 
 			codeMirror.operation(()=>{ // Batch CodeMirror styling
 				//reset custom text styles
@@ -305,23 +305,23 @@ const Editor = createClass({
 
 				targetLine = lineCount - 1; //Scroll to `\page`, which is one line back.
 
-				let currentY = this.editor.current.codeMirror.getScrollInfo().top;
-				let targetY  = this.editor.current.codeMirror.heightAtLine(targetLine, 'local', true);
+				let currentY = this.codeEditor.current.codeMirror.getScrollInfo().top;
+				let targetY  = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
 
 				//Scroll 1/10 of the way every 10ms until 1px off.
 				const incrementalScroll = setInterval(()=>{
 					currentY += (targetY - currentY) / 10;
-					this.editor.current.codeMirror.scrollTo(null, currentY);
+					this.codeEditor.current.codeMirror.scrollTo(null, currentY);
 
 					// Update target: target height is not accurate until within +-10 lines of the visible window
 					if(Math.abs(targetY - currentY > 100))
-						targetY = this.editor.current.codeMirror.heightAtLine(targetLine, 'local', true);
+						targetY = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
 
 					// End when close enough
 					if(Math.abs(targetY - currentY) < 1) {
-						this.editor.current.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
-						this.editor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
-						this.editor.current.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
+						this.codeEditor.current.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
+						this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
+						this.codeEditor.current.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
 						clearInterval(incrementalScroll);
 					}
 				}, 10);
@@ -331,7 +331,7 @@ const Editor = createClass({
 
 	//Called when there are changes to the editor's dimensions
 	update : function(){
-		this.editor.current?.updateSize();
+		this.codeEditor.current?.updateSize();
 	},
 
 	updateEditorTheme : function(newTheme){
@@ -350,7 +350,7 @@ const Editor = createClass({
 		if(this.isText()){
 			return <>
 				<CodeEditor key='codeEditor'
-					ref={this.editor}
+					ref={this.codeEditor}
 					language='gfm'
 					view={this.state.view}
 					value={this.props.brew.text}
@@ -362,7 +362,7 @@ const Editor = createClass({
 		if(this.isStyle()){
 			return <>
 				<CodeEditor key='codeEditor'
-					ref={this.editor}
+					ref={this.codeEditor}
 					language='css'
 					view={this.state.view}
 					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
@@ -387,28 +387,28 @@ const Editor = createClass({
 	},
 
 	redo : function(){
-		return this.editor.current?.redo();
+		return this.codeEditor.current?.redo();
 	},
 
 	historySize : function(){
-		return this.editor.current?.historySize();
+		return this.codeEditor.current?.historySize();
 	},
 
 	undo : function(){
-		return this.editor.current?.undo();
+		return this.codeEditor.current?.undo();
 	},
 
 	foldCode : function(){
-		return this.editor.current?.foldAllCode();
+		return this.codeEditor.current?.foldAllCode();
 	},
 
 	unfoldCode : function(){
-		return this.editor.current?.unfoldAllCode();
+		return this.codeEditor.current?.unfoldAllCode();
 	},
 
 	render : function(){
 		return (
-			<div className='editor' ref={this.editorWrapper}>
+			<div className='editor' ref={this.editor}>
 				<SnippetBar
 					brew={this.props.brew}
 					view={this.state.view}
@@ -424,7 +424,7 @@ const Editor = createClass({
 					historySize={this.historySize()}
 					currentEditorTheme={this.state.editorTheme}
 					updateEditorTheme={this.updateEditorTheme}
-					cursorPos={this.editor.current?.getCursorPosition() || {}} />
+					cursorPos={this.codeEditor.current?.getCursorPosition() || {}} />
 
 				{this.renderEditor()}
 			</div>
