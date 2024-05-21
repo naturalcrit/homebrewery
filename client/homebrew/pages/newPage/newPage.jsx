@@ -2,7 +2,6 @@
 require('./newPage.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const _ = require('lodash');
 const request = require('../../utils/request-middleware.js');
 
 const Markdown = require('naturalcrit/markdown.js');
