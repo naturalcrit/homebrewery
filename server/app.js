@@ -25,7 +25,7 @@ const sanitizeBrew = (brew, accessType)=>{
 	brew.__v = undefined;
 	if(accessType !== 'edit' && accessType !== 'shareAuthor') {
 		brew.editId = undefined;
-	}	
+	}
 	return brew;
 };
 
