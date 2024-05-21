@@ -248,6 +248,7 @@ const ArchivePage = createClass({
                     Remember, you can only search brews with this tool if they
                     are published
                 </small>
+                <button onClick={console.log('total brews in state: ', this.state.totalBrews)}>Log total</button>
             </div>
         );
     },
