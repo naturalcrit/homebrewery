@@ -25,8 +25,8 @@ const NotificationPopup = createClass({
 				<>
 					<li key='psa'>
 						<em>Don't store IMAGES in Google Drive</em><br />
-						Google Drive is not an image service, and will block images from being used 
-						in brews if they get more views than expected. Google has confirmed they won't fix 
+						Google Drive is not an image service, and will block images from being used
+						in brews if they get more views than expected. Google has confirmed they won't fix
 						this, so we recommend you look for another image hosting service such as imgur, ImgBB or Google Photos.
 					</li>
 
