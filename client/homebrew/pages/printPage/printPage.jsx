@@ -102,7 +102,7 @@ const PrintPage = createClass({
 			<link href={`/themes/${rendererPath}/${themePath}/style.css`} type='text/css' rel='stylesheet'/>
 			{/* Apply CSS from Style tab */}
 			{this.renderStyle()}
-			<div className='pages' ref='pages' lang={this.state.brew.lang}>
+			<div className='pages' lang={this.state.brew.lang}>
 				{this.renderPages()}
 			</div>
 		</div>;
