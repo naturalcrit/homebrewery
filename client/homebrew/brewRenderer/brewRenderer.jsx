@@ -7,6 +7,7 @@ const _ = require('lodash');
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
 const Markdown = require('naturalcrit/markdown.js');
 const ErrorBar = require('./errorBar/errorBar.jsx');
+const ToolBar  = require('./toolBar/toolBar.jsx');
 
 //TODO: move to the brew renderer
 const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
@@ -198,6 +199,7 @@ const BrewRenderer = (props)=>{
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
 			>
+				<ToolBar />
 				<div className={'brewRenderer'}
 					onScroll={handleScroll}
 					style={{ height: state.height }}>
