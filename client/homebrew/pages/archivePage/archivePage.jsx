@@ -99,7 +99,9 @@ const ArchivePage = createClass({
         if (title !== '') {
             try {
                 this.setState({ searching: true, error: null });
-                const response = await request.get(`/api/archive?title=${title}&page=${page}&size=${size}&v3=${v3}&legacy=${legacy}`);
+                const response = await request.get(
+                    `/api/archive?title=${title}&page=${page}&size=${size}&v3=${v3}&legacy=${legacy}`
+                );
                 if (response.ok) {
                     this.updateStateWithBrews(response.body.brews, page);
                 }
@@ -119,6 +121,9 @@ const ArchivePage = createClass({
         const { title, v3, legacy } = this.state;
 
         if (title !== '') {
+            this.setState({
+                totalBrews: null,
+            });
             try {
                 await request
                     .get(
@@ -178,7 +183,10 @@ const ArchivePage = createClass({
                             placeholder="v3 Reference Document"
                         />
                     </label>
-                    <small>Tip! you can use <code>-</code> to negate words, and <code>"word"</code> to specify an exact string.</small>
+                    <small>
+                        Tip! you can use <code>-</code> to negate words, and{' '}
+                        <code>"word"</code> to specify an exact string.
+                    </small>
                     <label>
                         Results per page
                         <input
@@ -235,79 +243,92 @@ const ArchivePage = createClass({
                         />
                     </button>
                 </div>
-                <small>Remember, you can only search brews with this tool if they are published</small>
+                <small>
+                    Remember, you can only search brews with this tool if they
+                    are published
+                </small>
             </div>
         );
     },
 
-    renderPaginationControls() {
-        if (this.state.totalBrews) {
-            const size = parseInt(this.state.pageSize);
-            const { page, totalBrews } = this.state;
-
-            const totalPages = Math.ceil(totalBrews / size);
-
-            let startPage, endPage;
-            if (page <= 6) {
-                startPage = 1;
-                endPage = Math.min(totalPages, 10);
-            } else if (page + 4 >= totalPages) {
-                startPage = Math.max(1, totalPages - 9);
-                endPage = totalPages;
-            } else {
-                startPage = page - 5;
-                endPage = page + 4;
-            }
-
-            const pagesAroundCurrent = new Array(endPage - startPage + 1)
-                .fill()
-                .map((_, index) => (
-                    <a
-                        key={startPage + index}
-                        className={`pageNumber ${
-                            page === startPage + index ? 'currentPage' : ''
-                        }`}
-                        onClick={() => this.loadPage(startPage + index, false)}
-                    >
-                        {startPage + index}
-                    </a>
-                ));
-
-            return (
-                <div className="paginationControls">
-                    {page > 1 && (
-                        <button
-                            className="previousPage"
-                            onClick={() => this.loadPage(page - 1, false)}
-                        >
-                            &lt;&lt;
-                        </button>
-                    )}
-                    <ol className="pages">
-                        {startPage > 1 && <a className="firstPage pageNumber" onClick={() => this.loadPage(1, false)}>1 ...</a>}
-                        {pagesAroundCurrent}
-                        {endPage < totalPages && (
-                            <a className="lastPage pageNumber" onClick={() => this.loadPage(totalPages, false)}>... {totalPages}</a>
-                        )}
-                    </ol>
-                    {page < totalPages && (
-                        <button
-                            className="nextPage"
-                            onClick={() => this.loadPage(page + 1, false)}
-                        >
-                            &gt;&gt;
-                        </button>
-                    )}
-                </div>
-            );
-        } else {
+    renderPaginationControls: function () {
+        if (!this.state.totalBrews) {
             return null;
         }
+
+        const size = parseInt(this.state.pageSize);
+        const { page, totalBrews } = this.state;
+        const totalPages = Math.ceil(totalBrews / size);
+
+        let startPage, endPage;
+        if (page <= 6) {
+            startPage = 1;
+            endPage = Math.min(totalPages, 10);
+        } else if (page + 4 >= totalPages) {
+            startPage = Math.max(1, totalPages - 9);
+            endPage = totalPages;
+        } else {
+            startPage = page - 5;
+            endPage = page + 4;
+        }
+
+        const pagesAroundCurrent = new Array(endPage - startPage + 1)
+            .fill()
+            .map((_, index) => (
+                <a
+                    key={startPage + index}
+                    className={`pageNumber ${
+                        page === startPage + index ? 'currentPage' : ''
+                    }`}
+                    onClick={() => this.loadPage(startPage + index, false)}
+                >
+                    {startPage + index}
+                </a>
+            ));
+
+        return (
+            <div className="paginationControls">
+                {page > 1 && (
+                    <button
+                        className="previousPage"
+                        onClick={() => this.loadPage(page - 1, false)}
+                    >
+                        &lt;&lt;
+                    </button>
+                )}
+                <ol className="pages">
+                    {startPage > 1 && (
+                        <a
+                            className="firstPage pageNumber"
+                            onClick={() => this.loadPage(1, false)}
+                        >
+                            1 ...
+                        </a>
+                    )}
+                    {pagesAroundCurrent}
+                    {endPage < totalPages && (
+                        <a
+                            className="lastPage pageNumber"
+                            onClick={() => this.loadPage(totalPages, false)}
+                        >
+                            ... {totalPages}
+                        </a>
+                    )}
+                </ol>
+                {page < totalPages && (
+                    <button
+                        className="nextPage"
+                        onClick={() => this.loadPage(page + 1, false)}
+                    >
+                        &gt;&gt;
+                    </button>
+                )}
+            </div>
+        );
     },
 
     renderFoundBrews() {
-        const { title, brewCollection, error, searching } =
-            this.state;
+        const { title, brewCollection, error, searching } = this.state;
 
         if (searching) {
             return (
@@ -333,10 +354,12 @@ const ArchivePage = createClass({
                     errorMessage = "404 - We didn't find any brew";
                     break;
                 case '503':
-                    errorMessage = "503 - Service Unavailable, try again later, sorry.";
+                    errorMessage =
+                        '503 - Service Unavailable, try again later, sorry.';
                     break;
                 case '500':
-                    errorMessage = "500 - We don't know what happened, go ahead and contact the mods or report as a mistake.";
+                    errorMessage =
+                        "500 - We don't know what happened, go ahead and contact the mods or report as a mistake.";
                     break;
                 default:
                     errorMessage = 'An unexpected error occurred';
