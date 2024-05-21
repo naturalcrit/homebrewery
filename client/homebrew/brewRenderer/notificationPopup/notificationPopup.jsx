@@ -2,7 +2,6 @@ require('./notificationPopup.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
-const cx    = require('classnames');	//Unused variable
 
 const DISMISS_KEY = 'dismiss_notification12-04-23';
 
