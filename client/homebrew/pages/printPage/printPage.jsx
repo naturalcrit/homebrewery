@@ -2,7 +2,6 @@ require('./printPage.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
-const cx    = require('classnames');
 const { Meta } = require('vitreum/headtags');
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
 const Markdown = require('naturalcrit/markdown.js');
@@ -34,7 +33,7 @@ const PrintPage = createClass({
 				style    : this.props.brew.style    || undefined,
 				renderer : this.props.brew.renderer || 'legacy',
 				theme    : this.props.brew.theme    || '5ePHB',
-				lang	 : this.props.brew.lang     || 'en'
+				lang   	 : this.props.brew.lang     || 'en'
 			}
 		};
 	},
@@ -52,7 +51,7 @@ const PrintPage = createClass({
 						style    : styleStorage,
 						renderer : metaStorage?.renderer || 'legacy',
 						theme    : metaStorage?.theme    || '5ePHB',
-						lang	 : metaStorage?.lang	 || 'en'
+						lang   	 : metaStorage?.lang	 || 'en'
 					}
 				};
 			});
@@ -96,14 +95,14 @@ const PrintPage = createClass({
 
 		return <div>
 			<Meta name='robots' content='noindex, nofollow' />
-			<link href={`/themes/${rendererPath}/Blank/style.css`} type="text/css" rel='stylesheet'/>
+			<link href={`/themes/${rendererPath}/Blank/style.css`} type='text/css' rel='stylesheet'/>
 			{baseThemePath &&
-				<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} type="text/css" rel='stylesheet'/>
+				<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} type='text/css' rel='stylesheet'/>
 			}
-			<link href={`/themes/${rendererPath}/${themePath}/style.css`} type="text/css" rel='stylesheet'/>
+			<link href={`/themes/${rendererPath}/${themePath}/style.css`} type='text/css' rel='stylesheet'/>
 			{/* Apply CSS from Style tab */}
 			{this.renderStyle()}
-			<div className='pages' ref='pages' lang={this.state.brew.lang}>
+			<div className='pages' lang={this.state.brew.lang}>
 				{this.renderPages()}
 			</div>
 		</div>;

@@ -1,8 +1,6 @@
 require('./brewItem.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const _     = require('lodash');
-const cx    = require('classnames');
 const moment = require('moment');
 const request = require('../../../../utils/request-middleware.js');
 

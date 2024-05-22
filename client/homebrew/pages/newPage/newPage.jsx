@@ -2,7 +2,6 @@
 require('./newPage.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const _ = require('lodash');
 const request = require('../../utils/request-middleware.js');
 
 const Markdown = require('naturalcrit/markdown.js');
@@ -46,6 +45,8 @@ const NewPage = createClass({
 			currentEditorPage : 0
 		};
 	},
+
+	editor : React.createRef(null),
 
 	componentDidMount : function() {
 		document.addEventListener('keydown', this.handleControlKeys);
@@ -96,7 +97,7 @@ const NewPage = createClass({
 	},
 
 	handleSplitMove : function(){
-		this.refs.editor.update();
+		this.editor.current.update();
 	},
 
 	handleTextChange : function(text){
@@ -107,7 +108,7 @@ const NewPage = createClass({
 		this.setState((prevState)=>({
 			brew              : { ...prevState.brew, text: text },
 			htmlErrors        : htmlErrors,
-			currentEditorPage : this.refs.editor.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
+			currentEditorPage : this.editor.current.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
 		}));
 		localStorage.setItem(BREWKEY, text);
 	},
@@ -213,9 +214,9 @@ const NewPage = createClass({
 		return <div className='newPage sitePage'>
 			{this.renderNavbar()}
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
+				<SplitPane onDragFinish={this.handleSplitMove}>
 					<Editor
-						ref='editor'
+						ref={this.editor}
 						brew={this.state.brew}
 						onTextChange={this.handleTextChange}
 						onStyleChange={this.handleStyleChange}
