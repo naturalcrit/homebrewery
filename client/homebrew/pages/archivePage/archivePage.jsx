@@ -403,7 +403,16 @@ const ArchivePage = createClass({
         return (
             <div className="foundBrews">
                 <span className="totalBrews">
-                    Brews found: {this.state.totalBrews}
+                    Brews found:
+                    {() => {
+                        if (title == '') {
+                            return '0';
+                        }
+                        if (this.state.totalBrews) {
+                            return this.state.totalBrews;
+                        }
+                        return '<span className="searchAnim"></span>';
+                    }}
                 </span>
                 {brewCollection.map((brew, index) => (
                     <BrewItem
@@ -434,7 +443,7 @@ const ArchivePage = createClass({
                         </div>
                         <div className="resultsContainer dataGroup">
                             <div className="title">
-                                <h2>Your searched returned these results</h2>
+                                <h2>Your search returned these results</h2>
                             </div>
                             {this.renderFoundBrews()}
                         </div>
