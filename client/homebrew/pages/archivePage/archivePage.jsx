@@ -79,13 +79,23 @@ const ArchivePage = createClass({
     loadPage: async function (page, update) {
         console.log('running loadPage');
         //load form data directly
+        /*
         const title = document.getElementById('title').value || '';
         const size = document.getElementById('size').value || 10;
         const v3 = document.getElementById('v3').checked;
         const legacy = document.getElementById('legacy').checked;
+        State is usually not fast enough for this function
+        */
+        
+        const {title, size, v3, legacy} = this.state;
 
         // Update state with form data for later, only when first page
         if (update === true) {
+            const title = document.getElementById('title').value || '';
+            const size = document.getElementById('size').value || 10;
+            const v3 = document.getElementById('v3').checked;
+            const legacy = document.getElementById('legacy').checked;
+
             this.setState({
                 title: title,
                 pageSize: size,
@@ -117,9 +127,7 @@ const ArchivePage = createClass({
 
     loadTotal: async function () {
         console.log('running loadTotal');
-        const title = document.getElementById('title').value || '';
-        const v3 = document.getElementById('v3').checked;
-        const legacy = document.getElementById('legacy').checked;
+        const {title, v3, legacy} = this.state;
 
         this.setState({
             totalBrews: null,
