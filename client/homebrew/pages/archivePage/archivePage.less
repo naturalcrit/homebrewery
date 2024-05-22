@@ -6,19 +6,20 @@ body {
     }
 
     small {
-        font-size:10pt;
-        color:#555;
+        font-size: 10pt;
+        color: #555;
+
         a {
-            color:#333;
+            color: #333;
         }
     }
-    
+
     code {
-        background:lightgrey;
-        border-radius:5px;
-        padding-inline:5px
+        background: lightgrey;
+        border-radius: 5px;
+        padding-inline: 5px
     }
-    
+
     *:not(input) {
         user-select: none;
     }
@@ -29,7 +30,9 @@ body {
     height: 100%;
     background-color: #2C3E50;
 
-    h1,h2,h3 {
+    h1,
+    h2,
+    h3 {
         font-family: 'Open Sans';
         color: white;
         font-weight: 900;
@@ -37,221 +40,201 @@ body {
 
     .content {
         display: grid;
-        grid-template-rows: 20vh 1fr;
+        grid-template-columns: 500px 2fr;
+        background: #2C3E50;
 
-        .welcome {
-            display: grid;
-            place-items: center;
-            background: url('https://i.imgur.com/MJ4YHu7.jpg');
-            background-size: 100%;
-            background-position: center;
-            height: 20vh;
-            border-bottom: 5px solid #333;
-
-            h1 {
-                font-size: 40px;
-                filter:drop-shadow(0 0 5px black);
-            }
-        }
-
-        .flexGroup {
+        .dataGroup {
+            width: 100%;
             height: 100%;
-            display: grid;
-            grid-template-columns: 500px 2fr;
-            background: #2C3E50;
+            background: white;
 
-            .dataGroup {
-                width: 100%;
-                height: 100%;
-                background: white;
+            &.form .brewLookup {
+                position: relative;
+                padding: 50px;
 
-                &.form .brewLookup {
-                    position: relative;
-                    padding: 50px;
-
-                    .formTitle {
-                        color:black;
-                        font-size: 30px;
-                        border-bottom: 2px solid;
-                        margin: 20px 0;
-                        text-align: center;
-                    }
-
-                    .formContents {
-                        display: flex;
-                        flex-direction: column;
-                    }
-                    label {
-                        margin: 10px 0;
-                    }
-                    input {
-                        margin: 0 10px;
-                    }
-                    #searchButton {
-                        position:absolute;
-                        right:10px;
-                        bottom:20px;
-
-                        i {
-                            margin-left: 10px;
-                        }
-                    }
+                .formTitle {
+                    color: black;
+                    font-size: 30px;
+                    border-bottom: 2px solid;
+                    margin: 20px 0;
+                    text-align: center;
                 }
 
-                &.resultsContainer {
+                .formContents {
                     display: flex;
                     flex-direction: column;
-                    border-left: 2px solid;
-                    height: 100%;
-                    font-family: "BookInsanityRemake";
-                    font-size: .34cm;
+                }
 
-                    .title {
-                        height: 10vh;
-                        background-color: #333;
+                label {
+                    margin: 10px 0;
+                }
+
+                input {
+                    margin: 0 10px;
+                }
+
+                #searchButton {
+                    position: absolute;
+                    right: 10px;
+                    bottom: 20px;
+
+                    i {
+                        margin-left: 10px;
+                    }
+                }
+            }
+
+            &.resultsContainer {
+                display: flex;
+                flex-direction: column;
+                border-left: 2px solid;
+                height: 100%;
+                font-family: "BookInsanityRemake";
+                font-size: .34cm;
+
+
+                .foundBrews {
+                    position: relative;
+                    background-color: #2C3E50;
+                    width: 100%;
+                    max-height: 100%;
+                    height: 100%;
+                    padding: 50px;
+                    overflow-y: scroll;
+
+                    h3 {
+                        font-size: 25px;
+                    }
+
+                    &.noBrews {
                         display: grid;
                         place-items: center;
-
-                        h2 {
-                            font-size: 30px;
-                        }
+                        color: white;
                     }
-                    .foundBrews {
-                        position: relative;
-                        background-color: #2C3E50;
-                        width: 100%;
-                        max-height: 100%;
-                        height: 66.8vh;
-                        padding: 50px;
-                        overflow-y:scroll;
+
+                    &.searching {
+                        display: grid;
+                        place-items: center;
+                        color: white;
 
                         h3 {
-                            font-size: 25px;
+                            position: relative;
                         }
 
-                        &.noBrews {
-                            display: grid;
-                            place-items: center;
-                            color: white;
-                        }
-
-                        &.searching {
-                            display: grid;
-                            place-items: center;
-                            color: white;
-
-                            h3 { position: relative;}
-                            h3.searchAnim::after {
-                                content: "";
-                                width: max-content;
-                                height: 1em;
-                                position: absolute;
-                                right: 0;
-                                top: 50%;
-                                translate: 100% -50%;
-                                animation: trailingDots 2s ease infinite;
-                            }
-                        }
-
-                        .totalBrews {
-                            position: fixed;
-                            bottom: 0;
-                            right: 17px;
-                            font-size: 11px;
-                            font-weight: 800;
-                            color: white;
-                            background-color: #333;
-                            padding: 8px 10px;
-                            z-index: 1000;
-                            font-family: 'Open Sans';
-                        }
-                        .brewItem {
-                            background-image: url('/assets/parchmentBackground.jpg');
-                            width: 48%;
-                            margin-right: 40px;
-                            color: black;
-
-                            &:nth-child(even of .brewItem) {
-                                margin-right: 0;
-                            }
-                            h2 {
-                                font-size: 0.75cm;
-                                line-height: 0.988em;
-                                font-family: "MrEavesRemake";
-                                font-weight: 800;
-                                color: var(--HB_Color_HeaderText);
-                            }
-
-                            .info {
-                                font-family: ScalySansRemake;
-                                font-size: 1.2em;
-
-                                >span {
-                                    margin-right: 12px;
-                                    line-height: 1.5em;
-                                }
-                            }
-                        }
-
-                        .paginationControls {
+                        h3.searchAnim::after {
+                            content: "";
+                            width: max-content;
+                            height: 1em;
                             position: absolute;
-                            left: 50%;
-                            translate: -50%;
-                            width: auto;
-                            display: grid;
-                            place-items: center;
-                            grid-template-areas: "previousPage currentPage nextPage";
-                            grid-template-columns: 50px 1fr 50px;
-                            
-                            .pages {
-                                grid-area: currentPage;
-                                height: 100%;
-                                width: 100%;
-                                display: flex;
-                                justify-content:space-evenly;
-                                text-align: center;
-                                padding: 5px 8px;
+                            right: 0;
+                            top: 50%;
+                            translate: 100% -50%;
+                            animation: trailingDots 2s ease infinite;
+                        }
+                    }
 
-                                .pageNumber {
-                                    color: white;
-                                    font-family: Open Sans;
-                                    font-weight: 900;
-                                    text-underline-position: under;
-                                    margin-inline:10px;
-                                    cursor: pointer;
+                    .totalBrews {
+                        position: fixed;
+                        bottom: 0;
+                        right: 17px;
+                        font-size: 11px;
+                        font-weight: 800;
+                        color: white;
+                        background-color: #333;
+                        padding: 8px 10px;
+                        z-index: 1000;
+                        font-family: 'Open Sans';
+                    }
 
-                                    &.currentPage {
-                                        color:gold;
-                                        text-decoration:underline;
-                                        pointer-events:none;
-                                    }
+                    .brewItem {
+                        background-image: url('/assets/parchmentBackground.jpg');
+                        width: 48%;
+                        margin-right: 40px;
+                        color: black;
 
-                                    &.firstPage {
-                                        margin-right:-5px;
-                                    }
-                                    &.lastPage {
-                                        margin-left:-5px;
-                                    }
-                                }
-                            }
-                            button {
-                                width:max-content;
-                                border-radius:5px;
-
-                                &.previousPage {
-                                    grid-area: previousPage;
-                                }
-
-                                &.nextPage {
-                                    grid-area: nextPage;
-                                }
-                            }
-                            
+                        &:nth-child(even of .brewItem) {
+                            margin-right: 0;
                         }
 
-                        hr {
-                            visibility: hidden;
+                        h2 {
+                            font-size: 0.75cm;
+                            line-height: 0.988em;
+                            font-family: "MrEavesRemake";
+                            font-weight: 800;
+                            color: var(--HB_Color_HeaderText);
                         }
+
+                        .info {
+                            font-family: ScalySansRemake;
+                            font-size: 1.2em;
+
+                            >span {
+                                margin-right: 12px;
+                                line-height: 1.5em;
+                            }
+                        }
+                    }
+
+                    .paginationControls {
+                        position: absolute;
+                        left: 50%;
+                        translate: -50%;
+                        width: auto;
+                        display: grid;
+                        place-items: center;
+                        grid-template-areas: "previousPage currentPage nextPage";
+                        grid-template-columns: 50px 1fr 50px;
+
+                        .pages {
+                            grid-area: currentPage;
+                            height: 100%;
+                            width: 100%;
+                            display: flex;
+                            justify-content: space-evenly;
+                            text-align: center;
+                            padding: 5px 8px;
+
+                            .pageNumber {
+                                color: white;
+                                font-family: Open Sans;
+                                font-weight: 900;
+                                text-underline-position: under;
+                                margin-inline: 10px;
+                                cursor: pointer;
+
+                                &.currentPage {
+                                    color: gold;
+                                    text-decoration: underline;
+                                    pointer-events: none;
+                                }
+
+                                &.firstPage {
+                                    margin-right: -5px;
+                                }
+
+                                &.lastPage {
+                                    margin-left: -5px;
+                                }
+                            }
+                        }
+
+                        button {
+                            width: max-content;
+                            border-radius: 5px;
+
+                            &.previousPage {
+                                grid-area: previousPage;
+                            }
+
+                            &.nextPage {
+                                grid-area: nextPage;
+                            }
+                        }
+
+                    }
+
+                    hr {
+                        visibility: hidden;
                     }
                 }
             }
@@ -259,17 +242,20 @@ body {
     }
 }
 
-
 @keyframes trailingDots {
-    0%,32% {
-        content:'.';
+
+    0%,
+    32% {
+        content: '.';
     }
-    
-    33%, 65% {
-        content:'..';
+
+    33%,
+    65% {
+        content: '..';
     }
-    
-    66%,100% {
-        content:'...';
+
+    66%,
+    100% {
+        content: '...';
     }
 }

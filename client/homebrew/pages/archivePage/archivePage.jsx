@@ -425,19 +425,9 @@ const ArchivePage = createClass({
                 {this.renderNavItems()}
 
                 <div className="content">
-                    <div className="welcome">
-                        <h1>Welcome to the Archive</h1>
-                    </div>
-                    <div className="flexGroup">
-                        <div className="form dataGroup">
-                            {this.renderForm()}
-                        </div>
-                        <div className="resultsContainer dataGroup">
-                            <div className="title">
-                                <h2>Your search returned these results</h2>
-                            </div>
-                            {this.renderFoundBrews()}
-                        </div>
+                    <div className="form dataGroup">{this.renderForm()}</div>
+                    <div className="resultsContainer dataGroup">
+                        {this.renderFoundBrews()}
                     </div>
                 </div>
             </div>
