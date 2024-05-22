@@ -6,7 +6,7 @@ const { Meta } = require('vitreum/headtags');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 const MetadataNav = require('../../navbar/metadata.navitem.jsx');
-const PrintLink = require('../../navbar/print.navitem.jsx');
+const PrintNavItem = require('../../navbar/print.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account = require('../../navbar/account.navitem.jsx');
 
@@ -35,7 +35,7 @@ const SharePage = createClass({
 		if(!(e.ctrlKey || e.metaKey)) return;
 		const P_KEY = 80;
 		if(e.keyCode == P_KEY){
-			window.open(`/print/${this.processShareId()}?dialog=true`, '_blank').focus();
+			if(e.keyCode == P_KEY) window.frames['BrewRenderer'].contentWindow.print();
 			e.stopPropagation();
 			e.preventDefault();
 		}
@@ -72,7 +72,7 @@ const SharePage = createClass({
 
 				<Nav.section>
 					{this.props.brew.shareId && <>
-						<PrintLink shareId={this.processShareId()} />
+						<PrintNavItem/>
 						<Nav.dropdown>
 							<Nav.item color='red' icon='fas fa-code'>
 								source

@@ -11,7 +11,7 @@ const Navbar = require('../../navbar/navbar.jsx');
 
 const NewBrew = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
-const PrintLink = require('../../navbar/print.navitem.jsx');
+const PrintNavItem = require('../../navbar/print.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
@@ -95,7 +95,7 @@ const EditPage = createClass({
 		const S_KEY = 83;
 		const P_KEY = 80;
 		if(e.keyCode == S_KEY) this.trySave(true);
-		if(e.keyCode == P_KEY) window.open(`/print/${this.processShareId()}?dialog=true`, '_blank').focus();
+		if(e.keyCode == P_KEY) window.frames['BrewRenderer'].contentWindow.print();
 		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
 			e.stopPropagation();
 			e.preventDefault();
@@ -378,7 +378,7 @@ const EditPage = createClass({
 						post to reddit
 					</Nav.item>
 				</Nav.dropdown>
-				<PrintLink shareId={this.processShareId()} />
+				<PrintNavItem/>
 				<RecentNavItem brew={this.state.brew} storageKey='edit' />
 				<Account />
 			</Nav.section>
