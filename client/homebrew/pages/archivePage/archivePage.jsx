@@ -358,7 +358,7 @@ const ArchivePage = createClass({
         if (title === '') {
             return (
                 <div className="foundBrews noBrews">
-                    <h3>Whenever you want, just start typing...</h3>
+                    <h3>No search yet</h3>
                 </div>
             );
         }
