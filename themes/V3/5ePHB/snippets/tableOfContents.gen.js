@@ -4,7 +4,6 @@ const dedent = require('dedent-tabs').default;
 const getTOC = (pages)=>{
 
 	const recursiveAdd = (title, page, targetDepth, child, curDepth=0)=>{
-		console.log(curDepth);
 		if(curDepth > 5) return; // Something went wrong.
 		if(curDepth == targetDepth) {
 			child.push({
@@ -13,49 +12,36 @@ const getTOC = (pages)=>{
 				children : []
 			});
 		} else {
-			console.log(typeof child);
 			child.push({
 				title    : null,
 				page     : page + 1,
 				children : []
 			});
-			console.log(_.last(child));
-			console.log(_.last(child).children);
 			recursiveAdd(title, page, targetDepth, _.last(child).children, curDepth+1,);
 		}
 	};
 
 	const res = [];
 
-	_.each(pages, (page, pageNum)=>{
-		if(!page.includes("{{frontCover}}") && !page.includes("{{insideCover}}") && !page.includes("{{partCover}}") && !page.includes("{{backCover}}")) {
-			const lines = page.split('\n');
-			_.each(lines, (line)=>{
-				if(_.startsWith(line, '# ')){
-					const title = line.replace('# ', '');
-					recursiveAdd(title, pageNum, 0, res);
-				}
-				if(_.startsWith(line, '## ')){
-					const title = line.replace('## ', '');
-					recursiveAdd(title, pageNum, 1, res);
-				}
-				if(_.startsWith(line, '### ')){
-					const title = line.replace('### ', '');
-					recursiveAdd(title, pageNum, 2, res);
-				}
-				if(_.startsWith(line, '#### ')){
-					const title = line.replace('#### ', '');
-					recursiveAdd(title, pageNum, 3, res);
-				}
-				if(_.startsWith(line, '##### ')){
-					const title = line.replace('##### ', '');
-					recursiveAdd(title, pageNum, 4, res);
-				}
-				if(_.startsWith(line, '##### ')){
-					const title = line.replace('##### ', '');
-					recursiveAdd(title, pageNum, 5, res);
-				}
-			});
+	const iframe = document.getElementById('BrewRenderer');
+	const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+	const headings = iframeDocument.querySelectorAll('h1, h2, h3, h4, h5, h6');
+	const headerDepth = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
+	const exclusionElements = iframeDocument.querySelectorAll('frontCover insideCover partCover backCover');
+	const excludedPages = [];
+
+	// Build a list of excluded pages.
+	_.each(exclusionElements, (e)=>{
+		const onPage = parseInt(e.closest('.page,.phb').id?.replace(/^p/, ''));
+		if(!excludedPages.includes(onPage)) excludedPages.push(onPage);
+	});
+
+	_.each(headings, (heading)=>{
+		const onPage = parseInt(heading.closest('.page,.phb').id?.replace(/^p/, ''));
+		const ToCExclude = getComputedStyle(heading).getPropertyValue('--TOC');
+
+		if((ToCExclude != 'exclude') && (!excludedPages.includes(onPage))) {
+			recursiveAdd(heading.innerText.trim(), onPage, headerDepth.indexOf(heading.tagName), res);
 		}
 	});
 	return res;
