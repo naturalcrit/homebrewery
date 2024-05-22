@@ -194,7 +194,7 @@ const ArchivePage = createClass({
                             onKeyUp={() => {
                                 this.validateInput();
                             }}
-                            pattern=".{2,}"
+                            pattern=".{3,}"
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                     this.loadTotal();
