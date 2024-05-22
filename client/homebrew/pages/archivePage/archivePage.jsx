@@ -28,7 +28,7 @@ const ArchivePage = createClass({
             //tags: {},
             legacy: this.props.query.legacy !== 'false',
             v3: this.props.query.v3 !== 'false',
-            pageSize: this.props.query.size || 10,
+            count: this.props.query.count || 10,
             page: parseInt(this.props.query.page) || 1,
 
             //# response
@@ -57,20 +57,20 @@ const ArchivePage = createClass({
         });
     },
 
-    updateUrl: function (title, page, size, v3, legacy) {
+    updateUrl: function (title, page, count, v3, legacy) {
         const url = new URL(window.location.href);
         const urlParams = new URLSearchParams(url.search);
 
         //clean all params
         urlParams.delete('title');
         urlParams.delete('page');
-        urlParams.delete('size');
+        urlParams.delete('count');
         urlParams.delete('v3');
         urlParams.delete('legacy');
 
         urlParams.set('title', title);
         urlParams.set('page', page);
-        urlParams.set('size', size);
+        urlParams.set('count', count);
         urlParams.set('v3', v3);
         urlParams.set('legacy', legacy);
 
@@ -81,15 +81,18 @@ const ArchivePage = createClass({
     loadPage: async function (page, update) {
         console.log('running loadPage');
         this.setState({ searching: true, error: null });
+        console.log('props: ',this.props.query.count, '| state: ', this.state.count, '| input: ', document.getElementById('count').value || 10);
     
-        const performSearch = async ({ title, size, v3, legacy }) => {
+        const performSearch = async ({ title, count, v3, legacy }) => {
+            this.updateUrl(title, page, count, v3, legacy);
             if (title !== '') {
                 try {
                     const response = await request.get(
-                        `/api/archive?title=${title}&page=${page}&size=${size}&v3=${v3}&legacy=${legacy}`
+                        `/api/archive?title=${title}&page=${page}&count=${count}&v3=${v3}&legacy=${legacy}`
                     );
                     if (response.ok) {
                         this.updateStateWithBrews(response.body.brews, page);
+                        
                     } else {
                         throw new Error(`Error: ${response.status}`);
                     }
@@ -105,25 +108,25 @@ const ArchivePage = createClass({
     
         if (update === true) {
             const title = document.getElementById('title').value || '';
-            const size = document.getElementById('size').value || 10;
+            const count = document.getElementById('count').value || 10;
             const v3 = document.getElementById('v3').checked;
             const legacy = document.getElementById('legacy').checked;
     
             this.setState(
                 {
                     title: title,
-                    pageSize: size,
+                    count: count,
                     v3: v3,
                     legacy: legacy,
                 },
                 () => {
                     // State is updated, now perform the search
-                    performSearch({ title, size, v3, legacy });
+                    performSearch({ title, count, v3, legacy });
                 }
             );
         } else {
-            const { title, size, v3, legacy } = this.state;
-            performSearch({ title, size, v3, legacy });
+            const { title, count, v3, legacy } = this.state;
+            performSearch({ title, count, v3, legacy });
         }
     },
     
@@ -214,7 +217,7 @@ const ArchivePage = createClass({
                     </small>
                     <label>
                         Results per page
-                        <select name="pageSize" id="size">
+                        <select name="count" id="count">
                             <option value="10" default>10</option>
                             <option value="20">20</option>
                             <option value="40">40</option>
@@ -278,9 +281,9 @@ const ArchivePage = createClass({
             return null;
         }
 
-        const size = parseInt(this.state.pageSize);
+        const count = parseInt(this.state.count);
         const { page, totalBrews } = this.state;
-        const totalPages = Math.ceil(totalBrews / size);
+        const totalPages = Math.ceil(totalBrews / count);
 
         let startPage, endPage;
         if (page <= 6) {

@@ -60,9 +60,9 @@ const archive = {
 
             const title = req.query.title || '';
             const page = Math.max(parseInt(req.query.page) || 1, 1);
-            const minPageSize = 6;
-            const pageSize = Math.max(parseInt(req.query.size) || 10, minPageSize);
-            const skip = (page - 1) * pageSize;
+            const mincount = 10;
+            const count = Math.max(parseInt(req.query.count) || 10, mincount);
+            const skip = (page - 1) * count;
 
             const brewsQuery = buildBrewsQuery(req.query.legacy, req.query.v3);
             const titleConditionsArray = buildTitleConditions(title);
@@ -79,7 +79,7 @@ const archive = {
             };
             const brews = await HomebrewModel.find(titleQuery, projection)
                 .skip(skip)
-                .limit(pageSize)
+                .limit(count)
                 .maxTimeMS(5000)
                 .exec();
 
