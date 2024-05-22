@@ -3,7 +3,6 @@ require('./codeEditor.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
-const cx = require('classnames');
 const closeTag = require('./close-tag');
 const autoCompleteEmoji = require('./autocompleteEmoji');
 
@@ -63,6 +62,8 @@ const CodeEditor = createClass({
 		};
 	},
 
+	editor : React.createRef(null),
+
 	componentDidMount : function() {
 		this.buildEditor();
 		const newDoc = CodeMirror.Doc(this.props.value, this.props.language);
@@ -102,7 +103,7 @@ const CodeEditor = createClass({
 	},
 
 	buildEditor : function() {
-		this.codeMirror = CodeMirror(this.refs.editor, {
+		this.codeMirror = CodeMirror(this.editor.current, {
 			lineNumbers       : true,
 			lineWrapping      : this.props.wrap,
 			indentWithTabs    : false,
@@ -443,7 +444,7 @@ const CodeEditor = createClass({
 	render : function(){
 		return <>
 			<link href={`../homebrew/cm-themes/${this.props.editorTheme}.css`} type='text/css' rel='stylesheet' />
-			<div className='codeEditor' ref='editor' style={this.props.style}/>
+			<div className='codeEditor' ref={this.editor} style={this.props.style}/>
 		</>;
 	}
 });

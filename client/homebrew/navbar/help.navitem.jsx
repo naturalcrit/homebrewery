@@ -1,6 +1,4 @@
 const React = require('react');
-const createClass = require('create-react-class');
-const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
 
 const Nav = require('naturalcrit/nav/nav.jsx');

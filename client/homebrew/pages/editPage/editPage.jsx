@@ -54,6 +54,8 @@ const EditPage = createClass({
 			currentEditorPage      : 0
 		};
 	},
+
+	editor    : React.createRef(null),
 	savedBrew : null,
 
 	componentDidMount : function(){
@@ -101,7 +103,7 @@ const EditPage = createClass({
 	},
 
 	handleSplitMove : function(){
-		this.refs.editor.update();
+		this.editor.current.update();
 	},
 
 	handleTextChange : function(text){
@@ -113,7 +115,7 @@ const EditPage = createClass({
 			brew              : { ...prevState.brew, text: text },
 			isPending         : true,
 			htmlErrors        : htmlErrors,
-			currentEditorPage : this.refs.editor.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
+			currentEditorPage : this.editor.current.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
 		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
@@ -390,9 +392,9 @@ const EditPage = createClass({
 			{this.renderNavbar()}
 
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
+				<SplitPane onDragFinish={this.handleSplitMove}>
 					<Editor
-						ref='editor'
+						ref={this.editor}
 						brew={this.state.brew}
 						onTextChange={this.handleTextChange}
 						onStyleChange={this.handleStyleChange}
