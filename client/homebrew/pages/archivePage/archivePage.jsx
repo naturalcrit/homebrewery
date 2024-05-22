@@ -205,12 +205,10 @@ const ArchivePage = createClass({
                     <label>
                         Results per page
                         <select name="pageSize" id="size">
-                            <option value="6">6</option>
                             <option value="10" default>10</option>
-                            <option value="16">16</option>
                             <option value="20">20</option>
-                            <option value="24">24</option>
-                            <option value="30">30</option>
+                            <option value="40">40</option>
+                            <option value="60">60</option>
                         </select>
                     </label>
 
@@ -247,7 +245,6 @@ const ArchivePage = createClass({
                             this.loadTotal();
                             this.loadPage(1, true);
                         }}
-                        disabled
                     >
                         Search
                         <i
