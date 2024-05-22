@@ -27,25 +27,12 @@ const getTOC = (pages)=>{
 	const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
 	const headings = iframeDocument.querySelectorAll('h1, h2, h3, h4, h5, h6');
 	const headerDepth = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
-	const exclusionElements = iframeDocument.querySelectorAll('frontCover insideCover backCover');
-	const excludedPages = [];
-
-	// Build a list of excluded pages.
-	_.each(exclusionElements, (e)=>{
-		const onPage = parseInt(e.closest('.page,.phb').id?.replace(/^p/, ''));
-		if(!excludedPages.includes(onPage)) excludedPages.push(onPage);
-	});
 
 	_.each(headings, (heading)=>{
 		const onPage = parseInt(heading.closest('.page,.phb').id?.replace(/^p/, ''));
 		const ToCExclude = getComputedStyle(heading).getPropertyValue('--TOC');
 
-		if(heading.tagName == 'H1') {
-			console.log(heading);
-			console.log(ToCExclude);
-		}
-
-		if(((ToCExclude != 'exclude') && (!excludedPages.includes(onPage)))) {
+		if(ToCExclude != 'exclude') {
 			recursiveAdd(heading.innerText.trim(), onPage, headerDepth.indexOf(heading.tagName), res);
 		}
 	});
