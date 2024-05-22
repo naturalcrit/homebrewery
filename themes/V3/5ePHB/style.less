@@ -798,19 +798,18 @@ h6,
 .noToC,
 .toc { --TOC: exclude; }
 
-.tocH1 :is(h1) { --TOC: include; }
-.tocH2 :is(h1, h2) {--TOC: include; }
-.tocH3 :is(h1, h2, h3) {--TOC: include; }
-.tocH4 :is(h1, h2, h3, h4) {--TOC: include; }
-.tocH5 :is(h1, h2, h3, h4, h5) {--TOC: include; }
-.tocH6 :is(h1, h2, h3, h4, h5, h6) {--TOC: include; }
+.tocAddH1H2 :is(h1, h2) {--TOC: include; }
+.tocAddH1H3 :is(h1, h2, h3) {--TOC: include; }
+.tocAddH1H4 :is(h1, h2, h3, h4) {--TOC: include; }
+.tocAddH1H5 :is(h1, h2, h3, h4, h5) {--TOC: include; }
+.tocAddH1H6 :is(h1, h2, h3, h4, h5, h6) {--TOC: include; }
 
-.tocIncludeH1 h1 {--TOC: include; }
-.tocIncludeH2 h2 {--TOC: include; }
-.tocIncludeH3 h3 {--TOC: include; }
-.tocIncludeH4 h4 {--TOC: include; }
-.tocIncludeH5 h5 {--TOC: include; }
-.tocIncludeH6 h6 {--TOC: include; }
+.tocAddH1 h1 {--TOC: include; }
+.tocAddH2 h2 {--TOC: include; }
+.tocAddH3 h3 {--TOC: include; }
+.tocAddH4 h4 {--TOC: include; }
+.tocAddH5 h5 {--TOC: include; }
+.tocAddH6 h6 {--TOC: include; }
 
 .page {
 	&:has(.toc)::after { display : none; }
