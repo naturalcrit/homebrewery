@@ -41,6 +41,8 @@ const ArchivePage = createClass({
     },
 
     componentDidMount: function () {
+        console.log(this.props.query);
+        console.log(this.state);
         if (this.state.title !== '') {
             this.loadPage(this.state.page, false);
         }
