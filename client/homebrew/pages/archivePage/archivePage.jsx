@@ -78,53 +78,53 @@ const ArchivePage = createClass({
 
     loadPage: async function (page, update) {
         console.log('running loadPage');
-        //load form data directly
-        /*
-        const title = document.getElementById('title').value || '';
-        const size = document.getElementById('size').value || 10;
-        const v3 = document.getElementById('v3').checked;
-        const legacy = document.getElementById('legacy').checked;
-        State is usually not fast enough for this function
-        */
-        
-        const {title, size, v3, legacy} = this.state;
-
-        // Update state with form data for later, only when first page
+        this.setState({ searching: true, error: null });
+    
+        const performSearch = async ({ title, size, v3, legacy }) => {
+            if (title !== '') {
+                try {
+                    const response = await request.get(
+                        `/api/archive?title=${title}&page=${page}&size=${size}&v3=${v3}&legacy=${legacy}`
+                    );
+                    if (response.ok) {
+                        this.updateStateWithBrews(response.body.brews, page);
+                    } else {
+                        throw new Error(`Error: ${response.status}`);
+                    }
+                } catch (error) {
+                    console.log('error at loadPage: ', error);
+                    this.setState({ error: `${error.response ? error.response.status : error.message}` });
+                    this.updateStateWithBrews([], 1);
+                }
+            } else {
+                this.setState({ error: '404' });
+            }
+        };
+    
         if (update === true) {
             const title = document.getElementById('title').value || '';
             const size = document.getElementById('size').value || 10;
             const v3 = document.getElementById('v3').checked;
             const legacy = document.getElementById('legacy').checked;
-
-            this.setState({
-                title: title,
-                pageSize: size,
-                v3: v3,
-                legacy: legacy,
-            });
-            this.updateUrl(title, page, size, v3, legacy);
-        }
-
-        if (title !== '') {
-            try {
-                this.setState({ searching: true, error: null });
-                const response = await request.get(
-                    `/api/archive?title=${title}&page=${page}&size=${size}&v3=${v3}&legacy=${legacy}`
-                );
-                if (response.ok) {
-                    this.updateStateWithBrews(response.body.brews, page);
+    
+            this.setState(
+                {
+                    title: title,
+                    pageSize: size,
+                    v3: v3,
+                    legacy: legacy,
+                },
+                () => {
+                    // State is updated, now perform the search
+                    performSearch({ title, size, v3, legacy });
                 }
-            } catch (error) {
-                console.log('error at loadPage: ', error);
-                this.setState({ error: `${error.response.status}` });
-                this.updateStateWithBrews([], 1);
-            }
-            if (!this.state.brewCollection) {
-                this.setState({ error: '404' });
-            }
+            );
+        } else {
+            const { title, size, v3, legacy } = this.state;
+            performSearch({ title, size, v3, legacy });
         }
     },
-
+    
     loadTotal: async function () {
         console.log('running loadTotal');
         const {title, v3, legacy} = this.state;
