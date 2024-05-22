@@ -43,7 +43,9 @@ const ArchivePage = createClass({
     componentDidMount: function () {
         console.log(this.props.query);
         console.log(this.state);
-        if (this.state.title !== '') {
+
+        this.validateInput();
+        if (this.state.title) {
             this.loadPage(this.state.page, false);
         }
         this.state.totalBrews || this.loadTotal(); // Load total if not already loaded
@@ -59,25 +61,14 @@ const ArchivePage = createClass({
 
     updateUrl: function (title, page, count, v3, legacy) {
         const url = new URL(window.location.href);
-        const urlParams = new URLSearchParams(url.search);
-
-        //clean all params
-        urlParams.delete('title');
-        urlParams.delete('page');
-        urlParams.delete('count');
-        urlParams.delete('v3');
-        urlParams.delete('legacy');
-
-        urlParams.set('title', title);
-        urlParams.set('page', page);
-        urlParams.set('count', count);
-        urlParams.set('v3', v3);
-        urlParams.set('legacy', legacy);
-
-        url.search = urlParams.toString(); // Convert URLSearchParams to string
+        const urlParams = new URLSearchParams();
+    
+        Object.entries({ title, page, count, v3, legacy }).forEach(([key, value]) => urlParams.set(key, value));
+    
+        url.search = urlParams.toString();
         window.history.replaceState(null, null, url);
     },
-
+    
     loadPage: async function (page, update) {
         console.log('running loadPage');
         this.setState({ searching: true, error: null });
@@ -138,7 +129,7 @@ const ArchivePage = createClass({
             totalBrews: null,
         });
 
-        if (title !== '') {
+        if (title) {
             try {
                 await request
                     .get(
@@ -177,10 +168,10 @@ const ArchivePage = createClass({
         );
     },
 
-    validateInput: function (e) {
-        const textInput = e.target
+    validateInput: function () {
+        const textInput = document.getElementById('title');
         const submitButton = document.getElementById('searchButton');
-        if (textInput.value.length > 3) {
+        if (textInput.valid) {
             submitButton.disabled = false;
         } else {
             submitButton.disabled = true;
@@ -199,9 +190,10 @@ const ArchivePage = createClass({
                             type="text"
                             name="title"
                             defaultValue={this.state.title}
-                            onKeyUp={(e) => {
-                                this.validateInput(e);
+                            onKeyUp={() => {
+                                this.validateInput();
                             }}
+                            pattern=".{2,}"
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                     this.loadTotal();
