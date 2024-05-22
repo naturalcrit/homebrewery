@@ -33,27 +33,27 @@ module.exports = [
 					{
 						name : 'Include in ToC up to H3',
 						icon : 'fas fa-dice-six',
-						gen  : dedent `{{addToC
-							}}`,
+						gen  : dedent `\n{{addToC
+							}}\n`,
 
 					},
 					{
 						name : 'Include in ToC up to H4',
 						icon : 'fas fa-dice-four',
-						gen  : dedent `{{addToC,tocH4
-							}}`,
+						gen  : dedent `\n{{addToC,tocH4
+							}}\n`,
 					},
 					{
 						name : 'Include in ToC up to H5',
 						icon : 'fas fa-dice-five',
-						gen  : dedent `{{addToC,tocH5
-							}}`,
+						gen  : dedent `\n{{addToC,tocH5
+							}}\n`,
 					},
 					{
 						name : 'Include in ToC up to H6',
 						icon : 'fas fa-dice-six',
-						gen  : dedent `{{addToC,tocH6
-							}}`,
+						gen  : dedent `\n{{addToC,tocH6
+							}}\n`,
 					}
 				]
 			},
