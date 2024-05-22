@@ -127,21 +127,22 @@ const ArchivePage = createClass({
 
         this.setState({
             totalBrews: null,
+            error: null
         });
-
+    
         if (title) {
             try {
-                await request
-                    .get(
-                        `/api/archive/total?title=${title}&v3=${v3}&legacy=${legacy}`
-                    )
-                    .then((response) => {
-                        if (response.ok) {
-                            this.setState({
-                                totalBrews: response.body.totalBrews,
-                            });
-                        }
+                const response = await request.get(
+                    `/api/archive/total?title=${title}&v3=${v3}&legacy=${legacy}`
+                );
+    
+                if (response.ok) {
+                    this.setState({
+                        totalBrews: response.body.totalBrews,
                     });
+                } else {
+                    throw new Error(`Failed to load total brews: ${response.statusText}`);
+                }
             } catch (error) {
                 console.log('error at loadTotal: ', error);
                 this.setState({ error: `${error.response.status}` });
@@ -171,7 +172,7 @@ const ArchivePage = createClass({
     validateInput: function () {
         const textInput = document.getElementById('title');
         const submitButton = document.getElementById('searchButton');
-        if (textInput.valid) {
+        if (textInput.validity.valid && textInput.value) {
             submitButton.disabled = false;
         } else {
             submitButton.disabled = true;
