@@ -35,9 +35,20 @@ const SharePage = createClass({
 		if(!(e.ctrlKey || e.metaKey)) return;
 		const P_KEY = 80;
 		if(e.keyCode == P_KEY){
-			if(e.keyCode == P_KEY) window.frames['BrewRenderer'].contentWindow.print();
+			if(e.keyCode == P_KEY) this.printPage();
 			e.stopPropagation();
 			e.preventDefault();
+		}
+	},
+
+	printPage : function(){
+		if (window.typeof !== 'undefined') {
+			window.frames['BrewRenderer'].contentWindow.print();
+			//Force DOM reflow; Print dialog causes a repaint, and @media print CSS somehow makes out-of-view pages disappear
+			let node = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer').item(0);
+			node.style.display='none';
+			node.offsetHeight; // accessing this is enough to trigger a reflow
+			node.style.display='';
 		}
 	},
 
@@ -72,7 +83,7 @@ const SharePage = createClass({
 
 				<Nav.section>
 					{this.props.brew.shareId && <>
-						<PrintNavItem/>
+						<PrintNavItem printFunction={this.printPage}/>
 						<Nav.dropdown>
 							<Nav.item color='red' icon='fas fa-code'>
 								source
