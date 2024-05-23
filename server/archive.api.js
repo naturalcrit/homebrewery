@@ -55,7 +55,7 @@ const buildBrewsQuery = (legacy, v3) => {
 const archive = {
     findBrews: async (req, res, next) => {
         try {
-            console.log(`Query as received in archive api:`);
+            console.log(`Query as received in archive api for findBrews:`);
             console.table(req.query);
 
             const title = req.query.title || '';
@@ -91,6 +91,8 @@ const archive = {
         }
     },
     findTotal: async (req, res) => {
+        console.log(`Query as received in archive api for totalBrews:`);
+        console.table(req.query);
         try {
             const title = req.query.title || '';
 
@@ -102,7 +104,7 @@ const archive = {
             };
 
             const totalBrews = await HomebrewModel.countDocuments(titleQuery);
-
+            console.log('when returning, totalbrews is ', totalBrews);
             return res.json({ totalBrews });
 
         } catch (error) {
