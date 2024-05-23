@@ -144,6 +144,24 @@ body {
                         padding: 8px 10px;
                         z-index: 1000;
                         font-family: 'Open Sans';
+
+                        .searchAnim {
+                            position: relative;
+                            display: inline-block;
+                            width: 3ch;
+                            height: 1em;
+                        }
+
+                        .searchAnim::after {
+                            content: "";
+                            width: max-content;
+                            height: 1em;
+                            position: absolute;
+                            right: 0;
+                            top: 50%;
+                            translate: -50% -50%;
+                            animation: trailingDots 2s ease infinite;
+                        }
                     }
 
                     .brewItem {

@@ -70,9 +70,8 @@ const ArchivePage = createClass({
     },
     
     loadPage: async function (page, update) {
-        console.log('running loadPage');
         this.setState({ searching: true, error: null });
-        console.log('props: ',this.props.query.count, '| state: ', this.state.count, '| input: ', document.getElementById('count').value || 10);
+        
     
         const performSearch = async ({ title, count, v3, legacy }) => {
             this.updateUrl(title, page, count, v3, legacy);
@@ -122,7 +121,6 @@ const ArchivePage = createClass({
     },
     
     loadTotal: async function () {
-        console.log('running loadTotal');
         const {title, v3, legacy} = this.state;
 
         this.setState({
@@ -397,11 +395,12 @@ const ArchivePage = createClass({
                 </div>
             );
         }
-
+        console.log('state when rendering ');
+        console.table(this.state);
         return (
             <div className="foundBrews">
                 <span className="totalBrews">
-                    Brews found: 
+                    {`Brews found: `}
                     {title === '' ? '0' : this.state.totalBrews ? this.state.totalBrews : <span className="searchAnim"></span>}
                 </span>
                 {brewCollection.map((brew, index) => (
