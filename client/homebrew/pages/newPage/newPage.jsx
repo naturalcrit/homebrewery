@@ -204,7 +204,7 @@ const NewPage = createClass({
 					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
 					this.renderSaveButton()
 				}
-				<PrintNavItem printFunction={this.printPage}/><PrintNavItem/>
+				<PrintNavItem printFunction={this.printPage}/>
 				<HelpNavItem />
 				<RecentNavItem />
 				<AccountNavItem />
