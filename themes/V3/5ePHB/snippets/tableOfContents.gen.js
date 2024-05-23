@@ -29,7 +29,7 @@ const getTOC = (pages)=>{
 	const headerDepth = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
 
 	_.each(headings, (heading)=>{
-		const onPage = parseInt(heading.closest('.page,.phb').id?.replace(/^p/, ''));
+		const onPage = parseInt(heading.closest('.page').id?.replace(/^p/, ''));
 		const ToCExclude = getComputedStyle(heading).getPropertyValue('--TOC');
 
 		if(ToCExclude != 'exclude') {

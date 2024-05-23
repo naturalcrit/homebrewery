@@ -21,14 +21,16 @@ module.exports = [
 		view      : 'text',
 		snippets  : [
 			{
-				name        : 'Table of Contents',
-				icon        : 'fas fa-book',
-				gen         : TableOfContentsGen,
-				subsnippets : [
+				name         : 'Table of Contents',
+				icon         : 'fas fa-book',
+				gen          : TableOfContentsGen,
+				experimental : true,
+				subsnippets  : [
 					{
-						name : 'Table of Contents',
-						icon : 'fas fa-book',
-						gen  : TableOfContentsGen,
+						name         : 'Table of Contents',
+						icon         : 'fas fa-book',
+						gen          : TableOfContentsGen,
+						experimental : true
 					},
 					{
 						name : 'Include in ToC up to H3',
