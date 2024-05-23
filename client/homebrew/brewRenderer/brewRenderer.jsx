@@ -159,6 +159,27 @@ const BrewRenderer = (props)=>{
 		return renderedPages;
 	};
 
+	const handleControlKeys = (e)=>{
+		if(!(e.ctrlKey || e.metaKey)) return;
+		const P_KEY = 80;
+		if(e.keyCode == P_KEY) printPage();
+		if(e.keyCode == P_KEY) {
+			e.stopPropagation();
+			e.preventDefault();
+		}
+	};
+
+	const printPage = ()=>{
+		if (window.typeof !== 'undefined') {
+			window.frames['BrewRenderer'].contentWindow.print();
+			//Force DOM reflow; Print dialog causes a repaint, and @media print CSS somehow makes out-of-view pages disappear
+			let node = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer').item(0);
+			node.style.display='none';
+			node.offsetHeight; // accessing this is enough to trigger a reflow
+			node.style.display='';
+		}
+	};
+
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			updateSize();
@@ -200,6 +221,8 @@ const BrewRenderer = (props)=>{
 			>
 				<div className={'brewRenderer'}
 					onScroll={handleScroll}
+					onKeyDown={handleControlKeys}
+					tabIndex={-1}
 					style={{ height: state.height }}>
 
 					<ErrorBar errors={props.errors} />
