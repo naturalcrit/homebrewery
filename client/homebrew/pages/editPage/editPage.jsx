@@ -23,6 +23,7 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 const Markdown = require('naturalcrit/markdown.js');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
+const { printPage } = require('../../../../shared/helpers.js');
 
 const googleDriveIcon = require('../../googleDrive.svg');
 
@@ -95,21 +96,10 @@ const EditPage = createClass({
 		const S_KEY = 83;
 		const P_KEY = 80;
 		if(e.keyCode == S_KEY) this.trySave(true);
-		if(e.keyCode == P_KEY) this.printPage();
+		if(e.keyCode == P_KEY) printPage();
 		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
 			e.stopPropagation();
 			e.preventDefault();
-		}
-	},
-
-	printPage : function(){
-		if (window.typeof !== 'undefined') {
-			window.frames['BrewRenderer'].contentWindow.print();
-			//Force DOM reflow; Print dialog causes a repaint, and @media print CSS somehow makes out-of-view pages disappear
-			let node = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer').item(0);
-			node.style.display='none';
-			node.offsetHeight; // accessing this is enough to trigger a reflow
-			node.style.display='';
 		}
 	},
 
@@ -389,7 +379,7 @@ const EditPage = createClass({
 						post to reddit
 					</Nav.item>
 				</Nav.dropdown>
-				<PrintNavItem printFunction={this.printPage}/>
+				<PrintNavItem />
 				<RecentNavItem brew={this.state.brew} storageKey='edit' />
 				<Account />
 			</Nav.section>

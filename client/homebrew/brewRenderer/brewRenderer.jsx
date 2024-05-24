@@ -13,6 +13,7 @@ const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
 const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
+const { printPage } = require('../../../shared/helpers.js');
 
 const DOMPurify = require('dompurify');
 const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
@@ -166,17 +167,6 @@ const BrewRenderer = (props)=>{
 		if(e.keyCode == P_KEY) {
 			e.stopPropagation();
 			e.preventDefault();
-		}
-	};
-
-	const printPage = ()=>{
-		if (window.typeof !== 'undefined') {
-			window.frames['BrewRenderer'].contentWindow.print();
-			//Force DOM reflow; Print dialog causes a repaint, and @media print CSS somehow makes out-of-view pages disappear
-			let node = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer').item(0);
-			node.style.display='none';
-			node.offsetHeight; // accessing this is enough to trigger a reflow
-			node.style.display='';
 		}
 	};
 
