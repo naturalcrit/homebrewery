@@ -7,11 +7,12 @@ const rateLimit = require('express-rate-limit');
 
 // Define rate limiter options
 const loginLimiter = rateLimit({
-    windowMs: 24 * 60 * 60 * 1000, // 24 hours window
-    max: 10, // limit each IP to 10 requests per windowMs
+    timeWindow: 24 * 60 * 60 * 1000, // 24 hours window
+    max: 10, // limit each IP to 10 requests per timeWindow
     message: "Too many login attempts from this IP, please try again later"
 });
 
+//Local version username and password
 process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
 process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password3';
 
