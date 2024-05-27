@@ -52,7 +52,7 @@ const AccountPage = (props)=>{
 	const renderDefaultPageSizeOptions = () => {
 	
 		return (
-			<div>
+			<div className='pageSize'>
 				<h5>Default Page Size: </h5>
 				<label>Letter:<input type="radio" name="size" id="letterSize" onChange={() => setActivePageSize('letter')} defaultChecked={pageSize === 'letter'}/></label>
 				<label>A4:<input type="radio" name="size" id="A4Size" onChange={() => setActivePageSize('A4')} defaultChecked={pageSize === 'A4'}/></label>
@@ -95,11 +95,6 @@ const AccountPage = (props)=>{
 					<h4>Brew Defaults</h4>
 					{renderDefaultPageSizeOptions()}
 					{/*renderDefaultThemeUrl()*/}
-
-				</div>
-				<div className="dataGroup">
-					<h4>Editor Defaults</h4>
-					{/*renderDefaultEditorOptions()*/}
 				</div>
 			</>
 		);
