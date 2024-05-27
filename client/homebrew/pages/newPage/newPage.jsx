@@ -69,7 +69,7 @@ const NewPage = createClass({
 			if (!pageSizeRegex.test(brew.style)) {
 				// No page size defined, apply the default size if sizeStorage is 'A4', otherwise the default letter stays
 				if (sizeStorage === 'A4') {
-					brew.style = '/* A4 Page Size */\n.page{\n    width  : 210mm;\n    height : 296.8mm;\n}\n\n' + brew.style;
+					brew.style = brew.style + '\n\n/* A4 Page Size */\n.page{\n    width  : 210mm;\n    height : 296.8mm;\n}\n';
 				}
 			}
 		
