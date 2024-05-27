@@ -22,6 +22,7 @@ const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
 const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
 const METAKEY  = 'homebrewery-new-meta';
+const SIZEKEY  = 'HOMEBREWERY-DEFAULT-SIZE'
 let SAVEKEY;
 
 
@@ -53,19 +54,31 @@ const NewPage = createClass({
 
 		const brew = this.state.brew;
 
-		if(!this.props.brew.shareId && typeof window !== 'undefined') { //Load from localStorage if in client browser
+		if (!this.props.brew.shareId && typeof window !== 'undefined') {
+			// Load from localStorage if in client browser
 			const brewStorage  = localStorage.getItem(BREWKEY);
 			const styleStorage = localStorage.getItem(STYLEKEY);
-			const metaStorage = JSON.parse(localStorage.getItem(METAKEY));
-
+			const sizeStorage  = localStorage.getItem(SIZEKEY);
+			const metaStorage  = JSON.parse(localStorage.getItem(METAKEY));
+		
 			brew.text  = brewStorage  ?? brew.text;
 			brew.style = styleStorage ?? brew.style;
-			// brew.title = metaStorage?.title || this.state.brew.title;
-			// brew.description = metaStorage?.description || this.state.brew.description;
+		
+			// Check if a page size is already defined in brew.style
+			const pageSizeRegex = /\.page\s*{[^}]*\b(width|height)\b[^}]*}/;
+			if (!pageSizeRegex.test(brew.style)) {
+				// No page size defined, apply the default size if sizeStorage is 'A4', otherwise the default letter stays
+				if (sizeStorage === 'A4') {
+					brew.style = '/* A4 Page Size */\n.page{\n    width  : 210mm;\n    height : 296.8mm;\n}\n\n' + brew.style;
+				}
+			}
+		
+			// Apply other properties from metaStorage
 			brew.renderer = metaStorage?.renderer ?? brew.renderer;
 			brew.theme    = metaStorage?.theme    ?? brew.theme;
 			brew.lang     = metaStorage?.lang     ?? brew.lang;
 		}
+		
 
 		SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${global.account?.username || ''}`;
 		const saveStorage = localStorage.getItem(SAVEKEY) || 'HOMEBREWERY';

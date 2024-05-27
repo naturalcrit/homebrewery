@@ -4,11 +4,13 @@ const UIPage = require('../basePages/uiPage/uiPage.jsx');
 const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
 
 let SAVEKEY = '';
+const SIZEKEY = 'HOMEBREWERY-DEFAULT-SIZE';
 
 const AccountPage = (props)=>{
 	// destructure props and set state for save location
 	const { accountDetails, brew } = props;
 	const [saveLocation, setSaveLocation] = React.useState('');
+	const [pageSize, setPageSize] = React.useState('');
 
 	// initialize save location from local storage based on user id
 	React.useEffect(()=>{
@@ -18,6 +20,9 @@ const AccountPage = (props)=>{
 			let saveLocation = window.localStorage.getItem(SAVEKEY);
 			saveLocation = saveLocation ?? (accountDetails.googleId ? 'GOOGLE-DRIVE' : 'HOMEBREWERY');
 			setActiveSaveLocation(saveLocation);
+		}
+		if(!pageSize) {
+			setPageSize(window.localStorage.getItem(SIZEKEY) ?? 'letter'); 
 		}
 	}, []);
 
@@ -37,6 +42,24 @@ const AccountPage = (props)=>{
 		);
 	};
 
+	const setActivePageSize = (size) => {
+		if (typeof window !== 'undefined' && window.localStorage) {
+			window.localStorage.setItem(SIZEKEY, size);
+			setPageSize(size);
+		}
+	}
+
+	const renderDefaultPageSizeOptions = () => {
+	
+		return (
+			<div>
+				<h5>Default Page Size: </h5>
+				<label>Letter:<input type="radio" name="size" id="letterSize" onChange={() => setActivePageSize('letter')} defaultChecked={pageSize === 'letter'}/></label>
+				<label>A4:<input type="radio" name="size" id="A4Size" onChange={() => setActivePageSize('A4')} defaultChecked={pageSize === 'A4'}/></label>
+			</div>
+		);
+	};
+	
 	// render the entirety of the account page content
 	const renderAccountPage = ()=>{
 		return (
@@ -67,6 +90,16 @@ const AccountPage = (props)=>{
 					<h4>Default Save Location</h4>
 					{renderSaveLocationButton('Homebrewery', 'HOMEBREWERY')}
 					{renderSaveLocationButton('Google Drive', 'GOOGLE-DRIVE', accountDetails.googleId)}
+				</div>
+				<div className="dataGroup">
+					<h4>Brew Defaults</h4>
+					{renderDefaultPageSizeOptions()}
+					{/*renderDefaultThemeUrl()*/}
+
+				</div>
+				<div className="dataGroup">
+					<h4>Editor Defaults</h4>
+					{/*renderDefaultEditorOptions()*/}
 				</div>
 			</>
 		);
