@@ -83,7 +83,7 @@
   },
   "dependencies": {
     "@babel/core": "^7.24.5",
-    "@babel/plugin-transform-runtime": "^7.24.3",
+    "@babel/plugin-transform-runtime": "^7.24.6",
     "@babel/preset-env": "^7.24.5",
     "@babel/preset-react": "^7.24.1",
     "@googleapis/drive": "^8.8.0",
