@@ -19,7 +19,7 @@ const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
-const { printPage } = require('../../../../shared/helpers.js');
+const { printCurrentBrew } = require('../../../../shared/helpers.js');
 
 const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
@@ -91,7 +91,7 @@ const NewPage = createClass({
 		const S_KEY = 83;
 		const P_KEY = 80;
 		if(e.keyCode == S_KEY) this.save();
-		if(e.keyCode == P_KEY) printPage();
+		if(e.keyCode == P_KEY) printCurrentBrew();
 		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
 			e.stopPropagation();
 			e.preventDefault();

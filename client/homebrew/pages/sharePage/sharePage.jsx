@@ -12,7 +12,7 @@ const Account = require('../../navbar/account.navitem.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
-const { printPage } = require('../../../../shared/helpers.js');
+const { printCurrentBrew } = require('../../../../shared/helpers.js');
 
 const SharePage = createClass({
 	displayName     : 'SharePage',
@@ -34,7 +34,7 @@ const SharePage = createClass({
 		if(!(e.ctrlKey || e.metaKey)) return;
 		const P_KEY = 80;
 		if(e.keyCode == P_KEY){
-			if(e.keyCode == P_KEY) printPage();
+			if(e.keyCode == P_KEY) printCurrentBrew();
 			e.stopPropagation();
 			e.preventDefault();
 		}

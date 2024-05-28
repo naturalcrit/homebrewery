@@ -13,7 +13,7 @@ const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
 const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
-const { printPage } = require('../../../shared/helpers.js');
+const { printCurrentBrew } = require('../../../shared/helpers.js');
 
 const DOMPurify = require('dompurify');
 const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
@@ -163,7 +163,7 @@ const BrewRenderer = (props)=>{
 	const handleControlKeys = (e)=>{
 		if(!(e.ctrlKey || e.metaKey)) return;
 		const P_KEY = 80;
-		if(e.keyCode == P_KEY && props.allowPrint) printPage();
+		if(e.keyCode == P_KEY && props.allowPrint) printCurrentBrew();
 		if(e.keyCode == P_KEY) {
 			e.stopPropagation();
 			e.preventDefault();

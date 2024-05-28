@@ -23,7 +23,7 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 const Markdown = require('naturalcrit/markdown.js');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
-const { printPage } = require('../../../../shared/helpers.js');
+const { printCurrentBrew } = require('../../../../shared/helpers.js');
 
 const googleDriveIcon = require('../../googleDrive.svg');
 
@@ -96,7 +96,7 @@ const EditPage = createClass({
 		const S_KEY = 83;
 		const P_KEY = 80;
 		if(e.keyCode == S_KEY) this.trySave(true);
-		if(e.keyCode == P_KEY) printPage();
+		if(e.keyCode == P_KEY) printCurrentBrew();
 		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
 			e.stopPropagation();
 			e.preventDefault();
