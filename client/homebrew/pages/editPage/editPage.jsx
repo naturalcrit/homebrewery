@@ -411,6 +411,7 @@ const EditPage = createClass({
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
 						currentEditorPage={this.state.currentEditorPage}
+						allowPrint={true}
 					/>
 				</SplitPane>
 			</div>

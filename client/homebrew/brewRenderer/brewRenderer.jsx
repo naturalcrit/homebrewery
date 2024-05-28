@@ -163,7 +163,7 @@ const BrewRenderer = (props)=>{
 	const handleControlKeys = (e)=>{
 		if(!(e.ctrlKey || e.metaKey)) return;
 		const P_KEY = 80;
-		if(e.keyCode == P_KEY) printPage();
+		if(e.keyCode == P_KEY && props.allowPrint) printPage();
 		if(e.keyCode == P_KEY) {
 			e.stopPropagation();
 			e.preventDefault();
