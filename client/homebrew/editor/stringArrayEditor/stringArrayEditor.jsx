@@ -116,6 +116,7 @@ const StringArrayEditor = createClass({
 			event.target.parentNode.focus();
 		} else if(event.key === 'ArrowLeft' && event.target.value.length === 0) {
 			event.target.previousElementSibling?.focus();
+			event.target.previousElementSibling?.select();
 		}
 	},
 
