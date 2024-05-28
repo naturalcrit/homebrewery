@@ -1,6 +1,6 @@
 const React = require('react');
 const createClass = require('create-react-class');
-const _     = require('lodash');
+const _ = require('lodash');
 
 const StringArrayEditor = createClass({
 	displayName     : 'StringArrayEditor',
@@ -12,7 +12,7 @@ const StringArrayEditor = createClass({
 			options          : [],
 			valuePatterns    : null,
 			validators       : [],
-			modifySubmission : (value)=>{return value;},
+			modifySubmission : (value)=>{ return value; },
 			placeholder      : '',
 			notes            : [],
 			unique           : false,
@@ -53,19 +53,19 @@ const StringArrayEditor = createClass({
 		});
 	},
 
-	addValue : function(value){
+	addValue : function(value) {
 		this.handleChange(_.uniq([...this.props.values, this.props.modifySubmission(value)]));
 		this.setState({
 			temporaryValue : ''
 		});
 	},
 
-	removeValue : function(index){
+	removeValue : function(index) {
 		this.handleChange(this.props.values.filter((_, i)=>i !== index));
 		this.newTagInput.current.focus();
 	},
 
-	updateValue : function(value, index){
+	updateValue : function(value, index) {
 		const valueContext = this.state.valueContext;
 		valueContext[index].value = this.props.modifySubmission(value);
 		valueContext[index].editing = false;
@@ -73,7 +73,7 @@ const StringArrayEditor = createClass({
 		this.setState({ valueContext, updateValue: '' });
 	},
 
-	editValue : function(index){
+	editValue : function(index) {
 		if(!!this.props.cannotEdit && this.props.cannotEdit.includes(this.props.values[index])) {
 			return;
 		}
@@ -107,14 +107,14 @@ const StringArrayEditor = createClass({
 				} else {
 					this.addValue(event.target.value.trim());
 				}
-			} else if(event.target.value.length == 0){
+			} else if(event.target.value.length == 0) {
 				this.removeValue(index);
 			}
 			this.newTagInput.current.focus();
 		} else if(event.key === 'Escape' && index) {
 			this.closeEditInput(index);
 			event.target.parentNode.focus();
-		} else if(event.key === 'ArrowLeft' && event.target.value.length === 0){
+		} else if(event.key === 'ArrowLeft' && event.target.value.length === 0) {
 			event.target.previousElementSibling?.focus();
 		}
 	},
@@ -126,22 +126,20 @@ const StringArrayEditor = createClass({
 	},
 
 	handleTagKeyDown : function(event, index) {
-		if(_.includes(['Enter', 'Space'], event.code)){
+		if(_.includes(['Enter', 'Space'], event.code)) {
 			event.preventDefault();
 			this.editValue(event, index);
 		} else if(_.includes(['Delete'], event.key)) {
 			this.removeValue(index);
-		} else if(_.includes(['ArrowLeft'], event.key)){
+		} else if(_.includes(['ArrowLeft'], event.key)) {
 			event.target.previousElementSibling?.focus();
-		} else if(_.includes(['ArrowRight'], event.key)){
+		} else if(_.includes(['ArrowRight'], event.key)) {
 			event.target.nextElementSibling?.focus();
 		}
-
-
 	},
 
-	renderDatalist : function(){
-		if(this.props.options?.length > 0){
+	renderDatalist : function() {
+		if(this.props.options?.length > 0) {
 			return <datalist id={`${this.props.id}__tags-precoordinated`}>
 				{this.props.options.map((option)=>{
 					return <option value={`${option}`}></option>;
