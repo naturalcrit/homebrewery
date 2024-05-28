@@ -142,7 +142,7 @@ const StringArrayEditor = createClass({
 		if(this.props.options?.length > 0) {
 			return <datalist id={`${this.props.id}__tags-precoordinated`}>
 				{this.props.options.map((option)=>{
-					return <option value={`${option}`}></option>;
+					return <option key={`${option}`} value={`${option}`}></option>;
 				})}
 			</datalist>;
 		}
