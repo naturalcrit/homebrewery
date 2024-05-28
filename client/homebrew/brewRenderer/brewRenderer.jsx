@@ -65,6 +65,7 @@ const BrewRenderer = (props)=>{
 		height             : PAGE_HEIGHT,
 		isMounted          : false,
 		visibility         : 'hidden',
+		zoom			   : 100,
 	});
 
 	const mainRef  = useRef(null);
@@ -182,6 +183,30 @@ const BrewRenderer = (props)=>{
 	const themePath     = props.theme ?? '5ePHB';
 	const baseThemePath = Themes[rendererPath][themePath].baseTheme;
 
+
+	//Toolbar settings:
+
+	const updateZoom = (newZoom) => {
+		setState((prevState)=>({
+			...prevState,
+			zoom : newZoom
+		}));
+	};
+
+	const makeZoom = () => {
+
+		return(
+			<style>
+        {`
+          .pages {
+            scale:${state.zoom}%;
+          }
+        `}
+      </style>
+		);
+	}
+
+
 	return (
 		<>
 			{/*render dummy page while iFrame is mounting.*/}
@@ -199,7 +224,7 @@ const BrewRenderer = (props)=>{
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
 			>
-				<ToolBar />
+				<ToolBar updateZoom={updateZoom} />
 				<div className={'brewRenderer'}
 					onScroll={handleScroll}
 					style={{ height: state.height }}>
@@ -214,6 +239,7 @@ const BrewRenderer = (props)=>{
 						<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} type='text/css' rel='stylesheet'/>
 					}
 					<link href={`/themes/${rendererPath}/${themePath}/style.css`} type='text/css' rel='stylesheet'/>
+					{makeZoom()}
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted

@@ -3,12 +3,17 @@ const React = require('react');
 const { useState, useRef, useEffect } = React;
 const _ = require('lodash');
 
-const ToolBar = () => {
+const ToolBar = ({updateZoom}) => {
     const [state, setState] = useState({
         currentPage: 1,
         totalPages: 10,
         zoomLevel: 100,
     });
+
+    useEffect(() => {
+        console.log(`Zoom to: ${state.zoomLevel}`);
+        updateZoom(state.zoomLevel);
+    }, [state.zoomLevel]);
 
     const setZoomLevel = (direction) => {
         let zoomLevel = state.zoomLevel;
