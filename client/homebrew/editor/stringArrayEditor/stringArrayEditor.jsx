@@ -33,13 +33,17 @@ const StringArrayEditor = createClass({
 		};
 	},
 
+	componentDidMount : function(){
+		this.newTagInput = React.createRef(null);
+	},
+
 	componentDidUpdate : function(prevProps) {
 		if(!_.eq(this.props.values, prevProps.values)) {
 			this.setState({
 				valueContext : this.props.values ? this.props.values.map((newValue, i)=>({
 					value    : newValue,
 					editing  : this.state.valueContext.find(({ value })=>value === newValue)?.editing || false,
-					inputRef : this.state.valueContext[i]?.inputRef || React.createRef()
+					inputRef : this.state.valueContext[i]?.inputRef || React.createRef()  // todo: this should include the 'new tag' input
 				})) : []
 			});
 		}
