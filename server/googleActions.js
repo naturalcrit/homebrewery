@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-const _ = require('lodash');
 const googleDrive = require('@googleapis/drive');
 const { nanoid } = require('nanoid');
 const token = require('./token.js');

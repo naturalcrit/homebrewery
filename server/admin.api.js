@@ -28,12 +28,10 @@ const mw = {
 };
 
 const junkBrewPipeline = [
-	{	$match :
-		{
-			updatedAt  : { $lt: Moment().subtract(30, 'days').toDate() },
-			lastViewed : { $lt: Moment().subtract(30, 'days').toDate() }
-		}
-	},
+	{	$match : {
+		updatedAt  : { $lt: Moment().subtract(30, 'days').toDate() },
+		lastViewed : { $lt: Moment().subtract(30, 'days').toDate() }
+	} },
 	{ $project: { textBinSize: { $binarySize: '$textBin' } } },
 	{ $match: { textBinSize: { $lt: 140 } } },
 	{ $limit: 100 }

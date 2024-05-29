@@ -2,7 +2,6 @@ require('./renderWarnings.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
-const cx    = require('classnames');
 
 const DISMISS_KEY = 'dismiss_render_warning';
 
