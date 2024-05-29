@@ -199,13 +199,13 @@ const BrewRenderer = (props)=>{
 			<style>
         {`
           .pages {
-            scale:${state.zoom}%;
+            zoom:${state.zoom}%;
+			margin-bottom:5%;
           }
         `}
       </style>
 		);
 	}
-
 
 	return (
 		<>
