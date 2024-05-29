@@ -98,6 +98,7 @@
     "expr-eval": "^2.0.2",
     "express": "^4.19.2",
     "express-async-handler": "^1.2.0",
+    "express-requests-logger": "^4.0.0",
     "express-static-gzip": "2.1.7",
     "fs-extra": "11.2.0",
     "html-to-image": "^1.11.11",

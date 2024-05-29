@@ -16,7 +16,9 @@ module.exports = {
 		(value)=>{
 			if(value?.length == 0){return null;}
 			try {
-				Boolean(new URL(value));
+				if(value != 'Page 1') {
+					Boolean(new URL(value));
+				}
 				return null;
 			} catch (e) {
 				return 'Must be a valid URL';

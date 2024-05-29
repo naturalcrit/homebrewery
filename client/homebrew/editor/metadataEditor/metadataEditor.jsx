@@ -34,7 +34,6 @@ const MetadataEditor = createClass({
 				description : '',
 				thumbnail   : '',
 				thumbnailSm : null,
-				thumbnailLg : null,
 				tags        : [],
 				published   : false,
 				authors     : [],
@@ -61,58 +60,70 @@ const MetadataEditor = createClass({
 	},
 
 
-	ThumbnailCapture : async function() {
+	thumbnailCapture : async function() {
 		const bR = parent.document.getElementById('BrewRenderer');
 		const brewRenderer = bR.contentDocument || bR.contentWindow.document;
-		const topPage = brewRenderer.getElementsByClassName('page')[0].cloneNode(true);
+		const pageOne = brewRenderer.getElementsByClassName('page')[0];
+		const topPage = pageOne.cloneNode(true);
+		pageOne.parentNode.appendChild(topPage);
 		// Walk through Top Page's Source and convert all Images to inline data *in* topPage.
 		const srcImages = brewRenderer.getElementsByClassName('page')[0].getElementsByTagName('img');
 		const topImages = topPage.getElementsByTagName('img');
 		const topLinks = brewRenderer.getElementsByTagName('link');
 		const topStyles = brewRenderer.getElementsByTagName('style');
 		// These two should start off with identical contents.
-		for (let imgPos = 0; imgPos < srcImages.length; imgPos++) {
-			topImages[imgPos].src = `http://localhost:8000/xssp/${base64url.encode(srcImages[imgPos].src)}`;
-		}
-		console.log(topImages);
-		for (let linkPos = 0; linkPos < topLinks.length; linkPos++) {
-			topLinks[linkPos].src = `http://localhost:8000/xssp/${base64url.encode(topLinks[linkPos].src)}`;
-		}
-		console.log(topLinks);
-		for (let stylePos = 0; stylePos < topStyles.length; stylePos++) {
-			const urlRegex = /url\(([^\'\"].*[^\'\"])\)/gs;
-			const urlRegexWrapped = /url\(\'(.*)\'\)/gs;
-			topStyles[stylePos].replace(urlRegex, function(urlMatch, url){
-				console.log(`url Match`);
-				console.log(urlMatch);
-				console.log(url);
-				console.log(base64url.encode(url));
-				return (`url(http://localhost:8000/xssp/${base64url.encode(url)})`);
-			});
-			console.log(topStyles[stylePos]);
-			topStyles[stylePos].replace(urlRegexWrapped, function(urllMatch, url){
-				console.log(`url Match`);
-				console.log(urlMatch);
-				console.log(url);
-				console.log(base64url.encode(url));
-				return (`url('http://localhost:8000/xssp/${base64url.encode(url)}')`);
-			});
-			console.log(topStyles[stylePos]);
-		}
-		console.log('topStyles');
-		console.log(topStyles);
-		console.log('topStyles');
+		// for (let imgPos = 0; imgPos < srcImages.length; imgPos++) {
+		// 	topImages[imgPos].src = `http://localhost:8000/xssp/${base64url.encode(srcImages[imgPos].src)}`;
+		// }
+		// console.log(topImages);
+		// for (let linkPos = 0; linkPos < topLinks.length; linkPos++) {
+		// 	topLinks[linkPos].src = `http://localhost:8000/xssp/${base64url.encode(topLinks[linkPos].src)}`;
+		// }
+		// console.log(topLinks);
+		// for (let stylePos = 0; stylePos < topStyles.length; stylePos++) {
+		// 	const urlRegex = /url\(([^\'\"].*[^\'\"])\)/gs;
+		// 	const urlRegexWrapped = /url\(\'(.*)\'\)/gs;
+		// 	topStyles[stylePos].replace(urlRegex, function(urlMatch, url){
+		// 		console.log(`url Match`);
+		// 		console.log(urlMatch);
+		// 		console.log(url);
+		// 		console.log(base64url.encode(url));
+		// 		return (`url(http://localhost:8000/xssp/${base64url.encode(url)})`);
+		// 	});
+		// 	console.log(topStyles[stylePos]);
+		// 	topStyles[stylePos].replace(urlRegexWrapped, function(urllMatch, url){
+		// 		console.log(`url Match`);
+		// 		console.log(urlMatch);
+		// 		console.log(url);
+		// 		console.log(base64url.encode(url));
+		// 		return (`url('http://localhost:8000/xssp/${base64url.encode(url)}')`);
+		// 	});
+		// 	console.log(topStyles[stylePos]);
+		// }
+		// console.log('topStyles');
+		// console.log(topStyles);
+		// console.log('topStyles');
 		const props = this.props;
 
-		htmlimg.toPng(topPage, {
-			preferredFontFormat : 'woff2',
-			style               : { margin: 'unset' },
-		    cacheBust           : true
-		  }).then(function(dataURL){
-			props.metadata.thumbnail = 'Page 1';
-			props.metadata.thumbnailSm = dataURL;
-			props.onChange(props.metadata);
-		});
+		console.log(topPage);
+
+
+		const clientHeightLg = topPage.clientHeight * 0.5;
+		const clientWidthSm = topPage.clientWidth * (115/topPage.clientHeight);
+		const clientWidthLg = topPage.clientWidth * 0.5;
+
+		htmlimg.toPng(topPage, { canvasHeight : clientHeightLg, canvasWidth : clientWidthLg
+		}).then(function(dataURL){
+		  props.metadata.thumbnailLg = dataURL;
+		  	htmlimg.toJpeg(topPage, { canvasHeight : 115, canvasWidth : clientWidthSm, quality : 0.95
+		  	}).then(function(dataURL){
+				props.metadata.thumbnail = 'Page 1';
+				props.metadata.thumbnailSm = dataURL;
+				props.onChange(props.metadata);
+				topPage.remove();
+			});
+		  props.onChange(props.metadata);
+	  	});
 	},
 
 	renderThumbnail : function(){
@@ -393,7 +404,7 @@ const MetadataEditor = createClass({
 						<button className='display' onClick={this.toggleThumbnailDisplay}>
 							<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
 						</button>
-						<button className='display' onClick={this.ThumbnailCapture}>
+						<button className='display' onClick={this.thumbnailCapture}>
 							<i className={`fas fa-camera`} />
 						</button>
 					</div>
