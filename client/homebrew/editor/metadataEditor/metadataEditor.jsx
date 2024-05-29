@@ -61,6 +61,10 @@ const MetadataEditor = createClass({
 
 
 	thumbnailCapture : async function() {
+
+		function urlReplacer(urlMatch, url) {
+			return (`url(/xssp/${base64url.encode(url)})`);
+		}
 		const bR = parent.document.getElementById('BrewRenderer');
 		const brewRenderer = bR.contentDocument || bR.contentWindow.document;
 		const pageOne = brewRenderer.getElementsByClassName('page')[0];
@@ -72,41 +76,19 @@ const MetadataEditor = createClass({
 		const topLinks = brewRenderer.getElementsByTagName('link');
 		const topStyles = brewRenderer.getElementsByTagName('style');
 		// These two should start off with identical contents.
-		// for (let imgPos = 0; imgPos < srcImages.length; imgPos++) {
-		// 	topImages[imgPos].src = `http://localhost:8000/xssp/${base64url.encode(srcImages[imgPos].src)}`;
-		// }
-		// console.log(topImages);
-		// for (let linkPos = 0; linkPos < topLinks.length; linkPos++) {
-		// 	topLinks[linkPos].src = `http://localhost:8000/xssp/${base64url.encode(topLinks[linkPos].src)}`;
-		// }
-		// console.log(topLinks);
-		// for (let stylePos = 0; stylePos < topStyles.length; stylePos++) {
-		// 	const urlRegex = /url\(([^\'\"].*[^\'\"])\)/gs;
-		// 	const urlRegexWrapped = /url\(\'(.*)\'\)/gs;
-		// 	topStyles[stylePos].replace(urlRegex, function(urlMatch, url){
-		// 		console.log(`url Match`);
-		// 		console.log(urlMatch);
-		// 		console.log(url);
-		// 		console.log(base64url.encode(url));
-		// 		return (`url(http://localhost:8000/xssp/${base64url.encode(url)})`);
-		// 	});
-		// 	console.log(topStyles[stylePos]);
-		// 	topStyles[stylePos].replace(urlRegexWrapped, function(urllMatch, url){
-		// 		console.log(`url Match`);
-		// 		console.log(urlMatch);
-		// 		console.log(url);
-		// 		console.log(base64url.encode(url));
-		// 		return (`url('http://localhost:8000/xssp/${base64url.encode(url)}')`);
-		// 	});
-		// 	console.log(topStyles[stylePos]);
-		// }
-		// console.log('topStyles');
-		// console.log(topStyles);
-		// console.log('topStyles');
+		for (let imgPos = 0; imgPos < srcImages.length; imgPos++) {
+			topImages[imgPos].src = `/xssp/${base64url.encode(srcImages[imgPos].src)}`;
+		}
+		for (let linkPos = 0; linkPos < topLinks.length; linkPos++) {
+			topLinks[linkPos].href = `/xssp/${base64url.encode(topLinks[linkPos].href)}`;
+		}
+		for (let stylePos = 0; stylePos < topStyles.length; stylePos++) {
+			const urlRegex = /url\(([^\'\"].*[^\'\"])\)/gs;
+			const urlRegexWrapped = /url\(\'(.*)\'\)/gs;
+			topStyles[stylePos].innerText = topStyles[stylePos].innerText.replace(urlRegex,  urlReplacer);
+			topStyles[stylePos].innerText = topStyles[stylePos].innerText.replace(urlRegexWrapped, urlReplacer);
+		}
 		const props = this.props;
-
-		console.log(topPage);
-
 
 		const clientHeightLg = topPage.clientHeight * 0.5;
 		const clientWidthSm = topPage.clientWidth * (115/topPage.clientHeight);

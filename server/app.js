@@ -5,7 +5,6 @@ process.chdir(`${__dirname}/..`);
 const _ = require('lodash');
 const jwt = require('jwt-simple');
 const express = require('express');
-const audit = require('express-requests-logger');
 
 
 const yaml = require('js-yaml');
