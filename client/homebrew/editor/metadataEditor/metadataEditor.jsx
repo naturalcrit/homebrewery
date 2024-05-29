@@ -71,7 +71,7 @@ const MetadataEditor = createClass({
 		const topPage = pageOne.cloneNode(true);
 		pageOne.parentNode.appendChild(topPage);
 		// Walk through Top Page's Source and convert all Images to inline data *in* topPage.
-		const srcImages = brewRenderer.getElementsByClassName('page')[0].getElementsByTagName('img');
+		const srcImages = pageOne.getElementsByTagName('img');
 		const topImages = topPage.getElementsByTagName('img');
 		const topLinks = brewRenderer.getElementsByTagName('link');
 		const topStyles = brewRenderer.getElementsByTagName('style');
