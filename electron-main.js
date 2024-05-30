@@ -4,6 +4,8 @@ const path = require('path');
 // const express = require('express');
 // const cors = require('cors');
 
+process.env.NODE_ENV = 'electron';
+
 const DB = require('./server/db.js');
 const server = require('./server/app.js');
 const config = require('./server/config.js');
