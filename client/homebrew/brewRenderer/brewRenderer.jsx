@@ -81,9 +81,7 @@ const BrewRenderer = (props)=>{
 
 
 	useEffect(() => {
-		// Extract element ID from the URL
-		const urlParams = new URLSearchParams(window.location.search);
-		const elementId = urlParams.get('elementId'); // Assume the URL is like ?elementId=yourElementId
+		const elementId = window.location.hash.slice(1); // Remove the leading '#'
 	
 		if (elementId) {
 			const iframe = document.getElementById('BrewRenderer');
@@ -106,7 +104,7 @@ const BrewRenderer = (props)=>{
 			if (brewRenderer) {
 				const pages = brewRenderer.querySelectorAll('.page');
 				if (pages && pages[pageNumber]) {
-					pages[pageNumber].scrollIntoView({ behavior: 'smooth', block: 'start' });
+					pages[pageNumber].scrollIntoView({ block: 'start' });
 				}
 			}
 		}
@@ -114,22 +112,10 @@ const BrewRenderer = (props)=>{
 	
 	const getPageContainingElement = (iframe, elementId) => {
 		return new Promise((resolve, reject) => {
-			if (!iframe || !iframe.contentWindow) {
-				console.log("iframe doesn't exist or content window is not accessible.");
-				reject(new Error("iframe doesn't exist or content window is not accessible."));
-				return;
-			}
-	
 			iframe.addEventListener('load', () => {
-				console.log('Iframe has finished loading');
 	
 				const brewRenderer = iframe.contentWindow.document.querySelector('.brewRenderer');
 				console.log('brewRenderer:', brewRenderer);
-				if (!brewRenderer) {
-					console.log("brewRenderer doesn't exist");
-					reject(new Error("brewRenderer doesn't exist"));
-					return;
-				}
 	
 				setTimeout(() => {
 					const pages = brewRenderer.querySelectorAll('.page');
@@ -137,11 +123,8 @@ const BrewRenderer = (props)=>{
 	
 					for (let i = 0; i < pages.length; i++) {
 						if (pages[i].querySelector(`#${elementId}`)) {
-							console.log('Page containing element found:', i);
 							resolve(i);
 							return;
-						} else {
-							console.log('Page containing element not found:', i);
 						}
 					}
 	
