@@ -3,17 +3,32 @@ const React = require('react');
 const { useState, useRef, useEffect } = React;
 const _ = require('lodash');
 
-const ToolBar = ({updateZoom}) => {
+const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
     const [state, setState] = useState({
-        currentPage: 1,
-        totalPages: 10,
+        currentPage: currentPage,
+        totalPages: totalPages,
         zoomLevel: 100,
     });
+
+    const [pageNumberInput, setPageNumberInput] = useState(
+        state.currentPage + 1
+    );
+    const [zoomInput, setZoomInput] = useState(state.zoomLevel);
 
     useEffect(() => {
         console.log(`Zoom to: ${state.zoomLevel}`);
         updateZoom(state.zoomLevel);
     }, [state.zoomLevel]);
+
+    // Update currentPage whenever page prop changes
+    useEffect(() => {
+        console.log(`page number from props ${currentPage}`);
+        setState((prevState) => ({
+            ...prevState,
+            currentPage: currentPage,
+        }));
+        setPageNumberInput(currentPage + 1);
+    }, [currentPage]);
 
     const setZoomLevel = (direction) => {
         let zoomLevel = state.zoomLevel;
@@ -29,17 +44,22 @@ const ToolBar = ({updateZoom}) => {
         }));
     };
 
-    const scrollToPage = (direction) => {
-        let currentPage = state.currentPage;
-        if (direction === 'next') {
-            currentPage += 1;
-        } else {
-            currentPage = currentPage - 1;
+    const handleInputChange = (value, type) => {
+        // Remove the "%" symbol from the input value
+        const newValue = parseInt(value.replace('%', ''), 10);
+
+        // Check the type of input (zoom or page)
+        if (type === 'zoom') {
+            // Check if zoom level is within the allowed range
+            if (newValue >= 10 && newValue <= 300) {
+                setZoomInput(newValue + '%'); // Add "%" back to the value
+            }
+        } else if (type === 'page') {
+            // Check if page number is within the allowed range
+            if (newValue >= 1 && newValue <= totalPages) {
+                setPageNumberInput(newValue);
+            }
         }
-        setState((prevState) => ({
-            ...prevState,
-            currentPage,
-        }));
     };
 
     return (
@@ -53,7 +73,27 @@ const ToolBar = ({updateZoom}) => {
                 </button>
             </div>
 
-            <span className="currentZoom">{state.zoomLevel}%</span>
+            <div className="tool">
+                <input
+                    type="number"
+                    name="zoom"
+                    min={10}
+                    max={300}
+                    value={zoomInput}
+                    onChange={(e) => handleInputChange(e.target.value, 'zoom')}
+                    onBlur={(e) => {
+                        const newZoomLevel = parseInt(
+                            e.target.value.replace('%', ''),
+                            10
+                        );
+                        if (newZoomLevel !== state.zoomLevel) {
+                            updateZoom(newZoomLevel);
+                        }
+                    }}
+                />
+                <span>%</span>
+            </div>
+
             <div className="tool">
                 <button
                     onClick={() => setZoomLevel('out')}
@@ -66,19 +106,38 @@ const ToolBar = ({updateZoom}) => {
             <div className="tool">
                 <button
                     className="previousPage"
-                    onClick={() => scrollToPage('previous')}
-                    disabled={state.currentPage <= 1}
+                    onClick={() => {
+                        console.log(`page is ${state.currentPage}`);
+                        onPageChange(state.currentPage - 1);
+                    }}
+                    disabled={state.currentPage === 0}
                 >
                     <i className="fas fa-arrow-left"></i>
                 </button>
             </div>
 
-            <span className="currentPage">{state.currentPage}</span>
+            <input
+                type="number"
+                name="page"
+                min={1}
+                max={state.totalPages}
+                id="pageInput"
+                value={pageNumberInput}
+                onChange={(e) => handleInputChange(e.target.value, 'page')}
+                onBlur={(e) => {
+                    parseInt(pageNumberInput) === state.currentPage + 1 ||
+                        onPageChange(parseInt(pageNumberInput) - 1);
+                }}
+            />
+
             <div className="tool">
                 <button
                     className="nextPage"
-                    onClick={() => scrollToPage('next')}
-                    disabled={state.currentPage >= 10}
+                    onClick={() => {
+                        console.log(`page is ${state.currentPage}`);
+                        onPageChange(state.currentPage + 1);
+                    }}
+                    disabled={state.currentPage + 1 === state.totalPages}
                 >
                     <i className="fas fa-arrow-right"></i>
                 </button>

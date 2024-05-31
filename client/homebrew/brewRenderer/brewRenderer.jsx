@@ -88,7 +88,8 @@ const BrewRenderer = (props)=>{
                 iframe.contentWindow.document.querySelector('.brewRenderer');
             if (brewRenderer) {
                 const pages = brewRenderer.querySelectorAll('.page');
-                if (pageNumber > pages.length) {
+                if (pageNumber + 1 > pages.length) {
+					console.log(pageNumber, pages.length);
                     console.log('page not found');
                 } else {
                     pages[pageNumber].scrollIntoView({ block: 'start' });
@@ -234,6 +235,11 @@ const BrewRenderer = (props)=>{
 		);
 	}
 
+	const handlePageChange = (pageNumber) => {
+        // Scroll to the desired page
+        scrollToPage(pageNumber);
+    };
+
 	return (
 		<>
 			{/*render dummy page while iFrame is mounting.*/}
@@ -251,7 +257,7 @@ const BrewRenderer = (props)=>{
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
 			>
-				<ToolBar updateZoom={updateZoom} />
+				<ToolBar updateZoom={updateZoom} currentPage={state.viewablePageNumber} onPageChange={handlePageChange} totalPages={rawPages.length}/>
 				<div className={'brewRenderer'}
 					onScroll={handleScroll}
 					onKeyDown={handleControlKeys}
