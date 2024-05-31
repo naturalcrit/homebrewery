@@ -85,15 +85,15 @@ const BrewRenderer = (props)=>{
                 if (pageIdRegex.test(locationHash)) {
                     // Extract page number from the ID
                     const pageNumber = parseInt(locationHash.slice(2));
-                    scrollToPage(iframe, pageNumber);
+                    scrollToPage(pageNumber);
                 } else {
                     // Treat it as an element ID
                     const elementId = locationHash.slice(1); // Remove the leading '#'
                     if (elementId) {
-                        getPageContainingElement(iframe, elementId)
+                        getPageContainingElement(elementId)
                             .then((pageNumber) => {
                                 if (pageNumber !== -1) {
-                                    scrollToPage(iframe, pageNumber);
+                                    scrollToPage(pageNumber);
                                 }
                             })
                             .catch((error) => {
@@ -111,7 +111,8 @@ const BrewRenderer = (props)=>{
     }, []);
 	
 
-	const scrollToPage = (iframe, pageNumber) => {
+	const scrollToPage = (pageNumber) => {
+		const iframe = document.getElementById('BrewRenderer');
         if (iframe && iframe.contentWindow) {
             const brewRenderer =
                 iframe.contentWindow.document.querySelector('.brewRenderer');
@@ -126,7 +127,8 @@ const BrewRenderer = (props)=>{
         }
     };
 	
-	const getPageContainingElement = (iframe, elementId) => {
+	const getPageContainingElement = (elementId) => {
+		const iframe = document.getElementById('BrewRenderer');
         return new Promise((resolve) => {
             const brewRenderer =
                 iframe.contentWindow.document.querySelector('.brewRenderer');
