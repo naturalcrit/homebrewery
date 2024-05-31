@@ -85,7 +85,7 @@ const BrewRenderer = (props)=>{
                 if (pageIdRegex.test(locationHash)) {
                     // Extract page number from the ID
                     const pageNumber = parseInt(locationHash.slice(2));
-                    scrollToPage(pageNumber+1);
+                    scrollToPage(pageNumber-1);
                 } else {
                     // Treat it as an element ID
                     const elementId = locationHash.slice(1); // Remove the leading '#'
