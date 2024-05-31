@@ -76,7 +76,7 @@ const BrewRenderer = (props)=>{
 
 	useEffect(() => {
         const locationHash = window.location.hash;
-		const iframe = document.getElementById('BrewRenderer');
+        const iframe = document.getElementById('BrewRenderer');
 
         // Regular expression to match page IDs like '#p1'
         const pageIdRegex = /^#p\d+$/;
@@ -85,12 +85,7 @@ const BrewRenderer = (props)=>{
                 if (pageIdRegex.test(locationHash)) {
                     // Extract page number from the ID
                     const pageNumber = parseInt(locationHash.slice(2));
-                    console.log('scrolling to page ', pageNumber);
-                    if (!isNaN(pageNumber)) {
-                        scrollToPage(iframe, pageNumber);
-                    } else {
-                        console.error('Invalid page ID:', locationHash);
-                    }
+                    scrollToPage(iframe, pageNumber);
                 } else {
                     // Treat it as an element ID
                     const elementId = locationHash.slice(1); // Remove the leading '#'
@@ -117,16 +112,19 @@ const BrewRenderer = (props)=>{
 	
 
 	const scrollToPage = (iframe, pageNumber) => {
-		if (iframe && iframe.contentWindow) {
-			const brewRenderer = iframe.contentWindow.document.querySelector('.brewRenderer');
-			if (brewRenderer) {
-				const pages = brewRenderer.querySelectorAll('.page');
-				if (pages && pages[pageNumber]) {
-					pages[pageNumber].scrollIntoView({ block: 'start' });
-				}
-			}
-		}
-	};
+        if (iframe && iframe.contentWindow) {
+            const brewRenderer =
+                iframe.contentWindow.document.querySelector('.brewRenderer');
+            if (brewRenderer) {
+                const pages = brewRenderer.querySelectorAll('.page');
+                if (pageNumber > pages.length) {
+                    console.log('page not found');
+                } else {
+                    pages[pageNumber].scrollIntoView({ block: 'start' });
+                }
+            }
+        }
+    };
 	
 	const getPageContainingElement = (iframe, elementId) => {
         return new Promise((resolve) => {
