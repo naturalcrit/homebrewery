@@ -18,6 +18,7 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
     useEffect(() => {
         console.log(`Zoom to: ${state.zoomLevel}`);
         updateZoom(state.zoomLevel);
+        setZoomInput(state.zoomLevel);
     }, [state.zoomLevel]);
 
     // Update currentPage whenever page prop changes
