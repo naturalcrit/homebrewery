@@ -242,11 +242,11 @@ const BrewRenderer = (props)=>{
 	const makeZoom = () => {
 
 		return(
-			<style>
+			<style id='zoomStyle'>
         {`
           .pages {
             zoom: ${state.zoom}%;
-			margin-bottom: 7cm;
+			margin-bottom: 5cm;
           }
         `}
       </style>
