@@ -144,7 +144,7 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
                     className="nextPage"
                     onClick={() => {
                         console.log(`page is ${state.currentPage}`);
-                        onPageChange(state.currentPage);
+                        onPageChange(state.currentPage+1);
                     }}
                     disabled={state.currentPage + 1 === state.totalPages}
                 >
