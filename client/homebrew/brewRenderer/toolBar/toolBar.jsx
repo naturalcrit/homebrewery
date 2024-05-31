@@ -90,6 +90,11 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
                             updateZoom(newZoomLevel);
                         }
                     }}
+                    onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                            e.target.blur();
+                        }
+                    }}
                 />
                 <span>%</span>
             </div>
@@ -127,6 +132,11 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
                 onBlur={(e) => {
                     parseInt(pageNumberInput) === state.currentPage + 1 ||
                         onPageChange(parseInt(pageNumberInput) - 1);
+                }}
+                onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                        e.target.blur();
+                    }
                 }}
             />
 
