@@ -146,7 +146,7 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
                         console.log(`page is ${state.currentPage} and i move to ${state.currentPage}`);
                         onPageChange(state.currentPage);
                     }}
-                    disabled={state.currentPage + 1 === state.totalPages}
+                    disabled={state.currentPage >= state.totalPages}
                 >
                     <i className="fas fa-arrow-right"></i>
                 </button>
