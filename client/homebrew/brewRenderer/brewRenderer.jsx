@@ -67,6 +67,7 @@ const BrewRenderer = (props)=>{
 		isMounted          : false,
 		visibility         : 'hidden',
 		zoom			   : 100,
+		currentPageNumber  : 1,
 	});
 
 	const mainRef  = useRef(null);
@@ -88,7 +89,8 @@ const BrewRenderer = (props)=>{
                 iframe.contentWindow.document.querySelector('.brewRenderer');
             if (brewRenderer) {
                 const pages = brewRenderer.querySelectorAll('.page');
-                if (pageNumber + 1 > pages.length) {
+				console.log(pageNumber);
+                if (pageNumber + 1 > pages.length || pageNumber < 0) {
 					console.log(pageNumber, pages.length);
                     console.log('page not found');
                 } else {
@@ -110,6 +112,18 @@ const BrewRenderer = (props)=>{
 		setState((prevState)=>({
 			...prevState,
 			viewablePageNumber : Math.floor(target.scrollTop / target.scrollHeight * rawPages.length)
+		}));
+
+		getCurrentPage(e);
+	};
+
+	const getCurrentPage = (e) => {
+		const target = e.target;
+		const currentPageNumber = Math.ceil(target.scrollTop / target.scrollHeight * rawPages.length);
+		
+		setState((prevState) => ({
+			...prevState,
+			currentPageNumber: currentPageNumber || 1
 		}));
 	};
 
@@ -257,7 +271,7 @@ const BrewRenderer = (props)=>{
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
 			>
-				<ToolBar updateZoom={updateZoom} currentPage={state.viewablePageNumber} onPageChange={handlePageChange} totalPages={rawPages.length}/>
+				<ToolBar updateZoom={updateZoom} currentPage={state.currentPageNumber} onPageChange={handlePageChange} totalPages={rawPages.length}/>
 				<div className={'brewRenderer'}
 					onScroll={handleScroll}
 					onKeyDown={handleControlKeys}

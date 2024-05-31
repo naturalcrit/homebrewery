@@ -11,7 +11,7 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
     });
 
     const [pageNumberInput, setPageNumberInput] = useState(
-        state.currentPage + 1
+        state.currentPage
     );
     const [zoomInput, setZoomInput] = useState(state.zoomLevel);
 
@@ -22,12 +22,11 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
 
     // Update currentPage whenever page prop changes
     useEffect(() => {
-        console.log(`page number from props ${currentPage}`);
         setState((prevState) => ({
             ...prevState,
             currentPage: currentPage,
         }));
-        setPageNumberInput(currentPage + 1);
+        setPageNumberInput(currentPage);
     }, [currentPage]);
 
     const setZoomLevel = (direction) => {
@@ -113,9 +112,9 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
                     className="previousPage"
                     onClick={() => {
                         console.log(`page is ${state.currentPage}`);
-                        onPageChange(state.currentPage - 1);
+                        onPageChange(state.currentPage - 2);
                     }}
-                    disabled={state.currentPage === 0}
+                    disabled={state.currentPage <= 1}
                 >
                     <i className="fas fa-arrow-left"></i>
                 </button>
@@ -130,7 +129,7 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
                 value={pageNumberInput}
                 onChange={(e) => handleInputChange(e.target.value, 'page')}
                 onBlur={(e) => {
-                    parseInt(pageNumberInput) === state.currentPage + 1 ||
+                    parseInt(pageNumberInput) === state.currentPage ||
                         onPageChange(parseInt(pageNumberInput) - 1);
                 }}
                 onKeyPress={(e) => {
@@ -145,7 +144,7 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
                     className="nextPage"
                     onClick={() => {
                         console.log(`page is ${state.currentPage}`);
-                        onPageChange(state.currentPage + 1);
+                        onPageChange(state.currentPage);
                     }}
                     disabled={state.currentPage + 1 === state.totalPages}
                 >
