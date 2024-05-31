@@ -246,7 +246,7 @@ const BrewRenderer = (props)=>{
         {`
           .pages {
             zoom: ${state.zoom}%;
-			margin-bottom: 2cm;
+			margin-bottom: 7cm;
           }
         `}
       </style>
