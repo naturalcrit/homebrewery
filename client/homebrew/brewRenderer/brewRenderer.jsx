@@ -79,6 +79,82 @@ const BrewRenderer = (props)=>{
 		return ()=>{window.removeEventListener('resize', updateSize);};
 	}, []);
 
+
+	useEffect(() => {
+		// Extract element ID from the URL
+		const urlParams = new URLSearchParams(window.location.search);
+		const elementId = urlParams.get('elementId'); // Assume the URL is like ?elementId=yourElementId
+	
+		if (elementId) {
+			const iframe = document.getElementById('BrewRenderer');
+			getPageContainingElement(iframe, elementId)
+				.then(pageNumber => {
+					if (pageNumber !== -1) {
+						scrollToPage(iframe, pageNumber);
+					}
+				})
+				.catch(error => {
+					console.error('Error:', error);
+				});
+		}
+	}, []);
+	
+
+	const scrollToPage = (iframe, pageNumber) => {
+		if (iframe && iframe.contentWindow) {
+			const brewRenderer = iframe.contentWindow.document.querySelector('.brewRenderer');
+			if (brewRenderer) {
+				const pages = brewRenderer.querySelectorAll('.page');
+				if (pages && pages[pageNumber]) {
+					pages[pageNumber].scrollIntoView({ behavior: 'smooth', block: 'start' });
+				}
+			}
+		}
+	};
+	
+	const getPageContainingElement = (iframe, elementId) => {
+		return new Promise((resolve, reject) => {
+			if (!iframe || !iframe.contentWindow) {
+				console.log("iframe doesn't exist or content window is not accessible.");
+				reject(new Error("iframe doesn't exist or content window is not accessible."));
+				return;
+			}
+	
+			iframe.addEventListener('load', () => {
+				console.log('Iframe has finished loading');
+	
+				const brewRenderer = iframe.contentWindow.document.querySelector('.brewRenderer');
+				console.log('brewRenderer:', brewRenderer);
+				if (!brewRenderer) {
+					console.log("brewRenderer doesn't exist");
+					reject(new Error("brewRenderer doesn't exist"));
+					return;
+				}
+	
+				setTimeout(() => {
+					const pages = brewRenderer.querySelectorAll('.page');
+					console.log('Number of pages found:', pages.length);
+	
+					for (let i = 0; i < pages.length; i++) {
+						if (pages[i].querySelector(`#${elementId}`)) {
+							console.log('Page containing element found:', i);
+							resolve(i);
+							return;
+						} else {
+							console.log('Page containing element not found:', i);
+						}
+					}
+	
+					console.log('Element with ID not found in any page.');
+					resolve(-1);
+				}, 100); // Adjust delay as needed
+			});
+		});
+	};
+	
+
+
+
 	const updateSize = ()=>{
 		setState((prevState)=>({
 			...prevState,
