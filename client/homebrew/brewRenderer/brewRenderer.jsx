@@ -80,6 +80,18 @@ const BrewRenderer = (props)=>{
 		return ()=>{window.removeEventListener('resize', updateSize);};
 	}, []);
 
+	const scrollToPage = (iframe, pageNumber) => {
+		if (iframe && iframe.contentWindow) {
+			const brewRenderer = iframe.contentWindow.document.querySelector('.brewRenderer');
+			if (brewRenderer) {
+				const pages = brewRenderer.querySelectorAll('.page');
+				if (pages && pages[pageNumber]) {
+					pages[pageNumber].scrollIntoView({ behavior: 'smooth', block: 'start' });
+				}
+			}
+		}
+	};
+	
 	const updateSize = ()=>{
 		setState((prevState)=>({
 			...prevState,
