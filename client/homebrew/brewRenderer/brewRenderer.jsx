@@ -10,7 +10,7 @@ const ErrorBar = require('./errorBar/errorBar.jsx');
 
 //TODO: move to the brew renderer
 const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
-const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
+const NotificationPopup = require('../../../client/components/notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
 const { printCurrentBrew } = require('../../../shared/helpers.js');
