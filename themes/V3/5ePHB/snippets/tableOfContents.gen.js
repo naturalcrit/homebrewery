@@ -12,11 +12,13 @@ const getTOC = (pages)=>{
 				children : []
 			});
 		} else {
-			child.push({
-				title    : null,
-				page     : page + 1,
-				children : []
-			});
+			if(child.length == 0) {
+				child.push({
+					title    : null,
+					page     : page + 1,
+					children : []
+				});
+			}
 			recursiveAdd(title, page, targetDepth, _.last(child).children, curDepth+1,);
 		}
 	};
@@ -41,14 +43,14 @@ const getTOC = (pages)=>{
 
 
 const ToCIterate = (entries, curDepth=0)=>{
-	const levelPad = ['- ###', '  - ####', '    - ####', '      - ####', '        - ####', '          - ####'];
+	const levelPad = ['- ###', '  - ####', '    - ', '      - ', '        - ', '          - '];
 	const toc = [];
 	if(entries.title !== null){
 		toc.push(`${levelPad[curDepth]} [{{ ${entries.title}}}{{ ${entries.page}}}](#p${entries.page})`);
 	}
 	if(entries.children.length) {
 		_.each(entries.children, (entry, idx)=>{
-			const children = ToCIterate(entry, curDepth+1);
+			const children = ToCIterate(entry, entry.title == null ? curDepth : curDepth+1);
 			if(children.length) {
 				toc.push(...children);
 			}

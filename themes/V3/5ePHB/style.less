@@ -812,6 +812,13 @@ h6,
 .tocIncludeH5 h5 {--TOC: include; }
 .tocIncludeH6 h6 {--TOC: include; }
 
+.page:has(.partCover) {
+	--TOC: exclude;
+	&h1 {
+	  --TOC: include;
+	}
+  }
+
 .page {
 	&:has(.toc)::after { display : none; }
 	.toc {
