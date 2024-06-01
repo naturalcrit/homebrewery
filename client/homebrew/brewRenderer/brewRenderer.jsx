@@ -13,6 +13,7 @@ const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
 const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
+const { printCurrentBrew } = require('../../../shared/helpers.js');
 
 const DOMPurify = require('dompurify');
 const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
@@ -159,6 +160,16 @@ const BrewRenderer = (props)=>{
 		return renderedPages;
 	};
 
+	const handleControlKeys = (e)=>{
+		if(!(e.ctrlKey || e.metaKey)) return;
+		const P_KEY = 80;
+		if(e.keyCode == P_KEY && props.allowPrint) printCurrentBrew();
+		if(e.keyCode == P_KEY) {
+			e.stopPropagation();
+			e.preventDefault();
+		}
+	};
+
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			updateSize();
@@ -223,6 +234,8 @@ const BrewRenderer = (props)=>{
 			>
 				<div className={'brewRenderer'}
 					onScroll={handleScroll}
+					onKeyDown={handleControlKeys}
+					tabIndex={-1}
 					style={{ height: state.height }}>
 
 					<ErrorBar errors={props.errors} />

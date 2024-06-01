@@ -25,7 +25,7 @@ const sanitizeBrew = (brew, accessType)=>{
 	brew.__v = undefined;
 	if(accessType !== 'edit' && accessType !== 'shareAuthor') {
 		brew.editId = undefined;
-	}	
+	}
 	return brew;
 };
 
@@ -293,13 +293,13 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	const brew = {
-		shareId  : req.brew.shareId,
-		title    : `CLONE - ${req.brew.title}`,
-		text     : req.brew.text,
-		style    : req.brew.style,
-		renderer : req.brew.renderer,
-		theme    : req.brew.theme,
-		tags     : req.brew.tags,
+		shareId    : req.brew.shareId,
+		title      : `CLONE - ${req.brew.title}`,
+		text       : req.brew.text,
+		style      : req.brew.style,
+		renderer   : req.brew.renderer,
+		theme      : req.brew.theme,
+		tags       : req.brew.tags,
 		userThemes : req.brew.userThemes
 	};
 	req.brew = _.defaults(brew, DEFAULT_BREW);
@@ -338,13 +338,6 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 	splitTextStyleAndMetadata(req.brew);
 	return next();
 }));
-
-//Print Page
-app.get('/print/:id', asyncHandler(getBrew('share')), async (req, res, next)=>{
-	sanitizeBrew(req.brew, 'share');
-	splitTextStyleAndMetadata(req.brew);
-	next();
-});
 
 //Account Page
 app.get('/account', asyncHandler(async (req, res, next)=>{
