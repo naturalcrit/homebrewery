@@ -11,7 +11,7 @@ const Navbar = require('../../navbar/navbar.jsx');
 
 const NewBrew = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
-const PrintLink = require('../../navbar/print.navitem.jsx');
+const PrintNavItem = require('../../navbar/print.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
@@ -23,6 +23,7 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 const Markdown = require('naturalcrit/markdown.js');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
+const { printCurrentBrew } = require('../../../../shared/helpers.js');
 
 const googleDriveIcon = require('../../googleDrive.svg');
 
@@ -54,6 +55,8 @@ const EditPage = createClass({
 			currentEditorPage      : 0
 		};
 	},
+
+	editor    : React.createRef(null),
 	savedBrew : null,
 
 	componentDidMount : function(){
@@ -93,7 +96,7 @@ const EditPage = createClass({
 		const S_KEY = 83;
 		const P_KEY = 80;
 		if(e.keyCode == S_KEY) this.trySave(true);
-		if(e.keyCode == P_KEY) window.open(`/print/${this.processShareId()}?dialog=true`, '_blank').focus();
+		if(e.keyCode == P_KEY) printCurrentBrew();
 		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
 			e.stopPropagation();
 			e.preventDefault();
@@ -101,7 +104,7 @@ const EditPage = createClass({
 	},
 
 	handleSplitMove : function(){
-		this.refs.editor.update();
+		this.editor.current.update();
 	},
 
 	handleTextChange : function(text){
@@ -113,7 +116,7 @@ const EditPage = createClass({
 			brew              : { ...prevState.brew, text: text },
 			isPending         : true,
 			htmlErrors        : htmlErrors,
-			currentEditorPage : this.refs.editor.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
+			currentEditorPage : this.editor.current.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
 		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
@@ -376,7 +379,7 @@ const EditPage = createClass({
 						post to reddit
 					</Nav.item>
 				</Nav.dropdown>
-				<PrintLink shareId={this.processShareId()} />
+				<PrintNavItem />
 				<RecentNavItem brew={this.state.brew} storageKey='edit' />
 				<Account />
 			</Nav.section>
@@ -390,9 +393,9 @@ const EditPage = createClass({
 			{this.renderNavbar()}
 
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
+				<SplitPane onDragFinish={this.handleSplitMove}>
 					<Editor
-						ref='editor'
+						ref={this.editor}
 						brew={this.state.brew}
 						onTextChange={this.handleTextChange}
 						onStyleChange={this.handleStyleChange}
@@ -408,6 +411,7 @@ const EditPage = createClass({
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
 						currentEditorPage={this.state.currentEditorPage}
+						allowPrint={true}
 					/>
 				</SplitPane>
 			</div>
