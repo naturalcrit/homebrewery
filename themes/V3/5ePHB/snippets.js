@@ -34,7 +34,7 @@ module.exports = [
 					},
 					{
 						name : 'Include in ToC up to H3',
-						icon : 'fas fa-dice-six',
+						icon : 'fas fa-dice-three',
 						gen  : dedent `\n{{tocDepthH3
 							}}\n`,
 
