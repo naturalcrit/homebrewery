@@ -29,7 +29,7 @@ const elderberryInn = {
 	'ei_slashing'    : 'ei slashing',
 	'ei_thunder'     : 'ei thunder',
 
-	/* DnD Donditions */
+	/* DnD Conditions */
 	'ei_blinded'       : 'ei blinded',
 	'ei_charmed'       : 'ei charmed',
 	'ei_deafened'      : 'ei deafened',
@@ -105,6 +105,7 @@ const elderberryInn = {
 	'ei_action1'                       : 'ei action-1',
 	'ei_alter_self'                    : 'ei alter-self',
 	'ei_alter_self2'                   : 'ei alter-self-2',
+	'ei_magic_beans'                   : 'ei magic-beans',
 	'ei_animal_friendship'             : 'ei animal-friendship',
 	'ei_animate_dead'                  : 'ei animate-dead',
 	'ei_animate_objects'               : 'ei animate-objects',
