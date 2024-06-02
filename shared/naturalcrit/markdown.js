@@ -10,6 +10,7 @@ const { markedEmoji: MarkedEmojis } = require('marked-emoji');
 const diceFont      = require('../../themes/fonts/iconFonts/diceFont.js');
 const elderberryInn = require('../../themes/fonts/iconFonts/elderberryInn.js');
 const fontAwesome   = require('../../themes/fonts/iconFonts/fontAwesome.js');
+const gameIcons     = require('../../themes/fonts/iconFonts/gameIcons.js');
 
 const MathParser = require('expr-eval').Parser;
 const renderer = new Marked.Renderer();
@@ -708,7 +709,8 @@ const MarkedEmojiOptions = {
 	emojis : {
 		...diceFont,
 		...elderberryInn,
-		...fontAwesome
+		...fontAwesome,
+		...gameIcons,
 	},
 	renderer : (token)=>`<i class="${token.emoji}"></i>`
 };
