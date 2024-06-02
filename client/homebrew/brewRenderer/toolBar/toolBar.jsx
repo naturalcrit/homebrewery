@@ -45,14 +45,13 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
     };
 
     const handleInputChange = (value, type) => {
-        // Remove the "%" symbol from the input value
-        const newValue = parseInt(value.replace('%', ''), 10);
+        const newValue = parseInt(value, 10);
 
         // Check the type of input (zoom or page)
         if (type === 'zoom') {
             // Check if zoom level is within the allowed range
             if (newValue >= 10 && newValue <= 300) {
-                setZoomInput(newValue + '%'); // Add "%" back to the value
+                setZoomInput(newValue);
             }
         } else if (type === 'page') {
             // Check if page number is within the allowed range
@@ -83,7 +82,7 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
                     onChange={(e) => handleInputChange(e.target.value, 'zoom')}
                     onBlur={(e) => {
                         const newZoomLevel = parseInt(
-                            e.target.value.replace('%', ''),
+                            e.target.value,
                             10
                         );
                         if (newZoomLevel !== state.zoomLevel) {
