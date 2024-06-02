@@ -2,7 +2,6 @@ require('./errorBar.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
-const cx    = require('classnames');
 
 const ErrorBar = createClass({
 	displayName     : 'ErrorBar',
