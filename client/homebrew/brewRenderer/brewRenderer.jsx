@@ -171,6 +171,29 @@ const BrewRenderer = (props)=>{
 	};
 
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
+		const TEMPORARY_ATTRIBUTE = 'data-temp-href-target';
+
+		DOMPurify.addHook('beforeSanitizeAttributes', function (node) {
+			if(node.tagName === 'A') {
+				if(!node.hasAttribute('target')) {
+					node.setAttribute('target', '_self');
+				}
+
+				if(node.hasAttribute('target')) {
+					node.setAttribute(TEMPORARY_ATTRIBUTE, node.getAttribute('target'));
+				}
+			}
+		});
+
+		DOMPurify.addHook('afterSanitizeAttributes', function (node) {
+			if(node.tagName === 'A' && node.hasAttribute(TEMPORARY_ATTRIBUTE)) {
+				node.setAttribute('target', node.getAttribute(TEMPORARY_ATTRIBUTE));
+				node.removeAttribute(TEMPORARY_ATTRIBUTE);
+				if(node.getAttribute('target') === '_blank') {
+					node.setAttribute('rel', 'noopener');
+				}
+			}
+		});
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			updateSize();
 			window.addEventListener('resize', updateSize);
