@@ -221,7 +221,7 @@ const mustacheInjectInline = {
 			if(!lastToken || lastToken.type == 'mustacheInjectInline')
 				return false;
 
-			const tags = `${processStyleTags(processStyleMacros(match[1], lastToken))}`;
+			const tags = processStyleTags(processStyleMacros(match[1], lastToken));
 			lastToken.originalType = lastToken.type;
 			lastToken.type         = 'mustacheInjectInline';
 			lastToken.injectedTags = tags;
