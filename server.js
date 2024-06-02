@@ -14,7 +14,7 @@ DB.connect(config).then(()=>{
 
 		console.log(`\n\tserver started at: ${new Date().toLocaleString()}`);
 		console.log(`\tserver on port: ${PORT}`);
-		console.log(`\t${bright + cyan}Open in browser: ${reset}${underline + bright + cyan}http://localhost:${PORT}${reset}\n\n`)
+		console.log(`\t${bright + cyan}Open in browser: ${reset}${underline + bright + cyan}http://localhost:${PORT}${reset}\n\n`);
 
 	});
 });
