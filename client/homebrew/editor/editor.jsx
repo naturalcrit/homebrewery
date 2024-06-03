@@ -23,7 +23,6 @@ const DEFAULT_STYLE_TEXT = dedent`
 				}`;
 
 let lastPage = 0;
-let liveScroll = true;
 
 const isElementCodeMirror=(element)=>{
 	let el = element;
@@ -44,7 +43,6 @@ const Editor = createClass({
 				text  : '',
 				style : ''
 			},
-			liveScroll : true,
 
 			onTextChange  : ()=>{},
 			onStyleChange : ()=>{},
@@ -67,12 +65,13 @@ const Editor = createClass({
 	isMeta  : function() {return this.state.view == 'meta';},
 
 	componentDidMount : function() {
+
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
 		document.addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('click', (e)=>{
-			if(isElementCodeMirror(e.target) && liveScroll ) {
+			if(isElementCodeMirror(e.target) && this.props.liveScroll ) {
 				const curPage = this.getCurrentPage();
 				if( curPage != lastPage ) {
 					this.brewJump();
@@ -94,10 +93,6 @@ const Editor = createClass({
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
-		console.log(this.props);
-		console.log(prevProps);
-		console.log(this.state);
-		console.log(prevState);
 
 		this.highlightCustomMarkdown();
 		if(prevProps.moveBrew !== this.props.moveBrew) {
@@ -106,13 +101,13 @@ const Editor = createClass({
 		if(prevProps.moveSource !== this.props.moveSource) {
 			this.sourceJump();
 		};
-		if(prevProps.liveScroll !== this.props.liveScroll) {
-			liveScroll = !liveScroll;
+		if(prevProps.liveScroll != this.props.liveScroll) {
+			if (this.props.liveScroll) this.brewJump();
 		};
 	},
 
 	handleControlKeys : function(e){
-		if(liveScroll) {
+		if(this.props.liveScroll) {
 			const movementKeys = [ 13, 33, 34, 37, 38, 39, 40 ];
 			if (movementKeys.includes(e.keyCode)) {
 				const curPage = this.getCurrentPage();
@@ -122,14 +117,14 @@ const Editor = createClass({
 				}
 			}
 		}
-		const M_KEY = 77;
+		const X_KEY = 88;
 		const END_KEY = 35;
 		const HOME_KEY = 36;
 		const SCROLLLOCK_KEY = 145;
 
 		// Toggle Live-scrolling on Scroll Lock
 		if(e.keyCode == SCROLLLOCK_KEY) {
-			liveScroll = !liveScroll;
+			this.setState( {liveScroll: !liveScroll} );
 		}
 
 		if(!(e.ctrlKey || e.metaKey)) return;
@@ -140,9 +135,9 @@ const Editor = createClass({
 		// Brew Jump on CTRL-J
 		if((!e.shiftKey) && (e.keyCode == M_KEY)) this.brewJump();
 		// Source Jump on Shift-CTRL-J
-		if ((e.shiftKey) && (!e.altKey) && (e.keyCode == M_KEY)) this.sourceJump();
+		if ((e.shiftKey) && (!e.altKey) && (e.keyCode == X_KEY)) this.sourceJump();
 
-		if( e.keyCode == M_KEY) {
+		if( e.keyCode == X_KEY) {
 			e.stopPropagation();
 			e.preventDefault();
 		}
@@ -330,6 +325,7 @@ const Editor = createClass({
 		// console.log(`Scroll to: p${targetPage}`);
 		const brewRenderer = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
 		const currentPos = brewRenderer.scrollTop;
+		if(!window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`)) return;
 		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
 		const interimPos = targetPos >= 0 ? -30 : 30;
 

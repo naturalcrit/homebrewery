@@ -20,7 +20,6 @@ const SplitPane = createClass({
 			isDragging         : false,
 			moveSource         : false,
 			moveBrew           : false,
-			liveScroll         : true,
 			viewablePageNumber : 0,
 			showMoveArrows     : true
 		};
@@ -41,9 +40,25 @@ const SplitPane = createClass({
 			});
 		}
 		window.addEventListener('resize', this.handleWindowResize);
+
+
+		// This lives here instead of in the initial render because you cannot touch localStorage until the componant mounts.
+		const loadLiveScroll = window.localStorage.getItem('liveScroll') === 'true';
+		this.setState({
+			liveScroll : loadLiveScroll
+		});
+		const toggle = document.getElementById('scrollToggle');
+		const toggleDiv = document.getElementById('scrollToggleDiv');
+		if(loadLiveScroll) {
+			toggle.className = 'fas fa-lock';
+			toggleDiv.className = 'arrow lock';
+		} else {
+			toggle.className = 'fas fa-unlock';
+			toggleDiv.className = 'arrow unlock';
+		}
 	},
 
-componentWillUnmount : function() {
+	componentWillUnmount : function() {
 		window.removeEventListener('resize', this.handleWindowResize);
 	},
 
@@ -119,21 +134,23 @@ componentWillUnmount : function() {
 					onClick={()=>this.setState({ moveBrew: !this.state.moveBrew })} >
 					<i className='fas fa-arrow-right' />
 				</div>
-				<div id='scrollToggleDiv' className='arrow unlock'
+				<div id='scrollToggleDiv' className={`arrow lock`}
 					style={{ left: this.state.currentDividerPos-4 }}
 					onClick={()=>{
-						this.setState({ liveScroll: !this.state.liveScroll });
+						const flipLiveScroll = !this.state.liveScroll;
 						const toggle = document.getElementById('scrollToggle');
 						const toggleDiv = document.getElementById('scrollToggleDiv');
-						if(toggle.classList.contains('fa-unlock')) {
+						if(flipLiveScroll) {
 							toggle.className = 'fas fa-lock';
 							toggleDiv.className = 'arrow lock';
 						} else {
 							toggle.className = 'fas fa-unlock';
 							toggleDiv.className = 'arrow unlock';
 						}
+						window.localStorage.setItem('liveScroll', String(flipLiveScroll));
+						this.setState({ liveScroll: flipLiveScroll });
 					}} >
-					<i id='scrollToggle' className='fas fa-unlock' />
+					<i id='scrollToggle' className={`fas fa-lock`} />
 				</div>
 			</>;
 		}
