@@ -56,6 +56,7 @@ const Editor = createClass({
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
+		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
 
 		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
@@ -72,6 +73,10 @@ const Editor = createClass({
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
 		this.highlightCustomMarkdown();
+		if(this.props.jumpSource) {
+			this.sourceJump();
+			this.setState({sourceJump: false});
+		}
 		if(prevProps.moveBrew !== this.props.moveBrew) {
 			this.brewJump();
 		};
@@ -83,10 +88,10 @@ const Editor = createClass({
 	handleControlKeys : function(e){
 		if(!(e.ctrlKey || e.metaKey)) return;
 		console.log(e);
-		const M_KEY = 77;
-		if((!e.shiftKey) && (e.keyCode == M_KEY)) this.brewJump();
-		if (e.shiftKey && (e.keyCode == M_KEY)) this.sourceJump();
-		if( e.keyCode == M_KEY) {
+		const X_KEY = 88;
+		if((!e.shiftKey) && (e.keyCode == X_KEY)) this.brewJump();
+		if (e.shiftKey && (e.keyCode == X_KEY)) this.sourceJump();
+		if( e.keyCode == X_KEY) {
 			e.stopPropagation();
 			e.preventDefault();
 		}
