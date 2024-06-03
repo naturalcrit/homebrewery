@@ -127,13 +127,13 @@ const Editor = createClass({
 
 		// Toggle Live-scrolling on Scroll Lock
 		if(e.keyCode == SCROLLLOCK_KEY) {
-			this.setState( {liveScroll: !liveScroll} );
+			this.setState( {liveScroll: !this.props.liveScroll} );
 		}
 
 		if(!(e.ctrlKey || e.metaKey)) return;
 
 		// Handle CTRL-HOME and CTRL-END
-		if(((e.keyCode == END_KEY) || (e.keyCode == HOME_KEY)) && liveScroll) this.brewJump();
+		if(((e.keyCode == END_KEY) || (e.keyCode == HOME_KEY)) && this.props.liveScroll) this.brewJump();
 
 		// Brew Jump on CTRL-J
 		if((!e.shiftKey) && (e.keyCode == M_KEY)) this.brewJump();
