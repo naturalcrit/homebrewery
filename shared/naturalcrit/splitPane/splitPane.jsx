@@ -1,7 +1,6 @@
 require('./splitPane.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const _ = require('lodash');
 const cx = require('classnames');
 
 const SplitPane = createClass({
@@ -24,6 +23,9 @@ const SplitPane = createClass({
 			showMoveArrows     : true
 		};
 	},
+
+	pane1 : React.createRef(null),
+	pane2 : React.createRef(null),
 
 	componentDidMount : function() {
 		const dividerPos = window.localStorage.getItem(this.props.storageKey);
@@ -172,7 +174,6 @@ const SplitPane = createClass({
 	render : function(){
 		return <div className='splitPane' onPointerMove={this.handleMove} onPointerUp={this.handleUp}>
 			<Pane
-				ref='pane1'
 				width={this.state.currentDividerPos}
 			>
 				{React.cloneElement(this.props.children[0], {
@@ -183,7 +184,7 @@ const SplitPane = createClass({
 				})}
 			</Pane>
 			{this.renderDivider()}
-			<Pane ref='pane2' isDragging={this.state.isDragging}>{this.props.children[1]}</Pane>
+			<Pane isDragging={this.state.isDragging}>{this.props.children[1]}</Pane>
 		</div>;
 	}
 });
