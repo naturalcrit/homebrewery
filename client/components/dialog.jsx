@@ -2,45 +2,30 @@
 const React = require('react');
 const { useState, useRef, useEffect } = React;
 
-function Dialog({ dismissKey, closeText = 'Close', blocking = false, children, ...rest }) {
-	const ref = useRef();
-
+function Dialog({ dismissKey, closeText = 'Close', blocking = false, ...rest }) {
+	const dialogRef = useRef();
 	const [open, setOpen] = useState(false);
 
 	useEffect(()=>{
-		if(!window || !dismissKey) return;
-		if(!localStorage.getItem(dismissKey)){
+		if(dismissKey && !localStorage.getItem(dismissKey)) {
+			blocking ? dialogRef.current?.showModal() : dialogRef.current?.show();
 			setOpen(true);
 		}
 	}, []);
 
-	useEffect(()=>{
-		if(open) {
-			blocking ? ref.current?.showModal() : ref.current?.show();
-		} else {
-			ref.current?.close();
-		}
-	}, [open]);
-
-	const dismiss = function(){
+	const dismiss = ()=>{
 		localStorage.setItem(dismissKey, true);
+		dialogRef.current?.close();
 		setOpen(false);
 	};
 
-	if(!open) return;
+	if(!open) return null;
 	return (
-		<dialog
-			ref={ref}
-			onCancel={()=>dismiss()}
-			{...rest}
-		>
-			<button
-				className='dismiss'
-				onClick={()=>dismiss()}
-			>
+		<dialog ref={dialogRef} onCancel={dismiss} {...rest}>
+			<button className='dismiss' onClick={dismiss}>
         	{closeText}
 			</button>
-			{children}
+			{rest.children}
 		</dialog>
 	);
 }
