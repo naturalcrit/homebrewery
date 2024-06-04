@@ -2,7 +2,7 @@
 const React = require('react');
 const { useState, useRef, useEffect } = React;
 
-function Modal({ dismissKey, blocking, children, ...rest }) {
+function Modal({ dismissKey, blocking, children, closeText = 'Close', ...rest }) {
 	const ref = useRef();
 
 	const [open, setOpen] = useState(false);
@@ -38,7 +38,7 @@ function Modal({ dismissKey, blocking, children, ...rest }) {
 				className='dismiss'
 				onClick={()=>dismiss()}
 			>
-        Close
+        	{closeText}
 			</button>
 			{children}
 		</dialog>
