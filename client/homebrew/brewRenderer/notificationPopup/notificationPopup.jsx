@@ -6,8 +6,8 @@ import Dialog from '../../../components/dialog.jsx';
 
 const DISMISS_KEY = 'dismiss_notification12-04-23';
 
-const NotificationPopup = (props)=>{
-	return <Dialog className='notificationPopup' dismissKey={DISMISS_KEY} blocking={false} {...props} >
+const NotificationPopup = ()=>{
+	return <Dialog className='notificationPopup' dismissKey={DISMISS_KEY} closeText='X' >
 		<div className='header'>
 			<h3>Notice</h3>
 			<small>This website is always improving and we are still adding new features and squashing bugs. Keep the following in mind:</small>
