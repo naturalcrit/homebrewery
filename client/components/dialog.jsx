@@ -14,7 +14,7 @@ function Dialog({ dismissKey, closeText = 'Close', blocking = false, ...rest }) 
 	}, []);
 
 	const dismiss = ()=>{
-		localStorage.setItem(dismissKey, true);
+		dismissKey && localStorage.setItem(dismissKey, true);
 		dialogRef.current?.close();
 		setOpen(false);
 	};
