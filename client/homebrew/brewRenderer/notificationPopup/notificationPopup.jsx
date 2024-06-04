@@ -6,8 +6,10 @@ import Dialog from '../../../components/dialog.jsx';
 
 const DISMISS_KEY = 'dismiss_notification12-04-23';
 
+const DISMISS_BUTTON = <i className='fas fa-times dismiss' />;
+
 const NotificationPopup = ()=>{
-	return <Dialog className='notificationPopup' dismissKey={DISMISS_KEY} closeText='X' >
+	return <Dialog className='notificationPopup' dismissKey={DISMISS_KEY} closeText={DISMISS_BUTTON} >
 		<div className='header'>
 			<h3>Notice</h3>
 			<small>This website is always improving and we are still adding new features and squashing bugs. Keep the following in mind:</small>
