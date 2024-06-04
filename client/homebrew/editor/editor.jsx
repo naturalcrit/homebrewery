@@ -105,7 +105,7 @@ const Editor = createClass({
 			this.sourceJump();
 		};
 		if(prevProps.liveScroll != this.props.liveScroll) {
-			if (this.props.liveScroll) this.brewJump();
+			if ((prevProps.liveScroll != undefined) && (this.props.liveScroll)) this.brewJump();
 		};
 	},
 
@@ -328,7 +328,6 @@ const Editor = createClass({
 		// console.log(`Scroll to: p${targetPage}`);
 		const brewRenderer = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
 		const currentPos = brewRenderer.scrollTop;
-		if(!window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`)) return;
 		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
 		const interimPos = targetPos >= 0 ? -30 : 30;
 
