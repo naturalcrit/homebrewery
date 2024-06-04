@@ -5,7 +5,6 @@ const _     = require('lodash');
 import Dialog from '../../../components/dialog.jsx';
 
 const DISMISS_KEY = 'dismiss_notification12-04-23';
-
 const DISMISS_BUTTON = <i className='fas fa-times dismiss' />;
 
 const NotificationPopup = ()=>{
