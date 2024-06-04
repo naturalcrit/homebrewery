@@ -1,8 +1,8 @@
-// Modal as a separate component
+// Dialog as a separate component
 const React = require('react');
 const { useState, useRef, useEffect } = React;
 
-function Modal({ dismissKey, blocking, children, closeText = 'Close', ...rest }) {
+function Dialog({ dismissKey, closeText = 'Close', blocking = false, children, ...rest }) {
 	const ref = useRef();
 
 	const [open, setOpen] = useState(false);
@@ -45,4 +45,4 @@ function Modal({ dismissKey, blocking, children, closeText = 'Close', ...rest })
 	);
 }
 
-export default Modal;
+export default Dialog;
