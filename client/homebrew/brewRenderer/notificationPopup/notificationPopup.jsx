@@ -11,6 +11,7 @@ const DISMISS_BUTTON = <i className='fas fa-times dismiss' />;
 const NotificationPopup = ()=>{
 	return <Dialog className='notificationPopup' dismissKey={DISMISS_KEY} closeText={DISMISS_BUTTON} >
 		<div className='header'>
+			<i className='fas fa-info-circle info'></i>
 			<h3>Notice</h3>
 			<small>This website is always improving and we are still adding new features and squashing bugs. Keep the following in mind:</small>
 		</div>
