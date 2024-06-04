@@ -15,12 +15,12 @@ function Modal({ dismissKey, blocking, children, ...rest }) {
 	}, []);
 
 	useEffect(()=>{
-		if(blocking) {
-			modal ? ref.current?.showModal() : ref.current?.show();
+		if(open) {
+			blocking ? ref.current?.showModal() : ref.current?.show();
 		} else {
 			ref.current?.close();
 		}
-	}, [blocking]);
+	}, [open]);
 
 	const dismiss = function(){
 		localStorage.setItem(dismissKey, true);
