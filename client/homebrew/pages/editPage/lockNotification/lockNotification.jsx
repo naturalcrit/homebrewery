@@ -1,5 +1,6 @@
 require('./lockNotification.less');
 const React = require('react');
+const Dialog = require('../../../../components/dialog.jsx');
 
 function LockNotification(props) {
 	props = {
@@ -12,7 +13,7 @@ function LockNotification(props) {
 		alert(`Not yet implemented - ID ${props.shareId}`);
 	};
 
-	return <div className='lockNotification'>
+	return <Dialog className='lockNotification'>
 		<h1>BREW LOCKED</h1>
 		<p>This brew been locked by the Administrators. It will not be accessible by any method other than the Editor until the lock is removed.</p>
 		<hr />
@@ -23,7 +24,7 @@ function LockNotification(props) {
 		<p>Click CONTINUE TO EDITOR to temporarily hide this notification; it will reappear the next time the page is reloaded.</p>
 		<button onClick={props.disableLock}>CONTINUE TO EDITOR</button>
 		<button onClick={removeLock}>REQUEST LOCK REMOVAL</button>
-	</div>;
+	</Dialog>;
 };
 
 module.exports = LockNotification;
