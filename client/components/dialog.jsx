@@ -7,7 +7,7 @@ function Dialog({ dismissKey, closeText = 'Close', blocking = false, ...rest }) 
 	const [open, setOpen] = useState(false);
 
 	useEffect(()=>{
-		if(dismissKey && !localStorage.getItem(dismissKey)) {
+		if(!dismissKey || !localStorage.getItem(dismissKey)) {
 			blocking ? dialogRef.current?.showModal() : dialogRef.current?.show();
 			setOpen(true);
 		}
