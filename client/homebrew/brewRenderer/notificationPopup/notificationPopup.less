@@ -8,7 +8,6 @@
 
 .notificationPopup{
 	position         : relative;
-	display          : inline-block;
 	width            : 100%;
 	padding          : 15px;
 	padding-bottom   : 10px;
@@ -16,6 +15,10 @@
 	background-color : @blue;
 	color            : white;
 	border           : none;
+	&[open]{
+		// Do NOT set a display property on a dialog! Set it on dialog[open] instead
+		display: block;
+	}
 	a{
 		color       : #e0e5c1;
 		font-weight : 800;
