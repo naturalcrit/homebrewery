@@ -396,31 +396,28 @@ const EditPage = createClass({
 			{this.renderNavbar()}
 
 			<div className='content'>
-				{this.state.displayLockMessage ?
-					<LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} disableLock={()=>this.setState({ displayLockMessage: false })}/>
-					:
-					<SplitPane onDragFinish={this.handleSplitMove}>
-						<Editor
-							ref={this.editor}
-							brew={this.state.brew}
-							onTextChange={this.handleTextChange}
-							onStyleChange={this.handleStyleChange}
-							onMetaChange={this.handleMetaChange}
-							reportError={this.errorReported}
-							renderer={this.state.brew.renderer}
-						/>
-						<BrewRenderer
-							text={this.state.brew.text}
-							style={this.state.brew.style}
-							renderer={this.state.brew.renderer}
-							theme={this.state.brew.theme}
-							errors={this.state.htmlErrors}
-							lang={this.state.brew.lang}
-							currentEditorPage={this.state.currentEditorPage}
-							allowPrint={true}
-						/>
-					</SplitPane>
-				}
+				{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} />}
+				<SplitPane onDragFinish={this.handleSplitMove}>
+					<Editor
+						ref={this.editor}
+						brew={this.state.brew}
+						onTextChange={this.handleTextChange}
+						onStyleChange={this.handleStyleChange}
+						onMetaChange={this.handleMetaChange}
+						reportError={this.errorReported}
+						renderer={this.state.brew.renderer}
+					/>
+					<BrewRenderer
+						text={this.state.brew.text}
+						style={this.state.brew.style}
+						renderer={this.state.brew.renderer}
+						theme={this.state.brew.theme}
+						errors={this.state.htmlErrors}
+						lang={this.state.brew.lang}
+						currentEditorPage={this.state.currentEditorPage}
+						allowPrint={true}
+					/>
+				</SplitPane>
 			</div>
 		</div>;
 	}

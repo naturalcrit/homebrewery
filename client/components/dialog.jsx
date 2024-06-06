@@ -8,10 +8,17 @@ function Dialog({ dismissKey, closeText = 'Close', blocking = false, ...rest }) 
 
 	useEffect(()=>{
 		if(!dismissKey || !localStorage.getItem(dismissKey)) {
-			blocking ? dialogRef.current?.showModal() : dialogRef.current?.show();
-			setOpen(true);
+			!open && setOpen(true);
 		}
 	}, []);
+
+	useEffect(()=>{
+		if(open && !dialogRef.current?.open){
+			blocking ? dialogRef.current?.showModal() : dialogRef.current?.show();
+		} else {
+			dialogRef.current?.close();
+		}
+	}, [open]);
 
 	const dismiss = ()=>{
 		dismissKey && localStorage.setItem(dismissKey, true);
@@ -19,7 +26,6 @@ function Dialog({ dismissKey, closeText = 'Close', blocking = false, ...rest }) 
 		setOpen(false);
 	};
 
-	if(!open) return null;
 	return (
 		<dialog ref={dialogRef} onCancel={dismiss} {...rest}>
 			<button className='dismiss' onClick={dismiss}>
