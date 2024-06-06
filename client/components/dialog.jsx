@@ -3,11 +3,11 @@ const React = require('react');
 const { useState, useRef, useEffect } = React;
 
 function Dialog({ dismissKey, closeText = 'Close', blocking = false, ...rest }) {
-	const dialogRef = useRef();
+	const dialogRef = useRef(null);
 	const [open, setOpen] = useState(false);
 
 	useEffect(()=>{
-		if(!dismissKey || !localStorage.getItem(dismissKey)) {
+		if(!localStorage.getItem(dismissKey)) {
 			!open && setOpen(true);
 		}
 	}, []);
@@ -22,18 +22,16 @@ function Dialog({ dismissKey, closeText = 'Close', blocking = false, ...rest }) 
 
 	const dismiss = ()=>{
 		dismissKey && localStorage.setItem(dismissKey, true);
-		dialogRef.current?.close();
 		setOpen(false);
 	};
 
-	return (
-		<dialog ref={dialogRef} onCancel={dismiss} {...rest}>
-			<button className='dismiss' onClick={dismiss}>
-        	{closeText}
-			</button>
-			{rest.children}
-		</dialog>
-	);
-}
+	return <dialog ref={dialogRef} onCancel={dismiss} {...rest}>
+		{rest.children}
+		<button className='dismiss' onClick={dismiss}>
+			{closeText}
+		</button>
+	</dialog>
+	;
+};
 
 export default Dialog;
