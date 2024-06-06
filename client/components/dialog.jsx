@@ -1,4 +1,5 @@
 // Dialog as a separate component
+require('./dialog.less');
 const React = require('react');
 const { useState, useRef, useEffect } = React;
 
