@@ -5,25 +5,16 @@ const { useState, useRef, useEffect } = React;
 
 function Dialog({ dismissKey, closeText = 'Close', blocking = false, ...rest }) {
 	const dialogRef = useRef(null);
-	const [open, setOpen] = useState(false);
 
 	useEffect(()=>{
-		if(!localStorage.getItem(dismissKey)) {
-			!open && setOpen(true);
+		if(!dismissKey || !localStorage.getItem(dismissKey)) {
+			blocking ? dialogRef.current?.showModal() : dialogRef.current?.show();
 		}
 	}, []);
 
-	useEffect(()=>{
-		if(open && !dialogRef.current?.open){
-			blocking ? dialogRef.current?.showModal() : dialogRef.current?.show();
-		} else {
-			dialogRef.current?.close();
-		}
-	}, [open]);
-
 	const dismiss = ()=>{
 		dismissKey && localStorage.setItem(dismissKey, true);
-		setOpen(false);
+		dialogRef.current?.close();
 	};
 
 	return <dialog ref={dialogRef} onCancel={dismiss} {...rest}>
