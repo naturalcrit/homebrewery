@@ -20,6 +20,8 @@ const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
+const LockNotification = require('./lockNotification/lockNotification.jsx');
+
 const Markdown = require('naturalcrit/markdown.js');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
@@ -52,7 +54,8 @@ const EditPage = createClass({
 			autoSave               : true,
 			autoSaveWarning        : false,
 			unsavedTime            : new Date(),
-			currentEditorPage      : 0
+			currentEditorPage      : 0,
+			displayLockMessage     : this.props.brew.lock || false
 		};
 	},
 
@@ -393,6 +396,7 @@ const EditPage = createClass({
 			{this.renderNavbar()}
 
 			<div className='content'>
+				{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} />}
 				<SplitPane onDragFinish={this.handleSplitMove}>
 					<Editor
 						ref={this.editor}

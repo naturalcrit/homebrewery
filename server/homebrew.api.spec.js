@@ -300,7 +300,7 @@ describe('Tests for api', ()=>{
 		});
 
 		it('access is denied to a locked brew', async()=>{
-			const lockBrew = { title: 'test brew', shareId: '1', lock: { locked: true, code: 404, message: 'brew locked' } };
+			const lockBrew = { title: 'test brew', shareId: '1', lock: { locked: true, code: 404, shareMessage: 'brew locked' } };
 			model.get = jest.fn(()=>toBrewPromise(lockBrew));
 			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
 
