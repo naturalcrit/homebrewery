@@ -1,7 +1,7 @@
 // Dialog as a separate component
 // require('./dialog.less');
 const React = require('react');
-const { useState, useRef, useEffect } = React;
+const { useRef, useEffect } = React;
 
 function Dialog({ dismissKey, closeText = 'Close', blocking = false, ...rest }) {
 	const dialogRef = useRef(null);
