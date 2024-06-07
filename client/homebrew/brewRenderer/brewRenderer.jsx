@@ -7,6 +7,7 @@ const _ = require('lodash');
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
 const Markdown = require('naturalcrit/markdown.js');
 const ErrorBar = require('./errorBar/errorBar.jsx');
+const ToolBar  = require('./toolBar/toolBar.jsx');
 
 //TODO: move to the brew renderer
 const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
@@ -65,6 +66,8 @@ const BrewRenderer = (props)=>{
 		height             : PAGE_HEIGHT,
 		isMounted          : false,
 		visibility         : 'hidden',
+		zoom			   : 100,
+		currentPageNumber  : 1,
 	});
 
 	const mainRef  = useRef(null);
@@ -79,6 +82,25 @@ const BrewRenderer = (props)=>{
 		return ()=>{window.removeEventListener('resize', updateSize);};
 	}, []);
 
+	const scrollToPage = (pageNumber) => {
+		const iframe = document.getElementById('BrewRenderer');
+        if (iframe && iframe.contentWindow) {
+            const brewRenderer =
+                iframe.contentWindow.document.querySelector('.brewRenderer');
+            if (brewRenderer) {
+                const pages = brewRenderer.querySelectorAll('.page');
+				console.log(`Attempting to scroll to page ${pageNumber} of ${pages.length}`);
+                if (pageNumber + 1 > pages.length || pageNumber < 0) {
+					console.log(pageNumber, pages.length);
+                    console.log('page not found');
+                } else {
+					console.log(`Scrolling to page: ${pages[pageNumber].id}`);
+                    pages[pageNumber].scrollIntoView({ block: 'start' });
+                }
+            }
+        }
+    };
+	
 	const updateSize = ()=>{
 		setState((prevState)=>({
 			...prevState,
@@ -91,6 +113,21 @@ const BrewRenderer = (props)=>{
 		setState((prevState)=>({
 			...prevState,
 			viewablePageNumber : Math.floor(target.scrollTop / target.scrollHeight * rawPages.length)
+		}));
+
+		getCurrentPage(e);
+	};
+
+	const getCurrentPage = (e) => {
+		const target = e.target;
+		const { scrollTop, clientHeight, scrollHeight } = target;
+		const totalScrollableHeight = scrollHeight - clientHeight;
+		
+		const currentPageNumber = Math.ceil((scrollTop / totalScrollableHeight) * rawPages.length);
+		
+		setState((prevState) => ({
+			...prevState,
+			currentPageNumber: currentPageNumber || 1
 		}));
 	};
 
@@ -192,6 +229,34 @@ const BrewRenderer = (props)=>{
 	const themePath     = props.theme ?? '5ePHB';
 	const baseThemePath = Themes[rendererPath][themePath].baseTheme;
 
+
+	//Toolbar settings:
+
+	const updateZoom = (newZoom) => {
+		setState((prevState)=>({
+			...prevState,
+			zoom : newZoom
+		}));
+	};
+
+	const makeZoom = () => {
+
+		return(
+			<style id='zoomStyle'>
+        {`
+          .pages {
+            zoom: ${state.zoom}%;
+          }
+        `}
+      </style>
+		);
+	}
+
+	const handlePageChange = (pageNumber) => {
+        // Scroll to the desired page
+        scrollToPage(pageNumber);
+    };
+
 	return (
 		<>
 			{/*render dummy page while iFrame is mounting.*/}
@@ -215,6 +280,7 @@ const BrewRenderer = (props)=>{
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
 			>
+				<ToolBar updateZoom={updateZoom} currentPage={state.currentPageNumber} onPageChange={handlePageChange} totalPages={rawPages.length}/>
 				<div className={'brewRenderer'}
 					onScroll={handleScroll}
 					onKeyDown={handleControlKeys}
@@ -226,6 +292,7 @@ const BrewRenderer = (props)=>{
 						<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} type='text/css' rel='stylesheet'/>
 					}
 					<link href={`/themes/${rendererPath}/${themePath}/style.css`} type='text/css' rel='stylesheet'/>
+					{makeZoom()}
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted
