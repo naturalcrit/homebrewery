@@ -1,5 +1,4 @@
-// Dialog as a separate component
-// require('./dialog.less');
+// Dialog box, for popups and modal blocking messages
 const React = require('react');
 const { useRef, useEffect } = React;
 
@@ -17,13 +16,14 @@ function Dialog({ dismissKey, closeText = 'Close', blocking = false, ...rest }) 
 		dialogRef.current?.close();
 	};
 
-	return <dialog ref={dialogRef} onCancel={dismiss} {...rest}>
-		{rest.children}
-		<button className='dismiss' onClick={dismiss}>
-			{closeText}
-		</button>
-	</dialog>
-	;
+	return	(
+		<dialog ref={dialogRef} onCancel={dismiss} {...rest}>
+			{rest.children}
+			<button className='dismiss' onClick={dismiss}>
+				{closeText}
+			</button>
+		</dialog>
+	);
 };
 
 export default Dialog;
