@@ -93,7 +93,7 @@
     "cookie-parser": "^1.4.6",
     "create-react-class": "^15.7.0",
     "dedent-tabs": "^0.10.3",
-    "dompurify": "^3.1.4",
+    "dompurify": "^3.1.5",
     "expr-eval": "^2.0.2",
     "express": "^4.19.2",
     "express-async-handler": "^1.2.0",
