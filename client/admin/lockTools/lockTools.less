@@ -1,13 +1,40 @@
 .lockTools {
-    .lockBrew label {
-        width: 50%;
-        display: inline-block;
-        text-align: right;
-        line-height: 1.5em;
-        input {
-            float: right;
-            width: 70%;
-            margin-left: 10px;
+    .lockBrew { 
+        columns: 2;
+
+        .lockForm {
+            break-inside: avoid;
+
+            label {
+            width: 100%;
+            display: inline-block;
+            text-align: right;
+            line-height: 1.5em;            
+            input {
+                float: right;
+                width: 70%;
+                margin-left: 10px;
+                }
+            }
+        }
+
+        .lockSuggestions {
+            break-inside: avoid;
+            columns: 2;
+            line-height: 1.2em;
+            h2 {
+                column-span: all;
+            }
+            h3 {
+                margin-top: 0px;
+            }
+            b {
+                font-weight: 600;
+            }
+
+            .lockCodes {
+                break-inside: avoid;
+            }
         }
     }
 

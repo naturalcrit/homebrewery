@@ -85,32 +85,60 @@ const LockBrew = createClass({
 
 	render : function() {
 		return <div className='lockBrew'>
-			<h2>Lock Brew</h2>
-			<form onSubmit={this.submit}>
-				<label>
-                    ID:
-					{this.renderInput('brewId')}
-				</label>
-				<br />
-				<label>
-                    Error Code:
-					{this.renderInput('code')}
-				</label>
-				<br />
-				<label>
-                    Edit Message:
-					{this.renderInput('editMessage')}
-				</label>
-				<br />
-				<label>
-                    Share Message:
-					{this.renderInput('shareMessage')}
-				</label>
-				<br />
-				<label>
-				    <input type='submit' />
-				</label>
-			</form>
+			<div className='lockForm'>
+				<h2>Lock Brew</h2>
+				<form onSubmit={this.submit}>
+					<label>
+						ID:
+						{this.renderInput('brewId')}
+					</label>
+					<br />
+					<label>
+						Error Code:
+						{this.renderInput('code')}
+					</label>
+					<br />
+					<label>
+						Edit Message:
+						{this.renderInput('editMessage')}
+					</label>
+					<br />
+					<label>
+						Share Message:
+						{this.renderInput('shareMessage')}
+					</label>
+					<br />
+					<label>
+						<input type='submit' />
+					</label>
+				</form>
+			</div>
+			<div className='lockSuggestions'>
+				<h2>Suggestions</h2>
+				<div className='lockCodes'>
+					<h3>Codes</h3>
+					<ul>
+						<li>455 - Generic Lock</li>
+						<li>456 - Copyright issues</li>
+						<li>457 - Confidential Information Leakage</li>
+						<li>458 - Sensitive Personal Information</li>
+						<li>459 - Defamation or Libel</li>
+						<li>460 - Hate Speech or Discrimination</li>
+						<li>461 - Illegal Activities</li>
+						<li>462 - Malware or Phishing</li>
+						<li>463 - Plagiarism</li>
+						<li>465 - Misrepresentation</li>
+						<li>466 - Inappropriate Content</li>
+					</ul>
+				</div>
+				<div className='lockMessages'>
+					<h3>Messages</h3>
+					<ul>
+						<li><b>Edit Message:</b> This is the private message that is ONLY displayed to the authors of the locked brew. This message MUST specify exactly what actions must be taken in order to have the brew unlocked.</li>
+						<li><b>Share Message:</b> This is the public message that is displayed to the EVERYONE that attempts to view the locked brew.</li>
+					</ul>
+				</div>
+			</div>
 		</div>;
 	}
 });
