@@ -231,7 +231,7 @@ const LockLookup = createClass({
 	render : function() {
 		return <div className='brewLookup'>
 			<h2>{this.props.title}</h2>
-			<input type='text' value={this.state.query} onChange={this.handleChange} placeholder='edit or share id' />
+			<input type='text' value={this.state.query} onChange={this.handleChange} placeholder='share id' />
 			<button onClick={this.clickFn}>
 				<i className={`fas ${!this.state.searching ? 'fa-search' : 'fa-spin fa-spinner'}`} />
 			</button>
