@@ -396,7 +396,7 @@ const EditPage = createClass({
 			{this.renderNavbar()}
 
 			<div className='content'>
-				{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} />}
+				{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} lock={this.props.brew.lock} />}
 				<SplitPane onDragFinish={this.handleSplitMove}>
 					<Editor
 						ref={this.editor}
