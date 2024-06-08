@@ -312,11 +312,6 @@
 			border-image-outset   : 0px 2px;
 			box-shadow            : 1px 4px 14px #888888;
 
-			//only for IOS devices
-			@supports (-webkit-touch-callout: none) {
-				background-image      : @monsterBlockOverlay;
-				background-blend-mode : normal;
-			}
 		}
 
 		position      : relative;
@@ -465,6 +460,16 @@
 		margin-left   : 1.5em;
 	}
 }
+
+//only for IOS devices
+@supports (-webkit-touch-callout: none) {
+	.page .monster.frame {
+		background-image      : @monsterBlockOverlay;
+		background-blend-mode : normal;
+	}
+	
+}
+
 // *****************************
 // *         SPELL LIST
 // *****************************/
