@@ -141,19 +141,13 @@ router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 
 router.get('/admin/lock', mw.adminOnly, async (req, res)=>{
 	try {
-		const countLocksPipeline = [
-			{
-			  $match :
-				{
-				  lock : true
-				}
-			},
-			{
-			  $count :
-				'count'
-			}
-		];
-		const count = await HomebrewModel.aggregate(countLocksPipeline);
+		const countLocksQuery = {
+			lock : { $exists: true }
+		};
+		const count = await HomebrewModel.countDocuments(countLocksQuery)
+			.then((result)=>{
+				return result;
+			});
 		return res.json({
 			count
 		});
