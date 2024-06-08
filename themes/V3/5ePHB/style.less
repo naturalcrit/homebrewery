@@ -305,11 +305,18 @@
 			margin-left           : -0.16cm;
 			background-color      : var(--HB_Color_MonsterStatBackground);
 			background-image      : @monsterBlockBackground;
+			background-blend-mode : overlay;
 			border-style          : solid;
 			border-width          : 7px 6px;
 			border-image          : @monsterBorderImage 14 round;
 			border-image-outset   : 0px 2px;
 			box-shadow            : 1px 4px 14px #888888;
+
+			//only for IOS devices
+			@supports (-webkit-touch-callout: none) {
+				background-image      : @monsterBlockOverlay;
+				background-blend-mode : normal;
+			}
 		}
 
 		position      : relative;
