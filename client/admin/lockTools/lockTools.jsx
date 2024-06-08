@@ -174,35 +174,42 @@ const LockTable = createClass({
 
 	render : function () {
 		return <>
-			<h2>{this.props.title}</h2>
-			<button onClick={this.clickFn}>
-				<i className={`fas ${!this.state.searching ? 'fa-search' : 'fa-spin fa-spinner'}`} />
-			</button>
-			{this.state.result[this.props.resultName] &&
-            <>
-            	<p>Total Reviews Waiting: {this.state.result[this.props.resultName].length}</p>
-            	<table className='lockTable'>
-            		<thead>
-            			<tr>
-            				{this.props.propertyNames.map((name, idx)=>{
-            					return <th key={idx}>{name}</th>;
-            				})}
-            			</tr>
-            		</thead>
-                	<tbody>
-                		{this.state.result[this.props.resultName].map((result, resultIdx)=>{
-                			return <tr key={`${resultIdx}-row`} onClick={()=>{navigator.clipboard.writeText(result.shareId.toString());}}>
-            					{this.props.propertyNames.map((name, nameIdx)=>{
-                				return <td key={`${resultIdx}-${nameIdx}`}>
-            							{result[name].toString()}
-            						</td>;
-                			})}
-            				</tr>;
-            			})}
-                	</tbody>
-            	</table>
-            </>
-			}
+			<div className='brewsAwaitingReview'>
+				<div className='brewBlock'>
+					<h2>{this.props.title}</h2>
+					<button onClick={this.clickFn}>
+						REFRESH
+						<i className={`fas ${!this.state.searching ? 'fa-search' : 'fa-spin fa-spinner'}`} />
+					</button>
+				</div>
+				{this.state.result[this.props.resultName] &&
+				<>
+					<p>Total Reviews Waiting: {this.state.result[this.props.resultName].length}</p>
+					<hr />
+					<p>Click a row to copy the Share ID to the clipboard</p>
+					<table className='lockTable'>
+						<thead>
+							<tr>
+								{this.props.propertyNames.map((name, idx)=>{
+									return <th key={idx}>{name}</th>;
+								})}
+							</tr>
+						</thead>
+						<tbody>
+							{this.state.result[this.props.resultName].map((result, resultIdx)=>{
+								return <tr key={`${resultIdx}-row`} onClick={()=>{navigator.clipboard.writeText(result.shareId.toString());}}>
+									{this.props.propertyNames.map((name, nameIdx)=>{
+										return <td key={`${resultIdx}-${nameIdx}`}>
+											{result[name].toString()}
+										</td>;
+									})}
+								</tr>;
+							})}
+						</tbody>
+					</table>
+				</>
+				}
+			</div>
 		</>;
 	}
 });
