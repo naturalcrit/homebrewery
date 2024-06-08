@@ -140,7 +140,7 @@ const errorIndex = (props)=>{
 		'100' : dedent`
 		## This brew has been locked.
 		
-		Once the author has taken corrective action, they may request an administrative review to have this document unlocked.
+		Only an author may request that this lock is removed.
 		
 		:
 
