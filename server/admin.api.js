@@ -222,7 +222,6 @@ router.get('/admin/lock/reviews', mw.adminOnly, async (req, res)=>{
 			{
 			  $match :
 				{
-				  'lock.locked'          : true,
 				  'lock.reviewRequested' : { '$exists': 1 }
 				},
 			}
