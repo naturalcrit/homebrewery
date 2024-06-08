@@ -246,7 +246,6 @@ const LockLookup = createClass({
 	},
 
 	renderResult : function(){
-		console.log(this.state.result);
 		return <>
 			<h3>Result:</h3>
 			<table>
