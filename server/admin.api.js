@@ -186,7 +186,7 @@ router.post('/admin/lock/:id', mw.adminOnly, async (req, res)=>{
 	}
 });
 
-router.get('/admin/unlock/:id', mw.adminOnly, async (req, res)=>{
+router.put('/admin/unlock/:id', mw.adminOnly, async (req, res)=>{
 	try {
 		const filter = {
 			shareId : req.params.id
@@ -260,7 +260,7 @@ router.put('/admin/lock/review/request/:id', async (req, res)=>{
 	}
 });
 
-router.get('/admin/lock/review/remove/:id', mw.adminOnly, async (req, res)=>{
+router.put('/admin/lock/review/remove/:id', mw.adminOnly, async (req, res)=>{
 	try {
 		const filter = {
 			shareId                : req.params.id,

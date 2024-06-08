@@ -237,7 +237,7 @@ const LockLookup = createClass({
 	clickFn(){
 		this.setState({ searching: true, error: null });
 
-		request.get(`${this.props.fetchURL}/${this.state.query}`)
+		request.put(`${this.props.fetchURL}/${this.state.query}`)
 			.then((res)=>this.setState({ result: res.body }))
 			.catch((err)=>this.setState({ error: err }))
 			.finally(()=>{
