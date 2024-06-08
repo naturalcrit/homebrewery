@@ -153,7 +153,7 @@ const LockTable = createClass({
 			{this.state.result[this.props.resultName] &&
             <>
             	<p>Total Reviews Waiting: {this.state.result[this.props.resultName].length}</p>
-            	<table>
+            	<table className='lockTable'>
             		<thead>
             			<tr>
             				{this.props.propertyNames.map((name, idx)=>{
