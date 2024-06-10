@@ -66,10 +66,17 @@ const Editor = createClass({
 				editorTheme : editorTheme
 			});
 		}
+		if(this.refs.codeEditor){
+			this.refs.codeEditor.codeMirror.focus();
+			this.refs.codeEditor.codeMirror.setCursor(this.getStoredCursorPosition(this.state.view))
+
+		}
+
 	},
 
 	componentWillUnmount : function() {
 		window.removeEventListener('resize', this.updateEditorSize);
+		this.setStoredCursorPosition(this.state.view);
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
@@ -80,6 +87,27 @@ const Editor = createClass({
 		if(prevProps.moveSource !== this.props.moveSource) {
 			this.sourceJump();
 		};
+	},
+
+	/**
+	 *	Stores the current cursor position in local storage.
+	*	@param {string} view - The editor type ('text' or 'style').
+	*/
+	setStoredCursorPosition : function(view){
+		if(view === 'text' || view === 'style'){
+			const cursorPos = this.refs.codeEditor.codeMirror.getCursor();
+			window.localStorage.setItem(`CURSOR_POS-${view}`, JSON.stringify(cursorPos))
+		}
+	},
+
+	/**
+	 * Retrieves the stored cursor position from local storage.
+	 * @param {string} view - The editor type ('text' or 'style').
+	 * @returns {Object} - The cursor position object or { line: 0, ch: 0 } if not found.
+	 */
+	getStoredCursorPosition : function(view){
+		const cursorPos = JSON.parse(window.localStorage.getItem(`CURSOR_POS-${view}`)) ?? { line: 0, ch: 0 };
+		return cursorPos;
 	},
 
 	updateEditorSize : function() {
@@ -96,9 +124,15 @@ const Editor = createClass({
 
 	handleViewChange : function(newView){
 		this.props.setMoveArrows(newView === 'text');
+		this.setStoredCursorPosition(this.state.view);
+		const tempCursor = this.getStoredCursorPosition(newView);
 		this.setState({
 			view : newView
-		}, this.updateEditorSize);	//TODO: not sure if updateeditorsize needed
+		}, ()=>{
+			this.updateEditorSize;
+			this.refs.codeEditor?.codeMirror.focus();
+			this.refs.codeEditor?.codeMirror.setCursor(tempCursor)
+		});	//TODO: not sure if updateeditorsize needed
 	},
 
 	getCurrentPage : function(){
