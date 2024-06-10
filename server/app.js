@@ -332,13 +332,6 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 	return next();
 }));
 
-//Print Page
-app.get('/print/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
-	sanitizeBrew(req.brew, 'share');
-	splitTextStyleAndMetadata(req.brew);
-	next();
-});
-
 //Account Page
 app.get('/account', asyncHandler(async (req, res, next)=>{
 	const data = {};

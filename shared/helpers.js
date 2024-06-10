@@ -17,6 +17,18 @@ const splitTextStyleAndMetadata = (brew)=>{
 	}
 };
 
+const printCurrentBrew = ()=>{
+	if(window.typeof !== 'undefined') {
+		window.frames['BrewRenderer'].contentWindow.print();
+		//Force DOM reflow; Print dialog causes a repaint, and @media print CSS somehow makes out-of-view pages disappear
+		const node = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer').item(0);
+		node.style.display='none';
+		node.offsetHeight; // accessing this is enough to trigger a reflow
+		node.style.display='';
+	}
+};
+
 module.exports = {
-	splitTextStyleAndMetadata
+	splitTextStyleAndMetadata,
+	printCurrentBrew
 };
