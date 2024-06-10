@@ -1,7 +1,7 @@
 require('./archivePage.less');
 
 const React = require('react');
-const createClass = require('create-react-class');
+const { useState, useEffect, useRef } = React;
 const cx = require('classnames');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
@@ -11,270 +11,234 @@ const Account = require('../../navbar/account.navitem.jsx');
 const NewBrew = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const BrewItem = require('../basePages/listPage/brewItem/brewItem.jsx');
-//const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
 
 const request = require('../../utils/request-middleware.js');
 
-const ArchivePage = createClass({
-    displayName: 'ArchivePage',
-    getDefaultProps: function () {
-        return {};
-    },
+const ArchivePage = (props) => {
+    const [title, setTitle] = useState(props.query.title || '');
+    const [legacy, setLegacy] = useState(props.query.legacy !== 'false');
+    const [v3, setV3] = useState(props.query.v3 !== 'false');
+    const [count, setCount] = useState(props.query.count || 10);
+    const [page, setPage] = useState(parseInt(props.query.page) || 1);
+    const [brewCollection, setBrewCollection] = useState(null);
+    const [totalBrews, setTotalBrews] = useState(null);
+    const [searching, setSearching] = useState(false);
+    const [error, setError] = useState(null);
 
-    getInitialState: function () {
-        return {
-            //# request
-            title: this.props.query.title || '',
-            //tags: {},
-            legacy: this.props.query.legacy !== 'false',
-            v3: this.props.query.v3 !== 'false',
-            count: this.props.query.count || 10,
-            page: parseInt(this.props.query.page) || 1,
+    const titleRef = useRef(null);
+    const countRef = useRef(null);
+    const v3Ref = useRef(null);
+    const legacyRef = useRef(null);
 
-            //# response
-            brewCollection: null,
-            totalBrews: null,
-
-            searching: false,
-            error: null,
-        };
-    },
-
-    componentDidMount: function () {
-        console.log(this.props.query);
-        console.log(this.state);
-
-        this.validateInput();
-        if (this.state.title) {
-            this.loadPage(this.state.page, false);
+    useEffect(() => {
+        validateInput();
+        if (title) {
+            loadPage(page, false);
         }
-        this.state.totalBrews || this.loadTotal(); // Load total if not already loaded
-    },
+        !totalBrews && loadTotal();
+    }, []);
 
-    updateStateWithBrews: function (brews, page) {
-        this.setState({
-            brewCollection: brews || null,
-            page: parseInt(page) || 1,
-            searching: false,
-        });
-    },
+    const updateStateWithBrews = (brews, page) => {
+        setBrewCollection(brews || null);
+        setPage(parseInt(page) || 1);
+        setSearching(false);
+    };
 
-    updateUrl: function (title, page, count, v3, legacy) {
+    const updateUrl = (title, page, count, v3, legacy) => {
         const url = new URL(window.location.href);
         const urlParams = new URLSearchParams();
-    
-        Object.entries({ title, page, count, v3, legacy }).forEach(([key, value]) => urlParams.set(key, value));
-    
+
+        Object.entries({ title, page, count, v3, legacy }).forEach(
+            ([key, value]) => urlParams.set(key, value)
+        );
+
         url.search = urlParams.toString();
         window.history.replaceState(null, null, url);
-    },
-    
-    loadPage: async function (page, update) {
-        this.setState({ searching: true, error: null });
-        
-    
+    };
+
+    const loadPage = async (page, update) => {
+        setSearching(true);
+        setError(null);
+
         const performSearch = async ({ title, count, v3, legacy }) => {
-            this.updateUrl(title, page, count, v3, legacy);
+            updateUrl(title, page, count, v3, legacy);
             if (title !== '') {
                 try {
                     const response = await request.get(
                         `/api/archive?title=${title}&page=${page}&count=${count}&v3=${v3}&legacy=${legacy}`
                     );
                     if (response.ok) {
-                        this.updateStateWithBrews(response.body.brews, page);
-                        
+                        updateStateWithBrews(response.body.brews, page);
                     } else {
                         throw new Error(`Error: ${response.status}`);
                     }
                 } catch (error) {
                     console.log('error at loadPage: ', error);
-                    this.setState({ error: `${error.response ? error.response.status : error.message}` });
-                    this.updateStateWithBrews([], 1);
+                    setError(
+                        `${
+                            error.response
+                                ? error.response.status
+                                : error.message
+                        }`
+                    );
+                    updateStateWithBrews([], 1);
                 }
             } else {
-                this.setState({ error: '404' });
+                setError('404');
             }
         };
-    
-        if (update === true) {
-            const title = document.getElementById('title').value || '';
-            const count = document.getElementById('count').value || 10;
-            const v3 = document.getElementById('v3').checked;
-            const legacy = document.getElementById('legacy').checked;
-    
-            this.setState(
-                {
-                    title: title,
-                    count: count,
-                    v3: v3,
-                    legacy: legacy,
-                },
-                () => {
-                    // State is updated, now perform the search
-                    performSearch({ title, count, v3, legacy });
-                }
-            );
+
+        if (update) {
+            const title = titleRef.current.value || '';
+            const count = countRef.current.value || 10;
+            const v3 = v3Ref.current.checked;
+            const legacy = legacyRef.current.checked;
+
+            setTitle(title);
+            setCount(count);
+            setV3(v3);
+            setLegacy(legacy);
+
+            performSearch({ title, count, v3, legacy });
         } else {
-            const { title, count, v3, legacy } = this.state;
             performSearch({ title, count, v3, legacy });
         }
-    },
-    
-    loadTotal: async function () {
-        const {title, v3, legacy} = this.state;
+    };
 
-        this.setState({
-            totalBrews: null,
-            error: null
-        });
-    
+    const loadTotal = async () => {
+        setTotalBrews(null);
+        setError(null);
+
         if (title) {
             try {
                 const response = await request.get(
                     `/api/archive/total?title=${title}&v3=${v3}&legacy=${legacy}`
                 );
-    
+
                 if (response.ok) {
-                    this.setState({
-                        totalBrews: response.body.totalBrews,
-                    });
+                    setTotalBrews(response.body.totalBrews);
                 } else {
-                    throw new Error(`Failed to load total brews: ${response.statusText}`);
+                    throw new Error(
+                        `Failed to load total brews: ${response.statusText}`
+                    );
                 }
             } catch (error) {
                 console.log('error at loadTotal: ', error);
-                this.setState({ error: `${error.response.status}` });
-                this.updateStateWithBrews([], 1);
+                setError(`${error.response.status}`);
+                updateStateWithBrews([], 1);
             }
         }
-    },
+    };
 
-    renderNavItems: function () {
-        return (
-            <Navbar>
-                <Nav.section>
-                    <Nav.item className="brewTitle">
-                        Archive: Search for brews
-                    </Nav.item>
-                </Nav.section>
-                <Nav.section>
-                    <NewBrew />
-                    <HelpNavItem />
-                    <RecentNavItem />
-                    <Account />
-                </Nav.section>
-            </Navbar>
-        );
-    },
+    const renderNavItems = () => (
+        <Navbar>
+            <Nav.section>
+                <Nav.item className="brewTitle">
+                    Archive: Search for brews
+                </Nav.item>
+            </Nav.section>
+            <Nav.section>
+                <NewBrew />
+                <HelpNavItem />
+                <RecentNavItem />
+                <Account />
+            </Nav.section>
+        </Navbar>
+    );
 
-    validateInput: function () {
-        const textInput = document.getElementById('title');
+    const validateInput = () => {
+        const textInput = titleRef.current;
         const submitButton = document.getElementById('searchButton');
         if (textInput.validity.valid && textInput.value) {
             submitButton.disabled = false;
         } else {
             submitButton.disabled = true;
         }
-    },
+    };
 
-    renderForm: function () {
-        return (
-            <div className="brewLookup">
-                <h2 className="formTitle">Brew Lookup</h2>
-                <div className="formContents">
-                    <label>
-                        Title of the brew
-                        <input
-                            id="title"
-                            type="text"
-                            name="title"
-                            defaultValue={this.state.title}
-                            onKeyUp={() => {
-                                this.validateInput();
-                            }}
-                            pattern=".{3,}"
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                    this.loadTotal();
-                                    this.loadPage(1, true);
+    const renderForm = () => (
+        <div className="brewLookup">
+            <h2 className="formTitle">Brew Lookup</h2>
+            <div className="formContents">
+                <label>
+                    Title of the brew
+                    <input
+                        ref={titleRef}
+                        type="text"
+                        name="title"
+                        defaultValue={title}
+                        onKeyUp={validateInput}
+                        pattern=".{3,}"
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                if (
+                                    e.target.validity.valid &&
+                                    e.target.value
+                                ) {
+                                    loadTotal();
+                                    loadPage(1, true);
                                 }
-                            }}
-                            placeholder="v3 Reference Document"
-                        />
-                    </label>
-                    <small>
-                        Tip! you can use <code>-</code> to negate words, and{' '}
-                        <code>"word"</code> to specify an exact string.
-                    </small>
-                    <label>
-                        Results per page
-                        <select name="count" id="count">
-                            <option value="10" default>10</option>
-                            <option value="20">20</option>
-                            <option value="40">40</option>
-                            <option value="60">60</option>
-                        </select>
-                    </label>
-
-                    <label>
-                        <input
-                            id="v3"
-                            type="checkbox"
-                            defaultChecked={this.state.v3}
-                        />
-                        Search for v3 brews
-                    </label>
-
-                    <label>
-                        <input
-                            id="legacy"
-                            type="checkbox"
-                            defaultChecked={this.state.legacy}
-                        />
-                        Search for legacy brews
-                    </label>
-
-                    {/* In the future, we should be able to filter the results by adding tags.
-            		<<StringArrayEditor label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
-					placeholder='add tag' unique={true}
-					values={this.state.tags}
-					onChange={(e)=>this.handleChange('tags', e)}/>
-
-					check metadataEditor.jsx L65
-            		*/}
-
-                    <button
-                        id="searchButton"
-                        onClick={() => {
-                            this.loadTotal();
-                            this.loadPage(1, true);
+                            }
                         }}
-                    >
-                        Search
-                        <i
-                            className={cx('fas', {
-                                'fa-search': !this.state.searching,
-                                'fa-spin fa-spinner': this.state.searching,
-                            })}
-                        />
-                    </button>
-                </div>
+                        placeholder="v3 Reference Document"
+                    />
+                </label>
                 <small>
-                    Remember, you can only search brews with this tool if they
-                    are published
+                    Tip! you can use <code>-</code> to negate words, and{' '}
+                    <code>"word"</code> to specify an exact string.
                 </small>
+                <label>
+                    Results per page
+                    <select ref={countRef} name="count" defaultValue={count}>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="40">40</option>
+                        <option value="60">60</option>
+                    </select>
+                </label>
+
+                <label>
+                    <input ref={v3Ref} type="checkbox" defaultChecked={v3} />
+                    Search for v3 brews
+                </label>
+
+                <label>
+                    <input
+                        ref={legacyRef}
+                        type="checkbox"
+                        defaultChecked={legacy}
+                    />
+                    Search for legacy brews
+                </label>
+
+                <button
+                    id="searchButton"
+                    onClick={() => {
+                        loadTotal();
+                        loadPage(1, true);
+                    }}
+                >
+                    Search
+                    <i
+                        className={cx('fas', {
+                            'fa-search': !searching,
+                            'fa-spin fa-spinner': searching,
+                        })}
+                    />
+                </button>
             </div>
-        );
-    },
+            <small>
+                Remember, you can only search brews with this tool if they are
+                published
+            </small>
+        </div>
+    );
 
-    renderPaginationControls: function () {
-        if (!this.state.totalBrews) {
-            return null;
-        }
+    const renderPaginationControls = () => {
+        if (!totalBrews) return null;
 
-        const count = parseInt(this.state.count);
-        const { page, totalBrews } = this.state;
-        const totalPages = Math.ceil(totalBrews / count);
+        const countInt = parseInt(count);
+        const totalPages = Math.ceil(totalBrews / countInt);
 
         let startPage, endPage;
         if (page <= 6) {
@@ -296,7 +260,7 @@ const ArchivePage = createClass({
                     className={`pageNumber ${
                         page === startPage + index ? 'currentPage' : ''
                     }`}
-                    onClick={() => this.loadPage(startPage + index, false)}
+                    onClick={() => loadPage(startPage + index, false)}
                 >
                     {startPage + index}
                 </a>
@@ -307,7 +271,7 @@ const ArchivePage = createClass({
                 {page > 1 && (
                     <button
                         className="previousPage"
-                        onClick={() => this.loadPage(page - 1, false)}
+                        onClick={() => loadPage(page - 1, false)}
                     >
                         &lt;&lt;
                     </button>
@@ -315,8 +279,8 @@ const ArchivePage = createClass({
                 <ol className="pages">
                     {startPage > 1 && (
                         <a
-                            className="firstPage pageNumber"
-                            onClick={() => this.loadPage(1, false)}
+                            className="firstPage"
+                            onClick={() => loadPage(1, false)}
                         >
                             1 ...
                         </a>
@@ -324,8 +288,8 @@ const ArchivePage = createClass({
                     {pagesAroundCurrent}
                     {endPage < totalPages && (
                         <a
-                            className="lastPage pageNumber"
-                            onClick={() => this.loadPage(totalPages, false)}
+                            className="lastPage"
+                            onClick={() => loadPage(totalPages, false)}
                         >
                             ... {totalPages}
                         </a>
@@ -334,18 +298,16 @@ const ArchivePage = createClass({
                 {page < totalPages && (
                     <button
                         className="nextPage"
-                        onClick={() => this.loadPage(page + 1, false)}
+                        onClick={() => loadPage(page + 1, false)}
                     >
                         &gt;&gt;
                     </button>
                 )}
             </div>
         );
-    },
+    };
 
-    renderFoundBrews() {
-        const { title, brewCollection, error, searching } = this.state;
-
+    const renderFoundBrews = () => {
         if (searching) {
             return (
                 <div className="foundBrews searching">
@@ -395,43 +357,45 @@ const ArchivePage = createClass({
                 </div>
             );
         }
-        console.log('state when rendering ');
-        console.table(this.state);
+
         return (
             <div className="foundBrews">
                 <span className="totalBrews">
                     {`Brews found: `}
-                    {title === '' ? '0' : this.state.totalBrews ? this.state.totalBrews : <span className="searchAnim"></span>}
+                    {title === '' ? (
+                        '0'
+                    ) : totalBrews ? (
+                        totalBrews
+                    ) : (
+                        <span className="searchAnim"></span>
+                    )}
                 </span>
                 {brewCollection.map((brew, index) => (
                     <BrewItem
                         brew={brew}
                         key={index}
-                        reportError={this.props.reportError}
+                        reportError={props.reportError}
                     />
                 ))}
-                {this.renderPaginationControls()}
+                {renderPaginationControls()}
             </div>
         );
-        
-    },
+    };
 
-    render: function () {
-        return (
-            <div className="archivePage">
-                <link href="/themes/V3/Blank/style.css" rel="stylesheet" />
-                <link href="/themes/V3/5ePHB/style.css" rel="stylesheet" />
-                {this.renderNavItems()}
+    return (
+        <div className="archivePage">
+            <link href="/themes/V3/Blank/style.css" rel="stylesheet" />
+            <link href="/themes/V3/5ePHB/style.css" rel="stylesheet" />
+            {renderNavItems()}
+            <div className="content">
+                <div className="form dataGroup">{renderForm()}</div>
 
-                <div className="content">
-                    <div className="form dataGroup">{this.renderForm()}</div>
-                    <div className="resultsContainer dataGroup">
-                        {this.renderFoundBrews()}
-                    </div>
+                <div className="resultsContainer dataGroup">
+                    {renderFoundBrews()}
                 </div>
             </div>
-        );
-    },
-});
+        </div>
+    );
+};
 
 module.exports = ArchivePage;
