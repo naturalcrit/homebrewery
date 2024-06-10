@@ -52,10 +52,10 @@ const buildBrewsQuery = (legacy, v3) => {
     return brewsQuery;
 };
 
-const archive = {
+const vault = {
     findBrews: async (req, res, next) => {
         try {
-            console.log(`Query as received in archive api for findBrews:`);
+            console.log(`Query as received in vault api for findBrews:`);
             console.table(req.query);
 
             const title = req.query.title || '';
@@ -91,7 +91,7 @@ const archive = {
         }
     },
     findTotal: async (req, res) => {
-        console.log(`Query as received in archive api for totalBrews:`);
+        console.log(`Query as received in vault api for totalBrews:`);
         console.table(req.query);
         try {
             const title = req.query.title || '';
@@ -102,9 +102,8 @@ const archive = {
             const titleQuery = {
                 $and: [brewsQuery, ...titleConditionsArray],
             };
-
             const totalBrews = await HomebrewModel.countDocuments(titleQuery);
-            console.log('when returning, totalbrews is ', totalBrews);
+            console.log('when returning, totalbrews is ', totalBrews, 'for the query ',JSON.stringify(titleQuery));
             return res.json({ totalBrews });
 
         } catch (error) {
@@ -114,7 +113,7 @@ const archive = {
     },
 };
 
-router.get('/api/archive/total', asyncHandler(archive.findTotal));
-router.get('/api/archive', asyncHandler(archive.findBrews));
+router.get('/api/vault/total', asyncHandler(vault.findTotal));
+router.get('/api/vault', asyncHandler(vault.findBrews));
 
 module.exports = router;

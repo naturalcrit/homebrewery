@@ -54,7 +54,7 @@ app.use((req, res, next)=>{
 
 app.use(homebrewApi);
 app.use(require('./admin.api.js'));
-app.use(require('./archive.api.js'));
+app.use(require('./vault.api.js'));
 
 const HomebrewModel     = require('./homebrew.model.js').model;
 const welcomeText       = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
@@ -462,8 +462,8 @@ app.use(async (err, req, res, next)=>{
 		res.status(err.status || err.response?.status || 500).send(err);
 		return;
 	}
-	if(err.originalUrl?.startsWith('/archive/')) {
-		// console.log('archive error');
+	if(err.originalUrl?.startsWith('/vault/')) {
+		// console.log('vault error');
 		res.status(err.status || err.response?.status || 500).send(err);
 		return;
 	}
@@ -489,8 +489,6 @@ app.use(async (err, req, res, next)=>{
 	if(!page) return;
 	res.send(page);
 });
-
-
 
 app.use((req, res)=>{
 	if(!res.headersSent) {

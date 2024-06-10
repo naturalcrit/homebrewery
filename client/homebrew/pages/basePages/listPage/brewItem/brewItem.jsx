@@ -117,8 +117,6 @@ const BrewItem = createClass({
 			});
 		}
 		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
-		const authors = brew.authors.length > 0 ? brew.authors : 'No authors';
-
 
 		return <div className='brewItem'>
 			{brew.thumbnail &&

@@ -85,6 +85,7 @@ router.get('/admin/lookup/:id', mw.adminOnly, async (req, res, next)=>{
 	});
 });
   
+
 /* Find 50 brews that aren't compressed yet */
 router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{
 	const query = uncompressedBrewQuery.clone();
@@ -99,6 +100,7 @@ router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{
 			res.status(500).send(err.message || 'Internal Server Error');
 		});
 });
+
 
 /* Compresses the "text" field of a brew to binary */
 router.put('/admin/compress/:id', (req, res)=>{
@@ -120,6 +122,7 @@ router.put('/admin/compress/:id', (req, res)=>{
 			res.status(500).send('Error while saving');
 		});
 });
+
 
 router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 	try {

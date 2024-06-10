@@ -1,4 +1,4 @@
-require('./archivePage.less');
+require('./vaultPage.less');
 
 const React = require('react');
 const { useState, useEffect, useRef } = React;
@@ -14,7 +14,7 @@ const BrewItem = require('../basePages/listPage/brewItem/brewItem.jsx');
 
 const request = require('../../utils/request-middleware.js');
 
-const ArchivePage = (props) => {
+const VaultPage = (props) => {
     const [title, setTitle] = useState(props.query.title || '');
     const [legacy, setLegacy] = useState(props.query.legacy !== 'false');
     const [v3, setV3] = useState(props.query.v3 !== 'false');
@@ -29,6 +29,7 @@ const ArchivePage = (props) => {
     const countRef = useRef(null);
     const v3Ref = useRef(null);
     const legacyRef = useRef(null);
+    const totalBrewsSpanRef = useRef(null);
 
     useEffect(() => {
         validateInput();
@@ -37,6 +38,23 @@ const ArchivePage = (props) => {
         }
         !totalBrews && loadTotal();
     }, []);
+
+    useEffect(() => {
+        console.log(totalBrewsSpanRef);
+        console.log(totalBrews);
+        if (totalBrewsSpanRef.current) {
+            if (title === '') {
+                totalBrewsSpanRef.current.innerHTML = '0';
+            } else {
+                if (!totalBrews) {
+                    totalBrewsSpanRef.current.innerHTML =
+                        '<span class="searchAnim"></span>';
+                } else {
+                    totalBrewsSpanRef.current.innerHTML = `${totalBrews}`;
+                }
+            }
+        }
+    }, [totalBrews, title, () => totalBrewsSpanRef.current]);
 
     const updateStateWithBrews = (brews, page) => {
         setBrewCollection(brews || null);
@@ -65,7 +83,7 @@ const ArchivePage = (props) => {
             if (title !== '') {
                 try {
                     const response = await request.get(
-                        `/api/archive?title=${title}&page=${page}&count=${count}&v3=${v3}&legacy=${legacy}`
+                        `/api/vault?title=${title}&page=${page}&count=${count}&v3=${v3}&legacy=${legacy}`
                     );
                     if (response.ok) {
                         updateStateWithBrews(response.body.brews, page);
@@ -112,7 +130,7 @@ const ArchivePage = (props) => {
         if (title) {
             try {
                 const response = await request.get(
-                    `/api/archive/total?title=${title}&v3=${v3}&legacy=${legacy}`
+                    `/api/vault/total?title=${title}&v3=${v3}&legacy=${legacy}`
                 );
 
                 if (response.ok) {
@@ -134,7 +152,7 @@ const ArchivePage = (props) => {
         <Navbar>
             <Nav.section>
                 <Nav.item className="brewTitle">
-                    Archive: Search for brews
+                    Vault: Search for brews
                 </Nav.item>
             </Nav.section>
             <Nav.section>
@@ -171,10 +189,7 @@ const ArchivePage = (props) => {
                         pattern=".{3,}"
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
-                                if (
-                                    e.target.validity.valid &&
-                                    e.target.value
-                                ) {
+                                if (e.target.validity.valid && e.target.value) {
                                     loadTotal();
                                     loadPage(1, true);
                                 }
@@ -362,13 +377,7 @@ const ArchivePage = (props) => {
             <div className="foundBrews">
                 <span className="totalBrews">
                     {`Brews found: `}
-                    {title === '' ? (
-                        '0'
-                    ) : totalBrews ? (
-                        totalBrews
-                    ) : (
-                        <span className="searchAnim"></span>
-                    )}
+                    <span ref={totalBrewsSpanRef}></span>
                 </span>
                 {brewCollection.map((brew, index) => (
                     <BrewItem
@@ -383,7 +392,7 @@ const ArchivePage = (props) => {
     };
 
     return (
-        <div className="archivePage">
+        <div className="vaultPage">
             <link href="/themes/V3/Blank/style.css" rel="stylesheet" />
             <link href="/themes/V3/5ePHB/style.css" rel="stylesheet" />
             {renderNavItems()}
@@ -398,4 +407,4 @@ const ArchivePage = (props) => {
     );
 };
 
-module.exports = ArchivePage;
+module.exports = VaultPage;
