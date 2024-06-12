@@ -50,7 +50,8 @@ const LockBrew = createClass({
 			brewId       : '',
 			code         : 1000,
 			editMessage  : '',
-			shareMessage : ''
+			shareMessage : '',
+			result       : {}
 		};
 	},
 
@@ -75,12 +76,29 @@ const LockBrew = createClass({
 			.send(newLock)
 			.set('Content-Type', 'application/json')
 			.then((response)=>{
-				console.log(response.body);
+				this.setState({ result: response.body });
 			});
 	},
 
 	renderInput : function (name) {
 		return <input type='text' name={name} value={this.state[name]} onChange={(e)=>this.handleChange(e, name)} autoComplete='off' required/>;
+	},
+
+	renderResult : function(){
+		return <>
+			<h3>Result:</h3>
+			<table>
+				<tbody>
+					{Object.keys(this.state.result).map((key, idx)=>{
+						return <tr key={`${idx}-row`}>
+							<td key={`${idx}-key`}>{key}</td>
+							<td key={`${idx}-value`}>{this.state.result[key].toString()}
+							</td>
+						</tr>;
+					})}
+				</tbody>
+			</table>
+		</>;
 	},
 
 	render : function() {
@@ -112,6 +130,7 @@ const LockBrew = createClass({
 						<input type='submit' />
 					</label>
 				</form>
+				{this.state.result && this.renderResult()}
 			</div>
 			<div className='lockSuggestions'>
 				<h2>Suggestions</h2>
