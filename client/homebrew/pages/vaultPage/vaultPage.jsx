@@ -47,7 +47,7 @@ const VaultPage = (props) => {
         const url = new URL(window.location.href);
         const urlParams = new URLSearchParams();
 
-        Object.entries({ title, page, count, v3, legacy }).forEach(
+        Object.entries({ title, v3, legacy, count, page }).forEach(
             ([key, value]) => urlParams.set(key, value)
         );
 
@@ -64,7 +64,7 @@ const VaultPage = (props) => {
             if (title !== '') {
                 try {
                     const response = await request.get(
-                        `/api/vault?title=${title}&page=${page}&count=${count}&v3=${v3}&legacy=${legacy}`
+                        `/api/vault?title=${title}&v3=${v3}&legacy=${legacy}&count=${count}&page=${page}`
                     );
                     if (response.ok) {
                         updateStateWithBrews(response.body.brews, page);
