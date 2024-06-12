@@ -161,7 +161,7 @@ const VaultPage = (props) => {
     const renderForm = () => (
         <div className="brewLookup">
             <h2 className="formTitle">Brew Lookup</h2>
-            <div className="formContents">
+            <form className="formContents">
                 <label>
                     Title of the brew
                     <input
@@ -223,7 +223,7 @@ const VaultPage = (props) => {
                         })}
                     />
                 </button>
-            </div>
+            </form>
             <small>
                 Remember, you can only search brews with this tool if they are
                 published
