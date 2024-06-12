@@ -386,6 +386,26 @@ const definitionListsSingleLine = {
 	}
 };
 
+const highlight = {
+	name  : 'highlight',
+	level : 'inline',
+	start(src) { return src.match(/\b__(?![_\s])(.*?[^_\s])__\b/m)?.index;},
+	tokenizer(src, tokens) {
+		const uRegex = /^\b__(?![_\s])(.*?[^_\s])__\b/m;
+	    const match = uRegex.exec(src);
+		if(match?.length) {
+			return {
+				type   : 'highlight',
+				raw    : match[0],
+				tokens : this.lexer.inlineTokens(match[1])
+			};
+		}
+	},
+	renderer(token) {		
+		return  `<mark>${this.parser.parseInline(token.tokens)}</mark>`;
+	}
+};
+				
 const definitionListsMultiLine = {
 	name  : 'definitionListsMultiLine',
 	level : 'block',
@@ -696,7 +716,7 @@ const MarkedEmojiOptions = {
 };
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions: [definitionListsMultiLine, definitionListsSingleLine, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use({ extensions: [definitionListsMultiLine, definitionListsSingleLine, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline, highlight] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
