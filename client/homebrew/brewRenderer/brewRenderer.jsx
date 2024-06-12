@@ -269,6 +269,12 @@ const BrewRenderer = (props)=>{
 				</div>
 				: null}
 
+			<ErrorBar errors={props.errors} />
+			<div className='popups'>
+				<RenderWarnings />
+				<NotificationPopup />
+			</div>
+
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
 				style={{ width: '100%', height: '100%', visibility: state.visibility }}
@@ -281,11 +287,6 @@ const BrewRenderer = (props)=>{
 					tabIndex={-1}
 					style={{ height: state.height }}>
 
-					<ErrorBar errors={props.errors} />
-					<div className='popups'>
-						<RenderWarnings />
-						<NotificationPopup />
-					</div>
 					<link href={`/themes/${rendererPath}/Blank/style.css`} type='text/css' rel='stylesheet'/>
 					{baseThemePath &&
 						<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} type='text/css' rel='stylesheet'/>
