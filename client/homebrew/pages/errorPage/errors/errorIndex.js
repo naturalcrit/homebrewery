@@ -95,7 +95,7 @@ const errorIndex = (props)=>{
 		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
 
 		[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`,
-		
+
 
 		// Brew load error
 		'05' : dedent`
@@ -140,7 +140,7 @@ const errorIndex = (props)=>{
 		'100' : dedent`
 		## This brew has been locked.
 		
-		Please contact the Administrators to unlock this document.
+		Only an author may request that this lock is removed.
 		
 		:
 

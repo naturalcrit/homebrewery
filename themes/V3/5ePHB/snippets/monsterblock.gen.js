@@ -171,7 +171,7 @@ module.exports = {
 			**Condition Immunities** :: ${genList(['groggy', 'swagged', 'weak-kneed', 'buzzed', 'groovy', 'melancholy', 'drunk'], 3)}
 			**Senses**               :: darkvision 60 ft., passive Perception ${_.random(3, 20)}
 			**Languages**            :: ${genList(['Common', 'Pottymouth', 'Gibberish', 'Latin', 'Jive'], 2)}
-			**Challenge**            :: ${_.random(0, 15)} (${_.random(10, 10000)} XP)
+			**Challenge**            :: ${_.random(0, 15)} (${_.random(10, 10000)} XP) {{bonus **Proficiency Bonus** +${_.random(2, 6)}}}
 			___
 			${_.times(_.random(genLines, genLines + 2), function(){return genAbilities();}).join('\n:\n')}
 			:
