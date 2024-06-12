@@ -29,32 +29,13 @@ const VaultPage = (props) => {
     const countRef = useRef(null);
     const v3Ref = useRef(null);
     const legacyRef = useRef(null);
-    const totalBrewsSpanRef = useRef(null);
 
     useEffect(() => {
         validateInput();
         if (title) {
-            loadPage(page, false);
+            loadPage(page, false, true);
         }
-        !totalBrews && loadTotal();
     }, []);
-
-    useEffect(() => {
-        console.log(totalBrewsSpanRef);
-        console.log(totalBrews);
-        if (totalBrewsSpanRef.current) {
-            if (title === '') {
-                totalBrewsSpanRef.current.innerHTML = '0';
-            } else {
-                if (!totalBrews) {
-                    totalBrewsSpanRef.current.innerHTML =
-                        '<span class="searchAnim"></span>';
-                } else {
-                    totalBrewsSpanRef.current.innerHTML = `${totalBrews}`;
-                }
-            }
-        }
-    }, [totalBrews, title, () => totalBrewsSpanRef.current]);
 
     const updateStateWithBrews = (brews, page) => {
         setBrewCollection(brews || null);
@@ -74,7 +55,7 @@ const VaultPage = (props) => {
         window.history.replaceState(null, null, url);
     };
 
-    const loadPage = async (page, update) => {
+    const loadPage = async (page, update, total) => {
         setSearching(true);
         setError(null);
 
@@ -106,12 +87,36 @@ const VaultPage = (props) => {
             }
         };
 
-        if (update) {
-            const title = titleRef.current.value || '';
-            const count = countRef.current.value || 10;
-            const v3 = v3Ref.current.checked;
-            const legacy = legacyRef.current.checked;
+        const loadTotal = async ({title, v3, legacy}) => {
+            setTotalBrews(null);
+            setError(null);
+            if (title) {
+                try {
+                    const response = await request.get(
+                        `/api/vault/total?title=${title}&v3=${v3}&legacy=${legacy}`
+                    );
 
+                    if (response.ok) {
+                        setTotalBrews(response.body.totalBrews);
+                    } else {
+                        throw new Error(
+                            `Failed to load total brews: ${response.statusText}`
+                        );
+                    }
+                } catch (error) {
+                    console.log('error at loadTotal: ', error);
+                    setError(`${error.response.status}`);
+                    updateStateWithBrews([], 1);
+                }
+            }
+        };
+
+        const title = titleRef.current.value || '';
+        const count = countRef.current.value || 10;
+        const v3 = v3Ref.current.checked;
+        const legacy = legacyRef.current.checked;
+
+        if (update) {
             setTitle(title);
             setCount(count);
             setV3(v3);
@@ -121,30 +126,9 @@ const VaultPage = (props) => {
         } else {
             performSearch({ title, count, v3, legacy });
         }
-    };
 
-    const loadTotal = async () => {
-        setTotalBrews(null);
-        setError(null);
-
-        if (title) {
-            try {
-                const response = await request.get(
-                    `/api/vault/total?title=${title}&v3=${v3}&legacy=${legacy}`
-                );
-
-                if (response.ok) {
-                    setTotalBrews(response.body.totalBrews);
-                } else {
-                    throw new Error(
-                        `Failed to load total brews: ${response.statusText}`
-                    );
-                }
-            } catch (error) {
-                console.log('error at loadTotal: ', error);
-                setError(`${error.response.status}`);
-                updateStateWithBrews([], 1);
-            }
+        if (total) {
+            loadTotal({ title, v3, legacy });
         }
     };
 
@@ -190,8 +174,7 @@ const VaultPage = (props) => {
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                                 if (e.target.validity.valid && e.target.value) {
-                                    loadTotal();
-                                    loadPage(1, true);
+                                    loadPage(1, true, true);
                                 }
                             }
                         }}
@@ -229,8 +212,7 @@ const VaultPage = (props) => {
                 <button
                     id="searchButton"
                     onClick={() => {
-                        loadTotal();
-                        loadPage(1, true);
+                        loadPage(1, true, true);
                     }}
                 >
                     Search
@@ -377,7 +359,7 @@ const VaultPage = (props) => {
             <div className="foundBrews">
                 <span className="totalBrews">
                     {`Brews found: `}
-                    <span ref={totalBrewsSpanRef}></span>
+                    <span>{totalBrews}</span>
                 </span>
                 {brewCollection.map((brew, index) => (
                     <BrewItem
