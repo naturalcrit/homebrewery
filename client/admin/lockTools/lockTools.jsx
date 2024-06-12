@@ -37,9 +37,11 @@ const LockTools = createClass({
 			<hr />
 			<LockBrew></LockBrew>
 			<hr />
-			<LockLookup title='Unlock Brew' fetchURL='/admin/unlock' updateFn={this.updateReviewCount}></LockLookup>
+			<div style={{ columns: 2 }}>
+				<LockLookup title='Unlock Brew' fetchURL='/admin/unlock' updateFn={this.updateReviewCount}></LockLookup>
+				<LockLookup title='Clear Review Request' fetchURL='/admin/lock/review/remove'></LockLookup>
+			</div>
 			<hr />
-			<LockLookup title='Clear Review Request' fetchURL='/admin/lock/review/remove'></LockLookup>
 		</div>;
 	}
 });
@@ -68,8 +70,7 @@ const LockBrew = createClass({
 			code         : parseInt(this.state.code) || 100,
 			editMessage  : this.state.editMessage,
 			shareMessage : this.state.shareMessage,
-			applied      : new Date,
-			locked       : true
+			applied      : new Date
 		};
 
 		request.post(`/admin/lock/${this.state.brewId}`)
@@ -204,7 +205,6 @@ const LockTable = createClass({
 				{this.state.result[this.props.resultName] &&
 				<>
 					<p>Total Reviews Waiting: {this.state.result[this.props.resultName].length}</p>
-					<hr />
 					<p>Click a row to copy the Share ID to the clipboard</p>
 					<table className='lockTable'>
 						<thead>
