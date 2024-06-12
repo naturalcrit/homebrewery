@@ -1,280 +1,245 @@
 body {
-    height: 100vh;
+	height : 100vh;
 
-    .content {
-        height: 100%;
-    }
+	.content { height : 100%; }
 
-    small {
-        font-size: 10pt;
-        color: #555;
+	small {
+		font-size : 10pt;
+		color     : #555555;
 
-        a {
-            color: #333;
-        }
-    }
+		a { color : #333333; }
+	}
 
-    code {
-        background: lightgrey;
-        border-radius: 5px;
-        padding-inline: 5px
-    }
+	code {
+		padding-inline : 5px;
+		background     : lightgrey;
+		border-radius  : 5px;
+	}
 
-    *:not(input) {
-        user-select: none;
-    }
+	*:not(input) { user-select : none; }
 }
 
 .vaultPage {
-    overflow-y: hidden;
-    height: 100%;
-    background-color: #2C3E50;
+	height           : 100%;
+	overflow-y       : hidden;
+	background-color : #2C3E50;
 
-    h1,
-    h2,
-    h3 {
-        font-family: 'Open Sans';
-        color: white;
-        font-weight: 900;
-    }
+	h1,
+	h2,
+	h3 {
+		font-family : 'Open Sans';
+		font-weight : 900;
+		color       : white;
+	}
 
-    .content {
-        display: grid;
-        grid-template-columns: 500px 2fr;
-        background: #2C3E50;
+	.content {
+		display               : grid;
+		grid-template-columns : 500px 2fr;
+		background            : #2C3E50;
 
-        .dataGroup {
-            width: 100%;
-            height: 100%;
-            background: white;
+		.dataGroup {
+			width      : 100%;
+			height     : 100%;
+			background : white;
 
-            &.form .brewLookup {
-                position: relative;
-                padding: 50px;
+			&.form .brewLookup {
+				position : relative;
+				padding  : 50px;
 
-                .formTitle {
-                    color: black;
-                    font-size: 30px;
-                    border-bottom: 2px solid;
-                    margin: 20px 0;
-                    text-align: center;
-                }
+				.formTitle {
+					margin        : 20px 0;
+					font-size     : 30px;
+					color         : black;
+					text-align    : center;
+					border-bottom : 2px solid;
+				}
 
-                .formContents {
-                    display: flex;
-                    flex-direction: column;
-                }
+				.formContents {
+					display        : flex;
+					flex-direction : column;
+				}
 
-                label {
-                    margin: 10px 0;
-                }
+				label { margin : 10px 0; }
 
-                input {
-                    margin: 0 10px;
-                }
+				input { margin : 0 10px; }
 
-                #searchButton {
-                    position: absolute;
-                    right: 10px;
-                    bottom: 20px;
+				#searchButton {
+					position : absolute;
+					right    : 10px;
+					bottom   : 20px;
 
-                    i {
-                        margin-left: 10px;
-                    }
-                }
-            }
+					i { margin-left : 10px; }
+				}
+			}
 
-            &.resultsContainer {
-                display: flex;
-                flex-direction: column;
-                border-left: 2px solid;
-                height: 100%;
-                font-family: "BookInsanityRemake";
-                font-size: .34cm;
-                overflow-y: auto;
+			&.resultsContainer {
+				display        : flex;
+				flex-direction : column;
+				height         : 100%;
+				overflow-y     : auto;
+				font-family    : 'BookInsanityRemake';
+				font-size      : 0.34cm;
+				border-left    : 2px solid;
 
 
-                .foundBrews {
-                    position: relative;
-                    background-color: #2C3E50;
-                    width: 100%;
-                    max-height: 100%;
-                    height: 100%;
-                    padding: 50px 50px 70px 50px;
-                    overflow-y: scroll;
+				.foundBrews {
+					position         : relative;
+					width            : 100%;
+					height           : 100%;
+					max-height       : 100%;
+					padding          : 50px 50px 70px 50px;
+					overflow-y       : scroll;
+					background-color : #2C3E50;
 
-                    h3 {
-                        font-size: 25px;
-                    }
+					h3 { font-size : 25px; }
 
-                    &.noBrews {
-                        display: grid;
-                        place-items: center;
-                        color: white;
-                    }
+					&.noBrews {
+						display     : grid;
+						place-items : center;
+						color       : white;
+					}
 
-                    &.searching {
-                        display: grid;
-                        place-items: center;
-                        color: white;
+					&.searching {
+						display     : grid;
+						place-items : center;
+						color       : white;
 
-                        h3 {
-                            position: relative;
-                        }
+						h3 { position : relative; }
 
-                        h3.searchAnim::after {
-                            content: "";
-                            width: max-content;
-                            height: 1em;
-                            position: absolute;
-                            right: 0;
-                            top: 50%;
-                            translate: 100% -50%;
-                            animation: trailingDots 2s ease infinite;
-                        }
-                    }
+						h3.searchAnim::after {
+							position  : absolute;
+							top       : 50%;
+							right     : 0;
+							width     : max-content;
+							height    : 1em;
+							content   : '';
+							translate : 100% -50%;
+							animation : trailingDots 2s ease infinite;
+						}
+					}
 
-                    .totalBrews {
-                        position: fixed;
-                        bottom: 0;
-                        right: 17px;
-                        font-size: 11px;
-                        font-weight: 800;
-                        color: white;
-                        background-color: #333;
-                        padding: 8px 10px;
-                        z-index: 1000;
-                        font-family: 'Open Sans';
+					.totalBrews {
+						position         : fixed;
+						right            : 17px;
+						bottom           : 0;
+						z-index          : 1000;
+						padding          : 8px 10px;
+						font-family      : 'Open Sans';
+						font-size        : 11px;
+						font-weight      : 800;
+						color            : white;
+						background-color : #333333;
 
-                        .searchAnim {
-                            position: relative;
-                            display: inline-block;
-                            width: 3ch;
-                            height: 1em;
-                        }
+						.searchAnim {
+							position : relative;
+							display  : inline-block;
+							width    : 3ch;
+							height   : 1em;
+						}
 
-                        .searchAnim::after {
-                            content: "";
-                            width: max-content;
-                            height: 1em;
-                            position: absolute;
-                            right: 0;
-                            top: 50%;
-                            translate: -50% -50%;
-                            animation: trailingDots 2s ease infinite;
-                        }
-                    }
+						.searchAnim::after {
+							position  : absolute;
+							top       : 50%;
+							right     : 0;
+							width     : max-content;
+							height    : 1em;
+							content   : '';
+							translate : -50% -50%;
+							animation : trailingDots 2s ease infinite;
+						}
+					}
 
-                    .brewItem {
-                        background-image: url('/assets/parchmentBackground.jpg');
-                        width: 48%;
-                        margin-right: 40px;
-                        color: black;
+					.brewItem {
+						width            : 48%;
+						margin-right     : 40px;
+						color            : black;
+						background-image : url('/assets/parchmentBackground.jpg');
 
-                        &:nth-child(even of .brewItem) {
-                            margin-right: 0;
-                        }
+						&:nth-child(even of .brewItem) { margin-right : 0; }
 
-                        h2 {
-                            font-size: 0.75cm;
-                            line-height: 0.988em;
-                            font-family: "MrEavesRemake";
-                            font-weight: 800;
-                            color: var(--HB_Color_HeaderText);
-                        }
+						h2 {
+							font-family : 'MrEavesRemake';
+							font-size   : 0.75cm;
+							font-weight : 800;
+							line-height : 0.988em;
+							color       : var(--HB_Color_HeaderText);
+						}
 
-                        .info {
-                            font-family: ScalySansRemake;
-                            font-size: 1.2em;
+						.info {
+							font-family : "ScalySansRemake";
+							font-size   : 1.2em;
 
-                            >span {
-                                margin-right: 12px;
-                                line-height: 1.5em;
-                            }
-                        }
-                    }
+							>span {
+								margin-right : 12px;
+								line-height  : 1.5em;
+							}
+						}
+					}
 
-                    .paginationControls {
-                        position: absolute;
-                        left: 50%;
-                        translate: -50%;
-                        width: auto;
-                        display: grid;
-                        place-items: center;
-                        grid-template-areas: "previousPage currentPage nextPage";
-                        grid-template-columns: 50px 1fr 50px;
+					.paginationControls {
+						position              : absolute;
+						left                  : 50%;
+						display               : grid;
+						grid-template-areas   : 'previousPage currentPage nextPage';
+						grid-template-columns : 50px 1fr 50px;
+						place-items           : center;
+						width                 : auto;
+						translate             : -50%;
 
-                        .pages {
-                            grid-area: currentPage;
-                            height: 100%;
-                            width: 100%;
-                            display: flex;
-                            justify-content: space-evenly;
-                            text-align: center;
-                            padding: 5px 8px;
+						.pages {
+							display         : flex;
+							grid-area       : currentPage;
+							justify-content : space-evenly;
+							width           : 100%;
+							height          : 100%;
+							padding         : 5px 8px;
+							text-align      : center;
 
-                            .pageNumber {
-                                color: white;
-                                font-family: Open Sans;
-                                font-weight: 900;
-                                text-underline-position: under;
-                                margin-inline: 10px;
-                                cursor: pointer;
+							.pageNumber {
+								margin-inline           : 10px;
+								font-family             : "Open Sans";
+								font-weight             : 900;
+								color                   : white;
+								text-underline-position : under;
+								cursor                  : pointer;
 
-                                &.currentPage {
-                                    color: gold;
-                                    text-decoration: underline;
-                                    pointer-events: none;
-                                }
+								&.currentPage {
+									color           : gold;
+									text-decoration : underline;
+									pointer-events  : none;
+								}
 
-                                &.firstPage {
-                                    margin-right: -5px;
-                                }
+								&.firstPage { margin-right : -5px; }
 
-                                &.lastPage {
-                                    margin-left: -5px;
-                                }
-                            }
-                        }
+								&.lastPage { margin-left : -5px; }
+							}
+						}
 
-                        button {
-                            width: max-content;
-                            border-radius: 5px;
+						button {
+							width : max-content;
 
-                            &.previousPage {
-                                grid-area: previousPage;
-                            }
+							&.previousPage { grid-area : previousPage; }
 
-                            &.nextPage {
-                                grid-area: nextPage;
-                            }
-                        }
+							&.nextPage { grid-area : nextPage; }
+						}
 
-                    }
+					}
 
-                    hr {
-                        visibility: hidden;
-                    }
-                }
-            }
-        }
-    }
+					hr { visibility : hidden; }
+				}
+			}
+		}
+	}
 }
 
 @keyframes trailingDots {
 
-    0%,
-    32% {
-        content: '.';
-    }
+	0%,
+	32% { content : '.'; }
 
-    33%,
-    65% {
-        content: '..';
-    }
+	33%,
+	65% { content : '..'; }
 
-    66%,
-    100% {
-        content: '...';
-    }
+	66%,
+	100% { content : '...'; }
 }

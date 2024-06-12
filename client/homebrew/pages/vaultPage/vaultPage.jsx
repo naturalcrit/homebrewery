@@ -87,7 +87,7 @@ const VaultPage = (props) => {
             }
         };
 
-        const loadTotal = async ({title, v3, legacy}) => {
+        const loadTotal = async ({ title, v3, legacy }) => {
             setTotalBrews(null);
             setError(null);
             if (title) {
@@ -265,18 +265,17 @@ const VaultPage = (props) => {
 
         return (
             <div className="paginationControls">
-                {page > 1 && (
-                    <button
-                        className="previousPage"
-                        onClick={() => loadPage(page - 1, false)}
-                    >
-                        &lt;&lt;
-                    </button>
-                )}
+                <button
+                    className="previousPage"
+                    onClick={() => loadPage(page - 1, false)}
+                    disabled={page === startPage}
+                >
+                    <i className="fa-solid fa-chevron-left"></i>
+                </button>
                 <ol className="pages">
                     {startPage > 1 && (
                         <a
-                            className="firstPage"
+                            className="pageNumber firstPage"
                             onClick={() => loadPage(1, false)}
                         >
                             1 ...
@@ -285,21 +284,20 @@ const VaultPage = (props) => {
                     {pagesAroundCurrent}
                     {endPage < totalPages && (
                         <a
-                            className="lastPage"
+                            className="pageNumber lastPage"
                             onClick={() => loadPage(totalPages, false)}
                         >
                             ... {totalPages}
                         </a>
                     )}
                 </ol>
-                {page < totalPages && (
-                    <button
-                        className="nextPage"
-                        onClick={() => loadPage(page + 1, false)}
-                    >
-                        &gt;&gt;
-                    </button>
-                )}
+                <button
+                    className="nextPage"
+                    onClick={() => loadPage(page + 1, false)}
+                    disabled={page === totalPages}
+                >
+                    <i className="fa-solid fa-chevron-right"></i>
+                </button>
             </div>
         );
     };
