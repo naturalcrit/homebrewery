@@ -179,7 +179,7 @@ router.post('/admin/lock/:id', mw.adminOnly, async (req, res)=>{
 		await brew.save();
 
 		// console.log(`Lock applied to brew ID ${brew.shareId} - ${brew.title}`);
-		return res.json({ status: 'LOCKED', detail: `Lock applied to brew ID ${brew.shareId} - ${brew.title}`, lock });
+		return res.json({ status: 'LOCKED', detail: `Lock applied to brew ID ${brew.shareId} - ${brew.title}`, ...lock });
 	} catch (error) {
 		console.error(error);
 		return res.json({ status: 'ERROR', error, message: `Unable to set lock on brew ${req.params.id}` });
