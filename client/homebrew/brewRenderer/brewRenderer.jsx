@@ -244,11 +244,6 @@ const BrewRenderer = (props)=>{
 					tabIndex={-1}
 					style={{ height: state.height }}>
 
-					<ErrorBar errors={props.errors} />
-					<div className='popups'>
-						<RenderWarnings />
-						<NotificationPopup />
-					</div>
 					<link href={`/css/${blankRendererPath}/Blank`}  type='text/css' rel='stylesheet'/>
 					{baseThemePath &&
 						<link href={staticOrUserParent}  type='text/css'  rel='stylesheet'/>
