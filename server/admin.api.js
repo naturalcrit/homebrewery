@@ -21,7 +21,10 @@ const mw = {
         loginLimiter,
         (req, res, next) => {
             if (!req.get('authorization')) {
-                throw { HBErrorCode: '401', code: 401, message: 'Authorization Required' };
+                return res
+                    .set('WWW-Authenticate', 'Basic realm="Authorization Required"')
+                    .status(401)
+                    .send('Authorization Required');
             }
             const [username, password] = Buffer.from(req.get('authorization').split(' ').pop(), 'base64')
                 .toString('ascii')
