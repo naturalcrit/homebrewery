@@ -21,10 +21,7 @@ const mw = {
         loginLimiter,
         (req, res, next) => {
             if (!req.get('authorization')) {
-                return res
-                    .set('WWW-Authenticate', 'Basic realm="Authorization Required"')
-                    .status(401)
-                    .send('Authorization Required');
+                throw { HBErrorCode: '401', code: 401, message: 'Authorization Required' };
             }
             const [username, password] = Buffer.from(req.get('authorization').split(' ').pop(), 'base64')
                 .toString('ascii')
@@ -32,7 +29,7 @@ const mw = {
             if (process.env.ADMIN_USER === username && process.env.ADMIN_PASS === password) {
                 return next();
             }
-            return res.status(401).send('Access denied');
+            throw { HBErrorCode: '403', code: 403, message: 'Access denied' };
         }
     ]
 };
