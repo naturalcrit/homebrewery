@@ -147,6 +147,22 @@ const errorIndex = (props)=>{
 		**Brew ID:**  ${props.brew.brewId}
 		
 		**Brew Title:** ${props.brew.brewTitle}`,
+
+		'470' : dedent`
+		## You have runned out of attempts
+
+		You are trying to access the admin page, reserved for the administrators of this tool. 
+		This is not a page where regular users should be, please, refrain from further access attempts.
+
+		:
+
+		If you are a part of the administrators team who does not remember the correct credentials, 
+		please get in contact with the rest of the team before trying again.
+
+		:
+		
+		In any case, your attempts have been logged, and you will not be capable of doing any more attempt for now.
+		`,
 	};
 };
 

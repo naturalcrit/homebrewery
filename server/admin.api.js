@@ -7,9 +7,9 @@ const rateLimit = require('express-rate-limit');
 
 // Define rate limiter options
 const loginLimiter = rateLimit({
-    timeWindow: 24 * 60 * 60 * 1000, // 24 hours window
-    max: 10, // limit each IP to 10 requests per timeWindow
-    message: "Too many login attempts from this IP, please try again later"
+	timeWindow : 24 * 60 * 60 * 1000, // 24 hours window
+	max        : 10, // limit each IP to 10 requests per timeWindow
+	handler    : ()=>{throw { HBErrorCode: '470', code: 470, message: 'Too many failed login attempts, try again later' }; }
 });
 
 //Local version username and password
