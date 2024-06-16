@@ -14,7 +14,6 @@ const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 
-
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
