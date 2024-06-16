@@ -43,7 +43,6 @@ const BrewPage = (props)=>{
 	       </div>;
 };
 
-
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
 const renderedPages = [];
 let rawPages      = [];
@@ -75,9 +74,76 @@ const BrewRenderer = (props)=>{
 		rawPages = props.text.split(/^\\page$/gm);
 	}
 
-	useEffect(()=>{ // Unmounting steps
-		return ()=>{window.removeEventListener('resize', updateSize);};
-	}, []);
+	useEffect(() => {
+        const locationHash = window.location.hash;
+        const iframe = document.getElementById('BrewRenderer');
+
+        // Regular expression to match page IDs like '#p1'
+        const pageIdRegex = /^#p\d+$/;
+        iframe.addEventListener('load', () => {
+            setTimeout(() => {
+                if (pageIdRegex.test(locationHash)) {
+                    // Extract page number from the ID
+                    const pageNumber = parseInt(locationHash.slice(2));
+                    scrollToPage(pageNumber-1);
+                } else {
+                    // Treat it as an element ID
+                    const elementId = locationHash.slice(1); // Remove the leading '#'
+                    if (elementId) {
+                        getPageContainingElement(elementId)
+                            .then((pageNumber) => {
+                                if (pageNumber !== -1) {
+                                    scrollToPage(pageNumber);
+                                }
+                            })
+                            .catch((error) => {
+                                console.error('Error:', error);
+                            });
+                    }
+                }
+            }, 100);
+        });
+
+        // Cleanup function for removing the resize event listener
+        return () => {
+            window.removeEventListener('resize', updateSize);
+        };
+    }, []);
+	
+
+	const scrollToPage = (pageNumber) => {
+		const iframe = document.getElementById('BrewRenderer');
+        if (iframe && iframe.contentWindow) {
+            const brewRenderer =
+                iframe.contentWindow.document.querySelector('.brewRenderer');
+            if (brewRenderer) {
+                const pages = brewRenderer.querySelectorAll('.page');
+                if (pageNumber > pages.length) {
+                    console.log('page not found');
+                } else {
+                    pages[pageNumber].scrollIntoView({ block: 'start' });
+                }
+            }
+        }
+    };
+	
+	const getPageContainingElement = (elementId) => {
+		const iframe = document.getElementById('BrewRenderer');
+        return new Promise((resolve) => {
+            const brewRenderer =
+                iframe.contentWindow.document.querySelector('.brewRenderer');
+            const pages = brewRenderer.querySelectorAll('.page');
+            for (let i = 0; i < pages.length; i++) {
+                if (pages[i].querySelector(`#${elementId}`)) {
+                    resolve(i);
+                    return;
+                }
+            }
+
+            console.log('Element with ID not found in any page.');
+            resolve(-1);
+        });
+    };
 
 	const updateSize = ()=>{
 		setState((prevState)=>({
