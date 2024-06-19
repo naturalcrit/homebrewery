@@ -64,3 +64,16 @@
 	color            : white;
 	background-color : #333333;
 }
+
+@media print {
+	.brewRenderer {
+		height: 100%;
+		overflow-y: unset;
+		.pages {
+			margin: 0px;
+			&>.page {
+				box-shadow: unset;
+			}
+		}
+	}
+}
