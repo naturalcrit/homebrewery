@@ -1,0 +1,27 @@
+.lockNotification {
+	z-index          : 1;
+	width            : 80%;
+	padding          : 10px;
+	margin           : 5% 10%;
+	line-height      : 1.5em;
+	color            : black;
+	text-align       : center;
+	background-color : #CCCCCC;
+
+	&::backdrop { background-color : #000000AA; }
+
+	button {
+		margin           : 10px;
+		color            : white;
+		background-color : #333333;
+
+		&:hover { background-color : #777777; }
+	}
+
+	h1, h3 {
+		font-family : 'Open Sans', sans-serif;
+		font-weight : 800;
+	}
+	h1 { font-size : 24px; }
+	h3 { font-size : 18px; }
+}
