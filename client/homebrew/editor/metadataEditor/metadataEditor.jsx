@@ -7,6 +7,7 @@ const request = require('../../utils/request-middleware.js');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Combobox = require('client/components/combobox.jsx');
 const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
+const tagOptions = require('./tagDatalist.json');
 
 const Themes = require('themes/themes.json');
 const validations = require('./validations.js');
@@ -337,10 +338,15 @@ const MetadataEditor = createClass({
 				{this.renderThumbnail()}
 			</div>
 
-			<StringArrayEditor label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
+			<StringArrayEditor id='tag-input' label='tags' valuePatterns={[/^(?:(?:meta|system|type):)?[\p{L}a-z0-9][\p{L}a-z0-9 \/.\-&]{0,40}$/iu]} // \p{L} allows unicode characters
 				placeholder='add tag' unique={true}
 				values={this.props.metadata.tags}
-				onChange={(e)=>this.handleFieldChange('tags', e)}/>
+				options={tagOptions.options}
+				onChange={(e)=>this.handleFieldChange('tags', e)}
+				modifySubmission={(value)=>{
+					value = value.trim().replace(/^(.*):/, (match)=>{return match.toLowerCase();});   // convert tag scheme (ex. 'meta:') to lowercase
+					return value;
+				}}/>
 
 			<div className='field systems'>
 				<label>systems</label>

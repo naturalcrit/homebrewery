@@ -9,6 +9,12 @@
 	background-color : #999;
 	height           : calc(100vh - 54px); // 54px is the height of the navbar + snippet bar.  probably a better way to dynamic get this.
 	overflow-y       : auto;
+	font-size: 13px;
+	font-family : 'Open Sans', sans-serif;
+
+	*:focus {
+		outline: 1px solid #444;
+	}
 
 	.sectionHead {
 		font-weight: 1000;
@@ -61,9 +67,6 @@
 		}
 		input[type='text'], textarea {
 			border : 1px solid gray;
-			&:focus {
-				outline: 1px solid #444;
-			}
 		}
 		&.thumbnail{
 			height      : 1.4em;
@@ -75,7 +78,6 @@
   				text-overflow: ellipsis;
 			}
 			button{
-				border: 1px solid #999;
 				color: white;
 				padding: 0px 5px;
 				background-color: black;
@@ -90,8 +92,6 @@
 			textarea.value {
 				resize      : none;
 				height      : auto;
-				font-family : 'Open Sans', sans-serif;
-				font-size   : 0.8em;
 			}
 		}
 
@@ -100,7 +100,7 @@
 			z-index   : 200;
 		}
 		small {
-			font-size   : 0.6em;
+			font-size   : 0.8em;
 			font-style  : italic;
 			line-height : 1.4em;
 			display     : inline-block;
@@ -125,16 +125,12 @@
 			vertical-align : middle;
 			margin-right   : 15px;
 			cursor         : pointer;
-			font-size      : 0.7em;
-			font-weight    : 800;
 			user-select    : none;
 			white-space    : nowrap;
 			display        : inline-flex;
 			align-items    : center;
 		}
 		a {
-			font-size   : 0.7em;
-			font-weight : 800;
 			display     : inline-flex;
 		}
 		input{
@@ -163,12 +159,10 @@
 		}
 	}
 	.authors.field .value{
-		font-size: 0.8em;
 		line-height    : 1.5em;
 	}
 
 	.themes.field{
-		font-size : 13.33px;
 		.navDropdownContainer {
 			background-color	: white;
 			position			: relative;
@@ -243,64 +237,84 @@
 			}
 		}
 	}
-	.field .list {
+	.field .tag-container {
 		display: flex;
 		flex: 1 0;
 		flex-wrap: wrap;
+		gap: 4px;
+		background: gray;
+		padding: 6px;
 
 		> * {
 			flex: 0 0 auto;
 		}
 
-		#groupedIcon {
-			#backgroundColors;
-			display: inline-block;
-			height: ~"calc(100% + 0.6em)";
+
+		.invalid:focus {
+			background-color: pink;
+		}
+
+		.tag {
+			background: lightgray;
+			display: flex;
+			align-items: center;
 			position: relative;
-			top: -0.3em;
-			right: -0.3em;
-			cursor: pointer;
-			min-width: 20px;
-			text-align: center;
-			color: white;
+			justify-content: space-between;
+			border: 1px solid gray;
+			&:focus {
+				background-color: #a8a8a8;
+			}
 
-			i {
+			button {
+				flex: 0 0 20px;
+				
+				// position: absolute;
+				right: 0;
+				top: 0;
+				background-color: transparent;
+				padding: 0;
+				height: 100%;
+				min-width: 20px;
+				&:hover{
+					background: red;
+					
+				}
+
+
+			}
+
+			.tag-text {
+				flex: 1 0 auto;
 				position: relative;
-				top: 50%;
-				transform: translateY(-50%);
+				display: block;
+				margin: 3px 3px 3px 6px;
+				
 			}
 
-			&:not(:last-child) {
-				border-right: 1px solid black;
+			&.editable {
+				display: flex;
+				position: relative;
+				input {
+					// to prevent width shifting from non-editing tag to editing tag,
+					// need JS to get tag width (actually probably tag-text span width) and
+					// set the input width to match.
+					border: none;
+					flex: 1 0 100%;
+					padding-left: 6px;
+					&:focus {
+						outline: none;
+					}
+				}
+				button {
+					visibility: hidden;
+				}
 			}
 
-			&:last-child {
-				border-radius: 0 0.5em 0.5em 0;
-			}
-		}
 
-		.badge {
-			background-color: #dddddd;
-			border-radius: .5em;
-			font-size: .9em;
-			margin: 2px;
-			padding: .3em;
-
-			.icon {
-				#groupedIcon
-			}
-		}
-
-		.input-group {
-			height: ~"calc(.9em + 4px + .6em)";
-
-			input {
-				border-radius: .5em 0 0 .5em;
+			.hidden {
+				display: none;
 			}
 
-			input:last-child {
-				border-radius: .5em;
-			}
 
 			.value {
 				width: 7.5vw;
@@ -308,21 +322,8 @@
 				height: 100%;
 			}
 
-			.invalid:focus {
-				background-color: pink;
-			}
 
-			.icon {
-				#groupedIcon;
-				height: 97%;
-				font-size: .8em;
-				right: 1px;
-				top: -.54em;
 
-				i {
-					font-size: 1.125em;
-				}
-			}
 		}
 	}
 }
