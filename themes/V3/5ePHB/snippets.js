@@ -21,9 +21,43 @@ module.exports = [
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'Table of Contents',
-				icon : 'fas fa-book',
-				gen  : TableOfContentsGen
+				name         : 'Table of Contents',
+				icon         : 'fas fa-book',
+				gen          : TableOfContentsGen,
+				experimental : true,
+				subsnippets  : [
+					{
+						name         : 'Table of Contents',
+						icon         : 'fas fa-book',
+						gen          : TableOfContentsGen,
+						experimental : true
+					},
+					{
+						name : 'Include in ToC up to H3',
+						icon : 'fas fa-dice-three',
+						gen  : dedent `\n{{tocDepthH3
+							}}\n`,
+
+					},
+					{
+						name : 'Include in ToC up to H4',
+						icon : 'fas fa-dice-four',
+						gen  : dedent `\n{{tocDepthH4
+							}}\n`,
+					},
+					{
+						name : 'Include in ToC up to H5',
+						icon : 'fas fa-dice-five',
+						gen  : dedent `\n{{tocDepthH5
+							}}\n`,
+					},
+					{
+						name : 'Include in ToC up to H6',
+						icon : 'fas fa-dice-six',
+						gen  : dedent `\n{{tocDepthH6
+							}}\n`,
+					}
+				]
 			},
 			{
 				name         : 'Index',
