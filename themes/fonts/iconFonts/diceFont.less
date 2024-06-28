@@ -111,4 +111,32 @@
 	&.solid-small-dot-d6-4::before { content : '\f18c'; }
 	&.solid-small-dot-d6-5::before { content : '\f18d'; }
 	&.solid-small-dot-d6-6::before { content : '\f18e'; }
+
+	@tens_runes: '\f100',
+	'\f101',
+	'\f103',
+	'\f104',
+	'\f105',
+	'\f106',
+	'\f107',
+	'\f108',
+	'\f109',
+	'\f10a',
+	'\f101';
+
+	&.d100-0::before {
+		@zeros: (extract(@tens_runes, 1));
+		@zeros_dice: @zeros@zeros;
+		content : (@zeros_dice)
+	}
+	each(range(99), {
+		&.d100-@{value}::before {
+			@ones: mod(@value,10);
+			@tens: if(@ones > 0, ceil((@value / 10)), (ceil((@value / 10))+1));
+			@tens_dice: extract(@tens_runes, (@tens));
+			@ones_dice: extract(@tens_runes, (@ones + 1));
+			@final_dice: @tens_dice@ones_dice;
+			content: (@final_dice);
+		}
+	})
 }
