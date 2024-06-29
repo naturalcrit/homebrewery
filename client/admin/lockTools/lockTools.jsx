@@ -3,7 +3,8 @@ require('./lockTools.less');
 const React = require('react');
 const createClass = require('create-react-class');
 
-const request = require('superagent');
+// const request = require('superagent');
+const request = require('../../homebrew/utils/request-middleware.js');
 
 const LockTools = createClass({
 	getInitialState : function() {
@@ -18,7 +19,7 @@ const LockTools = createClass({
 	},
 
 	updateReviewCount : async function() {
-		const newCount = await request.get('/admin/lock')
+		const newCount = await request.get('/api/lock/count')
             .then((res)=>{return res.body?.count || 'Unknown';});
 		if(newCount != this.state.reviewCount){
 			this.setState({
@@ -33,13 +34,13 @@ const LockTools = createClass({
 			<p>Number of brews currently locked: {this.state.reviewCount}</p>
 			<button onClick={this.updateReviewCount}>REFRESH</button>
 			<hr />
-			<LockTable title='Brews Awaiting Review' resultName='reviewDocuments' fetchURL='/admin/lock/reviews' propertyNames={['shareId', 'title']} ></LockTable>
+			<LockTable title='Brews Awaiting Review' resultName='reviewDocuments' fetchURL='/api/lock/reviews' propertyNames={['shareId', 'title']} ></LockTable>
 			<hr />
 			<LockBrew></LockBrew>
 			<hr />
 			<div style={{ columns: 2 }}>
-				<LockLookup title='Unlock Brew' fetchURL='/admin/unlock' updateFn={this.updateReviewCount}></LockLookup>
-				<LockLookup title='Clear Review Request' fetchURL='/admin/lock/review/remove'></LockLookup>
+				<LockLookup title='Unlock Brew' fetchURL='/api/unlock' updateFn={this.updateReviewCount}></LockLookup>
+				<LockLookup title='Clear Review Request' fetchURL='/api/lock/review/remove'></LockLookup>
 			</div>
 			<hr />
 		</div>;
@@ -48,11 +49,12 @@ const LockTools = createClass({
 
 const LockBrew = createClass({
 	getInitialState : function() {
+		// Default values
 		return {
 			brewId       : '',
-			code         : 1000,
+			code         : 455,
 			editMessage  : '',
-			shareMessage : '',
+			shareMessage : 'This Brew has been locked.',
 			result       : {}
 		};
 	},
@@ -73,7 +75,7 @@ const LockBrew = createClass({
 			applied      : new Date
 		};
 
-		request.post(`/admin/lock/${this.state.brewId}`)
+		request.post(`/api/lock/${this.state.brewId}`)
 			.send(newLock)
 			.set('Content-Type', 'application/json')
 			.then((response)=>{
@@ -167,7 +169,7 @@ const LockTable = createClass({
 	getDefaultProps : function() {
 		return {
 			title         : '',
-			fetchURL      : '/admin/locks',
+			fetchURL      : '/api/locks',
 			resultName    : '',
 			propertyNames : ['shareId']
 		};
@@ -236,7 +238,7 @@ const LockTable = createClass({
 const LockLookup = createClass({
 	getDefaultProps : function() {
 		return {
-			fetchURL : '/admin/lookup'
+			fetchURL : '/api/lookup'
 		};
 	},
 

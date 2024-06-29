@@ -139,7 +139,7 @@ router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 	}
 });
 
-router.get('/admin/lock', mw.adminOnly, async (req, res)=>{
+router.get('/api/lock/count', mw.adminOnly, async (req, res)=>{
 	try {
 		const countLocksQuery = {
 			lock : { $exists: true }
@@ -157,7 +157,7 @@ router.get('/admin/lock', mw.adminOnly, async (req, res)=>{
 	}
 });
 
-router.post('/admin/lock/:id', mw.adminOnly, async (req, res)=>{
+router.post('/api/lock/:id', mw.adminOnly, async (req, res)=>{
 	try {
 		const lock = req.body;
 		lock.applied = new Date;
@@ -186,7 +186,7 @@ router.post('/admin/lock/:id', mw.adminOnly, async (req, res)=>{
 	}
 });
 
-router.put('/admin/unlock/:id', mw.adminOnly, async (req, res)=>{
+router.put('/api/unlock/:id', mw.adminOnly, async (req, res)=>{
 	try {
 		const filter = {
 			shareId : req.params.id
@@ -210,7 +210,7 @@ router.put('/admin/unlock/:id', mw.adminOnly, async (req, res)=>{
 	return res.json({ status: 'UNLOCKED', detail: `Lock removed from brew ID ${req.params.id}` });
 });
 
-router.get('/admin/lock/reviews', mw.adminOnly, async (req, res)=>{
+router.get('/api/lock/reviews', mw.adminOnly, async (req, res)=>{
 	try {
 		const countReviewsPipeline = [
 			{
@@ -260,7 +260,7 @@ router.put('/admin/lock/review/request/:id', async (req, res)=>{
 	}
 });
 
-router.put('/admin/lock/review/remove/:id', mw.adminOnly, async (req, res)=>{
+router.put('/api/lock/review/remove/:id', mw.adminOnly, async (req, res)=>{
 	try {
 		const filter = {
 			shareId                : req.params.id,

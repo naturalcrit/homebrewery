@@ -1,6 +1,7 @@
 const request = require('superagent');
+const version = require('../../../package.json').version;
 
-const addHeader = (request)=>request.set('Homebrewery-Version', global.version);
+const addHeader = (request)=>request.set('Homebrewery-Version', version);
 
 const requestMiddleware = {
 	get    : (path)=>addHeader(request.get(path)),
