@@ -14,12 +14,13 @@ const SplitPane = createClass({
 
 	getInitialState : function() {
 		return {
-			currentDividerPos : null,
-			windowWidth       : 0,
-			isDragging        : false,
-			moveSource        : false,
-			moveBrew          : false,
-			showMoveArrows    : true
+			currentDividerPos  : null,
+			windowWidth        : 0,
+			isDragging         : false,
+			moveSource         : false,
+			moveBrew           : false,
+			viewablePageNumber : 0,
+			showMoveArrows     : true
 		};
 	},
 
@@ -41,6 +42,22 @@ const SplitPane = createClass({
 			});
 		}
 		window.addEventListener('resize', this.handleWindowResize);
+
+
+		// This lives here instead of in the initial render because you cannot touch localStorage until the componant mounts.
+		const loadLiveScroll = window.localStorage.getItem('liveScroll') === 'true';
+		this.setState({
+			liveScroll : loadLiveScroll
+		});
+		const toggle = document.getElementById('scrollToggle');
+		const toggleDiv = document.getElementById('scrollToggleDiv');
+		if(loadLiveScroll) {
+			toggle.className = 'fas fa-lock';
+			toggleDiv.className = 'arrow lock';
+		} else {
+			toggle.className = 'fas fa-unlock';
+			toggleDiv.className = 'arrow unlock';
+		}
 	},
 
 	componentWillUnmount : function() {
@@ -119,6 +136,24 @@ const SplitPane = createClass({
 					onClick={()=>this.setState({ moveBrew: !this.state.moveBrew })} >
 					<i className='fas fa-arrow-right' />
 				</div>
+				<div id='scrollToggleDiv' className={`arrow lock`}
+					style={{ left: this.state.currentDividerPos-4 }}
+					onClick={()=>{
+						const flipLiveScroll = !this.state.liveScroll;
+						const toggle = document.getElementById('scrollToggle');
+						const toggleDiv = document.getElementById('scrollToggleDiv');
+						if(flipLiveScroll) {
+							toggle.className = 'fas fa-lock';
+							toggleDiv.className = 'arrow lock';
+						} else {
+							toggle.className = 'fas fa-unlock';
+							toggleDiv.className = 'arrow unlock';
+						}
+						window.localStorage.setItem('liveScroll', String(flipLiveScroll));
+						this.setState({ liveScroll: flipLiveScroll });
+					}} >
+					<i id='scrollToggle' className={`fas fa-lock`} />
+				</div>
 			</>;
 		}
 	},
@@ -144,6 +179,7 @@ const SplitPane = createClass({
 				{React.cloneElement(this.props.children[0], {
 					moveBrew      : this.state.moveBrew,
 					moveSource    : this.state.moveSource,
+					liveScroll    : this.state.liveScroll,
 					setMoveArrows : this.setMoveArrows
 				})}
 			</Pane>
