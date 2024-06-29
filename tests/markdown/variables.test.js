@@ -29,7 +29,7 @@ describe('Block-level variables', ()=>{
 
 			$[var]
 		`;
-		const rendered = Markdown.render(source).trimReturns();
+		const rendered = Markdown.render(source, 0).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>string</p>');
 	});
 
@@ -40,7 +40,7 @@ describe('Block-level variables', ()=>{
 			lines
 
 			$[var]`;
-		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
+		const rendered = Markdown.render(source, 0).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>string across multiple lines</p>');
 	});
 
@@ -54,7 +54,7 @@ describe('Block-level variables', ()=>{
 			| C  | D  |
 			
 			$[var]`;
-		const rendered = Markdown.render(source).trimReturns();
+		const rendered = Markdown.render(source, 0).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
 			<h5 id="title">Title</h5>
 			<table><thead><tr><th align=left>H1</th>
@@ -71,7 +71,7 @@ describe('Block-level variables', ()=>{
 			$[var]
 
 			[var]: string`;
-		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
+		const rendered = Markdown.render(source, 0).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>string</p>');
 	});
 
@@ -82,7 +82,7 @@ describe('Block-level variables', ()=>{
 			[var]: string
 
 			[var]: new string`;
-		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
+		const rendered = Markdown.render(source, 0).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>new string</p>');
 	});
 
@@ -102,7 +102,7 @@ describe('Block-level variables', ()=>{
 
 			[lastName]: $[lastName]son
 			`;
-		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
+		const rendered = Markdown.render(source, 0).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>Welcome, Mr. Bob Jacobson!</p>');
 	});
 
@@ -116,7 +116,7 @@ describe('Block-level variables', ()=>{
 
 			$[var]
 			`;
-		const rendered = Markdown.render(source).trimReturns();
+		const rendered = Markdown.render(source, 0).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>one</p><p>two</p>'.trimReturns());
 	});
 
@@ -132,7 +132,7 @@ describe('Block-level variables', ()=>{
 
 			$[var]
 			`;
-		const rendered = Markdown.render(source).trimReturns();
+		const rendered = Markdown.render(source, 0).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>two</p><p>one</p><p>two</p>'.trimReturns());
 	});
 
@@ -142,7 +142,7 @@ describe('Block-level variables', ()=>{
 
 			$[last]: Jones
 			`;
-		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
+		const rendered = Markdown.render(source, 0).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>My name is $[first] Jones</p>`.trimReturns());
 	});
 });
@@ -154,7 +154,7 @@ describe('Inline-level variables', ()=>{
 
 			$[var]
 		`;
-		const rendered = Markdown.render(source).trimReturns();
+		const rendered = Markdown.render(source, 0).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>string</p><p>string</p>');
 	});
 
@@ -163,7 +163,7 @@ describe('Inline-level variables', ()=>{
 			$[var](My name is $[name] Jones)
 
 			[name]: Bob`;
-		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
+		const rendered = Markdown.render(source, 0).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>My name is Bob Jones</p>');
 	});
 
@@ -174,7 +174,7 @@ describe('Inline-level variables', ()=>{
 			$[name](Bob)
 
 			[name]: Bill`;
-		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
+		const rendered = Markdown.render(source, 0).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>My name is Bill Jones</p> <p>Bob</p>`.trimReturns());
 	});
 
@@ -187,7 +187,7 @@ describe('Inline-level variables', ()=>{
 			$[var2](A variable ) with unbalanced parens)
 
 			$[var2]`;
-		const rendered = Markdown.render(source).trimReturns();
+		const rendered = Markdown.render(source, 0).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
 		<p>A variable (with nested parens) inside</p>
 		<p>A variable (with nested parens) inside</p>
@@ -202,35 +202,35 @@ describe('Math', ()=>{
 		const source = dedent`
 			$[1 + 3 * 5 - (1 / 4)]
 		`;
-		const rendered = Markdown.render(source).trimReturns();
+		const rendered = Markdown.render(source, 0).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>15.75</p>');
 	});
 
 	it('Handles round function', function() {
 		const source = dedent`
 			$[round(1/4)]`;
-		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
+		const rendered = Markdown.render(source, 0).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>0</p>');
 	});
 
 	it('Handles floor function', function() {
 		const source = dedent`
 			$[floor(0.6)]`;
-		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
+		const rendered = Markdown.render(source, 0).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>0</p>');
 	});
 
 	it('Handles ceil function', function() {
 		const source = dedent`
 			$[ceil(0.2)]`;
-		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
+		const rendered = Markdown.render(source, 0).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>1</p>');
 	});
 
 	it('Handles nested functions', function() {
 		const source = dedent`
 			$[ceil(floor(round(0.6)))]`;
-		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
+		const rendered = Markdown.render(source, 0).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>1</p>');
 	});
 
@@ -242,7 +242,7 @@ describe('Math', ()=>{
 
 			Answer is $[answer]($[1 + 3 * num1 - (1 / num2)]).
 		`;
-		const rendered = Markdown.render(source).trimReturns();
+		const rendered = Markdown.render(source, 0).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>Answer is 15.75.</p>');
 	});
 
@@ -252,7 +252,7 @@ describe('Math', ()=>{
 
 			Increment num1 to get $[num1]($[num1 + 1]) and again to $[num1]($[num1 + 1]).
 		`;
-		const rendered = Markdown.render(source).trimReturns();
+		const rendered = Markdown.render(source, 0).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p>Increment num1 to get 6 and again to 7.</p>');
 	});
 });
@@ -268,7 +268,7 @@ describe('Code blocks', ()=>{
 			$[var](new string)
 			\`\`\`
 		`;
-		const rendered = Markdown.render(source).trimReturns();
+		const rendered = Markdown.render(source, 0).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
 		 <pre><code>
 		 [var]: string
@@ -289,7 +289,7 @@ describe('Code blocks', ()=>{
 
 			    $[var](new string)
 		`;
-		const rendered = Markdown.render(source).trimReturns();
+		const rendered = Markdown.render(source, 0).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
 		 <p>test</p>
 
@@ -304,7 +304,7 @@ describe('Code blocks', ()=>{
 
 	it('Ignores all variables in inline code blocks', function() {
 		const source = '[var](Hello) `[link](url)`. This `[var] does not work`';
-		const rendered = Markdown.render(source).trimReturns();
+		const rendered = Markdown.render(source, 0).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
 			<p><a href="Hello">var</a> <code>[link](url)</code>. This <code>[var] does not work</code></p>`.trimReturns());
 	});
@@ -313,35 +313,35 @@ describe('Code blocks', ()=>{
 describe('Normal Links and Images', ()=>{
 	it('Renders normal images', function() {
 		const source = `![alt text](url)`;
-		const rendered = Markdown.render(source).trimReturns();
+		const rendered = Markdown.render(source, 0).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
 			<p><img src="url" alt="alt text"></p>`.trimReturns());
 	});
 
 	it('Renders normal images with a title', function() {
 		const source = 'An image ![alt text](url "and title")!';
-		const rendered = Markdown.render(source).trimReturns();
+		const rendered = Markdown.render(source, 0).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
 			<p>An image <img src="url" alt="alt text" title="and title">!</p>`.trimReturns());
 	});
 
 	it('Applies curly injectors to images', function() {
 		const source = `![alt text](url){width:100px}`;
-		const rendered = Markdown.render(source).trimReturns();
+		const rendered = Markdown.render(source, 0).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
 			<p><img style="width:100px;" src="url" alt="alt text"></p>`.trimReturns());
 	});
 
 	it('Renders normal links', function() {
 		const source = 'A Link to my [website](url)!';
-		const rendered = Markdown.render(source).trimReturns();
+		const rendered = Markdown.render(source, 0).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
 		<p>A Link to my <a href="url">website</a>!</p>`.trimReturns());
 	});
 
 	it('Renders normal links with a title', function() {
 		const source = 'A Link to my [website](url "and title")!';
-		const rendered = Markdown.render(source).trimReturns();
+		const rendered = Markdown.render(source, 0).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
 		<p>A Link to my <a href="url" title="and title">website</a>!</p>`.trimReturns());
 	});
