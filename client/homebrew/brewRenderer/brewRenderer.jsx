@@ -16,7 +16,7 @@ const dedent = require('dedent-tabs').default;
 const { printCurrentBrew } = require('../../../shared/helpers.js');
 
 const DOMPurify = require('dompurify');
-const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
+const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false, ADD_ATTR: ['target'] };
 
 const Themes = require('themes/themes.json');
 
