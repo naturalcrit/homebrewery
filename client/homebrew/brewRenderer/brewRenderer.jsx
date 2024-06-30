@@ -18,7 +18,8 @@ const { printCurrentBrew } = require('../../../shared/helpers.js');
 import DOMPurify from 'dompurify';
 
 const purifyConfig = {
-	ADD_ATTR : ['id', 'target']
+	ADD_ATTR    : ['id', 'target'],
+	FORBID_TAGS : ['script']
 };
 
 const Themes = require('themes/themes.json');
