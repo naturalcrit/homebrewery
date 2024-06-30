@@ -177,7 +177,7 @@ const BrewRenderer = (props)=>{
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
 		DOMPurify.addHook('uponSanitizeElement', (node, data, config)=>{
 			const tagName = node.tagName?.toLowerCase();
-			data.allowedTags[tagName] = true;
+			if(!config.FORBID_TAGS?.includes(tagName)){ data.allowedTags[tagName] = true; }
 		});
 
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
