@@ -15,8 +15,17 @@ const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
 const { printCurrentBrew } = require('../../../shared/helpers.js');
 
-const DOMPurify = require('dompurify');
-const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false, ADD_ATTR: ['target'] };
+import DOMPurify from 'dompurify';
+
+const purifyConfig = {
+	ADD_ATTR                    : ['id', 'target'],
+	IGNORE_BASIC_CUSTOM_ELEMENT : true, // ignore the custom-element naming specification
+	CUSTOM_ELEMENT_HANDLING     : {
+		tagNameCheck                   : ()=>{ return true; }, // all elements are allowed
+		attributeNameCheck             : null, // default / standard attribute allow-list is used
+		allowCustomizedBuiltInElements : false, // no customized built-ins allowed
+	},
+};
 
 const Themes = require('themes/themes.json');
 
