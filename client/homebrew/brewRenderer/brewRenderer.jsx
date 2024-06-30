@@ -18,13 +18,7 @@ const { printCurrentBrew } = require('../../../shared/helpers.js');
 import DOMPurify from 'dompurify';
 
 const purifyConfig = {
-	ADD_ATTR                    : ['id', 'target'],
-	IGNORE_BASIC_CUSTOM_ELEMENT : true, // ignore the custom-element naming specification
-	CUSTOM_ELEMENT_HANDLING     : {
-		tagNameCheck                   : ()=>{ return true; }, // all elements are allowed
-		attributeNameCheck             : null, // default / standard attribute allow-list is used
-		allowCustomizedBuiltInElements : false, // no customized built-ins allowed
-	},
+	ADD_ATTR : ['id', 'target']
 };
 
 const Themes = require('themes/themes.json');
@@ -180,6 +174,11 @@ const BrewRenderer = (props)=>{
 	};
 
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
+		DOMPurify.addHook('uponSanitizeElement', (node, data, config)=>{
+			const tagName = node.tagName?.toLowerCase();
+			data.allowedTags[tagName] = true;
+		});
+
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			updateSize();
 			window.addEventListener('resize', updateSize);
