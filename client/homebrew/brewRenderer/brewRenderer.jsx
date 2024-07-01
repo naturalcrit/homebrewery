@@ -15,13 +15,6 @@ const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
 const { printCurrentBrew } = require('../../../shared/helpers.js');
 
-import DOMPurify from 'dompurify';
-
-const purifyConfig = {
-	ADD_ATTR    : ['id', 'target'],
-	FORBID_TAGS : ['script']
-};
-
 const Themes = require('themes/themes.json');
 
 const PAGE_HEIGHT = 1056;
@@ -34,6 +27,8 @@ const INITIAL_CONTENT = dedent`
 	<base target=_blank>
 	</head><body style='overflow: hidden'><div></div></body></html>`;
 
+let safeHTML = ()=>{};
+
 //v=====----------------------< Brew Page Component >---------------------=====v//
 const BrewPage = (props)=>{
 	props = {
@@ -41,7 +36,7 @@ const BrewPage = (props)=>{
 		index    : 0,
 		...props
 	};
-	const cleanText = DOMPurify.sanitize(props.contents, purifyConfig);
+	const cleanText = safeHTML(props.contents);
 	return <div className={props.className} id={`p${props.index + 1}`} >
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
@@ -130,9 +125,9 @@ const BrewRenderer = (props)=>{
 
 	const renderStyle = ()=>{
 		if(!props.style) return;
-		const cleanStyle = DOMPurify.sanitize(props.style, purifyConfig);
+		const cleanStyle = safeHTML(`<style>${props.style}</style>`);
 		//return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${sanitizeScriptTags(props.style)}\n} </style>` }} />;
-		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${cleanStyle} </style>` }} />;
+		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: cleanStyle }} />;
 	};
 
 	const renderPage = (pageText, index)=>{
@@ -175,10 +170,7 @@ const BrewRenderer = (props)=>{
 	};
 
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
-		DOMPurify.addHook('uponSanitizeElement', (node, data, config)=>{
-			const tagName = node.tagName?.toLowerCase();
-			if(!config.FORBID_TAGS?.includes(tagName)){ data.allowedTags[tagName] = true; }
-		});
+		safeHTML = require('vue-html-secure').safeHTML;
 
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			updateSize();

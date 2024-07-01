@@ -93,7 +93,6 @@
     "cookie-parser": "^1.4.6",
     "create-react-class": "^15.7.0",
     "dedent-tabs": "^0.10.3",
-    "dompurify": "^3.1.5",
     "expr-eval": "^2.0.2",
     "express": "^4.19.2",
     "express-async-handler": "^1.2.0",
@@ -119,7 +118,8 @@
     "react-router-dom": "6.23.1",
     "sanitize-filename": "1.6.3",
     "superagent": "^9.0.2",
-    "vitreum": "git+https://git@github.com/calculuschild/vitreum.git"
+    "vitreum": "git+https://git@github.com/calculuschild/vitreum.git",
+    "vue-html-secure": "^1.0.10"
   },
   "devDependencies": {
     "eslint": "^8.57.0",
