@@ -54,7 +54,7 @@ const api = {
 				});
 			stub = stub?.toObject();
 
-			if(stub?.lock?.locked && accessType != 'edit') {
+			if(stub?.lock && accessType != 'edit') {
 				throw { HBErrorCode: '100', code: stub.lock.code, message: stub.lock.shareMessage, brewId: stub.shareId, brewTitle: stub.title };
 			}
 
