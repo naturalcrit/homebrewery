@@ -118,8 +118,7 @@
     "react-router-dom": "6.23.1",
     "sanitize-filename": "1.6.3",
     "superagent": "^9.0.2",
-    "vitreum": "git+https://git@github.com/calculuschild/vitreum.git",
-    "vue-html-secure": "^1.0.10"
+    "vitreum": "git+https://git@github.com/calculuschild/vitreum.git"
   },
   "devDependencies": {
     "eslint": "^8.57.0",

@@ -27,7 +27,7 @@ const INITIAL_CONTENT = dedent`
 	<base target=_blank>
 	</head><body style='overflow: hidden'><div></div></body></html>`;
 
-let safeHTML = ()=>{};
+import { safeHTML } from './safeHTML.js';
 
 //v=====----------------------< Brew Page Component >---------------------=====v//
 const BrewPage = (props)=>{
@@ -170,8 +170,6 @@ const BrewRenderer = (props)=>{
 	};
 
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
-		safeHTML = require('vue-html-secure').safeHTML;
-
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			updateSize();
 			window.addEventListener('resize', updateSize);
