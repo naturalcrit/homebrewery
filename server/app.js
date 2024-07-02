@@ -9,7 +9,7 @@ const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
 
-const { homebrewApi, getBrew } = require('./homebrew.api.js');
+const { homebrewApi, getBrew, getBrewThemeWithCSS, getStaticTheme, getBrewThemeParent } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
@@ -76,6 +76,13 @@ const defaultMetaTags = {
 app.get('/robots.txt', (req, res)=>{
 	return res.sendFile(`robots.txt`, { root: process.cwd() });
 });
+
+// Theme
+
+app.get('/css/:id', asyncHandler(getBrew('theme', false)),  asyncHandler(getBrewThemeWithCSS));
+app.get('/css/:engine/:id/', asyncHandler(getStaticTheme));
+app.get('/cssParent/:id', asyncHandler(getBrew('theme', false)), asyncHandler(getBrewThemeParent));
+
 
 //Home page
 app.get('/', (req, res, next)=>{
@@ -265,7 +272,7 @@ app.get('/user/:username', async (req, res, next)=>{
 });
 
 //Edit Page
-app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
+app.get('/edit/:id', asyncHandler(getBrew('edit')), async(req, res, next)=>{
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -286,13 +293,14 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	const brew = {
-		shareId  : req.brew.shareId,
-		title    : `CLONE - ${req.brew.title}`,
-		text     : req.brew.text,
-		style    : req.brew.style,
-		renderer : req.brew.renderer,
-		theme    : req.brew.theme,
-		tags     : req.brew.tags
+		shareId    : req.brew.shareId,
+		title      : `CLONE - ${req.brew.title}`,
+		text       : req.brew.text,
+		style      : req.brew.style,
+		renderer   : req.brew.renderer,
+		theme      : req.brew.theme,
+		tags       : req.brew.tags,
+		userThemes : req.brew.userThemes
 	};
 	req.brew = _.defaults(brew, DEFAULT_BREW);
 
@@ -418,7 +426,8 @@ const renderPage = async (req, res)=>{
 		enable_v3     : config.get('enable_v3'),
 		enable_themes : config.get('enable_themes'),
 		config        : configuration,
-		ogMeta        : req.ogMeta
+		ogMeta        : req.ogMeta,
+		userThemes    : req.userThemes
 	};
 	const title = req.brew ? req.brew.title : '';
 	const page = await templateFn('homebrew', title, props)
