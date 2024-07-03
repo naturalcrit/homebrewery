@@ -8,14 +8,14 @@ const getTOC = (pages)=>{
 		if(curDepth == targetDepth) {
 			child.push({
 				title    : title,
-				page     : page + 1,
+				page     : page,
 				children : []
 			});
 		} else {
 			if(child.length == 0) {
 				child.push({
 					title    : null,
-					page     : page + 1,
+					page     : page,
 					children : []
 				});
 			}
