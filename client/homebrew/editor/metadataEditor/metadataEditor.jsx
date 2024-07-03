@@ -93,6 +93,9 @@ const MetadataEditor = createClass({
 		const clientWidthSm = topPage.clientWidth * (115/topPage.clientHeight);
 		const clientWidthLg = topPage.clientWidth * 0.5;
 
+		// HARD Override margins.
+		topPage.style.margin = '0px';
+
 		htmlimg.toPng(topPage, { canvasHeight : clientHeightLg, canvasWidth : clientWidthLg
 		}).then(function(dataURL){
 		  props.metadata.thumbnailLg = dataURL;
