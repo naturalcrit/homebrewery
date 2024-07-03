@@ -31,9 +31,12 @@ function safeHTML(htmlString) {
 		// Check remaining elements for blacklisted attributes
 		if(element.hasAttributes()){
 			for (const attribute of element.attributes){
-				let result = false;
-				blacklistAttrs.forEach((test)=>{result ||= test(attribute);});
-				if(result) element.removeAttribute(attribute.localName);
+				for (const test of blacklistAttrs) {
+					if(test(attribute)){
+						element.removeAttribute(attribute.localName);
+						break;
+					};
+				};
 			};
 		};
 	});
