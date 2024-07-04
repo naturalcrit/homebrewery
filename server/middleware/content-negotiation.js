@@ -1,5 +1,5 @@
 module.exports = (req, res, next)=>{
-	if(! req.url.startsWith('/xssp/')) {
+	if(! req?.url?.startsWith('/xssp/')) {
 		const isImageRequest = req.get('Accept')?.split(',')
 			?.filter((h)=>!h.includes('q='))
 			?.every((h)=>/image\/.*/.test(h));
