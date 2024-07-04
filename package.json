@@ -119,7 +119,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-frame-component": "^4.1.3",
-    "react-router-dom": "6.23.1",
+    "react-router-dom": "6.24.1",
     "request": "^2.88.2",
     "sanitize-filename": "1.6.3",
     "superagent": "^9.0.2",
