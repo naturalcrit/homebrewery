@@ -188,32 +188,24 @@ const BrewRenderer = (props)=>{
 		document.dispatchEvent(new MouseEvent('click'));
 	};
 
-	let rendererPath  = props.renderer == 'V3' ? 'V3' : 'Legacy';
-	let baseRendererPath = props.renderer == 'V3' ? 'V3' : 'Legacy';
-	const blankRendererPath = props.renderer == 'V3' ? 'V3' : 'Legacy';
+	let brewThemeRendererPath  = props?.renderer ? props.renderer : 'Legacy';
 	if(props?.theme && (props?.theme[0] === '#')) {
-		rendererPath = 'Brew';
+		brewThemeRendererPath = 'Brew';
 	}
 	let themePath     = props.theme ?? '5ePHB';
 	const Themes = { ...staticThemes, ...props.userThemes };
-	let baseThemePath = (themePath && themePath[0] !== '#') ? Themes[rendererPath][themePath]?.baseTheme : 'Brew';
+	const baseThemePath = (themePath && themePath[0] !== '#') ? Themes[brewThemeRendererPath][themePath]?.baseTheme : 'Brew';
 
 	// Override static theme values if a Brew theme.
 
 	if(themePath && themePath[0] === '#') {
 		themePath = themePath.slice(1);
-		rendererPath = '';
+		brewThemeRendererPath = '';
 	} else {
-		rendererPath += '/';
+		brewThemeRendererPath += '/';
 	}
 
-	if(rendererPath == '') {
-		baseRendererPath = '';
-	} else {
-		baseRendererPath += '/';
-	}
-
-	const staticOrUserParent = (props.theme && props?.theme[0] == '#') ? `/cssParent/${themePath}` : `/css/${baseRendererPath}${baseThemePath}`;
+	const staticOrUserParent = (props.theme && props?.theme[0] == '#') ? `/cssParent/${themePath}` : `/css/${brewThemeRendererPath}${baseThemePath}`;
 
 	return (
 		<>
@@ -244,11 +236,11 @@ const BrewRenderer = (props)=>{
 					tabIndex={-1}
 					style={{ height: state.height }}>
 
-					<link href={`/css/${blankRendererPath}/Blank`}  type='text/css' rel='stylesheet'/>
+					<link href={`/css/${props?.renderer ? props.renderer : 'Legacy'}/Blank`}  type='text/css' rel='stylesheet'/>
 					{baseThemePath &&
 						<link href={staticOrUserParent}  type='text/css'  rel='stylesheet'/>
 					}
-					<link href={`/css/${rendererPath}${themePath}`}  type='text/css' rel='stylesheet'/>
+					<link href={`/css/${brewThemeRendererPath}${themePath}`}  type='text/css' rel='stylesheet'/>
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted
