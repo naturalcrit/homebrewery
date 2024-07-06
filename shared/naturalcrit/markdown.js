@@ -788,10 +788,11 @@ const processStyleTags = (string)=>{
 };
 
 const extractHTMLStyleTags = (htmlString)=>{
-	const id         = htmlString.match(/id="([^"]*)"/)?.[1]    || null;
-	const classes    = htmlString.match(/class="([^"]*)"/)?.[1] || null;
-	const styles     = htmlString.match(/style="([^"]*)"/)?.[1] || null;
-	const attributes = htmlString.match(/[a-zA-Z]+="[^"]*"/g)
+	const firstElementOnly = htmlString.indexOf('>') > 0 ? htmlString.substring(0, htmlString.indexOf('>')) : htmlString;
+	const id         = firstElementOnly.match(/id="([^"]*)"/)?.[1]    || null;
+	const classes    = firstElementOnly.match(/class="([^"]*)"/)?.[1] || null;
+	const styles     = firstElementOnly.match(/style="([^"]*)"/)?.[1] || null;
+	const attributes = firstElementOnly.match(/[a-zA-Z]+="[^"]*"/g)
 		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
 		.reduce((obj, attr)=>{
 			const index = attr.indexOf('=');
