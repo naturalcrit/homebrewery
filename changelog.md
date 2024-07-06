@@ -84,6 +84,16 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Saturday 6/7/2024 - v3.13.1
+{{taskList
+
+##### calculuschild, G-Ambatte
+
+* [x] Hotfixes for issues with v3.13.0
+
+Fixes issues [#3559](https://github.com/naturalcrit/homebrewery/issues/3559), [#3552](https://github.com/naturalcrit/homebrewery/issues/3552), [#3554](https://github.com/naturalcrit/homebrewery/issues/3554)
+}}
+
 ### Friday 28/6/2024 - v3.13.0
 {{taskList
 
