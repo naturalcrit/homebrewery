@@ -189,12 +189,14 @@ const BrewRenderer = (props)=>{
 	};
 
 	let brewThemeRendererPath  = props?.renderer ? props.renderer : 'Legacy';
+	// Correct for casing vs theme.json
+	if(brewThemeRendererPath == 'legacy') { brewThemeRendererPath = 'Legacy'; }
 	if(props?.theme && (props?.theme[0] === '#')) {
 		brewThemeRendererPath = 'Brew';
 	}
 	let themePath     = props.theme ?? '5ePHB';
 	const Themes = { ...staticThemes, ...props.userThemes };
-	const baseThemePath = (themePath && themePath[0] !== '#') ? Themes[brewThemeRendererPath][themePath]?.baseTheme : 'Brew';
+	const baseThemePath = (themePath && themePath[0] !== '#') ? Themes[brewThemeRendererPath][themePath].baseTheme : 'Brew';
 
 	// Override static theme values if a Brew theme.
 

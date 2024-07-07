@@ -333,6 +333,13 @@ describe('Injection: When an injection tag follows an element', ()=>{
 			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p><span class="inline-block" style="color:red;">text</span>{background:blue}</p>');
 		});
 
+		it('Renders an parent and child element, each modified by an injector', function() {
+			const source = dedent`**bolded text**{color:red}
+														{color:blue}`;
+			const rendered = Markdown.render(source).trimReturns();
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p style="color:blue;"><strong style="color:red;">bolded text</strong></p>');
+		});
+
 		it('Renders an image with added attributes', function() {
 			const source = `![homebrew mug](https://i.imgur.com/hMna6G0.png) {position:absolute,bottom:20px,left:130px,width:220px,a="b and c",d=e}`;
 			const rendered = Markdown.render(source).trimReturns();
