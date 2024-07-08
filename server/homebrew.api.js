@@ -89,13 +89,13 @@ const api = {
 
 		if(brews) {
 			for await (const brew of brews) {
-				userThemes.Brew[`#${brew.shareId}`] = {
+				userThemes.Brew[brew.shareId] = {
 					name         : brew.title,
 					renderer     : 'V3',
 					baseTheme    : '',
 					baseSnippets : false,
 					author       : brew.authors[0],
-					path         : `#${brew.shareId}`,
+					path         : brew.shareId,
 					thumbnail    : brew.thumbnail.length > 0 ? brew.thumbnail : '/assets/naturalCritLogoWhite.svg'
 				};
 			}
@@ -285,7 +285,7 @@ const api = {
 		const brew = req.brew;
 		splitTextStyleAndMetadata(brew);
 		res.setHeader('Content-Type', 'text/css');
-		const themePath = req.brew.theme[0] != '#' ? `/css/${req.brew.renderer}/${req.brew.theme}` : `/css/${req.brew.theme.slice(1)}`;
+		const themePath = themes[_.upperFirst(req.brew.renderer)].hasOwnProperty(req.brew.theme) ? `/css/${req.brew.renderer}/${req.brew.theme}` : `/css/${req.brew.theme}`;
 		// Drop Parent theme if it has already been loaded.
 		// This assumes the continued use of the V3/5ePHB and V3/Blank themes for the app.
 		const parentThemeImport = ((req.brew.theme != '5ePHB') && (req.brew.theme != 'Blank')) ? `@import url(\"${themePath}\");\n\n`:'';
@@ -296,7 +296,7 @@ const api = {
 		const brew = req.brew;
 		splitTextStyleAndMetadata(brew);
 		res.setHeader('Content-Type', 'text/css');
-		const themePath = req.brew.theme[0] != '#' ? `/css/${req.brew.renderer}/${req.brew.theme}` : `/css/${req.brew.theme.slice(1)}`;
+		const themePath = themes[_.upperFirst(req.brew.renderer)].hasOwnProperty(req.brew.theme) ? `/css/${req.brew.renderer}/${req.brew.theme}` : `/css/${req.brew.theme}`;
 		const parentThemeImport = `@import url(\"${themePath}\");\n\n`;
 		const themeLocationComment = `/*  From Brew: ${req.protocol}://${req.get('host')}/share/${req.brew.shareId} */\n\n`;
 		return res.status(200).send(req.brew.renderer == 'legacy' ? '' : `${parentThemeImport}${themeLocationComment}`);

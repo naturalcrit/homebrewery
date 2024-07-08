@@ -604,7 +604,7 @@ brew`);
 	describe('getBrewThemeWithUserParent', ()=>{
 		it('should collect parent theme and brew style - returning as css with user-theme parent imported.', async ()=>{
 			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
-			model.get = jest.fn(()=>toBrewPromise({ title: 'test brew', renderer: 'V3',  shareId: 'iAmAUserTheme', theme: '#IamATheme', style: 'I Have a style!' }));
+			model.get = jest.fn(()=>toBrewPromise({ title: 'test brew', renderer: 'V3',  shareId: 'iAmAUserTheme', theme: 'IamATheme', style: 'I Have a style!' }));
 			const fn = api.getBrew('share', true);
 			const req = { brew: {}, get: ()=>{return 'localhost';}, protocol: 'https' };
 			const next = jest.fn();

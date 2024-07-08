@@ -188,26 +188,23 @@ const BrewRenderer = (props)=>{
 		document.dispatchEvent(new MouseEvent('click'));
 	};
 
-	let brewThemeRendererPath  = props?.renderer ? props.renderer : 'Legacy';
-	// Correct for casing vs theme.json
-	if(brewThemeRendererPath == 'legacy') { brewThemeRendererPath = 'Legacy'; }
-	if(props?.theme && (props?.theme[0] === '#')) {
-		brewThemeRendererPath = 'Brew';
-	}
+	let brewThemeRendererPath  = `${props?.renderer ? _.upperFirst(props.renderer) : 'V3'}`;
+
 	let themePath     = props.theme ?? '5ePHB';
 	const Themes = { ...staticThemes, ...props.userThemes };
-	const baseThemePath = (themePath && themePath[0] !== '#') ? Themes[brewThemeRendererPath][themePath].baseTheme : 'Brew';
+	let staticOrUserParent; 
+	let baseThemePath = null;
 
-	// Override static theme values if a Brew theme.
-
-	if(themePath && themePath[0] === '#') {
-		themePath = themePath.slice(1);
+	if (!Themes[brewThemeRendererPath].hasOwnProperty(themePath)) {
 		brewThemeRendererPath = '';
+		staticOrUserParent = `/cssParent/${themePath}`;
+		baseThemePath = 'Brew';
 	} else {
+		baseThemePath = Themes[brewThemeRendererPath][themePath].baseTheme
 		brewThemeRendererPath += '/';
+		staticOrUserParent = `/css/${brewThemeRendererPath}${baseThemePath}`;
+		
 	}
-
-	const staticOrUserParent = (props.theme && props?.theme[0] == '#') ? `/cssParent/${themePath}` : `/css/${brewThemeRendererPath}${baseThemePath}`;
 
 	return (
 		<>
@@ -238,7 +235,7 @@ const BrewRenderer = (props)=>{
 					tabIndex={-1}
 					style={{ height: state.height }}>
 
-					<link href={`/css/${props?.renderer ? props.renderer : 'Legacy'}/Blank`}  type='text/css' rel='stylesheet'/>
+					<link href={`/css/${props?.renderer ? props.renderer : 'V3'}/Blank`}  type='text/css' rel='stylesheet'/>
 					{baseThemePath &&
 						<link href={staticOrUserParent}  type='text/css'  rel='stylesheet'/>
 					}
