@@ -787,11 +787,13 @@ const processStyleTags = (string)=>{
 	};
 };
 
+//Given a string representing an HTML element, extract all of its properties (id, class, style, and other attributes)
 const extractHTMLStyleTags = (htmlString)=>{
-	const id         = htmlString.match(/id="([^"]*)"/)?.[1]    || null;
-	const classes    = htmlString.match(/class="([^"]*)"/)?.[1] || null;
-	const styles     = htmlString.match(/style="([^"]*)"/)?.[1] || null;
-	const attributes = htmlString.match(/[a-zA-Z]+="[^"]*"/g)
+	const firstElementOnly = htmlString.split('>')[0];
+	const id         = firstElementOnly.match(/id="([^"]*)"/)?.[1]    || null;
+	const classes    = firstElementOnly.match(/class="([^"]*)"/)?.[1] || null;
+	const styles     = firstElementOnly.match(/style="([^"]*)"/)?.[1] || null;
+	const attributes = firstElementOnly.match(/[a-zA-Z]+="[^"]*"/g)
 		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
 		.reduce((obj, attr)=>{
 			const index = attr.indexOf('=');
