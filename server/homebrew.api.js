@@ -13,17 +13,10 @@ var url = require('url');
 
 const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
 
-const themes = require('../themes/themes.json');
+const Themes = require('../themes/themes.json');
 
-const isStaticTheme = (engine, themeName)=>{
-	if(!themes.hasOwnProperty(engine)) {
-		return undefined;
-	}
-	if(themes[engine].hasOwnProperty(themeName)) {
-		return themes[engine][themeName].baseTheme;
-	} else {
-		return undefined;
-	}
+const isStaticTheme = (renderer, themeName)=>{
+	return Themes[renderer]?.[themeName] !== undefined;
 };
 
 // const getTopBrews = (cb) => {
@@ -281,35 +274,40 @@ const api = {
 
 		res.status(200).send(saved);
 	},
-	getBrewThemeWithCSS : async (req, res)=>{
+	getBrewThemeCSS : async (req, res)=>{
 		const brew = req.brew;
+		console.log(`getBrewThemeCSS for ${brew.shareId}`)
 		splitTextStyleAndMetadata(brew);
 		res.setHeader('Content-Type', 'text/css');
-		const themePath = themes[_.upperFirst(req.brew.renderer)].hasOwnProperty(req.brew.theme) ? `/css/${req.brew.renderer}/${req.brew.theme}` : `/css/${req.brew.theme}`;
+		const themePath = Themes[_.upperFirst(req.brew.renderer)].hasOwnProperty(req.brew.theme) ? `/css/${req.brew.renderer}/${req.brew.theme}` : `/css/${req.brew.theme}`;
 		// Drop Parent theme if it has already been loaded.
 		// This assumes the continued use of the V3/5ePHB and V3/Blank themes for the app.
+		console.log(`and parentThemeImport for ${brew.theme}`)
 		const parentThemeImport = ((req.brew.theme != '5ePHB') && (req.brew.theme != 'Blank')) ? `@import url(\"${themePath}\");\n\n`:'';
 		const themeLocationComment = `/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.brew.shareId} */\n\n`;
 		return res.status(200).send(req.brew.renderer == 'legacy' ? '' : `${parentThemeImport}${themeLocationComment}${req.brew.style}`);
 	},
-	getBrewThemeParent : async (req, res)=>{
+	getBrewThemeParentCSS : async (req, res)=>{
 		const brew = req.brew;
+		console.log(`getBrewThemeParentCSS for ${brew.shareId}`)
 		splitTextStyleAndMetadata(brew);
 		res.setHeader('Content-Type', 'text/css');
-		const themePath = themes[_.upperFirst(req.brew.renderer)].hasOwnProperty(req.brew.theme) ? `/css/${req.brew.renderer}/${req.brew.theme}` : `/css/${req.brew.theme}`;
+		console.log(`getBrewThemeParentCSS parent is ${brew.theme}`)
+		const themePath = Themes[_.upperFirst(req.brew.renderer)].hasOwnProperty(req.brew.theme) ? `/css/${req.brew.renderer}/${req.brew.theme}` : `/css/${req.brew.theme}`;
 		const parentThemeImport = `@import url(\"${themePath}\");\n\n`;
 		const themeLocationComment = `/*  From Brew: ${req.protocol}://${req.get('host')}/share/${req.brew.shareId} */\n\n`;
 		return res.status(200).send(req.brew.renderer == 'legacy' ? '' : `${parentThemeImport}${themeLocationComment}`);
 	},
-	getStaticTheme : async(req, res)=>{
-		const themeParent = isStaticTheme(req.params.engine, req.params.id);
-		if(themeParent === undefined){
-			res.status(404).send(`Invalid Theme - Engine: ${req.params.engine}, Name: ${req.params.id}`);
-		} else {
+	getStaticThemeCSS : async(req, res)=>{
+		if (!isStaticTheme(req.params.engine, req.params.id))
+			res.status(404).send(`Invalid Theme - Renderer: ${req.params.engine}, Name: ${req.params.id}`);
+		else {
+			const themeParent = Themes[req.params.engine][req.params.id].baseTheme;
+			console.log(`getStaticThemeCSS for ${themeParent}`)
 			res.setHeader('Content-Type', 'text/css');
 			res.setHeader('Cache-Control', 'public, max-age: 43200, must-revalidate');
-			const parentTheme = themeParent ? `@import url(\"/css/${req.params.engine}/${themeParent}\");\n/* Static Theme ${themes[req.params.engine][themeParent].name} */\n` : '';
-			return res.status(200).send(`${parentTheme}@import url(\"/themes/${req.params.engine}/${req.params.id}/style.css\");\n/* Static Theme ${themes[req.params.engine][req.params.id].name} */\n`);
+			const parentTheme = themeParent ? `@import url(\"/css/${req.params.engine}/${themeParent}\");\n/* Static Theme ${Themes[req.params.engine][themeParent].name} */\n` : '';
+			return res.status(200).send(`${parentTheme}@import url(\"/themes/${req.params.engine}/${req.params.id}/style.css\");\n/* Static Theme ${Themes[req.params.engine][req.params.id].name} */\n`);
 		}
 	},
 	updateBrew : async (req, res)=>{
