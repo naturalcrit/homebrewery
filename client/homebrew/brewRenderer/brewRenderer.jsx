@@ -188,23 +188,11 @@ const BrewRenderer = (props)=>{
 		document.dispatchEvent(new MouseEvent('click'));
 	};
 
-	let brewThemeRendererPath  = `${props?.renderer ? _.upperFirst(props.renderer) : 'V3'}`;
+	let rendererPath = '';
+	let themePath    = props.theme;
 
-	let themePath     = props.theme ?? '5ePHB';
-	const Themes = { ...staticThemes, ...props.userThemes };
-	let staticOrUserParent; 
-	let baseThemePath = null;
-
-	if (!Themes[brewThemeRendererPath].hasOwnProperty(themePath)) {
-		brewThemeRendererPath = '';
-		staticOrUserParent = `/cssParent/${themePath}`;
-		baseThemePath = 'Brew';
-	} else {
-		baseThemePath = Themes[brewThemeRendererPath][themePath].baseTheme
-		brewThemeRendererPath += '/';
-		staticOrUserParent = `/css/${brewThemeRendererPath}${baseThemePath}`;
-		
-	}
+	if (staticThemes[_.upperFirst(props.renderer)]?.[props.theme] !== undefined)	//Change CSS path if is staticTheme
+		rendererPath = _.upperFirst(props.renderer) + '/';
 
 	return (
 		<>
@@ -235,11 +223,7 @@ const BrewRenderer = (props)=>{
 					tabIndex={-1}
 					style={{ height: state.height }}>
 
-					<link href={`/css/${props?.renderer ? props.renderer : 'V3'}/Blank`}  type='text/css' rel='stylesheet'/>
-					{baseThemePath &&
-						<link href={staticOrUserParent}  type='text/css'  rel='stylesheet'/>
-					}
-					<link href={`/css/${brewThemeRendererPath}${themePath}`}  type='text/css' rel='stylesheet'/>
+					<link href={`/css/${rendererPath}${themePath}`}  type='text/css' rel='stylesheet'/>
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted
