@@ -651,7 +651,7 @@ brew`);
 			};
 			api.getStaticThemeCSS(req, res);
 			const sent = res.send.mock.calls[0][0];
-			expect(sent).toBe('Invalid Theme - Engine: V3, Name: 5eDMGGGG');
+			expect(sent).toBe('Invalid Theme - Renderer: V3, Name: 5eDMGGGG');
 			expect(res.status).toHaveBeenCalledWith(404);
 		});
 	});
