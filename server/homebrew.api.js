@@ -274,6 +274,7 @@ const api = {
 
 		res.status(200).send(saved);
 	},
+	//Return CSS for a brew theme, with @include endpoint for its parent theme if any (except for Blank and 5ePHB)
 	getBrewThemeCSS : async (req, res)=>{
 		const brew = req.brew;
 		console.log(`getBrewThemeCSS for ${brew.shareId}`)
@@ -287,6 +288,7 @@ const api = {
 		const themeLocationComment = `/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.brew.shareId} */\n\n`;
 		return res.status(200).send(req.brew.renderer == 'legacy' ? '' : `${parentThemeImport}${themeLocationComment}${req.brew.style}`);
 	},
+	//Return @include endpoint for a theme's parent theme only
 	getBrewThemeParentCSS : async (req, res)=>{
 		const brew = req.brew;
 		console.log(`getBrewThemeParentCSS for ${brew.shareId}`)
@@ -298,14 +300,15 @@ const api = {
 		const themeLocationComment = `/*  From Brew: ${req.protocol}://${req.get('host')}/share/${req.brew.shareId} */\n\n`;
 		return res.status(200).send(req.brew.renderer == 'legacy' ? '' : `${parentThemeImport}${themeLocationComment}`);
 	},
+	//Return CSS for a static theme, with @include endpoint for its parent theme if any
 	getStaticThemeCSS : async(req, res)=>{
 		if (!isStaticTheme(req.params.engine, req.params.id))
 			res.status(404).send(`Invalid Theme - Renderer: ${req.params.engine}, Name: ${req.params.id}`);
 		else {
-			const themeParent = Themes[req.params.engine][req.params.id].baseTheme;
 			console.log(`getStaticThemeCSS for ${themeParent}`)
 			res.setHeader('Content-Type', 'text/css');
 			res.setHeader('Cache-Control', 'public, max-age: 43200, must-revalidate');
+			const themeParent = Themes[req.params.engine][req.params.id].baseTheme;
 			const parentTheme = themeParent ? `@import url(\"/css/${req.params.engine}/${themeParent}\");\n/* Static Theme ${Themes[req.params.engine][themeParent].name} */\n` : '';
 			return res.status(200).send(`${parentTheme}@import url(\"/themes/${req.params.engine}/${req.params.id}/style.css\");\n/* Static Theme ${Themes[req.params.engine][req.params.id].name} */\n`);
 		}
