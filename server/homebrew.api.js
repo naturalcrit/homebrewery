@@ -274,41 +274,28 @@ const api = {
 
 		res.status(200).send(saved);
 	},
-	//Return CSS for a brew theme, with @include endpoint for its parent theme if any (except for Blank and 5ePHB)
+	//Return CSS for a brew theme, with @include endpoint for its parent theme if any
 	getBrewThemeCSS : async (req, res)=>{
 		const brew = req.brew;
 		console.log(`getBrewThemeCSS for ${brew.shareId}`)
 		splitTextStyleAndMetadata(brew);
 		res.setHeader('Content-Type', 'text/css');
 		const themePath = Themes[_.upperFirst(req.brew.renderer)].hasOwnProperty(req.brew.theme) ? `/css/${req.brew.renderer}/${req.brew.theme}` : `/css/${req.brew.theme}`;
-		// Drop Parent theme if it has already been loaded.
-		// This assumes the continued use of the V3/5ePHB and V3/Blank themes for the app.
 		console.log(`and parentThemeImport for ${brew.theme}`)
-		const parentThemeImport = ((req.brew.theme != '5ePHB') && (req.brew.theme != 'Blank')) ? `@import url(\"${themePath}\");\n\n`:'';
+		const parentThemeImport = `@import url(\"${themePath}\");\n\n`;
 		const themeLocationComment = `/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.brew.shareId} */\n\n`;
 		return res.status(200).send(req.brew.renderer == 'legacy' ? '' : `${parentThemeImport}${themeLocationComment}${req.brew.style}`);
-	},
-	//Return @include endpoint for a theme's parent theme only
-	getBrewThemeParentCSS : async (req, res)=>{
-		const brew = req.brew;
-		console.log(`getBrewThemeParentCSS for ${brew.shareId}`)
-		splitTextStyleAndMetadata(brew);
-		res.setHeader('Content-Type', 'text/css');
-		console.log(`getBrewThemeParentCSS parent is ${brew.theme}`)
-		const themePath = Themes[_.upperFirst(req.brew.renderer)].hasOwnProperty(req.brew.theme) ? `/css/${req.brew.renderer}/${req.brew.theme}` : `/css/${req.brew.theme}`;
-		const parentThemeImport = `@import url(\"${themePath}\");\n\n`;
-		const themeLocationComment = `/*  From Brew: ${req.protocol}://${req.get('host')}/share/${req.brew.shareId} */\n\n`;
-		return res.status(200).send(req.brew.renderer == 'legacy' ? '' : `${parentThemeImport}${themeLocationComment}`);
 	},
 	//Return CSS for a static theme, with @include endpoint for its parent theme if any
 	getStaticThemeCSS : async(req, res)=>{
 		if (!isStaticTheme(req.params.engine, req.params.id))
 			res.status(404).send(`Invalid Theme - Renderer: ${req.params.engine}, Name: ${req.params.id}`);
 		else {
-			console.log(`getStaticThemeCSS for ${themeParent}`)
 			res.setHeader('Content-Type', 'text/css');
 			res.setHeader('Cache-Control', 'public, max-age: 43200, must-revalidate');
 			const themeParent = Themes[req.params.engine][req.params.id].baseTheme;
+			console.log(`getStaticThemeCSS for ${req.params.id}`)
+			console.log(`and parentThemeImport for ${themeParent}`)
 			const parentTheme = themeParent ? `@import url(\"/css/${req.params.engine}/${themeParent}\");\n/* Static Theme ${Themes[req.params.engine][themeParent].name} */\n` : '';
 			return res.status(200).send(`${parentTheme}@import url(\"/themes/${req.params.engine}/${req.params.id}/style.css\");\n/* Static Theme ${Themes[req.params.engine][req.params.id].name} */\n`);
 		}
