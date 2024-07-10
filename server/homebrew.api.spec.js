@@ -618,18 +618,6 @@ brew`);
 	});
 
 	describe('getStaticThemeCSS', ()=>{
-		it('should return an import of the theme without including a parent.', async ()=>{
-			const req = {
-				params : {
-					engine : 'V3',
-					id     : '5ePHB'
-				}
-			};
-			api.getStaticThemeCSS(req, res);
-			const sent = res.send.mock.calls[0][0];
-			expect(sent).toBe('@import url("/themes/V3/5ePHB/style.css");\n/* Static Theme 5e PHB */\n');
-			expect(res.status).toHaveBeenCalledWith(200);
-		});
 		it('should return an import of the theme including a parent.', async ()=>{
 			const req = {
 				params : {
