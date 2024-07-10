@@ -119,7 +119,8 @@
     "react-frame-component": "^4.1.3",
     "react-router-dom": "6.24.1",
     "sanitize-filename": "1.6.3",
-    "superagent": "^9.0.2"
+    "superagent": "^9.0.2",
+    "through2": "^4.0.2"
   },
   "devDependencies": {
     "eslint": "^8.57.0",
