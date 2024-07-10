@@ -277,14 +277,17 @@ const api = {
 	//Return CSS for a brew theme, with @include endpoint for its parent theme if any
 	getBrewThemeCSS : async (req, res)=>{
 		const brew = req.brew;
-		console.log(`getBrewThemeCSS for ${brew.shareId}`)
 		splitTextStyleAndMetadata(brew);
 		res.setHeader('Content-Type', 'text/css');
-		const themePath = Themes[_.upperFirst(req.brew.renderer)].hasOwnProperty(req.brew.theme) ? `/css/${req.brew.renderer}/${req.brew.theme}` : `/css/${req.brew.theme}`;
+		let rendererPath = '';
+		if(isStaticTheme(req.brew.renderer,req.brew.theme)) //Check if parent is staticBrew
+			rendererPath = _.upperFirst(req.brew.renderer) + '/';
+
+		console.log(`getBrewThemeCSS for ${brew.shareId}`)
 		console.log(`and parentThemeImport for ${brew.theme}`)
-		const parentThemeImport = `@import url(\"${themePath}\");\n\n`;
+		const parentThemeImport = `@import url(\"/css/${rendererPath}${req.brew.theme}\");\n\n`;
 		const themeLocationComment = `/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.brew.shareId} */\n\n`;
-		return res.status(200).send(req.brew.renderer == 'legacy' ? '' : `${parentThemeImport}${themeLocationComment}${req.brew.style}`);
+		return res.status(200).send(`${parentThemeImport}${themeLocationComment}${req.brew.style}`);
 	},
 	//Return CSS for a static theme, with @include endpoint for its parent theme if any
 	getStaticThemeCSS : async(req, res)=>{
@@ -296,8 +299,8 @@ const api = {
 			const themeParent = Themes[req.params.engine][req.params.id].baseTheme;
 			console.log(`getStaticThemeCSS for ${req.params.id}`)
 			console.log(`and parentThemeImport for ${themeParent}`)
-			const parentTheme = themeParent ? `@import url(\"/css/${req.params.engine}/${themeParent}\");\n/* Static Theme ${Themes[req.params.engine][themeParent].name} */\n` : '';
-			return res.status(200).send(`${parentTheme}@import url(\"/themes/${req.params.engine}/${req.params.id}/style.css\");\n/* Static Theme ${Themes[req.params.engine][req.params.id].name} */\n`);
+			const parentThemeImport = themeParent ? `@import url(\"/css/${req.params.engine}/${themeParent}\");\n/* Static Theme ${Themes[req.params.engine][themeParent].name} */\n` : '';
+			return res.status(200).send(`${parentThemeImport}@import url(\"/themes/${req.params.engine}/${req.params.id}/style.css\");\n/* Static Theme ${Themes[req.params.engine][req.params.id].name} */\n`);
 		}
 	},
 	updateBrew : async (req, res)=>{
