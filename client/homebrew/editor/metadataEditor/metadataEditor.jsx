@@ -36,7 +36,6 @@ const MetadataEditor = createClass({
 				authors     : [],
 				systems     : [],
 				renderer    : 'legacy',
-				themeClass  : 'V3',
 				theme       : '5ePHB',
 				lang        : 'en'
 			},
@@ -109,9 +108,8 @@ const MetadataEditor = createClass({
 		});
 	},
 
-	handleTheme : function(theme, themeClass){
+	handleTheme : function(theme){
 		this.props.metadata.renderer = theme.renderer;
-		this.props.metadata.themeClass = themeClass;
 		this.props.metadata.theme    = theme.path;
 		this.props.onChange(this.props.metadata);
 	},
@@ -200,7 +198,7 @@ const MetadataEditor = createClass({
 			return _.map(_.values(mergedThemes[renderer]), (theme)=>{
 				const preview = theme?.thumbnail ? theme.thumbnail : `/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`;
 				const texture = theme?.thumbnail ? theme.thumbnail : `/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`;
-				return <div className='item' key={`${renderer}_${theme.name}`} onClick={()=>this.handleTheme(theme, renderer)} title={''}>
+				return <div className='item' key={`${renderer}_${theme.name}`} onClick={()=>this.handleTheme(theme)} title={''}>
 					<p>{`${theme?.author ? theme.author : renderer} : ${theme.name}`}</p>
 					<div className='texture-container'>
 						<img src={`${texture}`}/>
