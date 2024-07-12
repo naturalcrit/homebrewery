@@ -2,11 +2,13 @@ const fs = require('fs-extra');
 const zlib = require('zlib');
 const Proj = require('./project.json');
 
-const { pack, watchFile, livereload } = require('vitreum');
+// const { watchFile, livereload } = require('vitreum');
+const pack = require('./transforms/pack.js');
+
 const isDev = !!process.argv.find((arg)=>arg=='--dev');
 
-const lessTransform  = require('vitreum/transforms/less.js');
-const assetTransform = require('vitreum/transforms/asset.js');
+const lessTransform  = require('./transforms/less.js');
+const assetTransform = require('./transforms/asset.js');
 const babel          = require('@babel/core');
 const less           = require('less');
 
@@ -155,13 +157,13 @@ fs.emptyDirSync('./build');
 	//
 
 	//In development, set up LiveReload (refreshes browser), and Nodemon (restarts server)
-	if(isDev){
-		livereload('./build');     // Install the Chrome extension LiveReload to automatically refresh the browser
-		watchFile('./server.js', { // Restart server when change detected to this file or any nested directory from here
-			ignore : ['./build', './client', './themes'],  // Ignore folders that are not running server code / avoids unneeded restarts
-			ext    : 'js json'                             // Extensions to watch (only .js/.json by default)
-			//watch : ['./server', './themes'],            // Watch additional folders if needed
-		});
-	}
+	// if(isDev){
+	// 	livereload('./build');     // Install the Chrome extension LiveReload to automatically refresh the browser
+	// 	watchFile('./server.js', { // Restart server when change detected to this file or any nested directory from here
+	// 		ignore : ['./build', './client', './themes'],  // Ignore folders that are not running server code / avoids unneeded restarts
+	// 		ext    : 'js json'                             // Extensions to watch (only .js/.json by default)
+	// 		//watch : ['./server', './themes'],            // Watch additional folders if needed
+	// 	});
+	// }
 
 })().catch(console.error);

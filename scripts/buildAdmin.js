@@ -1,11 +1,11 @@
 const fs = require('fs-extra');
 const Proj = require('./project.json');
 
-const { pack } = require('vitreum');
+const pack = require('./transforms/pack.js');
 const isDev = !!process.argv.find((arg)=>arg=='--dev');
 
-const lessTransform  = require('vitreum/transforms/less.js');
-const assetTransform = require('vitreum/transforms/asset.js');
+const lessTransform  = require('./transforms/less.js');
+const assetTransform = require('./transforms/asset.js');
 //const Meta = require('vitreum/headtags');
 
 const transforms = {
