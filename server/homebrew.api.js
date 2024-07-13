@@ -259,13 +259,13 @@ const api = {
 			Important parameter members:
 				req.params.id: This is the shareId ( User theme ) or name ( static theme )
 					loaded first.
-				req.params.engine: This is the Markdown+ version for the static theme. If a
+				req.params.renderer: This is the Markdown+ version for the static theme. If a
 					User theme the value will come from the User Theme metadata.
 		*/
 		let parentReq = {};
 		const completeStyles = [];
 		const completeSnippets = [];
-		if(!req.params.engine) {
+		if(!req.params.renderer) {
 			// If this is not set, our *first* theme is a User theme.
 			const finalChildBrew = req.brew;
 			// Break up the frontmatter
@@ -307,7 +307,7 @@ const api = {
 					id : req.params.id,
 					// This is the name of the theme
 				},
-				renderer : req.params.engine
+				renderer : req.params.renderer
 				// The renderer is needed for the static pathing.
 			};
 		}
@@ -348,16 +348,16 @@ const api = {
 	},
 	//Return CSS for a static theme, with @include endpoint for its parent theme if any
 	getStaticThemeCSS : async(req, res)=>{
-		if(!isStaticTheme(req.params.engine, req.params.id))
-			res.status(404).send(`Invalid Theme - Renderer: ${req.params.engine}, Name: ${req.params.id}`);
+		if(!isStaticTheme(req.params.renderer, req.params.id))
+			res.status(404).send(`Invalid Theme - Renderer: ${req.params.renderer}, Name: ${req.params.id}`);
 		else {
 			res.setHeader('Content-Type', 'text/css');
 			res.setHeader('Cache-Control', 'public, max-age: 43200, must-revalidate');
-			const themeParent = Themes[req.params.engine][req.params.id].baseTheme;
+			const themeParent = Themes[req.params.renderer][req.params.id].baseTheme;
 			console.log(`getStaticThemeCSS for ${req.params.id}`);
 			console.log(`and parentThemeImport for ${themeParent}`);
-			const parentThemeImport = themeParent ? `@import url(\"/css/${req.params.engine}/${themeParent}\");\n/* Static Theme ${Themes[req.params.engine][themeParent].name} */\n` : '';
-			return res.status(200).send(`${parentThemeImport}@import url(\"/themes/${req.params.engine}/${req.params.id}/style.css\");\n/* Static Theme ${Themes[req.params.engine][req.params.id].name} */\n`);
+			const parentThemeImport = themeParent ? `@import url(\"/css/${req.params.renderer}/${themeParent}\");\n/* Static Theme ${Themes[req.params.renderer][themeParent].name} */\n` : '';
+			return res.status(200).send(`${parentThemeImport}@import url(\"/themes/${req.params.renderer}/${req.params.id}/style.css\");\n/* Static Theme ${Themes[req.params.renderer][req.params.id].name} */\n`);
 		}
 	},
 	updateBrew : async (req, res)=>{
