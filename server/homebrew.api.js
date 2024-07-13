@@ -67,7 +67,7 @@ const api = {
 				userThemes.Brew[brew.shareId] = {
 					name         : brew.title,
 					renderer     : brew.renderer,
-					baseTheme    : '',
+					baseTheme    : brew.theme,
 					baseSnippets : false,
 					author       : brew.authors[0],
 					path         : brew.shareId,
