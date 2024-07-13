@@ -47,7 +47,7 @@ const api = {
 		return { id, googleId };
 	},
 	//Get array of any of this user's brews tagged with `meta:theme`
-	getUsersBrewThemes : async (username, id)=>{
+	getUsersBrewThemes : async (username)=>{
 		const fields = [
 			'title',
 			'tags',
@@ -60,7 +60,7 @@ const api = {
 
 		const userThemes = {};
 
-		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] }, shareId: { $ne: id }, renderer: { $ne: 'Legacy' } });
+		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] }, renderer: { $ne: 'Legacy' } });
 
 		if(brews) {
 			for (const brew of brews) {
@@ -139,7 +139,6 @@ const api = {
 			const userID = req?.account?.username && (accessType === 'edit') ? req.account.username : mainAuthor;
 
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
-			const userThemes = accessType != 'themes' ? await api.getUsersBrewThemes(userID, id, req, res, next) : {};
 			if(stub) {
 				stub.tags     = stub.tags     || undefined; // Clear empty strings
 				stub.renderer = stub.renderer || undefined; // Clear empty strings
@@ -384,7 +383,7 @@ const api = {
 		brew.description = brew.description.trim() || '';
 		brew.text = api.mergeBrewText(brew);
 		const userID = req?.account?.username ? req.account.username : brew.authors.split(',')[0];
-		brew.userThemes = await api.getUsersBrewThemes(userID, brew.editId, req, res, null);
+		brew.userThemes = await api.getUsersBrewThemes(userID, req, res, null);
 
 
 		if(brew.googleId && removeFromGoogle) {
