@@ -10,6 +10,7 @@ const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
 const path = require('path');
 const fs = require('fs');
+const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
 
 const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
 
@@ -26,22 +27,6 @@ const isStaticTheme = (renderer, themeName)=>{
 // };
 
 const MAX_TITLE_LENGTH = 100;
-
-const splitTextStyleAndMetadata = (brew)=>{
-	brew.text = brew.text.replaceAll('\r\n', '\n');
-	if(brew.text.startsWith('```metadata')) {
-		const index = brew.text.indexOf('```\n\n');
-		const metadataSection = brew.text.slice(12, index - 1);
-		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
-		brew.text = brew.text.slice(index + 5);
-	}
-	if(brew.text.startsWith('```css')) {
-		const index = brew.text.indexOf('```\n\n');
-		brew.style = brew.text.slice(7, index - 1);
-		brew.text = brew.text.slice(index + 5);
-	}
-};
 
 const api = {
 	homebrewApi : router,
