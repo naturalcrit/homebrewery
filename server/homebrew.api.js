@@ -135,15 +135,11 @@ const api = {
 				throw { name: 'BrewLoad Error', message: 'Brew not found', status: 404, HBErrorCode: '05', accessType: accessType, brewId: id };
 			}
 
-			const mainAuthor = stub.authors ? stub.authors[0] : '';
-			const userID = req?.account?.username && (accessType === 'edit') ? req.account.username : mainAuthor;
-
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
 			if(stub) {
 				stub.tags     = stub.tags     || undefined; // Clear empty strings
 				stub.renderer = stub.renderer || undefined; // Clear empty strings
 				stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
-				stub.userThemes = userThemes;
 			}
 
 			req.brew = stub ?? {};
@@ -382,9 +378,6 @@ const api = {
 		brew.title = brew.title.trim();
 		brew.description = brew.description.trim() || '';
 		brew.text = api.mergeBrewText(brew);
-		const userID = req?.account?.username ? req.account.username : brew.authors.split(',')[0];
-		brew.userThemes = await api.getUsersBrewThemes(userID, req, res, null);
-
 
 		if(brew.googleId && removeFromGoogle) {
 			// If the google id exists and we're removing it from google, set afterSave to delete the google brew and mark the brew's google id as undefined

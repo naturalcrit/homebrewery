@@ -9,7 +9,7 @@ const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
 
-const { homebrewApi, getBrew, getThemeBundle } = require('./homebrew.api.js');
+const { homebrewApi, getBrew, getThemeBundle, getUsersBrewThemes } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
@@ -274,6 +274,8 @@ app.get('/user/:username', async (req, res, next)=>{
 app.get('/edit/:id', asyncHandler(getBrew('edit')), async(req, res, next)=>{
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
 
+	req.userThemes = await(getUsersBrewThemes(req.account?.username));
+
 	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',
 		description : req.brew.description || 'No description.',
@@ -299,9 +301,10 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 		renderer   : req.brew.renderer,
 		theme      : req.brew.theme,
 		tags       : req.brew.tags,
-		userThemes : req.brew.userThemes
 	};
 	req.brew = _.defaults(brew, DEFAULT_BREW);
+
+	req.userThemes = await(getUsersBrewThemes(req.account?.username));
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'New',
