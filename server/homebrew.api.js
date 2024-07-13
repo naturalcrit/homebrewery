@@ -46,6 +46,7 @@ const api = {
 		}
 		return { id, googleId };
 	},
+	//Get array of any of this user's brews tagged with `meta:theme`
 	getUsersBrewThemes : async (username, id)=>{
 		const fields = [
 			'title',
@@ -57,24 +58,20 @@ const api = {
 			'authors'
 		];
 
-		const userThemes = {
-			Brew : {
-
-			}
-		};
+		const userThemes = {};
 
 		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] }, shareId: { $ne: id }, renderer: { $ne: 'Legacy' } });
 
 		if(brews) {
-			for await (const brew of brews) {
+			for (const brew of brews) {
 				userThemes.Brew[brew.shareId] = {
 					name         : brew.title,
-					renderer     : 'V3',
+					renderer     : brew.renderer,
 					baseTheme    : '',
 					baseSnippets : false,
 					author       : brew.authors[0],
 					path         : brew.shareId,
-					thumbnail    : brew.thumbnail.length > 0 ? brew.thumbnail : '/assets/naturalCritLogoWhite.svg'
+					thumbnail    : brew.thumbnail || '/assets/naturalCritLogoWhite.svg'
 				};
 			}
 		}
