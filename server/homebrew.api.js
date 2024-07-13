@@ -64,7 +64,7 @@ const api = {
 
 		if(brews) {
 			for (const brew of brews) {
-				userThemes.Brew[brew.shareId] = {
+				userThemes[brew.shareId] = {
 					name         : brew.title,
 					renderer     : brew.renderer,
 					baseTheme    : brew.theme,
