@@ -621,8 +621,8 @@ brew`);
 		it('should return an import of the theme including a parent.', async ()=>{
 			const req = {
 				params : {
-					engine : 'V3',
-					id     : '5eDMG'
+					renderer : 'V3',
+					id       : '5eDMG'
 				}
 			};
 			api.getStaticThemeCSS(req, res);
@@ -633,8 +633,8 @@ brew`);
 		it('should fail for an invalid static theme.', async()=>{
 			const req = {
 				params : {
-					engine : 'V3',
-					id     : '5eDMGGGG'
+					renderer : 'V3',
+					id       : '5eDMGGGG'
 				}
 			};
 			api.getStaticThemeCSS(req, res);

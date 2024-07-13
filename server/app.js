@@ -81,7 +81,7 @@ app.get('/robots.txt', (req, res)=>{
 // Path for User Themes
 app.get('/theme/:id', asyncHandler(getBrew('theme', false)),  asyncHandler(getThemeBundle));
 // Path for Static Themes
-app.get('/theme/:engine/:id', asyncHandler(getThemeBundle));
+app.get('/theme/:renderer/:id', asyncHandler(getThemeBundle));
 
 //Home page
 app.get('/', (req, res, next)=>{
