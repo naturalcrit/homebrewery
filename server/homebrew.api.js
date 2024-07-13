@@ -81,12 +81,11 @@ const api = {
 	getBrew : (accessType, stubOnly = false)=>{
 		// Create middleware with the accessType passed in as part of the scope
 		return async (req, res, next)=>{
-
 			// Get relevant IDs for the brew
 			const { id, googleId } = api.getId(req);
 
 			// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine.
-			let stub = await HomebrewModel.get((accessType === 'edit') ? { editId: id } : { shareId: id })
+			let stub = await HomebrewModel.get(accessType === 'edit' ? { editId: id } : { shareId: id })
 				.catch((err)=>{
 					if(googleId) {
 						console.warn(`Unable to find document stub for ${accessType}Id ${id}`);
