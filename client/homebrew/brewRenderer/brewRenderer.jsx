@@ -20,6 +20,10 @@ const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
 
 const staticThemes = require('themes/themes.json');
 
+const isStaticTheme = (renderer, themeName)=>{
+	return staticThemes[renderer]?.[themeName] !== undefined;
+};
+
 const PAGE_HEIGHT = 1056;
 
 const INITIAL_CONTENT = dedent`
@@ -124,13 +128,6 @@ const BrewRenderer = (props)=>{
 		</div>;
 	};
 
-	const renderStyle = ()=>{
-		if(!props.style) return;
-		const cleanStyle = props.style; //DOMPurify.sanitize(props.style, purifyConfig);
-		//return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${sanitizeScriptTags(props.style)}\n} </style>` }} />;
-		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${cleanStyle} </style>` }} />;
-	};
-
 	const renderPage = (pageText, index)=>{
 		if(props.renderer == 'legacy') {
 			const html = MarkdownLegacy.render(pageText);
@@ -170,7 +167,44 @@ const BrewRenderer = (props)=>{
 		}
 	};
 
+	const loadAllBrewStylesAndSnippets = ()=>{
+		/*
+			Loads the theme bundle and parses it out.
+			These functionally replaces the previous renderStyles() function but needs to wait until the window is mounted.
+		*/
+		const rendererPath = isStaticTheme(props.renderer, props.theme) ? `/${props.renderer}/` : '/';
+		// Check for a User or Static Theme to change the endpoint path
+		fetch(`${window.location.protocol}//${window.location.host}/theme${rendererPath}${props.theme}`).then((response)=>response.json()).then((themeBundle)=>{
+			// Load the themeBundle from the endpoint as an object.
+			const documentFrame = document.getElementById('BrewRenderer');
+			const iframeDocument = documentFrame.contentDocument || documentFrame.contentWindow.document;
+			// Find the brew frame Document root.
+
+			for (let style=0; style < themeBundle.styles.length; style++){
+				/*
+				  Walk through the styles array on the Theme Bundle. 
+				  Create a new style node and add it to the Brew Frame <head>
+				*/
+				const newStyles = document.createElement('style');
+				newStyles.appendChild(document.createTextNode(`${themeBundle.styles[style]}\n`));
+				iframeDocument.head.appendChild(newStyles);
+
+			}
+			/*
+			  Add the local brew styling to the Brew Frame <head>
+			*/
+			const newStyles = document.createElement('style');
+			const cleanStyle = props.style; //DOMPurify.sanitize(props.style, purifyConfig);
+
+			newStyles.appendChild(document.createTextNode(`/* Local Brew Styling */\n\n${cleanStyle}`));
+			iframeDocument.head.appendChild(newStyles);
+
+			// TO-DO - Walk the snippets returns and add them to the appropriate menu.
+		});
+	};
+
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
+		loadAllBrewStylesAndSnippets(); // Load the brew's inherited and local styles.
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			updateSize();
 			window.addEventListener('resize', updateSize);
@@ -189,10 +223,10 @@ const BrewRenderer = (props)=>{
 	};
 
 	let rendererPath = '';
-	let themePath    = props.theme;
+	const themePath    = props.theme;
 
-	if (staticThemes[_.upperFirst(props.renderer)]?.[props.theme] !== undefined)	//Change CSS path if is staticTheme
-		rendererPath = _.upperFirst(props.renderer) + '/';
+	if(staticThemes[_.upperFirst(props.renderer)]?.[props.theme] !== undefined)	//Change CSS path if is staticTheme
+		rendererPath = `${_.upperFirst(props.renderer)}/`;
 
 	return (
 		<>
@@ -222,14 +256,10 @@ const BrewRenderer = (props)=>{
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
 					style={{ height: state.height }}>
-
-					<link href={`/css/${rendererPath}${themePath}`}  type='text/css' rel='stylesheet'/>
-
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted
 						&&
 						<>
-							{renderStyle()}
 							<div className='pages' lang={`${props.lang || 'en'}`}>
 								{renderPages()}
 							</div>

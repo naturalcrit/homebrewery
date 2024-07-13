@@ -9,7 +9,7 @@ const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
 
-const { homebrewApi, getBrew, getBrewThemeCSS, getStaticThemeCSS } = require('./homebrew.api.js');
+const { homebrewApi, getBrew, getThemeBundle } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
@@ -78,10 +78,10 @@ app.get('/robots.txt', (req, res)=>{
 });
 
 // Theme
-
-app.get('/css/:id', asyncHandler(getBrew('theme', false)),  asyncHandler(getBrewThemeCSS));
-app.get('/css/:engine/:id/', asyncHandler(getStaticThemeCSS));
-
+// Path for User Themes
+app.get('/theme/:id', asyncHandler(getBrew('theme', false)),  asyncHandler(getThemeBundle));
+// Path for Static Themes
+app.get('/theme/:engine/:id', asyncHandler(getThemeBundle));
 
 //Home page
 app.get('/', (req, res, next)=>{

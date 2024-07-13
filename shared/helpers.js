@@ -15,6 +15,11 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
+	if(brew.text.startsWith('```snippets')) {
+		const index = brew.text.indexOf('```\n\n');
+		brew.snippets = brew.text.slice(11, index - 1);
+		brew.text = brew.text.slice(index + 5);
+	}
 };
 
 const printCurrentBrew = ()=>{

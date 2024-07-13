@@ -8,8 +8,8 @@ const Markdown = require('../shared/naturalcrit/markdown.js');
 const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
-var url = require('url');
-
+const path = require('path');
+const fs = require('fs');
 
 const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
 
@@ -274,31 +274,111 @@ const api = {
 
 		res.status(200).send(saved);
 	},
+	getThemeBundle : async(req, res)=>{
+		/*
+			getThemeBundle: Collects the theme and all parent themes
+				returns an object containing an array of css, in render order, and an array
+					of snippets ( currently empty )
+			Important parameter members:
+				req.params.id: This is the shareId ( User theme ) or name ( static theme )
+					loaded first.
+				req.params.engine: This is the Markdown+ version for the static theme. If a
+					User theme the value will come from the User Theme metadata.
+		*/
+		let parentReq = {};
+		const completeStyles = [];
+		const completeSnippets = [];
+		if(!req.params.engine) {
+			// If this is not set, our *first* theme is a User theme.
+			const finalChildBrew = req.brew;
+			// Break up the frontmatter
+			splitTextStyleAndMetadata(finalChildBrew);
+			// If there is anything in the snippets member, append it to the snippets array.
+			if(finalChildBrew?.snippets) completeSnippets.push(JSON.parse(finalChildBrew.snippets));
+			// If there is anything in the styles member, append it to the styles array with labelling.
+			if(finalChildBrew?.style) completeStyles.push(`/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.params.id} */\n\n${finalChildBrew.style}`);
+
+			// Set up the simulated request we are using for the parent-walking.
+			// This is our loop control.
+			parentReq = {
+				params : {
+					id : finalChildBrew.theme,
+					// This is the only value needed for the User themes. This is the shareId of the theme.
+				},
+				renderer : finalChildBrew.renderer
+				// We set this for use later when checking for Static theme inheritance.
+			};
+			while ((parentReq.params.id) && (!isStaticTheme(finalChildBrew.renderer, parentReq.params.id))) {
+				await api.getBrew('share')(parentReq, res, ()=>{});
+				// Load the referenced Brew
+				splitTextStyleAndMetadata(parentReq);
+				// break up the meta data
+				if(parentReq?.snippets) completeSnippets.push(JSON.parse(parentReq.snippets));
+				// If there is anything in the snippets member, append it to the snippets array.
+				if(parentReq?.style) {
+					completeStyles.push(`/* From Brew: ${req.protocol}://${req.get('host')}/share/${parentReq.params.id} */\n\n${parentReq.style}`);
+					// If there is anything in the styles member, append it to the styles array with labelling.
+				}
+				// Update the loop object to point to this theme's parent
+				parentReq.params.id = parentReq?.theme;
+			}
+		} else {
+			// If the first theme wasn't a User theme, set up the loop control object
+			// This is done the same as above for consistant logic.
+			parentReq = {
+				params : {
+					id : req.params.id,
+					// This is the name of the theme
+				},
+				renderer : req.params.engine
+				// The renderer is needed for the static pathing.
+			};
+		}
+
+		while ((parentReq.params.id) && (isStaticTheme(parentReq.renderer, parentReq.params.id))) {
+			// If we have a static path
+			const localStyle = fs.readFileSync(path.join(__dirname, '../build/themes/', parentReq.renderer, parentReq.params.id, 'style.css')).toString();
+			// Read the Theme's style.css from the filesystem
+			completeStyles.push(`/* From Theme ${parentReq.params.id} */\n\n${localStyle}`);
+			// Label and append the themes style to the styles array.
+			parentReq.params.id = Themes[parentReq.renderer][parentReq.params.id].baseTheme;
+			// NOTE: This currently makes NO attempt to do anything with Static theme Snippets. Loading of static snippets remains unchanged.
+		}
+
+		const returnObj = {
+			styles   : completeStyles.reverse(),
+			// Reverse the order of the styles array so they are rendered oldest aprent to youngest child.
+			snippets : completeSnippets
+		};
+
+		res.setHeader('Content-Type', 'text/json');
+		return res.status(200).send(JSON.stringify(returnObj));
+	},
 	//Return CSS for a brew theme, with @include endpoint for its parent theme if any
 	getBrewThemeCSS : async (req, res)=>{
 		const brew = req.brew;
 		splitTextStyleAndMetadata(brew);
 		res.setHeader('Content-Type', 'text/css');
 		let rendererPath = '';
-		if(isStaticTheme(req.brew.renderer,req.brew.theme)) //Check if parent is staticBrew
-			rendererPath = _.upperFirst(req.brew.renderer) + '/';
+		if(isStaticTheme(req.brew.renderer, req.brew.theme)) //Check if parent is staticBrew
+			rendererPath = `${_.upperFirst(req.brew.renderer)}/`;
 
-		console.log(`getBrewThemeCSS for ${brew.shareId}`)
-		console.log(`and parentThemeImport for ${brew.theme}`)
+		console.log(`getBrewThemeCSS for ${brew.shareId}`);
+		console.log(`and parentThemeImport for ${brew.theme}`);
 		const parentThemeImport = `@import url(\"/css/${rendererPath}${req.brew.theme}\");\n\n`;
 		const themeLocationComment = `/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.brew.shareId} */\n\n`;
 		return res.status(200).send(`${parentThemeImport}${themeLocationComment}${req.brew.style}`);
 	},
 	//Return CSS for a static theme, with @include endpoint for its parent theme if any
 	getStaticThemeCSS : async(req, res)=>{
-		if (!isStaticTheme(req.params.engine, req.params.id))
+		if(!isStaticTheme(req.params.engine, req.params.id))
 			res.status(404).send(`Invalid Theme - Renderer: ${req.params.engine}, Name: ${req.params.id}`);
 		else {
 			res.setHeader('Content-Type', 'text/css');
 			res.setHeader('Cache-Control', 'public, max-age: 43200, must-revalidate');
 			const themeParent = Themes[req.params.engine][req.params.id].baseTheme;
-			console.log(`getStaticThemeCSS for ${req.params.id}`)
-			console.log(`and parentThemeImport for ${themeParent}`)
+			console.log(`getStaticThemeCSS for ${req.params.id}`);
+			console.log(`and parentThemeImport for ${themeParent}`);
 			const parentThemeImport = themeParent ? `@import url(\"/css/${req.params.engine}/${themeParent}\");\n/* Static Theme ${Themes[req.params.engine][themeParent].name} */\n` : '';
 			return res.status(200).send(`${parentThemeImport}@import url(\"/themes/${req.params.engine}/${req.params.id}/style.css\");\n/* Static Theme ${Themes[req.params.engine][req.params.id].name} */\n`);
 		}
