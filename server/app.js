@@ -271,7 +271,7 @@ app.get('/user/:username', async (req, res, next)=>{
 });
 
 //Edit Page
-app.get('/edit/:id', asyncHandler(getBrew('edit')), async(req, res, next)=>{
+app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res, next)=>{
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
 
 	req.userThemes = await(getUsersBrewThemes(req.account?.username));
@@ -287,10 +287,10 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), async(req, res, next)=>{
 	splitTextStyleAndMetadata(req.brew);
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
 	return next();
-});
+}));
 
 //New Page
-app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
+app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async(req, res, next)=>{
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	const brew = {
@@ -312,7 +312,7 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	};
 
 	return next();
-});
+}));
 
 //Share Page
 app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
