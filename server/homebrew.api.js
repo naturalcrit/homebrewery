@@ -262,69 +262,40 @@ const api = {
 					User theme the value will come from the User Theme metadata.
 		*/
 		let parentReq = {};
-		const completeStyles = [];
+		let currentTheme;
+		const completeStyles   = [];
 		const completeSnippets = [];
-		if(!req.params.renderer) {
-			// If this is not set, our *first* theme is a User theme.
-			const finalChildBrew = req.brew;
-			// Break up the frontmatter
-			splitTextStyleAndMetadata(finalChildBrew);
-			// If there is anything in the snippets member, append it to the snippets array.
-			if(finalChildBrew?.snippets) completeSnippets.push(JSON.parse(finalChildBrew.snippets));
-			// If there is anything in the styles member, append it to the styles array with labelling.
-			if(finalChildBrew?.style) completeStyles.push(`/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.params.id} */\n\n${finalChildBrew.style}`);
 
-			// Set up the simulated request we are using for the parent-walking.
-			// This is our loop control.
-			parentReq = {
-				params : {
-					id : finalChildBrew.theme,
-					// This is the only value needed for the User themes. This is the shareId of the theme.
-				},
-				renderer : finalChildBrew.renderer
-				// We set this for use later when checking for Static theme inheritance.
-			};
-			while ((parentReq.params.id) && (!isStaticTheme(finalChildBrew.renderer, parentReq.params.id))) {
-				await api.getBrew('share')(parentReq, res, ()=>{});
-				// Load the referenced Brew
-				splitTextStyleAndMetadata(parentReq);
-				// break up the meta data
-				if(parentReq?.snippets) completeSnippets.push(JSON.parse(parentReq.snippets));
-				// If there is anything in the snippets member, append it to the snippets array.
-				if(parentReq?.style) {
-					completeStyles.push(`/* From Brew: ${req.protocol}://${req.get('host')}/share/${parentReq.params.id} */\n\n${parentReq.style}`);
-					// If there is anything in the styles member, append it to the styles array with labelling.
-				}
-				// Update the loop object to point to this theme's parent
-				parentReq.params.id = parentReq?.theme;
+		while (req.params.id) {
+			console.log(`loading theme ID ${req.params.id}`)
+			//=== User Themes ===//
+			if(!isStaticTheme(req.params.renderer, req.params.id)) {
+				await api.getBrew('share')(req, res, ()=>{});
+				currentTheme = req.brew;
+				splitTextStyleAndMetadata(currentTheme);
+
+				// If there is anything in the snippets or style members, append them to the appropriate array
+				if(currentTheme?.snippets) completeSnippets.push(JSON.parse(currentTheme.snippets));
+				if(currentTheme?.style) completeStyles.push(`/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.params.id} */\n\n${currentTheme.style}`);
+
+				req.params.id       = currentTheme.theme;
+				req.params.renderer = currentTheme.renderer;
+			} 
+			//=== Static Themes ===//
+			else {
+
+				// NOTE: This currently makes NO attempt to do anything with Static theme Snippets. Loading of static snippets remains unchanged.
+				const localStyle = `@import url(\"/themes/${req.params.renderer}/${req.params.id}/style.css\");`;
+				completeStyles.push(`/* From Theme ${req.params.id} */\n\n${localStyle}`);
+
+				req.params.id = Themes[req.params.renderer][req.params.id].baseTheme;
 			}
-		} else {
-			// If the first theme wasn't a User theme, set up the loop control object
-			// This is done the same as above for consistant logic.
-			parentReq = {
-				params : {
-					id : req.params.id,
-					// This is the name of the theme
-				},
-				renderer : req.params.renderer
-				// The renderer is needed for the static pathing.
-			};
-		}
-
-		while ((parentReq.params.id) && (isStaticTheme(parentReq.renderer, parentReq.params.id))) {
-			// If we have a static path
-			const localStyle = fs.readFileSync(path.join(__dirname, '../build/themes/', parentReq.renderer, parentReq.params.id, 'style.css')).toString();
-			// Read the Theme's style.css from the filesystem
-			completeStyles.push(`/* From Theme ${parentReq.params.id} */\n\n${localStyle}`);
-			// Label and append the themes style to the styles array.
-			parentReq.params.id = Themes[parentReq.renderer][parentReq.params.id].baseTheme;
-			// NOTE: This currently makes NO attempt to do anything with Static theme Snippets. Loading of static snippets remains unchanged.
 		}
 
 		const returnObj = {
+			// Reverse the order of the arrays so they are listed oldest parent to youngest child.
 			styles   : completeStyles.reverse(),
-			// Reverse the order of the styles array so they are rendered oldest aprent to youngest child.
-			snippets : completeSnippets
+			snippets : completeSnippets.reverse()
 		};
 
 		res.setHeader('Content-Type', 'text/json');
