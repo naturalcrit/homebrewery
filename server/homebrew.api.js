@@ -261,7 +261,7 @@ const api = {
 				req.params.renderer: This is the Markdown+ version for the static theme. If a
 					User theme the value will come from the User Theme metadata.
 		*/
-		let parentReq = {};
+
 		let currentTheme;
 		const completeStyles   = [];
 		const completeSnippets = [];
@@ -283,7 +283,6 @@ const api = {
 			} 
 			//=== Static Themes ===//
 			else {
-
 				// NOTE: This currently makes NO attempt to do anything with Static theme Snippets. Loading of static snippets remains unchanged.
 				const localStyle = `@import url(\"/themes/${req.params.renderer}/${req.params.id}/style.css\");`;
 				completeStyles.push(`/* From Theme ${req.params.id} */\n\n${localStyle}`);
