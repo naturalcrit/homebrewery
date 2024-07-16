@@ -55,7 +55,6 @@ const EditPage = createClass({
 			autoSaveWarning        : false,
 			unsavedTime            : new Date(),
 			currentEditorPage      : 0,
-			userThemes             : this.props.brew.userThemes,
 			displayLockMessage     : this.props.brew.lock || false
 		};
 	},
@@ -415,7 +414,7 @@ const EditPage = createClass({
 						theme={this.state.brew.theme}
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
-						userThemes={this.state.brew.userThemes}
+						userThemes={this.props.userThemes}
 						currentEditorPage={this.state.currentEditorPage}
 						allowPrint={true}
 					/>

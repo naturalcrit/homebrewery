@@ -218,6 +218,7 @@ const NewPage = createClass({
 						theme={this.state.brew.theme}
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
+						userThemes={this.props.userThemes}
 						currentEditorPage={this.state.currentEditorPage}
 						allowPrint={true}
 					/>
