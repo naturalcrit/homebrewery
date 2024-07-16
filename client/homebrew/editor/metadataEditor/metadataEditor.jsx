@@ -192,7 +192,7 @@ const MetadataEditor = createClass({
 	renderThemeDropdown : function(){
 		if(!global.enable_themes) return;
 
-		const mergedThemes = { ...Themes, ...this.props.metadata.userThemes };
+		const mergedThemes = { ...Themes, ...this.props.userThemes };
 
 		const listThemes = (renderer)=>{
 			return _.map(_.values(mergedThemes[renderer]), (theme)=>{
@@ -211,8 +211,8 @@ const MetadataEditor = createClass({
 			});
 		};
 
-		const currentThemePath = this.props.metadata?.theme && Themes[_.upperFirst(this.props.metadata.renderer)].hasOwnProperty(this.props.metadata?.theme) ? this.props.metadata.renderer : 'Brew';
-		const currentTheme = mergedThemes[`${_.upperFirst(currentThemePath)}`].hasOwnProperty(this.props.metadata.theme) ? mergedThemes[`${_.upperFirst(currentThemePath)}`][this.props.metadata.theme] : { name: `!!! THEME MISSING !!! ID=${this.props.metadata.theme.slice(1)}`};
+		const currentThemePath = this.props.metadata?.theme && Themes[_.upperFirst(this.props.metadata.renderer)]?.hasOwnProperty(this.props.metadata?.theme) ? this.props.metadata.renderer : 'Brew';
+		const currentTheme = mergedThemes[`${_.upperFirst(currentThemePath)}`]?.hasOwnProperty(this.props.metadata.theme) ? mergedThemes[`${_.upperFirst(currentThemePath)}`][this.props.metadata.theme] : { name: `!!! THEME MISSING !!! ID=${this.props.metadata.theme.slice(1)}`};
 		let dropdown;
 
 		if(this.props.metadata.renderer == 'legacy') {
