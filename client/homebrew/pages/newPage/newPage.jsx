@@ -210,6 +210,7 @@ const NewPage = createClass({
 						onStyleChange={this.handleStyleChange}
 						onMetaChange={this.handleMetaChange}
 						renderer={this.state.brew.renderer}
+						userThemes={this.props.userThemes}
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}

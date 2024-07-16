@@ -381,7 +381,8 @@ const Editor = createClass({
 				<MetadataEditor
 					metadata={this.props.brew}
 					onChange={this.props.onMetaChange}
-					reportError={this.props.reportError}/>
+					reportError={this.props.reportError}
+					userThemes={this.props.userThemes}/>
 			</>;
 		}
 	},

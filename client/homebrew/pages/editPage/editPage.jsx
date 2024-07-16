@@ -406,6 +406,7 @@ const EditPage = createClass({
 						onMetaChange={this.handleMetaChange}
 						reportError={this.errorReported}
 						renderer={this.state.brew.renderer}
+						userThemes={this.props.userThemes}
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}
