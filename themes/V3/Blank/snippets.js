@@ -6,6 +6,7 @@ const FooterGen     = require('./snippets/footer.gen.js');
 const LicenseGenWotC = require('./snippets/licenseWotC.gen.js');
 const LicenseGenGNU = require('./snippets/licenseGNU.gen.js');
 const LicenseGen = require('./snippets/license.gen.js');
+const LicenseGenAelf = require('./snippets/licenseAELF.js');
 
 const dedent        = require('dedent-tabs').default;
 
@@ -134,9 +135,13 @@ module.exports = [
 	},
 	{
 		groupName : 'License',
-		icon	  : 'fas fa-copyright',
-		view	  : 'text',
+		icon      : 'fas fa-copyright',
+		view      : 'text',
 		snippets  : [
+			{
+				name : 'AELF',
+				gen  : LicenseGenAelf.aelf10a
+			},
 			{
 				name        : 'Creative Commons',
 				icon        : 'fab fa-creative-commons',
@@ -276,6 +281,42 @@ module.exports = [
 			},
 
 			{
+				name : 'MIT License',
+				icon : 'fas fa-mit',
+				gen  : LicenseGen.mit,
+			},
+
+			{
+				name : 'ORC Notice',
+				icon : 'fas fa-Paizo',
+				gen	 : LicenseGen.orc1,
+			},
+
+			{
+				name        : 'Old School Essentials',
+				icon        : 'fas fa-ose',
+				subsnippets : [
+					{
+						name : 'OSE Logo - Black',
+						icon : 'fas fab-ose',
+						gen  : LicenseGen.oseBlack,
+					},
+
+					{
+						name : 'OSE Logo - White',
+						icon : 'fas fa-ose',
+						gen  : LicenseGen.oseWhite,
+					},
+
+					{
+						name : 'OSE Legal Text',
+						icon : 'fas fa-alt',
+						gen  : LicenseGen.oseNotice,
+					}
+				]
+			},
+
+			{
 				name        : 'Wizards of the Coast',
 				icon        : 'fab fa-wizards-of-the-coast',
 				subsnippets : [
@@ -292,18 +333,6 @@ module.exports = [
 						gen	 : LicenseGenWotC.fcp,
 					},
 				]
-			},
-
-			{
-				name : 'MIT License',
-				icon : 'fas fa-mit',
-				gen  : LicenseGen.mit,
-			},
-
-			{
-				name : 'ORC Notice',
-				icon : 'fas fa-Paizo',
-				gen	 : LicenseGen.orc1,
 			},
 
 		]

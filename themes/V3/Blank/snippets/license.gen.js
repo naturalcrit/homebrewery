@@ -47,4 +47,7 @@ module.exports = {
 	ccbyncsaBadge : `![CC BY-NC-SA](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-sa.svg)`,
 	ccbyndBadge   : `![CC BY-ND](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nd.svg)`,
 	ccbyncndBadge : `![CC BY-NC-ND](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-nd.svg)`,
+	oseBlack      : `![Old School Essentials Black Logo](/assets/license_logos/Designed_For_Use_With_Old-School_Essentials_-_Black.png){width:200px}`,
+	oseWhite      : `![Old School Essentials Black Logo](/assets/license_logos/Designed_For_Use_With_Old-School_Essentials_-_White.png){width:200px}`,
+	oseNotice     : `Old-School Essentials is a trademark of Necrotic Gnome. The trademark and Old-School Essentials logo are used with permission of Necrotic Gnome, under license”.`,
 };
