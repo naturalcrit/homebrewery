@@ -317,6 +317,36 @@ module.exports = [
 			},
 
 			{
+				name        : 'Shadowdark',
+				icon        : 'fab fa-shadowdark',
+				subsnippets : [
+					{
+						name        : 'Icons',
+						icon        : 'fas fa-image',
+						subsnippets : [
+							{
+								name : 'Compatibility Logo - Black',
+								icon : 'fas fa-image',
+								gen  : LicenseGen.shadowDarkBlack
+							},
+							{
+								name : 'Compatibility Logo - White',
+								icon : 'fas fa-image',
+								gen  : LicenseGen.shadowDarkWhite
+							}
+						]
+					},
+					{
+						name : 'License Statement',
+						icon : 'fas fa-alt',
+						gen  : LicenseGen.shadowDarkNotice
+					}
+
+				]
+
+			},
+
+			{
 				name        : 'Wizards of the Coast',
 				icon        : 'fab fa-wizards-of-the-coast',
 				subsnippets : [
