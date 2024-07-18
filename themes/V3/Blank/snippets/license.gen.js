@@ -53,4 +53,6 @@ module.exports = {
 	shadowDarkNotice : `\[Product Name]\ is an independent product published under the Shadowdark RPG Third-Party License and is not affiliated with The Arcane Library, LLC. Shadowdark RPG © 2023 The Arcane Library, LLC.`,
 	shadowDarkBlack  : `![Shadowdark Black Logo](/assets/license_logos/Third_Party_Shadowdark_Logo_Black.png){width:200px}`,
 	shadowDarkWhite  : `![Shadowdark White Logo](/assets/license_logos/Third_Party_Shadowdark_Logo_White.png){width:200px}`,
+	bladesDarkNotice : `This work is based on Blades in the Dark \(found at (http://www.bladesinthedark.com/)\), product of One Seven Design, developed and authored by John Harper, and licensed for our use under the Creative Commons Attribution 3.0 Unported license \(http://creativecommons.org/licenses/by/3.0/\).`,
+	bladesDarkLogo   : `![Forged in the Dark](/assets/license_logos/forged_in_the_dark_logo2_0.png)`
 };

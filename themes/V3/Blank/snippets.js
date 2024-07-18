@@ -143,6 +143,21 @@ module.exports = [
 				gen  : LicenseGenAelf.aelf10a
 			},
 			{
+				name        : 'Blades in the Dark',
+				subsnippets : [
+					{
+						name : 'Forged in the Dark Logo',
+						icon : 'fas fa-image',
+						gen  : LicenseGen.bladesDarkLogo
+					},
+					{
+						name : 'Usage Statement',
+						icon : 'fas fa-text',
+						gen  : LicenseGen.bladesDarkNotice
+					},
+				],
+			},
+			{
 				name        : 'Creative Commons',
 				icon        : 'fab fa-creative-commons',
 				subsnippets : [
