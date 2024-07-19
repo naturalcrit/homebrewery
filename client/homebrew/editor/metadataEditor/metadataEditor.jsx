@@ -192,7 +192,7 @@ const MetadataEditor = createClass({
 	renderThemeDropdown : function(){
 		if(!global.enable_themes) return;
 
-		const mergedThemes = { ...Themes, ...this.props.userThemes };
+		const mergedThemes = _.merge(Themes, this.props.userThemes);
 
 		const listThemes = (renderer)=>{
 			return _.map(_.values(mergedThemes[renderer]), (theme)=>{
@@ -230,7 +230,6 @@ const MetadataEditor = createClass({
 					</div>
 					{/*listThemes('Legacy')*/}
 					{listThemes('V3')}
-					{listThemes('Brew')}
 				</Nav.dropdown>;
 		}
 

@@ -55,16 +55,18 @@ const api = {
 			'thumbnail',
 			'textBin',
 			'text',
-			'authors'
+			'authors',
+			'renderer'
 		];
 
 		const userThemes = {};
 
-		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] }, renderer: { $ne: 'Legacy' } });
+		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] }});
 
 		if(brews) {
 			for (const brew of brews) {
-				userThemes[brew.shareId] = {
+				userThemes[brew.renderer] ??= {};
+				userThemes[brew.renderer][brew.shareId] = {
 					name         : brew.title,
 					renderer     : brew.renderer,
 					baseTheme    : brew.theme,
