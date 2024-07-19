@@ -99,7 +99,7 @@ const SharePage = createClass({
 					style={this.props.brew.style}
 					renderer={this.props.brew.renderer}
 					theme={this.props.brew.theme}
-					userThemes={this.props.brew.userThemes}
+					userThemes={this.props.userThemes}
 					allowPrint={true}
 				/>
 			</div>
