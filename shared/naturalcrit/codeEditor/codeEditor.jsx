@@ -39,8 +39,10 @@ if(typeof window !== 'undefined'){
 	//Autocompletion
 	require('codemirror/addon/hint/show-hint.js');
 
-	const foldCode = require('./fold-code');
-	foldCode.registerHomebreweryHelper(CodeMirror);
+	const foldPagesCode = require('./fold-pages');
+	foldPagesCode.registerHomebreweryHelper(CodeMirror);
+	const foldCSSCode = require('./fold-css');
+	foldCSSCode.registerHomebreweryHelper(CodeMirror);
 }
 
 const CodeEditor = createClass({
@@ -411,7 +413,7 @@ const CodeEditor = createClass({
 	foldOptions : function(cm){
 		return {
 			scanUp      : true,
-			rangeFinder : CodeMirror.fold.homebrewery,
+			rangeFinder : this.props.language === 'css' ? CodeMirror.fold.homebrewerycss : CodeMirror.fold.homebrewery,
 			widget      : (from, to)=>{
 				let text = '';
 				let currentLine = from.line;
@@ -450,3 +452,4 @@ const CodeEditor = createClass({
 });
 
 module.exports = CodeEditor;
+
