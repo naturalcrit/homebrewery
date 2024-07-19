@@ -100,6 +100,10 @@ const CodeEditor = createClass({
 		if(prevProps.editorTheme !== this.props.editorTheme){
 			this.codeMirror.setOption('theme', this.props.editorTheme);
 		}
+
+		if(prevProps.wrap != this.props.wrap){
+			this.codeMirror.setOption('lineWrapping', this.props.wrap);
+		}
 	},
 
 	buildEditor : function() {

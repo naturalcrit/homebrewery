@@ -354,6 +354,7 @@ const Editor = createClass({
 					language='gfm'
 					view={this.state.view}
 					value={this.props.brew.text}
+					wrap={true}
 					onChange={this.props.onTextChange}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent} />
@@ -367,7 +368,8 @@ const Editor = createClass({
 					view={this.state.view}
 					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
 					onChange={this.props.onStyleChange}
-					enableFolding={false}
+					enableFolding={true}
+					wrap={false}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent} />
 			</>;
