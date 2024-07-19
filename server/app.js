@@ -209,7 +209,6 @@ app.get('/metadata/:id', asyncHandler(getBrew('share')), (req, res) => {
 	  if (brew[field] !== undefined) acc[field] = brew[field];
 	  return acc;
 	}, {});
-	console.log(metadata);
 	res.status(200).json(metadata);
 });
   
