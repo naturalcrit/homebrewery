@@ -69,6 +69,7 @@ const BrewRenderer = (props)=>{
 		height             : PAGE_HEIGHT,
 		isMounted          : false,
 		visibility         : 'hidden',
+		themeBundle        : {}
 	});
 
 	const mainRef  = useRef(null);
@@ -128,6 +129,11 @@ const BrewRenderer = (props)=>{
 		</div>;
 	};
 
+	const renderStyle = ()=>{
+		const cleanStyle = props.style; //DOMPurify.sanitize(props.style, purifyConfig);
+		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `${state.themeBundle.joinedStyles} \n\n <style> ${cleanStyle} </style>` }} />;
+	};
+
 	const renderPage = (pageText, index)=>{
 		if(props.renderer == 'legacy') {
 			const html = MarkdownLegacy.render(pageText);
@@ -167,39 +173,17 @@ const BrewRenderer = (props)=>{
 		}
 	};
 
+	// Loads the theme bundle and parses it out. Called when the iFrame is first mounted, and when a new theme is selected
 	const loadAllBrewStylesAndSnippets = ()=>{
-		/*
-			Loads the theme bundle and parses it out.
-			These functionally replaces the previous renderStyles() function but needs to wait until the window is mounted.
-		*/
 		const rendererPath = isStaticTheme(props.renderer, props.theme) ? `/${props.renderer}/` : '/';
-		// Check for a User or Static Theme to change the endpoint path
+
+		// Load the themeBundle from the endpoint as an object
 		fetch(`${window.location.protocol}//${window.location.host}/theme${rendererPath}${props.theme}`).then((response)=>response.json()).then((themeBundle)=>{
-			// Load the themeBundle from the endpoint as an object.
-			const documentFrame = document.getElementById('BrewRenderer');
-			const iframeDocument = documentFrame.contentDocument || documentFrame.contentWindow.document;
-			// Find the brew frame Document root.
-
-			for (let style=0; style < themeBundle.styles.length; style++){
-				/*
-				  Walk through the styles array on the Theme Bundle. 
-				  Create a new style node and add it to the Brew Frame <head>
-				*/
-				const newStyles = document.createElement('style');
-				newStyles.appendChild(document.createTextNode(`${themeBundle.styles[style]}\n`));
-				iframeDocument.head.appendChild(newStyles);
-
-			}
-			/*
-			  Add the local brew styling to the Brew Frame <head>
-			*/
-			const newStyles = document.createElement('style');
-			const cleanStyle = props.style; //DOMPurify.sanitize(props.style, purifyConfig);
-
-			newStyles.appendChild(document.createTextNode(`/* Local Brew Styling */\n\n${cleanStyle}`));
-			iframeDocument.head.appendChild(newStyles);
-
-			// TO-DO - Walk the snippets returns and add them to the appropriate menu.
+			themeBundle.joinedStyles = themeBundle.styles.map(style => `<style>${style}</style>`).join('\n\n'); //DOMPurify.sanitize(joinedStyles, purifyConfig);
+			setState((prevState)=>({
+				...prevState,
+				themeBundle : themeBundle
+			}));
 		});
 	};
 
@@ -260,6 +244,7 @@ const BrewRenderer = (props)=>{
 					{state.isMounted
 						&&
 						<>
+							{renderStyle()}
 							<div className='pages' lang={`${props.lang || 'en'}`}>
 								{renderPages()}
 							</div>
