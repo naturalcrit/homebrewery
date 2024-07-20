@@ -78,9 +78,6 @@ app.get('/robots.txt', (req, res)=>{
 });
 
 // Theme
-// Path for User Themes
-app.get('/theme/:id', asyncHandler(getThemeBundle));
-// Path for Static Themes
 app.get('/theme/:renderer/:id', asyncHandler(getThemeBundle));
 
 //Home page

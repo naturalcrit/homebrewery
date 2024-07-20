@@ -175,10 +175,7 @@ const BrewRenderer = (props)=>{
 
 	// Loads the theme bundle and parses it out. Called when the iFrame is first mounted, and when a new theme is selected
 	const loadAllBrewStylesAndSnippets = ()=>{
-		const rendererPath = isStaticTheme(props.renderer, props.theme) ? `/${props.renderer}/` : '/';
-
-		// Load the themeBundle from the endpoint as an object
-		fetch(`${window.location.protocol}//${window.location.host}/theme${rendererPath}${props.theme}`).then((response)=>response.json()).then((themeBundle)=>{
+		fetch(`${window.location.protocol}//${window.location.host}/theme/${props.renderer}/${props.theme}`).then((response)=>response.json()).then((themeBundle)=>{
 			themeBundle.joinedStyles = themeBundle.styles.map(style => `<style>${style}</style>`).join('\n\n'); //DOMPurify.sanitize(joinedStyles, purifyConfig);
 			setState((prevState)=>({
 				...prevState,
