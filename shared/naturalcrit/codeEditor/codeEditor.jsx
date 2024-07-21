@@ -433,7 +433,7 @@ const CodeEditor = createClass({
 				}
 				text = foldPreviewText || `Lines ${from.line+1}-${to.line+1}`;
 
-				text = text.trim().replace('{', '').trim();
+				text = text.replace('{', '').trim();
 				if(text.length > maxLength)
 					text = `${text.substr(0, maxLength)}...`;
 
