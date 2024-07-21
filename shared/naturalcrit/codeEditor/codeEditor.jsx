@@ -437,9 +437,13 @@ const CodeEditor = createClass({
 				text = text.replace('{', '').trim();
 
 				// Extra data url chomping
-				console.log(text);
-				text = text.indexOf('data:') > -1 ? `${text.slice(0, text.indexOf('data:') + 5)} ...` : text;
-				console.log(text);
+				// Try to make it pretty...
+				const startOfData = text.indexOf('data:');
+				if(startOfData) {
+					text = (startOfData > maxLength) ?
+						`${text.slice(0, text.indexOf(':') + 1)} ... ${text.slice(startOfData, startOfData + 5)} ...` :
+						`${text.slice(0, text.indexOf('data:') + 5)} ...`;
+				}
 
 				if(text.length > maxLength)
 					text = `${text.slice(0, maxLength)}...`;
