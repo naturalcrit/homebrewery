@@ -55,7 +55,8 @@ const EditPage = createClass({
 			autoSaveWarning        : false,
 			unsavedTime            : new Date(),
 			currentEditorPage      : 0,
-			displayLockMessage     : this.props.brew.lock || false
+			displayLockMessage     : this.props.brew.lock || false,
+			themeBundle            : {}
 		};
 	},
 
@@ -86,6 +87,8 @@ const EditPage = createClass({
 		this.setState((prevState)=>({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
+
+		this.fetchThemeBundle(this.props.brew.renderer, this.props.brew.theme);
 
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
@@ -130,7 +133,10 @@ const EditPage = createClass({
 		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
-	handleMetaChange : function(metadata){
+	handleMetaChange : function(metadata, field=undefined){
+		if(field == "theme")	// Fetch theme bundle only if theme was changed
+			this.fetchThemeBundle(metadata.renderer, metadata.theme);
+		
 		this.setState((prevState)=>({
 			brew : {
 				...prevState.brew,
@@ -138,11 +144,22 @@ const EditPage = createClass({
 			},
 			isPending : true,
 		}), ()=>{if(this.state.autoSave) this.trySave();});
-
 	},
 
 	hasChanges : function(){
 		return !_.isEqual(this.state.brew, this.savedBrew);
+	},
+
+	// Loads the theme bundle and parses it out. Called when the iFrame is first mounted, and when a new theme is selected
+	fetchThemeBundle : function(renderer, theme) {
+		fetch(`${window.location.protocol}//${window.location.host}/theme/${renderer}/${theme}`).then((response)=>response.json()).then((themeBundle)=>{
+			themeBundle.joinedStyles = themeBundle.styles.map(style => `<style>${style}</style>`).join('\n\n'); //DOMPurify.sanitize(joinedStyles, purifyConfig);
+			this.setState((prevState)=>({ // MOVE TO MOUNT STEP OF SHARE / NEW / EDIT
+				...prevState,
+				themeBundle : themeBundle
+			}));
+		});
+		
 	},
 
 	trySave : function(immediate=false){
@@ -413,6 +430,7 @@ const EditPage = createClass({
 						style={this.state.brew.style}
 						renderer={this.state.brew.renderer}
 						theme={this.state.brew.theme}
+						themeBundle={this.state.themeBundle}
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
 						userThemes={this.props.userThemes}

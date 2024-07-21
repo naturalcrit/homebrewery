@@ -61,6 +61,7 @@ const BrewRenderer = (props)=>{
 		lang              : '',
 		errors            : [],
 		currentEditorPage : 0,
+		themeBundle       : {},
 		...props
 	};
 
@@ -69,7 +70,6 @@ const BrewRenderer = (props)=>{
 		height             : PAGE_HEIGHT,
 		isMounted          : false,
 		visibility         : 'hidden',
-		themeBundle        : {}
 	});
 
 	const mainRef  = useRef(null);
@@ -131,7 +131,7 @@ const BrewRenderer = (props)=>{
 
 	const renderStyle = ()=>{
 		const cleanStyle = props.style; //DOMPurify.sanitize(props.style, purifyConfig);
-		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `${state.themeBundle.joinedStyles} \n\n <style> ${cleanStyle} </style>` }} />;
+		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `${props.themeBundle.joinedStyles} \n\n <style> ${cleanStyle} </style>` }} />;
 	};
 
 	const renderPage = (pageText, index)=>{
@@ -173,19 +173,7 @@ const BrewRenderer = (props)=>{
 		}
 	};
 
-	// Loads the theme bundle and parses it out. Called when the iFrame is first mounted, and when a new theme is selected
-	const loadAllBrewStylesAndSnippets = ()=>{
-		fetch(`${window.location.protocol}//${window.location.host}/theme/${props.renderer}/${props.theme}`).then((response)=>response.json()).then((themeBundle)=>{
-			themeBundle.joinedStyles = themeBundle.styles.map(style => `<style>${style}</style>`).join('\n\n'); //DOMPurify.sanitize(joinedStyles, purifyConfig);
-			setState((prevState)=>({
-				...prevState,
-				themeBundle : themeBundle
-			}));
-		});
-	};
-
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
-		loadAllBrewStylesAndSnippets(); // Load the brew's inherited and local styles.
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			updateSize();
 			window.addEventListener('resize', updateSize);

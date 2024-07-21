@@ -111,7 +111,7 @@ const MetadataEditor = createClass({
 	handleTheme : function(theme){
 		this.props.metadata.renderer = theme.renderer;
 		this.props.metadata.theme    = theme.path;
-		this.props.onChange(this.props.metadata);
+		this.props.onChange(this.props.metadata, "theme");
 	},
 
 	handleLanguage : function(languageCode){
