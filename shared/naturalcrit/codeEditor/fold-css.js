@@ -5,10 +5,10 @@ module.exports = {
 			// BRACE FOLDING
 			const startMatcher = /\{[ \t]*$/;
 			const endMatcher = /\}[ \t]*$/;
-			const prevLine = cm.getLine(start.line);
+			const activeLine = cm.getLine(start.line);
 
 
-			if(prevLine.match(startMatcher)) {
+			if(activeLine.match(startMatcher)) {
 				const lastLineNo = cm.lastLine();
 				let end = start.line + 1;
 				let braceCount = 1;
@@ -31,7 +31,7 @@ module.exports = {
 
 			const importMatcher = /^@import.*?[;]/;
 
-			if(prevLine.match(importMatcher)) {
+			if(activeLine.match(importMatcher)) {
 				return {
 					from : CodeMirror.Pos(start.line, 0),
 					to   : CodeMirror.Pos(start.line, cm.getLine(start.line).length)
