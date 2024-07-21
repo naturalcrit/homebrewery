@@ -1,25 +1,27 @@
 const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
 
-const getTOC = (pages)=>{
+const getTOC = (pages) => {
 
-	const recursiveAdd = (title, page, targetDepth, child, curDepth=0)=>{
-		if(curDepth > 5) return; // Something went wrong.
-		if(curDepth == targetDepth) {
+	const recursiveAdd = (title, page, link, targetDepth, child, curDepth = 0) => {
+		if (curDepth > 5) return; // Something went wrong.
+		if (curDepth == targetDepth) {
 			child.push({
-				title    : title,
-				page     : page,
-				children : []
+				title: title,
+				page: page,
+				link: link,
+				children: []
 			});
 		} else {
-			if(child.length == 0) {
+			if (child.length == 0) {
 				child.push({
-					title    : null,
-					page     : page,
-					children : []
+					title: null,
+					page: page,
+					link: link,
+					children: []
 				});
 			}
-			recursiveAdd(title, page, targetDepth, _.last(child).children, curDepth+1,);
+			recursiveAdd(title, page, link, targetDepth, _.last(child).children, curDepth + 1,);
 		}
 	};
 
@@ -30,28 +32,29 @@ const getTOC = (pages)=>{
 	const headings = iframeDocument.querySelectorAll('h1, h2, h3, h4, h5, h6');
 	const headerDepth = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
 
-	_.each(headings, (heading)=>{
+	_.each(headings, (heading) => {
 		const onPage = parseInt(heading.closest('.page').id?.replace(/^p/, ''));
+		const link = heading.id;
 		const ToCExclude = getComputedStyle(heading).getPropertyValue('--TOC');
 
-		if(ToCExclude != 'exclude') {
-			recursiveAdd(heading.innerText.trim(), onPage, headerDepth.indexOf(heading.tagName), res);
+		if (ToCExclude != 'exclude') {
+			recursiveAdd(heading.textContent.trim(), onPage, link, headerDepth.indexOf(heading.tagName), res);
 		}
 	});
 	return res;
 };
 
 
-const ToCIterate = (entries, curDepth=0)=>{
+const ToCIterate = (entries, curDepth = 0) => {
 	const levelPad = ['- ###', '  - ####', '    - ', '      - ', '        - ', '          - '];
 	const toc = [];
-	if(entries.title !== null){
-		toc.push(`${levelPad[curDepth]} [{{ ${entries.title}}}{{ ${entries.page}}}](#p${entries.page})`);
+	if (entries.title !== null) {
+		toc.push(`${levelPad[curDepth]} [{{ ${entries.title}}}{{ ${entries.page}}}](#${entries.link})`);
 	}
-	if(entries.children.length) {
-		_.each(entries.children, (entry, idx)=>{
-			const children = ToCIterate(entry, entry.title == null ? curDepth : curDepth+1);
-			if(children.length) {
+	if (entries.children.length) {
+		_.each(entries.children, (entry, idx) => {
+			const children = ToCIterate(entry, entry.title == null ? curDepth : curDepth + 1);
+			if (children.length) {
 				toc.push(...children);
 			}
 		});
@@ -59,10 +62,10 @@ const ToCIterate = (entries, curDepth=0)=>{
 	return toc;
 };
 
-module.exports = function(props){
+module.exports = function (props) {
 	const pages = props.brew.text.split('\\page');
 	const TOC = getTOC(pages);
-	const markdown = _.reduce(TOC, (r, g1, idx1)=>{
+	const markdown = _.reduce(TOC, (r, g1, idx1) => {
 		r.push(ToCIterate(g1).join('\n'));
 		return r;
 	}, []).join('\n');
