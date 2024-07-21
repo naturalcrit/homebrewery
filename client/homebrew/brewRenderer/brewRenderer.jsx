@@ -65,9 +65,11 @@ const BrewRenderer = (props)=>{
 		height             : PAGE_HEIGHT,
 		isMounted          : false,
 		visibility         : 'hidden',
+		showHeaderNav      : false
 	});
 
 	const mainRef  = useRef(null);
+	const pagesRef = useRef(null);
 
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split('\\page');
@@ -188,6 +190,60 @@ const BrewRenderer = (props)=>{
 		document.dispatchEvent(new MouseEvent('click'));
 	};
 
+	const toggleHeaderNav = ()=>{
+		setState((prevState)=>({
+			...prevState,
+			showHeaderNav : !prevState.showHeaderNav
+		}));
+	};
+
+	const renderHeaderNav = ()=>{
+		return <>
+			<i
+				className={`navIcon ${state.showHeaderNav ? 'fa-solid' : 'fa-regular'} fa-rectangle-list`}
+				onClick={toggleHeaderNav}
+			></i>
+			{state.showHeaderNav && renderHeaderLinks()}
+		</>;
+	};
+
+	const renderHeaderLinks = ()=>{
+		if(!pagesRef.current) return;
+		const elements = pagesRef.current.querySelectorAll('[id]');
+		if(!elements) return;
+		const navList = [];
+
+		elements.forEach((el)=>{
+			if(el.className.match(/\bpage\b/)) {
+				navList.push({
+					depth : 0,
+					text  : `Page ${el.id.slice(1)}`,
+					link  : el.id
+				});
+				return;
+			}
+			if(el.localName.match(/^h[1-6]/)){
+				navList.push({
+					depth : el.localName[1],
+					text  : el.innerText,
+					link  : el.id
+				});
+				return;
+			}
+			navList.push({
+				depth : 7,
+				text  : el.innerText,
+				link  : el.id
+			});
+		});
+
+		return _.map(navList, (navItem)=>{
+			return <p>
+				<a href={`#${navItem.link}`} target='_self'>{`${'-'.repeat(navItem.depth)}${navItem.text}`}</a>
+			</p>;
+		});
+	};
+
 	const rendererPath  = props.renderer == 'V3' ? 'V3' : 'Legacy';
 	const themePath     = props.theme ?? '5ePHB';
 	const baseThemePath = Themes[rendererPath][themePath].baseTheme;
@@ -232,11 +288,14 @@ const BrewRenderer = (props)=>{
 						&&
 						<>
 							{renderStyle()}
-							<div className='pages' lang={`${props.lang || 'en'}`}>
+							<div className='pages' lang={`${props.lang || 'en'}`} ref={pagesRef}>
 								{renderPages()}
 							</div>
 						</>
 					}
+				</div>
+				<div className='headerNav'>
+					{renderHeaderNav()}
 				</div>
 			</Frame>
 			{renderPageInfo()}
