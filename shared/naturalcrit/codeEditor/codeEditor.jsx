@@ -433,9 +433,17 @@ const CodeEditor = createClass({
 				}
 				text = foldPreviewText || `Lines ${from.line+1}-${to.line+1}`;
 
+
 				text = text.replace('{', '').trim();
+
+				// Extra data url chomping
+				console.log(text);
+				text = text.indexOf('data:') > -1 ? `${text.slice(0, text.indexOf('data:') + 5)} ...` : text;
+				console.log(text);
+
 				if(text.length > maxLength)
-					text = `${text.substr(0, maxLength)}...`;
+					text = `${text.slice(0, maxLength)}...`;
+
 
 				return `\u21A4 ${text} \u21A6`;
 			}

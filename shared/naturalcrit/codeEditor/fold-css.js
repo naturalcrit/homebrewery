@@ -38,6 +38,18 @@ module.exports = {
 				};
 			}
 
+			// data-url folding FOR CSS.
+
+			const dataURLMatcher =  /url\(.*?data\:.*\)/;
+
+			if(activeLine.match(dataURLMatcher)) {
+				return {
+					from : CodeMirror.Pos(start.line, 0),
+					to   : CodeMirror.Pos(start.line, cm.getLine(start.line).length)
+				};
+			}
+
+
 			return null;
 		});
 	}
