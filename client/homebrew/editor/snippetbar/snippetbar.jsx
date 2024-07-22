@@ -51,7 +51,7 @@ const Snippetbar = createClass({
 	},
 
 	componentDidMount : async function() {
-		let snippets = this.compileSnippets();
+		const snippets = this.compileSnippets();
 		this.setState({
 			snippets : snippets
 		});
@@ -59,7 +59,7 @@ const Snippetbar = createClass({
 
 	componentDidUpdate : async function(prevProps) {
 		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.snippetBundle != this.props.snippetBundle) {
-			let snippets = this.compileSnippets();
+			const snippets = this.compileSnippets();
 			this.setState({
 				snippets : snippets
 			});
@@ -78,12 +78,12 @@ const Snippetbar = createClass({
 		let compiledSnippets = [];
 
 		let oldSnippets = _.keyBy(compiledSnippets, 'groupName');
-		
+
 		for (let snippets of this.props.snippetBundle) {
-			if (typeof(snippets) == "string")	// load staticThemes as needed; they were sent as just a file name
+			if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name
 				snippets = ThemeSnippets[snippets];
 
-			let newSnippets = _.keyBy(_.cloneDeep(snippets), 'groupName');
+			const newSnippets = _.keyBy(_.cloneDeep(snippets), 'groupName');
 			compiledSnippets = _.values(_.mergeWith(oldSnippets, newSnippets, this.mergeCustomizer));
 
 			oldSnippets = _.keyBy(compiledSnippets, 'groupName');

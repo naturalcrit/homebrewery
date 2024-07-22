@@ -288,14 +288,14 @@ describe('Tests for api', ()=>{
 				textBin     : undefined,
 				version     : undefined,
 				userThemes  : {
-					Brew: {}
+					Brew : {}
 				},
-				createdAt   : undefined,
-				gDrive      : false,
-				style       : undefined,
-				trashed     : false,
-				updatedAt   : undefined,
-				views       : 0
+				createdAt : undefined,
+				gDrive    : false,
+				style     : undefined,
+				trashed   : false,
+				updatedAt : undefined,
+				views     : 0
 			});
 			expect(next).toHaveBeenCalled();
 			expect(api.getId).toHaveBeenCalledWith(req);

@@ -61,7 +61,7 @@ const api = {
 
 		const userThemes = {};
 
-		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] }});
+		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] } });
 
 		if(brews) {
 			for (const brew of brews) {
@@ -269,7 +269,6 @@ const api = {
 		const completeSnippets = [];
 
 		while (req.params.id) {
-			console.log(`loading theme ID ${req.params.id}`)
 			//=== User Themes ===//
 			if(!isStaticTheme(req.params.renderer, req.params.id)) {
 				await api.getBrew('share')(req, res, ()=>{});
@@ -282,7 +281,7 @@ const api = {
 
 				req.params.id       = currentTheme.theme;
 				req.params.renderer = currentTheme.renderer;
-			} 
+			}
 			//=== Static Themes ===//
 			else {
 				const localSnippets = `${req.params.renderer}_${req.params.id}`; // Just log the name for loading on client

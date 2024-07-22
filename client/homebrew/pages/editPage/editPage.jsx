@@ -134,9 +134,9 @@ const EditPage = createClass({
 	},
 
 	handleMetaChange : function(metadata, field=undefined){
-		if(field == "theme")	// Fetch theme bundle only if theme was changed
+		if(field == 'theme')	// Fetch theme bundle only if theme was changed
 			this.fetchThemeBundle(metadata.renderer, metadata.theme);
-		
+
 		this.setState((prevState)=>({
 			brew : {
 				...prevState.brew,
@@ -153,13 +153,13 @@ const EditPage = createClass({
 	// Loads the theme bundle and parses it out. Called when the iFrame is first mounted, and when a new theme is selected
 	fetchThemeBundle : function(renderer, theme) {
 		fetch(`${window.location.protocol}//${window.location.host}/theme/${renderer}/${theme}`).then((response)=>response.json()).then((themeBundle)=>{
-			themeBundle.joinedStyles = themeBundle.styles.map(style => `<style>${style}</style>`).join('\n\n'); //DOMPurify.sanitize(joinedStyles, purifyConfig);
+			themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n'); //DOMPurify.sanitize(joinedStyles, purifyConfig);
 			this.setState((prevState)=>({ // MOVE TO MOUNT STEP OF SHARE / NEW / EDIT
 				...prevState,
 				themeBundle : themeBundle
 			}));
 		});
-		
+
 	},
 
 	trySave : function(immediate=false){
