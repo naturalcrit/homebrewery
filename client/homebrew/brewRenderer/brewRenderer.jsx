@@ -37,7 +37,7 @@ const BrewPage = (props)=>{
 		index    : 0,
 		...props
 	};
-	const cleanText = DOMPurify.sanitize(props.contents, purifyConfig);
+	const cleanText = props.contents; //DOMPurify.sanitize(props.contents, purifyConfig);
 	return <div className={props.className} id={`p${props.index + 1}`} >
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
@@ -192,7 +192,7 @@ const BrewRenderer = (props)=>{
 
 	const renderStyle = ()=>{
 		if(!props.style) return;
-		const cleanStyle = DOMPurify.sanitize(props.style, purifyConfig);
+		const cleanStyle = props.style; //DOMPurify.sanitize(props.style, purifyConfig);
 		//return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${sanitizeScriptTags(props.style)}\n} </style>` }} />;
 		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${cleanStyle} </style>` }} />;
 	};
