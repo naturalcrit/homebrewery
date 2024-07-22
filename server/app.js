@@ -17,26 +17,13 @@ const asyncHandler = require('express-async-handler');
 
 const { DEFAULT_BREW } = require('./brewDefaults.js');
 
-const splitTextStyleAndMetadata = (brew)=>{
-	brew.text = brew.text.replaceAll('\r\n', '\n');
-	if(brew.text.startsWith('```metadata')) {
-		const index = brew.text.indexOf('```\n\n');
-		const metadataSection = brew.text.slice(12, index - 1);
-		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
-		brew.text = brew.text.slice(index + 5);
-	}
-	if(brew.text.startsWith('```css')) {
-		const index = brew.text.indexOf('```\n\n');
-		brew.style = brew.text.slice(7, index - 1);
-		brew.text = brew.text.slice(index + 5);
-	}
-};
+const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
+
 
 const sanitizeBrew = (brew, accessType)=>{
 	brew._id = undefined;
 	brew.__v = undefined;
-	if(accessType !== 'edit'){
+	if(accessType !== 'edit' && accessType !== 'shareAuthor') {
 		brew.editId = undefined;
 	}
 	return brew;
@@ -320,7 +307,6 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 //Share Page
 app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
 	const { brew } = req;
-
 	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',
 		description : req.brew.description || 'No description.',
@@ -339,17 +325,11 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 			await HomebrewModel.increaseView({ shareId: brew.shareId });
 		}
 	};
-	sanitizeBrew(req.brew, 'share');
+
+	brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	return next();
 }));
-
-//Print Page
-app.get('/print/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
-	sanitizeBrew(req.brew, 'share');
-	splitTextStyleAndMetadata(req.brew);
-	next();
-});
 
 //Account Page
 app.get('/account', asyncHandler(async (req, res, next)=>{
@@ -385,7 +365,7 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 				console.log(err);
 			});
 
-		data.uiItems = {
+		data.accountDetails = {
 			username    : req.account.username,
 			issued      : req.account.issued,
 			googleId    : Boolean(req.account.googleId),

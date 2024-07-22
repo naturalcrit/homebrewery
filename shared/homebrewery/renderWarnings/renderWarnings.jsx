@@ -2,9 +2,8 @@ require('./renderWarnings.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
-const cx    = require('classnames');
 
-const DISMISS_KEY = 'dismiss_render_warning';
+import Dialog from '../../../client/components/dialog.jsx';
 
 const RenderWarnings = createClass({
 	displayName     : 'RenderWarnings',
@@ -35,9 +34,6 @@ const RenderWarnings = createClass({
 		},
 	},
 	checkWarnings : function(){
-		const hideDismiss = localStorage.getItem(DISMISS_KEY);
-		if(hideDismiss) return this.setState({ warnings: {} });
-
 		this.setState({
 			warnings : _.reduce(this.warnings, (r, fn, type)=>{
 				const element = fn();
@@ -46,20 +42,18 @@ const RenderWarnings = createClass({
 			}, {})
 		});
 	},
-	dismiss : function(){
-		localStorage.setItem(DISMISS_KEY, true);
-		this.checkWarnings();
-	},
 	render : function(){
 		if(_.isEmpty(this.state.warnings)) return null;
 
-		return <div className='renderWarnings'>
-			<i className='fas fa-times dismiss' onClick={this.dismiss}/>
+		const DISMISS_KEY = 'dismiss_render_warning';
+		const DISMISS_TEXT = <i className='fas fa-times dismiss' />;
+
+		return <Dialog className='renderWarnings' dismissKey={DISMISS_KEY} closeText={DISMISS_TEXT}>
 			<i className='fas fa-exclamation-triangle ohno' />
 			<h3>Render Warnings</h3>
 			<small>If this homebrew is rendering badly if might be because of the following:</small>
 			<ul>{_.values(this.state.warnings)}</ul>
-		</div>;
+		</Dialog>;
 	}
 });
 

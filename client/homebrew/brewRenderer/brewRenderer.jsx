@@ -13,6 +13,10 @@ const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
 const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
+const { printCurrentBrew } = require('../../../shared/helpers.js');
+
+const DOMPurify = require('dompurify');
+const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
 
 const Themes = require('themes/themes.json');
 
@@ -20,9 +24,9 @@ const PAGE_HEIGHT = 1056;
 
 const INITIAL_CONTENT = dedent`
 	<!DOCTYPE html><html><head>
-	<link href="//use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
+	<link href="//use.fontawesome.com/releases/v6.5.1/css/all.css" rel="stylesheet" type="text/css" />
 	<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
-	<link href='/homebrew/bundle.css' rel='stylesheet' />
+	<link href='/homebrew/bundle.css' type="text/css" rel='stylesheet' />
 	<base target=_blank>
 	</head><body style='overflow: hidden'><div></div></body></html>`;
 
@@ -33,8 +37,9 @@ const BrewPage = (props)=>{
 		index    : 0,
 		...props
 	};
+	const cleanText = props.contents; //DOMPurify.sanitize(props.contents, purifyConfig);
 	return <div className={props.className} id={`p${props.index + 1}`} >
-	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: props.contents }} />
+	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
 };
 
@@ -102,13 +107,6 @@ const BrewRenderer = (props)=>{
 		return false;
 	};
 
-	const sanitizeScriptTags = (content)=>{
-		return content
-			?.replace(/<script/ig, '&lt;script')
-			.replace(/<\/script>/ig, '&lt;/script&gt;')
-			|| '';
-	};
-
 	const renderPageInfo = ()=>{
 		return <div className='pageInfo' ref={mainRef}>
 			<div>
@@ -128,19 +126,18 @@ const BrewRenderer = (props)=>{
 
 	const renderStyle = ()=>{
 		if(!props.style) return;
-		const cleanStyle = sanitizeScriptTags(props.style);
+		const cleanStyle = props.style; //DOMPurify.sanitize(props.style, purifyConfig);
 		//return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${sanitizeScriptTags(props.style)}\n} </style>` }} />;
 		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${cleanStyle} </style>` }} />;
 	};
 
 	const renderPage = (pageText, index)=>{
-		let cleanPageText = sanitizeScriptTags(pageText);
 		if(props.renderer == 'legacy') {
-			const html = MarkdownLegacy.render(cleanPageText);
+			const html = MarkdownLegacy.render(pageText);
 			return <BrewPage className='page phb' index={index} key={index} contents={html} />;
 		} else {
-			cleanPageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
-			const html = Markdown.render(cleanPageText, index);
+			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
+			const html = Markdown.render(pageText, index);
 			return <BrewPage className='page' index={index} key={index} contents={html} />;
 		}
 	};
@@ -161,6 +158,16 @@ const BrewRenderer = (props)=>{
 			}
 		});
 		return renderedPages;
+	};
+
+	const handleControlKeys = (e)=>{
+		if(!(e.ctrlKey || e.metaKey)) return;
+		const P_KEY = 80;
+		if(e.keyCode == P_KEY && props.allowPrint) printCurrentBrew();
+		if(e.keyCode == P_KEY) {
+			e.stopPropagation();
+			e.preventDefault();
+		}
 	};
 
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
@@ -196,6 +203,12 @@ const BrewRenderer = (props)=>{
 				</div>
 				: null}
 
+			<ErrorBar errors={props.errors} />
+			<div className='popups'>
+				<RenderWarnings />
+				<NotificationPopup />
+			</div>
+
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
 				style={{ width: '100%', height: '100%', visibility: state.visibility }}
@@ -204,18 +217,15 @@ const BrewRenderer = (props)=>{
 			>
 				<div className={'brewRenderer'}
 					onScroll={handleScroll}
+					onKeyDown={handleControlKeys}
+					tabIndex={-1}
 					style={{ height: state.height }}>
 
-					<ErrorBar errors={props.errors} />
-					<div className='popups'>
-						<RenderWarnings />
-						<NotificationPopup />
-					</div>
-					<link href={`/themes/${rendererPath}/Blank/style.css`} rel='stylesheet'/>
+					<link href={`/themes/${rendererPath}/Blank/style.css`} type='text/css' rel='stylesheet'/>
 					{baseThemePath &&
-						<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} rel='stylesheet'/>
+						<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} type='text/css' rel='stylesheet'/>
 					}
-					<link href={`/themes/${rendererPath}/${themePath}/style.css`} rel='stylesheet'/>
+					<link href={`/themes/${rendererPath}/${themePath}/style.css`} type='text/css' rel='stylesheet'/>
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted

@@ -1,8 +1,6 @@
 require('./brewItem.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const _     = require('lodash');
-const cx    = require('classnames');
 const moment = require('moment');
 const request = require('../../../../utils/request-middleware.js');
 
@@ -20,7 +18,8 @@ const BrewItem = createClass({
 				authors     : [],
 				stubbed     : true
 			},
-			reportError : ()=>{}
+			updateListFilter : ()=>{},
+			reportError      : ()=>{}
 		};
 	},
 
@@ -42,6 +41,10 @@ const BrewItem = createClass({
 					location.reload();
 				}
 			});
+	},
+
+	updateFilter : function(type, term){
+		this.props.updateListFilter(type, term);
 	},
 
 	renderDeleteBrewLink : function(){
@@ -109,6 +112,9 @@ const BrewItem = createClass({
 		const brew = this.props.brew;
 		if(Array.isArray(brew.tags)) {               // temporary fix until dud tags are cleaned
 			brew.tags = brew.tags?.filter((tag)=>tag); //remove tags that are empty strings
+			brew.tags.sort((a, b)=>{
+				return a.indexOf(':') - b.indexOf(':') != 0 ? a.indexOf(':') - b.indexOf(':') : a.toLowerCase().localeCompare(b.toLowerCase());
+			});
 		}
 		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
 
@@ -129,7 +135,7 @@ const BrewItem = createClass({
 						<i className='fas fa-tags'/>
 						{brew.tags.map((tag, idx)=>{
 							const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
-							return <span key={idx} className={matches[1]}>{matches[2]}</span>;
+							return <span key={idx} className={matches[1]} onClick={()=>{this.updateFilter(tag);}}>{matches[2]}</span>;
 						})}
 					</div>
 				</> : <></>
