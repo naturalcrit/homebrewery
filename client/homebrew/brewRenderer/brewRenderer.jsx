@@ -57,6 +57,7 @@ const BrewRenderer = (props)=>{
 		lang              : '',
 		errors            : [],
 		currentEditorPage : 0,
+		showHeaderNav     : false,
 		...props
 	};
 
@@ -294,9 +295,13 @@ const BrewRenderer = (props)=>{
 						</>
 					}
 				</div>
-				<div className='headerNav'>
-					{renderHeaderNav()}
-				</div>
+				{props.showHeaderNav ?
+					<div className='headerNav'>
+						{renderHeaderNav()}
+					</div>
+					:
+					<></>
+				}
 			</Frame>
 			{renderPageInfo()}
 		</>
