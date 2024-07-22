@@ -26,9 +26,10 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 		elements.forEach((el)=>{
 			if(el.className.match(/\bpage\b/)) {
 				navList.push({
-					depth : 0,
-					text  : `Page ${el.id.slice(1)}`,
-					link  : el.id
+					depth     : 0,
+					text      : `Page ${el.id.slice(1)}`,
+					link      : el.id,
+					className : 'pageLink'
 				});
 				return;
 			}
@@ -48,7 +49,7 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 		});
 
 		return _.map(navList, (navItem, index)=>{
-			return <HeaderNavItem text={navItem.text} link={navItem.link} depth={navItem.depth} index={index} />;
+			return <HeaderNavItem {...navItem} key={index} />;
 		});
 
 	};
@@ -64,9 +65,11 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 }
 );
 
-const HeaderNavItem = ({ index, link, text, depth })=>{
-	return <p key={index}>
-		<a href={`#${link}`} target='_self'>{`${'-'.repeat(depth)}${text}`}</a>
+const HeaderNavItem = ({ link, text, depth, className })=>{
+	return <p>
+		<a href={`#${link}`} target='_self' className={className}>
+			{`${'-'.repeat(depth)}${text}`}
+		</a>
 	</p>;
 };
 
