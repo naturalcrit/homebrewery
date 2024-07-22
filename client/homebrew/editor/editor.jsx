@@ -425,6 +425,7 @@ const Editor = createClass({
 					historySize={this.historySize()}
 					currentEditorTheme={this.state.editorTheme}
 					updateEditorTheme={this.updateEditorTheme}
+					snippetBundle={this.props.snippetBundle}
 					cursorPos={this.codeEditor.current?.getCursorPosition() || {}} />
 
 				{this.renderEditor()}

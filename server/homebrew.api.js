@@ -285,8 +285,9 @@ const api = {
 			} 
 			//=== Static Themes ===//
 			else {
-				// NOTE: This currently makes NO attempt to do anything with Static theme Snippets. Loading of static snippets remains unchanged.
-				const localStyle = `@import url(\"/themes/${req.params.renderer}/${req.params.id}/style.css\");`;
+				const localSnippets = `${req.params.renderer}_${req.params.id}`; // Just log the name for loading on client
+				const localStyle    = `@import url(\"/themes/${req.params.renderer}/${req.params.id}/style.css\");`;
+				completeSnippets.push(localSnippets);
 				completeStyles.push(`/* From Theme ${req.params.id} */\n\n${localStyle}`);
 
 				req.params.id = Themes[req.params.renderer][req.params.id].baseTheme;

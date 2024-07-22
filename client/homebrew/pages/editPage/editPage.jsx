@@ -424,6 +424,7 @@ const EditPage = createClass({
 						reportError={this.errorReported}
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
+						snippetBundle={this.state.themeBundle.snippets}
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}
