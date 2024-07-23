@@ -34,7 +34,7 @@ body {
 
 	.content {
 		display               : grid;
-		grid-template-columns : 500px 2fr;
+		grid-template-columns : clamp(310px,25vw, 600px) 2fr;
 		background            : #2C3E50;
 
 		.dataGroup {
@@ -44,7 +44,7 @@ body {
 
 			&.form .brewLookup {
 				position : relative;
-				padding  : 50px;
+				padding  : 50px clamp(20px, 4vw, 50px);
 
 				.formTitle {
 					margin        : 20px 0;
@@ -66,7 +66,7 @@ body {
 				#searchButton {
 					position : absolute;
 					right    : 10px;
-					bottom   : 20px;
+					bottom   : 0;
 
 					i { margin-left : 10px; }
 				}
@@ -120,7 +120,7 @@ body {
 
 					.totalBrews {
 						position         : fixed;
-						right            : 17px;
+						right            : 0;
 						bottom           : 0;
 						z-index          : 1000;
 						padding          : 8px 10px;
@@ -150,7 +150,7 @@ body {
 					}
 
 					.brewItem {
-						width            : 48%;
+						width            : 47%;
 						margin-right     : 40px;
 						color            : black;
 						background-image : url('/assets/parchmentBackground.jpg');
@@ -196,12 +196,13 @@ body {
 							text-align      : center;
 
 							.pageNumber {
-								margin-inline           : 10px;
+								margin-inline           : 1vw;
 								font-family             : "Open Sans";
 								font-weight             : 900;
 								color                   : white;
 								text-underline-position : under;
 								cursor                  : pointer;
+								text-wrap				: nowrap;
 
 								&.currentPage {
 									color           : gold;
