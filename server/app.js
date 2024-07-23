@@ -101,7 +101,8 @@ app.get('/', (req, res, next)=>{
 app.get('/legacy', (req, res, next)=>{
 	req.brew = {
 		text     : welcomeTextLegacy,
-		renderer : 'legacy'
+		renderer : 'legacy',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,

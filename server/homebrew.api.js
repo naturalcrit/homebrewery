@@ -8,8 +8,6 @@ const Markdown = require('../shared/naturalcrit/markdown.js');
 const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
-const path = require('path');
-const fs = require('fs');
 const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
 
 const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
@@ -263,7 +261,7 @@ const api = {
 				req.params.renderer: This is the Markdown+ version for the static theme. If a
 					User theme the value will come from the User Theme metadata.
 		*/
-
+		req.params.renderer = _.upperFirst(req.params.renderer);
 		let currentTheme;
 		const completeStyles   = [];
 		const completeSnippets = [];

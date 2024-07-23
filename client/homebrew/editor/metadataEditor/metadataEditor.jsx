@@ -99,7 +99,7 @@ const MetadataEditor = createClass({
 			if(renderer == 'legacy')
 				this.props.metadata.theme = '5ePHB';
 		}
-		this.props.onChange(this.props.metadata);
+		this.props.onChange(this.props.metadata, 'renderer');
 	},
 	handlePublish : function(val){
 		this.props.onChange({
