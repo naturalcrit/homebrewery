@@ -18,7 +18,7 @@ const VaultPage = (props) => {
     const [title, setTitle] = useState(props.query.title || '');
     const [legacy, setLegacy] = useState(props.query.legacy !== 'false');
     const [v3, setV3] = useState(props.query.v3 !== 'false');
-    const [count, setCount] = useState(props.query.count || 10);
+    const [count, setCount] = useState(props.query.count || 20);
     const [page, setPage] = useState(parseInt(props.query.page) || 1);
     const [brewCollection, setBrewCollection] = useState(null);
     const [totalBrews, setTotalBrews] = useState(null);

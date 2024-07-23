@@ -61,7 +61,7 @@ const vault = {
             const title = req.query.title || '';
             const page = Math.max(parseInt(req.query.page) || 1, 1);
             const mincount = 10;
-            const count = Math.max(parseInt(req.query.count) || 10, mincount);
+            const count = Math.max(parseInt(req.query.count) || 20, mincount);
             const skip = (page - 1) * count;
 
             const brewsQuery = buildBrewsQuery(req.query.legacy, req.query.v3);
