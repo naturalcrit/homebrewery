@@ -247,10 +247,18 @@ body {
 
 // media query for when the page is smaller than 1079 px in width
 @media screen and (max-width: 1079px) {
-	.vaultPage .content .dataGroup.resultsContainer .foundBrews .brewItem {
-		width: 100%;
-		color: black;
-		background-image: url('/assets/parchmentBackground.jpg');
-	}
+	.vaultPage .content {
+		grid-template-columns: none;
+		grid-template-rows: 325px 1fr;
 
+		.brewLookup {
+			padding-block:10px 20px;
+		}
+
+		.dataGroup.resultsContainer .foundBrews .brewItem {
+			width: 100%;
+			color: black;
+			background-image: url('/assets/parchmentBackground.jpg');
+		}
+	}
 }
