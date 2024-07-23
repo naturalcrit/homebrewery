@@ -159,7 +159,6 @@ const EditPage = createClass({
 				themeBundle : themeBundle
 			}));
 		});
-
 	},
 
 	trySave : function(immediate=false){
@@ -434,7 +433,6 @@ const EditPage = createClass({
 						themeBundle={this.state.themeBundle}
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
-						userThemes={this.props.userThemes}
 						currentEditorPage={this.state.currentEditorPage}
 						allowPrint={true}
 					/>

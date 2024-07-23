@@ -69,7 +69,7 @@ const Homebrew = createClass({
 						<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={this.props.brew} userThemes={this.props.userThemes}/>} />
 						<Route path='/share/:id' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
 						<Route path='/new/:id' element={<WithRoute el={NewPage} brew={this.props.brew} userThemes={this.props.userThemes}/>} />
-						<Route path='/new' element={<WithRoute el={NewPage}/>} />
+						<Route path='/new' element={<WithRoute el={NewPage} userThemes={this.props.userThemes}/> } />
 						<Route path='/user/:username' element={<WithRoute el={UserPage} brews={this.props.brews} />} />
 						<Route path='/changelog' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
 						<Route path='/faq' element={<WithRoute el={SharePage} brew={this.props.brew} />} />

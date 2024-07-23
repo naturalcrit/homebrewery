@@ -19,13 +19,12 @@ const SharePage = createClass({
 	getDefaultProps : function() {
 		return {
 			brew : DEFAULT_BREW_LOAD,
-			themeBundle : {}
 		};
 	},
 
 	getInitialState : function() {
 		return {
-			themeBundle : this.props.themeBundle
+			themeBundle : {}
 		};
 	},
 

@@ -44,7 +44,8 @@ const NewPage = createClass({
 			saveGoogle        : (global.account && global.account.googleId ? true : false),
 			error             : null,
 			htmlErrors        : Markdown.validate(brew.text),
-			currentEditorPage : 0
+			currentEditorPage : 0,
+			themeBundle       : {}
 		};
 	},
 
@@ -77,6 +78,8 @@ const NewPage = createClass({
 			saveGoogle : (saveStorage == 'GOOGLE-DRIVE' && this.state.saveGoogle)
 		});
 
+		this.fetchThemeBundle(this.props.brew.renderer, this.props.brew.theme);
+
 		localStorage.setItem(BREWKEY, brew.text);
 		if(brew.style)
 			localStorage.setItem(STYLEKEY, brew.style);
@@ -84,6 +87,17 @@ const NewPage = createClass({
 	},
 	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
+	},
+
+	// Loads the theme bundle and parses it out. Called when the iFrame is first mounted, and when a new theme is selected
+	fetchThemeBundle : function(renderer, theme) {
+		fetch(`${window.location.protocol}//${window.location.host}/theme/${renderer}/${theme}`).then((response)=>response.json()).then((themeBundle)=>{
+			themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n'); //DOMPurify.sanitize(joinedStyles, purifyConfig);
+			this.setState((prevState)=>({ // MOVE TO MOUNT STEP OF SHARE / NEW / EDIT
+				...prevState,
+				themeBundle : themeBundle
+			}));
+		});
 	},
 
 	handleControlKeys : function(e){
@@ -122,7 +136,10 @@ const NewPage = createClass({
 		localStorage.setItem(STYLEKEY, style);
 	},
 
-	handleMetaChange : function(metadata){
+	handleMetaChange : function(metadata, field=undefined){
+		if(field == 'theme')	// Fetch theme bundle only if theme was changed
+			this.fetchThemeBundle(metadata.renderer, metadata.theme);
+
 		this.setState((prevState)=>({
 			brew : { ...prevState.brew, ...metadata },
 		}), ()=>{
@@ -157,7 +174,7 @@ const NewPage = createClass({
 			.catch((err)=>{
 				this.setState({ isSaving: false, error: err });
 			});
-			if(!res) return;
+		if(!res) return;
 
 		brew = res.body;
 		localStorage.removeItem(BREWKEY);
@@ -217,9 +234,9 @@ const NewPage = createClass({
 						style={this.state.brew.style}
 						renderer={this.state.brew.renderer}
 						theme={this.state.brew.theme}
+						themeBundle={this.state.themeBundle}
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
-						userThemes={this.props.userThemes}
 						currentEditorPage={this.state.currentEditorPage}
 						allowPrint={true}
 					/>

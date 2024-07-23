@@ -286,7 +286,7 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res,
 	return next();
 }));
 
-//New Page
+//New Page from ID
 app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async(req, res, next)=>{
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
@@ -301,6 +301,18 @@ app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async(req, res,
 	};
 	req.brew = _.defaults(brew, DEFAULT_BREW);
 
+	req.userThemes = await(getUsersBrewThemes(req.account?.username));
+
+	req.ogMeta = { ...defaultMetaTags,
+		title       : 'New',
+		description : 'Start crafting your homebrew on the Homebrewery!'
+	};
+
+	return next();
+}));
+
+//New Page
+app.get('/new', asyncHandler(async(req, res, next)=>{
 	req.userThemes = await(getUsersBrewThemes(req.account?.username));
 
 	req.ogMeta = { ...defaultMetaTags,
