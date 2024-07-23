@@ -18,12 +18,6 @@ const { printCurrentBrew } = require('../../../shared/helpers.js');
 const DOMPurify = require('dompurify');
 const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
 
-const staticThemes = require('themes/themes.json');
-
-const isStaticTheme = (renderer, themeName)=>{
-	return staticThemes[renderer]?.[themeName] !== undefined;
-};
-
 const PAGE_HEIGHT = 1056;
 
 const INITIAL_CONTENT = dedent`
@@ -190,12 +184,6 @@ const BrewRenderer = (props)=>{
 		if(!window || !document) return;
 		document.dispatchEvent(new MouseEvent('click'));
 	};
-
-	let rendererPath = '';
-	const themePath    = props.theme;
-
-	if(staticThemes[_.upperFirst(props.renderer)]?.[props.theme] !== undefined)	//Change CSS path if is staticTheme
-		rendererPath = `${_.upperFirst(props.renderer)}/`;
 
 	return (
 		<>
