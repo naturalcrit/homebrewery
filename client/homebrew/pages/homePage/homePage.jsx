@@ -34,11 +34,27 @@ const HomePage = createClass({
 			brew              : this.props.brew,
 			welcomeText       : this.props.brew.text,
 			error             : undefined,
-			currentEditorPage : 0
+			currentEditorPage : 0,
+			themeBundle       : {}
 		};
 	},
 
 	editor : React.createRef(null),
+
+	componentDidMount : function() {
+		this.fetchThemeBundle(this.props.brew.renderer, this.props.brew.theme);
+	},
+
+	// Loads the theme bundle and parses it out. Called when the iFrame is first mounted, and when a new theme is selected
+	fetchThemeBundle : function(renderer, theme) {
+		fetch(`${window.location.protocol}//${window.location.host}/theme/${renderer}/${theme}`).then((response)=>response.json()).then((themeBundle)=>{
+			themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n'); //DOMPurify.sanitize(joinedStyles, purifyConfig);
+			this.setState((prevState)=>({ // MOVE TO MOUNT STEP OF SHARE / NEW / EDIT
+				...prevState,
+				themeBundle : themeBundle
+			}));
+		});
+	},
 
 	handleSave : function(){
 		request.post('/api')
@@ -95,6 +111,7 @@ const HomePage = createClass({
 						style={this.state.brew.style}
 						renderer={this.state.brew.renderer}
 						currentEditorPage={this.state.currentEditorPage}
+						themeBundle={this.state.themeBundle}
 					/>
 				</SplitPane>
 			</div>

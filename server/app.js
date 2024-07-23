@@ -84,7 +84,8 @@ app.get('/theme/:renderer/:id', asyncHandler(getThemeBundle));
 app.get('/', (req, res, next)=>{
 	req.brew = {
 		text     : welcomeText,
-		renderer : 'V3'
+		renderer : 'V3',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
