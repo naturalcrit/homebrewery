@@ -287,15 +287,12 @@ describe('Tests for api', ()=>{
 				thumbnail   : '',
 				textBin     : undefined,
 				version     : undefined,
-				userThemes  : {
-					Brew : {}
-				},
-				createdAt : undefined,
-				gDrive    : false,
-				style     : undefined,
-				trashed   : false,
-				updatedAt : undefined,
-				views     : 0
+				createdAt   : undefined,
+				gDrive      : false,
+				style       : undefined,
+				trashed     : false,
+				updatedAt   : undefined,
+				views       : 0
 			});
 			expect(next).toHaveBeenCalled();
 			expect(api.getId).toHaveBeenCalledWith(req);
@@ -600,7 +597,7 @@ brew`);
 			expect(res.status).toHaveBeenCalledWith(200);
 		});
 	});
-
+//////////////////////////////
 	describe('getBrewThemeWithUserParent', ()=>{
 		it('should collect parent theme and brew style - returning as css with user-theme parent imported.', async ()=>{
 			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
@@ -643,7 +640,7 @@ brew`);
 			expect(res.status).toHaveBeenCalledWith(404);
 		});
 	});
-
+////////////////////////////////
 
 	describe('deleteBrew', ()=>{
 		it('should handle case where fetching the brew returns an error', async ()=>{

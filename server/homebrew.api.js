@@ -309,8 +309,6 @@ const api = {
 		if(isStaticTheme(req.brew.renderer, req.brew.theme)) //Check if parent is staticBrew
 			rendererPath = `${_.upperFirst(req.brew.renderer)}/`;
 
-		console.log(`getBrewThemeCSS for ${brew.shareId}`);
-		console.log(`and parentThemeImport for ${brew.theme}`);
 		const parentThemeImport = `@import url(\"/css/${rendererPath}${req.brew.theme}\");\n\n`;
 		const themeLocationComment = `/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.brew.shareId} */\n\n`;
 		return res.status(200).send(`${parentThemeImport}${themeLocationComment}${req.brew.style}`);
@@ -323,8 +321,6 @@ const api = {
 			res.setHeader('Content-Type', 'text/css');
 			res.setHeader('Cache-Control', 'public, max-age: 43200, must-revalidate');
 			const themeParent = Themes[req.params.renderer][req.params.id].baseTheme;
-			console.log(`getStaticThemeCSS for ${req.params.id}`);
-			console.log(`and parentThemeImport for ${themeParent}`);
 			const parentThemeImport = themeParent ? `@import url(\"/css/${req.params.renderer}/${themeParent}\");\n/* Static Theme ${Themes[req.params.renderer][themeParent].name} */\n` : '';
 			return res.status(200).send(`${parentThemeImport}@import url(\"/themes/${req.params.renderer}/${req.params.id}/style.css\");\n/* Static Theme ${Themes[req.params.renderer][req.params.id].name} */\n`);
 		}
