@@ -7,7 +7,7 @@ const LicenseGenWotC = require('./snippets/licenseWotC.gen.js');
 const LicenseGenGNU = require('./snippets/licenseGNU.gen.js');
 const LicenseGen = require('./snippets/license.gen.js');
 const LicenseGenAelf = require('./snippets/licenseAELF.js');
-
+const LicenseDTTRPGGCC = require('./snippets/licenseDTRPGCC.gen.js');
 const dedent        = require('dedent-tabs').default;
 
 module.exports = [
@@ -379,6 +379,368 @@ module.exports = [
 					},
 				]
 			},
+
+			{
+				name  : 'DTRPG Community Content',
+				incon : 'fab fa-dtrpg',
+				subsnippets : [
+					{
+						name : "Starforgers Guild Colophon",
+						gen	 : LicenseDTTRPGGCC.alligatorAlleyEntertainmentStarforgersGuildColophon,
+					},
+
+					{
+						name : "Holostreets Colophon",
+						gen	 : LicenseDTTRPGGCC.CatalystHolostreetsColophon,
+					},
+
+					{
+						name : "Hall of Champions Colophon",
+						gen	 : LicenseDTTRPGGCC.dojHallofChampionsColophon,
+					},
+
+					{
+						name : "Genesys Foundry Colophon",
+						gen	 : LicenseDTTRPGGCC.fantasyFlightGenesysFoundryColophon,
+					},
+
+					{
+						name : "Free League Workshop",
+						subsnippets : [
+
+							{
+								name : "Coriolis Colophon",
+								gen	 : LicenseDTTRPGGCC.freeLeagueWorkShopCoriolisColophon,
+							},
+
+							{
+								name : "MYZ Colophon",
+								gen	 : LicenseDTTRPGGCC.freeLeagueWorkShopMYZColophon,
+							},
+
+							{
+								name : "FL Colophon",
+								gen	 : LicenseDTTRPGGCC.freeLeagueWorkShopFLColophon,
+							},
+
+							{
+								name : "Sym Colophon",
+								gen	 : LicenseDTTRPGGCC.freeLeagueWorkShopSymColophon,
+							},
+
+							{
+								name : "TftL Colophon",
+								gen	 : LicenseDTTRPGGCC.freeLeagueWorkShopTftLColophon,
+							},
+
+							{
+								name : "Vas Colophon",
+								gen	 : LicenseDTTRPGGCC.freeLeagueWorkShopVasColophon,
+							},
+
+							{
+								name : "Twilight 2000 Colophon",
+								gen	 : LicenseDTTRPGGCC.freeLeagueWorkShopT2000Colophon,
+							},
+						],
+					},
+
+					{
+						name : "Gallant Knight's Tiny Trove",
+						subsnippets : [
+
+							{
+								name : 'Required Text',
+								subsnippets : [
+
+									{
+										name : "Tiny Trove Colophon",
+										gen	 : LicenseDTTRPGGCC.gallantKnightTinyTroveColophon,
+									},
+
+									{
+										name : "Tiny Trove Cover",
+										gen	 : LicenseDTTRPGGCC.gallantKnightTinyTroveCover,
+									}
+								]
+							},
+
+							{
+								name : "Tiny Trove Colophon Logo",
+								gen	 : LicenseDTTRPGGCC.gallantKnightTinyTroveColophonLogo,
+							},
+
+						]
+					},
+
+					{
+						name : 'Green Ronin\'s Age Creator\'s Alliance',
+						subsnippets : [
+							{
+								name : "Required Text",
+								subsnippets : [
+									{
+										name : "Colophon",
+										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceColophon,
+									},
+
+									{
+										name : "Cover Text",
+										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceCover,
+									},
+								]
+							},
+							{
+								name : "Logos",
+								subsnippets : [
+									{
+										name : "Logo",
+										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceLogo,
+									},
+
+									{
+										name : "Blue Rose Logo",
+										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceBlueRoseLogo,
+									},
+
+									{
+										name : "Fantasy Age Compatible",
+										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceFantasyAgeCompatible,
+									},
+
+									{
+										name : "Modern AGE Compatible",
+										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceModernAGECompatible,
+									},
+								]
+							}
+						]
+					},
+
+					{
+						name : "Chronicle SystemGuild Colophon",
+						gen	 : LicenseDTTRPGGCC.greenRoninChronicleSystemGuildColophon,
+					},
+
+					{
+						name : "Super-Powered by M&M",
+						subsnippets : [
+							{
+								name : "Required Text",
+								subsnippets : [
+									{
+										name : "greenRoninSuperPoweredMMColophon",
+										gen	 : LicenseDTTRPGGCC.greenRoninSuperPoweredMMColophon,
+									},
+
+									{
+										name : "greenRoninSuperPoweredMMCover",
+										gen	 : LicenseDTTRPGGCC.greenRoninSuperPoweredMMCover,
+									},
+
+									{
+										name : "greenRoninSuperPoweredMMSection15",
+										gen	 : LicenseDTTRPGGCC.greenRoninSuperPoweredMMSection15,
+									},
+								]
+							}
+						]
+					},
+
+					{
+						name : "Grim and Perilous Library",
+						subsnippets : [
+							{
+								name: "Required Text",
+								subsnippets : [
+									{
+										name : "grimPerilousLibraryColophon",
+										gen	 : LicenseDTTRPGGCC.grimPerilousLibraryColophon,
+									},
+
+									{
+										name : "grimPerilousLibraryTitle",
+										gen	 : LicenseDTTRPGGCC.grimPerilousLibraryTitle,
+									},
+								]
+							}
+						]
+					},
+
+					{
+						name : "Hero Kid\'s Creators Guild",
+						subsnippets : [
+
+							{
+								name: "Required Text",
+								subsnippets : [
+							
+									{
+										name : "heroForgeHeroKidsCreatorsGuildColophon",
+										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildColophon,
+									},
+
+									{
+										name : "heroForgeHeroKidsCreatorsGuildSuperKidsColophon",
+										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildSuperKidsColophon,
+									},
+
+									{
+										name : "heroForgeHeroKidsCreatorsGuildCover",
+										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildCover,
+									},
+
+									{
+										name : "heroForgeHeroKidsCreatorsGuildSuperKidsCover",
+										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildSuperKidsCover,
+									},
+								]
+							}
+						]
+					},
+
+					{
+						name : "Travellers Aid Society Colophon",
+						gen	 : LicenseDTTRPGGCC.mongooseTravellersAidSocietyColophon,
+					},
+
+					{
+						name : "Cypher System Creator",
+						subsnippets : [
+							{
+								name : "Required Text",
+								subsnippets : [
+
+									{
+										name : "Cover",
+										gen	 : LicenseDTTRPGGCC.monteCookCypherCover,
+									},
+
+									{
+										name : "Colophon",
+										gen	 : LicenseDTTRPGGCC.monteCookCypherColophon,
+									},
+								]
+							},
+							{
+
+								name : "Logos",
+								subsnippets : [
+									{
+										name : "monteCookLogoDarkLarge",
+										gen	 : LicenseDTTRPGGCC.monteCookLogoDarkLarge,
+									},
+
+									{
+										name : "monteCookLogoDarkSmall",
+										gen	 : LicenseDTTRPGGCC.monteCookLogoDarkSmall,
+									},
+
+									{
+										name : "monteCookLogoLightLarge",
+										gen	 : LicenseDTTRPGGCC.monteCookLogoLightLarge,
+									},
+
+									{
+										name : "monteCookLogoLightSmall",
+										gen	 : LicenseDTTRPGGCC.monteCookLogoLightSmall,
+									},
+								]
+							}
+						]
+					},
+
+					{
+						name : "Canis Minor Colophon",
+						gen	 : LicenseDTTRPGGCC.onyxPathCanisMinorColophon,
+					},
+
+					{
+						name : "Story Path Nexus",
+						subsnippets : [
+							{
+
+								name : "Required Text",
+								subsnippets : [
+
+									{
+										name : "General Colophon",
+										gen	 : LicenseDTTRPGGCC.onyxPathStoryPathNexuscolophon,
+									},
+
+									{
+										name : "Dystopia Rising: Evolution Colophon",
+										gen	 : LicenseDTTRPGGCC.onyxPathStoryPathNexusdreColophon,
+									},
+
+									{
+										name : "Dystopia Rising: Evolution Cover",
+										gen	 : LicenseDTTRPGGCC.onyxPathStoryPathNexusdreCover,
+									},
+
+									{
+										name : "Scion Cover",
+										gen	 : LicenseDTTRPGGCC.onyxPathStoryPathNexusscionCover,
+									},
+
+									{
+										name : "Trinity Continuum Cover",
+										gen	 : LicenseDTTRPGGCC.onyxPathStoryPathNexustcCover,
+									},
+
+									{
+										name : "Trinity Continuum: Aeon Cover",
+										gen	 : LicenseDTTRPGGCC.onyxPathStoryPathNexustcAeonCover,
+									},
+
+									{
+										name : "Trinity Continuum: Abberant Cover",
+										gen	 : LicenseDTTRPGGCC.onyxPathStoryPathNexustcAbberantCover,
+									},
+
+									{
+										name : "They Came from the ... Cover",
+										gen	 : LicenseDTTRPGGCC.onyxPathStoryPathNexustctcCover,
+									}
+								]
+							}
+						]
+					},
+
+					{
+						name : "Disciples of the Demon Lord",
+						subsnippets : [
+
+							{
+								name : "schwalbEntertainmentDisciplesDemonLordColophon",
+								gen	 : LicenseDTTRPGGCC.schwalbEntertainmentDisciplesDemonLordColophon,
+							},
+
+							{
+								name : "schwalbEntertainmentDisciplesDemonLordCover",
+								gen	 : LicenseDTTRPGGCC.schwalbEntertainmentDisciplesDemonLordCover,
+							},
+
+						]
+					},
+
+					{
+						name : "City of Mists Garage Colophon",
+						gen	 : LicenseDTTRPGGCC.sonOakGameStudioCityMistsGarageColophon,
+					},
+
+					{
+						name : "Epicismo Editions Colophon",
+						gen	 : LicenseDTTRPGGCC.ulissesSpieleEpicismoEditionsColophon,
+					},
+
+					{
+						name : "Company of the Phoenix Colophon",
+						gen	 : LicenseDTTRPGGCC.ulissesSpieleCompanyPhoenixColophon,
+					},
+
+				]
+			}
 
 		]
 	},

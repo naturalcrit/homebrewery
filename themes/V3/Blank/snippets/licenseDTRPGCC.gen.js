@@ -202,16 +202,6 @@ module.exports = {
 	monteCookLogoDarkSmall              : `![Cypher System Compatible](/themes/assets/license_logos/CSCDarkSmall.png)`,
 	monteCookLogoLightLarge             : `![Cypher System Compatible](/themes/assets/license_logos/CSCLightLarge.png)`,
 	monteCookLogoLightSmall             : `![Cypher System Compatible](/themes/assets/license_logos/CSCLightSmall.png)`,
-	// Company of the Phoenix- Fading Suns - Verify Logos and access
-	ulissesSpieleCompanyPhoenixColophon : function() {
-		return dedent`
-		This product was created under license from Ulisses Medien und Spiele Distribution GmbH. Fading Suns and its respective logo(s) are a trademark of Ulisses Medien und Spiele Distribution GmbH. The title and contents of this book are protected under the copyright laws of Germany, the United States of America and other countries. No part of this publication may be reproduced, stored in retrieval systems or transmitted, in any form or by any means without prior written consent from Ulisses Medien und Spiele Distribution GmbH.
-
-		This publication includes material that was produced by Ulisses Spiele and/or other authors and which is protected under applicable copyright laws. Use of such material is granted under the Community Content Agreement for the Company of the Phoenix.
-
-		All original content in this work is copyright \[2021\] by \[your legal name or company name\] and published under the Community Content Agreement for the Company of the Phoenix.
-		`;
-	},
 	// Onyx Path Canis Minor - Verify logos and access
 	onyxPathCanisMinorColophon : function () {
 		return dedent`
@@ -271,5 +261,15 @@ module.exports = {
 
 			All original content in this work is copyright \[current year\] of \[your legal name or company name\] and published under the SCRIPTORIUM AVENTURIS Community Content Agreement.
 			`;
+	},
+	// Company of the Phoenix- Fading Suns - Verify Logos and access
+	ulissesSpieleCompanyPhoenixColophon : function() {
+		return dedent`
+		This product was created under license from Ulisses Medien und Spiele Distribution GmbH. Fading Suns and its respective logo(s) are a trademark of Ulisses Medien und Spiele Distribution GmbH. The title and contents of this book are protected under the copyright laws of Germany, the United States of America and other countries. No part of this publication may be reproduced, stored in retrieval systems or transmitted, in any form or by any means without prior written consent from Ulisses Medien und Spiele Distribution GmbH.
+
+		This publication includes material that was produced by Ulisses Spiele and/or other authors and which is protected under applicable copyright laws. Use of such material is granted under the Community Content Agreement for the Company of the Phoenix.
+
+		All original content in this work is copyright \[2021\] by \[your legal name or company name\] and published under the Community Content Agreement for the Company of the Phoenix.
+		`;
 	},
 };
