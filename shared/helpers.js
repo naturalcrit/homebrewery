@@ -33,7 +33,18 @@ const printCurrentBrew = ()=>{
 	}
 };
 
+const fetchThemeBundle = (obj, renderer, theme)=>{
+	fetch(`${window.location.protocol}//${window.location.host}/theme/${renderer}/${theme}`).then((response)=>response.json()).then((themeBundle)=>{
+		themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n'); //DOMPurify.sanitize(joinedStyles, purifyConfig);
+		obj.setState((prevState)=>({ // MOVE TO MOUNT STEP OF SHARE / NEW / EDIT
+			...prevState,
+			themeBundle : themeBundle
+		}));
+	});
+};
+
 module.exports = {
 	splitTextStyleAndMetadata,
-	printCurrentBrew
+	printCurrentBrew,
+	fetchThemeBundle,
 };

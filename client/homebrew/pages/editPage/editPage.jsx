@@ -25,7 +25,7 @@ const LockNotification = require('./lockNotification/lockNotification.jsx');
 const Markdown = require('naturalcrit/markdown.js');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
-const { printCurrentBrew } = require('../../../../shared/helpers.js');
+const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
 
 const googleDriveIcon = require('../../googleDrive.svg');
 
@@ -88,7 +88,7 @@ const EditPage = createClass({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
-		this.fetchThemeBundle(this.props.brew.renderer, this.props.brew.theme);
+		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
 
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
@@ -135,7 +135,7 @@ const EditPage = createClass({
 
 	handleMetaChange : function(metadata, field=undefined){
 		if(field == 'theme' || field == 'renderer')	// Fetch theme bundle only if theme or renderer was changed
-			this.fetchThemeBundle(metadata.renderer, metadata.theme);
+			fetchThemeBundle(this, metadata.renderer, metadata.theme);
 
 		this.setState((prevState)=>({
 			brew : {
@@ -148,17 +148,6 @@ const EditPage = createClass({
 
 	hasChanges : function(){
 		return !_.isEqual(this.state.brew, this.savedBrew);
-	},
-
-	// Loads the theme bundle and parses it out. Called when the iFrame is first mounted, and when a new theme is selected
-	fetchThemeBundle : function(renderer, theme) {
-		fetch(`${window.location.protocol}//${window.location.host}/theme/${renderer}/${theme}`).then((response)=>response.json()).then((themeBundle)=>{
-			themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n'); //DOMPurify.sanitize(joinedStyles, purifyConfig);
-			this.setState((prevState)=>({ // MOVE TO MOUNT STEP OF SHARE / NEW / EDIT
-				...prevState,
-				themeBundle : themeBundle
-			}));
-		});
 	},
 
 	trySave : function(immediate=false){

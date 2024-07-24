@@ -19,7 +19,7 @@ const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
-const { printCurrentBrew } = require('../../../../shared/helpers.js');
+const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
 
 const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
@@ -78,7 +78,7 @@ const NewPage = createClass({
 			saveGoogle : (saveStorage == 'GOOGLE-DRIVE' && this.state.saveGoogle)
 		});
 
-		this.fetchThemeBundle(this.props.brew.renderer, this.props.brew.theme);
+		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
 
 		localStorage.setItem(BREWKEY, brew.text);
 		if(brew.style)
@@ -87,17 +87,6 @@ const NewPage = createClass({
 	},
 	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
-	},
-
-	// Loads the theme bundle and parses it out. Called when the iFrame is first mounted, and when a new theme is selected
-	fetchThemeBundle : function(renderer, theme) {
-		fetch(`${window.location.protocol}//${window.location.host}/theme/${renderer}/${theme}`).then((response)=>response.json()).then((themeBundle)=>{
-			themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n'); //DOMPurify.sanitize(joinedStyles, purifyConfig);
-			this.setState((prevState)=>({ // MOVE TO MOUNT STEP OF SHARE / NEW / EDIT
-				...prevState,
-				themeBundle : themeBundle
-			}));
-		});
 	},
 
 	handleControlKeys : function(e){
@@ -138,7 +127,7 @@ const NewPage = createClass({
 
 	handleMetaChange : function(metadata, field=undefined){
 		if(field == 'theme' || field == 'renderer')	// Fetch theme bundle only if theme or renderer was changed
-			this.fetchThemeBundle(metadata.renderer, metadata.theme);
+			fetchThemeBundle(this, metadata.renderer, metadata.theme);
 
 		this.setState((prevState)=>({
 			brew : { ...prevState.brew, ...metadata },

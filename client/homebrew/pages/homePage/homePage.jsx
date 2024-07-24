@@ -13,6 +13,7 @@ const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
+const { fetchThemeBundle } = require('../../../../shared/helpers.js');
 
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
@@ -42,18 +43,7 @@ const HomePage = createClass({
 	editor : React.createRef(null),
 
 	componentDidMount : function() {
-		this.fetchThemeBundle(this.props.brew.renderer, this.props.brew.theme);
-	},
-
-	// Loads the theme bundle and parses it out. Called when the iFrame is first mounted, and when a new theme is selected
-	fetchThemeBundle : function(renderer, theme) {
-		fetch(`${window.location.protocol}//${window.location.host}/theme/${renderer}/${theme}`).then((response)=>response.json()).then((themeBundle)=>{
-			themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n'); //DOMPurify.sanitize(joinedStyles, purifyConfig);
-			this.setState((prevState)=>({ // MOVE TO MOUNT STEP OF SHARE / NEW / EDIT
-				...prevState,
-				themeBundle : themeBundle
-			}));
-		});
+		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
 	},
 
 	handleSave : function(){
