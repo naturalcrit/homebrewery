@@ -33,7 +33,7 @@ body {
 	}
 
 	.content {
-		background: #2C3E50;
+		background : #2C3E50;
 
 		.dataGroup {
 			width      : 100%;
@@ -55,18 +55,66 @@ body {
 				.formContents {
 					display        : flex;
 					flex-direction : column;
-				}
 
-				label { margin : 10px 0; }
+					label {
+						display     : flex;
+						align-items : center; 
+						margin      : 10px 0;
+					}
+					select { margin : 0 10px; }
 
-				input { margin : 0 10px; }
+					input { 
+						margin : 0 10px; 
+					
+						&.renderer {
+							position       : relative;
+							display        : inline-block;
+							width          : 50px;
+							height         : 30px;
+							font-family    : 'WalterTurncoat';
+							font-size      : 20px;
+							font-weight    : 800;
+							color          : white;
+							letter-spacing : 2px;
+							appearance     : none;
+							background     : red;
+							isolation      : isolate;
+							border-radius  : 5px;
 
-				#searchButton {
-					position : absolute;
-					right    : 10px;
-					bottom   : 0;
+							&::before,&::after {
+								position    : absolute;
+								inset       : 0;
+								padding-top : 2px;
+								text-align  : center;
+								z-index 	: 5;
+							}
 
-					i { margin-left : 10px; }
+							&::before {
+								display : block;
+								content : 'No';
+							}
+
+							&::after {
+								display : none;
+								content : 'Yes';
+							}
+
+							&:checked {
+								background : green;
+
+								&::before { display : none; }
+								&::after { display : block; }
+							}
+						}
+					}
+
+					#searchButton {
+						position : absolute;
+						right    : 10px;
+						bottom   : 0;
+
+						i { margin-left : 10px; }
+					}
 				}
 			}
 
@@ -163,7 +211,7 @@ body {
 						}
 
 						.info {
-							font-family : "ScalySansRemake";
+							font-family : 'ScalySansRemake';
 							font-size   : 1.2em;
 
 							>span {
@@ -194,12 +242,12 @@ body {
 
 							.pageNumber {
 								margin-inline           : 1vw;
-								font-family             : "Open Sans";
+								font-family             : 'Open Sans';
 								font-weight             : 900;
 								color                   : white;
 								text-underline-position : under;
+								text-wrap               : nowrap;
 								cursor                  : pointer;
-								text-wrap				: nowrap;
 
 								&.currentPage {
 									color           : gold;
@@ -243,16 +291,14 @@ body {
 }
 
 // media query for when the page is smaller than 1079 px in width
-@media screen and (max-width: 1079px) {
+@media screen and (max-width : 1079px) {
 	.vaultPage .content {
 
-		.brewLookup {
-			padding:0 20px 20px 10px;
-		}
+		.dataGroup.form .brewLookup { padding : 1px 20px 20px 10px; }
 
 		.dataGroup.resultsContainer .foundBrews .brewItem {
-			width  			: 100%;
-			margin-inline	: auto;
+			width         : 100%;
+			margin-inline : auto;
 		}
 	}
 }

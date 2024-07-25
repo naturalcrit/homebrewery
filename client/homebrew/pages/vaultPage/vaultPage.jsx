@@ -188,7 +188,7 @@ const VaultPage = (props) => {
                     <code>"word"</code> to specify an exact string.
                 </small>
                 <label>
-                    Results per page
+                    Results per page 
                     <select ref={countRef} name="count" defaultValue={count}>
                         <option value="10">10</option>
                         <option value="20">20</option>
@@ -198,12 +198,18 @@ const VaultPage = (props) => {
                 </label>
 
                 <label>
-                    <input ref={v3Ref} type="checkbox" defaultChecked={v3} />
+                    <input
+                        className='renderer'
+                        ref={v3Ref}
+                        type="checkbox"
+                        defaultChecked={v3}
+                    />
                     Search for v3 brews
                 </label>
 
                 <label>
                     <input
+                        className='renderer'
                         ref={legacyRef}
                         type="checkbox"
                         defaultChecked={legacy}
