@@ -12,6 +12,8 @@ const NewBrew = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const BrewItem = require('../basePages/listPage/brewItem/brewItem.jsx');
 
+const SplitPane = require('../../../../shared/naturalcrit/splitPane/splitPane.jsx');
+
 const request = require('../../utils/request-middleware.js');
 
 const VaultPage = (props) => {
@@ -377,11 +379,13 @@ const VaultPage = (props) => {
             <link href="/themes/V3/5ePHB/style.css" rel="stylesheet" />
             {renderNavItems()}
             <div className="content">
+            <SplitPane>
                 <div className="form dataGroup">{renderForm()}</div>
 
                 <div className="resultsContainer dataGroup">
                     {renderFoundBrews()}
                 </div>
+            </SplitPane>
             </div>
         </div>
     );

@@ -33,9 +33,7 @@ body {
 	}
 
 	.content {
-		display               : grid;
-		grid-template-columns : clamp(310px,25vw, 600px) 2fr;
-		background            : #2C3E50;
+		background: #2C3E50;
 
 		.dataGroup {
 			width      : 100%;
@@ -79,7 +77,6 @@ body {
 				overflow-y     : auto;
 				font-family    : 'BookInsanityRemake';
 				font-size      : 0.34cm;
-				border-left    : 2px solid;
 
 
 				.foundBrews {
@@ -248,17 +245,14 @@ body {
 // media query for when the page is smaller than 1079 px in width
 @media screen and (max-width: 1079px) {
 	.vaultPage .content {
-		grid-template-columns: none;
-		grid-template-rows: 325px 1fr;
 
 		.brewLookup {
-			padding-block:10px 20px;
+			padding:0 20px 20px 10px;
 		}
 
 		.dataGroup.resultsContainer .foundBrews .brewItem {
-			width: 100%;
-			color: black;
-			background-image: url('/assets/parchmentBackground.jpg');
+			width  			: 100%;
+			margin-inline	: auto;
 		}
 	}
 }
