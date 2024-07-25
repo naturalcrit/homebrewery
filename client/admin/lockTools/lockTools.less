@@ -39,8 +39,16 @@
     }
 
     .lockTable{
-        td:hover {
+        cursor: default;
+        .row:hover {
+            background-color: #ccc;
+            color: #000;
+        }
+        .icon {
             cursor: pointer;
+            &:hover{
+                text-shadow: 0px 0px 6px black;
+            }
         }
     }
     

@@ -207,23 +207,26 @@ const LockTable = createClass({
 				{this.state.result[this.props.resultName] &&
 				<>
 					<p>Total Reviews Waiting: {this.state.result[this.props.resultName].length}</p>
-					<p>Click a row to copy the Share ID to the clipboard</p>
 					<table className='lockTable'>
 						<thead>
 							<tr>
 								{this.props.propertyNames.map((name, idx)=>{
 									return <th key={idx}>{name}</th>;
 								})}
+								<th>clip</th>
+								<th>view</th>
 							</tr>
 						</thead>
 						<tbody>
 							{this.state.result[this.props.resultName].map((result, resultIdx)=>{
-								return <tr key={`${resultIdx}-row`} onClick={()=>{navigator.clipboard.writeText(result.shareId.toString());}}>
+								return <tr className='row' key={`${resultIdx}-row`}>
 									{this.props.propertyNames.map((name, nameIdx)=>{
 										return <td key={`${resultIdx}-${nameIdx}`}>
 											{result[name].toString()}
 										</td>;
 									})}
+									<td className='icon' onClick={()=>{navigator.clipboard.writeText(result.shareId.toString());}}><i className='fa-regular fa-clipboard'></i></td>
+									<td className='icon'><i className='fa-regular fa-circle-right'></i></td>
 								</tr>;
 							})}
 						</tbody>
