@@ -7,6 +7,7 @@ const request = require('../../utils/request-middleware.js');
 const Markdown = require('naturalcrit/markdown.js');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
+const PrintNavItem = require('../../navbar/print.navitem.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
@@ -18,6 +19,7 @@ const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
+const { printCurrentBrew } = require('../../../../shared/helpers.js');
 
 const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
@@ -102,7 +104,7 @@ const NewPage = createClass({
 		const S_KEY = 83;
 		const P_KEY = 80;
 		if(e.keyCode == S_KEY) this.save();
-		if(e.keyCode == P_KEY) this.print();
+		if(e.keyCode == P_KEY) printCurrentBrew();
 		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
 			e.stopPropagation();
 			e.preventDefault();
@@ -193,16 +195,6 @@ const NewPage = createClass({
 		}
 	},
 
-	print : function(){
-		window.open('/print?dialog=true&local=print', '_blank');
-	},
-
-	renderLocalPrintButton : function(){
-		return <Nav.item color='purple' icon='far fa-file-pdf' onClick={this.print}>
-			get PDF
-		</Nav.item>;
-	},
-
 	renderNavbar : function(){
 		return <Navbar>
 
@@ -215,7 +207,7 @@ const NewPage = createClass({
 					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
 					this.renderSaveButton()
 				}
-				{this.renderLocalPrintButton()}
+				<PrintNavItem />
 				<HelpNavItem />
 				<RecentNavItem />
 				<AccountNavItem />
@@ -244,6 +236,7 @@ const NewPage = createClass({
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
 						currentEditorPage={this.state.currentEditorPage}
+						allowPrint={true}
 					/>
 				</SplitPane>
 			</div>
