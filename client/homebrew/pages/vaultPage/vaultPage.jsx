@@ -178,7 +178,7 @@ const VaultPage = (props) => {
                         pattern=".{3,}"
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
-                                if (e.target.validity.valid && e.target.value) {
+                                if (!searchButtonRef.current.disabled) {
                                     loadPage(1, true, true);
                                 }
                             }
