@@ -582,6 +582,51 @@ brew`);
 		});
 	});
 
+	describe('theme bundle', () => {
+		it('should return Theme Bundle for a User Theme', async () => {
+			const toBrewPromise = (brew) => new Promise((res) => res({ toObject: () => brew }));
+			model.get = jest.fn(() => toBrewPromise({ title: 'User Theme A', renderer: 'V3', theme: null, shareId: 'userThemeAID', style: 'User Theme A Style' }));
+			const req = { params: { renderer: "V3", id: "userThemeAID" }, get: () => { return 'localhost'; }, protocol: 'https' };
+
+			await api.getThemeBundle(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith({
+				styles: ["/* From Brew: https://localhost/share/userThemeAID */\n\nUser Theme A Style"],
+				snippets: []
+			});
+		});
+
+		it('should return Theme Bundle for nested User Themes', async () => {
+			console.log(api.getId)
+			const brews = {
+				userThemeAID: { title: 'User Theme A', renderer: 'V3', theme: 'userThemeBID', shareId: 'userThemeAID', style: 'User Theme A Style' },
+				userThemeBID: { title: 'User Theme B', renderer: 'V3', theme: 'userThemeCID', shareId: 'userThemeBID', style: 'User Theme B Style' },
+				userThemeCID: { title: 'User Theme C', renderer: 'V3', theme: null, shareId: 'userThemeCID', style: 'User Theme C Style' }
+			};
+
+			const toBrewPromise = (brew) => new Promise((res) => res({ toObject: () => brew }));
+			model.get = jest.fn((shareId) => {
+				toBrewPromise(brews[shareId]);
+			});
+			const req = { params: { renderer: "V3", id: "userThemeAID" }, get: () => { return 'localhost'; }, protocol: 'https' };
+
+			await api.getThemeBundle(req, res);
+
+			expect(res.send).toHaveBeenCalledWith({
+					styles: [
+							"/* From Brew: https://localhost/share/userThemeCID */\n\nUser Theme C Style",
+							"/* From Brew: https://localhost/share/userThemeBID */\n\nUser Theme B Style",
+							"/* From Brew: https://localhost/share/userThemeAID */\n\nUser Theme A Style"
+					],
+					snippets: []
+			});
+			expect(res.status).toHaveBeenCalledWith(200);
+		});
+	
+	});
+
+//////////////////////////////
 	describe('getBrewThemeWithStaticParent', ()=>{
 		it('should collect parent theme and brew style - returning as css with static parent imported.', async ()=>{
 			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
@@ -597,7 +642,7 @@ brew`);
 			expect(res.status).toHaveBeenCalledWith(200);
 		});
 	});
-//////////////////////////////
+
 	describe('getBrewThemeWithUserParent', ()=>{
 		it('should collect parent theme and brew style - returning as css with user-theme parent imported.', async ()=>{
 			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
