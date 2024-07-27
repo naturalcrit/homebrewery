@@ -14,6 +14,9 @@ describe('Tests for api', ()=>{
 	let saved;
 
 	beforeEach(()=>{
+		jest.resetModules();
+		jest.restoreAllMocks();
+
 		saved = undefined;
 		saveFunc = jest.fn(async function() {
 			saved = { ...this, _id: '1' };
@@ -80,10 +83,6 @@ describe('Tests for api', ()=>{
 			...hbBrew,
 			googleId : '12345'
 		};
-	});
-
-	afterEach(()=>{
-		jest.restoreAllMocks();
 	});
 
 	describe('getId', ()=>{
@@ -582,10 +581,14 @@ brew`);
 		});
 	});
 
-	describe('theme bundle', () => {
+	describe('Theme bundle', () => {
 		it('should return Theme Bundle for a User Theme', async () => {
+			const brews = {
+				userThemeAID: { title: 'User Theme A', renderer: 'V3', theme: null, shareId: 'userThemeAID', style: 'User Theme A Style' }
+			};
+
 			const toBrewPromise = (brew) => new Promise((res) => res({ toObject: () => brew }));
-			model.get = jest.fn(() => toBrewPromise({ title: 'User Theme A', renderer: 'V3', theme: null, shareId: 'userThemeAID', style: 'User Theme A Style' }));
+			model.get = jest.fn((getParams) => toBrewPromise(brews[getParams.shareId]));
 			const req = { params: { renderer: "V3", id: "userThemeAID" }, get: () => { return 'localhost'; }, protocol: 'https' };
 
 			await api.getThemeBundle(req, res);
@@ -598,7 +601,6 @@ brew`);
 		});
 
 		it('should return Theme Bundle for nested User Themes', async () => {
-			console.log(api.getId)
 			const brews = {
 				userThemeAID: { title: 'User Theme A', renderer: 'V3', theme: 'userThemeBID', shareId: 'userThemeAID', style: 'User Theme A Style' },
 				userThemeBID: { title: 'User Theme B', renderer: 'V3', theme: 'userThemeCID', shareId: 'userThemeBID', style: 'User Theme B Style' },
@@ -606,13 +608,12 @@ brew`);
 			};
 
 			const toBrewPromise = (brew) => new Promise((res) => res({ toObject: () => brew }));
-			model.get = jest.fn((shareId) => {
-				toBrewPromise(brews[shareId]);
-			});
+			model.get = jest.fn((getParams) => toBrewPromise(brews[getParams.shareId]));
 			const req = { params: { renderer: "V3", id: "userThemeAID" }, get: () => { return 'localhost'; }, protocol: 'https' };
 
 			await api.getThemeBundle(req, res);
 
+			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.send).toHaveBeenCalledWith({
 					styles: [
 							"/* From Brew: https://localhost/share/userThemeCID */\n\nUser Theme C Style",
@@ -621,9 +622,71 @@ brew`);
 					],
 					snippets: []
 			});
-			expect(res.status).toHaveBeenCalledWith(200);
 		});
-	
+
+		it('should return Theme Bundle for a Static Theme', async () => {
+			const req = { params: { renderer: "V3", id: "5ePHB" }, get: () => { return 'localhost'; }, protocol: 'https' };
+
+			await api.getThemeBundle(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith({
+					styles: [
+							`/* From Theme Blank */\n\n@import url("/themes/V3/Blank/style.css");`,
+							`/* From Theme 5ePHB */\n\n@import url("/themes/V3/5ePHB/style.css");`
+					],
+					snippets: [
+						"V3_Blank",
+						"V3_5ePHB"
+					]
+			});
+		});
+
+		it('should return Theme Bundle for nested User and Static Themes together', async () => {
+			const brews = {
+				userThemeAID: { title: 'User Theme A', renderer: 'V3', theme: 'userThemeBID', shareId: 'userThemeAID', style: 'User Theme A Style' },
+				userThemeBID: { title: 'User Theme B', renderer: 'V3', theme: 'userThemeCID', shareId: 'userThemeBID', style: 'User Theme B Style' },
+				userThemeCID: { title: 'User Theme C', renderer: 'V3', theme: '5eDMG', shareId: 'userThemeCID', style: 'User Theme C Style' }
+			};
+
+			const toBrewPromise = (brew) => new Promise((res) => res({ toObject: () => brew }));
+			model.get = jest.fn((getParams) => toBrewPromise(brews[getParams.shareId]));
+			const req = { params: { renderer: "V3", id: "userThemeAID" }, get: () => { return 'localhost'; }, protocol: 'https' };
+
+			await api.getThemeBundle(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith({
+					styles: [
+							`/* From Theme Blank */\n\n@import url("/themes/V3/Blank/style.css");`,
+							`/* From Theme 5ePHB */\n\n@import url("/themes/V3/5ePHB/style.css");`,
+							`/* From Theme 5eDMG */\n\n@import url("/themes/V3/5eDMG/style.css");`,
+							"/* From Brew: https://localhost/share/userThemeCID */\n\nUser Theme C Style",
+							"/* From Brew: https://localhost/share/userThemeBID */\n\nUser Theme B Style",
+							"/* From Brew: https://localhost/share/userThemeAID */\n\nUser Theme A Style"
+					],
+					snippets: [
+						"V3_Blank",
+						"V3_5ePHB",
+						"V3_5eDMG"
+					]
+			});
+		});
+
+		it('should fail for an invalid Theme in the chain', async()=>{
+			const brews = {
+				userThemeAID: { title: 'User Theme A', renderer: 'V3', theme: 'missingTheme', shareId: 'userThemeAID', style: 'User Theme A Style' },
+			};
+
+			const toBrewPromise = (brew) => new Promise((res) => res({ toObject: () => brew }));
+			model.get = jest.fn((getParams) => toBrewPromise(brews[getParams.shareId]));
+			const req = { params: { renderer: "V3", id: "userThemeAID" }, get: () => { return 'localhost'; }, protocol: 'https' };
+
+			await api.getThemeBundle(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(404);
+			expect(res.send).toHaveBeenCalledWith('Theme Not Found - Renderer: V3, Name: missingTheme');
+		});
 	});
 
 //////////////////////////////
