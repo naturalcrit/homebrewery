@@ -31,9 +31,10 @@ const VaultPage = (props) => {
     const countRef = useRef(null);
     const v3Ref = useRef(null);
     const legacyRef = useRef(null);
+    const searchButtonRef = useRef(null);
 
     useEffect(() => {
-        validateInput();
+        validateForm();
         if (title) {
             loadPage(page, false, true);
         }
@@ -63,7 +64,7 @@ const VaultPage = (props) => {
 
         const performSearch = async ({ title, count, v3, legacy }) => {
             updateUrl(title, page, count, v3, legacy);
-            if (title !== '') {
+            if (title && (v3 || legacy)) {
                 try {
                     const response = await request.get(
                         `/api/vault?title=${title}&v3=${v3}&legacy=${legacy}&count=${count}&page=${page}`
@@ -115,8 +116,8 @@ const VaultPage = (props) => {
 
         const title = titleRef.current.value || '';
         const count = countRef.current.value || 10;
-        const v3 = v3Ref.current.checked;
-        const legacy = legacyRef.current.checked;
+        const v3 = v3Ref.current.checked != false;
+        const legacy = legacyRef.current.checked != false;
 
         if (update) {
             setTitle(title);
@@ -150,20 +151,22 @@ const VaultPage = (props) => {
         </Navbar>
     );
 
-    const validateInput = () => {
+    const validateForm = () => {
+        const submitButton = searchButtonRef.current;
         const textInput = titleRef.current;
-        const submitButton = document.getElementById('searchButton');
-        if (textInput.validity.valid && textInput.value) {
-            submitButton.disabled = false;
-        } else {
-            submitButton.disabled = true;
-        }
+        const legacyCheckbox = legacyRef.current;
+        const v3Checkbox = v3Ref.current;
+
+        const isTextValid = textInput.validity.valid && textInput.value;
+        const isCheckboxChecked = legacyCheckbox.checked || v3Checkbox.checked;
+
+        submitButton.disabled = !(isTextValid && isCheckboxChecked);
     };
 
     const renderForm = () => (
         <div className="brewLookup">
             <h2 className="formTitle">Brew Lookup</h2>
-            <form className="formContents">
+            <div className="formContents">
                 <label>
                     Title of the brew
                     <input
@@ -171,7 +174,7 @@ const VaultPage = (props) => {
                         type="text"
                         name="title"
                         defaultValue={title}
-                        onKeyUp={validateInput}
+                        onKeyUp={validateForm}
                         pattern=".{3,}"
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
@@ -188,7 +191,7 @@ const VaultPage = (props) => {
                     <code>"word"</code> to specify an exact string.
                 </small>
                 <label>
-                    Results per page 
+                    Results per page
                     <select ref={countRef} name="count" defaultValue={count}>
                         <option value="10">10</option>
                         <option value="20">20</option>
@@ -199,26 +202,29 @@ const VaultPage = (props) => {
 
                 <label>
                     <input
-                        className='renderer'
+                        className="renderer"
                         ref={v3Ref}
                         type="checkbox"
                         defaultChecked={v3}
+                        onChange={validateForm}
                     />
                     Search for v3 brews
                 </label>
 
                 <label>
                     <input
-                        className='renderer'
+                        className="renderer"
                         ref={legacyRef}
                         type="checkbox"
                         defaultChecked={legacy}
+                        onChange={validateForm}
                     />
                     Search for legacy brews
                 </label>
 
                 <button
                     id="searchButton"
+                    ref={searchButtonRef}
                     onClick={() => {
                         loadPage(1, true, true);
                     }}
@@ -231,7 +237,7 @@ const VaultPage = (props) => {
                         })}
                     />
                 </button>
-            </form>
+            </div>
             <small>
                 Remember, you can only search brews with this tool if they are
                 published
@@ -265,7 +271,7 @@ const VaultPage = (props) => {
                     className={`pageNumber ${
                         page === startPage + index ? 'currentPage' : ''
                     }`}
-                    onClick={() => loadPage(startPage + index, false)}
+                    onClick={() => loadPage(startPage + index, false, false)}
                 >
                     {startPage + index}
                 </a>
@@ -275,7 +281,7 @@ const VaultPage = (props) => {
             <div className="paginationControls">
                 <button
                     className="previousPage"
-                    onClick={() => loadPage(page - 1, false)}
+                    onClick={() => loadPage(page - 1, false, false)}
                     disabled={page === startPage}
                 >
                     <i className="fa-solid fa-chevron-left"></i>
@@ -284,7 +290,7 @@ const VaultPage = (props) => {
                     {startPage > 1 && (
                         <a
                             className="pageNumber firstPage"
-                            onClick={() => loadPage(1, false)}
+                            onClick={() => loadPage(1, false, false)}
                         >
                             1 ...
                         </a>
@@ -293,7 +299,7 @@ const VaultPage = (props) => {
                     {endPage < totalPages && (
                         <a
                             className="pageNumber lastPage"
-                            onClick={() => loadPage(totalPages, false)}
+                            onClick={() => loadPage(totalPages, false, false)}
                         >
                             ... {totalPages}
                         </a>
@@ -301,7 +307,7 @@ const VaultPage = (props) => {
                 </ol>
                 <button
                     className="nextPage"
-                    onClick={() => loadPage(page + 1, false)}
+                    onClick={() => loadPage(page + 1, false, false)}
                     disabled={page === totalPages}
                 >
                     <i className="fa-solid fa-chevron-right"></i>
@@ -385,13 +391,13 @@ const VaultPage = (props) => {
             <link href="/themes/V3/5ePHB/style.css" rel="stylesheet" />
             {renderNavItems()}
             <div className="content">
-            <SplitPane hideMoveArrows>
-                <div className="form dataGroup">{renderForm()}</div>
+                <SplitPane hideMoveArrows>
+                    <div className="form dataGroup">{renderForm()}</div>
 
-                <div className="resultsContainer dataGroup">
-                    {renderFoundBrews()}
-                </div>
-            </SplitPane>
+                    <div className="resultsContainer dataGroup">
+                        {renderFoundBrews()}
+                    </div>
+                </SplitPane>
             </div>
         </div>
     );
