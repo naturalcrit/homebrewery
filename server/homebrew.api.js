@@ -297,8 +297,8 @@ const api = {
 			snippets : completeSnippets.reverse()
 		};
 
-		res.setHeader('Content-Type', 'text/json');
-		return res.status(200).send(JSON.stringify(returnObj));
+		res.setHeader('Content-Type', 'application/json');
+		return res.status(200).send(returnObj);
 	},
 	//Return CSS for a brew theme, with @include endpoint for its parent theme if any
 	getBrewThemeCSS : async (req, res)=>{
