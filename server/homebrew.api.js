@@ -269,7 +269,18 @@ const api = {
 		while (req.params.id) {
 			//=== User Themes ===//
 			if(!isStaticTheme(req.params.renderer, req.params.id)) {
-				await api.getBrew('share')(req, res, ()=>{});
+				await api.getBrew('share')(req, res, ()=>{})
+					.catch((err)=>{
+						console.error(err);
+						if(err.HBErrorCode == '05')
+							res.status(err.status).send(`Theme Not Found - Renderer: ${req.params.renderer}, Name: ${req.params.id}`);
+						else
+							res.status(err.status || err.response.status).send(err.message || err);
+						req.brew = undefined;
+					});
+				if (!req.brew)
+					return;
+
 				currentTheme = req.brew;
 				splitTextStyleAndMetadata(currentTheme);
 
