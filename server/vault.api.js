@@ -36,17 +36,22 @@ const handleErrorResponse = (res, error, functionName) => {
 };
 
 const buildBrewsQuery = (legacy, v3) => {
-    const brewsQuery = {
-        $or: [],
-        published: true,
-    };
+    const renderers = [];
 
     if (legacy === 'true') {
-        brewsQuery.$or.push({ renderer: 'legacy' });
+        renderers.push('legacy');
     }
 
     if (v3 === 'true') {
-        brewsQuery.$or.push({ renderer: 'V3' });
+        renderers.push('V3');
+    }
+
+    const brewsQuery = {
+        published: true,
+    };
+
+    if (renderers.length > 0) {
+        brewsQuery.renderer = { $in: renderers };
     }
 
     return brewsQuery;
