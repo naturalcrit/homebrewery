@@ -64,10 +64,14 @@ body {
 					select { margin : 0 10px; }
 
 					input { 
-						margin : 0 10px; 
+						margin   : 0 10px; 
+
+						&:invalid {
+							background : rgb(255, 188, 181);
+						}
 					
-						&.renderer {
-							position       : relative;
+						&[type='checkbox'] {
+							position : relative;
 							display        : inline-block;
 							width          : 50px;
 							height         : 30px;
@@ -84,9 +88,9 @@ body {
 							&::before,&::after {
 								position    : absolute;
 								inset       : 0;
+								z-index     : 5;
 								padding-top : 2px;
 								text-align  : center;
-								z-index 	: 5;
 							}
 
 							&::before {

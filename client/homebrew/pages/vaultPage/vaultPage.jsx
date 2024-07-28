@@ -18,6 +18,9 @@ const request = require('../../utils/request-middleware.js');
 
 const VaultPage = (props) => {
     const [title, setTitle] = useState(props.query.title || '');
+    //state author and owner
+    const [author, setAuthor] = useState(props.query.author || '');
+    const [owner, setOwner] = useState(props.query.owner !== 'false');
     const [legacy, setLegacy] = useState(props.query.legacy !== 'false');
     const [v3, setV3] = useState(props.query.v3 !== 'false');
     const [count, setCount] = useState(props.query.count || 20);
@@ -28,6 +31,8 @@ const VaultPage = (props) => {
     const [error, setError] = useState(null);
 
     const titleRef = useRef(null);
+    const authorRef = useRef(null);
+    const ownerRef = useRef(null);
     const countRef = useRef(null);
     const v3Ref = useRef(null);
     const legacyRef = useRef(null);
@@ -46,13 +51,19 @@ const VaultPage = (props) => {
         setSearching(false);
     };
 
-    const updateUrl = (title, page, count, v3, legacy) => {
+    const updateUrl = (title, author, owner, count, v3, legacy, page) => {
         const url = new URL(window.location.href);
         const urlParams = new URLSearchParams();
 
-        Object.entries({ title, v3, legacy, count, page }).forEach(
-            ([key, value]) => urlParams.set(key, value)
-        );
+        Object.entries({
+            title,
+            author,
+            owner,
+            count,
+            v3,
+            legacy,
+            page,
+        }).forEach(([key, value]) => urlParams.set(key, value));
 
         url.search = urlParams.toString();
         window.history.replaceState(null, null, url);
@@ -62,14 +73,22 @@ const VaultPage = (props) => {
         setSearching(true);
         setError(null);
 
-        const performSearch = async ({ title, count, v3, legacy }) => {
-            updateUrl(title, page, count, v3, legacy);
-            if (title && (v3 || legacy)) {
+        const performSearch = async ({
+            title,
+            author,
+            owner,
+            count,
+            v3,
+            legacy,
+        }) => {
+            updateUrl(title, author, owner, count, v3, legacy, page);
+            if ((title || author) && (v3 || legacy)) {
                 try {
                     const response = await request.get(
-                        `/api/vault?title=${title}&v3=${v3}&legacy=${legacy}&count=${count}&page=${page}`
+                        `/api/vault?title=${title}&author=${author}&owner=${owner}&v3=${v3}&legacy=${legacy}&count=${count}&page=${page}`
                     );
                     if (response.ok) {
+                        console.log(response.body.brews);
                         updateStateWithBrews(response.body.brews, page);
                     } else {
                         throw new Error(`Error: ${response.status}`);
@@ -93,10 +112,10 @@ const VaultPage = (props) => {
         const loadTotal = async ({ title, v3, legacy }) => {
             setTotalBrews(null);
             setError(null);
-            if (title) {
+            if ((title || author) && (v3 || legacy)) {
                 try {
                     const response = await request.get(
-                        `/api/vault/total?title=${title}&v3=${v3}&legacy=${legacy}`
+                        `/api/vault/total?title=${title}&author=${author}&owner=${owner}&v3=${v3}&legacy=${legacy}`
                     );
 
                     if (response.ok) {
@@ -115,23 +134,26 @@ const VaultPage = (props) => {
         };
 
         const title = titleRef.current.value || '';
+        const author = authorRef.current.value || '';
+        const owner = ownerRef.current.checked != false;
         const count = countRef.current.value || 10;
         const v3 = v3Ref.current.checked != false;
         const legacy = legacyRef.current.checked != false;
 
+        console.log(author);
         if (update) {
             setTitle(title);
             setCount(count);
             setV3(v3);
             setLegacy(legacy);
 
-            performSearch({ title, count, v3, legacy });
+            performSearch({ title, author, owner, count, v3, legacy });
         } else {
-            performSearch({ title, count, v3, legacy });
+            performSearch({ title, author, owner, count, v3, legacy });
         }
 
         if (total) {
-            loadTotal({ title, v3, legacy });
+            loadTotal({ title, author, owner, v3, legacy });
         }
     };
 
@@ -152,15 +174,19 @@ const VaultPage = (props) => {
     );
 
     const validateForm = () => {
-        const submitButton = searchButtonRef.current;
-        const textInput = titleRef.current;
-        const legacyCheckbox = legacyRef.current;
-        const v3Checkbox = v3Ref.current;
+        //form validity: title or author must be written, and at least one renderer set
+        const { current: submitButton } = searchButtonRef;
+        const { current: titleInput } = titleRef;
+        const { current: legacyCheckbox } = legacyRef;
+        const { current: v3Checkbox } = v3Ref;
+        const { current: authorInput } = authorRef;
 
-        const isTextValid = textInput.validity.valid && textInput.value;
+        const isTitleValid = titleInput.validity.valid && titleInput.value;
+        const isAuthorValid = authorInput.validity.valid && authorInput.value;
         const isCheckboxChecked = legacyCheckbox.checked || v3Checkbox.checked;
 
-        submitButton.disabled = !(isTextValid && isCheckboxChecked);
+        submitButton.disabled =
+            !(isTitleValid || isAuthorValid) || !isCheckboxChecked;
     };
 
     const renderForm = () => (
@@ -176,6 +202,7 @@ const VaultPage = (props) => {
                         defaultValue={title}
                         onKeyUp={validateForm}
                         pattern=".{3,}"
+                        title="At least 3 characters"
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                                 if (!searchButtonRef.current.disabled) {
@@ -191,6 +218,35 @@ const VaultPage = (props) => {
                     <code>"word"</code> to specify an exact string.
                 </small>
                 <label>
+                    Author of the brew
+                    <input
+                        ref={authorRef}
+                        type="text"
+                        name="author"
+                        pattern=".{1,}"
+                        defaultValue={author}
+                        onKeyUp={validateForm}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                if (!searchButtonRef.current.disabled) {
+                                    loadPage(1, true, true);
+                                }
+                            }
+                        }}
+                        placeholder="Gazook89"
+                    />
+                </label>
+                <label>
+                    <input
+                        type="checkbox"
+                        name="owner"
+                        ref={ownerRef}
+                        defaultChecked={owner}
+                        onChange={validateForm}
+                    />
+                    Author is the owner
+                </label>
+                <label>
                     Results per page
                     <select ref={countRef} name="count" defaultValue={count}>
                         <option value="10">10</option>
@@ -202,7 +258,6 @@ const VaultPage = (props) => {
 
                 <label>
                     <input
-                        className="renderer"
                         ref={v3Ref}
                         type="checkbox"
                         defaultChecked={v3}
@@ -213,7 +268,6 @@ const VaultPage = (props) => {
 
                 <label>
                     <input
-                        className="renderer"
                         ref={legacyRef}
                         type="checkbox"
                         defaultChecked={legacy}
@@ -325,7 +379,7 @@ const VaultPage = (props) => {
             );
         }
 
-        if (title === '') {
+        if (title === '' && author === '') {
             return (
                 <div className="foundBrews noBrews">
                     <h3>No search yet</h3>
