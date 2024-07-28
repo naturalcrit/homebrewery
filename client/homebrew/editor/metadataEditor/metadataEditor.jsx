@@ -199,37 +199,34 @@ const MetadataEditor = createClass({
 				const preview = theme.thumbnail || `/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`;
 				const texture = theme.thumbnail || `/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`;
 				return <div className='item' key={`${renderer}_${theme.name}`} onClick={()=>this.handleTheme(theme)} title={''}>
-					<p>{`${theme?.author ? theme.author : renderer} : ${theme.name}`}</p>
+					{theme.author ?? renderer} : {theme.name}
 					<div className='texture-container'>
-						<img src={`${texture}`}/>
+						<img src={texture}/>
 					</div>
 					<div className='preview'>
-						<h6>{`${theme.name}`} preview</h6>
-						<img src={`${preview}`}/>
+						<h6>{theme.name} preview</h6>
+						<img src={preview}/>
 					</div>
 				</div>;
 			});
 		};
 
-		const currentThemePath = this.props.metadata?.theme && Themes[_.upperFirst(this.props.metadata.renderer)]?.hasOwnProperty(this.props.metadata?.theme) ? this.props.metadata.renderer : 'Brew';
-		const currentTheme = mergedThemes[`${_.upperFirst(currentThemePath)}`]?.hasOwnProperty(this.props.metadata.theme) ? mergedThemes[`${_.upperFirst(currentThemePath)}`][this.props.metadata.theme] : { name: `!!! THEME MISSING !!! ID=${this.props.metadata.theme.slice(1)}` };
+		const currentRenderer = this.props.metadata.renderer;
+		const currentTheme    = mergedThemes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme]
+													?? { name: `!!! THEME MISSING !!! ID=${this.props.metadata.theme}` };
 		let dropdown;
 
-		if(this.props.metadata.renderer == 'legacy') {
+		if(currentRenderer == 'legacy') {
 			dropdown =
 				<Nav.dropdown className='disabled value' trigger='disabled'>
-					<div>
-						{`Themes are not supported in the Legacy Renderer`} <i className='fas fa-caret-down'></i>
-					</div>
+					<div> {`Themes are not supported in the Legacy Renderer`} <i className='fas fa-caret-down'></i> </div>
 				</Nav.dropdown>;
 		} else {
 			dropdown =
 				<Nav.dropdown className='value' trigger='click'>
-					<div>
-						{`${currentTheme?.author ? currentTheme.author : _.upperFirst(currentThemePath)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
-					</div>
-					{/*listThemes('Legacy')*/}
-					{listThemes('V3')}
+					<div> {currentTheme.author ?? _.upperFirst(currentRenderer)} : {currentTheme.name} <i className='fas fa-caret-down'></i> </div>
+					
+					{listThemes(currentRenderer)}
 				</Nav.dropdown>;
 		}
 
