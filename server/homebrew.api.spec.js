@@ -696,65 +696,6 @@ brew`);
 		});
 	});
 
-	describe('getBrewThemeWithStaticParent', ()=>{
-		it('should collect parent theme and brew style - returning as css with static parent imported.', async ()=>{
-			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
-			model.get = jest.fn(()=>toBrewPromise({ title: 'test brew', renderer: 'V3', theme: '5eDMG', shareId: 'iAmAUserTheme', style: 'I Have a style!' }));
-			const fn = api.getBrew('share', true);
-			const req = { brew: {}, get: ()=>{return 'localhost';}, protocol: 'https' };
-			const next = jest.fn();
-			await fn(req, null, next);
-
-			api.getBrewThemeCSS(req, res);
-			const sent = res.send.mock.calls[0][0];
-			expect(sent).toBe(`@import url("/css/V3/5eDMG");\n\n/* From Brew: https://localhost/share/iAmAUserTheme */\n\nI Have a style!`);
-			expect(res.status).toHaveBeenCalledWith(200);
-		});
-	});
-
-	describe('getBrewThemeWithUserParent', ()=>{
-		it('should collect parent theme and brew style - returning as css with user-theme parent imported.', async ()=>{
-			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
-			model.get = jest.fn(()=>toBrewPromise({ title: 'test brew', renderer: 'V3',  shareId: 'iAmAUserTheme', theme: 'IamATheme', style: 'I Have a style!' }));
-			const fn = api.getBrew('share', true);
-			const req = { brew: {}, get: ()=>{return 'localhost';}, protocol: 'https' };
-			const next = jest.fn();
-			await fn(req, null, next);
-
-			api.getBrewThemeCSS(req, res);
-			const sent = res.send.mock.calls[0][0];
-			expect(sent).toBe(`@import url("/css/IamATheme");\n\n/* From Brew: https://localhost/share/iAmAUserTheme */\n\nI Have a style!`);
-			expect(res.status).toHaveBeenCalledWith(200);
-		});
-	});
-
-	describe('getStaticThemeCSS', ()=>{
-		it('should return an import of the theme including a parent.', async ()=>{
-			const req = {
-				params : {
-					renderer : 'V3',
-					id       : '5eDMG'
-				}
-			};
-			api.getStaticThemeCSS(req, res);
-			const sent = res.send.mock.calls[0][0];
-			expect(sent).toBe('@import url("/css/V3/5ePHB");\n/* Static Theme 5e PHB */\n@import url("/themes/V3/5eDMG/style.css");\n/* Static Theme 5e DMG */\n');
-			expect(res.status).toHaveBeenCalledWith(200);
-		});
-		it('should fail for an invalid static theme.', async()=>{
-			const req = {
-				params : {
-					renderer : 'V3',
-					id       : '5eDMGGGG'
-				}
-			};
-			api.getStaticThemeCSS(req, res);
-			const sent = res.send.mock.calls[0][0];
-			expect(sent).toBe('Invalid Theme - Renderer: V3, Name: 5eDMGGGG');
-			expect(res.status).toHaveBeenCalledWith(404);
-		});
-	});
-
 	describe('deleteBrew', ()=>{
 		it('should handle case where fetching the brew returns an error', async ()=>{
 			api.getBrew = jest.fn(()=>async ()=>{ throw { message: 'err', HBErrorCode: '02' }; });

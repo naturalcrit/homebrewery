@@ -306,31 +306,6 @@ const api = {
 		res.setHeader('Content-Type', 'application/json');
 		return res.status(200).send(returnObj);
 	},
-	//Return CSS for a brew theme, with @include endpoint for its parent theme if any
-	getBrewThemeCSS : async (req, res)=>{
-		const brew = req.brew;
-		splitTextStyleAndMetadata(brew);
-		res.setHeader('Content-Type', 'text/css');
-		let rendererPath = '';
-		if(isStaticTheme(req.brew.renderer, req.brew.theme)) //Check if parent is staticBrew
-			rendererPath = `${_.upperFirst(req.brew.renderer)}/`;
-
-		const parentThemeImport = `@import url(\"/css/${rendererPath}${req.brew.theme}\");\n\n`;
-		const themeLocationComment = `/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.brew.shareId} */\n\n`;
-		return res.status(200).send(`${parentThemeImport}${themeLocationComment}${req.brew.style}`);
-	},
-	//Return CSS for a static theme, with @include endpoint for its parent theme if any
-	getStaticThemeCSS : async(req, res)=>{
-		if(!isStaticTheme(req.params.renderer, req.params.id))
-			res.status(404).send(`Invalid Theme - Renderer: ${req.params.renderer}, Name: ${req.params.id}`);
-		else {
-			res.setHeader('Content-Type', 'text/css');
-			res.setHeader('Cache-Control', 'public, max-age: 43200, must-revalidate');
-			const themeParent = Themes[req.params.renderer][req.params.id].baseTheme;
-			const parentThemeImport = themeParent ? `@import url(\"/css/${req.params.renderer}/${themeParent}\");\n/* Static Theme ${Themes[req.params.renderer][themeParent].name} */\n` : '';
-			return res.status(200).send(`${parentThemeImport}@import url(\"/themes/${req.params.renderer}/${req.params.id}/style.css\");\n/* Static Theme ${Themes[req.params.renderer][req.params.id].name} */\n`);
-		}
-	},
 	updateBrew : async (req, res)=>{
 		// Initialize brew from request and body, destructure query params, and set the initial value for the after-save method
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
