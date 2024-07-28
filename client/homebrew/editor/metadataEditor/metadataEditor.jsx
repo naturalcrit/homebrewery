@@ -225,7 +225,7 @@ const MetadataEditor = createClass({
 			dropdown =
 				<Nav.dropdown className='value' trigger='click'>
 					<div> {currentTheme.author ?? _.upperFirst(currentRenderer)} : {currentTheme.name} <i className='fas fa-caret-down'></i> </div>
-					
+
 					{listThemes(currentRenderer)}
 				</Nav.dropdown>;
 		}

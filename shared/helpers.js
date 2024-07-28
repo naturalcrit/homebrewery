@@ -34,19 +34,19 @@ const printCurrentBrew = ()=>{
 	}
 };
 
-const fetchThemeBundle = async (obj, renderer, theme) => {
+const fetchThemeBundle = async (obj, renderer, theme)=>{
 	const res = await request
 			.get(`/api/theme/${renderer}/${theme}`)
-			.catch((err) => {
-					obj.setState({ error: err });
+			.catch((err)=>{
+				obj.setState({ error: err });
 			});
-	if (!res) return;
+	if(!res) return;
 
 	const themeBundle = res.body;
-	themeBundle.joinedStyles = themeBundle.styles.map((style) => `<style>${style}</style>`).join('\n\n');
-	obj.setState((prevState) => ({
-			...prevState,
-			themeBundle: themeBundle
+	themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n');
+	obj.setState((prevState)=>({
+		...prevState,
+		themeBundle : themeBundle
 	}));
 };
 

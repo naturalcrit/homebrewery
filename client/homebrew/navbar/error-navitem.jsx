@@ -111,7 +111,7 @@ const ErrorNavItem = createClass({
 					Looks like there was a problem retreiving
 					the theme, or a theme that it inherits,
 					for this brew. Verify that brew <a className='lowercase' target='_blank' rel='noopener noreferrer' href={`/share/${response.body.brewId}`}>
-					{response.body.brewId}</a> still exists! 
+					{response.body.brewId}</a> still exists!
 				</div>
 			</Nav.item>;
 		}

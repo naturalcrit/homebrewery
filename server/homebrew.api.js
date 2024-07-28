@@ -272,7 +272,7 @@ const api = {
 				await api.getBrew('share')(req, res, ()=>{})
 					.catch((err)=>{
 						if(err.HBErrorCode == '05')
-							err = {...err, name: 'ThemeLoad Error', message: 'Theme Not Found', HBErrorCode: '09'};
+							err = { ...err, name: 'ThemeLoad Error', message: 'Theme Not Found', HBErrorCode: '09' };
 						throw err;
 					});
 
