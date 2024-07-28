@@ -378,7 +378,7 @@ const VaultPage = (props) => {
             );
         }
 
-        if (title === '' && author === '') {
+        if (title === '' && author === '' && !brewCollection) {
             return (
                 <div className="foundBrews noBrews">
                     <h3>No search yet</h3>
