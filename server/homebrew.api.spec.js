@@ -682,14 +682,20 @@ brew`);
 			model.get = jest.fn((getParams) => toBrewPromise(brews[getParams.shareId]));
 			const req = { params: { renderer: "V3", id: "userThemeAID" }, get: () => { return 'localhost'; }, protocol: 'https' };
 
-			await api.getThemeBundle(req, res);
+			let err
+			await api.getThemeBundle(req, res)
+			.catch(e => err = e);
 
-			expect(res.status).toHaveBeenCalledWith(404);
-			expect(res.send).toHaveBeenCalledWith('Theme Not Found - Renderer: V3, Name: missingTheme');
+			expect(err).toEqual({
+				HBErrorCode : "09",
+				accessType  : "share",
+				brewId      : "missingTheme",
+				message     : "Theme Not Found",
+				name        : "ThemeLoad Error",
+				status      : 404});
 		});
 	});
 
-//////////////////////////////
 	describe('getBrewThemeWithStaticParent', ()=>{
 		it('should collect parent theme and brew style - returning as css with static parent imported.', async ()=>{
 			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
@@ -748,7 +754,6 @@ brew`);
 			expect(res.status).toHaveBeenCalledWith(404);
 		});
 	});
-////////////////////////////////
 
 	describe('deleteBrew', ()=>{
 		it('should handle case where fetching the brew returns an error', async ()=>{

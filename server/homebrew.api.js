@@ -271,15 +271,10 @@ const api = {
 			if(!isStaticTheme(req.params.renderer, req.params.id)) {
 				await api.getBrew('share')(req, res, ()=>{})
 					.catch((err)=>{
-						console.error(err);
 						if(err.HBErrorCode == '05')
-							res.status(err.status).send(`Theme Not Found - Renderer: ${req.params.renderer}, Name: ${req.params.id}`);
-						else
-							res.status(err.status || err.response.status).send(err.message || err);
-						req.brew = undefined;
+							err = {...err, name: 'ThemeLoad Error', message: 'Theme Not Found', HBErrorCode: '09'};
+						throw err;
 					});
-				if (!req.brew)
-					return;
 
 				currentTheme = req.brew;
 				splitTextStyleAndMetadata(currentTheme);
@@ -496,5 +491,6 @@ router.put('/api/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api
 router.put('/api/update/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
 router.delete('/api/:id', asyncHandler(api.deleteBrew));
 router.get('/api/remove/:id', asyncHandler(api.deleteBrew));
+router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
 
 module.exports = api;

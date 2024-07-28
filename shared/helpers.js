@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const yaml = require('js-yaml');
+const request = require('../client/homebrew/utils/request-middleware.js');
 
 const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
@@ -33,14 +34,20 @@ const printCurrentBrew = ()=>{
 	}
 };
 
-const fetchThemeBundle = (obj, renderer, theme)=>{
-	fetch(`${window.location.protocol}//${window.location.host}/theme/${renderer}/${theme}`).then((response)=>response.json()).then((themeBundle)=>{
-		themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n'); //DOMPurify.sanitize(joinedStyles, purifyConfig);
-		obj.setState((prevState)=>({
+const fetchThemeBundle = async (obj, renderer, theme) => {
+	const res = await request
+			.get(`${window.location.protocol}//${window.location.host}/api/theme/${renderer}/${theme}`)
+			.catch((err) => {
+					obj.setState({ error: err });
+			});
+	if (!res) return;
+
+	const themeBundle = res.body;
+	themeBundle.joinedStyles = themeBundle.styles.map((style) => `<style>${style}</style>`).join('\n\n');
+	obj.setState((prevState) => ({
 			...prevState,
-			themeBundle : themeBundle
-		}));
-	});
+			themeBundle: themeBundle
+	}));
 };
 
 module.exports = {
