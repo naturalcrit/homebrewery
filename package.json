@@ -57,15 +57,15 @@
     ],
     "coverageThreshold": {
       "global": {
-        "statements": 25,
-        "branches": 10,
-        "functions": 22,
-        "lines": 25
+        "statements": 50,
+        "branches": 40,
+        "functions": 40,
+        "lines": 50
       },
       "server/homebrew.api.js": {
-        "statements": 65,
+        "statements": 70,
         "branches": 50,
-        "functions": 60,
+        "functions": 65,
         "lines": 70
       }
     },
