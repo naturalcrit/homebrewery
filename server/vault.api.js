@@ -33,6 +33,8 @@ const handleErrorResponse = (res, error, functionName) => {
 };
 
 const buildBrewsQuery = (legacy, v3) => {
+    if (legacy === 'true' && v3 === 'true') return { published: true };
+
     const renderers = [];
     if (legacy === 'true') renderers.push('legacy');
     if (v3 === 'true') renderers.push('V3');
@@ -62,7 +64,7 @@ const vault = {
             const authorConditions = buildAuthorConditions(author, owner);
 
             const combinedQuery = {
-                $and: [brewsQuery, titleConditions, authorConditions]
+                $and: [brewsQuery, titleConditions, authorConditions],
             };
 
             const projection = {
@@ -98,7 +100,7 @@ const vault = {
             const authorConditions = buildAuthorConditions(author, owner);
 
             const combinedQuery = {
-                $and: [brewsQuery, titleConditions, authorConditions]
+                $and: [brewsQuery, titleConditions, authorConditions],
             };
 
             console.log(

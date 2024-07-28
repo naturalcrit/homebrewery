@@ -140,7 +140,6 @@ const VaultPage = (props) => {
         const v3 = v3Ref.current.checked != false;
         const legacy = legacyRef.current.checked != false;
 
-        console.log(author);
         if (update) {
             setTitle(title);
             setCount(count);
