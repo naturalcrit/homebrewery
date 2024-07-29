@@ -125,7 +125,8 @@ const BrewRenderer = (props)=>{
 
 	const renderStyle = ()=>{
 		const cleanStyle = props.style; //DOMPurify.sanitize(props.style, purifyConfig);
-		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `${props.themeBundle.joinedStyles} \n\n <style> ${cleanStyle} </style>` }} />;
+		const themeStyles = props.themeBundle?.joinedStyles ?? '<style>@import url("/themes/V3/Blank/style.css");</style>';
+		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `${themeStyles} \n\n <style> ${cleanStyle} </style>` }} />;
 	};
 
 	const renderPage = (pageText, index)=>{
