@@ -817,7 +817,7 @@ let globalPageNumber = 0;
 
 module.exports = {
 	marked : Marked,
-	render : (rawBrewText, pageNumber=1)=>{
+	render : (rawBrewText, pageNumber=0)=>{
 		globalVarsList[pageNumber] = {};					//Reset global links for current page, to ensure values are parsed in order
 		varsQueue                  = [];						//Could move into MarkedVariables()
 		globalPageNumber           = pageNumber;
