@@ -47,8 +47,8 @@ const Nav = {
 				color   : null
 			};
 		},
-		handleClick : function(){
-			this.props.onClick();
+		handleClick : function(e){
+			this.props.onClick(e);
 		},
 		render : function(){
 			const classes = cx('navItem', this.props.color, this.props.className);
