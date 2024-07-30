@@ -1,7 +1,7 @@
 {
   "name": "homebrewery",
   "description": "Create authentic looking D&D homebrews using only markdown",
-  "version": "3.13.1",
+  "version": "3.14.0",
   "engines": {
     "npm": "^10.2.x",
     "node": "^20.8.x"
@@ -22,7 +22,8 @@
     "circleci": "npm test && eslint **/*.{js,jsx} --max-warnings=0",
     "verify": "npm run lint && npm test",
     "test": "jest --runInBand",
-    "test:api-unit": "jest server/*.spec.js --verbose",
+    "test:api-unit": "jest \"server/.*.spec.js\" --verbose",
+    "test:api-unit:themes": "jest \"server/.*.spec.js\" -t \"theme bundle\" --verbose",
     "test:coverage": "jest --coverage --silent --runInBand",
     "test:dev": "jest --verbose --watch",
     "test:basic": "jest tests/markdown/basic.test.js --verbose",
@@ -56,15 +57,15 @@
     ],
     "coverageThreshold": {
       "global": {
-        "statements": 25,
-        "branches": 10,
-        "functions": 22,
-        "lines": 25
+        "statements": 50,
+        "branches": 40,
+        "functions": 40,
+        "lines": 50
       },
       "server/homebrew.api.js": {
-        "statements": 65,
+        "statements": 70,
         "branches": 50,
-        "functions": 60,
+        "functions": 65,
         "lines": 70
       }
     },
