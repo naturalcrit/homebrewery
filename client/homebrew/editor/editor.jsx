@@ -123,12 +123,6 @@ const Editor = createClass({
 		const X_KEY = 88;
 		const END_KEY = 35;
 		const HOME_KEY = 36;
-		const SCROLLLOCK_KEY = 145;
-
-		// Toggle Live-scrolling on Scroll Lock
-		if(e.keyCode == SCROLLLOCK_KEY) {
-			this.setState( {liveScroll: !this.props.liveScroll} );
-		}
 
 		if(!(e.ctrlKey || e.metaKey)) return;
 
