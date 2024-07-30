@@ -105,6 +105,21 @@ const SplitPane = createClass({
 			userSetDividerPos : newSize
 		});
 	},
+
+	liveScrollToggle : function(e) {
+		const flipLiveScroll = !this.state.liveScroll;
+		const toggle = e.target;
+		const toggleDiv = toggle.parentElement;
+		if(flipLiveScroll) {
+			toggle.className = 'fas fa-lock';
+			toggleDiv.className = 'arrow lock';
+		} else {
+			toggle.className = 'fas fa-unlock';
+			toggleDiv.className = 'arrow unlock';
+		}
+		window.localStorage.setItem('liveScroll', String(flipLiveScroll));
+		this.setState({ liveScroll: flipLiveScroll });
+	},
 	/*
 	unFocus : function() {
 		if(document.selection){
@@ -138,20 +153,7 @@ const SplitPane = createClass({
 				</div>
 				<div id='scrollToggleDiv' className={`arrow lock`}
 					style={{ left: this.state.currentDividerPos-4 }}
-					onClick={()=>{
-						const flipLiveScroll = !this.state.liveScroll;
-						const toggle = document.getElementById('scrollToggle');
-						const toggleDiv = document.getElementById('scrollToggleDiv');
-						if(flipLiveScroll) {
-							toggle.className = 'fas fa-lock';
-							toggleDiv.className = 'arrow lock';
-						} else {
-							toggle.className = 'fas fa-unlock';
-							toggleDiv.className = 'arrow unlock';
-						}
-						window.localStorage.setItem('liveScroll', String(flipLiveScroll));
-						this.setState({ liveScroll: flipLiveScroll });
-					}} >
+					onClick={this.liveScrollToggle} >
 					<i id='scrollToggle' className={`fas fa-lock`} />
 				</div>
 			</>;
