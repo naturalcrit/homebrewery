@@ -25,7 +25,7 @@ const LockNotification = require('./lockNotification/lockNotification.jsx');
 const Markdown = require('naturalcrit/markdown.js');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
-const { printCurrentBrew } = require('../../../../shared/helpers.js');
+const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
 
 const googleDriveIcon = require('../../googleDrive.svg');
 
@@ -55,7 +55,8 @@ const EditPage = createClass({
 			autoSaveWarning        : false,
 			unsavedTime            : new Date(),
 			currentEditorPage      : 0,
-			displayLockMessage     : this.props.brew.lock || false
+			displayLockMessage     : this.props.brew.lock || false,
+			themeBundle            : {}
 		};
 	},
 
@@ -86,6 +87,8 @@ const EditPage = createClass({
 		this.setState((prevState)=>({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
+
+		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
 
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
@@ -130,7 +133,10 @@ const EditPage = createClass({
 		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
-	handleMetaChange : function(metadata){
+	handleMetaChange : function(metadata, field=undefined){
+		if(field == 'theme' || field == 'renderer')	// Fetch theme bundle only if theme or renderer was changed
+			fetchThemeBundle(this, metadata.renderer, metadata.theme);
+
 		this.setState((prevState)=>({
 			brew : {
 				...prevState.brew,
@@ -138,7 +144,6 @@ const EditPage = createClass({
 			},
 			isPending : true,
 		}), ()=>{if(this.state.autoSave) this.trySave();});
-
 	},
 
 	hasChanges : function(){
@@ -406,12 +411,15 @@ const EditPage = createClass({
 						onMetaChange={this.handleMetaChange}
 						reportError={this.errorReported}
 						renderer={this.state.brew.renderer}
+						userThemes={this.props.userThemes}
+						snippetBundle={this.state.themeBundle.snippets}
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}
 						style={this.state.brew.style}
 						renderer={this.state.brew.renderer}
 						theme={this.state.brew.theme}
+						themeBundle={this.state.themeBundle}
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
 						currentEditorPage={this.state.currentEditorPage}
