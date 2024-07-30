@@ -402,7 +402,8 @@ const Editor = createClass({
 				<MetadataEditor
 					metadata={this.props.brew}
 					onChange={this.props.onMetaChange}
-					reportError={this.props.reportError}/>
+					reportError={this.props.reportError}
+					userThemes={this.props.userThemes}/>
 			</>;
 		}
 	},
@@ -445,6 +446,7 @@ const Editor = createClass({
 					historySize={this.historySize()}
 					currentEditorTheme={this.state.editorTheme}
 					updateEditorTheme={this.updateEditorTheme}
+					snippetBundle={this.props.snippetBundle}
 					cursorPos={this.codeEditor.current?.getCursorPosition() || {}} />
 
 				{this.renderEditor()}
