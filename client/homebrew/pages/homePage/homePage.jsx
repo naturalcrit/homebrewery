@@ -13,6 +13,7 @@ const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
+const { fetchThemeBundle } = require('../../../../shared/helpers.js');
 
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
@@ -34,11 +35,16 @@ const HomePage = createClass({
 			brew              : this.props.brew,
 			welcomeText       : this.props.brew.text,
 			error             : undefined,
-			currentEditorPage : 0
+			currentEditorPage : 0,
+			themeBundle       : {}
 		};
 	},
 
 	editor : React.createRef(null),
+
+	componentDidMount : function() {
+		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
+	},
 
 	handleSave : function(){
 		request.post('/api')
@@ -95,6 +101,7 @@ const HomePage = createClass({
 						style={this.state.brew.style}
 						renderer={this.state.brew.renderer}
 						currentEditorPage={this.state.currentEditorPage}
+						themeBundle={this.state.themeBundle}
 					/>
 				</SplitPane>
 			</div>

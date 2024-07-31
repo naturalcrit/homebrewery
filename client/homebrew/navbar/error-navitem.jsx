@@ -104,6 +104,18 @@ const ErrorNavItem = createClass({
 			</Nav.item>;
 		}
 
+		if(HBErrorCode === '09') {
+			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+				Oops!
+				<div className='errorContainer' onClick={clearError}>
+					Looks like there was a problem retreiving
+					the theme, or a theme that it inherits,
+					for this brew. Verify that brew <a className='lowercase' target='_blank' rel='noopener noreferrer' href={`/share/${response.body.brewId}`}>
+					{response.body.brewId}</a> still exists!
+				</div>
+			</Nav.item>;
+		}
+
 		return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 			Oops!
 			<div className='errorContainer'>
