@@ -273,6 +273,7 @@ app.get('/user/:username', async (req, res, next)=>{
 app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res, next)=>{
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
 
+	console.log(`opening Edit page. Need to load custom user themes.`)
 	req.userThemes = await(getUsersBrewThemes(req.account?.username));
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -303,6 +304,7 @@ app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async(req, res,
 	};
 	req.brew = _.defaults(brew, DEFAULT_BREW);
 
+	console.log(`opening New page. Need to load custom user themes.`)
 	req.userThemes = await(getUsersBrewThemes(req.account?.username));
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -315,6 +317,7 @@ app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async(req, res,
 
 //New Page
 app.get('/new', asyncHandler(async(req, res, next)=>{
+	console.log(`opening New page. Need to load custom user themes.`)
 	req.userThemes = await(getUsersBrewThemes(req.account?.username));
 
 	req.ogMeta = { ...defaultMetaTags,

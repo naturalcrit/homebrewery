@@ -46,6 +46,8 @@ const api = {
 	},
 	//Get array of any of this user's brews tagged with `meta:theme`
 	getUsersBrewThemes : async (username)=>{
+		console.log(`getting User custom themes for user ${username}`)
+
 		if(!username)
 			return {};
 
@@ -62,8 +64,11 @@ const api = {
 
 		const userThemes = {};
 
+		console.log(`starting request`)
 		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] } });
 
+		console.log(`found custom themes:`)
+		console.log(brews)
 		if(brews) {
 			for (const brew of brews) {
 				userThemes[brew.renderer] ??= {};
