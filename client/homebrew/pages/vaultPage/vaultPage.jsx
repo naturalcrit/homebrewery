@@ -20,7 +20,7 @@ const VaultPage = (props) => {
     const [title, setTitle] = useState(props.query.title || '');
     //state author and owner
     const [author, setAuthor] = useState(props.query.author || '');
-    const [owner, setOwner] = useState(props.query.owner !== 'false');
+    const [owner, setOwner] = useState(props.query.owner ? props.query.owner !== 'false' : false);
     const [legacy, setLegacy] = useState(props.query.legacy !== 'false');
     const [v3, setV3] = useState(props.query.v3 !== 'false');
     const [count, setCount] = useState(props.query.count || 20);
@@ -142,6 +142,8 @@ const VaultPage = (props) => {
 
         if (update) {
             setTitle(title);
+            setAuthor(author);
+            setOwner(owner);
             setCount(count);
             setV3(v3);
             setLegacy(legacy);
