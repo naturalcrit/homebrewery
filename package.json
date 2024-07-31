@@ -83,7 +83,7 @@
     ]
   },
   "dependencies": {
-    "@babel/core": "^7.24.7",
+    "@babel/core": "^7.25.2",
     "@babel/plugin-transform-runtime": "^7.24.7",
     "@babel/preset-env": "^7.25.2",
     "@babel/preset-react": "^7.24.7",
@@ -94,7 +94,7 @@
     "cookie-parser": "^1.4.6",
     "create-react-class": "^15.7.0",
     "dedent-tabs": "^0.10.3",
-    "dompurify": "^3.1.5",
+    "dompurify": "^3.1.6",
     "expr-eval": "^2.0.2",
     "express": "^4.19.2",
     "express-async-handler": "^1.2.0",
