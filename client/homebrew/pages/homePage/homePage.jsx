@@ -97,6 +97,7 @@ const HomePage = createClass({
 						onTextChange={this.handleTextChange}
 						renderer={this.state.brew.renderer}
 						showEditButtons={false}
+						snippetBundle={this.state.themeBundle.snippets}
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}

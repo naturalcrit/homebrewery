@@ -186,7 +186,7 @@ const api = {
 		return modified;
 	},
 	excludeStubProps : (brew)=>{
-		const propsToExclude = ['text', 'textBin', 'renderer', 'pageCount'];
+		const propsToExclude = ['text', 'textBin'];
 		for (const prop of propsToExclude) {
 			brew[prop] = undefined;
 		}
