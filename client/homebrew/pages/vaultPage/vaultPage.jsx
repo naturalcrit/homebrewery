@@ -237,7 +237,7 @@ const VaultPage = (props) => {
                         placeholder="Gazook89"
                     />
                 </label>
-                ${/*<label>
+                {/*<label>
                     <input
                         type="checkbox"
                         name="owner"
