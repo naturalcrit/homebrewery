@@ -408,8 +408,8 @@ brew`);
 			expect(sent).not.toEqual(googleBrew);
 			expect(result.text).toBeUndefined();
 			expect(result.textBin).toBeUndefined();
-			expect(result.renderer).toBeUndefined();
-			expect(result.pageCount).toBeUndefined();
+			expect(result.renderer).toBe('v3');
+			expect(result.pageCount).toBe(1);
 		});
 	});
 
@@ -540,9 +540,9 @@ brew`);
 				description : '',
 				editId      : expect.any(String),
 				gDrive      : false,
-				pageCount   : undefined,
+				pageCount   : 1,
 				published   : false,
-				renderer    : undefined,
+				renderer    : 'V3',
 				lang        : 'en',
 				shareId     : expect.any(String),
 				googleId    : expect.any(String),

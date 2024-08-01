@@ -217,6 +217,7 @@ const NewPage = createClass({
 						onMetaChange={this.handleMetaChange}
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
+						snippetBundle={this.state.themeBundle.snippets}
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}
