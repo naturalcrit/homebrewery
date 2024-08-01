@@ -13,11 +13,10 @@ const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
 const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
+const { printCurrentBrew } = require('../../../shared/helpers.js');
 
 const DOMPurify = require('dompurify');
 const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
-
-const Themes = require('themes/themes.json');
 
 const PAGE_HEIGHT = 1056;
 
@@ -36,7 +35,7 @@ const BrewPage = (props)=>{
 		index    : 0,
 		...props
 	};
-	const cleanText = DOMPurify.sanitize(props.contents, purifyConfig);
+	const cleanText = props.contents; //DOMPurify.sanitize(props.contents, purifyConfig);
 	return <div className={props.className} id={`p${props.index + 1}`} >
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
@@ -78,6 +77,7 @@ const BrewRenderer = (props)=>{
 		lang              : '',
 		errors            : [],
 		currentEditorPage : 0,
+		themeBundle       : {},
 		...props
 	};
 
@@ -146,10 +146,9 @@ const BrewRenderer = (props)=>{
 	};
 
 	const renderStyle = ()=>{
-		if(!props.style) return;
-		const cleanStyle = DOMPurify.sanitize(props.style, purifyConfig);
-		//return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${sanitizeScriptTags(props.style)}\n} </style>` }} />;
-		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${cleanStyle} </style>` }} />;
+		const cleanStyle = props.style; //DOMPurify.sanitize(props.style, purifyConfig);
+		const themeStyles = props.themeBundle?.joinedStyles ?? '<style>@import url("/themes/V3/Blank/style.css");</style>';
+		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `${themeStyles} \n\n <style> ${cleanStyle} </style>` }} />;
 	};
 
 	const renderPage = (pageText, index)=>{
@@ -184,6 +183,16 @@ const BrewRenderer = (props)=>{
 		return renderedPages;
 	};
 
+	const handleControlKeys = (e)=>{
+		if(!(e.ctrlKey || e.metaKey)) return;
+		const P_KEY = 80;
+		if(e.keyCode == P_KEY && props.allowPrint) printCurrentBrew();
+		if(e.keyCode == P_KEY) {
+			e.stopPropagation();
+			e.preventDefault();
+		}
+	};
+
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			updateSize();
@@ -202,10 +211,6 @@ const BrewRenderer = (props)=>{
 		document.dispatchEvent(new MouseEvent('click'));
 	};
 
-	const rendererPath  = props.renderer == 'V3' ? 'V3' : 'Legacy';
-	const themePath     = props.theme ?? '5ePHB';
-	const baseThemePath = Themes[rendererPath][themePath].baseTheme;
-
 	return (
 		<>
 			{/*render dummy page while iFrame is mounting.*/}
@@ -217,6 +222,12 @@ const BrewRenderer = (props)=>{
 				</div>
 				: null}
 
+			<ErrorBar errors={props.errors} />
+			<div className='popups'>
+				<RenderWarnings />
+				<NotificationPopup />
+			</div>
+
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
 				style={{ width: '100%', height: '100%', visibility: state.visibility }}
@@ -225,19 +236,9 @@ const BrewRenderer = (props)=>{
 			>
 				<div className={'brewRenderer'}
 					onScroll={handleScroll}
+					onKeyDown={handleControlKeys}
+					tabIndex={-1}
 					style={{ height: state.height }}>
-
-					<ErrorBar errors={props.errors} />
-					<div className='popups'>
-						<RenderWarnings />
-						<NotificationPopup />
-					</div>
-					<link href={`/themes/${rendererPath}/Blank/style.css`} type='text/css' rel='stylesheet'/>
-					{baseThemePath &&
-						<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} type='text/css' rel='stylesheet'/>
-					}
-					<link href={`/themes/${rendererPath}/${themePath}/style.css`} type='text/css' rel='stylesheet'/>
-
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted
 						&&

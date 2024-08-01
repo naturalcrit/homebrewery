@@ -8,8 +8,15 @@ const Markdown = require('../shared/naturalcrit/markdown.js');
 const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
+const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
 
 const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
+
+const Themes = require('../themes/themes.json');
+
+const isStaticTheme = (renderer, themeName)=>{
+	return Themes[renderer]?.[themeName] !== undefined;
+};
 
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
@@ -37,6 +44,43 @@ const api = {
 		}
 		return { id, googleId };
 	},
+	//Get array of any of this user's brews tagged with `meta:theme`
+	getUsersBrewThemes : async (username)=>{
+		if(!username)
+			return {};
+
+		const fields = [
+			'title',
+			'tags',
+			'shareId',
+			'thumbnail',
+			'textBin',
+			'text',
+			'authors',
+			'renderer'
+		];
+
+		const userThemes = {};
+
+		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] } });
+
+		if(brews) {
+			for (const brew of brews) {
+				userThemes[brew.renderer] ??= {};
+				userThemes[brew.renderer][brew.shareId] = {
+					name         : brew.title,
+					renderer     : brew.renderer,
+					baseTheme    : brew.theme,
+					baseSnippets : false,
+					author       : brew.authors[0],
+					path         : brew.shareId,
+					thumbnail    : brew.thumbnail || '/assets/naturalCritLogoWhite.svg'
+				};
+			}
+		}
+
+		return userThemes;
+	},
 	getBrew : (accessType, stubOnly = false)=>{
 		// Create middleware with the accessType passed in as part of the scope
 		return async (req, res, next)=>{
@@ -55,7 +99,7 @@ const api = {
 			stub = stub?.toObject();
 
 			if(stub?.lock?.locked && accessType != 'edit') {
-				throw { HBErrorCode: '100', code: stub.lock.code, message: stub.lock.message, brewId: stub.shareId, brewTitle: stub.title };
+				throw { HBErrorCode: '100', code: stub.lock.code, message: stub.lock.shareMessage, brewId: stub.shareId, brewTitle: stub.title };
 			}
 
 			// If there is a google id, try to find the google brew
@@ -83,9 +127,9 @@ const api = {
 			if(accessType === 'edit' && (authorsExist && !(isAuthor || isInvited))) {
 				const accessError = { name: 'Access Error', status: 401 };
 				if(req.account){
-					throw { ...accessError, message: 'User is not an Author', HBErrorCode: '03', authors: stub.authors, brewTitle: stub.title, shareId: stub.shareId};
+					throw { ...accessError, message: 'User is not an Author', HBErrorCode: '03', authors: stub.authors, brewTitle: stub.title, shareId: stub.shareId };
 				}
-				throw { ...accessError, message: 'User is not logged in', HBErrorCode: '04', authors: stub.authors, brewTitle: stub.title, shareId: stub.shareId};
+				throw { ...accessError, message: 'User is not logged in', HBErrorCode: '04', authors: stub.authors, brewTitle: stub.title, shareId: stub.shareId };
 			}
 
 			// If after all of that we still don't have a brew, throw an exception
@@ -142,7 +186,7 @@ const api = {
 		return modified;
 	},
 	excludeStubProps : (brew)=>{
-		const propsToExclude = ['text', 'textBin', 'renderer', 'pageCount'];
+		const propsToExclude = ['text', 'textBin'];
 		for (const prop of propsToExclude) {
 			brew[prop] = undefined;
 		}
@@ -208,6 +252,58 @@ const api = {
 		saved = saved.toObject();
 
 		res.status(200).send(saved);
+	},
+	getThemeBundle : async(req, res)=>{
+		/*	getThemeBundle: Collects the theme and all parent themes
+				returns an object containing an array of css, and an array of snippets, in render order
+
+				req.params.id       : The shareId ( User theme ) or name ( static theme )
+				req.params.renderer : The Markdown renderer used for this theme */
+
+		req.params.renderer = _.upperFirst(req.params.renderer);
+		let currentTheme;
+		const completeStyles   = [];
+		const completeSnippets = [];
+
+		while (req.params.id) {
+			//=== User Themes ===//
+			if(!isStaticTheme(req.params.renderer, req.params.id)) {
+				await api.getBrew('share')(req, res, ()=>{})
+					.catch((err)=>{
+						if(err.HBErrorCode == '05')
+							err = { ...err, name: 'ThemeLoad Error', message: 'Theme Not Found', HBErrorCode: '09' };
+						throw err;
+					});
+
+				currentTheme = req.brew;
+				splitTextStyleAndMetadata(currentTheme);
+
+				// If there is anything in the snippets or style members, append them to the appropriate array
+				if(currentTheme?.snippets) completeSnippets.push(JSON.parse(currentTheme.snippets));
+				if(currentTheme?.style) completeStyles.push(`/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.params.id} */\n\n${currentTheme.style}`);
+
+				req.params.id       = currentTheme.theme;
+				req.params.renderer = currentTheme.renderer;
+			}
+			//=== Static Themes ===//
+			else {
+				const localSnippets = `${req.params.renderer}_${req.params.id}`; // Just log the name for loading on client
+				const localStyle    = `@import url(\"/themes/${req.params.renderer}/${req.params.id}/style.css\");`;
+				completeSnippets.push(localSnippets);
+				completeStyles.push(`/* From Theme ${req.params.id} */\n\n${localStyle}`);
+
+				req.params.id = Themes[req.params.renderer][req.params.id].baseTheme;
+			}
+		}
+
+		const returnObj = {
+			// Reverse the order of the arrays so they are listed oldest parent to youngest child.
+			styles   : completeStyles.reverse(),
+			snippets : completeSnippets.reverse()
+		};
+
+		res.setHeader('Content-Type', 'application/json');
+		return res.status(200).send(returnObj);
 	},
 	updateBrew : async (req, res)=>{
 		// Initialize brew from request and body, destructure query params, and set the initial value for the after-save method
@@ -369,5 +465,6 @@ router.put('/api/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api
 router.put('/api/update/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
 router.delete('/api/:id', asyncHandler(api.deleteBrew));
 router.get('/api/remove/:id', asyncHandler(api.deleteBrew));
+router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
 
 module.exports = api;

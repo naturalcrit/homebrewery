@@ -95,7 +95,7 @@ const errorIndex = (props)=>{
 		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
 
 		[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`,
-		
+
 
 		// Brew load error
 		'05' : dedent`
@@ -136,11 +136,24 @@ const errorIndex = (props)=>{
 
 		**Brew ID:**  ${props.brew.brewId}`,
 
+		// Theme load error
+		'09' : dedent`
+		## No Homebrewery theme document could be found.
+		
+		The server could not locate the Homebrewery document. It was likely deleted by
+		its owner.
+		
+		:
+
+		**Requested access:** ${props.brew.accessType}
+
+		**Brew ID:**  ${props.brew.brewId}`,
+
 		// Brew locked by Administrators error
 		'100' : dedent`
 		## This brew has been locked.
 		
-		Please contact the Administrators to unlock this document.
+		Only an author may request that this lock is removed.
 		
 		:
 
