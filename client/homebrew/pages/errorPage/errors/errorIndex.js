@@ -136,6 +136,19 @@ const errorIndex = (props)=>{
 
 		**Brew ID:**  ${props.brew.brewId}`,
 
+		// Theme load error
+		'09' : dedent`
+		## No Homebrewery theme document could be found.
+		
+		The server could not locate the Homebrewery document. It was likely deleted by
+		its owner.
+		
+		:
+
+		**Requested access:** ${props.brew.accessType}
+
+		**Brew ID:**  ${props.brew.brewId}`,
+
 		// Brew locked by Administrators error
 		'100' : dedent`
 		## This brew has been locked.
