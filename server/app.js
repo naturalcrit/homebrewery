@@ -10,7 +10,7 @@ const app = express();
 const config = require('./config.js');
 const fs = require('fs-extra');
 
-const { homebrewApi, getBrew } = require('./homebrew.api.js');
+const { homebrewApi, getBrew, getUsersBrewThemes } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
@@ -82,7 +82,8 @@ app.get('/robots.txt', (req, res)=>{
 app.get('/', (req, res, next)=>{
 	req.brew = {
 		text     : welcomeText,
-		renderer : 'V3'
+		renderer : 'V3',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -98,7 +99,8 @@ app.get('/', (req, res, next)=>{
 app.get('/legacy', (req, res, next)=>{
 	req.brew = {
 		text     : welcomeTextLegacy,
-		renderer : 'legacy'
+		renderer : 'legacy',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -114,7 +116,8 @@ app.get('/legacy', (req, res, next)=>{
 app.get('/migrate', (req, res, next)=>{
 	req.brew = {
 		text     : migrateText,
-		renderer : 'V3'
+		renderer : 'V3',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -131,7 +134,8 @@ app.get('/changelog', async (req, res, next)=>{
 	req.brew = {
 		title    : 'Changelog',
 		text     : changelogText,
-		renderer : 'V3'
+		renderer : 'V3',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -148,7 +152,8 @@ app.get('/faq', async (req, res, next)=>{
 	req.brew = {
 		title    : 'FAQ',
 		text     : faqText,
-		renderer : 'V3'
+		renderer : 'V3',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -266,8 +271,10 @@ app.get('/user/:username', async (req, res, next)=>{
 });
 
 //Edit Page
-app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
+app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res, next)=>{
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
+
+	req.userThemes = await(getUsersBrewThemes(req.account?.username));
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',
@@ -280,10 +287,10 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 	splitTextStyleAndMetadata(req.brew);
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
 	return next();
-});
+}));
 
-//New Page
-app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
+//New Page from ID
+app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async(req, res, next)=>{
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	const brew = {
@@ -293,9 +300,11 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 		style    : req.brew.style,
 		renderer : req.brew.renderer,
 		theme    : req.brew.theme,
-		tags     : req.brew.tags
+		tags     : req.brew.tags,
 	};
 	req.brew = _.defaults(brew, DEFAULT_BREW);
+
+	req.userThemes = await(getUsersBrewThemes(req.account?.username));
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'New',
@@ -303,7 +312,19 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	};
 
 	return next();
-});
+}));
+
+//New Page
+app.get('/new', asyncHandler(async(req, res, next)=>{
+	req.userThemes = await(getUsersBrewThemes(req.account?.username));
+
+	req.ogMeta = { ...defaultMetaTags,
+		title       : 'New',
+		description : 'Start crafting your homebrew on the Homebrewery!'
+	};
+
+	return next();
+}));
 
 //Share Page
 app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
@@ -422,7 +443,8 @@ const renderPage = async (req, res)=>{
 		enable_v3     : config.get('enable_v3'),
 		enable_themes : config.get('enable_themes'),
 		config        : configuration,
-		ogMeta        : req.ogMeta
+		ogMeta        : req.ogMeta,
+		userThemes    : req.userThemes
 	};
 	const title = req.brew ? req.brew.title : '';
 	const page = await templateFn('homebrew', title, props)

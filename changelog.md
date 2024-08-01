@@ -84,6 +84,81 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Monday 7/29/2024 - v3.14.0
+{{taskList
+
+##### abquintic, calculuschild
+
+* [x] Alternative Brew Themes, including importing other brews as a base theme.
+
+- In the :fas_circle_info: **Properties** menu, find the new {{openSans **THEME**}} dropdown. It lists Brew Themes, including a new **Blank** theme as a simpler basis for custom styling.
+- Brews tagged with `meta:theme` will appear in the Brew Themes list. Selecting one loads its :fas_paintbrush: **Style** tab contents as the CSS basis for the current brew, allowing one brew to style multiple documents.
+- Brews with `meta:theme` can also select their own Theme, i.e. layering Themes on top of each other.
+- The next goal is to make **Published** Themes shareable between users.
+
+
+Fixes issues [#1899](https://github.com/naturalcrit/homebrewery/issues/1899), [#3085](https://github.com/naturalcrit/homebrewery/issues/3085)
+
+##### G-Ambatte
+
+* [x] Fix Drop-cap font becoming corrupted when Bold
+
+Fixes issues [#3551](https://github.com/naturalcrit/homebrewery/issues/3551)
+
+* [x] Fixes to UI styling
+
+Fixes issues [#3568](https://github.com/naturalcrit/homebrewery/issues/3568)
+
+}}
+
+
+### Saturday 6/7/2024 - v3.13.1
+{{taskList
+
+##### calculuschild, G-Ambatte
+
+* [x] Hotfixes for issues with v3.13.0
+
+Fixes issues [#3559](https://github.com/naturalcrit/homebrewery/issues/3559), [#3552](https://github.com/naturalcrit/homebrewery/issues/3552), [#3554](https://github.com/naturalcrit/homebrewery/issues/3554)
+}}
+
+### Friday 28/6/2024 - v3.13.0
+{{taskList
+
+##### calculuschild
+
+* [x] Add `:emoji:` Markdown syntax, with autosuggest; start typing after the first `:` for matching emojis from 
+:fab_font_awesome: FontAwesome, :df_d20: DiceFont, :ei_action: ElderberryInn, and a subset of :gi_broadsword: GameIcons
+
+* [x] Fix `{curly injection}` to append to, rather than erase and replace target CSS
+* [x] {{openSans **GET PDF**}} {{fa,fa-file-pdf}} now opens the print dialog directly, rather than redirecting to a separate page
+
+##### Gazook
+
+* [x] Several small style tweaks to the UI
+* [x] Cleaning and refactoring several large pieces of code
+
+##### 5e-Cleric
+
+* [x] For error pages, add links to user account and `/share` page if available
+
+Fixes issue [#3298](https://github.com/naturalcrit/homebrewery/issues/3298)
+
+* [x] Change FrontCover title to use stroke outline instead of faking it with dozens of shadows
+* [x] Cleaning and refactoring several large pieces of CSS
+
+##### abquintic
+
+* [x] Added additional {{openSans **TABLE OF CONTENTS**}} snippet options. Explicitly include or exclude items from the ToC generation via CSS properties  
+`--TOC:exclude` or `--TOC:include`, or change the included header depth from 3 to 6 (default 3) with `tocDepthH6`
+
+##### MurdoMaclachlan *(new contributor!)*
+
+* [x] Added "proficiency bonus" to Monster Stat Block snippet. 
+
+Fixes issue [#3397](https://github.com/naturalcrit/homebrewery/issues/3397)
+}}
+
 ### Monday 18/3/2024 - v3.12.0
 {{taskList
 

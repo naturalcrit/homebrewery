@@ -19,7 +19,7 @@ const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
-const { printCurrentBrew } = require('../../../../shared/helpers.js');
+const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
 
 const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
@@ -44,7 +44,8 @@ const NewPage = createClass({
 			saveGoogle        : (global.account && global.account.googleId ? true : false),
 			error             : null,
 			htmlErrors        : Markdown.validate(brew.text),
-			currentEditorPage : 0
+			currentEditorPage : 0,
+			themeBundle       : {}
 		};
 	},
 
@@ -76,6 +77,8 @@ const NewPage = createClass({
 			brew       : brew,
 			saveGoogle : (saveStorage == 'GOOGLE-DRIVE' && this.state.saveGoogle)
 		});
+
+		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
 
 		localStorage.setItem(BREWKEY, brew.text);
 		if(brew.style)
@@ -122,7 +125,10 @@ const NewPage = createClass({
 		localStorage.setItem(STYLEKEY, style);
 	},
 
-	handleMetaChange : function(metadata){
+	handleMetaChange : function(metadata, field=undefined){
+		if(field == 'theme' || field == 'renderer')	// Fetch theme bundle only if theme or renderer was changed
+			fetchThemeBundle(this, metadata.renderer, metadata.theme);
+
 		this.setState((prevState)=>({
 			brew : { ...prevState.brew, ...metadata },
 		}), ()=>{
@@ -142,8 +148,6 @@ const NewPage = createClass({
 			isSaving : true
 		});
 
-		console.log('saving new brew');
-
 		let brew = this.state.brew;
 		// Split out CSS to Style if CSS codefence exists
 		if(brew.text.startsWith('```css') && brew.text.indexOf('```\n\n') > 0) {
@@ -153,12 +157,10 @@ const NewPage = createClass({
 		}
 
 		brew.pageCount=((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
-
 		const res = await request
 			.post(`/api${this.state.saveGoogle ? '?saveToGoogle=true' : ''}`)
 			.send(brew)
 			.catch((err)=>{
-				console.log(err);
 				this.setState({ isSaving: false, error: err });
 			});
 		if(!res) return;
@@ -214,12 +216,15 @@ const NewPage = createClass({
 						onStyleChange={this.handleStyleChange}
 						onMetaChange={this.handleMetaChange}
 						renderer={this.state.brew.renderer}
+						userThemes={this.props.userThemes}
+						snippetBundle={this.state.themeBundle.snippets}
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}
 						style={this.state.brew.style}
 						renderer={this.state.brew.renderer}
 						theme={this.state.brew.theme}
+						themeBundle={this.state.themeBundle}
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
 						currentEditorPage={this.state.currentEditorPage}

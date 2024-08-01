@@ -7,14 +7,15 @@
 }
 
 .ei {
-	display                 : inline-block;
-	margin-right            : 3px;
+	display                 : inline;
 	font-family             : 'Elderberry-Inn';
 	line-height             : 1;
 	vertical-align          : baseline;
-	-moz-osx-font-smoothing : grayscale;
-	-webkit-font-smoothing  : antialiased;
 	text-rendering          : auto;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing  : antialiased;
+	-moz-osx-font-smoothing : grayscale;
 
 	&.book::before { content : '\E900'; }
 	&.screen::before { content : '\E901'; }
