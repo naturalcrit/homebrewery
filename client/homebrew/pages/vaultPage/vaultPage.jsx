@@ -237,7 +237,7 @@ const VaultPage = (props) => {
                         placeholder="Gazook89"
                     />
                 </label>
-                {/*<label>
+                <label style="visibility:hidden">
                     <input
                         type="checkbox"
                         name="owner"
@@ -246,7 +246,7 @@ const VaultPage = (props) => {
                         onChange={validateForm}
                     />
                     Author is the owner
-                </label>*/}
+                </label>
                 <label>
                     Results per page
                     <select ref={countRef} name="count" defaultValue={count}>
