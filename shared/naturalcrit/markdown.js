@@ -58,11 +58,8 @@ mathParser.functions.sign = function (a) {
 };
 // Add signed function
 mathParser.functions.signed = function (a) {
-	if(a >= 0) {
-		return `\\+${a}`;
-	} else {
-		return `\\${a}`;
-	}
+	if(a >= 0) return `\\+${a}`;
+	return `\\${a}`;
 };
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
