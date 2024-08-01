@@ -7,7 +7,7 @@
 } 
 
 .df {
-	display                 : inline-block;
+	display                 : inline;
 	font-family             : 'DiceFont';
 	font-style              : normal;
 	font-weight             : normal;
@@ -16,8 +16,11 @@
 	text-decoration         : inherit;
 	text-transform          : none;
 	text-rendering          : optimizeLegibility;
-	-moz-osx-font-smoothing : grayscale;
+	
+	/* Better Font Rendering =========== */
 	-webkit-font-smoothing  : antialiased;
+	-moz-osx-font-smoothing : grayscale;
+
 	&.F::before { content : '\f190'; }
 	&.F-minus::before { content : '\f191'; }
 	&.F-plus::before { content : '\f192'; }
