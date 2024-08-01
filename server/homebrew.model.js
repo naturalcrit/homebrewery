@@ -51,8 +51,8 @@ HomebrewSchema.statics.get = async function(query, fields=null){
 	return brew;
 };
 
-HomebrewSchema.statics.getByUser = async function(username, allowAccess=false, fields=null){
-	const query = { authors: username, published: true };
+HomebrewSchema.statics.getByUser = async function(username, allowAccess=false, fields=null, filter=null){
+	const query = { authors: username, published: true, ...filter };
 	if(allowAccess){
 		delete query.published;
 	}
