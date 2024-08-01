@@ -46,6 +46,9 @@ const api = {
 	},
 	//Get array of any of this user's brews tagged with `meta:theme`
 	getUsersBrewThemes : async (username)=>{
+		if(!username)
+			return {};
+
 		const fields = [
 			'title',
 			'tags',
@@ -183,7 +186,7 @@ const api = {
 		return modified;
 	},
 	excludeStubProps : (brew)=>{
-		const propsToExclude = ['text', 'textBin', 'renderer', 'pageCount'];
+		const propsToExclude = ['text', 'textBin'];
 		for (const prop of propsToExclude) {
 			brew[prop] = undefined;
 		}
@@ -251,16 +254,12 @@ const api = {
 		res.status(200).send(saved);
 	},
 	getThemeBundle : async(req, res)=>{
-		/*
-			getThemeBundle: Collects the theme and all parent themes
-				returns an object containing an array of css, in render order, and an array
-					of snippets ( currently empty )
-			Important parameter members:
-				req.params.id: This is the shareId ( User theme ) or name ( static theme )
-					loaded first.
-				req.params.renderer: This is the Markdown+ version for the static theme. If a
-					User theme the value will come from the User Theme metadata.
-		*/
+		/*	getThemeBundle: Collects the theme and all parent themes
+				returns an object containing an array of css, and an array of snippets, in render order
+
+				req.params.id       : The shareId ( User theme ) or name ( static theme )
+				req.params.renderer : The Markdown renderer used for this theme */
+
 		req.params.renderer = _.upperFirst(req.params.renderer);
 		let currentTheme;
 		const completeStyles   = [];
