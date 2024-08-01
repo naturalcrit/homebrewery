@@ -14,6 +14,28 @@
 			box-shadow    : 1px 4px 14px #000000;
 		}
 	}
+
+	&::-webkit-scrollbar {
+		width: 20px;
+		&:horizontal{
+			height: 20px;
+			width:auto;
+		}
+		&-thumb {
+			background: linear-gradient(90deg, #d3c1af 15px, #00000000 15px);
+			&:horizontal{
+				background: linear-gradient(0deg, #d3c1af 15px, #00000000 15px);
+			}
+		}
+		&-corner {
+			visibility: hidden;
+		}
+	}
+	
+
+
+
+
 }
 .pane { position : relative; }
 .pageInfo {
@@ -41,4 +63,17 @@
 	font-weight      : 800;
 	color            : white;
 	background-color : #333333;
+}
+
+@media print {
+	.brewRenderer {
+		height: 100%;
+		overflow-y: unset;
+		.pages {
+			margin: 0px;
+			&>.page {
+				box-shadow: unset;
+			}
+		}
+	}
 }

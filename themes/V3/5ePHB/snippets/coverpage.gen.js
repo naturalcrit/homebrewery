@@ -149,8 +149,6 @@ module.exports = {
 			![](/assets/naturalCritLogoWhite.svg)
 
 			Homebrewery.Naturalcrit.com
-			}}
-
-			\page`;
+			}}`;
 	}
 };

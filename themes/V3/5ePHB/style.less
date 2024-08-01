@@ -1,6 +1,4 @@
-@import (less) './themes/fonts/5e/fonts.less';
 @import (less) './themes/assets/assets.less';
-@import (less) './themes/fonts/icon fonts/font-icons.less';
 
 :root {
 	//Colors
@@ -356,6 +354,11 @@
 			}
 		}
 
+		.bonus {
+			float: right;
+			padding-right: 0.5em;
+		}
+
 		// Monster Ability table
 		hr + table:first-of-type {
 			margin              : 0;
@@ -532,21 +535,19 @@
 .page:has(.frontCover) {
 	columns    : 1;
 	text-align : center;
-	&::after { all : unset; }
+	&::after { display : none; }
 	h1 {
 		margin-top     : 1.2cm;
 		margin-bottom  : 0;
 		font-family    : 'NodestoCapsCondensed';
 		font-size      : 2.245cm;
 		font-weight    : normal;
-		line-height    : 0.85em;
+		line-height    : 1.9cm;
 		color          : white;
 		text-shadow    : unset;
 		text-transform : uppercase;
-		filter         : drop-shadow(0 0 1.5px black) drop-shadow(0 0 0 black)
-			drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-			drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-			drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		-webkit-text-stroke: 0.2cm black;
+  		paint-order:stroke;
 	}
 	h2 {
 		font-family    : 'NodestoCapsCondensed';
@@ -554,10 +555,8 @@
 		font-weight    : normal;
 		color          : white;
 		letter-spacing : 0.1cm;
-		filter         : drop-shadow(0 0 1px black) drop-shadow(0 0 0 black)
-			drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-			drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-			drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		-webkit-text-stroke: 0.14cm black;
+  		paint-order:stroke;
 	}
 	hr {
 		position         : relative;
@@ -603,10 +602,8 @@
 		font-size    : 0.496cm;
 		color        : white;
 		text-align   : center;
-		filter       : drop-shadow(0 0 0.7px black) drop-shadow(0 0 0 black)
-			drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-			drop-shadow(0 0 0 black) drop-shadow(0 0 0 black)
-			drop-shadow(0 0 0 black) drop-shadow(0 0 0 black);
+		-webkit-text-stroke: 0.1cm black;
+  		paint-order:stroke;
 	}
 	.logo {
 		position   : absolute;
@@ -626,14 +623,14 @@
 .page:has(.insideCover) {
 	columns    : 1;
 	text-align : center;
-	&::after { all	: unset; }
+	&::after { display	: none; }
 	h1 {
 		margin-top     : 1.2cm;
 		margin-bottom  : 0;
 		font-family    : 'NodestoCapsCondensed';
 		font-size      : 2.1cm;
 		font-weight    : normal;
-		line-height    : 0.85em;
+		line-height    : 1.785cm;
 		text-transform : uppercase;
 	}
 	h2 {
@@ -672,7 +669,7 @@
 	padding : 2.25cm 1.3cm 2cm 1.3cm;
 	color   : #FFFFFF;
 	columns : 1;
-	&::after { all : unset; }
+	&::after { display : none; }
 	.columnWrapper { width : 7.6cm; }
 	.backCover {
 		position          : absolute;
@@ -688,7 +685,7 @@
 		margin-bottom : 0.3cm;
 		font-family   : 'NodestoCapsCondensed';
 		font-size     : 1.35cm;
-		line-height   : 0.95em;
+		line-height   : 1.28cm;
 		color         : #ED1C24;
 		text-align    : center;
 	}
@@ -714,7 +711,7 @@
 	p {
 		font-family : 'Overpass';
 		font-size   : 0.332cm;
-		line-height : 1.5em;
+		line-height : 0.35cm;
 	}
 	hr + p {
 		margin-top : 0.6cm;
@@ -739,10 +736,10 @@
 			font-family    : 'NodestoCapsWide';
 			font-size      : 0.4cm;
 			line-height    : 1em;
+			line-height    : 1.28cm;
 			color          : #FFFFFF;
 			text-align     : center;
 			text-indent    : 0;
-			letter-spacing : 0.08em;
 		}
 	}
 }
@@ -782,13 +779,46 @@
 		margin-left  : auto;
 		font-family  : 'Overpass';
 		font-size    : 0.45cm;
-		line-height  : 1.1em;
+		line-height  : 0.495cm;
 	}
 }
 
 // *****************************
 // *      TABLE OF CONTENTS
 // *****************************/
+
+// Default Exclusions
+// Anything not exlcuded is included, default Headers are H1, H2, and H3.
+h4,
+h5,
+h6,
+.page:has(.frontCover), 
+.page:has(.backCover), 
+.page:has(.insideCover), 
+.monster,
+.noToC,
+.toc { --TOC: exclude; }
+
+.tocDepthH2 :is(h1, h2) {--TOC: include; }
+.tocDepthH3 :is(h1, h2, h3) {--TOC: include; }
+.tocDepthH4 :is(h1, h2, h3, h4) {--TOC: include; }
+.tocDepthH5 :is(h1, h2, h3, h4, h5) {--TOC: include; }
+.tocDepthH6 :is(h1, h2, h3, h4, h5, h6) {--TOC: include; }
+
+.tocIncludeH1 h1 {--TOC: include; }
+.tocIncludeH2 h2 {--TOC: include; }
+.tocIncludeH3 h3 {--TOC: include; }
+.tocIncludeH4 h4 {--TOC: include; }
+.tocIncludeH5 h5 {--TOC: include; }
+.tocIncludeH6 h6 {--TOC: include; }
+
+.page:has(.partCover) {
+	--TOC: exclude;
+	& h1 {
+	  --TOC: include;
+	}
+  }
+
 .page {
 	&:has(.toc)::after { display : none; }
 	.toc {
@@ -876,6 +906,10 @@
 .page .wide { margin-bottom : 0.325cm; }
 
 .page h1 + * { margin-top : 0; }
+
+.page .descriptive.wide + * {
+	margin-top: 0;
+}
 
 //*****************************
 // *       RUNE TABLE
