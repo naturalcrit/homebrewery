@@ -12,18 +12,26 @@ const Account = require('../../navbar/account.navitem.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
-const { printCurrentBrew } = require('../../../../shared/helpers.js');
+const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
 
 const SharePage = createClass({
 	displayName     : 'SharePage',
 	getDefaultProps : function() {
 		return {
-			brew : DEFAULT_BREW_LOAD
+			brew : DEFAULT_BREW_LOAD,
+		};
+	},
+
+	getInitialState : function() {
+		return {
+			themeBundle : {}
 		};
 	},
 
 	componentDidMount : function() {
 		document.addEventListener('keydown', this.handleControlKeys);
+
+		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
 	},
 
 	componentWillUnmount : function() {
@@ -99,6 +107,7 @@ const SharePage = createClass({
 					style={this.props.brew.style}
 					renderer={this.props.brew.renderer}
 					theme={this.props.brew.theme}
+					themeBundle={this.state.themeBundle}
 					allowPrint={true}
 				/>
 			</div>
