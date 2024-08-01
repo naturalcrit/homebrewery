@@ -311,7 +311,6 @@
 			border-image          : @monsterBorderImage 14 round;
 			border-image-outset   : 0px 2px;
 			box-shadow            : 1px 4px 14px #888888;
-
 		}
 
 		position      : relative;
@@ -381,6 +380,14 @@
 	//Full Width
 	.monster.wide {
 		.useColumns(0.96, @fillMode: balance);
+	}
+
+	//only for IOS devices
+	@supports (-webkit-touch-callout: none) {
+		.page .monster.frame {
+			background-repeat : no-repeat;
+			background-size   : cover;
+		}
 	}
 
 	// *****************************
@@ -459,15 +466,6 @@
 		margin-bottom : 0px;
 		margin-left   : 1.5em;
 	}
-}
-
-//only for IOS devices
-@supports (-webkit-touch-callout: none) {
-	.page .monster.frame {
-		background-repeat : no-repeat;
-		background-size   : cover;
-	}
-	
 }
 
 // *****************************
