@@ -53,11 +53,8 @@ mathParser.functions.abs = function (a) {
 // Add sign function
 mathParser.functions.sign = function (a) {
 	if(a == 0) return '';
-	if(a > 0) {
-		return '\\+';
-	} else {
-		return '\\-';
-	}
+	if(a > 0) return '\\+';
+	return '\\-';
 };
 // Add signed function
 mathParser.functions.signed = function (a) {
