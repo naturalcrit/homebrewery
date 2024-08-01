@@ -237,7 +237,7 @@ const VaultPage = (props) => {
                         placeholder="Gazook89"
                     />
                 </label>
-                <label style="visibility:hidden">
+                <label style={{ visibility: 'hidden', position: 'absolute' }}>
                     <input
                         type="checkbox"
                         name="owner"
