@@ -382,6 +382,14 @@
 		.useColumns(0.96, @fillMode: balance);
 	}
 
+	//only for IOS devices
+	@supports (-webkit-touch-callout: none) {
+		.page .monster.frame {
+			background-repeat : no-repeat;
+			background-size   : cover;
+		}
+	}
+
 	// *****************************
 	// *           FOOTER
 	// *****************************/
@@ -459,6 +467,7 @@
 		margin-left   : 1.5em;
 	}
 }
+
 // *****************************
 // *         SPELL LIST
 // *****************************/
