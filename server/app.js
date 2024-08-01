@@ -115,7 +115,8 @@ app.get('/legacy', (req, res, next)=>{
 app.get('/migrate', (req, res, next)=>{
 	req.brew = {
 		text     : migrateText,
-		renderer : 'V3'
+		renderer : 'V3',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -132,7 +133,8 @@ app.get('/changelog', async (req, res, next)=>{
 	req.brew = {
 		title    : 'Changelog',
 		text     : changelogText,
-		renderer : 'V3'
+		renderer : 'V3',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -149,7 +151,8 @@ app.get('/faq', async (req, res, next)=>{
 	req.brew = {
 		title    : 'FAQ',
 		text     : faqText,
-		renderer : 'V3'
+		renderer : 'V3',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
