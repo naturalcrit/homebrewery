@@ -3,11 +3,11 @@ require('./metadataEditor.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
-const cx    = require('classnames');
 const request = require('../../utils/request-middleware.js');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Combobox = require('client/components/combobox.jsx');
 const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
+
 
 const Themes = require('themes/themes.json');
 const validations = require('./validations.js');
@@ -99,7 +99,7 @@ const MetadataEditor = createClass({
 			if(renderer == 'legacy')
 				this.props.metadata.theme = '5ePHB';
 		}
-		this.props.onChange(this.props.metadata);
+		this.props.onChange(this.props.metadata, 'renderer');
 	},
 	handlePublish : function(val){
 		this.props.onChange({
@@ -111,7 +111,7 @@ const MetadataEditor = createClass({
 	handleTheme : function(theme){
 		this.props.metadata.renderer = theme.renderer;
 		this.props.metadata.theme    = theme.path;
-		this.props.onChange(this.props.metadata);
+		this.props.onChange(this.props.metadata, 'theme');
 	},
 
 	handleLanguage : function(languageCode){
@@ -192,37 +192,41 @@ const MetadataEditor = createClass({
 	renderThemeDropdown : function(){
 		if(!global.enable_themes) return;
 
+		const mergedThemes = _.merge(Themes, this.props.userThemes);
+
 		const listThemes = (renderer)=>{
-			return _.map(_.values(Themes[renderer]), (theme)=>{
-				return <div className='item' key={''} onClick={()=>this.handleTheme(theme)} title={''}>
-					{`${theme.renderer} : ${theme.name}`}
-					<img src={`/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`}/>
+			return _.map(_.values(mergedThemes[renderer]), (theme)=>{
+				const preview = theme.thumbnail || `/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`;
+				const texture = theme.thumbnail || `/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`;
+				return <div className='item' key={`${renderer}_${theme.name}`} onClick={()=>this.handleTheme(theme)} title={''}>
+					{theme.author ?? renderer} : {theme.name}
+					<div className='texture-container'>
+						<img src={texture}/>
+					</div>
 					<div className='preview'>
-						<h6>{`${theme.name}`} preview</h6>
-						<img src={`/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`}/>
+						<h6>{theme.name} preview</h6>
+						<img src={preview}/>
 					</div>
 				</div>;
 			});
 		};
 
-		const currentTheme = Themes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme];
+		const currentRenderer = this.props.metadata.renderer;
+		const currentTheme    = mergedThemes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme]
+													?? { name: `!!! THEME MISSING !!! ID=${this.props.metadata.theme}` };
 		let dropdown;
 
-		if(this.props.metadata.renderer == 'legacy') {
+		if(currentRenderer == 'legacy') {
 			dropdown =
 				<Nav.dropdown className='disabled value' trigger='disabled'>
-					<div>
-						{`Themes are not supported in the Legacy Renderer`} <i className='fas fa-caret-down'></i>
-					</div>
+					<div> {`Themes are not supported in the Legacy Renderer`} <i className='fas fa-caret-down'></i> </div>
 				</Nav.dropdown>;
 		} else {
 			dropdown =
 				<Nav.dropdown className='value' trigger='click'>
-					<div>
-						{`${_.upperFirst(currentTheme.renderer)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
-					</div>
-					{/*listThemes('Legacy')*/}
-					{listThemes('V3')}
+					<div> {currentTheme.author ?? _.upperFirst(currentRenderer)} : {currentTheme.name} <i className='fas fa-caret-down'></i> </div>
+
+					{listThemes(currentRenderer)}
 				</Nav.dropdown>;
 		}
 

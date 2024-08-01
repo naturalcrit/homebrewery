@@ -1,9 +1,7 @@
 const React = require('react');
 const createClass = require('create-react-class');
-const cx = require('classnames');
 const Nav = require('naturalcrit/nav/nav.jsx');
 
-const MAX_URL_SIZE = 2083;
 const MAIN_URL = 'https://www.reddit.com/r/UnearthedArcana/submit?selftext=true';
 
 
