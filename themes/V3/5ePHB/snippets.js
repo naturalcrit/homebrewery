@@ -349,7 +349,7 @@ module.exports = [
 					/* Ink Friendly */
 					*:is(.page,.monster,.note,.descriptive) {
 						background : white !important;
-						filter : drop-shadow(0px 0px 3px #888) !important;
+						box-shadow : 1px 4px 14px #888 !important;
 					}
 
 					.page img {
