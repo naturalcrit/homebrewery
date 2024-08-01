@@ -4,6 +4,7 @@ const jszip = require('jszip');
 const fileSaver = require('file-saver');
 const htmlimg = require('html-to-image');
 const base64url = require('base64-url');
+const request = require('../client/homebrew/utils/request-middleware.js');
 
 
 const thumbnailCapture = async (pageNumber, brewRenderer)=>{
@@ -47,6 +48,11 @@ const splitTextStyleAndMetadata = (brew)=>{
 	if(brew.text.startsWith('```css')) {
 		const index = brew.text.indexOf('```\n\n');
 		brew.style = brew.text.slice(7, index - 1);
+		brew.text = brew.text.slice(index + 5);
+	}
+	if(brew.text.startsWith('```snippets')) {
+		const index = brew.text.indexOf('```\n\n');
+		brew.snippets = brew.text.slice(11, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
 };
@@ -106,9 +112,26 @@ const createBrewCBZ = async ()=>{
 		});
 	}
 };
+		
+const fetchThemeBundle = async (obj, renderer, theme)=>{
+	const res = await request
+			.get(`/api/theme/${renderer}/${theme}`)
+			.catch((err)=>{
+				obj.setState({ error: err });
+			});
+	if(!res) return;
+
+	const themeBundle = res.body;
+	themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n');
+	obj.setState((prevState)=>({
+		...prevState,
+		themeBundle : themeBundle
+	}));
+};
 
 module.exports = {
 	splitTextStyleAndMetadata,
 	printCurrentBrew,
-	createBrewCBZ
+	createBrewCBZ,
+	fetchThemeBundle,
 };
