@@ -7,10 +7,13 @@ const request = require('../../utils/request-middleware.js');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Combobox = require('client/components/combobox.jsx');
 const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
+const htmlimg = require('html-to-image');
+const base64url = require('base64-url');
 
 
 const Themes = require('themes/themes.json');
 const validations = require('./validations.js');
+
 
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
@@ -31,6 +34,7 @@ const MetadataEditor = createClass({
 				title       : '',
 				description : '',
 				thumbnail   : '',
+				thumbnailSm : null,
 				tags        : [],
 				published   : false,
 				authors     : [],
@@ -56,9 +60,62 @@ const MetadataEditor = createClass({
 		});
 	},
 
+
+	thumbnailCapture : async function() {
+
+		function urlReplacer(urlMatch, url) {
+			return (`url(/xssp/${base64url.encode(url)})`);
+		}
+		const bR = parent.document.getElementById('BrewRenderer');
+		const brewRenderer = bR.contentDocument || bR.contentWindow.document;
+		const pageOne = brewRenderer.getElementsByClassName('page')[0];
+		const topPage = pageOne.cloneNode(true);
+		pageOne.parentNode.appendChild(topPage);
+		// Walk through Top Page's Source and convert all Images to inline data *in* topPage.
+		const srcImages = pageOne.getElementsByTagName('img');
+		const topImages = topPage.getElementsByTagName('img');
+		const topLinks = brewRenderer.getElementsByTagName('link');
+		const topStyles = brewRenderer.getElementsByTagName('style');
+		// These two should start off with identical contents.
+		for (let imgPos = 0; imgPos < srcImages.length; imgPos++) {
+			topImages[imgPos].src = `/xssp/${base64url.encode(srcImages[imgPos].src)}`;
+		}
+		for (let linkPos = 0; linkPos < topLinks.length; linkPos++) {
+			topLinks[linkPos].href = `/xssp/${base64url.encode(topLinks[linkPos].href)}`;
+		}
+		for (let stylePos = 0; stylePos < topStyles.length; stylePos++) {
+			const urlRegex = /url\(([^\'\"].*[^\'\"])\)/gs;
+			const urlRegexWrapped = /url\(\'(.*)\'\)/gs;
+			topStyles[stylePos].innerText = topStyles[stylePos].innerText.replace(urlRegex,  urlReplacer);
+			topStyles[stylePos].innerText = topStyles[stylePos].innerText.replace(urlRegexWrapped, urlReplacer);
+		}
+		const props = this.props;
+
+		const clientHeightLg = topPage.clientHeight * 0.5;
+		const clientWidthSm = topPage.clientWidth * (115/topPage.clientHeight);
+		const clientWidthLg = topPage.clientWidth * 0.5;
+
+		// HARD Override margins.
+		topPage.style.margin = '0px';
+
+		htmlimg.toPng(topPage, { canvasHeight : clientHeightLg, canvasWidth : clientWidthLg
+		}).then(function(dataURL){
+		  props.metadata.thumbnailLg = dataURL;
+		  	htmlimg.toJpeg(topPage, { canvasHeight : 115, canvasWidth : clientWidthSm, quality : 0.95
+		  	}).then(function(dataURL){
+				props.metadata.thumbnail = 'Page 1';
+				props.metadata.thumbnailSm = dataURL;
+				props.onChange(props.metadata);
+				topPage.remove();
+			});
+		  props.onChange(props.metadata);
+	  	});
+	},
+
 	renderThumbnail : function(){
 		if(!this.state.showThumbnail) return;
-		return <img className='thumbnail-preview' src={this.props.metadata.thumbnail || homebreweryThumbnail}></img>;
+		const imgURL = this.props.metadata.thumbnail.startsWith('Page 1') ? this.props.metadata.thumbnailSm : this.props.metadata.thumbnail;
+		return <img className='thumbnail-preview' src={imgURL || homebreweryThumbnail}></img>;
 	},
 
 	handleFieldChange : function(name, e){
@@ -336,6 +393,9 @@ const MetadataEditor = createClass({
 							onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
 						<button className='display' onClick={this.toggleThumbnailDisplay}>
 							<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
+						</button>
+						<button className='display' onClick={this.thumbnailCapture}>
+							<i className={`fas fa-camera`} />
 						</button>
 					</div>
 				</div>
