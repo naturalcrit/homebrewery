@@ -221,7 +221,7 @@ const mustacheInjectInline = {
 			if(!lastToken || lastToken.type == 'mustacheInjectInline')
 				return false;
 
-			const tags = processStyleTags(match[1]);
+			const tags = processStyleTags(processStyleMacros(match[1], lastToken));
 			lastToken.originalType = lastToken.type;
 			lastToken.type         = 'mustacheInjectInline';
 			lastToken.injectedTags = tags;
@@ -760,6 +760,29 @@ const voidTags = new Set([
 	'area', 'base', 'br', 'col', 'command', 'hr', 'img',
 	'input', 'keygen', 'link', 'meta', 'param', 'source'
 ]);
+
+const processStyleMacros = (string, lastToken)=>{
+
+	let substitutions = string;
+
+	const textWrapThresholdRegex = /\$(twt[lr])(-(\d*\.?\d+))?/;
+	let twMatch = textWrapThresholdRegex.exec(substitutions);
+
+	if(twMatch) {
+		substitutions = substitutions.replace(twMatch[0],
+			`float:${twMatch[1] == 'twtl' ? 'left' : 'right'},shape-outside:url(${lastToken.href})${twMatch[3]?.length > 0 ? `;shape-image-threshold:${twMatch[3]}` : ''}`);
+	}
+
+	const textWrapMarginRegex = /\$(tw[lr])(-(\d*\.?\d+(%|\w{2,4})))?/;
+	twMatch = textWrapMarginRegex.exec(substitutions);
+
+	if(twMatch) {
+		substitutions = substitutions.replace(twMatch[0],
+			`float:${twMatch[1] == 'twl' ? 'left' : 'right'},shape-outside:url(${lastToken.href})${twMatch[3]?.length > 0 ? `; shape-margin:${twMatch[3]}` : ''}`);
+	}
+
+	return substitutions;
+};
 
 const processStyleTags = (string)=>{
 	//split tags up. quotes can only occur right after : or =.
