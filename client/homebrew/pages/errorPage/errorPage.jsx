@@ -5,9 +5,11 @@ const Markdown   = require('../../../../shared/naturalcrit/markdown.js');
 const ErrorIndex = require('./errors/errorIndex.js');
 
 const ErrorPage = ({ brew })=>{
+	
 	// Retrieving the error text based on the brew's error code from ErrorIndex
 	const errorText = ErrorIndex({ brew })[brew.HBErrorCode.toString()] || '';
-
+	console.log(errorText);
+	
 	return (
 		<UIPage brew={{ title: 'Crit Fail!' }}>
 			<div className='dataGroup'>

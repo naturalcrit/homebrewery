@@ -160,6 +160,58 @@ const errorIndex = (props)=>{
 		**Brew ID:**  ${props.brew.brewId}
 		
 		**Brew Title:** ${props.brew.brewTitle}`,
+
+
+
+		// ####### Admin pages errors ####### 
+
+		'401': dedent`
+		## Authorization Required
+
+		You need to provide correct credentials to access this page.
+		
+		:
+		
+		This is an administrator only page to manage the site, if you should not have access, leave inmediately.
+
+		:
+
+		If you have received instructions to open this page, report 
+		as so at our subreddit or discord you will find in the home page.
+		`,
+		'403': dedent`
+		## Access Denied
+		
+		The credentials you entered are not correct, you may try again, attention, there is a limited number of tries before you are blocked.
+		
+		:
+
+		This is an administrator only page to manage the site, if you should not have access, leave inmediately.
+		
+		:
+		
+		If you have received instructions to open this page, report 
+		as so at our subreddit or discord you will find in the home page.
+		`,
+
+		'470' : dedent`
+		## You have runned out of attempts
+
+		You have failed to provide correct credentials to access the page too many times, and you have run out of attempts.
+		
+		:
+		
+		This is an administrator only page to manage the site, if you should not have access, leave inmediately.
+		
+		:
+		
+		If you have received instructions to open this page, report 
+		as so at our subreddit or discord you will find in the home page.
+		
+		::
+		
+		In any case, your attempts have been logged, and you will not be capable of doing any more attempt for now.
+		`,
 	};
 };
 
