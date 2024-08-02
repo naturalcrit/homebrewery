@@ -21,6 +21,7 @@ const HomebrewSchema = mongoose.Schema({
 	invitedAuthors : [String],
 	published      : { type: Boolean, default: false },
 	thumbnail      : { type: String, default: '' },
+	thumbnailSm    : { type: String, default: '' },
 
 	createdAt  : { type: Date, default: Date.now },
 	updatedAt  : { type: Date, default: Date.now },
