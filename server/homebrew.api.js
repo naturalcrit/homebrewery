@@ -13,6 +13,9 @@ const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
 const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
 
 const Themes = require('../themes/themes.json');
+const gists = require('./github_gist.js');
+
+const testToken ='';
 
 const isStaticTheme = (renderer, themeName)=>{
 	return Themes[renderer]?.[themeName] !== undefined;
@@ -120,6 +123,10 @@ const api = {
 				}
 				// Combine the Homebrewery stub with the google brew, or if the stub doesn't exist just use the google brew
 				stub = stub ? _.assign({ ...api.excludeStubProps(stub), stubbed: true }, api.excludeGoogleProps(googleBrew)) : googleBrew;
+			} else if(gists.gistsActive() && testToken) {
+				stub.ghToken = testToken;
+				const fileFromGist = await gists.gistGetText(stub);
+				stub.text = fileFromGist;
 			}
 			const authorsExist = stub?.authors?.length > 0;
 			const isAuthor = stub?.authors?.includes(req.account?.username);
@@ -236,6 +243,10 @@ const api = {
 			if(!googleId) return;
 			api.excludeStubProps(newHomebrew);
 			newHomebrew.googleId = googleId;
+		} else if(gists.gistsActive() && testToken) {
+			newHomebrew.ghToken = testToken;
+			const fileSaved = await gists.gistPutText(newHomebrew);
+			if(fileSaved) return;
 		} else {
 			// Compress brew text to binary before saving
 			newHomebrew.textBin = zlib.deflateRawSync(newHomebrew.text);
@@ -356,6 +367,11 @@ const api = {
 		if(brew.googleId) {
 			// If the google id exists after all those actions, exclude the props that are stored in google and aren't needed for rendering the brew items
 			api.excludeStubProps(brew);
+		} else if(gists.gistsActive() && testToken) {
+			brew.ghToken = testToken;
+			const fileSaved = await gists.gistPutText(brew);
+			if(!fileSaved) return;
+			brew.text = undefined;
 		} else {
 			// Compress brew text to binary before saving
 			brew.textBin = zlib.deflateRawSync(brew.text);
@@ -417,6 +433,7 @@ const api = {
 		const isOwner = account && (brew.authors.length === 0 || brew.authors[0] === account.username);
 		// If the user is the owner and the file is saved to google, mark the google brew for deletion
 		const shouldDeleteGoogleBrew = googleId && isOwner;
+		const shouldDeleteGistBrew   = gists.gistsActive() && testToken;
 
 		if(brew._id) {
 			brew = _.assign(await HomebrewModel.findOne({ _id: brew._id }), brew);
@@ -445,6 +462,10 @@ const api = {
 						throw { name: 'BrewAuthorDelete Error', message: err, status: 500, HBErrorCode: '08', brewId: brew._id };
 					});
 			}
+		}
+		if(shouldDeleteGistBrew) {
+			const deleted = await gists.deleteGist(brew);
+			if(!deleted) return;
 		}
 		if(shouldDeleteGoogleBrew) {
 			const deleted = await api.deleteGoogleBrew(account, googleId, editId, res)
