@@ -45,6 +45,28 @@ const BrewPage = (props)=>{
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
 const renderedPages = [];
 let rawPages      = [];
+let pageClasses   = {};
+
+// There is bound to be a more elegant way to do this. But this works for now.
+const getPageClasses = (pages)=>{
+	const tempPages = [];
+	pageClasses = {};
+	pages.forEach((page, index)=>{
+		if(page.match(/^\\page ?\w*$/)) {
+			let indexOffset = 0;
+			if(index > 0) {
+				indexOffset =  index % 2 == 0 ? (index)/2 : ((index)/2) + 1;
+			}
+			const pageClass = page.replace(/^\\page ?/, '').replace(/\n\r/, '').trim();
+			if(pageClass) {
+				pageClasses[ indexOffset ] = pageClass;
+			}
+		} else {
+			tempPages.push(page);
+		}
+	});
+	return tempPages;
+};
 
 const BrewRenderer = (props)=>{
 	props = {
@@ -71,7 +93,7 @@ const BrewRenderer = (props)=>{
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split('\\page');
 	} else {
-		rawPages = props.text.split(/^\\page$/gm);
+		rawPages = getPageClasses(props.text.split(/(?=^\\page ?\w*$)|(?<=^\\page ?\w*$)/gm));
 	}
 
 	useEffect(()=>{ // Unmounting steps
@@ -130,13 +152,16 @@ const BrewRenderer = (props)=>{
 	};
 
 	const renderPage = (pageText, index)=>{
+		if(!pageText)  {return; };
+		let cleanPageText = sanitizeScriptTags(pageText);
 		if(props.renderer == 'legacy') {
 			const html = MarkdownLegacy.render(pageText);
 			return <BrewPage className='page phb' index={index} key={index} contents={html} />;
 		} else {
-			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
-			const html = Markdown.render(pageText, index);
-			return <BrewPage className='page' index={index} key={index} contents={html} />;
+			cleanPageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
+			const html = Markdown.render(cleanPageText, index);
+			const pageClassesUsed = `page${pageClasses.hasOwnProperty(`${index}`) ? ` ${pageClasses[index]}` : ''}`;
+			return <BrewPage className={pageClassesUsed} index={index} key={index} contents={html} />;
 		}
 	};
 
