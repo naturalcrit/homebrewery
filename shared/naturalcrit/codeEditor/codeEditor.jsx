@@ -438,7 +438,7 @@ const CodeEditor = createClass({
 
 				// Extra data url chomping
 				// Try to make it pretty...
-				const startOfData = text.indexOf('data:');
+				const startOfData = text.indexOf('data:') > 0 ? text.indexOf('data:') : false;
 				if(startOfData) {
 					text = (startOfData > maxLength) ?
 						`${text.slice(0, text.indexOf(':') + 1)} ... ${text.slice(startOfData, startOfData + 5)} ...` :

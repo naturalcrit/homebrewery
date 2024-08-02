@@ -29,7 +29,7 @@ module.exports = {
 
 			// IMPORT FOLDING
 
-			const importMatcher = /^@import.*?;/;
+			const importMatcher = /^@import.*?[;]/;
 
 			if(activeLine.match(importMatcher)) {
 				return {
