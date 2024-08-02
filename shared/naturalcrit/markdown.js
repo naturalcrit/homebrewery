@@ -28,17 +28,18 @@ const mathParser = new MathParser({
 		round    : true,
 		floor    : true,
 		ceil     : true,
+		abs      : true,
 
 		sin     : false, cos     : false, tan     : false, asin    : false, acos    : false,
 		atan    : false, sinh    : false, cosh    : false, tanh    : false, asinh   : false,
 		acosh   : false, atanh   : false, sqrt    : false, cbrt    : false, log     : false,
 		log2    : false, ln      : false, lg      : false, log10   : false, expm1   : false,
-		log1p   : false, abs     : false, trunc   : false, join    : false, sum     : false,
+		log1p   : false, trunc   : false, join    : false, sum     : false, indexOf : false,
 		'-'     : false, '+'     : false, exp     : false, not     : false, length  : false,
 		'!'     : false, sign    : false, random  : false, fac     : false, min     : false,
 		max     : false, hypot   : false, pyt     : false, pow     : false, atan2   : false,
 		'if'    : false, gamma   : false, roundTo : false, map     : false, fold    : false,
-		filter  : false, indexOf : false,
+		filter  : false,
 
 		remainder   : false, factorial   : false,
 		comparison  : false, concatenate : false,
@@ -46,10 +47,6 @@ const mathParser = new MathParser({
 		array       : false, fndef       : false
 	}
 });
-// Add absolute function
-mathParser.functions.abs = function (a) {
-	return Math.abs(a);
-};
 // Add sign function
 mathParser.functions.sign = function (a) {
 	if(a == 0) return '';
