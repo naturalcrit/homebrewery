@@ -15,6 +15,8 @@ const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
 const { printCurrentBrew } = require('../../../shared/helpers.js');
 
+import HeaderNav from './headerNav/headerNav.jsx';
+
 const DOMPurify = require('dompurify');
 const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
 
@@ -55,6 +57,7 @@ const BrewRenderer = (props)=>{
 		lang              : '',
 		errors            : [],
 		currentEditorPage : 0,
+		showHeaderNav     : false,
 		themeBundle       : {},
 		...props
 	};
@@ -63,10 +66,11 @@ const BrewRenderer = (props)=>{
 		viewablePageNumber : 0,
 		height             : PAGE_HEIGHT,
 		isMounted          : false,
-		visibility         : 'hidden',
+		visibility         : 'hidden'
 	});
 
 	const mainRef  = useRef(null);
+	const pagesRef = useRef(null);
 
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split('\\page');
@@ -219,12 +223,13 @@ const BrewRenderer = (props)=>{
 						&&
 						<>
 							{renderStyle()}
-							<div className='pages' lang={`${props.lang || 'en'}`}>
+							<div className='pages' lang={`${props.lang || 'en'}`} ref={pagesRef}>
 								{renderPages()}
 							</div>
 						</>
 					}
 				</div>
+				{props.showHeaderNav ? <HeaderNav ref={pagesRef} /> : <></>}
 			</Frame>
 			{renderPageInfo()}
 		</>
