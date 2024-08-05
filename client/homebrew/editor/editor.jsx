@@ -22,6 +22,18 @@ const DEFAULT_STYLE_TEXT = dedent`
 					color: black;
 				}`;
 
+let lastPage = 0;
+
+const isElementCodeMirror=(element)=>{
+	let el = element;
+	while( el.tagName != 'body' ) {
+		if ( !el?.classList ) return false
+		if( el?.classList?.contains('CodeMirror-code') || el.classList.contains('CodeMirror-line'))
+			return true;
+		el = el.parentNode;
+	}
+	return false;
+};
 
 const Editor = createClass({
 	displayName     : 'Editor',
@@ -56,9 +68,20 @@ const Editor = createClass({
 	isMeta  : function() {return this.state.view == 'meta';},
 
 	componentDidMount : function() {
+
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
+		document.addEventListener('keydown', this.handleControlKeys);
+		document.addEventListener('click', (e)=>{
+			if(isElementCodeMirror(e.target) && this.props.liveScroll ) {
+				const curPage = this.getCurrentPage();
+				if( curPage != lastPage ) {
+					this.brewJump();
+					lastPage = curPage;
+				}
+			}
+		});
 
 		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
 		if(editorTheme) {
@@ -73,6 +96,7 @@ const Editor = createClass({
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
+
 		this.highlightCustomMarkdown();
 		if(prevProps.moveBrew !== this.props.moveBrew) {
 			this.brewJump();
@@ -80,7 +104,42 @@ const Editor = createClass({
 		if(prevProps.moveSource !== this.props.moveSource) {
 			this.sourceJump();
 		};
+		if(prevProps.liveScroll != this.props.liveScroll) {
+			if ((prevProps.liveScroll != undefined) && (this.props.liveScroll)) this.brewJump();
+		};
 	},
+
+	handleControlKeys : function(e){
+		if(this.props.liveScroll) {
+			const movementKeys = [ 13, 33, 34, 37, 38, 39, 40 ];
+			if (movementKeys.includes(e.keyCode)) {
+				const curPage = this.getCurrentPage();
+				if( curPage != lastPage ) {
+					this.brewJump();
+					lastPage = curPage;
+				}
+			}
+		}
+		const X_KEY = 88;
+		const END_KEY = 35;
+		const HOME_KEY = 36;
+
+		if(!(e.ctrlKey || e.metaKey)) return;
+
+		// Handle CTRL-HOME and CTRL-END
+		if(((e.keyCode == END_KEY) || (e.keyCode == HOME_KEY)) && this.props.liveScroll) this.brewJump();
+
+		// Brew Jump on CTRL-J
+		if((!e.shiftKey) && (e.keyCode == M_KEY)) this.brewJump();
+		// Source Jump on Shift-CTRL-J
+		if ((e.shiftKey) && (!e.altKey) && (e.keyCode == X_KEY)) this.sourceJump();
+
+		if( e.keyCode == X_KEY) {
+			e.stopPropagation();
+			e.preventDefault();
+		}
+	},
+
 
 	updateEditorSize : function() {
 		if(this.codeEditor.current) {
@@ -119,6 +178,7 @@ const Editor = createClass({
 			const codeMirror = this.codeEditor.current.codeMirror;
 
 			codeMirror.operation(()=>{ // Batch CodeMirror styling
+
 				//reset custom text styles
 				const customHighlights = codeMirror.getAllMarks().filter((mark)=>!mark.__isFold); //Don't undo code folding
 				for (let i=customHighlights.length - 1;i>=0;i--) customHighlights[i].clear();
