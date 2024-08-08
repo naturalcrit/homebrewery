@@ -27,28 +27,16 @@ module.exports = {
 				};
 			}
 
-			// IMPORT FOLDING
+			// @import and data-url folding
+			const importMatcher  = /^@import.*?;/;
+			const dataURLMatcher = /url\(.*?data\:.*\)/;
 
-			const importMatcher = /^@import.*?;/;
-
-			if(activeLine.match(importMatcher)) {
+			if(activeLine.match(importMatcher) || activeLine.match(dataURLMatcher)) {
 				return {
 					from : CodeMirror.Pos(start.line, 0),
-					to   : CodeMirror.Pos(start.line, cm.getLine(start.line).length)
+					to   : CodeMirror.Pos(start.line, activeLine.length)
 				};
 			}
-
-			// data-url folding FOR CSS.
-
-			const dataURLMatcher =  /url\(.*?data\:.*\)/;
-
-			if(activeLine.match(dataURLMatcher)) {
-				return {
-					from : CodeMirror.Pos(start.line, 0),
-					to   : CodeMirror.Pos(start.line, cm.getLine(start.line).length)
-				};
-			}
-
 
 			return null;
 		});
