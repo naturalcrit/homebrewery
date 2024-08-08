@@ -434,7 +434,7 @@ const CodeEditor = createClass({
 				text = foldPreviewText || `Lines ${from.line+1}-${to.line+1}`;
 				text = text.replace('{', '').trim();
 
-				// Truncate data URLs
+				// Truncate data URLs at `data:`
 				const startOfData = text.indexOf('data:');
 				if(startOfData > 0)
 					maxLength = Math.min(startOfData + 5, maxLength);
