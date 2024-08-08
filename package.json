@@ -119,7 +119,7 @@
     "react-frame-component": "^4.1.3",
     "react-router-dom": "6.26.0",
     "sanitize-filename": "1.6.3",
-    "superagent": "^9.0.2",
+    "superagent": "^10.0.0",
     "vitreum": "git+https://git@github.com/calculuschild/vitreum.git"
   },
   "devDependencies": {
