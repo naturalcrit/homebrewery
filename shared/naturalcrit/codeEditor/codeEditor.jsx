@@ -417,7 +417,7 @@ const CodeEditor = createClass({
 			widget      : (from, to)=>{
 				let text = '';
 				let currentLine = from.line;
-				const maxLength = 50;
+				let maxLength = 50;
 
 				let foldPreviewText = '';
 				while (currentLine <= to.line && text.length <= maxLength) {
@@ -432,22 +432,15 @@ const CodeEditor = createClass({
 					}
 				}
 				text = foldPreviewText || `Lines ${from.line+1}-${to.line+1}`;
-
-
 				text = text.replace('{', '').trim();
 
-				// Extra data url chomping
-				// Try to make it pretty...
-				const startOfData = text.indexOf('data:') > 0 ? text.indexOf('data:') : false;
-				if(startOfData) {
-					text = (startOfData > maxLength) ?
-						`${text.slice(0, text.indexOf(':') + 1)} ... ${text.slice(startOfData, startOfData + 5)} ...` :
-						`${text.slice(0, text.indexOf('data:') + 5)} ...`;
-				}
+				// Truncate data URLs
+				const startOfData = text.indexOf('data:');
+				if(startOfData > 0)
+					maxLength = Math.min(startOfData + 5, maxLength);
 
 				if(text.length > maxLength)
 					text = `${text.slice(0, maxLength)}...`;
-
 
 				return `\u21A4 ${text} \u21A6`;
 			}
