@@ -84,7 +84,6 @@ const VaultPage = (props) => {
                         `/api/vault?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}&count=${count}&page=${page}`
                     );
                     if (response.ok) {
-                        console.log(response.body.brews);
                         updateStateWithBrews(response.body.brews, page);
                     } else {
                         throw new Error(`Error: ${response.status}`);
