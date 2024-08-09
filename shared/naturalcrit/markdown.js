@@ -462,7 +462,7 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 		mathVars?.forEach((variable)=>{
 			const foundVar = lookupVar(variable, globalPageNumber, hoist);
 			if(foundVar && foundVar.resolved && foundVar.content && !isNaN(foundVar.content)) // Only subsitute math values if fully resolved, not empty strings, and numbers
-				replacedLabel = replacedLabel.replaceAll(variable, foundVar.content);
+				replacedLabel = replacedLabel.replaceAll(new RegExp(`/(?<!\\w)(${variable})(?!\\w)`, 'g'), foundVar.content);
 		});
 
 		try {
