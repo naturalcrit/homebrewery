@@ -37,8 +37,8 @@ const VaultPage = (props) => {
     const searchButtonRef = useRef(null);
 
     useEffect(() => {
-        validateForm();
-        if (title) {
+        disableSubmitIfFormInvalid();
+        if (validateForm()) {
             loadPage(page, false, true);
         }
     }, []);
@@ -69,6 +69,14 @@ const VaultPage = (props) => {
     const loadPage = async (page, update, total) => {
         setSearching(true);
         setError(null);
+
+        const title = titleRef.current.value || '';
+        const author = authorRef.current.value || '';
+        const count = countRef.current.value || 10;
+        const v3 = v3Ref.current.checked != false;
+        const legacy = legacyRef.current.checked != false;
+
+        if (!title || title.length < 3) { return }
 
         const performSearch = async ({
             title,
@@ -129,11 +137,7 @@ const VaultPage = (props) => {
             }
         };
 
-        const title = titleRef.current.value || '';
-        const author = authorRef.current.value || '';
-        const count = countRef.current.value || 10;
-        const v3 = v3Ref.current.checked != false;
-        const legacy = legacyRef.current.checked != false;
+        
 
         if (update) {
             setTitle(title);
@@ -170,7 +174,6 @@ const VaultPage = (props) => {
 
     const validateForm = () => {
         //form validity: title or author must be written, and at least one renderer set
-        const { current: submitButton } = searchButtonRef;
         const { current: titleInput } = titleRef;
         const { current: legacyCheckbox } = legacyRef;
         const { current: v3Checkbox } = v3Ref;
@@ -180,9 +183,16 @@ const VaultPage = (props) => {
         const isAuthorValid = authorInput.validity.valid && authorInput.value;
         const isCheckboxChecked = legacyCheckbox.checked || v3Checkbox.checked;
 
-        submitButton.disabled =
-            !(isTitleValid || isAuthorValid) || !isCheckboxChecked;
+        const isFormValid = isTitleValid && isAuthorValid && isCheckboxChecked
+
+        return isFormValid;
     };
+
+    const disableSubmitIfFormInvalid = () => {
+        const { current: submitButton } = searchButtonRef;
+
+        submitButton.disabled = validateForm();
+    }
 
     const renderForm = () => (
         <div className="brewLookup">
@@ -195,7 +205,7 @@ const VaultPage = (props) => {
                         type="text"
                         name="title"
                         defaultValue={title}
-                        onKeyUp={validateForm}
+                        onKeyUp={disableSubmitIfFormInvalid}
                         pattern=".{3,}"
                         title="At least 3 characters"
                         onKeyDown={(e) => {
@@ -220,7 +230,7 @@ const VaultPage = (props) => {
                         name="author"
                         pattern=".{1,}"
                         defaultValue={author}
-                        onKeyUp={validateForm}
+                        onKeyUp={disableSubmitIfFormInvalid}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                                 if (!searchButtonRef.current.disabled) {
@@ -246,7 +256,7 @@ const VaultPage = (props) => {
                         ref={v3Ref}
                         type="checkbox"
                         defaultChecked={v3}
-                        onChange={validateForm}
+                        onChange={disableSubmitIfFormInvalid}
                     />
                     Search for v3 brews
                 </label>
@@ -256,7 +266,7 @@ const VaultPage = (props) => {
                         ref={legacyRef}
                         type="checkbox"
                         defaultChecked={legacy}
-                        onChange={validateForm}
+                        onChange={disableSubmitIfFormInvalid}
                     />
                     Search for legacy brews
                 </label>
