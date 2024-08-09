@@ -369,14 +369,6 @@ const VaultPage = (props) => {
             );
         }
 
-        if (validateForm() && !brewCollection) {
-            return (
-                <div className="foundBrews noBrews">
-                    <h3>No search yet</h3>
-                </div>
-            );
-        }
-
         if (error) {
             console.log('render Error: ', error);
             let errorMessage;
@@ -403,7 +395,15 @@ const VaultPage = (props) => {
             );
         }
 
-        if (!brewCollection || brewCollection.length === 0) {
+        if (!brewCollection) {
+            return (
+                <div className="foundBrews noBrews">
+                    <h3>No search yet</h3>
+                </div>
+            );
+        }
+    
+        if (brewCollection.length === 0) {
             return (
                 <div className="foundBrews noBrews">
                     <h3>No brews found</h3>
