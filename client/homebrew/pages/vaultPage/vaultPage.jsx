@@ -38,9 +38,7 @@ const VaultPage = (props) => {
 
     useEffect(() => {
         disableSubmitIfFormInvalid();
-        if (validateForm()) {
-            loadPage(page, false, true);
-        }
+        loadPage(page, false, true);
     }, []);
 
     const updateStateWithBrews = (brews, page) => {
@@ -67,24 +65,17 @@ const VaultPage = (props) => {
     };
 
     const loadPage = async (page, update, total) => {
+        if (!validateForm()) {
+            console.log(
+                'Invalid search, title should be more than 3 characters, or an author specified, and at least one renderer specified.'
+            );
+            return;
+        }
+
         setSearching(true);
         setError(null);
 
-        const title = titleRef.current.value || '';
-        const author = authorRef.current.value || '';
-        const count = countRef.current.value || 10;
-        const v3 = v3Ref.current.checked != false;
-        const legacy = legacyRef.current.checked != false;
-
-        if (!title || title.length < 3) { return }
-
-        const performSearch = async ({
-            title,
-            author,
-            count,
-            v3,
-            legacy,
-        }) => {
+        const performSearch = async ({ title, author, count, v3, legacy }) => {
             updateUrl(title, author, count, v3, legacy, page);
             if ((title || author) && (v3 || legacy)) {
                 try {
@@ -137,7 +128,11 @@ const VaultPage = (props) => {
             }
         };
 
-        
+        const title = titleRef.current.value || '';
+        const author = authorRef.current.value || '';
+        const count = countRef.current.value || 10;
+        const v3 = v3Ref.current.checked != false;
+        const legacy = legacyRef.current.checked != false;
 
         if (update) {
             setTitle(title);
@@ -183,7 +178,7 @@ const VaultPage = (props) => {
         const isAuthorValid = authorInput.validity.valid && authorInput.value;
         const isCheckboxChecked = legacyCheckbox.checked || v3Checkbox.checked;
 
-        const isFormValid = isTitleValid && isAuthorValid && isCheckboxChecked
+        const isFormValid = isTitleValid && isAuthorValid && isCheckboxChecked;
 
         return isFormValid;
     };
@@ -192,7 +187,7 @@ const VaultPage = (props) => {
         const { current: submitButton } = searchButtonRef;
 
         submitButton.disabled = validateForm();
-    }
+    };
 
     const renderForm = () => (
         <div className="brewLookup">
@@ -374,7 +369,7 @@ const VaultPage = (props) => {
             );
         }
 
-        if (title === '' && author === '' && !brewCollection) {
+        if (validateForm() && !brewCollection) {
             return (
                 <div className="foundBrews noBrews">
                     <h3>No search yet</h3>
