@@ -19,6 +19,9 @@ const buildAuthorConditions = (author) => {
     return { authors: author };
 };
 
+//"$and": [ {"published": true}, {"$text": { "$search": "titleString", "$caseSensitive": false } }, { "authors" : "authorString"}] 
+//is a good example of a query constructed with this function
+
 const handleErrorResponse = (res, error, functionName) => {
     const status = error.response?.status || 500;
     const message =
