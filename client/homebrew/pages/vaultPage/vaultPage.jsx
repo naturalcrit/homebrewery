@@ -178,7 +178,7 @@ const VaultPage = (props) => {
         const isAuthorValid = authorInput.validity.valid && authorInput.value;
         const isCheckboxChecked = legacyCheckbox.checked || v3Checkbox.checked;
 
-        const isFormValid = isTitleValid && isAuthorValid && isCheckboxChecked;
+        const isFormValid = (isTitleValid || isAuthorValid) && isCheckboxChecked;
 
         return isFormValid;
     };
@@ -186,7 +186,7 @@ const VaultPage = (props) => {
     const disableSubmitIfFormInvalid = () => {
         const { current: submitButton } = searchButtonRef;
 
-        submitButton.disabled = validateForm();
+        submitButton.disabled = !validateForm();
     };
 
     const renderForm = () => (
