@@ -36,6 +36,7 @@ const handleErrorResponse = (res, error, functionName) => {
 };
 
 const buildBrewsQuery = (legacy, v3) => {
+    //first off, no need to include renderers, if all are valid
     if (legacy === 'true' && v3 === 'true') return { published: true };
 
     const renderers = [];
@@ -43,7 +44,7 @@ const buildBrewsQuery = (legacy, v3) => {
     if (v3 === 'true') renderers.push('V3');
 
     const brewsQuery = { published: true };
-    if (renderers.length > 0) brewsQuery.renderer = { $in: renderers };
+    brewsQuery.renderer = { $in: renderers };
 
     return brewsQuery;
 };
