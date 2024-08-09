@@ -11,7 +11,6 @@ const Account = require('../../navbar/account.navitem.jsx');
 const NewBrew = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const BrewItem = require('../basePages/listPage/brewItem/brewItem.jsx');
-
 const SplitPane = require('../../../../shared/naturalcrit/splitPane/splitPane.jsx');
 
 const request = require('../../utils/request-middleware.js');
@@ -65,6 +64,8 @@ const VaultPage = (props) => {
     };
 
     const loadPage = async (page, update, total) => {
+        //Different searches use the update or total props to make only the necessary queries and functions
+
         if (!validateForm()) {
             console.log(
                 'Invalid search, title should be more than 3 characters, or an author specified, and at least one renderer specified.'
@@ -128,26 +129,25 @@ const VaultPage = (props) => {
             }
         };
 
-        const title = titleRef.current.value || '';
-        const author = authorRef.current.value || '';
-        const count = countRef.current.value || 10;
-        const v3 = v3Ref.current.checked != false;
-        const legacy = legacyRef.current.checked != false;
+        const titleValue = titleRef.current.value || '';
+        const authorValue = authorRef.current.value || '';
+        const countValue = countRef.current.value || 10;
+        const v3Value = v3Ref.current.checked != false;
+        const legacyValue = legacyRef.current.checked != false;
 
         if (update) {
-            setTitle(title);
-            setAuthor(author);
-            setCount(count);
-            setV3(v3);
-            setLegacy(legacy);
-
-            performSearch({ title, author, count, v3, legacy });
-        } else {
-            performSearch({ title, author, count, v3, legacy });
+            setTitle(titleValue);
+            setAuthor(authorValue);
+            setCount(countValue);
+            setV3(v3Value);
+            setLegacy(legacyValue);
         }
+        
+        // Perform search with the latest input values, because state is not fast enough
+        performSearch({ titleValue, authorValue, countValue, v3Value, legacyValue });
 
         if (total) {
-            loadTotal({ title, author, v3, legacy });
+            loadTotal({ titleValue, authorValue, v3Value, legacyValue });
         }
     };
 
@@ -175,6 +175,7 @@ const VaultPage = (props) => {
         const { current: authorInput } = authorRef;
 
         const isTitleValid = titleInput.validity.valid && titleInput.value;
+        //because a pattern attr is set in the input, title must be over 2 chars long
         const isAuthorValid = authorInput.validity.valid && authorInput.value;
         const isCheckboxChecked = legacyCheckbox.checked || v3Checkbox.checked;
 
@@ -185,7 +186,6 @@ const VaultPage = (props) => {
 
     const disableSubmitIfFormInvalid = () => {
         const { current: submitButton } = searchButtonRef;
-
         submitButton.disabled = !validateForm();
     };
 
@@ -236,6 +236,9 @@ const VaultPage = (props) => {
                         placeholder="Gazook89"
                     />
                 </label>
+                <small>
+                    Remember, usernames are case sensitive.
+                </small>
                 <label>
                     Results per page
                     <select ref={countRef} name="count" defaultValue={count}>

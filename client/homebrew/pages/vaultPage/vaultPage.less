@@ -117,7 +117,10 @@ body {
 						right    : 10px;
 						bottom   : 0;
 
-						i { margin-left : 10px; }
+						i {
+							margin-left			: 10px;
+							animation-duration  : 1000s;
+						}
 					}
 				}
 			}
@@ -162,7 +165,7 @@ body {
 							width     : max-content;
 							height    : 1em;
 							content   : '';
-							translate : 100% -50%;
+							translate : calc(100% + 5px) -50%;
 							animation : trailingDots 2s ease infinite;
 						}
 					}
@@ -285,13 +288,13 @@ body {
 @keyframes trailingDots {
 
 	0%,
-	32% { content : '.'; }
+	32% { content : ' .'; }
 
 	33%,
-	65% { content : '..'; }
+	65% { content : ' ..'; }
 
 	66%,
-	100% { content : '...'; }
+	100% { content : ' ...'; }
 }
 
 // media query for when the page is smaller than 1079 px in width

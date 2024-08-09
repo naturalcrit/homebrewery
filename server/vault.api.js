@@ -19,7 +19,7 @@ const buildAuthorConditions = (author) => {
     return { authors: author };
 };
 
-//"$and": [ {"published": true}, {"$text": { "$search": "titleString", "$caseSensitive": false } }, { "authors" : "authorString"}] 
+//"$and": [ {"published": true}, {"$text": { "$search": "titleString", "$caseSensitive": false } }, { "authors" : "authorString"}]
 //is a good example of a query constructed with this function
 
 const handleErrorResponse = (res, error, functionName) => {
@@ -52,12 +52,8 @@ const buildBrewsQuery = (legacy, v3) => {
 const vault = {
     findBrews: async (req, res) => {
         try {
-            console.log(`Query as received in vault api for findBrews:`);
-            console.table(req.query);
-
             const title = req.query.title || '';
             const author = req.query.author || '';
-           
             const page = Math.max(parseInt(req.query.page) || 1, 1);
             const mincount = 10;
             const count = Math.max(parseInt(req.query.count) || 20, mincount);
@@ -76,14 +72,20 @@ const vault = {
                 googleId: 0,
                 text: 0,
                 textBin: 0,
+                version: 0,
+                thumbnail: 0,
             };
+
             const brews = await HomebrewModel.find(combinedQuery, projection)
                 .skip(skip)
                 .limit(count)
                 .maxTimeMS(5000)
                 .exec();
 
-            console.log('query', JSON.stringify(combinedQuery, null, 2));
+            console.log(
+                'Query in findBrews: ',
+                JSON.stringify(combinedQuery, null, 2)
+            );
             return res.json({ brews, page });
         } catch (error) {
             console.error(error);
@@ -92,8 +94,6 @@ const vault = {
     },
 
     findTotal: async (req, res) => {
-        console.log(`Query as received in vault api for totalBrews:`);
-        console.table(req.query);
         try {
             const title = req.query.title || '';
             const author = req.query.author || '';
@@ -106,16 +106,11 @@ const vault = {
                 $and: [brewsQuery, titleConditions, authorConditions],
             };
 
-            console.log(
-                'Combined Query:',
-                JSON.stringify(combinedQuery, null, 2)
-            );
-
             const totalBrews = await HomebrewModel.countDocuments(
                 combinedQuery
             );
             console.log(
-                'when returning, totalbrews is ',
+                'when returning, the total of brews is ',
                 totalBrews,
                 'for the query',
                 JSON.stringify(combinedQuery)
