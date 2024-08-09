@@ -84,7 +84,6 @@ router.get('/admin/lookup/:id', mw.adminOnly, async (req, res, next)=>{
 		return res.status(500).json({ error: 'Internal Server Error' });
 	});
 });
-  
 
 /* Find 50 brews that aren't compressed yet */
 router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{

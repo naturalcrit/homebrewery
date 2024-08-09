@@ -34,8 +34,6 @@ const Stats = createClass({
 			<dl>
 				<dt>Total Brew Count</dt>
 				<dd>{this.state.stats.totalBrews}</dd>
-				<dt>Total Brews Published Count</dt>
-				<dd>{this.state.stats.totalPublishedBrews || 'no published brews'}</dd>
 			</dl>
 
 			{this.state.fetching
