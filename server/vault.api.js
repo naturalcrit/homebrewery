@@ -14,9 +14,9 @@ const buildTitleConditions = (title) => {
     };
 };
 
-const buildAuthorConditions = (author, owner) => {
+const buildAuthorConditions = (author) => {
     if (!author) return {};
-    return owner ? { 'authors.0': author } : { authors: author };
+    return { authors: author };
 };
 
 const handleErrorResponse = (res, error, functionName) => {
@@ -53,7 +53,7 @@ const vault = {
 
             const title = req.query.title || '';
             const author = req.query.author || '';
-            const owner = req.query.owner === 'true';
+           
             const page = Math.max(parseInt(req.query.page) || 1, 1);
             const mincount = 10;
             const count = Math.max(parseInt(req.query.count) || 20, mincount);
@@ -61,7 +61,7 @@ const vault = {
 
             const brewsQuery = buildBrewsQuery(req.query.legacy, req.query.v3);
             const titleConditions = buildTitleConditions(title);
-            const authorConditions = buildAuthorConditions(author, owner);
+            const authorConditions = buildAuthorConditions(author);
 
             const combinedQuery = {
                 $and: [brewsQuery, titleConditions, authorConditions],
@@ -93,11 +93,10 @@ const vault = {
         try {
             const title = req.query.title || '';
             const author = req.query.author || '';
-            const owner = req.query.owner === 'true';
 
             const brewsQuery = buildBrewsQuery(req.query.legacy, req.query.v3);
             const titleConditions = buildTitleConditions(title);
-            const authorConditions = buildAuthorConditions(author, owner);
+            const authorConditions = buildAuthorConditions(author);
 
             const combinedQuery = {
                 $and: [brewsQuery, titleConditions, authorConditions],

@@ -18,9 +18,8 @@ const request = require('../../utils/request-middleware.js');
 
 const VaultPage = (props) => {
     const [title, setTitle] = useState(props.query.title || '');
-    //state author and owner
+    //state author
     const [author, setAuthor] = useState(props.query.author || '');
-    const [owner, setOwner] = useState(props.query.owner ? props.query.owner !== 'false' : false);
     const [legacy, setLegacy] = useState(props.query.legacy !== 'false');
     const [v3, setV3] = useState(props.query.v3 !== 'false');
     const [count, setCount] = useState(props.query.count || 20);
@@ -32,7 +31,6 @@ const VaultPage = (props) => {
 
     const titleRef = useRef(null);
     const authorRef = useRef(null);
-    const ownerRef = useRef(null);
     const countRef = useRef(null);
     const v3Ref = useRef(null);
     const legacyRef = useRef(null);
@@ -51,14 +49,13 @@ const VaultPage = (props) => {
         setSearching(false);
     };
 
-    const updateUrl = (title, author, owner, count, v3, legacy, page) => {
+    const updateUrl = (title, author, count, v3, legacy, page) => {
         const url = new URL(window.location.href);
         const urlParams = new URLSearchParams();
 
         Object.entries({
             title,
             author,
-            owner,
             count,
             v3,
             legacy,
@@ -76,16 +73,15 @@ const VaultPage = (props) => {
         const performSearch = async ({
             title,
             author,
-            owner,
             count,
             v3,
             legacy,
         }) => {
-            updateUrl(title, author, owner, count, v3, legacy, page);
+            updateUrl(title, author, count, v3, legacy, page);
             if ((title || author) && (v3 || legacy)) {
                 try {
                     const response = await request.get(
-                        `/api/vault?title=${title}&author=${author}&owner=${owner}&v3=${v3}&legacy=${legacy}&count=${count}&page=${page}`
+                        `/api/vault?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}&count=${count}&page=${page}`
                     );
                     if (response.ok) {
                         console.log(response.body.brews);
@@ -115,7 +111,7 @@ const VaultPage = (props) => {
             if ((title || author) && (v3 || legacy)) {
                 try {
                     const response = await request.get(
-                        `/api/vault/total?title=${title}&author=${author}&owner=${owner}&v3=${v3}&legacy=${legacy}`
+                        `/api/vault/total?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}`
                     );
 
                     if (response.ok) {
@@ -135,7 +131,6 @@ const VaultPage = (props) => {
 
         const title = titleRef.current.value || '';
         const author = authorRef.current.value || '';
-        const owner = ownerRef.current.checked != false;
         const count = countRef.current.value || 10;
         const v3 = v3Ref.current.checked != false;
         const legacy = legacyRef.current.checked != false;
@@ -143,18 +138,17 @@ const VaultPage = (props) => {
         if (update) {
             setTitle(title);
             setAuthor(author);
-            setOwner(owner);
             setCount(count);
             setV3(v3);
             setLegacy(legacy);
 
-            performSearch({ title, author, owner, count, v3, legacy });
+            performSearch({ title, author, count, v3, legacy });
         } else {
-            performSearch({ title, author, owner, count, v3, legacy });
+            performSearch({ title, author, count, v3, legacy });
         }
 
         if (total) {
-            loadTotal({ title, author, owner, v3, legacy });
+            loadTotal({ title, author, v3, legacy });
         }
     };
 
@@ -236,16 +230,6 @@ const VaultPage = (props) => {
                         }}
                         placeholder="Gazook89"
                     />
-                </label>
-                <label style={{ visibility: 'hidden', position: 'absolute' }}>
-                    <input
-                        type="checkbox"
-                        name="owner"
-                        ref={ownerRef}
-                        defaultChecked={owner}
-                        onChange={validateForm}
-                    />
-                    Author is the owner
                 </label>
                 <label>
                     Results per page
