@@ -8,7 +8,7 @@ const SplitPane = createClass({
 	getDefaultProps : function() {
 		return {
 			storageKey   : 'naturalcrit-pane-split',
-			onDragFinish : function(){} //fires when dragging
+			onDragFinish : function(){}, //fires when dragging
 		};
 	},
 
@@ -19,7 +19,7 @@ const SplitPane = createClass({
 			isDragging        : false,
 			moveSource        : false,
 			moveBrew          : false,
-			showMoveArrows    : true
+			showMoveArrows    : !this.props.hideMoveArrows,
 		};
 	},
 

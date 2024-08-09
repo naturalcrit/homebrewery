@@ -1,0 +1,308 @@
+body {
+	height : 100vh;
+
+	.content { height : 100%; }
+
+	small {
+		font-size : 10pt;
+		color     : #555555;
+
+		a { color : #333333; }
+	}
+
+	code {
+		padding-inline : 5px;
+		background     : lightgrey;
+		border-radius  : 5px;
+	}
+
+	*:not(input) { user-select : none; }
+}
+
+.vaultPage {
+	height           : 100%;
+	overflow-y       : hidden;
+	background-color : #2C3E50;
+
+	h1,
+	h2,
+	h3 {
+		font-family : 'Open Sans';
+		font-weight : 900;
+		color       : white;
+	}
+
+	.content {
+		background : #2C3E50;
+
+		.dataGroup {
+			width      : 100%;
+			height     : 100%;
+			background : white;
+
+			&.form .brewLookup {
+				position : relative;
+				padding  : 50px clamp(20px, 4vw, 50px);
+
+				.formTitle {
+					margin        : 20px 0;
+					font-size     : 30px;
+					color         : black;
+					text-align    : center;
+					border-bottom : 2px solid;
+				}
+
+				.formContents {
+					display        : flex;
+					flex-direction : column;
+
+					label {
+						display     : flex;
+						align-items : center; 
+						margin      : 10px 0;
+					}
+					select { margin : 0 10px; }
+
+					input { 
+						margin   : 0 10px; 
+
+						&:invalid {
+							background : rgb(255, 188, 181);
+						}
+					
+						&[type='checkbox'] {
+							position : relative;
+							display        : inline-block;
+							width          : 50px;
+							height         : 30px;
+							font-family    : 'WalterTurncoat';
+							font-size      : 20px;
+							font-weight    : 800;
+							color          : white;
+							letter-spacing : 2px;
+							appearance     : none;
+							background     : red;
+							isolation      : isolate;
+							border-radius  : 5px;
+
+							&::before,&::after {
+								position    : absolute;
+								inset       : 0;
+								z-index     : 5;
+								padding-top : 2px;
+								text-align  : center;
+							}
+
+							&::before {
+								display : block;
+								content : 'No';
+							}
+
+							&::after {
+								display : none;
+								content : 'Yes';
+							}
+
+							&:checked {
+								background : green;
+
+								&::before { display : none; }
+								&::after { display : block; }
+							}
+						}
+					}
+
+					#searchButton {
+						position : absolute;
+						right    : 10px;
+						bottom   : 0;
+
+						i { margin-left : 10px; }
+					}
+				}
+			}
+
+			&.resultsContainer {
+				display        : flex;
+				flex-direction : column;
+				height         : 100%;
+				overflow-y     : auto;
+				font-family    : 'BookInsanityRemake';
+				font-size      : 0.34cm;
+
+
+				.foundBrews {
+					position         : relative;
+					width            : 100%;
+					height           : 100%;
+					max-height       : 100%;
+					padding          : 50px 50px 70px 50px;
+					overflow-y       : scroll;
+					background-color : #2C3E50;
+
+					h3 { font-size : 25px; }
+
+					&.noBrews {
+						display     : grid;
+						place-items : center;
+						color       : white;
+					}
+
+					&.searching {
+						display     : grid;
+						place-items : center;
+						color       : white;
+
+						h3 { position : relative; }
+
+						h3.searchAnim::after {
+							position  : absolute;
+							top       : 50%;
+							right     : 0;
+							width     : max-content;
+							height    : 1em;
+							content   : '';
+							translate : 100% -50%;
+							animation : trailingDots 2s ease infinite;
+						}
+					}
+
+					.totalBrews {
+						position         : fixed;
+						right            : 0;
+						bottom           : 0;
+						z-index          : 1000;
+						padding          : 8px 10px;
+						font-family      : 'Open Sans';
+						font-size        : 11px;
+						font-weight      : 800;
+						color            : white;
+						background-color : #333333;
+
+						.searchAnim {
+							position : relative;
+							display  : inline-block;
+							width    : 3ch;
+							height   : 1em;
+						}
+
+						.searchAnim::after {
+							position  : absolute;
+							top       : 50%;
+							right     : 0;
+							width     : max-content;
+							height    : 1em;
+							content   : '';
+							translate : -50% -50%;
+							animation : trailingDots 2s ease infinite;
+						}
+					}
+
+					.brewItem {
+						width            : 47%;
+						margin-right     : 40px;
+						color            : black;
+						background-image : url('/assets/parchmentBackground.jpg');
+
+						&:nth-child(even of .brewItem) { margin-right : 0; }
+
+						h2 {
+							font-family : 'MrEavesRemake';
+							font-size   : 0.75cm;
+							font-weight : 800;
+							line-height : 0.988em;
+							color       : var(--HB_Color_HeaderText);
+						}
+
+						.info {
+							font-family : 'ScalySansRemake';
+							font-size   : 1.2em;
+
+							>span {
+								margin-right : 12px;
+								line-height  : 1.5em;
+							}
+						}
+					}
+
+					.paginationControls {
+						position              : absolute;
+						left                  : 50%;
+						display               : grid;
+						grid-template-areas   : 'previousPage currentPage nextPage';
+						grid-template-columns : 50px 1fr 50px;
+						place-items           : center;
+						width                 : auto;
+						translate             : -50%;
+
+						.pages {
+							display         : flex;
+							grid-area       : currentPage;
+							justify-content : space-evenly;
+							width           : 100%;
+							height          : 100%;
+							padding         : 5px 8px;
+							text-align      : center;
+
+							.pageNumber {
+								margin-inline           : 1vw;
+								font-family             : 'Open Sans';
+								font-weight             : 900;
+								color                   : white;
+								text-underline-position : under;
+								text-wrap               : nowrap;
+								cursor                  : pointer;
+
+								&.currentPage {
+									color           : gold;
+									text-decoration : underline;
+									pointer-events  : none;
+								}
+
+								&.firstPage { margin-right : -5px; }
+
+								&.lastPage { margin-left : -5px; }
+							}
+						}
+
+						button {
+							width : max-content;
+
+							&.previousPage { grid-area : previousPage; }
+
+							&.nextPage { grid-area : nextPage; }
+						}
+
+					}
+
+					hr { visibility : hidden; }
+				}
+			}
+		}
+	}
+}
+
+@keyframes trailingDots {
+
+	0%,
+	32% { content : '.'; }
+
+	33%,
+	65% { content : '..'; }
+
+	66%,
+	100% { content : '...'; }
+}
+
+// media query for when the page is smaller than 1079 px in width
+@media screen and (max-width : 1079px) {
+	.vaultPage .content {
+
+		.dataGroup.form .brewLookup { padding : 1px 20px 20px 10px; }
+
+		.dataGroup.resultsContainer .foundBrews .brewItem {
+			width         : 100%;
+			margin-inline : auto;
+		}
+	}
+}

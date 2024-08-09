@@ -10,11 +10,11 @@ const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
+const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const { fetchThemeBundle } = require('../../../../shared/helpers.js');
-
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
@@ -76,6 +76,7 @@ const HomePage = createClass({
 				}
 				<NewBrewItem />
 				<HelpNavItem />
+				<VaultNavItem />
 				<RecentNavItem />
 				<AccountNavItem />
 			</Nav.section>
