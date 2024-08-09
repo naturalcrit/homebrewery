@@ -371,3 +371,17 @@ describe('Cross-page variables', ()=>{
 		expect(rendered, `Input:\n${[source0, source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>two</p><p>one</p>\\page<p>two</p>');
 	});
 });
+
+describe('Variable name as a subset of a function or other variable name', ()=>{
+	it('Variable name as a subset of a function', function() {
+		const source = `[a]: -1\n\n$[abs(a)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>1</p>');
+	});
+
+	it('Variable name as a subset of another variable name', function() {
+		const source = `[ab]: 2\n\n[aba]: 8\n\n[ba]: 4\n\n$[ab + aba + ba]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>14</p>');
+	});
+});
