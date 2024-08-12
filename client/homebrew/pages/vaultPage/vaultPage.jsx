@@ -67,9 +67,6 @@ const VaultPage = (props) => {
         //Different searches use the update or total props to make only the necessary queries and functions
 
         if (!validateForm()) {
-            console.log(
-                'Invalid search, title should be more than 3 characters, or an author specified, and at least one renderer specified.'
-            );
             return;
         }
 
