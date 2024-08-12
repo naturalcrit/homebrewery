@@ -452,7 +452,7 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 	const label  = match[2];
 
 	//v=====--------------------< HANDLE MATH >-------------------=====v//
-	const mathRegex = /[a-z]+\(|[+\-*/^()]/g;
+	const mathRegex = /[a-z]+\(|[+\-*/^(),]/g;
 	const matches = label.split(mathRegex);
 	const mathVars = matches.filter((match)=>isNaN(match))?.map((s)=>s.trim()); // Capture any variable names
 
