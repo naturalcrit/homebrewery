@@ -201,16 +201,20 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 });
 
 //Serve brew styling
-app.get('/css/:id', asyncHandler(getBrew('share')), (req, res)=>{
+app.get('/css/:id', asyncHandler(getBrew('share')), ((req, res)=>{app.getCSS(req, res);}));
+
+app.getCSS = (req, res)=>{
 	const { brew } = req;
+	if(!brew) return res.status(404).send();
 	splitTextStyleAndMetadata(brew);
+	if(!brew.style) return res.status(404).send();
 
 	res.set({
 		'Cache-Control' : 'no-cache',
 		'Content-Type'  : 'text/css'
 	});
-	res.status(200).send(brew.style);
-});
+	return res.status(200).send(brew.style);
+};
 
 //User Page
 app.get('/user/:username', async (req, res, next)=>{
