@@ -89,7 +89,6 @@ app.get('/', (req, res, next)=>{
 		title       : 'Homepage',
 		description : 'Homepage'
 	};
-
 	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
@@ -500,7 +499,6 @@ app.use(async (err, req, res, next)=>{
 		pureError   : getPureError(err)
 	};
 	req.customUrl= '/error';
-
 	const page = await renderPage(req, res);
 	if(!page) return;
 	res.send(page);

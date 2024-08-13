@@ -32,7 +32,9 @@ const SharePage = createClass({
 	componentDidMount : function() {
 		document.addEventListener('keydown', this.handleControlKeys);
 
-		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
+		if(this.props.brew.renderer || this.props.brew.theme){
+			fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
+		}
 	},
 
 	componentWillUnmount : function() {
