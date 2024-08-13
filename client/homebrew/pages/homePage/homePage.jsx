@@ -43,9 +43,7 @@ const HomePage = createClass({
 	editor : React.createRef(null),
 
 	componentDidMount : function() {
-		if(this.props.brew.renderer || this.props.brew.theme){
-			fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
-		}
+		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
 	},
 
 	handleSave : function(){
