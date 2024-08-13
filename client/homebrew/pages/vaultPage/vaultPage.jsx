@@ -75,6 +75,7 @@ const VaultPage = (props) => {
 
         const performSearch = async ({ title, author, count, v3, legacy }) => {
             updateUrl(title, author, count, v3, legacy, page);
+            console.log(title, author, count, v3, legacy);
             if ((title || author) && (v3 || legacy)) {
                 try {
                     const response = await request.get(
@@ -125,25 +126,26 @@ const VaultPage = (props) => {
             }
         };
 
-        const titleValue = titleRef.current.value || '';
-        const authorValue = authorRef.current.value || '';
-        const countValue = countRef.current.value || 10;
-        const v3Value = v3Ref.current.checked != false;
-        const legacyValue = legacyRef.current.checked != false;
+        const title = titleRef.current.value || '';
+        const author = authorRef.current.value || '';
+        const count = countRef.current.value || 10;
+        const v3 = v3Ref.current.checked != false;
+        const legacy = legacyRef.current.checked != false;
 
+        console.log(title);
         if (update) {
-            setTitle(titleValue);
-            setAuthor(authorValue);
-            setCount(countValue);
-            setV3(v3Value);
-            setLegacy(legacyValue);
+            setTitle(title);
+            setAuthor(author);
+            setCount(count);
+            setV3(v3);
+            setLegacy(legacy);
         }
         
         // Perform search with the latest input values, because state is not fast enough
-        performSearch({ titleValue, authorValue, countValue, v3Value, legacyValue });
+        performSearch({ title, author, count, v3, legacy });
 
         if (total) {
-            loadTotal({ titleValue, authorValue, v3Value, legacyValue });
+            loadTotal({ title, author, v3, legacy });
         }
     };
 
