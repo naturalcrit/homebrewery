@@ -382,6 +382,14 @@
 		.useColumns(0.96, @fillMode: balance);
 	}
 
+	//only for IOS devices
+	@supports (-webkit-touch-callout: none) {
+		.page .monster.frame {
+			background-repeat : no-repeat;
+			background-size   : cover;
+		}
+	}
+
 	// *****************************
 	// *           FOOTER
 	// *****************************/
@@ -459,6 +467,7 @@
 		margin-left   : 1.5em;
 	}
 }
+
 // *****************************
 // *         SPELL LIST
 // *****************************/
@@ -883,6 +892,9 @@ h6,
 			.useColumns(0.96, @fillMode: balance);
 		}
 	}
+	.toc.wide li {
+			break-inside: auto;
+	}
 }
 
 // *****************************
@@ -906,6 +918,10 @@ h6,
 .page .wide { margin-bottom : 0.325cm; }
 
 .page h1 + * { margin-top : 0; }
+
+.page .descriptive.wide + * {
+	margin-top: 0;
+}
 
 //*****************************
 // *       RUNE TABLE
