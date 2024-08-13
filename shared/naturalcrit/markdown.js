@@ -28,17 +28,18 @@ const mathParser = new MathParser({
 		round    : true,
 		floor    : true,
 		ceil     : true,
+		abs      : true,
 
 		sin     : false, cos     : false, tan     : false, asin    : false, acos    : false,
 		atan    : false, sinh    : false, cosh    : false, tanh    : false, asinh   : false,
 		acosh   : false, atanh   : false, sqrt    : false, cbrt    : false, log     : false,
 		log2    : false, ln      : false, lg      : false, log10   : false, expm1   : false,
-		log1p   : false, abs     : false, trunc   : false, join    : false, sum     : false,
+		log1p   : false, trunc   : false, join    : false, sum     : false, indexOf : false,
 		'-'     : false, '+'     : false, exp     : false, not     : false, length  : false,
 		'!'     : false, sign    : false, random  : false, fac     : false, min     : false,
 		max     : false, hypot   : false, pyt     : false, pow     : false, atan2   : false,
 		'if'    : false, gamma   : false, roundTo : false, map     : false, fold    : false,
-		filter  : false, indexOf : false,
+		filter  : false,
 
 		remainder   : false, factorial   : false,
 		comparison  : false, concatenate : false,
@@ -46,6 +47,16 @@ const mathParser = new MathParser({
 		array       : false, fndef       : false
 	}
 });
+// Add sign function
+mathParser.functions.sign = function (a) {
+	if(a >= 0) return '+';
+	return '-';
+};
+// Add signed function
+mathParser.functions.signed = function (a) {
+	if(a >= 0) return `+${a}`;
+	return `${a}`;
+};
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (html) {
@@ -461,7 +472,7 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 	const label  = match[2];
 
 	//v=====--------------------< HANDLE MATH >-------------------=====v//
-	const mathRegex = /[a-z]+\(|[+\-*/^()]/g;
+	const mathRegex = /[a-z]+\(|[+\-*/^(),]/g;
 	const matches = label.split(mathRegex);
 	const mathVars = matches.filter((match)=>isNaN(match))?.map((s)=>s.trim()); // Capture any variable names
 
@@ -471,7 +482,7 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 		mathVars?.forEach((variable)=>{
 			const foundVar = lookupVar(variable, globalPageNumber, hoist);
 			if(foundVar && foundVar.resolved && foundVar.content && !isNaN(foundVar.content)) // Only subsitute math values if fully resolved, not empty strings, and numbers
-				replacedLabel = replacedLabel.replaceAll(variable, foundVar.content);
+				replacedLabel = replacedLabel.replaceAll(new RegExp(`(?<!\\w)(${variable})(?!\\w)`, 'g'), foundVar.content);
 		});
 
 		try {
