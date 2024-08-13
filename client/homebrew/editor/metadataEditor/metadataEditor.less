@@ -1,258 +1,239 @@
 @import 'naturalcrit/styles/colors.less';
 
-.metadataEditor{
+.metadataEditor {
 	position         : absolute;
 	z-index          : 5;
 	box-sizing       : border-box;
 	width            : 100%;
-	padding          : 25px;
-	background-color : #999;
 	height           : calc(100vh - 54px); // 54px is the height of the navbar + snippet bar.  probably a better way to dynamic get this.
+	padding          : 25px;
 	overflow-y       : auto;
+	background-color : #999999;
 
 	.sectionHead {
-		font-weight: 1000;
-		margin: 20px 0;
+		margin      : 20px 0;
+		font-weight : 1000;
 
-		&:first-of-type {
-			margin-top: 0;
-		}
+		&:first-of-type { margin-top : 0; }
 	}
 
-	& > div {
-		margin-bottom: 10px;
-	}
+	& > div { margin-bottom : 10px; }
 
 	.field-group {
-		display: flex;
-		width: 100%;
-		flex-wrap: wrap;
-		gap: 10px;
+		display   : flex;
+		flex-wrap : wrap;
+		gap       : 10px;
+		width     : 100%;
 	}
 
 	.field-column {
-		display: flex;
-		flex-direction: column;
-		flex: 5 0 200px;
-		gap: 10px;
+		display        : flex;
+		flex           : 5 0 200px;
+		flex-direction : column;
+		gap            : 10px;
 	}
 
 
 
-	.field{
+	.field {
+		position      : relative;
 		display       : flex;
 		flex-wrap     : wrap;
 		width         : 100%;
 		min-width     : 200px;
-		position      : relative;
-		&>label{
+		& > label {
 			width          : 80px;
 			font-size      : 11px;
 			font-weight    : 800;
 			line-height    : 1.8em;
 			text-transform : uppercase;
 		}
-		&>.value{
+		& > .value {
 			flex           : 1 1 auto;
 			width          : 50px;
-			&:invalid {
-				background : #ffb9b9;
-			}
+			&:invalid { background : #FFB9B9; }
 		}
 		input[type='text'], textarea {
 			border : 1px solid gray;
-			&:focus {
-				outline: 1px solid #444;
-			}
+			&:focus { outline : 1px solid #444444; }
 		}
-		&.thumbnail{
+		&.thumbnail {
 			height      : 1.4em;
-			label{
-				line-height: 2.0em;
+			label { line-height : 2.0em; }
+			.value {
+				overflow      : hidden;
+				text-overflow : ellipsis;
 			}
-			.value{
-  				overflow: hidden;
-  				text-overflow: ellipsis;
-			}
-			button{
-				border: 1px solid #999;
-				color: white;
-				padding: 0px 5px;
-				background-color: black;
-				&:hover{
-					background-color: #777;
-				}
+			button {
+				padding          : 0px 5px;
+				color            : white;
+				background-color : black;
+				border           : 1px solid #999999;
+				&:hover { background-color : #777777; }
 			}
 		}
 
 		&.description {
-			flex: 1;
+			flex : 1;
 			textarea.value {
-				resize      : none;
 				height      : auto;
 				font-family : 'Open Sans', sans-serif;
 				font-size   : 0.8em;
+				resize      : none;
 			}
 		}
 
 		&.language .language-dropdown {
-			max-width : 150px;
 			z-index   : 200;
+			max-width : 150px;
 		}
 		small {
+			display     : inline-block;
 			font-size   : 0.6em;
 			font-style  : italic;
 			line-height : 1.4em;
-			display     : inline-block;
 		}
 	}
 
 
 	.thumbnail-preview {
-		position: relative;
-		justify-self: center;
-		width: 80px;
-		height: min-content;
-		flex: 1 1;
-		max-height: 115px;
-		aspect-ratio: 1 / 1;
-		object-fit: contain;
-		background-color: #AAA;
+		position         : relative;
+		flex             : 1 1;
+		justify-self     : center;
+		width            : 80px;
+		height           : min-content;
+		max-height       : 115px;
+		aspect-ratio     : 1 / 1;
+		object-fit       : contain;
+		background-color : #AAAAAA;
 	}
 
-	.systems.field .value{
-		label{
-			vertical-align : middle;
-			margin-right   : 15px;
-			cursor         : pointer;
-			font-size      : 0.7em;
-			font-weight    : 800;
-			user-select    : none;
-			white-space    : nowrap;
+	.systems.field .value {
+		label {
 			display        : inline-flex;
 			align-items    : center;
-		}
-		a {
-			font-size   : 0.7em;
-			font-weight : 800;
-			display     : inline-flex;
-		}
-		input{
+			margin-right   : 15px;
+			font-size      : 0.7em;
+			font-weight    : 800;
+			white-space    : nowrap;
 			vertical-align : middle;
 			cursor         : pointer;
+			user-select    : none;
+		}
+		a {
+			display     : inline-flex;
+			font-size   : 0.7em;
+			font-weight : 800;
+		}
+		input {
 			margin         : 3px;
+			vertical-align : middle;
+			cursor         : pointer;
 		}
 	}
-	.publish.field .value{
-		position : relative;
-		margin-bottom: 15px;
-		button{
-			width:100%;
-		}
-		button.publish{
+	.publish.field .value {
+		position      : relative;
+		margin-bottom : 15px;
+		button { width : 100%; }
+		button.publish {
 			.button(@blueLight);
 		}
-		button.unpublish{
+		button.unpublish {
 			.button(@silver);
 		}
 	}
 
-	.delete.field .value{
-		button{
+	.delete.field .value {
+		button {
 			.button(@red);
 		}
 	}
-	.authors.field .value{
-		font-size: 0.8em;
+	.authors.field .value {
+		font-size      : 0.8em;
 		line-height    : 1.5em;
 	}
 
-	.themes.field{
+	.themes.field {
 		font-size : 13.33px;
 		.navDropdownContainer {
-			background-color	: white;
-			position			: relative;
-			z-index				: 100;
+			position         : relative;
+			z-index          : 100;
+			background-color : white;
 			&.disabled {
-				font-style			:italic;
-				font-style			: italic;
-				background-color	: darkgray;
-				color				: dimgray;
+				font-style       : italic;
+				color            : dimgray;
+				background-color : darkgray;
 			}
-			&>div:first-child {
-				border 				: 2px solid rgb(118,118,118);
-				padding 			: 6px 3px;
-				background-color 	: inherit;
-				i {
-					float	: right;
-				}
+			& > div:first-child {
+				padding           : 6px 3px;
+				background-color  : inherit;
+				border            : 2px solid rgb(118,118,118);
+				i { float	: right; }
 				&:hover {
-					background-color	: @blue;
-					color				: white;
+					color            : white;
+					background-color : @blue;
 				}
 			}
 			.navDropdown .item > p {
-				width: 45%;
-				white-space: nowrap;
-				text-overflow: ellipsis;
-				overflow: hidden;
-				height: 1.1em;
+				width         : 45%;
+				height        : 1.1em;
+				overflow      : hidden;
+				text-overflow : ellipsis;
+				white-space   : nowrap;
 			}			
 			.navDropdown {
-				box-shadow	: 0px 5px 10px rgba(0, 0, 0, 0.3);
 				position	  : absolute;
 				width		    : 100%;
+				box-shadow	: 0px 5px 10px rgba(0, 0, 0, 0.3);
 				.item {
-					padding           : 3px 3px;
-					border-top        : 1px solid rgb(118, 118, 118);
 					position          : relative;
+					padding           : 3px 3px;
 					overflow          : visible;
-					background-color	: white;
+					background-color  : white;
+					border-top        : 1px solid rgb(118, 118, 118);
 					.preview {
-						display       : flex;
-  					flex-direction: column;
-						background    : #ccc;
-						border-radius : 5px;
-  					box-shadow    : 0 0 5px black;
-						width         : 200px;
-						color         :black;
-						position      : absolute;
-						top           : 0;
-						right         : 0;
-						opacity       : 0;
-						transition    : opacity 250ms ease;
-						z-index       : 1;
-						overflow      :hidden;
+						position       : absolute;
+						top            : 0;
+						right          : 0;
+						z-index        : 1;
+						display        : flex;
+						flex-direction : column;
+						width          : 200px;
+						overflow       : hidden;
+						color          : black;
+						background     : #CCCCCC;
+						border-radius  : 5px;
+						box-shadow     : 0 0 5px black;
+						opacity        : 0;
+						transition     : opacity 250ms ease;
 						h6 {
-							font-weight   : 900;
-							padding-inline:1em;
-							padding-block :.5em;
-							border-bottom :2px solid hsl(0,0%,40%);
+							padding-block  : 0.5em;
+							padding-inline : 1em;
+							font-weight    : 900;
+							border-bottom  : 2px solid hsl(0,0%,40%);
 						}
 					}
 					&:hover {
-						background-color	: @blue;
-						color				      : white;
+						color            : white;
+						background-color : @blue;
 					}
-					&:hover > .preview {
-						opacity: 1;
-					}
+					&:hover > .preview { opacity : 1; }
 					.texture-container {
-						position: absolute;
-						width: 100%;
-						height: 100%;
-						min-height: 100%;
-						top: 0;
-						left: 0;
-						overflow: hidden;
+						position   : absolute;
+						top        : 0;
+						left       : 0;
+						width      : 100%;
+						height     : 100%;
+						min-height : 100%;
+						overflow   : hidden;
 						> img {
-							mask-image			: linear-gradient(90deg, transparent, black 20%);
-							-webkit-mask-image	: linear-gradient(90deg, transparent, black 20%);
-							position			: absolute;
-							right				: 0;
-							top					: 0px;
-							width				: 50%;
+							position            : absolute;
+							top                 : 0px;
+							right               : 0;
+							width               : 50%;
 							min-height          : 100%;
+							-webkit-mask-image  : linear-gradient(90deg, transparent, black 20%);
+							mask-image          : linear-gradient(90deg, transparent, black 20%);
 						}
 					}
 				}
@@ -260,84 +241,69 @@
 		}
 	}
 	.field .list {
-		display: flex;
-		flex: 1 0;
-		flex-wrap: wrap;
+		display   : flex;
+		flex      : 1 0;
+		flex-wrap : wrap;
 
-		> * {
-			flex: 0 0 auto;
-		}
+		> * { flex : 0 0 auto; }
 
 		#groupedIcon {
 			#backgroundColors;
-			display: inline-block;
-			height: ~"calc(100% + 0.6em)";
-			position: relative;
-			top: -0.3em;
-			right: -0.3em;
-			cursor: pointer;
-			min-width: 20px;
-			text-align: center;
-			color: white;
+			position   : relative;
+			top        : -0.3em;
+			right      : -0.3em;
+			display    : inline-block;
+			min-width  : 20px;
+			height     : ~'calc(100% + 0.6em)';
+			color      : white;
+			text-align : center;
+			cursor     : pointer;
 
 			i {
-				position: relative;
-				top: 50%;
-				transform: translateY(-50%);
+				position  : relative;
+				top       : 50%;
+				transform : translateY(-50%);
 			}
 
-			&:not(:last-child) {
-				border-right: 1px solid black;
-			}
+			&:not(:last-child) { border-right : 1px solid black; }
 
-			&:last-child {
-				border-radius: 0 0.5em 0.5em 0;
-			}
+			&:last-child { border-radius : 0 0.5em 0.5em 0; }
 		}
 
 		.badge {
-			background-color: #dddddd;
-			border-radius: .5em;
-			font-size: .9em;
-			margin: 2px;
-			padding: .3em;
+			padding          : 0.3em;
+			margin           : 2px;
+			font-size        : 0.9em;
+			background-color : #DDDDDD;
+			border-radius    : 0.5em;
 
 			.icon {
-				#groupedIcon
-			}
+				#groupedIcon; }
 		}
 
 		.input-group {
-			height: ~"calc(.9em + 4px + .6em)";
+			height : ~'calc(.9em + 4px + .6em)';
 
-			input {
-				border-radius: .5em 0 0 .5em;
-			}
+			input { border-radius : 0.5em 0 0 0.5em; }
 
-			input:last-child {
-				border-radius: .5em;
-			}
+			input:last-child { border-radius : 0.5em; }
 
 			.value {
-				width: 7.5vw;
-				min-width: 75px;
-				height: 100%;
+				width     : 7.5vw;
+				min-width : 75px;
+				height    : 100%;
 			}
 
-			.invalid:focus {
-				background-color: pink;
-			}
+			.invalid:focus { background-color : pink; }
 
 			.icon {
 				#groupedIcon;
-				height: 97%;
-				font-size: .8em;
-				right: 1px;
-				top: -.54em;
+				top       : -0.54em;
+				right     : 1px;
+				height    : 97%;
+				font-size : 0.8em;
 
-				i {
-					font-size: 1.125em;
-				}
+				i { font-size : 1.125em; }
 			}
 		}
 	}

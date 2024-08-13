@@ -28,6 +28,7 @@ const MetadataEditor = createClass({
 		return {
 			metadata : {
 				editId      : null,
+				shareId     : null,
 				title       : '',
 				description : '',
 				thumbnail   : '',
@@ -196,6 +197,7 @@ const MetadataEditor = createClass({
 
 		const listThemes = (renderer)=>{
 			return _.map(_.values(mergedThemes[renderer]), (theme)=>{
+				if(theme.path == this.props.metadata.shareId) return;
 				const preview = theme.thumbnail || `/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`;
 				const texture = theme.thumbnail || `/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`;
 				return <div className='item' key={`${renderer}_${theme.name}`} onClick={()=>this.handleTheme(theme)} title={''}>
