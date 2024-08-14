@@ -2,11 +2,18 @@
 @import (less) '././././themes/fonts/5e/fonts.less';
 
 .snippetBar {
-	@menuHeight      : 25px;
+	@menuHeight : 25px;
 	position         : relative;
 	height           : @menuHeight;
 	color            : black;
 	background-color : #DDDDDD;
+	min-width		 : 331px;
+
+	@container editor (width < 538px) {
+		display : flex;
+		flex-wrap : wrap;
+		height : 50px;
+	}
 
 	.editors {
 		position        : absolute;
@@ -15,6 +22,11 @@
 		display         : flex;
 		justify-content : space-between;
 		height          : @menuHeight;
+
+		@container editor (width < 538px) {
+			position : static; 
+		}
+		
 		& > div {
 			width       : @menuHeight;
 			height      : @menuHeight;
