@@ -26,7 +26,9 @@ const HomebrewSchema = mongoose.Schema({
 	updatedAt  : { type: Date, default: Date.now },
 	lastViewed : { type: Date, default: Date.now },
 	views      : { type: Number, default: 0 },
-	version    : { type: Number, default: 1 }
+	version    : { type: Number, default: 1 },
+
+	cloning	   : { type: Boolean, default:true}
 }, { versionKey: false });
 
 HomebrewSchema.statics.increaseView = async function(query) {

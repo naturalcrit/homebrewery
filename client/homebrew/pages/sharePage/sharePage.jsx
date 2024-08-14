@@ -87,24 +87,29 @@ const SharePage = createClass({
 				</Nav.section>
 
 				<Nav.section>
-					{this.props.brew.shareId && <>
-						<PrintNavItem/>
-						<Nav.dropdown>
-							<Nav.item color='red' icon='fas fa-code'>
-								source
-							</Nav.item>
-							<Nav.item color='blue' icon='fas fa-eye' href={`/source/${this.processShareId()}`}>
-								view
-							</Nav.item>
-							{this.renderEditLink()}
-							<Nav.item color='blue' icon='fas fa-download' href={`/download/${this.processShareId()}`}>
-								download
-							</Nav.item>
-							<Nav.item color='blue' icon='fas fa-clone' href={`/new/${this.processShareId()}`}>
-								clone to new
-							</Nav.item>
-						</Nav.dropdown>
-					</>}
+				{this.props.brew.shareId && (
+  				<>
+    				<PrintNavItem />
+    				{this.props.brew.cloning !== false && (
+      				<Nav.dropdown>
+        				<Nav.item color='red' icon='fas fa-code'>
+          				source
+        				</Nav.item>
+        				<Nav.item color='blue' icon='fas fa-eye' href={`/source/${this.processShareId()}`}>
+          				view
+        				</Nav.item>
+        				{this.renderEditLink()}
+        				<Nav.item color='blue' icon='fas fa-download' href={`/download/${this.processShareId()}`}>
+          				download
+        				</Nav.item>
+        				<Nav.item color='blue' icon='fas fa-clone' href={`/new/${this.processShareId()}`}>
+          				clone to new
+        				</Nav.item>
+     				 </Nav.dropdown>
+    				)}
+  				</>
+				)}
+
 					<RecentNavItem brew={this.props.brew} storageKey='view' />
 					<Account />
 				</Nav.section>

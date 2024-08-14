@@ -38,7 +38,8 @@ const MetadataEditor = createClass({
 				systems     : [],
 				renderer    : 'legacy',
 				theme       : '5ePHB',
-				lang        : 'en'
+				lang        : 'en',
+				cloning		: true,
 			},
 			onChange    : ()=>{},
 			reportError : ()=>{}
@@ -102,6 +103,12 @@ const MetadataEditor = createClass({
 		}
 		this.props.onChange(this.props.metadata, 'renderer');
 	},
+	
+	handleCloning: function(e) {
+		const newMetadata = { ...this.props.metadata, cloning: e.target.checked };
+		this.props.onChange(newMetadata, 'cloning');
+	},
+
 	handlePublish : function(val){
 		this.props.onChange({
 			...this.props.metadata,
@@ -312,6 +319,24 @@ const MetadataEditor = createClass({
 		</div>;
 	},
 
+	renderCloning : function(){
+		return	<div className="field cloning">
+					<label>Cloning</label>
+					<div className="value">
+						<label>
+							<input
+							type='checkbox'
+							name='clone'
+							checked={this.props.metadata.cloning}
+							onChange={(e)=>this.handleCloning(e)}/>
+							Allow this brew to be cloned
+						</label>
+					</div>
+					
+				</div> 
+		
+	},
+
 	render : function(){
 		return <div className='metadataEditor'>
 			<h1 className='sectionHead'>Brew</h1>
@@ -378,6 +403,8 @@ const MetadataEditor = createClass({
 			<hr/>
 
 			<h1 className='sectionHead'>Privacy</h1>
+
+			{this.renderCloning()}
 
 			<div className='field publish'>
 				<label>publish</label>
