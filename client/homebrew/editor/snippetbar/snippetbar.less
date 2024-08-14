@@ -4,10 +4,10 @@
 .snippetBar {
 	@menuHeight : 25px;
 	position         : relative;
+	min-width        : 331px;
 	height           : @menuHeight;
 	color            : black;
 	background-color : #DDDDDD;
-	min-width		 : 331px;
 
 	@container editor (width < 538px) {
 		display : flex;
@@ -139,11 +139,11 @@
 				cursor      : pointer;
 				.animate(background-color);
 				i {
+					min-width    : 25px;
 					height       : 1.2em;
 					margin-right : 8px;
 					font-size    : 1.2em;
-					min-width: 25px;
-					text-align: center;
+					text-align   : center;
 					& ~ i {
 						margin-right : 0;
 						margin-left  : 5px;
