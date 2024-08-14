@@ -165,40 +165,64 @@ app.get('/faq', async (req, res, next)=>{
 });
 
 //Source page
-app.get('/source/:id', asyncHandler(getBrew('share')), (req, res)=>{
-	const { brew } = req;
+app.get('/source/:id', asyncHandler(getBrew('share')), (req, res) => {
+    const { brew } = req;
 
-	const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
-	let text = brew.text;
-	for (const replaceStr in replaceStrings) {
-		text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
-	}
-	text = `<code><pre style="white-space: pre-wrap;">${text}</pre></code>`;
-	res.status(200).send(text);
+    // Check if cloning is disabled
+    if (brew.cloning === false) {
+        const errorText = `This brew's author has disabled cloning, so its source is not publicly available.`;
+        return res.status(403).send(errorText);
+    }
+
+    // HTML encode the text
+    const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
+    let text = brew.text;
+    for (const replaceStr in replaceStrings) {
+        text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
+    }
+    text = `<code><pre style="white-space: pre-wrap;">${text}</pre></code>`;
+    
+    // Send the response
+    res.status(200).send(text);
 });
 
 //Download brew source page
-app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
-	const { brew } = req;
-	sanitizeBrew(brew, 'share');
-	const prefix = 'HB - ';
+app.get('/download/:id', asyncHandler(getBrew('share')), (req, res) => {
+    const { brew } = req;
+    sanitizeBrew(brew, 'share');
 
-	const encodeRFC3986ValueChars = (str)=>{
-		return (
-			encodeURIComponent(str)
-				.replace(/[!'()*]/g, (char)=>{`%${char.charCodeAt(0).toString(16).toUpperCase()}`;})
-		);
-	};
+    // Check if cloning is disabled
+    if (brew.cloning === false) {
+        const errorText = `This brew's author has disabled cloning, so its source is not available for download.`;
+        return res.status(403).send(errorText);
+    }
 
-	let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
-	if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };
-	res.set({
-		'Cache-Control'       : 'no-cache',
-		'Content-Type'        : 'text/plain',
-		'Content-Disposition' : `attachment; filename*=UTF-8''${encodeRFC3986ValueChars(fileName)}.txt`
-	});
-	res.status(200).send(brew.text);
+    const prefix = 'HB - ';
+
+    // Function to encode characters according to RFC 3986
+    const encodeRFC3986ValueChars = (str) => {
+        return encodeURIComponent(str)
+            .replace(/[!'()*]/g, (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`);
+    };
+
+    // Sanitize and format filename
+    let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
+    if (!fileName || fileName.length === 0) {
+        fileName = `${prefix}-Untitled-Brew`;
+    }
+
+    // Set headers for file download
+    res.set({
+        'Cache-Control': 'no-cache',
+        'Content-Type': 'text/plain',
+        'Content-Disposition': `attachment; filename*=UTF-8''${encodeRFC3986ValueChars(fileName)}.txt`
+    });
+
+    // Handle empty or undefined brew.text
+    const textToSend = brew.text || '';
+    res.status(200).send(textToSend);
 });
+
 
 //User Page
 app.get('/user/:username', async (req, res, next)=>{
@@ -291,6 +315,14 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res,
 //New Page from ID
 app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async(req, res, next)=>{
 	sanitizeBrew(req.brew, 'share');
+
+	 // Check if cloning is disabled
+	if (req.brew.cloning === false) {
+		console.log('error 403');
+        const errorText = `This brew's author has disabled cloning, so its source is not available for download.`;
+        return res.status(403).send(errorText);
+    }
+
 	splitTextStyleAndMetadata(req.brew);
 	const brew = {
 		shareId  : req.brew.shareId,
