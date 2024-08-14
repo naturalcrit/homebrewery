@@ -24,6 +24,8 @@
 
 .homebrew nav {
 	background-color : #333333;
+	container        : nav / inline-size;
+
 	.navContent {
 		position        : relative;
 		z-index         : 2;
@@ -34,6 +36,8 @@
 		display     : flex;
 		align-items : center;
 		&:last-child .navItem { border-left : 1px solid #666666; }
+
+		&:has(.brewTitle) {flex-grow : 1; min-width : 300px;container : brewTitle / inline-size; }
 	}
 	// "NaturalCrit" logo
 	.navLogo {
@@ -68,6 +72,10 @@
 	.navItem {
 		#backgroundColorsHover;
 		.animate(background-color);
+		display          : flex;
+		align-items      : center;
+		justify-content  : center;
+		height           : 100%;
 		padding          : 8px 12px;
 		font-size        : 10px;
 		font-weight      : 800;
@@ -77,6 +85,7 @@
 		text-transform   : uppercase;
 		cursor           : pointer;
 		background-color : #333333;
+
 		i {
 			float       : right;
 			margin-left : 5px;
@@ -93,39 +102,20 @@
 				animation-duration : 2s;
 			}
 		}
-		&.editTitle {  // this is not needed at all currently - you used to be able to edit the title via the navbar.
-			padding : 2px 12px;
-			input {
-				width            : 250px;
-				padding          : 2px;
-				margin           : 0;
-				font-family      : 'Open Sans', sans-serif;
-				font-size        : 12px;
-				font-weight      : 800;
-				color            : white;
-				text-align       : center;
-				background-color : transparent;
-				border           : 1px solid @blue;
-				outline          : none;
-			}
-			.charCount {
-				display        : inline-block;
-				margin-left    : 8px;
-				color          : #666666;
-				text-align     : right;
-				vertical-align : bottom;
-				&.max { color : @red; }
-			}
-		}
 		&.brewTitle {
-			flex-grow        : 1;
+			display          : block;
+			width            : 100%;
+			overflow         : hidden;
 			font-size        : 12px;
 			font-weight      : 800;
 			color            : white;
 			text-align       : center;
-			text-transform   : initial;
-			background-color : transparent;
+			text-overflow    : ellipsis;
+			text-transform   : initial;	
+			white-space      : nowrap;
+			background-color : transparent;		
 		}
+
 		// "The Homebrewery" logo
 		&.homebrewLogo {
 			.animate(color);
@@ -239,23 +229,25 @@
 	}
 	.navDropdownContainer {
 		position : relative;
+		height   : 100%;
+
 		.navDropdown {
-			position: absolute;
-			top: 28px;
-			right: 0px;
-			z-index: 10000;
-			width: max-content;
-			min-width:100%;
-			max-height: calc(100vh - 28px);
-			overflow: hidden auto;
-			display: flex;
-			flex-direction: column;
-			align-items: flex-end;
+			position       : absolute;
+			//top: 28px;
+			right          : 0px;
+			z-index        : 10000;
+			display        : flex;
+			flex-direction : column;
+			align-items    : flex-end;
+			width          : max-content;
+			min-width      : 100%;
+			max-height     : calc(100vh - 28px);
+			overflow       : hidden auto;
 			.navItem {
 				position           : relative;
 				display            : flex;
-				justify-content    : space-between;
 				align-items        : center;
+				justify-content    : space-between;
 				width              : 100%;
 				border             : 1px solid #888888;
 				border-bottom      : 0;
