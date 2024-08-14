@@ -24,8 +24,6 @@
 
 .homebrew nav {
 	background-color : #333333;
-	container        : nav / inline-size;
-
 	.navContent {
 		position        : relative;
 		z-index         : 2;
@@ -37,7 +35,10 @@
 		align-items : center;
 		&:last-child .navItem { border-left : 1px solid #666666; }
 
-		&:has(.brewTitle) {flex-grow : 1; min-width : 300px;container : brewTitle / inline-size; }
+		&:has(.brewTitle) {
+			flex-grow : 1;
+			min-width : 300px; 
+		}
 	}
 	// "NaturalCrit" logo
 	.navLogo {
@@ -85,7 +86,6 @@
 		text-transform   : uppercase;
 		cursor           : pointer;
 		background-color : #333333;
-
 		i {
 			float       : right;
 			margin-left : 5px;
