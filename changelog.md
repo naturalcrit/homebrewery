@@ -84,6 +84,65 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Tuesday 8/13/2024 - v3.14.1
+{{taskList
+
+##### abquintic
+
+* [x] Allow Table of Contents to flow across columns
+
+Fixes issues [#2563](https://github.com/naturalcrit/homebrewery/issues/2563)
+
+* [x] Fix unusual margin spacing for adjacent `.descriptive` and `.wide` blocks
+
+Fixes issues [#2688](https://github.com/naturalcrit/homebrewery/issues/2688)
+
+* [x] Add code folding to :fas_paintbrush: {{openSans **STYLE**}} tab
+
+##### G-Ambatte
+
+* [x] Fix edge case where Table of Contents generator changed capitalization of headings
+
+Fixes issues [#3572](https://github.com/naturalcrit/homebrewery/issues/3572)
+
+* [x] Fix **Ink Friendly** snippet causing unselectable PDF text
+
+Fixes issues [#3563](https://github.com/naturalcrit/homebrewery/issues/3563)
+
+* [x] Prevent brews selecting themselves as a theme
+
+Fixes issues [#3614](https://github.com/naturalcrit/homebrewery/issues/3614)
+
+* [x] Fix info pages (`/faq`, `/migrate`, etc.) showing blank authorship info
+
+Fixes issues [#3568](https://github.com/naturalcrit/homebrewery/issues/3568)
+
+* [x] Add `abs()`, `sign()` and `signed()` functions to variable syntax math handler
+
+Fixes issues [#3537](https://github.com/naturalcrit/homebrewery/issues/3537)
+
+* [x] Fix variable math handler not processing commas (i.e., in `$[max(varA,varB)]`
+
+Fixes issues [#3613](https://github.com/naturalcrit/homebrewery/issues/3613)
+
+* [x] Fix variable math handler scrambling variables with names that are subsets of other variables 
+
+Fixes issues [#3622](https://github.com/naturalcrit/homebrewery/issues/3622)
+
+
+##### calculuschild
+
+* [x] Fix `/migrate` page using an editor context instead of share context
+
+
+##### 5e-Cleric
+
+* [x] Fix Monster Stat Blocks losing color in Safari
+
+}}
+
+\page
+
 ### Monday 7/29/2024 - v3.14.0
 {{taskList
 
