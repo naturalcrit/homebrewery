@@ -367,7 +367,7 @@ const Editor = createClass({
 					view={this.state.view}
 					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
 					onChange={this.props.onStyleChange}
-					enableFolding={false}
+					enableFolding={true}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent} />
 			</>;
@@ -381,7 +381,8 @@ const Editor = createClass({
 				<MetadataEditor
 					metadata={this.props.brew}
 					onChange={this.props.onMetaChange}
-					reportError={this.props.reportError}/>
+					reportError={this.props.reportError}
+					userThemes={this.props.userThemes}/>
 			</>;
 		}
 	},
@@ -424,6 +425,7 @@ const Editor = createClass({
 					historySize={this.historySize()}
 					currentEditorTheme={this.state.editorTheme}
 					updateEditorTheme={this.updateEditorTheme}
+					snippetBundle={this.props.snippetBundle}
 					cursorPos={this.codeEditor.current?.getCursorPosition() || {}} />
 
 				{this.renderEditor()}

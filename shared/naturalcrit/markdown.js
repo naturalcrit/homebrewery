@@ -28,17 +28,18 @@ const mathParser = new MathParser({
 		round    : true,
 		floor    : true,
 		ceil     : true,
+		abs      : true,
 
 		sin     : false, cos     : false, tan     : false, asin    : false, acos    : false,
 		atan    : false, sinh    : false, cosh    : false, tanh    : false, asinh   : false,
 		acosh   : false, atanh   : false, sqrt    : false, cbrt    : false, log     : false,
 		log2    : false, ln      : false, lg      : false, log10   : false, expm1   : false,
-		log1p   : false, abs     : false, trunc   : false, join    : false, sum     : false,
+		log1p   : false, trunc   : false, join    : false, sum     : false, indexOf : false,
 		'-'     : false, '+'     : false, exp     : false, not     : false, length  : false,
 		'!'     : false, sign    : false, random  : false, fac     : false, min     : false,
 		max     : false, hypot   : false, pyt     : false, pow     : false, atan2   : false,
 		'if'    : false, gamma   : false, roundTo : false, map     : false, fold    : false,
-		filter  : false, indexOf : false,
+		filter  : false,
 
 		remainder   : false, factorial   : false,
 		comparison  : false, concatenate : false,
@@ -46,6 +47,16 @@ const mathParser = new MathParser({
 		array       : false, fndef       : false
 	}
 });
+// Add sign function
+mathParser.functions.sign = function (a) {
+	if(a >= 0) return '+';
+	return '-';
+};
+// Add signed function
+mathParser.functions.signed = function (a) {
+	if(a >= 0) return `+${a}`;
+	return `${a}`;
+};
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (html) {
@@ -102,7 +113,7 @@ const mustacheSpans = {
 	start(src) { return src.match(/{{[^{]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeSpan = /^{{[^\n]*}}/;               // Regex for the complete token
-		const inlineRegex = /{{(?=((?:[:=](?:"['\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *|}}/g;
+		const inlineRegex = /{{(?=((?:[:=](?:"['\w,\-()#%=?. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *|}}/g;
 		const match = completeSpan.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -159,7 +170,7 @@ const mustacheDivs = {
 	start(src) { return src.match(/\n *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeBlock = /^ *{{[^\n}]* *\n.*\n *}}/s;                // Regex for the complete token
-		const blockRegex = /^ *{{(?=((?:[:=](?:"['\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *$|^ *}}$/gm;
+		const blockRegex = /^ *{{(?=((?:[:=](?:"['\w,\-()#%=?. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *$|^ *}}$/gm;
 		const match = completeBlock.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -214,7 +225,7 @@ const mustacheInjectInline = {
 	level : 'inline',
 	start(src) { return src.match(/ *{[^{\n]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/g;
+		const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-()#%=?. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/g;
 		const match = inlineRegex.exec(src);
 		if(match) {
 			const lastToken = tokens[tokens.length - 1];
@@ -265,7 +276,7 @@ const mustacheInjectBlock = {
 		level : 'block',
 		start(src) { return src.match(/\n *{[^{\n]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 		tokenizer(src, tokens) {
-			const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/ym;
+			const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-()#%=?. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/ym;
 			const match = inlineRegex.exec(src);
 			if(match) {
 				const lastToken = tokens[tokens.length - 1];
@@ -441,7 +452,7 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 	const label  = match[2];
 
 	//v=====--------------------< HANDLE MATH >-------------------=====v//
-	const mathRegex = /[a-z]+\(|[+\-*/^()]/g;
+	const mathRegex = /[a-z]+\(|[+\-*/^(),]/g;
 	const matches = label.split(mathRegex);
 	const mathVars = matches.filter((match)=>isNaN(match))?.map((s)=>s.trim()); // Capture any variable names
 
@@ -451,7 +462,7 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 		mathVars?.forEach((variable)=>{
 			const foundVar = lookupVar(variable, globalPageNumber, hoist);
 			if(foundVar && foundVar.resolved && foundVar.content && !isNaN(foundVar.content)) // Only subsitute math values if fully resolved, not empty strings, and numbers
-				replacedLabel = replacedLabel.replaceAll(variable, foundVar.content);
+				replacedLabel = replacedLabel.replaceAll(new RegExp(`(?<!\\w)(${variable})(?!\\w)`, 'g'), foundVar.content);
 		});
 
 		try {
@@ -771,7 +782,8 @@ const processStyleTags = (string)=>{
 	const attributes = _.remove(tags, (tag)=>(tag.includes('='))).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'))
 		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
 		.reduce((obj, attr)=>{
-			let [key, value] = attr.split('=');
+			const index = attr.indexOf('=');
+			let [key, value] = [attr.substring(0, index), attr.substring(index + 1)];
 			value = value.replace(/"/g, '');
 			obj[key] = value;
 			return obj;
@@ -786,14 +798,17 @@ const processStyleTags = (string)=>{
 	};
 };
 
+//Given a string representing an HTML element, extract all of its properties (id, class, style, and other attributes)
 const extractHTMLStyleTags = (htmlString)=>{
-	const id         = htmlString.match(/id="([^"]*)"/)?.[1]    || null;
-	const classes    = htmlString.match(/class="([^"]*)"/)?.[1] || null;
-	const styles     = htmlString.match(/style="([^"]*)"/)?.[1] || null;
-	const attributes = htmlString.match(/[a-zA-Z]+="[^"]*"/g)
+	const firstElementOnly = htmlString.split('>')[0];
+	const id         = firstElementOnly.match(/id="([^"]*)"/)?.[1]    || null;
+	const classes    = firstElementOnly.match(/class="([^"]*)"/)?.[1] || null;
+	const styles     = firstElementOnly.match(/style="([^"]*)"/)?.[1] || null;
+	const attributes = firstElementOnly.match(/[a-zA-Z]+="[^"]*"/g)
 		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
 		.reduce((obj, attr)=>{
-			let [key, value] = attr.split('=');
+			const index = attr.indexOf('=');
+			let [key, value] = [attr.substring(0, index), attr.substring(index + 1)];
 			value = value.replace(/"/g, '');
 			obj[key] = value;
 			return obj;
