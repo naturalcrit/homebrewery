@@ -1,33 +1,26 @@
 require('./toolBar.less');
 const React = require('react');
-const { useState, useRef, useEffect } = React;
-const _ = require('lodash');
+const { useState, useEffect } = React;
 
 const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
     const [state, setState] = useState({
         currentPage: currentPage,
         totalPages: totalPages,
         zoomLevel: 100,
+        pageNumberInput: currentPage,
+        zoomInput: 100,
     });
 
-    const [pageNumberInput, setPageNumberInput] = useState(
-        state.currentPage
-    );
-    const [zoomInput, setZoomInput] = useState(state.zoomLevel);
-
     useEffect(() => {
-        console.log(`Zoom to: ${state.zoomLevel}`);
         updateZoom(state.zoomLevel);
-        setZoomInput(state.zoomLevel);
     }, [state.zoomLevel]);
 
-    // Update currentPage whenever page prop changes
     useEffect(() => {
         setState((prevState) => ({
             ...prevState,
             currentPage: currentPage,
+            pageNumberInput: currentPage,
         }));
-        setPageNumberInput(currentPage);
     }, [currentPage]);
 
     const setZoomLevel = (direction) => {
@@ -35,7 +28,7 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
         if (direction === 'in') {
             zoomLevel += 10;
         } else {
-            zoomLevel = zoomLevel - 10;
+            zoomLevel -= 10;
         }
 
         setState((prevState) => ({
@@ -47,17 +40,16 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
     const handleInputChange = (value, type) => {
         const newValue = parseInt(value, 10);
 
-        // Check the type of input (zoom or page)
-        if (type === 'zoom') {
-            // Check if zoom level is within the allowed range
-            if (newValue >= 10 && newValue <= 300) {
-                setZoomInput(newValue);
-            }
-        } else if (type === 'page') {
-            // Check if page number is within the allowed range
-            if (newValue >= 1 && newValue <= totalPages) {
-                setPageNumberInput(newValue);
-            }
+        if (type === 'zoom' && newValue >= 10 && newValue <= 300) {
+            setState((prevState) => ({
+                ...prevState,
+                zoomInput: newValue,
+            }));
+        } else if (type === 'page' && newValue >= 1 && newValue <= totalPages) {
+            setState((prevState) => ({
+                ...prevState,
+                pageNumberInput: newValue,
+            }));
         }
     };
 
@@ -74,34 +66,31 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
 
             <div className="tool">
                 <input
-                    type="number"
+                    className='slider'
+                    type="range"
                     name="zoom"
                     min={10}
                     max={300}
-                    value={zoomInput}
+                    value={state.zoomInput}
                     onChange={(e) => handleInputChange(e.target.value, 'zoom')}
-                    onBlur={(e) => {
-                        const newZoomLevel = parseInt(
-                            e.target.value,
-                            10
-                        );
+                    onMouseUp={(e) => {
+                        const newZoomLevel = parseInt(e.target.value, 10);
                         if (newZoomLevel !== state.zoomLevel) {
+                            setState((prevState) => ({
+                                ...prevState,
+                                zoomLevel: newZoomLevel,
+                                zoomInput: newZoomLevel,
+                            }));
                             updateZoom(newZoomLevel);
                         }
                     }}
-                    onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                            e.target.blur();
-                        }
-                    }}
                 />
-                <span>%</span>
             </div>
 
             <div className="tool">
                 <button
                     onClick={() => setZoomLevel('out')}
-                    disabled={state.zoomLevel <= 20}
+                    disabled={state.zoomLevel <= 10}
                 >
                     Zoom Out
                 </button>
@@ -126,11 +115,11 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
                 min={1}
                 max={state.totalPages}
                 id="pageInput"
-                value={pageNumberInput}
+                value={state.pageNumberInput}
                 onChange={(e) => handleInputChange(e.target.value, 'page')}
                 onBlur={(e) => {
-                    parseInt(pageNumberInput) === state.currentPage ||
-                        onPageChange(parseInt(pageNumberInput) - 1);
+                    parseInt(state.pageNumberInput) === state.currentPage ||
+                        onPageChange(parseInt(state.pageNumberInput) - 1);
                 }}
                 onKeyPress={(e) => {
                     if (e.key === 'Enter') {
@@ -143,7 +132,9 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
                 <button
                     className="nextPage"
                     onClick={() => {
-                        console.log(`page is ${state.currentPage} and i move to ${state.currentPage}`);
+                        console.log(
+                            `page is ${state.currentPage} and i move to ${state.currentPage}`
+                        );
                         onPageChange(state.currentPage);
                     }}
                     disabled={state.currentPage >= state.totalPages}
