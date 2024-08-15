@@ -9,12 +9,6 @@
 	color            : black;
 	background-color : #DDDDDD;
 
-	@container editor (width < 538px) {
-		display : flex;
-		flex-wrap : wrap;
-		height : 50px;
-	}
-
 	.editors {
 		position        : absolute;
 		top             : 0px;
@@ -22,10 +16,6 @@
 		display         : flex;
 		justify-content : space-between;
 		height          : @menuHeight;
-
-		@container editor (width < 538px) {
-			position : static; 
-		}
 		
 		& > div {
 			width       : @menuHeight;
@@ -199,6 +189,19 @@
 					}
 				}
 			}
+		}
+	}
+}
+
+@container editor (width < 538px) {
+
+	.snippetBar {
+		display : flex;
+		flex-wrap : wrap;
+		height : 50px;
+
+		.editors {
+			position : static;
 		}
 	}
 }
