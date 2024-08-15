@@ -158,11 +158,15 @@ const errorIndex = (props)=>{
 
 		If you think this is a mistake, you may contact the author.
 
+		If you are the author, please login to the account that has authorship of this brew.
+
 		:
 
 		**Brew ID:**  ${props.brew.brewId}
 		
-		**Brew Title:** ${props.brew.brewTitle}`,
+		**Brew Title:** ${props.brew.brewTitle}
+
+		**Brew Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}`,
 
 		// Brew locked by Administrators error
 		'100' : dedent`
