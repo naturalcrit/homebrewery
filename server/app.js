@@ -168,16 +168,16 @@ app.get('/faq', async (req, res, next)=>{
 app.get('/source/:id', asyncHandler(getBrew('share')), (req, res, next) => {
     const ownBrew = req.account && req.brew.authors.includes(req.account.username);
 
-    // Check if cloning is disabled
     if (req.brew.cloning === false && !ownBrew) {
-        const error = new Error(`Cloning blocked`);
-        error.status = 401; // HTTP status code for "Locked"
-		error.HBErrorCode = '10';
-		error.brewId = req.brew.shareId;
-		error.brewTitle = req.brew.title;
+        res.set('WWW-Authenticate', 'Bearer realm="Authorization Required"');
+        const error = new Error('Cloning blocked');
+        error.status = 401;
+        error.HBErrorCode = '10';
+        error.brewId = req.brew.shareId;
+        error.brewTitle = req.brew.title;
+		error.authors = req.brew.authors;
         return next(error);
     }
-
     return next();
 });
 
@@ -185,20 +185,17 @@ app.get('/source/:id', asyncHandler(getBrew('share')), (req, res, next) => {
 app.get('/download/:id', asyncHandler(getBrew('share')), (req, res, next) => {
     const ownBrew = req.account && req.brew.authors.includes(req.account.username);
     
-    // Check if cloning is disabled
     if (req.brew.cloning === false && !ownBrew) {
-        const error = new Error(`Cloning blocked`);
-        error.status = 401; // HTTP status code for "Locked"
+        res.set('WWW-Authenticate', 'Bearer realm="Authorization Required"');
+        const error = new Error('Cloning blocked');
+        error.status = 401;
         error.HBErrorCode = '10';
         error.brewId = req.brew.shareId;
         error.brewTitle = req.brew.title;
-        return next(error); // Pass the error to the error-handling middleware
+        return next(error);
     }
-
-    // If cloning is allowed, proceed to the next middleware or route handler
     return next();
 });
-
 
 //User Page
 app.get('/user/:username', async (req, res, next)=>{
