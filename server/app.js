@@ -165,62 +165,38 @@ app.get('/faq', async (req, res, next)=>{
 });
 
 //Source page
-app.get('/source/:id', asyncHandler(getBrew('share')), (req, res) => {
-    const { brew } = req;
+app.get('/source/:id', asyncHandler(getBrew('share')), (req, res, next) => {
+    const ownBrew = req.account && req.brew.authors.includes(req.account.username);
 
     // Check if cloning is disabled
-    if (brew.cloning === false) {
-        const errorText = `This brew's author has disabled cloning, so its source is not publicly available.`;
-        return res.status(403).send(errorText);
+    if (req.brew.cloning === false && !ownBrew) {
+        const error = new Error(`Cloning blocked`);
+        error.status = 423; // HTTP status code for "Locked"
+		error.HBErrorCode = '23';
+		error.brewId = req.brew.shareId;
+		error.brewTitle = req.brew.title;
+        return next(error);
     }
 
-    // HTML encode the text
-    const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
-    let text = brew.text;
-    for (const replaceStr in replaceStrings) {
-        text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
-    }
-    text = `<code><pre style="white-space: pre-wrap;">${text}</pre></code>`;
-    
-    // Send the response
-    res.status(200).send(text);
+    return next();
 });
 
 //Download brew source page
-app.get('/download/:id', asyncHandler(getBrew('share')), (req, res) => {
-    const { brew } = req;
-    sanitizeBrew(brew, 'share');
-
+app.get('/download/:id', asyncHandler(getBrew('share')), (req, res, next) => {
+    const ownBrew = req.account && req.brew.authors.includes(req.account.username);
+    
     // Check if cloning is disabled
-    if (brew.cloning === false) {
-        const errorText = `This brew's author has disabled cloning, so its source is not available for download.`;
-        return res.status(403).send(errorText);
+    if (req.brew.cloning === false && !ownBrew) {
+        const error = new Error(`Cloning blocked`);
+        error.status = 423; // HTTP status code for "Locked"
+        error.HBErrorCode = '23';
+        error.brewId = req.brew.shareId;
+        error.brewTitle = req.brew.title;
+        return next(error); // Pass the error to the error-handling middleware
     }
 
-    const prefix = 'HB - ';
-
-    // Function to encode characters according to RFC 3986
-    const encodeRFC3986ValueChars = (str) => {
-        return encodeURIComponent(str)
-            .replace(/[!'()*]/g, (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`);
-    };
-
-    // Sanitize and format filename
-    let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
-    if (!fileName || fileName.length === 0) {
-        fileName = `${prefix}-Untitled-Brew`;
-    }
-
-    // Set headers for file download
-    res.set({
-        'Cache-Control': 'no-cache',
-        'Content-Type': 'text/plain',
-        'Content-Disposition': `attachment; filename*=UTF-8''${encodeRFC3986ValueChars(fileName)}.txt`
-    });
-
-    // Handle empty or undefined brew.text
-    const textToSend = brew.text || '';
-    res.status(200).send(textToSend);
+    // If cloning is allowed, proceed to the next middleware or route handler
+    return next();
 });
 
 
@@ -314,10 +290,11 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res,
 
 //New Page from ID
 app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async(req, res, next)=>{
+	const ownAccount = req.account && (req.account.username == req.params.username);
 	sanitizeBrew(req.brew, 'share');
 
 	 // Check if cloning is disabled
-	if (req.brew.cloning === false) {
+	if (req.brew.cloning === false && !ownAccount) {
 		console.log('error 403');
         const errorText = `This brew's author has disabled cloning, so its source is not available for download.`;
         return res.status(403).send(errorText);

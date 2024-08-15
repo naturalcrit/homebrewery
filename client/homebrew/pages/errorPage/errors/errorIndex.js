@@ -148,6 +148,21 @@ const errorIndex = (props)=>{
 		**Requested access:** ${props.brew.accessType}
 
 		**Brew ID:**  ${props.brew.brewId}`,
+		
+		//Brew's cloning blocked
+		'23' : dedent`
+		## This brew's cloning features have been disabled
+
+		The author of this brew does not want other people using its contents, so viewing the source, 
+		cloning the brew and downloading the text has been disabled.
+
+		If you think this is a mistake, you may contact the author.
+
+		:
+
+		**Brew ID:**  ${props.brew.brewId}
+		
+		**Brew Title:** ${props.brew.brewTitle}`,
 
 		// Brew locked by Administrators error
 		'100' : dedent`

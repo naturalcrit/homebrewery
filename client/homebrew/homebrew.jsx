@@ -11,6 +11,7 @@ const SharePage = require('./pages/sharePage/sharePage.jsx');
 const NewPage = require('./pages/newPage/newPage.jsx');
 const ErrorPage = require('./pages/errorPage/errorPage.jsx');
 const AccountPage = require('./pages/accountPage/accountPage.jsx');
+const SourcePage = require('./pages/sourcePage/sourcePage.jsx');
 
 const WithRoute = (props)=>{
 	const params = useParams();
@@ -68,6 +69,8 @@ const Homebrew = createClass({
 					<Routes>
 						<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={this.props.brew} userThemes={this.props.userThemes}/>} />
 						<Route path='/share/:id' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
+						<Route path='/source/:id' element={<WithRoute el={SourcePage} brew={this.props.brew} />} />
+						<Route path='/download/:id' element={<WithRoute el={SourcePage} brew={this.props.brew} />} />
 						<Route path='/new/:id' element={<WithRoute el={NewPage} brew={this.props.brew} userThemes={this.props.userThemes}/>} />
 						<Route path='/new' element={<WithRoute el={NewPage} userThemes={this.props.userThemes}/> } />
 						<Route path='/user/:username' element={<WithRoute el={UserPage} brews={this.props.brews} />} />
