@@ -171,8 +171,8 @@ app.get('/source/:id', asyncHandler(getBrew('share')), (req, res, next) => {
     // Check if cloning is disabled
     if (req.brew.cloning === false && !ownBrew) {
         const error = new Error(`Cloning blocked`);
-        error.status = 423; // HTTP status code for "Locked"
-		error.HBErrorCode = '23';
+        error.status = 401; // HTTP status code for "Locked"
+		error.HBErrorCode = '10';
 		error.brewId = req.brew.shareId;
 		error.brewTitle = req.brew.title;
         return next(error);
@@ -188,8 +188,8 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res, next) => {
     // Check if cloning is disabled
     if (req.brew.cloning === false && !ownBrew) {
         const error = new Error(`Cloning blocked`);
-        error.status = 423; // HTTP status code for "Locked"
-        error.HBErrorCode = '23';
+        error.status = 401; // HTTP status code for "Locked"
+        error.HBErrorCode = '10';
         error.brewId = req.brew.shareId;
         error.brewTitle = req.brew.title;
         return next(error); // Pass the error to the error-handling middleware

@@ -150,7 +150,7 @@ const errorIndex = (props)=>{
 		**Brew ID:**  ${props.brew.brewId}`,
 		
 		//Brew's cloning blocked
-		'23' : dedent`
+		'10' : dedent`
 		## This brew's cloning features have been disabled
 
 		The author of this brew does not want other people using its contents, so viewing the source, 
