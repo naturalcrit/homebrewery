@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const yaml = require('js-yaml');
+const request = require('../client/homebrew/utils/request-middleware.js');
 
 const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
@@ -15,6 +16,11 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
+	if(brew.text.startsWith('```snippets')) {
+		const index = brew.text.indexOf('```\n\n');
+		brew.snippets = brew.text.slice(11, index - 1);
+		brew.text = brew.text.slice(index + 5);
+	}
 };
 
 const printCurrentBrew = ()=>{
@@ -27,7 +33,24 @@ const printCurrentBrew = ()=>{
 	}
 };
 
+const fetchThemeBundle = async (obj, renderer, theme)=>{
+	const res = await request
+			.get(`/api/theme/${renderer}/${theme}`)
+			.catch((err)=>{
+				obj.setState({ error: err });
+			});
+	if(!res) return;
+
+	const themeBundle = res.body;
+	themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n');
+	obj.setState((prevState)=>({
+		...prevState,
+		themeBundle : themeBundle
+	}));
+};
+
 module.exports = {
 	splitTextStyleAndMetadata,
-	printCurrentBrew
+	printCurrentBrew,
+	fetchThemeBundle,
 };
