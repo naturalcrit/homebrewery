@@ -9,7 +9,7 @@ const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
 
-const { homebrewApi, getBrew } = require('./homebrew.api.js');
+const { homebrewApi, getBrew, getUsersBrewThemes } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
@@ -17,26 +17,13 @@ const asyncHandler = require('express-async-handler');
 
 const { DEFAULT_BREW } = require('./brewDefaults.js');
 
-const splitTextStyleAndMetadata = (brew)=>{
-	brew.text = brew.text.replaceAll('\r\n', '\n');
-	if(brew.text.startsWith('```metadata')) {
-		const index = brew.text.indexOf('```\n\n');
-		const metadataSection = brew.text.slice(12, index - 1);
-		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
-		brew.text = brew.text.slice(index + 5);
-	}
-	if(brew.text.startsWith('```css')) {
-		const index = brew.text.indexOf('```\n\n');
-		brew.style = brew.text.slice(7, index - 1);
-		brew.text = brew.text.slice(index + 5);
-	}
-};
+const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
+
 
 const sanitizeBrew = (brew, accessType)=>{
 	brew._id = undefined;
 	brew.__v = undefined;
-	if(accessType !== 'edit'){
+	if(accessType !== 'edit' && accessType !== 'shareAuthor') {
 		brew.editId = undefined;
 	}
 	return brew;
@@ -94,7 +81,8 @@ app.get('/robots.txt', (req, res)=>{
 app.get('/', (req, res, next)=>{
 	req.brew = {
 		text     : welcomeText,
-		renderer : 'V3'
+		renderer : 'V3',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -110,7 +98,8 @@ app.get('/', (req, res, next)=>{
 app.get('/legacy', (req, res, next)=>{
 	req.brew = {
 		text     : welcomeTextLegacy,
-		renderer : 'legacy'
+		renderer : 'legacy',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -126,7 +115,8 @@ app.get('/legacy', (req, res, next)=>{
 app.get('/migrate', (req, res, next)=>{
 	req.brew = {
 		text     : migrateText,
-		renderer : 'V3'
+		renderer : 'V3',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -143,7 +133,8 @@ app.get('/changelog', async (req, res, next)=>{
 	req.brew = {
 		title    : 'Changelog',
 		text     : changelogText,
-		renderer : 'V3'
+		renderer : 'V3',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -160,7 +151,8 @@ app.get('/faq', async (req, res, next)=>{
 	req.brew = {
 		title    : 'FAQ',
 		text     : faqText,
-		renderer : 'V3'
+		renderer : 'V3',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -278,8 +270,10 @@ app.get('/user/:username', async (req, res, next)=>{
 });
 
 //Edit Page
-app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
+app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res, next)=>{
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
+
+	req.userThemes = await(getUsersBrewThemes(req.account?.username));
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',
@@ -292,10 +286,10 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 	splitTextStyleAndMetadata(req.brew);
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
 	return next();
-});
+}));
 
-//New Page
-app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
+//New Page from ID
+app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async(req, res, next)=>{
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	const brew = {
@@ -304,9 +298,12 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 		text     : req.brew.text,
 		style    : req.brew.style,
 		renderer : req.brew.renderer,
-		theme    : req.brew.theme
+		theme    : req.brew.theme,
+		tags     : req.brew.tags,
 	};
 	req.brew = _.defaults(brew, DEFAULT_BREW);
+
+	req.userThemes = await(getUsersBrewThemes(req.account?.username));
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'New',
@@ -314,12 +311,23 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	};
 
 	return next();
-});
+}));
+
+//New Page
+app.get('/new', asyncHandler(async(req, res, next)=>{
+	req.userThemes = await(getUsersBrewThemes(req.account?.username));
+
+	req.ogMeta = { ...defaultMetaTags,
+		title       : 'New',
+		description : 'Start crafting your homebrew on the Homebrewery!'
+	};
+
+	return next();
+}));
 
 //Share Page
 app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
 	const { brew } = req;
-
 	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',
 		description : req.brew.description || 'No description.',
@@ -338,17 +346,11 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 			await HomebrewModel.increaseView({ shareId: brew.shareId });
 		}
 	};
-	sanitizeBrew(req.brew, 'share');
+
+	brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	return next();
 }));
-
-//Print Page
-app.get('/print/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
-	sanitizeBrew(req.brew, 'share');
-	splitTextStyleAndMetadata(req.brew);
-	next();
-});
 
 //Account Page
 app.get('/account', asyncHandler(async (req, res, next)=>{
@@ -384,7 +386,7 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 				console.log(err);
 			});
 
-		data.uiItems = {
+		data.accountDetails = {
 			username    : req.account.username,
 			issued      : req.account.issued,
 			googleId    : Boolean(req.account.googleId),
@@ -437,7 +439,8 @@ const renderPage = async (req, res)=>{
 		enable_v3     : config.get('enable_v3'),
 		enable_themes : config.get('enable_themes'),
 		config        : configuration,
-		ogMeta        : req.ogMeta
+		ogMeta        : req.ogMeta,
+		userThemes    : req.userThemes
 	};
 	const title = req.brew ? req.brew.title : '';
 	const page = await templateFn('homebrew', title, props)

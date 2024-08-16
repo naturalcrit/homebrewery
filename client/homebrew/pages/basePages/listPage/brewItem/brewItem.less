@@ -48,6 +48,10 @@
 		&>span{
 			margin-right : 12px;
 			line-height  : 1.5em;
+
+			a {
+				color:inherit;
+			}
 		}
 	}
 	.brewTags span {
@@ -59,6 +63,41 @@
 		white-space: nowrap;
 		display: inline-block;
 		font-weight: bold;
+		border-color: currentColor;
+		cursor : pointer;
+		&:before {
+			font-family: 'Font Awesome 5 Free';
+			font-size: 12px;
+			margin-right: 3px;
+		}
+		&.type {
+			background-color: #0080003b;
+			color: #008000;
+			&:before{
+				content: '\f0ad';
+			}
+		}
+		&.group {
+			background-color: #5050503b;
+			color: #000000;
+			&:before{
+				content: '\f500';
+			}
+		}
+		&.meta {
+			background-color: #0000803b;
+			color: #000080;
+			&:before{
+				content: '\f05a';
+			}
+		}
+		&.system {
+			background-color: #8000003b;
+			color: #800000;
+			&:before{
+				content: '\f518';
+			}
+		}
 	}
 	&:hover{
 		.links{
@@ -80,11 +119,12 @@
 		text-align       : center;
 		a{
 			.animate(opacity);
-			display   : block;
-			margin    : 8px 0px;
-			opacity   : 0.6;
-			font-size : 1.3em;
-			color     : white;
+			display         : block;
+			margin          : 8px 0px;
+			opacity         : 0.6;
+			font-size       : 1.3em;
+			color           : white;
+			text-decoration : unset;
 			&:hover{
 				opacity : 1;
 			}
