@@ -2,6 +2,10 @@ require('./toolBar.less');
 const React = require('react');
 const { useState, useEffect } = React;
 
+const maxZoom = 300;
+const minZoom = 10;
+const zoomStep = 10;
+
 const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
     const [state, setState] = useState({
         currentPage: currentPage,
@@ -26,21 +30,22 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
     const setZoomLevel = (direction) => {
         let zoomLevel = state.zoomLevel;
         if (direction === 'in') {
-            zoomLevel += 10;
+            zoomLevel += zoomStep;
         } else {
-            zoomLevel -= 10;
+            zoomLevel -= zoomStep;
         }
 
         setState((prevState) => ({
             ...prevState,
-            zoomLevel,
+            zoomLevel: zoomLevel,
+            zoomInput: zoomLevel,
         }));
     };
 
     const handleInputChange = (value, type) => {
         const newValue = parseInt(value, 10);
 
-        if (type === 'zoom' && newValue >= 10 && newValue <= 300) {
+        if (type === 'zoom' && newValue >= minZoom && newValue <= maxZoom) {
             setState((prevState) => ({
                 ...prevState,
                 zoomInput: newValue,
@@ -57,20 +62,21 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
         <div className="toolBar">
             <div className="tool">
                 <button
-                    onClick={() => setZoomLevel('in')}
-                    disabled={state.zoomLevel >= 300}
+                    onClick={() => setZoomLevel('out')}
+                    disabled={state.zoomLevel <= minZoom}
                 >
-                    Zoom In
+                    Zoom Out
                 </button>
             </div>
-
             <div className="tool">
                 <input
-                    className='slider'
+                    className="slider"
                     type="range"
                     name="zoom"
-                    min={10}
-                    max={300}
+                    list="zoomLevels"
+                    min={minZoom}
+                    max={maxZoom}
+                    step={zoomStep}
                     value={state.zoomInput}
                     onChange={(e) => handleInputChange(e.target.value, 'zoom')}
                     onMouseUp={(e) => {
@@ -85,17 +91,27 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
                         }
                     }}
                 />
+                <datalist id="zoomLevels">
+                    {Array.from(
+                        {
+                            length:
+                                Math.floor((maxZoom - minZoom) / zoomStep) + 1,
+                        },
+                        (_, i) => minZoom + i * zoomStep
+                    ).map((option) => (
+                        <option key={option} value={option} />
+                    ))}
+                </datalist>
             </div>
 
             <div className="tool">
                 <button
-                    onClick={() => setZoomLevel('out')}
-                    disabled={state.zoomLevel <= 10}
+                    onClick={() => setZoomLevel('in')}
+                    disabled={state.zoomLevel >= maxZoom}
                 >
-                    Zoom Out
+                    Zoom In
                 </button>
             </div>
-
             <div className="tool">
                 <button
                     className="previousPage"
