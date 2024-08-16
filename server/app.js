@@ -309,14 +309,18 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res,
 
 //New Page from ID
 app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async(req, res, next)=>{
-	const ownAccount = req.account && (req.account.username == req.params.username);
+	const ownBrew = req.account && req.brew.authors.includes(req.account.username);
 	sanitizeBrew(req.brew, 'share');
 
-	 // Check if cloning is disabled
-	if (req.brew.cloning === false && !ownAccount) {
-		console.log('error 403');
-        const errorText = `This brew's author has disabled cloning, so its source is not available for download.`;
-        return res.status(403).send(errorText);
+	if (req.brew.cloning === false && !ownBrew) {
+        res.set('WWW-Authenticate', 'Bearer realm="Authorization Required"');
+        const error = new Error('Cloning blocked');
+        error.status = 401;
+        error.HBErrorCode = '10';
+        error.brewId = req.brew.shareId;
+        error.brewTitle = req.brew.title;
+		error.authors = req.brew.authors;
+        return next(error);
     }
 
 	splitTextStyleAndMetadata(req.brew);
