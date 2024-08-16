@@ -74,6 +74,9 @@ jobs:
           name: Test - Routes
           command: npm run test:route
       - run:
+          name: Test - HTML sanitization
+          command: npm run test:safehtml
+      - run:
           name: Test - Coverage
           command: npm run test:coverage
 
