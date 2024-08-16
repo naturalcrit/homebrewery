@@ -24,7 +24,6 @@
     "test": "jest --runInBand",
     "test:api-unit": "jest \"server/.*.spec.js\" --verbose",
     "test:api-unit:themes": "jest \"server/.*.spec.js\" -t \"theme bundle\" --verbose",
-    "test:app": "jest \"server/app.spec.js\" --verbose",
     "test:coverage": "jest --coverage --silent --runInBand",
     "test:dev": "jest --verbose --watch",
     "test:basic": "jest tests/markdown/basic.test.js --verbose",
