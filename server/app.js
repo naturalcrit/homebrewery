@@ -166,16 +166,17 @@ app.get('/faq', async (req, res, next)=>{
 
 //Source page
 app.get('/source/:id', asyncHandler(getBrew('share')), (req, res, next) => {
-    const ownBrew = req.account && req.brew.authors.includes(req.account.username);
+	const { brew, account } = req;
+    const ownBrew = account && brew.authors.includes(account.username);
 
-    if (req.brew.cloning === false && !ownBrew) {
+    if (brew.cloning === false && !ownBrew) {
         res.set('WWW-Authenticate', 'Bearer realm="Authorization Required"');
         const error = new Error('Cloning blocked');
         error.status = 401;
         error.HBErrorCode = '10';
-        error.brewId = req.brew.shareId;
-        error.brewTitle = req.brew.title;
-		error.authors = req.brew.authors;
+        error.brewId = brew.shareId;
+        error.brewTitle = brew.title;
+		error.authors = brew.authors;
         return next(error);
     }
     return next();
@@ -183,18 +184,39 @@ app.get('/source/:id', asyncHandler(getBrew('share')), (req, res, next) => {
 
 //Download brew source page
 app.get('/download/:id', asyncHandler(getBrew('share')), (req, res, next) => {
-    const ownBrew = req.account && req.brew.authors.includes(req.account.username);
+	const { brew, account } = req;
+    const ownBrew = account && brew.authors.includes(account.username);
     
-    if (req.brew.cloning === false && !ownBrew) {
+    if (brew.cloning === false && !ownBrew) {
         res.set('WWW-Authenticate', 'Bearer realm="Authorization Required"');
         const error = new Error('Cloning blocked');
         error.status = 401;
         error.HBErrorCode = '10';
-        error.brewId = req.brew.shareId;
-        error.brewTitle = req.brew.title;
+        error.brewId = brew.shareId;
+        error.brewTitle = brew.title;
+		error.authors = brew.authors;
         return next(error);
     }
-    return next();
+
+	
+	sanitizeBrew(brew, 'share');
+	const prefix = 'HB - ';
+
+	const encodeRFC3986ValueChars = (str)=>{
+		return (
+			encodeURIComponent(str)
+				.replace(/[!'()*]/g, (char)=>{`%${char.charCodeAt(0).toString(16).toUpperCase()}`;})
+		);
+	};
+
+	let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
+	if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };
+	res.set({
+		'Cache-Control'       : 'no-cache',
+		'Content-Type'        : 'text/plain',
+		'Content-Disposition' : `attachment; filename*=UTF-8''${encodeRFC3986ValueChars(fileName)}.txt`
+	});
+	res.status(200).send(brew.text);
 });
 
 //User Page
