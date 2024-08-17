@@ -34,20 +34,11 @@
 			color: #D3D3D3;
 			accent-color: #d3d3d3;
   
-			&::-webkit-slider-thumb {
-				width            : 8px; 
-				height           : 15px;
-				appearance       : none;
+			&::-webkit-slider-thumb, &::-moz-slider-thumb {
 				cursor           : pointer; 
-				background-color : rgb(39, 174, 96);
-				translate        : 0 -66%; 
-			}
-			&::-moz-slider-thumb {
-				width            : 8px; 
-				height           : 15px;
-				appearance       : none;
-				cursor           : pointer; 
-				background-color : rgb(39, 174, 96); 
+				width: 5px;
+				height: 5px;
+				outline: none;
 			}
 
 			&:hover::after {
