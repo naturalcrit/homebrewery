@@ -91,17 +91,9 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages }) => {
                         }
                     }}
                 />
-                <datalist id="zoomLevels">
-                    {Array.from(
-                        {
-                            length:
-                                Math.floor((maxZoom - minZoom) / zoomStep) + 1,
-                        },
-                        (_, i) => minZoom + i * zoomStep
-                    ).map((option) => (
-                        <option key={option} value={option} />
-                    ))}
-                </datalist>
+                <datalist id='zoomLevels'>
+                    <option value='100' />
+				</datalist>
             </div>
 
             <div className="tool">
