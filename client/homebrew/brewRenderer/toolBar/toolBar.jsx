@@ -65,7 +65,7 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages })=>{
 					onClick={()=>setZoomLevel('out')}
 					disabled={state.zoomLevel <= minZoom}
 				>
-                    Zoom Out
+					<i className='fas fa-magnifying-glass-minus' />
 				</button>
 			</div>
 			<div className='tool'>
@@ -101,7 +101,7 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages })=>{
 					onClick={()=>setZoomLevel('in')}
 					disabled={state.zoomLevel >= maxZoom}
 				>
-                    Zoom In
+					<i className='fas fa-magnifying-glass-plus' />
 				</button>
 			</div>
 			<div className='tool'>
