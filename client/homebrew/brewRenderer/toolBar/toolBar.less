@@ -50,39 +50,26 @@
 				background-color : rgb(39, 174, 96); 
 			}
 
-			&::before {
+			&:hover::after {
 				position         : absolute;
-				top              : 50%;
-				left             : 33.33%;
-				z-index          : -1;
-				width            : 7px;
-				height           : 15px;
-				content          : '';
+				bottom           : -30px;
+				left             : 50%;
+				z-index          : 1;
+				display          : grid;
+				place-items      : center;
+				width            : 4ch;
+				height           : 1.2lh;
+				pointer-events   : none;
+				content          : attr(value);
 				background-color : #D3D3D3;
-				transform        : translate(-50%, -50%);
+				border           : 1px solid #A1A1A1;
+				border-radius    : 5px;
+				transform        : translate(-50%, 50%);
 			}
-			
 		}
 	}
 
-	.tool {
-		&:hover .slider::after {
-			position         : absolute;
-			bottom           : -30px;
-			left             : 50%;
-			z-index          : 1;
-			display          : grid;
-			place-items      : center;
-			width            : 4ch;
-			height           : 1.2lh;
-			pointer-events   : none;
-			content          : attr(value);
-			background-color : #D3D3D3;
-			border           : 1px solid #A1A1A1;
-			border-radius    : 5px;
-			transform        : translate(-50%, 50%);
-		}
-	}
+
 
 	.tool {
 		display     : flex;
