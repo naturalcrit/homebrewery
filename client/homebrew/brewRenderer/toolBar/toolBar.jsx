@@ -78,8 +78,8 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages })=>{
 					max={maxZoom}
 					step={zoomStep}
 					value={state.zoomInput}
-					onChange={(e)=>handleInputChange(e.target.value, 'zoom')}
-					onMouseUp={(e)=>{
+					// onChange={(e)=>handleInputChange(e.target.value, 'zoom')}
+					onChange={(e)=>{
 						const newZoomLevel = parseInt(e.target.value, 10);
 						if(newZoomLevel !== state.zoomLevel) {
 							setState((prevState)=>({
@@ -92,15 +92,7 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages })=>{
 					}}
 				/>
 				<datalist id='zoomLevels'>
-					{Array.from(
-						{
-							length :
-                                Math.floor((maxZoom - minZoom) / zoomStep) + 1,
-						},
-						(_, i)=>minZoom + i * zoomStep
-					).map((option)=>(
-						<option key={option} value={option} />
-					))}
+					<option value='100' />
 				</datalist>
 			</div>
 
