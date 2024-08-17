@@ -84,6 +84,93 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Tuesday 8/13/2024 - v3.14.1
+{{taskList
+
+##### abquintic
+
+* [x] Allow Table of Contents to flow across columns
+
+Fixes issues [#2563](https://github.com/naturalcrit/homebrewery/issues/2563)
+
+* [x] Fix unusual margin spacing for adjacent `.descriptive` and `.wide` blocks
+
+Fixes issues [#2688](https://github.com/naturalcrit/homebrewery/issues/2688)
+
+* [x] Add code folding to :fas_paintbrush: {{openSans **STYLE**}} tab
+
+##### G-Ambatte
+
+* [x] Fix edge case where Table of Contents generator changed capitalization of headings
+
+Fixes issues [#3572](https://github.com/naturalcrit/homebrewery/issues/3572)
+
+* [x] Fix **Ink Friendly** snippet causing unselectable PDF text
+
+Fixes issues [#3563](https://github.com/naturalcrit/homebrewery/issues/3563)
+
+* [x] Prevent brews selecting themselves as a theme
+
+Fixes issues [#3614](https://github.com/naturalcrit/homebrewery/issues/3614)
+
+* [x] Fix info pages (`/faq`, `/migrate`, etc.) showing blank authorship info
+
+Fixes issues [#3568](https://github.com/naturalcrit/homebrewery/issues/3568)
+
+* [x] Add `abs()`, `sign()` and `signed()` functions to variable syntax math handler
+
+Fixes issues [#3537](https://github.com/naturalcrit/homebrewery/issues/3537)
+
+* [x] Fix variable math handler not processing commas (i.e., in `$[max(varA,varB)]`
+
+Fixes issues [#3613](https://github.com/naturalcrit/homebrewery/issues/3613)
+
+* [x] Fix variable math handler scrambling variables with names that are subsets of other variables 
+
+Fixes issues [#3622](https://github.com/naturalcrit/homebrewery/issues/3622)
+
+
+##### calculuschild
+
+* [x] Fix `/migrate` page using an editor context instead of share context
+
+
+##### 5e-Cleric
+
+* [x] Fix Monster Stat Blocks losing color in Safari
+
+}}
+
+\page
+
+### Monday 7/29/2024 - v3.14.0
+{{taskList
+
+##### abquintic, calculuschild
+
+* [x] Alternative Brew Themes, including importing other brews as a base theme.
+
+- In the :fas_circle_info: **Properties** menu, find the new {{openSans **THEME**}} dropdown. It lists Brew Themes, including a new **Blank** theme as a simpler basis for custom styling.
+- Brews tagged with `meta:theme` will appear in the Brew Themes list. Selecting one loads its :fas_paintbrush: **Style** tab contents as the CSS basis for the current brew, allowing one brew to style multiple documents.
+- Brews with `meta:theme` can also select their own Theme, i.e. layering Themes on top of each other.
+- The next goal is to make **Published** Themes shareable between users.
+
+
+Fixes issues [#1899](https://github.com/naturalcrit/homebrewery/issues/1899), [#3085](https://github.com/naturalcrit/homebrewery/issues/3085)
+
+##### G-Ambatte
+
+* [x] Fix Drop-cap font becoming corrupted when Bold
+
+Fixes issues [#3551](https://github.com/naturalcrit/homebrewery/issues/3551)
+
+* [x] Fixes to UI styling
+
+Fixes issues [#3568](https://github.com/naturalcrit/homebrewery/issues/3568)
+
+}}
+
+
 ### Saturday 6/7/2024 - v3.13.1
 {{taskList
 
@@ -130,8 +217,6 @@ Fixes issue [#3298](https://github.com/naturalcrit/homebrewery/issues/3298)
 
 Fixes issue [#3397](https://github.com/naturalcrit/homebrewery/issues/3397)
 }}
-
-\column
 
 ### Monday 18/3/2024 - v3.12.0
 {{taskList
