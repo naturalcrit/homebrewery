@@ -64,7 +64,7 @@
 		width: auto;
 		box-sizing: content-box;
 
-		&:hover,&:focus-within { background-color : #444444; }
+		&:hover { background-color : #444444; }
 
 		button {
 			font-family      : 'Open Sans', sans-serif;
@@ -78,11 +78,8 @@
 			min-width        : 46px;
 			padding          : 0 8px;
 
-			&:focus-within {
-				height      : 100%;
-				font-weight : 800;
-				color       : white;
-			}
+
+			&:focus { outline : 1px solid #d3d3d3; }
 
 			&:disabled {
 				color            : #777777;
