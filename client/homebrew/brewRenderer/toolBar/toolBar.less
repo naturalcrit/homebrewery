@@ -11,7 +11,7 @@
 	height           : 29px;
 	padding          : 2px 0;
 	font-family      : 'Open Sans', sans-serif;
-	color            : white;
+	color            : #CCCCCC;
 	background-color : #555555;
 
 	input {
@@ -58,7 +58,6 @@
 	.tool {
 		display     : flex;
 		align-items : center;
-		color       : #CCCCCC;
 		padding     : 0;
 		height: 100%;
 		width: auto;
@@ -67,23 +66,20 @@
 		&:hover { background-color : #444444; }
 
 		button {
-			font-family      : 'Open Sans', sans-serif;
-			font-size        : 11px;
-			font-weight      : normal;
-			color            : #CCCCCC;
-			text-transform   : uppercase;
-			background-color : transparent;
 			height           : 100%;
 			width            : auto;
 			min-width        : 46px;
 			padding          : 0 8px;
+			font-weight      : unset;
+			color            : inherit;
+			background-color : unset;
 
 
 			&:focus { outline : 1px solid #d3d3d3; }
 
 			&:disabled {
 				color            : #777777;
-				background-color : transparent !important;
+				background-color : unset !important;
 			}
 		}
 	}
