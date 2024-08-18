@@ -6,7 +6,7 @@ const maxZoom = 300;
 const minZoom = 10;
 const zoomStep = 10;
 
-const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages })=>{
+const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	const [state, setState] = useState({
 		currentPage     : currentPage,
 		totalPages      : totalPages,
@@ -16,7 +16,7 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages })=>{
 	});
 
 	useEffect(()=>{
-		updateZoom(state.zoomLevel);
+		onZoomChange(state.zoomLevel);
 	}, [state.zoomLevel]);
 
 	useEffect(()=>{
@@ -87,7 +87,7 @@ const ToolBar = ({ updateZoom, currentPage, onPageChange, totalPages })=>{
 								zoomLevel : newZoomLevel,
 								zoomInput : newZoomLevel,
 							}));
-							updateZoom(newZoomLevel);
+							onZoomChange(newZoomLevel);
 						}
 					}}
 				/>

@@ -224,7 +224,7 @@ const BrewRenderer = (props)=>{
 	};
 
 	//Toolbar settings:
-	const updateZoom = (newZoom) => {
+	const handleZoom = (newZoom) => {
 		setState((prevState)=>({
 			...prevState,
 			zoom : newZoom
@@ -259,7 +259,7 @@ const BrewRenderer = (props)=>{
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
 			>
-				<ToolBar updateZoom={updateZoom} currentPage={state.currentPageNumber} onPageChange={handlePageChange} totalPages={rawPages.length}/>
+				<ToolBar onZoomChange={handleZoom} currentPage={state.currentPageNumber} onPageChange={handlePageChange} totalPages={rawPages.length}/>
 				<div className={'brewRenderer'}
 					onScroll={handleScroll}
 					onKeyDown={handleControlKeys}
