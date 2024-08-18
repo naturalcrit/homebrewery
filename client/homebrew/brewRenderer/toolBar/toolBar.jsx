@@ -4,7 +4,6 @@ const { useState, useEffect } = React;
 
 const maxZoom = 300;
 const minZoom = 10;
-const zoomStep = 10;
 
 const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	const [state, setState] = useState({
@@ -42,22 +41,6 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 		}));
 	};
 
-	const handleInputChange = (value, type)=>{
-		const newValue = parseInt(value, 10);
-
-		if(type === 'zoom' && newValue >= minZoom && newValue <= maxZoom) {
-			setState((prevState)=>({
-				...prevState,
-				zoomInput : newValue,
-			}));
-		} else if(type === 'page' && newValue >= 1 && newValue <= totalPages) {
-			setState((prevState)=>({
-				...prevState,
-				pageNumberInput : newValue,
-			}));
-		}
-	};
-
 	return (
 		<div className='toolBar'>
 			<div className='tool'>
@@ -76,9 +59,8 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 					list='zoomLevels'
 					min={minZoom}
 					max={maxZoom}
-					step={zoomStep}
+					step='1'
 					value={state.zoomInput}
-					// onChange={(e)=>handleInputChange(e.target.value, 'zoom')}
 					onChange={(e)=>{
 						const newZoomLevel = parseInt(e.target.value, 10);
 						if(newZoomLevel !== state.zoomLevel) {
