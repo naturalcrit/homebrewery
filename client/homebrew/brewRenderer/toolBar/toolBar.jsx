@@ -1,6 +1,7 @@
 require('./toolBar.less');
 const React = require('react');
 const { useState, useEffect } = React;
+const _ = require('lodash')
 
 const maxZoom = 300;
 const minZoom = 10;
@@ -26,13 +27,8 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 		}));
 	}, [currentPage]);
 
-	const setZoomLevel = (direction)=>{
-		let zoomLevel = state.zoomLevel;
-		if(direction === 'in') {
-			zoomLevel += zoomStep;
-		} else {
-			zoomLevel -= zoomStep;
-		}
+	const setZoomLevel = (delta)=>{
+		const zoomLevel = _.clamp(state.zoomLevel + delta, minZoom, maxZoom);
 
 		setState((prevState)=>({
 			...prevState,
@@ -45,7 +41,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 		<div className='toolBar'>
 			<div className='tool'>
 				<button
-					onClick={()=>setZoomLevel('out')}
+					onClick={()=>setZoomLevel(-20)}
 					disabled={state.zoomLevel <= minZoom}
 				>
 					<i className='fas fa-magnifying-glass-minus' />
@@ -80,7 +76,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 			<div className='tool'>
 				<button
-					onClick={()=>setZoomLevel('in')}
+					onClick={()=>setZoomLevel(20)}
 					disabled={state.zoomLevel >= maxZoom}
 				>
 					<i className='fas fa-magnifying-glass-plus' />
