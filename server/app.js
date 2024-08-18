@@ -325,6 +325,7 @@ app.get('/new', asyncHandler(async(req, res, next)=>{
 	return next();
 }));
 
+
 //Share Page
 app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
 	const { brew } = req;
@@ -349,6 +350,35 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 
 	brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
+	return next();
+}));
+
+//Share Page
+app.get('/html/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
+	const { brew } = req;
+	console.log("I HEAR!");
+	req.ogMeta = { ...defaultMetaTags,
+		title       : req.brew.title || 'Untitled Brew',
+		description : req.brew.description || 'No description.',
+		image       : req.brew.thumbnail || defaultMetaTags.image,
+		type        : 'article'
+	};
+
+	// increase visitor view count, do not include visits by author(s)
+	if(!brew.authors.includes(req.account?.username)){
+		if(req.params.id.length > 12 && !brew._id) {
+			const googleId = brew.googleId;
+			const shareId = brew.shareId;
+			await GoogleActions.increaseView(googleId, shareId, 'share', brew)
+				.catch((err)=>{next(err);});
+		} else {
+			await HomebrewModel.increaseView({ shareId: brew.shareId });
+		}
+	};
+
+	brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
+	splitTextStyleAndMetadata(req.brew);
+	console.log(req.brew);
 	return next();
 }));
 

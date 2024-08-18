@@ -19,7 +19,8 @@ const SharePage = createClass({
 	getDefaultProps : function() {
 		return {
 			brew        : DEFAULT_BREW_LOAD,
-			disableMeta : false
+			disableMeta : false,
+			embed       : false
 		};
 	},
 
@@ -68,9 +69,28 @@ const SharePage = createClass({
 		</Nav.item>;
 	},
 
+	renderEmbed : function(){
+		return  <div className='embedPage sitePage'>
+			<div className='content'>
+				<BrewRenderer
+					text={this.props.brew.text}
+					style={this.props.brew.style}
+					renderer={this.props.brew.renderer}
+					theme={this.props.brew.theme}
+					themeBundle={this.state.themeBundle}
+					allowPrint={false}
+				/>
+			</div>
+		</div>;
+	},
+
 	render : function(){
 		const titleStyle = this.props.disableMeta ? { cursor: 'default' } : {};
 		const titleEl = <Nav.item className='brewTitle' style={titleStyle}>{this.props.brew.title}</Nav.item>;
+
+		if(this.props.embed) return this.renderEmbed();
+		console.log("I SEE");
+		console.log(this.props);
 
 		return <div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
