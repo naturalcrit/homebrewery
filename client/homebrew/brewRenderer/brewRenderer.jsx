@@ -231,19 +231,6 @@ const BrewRenderer = (props)=>{
 		}));
 	};
 
-	const makeZoom = () => {
-
-		return(
-			<style id='zoomStyle'>
-        {`
-          .pages {
-            zoom: ${state.zoom}%;
-          }
-        `}
-      </style>
-		);
-	}
-
 	const handlePageChange = (pageNumber) => {
         // Scroll to the desired page
         scrollToPage(pageNumber);
@@ -284,14 +271,13 @@ const BrewRenderer = (props)=>{
 						<RenderWarnings />
 						<NotificationPopup />
 					</div>
-					{makeZoom()}
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted
 						&&
 						<>
 							{renderStyle()}
-							<div className='pages' lang={`${props.lang || 'en'}`}>
+							<div className='pages' lang={`${props.lang || 'en'}`} style={{ zoom: `${state.zoom}%` }}>
 								{renderPages()}
 							</div>
 						</>
