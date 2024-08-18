@@ -9,6 +9,7 @@ const EditPage = require('./pages/editPage/editPage.jsx');
 const UserPage = require('./pages/userPage/userPage.jsx');
 const SharePage = require('./pages/sharePage/sharePage.jsx');
 const NewPage = require('./pages/newPage/newPage.jsx');
+const HtmlPage = require('./pages/htmlPage/htmlPage.jsx');
 const ErrorPage = require('./pages/errorPage/errorPage.jsx');
 const AccountPage = require('./pages/accountPage/accountPage.jsx');
 
@@ -70,6 +71,7 @@ const Homebrew = createClass({
 						<Route path='/share/:id' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
 						<Route path='/new/:id' element={<WithRoute el={NewPage} brew={this.props.brew} userThemes={this.props.userThemes}/>} />
 						<Route path='/new' element={<WithRoute el={NewPage} userThemes={this.props.userThemes}/> } />
+						<Route path='/html/:id' element={<WithRoute el={HtmlPage} brews={this.props.brews} />} />
 						<Route path='/user/:username' element={<WithRoute el={UserPage} brews={this.props.brews} />} />
 						<Route path='/changelog' element={<WithRoute el={SharePage} brew={this.props.brew} disableMeta={true} />} />
 						<Route path='/faq' element={<WithRoute el={SharePage} brew={this.props.brew} disableMeta={true} />} />
