@@ -781,7 +781,7 @@ const processStyleMacros = (string, lastToken)=>{
 
 	if(twMatch) {
 		substitutions = substitutions.replace(twMatch[0],
-			`float:${twMatch[1] == 'twtl' ? 'left' : 'right'},shape-outside:url(${lastToken.href})${twMatch[3]?.length > 0 ? `;shape-image-threshold:${twMatch[3]}` : ''}`);
+			`float:${twMatch[1] == 'twtl' ? 'left' : 'right'},shape-outside:url(${lastToken.href})${twMatch[3]?.length > 0 ? `,shape-image-threshold:${twMatch[3]}` : ''}`);
 	}
 
 	const textWrapMarginRegex = /\$(tw[lr])(-(\d*\.?\d+(%|\w{2,4})))?/;
@@ -789,7 +789,7 @@ const processStyleMacros = (string, lastToken)=>{
 
 	if(twMatch) {
 		substitutions = substitutions.replace(twMatch[0],
-			`float:${twMatch[1] == 'twl' ? 'left' : 'right'},shape-outside:url(${lastToken.href})${twMatch[3]?.length > 0 ? `; shape-margin:${twMatch[3]}` : ''}`);
+			`float:${twMatch[1] == 'twl' ? 'left' : 'right'},shape-outside:url(${lastToken.href})${twMatch[3]?.length > 0 ? `,shape-margin:${twMatch[3]}` : ''}`);
 	}
 
 	return substitutions;
