@@ -71,6 +71,7 @@ const SharePage = createClass({
 
 	renderEmbed : function(){
 		return  <div className='embedPage sitePage'>
+			<Meta name='robots' content='noindex, nofollow' />
 			<div className='content'>
 				<BrewRenderer
 					text={this.props.brew.text}
@@ -79,6 +80,7 @@ const SharePage = createClass({
 					theme={this.props.brew.theme}
 					themeBundle={this.state.themeBundle}
 					allowPrint={false}
+					centeredView={false}
 				/>
 			</div>
 		</div>;
@@ -89,8 +91,6 @@ const SharePage = createClass({
 		const titleEl = <Nav.item className='brewTitle' style={titleStyle}>{this.props.brew.title}</Nav.item>;
 
 		if(this.props.embed) return this.renderEmbed();
-		console.log("I SEE");
-		console.log(this.props);
 
 		return <div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
@@ -138,6 +138,7 @@ const SharePage = createClass({
 					theme={this.props.brew.theme}
 					themeBundle={this.state.themeBundle}
 					allowPrint={true}
+					centeredView={true}
 				/>
 			</div>
 		</div>;
