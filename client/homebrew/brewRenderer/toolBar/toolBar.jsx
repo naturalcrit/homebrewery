@@ -10,13 +10,14 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	const [state, setState] = useState({
 		currentPage     : currentPage,
 		totalPages      : totalPages,
-		zoomLevel       : 100,
 		pageNumberInput : currentPage,
 	});
 
+	const [zoomLevel, setZoomLevel] = useState(100);
+
 	useEffect(()=>{
-		onZoomChange(state.zoomLevel);
-	}, [state.zoomLevel]);
+		onZoomChange(zoomLevel);
+	}, [zoomLevel]);
 
 	useEffect(()=>{
 		setState((prevState)=>({
@@ -26,21 +27,18 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 		}));
 	}, [currentPage]);
 
-	const setZoomLevel = (delta)=>{
-		const zoomChange = _.clamp(state.zoomLevel + delta, minZoom, maxZoom);
+	const handleZoomChange = (delta)=>{
+		const zoomChange = _.clamp(zoomLevel + delta, minZoom, maxZoom);
 
-		setState((prevState)=>({
-			...prevState,
-			zoomLevel : zoomChange
-		}));
+		setZoomLevel(zoomChange);
 	};
 
 	return (
 		<div className='toolBar'>
 			<div className='tool'>
 				<button
-					onClick={()=>setZoomLevel(-20)}
-					disabled={state.zoomLevel <= minZoom}
+					onClick={()=>handleZoomChange(-20)}
+					disabled={zoomLevel <= minZoom}
 				>
 					<i className='fas fa-magnifying-glass-minus' />
 				</button>
@@ -54,17 +52,8 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 					min={minZoom}
 					max={maxZoom}
 					step='1'
-					value={state.zoomLevel}
-					onChange={(e)=>{
-						const newZoomLevel = parseInt(e.target.value, 10);
-						if(newZoomLevel !== state.zoomLevel) {
-							setState((prevState)=>({
-								...prevState,
-								zoomLevel : newZoomLevel
-							}));
-							onZoomChange(newZoomLevel);
-						}
-					}}
+					value={zoomLevel}
+					onChange={(e)=>{setZoomLevel(parseInt(e.target.value));}}
 				/>
 				<datalist id='zoomLevels'>
 					<option value='100' />
@@ -73,8 +62,8 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 			<div className='tool'>
 				<button
-					onClick={()=>setZoomLevel(20)}
-					disabled={state.zoomLevel >= maxZoom}
+					onClick={()=>handleZoomChange(20)}
+					disabled={zoomLevel >= maxZoom}
 				>
 					<i className='fas fa-magnifying-glass-plus' />
 				</button>
