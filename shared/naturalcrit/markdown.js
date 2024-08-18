@@ -776,20 +776,13 @@ const processStyleMacros = (string, lastToken)=>{
 
 	let substitutions = string;
 
-	const textWrapThresholdRegex = /\$(twt[lr])(-(\d*\.?\d+))?/;
-	let twMatch = textWrapThresholdRegex.exec(substitutions);
+	const textWrapMarginRegex = /\$(tw[lr])(-(\d*\.?\d+(%|\w{2,4})?))?/;
+	const twMatch = textWrapMarginRegex.exec(substitutions);
 
 	if(twMatch) {
+		const wrapType = twMatch[4] ? 'shape-margin': 'shape-image-threshold';
 		substitutions = substitutions.replace(twMatch[0],
-			`float:${twMatch[1] == 'twtl' ? 'left' : 'right'},shape-outside:url(${lastToken.href})${twMatch[3]?.length > 0 ? `,shape-image-threshold:${twMatch[3]}` : ''}`);
-	}
-
-	const textWrapMarginRegex = /\$(tw[lr])(-(\d*\.?\d+(%|\w{2,4})))?/;
-	twMatch = textWrapMarginRegex.exec(substitutions);
-
-	if(twMatch) {
-		substitutions = substitutions.replace(twMatch[0],
-			`float:${twMatch[1] == 'twl' ? 'left' : 'right'},shape-outside:url(${lastToken.href})${twMatch[3]?.length > 0 ? `,shape-margin:${twMatch[3]}` : ''}`);
+			`float:${twMatch[1] == 'twl' ? 'left' : 'right'},shape-outside:url(${lastToken.href})${twMatch[3]?.length > 0 ? `,${wrapType}:${twMatch[3]}` : ''}`);
 	}
 
 	return substitutions;
