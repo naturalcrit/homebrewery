@@ -231,10 +231,10 @@ const BrewRenderer = (props)=>{
 		}));
 	};
 
-	const handlePageChange = (pageNumber) => {
-        // Scroll to the desired page
-        scrollToPage(pageNumber);
-    };
+	// const handlePageChange = (pageNumber) => {
+    //     // Scroll to the desired page
+    //     scrollToPage(pageNumber);
+    // };
 
 	return (
 		<>
@@ -253,13 +253,15 @@ const BrewRenderer = (props)=>{
 				<NotificationPopup />
 			</div>
 
+			<ToolBar onZoomChange={handleZoom} currentPage={state.currentPageNumber} onPageChange={scrollToPage} totalPages={rawPages.length}/>
+
+
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
 				style={{ width: '100%', height: '100%', visibility: state.visibility }}
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
 			>
-				<ToolBar onZoomChange={handleZoom} currentPage={state.currentPageNumber} onPageChange={handlePageChange} totalPages={rawPages.length}/>
 				<div className={'brewRenderer'}
 					onScroll={handleScroll}
 					onKeyDown={handleControlKeys}
