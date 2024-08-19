@@ -69,6 +69,20 @@ renderer.html = function (html) {
 	return html;
 };
 
+renderer.code = function(code, infostring, escaped) {
+	const lang = (infostring || '').match(/^\S*/)?.[0];
+
+	code = code.replace(/<div class='blank'><\/div>/gm, (match)=>`${`:`}`);
+
+	code = `${code.replace(/\n$/, '')}\n`;
+
+	if(!lang) {
+		return `<pre><code>${escaped ? code : escape(code, true)}</code></pre>\n`;
+	}
+
+	return `<pre><code class="language-${escape(lang)}">${escaped ? code : escape(code, true)}</code></pre>\n`;
+};
+
 // Don't wrap {{ Spans alone on a line, or {{ Divs in <p> tags
 renderer.paragraph = function(text){
 	let match;
@@ -834,7 +848,7 @@ module.exports = {
 		globalPageNumber        = pageNumber;
 
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
-														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
+					.replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
 		const opts = Marked.defaults;
 
 		rawBrewText = opts.hooks.preprocess(rawBrewText);
