@@ -87,7 +87,7 @@
     "@babel/plugin-transform-runtime": "^7.24.7",
     "@babel/preset-env": "^7.25.3",
     "@babel/preset-react": "^7.24.7",
-    "@googleapis/drive": "^8.11.0",
+    "@googleapis/drive": "^8.11.1",
     "body-parser": "^1.20.2",
     "classnames": "^2.5.1",
     "codemirror": "^5.65.6",
