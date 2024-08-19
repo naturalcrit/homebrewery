@@ -69,20 +69,6 @@ renderer.html = function (html) {
 	return html;
 };
 
-renderer.code = function(code, infostring, escaped) {
-	const lang = (infostring || '').match(/^\S*/)?.[0];
-
-	code = code.replace(/<div class='blank'><\/div>/gm, (match)=>`${`:`}`);
-
-	code = `${code.replace(/\n$/, '')}\n`;
-
-	if(!lang) {
-		return `<pre><code>${escaped ? code : escape(code, true)}</code></pre>\n`;
-	}
-
-	return `<pre><code class="language-${escape(lang)}">${escaped ? code : escape(code, true)}</code></pre>\n`;
-};
-
 // Don't wrap {{ Spans alone on a line, or {{ Divs in <p> tags
 renderer.paragraph = function(text){
 	let match;
@@ -370,6 +356,28 @@ const superSubScripts = {
 	}
 };
 
+const forcedParagraphBreaks = {
+	name  : 'colonParagraphs',
+	level : 'inline',
+	start(src) { return src.match(/^:+$/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const regex  = /^(:+)$/m;
+		const match = regex.exec(src);
+		if(match?.length) {
+			return {
+				type   : 'colonParagraphs', // Should match "name" above
+				raw    : match[0],       // Text to consume from the source
+				length : match[1].length,
+				text   : ''
+			};
+		}
+	},
+	renderer(token) {
+		return `<div class='blank'></div>`.repeat(token.length);
+	}
+};
+
+
 const definitionListsSingleLine = {
 	name  : 'definitionListsSingleLine',
 	level : 'block',
@@ -387,7 +395,8 @@ const definitionListsSingleLine = {
 				.map((emoji)=>firstLine = firstLine.replace(emoji.raw, 'x'.repeat(emoji.raw.length)));
 
 			const newMatch = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym.exec(firstLine);
-			if(newMatch) {
+			if((newMatch) && (newMatch[0].length > 0) && (newMatch[1].length > 0)) {
+				// Test the lengths to handle two : paragraph breaks exception
 				definitions.push({
 					dt : this.lexer.inlineTokens(originalLine.slice(0, newMatch[1].length).trim()),
 					dd : this.lexer.inlineTokens(originalLine.slice(newMatch[1].length + 2).trim())
@@ -721,7 +730,8 @@ const MarkedEmojiOptions = {
 };
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions: [definitionListsMultiLine, definitionListsSingleLine, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use({ extensions : [forcedParagraphBreaks, definitionListsMultiLine, definitionListsSingleLine, superSubScripts,
+	mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
@@ -847,8 +857,7 @@ module.exports = {
 		varsQueue              = [];						//Could move into MarkedVariables()
 		globalPageNumber        = pageNumber;
 
-		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
-					.replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
+		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`);
 		const opts = Marked.defaults;
 
 		rawBrewText = opts.hooks.preprocess(rawBrewText);
