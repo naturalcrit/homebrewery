@@ -7,13 +7,9 @@ const MAX_ZOOM = 300;
 const MIN_ZOOM = 10;
 
 const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
-	const [state, setState] = useState({
-		currentPage     : currentPage,
-		totalPages      : totalPages,
-		pageNumberInput : currentPage,
-	});
 
 	const [zoomLevel, setZoomLevel] = useState(100);
+	const [pageInput, setPageInput] = useState(currentPage);
 
 	useEffect(()=>{
 		onZoomChange(zoomLevel);
