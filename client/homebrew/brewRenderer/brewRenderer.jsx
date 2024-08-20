@@ -82,7 +82,7 @@ const BrewRenderer = (props)=>{
 	}, []);
 
 	const scrollToPage = (pageNumber) => {
-		pageNumber = pageNumber - 1;
+		pageNumber = _.clamp(pageNumber - 1, 0, rawPages.length - 1);
 		const iframe = document.getElementById('BrewRenderer');
 		if(iframe && iframe.contentWindow) {
 			const brewRenderer = iframe.contentWindow.document.querySelector('.brewRenderer');

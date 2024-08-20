@@ -26,8 +26,8 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	};
 
 	const handlePageChange = (page)=>{
-		setPageInput((page));
-	}
+		setPageInput(page);
+	};
 
 	return (
 		<div className='toolBar'>
@@ -88,6 +88,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 					onChange={(e)=>{
 						handlePageChange(e.target.value == false ? e.target.value : parseInt(e.target.value));}}
 					onBlur={()=>onPageChange(pageInput)}
+					onKeyDown={(e)=>{e.key == 'Enter' ? onPageChange(pageInput) : null;}}
 				/>
 
 				<span id='page-count'>/ {totalPages}</span>
