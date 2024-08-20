@@ -85,7 +85,7 @@ const NewPage = createClass({
 			localStorage.setItem(STYLEKEY, brew.style);
 		localStorage.setItem(METAKEY, JSON.stringify({ 'renderer': brew.renderer, 'theme': brew.theme, 'lang': brew.lang }));
 		if(window.location.pathname != '/new') {
-			window.location.pathname = '/new';
+			window.history.replaceState({}, window.location.title, '/new/');
 		}
 	},
 	componentWillUnmount : function() {
