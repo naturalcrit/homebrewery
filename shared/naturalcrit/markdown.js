@@ -357,7 +357,7 @@ const superSubScripts = {
 };
 
 const forcedParagraphBreaks = {
-	name  : 'colonParagraphs',
+	name  : 'hardBreaks',
 	level : 'inline',
 	start(src) { return src.match(/^:+$/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
@@ -365,7 +365,7 @@ const forcedParagraphBreaks = {
 		const match = regex.exec(src);
 		if(match?.length) {
 			return {
-				type   : 'colonParagraphs', // Should match "name" above
+				type   : 'hardBreaks', // Should match "name" above
 				raw    : match[0],       // Text to consume from the source
 				length : match[1].length,
 				text   : ''
@@ -373,7 +373,7 @@ const forcedParagraphBreaks = {
 		}
 	},
 	renderer(token) {
-		return `<div class='blank'></div>`.repeat(token.length);
+		return `<div class='blank'></div>`.repeat(token.length).concat('\n');
 	}
 };
 
@@ -395,8 +395,7 @@ const definitionListsSingleLine = {
 				.map((emoji)=>firstLine = firstLine.replace(emoji.raw, 'x'.repeat(emoji.raw.length)));
 
 			const newMatch = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym.exec(firstLine);
-			if((newMatch) && newMatch[1].length > 0) {
-				// Test the lengths to handle two : paragraph breaks exception
+			if(newMatch) {
 				definitions.push({
 					dt : this.lexer.inlineTokens(originalLine.slice(0, newMatch[1].length).trim()),
 					dd : this.lexer.inlineTokens(originalLine.slice(newMatch[1].length + 2).trim())
@@ -857,7 +856,8 @@ module.exports = {
 		varsQueue              = [];						//Could move into MarkedVariables()
 		globalPageNumber        = pageNumber;
 
-		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`);
+		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
+												 		 .replace(/^(:+)$/gm, (match)=>`${`:\n\n`.repeat(match.length)}\n`);
 		const opts = Marked.defaults;
 
 		rawBrewText = opts.hooks.preprocess(rawBrewText);
