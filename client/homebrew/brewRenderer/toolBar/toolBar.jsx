@@ -20,7 +20,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	}, [currentPage])
 
 	const handleZoomChange = (delta)=>{
-		const zoomChange = _.clamp(zoomLevel + delta, minZoom, maxZoom);
+		const zoomChange = _.clamp(zoomLevel + delta, MIN_ZOOM, MAX_ZOOM);
 
 		setZoomLevel(zoomChange);
 	};
@@ -30,7 +30,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 			<div className='tool'>
 				<button
 					onClick={()=>handleZoomChange(-20)}
-					disabled={zoomLevel <= minZoom}
+					disabled={zoomLevel <= MIN_ZOOM}
 				>
 					<i className='fas fa-magnifying-glass-minus' />
 				</button>
@@ -41,8 +41,8 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 					type='range'
 					name='zoom'
 					list='zoomLevels'
-					min={minZoom}
-					max={maxZoom}
+					min={MIN_ZOOM}
+					max={MAX_ZOOM}
 					step='1'
 					value={zoomLevel}
 					onChange={(e)=>{setZoomLevel(parseInt(e.target.value));}}
@@ -55,7 +55,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 			<div className='tool'>
 				<button
 					onClick={()=>handleZoomChange(20)}
-					disabled={zoomLevel >= maxZoom}
+					disabled={zoomLevel >= MAX_ZOOM}
 				>
 					<i className='fas fa-magnifying-glass-plus' />
 				</button>
