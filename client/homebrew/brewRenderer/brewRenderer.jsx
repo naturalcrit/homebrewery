@@ -85,18 +85,17 @@ const BrewRenderer = (props)=>{
 		pageNumber = pageNumber - 1;
 		const iframe = document.getElementById('BrewRenderer');
 		if(iframe && iframe.contentWindow) {
-			const brewRenderer =
-                iframe.contentWindow.document.querySelector('.brewRenderer');
-            if (brewRenderer) {
-                const pages = brewRenderer.querySelectorAll('.page');
+			const brewRenderer = iframe.contentWindow.document.querySelector('.brewRenderer');
+			if(brewRenderer) {
+				const pages = brewRenderer.querySelectorAll('.page');
 
-                if (pageNumber + 1 > pages.length || pageNumber < 0) {
-                    console.log('page not found');
-                } else {
-                    pages[pageNumber].scrollIntoView({ block: 'start' });
-                }
-            }
-        }
+				if(pageNumber + 1 > pages.length || pageNumber < 0) {
+					console.log('page not found');
+				} else {
+					pages[pageNumber].scrollIntoView({ block: 'start' });
+				}
+			}
+		}
 	};
 
 	const updateSize = ()=>{
