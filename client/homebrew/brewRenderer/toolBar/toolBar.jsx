@@ -64,14 +64,12 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 					<i className='fas fa-magnifying-glass-plus' />
 				</button>
 			</div>
+
 			<div className='tool'>
 				<button
 					className='previousPage'
-					onClick={()=>{
-						console.log(`page is ${state.currentPage}`);
-						onPageChange(state.currentPage - 2);
-					}}
-					disabled={state.currentPage <= 1}
+					onClick={()=>onPageChange(pageInput - 1)}
+					disabled={pageInput <= 1}
 				>
 					<i className='fas fa-arrow-left'></i>
 				</button>
@@ -92,13 +90,9 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 			<div className='tool'>
 				<button
 					className='nextPage'
-					onClick={()=>{
-						console.log(
-							`page is ${state.currentPage} and i move to ${state.currentPage}`
-						);
-						onPageChange(state.currentPage);
-					}}
-					disabled={state.currentPage >= state.totalPages}
+					// onClick={()=>{setPageInput((pageInput)=>parseInt(pageInput) + 1)}}
+					onClick={()=>onPageChange(pageInput + 1)}
+					disabled={pageInput >= totalPages}
 				>
 					<i className='fas fa-arrow-right'></i>
 				</button>
