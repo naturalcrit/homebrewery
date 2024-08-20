@@ -93,8 +93,8 @@ const Editor = createClass({
 		console.log(e);
 		const LEFTARROW_KEY = 37;
 		const RIGHTARROW_KEY = 39;
-		if (e.shiftKey && (e.keyCode == LEFTARROW_KEY)) this.brewJump();
-		if (e.shiftKey && (e.keyCode == RIGHTARROW_KEY)) this.sourceJump();
+		if (e.shiftKey && (e.keyCode == RIGHTARROW_KEY)) this.brewJump();
+		if (e.shiftKey && (e.keyCode == LEFTARROW_KEY)) this.sourceJump();
 		if ((e.keyCode == LEFTARROW_KEY) || (e.keyCode == RIGHTARROW_KEY)) {
 			e.stopPropagation();
 			e.preventDefault();
