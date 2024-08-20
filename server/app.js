@@ -420,6 +420,14 @@ if(isLocalEnvironment){
 	});
 }
 
+// Catch-all route for invalid routes
+app.use((req, res, next) => {
+	if (!req.route)
+		return res.redirect('/');
+
+	return next();
+});
+
 //Render the page
 const templateFn = require('./../client/template.js');
 const renderPage = async (req, res)=>{
