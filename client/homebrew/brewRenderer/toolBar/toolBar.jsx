@@ -87,6 +87,8 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				onBlur={()=>onPageChange(pageInput)}
 			/>
 
+			<span id='page-count'>/ {totalPages}</span>
+
 			<div className='tool'>
 				<button
 					className='nextPage'
