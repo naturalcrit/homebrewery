@@ -84,6 +84,9 @@ const NewPage = createClass({
 		if(brew.style)
 			localStorage.setItem(STYLEKEY, brew.style);
 		localStorage.setItem(METAKEY, JSON.stringify({ 'renderer': brew.renderer, 'theme': brew.theme, 'lang': brew.lang }));
+		if(window.location.pathname != '/new') {
+			window.location.pathname = '/new';
+		}
 	},
 	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
