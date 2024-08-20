@@ -395,7 +395,9 @@ const definitionListsSingleLine = {
 				.map((emoji)=>firstLine = firstLine.replace(emoji.raw, 'x'.repeat(emoji.raw.length)));
 
 			const newMatch = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym.exec(firstLine);
-			if(newMatch) {
+			if((newMatch) && ((newMatch[2].length > 0) && newMatch[2][0] != ':')) {
+				// Test the length to handle two : paragraph breaks exception
+				// Test the first position on the dictionary term to handle three + paragraph breaks exception
 				definitions.push({
 					dt : this.lexer.inlineTokens(originalLine.slice(0, newMatch[1].length).trim()),
 					dd : this.lexer.inlineTokens(originalLine.slice(newMatch[1].length + 2).trim())
@@ -856,8 +858,7 @@ module.exports = {
 		varsQueue              = [];						//Could move into MarkedVariables()
 		globalPageNumber        = pageNumber;
 
-		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
-												 		 .replace(/^(:+)$/gm, (match)=>`${`:\n\n`.repeat(match.length)}\n`);
+		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`);
 		const opts = Marked.defaults;
 
 		rawBrewText = opts.hooks.preprocess(rawBrewText);
