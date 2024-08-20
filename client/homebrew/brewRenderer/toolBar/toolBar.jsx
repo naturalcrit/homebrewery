@@ -78,10 +78,10 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 			</div>
 
 			<input
-				type='number'
+				type='text'
 				name='page'
-				min={1}
-				max={state.totalPages}
+				inputMode='numeric'
+				pattern='[0-9]'
 				id='pageInput'
 				value={pageInput}
 				onChange={(e)=>{
