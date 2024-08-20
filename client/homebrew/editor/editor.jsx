@@ -76,10 +76,6 @@ const Editor = createClass({
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
 		this.highlightCustomMarkdown();
-		if(this.props.jumpSource) {
-			this.sourceJump();
-			this.setState({sourceJump: false});
-		}
 		if(prevProps.moveBrew !== this.props.moveBrew) {
 			this.brewJump();
 		};
