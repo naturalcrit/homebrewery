@@ -84,23 +84,21 @@ const BrewRenderer = (props)=>{
 	const scrollToPage = (pageNumber) => {
 		pageNumber = pageNumber - 1;
 		const iframe = document.getElementById('BrewRenderer');
-        if (iframe && iframe.contentWindow) {
-            const brewRenderer =
+		if(iframe && iframe.contentWindow) {
+			const brewRenderer =
                 iframe.contentWindow.document.querySelector('.brewRenderer');
             if (brewRenderer) {
                 const pages = brewRenderer.querySelectorAll('.page');
-				console.log(`Attempting to scroll to page ${pageNumber} of ${pages.length}`);
+
                 if (pageNumber + 1 > pages.length || pageNumber < 0) {
-					console.log(pageNumber, pages.length);
                     console.log('page not found');
                 } else {
-					console.log(`Scrolling to page: ${pages[pageNumber].id}`);
                     pages[pageNumber].scrollIntoView({ block: 'start' });
                 }
             }
         }
-    };
-	
+	};
+
 	const updateSize = ()=>{
 		setState((prevState)=>({
 			...prevState,
@@ -122,9 +120,9 @@ const BrewRenderer = (props)=>{
 		const target = e.target;
 		const { scrollTop, clientHeight, scrollHeight } = target;
 		const totalScrollableHeight = scrollHeight - clientHeight;
-		
+
 		const currentPageNumber = Math.ceil((scrollTop / totalScrollableHeight) * rawPages.length);
-		
+
 		setState((prevState) => ({
 			...prevState,
 			currentPageNumber: currentPageNumber || 1
