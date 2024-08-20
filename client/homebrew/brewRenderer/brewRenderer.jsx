@@ -81,22 +81,7 @@ const BrewRenderer = (props)=>{
 		return ()=>{window.removeEventListener('resize', updateSize);};
 	}, []);
 
-	const scrollToPage = (pageNumber) => {
-		pageNumber = _.clamp(pageNumber - 1, 0, rawPages.length - 1);
-		const iframe = document.getElementById('BrewRenderer');
-		if(iframe && iframe.contentWindow) {
-			const brewRenderer = iframe.contentWindow.document.querySelector('.brewRenderer');
-			if(brewRenderer) {
-				const pages = brewRenderer.querySelectorAll('.page');
 
-				if(pageNumber + 1 > pages.length || pageNumber < 0) {
-					console.log('page not found');
-				} else {
-					pages[pageNumber].scrollIntoView({ block: 'start' });
-				}
-			}
-		}
-	};
 
 	const updateSize = ()=>{
 		setState((prevState)=>({
@@ -247,7 +232,7 @@ const BrewRenderer = (props)=>{
 				<NotificationPopup />
 			</div>
 
-			<ToolBar onZoomChange={handleZoom} currentPage={state.currentPageNumber} onPageChange={scrollToPage} totalPages={rawPages.length}/>
+			<ToolBar onZoomChange={handleZoom} currentPage={state.currentPageNumber}  totalPages={rawPages.length}/>
 
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}

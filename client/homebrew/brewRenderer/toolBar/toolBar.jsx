@@ -29,6 +29,23 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 		setPageInput(page);
 	};
 
+	const scrollToPage = (pageNumber) => {
+		pageNumber = _.clamp(pageNumber - 1, 0, totalPages - 1);
+		const iframe = document.getElementById('BrewRenderer');
+		if(iframe && iframe.contentWindow) {
+			const brewRenderer = iframe.contentWindow.document.querySelector('.brewRenderer');
+			if(brewRenderer) {
+				const pages = brewRenderer.querySelectorAll('.page');
+
+				if(pageNumber + 1 > pages.length || pageNumber < 0) {
+					console.log('page not found');
+				} else {
+					pages[pageNumber].scrollIntoView({ block: 'start' });
+				}
+			}
+		}
+	};
+
 	return (
 		<div className='toolBar'>
 			<div className='group'>
@@ -71,7 +88,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<div className='tool'>
 					<button
 						className='previousPage'
-						onClick={()=>onPageChange(pageInput - 1)}
+						onClick={()=>scrollToPage(pageInput - 1)}
 						disabled={pageInput <= 1}
 					>
 						<i className='fas fa-arrow-left'></i>
@@ -87,8 +104,8 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 					value={pageInput}
 					onChange={(e)=>{
 						handlePageChange(e.target.value == false ? e.target.value : parseInt(e.target.value));}}
-					onBlur={()=>onPageChange(pageInput)}
-					onKeyDown={(e)=>{e.key == 'Enter' ? onPageChange(pageInput) : null;}}
+					onBlur={()=>scrollToPage(pageInput)}
+					onKeyDown={(e)=>{e.key == 'Enter' ? scrollToPage(pageInput) : null;}}
 				/>
 
 				<span id='page-count'>/ {totalPages}</span>
@@ -97,7 +114,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 					<button
 						className='nextPage'
 						// onClick={()=>{setPageInput((pageInput)=>parseInt(pageInput) + 1)}}
-						onClick={()=>onPageChange(pageInput + 1)}
+						onClick={()=>scrollToPage(pageInput + 1)}
 						disabled={pageInput >= totalPages}
 					>
 						<i className='fas fa-arrow-right'></i>
