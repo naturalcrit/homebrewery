@@ -3,8 +3,8 @@ const React = require('react');
 const { useState, useEffect } = React;
 const _ = require('lodash')
 
-const maxZoom = 300;
-const minZoom = 10;
+const MAX_ZOOM = 300;
+const MIN_ZOOM = 10;
 
 const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	const [state, setState] = useState({
