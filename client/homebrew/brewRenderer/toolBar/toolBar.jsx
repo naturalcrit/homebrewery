@@ -25,6 +25,10 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 		setZoomLevel(zoomChange);
 	};
 
+	const handlePageChange = (page)=>{
+		setPageInput((page));
+	}
+
 	return (
 		<div className='toolBar'>
 			<div className='tool'>
@@ -79,17 +83,10 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				min={1}
 				max={state.totalPages}
 				id='pageInput'
-				value={state.pageNumberInput}
-				onChange={(e)=>handleInputChange(e.target.value, 'page')}
-				onBlur={(e)=>{
-					parseInt(state.pageNumberInput) === state.currentPage ||
-                        onPageChange(parseInt(state.pageNumberInput) - 1);
-				}}
-				onKeyPress={(e)=>{
-					if(e.key === 'Enter') {
-						e.target.blur();
-					}
-				}}
+				value={pageInput}
+				onChange={(e)=>{
+					handlePageChange(e.target.value == false ? e.target.value : parseInt(e.target.value));}}
+				onBlur={()=>onPageChange(pageInput)}
 			/>
 
 			<div className='tool'>

@@ -231,10 +231,6 @@ const BrewRenderer = (props)=>{
 		}));
 	};
 
-	// const handlePageChange = (pageNumber) => {
-    //     // Scroll to the desired page
-    //     scrollToPage(pageNumber);
-    // };
 
 	return (
 		<>
