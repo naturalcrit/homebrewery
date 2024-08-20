@@ -395,7 +395,7 @@ const definitionListsSingleLine = {
 				.map((emoji)=>firstLine = firstLine.replace(emoji.raw, 'x'.repeat(emoji.raw.length)));
 
 			const newMatch = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym.exec(firstLine);
-			if((newMatch) && (newMatch[0].length > 0) && (newMatch[1].length > 0)) {
+			if((newMatch) && newMatch[1].length > 0) {
 				// Test the lengths to handle two : paragraph breaks exception
 				definitions.push({
 					dt : this.lexer.inlineTokens(originalLine.slice(0, newMatch[1].length).trim()),
