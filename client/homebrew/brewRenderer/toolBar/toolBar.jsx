@@ -16,12 +16,8 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	}, [zoomLevel]);
 
 	useEffect(()=>{
-		setState((prevState)=>({
-			...prevState,
-			currentPage     : currentPage,
-			pageNumberInput : currentPage,
-		}));
-	}, [currentPage]);
+		setPageInput(currentPage);
+	}, [currentPage])
 
 	const handleZoomChange = (delta)=>{
 		const zoomChange = _.clamp(zoomLevel + delta, minZoom, maxZoom);
