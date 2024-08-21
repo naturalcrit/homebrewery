@@ -16,12 +16,18 @@
 
 	.group {
 		display          : flex;
+		gap: 0 3px;
 		align-items      : center;
 		justify-content  : center;
 		box-sizing       : border-box;
 		height: 28px;
-
 	}
+
+	.tool {
+		display: flex;
+		align-items: center;
+	}
+
 	input {
 		position       : relative;
 		height         : 1.5em;
@@ -32,7 +38,8 @@
 		border : 1px solid gray;
 		&:focus { outline : 1px solid #d3d3d3; }
 
-		&.slider {
+		// `.range-input` if generic to all range inputs, or `#zoom-input` if only for zoom slider
+		&.range-input {
 			color: #D3D3D3;
 			accent-color: #d3d3d3;
 			padding: 2px 0;
@@ -61,40 +68,37 @@
 			}
 		}
 
-		&#pageInput {
+		// `.text-input` if generic to all range inputs, or `#page-input` if only for current page input
+		&#page-input {
 			width: 4ch;
 			text-align: center;
 			margin-right: 1ch;
-			
+
 		}
 
 	}
 
-	.tool {
+
+	button {
 		display     : flex;
 		align-items : center;
-		padding     : 0;
-		height: 100%;
-		width: auto;
+		justify-content: center;
+		height           : 100%;
+		width            : auto;
+		min-width        : 46px;
+		padding          : 0 0px;
+		font-weight      : unset;
+		color            : inherit;
+		background-color : unset;
 		box-sizing: content-box;
 
 		&:hover { background-color : #444444; }
 
-		button {
-			height           : 100%;
-			width            : auto;
-			min-width        : 46px;
-			padding          : 0 0px;
-			font-weight      : unset;
-			color            : inherit;
-			background-color : unset;
+		&:focus { outline : 1px solid #d3d3d3; }
 
-			&:focus { outline : 1px solid #d3d3d3; }
-
-			&:disabled {
-				color            : #777777;
-				background-color : unset !important;
-			}
+		&:disabled {
+			color            : #777777;
+			background-color : unset !important;
 		}
 	}
 }

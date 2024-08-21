@@ -44,77 +44,77 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	return (
 		<div className='toolBar'>
 			<div className='group'>
-				<div className='tool'>
-					<button
-						onClick={()=>handleZoomChange(-20)}
-						disabled={zoomLevel <= MIN_ZOOM}
-					>
-						<i className='fas fa-magnifying-glass-minus' />
-					</button>
-				</div>
-				<div className='tool'>
-					<input
-						className='slider'
-						type='range'
-						name='zoom'
-						list='zoomLevels'
-						min={MIN_ZOOM}
-						max={MAX_ZOOM}
-						step='1'
-						value={zoomLevel}
-						onChange={(e)=>{setZoomLevel(parseInt(e.target.value));}}
-					/>
-					<datalist id='zoomLevels'>
-						<option value='100' />
-					</datalist>
-				</div>
+				<button
+					id='zoom-out'
+					className='tool'
+					onClick={()=>handleZoomChange(-20)}
+					disabled={zoomLevel <= MIN_ZOOM}
+				>
+					<i className='fas fa-magnifying-glass-minus' />
+				</button>
+				<input
+					id='zoom-slider'
+					className='range-input tool'
+					type='range'
+					name='zoom'
+					list='zoomLevels'
+					min={MIN_ZOOM}
+					max={MAX_ZOOM}
+					step='1'
+					value={zoomLevel}
+					onChange={(e)=>{setZoomLevel(parseInt(e.target.value));}}
+				/>
+				<datalist id='zoomLevels'>
+					<option value='100' />
+				</datalist>
 
-				<div className='tool'>
-					<button
-						onClick={()=>handleZoomChange(20)}
-						disabled={zoomLevel >= MAX_ZOOM}
-					>
-						<i className='fas fa-magnifying-glass-plus' />
-					</button>
-				</div>
+				<button
+					id='zoom-in'
+					className='tool'
+					onClick={()=>handleZoomChange(20)}
+					disabled={zoomLevel >= MAX_ZOOM}
+				>
+					<i className='fas fa-magnifying-glass-plus' />
+				</button>
 			</div>
 
 			<div className='group'>
-				<div className='tool'>
-					<button
-						className='previousPage'
-						onClick={()=>scrollToPage(pageInput - 1)}
-						disabled={pageInput <= 1}
-					>
-						<i className='fas fa-arrow-left'></i>
-					</button>
-				</div>
-
-				<input
-					type='text'
-					name='page'
-					inputMode='numeric'
-					pattern='[0-9]'
-					id='pageInput'
-					value={pageInput}
-					onChange={(e)=>{
-						handlePageChange(e.target.value == false ? e.target.value : parseInt(e.target.value));}}
-					onBlur={()=>scrollToPage(pageInput)}
-					onKeyDown={(e)=>{e.key == 'Enter' ? scrollToPage(pageInput) : null;}}
-				/>
-
-				<span id='page-count'>/ {totalPages}</span>
+				<button
+					id='previous-page'
+					className='previousPage tool'
+					onClick={()=>scrollToPage(pageInput - 1)}
+					disabled={pageInput <= 1}
+				>
+					<i className='fas fa-arrow-left'></i>
+				</button>
 
 				<div className='tool'>
-					<button
-						className='nextPage'
-						// onClick={()=>{setPageInput((pageInput)=>parseInt(pageInput) + 1)}}
-						onClick={()=>scrollToPage(pageInput + 1)}
-						disabled={pageInput >= totalPages}
-					>
-						<i className='fas fa-arrow-right'></i>
-					</button>
+					<input
+						id='page-input'
+						class='text-input'
+						type='text'
+						name='page'
+						inputMode='numeric'
+						pattern='[0-9]'
+						value={pageInput}
+						onChange={(e)=>{
+							handlePageChange(e.target.value == false ? e.target.value : parseInt(e.target.value));}}
+						onBlur={()=>scrollToPage(pageInput)}
+						onKeyDown={(e)=>{e.key == 'Enter' ? scrollToPage(pageInput) : null;}}
+					/>
+
+					<span id='page-count'>/ {totalPages}</span>
 				</div>
+
+
+				<button
+					id='next-page'
+					className='tool'
+					onClick={()=>scrollToPage(pageInput + 1)}
+					disabled={pageInput >= totalPages}
+				>
+					<i className='fas fa-arrow-right'></i>
+				</button>
 			</div>
 		</div>
 
