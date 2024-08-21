@@ -36,12 +36,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 			const brewRenderer = iframe.contentWindow.document.querySelector('.brewRenderer');
 			if(brewRenderer) {
 				const pages = brewRenderer.querySelectorAll('.page');
-
-				if(pageNumber + 1 > pages.length || pageNumber < 0) {
-					console.log('page not found');
-				} else {
-					pages[pageNumber].scrollIntoView({ block: 'start' });
-				}
+				pages[pageNumber]?.scrollIntoView({ block: 'start' });
 			}
 		}
 	};
