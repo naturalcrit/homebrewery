@@ -72,6 +72,7 @@ const Editor = createClass({
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
+		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('click', (e)=>{
 			if(isElementCodeMirror(e.target) && this.props.liveScroll ) {
@@ -125,6 +126,7 @@ const Editor = createClass({
 		const HOME_KEY = 36;
 
 		if(!(e.ctrlKey || e.metaKey)) return;
+<<<<<<< HEAD
 
 		// Handle CTRL-HOME and CTRL-END
 		if(((e.keyCode == END_KEY) || (e.keyCode == HOME_KEY)) && this.props.liveScroll) this.brewJump();
@@ -135,6 +137,14 @@ const Editor = createClass({
 		if ((e.shiftKey) && (!e.altKey) && (e.keyCode == X_KEY)) this.sourceJump();
 
 		if( e.keyCode == X_KEY) {
+=======
+		console.log(e);
+		const LEFTARROW_KEY = 37;
+		const RIGHTARROW_KEY = 39;
+		if (e.shiftKey && (e.keyCode == RIGHTARROW_KEY)) this.brewJump();
+		if (e.shiftKey && (e.keyCode == LEFTARROW_KEY)) this.sourceJump();
+		if ((e.keyCode == LEFTARROW_KEY) || (e.keyCode == RIGHTARROW_KEY)) {
+>>>>>>> master
 			e.stopPropagation();
 			e.preventDefault();
 		}
