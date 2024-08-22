@@ -111,8 +111,13 @@ const Editor = createClass({
 	},
 
 	handleControlKeys : function(e){
+		const END_KEY = 35;
+		const HOME_KEY = 36;
+		const LEFTARROW_KEY = 37;
+		const RIGHTARROW_KEY = 39;
+
 		if(this.props.liveScroll) {
-			const movementKeys = [ 13, 33, 34, 37, 38, 39, 40 ];
+			const movementKeys = [ 13, 33, 34, LEFTARROW_KEY, 38, RIGHTARROW_KEY, 40 ];
 			if (movementKeys.includes(e.keyCode)) {
 				const curPage = this.getCurrentPage();
 				if( curPage != lastPage ) {
@@ -121,30 +126,15 @@ const Editor = createClass({
 				}
 			}
 		}
-		const X_KEY = 88;
-		const END_KEY = 35;
-		const HOME_KEY = 36;
 
 		if(!(e.ctrlKey || e.metaKey)) return;
-<<<<<<< HEAD
-
+		console.log(e);
 		// Handle CTRL-HOME and CTRL-END
 		if(((e.keyCode == END_KEY) || (e.keyCode == HOME_KEY)) && this.props.liveScroll) this.brewJump();
 
-		// Brew Jump on CTRL-J
-		if((!e.shiftKey) && (e.keyCode == M_KEY)) this.brewJump();
-		// Source Jump on Shift-CTRL-J
-		if ((e.shiftKey) && (!e.altKey) && (e.keyCode == X_KEY)) this.sourceJump();
-
-		if( e.keyCode == X_KEY) {
-=======
-		console.log(e);
-		const LEFTARROW_KEY = 37;
-		const RIGHTARROW_KEY = 39;
 		if (e.shiftKey && (e.keyCode == RIGHTARROW_KEY)) this.brewJump();
 		if (e.shiftKey && (e.keyCode == LEFTARROW_KEY)) this.sourceJump();
 		if ((e.keyCode == LEFTARROW_KEY) || (e.keyCode == RIGHTARROW_KEY)) {
->>>>>>> master
 			e.stopPropagation();
 			e.preventDefault();
 		}
