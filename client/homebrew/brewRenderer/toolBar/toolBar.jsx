@@ -41,9 +41,36 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 		}
 	};
 
+
+	const toFit = ()=>{
+		const iframe = document.getElementById('BrewRenderer');
+		const iframeWidth = iframe.getBoundingClientRect().width;
+		const pages = iframe.contentWindow.document.getElementsByClassName('page');
+
+		// find widest page, in case pages are different widths, so that the zoom is adapted to not cut the widest page off screen.
+		let widestPage = 0;
+		[...pages].forEach((page)=>{
+			const width = page.offsetWidth;
+			if(width > widestPage)
+				widestPage = width;
+		});
+
+		const margin = 5;  // extra space so page isn't edge to edge (not truly "to fit")
+		const desiredZoom = (iframeWidth / widestPage) * 100;
+		const deltaZoom = (desiredZoom - zoomLevel) - margin;
+		return deltaZoom;
+	}
+
 	return (
 		<div className='toolBar'>
 			<div className='group'>
+				<button
+					id='zoom-to-fit'
+					className='tool'
+					onClick={()=>handleZoomChange(toFit())}
+				>
+					toFit
+				</button>
 				<button
 					id='zoom-out'
 					className='tool'
