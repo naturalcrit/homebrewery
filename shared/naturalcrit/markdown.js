@@ -86,7 +86,7 @@ renderer.link = function (href, title, text) {
 	if(href[0] == '#') {
 		self = true;
 	}
-	href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+	href = cleanUrl(href);
 
 	if(href === null) {
 		return text;
@@ -712,28 +712,14 @@ Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
-const nonWordAndColonTest = /[^\w:]/g;
-const cleanUrl = function (sanitize, base, href) {
-	if(sanitize) {
-		let prot;
-		try {
-			prot = decodeURIComponent(unescape(href))
-        .replace(nonWordAndColonTest, '')
-        .toLowerCase();
-		} catch (e) {
-			return null;
-		}
-		if(prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
-			return null;
-		}
-	}
-	try {
-		href = encodeURI(href).replace(/%25/g, '%');
-	} catch (e) {
-		return null;
-	}
-	return href;
-};
+function cleanUrl(href) {
+  try {
+    href = encodeURI(href).replace(/%25/g, '%');
+  } catch {
+    return null;
+  }
+  return href;
+}
 
 const escapeTest = /[&<>"']/;
 const escapeReplace = /[&<>"']/g;
