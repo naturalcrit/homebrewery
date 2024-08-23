@@ -42,46 +42,45 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	};
 
 
-	const toFill = ()=>{
-		const iframe = document.getElementById('BrewRenderer');
-		const iframeWidth = iframe.getBoundingClientRect().width;
-		const pages = iframe.contentWindow.document.getElementsByClassName('page');
-
-		// find widest page, in case pages are different widths, so that the zoom is adapted to not cut the widest page off screen.
-		let widestPage = 0;
-		[...pages].forEach((page)=>{
-			const width = page.offsetWidth;
-			if(width > widestPage)
-				widestPage = width;
-		});
-
-		const margin = 5;  // extra space so page isn't edge to edge (not truly "to fill")
-		const desiredZoom = (iframeWidth / widestPage) * 100;
-		const deltaZoom = (desiredZoom - zoomLevel) - margin;
-		return deltaZoom;
-	};
-
-	const toFit = ()=>{
+	const calculateZoom = (mode)=>{
 		const iframe = document.getElementById('BrewRenderer');
 		const iframeWidth = iframe.getBoundingClientRect().width;
 		const iframeHeight = iframe.getBoundingClientRect().height;
 		const pages = iframe.contentWindow.document.getElementsByClassName('page');
 
-		let maxDimRatio = 0;
+		let desiredZoom = 0;
 
-		[...pages].forEach((page)=>{
-			const widthRatio = iframeWidth / page.offsetWidth;
-			const heightRatio = iframeHeight / page.offsetHeight;
-			const dimensionRatio = Math.min(widthRatio, heightRatio);
-			if(dimensionRatio < maxDimRatio || maxDimRatio == 0){
-				maxDimRatio = dimensionRatio;
-			}
-		});
+		if(mode == 'fill'){
+			// find widest page, in case pages are different widths, so that the zoom is adapted to not cut the widest page off screen.
+			let widestPage = 0;
+			[...pages].forEach((page)=>{
+				const width = page.offsetWidth;
+				if(width > widestPage)
+					widestPage = width;
+			});
 
-		const margin = 5;
-		const desiredZoom = maxDimRatio * 100;
-		const deltaZoom = desiredZoom - zoomLevel - margin;
+			desiredZoom = (iframeWidth / widestPage) * 100;
 
+		} else if(mode == 'fit'){
+			// find the page with the largest single dim (height or width) so that zoom can be adapted to fit it.
+			let maxDimRatio = 0;
+
+			[...pages].forEach((page)=>{
+				const widthRatio = iframeWidth / page.offsetWidth;
+				const heightRatio = iframeHeight / page.offsetHeight;
+				const dimensionRatio = Math.min(widthRatio, heightRatio);
+				if(dimensionRatio < maxDimRatio || maxDimRatio == 0){
+					maxDimRatio = dimensionRatio;
+				}
+			});
+
+			desiredZoom = maxDimRatio * 100;
+
+		}
+
+		const margin = 5;  // extra space so page isn't edge to edge (not truly "to fill")
+
+		const deltaZoom = (desiredZoom - zoomLevel) - margin;
 		return deltaZoom;
 	};
 
@@ -91,14 +90,14 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<button
 					id='zoom-to-fill'
 					className='tool'
-					onClick={()=>handleZoomChange(toFill())}
+					onClick={()=>handleZoomChange(calculateZoom('fill'))}
 				>
 					toFill
 				</button>
 				<button
 					id='zoom-to-fit'
 					className='tool'
-					onClick={()=>handleZoomChange(toFit())}
+					onClick={()=>handleZoomChange(calculateZoom('fit'))}
 				>
 					toFit
 				</button>
