@@ -61,12 +61,11 @@ const BrewRenderer = (props)=>{
 	};
 
 	const [state, setState] = useState({
-		viewablePageNumber : 0,
-		height             : PAGE_HEIGHT,
-		isMounted          : false,
-		visibility         : 'hidden',
-		zoom			   : 100,
-		currentPageNumber  : 1,
+		height            : PAGE_HEIGHT,
+		isMounted         : false,
+		visibility        : 'hidden',
+		zoom              : 100,
+		currentPageNumber : 1,
 	});
 
 	const mainRef  = useRef(null);
@@ -90,16 +89,6 @@ const BrewRenderer = (props)=>{
 		}));
 	};
 
-	const handleScroll = (e)=>{
-		const target = e.target;
-		setState((prevState)=>({
-			...prevState,
-			viewablePageNumber : Math.floor(target.scrollTop / target.scrollHeight * rawPages.length)
-		}));
-
-		getCurrentPage(e);
-	};
-
 	const getCurrentPage = (e) => {
 		const target = e.target;
 		const { scrollTop, clientHeight, scrollHeight } = target;
@@ -109,7 +98,7 @@ const BrewRenderer = (props)=>{
 
 		setState((prevState) => ({
 			...prevState,
-			currentPageNumber: currentPageNumber || 1
+			currentPageNumber : currentPageNumber || 1
 		}));
 	};
 
@@ -120,7 +109,7 @@ const BrewRenderer = (props)=>{
 		if(index == props.currentEditorPage)	//Already rendered before this step
 			return false;
 
-		if(Math.abs(index - state.viewablePageNumber) <= 3)
+		if(Math.abs(index - state.currentPageNumber) <= 3)
 			return true;
 
 		return false;
@@ -132,7 +121,7 @@ const BrewRenderer = (props)=>{
 				{props.renderer}
 			</div>
 			<div>
-				{state.viewablePageNumber + 1} / {rawPages.length}
+				{state.currentPageNumber} / {rawPages.length}
 			</div>
 		</div>;
 	};
@@ -219,7 +208,7 @@ const BrewRenderer = (props)=>{
 		<>
 			{/*render dummy page while iFrame is mounting.*/}
 			{!state.isMounted
-				? <div className='brewRenderer' onScroll={handleScroll}>
+				? <div className='brewRenderer' onScroll={getCurrentPage}>
 					<div className='pages'>
 						{renderDummyPage(1)}
 					</div>
@@ -242,7 +231,7 @@ const BrewRenderer = (props)=>{
 				onClick={()=>{emitClick();}}
 			>
 				<div className={'brewRenderer'}
-					onScroll={handleScroll}
+					onScroll={getCurrentPage}
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
 					style={{ height: state.height }}>
