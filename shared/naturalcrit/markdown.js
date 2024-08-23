@@ -358,15 +358,15 @@ const superSubScripts = {
 
 const forcedParagraphBreaks = {
 	name  : 'hardBreaks',
-	level : 'inline',
-	start(src) { return src.match(/^:+$/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	level : 'block',
+	start(src) { return src.match(/\n:+$/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const regex  = /^(:+)$/m;
+		const regex  = /^(:+)(?:\n|$)/ym;
 		const match = regex.exec(src);
 		if(match?.length) {
 			return {
 				type   : 'hardBreaks', // Should match "name" above
-				raw    : match[0],       // Text to consume from the source
+				raw    : match[0],     // Text to consume from the source
 				length : match[1].length,
 				text   : ''
 			};
@@ -376,7 +376,6 @@ const forcedParagraphBreaks = {
 		return `<div class='blank'></div>`.repeat(token.length).concat('\n');
 	}
 };
-
 
 const definitionListsSingleLine = {
 	name  : 'definitionListsSingleLine',
@@ -395,9 +394,7 @@ const definitionListsSingleLine = {
 				.map((emoji)=>firstLine = firstLine.replace(emoji.raw, 'x'.repeat(emoji.raw.length)));
 
 			const newMatch = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym.exec(firstLine);
-			if((newMatch) && ((newMatch[2].length > 0) && newMatch[2][0] != ':')) {
-				// Test the length to handle two : paragraph breaks exception
-				// Test the first position on the dictionary term to handle three + paragraph breaks exception
+			if(newMatch) {
 				definitions.push({
 					dt : this.lexer.inlineTokens(originalLine.slice(0, newMatch[1].length).trim()),
 					dd : this.lexer.inlineTokens(originalLine.slice(newMatch[1].length + 2).trim())
@@ -424,9 +421,9 @@ const definitionListsSingleLine = {
 const definitionListsMultiLine = {
 	name  : 'definitionListsMultiLine',
 	level : 'block',
-	start(src) { return src.match(/\n[^\n]*\n::/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	start(src) { return src.match(/\n[^\n]*\n::[^:\n]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const regex = /(\n?\n?(?!::)[^\n]+?(?=\n::))|\n::(.(?:.|\n)*?(?=(?:\n::)|(?:\n\n)|$))/y;
+		const regex = /(\n?\n?(?!::)[^\n]+?(?=\n::[^:\n]))|\n::([^:\n](?:.|\n)*?(?=(?:\n::)|(?:\n\n)|$))/y;
 		let match;
 		let endIndex = 0;
 		const definitions = [];
@@ -731,7 +728,7 @@ const MarkedEmojiOptions = {
 };
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions : [forcedParagraphBreaks, definitionListsMultiLine, definitionListsSingleLine, superSubScripts,
+Marked.use({ extensions : [definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks, superSubScripts,
 	mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
