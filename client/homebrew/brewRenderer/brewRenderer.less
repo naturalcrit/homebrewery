@@ -6,14 +6,31 @@
 	padding-block : 30px;
 
 	:where(.pages) {
-		margin : 30px 0px;
+		margin : 30px 30px;
 
-		&.book-mode {
+		&.facing {
 			display: grid; 
 			grid-template-columns: repeat(2, auto); 
 			grid-template-rows: repeat(3, auto); 
 			gap: 10px 10px; 
 			justify-content: center;
+			& .page:first-child {
+				// sets first page on 'right' ('recto') of the preview, as if for a Cover page.  
+				// todo: add a checkbox to toggle this setting
+				grid-column-start: 2; 
+			}
+		}
+
+		&.flow {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			justify-content: start;
+			& .page {
+				margin-left: unset;
+				margin-right: unset;
+			}
+
 		}
 
 		& > :where(.page) {
