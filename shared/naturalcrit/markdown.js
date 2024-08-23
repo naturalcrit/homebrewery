@@ -86,7 +86,7 @@ renderer.link = function (href, title, text) {
 	if(href[0] == '#') {
 		self = true;
 	}
-	href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+	href = cleanUrl(href);
 
 	if(href === null) {
 		return text;
@@ -356,6 +356,27 @@ const superSubScripts = {
 	}
 };
 
+const forcedParagraphBreaks = {
+	name  : 'hardBreaks',
+	level : 'block',
+	start(src) { return src.match(/\n:+$/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const regex  = /^(:+)(?:\n|$)/ym;
+		const match = regex.exec(src);
+		if(match?.length) {
+			return {
+				type   : 'hardBreaks', // Should match "name" above
+				raw    : match[0],     // Text to consume from the source
+				length : match[1].length,
+				text   : ''
+			};
+		}
+	},
+	renderer(token) {
+		return `<div class='blank'></div>`.repeat(token.length).concat('\n');
+	}
+};
+
 const definitionListsSingleLine = {
 	name  : 'definitionListsSingleLine',
 	level : 'block',
@@ -400,9 +421,9 @@ const definitionListsSingleLine = {
 const definitionListsMultiLine = {
 	name  : 'definitionListsMultiLine',
 	level : 'block',
-	start(src) { return src.match(/\n[^\n]*\n::/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	start(src) { return src.match(/\n[^\n]*\n::[^:\n]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const regex = /(\n?\n?(?!::)[^\n]+?(?=\n::))|\n::(.(?:.|\n)*?(?=(?:\n::)|(?:\n\n)|$))/y;
+		const regex = /(\n?\n?(?!::)[^\n]+?(?=\n::[^:\n]))|\n::([^:\n](?:.|\n)*?(?=(?:\n::)|(?:\n\n)|$))/y;
 		let match;
 		let endIndex = 0;
 		const definitions = [];
@@ -707,33 +728,20 @@ const MarkedEmojiOptions = {
 };
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions: [definitionListsMultiLine, definitionListsSingleLine, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use({ extensions : [definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks, superSubScripts,
+	mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
-const nonWordAndColonTest = /[^\w:]/g;
-const cleanUrl = function (sanitize, base, href) {
-	if(sanitize) {
-		let prot;
-		try {
-			prot = decodeURIComponent(unescape(href))
-        .replace(nonWordAndColonTest, '')
-        .toLowerCase();
-		} catch (e) {
-			return null;
-		}
-		if(prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
-			return null;
-		}
-	}
-	try {
-		href = encodeURI(href).replace(/%25/g, '%');
-	} catch (e) {
-		return null;
-	}
-	return href;
-};
+function cleanUrl(href) {
+  try {
+    href = encodeURI(href).replace(/%25/g, '%');
+  } catch {
+    return null;
+  }
+  return href;
+}
 
 const escapeTest = /[&<>"']/;
 const escapeReplace = /[&<>"']/g;
@@ -833,8 +841,7 @@ module.exports = {
 		varsQueue              = [];						//Could move into MarkedVariables()
 		globalPageNumber        = pageNumber;
 
-		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
-														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
+		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`);
 		const opts = Marked.defaults;
 
 		rawBrewText = opts.hooks.preprocess(rawBrewText);
