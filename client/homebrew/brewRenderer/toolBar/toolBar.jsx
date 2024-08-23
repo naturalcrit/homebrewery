@@ -12,6 +12,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 	const [zoomLevel, setZoomLevel] = useState(100);
 	const [pageInput, setPageInput] = useState(currentPage);
+	const [arrangement, setArrangement] = useState('single');
 
 	useEffect(()=>{
 		onZoomChange(zoomLevel);
@@ -86,6 +87,13 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 		return deltaZoom;
 	};
 
+	const setBookMode = ()=>{
+		const iframe = document.getElementById('BrewRenderer');
+		const pagesContainer = iframe.contentWindow.document.getElementsByClassName('pages')[0];
+		pagesContainer.classList.toggle('book-mode');
+		pagesContainer.firstChild.style.gridColumnStart = '2' ;
+	};
+
 	return (
 		<div className='toolBar'>
 			<div className='group'>
@@ -134,6 +142,16 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 					disabled={zoomLevel >= MAX_ZOOM}
 				>
 					<i className='fas fa-magnifying-glass-plus' />
+				</button>
+			</div>
+
+			<div className='group'>
+				<button
+					id='book-mode'
+					className='tool'
+					onClick={()=>setBookMode()}
+				>
+					{arrangement}
 				</button>
 			</div>
 

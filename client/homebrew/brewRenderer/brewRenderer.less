@@ -8,6 +8,14 @@
 	:where(.pages) {
 		margin : 30px 0px;
 
+		&.book-mode {
+			display: grid; 
+			grid-template-columns: repeat(2, auto); 
+			grid-template-rows: repeat(3, auto); 
+			gap: 10px 10px; 
+			justify-content: center;
+		}
+
 		& > :where(.page) {
 			width         : 215.9mm;
 			height        : 279.4mm;
