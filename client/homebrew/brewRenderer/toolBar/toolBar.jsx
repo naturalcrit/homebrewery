@@ -91,7 +91,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<div className='tool'>
 					<input
 						id='page-input'
-						class='text-input'
+						className='text-input'
 						type='text'
 						name='page'
 						inputMode='numeric'
