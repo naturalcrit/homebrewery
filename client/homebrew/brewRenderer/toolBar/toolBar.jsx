@@ -9,14 +9,14 @@ const MIN_ZOOM = 10;
 const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 	const [zoomLevel, setZoomLevel] = useState(100);
-	const [pageInput, setPageInput] = useState(currentPage);
+	const [pageNum, setPageNum] = useState(currentPage);
 
 	useEffect(()=>{
 		onZoomChange(zoomLevel);
 	}, [zoomLevel]);
 
 	useEffect(()=>{
-		setPageInput(currentPage);
+		setPageNum(currentPage);
 	}, [currentPage])
 
 	const handleZoomChange = (delta)=>{
@@ -26,7 +26,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	};
 
 	const handlePageChange = (page)=>{
-		setPageInput(page);
+		setPageNum(page);
 	};
 
 	const scrollToPage = (pageNumber) => {
@@ -82,8 +82,8 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<button
 					id='previous-page'
 					className='previousPage tool'
-					onClick={()=>scrollToPage(pageInput - 1)}
-					disabled={pageInput <= 1}
+					onClick={()=>scrollToPage(pageNum - 1)}
+					disabled={pageNum <= 1}
 				>
 					<i className='fas fa-arrow-left'></i>
 				</button>
@@ -96,11 +96,11 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 						name='page'
 						inputMode='numeric'
 						pattern='[0-9]'
-						value={pageInput}
+						value={pageNum}
 						onChange={(e)=>{
 							handlePageChange(e.target.value == false ? e.target.value : parseInt(e.target.value));}}
-						onBlur={()=>scrollToPage(pageInput)}
-						onKeyDown={(e)=>{e.key == 'Enter' ? scrollToPage(pageInput) : null;}}
+						onBlur={()=>scrollToPage(pageNum)}
+						onKeyDown={(e)=>{e.key == 'Enter' ? scrollToPage(pageNum) : null;}}
 					/>
 
 					<span id='page-count'>/ {totalPages}</span>
@@ -110,8 +110,8 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<button
 					id='next-page'
 					className='tool'
-					onClick={()=>scrollToPage(pageInput + 1)}
-					disabled={pageInput >= totalPages}
+					onClick={()=>scrollToPage(pageNum + 1)}
+					disabled={pageNum >= totalPages}
 				>
 					<i className='fas fa-arrow-right'></i>
 				</button>
