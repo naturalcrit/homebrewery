@@ -3,6 +3,8 @@ const React = require('react');
 const { useState, useEffect } = React;
 const _ = require('lodash')
 
+import * as ZoomIcons from '../../../icons/icon-components/zoomIcons.jsx';
+
 const MAX_ZOOM = 300;
 const MIN_ZOOM = 10;
 
@@ -92,14 +94,14 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 					className='tool'
 					onClick={()=>handleZoomChange(calculateZoom('fill'))}
 				>
-					toFill
+					<ZoomIcons.FitWidth title='Fit to Width' style={{ width: '1.5em' }} />
 				</button>
 				<button
 					id='zoom-to-fit'
 					className='tool'
 					onClick={()=>handleZoomChange(calculateZoom('fit'))}
 				>
-					toFit
+					<ZoomIcons.FitAll title='Zoom to Fit' style={{ width: '1.5em' }} />
 				</button>
 				<button
 					id='zoom-out'
