@@ -247,12 +247,6 @@ const BrewRenderer = (props)=>{
 					tabIndex={-1}
 					style={{ height: state.height }}>
 
-					<ErrorBar errors={props.errors} />
-					<div className='popups'>
-						<RenderWarnings />
-						<NotificationPopup />
-					</div>
-
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted
 						&&
