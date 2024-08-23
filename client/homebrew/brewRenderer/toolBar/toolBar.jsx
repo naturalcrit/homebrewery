@@ -19,14 +19,10 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 		setPageNum(currentPage);
 	}, [currentPage])
 
-	const handleZoomChange = (delta)=>{
-		const zoomChange = _.clamp(zoomLevel + delta, MIN_ZOOM, MAX_ZOOM);
+	const handleZoomButton = (delta)=>{
+		const newZoomLevel = _.clamp(zoomLevel + delta, MIN_ZOOM, MAX_ZOOM);
 
-		setZoomLevel(zoomChange);
-	};
-
-	const handlePageChange = (page)=>{
-		setPageNum(page);
+		setZoomLevel(newZoomLevel);
 	};
 
 	const scrollToPage = (pageNumber) => {
@@ -47,7 +43,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<button
 					id='zoom-out'
 					className='tool'
-					onClick={()=>handleZoomChange(-20)}
+					onClick={()=>handleZoomButton(-20)}
 					disabled={zoomLevel <= MIN_ZOOM}
 				>
 					<i className='fas fa-magnifying-glass-minus' />
@@ -71,7 +67,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<button
 					id='zoom-in'
 					className='tool'
-					onClick={()=>handleZoomChange(20)}
+					onClick={()=>handleZoomButton(20)}
 					disabled={zoomLevel >= MAX_ZOOM}
 				>
 					<i className='fas fa-magnifying-glass-plus' />
@@ -97,12 +93,10 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 						inputMode='numeric'
 						pattern='[0-9]'
 						value={pageNum}
-						onChange={(e)=>{
-							handlePageChange(e.target.value == false ? e.target.value : parseInt(e.target.value));}}
+						onChange={(e)=>{setPageNum(e.target.value == false ? e.target.value : parseInt(e.target.value));}}
 						onBlur={()=>scrollToPage(pageNum)}
 						onKeyDown={(e)=>{e.key == 'Enter' ? scrollToPage(pageNum) : null;}}
 					/>
-
 					<span id='page-count'>/ {totalPages}</span>
 				</div>
 
