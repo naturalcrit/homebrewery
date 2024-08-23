@@ -6,138 +6,13 @@ const MonsterBlockGen    = require('./snippets/monsterblock.gen.js');
 const scriptGen          = require('./snippets/script.gen.js');
 const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
 const CoverPageGen       = require('./snippets/coverpage.gen.js');
-const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
-const indexGen           = require('./snippets/index.gen.js');
 const QuoteGen 			 = require('./snippets/quote.gen.js');
 const dedent             = require('dedent-tabs').default;
 
 
 
 module.exports = [
-
-	{
-		groupName : 'Text Editor',
-		icon      : 'fas fa-pencil-alt',
-		view      : 'text',
-		snippets  : [
-			{
-				name         : 'Table of Contents',
-				icon         : 'fas fa-book',
-				gen          : TableOfContentsGen,
-				experimental : true,
-				subsnippets  : [
-					{
-						name         : 'Table of Contents',
-						icon         : 'fas fa-book',
-						gen          : TableOfContentsGen,
-						experimental : true
-					},
-					{
-						name : 'Include in ToC up to H3',
-						icon : 'fas fa-dice-three',
-						gen  : dedent `\n{{tocDepthH3
-							}}\n`,
-
-					},
-					{
-						name : 'Include in ToC up to H4',
-						icon : 'fas fa-dice-four',
-						gen  : dedent `\n{{tocDepthH4
-							}}\n`,
-					},
-					{
-						name : 'Include in ToC up to H5',
-						icon : 'fas fa-dice-five',
-						gen  : dedent `\n{{tocDepthH5
-							}}\n`,
-					},
-					{
-						name : 'Include in ToC up to H6',
-						icon : 'fas fa-dice-six',
-						gen  : dedent `\n{{tocDepthH6
-							}}\n`,
-					}
-				]
-			},
-			{
-				name         : 'Index',
-				icon         : 'fas fa-bars',
-				gen          : indexGen,
-				experimental : true
-			}
-		]
-	},
-	{
-		groupName : 'Style Editor',
-		icon      : 'fas fa-pencil-alt',
-		view      : 'style',
-		snippets  : [
-			{
-				name : 'Remove Drop Cap',
-				icon : 'fas fa-remove-format',
-				gen  : dedent`/* Removes Drop Caps */
-						.page h1+p:first-letter {
-							all: unset;
-						}\n\n
-						/* Removes Small-Caps in first line */
-						.page h1+p:first-line {
-							all: unset;
-						}`
-			},
-			{
-				name : 'Tweak Drop Cap',
-				icon : 'fas fa-sliders-h',
-				gen  : dedent`/* Drop Cap settings */
-						.page h1 + p::first-letter {
-							font-family: SolberaImitationRemake;
-							font-size: 3.5cm;
-							background-image: linear-gradient(-45deg, #322814, #998250, #322814);
-							line-height: 1em;
-						}\n\n`
-			}
-		]
-	},
-
-	/*********************** IMAGES *******************/
-	{
-		groupName : 'Images',
-		icon      : 'fas fa-images',
-		view      : 'text',
-		snippets  : [
-			{
-				name : 'Image',
-				icon : 'fas fa-image',
-				gen  : dedent`
-					![cat warrior](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:325px,mix-blend-mode:multiply}
-
-					{{artist,position:relative,top:-230px,left:10px,margin-bottom:-30px
-					##### Cat Warrior
-					[Kyoung Hwan Kim](https://www.artstation.com/tahra)
-					}}`
-			},
-			{
-				name : 'Background Image',
-				icon : 'fas fa-tree',
-				gen  : dedent`
-					![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,top:50px,right:30px,width:280px}
-
-					{{artist,top:80px,right:30px
-					##### Homebrew Mug
-					[naturalcrit](https://homebrew.naturalcrit.com)
-					}}`
-			},
-			{
-				name : 'Watermark',
-				icon : 'fas fa-id-card',
-				gen  : dedent`
-				{{watermark Homebrewery}}\n`
-			},
-		]
-	},
-
-
 	/************************* PHB ********************/
-
 	{
 		groupName : 'PHB',
 		icon      : 'fas fa-book',
@@ -331,9 +206,6 @@ module.exports = [
 			},
 		]
 	},
-
-
-
 
 	/**************** PAGE *************/
 
