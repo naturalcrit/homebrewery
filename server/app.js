@@ -14,6 +14,7 @@ const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
+const templateFn = require('./../client/template.js');
 
 const { DEFAULT_BREW } = require('./brewDefaults.js');
 
@@ -420,8 +421,16 @@ if(isLocalEnvironment){
 	});
 }
 
+//Send rendered page
+app.use(asyncHandler(async (req, res, next)=>{
+	if (!req.route) return res.redirect('/'); // Catch-all for invalid routes
+		
+	const page = await renderPage(req, res);
+	if(!page) return;
+	res.send(page);
+}));
+
 //Render the page
-const templateFn = require('./../client/template.js');
 const renderPage = async (req, res)=>{
 	// Create configuration object
 	const configuration = {
@@ -449,13 +458,6 @@ const renderPage = async (req, res)=>{
 		});
 	return page;
 };
-
-//Send rendered page
-app.use(asyncHandler(async (req, res, next)=>{
-	const page = await renderPage(req, res);
-	if(!page) return;
-	res.send(page);
-}));
 
 //v=====----- Error-Handling Middleware -----=====v//
 //Format Errors as plain objects so all fields will appear in the string sent
