@@ -3,7 +3,7 @@ const _ = require('lodash');
 const Marked = require('marked');
 const MarkedExtendedTables = require('marked-extended-tables');
 const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartypants-lite');
-const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
+const { gfmHeadingId: MarkedGFMHeadingId, resetHeadings: MarkedGFMResetHeadingIDs } = require('marked-gfm-heading-id');
 const { markedEmoji: MarkedEmojis } = require('marked-emoji');
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
@@ -732,7 +732,7 @@ Marked.use({ extensions : [definitionListsMultiLine, definitionListsSingleLine, 
 	mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
-Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
+Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId({ globalSlugs: true }), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
 function cleanUrl(href) {
   try {
@@ -836,10 +836,13 @@ let globalPageNumber = 0;
 
 module.exports = {
 	marked : Marked,
-	render : (rawBrewText, pageNumber=1)=>{
-		globalVarsList[pageNumber] = {};						//Reset global links for current page, to ensure values are parsed in order
-		varsQueue              = [];						//Could move into MarkedVariables()
-		globalPageNumber        = pageNumber;
+	render : (rawBrewText, pageNumber=0)=>{
+		globalVarsList[pageNumber] = {};					//Reset global links for current page, to ensure values are parsed in order
+		varsQueue                  = [];						//Could move into MarkedVariables()
+		globalPageNumber           = pageNumber;
+		if(pageNumber==0) {
+			MarkedGFMResetHeadingIDs();
+		}
 
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`);
 		const opts = Marked.defaults;
