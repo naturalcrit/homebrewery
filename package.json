@@ -33,6 +33,7 @@
     "test:mustache-syntax:block": "jest \".*(mustache-syntax).*\" -t '^Block:.*' --verbose --noStackTrace",
     "test:mustache-syntax:injection": "jest \".*(mustache-syntax).*\" -t '^Injection:.*' --verbose --noStackTrace",
     "test:definition-lists": "jest tests/markdown/definition-lists.test.js --verbose --noStackTrace",
+    "test:hard-breaks": "jest tests/markdown/hard-breaks.test.js --verbose --noStackTrace",
     "test:emojis": "jest tests/markdown/emojis.test.js --verbose --noStackTrace",
     "test:route": "jest tests/routes/static-pages.test.js --verbose",
     "phb": "node scripts/phb.js",
