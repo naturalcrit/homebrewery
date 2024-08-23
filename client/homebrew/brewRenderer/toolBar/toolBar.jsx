@@ -59,7 +59,31 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 		const desiredZoom = (iframeWidth / widestPage) * 100;
 		const deltaZoom = (desiredZoom - zoomLevel) - margin;
 		return deltaZoom;
-	}
+	};
+
+	const toFit = ()=>{
+		const iframe = document.getElementById('BrewRenderer');
+		const iframeWidth = iframe.getBoundingClientRect().width;
+		const iframeHeight = iframe.getBoundingClientRect().height;
+		const pages = iframe.contentWindow.document.getElementsByClassName('page');
+
+		let maxDimRatio = 0;
+
+		[...pages].forEach((page)=>{
+			const widthRatio = iframeWidth / page.offsetWidth;
+			const heightRatio = iframeHeight / page.offsetHeight;
+			const dimensionRatio = Math.min(widthRatio, heightRatio);
+			if(dimensionRatio < maxDimRatio || maxDimRatio == 0){
+				maxDimRatio = dimensionRatio;
+			}
+		});
+
+		const margin = 5;
+		const desiredZoom = maxDimRatio * 100;
+		const deltaZoom = desiredZoom - zoomLevel - margin;
+
+		return deltaZoom;
+	};
 
 	return (
 		<div className='toolBar'>
@@ -70,6 +94,13 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 					onClick={()=>handleZoomChange(toFill())}
 				>
 					toFill
+				</button>
+				<button
+					id='zoom-to-fit'
+					className='tool'
+					onClick={()=>handleZoomChange(toFit())}
+				>
+					toFit
 				</button>
 				<button
 					id='zoom-out'
