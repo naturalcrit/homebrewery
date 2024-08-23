@@ -13,6 +13,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	const [zoomLevel, setZoomLevel] = useState(100);
 	const [pageInput, setPageInput] = useState(currentPage);
 	const [arrangement, setArrangement] = useState('single');
+	const modes = ['single', 'facing', 'flow'];
 
 	useEffect(()=>{
 		onZoomChange(zoomLevel);
@@ -20,7 +21,19 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 	useEffect(()=>{
 		setPageInput(currentPage);
-	}, [currentPage])
+	}, [currentPage]);
+
+	// update display arrangement when arrangement state is changed.
+	useEffect(()=>{
+		const iframe = document.getElementById('BrewRenderer');
+		const pagesContainer = iframe?.contentWindow?.document.querySelector('.pages');
+
+		if(pagesContainer) {
+			modes.forEach((mode)=>pagesContainer.classList.remove(mode));
+			pagesContainer.classList.add(arrangement);
+		}
+	}, [arrangement]);
+
 
 	const handleZoomChange = (delta)=>{
 		const zoomChange = _.clamp(zoomLevel + delta, MIN_ZOOM, MAX_ZOOM);
@@ -88,10 +101,8 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	};
 
 	const setBookMode = ()=>{
-		const iframe = document.getElementById('BrewRenderer');
-		const pagesContainer = iframe.contentWindow.document.getElementsByClassName('pages')[0];
-		pagesContainer.classList.toggle('book-mode');
-		pagesContainer.firstChild.style.gridColumnStart = '2' ;
+		const nextMode = modes[(modes.indexOf(arrangement) + 1) % modes.length];
+		setArrangement(nextMode);
 	};
 
 	return (
