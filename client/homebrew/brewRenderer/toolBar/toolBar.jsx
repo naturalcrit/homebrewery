@@ -21,7 +21,6 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 	const handleZoomButton = (delta)=>{
 		const newZoomLevel = _.clamp(zoomLevel + delta, MIN_ZOOM, MAX_ZOOM);
-
 		setZoomLevel(newZoomLevel);
 	};
 
