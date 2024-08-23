@@ -125,18 +125,22 @@ const Snippetbar = createClass({
 	renderSnippetGroups : function(){
 		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
 
-		return _.map(snippets, (snippetGroup)=>{
-			return <SnippetGroup
-				brew={this.props.brew}
-				groupName={snippetGroup.groupName}
-				icon={snippetGroup.icon}
-				snippets={snippetGroup.snippets}
-				key={snippetGroup.groupName}
-				onSnippetClick={this.handleSnippetClick}
-				cursorPos={this.props.cursorPos}
-			/>;
-		});
+		return <div className="snippets">
+			{_.map(snippets, (snippetGroup)=>{
+				return <SnippetGroup
+					brew={this.props.brew}
+					groupName={snippetGroup.groupName}
+					icon={snippetGroup.icon}
+					snippets={snippetGroup.snippets}
+					key={snippetGroup.groupName}
+					onSnippetClick={this.handleSnippetClick}
+					cursorPos={this.props.cursorPos}
+					/>;
+				})
+			}
+		</div>
 	},
+
 
 	renderEditorButtons : function(){
 		if(!this.props.showEditButtons) return;
@@ -158,23 +162,6 @@ const Snippetbar = createClass({
 		}
 
 		return <div className='editors'>
-			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
-				onClick={this.props.undo} >
-				<i className='fas fa-undo' />
-			</div>
-			<div className={`editorTool redo ${this.props.historySize.redo ? 'active' : ''}`}
-				onClick={this.props.redo} >
-				<i className='fas fa-redo' />
-			</div>
-			<div className='divider'></div>
-			{foldButtons}
-			<div className={`editorTool editorTheme ${this.state.themeSelector ? 'active' : ''}`}
-				onClick={this.toggleThemeSelector} >
-				<i className='fas fa-palette' />
-				{this.state.themeSelector && this.renderThemeSelector()}
-			</div>
-
-			<div className='divider'></div>
 			<div className={cx('text', { selected: this.props.view === 'text' })}
 				 onClick={()=>this.props.onViewChange('text')}>
 				<i className='fa fa-beer' />
@@ -186,14 +173,33 @@ const Snippetbar = createClass({
 			<div className={cx('meta', { selected: this.props.view === 'meta' })}
 				onClick={()=>this.props.onViewChange('meta')}>
 				<i className='fas fa-info-circle' />
+			</div>			
+			<div className='divider'></div>
+			{foldButtons}
+			<div className={`editorTool editorTheme ${this.state.themeSelector ? 'active' : ''}`}
+				onClick={this.toggleThemeSelector} >
+				<i className='fas fa-palette' />
+				{this.state.themeSelector && this.renderThemeSelector()}
 			</div>
+
+			<div className='divider'></div>
+			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
+				onClick={this.props.undo} >
+				<i className='fas fa-undo' />
+			</div>
+			<div className={`editorTool redo ${this.props.historySize.redo ? 'active' : ''}`}
+				onClick={this.props.redo} >
+				<i className='fas fa-redo' />
+			</div>
+			
 		</div>;
 	},
 
 	render : function(){
 		return <div className='snippetBar'>
-			{this.renderSnippetGroups()}
 			{this.renderEditorButtons()}
+			{this.renderSnippetGroups()}
+			
 		</div>;
 	}
 });

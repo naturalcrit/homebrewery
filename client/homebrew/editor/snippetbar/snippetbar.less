@@ -8,11 +8,15 @@
 	height           : @menuHeight;
 	color            : black;
 	background-color : #DDDDDD;
+	display: flex;
 
-	.editors {
+	.snippets {
 		position        : absolute;
 		top             : 0px;
 		right           : 0px;
+	}
+
+	.editors {
 		display         : flex;
 		justify-content : space-between;
 		height          : @menuHeight;
@@ -107,7 +111,7 @@
 		.tooltipLeft('Edit Brew Properties');
 	}
 	.snippetGroup {
-		border-right   : 1px solid currentColor;
+		border-left   : 1px solid currentColor;
 		&:hover {
 			& > .dropdown { visibility : visible; }
 		}
@@ -200,7 +204,7 @@
 		flex-wrap : wrap;
 		height : 50px;
 
-		.editors {
+		.snippets {
 			position : static;
 		}
 	}
