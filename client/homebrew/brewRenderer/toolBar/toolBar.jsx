@@ -87,14 +87,14 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<button
 					id='zoom-to-fill'
 					className='tool'
-					onClick={()=>handleZoomChange(calculateZoom('fill'))}
+					onClick={()=>handleZoomButton(calculateZoom('fill'))}
 				>
 					<ZoomIcons.FitWidth title='Fit to Width' style={{ width: '1.5em' }} />
 				</button>
 				<button
 					id='zoom-to-fit'
 					className='tool'
-					onClick={()=>handleZoomChange(calculateZoom('fit'))}
+					onClick={()=>handleZoomButton(calculateZoom('fit'))}
 				>
 					<ZoomIcons.FitAll title='Zoom to Fit' style={{ width: '1.5em' }} />
 				</button>
