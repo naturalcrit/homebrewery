@@ -205,7 +205,7 @@ const BrewRenderer = (props)=>{
 				: null}
 
 			<ErrorBar errors={props.errors} />
-			<div className='popups'>
+			<div className='popups' ref={mainRef}>
 				<RenderWarnings />
 				<NotificationPopup />
 			</div>
