@@ -92,7 +92,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 						inputMode='numeric'
 						pattern='[0-9]'
 						value={pageNum}
-						onChange={(e)=>{setPageNum(e.target.value == false ? e.target.value : parseInt(e.target.value));}}
+						onChange={(e)=>{setPageNum(parseInt(e.target.value));}}
 						onBlur={()=>scrollToPage(pageNum)}
 						onKeyDown={(e)=>{e.key == 'Enter' ? scrollToPage(pageNum) : null;}}
 					/>
