@@ -1,7 +1,7 @@
 require('./toolBar.less');
 const React = require('react');
 const { useState, useEffect } = React;
-const _ = require('lodash')
+const _ = require('lodash');
 
 const MAX_ZOOM = 300;
 const MIN_ZOOM = 10;
@@ -17,14 +17,14 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 	useEffect(()=>{
 		setPageNum(currentPage);
-	}, [currentPage])
+	}, [currentPage]);
 
 	const handleZoomButton = (delta)=>{
 		const newZoomLevel = _.clamp(zoomLevel + delta, MIN_ZOOM, MAX_ZOOM);
 		setZoomLevel(newZoomLevel);
 	};
 
-	const scrollToPage = (pageNumber) => {
+	const scrollToPage = (pageNumber)=>{
 		pageNumber = _.clamp(pageNumber - 1, 0, totalPages - 1);
 		const iframe = document.getElementById('BrewRenderer');
 		if(iframe && iframe.contentWindow) {
