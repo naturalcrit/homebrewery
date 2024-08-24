@@ -19,6 +19,7 @@ const DOMPurify = require('dompurify');
 const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
 
 const PAGE_HEIGHT = 1056;
+let isScrolling;
 
 const INITIAL_CONTENT = dedent`
 	<!DOCTYPE html><html><head>
@@ -87,9 +88,16 @@ const BrewRenderer = (props)=>{
 
 	const handleScroll = (e)=>{
 		const target = e.target;
+		const newPage = Math.floor(target.scrollTop / target.scrollHeight * rawPages.length);
+		if(newPage != state.viewablePageNumber) {
+			window.clearTimeout(isScrolling);
+			isScrolling = setTimeout(function() {
+				window.parent.document.dispatchEvent(new CustomEvent('renderScrolled', {}));
+			}, 66);
+		}
 		setState((prevState)=>({
 			...prevState,
-			viewablePageNumber : Math.floor(target.scrollTop / target.scrollHeight * rawPages.length)
+			viewablePageNumber : newPage
 		}));
 	};
 

@@ -23,6 +23,9 @@ const DEFAULT_STYLE_TEXT = dedent`
 				}`;
 
 let lastPage = 0;
+let lockBrewJump = false;
+let lockSourceJump = false;
+let scrollingJump = false;
 
 const isElementCodeMirror=(element)=>{
 	let el = element;
@@ -73,6 +76,7 @@ const Editor = createClass({
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
 		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
+		document.addEventListener('renderScrolled', this.handleBrewScroll);
 		document.addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('click', (e)=>{
 			if(isElementCodeMirror(e.target) && this.props.liveScroll ) {
@@ -128,7 +132,6 @@ const Editor = createClass({
 		}
 
 		if(!(e.ctrlKey || e.metaKey)) return;
-		console.log(e);
 		// Handle CTRL-HOME and CTRL-END
 		if(((e.keyCode == END_KEY) || (e.keyCode == HOME_KEY)) && this.props.liveScroll) this.brewJump();
 
@@ -140,6 +143,19 @@ const Editor = createClass({
 		}
 	},
 
+	handleBrewScroll : function() {
+		if(!this.props.liveScroll) return;
+		scrollingJump = true;
+		this.sourceJump();
+		scrollingJump = false;
+	},
+
+	handleSourceScroll : function(e) {
+		if(!this.props.liveScroll) return;
+		scrollingJump = true;
+		this.brewJump();
+		scrollingJump = false;
+	},
 
 	updateEditorSize : function() {
 		if(this.codeEditor.current) {
@@ -318,8 +334,11 @@ const Editor = createClass({
 	},
 
 	brewJump : function(targetPage=this.getCurrentPage()){
+		if(lockBrewJump) return;
 		if(!window) return;
-		// console.log(`Scroll to: p${targetPage}`);
+		lockSourceJump = true;
+		lockBrewJump = true;
+		//console.log(`Scroll to: p${targetPage}`);
 		const brewRenderer = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
 		const currentPos = brewRenderer.scrollTop;
 		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
@@ -328,24 +347,33 @@ const Editor = createClass({
 		const bounceDelay = 100;
 		const scrollDelay = 500;
 
-		if(!this.throttleBrewMove) {
-			this.throttleBrewMove = _.throttle((currentPos, interimPos, targetPos)=>{
-				brewRenderer.scrollTo({ top: currentPos + interimPos, behavior: 'smooth' });
-				setTimeout(()=>{
-					brewRenderer.scrollTo({ top: currentPos + targetPos, behavior: 'smooth', block: 'start' });
-				}, bounceDelay);
-			}, scrollDelay, { leading: true, trailing: false });
-		};
-		this.throttleBrewMove(currentPos, interimPos, targetPos);
+		if(scrollingJump) {
+			brewRenderer.scrollTo({ top: currentPos + targetPos, behavior: 'instant', block: 'start' });
+		} else {
+			if(!this.throttleBrewMove) {
+				this.throttleBrewMove = _.throttle((currentPos, interimPos, targetPos)=>{
+					brewRenderer.scrollTo({ top: currentPos + interimPos, behavior: 'smooth' });
+					setTimeout(()=>{
+						brewRenderer.scrollTo({ top: currentPos + targetPos, behavior: 'smooth', block: 'start' });
+					}, bounceDelay);
+				}, scrollDelay, { leading: true, trailing: false });
+			};
+			this.throttleBrewMove(currentPos, interimPos, targetPos);
+		}
+		lockSourceJump = false;
+		lockBrewJump = false;
 
 		// const hashPage = (page != 1) ? `p${page}` : '';
 		// window.location.hash = hashPage;
 	},
 
 	sourceJump : function(targetLine=null){
+		if(lockSourceJump) return;
 		if(this.isText()) {
 			if(targetLine == null) {
 				targetLine = 0;
+				lockBrewJump = true;
+				lockSourceJump = true;
 
 				const pageCollection = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('page');
 				const brewRendererHeight = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer').item(0).getBoundingClientRect().height;
@@ -368,23 +396,33 @@ const Editor = createClass({
 				let currentY = this.codeEditor.current.codeMirror.getScrollInfo().top;
 				let targetY  = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
 
-				//Scroll 1/10 of the way every 10ms until 1px off.
-				const incrementalScroll = setInterval(()=>{
-					currentY += (targetY - currentY) / 10;
-					this.codeEditor.current.codeMirror.scrollTo(null, currentY);
+				if(!scrollingJump) {
+					//Scroll 1/10 of the way every 10ms until 1px off.
+					const incrementalScroll = setInterval(()=>{
+						currentY += (targetY - currentY) / 10;
+						this.codeEditor.current.codeMirror.scrollTo(null, currentY);
 
-					// Update target: target height is not accurate until within +-10 lines of the visible window
-					if(Math.abs(targetY - currentY > 100))
-						targetY = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
+						// Update target: target height is not accurate until within +-10 lines of the visible window
+						if(Math.abs(targetY - currentY > 100))
+							targetY = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
 
-					// End when close enough
-					if(Math.abs(targetY - currentY) < 1) {
-						this.codeEditor.current.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
-						this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
-						this.codeEditor.current.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
-						clearInterval(incrementalScroll);
-					}
-				}, 10);
+						// End when close enough
+						if(Math.abs(targetY - currentY) < 1) {
+							this.codeEditor.current.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
+							this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
+							this.codeEditor.current.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
+							clearInterval(incrementalScroll);
+							lockBrewJump = false;
+							lockSourceJump = false;
+						}
+					}, 10);
+				} else {
+					this.codeEditor.current.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
+					this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
+					this.codeEditor.current.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
+					lockBrewJump = false;
+					lockSourceJump = false;
+				}
 			}
 		}
 	},
@@ -415,6 +453,7 @@ const Editor = createClass({
 					view={this.state.view}
 					value={this.props.brew.text}
 					onChange={this.props.onTextChange}
+					onScroll={this.handleSourceScroll}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent} />
 			</>;

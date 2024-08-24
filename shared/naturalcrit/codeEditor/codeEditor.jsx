@@ -7,6 +7,7 @@ const closeTag = require('./close-tag');
 const autoCompleteEmoji = require('./autocompleteEmoji');
 
 let CodeMirror;
+let isScrolling;
 if(typeof window !== 'undefined'){
 	CodeMirror = require('codemirror');
 
@@ -190,6 +191,14 @@ const CodeEditor = createClass({
 
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
 		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
+		this.codeMirror.on('scroll', (cm)=>{
+			window.clearTimeout(isScrolling);
+			const props = this.props;
+			isScrolling = setTimeout(function() {
+				cm.setCursor({ line: cm.lineAtHeight(cm.getWrapperElement().getBoundingClientRect().top) + 1, ch: 0 });
+				props.onScroll(cm.lineAtHeight(cm.getWrapperElement().getBoundingClientRect().top));
+			}, 66);
+		});
 		this.updateSize();
 	},
 
