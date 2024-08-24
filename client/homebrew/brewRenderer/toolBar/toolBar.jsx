@@ -24,16 +24,27 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 		setZoomLevel(newZoomLevel);
 	};
 
+	const handlePageChange = (page)=>{
+		const regex = /[0-9]/;
+		if(regex.test(page)){
+			const num = parseInt(page);  // input type is 'text', so `page` comes in as a string, not number.
+			setPageNum(num)
+		} else {
+			 return;
+		}
+	};
+
 	const scrollToPage = (pageNumber)=>{
-		pageNumber = _.clamp(pageNumber - 1, 0, totalPages - 1);
+		pageNumber = _.clamp(pageNumber, 1, totalPages);
 		const iframe = document.getElementById('BrewRenderer');
 		if(iframe && iframe.contentWindow) {
 			const brewRenderer = iframe.contentWindow.document.querySelector('.brewRenderer');
 			if(brewRenderer) {
 				const pages = brewRenderer.querySelectorAll('.page');
-				pages[pageNumber]?.scrollIntoView({ block: 'start' });
+				pages[pageNumber - 1]?.scrollIntoView({ block: 'start' });
 			}
 		}
+		setPageNum(pageNumber);
 	};
 
 	return (
@@ -92,7 +103,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 						inputMode='numeric'
 						pattern='[0-9]'
 						value={pageNum}
-						onChange={(e)=>{setPageNum(parseInt(e.target.value));}}
+						onChange={(e)=>{handlePageChange(e.target.value);}}
 						onBlur={()=>scrollToPage(pageNum)}
 						onKeyDown={(e)=>{e.key == 'Enter' ? scrollToPage(pageNum) : null;}}
 					/>
