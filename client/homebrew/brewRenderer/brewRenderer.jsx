@@ -115,17 +115,6 @@ const BrewRenderer = (props)=>{
 		return false;
 	};
 
-	const renderPageInfo = ()=>{
-		return <div className='pageInfo' ref={mainRef}>
-			<div>
-				{props.renderer}
-			</div>
-			<div>
-				{state.currentPageNumber} / {rawPages.length}
-			</div>
-		</div>;
-	};
-
 	const renderDummyPage = (index)=>{
 		return <div className='phb page' id={`p${index + 1}`} key={index}>
 			<i className='fas fa-spinner fa-spin' />
@@ -248,7 +237,6 @@ const BrewRenderer = (props)=>{
 					}
 				</div>
 			</Frame>
-			{renderPageInfo()}
 		</>
 	);
 };
