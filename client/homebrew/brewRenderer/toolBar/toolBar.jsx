@@ -1,7 +1,7 @@
 require('./toolBar.less');
 const React = require('react');
 const { useState, useEffect } = React;
-const _ = require('lodash')
+const _ = require('lodash');
 
 import * as ZoomIcons from '../../../icons/icon-components/zoomIcons.jsx';
 
@@ -11,27 +11,22 @@ const MIN_ZOOM = 10;
 const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 	const [zoomLevel, setZoomLevel] = useState(100);
-	const [pageInput, setPageInput] = useState(currentPage);
+	const [pageNum, setPageNum] = useState(currentPage);
 
 	useEffect(()=>{
 		onZoomChange(zoomLevel);
 	}, [zoomLevel]);
 
 	useEffect(()=>{
-		setPageInput(currentPage);
-	}, [currentPage])
+		setPageNum(currentPage);
+	}, [currentPage]);
 
-	const handleZoomChange = (delta)=>{
-		const zoomChange = _.clamp(zoomLevel + delta, MIN_ZOOM, MAX_ZOOM);
-
-		setZoomLevel(zoomChange);
+	const handleZoomButton = (delta)=>{
+		const newZoomLevel = _.clamp(zoomLevel + delta, MIN_ZOOM, MAX_ZOOM);
+		setZoomLevel(newZoomLevel);
 	};
 
-	const handlePageChange = (page)=>{
-		setPageInput(page);
-	};
-
-	const scrollToPage = (pageNumber) => {
+	const scrollToPage = (pageNumber)=>{
 		pageNumber = _.clamp(pageNumber - 1, 0, totalPages - 1);
 		const iframe = document.getElementById('BrewRenderer');
 		if(iframe && iframe.contentWindow) {
@@ -106,7 +101,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<button
 					id='zoom-out'
 					className='tool'
-					onClick={()=>handleZoomChange(-20)}
+					onClick={()=>handleZoomButton(-20)}
 					disabled={zoomLevel <= MIN_ZOOM}
 				>
 					<i className='fas fa-magnifying-glass-minus' />
@@ -130,7 +125,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<button
 					id='zoom-in'
 					className='tool'
-					onClick={()=>handleZoomChange(20)}
+					onClick={()=>handleZoomButton(20)}
 					disabled={zoomLevel >= MAX_ZOOM}
 				>
 					<i className='fas fa-magnifying-glass-plus' />
@@ -141,8 +136,8 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<button
 					id='previous-page'
 					className='previousPage tool'
-					onClick={()=>scrollToPage(pageInput - 1)}
-					disabled={pageInput <= 1}
+					onClick={()=>scrollToPage(pageNum - 1)}
+					disabled={pageNum <= 1}
 				>
 					<i className='fas fa-arrow-left'></i>
 				</button>
@@ -155,13 +150,11 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 						name='page'
 						inputMode='numeric'
 						pattern='[0-9]'
-						value={pageInput}
-						onChange={(e)=>{
-							handlePageChange(e.target.value == false ? e.target.value : parseInt(e.target.value));}}
-						onBlur={()=>scrollToPage(pageInput)}
-						onKeyDown={(e)=>{e.key == 'Enter' ? scrollToPage(pageInput) : null;}}
+						value={pageNum}
+						onChange={(e)=>{setPageNum(parseInt(e.target.value));}}
+						onBlur={()=>scrollToPage(pageNum)}
+						onKeyDown={(e)=>{e.key == 'Enter' ? scrollToPage(pageNum) : null;}}
 					/>
-
 					<span id='page-count'>/ {totalPages}</span>
 				</div>
 
@@ -169,8 +162,8 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<button
 					id='next-page'
 					className='tool'
-					onClick={()=>scrollToPage(pageInput + 1)}
-					disabled={pageInput >= totalPages}
+					onClick={()=>scrollToPage(pageNum + 1)}
+					disabled={pageNum >= totalPages}
 				>
 					<i className='fas fa-arrow-right'></i>
 				</button>
