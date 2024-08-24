@@ -1,12 +1,12 @@
 .toolBar {
 	position         : absolute;
 	z-index          : 1;
+	box-sizing       : border-box;
 	display          : flex;
 	flex-wrap        : wrap;
 	gap              : 8px 30px;
 	align-items      : center;
 	justify-content  : center;
-	box-sizing       : border-box;
 	width            : 100%;
 	height           : auto;
 	padding          : 2px 0;
@@ -15,17 +15,17 @@
 	background-color : #555555;
 
 	.group {
+		box-sizing       : border-box;
 		display          : flex;
-		gap: 0 3px;
+		gap              : 0 3px;
 		align-items      : center;
 		justify-content  : center;
-		box-sizing       : border-box;
-		height: 28px;
+		height           : 28px;
 	}
 
 	.tool {
-		display: flex;
-		align-items: center;
+		display     : flex;
+		align-items : center;
 	}
 
 	input {
@@ -35,20 +35,20 @@
 		font-family    : 'Open Sans', sans-serif;
 		color          : #000000;
 		background     : #EEEEEE;
-		border : 1px solid gray;
-		&:focus { outline : 1px solid #d3d3d3; }
+		border         : 1px solid gray;
+		&:focus { outline : 1px solid #D3D3D3; }
 
 		// `.range-input` if generic to all range inputs, or `#zoom-input` if only for zoom slider
 		&.range-input {
-			color: #D3D3D3;
-			accent-color: #d3d3d3;
-			padding: 2px 0;
+			padding      : 2px 0;
+			color        : #D3D3D3;
+			accent-color : #D3D3D3;
   
-			&::-webkit-slider-thumb, &::-moz-slider-thumb {
-				cursor           : pointer; 
-				width: 5px;
-				height: 5px;
-				outline: none;
+			&::-webkit-slider-thumb, &::-moz-slider-thumb { 
+				width            : 5px;
+				height           : 5px;
+				cursor           : pointer;
+				outline          : none;
 			}
 
 			&:hover::after {
@@ -70,9 +70,9 @@
 
 		// `.text-input` if generic to all range inputs, or `#page-input` if only for current page input
 		&#page-input {
-			width: 4ch;
-			text-align: center;
-			margin-right: 1ch;
+			width        : 4ch;
+			margin-right : 1ch;
+			text-align   : center;
 
 		}
 
@@ -80,21 +80,21 @@
 
 
 	button {
-		display     : flex;
-		align-items : center;
-		justify-content: center;
-		height           : 100%;
+		box-sizing       : content-box;
+		display          : flex;
+		align-items      : center;
+		justify-content  : center;
 		width            : auto;
 		min-width        : 46px;
+		height           : 100%;
 		padding          : 0 0px;
 		font-weight      : unset;
 		color            : inherit;
 		background-color : unset;
-		box-sizing: content-box;
 
 		&:hover { background-color : #444444; }
 
-		&:focus { outline : 1px solid #d3d3d3; }
+		&:focus { outline : 1px solid #D3D3D3; }
 
 		&:disabled {
 			color            : #777777;
