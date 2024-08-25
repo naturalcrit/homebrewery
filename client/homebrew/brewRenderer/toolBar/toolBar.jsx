@@ -32,7 +32,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 		pageNumber = _.clamp(pageNumber, 1, totalPages);
 		const iframe = document.getElementById('BrewRenderer');
 		const brewRenderer = iframe?.contentWindow?.document.querySelector('.brewRenderer');
-		const page = brewRenderer?.querySelector(`#p${pageNumber}`)
+		const page = brewRenderer?.querySelector(`#p${pageNumber}`);
 		page?.scrollIntoView({ block: 'start' });
 		setPageNum(pageNumber);
 	};
@@ -59,7 +59,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 					max={MAX_ZOOM}
 					step='1'
 					value={zoomLevel}
-					onChange={(e) => setZoomLevel(parseInt(e.target.value))}
+					onChange={(e)=>setZoomLevel(parseInt(e.target.value))}
 				/>
 				<datalist id='zoomLevels'>
 					<option value='100' />
@@ -95,10 +95,10 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 						inputMode='numeric'
 						pattern='[0-9]'
 						value={pageNum}
-						onClick={(e) => e.target.select()}
+						onClick={(e)=>e.target.select()}
 						onChange={(e)=>handlePageInput(e.target.value)}
 						onBlur={()=>scrollToPage(pageNum)}
-						onKeyDown={(e) => e.key == 'Enter' && scrollToPage(pageNum)}
+						onKeyDown={(e)=>e.key == 'Enter' && scrollToPage(pageNum)}
 					/>
 					<span id='page-count'>/ {totalPages}</span>
 				</div>

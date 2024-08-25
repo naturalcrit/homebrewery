@@ -87,12 +87,12 @@ const BrewRenderer = (props)=>{
 		}));
 	};
 
-	const getCurrentPage = (e) => {
+	const getCurrentPage = (e)=>{
 		const { scrollTop, clientHeight, scrollHeight } = e.target;
 		const totalScrollableHeight = scrollHeight - clientHeight;
 		const currentPageNumber = Math.ceil((scrollTop / totalScrollableHeight) * rawPages.length);
 
-		setState((prevState) => ({
+		setState((prevState)=>({
 			...prevState,
 			currentPageNumber : currentPageNumber || 1
 		}));
@@ -181,7 +181,7 @@ const BrewRenderer = (props)=>{
 	};
 
 	//Toolbar settings:
-	const handleZoom = (newZoom) => {
+	const handleZoom = (newZoom)=>{
 		setState((prevState)=>({
 			...prevState,
 			zoom : newZoom
