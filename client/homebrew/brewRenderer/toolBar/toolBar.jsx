@@ -9,7 +9,7 @@ const MIN_ZOOM = 10;
 const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 	const [zoomLevel, setZoomLevel] = useState(100);
-	const [pageNum, setPageNum] = useState(currentPage);
+	const [pageNum, setPageNum]     = useState(currentPage);
 
 	useEffect(()=>{
 		onZoomChange(zoomLevel);
@@ -20,35 +20,26 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	}, [currentPage]);
 
 	const handleZoomButton = (delta)=>{
-		const newZoomLevel = _.clamp(zoomLevel + delta, MIN_ZOOM, MAX_ZOOM);
-		setZoomLevel(newZoomLevel);
+		setZoomLevel(_.clamp(zoomLevel + delta, MIN_ZOOM, MAX_ZOOM));
 	};
 
-	const handlePageChange = (page)=>{
-		const regex = /[0-9]/;
-		if(regex.test(page)){
-			const num = parseInt(page);  // input type is 'text', so `page` comes in as a string, not number.
-			setPageNum(num)
-		} else {
-			 return;
-		}
+	const handlePageInput = (pageInput)=>{
+		if(/[0-9]/.test(pageInput))
+			setPageNum(parseInt(pageInput)); // input type is 'text', so `page` comes in as a string, not number.
 	};
 
 	const scrollToPage = (pageNumber)=>{
 		pageNumber = _.clamp(pageNumber, 1, totalPages);
 		const iframe = document.getElementById('BrewRenderer');
-		if(iframe && iframe.contentWindow) {
-			const brewRenderer = iframe.contentWindow.document.querySelector('.brewRenderer');
-			if(brewRenderer) {
-				const pages = brewRenderer.querySelectorAll('.page');
-				pages[pageNumber - 1]?.scrollIntoView({ block: 'start' });
-			}
-		}
+		const brewRenderer = iframe?.contentWindow?.document.querySelector('.brewRenderer');
+		const page = brewRenderer?.querySelector(`#p${pageNumber}`)
+		page?.scrollIntoView({ block: 'start' });
 		setPageNum(pageNumber);
 	};
 
 	return (
 		<div className='toolBar'>
+			{/*v=====----------------------< Zoom Controls >---------------------=====v*/}
 			<div className='group'>
 				<button
 					id='zoom-out'
@@ -68,7 +59,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 					max={MAX_ZOOM}
 					step='1'
 					value={zoomLevel}
-					onChange={(e)=>{setZoomLevel(parseInt(e.target.value));}}
+					onChange={(e) => setZoomLevel(parseInt(e.target.value))}
 				/>
 				<datalist id='zoomLevels'>
 					<option value='100' />
@@ -84,6 +75,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				</button>
 			</div>
 
+			{/*v=====----------------------< Page Controls >---------------------=====v*/}
 			<div className='group'>
 				<button
 					id='previous-page'
@@ -103,14 +95,13 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 						inputMode='numeric'
 						pattern='[0-9]'
 						value={pageNum}
-						onClick={(e)=>{e.target.select()}}
-						onChange={(e)=>{handlePageChange(e.target.value);}}
+						onClick={(e) => e.target.select()}
+						onChange={(e)=>handlePageInput(e.target.value)}
 						onBlur={()=>scrollToPage(pageNum)}
-						onKeyDown={(e)=>{e.key == 'Enter' ? scrollToPage(pageNum) : null;}}
+						onKeyDown={(e) => e.key == 'Enter' && scrollToPage(pageNum)}
 					/>
 					<span id='page-count'>/ {totalPages}</span>
 				</div>
-
 
 				<button
 					id='next-page'
@@ -122,7 +113,6 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				</button>
 			</div>
 		</div>
-
 	);
 };
 
