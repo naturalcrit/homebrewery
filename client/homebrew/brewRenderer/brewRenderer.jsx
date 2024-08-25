@@ -80,8 +80,6 @@ const BrewRenderer = (props)=>{
 		return ()=>{window.removeEventListener('resize', updateSize);};
 	}, []);
 
-
-
 	const updateSize = ()=>{
 		setState((prevState)=>({
 			...prevState,
@@ -90,10 +88,8 @@ const BrewRenderer = (props)=>{
 	};
 
 	const getCurrentPage = (e) => {
-		const target = e.target;
-		const { scrollTop, clientHeight, scrollHeight } = target;
+		const { scrollTop, clientHeight, scrollHeight } = e.target;
 		const totalScrollableHeight = scrollHeight - clientHeight;
-
 		const currentPageNumber = Math.ceil((scrollTop / totalScrollableHeight) * rawPages.length);
 
 		setState((prevState) => ({
@@ -192,7 +188,6 @@ const BrewRenderer = (props)=>{
 		}));
 	};
 
-
 	return (
 		<>
 			{/*render dummy page while iFrame is mounting.*/}
@@ -211,7 +206,6 @@ const BrewRenderer = (props)=>{
 			</div>
 
 			<ToolBar onZoomChange={handleZoom} currentPage={state.currentPageNumber}  totalPages={rawPages.length}/>
-
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
