@@ -4,10 +4,8 @@
 	padding-top   : 30px;
 	overflow-y    : scroll;
 	will-change   : transform;
-
 	:where(.pages) {
 		margin : 30px 0px;
-
 		& > :where(.page) {
 			width         : 215.9mm;
 			height        : 279.4mm;
@@ -17,20 +15,16 @@
 			box-shadow    : 1px 4px 14px #000000;
 		}
 	}
-
 	&::-webkit-scrollbar {
 		width : 20px;
-
 		&:horizontal {
 			width  : auto;
 			height : 20px;
 		}
-
 		&-thumb {
 			background : linear-gradient(90deg, #D3C1AF 15px, #00000000 15px);
 			&:horizontal { background : linear-gradient(0deg, #D3C1AF 15px, #00000000 15px); }
 		}
-
 		&-corner { visibility : hidden; }
 	}
 }
