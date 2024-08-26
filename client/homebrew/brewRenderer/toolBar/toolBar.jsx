@@ -20,8 +20,8 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 		setPageNum(currentPage);
 	}, [currentPage]);
 
-	const handleZoomButton = (delta)=>{
-		setZoomLevel(_.round(_.clamp(zoomLevel + delta, MIN_ZOOM, MAX_ZOOM)));
+	const handleZoomButton = (zoom)=>{
+		setZoomLevel(_.round(_.clamp(zoom, MIN_ZOOM, MAX_ZOOM)));
 	};
 
 	const handlePageInput = (pageInput)=>{
@@ -39,7 +39,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	};
 
 
-	const calculateZoom = (mode)=>{
+	const calculateChange = (mode)=>{
 		const iframe = document.getElementById('BrewRenderer');
 		const iframeWidth = iframe.getBoundingClientRect().width;
 		const iframeHeight = iframe.getBoundingClientRect().height;
@@ -49,12 +49,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 		if(mode == 'fill'){
 			// find widest page, in case pages are different widths, so that the zoom is adapted to not cut the widest page off screen.
-			let widestPage = 0;
-			[...pages].forEach((page)=>{
-				const width = page.offsetWidth;
-				if(width > widestPage)
-					widestPage = width;
-			});
+			const widestPage = _.maxBy([...pages], 'offsetWidth').offsetWidth;
 
 			desiredZoom = (iframeWidth / widestPage) * 100;
 
@@ -88,21 +83,21 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<button
 					id='fill-width'
 					className='tool'
-					onClick={()=>handleZoomButton(calculateZoom('fill'))}
+					onClick={()=>handleZoomButton(zoomLevel + calculateChange('fill'))}
 				>
 					<i className='fac fit-width' />
 				</button>
 				<button
 					id='zoom-to-fit'
 					className='tool'
-					onClick={()=>handleZoomButton(calculateZoom('fit'))}
+					onClick={()=>handleZoomButton(zoomLevel + calculateChange('fit'))}
 				>
 					<i className='fac zoom-to-fit' />
 				</button>
 				<button
 					id='zoom-out'
 					className='tool'
-					onClick={()=>handleZoomButton(-20)}
+					onClick={()=>handleZoomButton(zoomLevel - 20)}
 					disabled={zoomLevel <= MIN_ZOOM}
 				>
 					<i className='fas fa-magnifying-glass-minus' />
@@ -117,7 +112,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 					max={MAX_ZOOM}
 					step='1'
 					value={zoomLevel}
-					onChange={(e)=>setZoomLevel(parseInt(e.target.value))}
+					onChange={(e)=>handleZoomButton(parseInt(e.target.value))}
 				/>
 				<datalist id='zoomLevels'>
 					<option value='100' />
@@ -126,7 +121,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<button
 					id='zoom-in'
 					className='tool'
-					onClick={()=>handleZoomButton(20)}
+					onClick={()=>handleZoomButton(zoomLevel + 20)}
 					disabled={zoomLevel >= MAX_ZOOM}
 				>
 					<i className='fas fa-magnifying-glass-plus' />
