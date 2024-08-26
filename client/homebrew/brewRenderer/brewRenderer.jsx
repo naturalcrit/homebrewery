@@ -67,7 +67,7 @@ const BrewRenderer = (props)=>{
 		viewablePageNumber : 0,
 		height             : PAGE_HEIGHT,
 		isMounted          : false,
-		visibility         : 'hidden'
+		visibility         : 'hidden',
 		zoom               : 100,
 		currentPageNumber  : 1,
 	});
