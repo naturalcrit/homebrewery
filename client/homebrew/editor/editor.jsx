@@ -160,11 +160,8 @@ const Editor = createClass({
 
 					// Don't process lines inside folded text
 					// If the current lineNumber is inside any folded marks, skip line styling
-					if(_.filter(foldLines, (fold)=>{
-						return lineNumber >= fold.from && lineNumber <= fold.to;
-					 }).length > 0) {
+					if (foldLines.some(fold => lineNumber >= fold.from && lineNumber <= fold.to))
 						return;
-					 };
 
 					// Styling for \page breaks
 					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
@@ -278,7 +275,7 @@ const Editor = createClass({
 									// Iterate over conflicting marks and clear them
 									var marks = codeMirror.findMarks(startPos, endPos);
 									marks.forEach(function(marker) {
-										marker.clear();
+										if(!marker.__isFold) marker.clear();
 									});
 									codeMirror.markText(startPos, endPos, { className: 'emoji' });
 								}
