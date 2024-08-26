@@ -917,8 +917,8 @@ brew`);
 			expect(saved.googleId).toEqual(brew.googleId);
 		});
 	});
-	describe('Get CSS tests', ()=>{
-		it('get CSS - successful', async ()=>{
+	describe('Get CSS', ()=>{
+		it('should return brew style content as CSS text', async ()=>{
 			const testBrew = { title: 'test brew', text: '```css\n\nI Have a style!\n````\n\n' };
 
 			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
@@ -933,13 +933,15 @@ brew`);
 
 			expect(req.brew).toEqual(testBrew);
 			expect(req.brew).toHaveProperty('style', '\nI Have a style!\n');
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith("\nI Have a style!\n");
 			expect(res.set).toHaveBeenCalledWith({
 				'Cache-Control' : 'no-cache',
 				'Content-Type'  : 'text/css'
 			});
 		});
 
-		it('get CSS - no style in brew', async ()=>{
+		it('should return 404 when brew has no style content', async ()=>{
 			const testBrew = { title: 'test brew', text: 'I don\'t have a style!' };
 
 			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
@@ -958,7 +960,7 @@ brew`);
 			expect(res.send).toHaveBeenCalledWith('');
 		});
 
-		it('get CSS - no brew', async ()=>{
+		it('should return 404 when brew does not exist', async ()=>{
 			const testBrew = { };
 
 			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
