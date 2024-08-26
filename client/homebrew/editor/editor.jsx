@@ -59,6 +59,8 @@ const Editor = createClass({
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
+		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
+		document.addEventListener('keydown', this.handleControlKeys);
 
 		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
 		if(editorTheme) {
@@ -81,6 +83,19 @@ const Editor = createClass({
 			this.sourceJump();
 		};
 	},
+
+	handleControlKeys : function(e){
+		if(!(e.ctrlKey || e.metaKey)) return;
+		const LEFTARROW_KEY = 37;
+		const RIGHTARROW_KEY = 39;
+		if (e.shiftKey && (e.keyCode == RIGHTARROW_KEY)) this.brewJump();
+		if (e.shiftKey && (e.keyCode == LEFTARROW_KEY)) this.sourceJump();
+		if ((e.keyCode == LEFTARROW_KEY) || (e.keyCode == RIGHTARROW_KEY)) {
+			e.stopPropagation();
+			e.preventDefault();
+		}
+	},
+
 
 	updateEditorSize : function() {
 		if(this.codeEditor.current) {
@@ -119,7 +134,9 @@ const Editor = createClass({
 			const codeMirror = this.codeEditor.current.codeMirror;
 
 			codeMirror.operation(()=>{ // Batch CodeMirror styling
+
 				const foldLines = [];
+        
 				//reset custom text styles
 				const customHighlights = codeMirror.getAllMarks().filter((mark)=>{
 					// Record details of folded sections
