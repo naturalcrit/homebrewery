@@ -9,7 +9,7 @@ const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
 
-const { homebrewApi, getBrew, getUsersBrewThemes } = require('./homebrew.api.js');
+const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
@@ -200,6 +200,9 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	});
 	res.status(200).send(brew.text);
 });
+
+//Serve brew styling
+app.get('/css/:id', asyncHandler(getBrew('share')), (req, res)=>{getCSS(req, res);});
 
 //User Page
 app.get('/user/:username', async (req, res, next)=>{
