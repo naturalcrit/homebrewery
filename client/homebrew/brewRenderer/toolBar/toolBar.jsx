@@ -55,19 +55,9 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 		} else if(mode == 'fit'){
 			// find the page with the largest single dim (height or width) so that zoom can be adapted to fit it.
-			let maxDimRatio = 0;
+			const minDimRatio = [...pages].reduce((minRatio, page) => Math.min(minRatio, iframeWidth / page.offsetWidth, iframeHeight / page.offsetHeight), Infinity);
 
-			[...pages].forEach((page)=>{
-				const widthRatio = iframeWidth / page.offsetWidth;
-				const heightRatio = iframeHeight / page.offsetHeight;
-				const dimensionRatio = Math.min(widthRatio, heightRatio);
-				if(dimensionRatio < maxDimRatio || maxDimRatio == 0){
-					maxDimRatio = dimensionRatio;
-				}
-			});
-
-			desiredZoom = maxDimRatio * 100;
-
+			desiredZoom = minDimRatio * 100;
 		}
 
 		const margin = 5;  // extra space so page isn't edge to edge (not truly "to fill")
