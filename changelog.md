@@ -84,6 +84,55 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Tuesday 8/27/2024 - v3.14.2
+{{taskList
+
+##### Calculuschild
+
+* [x] Add catch-all for invalid paths
+
+Fixes issues [#3269](https://github.com/naturalcrit/homebrewery/issues/3629)
+
+* [x] Update `cleanUrl` helper function to match later Marked version
+
+##### G-Ambatte
+
+* [x] Add route to get brew styling
+
+Fixes issues [#1097](https://github.com/naturalcrit/homebrewery/issues/1097)
+
+* [x] Prevent styling of lines inside folded sections
+
+Fixes issues [#3604](https://github.com/naturalcrit/homebrewery/issues/3604)
+
+* [x] Change order of operations in mask img transform
+
+Fixes issues [#3636](https://github.com/naturalcrit/homebrewery/issues/3636)
+
+* [x] Fix Table of Contents uppercasing
+
+Fixes issues [#3572](https://github.com/naturalcrit/homebrewery/issues/3572)
+
+##### abquintic
+
+* [x] Create globally unique Header IDs when marked parses
+
+Fixes issues [#1430](https://github.com/naturalcrit/homebrewery/issues/1430)
+
+* [x] Fix for the colons in codeblocks issue
+
+* [x] Prevent loading of undefined renderer or theme theme bundle
+
+* [x] Add Jump-To hotkeys
+
+* [x] Prevent reload from clobbering modified fresh clones
+
+##### 5e-Cleric, Gazook89
+
+* [x] Viewer tools
+
+}}
+
 ### Tuesday 8/13/2024 - v3.14.1
 {{taskList
 
@@ -130,7 +179,7 @@ Fixes issues [#3613](https://github.com/naturalcrit/homebrewery/issues/3613)
 Fixes issues [#3622](https://github.com/naturalcrit/homebrewery/issues/3622)
 
 
-##### calculuschild
+##### Calculuschild
 
 * [x] Fix `/migrate` page using an editor context instead of share context
 
@@ -146,7 +195,7 @@ Fixes issues [#3622](https://github.com/naturalcrit/homebrewery/issues/3622)
 ### Monday 7/29/2024 - v3.14.0
 {{taskList
 
-##### abquintic, calculuschild
+##### abquintic, Calculuschild
 
 * [x] Alternative Brew Themes, including importing other brews as a base theme.
 
@@ -174,7 +223,7 @@ Fixes issues [#3568](https://github.com/naturalcrit/homebrewery/issues/3568)
 ### Saturday 6/7/2024 - v3.13.1
 {{taskList
 
-##### calculuschild, G-Ambatte
+##### Calculuschild, G-Ambatte
 
 * [x] Hotfixes for issues with v3.13.0
 
@@ -184,7 +233,7 @@ Fixes issues [#3559](https://github.com/naturalcrit/homebrewery/issues/3559), [#
 ### Friday 28/6/2024 - v3.13.0
 {{taskList
 
-##### calculuschild
+##### Calculuschild
 
 * [x] Add `:emoji:` Markdown syntax, with autosuggest; start typing after the first `:` for matching emojis from 
 :fab_font_awesome: FontAwesome, :df_d20: DiceFont, :ei_action: ElderberryInn, and a subset of :gi_broadsword: GameIcons
@@ -273,7 +322,7 @@ Fixes issue [#3275](https://github.com/naturalcrit/homebrewery/issues/3275)
 
 * [x] Added new text editor theme: "Darkvision".
 
-##### calculuschild, G-Ambatte, 5e-Cleric
+##### Calculuschild, G-Ambatte, 5e-Cleric
 
 * [x] Codebase and UI cleanup
 }}
@@ -356,7 +405,7 @@ Fixes issue [1488](https://github.com/naturalcrit/homebrewery/issues/1488)
  
 Fixes issue [1488](https://github.com/naturalcrit/homebrewery/issues/1488)
 
-##### calculuschild
+##### Calculuschild
 
 * [x] Better error messages for "Out of Google Drive Storage" and "Not logged in to edit"
 
@@ -603,7 +652,7 @@ Fixes issue [#2784](https://github.com/naturalcrit/homebrewery/issues/2784)
 ### Wednesday 12/04/2023 - v3.8.0
 {{taskList
 
-##### calculuschild
+##### Calculuschild
 
 * [x] Rename `{{coverPage}}` to `{{frontCover}}`. Those using this {{beta BETA}} feature will need to update that text to make the cover page appear again.
 
@@ -728,7 +777,7 @@ Fixes issues [#2674](https://github.com/naturalcrit/homebrewery/issues/2674)
 
 ### Monday 23/01/2023 - v3.6.0
 {{taskList
-##### calculuschild
+##### Calculuschild
 
 * [x] Fix Google Drive brews sometimes duplicating
 
@@ -1684,7 +1733,7 @@ myStyle {color: black}
 - Fixed a bad search route in the admin panel (thanks u/SnappyTom!)
 
 ### Friday, 29/07/2016 - v2.2.7
-- Adding in descriptive note blocks. (Thanks calculuschild!)
+- Adding in descriptive note blocks. (Thanks Calculuschild!)
 
 ### Thursday, 07/07/2016 - v2.2.6
 - Added a new nav item on the homepage for accessing both recently viewed and edited brews (thanks [ChosenSeraph!](https://github.com/stolksdorf/homebrewery/issues/147))
