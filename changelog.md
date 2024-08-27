@@ -125,6 +125,9 @@ Fixes issues [#1430](https://github.com/naturalcrit/homebrewery/issues/1430)
 
 * [x] Add Jump-To hotkeys
 
+  * Use `CTRL/META + SHIFT + LEFTARROW` to brewJump
+  * Use `CTRL/META + SHIFT + RIGHTARROW` to sourceJump
+
 * [x] Prevent reload from clobbering modified fresh clones
 
 ##### 5e-Cleric, Gazook89
