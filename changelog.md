@@ -87,25 +87,25 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 ### Tuesday 8/27/2024 - v3.14.2
 {{taskList
 
-##### Calculuschild
+##### calculuschild
 
-* [x] Add catch-all for invalid paths
+* [x] Reroute invalid urls to homepage
 
 Fixes issues [#3269](https://github.com/naturalcrit/homebrewery/issues/3629)
 
-* [x] Update `cleanUrl` helper function to match later Marked version
+* [x] Background dependency updates
 
 ##### G-Ambatte
 
-* [x] Add route to get brew styling
+* [x] Add route to get brew styling via `/css/shareId`
 
 Fixes issues [#1097](https://github.com/naturalcrit/homebrewery/issues/1097)
 
-* [x] Prevent styling of lines inside folded sections
+* [x] Fix `:emojis:` preventing code folding
 
 Fixes issues [#3604](https://github.com/naturalcrit/homebrewery/issues/3604)
 
-* [x] Change order of operations in mask img transform
+* [x] Fix mask image warping when rotated and stretched
 
 Fixes issues [#3636](https://github.com/naturalcrit/homebrewery/issues/3636)
 
@@ -115,13 +115,13 @@ Fixes issues [#3572](https://github.com/naturalcrit/homebrewery/issues/3572)
 
 ##### abquintic
 
-* [x] Create globally unique Header IDs when marked parses
+* [x] Create globally unique Header IDs across pages
 
 Fixes issues [#1430](https://github.com/naturalcrit/homebrewery/issues/1430)
 
-* [x] Fix for the colons in codeblocks issue
+* [x] Fix colon `:::` being parsed in codeblocks
 
-* [x] Prevent loading of undefined renderer or theme theme bundle
+* [x] Prevent crashes when loading undefined renderer or theme bundle
 
 * [x] Add Jump-To hotkeys
 
@@ -132,7 +132,7 @@ Fixes issues [#1430](https://github.com/naturalcrit/homebrewery/issues/1430)
 
 ##### 5e-Cleric, Gazook89
 
-* [x] Viewer tools
+* [x] Viewer tools for zoom/page navigation
 
 }}
 
@@ -182,7 +182,7 @@ Fixes issues [#3613](https://github.com/naturalcrit/homebrewery/issues/3613)
 Fixes issues [#3622](https://github.com/naturalcrit/homebrewery/issues/3622)
 
 
-##### Calculuschild
+##### calculuschild
 
 * [x] Fix `/migrate` page using an editor context instead of share context
 
@@ -198,7 +198,7 @@ Fixes issues [#3622](https://github.com/naturalcrit/homebrewery/issues/3622)
 ### Monday 7/29/2024 - v3.14.0
 {{taskList
 
-##### abquintic, Calculuschild
+##### abquintic, calculuschild
 
 * [x] Alternative Brew Themes, including importing other brews as a base theme.
 
@@ -226,7 +226,7 @@ Fixes issues [#3568](https://github.com/naturalcrit/homebrewery/issues/3568)
 ### Saturday 6/7/2024 - v3.13.1
 {{taskList
 
-##### Calculuschild, G-Ambatte
+##### calculuschild, G-Ambatte
 
 * [x] Hotfixes for issues with v3.13.0
 
@@ -236,7 +236,7 @@ Fixes issues [#3559](https://github.com/naturalcrit/homebrewery/issues/3559), [#
 ### Friday 28/6/2024 - v3.13.0
 {{taskList
 
-##### Calculuschild
+##### calculuschild
 
 * [x] Add `:emoji:` Markdown syntax, with autosuggest; start typing after the first `:` for matching emojis from 
 :fab_font_awesome: FontAwesome, :df_d20: DiceFont, :ei_action: ElderberryInn, and a subset of :gi_broadsword: GameIcons
@@ -325,7 +325,7 @@ Fixes issue [#3275](https://github.com/naturalcrit/homebrewery/issues/3275)
 
 * [x] Added new text editor theme: "Darkvision".
 
-##### Calculuschild, G-Ambatte, 5e-Cleric
+##### calculuschild, G-Ambatte, 5e-Cleric
 
 * [x] Codebase and UI cleanup
 }}
@@ -408,7 +408,7 @@ Fixes issue [1488](https://github.com/naturalcrit/homebrewery/issues/1488)
  
 Fixes issue [1488](https://github.com/naturalcrit/homebrewery/issues/1488)
 
-##### Calculuschild
+##### calculuschild
 
 * [x] Better error messages for "Out of Google Drive Storage" and "Not logged in to edit"
 
@@ -561,7 +561,7 @@ Fixes issue [#2729](https://github.com/naturalcrit/homebrewery/issues/2729),
 ### Thursday 17/08/2023 - v3.9.2
 {{taskList
 
-##### Calculuschild
+##### calculuschild
 
 * [x] Fix links to certain old Google Drive files
 
@@ -619,7 +619,7 @@ Fixes issue [#1924](https://github.com/naturalcrit/homebrewery/issues/1924)
 ### Friday 02/06/2023 - v3.9.0
 {{taskList
 
-##### Calculuschild
+##### calculuschild
 
 * [x] Fix some files not showing up on userpage when user has a large number of brews in Google Drive
 
@@ -655,7 +655,7 @@ Fixes issue [#2784](https://github.com/naturalcrit/homebrewery/issues/2784)
 ### Wednesday 12/04/2023 - v3.8.0
 {{taskList
 
-##### Calculuschild
+##### calculuschild
 
 * [x] Rename `{{coverPage}}` to `{{frontCover}}`. Those using this {{beta BETA}} feature will need to update that text to make the cover page appear again.
 
@@ -716,7 +716,7 @@ Fixes issues [#2731](https://github.com/naturalcrit/homebrewery/issues/2731)
 ### Monday 13/03/2023 - v3.7.2
 {{taskList
 
-##### Calculuschild
+##### calculuschild
 
 * [x] Fix wide Monster Stat Blocks not spanning columns on Legacy
 }}
@@ -739,7 +739,7 @@ Fixes issues [#1569](https://github.com/naturalcrit/homebrewery/issues/1569)
 * [x] Updated the Google Drive icon
 * [x] Backend fix to unit tests failing intermittently
 
-##### Calculuschild
+##### calculuschild
 
 * [x] Fix PDF pixelation on CoverPage text outlines
 }}
@@ -751,7 +751,7 @@ Fixes issues [#1569](https://github.com/naturalcrit/homebrewery/issues/1569)
 **NOTE:** Some new snippets will now show a {{beta BETA}} tag. Feel free to use them, but be aware we may change how they work depending on your feedback.
 }}
 
-##### Calculuschild
+##### calculuschild
 
 * [x] New {{openSans **IMAGES → WATERCOLOR EDGE** {{fac,mask-edge}} }} and {{openSans **WATERCOLOR CORNER** {{fac,mask-corner}} }} snippets for V3, which adds a stylish watercolor texture to the edge of your images! (Thanks to /u/flamableconcrete on Reddit for providing these image masks!)
 
@@ -780,7 +780,7 @@ Fixes issues [#2674](https://github.com/naturalcrit/homebrewery/issues/2674)
 
 ### Monday 23/01/2023 - v3.6.0
 {{taskList
-##### Calculuschild
+##### calculuschild
 
 * [x] Fix Google Drive brews sometimes duplicating
 
@@ -895,7 +895,7 @@ Fixes issues [#1670](https://github.com/naturalcrit/homebrewery/issues/1670)
 ### Thursday 28/10/2022 - v3.3.1
 {{taskList
 
-##### Calculuschild
+##### calculuschild
 
 * [x] Fixes to several broken CSS styles from v3.3.0
 
@@ -910,7 +910,7 @@ Fixes issues  [#2468](https://github.com/naturalcrit/homebrewery/issues/2468)
 ### Friday 19/10/2022 - v3.3.0
 {{taskList
 
-##### Calculuschild
+##### calculuschild
 
 * [x] Fix for tables broken by Chrome v106
 
@@ -993,7 +993,7 @@ Fixes issues  [#2317](https://github.com/naturalcrit/homebrewery/issues/2317), [
 ### Wednesday 31/08/2022 - v3.2.1
 {{taskList
 
-##### Calculuschild
+##### calculuschild
 
 * [x] Reference Links should now work inside tables
 
@@ -1019,7 +1019,7 @@ Fixes issues  [#2317](https://github.com/naturalcrit/homebrewery/issues/2317), [
 ### Saturday 27/08/2022 - v3.2.0
 {{taskList
 
-##### Calculuschild
+##### calculuschild
 
 * [x] The V3 renderer is now the default for new brews.
 
@@ -1046,7 +1046,7 @@ Fixes issues  [#2317](https://github.com/naturalcrit/homebrewery/issues/2317), [
 ### Thursday 09/06/2022 - v3.1.1
 {{taskList
 
-##### Calculuschild:
+##### calculuschild:
 
 * [x] Fixed class table decorations appearing on top of the table in PDF output.
 
@@ -1736,7 +1736,7 @@ myStyle {color: black}
 - Fixed a bad search route in the admin panel (thanks u/SnappyTom!)
 
 ### Friday, 29/07/2016 - v2.2.7
-- Adding in descriptive note blocks. (Thanks Calculuschild!)
+- Adding in descriptive note blocks. (Thanks calculuschild!)
 
 ### Thursday, 07/07/2016 - v2.2.6
 - Added a new nav item on the homepage for accessing both recently viewed and edited brews (thanks [ChosenSeraph!](https://github.com/stolksdorf/homebrewery/issues/147))
