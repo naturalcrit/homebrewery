@@ -159,7 +159,10 @@ router.get('/admin', mw.adminOnly, (req, res)=>{
 		url : req.originalUrl
 	})
 	.then((page)=>res.send(page))
-	.catch((err)=>res.sendStatus(500));
+	.catch((err)=> {
+		console.log(err)
+		res.sendStatus(500)
+	})
 });
 
 module.exports = router;
