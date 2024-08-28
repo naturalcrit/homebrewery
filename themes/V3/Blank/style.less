@@ -156,6 +156,19 @@ body { counter-reset : page-numbers; }
 		break-inside                : avoid;
 	}
 
+	/* Wrap Text */
+	.wrapLeft {
+		shape-outside : var(--HB_src);
+		float         : right;
+		shape-margin  : 0.2cm;
+	}
+
+	.wrapRight {
+		shape-outside : var(--HB_src);
+		float         : left;
+		shape-margin  : 0.2cm;
+	}
+
 	/* Watermark */
 	.watermark {
 		position        : absolute;
