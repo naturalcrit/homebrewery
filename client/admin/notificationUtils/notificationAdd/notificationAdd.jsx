@@ -1,111 +1,151 @@
-require('./notificationAdd.less');
 const React = require('react');
-const { useState } = require('react');
+const { useState, useRef } = require('react');
 const cx = require('classnames');
 const request = require('superagent');
 
-const fields = ['dismissKey', 'title', 'text', 'startAt', 'stopAt'];
-
 const NotificationAdd = () => {
     const [state, setState] = useState({
-        query: '',
         notificationResult: null,
         searching: false,
         error: null,
-        dismissKey: '',
-        title: '',
-        text: '',
-        startAt: '',
-        stopAt: ''
     });
 
-    const handleChange = (e, field) => {
-        const value = e.target.value;
-        setState(prevState => ({
-            ...prevState,
-            [field]: value
-        }));
-    };
+    const dismissKeyRef = useRef(null);
+    const titleRef = useRef(null);
+    const textRef = useRef(null);
+    const [startAt, setStartAt] = useState(null);
+    const [stopAt, setStopAt] = useState(null);
 
     const saveNotification = async () => {
-        if (!state.dismissKey) {
+        const dismissKey = dismissKeyRef.current.value;
+        const title = titleRef.current.value;
+        const text = textRef.current.value;
+
+        // Basic validation
+        if (!dismissKey || !title || !text || !startAt || !stopAt) {
             setState(prevState => ({
                 ...prevState,
-                error: 'No notification key!'
+                error: 'All fields are required!',
             }));
             return;
         }
 
         const data = {
-            dismissKey: state.dismissKey,
-            title: state.title,
-            text: state.text,
-            startAt: Date.parse(state.startAt),
-            stopAt: Date.parse(state.stopAt)
+            dismissKey,
+            title,
+            text,
+            startAt: startAt ? startAt.toISOString() : '',
+            stopAt: stopAt ? stopAt.toISOString() : '',
         };
 
         try {
+            setState(prevState => ({ ...prevState, searching: true, error: null }));
             const response = await request.post('/admin/notification/add').send(data);
             const notification = response.body;
+
             let update = {
-                notificationResult: `Created notification: ${JSON.stringify(notification, null, 2)}`
+                notificationResult: `Created notification: ${JSON.stringify(notification, null, 2)}`,
             };
 
             if (notification.err) {
                 update.notificationResult = JSON.stringify(notification.err);
-                if (notification.err.code == 11000) {
-                    update.notificationResult = `Duplicate dismissKey error! ${state.dismissKey} already exists.`;
+                if (notification.err.code === 11000) {
+                    update.notificationResult = `Duplicate dismissKey error! ${dismissKey} already exists.`;
                 }
             } else {
                 update = {
                     ...update,
-                    dismissKey: '',
-                    title: '',
-                    text: '',
-                    startAt: '',
-                    stopAt: ''
+                    notificationResult: `Notification successfully created.`,
                 };
+                // Reset form fields
+                dismissKeyRef.current.value = '';
+                titleRef.current.value = '';
+                textRef.current.value = '';
+                setStartAt(null);
+                setStopAt(null);
             }
 
             setState(prevState => ({
                 ...prevState,
                 ...update,
-                searching: false
+                searching: false,
             }));
         } catch (err) {
             setState(prevState => ({
                 ...prevState,
-                error: err.message,
-                searching: false
+                error: `Error saving notification: ${err.message}`,
+                searching: false,
             }));
         }
     };
 
     return (
         <div className='notificationAdd'>
-            <h2>Add</h2>
-            {fields.map((field, idx) => (
-                <div key={idx}>
-                    <label className='fieldLabel'>{field.toUpperCase()}</label>
-                    <input
-                        className='fieldInput'
-                        type='text'
-                        value={state[field]}
-                        onChange={(e) => handleChange(e, field)}
-                        placeholder={field}
-                    />
-                </div>
-            ))}
+            <h2>Add Notification</h2>
+
+            <label className='fieldLabel'>
+                DISMISSKEY
+                <input
+                    className='fieldInput'
+                    type='text'
+                    ref={dismissKeyRef}
+                    placeholder='GOOGLEDRIVENOTIF'
+                />
+            </label>
+
+            <label className='fieldLabel'>
+                TITLE
+                <input
+                    className='fieldInput'
+                    type='text'
+                    ref={titleRef}
+                    placeholder='Stop using Google Drive as image host'
+                />
+            </label>
+
+            <label className='fieldLabel'>
+                TEXT
+                <textarea
+					className='fieldInput'
+					type='text'
+					ref={textRef}
+					placeholder='Google Drive is not an image hosting site, you should not use it as such.'>
+					</textarea>
+            </label>
+
+            <label className='fieldLabel'>
+                STARTAT
+                <input
+					type="date"
+                    className='fieldInput'
+                    selected={startAt}
+                    onChange={date => setStartAt(date)}
+                />
+            </label>
+
+            <label className='fieldLabel'>
+                STOPAT
+                <input
+					type="date"
+                    className='fieldInput'
+                    selected={stopAt}
+                    onChange={date => setStopAt(date)}
+                />
+            </label>
+
             <div className='notificationResult'>{state.notificationResult}</div>
-            <button onClick={saveNotification}>
+
+            <button className='notificationSave' onClick={saveNotification} disabled={state.searching}>
                 <i
                     className={cx('fas', {
                         'fa-save': !state.searching,
-                        'fa-spin fa-spinner': state.searching
+                        'fa-spin fa-spinner': state.searching,
                     })}
                 />
+                Save Notification
             </button>
-            {state.error && <div className='error'>{state.error.toString()}</div>}
+
+            {state.error && <div className='error'>{state.error}</div>}
         </div>
     );
 };
