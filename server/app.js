@@ -358,6 +358,9 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 
 //Account Page
 app.get('/account', asyncHandler(async (req, res, next)=>{
+	const data = {};
+	data.title = 'Account Information Page';
+	
 	if(!req.account) {
 		res.set('WWW-Authenticate', 'Bearer realm="Authorization Required"');
 		const error = new Error('No valid account');
@@ -366,9 +369,6 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 		error.page = data.title;
 		return next(error);
 	};
-	
-	const data = {};
-	data.title = 'Account Information Page';
 
 	let auth;
 	let googleCount = [];
