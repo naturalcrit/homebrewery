@@ -1,5 +1,5 @@
 const stylelint = require('stylelint');
-const { isNumber } = require('stylelint/lib/utils/validateTypes');
+const { isNumber } = require('stylelint/lib/utils/validateTypes.cjs');
 
 const { report, ruleMessages, validateOptions } = stylelint.utils;
 const ruleName = 'naturalcrit/declaration-colon-min-space-before';

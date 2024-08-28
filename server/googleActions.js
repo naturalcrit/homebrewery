@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-const _ = require('lodash');
 const googleDrive = require('@googleapis/drive');
 const { nanoid } = require('nanoid');
 const token = require('./token.js');
@@ -7,7 +6,9 @@ const config = require('./config.js');
 
 let serviceAuth;
 if(!config.get('service_account')){
-	console.log('No Google Service Account in config files - Google Drive integration will not be available.');
+	const reset = '\x1b[0m'; // Reset to default style
+	const yellow = '\x1b[33m'; // yellow color
+	console.warn(`\n${yellow}No Google Service Account in config files - Google Drive integration will not be available.${reset}`);
 } else  {
 	const keys = typeof(config.get('service_account')) == 'string' ?
 		JSON.parse(config.get('service_account')) :
@@ -18,7 +19,7 @@ if(!config.get('service_account')){
 		serviceAuth.scopes = ['https://www.googleapis.com/auth/drive'];
 	} catch (err) {
 		console.warn(err);
-		console.log('Please make sure the Google Service Account is set up properly in your config files.');
+		console.warn('Please make sure the Google Service Account is set up properly in your config files.');
 	}
 }
 

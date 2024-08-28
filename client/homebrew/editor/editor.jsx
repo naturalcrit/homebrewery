@@ -5,10 +5,13 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 const dedent = require('dedent-tabs').default;
+const Markdown = require('../../../shared/naturalcrit/markdown.js');
 
 const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
 const SnippetBar = require('./snippetbar/snippetbar.jsx');
 const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
+
+const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
 
 const SNIPPETBAR_HEIGHT = 25;
 const DEFAULT_STYLE_TEXT = dedent`
@@ -34,14 +37,19 @@ const Editor = createClass({
 			onMetaChange  : ()=>{},
 			reportError   : ()=>{},
 
-			renderer : 'legacy'
+			editorTheme : 'default',
+			renderer    : 'legacy'
 		};
 	},
 	getInitialState : function() {
 		return {
-			view : 'text' //'text', 'style', 'meta'
+			editorTheme : this.props.editorTheme,
+			view        : 'text' //'text', 'style', 'meta'
 		};
 	},
+
+	editor     : React.createRef(null),
+	codeEditor : React.createRef(null),
 
 	isText  : function() {return this.state.view == 'text';},
 	isStyle : function() {return this.state.view == 'style';},
@@ -51,6 +59,15 @@ const Editor = createClass({
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
+		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
+		document.addEventListener('keydown', this.handleControlKeys);
+
+		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
+		if(editorTheme) {
+			this.setState({
+				editorTheme : editorTheme
+			});
+		}
 	},
 
 	componentWillUnmount : function() {
@@ -67,16 +84,29 @@ const Editor = createClass({
 		};
 	},
 
+	handleControlKeys : function(e){
+		if(!(e.ctrlKey || e.metaKey)) return;
+		const LEFTARROW_KEY = 37;
+		const RIGHTARROW_KEY = 39;
+		if (e.shiftKey && (e.keyCode == RIGHTARROW_KEY)) this.brewJump();
+		if (e.shiftKey && (e.keyCode == LEFTARROW_KEY)) this.sourceJump();
+		if ((e.keyCode == LEFTARROW_KEY) || (e.keyCode == RIGHTARROW_KEY)) {
+			e.stopPropagation();
+			e.preventDefault();
+		}
+	},
+
+
 	updateEditorSize : function() {
-		if(this.refs.codeEditor) {
-			let paneHeight = this.refs.main.parentNode.clientHeight;
-			paneHeight -= SNIPPETBAR_HEIGHT + 1;
-			this.refs.codeEditor.codeMirror.setSize(null, paneHeight);
+		if(this.codeEditor.current) {
+			let paneHeight = this.editor.current.parentNode.clientHeight;
+			paneHeight -= SNIPPETBAR_HEIGHT;
+			this.codeEditor.current.codeMirror.setSize(null, paneHeight);
 		}
 	},
 
 	handleInject : function(injectText){
-		this.refs.codeEditor?.injectText(injectText, false);
+		this.codeEditor.current?.injectText(injectText, false);
 	},
 
 	handleViewChange : function(newView){
@@ -87,7 +117,7 @@ const Editor = createClass({
 	},
 
 	getCurrentPage : function(){
-		const lines = this.props.brew.text.split('\n').slice(0, this.refs.codeEditor.getCursorPosition().line + 1);
+		const lines = this.props.brew.text.split('\n').slice(0, this.codeEditor.current.getCursorPosition().line + 1);
 		return _.reduce(lines, (r, line)=>{
 			if(
 				(this.props.renderer == 'legacy' && line.indexOf('\\page') !== -1)
@@ -99,13 +129,24 @@ const Editor = createClass({
 	},
 
 	highlightCustomMarkdown : function(){
-		if(!this.refs.codeEditor) return;
+		if(!this.codeEditor.current) return;
 		if(this.state.view === 'text')  {
-			const codeMirror = this.refs.codeEditor.codeMirror;
+			const codeMirror = this.codeEditor.current.codeMirror;
 
 			codeMirror.operation(()=>{ // Batch CodeMirror styling
+
+				const foldLines = [];
+        
 				//reset custom text styles
-				const customHighlights = codeMirror.getAllMarks().filter((mark)=>!mark.__isFold); //Don't undo code folding
+				const customHighlights = codeMirror.getAllMarks().filter((mark)=>{
+					// Record details of folded sections
+					if(mark.__isFold) {
+						const fold = mark.find();
+						foldLines.push({from: fold.from?.line, to: fold.to?.line});
+					}
+					return !mark.__isFold;
+				}); //Don't undo code folding
+
 				for (let i=customHighlights.length - 1;i>=0;i--) customHighlights[i].clear();
 
 				let editorPageCount = 2; // start page count from page 2
@@ -116,6 +157,11 @@ const Editor = createClass({
 					codeMirror.removeLineClass(lineNumber, 'background', 'pageLine');
 					codeMirror.removeLineClass(lineNumber, 'text');
 					codeMirror.removeLineClass(lineNumber, 'wrap', 'sourceMoveFlash');
+
+					// Don't process lines inside folded text
+					// If the current lineNumber is inside any folded marks, skip line styling
+					if (foldLines.some(fold => lineNumber >= fold.from && lineNumber <= fold.to))
+						return;
 
 					// Styling for \page breaks
 					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
@@ -138,9 +184,45 @@ const Editor = createClass({
 							codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 						}
 
+						// definition lists
+						if(line.includes('::')){
+							if(/^:*$/.test(line) == true){ return };
+							const regex = /^([^\n]*?:?\s?)(::[^\n]*)(?:\n|$)/ymd;  // the `d` flag, for match indices, throws an ESLint error.
+							let match;
+							while ((match = regex.exec(line)) != null){
+								codeMirror.markText({ line: lineNumber, ch: match.indices[0][0] }, { line: lineNumber, ch: match.indices[0][1] }, { className: 'dl-highlight' });
+								codeMirror.markText({ line: lineNumber, ch: match.indices[1][0] }, { line: lineNumber, ch: match.indices[1][1] }, { className: 'dt-highlight' });
+								codeMirror.markText({ line: lineNumber, ch: match.indices[2][0] }, { line: lineNumber, ch: match.indices[2][1] }, { className: 'dd-highlight' });
+								const ddIndex = match.indices[2][0];
+								let colons = /::/g;
+								let colonMatches = colons.exec(match[2]);
+								if(colonMatches !== null){
+									codeMirror.markText({ line: lineNumber, ch: colonMatches.index + ddIndex }, { line: lineNumber, ch: colonMatches.index + colonMatches[0].length + ddIndex }, { className: 'dl-colon-highlight'} )
+								}
+							}
+						}
+
+						// Subscript & Superscript
+						if(line.includes('^')) {
+							let startIndex = line.indexOf('^');
+							const superRegex = /\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^/gy;
+							const subRegex   = /\^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^\^/gy;
+							
+							while (startIndex >= 0) {
+								superRegex.lastIndex = subRegex.lastIndex = startIndex;
+								let isSuper = false;
+								let match = subRegex.exec(line) || superRegex.exec(line);
+								if (match) {
+									isSuper = !subRegex.lastIndex;
+									codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: isSuper ? 'superscript' : 'subscript' });
+								}
+								startIndex = line.indexOf('^', Math.max(startIndex + 1, subRegex.lastIndex, superRegex.lastIndex));
+							}
+						}
+
 						// Highlight injectors {style}
 						if(line.includes('{') && line.includes('}')){
-							const regex = /(?:^|[^{\n])({(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\2})/gm;
+							const regex = /(?:^|[^{\n])({(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\2})/gm;
 							let match;
 							while ((match = regex.exec(line)) != null) {
 								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length }, { className: 'injection' });
@@ -148,7 +230,7 @@ const Editor = createClass({
 						}
 						// Highlight inline spans {{content}}
 						if(line.includes('{{') && line.includes('}}')){
-							const regex = /{{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1 *|}}/g;
+							const regex = /{{(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\1 *|}}/g;
 							let match;
 							let blockCount = 0;
 							while ((match = regex.exec(line)) != null) {
@@ -167,10 +249,38 @@ const Editor = createClass({
 							// Highlight block divs {{\n Content \n}}
 							let endCh = line.length+1;
 
-							const match = line.match(/^ *{{(?=((?::(?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':{}\s]*)*))\1 *$|^ *}}$/);
+							const match = line.match(/^ *{{(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\1 *$|^ *}}$/);
 							if(match)
 								endCh = match.index+match[0].length;
 							codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
+						}
+
+						// Emojis
+						if(line.match(/:[^\s:]+:/g)) {
+							let startIndex = line.indexOf(':');
+							const emojiRegex = /:[^\s:]+:/gy;
+
+							while (startIndex >= 0) {
+								emojiRegex.lastIndex = startIndex;
+								let match = emojiRegex.exec(line);
+								if (match) {
+									let tokens = Markdown.marked.lexer(match[0]);
+									tokens = tokens[0].tokens.filter(t => t.type == 'emoji')
+									if (!tokens.length)
+										return;
+
+									let startPos = { line: lineNumber, ch: match.index };
+									let endPos   = { line: lineNumber, ch: match.index + match[0].length };
+
+									// Iterate over conflicting marks and clear them
+									var marks = codeMirror.findMarks(startPos, endPos);
+									marks.forEach(function(marker) {
+										if(!marker.__isFold) marker.clear();
+									});
+									codeMirror.markText(startPos, endPos, { className: 'emoji' });
+								}
+								startIndex = line.indexOf(':', Math.max(startIndex + 1, emojiRegex.lastIndex));
+							}
 						}
 					}
 				});
@@ -226,23 +336,23 @@ const Editor = createClass({
 
 				targetLine = lineCount - 1; //Scroll to `\page`, which is one line back.
 
-				let currentY = this.refs.codeEditor.codeMirror.getScrollInfo().top;
-				let targetY  = this.refs.codeEditor.codeMirror.heightAtLine(targetLine, 'local', true);
+				let currentY = this.codeEditor.current.codeMirror.getScrollInfo().top;
+				let targetY  = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
 
 				//Scroll 1/10 of the way every 10ms until 1px off.
 				const incrementalScroll = setInterval(()=>{
 					currentY += (targetY - currentY) / 10;
-					this.refs.codeEditor.codeMirror.scrollTo(null, currentY);
+					this.codeEditor.current.codeMirror.scrollTo(null, currentY);
 
 					// Update target: target height is not accurate until within +-10 lines of the visible window
 					if(Math.abs(targetY - currentY > 100))
-						targetY = this.refs.codeEditor.codeMirror.heightAtLine(targetLine, 'local', true);
+						targetY = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
 
 					// End when close enough
 					if(Math.abs(targetY - currentY) < 1) {
-						this.refs.codeEditor.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
-						this.refs.codeEditor.setCursorPosition({ line: targetLine + 1, ch: 0 });
-						this.refs.codeEditor.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
+						this.codeEditor.current.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
+						this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
+						this.codeEditor.current.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
 						clearInterval(incrementalScroll);
 					}
 				}, 10);
@@ -252,7 +362,14 @@ const Editor = createClass({
 
 	//Called when there are changes to the editor's dimensions
 	update : function(){
-		this.refs.codeEditor?.updateSize();
+		this.codeEditor.current?.updateSize();
+	},
+
+	updateEditorTheme : function(newTheme){
+		window.localStorage.setItem(EDITOR_THEME_KEY, newTheme);
+		this.setState({
+			editorTheme : newTheme
+		});
 	},
 
 	//Called by CodeEditor after document switch, so Snippetbar can refresh UndoHistory
@@ -264,23 +381,25 @@ const Editor = createClass({
 		if(this.isText()){
 			return <>
 				<CodeEditor key='codeEditor'
-					ref='codeEditor'
+					ref={this.codeEditor}
 					language='gfm'
 					view={this.state.view}
 					value={this.props.brew.text}
 					onChange={this.props.onTextChange}
+					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent} />
 			</>;
 		}
 		if(this.isStyle()){
 			return <>
 				<CodeEditor key='codeEditor'
-					ref='codeEditor'
+					ref={this.codeEditor}
 					language='css'
 					view={this.state.view}
 					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
 					onChange={this.props.onStyleChange}
-					enableFolding={false}
+					enableFolding={true}
+					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent} />
 			</>;
 		}
@@ -293,26 +412,35 @@ const Editor = createClass({
 				<MetadataEditor
 					metadata={this.props.brew}
 					onChange={this.props.onMetaChange}
-					reportError={this.props.reportError}/>
+					reportError={this.props.reportError}
+					userThemes={this.props.userThemes}/>
 			</>;
 		}
 	},
 
 	redo : function(){
-		return this.refs.codeEditor?.redo();
+		return this.codeEditor.current?.redo();
 	},
 
 	historySize : function(){
-		return this.refs.codeEditor?.historySize();
+		return this.codeEditor.current?.historySize();
 	},
 
 	undo : function(){
-		return this.refs.codeEditor?.undo();
+		return this.codeEditor.current?.undo();
+	},
+
+	foldCode : function(){
+		return this.codeEditor.current?.foldAllCode();
+	},
+
+	unfoldCode : function(){
+		return this.codeEditor.current?.unfoldAllCode();
 	},
 
 	render : function(){
 		return (
-			<div className='editor' ref='main'>
+			<div className='editor' ref={this.editor}>
 				<SnippetBar
 					brew={this.props.brew}
 					view={this.state.view}
@@ -323,8 +451,13 @@ const Editor = createClass({
 					theme={this.props.brew.theme}
 					undo={this.undo}
 					redo={this.redo}
+					foldCode={this.foldCode}
+					unfoldCode={this.unfoldCode}
 					historySize={this.historySize()}
-					cursorPos={this.refs.codeEditor?.getCursorPosition() || {}} />
+					currentEditorTheme={this.state.editorTheme}
+					updateEditorTheme={this.updateEditorTheme}
+					snippetBundle={this.props.snippetBundle}
+					cursorPos={this.codeEditor.current?.getCursorPosition() || {}} />
 
 				{this.renderEditor()}
 			</div>

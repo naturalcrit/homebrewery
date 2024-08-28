@@ -3,11 +3,11 @@ require('./codeEditor.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
-const cx = require('classnames');
 const closeTag = require('./close-tag');
+const autoCompleteEmoji = require('./autocompleteEmoji');
 
 let CodeMirror;
-if(typeof navigator !== 'undefined'){
+if(typeof window !== 'undefined'){
 	CodeMirror = require('codemirror');
 
 	//Language Modes
@@ -36,9 +36,13 @@ if(typeof navigator !== 'undefined'){
 	//XML code folding is a requirement of the auto-closing tag feature and is not enabled
 	require('codemirror/addon/fold/xml-fold.js');
 	require('codemirror/addon/edit/closetag.js');
+	//Autocompletion
+	require('codemirror/addon/hint/show-hint.js');
 
-	const foldCode = require('./fold-code');
-	foldCode.registerHomebreweryHelper(CodeMirror);
+	const foldPagesCode = require('./fold-pages');
+	foldPagesCode.registerHomebreweryHelper(CodeMirror);
+	const foldCSSCode = require('./fold-css');
+	foldCSSCode.registerHomebreweryHelper(CodeMirror);
 }
 
 const CodeEditor = createClass({
@@ -49,7 +53,8 @@ const CodeEditor = createClass({
 			value         : '',
 			wrap          : true,
 			onChange      : ()=>{},
-			enableFolding : true
+			enableFolding : true,
+			editorTheme   : 'default'
 		};
 	},
 
@@ -58,6 +63,8 @@ const CodeEditor = createClass({
 			docs : {}
 		};
 	},
+
+	editor : React.createRef(null),
 
 	componentDidMount : function() {
 		this.buildEditor();
@@ -91,10 +98,14 @@ const CodeEditor = createClass({
 		} else {
 			this.codeMirror.setOption('foldOptions', false);
 		}
+
+		if(prevProps.editorTheme !== this.props.editorTheme){
+			this.codeMirror.setOption('theme', this.props.editorTheme);
+		}
 	},
 
 	buildEditor : function() {
-		this.codeMirror = CodeMirror(this.refs.editor, {
+		this.codeMirror = CodeMirror(this.editor.current, {
 			lineNumbers       : true,
 			lineWrapping      : this.props.wrap,
 			indentWithTabs    : false,
@@ -107,6 +118,10 @@ const CodeEditor = createClass({
 				'Shift-Tab'        : this.dedent,
 				'Ctrl-B'           : this.makeBold,
 				'Cmd-B'            : this.makeBold,
+				'Shift-Ctrl-='     : this.makeSuper,
+				'Shift-Cmd-='      : this.makeSuper,
+				'Ctrl-='           : this.makeSub,
+				'Cmd-='            : this.makeSub,
 				'Ctrl-I'           : this.makeItalic,
 				'Cmd-I'            : this.makeItalic,
 				'Ctrl-U'           : this.makeUnderline,
@@ -159,6 +174,7 @@ const CodeEditor = createClass({
 			autoCloseTags     : true,
 			styleActiveLine   : true,
 			showTrailingSpace : false,
+			theme             : this.props.editorTheme
 			// specialChars           : / /,
 			// specialCharPlaceholder : function(char) {
 			// 	const el = document.createElement('span');
@@ -167,7 +183,10 @@ const CodeEditor = createClass({
 			// 	return el;
 			// }
 		});
+
+		// Add custom behaviors (auto-close curlies and auto-complete emojis)
 		closeTag.autoCloseCurlyBraces(CodeMirror, this.codeMirror);
+		autoCompleteEmoji.showAutocompleteEmoji(CodeMirror, this.codeMirror);
 
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
 		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
@@ -212,6 +231,25 @@ const CodeEditor = createClass({
 			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 1 });
 		}
 	},
+
+	makeSuper : function() {
+		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 1) === '^' && selection.slice(-1) === '^';
+		this.codeMirror.replaceSelection(t ? selection.slice(1, -1) : `^${selection}^`, 'around');
+		if(selection.length === 0){
+			const cursor = this.codeMirror.getCursor();
+			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 1 });
+		}
+	},
+
+	makeSub : function() {
+		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 2) === '^^' && selection.slice(-2) === '^^';
+		this.codeMirror.replaceSelection(t ? selection.slice(2, -2) : `^^${selection}^^`, 'around');
+		if(selection.length === 0){
+			const cursor = this.codeMirror.getCursor();
+			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 2 });
+		}
+	},
+
 
 	makeNbsp : function() {
 		this.codeMirror.replaceSelection('&nbsp;', 'end');
@@ -375,11 +413,11 @@ const CodeEditor = createClass({
 	foldOptions : function(cm){
 		return {
 			scanUp      : true,
-			rangeFinder : CodeMirror.fold.homebrewery,
+			rangeFinder : this.props.language === 'css' ? CodeMirror.fold.homebrewerycss : CodeMirror.fold.homebrewery,
 			widget      : (from, to)=>{
 				let text = '';
 				let currentLine = from.line;
-				const maxLength = 50;
+				let maxLength = 50;
 
 				let foldPreviewText = '';
 				while (currentLine <= to.line && text.length <= maxLength) {
@@ -394,10 +432,15 @@ const CodeEditor = createClass({
 					}
 				}
 				text = foldPreviewText || `Lines ${from.line+1}-${to.line+1}`;
+				text = text.replace('{', '').trim();
 
-				text = text.trim();
+				// Truncate data URLs at `data:`
+				const startOfData = text.indexOf('data:');
+				if(startOfData > 0)
+					maxLength = Math.min(startOfData + 5, maxLength);
+
 				if(text.length > maxLength)
-					text = `${text.substr(0, maxLength)}...`;
+					text = `${text.slice(0, maxLength)}...`;
 
 				return `\u21A4 ${text} \u21A6`;
 			}
@@ -406,8 +449,12 @@ const CodeEditor = createClass({
 	//----------------------//
 
 	render : function(){
-		return <div className='codeEditor' ref='editor' style={this.props.style}/>;
+		return <>
+			<link href={`../homebrew/cm-themes/${this.props.editorTheme}.css`} type='text/css' rel='stylesheet' />
+			<div className='codeEditor' ref={this.editor} style={this.props.style}/>
+		</>;
 	}
 });
 
 module.exports = CodeEditor;
+

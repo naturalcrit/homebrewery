@@ -22,18 +22,18 @@ const errorIndex = (props)=>{
 			## We can't find this brew in Google Drive!
 			
 			This file was saved on Google Drive, but this link doesn't work anymore.
-			${ props.brew.authors?.length > 0
-				? `Note that this brew belongs to the Homebrewery account **${ props.brew.authors[0] }**,
-				${ props.brew.account
-					? `which is
+			${props.brew.authors?.length > 0
+		? `Note that this brew belongs to the Homebrewery account **${props.brew.authors[0]}**,
+				${props.brew.account
+		? `which is
 						${props.brew.authors[0] == props.brew.account
-							? `your account.`
-							: `not your account (you are currently signed in as **${props.brew.account}**).`
-						}`
-					: 'and you are not currently signed in to any account.'
-				}`
-				: ''
-			}
+		? `your account.`
+		: `not your account (you are currently signed in as **${props.brew.account}**).`
+}`
+		: 'and you are not currently signed in to any account.'
+}`
+		: ''
+}
 			The Homebrewery cannot delete files from Google Drive on its own, so there
 			are three most likely possibilities:
 			:
@@ -73,9 +73,13 @@ const errorIndex = (props)=>{
 		**Properties** tab, and adding your username to the "invited authors" list. You can
 		then try to access this document again.
 		
+		:
+
 		**Brew Title:** ${props.brew.brewTitle || 'Unable to show title'}
 
-		**Current Authors:** ${props.brew.authors?.map((author)=>{return `${author}`;}).join(', ') || 'Unable to list authors'}`,
+		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
+		
+		[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`,
 
 		// User is not signed in; must be a user on the Authors List
 		'04' : dedent`
@@ -84,9 +88,14 @@ const errorIndex = (props)=>{
 		You must be logged in to one of the accounts listed as an author of this brew.
 		User is not logged in. Please log in [here](${loginUrl}).
 		
+		:
+
 		**Brew Title:** ${props.brew.brewTitle || 'Unable to show title'}
 
-		**Current Authors:** ${props.brew.authors?.map((author)=>{return `${author}`;}).join(', ') || 'Unable to list authors'}`,
+		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
+
+		[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`,
+
 
 		// Brew load error
 		'05' : dedent`
@@ -95,6 +104,8 @@ const errorIndex = (props)=>{
 		The server could not locate the Homebrewery document. It was likely deleted by
 		its owner.
 		
+		:
+
 		**Requested access:** ${props.brew.accessType}
 
 		**Brew ID:**  ${props.brew.brewId}`,
@@ -111,6 +122,8 @@ const errorIndex = (props)=>{
 		
 		An error occurred while attempting to remove the Homebrewery document.
 		
+		:
+
 		**Brew ID:**  ${props.brew.brewId}`,
 
 		// Author delete error
@@ -119,7 +132,34 @@ const errorIndex = (props)=>{
 		
 		An error occurred while attempting to remove the user from the Homebrewery document author list!
 		
+		:
+
 		**Brew ID:**  ${props.brew.brewId}`,
+
+		// Theme load error
+		'09' : dedent`
+		## No Homebrewery theme document could be found.
+		
+		The server could not locate the Homebrewery document. It was likely deleted by
+		its owner.
+		
+		:
+
+		**Requested access:** ${props.brew.accessType}
+
+		**Brew ID:**  ${props.brew.brewId}`,
+
+		// Brew locked by Administrators error
+		'100' : dedent`
+		## This brew has been locked.
+		
+		Only an author may request that this lock is removed.
+		
+		:
+
+		**Brew ID:**  ${props.brew.brewId}
+		
+		**Brew Title:** ${props.brew.brewTitle}`,
 	};
 };
 

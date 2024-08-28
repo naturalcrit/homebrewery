@@ -13,6 +13,7 @@ const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
+const { fetchThemeBundle } = require('../../../../shared/helpers.js');
 
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
@@ -31,11 +32,20 @@ const HomePage = createClass({
 	},
 	getInitialState : function() {
 		return {
-			brew        : this.props.brew,
-			welcomeText : this.props.brew.text,
-			error       : undefined
+			brew              : this.props.brew,
+			welcomeText       : this.props.brew.text,
+			error             : undefined,
+			currentEditorPage : 0,
+			themeBundle       : {}
 		};
 	},
+
+	editor : React.createRef(null),
+
+	componentDidMount : function() {
+		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
+	},
+
 	handleSave : function(){
 		request.post('/api')
 			.send(this.state.brew)
@@ -49,11 +59,12 @@ const HomePage = createClass({
 			});
 	},
 	handleSplitMove : function(){
-		this.refs.editor.update();
+		this.editor.current.update();
 	},
 	handleTextChange : function(text){
 		this.setState((prevState)=>({
-			brew : { ...prevState.brew, text: text }
+			brew              : { ...prevState.brew, text: text },
+			currentEditorPage : this.editor.current.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
 		}));
 	},
 	renderNavbar : function(){
@@ -77,15 +88,22 @@ const HomePage = createClass({
 			{this.renderNavbar()}
 
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove} ref='pane'>
+				<SplitPane onDragFinish={this.handleSplitMove}>
 					<Editor
-						ref='editor'
+						ref={this.editor}
 						brew={this.state.brew}
 						onTextChange={this.handleTextChange}
 						renderer={this.state.brew.renderer}
 						showEditButtons={false}
+						snippetBundle={this.state.themeBundle.snippets}
 					/>
-					<BrewRenderer text={this.state.brew.text} style={this.state.brew.style} renderer={this.state.brew.renderer}/>
+					<BrewRenderer
+						text={this.state.brew.text}
+						style={this.state.brew.style}
+						renderer={this.state.brew.renderer}
+						currentEditorPage={this.state.currentEditorPage}
+						themeBundle={this.state.themeBundle}
+					/>
 				</SplitPane>
 			</div>
 

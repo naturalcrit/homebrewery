@@ -9,34 +9,22 @@ const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
 
-const { homebrewApi, getBrew } = require('./homebrew.api.js');
+const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
+const templateFn = require('./../client/template.js');
 
 const { DEFAULT_BREW } = require('./brewDefaults.js');
 
-const splitTextStyleAndMetadata = (brew)=>{
-	brew.text = brew.text.replaceAll('\r\n', '\n');
-	if(brew.text.startsWith('```metadata')) {
-		const index = brew.text.indexOf('```\n\n');
-		const metadataSection = brew.text.slice(12, index - 1);
-		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
-		brew.text = brew.text.slice(index + 5);
-	}
-	if(brew.text.startsWith('```css')) {
-		const index = brew.text.indexOf('```\n\n');
-		brew.style = brew.text.slice(7, index - 1);
-		brew.text = brew.text.slice(index + 5);
-	}
-};
+const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
+
 
 const sanitizeBrew = (brew, accessType)=>{
 	brew._id = undefined;
 	brew.__v = undefined;
-	if(accessType !== 'edit'){
+	if(accessType !== 'edit' && accessType !== 'shareAuthor') {
 		brew.editId = undefined;
 	}
 	return brew;
@@ -94,7 +82,8 @@ app.get('/robots.txt', (req, res)=>{
 app.get('/', (req, res, next)=>{
 	req.brew = {
 		text     : welcomeText,
-		renderer : 'V3'
+		renderer : 'V3',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -110,7 +99,8 @@ app.get('/', (req, res, next)=>{
 app.get('/legacy', (req, res, next)=>{
 	req.brew = {
 		text     : welcomeTextLegacy,
-		renderer : 'legacy'
+		renderer : 'legacy',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -126,7 +116,8 @@ app.get('/legacy', (req, res, next)=>{
 app.get('/migrate', (req, res, next)=>{
 	req.brew = {
 		text     : migrateText,
-		renderer : 'V3'
+		renderer : 'V3',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -143,7 +134,8 @@ app.get('/changelog', async (req, res, next)=>{
 	req.brew = {
 		title    : 'Changelog',
 		text     : changelogText,
-		renderer : 'V3'
+		renderer : 'V3',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -160,7 +152,8 @@ app.get('/faq', async (req, res, next)=>{
 	req.brew = {
 		title    : 'FAQ',
 		text     : faqText,
-		renderer : 'V3'
+		renderer : 'V3',
+		theme    : '5ePHB'
 	},
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -207,6 +200,9 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	});
 	res.status(200).send(brew.text);
 });
+
+//Serve brew styling
+app.get('/css/:id', asyncHandler(getBrew('share')), (req, res)=>{getCSS(req, res);});
 
 //User Page
 app.get('/user/:username', async (req, res, next)=>{
@@ -268,6 +264,9 @@ app.get('/user/:username', async (req, res, next)=>{
 	}
 
 	req.brews = _.map(brews, (brew)=>{
+		// Clean up brew data
+		brew.title = brew.title?.trim();
+		brew.description = brew.description?.trim();
 		return sanitizeBrew(brew, ownAccount ? 'edit' : 'share');
 	});
 
@@ -275,8 +274,10 @@ app.get('/user/:username', async (req, res, next)=>{
 });
 
 //Edit Page
-app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
+app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res, next)=>{
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
+
+	req.userThemes = await(getUsersBrewThemes(req.account?.username));
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',
@@ -289,10 +290,10 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), (req, res, next)=>{
 	splitTextStyleAndMetadata(req.brew);
 	res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
 	return next();
-});
+}));
 
-//New Page
-app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
+//New Page from ID
+app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async(req, res, next)=>{
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	const brew = {
@@ -301,9 +302,12 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 		text     : req.brew.text,
 		style    : req.brew.style,
 		renderer : req.brew.renderer,
-		theme    : req.brew.theme
+		theme    : req.brew.theme,
+		tags     : req.brew.tags,
 	};
 	req.brew = _.defaults(brew, DEFAULT_BREW);
+
+	req.userThemes = await(getUsersBrewThemes(req.account?.username));
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'New',
@@ -311,12 +315,23 @@ app.get('/new/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
 	};
 
 	return next();
-});
+}));
+
+//New Page
+app.get('/new', asyncHandler(async(req, res, next)=>{
+	req.userThemes = await(getUsersBrewThemes(req.account?.username));
+
+	req.ogMeta = { ...defaultMetaTags,
+		title       : 'New',
+		description : 'Start crafting your homebrew on the Homebrewery!'
+	};
+
+	return next();
+}));
 
 //Share Page
 app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
 	const { brew } = req;
-
 	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',
 		description : req.brew.description || 'No description.',
@@ -324,25 +339,22 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 		type        : 'article'
 	};
 
-	if(req.params.id.length > 12 && !brew._id) {
-		const googleId = brew.googleId;
-		const shareId = brew.shareId;
-		await GoogleActions.increaseView(googleId, shareId, 'share', brew)
-			.catch((err)=>{next(err);});
-	} else {
-		await HomebrewModel.increaseView({ shareId: brew.shareId });
-	}
-	sanitizeBrew(req.brew, 'share');
+	// increase visitor view count, do not include visits by author(s)
+	if(!brew.authors.includes(req.account?.username)){
+		if(req.params.id.length > 12 && !brew._id) {
+			const googleId = brew.googleId;
+			const shareId = brew.shareId;
+			await GoogleActions.increaseView(googleId, shareId, 'share', brew)
+				.catch((err)=>{next(err);});
+		} else {
+			await HomebrewModel.increaseView({ shareId: brew.shareId });
+		}
+	};
+
+	brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	return next();
 }));
-
-//Print Page
-app.get('/print/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
-	sanitizeBrew(req.brew, 'share');
-	splitTextStyleAndMetadata(req.brew);
-	next();
-});
 
 //Account Page
 app.get('/account', asyncHandler(async (req, res, next)=>{
@@ -378,7 +390,7 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 				console.log(err);
 			});
 
-		data.uiItems = {
+		data.accountDetails = {
 			username    : req.account.username,
 			issued      : req.account.issued,
 			googleId    : Boolean(req.account.googleId),
@@ -412,8 +424,16 @@ if(isLocalEnvironment){
 	});
 }
 
+//Send rendered page
+app.use(asyncHandler(async (req, res, next)=>{
+	if (!req.route) return res.redirect('/'); // Catch-all for invalid routes
+		
+	const page = await renderPage(req, res);
+	if(!page) return;
+	res.send(page);
+}));
+
 //Render the page
-const templateFn = require('./../client/template.js');
 const renderPage = async (req, res)=>{
 	// Create configuration object
 	const configuration = {
@@ -431,7 +451,8 @@ const renderPage = async (req, res)=>{
 		enable_v3     : config.get('enable_v3'),
 		enable_themes : config.get('enable_themes'),
 		config        : configuration,
-		ogMeta        : req.ogMeta
+		ogMeta        : req.ogMeta,
+		userThemes    : req.userThemes
 	};
 	const title = req.brew ? req.brew.title : '';
 	const page = await templateFn('homebrew', title, props)
@@ -440,13 +461,6 @@ const renderPage = async (req, res)=>{
 		});
 	return page;
 };
-
-//Send rendered page
-app.use(asyncHandler(async (req, res, next)=>{
-	const page = await renderPage(req, res);
-	if(!page) return;
-	res.send(page);
-}));
 
 //v=====----- Error-Handling Middleware -----=====v//
 //Format Errors as plain objects so all fields will appear in the string sent
@@ -466,8 +480,17 @@ const getPureError = (error)=>{
 };
 
 app.use(async (err, req, res, next)=>{
-	const status = err.status || err.code || 500;
+	err.originalUrl = req.originalUrl;
 	console.error(err);
+
+	if(err.originalUrl?.startsWith('/api/')) {
+		// console.log('API error');
+		res.status(err.status || err.response?.status || 500).send(err);
+		return;
+	}
+
+	// console.log('non-API error');
+	const status = err.status || err.code || 500;
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'Error Page',

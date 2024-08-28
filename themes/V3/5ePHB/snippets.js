@@ -8,6 +8,7 @@ const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
 const CoverPageGen       = require('./snippets/coverpage.gen.js');
 const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
 const indexGen           = require('./snippets/index.gen.js');
+const QuoteGen 			 = require('./snippets/quote.gen.js');
 const dedent             = require('dedent-tabs').default;
 
 
@@ -20,9 +21,43 @@ module.exports = [
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'Table of Contents',
-				icon : 'fas fa-book',
-				gen  : TableOfContentsGen
+				name         : 'Table of Contents',
+				icon         : 'fas fa-book',
+				gen          : TableOfContentsGen,
+				experimental : true,
+				subsnippets  : [
+					{
+						name         : 'Table of Contents',
+						icon         : 'fas fa-book',
+						gen          : TableOfContentsGen,
+						experimental : true
+					},
+					{
+						name : 'Include in ToC up to H3',
+						icon : 'fas fa-dice-three',
+						gen  : dedent `\n{{tocDepthH3
+							}}\n`,
+
+					},
+					{
+						name : 'Include in ToC up to H4',
+						icon : 'fas fa-dice-four',
+						gen  : dedent `\n{{tocDepthH4
+							}}\n`,
+					},
+					{
+						name : 'Include in ToC up to H5',
+						icon : 'fas fa-dice-five',
+						gen  : dedent `\n{{tocDepthH5
+							}}\n`,
+					},
+					{
+						name : 'Include in ToC up to H6',
+						icon : 'fas fa-dice-six',
+						gen  : dedent `\n{{tocDepthH6
+							}}\n`,
+					}
+				]
 			},
 			{
 				name         : 'Index',
@@ -122,6 +157,11 @@ module.exports = [
 				name : 'Class Feature',
 				icon : 'fas fa-mask',
 				gen  : ClassFeatureGen,
+			},
+			{
+				name : 'Quote',
+				icon : 'fas fa-quote-right',
+				gen  : QuoteGen,
 			},
 			{
 				name : 'Note',
@@ -309,7 +349,7 @@ module.exports = [
 					/* Ink Friendly */
 					*:is(.page,.monster,.note,.descriptive) {
 						background : white !important;
-						filter : drop-shadow(0px 0px 3px #888) !important;
+						box-shadow : 1px 4px 14px #888 !important;
 					}
 
 					.page img {
