@@ -2,6 +2,9 @@ const dedent = require('dedent-tabs').default;
 
 const loginUrl = 'https://www.naturalcrit.com/login';
 
+//001-050 : Brew errors
+//050-100 : Other pages errors
+
 const errorIndex = (props)=>{
 	return {
 		// Default catch all
@@ -148,6 +151,14 @@ const errorIndex = (props)=>{
 		**Requested access:** ${props.brew.accessType}
 
 		**Brew ID:**  ${props.brew.brewId}`,
+
+		//account page when account is not defined
+		'50' : dedent`
+		## You are not signed in
+		
+		You are trying to access the account page. This page can only be accessed if you are signed in an account.
+		
+		Please login or signup at our [login page](https://www.naturalcrit.com/login?redirect=https://homebrewery.naturalcrit.com/account) `,
 
 		// Brew locked by Administrators error
 		'100' : dedent`
