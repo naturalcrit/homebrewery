@@ -358,6 +358,7 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 
 //Account Page
 app.get('/account', asyncHandler(async (req, res, next)=>{
+	if(!req.account) return res.redirect('/');
 	const data = {};
 	data.title = 'Account Information Page';
 
