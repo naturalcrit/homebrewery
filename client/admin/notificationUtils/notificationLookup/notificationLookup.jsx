@@ -1,94 +1,97 @@
 require('./notificationLookup.less');
+
 const React = require('react');
-const createClass = require('create-react-class');
-const cx    = require('classnames');
+const { useState } = require('react');
+const cx = require('classnames');
 
 const request = require('superagent');
 const Moment = require('moment');
 
+const NotificationLookup = () => {
+    const [query, setQuery] = useState('');
+    const [foundNotification, setFoundNotification] = useState(null);
+    const [searching, setSearching] = useState(false);
+    const [error, setError] = useState(null);
 
-const NotificationLookup = createClass({
-	displayName : 'NotificationLookup',
-	getDefaultProps() {
-		return {};
-	},
-	getInitialState() {
-		return {
-			query             : '',
-			foundNotification : null,
-			searching         : false,
-			error             : null
-		};
-	},
-	handleChange(e){
-		this.setState({ query: e.target.value });
-	},
-	lookup(){
-		this.setState({ searching: true, error: null });
+    const handleChange = (e) => {
+        setQuery(e.target.value);
+    };
 
-		request.get(`/admin/notification/lookup/${this.state.query}`)
-			.then((res)=>this.setState({ foundNotification: res.body }))
-			.catch((err)=>this.setState({ error: err }))
-			.finally(()=>this.setState({ searching: false }));
-	},
+    const lookup = () => {
+        setSearching(true);
+        setError(null);
 
-	deleteNotification : function(){
-		console.log('DELETE');
-		if(!confirm(`Really delete notification ${this.state.foundNotification.dismissKey} : ${this.state.foundNotification.title}?`)) {
-			console.log('CANCELLED');
-			return;
-		}
-		console.log('CONFIRMED');
-		return;
-	},
+        request.get(`/admin/notification/lookup/${query}`)
+            .then((res) => setFoundNotification(res.body))
+            .catch((err) => setError(err))
+            .finally(() => setSearching(false));
+    };
 
-	renderFoundNotification(){
-		const notification = this.state.foundNotification;
-		return <div className='foundNotification'>
-			<dl>
-				<dt>Key</dt>
-				<dd>{notification.dismissKey}</dd>
+    const deleteNotification = () => {
+        if (!foundNotification) return;
 
-				<dt>Title</dt>
-				<dd>{notification.title || 'No Title'}</dd>
+        const confirmed = window.confirm(`Really delete notification ${foundNotification.dismissKey} : ${foundNotification.title}?`);
+        if (!confirmed) {
+            console.log('CANCELLED');
+            return;
+        }
+        console.log('CONFIRMED');
+        // Perform delete operation here
+    };
 
-				<dt>Text</dt>
-				<dd>{notification.text || 'No Text'}</dd>
+    const renderFoundNotification = () => {
+        if (!foundNotification) return null;
 
-				<dt>Created</dt>
-				<dd>{Moment(notification.createdAt).toLocaleString()}</dd>
+        return (
+            <div className='foundNotification'>
+                <dl>
+                    <dt>Key</dt>
+                    <dd>{foundNotification.dismissKey}</dd>
 
-				<dt>Start</dt>
-				<dd>{Moment(notification.startAt).toLocaleString() || 'No Start Time'}</dd>
+                    <dt>Title</dt>
+                    <dd>{foundNotification.title || 'No Title'}</dd>
 
-				<dt>Stop</dt>
-				<dd>{Moment(notification.stopAt).toLocaleString() || 'No End Time'}</dd>
-			</dl>
-			<button onClick={this.deleteNotification}>DELETE</button>
-		</div>;
-	},
+                    <dt>Text</dt>
+                    <dd>{foundNotification.text || 'No Text'}</dd>
 
-	render(){
-		return <div className='notificationLookup'>
-			<h2>Lookup</h2>
-			<input type='text' value={this.state.query} onChange={this.handleChange} placeholder='notification key' />
-			<button onClick={this.lookup}>
-				<i className={cx('fas', {
-					'fa-search'          : !this.state.searching,
-					'fa-spin fa-spinner' : this.state.searching,
-				})} />
-			</button>
+                    <dt>Created</dt>
+                    <dd>{Moment(foundNotification.createdAt).toLocaleString()}</dd>
 
-			{this.state.error
-				&& <div className='error'>{this.state.error.toString()}</div>
-			}
+                    <dt>Start</dt>
+                    <dd>{Moment(foundNotification.startAt).toLocaleString() || 'No Start Time'}</dd>
 
-			{this.state.foundNotification
-				? this.renderFoundNotification()
-				: <div className='noNotification'>No notification found.</div>
-			}
-		</div>;
-	}
-});
+                    <dt>Stop</dt>
+                    <dd>{Moment(foundNotification.stopAt).toLocaleString() || 'No End Time'}</dd>
+                </dl>
+                <button onClick={deleteNotification}>DELETE</button>
+            </div>
+        );
+    };
+
+    return (
+        <div className='notificationLookup'>
+            <h2>Lookup</h2>
+            <input
+                type='text'
+                value={query}
+                onChange={handleChange}
+                placeholder='notification key'
+            />
+            <button onClick={lookup}>
+                <i className={cx('fas', {
+                    'fa-search': !searching,
+                    'fa-spin fa-spinner': searching,
+                })} />
+            </button>
+
+            {error && <div className='error'>{error.toString()}</div>}
+
+            {foundNotification
+                ? renderFoundNotification()
+                : <div className='noNotification'>No notification found.</div>
+            }
+        </div>
+    );
+};
 
 module.exports = NotificationLookup;

@@ -1,101 +1,113 @@
 require('./notificationAdd.less');
 const React = require('react');
-const createClass = require('create-react-class');
-const cx    = require('classnames');
-
+const { useState } = require('react');
+const cx = require('classnames');
 const request = require('superagent');
 
 const fields = ['dismissKey', 'title', 'text', 'startAt', 'stopAt'];
 
+const NotificationAdd = () => {
+    const [state, setState] = useState({
+        query: '',
+        notificationResult: null,
+        searching: false,
+        error: null,
+        dismissKey: '',
+        title: '',
+        text: '',
+        startAt: '',
+        stopAt: ''
+    });
 
-const NotificationAdd = createClass({
-	displayName : 'NotificationAdd',
-	getDefaultProps() {
-		return {};
-	},
-	getInitialState() {
-		return {
-			query              : '',
-			notificationResult : null,
-			searching          : false,
-			error              : null,
+    const handleChange = (e, field) => {
+        const value = e.target.value;
+        setState(prevState => ({
+            ...prevState,
+            [field]: value
+        }));
+    };
 
-			dismissKey : '',
-			title      : '',
-			text       : '',
-			startAt    : '',
-			stopAt     : ''
-		};
-	},
-	handleChange(e, field){
-		const data = {};
-		data[field] = e.target.value;
-		this.setState(data);
-	},
-	saveNotification : async function(){
-		if(!this.state.dismissKey) return 'No notification key!';
-		const data = {
-			dismissKey : this.state.dismissKey,
-			title      : this.state.title,
-			text       : this.state.text,
-			startAt    : Date.parse(this.state.startAt),
-			stopAt     : Date.parse(this.state.stopAt)
-		};
+    const saveNotification = async () => {
+        if (!state.dismissKey) {
+            setState(prevState => ({
+                ...prevState,
+                error: 'No notification key!'
+            }));
+            return;
+        }
 
-		const notification = await request.post('/admin/notification/add')
-			.send(data)
-			.then((response)=>{
-				return response.body;
-			});
+        const data = {
+            dismissKey: state.dismissKey,
+            title: state.title,
+            text: state.text,
+            startAt: Date.parse(state.startAt),
+            stopAt: Date.parse(state.stopAt)
+        };
 
-		const update = {
-			notificationResult : `Created notification: ${JSON.stringify(notification, null, 2)}`
-		};
-		if(notification.err) {
-			update.notificationResult = JSON.stringify(notification.err);
-			if(notification.err.code == 11000) {
-				update.notificationResult = `Duplicate dismissKey error! ${this.state.dismissKey} already exists.`;
-			}
-		};
-		if(!notification.err) {
-			update.dismissKey = '';
-			update.title = '';
-			update.text = '';
-			update.startAt = '';
-			update.stopAt = '';
-		}
+        try {
+            const response = await request.post('/admin/notification/add').send(data);
+            const notification = response.body;
+            let update = {
+                notificationResult: `Created notification: ${JSON.stringify(notification, null, 2)}`
+            };
 
-		console.log(update);
+            if (notification.err) {
+                update.notificationResult = JSON.stringify(notification.err);
+                if (notification.err.code == 11000) {
+                    update.notificationResult = `Duplicate dismissKey error! ${state.dismissKey} already exists.`;
+                }
+            } else {
+                update = {
+                    ...update,
+                    dismissKey: '',
+                    title: '',
+                    text: '',
+                    startAt: '',
+                    stopAt: ''
+                };
+            }
 
-		this.setState(update);
-	},
+            setState(prevState => ({
+                ...prevState,
+                ...update,
+                searching: false
+            }));
+        } catch (err) {
+            setState(prevState => ({
+                ...prevState,
+                error: err.message,
+                searching: false
+            }));
+        }
+    };
 
-	render(){
-		return <div className='notificationAdd'>
-			<h2>Add</h2>
-			{fields.map((field, idx)=>{
-				return <div key={idx}>
-					<label className='fieldLabel'>{field.toUpperCase()}</label>
-					<input className='fieldInput' type='text' value={this.state[field]} onChange={(e)=>this.handleChange(e, field)} placeholder={field} />
-				</div>;
-			})}
-			<div className='notificationResult'>{this.state.notificationResult}</div>
-			{/* <label>Dismiss Key:</label>
-			<input type='text' value={this.state.dismissKey} onChange={this.handleChange} placeholder='notification key' />
-			<label>Title:</label>
-			<input type='text' value={this.state.title} onChange={this.handleChange} placeholder='title' />  */}
-			<button onClick={this.saveNotification}>
-				<i className={cx('fas', {
-					'fa-save'            : !this.state.searching,
-					'fa-spin fa-spinner' : this.state.searching,
-				})} />
-			</button>
-
-			{this.state.error
-				&& <div className='error'>{this.state.error.toString()}</div>
-			}
-		</div>;
-	}
-});
+    return (
+        <div className='notificationAdd'>
+            <h2>Add</h2>
+            {fields.map((field, idx) => (
+                <div key={idx}>
+                    <label className='fieldLabel'>{field.toUpperCase()}</label>
+                    <input
+                        className='fieldInput'
+                        type='text'
+                        value={state[field]}
+                        onChange={(e) => handleChange(e, field)}
+                        placeholder={field}
+                    />
+                </div>
+            ))}
+            <div className='notificationResult'>{state.notificationResult}</div>
+            <button onClick={saveNotification}>
+                <i
+                    className={cx('fas', {
+                        'fa-save': !state.searching,
+                        'fa-spin fa-spinner': state.searching
+                    })}
+                />
+            </button>
+            {state.error && <div className='error'>{state.error.toString()}</div>}
+        </div>
+    );
+};
 
 module.exports = NotificationAdd;
