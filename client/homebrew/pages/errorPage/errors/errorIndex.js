@@ -156,9 +156,9 @@ const errorIndex = (props)=>{
 		'50' : dedent`
 		## You are not signed in
 		
-		You are trying to access the account page. This page can only be accessed if you are signed in an account.
+		You are trying to access the account page, but are not signed in to an account.
 		
-		Please login or signup at our [login page](https://www.naturalcrit.com/login?redirect=https://homebrewery.naturalcrit.com/account) `,
+		Please login or signup at our [login page](https://www.naturalcrit.com/login?redirect=https://homebrewery.naturalcrit.com/account).`,
 
 		// Brew locked by Administrators error
 		'100' : dedent`
