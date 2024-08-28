@@ -102,6 +102,20 @@ renderer.link = function (href, title, text) {
 	return out;
 };
 
+// Expose `src` attribute as `--HB_src` to make the URL accessible via CSS
+renderer.image = function (href, title, text) {
+	href = cleanUrl(href);
+	if (href === null)
+		return text;
+
+	let out = `<img src="${href}" alt="${text}" style="--HB_src:url(${href});"`;
+	if (title)
+		out += ` title="${title}"`;
+
+	out += '>';
+	return out;
+}
+
 // Disable default reflink behavior, as it steps on our variables extension
 tokenizer.def = function () {
 	return undefined;
