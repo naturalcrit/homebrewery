@@ -59,6 +59,8 @@ const Editor = createClass({
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
+		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
+		document.addEventListener('keydown', this.handleControlKeys);
 
 		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
 		if(editorTheme) {
@@ -81,6 +83,19 @@ const Editor = createClass({
 			this.sourceJump();
 		};
 	},
+
+	handleControlKeys : function(e){
+		if(!(e.ctrlKey || e.metaKey)) return;
+		const LEFTARROW_KEY = 37;
+		const RIGHTARROW_KEY = 39;
+		if (e.shiftKey && (e.keyCode == RIGHTARROW_KEY)) this.brewJump();
+		if (e.shiftKey && (e.keyCode == LEFTARROW_KEY)) this.sourceJump();
+		if ((e.keyCode == LEFTARROW_KEY) || (e.keyCode == RIGHTARROW_KEY)) {
+			e.stopPropagation();
+			e.preventDefault();
+		}
+	},
+
 
 	updateEditorSize : function() {
 		if(this.codeEditor.current) {
@@ -119,8 +134,19 @@ const Editor = createClass({
 			const codeMirror = this.codeEditor.current.codeMirror;
 
 			codeMirror.operation(()=>{ // Batch CodeMirror styling
+
+				const foldLines = [];
+        
 				//reset custom text styles
-				const customHighlights = codeMirror.getAllMarks().filter((mark)=>!mark.__isFold); //Don't undo code folding
+				const customHighlights = codeMirror.getAllMarks().filter((mark)=>{
+					// Record details of folded sections
+					if(mark.__isFold) {
+						const fold = mark.find();
+						foldLines.push({from: fold.from?.line, to: fold.to?.line});
+					}
+					return !mark.__isFold;
+				}); //Don't undo code folding
+
 				for (let i=customHighlights.length - 1;i>=0;i--) customHighlights[i].clear();
 
 				let editorPageCount = 2; // start page count from page 2
@@ -131,6 +157,11 @@ const Editor = createClass({
 					codeMirror.removeLineClass(lineNumber, 'background', 'pageLine');
 					codeMirror.removeLineClass(lineNumber, 'text');
 					codeMirror.removeLineClass(lineNumber, 'wrap', 'sourceMoveFlash');
+
+					// Don't process lines inside folded text
+					// If the current lineNumber is inside any folded marks, skip line styling
+					if (foldLines.some(fold => lineNumber >= fold.from && lineNumber <= fold.to))
+						return;
 
 					// Styling for \page breaks
 					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
@@ -244,7 +275,7 @@ const Editor = createClass({
 									// Iterate over conflicting marks and clear them
 									var marks = codeMirror.findMarks(startPos, endPos);
 									marks.forEach(function(marker) {
-										marker.clear();
+										if(!marker.__isFold) marker.clear();
 									});
 									codeMirror.markText(startPos, endPos, { className: 'emoji' });
 								}
