@@ -33,6 +33,16 @@ module.exports = [
 				gen  : '{{pageNumber,auto}}\n'
 			},
 			{
+				name : 'Skip Page Number Increment this Page',
+				icon : 'fas fa-forward',
+				gen  : '{{skipCounting}}\n'
+			},
+			{
+				name : 'Restart Numbering',
+				icon : 'fas fa-fast-backward',
+				gen  : '{{resetCounting}}\n'
+			},
+			{
 				name        : 'Footer',
 				icon        : 'fas fa-shoe-prints',
 				gen         : FooterGen.createFooterFunc(),
