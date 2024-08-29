@@ -85,7 +85,6 @@ const Editor = createClass({
 	},
 
 	handleControlKeys : function(e){
-		console.log(e);
 		if(!(e.ctrlKey && e.metaKey)) return;
 		const LEFTARROW_KEY = 37;
 		const RIGHTARROW_KEY = 39;
