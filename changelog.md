@@ -93,7 +93,7 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 
 Fixes issue [#380](https://github.com/naturalcrit/homebrewery/issues/380), supersedes [#3126](https://github.com/naturalcrit/homebrewery/issues/3126)
 
-* [x] Add regex to detext when to interrupt a table
+* [x] Add regex to detect when to interrupt a table
 
 Fixes v3.14.2 bug with tables and multiple colons
 
