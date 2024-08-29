@@ -72,7 +72,7 @@ const updatePageArray = (add, pageNo)=>{
 
 const getPageNumber = ()=>{
 	if(pageArray.length == 0) return currentPage;
-	currentPage = pageArray.reduce((p, c)=>{p+c;}) / pageArray.length;
+	currentPage = Math.floor(pageArray.reduce((p, c)=>{p+c;}) / pageArray.length);
 	return currentPage;
 };
 
