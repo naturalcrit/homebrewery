@@ -440,10 +440,7 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 
 const nodeEnv = config.get('node_env');
 
-console.group();
-console.log('Config vars')
-console.table(config);
-console.groupEnd();
+console.log('Config vars: ',config);
 
 const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
 // Local only
