@@ -84,6 +84,34 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Wednesday 8/28/2024 - v3.14.3
+{{taskList
+
+##### Calculuschild
+
+* [x] Image wrapping snippets
+
+Fixes issue [#380](https://github.com/naturalcrit/homebrewery/issues/380), supersedes [#3126](https://github.com/naturalcrit/homebrewery/issues/3126)
+
+* [x] Add regex to detext when to interrupt a table
+
+Fixes v3.14.2 bug with tables and multiple colons
+
+##### 5e-Cleric
+
+* [x] Fix Account page error for invalid users
+
+Fixes issue [#3605](https://github.com/naturalcrit/homebrewery/issues/3605)
+
+##### dbolack-ab
+
+* [x] Fix for jump hotkeys
+
+Fixes v3.14.2 bug; Preview and Source movement shortcuts now use `CTRL+SHIT+META+Arrow` keys
+
+}}
+
+
 ### Tuesday 8/27/2024 - v3.14.2
 {{taskList
 
