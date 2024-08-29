@@ -155,6 +155,19 @@ body { counter-reset : page-numbers 0; }
 		break-inside                : avoid;
 	}
 
+	/* Wrap Text */
+	.wrapLeft {
+		shape-outside : var(--HB_src);
+		float         : right;
+		shape-margin  : 0.2cm;
+	}
+
+	.wrapRight {
+		shape-outside : var(--HB_src);
+		float         : left;
+		shape-margin  : 0.2cm;
+	}
+
 	/* Watermark */
 	.watermark {
 		position        : absolute;
@@ -235,7 +248,7 @@ body { counter-reset : page-numbers 0; }
 			left       : 50%;
 			width      : 50%;
 			height     : 50%;
-			transform  : translateX(-50%) translateY(50%) rotate(calc(-1deg * var(--rotation))) scaleX(calc(1 / var(--scaleX))) scaleY(calc(1 / var(--scaleY)));
+			transform  : translateX(-50%) translateY(50%) scaleX(calc(1 / var(--scaleX))) scaleY(calc(1 / var(--scaleY))) rotate(calc(-1deg * var(--rotation)));
 		}
 		& img {
 			position : absolute;
