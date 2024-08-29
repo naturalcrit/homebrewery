@@ -83,8 +83,8 @@ const NotificationAdd = () => {
         <div className='notificationAdd'>
             <h2>Add Notification</h2>
 
-            <label className='fieldLabel'>
-                DISMISSKEY
+            <label className='field'>
+                Dismiss Key:
                 <input
                     className='fieldInput'
                     type='text'
@@ -93,8 +93,8 @@ const NotificationAdd = () => {
                 />
             </label>
 
-            <label className='fieldLabel'>
-                TITLE
+            <label className='field'>
+                Title:
                 <input
                     className='fieldInput'
                     type='text'
@@ -103,8 +103,8 @@ const NotificationAdd = () => {
                 />
             </label>
 
-            <label className='fieldLabel'>
-                TEXT
+            <label className='field'>
+                Text:
                 <textarea
 					className='fieldInput'
 					type='text'
@@ -113,8 +113,9 @@ const NotificationAdd = () => {
 					</textarea>
             </label>
 
-            <label className='fieldLabel'>
-                STARTAT
+            <label className='field'>
+                Start Date:
+
                 <input
 					type="date"
                     className='fieldInput'
@@ -123,8 +124,8 @@ const NotificationAdd = () => {
                 />
             </label>
 
-            <label className='fieldLabel'>
-                STOPAT
+            <label className='field'>
+                End Date:
                 <input
 					type="date"
                     className='fieldInput'
