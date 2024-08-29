@@ -107,7 +107,7 @@ Fixes issue [#3605](https://github.com/naturalcrit/homebrewery/issues/3605)
 
 * [x] Fix for jump hotkeys
 
-Fixes v3.14.2 bug; Preview and Source movement shortcuts now use `CTRL+SHIT+META+Arrow` keys
+Fixes v3.14.2 bug; Preview and Source movement shortcuts now use `CTRL+SHIFT+META+Arrow` keys
 
 }}
 
