@@ -440,7 +440,9 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 
 const nodeEnv = config.get('node_env');
 
-console.log('Config vars: ',config);
+console.log(config.get('HEROKU_PR_NUMBER'));
+console.log(config.get('HEROKU_APP_NAME'));
+console.log(config.get('HEROKU_BRANCH'));
 
 const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
 // Local only
