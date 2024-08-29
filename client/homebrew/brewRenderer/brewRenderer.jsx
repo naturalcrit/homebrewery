@@ -7,6 +7,7 @@ const _ = require('lodash');
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
 const Markdown = require('naturalcrit/markdown.js');
 const ErrorBar = require('./errorBar/errorBar.jsx');
+const ToolBar  = require('./toolBar/toolBar.jsx');
 
 //TODO: move to the brew renderer
 const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
@@ -61,10 +62,11 @@ const BrewRenderer = (props)=>{
 	};
 
 	const [state, setState] = useState({
-		viewablePageNumber : 0,
-		height             : PAGE_HEIGHT,
-		isMounted          : false,
-		visibility         : 'hidden',
+		height            : PAGE_HEIGHT,
+		isMounted         : false,
+		visibility        : 'hidden',
+		zoom              : 100,
+		currentPageNumber : 1,
 	});
 
 	const mainRef  = useRef(null);
@@ -101,6 +103,18 @@ const BrewRenderer = (props)=>{
 		}));
 	};
 
+	const getCurrentPage = (e)=>{
+		const { scrollTop, clientHeight, scrollHeight } = e.target;
+		const totalScrollableHeight = scrollHeight - clientHeight;
+		const currentPageNumber = Math.ceil((scrollTop / totalScrollableHeight) * rawPages.length);
+
+		setState((prevState)=>({
+			...prevState,
+			currentPageNumber : currentPageNumber || 1
+		}));
+	};
+
+
 	const isInView = (index)=>{
 		if(!state.isMounted)
 			return false;
@@ -108,21 +122,10 @@ const BrewRenderer = (props)=>{
 		if(index == props.currentEditorPage)	//Already rendered before this step
 			return false;
 
-		if(Math.abs(index - state.viewablePageNumber) <= 3)
+		if(Math.abs(index - state.currentPageNumber) <= 3)
 			return true;
 
 		return false;
-	};
-
-	const renderPageInfo = ()=>{
-		return <div className='pageInfo' ref={mainRef}>
-			<div>
-				{props.renderer}
-			</div>
-			<div>
-				{state.viewablePageNumber + 1} / {rawPages.length}
-			</div>
-		</div>;
 	};
 
 	const renderDummyPage = (index)=>{
@@ -194,11 +197,19 @@ const BrewRenderer = (props)=>{
 		document.dispatchEvent(new MouseEvent('click'));
 	};
 
+	//Toolbar settings:
+	const handleZoom = (newZoom)=>{
+		setState((prevState)=>({
+			...prevState,
+			zoom : newZoom
+		}));
+	};
+
 	return (
 		<>
 			{/*render dummy page while iFrame is mounting.*/}
 			{!state.isMounted
-				? <div className='brewRenderer' onScroll={handleScroll}>
+				? <div className='brewRenderer' onScroll={getCurrentPage}>
 					<div className='pages'>
 						{renderDummyPage(1)}
 					</div>
@@ -206,10 +217,12 @@ const BrewRenderer = (props)=>{
 				: null}
 
 			<ErrorBar errors={props.errors} />
-			<div className='popups'>
+			<div className='popups' ref={mainRef}>
 				<RenderWarnings />
 				<NotificationPopup />
 			</div>
+
+			<ToolBar onZoomChange={handleZoom} currentPage={state.currentPageNumber}  totalPages={rawPages.length}/>
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
@@ -218,23 +231,23 @@ const BrewRenderer = (props)=>{
 				onClick={()=>{emitClick();}}
 			>
 				<div className={'brewRenderer'}
-					onScroll={handleScroll}
+					onScroll={getCurrentPage}
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
 					style={{ height: state.height }}>
+
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted
 						&&
 						<>
 							{renderStyle()}
-							<div className='pages' lang={`${props.lang || 'en'}`}>
+							<div className='pages' lang={`${props.lang || 'en'}`} style={{ zoom: `${state.zoom}%` }}>
 								{renderPages()}
 							</div>
 						</>
 					}
 				</div>
 			</Frame>
-			{renderPageInfo()}
 		</>
 	);
 };
