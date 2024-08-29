@@ -410,7 +410,7 @@ module.exports = [
 		]
 	},
 
-	/**************** PAGE *************/
+	/**************** Layout *************/
 
 	{
 		groupName : 'Print',
@@ -427,6 +427,24 @@ module.exports = [
 					}\n\n`
 			},
 			{
+                name: 'A3 Page Size',
+                icon: 'far fa-file',
+                gen: dedent`/* A3 Page Size */
+						.page{
+						width  : 297mm;
+						height : 420mm;
+						}\n\n`,
+            },
+            {
+                name: 'A5 Page Size',
+                icon: 'far fa-file',
+                gen: dedent`/* A5 Page Size */
+				.page{
+				width  : 148mm;
+				height : 210mm;
+				}\n\n`,
+            },
+			{
 				name : 'Square Page Size',
 				icon : 'far fa-file',
 				gen  : dedent`/* Square Page Size */
@@ -437,6 +455,16 @@ module.exports = [
 						columns : unset;
 					}\n\n`
 			},
+			
+		]
+	},
+
+	/**************** PAGE *************/
+	{
+		groupName : 'Print',
+		icon      : 'fas fa-print',
+		view      : 'style',
+		snippets  : [
 			{
 				name : 'Ink Friendly',
 				icon : 'fas fa-tint',
@@ -451,6 +479,46 @@ module.exports = [
 						visibility : hidden;
 					}\n\n`
 			},
-		]
-	}
+			{
+				name : 'Background',
+				icon : 'fas fa-paint-roller',
+				subsnippets : [
+					{
+						name : 'Old Parchment 2',
+						icon : 'fas fa-page',
+						gen  : dedent`
+						.page {
+							background-image:url('https://i.imgur.com/oTKpg48.png');
+						}`,
+					},
+					{
+						name : 'Grey parchment',
+						icon : 'fas fa-page',
+						gen  : dedent`
+						.page {
+							background-image:url('https://i.imgur.com/VwjzlLV.png');
+						}`,
+					},
+					{
+						name : 'Old parchment 3',
+						icon : 'fas fa-page',
+						gen  : dedent`
+						.page {
+							background-image:url('https://i.imgur.com/EY8yyPv.jpeg');
+						}`,
+					},
+					{
+						name : 'Old parchment 3 framed',
+						icon : 'fas fa-page',
+						gen  : dedent`
+						.page {
+							background-image:url('https://i.imgur.com/QMKzWYb.jpeg');
+						}`,
+					},
+					
+				]
+			},
+		],
+	},
+
 ];
