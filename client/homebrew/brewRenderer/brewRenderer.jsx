@@ -13,7 +13,7 @@ const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
 const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
-const { printCurrentBrew } = require('../../../shared/helpers.js');
+const { printCurrentBrew, updatePageArray, getPageNumber } = require('../../../shared/helpers.js');
 
 const DOMPurify = require('dompurify');
 const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
@@ -35,8 +35,28 @@ const BrewPage = (props)=>{
 		index    : 0,
 		...props
 	};
+
+	const pageRef = useRef();
+
+	const rootMargin = '-50% 0px';
+
+	useEffect(()=>{
+		const observer = new IntersectionObserver(
+			([entry])=>{
+				const pageNo = parseInt(entry.target.getAttribute('id').slice(1));
+				updatePageArray(entry.isIntersecting, pageNo);
+			},
+			{ rootMargin }
+		);
+		observer.observe(pageRef.current);
+		return ()=>{
+			if(pageRef.current == null) return;
+			observer.unobserve(pageRef.current);
+		};
+	}, [pageRef.current, rootMargin]);
+
 	const cleanText = props.contents; //DOMPurify.sanitize(props.contents, purifyConfig);
-	return <div className={props.className} id={`p${props.index + 1}`} >
+	return <div className={props.className} id={`p${props.index + 1}`} ref={pageRef} >
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
 };
@@ -112,7 +132,8 @@ const BrewRenderer = (props)=>{
 				{props.renderer}
 			</div>
 			<div>
-				{state.viewablePageNumber + 1} / {rawPages.length}
+				{/* {state.viewablePageNumber + 1} / {rawPages.length} */}
+				{getPageNumber()} / {rawPages.length}
 			</div>
 		</div>;
 	};

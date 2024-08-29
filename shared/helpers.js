@@ -50,8 +50,42 @@ const fetchThemeBundle = async (obj, renderer, theme)=>{
 	}));
 };
 
+let pageArray = [];
+let currentPage = 1;
+
+const updatePageArray = (add, pageNo)=>{
+	// Remove page # from array
+	if(!add){
+		// If page # not in array, exit
+		if(!pageArray.includes(pageNo)) return;
+		// Update array to exclude page #
+		pageArray = pageArray.filter((el)=>{return el != pageNo;});
+		return;
+	}
+	// Add page # to array
+	// If page # already in array, exit
+	if(pageArray.includes(pageNo)) return;
+	// Add page # to array
+	pageArray.push(pageNo);
+	return;
+};
+
+const getPageNumber = ()=>{
+	if(pageArray.length == 0) return currentPage;
+	currentPage = pageArray.reduce((p, c)=>{p+c;}) / pageArray.length;
+	return currentPage;
+};
+
+const getVisiblePageRange = ()=>{
+	if(pageArray.length <= 3) return pageArray.join(', ');
+	return `${pageArray[0]} - ${pageArray.slice(-1)[0]}`;
+};
+
 module.exports = {
 	splitTextStyleAndMetadata,
 	printCurrentBrew,
 	fetchThemeBundle,
+	updatePageArray,
+	getPageNumber,
+	getVisiblePageRange
 };
