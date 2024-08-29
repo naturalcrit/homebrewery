@@ -6,58 +6,91 @@
 
 @import 'font-awesome/css/font-awesome.css';
 
-html,body, #reactContainer, .naturalCrit{
-	min-height : 100%;
-}
+html,body, #reactContainer, .naturalCrit { min-height : 100%; }
 
 @sidebarWidth : 250px;
 
-body{
-	background-color : #eee;
-	font-family      : 'Open Sans', sans-serif;
-	color            : #4b5055;
-	font-weight      : 100;
-	text-rendering   : optimizeLegibility;
-	margin           : 0;
+body {
+	height           : 100%;
 	padding          : 0;
-	height : 100%;
+	margin           : 0;
+	font-family      : 'Open Sans', sans-serif;
+	font-weight      : 100;
+	color            : #4B5055;
+	background-color : #EEEEEE;
+	text-rendering   : optimizeLegibility;
 }
 
-.admin{
+.admin {
 
-	header{
+	header {
+		padding          : 20px 0px;
+		margin-bottom    : 30px;
+		font-size        : 2em;
+		color            : white;
 		background-color : @red;
-		font-size: 2em;
-		padding : 20px 0px;
-		color : white;
-		margin-bottom: 30px;
-		i{
-			margin-right: 30px;
-		}
+		i { margin-right : 30px; }
 	}
 
-	hr{
-		margin : 30px 0px;
-	}
+	hr { margin : 30px 0px; }
 
-	.container{
-		.tabs button{
-			background-color: #eee;
-			margin-left: 3px;
-			margin-right: 3px;
-			border: 1px solid #444;
-			border-radius: 5px;
-			color: black;
-			&:hover{
-				background-color: #444;
-				color: #eee;
+	.container {
+		.tabs button {
+			margin-right     : 3px;
+			margin-left      : 3px;
+			color            : black;
+			background-color : #EEEEEE;
+			border           : 1px solid #444444;
+			border-radius    : 5px;
+			&:hover {
+				color            : #EEEEEE;
+				background-color : #444444;
 			}
-			&.active{
-				border: 2px solid #444;
-				text-decoration: underline;
-				margin-left: 2px;
-				margin-right: 2px;
-				background-color: #ccc;
+			&.active {
+				margin-right     : 2px;
+				margin-left      : 2px;
+				text-decoration  : underline;
+				background-color : #CCCCCC;
+				border           : 2px solid #444444;
+			}
+		}
+
+		.notificationAdd {
+			position       : relative;
+			display        : flex;
+			flex-direction : column;
+			width          : 500px;
+			
+			.field {
+				display               : grid;
+				grid-template-columns : 120px 150px;
+				align-items           : center;
+				justify-items         : stretch;
+				width                 : 100%;
+				margin-bottom         : 20px;
+			   
+				
+				input {
+					height      : 33px;
+					padding     : 0px 10px;
+					font-family : monospace;
+				}
+				
+				textarea {
+					min-width  : 50ch;
+					max-width  : 100ch;
+					min-height : 7em;
+					max-height : 30em;
+				}
+			}
+			
+			button {
+				
+				position : absolute;
+				right    : 0;
+				bottom   : 0;
+					
+				i { margin-right : 10px; }
 			}
 		}
 	}
