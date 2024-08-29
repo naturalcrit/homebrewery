@@ -99,50 +99,40 @@ module.exports = [
 				name : 'Table of Contents Toggles',
 				icon : 'fas fa-book',
 				gen  : dedent`/* Add ToC include for H3, H4, H5, and H6 level Headers */
-  							{
-								h3, h4, h5, h6 {
-									--TOC: include;
-								}
+							.page h3, .page h4, .page h5, .page h6 {
+								--TOC: include;
 							}\n\n`,
 				subsnippets : [
 					{
 						name : 'Enable H1-H3 all pages',
 						icon : 'fas fa-dice-three',
 						gen  : dedent`/* Add ToC include for H3 level Headers */
-									{
-									  h3 {
-	  								    --TOC: include;
-									  }
+								  	.page h3 {
+  								    	--TOC: include;
 									}\n\n`
 					},
 					{
 						name : 'Enable H1-H4 all pages',
 						icon : 'fas fa-dice-four',
 						gen  : dedent`/* Add ToC include for H3 and H4 level Headers */
-									{
-									  h3, h4 {
-	  								    --TOC: include;
-									  }
+									.page h3, .page h4 {
+  								    	--TOC: include;
 									}\n\n`
 					},
 					{
 						name : 'Enable H1-H5 all pages',
 						icon : 'fas fa-dice-five',
 						gen  : dedent`/* Add ToC include for H3, H4, and H5 level Headers */
-									{
-									  h3, h4, h5 {
+									.page h3, .page h4, .page h5 {
 	  								    --TOC: include;
-									  }
 									}\n\n`
 					},
 					{
 						name : 'Enable H1-H6 all pages',
 						icon : 'fas fa-dice-six',
 						gen  : dedent`/* Add ToC include for H3, H4, H5, and H6 level Headers */
-									{
-									  h3, h4, h5, h6 {
+									.page h3, .page h4, .page h5, .page h6 {
 	  								    --TOC: include;
-									  }
 									}\n\n`
 					},
 				]
