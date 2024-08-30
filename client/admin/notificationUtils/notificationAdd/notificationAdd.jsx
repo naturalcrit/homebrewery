@@ -90,6 +90,7 @@ const NotificationAdd = () => {
                     type='text'
                     ref={dismissKeyRef}
                     placeholder='GOOGLEDRIVENOTIF'
+                    required
                 />
             </label>
 
@@ -100,6 +101,7 @@ const NotificationAdd = () => {
                     type='text'
                     ref={titleRef}
                     placeholder='Stop using Google Drive as image host'
+                    required
                 />
             </label>
 
@@ -109,7 +111,8 @@ const NotificationAdd = () => {
 					className='fieldInput'
 					type='text'
 					ref={textRef}
-					placeholder='Google Drive is not an image hosting site, you should not use it as such.'>
+					placeholder='Google Drive is not an image hosting site, you should not use it as such.'
+                    required>
 					</textarea>
             </label>
 
@@ -121,6 +124,7 @@ const NotificationAdd = () => {
                     className='fieldInput'
                     selected={startAt}
                     onChange={date => setStartAt(date)}
+                    required
                 />
             </label>
 
@@ -131,6 +135,7 @@ const NotificationAdd = () => {
                     className='fieldInput'
                     selected={stopAt}
                     onChange={date => setStopAt(date)}
+                    required
                 />
             </label>
 
