@@ -138,7 +138,7 @@ const SplitPane = createClass({
 
 	render : function(){
 		return <div className='splitPane' onPointerMove={this.handleMove} onPointerUp={this.handleUp}>
-			<Pane
+			<Pane className="editorPane"
 				width={this.state.currentDividerPos}
 			>
 				{React.cloneElement(this.props.children[0], {
@@ -148,7 +148,7 @@ const SplitPane = createClass({
 				})}
 			</Pane>
 			{this.renderDivider()}
-			<Pane isDragging={this.state.isDragging}>{this.props.children[1]}</Pane>
+			<Pane className="previewPane" isDragging={this.state.isDragging}>{this.props.children[1]}</Pane>
 		</div>;
 	}
 });
