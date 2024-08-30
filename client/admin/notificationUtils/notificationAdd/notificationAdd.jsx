@@ -13,13 +13,15 @@ const NotificationAdd = () => {
     const dismissKeyRef = useRef(null);
     const titleRef = useRef(null);
     const textRef = useRef(null);
-    const [startAt, setStartAt] = useState(null);
-    const [stopAt, setStopAt] = useState(null);
+    const startAtRef = useRef(null);
+    const stopAtRef = useRef(null);
 
     const saveNotification = async () => {
         const dismissKey = dismissKeyRef.current.value;
         const title = titleRef.current.value;
         const text = textRef.current.value;
+        const startAt = new Date(startAtRef.current.value);
+        const stopAt = new Date(stopAtRef.current.value);
 
         // Basic validation
         if (!dismissKey || !title || !text || !startAt || !stopAt) {
@@ -29,6 +31,11 @@ const NotificationAdd = () => {
             }));
             return;
         }
+        console.log('dismissKey: ', dismissKey);
+        console.log('title: ', title);
+        console.log('text: ', text);
+        console.log('startAt: ', startAt);
+        console.log('stopAt: ', stopAt);
 
         const data = {
             dismissKey,
@@ -122,8 +129,7 @@ const NotificationAdd = () => {
                 <input
 					type="date"
                     className='fieldInput'
-                    selected={startAt}
-                    onChange={date => setStartAt(date)}
+                    ref={startAtRef}
                     required
                 />
             </label>
@@ -133,8 +139,7 @@ const NotificationAdd = () => {
                 <input
 					type="date"
                     className='fieldInput'
-                    selected={stopAt}
-                    onChange={date => setStopAt(date)}
+                    ref={stopAtRef}
                     required
                 />
             </label>
