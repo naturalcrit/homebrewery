@@ -217,7 +217,7 @@ const BrewRenderer = (props)=>{
 					onScroll={getCurrentPage}
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
-					style={{ height: state.height }}>
+					style={{ height: "100vh" }}>
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted
