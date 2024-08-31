@@ -1,20 +1,39 @@
+.notificationAdd {
+	position       : relative;
+	display        : flex;
+	flex-direction : column;
+	width          : 500px;
 
-.notificationAdd{
-	input{
-		height        : 33px;
-		margin-bottom : 20px;
-		padding       : 0px 10px;
-		font-family   : monospace;
+	.field {
+		display               : grid;
+		grid-template-columns : 120px 150px;
+		align-items           : center;
+		justify-items         : stretch;
+		width                 : 100%;
+		margin-bottom         : 20px;
+   
+	
+		input {
+			height        : 33px;
+			padding       : 0px 10px;
+			margin-bottom : unset;
+			font-family   : monospace;
+		}
+	
+		textarea {
+			width      : 50ch;
+			min-height : 7em;
+			max-height : 25em;
+			resize     : vertical;
+		}
 	}
-	button{
-		vertical-align : middle;
-		height         : 37px;
-	}
-	.fieldLabel{
-		display: inline-block;
-		width: 10%;
-	}
-	.fieldInput{
-		margin-bottom: 5px;
+
+	button {
+	
+		position : absolute;
+		right    : 0;
+		bottom   : 0;
+		
+		i { margin-right : 10px; }
 	}
 }

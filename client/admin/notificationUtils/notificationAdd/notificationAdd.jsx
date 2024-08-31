@@ -1,3 +1,4 @@
+require('./notificationAdd.less');
 const React = require('react');
 const { useState, useRef } = require('react');
 const cx = require('classnames');

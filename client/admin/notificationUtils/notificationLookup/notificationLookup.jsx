@@ -125,7 +125,7 @@ const NotificationLookup = () => {
         }
 
         if (notifications.length === 0) {
-            return <div className="noNotifications">No notifications available.</div>;
+            return <div className="noNotification">No notifications available.</div>;
         }
 
         return (
@@ -143,7 +143,7 @@ const NotificationLookup = () => {
     return (
         <div className="notificationLookup">
             <div className="byId">
-                <h2>Lookup</h2>
+                <h2>Lookup by dissmiss key</h2>
                 <input
                     type="text"
                     ref={lookupRef}
@@ -166,7 +166,7 @@ const NotificationLookup = () => {
                 {renderFoundNotification()}
             </div>
             <div className="all">
-                <h2>All Notifications</h2>
+                <h2>Check all Notifications</h2>
                 <button onClick={lookupAll}>
                     <i
                         className={cx('fas', {
