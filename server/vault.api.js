@@ -36,15 +36,14 @@ const handleErrorResponse = (res, error, functionName) => {
 };
 
 const buildBrewsQuery = (legacy, v3) => {
-    //first off, no need to include renderers, if all are valid
+    const brewsQuery = { published: true };
     if (legacy === 'true' && v3 === 'true') return { published: true };
 
-    const renderers = [];
-    if (legacy === 'true') renderers.push('legacy');
-    if (v3 === 'true') renderers.push('V3');
-
-    const brewsQuery = { published: true };
-    brewsQuery.renderer = { $in: renderers };
+    if (legacy === 'true' && v3 !== 'true') {
+        brewsQuery.renderer = 'legacy';
+    } else if (v3 === 'true' && legacy !== 'true') {
+        brewsQuery.renderer = 'V3';
+    }
 
     return brewsQuery;
 };
