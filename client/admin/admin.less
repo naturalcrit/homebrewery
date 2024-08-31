@@ -54,44 +54,85 @@ body {
 				border           : 2px solid #444444;
 			}
 		}
+		section.notificationUtils {
+			display         : flex;
+			gap             : 50px;
+			justify-content : space-between;
 
-		.notificationAdd {
-			position       : relative;
-			display        : flex;
-			flex-direction : column;
-			width          : 500px;
+			.notificationAdd {
+				position       : relative;
+				display        : flex;
+				flex-direction : column;
+				width          : 500px;
 			
-			.field {
-				display               : grid;
-				grid-template-columns : 120px 150px;
-				align-items           : center;
-				justify-items         : stretch;
-				width                 : 100%;
-				margin-bottom         : 20px;
+				.field {
+					display               : grid;
+					grid-template-columns : 120px 150px;
+					align-items           : center;
+					justify-items         : stretch;
+					width                 : 100%;
+					margin-bottom         : 20px;
 			   
 				
-				input {
-					height      : 33px;
-					padding     : 0px 10px;
-					font-family : monospace;
-				}
+					input {
+						height      : 33px;
+						padding     : 0px 10px;
+						font-family : monospace;
+					}
 				
-				textarea {
-					min-width  : 50ch;
-					max-width  : 100ch;
-					min-height : 7em;
-					max-height : 30em;
+					textarea {
+						resize:vertical;
+						width  : 50ch;
+						min-height : 7em;
+						max-height : 25em;
+					}
+				}
+			
+				button {
+				
+					position : absolute;
+					right    : 0;
+					bottom   : 0;
+					
+					i { margin-right : 10px; }
 				}
 			}
-			
-			button {
+		
+			.notificationLookup {
+				width     : max-content;
+				min-width : 450px;
+		
+				.notificationList {
+					display        : flex;
+					flex-direction : column;
+					gap            : px;
+					margin-block   : 20px;
+					border         : 1px solid;
+					border-radius  : 5px;
+						
+					details {
+						padding    : 10px;
+						background : #CCCCCC;
+							
+						&:nth-child(even) { background : #DDDDDD; }
+						&:first-child {
+							border-top-left-radius  : 5px;
+							border-top-right-radius : 5px;
+						}
+						&:last-child {
+							border-bottom-right-radius : 5px;
+							border-bottom-left-radius  : 5px;
+						}
+							
+						summary {
+							font-size   : 20px;
+							font-weight : 900;
+						}
+					}
+				}
 				
-				position : absolute;
-				right    : 0;
-				bottom   : 0;
-					
-				i { margin-right : 10px; }
 			}
 		}
+		
 	}
 }
