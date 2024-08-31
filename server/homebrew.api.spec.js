@@ -53,6 +53,7 @@ describe('Tests for api', ()=>{
 		res = {
 			status    : jest.fn(()=>res),
 			send      : jest.fn(()=>{}),
+			set       : jest.fn(()=>{}),
 			setHeader : jest.fn(()=>{})
 		};
 
@@ -919,6 +920,68 @@ brew`);
 			expect(saveFunc).toHaveBeenCalled();
 			expect(saved.authors).toEqual(['test']);
 			expect(saved.googleId).toEqual(brew.googleId);
+		});
+	});
+	describe('Get CSS', ()=>{
+		it('should return brew style content as CSS text', async ()=>{
+			const testBrew = { title: 'test brew', text: '```css\n\nI Have a style!\n````\n\n' };
+
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
+			model.get = jest.fn(()=>toBrewPromise(testBrew));
+
+			const fn = api.getBrew('share', true);
+			const req = { brew: {} };
+			const next = jest.fn();
+			await fn(req, null, next);
+			await api.getCSS(req, res);
+
+			expect(req.brew).toEqual(testBrew);
+			expect(req.brew).toHaveProperty('style', '\nI Have a style!\n');
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith("\nI Have a style!\n");
+			expect(res.set).toHaveBeenCalledWith({
+				'Cache-Control' : 'no-cache',
+				'Content-Type'  : 'text/css'
+			});
+		});
+
+		it('should return 404 when brew has no style content', async ()=>{
+			const testBrew = { title: 'test brew', text: 'I don\'t have a style!' };
+
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
+			model.get = jest.fn(()=>toBrewPromise(testBrew));
+
+			const fn = api.getBrew('share', true);
+			const req = { brew: {} };
+			const next = jest.fn();
+			await fn(req, null, next);
+			await api.getCSS(req, res);
+
+			expect(req.brew).toEqual(testBrew);
+			expect(req.brew).toHaveProperty('style');
+			expect(res.status).toHaveBeenCalledWith(404);
+			expect(res.send).toHaveBeenCalledWith('');
+		});
+
+		it('should return 404 when brew does not exist', async ()=>{
+			const testBrew = { };
+
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
+			model.get = jest.fn(()=>toBrewPromise(testBrew));
+
+			const fn = api.getBrew('share', true);
+			const req = { brew: {} };
+			const next = jest.fn();
+			await fn(req, null, next);
+			await api.getCSS(req, res);
+
+			expect(req.brew).toEqual(testBrew);
+			expect(req.brew).toHaveProperty('style');
+			expect(res.status).toHaveBeenCalledWith(404);
+			expect(res.send).toHaveBeenCalledWith('');
 		});
 	});
 });
