@@ -140,7 +140,7 @@ const VaultPage = (props) => {
             setV3(v3);
             setLegacy(legacy);
         }
-        
+
         // Perform search with the latest input values, because state is not fast enough
         performSearch({ title, author, count, v3, legacy });
 
@@ -177,7 +177,8 @@ const VaultPage = (props) => {
         const isAuthorValid = authorInput.validity.valid && authorInput.value;
         const isCheckboxChecked = legacyCheckbox.checked || v3Checkbox.checked;
 
-        const isFormValid = (isTitleValid || isAuthorValid) && isCheckboxChecked;
+        const isFormValid =
+            (isTitleValid || isAuthorValid) && isCheckboxChecked;
 
         return isFormValid;
     };
@@ -211,10 +212,7 @@ const VaultPage = (props) => {
                         placeholder="v3 Reference Document"
                     />
                 </label>
-                <small>
-                    Tip! you can use <code>-</code> to negate words, and{' '}
-                    <code>"word"</code> to specify an exact string.
-                </small>
+
                 <label>
                     Author of the brew
                     <input
@@ -234,9 +232,7 @@ const VaultPage = (props) => {
                         placeholder="Gazook89"
                     />
                 </label>
-                <small>
-                    Remember, usernames are case sensitive.
-                </small>
+
                 <label>
                     Results per page
                     <select ref={countRef} name="count" defaultValue={count}>
@@ -249,7 +245,7 @@ const VaultPage = (props) => {
 
                 <label>
                     <input
-                        className='renderer'
+                        className="renderer"
                         ref={v3Ref}
                         type="checkbox"
                         defaultChecked={v3}
@@ -260,7 +256,7 @@ const VaultPage = (props) => {
 
                 <label>
                     <input
-                        className='renderer'
+                        className="renderer"
                         ref={legacyRef}
                         type="checkbox"
                         defaultChecked={legacy}
@@ -285,10 +281,34 @@ const VaultPage = (props) => {
                     />
                 </button>
             </div>
-            <small>
-                Remember, you can only search brews with this tool if they are
-                published
-            </small>
+            <legend>
+                <h3>Tips and tricks</h3>
+                <ul>
+                    <li>
+                        You can only search brews with this tool if they are
+                        published
+                    </li>
+                    <li>
+                        Usernames are case sensitive, make sure you are writing
+                        it correctly
+                    </li>
+                    <li>
+                        You can use <code>-</code> to negate words, assuming
+                        there is any word not negated, and <code>"word"</code>{' '}
+                        to specify an exact string.
+                    </li>
+
+                    <li>
+                        Some words like a, after, through, itself, or here, are
+                        ignored in searches, make sure your search has relevant
+                        words. The full list can be found{' '}
+                        <a href="https://github.com/mongodb/mongo/blob/0e3b3ca8480ddddf5d0105d11a94bd4698335312/src/mongo/db/fts/stop_words_english.txt">
+                            here
+                        </a>
+                    </li>
+                </ul>
+            </legend>
+            <small></small>
         </div>
     );
 
@@ -405,7 +425,7 @@ const VaultPage = (props) => {
                 </div>
             );
         }
-    
+
         if (brewCollection.length === 0) {
             return (
                 <div className="foundBrews noBrews">
