@@ -249,6 +249,7 @@ const VaultPage = (props) => {
 
                 <label>
                     <input
+                        className='renderer'
                         ref={v3Ref}
                         type="checkbox"
                         defaultChecked={v3}
@@ -259,6 +260,7 @@ const VaultPage = (props) => {
 
                 <label>
                     <input
+                        className='renderer'
                         ref={legacyRef}
                         type="checkbox"
                         defaultChecked={legacy}

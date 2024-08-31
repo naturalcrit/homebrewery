@@ -112,6 +112,25 @@ body {
 						}
 					}
 
+					&:after {
+						content: "Error:\A At least one renderer should be enabled to make a search";
+						display: block;
+						opacity:0;
+						transition: opacity 0.5s;
+						position: absolute;
+						white-space: pre-wrap;
+						top:0;
+						left:0;
+						right:0;
+						background:rgb(255, 60, 60);
+						color:white;
+						font-weight:900;
+						padding:10px;
+					}
+					&:not(:has(input[type="checkbox"]:checked)):after {
+						opacity:1;
+					}
+
 					#searchButton {
 						position : absolute;
 						right    : 10px;
