@@ -434,6 +434,11 @@ if(isLocalEnvironment){
 	});
 }
 
+//Vault Page
+app.get('/vault', asyncHandler(async(req, res, next)=>{
+	return next();
+}));
+
 //Send rendered page
 app.use(asyncHandler(async (req, res, next)=>{
 	if (!req.route) return res.redirect('/'); // Catch-all for invalid routes
