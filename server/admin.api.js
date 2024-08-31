@@ -139,19 +139,51 @@ router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 	}
 });
 
+// #######################   NOTIFICATIONS
+
 /* Searches for notification with matching key */
-router.get('/admin/notification/lookup/:id', mw.adminOnly, (req, res, next)=>{
-	NotificationModel.findOne({ dismissKey: req.params.id })
-		.exec((err, notification)=>{
-			return res.json(notification);
-		});
+router.get('/admin/notification/lookup/:id', mw.adminOnly, async (req, res, next) => {
+    try {
+        const notification = await NotificationModel.findOne({ dismissKey: req.params.id }).exec();
+        if (!notification) {
+            return res.status(404).json({ message: 'Notification not found' });
+        }
+        return res.json(notification);
+    } catch (err) {
+        return next(err);
+    }
 });
 
-/* Add new notification */
-router.post('/admin/notification/add', mw.adminOnly, async (req, res, next)=>{
-	console.log(req.body);
-	const notification = await NotificationModel.addNotification(req.body);
-	return res.json(notification);
+// get all notifications
+router.get('/admin/notification/all', mw.adminOnly, async (req, res, next) => {
+	try {
+		const notifications = await NotificationModel.getAll();
+		return res.json(notifications);
+		} catch (err) {
+			return next(err);
+		}
+});
+
+router.post('/admin/notification/add', mw.adminOnly, async (req, res, next) => {
+    console.table(req.body);
+    try {
+        // Assuming you have some validation logic here
+        const notification = await NotificationModel.addNotification(req.body);
+        return res.json(notification);
+    } catch (error) {
+        console.error('Error adding notification:', error);
+        return res.status(500).json({ error: 'An error occurred while adding the notification' });
+    }
+});
+
+router.delete('/admin/notification/delete/:id', mw.adminOnly, async (req, res, next) => {
+    try {
+        const notification = await NotificationModel.deleteNotification(req.params.id);
+        return res.json(notification);
+    } catch (error) {
+        console.error('Error deleting notification: { key: ', req.params.id , ' error: ',  error ,' }');
+        return res.status(500).json({ error: 'An error occurred while deleting the notification' });
+    }
 });
 
 router.get('/admin', mw.adminOnly, (req, res)=>{

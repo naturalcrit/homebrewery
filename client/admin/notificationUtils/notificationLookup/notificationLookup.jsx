@@ -1,95 +1,183 @@
 require('./notificationLookup.less');
 
 const React = require('react');
-const { useState } = require('react');
+const { useState, useRef } = require('react');
 const cx = require('classnames');
-
 const request = require('superagent');
 const Moment = require('moment');
 
+const NotificationDetail = ({ notification, onDelete }) => (
+    <div>
+        <dl>
+            <dt>Key</dt>
+            <dd>{notification.dismissKey}</dd>
+
+            <dt>Title</dt>
+            <dd>{notification.title || 'No Title'}</dd>
+
+            <dt>Text</dt>
+            <dd>{notification.text || 'No Text'}</dd>
+
+            <dt>Created</dt>
+            <dd>{Moment(notification.createdAt).format('LLLL')}</dd>
+
+            <dt>Start</dt>
+            <dd>{Moment(notification.startAt).format('LLLL') || 'No Start Time'}</dd>
+
+            <dt>Stop</dt>
+            <dd>{Moment(notification.stopAt).format('LLLL') || 'No End Time'}</dd>
+        </dl>
+        <button onClick={() => onDelete(notification.dismissKey)}>DELETE</button>
+    </div>
+);
+
 const NotificationLookup = () => {
-    const [query, setQuery] = useState('');
     const [foundNotification, setFoundNotification] = useState(null);
     const [searching, setSearching] = useState(false);
     const [error, setError] = useState(null);
+    const [notifications, setNotifications] = useState([]);
+    
+    const lookupRef = useRef(null);
 
-    const handleChange = (e) => {
-        setQuery(e.target.value);
-    };
+    const lookup = async () => {
+        const query = lookupRef.current.value;
 
-    const lookup = () => {
+        if (!query.trim()) {
+            setError('Please enter a valid dismiss key.');
+            return;
+        }
+
         setSearching(true);
         setError(null);
 
-        request.get(`/admin/notification/lookup/${query}`)
-            .then((res) => setFoundNotification(res.body))
-            .catch((err) => setError(err))
-            .finally(() => setSearching(false));
+        try {
+            const res = await request.get(`/admin/notification/lookup/${query}`);
+            if (res.body) {
+                setFoundNotification(res.body);
+            } else {
+                setFoundNotification(null);
+                setError('No notification found.');
+            }
+        } catch {
+            setError('Error fetching notification.');
+        } finally {
+            setSearching(false);
+        }
     };
 
-    const deleteNotification = () => {
-        if (!foundNotification) return;
+    const lookupAll = async () => {
+        setSearching(true);
+        setError(null);
 
-        const confirmed = window.confirm(`Really delete notification ${foundNotification.dismissKey} : ${foundNotification.title}?`);
+        try {
+            const res = await request.get('/admin/notification/all');
+            setNotifications(res.body || []);
+        } catch {
+            setError('Error fetching all notifications.');
+        } finally {
+            setSearching(false);
+        }
+    };
+
+    const deleteNotification = async (dismissKey) => {
+        if (!dismissKey) return;
+
+        const confirmed = window.confirm(
+            `Really delete notification ${dismissKey}?`
+        );
         if (!confirmed) {
             console.log('CANCELLED');
             return;
         }
         console.log('CONFIRMED');
-        // Perform delete operation here
+        try {
+            await request.delete(`/admin/notification/delete/${dismissKey}`);
+            // Only reset the foundNotification if it matches the one being deleted
+            if (foundNotification && foundNotification.dismissKey === dismissKey) {
+                setFoundNotification(null);
+            }
+            // Optionally refresh the list of all notifications
+            lookupAll(); 
+        } catch {
+            setError('Error deleting notification.');
+        }
     };
 
     const renderFoundNotification = () => {
-        if (!foundNotification) return null;
+        if (error) {
+            return <div className="error">{error}</div>;
+        }
+
+        if (!foundNotification) {
+            return <div className="noNotification">No notification found.</div>;
+        }
 
         return (
-            <div className='foundNotification'>
-                <dl>
-                    <dt>Key</dt>
-                    <dd>{foundNotification.dismissKey}</dd>
+            <div className="foundNotification">
+                <NotificationDetail notification={foundNotification} onDelete={deleteNotification} />
+            </div>
+        );
+    };
 
-                    <dt>Title</dt>
-                    <dd>{foundNotification.title || 'No Title'}</dd>
+    const renderNotificationsList = () => {
+        if (error) {
+            return <div className="error">{error}</div>;
+        }
 
-                    <dt>Text</dt>
-                    <dd>{foundNotification.text || 'No Text'}</dd>
+        if (notifications.length === 0) {
+            return <div className="noNotifications">No notifications available.</div>;
+        }
 
-                    <dt>Created</dt>
-                    <dd>{Moment(foundNotification.createdAt).toLocaleString()}</dd>
-
-                    <dt>Start</dt>
-                    <dd>{Moment(foundNotification.startAt).toLocaleString() || 'No Start Time'}</dd>
-
-                    <dt>Stop</dt>
-                    <dd>{Moment(foundNotification.stopAt).toLocaleString() || 'No End Time'}</dd>
-                </dl>
-                <button onClick={deleteNotification}>DELETE</button>
+        return (
+            <div className="notificationsList">
+                {notifications.map((notification) => (
+                    <details key={notification.dismissKey}>
+                        <summary>{notification.title || 'No Title'}</summary>
+                        <NotificationDetail notification={notification} onDelete={deleteNotification} />
+                    </details>
+                ))}
             </div>
         );
     };
 
     return (
-        <div className='notificationLookup'>
-            <h2>Lookup</h2>
-            <input
-                type='text'
-                value={query}
-                onChange={handleChange}
-                placeholder='notification key'
-            />
-            <button onClick={lookup}>
-                <i className={cx('fas', {
-                    'fa-search': !searching,
-                    'fa-spin fa-spinner': searching,
-                })} />
-            </button>
+        <div className="notificationLookup">
+            <div className="byId">
+                <h2>Lookup</h2>
+                <input
+                    type="text"
+                    ref={lookupRef}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            lookup();
+                        }
+                    }}
+                    placeholder="dismiss key"
+                />
+                <button onClick={lookup}>
+                    <i
+                        className={cx('fas', {
+                            'fa-search': !searching,
+                            'fa-spin fa-spinner': searching,
+                        })}
+                    />
+                </button>
 
-            {error && <div className='error'>{error.toString()}</div>}
+                {renderFoundNotification()}
+            </div>
+            <div className="all">
+                <h2>All Notifications</h2>
+                <button onClick={lookupAll}>
+                    <i
+                        className={cx('fas', {
+                            'fa-search': !searching,
+                            'fa-spin fa-spinner': searching,
+                        })}
+                    />
+                </button>
 
-            {foundNotification
-                ? renderFoundNotification()
-                : <div className='noNotification'>No notification found.</div>
-            }
+                {renderNotificationsList()}
+            </div>
         </div>
     );
 };

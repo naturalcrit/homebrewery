@@ -1,80 +1,104 @@
 const mongoose = require('mongoose');
 const _ = require('lodash');
 
-const NotificationSchema = mongoose.Schema({
-	dismissKey : { type: String, unique: true, required: true },
-	title      : { type: String, default: '' },
-	text       : { type: String, default: '' },
-
-	createdAt : { type: Date, default: Date.now },
-	startAt   : { type: Date, default: Date.now },
-	stopAt    : { type: Date, default: Date.now },
+// Define the schema for the notification
+const NotificationSchema = new mongoose.Schema({
+    dismissKey: { type: String, unique: true, required: true },
+    title: { type: String, default: '' },
+    text: { type: String, default: '' },
+    createdAt: { type: Date, default: Date.now },
+    startAt: { type: Date, default: Date.now },
+    stopAt: { type: Date, default: Date.now },
 }, { versionKey: false });
 
-NotificationSchema.statics.get = function(query, fields=null){
-	return new Promise((resolve, reject)=>{
-		Notification.find(query, fields, null, (err, notifications)=>{
-			if(err || !notifications.length) return reject('Can not find notification');
-			return resolve(notifications[0]);
-		});
-	});
+// Static method to get a notification based on a query
+NotificationSchema.statics.get = async function(query, fields = null) {
+    try {
+        const notifications = await this.find(query, fields).exec();
+        if (!notifications.length) throw new Error('Cannot find notification');
+        return notifications[0];
+    } catch (err) {
+        throw new Error(err.message || 'Error finding notification');
+    }
 };
 
-NotificationSchema.statics.getByKey = function(key, fields=null){
-	return new Promise((resolve, reject)=>{
-		const query = { dissmissKey: key };
-		Notification.findOne(query, fields).lean().exec((err, notifications)=>{ //lean() converts results to JSObjects
-			if(err) return reject('Can not find notification');
-			return resolve(notifications);
-		});
-	});
+// Static method to get a notification by its dismiss key
+NotificationSchema.statics.getByKey = async function(key, fields = null) {
+    try {
+        const notification = await this.findOne({ dismissKey: key }, fields).lean().exec();
+        if (!notification) throw new Error('Cannot find notification');
+        return notification;
+    } catch (err) {
+        throw new Error(err.message || 'Error finding notification');
+    }
 };
 
-NotificationSchema.statics.addNotification = async function(data){
-	// console.log('add notification');
-	if(!data.dismissKey) return 'Dismiss key is required!';
-	const defaults = {
-		title   : '',
-		text    : '',
-		startAt : new Date,
-		stopAt  : new Date
-	};
-	_.defaults(data, defaults);
-	const newNotification = new Notification(data);
-	const savedNotification = await newNotification.save()
-		.catch((err)=>{
-			return { err };
-		});
-
-	return savedNotification;
+// Static method to add a new notification
+NotificationSchema.statics.addNotification = async function(data) {
+    if (!data.dismissKey) return 'Dismiss key is required!';
+    const defaults = {
+        title: '',
+        text: '',
+        startAt: new Date(),
+        stopAt: new Date()
+    };
+    _.defaults(data, defaults);
+    const newNotification = new this(data);
+    try {
+        const savedNotification = await newNotification.save();
+        return savedNotification;
+    } catch (err) {
+        throw new Error(err.message || 'Error saving notification');
+    }
 };
 
-NotificationSchema.statics.updateNotification = async function(dismissKey, title=null, text=null, startAt=null, stopAt=null){
-	if(!dismissKey) return 'No key!';
-	if(!title && !text && !startAt && !stopAt) return 'No data!';
-	const filter = {
-		dismissKey : dismissKey
-	};
-	const data = {
-		title   : title,
-		text    : text,
-		startAt : startAt,
-		stopAt  : stopAt
-	};
-	for (const [key, value] of Object.entries(data)){
-		if(value === null) delete data[key];
-	}
+// Static method to update a notification
+NotificationSchema.statics.updateNotification = async function(dismissKey, title = null, text = null, startAt = null, stopAt = null) {
+    if (!dismissKey) return 'No key!';
+    if (!title && !text && !startAt && !stopAt) return 'No data!';
+    const filter = { dismissKey: dismissKey };
+    const data = { title, text, startAt, stopAt };
 
-	await Notification.findOneAndUpdate(filter, data, { new: true })
-		.exec((err, notifications)=>{
-			if(err) return reject('Can not find notification');
-			return resolve(notifications);
-		});
+    // Remove null values from the data object
+    for (const [key, value] of Object.entries(data)) {
+        if (value === null) delete data[key];
+    }
+
+    try {
+        const updatedNotification = await this.findOneAndUpdate(filter, data, { new: true }).exec();
+        if (!updatedNotification) throw new Error('Cannot find notification');
+        return updatedNotification;
+    } catch (err) {
+        throw new Error(err.message || 'Error updating notification');
+    }
 };
 
+// Static method to delete a notification
+NotificationSchema.statics.deleteNotification = async function(dismissKey) {
+    if (!dismissKey) return 'No key provided!';
+    try {
+        const deletedNotification = await this.findOneAndDelete({ dismissKey }).exec();
+        if (!deletedNotification) throw new Error('Notification not found');
+        return deletedNotification;
+    } catch (err) {
+        throw new Error(err.message || 'Error deleting notification');
+    }
+};
+
+// Static method to get all notifications
+NotificationSchema.statics.getAll = async function() {
+    try {
+        const notifications = await this.find().exec();
+        return notifications;
+    } catch (err) {
+        throw new Error(err.message || 'Error retrieving notifications');
+    }
+};
+
+// Create and export the model
 const Notification = mongoose.model('Notification', NotificationSchema);
 
 module.exports = {
-	schema : NotificationSchema,
-	model  : Notification,
+    schema: NotificationSchema,
+    model: Notification,
 };
