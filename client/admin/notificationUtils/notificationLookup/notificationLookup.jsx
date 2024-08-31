@@ -129,7 +129,7 @@ const NotificationLookup = () => {
         }
 
         return (
-            <div className="notificationsList">
+            <div className="notificationList">
                 {notifications.map((notification) => (
                     <details key={notification.dismissKey}>
                         <summary>{notification.title || 'No Title'}</summary>

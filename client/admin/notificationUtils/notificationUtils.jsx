@@ -5,11 +5,10 @@ const NotificationAdd = require('./notificationAdd/notificationAdd.jsx');
 
 const NotificationUtils = () => {
     return (
-        <>
+        <section className='notificationUtils'>
             <NotificationAdd />
-            <hr />
             <NotificationLookup />
-        </>
+        </section>
     );
 };
 

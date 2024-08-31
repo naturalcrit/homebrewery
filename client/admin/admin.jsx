@@ -33,13 +33,13 @@ const Admin = createClass({
 					homebrewery admin
 				</div>
 			</header>
-			<div className='container'>
-				<div className='tabs'>
+			<main className='container'>
+				<nav className='tabs'>
 					{tabGroups.map((tab, idx)=>{ return <button className={tab===this.state.currentTab ? 'active' : ''} key={idx} onClick={()=>{ return this.handleClick(tab); }}>{tab.toUpperCase()}</button>; })}
-				</div>
+				</nav>
 				{this.state.currentTab==='brew' && <BrewUtils />}
 				{this.state.currentTab==='notifications' && <NotificationUtils />}
-			</div>
+			</main>
 		</div>;
 	}
 });
