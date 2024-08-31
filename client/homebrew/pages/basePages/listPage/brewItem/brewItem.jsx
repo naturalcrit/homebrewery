@@ -145,9 +145,9 @@ const BrewItem = createClass({
 				{brew.authors?.map((author, index) => (
 					<React.Fragment key={index}>
 						{author === 'hidden' ? (
-							<span>{author}</span> // Render as plain text if the author's name is "hidden"
+							<span title="This username had an email in it, so we hid it to keep the user's privacy, sorry">&nbsp;{author}</span>
 							) : (
-							<a href={`/user/${author}`}>{author}</a> // Render as a link if not "hidden"
+							<a href={`/user/${author}`}>{author}</a>
 						)}
 						{index < brew.authors.length - 1 && ', '}
 					</React.Fragment>
