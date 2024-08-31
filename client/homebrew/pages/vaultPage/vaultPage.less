@@ -59,6 +59,23 @@ body {
 				position : relative;
 				padding  : 50px clamp(20px, 4vw, 50px);
 
+				&::after {
+					position    : absolute;
+					top         : 0;
+					right       : 0;
+					left        : 0;
+					display     : block;
+					padding     : 10px;
+					font-weight : 900;
+					color       : white;
+					white-space : pre-wrap;
+					content     : 'Error:\A At least one renderer should be enabled to make a search';
+					background  : rgb(255, 60, 60);
+					opacity     : 0;
+					transition  : opacity 0.5s;
+				}
+				&:not(:has(input[type='checkbox']:checked))::after { opacity : 1; }
+
 				.formTitle {
 					margin        : 20px 0;
 					font-size     : 30px;
@@ -126,22 +143,7 @@ body {
 						}
 					}
 
-					&::after {
-						position    : absolute;
-						top         : 0;
-						right       : 0;
-						left        : 0;
-						display     : block;
-						padding     : 10px;
-						font-weight : 900;
-						color       : white;
-						white-space : pre-wrap;
-						content     : 'Error:\A At least one renderer should be enabled to make a search';
-						background  : rgb(255, 60, 60);
-						opacity     : 0;
-						transition  : opacity 0.5s;
-					}
-					&:not(:has(input[type='checkbox']:checked))::after { opacity : 1; }
+					
 
 					#searchButton {
 						position : absolute;
