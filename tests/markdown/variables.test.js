@@ -315,21 +315,21 @@ describe('Normal Links and Images', ()=>{
 		const source = `![alt text](url)`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
-			<p><img src="url" alt="alt text"></p>`.trimReturns());
+			<p><img src="url" alt="alt text" style="--HB_src:url(url);"></p>`.trimReturns());
 	});
 
 	it('Renders normal images with a title', function() {
 		const source = 'An image ![alt text](url "and title")!';
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
-			<p>An image <img src="url" alt="alt text" title="and title">!</p>`.trimReturns());
+			<p>An image <img src="url" alt="alt text" style="--HB_src:url(url);" title="and title">!</p>`.trimReturns());
 	});
 
 	it('Applies curly injectors to images', function() {
 		const source = `![alt text](url){width:100px}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
-			<p><img style="width:100px;" src="url" alt="alt text"></p>`.trimReturns());
+			<p><img style="--HB_src:url(url); width:100px;" src="url" alt="alt text"></p>`.trimReturns());
 	});
 
 	it('Renders normal links', function() {
