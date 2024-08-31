@@ -841,12 +841,18 @@ const MarkedEmojiOptions = {
 	renderer : (token)=>`<i class="${token.emoji}"></i>`
 };
 
+const tableTerminators = [
+	`:+\\n`,                // hardBreak
+	` *{[^\n]+}`,           // blockInjector
+	` *{{[^{\n]*\n.*?\n}}`  // mustacheDiv
+]
+
 Marked.use(MarkedVariables());
 Marked.use({ extensions : [indexAnchors, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks, superSubScripts,
 	mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
-Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId({ globalSlugs: true }), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
+Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
 function cleanUrl(href) {
   try {
