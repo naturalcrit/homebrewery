@@ -2,6 +2,8 @@
 const _ = require('lodash');
 
 // Small and one-off licenses
+// Licenses in this file consist of one or two functions at most. If something is larger, 
+// has more assets, or variations, break it out into a distinct file.
 
 module.exports = {
 
@@ -54,5 +56,6 @@ module.exports = {
 	shadowDarkBlack  : `![Shadowdark Black Logo](/assets/license_logos/Third_Party_Shadowdark_Logo_Black.png){width:200px}`,
 	shadowDarkWhite  : `![Shadowdark White Logo](/assets/license_logos/Third_Party_Shadowdark_Logo_White.png){width:200px}`,
 	bladesDarkNotice : `This work is based on Blades in the Dark \(found at (http://www.bladesinthedark.com/)\), product of One Seven Design, developed and authored by John Harper, and licensed for our use under the Creative Commons Attribution 3.0 Unported license \(http://creativecommons.org/licenses/by/3.0/\).`,
-	bladesDarkLogo   : `![Forged in the Dark](/assets/license_logos/forged_in_the_dark_logo2_0.png)`
+	bladesDarkLogo   : `![Forged in the Dark](/assets/license_logos/forged_in_the_dark_logo2_0.png)`,
+	bladesDarkLogoAttribution : `*Blades in the Dark^tm^ is a trademark of One Seven Design. The Forged in the Dark Logo is © One Seven Design, and is used with permission.*`
 };

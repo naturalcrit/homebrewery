@@ -143,29 +143,37 @@ module.exports = [
 				subsnippets : [
 					{
 						name : 'Title Page Declaration',
+						icon : 'fas fa-text',
 						gen  : LicenseGenAelf.aelfTitleNotice
 					},
 					{
 						name : 'Legal Declaration',
+						icon : 'fas fa-text',
 						gen  : LicenseGenAelf.aelfLegalNotice
 					},
 					{
 						name : 'AELF License',
+						icon : 'fas fa-legal',
 						gen  : LicenseGenAelf.aelf10a
 					}
 				]
 			},
 			{
-				name        : 'Blades in the Dark',
+				name        : 'Forged in the Dark',
 				subsnippets : [
 					{
-						name : 'Forged in the Dark Logo',
+						name : 'Logo',
 						icon : 'fas fa-image',
 						gen  : LicenseGen.bladesDarkLogo
 					},
 					{
-						name : 'Usage Statement',
-						icon : 'fas fa-text',
+						name : 'Logo Attribution',
+						icon : 'fas fa-legal',
+						gen  : LicenseGen.bladesDarkLogoAttribution
+					},
+					{
+						name : 'Attribution Statement',
+						icon : 'fas fa-legal',
 						gen  : LicenseGen.bladesDarkNotice
 					},
 				],
