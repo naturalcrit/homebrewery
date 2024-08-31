@@ -28,10 +28,10 @@ const buildRendererConditions = (legacy, v3) => {
 		brewsQuery.renderer = 'V3';
 	}
 
+    //if all renderers are selected, doesn't make sense to add them to the query, it would only take longer
 	return brewsQuery;
 };
 
-// Function to find brews
 const findBrews = async (req, res) => {
 	const title = req.query.title || '';
 	const author = req.query.author || '';
@@ -76,14 +76,10 @@ const findBrews = async (req, res) => {
 		})
 		.catch((error) => {
 			console.error(error);
-			res.status(500).json({
-				error: 'Error finding brews in Vault search',
-				HBErrorCode: '99',
-			});
+			throw {...err, message: "Error finding brews in Vault search", HBErrorCode: '99'}; 
 		});
 };
 
-// Function to find total brews
 const findTotal = async (req, res) => {
 	const title = req.query.title || '';
 	const author = req.query.author || '';
@@ -113,10 +109,7 @@ const findTotal = async (req, res) => {
 		})
 		.catch((error) => {
 			console.error(error);
-			res.status(500).json({
-				error: 'Error finding brews in Vault search find total search',
-				HBErrorCode: '99',
-			});
+			throw {...err, message: "Error finding brews in Vault search", HBErrorCode: '99'};
 		});
 };
 
