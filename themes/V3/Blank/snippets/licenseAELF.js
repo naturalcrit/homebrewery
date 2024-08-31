@@ -5,9 +5,20 @@ const dedent = require('dedent');
 // AELF License
 
 module.exports = {
+	aelfTitleNotice : function() {
+		return `This work includes AELF Open Gaming Content, which may only be used under the terms of the AELF Open License version 1.0a. This product is not endorsed or reviewed by Mythmere Games LLC or any other contributor of AELF Open Gaming Content and does not represent the views of Mythmere Games LLC any other contributor.`;
+	},
+	aelfLegalNotice : function() {
+		return dedent`{{ol-lowerLetters
+		1. **Notice.** This work includes AELF Open Gaming Content, which may only be used under the terms of the AELF Open License version 1.0a. This product is not endorsed or reviewed by Mythmere Games LLC or any other contributor of AELF Open Gaming Content and does not represent the olListLower
+		2. **Designation of AELF Open Game Content.** Here you describe your AELF Open Game Content. There are some examples of what might go in this section below.
+		3. **Product Identity.** Here you designate your Product Identity. 
+		4. **Required Attributions.** Here you include any “Required Attributions” for your product or for a product containing AELF Open Game Content that you’re using.
+		}}\n\n`;
+	},
 	aelf10a : function() {
 		return dedent`
-			{{license,wide
+			{{license,wide,ol-noIndent
 			AELF OPEN LICENSE VERSION 1.0a
 			:
 			Defined Terms are listed in Section 13.
@@ -29,9 +40,7 @@ module.exports = {
 			8. USE OF CONTRIBUTOR CREDITS: You may not market or advertise AELF Open Gaming Content using the name of any Contributor unless You have written permission from the Contributor to do so. You may include a statement of compatibility if the Contributor has set forth terms for statements of compatibility or if your statement complies with relevant law regarding trademarks.
 
 			9. PRIVITY OF CONTRACT: In any dispute hereunder, only the Contributors of content Used by You are considered to be in privity of contract with You. No other person shall be deemed a third-party beneficiary of this License with respect to You.
-			}}
-			\page
-			{{license,wide
+
 			10. INABILITY TO COMPLY: If it is impossible for You to comply with any of the terms of this License with respect to some or all of the AELF Open Gaming Content due to statute, judicial order, or governmental regulation, then You may not Use any AELF Open Gaming Content so affected.
 
 			11. TERMINATION FOR FAILURE TO COMPLY WITH LICENSE: This License (under all versions present and future) will terminate automatically, but only as to You (and to all of Your affiliates and subsidiaries), if You fail to comply with any of the terms hereof and You do not cure such failure within 30 days of becoming aware of it. If the License has so terminated with respect to You, it may only be reinstated if all Contributors of the relevant content Used by You, who were adversely affected by Your failure to comply, waive such failure in writing. However, no such termination shall affect the license of any AELF Open Gaming Content (whether contributed by the person as to which this License has terminated or by any other person) under this License to any persons as to which this License has not terminated.
@@ -42,5 +51,5 @@ module.exports = {
 
 			14. COPYRIGHT NOTICE \[Insert both (i) the exact text of the COPYRIGHT NOTICE from any AELF Open Gaming Content You are Using, together with any required attribution under Section 5(b)(iii), and (ii) the title, the copyright date, and the copyright holder's name of your product, together with any additional required attribution under Section 5(b)(iii).\]
 			}}`;
-	}
+	},
 };

@@ -486,6 +486,12 @@ body { counter-reset : page-numbers; }
 //*******************************
 // * Ordered List Type Overrides
 // *****************************/
+@counter-style lower-alpha-trailing-paren {
+	system: extends lower-alpha;
+	prefix: "";
+	suffix: ") ";
+  }
+
 .page{
 	.ol-ccby ol {
 		list-style-type: lower-alpha;
@@ -510,4 +516,35 @@ body { counter-reset : page-numbers; }
 		padding-left: 25px;
 		text-indent: 0em !important;
 	  }
+
+	  // Non-indented, numerical lists with slight gap between paragraphs.
+	  .ol-lowerLetters ol {
+		list-style-type: lower-alpha-trailing-paren;
+	  }
+
+	  .ol-lowerLetters ol li p {
+		display: inline;
+	  }
+
+  	  .ol-lowerLetters ol {
+		list-style-position: inside;
+		padding: 0px;
+	  }
+    
+	  .ol-lowerLetters ol li:not(:last-child) { 
+		 margin-bottom: 0.5em; 	
+	  }      	  
+
+	  .ol-noIndent ol {
+		list-style-position: inside;
+		padding: 0px;
+	  }
+	  
+	  .ol-noIndent ol li p {
+		display: inline;
+	  }
+	  
+	  .ol-noIndent ol li:not(:last-child) { 
+		 margin-bottom: 0.5em; 	
+	  }  
 }

@@ -140,7 +140,20 @@ module.exports = [
 		snippets  : [
 			{
 				name : 'AELF',
-				gen  : LicenseGenAelf.aelf10a
+				subsnippets : [
+					{
+						name : 'Title Page Declaration',
+						gen  : LicenseGenAelf.aelfTitleNotice
+					},
+					{
+						name : 'Legal Declaration',
+						gen  : LicenseGenAelf.aelfLegalNotice
+					},
+					{
+						name : 'AELF License',
+						gen  : LicenseGenAelf.aelf10a
+					}
+				]
 			},
 			{
 				name        : 'Blades in the Dark',
