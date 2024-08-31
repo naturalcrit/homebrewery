@@ -503,11 +503,6 @@ app.use(async (err, req, res, next)=>{
 		res.status(err.status || err.response?.status || 500).send(err);
 		return;
 	}
-	if(err.originalUrl?.startsWith('/vault/')) {
-		// console.log('vault error');
-		res.status(err.status || err.response?.status || 500).send(err);
-		return;
-	}
 
 	// console.log('non-API error');
 	const status = err.status || err.code || 500;
