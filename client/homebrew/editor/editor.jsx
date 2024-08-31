@@ -85,7 +85,7 @@ const Editor = createClass({
 	},
 
 	handleControlKeys : function(e){
-		if(!(e.ctrlKey || e.metaKey)) return;
+		if(!(e.ctrlKey && e.metaKey)) return;
 		const LEFTARROW_KEY = 37;
 		const RIGHTARROW_KEY = 39;
 		if (e.shiftKey && (e.keyCode == RIGHTARROW_KEY)) this.brewJump();
