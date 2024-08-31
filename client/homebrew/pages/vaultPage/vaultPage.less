@@ -24,13 +24,28 @@ body {
 	overflow-y       : hidden;
 	background-color : #2C3E50;
 
-	h1,
-	h2,
-	h3 {
-		font-family : 'Open Sans';
-		font-weight : 900;
-		color       : white;
+	h1, h2, h3, h4 {
+		font-family    : 'CodeBold';
+		letter-spacing : 2px;
 	}
+
+	legend {
+		h3 {
+			margin-block  : 30px 20px;
+			font-size     : 20px;
+			text-align    : center;
+			border-bottom : 2px solid;
+		}
+		ul {
+			padding-inline : 30px 10px;
+			li {
+				margin-block : 5px;
+				line-height:calc(1em + 5px);
+				list-style   : disc;
+			}
+		} 
+	}
+	
 
 	.content {
 		background : #2C3E50;
@@ -66,12 +81,10 @@ body {
 					input { 
 						margin   : 0 10px; 
 
-						&:invalid {
-							background : rgb(255, 188, 181);
-						}
+						&:invalid { background : rgb(255, 188, 181); }
 					
 						&[type='checkbox'] {
-							position : relative;
+							position       : relative;
 							display        : inline-block;
 							width          : 50px;
 							height         : 30px;
@@ -112,24 +125,22 @@ body {
 						}
 					}
 
-					&:after {
-						content: "Error:\A At least one renderer should be enabled to make a search";
-						display: block;
-						opacity:0;
-						transition: opacity 0.5s;
-						position: absolute;
-						white-space: pre-wrap;
-						top:0;
-						left:0;
-						right:0;
-						background:rgb(255, 60, 60);
-						color:white;
-						font-weight:900;
-						padding:10px;
+					&::after {
+						position    : absolute;
+						top         : 0;
+						right       : 0;
+						left        : 0;
+						display     : block;
+						padding     : 10px;
+						font-weight : 900;
+						color       : white;
+						white-space : pre-wrap;
+						content     : 'Error:\A At least one renderer should be enabled to make a search';
+						background  : rgb(255, 60, 60);
+						opacity     : 0;
+						transition  : opacity 0.5s;
 					}
-					&:not(:has(input[type="checkbox"]:checked)):after {
-						opacity:1;
-					}
+					&:not(:has(input[type='checkbox']:checked))::after { opacity : 1; }
 
 					#searchButton {
 						position : absolute;
@@ -137,7 +148,7 @@ body {
 						bottom   : 0;
 
 						i {
-							margin-left			: 10px;
+							margin-left         : 10px;
 							animation-duration  : 1000s;
 						}
 					}
@@ -152,6 +163,12 @@ body {
 				font-family    : 'BookInsanityRemake';
 				font-size      : 0.34cm;
 
+				
+				h3 {
+					font-family : 'Open Sans';
+					font-weight : 900;
+					color       : white;
+				}
 
 				.foundBrews {
 					position         : relative;

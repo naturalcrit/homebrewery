@@ -294,16 +294,16 @@ const VaultPage = (props) => {
                     </li>
                     <li>
                         You can use <code>-</code> to negate words, assuming
-                        there is any word not negated, and <code>"word"</code>{' '}
+                        there is any word not negated, and <code>"word"</code>
                         to specify an exact string.
                     </li>
 
                     <li>
                         Some words like a, after, through, itself, or here, are
                         ignored in searches, make sure your search has relevant
-                        words. The full list can be found{' '}
+                        words. The full list can be found &nbsp;
                         <a href="https://github.com/mongodb/mongo/blob/0e3b3ca8480ddddf5d0105d11a94bd4698335312/src/mongo/db/fts/stop_words_english.txt">
-                            here
+                             here 
                         </a>
                     </li>
                 </ul>
