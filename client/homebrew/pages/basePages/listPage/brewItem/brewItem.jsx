@@ -141,11 +141,17 @@ const BrewItem = createClass({
 				</> : <></>
 				}
 				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
-					<i className='fas fa-user'/> {brew.authors?.map((author, index)=>(
-  					<>
-    					<a key={index} href={`/user/${author}`}>{author}</a>
-    					{index < brew.authors.length - 1 && ', '}
-  					</>))}
+				<i className='fas fa-user'/> 
+				{brew.authors?.map((author, index) => (
+					<React.Fragment key={index}>
+						{author === 'hidden' ? (
+							<span>{author}</span> // Render as plain text if the author's name is "hidden"
+							) : (
+							<a href={`/user/${author}`}>{author}</a> // Render as a link if not "hidden"
+						)}
+						{index < brew.authors.length - 1 && ', '}
+					</React.Fragment>
+				))}
 				</span>
 				<br />
 				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>

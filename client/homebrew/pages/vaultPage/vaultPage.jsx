@@ -435,22 +435,27 @@ const VaultPage = (props) => {
 		}
 
 		return (
-			<div className="foundBrews">
-				<span className="totalBrews">
-					{`Brews found: `}
-					<span>{totalBrews}</span>
-				</span>
-				{brewCollection.map((brew, index) => (
-					<BrewItem
-						brew={brew}
-						key={index}
-						reportError={props.reportError}
-					/>
-				))}
-				{renderPaginationControls()}
-			</div>
-		);
-	};
+            <div className="foundBrews">
+                <span className="totalBrews">
+                    {`Brews found: `}
+                    <span>{totalBrews}</span>
+                </span>
+                {brewCollection.map((brew, index) => {
+                    const processedAuthors = brew.authors.map(author =>
+                        author.includes('@') ? 'hidden' : author
+                    );
+                    return (
+                        <BrewItem
+                            brew={{ ...brew, authors: processedAuthors }}
+                            key={index}
+                            reportError={props.reportError}
+                        />
+                    );
+                })}
+                {renderPaginationControls()}
+            </div>
+        );
+    };
 
 	return (
 		<div className="vaultPage">
