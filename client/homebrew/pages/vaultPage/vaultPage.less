@@ -23,28 +23,6 @@ body {
 	height           : 100%;
 	overflow-y       : hidden;
 	background-color : #2C3E50;
-
-	h1, h2, h3, h4 {
-		font-family    : 'CodeBold';
-		letter-spacing : 2px;
-	}
-
-	legend {
-		h3 {
-			margin-block  : 30px 20px;
-			font-size     : 20px;
-			text-align    : center;
-			border-bottom : 2px solid;
-		}
-		ul {
-			padding-inline : 30px 10px;
-			li {
-				margin-block : 5px;
-				line-height  : calc(1em + 5px);
-				list-style   : disc;
-			}
-		} 
-	}
 	
 
 	.content {
@@ -58,6 +36,29 @@ body {
 			&.form .brewLookup {
 				position : relative;
 				padding  : 50px clamp(20px, 4vw, 50px);
+
+				h1, h2, h3, h4 {
+					font-family    : 'CodeBold';
+					letter-spacing : 2px;
+				}
+
+				
+				legend {
+					h3 {
+						margin-block  : 30px 20px;
+						font-size     : 20px;
+						text-align    : center;
+						border-bottom : 2px solid;
+					}
+					ul {
+						padding-inline : 30px 10px;
+						li {
+							margin-block : 5px;
+							line-height  : calc(1em + 5px);
+							list-style   : disc;
+						}
+					} 
+				}
 
 				&::after {
 					position    : absolute;
