@@ -4,7 +4,7 @@ const HomebrewModel = require('./homebrew.model.js').model;
 
 const router = express.Router();
 
-const buildTitleConditions = (title) => {
+const titleConditions = (title) => {
 	if (!title) return {};
 	return {
 		$text: {
@@ -14,12 +14,12 @@ const buildTitleConditions = (title) => {
 	};
 };
 
-const buildAuthorConditions = (author) => {
+const authorConditions = (author) => {
 	if (!author) return {};
 	return { authors: author };
 };
 
-const buildRendererConditions = (legacy, v3) => {
+const rendererConditions = (legacy, v3) => {
 	const brewsQuery = {};
 
 	if (legacy === 'true' && v3 !== 'true') {
@@ -40,9 +40,9 @@ const findBrews = async (req, res) => {
 	const count = Math.max(parseInt(req.query.count) || 20, mincount);
 	const skip = (page - 1) * count;
 
-	const brewsQuery = buildRendererConditions(req.query.legacy, req.query.v3);
-	const titleConditions = buildTitleConditions(title);
-	const authorConditions = buildAuthorConditions(author);
+	const brewsQuery = rendererConditions(req.query.legacy, req.query.v3);
+	const titleConditions = titleConditions(title);
+	const authorConditions = authorConditions(author);
 
 	const combinedQuery = {
 		$and: [
@@ -84,9 +84,9 @@ const findTotal = async (req, res) => {
 	const title = req.query.title || '';
 	const author = req.query.author || '';
 
-	const brewsQuery = buildRendererConditions(req.query.legacy, req.query.v3);
-	const titleConditions = buildTitleConditions(title);
-	const authorConditions = buildAuthorConditions(author);
+	const brewsQuery = rendererConditions(req.query.legacy, req.query.v3);
+	const titleConditions = titleConditions(title);
+	const authorConditions = authorConditions(author);
 
 	const combinedQuery = {
 		$and: [
@@ -99,17 +99,12 @@ const findTotal = async (req, res) => {
 
 	await HomebrewModel.countDocuments(combinedQuery)
 		.then((totalBrews) => {
-			console.log(
-				'when returning, the total of brews is ',
-				totalBrews,
-				'for the query',
-				JSON.stringify(combinedQuery)
-			);
+			console.log(`when returning, the total of brews is ${totalBrews} for the query ${JSON.stringify(combinedQuery)}`); 
 			res.json({ totalBrews });
 		})
 		.catch((error) => {
 			console.error(error);
-			throw {...err, message: "Error finding brews in Vault search", HBErrorCode: 90};
+			throw {...err, message: "Error finding brews in Vault search findTotal function", HBErrorCode: 91};
 		});
 };
 

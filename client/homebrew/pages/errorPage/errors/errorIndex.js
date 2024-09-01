@@ -174,6 +174,8 @@ const errorIndex = (props)=>{
 
 		'90' : dedent` An unexpected error occurred while looking for these brews.  
             Try again in a few minutes.`,
+		
+		'91' : dedent` An unexpected error occurred while trying to get the total of brews.`,
 	};
 };
 
