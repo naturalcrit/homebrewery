@@ -20,16 +20,16 @@ const authorConditions = (author) => {
 };
 
 const rendererConditions = (legacy, v3) => {
-	const brewsQuery = {};
+	const renderer = {};
 
 	if (legacy === 'true' && v3 !== 'true') {
-		brewsQuery.renderer = 'legacy';
+		renderer.renderer = 'legacy';
 	} else if (v3 === 'true' && legacy !== 'true') {
-		brewsQuery.renderer = 'V3';
+		renderer.renderer = 'V3';
 	}
 
     //if all renderers are selected, doesn't make sense to add them to the query, it would only take longer
-	return brewsQuery;
+	return renderer;
 };
 
 const findBrews = async (req, res) => {
@@ -40,16 +40,16 @@ const findBrews = async (req, res) => {
 	const count = Math.max(parseInt(req.query.count) || 20, mincount);
 	const skip = (page - 1) * count;
 
-	const brewsQuery = rendererConditions(req.query.legacy, req.query.v3);
-	const titleConditions = titleConditions(title);
-	const authorConditions = authorConditions(author);
+	const rendererQuery = rendererConditions(req.query.legacy, req.query.v3);
+	const titleQuery = titleConditions(title);
+	const authorQuery = authorConditions(author);
 
 	const combinedQuery = {
 		$and: [
 			{ published: true },
-			brewsQuery,
-			titleConditions,
-			authorConditions,
+			rendererQuery,
+			titleQuery,
+			authorQuery,
 		],
 	};
 
@@ -84,16 +84,16 @@ const findTotal = async (req, res) => {
 	const title = req.query.title || '';
 	const author = req.query.author || '';
 
-	const brewsQuery = rendererConditions(req.query.legacy, req.query.v3);
-	const titleConditions = titleConditions(title);
-	const authorConditions = authorConditions(author);
+	const rendererQuery = rendererConditions(req.query.legacy, req.query.v3);
+	const titleQuery = titleConditions(title);
+	const authorQuery = authorConditions(author);
 
 	const combinedQuery = {
 		$and: [
 			{ published: true },
-			brewsQuery,
-			titleConditions,
-			authorConditions,
+			rendererQuery,
+			titleQuery,
+			authorQuery,
 		],
 	};
 
