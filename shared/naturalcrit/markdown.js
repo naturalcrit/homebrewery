@@ -4,7 +4,7 @@ const Marked = require('marked');
 const MarkedExtendedTables = require('marked-extended-tables');
 const MarkedMermaid = require('marked-mermaid');
 const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartypants-lite');
-const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
+const { gfmHeadingId: MarkedGFMHeadingId, resetHeadings: MarkedGFMResetHeadingIDs } = require('marked-gfm-heading-id');
 const { markedEmoji: MarkedEmojis } = require('marked-emoji');
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
@@ -106,6 +106,20 @@ renderer.link = function (href, title, text) {
 	out += `>${text}</a>`;
 	return out;
 };
+
+// Expose `src` attribute as `--HB_src` to make the URL accessible via CSS
+renderer.image = function (href, title, text) {
+	href = cleanUrl(href);
+	if (href === null)
+		return text;
+
+	let out = `<img src="${href}" alt="${text}" style="--HB_src:url(${href});"`;
+	if (title)
+		out += ` title="${title}"`;
+
+	out += '>';
+	return out;
+}
 
 // Disable default reflink behavior, as it steps on our variables extension
 tokenizer.def = function () {
@@ -786,12 +800,18 @@ const mermaidConfig = {
 	}
 };
 
+const tableTerminators = [
+	`:+\\n`,                // hardBreak
+	` *{[^\n]+}`,           // blockInjector
+	` *{{[^{\n]*\n.*?\n}}`  // mustacheDiv
+];
+
 Marked.use(MarkedVariables());
 Marked.use({ extensions : [definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks, superSubScripts,
 	mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock, MarkedMermaid(mermaidConfig));
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
-Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
+Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
 function cleanUrl(href) {
   try {
@@ -895,10 +915,13 @@ let globalPageNumber = 0;
 
 module.exports = {
 	marked : Marked,
-	render : (rawBrewText, pageNumber=1)=>{
-		globalVarsList[pageNumber] = {};						//Reset global links for current page, to ensure values are parsed in order
-		varsQueue              = [];						//Could move into MarkedVariables()
-		globalPageNumber        = pageNumber;
+	render : (rawBrewText, pageNumber=0)=>{
+		globalVarsList[pageNumber] = {};					//Reset global links for current page, to ensure values are parsed in order
+		varsQueue                  = [];						//Could move into MarkedVariables()
+		globalPageNumber           = pageNumber;
+		if(pageNumber==0) {
+			MarkedGFMResetHeadingIDs();
+		}
 
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`);
 		const opts = Marked.defaults;
