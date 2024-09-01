@@ -32,7 +32,7 @@ const VaultPage = (props) => {
 	const countRef = useRef(null);
 	const v3Ref = useRef(null);
 	const legacyRef = useRef(null);
-	const searchButtonRef = useRef(null);
+	const submitButtonRef = useRef(null);
 
 	useEffect(() => {
 		disableSubmitIfFormInvalid();
@@ -183,11 +183,8 @@ const VaultPage = (props) => {
 						pattern=".{3,}"
 						title="At least 3 characters"
 						onKeyDown={(e) => {
-							if (e.key === 'Enter') {
-								if (!searchButtonRef.current.disabled) {
-									loadPage(1, true, true);
-								}
-							}
+							if (e.key === 'Enter' && !submitButtonRef.current.disabled)
+                                loadPage(1, true, true);
 						}}
 						placeholder="v3 Reference Document"
 					/>
@@ -203,11 +200,8 @@ const VaultPage = (props) => {
 						defaultValue={author}
 						onKeyUp={disableSubmitIfFormInvalid}
 						onKeyDown={(e) => {
-							if (e.key === 'Enter') {
-								if (!searchButtonRef.current.disabled) {
-									loadPage(1, true, true);
-								}
-							}
+							if (e.key === 'Enter' && !submitButtonRef.current.disabled)
+                                loadPage(1, true, true);
 						}}
 						placeholder="Gazook89"
 					/>
@@ -247,7 +241,7 @@ const VaultPage = (props) => {
 
 				<button
 					id="searchButton"
-					ref={searchButtonRef}
+					ref={submitButtonRef}
 					onClick={() => {
 						loadPage(1, true, true);
 					}}
