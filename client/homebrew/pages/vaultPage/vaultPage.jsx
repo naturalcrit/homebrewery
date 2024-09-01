@@ -270,7 +270,7 @@ const VaultPage = (props) => {
 
 					<li>
 					Some common words like "a", "after", "through", "itself", "here", etc.,  
-                        are ignored in searches. The full list can be found  
+                        are ignored in searches. The full list can be found &nbsp;
                         <a href="https://github.com/mongodb/mongo/blob/0e3b3ca8480ddddf5d0105d11a94bd4698335312/src/mongo/db/fts/stop_words_english.txt">  
                             here  
                         </a>
