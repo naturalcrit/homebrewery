@@ -172,8 +172,8 @@ const errorIndex = (props)=>{
 		
 		**Brew Title:** ${props.brew.brewTitle}`,
 
-		'99' : dedent` An unexpected error ocurred while looking for these brews, try again in a few minutes, if this error persists, 
-		contact the developers at the subreddit or discord provided in the home page.`,
+		'90' : dedent` An unexpected error occurred while looking for these brews.  
+            Try again in a few minutes.`,
 	};
 };
 

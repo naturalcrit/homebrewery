@@ -76,7 +76,7 @@ const findBrews = async (req, res) => {
 		})
 		.catch((error) => {
 			console.error(error);
-			throw {...err, message: "Error finding brews in Vault search", HBErrorCode: '99'}; 
+			throw {...err, message: "Error finding brews in Vault search", HBErrorCode: 90}; 
 		});
 };
 
@@ -109,7 +109,7 @@ const findTotal = async (req, res) => {
 		})
 		.catch((error) => {
 			console.error(error);
-			throw {...err, message: "Error finding brews in Vault search", HBErrorCode: '99'};
+			throw {...err, message: "Error finding brews in Vault search", HBErrorCode: 90};
 		});
 };
 

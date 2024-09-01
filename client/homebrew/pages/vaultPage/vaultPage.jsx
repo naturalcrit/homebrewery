@@ -2,7 +2,6 @@ require('./vaultPage.less');
 
 const React = require('react');
 const { useState, useEffect, useRef } = React;
-const cx = require('classnames');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
@@ -63,68 +62,56 @@ const VaultPage = (props) => {
 		window.history.replaceState(null, null, url);
 	};
 
+	const performSearch = async ({ title, author, count, v3, legacy }) => {
+		updateUrl(title, author, count, v3, legacy, page);
+		console.log(title, author, count, v3, legacy);
+		if ((title || author) && (v3 || legacy)) {
+			const response = await request.get(
+				`/api/vault?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}&count=${count}&page=${page}`
+			).catch((error)=>{
+				console.log('error at loadPage: ', error);
+				setError(`${error.response
+					? error.response.status
+					: error.message}`
+				);
+				updateStateWithBrews([], 1);
+			});
+			
+			if (response.ok)
+				updateStateWithBrews(response.body.brews, page);
+		} else {
+			setError('404');
+		}
+	};
+
+	const loadTotal = async ({ title, v3, legacy }) => {
+		setTotalBrews(null);
+		setError(null);
+		if ((title || author) && (v3 || legacy)) {
+			const response = await request.get(
+				`/api/vault/total?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}`
+			).catch((error)=>{
+				console.log('error at loadTotal: ', error);
+				setError(`${error.response
+					? error.response.status
+					: error.message}`
+				);
+				updateStateWithBrews([], 1);
+			});
+			
+			if (response.ok)
+				updateStateWithBrews(response.body.brews, page);
+		}
+	};
+
 	const loadPage = async (page, update, total) => {
 		//Different searches use the update or total props to make only the necessary queries and functions
 
 		if (!validateForm()) {
 			return;
 		}
-
 		setSearching(true);
 		setError(null);
-
-		const performSearch = async ({ title, author, count, v3, legacy }) => {
-			updateUrl(title, author, count, v3, legacy, page);
-			console.log(title, author, count, v3, legacy);
-			if ((title || author) && (v3 || legacy)) {
-				try {
-					const response = await request.get(
-						`/api/vault?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}&count=${count}&page=${page}`
-					);
-					if (response.ok) {
-						updateStateWithBrews(response.body.brews, page);
-					} else {
-						throw new Error(`Error: ${response.status}`);
-					}
-				} catch (error) {
-					console.log('error at loadPage: ', error);
-					setError(
-						`${
-							error.response
-								? error.response.status
-								: error.message
-						}`
-					);
-					updateStateWithBrews([], 1);
-				}
-			} else {
-				setError('404');
-			}
-		};
-
-		const loadTotal = async ({ title, v3, legacy }) => {
-			setTotalBrews(null);
-			setError(null);
-			if ((title || author) && (v3 || legacy)) {
-				try {
-					const response = await request.get(
-						`/api/vault/total?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}`
-					);
-
-					if (response.ok) {
-						setTotalBrews(response.body.totalBrews);
-					} else {
-						throw new Error(
-							`Failed to load total brews: ${response.statusText}`
-						);
-					}
-				} catch (error) {
-					console.log('error at loadTotal: ', error);
-					setError(`${error.response.status}`);
-					updateStateWithBrews([], 1);
-				}
-			}
-		};
 
 		const title = titleRef.current.value || '';
 		const author = authorRef.current.value || '';
@@ -167,25 +154,18 @@ const VaultPage = (props) => {
 
 	const validateForm = () => {
 		//form validity: title or author must be written, and at least one renderer set
-		const { current: titleInput } = titleRef;
-		const { current: legacyCheckbox } = legacyRef;
-		const { current: v3Checkbox } = v3Ref;
-		const { current: authorInput } = authorRef;
 
-		const isTitleValid = titleInput.validity.valid && titleInput.value;
-		//because a pattern attr is set in the input, title must be over 2 chars long
-		const isAuthorValid = authorInput.validity.valid && authorInput.value;
-		const isCheckboxChecked = legacyCheckbox.checked || v3Checkbox.checked;
+		const isTitleValid = titleRef.current.validity.valid && titleRef.current.value;
+		const isAuthorValid = authorRef.current.validity.valid && authorRef.current.value;
+		const isCheckboxChecked = legacyRef.current.checked || v3Ref.current.checked;
 
-		const isFormValid =
-			(isTitleValid || isAuthorValid) && isCheckboxChecked;
+		const isFormValid = (isTitleValid || isAuthorValid) && isCheckboxChecked;
 
 		return isFormValid;
 	};
 
 	const disableSubmitIfFormInvalid = () => {
-		const { current: submitButton } = searchButtonRef;
-		submitButton.disabled = !validateForm();
+		submitButtonRef.current.disabled = !validateForm();
 	};
 
 	const renderForm = () => (
@@ -274,10 +254,7 @@ const VaultPage = (props) => {
 				>
 					Search
 					<i
-						className={cx('fas', {
-							'fa-search': !searching,
-							'fa-spin fa-spinner': searching,
-						})}
+						className={searching ? 'fas fa-spin fa-spinner': 'fas fa-search'}
 					/>
 				</button>
 			</div>
@@ -285,30 +262,27 @@ const VaultPage = (props) => {
 				<h3>Tips and tricks</h3>
 				<ul>
 					<li>
-						You can only search brews with this tool if they are
-						published
+						Only <b>published</b> brews are searchable via this tool  
 					</li>
 					<li>
 						Usernames are case sensitive, make sure you are writing
 						it correctly
 					</li>
 					<li>
-						You can use <code>-</code> to negate words, assuming
-						there is any word not negated, and <code>"word"</code>
-						to specify an exact string.
+						Use <code>"word"</code> to match an exact string, and  
+                        <code>-</code> to exclude words (at least one word  
+                        must not be negated).
 					</li>
 
 					<li>
-						Some words like a, after, through, itself, or here, are
-						ignored in searches, make sure your search has relevant
-						words. The full list can be found &nbsp;
-						<a href="https://github.com/mongodb/mongo/blob/0e3b3ca8480ddddf5d0105d11a94bd4698335312/src/mongo/db/fts/stop_words_english.txt">
-							here
-						</a>
+					Some common words like "a", "after", "through", "itself", "here", etc.,  
+                        are ignored in searches. The full list can be found  
+                        <a href="https://github.com/mongodb/mongo/blob/0e3b3ca8480ddddf5d0105d11a94bd4698335312/src/mongo/db/fts/stop_words_english.txt">  
+                            here  
+                        </a>
 					</li>
 				</ul>
 			</legend>
-			<small></small>
 		</div>
 	);
 
