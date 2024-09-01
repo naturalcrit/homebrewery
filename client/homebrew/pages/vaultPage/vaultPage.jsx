@@ -96,7 +96,6 @@ const VaultPage = (props) => {
 					? error.response.status
 					: error.message}`
 				);
-				updateStateWithBrews([], 1);
 			});
 			
 			if (response.ok)
