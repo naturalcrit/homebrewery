@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 const _ = require('lodash');
+const dedent = require('dedent');
 
 // DriveThruRPG/OneBookShelf Community Content Programs
 

@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 const _ = require('lodash');
+const dedent = require('dedent');
 
 // Small and one-off licenses
 // Licenses in this file consist of one or two functions at most. If something is larger, 
@@ -10,7 +11,7 @@ module.exports = {
 	mit : function () {
 		return dedent`
 		{{license,wide
-		Copyright \\<YEAR\\> \\<COPYRIGHT HOLDER\\>
+		Copyright \<YEAR\> \<COPYRIGHT HOLDER\>
 		:
 		Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 		:
