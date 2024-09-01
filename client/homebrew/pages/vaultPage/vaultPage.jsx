@@ -11,6 +11,7 @@ const NewBrew = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const BrewItem = require('../basePages/listPage/brewItem/brewItem.jsx');
 const SplitPane = require('../../../../shared/naturalcrit/splitPane/splitPane.jsx');
+const ErrorIndex = require('../errorPage/errors/errorIndex.js');
 
 const request = require('../../utils/request-middleware.js');
 
@@ -62,7 +63,7 @@ const VaultPage = (props) => {
 		window.history.replaceState(null, null, url);
 	};
 
-	const performSearch = async ({ title, author, count, v3, legacy }) => {
+	const performSearch = async ({ title, author, count, v3, legacy, page }) => {
 		updateUrl(title, author, count, v3, legacy, page);
 		console.log(title, author, count, v3, legacy);
 		if ((title || author) && (v3 || legacy)) {
@@ -84,7 +85,6 @@ const VaultPage = (props) => {
 
 	const loadTotal = async ({ title, v3, legacy }) => {
 		setTotalBrews(null);
-		setError(null);
 		if ((title || author) && (v3 || legacy)) {
 			const response = await request.get(
 				`/api/vault/total?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}`
@@ -117,17 +117,17 @@ const VaultPage = (props) => {
 		const v3 = v3Ref.current.checked != false;
 		const legacy = legacyRef.current.checked != false;
 
-		console.log(title);
 		if (update) {
 			setTitle(title);
 			setAuthor(author);
 			setCount(count);
 			setV3(v3);
 			setLegacy(legacy);
+			setPage(page);
 		}
 
 		// Perform search with the latest input values, because state is not fast enough
-		performSearch({ title, author, count, v3, legacy });
+		performSearch({ title, author, count, v3, legacy, page });
 
 		if (total) {
 			loadTotal({ title, author, v3, legacy });
@@ -359,27 +359,12 @@ const VaultPage = (props) => {
 		}
 
 		if (error) {
+			const errorText = ErrorIndex({ brew })[brew.HBErrorCode.toString()] || '';
 			console.log('render Error: ', error);
-			let errorMessage;
-			switch (error.errorCode) {
-				case '404':
-					errorMessage = "404 - We didn't find any brew";
-					break;
-				case '503':
-					errorMessage =
-						'503 - Service Unavailable, try again later, sorry.';
-					break;
-				case '500':
-					errorMessage =
-						"500 - We don't know what happened, go ahead and contact the mods or report as a mistake.";
-					break;
-				default:
-					errorMessage = 'An unexpected error occurred';
-			}
 
 			return (
 				<div className="foundBrews noBrews">
-					<h3>Error: {errorMessage}</h3>
+					<h3>Error: {errorText}</h3>
 				</div>
 			);
 		}

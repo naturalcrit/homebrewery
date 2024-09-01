@@ -161,7 +161,7 @@ const errorIndex = (props)=>{
 		Please login or signup at our [login page](https://www.naturalcrit.com/login?redirect=https://homebrewery.naturalcrit.com/account).`,
 
 		// Brew locked by Administrators error
-		'100' : dedent`
+		'51' : dedent`
 		## This brew has been locked.
 		
 		Only an author may request that this lock is removed.
