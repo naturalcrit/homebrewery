@@ -79,9 +79,7 @@ const VaultPage = (props) => {
 			
 			if (response.ok)
 				updateStateWithBrews(response.body.brews, page);
-		} else {
-			setError('404');
-		}
+		} 
 	};
 
 	const loadTotal = async ({ title, v3, legacy }) => {
@@ -96,10 +94,11 @@ const VaultPage = (props) => {
 					? error.response.status
 					: error.message}`
 				);
+				updateStateWithBrews([], 1);
 			});
 			
 			if (response.ok)
-				updateStateWithBrews(response.body.brews, page);
+				setTotalBrews(response.body.totalBrews);
 		}
 	};
 
