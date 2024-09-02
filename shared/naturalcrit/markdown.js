@@ -2,7 +2,7 @@
 const _ = require('lodash');
 const Marked = require('marked');
 const MarkedExtendedTables = require('marked-extended-tables');
-const MarkedMermaid = require('marked-mermaid');
+const MarkedMermaid = require('marked-mermaidjs');
 const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartypants-lite');
 const { gfmHeadingId: MarkedGFMHeadingId, resetHeadings: MarkedGFMResetHeadingIDs } = require('marked-gfm-heading-id');
 const { markedEmoji: MarkedEmojis } = require('marked-emoji');
