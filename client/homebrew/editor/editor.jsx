@@ -69,9 +69,10 @@ const Editor = createClass({
 				editorTheme : editorTheme
 			});
 		}
-		if(this.refs.codeEditor){
-			this.refs.codeEditor.codeMirror.focus();
-			this.refs.codeEditor.codeMirror.setCursor(this.getStoredCursorPosition(this.state.view))
+		if(this.codeEditor.current){
+			console.log(this.codeEditor.current);
+			this.codeEditor.current.codeMirror.focus();
+			this.codeEditor.current.codeMirror.setCursor(this.getStoredCursorPosition(this.state.view))
 
 		}
 
@@ -101,7 +102,7 @@ const Editor = createClass({
 	 */
 	setStoredCursorPosition : function(view){
 		if(view === 'text' || view === 'style'){
-			const cursorPos = this.refs.codeEditor.codeMirror.getCursor();
+			const cursorPos = this.codeEditor.current.codeMirror.getCursor();
 			window.localStorage.setItem(`CURSOR_POS-${view}`, JSON.stringify(cursorPos))
 		}
 		return null;
@@ -149,8 +150,8 @@ const Editor = createClass({
 			view : newView
 		}, ()=>{
 			this.updateEditorSize;
-			this.refs.codeEditor?.codeMirror.focus();
-			this.refs.codeEditor?.codeMirror.setCursor(tempCursor)
+			this.codeEditor?.current.codeMirror.focus();
+			this.codeEditor?.current.codeMirror.setCursor(tempCursor)
 		});	//TODO: not sure if updateeditorsize needed
 	},
 
