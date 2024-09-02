@@ -98,7 +98,7 @@ const Editor = createClass({
 	/**
 	 * Stores the current cursor position in local storage.
 	 * @param {string} view - The editor type ('text' or 'style').
-	 * @returns {null} - Returns null to trigger beforeunload event listener before page closes (without opening prompt).
+	 * @returns {null} Returns null to trigger beforeunload event listener before page closes (without opening prompt).
 	 */
 	setStoredCursorPosition : function(view){
 		if(view === 'text' || view === 'style'){
@@ -111,12 +111,13 @@ const Editor = createClass({
 	/**
 	 * Retrieves the stored cursor position from local storage.
 	 * @param {string} view - The editor type ('text' or 'style').
-	 * @returns {Object} - The cursor position object or { line: 0, ch: 0 } if not found.
+	 * @returns {{line: number, ch: number}} The cursor position object or { line: 0, ch: 0 } if not found.
 	 */
 	getStoredCursorPosition : function(view){
 		const cursorPos = JSON.parse(window.localStorage.getItem(`CURSOR_POS-${view}`)) ?? { line: 0, ch: 0 };
 		return cursorPos;
 	},
+
 	handleControlKeys : function(e){
 		if(!(e.ctrlKey && e.metaKey)) return;
 		const LEFTARROW_KEY = 37;
