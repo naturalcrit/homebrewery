@@ -56,6 +56,7 @@ const Editor = createClass({
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
+		window.addEventListener('beforeunload', ()=>{this.setStoredCursorPosition(this.state.view);});
 
 		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
 		if(editorTheme) {
@@ -73,8 +74,10 @@ const Editor = createClass({
 
 	componentWillUnmount : function() {
 		window.removeEventListener('resize', this.updateEditorSize);
+		window.removeEventListener('beforeunload', ()=>{this.setStoredCursorPosition(this.state.view);});
 		this.setStoredCursorPosition(this.state.view);
 	},
+
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
 		this.highlightCustomMarkdown();
@@ -87,14 +90,16 @@ const Editor = createClass({
 	},
 
 	/**
-	 *	Stores the current cursor position in local storage.
-	*	@param {string} view - The editor type ('text' or 'style').
-	*/
+	 * Stores the current cursor position in local storage.
+	 * @param {string} view - The editor type ('text' or 'style').
+	 * @returns {null} - Returns null to trigger beforeunload event listener before page closes (without opening prompt).
+	 */
 	setStoredCursorPosition : function(view){
 		if(view === 'text' || view === 'style'){
 			const cursorPos = this.refs.codeEditor.codeMirror.getCursor();
 			window.localStorage.setItem(`CURSOR_POS-${view}`, JSON.stringify(cursorPos))
 		}
+		return null;
 	},
 
 	/**
