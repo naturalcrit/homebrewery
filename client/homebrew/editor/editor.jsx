@@ -59,7 +59,6 @@ const Editor = createClass({
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
-		window.addEventListener('beforeunload', ()=>{this.setStoredCursorPosition(this.state.view);});
 		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
 
@@ -69,10 +68,11 @@ const Editor = createClass({
 				editorTheme : editorTheme
 			});
 		}
-		if(this.codeEditor.current){
-			console.log(this.codeEditor.current);
+		if(this.codeEditor.current.codeMirror){
+			// if there is a codemirror instance...
 			this.codeEditor.current.codeMirror.focus();
 			this.codeEditor.current.codeMirror.setCursor(this.getStoredCursorPosition(this.state.view))
+			window.addEventListener('beforeunload', ()=>{this.setStoredCursorPosition(this.state.view);});
 
 		}
 
@@ -151,8 +151,8 @@ const Editor = createClass({
 			view : newView
 		}, ()=>{
 			this.updateEditorSize;
-			this.codeEditor?.current.codeMirror.focus();
-			this.codeEditor?.current.codeMirror.setCursor(tempCursor)
+			this.codeEditor.current?.codeMirror.focus();
+			this.codeEditor.current?.codeMirror.setCursor(tempCursor)
 		});	//TODO: not sure if updateeditorsize needed
 	},
 
