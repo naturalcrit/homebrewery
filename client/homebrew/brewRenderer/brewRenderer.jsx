@@ -7,17 +7,17 @@ const _ = require('lodash');
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
 const Markdown = require('naturalcrit/markdown.js');
 const ErrorBar = require('./errorBar/errorBar.jsx');
+const ToolBar  = require('./toolBar/toolBar.jsx');
 
 //TODO: move to the brew renderer
 const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
 const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
+const { printCurrentBrew } = require('../../../shared/helpers.js');
 
 const DOMPurify = require('dompurify');
 const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
-
-const Themes = require('themes/themes.json');
 
 const PAGE_HEIGHT = 1056;
 
@@ -36,7 +36,7 @@ const BrewPage = (props)=>{
 		index    : 0,
 		...props
 	};
-	const cleanText = DOMPurify.sanitize(props.contents, purifyConfig);
+	const cleanText = props.contents; //DOMPurify.sanitize(props.contents, purifyConfig);
 	return <div className={props.className} id={`p${props.index + 1}`} >
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
@@ -56,14 +56,16 @@ const BrewRenderer = (props)=>{
 		lang              : '',
 		errors            : [],
 		currentEditorPage : 0,
+		themeBundle       : {},
 		...props
 	};
 
 	const [state, setState] = useState({
-		viewablePageNumber : 0,
-		height             : PAGE_HEIGHT,
-		isMounted          : false,
-		visibility         : 'hidden',
+		height            : PAGE_HEIGHT,
+		isMounted         : false,
+		visibility        : 'hidden',
+		zoom              : 100,
+		currentPageNumber : 1,
 	});
 
 	const mainRef  = useRef(null);
@@ -85,11 +87,14 @@ const BrewRenderer = (props)=>{
 		}));
 	};
 
-	const handleScroll = (e)=>{
-		const target = e.target;
+	const getCurrentPage = (e)=>{
+		const { scrollTop, clientHeight, scrollHeight } = e.target;
+		const totalScrollableHeight = scrollHeight - clientHeight;
+		const currentPageNumber = Math.ceil((scrollTop / totalScrollableHeight) * rawPages.length);
+
 		setState((prevState)=>({
 			...prevState,
-			viewablePageNumber : Math.floor(target.scrollTop / target.scrollHeight * rawPages.length)
+			currentPageNumber : currentPageNumber || 1
 		}));
 	};
 
@@ -100,21 +105,10 @@ const BrewRenderer = (props)=>{
 		if(index == props.currentEditorPage)	//Already rendered before this step
 			return false;
 
-		if(Math.abs(index - state.viewablePageNumber) <= 3)
+		if(Math.abs(index - state.currentPageNumber) <= 3)
 			return true;
 
 		return false;
-	};
-
-	const renderPageInfo = ()=>{
-		return <div className='pageInfo' ref={mainRef}>
-			<div>
-				{props.renderer}
-			</div>
-			<div>
-				{state.viewablePageNumber + 1} / {rawPages.length}
-			</div>
-		</div>;
 	};
 
 	const renderDummyPage = (index)=>{
@@ -124,10 +118,9 @@ const BrewRenderer = (props)=>{
 	};
 
 	const renderStyle = ()=>{
-		if(!props.style) return;
-		const cleanStyle = DOMPurify.sanitize(props.style, purifyConfig);
-		//return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style>@layer styleTab {\n${sanitizeScriptTags(props.style)}\n} </style>` }} />;
-		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `<style> ${cleanStyle} </style>` }} />;
+		const cleanStyle = props.style; //DOMPurify.sanitize(props.style, purifyConfig);
+		const themeStyles = props.themeBundle?.joinedStyles ?? '<style>@import url("/themes/V3/Blank/style.css");</style>';
+		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `${themeStyles} \n\n <style> ${cleanStyle} </style>` }} />;
 	};
 
 	const renderPage = (pageText, index)=>{
@@ -159,6 +152,16 @@ const BrewRenderer = (props)=>{
 		return renderedPages;
 	};
 
+	const handleControlKeys = (e)=>{
+		if(!(e.ctrlKey || e.metaKey)) return;
+		const P_KEY = 80;
+		if(e.keyCode == P_KEY && props.allowPrint) printCurrentBrew();
+		if(e.keyCode == P_KEY) {
+			e.stopPropagation();
+			e.preventDefault();
+		}
+	};
+
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			updateSize();
@@ -177,20 +180,32 @@ const BrewRenderer = (props)=>{
 		document.dispatchEvent(new MouseEvent('click'));
 	};
 
-	const rendererPath  = props.renderer == 'V3' ? 'V3' : 'Legacy';
-	const themePath     = props.theme ?? '5ePHB';
-	const baseThemePath = Themes[rendererPath][themePath].baseTheme;
+	//Toolbar settings:
+	const handleZoom = (newZoom)=>{
+		setState((prevState)=>({
+			...prevState,
+			zoom : newZoom
+		}));
+	};
 
 	return (
 		<>
 			{/*render dummy page while iFrame is mounting.*/}
 			{!state.isMounted
-				? <div className='brewRenderer' onScroll={handleScroll}>
+				? <div className='brewRenderer' onScroll={getCurrentPage}>
 					<div className='pages'>
 						{renderDummyPage(1)}
 					</div>
 				</div>
 				: null}
+
+			<ErrorBar errors={props.errors} />
+			<div className='popups' ref={mainRef}>
+				<RenderWarnings />
+				<NotificationPopup />
+			</div>
+
+			<ToolBar onZoomChange={handleZoom} currentPage={state.currentPageNumber}  totalPages={rawPages.length}/>
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
@@ -199,33 +214,23 @@ const BrewRenderer = (props)=>{
 				onClick={()=>{emitClick();}}
 			>
 				<div className={'brewRenderer'}
-					onScroll={handleScroll}
+					onScroll={getCurrentPage}
+					onKeyDown={handleControlKeys}
+					tabIndex={-1}
 					style={{ height: state.height }}>
-
-					<ErrorBar errors={props.errors} />
-					<div className='popups'>
-						<RenderWarnings />
-						<NotificationPopup />
-					</div>
-					<link href={`/themes/${rendererPath}/Blank/style.css`} type='text/css' rel='stylesheet'/>
-					{baseThemePath &&
-						<link href={`/themes/${rendererPath}/${baseThemePath}/style.css`} type='text/css' rel='stylesheet'/>
-					}
-					<link href={`/themes/${rendererPath}/${themePath}/style.css`} type='text/css' rel='stylesheet'/>
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted
 						&&
 						<>
 							{renderStyle()}
-							<div className='pages' lang={`${props.lang || 'en'}`}>
+							<div className='pages' lang={`${props.lang || 'en'}`} style={{ zoom: `${state.zoom}%` }}>
 								{renderPages()}
 							</div>
 						</>
 					}
 				</div>
 			</Frame>
-			{renderPageInfo()}
 		</>
 	);
 };

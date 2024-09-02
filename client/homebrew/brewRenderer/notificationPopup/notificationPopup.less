@@ -1,64 +1,61 @@
-.popups{
+.popups {
 	position         : fixed;
-	top              : @navbarHeight;
-	right            : 15px;
+	top              : calc(@navbarHeight + @viewerToolsHeight);
+	right            : 24px;
 	z-index          : 10001;
 	width            : 450px;
+	margin-top       : 5px;
 }
 
-.notificationPopup{
+.notificationPopup {
 	position         : relative;
-	display          : inline-block;
 	width            : 100%;
 	padding          : 15px;
 	padding-bottom   : 10px;
 	padding-left     : 25px;
-	background-color : @blue;
 	color            : white;
-	a{
-		color       : #e0e5c1;
+	background-color : @blue;
+	border           : none;
+	&[open] { display : inline-block; }
+	a {
 		font-weight : 800;
+		color       : #E0E5C1;
 	}
-	i.info{
+	i.info {
 		position  : absolute;
 		top       : 12px;
 		left      : 12px;
-		opacity   : 0.8;
 		font-size : 2.5em;
+		opacity   : 0.8;
 	}
-	i.dismiss{
-		position : absolute;
-		top      : 10px;
-		right    : 10px;
-		cursor   : pointer;
-		opacity  : 0.6;
-		&:hover{
-			opacity : 1;
-		}
+	button.dismiss {
+		position         : absolute;
+		top              : 10px;
+		right            : 10px;
+		cursor           : pointer;
+		background-color : transparent;
+		opacity          : 0.6;
+		&:hover { opacity : 1; }
 	}
-	.header {
-		padding-left : 50px;
-	}
-	small{
-		opacity   : 0.7;
+	.header { padding-left : 50px; }
+	small {
 		font-size : 0.6em;
+		opacity   : 0.7;
 	}
-	h3{
+	h3 {
 		font-size   : 1.1em;
 		font-weight : 800;
 	}
-	ul{
+	ul {
 		margin-top          : 15px;
 		font-size           : 0.8em;
 		list-style-position : outside;
 		list-style-type     : disc;
-		li{
+		li {
+			margin-top  : 1.4em;
 			font-size   : 0.8em;
 			line-height : 1.4em;
-			margin-top  : 1.4em;
-			em{
-				font-weight : 800;
-			}
+			em { font-weight : 800; }
 		}
 	}
 }

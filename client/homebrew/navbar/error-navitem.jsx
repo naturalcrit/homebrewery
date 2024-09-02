@@ -42,7 +42,7 @@ const ErrorNavItem = createClass({
 				</div>
 			</Nav.item>;
 		}
-		
+
 		if(status === 412) {
 			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
@@ -51,7 +51,7 @@ const ErrorNavItem = createClass({
 				</div>
 			</Nav.item>;
 		}
-		
+
 		if(HBErrorCode === '04') {
 			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
@@ -76,10 +76,10 @@ const ErrorNavItem = createClass({
 		if(response.body?.errors?.[0].reason == 'storageQuotaExceeded') {
 			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 			Oops!
-			<div className='errorContainer' onClick={clearError}>
+				<div className='errorContainer' onClick={clearError}>
 				Can't save because your Google Drive seems to be full!
-			</div>
-		</Nav.item>;
+				</div>
+			</Nav.item>;
 		}
 
 		if(response.req.url.match(/^\/api.*Google.*$/m)){
@@ -100,6 +100,18 @@ const ErrorNavItem = createClass({
 					<div className='deny'>
 						Not Now
 					</div>
+				</div>
+			</Nav.item>;
+		}
+
+		if(HBErrorCode === '09') {
+			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+				Oops!
+				<div className='errorContainer' onClick={clearError}>
+					Looks like there was a problem retreiving
+					the theme, or a theme that it inherits,
+					for this brew. Verify that brew <a className='lowercase' target='_blank' rel='noopener noreferrer' href={`/share/${response.body.brewId}`}>
+					{response.body.brewId}</a> still exists!
 				</div>
 			</Nav.item>;
 		}

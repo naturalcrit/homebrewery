@@ -48,6 +48,9 @@ const Editor = createClass({
 		};
 	},
 
+	editor     : React.createRef(null),
+	codeEditor : React.createRef(null),
+
 	isText  : function() {return this.state.view == 'text';},
 	isStyle : function() {return this.state.view == 'style';},
 	isMeta  : function() {return this.state.view == 'meta';},
@@ -57,6 +60,8 @@ const Editor = createClass({
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
 		window.addEventListener('beforeunload', ()=>{this.setStoredCursorPosition(this.state.view);});
+		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
+		document.addEventListener('keydown', this.handleControlKeys);
 
 		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
 		if(editorTheme) {
@@ -111,17 +116,29 @@ const Editor = createClass({
 		const cursorPos = JSON.parse(window.localStorage.getItem(`CURSOR_POS-${view}`)) ?? { line: 0, ch: 0 };
 		return cursorPos;
 	},
+	handleControlKeys : function(e){
+		if(!(e.ctrlKey && e.metaKey)) return;
+		const LEFTARROW_KEY = 37;
+		const RIGHTARROW_KEY = 39;
+		if (e.shiftKey && (e.keyCode == RIGHTARROW_KEY)) this.brewJump();
+		if (e.shiftKey && (e.keyCode == LEFTARROW_KEY)) this.sourceJump();
+		if ((e.keyCode == LEFTARROW_KEY) || (e.keyCode == RIGHTARROW_KEY)) {
+			e.stopPropagation();
+			e.preventDefault();
+		}
+	},
+
 
 	updateEditorSize : function() {
-		if(this.refs.codeEditor) {
-			let paneHeight = this.refs.main.parentNode.clientHeight;
+		if(this.codeEditor.current) {
+			let paneHeight = this.editor.current.parentNode.clientHeight;
 			paneHeight -= SNIPPETBAR_HEIGHT;
-			this.refs.codeEditor.codeMirror.setSize(null, paneHeight);
+			this.codeEditor.current.codeMirror.setSize(null, paneHeight);
 		}
 	},
 
 	handleInject : function(injectText){
-		this.refs.codeEditor?.injectText(injectText, false);
+		this.codeEditor.current?.injectText(injectText, false);
 	},
 
 	handleViewChange : function(newView){
@@ -138,7 +155,7 @@ const Editor = createClass({
 	},
 
 	getCurrentPage : function(){
-		const lines = this.props.brew.text.split('\n').slice(0, this.refs.codeEditor.getCursorPosition().line + 1);
+		const lines = this.props.brew.text.split('\n').slice(0, this.codeEditor.current.getCursorPosition().line + 1);
 		return _.reduce(lines, (r, line)=>{
 			if(
 				(this.props.renderer == 'legacy' && line.indexOf('\\page') !== -1)
@@ -150,13 +167,24 @@ const Editor = createClass({
 	},
 
 	highlightCustomMarkdown : function(){
-		if(!this.refs.codeEditor) return;
+		if(!this.codeEditor.current) return;
 		if(this.state.view === 'text')  {
-			const codeMirror = this.refs.codeEditor.codeMirror;
+			const codeMirror = this.codeEditor.current.codeMirror;
 
 			codeMirror.operation(()=>{ // Batch CodeMirror styling
+
+				const foldLines = [];
+        
 				//reset custom text styles
-				const customHighlights = codeMirror.getAllMarks().filter((mark)=>!mark.__isFold); //Don't undo code folding
+				const customHighlights = codeMirror.getAllMarks().filter((mark)=>{
+					// Record details of folded sections
+					if(mark.__isFold) {
+						const fold = mark.find();
+						foldLines.push({from: fold.from?.line, to: fold.to?.line});
+					}
+					return !mark.__isFold;
+				}); //Don't undo code folding
+
 				for (let i=customHighlights.length - 1;i>=0;i--) customHighlights[i].clear();
 
 				let editorPageCount = 2; // start page count from page 2
@@ -167,6 +195,11 @@ const Editor = createClass({
 					codeMirror.removeLineClass(lineNumber, 'background', 'pageLine');
 					codeMirror.removeLineClass(lineNumber, 'text');
 					codeMirror.removeLineClass(lineNumber, 'wrap', 'sourceMoveFlash');
+
+					// Don't process lines inside folded text
+					// If the current lineNumber is inside any folded marks, skip line styling
+					if (foldLines.some(fold => lineNumber >= fold.from && lineNumber <= fold.to))
+						return;
 
 					// Styling for \page breaks
 					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
@@ -280,7 +313,7 @@ const Editor = createClass({
 									// Iterate over conflicting marks and clear them
 									var marks = codeMirror.findMarks(startPos, endPos);
 									marks.forEach(function(marker) {
-										marker.clear();
+										if(!marker.__isFold) marker.clear();
 									});
 									codeMirror.markText(startPos, endPos, { className: 'emoji' });
 								}
@@ -341,23 +374,23 @@ const Editor = createClass({
 
 				targetLine = lineCount - 1; //Scroll to `\page`, which is one line back.
 
-				let currentY = this.refs.codeEditor.codeMirror.getScrollInfo().top;
-				let targetY  = this.refs.codeEditor.codeMirror.heightAtLine(targetLine, 'local', true);
+				let currentY = this.codeEditor.current.codeMirror.getScrollInfo().top;
+				let targetY  = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
 
 				//Scroll 1/10 of the way every 10ms until 1px off.
 				const incrementalScroll = setInterval(()=>{
 					currentY += (targetY - currentY) / 10;
-					this.refs.codeEditor.codeMirror.scrollTo(null, currentY);
+					this.codeEditor.current.codeMirror.scrollTo(null, currentY);
 
 					// Update target: target height is not accurate until within +-10 lines of the visible window
 					if(Math.abs(targetY - currentY > 100))
-						targetY = this.refs.codeEditor.codeMirror.heightAtLine(targetLine, 'local', true);
+						targetY = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
 
 					// End when close enough
 					if(Math.abs(targetY - currentY) < 1) {
-						this.refs.codeEditor.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
-						this.refs.codeEditor.setCursorPosition({ line: targetLine + 1, ch: 0 });
-						this.refs.codeEditor.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
+						this.codeEditor.current.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
+						this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
+						this.codeEditor.current.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
 						clearInterval(incrementalScroll);
 					}
 				}, 10);
@@ -367,7 +400,7 @@ const Editor = createClass({
 
 	//Called when there are changes to the editor's dimensions
 	update : function(){
-		this.refs.codeEditor?.updateSize();
+		this.codeEditor.current?.updateSize();
 	},
 
 	updateEditorTheme : function(newTheme){
@@ -386,7 +419,7 @@ const Editor = createClass({
 		if(this.isText()){
 			return <>
 				<CodeEditor key='codeEditor'
-					ref='codeEditor'
+					ref={this.codeEditor}
 					language='gfm'
 					view={this.state.view}
 					value={this.props.brew.text}
@@ -398,12 +431,12 @@ const Editor = createClass({
 		if(this.isStyle()){
 			return <>
 				<CodeEditor key='codeEditor'
-					ref='codeEditor'
+					ref={this.codeEditor}
 					language='css'
 					view={this.state.view}
 					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
 					onChange={this.props.onStyleChange}
-					enableFolding={false}
+					enableFolding={true}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent} />
 			</>;
@@ -417,34 +450,35 @@ const Editor = createClass({
 				<MetadataEditor
 					metadata={this.props.brew}
 					onChange={this.props.onMetaChange}
-					reportError={this.props.reportError}/>
+					reportError={this.props.reportError}
+					userThemes={this.props.userThemes}/>
 			</>;
 		}
 	},
 
 	redo : function(){
-		return this.refs.codeEditor?.redo();
+		return this.codeEditor.current?.redo();
 	},
 
 	historySize : function(){
-		return this.refs.codeEditor?.historySize();
+		return this.codeEditor.current?.historySize();
 	},
 
 	undo : function(){
-		return this.refs.codeEditor?.undo();
+		return this.codeEditor.current?.undo();
 	},
 
 	foldCode : function(){
-		return this.refs.codeEditor?.foldAllCode();
+		return this.codeEditor.current?.foldAllCode();
 	},
 
 	unfoldCode : function(){
-		return this.refs.codeEditor?.unfoldAllCode();
+		return this.codeEditor.current?.unfoldAllCode();
 	},
 
 	render : function(){
 		return (
-			<div className='editor' ref='main'>
+			<div className='editor' ref={this.editor}>
 				<SnippetBar
 					brew={this.props.brew}
 					view={this.state.view}
@@ -460,7 +494,8 @@ const Editor = createClass({
 					historySize={this.historySize()}
 					currentEditorTheme={this.state.editorTheme}
 					updateEditorTheme={this.updateEditorTheme}
-					cursorPos={this.refs.codeEditor?.getCursorPosition() || {}} />
+					snippetBundle={this.props.snippetBundle}
+					cursorPos={this.codeEditor.current?.getCursorPosition() || {}} />
 
 				{this.renderEditor()}
 			</div>

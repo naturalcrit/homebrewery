@@ -315,21 +315,21 @@ describe('Normal Links and Images', ()=>{
 		const source = `![alt text](url)`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
-			<p><img src="url" alt="alt text"></p>`.trimReturns());
+			<p><img src="url" alt="alt text" style="--HB_src:url(url);"></p>`.trimReturns());
 	});
 
 	it('Renders normal images with a title', function() {
 		const source = 'An image ![alt text](url "and title")!';
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
-			<p>An image <img src="url" alt="alt text" title="and title">!</p>`.trimReturns());
+			<p>An image <img src="url" alt="alt text" style="--HB_src:url(url);" title="and title">!</p>`.trimReturns());
 	});
 
 	it('Applies curly injectors to images', function() {
 		const source = `![alt text](url){width:100px}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
-			<p><img style="width:100px;" src="url" alt="alt text"></p>`.trimReturns());
+			<p><img style="--HB_src:url(url); width:100px;" src="url" alt="alt text"></p>`.trimReturns());
 	});
 
 	it('Renders normal links', function() {
@@ -369,5 +369,37 @@ describe('Cross-page variables', ()=>{
 		renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();	//Requires one full render of document before hoisting is picked up
 		const rendered = renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();
 		expect(rendered, `Input:\n${[source0, source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>two</p><p>one</p>\\page<p>two</p>');
+	});
+});
+
+describe('Math function parameter handling', ()=>{
+	it('allows variables in single-parameter functions', function() {
+		const source = '[var]:4.1\n\n$[floor(var)]';
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>4</p>`);
+	});
+	it('allows one variable and a number in two-parameter functions', function() {
+		const source = '[var]:4\n\n$[min(1,var)]';
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>1</p>`);
+	});
+	it('allows two variables in two-parameter functions', function() {
+		const source = '[var1]:4\n\n[var2]:8\n\n$[min(var1,var2)]';
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>4</p>`);
+	});
+});
+
+describe('Variable names that are subsets of other names', ()=>{
+	it('do not conflict with function names', function() {
+		const source = `[a]: -1\n\n$[abs(a)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>1</p>');
+	});
+
+	it('do not conflict with other variable names', function() {
+		const source = `[ab]: 2\n\n[aba]: 8\n\n[ba]: 4\n\n$[ab + aba + ba]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>14</p>');
 	});
 });

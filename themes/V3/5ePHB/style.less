@@ -382,6 +382,14 @@
 		.useColumns(0.96, @fillMode: balance);
 	}
 
+	//only for IOS devices
+	@supports (-webkit-touch-callout: none) {
+		.page .monster.frame {
+			background-repeat : no-repeat;
+			background-size   : cover;
+		}
+	}
+
 	// *****************************
 	// *           FOOTER
 	// *****************************/
@@ -459,6 +467,7 @@
 		margin-left   : 1.5em;
 	}
 }
+
 // *****************************
 // *         SPELL LIST
 // *****************************/
@@ -786,6 +795,39 @@
 // *****************************
 // *      TABLE OF CONTENTS
 // *****************************/
+
+// Default Exclusions
+// Anything not exlcuded is included, default Headers are H1, H2, and H3.
+h4,
+h5,
+h6,
+.page:has(.frontCover), 
+.page:has(.backCover), 
+.page:has(.insideCover), 
+.monster,
+.noToC,
+.toc { --TOC: exclude; }
+
+.tocDepthH2 :is(h1, h2) {--TOC: include; }
+.tocDepthH3 :is(h1, h2, h3) {--TOC: include; }
+.tocDepthH4 :is(h1, h2, h3, h4) {--TOC: include; }
+.tocDepthH5 :is(h1, h2, h3, h4, h5) {--TOC: include; }
+.tocDepthH6 :is(h1, h2, h3, h4, h5, h6) {--TOC: include; }
+
+.tocIncludeH1 h1 {--TOC: include; }
+.tocIncludeH2 h2 {--TOC: include; }
+.tocIncludeH3 h3 {--TOC: include; }
+.tocIncludeH4 h4 {--TOC: include; }
+.tocIncludeH5 h5 {--TOC: include; }
+.tocIncludeH6 h6 {--TOC: include; }
+
+.page:has(.partCover) {
+	--TOC: exclude;
+	& h1 {
+	  --TOC: include;
+	}
+  }
+
 .page {
 	&:has(.toc)::after { display : none; }
 	.toc {
@@ -850,6 +892,9 @@
 			.useColumns(0.96, @fillMode: balance);
 		}
 	}
+	.toc.wide li {
+			break-inside: auto;
+	}
 }
 
 // *****************************
@@ -873,6 +918,10 @@
 .page .wide { margin-bottom : 0.325cm; }
 
 .page h1 + * { margin-top : 0; }
+
+.page .descriptive.wide + * {
+	margin-top: 0;
+}
 
 //*****************************
 // *       RUNE TABLE
