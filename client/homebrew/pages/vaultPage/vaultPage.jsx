@@ -16,12 +16,6 @@ const ErrorIndex = require('../errorPage/errors/errorIndex.js');
 const request = require('../../utils/request-middleware.js');
 
 const VaultPage = (props) => {
-	//Form state
-	const [titleState, setTitle] = useState(props.query.title || '');
-	const [authorState, setAuthor] = useState(props.query.author || '');
-	const [legacyState, setLegacy] = useState(props.query.legacy !== 'false');
-	const [v3State, setV3] = useState(props.query.v3 !== 'false');
-	const [countState, setCount] = useState(props.query.count || 20);
 	const [pageState, setPage] = useState(parseInt(props.query.page) || 1);
 
 	//Response state
@@ -51,24 +45,21 @@ const VaultPage = (props) => {
 
 	const updateUrl = (titleValue, authorValue, countValue, v3Value, legacyValue, page) => {
 		const url = new URL(window.location.href);
-		const urlParams = new URLSearchParams();
-
-		Object.entries({
-			titleValue,
-			authorValue,
-			countValue,
-			v3Value,
-			legacyValue,
-			page,
-		}).forEach(([key, value]) => urlParams.set(key, value));
-
+		const urlParams = new URLSearchParams(url.search);
+	
+		urlParams.set('title', titleValue);
+		urlParams.set('author', authorValue);
+		urlParams.set('count', countValue);
+		urlParams.set('v3', v3Value);
+		urlParams.set('legacy', legacyValue);
+		urlParams.set('page', page);
+	
 		url.search = urlParams.toString();
-		window.history.replaceState(null, null, url);
+		window.history.replaceState(null, '', url.toString());
 	};
 
 	const performSearch = async ({ titleValue, authorValue, countValue, v3Value, legacyValue, page }) => {
 		updateUrl(titleValue, authorValue, countValue, v3Value, legacyValue, page);
-		console.log(titleValue, authorValue, countValue, v3Value, legacyValue);
 		if ((titleValue || authorValue) && (v3Value || legacyValue)) {
 			const response = await request.get(
 				`/api/vault?title=${titleValue}&author=${authorValue}&v3=${v3Value}&legacy=${legacyValue}&count=${countValue}&page=${page}`
@@ -119,11 +110,6 @@ const VaultPage = (props) => {
 		const legacyValue = legacyRef.current.checked != false;
 
 		if (update) {
-			setTitle(titleValue);
-			setAuthor(authorValue);
-			setCount(countValue);
-			setV3(v3Value);
-			setLegacy(legacyValue);
 			setPage(page);
 		}
 
@@ -177,7 +163,7 @@ const VaultPage = (props) => {
 						ref={titleRef}
 						type="text"
 						name="title"
-						defaultValue={titleState}
+						defaultValue={props.query.title || ''}
 						onKeyUp={disableSubmitIfFormInvalid}
 						pattern=".{3,}"
 						title="At least 3 characters"
@@ -196,7 +182,7 @@ const VaultPage = (props) => {
 						type="text"
 						name="author"
 						pattern=".{1,}"
-						defaultValue={authorState}
+						defaultValue={props.query.author || ''}
 						onKeyUp={disableSubmitIfFormInvalid}
 						onKeyDown={(e) => {
 							if (e.key === 'Enter' && !submitButtonRef.current.disabled)
@@ -208,7 +194,7 @@ const VaultPage = (props) => {
 
 				<label>
 					Results per page
-					<select ref={countRef} name="count" defaultValue={countState}>
+					<select ref={countRef} name="count" defaultValue={props.query.count || 20}>
 						<option value="10">10</option>
 						<option value="20">20</option>
 						<option value="40">40</option>
@@ -221,7 +207,7 @@ const VaultPage = (props) => {
 						className="renderer"
 						ref={v3Ref}
 						type="checkbox"
-						defaultChecked={v3State}
+						defaultChecked={props.query.v3 !== 'false'}
 						onChange={disableSubmitIfFormInvalid}
 					/>
 					Search for v3 brews
@@ -232,7 +218,7 @@ const VaultPage = (props) => {
 						className="renderer"
 						ref={legacyRef}
 						type="checkbox"
-						defaultChecked={legacyState}
+						defaultChecked={props.query.legacy !== 'false'}
 						onChange={disableSubmitIfFormInvalid}
 					/>
 					Search for legacy brews
@@ -282,7 +268,7 @@ const VaultPage = (props) => {
 	const renderPaginationControls = () => {
 		if (!totalBrews) return null;
 
-		const countInt = parseInt(countState);
+		const countInt = parseInt(props.query.count || 20);
 		const totalPages = Math.ceil(totalBrews / countInt);
 
 		let startPage, endPage;
