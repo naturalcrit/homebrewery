@@ -68,11 +68,15 @@ const findBrews = async (req, res) => {
 		.maxTimeMS(5000)
 		.exec()
 		.then((brews) => {
-			console.log(
-				'Query in findBrews: ',
-				JSON.stringify(combinedQuery, null, 2)
-			);
-			res.json({ brews, page });
+			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+			const processedBrews = brews.map((brew) => {
+				brew.authors = brew.authors.map(author =>
+					emailRegex.test(author) ? 'hidden' : author
+				);
+				return brew;
+			});
+			res.json({ brews: processedBrews, page });
 		})
 		.catch((error) => {
 			console.error(error);

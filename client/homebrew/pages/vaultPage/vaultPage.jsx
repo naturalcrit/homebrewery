@@ -393,12 +393,9 @@ const VaultPage = (props) => {
                     <span>{totalBrews}</span>
                 </span>
                 {brewCollection.map((brew, index) => {
-                    const processedAuthors = brew.authors.map(author =>
-                        author.includes('@') ? 'hidden' : author
-                    );
                     return (
                         <BrewItem
-                            brew={{ ...brew, authors: processedAuthors }}
+                            brew={{...brew}}
                             key={index}
                             reportError={props.reportError}
                         />
