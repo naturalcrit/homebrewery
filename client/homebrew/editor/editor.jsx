@@ -82,6 +82,7 @@ const Editor = createClass({
 		if(prevProps.moveSource !== this.props.moveSource) {
 			this.sourceJump();
 		};
+		this.codeEditor.current?.codeMirror.focus();
 	},
 
 	handleControlKeys : function(e){
