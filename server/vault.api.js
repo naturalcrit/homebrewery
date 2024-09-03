@@ -59,7 +59,6 @@ const findBrews = async (req, res) => {
 		text: 0,
 		textBin: 0,
 		version: 0,
-		thumbnail: 0,
 	};
 
 	await HomebrewModel.find(combinedQuery, projection)
