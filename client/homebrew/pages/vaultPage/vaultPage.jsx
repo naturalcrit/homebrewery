@@ -49,16 +49,16 @@ const VaultPage = (props) => {
 		setSearching(false);
 	};
 
-	const updateUrl = (title, author, count, v3, legacy, page) => {
+	const updateUrl = (titleValue, authorValue, countValue, v3Value, legacyValue, page) => {
 		const url = new URL(window.location.href);
 		const urlParams = new URLSearchParams();
 
 		Object.entries({
-			title,
-			author,
-			count,
-			v3,
-			legacy,
+			titleValue,
+			authorValue,
+			countValue,
+			v3Value,
+			legacyValue,
 			page,
 		}).forEach(([key, value]) => urlParams.set(key, value));
 
@@ -68,7 +68,7 @@ const VaultPage = (props) => {
 
 	const performSearch = async ({ titleValue, authorValue, countValue, v3Value, legacyValue, page }) => {
 		updateUrl(titleValue, authorValue, countValue, v3Value, legacyValue, page);
-		console.log(title, author, count, v3, legacy);
+		console.log(titleValue, authorValue, countValue, v3Value, legacyValue);
 		if ((titleValue || authorValue) && (v3Value || legacyValue)) {
 			const response = await request.get(
 				`/api/vault?title=${titleValue}&author=${authorValue}&v3=${v3Value}&legacy=${legacyValue}&count=${countValue}&page=${page}`
