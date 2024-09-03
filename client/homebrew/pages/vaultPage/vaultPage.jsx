@@ -16,17 +16,20 @@ const ErrorIndex = require('../errorPage/errors/errorIndex.js');
 const request = require('../../utils/request-middleware.js');
 
 const VaultPage = (props) => {
-	const [title, setTitle] = useState(props.query.title || '');
-	//state author
-	const [author, setAuthor] = useState(props.query.author || '');
-	const [legacy, setLegacy] = useState(props.query.legacy !== 'false');
-	const [v3, setV3] = useState(props.query.v3 !== 'false');
-	const [count, setCount] = useState(props.query.count || 20);
-	const [page, setPage] = useState(parseInt(props.query.page) || 1);
+	//Form state
+	const [titleState, setTitle] = useState(props.query.title || '');
+	const [authorState, setAuthor] = useState(props.query.author || '');
+	const [legacyState, setLegacy] = useState(props.query.legacy !== 'false');
+	const [v3State, setV3] = useState(props.query.v3 !== 'false');
+	const [countState, setCount] = useState(props.query.count || 20);
+	const [pageState, setPage] = useState(parseInt(props.query.page) || 1);
+
+	//Response state
 	const [brewCollection, setBrewCollection] = useState(null);
 	const [totalBrews, setTotalBrews] = useState(null);
 	const [searching, setSearching] = useState(false);
 	const [error, setError] = useState(null);
+
 
 	const titleRef = useRef(null);
 	const authorRef = useRef(null);
@@ -37,7 +40,7 @@ const VaultPage = (props) => {
 
 	useEffect(() => {
 		disableSubmitIfFormInvalid();
-		loadPage(page, false, true);
+		loadPage(pageState, false, true);
 	}, []);
 
 	const updateStateWithBrews = (brews, page) => {
@@ -63,12 +66,12 @@ const VaultPage = (props) => {
 		window.history.replaceState(null, null, url);
 	};
 
-	const performSearch = async ({ title, author, count, v3, legacy, page }) => {
-		updateUrl(title, author, count, v3, legacy, page);
+	const performSearch = async ({ titleValue, authorValue, countValue, v3Value, legacyValue, page }) => {
+		updateUrl(titleValue, authorValue, countValue, v3Value, legacyValue, page);
 		console.log(title, author, count, v3, legacy);
-		if ((title || author) && (v3 || legacy)) {
+		if ((titleValue || authorValue) && (v3Value || legacyValue)) {
 			const response = await request.get(
-				`/api/vault?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}&count=${count}&page=${page}`
+				`/api/vault?title=${titleValue}&author=${authorValue}&v3=${v3Value}&legacy=${legacyValue}&count=${countValue}&page=${page}`
 			).catch((error)=>{
 				console.log('error at loadPage: ', error);
 				setError(`${error.response
@@ -83,11 +86,11 @@ const VaultPage = (props) => {
 		} 
 	};
 
-	const loadTotal = async ({ title, v3, legacy }) => {
+	const loadTotal = async ({ titleValue, authorValue, v3Value, legacyValue }) => {
 		setTotalBrews(null);
-		if ((title || author) && (v3 || legacy)) {
+		if ((titleValue || authorValue) && (v3Value || legacyValue)) {
 			const response = await request.get(
-				`/api/vault/total?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}`
+				`/api/vault/total?title=${titleValue}&author=${authorValue}&v3=${v3Value}&legacy=${legacyValue}`
 			).catch((error)=>{
 				console.log('error at loadTotal: ', error);
 				setError(`${error.response
@@ -103,34 +106,32 @@ const VaultPage = (props) => {
 	};
 
 	const loadPage = async (page, update, total) => {
-		//Different searches use the update or total props to make only the necessary queries and functions
-
 		if (!validateForm()) {
 			return;
 		}
 		setSearching(true);
 		setError(null);
 
-		const title = titleRef.current.value || '';
-		const author = authorRef.current.value || '';
-		const count = countRef.current.value || 10;
-		const v3 = v3Ref.current.checked != false;
-		const legacy = legacyRef.current.checked != false;
+		const titleValue = titleRef.current.value || '';
+		const authorValue = authorRef.current.value || '';
+		const countValue = countRef.current.value || 10;
+		const v3Value = v3Ref.current.checked != false;
+		const legacyValue = legacyRef.current.checked != false;
 
 		if (update) {
-			setTitle(title);
-			setAuthor(author);
-			setCount(count);
-			setV3(v3);
-			setLegacy(legacy);
+			setTitle(titleValue);
+			setAuthor(authorValue);
+			setCount(countValue);
+			setV3(v3Value);
+			setLegacy(legacyValue);
 			setPage(page);
 		}
 
 		// Perform search with the latest input values, because state is not fast enough
-		performSearch({ title, author, count, v3, legacy, page });
+		performSearch({ titleValue, authorValue, countValue, v3Value, legacyValue, page });
 
 		if (total) {
-			loadTotal({ title, author, v3, legacy });
+			loadTotal({ titleValue, authorValue, v3Value, legacyValue });
 		}
 	};
 
@@ -176,7 +177,7 @@ const VaultPage = (props) => {
 						ref={titleRef}
 						type="text"
 						name="title"
-						defaultValue={title}
+						defaultValue={titleState}
 						onKeyUp={disableSubmitIfFormInvalid}
 						pattern=".{3,}"
 						title="At least 3 characters"
@@ -195,19 +196,19 @@ const VaultPage = (props) => {
 						type="text"
 						name="author"
 						pattern=".{1,}"
-						defaultValue={author}
+						defaultValue={authorState}
 						onKeyUp={disableSubmitIfFormInvalid}
 						onKeyDown={(e) => {
 							if (e.key === 'Enter' && !submitButtonRef.current.disabled)
                                 loadPage(1, true, true);
 						}}
-						placeholder="Gazook89"
+						placeholder="Username"
 					/>
 				</label>
 
 				<label>
 					Results per page
-					<select ref={countRef} name="count" defaultValue={count}>
+					<select ref={countRef} name="count" defaultValue={countState}>
 						<option value="10">10</option>
 						<option value="20">20</option>
 						<option value="40">40</option>
@@ -220,7 +221,7 @@ const VaultPage = (props) => {
 						className="renderer"
 						ref={v3Ref}
 						type="checkbox"
-						defaultChecked={v3}
+						defaultChecked={v3State}
 						onChange={disableSubmitIfFormInvalid}
 					/>
 					Search for v3 brews
@@ -231,7 +232,7 @@ const VaultPage = (props) => {
 						className="renderer"
 						ref={legacyRef}
 						type="checkbox"
-						defaultChecked={legacy}
+						defaultChecked={legacyState}
 						onChange={disableSubmitIfFormInvalid}
 					/>
 					Search for legacy brews
@@ -281,19 +282,19 @@ const VaultPage = (props) => {
 	const renderPaginationControls = () => {
 		if (!totalBrews) return null;
 
-		const countInt = parseInt(count);
+		const countInt = parseInt(countState);
 		const totalPages = Math.ceil(totalBrews / countInt);
 
 		let startPage, endPage;
-		if (page <= 6) {
+		if (pageState <= 6) {
 			startPage = 1;
 			endPage = Math.min(totalPages, 10);
-		} else if (page + 4 >= totalPages) {
+		} else if (pageState + 4 >= totalPages) {
 			startPage = Math.max(1, totalPages - 9);
 			endPage = totalPages;
 		} else {
-			startPage = page - 5;
-			endPage = page + 4;
+			startPage = pageState - 5;
+			endPage = pageState + 4;
 		}
 
 		const pagesAroundCurrent = new Array(endPage - startPage + 1)
@@ -302,7 +303,7 @@ const VaultPage = (props) => {
 				<a
 					key={startPage + index}
 					className={`pageNumber ${
-						page === startPage + index ? 'currentPage' : ''
+						pageState === startPage + index ? 'currentPage' : ''
 					}`}
 					onClick={() => loadPage(startPage + index, false, false)}
 				>
@@ -314,8 +315,8 @@ const VaultPage = (props) => {
 			<div className="paginationControls">
 				<button
 					className="previousPage"
-					onClick={() => loadPage(page - 1, false, false)}
-					disabled={page === startPage}
+					onClick={() => loadPage(pageState - 1, false, false)}
+					disabled={pageState === startPage}
 				>
 					<i className="fa-solid fa-chevron-left"></i>
 				</button>
@@ -340,8 +341,8 @@ const VaultPage = (props) => {
 				</ol>
 				<button
 					className="nextPage"
-					onClick={() => loadPage(page + 1, false, false)}
-					disabled={page === totalPages}
+					onClick={() => loadPage(pageState + 1, false, false)}
+					disabled={pageState === totalPages}
 				>
 					<i className="fa-solid fa-chevron-right"></i>
 				</button>
