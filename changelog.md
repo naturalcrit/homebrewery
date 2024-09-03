@@ -85,42 +85,35 @@ pre {
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
 ### Wednesday 8/28/2024 - v3.14.3
+
 {{taskList
+##### calculuschild, G-Ambatte
 
-##### Calculuschild
+* [x] New {{openSans **IMAGES → {{fac,image-wrap-left}} IMAGE WRAP LEFT/RIGHT**}} snippets
 
-* [x] Image wrapping snippets
+Fixes issue [#380](https://github.com/naturalcrit/homebrewery/issues/380)
 
-Fixes issue [#380](https://github.com/naturalcrit/homebrewery/issues/380), supersedes [#3126](https://github.com/naturalcrit/homebrewery/issues/3126)
-
-* [x] Add regex to detect when to interrupt a table
-
-Fixes v3.14.2 bug with tables and multiple colons
+* [x] Fix v3.14.2 bug with `꞉꞉꞉꞉` failing after tables
 
 ##### 5e-Cleric
 
-* [x] Fix Account page error for invalid users
+* [x] Fix Account page crash when not logged in
 
 Fixes issue [#3605](https://github.com/naturalcrit/homebrewery/issues/3605)
 
 ##### dbolack-ab
 
-* [x] Fix for jump hotkeys
-
-Fixes v3.14.2 bug; Preview and Source movement shortcuts now use `CTRL+SHIFT+META+Arrow` keys
+* [x] Fix jump hotkeys conflicting with `CTRL + SHIFT`. Preview and Source movement shortcuts now use `CTRL + SHIFT + META + LEFT\RIGHTARROW`
 
 ##### G-Ambatte
 
-* [x] Fix image wrap icons
-
-Fixes icons for new image wrap snippets
-
+* [x] Fix display issue with image wrap icons
 }}
 
 
 ### Tuesday 8/27/2024 - v3.14.2
-{{taskList
 
+{{taskList
 ##### calculuschild
 
 * [x] Reroute invalid urls to homepage
@@ -153,7 +146,7 @@ Fixes issues [#3572](https://github.com/naturalcrit/homebrewery/issues/3572)
 
 Fixes issues [#1430](https://github.com/naturalcrit/homebrewery/issues/1430)
 
-* [x] Fix colon `:::` being parsed in codeblocks
+* [x] Fix colon `꞉꞉꞉꞉` being parsed in codeblocks
 
 * [x] Prevent crashes when loading undefined renderer or theme bundle
 
@@ -167,12 +160,11 @@ Fixes issues [#1430](https://github.com/naturalcrit/homebrewery/issues/1430)
 ##### 5e-Cleric, Gazook89
 
 * [x] Viewer tools for zoom/page navigation
-
 }}
 
 ### Tuesday 8/13/2024 - v3.14.1
-{{taskList
 
+{{taskList
 ##### abquintic
 
 * [x] Allow Table of Contents to flow across columns
@@ -215,16 +207,13 @@ Fixes issues [#3613](https://github.com/naturalcrit/homebrewery/issues/3613)
 
 Fixes issues [#3622](https://github.com/naturalcrit/homebrewery/issues/3622)
 
-
 ##### calculuschild
 
 * [x] Fix `/migrate` page using an editor context instead of share context
 
-
 ##### 5e-Cleric
 
 * [x] Fix Monster Stat Blocks losing color in Safari
-
 }}
 
 \page
