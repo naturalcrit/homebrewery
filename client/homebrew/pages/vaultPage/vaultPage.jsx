@@ -160,7 +160,7 @@ const VaultPage = (props) => {
 						title="At least 3 characters"
 						onKeyDown={(e) => {
 							if (e.key === 'Enter' && !submitButtonRef.current.disabled)
-                                loadPage(1, true);
+								loadPage(1, true);
 						}}
 						placeholder="v3 Reference Document"
 					/>
@@ -177,7 +177,7 @@ const VaultPage = (props) => {
 						onKeyUp={disableSubmitIfFormInvalid}
 						onKeyDown={(e) => {
 							if (e.key === 'Enter' && !submitButtonRef.current.disabled)
-                                loadPage(1, true);
+								loadPage(1, true);
 						}}
 						placeholder="Username"
 					/>
@@ -232,24 +232,21 @@ const VaultPage = (props) => {
 				<h3>Tips and tricks</h3>
 				<ul>
 					<li>
-						Only <b>published</b> brews are searchable via this tool  
+						Only <b>published</b> brews are searchable via this tool
 					</li>
 					<li>
-						Usernames are case sensitive, make sure you are writing
-						it correctly
+						Usernames are case-sensitive
 					</li>
 					<li>
-						Use <code>"word"</code> to match an exact string, and  
-                        <code>-</code> to exclude words (at least one word  
-                        must not be negated).
+						Use <code>"word"</code> to match an exact string,
+						and <code>-</code> to exclude words (at least one word must not be negated)
 					</li>
-
 					<li>
-					Some common words like "a", "after", "through", "itself", "here", etc.,  
-                        are ignored in searches. The full list can be found &nbsp;
-                        <a href="https://github.com/mongodb/mongo/blob/0e3b3ca8480ddddf5d0105d11a94bd4698335312/src/mongo/db/fts/stop_words_english.txt">  
-                            here  
-                        </a>
+						Some common words like "a", "after", "through", "itself", "here", etc.,
+						are ignored in searches. The full list can be found &nbsp;
+						<a href="https://github.com/mongodb/mongo/blob/0e3b3ca8480ddddf5d0105d11a94bd4698335312/src/mongo/db/fts/stop_words_english.txt">
+							here
+						</a>
 					</li>
 				</ul>
 			</legend>
