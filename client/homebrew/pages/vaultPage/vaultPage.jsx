@@ -365,7 +365,7 @@ const VaultPage = (props)=>{
 							brew={{ ...brew }}
 							key={index}
 							reportError={props.reportError}
-							dontRenderStorage
+							renderStorage={false}
 						/>
 					);
 				})}
