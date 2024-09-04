@@ -65,10 +65,7 @@ const VaultPage = (props)=>{
 			`/api/vault?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}&count=${count}&page=${page}`
 		).catch((error)=>{
 			console.log('error at loadPage: ', error);
-			setError(`${error.response
-				? error.response.status
-				: error.message}`
-			);
+			setError(error);
 			updateStateWithBrews([], 1);
 		});
 
@@ -83,10 +80,7 @@ const VaultPage = (props)=>{
 			`/api/vault/total?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}`
 		).catch((error)=>{
 			console.log('error at loadTotal: ', error);
-			setError(`${error.response
-				? error.response.status
-				: error.message}`
-			);
+			setError(error);
 			updateStateWithBrews([], 1);
 		});
 
@@ -334,9 +328,8 @@ const VaultPage = (props)=>{
 		}
 
 		if(error) {
-			const errorText = ErrorIndex({ brew })[brew.HBErrorCode.toString()] || '';
-			console.log('render Error: ', error);
-
+			const errorText = ErrorIndex()[error.HBErrorCode.toString()] || '';
+			
 			return (
 				<div className='foundBrews noBrews'>
 					<h3>Error: {errorText}</h3>
