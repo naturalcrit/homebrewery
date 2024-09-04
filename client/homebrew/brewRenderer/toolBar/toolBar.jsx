@@ -11,6 +11,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 	const [zoomLevel, setZoomLevel] = useState(100);
 	const [pageNum, setPageNum]     = useState(currentPage);
+	const [toolsVisible, setToolsVisible] = useState(true);
 
 	useEffect(()=>{
 		onZoomChange(zoomLevel);
@@ -66,8 +67,9 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 		return deltaZoom;
 	};
 
-	return (
-		<div className='toolBar'>
+	return (		
+		<div className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`}>
+			<button class='toggleButton' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible)}}><i className='fas fa-glasses' /></button>
 			{/*v=====----------------------< Zoom Controls >---------------------=====v*/}
 			<div className='group'>
 				<button
