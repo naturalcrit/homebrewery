@@ -20,16 +20,13 @@ const authorConditions = (author) => {
 };
 
 const rendererConditions = (legacy, v3) => {
-	const renderer = {};
+	if (legacy === 'true' && v3 !== 'true')
+		return { renderer: 'legacy'};
 
-	if (legacy === 'true' && v3 !== 'true') {
-		renderer.renderer = 'legacy';
-	} else if (v3 === 'true' && legacy !== 'true') {
-		renderer.renderer = 'V3';
-	}
+	if (v3 === 'true' && legacy !== 'true')
+		return { renderer: 'V3'};
 
-    //if all renderers are selected, doesn't make sense to add them to the query, it would only take longer
-	return renderer;
+	return {}; // If all renderers selected, renderer field not needed in query for speed
 };
 
 const findBrews = async (req, res) => {
