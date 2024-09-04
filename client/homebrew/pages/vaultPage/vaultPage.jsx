@@ -34,7 +34,7 @@ const VaultPage = (props) => {
 
 	useEffect(() => {
 		disableSubmitIfFormInvalid();
-		loadPage(pageState, false, true);
+		loadPage(pageState, true);
 	}, []);
 
 	const updateStateWithBrews = (brews, page) => {
@@ -96,7 +96,7 @@ const VaultPage = (props) => {
 		}
 	};
 
-	const loadPage = async (page, update, total) => {
+	const loadPage = async (page, updateTotal) => {
 		if (!validateForm()) {
 			return;
 		}
@@ -112,9 +112,8 @@ const VaultPage = (props) => {
 		// Perform search with the latest input values, because state is not fast enough
 		performSearch({ titleValue, authorValue, countValue, v3Value, legacyValue, page });
 
-		if (total) {
+		if (updateTotal)
 			loadTotal({ titleValue, authorValue, v3Value, legacyValue });
-		}
 	};
 
 	const renderNavItems = () => (
@@ -165,7 +164,7 @@ const VaultPage = (props) => {
 						title="At least 3 characters"
 						onKeyDown={(e) => {
 							if (e.key === 'Enter' && !submitButtonRef.current.disabled)
-                                loadPage(1, true, true);
+                                loadPage(1, true);
 						}}
 						placeholder="v3 Reference Document"
 					/>
@@ -182,7 +181,7 @@ const VaultPage = (props) => {
 						onKeyUp={disableSubmitIfFormInvalid}
 						onKeyDown={(e) => {
 							if (e.key === 'Enter' && !submitButtonRef.current.disabled)
-                                loadPage(1, true, true);
+                                loadPage(1, true);
 						}}
 						placeholder="Username"
 					/>
@@ -224,7 +223,7 @@ const VaultPage = (props) => {
 					id="searchButton"
 					ref={submitButtonRef}
 					onClick={() => {
-						loadPage(1, true, true);
+						loadPage(1, true);
 					}}
 				>
 					Search
@@ -287,7 +286,7 @@ const VaultPage = (props) => {
 					className={`pageNumber ${
 						pageState === startPage + index ? 'currentPage' : ''
 					}`}
-					onClick={() => loadPage(startPage + index, false, false)}
+					onClick={() => loadPage(startPage + index, false)}
 				>
 					{startPage + index}
 				</a>
@@ -297,7 +296,7 @@ const VaultPage = (props) => {
 			<div className="paginationControls">
 				<button
 					className="previousPage"
-					onClick={() => loadPage(pageState - 1, false, false)}
+					onClick={() => loadPage(pageState - 1, false)}
 					disabled={pageState === startPage}
 				>
 					<i className="fa-solid fa-chevron-left"></i>
@@ -306,7 +305,7 @@ const VaultPage = (props) => {
 					{startPage > 1 && (
 						<a
 							className="pageNumber firstPage"
-							onClick={() => loadPage(1, false, false)}
+							onClick={() => loadPage(1, false)}
 						>
 							1 ...
 						</a>
@@ -315,7 +314,7 @@ const VaultPage = (props) => {
 					{endPage < totalPages && (
 						<a
 							className="pageNumber lastPage"
-							onClick={() => loadPage(totalPages, false, false)}
+							onClick={() => loadPage(totalPages, false)}
 						>
 							... {totalPages}
 						</a>
@@ -323,7 +322,7 @@ const VaultPage = (props) => {
 				</ol>
 				<button
 					className="nextPage"
-					onClick={() => loadPage(pageState + 1, false, false)}
+					onClick={() => loadPage(pageState + 1, false)}
 					disabled={pageState === totalPages}
 				>
 					<i className="fa-solid fa-chevron-right"></i>
