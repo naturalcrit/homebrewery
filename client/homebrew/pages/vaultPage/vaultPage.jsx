@@ -60,8 +60,6 @@ const VaultPage = (props) => {
 
 	const performSearch = async (title, author, count, v3, legacy, page) => {
 		updateUrl(title, author, count, v3, legacy, page);
-		if (!((title || author) && (v3 || legacy)))
-			return;
 
 		const response = await request.get(
 			`/api/vault?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}&count=${count}&page=${page}`
@@ -80,8 +78,6 @@ const VaultPage = (props) => {
 
 	const loadTotal = async (title, author, v3, legacy) => {
 		setTotalBrews(null);
-		if (!((title || author) && (v3 || legacy)))
-			return;
 		
 		const response = await request.get(
 			`/api/vault/total?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}`
@@ -135,7 +131,6 @@ const VaultPage = (props) => {
 
 	const validateForm = () => {
 		//form validity: title or author must be written, and at least one renderer set
-
 		const isTitleValid      = titleRef.current.validity.valid && titleRef.current.value;
 		const isAuthorValid     = authorRef.current.validity.valid && authorRef.current.value;
 		const isCheckboxChecked = legacyRef.current.checked || v3Ref.current.checked;
