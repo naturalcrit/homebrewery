@@ -75,19 +75,15 @@ const findBrews = async (req, res) => {
 };
 
 const findTotal = async (req, res) => {
-	const title = req.query.title || '';
+	const title  = req.query.title || '';
 	const author = req.query.author || '';
-
-	const rendererQuery = rendererConditions(req.query.legacy, req.query.v3);
-	const titleQuery = titleConditions(title);
-	const authorQuery = authorConditions(author);
 
 	const combinedQuery = {
 		$and: [
 			{ published: true },
-			rendererQuery,
-			titleQuery,
-			authorQuery,
+			rendererConditions(req.query.legacy, req.query.v3),
+			titleConditions(title),
+			authorConditions(author)
 		],
 	};
 
