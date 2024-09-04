@@ -380,7 +380,7 @@ const VaultPage = (props)=>{
 			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet' />
 			{renderNavItems()}
 			<div className='content'>
-				<SplitPane hideMoveArrows>
+				<SplitPane showDividerButtons={false}>
 					<div className='form dataGroup'>{renderForm()}</div>
 
 					<div className='resultsContainer dataGroup'>

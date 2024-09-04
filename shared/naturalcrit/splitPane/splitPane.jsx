@@ -7,8 +7,9 @@ const SplitPane = createClass({
 	displayName     : 'SplitPane',
 	getDefaultProps : function() {
 		return {
-			storageKey   : 'naturalcrit-pane-split',
-			onDragFinish : function(){} //fires when dragging
+			storageKey         : 'naturalcrit-pane-split',
+			onDragFinish       : function(){}, //fires when dragging
+			showDividerButtons : true
 		};
 	},
 
@@ -18,8 +19,7 @@ const SplitPane = createClass({
 			windowWidth       : 0,
 			isDragging        : false,
 			moveSource        : false,
-			moveBrew          : false,
-			showMoveArrows    : !this.props.hideMoveArrows,
+			moveBrew          : false
 		};
 	},
 
@@ -142,7 +142,7 @@ const SplitPane = createClass({
 				width={this.state.currentDividerPos}
 			>
 				{React.cloneElement(this.props.children[0], {
-					...(this.state.showMoveArrows && {
+					...(this.props.showDividerButtons && {
 						moveBrew: this.state.moveBrew,
 						moveSource: this.state.moveSource,
 						setMoveArrows: this.setMoveArrows,
