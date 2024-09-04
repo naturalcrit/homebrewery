@@ -95,6 +95,7 @@ const BrewItem = createClass({
 	},
 
 	renderStorageIcon : function(){
+		if(this.props.dontRenderStorage) return;
 		if(this.props.brew.googleId) {
 			return <span title={this.props.brew.webViewLink ? 'Your Google Drive Storage': 'Another User\'s Google Drive Storage'}>
 				<a href={this.props.brew.webViewLink} target='_blank'>
