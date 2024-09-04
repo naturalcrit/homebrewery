@@ -142,9 +142,11 @@ const SplitPane = createClass({
 				width={this.state.currentDividerPos}
 			>
 				{React.cloneElement(this.props.children[0], {
-					moveBrew      : this.state.moveBrew,
-					moveSource    : this.state.moveSource,
-					setMoveArrows : this.setMoveArrows
+					...(this.state.showMoveArrows && {
+						moveBrew: this.state.moveBrew,
+						moveSource: this.state.moveSource,
+						setMoveArrows: this.setMoveArrows,
+					}),
 				})}
 			</Pane>
 			{this.renderDivider()}
