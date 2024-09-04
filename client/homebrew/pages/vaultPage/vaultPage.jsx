@@ -3,15 +3,15 @@ require('./vaultPage.less');
 const React = require('react');
 const { useState, useEffect, useRef } = React;
 
-const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
+const Nav           = require('naturalcrit/nav/nav.jsx');
+const Navbar        = require('../../navbar/navbar.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const Account = require('../../navbar/account.navitem.jsx');
-const NewBrew = require('../../navbar/newbrew.navitem.jsx');
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
-const BrewItem = require('../basePages/listPage/brewItem/brewItem.jsx');
-const SplitPane = require('../../../../shared/naturalcrit/splitPane/splitPane.jsx');
-const ErrorIndex = require('../errorPage/errors/errorIndex.js');
+const Account       = require('../../navbar/account.navitem.jsx');
+const NewBrew       = require('../../navbar/newbrew.navitem.jsx');
+const HelpNavItem   = require('../../navbar/help.navitem.jsx');
+const BrewItem      = require('../basePages/listPage/brewItem/brewItem.jsx');
+const SplitPane     = require('../../../../shared/naturalcrit/splitPane/splitPane.jsx');
+const ErrorIndex    = require('../errorPage/errors/errorIndex.js');
 
 const request = require('../../utils/request-middleware.js');
 
@@ -20,16 +20,16 @@ const VaultPage = (props) => {
 
 	//Response state
 	const [brewCollection, setBrewCollection] = useState(null);
-	const [totalBrews, setTotalBrews] = useState(null);
-	const [searching, setSearching] = useState(false);
-	const [error, setError] = useState(null);
+	const [totalBrews, setTotalBrews]         = useState(null);
+	const [searching, setSearching]           = useState(false);
+	const [error, setError]                   = useState(null);
 
 
-	const titleRef = useRef(null);
-	const authorRef = useRef(null);
-	const countRef = useRef(null);
-	const v3Ref = useRef(null);
-	const legacyRef = useRef(null);
+	const titleRef        = useRef(null);
+	const authorRef       = useRef(null);
+	const countRef        = useRef(null);
+	const v3Ref           = useRef(null);
+	const legacyRef       = useRef(null);
 	const submitButtonRef = useRef(null);
 
 	useEffect(() => {
@@ -103,10 +103,10 @@ const VaultPage = (props) => {
 		setSearching(true);
 		setError(null);
 
-		const titleValue = titleRef.current.value || '';
+		const titleValue  = titleRef.current.value || '';
 		const authorValue = authorRef.current.value || '';
-		const countValue = countRef.current.value || 10;
-		const v3Value = v3Ref.current.checked != false;
+		const countValue  = countRef.current.value || 10;
+		const v3Value     = v3Ref.current.checked != false;
 		const legacyValue = legacyRef.current.checked != false;
 
 		if (update) {
@@ -140,8 +140,8 @@ const VaultPage = (props) => {
 	const validateForm = () => {
 		//form validity: title or author must be written, and at least one renderer set
 
-		const isTitleValid = titleRef.current.validity.valid && titleRef.current.value;
-		const isAuthorValid = authorRef.current.validity.valid && authorRef.current.value;
+		const isTitleValid      = titleRef.current.validity.valid && titleRef.current.value;
+		const isAuthorValid     = authorRef.current.validity.valid && authorRef.current.value;
 		const isCheckboxChecked = legacyRef.current.checked || v3Ref.current.checked;
 
 		const isFormValid = (isTitleValid || isAuthorValid) && isCheckboxChecked;
