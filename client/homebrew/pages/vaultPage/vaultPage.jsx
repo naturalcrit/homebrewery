@@ -243,6 +243,7 @@ const VaultPage = (props)=>{
 						</a>
 					</li>
 				</ul>
+				<small>New features will be coming, such as filters and search by tags.</small>
 			</legend>
 		</div>
 	);

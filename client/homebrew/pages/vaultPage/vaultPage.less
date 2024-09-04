@@ -245,7 +245,16 @@ body {
 						width            : 47%;
 						margin-right     : 40px;
 						color            : black;
-						background-image : url('/assets/parchmentBackground.jpg');
+						isolation:isolate;
+						
+						&:after {
+							position:absolute;
+							inset:0;
+							display:block;
+							content:'';
+							background-image : url('/assets/parchmentBackground.jpg');
+							z-index:-1;
+						}
 
 						&:nth-child(even of .brewItem) { margin-right : 0; }
 
@@ -255,11 +264,6 @@ body {
 							font-weight : 800;
 							line-height : 0.988em;
 							color       : var(--HB_Color_HeaderText);
-						}
-
-						.text {
-							position:relative;
-							z-index:2;
 						}
 						.info {
 							font-family : 'ScalySansRemake';
