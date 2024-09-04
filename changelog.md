@@ -84,6 +84,24 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Wednesday 9/04/2024 - v3.15.0
+
+{{taskList
+##### 5e-Cleric, abquintic, calculuschild, Gazook89, G-Ambatte, Ericsheid, Kaiburr
+
+* [x] New {{openSans **VAULT** {{fas,fa-dungeon}}}} page 🎉🎉🎉
+:
+All **PUBLISHED** brews ({{openSans :fas_circle_info: **Properties**}} menu) will be searchable, by title or author, and filtered by renderer. More features and adjustments will be coming.
+:
+Note: If any of your own brews are not showing up in search (particularly if stored on Google Drive), please edit and re-save to ensure our database has the data needed from document to be searchable. 
+
+Fixes issue [#697](https://github.com/naturalcrit/homebrewery/issues/697)
+
+##### Gazook89
+
+* [x] Auto-focus on text editor when switching editor tabs
+}}
+
 ### Wednesday 8/28/2024 - v3.14.3
 
 {{taskList
@@ -101,7 +119,7 @@ Fixes issue [#380](https://github.com/naturalcrit/homebrewery/issues/380)
 
 Fixes issue [#3605](https://github.com/naturalcrit/homebrewery/issues/3605)
 
-##### dbolack-ab
+##### abquintic
 
 * [x] Fix jump hotkeys conflicting with `CTRL + SHIFT`. Preview and Source movement shortcuts now use `CTRL + SHIFT + META + LEFT\RIGHTARROW`
 
