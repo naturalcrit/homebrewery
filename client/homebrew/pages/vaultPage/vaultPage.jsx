@@ -58,62 +58,63 @@ const VaultPage = (props) => {
 		window.history.replaceState(null, '', url.toString());
 	};
 
-	const performSearch = async ({ titleValue, authorValue, countValue, v3Value, legacyValue, page }) => {
-		updateUrl(titleValue, authorValue, countValue, v3Value, legacyValue, page);
-		if ((titleValue || authorValue) && (v3Value || legacyValue)) {
-			const response = await request.get(
-				`/api/vault?title=${titleValue}&author=${authorValue}&v3=${v3Value}&legacy=${legacyValue}&count=${countValue}&page=${page}`
-			).catch((error)=>{
-				console.log('error at loadPage: ', error);
-				setError(`${error.response
-					? error.response.status
-					: error.message}`
-				);
-				updateStateWithBrews([], 1);
-			});
-			
-			if (response.ok)
-				updateStateWithBrews(response.body.brews, page);
-		} 
+	const performSearch = async (title, author, count, v3, legacy, page) => {
+		updateUrl(title, author, count, v3, legacy, page);
+		if (!((title || author) && (v3 || legacy)))
+			return;
+
+		const response = await request.get(
+			`/api/vault?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}&count=${count}&page=${page}`
+		).catch((error)=>{
+			console.log('error at loadPage: ', error);
+			setError(`${error.response
+				? error.response.status
+				: error.message}`
+			);
+			updateStateWithBrews([], 1);
+		});
+		
+		if (response.ok)
+			updateStateWithBrews(response.body.brews, page);
 	};
 
-	const loadTotal = async ({ titleValue, authorValue, v3Value, legacyValue }) => {
+	const loadTotal = async (title, author, v3, legacy) => {
 		setTotalBrews(null);
-		if ((titleValue || authorValue) && (v3Value || legacyValue)) {
-			const response = await request.get(
-				`/api/vault/total?title=${titleValue}&author=${authorValue}&v3=${v3Value}&legacy=${legacyValue}`
-			).catch((error)=>{
-				console.log('error at loadTotal: ', error);
-				setError(`${error.response
-					? error.response.status
-					: error.message}`
-				);
-				updateStateWithBrews([], 1);
-			});
-			
-			if (response.ok)
-				setTotalBrews(response.body.totalBrews);
-		}
+		if (!((title || author) && (v3 || legacy)))
+			return;
+		
+		const response = await request.get(
+			`/api/vault/total?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}`
+		).catch((error)=>{
+			console.log('error at loadTotal: ', error);
+			setError(`${error.response
+				? error.response.status
+				: error.message}`
+			);
+			updateStateWithBrews([], 1);
+		});
+		
+		if (response.ok)
+			setTotalBrews(response.body.totalBrews);
 	};
 
 	const loadPage = async (page, updateTotal) => {
-		if (!validateForm()) {
+		if (!validateForm())
 			return;
-		}
+
 		setSearching(true);
 		setError(null);
 
-		const titleValue  = titleRef.current.value || '';
-		const authorValue = authorRef.current.value || '';
-		const countValue  = countRef.current.value || 10;
-		const v3Value     = v3Ref.current.checked != false;
-		const legacyValue = legacyRef.current.checked != false;
+		const title  = titleRef.current.value || '';
+		const author = authorRef.current.value || '';
+		const count  = countRef.current.value || 10;
+		const v3     = v3Ref.current.checked != false;
+		const legacy = legacyRef.current.checked != false;
 
-		// Perform search with the latest input values, because state is not fast enough
-		performSearch({ titleValue, authorValue, countValue, v3Value, legacyValue, page });
+		performSearch(title, author, count, v3, legacy, page);
 
 		if (updateTotal)
-			loadTotal({ titleValue, authorValue, v3Value, legacyValue });
+			loadTotal(title, author, v3, legacy);
 	};
 
 	const renderNavItems = () => (
