@@ -109,10 +109,6 @@ const VaultPage = (props) => {
 		const v3Value     = v3Ref.current.checked != false;
 		const legacyValue = legacyRef.current.checked != false;
 
-		if (update) {
-			setPageState(page);
-		}
-
 		// Perform search with the latest input values, because state is not fast enough
 		performSearch({ titleValue, authorValue, countValue, v3Value, legacyValue, page });
 
