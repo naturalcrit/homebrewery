@@ -16,7 +16,7 @@ const ErrorIndex    = require('../errorPage/errors/errorIndex.js');
 const request = require('../../utils/request-middleware.js');
 
 const VaultPage = (props) => {
-	const [pageState, setPage] = useState(parseInt(props.query.page) || 1);
+	const [pageState, setPageState] = useState(parseInt(props.query.page) || 1);
 
 	//Response state
 	const [brewCollection, setBrewCollection] = useState(null);
@@ -39,7 +39,7 @@ const VaultPage = (props) => {
 
 	const updateStateWithBrews = (brews, page) => {
 		setBrewCollection(brews || null);
-		setPage(parseInt(page) || 1);
+		setPageState(parseInt(page) || 1);
 		setSearching(false);
 	};
 
@@ -110,7 +110,7 @@ const VaultPage = (props) => {
 		const legacyValue = legacyRef.current.checked != false;
 
 		if (update) {
-			setPage(page);
+			setPageState(page);
 		}
 
 		// Perform search with the latest input values, because state is not fast enough
