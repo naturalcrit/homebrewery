@@ -141,7 +141,7 @@ const BrewItem = createClass({
 				</> : <></>
 				}
 				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
-					<i className='fas fa-user'/> {brew.authors?.map((author, index) => (
+					<i className='fas fa-user'/> {brew.authors?.map((author, index)=>(
 						<React.Fragment key={index}>
 							{author === 'hidden'
 								? <span title="Username contained an email address; hidden to protect user's privacy">{author}</span>

@@ -4,32 +4,32 @@ const HomebrewModel = require('./homebrew.model.js').model;
 
 const router = express.Router();
 
-const titleConditions = (title) => {
-	if (!title) return {};
+const titleConditions = (title)=>{
+	if(!title) return {};
 	return {
-		$text: {
-			$search: title,
-			$caseSensitive: false,
+		$text : {
+			$search        : title,
+			$caseSensitive : false,
 		},
 	};
 };
 
-const authorConditions = (author) => {
-	if (!author) return {};
+const authorConditions = (author)=>{
+	if(!author) return {};
 	return { authors: author };
 };
 
-const rendererConditions = (legacy, v3) => {
-	if (legacy === 'true' && v3 !== 'true')
-		return { renderer: 'legacy'};
+const rendererConditions = (legacy, v3)=>{
+	if(legacy === 'true' && v3 !== 'true')
+		return { renderer: 'legacy' };
 
-	if (v3 === 'true' && legacy !== 'true')
-		return { renderer: 'V3'};
+	if(v3 === 'true' && legacy !== 'true')
+		return { renderer: 'V3' };
 
 	return {}; // If all renderers selected, renderer field not needed in query for speed
 };
 
-const findBrews = async (req, res) => {
+const findBrews = async (req, res)=>{
 	const title  = req.query.title || '';
 	const author = req.query.author || '';
 	const page   = Math.max(parseInt(req.query.page)  || 1, 1);
@@ -37,7 +37,7 @@ const findBrews = async (req, res) => {
 	const skip   = (page - 1) * count;
 
 	const combinedQuery = {
-		$and: [
+		$and : [
 			{ published: true },
 			rendererConditions(req.query.legacy, req.query.v3),
 			titleConditions(title),
@@ -58,28 +58,27 @@ const findBrews = async (req, res) => {
 		.limit(count)
 		.maxTimeMS(5000)
 		.exec()
-		.then((brews) => {
+		.then((brews)=>{
 			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-			const processedBrews = brews.map((brew) => {
-				brew.authors = brew.authors.map(author =>
-					emailRegex.test(author) ? 'hidden' : author
+			const processedBrews = brews.map((brew)=>{
+				brew.authors = brew.authors.map((author)=>emailRegex.test(author) ? 'hidden' : author
 				);
 				return brew;
 			});
 			res.json({ brews: processedBrews, page });
 		})
-		.catch((error) => {
-			throw {...error, message: "Error finding brews in Vault search", HBErrorCode: 90}; 
+		.catch((error)=>{
+			throw { ...error, message: 'Error finding brews in Vault search', HBErrorCode: 90 };
 		});
 };
 
-const findTotal = async (req, res) => {
+const findTotal = async (req, res)=>{
 	const title  = req.query.title || '';
 	const author = req.query.author || '';
 
 	const combinedQuery = {
-		$and: [
+		$and : [
 			{ published: true },
 			rendererConditions(req.query.legacy, req.query.v3),
 			titleConditions(title),
@@ -88,12 +87,12 @@ const findTotal = async (req, res) => {
 	};
 
 	await HomebrewModel.countDocuments(combinedQuery)
-		.then((totalBrews) => {
-			console.log(`when returning, the total of brews is ${totalBrews} for the query ${JSON.stringify(combinedQuery)}`); 
+		.then((totalBrews)=>{
+			console.log(`when returning, the total of brews is ${totalBrews} for the query ${JSON.stringify(combinedQuery)}`);
 			res.json({ totalBrews });
 		})
-		.catch((error) => {
-			throw {...error, message: "Error finding brews in Vault search findTotal function", HBErrorCode: 91};
+		.catch((error)=>{
+			throw { ...error, message: 'Error finding brews in Vault search findTotal function', HBErrorCode: 91 };
 		});
 };
 
