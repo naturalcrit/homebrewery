@@ -30,32 +30,27 @@ const rendererConditions = (legacy, v3) => {
 };
 
 const findBrews = async (req, res) => {
-	const title = req.query.title || '';
+	const title  = req.query.title || '';
 	const author = req.query.author || '';
-	const page = Math.max(parseInt(req.query.page) || 1, 1);
-	const mincount = 10;
-	const count = Math.max(parseInt(req.query.count) || 20, mincount);
-	const skip = (page - 1) * count;
-
-	const rendererQuery = rendererConditions(req.query.legacy, req.query.v3);
-	const titleQuery = titleConditions(title);
-	const authorQuery = authorConditions(author);
+	const page   = Math.max(parseInt(req.query.page)  || 1, 1);
+	const count  = Math.max(parseInt(req.query.count) || 20, 10);
+	const skip   = (page - 1) * count;
 
 	const combinedQuery = {
 		$and: [
 			{ published: true },
-			rendererQuery,
-			titleQuery,
-			authorQuery,
+			rendererConditions(req.query.legacy, req.query.v3),
+			titleConditions(title),
+			authorConditions(author)
 		],
 	};
 
 	const projection = {
-		editId: 0,
-		googleId: 0,
-		text: 0,
-		textBin: 0,
-		version: 0,
+		editId   : 0,
+		googleId : 0,
+		text     : 0,
+		textBin  : 0,
+		version  : 0
 	};
 
 	await HomebrewModel.find(combinedQuery, projection)
