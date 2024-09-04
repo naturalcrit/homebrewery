@@ -19,7 +19,8 @@ const SplitPane = createClass({
 			windowWidth       : 0,
 			isDragging        : false,
 			moveSource        : false,
-			moveBrew          : false
+			moveBrew          : false,
+			showMoveArrows    : true
 		};
 	},
 
