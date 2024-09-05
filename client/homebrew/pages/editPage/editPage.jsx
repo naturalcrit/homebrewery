@@ -29,6 +29,15 @@ const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpe
 
 const googleDriveIcon = require('../../googleDrive.svg');
 
+const HISTORY_PREFIX = 'HOMEBREWERY-HISTORY'
+const HISTORY_SAVE_DELAYS = [
+	1,			// 1 minute
+	30,			// 30 minutes
+	60,			// 60 minutes
+	24 * 60,	// 24 hours
+	5 * 24 * 60 // 5 days
+];
+
 const SAVE_TIMEOUT = 3000;
 
 const EditPage = createClass({
@@ -202,6 +211,8 @@ const EditPage = createClass({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
+		this.updateHistory();
+
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 
 		const brew = this.state.brew;
@@ -231,6 +242,40 @@ const EditPage = createClass({
 			isSaving    : false,
 			unsavedTime : new Date()
 		}));
+	},
+
+	updateHistory : function(){
+		const historyKeys = [];
+		[1,2,3,4,5].forEach((i)=>{
+			historyKeys.push(`${HISTORY_PREFIX}-${this.props.brew.shareId}-${i}`);
+		});
+		historyKeys.forEach((key, i)=>{
+			// console.log(i, key);
+			const storedVersion = localStorage.getItem(key);
+			// console.log(storedVersion);
+			if(!storedVersion){
+				this.updateStoredBrew(key);
+				return;
+			}
+			const storedObject = JSON.parse(storedVersion);
+			let targetTime = new Date(storedObject.savedAt);
+			targetTime.setMinutes(targetTime.getMinutes() + HISTORY_SAVE_DELAYS[i]);
+			// console.log('UPDATE AT: ', targetTime);
+			if(new Date() >= targetTime){
+				// console.log('Update Stored Brew:', i);
+				this.updateStoredBrew(key);
+			}
+		});
+	},
+
+	updateStoredBrew : function (key){
+		const archiveBrew = {};
+		archiveBrew.title = this.state.brew.title;
+		archiveBrew.text = this.state.brew.text;
+		archiveBrew.style = this.state.brew.style;
+		archiveBrew.savedAt = new Date();
+		localStorage.setItem(key, JSON.stringify(archiveBrew));
+		return;
 	},
 
 	renderGoogleDriveIcon : function(){
