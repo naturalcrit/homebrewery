@@ -56,6 +56,7 @@ app.use((req, res, next)=>{
 
 app.use(homebrewApi);
 app.use(require('./admin.api.js'));
+app.use(require('./vault.api.js'));
 
 const HomebrewModel     = require('./homebrew.model.js').model;
 const welcomeText       = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
@@ -436,6 +437,11 @@ if(isLocalEnvironment){
 	app.use('/staticImages', express.static(config.get('hb_images') && fs.existsSync(config.get('hb_images')) ? config.get('hb_images') :'staticImages'));
 	app.use('/staticFonts', express.static(config.get('hb_fonts')  && fs.existsSync(config.get('hb_fonts')) ? config.get('hb_fonts'):'staticFonts'));
 }
+
+//Vault Page
+app.get('/vault', asyncHandler(async(req, res, next)=>{
+	return next();
+}));
 
 //Send rendered page
 app.use(asyncHandler(async (req, res, next)=>{
