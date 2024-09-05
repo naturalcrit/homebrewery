@@ -37,6 +37,13 @@ const HISTORY_SAVE_DELAYS = [
 	24 * 60,	// 24 hours
 	5 * 24 * 60 // 5 days
 ];
+const HISTORY_VERSION_DIFFS = [
+	1,
+	10,
+	50,
+	100,
+	250
+]
 
 const SAVE_TIMEOUT = 3000;
 
@@ -250,19 +257,19 @@ const EditPage = createClass({
 			historyKeys.push(`${HISTORY_PREFIX}-${this.props.brew.shareId}-${i}`);
 		});
 		historyKeys.forEach((key, i)=>{
-			// console.log(i, key);
 			const storedVersion = localStorage.getItem(key);
-			// console.log(storedVersion);
 			if(!storedVersion){
 				this.updateStoredBrew(key);
 				return;
 			}
+			
 			const storedObject = JSON.parse(storedVersion);
 			let targetTime = new Date(storedObject.savedAt);
 			targetTime.setMinutes(targetTime.getMinutes() + HISTORY_SAVE_DELAYS[i]);
-			// console.log('UPDATE AT: ', targetTime);
-			if(new Date() >= targetTime){
-				// console.log('Update Stored Brew:', i);
+
+			const targetVersion = storedObject.version + HISTORY_VERSION_DIFFS[i];
+
+			if(new Date() >= targetTime && this.state.brew.version >= targetVersion){
 				this.updateStoredBrew(key);
 			}
 		});
@@ -274,6 +281,7 @@ const EditPage = createClass({
 		archiveBrew.text = this.state.brew.text;
 		archiveBrew.style = this.state.brew.style;
 		archiveBrew.savedAt = new Date();
+		archiveBrew.version = this.state.brew.version;
 		localStorage.setItem(key, JSON.stringify(archiveBrew));
 		return;
 	},
