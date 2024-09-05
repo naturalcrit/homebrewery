@@ -35,6 +35,7 @@ const printCurrentBrew = ()=>{
 };
 
 const fetchThemeBundle = async (obj, renderer, theme)=>{
+	if(!renderer || !theme) return;
 	const res = await request
 			.get(`/api/theme/${renderer}/${theme}`)
 			.catch((err)=>{

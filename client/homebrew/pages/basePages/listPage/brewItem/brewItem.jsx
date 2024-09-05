@@ -19,7 +19,8 @@ const BrewItem = createClass({
 				stubbed     : true
 			},
 			updateListFilter : ()=>{},
-			reportError      : ()=>{}
+			reportError      : ()=>{},
+			renderStorage    : true
 		};
 	},
 
@@ -95,6 +96,7 @@ const BrewItem = createClass({
 	},
 
 	renderStorageIcon : function(){
+		if(!this.props.renderStorage) return;
 		if(this.props.brew.googleId) {
 			return <span title={this.props.brew.webViewLink ? 'Your Google Drive Storage': 'Another User\'s Google Drive Storage'}>
 				<a href={this.props.brew.webViewLink} target='_blank'>
@@ -142,10 +144,14 @@ const BrewItem = createClass({
 				}
 				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
 					<i className='fas fa-user'/> {brew.authors?.map((author, index)=>(
-  					<>
-    					<a key={index} href={`/user/${author}`}>{author}</a>
-    					{index < brew.authors.length - 1 && ', '}
-  					</>))}
+						<React.Fragment key={index}>
+							{author === 'hidden'
+								? <span title="Username contained an email address; hidden to protect user's privacy">{author}</span>
+								: <a href={`/user/${author}`}>{author}</a>
+							}
+							{index < brew.authors.length - 1 && ', '}
+						</React.Fragment>
+					))}
 				</span>
 				<br />
 				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>

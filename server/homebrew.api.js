@@ -99,7 +99,7 @@ const api = {
 			stub = stub?.toObject();
 
 			if(stub?.lock && accessType != 'edit') {
-				throw { HBErrorCode: '100', code: stub.lock.code, message: stub.lock.shareMessage, brewId: stub.shareId, brewTitle: stub.title };
+				throw { HBErrorCode: '51', code: stub.lock.code, message: stub.lock.shareMessage, brewId: stub.shareId, brewTitle: stub.title };
 			}
 
 			// If there is a google id, try to find the google brew
@@ -148,6 +148,20 @@ const api = {
 			next();
 		};
 	},
+
+	getCSS : async (req, res)=>{
+		const { brew } = req;
+		if(!brew) return res.status(404).send('');
+		splitTextStyleAndMetadata(brew);
+		if(!brew.style) return res.status(404).send('');
+
+		res.set({
+			'Cache-Control' : 'no-cache',
+			'Content-Type'  : 'text/css'
+		});
+		return res.status(200).send(brew.style);
+	},
+
 	mergeBrewText : (brew)=>{
 		let text = brew.text;
 		if(brew.style !== undefined) {
