@@ -1,32 +1,13 @@
-body {
-	height : 100vh;
-
-	.content { height : 100%; }
-
-	small {
-		font-size : 10pt;
-		color     : #555555;
-
-		a { color : #333333; }
-	}
-
-	code {
-		padding-inline : 5px;
-		background     : lightgrey;
-		border-radius  : 5px;
-	}
-
-	*:not(input) { user-select : none; }
-}
-
 .vaultPage {
 	height           : 100%;
 	overflow-y       : hidden;
 	background-color : #2C3E50;
-	
+
+	*:not(input) { user-select : none; }
 
 	.content {
 		background : #2C3E50;
+		height: 100%;
 
 		.dataGroup {
 			width      : 100%;
@@ -37,11 +18,24 @@ body {
 				position : relative;
 				padding  : 50px clamp(20px, 4vw, 50px);
 
+				small {
+					font-size : 10pt;
+					color     : #555555;
+			
+					a { color : #333333; }
+				}
+
+				code {
+					padding-inline : 5px;
+					background     : lightgrey;
+					border-radius  : 5px;
+					font-family    : monospace;
+				}
+
 				h1, h2, h3, h4 {
 					font-family    : 'CodeBold';
 					letter-spacing : 2px;
 				}
-
 				
 				legend {
 					h3 {
@@ -144,8 +138,6 @@ body {
 						}
 					}
 
-					
-
 					#searchButton {
 						position : absolute;
 						right    : 20px;
@@ -166,7 +158,6 @@ body {
 				overflow-y     : auto;
 				font-family    : 'BookInsanityRemake';
 				font-size      : 0.34cm;
-
 				
 				h3 {
 					font-family : 'Open Sans';
