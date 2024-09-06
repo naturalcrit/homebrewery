@@ -61,7 +61,6 @@ const BrewRenderer = (props)=>{
 	};
 
 	const [state, setState] = useState({
-		height            : PAGE_HEIGHT,
 		isMounted         : false,
 		visibility        : 'hidden',
 		zoom              : 100,
@@ -75,17 +74,6 @@ const BrewRenderer = (props)=>{
 	} else {
 		rawPages = props.text.split(/^\\page$/gm);
 	}
-
-	useEffect(()=>{ // Unmounting steps
-		return ()=>{window.removeEventListener('resize', updateSize);};
-	}, []);
-
-	const updateSize = ()=>{
-		setState((prevState)=>({
-			...prevState,
-			height : mainRef.current.parentNode.clientHeight,
-		}));
-	};
 
 	const getCurrentPage = (e)=>{
 		const { scrollTop, clientHeight, scrollHeight } = e.target;
@@ -164,8 +152,6 @@ const BrewRenderer = (props)=>{
 
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
-			updateSize();
-			window.addEventListener('resize', updateSize);
 			renderPages(); //Make sure page is renderable before showing
 			setState((prevState)=>({
 				...prevState,

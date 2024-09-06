@@ -1,8 +1,6 @@
 @import (less) './client/icons/customIcons.less';
 
 .toolBar {
-	z-index          : 1;
-	box-sizing       : border-box;
 	display          : flex;
 	flex-wrap        : wrap;
 	gap              : 8px 30px;
@@ -11,12 +9,10 @@
 	width            : 100%;
 	height           : auto;
 	padding          : 2px 0;
-	font-family      : 'Open Sans', sans-serif;
 	color            : #CCCCCC;
 	background-color : #555555;
 
 	.group {
-		box-sizing       : border-box;
 		display          : flex;
 		gap              : 0 3px;
 		align-items      : center;
@@ -33,7 +29,7 @@
 		position       : relative;
 		height         : 1.5em;
 		padding        : 2px 5px;
-		font-family    : 'Open Sans', sans-serif;
+		font-family    : inherit;
 		color          : #000000;
 		background     : #EEEEEE;
 		border         : 1px solid gray;
@@ -79,8 +75,6 @@
 
 	button {
 		box-sizing       : content-box;
-		display          : flex;
-		align-items      : center;
 		justify-content  : center;
 		width            : auto;
 		min-width        : 46px;
@@ -95,8 +89,6 @@
 			color            : #777777;
 			background-color : unset !important;
 		}
-		i {
-			font-size:1.2em;
-		}
+		i { font-size : 1.2em; }
 	}
 }
