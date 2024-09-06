@@ -3,19 +3,13 @@
 .brewRenderer {
 	overflow-y    : scroll;
 	will-change   : transform;
-	padding-block : 30px;
+	padding-block : 15px;
 	:where(.pages) {
 		& > :where(.page) {
 			width         : 215.9mm;
 			height        : 279.4mm;
-			margin-right  : auto;
-			margin-bottom : 30px;
-			margin-left   : auto;
+			margin        : 15px auto;
 			box-shadow    : 1px 4px 14px #000000;
-
-			&:where(:last-child) {
-				margin-bottom : 0;
-			}
 		}
 	}
 	&::-webkit-scrollbar {
@@ -31,6 +25,7 @@
 		&-corner { visibility : hidden; }
 	}
 }
+
 
 .pane { position : relative; }
 
