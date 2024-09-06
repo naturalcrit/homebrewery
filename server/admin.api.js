@@ -32,8 +32,7 @@ const junkBrewPipeline = [
 		lastViewed : { $lt: Moment().subtract(30, 'days').toDate() }
 	} },
 	{ $project: { textBinSize: { $binarySize: '$textBin' } } },
-	{ $match: { textBinSize: { $lt: 140 } } },
-	{ $limit: 100 }
+	{ $match: { textBinSize: { $lt: 140 } } }
 ];
 
 /* Search for brews that aren't compressed (missing the compressed text field) */
