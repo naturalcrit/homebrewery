@@ -55,6 +55,7 @@ app.use((req, res, next)=>{
 
 app.use(homebrewApi);
 app.use(require('./admin.api.js'));
+app.use(require('./vault.api.js'));
 
 const HomebrewModel     = require('./homebrew.model.js').model;
 const welcomeText       = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
@@ -432,6 +433,11 @@ if(isLocalEnvironment){
 		return res.json(payload);
 	});
 }
+
+//Vault Page
+app.get('/vault', asyncHandler(async(req, res, next)=>{
+	return next();
+}));
 
 //Send rendered page
 app.use(asyncHandler(async (req, res, next)=>{
