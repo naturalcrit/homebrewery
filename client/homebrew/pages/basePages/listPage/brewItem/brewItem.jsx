@@ -112,6 +112,7 @@ const BrewItem = createClass({
 
 	render : function(){
 		const brew = this.props.brew;
+		const effectiveThumbnail = brew.thumbnail.startsWith('Page 1') ? brew.thumbnailSm : brew.thumbnail;
 		if(Array.isArray(brew.tags)) {               // temporary fix until dud tags are cleaned
 			brew.tags = brew.tags?.filter((tag)=>tag); //remove tags that are empty strings
 			brew.tags.sort((a, b)=>{
@@ -122,7 +123,7 @@ const BrewItem = createClass({
 
 		return <div className='brewItem'>
 			{brew.thumbnail &&
-				<div className='thumbnail' style={{ backgroundImage: `url(${brew.thumbnail})` }} >
+				<div className='thumbnail' style={{ backgroundImage: `url(${effectiveThumbnail})` }} >
 				</div>
 			}
 			<div className='text'>
