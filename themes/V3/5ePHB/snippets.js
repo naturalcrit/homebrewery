@@ -107,8 +107,8 @@ module.exports = [
 						name : 'Enable H1-H3 all pages',
 						icon : 'fas fa-dice-three',
 						gen  : dedent`/* Add ToC include for H3 level Headers */
-								  	.page h3 {
-  								    	--TOC: include;
+									.page h3 {
+										--TOC: include;
 									}\n\n`
 					},
 					{
@@ -116,7 +116,7 @@ module.exports = [
 						icon : 'fas fa-dice-four',
 						gen  : dedent`/* Add ToC include for H3 and H4 level Headers */
 									.page h3, .page h4 {
-  								    	--TOC: include;
+										--TOC: include;
 									}\n\n`
 					},
 					{
@@ -124,7 +124,7 @@ module.exports = [
 						icon : 'fas fa-dice-five',
 						gen  : dedent`/* Add ToC include for H3, H4, and H5 level Headers */
 									.page h3, .page h4, .page h5 {
-	  								    --TOC: include;
+										--TOC: include;
 									}\n\n`
 					},
 					{
@@ -132,7 +132,7 @@ module.exports = [
 						icon : 'fas fa-dice-six',
 						gen  : dedent`/* Add ToC include for H3, H4, H5, and H6 level Headers */
 									.page h3, .page h4, .page h5, .page h6 {
-	  								    --TOC: include;
+										--TOC: include;
 									}\n\n`
 					},
 				]
