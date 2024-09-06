@@ -42,12 +42,6 @@ const BrewCleanup = createClass({
 			return <div className='removeBox'>No Matching Brews found.</div>;
 		}
 		return <div className='removeBox'>
-			<button onClick={this.cleanup} className='remove'>
-				{this.state.pending
-					? <i className='fas fa-spin fa-spinner' />
-					: <span><i className='fas fa-times' /> Remove</span>
-				}
-			</button>
 			<span>Found {this.state.count} Brews that could be removed. </span>
 		</div>;
 	},
