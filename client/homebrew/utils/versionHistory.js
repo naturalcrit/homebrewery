@@ -1,10 +1,10 @@
 const HISTORY_PREFIX = 'HOMEBREWERY-HISTORY'
 const HISTORY_SAVE_DELAYS = [
-	1,			// 1 minute
-	30,			// 30 minutes
+	2,			// 2 minutes
+	10,			// 10 minutes
 	60,			// 60 minutes
-	24 * 60,	// 24 hours
-	5 * 24 * 60 // 5 days
+	12 * 60,	// 12 hours
+	2 * 24 * 60 // 2 days
 ];
 const HISTORY_VERSION_DIFFS = [
 	1,
