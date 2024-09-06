@@ -7,4 +7,4 @@
 	"enable_themes" : true,
 	"local_environments" : ["docker", "local"],
 	"publicUrl" : "https://homebrewery.naturalcrit.com"
-}
+	}
