@@ -70,7 +70,7 @@ const Snippetbar = createClass({
 	mergeCustomizer : function(oldValue, newValue, key) {
 		if(key == 'snippets') {
 			const result = _.reverse(_.unionBy(_.reverse(newValue), _.reverse(oldValue), 'name')); // Join snippets together, with preference for the child theme over the parent theme
-			return result.filter(snip.gen || snip.subsnippets);
+			return result.filter(snip => snip.gen || snip.subsnippets);
 		}
 	},
 
