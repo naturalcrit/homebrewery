@@ -114,7 +114,6 @@ export function versionHistoryGarbageCollection(){
             const collectAt = new Date(JSON.parse(localStorage.getItem(key)).expireAt);
             collectAt.setMinutes(collectAt.getMinutes() + GARBAGE_COLLECT_DELAY);
             if(new Date() > collectAt){
-                console.log('GARBAGE COLLECTION:', key);
                 localStorage.removeItem(key);
             }
         });
