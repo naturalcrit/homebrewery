@@ -72,7 +72,6 @@ export function updateHistory(brew) {
 
         // If slot has expired, update
         if(new Date() >= new Date(storedVersion.expireAt)){
-            console.log('Expired slot: ', slot);
             const keys = Array.from(Array(slot - 1).keys());
             keys.toReversed().every((n)=>{
                 const num = n + 1;
