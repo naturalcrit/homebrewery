@@ -7,6 +7,11 @@ export const HISTORY_PREFIX = 'HOMEBREWERY-HISTORY'
 // 	4: 12 * 60,     // 12 hours
 // 	5: 2 * 24 * 60  // 2 days
 // };
+// 
+// const GARBAGE_COLLECT_AT = 28 * 24 * 60; // 28 days
+
+
+// <=================== TEST VALUES STARTS ===================>
 
 // Test values
 const HISTORY_SAVE_DELAYS = {
@@ -17,6 +22,11 @@ const HISTORY_SAVE_DELAYS = {
 	4: 4,           // 4 minutes
 	5: 5            // 5 minutes
 };
+const GARBAGE_COLLECT_DELAY = 10; // 10 minutes
+
+// <==================== TEST VALUES ENDS ====================>
+
+
 
 const DEFAULT_STORED_BREW = {
     shareId  : 'default_brew',
@@ -93,4 +103,19 @@ export function updateHistory(brew) {
         // Continue data checks because this one wasn't expired
         return true;
     });
+};
+
+export function versionHistoryGarbageCollection(){
+    Object.keys(localStorage)
+        .filter((key)=>{
+            return key.startsWith(HISTORY_PREFIX);
+        })
+        .forEach((key)=>{
+            const collectAt = new Date(JSON.parse(localStorage.getItem(key)).expireAt);
+            collectAt.setMinutes(collectAt.getMinutes() + GARBAGE_COLLECT_DELAY);
+            if(new Date() > collectAt){
+                console.log('GARBAGE COLLECTION:', key);
+                localStorage.removeItem(key);
+            }
+        });
 };

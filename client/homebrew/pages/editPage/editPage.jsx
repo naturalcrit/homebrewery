@@ -27,7 +27,7 @@ const Markdown = require('naturalcrit/markdown.js');
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
 const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
 
-import { updateHistory } from '../../utils/versionHistory.js';
+import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 
 const googleDriveIcon = require('../../googleDrive.svg');
 
@@ -205,6 +205,7 @@ const EditPage = createClass({
 		}));
 
 		updateHistory(this.state.brew);
+		versionHistoryGarbageCollection();
 
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 
