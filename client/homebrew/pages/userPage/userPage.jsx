@@ -12,6 +12,7 @@ const Account = require('../../navbar/account.navitem.jsx');
 const NewBrew = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
+const VaultNavitem = require('../../navbar/vault.navitem.jsx');
 
 const UserPage = createClass({
 	displayName     : 'UserPage',
@@ -66,6 +67,7 @@ const UserPage = createClass({
 				}
 				<NewBrew />
 				<HelpNavItem />
+				<VaultNavitem/>
 				<RecentNavItem />
 				<Account />
 			</Nav.section>
