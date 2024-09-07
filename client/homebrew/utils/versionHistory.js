@@ -8,7 +8,7 @@ export const HISTORY_PREFIX = 'HOMEBREWERY-HISTORY'
 // 	5: 2 * 24 * 60  // 2 days
 // };
 // 
-// const GARBAGE_COLLECT_AT = 28 * 24 * 60; // 28 days
+// const GARBAGE_COLLECT_DELAY = 28 * 24 * 60; // 28 days
 
 
 // <=================== TEST VALUES STARTS ===================>
