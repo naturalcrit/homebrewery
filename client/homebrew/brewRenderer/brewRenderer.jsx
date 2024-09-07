@@ -76,40 +76,44 @@ const BrewRenderer = (props)=>{
 	}
 
 	useEffect(() => {
-        const locationHash = window.location.hash;
-        const iframe = document.getElementById('BrewRenderer');
+		const locationHash = window.location.hash;
+		const iframe = document.getElementById('BrewRenderer');
+		
+		const pageIdRegex = /^#p\d+$/;
+		
+		const handleIframeLoad = () => {
+			setTimeout(() => {
+				if (pageIdRegex.test(locationHash)) {
+					const pageNumber = parseInt(locationHash.slice(2));
+					scrollToPage(pageNumber - 1);
+				} else {
+					const elementId = locationHash.slice(1);
+					if (elementId) {
+						getPageContainingElement(elementId)
+							.then((pageNumber) => {
+								if (pageNumber !== -1) {
+									scrollToPage(pageNumber);
+								}
+							})
+							.catch((error) => {
+								console.error('Error:', error);
+							});
+					}
+				}
+			}, 100);
+		};
+		
+		if (locationHash) {
+			iframe.addEventListener('load', handleIframeLoad);
+		}
 
-        // Regular expression to match page IDs like '#p1'
-        const pageIdRegex = /^#p\d+$/;
-        iframe.addEventListener('load', () => {
-            setTimeout(() => {
-                if (pageIdRegex.test(locationHash)) {
-                    // Extract page number from the ID
-                    const pageNumber = parseInt(locationHash.slice(2));
-                    scrollToPage(pageNumber-1);
-                } else {
-                    // Treat it as an element ID
-                    const elementId = locationHash.slice(1); // Remove the leading '#'
-                    if (elementId) {
-                        getPageContainingElement(elementId)
-                            .then((pageNumber) => {
-                                if (pageNumber !== -1) {
-                                    scrollToPage(pageNumber);
-                                }
-                            })
-                            .catch((error) => {
-                                console.error('Error:', error);
-                            });
-                    }
-                }
-            }, 100);
-        });
-
-        // Cleanup function for removing the resize event listener
-        return () => {
-            window.removeEventListener('resize', updateSize);
-        };
-    }, []);
+		return () => {
+			if (locationHash) {
+				iframe.removeEventListener('load', handleIframeLoad);
+			}
+			window.removeEventListener('resize', updateSize);
+		};
+	}, []);
 	
 
 	const scrollToPage = (pageNumber) => {
