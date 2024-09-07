@@ -67,24 +67,30 @@ export function updateHistory(brew) {
         history[i] = getVersionBySlot(brew, i);
     });
 
+    // Walk each version position
     numbers.toReversed().every((slot)=>{
         const storedVersion = history[slot];
 
-        // If slot has expired, update
+        // If slot has expired, update all lower slots and break
         if(new Date() >= new Date(storedVersion.expireAt)){
-            const keys = Array.from(Array(slot - 1).keys());
-            keys.toReversed().every((n)=>{
-                const num = n + 1;
-                updateStoredBrew({ ...history[num], shareId: brew.shareId }, num + 1);
-                if(num == 1) {
+            const slots = Array.from(Array(slot - 1).keys());
+            slots.toReversed().every((slot)=>{
+                const actualSlot = slot + 1;
+                // Move data from actualSlot to actualSlot + 1
+                updateStoredBrew({ ...history[actualSlot], shareId: brew.shareId }, actualSlot + 1);
+                // If first slot, fill with current data
+                if(actualSlot == 1) {
                     updateStoredBrew(brew, 1);
+                    // Break after updating first slot
                     return false;
                 }
-
+                // Continue loop to move data in remaining slots
                 return true;
             });
+            // Break out of data checks because we found an expired value
             return false;
         }
+        // Continue data checks because this one wasn't expired
         return true;
     });
 };
