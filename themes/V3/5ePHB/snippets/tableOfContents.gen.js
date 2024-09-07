@@ -35,7 +35,7 @@ const getTOC = (pages)=>{
 		const ToCExclude = getComputedStyle(heading).getPropertyValue('--TOC');
 
 		if(ToCExclude != 'exclude') {
-			recursiveAdd(heading.innerText.trim(), onPage, headerDepth.indexOf(heading.tagName), res);
+			recursiveAdd(heading.textContent.trim(), onPage, headerDepth.indexOf(heading.tagName), res);
 		}
 	});
 	return res;
