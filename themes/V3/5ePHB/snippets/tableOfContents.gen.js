@@ -12,8 +12,8 @@ const walkPages = (iframeDocument)=>{
 	const pages = iframeDocument.querySelectorAll('.page');
 	_.each(pages, (page)=>{
 		current++;
-		const doSkip = (page.querySelector('.skipCounting').length > 0);
-		const doReset = (page.querySelector('.resetCounting').length > 0);
+		const doSkip = (page.querySelector('.skipCounting') > 0);
+		const doReset = (page.querySelector('.resetCounting') > 0);
 		if(doReset) {
 			reset = current - 1;
 			skip = 0;
