@@ -121,6 +121,7 @@ const Editor = createClass({
 		const RIGHTARROW_KEY = 39;
 
 		if(this.props.liveScroll) {
+			console.log('Should be scrollig!');
 			const movementKeys = [13, 33, 34, LEFTARROW_KEY, 38, RIGHTARROW_KEY, 40];
 			if(movementKeys.includes(e.keyCode)) {
 				const curPage = this.getCurrentPage();
