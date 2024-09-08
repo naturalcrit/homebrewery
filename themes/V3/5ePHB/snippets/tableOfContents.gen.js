@@ -87,7 +87,7 @@ const ToCIterate = (entries, curDepth=0)=>{
 			}
 		});
 	}
-	return toc.length > 0 ? toc : null;
+	return toc;
 };
 
 module.exports = function(props){
@@ -95,7 +95,7 @@ module.exports = function(props){
 	const markdown = _.reduce(TOC, (r, g1, idx1)=>{
 		r.push(ToCIterate(g1).join('\n'));
 		return r;
-	}, []).join('\n');
+	}, []).join('\n').replace('\n\n', '\n');
 
 	return dedent`
 		{{toc,wide
