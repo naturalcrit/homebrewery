@@ -87,7 +87,7 @@ const ToCIterate = (entries, curDepth=0)=>{
 			}
 		});
 	}
-	return toc;
+	return toc.length > 0 ? toc : null;
 };
 
 module.exports = function(props){
