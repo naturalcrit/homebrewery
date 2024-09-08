@@ -58,7 +58,6 @@ const getTOC = ()=>{
 	walkPages();
 
 	_.each(headings, (heading)=>{
-		const pageAnchor = heading.closest('.page').id;
 		const onPage = parseInt(heading.closest('.page').id?.replace(/^p/, ''));
 		const ToCExclude = getComputedStyle(heading).getPropertyValue('--TOC');
 
