@@ -688,29 +688,6 @@ module.exports = [
 				gen	 : LicenseGen.orc1,
 			},
 
-			{
-				name        : 'Old School Essentials',
-				icon        : 'fas fa-ose',
-				subsnippets : [
-					{
-						name : 'OSE Logo - Black',
-						icon : 'fas fab-ose',
-						gen  : LicenseGen.oseBlack,
-					},
-
-					{
-						name : 'OSE Logo - White',
-						icon : 'fas fa-ose',
-						gen  : LicenseGen.oseWhite,
-					},
-
-					{
-						name : 'OSE Legal Text',
-						icon : 'fas fa-alt',
-						gen  : LicenseGen.oseNotice,
-					}
-				]
-			},
 
 			{
 				name        : 'Shadowdark',
