@@ -5,26 +5,23 @@ const res = [];
 
 const pageMap = [];
 
-const walkPages = (iframeDocument)=>{
-	let current = 0;
-	let skip = 0;
-	let reset = 0;
+const mapPages = (iframeDocument)=>{
+	let actualPage = 0;
+	let mappedPage = 0;
 	const pages = iframeDocument.querySelectorAll('.page');
 	_.each(pages, (page)=>{
-		let showPage = true;
-		current++;
-		const doSkip = (page.querySelector('.skipCounting'));
-		const doReset = (page.querySelector('.resetCounting'));
-		if(doReset) {
-			reset = current - 1;
-			skip = 0;
-		} else if(doSkip){
-			skip += 1;
-			showPage = false;
-		}
-		pageMap[current] = {
-			pageNumber : current - reset - skip,
-			showPage   : showPage
+		actualPage++;
+		const doSkip  = page.querySelector('.skipCounting');
+		const doReset = page.querySelector('.resetCounting');
+
+		if(doReset)
+			mappedPage = 1;
+		if(!doSkip && !doReset)
+			mappedPage++;
+
+		pageMap[actualPage] = {
+			mappedPage : mappedPage,
+			showPage   : !doSkip
 		};
 	});
 };
@@ -59,7 +56,7 @@ const getTOC = ()=>{
 	const headings = iframeDocument.querySelectorAll('h1, h2, h3, h4, h5, h6');
 	const headerDepth = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
 
-	walkPages(iframeDocument);
+	mapPages(iframeDocument);
 
 	_.each(headings, (heading)=>{
 		const onPage = parseInt(heading.closest('.page').id?.replace(/^p/, ''));
@@ -77,7 +74,7 @@ const ToCIterate = (entries, curDepth=0)=>{
 	const levelPad = ['- ###', '  - ####', '    - ', '      - ', '        - ', '          - '];
 	const toc = [];
 	if(entries.title !== null){
-		if(entries.page.showPage) toc.push(`${levelPad[curDepth]} [{{ ${entries.title}}}{{ ${entries.page.pageNumber}}}](#${entries.anchor})`);
+		if(entries.page.showPage) toc.push(`${levelPad[curDepth]} [{{ ${entries.title}}}{{ ${entries.page.mappedPage}}}](#${entries.anchor})`);
 	}
 	if(entries.children.length) {
 		_.each(entries.children, (entry, idx)=>{
