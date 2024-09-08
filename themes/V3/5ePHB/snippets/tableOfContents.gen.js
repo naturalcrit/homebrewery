@@ -1,55 +1,59 @@
 const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
 
-const getTOC = ()=>{
+const iframe = document.getElementById('BrewRenderer');
+const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+const headings = iframeDocument.querySelectorAll('h1, h2, h3, h4, h5, h6');
+const headerDepth = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
 
-	const iframe = document.getElementById('BrewRenderer');
-	const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-	const headings = iframeDocument.querySelectorAll('h1, h2, h3, h4, h5, h6');
-	const headerDepth = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
+const res = [];
 
-	const res = [];
+const pageMap = [];
 
-	const pageMap = [];
+const walkPages = ()=>{
+	let current = 0;
+	let skip = 0;
+	let reset = 0;
+	const pages = iframeDocument.querySelectorAll('.page');
+	_.each(pages, (page)=>{
+		current++;
+		const doSkip = (page.querySelector('.skipCounting').length > 0);
+		const doReset = (page.querySelector('.resetCounting').length > 0);
+		if(doReset) {
+			reset = current - 1;
+			skip = 0;
+		} else if(doSkip){
+			skip += 1;
+		}
+		pageMap[current] = current - reset - skip;
+	});
+};
 
-	const walkPages = ()=>{
-		let current = 0;
-		let skip = 0;
-		let reset = 0;
-		const pages = iframeDocument.querySelectorAll('.page');
-		_.each(pages, (page)=>{
-			current++;
-			if(page.querySelectorAll('.skipCounting').length > 0) {
-				skip += 1;
-			} else if(page.querySelectorAll('.resetCounting').length > 0) {
-				reset = current - 1;
-				skip = 0;
-			}
-			pageMap[current] = current - reset - skip;
+const recursiveAdd = (title, page, actualPage, targetDepth, child, curDepth=0)=>{
+	const anchor = `p${actualPage}`;
+	if(curDepth > 5) return; // Something went wrong.
+	if(curDepth == targetDepth) {
+		child.push({
+			title    : title,
+			page     : page,
+			anchor   : anchor,
+			children : []
 		});
-	};
-
-	const recursiveAdd = (title, page, anchor, targetDepth, child, curDepth=0)=>{
-		if(curDepth > 5) return; // Something went wrong.
-		if(curDepth == targetDepth) {
+	} else {
+		if(child.length == 0) {
 			child.push({
-				title    : title,
+				title    : null,
 				page     : page,
 				anchor   : anchor,
 				children : []
 			});
-		} else {
-			if(child.length == 0) {
-				child.push({
-					title    : null,
-					page     : page,
-					anchor   : anchor,
-					children : []
-				});
-			}
-			recursiveAdd(title, page, anchor, targetDepth, _.last(child).children, curDepth+1,);
 		}
-	};
+		recursiveAdd(title, page, anchor, targetDepth, _.last(child).children, curDepth+1,);
+	}
+};
+
+
+const getTOC = ()=>{
 
 	walkPages();
 
@@ -59,7 +63,7 @@ const getTOC = ()=>{
 		const ToCExclude = getComputedStyle(heading).getPropertyValue('--TOC');
 
 		if(ToCExclude != 'exclude') {
-			recursiveAdd(heading.textContent.trim(), pageMap[onPage], pageAnchor, headerDepth.indexOf(heading.tagName), res);
+			recursiveAdd(heading.textContent.trim(), pageMap[onPage], onPage, headerDepth.indexOf(heading.tagName), res);
 		}
 	});
 	return res;
