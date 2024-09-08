@@ -1,16 +1,11 @@
 const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
 
-const iframe = document.getElementById('BrewRenderer');
-const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-const headings = iframeDocument.querySelectorAll('h1, h2, h3, h4, h5, h6');
-const headerDepth = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
-
 const res = [];
 
 const pageMap = [];
 
-const walkPages = ()=>{
+const walkPages = (iframeDocument)=>{
 	let current = 0;
 	let skip = 0;
 	let reset = 0;
@@ -54,8 +49,12 @@ const recursiveAdd = (title, page, actualPage, targetDepth, child, curDepth=0)=>
 
 
 const getTOC = ()=>{
+	const iframe = document.getElementById('BrewRenderer');
+	const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+	const headings = iframeDocument.querySelectorAll('h1, h2, h3, h4, h5, h6');
+	const headerDepth = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
 
-	walkPages();
+	walkPages(iframeDocument);
 
 	_.each(headings, (heading)=>{
 		const onPage = parseInt(heading.closest('.page').id?.replace(/^p/, ''));
