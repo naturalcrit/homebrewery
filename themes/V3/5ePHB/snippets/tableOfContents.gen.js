@@ -11,6 +11,7 @@ const walkPages = (iframeDocument)=>{
 	let reset = 0;
 	const pages = iframeDocument.querySelectorAll('.page');
 	_.each(pages, (page)=>{
+		let showPage = true;
 		current++;
 		const doSkip = (page.querySelector('.skipCounting'));
 		const doReset = (page.querySelector('.resetCounting'));
@@ -19,8 +20,12 @@ const walkPages = (iframeDocument)=>{
 			skip = 0;
 		} else if(doSkip){
 			skip += 1;
+			showPage = false;
 		}
-		pageMap[current] = current - reset - skip;
+		pageMap[current] = {
+			pageNumber : current - reset - skip,
+			showPage   : showPage
+		};
 	});
 };
 
@@ -72,7 +77,7 @@ const ToCIterate = (entries, curDepth=0)=>{
 	const levelPad = ['- ###', '  - ####', '    - ', '      - ', '        - ', '          - '];
 	const toc = [];
 	if(entries.title !== null){
-		toc.push(`${levelPad[curDepth]} [{{ ${entries.title}}}{{ ${entries.page}}}](#${entries.anchor})`);
+		if(entries.page.showPage) toc.push(`${levelPad[curDepth]} [{{ ${entries.title}}}{{ ${entries.page.pageNumber}}}](#${entries.anchor})`);
 	}
 	if(entries.children.length) {
 		_.each(entries.children, (entry, idx)=>{
