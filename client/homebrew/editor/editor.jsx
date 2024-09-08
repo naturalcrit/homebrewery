@@ -119,9 +119,6 @@ const Editor = createClass({
 		const HOME_KEY = 36;
 		const LEFTARROW_KEY = 37;
 		const RIGHTARROW_KEY = 39;
-		if(!(e.ctrlKey && e.metaKey)) return;
-
-		if(!e.ctrlKey) return;
 
 		if(this.props.liveScroll) {
 			const movementKeys = [13, 33, 34, LEFTARROW_KEY, 38, RIGHTARROW_KEY, 40];
@@ -133,6 +130,10 @@ const Editor = createClass({
 				}
 			}
 		}
+
+		if(!(e.ctrlKey && e.metaKey)) return;
+
+		if(!e.ctrlKey) return;
 
 		// Handle CTRL-HOME and CTRL-END
 		if(((e.keyCode == END_KEY) || (e.keyCode == HOME_KEY)) && this.props.liveScroll) this.brewJump();
