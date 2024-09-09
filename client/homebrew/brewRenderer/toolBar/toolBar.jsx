@@ -69,7 +69,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 	return (		
 		<div className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`}>
-			<button class='toggleButton' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible)}}><i className='fas fa-glasses' /></button>
+			<button className='toggleButton' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible)}}><i className='fas fa-glasses' /></button>
 			{/*v=====----------------------< Zoom Controls >---------------------=====v*/}
 			<div className='group'>
 				<button
