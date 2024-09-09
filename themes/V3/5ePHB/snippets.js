@@ -104,14 +104,6 @@ module.exports = [
 							}\n\n`,
 				subsnippets : [
 					{
-						name : 'Enable H1-H3 all pages',
-						icon : 'fas fa-dice-three',
-						gen  : dedent`/* Add ToC include for H3 level Headers */
-								  	.page h3 {
-  								    	--TOC: include;
-									}\n\n`
-					},
-					{
 						name : 'Enable H1-H4 all pages',
 						icon : 'fas fa-dice-four',
 						gen  : dedent`/* Add ToC include for H3 and H4 level Headers */
