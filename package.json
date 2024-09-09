@@ -126,7 +126,7 @@
   },
   "devDependencies": {
     "@stylistic/stylelint-plugin": "^3.0.1",
-    "eslint": "^9.9.1",
+    "eslint": "^9.10.0",
     "eslint-plugin-jest": "^28.8.3",
     "eslint-plugin-react": "^7.35.2",
     "globals": "^15.9.0",
