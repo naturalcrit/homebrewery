@@ -45,6 +45,7 @@ const recursiveAdd = (title, page, actualPage, targetDepth, child, curDepth=0)=>
 	}
 };
 
+
 const getTOC = ()=>{
 	const pageMap = [];
 	const entries = [];
@@ -57,7 +58,6 @@ const getTOC = ()=>{
 	mapPages(iframeDocument, pageMap);
 
 	_.each(headings, (heading)=>{
-		const pageAnchor = heading.closest('.page').id;
 		const onPage = parseInt(heading.closest('.page').id?.replace(/^p/, ''));
 		const ToCExclude = getComputedStyle(heading).getPropertyValue('--TOC');
 
