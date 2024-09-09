@@ -126,7 +126,7 @@ const SplitPane = createClass({
 
 	renderDivider : function(){
 		return <>
-			{this.renderMoveArrows()}
+			{this.props.showDividerButtons && this.renderMoveArrows()}
 			<div className='divider' onPointerDown={this.handleDown} >
 				<div className='dots'>
 					<i className='fas fa-circle' />

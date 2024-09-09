@@ -11,6 +11,10 @@
 	padding          : 2px 0;
 	color            : #CCCCCC;
 	background-color : #555555;
+	& > *:not(.toggleButton) {
+		opacity: 1;
+		transition: all .2s ease;
+	}
 
 	.group {
 		display          : flex;
@@ -91,4 +95,25 @@
 		}
 		i { font-size : 1.2em; }
 	}
+
+	&.hidden {
+		width: 32px;
+		transition: all .3s ease;
+		flex-wrap:nowrap;
+		overflow: hidden;
+		background-color: unset;
+		opacity: .5;
+		& > *:not(.toggleButton) {
+			opacity: 0;
+			transition: all .2s ease;
+		}
+	}
+}
+
+button.toggleButton {
+	z-index : 5;
+	position:absolute;
+	left: 0;
+	width: 32px;
+	min-width: unset;
 }
