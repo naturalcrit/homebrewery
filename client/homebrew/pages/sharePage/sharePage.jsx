@@ -1,7 +1,7 @@
 require('./sharePage.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const { Meta } = require('vitreum/headtags');
+const { Meta } = require('../../../components/headTags.jsx');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');

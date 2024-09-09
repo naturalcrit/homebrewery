@@ -4,7 +4,7 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 const request = require('../../utils/request-middleware.js');
-const { Meta } = require('vitreum/headtags');
+const { Meta } = require('../../../components/headTags.jsx');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
