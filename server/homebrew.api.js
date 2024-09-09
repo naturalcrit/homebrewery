@@ -99,7 +99,7 @@ const api = {
 			stub = stub?.toObject();
 
 			if(stub?.lock?.locked && accessType != 'edit') {
-				throw { HBErrorCode: '100', code: stub.lock.code, message: stub.lock.shareMessage, brewId: stub.shareId, brewTitle: stub.title };
+				throw { HBErrorCode: '51', code: stub.lock.code, message: stub.lock.shareMessage, brewId: stub.shareId, brewTitle: stub.title };
 			}
 
 			// If there is a google id, try to find the google brew
