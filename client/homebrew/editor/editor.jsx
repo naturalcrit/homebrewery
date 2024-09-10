@@ -189,7 +189,7 @@ const Editor = createClass({
 		if (atCursor)
 			lines = lines.slice(0, this.codeEditor.current.getCursorPosition().line + 1); // get cursor page
 		else
-			lines = lines.slice(0, this.codeEditor.current.getViewport().from + 1); // get view page 
+			lines = lines.slice(0, this.codeEditor.current.getTopVisibleLine() + 1); // get view page 
 
 		return _.reduce(lines, (r, line)=>{
 			if(
