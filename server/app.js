@@ -436,6 +436,10 @@ if(isLocalEnvironment){
 
 //Vault Page
 app.get('/vault', asyncHandler(async(req, res, next)=>{
+	req.ogMeta = { ...defaultMetaTags,
+		title       : 'The Vault',
+		description : 'Search for Brews'
+	};
 	return next();
 }));
 
