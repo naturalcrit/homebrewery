@@ -202,6 +202,23 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	res.status(200).send(brew.text);
 });
 
+//Serve brew metadata
+app.get('/metadata/:id', asyncHandler(getBrew('share')), (req, res) => {
+	const { brew } = req;
+	sanitizeBrew(brew, 'share');
+  
+	const fields = [ 'title', 'pageCount', 'description', 'authors', 'lang', 
+	  'published', 'views', 'shareId', 'createdAt', 'updatedAt', 
+	  'lastViewed', 'thumbnail', 'tags'
+	];
+  
+	const metadata = fields.reduce((acc, field) => {
+	  if (brew[field] !== undefined) acc[field] = brew[field];
+	  return acc;
+	}, {});
+	res.status(200).json(metadata);
+});
+  
 //Serve brew styling
 app.get('/css/:id', asyncHandler(getBrew('share')), (req, res)=>{getCSS(req, res);});
 

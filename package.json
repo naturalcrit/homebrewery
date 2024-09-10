@@ -98,7 +98,7 @@
     "dedent-tabs": "^0.10.3",
     "dompurify": "^3.1.6",
     "expr-eval": "^2.0.2",
-    "express": "^4.19.2",
+    "express": "^4.20.0",
     "express-async-handler": "^1.2.0",
     "express-static-gzip": "2.1.7",
     "fs-extra": "11.2.0",
@@ -119,7 +119,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-frame-component": "^4.1.3",
-    "react-router-dom": "6.26.1",
+    "react-router-dom": "6.26.2",
     "sanitize-filename": "1.6.3",
     "superagent": "^10.1.0",
     "vitreum": "git+https://git@github.com/calculuschild/vitreum.git"
