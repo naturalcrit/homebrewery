@@ -27,35 +27,90 @@ module.exports = [
 				experimental : true,
 				subsnippets  : [
 					{
-						name         : 'Table of Contents',
+						name         : 'Generate Table of Contents',
 						icon         : 'fas fa-book',
 						gen          : TableOfContentsGen,
 						experimental : true
 					},
 					{
-						name : 'Include in ToC up to H3',
-						icon : 'fas fa-dice-three',
+						name : 'Table of Contents Individual Inclusion',
+						icon : 'fas fa-book',
+						gen  : dedent `\n{{tocInclude# CHANGE # to your header level
+							}}\n`,
+					},
+					{
+						name : 'Table of Contents Range Inclusion',
+						icon : 'fas fa-book',
 						gen  : dedent `\n{{tocDepthH3
 							}}\n`,
+						subsnippets : [
+							{
+								name : 'Include in ToC up to H3',
+								icon : 'fas fa-dice-three',
+								gen  : dedent `\n{{tocDepthH3
+									}}\n`,
 
+							},
+							{
+								name : 'Include in ToC up to H4',
+								icon : 'fas fa-dice-four',
+								gen  : dedent `\n{{tocDepthH4
+									}}\n`,
+							},
+							{
+								name : 'Include in ToC up to H5',
+								icon : 'fas fa-dice-five',
+								gen  : dedent `\n{{tocDepthH5
+									}}\n`,
+							},
+							{
+								name : 'Include in ToC up to H6',
+								icon : 'fas fa-dice-six',
+								gen  : dedent `\n{{tocDepthH6
+									}}\n`,
+							},
+						]
 					},
 					{
-						name : 'Include in ToC up to H4',
-						icon : 'fas fa-dice-four',
-						gen  : dedent `\n{{tocDepthH4
+						name : 'Table of Contents Individual Exclusion',
+						icon : 'fas fa-book',
+						gen  : dedent `\n{{tocExcludeH# CHANGE # to your header level
 							}}\n`,
 					},
+
 					{
-						name : 'Include in ToC up to H5',
-						icon : 'fas fa-dice-five',
-						gen  : dedent `\n{{tocDepthH5
-							}}\n`,
-					},
-					{
-						name : 'Include in ToC up to H6',
-						icon : 'fas fa-dice-six',
-						gen  : dedent `\n{{tocDepthH6
-							}}\n`,
+						name : 'Table of Contents Toggles',
+						icon : 'fas fa-book',
+						gen  : dedent`/* Add ToC include for H3, H4, H5, and H6 level Headers */
+									.page h3, .page h4, .page h5, .page h6 {
+										--TOC: include;
+									}\n\n`,
+						subsnippets : [
+							{
+								name : 'Enable H1-H4 all pages',
+								icon : 'fas fa-dice-four',
+								gen  : dedent`/* Add ToC include for H3 and H4 level Headers */
+											.page h3, .page h4 {
+												--TOC: include;
+											}\n\n`
+							},
+							{
+								name : 'Enable H1-H5 all pages',
+								icon : 'fas fa-dice-five',
+								gen  : dedent`/* Add ToC include for H3, H4, and H5 level Headers */
+											.page h3, .page h4, .page h5 {
+												--TOC: include;
+											}\n\n`
+							},
+							{
+								name : 'Enable H1-H6 all pages',
+								icon : 'fas fa-dice-six',
+								gen  : dedent`/* Add ToC include for H3, H4, H5, and H6 level Headers */
+											.page h3, .page h4, .page h5, .page h6 {
+												--TOC: include;
+											}\n\n`
+							},
+						]
 					}
 				]
 			},
@@ -95,40 +150,6 @@ module.exports = [
 							line-height: 1em;
 						}\n\n`
 			},
-			{
-				name : 'Table of Contents Toggles',
-				icon : 'fas fa-book',
-				gen  : dedent`/* Add ToC include for H3, H4, H5, and H6 level Headers */
-							.page h3, .page h4, .page h5, .page h6 {
-								--TOC: include;
-							}\n\n`,
-				subsnippets : [
-					{
-						name : 'Enable H1-H4 all pages',
-						icon : 'fas fa-dice-four',
-						gen  : dedent`/* Add ToC include for H3 and H4 level Headers */
-									.page h3, .page h4 {
-										--TOC: include;
-									}\n\n`
-					},
-					{
-						name : 'Enable H1-H5 all pages',
-						icon : 'fas fa-dice-five',
-						gen  : dedent`/* Add ToC include for H3, H4, and H5 level Headers */
-									.page h3, .page h4, .page h5 {
-										--TOC: include;
-									}\n\n`
-					},
-					{
-						name : 'Enable H1-H6 all pages',
-						icon : 'fas fa-dice-six',
-						gen  : dedent`/* Add ToC include for H3, H4, H5, and H6 level Headers */
-									.page h3, .page h4, .page h5, .page h6 {
-										--TOC: include;
-									}\n\n`
-					},
-				]
-			}
 		]
 	},
 
