@@ -20,7 +20,6 @@ const SplitPane = createClass({
 			isDragging         : false,
 			moveSource         : false,
 			moveBrew           : false,
-			viewablePageNumber : 0,
 			showMoveArrows     : true
 		};
 	},
