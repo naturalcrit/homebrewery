@@ -814,6 +814,18 @@ h6,
 .tocDepthH5 :is(h1, h2, h3, h4, h5) {--TOC: include; }
 .tocDepthH6 :is(h1, h2, h3, h4, h5, h6) {--TOC: include; }
 
+.page:has(.tocGobalH4) {
+	h4 {--TOC: include; }
+}
+
+.page:has(.tocGobalH5) {
+	h4, h5 {--TOC: include; }
+}
+
+.page:has(.tocGobalH6) {
+	h4, h5, h6 {--TOC: include; }
+}
+
 .tocIncludeH1 h1 {--TOC: include; }
 .tocIncludeH2 h2 {--TOC: include; }
 .tocIncludeH3 h3 {--TOC: include; }
