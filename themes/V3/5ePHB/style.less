@@ -797,7 +797,7 @@
 // *****************************/
 
 // Default Exclusions
-// Anything not exlcuded is included, default Headers are H1, H2, and H3.
+// Anything not excluded is included, default Headers are H1, H2, and H3.
 h4,
 h5,
 h6,
@@ -814,15 +814,15 @@ h6,
 .tocDepthH5 :is(h1, h2, h3, h4, h5) {--TOC: include; }
 .tocDepthH6 :is(h1, h2, h3, h4, h5, h6) {--TOC: include; }
 
-.page:has(.tocGlobalH4) {
+.pages:has(.tocGlobalH4) {
 	h4 {--TOC: include; }
 }
 
-.page:has(.tocGlobalH5) {
+.pages:has(.tocGlobalH5) {
 	h4, h5 {--TOC: include; }
 }
 
-.page:has(.tocGlobalH6) {
+.pages:has(.tocGlobalH6) {
 	h4, h5, h6 {--TOC: include; }
 }
 
