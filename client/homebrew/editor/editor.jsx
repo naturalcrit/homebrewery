@@ -158,7 +158,7 @@ const Editor = createClass({
 		if(!this.props.liveScroll) return;
 		console.log("handleSourceScroll")
 		scrollingJump = true;
-		this.brewJump();
+		this.brewJump(this.getCurrentPage(false));
 		scrollingJump = false;
 	},
 
@@ -184,8 +184,13 @@ const Editor = createClass({
 		});	//TODO: not sure if updateeditorsize needed
 	},
 
-	getCurrentPage : function(){
-		const lines = this.props.brew.text.split('\n').slice(0, this.codeEditor.current.getCursorPosition().line + 1);
+	getCurrentPage : function(atCursor = true){
+		let lines = this.props.brew.text.split('\n');
+		if (atCursor)
+			lines = lines.slice(0, this.codeEditor.current.getCursorPosition().line + 1); // get cursor page
+		else
+			lines = lines.slice(0, this.codeEditor.current.getViewport().from + 1); // get view page 
+
 		return _.reduce(lines, (r, line)=>{
 			if(
 				(this.props.renderer == 'legacy' && line.indexOf('\\page') !== -1)
@@ -357,7 +362,7 @@ const Editor = createClass({
 	},
 
 	brewJump : function(targetPage=this.getCurrentPage()){
-		console.log('jumpbrew')
+		console.log(`jumpBrew to page ${targetPage}`)
 		if(lockBrewJump) return;
 		if(!window) return;
 		lockSourceJump = true;

@@ -399,6 +399,9 @@ const CodeEditor = createClass({
 	getCursorPosition : function(){
 		return this.codeMirror.getCursor();
 	},
+	getViewport : function(){
+		return this.codeMirror.getViewport();
+	},
 	updateSize : function(){
 		this.codeMirror.refresh();
 	},
