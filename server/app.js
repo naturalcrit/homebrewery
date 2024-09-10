@@ -9,11 +9,12 @@ const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
 
-const { homebrewApi, getBrew, getUsersBrewThemes } = require('./homebrew.api.js');
+const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
 const asyncHandler = require('express-async-handler');
+const templateFn = require('./../client/template.js');
 
 const { DEFAULT_BREW } = require('./brewDefaults.js');
 
@@ -54,6 +55,7 @@ app.use((req, res, next)=>{
 
 app.use(homebrewApi);
 app.use(require('./admin.api.js'));
+app.use(require('./vault.api.js'));
 
 const HomebrewModel     = require('./homebrew.model.js').model;
 const welcomeText       = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
@@ -200,7 +202,7 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	res.status(200).send(brew.text);
 });
 
-
+//Serve brew metadata
 app.get('/metadata/:id', asyncHandler(getBrew('share')), (req, res) => {
 	const { brew } = req;
 	sanitizeBrew(brew, 'share');
@@ -217,7 +219,8 @@ app.get('/metadata/:id', asyncHandler(getBrew('share')), (req, res) => {
 	res.status(200).json(metadata);
 });
   
-
+//Serve brew styling
+app.get('/css/:id', asyncHandler(getBrew('share')), (req, res)=>{getCSS(req, res);});
 
 //User Page
 app.get('/user/:username', async (req, res, next)=>{
@@ -375,6 +378,15 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 app.get('/account', asyncHandler(async (req, res, next)=>{
 	const data = {};
 	data.title = 'Account Information Page';
+	
+	if(!req.account) {
+		res.set('WWW-Authenticate', 'Bearer realm="Authorization Required"');
+		const error = new Error('No valid account');
+		error.status = 401;
+		error.HBErrorCode = '50';
+		error.page = data.title;
+		return next(error);
+	};
 
 	let auth;
 	let googleCount = [];
@@ -439,8 +451,25 @@ if(isLocalEnvironment){
 	});
 }
 
+//Vault Page
+app.get('/vault', asyncHandler(async(req, res, next)=>{
+	req.ogMeta = { ...defaultMetaTags,
+		title       : 'The Vault',
+		description : 'Search for Brews'
+	};
+	return next();
+}));
+
+//Send rendered page
+app.use(asyncHandler(async (req, res, next)=>{
+	if (!req.route) return res.redirect('/'); // Catch-all for invalid routes
+		
+	const page = await renderPage(req, res);
+	if(!page) return;
+	res.send(page);
+}));
+
 //Render the page
-const templateFn = require('./../client/template.js');
 const renderPage = async (req, res)=>{
 	// Create configuration object
 	const configuration = {
@@ -468,13 +497,6 @@ const renderPage = async (req, res)=>{
 		});
 	return page;
 };
-
-//Send rendered page
-app.use(asyncHandler(async (req, res, next)=>{
-	const page = await renderPage(req, res);
-	if(!page) return;
-	res.send(page);
-}));
 
 //v=====----- Error-Handling Middleware -----=====v//
 //Format Errors as plain objects so all fields will appear in the string sent

@@ -23,14 +23,30 @@ module.exports = [
 				gen  : '\n\\page\n'
 			},
 			{
-				name : 'Page Number',
-				icon : 'fas fa-bookmark',
-				gen  : '{{pageNumber 1}}\n'
-			},
-			{
-				name : 'Auto-incrementing Page Number',
-				icon : 'fas fa-sort-numeric-down',
-				gen  : '{{pageNumber,auto}}\n'
+				name        : 'Page Numbering',
+				icon        : 'fas fa-bookmark',
+				subsnippets : [
+					{
+						name : 'Page Number',
+						icon : 'fas fa-bookmark',
+						gen  : '{{pageNumber 1}}\n'
+					},
+					{
+						name : 'Auto-incrementing Page Number',
+						icon : 'fas fa-sort-numeric-down',
+						gen  : '{{pageNumber,auto}}\n'
+					},
+					{
+						name : 'Skip Page Number Increment this Page',
+						icon : 'fas fa-xmark',
+						gen  : '{{skipCounting}}\n'
+					},
+					{
+						name : 'Restart Numbering',
+						icon : 'fas fa-arrow-rotate-left',
+						gen  : '{{resetCounting}}\n'
+					},
+				]
 			},
 			{
 				name        : 'Footer',
@@ -152,6 +168,18 @@ module.exports = [
 				icon : 'fas fa-image',
 				gen  : dedent`
 					![cat warrior](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:325px,mix-blend-mode:multiply}`
+			},
+			{
+				name : 'Image Wrap Left',
+				icon : 'fac image-wrap-left',
+				gen  : dedent`
+					![homebrewery_mug](http://i.imgur.com/hMna6G0.png) {width:280px,margin-right:-3cm,wrapLeft}`
+			},
+			{
+				name : 'Image Wrap Right',
+				icon : 'fac image-wrap-right',
+				gen  : dedent`
+					![homebrewery_mug](http://i.imgur.com/hMna6G0.png) {width:280px,margin-left:-3cm,wrapRight}`
 			},
 			{
 				name : 'Background Image',
