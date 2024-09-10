@@ -44,21 +44,9 @@ const SplitPane = createClass({
 		}
 		window.addEventListener('resize', this.handleWindowResize);
 
-
 		// This lives here instead of in the initial render because you cannot touch localStorage until the componant mounts.
 		const loadLiveScroll = window.localStorage.getItem('liveScroll') === 'true';
-		this.setState({
-			liveScroll : loadLiveScroll
-		});
-		const toggle = document.getElementById('scrollToggle');
-		const toggleDiv = document.getElementById('scrollToggleDiv');
-		if(loadLiveScroll) {
-			toggle.className = 'fas fa-lock';
-			toggleDiv.className = 'arrow lock';
-		} else {
-			toggle.className = 'fas fa-unlock';
-			toggleDiv.className = 'arrow unlock';
-		}
+		this.setState({ liveScroll : loadLiveScroll });
 	},
 
 	componentWillUnmount : function() {
