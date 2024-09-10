@@ -153,8 +153,9 @@ const SplitPane = createClass({
 					<i className='fas fa-arrow-right' />
 				</div>
 				<div id='scrollToggleDiv' className={`arrow lock`}
-					style={{ left: this.state.currentDividerPos-4 }} >
-					<i id='scrollToggle' className={`fas fa-lock`} onClick={this.liveScrollToggle}/>
+					style={{ left: this.state.currentDividerPos-4 }} 
+					onClick={this.liveScrollToggle} >
+					<i id='scrollToggle' className='fas fa-lock' />
 				</div>
 			</>;
 		}
