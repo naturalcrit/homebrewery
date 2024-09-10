@@ -154,8 +154,9 @@ const Editor = createClass({
 		scrollingJump = false;
 	},
 
-	handleSourceScroll : function(e) {
+	handleSourceScroll : function() {
 		if(!this.props.liveScroll) return;
+		console.log("handleSourceScroll")
 		scrollingJump = true;
 		this.brewJump();
 		scrollingJump = false;
@@ -356,6 +357,7 @@ const Editor = createClass({
 	},
 
 	brewJump : function(targetPage=this.getCurrentPage()){
+		console.log('jumpbrew')
 		if(lockBrewJump) return;
 		if(!window) return;
 		lockSourceJump = true;
