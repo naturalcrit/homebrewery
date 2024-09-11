@@ -37,6 +37,44 @@ module.exports = [
 						icon : 'fas fa-book',
 						gen  : dedent `\n{{tocInclude# CHANGE # to your header level
 							}}\n`,
+						subsnippets : [
+							{
+								name : 'Individual Inclusion H1',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocIncludeH1 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Inclusion H2',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocIncludeH2 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Inclusion H3',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocIncludeH3 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Inclusion H4',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocIncludeH4 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Inclusion H5',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocIncludeH5 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Inclusion H6',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocIncludeH6 \n
+									}}\n`,
+							}
+						]
 					},
 					{
 						name : 'Table of Contents Range Inclusion',
@@ -74,8 +112,46 @@ module.exports = [
 					{
 						name : 'Table of Contents Individual Exclusion',
 						icon : 'fas fa-book',
-						gen  : dedent `\n{{tocExcludeH# CHANGE # to your header level
+						gen  : dedent `\n{{tocExcludeH1 \n
 							}}\n`,
+						subsnippets : [
+							{
+								name : 'Individual Exclusion H1',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocExcludeH1 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Exclusion H2',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocExcludeH2 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Exclusion H3',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocExcludeH3 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Exclusion H4',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocExcludeH4 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Exclusion H5',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocExcludeH5 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Exclusion H6',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocExcludeH6 \n
+									}}\n`,
+							},
+						]
 					},
 
 					{
