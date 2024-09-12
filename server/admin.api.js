@@ -32,7 +32,7 @@ const mw = {
             if (process.env.ADMIN_USER === username && process.env.ADMIN_PASS === password) {
                 return next();
             }
-            throw { HBErrorCode: '403', code: 403, message: 'Access denied' };
+            throw { HBErrorCode: '403', code: 401, message: 'Access denied' };
         }
     ]
 };

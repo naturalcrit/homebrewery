@@ -154,17 +154,13 @@ const errorIndex = (props)=>{
 
 		'401': dedent`
 		## Authorization Required
-
-		You need to provide correct credentials to access this page.
+		You need to provide correct administrator credentials to access this page.
 		
 		:
-		
-		This is an administrator only page to manage the site, if you should not have access, leave inmediately.
 
-		:
-
-		If you have received instructions to open this page, report 
-		as so at our subreddit or discord you will find in the home page.
+		If you should have access but are not able to log-in, please reach out via 
+		[reddit mod mail](https://old.reddit.com/message/compose/?to=/r/homebrewery) or 
+		in the [hb_issues channel of the Discord of Many Things server](https://discord.gg/domt).
 		`,
 		'403': dedent`
 		## Access Denied
