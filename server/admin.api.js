@@ -28,8 +28,8 @@ const mw = {
 
 const junkBrewPipeline = [
 	{	$match : {
-		updatedAt  : { $lt: Moment().subtract(300, 'days').toDate() },
-		lastViewed : { $lt: Moment().subtract(300, 'days').toDate() }
+		updatedAt  : { $lt: Moment().subtract(2, 'years').toDate() },
+		lastViewed : { $lt: Moment().subtract(2, 'years').toDate() }
 	} },
 	{ $project: { textBinSize: { $binarySize: '$textBin' } } },
 	{ $match: { textBinSize: { $lt: 140 } } }
@@ -42,7 +42,7 @@ const uncompressedBrewQuery = HomebrewModel.find({
 
 // Search for up to 100 brews that have not been viewed or updated in 30 days and are shorter than 140 bytes
 router.get('/admin/cleanup', mw.adminOnly, (req, res)=>{
-	HomebrewModel.aggregate(junkBrewPipeline).option({ maxTimeMS: 60000 }).maxTimeMS(20000)
+	HomebrewModel.aggregate(junkBrewPipeline).option({ maxTimeMS: 20000 })
 		.then((objs)=>res.json({ count: objs.length }))
 		.catch((error)=>{
 			console.error(error);
