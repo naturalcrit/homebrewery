@@ -28,8 +28,8 @@ const mw = {
 
 const junkBrewPipeline = [
 	{	$match : {
-		updatedAt  : { $lt: Moment().subtract(2, 'years').toDate() },
-		lastViewed : { $lt: Moment().subtract(2, 'years').toDate() }
+		updatedAt  : { $lt: Moment().subtract(4, 'years').toDate() },
+		lastViewed : { $lt: Moment().subtract(4, 'years').toDate() }
 	} },
 	{ $project: { textBinSize: { $binarySize: '$textBin' } } },
 	{ $match: { textBinSize: { $lt: 140 } } }
