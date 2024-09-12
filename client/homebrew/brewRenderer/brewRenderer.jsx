@@ -58,6 +58,7 @@ const BrewRenderer = (props)=>{
 		errors            : [],
 		currentEditorPage : 0,
 		themeBundle       : {},
+		onPageChange      : ()=>{},
 		...props
 	};
 
@@ -88,34 +89,18 @@ const BrewRenderer = (props)=>{
 		}));
 	};
 
-	const handleScroll = (e)=>{
-		const target = e.target;
-		const newPage = Math.floor(target.scrollTop / target.scrollHeight * rawPages.length);
-		if(newPage != state.viewablePageNumber) {
-			window.clearTimeout(isScrolling);
-			isScrolling = setTimeout(function() {
-				window.parent.document.dispatchEvent(new CustomEvent('renderScrolled', {}));
-			}, 66);
-		}
-		setState((prevState)=>({
-			...prevState,
-			viewablePageNumber : newPage
-		}));
-	};
-
 	const getCurrentPage = (e)=>{
 		const { scrollTop, clientHeight, scrollHeight } = e.target;
 		const totalScrollableHeight = scrollHeight - clientHeight;
 		const currentPageNumber = Math.ceil((scrollTop / totalScrollableHeight) * rawPages.length);
 
-		handleScroll(e);
+		props.onPageChange(currentPageNumber);
 
 		setState((prevState)=>({
 			...prevState,
 			currentPageNumber : currentPageNumber || 1
 		}));
 	};
-
 
 	const isInView = (index)=>{
 		if(!state.isMounted)

@@ -39,13 +39,14 @@ const NewPage = createClass({
 		const brew = this.props.brew;
 
 		return {
-			brew              : brew,
-			isSaving          : false,
-			saveGoogle        : (global.account && global.account.googleId ? true : false),
-			error             : null,
-			htmlErrors        : Markdown.validate(brew.text),
-			currentEditorPage : 0,
-			themeBundle       : {}
+			brew                    : brew,
+			isSaving                : false,
+			saveGoogle              : (global.account && global.account.googleId ? true : false),
+			error                   : null,
+			htmlErrors              : Markdown.validate(brew.text),
+			currentEditorPage       : 0,
+			currentBrewRendererPage : 0,
+			themeBundle             : {}
 		};
 	},
 
@@ -106,6 +107,10 @@ const NewPage = createClass({
 
 	handleSplitMove : function(){
 		this.editor.current.update();
+	},
+
+	handleBrewRendererPageChange : function(pageNumber){
+		this.setState(()=>({ currentBrewRendererPage : pageNumber }));
 	},
 
 	handleTextChange : function(text){
@@ -221,6 +226,7 @@ const NewPage = createClass({
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
 						snippetBundle={this.state.themeBundle.snippets}
+						currentBrewRendererPage={this.state.currentBrewRendererPage}
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}
@@ -230,6 +236,7 @@ const NewPage = createClass({
 						themeBundle={this.state.themeBundle}
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
+						onPageChange={this.handleBrewRendererPageChange}
 						currentEditorPage={this.state.currentEditorPage}
 						allowPrint={true}
 					/>

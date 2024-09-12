@@ -41,22 +41,23 @@ const EditPage = createClass({
 
 	getInitialState : function() {
 		return {
-			brew                   : this.props.brew,
-			isSaving               : false,
-			isPending              : false,
-			alertTrashedGoogleBrew : this.props.brew.trashed,
-			alertLoginToTransfer   : false,
-			saveGoogle             : this.props.brew.googleId ? true : false,
-			confirmGoogleTransfer  : false,
-			error                  : null,
-			htmlErrors             : Markdown.validate(this.props.brew.text),
-			url                    : '',
-			autoSave               : true,
-			autoSaveWarning        : false,
-			unsavedTime            : new Date(),
-			currentEditorPage      : 0,
-			displayLockMessage     : this.props.brew.lock || false,
-			themeBundle            : {}
+			brew                    : this.props.brew,
+			isSaving                : false,
+			isPending               : false,
+			alertTrashedGoogleBrew  : this.props.brew.trashed,
+			alertLoginToTransfer    : false,
+			saveGoogle              : this.props.brew.googleId ? true : false,
+			confirmGoogleTransfer   : false,
+			error                   : null,
+			htmlErrors              : Markdown.validate(this.props.brew.text),
+			url                     : '',
+			autoSave                : true,
+			autoSaveWarning         : false,
+			unsavedTime             : new Date(),
+			currentEditorPage       : 0,
+			currentBrewRendererPage : 0,
+			displayLockMessage      : this.props.brew.lock || false,
+			themeBundle             : {}
 		};
 	},
 
@@ -111,6 +112,10 @@ const EditPage = createClass({
 
 	handleSplitMove : function(){
 		this.editor.current.update();
+	},
+
+	handleBrewRendererPageChange : function(pageNumber){
+		this.setState(()=>({ currentBrewRendererPage : pageNumber }));
 	},
 
 	handleTextChange : function(text){
@@ -413,6 +418,7 @@ const EditPage = createClass({
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
 						snippetBundle={this.state.themeBundle.snippets}
+						currentBrewRendererPage={this.state.currentBrewRendererPage}
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}
@@ -422,6 +428,7 @@ const EditPage = createClass({
 						themeBundle={this.state.themeBundle}
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
+						onPageChange={this.handleBrewRendererPageChange}
 						currentEditorPage={this.state.currentEditorPage}
 						allowPrint={true}
 					/>
