@@ -42,7 +42,7 @@ const uncompressedBrewQuery = HomebrewModel.find({
 
 // Search for up to 100 brews that have not been viewed or updated in 30 days and are shorter than 140 bytes
 router.get('/admin/cleanup', mw.adminOnly, (req, res)=>{
-	HomebrewModel.aggregate(junkBrewPipeline).option({ maxTimeMS: 60000 })
+	HomebrewModel.aggregate(junkBrewPipeline).option({ maxTimeMS: 60000 }).maxTimeMS(20000)
 		.then((objs)=>res.json({ count: objs.length }))
 		.catch((error)=>{
 			console.error(error);
