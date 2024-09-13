@@ -141,21 +141,7 @@ router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 
 // #######################   NOTIFICATIONS
 
-/* Searches for notification with matching key */
-router.get('/admin/notification/lookup/:id', mw.adminOnly, async (req, res, next) => {
-    try {
-        const notification = await NotificationModel.findOne({ dismissKey: req.params.id }).exec();
-        if (!notification) {
-            return res.status(404).json({ message: 'Notification not found' });
-        }
-        return res.json(notification);
-    } catch (err) {
-        return next(err);
-    }
-});
-
-// get all notifications
-router.get('/admin/notification/all', mw.adminOnly, async (req, res, next) => {
+router.get('/admin/notification/all', async (req, res, next) => {
 	try {
 		const notifications = await NotificationModel.getAll();
 		return res.json(notifications);
