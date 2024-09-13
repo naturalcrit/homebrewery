@@ -7,8 +7,9 @@ const SplitPane = createClass({
 	displayName     : 'SplitPane',
 	getDefaultProps : function() {
 		return {
-			storageKey   : 'naturalcrit-pane-split',
-			onDragFinish : function(){} //fires when dragging
+			storageKey         : 'naturalcrit-pane-split',
+			onDragFinish       : function(){}, //fires when dragging
+			showDividerButtons : true
 		};
 	},
 
@@ -125,7 +126,7 @@ const SplitPane = createClass({
 
 	renderDivider : function(){
 		return <>
-			{this.renderMoveArrows()}
+			{this.props.showDividerButtons && this.renderMoveArrows()}
 			<div className='divider' onPointerDown={this.handleDown} >
 				<div className='dots'>
 					<i className='fas fa-circle' />
@@ -142,9 +143,11 @@ const SplitPane = createClass({
 				width={this.state.currentDividerPos}
 			>
 				{React.cloneElement(this.props.children[0], {
-					moveBrew      : this.state.moveBrew,
-					moveSource    : this.state.moveSource,
-					setMoveArrows : this.setMoveArrows
+					...(this.props.showDividerButtons && {
+						moveBrew: this.state.moveBrew,
+						moveSource: this.state.moveSource,
+						setMoveArrows: this.setMoveArrows,
+					}),
 				})}
 			</Pane>
 			{this.renderDivider()}

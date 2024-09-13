@@ -113,7 +113,10 @@ const Editor = createClass({
 		this.props.setMoveArrows(newView === 'text');
 		this.setState({
 			view : newView
-		}, this.updateEditorSize);	//TODO: not sure if updateeditorsize needed
+		}, ()=>{
+			this.codeEditor.current?.codeMirror.focus();
+			this.updateEditorSize();
+		});	//TODO: not sure if updateeditorsize needed
 	},
 
 	getCurrentPage : function(){
