@@ -32,11 +32,6 @@ const NotificationAdd = () => {
             }));
             return;
         }
-        console.log('dismissKey: ', dismissKey);
-        console.log('title: ', title);
-        console.log('text: ', text);
-        console.log('startAt: ', startAt);
-        console.log('stopAt: ', stopAt);
 
         const data = {
             dismissKey,
@@ -69,8 +64,6 @@ const NotificationAdd = () => {
                 dismissKeyRef.current.value = '';
                 titleRef.current.value = '';
                 textRef.current.value = '';
-                setStartAt(null);
-                setStopAt(null);
             }
 
             setState(prevState => ({
