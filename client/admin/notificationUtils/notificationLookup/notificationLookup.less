@@ -6,12 +6,13 @@
 	.notificationList {
 		display        : flex;
 		flex-direction : column;
-		gap            : px;
+		max-height     : 500px;
 		margin-block   : 20px;
+		overflow       : auto;
 		border         : 1px solid;
 		border-radius  : 5px;
 		
-		details {
+		li {
 			padding    : 10px;
 			background : #CCCCCC;
 				
@@ -28,6 +29,10 @@
 			summary {
 				font-size   : 20px;
 				font-weight : 900;
+			}
+
+			dl dt{
+				font-weight: 900;
 			}
 		}
 	}
