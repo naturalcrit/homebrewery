@@ -3,155 +3,117 @@ const React = require('react');
 const { useState, useRef } = require('react');
 const request = require('superagent');
 
-const NotificationAdd = () => {
-    const [state, setState] = useState({
-        notificationResult: null,
-        searching: false,
-        error: null,
-    });
+const NotificationAdd = ()=>{
+	const [state, setState] = useState({
+		notificationResult : null,
+		searching          : false,
+		error              : null,
+	});
 
-    const dismissKeyRef = useRef(null);
-    const titleRef = useRef(null);
-    const textRef = useRef(null);
-    const startAtRef = useRef(null);
-    const stopAtRef = useRef(null);
+	const dismissKeyRef = useRef(null);
+	const titleRef = useRef(null);
+	const textRef = useRef(null);
+	const startAtRef = useRef(null);
+	const stopAtRef = useRef(null);
 
-    const saveNotification = async () => {
-        const dismissKey = dismissKeyRef.current.value;
-        const title = titleRef.current.value;
-        const text = textRef.current.value;
-        const startAt = new Date(startAtRef.current.value);
-        const stopAt = new Date(stopAtRef.current.value);
+	const saveNotification = async ()=>{
+		const dismissKey = dismissKeyRef.current.value;
+		const title = titleRef.current.value;
+		const text = textRef.current.value;
+		const startAt = new Date(startAtRef.current.value);
+		const stopAt = new Date(stopAtRef.current.value);
 
-        // Basic validation
-        if (!dismissKey || !title || !text || !startAt || !stopAt) {
-            setState(prevState => ({
-                ...prevState,
-                error: 'All fields are required!',
-            }));
-            return;
-        }
+		// Basic validation
+		if(!dismissKey || !title || !text || !startAt || !stopAt) {
+			setState((prevState)=>({
+				...prevState,
+				error : 'All fields are required!',
+			}));
+			return;
+		}
 
-        const data = {
-            dismissKey,
-            title,
-            text,
-            startAt: startAt ? startAt.toISOString() : '',
-            stopAt: stopAt ? stopAt.toISOString() : '',
-        };
+		const data = {
+			dismissKey,
+			title,
+			text,
+			startAt : startAt?.toISOString() ?? '',
+			stopAt  : stopAt?.stopAt.toISOString() ?? '',
+		};
 
-        try {
-            setState(prevState => ({ ...prevState, searching: true, error: null }));
-            const response = await request.post('/admin/notification/add').send(data);
-            const notification = response.body;
+		try {
+			setState((prevState)=>({ ...prevState, searching: true, error: null }));
+			const response = await request.post('/admin/notification/add').send(data);
+            console.log(response.body);
+			const update = { notificationResult: `Notification successfully created.` };
 
-            let update = {
-                notificationResult: `Created notification: ${JSON.stringify(notification, null, 2)}`,
-            };
+			// Reset form fields
+			dismissKeyRef.current.value = '';
+			titleRef.current.value = '';
+			textRef.current.value = '';
 
-            if (notification.err) {
-                update.notificationResult = JSON.stringify(notification.err);
-                if (notification.err.code === 11000) {
-                    update.notificationResult = `Duplicate dismissKey error! ${dismissKey} already exists.`;
-                }
-            } else {
-                update = {
-                    ...update,
-                    notificationResult: `Notification successfully created.`,
-                };
-                // Reset form fields
-                dismissKeyRef.current.value = '';
-                titleRef.current.value = '';
-                textRef.current.value = '';
-            }
+			setState((prevState)=>({
+				...prevState,
+				...update,
+				searching : false,
+			}));
+		} catch (err) {
+			setState((prevState)=>({
+				...prevState,
+				error     : `Error saving notification: ${err.message}`,
+				searching : false,
+			}));
+		}
+	};
 
-            setState(prevState => ({
-                ...prevState,
-                ...update,
-                searching: false,
-            }));
-        } catch (err) {
-            setState(prevState => ({
-                ...prevState,
-                error: `Error saving notification: ${err.message}`,
-                searching: false,
-            }));
-        }
-    };
+	return (
+		<div className='notificationAdd'>
+			<h2>Add Notification</h2>
 
-    return (
-        <div className='notificationAdd'>
-            <h2>Add Notification</h2>
-
-            <label className='field'>
+			<label className='field'>
                 Dismiss Key:
-                <input
-                    className='fieldInput'
-                    type='text'
-                    ref={dismissKeyRef}
-                    placeholder='GOOGLEDRIVENOTIF'
-                    required
-                />
-            </label>
+				<input className='fieldInput' type='text' ref={dismissKeyRef} required
+					placeholder='GOOGLEDRIVENOTIF'
+					
+				/>
+			</label>
 
-            <label className='field'>
+			<label className='field'>
                 Title:
-                <input
-                    className='fieldInput'
-                    type='text'
-                    ref={titleRef}
-                    placeholder='Stop using Google Drive as image host'
-                    required
-                />
-            </label>
+				<input className='fieldInput' type='text' ref={titleRef} required
+					placeholder='Stop using Google Drive as image host'
+				/>
+			</label>
 
-            <label className='field'>
+			<label className='field'>
                 Text:
-                <textarea
-					className='fieldInput'
-					type='text'
-					ref={textRef}
+				<textarea className='fieldInput' type='text' ref={textRef} required
 					placeholder='Google Drive is not an image hosting site, you should not use it as such.'
-                    required>
-					</textarea>
-            </label>
+				>
+				</textarea>
+			</label>
 
-            <label className='field'>
+			<label className='field'>
                 Start Date:
 
-                <input
-					type="date"
-                    className='fieldInput'
-                    ref={startAtRef}
-                    required
-                />
-            </label>
+				<input type='date' className='fieldInput' ref={startAtRef} required/>
+			</label>
 
-            <label className='field'>
+			<label className='field'>
                 End Date:
-                <input
-					type="date"
-                    className='fieldInput'
-                    ref={stopAtRef}
-                    required
-                />
-            </label>
+				<input type='date' className='fieldInput' ref={stopAtRef} required
+				/>
+			</label>
 
-            <div className='notificationResult'>{state.notificationResult}</div>
+			<div className='notificationResult'>{state.notificationResult}</div>
 
-            <button className='notificationSave' onClick={saveNotification} disabled={state.searching}>
-                <i
-                    className={'fas', {
-                        'fa-save': !state.searching,
-                        'fa-spin fa-spinner': state.searching,
-                    }}
-                />
+			<button className='notificationSave' onClick={saveNotification} disabled={state.searching}>
+				<i className={`fas ${state.searching ? 'fa-spin fa-spinner' : 'fa-save'}`} />
                 Save Notification
-            </button>
+			</button>
 
-            {state.error && <div className='error'>{state.error}</div>}
-        </div>
-    );
+			{state.error && <div className='error'>{state.error}</div>}
+		</div>
+	);
 };
 
 module.exports = NotificationAdd;
