@@ -118,6 +118,7 @@ const SharePage = createClass({
 					theme={this.props.brew.theme}
 					themeBundle={this.state.themeBundle}
 					allowPrint={true}
+					showHeaderNav={true}
 				/>
 			</div>
 		</div>;
