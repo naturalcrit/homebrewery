@@ -1,7 +1,6 @@
 require('./notificationAdd.less');
 const React = require('react');
 const { useState, useRef } = require('react');
-const cx = require('classnames');
 const request = require('superagent');
 
 const NotificationAdd = () => {
@@ -142,10 +141,10 @@ const NotificationAdd = () => {
 
             <button className='notificationSave' onClick={saveNotification} disabled={state.searching}>
                 <i
-                    className={cx('fas', {
+                    className={'fas', {
                         'fa-save': !state.searching,
                         'fa-spin fa-spinner': state.searching,
-                    })}
+                    }}
                 />
                 Save Notification
             </button>
