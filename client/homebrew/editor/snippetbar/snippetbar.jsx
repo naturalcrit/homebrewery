@@ -49,8 +49,7 @@ const Snippetbar = createClass({
 			renderer      : this.props.renderer,
 			themeSelector : false,
 			snippets      : [],
-			historyExists : false,
-			showHistory   : false
+			historyExists : false
 		};
 	},
 
@@ -149,22 +148,18 @@ const Snippetbar = createClass({
 		});
 	},
 
-	showHistory : function () {
-		if(!this.state.historyExists) return;
-
-		this.setState({
-			showHistory : !this.state.showHistory
-		});
-	},
-
 	renderHistoryItems : function() {
 		const historyItems = getHistoryItems(this.props.brew);
 
 		return <div className='dropdown'>
 			{_.map(historyItems, (item, index)=>{
+				const saveTime = new Date(item.savedAt);
+				const diffTime = new Date() - saveTime;
+				const diffMins = Math.floor(diffTime / (60 * 1000));
+
 				return <div className='snippet' key={index} >
 					<i className={`fas fa-${index+1}`} />
-					<span className='name' title={item.title}>{item.title}</span>
+					<span className='name' title={saveTime.toISOString()}>v{item.version} : about {diffMins} mins ago</span>
 				</div>;
 			})}
 		</div>;
@@ -190,10 +185,9 @@ const Snippetbar = createClass({
 		}
 
 		return <div className='editors'>
-			<div className={`editorTool history ${this.state.historyExists ? 'active' : ''}`}
-				onClick={this.showHistory} >
+			<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`} >
 				<i className='fas fa-clock-rotate-left' />
-				{this.state.showHistory && this.renderHistoryItems() }
+				{this.state.historyExists && this.renderHistoryItems() }
 			</div>
 			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
 				onClick={this.props.undo} >
