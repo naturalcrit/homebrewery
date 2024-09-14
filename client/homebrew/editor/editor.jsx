@@ -36,9 +36,16 @@ const Editor = createClass({
 			onStyleChange : ()=>{},
 			onMetaChange  : ()=>{},
 			reportError   : ()=>{},
+			
+			onCursorPageChange : ()=>{},
+			onViewPageChange   : ()=>{},
 
 			editorTheme : 'default',
-			renderer    : 'legacy'
+			renderer    : 'legacy',
+
+			currentEditorCursorPageNum : 0,
+			currentEditorViewPageNum   : 0,
+			currentBrewRendererPageNum : 0, 
 		};
 	},
 	getInitialState : function() {
@@ -61,6 +68,9 @@ const Editor = createClass({
 		window.addEventListener('resize', this.updateEditorSize);
 		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
+
+		this.codeEditor.current.codeMirror.on('cursorActivity', (cm)=>{this.updateCurrentCursorPage(cm.getCursor())});
+		this.codeEditor.current.codeMirror.on('scroll', _.throttle(()=>{this.updateCurrentViewPage(this.codeEditor.current.getTopVisibleLine())}, 200));
 
 		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
 		if(editorTheme) {
@@ -96,13 +106,26 @@ const Editor = createClass({
 		}
 	},
 
-
 	updateEditorSize : function() {
 		if(this.codeEditor.current) {
 			let paneHeight = this.editor.current.parentNode.clientHeight;
 			paneHeight -= SNIPPETBAR_HEIGHT;
 			this.codeEditor.current.codeMirror.setSize(null, paneHeight);
 		}
+	},
+
+	updateCurrentCursorPage : function(cursor) {
+		const lines = this.props.brew.text.split('\n').slice(0, cursor.line + 1);
+		const pageRegex = this.props.brew.renderer == 'V3' ? /^\\page$/ : /\\page/;
+		const currentPage = lines.reduce((count, line) => count + (pageRegex.test(line) ? 1 : 0), 1);
+		this.props.onCursorPageChange(currentPage);
+	},
+
+	updateCurrentViewPage : function(topScrollLine) {
+		const lines = this.props.brew.text.split('\n').slice(0, topScrollLine + 1);
+		const pageRegex = this.props.brew.renderer == 'V3' ? /^\\page$/ : /\\page/;
+		const currentPage = lines.reduce((count, line) => count + (pageRegex.test(line) ? 1 : 0), 1);
+		this.props.onViewPageChange(currentPage);
 	},
 
 	handleInject : function(injectText){
@@ -117,18 +140,6 @@ const Editor = createClass({
 			this.codeEditor.current?.codeMirror.focus();
 			this.updateEditorSize();
 		});	//TODO: not sure if updateeditorsize needed
-	},
-
-	getCurrentPage : function(){
-		const lines = this.props.brew.text.split('\n').slice(0, this.codeEditor.current.getCursorPosition().line + 1);
-		return _.reduce(lines, (r, line)=>{
-			if(
-				(this.props.renderer == 'legacy' && line.indexOf('\\page') !== -1)
-				||
-				(this.props.renderer == 'V3' && line.match(/^\\page$/))
-			) r++;
-			return r;
-		}, 1);
 	},
 
 	highlightCustomMarkdown : function(){
@@ -291,9 +302,9 @@ const Editor = createClass({
 		}
 	},
 
-	brewJump : function(targetPage=this.getCurrentPage()){
+	brewJump : function(targetPage=this.props.currentEditorCursorPageNum){
 		if(!window) return;
-		// console.log(`Scroll to: p${targetPage}`);
+		// Get current brewRenderer scroll position and calculate target position
 		const brewRenderer = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
 		const currentPos = brewRenderer.scrollTop;
 		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
@@ -321,19 +332,8 @@ const Editor = createClass({
 			if(targetLine == null) {
 				targetLine = 0;
 
-				const pageCollection = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('page');
-				const brewRendererHeight = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer').item(0).getBoundingClientRect().height;
-
-				let currentPage = 1;
-				for (const page of pageCollection) {
-					if(page.getBoundingClientRect().bottom > (brewRendererHeight / 2)) {
-						currentPage = parseInt(page.id.slice(1)) || 1;
-						break;
-					}
-				}
-
 				const textSplit = this.props.renderer == 'V3' ? /^\\page$/gm : /\\page/;
-				const textString = this.props.brew.text.split(textSplit).slice(0, currentPage-1).join(textSplit);
+				const textString = this.props.brew.text.split(textSplit).slice(0, this.props.currentBrewRendererPageNum-1).join(textSplit);
 				const textPosition = textString.length;
 				const lineCount = textString.match('\n') ? textString.slice(0, textPosition).split('\n').length : 0;
 
@@ -389,6 +389,8 @@ const Editor = createClass({
 					view={this.state.view}
 					value={this.props.brew.text}
 					onChange={this.props.onTextChange}
+					onCursorActivity={this.props.onCursorActivity}
+					onScroll={this.props.onPageChange}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent} />
 			</>;
