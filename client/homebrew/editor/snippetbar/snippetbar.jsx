@@ -153,6 +153,8 @@ const Snippetbar = createClass({
 
 		return <div className='dropdown'>
 			{_.map(historyItems, (item, index)=>{
+				if(!item.savedAt) return;
+
 				const saveTime = new Date(item.savedAt);
 				const diffTime = new Date() - saveTime;
 				const diffMins = Math.floor(diffTime / (60 * 1000));
