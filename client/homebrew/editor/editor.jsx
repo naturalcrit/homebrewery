@@ -49,9 +49,16 @@ const Editor = createClass({
 			onStyleChange : ()=>{},
 			onMetaChange  : ()=>{},
 			reportError   : ()=>{},
+			
+			onCursorPageChange : ()=>{},
+			onViewPageChange   : ()=>{},
 
 			editorTheme : 'default',
-			renderer    : 'legacy'
+			renderer    : 'legacy',
+
+			currentEditorCursorPageNum : 0,
+			currentEditorViewPageNum   : 0,
+			currentBrewRendererPageNum : 0, 
 		};
 	},
 	getInitialState : function() {
@@ -75,6 +82,9 @@ const Editor = createClass({
 		window.addEventListener('resize', this.updateEditorSize);
 		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
+
+		this.codeEditor.current.codeMirror.on('cursorActivity', (cm)=>{this.updateCurrentCursorPage(cm.getCursor())});
+		this.codeEditor.current.codeMirror.on('scroll', _.throttle(()=>{this.updateCurrentViewPage(this.codeEditor.current.getTopVisibleLine())}, 200));
 		document.addEventListener('click', (e)=>{
 			if(isElementCodeMirror(e.target) && this.props.liveScroll ) {
 				const curPage = this.getCurrentPage();
@@ -165,6 +175,20 @@ const Editor = createClass({
 		}
 	},
 
+	updateCurrentCursorPage : function(cursor) {
+		const lines = this.props.brew.text.split('\n').slice(0, cursor.line + 1);
+		const pageRegex = this.props.brew.renderer == 'V3' ? /^\\page$/ : /\\page/;
+		const currentPage = lines.reduce((count, line) => count + (pageRegex.test(line) ? 1 : 0), 1);
+		this.props.onCursorPageChange(currentPage);
+	},
+
+	updateCurrentViewPage : function(topScrollLine) {
+		const lines = this.props.brew.text.split('\n').slice(0, topScrollLine + 1);
+		const pageRegex = this.props.brew.renderer == 'V3' ? /^\\page$/ : /\\page/;
+		const currentPage = lines.reduce((count, line) => count + (pageRegex.test(line) ? 1 : 0), 1);
+		this.props.onViewPageChange(currentPage);
+	},
+
 	handleInject : function(injectText){
 		this.codeEditor.current?.injectText(injectText, false);
 	},
@@ -179,23 +203,6 @@ const Editor = createClass({
 		});	//TODO: not sure if updateeditorsize needed
 	},
 
-	getCurrentPage : function(atCursor = true){
-		let lines = this.props.brew.text.split('\n');
-		if (atCursor)
-			lines = lines.slice(0, this.codeEditor.current.getCursorPosition().line + 1); // get cursor page
-		else
-			lines = lines.slice(0, this.codeEditor.current.getTopVisibleLine() + 1); // get view page 
-
-		return _.reduce(lines, (r, line)=>{
-			if(
-				(this.props.renderer == 'legacy' && line.indexOf('\\page') !== -1)
-				||
-				(this.props.renderer == 'V3' && line.match(/^\\page$/))
-			) r++;
-			return r;
-		}, 1);
-	},
-
 	highlightCustomMarkdown : function(){
 		if(!this.codeEditor.current) return;
 		if(this.state.view === 'text')  {
@@ -204,7 +211,7 @@ const Editor = createClass({
 			codeMirror.operation(()=>{ // Batch CodeMirror styling
 
 				const foldLines = [];
-        
+
 				//reset custom text styles
 				const customHighlights = codeMirror.getAllMarks().filter((mark)=>{
 					// Record details of folded sections
@@ -356,10 +363,10 @@ const Editor = createClass({
 		}
 	},
 
-	brewJump : function(targetPage=this.getCurrentPage(), smooth=true){
+	brewJump : function(targetPage=this.props.currentEditorCursorPageNum, smooth=true){
 		if(isJumping) return;
 		if(!window) return;
-
+		// Get current brewRenderer scroll position and calculate target position
 		const brewRenderer = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
 		const currentPos = brewRenderer.scrollTop;
 		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
@@ -409,7 +416,7 @@ const Editor = createClass({
 				targetLine = 0;
 
 				const textSplit = this.props.renderer == 'V3' ? /^\\page$/gm : /\\page/;
-				const textString = this.props.brew.text.split(textSplit).slice(0, this.props.currentBrewRendererPage-1).join(textSplit);
+				const textString = this.props.brew.text.split(textSplit).slice(0, this.props.currentBrewRendererPageNum-1).join(textSplit);
 				const textPosition = textString.length;
 				const lineCount = textString.match('\n') ? textString.slice(0, textPosition).split('\n').length : 0;
 
@@ -489,7 +496,8 @@ const Editor = createClass({
 					view={this.state.view}
 					value={this.props.brew.text}
 					onChange={this.props.onTextChange}
-					onScroll={this.handleSourceScroll}
+					onCursorActivity={this.props.onCursorActivity}
+					onScroll={this.props.onPageChange}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent} />
 			</>;

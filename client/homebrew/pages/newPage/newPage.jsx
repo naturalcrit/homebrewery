@@ -39,14 +39,15 @@ const NewPage = createClass({
 		const brew = this.props.brew;
 
 		return {
-			brew                    : brew,
-			isSaving                : false,
-			saveGoogle              : (global.account && global.account.googleId ? true : false),
-			error                   : null,
-			htmlErrors              : Markdown.validate(brew.text),
-			currentEditorPage       : 0,
-			currentBrewRendererPage : 0,
-			themeBundle             : {}
+			brew                       : brew,
+			isSaving                   : false,
+			saveGoogle                 : (global.account && global.account.googleId ? true : false),
+			error                      : null,
+			htmlErrors                 : Markdown.validate(brew.text),
+			currentEditorViewPageNum   : 0,
+			currentEditorCursorPageNum : 0,
+			currentBrewRendererPageNum : 0,
+			themeBundle                : {}
 		};
 	},
 
@@ -109,8 +110,19 @@ const NewPage = createClass({
 		this.editor.current.update();
 	},
 
+	handleEditorViewPageChange : function(pageNumber){
+		console.log(`editor view : ${pageNumber}`);
+		this.setState({ currentEditorViewPageNum: pageNumber });
+	},
+
+	handleEditorCursorPageChange : function(pageNumber){
+		console.log(`editor cursor : ${pageNumber}`);
+		this.setState({ currentEditorCursorPageNum: pageNumber });
+	},
+
 	handleBrewRendererPageChange : function(pageNumber){
-		this.setState(()=>({ currentBrewRendererPage : pageNumber }));
+		console.log(`brewRenderer view : ${pageNumber}`);
+		this.setState({ currentBrewRendererPageNum: pageNumber });
 	},
 
 	handleTextChange : function(text){
@@ -119,9 +131,8 @@ const NewPage = createClass({
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 
 		this.setState((prevState)=>({
-			brew              : { ...prevState.brew, text: text },
-			htmlErrors        : htmlErrors,
-			currentEditorPage : this.editor.current.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
+			brew       : { ...prevState.brew, text: text },
+			htmlErrors : htmlErrors,
 		}));
 		localStorage.setItem(BREWKEY, text);
 	},
@@ -226,7 +237,11 @@ const NewPage = createClass({
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
 						snippetBundle={this.state.themeBundle.snippets}
-						currentBrewRendererPage={this.state.currentBrewRendererPage}
+						onCursorPageChange={this.handleEditorCursorPageChange}
+						onViewPageChange={this.handleEditorViewPageChange}
+						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
+						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
+						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}
@@ -237,7 +252,9 @@ const NewPage = createClass({
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
 						onPageChange={this.handleBrewRendererPageChange}
-						currentEditorPage={this.state.currentEditorPage}
+						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
+						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
+						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 						allowPrint={true}
 					/>
 				</SplitPane>

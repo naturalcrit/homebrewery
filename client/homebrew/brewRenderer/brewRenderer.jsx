@@ -1,7 +1,7 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
-const { useState, useRef, useEffect } = React;
+const { useState, useRef, useEffect, useCallback } = React;
 const _ = require('lodash');
 
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
@@ -50,24 +50,25 @@ let rawPages      = [];
 
 const BrewRenderer = (props)=>{
 	props = {
-		text              : '',
-		style             : '',
-		renderer          : 'legacy',
-		theme             : '5ePHB',
-		lang              : '',
-		errors            : [],
-		currentEditorPage : 0,
-		themeBundle       : {},
-		onPageChange      : ()=>{},
+		text                       : '',
+		style                      : '',
+		renderer                   : 'legacy',
+		theme                      : '5ePHB',
+		lang                       : '',
+		errors                     : [],
+		currentEditorCursorPageNum : 0,
+		currentEditorViewPageNum   : 0,
+		currentBrewRendererPageNum : 0,
+		themeBundle                : {},
+		onPageChange               : ()=>{},
 		...props
 	};
 
 	const [state, setState] = useState({
-		height            : PAGE_HEIGHT,
-		isMounted         : false,
-		visibility        : 'hidden',
-		zoom              : 100,
-		currentPageNumber : 1,
+		height     : PAGE_HEIGHT,
+		isMounted  : false,
+		visibility : 'hidden',
+		zoom       : 100
 	});
 
 	const mainRef  = useRef(null);
@@ -89,27 +90,22 @@ const BrewRenderer = (props)=>{
 		}));
 	};
 
-	const getCurrentPage = (e)=>{
+	const updateCurrentPage = useCallback(_.throttle((e)=>{
 		const { scrollTop, clientHeight, scrollHeight } = e.target;
 		const totalScrollableHeight = scrollHeight - clientHeight;
-		const currentPageNumber = Math.ceil((scrollTop / totalScrollableHeight) * rawPages.length);
+		const currentPageNumber = Math.ceil(((scrollTop + 1) / totalScrollableHeight) * rawPages.length);
 
 		props.onPageChange(currentPageNumber);
-
-		setState((prevState)=>({
-			...prevState,
-			currentPageNumber : currentPageNumber || 1
-		}));
-	};
+	}, 200), []);
 
 	const isInView = (index)=>{
 		if(!state.isMounted)
 			return false;
 
-		if(index == props.currentEditorPage)	//Already rendered before this step
+		if(index == props.currentEditorCursorPageNum - 1)	//Already rendered before this step
 			return false;
 
-		if(Math.abs(index - state.currentPageNumber) <= 3)
+		if(Math.abs(index - props.currentBrewRendererPageNum - 1) <= 3)
 			return true;
 
 		return false;
@@ -146,7 +142,7 @@ const BrewRenderer = (props)=>{
 			renderedPages.length = 0;
 
 		// Render currently-edited page first so cross-page effects (variables, links) can propagate out first
-		renderedPages[props.currentEditorPage] = renderPage(rawPages[props.currentEditorPage], props.currentEditorPage);
+		renderedPages[props.currentEditorCursorPageNum - 1] = renderPage(rawPages[props.currentEditorCursorPageNum - 1], props.currentEditorCursorPageNum - 1);
 
 		_.forEach(rawPages, (page, index)=>{
 			if((isInView(index) || !renderedPages[index]) && typeof window !== 'undefined'){
@@ -196,7 +192,7 @@ const BrewRenderer = (props)=>{
 		<>
 			{/*render dummy page while iFrame is mounting.*/}
 			{!state.isMounted
-				? <div className='brewRenderer' onScroll={getCurrentPage}>
+				? <div className='brewRenderer' onScroll={updateCurrentPage}>
 					<div className='pages'>
 						{renderDummyPage(1)}
 					</div>
@@ -209,7 +205,7 @@ const BrewRenderer = (props)=>{
 				<NotificationPopup />
 			</div>
 
-			<ToolBar onZoomChange={handleZoom} currentPage={state.currentPageNumber}  totalPages={rawPages.length}/>
+			<ToolBar onZoomChange={handleZoom} currentPage={props.currentBrewRendererPageNum}  totalPages={rawPages.length}/>
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
@@ -218,7 +214,7 @@ const BrewRenderer = (props)=>{
 				onClick={()=>{emitClick();}}
 			>
 				<div className={'brewRenderer'}
-					onScroll={getCurrentPage}
+					onScroll={updateCurrentPage}
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
 					style={{ height: state.height }}>
