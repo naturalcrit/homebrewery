@@ -64,23 +64,23 @@ const HomePage = createClass({
 	},
 
 	handleEditorViewPageChange : function(pageNumber){
-		console.log(`editor view : ${pageNumber}`)
-		this.setState({ currentEditorViewPageNum : pageNumber });
+		console.log(`editor view : ${pageNumber}`);
+		this.setState({ currentEditorViewPageNum: pageNumber });
 	},
 
 	handleEditorCursorPageChange : function(pageNumber){
-		console.log(`editor cursor : ${pageNumber}`)
-		this.setState({ currentEditorCursorPageNum : pageNumber });
+		console.log(`editor cursor : ${pageNumber}`);
+		this.setState({ currentEditorCursorPageNum: pageNumber });
 	},
 
 	handleBrewRendererPageChange : function(pageNumber){
-		console.log(`brewRenderer view : ${pageNumber}`)
-		this.setState({ currentBrewRendererPageNum : pageNumber });
+		console.log(`brewRenderer view : ${pageNumber}`);
+		this.setState({ currentBrewRendererPageNum: pageNumber });
 	},
 
 	handleTextChange : function(text){
 		this.setState((prevState)=>({
-			brew                       : { ...prevState.brew, text: text },
+			brew : { ...prevState.brew, text: text },
 		}));
 	},
 	renderNavbar : function(){

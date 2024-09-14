@@ -111,18 +111,18 @@ const NewPage = createClass({
 	},
 
 	handleEditorViewPageChange : function(pageNumber){
-		console.log(`editor view : ${pageNumber}`)
-		this.setState({ currentEditorViewPageNum : pageNumber });
+		console.log(`editor view : ${pageNumber}`);
+		this.setState({ currentEditorViewPageNum: pageNumber });
 	},
 
 	handleEditorCursorPageChange : function(pageNumber){
-		console.log(`editor cursor : ${pageNumber}`)
-		this.setState({ currentEditorCursorPageNum : pageNumber });
+		console.log(`editor cursor : ${pageNumber}`);
+		this.setState({ currentEditorCursorPageNum: pageNumber });
 	},
 
 	handleBrewRendererPageChange : function(pageNumber){
-		console.log(`brewRenderer view : ${pageNumber}`)
-		this.setState({ currentBrewRendererPageNum : pageNumber });
+		console.log(`brewRenderer view : ${pageNumber}`);
+		this.setState({ currentBrewRendererPageNum: pageNumber });
 	},
 
 	handleTextChange : function(text){
@@ -131,8 +131,8 @@ const NewPage = createClass({
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 
 		this.setState((prevState)=>({
-			brew                       : { ...prevState.brew, text: text },
-			htmlErrors                 : htmlErrors,
+			brew       : { ...prevState.brew, text: text },
+			htmlErrors : htmlErrors,
 		}));
 		localStorage.setItem(BREWKEY, text);
 	},

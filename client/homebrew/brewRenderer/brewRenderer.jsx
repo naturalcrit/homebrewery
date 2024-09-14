@@ -57,7 +57,7 @@ const BrewRenderer = (props)=>{
 		errors                     : [],
 		currentEditorCursorPageNum : 0,
 		currentEditorViewPageNum   : 0,
-		currentBrewRendererPageNum : 0, 
+		currentBrewRendererPageNum : 0,
 		themeBundle                : {},
 		onPageChange               : ()=>{},
 		...props
@@ -89,13 +89,13 @@ const BrewRenderer = (props)=>{
 		}));
 	};
 
-  const updateCurrentPage = useCallback(_.throttle((e) => {
-    const { scrollTop, clientHeight, scrollHeight } = e.target;
-    const totalScrollableHeight = scrollHeight - clientHeight;
-    const currentPageNumber = Math.ceil(((scrollTop + 1) / totalScrollableHeight) * rawPages.length);
+	const updateCurrentPage = useCallback(_.throttle((e)=>{
+		const { scrollTop, clientHeight, scrollHeight } = e.target;
+		const totalScrollableHeight = scrollHeight - clientHeight;
+		const currentPageNumber = Math.ceil(((scrollTop + 1) / totalScrollableHeight) * rawPages.length);
 
-    props.onPageChange(currentPageNumber);
-  }, 200), []);
+		props.onPageChange(currentPageNumber);
+	}, 200), []);
 
 	const isInView = (index)=>{
 		if(!state.isMounted)
