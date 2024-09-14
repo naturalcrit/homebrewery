@@ -98,7 +98,7 @@ export function updateHistory(brew) {
 		if(new Date() >= new Date(storedVersion.expireAt)){
 			for (let updateSlot = slot - 1; updateSlot>0; updateSlot--){
 				// Move data from updateSlot to updateSlot + 1
-				updateStoredBrew({ ...history[updateSlot], shareId: brew.shareId }, updateSlot + 1);
+				updateStoredBrew(history[updateSlot], updateSlot + 1);
 			};
 
 			// Update the most recent brew
