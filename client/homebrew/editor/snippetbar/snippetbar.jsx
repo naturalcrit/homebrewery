@@ -70,7 +70,7 @@ const Snippetbar = createClass({
 	mergeCustomizer : function(oldValue, newValue, key) {
 		if(key == 'snippets') {
 			const result = _.reverse(_.unionBy(_.reverse(newValue), _.reverse(oldValue), 'name')); // Join snippets together, with preference for the child theme over the parent theme
-			return result.filter(snip => snip.gen || snip.subsnippets);
+			return result.filter((snip)=>snip.gen || snip.subsnippets);
 		}
 	},
 
@@ -138,6 +138,10 @@ const Snippetbar = createClass({
 		});
 	},
 
+	showHistory : function () {
+		console.log('show history');
+	},
+
 	renderEditorButtons : function(){
 		if(!this.props.showEditButtons) return;
 
@@ -158,6 +162,10 @@ const Snippetbar = createClass({
 		}
 
 		return <div className='editors'>
+			<div className={'editorTool history'}
+				onClick={this.showHistory} >
+				<i className='fas fa-clock-rotate-left' />
+			</div>
 			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
 				onClick={this.props.undo} >
 				<i className='fas fa-undo' />
