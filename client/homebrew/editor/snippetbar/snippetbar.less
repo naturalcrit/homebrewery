@@ -57,7 +57,12 @@
 				.tooltipLeft('History');
 				font-size : 0.75em;
 				color     : grey;
-				&.active { color : inherit; }
+				&.active {
+					color : inherit;
+					&>.dropdown { visibility: visible; }
+				}
+				&:hover>.dropdown { visibility: visible; }
+
 			}
 			&.editorTheme {
 				.tooltipLeft('Editor Themes');

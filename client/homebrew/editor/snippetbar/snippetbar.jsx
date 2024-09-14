@@ -5,6 +5,8 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
+import { getHistoryItems, historyExists } from '../../utils/versionHistory.js';
+
 //Import all themes
 const ThemeSnippets = {};
 ThemeSnippets['Legacy_5ePHB'] = require('themes/Legacy/5ePHB/snippets.js');
@@ -46,7 +48,9 @@ const Snippetbar = createClass({
 		return {
 			renderer      : this.props.renderer,
 			themeSelector : false,
-			snippets      : []
+			snippets      : [],
+			historyExists : false,
+			showHistory   : false
 		};
 	},
 
@@ -58,14 +62,21 @@ const Snippetbar = createClass({
 	},
 
 	componentDidUpdate : async function(prevProps) {
-		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.snippetBundle != this.props.snippetBundle) {
-			const snippets = this.compileSnippets();
-			this.setState({
-				snippets : snippets
-			});
-		}
-	},
+		const update = {};
+		let newData = false;
 
+		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.snippetBundle != this.props.snippetBundle) {
+			update.snippets = this.compileSnippets();
+			newData = true;
+		};
+
+		if(historyExists(this.props.brew) != this.state.historyExists){
+			update.historyExists = !this.state.historyExists;
+			newData = true;
+		}
+
+		newData && this.setState(update);
+	},
 
 	mergeCustomizer : function(oldValue, newValue, key) {
 		if(key == 'snippets') {
@@ -139,7 +150,24 @@ const Snippetbar = createClass({
 	},
 
 	showHistory : function () {
-		console.log('show history');
+		if(!this.state.historyExists) return;
+
+		this.setState({
+			showHistory : !this.state.showHistory
+		});
+	},
+
+	renderHistoryItems : function() {
+		const historyItems = getHistoryItems(this.props.brew);
+
+		return <div className='dropdown'>
+			{_.map(historyItems, (item, index)=>{
+				return <div className='snippet' key={index} >
+					<i className={`fas fa-${index+1}`} />
+					<span className='name' title={item.title}>{item.title}</span>
+				</div>;
+			})}
+		</div>;
 	},
 
 	renderEditorButtons : function(){
@@ -162,9 +190,10 @@ const Snippetbar = createClass({
 		}
 
 		return <div className='editors'>
-			<div className={'editorTool history'}
+			<div className={`editorTool history ${this.state.historyExists ? 'active' : ''}`}
 				onClick={this.showHistory} >
 				<i className='fas fa-clock-rotate-left' />
+				{this.state.showHistory && this.renderHistoryItems() }
 			</div>
 			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
 				onClick={this.props.undo} >

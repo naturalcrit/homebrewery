@@ -1,4 +1,5 @@
 export const HISTORY_PREFIX = 'HOMEBREWERY-HISTORY';
+export const HISTORY_SLOTS = 5;
 // const HISTORY_SAVE_DELAYS = {
 //  0: 0,           // 0 minutes (if not specified)
 // 	1: 2,			// 2 minutes
@@ -68,16 +69,29 @@ function updateStoredBrew(brew, slot=0){
 	return;
 };
 
-export function updateHistory(brew) {
+export function historyExists(brew){
+	return Object.keys(localStorage)
+        .some((key)=>{
+        	return key.startsWith(`${HISTORY_PREFIX}-${brew.shareId}`);
+        });
+}
+
+export function loadHistory(brew){
 	const history = {};
 
 	// Load data from local storage to History object
-	for (let i = 1; i<=5; i++){
+	for (let i = 1; i <= HISTORY_SLOTS; i++){
 		history[i] = getVersionBySlot(brew, i);
 	};
 
+	return history;
+}
+
+export function updateHistory(brew) {
+	const history = loadHistory(brew);
+
 	// Walk each version position
-	for (let slot = 5; slot>0; slot--){
+	for (let slot = HISTORY_SLOTS; slot > 0; slot--){
 		const storedVersion = history[slot];
 
 		// If slot has expired, update all lower slots and break
@@ -94,6 +108,16 @@ export function updateHistory(brew) {
 			break;
 		}
 	};
+};
+
+export function getHistoryItems(brew){
+	const historyArray = [];
+
+	for (let i = 1; i <= HISTORY_SLOTS; i++){
+		historyArray.push(getVersionBySlot(brew, i));
+	}
+
+	return historyArray;
 };
 
 export function versionHistoryGarbageCollection(){
