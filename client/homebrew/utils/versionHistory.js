@@ -126,7 +126,7 @@ export function versionHistoryGarbageCollection(){
         	return key.startsWith(HISTORY_PREFIX);
         })
         .forEach((key)=>{
-        	const collectAt = new Date(JSON.parse(localStorage.getItem(key)).expireAt);
+        	const collectAt = new Date(JSON.parse(localStorage.getItem(key)).savedAt);
         	collectAt.setMinutes(collectAt.getMinutes() + GARBAGE_COLLECT_DELAY);
         	if(new Date() > collectAt){
         		localStorage.removeItem(key);
