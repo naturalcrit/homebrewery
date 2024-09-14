@@ -1,118 +1,111 @@
 require('./notificationLookup.less');
 
 const React = require('react');
-const { useState, useRef } = require('react');
-const cx = require('classnames');
+const { useState } = require('react');
 const request = require('superagent');
 const Moment = require('moment');
 
-const NotificationDetail = ({ notification, onDelete }) => (
-    <div>
-        <dl>
-            <dt>Key</dt>
-            <dd>{notification.dismissKey}</dd>
+const NotificationDetail = ({ notification, onDelete })=>(
+	<>
+		<dl>
+			<dt>Key</dt>
+			<dd>{notification.dismissKey}</dd>
 
-            <dt>Title</dt>
-            <dd>{notification.title || 'No Title'}</dd>
+			<dt>Title</dt>
+			<dd>{notification.title || 'No Title'}</dd>
 
-            <dt>Text</dt>
-            <dd>{notification.text || 'No Text'}</dd>
+			<dt>Text</dt>
+			<dd>{notification.text || 'No Text'}</dd>
 
-            <dt>Created</dt>
-            <dd>{Moment(notification.createdAt).format('LLLL')}</dd>
+			<dt>Created</dt>
+			<dd>{Moment(notification.createdAt).format('LLLL')}</dd>
 
-            <dt>Start</dt>
-            <dd>{Moment(notification.startAt).format('LLLL') || 'No Start Time'}</dd>
+			<dt>Start</dt>
+			<dd>{Moment(notification.startAt).format('LLLL') || 'No Start Time'}</dd>
 
-            <dt>Stop</dt>
-            <dd>{Moment(notification.stopAt).format('LLLL') || 'No End Time'}</dd>
-        </dl>
-        <button onClick={() => onDelete(notification.dismissKey)}>DELETE</button>
-    </div>
+			<dt>Stop</dt>
+			<dd>{Moment(notification.stopAt).format('LLLL') || 'No End Time'}</dd>
+		</dl>
+		<button onClick={()=>onDelete(notification.dismissKey)}>DELETE</button>
+	</>
 );
 
-const NotificationLookup = () => {
-    const [foundNotification, setFoundNotification] = useState(null);
-    const [searching, setSearching] = useState(false);
-    const [error, setError] = useState(null);
-    const [notifications, setNotifications] = useState([]);
+const NotificationLookup = ()=>{
+	const [foundNotification, setFoundNotification] = useState(null);
+	const [searching, setSearching] = useState(false);
+	const [error, setError] = useState(null);
+	const [notifications, setNotifications] = useState([]);
 
-    const lookupAll = async () => {
-        setSearching(true);
-        setError(null);
+	const lookupAll = async ()=>{
+		setSearching(true);
+		setError(null);
 
-        try {
-            const res = await request.get('/admin/notification/all');
-            setNotifications(res.body || []);
-        } catch {
-            setError('Error fetching all notifications.');
-        } finally {
-            setSearching(false);
-        }
-    };
+		try {
+			const res = await request.get('/admin/notification/all');
+			setNotifications(res.body || []);
+		} catch (error) {
+            console.log(error);
+			setError(`Error looking up notifications: ${error.response.body.message}`)
+		} finally {
+			setSearching(false);
+		}
+	};
 
-    const deleteNotification = async (dismissKey) => {
-        if (!dismissKey) return;
+	const deleteNotification = async (dismissKey)=>{
+		if(!dismissKey) return;
 
-        const confirmed = window.confirm(
-            `Really delete notification ${dismissKey}?`
-        );
-        if (!confirmed) {
-            console.log('CANCELLED');
-            return;
-        }
-        console.log('CONFIRMED');
-        try {
-            await request.delete(`/admin/notification/delete/${dismissKey}`);
-            // Only reset the foundNotification if it matches the one being deleted
-            if (foundNotification && foundNotification.dismissKey === dismissKey) {
-                setFoundNotification(null);
-            }
-            // Optionally refresh the list of all notifications
-            lookupAll(); 
-        } catch {
-            setError('Error deleting notification.');
-        }
-    };
+		const confirmed = window.confirm(
+			`Really delete notification ${dismissKey}?`
+		);
+		if(!confirmed) {
+			console.log('Delete notification cancelled');
+			return;
+		}
+		console.log('Delete notification confirm');
+		try {
+			await request.delete(`/admin/notification/delete/${dismissKey}`);
+			// Only reset the foundNotification if it matches the one being deleted
+			if(foundNotification && foundNotification.dismissKey === dismissKey) {
+				setFoundNotification(null);
+			}
+			lookupAll();
+		} catch (error) {
+            console.log(error);
+			setError(`Error deleting notification: ${error.response.body.message}`)
+		};
+	}
 
-    const renderNotificationsList = () => {
-        if (error) {
-            return <div className="error">{error}</div>;
-        }
+	const renderNotificationsList = ()=>{
+		if(error) {
+			return <div className='error'>{error}</div>;
+		}
 
-        if (notifications.length === 0) {
-            return <div className="noNotification">No notifications available.</div>;
-        }
+		if(notifications.length === 0) {
+			return <div className='noNotification'>No notifications available.</div>;
+		}
 
-        return (
-            <ul className="notificationList">
-                {notifications.map((notification) => (
-                    <li key={notification.dismissKey} >
-                        <details>
-                        <summary>{notification.title || 'No Title'}</summary>
-                        <NotificationDetail notification={notification} onDelete={deleteNotification} />
-                    </details></li>
-                    
-                ))}
-            </ul>
-        );
-    };
+		return (
+			<ul className='notificationList'>
+				{notifications.map((notification)=>(
+					<li key={notification.dismissKey} >
+						<details>
+							<summary>{notification.title || 'No Title'}</summary>
+							<NotificationDetail notification={notification} onDelete={deleteNotification} />
+						</details></li>
 
-    return (
-        <div className="notificationLookup">
-                <h2>Check all Notifications</h2><button onClick={lookupAll}>
-                    <i
-                        className={cx('fas', {
-                            'fa-search': !searching,
-                            'fa-spin fa-spinner': searching,
-                        })}
-                    />
-                </button>
-                
+				))}
+			</ul>
+		);
+	};
 
-                {renderNotificationsList()}
-        </div>
-    );
+	return (
+		<div className='notificationLookup'>
+			<h2>Check all Notifications</h2><button onClick={lookupAll}>
+            <i className={`fas ${searching ? 'fa-spin fa-spinner' : 'fa-search'}`} />
+			</button>
+			{renderNotificationsList()}
+		</div>
+	);
 };
 
 module.exports = NotificationLookup;

@@ -517,7 +517,7 @@ const getPureError = (error)=>{
 
 app.use(async (err, req, res, next)=>{
 	err.originalUrl = req.originalUrl;
-	console.error(err);
+	console.error('console.log in app.js: ', err);
 
 	if(err.originalUrl?.startsWith('/api/')) {
 		// console.log('API error');

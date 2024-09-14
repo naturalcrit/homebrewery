@@ -24,20 +24,27 @@ const NotificationAdd = ()=>{
 		const stopAt = new Date(stopAtRef.current.value);
 
 		// Basic validation
-		if(!dismissKey || !title || !text || !startAt || !stopAt) {
-			setState((prevState)=>({
+		if (!dismissKey || !title || !text || isNaN(startAt.getTime()) || isNaN(stopAt.getTime())) {
+			setState((prevState) => ({
 				...prevState,
-				error : 'All fields are required!',
+				error: 'All fields are required',
 			}));
 			return;
 		}
-
+		if (startAt >= stopAt) {
+			setState((prevState) => ({
+				...prevState,
+				error: 'End date must be after the start date!',
+			}));
+			return;
+		}
+	
 		const data = {
 			dismissKey,
 			title,
 			text,
 			startAt : startAt?.toISOString() ?? '',
-			stopAt  : stopAt?.stopAt.toISOString() ?? '',
+			stopAt  : stopAt?.toISOString() ?? '',
 		};
 
 		try {
@@ -56,10 +63,11 @@ const NotificationAdd = ()=>{
 				...update,
 				searching : false,
 			}));
-		} catch (err) {
+		} catch (error) {
+            console.log(error.response.body.message);
 			setState((prevState)=>({
 				...prevState,
-				error     : `Error saving notification: ${err.message}`,
+				error     : `Error saving notification: ${error.response.body.message}`,
 				searching : false,
 			}));
 		}
@@ -110,7 +118,6 @@ const NotificationAdd = ()=>{
 				<i className={`fas ${state.searching ? 'fa-spin fa-spinner' : 'fa-save'}`} />
                 Save Notification
 			</button>
-
 			{state.error && <div className='error'>{state.error}</div>}
 		</div>
 	);

@@ -145,20 +145,20 @@ router.get('/admin/notification/all', async (req, res, next) => {
 	try {
 		const notifications = await NotificationModel.getAll();
 		return res.json(notifications);
-		} catch (err) {
-			return next(err);
+		} catch (error) {
+			console.log('Error getting all notifications: ', error.message);
+			return res.status(500).json({message: error.message});
 		}
 });
 
 router.post('/admin/notification/add', mw.adminOnly, async (req, res, next) => {
     console.table(req.body);
     try {
-        // Assuming you have some validation logic here
         const notification = await NotificationModel.addNotification(req.body);
-        return res.json(notification);
+        return res.status(201).json(notification);
     } catch (error) {
-        console.error('Error adding notification:', error);
-        return res.status(500).json({ error: 'An error occurred while adding the notification' });
+        console.log('Error adding notification: ', error.message);
+        return res.status(500).json({message: error.message});
     }
 });
 
@@ -167,8 +167,8 @@ router.delete('/admin/notification/delete/:id', mw.adminOnly, async (req, res, n
         const notification = await NotificationModel.deleteNotification(req.params.id);
         return res.json(notification);
     } catch (error) {
-        console.error('Error deleting notification: { key: ', req.params.id , ' error: ',  error ,' }');
-        return res.status(500).json({ error: 'An error occurred while deleting the notification' });
+        console.error('Error deleting notification: { key: ', req.params.id , ' error: ',  error.message ,' }');
+        return res.status(500).json({message: error.message});
     }
 });
 
