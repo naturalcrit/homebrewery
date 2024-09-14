@@ -1,7 +1,6 @@
 require('./homePage.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const _ = require('lodash');
 const cx = require('classnames');
 const request = require('../../utils/request-middleware.js');
 const { Meta } = require('vitreum/headtags');
@@ -32,11 +31,13 @@ const HomePage = createClass({
 	},
 	getInitialState : function() {
 		return {
-			brew              : this.props.brew,
-			welcomeText       : this.props.brew.text,
-			error             : undefined,
-			currentEditorPage : 0,
-			themeBundle       : {}
+			brew                       : this.props.brew,
+			welcomeText                : this.props.brew.text,
+			error                      : undefined,
+			currentEditorViewPageNum   : 0,
+			currentEditorCursorPageNum : 0,
+			currentBrewRendererPageNum : 0,
+			themeBundle                : {}
 		};
 	},
 
@@ -61,10 +62,25 @@ const HomePage = createClass({
 	handleSplitMove : function(){
 		this.editor.current.update();
 	},
+
+	handleEditorViewPageChange : function(pageNumber){
+		console.log(`editor view : ${pageNumber}`)
+		this.setState({ currentEditorViewPageNum : pageNumber });
+	},
+
+	handleEditorCursorPageChange : function(pageNumber){
+		console.log(`editor cursor : ${pageNumber}`)
+		this.setState({ currentEditorCursorPageNum : pageNumber });
+	},
+
+	handleBrewRendererPageChange : function(pageNumber){
+		console.log(`brewRenderer view : ${pageNumber}`)
+		this.setState({ currentBrewRendererPageNum : pageNumber });
+	},
+
 	handleTextChange : function(text){
 		this.setState((prevState)=>({
-			brew              : { ...prevState.brew, text: text },
-			currentEditorPage : this.editor.current.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
+			brew                       : { ...prevState.brew, text: text },
 		}));
 	},
 	renderNavbar : function(){
@@ -97,12 +113,20 @@ const HomePage = createClass({
 						renderer={this.state.brew.renderer}
 						showEditButtons={false}
 						snippetBundle={this.state.themeBundle.snippets}
+						onCursorPageChange={this.handleEditorCursorPageChange}
+						onViewPageChange={this.handleEditorViewPageChange}
+						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
+						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
+						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}
 						style={this.state.brew.style}
 						renderer={this.state.brew.renderer}
-						currentEditorPage={this.state.currentEditorPage}
+						onPageChange={this.handleBrewRendererPageChange}
+						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
+						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
+						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 						themeBundle={this.state.themeBundle}
 					/>
 				</SplitPane>
