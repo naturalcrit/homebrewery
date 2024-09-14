@@ -496,8 +496,6 @@ const Editor = createClass({
 					view={this.state.view}
 					value={this.props.brew.text}
 					onChange={this.props.onTextChange}
-					onCursorActivity={this.props.onCursorActivity}
-					onScroll={this.props.onPageChange}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent} />
 			</>;
