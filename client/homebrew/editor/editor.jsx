@@ -150,7 +150,7 @@ const Editor = createClass({
 			codeMirror.operation(()=>{ // Batch CodeMirror styling
 
 				const foldLines = [];
-        
+
 				//reset custom text styles
 				const customHighlights = codeMirror.getAllMarks().filter((mark)=>{
 					// Record details of folded sections

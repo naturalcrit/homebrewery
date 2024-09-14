@@ -399,7 +399,7 @@ const CodeEditor = createClass({
 	},
 	getTopVisibleLine : function(){
 		const rect = this.codeMirror.getWrapperElement().getBoundingClientRect();
-    const topVisibleLine = this.codeMirror.lineAtHeight(rect.top, "window");
+		const topVisibleLine = this.codeMirror.lineAtHeight(rect.top, "window");
 		return topVisibleLine;
 	},
 	updateSize : function(){
