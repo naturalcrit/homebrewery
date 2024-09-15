@@ -1,8 +1,9 @@
 /* eslint-disable max-lines */
 require('./editPage.less');
 const React = require('react');
-const createClass = require('create-react-class');
 const _ = require('lodash');
+const createClass = require('create-react-class');
+
 const request = require('../../utils/request-middleware.js');
 const { Meta } = require('vitreum/headtags');
 
@@ -43,22 +44,24 @@ const EditPage = createClass({
 
 	getInitialState : function() {
 		return {
-			brew                   : this.props.brew,
-			isSaving               : false,
-			isPending              : false,
-			alertTrashedGoogleBrew : this.props.brew.trashed,
-			alertLoginToTransfer   : false,
-			saveGoogle             : this.props.brew.googleId ? true : false,
-			confirmGoogleTransfer  : false,
-			error                  : null,
-			htmlErrors             : Markdown.validate(this.props.brew.text),
-			url                    : '',
-			autoSave               : true,
-			autoSaveWarning        : false,
-			unsavedTime            : new Date(),
-			currentEditorPage      : 0,
-			displayLockMessage     : this.props.brew.lock || false,
-			themeBundle            : {}
+			brew                       : this.props.brew,
+			isSaving                   : false,
+			isPending                  : false,
+			alertTrashedGoogleBrew     : this.props.brew.trashed,
+			alertLoginToTransfer       : false,
+			saveGoogle                 : this.props.brew.googleId ? true : false,
+			confirmGoogleTransfer      : false,
+			error                      : null,
+			htmlErrors                 : Markdown.validate(this.props.brew.text),
+			url                        : '',
+			autoSave                   : true,
+			autoSaveWarning            : false,
+			unsavedTime                : new Date(),
+			currentEditorViewPageNum   : 0,
+			currentEditorCursorPageNum : 0,
+			currentBrewRendererPageNum : 0,
+			displayLockMessage         : this.props.brew.lock || false,
+			themeBundle                : {}
 		};
 	},
 
@@ -115,16 +118,31 @@ const EditPage = createClass({
 		this.editor.current.update();
 	},
 
+	handleEditorViewPageChange : function(pageNumber){
+		console.log(`editor view : ${pageNumber}`);
+		this.setState({ currentEditorViewPageNum: pageNumber });
+	},
+
+	handleEditorCursorPageChange : function(pageNumber){
+		console.log(`editor cursor : ${pageNumber}`);
+		this.setState({ currentEditorCursorPageNum: pageNumber });
+	},
+
+	handleBrewRendererPageChange : function(pageNumber){
+		console.log(`brewRenderer view : ${pageNumber}`);
+		this.setState({ currentBrewRendererPageNum: pageNumber });
+	},
+
 	handleTextChange : function(text){
 		//If there are errors, run the validator on every change to give quick feedback
+		console.log('text change');
 		let htmlErrors = this.state.htmlErrors;
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 
 		this.setState((prevState)=>({
-			brew              : { ...prevState.brew, text: text },
-			isPending         : true,
-			htmlErrors        : htmlErrors,
-			currentEditorPage : this.editor.current.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
+			brew       : { ...prevState.brew, text: text },
+			isPending  : true,
+			htmlErrors : htmlErrors,
 		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
@@ -429,6 +447,11 @@ const EditPage = createClass({
 						userThemes={this.props.userThemes}
 						snippetBundle={this.state.themeBundle.snippets}
 						updateBrew={this.updateBrew}
+						onCursorPageChange={this.handleEditorCursorPageChange}
+						onViewPageChange={this.handleEditorViewPageChange}
+						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
+						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
+						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}
@@ -438,7 +461,10 @@ const EditPage = createClass({
 						themeBundle={this.state.themeBundle}
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
-						currentEditorPage={this.state.currentEditorPage}
+						onPageChange={this.handleBrewRendererPageChange}
+						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
+						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
+						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 						allowPrint={true}
 					/>
 				</SplitPane>
