@@ -79,44 +79,38 @@ const BrewRenderer = (props)=>{
 
 	useEffect(() => {
 		const locationHash = window.location.hash;
-		const iframe = document.getElementById('BrewRenderer');
-		
 		const pageIdRegex = /^#p\d+$/;
 		
-		const handleIframeLoad = () => {
-			setTimeout(() => {
+		console.log(state);
+		
+		if (locationHash) {
+			if (state.isMounted) {
 				if (pageIdRegex.test(locationHash)) {
 					const pageNumber = parseInt(locationHash.slice(2));
 					scrollToPage(pageNumber - 1);
 				} else {
 					const elementId = locationHash.slice(1);
 					if (elementId) {
-						getPageContainingElement(elementId)
-							.then((pageNumber) => {
-								if (pageNumber !== -1) {
-									scrollToPage(pageNumber);
-								}
-							})
-							.catch((error) => {
-								console.error('Error:', error);
-							});
+						const element = document.getElementById(elementId);
+						console.log(element);
+						if (element) {
+							
+							const page = element.closest(".page");
+							// Ensure `page` exists before proceeding
+							if (page) {
+								console.log(page.getAttribute("Id").slice(1));
+								scrollToPage(page.getAttribute("Id").slice(1));
+							}
+						}
 					}
 				}
-			}, 100);
-		};
-		
-		if (locationHash) {
-			iframe.addEventListener('load', handleIframeLoad);
-		}
-
-		return () => {
-			if (locationHash) {
-				iframe.removeEventListener('load', handleIframeLoad);
 			}
+		}
+	
+		return () => {
 			window.removeEventListener('resize', updateSize);
 		};
-	}, []);
-	
+	}, [state.isMounted]);
 
 	const scrollToPage = (pageNumber) => {
 		const iframe = document.getElementById('BrewRenderer');
@@ -132,24 +126,6 @@ const BrewRenderer = (props)=>{
                 }
             }
         }
-    };
-	
-	const getPageContainingElement = (elementId) => {
-		const iframe = document.getElementById('BrewRenderer');
-        return new Promise((resolve) => {
-            const brewRenderer =
-                iframe.contentWindow.document.querySelector('.brewRenderer');
-            const pages = brewRenderer.querySelectorAll('.page');
-            for (let i = 0; i < pages.length; i++) {
-                if (pages[i].querySelector(`#${elementId}`)) {
-                    resolve(i);
-                    return;
-                }
-            }
-
-            console.log('Element with ID not found in any page.');
-            resolve(-1);
-        });
     };
 
 	const updateSize = ()=>{
