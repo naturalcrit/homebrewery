@@ -59,6 +59,7 @@ app.use((req, res, next)=>{
 
 app.use(homebrewApi);
 app.use(require('./admin.api.js'));
+app.use(require('./vault.api.js'));
 
 const HomebrewModel     = require('./homebrew.model.js').model;
 const welcomeText       = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
@@ -234,6 +235,23 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	res.status(200).send(brew.text);
 });
 
+//Serve brew metadata
+app.get('/metadata/:id', asyncHandler(getBrew('share')), (req, res) => {
+	const { brew } = req;
+	sanitizeBrew(brew, 'share');
+  
+	const fields = [ 'title', 'pageCount', 'description', 'authors', 'lang', 
+	  'published', 'views', 'shareId', 'createdAt', 'updatedAt', 
+	  'lastViewed', 'thumbnail', 'tags'
+	];
+  
+	const metadata = fields.reduce((acc, field) => {
+	  if (brew[field] !== undefined) acc[field] = brew[field];
+	  return acc;
+	}, {});
+	res.status(200).json(metadata);
+});
+  
 //Serve brew styling
 app.get('/css/:id', asyncHandler(getBrew('share')), (req, res)=>{getCSS(req, res);});
 
@@ -465,6 +483,15 @@ if(isLocalEnvironment){
 		return res.json(payload);
 	});
 }
+
+//Vault Page
+app.get('/vault', asyncHandler(async(req, res, next)=>{
+	req.ogMeta = { ...defaultMetaTags,
+		title       : 'The Vault',
+		description : 'Search for Brews'
+	};
+	return next();
+}));
 
 //Send rendered page
 app.use(asyncHandler(async (req, res, next)=>{

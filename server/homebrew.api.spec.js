@@ -309,7 +309,7 @@ describe('Tests for api', ()=>{
 			const req = { brew: {} };
 			const next = jest.fn();
 
-			await expect(fn(req, null, next)).rejects.toEqual({ 'HBErrorCode': '100', 'brewId': '1', 'brewTitle': 'test brew', 'code': 404, 'message': 'brew locked' });
+			await expect(fn(req, null, next)).rejects.toEqual({ 'HBErrorCode': '51', 'brewId': '1', 'brewTitle': 'test brew', 'code': 404, 'message': 'brew locked' });
 		});
 	});
 
