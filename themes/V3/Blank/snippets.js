@@ -24,14 +24,30 @@ module.exports = [
 				gen  : '\n\\page\n'
 			},
 			{
-				name : 'Page Number',
-				icon : 'fas fa-bookmark',
-				gen  : '{{pageNumber 1}}\n'
-			},
-			{
-				name : 'Auto-incrementing Page Number',
-				icon : 'fas fa-sort-numeric-down',
-				gen  : '{{pageNumber,auto}}\n'
+				name        : 'Page Numbering',
+				icon        : 'fas fa-bookmark',
+				subsnippets : [
+					{
+						name : 'Page Number',
+						icon : 'fas fa-bookmark',
+						gen  : '{{pageNumber 1}}\n'
+					},
+					{
+						name : 'Auto-incrementing Page Number',
+						icon : 'fas fa-sort-numeric-down',
+						gen  : '{{pageNumber,auto}}\n'
+					},
+					{
+						name : 'Skip Page Number Increment this Page',
+						icon : 'fas fa-xmark',
+						gen  : '{{skipCounting}}\n'
+					},
+					{
+						name : 'Restart Numbering',
+						icon : 'fas fa-arrow-rotate-left',
+						gen  : '{{resetCounting}}\n'
+					},
+				]
 			},
 			{
 				name        : 'Footer',
