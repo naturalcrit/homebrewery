@@ -1,38 +1,26 @@
 export const HISTORY_PREFIX = 'HOMEBREWERY-HISTORY';
 export const HISTORY_SLOTS = 5;
-// const HISTORY_SAVE_DELAYS = {
-//  0: 0,           // 0 minutes (if not specified)
-// 	1: 2,			// 2 minutes
-// 	2: 10,			// 10 minutes
-// 	3: 60,			// 60 minutes
-// 	4: 12 * 60,     // 12 hours
-// 	5: 2 * 24 * 60  // 2 days
-// };
-//
-// const GARBAGE_COLLECT_DELAY = 28 * 24 * 60; // 28 days
 
-
-// <=================== TEST VALUES STARTS ===================>
-
-// Test values
-const HISTORY_SAVE_DELAYS = {
-	0 : 0,           // 0 minutes (if not specified)
-	1 : 1,			// 1 minutes
-	2 : 2,			// 2 minutes
-	3 : 3,			// 3 minutes
-	4 : 4,           // 4 minutes
-	5 : 5            // 5 minutes
+const DEFAULT_HISTORY_SAVE_DELAYS = {
+ 	'0' : 0,           // 0 minutes (if not specified)
+	'1' : 2,			// 2 minutes
+	'2' : 10,			// 10 minutes
+	'3' : 60,			// 60 minutes
+	'4' : 12 * 60,     // 12 hours
+	'5' : 2 * 24 * 60  // 2 days
 };
-const GARBAGE_COLLECT_DELAY = 10; // 10 minutes
 
-// <==================== TEST VALUES ENDS ====================>
-
-
+const DEFAULT_GARBAGE_COLLECT_DELAY = 28 * 24 * 60; // 28 days
 
 const DEFAULT_STORED_BREW = {
 	shareId  : 'default_brew',
 	expireAt : '2000-01-01T00:00:00.000Z'
 };
+
+const HISTORY_SAVE_DELAYS = global.config?.historyData?.HISTORY_SAVE_DELAYS ?? DEFAULT_HISTORY_SAVE_DELAYS;
+const GARBAGE_COLLECT_DELAY = global.config?.historyData?.GARBAGE_COLLECT_DELAY ?? DEFAULT_GARBAGE_COLLECT_DELAY;
+
+
 
 function getKeyBySlot(brew, slot){
 	return `${HISTORY_PREFIX}-${brew.shareId}-${slot}`;
