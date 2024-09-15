@@ -40,7 +40,8 @@ const Snippetbar = createClass({
 			unfoldCode        : ()=>{},
 			updateEditorTheme : ()=>{},
 			cursorPos         : {},
-			snippetBundle     : []
+			snippetBundle     : [],
+			updateBrew        : ()=>{}
 		};
 	},
 
@@ -148,6 +149,10 @@ const Snippetbar = createClass({
 		});
 	},
 
+	replaceContent : function(item){
+		return this.props.updateBrew(item);
+	},
+
 	renderHistoryItems : function() {
 		const historyItems = getHistoryItems(this.props.brew);
 
@@ -156,12 +161,18 @@ const Snippetbar = createClass({
 				if(!item.savedAt) return;
 
 				const saveTime = new Date(item.savedAt);
-				const diffTime = new Date() - saveTime;
-				const diffMins = Math.floor(diffTime / (60 * 1000));
+				const diffMs = new Date() - saveTime;
+				const diffMins = Math.floor(diffMs / (60 * 1000));
 
-				return <div className='snippet' key={index} >
+				let diffString = `about ${diffMins} minutes ago`;
+
+				if(diffMins > 60) diffString = `about ${Math.floor(diffMins / 60)} hours ago`;
+				if(diffMins > (24 * 60)) diffString = `about ${Math.floor(diffMins / (24 * 60))} days ago`;
+				if(diffMins > (7 * 24 * 60)) diffString = `about ${Math.floor(diffMins / (7 * 24 * 60))} weeks ago`;
+
+				return <div className='snippet' key={index} onClick={()=>{this.replaceContent(item);}} >
 					<i className={`fas fa-${index+1}`} />
-					<span className='name' title={saveTime.toISOString()}>v{item.version} : about {diffMins} mins ago</span>
+					<span className='name' title={saveTime.toISOString()}>v{item.version} : {diffString}</span>
 				</div>;
 			})}
 		</div>;

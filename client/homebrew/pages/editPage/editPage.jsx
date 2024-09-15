@@ -152,6 +152,16 @@ const EditPage = createClass({
 		return !_.isEqual(this.state.brew, this.savedBrew);
 	},
 
+	updateBrew : function(newData){
+		this.setState((prevState)=>({
+			brew : {
+				...prevState.brew,
+				style : newData.style,
+				text  : newData.text
+			}
+		}));
+	},
+
 	trySave : function(immediate=false){
 		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
 		if(this.hasChanges()){
@@ -418,6 +428,7 @@ const EditPage = createClass({
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
 						snippetBundle={this.state.themeBundle.snippets}
+						updateBrew={this.updateBrew}
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}
