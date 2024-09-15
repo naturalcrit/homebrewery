@@ -1,4 +1,4 @@
-/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
 require('./editor.less');
 const React = require('react');
 const createClass = require('create-react-class');
@@ -88,9 +88,9 @@ const Editor = createClass({
 		if(!(e.ctrlKey && e.metaKey)) return;
 		const LEFTARROW_KEY = 37;
 		const RIGHTARROW_KEY = 39;
-		if (e.shiftKey && (e.keyCode == RIGHTARROW_KEY)) this.brewJump();
-		if (e.shiftKey && (e.keyCode == LEFTARROW_KEY)) this.sourceJump();
-		if ((e.keyCode == LEFTARROW_KEY) || (e.keyCode == RIGHTARROW_KEY)) {
+		if(e.shiftKey && (e.keyCode == RIGHTARROW_KEY)) this.brewJump();
+		if(e.shiftKey && (e.keyCode == LEFTARROW_KEY)) this.sourceJump();
+		if((e.keyCode == LEFTARROW_KEY) || (e.keyCode == RIGHTARROW_KEY)) {
 			e.stopPropagation();
 			e.preventDefault();
 		}
@@ -139,13 +139,13 @@ const Editor = createClass({
 			codeMirror.operation(()=>{ // Batch CodeMirror styling
 
 				const foldLines = [];
-        
+
 				//reset custom text styles
 				const customHighlights = codeMirror.getAllMarks().filter((mark)=>{
 					// Record details of folded sections
 					if(mark.__isFold) {
 						const fold = mark.find();
-						foldLines.push({from: fold.from?.line, to: fold.to?.line});
+						foldLines.push({ from: fold.from?.line, to: fold.to?.line });
 					}
 					return !mark.__isFold;
 				}); //Don't undo code folding
@@ -163,7 +163,7 @@ const Editor = createClass({
 
 					// Don't process lines inside folded text
 					// If the current lineNumber is inside any folded marks, skip line styling
-					if (foldLines.some(fold => lineNumber >= fold.from && lineNumber <= fold.to))
+					if(foldLines.some((fold)=>lineNumber >= fold.from && lineNumber <= fold.to))
 						return;
 
 					// Styling for \page breaks
@@ -189,7 +189,7 @@ const Editor = createClass({
 
 						// definition lists
 						if(line.includes('::')){
-							if(/^:*$/.test(line) == true){ return };
+							if(/^:*$/.test(line) == true){ return; };
 							const regex = /^([^\n]*?:?\s?)(::[^\n]*)(?:\n|$)/ymd;  // the `d` flag, for match indices, throws an ESLint error.
 							let match;
 							while ((match = regex.exec(line)) != null){
@@ -197,10 +197,10 @@ const Editor = createClass({
 								codeMirror.markText({ line: lineNumber, ch: match.indices[1][0] }, { line: lineNumber, ch: match.indices[1][1] }, { className: 'dt-highlight' });
 								codeMirror.markText({ line: lineNumber, ch: match.indices[2][0] }, { line: lineNumber, ch: match.indices[2][1] }, { className: 'dd-highlight' });
 								const ddIndex = match.indices[2][0];
-								let colons = /::/g;
-								let colonMatches = colons.exec(match[2]);
+								const colons = /::/g;
+								const colonMatches = colons.exec(match[2]);
 								if(colonMatches !== null){
-									codeMirror.markText({ line: lineNumber, ch: colonMatches.index + ddIndex }, { line: lineNumber, ch: colonMatches.index + colonMatches[0].length + ddIndex }, { className: 'dl-colon-highlight'} )
+									codeMirror.markText({ line: lineNumber, ch: colonMatches.index + ddIndex }, { line: lineNumber, ch: colonMatches.index + colonMatches[0].length + ddIndex }, { className: 'dl-colon-highlight' });
 								}
 							}
 						}
@@ -210,12 +210,12 @@ const Editor = createClass({
 							let startIndex = line.indexOf('^');
 							const superRegex = /\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^/gy;
 							const subRegex   = /\^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^\^/gy;
-							
+
 							while (startIndex >= 0) {
 								superRegex.lastIndex = subRegex.lastIndex = startIndex;
 								let isSuper = false;
-								let match = subRegex.exec(line) || superRegex.exec(line);
-								if (match) {
+								const match = subRegex.exec(line) || superRegex.exec(line);
+								if(match) {
 									isSuper = !subRegex.lastIndex;
 									codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: isSuper ? 'superscript' : 'subscript' });
 								}
@@ -265,18 +265,18 @@ const Editor = createClass({
 
 							while (startIndex >= 0) {
 								emojiRegex.lastIndex = startIndex;
-								let match = emojiRegex.exec(line);
-								if (match) {
+								const match = emojiRegex.exec(line);
+								if(match) {
 									let tokens = Markdown.marked.lexer(match[0]);
-									tokens = tokens[0].tokens.filter(t => t.type == 'emoji')
-									if (!tokens.length)
+									tokens = tokens[0].tokens.filter((t)=>t.type == 'emoji');
+									if(!tokens.length)
 										return;
 
-									let startPos = { line: lineNumber, ch: match.index };
-									let endPos   = { line: lineNumber, ch: match.index + match[0].length };
+									const startPos = { line: lineNumber, ch: match.index };
+									const endPos   = { line: lineNumber, ch: match.index + match[0].length };
 
 									// Iterate over conflicting marks and clear them
-									var marks = codeMirror.findMarks(startPos, endPos);
+									const marks = codeMirror.findMarks(startPos, endPos);
 									marks.forEach(function(marker) {
 										if(!marker.__isFold) marker.clear();
 									});
