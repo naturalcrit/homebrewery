@@ -57,9 +57,9 @@ const EditPage = createClass({
 			autoSave                   : true,
 			autoSaveWarning            : false,
 			unsavedTime                : new Date(),
-			currentEditorViewPageNum   : 0,
-			currentEditorCursorPageNum : 0,
-			currentBrewRendererPageNum : 0,
+			currentEditorViewPageNum   : 1,
+			currentEditorCursorPageNum : 1,
+			currentBrewRendererPageNum : 1,
 			displayLockMessage         : this.props.brew.lock || false,
 			themeBundle                : {}
 		};
@@ -119,23 +119,19 @@ const EditPage = createClass({
 	},
 
 	handleEditorViewPageChange : function(pageNumber){
-		console.log(`editor view : ${pageNumber}`);
 		this.setState({ currentEditorViewPageNum: pageNumber });
 	},
 
 	handleEditorCursorPageChange : function(pageNumber){
-		console.log(`editor cursor : ${pageNumber}`);
 		this.setState({ currentEditorCursorPageNum: pageNumber });
 	},
 
 	handleBrewRendererPageChange : function(pageNumber){
-		console.log(`brewRenderer view : ${pageNumber}`);
 		this.setState({ currentBrewRendererPageNum: pageNumber });
 	},
 
 	handleTextChange : function(text){
 		//If there are errors, run the validator on every change to give quick feedback
-		console.log('text change');
 		let htmlErrors = this.state.htmlErrors;
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 

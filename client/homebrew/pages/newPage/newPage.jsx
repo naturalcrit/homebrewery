@@ -44,9 +44,9 @@ const NewPage = createClass({
 			saveGoogle                 : (global.account && global.account.googleId ? true : false),
 			error                      : null,
 			htmlErrors                 : Markdown.validate(brew.text),
-			currentEditorViewPageNum   : 0,
-			currentEditorCursorPageNum : 0,
-			currentBrewRendererPageNum : 0,
+			currentEditorViewPageNum   : 1,
+			currentEditorCursorPageNum : 1,
+			currentBrewRendererPageNum : 1,
 			themeBundle                : {}
 		};
 	},
@@ -111,17 +111,14 @@ const NewPage = createClass({
 	},
 
 	handleEditorViewPageChange : function(pageNumber){
-		console.log(`editor view : ${pageNumber}`);
 		this.setState({ currentEditorViewPageNum: pageNumber });
 	},
 
 	handleEditorCursorPageChange : function(pageNumber){
-		console.log(`editor cursor : ${pageNumber}`);
 		this.setState({ currentEditorCursorPageNum: pageNumber });
 	},
 
 	handleBrewRendererPageChange : function(pageNumber){
-		console.log(`brewRenderer view : ${pageNumber}`);
 		this.setState({ currentBrewRendererPageNum: pageNumber });
 	},
 
