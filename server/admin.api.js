@@ -23,7 +23,7 @@ const mw = {
             if (!req.get('authorization')) {
                 return res
                     .set('WWW-Authenticate', 'Basic realm="Authorization Required"')
-                    .status(51)
+                    .status(401)
                     .send('Authorization Required');
             }
             const [username, password] = Buffer.from(req.get('authorization').split(' ').pop(), 'base64')
