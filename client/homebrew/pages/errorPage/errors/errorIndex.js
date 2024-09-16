@@ -201,7 +201,7 @@ const errorIndex = (props)=>{
 		as so at our subreddit or discord you will find in the home page.
 		`,
 
-		'53' : dedent`
+		'54' : dedent`
 		## You have runned out of attempts
 
 		You have failed to provide correct credentials to access the page too many times, and you have run out of attempts.

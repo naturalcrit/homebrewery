@@ -9,7 +9,7 @@ const rateLimit = require('express-rate-limit');
 const loginLimiter = rateLimit({
 	timeWindow : 24 * 60 * 60 * 1000, // 24 hours window
 	max        : 10, // limit each IP to 10 requests per timeWindow
-	handler    : ()=>{throw { HBErrorCode: '470', code: 470, message: 'Too many failed login attempts, try again later' }; }
+	handler    : ()=>{throw { HBErrorCode: '54', code: 470, message: 'Too many failed login attempts, try again later' }; }
 });
 
 //Local version username and password
@@ -23,7 +23,7 @@ const mw = {
             if (!req.get('authorization')) {
                 return res
                     .set('WWW-Authenticate', 'Basic realm="Authorization Required"')
-                    .status(401)
+                    .status(51)
                     .send('Authorization Required');
             }
             const [username, password] = Buffer.from(req.get('authorization').split(' ').pop(), 'base64')
@@ -32,7 +32,7 @@ const mw = {
             if (process.env.ADMIN_USER === username && process.env.ADMIN_PASS === password) {
                 return next();
             }
-            throw { HBErrorCode: '403', code: 401, message: 'Access denied' };
+            throw { HBErrorCode: '53', code: 401, message: 'Access denied' };
         }
     ]
 };
