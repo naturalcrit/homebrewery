@@ -322,15 +322,8 @@ const Editor = createClass({
 		const currentPos = brewRenderer.scrollTop;
 		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
 
-		if(Math.abs(targetPos) < 1)
-			return;
-
-		isJumping = true;
-
-		// Detect end of scroll event to avoid feedback loops
-		let scrollingTimeout;
-
 		const checkIfScrollComplete = () => {
+			let scrollingTimeout;
 			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
 			scrollingTimeout = setTimeout(() => {
 				isJumping = false;
@@ -338,6 +331,8 @@ const Editor = createClass({
 			}, 150);	// If 150 ms pass without a brewRenderer scroll event, assume scrolling is done
 		};
 
+		isJumping = true;
+		checkIfScrollComplete();
 		brewRenderer.addEventListener('scroll', checkIfScrollComplete);
 
 		if(smooth) {
@@ -365,20 +360,13 @@ const Editor = createClass({
 
 		const textSplit  = this.props.renderer == 'V3' ? /^\\page$/gm : /\\page/;
 		const textString = this.props.brew.text.split(textSplit).slice(0, targetPage-1).join(textSplit);
-		const targetLine  = (textString.match(/\n/g) || []).length;
+		const targetLine = textString.match('\n') ? textString.split('\n').length - 1 : -1;
 
 		let currentY = this.codeEditor.current.codeMirror.getScrollInfo().top;
 		let targetY  = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
-
-		if (Math.abs(targetY - currentY) < 1)
-			return;
-
-		isJumping = true;
-	
-		// Detect end of scroll event to avoid feedback loops
-		let scrollingTimeout;
 	
 		const checkIfScrollComplete = () => {
+			let scrollingTimeout;
 			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
 			scrollingTimeout = setTimeout(() => {
 				isJumping = false;
@@ -386,6 +374,8 @@ const Editor = createClass({
 			}, 150); // If 150 ms pass without a scroll event, assume scrolling is done
 		};
 	
+		isJumping = true;
+		checkIfScrollComplete();
 		this.codeEditor.current.codeMirror.on('scroll', checkIfScrollComplete);
 
 		if(smooth) {
