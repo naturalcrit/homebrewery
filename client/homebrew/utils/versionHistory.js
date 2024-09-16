@@ -3,7 +3,7 @@ export const HISTORY_SLOTS = 5;
 
 // History values in minutes
 const DEFAULT_HISTORY_SAVE_DELAYS = {
- 	'0' : 0,
+	'0' : 0,
 	'1' : 2,
 	'2' : 10,
 	'3' : 60,
@@ -38,28 +38,28 @@ function getVersionBySlot(brew, slot){
 };
 
 function updateStoredBrew(brew, slot = 0) {
-  const archiveBrew = {
-    title    : brew.title,
-    text     : brew.text,
-    style    : brew.style,
-    version  : brew.version,
-    shareId  : brew.shareId,
-    savedAt  : brew?.savedAt || new Date(),
-    expireAt : new Date()
-  };
+	const archiveBrew = {
+		title    : brew.title,
+		text     : brew.text,
+		style    : brew.style,
+		version  : brew.version,
+		shareId  : brew.shareId,
+		savedAt  : brew?.savedAt || new Date(),
+		expireAt : new Date()
+	};
 
-  archiveBrew.expireAt.setMinutes(archiveBrew.expireAt.getMinutes() + HISTORY_SAVE_DELAYS[slot]);
+	archiveBrew.expireAt.setMinutes(archiveBrew.expireAt.getMinutes() + HISTORY_SAVE_DELAYS[slot]);
 
-  const key = getKeyBySlot(brew, slot);
-  localStorage.setItem(key, JSON.stringify(archiveBrew));
+	const key = getKeyBySlot(brew, slot);
+	localStorage.setItem(key, JSON.stringify(archiveBrew));
 }
 
 
 export function historyExists(brew){
 	return Object.keys(localStorage)
-        .some((key)=>{
-        	return key.startsWith(`${HISTORY_PREFIX}-${brew.shareId}`);
-        });
+		.some((key)=>{
+			return key.startsWith(`${HISTORY_PREFIX}-${brew.shareId}`);
+		});
 }
 
 export function loadHistory(brew){
@@ -108,14 +108,14 @@ export function getHistoryItems(brew){
 
 export function versionHistoryGarbageCollection(){
 	Object.keys(localStorage)
-        .filter((key)=>{
-        	return key.startsWith(HISTORY_PREFIX);
-        })
-        .forEach((key)=>{
-        	const collectAt = new Date(JSON.parse(localStorage.getItem(key)).savedAt);
-        	collectAt.setMinutes(collectAt.getMinutes() + GARBAGE_COLLECT_DELAY);
-        	if(new Date() > collectAt){
-        		localStorage.removeItem(key);
-        	}
-        });
+		.filter((key)=>{
+			return key.startsWith(HISTORY_PREFIX);
+		})
+		.forEach((key)=>{
+			const collectAt = new Date(JSON.parse(localStorage.getItem(key)).savedAt);
+			collectAt.setMinutes(collectAt.getMinutes() + GARBAGE_COLLECT_DELAY);
+			if(new Date() > collectAt){
+				localStorage.removeItem(key);
+			}
+		});
 };
