@@ -36,7 +36,7 @@ const Editor = createClass({
 			onStyleChange : ()=>{},
 			onMetaChange  : ()=>{},
 			reportError   : ()=>{},
-			
+
 			onCursorPageChange : ()=>{},
 			onViewPageChange   : ()=>{},
 
@@ -45,7 +45,7 @@ const Editor = createClass({
 
 			currentEditorCursorPageNum : 1,
 			currentEditorViewPageNum   : 1,
-			currentBrewRendererPageNum : 1, 
+			currentBrewRendererPageNum : 1,
 		};
 	},
 	getInitialState : function() {
@@ -70,8 +70,8 @@ const Editor = createClass({
 		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
 
-		this.codeEditor.current.codeMirror.on('cursorActivity', (cm)=>{this.updateCurrentCursorPage(cm.getCursor())});
-		this.codeEditor.current.codeMirror.on('scroll', _.throttle(()=>{this.updateCurrentViewPage(this.codeEditor.current.getTopVisibleLine())}, 200));
+		this.codeEditor.current.codeMirror.on('cursorActivity', (cm)=>{this.updateCurrentCursorPage(cm.getCursor());});
+		this.codeEditor.current.codeMirror.on('scroll', _.throttle(()=>{this.updateCurrentViewPage(this.codeEditor.current.getTopVisibleLine());}, 200));
 
 		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
 		if(editorTheme) {
@@ -109,9 +109,9 @@ const Editor = createClass({
 		if(!(e.ctrlKey && e.metaKey && e.shiftKey)) return;
 		const LEFTARROW_KEY = 37;
 		const RIGHTARROW_KEY = 39;
-		if (e.keyCode == RIGHTARROW_KEY) this.brewJump();
-		if (e.keyCode == LEFTARROW_KEY) this.sourceJump();
-		if (e.keyCode == LEFTARROW_KEY || e.keyCode == RIGHTARROW_KEY) {
+		if(e.keyCode == RIGHTARROW_KEY) this.brewJump();
+		if(e.keyCode == LEFTARROW_KEY) this.sourceJump();
+		if(e.keyCode == LEFTARROW_KEY || e.keyCode == RIGHTARROW_KEY) {
 			e.stopPropagation();
 			e.preventDefault();
 		}
@@ -128,14 +128,14 @@ const Editor = createClass({
 	updateCurrentCursorPage : function(cursor) {
 		const lines = this.props.brew.text.split('\n').slice(0, cursor.line + 1);
 		const pageRegex = this.props.brew.renderer == 'V3' ? /^\\page$/ : /\\page/;
-		const currentPage = lines.reduce((count, line) => count + (pageRegex.test(line) ? 1 : 0), 1);
+		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1);
 		this.props.onCursorPageChange(currentPage);
 	},
 
 	updateCurrentViewPage : function(topScrollLine) {
 		const lines = this.props.brew.text.split('\n').slice(0, topScrollLine + 1);
 		const pageRegex = this.props.brew.renderer == 'V3' ? /^\\page$/ : /\\page/;
-		const currentPage = lines.reduce((count, line) => count + (pageRegex.test(line) ? 1 : 0), 1);
+		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1);
 		this.props.onViewPageChange(currentPage);
 	},
 
@@ -322,10 +322,10 @@ const Editor = createClass({
 		const currentPos = brewRenderer.scrollTop;
 		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
 
-		const checkIfScrollComplete = () => {
+		const checkIfScrollComplete = ()=>{
 			let scrollingTimeout;
 			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
-			scrollingTimeout = setTimeout(() => {
+			scrollingTimeout = setTimeout(()=>{
 				isJumping = false;
 				brewRenderer.removeEventListener('scroll', checkIfScrollComplete);
 			}, 150);	// If 150 ms pass without a brewRenderer scroll event, assume scrolling is done
@@ -364,16 +364,16 @@ const Editor = createClass({
 
 		let currentY = this.codeEditor.current.codeMirror.getScrollInfo().top;
 		let targetY  = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
-	
-		const checkIfScrollComplete = () => {
+
+		const checkIfScrollComplete = ()=>{
 			let scrollingTimeout;
 			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
-			scrollingTimeout = setTimeout(() => {
+			scrollingTimeout = setTimeout(()=>{
 				isJumping = false;
 				this.codeEditor.current.codeMirror.off('scroll', checkIfScrollComplete);
 			}, 150); // If 150 ms pass without a scroll event, assume scrolling is done
 		};
-	
+
 		isJumping = true;
 		checkIfScrollComplete();
 		this.codeEditor.current.codeMirror.on('scroll', checkIfScrollComplete);
