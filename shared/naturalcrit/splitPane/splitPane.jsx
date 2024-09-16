@@ -15,12 +15,12 @@ const SplitPane = createClass({
 
 	getInitialState : function() {
 		return {
-			currentDividerPos  : null,
-			windowWidth        : 0,
-			isDragging         : false,
-			moveSource         : false,
-			moveBrew           : false,
-			showMoveArrows     : true
+			currentDividerPos : null,
+			windowWidth       : 0,
+			isDragging        : false,
+			moveSource        : false,
+			moveBrew          : false,
+			showMoveArrows    : true
 		};
 	},
 
@@ -45,7 +45,7 @@ const SplitPane = createClass({
 
 		// This lives here instead of in the initial render because you cannot touch localStorage until the componant mounts.
 		const loadLiveScroll = window.localStorage.getItem('liveScroll') === 'true';
-		this.setState({ liveScroll : loadLiveScroll });
+		this.setState({ liveScroll: loadLiveScroll });
 	},
 
 	componentWillUnmount : function() {
@@ -130,7 +130,7 @@ const SplitPane = createClass({
 					<i className='fas fa-arrow-right' />
 				</div>
 				<div id='scrollToggleDiv' className={this.state.liveScroll ? 'arrow lock' : 'arrow unlock'}
-					style={{ left: this.state.currentDividerPos-4 }} 
+					style={{ left: this.state.currentDividerPos-4 }}
 					onClick={this.liveScrollToggle} >
 					<i id='scrollToggle' className={this.state.liveScroll ? 'fas fa-lock' : 'fas fa-unlock'} />
 				</div>
@@ -160,7 +160,7 @@ const SplitPane = createClass({
 					...(this.props.showDividerButtons && {
 						moveBrew      : this.state.moveBrew,
 						moveSource    : this.state.moveSource,
-            liveScroll    : this.state.liveScroll,
+						liveScroll    : this.state.liveScroll,
 						setMoveArrows : this.setMoveArrows,
 					}),
 				})}
