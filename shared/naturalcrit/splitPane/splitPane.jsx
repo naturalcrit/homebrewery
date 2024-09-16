@@ -42,6 +42,10 @@ const SplitPane = createClass({
 			});
 		}
 		window.addEventListener('resize', this.handleWindowResize);
+
+		// This lives here instead of in the initial render because you cannot touch localStorage until the componant mounts.
+		const loadLiveScroll = window.localStorage.getItem('liveScroll') === 'true';
+		this.setState({ liveScroll: loadLiveScroll });
 	},
 
 	componentWillUnmount : function() {
@@ -89,6 +93,11 @@ const SplitPane = createClass({
 			userSetDividerPos : newSize
 		});
 	},
+
+	liveScrollToggle : function() {
+		window.localStorage.setItem('liveScroll', String(!this.state.liveScroll));
+		this.setState({ liveScroll: !this.state.liveScroll });
+	},
 	/*
 	unFocus : function() {
 		if(document.selection){
@@ -120,6 +129,11 @@ const SplitPane = createClass({
 					onClick={()=>this.setState({ moveBrew: !this.state.moveBrew })} >
 					<i className='fas fa-arrow-right' />
 				</div>
+				<div id='scrollToggleDiv' className={this.state.liveScroll ? 'arrow lock' : 'arrow unlock'}
+					style={{ left: this.state.currentDividerPos-4 }}
+					onClick={this.liveScrollToggle} >
+					<i id='scrollToggle' className={this.state.liveScroll ? 'fas fa-lock' : 'fas fa-unlock'} />
+				</div>
 			</>;
 		}
 	},
@@ -144,9 +158,10 @@ const SplitPane = createClass({
 			>
 				{React.cloneElement(this.props.children[0], {
 					...(this.props.showDividerButtons && {
-						moveBrew: this.state.moveBrew,
-						moveSource: this.state.moveSource,
-						setMoveArrows: this.setMoveArrows,
+						moveBrew      : this.state.moveBrew,
+						moveSource    : this.state.moveSource,
+						liveScroll    : this.state.liveScroll,
+						setMoveArrows : this.setMoveArrows,
 					}),
 				})}
 			</Pane>

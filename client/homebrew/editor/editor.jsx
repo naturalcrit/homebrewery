@@ -3,7 +3,6 @@ require('./editor.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
-const cx = require('classnames');
 const dedent = require('dedent-tabs').default;
 const Markdown = require('../../../shared/naturalcrit/markdown.js');
 
@@ -22,6 +21,7 @@ const DEFAULT_STYLE_TEXT = dedent`
 					color: black;
 				}`;
 
+let isJumping = false;
 
 const Editor = createClass({
 	displayName     : 'Editor',
@@ -37,8 +37,15 @@ const Editor = createClass({
 			onMetaChange  : ()=>{},
 			reportError   : ()=>{},
 
+			onCursorPageChange : ()=>{},
+			onViewPageChange   : ()=>{},
+
 			editorTheme : 'default',
-			renderer    : 'legacy'
+			renderer    : 'legacy',
+
+			currentEditorCursorPageNum : 1,
+			currentEditorViewPageNum   : 1,
+			currentBrewRendererPageNum : 1,
 		};
 	},
 	getInitialState : function() {
@@ -56,11 +63,15 @@ const Editor = createClass({
 	isMeta  : function() {return this.state.view == 'meta';},
 
 	componentDidMount : function() {
+
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
 		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
+
+		this.codeEditor.current.codeMirror.on('cursorActivity', (cm)=>{this.updateCurrentCursorPage(cm.getCursor());});
+		this.codeEditor.current.codeMirror.on('scroll', _.throttle(()=>{this.updateCurrentViewPage(this.codeEditor.current.getTopVisibleLine());}, 200));
 
 		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
 		if(editorTheme) {
@@ -75,27 +86,36 @@ const Editor = createClass({
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
+
 		this.highlightCustomMarkdown();
-		if(prevProps.moveBrew !== this.props.moveBrew) {
+		if(prevProps.moveBrew !== this.props.moveBrew)
 			this.brewJump();
-		};
-		if(prevProps.moveSource !== this.props.moveSource) {
+
+		if(prevProps.moveSource !== this.props.moveSource)
 			this.sourceJump();
-		};
+
+		if(this.props.liveScroll) {
+			if(prevProps.currentBrewRendererPageNum !== this.props.currentBrewRendererPageNum) {
+				this.sourceJump(this.props.currentBrewRendererPageNum, false);
+			} else if(prevProps.currentEditorViewPageNum !== this.props.currentEditorViewPageNum) {
+				this.brewJump(this.props.currentEditorViewPageNum, false);
+			} else if(prevProps.currentEditorCursorPageNum !== this.props.currentEditorCursorPageNum) {
+				this.brewJump(this.props.currentEditorCursorPageNum, false);
+			}
+		}
 	},
 
 	handleControlKeys : function(e){
-		if(!(e.ctrlKey && e.metaKey)) return;
+		if(!(e.ctrlKey && e.metaKey && e.shiftKey)) return;
 		const LEFTARROW_KEY = 37;
 		const RIGHTARROW_KEY = 39;
-		if (e.shiftKey && (e.keyCode == RIGHTARROW_KEY)) this.brewJump();
-		if (e.shiftKey && (e.keyCode == LEFTARROW_KEY)) this.sourceJump();
-		if ((e.keyCode == LEFTARROW_KEY) || (e.keyCode == RIGHTARROW_KEY)) {
+		if(e.keyCode == RIGHTARROW_KEY) this.brewJump();
+		if(e.keyCode == LEFTARROW_KEY) this.sourceJump();
+		if(e.keyCode == LEFTARROW_KEY || e.keyCode == RIGHTARROW_KEY) {
 			e.stopPropagation();
 			e.preventDefault();
 		}
 	},
-
 
 	updateEditorSize : function() {
 		if(this.codeEditor.current) {
@@ -103,6 +123,20 @@ const Editor = createClass({
 			paneHeight -= SNIPPETBAR_HEIGHT;
 			this.codeEditor.current.codeMirror.setSize(null, paneHeight);
 		}
+	},
+
+	updateCurrentCursorPage : function(cursor) {
+		const lines = this.props.brew.text.split('\n').slice(0, cursor.line + 1);
+		const pageRegex = this.props.brew.renderer == 'V3' ? /^\\page$/ : /\\page/;
+		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1);
+		this.props.onCursorPageChange(currentPage);
+	},
+
+	updateCurrentViewPage : function(topScrollLine) {
+		const lines = this.props.brew.text.split('\n').slice(0, topScrollLine + 1);
+		const pageRegex = this.props.brew.renderer == 'V3' ? /^\\page$/ : /\\page/;
+		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1);
+		this.props.onViewPageChange(currentPage);
 	},
 
 	handleInject : function(injectText){
@@ -119,18 +153,6 @@ const Editor = createClass({
 		});	//TODO: not sure if updateeditorsize needed
 	},
 
-	getCurrentPage : function(){
-		const lines = this.props.brew.text.split('\n').slice(0, this.codeEditor.current.getCursorPosition().line + 1);
-		return _.reduce(lines, (r, line)=>{
-			if(
-				(this.props.renderer == 'legacy' && line.indexOf('\\page') !== -1)
-				||
-				(this.props.renderer == 'V3' && line.match(/^\\page$/))
-			) r++;
-			return r;
-		}, 1);
-	},
-
 	highlightCustomMarkdown : function(){
 		if(!this.codeEditor.current) return;
 		if(this.state.view === 'text')  {
@@ -139,13 +161,13 @@ const Editor = createClass({
 			codeMirror.operation(()=>{ // Batch CodeMirror styling
 
 				const foldLines = [];
-        
+
 				//reset custom text styles
 				const customHighlights = codeMirror.getAllMarks().filter((mark)=>{
 					// Record details of folded sections
 					if(mark.__isFold) {
 						const fold = mark.find();
-						foldLines.push({from: fold.from?.line, to: fold.to?.line});
+						foldLines.push({ from: fold.from?.line, to: fold.to?.line });
 					}
 					return !mark.__isFold;
 				}); //Don't undo code folding
@@ -163,7 +185,7 @@ const Editor = createClass({
 
 					// Don't process lines inside folded text
 					// If the current lineNumber is inside any folded marks, skip line styling
-					if (foldLines.some(fold => lineNumber >= fold.from && lineNumber <= fold.to))
+					if(foldLines.some((fold)=>lineNumber >= fold.from && lineNumber <= fold.to))
 						return;
 
 					// Styling for \page breaks
@@ -189,7 +211,7 @@ const Editor = createClass({
 
 						// definition lists
 						if(line.includes('::')){
-							if(/^:*$/.test(line) == true){ return };
+							if(/^:*$/.test(line) == true){ return; };
 							const regex = /^([^\n]*?:?\s?)(::[^\n]*)(?:\n|$)/ymd;  // the `d` flag, for match indices, throws an ESLint error.
 							let match;
 							while ((match = regex.exec(line)) != null){
@@ -197,10 +219,10 @@ const Editor = createClass({
 								codeMirror.markText({ line: lineNumber, ch: match.indices[1][0] }, { line: lineNumber, ch: match.indices[1][1] }, { className: 'dt-highlight' });
 								codeMirror.markText({ line: lineNumber, ch: match.indices[2][0] }, { line: lineNumber, ch: match.indices[2][1] }, { className: 'dd-highlight' });
 								const ddIndex = match.indices[2][0];
-								let colons = /::/g;
-								let colonMatches = colons.exec(match[2]);
+								const colons = /::/g;
+								const colonMatches = colons.exec(match[2]);
 								if(colonMatches !== null){
-									codeMirror.markText({ line: lineNumber, ch: colonMatches.index + ddIndex }, { line: lineNumber, ch: colonMatches.index + colonMatches[0].length + ddIndex }, { className: 'dl-colon-highlight'} )
+									codeMirror.markText({ line: lineNumber, ch: colonMatches.index + ddIndex }, { line: lineNumber, ch: colonMatches.index + colonMatches[0].length + ddIndex }, { className: 'dl-colon-highlight' });
 								}
 							}
 						}
@@ -210,12 +232,12 @@ const Editor = createClass({
 							let startIndex = line.indexOf('^');
 							const superRegex = /\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^/gy;
 							const subRegex   = /\^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^\^/gy;
-							
+
 							while (startIndex >= 0) {
 								superRegex.lastIndex = subRegex.lastIndex = startIndex;
 								let isSuper = false;
-								let match = subRegex.exec(line) || superRegex.exec(line);
-								if (match) {
+								const match = subRegex.exec(line) || superRegex.exec(line);
+								if(match) {
 									isSuper = !subRegex.lastIndex;
 									codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: isSuper ? 'superscript' : 'subscript' });
 								}
@@ -265,18 +287,18 @@ const Editor = createClass({
 
 							while (startIndex >= 0) {
 								emojiRegex.lastIndex = startIndex;
-								let match = emojiRegex.exec(line);
-								if (match) {
+								const match = emojiRegex.exec(line);
+								if(match) {
 									let tokens = Markdown.marked.lexer(match[0]);
-									tokens = tokens[0].tokens.filter(t => t.type == 'emoji')
-									if (!tokens.length)
+									tokens = tokens[0].tokens.filter((t)=>t.type == 'emoji');
+									if(!tokens.length)
 										return;
 
-									let startPos = { line: lineNumber, ch: match.index };
-									let endPos   = { line: lineNumber, ch: match.index + match[0].length };
+									const startPos = { line: lineNumber, ch: match.index };
+									const endPos   = { line: lineNumber, ch: match.index + match[0].length };
 
 									// Iterate over conflicting marks and clear them
-									var marks = codeMirror.findMarks(startPos, endPos);
+									const marks = codeMirror.findMarks(startPos, endPos);
 									marks.forEach(function(marker) {
 										if(!marker.__isFold) marker.clear();
 									});
@@ -291,75 +313,93 @@ const Editor = createClass({
 		}
 	},
 
-	brewJump : function(targetPage=this.getCurrentPage()){
-		if(!window) return;
-		// console.log(`Scroll to: p${targetPage}`);
+	brewJump : function(targetPage=this.props.currentEditorCursorPageNum, smooth=true){
+		if(!window || isJumping)
+			return;
+
+		// Get current brewRenderer scroll position and calculate target position
 		const brewRenderer = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
 		const currentPos = brewRenderer.scrollTop;
 		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
-		const interimPos = targetPos >= 0 ? -30 : 30;
 
-		const bounceDelay = 100;
-		const scrollDelay = 500;
-
-		if(!this.throttleBrewMove) {
-			this.throttleBrewMove = _.throttle((currentPos, interimPos, targetPos)=>{
-				brewRenderer.scrollTo({ top: currentPos + interimPos, behavior: 'smooth' });
-				setTimeout(()=>{
-					brewRenderer.scrollTo({ top: currentPos + targetPos, behavior: 'smooth', block: 'start' });
-				}, bounceDelay);
-			}, scrollDelay, { leading: true, trailing: false });
+		const checkIfScrollComplete = ()=>{
+			let scrollingTimeout;
+			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
+			scrollingTimeout = setTimeout(()=>{
+				isJumping = false;
+				brewRenderer.removeEventListener('scroll', checkIfScrollComplete);
+			}, 150);	// If 150 ms pass without a brewRenderer scroll event, assume scrolling is done
 		};
-		this.throttleBrewMove(currentPos, interimPos, targetPos);
 
-		// const hashPage = (page != 1) ? `p${page}` : '';
-		// window.location.hash = hashPage;
+		isJumping = true;
+		checkIfScrollComplete();
+		brewRenderer.addEventListener('scroll', checkIfScrollComplete);
+
+		if(smooth) {
+			const bouncePos   = targetPos >= 0 ? -30 : 30; //Do a little bounce before scrolling
+			const bounceDelay = 100;
+			const scrollDelay = 500;
+
+			if(!this.throttleBrewMove) {
+				this.throttleBrewMove = _.throttle((currentPos, bouncePos, targetPos)=>{
+					brewRenderer.scrollTo({ top: currentPos + bouncePos, behavior: 'smooth' });
+					setTimeout(()=>{
+						brewRenderer.scrollTo({ top: currentPos + targetPos, behavior: 'smooth', block: 'start' });
+					}, bounceDelay);
+				}, scrollDelay, { leading: true, trailing: false });
+			};
+			this.throttleBrewMove(currentPos, bouncePos, targetPos);
+		} else {
+			brewRenderer.scrollTo({ top: currentPos + targetPos, behavior: 'instant', block: 'start' });
+		}
 	},
 
-	sourceJump : function(targetLine=null){
-		if(this.isText()) {
-			if(targetLine == null) {
-				targetLine = 0;
+	sourceJump : function(targetPage=this.props.currentBrewRendererPageNum, smooth=true){
+		if(!this.isText || isJumping)
+			return;
 
-				const pageCollection = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('page');
-				const brewRendererHeight = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer').item(0).getBoundingClientRect().height;
+		const textSplit  = this.props.renderer == 'V3' ? /^\\page$/gm : /\\page/;
+		const textString = this.props.brew.text.split(textSplit).slice(0, targetPage-1).join(textSplit);
+		const targetLine = textString.match('\n') ? textString.split('\n').length - 1 : -1;
 
-				let currentPage = 1;
-				for (const page of pageCollection) {
-					if(page.getBoundingClientRect().bottom > (brewRendererHeight / 2)) {
-						currentPage = parseInt(page.id.slice(1)) || 1;
-						break;
-					}
+		let currentY = this.codeEditor.current.codeMirror.getScrollInfo().top;
+		let targetY  = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
+
+		const checkIfScrollComplete = ()=>{
+			let scrollingTimeout;
+			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
+			scrollingTimeout = setTimeout(()=>{
+				isJumping = false;
+				this.codeEditor.current.codeMirror.off('scroll', checkIfScrollComplete);
+			}, 150); // If 150 ms pass without a scroll event, assume scrolling is done
+		};
+
+		isJumping = true;
+		checkIfScrollComplete();
+		this.codeEditor.current.codeMirror.on('scroll', checkIfScrollComplete);
+
+		if(smooth) {
+			//Scroll 1/10 of the way every 10ms until 1px off.
+			const incrementalScroll = setInterval(()=>{
+				currentY += (targetY - currentY) / 10;
+				this.codeEditor.current.codeMirror.scrollTo(null, currentY);
+
+				// Update target: target height is not accurate until within +-10 lines of the visible window
+				if(Math.abs(targetY - currentY > 100))
+					targetY = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
+
+				// End when close enough
+				if(Math.abs(targetY - currentY) < 1) {
+					this.codeEditor.current.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
+					this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
+					this.codeEditor.current.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
+					clearInterval(incrementalScroll);
 				}
-
-				const textSplit = this.props.renderer == 'V3' ? /^\\page$/gm : /\\page/;
-				const textString = this.props.brew.text.split(textSplit).slice(0, currentPage-1).join(textSplit);
-				const textPosition = textString.length;
-				const lineCount = textString.match('\n') ? textString.slice(0, textPosition).split('\n').length : 0;
-
-				targetLine = lineCount - 1; //Scroll to `\page`, which is one line back.
-
-				let currentY = this.codeEditor.current.codeMirror.getScrollInfo().top;
-				let targetY  = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
-
-				//Scroll 1/10 of the way every 10ms until 1px off.
-				const incrementalScroll = setInterval(()=>{
-					currentY += (targetY - currentY) / 10;
-					this.codeEditor.current.codeMirror.scrollTo(null, currentY);
-
-					// Update target: target height is not accurate until within +-10 lines of the visible window
-					if(Math.abs(targetY - currentY > 100))
-						targetY = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
-
-					// End when close enough
-					if(Math.abs(targetY - currentY) < 1) {
-						this.codeEditor.current.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
-						this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
-						this.codeEditor.current.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
-						clearInterval(incrementalScroll);
-					}
-				}, 10);
-			}
+			}, 10);
+		} else {
+			this.codeEditor.current.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
+			this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
+			this.codeEditor.current.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
 		}
 	},
 
