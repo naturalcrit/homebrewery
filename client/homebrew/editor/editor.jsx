@@ -3,7 +3,6 @@ require('./editor.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
-const cx = require('classnames');
 const dedent = require('dedent-tabs').default;
 const Markdown = require('../../../shared/naturalcrit/markdown.js');
 
@@ -22,6 +21,7 @@ const DEFAULT_STYLE_TEXT = dedent`
 					color: black;
 				}`;
 
+let isJumping = false;
 
 const Editor = createClass({
 	displayName     : 'Editor',
@@ -43,9 +43,9 @@ const Editor = createClass({
 			editorTheme : 'default',
 			renderer    : 'legacy',
 
-			currentEditorCursorPageNum : 0,
-			currentEditorViewPageNum   : 0,
-			currentBrewRendererPageNum : 0, 
+			currentEditorCursorPageNum : 1,
+			currentEditorViewPageNum   : 1,
+			currentBrewRendererPageNum : 1, 
 		};
 	},
 	getInitialState : function() {
@@ -63,6 +63,7 @@ const Editor = createClass({
 	isMeta  : function() {return this.state.view == 'meta';},
 
 	componentDidMount : function() {
+
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
 		window.addEventListener('resize', this.updateEditorSize);
@@ -85,22 +86,32 @@ const Editor = createClass({
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
+
 		this.highlightCustomMarkdown();
-		if(prevProps.moveBrew !== this.props.moveBrew) {
+		if(prevProps.moveBrew !== this.props.moveBrew)
 			this.brewJump();
-		};
-		if(prevProps.moveSource !== this.props.moveSource) {
+
+		if(prevProps.moveSource !== this.props.moveSource)
 			this.sourceJump();
-		};
+
+		if(this.props.liveScroll) {
+			if(prevProps.currentBrewRendererPageNum !== this.props.currentBrewRendererPageNum) {
+				this.sourceJump(this.props.currentBrewRendererPageNum, false);
+			} else if(prevProps.currentEditorViewPageNum !== this.props.currentEditorViewPageNum) {
+				this.brewJump(this.props.currentEditorViewPageNum, false);
+			} else if(prevProps.currentEditorCursorPageNum !== this.props.currentEditorCursorPageNum) {
+				this.brewJump(this.props.currentEditorCursorPageNum, false);
+			}
+		}
 	},
 
 	handleControlKeys : function(e){
-		if(!(e.ctrlKey && e.metaKey)) return;
+		if(!(e.ctrlKey && e.metaKey && e.shiftKey)) return;
 		const LEFTARROW_KEY = 37;
 		const RIGHTARROW_KEY = 39;
-		if (e.shiftKey && (e.keyCode == RIGHTARROW_KEY)) this.brewJump();
-		if (e.shiftKey && (e.keyCode == LEFTARROW_KEY)) this.sourceJump();
-		if ((e.keyCode == LEFTARROW_KEY) || (e.keyCode == RIGHTARROW_KEY)) {
+		if (e.keyCode == RIGHTARROW_KEY) this.brewJump();
+		if (e.keyCode == LEFTARROW_KEY) this.sourceJump();
+		if (e.keyCode == LEFTARROW_KEY || e.keyCode == RIGHTARROW_KEY) {
 			e.stopPropagation();
 			e.preventDefault();
 		}
@@ -302,64 +313,93 @@ const Editor = createClass({
 		}
 	},
 
-	brewJump : function(targetPage=this.props.currentEditorCursorPageNum){
-		if(!window) return;
+	brewJump : function(targetPage=this.props.currentEditorCursorPageNum, smooth=true){
+		if(!window || isJumping)
+			return;
+
 		// Get current brewRenderer scroll position and calculate target position
 		const brewRenderer = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
 		const currentPos = brewRenderer.scrollTop;
 		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
-		const interimPos = targetPos >= 0 ? -30 : 30;
 
-		const bounceDelay = 100;
-		const scrollDelay = 500;
-
-		if(!this.throttleBrewMove) {
-			this.throttleBrewMove = _.throttle((currentPos, interimPos, targetPos)=>{
-				brewRenderer.scrollTo({ top: currentPos + interimPos, behavior: 'smooth' });
-				setTimeout(()=>{
-					brewRenderer.scrollTo({ top: currentPos + targetPos, behavior: 'smooth', block: 'start' });
-				}, bounceDelay);
-			}, scrollDelay, { leading: true, trailing: false });
+		const checkIfScrollComplete = () => {
+			let scrollingTimeout;
+			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
+			scrollingTimeout = setTimeout(() => {
+				isJumping = false;
+				brewRenderer.removeEventListener('scroll', checkIfScrollComplete);
+			}, 150);	// If 150 ms pass without a brewRenderer scroll event, assume scrolling is done
 		};
-		this.throttleBrewMove(currentPos, interimPos, targetPos);
 
-		// const hashPage = (page != 1) ? `p${page}` : '';
-		// window.location.hash = hashPage;
+		isJumping = true;
+		checkIfScrollComplete();
+		brewRenderer.addEventListener('scroll', checkIfScrollComplete);
+
+		if(smooth) {
+			const bouncePos   = targetPos >= 0 ? -30 : 30; //Do a little bounce before scrolling
+			const bounceDelay = 100;
+			const scrollDelay = 500;
+
+			if(!this.throttleBrewMove) {
+				this.throttleBrewMove = _.throttle((currentPos, bouncePos, targetPos)=>{
+					brewRenderer.scrollTo({ top: currentPos + bouncePos, behavior: 'smooth' });
+					setTimeout(()=>{
+						brewRenderer.scrollTo({ top: currentPos + targetPos, behavior: 'smooth', block: 'start' });
+					}, bounceDelay);
+				}, scrollDelay, { leading: true, trailing: false });
+			};
+			this.throttleBrewMove(currentPos, bouncePos, targetPos);
+		} else {
+			brewRenderer.scrollTo({ top: currentPos + targetPos, behavior: 'instant', block: 'start' });
+		}
 	},
 
-	sourceJump : function(targetLine=null){
-		if(this.isText()) {
-			if(targetLine == null) {
-				targetLine = 0;
+	sourceJump : function(targetPage=this.props.currentBrewRendererPageNum, smooth=true){
+		if(!this.isText || isJumping)
+			return;
 
-				const textSplit = this.props.renderer == 'V3' ? /^\\page$/gm : /\\page/;
-				const textString = this.props.brew.text.split(textSplit).slice(0, this.props.currentBrewRendererPageNum-1).join(textSplit);
-				const textPosition = textString.length;
-				const lineCount = textString.match('\n') ? textString.slice(0, textPosition).split('\n').length : 0;
+		const textSplit  = this.props.renderer == 'V3' ? /^\\page$/gm : /\\page/;
+		const textString = this.props.brew.text.split(textSplit).slice(0, targetPage-1).join(textSplit);
+		const targetLine = textString.match('\n') ? textString.split('\n').length - 1 : -1;
 
-				targetLine = lineCount - 1; //Scroll to `\page`, which is one line back.
+		let currentY = this.codeEditor.current.codeMirror.getScrollInfo().top;
+		let targetY  = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
+	
+		const checkIfScrollComplete = () => {
+			let scrollingTimeout;
+			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
+			scrollingTimeout = setTimeout(() => {
+				isJumping = false;
+				this.codeEditor.current.codeMirror.off('scroll', checkIfScrollComplete);
+			}, 150); // If 150 ms pass without a scroll event, assume scrolling is done
+		};
+	
+		isJumping = true;
+		checkIfScrollComplete();
+		this.codeEditor.current.codeMirror.on('scroll', checkIfScrollComplete);
 
-				let currentY = this.codeEditor.current.codeMirror.getScrollInfo().top;
-				let targetY  = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
+		if(smooth) {
+			//Scroll 1/10 of the way every 10ms until 1px off.
+			const incrementalScroll = setInterval(()=>{
+				currentY += (targetY - currentY) / 10;
+				this.codeEditor.current.codeMirror.scrollTo(null, currentY);
 
-				//Scroll 1/10 of the way every 10ms until 1px off.
-				const incrementalScroll = setInterval(()=>{
-					currentY += (targetY - currentY) / 10;
-					this.codeEditor.current.codeMirror.scrollTo(null, currentY);
+				// Update target: target height is not accurate until within +-10 lines of the visible window
+				if(Math.abs(targetY - currentY > 100))
+					targetY = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
 
-					// Update target: target height is not accurate until within +-10 lines of the visible window
-					if(Math.abs(targetY - currentY > 100))
-						targetY = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
-
-					// End when close enough
-					if(Math.abs(targetY - currentY) < 1) {
-						this.codeEditor.current.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
-						this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
-						this.codeEditor.current.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
-						clearInterval(incrementalScroll);
-					}
-				}, 10);
-			}
+				// End when close enough
+				if(Math.abs(targetY - currentY) < 1) {
+					this.codeEditor.current.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
+					this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
+					this.codeEditor.current.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
+					clearInterval(incrementalScroll);
+				}
+			}, 10);
+		} else {
+			this.codeEditor.current.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
+			this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
+			this.codeEditor.current.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
 		}
 	},
 
@@ -389,8 +429,6 @@ const Editor = createClass({
 					view={this.state.view}
 					value={this.props.brew.text}
 					onChange={this.props.onTextChange}
-					onCursorActivity={this.props.onCursorActivity}
-					onScroll={this.props.onPageChange}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent} />
 			</>;
