@@ -33,7 +33,7 @@ function getVersionBySlot(brew, slot){
 	// - If it doesn't exist, pass default object
 	const key = getKeyBySlot(brew, slot);
 	const storedVersion = localStorage.getItem(key);
-	const output = storedVersion ? JSON.parse(storedVersion) : { ...DEFAULT_STORED_BREW, ...brew };
+	const output = storedVersion ? JSON.parse(storedVersion) : { expireAt: '2000-01-01T00:00:00.000Z', shareId: brew.shareId, noData: true };
 	return output;
 };
 
@@ -84,7 +84,7 @@ export function updateHistory(brew) {
 		if(new Date() >= new Date(storedVersion.expireAt)){
 			for (let updateSlot = slot - 1; updateSlot>0; updateSlot--){
 				// Move data from updateSlot to updateSlot + 1
-				updateStoredBrew(history[updateSlot], updateSlot + 1);
+				!history[updateSlot]?.noData &&	updateStoredBrew(history[updateSlot], updateSlot + 1);
 			};
 
 			// Update the most recent brew
