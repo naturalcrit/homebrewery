@@ -4,9 +4,9 @@ const dedent = require('dedent-tabs').default;
 const mapPages = (pages)=>{
 	let actualPage = 0;
 	let mappedPage = 0; // Number displayed in footer
-	let pageMap    = [];
+	const pageMap    = [];
 
-	pages.forEach(page => {
+	pages.forEach((page)=>{
 		actualPage++;
 		const doSkip  = page.querySelector('.skipCounting');
 		const doReset = page.querySelector('.resetCounting');
@@ -24,13 +24,13 @@ const mapPages = (pages)=>{
 	return pageMap;
 };
 
-const getMarkdown = (headings, pageMap) => {
+const getMarkdown = (headings, pageMap)=>{
 	const levelPad    = ['- ###', '  - ####', '    -', '      -', '        -', '          -'];
-	
-	let allMarkdown = [];
-	let depthChain  = [0];
 
-	headings.forEach(heading => {
+	const allMarkdown = [];
+	const depthChain  = [0];
+
+	headings.forEach((heading)=>{
 		const page       = parseInt(heading.closest('.page').id?.replace(/^p/, ''));
 		const mappedPage = pageMap[page].mappedPage;
 		const showPage   = pageMap[page].showPage;
@@ -42,14 +42,14 @@ const getMarkdown = (headings, pageMap) => {
 			return;
 
 		//If different header depth than last, remove indents until nearest higher-level header, then indent once
-		if (depth !== depthChain[depthChain.length -1]) {
+		if(depth !== depthChain[depthChain.length -1]) {
 			while (depth <= depthChain[depthChain.length - 1]) {
 				depthChain.pop();
 			}
 			depthChain.push(depth);
 		}
 
-		let markdown = `${levelPad[depthChain.length - 2]} [{{ ${title}}}{{ ${mappedPage}}}](#p${page})`;
+		const markdown = `${levelPad[depthChain.length - 2]} [{{ ${title}}}{{ ${mappedPage}}}](#p${page})`;
 		allMarkdown.push(markdown);
 	});
 	return allMarkdown.join('\n');
