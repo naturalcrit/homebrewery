@@ -17,7 +17,7 @@ const NotificationPopup = ()=>{
 		<ul>
 			<li key='Vault'>
 				<em>Search brews with our new page!</em><br />
-				We have been working very hard in making this possible, now you can share your work and look at it in the new <a href="/vault">Vault</a> page!
+				We have been working very hard in making this possible, now you can share your work and look at it in the new <a href='/vault'>Vault</a> page!
 				All PUBLISHED brews will be available to anyone searching there, by title or author, and filtering by renderer.
 
 				More features will be coming.
