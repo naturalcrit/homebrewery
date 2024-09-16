@@ -443,23 +443,23 @@ module.exports = [
 					}\n\n`
 			},
 			{
-                name: 'A3 Page Size',
-                icon: 'far fa-file',
-                gen: dedent`/* A3 Page Size */
+				name : 'A3 Page Size',
+				icon : 'far fa-file',
+				gen  : dedent`/* A3 Page Size */
 					.page {
 						width  : 297mm;
 						height : 420mm;
 					}\n\n`,
-            },
-            {
-                name: 'A5 Page Size',
-                icon: 'far fa-file',
-                gen: dedent`/* A5 Page Size */
+			},
+			{
+				name : 'A5 Page Size',
+				icon : 'far fa-file',
+				gen  : dedent`/* A5 Page Size */
 					.page {
 						width  : 148mm;
 						height : 210mm;
 				}\n\n`,
-            },
+			},
 			{
 				name : 'Square Page Size',
 				icon : 'far fa-file',
@@ -472,9 +472,9 @@ module.exports = [
 					}\n\n`
 			},
 			{
-				name: 'Card Page Size',
-				icon: 'far fa-file',
-				gen  : dedent`/* A4 Page Size */
+				name : 'Card Page Size',
+				icon : 'far fa-file',
+				gen  : dedent`/* Card Size */
 					.page {
 						width	  : 63.5mm;
 						height	  : 88.9mm;
