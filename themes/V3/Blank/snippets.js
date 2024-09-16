@@ -421,7 +421,7 @@ module.exports = [
 				name : 'A4 Page Size',
 				icon : 'far fa-file',
 				gen  : dedent`/* A4 Page Size */
-					.page{
+					.page {
 						width  : 210mm;
 						height : 296.8mm;
 					}\n\n`
@@ -430,18 +430,18 @@ module.exports = [
                 name: 'A3 Page Size',
                 icon: 'far fa-file',
                 gen: dedent`/* A3 Page Size */
-						.page{
+					.page {
 						width  : 297mm;
 						height : 420mm;
-						}\n\n`,
+					}\n\n`,
             },
             {
                 name: 'A5 Page Size',
                 icon: 'far fa-file',
                 gen: dedent`/* A5 Page Size */
-				.page{
-				width  : 148mm;
-				height : 210mm;
+					.page {
+						width  : 148mm;
+						height : 210mm;
 				}\n\n`,
             },
 			{
@@ -453,6 +453,16 @@ module.exports = [
 						height  : 125mm;
 						padding : 12.5mm;
 						columns : unset;
+					}\n\n`
+			},
+			{
+				name: 'Card Page Size',
+				icon: 'far fa-file',
+				gen  : dedent`/* A4 Page Size */
+					.page {
+						width	: 63.5mm;
+						height	: 88.9mm;
+						padding	: 5mm;
 					}\n\n`
 			},
 			
@@ -478,45 +488,6 @@ module.exports = [
 					.page img {
 						visibility : hidden;
 					}\n\n`
-			},
-			{
-				name : 'Background',
-				icon : 'fas fa-paint-roller',
-				subsnippets : [
-					{
-						name : 'Old Parchment 2',
-						icon : 'fas fa-page',
-						gen  : dedent`
-						.page {
-							background-image:url('https://i.imgur.com/oTKpg48.png');
-						}`,
-					},
-					{
-						name : 'Grey parchment',
-						icon : 'fas fa-page',
-						gen  : dedent`
-						.page {
-							background-image:url('https://i.imgur.com/VwjzlLV.png');
-						}`,
-					},
-					{
-						name : 'Old parchment 3',
-						icon : 'fas fa-page',
-						gen  : dedent`
-						.page {
-							background-image:url('https://i.imgur.com/EY8yyPv.jpeg');
-						}`,
-					},
-					{
-						name : 'Old parchment 3 framed',
-						icon : 'fas fa-page',
-						gen  : dedent`
-						.page {
-							background-image:url('https://i.imgur.com/QMKzWYb.jpeg');
-						}`,
-					},
-					
-				]
 			},
 		],
 	},
