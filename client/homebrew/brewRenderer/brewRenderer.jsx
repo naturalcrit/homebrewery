@@ -92,7 +92,7 @@ const BrewRenderer = (props)=>{
 	const updateCurrentPage = useCallback(_.throttle((e)=>{
 		const { scrollTop, clientHeight, scrollHeight } = e.target;
 		const totalScrollableHeight = scrollHeight - clientHeight;
-		const currentPageNumber = Math.ceil(((scrollTop + 1) / totalScrollableHeight) * rawPages.length);
+		const currentPageNumber = Math.max(Math.ceil((scrollTop / totalScrollableHeight) * rawPages.length), 1);
 
 		props.onPageChange(currentPageNumber);
 	}, 200), []);

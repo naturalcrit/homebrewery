@@ -53,6 +53,21 @@
 				font-size : 0.75em;
 				color     : inherit;
 			}
+			&.history {
+				.tooltipLeft('History');
+				font-size : 0.75em;
+				color     : grey;
+				position  : relative;
+				&.active {
+					color : inherit;
+				}
+				&>.dropdown{
+					right         : -1px;
+					&>.snippet{
+						padding-right : 10px;
+					}
+				}
+			}
 			&.editorTheme {
 				.tooltipLeft('Editor Themes');
 				font-size : 0.75em;

@@ -433,7 +433,7 @@ module.exports = [
 		]
 	},
 
-	/**************** PAGE *************/
+	/**************** LAYOUT *************/
 
 	{
 		groupName : 'Print',
@@ -441,13 +441,31 @@ module.exports = [
 		view      : 'style',
 		snippets  : [
 			{
+				name : 'A3 Page Size',
+				icon : 'far fa-file',
+				gen  : dedent`/* A3 Page Size */
+					.page {
+						width  : 297mm;
+						height : 420mm;
+					}\n\n`,
+			},
+			{
 				name : 'A4 Page Size',
 				icon : 'far fa-file',
 				gen  : dedent`/* A4 Page Size */
-					.page{
+					.page {
 						width  : 210mm;
 						height : 296.8mm;
 					}\n\n`
+			},
+			{
+				name : 'A5 Page Size',
+				icon : 'far fa-file',
+				gen  : dedent`/* A5 Page Size */
+					.page {
+						width  : 148mm;
+						height : 210mm;
+				}\n\n`,
 			},
 			{
 				name : 'Square Page Size',
@@ -458,6 +476,17 @@ module.exports = [
 						height  : 125mm;
 						padding : 12.5mm;
 						columns : unset;
+					}\n\n`
+			},
+			{
+				name : 'Card Page Size',
+				icon : 'far fa-file',
+				gen  : dedent`/* Card Size */
+					.page {
+						width     : 63.5mm;
+						height    : 88.9mm;
+						padding	  : 5mm;
+						columns	  : unset;
 					}\n\n`
 			},
 			{
@@ -475,5 +504,5 @@ module.exports = [
 					}\n\n`
 			},
 		]
-	}
+	},
 ];
