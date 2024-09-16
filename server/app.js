@@ -475,7 +475,8 @@ const renderPage = async (req, res)=>{
 	const configuration = {
 		local       : isLocalEnvironment,
 		publicUrl   : config.get('publicUrl') ?? '',
-		environment : nodeEnv
+		environment : nodeEnv,
+		history     : config.get('historyConfig') ?? {}
 	};
 	const props = {
 		version       : require('./../package.json').version,

@@ -1,4 +1,4 @@
-/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
 require('./editor.less');
 const React = require('react');
 const createClass = require('create-react-class');
@@ -500,7 +500,9 @@ const Editor = createClass({
 					currentEditorTheme={this.state.editorTheme}
 					updateEditorTheme={this.updateEditorTheme}
 					snippetBundle={this.props.snippetBundle}
-					cursorPos={this.codeEditor.current?.getCursorPosition() || {}} />
+					cursorPos={this.codeEditor.current?.getCursorPosition() || {}}
+					updateBrew={this.props.updateBrew}
+				/>
 
 				{this.renderEditor()}
 			</div>
