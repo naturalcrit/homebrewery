@@ -62,20 +62,17 @@ const Snippetbar = createClass({
 	},
 
 	componentDidUpdate : async function(prevProps) {
-		const update = {};
-		let newData = false;
-
 		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.snippetBundle != this.props.snippetBundle) {
-			update.snippets = this.compileSnippets();
-			newData = true;
+			this.setState({
+				snippets : this.compileSnippets()
+			});
 		};
 
 		if(historyExists(this.props.brew) != this.state.historyExists){
-			update.historyExists = !this.state.historyExists;
-			newData = true;
-		}
-
-		newData && this.setState(update);
+			this.setState({
+				historyExists : !this.state.historyExists
+			});
+		};
 	},
 
 	mergeCustomizer : function(oldValue, newValue, key) {
