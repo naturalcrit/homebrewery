@@ -460,12 +460,13 @@ module.exports = [
 				icon: 'far fa-file',
 				gen  : dedent`/* A4 Page Size */
 					.page {
-						width	: 63.5mm;
-						height	: 88.9mm;
-						padding	: 5mm;
+						width	  : 63.5mm;
+						height	  : 88.9mm;
+						padding	  : 5mm;
+						font-size : 12px;
+						columns	  : unset;
 					}\n\n`
 			},
-			
 		]
 	},
 
