@@ -68,6 +68,9 @@ jobs:
           name: Test - Definition Lists
           command: npm run test:definition-lists
       - run:
+          name: Test - Hard Breaks
+          command: npm run test:hard-breaks
+      - run:
           name: Test - Variables
           command: npm run test:variables
       - run:

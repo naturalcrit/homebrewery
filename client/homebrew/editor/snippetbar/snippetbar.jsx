@@ -5,6 +5,8 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
+import { getHistoryItems, historyExists } from '../../utils/versionHistory.js';
+
 //Import all themes
 const ThemeSnippets = {};
 ThemeSnippets['Legacy_5ePHB'] = require('themes/Legacy/5ePHB/snippets.js');
@@ -38,7 +40,8 @@ const Snippetbar = createClass({
 			unfoldCode        : ()=>{},
 			updateEditorTheme : ()=>{},
 			cursorPos         : {},
-			snippetBundle     : []
+			snippetBundle     : [],
+			updateBrew        : ()=>{}
 		};
 	},
 
@@ -46,7 +49,8 @@ const Snippetbar = createClass({
 		return {
 			renderer      : this.props.renderer,
 			themeSelector : false,
-			snippets      : []
+			snippets      : [],
+			historyExists : false
 		};
 	},
 
@@ -59,18 +63,20 @@ const Snippetbar = createClass({
 
 	componentDidUpdate : async function(prevProps) {
 		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.snippetBundle != this.props.snippetBundle) {
-			const snippets = this.compileSnippets();
 			this.setState({
-				snippets : snippets
+				snippets : this.compileSnippets()
 			});
-		}
-	},
+		};
 
+		this.setState({
+			historyExists : historyExists(this.props.brew)
+		});
+	},
 
 	mergeCustomizer : function(oldValue, newValue, key) {
 		if(key == 'snippets') {
 			const result = _.reverse(_.unionBy(_.reverse(newValue), _.reverse(oldValue), 'name')); // Join snippets together, with preference for the child theme over the parent theme
-			return _.filter(result, 'gen'); //Only keep snippets with a 'gen' property.
+			return result.filter((snip)=>snip.gen || snip.subsnippets);
 		}
 	},
 
@@ -138,6 +144,36 @@ const Snippetbar = createClass({
 		});
 	},
 
+	replaceContent : function(item){
+		return this.props.updateBrew(item);
+	},
+
+	renderHistoryItems : function() {
+		const historyItems = getHistoryItems(this.props.brew);
+
+		return <div className='dropdown'>
+			{_.map(historyItems, (item, index)=>{
+				if(!item.savedAt) return;
+
+				const saveTime = new Date(item.savedAt);
+				const diffMs = new Date() - saveTime;
+				const diffSecs = Math.floor(diffMs / 1000);
+
+				let diffString = `about ${diffSecs} seconds ago`;
+
+				if(diffSecs > 60) diffString = `about ${Math.floor(diffSecs / 60)} minutes ago`;
+				if(diffSecs > (60 * 60)) diffString = `about ${Math.floor(diffSecs / (60 * 60))} hours ago`;
+				if(diffSecs > (24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (24 * 60 * 60))} days ago`;
+				if(diffSecs > (7 * 24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (7 * 24 * 60 * 60))} weeks ago`;
+
+				return <div className='snippet' key={index} onClick={()=>{this.replaceContent(item);}} >
+					<i className={`fas fa-${index+1}`} />
+					<span className='name' title={saveTime.toISOString()}>v{item.version} : {diffString}</span>
+				</div>;
+			})}
+		</div>;
+	},
+
 	renderEditorButtons : function(){
 		if(!this.props.showEditButtons) return;
 
@@ -158,6 +194,10 @@ const Snippetbar = createClass({
 		}
 
 		return <div className='editors'>
+			<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`} >
+				<i className='fas fa-clock-rotate-left' />
+				{this.state.historyExists && this.renderHistoryItems() }
+			</div>
 			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
 				onClick={this.props.undo} >
 				<i className='fas fa-undo' />
