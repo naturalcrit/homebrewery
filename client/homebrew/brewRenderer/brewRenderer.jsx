@@ -20,7 +20,6 @@ const DOMPurify = require('dompurify');
 const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
 
 const PAGE_HEIGHT = 1056;
-let isScrolling;
 
 const INITIAL_CONTENT = dedent`
 	<!DOCTYPE html><html><head>
