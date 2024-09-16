@@ -483,15 +483,6 @@ module.exports = [
 						columns	  : unset;
 					}\n\n`
 			},
-		]
-	},
-
-	/**************** PAGE *************/
-	{
-		groupName : 'Print',
-		icon      : 'fas fa-print',
-		view      : 'style',
-		snippets  : [
 			{
 				name : 'Ink Friendly',
 				icon : 'fas fa-tint',
@@ -506,7 +497,6 @@ module.exports = [
 						visibility : hidden;
 					}\n\n`
 			},
-		],
+		]
 	},
-
 ];
