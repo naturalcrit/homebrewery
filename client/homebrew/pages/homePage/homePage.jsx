@@ -64,17 +64,14 @@ const HomePage = createClass({
 	},
 
 	handleEditorViewPageChange : function(pageNumber){
-		console.log(`editor view : ${pageNumber}`);
 		this.setState({ currentEditorViewPageNum: pageNumber });
 	},
 
 	handleEditorCursorPageChange : function(pageNumber){
-		console.log(`editor cursor : ${pageNumber}`);
 		this.setState({ currentEditorCursorPageNum: pageNumber });
 	},
 
 	handleBrewRendererPageChange : function(pageNumber){
-		console.log(`brewRenderer view : ${pageNumber}`);
 		this.setState({ currentBrewRendererPageNum: pageNumber });
 	},
 

@@ -365,9 +365,7 @@ const Editor = createClass({
 
 		const textSplit  = this.props.renderer == 'V3' ? /^\\page$/gm : /\\page/;
 		const textString = this.props.brew.text.split(textSplit).slice(0, targetPage-1).join(textSplit);
-		const lineCount  = (textString.match(/\n/g) || []).length;
-
-		const targetLine = lineCount - 1; //Scroll to `\page`, which is one line back.
+		const targetLine  = (textString.match(/\n/g) || []).length;
 
 		let currentY = this.codeEditor.current.codeMirror.getScrollInfo().top;
 		let targetY  = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);

@@ -117,23 +117,19 @@ const EditPage = createClass({
 	},
 
 	handleEditorViewPageChange : function(pageNumber){
-		console.log(`editor view : ${pageNumber}`);
 		this.setState({ currentEditorViewPageNum: pageNumber });
 	},
 
 	handleEditorCursorPageChange : function(pageNumber){
-		console.log(`editor cursor : ${pageNumber}`);
 		this.setState({ currentEditorCursorPageNum: pageNumber });
 	},
 
 	handleBrewRendererPageChange : function(pageNumber){
-		console.log(`brewRenderer view : ${pageNumber}`);
 		this.setState({ currentBrewRendererPageNum: pageNumber });
 	},
 
 	handleTextChange : function(text){
 		//If there are errors, run the validator on every change to give quick feedback
-		console.log('text change');
 		let htmlErrors = this.state.htmlErrors;
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 
