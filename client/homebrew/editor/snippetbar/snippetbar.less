@@ -2,19 +2,25 @@
 @import (less) '././././themes/fonts/5e/fonts.less';
 
 .snippetBar {
-	@menuHeight      : 25px;
+	@menuHeight : 25px;
 	position         : relative;
+	min-width        : 331px;
 	height           : @menuHeight;
 	color            : black;
 	background-color : #DDDDDD;
+	display: flex;
 
-	.editors {
+	.snippets {
 		position        : absolute;
 		top             : 0px;
 		right           : 0px;
+	}
+
+	.editors {
 		display         : flex;
 		justify-content : space-between;
 		height          : @menuHeight;
+		
 		& > div {
 			width       : @menuHeight;
 			height      : @menuHeight;
@@ -105,7 +111,7 @@
 		.tooltipLeft('Edit Brew Properties');
 	}
 	.snippetGroup {
-		border-right   : 1px solid currentColor;
+		border-left   : 1px solid currentColor;
 		&:hover {
 			& > .dropdown { visibility : visible; }
 		}
@@ -127,11 +133,11 @@
 				cursor      : pointer;
 				.animate(background-color);
 				i {
+					min-width    : 25px;
 					height       : 1.2em;
 					margin-right : 8px;
 					font-size    : 1.2em;
-					min-width: 25px;
-					text-align: center;
+					text-align   : center;
 					& ~ i {
 						margin-right : 0;
 						margin-left  : 5px;
@@ -187,6 +193,19 @@
 					}
 				}
 			}
+		}
+	}
+}
+
+@container editor (width < 538px) {
+
+	.snippetBar {
+		display : flex;
+		flex-wrap : wrap;
+		height : 50px;
+
+		.snippets {
+			position : static;
 		}
 	}
 }
