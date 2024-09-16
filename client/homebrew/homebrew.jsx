@@ -10,7 +10,7 @@ const UserPage = require('./pages/userPage/userPage.jsx');
 const SharePage = require('./pages/sharePage/sharePage.jsx');
 const NewPage = require('./pages/newPage/newPage.jsx');
 const ErrorPage = require('./pages/errorPage/errorPage.jsx');
-const PrintPage = require('./pages/printPage/printPage.jsx');
+const VaultPage = require('./pages/vaultPage/vaultPage.jsx');
 const AccountPage = require('./pages/accountPage/accountPage.jsx');
 
 const WithRoute = (props)=>{
@@ -67,20 +67,20 @@ const Homebrew = createClass({
 			<Router location={this.props.url}>
 				<div className='homebrew'>
 					<Routes>
-						<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={this.props.brew} />} />
+						<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={this.props.brew} userThemes={this.props.userThemes}/>} />
 						<Route path='/share/:id' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
-						<Route path='/new/:id' element={<WithRoute el={NewPage} brew={this.props.brew} />} />
-						<Route path='/new' element={<WithRoute el={NewPage}/>} />
+						<Route path='/new/:id' element={<WithRoute el={NewPage} brew={this.props.brew} userThemes={this.props.userThemes}/>} />
+						<Route path='/new' element={<WithRoute el={NewPage} userThemes={this.props.userThemes}/> } />
 						<Route path='/user/:username' element={<WithRoute el={UserPage} brews={this.props.brews} />} />
-						<Route path='/print/:id' element={<WithRoute el={PrintPage} brew={this.props.brew} />} />
-						<Route path='/print' element={<WithRoute el={PrintPage} />} />
-						<Route path='/changelog' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
-						<Route path='/faq' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
+						<Route path='/vault' element={<WithRoute el={VaultPage}/>}/>
+						<Route path='/changelog' element={<WithRoute el={SharePage} brew={this.props.brew} disableMeta={true} />} />
+						<Route path='/faq' element={<WithRoute el={SharePage} brew={this.props.brew} disableMeta={true} />} />
+						<Route path='/migrate' element={<WithRoute el={SharePage} brew={this.props.brew} disableMeta={true} />} />
 						<Route path='/account' element={<WithRoute el={AccountPage} brew={this.props.brew} accountDetails={this.props.brew.accountDetails} />} />
 						<Route path='/legacy' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
 						<Route path='/error' element={<WithRoute el={ErrorPage} brew={this.props.brew} />} />
-					  	<Route path='/' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
-					  	<Route path='/*' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
+						<Route path='/' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
+						<Route path='/*' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
 					</Routes>
 				</div>
 			</Router>
@@ -89,14 +89,3 @@ const Homebrew = createClass({
 });
 
 module.exports = Homebrew;
-
-//TODO: Nicer Error page instead of just "cant get that"
-// 	'/share/:id' : (args)=>{
-// 		if(!this.props.brew.shareId){
-// 			return <ErrorPage errorId={args.id}/>;
-// 		}
-//
-// 		return <SharePage
-// 			id={args.id}
-// 			brew={this.props.brew} />;
-// 	},

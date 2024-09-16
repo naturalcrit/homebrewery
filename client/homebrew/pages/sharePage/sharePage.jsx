@@ -6,25 +6,33 @@ const { Meta } = require('vitreum/headtags');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 const MetadataNav = require('../../navbar/metadata.navitem.jsx');
-const PrintLink = require('../../navbar/print.navitem.jsx');
+const PrintNavItem = require('../../navbar/print.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account = require('../../navbar/account.navitem.jsx');
-
-
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
+const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
 
 const SharePage = createClass({
 	displayName     : 'SharePage',
 	getDefaultProps : function() {
 		return {
-			brew : DEFAULT_BREW_LOAD
+			brew        : DEFAULT_BREW_LOAD,
+			disableMeta : false
+		};
+	},
+
+	getInitialState : function() {
+		return {
+			themeBundle : {}
 		};
 	},
 
 	componentDidMount : function() {
 		document.addEventListener('keydown', this.handleControlKeys);
+
+		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
 	},
 
 	componentWillUnmount : function() {
@@ -35,7 +43,7 @@ const SharePage = createClass({
 		if(!(e.ctrlKey || e.metaKey)) return;
 		const P_KEY = 80;
 		if(e.keyCode == P_KEY){
-			window.open(`/print/${this.processShareId()}?dialog=true`, '_blank').focus();
+			if(e.keyCode == P_KEY) printCurrentBrew();
 			e.stopPropagation();
 			e.preventDefault();
 		}
@@ -61,18 +69,26 @@ const SharePage = createClass({
 	},
 
 	render : function(){
+		const titleStyle = this.props.disableMeta ? { cursor: 'default' } : {};
+		const titleEl = <Nav.item className='brewTitle' style={titleStyle}>{this.props.brew.title}</Nav.item>;
+
 		return <div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
 			<Navbar>
 				<Nav.section className='titleSection'>
-					<MetadataNav brew={this.props.brew}>
-						<Nav.item className='brewTitle'>{this.props.brew.title}</Nav.item>
-					</MetadataNav>
+					{
+						this.props.disableMeta ?
+							titleEl
+							:
+							<MetadataNav brew={this.props.brew}>
+								{titleEl}
+							</MetadataNav>
+					}
 				</Nav.section>
 
 				<Nav.section>
 					{this.props.brew.shareId && <>
-						<PrintLink shareId={this.processShareId()} />
+						<PrintNavItem/>
 						<Nav.dropdown>
 							<Nav.item color='red' icon='fas fa-code'>
 								source
@@ -95,7 +111,14 @@ const SharePage = createClass({
 			</Navbar>
 
 			<div className='content'>
-				<BrewRenderer text={this.props.brew.text} style={this.props.brew.style} renderer={this.props.brew.renderer} theme={this.props.brew.theme} />
+				<BrewRenderer
+					text={this.props.brew.text}
+					style={this.props.brew.style}
+					renderer={this.props.brew.renderer}
+					theme={this.props.brew.theme}
+					themeBundle={this.state.themeBundle}
+					allowPrint={true}
+				/>
 			</div>
 		</div>;
 	}

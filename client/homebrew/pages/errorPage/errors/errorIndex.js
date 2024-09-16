@@ -2,6 +2,9 @@ const dedent = require('dedent-tabs').default;
 
 const loginUrl = 'https://www.naturalcrit.com/login';
 
+//001-050 : Brew errors
+//050-100 : Other pages errors
+
 const errorIndex = (props)=>{
 	return {
 		// Default catch all
@@ -136,11 +139,32 @@ const errorIndex = (props)=>{
 
 		**Brew ID:**  ${props.brew.brewId}`,
 
+		// Theme load error
+		'09' : dedent`
+		## No Homebrewery theme document could be found.
+		
+		The server could not locate the Homebrewery document. It was likely deleted by
+		its owner.
+		
+		:
+
+		**Requested access:** ${props.brew.accessType}
+
+		**Brew ID:**  ${props.brew.brewId}`,
+
+		//account page when account is not defined
+		'50' : dedent`
+		## You are not signed in
+		
+		You are trying to access the account page, but are not signed in to an account.
+		
+		Please login or signup at our [login page](https://www.naturalcrit.com/login?redirect=https://homebrewery.naturalcrit.com/account).`,
+
 		// Brew locked by Administrators error
-		'100' : dedent`
+		'51' : dedent`
 		## This brew has been locked.
 		
-		Please contact the Administrators to unlock this document.
+		Only an author may request that this lock is removed.
 		
 		:
 
@@ -152,7 +176,7 @@ const errorIndex = (props)=>{
 
 		// ####### Admin pages errors ####### 
 
-		'401': dedent`
+		'52': dedent`
 		## Authorization Required
 		You need to provide correct administrator credentials to access this page.
 		
@@ -162,7 +186,7 @@ const errorIndex = (props)=>{
 		[reddit mod mail](https://old.reddit.com/message/compose/?to=/r/homebrewery) or 
 		in the [hb_issues channel of the Discord of Many Things server](https://discord.gg/domt).
 		`,
-		'403': dedent`
+		'53': dedent`
 		## Access Denied
 		
 		The credentials you entered are not correct, you may try again, attention, there is a limited number of tries before you are blocked.
@@ -177,7 +201,7 @@ const errorIndex = (props)=>{
 		as so at our subreddit or discord you will find in the home page.
 		`,
 
-		'470' : dedent`
+		'53' : dedent`
 		## You have runned out of attempts
 
 		You have failed to provide correct credentials to access the page too many times, and you have run out of attempts.
@@ -195,6 +219,10 @@ const errorIndex = (props)=>{
 		
 		In any case, your attempts have been logged, and you will not be capable of doing any more attempt for now.
 		`,
+		'90' : dedent` An unexpected error occurred while looking for these brews.  
+            Try again in a few minutes.`,
+
+		'91' : dedent` An unexpected error occurred while trying to get the total of brews.`,
 	};
 };
 
