@@ -151,6 +151,25 @@ const errorIndex = (props)=>{
 		**Requested access:** ${props.brew.accessType}
 
 		**Brew ID:**  ${props.brew.brewId}`,
+		
+		//Brew's cloning blocked
+		'10' : dedent`
+		## This brew's cloning features have been disabled
+
+		The author of this brew does not want other people using its contents, so viewing the source, 
+		cloning the brew and downloading the text has been disabled.
+
+		If you think this is a mistake, you may contact the author.
+
+		If you are the author, please login to the account that has authorship of this brew.
+
+		:
+
+		**Brew ID:**  ${props.brew.brewId}
+		
+		**Brew Title:** ${props.brew.brewTitle}
+
+		**Brew Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}`,
 
 		//account page when account is not defined
 		'50' : dedent`

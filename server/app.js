@@ -167,21 +167,40 @@ app.get('/faq', async (req, res, next)=>{
 });
 
 //Source page
-app.get('/source/:id', asyncHandler(getBrew('share')), (req, res)=>{
-	const { brew } = req;
+app.get('/source/:id', asyncHandler(getBrew('share')), (req, res, next) => {
+	const { brew, account } = req;
+    const ownBrew = account && brew.authors.includes(account.username);
 
-	const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
-	let text = brew.text;
-	for (const replaceStr in replaceStrings) {
-		text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
-	}
-	text = `<code><pre style="white-space: pre-wrap;">${text}</pre></code>`;
-	res.status(200).send(text);
+    if (brew.cloning === false && !ownBrew) {
+        res.set('WWW-Authenticate', 'Bearer realm="Authorization Required"');
+        const error = new Error('Cloning blocked');
+        error.status = 401;
+        error.HBErrorCode = '10';
+        error.brewId = brew.shareId;
+        error.brewTitle = brew.title;
+		error.authors = brew.authors;
+        return next(error);
+    }
+    return next();
 });
 
 //Download brew source page
-app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
-	const { brew } = req;
+app.get('/download/:id', asyncHandler(getBrew('share')), (req, res, next) => {
+	const { brew, account } = req;
+    const ownBrew = account && brew.authors.includes(account.username);
+    
+    if (brew.cloning === false && !ownBrew) {
+        res.set('WWW-Authenticate', 'Bearer realm="Authorization Required"');
+        const error = new Error('Cloning blocked');
+        error.status = 401;
+        error.HBErrorCode = '10';
+        error.brewId = brew.shareId;
+        error.brewTitle = brew.title;
+		error.authors = brew.authors;
+        return next(error);
+    }
+
+	
 	sanitizeBrew(brew, 'share');
 	const prefix = 'HB - ';
 
@@ -312,7 +331,20 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res,
 
 //New Page from ID
 app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async(req, res, next)=>{
+	const ownBrew = req.account && req.brew.authors.includes(req.account.username);
 	sanitizeBrew(req.brew, 'share');
+
+	if (req.brew.cloning === false && !ownBrew) {
+        res.set('WWW-Authenticate', 'Bearer realm="Authorization Required"');
+        const error = new Error('Cloning blocked');
+        error.status = 401;
+        error.HBErrorCode = '10';
+        error.brewId = req.brew.shareId;
+        error.brewTitle = req.brew.title;
+		error.authors = req.brew.authors;
+        return next(error);
+    }
+
 	splitTextStyleAndMetadata(req.brew);
 	const brew = {
 		shareId  : req.brew.shareId,
@@ -438,6 +470,7 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 }));
 
 const nodeEnv = config.get('node_env');
+
 const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
 // Local only
 if(isLocalEnvironment){

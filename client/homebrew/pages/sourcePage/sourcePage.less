@@ -1,0 +1,35 @@
+
+.source {
+	position      : relative;
+	width         : 100%;
+	height        : fit-content;
+	padding       : 20px 100px 20px 20px;
+	background    : #E8DECD;
+	border        : 1px solid #A27A3E;
+	border-radius : 5px;
+
+	.buttons {
+        display:flex;
+        flex-direction: column;
+		position                  : absolute;
+		top                       : 0;
+		right                     : 0;
+		background                : #00000024;
+		border-bottom             : 1px solid #A27A3E;
+		border-left               : 1px solid #A27A3E;
+        
+		border-top-right-radius   : 5px;
+		border-bottom-left-radius : 5px;
+
+		button {
+			color      : black; 
+			background : none;
+
+			&:has(+button) { border-bottom : 1px solid #A27A3E; }
+        
+			&:hover { background : #00000024; }
+
+			&:active { background : #2722194C; }
+		}
+	}
+}
