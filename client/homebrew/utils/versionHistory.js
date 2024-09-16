@@ -1,16 +1,17 @@
 export const HISTORY_PREFIX = 'HOMEBREWERY-HISTORY';
 export const HISTORY_SLOTS = 5;
 
+// History values in minutes
 const DEFAULT_HISTORY_SAVE_DELAYS = {
- 	'0' : 0,           // 0 minutes (if not specified)
-	'1' : 2,			// 2 minutes
-	'2' : 10,			// 10 minutes
-	'3' : 60,			// 60 minutes
-	'4' : 12 * 60,     // 12 hours
-	'5' : 2 * 24 * 60  // 2 days
+ 	'0' : 0,
+	'1' : 2,
+	'2' : 10,
+	'3' : 60,
+	'4' : 12 * 60,
+	'5' : 2 * 24 * 60
 };
 
-const DEFAULT_GARBAGE_COLLECT_DELAY = 28 * 24 * 60; // 28 days
+const DEFAULT_GARBAGE_COLLECT_DELAY = 28 * 24 * 60;
 
 const DEFAULT_STORED_BREW = {
 	shareId  : 'default_brew',
