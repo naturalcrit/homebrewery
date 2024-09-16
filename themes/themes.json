@@ -29,12 +29,12 @@
       "baseSnippets": false,
       "path": "Blank"
     },
-    "journal": {
+    "Journal": {
       "name": "Journal",
       "renderer": "V3",
       "baseTheme": false,
       "baseSnippets": "5ePHB",
-      "path": "journal"
+      "path": "Journal"
     }
   }
 }
