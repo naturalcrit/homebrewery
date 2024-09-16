@@ -68,11 +68,9 @@ const Snippetbar = createClass({
 			});
 		};
 
-		if(historyExists(this.props.brew) != this.state.historyExists){
-			this.setState({
-				historyExists : !this.state.historyExists
-			});
-		};
+		this.setState({
+			historyExists : historyExists(this.props.brew)
+		});
 	},
 
 	mergeCustomizer : function(oldValue, newValue, key) {
