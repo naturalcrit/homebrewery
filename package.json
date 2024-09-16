@@ -100,7 +100,7 @@
     "expr-eval": "^2.0.2",
     "express": "^4.21.0",
     "express-async-handler": "^1.2.0",
-    "express-static-gzip": "2.1.7",
+    "express-static-gzip": "2.1.8",
     "fs-extra": "11.2.0",
     "js-yaml": "^4.1.0",
     "jwt-simple": "^0.5.6",
