@@ -36,26 +36,23 @@ function getVersionBySlot(brew, slot){
 	return output;
 };
 
-function updateStoredBrew(brew, slot=0){
-	const archiveBrew = {};
+function updateStoredBrew(brew, slot = 0) {
+  const archiveBrew = {
+    title    : brew.title,
+    text     : brew.text,
+    style    : brew.style,
+    version  : brew.version,
+    shareId  : brew.shareId,
+    savedAt  : brew?.savedAt || new Date(),
+    expireAt : new Date()
+  };
 
-	// Data from brew to be stored
-	archiveBrew.title = brew.title;
-	archiveBrew.text = brew.text;
-	archiveBrew.style = brew.style;
-	archiveBrew.version = brew.version;
-	archiveBrew.shareId = brew.shareId;
+  archiveBrew.expireAt.setMinutes(archiveBrew.expireAt.getMinutes() + HISTORY_SAVE_DELAYS[slot]);
 
-	// Calculated values
-	archiveBrew.savedAt = brew?.savedAt || new Date();
-	archiveBrew.expireAt = new Date();
-	archiveBrew.expireAt.setMinutes(archiveBrew.expireAt.getMinutes() + HISTORY_SAVE_DELAYS[slot]);
+  const key = getKeyBySlot(brew, slot);
+  localStorage.setItem(key, JSON.stringify(archiveBrew));
+}
 
-	// Store data
-	const key = getKeyBySlot(brew, slot);
-	localStorage.setItem(key, JSON.stringify(archiveBrew));
-	return;
-};
 
 export function historyExists(brew){
 	return Object.keys(localStorage)
