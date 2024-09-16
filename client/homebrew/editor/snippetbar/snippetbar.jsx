@@ -162,13 +162,14 @@ const Snippetbar = createClass({
 
 				const saveTime = new Date(item.savedAt);
 				const diffMs = new Date() - saveTime;
-				const diffMins = Math.floor(diffMs / (60 * 1000));
+				const diffSecs = Math.floor(diffMs / 1000);
 
-				let diffString = `about ${diffMins} minutes ago`;
+				let diffString = `about ${diffSecs} seconds ago`;
 
-				if(diffMins > 60) diffString = `about ${Math.floor(diffMins / 60)} hours ago`;
-				if(diffMins > (24 * 60)) diffString = `about ${Math.floor(diffMins / (24 * 60))} days ago`;
-				if(diffMins > (7 * 24 * 60)) diffString = `about ${Math.floor(diffMins / (7 * 24 * 60))} weeks ago`;
+				if(diffSecs > 60) diffString = `about ${Math.floor(diffSecs / 60)} minutes ago`;
+				if(diffSecs > (60 * 60)) diffString = `about ${Math.floor(diffSecs / (60 * 60))} hours ago`;
+				if(diffSecs > (24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (24 * 60 * 60))} days ago`;
+				if(diffSecs > (7 * 24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (7 * 24 * 60 * 60))} weeks ago`;
 
 				return <div className='snippet' key={index} onClick={()=>{this.replaceContent(item);}} >
 					<i className={`fas fa-${index+1}`} />
