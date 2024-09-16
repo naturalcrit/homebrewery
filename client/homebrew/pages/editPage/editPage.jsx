@@ -55,9 +55,9 @@ const EditPage = createClass({
 			autoSave                   : true,
 			autoSaveWarning            : false,
 			unsavedTime                : new Date(),
-			currentEditorViewPageNum   : 0,
-			currentEditorCursorPageNum : 0,
-			currentBrewRendererPageNum : 0,
+			currentEditorViewPageNum   : 1,
+			currentEditorCursorPageNum : 1,
+			currentBrewRendererPageNum : 1,
 			displayLockMessage         : this.props.brew.lock || false,
 			themeBundle                : {}
 		};

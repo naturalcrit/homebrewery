@@ -3,7 +3,6 @@ require('./editor.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
-const cx = require('classnames');
 const dedent = require('dedent-tabs').default;
 const Markdown = require('../../../shared/naturalcrit/markdown.js');
 
@@ -22,19 +21,7 @@ const DEFAULT_STYLE_TEXT = dedent`
 					color: black;
 				}`;
 
-let lastPage = 0;
 let isJumping = false;
-
-const isElementCodeMirror=(element)=>{
-	let el = element;
-	while( el.tagName != 'body' ) {
-		if ( !el?.classList ) return false
-		if( el?.classList?.contains('CodeMirror-code') || el.classList.contains('CodeMirror-line'))
-			return true;
-		el = el.parentNode;
-	}
-	return false;
-};
 
 const Editor = createClass({
 	displayName     : 'Editor',
@@ -56,9 +43,9 @@ const Editor = createClass({
 			editorTheme : 'default',
 			renderer    : 'legacy',
 
-			currentEditorCursorPageNum : 0,
-			currentEditorViewPageNum   : 0,
-			currentBrewRendererPageNum : 0, 
+			currentEditorCursorPageNum : 1,
+			currentEditorViewPageNum   : 1,
+			currentBrewRendererPageNum : 1, 
 		};
 	},
 	getInitialState : function() {
@@ -85,15 +72,6 @@ const Editor = createClass({
 
 		this.codeEditor.current.codeMirror.on('cursorActivity', (cm)=>{this.updateCurrentCursorPage(cm.getCursor())});
 		this.codeEditor.current.codeMirror.on('scroll', _.throttle(()=>{this.updateCurrentViewPage(this.codeEditor.current.getTopVisibleLine())}, 200));
-		document.addEventListener('click', (e)=>{
-			if(isElementCodeMirror(e.target) && this.props.liveScroll ) {
-				const curPage = this.getCurrentPage();
-				if( curPage != lastPage ) {
-					this.brewJump();
-					lastPage = curPage;
-				}
-			}
-		});
 
 		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
 		if(editorTheme) {
@@ -132,33 +110,12 @@ const Editor = createClass({
 	},
 
 	handleControlKeys : function(e){
-		const END_KEY = 35;
-		const HOME_KEY = 36;
+		if(!(e.ctrlKey && e.metaKey && e.shiftKey)) return;
 		const LEFTARROW_KEY = 37;
 		const RIGHTARROW_KEY = 39;
-
-		if(this.props.liveScroll) {
-			//console.log('Should be scrollig!');
-			//const movementKeys = [13, 33, 34, LEFTARROW_KEY, 38, RIGHTARROW_KEY, 40];
-			// if(movementKeys.includes(e.keyCode)) {
-			// 	const curPage = this.getCurrentPage();
-			// 	if(curPage != lastPage) {
-			// 		this.brewJump();
-			// 		lastPage = curPage;
-			// 	}
-			// }
-		}
-
-		if(!(e.ctrlKey && e.metaKey)) return;
-
-		if(!e.ctrlKey) return;
-
-		// Handle CTRL-HOME and CTRL-END
-		//if(((e.keyCode == END_KEY) || (e.keyCode == HOME_KEY)) && this.props.liveScroll) this.brewJump();
-		if(!e.metaKey) return;
-		//if(e.shiftKey && (e.keyCode == RIGHTARROW_KEY)) this.brewJump();
-		//if(e.shiftKey && (e.keyCode == LEFTARROW_KEY)) this.sourceJump();
-		if((e.keyCode == LEFTARROW_KEY) || (e.keyCode == RIGHTARROW_KEY)) {
+		if (e.keyCode == RIGHTARROW_KEY) this.brewJump();
+		if (e.keyCode == LEFTARROW_KEY) this.sourceJump();
+		if (e.keyCode == LEFTARROW_KEY || e.keyCode == RIGHTARROW_KEY) {
 			e.stopPropagation();
 			e.preventDefault();
 		}

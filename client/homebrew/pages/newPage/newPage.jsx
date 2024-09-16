@@ -44,9 +44,9 @@ const NewPage = createClass({
 			saveGoogle                 : (global.account && global.account.googleId ? true : false),
 			error                      : null,
 			htmlErrors                 : Markdown.validate(brew.text),
-			currentEditorViewPageNum   : 0,
-			currentEditorCursorPageNum : 0,
-			currentBrewRendererPageNum : 0,
+			currentEditorViewPageNum   : 1,
+			currentEditorCursorPageNum : 1,
+			currentBrewRendererPageNum : 1,
 			themeBundle                : {}
 		};
 	},

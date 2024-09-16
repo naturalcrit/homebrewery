@@ -34,9 +34,9 @@ const HomePage = createClass({
 			brew                       : this.props.brew,
 			welcomeText                : this.props.brew.text,
 			error                      : undefined,
-			currentEditorViewPageNum   : 0,
-			currentEditorCursorPageNum : 0,
-			currentBrewRendererPageNum : 0,
+			currentEditorViewPageNum   : 1,
+			currentEditorCursorPageNum : 1,
+			currentBrewRendererPageNum : 1,
 			themeBundle                : {}
 		};
 	},
