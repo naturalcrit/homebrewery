@@ -556,5 +556,6 @@ app.use((req, res)=>{
 //^=====--------------------------------------=====^//
 
 module.exports = {
-	app : app
+	app                       : app,
+	splitTextStyleAndMetadata : splitTextStyleAndMetadata
 };
