@@ -179,46 +179,42 @@ const errorIndex = (props)=>{
 		'52': dedent`
 		## Authorization Required
 		You need to provide correct administrator credentials to access this page.
-		
+
 		:
 
 		If you should have access but are not able to log-in, please reach out via 
-		[reddit mod mail](https://old.reddit.com/message/compose/?to=/r/homebrewery) or 
-		in the [hb_issues channel of the Discord of Many Things server](https://discord.gg/domt).
-		`,
+		[reddit mod mail](https://old.reddit.com/message/compose/?to=/r/homebrewery) or in the [hb_issues channel of the Discord of Many Things server](https://discord.gg/domt).`,
+		'52': dedent`
+		## Authorization Required
+		You need to provide correct administrator credentials to access this page.
+
+		:
+
+		If you should have access but are not able to log-in, please reach out via 
+		[reddit mod mail](https://old.reddit.com/message/compose/?to=/r/homebrewery) 
+		or in the [hb_issues channel of the Discord of Many Things server](https://discord.gg/domt).`,
+
 		'53': dedent`
 		## Access Denied
-		
-		The credentials you entered are not correct, you may try again, attention, there is a limited number of tries before you are blocked.
-		
+		You need to provide correct administrator credentials to access this page.  *Too many unsuccessful 
+		attempts will lock you out for a period of time.*
+
 		:
 
-		This is an administrator only page to manage the site, if you should not have access, leave inmediately.
-		
-		:
-		
-		If you have received instructions to open this page, report 
-		as so at our subreddit or discord you will find in the home page.
-		`,
+		If you should have access but are not able to log-in, please reach out via 
+		[reddit mod mail](https://old.reddit.com/message/compose/?to=/r/homebrewery) 
+		or in the [hb_issues channel of the Discord of Many Things server](https://discord.gg/domt).`,
 
 		'54' : dedent`
-		## You have runned out of attempts
+		## You have run out of attempts
+		You have failed to provide correct credentials to access the page too many times.
+		For security reasons, you will have to wait a day before retrying again.
 
-		You have failed to provide correct credentials to access the page too many times, and you have run out of attempts.
-		
 		:
-		
-		This is an administrator only page to manage the site, if you should not have access, leave inmediately.
-		
-		:
-		
-		If you have received instructions to open this page, report 
-		as so at our subreddit or discord you will find in the home page.
-		
-		::
-		
-		In any case, your attempts have been logged, and you will not be capable of doing any more attempt for now.
-		`,
+
+		If you should have access but are not able to log-in, please reach out via 
+		[reddit mod mail](https://old.reddit.com/message/compose/?to=/r/homebrewery) 
+		or in the [hb_issues channel of the Discord of Many Things server](https://discord.gg/domt).`,
 		'90' : dedent` An unexpected error occurred while looking for these brews.  
             Try again in a few minutes.`,
 
