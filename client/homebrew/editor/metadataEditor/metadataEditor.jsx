@@ -6,7 +6,7 @@ const _     = require('lodash');
 const request = require('../../utils/request-middleware.js');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Combobox = require('client/components/combobox.jsx');
-const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
+const TagInput = require('../tagInput/tagInput.jsx');
 
 
 const Themes = require('themes/themes.json');
@@ -344,7 +344,7 @@ const MetadataEditor = createClass({
 				{this.renderThumbnail()}
 			</div>
 
-			<StringArrayEditor label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
+			<TagInput label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
 				placeholder='add tag' unique={true}
 				values={this.props.metadata.tags}
 				onChange={(e)=>this.handleFieldChange('tags', e)}/>
@@ -368,7 +368,7 @@ const MetadataEditor = createClass({
 
 			{this.renderAuthors()}
 
-			<StringArrayEditor label='invited authors' valuePatterns={[/.+/]}
+			<TagInput label='invited authors' valuePatterns={[/.+/]}
 				validators={[(v)=>!this.props.metadata.authors?.includes(v)]}
 				placeholder='invite author' unique={true}
 				values={this.props.metadata.invitedAuthors}

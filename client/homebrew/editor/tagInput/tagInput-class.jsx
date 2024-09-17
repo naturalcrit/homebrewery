@@ -2,8 +2,8 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 
-const StringArrayEditor = createClass({
-	displayName     : 'StringArrayEditor',
+const TagInput = createClass({
+	displayName     : 'TagInput',
 	getDefaultProps : function() {
 		return {
 			label         : '',
@@ -146,4 +146,4 @@ const StringArrayEditor = createClass({
 	}
 });
 
-module.exports = StringArrayEditor;
+module.exports = TagInput;
