@@ -78,61 +78,35 @@ const BrewRenderer = (props)=>{
 	}
 
 	useEffect(() => {
-		const locationHash = window.location.hash;
-		const pageIdRegex = /^#p\d+$/;
-		
-		console.log(state);
-		
-		if (locationHash) {
-			if (state.isMounted) {
-				if (pageIdRegex.test(locationHash)) {
-					const pageNumber = parseInt(locationHash.slice(2));
-					scrollToPage(pageNumber - 1);
-				} else {
-					const elementId = locationHash.slice(1);
-					if (elementId) {
-						const element = document.getElementById(elementId);
-						console.log(element);
-						if (element) {
-							
-							const page = element.closest(".page");
-							// Ensure `page` exists before proceeding
-							if (page) {
-								console.log(page.getAttribute("Id").slice(1));
-								scrollToPage(page.getAttribute("Id").slice(1));
-							}
-						}
-					}
-				}
-			}
+		const elementId = window.location.hash.slice(1);
+		if (elementId && state.isMounted) {
+			const element = document.getElementById(elementId);
+			element.scrollIntoView({ block: 'start' });
 		}
-	
+		
 		return () => {
 			window.removeEventListener('resize', updateSize);
 		};
 	}, [state.isMounted]);
-
-	const scrollToPage = (pageNumber) => {
-		const iframe = document.getElementById('BrewRenderer');
-        if (iframe && iframe.contentWindow) {
-            const brewRenderer =
-                iframe.contentWindow.document.querySelector('.brewRenderer');
-            if (brewRenderer) {
-                const pages = brewRenderer.querySelectorAll('.page');
-                if (pageNumber > pages.length) {
-                    console.log('page not found');
-                } else {
-                    pages[pageNumber].scrollIntoView({ block: 'start' });
-                }
-            }
-        }
-    };
 
 	const updateSize = ()=>{
 		setState((prevState)=>({
 			...prevState,
 			height : mainRef.current.parentNode.clientHeight,
 		}));
+	};
+
+	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
+		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
+			updateSize();
+			window.addEventListener('resize', updateSize);
+			renderPages(); //Make sure page is renderable before showing
+			setState((prevState)=>({
+				...prevState,
+				isMounted  : true,
+				visibility : 'visible'
+			}));
+		}, 100);
 	};
 
 	const updateCurrentPage = useCallback(_.throttle((e)=>{
@@ -207,18 +181,6 @@ const BrewRenderer = (props)=>{
 		}
 	};
 
-	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
-		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
-			updateSize();
-			window.addEventListener('resize', updateSize);
-			renderPages(); //Make sure page is renderable before showing
-			setState((prevState)=>({
-				...prevState,
-				isMounted  : true,
-				visibility : 'visible'
-			}));
-		}, 100);
-	};
 
 	const emitClick = ()=>{ // Allow clicks inside iFrame to interact with dropdowns, etc. from outside
 		if(!window || !document) return;
