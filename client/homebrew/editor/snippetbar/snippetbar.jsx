@@ -5,10 +5,9 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
+import { getHistoryItems, historyExists } from '../../utils/versionHistory.js';
+
 //Import all themes
-
-const Themes = require('themes/themes.json');
-
 const ThemeSnippets = {};
 ThemeSnippets['Legacy_5ePHB'] = require('themes/Legacy/5ePHB/snippets.js');
 ThemeSnippets['V3_5ePHB']     = require('themes/V3/5ePHB/snippets.js');
@@ -40,7 +39,9 @@ const Snippetbar = createClass({
 			foldCode          : ()=>{},
 			unfoldCode        : ()=>{},
 			updateEditorTheme : ()=>{},
-			cursorPos         : {}
+			cursorPos         : {},
+			snippetBundle     : [],
+			updateBrew        : ()=>{}
 		};
 	},
 
@@ -48,53 +49,50 @@ const Snippetbar = createClass({
 		return {
 			renderer      : this.props.renderer,
 			themeSelector : false,
-			snippets      : []
+			snippets      : [],
+			historyExists : false
 		};
 	},
 
 	componentDidMount : async function() {
-		const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
-		const themePath    = this.props.theme ?? '5ePHB';
-		let snippets = _.cloneDeep(ThemeSnippets[`${rendererPath}_${themePath}`]);
-		snippets = this.compileSnippets(rendererPath, themePath, snippets);
+		const snippets = this.compileSnippets();
 		this.setState({
 			snippets : snippets
 		});
 	},
 
 	componentDidUpdate : async function(prevProps) {
-		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme) {
-			const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
-			const themePath    = this.props.theme ?? '5ePHB';
-			let snippets = _.cloneDeep(ThemeSnippets[`${rendererPath}_${themePath}`]);
-			snippets = this.compileSnippets(rendererPath, themePath, snippets);
+		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.snippetBundle != this.props.snippetBundle) {
 			this.setState({
-				snippets : snippets
+				snippets : this.compileSnippets()
 			});
-		}
+		};
+
+		this.setState({
+			historyExists : historyExists(this.props.brew)
+		});
 	},
 
-
-	mergeCustomizer : function(valueA, valueB, key) {
+	mergeCustomizer : function(oldValue, newValue, key) {
 		if(key == 'snippets') {
-			const result = _.reverse(_.unionBy(_.reverse(valueB), _.reverse(valueA), 'name')); // Join snippets together, with preference for the current theme over the base theme
-			return _.filter(result, 'gen'); //Only keep snippets with a 'gen' property.
+			const result = _.reverse(_.unionBy(_.reverse(newValue), _.reverse(oldValue), 'name')); // Join snippets together, with preference for the child theme over the parent theme
+			return result.filter((snip)=>snip.gen || snip.subsnippets);
 		}
 	},
 
-	compileSnippets : function(rendererPath, themePath, snippets) {
-		let compiledSnippets = snippets;
-		const baseSnippetsPath = Themes[rendererPath][themePath].baseSnippets;
+	compileSnippets : function() {
+		let compiledSnippets = [];
 
-		const objB = _.keyBy(compiledSnippets, 'groupName');
+		let oldSnippets = _.keyBy(compiledSnippets, 'groupName');
 
-		if(baseSnippetsPath) {
-			const objA = _.keyBy(_.cloneDeep(ThemeSnippets[`${rendererPath}_${baseSnippetsPath}`]), 'groupName');
-			compiledSnippets = _.values(_.mergeWith(objA, objB, this.mergeCustomizer));
-			compiledSnippets = this.compileSnippets(rendererPath, baseSnippetsPath, _.cloneDeep(compiledSnippets));
-		} else {
-			const objA = _.keyBy(_.cloneDeep(ThemeSnippets[`${rendererPath}_Blank`]), 'groupName');
-			compiledSnippets = _.values(_.mergeWith(objA, objB, this.mergeCustomizer));
+		for (let snippets of this.props.snippetBundle) {
+			if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name
+				snippets = ThemeSnippets[snippets];
+
+			const newSnippets = _.keyBy(_.cloneDeep(snippets), 'groupName');
+			compiledSnippets = _.values(_.mergeWith(oldSnippets, newSnippets, this.mergeCustomizer));
+
+			oldSnippets = _.keyBy(compiledSnippets, 'groupName');
 		}
 		return compiledSnippets;
 	},
@@ -146,6 +144,36 @@ const Snippetbar = createClass({
 		});
 	},
 
+	replaceContent : function(item){
+		return this.props.updateBrew(item);
+	},
+
+	renderHistoryItems : function() {
+		const historyItems = getHistoryItems(this.props.brew);
+
+		return <div className='dropdown'>
+			{_.map(historyItems, (item, index)=>{
+				if(!item.savedAt) return;
+
+				const saveTime = new Date(item.savedAt);
+				const diffMs = new Date() - saveTime;
+				const diffSecs = Math.floor(diffMs / 1000);
+
+				let diffString = `about ${diffSecs} seconds ago`;
+
+				if(diffSecs > 60) diffString = `about ${Math.floor(diffSecs / 60)} minutes ago`;
+				if(diffSecs > (60 * 60)) diffString = `about ${Math.floor(diffSecs / (60 * 60))} hours ago`;
+				if(diffSecs > (24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (24 * 60 * 60))} days ago`;
+				if(diffSecs > (7 * 24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (7 * 24 * 60 * 60))} weeks ago`;
+
+				return <div className='snippet' key={index} onClick={()=>{this.replaceContent(item);}} >
+					<i className={`fas fa-${index+1}`} />
+					<span className='name' title={saveTime.toISOString()}>v{item.version} : {diffString}</span>
+				</div>;
+			})}
+		</div>;
+	},
+
 	renderEditorButtons : function(){
 		if(!this.props.showEditButtons) return;
 
@@ -166,6 +194,10 @@ const Snippetbar = createClass({
 		}
 
 		return <div className='editors'>
+			<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`} >
+				<i className='fas fa-clock-rotate-left' />
+				{this.state.historyExists && this.renderHistoryItems() }
+			</div>
 			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
 				onClick={this.props.undo} >
 				<i className='fas fa-undo' />

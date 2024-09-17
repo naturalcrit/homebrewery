@@ -39,8 +39,10 @@ if(typeof window !== 'undefined'){
 	//Autocompletion
 	require('codemirror/addon/hint/show-hint.js');
 
-	const foldCode = require('./fold-code');
-	foldCode.registerHomebreweryHelper(CodeMirror);
+	const foldPagesCode = require('./fold-pages');
+	foldPagesCode.registerHomebreweryHelper(CodeMirror);
+	const foldCSSCode = require('./fold-css');
+	foldCSSCode.registerHomebreweryHelper(CodeMirror);
 }
 
 const CodeEditor = createClass({
@@ -395,6 +397,11 @@ const CodeEditor = createClass({
 	getCursorPosition : function(){
 		return this.codeMirror.getCursor();
 	},
+	getTopVisibleLine : function(){
+		const rect = this.codeMirror.getWrapperElement().getBoundingClientRect();
+		const topVisibleLine = this.codeMirror.lineAtHeight(rect.top, 'window');
+		return topVisibleLine;
+	},
 	updateSize : function(){
 		this.codeMirror.refresh();
 	},
@@ -411,11 +418,11 @@ const CodeEditor = createClass({
 	foldOptions : function(cm){
 		return {
 			scanUp      : true,
-			rangeFinder : CodeMirror.fold.homebrewery,
+			rangeFinder : this.props.language === 'css' ? CodeMirror.fold.homebrewerycss : CodeMirror.fold.homebrewery,
 			widget      : (from, to)=>{
 				let text = '';
 				let currentLine = from.line;
-				const maxLength = 50;
+				let maxLength = 50;
 
 				let foldPreviewText = '';
 				while (currentLine <= to.line && text.length <= maxLength) {
@@ -430,10 +437,15 @@ const CodeEditor = createClass({
 					}
 				}
 				text = foldPreviewText || `Lines ${from.line+1}-${to.line+1}`;
+				text = text.replace('{', '').trim();
 
-				text = text.trim();
+				// Truncate data URLs at `data:`
+				const startOfData = text.indexOf('data:');
+				if(startOfData > 0)
+					maxLength = Math.min(startOfData + 5, maxLength);
+
 				if(text.length > maxLength)
-					text = `${text.substr(0, maxLength)}...`;
+					text = `${text.slice(0, maxLength)}...`;
 
 				return `\u21A4 ${text} \u21A6`;
 			}
@@ -450,3 +462,4 @@ const CodeEditor = createClass({
 });
 
 module.exports = CodeEditor;
+
