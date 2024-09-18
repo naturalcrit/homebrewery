@@ -26,7 +26,7 @@ const NotificationAdd = ()=>{
 			setError('All fields are required');
 			return;
 		}
-		if (startAt >= stopAt) {
+		if(startAt >= stopAt) {
 			setError('End date must be after the start date!');
 			return;
 		}

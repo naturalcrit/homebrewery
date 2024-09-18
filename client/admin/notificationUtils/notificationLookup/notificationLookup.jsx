@@ -45,7 +45,7 @@ const NotificationLookup = ()=>{
 			setNotifications(res.body || []);
 		} catch (err) {
 			console.log(err);
-			setError(`Error looking up notifications: ${err.response.body.message}`)
+			setError(`Error looking up notifications: ${err.response.body.message}`);
 		} finally {
 			setSearching(false);
 		}
@@ -71,9 +71,9 @@ const NotificationLookup = ()=>{
 			lookupAll();
 		} catch (err) {
 			console.log(err);
-			setError(`Error deleting notification: ${err.response.body.message}`)
+			setError(`Error deleting notification: ${err.response.body.message}`);
 		};
-	}
+	};
 
 	const renderNotificationsList = ()=>{
 		if(error)
