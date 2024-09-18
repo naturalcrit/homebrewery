@@ -7,13 +7,26 @@ const TagInput = ({unique = true, values = [], ...props})=>{
 	const [temporaryValue, setTemporaryValue] = useState('');
 	const [valueContext, setValueContext] = useState(values.map((value)=>({ value: value, editing : false })));
 
-	const readTag = (value)=>{
+
+	const editTag = (evt)=>{
+		setValueContext(valueContext.map((context)=>{
+			context.editing = context.value === evt.target.dataset.value ? true : false;
+			return context;
+		}))
+	}
+
+	const renderReadTag = (value)=>{
 		return (
-			<div className={`tag`}>{value}</div>
+			<div key={value} 
+				data-value={value}
+				className={`tag`}
+				onClick={(evt)=>editTag(evt)}>
+					{value}
+			</div>
 		)
 	}
 
-	const writeTag = (value)=>{
+	const renderWriteTag = (value)=>{
 		return (
 			<input type='text' value={value} />
 		)
@@ -25,7 +38,7 @@ const TagInput = ({unique = true, values = [], ...props})=>{
 			<label>{props.label}</label>
 			<div className='list'>
 
-				{Object.values(valueContext).map((context, i)=>{ return context.editing ? writeTag(context.value) : readTag(context.value) })}
+				{Object.values(valueContext).map((context, i)=>{ return context.editing ? renderWriteTag(context.value) : renderReadTag(context.value) })}
 
 				<input type='text'
 					className={`value`}
