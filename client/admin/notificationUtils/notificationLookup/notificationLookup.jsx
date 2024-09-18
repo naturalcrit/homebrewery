@@ -31,7 +31,6 @@ const NotificationDetail = ({ notification, onDelete })=>(
 );
 
 const NotificationLookup = ()=>{
-	const [foundNotification, setFoundNotification] = useState(null);
 	const [searching, setSearching] = useState(false);
 	const [error, setError] = useState(null);
 	const [notifications, setNotifications] = useState([]);
@@ -64,10 +63,6 @@ const NotificationLookup = ()=>{
 		console.log('Delete notification confirm');
 		try {
 			await request.delete(`/admin/notification/delete/${dismissKey}`);
-			// Only reset the foundNotification if it matches the one being deleted
-			if(foundNotification && foundNotification.dismissKey === dismissKey) {
-				setFoundNotification(null);
-			}
 			lookupAll();
 		} catch (err) {
 			console.log(err);
