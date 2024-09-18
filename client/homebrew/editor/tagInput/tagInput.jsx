@@ -7,9 +7,15 @@ const TagInput = ({unique = true, values = [], ...props})=>{
 	const [temporaryValue, setTemporaryValue] = useState('');
 	const [valueContext, setValueContext] = useState(values.map((value)=>({ value: value, editing : false })));
 
-	const tagElement = (value)=>{
+	const readTag = (value)=>{
 		return (
-			<div className={`badge`}>{value}</div>
+			<div className={`tag`}>{value}</div>
+		)
+	}
+
+	const writeTag = (value)=>{
+		return (
+			<input type='text' value={value} />
 		)
 	}
 
@@ -17,13 +23,16 @@ const TagInput = ({unique = true, values = [], ...props})=>{
 		<div className='field'>
 
 			<label>{props.label}</label>
-			{Object.values(valueContext).map((context, i)=>{ return context.editing ? tagElement('editing') : tagElement(context.value) })}
+			<div className='list'>
 
-			<input type='text'
-				className={`value`}
-				placeholder={props.placeholder}
-				value={temporaryValue}
-				onChange={(e)=>setTemporaryValue(e.target.value)} />
+				{Object.values(valueContext).map((context, i)=>{ return context.editing ? writeTag(context.value) : readTag(context.value) })}
+
+				<input type='text'
+					className={`value`}
+					placeholder={props.placeholder}
+					value={temporaryValue}
+					onChange={(e)=>setTemporaryValue(e.target.value)} />
+			</div>
 		</div>
 	)
 }
