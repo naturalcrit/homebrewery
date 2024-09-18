@@ -376,6 +376,11 @@ module.exports = [
 				gen	 : dedent`{{font-family:MrEavesRemake Dummy Text}}`
 			},
 			{
+				name : 'Pagella',
+				icon : 'font Pagella',
+				gen	 : dedent`{{font-family:Pagella Dummy Text}}`
+			},
+			{
 				name : 'Solbera Imitation',
 				icon : 'font SolberaImitationRemake',
 				gen  : dedent`{{font-family:SolberaImitationRemake Dummy Text}}`
