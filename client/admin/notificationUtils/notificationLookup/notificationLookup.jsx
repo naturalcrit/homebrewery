@@ -43,9 +43,9 @@ const NotificationLookup = ()=>{
 		try {
 			const res = await request.get('/admin/notification/all');
 			setNotifications(res.body || []);
-		} catch (error) {
-            console.log(error);
-			setError(`Error looking up notifications: ${error.response.body.message}`)
+		} catch (err) {
+			console.log(err);
+			setError(`Error looking up notifications: ${err.response.body.message}`)
 		} finally {
 			setSearching(false);
 		}
@@ -69,9 +69,9 @@ const NotificationLookup = ()=>{
 				setFoundNotification(null);
 			}
 			lookupAll();
-		} catch (error) {
-            console.log(error);
-			setError(`Error deleting notification: ${error.response.body.message}`)
+		} catch (err) {
+			console.log(err);
+			setError(`Error deleting notification: ${err.response.body.message}`)
 		};
 	}
 
