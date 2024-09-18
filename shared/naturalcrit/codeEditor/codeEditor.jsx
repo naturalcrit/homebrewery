@@ -49,12 +49,12 @@ const CodeEditor = createClass({
 	displayName     : 'CodeEditor',
 	getDefaultProps : function() {
 		return {
-			language         : '',
-			value            : '',
-			wrap             : true,
-			onChange         : ()=>{},
-			enableFolding    : true,
-			editorTheme      : 'default'
+			language      : '',
+			value         : '',
+			wrap          : true,
+			onChange      : ()=>{},
+			enableFolding : true,
+			editorTheme   : 'default'
 		};
 	},
 
@@ -189,7 +189,7 @@ const CodeEditor = createClass({
 		autoCompleteEmoji.showAutocompleteEmoji(CodeMirror, this.codeMirror);
 
 		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
-		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue())});
+		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
 		this.updateSize();
 	},
 
@@ -399,7 +399,7 @@ const CodeEditor = createClass({
 	},
 	getTopVisibleLine : function(){
 		const rect = this.codeMirror.getWrapperElement().getBoundingClientRect();
-		const topVisibleLine = this.codeMirror.lineAtHeight(rect.top, "window");
+		const topVisibleLine = this.codeMirror.lineAtHeight(rect.top, 'window');
 		return topVisibleLine;
 	},
 	updateSize : function(){
