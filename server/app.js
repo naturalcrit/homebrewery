@@ -10,6 +10,7 @@ const app = express();
 const config = require('./config.js');
 const fs = require('fs-extra');
 
+
 const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
@@ -204,22 +205,22 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 });
 
 //Serve brew metadata
-app.get('/metadata/:id', asyncHandler(getBrew('share')), (req, res) => {
+app.get('/metadata/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	const { brew } = req;
 	sanitizeBrew(brew, 'share');
-  
-	const fields = [ 'title', 'pageCount', 'description', 'authors', 'lang', 
-	  'published', 'views', 'shareId', 'createdAt', 'updatedAt', 
+
+	const fields = ['title', 'pageCount', 'description', 'authors', 'lang',
+	  'published', 'views', 'shareId', 'createdAt', 'updatedAt',
 	  'lastViewed', 'thumbnail', 'tags'
 	];
-  
-	const metadata = fields.reduce((acc, field) => {
-	  if (brew[field] !== undefined) acc[field] = brew[field];
+
+	const metadata = fields.reduce((acc, field)=>{
+	  if(brew[field] !== undefined) acc[field] = brew[field];
 	  return acc;
 	}, {});
 	res.status(200).json(metadata);
 });
-  
+
 //Serve brew styling
 app.get('/css/:id', asyncHandler(getBrew('share')), (req, res)=>{getCSS(req, res);});
 
@@ -379,7 +380,7 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 app.get('/account', asyncHandler(async (req, res, next)=>{
 	const data = {};
 	data.title = 'Account Information Page';
-	
+
 	if(!req.account) {
 		res.set('WWW-Authenticate', 'Bearer realm="Authorization Required"');
 		const error = new Error('No valid account');
@@ -450,10 +451,11 @@ if(isLocalEnvironment){
 		const payload = jwt.encode({ username: username, issued: new Date }, config.get('secret'));
 		return res.json(payload);
 	});
-	// Add Static Local Paths
-	app.use('/staticImages', express.static(config.get('hb_images') && fs.existsSync(config.get('hb_images')) ? config.get('hb_images') :'staticImages'));
-	app.use('/staticFonts', express.static(config.get('hb_fonts')  && fs.existsSync(config.get('hb_fonts')) ? config.get('hb_fonts'):'staticFonts'));
 }
+
+// Add Static Local Paths
+app.use('/staticImages', express.static(config.get('hb_images') && fs.existsSync(config.get('hb_images')) ? config.get('hb_images') :'staticImages'));
+app.use('/staticFonts', express.static(config.get('hb_fonts')  && fs.existsSync(config.get('hb_fonts')) ? config.get('hb_fonts'):'staticFonts'));
 
 //Vault Page
 app.get('/vault', asyncHandler(async(req, res, next)=>{
@@ -466,8 +468,8 @@ app.get('/vault', asyncHandler(async(req, res, next)=>{
 
 //Send rendered page
 app.use(asyncHandler(async (req, res, next)=>{
-	if (!req.route) return res.redirect('/'); // Catch-all for invalid routes
-		
+	if(!req.route) return res.redirect('/'); // Catch-all for invalid routes
+
 	const page = await renderPage(req, res);
 	if(!page) return;
 	res.send(page);
@@ -479,7 +481,8 @@ const renderPage = async (req, res)=>{
 	const configuration = {
 		local       : isLocalEnvironment,
 		publicUrl   : config.get('publicUrl') ?? '',
-		environment : nodeEnv
+		environment : nodeEnv,
+		history     : config.get('historyConfig') ?? {}
 	};
 	const props = {
 		version       : require('./../package.json').version,

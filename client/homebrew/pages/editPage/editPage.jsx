@@ -28,6 +28,8 @@ const Markdown = require('naturalcrit/markdown.js');
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
 const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
 
+import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
+
 const googleDriveIcon = require('../../googleDrive.svg');
 
 const SAVE_TIMEOUT = 3000;
@@ -55,9 +57,9 @@ const EditPage = createClass({
 			autoSave                   : true,
 			autoSaveWarning            : false,
 			unsavedTime                : new Date(),
-			currentEditorViewPageNum   : 0,
-			currentEditorCursorPageNum : 0,
-			currentBrewRendererPageNum : 0,
+			currentEditorViewPageNum   : 1,
+			currentEditorCursorPageNum : 1,
+			currentBrewRendererPageNum : 1,
 			displayLockMessage         : this.props.brew.lock || false,
 			themeBundle                : {}
 		};
@@ -117,23 +119,19 @@ const EditPage = createClass({
 	},
 
 	handleEditorViewPageChange : function(pageNumber){
-		console.log(`editor view : ${pageNumber}`);
 		this.setState({ currentEditorViewPageNum: pageNumber });
 	},
 
 	handleEditorCursorPageChange : function(pageNumber){
-		console.log(`editor cursor : ${pageNumber}`);
 		this.setState({ currentEditorCursorPageNum: pageNumber });
 	},
 
 	handleBrewRendererPageChange : function(pageNumber){
-		console.log(`brewRenderer view : ${pageNumber}`);
 		this.setState({ currentBrewRendererPageNum: pageNumber });
 	},
 
 	handleTextChange : function(text){
 		//If there are errors, run the validator on every change to give quick feedback
-		console.log('text change');
 		let htmlErrors = this.state.htmlErrors;
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 
@@ -166,6 +164,16 @@ const EditPage = createClass({
 
 	hasChanges : function(){
 		return !_.isEqual(this.state.brew, this.savedBrew);
+	},
+
+	updateBrew : function(newData){
+		this.setState((prevState)=>({
+			brew : {
+				...prevState.brew,
+				style : newData.style,
+				text  : newData.text
+			}
+		}));
 	},
 
 	trySave : function(immediate=false){
@@ -219,6 +227,9 @@ const EditPage = createClass({
 			error      : null,
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
+
+		updateHistory(this.state.brew);
+		versionHistoryGarbageCollection();
 
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 
@@ -431,6 +442,7 @@ const EditPage = createClass({
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
 						snippetBundle={this.state.themeBundle.snippets}
+						updateBrew={this.updateBrew}
 						onCursorPageChange={this.handleEditorCursorPageChange}
 						onViewPageChange={this.handleEditorViewPageChange}
 						currentEditorViewPageNum={this.state.currentEditorViewPageNum}

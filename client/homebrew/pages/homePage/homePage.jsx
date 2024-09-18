@@ -34,9 +34,9 @@ const HomePage = createClass({
 			brew                       : this.props.brew,
 			welcomeText                : this.props.brew.text,
 			error                      : undefined,
-			currentEditorViewPageNum   : 0,
-			currentEditorCursorPageNum : 0,
-			currentBrewRendererPageNum : 0,
+			currentEditorViewPageNum   : 1,
+			currentEditorCursorPageNum : 1,
+			currentBrewRendererPageNum : 1,
 			themeBundle                : {}
 		};
 	},
@@ -64,17 +64,14 @@ const HomePage = createClass({
 	},
 
 	handleEditorViewPageChange : function(pageNumber){
-		console.log(`editor view : ${pageNumber}`);
 		this.setState({ currentEditorViewPageNum: pageNumber });
 	},
 
 	handleEditorCursorPageChange : function(pageNumber){
-		console.log(`editor cursor : ${pageNumber}`);
 		this.setState({ currentEditorCursorPageNum: pageNumber });
 	},
 
 	handleBrewRendererPageChange : function(pageNumber){
-		console.log(`brewRenderer view : ${pageNumber}`);
 		this.setState({ currentBrewRendererPageNum: pageNumber });
 	},
 

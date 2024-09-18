@@ -934,7 +934,7 @@ brew`);
 			expect(req.brew).toEqual(testBrew);
 			expect(req.brew).toHaveProperty('style', '\nI Have a style!\n');
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.send).toHaveBeenCalledWith("\nI Have a style!\n");
+			expect(res.send).toHaveBeenCalledWith('\nI Have a style!\n');
 			expect(res.set).toHaveBeenCalledWith({
 				'Cache-Control' : 'no-cache',
 				'Content-Type'  : 'text/css'
