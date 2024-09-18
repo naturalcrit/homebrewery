@@ -110,16 +110,16 @@ renderer.link = function (href, title, text) {
 // Expose `src` attribute as `--HB_src` to make the URL accessible via CSS
 renderer.image = function (href, title, text) {
 	href = cleanUrl(href);
-	if (href === null)
+	if(href === null)
 		return text;
 
 	let out = `<img src="${href}" alt="${text}" style="--HB_src:url(${href});"`;
-	if (title)
+	if(title)
 		out += ` title="${title}"`;
 
 	out += '>';
 	return out;
-}
+};
 
 // Disable default reflink behavior, as it steps on our variables extension
 tokenizer.def = function () {
@@ -814,12 +814,12 @@ Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
 function cleanUrl(href) {
-  try {
-    href = encodeURI(href).replace(/%25/g, '%');
-  } catch {
-    return null;
-  }
-  return href;
+	try {
+		href = encodeURI(href).replace(/%25/g, '%');
+	} catch {
+		return null;
+	}
+	return href;
 }
 
 const escapeTest = /[&<>"']/;
