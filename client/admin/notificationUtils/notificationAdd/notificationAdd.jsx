@@ -4,11 +4,9 @@ const { useState, useRef } = require('react');
 const request = require('superagent');
 
 const NotificationAdd = ()=>{
-	const [state, setState] = useState({
-		notificationResult : null,
-		searching          : false,
-		error              : null,
-	});
+	const [notificationResult, setNotificationResult] = useState(null);
+	const [searching, setSearching] = useState(false);
+	const [error, setError] = useState(null);
 
 	const dismissKeyRef = useRef(null);
 	const titleRef = useRef(null);
@@ -25,17 +23,11 @@ const NotificationAdd = ()=>{
 
 		// Basic validation
 		if(!dismissKey || !title || !text || isNaN(startAt.getTime()) || isNaN(stopAt.getTime())) {
-			setState((prevState)=>({
-				...prevState,
-				error : 'All fields are required',
-			}));
+			setError('All fields are required');
 			return;
 		}
-		if(startAt >= stopAt) {
-			setState((prevState)=>({
-				...prevState,
-				error : 'End date must be after the start date!',
-			}));
+		if (startAt >= stopAt) {
+			setError('End date must be after the start date!');
 			return;
 		}
 
@@ -48,7 +40,8 @@ const NotificationAdd = ()=>{
 		};
 
 		try {
-			setState((prevState)=>({ ...prevState, searching: true, error: null }));
+			setSearching(true);
+			setError(null);
 			const response = await request.post('/admin/notification/add').send(data);
 			console.log(response.body);
 
@@ -57,18 +50,12 @@ const NotificationAdd = ()=>{
 			titleRef.current.value = '';
 			textRef.current.value = '';
 
-			setState((prevState)=>({
-				...prevState,
-				notificationResult : `Notification successfully created.`,
-				searching          : false,
-			}));
-		} catch (error) {
+			setNotificationResult('Notification successfully created.');
+			setSearching(false);
+		} catch (err) {
 			console.log(error.response.body.message);
-			setState((prevState)=>({
-				...prevState,
-				error     : `Error saving notification: ${error.response.body.message}`,
-				searching : false,
-			}));
+			setError(`Error saving notification: ${err.response.body.message}`);
+			setSearching(false);
 		}
 	};
 
@@ -108,13 +95,13 @@ const NotificationAdd = ()=>{
 				<input type='date' className='fieldInput' ref={stopAtRef} required/>
 			</label>
 
-			<div className='notificationResult'>{state.notificationResult}</div>
+			<div className='notificationResult'>{notificationResult}</div>
 
-			<button className='notificationSave' onClick={saveNotification} disabled={state.searching}>
-				<i className={`fas ${state.searching ? 'fa-spin fa-spinner' : 'fa-save'}`}/>
+			<button className='notificationSave' onClick={saveNotification} disabled={searching}>
+				<i className={`fas ${searching ? 'fa-spin fa-spinner' : 'fa-save'}`}/>
 				Save Notification
 			</button>
-			{state.error && <div className='error'>{state.error}</div>}
+			{error && <div className='error'>{error}</div>}
 		</div>
 	);
 };
