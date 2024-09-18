@@ -91,8 +91,8 @@ const NotificationLookup = ()=>{
 						<details>
 							<summary>{notification.title || 'No Title'}</summary>
 							<NotificationDetail notification={notification} onDelete={deleteNotification} />
-						</details></li>
-
+						</details>
+					</li>
 				))}
 			</ul>
 		);
