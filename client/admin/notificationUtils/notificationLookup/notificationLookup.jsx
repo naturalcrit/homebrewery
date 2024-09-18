@@ -71,13 +71,11 @@ const NotificationLookup = ()=>{
 	}
 
 	const renderNotificationsList = ()=>{
-		if(error) {
+		if(error)
 			return <div className='error'>{error}</div>;
-		}
 
-		if(notifications.length === 0) {
+		if(notifications.length === 0)
 			return <div className='noNotification'>No notifications available.</div>;
-		}
 
 		return (
 			<ul className='notificationList'>
@@ -86,8 +84,8 @@ const NotificationLookup = ()=>{
 						<details>
 							<summary>{notification.title || 'No Title'}</summary>
 							<NotificationDetail notification={notification} onDelete={deleteNotification} />
-						</details></li>
-
+						</details>
+					</li>
 				))}
 			</ul>
 		);
@@ -95,8 +93,9 @@ const NotificationLookup = ()=>{
 
 	return (
 		<div className='notificationLookup'>
-			<h2>Check all Notifications</h2><button onClick={lookupAll}>
-            <i className={`fas ${searching ? 'fa-spin fa-spinner' : 'fa-search'}`} />
+			<h2>Check all Notifications</h2>
+			<button onClick={lookupAll}>
+				<i className={`fas ${searching ? 'fa-spin fa-spinner' : 'fa-search'}`} />
 			</button>
 			{renderNotificationsList()}
 		</div>
