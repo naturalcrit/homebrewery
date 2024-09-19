@@ -17,7 +17,8 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 	};
 
 	const handleInputKeyDown = (evt, value, clear = false) => {
-		if (evt.key === 'Enter') {
+		if (_.includes(['Enter', ','], evt.key)) {
+			evt.preventDefault();
 			submitTag(evt.target.value, value);
 			if(clear){ setTemporaryValue(''); }
 		};
@@ -88,7 +89,7 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 					placeholder={props.placeholder}
 					value={temporaryValue}
 					onChange={(e) => setTemporaryValue(e.target.value)}
-					onKeyDown={(evt) => handleInputKeyDown(evt, null, true)}  />
+					onKeyDown={(evt) =>handleInputKeyDown(evt, null, true)}  />
 			</div>
 		</div>
 	);
