@@ -17,12 +17,14 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 		})
 	};
 
-	const handleInputKeyDown = (evt, value, clear = false) => {
+	const handleInputKeyDown = ({ evt, value, index, options = {} }) => {
 		if (_.includes(['Enter', ','], evt.key)) {
 			evt.preventDefault();
-			submitTag(evt.target.value, value);
-			if(clear){ setTemporaryValue(''); }
-		};
+			submitTag(evt.target.value, value, index);
+			if (options.clear) {
+				setTemporaryValue('');
+			}
+		}
 	};
 
 	const submitTag = (newValue, originalValue, index) => {
@@ -36,8 +38,8 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 				return [...prevContext, { value: newValue, editing: false }]
 			}
 			// update existing tag
-			return prevContext.map((context) => {
-				if (context.value === originalValue) {
+			return prevContext.map((context, i) => {
+				if (i === index) {
 					return { ...context, value: newValue, editing: false };
 				}
 				return context;
@@ -45,10 +47,10 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 		});
 	};
 
-	const editTag = (valueToEdit) => {
+	const editTag = (index) => {
 		setValueContext((prevContext) => {
-			return prevContext.map((context) => {
-				if (context.value === valueToEdit) {
+			return prevContext.map((context, i) => {
+				if (i === index) {
 					return { ...context, editing: true };
 				}
 				return { ...context, editing: false };
@@ -61,7 +63,7 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 			<li key={index}
 				data-value={context.value}
 				className='tag'
-				onClick={() => editTag(context.value)}>
+				onClick={() => editTag(index)}>
 				{context.value}
 				<button onClick={(evt)=>{evt.stopPropagation(); submitTag(null, context.value, index)}}><i className='fa fa-times fa-fw'/></button>
 			</li>
@@ -73,7 +75,7 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 			<input type='text'
 				key={index}
 				defaultValue={context.value} 
-				onKeyDown={(evt) => handleInputKeyDown(evt, context.value)} 
+				onKeyDown={(evt) => handleInputKeyDown({evt, value: context.value, index: index})} 
 				autoFocus 
 			/>
 		);
@@ -87,12 +89,14 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 					{valueContext.map((context, index) => { return context.editing ? renderWriteTag(context, index) : renderReadTag(context, index); })}
 				</ul>
 
-				<input type='text'
+				<input
+					type='text'
 					className='value'
 					placeholder={props.placeholder}
 					value={temporaryValue}
 					onChange={(e) => setTemporaryValue(e.target.value)}
-					onKeyDown={(evt) =>handleInputKeyDown(evt, null, true)}  />
+					onKeyDown={(evt) => handleInputKeyDown({ evt, value: null, options: { clear: true } })}
+				/>
 			</div>
 		</div>
 	);
