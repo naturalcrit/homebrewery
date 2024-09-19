@@ -311,7 +311,7 @@ const MetadataEditor = createClass({
 
 	render : function(){
 		return <div className='metadataEditor'>
-			<h1 className='sectionHead'>Properties Editor</h1>
+			<h1>Properties Editor</h1>
 
 			<div className='field title'>
 				<label>title</label>
@@ -359,9 +359,7 @@ const MetadataEditor = createClass({
 
 			{this.renderRenderOptions()}
 
-			<hr/>
-
-			<h1 className='sectionHead'>Authors</h1>
+			<h2>Authors</h2>
 
 			{this.renderAuthors()}
 
@@ -372,9 +370,7 @@ const MetadataEditor = createClass({
 				notes={['Invited author usernames are case sensitive.', 'After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.']}
 				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}/>
 
-			<hr/>
-
-			<h1 className='sectionHead'>Privacy</h1>
+			<h2>Privacy</h2>
 
 			<div className='field publish'>
 				<label>publish</label>
