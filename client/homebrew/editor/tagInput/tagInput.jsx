@@ -84,7 +84,7 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 	return (
 		<div className='field'>
 			<label>{props.label}</label>
-			<div className='tag-input'>
+			<div className='value'>
 				<ul className='list'>
 					{valueContext.map((context, index) => { return context.editing ? renderWriteTag(context, index) : renderReadTag(context, index); })}
 				</ul>
