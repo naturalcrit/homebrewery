@@ -1,3 +1,4 @@
+require('./tagInput.less');
 const React = require('react');
 const { useState, useEffect } = React;
 const _     = require('lodash');
@@ -56,13 +57,13 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 
 	const renderReadTag = (context, index) => {
 		return (
-			<div key={index}
+			<li key={index}
 				data-value={context.value}
 				className='tag'
 				onClick={() => editTag(context.value)}>
 				{context.value}
 				<button onClick={(evt)=>{evt.stopPropagation(); submitTag(null, context.value, index)}}><i className='fa fa-times fa-fw'/></button>
-			</div>
+			</li>
 		);
 	};
 
@@ -80,8 +81,10 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 	return (
 		<div className='field'>
 			<label>{props.label}</label>
-			<div className='list'>
-				{valueContext.map((context, index) => { return context.editing ? renderWriteTag(context, index) : renderReadTag(context, index); })}
+			<div className='tag-input'>
+				<ul className='list'>
+					{valueContext.map((context, index) => { return context.editing ? renderWriteTag(context, index) : renderReadTag(context, index); })}
+				</ul>
 
 				<input type='text'
 					className='value'
