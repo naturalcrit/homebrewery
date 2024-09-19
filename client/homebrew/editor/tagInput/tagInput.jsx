@@ -16,19 +16,17 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 		})
 	};
 
-	const handleInputKeyDown = (evt, value) => {
+	const handleInputKeyDown = (evt, value, clear = false) => {
 		if (evt.key === 'Enter') {
 			submitTag(evt.target.value, value);
-		}
+			if(clear){ setTemporaryValue(''); }
+		};
 	};
-
-	
 
 	const submitTag = (newValue, originalValue, index) => {
 		setValueContext((prevContext) => {
 			// remove existing tag
 			if(newValue === null){
-				console.log('remove');
 				return [...prevContext].filter((context, i)=>i !== index);
 			}
 			// add new tag
@@ -90,7 +88,7 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 					placeholder={props.placeholder}
 					value={temporaryValue}
 					onChange={(e) => setTemporaryValue(e.target.value)}
-					onKeyDown={(evt) => handleInputKeyDown(evt, null)}  />
+					onKeyDown={(evt) => handleInputKeyDown(evt, null, true)}  />
 			</div>
 		</div>
 	);
