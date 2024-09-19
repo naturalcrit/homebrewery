@@ -1,15 +1,27 @@
 const React = require('react');
-const { useState } = React;
+const { useState, useEffect } = React;
 
 const TagInput = ({ unique = true, values = [], ...props }) => {
 	const [temporaryValue, setTemporaryValue] = useState('');
 	const [valueContext, setValueContext] = useState(values.map((value) => ({ value, editing: false })));
+
+	useEffect(()=>{
+		handleChange(valueContext.map((context)=>context.value))
+	}, [valueContext])
+
+	const handleChange = (value)=>{
+		props.onChange({
+			target : { value }
+		})
+	};
 
 	const handleInputKeyDown = (evt, value) => {
 		if (evt.key === 'Enter') {
 			submitTag(evt.target.value, value);
 		}
 	};
+
+	
 
 	const submitTag = (newValue, originalValue) => {
 		setValueContext((prevContext) => {
