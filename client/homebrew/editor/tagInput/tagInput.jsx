@@ -26,6 +26,11 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 
 	const submitTag = (newValue, originalValue) => {
 		setValueContext((prevContext) => {
+			// remove existing tag
+			if(newValue === null){
+				console.log('remove');
+				return [...prevContext].filter((context)=>context.value !== originalValue);
+			}
 			// add new tag
 			if(originalValue === null){
 				return [...prevContext, { value: newValue, editing: false }]
@@ -58,6 +63,7 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 				className='tag'
 				onClick={() => editTag(context.value)}>
 				{context.value}
+				<button onClick={(evt)=>{evt.stopPropagation(); submitTag(null, context.value)}}><i className='fa fa-times fa-fw'/></button>
 			</div>
 		);
 	};
