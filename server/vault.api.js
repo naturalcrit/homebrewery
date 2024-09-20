@@ -62,8 +62,8 @@ const findBrews = async (req, res)=>{
 	};
 
 	await HomebrewModel.find(combinedQuery, projection)
-		.skip(skip)
 		.sort(sortConditions(sort, dir))
+		.skip(skip)
 		.limit(count)
 		.maxTimeMS(5000)
 		.exec()

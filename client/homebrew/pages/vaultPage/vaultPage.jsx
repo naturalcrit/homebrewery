@@ -269,9 +269,7 @@ const VaultPage = (props)=>{
                 sortState === optionValue ? `active` : ''  
             }`}
 			>
-				<button onClick={() => {
-					loadPage(1, false, optionValue, oppositeDir)
-					}}>
+			<button onClick={() => loadPage(1, false, optionValue, oppositeDir)}>
                 {optionTitle}
             </button>
             {sortState === optionValue && (
@@ -319,7 +317,7 @@ const VaultPage = (props)=>{
 					className={`pageNumber ${
 						pageState === startPage + index ? 'currentPage' : ''
 					}`}
-					onClick={()=>loadPage(startPage + index)}
+					onClick={()=>loadPage(startPage + index, false, sortState, dirState)}
 				>
 					{startPage + index}
 				</a>
@@ -329,7 +327,7 @@ const VaultPage = (props)=>{
 			<div className='paginationControls'>
 				<button
 					className='previousPage'
-					onClick={()=>loadPage(pageState - 1)}
+					onClick={()=>loadPage(pageState - 1, false, sortState, dirState)}
 					disabled={pageState === startPage}
 				>
 					<i className='fa-solid fa-chevron-left'></i>
@@ -338,7 +336,7 @@ const VaultPage = (props)=>{
 					{startPage > 1 && (
 						<a
 							className='pageNumber firstPage'
-							onClick={()=>loadPage()}
+							onClick={()=>loadPage(1, false, sortState, dirState)}
 						>
 							1 ...
 						</a>
@@ -347,7 +345,7 @@ const VaultPage = (props)=>{
 					{endPage < totalPages && (
 						<a
 							className='pageNumber lastPage'
-							onClick={()=>loadPage(totalPages)}
+							onClick={()=>loadPage(totalPages, false, sortState, dirState)}
 						>
 							... {totalPages}
 						</a>
@@ -355,7 +353,7 @@ const VaultPage = (props)=>{
 				</ol>
 				<button
 					className='nextPage'
-					onClick={()=>loadPage(pageState + 1)}
+					onClick={()=>loadPage(pageState + 1, false, sortState, dirState)}
 					disabled={pageState === totalPages}
 				>
 					<i className='fa-solid fa-chevron-right'></i>
