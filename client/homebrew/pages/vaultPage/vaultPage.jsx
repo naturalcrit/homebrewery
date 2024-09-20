@@ -113,6 +113,9 @@ const VaultPage = (props)=>{
 		const dir = sort && sort.split('/')[1] || 'asc';
 		const pageProp = page || 1;
 
+		setSort(sortOption);
+		setdir(dir);
+
 		performSearch(title, author, count, v3, legacy, pageProp, sortOption, dir);
 
 		if(updateTotal)
@@ -270,8 +273,6 @@ const VaultPage = (props)=>{
             }`}
 			>
 				<button onClick={() => {
-					setSort(optionValue);
-					setdir(oppositeDir);
 					loadPage(1, false, `${optionValue}/${oppositeDir}`)
 					}}>
                 {optionTitle}
