@@ -29,6 +29,13 @@ const rendererConditions = (legacy, v3)=>{
 	return {}; // If all renderers selected, renderer field not needed in query for speed
 };
 
+const tagConditions = (tags) =>{
+	if(!tags) return {};
+	return {
+		$or: tags.map(tag => ({ tags: tag })),
+	}
+}
+
 const sortConditions = (sort, dir) => {
 	return {
 		[sort]: dir === 'asc' ? 1 : -1
@@ -41,6 +48,7 @@ const findBrews = async (req, res)=>{
 	const page   = Math.max(parseInt(req.query.page)  || 1, 1);
 	const count  = Math.max(parseInt(req.query.count) || 20, 10);
 	const skip   = (page - 1) * count;
+	const tags = req.query.tags || [];
 	const sort = req.query.sort || 'title';
 	const dir = req.query.dir || 'asc';
 
@@ -49,6 +57,7 @@ const findBrews = async (req, res)=>{
 			{ published: true },
 			rendererConditions(req.query.legacy, req.query.v3),
 			titleConditions(title),
+			tagConditions(tags),
 			authorConditions(author)
 		],
 	};
@@ -85,13 +94,15 @@ const findBrews = async (req, res)=>{
 const findTotal = async (req, res)=>{
 	const title  = req.query.title || '';
 	const author = req.query.author || '';
+	const tags = req.query.tags || [];
 
 	const combinedQuery = {
 		$and : [
 			{ published: true },
 			rendererConditions(req.query.legacy, req.query.v3),
 			titleConditions(title),
-			authorConditions(author)
+			authorConditions(author),
+			tagConditions(tags)
 		],
 	};
 
