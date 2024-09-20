@@ -245,79 +245,34 @@
 		display   : flex;
 		flex      : 1 0;
 		flex-wrap : wrap;
+		gap: 5px;
+		margin-bottom: 5px;
 
-		> * { flex : 0 0 auto; }
-
-		#groupedIcon {
-			#backgroundColors;
-			position   : relative;
-			top        : -0.3em;
-			right      : -0.3em;
-			display    : inline-block;
-			min-width  : 20px;
-			height     : ~'calc(100% + 0.6em)';
-			color      : white;
-			text-align : center;
-			cursor     : pointer;
-	
-			i {
-				position  : relative;
-				top       : 50%;
-				transform : translateY(-50%);
-			}
-	
-			&:not(:last-child) { border-right : 1px solid black; }
-	
-			&:last-child { border-radius : 0 0.5em 0.5em 0; }
-		}
 
 		.tag {
-			padding          : 0.3em;
-			margin           : 2px;
+			display          : flex;
+			align-items      : center;
+			gap              : 3px;
+			height           : 24px;
+			padding-left     : 6px;
 			font-size        : 0.9em;
 			background-color : #DDDDDD;
-			border-radius    : 0.5em;
-
-			.icon { #groupedIcon; }
-		}
-
-		.input-group {
-			height : ~'calc(.9em + 4px + .6em)';
-
-			input { border-radius : 0.5em 0 0 0.5em; }
-
-			input:last-child { border-radius : 0.5em; }
-
-			.value {
-				width     : 7.5vw;
-				min-width : 75px;
-				height    : 100%;
-			}
-
-			.input-group {
-				height : ~'calc(.9em + 4px + .6em)';
-
-				input { border-radius : 0.5em 0 0 0.5em; }
-
-				input:last-child { border-radius : 0.5em; }
-
-				.value {
-					width     : 7.5vw;
-					min-width : 75px;
-					height    : 100%;
-				}
-
-				.invalid:focus { background-color : pink; }
-
-				.icon {
-					#groupedIcon;
-					top       : -0.54em;
-					right     : 1px;
-					height    : 97%;
-
-					i { font-size : 1.125em; }
+			text-align: center;
+			button {
+				height       : 100%;
+				aspect-ratio : 1;
+				margin       : 0;
+				padding      : unset;
+				background-color: unset;
+				color: #555;
+				&:hover {
+					background-color: @red;
+					color: white;
 				}
 			}
+
 		}
+
+
 	}
 }
