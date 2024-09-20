@@ -6,6 +6,7 @@ const _     = require('lodash');
 const TagInput = ({ unique = true, values = [], ...props }) => {
 	const [temporaryValue, setTemporaryValue] = useState('');
 	const [valueContext, setValueContext] = useState(values.map((value) => ({ value, editing: false })));
+	const [focusedIndex, setFocusedIndex] = useState(-1);
 
 	useEffect(()=>{
 		handleChange(valueContext.map((context)=>context.value))
@@ -17,15 +18,28 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 		})
 	};
 
-	const handleInputKeyDown = ({ evt, value, index, options = {} }) => {
+	const handleInputKeyDown = ({ evt, value, index = valueContext.length, options = {} }) => {
 		if (_.includes(['Enter', ','], evt.key)) {
 			evt.preventDefault();
 			submitTag(evt.target.value, value, index);
 			if (options.clear) {
 				setTemporaryValue('');
 			}
+		} else if(evt.key === 'Escape'){
+			submitTag(value, value, index)
+		} else if(evt.key === 'Delete') {
+			submitTag(null, null, index);
+		} else if(evt.key === 'Tab' && evt.shiftKey){
+			setFocus(index - 1);
+		} else if(evt.key === 'Tab'){
+			setFocus(index + 1);
 		}
 	};
+
+	const setFocus = (index)=>{
+		if (index < 0 || index >= valueContext.length){ setFocusedIndex(-1); return};
+		setFocusedIndex(index);
+	}
 
 	const submitTag = (newValue, originalValue, index) => {
 		setValueContext((prevContext) => {
@@ -62,10 +76,12 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 		return (
 			<li key={index}
 				data-value={context.value}
-				className='tag'
-				onClick={() => editTag(index)}>
-				{context.value}
-				<button onClick={(evt)=>{evt.stopPropagation(); submitTag(null, context.value, index)}}><i className='fa fa-times fa-fw'/></button>
+				className={`tag${focusedIndex === index ? ' focused' : ''}`}
+				tabIndex={focusedIndex === index ? 0 : -1}
+				onClick={() => editTag(index)}
+				onKeyDown={(evt)=>handleInputKeyDown({evt, index: index})}>
+				{context.value} {index}
+				<button tabIndex={-1} onClick={(evt)=>{evt.stopPropagation(); submitTag(null, context.value, index)}}><i className='fa fa-times fa-fw'/></button>
 			</li>
 		);
 	};
