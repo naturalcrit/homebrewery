@@ -397,6 +397,11 @@ const CodeEditor = createClass({
 	getCursorPosition : function(){
 		return this.codeMirror.getCursor();
 	},
+	getTopVisibleLine : function(){
+		const rect = this.codeMirror.getWrapperElement().getBoundingClientRect();
+		const topVisibleLine = this.codeMirror.lineAtHeight(rect.top, 'window');
+		return topVisibleLine;
+	},
 	updateSize : function(){
 		this.codeMirror.refresh();
 	},
