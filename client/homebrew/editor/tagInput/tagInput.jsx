@@ -19,7 +19,7 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 	};
 
 	const handleInputKeyDown = ({ evt, value, index = valueContext.length, options = {} }) => {
-		if (_.includes(['Enter', ','], evt.key)) {
+		if (_.includes(['Enter', ','], evt.key) && valueContext[index].editing == true) {
 			evt.preventDefault();
 			submitTag(evt.target.value, value, index);
 			if (options.clear) {
@@ -80,7 +80,7 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 				tabIndex={focusedIndex === index ? 0 : -1}
 				onClick={() => editTag(index)}
 				onKeyDown={(evt)=>handleInputKeyDown({evt, index: index})}>
-				{context.value} {index}
+				{context.value}
 				<button tabIndex={-1} onClick={(evt)=>{evt.stopPropagation(); submitTag(null, context.value, index)}}><i className='fa fa-times fa-fw'/></button>
 			</li>
 		);
