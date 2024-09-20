@@ -6,8 +6,8 @@
 	*:not(input) { user-select : none; }
 
 	.content {
+		height     : 100%;
 		background : #2C3E50;
-		height: 100%;
 
 		.dataGroup {
 			width      : 100%;
@@ -27,9 +27,9 @@
 
 				code {
 					padding-inline : 5px;
+					font-family    : monospace;
 					background     : lightgrey;
 					border-radius  : 5px;
-					font-family    : monospace;
 				}
 
 				h1, h2, h3, h4 {
@@ -165,6 +165,48 @@
 					color       : white;
 				}
 
+				.sort-container {
+					display               : flex;
+					flex-wrap             : wrap;
+					column-gap            : 15px;
+					justify-content       : center;
+					height                : 30px;
+					color                 : white;
+					background-color      : #555555;
+					border-top            : 1px solid #666666;
+					border-bottom         : 1px solid #666666;
+					
+					.sort-option {
+						display     : flex;
+						align-items : center;
+						padding     : 0 8px;
+				
+						&:hover { background-color : #444444; }
+				
+						&.active {
+							background-color : #333333;
+				
+							button {
+								font-weight : 800;
+								color       : white;
+								
+								& + .sortDir { padding-left : 5px; }
+							}
+						}
+
+						button {
+							padding          : 0;
+							font-size        : 11px;
+							font-weight      : normal;
+							color            : #CCCCCC;
+							text-transform   : uppercase;
+							background-color : transparent;
+					
+							&:hover { background : none; }
+						}
+					}
+				}
+
 				.foundBrews {
 					position         : relative;
 					width            : 100%;
@@ -236,15 +278,15 @@
 						width            : 47%;
 						margin-right     : 40px;
 						color            : black;
-						isolation:isolate;
+						isolation        : isolate;
 						
-						&:after {
-							position:absolute;
-							inset:0;
-							display:block;
-							content:'';
+						&::after {
+							position         : absolute;
+							inset            : 0;
+							z-index          : -2;
+							display          : block;
+							content          : '';
 							background-image : url('/assets/parchmentBackground.jpg');
-							z-index:-1;
 						}
 
 						&:nth-child(even of .brewItem) { margin-right : 0; }
@@ -257,28 +299,24 @@
 							color       : var(--HB_Color_HeaderText);
 						}
 						.info {
+							position    : relative;
+							z-index     : 2;
 							font-family : 'ScalySansRemake';
 							font-size   : 1.2em;
-							position:relative;
-							z-index:2;
 
 							>span {
 								margin-right : 12px;
 								line-height  : 1.5em;
 							}
 						}
-						.links {
-							z-index:2;
-						}
+						.links { z-index : 2; }
 
 						hr {
-							margin: 0px;
-							visibility: hidden;
+							margin     : 0px;
+							visibility : hidden;
 						}
 
-						.thumbnail {
-							z-index:1;
-						}
+						.thumbnail { z-index : -1; }
 					}
 
 					.paginationControls {
