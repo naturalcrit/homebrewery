@@ -30,9 +30,7 @@ const rendererConditions = (legacy, v3)=>{
 };
 
 const sortConditions = (sort, dir) => {
-	return {
-		[sort]: dir === 'asc' ? 1 : -1
-	};
+	return { [sort]: dir === 'asc' ? 1 : -1 };
 }
 
 const findBrews = async (req, res)=>{
