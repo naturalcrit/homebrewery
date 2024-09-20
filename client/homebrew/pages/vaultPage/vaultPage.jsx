@@ -266,7 +266,7 @@ const VaultPage = (props)=>{
 		return (
 			<div
 			className={`sort-option ${
-                sortState === optionValue ? `active ${oppositeDir}` : ''
+                sortState === optionValue ? `active` : ''  
             }`}
 			>
 				<button onClick={() => {
