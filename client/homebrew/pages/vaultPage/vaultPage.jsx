@@ -1,3 +1,5 @@
+/*eslint max-lines: ["warn", {"max": 400, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-params:["warn", { max: 10 }], */
 require('./vaultPage.less');
 
 const React = require('react');
@@ -26,7 +28,6 @@ const VaultPage = (props)=>{
 	const [totalBrews, setTotalBrews]         = useState(null);
 	const [searching, setSearching]           = useState(false);
 	const [error, setError]                   = useState(null);
-
 
 	const titleRef        = useRef(null);
 	const authorRef       = useRef(null);
@@ -67,9 +68,7 @@ const VaultPage = (props)=>{
 		updateUrl(title, author, count, v3, legacy, page, sort, dir);
 
 		const response = await request
-			.get(
-				`/api/vault?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}&count=${count}&page=${page}&sort=${sort}&dir=${dir}`
-			)
+			.get(`/api/vault?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}&count=${count}&page=${page}&sort=${sort}&dir=${dir}`)
 			.catch((error)=>{
 				console.log('error at loadPage: ', error);
 				setError(error);
@@ -83,9 +82,8 @@ const VaultPage = (props)=>{
 	const loadTotal = async (title, author, v3, legacy)=>{
 		setTotalBrews(null);
 
-		const response = await request.get(
-			`/api/vault/total?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}`
-		).catch((error)=>{
+		const response = await request.get(`/api/vault/total?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}`)
+		.catch((error)=>{
 			console.log('error at loadTotal: ', error);
 			setError(error);
 			updateStateWithBrews([], 1);
@@ -260,27 +258,23 @@ const VaultPage = (props)=>{
 		</div>
 	);
 
-	const renderSortOption = ( optionTitle, optionValue)=>{
+	const renderSortOption = (optionTitle, optionValue)=>{
 		const oppositeDir = dirState === 'asc' ? 'desc' : 'asc';
 
 		return (
-			<div
-			className={`sort-option ${
-                sortState === optionValue ? `active` : ''  
-            }`}
-			>
-			<button onClick={() => loadPage(1, false, optionValue, oppositeDir)}>
-                {optionTitle}
-            </button>
-            {sortState === optionValue && (
-                <i className={`sortDir fas ${dirState === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`} />
-            )}
+			<div className={`sort-option ${sortState === optionValue ? `active` : ''}`}>
+				<button onClick={()=>loadPage(1, false, optionValue, oppositeDir)}>
+					{optionTitle}
+				</button>
+				{sortState === optionValue && (
+					<i className={`sortDir fas ${dirState === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`} />
+				)}
 			</div>
 		);
 	};
 
 	const renderSortBar = ()=>{
-		
+
 		return (
 			<div className='sort-container'>
 				{renderSortOption('Title', 'title', props.query.dir)}
@@ -314,9 +308,7 @@ const VaultPage = (props)=>{
 			.map((_, index)=>(
 				<a
 					key={startPage + index}
-					className={`pageNumber ${
-						pageState === startPage + index ? 'currentPage' : ''
-					}`}
+					className={`pageNumber ${pageState === startPage + index ? 'currentPage' : ''}`}
 					onClick={()=>loadPage(startPage + index, false, sortState, dirState)}
 				>
 					{startPage + index}
@@ -373,7 +365,7 @@ const VaultPage = (props)=>{
 
 		if(error) {
 			const errorText = ErrorIndex()[error.HBErrorCode.toString()] || '';
-			
+
 			return (
 				<div className='foundBrews noBrews'>
 					<h3>Error: {errorText}</h3>
