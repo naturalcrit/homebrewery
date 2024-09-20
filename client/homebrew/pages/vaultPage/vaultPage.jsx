@@ -37,10 +37,7 @@ const VaultPage = (props)=>{
 
 	useEffect(()=>{
 		disableSubmitIfFormInvalid();
-		const initialSort = props.query.sort || 'title';
-		const initialDir = props.query.dir || 'asc';
-		const initialSorting = `${initialSort}/${initialDir}`;
-		loadPage(pageState, true, initialSorting);
+		loadPage(pageState, true, props.query.sort, props.query.dir);
 	}, []);
 
 	const updateStateWithBrews = (brews, page)=>{
@@ -98,7 +95,7 @@ const VaultPage = (props)=>{
 			setTotalBrews(response.body.totalBrews);
 	};
 
-	const loadPage = async (page, updateTotal, sort)=>{
+	const loadPage = async (page, updateTotal, sort, dir)=>{
 		if(!validateForm()) return;
 
 		setSearching(true);
@@ -109,14 +106,14 @@ const VaultPage = (props)=>{
 		const count  = countRef.current.value || 10;
 		const v3     = v3Ref.current.checked != false;
 		const legacy = legacyRef.current.checked != false;
-		const sortOption = sort && sort.split('/')[0] || 'title';
-		const dir = sort && sort.split('/')[1] || 'asc';
+		const sortOption = sort || 'title';
+		const dirOption = dir || 'asc';
 		const pageProp = page || 1;
 
 		setSort(sortOption);
-		setdir(dir);
+		setdir(dirOption);
 
-		performSearch(title, author, count, v3, legacy, pageProp, sortOption, dir);
+		performSearch(title, author, count, v3, legacy, pageProp, sortOption, dirOption);
 
 		if(updateTotal)
 			loadTotal(title, author, v3, legacy);
@@ -273,16 +270,12 @@ const VaultPage = (props)=>{
             }`}
 			>
 				<button onClick={() => {
-					loadPage(1, false, `${optionValue}/${oppositeDir}`)
+					loadPage(1, false, optionValue, oppositeDir)
 					}}>
                 {optionTitle}
             </button>
             {sortState === optionValue && (
-                <i
-                    className={`sortDir fas ${
-                        dirState === 'asc' ? 'fa-sort-up' : 'fa-sort-down'
-                    }`}
-                ></i>
+                <i className={`sortDir fas ${dirState === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`} />
             )}
 			</div>
 		);
