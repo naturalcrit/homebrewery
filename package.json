@@ -134,7 +134,7 @@
     "jest-expect-message": "^1.1.3",
     "postcss-less": "^6.0.0",
     "stylelint": "^16.9.0",
-    "stylelint-config-recess-order": "^5.1.0",
+    "stylelint-config-recess-order": "^5.1.1",
     "stylelint-config-recommended": "^14.0.1",
     "supertest": "^7.0.0"
   }
