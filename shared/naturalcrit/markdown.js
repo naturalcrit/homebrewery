@@ -398,7 +398,7 @@ const indexSplit=(src)=>{
 
 const indexAnchors = {
 	name  : 'indexAnchor',
-	level : 'inline',
+	level : 'block',
 	start(src) {return src.match(/^#(.+)(?<!\\):([^/]+)((?<!\\)\/([^|]+))?/)?.index;}, // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const inlineRegex = /^#[^|]+(\|[^\n]+)?/gmy;

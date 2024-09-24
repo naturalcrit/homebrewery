@@ -58,14 +58,16 @@ const indexSplit=(src)=>{
 		index = 'Index:';
 	} else {
 		working = src.split(indexSplitRegex);
-		index = working[0].replace('\\:', ':').trim();
-		if(!working[1]?.trim()>0) {
-			working.splice(1, 1);
+		if(working[1]?.length > 0) {
+			index = working[0].replace('\\:', ':').trim();
+			if(!working[1]?.trim()>0) {
+				working.splice(1, 1);
+			}
+			working[1] = working[1]?.trim();
 		}
-		working[1] = working[1]?.trim();
 	}
 
-	if(working[1]) {
+	if(working[1]?.length > 0) {
 		if(working[1].search(subTopicSplit) !== -1){
 			const topics = working[1].split(subTopicSplit);
 			topic = topics[0].trim();
@@ -89,10 +91,10 @@ const indexSplit=(src)=>{
 
 const insertIndex = (indexes, entry, pageNumber, runningErrors)=>{
 	const crossReferenceSplit = /(?<!\\)\|/;
-
 	let crossReference = entry.split(crossReferenceSplit);
 
 	const entryMatch = indexSplit(crossReference[0]);
+	if(!entryMatch) return;
 	const useIndex = entryMatch.index;
 	if(!indexes.has(useIndex)) {
 		indexes.set(useIndex, new Map());
@@ -147,12 +149,15 @@ const insertIndex = (indexes, entry, pageNumber, runningErrors)=>{
 };
 
 const findIndexEntries = (pages, indexes, runningErrors)=>{
-	const theRegex = /#((.+)(?<!\\):)?(.+)((?:(?<!\\)\/(.+)))?\n/mg;
+	const theRegex = /^#((.+)(?<!\\):)?(.+)((?:(?<!\\)\/(.+)))?\n/mg;
 	for (const [pageNumber, page] of pages.entries()) {
 		if(page.match(theRegex)) {
 			let match;
 			while ((match = theRegex.exec(page)) !== null){
-				insertIndex(indexes, match[0].slice(1), pageNumber, runningErrors);
+				// Dumb check to make sure we aren't sending a header
+				if((match[0][1] !== '#') && (match[0][1] !== ' ')) {
+					insertIndex(indexes, match[0].slice(1), pageNumber, runningErrors);
+				}
 			}
 		}
 	};
