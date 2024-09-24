@@ -4,12 +4,12 @@ const { useState, useEffect } = React;
 const _     = require('lodash');
 
 const TagInput = ({ unique = true, values = [], ...props }) => {
-	const [temporaryValue, setTemporaryValue] = useState('');
-	const [valueContext, setValueContext] = useState(values.map((value) => ({ value, editing: false })));
+	const [tempInputText, setTempInputText] = useState('');
+	const [tagList, setTagList] = useState(values.map((value) => ({ value, editing: false })));
 
 	useEffect(()=>{
-		handleChange(valueContext.map((context)=>context.value))
-	}, [valueContext])
+		handleChange(tagList.map((context)=>context.value))
+	}, [tagList])
 
 	const handleChange = (value)=>{
 		props.onChange({
@@ -22,13 +22,13 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 			evt.preventDefault();
 			submitTag(evt.target.value, value, index);
 			if (options.clear) {
-				setTemporaryValue('');
+				setTempInputText('');
 			}
 		}
 	};
 
 	const submitTag = (newValue, originalValue, index) => {
-		setValueContext((prevContext) => {
+		setTagList((prevContext) => {
 			// remove existing tag
 			if(newValue === null){
 				return [...prevContext].filter((context, i)=>i !== index);
@@ -48,7 +48,7 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 	};
 
 	const editTag = (index) => {
-		setValueContext((prevContext) => {
+		setTagList((prevContext) => {
 			return prevContext.map((context, i) => {
 				if (i === index) {
 					return { ...context, editing: true };
@@ -86,15 +86,15 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 			<label>{props.label}</label>
 			<div className='value'>
 				<ul className='list'>
-					{valueContext.map((context, index) => { return context.editing ? renderWriteTag(context, index) : renderReadTag(context, index); })}
+					{tagList.map((context, index) => { return context.editing ? renderWriteTag(context, index) : renderReadTag(context, index); })}
 				</ul>
 
 				<input
 					type='text'
 					className='value'
 					placeholder={props.placeholder}
-					value={temporaryValue}
-					onChange={(e) => setTemporaryValue(e.target.value)}
+					value={tempInputText}
+					onChange={(e) => setTempInputText(e.target.value)}
 					onKeyDown={(evt) => handleInputKeyDown({ evt, value: null, options: { clear: true } })}
 				/>
 			</div>
