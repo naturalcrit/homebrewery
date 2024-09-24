@@ -4,21 +4,21 @@ const { useState, useEffect, useRef } = React;
 const _ = require('lodash');
 
 const TagInput = ({ unique = true, values = [], ...props }) => {
-	const [temporaryValue, setTemporaryValue] = useState('');
+	const [tempInputValue, setTempInputValue] = useState('');
 	const [focusedIndex, setFocusedIndex] = useState(-1);
-	const [valueContext, setValueContext] = useState(values.map((value) => ({ value, editing: false })));
+	const [tagList, setTagList] = useState(values.map((value) => ({ value, editing: false })));
 	const tagRefs = useRef([]);
 
 	useEffect(() => {
-		handleChange(valueContext.map((context) => context.value));
-		tagRefs.current = tagRefs.current.slice(0, valueContext.length);
-	}, [valueContext]);
+		handleChange(tagList.map((context) => context.value));
+		tagRefs.current = tagRefs.current.slice(0, tagList.length);
+	}, [tagList]);
 
 	useEffect(() => {
 		if (focusedIndex >= 0 && focusedIndex < tagRefs.current.length) {
 			tagRefs.current[focusedIndex]?.focus();
 		}
-	}, [valueContext, focusedIndex]);
+	}, [tagList, focusedIndex]);
 
 	const handleChange = (value) => {
 		props.onChange({
@@ -26,19 +26,19 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 		});
 	};
 
-	const handleInputKeyDown = ({ evt, value, index = valueContext.length, options = {} }) => {
+	const handleInputKeyDown = ({ evt, value, index = tagList.length, options = {} }) => {
 		if (_.includes(['Enter', ','], evt.key)) {
-			if (!valueContext[index]) {
+			if (!tagList[index]) {
 				submitTag(evt.target.value, null, null, evt);
-			} else if (valueContext[index].editing === true) {
+			} else if (tagList[index].editing === true) {
 				submitTag(evt.target.value, value, index, evt);
-			} else if (evt.key === 'Enter' && valueContext[index].editing === false) {
+			} else if (evt.key === 'Enter' && tagList[index].editing === false) {
 				editTag(index);
 			}
 			if (options.clear) {
-				setTemporaryValue('');
+				setTempInputValue('');
 			}
-		} else if (evt.key === ' ' && valueContext[index].editing === false) {
+		} else if (evt.key === ' ' && tagList[index].editing === false) {
 			evt.preventDefault();
 			editTag(index);
 		} else if (evt.key === 'Escape') {
@@ -53,7 +53,7 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 	};
 
 	const setFocus = (index, evt) => {
-		if (index < 0 || index >= valueContext.length) {
+		if (index < 0 || index >= tagList.length) {
 			setFocusedIndex(-1);
 			evt.target.blur();
 			return;
@@ -64,7 +64,7 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 
 	const submitTag = (newValue, originalValue, index, evt) => {
 		evt.preventDefault();
-		setValueContext((prevContext) => {
+		setTagList((prevContext) => {
 			// Remove tag
 			if (newValue === null) {
 				return [...prevContext].filter((context, i) => i !== index);
@@ -84,7 +84,7 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 	};
 
 	const editTag = (index) => {
-		setValueContext((prevContext) => {
+		setTagList((prevContext) => {
 			return prevContext.map((context, i) => {
 				if (i === index) {
 					return { ...context, editing: true };
@@ -139,7 +139,7 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 			<label>{props.label}</label>
 			<div className='value'>
 				<ul className='list'>
-					{valueContext.map((context, index) => {
+					{tagList.map((context, index) => {
 						return context.editing ? renderWriteTag(context, index) : renderReadTag(context, index);
 					})}
 				</ul>
@@ -148,8 +148,8 @@ const TagInput = ({ unique = true, values = [], ...props }) => {
 					type='text'
 					className='value'
 					placeholder={props.placeholder}
-					value={temporaryValue}
-					onChange={(e) => setTemporaryValue(e.target.value)}
+					value={tempInputValue}
+					onChange={(e) => setTempInputValue(e.target.value)}
 					onKeyDown={(evt) => handleInputKeyDown({ evt, value: null, options: { clear: true } })}
 				/>
 			</div>
