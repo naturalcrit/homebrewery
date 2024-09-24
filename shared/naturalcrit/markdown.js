@@ -399,9 +399,10 @@ const indexSplit=(src)=>{
 const indexAnchors = {
 	name  : 'indexAnchor',
 	level : 'block',
-	start(src) {return src.match(/^#(.+)(?<!\\):([^/]+)((?<!\\)\/([^|]+))?/)?.index;}, // Hint to Marked.js to stop and check for a match
+	start(src) {return src.match(/^#(.+)(?<!\\):([^/]+)((?<!\\)\/([^|]+))?\n/)?.index;}, // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const inlineRegex = /^#[^|]+(\|[^\n]+)?/gmy;
+		// const inlineRegex = /^#((.+)(?<!\\):)?([^/]+)((?<!\\)\/([^|]+))?\n/gmy;
+		const inlineRegex = /^#((.+)(?<!\\):)?(.+)((?:(?<!\\)\/(.+)))?\n/gmy;
 
 		const indexEntry = {};
 
@@ -412,6 +413,7 @@ const indexAnchors = {
 			const crossReference = srcMatch[0].split(crossReferenceSplit);
 			let entryMatch = undefined;
 			if((crossReference[0][1] !== '#') && (crossReference[0][1] !== ' ')) {
+
 				entryMatch = indexSplit(crossReference[0].slice(1));
 			}
 			if(!entryMatch) { return; }
