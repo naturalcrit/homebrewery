@@ -410,7 +410,10 @@ const indexAnchors = {
 			const crossReferenceSplit = /(?<!\\)\|/g;
 
 			const crossReference = srcMatch[0].split(crossReferenceSplit);
-			const entryMatch = indexSplit(crossReference[0].slice(1));
+			let entryMatch = undefined;
+			if((crossReference[0][1] !== '#') && (crossReference[0][1] !== ' ')) {
+				entryMatch = indexSplit(crossReference[0].slice(1));
+			}
 			if(!entryMatch) { return; }
 			indexEntry.subtopic = entryMatch?.subtopic ? entryMatch.subtopic : undefined;
 			indexEntry.topic = entryMatch.topic;
