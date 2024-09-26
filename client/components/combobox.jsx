@@ -57,6 +57,9 @@ const Combobox = ({ autoSuggest = { filterOn: ['data-value'] }, ...props }) => {
 			// ArrowDown moves to the next option
 			if (evt.key === 'ArrowDown') {
 				evt.preventDefault();
+				if((currentOption === -1) && (showDropdown === false)){
+					setShowDropdown(true);
+				};
 				const nextIndex = currentOption + 1;
 				if (nextIndex < optionsLength) {
 					setCurrentOption(nextIndex);
