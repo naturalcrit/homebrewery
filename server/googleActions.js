@@ -172,7 +172,6 @@ const GoogleActions = {
 		})
 		.catch((err)=>{
 			console.log('Error saving to google');
-			console.error(err);
 			throw (err);
 		});
 
