@@ -9,6 +9,21 @@ const Combobox = ({ autoSuggest = { filterOn: ['data-value'] }, ...props }) => {
 	const [currentOption, setCurrentOption] = useState(-1);
 	const [filteredOptions, setFilteredOptions] = useState([]);
 	const optionRefs = useRef([]);
+	const componentRef = useRef(null);
+
+	useEffect(() => {
+		const handleClickOutside = (evt) => {
+			if (showDropdown && componentRef.current && !componentRef.current.contains(evt.target)) {
+				setShowDropdown(false);
+			}
+		};
+		
+		document.addEventListener('pointerdown', handleClickOutside);
+
+		return () => {
+			document.removeEventListener('pointerdown', handleClickOutside);
+		};
+	}, [showDropdown]);
 
 	useEffect(() => {
 		props.onSelect(inputValue);
@@ -85,7 +100,7 @@ const Combobox = ({ autoSuggest = { filterOn: ['data-value'] }, ...props }) => {
 
 
 	return (
-		<div className="combobox">
+		<div className="combobox" ref={componentRef}>
 			<input
 				type="text"
 				value={inputValue}
