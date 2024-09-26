@@ -1,128 +1,106 @@
-const React = require('react');
-const createClass = require('create-react-class');
-const _ = require('lodash');
 require('./combobox.less');
+import React, { useState, useRef, useEffect } from 'react';
+const _ = require('lodash');
 
-const Combobox = createClass({
-	displayName     : 'Combobox',
-	getDefaultProps : function() {
-		return {
-			className   : '',
-			trigger     : 'hover',
-			default     : '',
-			placeholder : '',
-			autoSuggest : {
-				clearAutoSuggestOnClick : true,
-				suggestMethod           : 'includes',
-				filterOn                : []  // should allow as array to filter on multiple attributes, or even custom filter
-			},
-		};
-	},
-	getInitialState : function() {
-		return {
-			showDropdown : false,
-			value        : '',
-			options      : [...this.props.options],
-			inputFocused : false
-		};
-	},
-	componentDidMount : function() {
-		if(this.props.trigger == 'click')
-			document.addEventListener('click', this.handleClickOutside);
-		this.setState({
-			value : this.props.default
-		});
-	},
-	componentWillUnmount : function() {
-		if(this.props.trigger == 'click')
-			document.removeEventListener('click', this.handleClickOutside);
-	},
-	handleClickOutside : function(e){
-		// Close dropdown when clicked outside
-		if(this.refs.dropdown && !this.refs.dropdown.contains(e.target)) {
-			this.handleDropdown(false);
+const Combobox = ({ autoSuggest = { filterOn: ['data-value'] }, ...props }) => {
+	const [inputValue, setInputValue] = useState(props.value || '');
+	const [showDropdown, setShowDropdown] = useState(false);
+	const [inputFocused, setInputFocused] = useState(false);
+	const [currentOption, setCurrentOption] = useState(-1);
+	const [filteredOptions, setFilteredOptions] = useState([]);
+	const optionRefs = useRef([]);
+
+	useEffect(() => {
+		props.onSelect(inputValue);
+	
+		handleInputChange({ target: { value: inputValue } });
+	}, [inputValue]);
+
+	useEffect(() => {
+		if (currentOption >= 0 && optionRefs.current[currentOption] && optionRefs.current[currentOption].focus) {
+			optionRefs.current[currentOption].focus();
 		}
-	},
-	handleDropdown : function(show){
-		this.setState({
-			showDropdown : show,
-			inputFocused : this.props.autoSuggest.clearAutoSuggestOnClick ? show : false
-		});
-	},
-	handleInput : function(e){
-		e.persist();
-		this.setState({
-			value        : e.target.value,
-			inputFocused : false
-		}, ()=>{
-			this.props.onEntry(e);
-		});
-	},
-	handleSelect : function(e){
-		this.setState({
-			value : e.currentTarget.getAttribute('data-value')
-		}, ()=>{this.props.onSelect(this.state.value);});
-		;
-	},
-	renderTextInput : function(){
-		return (
-			<div className='dropdown-input item'
-				onMouseEnter={this.props.trigger == 'hover' ? ()=>{this.handleDropdown(true);} : undefined}
-				onClick=     {this.props.trigger == 'click' ? ()=>{this.handleDropdown(true);} : undefined}>
-				<input
-					type='text'
-					onChange={(e)=>this.handleInput(e)}
-					value={this.state.value || ''}
-					placeholder={this.props.placeholder}
-					onBlur={(e)=>{
-						if(!e.target.checkValidity()){
-							this.setState({
-								value : this.props.default
-							}, ()=>this.props.onEntry(e));
-						}
-					}}
-				/>
-			</div>
-		);
-	},
-	renderDropdown : function(dropdownChildren){
-		if(!this.state.showDropdown) return null;
-		if(this.props.autoSuggest && !this.state.inputFocused){
-			const suggestMethod = this.props.autoSuggest.suggestMethod;
-			const filterOn = _.isString(this.props.autoSuggest.filterOn) ? [this.props.autoSuggest.filterOn] : this.props.autoSuggest.filterOn;
-			const filteredArrays = filterOn.map((attr)=>{
-				const children = dropdownChildren.filter((item)=>{
-					if(suggestMethod === 'includes'){
-						return item.props[attr]?.toLowerCase().includes(this.state.value.toLowerCase());
-					} else if(suggestMethod === 'startsWith'){
-						return item.props[attr]?.toLowerCase().startsWith(this.state.value.toLowerCase());
-					}
-				});
-				return children;
+	}, [currentOption]);
+
+	const handleInputChange = (evt) => {
+		const newValue = evt.target.value;
+		setInputValue(newValue);
+		setCurrentOption(-1);
+
+		const filtered = React.Children.toArray(props.children).filter((option) => {
+			return autoSuggest.filterOn.some((filterAttr) => {
+				return option.props[filterAttr]?.toLowerCase().startsWith(newValue.toLowerCase());
 			});
-			dropdownChildren = _.uniq(filteredArrays.flat(1));
-		}
-
-		return (
-			<div className='dropdown-options'>
-				{dropdownChildren}
-			</div>
-		);
-	},
-	render : function () {
-		const dropdownChildren = this.state.options.map((child, i)=>{
-			const clone = React.cloneElement(child, { onClick: (e)=>this.handleSelect(e) });
-			return clone;
 		});
-		return (
-			<div className={`dropdown-container ${this.props.className}`}
-				ref='dropdown'
-				onMouseLeave={this.props.trigger == 'hover' ? ()=>{this.handleDropdown(false);} : undefined}>
-				{this.renderTextInput()}
-				{this.renderDropdown(dropdownChildren)}
-			</div>
-		);
+		setFilteredOptions(filtered);
 	}
-});
+
+	// Handle keyboard navigation
+	const handleKeyDown = (evt) => {
+		if (inputFocused || (currentOption >= 0)) {
+			const optionsLength = filteredOptions.length;
+			// ArrowDown moves to the next option
+			if (evt.key === 'ArrowDown') {
+				evt.preventDefault();
+				const nextIndex = currentOption + 1;
+				if (nextIndex < optionsLength) {
+					setCurrentOption(nextIndex);
+				} else {
+					setCurrentOption(0);
+				}
+			}
+			// ArrowUp moves to the previous option
+			else if (evt.key === 'ArrowUp') {
+				evt.preventDefault();
+				const prevIndex = currentOption - 1;
+				if (prevIndex >= 0) {
+					setCurrentOption(prevIndex);
+				} else {
+					setCurrentOption(optionsLength - 1);
+				}
+			}
+		}
+	}
+
+	const handleOptionClick = (evt) => {
+		setShowDropdown(false);
+		setInputValue(evt.currentTarget.dataset.value);
+	}
+
+	// Render the filtered options
+	const renderChildren = () => {
+		optionRefs.current = []; // Reset refs for each render cycle
+
+		// Add refs and event handlers for filtered options
+		return filteredOptions.map((child, i) => {
+			return React.cloneElement(child, {
+				onClick: (evt) => handleOptionClick(evt),
+				onKeyDown: (evt) => handleKeyDown(evt),
+				ref: (node) => { optionRefs.current[i] = node; },
+				tabIndex: -1,
+			});
+		});
+	}
+
+
+
+	return (
+		<div className="combobox">
+			<input
+				type="text"
+				value={inputValue}
+				onClick={() => {
+					setShowDropdown(true);
+					setInputFocused(true);
+				}}
+				onChange={(evt) => handleInputChange(evt)}
+				onKeyDown={(evt) => handleKeyDown(evt)}
+			/>
+			<div className={`dropdown-options${showDropdown ? ' open' : ''}`}>
+				{renderChildren()}
+			</div>
+		</div>
+	);
+}
 
 module.exports = Combobox;
