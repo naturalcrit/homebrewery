@@ -11,6 +11,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 	const [zoomLevel, setZoomLevel] = useState(100);
 	const [pageNum, setPageNum]     = useState(currentPage);
+	const [toolsVisible, setToolsVisible] = useState(true);
 
 	useEffect(()=>{
 		onZoomChange(zoomLevel);
@@ -55,7 +56,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 		} else if(mode == 'fit'){
 			// find the page with the largest single dim (height or width) so that zoom can be adapted to fit it.
-			const minDimRatio = [...pages].reduce((minRatio, page) => Math.min(minRatio, iframeWidth / page.offsetWidth, iframeHeight / page.offsetHeight), Infinity);
+			const minDimRatio = [...pages].reduce((minRatio, page)=>Math.min(minRatio, iframeWidth / page.offsetWidth, iframeHeight / page.offsetHeight), Infinity);
 
 			desiredZoom = minDimRatio * 100;
 		}
@@ -67,7 +68,8 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	};
 
 	return (
-		<div className='toolBar'>
+		<div className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`}>
+			<button className='toggleButton' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible);}}><i className='fas fa-glasses' /></button>
 			{/*v=====----------------------< Zoom Controls >---------------------=====v*/}
 			<div className='group'>
 				<button
