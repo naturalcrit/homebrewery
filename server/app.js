@@ -520,7 +520,7 @@ app.use(async (err, req, res, next)=>{
 	err.originalUrl = req.originalUrl;
 	console.error(err);
 
-	if(err.originalUrl?.startsWith('/api')) {
+	if(err.originalUrl?.startsWith('/api/')) {
 		// console.log('API error');
 		res.status(err.status || err.response?.status || 500).send(err);
 		return;
