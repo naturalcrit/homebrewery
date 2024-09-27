@@ -210,7 +210,6 @@ const GoogleActions = {
 		})
 		.catch((err)=>{
 			console.log('Error while creating new Google brew');
-			console.error(err);
 			throw (err);
 		});
 
