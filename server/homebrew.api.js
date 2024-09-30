@@ -28,7 +28,7 @@ const isStaticTheme = (renderer, themeName)=>{
 // Define rate limiter options
 const rateLimiter = rateLimit({
 	timeWindow : 5 * 60 * 1000, // 5 minutes window
-	max        : 60, // limit each IP to 100 requests per timeWindow
+	max        : 5, // limit each IP to 100 requests per timeWindow
 	handler: (req, res, next) => {
 		console.log(`Rate limiting user ${req.account?.username}`);
 		throw { HBErrorCode: '55', status: 429, message: 'Too many requests from this IP, please try again after 5 minutes'};
