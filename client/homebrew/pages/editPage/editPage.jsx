@@ -29,7 +29,7 @@ const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpe
 
 const googleDriveIcon = require('../../googleDrive.svg');
 
-const SAVE_TIMEOUT = 10000;
+const SAVE_TIMEOUT = 16000;
 
 const EditPage = createClass({
 	displayName     : 'EditPage',
