@@ -55,9 +55,9 @@ const BrewRenderer = (props)=>{
 		theme                      : '5ePHB',
 		lang                       : '',
 		errors                     : [],
-		currentEditorCursorPageNum : 0,
-		currentEditorViewPageNum   : 0,
-		currentBrewRendererPageNum : 0,
+		currentEditorCursorPageNum : 1,
+		currentEditorViewPageNum   : 1,
+		currentBrewRendererPageNum : 1,
 		themeBundle                : {},
 		onPageChange               : ()=>{},
 		...props

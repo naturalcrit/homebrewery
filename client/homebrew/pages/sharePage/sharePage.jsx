@@ -25,7 +25,8 @@ const SharePage = createClass({
 
 	getInitialState : function() {
 		return {
-			themeBundle : {}
+			themeBundle                : {},
+			currentBrewRendererPageNum : 1
 		};
 	},
 
@@ -37,6 +38,10 @@ const SharePage = createClass({
 
 	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
+	},
+
+	handleBrewRendererPageChange : function(pageNumber){
+		this.setState({ currentBrewRendererPageNum: pageNumber });
 	},
 
 	handleControlKeys : function(e){
@@ -118,6 +123,8 @@ const SharePage = createClass({
 					renderer={this.props.brew.renderer}
 					theme={this.props.brew.theme}
 					themeBundle={this.state.themeBundle}
+					onPageChange={this.handleBrewRendererPageChange}
+					currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 					allowPrint={true}
 				/>
 			</div>

@@ -96,7 +96,7 @@
     "cookie-parser": "^1.4.6",
     "create-react-class": "^15.7.0",
     "dedent-tabs": "^0.10.3",
-    "dompurify": "^3.1.6",
+    "dompurify": "^3.1.7",
     "expr-eval": "^2.0.2",
     "express": "^4.21.0",
     "express-async-handler": "^1.2.0",
@@ -113,7 +113,7 @@
     "marked-smartypants-lite": "^1.0.2",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.30.1",
-    "mongoose": "^8.6.2",
+    "mongoose": "^8.7.0",
     "nanoid": "3.3.4",
     "nconf": "^0.12.1",
     "react": "^18.3.1",
@@ -125,8 +125,8 @@
     "vitreum": "git+https://git@github.com/calculuschild/vitreum.git"
   },
   "devDependencies": {
-    "@stylistic/stylelint-plugin": "^3.0.1",
-    "eslint": "^9.10.0",
+    "@stylistic/stylelint-plugin": "^3.1.0",
+    "eslint": "^9.11.1",
     "eslint-plugin-jest": "^28.8.3",
     "eslint-plugin-react": "^7.36.1",
     "globals": "^15.9.0",
@@ -134,7 +134,7 @@
     "jest-expect-message": "^1.1.3",
     "postcss-less": "^6.0.0",
     "stylelint": "^16.9.0",
-    "stylelint-config-recess-order": "^5.1.0",
+    "stylelint-config-recess-order": "^5.1.1",
     "stylelint-config-recommended": "^14.0.1",
     "supertest": "^7.0.0"
   }
