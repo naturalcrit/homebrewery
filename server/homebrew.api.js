@@ -35,6 +35,15 @@ const rateLimiter = rateLimit({
 	}
 });
 
+// Define the delay middleware function
+const delayMiddleware = (delay) => {
+  return (req, res, next) => {
+    setTimeout(() => {
+      next();
+    }, delay);
+  };
+};
+
 const MAX_TITLE_LENGTH = 100;
 
 const api = {
@@ -488,7 +497,7 @@ router.use('/api', rateLimiter);
 router.use('/api', require('./middleware/check-client-version.js'));
 router.post('/api', asyncHandler(api.newBrew));
 router.put('/api/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
-router.put('/api/update/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
+router.put('/api/update/:id', asyncHandler(api.getBrew('edit', true)), delayMiddleware(1000), asyncHandler(api.updateBrew));
 router.delete('/api/:id', asyncHandler(api.deleteBrew));
 router.get('/api/remove/:id', asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
