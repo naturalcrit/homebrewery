@@ -353,7 +353,7 @@ const api = {
 			if(!brew.googleId) return;
 		} else if(brew.googleId) {
 			// If the google id exists and no other actions are being performed, update the google brew
-			const updated = await GoogleActions.updateGoogleBrew(api.excludeGoogleProps(brew));
+			const updated = await api.updateGoogleBrew(req.account, api.excludeGoogleProps(brew), res);
 
 			if(!updated) return;
 		}
@@ -397,6 +397,15 @@ const api = {
 
 		res.status(200).send(saved);
 	},
+
+	updateGoogleBrew : async (account, brew, res)=>{
+		let oAuth2Client;
+		if(account.googleId)
+			oAuth2Client = GoogleActions.authCheck(account, res);
+
+		return await GoogleActions.updateGoogleBrew(brew, oAuth2Client);
+	},
+
 	deleteGoogleBrew : async (account, id, editId, res)=>{
 		const auth = await GoogleActions.authCheck(account, res);
 		await GoogleActions.deleteGoogleBrew(auth, id, editId);

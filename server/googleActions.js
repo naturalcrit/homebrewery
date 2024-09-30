@@ -147,8 +147,10 @@ const GoogleActions = {
 	  return brews;
 	},
 
-	updateGoogleBrew : async (brew)=>{
-		const drive = googleDrive.drive({ version: 'v3', auth: defaultAuth });
+	updateGoogleBrew : async (brew, auth = defaultAuth)=>{
+		const drive = googleDrive.drive({ version: 'v3', auth: auth });
+
+		console.log(auth == defaultAuth ? 'UPDATE w SERVICEACC' : 'UPDATE w USERACC')
 
 		await drive.files.update({
 			fileId   : brew.googleId,
