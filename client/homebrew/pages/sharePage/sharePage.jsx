@@ -114,6 +114,7 @@ const SharePage = createClass({
 				<BrewRenderer
 					text={this.props.brew.text}
 					style={this.props.brew.style}
+					lang={this.props.brew.lang}
 					renderer={this.props.brew.renderer}
 					theme={this.props.brew.theme}
 					themeBundle={this.state.themeBundle}
