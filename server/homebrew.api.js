@@ -493,7 +493,7 @@ const api = {
 	}
 };
 
-router.use('/api', rateLimiter);
+// router.use('/api', rateLimiter);
 router.use('/api', require('./middleware/check-client-version.js'));
 router.post('/api', asyncHandler(api.newBrew));
 router.put('/api/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
