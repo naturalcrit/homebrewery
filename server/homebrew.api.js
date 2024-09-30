@@ -9,6 +9,7 @@ const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
 const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
+const rateLimit = require('express-rate-limit');
 
 const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
 
@@ -23,6 +24,16 @@ const isStaticTheme = (renderer, themeName)=>{
 // 		cb(brews);
 // 	});
 // };
+
+// Define rate limiter options
+const rateLimiter = rateLimit({
+	timeWindow : 5 * 60 * 1000, // 5 minutes window
+	max        : 100, // limit each IP to 100 requests per timeWindow
+	handler: (req, res, next) => {
+		console.log(`Rate limiting user ${req.account?.username}`);
+		throw { HBErrorCode: '55', status: 429, message: 'Too many requests from this IP, please try again after 5 minutes'};
+	}
+});
 
 const MAX_TITLE_LENGTH = 100;
 
@@ -473,6 +484,7 @@ const api = {
 	}
 };
 
+router.use('/api', rateLimiter);
 router.use('/api', require('./middleware/check-client-version.js'));
 router.post('/api', asyncHandler(api.newBrew));
 router.put('/api/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
