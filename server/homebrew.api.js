@@ -25,25 +25,6 @@ const isStaticTheme = (renderer, themeName)=>{
 // 	});
 // };
 
-// Define rate limiter options
-const rateLimiter = rateLimit({
-	timeWindow : 5 * 60 * 1000, // 5 minutes window
-	max        : 5, // limit each IP to 100 requests per timeWindow
-	handler: (req, res, next) => {
-		console.log(`Rate limiting user ${req.account?.username}`);
-		throw { HBErrorCode: '55', status: 429, message: 'Too many requests from this IP, please try again after 5 minutes'};
-	}
-});
-
-// Define the delay middleware function
-const delayMiddleware = (delay) => {
-  return (req, res, next) => {
-    setTimeout(() => {
-      next();
-    }, delay);
-  };
-};
-
 const MAX_TITLE_LENGTH = 100;
 
 const api = {
@@ -493,11 +474,10 @@ const api = {
 	}
 };
 
-// router.use('/api', rateLimiter);
 router.use('/api', require('./middleware/check-client-version.js'));
 router.post('/api', asyncHandler(api.newBrew));
 router.put('/api/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
-router.put('/api/update/:id', asyncHandler(api.getBrew('edit', true)), delayMiddleware(1000), asyncHandler(api.updateBrew));
+router.put('/api/update/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
 router.delete('/api/:id', asyncHandler(api.deleteBrew));
 router.get('/api/remove/:id', asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
