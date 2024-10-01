@@ -121,9 +121,7 @@ const GoogleActions = {
 			})
 			.catch((err)=>{
 				console.log(`Error Listing Google Brews`);
-				console.error(err);
 				throw (err);
-				//TODO: Should break out here, but continues on for some reason.
 			});
 			fileList.push(...obj.data.files);
 			NextPageToken = obj.data.nextPageToken;

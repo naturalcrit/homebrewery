@@ -379,22 +379,12 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 	let googleCount = [];
 	if(req.account) {
 		if(req.account.googleId) {
-			try {
-				auth = await GoogleActions.authCheck(req.account, res, false);
-			} catch (e) {
-				auth = undefined;
-				console.log('Google auth check failed!');
-				console.log(e);
-			}
-			if(auth.credentials.access_token) {
-				try {
-					googleCount = await GoogleActions.listGoogleBrews(auth);
-				} catch (e) {
-					googleCount = undefined;
-					console.log('List Google files failed!');
-					console.log(e);
-				}
-			}
+			auth = await GoogleActions.authCheck(req.account, res, false)
+
+			googleCount = await GoogleActions.listGoogleBrews(auth)
+				.catch((err)=>{
+					console.error(err);
+				});
 		}
 
 		const query = { authors: req.account.username, googleId: { $exists: false } };
@@ -408,7 +398,7 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 			username    : req.account.username,
 			issued      : req.account.issued,
 			googleId    : Boolean(req.account.googleId),
-			authCheck   : Boolean(req.account.googleId && auth.credentials.access_token),
+			authCheck   : Boolean(req.account.googleId && auth?.credentials.access_token),
 			mongoCount  : mongoCount,
 			googleCount : googleCount?.length
 		};
