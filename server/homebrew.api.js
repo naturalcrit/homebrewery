@@ -419,11 +419,11 @@ const api = {
 	},
 
 	updateGoogleBrew : async (account, brew, res, req)=>{
-		let oAuth2Client;
-		if(account.googleId)
-			oAuth2Client = GoogleActions.authCheck(account, res);
+		//let oAuth2Client;
+		//if(account.googleId)
+		//	oAuth2Client = GoogleActions.authCheck(account, res);
 
-		return await GoogleActions.updateGoogleBrew(brew, oAuth2Client, req.ip);
+		return await GoogleActions.updateGoogleBrew(brew, undefined, req.ip);
 	},
 
 	deleteGoogleBrew : async (account, id, editId, res)=>{
