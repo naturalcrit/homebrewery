@@ -4,7 +4,7 @@ const _     = require('lodash');
 
 import Dialog from '../../../components/dialog.jsx';
 
-const DISMISS_KEY = 'dismiss_notification28-09-24';
+const DISMISS_KEY = 'dismiss_notification01-10-24';
 const DISMISS_BUTTON = <i className='fas fa-times dismiss' />;
 
 const NotificationPopup = ()=>{
@@ -22,10 +22,13 @@ const NotificationPopup = ()=>{
 					fontSize: '1.0em'
 				}}>
 				<em>Known issue with saving/creating Google Drive files</em><br />
-				We are aware of <a href="https://github.com/naturalcrit/homebrewery/issues/3770">
-				an issue with saving to Google Drive</a> as of Sept 29 2024 01:50 UTC and are working on a fix.
-				This appears to be an intermittent error with Google in the last few days and may
-				take some time to resolve.
+				Dear users. The <a href="https://github.com/naturalcrit/homebrewery/issues/3770">
+				issue with saving to Google Drive</a> has resurfaced as of Oct 1, 2024 22:00 UTC.
+				<br></br><br></br>
+				Earlier we submitted a bug report to Google and have all but confirmed the issue
+				lies on Google's end and the disruption has been affecting multiple other
+				organizations besides us. Unfortunately, it means reliable interaction with
+				Google remains out of our control until they can resolve their issue.
 				<br></br><br></br>
 				Brews saved to Google Drive are <em>not lost</em> and can still be viewed, just not updated.
 				You can also access them via your Google Drive interface in the <code>/Hombrewery</code> folder.
