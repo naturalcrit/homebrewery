@@ -11,40 +11,50 @@ const NotificationSchema = new mongoose.Schema({
 }, { versionKey: false });
 
 NotificationSchema.statics.addNotification = async function(data) {
-	if(!data.dismissKey) return 'Dismiss key is required!';
+	if(!data.dismissKey) return { success: false, message: 'Dismiss key is required!' };
+
 	const defaults = {
 		title   : '',
 		text    : '',
 		startAt : new Date(),
-		stopAt  : new Date()
+		stopAt  : new Date(),
 	};
-	_.defaults(data, defaults);
-	const newNotification = new this(data);
+
+	const notificationData = _.defaults(data, defaults);
+
+	if(!(notificationData.startAt instanceof Date) || !(notificationData.stopAt instanceof Date)) {
+		return { success: false, message: 'Invalid date format for startAt or stopAt' };
+	}
+
 	try {
+		const newNotification = new this(notificationData);
 		const savedNotification = await newNotification.save();
-		return savedNotification;
+		return { success: true, notification: savedNotification };
 	} catch (err) {
-		throw new Error(err.message || 'Error saving notification');
+		return { success: false, message: err.message || 'Error saving notification' };
 	}
 };
 
 NotificationSchema.statics.deleteNotification = async function(dismissKey) {
-	if(!dismissKey) return 'No key provided!';
+	if(!dismissKey) return { success: false, message: 'No key provided!' };
+
 	try {
 		const deletedNotification = await this.findOneAndDelete({ dismissKey }).exec();
-		if(!deletedNotification) throw new Error('Notification not found');
-		return deletedNotification;
+		if(!deletedNotification) {
+			return { success: false, message: 'Notification not found' };
+		}
+		return { success: true, notification: deletedNotification };
 	} catch (err) {
-		throw new Error(err.message || 'Error deleting notification');
+		return { success: false, message: err.message || 'Error deleting notification' };
 	}
 };
 
 NotificationSchema.statics.getAll = async function() {
 	try {
 		const notifications = await this.find().exec();
-		return notifications;
+		return { success: true, notifications };
 	} catch (err) {
-		throw new Error(err.message || 'Error retrieving notifications');
+		return { success: false, message: err.message || 'Error retrieving notifications' };
 	}
 };
 
