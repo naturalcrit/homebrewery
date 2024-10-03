@@ -43,7 +43,7 @@ NotificationSchema.statics.deleteNotification = async function(dismissKey) {
 		if(!deletedNotification) {
 			return { success: false, message: 'Notification not found' };
 		}
-		return { success: true, notification: deletedNotification };
+		return { success: true, message: 'Notification deleted successfully' };  // Update response here
 	} catch (err) {
 		return { success: false, message: err.message || 'Error deleting notification' };
 	}

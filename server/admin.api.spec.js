@@ -31,10 +31,11 @@ describe('Tests for admin api', ()=>{
 			const inputNotification = {
 				title      : 'Test Notification',
 				text       : 'This is a test notification',
-				startAt    : new Date(),
-				stopAt     : new Date(),
+				startAt    : new Date().toISOString(),
+				stopAt     : new Date().toISOString(),
 				dismissKey : 'testKey'
-			};
+			  };
+			  
 
 			const savedNotification = {
 				...inputNotification,
