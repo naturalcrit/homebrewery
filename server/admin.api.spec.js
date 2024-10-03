@@ -41,8 +41,8 @@ describe('Tests for admin api', ()=>{
 				...inputNotification,
 				_id       : expect.any(String), // Don't care what _id is, just that it added one
 				createdAt : expect.any(String), // Don't care what date is, just that it added it
-				startAt   : inputNotification.startAt.toJSON(), // Convert to json to match the format coming from mongo
-				stopAt    : inputNotification.stopAt.toJSON()
+				startAt   : inputNotification.startAt, // Convert to json to match the format coming from mongo
+				stopAt    : inputNotification.stopAt,
 			};
 
 			//Change 'save' function to just return itself instead of actually interacting with the database
@@ -75,7 +75,7 @@ describe('Tests for admin api', ()=>{
 				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
 		
 			expect(response.status).toBe(200);
-			expect(response.body).toEqual({ message: 'Notification deleted successfully' });
+			expect(response.body).toEqual({ success: true, message: 'Notification deleted successfully' });
 		});
 		
 		
