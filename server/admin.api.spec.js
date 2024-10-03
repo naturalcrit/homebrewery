@@ -62,11 +62,11 @@ describe('Tests for admin api', ()=>{
 		it('should delete a notification based on its dismiss key', async () => {
 			const dismissKey = 'testKey';
 		
-			// Mock the deleteOne function to simulate a successful deletion
-			jest.spyOn(NotificationModel, 'deleteOne')
-				.mockImplementationOnce((query) => {
-					expect(query).toEqual({ dismissKey }); // Ensure the correct query is passed
-					return Promise.resolve({ deletedCount: 1 });
+			// Mock findOneAndDelete to simulate a successful deletion
+			jest.spyOn(NotificationModel, 'deleteNotification')
+				.mockImplementationOnce(async (key) => {
+					expect(key).toBe(dismissKey); // Ensure the correct key is passed
+					return { dismissKey }; // Simulate the notification object that was deleted
 				});
 		
 			const response = await app
@@ -76,6 +76,7 @@ describe('Tests for admin api', ()=>{
 			expect(response.status).toBe(200);
 			expect(response.body).toEqual({ message: 'Notification deleted successfully' });
 		});
+		
 		
 	});
 });
