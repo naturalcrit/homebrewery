@@ -6,28 +6,28 @@ const app = supertest.agent(require('app.js').app)
 
 const NotificationModel = require('./notifications.model.js').model;
 
-describe('Tests for admin api', () => {
-	afterEach(() => {
+describe('Tests for admin api', ()=>{
+	afterEach(()=>{
 		jest.resetAllMocks();
 	});
 
-	describe('Notifications', () => {
-		it('should return list of all notifications', async () => {
-			const fakeNotifications = ["a", "b"];
+	describe('Notifications', ()=>{
+		it('should return list of all notifications', async ()=>{
+			const fakeNotifications = ['a', 'b'];
 
 			// Change 'getAll' function to just return the above array instead of actually using the database
 			jest.spyOn(NotificationModel, 'getAll')
-				.mockImplementationOnce(() => fakeNotifications);
+				.mockImplementationOnce(()=>fakeNotifications);
 
 			const response = await app
 				.get('/admin/notification/all')
-				.set('Authorization', 'Basic ' + Buffer.from('admin:password3').toString('base64'));
+				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
 
 			expect(response.status).toBe(200);
 			expect(response.body).toEqual(fakeNotifications);
 		});
 
-		it('should add a new notification', async () => {
+		it('should add a new notification', async ()=>{
 			const inputNotification = {
 				title      : 'Test Notification',
 				text       : 'This is a test notification',
@@ -52,11 +52,30 @@ describe('Tests for admin api', () => {
 
 			const response = await app
 				.post('/admin/notification/add')
-				.set('Authorization', 'Basic ' + Buffer.from('admin:password3').toString('base64'))
+				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
 				.send(inputNotification);
 
 			expect(response.status).toBe(201);
 			expect(response.body).toEqual(savedNotification);
 		});
+
+		it('should delete a notification based on its dismiss key', async () => {
+			const dismissKey = 'testKey';
+		
+			// Mock the deleteOne function to simulate a successful deletion
+			jest.spyOn(NotificationModel, 'deleteOne')
+				.mockImplementationOnce((query) => {
+					expect(query).toEqual({ dismissKey }); // Ensure the correct query is passed
+					return Promise.resolve({ deletedCount: 1 });
+				});
+		
+			const response = await app
+				.delete(`/admin/notification/delete/${dismissKey}`)
+				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
+		
+			expect(response.status).toBe(200);
+			expect(response.body).toEqual({ message: 'Notification deleted successfully' });
+		});
+		
 	});
 });
