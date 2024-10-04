@@ -21,6 +21,11 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.snippets = brew.text.slice(11, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
+	if(brew.text.startsWith('```templates')) {
+		const index = brew.text.indexOf('```\n\n');
+		brew.templates = brew.text.slice(11, index - 1);
+		brew.text = brew.text.slice(index + 5);
+	}
 };
 
 const printCurrentBrew = ()=>{

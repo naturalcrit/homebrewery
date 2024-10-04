@@ -170,6 +170,18 @@ const api = {
 				`\`\`\`\n\n` +
 				`${text}`;
 		}
+		if(brew.snippets !== undefined) {
+			text = `\`\`\`snippets\n` +
+				`${brew.snippets || ''}\n` +
+				`\`\`\`\n\n` +
+				`${text}`;
+		}
+		if(brew.templates !== undefined) {
+			text = `\`\`\`templates\n` +
+				`${brew.templates || ''}\n` +
+				`\`\`\`\n\n` +
+				`${text}`;
+		}
 		const metadata = _.pick(brew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']);
 		text = `\`\`\`metadata\n` +
 			`${yaml.dump(metadata)}\n` +
@@ -275,6 +287,7 @@ const api = {
 		let currentTheme;
 		const completeStyles   = [];
 		const completeSnippets = [];
+		const completeTemplates = [];
 
 		while (req.params.id) {
 			//=== User Themes ===//
@@ -291,6 +304,7 @@ const api = {
 
 				// If there is anything in the snippets or style members, append them to the appropriate array
 				if(currentTheme?.snippets) completeSnippets.push(JSON.parse(currentTheme.snippets));
+				if(currentTheme?.templates) completeSnippets.push(JSON.parse(currentTheme.templates));
 				if(currentTheme?.style) completeStyles.push(`/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.params.id} */\n\n${currentTheme.style}`);
 
 				req.params.id       = currentTheme.theme;
@@ -309,8 +323,9 @@ const api = {
 
 		const returnObj = {
 			// Reverse the order of the arrays so they are listed oldest parent to youngest child.
-			styles   : completeStyles.reverse(),
-			snippets : completeSnippets.reverse()
+			styles    : completeStyles.reverse(),
+			snippets  : completeSnippets.reverse(),
+			templates : completeTemplates.reverse()
 		};
 
 		res.setHeader('Content-Type', 'application/json');

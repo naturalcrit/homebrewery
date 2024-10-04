@@ -315,13 +315,14 @@ app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async(req, res,
 	sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
 	const brew = {
-		shareId  : req.brew.shareId,
-		title    : `CLONE - ${req.brew.title}`,
-		text     : req.brew.text,
-		style    : req.brew.style,
-		renderer : req.brew.renderer,
-		theme    : req.brew.theme,
-		tags     : req.brew.tags,
+		shareId   : req.brew.shareId,
+		title     : `CLONE - ${req.brew.title}`,
+		text      : req.brew.text,
+		style     : req.brew.style,
+		renderer  : req.brew.renderer,
+		theme     : req.brew.theme,
+		tags      : req.brew.tags,
+		templates : req.brew.templates,
 	};
 	req.brew = _.defaults(brew, DEFAULT_BREW);
 
