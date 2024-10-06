@@ -242,6 +242,8 @@ app.get('/user/:username', async (req, res, next)=>{
 		console.log(err);
 	});
 
+	brews.forEach(brew => brew.stubbed = true); //All brews from MongoDB are "stubbed"
+
 	if(ownAccount && req?.account?.googleId){
 		const auth = await GoogleActions.authCheck(req.account, res);
 		let googleBrews = await GoogleActions.listGoogleBrews(auth)
@@ -249,12 +251,12 @@ app.get('/user/:username', async (req, res, next)=>{
 				console.error(err);
 			});
 
+		// If stub matches file from Google, use Google metadata over stub metadata
 		if(googleBrews && googleBrews.length > 0) {
 			for (const brew of brews.filter((brew)=>brew.googleId)) {
 				const match = googleBrews.findIndex((b)=>b.editId === brew.editId);
 				if(match !== -1) {
 					brew.googleId = googleBrews[match].googleId;
-					brew.stubbed = true;
 					brew.pageCount = googleBrews[match].pageCount;
 					brew.renderer = googleBrews[match].renderer;
 					brew.version = googleBrews[match].version;
@@ -263,6 +265,7 @@ app.get('/user/:username', async (req, res, next)=>{
 				}
 			}
 
+			//Remaining unstubbed google brews display current user as author
 			googleBrews = googleBrews.map((brew)=>({ ...brew, authors: [req.account.username] }));
 			brews = _.concat(brews, googleBrews);
 		}
