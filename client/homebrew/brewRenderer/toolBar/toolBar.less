@@ -1,3 +1,5 @@
+@import (less) './client/icons/customIcons.less';
+
 .toolBar {
 	position         : absolute;
 	z-index          : 1;
@@ -13,6 +15,10 @@
 	font-family      : 'Open Sans', sans-serif;
 	color            : #CCCCCC;
 	background-color : #555555;
+	& > *:not(.toggleButton) {
+		opacity: 1;
+		transition: all .2s ease;
+	}
 
 	.group {
 		box-sizing       : border-box;
@@ -38,7 +44,7 @@
 		border         : 1px solid gray;
 		&:focus { outline : 1px solid #D3D3D3; }
 
-		// `.range-input` if generic to all range inputs, or `#zoom-input` if only for zoom slider
+		// `.range-input` if generic to all range inputs, or `#zoom-slider` if only for zoom slider
 		&.range-input {
 			padding      : 2px 0;
 			color        : #D3D3D3;
@@ -73,11 +79,8 @@
 			width        : 4ch;
 			margin-right : 1ch;
 			text-align   : center;
-
 		}
-
 	}
-
 
 	button {
 		box-sizing       : content-box;
@@ -91,14 +94,35 @@
 		font-weight      : unset;
 		color            : inherit;
 		background-color : unset;
-
 		&:hover { background-color : #444444; }
-
 		&:focus { outline : 1px solid #D3D3D3; }
-
 		&:disabled {
 			color            : #777777;
 			background-color : unset !important;
 		}
+		i {
+			font-size:1.2em;
+		}
 	}
+
+	&.hidden {
+		width: 32px;
+		transition: all .3s ease;
+		flex-wrap:nowrap;
+		overflow: hidden;
+		background-color: unset;
+		opacity: .5;
+		& > *:not(.toggleButton) {
+			opacity: 0;
+			transition: all .2s ease;
+		}
+	}
+}
+
+button.toggleButton {
+	z-index : 5;
+	position:absolute;
+	left: 0;
+	width: 32px;
+	min-width: unset;
 }

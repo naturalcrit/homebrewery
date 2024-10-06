@@ -128,7 +128,7 @@ const StringArrayEditor = createClass({
 
 		return <div className='field'>
 			<label>{this.props.label}</label>
-			<div style={{ flex: '1 0' }}>
+			<div style={{ flex: '1 0' }} className='value'>
 				<div className='list'>
 					{valueElements}
 					<div className='input-group'>
