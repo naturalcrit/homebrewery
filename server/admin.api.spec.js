@@ -67,13 +67,11 @@ describe('Tests for admin api', ()=>{
 			jest.spyOn(NotificationModel, 'deleteNotification')
 				.mockImplementationOnce(async (key) => {
 					expect(key).toBe(dismissKey); // Ensure the correct key is passed
-					return { dismissKey }; // Simulate the notification object that was deleted
+					return { message: 'Notification deleted successfully' }; // Simulate the notification object that was deleted
 				});
-		
 			const response = await app
 				.delete(`/admin/notification/delete/${dismissKey}`)
 				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
-		
 			expect(response.status).toBe(200);
 			expect(response.body).toEqual({ message: 'Notification deleted successfully' });
 		});

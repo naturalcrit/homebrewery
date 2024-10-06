@@ -25,7 +25,7 @@ NotificationSchema.statics.addNotification = async function(data) {
 	try {
 		const newNotification = new this(notificationData);
 		const savedNotification = await newNotification.save();
-		return { notification: savedNotification };
+		return savedNotification;
 	} catch (err) {
 		return { message: err.message || 'Error saving notification' };
 	}
@@ -39,7 +39,7 @@ NotificationSchema.statics.deleteNotification = async function(dismissKey) {
 		if(!deletedNotification) {
 			return { message: 'Notification not found' };
 		}
-		return {  message: 'Notification deleted successfully' };  // Update response here
+		return { message: 'Notification deleted successfully' };
 	} catch (err) {
 		return { message: err.message || 'Error deleting notification' };
 	}
