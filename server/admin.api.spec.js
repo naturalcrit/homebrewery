@@ -75,7 +75,7 @@ describe('Tests for admin api', ()=>{
 				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
 		
 			expect(response.status).toBe(200);
-			expect(response.body).toEqual({ success: true, message: 'Notification deleted successfully' });
+			expect(response.body).toEqual({ message: 'Notification deleted successfully' });
 		});
 		
 		
