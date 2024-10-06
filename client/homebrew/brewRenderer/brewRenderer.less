@@ -12,7 +12,7 @@
 			grid-template-columns: repeat(2, auto); 
 			grid-template-rows: repeat(3, auto); 
 			gap: 10px 10px; 
-			justify-content: center;
+			justify-content: flex-start;
 			& .page:first-child {
 				// sets first page on 'right' ('recto') of the preview, as if for a Cover page.  
 				// todo: add a checkbox to toggle this setting
@@ -24,15 +24,10 @@
 			display: flex;
 			flex-wrap: wrap;
 			gap: 10px;
-			justify-content: start;
-			& .page {
-				margin-left: unset;
-				margin-right: unset;
-			}
+			justify-content: flex-start;
 
 		}
 
-		margin : 30px 0px;
 		& > :where(.page) {
 			width         : 215.9mm;
 			height        : 279.4mm;
