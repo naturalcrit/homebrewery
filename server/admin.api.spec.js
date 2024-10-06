@@ -1,6 +1,5 @@
 const supertest = require('supertest');
 
-// Mimic https responses to avoid being redirected all the time
 const app = supertest.agent(require('app.js').app)
 	.set('X-Forwarded-Proto', 'https');
 
@@ -15,7 +14,6 @@ describe('Tests for admin api', ()=>{
 		it('should return list of all notifications', async ()=>{
 			const fakeNotifications = ['a', 'b'];
 
-			// Change 'getAll' function to just return the above array instead of actually using the database
 			jest.spyOn(NotificationModel, 'getAll')
 				.mockImplementationOnce(()=>fakeNotifications);
 
@@ -35,17 +33,15 @@ describe('Tests for admin api', ()=>{
 				stopAt     : new Date().toISOString(),
 				dismissKey : 'testKey'
 			  };
-			  
 
 			const savedNotification = {
 				...inputNotification,
-				_id       : expect.any(String), // Don't care what _id is, just that it added one
-				createdAt : expect.any(String), // Don't care what date is, just that it added it
-				startAt   : inputNotification.startAt, // Convert to json to match the format coming from mongo
+				_id       : expect.any(String),
+				createdAt : expect.any(String),
+				startAt   : inputNotification.startAt,
 				stopAt    : inputNotification.stopAt,
 			};
 
-			//Change 'save' function to just return itself instead of actually interacting with the database
 			jest.spyOn(NotificationModel.prototype, 'save')
 				.mockImplementationOnce(function() {
 					return Promise.resolve(this);
@@ -60,22 +56,19 @@ describe('Tests for admin api', ()=>{
 			expect(response.body).toEqual(savedNotification);
 		});
 
-		it('should delete a notification based on its dismiss key', async () => {
+		it('should delete a notification based on its dismiss key', async ()=>{
 			const dismissKey = 'testKey';
-		
-			// Mock findOneAndDelete to simulate a successful deletion
 			jest.spyOn(NotificationModel, 'deleteNotification')
-				.mockImplementationOnce(async (key) => {
-					expect(key).toBe(dismissKey); // Ensure the correct key is passed
-					return { message: 'Notification deleted successfully' }; // Simulate the notification object that was deleted
+				.mockImplementationOnce(async (key)=>{
+					expect(key).toBe(dismissKey);
+					return { message: 'Notification deleted successfully' };
 				});
 			const response = await app
 				.delete(`/admin/notification/delete/${dismissKey}`)
 				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
+
 			expect(response.status).toBe(200);
 			expect(response.body).toEqual({ message: 'Notification deleted successfully' });
 		});
-		
-		
 	});
 });
