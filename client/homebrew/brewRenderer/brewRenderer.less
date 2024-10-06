@@ -3,10 +3,11 @@
 .brewRenderer {
 	overflow-y    : scroll;
 	will-change   : transform;
-	padding-top   : 30px;
+	padding   : 60px 0px;
+	&:has(.facing, .flow) {
+		padding : 60px 30px;
+	}
 	:where(.pages) {
-		margin : 30px 30px;
-
 		&.facing {
 			display: grid; 
 			grid-template-columns: repeat(2, auto); 
