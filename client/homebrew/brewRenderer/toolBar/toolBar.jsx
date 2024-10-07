@@ -12,6 +12,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	const [zoomLevel, setZoomLevel] = useState(100);
 	const [pageNum, setPageNum] = useState(currentPage);
 	const [arrangement, setArrangement] = useState('single');
+	const [startOnRight, setStartOnRight] = useState(true);
 	const [toolsVisible, setToolsVisible] = useState(true);
 	const modes = ['single', 'facing', 'flow'];
 
@@ -31,8 +32,11 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 		if(pagesContainer) {
 			modes.forEach((mode)=>pagesContainer.classList.remove(mode));
 			pagesContainer.classList.add(arrangement);
+			['recto', 'verso'].forEach((leaf)=>pagesContainer.classList.remove(leaf));
+			pagesContainer.classList.add(startOnRight ? 'recto' : 'verso');
 		}
 	}, [arrangement]);
+	}, [arrangement, startOnRight]);
 
 
 	const handleZoomButton = (zoom)=>{
