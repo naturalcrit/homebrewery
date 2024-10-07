@@ -21,20 +21,23 @@ const GARBAGE_COLLECT_DELAY = global.config?.historyData?.GARBAGE_COLLECT_DELAY 
 
 
 function getKeyBySlot(brew, slot){
+	// Return a string representing the key for this brew and history slot
 	return `${HISTORY_PREFIX}-${brew.shareId}-${slot}`;
 };
 
-function getVersionBySlot(brew, slot){
-	// Read stored brew data
-	// - If it exists, parse data to object
-	// - If it doesn't exist, pass default object
-	const key = getKeyBySlot(brew, slot);
-	const storedVersion = IDB.get(key);
-	const output = storedVersion ? storedVersion : { expireAt: '2000-01-01T00:00:00.000Z', shareId: brew.shareId, noData: true };
-	return output;
-};
+// function getVersionBySlot(brew, slot){
+// 	// Read stored brew data
+// 	// - If it exists, parse data to object
+// 	// - If it doesn't exist, pass default object
+// 	const key = getKeyBySlot(brew, slot);
+// 	const storedVersion = IDB.get(key);
+// 	const output = storedVersion ? storedVersion : { expireAt: '2000-01-01T00:00:00.000Z', shareId: brew.shareId, noData: true };
+// 	return output;
+// };
 
 function parseBrewForStorage(brew, slot = 0) {
+	// Strip out unneeded object properties
+	// Returns an array of [ key, brew ]
 	const archiveBrew = {
 		title    : brew.title,
 		text     : brew.text,
@@ -53,8 +56,8 @@ function parseBrewForStorage(brew, slot = 0) {
 }
 
 
-export async function historyExists(brew){
-	console.log('HISTORY CHECK');
+export async function historyCheck(brew){
+	if(!IDB) return false;
 	const historyExists = await IDB.keys()
 		.then((keys)=>{
 			return [...keys].some((key)=>{
@@ -62,7 +65,8 @@ export async function historyExists(brew){
 			});
 		})
 		.catch(()=>{return false;});
-	console.log('HISTORY STATE:', historyExists);
+
+	return historyExists;
 }
 
 export async function loadHistory(brew){
@@ -70,12 +74,13 @@ export async function loadHistory(brew){
 
 	const historyKeys = [];
 
-	// Load data from local storage to History object
+	// Create array of all history keys
 	for (let i = 1; i <= HISTORY_SLOTS; i++){
 		historyKeys.push(getKeyBySlot(brew, i));
 	};
 
 	const history = [];
+	// Load all keys from IDB at once
 	await IDB.getMany(historyKeys)
 				.then((dataArray)=>{
 					return dataArray.forEach((data)=>{
@@ -94,22 +99,20 @@ export async function loadHistory(brew){
 export async function updateHistory(brew) {
 	const history = await loadHistory(brew);
 
-	console.log('DATA:', history);
-
 	// Walk each version position
 	for (let slot = HISTORY_SLOTS - 1; slot >= 0; slot--){
-		console.log('SLOT #:', slot, history[slot]);
 		const storedVersion = history[slot];
 
 		// If slot has expired, update all lower slots and break
 		if(new Date() >= new Date(storedVersion.expireAt)){
+
+			// Create array of arrays : [ [key1, value1], [key2, value2], ..., [keyN, valueN] ]
+			// to pass to IDB.setMany
 			const historyUpdate = [];
 
-			for (let updateSlot = slot - 1; updateSlot > 0; updateSlot--){
-				console.log('CHECK DATA IN SLOT #:', updateSlot);
+			for (let updateSlot = slot; updateSlot > 0; updateSlot--){
 				// Move data from updateSlot to updateSlot + 1
 				if(!history[updateSlot - 1]?.noData) {
-					console.log('UPDATE SLOT #:', updateSlot - 1, '>', updateSlot);
 					historyUpdate.push(parseBrewForStorage(history[updateSlot - 1], updateSlot + 1));
 				}
 			};
@@ -117,23 +120,12 @@ export async function updateHistory(brew) {
 			// Update the most recent brew
 			historyUpdate.push(parseBrewForStorage(brew, 1));
 
-			console.log('HISTORY UPDATE OBJECT:', historyUpdate);
 			IDB.setMany(historyUpdate);
 
 			// Break out of data checks because we found an expired value
 			break;
 		}
 	};
-};
-
-export function getHistoryItems(brew){
-	const historyArray = [];
-
-	for (let i = 1; i <= HISTORY_SLOTS; i++){
-		historyArray.push(getVersionBySlot(brew, i));
-	}
-
-	return historyArray;
 };
 
 export function versionHistoryGarbageCollection(){

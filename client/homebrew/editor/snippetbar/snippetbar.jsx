@@ -5,7 +5,7 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
-import { getHistoryItems, historyExists } from '../../utils/versionHistory.js';
+import { historyCheck, loadHistory } from '../../utils/versionHistory.js';
 
 //Import all themes
 const ThemeSnippets = {};
@@ -50,30 +50,31 @@ const Snippetbar = createClass({
 			renderer      : this.props.renderer,
 			themeSelector : false,
 			snippets      : [],
-			historyExists : false
+			historyExists : false,
+			showHistory   : false
 		};
 	},
 
-	componentDidMount : async function() {
+	componentDidMount : async function(prevState) {
 		const snippets = this.compileSnippets();
 		this.setState({
 			snippets : snippets
 		});
 	},
 
-	componentDidUpdate : async function(prevProps) {
+	componentDidUpdate : async function(prevProps, prevState) {
 		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.snippetBundle != this.props.snippetBundle) {
 			this.setState({
 				snippets : this.compileSnippets()
 			});
 		};
 
-		if(historyExists(this.props.brew) != this.state.historyExists){
+		const checkHistoryExists = (await historyCheck(this.props.brew)) ?? false;
+		if(checkHistoryExists != prevState.historyExists){
 			this.setState({
-				historyExists : !this.state.historyExists
+				historyExists : checkHistoryExists
 			});
-		};
-
+		}
 	},
 
 	mergeCustomizer : function(oldValue, newValue, key) {
@@ -151,30 +152,34 @@ const Snippetbar = createClass({
 		return this.props.updateBrew(item);
 	},
 
-	renderHistoryItems : function() {
-		const historyItems = getHistoryItems(this.props.brew);
+	renderHistoryItems : async function() {
+		if(!this.state.historyExists || !this.state.showHistory) return;
 
-		return <div className='dropdown'>
-			{_.map(historyItems, (item, index)=>{
-				if(!item.savedAt) return;
+		const historyItems = await loadHistory(this.props.brew);
+		console.log('renderHistoryItems', historyItems);
+		return;
 
-				const saveTime = new Date(item.savedAt);
-				const diffMs = new Date() - saveTime;
-				const diffSecs = Math.floor(diffMs / 1000);
+		// return <div className='dropdown'>
+		// 	{_.map(historyItems, (item, index)=>{
+		// 		if(!item[1].savedAt) return;
 
-				let diffString = `about ${diffSecs} seconds ago`;
+		// 		const saveTime = new Date(item[1].savedAt);
+		// 		const diffMs = new Date() - saveTime;
+		// 		const diffSecs = Math.floor(diffMs / 1000);
 
-				if(diffSecs > 60) diffString = `about ${Math.floor(diffSecs / 60)} minutes ago`;
-				if(diffSecs > (60 * 60)) diffString = `about ${Math.floor(diffSecs / (60 * 60))} hours ago`;
-				if(diffSecs > (24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (24 * 60 * 60))} days ago`;
-				if(diffSecs > (7 * 24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (7 * 24 * 60 * 60))} weeks ago`;
+		// 		let diffString = `about ${diffSecs} seconds ago`;
 
-				return <div className='snippet' key={index} onClick={()=>{this.replaceContent(item);}} >
-					<i className={`fas fa-${index+1}`} />
-					<span className='name' title={saveTime.toISOString()}>v{item.version} : {diffString}</span>
-				</div>;
-			})}
-		</div>;
+		// 		if(diffSecs > 60) diffString = `about ${Math.floor(diffSecs / 60)} minutes ago`;
+		// 		if(diffSecs > (60 * 60)) diffString = `about ${Math.floor(diffSecs / (60 * 60))} hours ago`;
+		// 		if(diffSecs > (24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (24 * 60 * 60))} days ago`;
+		// 		if(diffSecs > (7 * 24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (7 * 24 * 60 * 60))} weeks ago`;
+
+		// 		return <div className='snippet' key={index} onClick={()=>{this.replaceContent(item);}} >
+		// 			<i className={`fas fa-${index+1}`} />
+		// 			<span className='name' title={saveTime.toISOString()}>v{item.version} : {diffString}</span>
+		// 		</div>;
+		// 	})}
+		// </div>;
 	},
 
 	renderEditorButtons : function(){
@@ -199,7 +204,7 @@ const Snippetbar = createClass({
 		return <div className='editors'>
 			<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`} >
 				<i className='fas fa-clock-rotate-left' />
-				{this.state.historyExists && this.renderHistoryItems() }
+				{/* { this.renderHistoryItems() } */}
 			</div>
 			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
 				onClick={this.props.undo} >
