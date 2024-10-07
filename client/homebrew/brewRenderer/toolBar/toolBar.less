@@ -57,7 +57,7 @@
 				outline          : none;
 			}
 
-			&:hover::after {
+			&[value]:hover::after {
 				position         : absolute;
 				bottom           : -30px;
 				left             : 50%;
@@ -94,6 +94,11 @@
 		font-weight      : unset;
 		color            : inherit;
 		background-color : unset;
+
+		&:not(button:has(i, svg)) {
+			padding: 0 8px;
+		}
+
 		&:hover { background-color : #444444; }
 		&:focus { outline : 1px solid #D3D3D3; }
 		&:disabled {
