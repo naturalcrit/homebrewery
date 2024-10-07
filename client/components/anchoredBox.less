@@ -1,0 +1,57 @@
+.anchored-trigger {
+	anchor-name: --view-settings;
+	&.active {
+		background-color: #444444;
+	}
+
+}
+.anchored-box {
+	position-anchor: --view-settings;
+	position:absolute;
+	inset-block-start: anchor(bottom);
+	justify-self: anchor-center;
+	visibility: hidden;
+	&.active {
+		visibility: visible;
+	}
+	padding          : 15px;
+	color            : white;
+	background-color : #555555;
+	border-radius    : 5px;
+	font-size        : .8em;
+	margin-top       : 10px;
+
+	h1 {
+		border-bottom: 1px solid currentColor;
+		margin-bottom: 0.5em;
+		padding-bottom: 0.3em;
+	}
+
+	h2 {
+		color: lightgray;
+		border-bottom: 1px solid currentColor;
+		margin: 1em 0 0.5em 0;
+		padding-bottom: 0.3em;
+	}
+
+	label {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 6px;
+
+	}
+
+	&:before {
+		content: "";
+		width: 0px;
+		height: 0px;
+		position: absolute;
+		border: 10px solid transparent;
+		border-bottom: 10px solid #555555;
+		left: 50%;
+		transform: translateX(-50%);
+		top: -20px;
+		pointer-events: none;
+	  }
+}

@@ -3,16 +3,19 @@ const React = require('react');
 const { useState, useEffect } = React;
 const _ = require('lodash');
 
+import AnchoredBox from '../../../components/anchoredBox.jsx';
+// import * as ZoomIcons from '../../../icons/icon-components/zoomIcons.jsx';
 
 const MAX_ZOOM = 300;
 const MIN_ZOOM = 10;
 
-const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
+const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleChange })=>{
 
 	const [zoomLevel, setZoomLevel] = useState(100);
 	const [pageNum, setPageNum] = useState(currentPage);
 	const [arrangement, setArrangement] = useState('single');
 	const [startOnRight, setStartOnRight] = useState(true);
+	const [pagesStyle, setPagesStyle] = useState({});
 	const [toolsVisible, setToolsVisible] = useState(true);
 	const modes = ['single', 'facing', 'flow'];
 
@@ -25,6 +28,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	}, [currentPage]);;
 
 	// update display arrangement when arrangement state is changed.
+	// todo: do this the 'react' way, without querying the dom.
 	useEffect(()=>{
 		const iframe = document.getElementById('BrewRenderer');
 		const pagesContainer = iframe?.contentWindow?.document.querySelector('.pages');
@@ -35,7 +39,6 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 			['recto', 'verso'].forEach((leaf)=>pagesContainer.classList.remove(leaf));
 			pagesContainer.classList.add(startOnRight ? 'recto' : 'verso');
 		}
-	}, [arrangement]);
 	}, [arrangement, startOnRight]);
 
 
@@ -152,6 +155,19 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				>
 					{arrangement}
 				</button>
+				<AnchoredBox id='view-mode-options' className='tool' title='Options'>
+					<label title='Modify the horizontal space between pages.'>Column gap<input type='range' min={0} max={200} className='range-input' onChange={(evt)=>onStyleChange({ columnGap: `${evt.target.value}px` })} /></label>
+					<label title='Modify the vertical space between rows of pages.'>Row gap<input type='range' min={0} max={200} className='range-input' onChange={(evt)=>onStyleChange({ rowGap: `${evt.target.value}px` })} /></label>
+
+					<h2>Facing</h2>
+					<label title='Start 1st page on the right side, such as if you have cover page.'>Start on right
+						<input type='checkbox'
+							onChange={()=>setStartOnRight(!startOnRight)}
+							checked={startOnRight}
+							disabled={arrangement !== 'facing' ? true : false}
+							title={arrangement !== 'facing' ? 'Switch to Facing to enable toggle.' : null} />
+					</label>
+				</AnchoredBox>
 			</div>
 
 			<div className='group'>
