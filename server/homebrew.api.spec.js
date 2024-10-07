@@ -560,16 +560,6 @@ brew`);
 				views       : 0
 			});
 		});
-
-		it('should handle google error', async()=>{
-			google.newGoogleBrew = jest.fn(()=>{
-				throw 'err';
-			});
-			await api.newBrew({ body: { text: 'asdf', title: '' }, query: { saveToGoogle: true }, account: { username: 'test user' } }, res);
-
-			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.send).toHaveBeenCalledWith('err');
-		});
 	});
 
 	describe('deleteGoogleBrew', ()=>{

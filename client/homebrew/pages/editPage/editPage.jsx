@@ -32,7 +32,7 @@ import { updateHistory, versionHistoryGarbageCollection } from '../../utils/vers
 
 const googleDriveIcon = require('../../googleDrive.svg');
 
-const SAVE_TIMEOUT = 3000;
+const SAVE_TIMEOUT = 16000;
 
 const EditPage = createClass({
 	displayName     : 'EditPage',

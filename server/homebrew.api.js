@@ -9,6 +9,7 @@ const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
 const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
+const rateLimit = require('express-rate-limit');
 
 const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
 
@@ -242,11 +243,8 @@ const api = {
 
 		let googleId, saved;
 		if(saveToGoogle) {
-			googleId = await api.newGoogleBrew(req.account, newHomebrew, res)
-				.catch((err)=>{
-					console.error(err);
-					res.status(err?.status || err?.response?.status || 500).send(err?.message || err);
-				});
+			googleId = await api.newGoogleBrew(req.account, newHomebrew, res);
+
 			if(!googleId) return;
 			api.excludeStubProps(newHomebrew);
 			newHomebrew.googleId = googleId;
@@ -351,19 +349,13 @@ const api = {
 			brew.googleId = undefined;
 		} else if(!brew.googleId && saveToGoogle) {
 			// If we don't have a google id and the user wants to save to google, create the google brew and set the google id on the brew
-			brew.googleId = await api.newGoogleBrew(req.account, api.excludeGoogleProps(brew), res)
-				.catch((err)=>{
-					console.error(err);
-					res.status(err.status || err.response.status).send(err.message || err);
-				});
+			brew.googleId = await api.newGoogleBrew(req.account, api.excludeGoogleProps(brew), res);
+
 			if(!brew.googleId) return;
 		} else if(brew.googleId) {
 			// If the google id exists and no other actions are being performed, update the google brew
-			const updated = await GoogleActions.updateGoogleBrew(api.excludeGoogleProps(brew))
-				.catch((err)=>{
-					console.error(err);
-					res.status(err?.response?.status || 500).send(err);
-				});
+			const updated = await api.updateGoogleBrew(req.account, api.excludeGoogleProps(brew), res, req);
+
 			if(!updated) return;
 		}
 
@@ -406,6 +398,15 @@ const api = {
 
 		res.status(200).send(saved);
 	},
+
+	updateGoogleBrew : async (account, brew, res, req)=>{
+		//let oAuth2Client;
+		//if(account.googleId)
+		//	oAuth2Client = GoogleActions.authCheck(account, res);
+
+		return await GoogleActions.updateGoogleBrew(brew, undefined, req.ip);
+	},
+
 	deleteGoogleBrew : async (account, id, editId, res)=>{
 		const auth = await GoogleActions.authCheck(account, res);
 		await GoogleActions.deleteGoogleBrew(auth, id, editId);

@@ -4,7 +4,7 @@ const _     = require('lodash');
 
 import Dialog from '../../../components/dialog.jsx';
 
-const DISMISS_KEY = 'dismiss_notification04-09-24';
+const DISMISS_KEY = 'dismiss_notification01-10-24';
 const DISMISS_BUTTON = <i className='fas fa-times dismiss' />;
 
 const NotificationPopup = ()=>{
@@ -15,6 +15,34 @@ const NotificationPopup = ()=>{
 			<small>This website is always improving and we are still adding new features and squashing bugs. Keep the following in mind:</small>
 		</div>
 		<ul>
+			<li key='ThrottlingError' style={{
+					backgroundColor: '#910000',
+					margin: '-10px -10px -10px -20px',
+					padding: '10px 10px 10px 20px',
+					fontSize: '1.0em'
+				}}>
+				<em>Known issue with saving/creating Google Drive files</em><br />
+				Dear users. The <a href="https://github.com/naturalcrit/homebrewery/issues/3770">
+				issue with saving to Google Drive</a> has resurfaced as of Oct 1, 2024 22:00 UTC.
+				<br></br><br></br>
+				Earlier we submitted a bug report to Google and have all but confirmed the issue
+				lies on Google's end and the disruption has been affecting multiple other
+				organizations besides us. Unfortunately, it means reliable interaction with
+				Google remains out of our control until they can resolve their issue.
+				<br></br><br></br>
+				Brews saved to Google Drive are <em>not lost</em> and can still be viewed, just not updated.
+				You can also access them via your Google Drive interface in the <code>/Hombrewery</code> folder.
+				<br></br><br></br>
+				If you need to urgently edit documents, you can detatch them from your Google Drive
+				by transferring them to our Homebrewery storage. To do this, click the colored Google Drive
+				icon next to the save button when on an edit page; you can transfer them back later,
+				but this should allow you to edit while this issue is ongoing.
+				<br></br><br></br>
+				If you are experiencing errors creating new documents, you can similarly change your
+				account settings to create new brews by default in the Homebrewery storage. Click
+				your username and then "account", then change the "default save location".
+			</li>
+
 			<li key='Vault'>
 				<em>Search brews with our new page!</em><br />
 				We have been working very hard in making this possible, now you can share your work and look at it in the new <a href='/vault'>Vault</a> page!
