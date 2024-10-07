@@ -13,6 +13,9 @@ const DEFAULT_HISTORY_SAVE_DELAYS = {
 	'5' : 2 * 24 * 60
 };
 
+const HB_DB = 'HOMEBREWERY-DB';
+const HB_STORE = 'HISTORY';
+
 const DEFAULT_GARBAGE_COLLECT_DELAY = 28 * 24 * 60;
 
 let HISTORY_SAVE_DELAYS = DEFAULT_HISTORY_SAVE_DELAYS;
@@ -59,9 +62,13 @@ function parseBrewForStorage(brew, slot = 0) {
 }
 
 
+async function createHBStore(){
+	return await IDB.createStore(HB_DB, HB_STORE);
+}
+
 export async function historyCheck(brew){
 	if(!IDB) return false;
-	const historyExists = await IDB.keys()
+	const historyExists = await IDB.keys(await createHBStore())
 		.then((keys)=>{
 			return [...keys].some((key)=>{
 				return key.startsWith(`${HISTORY_PREFIX}-${brew.shareId}`);
@@ -84,7 +91,7 @@ export async function loadHistory(brew){
 
 	const history = [];
 	// Load all keys from IDB at once
-	await IDB.getMany(historyKeys)
+	await IDB.getMany(historyKeys, await createHBStore())
 				.then((dataArray)=>{
 					return dataArray.forEach((data)=>{
 						history.push(data ?? DEFAULT_HISTORY_ITEM);
@@ -123,7 +130,7 @@ export async function updateHistory(brew) {
 			// Update the most recent brew
 			historyUpdate.push(parseBrewForStorage(brew, 1));
 
-			IDB.setMany(historyUpdate);
+			IDB.setMany(historyUpdate, await createHBStore());
 
 			// Break out of data checks because we found an expired value
 			break;
@@ -134,7 +141,7 @@ export async function updateHistory(brew) {
 export async function versionHistoryGarbageCollection(){
 	if(global.config?.history?.GARBAGE_COLLECT_DELAY != GARBAGE_COLLECT_DELAY) GARBAGE_COLLECT_DELAY = global.config?.history?.GARBAGE_COLLECT_DELAY;
 
-	await IDB.entries()
+	await IDB.entries(await createHBStore())
 		.then((entries)=>{
 			entries.forEach((entry)=>{
 				const key = entry[0];
