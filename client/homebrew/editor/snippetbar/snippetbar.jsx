@@ -1,4 +1,4 @@
-/*eslint max-lines: ["warn", {"max": 250, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 350, "skipBlankLines": true, "skipComments": true}]*/
 require('./snippetbar.less');
 const React = require('react');
 const createClass = require('create-react-class');
