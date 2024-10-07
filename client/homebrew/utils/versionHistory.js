@@ -143,17 +143,17 @@ export async function versionHistoryGarbageCollection(){
 
 	await IDB.entries(await createHBStore())
 		.then((entries)=>{
-			entries.forEach((entry)=>{
+			entries.forEach(async (entry)=>{
 				const key = entry[0];
 				const value = entry[1];
 
-				if(key.startsWith(`${HISTORY_PREFIX}`)) {
-					const collectAt = new Date(value.savedAt);
-					collectAt.setMinutes(collectAt.getMinutes() + GARBAGE_COLLECT_DELAY);
-					if(new Date() > collectAt){
-						IDB.del(key);
-					};
-				}
+				// if(key.startsWith(`${HISTORY_PREFIX}`)) {	// This check was to make sure we were only selecting the history keys, should be unnecessary
+				const collectAt = new Date(value.savedAt);
+				collectAt.setMinutes(collectAt.getMinutes() + GARBAGE_COLLECT_DELAY);
+				if(new Date() > collectAt){
+					IDB.del(key, await createHBStore());
+				};
+				// }
 			});
 		});
 };
