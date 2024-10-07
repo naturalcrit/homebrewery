@@ -15,9 +15,8 @@ const DEFAULT_HISTORY_SAVE_DELAYS = {
 
 const DEFAULT_GARBAGE_COLLECT_DELAY = 28 * 24 * 60;
 
-const HISTORY_SAVE_DELAYS = global.config?.historyData?.HISTORY_SAVE_DELAYS ?? DEFAULT_HISTORY_SAVE_DELAYS;
-const GARBAGE_COLLECT_DELAY = global.config?.historyData?.GARBAGE_COLLECT_DELAY ?? DEFAULT_GARBAGE_COLLECT_DELAY;
-
+let HISTORY_SAVE_DELAYS = DEFAULT_HISTORY_SAVE_DELAYS;
+let GARBAGE_COLLECT_DELAY = DEFAULT_GARBAGE_COLLECT_DELAY;
 
 
 function getKeyBySlot(brew, slot){
@@ -47,6 +46,10 @@ function parseBrewForStorage(brew, slot = 0) {
 		savedAt  : brew?.savedAt || new Date(),
 		expireAt : new Date()
 	};
+
+	if(global.config?.history?.HISTORY_SAVE_DELAYS){
+		HISTORY_SAVE_DELAYS = global.config?.history?.HISTORY_SAVE_DELAYS;
+	}
 
 	archiveBrew.expireAt.setMinutes(archiveBrew.expireAt.getMinutes() + HISTORY_SAVE_DELAYS[slot]);
 
@@ -128,17 +131,22 @@ export async function updateHistory(brew) {
 	};
 };
 
-export function versionHistoryGarbageCollection(){
-	console.log('Version History Garbage Collection');
-	// Object.keys(IDB)
-	// 	.filter((key)=>{
-	// 		return key.startsWith(HISTORY_PREFIX);
-	// 	})
-	// 	.forEach((key)=>{
-	// 		const collectAt = new Date(JSON.parse(IDB.get(key)).savedAt);
-	// 		collectAt.setMinutes(collectAt.getMinutes() + GARBAGE_COLLECT_DELAY);
-	// 		if(new Date() > collectAt){
-	// 			IDB.removeItem(key);
-	// 		}
-	// 	});
+export async function versionHistoryGarbageCollection(){
+	if(global.config?.history?.GARBAGE_COLLECT_DELAY != GARBAGE_COLLECT_DELAY) GARBAGE_COLLECT_DELAY = global.config?.history?.GARBAGE_COLLECT_DELAY;
+
+	await IDB.entries()
+		.then((entries)=>{
+			entries.forEach((entry)=>{
+				const key = entry[0];
+				const value = entry[1];
+
+				if(key.startsWith(`${HISTORY_PREFIX}`)) {
+					const collectAt = new Date(value.savedAt);
+					collectAt.setMinutes(collectAt.getMinutes() + GARBAGE_COLLECT_DELAY);
+					if(new Date() > collectAt){
+						IDB.del(key);
+					};
+				}
+			});
+		});
 };
