@@ -47,7 +47,8 @@ const NewPage = createClass({
 			currentEditorViewPageNum   : 1,
 			currentEditorCursorPageNum : 1,
 			currentBrewRendererPageNum : 1,
-			themeBundle                : {}
+			themeBundle                : {},
+			userTemplates              : brew.templates
 		};
 	},
 
@@ -235,6 +236,7 @@ const NewPage = createClass({
 						userThemes={this.props.userThemes}
 						snippetBundle={this.state.themeBundle.snippets}
 						masterPageBundle={this.state.themeBundle.templates}
+						userTemplates={this.state.userTemplates}
 						onCursorPageChange={this.handleEditorCursorPageChange}
 						onViewPageChange={this.handleEditorViewPageChange}
 						currentEditorViewPageNum={this.state.currentEditorViewPageNum}

@@ -37,7 +37,8 @@ const HomePage = createClass({
 			currentEditorViewPageNum   : 1,
 			currentEditorCursorPageNum : 1,
 			currentBrewRendererPageNum : 1,
-			themeBundle                : {}
+			themeBundle                : {},
+			userTemplates              : this.props.brew.templates
 		};
 	},
 
@@ -111,6 +112,7 @@ const HomePage = createClass({
 						showEditButtons={false}
 						snippetBundle={this.state.themeBundle.snippets}
 						masterPageBundle={this.state.themeBundle.templates}
+						userTemplates={this.state.userTemplates}
 						onCursorPageChange={this.handleEditorCursorPageChange}
 						onViewPageChange={this.handleEditorViewPageChange}
 						currentEditorViewPageNum={this.state.currentEditorViewPageNum}

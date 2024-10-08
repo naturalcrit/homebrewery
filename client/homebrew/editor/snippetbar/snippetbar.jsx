@@ -5,6 +5,7 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
+import {templatesToSnippet} from '../../../../shared/helpers.js';
 import { getHistoryItems, historyExists } from '../../utils/versionHistory.js';
 
 //Import all themes
@@ -41,7 +42,7 @@ const Snippetbar = createClass({
 			updateEditorTheme : ()=>{},
 			cursorPos         : {},
 			snippetBundle     : [],
-			masterPagesBundle : [],
+			templateBundle    : [],
 			updateBrew        : ()=>{}
 		};
 	},
@@ -64,7 +65,7 @@ const Snippetbar = createClass({
 
 	componentDidUpdate : async function(prevProps) {
 		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme
-				|| prevProps.snippetBundle != this.props.snippetBundle || prevProps.masterPagesBundle != this.props.masterPagesBundle) {
+				|| prevProps.snippetBundle != this.props.snippetBundle || prevProps.templateBundle != this.props.templateBundle) {
 			this.setState({
 				snippets : this.compileSnippets()
 			});
@@ -75,7 +76,6 @@ const Snippetbar = createClass({
 				historyExists : !this.state.historyExists
 			});
 		};
-	
 	},
 
 	mergeCustomizer : function(oldValue, newValue, key) {
@@ -85,36 +85,11 @@ const Snippetbar = createClass({
 		}
 	},
 
-	convertMasterPagesToSnippets : function (){
-		let mpAsSnippets = [];
-		for (let themes of the.props.masterPagesBundle) {
-			const pages = [];
-			for (let mp of themes.pages) {
-				pages.push({
-					name : mp.name,
-					icon : '',
-					gen  : `\n\page ${mp.name}\n`,
-				});
-			}
-			mpAsSnippets.push({
-				name     : themes.name,
-				icon     : '',
-				gen      : '',
-				snippets : pages
-			});
-		}
-		return {
-			groupName : 'Templates',
-			icon      : 'fas fa-pencil-alt',
-			view      : 'text',
-			snippets  : mpAsSnippets
-		};
-	},
-
 	compileSnippets : function() {
 		let compiledSnippets = [];
 
-		let oldSnippets = _.mergeWith(_.keyBy(compiledSnippets, 'groupName'), this.convertMasterPagesToSnippets, this.mergeCustomizer);
+		console.log('Start compiledSnippets');
+		let oldSnippets = _.keyBy(compiledSnippets, 'groupName');
 
 		for (let snippets of this.props.snippetBundle) {
 			if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name
@@ -125,6 +100,19 @@ const Snippetbar = createClass({
 
 			oldSnippets = _.keyBy(compiledSnippets, 'groupName');
 		}
+		console.log(this.props.brew.title);
+		console.log(this.props.brew.templates);
+		console.log(this.props.templateBundle);
+
+		const templateAsSnippets = templatesToSnippet(this.props.brew.title, this.props.brew.templates, this.props.templateBundle);
+
+		console.log(templateAsSnippets);
+
+		compiledSnippets.push(templateAsSnippets);
+
+		console.log(compiledSnippets);
+		console.log('Stop compiledSnippets');
+
 		return compiledSnippets;
 	},
 

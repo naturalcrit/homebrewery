@@ -62,6 +62,7 @@ const EditPage = createClass({
 			currentBrewRendererPageNum : 1,
 			displayLockMessage         : this.props.brew.lock || false,
 			themeBundle                : {},
+			userTemplates              : this.props.brew.templates
 		};
 	},
 
@@ -442,7 +443,8 @@ const EditPage = createClass({
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
 						snippetBundle={this.state.themeBundle.snippets}
-						masterPageBundle={this.state.themeBundle.templates}
+						templateBundle={this.state.themeBundle.templates}
+						userTemplates={this.state.userTemplates}
 						updateBrew={this.updateBrew}
 						onCursorPageChange={this.handleEditorCursorPageChange}
 						onViewPageChange={this.handleEditorViewPageChange}

@@ -301,10 +301,11 @@ const api = {
 
 				currentTheme = req.brew;
 				splitTextStyleAndMetadata(currentTheme);
+				console.log(currentTheme.templates);
 
 				// If there is anything in the snippets or style members, append them to the appropriate array
 				if(currentTheme?.snippets) completeSnippets.push(JSON.parse(currentTheme.snippets));
-				if(currentTheme?.templates) completeSnippets.push(JSON.parse(currentTheme.templates));
+				if(currentTheme?.templates) completeTemplates.push(currentTheme.templates);
 				if(currentTheme?.style) completeStyles.push(`/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.params.id} */\n\n${currentTheme.style}`);
 
 				req.params.id       = currentTheme.theme;
