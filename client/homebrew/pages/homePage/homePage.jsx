@@ -110,6 +110,7 @@ const HomePage = createClass({
 						renderer={this.state.brew.renderer}
 						showEditButtons={false}
 						snippetBundle={this.state.themeBundle.snippets}
+						masterPageBundle={this.state.themeBundle.templates}
 						onCursorPageChange={this.handleEditorCursorPageChange}
 						onViewPageChange={this.handleEditorViewPageChange}
 						currentEditorViewPageNum={this.state.currentEditorViewPageNum}

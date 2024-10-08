@@ -41,6 +41,7 @@ const Snippetbar = createClass({
 			updateEditorTheme : ()=>{},
 			cursorPos         : {},
 			snippetBundle     : [],
+			masterPagesBundle : [],
 			updateBrew        : ()=>{}
 		};
 	},
@@ -62,7 +63,8 @@ const Snippetbar = createClass({
 	},
 
 	componentDidUpdate : async function(prevProps) {
-		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.snippetBundle != this.props.snippetBundle) {
+		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme
+				|| prevProps.snippetBundle != this.props.snippetBundle || prevProps.masterPagesBundle != this.props.masterPagesBundle) {
 			this.setState({
 				snippets : this.compileSnippets()
 			});
@@ -70,23 +72,49 @@ const Snippetbar = createClass({
 
 		if(historyExists(this.props.brew) != this.state.historyExists){
 			this.setState({
-					historyExists : !this.state.historyExists
+				historyExists : !this.state.historyExists
 			});
 		};
 	
 	},
 
-	mergeCustomizer : function(oldValue, newValue, key) {
-		if(key == 'snippets') {
+	mergeCustomizer : function(oldValue, newValue, key) {
+		if(key == 'snippets') {
 			const result = _.reverse(_.unionBy(_.reverse(newValue), _.reverse(oldValue), 'name')); // Join snippets together, with preference for the child theme over the parent theme
 			return result.filter((snip)=>snip.gen || snip.subsnippets);
 		}
 	},
 
+	convertMasterPagesToSnippets : function (){
+		let mpAsSnippets = [];
+		for (let themes of the.props.masterPagesBundle) {
+			const pages = [];
+			for (let mp of themes.pages) {
+				pages.push({
+					name : mp.name,
+					icon : '',
+					gen  : `\n\page ${mp.name}\n`,
+				});
+			}
+			mpAsSnippets.push({
+				name     : themes.name,
+				icon     : '',
+				gen      : '',
+				snippets : pages
+			});
+		}
+		return {
+			groupName : 'Templates',
+			icon      : 'fas fa-pencil-alt',
+			view      : 'text',
+			snippets  : mpAsSnippets
+		};
+	},
+
 	compileSnippets : function() {
 		let compiledSnippets = [];
 
-		let oldSnippets = _.keyBy(compiledSnippets, 'groupName');
+		let oldSnippets = _.mergeWith(_.keyBy(compiledSnippets, 'groupName'), this.convertMasterPagesToSnippets, this.mergeCustomizer);
 
 		for (let snippets of this.props.snippetBundle) {
 			if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name

@@ -50,6 +50,7 @@ const fetchThemeBundle = async (obj, renderer, theme)=>{
 
 	const themeBundle = res.body;
 	themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n');
+	console.log(themeBundle);
 	obj.setState((prevState)=>({
 		...prevState,
 		themeBundle : themeBundle
