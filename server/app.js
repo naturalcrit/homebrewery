@@ -8,6 +8,8 @@ const express = require('express');
 const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
+const fs = require('fs-extra');
+
 
 const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
@@ -450,6 +452,10 @@ if(isLocalEnvironment){
 		return res.json(payload);
 	});
 }
+
+// Add Static Local Paths
+app.use('/staticImages', express.static(config.get('hb_images') && fs.existsSync(config.get('hb_images')) ? config.get('hb_images') :'staticImages'));
+app.use('/staticFonts', express.static(config.get('hb_fonts')  && fs.existsSync(config.get('hb_fonts')) ? config.get('hb_fonts'):'staticFonts'));
 
 //Vault Page
 app.get('/vault', asyncHandler(async(req, res, next)=>{
