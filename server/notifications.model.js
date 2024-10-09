@@ -27,7 +27,7 @@ NotificationSchema.statics.addNotification = async function(data) {
 		const savedNotification = await newNotification.save();
 		return savedNotification;
 	} catch (err) {
-		return { message: err.message || 'Error saving notification' };
+		throw { message: err.message || 'Error saving notification' };
 	}
 };
 
@@ -37,20 +37,20 @@ NotificationSchema.statics.deleteNotification = async function(dismissKey) {
 	try {
 		const deletedNotification = await this.findOneAndDelete({ dismissKey }).exec();
 		if(!deletedNotification) {
-			return { message: 'Notification not found' };
+			throw { message: 'Notification not found' };
 		}
-		return { message: 'Notification deleted successfully' };
+		return deletedNotification;
 	} catch (err) {
-		return { message: err.message || 'Error deleting notification' };
+		throw { message: err.message || 'Error deleting notification' };
 	}
 };
 
 NotificationSchema.statics.getAll = async function() {
 	try {
 		const notifications = await this.find().exec();
-		return {  notifications };
+		return notifications;
 	} catch (err) {
-		return { message: err.message || 'Error retrieving notifications' };
+		throw { message: err.message || 'Error retrieving notifications' };
 	}
 };
 

@@ -53,7 +53,7 @@ const NotificationAdd = ()=>{
 			setNotificationResult('Notification successfully created.');
 			setSearching(false);
 		} catch (err) {
-			console.log(error.response.body.message);
+			console.log(err.response.body.message);
 			setError(`Error saving notification: ${err.response.body.message}`);
 			setSearching(false);
 		}
