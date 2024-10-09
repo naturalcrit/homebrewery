@@ -117,19 +117,13 @@ export async function updateHistory(brew) {
 
 export async function versionHistoryGarbageCollection(){
 
-	await IDB.entries(await createHBStore())
-		.then((entries)=>{
-			entries.forEach(async (entry)=>{
-				const key = entry[0];
-				const value = entry[1];
+	const entries = await IDB.entries(await createHBStore());
 
-				// if(key.startsWith(`${HISTORY_PREFIX}`)) {	// This check was to make sure we were only selecting the history keys, should be unnecessary
-				const collectAt = new Date(value.savedAt);
-				collectAt.setMinutes(collectAt.getMinutes() + GARBAGE_COLLECT_DELAY);
-				if(new Date() > collectAt){
-					IDB.del(key, await createHBStore());
-				};
-				// }
-			});
-		});
+	for (const [key, value] of entries){
+		const expireAt = new Date(value.savedAt);
+		expireAt.setMinutes(expireAt.getMinutes() + GARBAGE_COLLECT_DELAY);
+		if(new Date() > expireAt){
+			IDB.del(key, await createHBStore());
+		};
+	};
 };
