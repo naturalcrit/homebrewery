@@ -45,7 +45,46 @@ const BrewPage = (props)=>{
 
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
 const renderedPages = [];
-let rawPages      = [];
+let rawPages        = [];
+let brewTemplates;
+
+
+// There is bound to be a more elegant way to do this. But this works for now.
+const getPageTemplates = (pages)=>{
+	const tempPages = [];
+	brewTemplates = [];
+	pages.forEach((page, index)=>{
+		const firstLine = page.split('\n')[0];
+		const firstLineClean = firstLine.slice(5).trim();
+		if(firstLineClean.length > 0) {
+			brewTemplates[ index ] = firstLineClean;
+		}
+		tempPages.push(page.slice(firstLine.length));
+	});
+	return tempPages;
+};
+
+const insertTemplate = (props, pageNumber)=>{
+	let lookAt = pageNumber;
+	while ((lookAt > 0) && (typeof brewTemplates[lookAt] === 'undefined')) lookAt--;
+	if(typeof brewTemplates[lookAt] !== 'undefined') {
+		const whichTemplate = brewTemplates[lookAt].split(':');
+		// If the template source is not in the themes list, it must be a local template.
+		for (let tb of props.templateBundle) {
+			if((tb.theme == whichTemplate[0]) && (tb.name == whichTemplate[1])) {
+				return tb.template;
+			}
+		}
+		for (let ut of props.userTemplates) {
+			if(ut.name == whichTemplate[1]) {
+				return ut.template;
+			}
+		}
+	}
+	return '';
+};
+
+
 
 const BrewRenderer = (props)=>{
 	props = {
@@ -75,7 +114,7 @@ const BrewRenderer = (props)=>{
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split('\\page');
 	} else {
-		rawPages = props.text.split(/^\\page$/gm);
+		rawPages = getPageTemplates(props.text.split(/^(?=^\\page)/gm));
 	}
 
 	useEffect(()=>{ // Unmounting steps
@@ -128,7 +167,7 @@ const BrewRenderer = (props)=>{
 			return <BrewPage className='page phb' index={index} key={index} contents={html} />;
 		} else {
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
-			const html = Markdown.render(pageText, index);
+			const html = Markdown.render(`${insertTemplate(props, index)}\n${pageText}`, index);
 			return <BrewPage className='page' index={index} key={index} contents={html} />;
 		}
 	};

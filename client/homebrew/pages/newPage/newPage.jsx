@@ -235,7 +235,7 @@ const NewPage = createClass({
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
 						snippetBundle={this.state.themeBundle.snippets}
-						masterPageBundle={this.state.themeBundle.templates}
+						templateBundle={this.state.themeBundle.templates}
 						userTemplates={this.state.userTemplates}
 						onCursorPageChange={this.handleEditorCursorPageChange}
 						onViewPageChange={this.handleEditorViewPageChange}
@@ -256,6 +256,8 @@ const NewPage = createClass({
 						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
 						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 						allowPrint={true}
+						templateBundle={asTemplateMap(this.state.themeBundle.templates)}
+						userTemplates={asTemplateMap(this.state.userTemplates)}
 					/>
 				</SplitPane>
 			</div>

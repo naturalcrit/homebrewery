@@ -26,7 +26,7 @@ const LockNotification = require('./lockNotification/lockNotification.jsx');
 const Markdown = require('naturalcrit/markdown.js');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
-const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
+const { printCurrentBrew, fetchThemeBundle, asTemplateMap } = require('../../../../shared/helpers.js');
 
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 
@@ -465,6 +465,8 @@ const EditPage = createClass({
 						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
 						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 						allowPrint={true}
+						templateBundle={asTemplateMap(this.state.themeBundle.templates)}
+						userTemplates={asTemplateMap(this.state.userTemplates)}
 					/>
 				</SplitPane>
 			</div>

@@ -11,7 +11,7 @@ const templatesToSnippet = (menuTitle, templates, themeBundle)=>{
 	for (let themes of themeBundle) {
 		const pages = [];
 		for (let mp of themes.templates.split(textSplit)) {
-			let name = mp.split('\n')[0];
+			let name = mp.split('\n')[0].trim();
 			if(name.length == 0) name = 'Blank';
 			pages.push({
 				name : name,
@@ -53,6 +53,46 @@ const templatesToSnippet = (menuTitle, templates, themeBundle)=>{
 		view      : 'text',
 		snippets  : mpAsSnippets
 	};
+};
+
+const splitTemplates = (templates)=>{
+	const splitTemplates = templates.split(/^(?=^\\page)/gm);
+	const templatesObj = [];
+	splitTemplates.forEach((page)=>{
+		const firstLine = page.split('\n')[0];
+		const firstLineClean = firstLine.slice(5).trim() || 'Blank';
+		templatesObj.push({ name: firstLineClean, template: page.slice(firstLine.length) });
+	});
+	return templatesObj;
+};
+
+const asTemplateMap = (templates)=>{
+	if(!templates) return [];
+	const resultTemplates = [];
+	if(typeof templates === 'string') {
+		const localTemplates = splitTemplates(templates);
+		for (let lt of localTemplates) {
+			resultTemplates.push({
+				theme    : '',
+				name     : lt.name,
+				template : lt.template
+			});
+		}
+	} else {
+		// Walk a template bundle
+		for (let theme of templates) {
+			const themeTemplates = splitTemplates(theme.templates);
+			for (let tt of themeTemplates) {
+				resultTemplates.push({
+					theme    : theme.name,
+					name     : tt.name,
+					template : tt.template
+				});
+			}
+		}
+
+	}
+	return resultTemplates;
 };
 
 const splitTextStyleAndMetadata = (brew)=>{
@@ -122,5 +162,6 @@ module.exports = {
 	splitTextStyleAndMetadata,
 	printCurrentBrew,
 	fetchThemeBundle,
-	templatesToSnippet
+	templatesToSnippet,
+	asTemplateMap
 };
