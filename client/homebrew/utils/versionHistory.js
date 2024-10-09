@@ -75,21 +75,9 @@ export async function loadHistory(brew){
 		historyKeys.push(getKeyBySlot(brew, i));
 	};
 
-	const history = [];
 	// Load all keys from IDB at once
-	await IDB.getMany(historyKeys, await createHBStore())
-				.then((dataArray)=>{
-					return dataArray.forEach((data)=>{
-						history.push(data ?? DEFAULT_HISTORY_ITEM);
-					});
-				})
-				.catch(()=>{
-					historyKeys.forEach(()=>{
-						history.push(DEFAULT_HISTORY_ITEM);
-					});
-				});
-
-	return history;
+	const dataArray = await IDB.getMany(historyKeys, await createHBStore());
+	return dataArray.map((data)=>{ return data ?? DEFAULT_HISTORY_ITEM; });
 }
 
 export async function updateHistory(brew) {
