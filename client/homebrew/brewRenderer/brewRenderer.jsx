@@ -16,8 +16,8 @@ const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
 const { printCurrentBrew } = require('../../../shared/helpers.js');
 
-const DOMPurify = require('dompurify');
-const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
+//const DOMPurify = require('dompurify');
+//const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
 
 const PAGE_HEIGHT = 1056;
 
@@ -77,17 +77,42 @@ const BrewRenderer = (props)=>{
 		rawPages = props.text.split(/^\\page$/gm);
 	}
 
-	useEffect(() => {
+	useEffect(()=>{
+		const iframeDoc = document.getElementById('brewRenderer');
+		const hash = window.location.hash;
+		console.log(hash);
+		if(hash && iframeDoc) {
+		  const anchor = iframeDoc.querySelector(hash);
+
+			if(anchor) {
+				anchor.scrollIntoView();
+			} else {
+				// Use MutationObserver to wait for the element if it's not immediately available
+				const observer = new MutationObserver((mutations, obs)=>{
+				const anchorElement = iframeDoc.querySelector(hash);
+				if(anchorElement) {
+					anchorElement.scrollIntoView();
+					obs.disconnect(); // Stop observing once the element is found
+				}
+				});
+
+				observer.observe(iframeDoc, {
+					childList : true,
+					subtree   : true,
+				});
+			}
+		}
+		/*
 		const elementId = window.location.hash.slice(1);
-		if (elementId && state.isMounted) {
+		if(elementId && state.isMounted) {
 			const element = document.getElementById(elementId);
 			element.scrollIntoView({ block: 'start' });
 		}
-		
-		return () => {
+		*/
+		return ()=>{
 			window.removeEventListener('resize', updateSize);
 		};
-	}, [state.isMounted]);
+	}, []);
 
 	const updateSize = ()=>{
 		setState((prevState)=>({
