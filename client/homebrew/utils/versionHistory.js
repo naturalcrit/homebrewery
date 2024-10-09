@@ -27,16 +27,6 @@ function getKeyBySlot(brew, slot){
 	return `${HISTORY_PREFIX}-${brew.shareId}-${slot}`;
 };
 
-// function getVersionBySlot(brew, slot){
-// 	// Read stored brew data
-// 	// - If it exists, parse data to object
-// 	// - If it doesn't exist, pass default object
-// 	const key = getKeyBySlot(brew, slot);
-// 	const storedVersion = IDB.get(key);
-// 	const output = storedVersion ? storedVersion : { expireAt: '2000-01-01T00:00:00.000Z', shareId: brew.shareId, noData: true };
-// 	return output;
-// };
-
 function parseBrewForStorage(brew, slot = 0) {
 	// Strip out unneeded object properties
 	// Returns an array of [ key, brew ]
