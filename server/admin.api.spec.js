@@ -58,7 +58,7 @@ describe('Tests for admin api', ()=>{
 			expect(response.body).toEqual(savedNotification);
 		});
 
-		it('should fail adding a new notification without dismissKey', async () => {
+		it('should handle error adding a notification without dismissKey', async () => {
 			const inputNotification = {
 				title   : 'Test Notification',
 				text    : 'This is a test notification',
@@ -95,6 +95,22 @@ describe('Tests for admin api', ()=>{
 			expect(NotificationModel.findOneAndDelete).toHaveBeenCalledWith({'dismissKey': 'testKey'});
 			expect(response.status).toBe(200);
 			expect(response.body).toEqual({ dismissKey: 'testKey' });
+		});
+
+		it('should handle error deleting a notification that doesnt exist', async ()=>{
+			const dismissKey = 'testKey';
+
+			jest.spyOn(NotificationModel, 'findOneAndDelete')
+				.mockImplementationOnce(() => {
+					return { exec: jest.fn().mockResolvedValue() };
+				});
+			const response = await app
+				.delete(`/admin/notification/delete/${dismissKey}`)
+				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
+
+			expect(NotificationModel.findOneAndDelete).toHaveBeenCalledWith({'dismissKey': 'testKey'});
+			expect(response.status).toBe(500);
+			expect(response.body).toEqual({ message: 'Notification not found' });
 		});
 	});
 });
