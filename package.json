@@ -93,7 +93,7 @@
     "body-parser": "^1.20.2",
     "classnames": "^2.5.1",
     "codemirror": "^5.65.6",
-    "cookie-parser": "^1.4.6",
+    "cookie-parser": "^1.4.7",
     "create-react-class": "^15.7.0",
     "dedent-tabs": "^0.10.3",
     "dompurify": "^3.1.7",
