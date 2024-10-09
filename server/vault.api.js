@@ -29,12 +29,18 @@ const rendererConditions = (legacy, v3)=>{
 	return {}; // If all renderers selected, renderer field not needed in query for speed
 };
 
+const sortConditions = (sort, dir) => {
+	return { [sort]: dir === 'asc' ? 1 : -1 };
+};
+
 const findBrews = async (req, res)=>{
 	const title  = req.query.title || '';
 	const author = req.query.author || '';
 	const page   = Math.max(parseInt(req.query.page)  || 1, 1);
 	const count  = Math.max(parseInt(req.query.count) || 20, 10);
 	const skip   = (page - 1) * count;
+	const sort = req.query.sort || 'title';
+	const dir = req.query.dir || 'asc';
 
 	const combinedQuery = {
 		$and : [
@@ -54,6 +60,7 @@ const findBrews = async (req, res)=>{
 	};
 
 	await HomebrewModel.find(combinedQuery, projection)
+		.sort(sortConditions(sort, dir))
 		.skip(skip)
 		.limit(count)
 		.maxTimeMS(5000)
