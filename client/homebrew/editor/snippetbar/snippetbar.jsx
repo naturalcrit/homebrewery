@@ -88,7 +88,6 @@ const Snippetbar = createClass({
 	compileSnippets : function() {
 		let compiledSnippets = [];
 
-		console.log('Start compiledSnippets');
 		let oldSnippets = _.keyBy(compiledSnippets, 'groupName');
 
 		for (let snippets of this.props.snippetBundle) {
@@ -100,18 +99,11 @@ const Snippetbar = createClass({
 
 			oldSnippets = _.keyBy(compiledSnippets, 'groupName');
 		}
-		console.log(this.props.brew.title);
-		console.log(this.props.brew.templates);
-		console.log(this.props.templateBundle);
 
 		const templateAsSnippets = templatesToSnippet(this.props.brew.title, this.props.brew.templates, this.props.templateBundle);
 
-		console.log(templateAsSnippets);
 
 		compiledSnippets.push(templateAsSnippets);
-
-		console.log(compiledSnippets);
-		console.log('Stop compiledSnippets');
 
 		return compiledSnippets;
 	},

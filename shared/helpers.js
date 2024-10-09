@@ -5,29 +5,31 @@ const dedent = require('dedent');
 
 // Convert the templates from a brew to a Snippets Structure.
 const templatesToSnippet = (menuTitle, templates, themeBundle)=>{
+	const textSplit  = /^\\page/gm;
 	const mpAsSnippets = [];
 	// Templates from Themes first.
 	for (let themes of themeBundle) {
 		const pages = [];
-		for (let mp of themes.templates) {
+		for (let mp of themes.templates.split(textSplit)) {
+			let name = mp.split('\n')[0];
+			if(name.length == 0) name = 'Blank';
 			pages.push({
-				name : mp?.name,
+				name : name,
 				icon : '',
-				gen  : `\n\\page ${themes?.name}:${mp?.name}\n`,
+				gen  : `\n\\page ${themes.name}:${name}\n`,
 			});
 		}
 		if(pages.length > 0) {
 			mpAsSnippets.push({
-				name     : themes?.name,
-				icon     : '',
-				gen      : '',
+				name        : themes.name,
+				icon        : '',
+				gen         : '',
 			    subsnippets : pages
 			});
 		}
 	}
 	// Local Templates
 	const pages = [];
-	const textSplit  = /^\\page/gm;
 	for (let mp of templates.split(textSplit)) {
 		let name = mp.split('\n')[0];
 		if(name.length == 0) name = 'Blank';
@@ -37,11 +39,10 @@ const templatesToSnippet = (menuTitle, templates, themeBundle)=>{
 			gen  : `\n\\page ${menuTitle}:${name}\n`,
 		});
 	}
-	console.log(pages);
 	if(pages.length) {
 		mpAsSnippets.push({
-			name     : menuTitle,
-			icon     : '',
+			name        : menuTitle,
+			icon        : '',
 			subsnippets : pages
 		});
 	}
@@ -73,17 +74,20 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.snippets = brew.text.slice(11, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
-	// if(brew.text.startsWith('```templates')) {
-	// 	const index = brew.text.indexOf('```\n\n');
-	// 	brew.templates = brew.text.slice(12, index - 1);
-	// 	brew.text = brew.text.slice(index + 5);
-	// }
-	brew.templates = dedent`
-	\page Master Test 1
-	{{wide}}
-	Hello!
-	:::
-	`;
+	if(brew.text.startsWith('```templates')) {
+		const index = brew.text.indexOf('```\n\n');
+		brew.templates = brew.text.slice(12, index - 1);
+		brew.text = brew.text.slice(index + 5);
+	}
+	// Stub until we have written the editor
+	if(!brew?.templates) {
+		brew.templates = dedent`
+		\page Master Test 1
+		{{wide}}
+		Hello!
+		:::
+		`;
+	}
 };
 
 const printCurrentBrew = ()=>{
@@ -108,7 +112,6 @@ const fetchThemeBundle = async (obj, renderer, theme)=>{
 
 	const themeBundle = res.body;
 	themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n');
-	console.log(themeBundle);
 	obj.setState((prevState)=>({
 		...prevState,
 		themeBundle : themeBundle

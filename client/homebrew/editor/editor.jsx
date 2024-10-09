@@ -500,6 +500,7 @@ const Editor = createClass({
 					currentEditorTheme={this.state.editorTheme}
 					updateEditorTheme={this.updateEditorTheme}
 					snippetBundle={this.props.snippetBundle}
+					templateBundle={this.props.templateBundle}
 					cursorPos={this.codeEditor.current?.getCursorPosition() || {}}
 					updateBrew={this.props.updateBrew}
 				/>
