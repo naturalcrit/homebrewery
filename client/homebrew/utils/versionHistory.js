@@ -44,21 +44,16 @@ function parseBrewForStorage(brew, slot = 0) {
 	return [key, archiveBrew];
 }
 
-
+// Create a custom IDB store
 async function createHBStore(){
 	return await IDB.createStore(HB_DB, HB_STORE);
 }
 
+// Determine if history data exists for this brew
 export async function historyCheck(brew){
-	const historyExists = await IDB.keys(await createHBStore())
-		.then((keys)=>{
-			return [...keys].some((key)=>{
-				return key.startsWith(`${HISTORY_PREFIX}-${brew.shareId}`);
-			});
-		})
+	const keys = await IDB.keys(await createHBStore())
 		.catch(()=>{return false;});
-
-	return historyExists;
+	return keys.some((key)=>{return key.startsWith(`${HISTORY_PREFIX}-${brew.shareId}`);});
 }
 
 export async function loadHistory(brew){
