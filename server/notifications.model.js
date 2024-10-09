@@ -11,7 +11,7 @@ const NotificationSchema = new mongoose.Schema({
 }, { versionKey: false });
 
 NotificationSchema.statics.addNotification = async function(data) {
-	if(!data.dismissKey) return { message: 'Dismiss key is required!' };
+	if(!data.dismissKey) throw { message: 'Dismiss key is required!' };
 
 	const defaults = {
 		title   : '',
