@@ -5,7 +5,7 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
-import { historyCheck, loadHistory } from '../../utils/versionHistory.js';
+import { loadHistory } from '../../utils/versionHistory.js';
 
 //Import all themes
 const ThemeSnippets = {};
@@ -70,23 +70,27 @@ const Snippetbar = createClass({
 			});
 		};
 
-		const checkHistoryExists = (await historyCheck(this.props.brew)) ?? false;
-		if(checkHistoryExists != prevState.historyExists){
+		// Update history list if it has changed
+		const checkHistoryItems = await loadHistory(this.props.brew);
+
+		// If all items have the noData property, there is no saved data
+		const checkHistoryExists = !checkHistoryItems.every((historyItem)=>{
+			return historyItem?.noData;
+		});
+		if(prevState.historyExists != checkHistoryExists){
 			this.setState({
 				historyExists : checkHistoryExists
 			});
 		}
 
-		// Update history list if it has changed
-		const checkHistoryItems = await loadHistory(this.props.brew);
-		if(checkHistoryItems.some((historyItem, index)=>{
-			return !index < this.state.historyItems.length || historyItem != this.state.historyItems[index];
+		// If any history items have changed, update the list
+		if(checkHistoryExists && checkHistoryItems.some((historyItem, index)=>{
+			return index >= prevState.historyItems.length || !_.isEqual(historyItem, prevState.historyItems[index]);
 		})){
 			this.setState({
 				historyItems : checkHistoryItems
 			});
 		}
-
 	},
 
 	mergeCustomizer : function(oldValue, newValue, key) {
