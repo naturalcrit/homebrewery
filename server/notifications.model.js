@@ -32,7 +32,7 @@ NotificationSchema.statics.addNotification = async function(data) {
 };
 
 NotificationSchema.statics.deleteNotification = async function(dismissKey) {
-	if(!dismissKey) return { message: 'No key provided!' };
+	if(!data.dismissKey) throw { message: 'Dismiss key is required!' };
 
 	try {
 		const deletedNotification = await this.findOneAndDelete({ dismissKey }).exec();
