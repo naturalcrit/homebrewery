@@ -42,7 +42,6 @@ const BrewPage = (props)=>{
 	       </div>;
 };
 
-
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
 const renderedPages = [];
 let rawPages      = [];
@@ -78,15 +77,36 @@ const BrewRenderer = (props)=>{
 		rawPages = props.text.split(/^\\page$/gm);
 	}
 
-	useEffect(()=>{ // Unmounting steps
-		return ()=>{window.removeEventListener('resize', updateSize);};
-	}, []);
+	useEffect(() => {
+		const elementId = window.location.hash.slice(1);
+		if (elementId && state.isMounted) {
+			const element = document.getElementById(elementId);
+			element.scrollIntoView({ block: 'start' });
+		}
+		
+		return () => {
+			window.removeEventListener('resize', updateSize);
+		};
+	}, [state.isMounted]);
 
 	const updateSize = ()=>{
 		setState((prevState)=>({
 			...prevState,
 			height : mainRef.current.parentNode.clientHeight,
 		}));
+	};
+
+	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
+		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
+			updateSize();
+			window.addEventListener('resize', updateSize);
+			renderPages(); //Make sure page is renderable before showing
+			setState((prevState)=>({
+				...prevState,
+				isMounted  : true,
+				visibility : 'visible'
+			}));
+		}, 100);
 	};
 
 	const updateCurrentPage = useCallback(_.throttle((e)=>{
@@ -161,18 +181,6 @@ const BrewRenderer = (props)=>{
 		}
 	};
 
-	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
-		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
-			updateSize();
-			window.addEventListener('resize', updateSize);
-			renderPages(); //Make sure page is renderable before showing
-			setState((prevState)=>({
-				...prevState,
-				isMounted  : true,
-				visibility : 'visible'
-			}));
-		}, 100);
-	};
 
 	const emitClick = ()=>{ // Allow clicks inside iFrame to interact with dropdowns, etc. from outside
 		if(!window || !document) return;
