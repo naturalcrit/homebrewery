@@ -4,7 +4,7 @@ export const HISTORY_PREFIX = 'HOMEBREWERY-HISTORY';
 export const HISTORY_SLOTS = 5;
 
 // History values in minutes
-const DEFAULT_HISTORY_SAVE_DELAYS = {
+const HISTORY_SAVE_DELAYS = {
 	'0' : 0,
 	'1' : 2,
 	'2' : 10,
@@ -16,10 +16,7 @@ const DEFAULT_HISTORY_SAVE_DELAYS = {
 const HB_DB = 'HOMEBREWERY-DB';
 const HB_STORE = 'HISTORY';
 
-const DEFAULT_GARBAGE_COLLECT_DELAY = 28 * 24 * 60;
-
-let HISTORY_SAVE_DELAYS = DEFAULT_HISTORY_SAVE_DELAYS;
-let GARBAGE_COLLECT_DELAY = DEFAULT_GARBAGE_COLLECT_DELAY;
+const GARBAGE_COLLECT_DELAY = 28 * 24 * 60;
 
 
 function getKeyBySlot(brew, slot){
@@ -39,10 +36,6 @@ function parseBrewForStorage(brew, slot = 0) {
 		savedAt  : brew?.savedAt || new Date(),
 		expireAt : new Date()
 	};
-
-	if(global.config?.history?.HISTORY_SAVE_DELAYS){
-		HISTORY_SAVE_DELAYS = global.config?.history?.HISTORY_SAVE_DELAYS;
-	}
 
 	archiveBrew.expireAt.setMinutes(archiveBrew.expireAt.getMinutes() + HISTORY_SAVE_DELAYS[slot]);
 
@@ -129,7 +122,6 @@ export async function updateHistory(brew) {
 };
 
 export async function versionHistoryGarbageCollection(){
-	if(global.config?.history?.GARBAGE_COLLECT_DELAY != GARBAGE_COLLECT_DELAY) GARBAGE_COLLECT_DELAY = global.config?.history?.GARBAGE_COLLECT_DELAY;
 
 	await IDB.entries(await createHBStore())
 		.then((entries)=>{
