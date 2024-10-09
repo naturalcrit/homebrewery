@@ -175,8 +175,6 @@ const Snippetbar = createClass({
 	},
 
 	renderHistoryItems : function() {
-		if(this.state.historyItems.length == 0) return;
-
 		return <div className='dropdown'>
 			{_.map(this.state.historyItems, (item, index)=>{
 				if(item.noData || !item.savedAt) return;
