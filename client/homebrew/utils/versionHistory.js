@@ -4,28 +4,28 @@ export const HISTORY_PREFIX = 'HOMEBREWERY-HISTORY';
 export const HISTORY_SLOTS = 5;
 
 // History values in minutes
-// const HISTORY_SAVE_DELAYS = {
-// 	'0' : 0,
-// 	'1' : 2,
-// 	'2' : 10,
-// 	'3' : 60,
-// 	'4' : 12 * 60,
-// 	'5' : 2 * 24 * 60
-// };
 const HISTORY_SAVE_DELAYS = {
 	'0' : 0,
-	'1' : 1,
-	'2' : 2,
-	'3' : 3,
-	'4' : 4,
-	'5' : 5
+	'1' : 2,
+	'2' : 10,
+	'3' : 60,
+	'4' : 12 * 60,
+	'5' : 2 * 24 * 60
 };
+// const HISTORY_SAVE_DELAYS = {
+// 	'0' : 0,
+// 	'1' : 1,
+// 	'2' : 2,
+// 	'3' : 3,
+// 	'4' : 4,
+// 	'5' : 5
+// };
 
 const HB_DB = 'HOMEBREWERY-DB';
 const HB_STORE = 'HISTORY';
 
-// const GARBAGE_COLLECT_DELAY = 28 * 24 * 60;
-const GARBAGE_COLLECT_DELAY = 10;
+const GARBAGE_COLLECT_DELAY = 28 * 24 * 60;
+// const GARBAGE_COLLECT_DELAY = 10;
 
 
 function getKeyBySlot(brew, slot){
@@ -97,7 +97,7 @@ export async function updateHistory(brew) {
 			// Update the most recent brew
 			historyUpdate.push(parseBrewForStorage(brew, 1));
 
-			IDB.setMany(historyUpdate, await createHBStore());
+			await IDB.setMany(historyUpdate, await createHBStore());
 
 			// Break out of data checks because we found an expired value
 			break;
@@ -113,7 +113,7 @@ export async function versionHistoryGarbageCollection(){
 		const expireAt = new Date(value.savedAt);
 		expireAt.setMinutes(expireAt.getMinutes() + GARBAGE_COLLECT_DELAY);
 		if(new Date() > expireAt){
-			IDB.del(key, await createHBStore());
+			await IDB.del(key, await createHBStore());
 		};
 	};
 };
