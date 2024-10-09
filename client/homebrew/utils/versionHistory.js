@@ -50,7 +50,6 @@ async function createHBStore(){
 }
 
 export async function historyCheck(brew){
-	if(!IDB) return false;
 	const historyExists = await IDB.keys(await createHBStore())
 		.then((keys)=>{
 			return [...keys].some((key)=>{
