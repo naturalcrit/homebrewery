@@ -58,13 +58,6 @@ async function createHBStore(){
 	return await IDB.createStore(HB_DB, HB_STORE);
 }
 
-// Determine if history data exists for this brew
-export async function historyCheck(brew){
-	const keys = await IDB.keys(await createHBStore())
-		.catch(()=>{return false;});
-	return keys.some((key)=>{return key.startsWith(`${HISTORY_PREFIX}-${brew.shareId}`);});
-}
-
 export async function loadHistory(brew){
 	const DEFAULT_HISTORY_ITEM = { expireAt: '2000-01-01T00:00:00.000Z', shareId: brew.shareId, noData: true };
 
