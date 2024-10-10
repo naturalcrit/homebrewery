@@ -20,8 +20,23 @@
 			height      : @menuHeight;
 			line-height : @menuHeight;
 			text-align  : center;
-			cursor      : pointer;
+			
+			&:not(.editorTool, .divider) {
+				cursor: pointer;
+			}
+
 			&:hover,&.selected { background-color : #999999; }
+
+			&.editorTool {
+				background-color: unset;
+
+				&.active {
+					cursor:pointer;
+					&:hover {
+						background-color: #999999;
+					}
+				}
+			}
 			&.text {
 				.tooltipLeft('Brew Editor');
 			}
