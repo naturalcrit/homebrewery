@@ -22,7 +22,6 @@ const NotificationPopup = ()=>{
 
 		try {
 			const res = await request.get('/admin/notification/all');
-			console.log('res', res.body);
 			pickActiveNotifications(res.body || []);
 		} catch (err) {
 			console.log(err);

@@ -6,13 +6,10 @@ function Dialog({ dismissKeys, closeText = 'Close', blocking = false, ...rest })
 	const dialogRef = useRef(null);
 
 	useEffect(()=>{
-		blocking ? dialogRef.current?.showModal() : dialogRef.current?.show();
-	}, [dialogRef.current]);
-
-	console.log(dismissKeys);
-	if (dismissKeys.length === 0) {
-		return null;
-	}
+		if (dismissKeys.length !== 0) {
+			blocking ? dialogRef.current?.showModal() : dialogRef.current?.show();
+		}
+	}, [dialogRef.current, dismissKeys]);
 
 	const dismiss = () => {
 		dismissKeys.forEach(key => {
@@ -22,7 +19,7 @@ function Dialog({ dismissKeys, closeText = 'Close', blocking = false, ...rest })
 		});
 		dialogRef.current?.close();
 	};
-	console.log('rendering');
+	
 	return (
 		<dialog ref={dialogRef} onCancel={dismiss} {...rest}>
 			{rest.children}
