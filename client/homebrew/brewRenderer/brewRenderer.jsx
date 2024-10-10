@@ -187,6 +187,12 @@ const BrewRenderer = (props)=>{
 		}));
 	};
 
+	const styleObject = { height: state.height };
+
+	if(global.config.deployment) {
+		styleObject.backgroundImage = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='40px' width='200px'><text x='0' y='15' fill='white' font-size='20'>${global.config.deployment}</text></svg>")`;
+	}
+
 	return (
 		<>
 			{/*render dummy page while iFrame is mounting.*/}
@@ -212,11 +218,11 @@ const BrewRenderer = (props)=>{
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
 			>
-				<div className={'brewRenderer'}
+				<div className={`brewRenderer ${global.config.deployment && 'deployment'}`}
 					onScroll={updateCurrentPage}
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
-					style={{ height: state.height }}>
+					style={ styleObject }>
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted
