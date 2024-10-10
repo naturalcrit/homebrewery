@@ -21,20 +21,16 @@
 			line-height : @menuHeight;
 			text-align  : center;
 			
-			&:not(.editorTool, .divider) {
-				cursor: pointer;
-			}
+			&:not(.editorTool, .divider) { cursor : pointer; }
 
 			&:hover,&.selected { background-color : #999999; }
 
 			&.editorTool {
-				background-color: unset;
+				background-color : unset;
 
 				&.active {
-					cursor:pointer;
-					&:hover {
-						background-color: #999999;
-					}
+					cursor : pointer;
+					&:hover { background-color : #999999; }
 				}
 			}
 			&.text {
@@ -70,17 +66,13 @@
 			}
 			&.history {
 				.tooltipLeft('History');
+				position  : relative;
 				font-size : 0.75em;
 				color     : grey;
-				position  : relative;
-				&.active {
-					color : inherit;
-				}
-				&>.dropdown{
+				&.active { color : inherit; }
+				& > .dropdown {
 					right         : -1px;
-					&>.snippet{
-						padding-right : 10px;
-					}
+					& > .snippet { padding-right : 10px; }
 				}
 			}
 			&.editorTheme {
@@ -157,11 +149,11 @@
 				cursor      : pointer;
 				.animate(background-color);
 				i {
+					min-width    : 25px;
 					height       : 1.2em;
 					margin-right : 8px;
 					font-size    : 1.2em;
-					min-width: 25px;
-					text-align: center;
+					text-align   : center;
 					& ~ i {
 						margin-right : 0;
 						margin-left  : 5px;
