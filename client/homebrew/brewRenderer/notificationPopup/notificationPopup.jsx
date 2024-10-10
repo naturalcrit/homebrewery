@@ -10,6 +10,7 @@ const DISMISS_BUTTON = <i className='fas fa-times dismiss' />;
 const NotificationPopup = ()=>{
 
 	const [notifications, setNotifications] = useState([]);
+	const [dissmissKeyList, setDismissKeyList] = useState([]);
 	const [error, setError] = useState(null);
 
 	useEffect(()=>{
@@ -38,6 +39,7 @@ const NotificationPopup = ()=>{
 			return now >= startDate && now <= stopDate && !dismissed;
 		});
 		setNotifications(filteredNotifications);
+		setDismissKeyList(filteredNotifications.map(notif => notif.dismissKey));
 	}
 
 	const renderNotificationsList = ()=>{
@@ -51,8 +53,6 @@ const NotificationPopup = ()=>{
 					</li>
 				))
 	};
-
-	const dissmissKeyList = notifications.map(notif => notif.dismissKey);
 
 	return <Dialog className='notificationPopup' dismissKeys={dissmissKeyList} closeText={DISMISS_BUTTON} >
 		<div className='header'>
