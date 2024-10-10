@@ -1,6 +1,6 @@
 // Dialog box, for popups and modal blocking messages
-import React from "react"; // Correct the import statement
-const { useRef, useEffect } = React; // Use React instead of react
+import React from "react";
+const { useRef, useEffect } = React;
 
 function Dialog({ dismissKeys, closeText = 'Close', blocking = false, ...rest }) {
 	const dialogRef = useRef(null);
