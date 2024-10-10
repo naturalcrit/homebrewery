@@ -11,10 +11,10 @@
     "url": "git://github.com/naturalcrit/homebrewery.git"
   },
   "scripts": {
-    "dev": "node scripts/dev.js",
-    "quick": "node scripts/quick.js",
-    "build": "node scripts/buildHomebrew.js && node scripts/buildAdmin.js",
-    "builddev": "node scripts/buildHomebrew.js --dev",
+    "dev": "node --experimental-require-module scripts/dev.js",
+    "quick": "node --experimental-require-module scripts/quick.js",
+    "build": "node --experimental-require-module scripts/buildHomebrew.js && node --experimental-require-module scripts/buildAdmin.js",
+    "builddev": "node --experimental-require-module scripts/buildHomebrew.js --dev",
     "lint": "eslint --fix",
     "lint:dry": "eslint",
     "stylelint": "stylelint --fix **/*.{less}",
@@ -38,10 +38,10 @@
     "test:hard-breaks": "jest tests/markdown/hard-breaks.test.js --verbose --noStackTrace",
     "test:emojis": "jest tests/markdown/emojis.test.js --verbose --noStackTrace",
     "test:route": "jest tests/routes/static-pages.test.js --verbose",
-    "phb": "node scripts/phb.js",
+    "phb": "node --experimental-require-module scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
     "postinstall": "npm run build",
-    "start": "node server.js"
+    "start": "node --experimental-require-module server.js"
   },
   "author": "stolksdorf",
   "license": "MIT",
