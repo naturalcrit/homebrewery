@@ -66,7 +66,7 @@ const NotificationAdd = ()=>{
 			<label className='field'>
 				Dismiss Key:
 				<input className='fieldInput' type='text' ref={dismissKeyRef} required
-					placeholder='GOOGLEDRIVENOTIF'
+					placeholder='dismiss_notif_drive'
 				/>
 			</label>
 
