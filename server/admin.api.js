@@ -144,7 +144,9 @@ router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 router.get('/admin/notification/all', async (req, res, next)=>{
 	try {
 		const notifications = await NotificationModel.getAll();
+		console.log('notifications: ', notifications);
 		return res.json(notifications);
+		
 	} catch (error) {
 		console.log('Error getting all notifications: ', error.message);
 		return res.status(500).json({ message: error.message });
