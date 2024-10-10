@@ -67,7 +67,8 @@ const BrewRenderer = (props)=>{
 		height     : PAGE_HEIGHT,
 		isMounted  : false,
 		visibility : 'hidden',
-		zoom       : 100
+		zoom       : 100,
+		pagesStyle : null
 	});
 
 	const mainRef  = useRef(null);
@@ -187,6 +188,13 @@ const BrewRenderer = (props)=>{
 		}));
 	};
 
+	const handleStyle = (newStyle)=>{
+		setState((prevState)=>({
+			...prevState,
+			pagesStyle : { ...prevState.pagesStyle, ...newStyle }, 
+		}));
+	};
+
 	return (
 		<>
 			{/*render dummy page while iFrame is mounting.*/}
@@ -204,7 +212,7 @@ const BrewRenderer = (props)=>{
 				<NotificationPopup />
 			</div>
 
-			<ToolBar onZoomChange={handleZoom} currentPage={props.currentBrewRendererPageNum}  totalPages={rawPages.length}/>
+			<ToolBar onZoomChange={handleZoom} currentPage={props.currentBrewRendererPageNum}  totalPages={rawPages.length} onStyleChange={handleStyle} />
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
@@ -223,7 +231,7 @@ const BrewRenderer = (props)=>{
 						&&
 						<>
 							{renderStyle()}
-							<div className='pages' lang={`${props.lang || 'en'}`} style={{ zoom: `${state.zoom}%` }}>
+							<div className='pages' lang={`${props.lang || 'en'}`} style={{ zoom: `${state.zoom}%`, ...state.pagesStyle }}>
 								{renderPages()}
 							</div>
 						</>

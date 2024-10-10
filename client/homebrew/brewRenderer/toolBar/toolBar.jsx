@@ -3,15 +3,21 @@ const React = require('react');
 const { useState, useEffect } = React;
 const _ = require('lodash');
 
+import AnchoredBox from '../../../components/anchoredBox.jsx';
+// import * as ZoomIcons from '../../../icons/icon-components/zoomIcons.jsx';
 
 const MAX_ZOOM = 300;
 const MIN_ZOOM = 10;
 
-const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
+const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleChange })=>{
 
 	const [zoomLevel, setZoomLevel] = useState(100);
-	const [pageNum, setPageNum]     = useState(currentPage);
+	const [pageNum, setPageNum] = useState(currentPage);
+	const [arrangement, setArrangement] = useState('single');
+	const [startOnRight, setStartOnRight] = useState(true);
+	const [pagesStyle, setPagesStyle] = useState({});
 	const [toolsVisible, setToolsVisible] = useState(true);
+	const modes = ['single', 'facing', 'flow'];
 
 	useEffect(()=>{
 		onZoomChange(zoomLevel);
@@ -19,7 +25,22 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 	useEffect(()=>{
 		setPageNum(currentPage);
-	}, [currentPage]);
+	}, [currentPage]);;
+
+	// update display arrangement when arrangement state is changed.
+	// todo: do this the 'react' way, without querying the dom.
+	useEffect(()=>{
+		const iframe = document.getElementById('BrewRenderer');
+		const pagesContainer = iframe?.contentWindow?.document.querySelector('.pages');
+
+		if(pagesContainer) {
+			modes.forEach((mode)=>pagesContainer.classList.remove(mode));
+			pagesContainer.classList.add(arrangement);
+			['recto', 'verso'].forEach((leaf)=>pagesContainer.classList.remove(leaf));
+			pagesContainer.classList.add(startOnRight ? 'recto' : 'verso');
+		}
+	}, [arrangement, startOnRight]);
+
 
 	const handleZoomButton = (zoom)=>{
 		setZoomLevel(_.round(_.clamp(zoom, MIN_ZOOM, MAX_ZOOM)));
@@ -65,6 +86,11 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 		const deltaZoom = (desiredZoom - zoomLevel) - margin;
 		return deltaZoom;
+	};
+
+	const setBookMode = ()=>{
+		const nextMode = modes[(modes.indexOf(arrangement) + 1) % modes.length];
+		setArrangement(nextMode);
 	};
 
 	return (
@@ -121,6 +147,29 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 			</div>
 
 			{/*v=====----------------------< Page Controls >---------------------=====v*/}
+			<div className='group'>
+				<button
+					id='book-mode'
+					className='tool'
+					onClick={()=>setBookMode()}
+				>
+					{arrangement}
+				</button>
+				<AnchoredBox id='view-mode-options' className='tool' title='Options'>
+					<label title='Modify the horizontal space between pages.'>Column gap<input type='range' min={0} max={200} className='range-input' onChange={(evt)=>onStyleChange({ columnGap: `${evt.target.value}px` })} /></label>
+					<label title='Modify the vertical space between rows of pages.'>Row gap<input type='range' min={0} max={200} className='range-input' onChange={(evt)=>onStyleChange({ rowGap: `${evt.target.value}px` })} /></label>
+
+					<h2>Facing</h2>
+					<label title='Start 1st page on the right side, such as if you have cover page.'>Start on right
+						<input type='checkbox'
+							onChange={()=>setStartOnRight(!startOnRight)}
+							checked={startOnRight}
+							disabled={arrangement !== 'facing' ? true : false}
+							title={arrangement !== 'facing' ? 'Switch to Facing to enable toggle.' : null} />
+					</label>
+				</AnchoredBox>
+			</div>
+
 			<div className='group'>
 				<button
 					id='previous-page'
