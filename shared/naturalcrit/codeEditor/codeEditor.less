@@ -26,6 +26,15 @@
     color: grey;
   }
 
+  .CodeMirror-foldgutter {
+    transition:background 0.1s;
+    border-left:1px solid #eee;
+    cursor:pointer;
+    &:hover {
+      background:#ddd;
+    }
+  }
+
   .sourceMoveFlash .CodeMirror-line{
     animation-name: sourceMoveAnimation;
     animation-duration: 0.4s;
