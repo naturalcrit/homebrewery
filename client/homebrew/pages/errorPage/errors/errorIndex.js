@@ -172,14 +172,10 @@ const errorIndex = (props)=>{
 		
 		**Brew Title:** ${props.brew.brewTitle}`,
 
-
 		// ####### Admin page error ####### 
-
 		'52': dedent`
 		## Access Denied
-		You need to provide correct administrator credentials to access this page.
-		:
-		This page is for administrators only, if you are not an administrator, stop trying to access it.`,
+		You need to provide correct administrator credentials to access this page.`,
 
 		'90' : dedent` An unexpected error occurred while looking for these brews.  
             Try again in a few minutes.`,
