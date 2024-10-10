@@ -50,9 +50,6 @@ const BrewLookup = createClass({
 				<dt>Last Updated</dt>
 				<dd>{Moment(brew.updatedAt).fromNow()}</dd>
 
-				<dt>Created</dt>
-				<dd>{Moment(brew.createdAt).fromNow()}</dd>
-
 				<dt>Num of Views</dt>
 				<dd>{brew.views}</dd>
 			</dl>
