@@ -4,13 +4,12 @@ const Moment = require('moment');
 const templateFn = require('../client/template.js');
 const zlib = require('zlib');
 
-//Local version username and password
 process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
 process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password3';
 
 const mw = {
-	adminOnly : (req, res, next)=> {
-		if(!req.get('authorization')) {
+	adminOnly : (req, res, next)=>{
+		if(!req.get('authorization')){
 			return res
 				.set('WWW-Authenticate', 'Basic realm="Authorization Required"')
 				.status(401)
@@ -19,7 +18,7 @@ const mw = {
 		const [username, password] = Buffer.from(req.get('authorization').split(' ').pop(), 'base64')
 			.toString('ascii')
 			.split(':');
-		if(process.env.ADMIN_USER === username && process.env.ADMIN_PASS === password) {
+		if(process.env.ADMIN_USER === username && process.env.ADMIN_PASS === password){
 			return next();
 		}
 		throw { HBErrorCode: '52', code: 401, message: 'Access denied' };
