@@ -139,6 +139,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 						name='page'
 						inputMode='numeric'
 						pattern='[0-9]'
+						style={{width:`${pageNum.toString().length + 2}ch`}}
 						value={pageNum}
 						onClick={(e)=>e.target.select()}
 						onChange={(e)=>handlePageInput(e.target.value)}
