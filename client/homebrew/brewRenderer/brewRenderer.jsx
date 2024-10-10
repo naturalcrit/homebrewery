@@ -1,7 +1,7 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
-const { useState, useRef, useEffect } = React;
+const { useState, useRef, useEffect, useCallback } = React;
 const _ = require('lodash');
 
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
@@ -49,23 +49,25 @@ let rawPages      = [];
 
 const BrewRenderer = (props)=>{
 	props = {
-		text              : '',
-		style             : '',
-		renderer          : 'legacy',
-		theme             : '5ePHB',
-		lang              : '',
-		errors            : [],
-		currentEditorPage : 0,
-		themeBundle       : {},
+		text                       : '',
+		style                      : '',
+		renderer                   : 'legacy',
+		theme                      : '5ePHB',
+		lang                       : '',
+		errors                     : [],
+		currentEditorCursorPageNum : 1,
+		currentEditorViewPageNum   : 1,
+		currentBrewRendererPageNum : 1,
+		themeBundle                : {},
+		onPageChange               : ()=>{},
 		...props
 	};
 
 	const [state, setState] = useState({
-		height            : PAGE_HEIGHT,
-		isMounted         : false,
-		visibility        : 'hidden',
-		zoom              : 100,
-		currentPageNumber : 1,
+		height     : PAGE_HEIGHT,
+		isMounted  : false,
+		visibility : 'hidden',
+		zoom       : 100
 	});
 
 	const mainRef  = useRef(null);
@@ -87,25 +89,22 @@ const BrewRenderer = (props)=>{
 		}));
 	};
 
-	const getCurrentPage = (e)=>{
+	const updateCurrentPage = useCallback(_.throttle((e)=>{
 		const { scrollTop, clientHeight, scrollHeight } = e.target;
 		const totalScrollableHeight = scrollHeight - clientHeight;
-		const currentPageNumber = Math.ceil((scrollTop / totalScrollableHeight) * rawPages.length);
+		const currentPageNumber = Math.max(Math.ceil((scrollTop / totalScrollableHeight) * rawPages.length), 1);
 
-		setState((prevState)=>({
-			...prevState,
-			currentPageNumber : currentPageNumber || 1
-		}));
-	};
+		props.onPageChange(currentPageNumber);
+	}, 200), []);
 
 	const isInView = (index)=>{
 		if(!state.isMounted)
 			return false;
 
-		if(index == props.currentEditorPage)	//Already rendered before this step
+		if(index == props.currentEditorCursorPageNum - 1)	//Already rendered before this step
 			return false;
 
-		if(Math.abs(index - state.currentPageNumber) <= 3)
+		if(Math.abs(index - props.currentBrewRendererPageNum - 1) <= 3)
 			return true;
 
 		return false;
@@ -142,7 +141,7 @@ const BrewRenderer = (props)=>{
 			renderedPages.length = 0;
 
 		// Render currently-edited page first so cross-page effects (variables, links) can propagate out first
-		renderedPages[props.currentEditorPage] = renderPage(rawPages[props.currentEditorPage], props.currentEditorPage);
+		renderedPages[props.currentEditorCursorPageNum - 1] = renderPage(rawPages[props.currentEditorCursorPageNum - 1], props.currentEditorCursorPageNum - 1);
 
 		_.forEach(rawPages, (page, index)=>{
 			if((isInView(index) || !renderedPages[index]) && typeof window !== 'undefined'){
@@ -191,14 +190,14 @@ const BrewRenderer = (props)=>{
 	const styleObject = { height: state.height };
 
 	if(global.config.deployment) {
-		styleObject.backgroundImage = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='40px' width='200px'><text x='0' y='15' fill='white' font-size='20'>${global.config.deployment}</text></svg>")`
+		styleObject.backgroundImage = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='40px' width='200px'><text x='0' y='15' fill='white' font-size='20'>${global.config.deployment}</text></svg>")`;
 	}
 
 	return (
 		<>
 			{/*render dummy page while iFrame is mounting.*/}
 			{!state.isMounted
-				? <div className='brewRenderer' onScroll={getCurrentPage}>
+				? <div className='brewRenderer' onScroll={updateCurrentPage}>
 					<div className='pages'>
 						{renderDummyPage(1)}
 					</div>
@@ -211,7 +210,7 @@ const BrewRenderer = (props)=>{
 				<NotificationPopup />
 			</div>
 
-			<ToolBar onZoomChange={handleZoom} currentPage={state.currentPageNumber}  totalPages={rawPages.length}/>
+			<ToolBar onZoomChange={handleZoom} currentPage={props.currentBrewRendererPageNum}  totalPages={rawPages.length}/>
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
@@ -220,7 +219,7 @@ const BrewRenderer = (props)=>{
 				onClick={()=>{emitClick();}}
 			>
 				<div className={`brewRenderer ${global.config.deployment && 'deployment'}`}
-					onScroll={getCurrentPage}
+					onScroll={updateCurrentPage}
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
 					style={ styleObject }>

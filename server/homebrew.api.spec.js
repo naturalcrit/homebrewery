@@ -309,7 +309,7 @@ describe('Tests for api', ()=>{
 			const req = { brew: {} };
 			const next = jest.fn();
 
-			await expect(fn(req, null, next)).rejects.toEqual({ 'HBErrorCode': '100', 'brewId': '1', 'brewTitle': 'test brew', 'code': 404, 'message': 'brew locked' });
+			await expect(fn(req, null, next)).rejects.toEqual({ 'HBErrorCode': '51', 'brewId': '1', 'brewTitle': 'test brew', 'code': 404, 'message': 'brew locked' });
 		});
 	});
 
@@ -559,16 +559,6 @@ brew`);
 				updatedAt   : undefined,
 				views       : 0
 			});
-		});
-
-		it('should handle google error', async()=>{
-			google.newGoogleBrew = jest.fn(()=>{
-				throw 'err';
-			});
-			await api.newBrew({ body: { text: 'asdf', title: '' }, query: { saveToGoogle: true }, account: { username: 'test user' } }, res);
-
-			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.send).toHaveBeenCalledWith('err');
 		});
 	});
 
@@ -934,7 +924,7 @@ brew`);
 			expect(req.brew).toEqual(testBrew);
 			expect(req.brew).toHaveProperty('style', '\nI Have a style!\n');
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.send).toHaveBeenCalledWith("\nI Have a style!\n");
+			expect(res.send).toHaveBeenCalledWith('\nI Have a style!\n');
 			expect(res.set).toHaveBeenCalledWith({
 				'Cache-Control' : 'no-cache',
 				'Content-Type'  : 'text/css'

@@ -8,6 +8,8 @@ const express = require('express');
 const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
+const fs = require('fs-extra');
+
 
 const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
@@ -55,6 +57,7 @@ app.use((req, res, next)=>{
 
 app.use(homebrewApi);
 app.use(require('./admin.api.js'));
+app.use(require('./vault.api.js'));
 
 const HomebrewModel     = require('./homebrew.model.js').model;
 const welcomeText       = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
@@ -199,6 +202,23 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 		'Content-Disposition' : `attachment; filename*=UTF-8''${encodeRFC3986ValueChars(fileName)}.txt`
 	});
 	res.status(200).send(brew.text);
+});
+
+//Serve brew metadata
+app.get('/metadata/:id', asyncHandler(getBrew('share')), (req, res)=>{
+	const { brew } = req;
+	sanitizeBrew(brew, 'share');
+
+	const fields = ['title', 'pageCount', 'description', 'authors', 'lang',
+	  'published', 'views', 'shareId', 'createdAt', 'updatedAt',
+	  'lastViewed', 'thumbnail', 'tags'
+	];
+
+	const metadata = fields.reduce((acc, field)=>{
+	  if(brew[field] !== undefined) acc[field] = brew[field];
+	  return acc;
+	}, {});
+	res.status(200).json(metadata);
 });
 
 //Serve brew styling
@@ -360,7 +380,7 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 app.get('/account', asyncHandler(async (req, res, next)=>{
 	const data = {};
 	data.title = 'Account Information Page';
-	
+
 	if(!req.account) {
 		res.set('WWW-Authenticate', 'Bearer realm="Authorization Required"');
 		const error = new Error('No valid account');
@@ -433,10 +453,23 @@ if(isLocalEnvironment){
 	});
 }
 
+// Add Static Local Paths
+app.use('/staticImages', express.static(config.get('hb_images') && fs.existsSync(config.get('hb_images')) ? config.get('hb_images') :'staticImages'));
+app.use('/staticFonts', express.static(config.get('hb_fonts')  && fs.existsSync(config.get('hb_fonts')) ? config.get('hb_fonts'):'staticFonts'));
+
+//Vault Page
+app.get('/vault', asyncHandler(async(req, res, next)=>{
+	req.ogMeta = { ...defaultMetaTags,
+		title       : 'The Vault',
+		description : 'Search for Brews'
+	};
+	return next();
+}));
+
 //Send rendered page
 app.use(asyncHandler(async (req, res, next)=>{
-	if (!req.route) return res.redirect('/'); // Catch-all for invalid routes
-		
+	if(!req.route) return res.redirect('/'); // Catch-all for invalid routes
+
 	const page = await renderPage(req, res);
 	if(!page) return;
 	res.send(page);
@@ -493,7 +526,7 @@ app.use(async (err, req, res, next)=>{
 	err.originalUrl = req.originalUrl;
 	console.error(err);
 
-	if(err.originalUrl?.startsWith('/api/')) {
+	if(err.originalUrl?.startsWith('/api')) {
 		// console.log('API error');
 		res.status(err.status || err.response?.status || 500).send(err);
 		return;

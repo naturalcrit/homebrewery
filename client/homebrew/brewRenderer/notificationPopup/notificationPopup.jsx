@@ -4,7 +4,7 @@ const _     = require('lodash');
 
 import Dialog from '../../../components/dialog.jsx';
 
-const DISMISS_KEY = 'dismiss_notification12-04-23';
+const DISMISS_KEY = 'dismiss_notification04-09-24';
 const DISMISS_BUTTON = <i className='fas fa-times dismiss' />;
 
 const NotificationPopup = ()=>{
@@ -15,11 +15,12 @@ const NotificationPopup = ()=>{
 			<small>This website is always improving and we are still adding new features and squashing bugs. Keep the following in mind:</small>
 		</div>
 		<ul>
-			<li key='psa'>
-				<em>Don't store IMAGES in Google Drive</em><br />
-				Google Drive is not an image service, and will block images from being used
-				in brews if they get more views than expected. Google has confirmed they won't fix
-				this, so we recommend you look for another image hosting service such as imgur, ImgBB or Google Photos.
+			<li key='Vault'>
+				<em>Search brews with our new page!</em><br />
+				We have been working very hard in making this possible, now you can share your work and look at it in the new <a href='/vault'>Vault</a> page!
+				All PUBLISHED brews will be available to anyone searching there, by title or author, and filtering by renderer.
+
+				More features will be coming.
 			</li>
 
 			<li key='googleDriveFolder'>
