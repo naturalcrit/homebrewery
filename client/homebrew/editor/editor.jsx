@@ -21,6 +21,10 @@ const DEFAULT_STYLE_TEXT = dedent`
 					color: black;
 				}`;
 
+const DEFAULT_TEMPLATE_TEXT = dedent`
+				\page Blank
+				`;
+
 let isJumping = false;
 
 const Editor = createClass({
@@ -32,10 +36,11 @@ const Editor = createClass({
 				style : ''
 			},
 
-			onTextChange  : ()=>{},
-			onStyleChange : ()=>{},
-			onMetaChange  : ()=>{},
-			reportError   : ()=>{},
+			onTextChange     : ()=>{},
+			onStyleChange    : ()=>{},
+			onMetaChange     : ()=>{},
+			onTemplateChange : ()=>{},
+			reportError      : ()=>{},
 
 			onCursorPageChange : ()=>{},
 			onViewPageChange   : ()=>{},
@@ -51,16 +56,17 @@ const Editor = createClass({
 	getInitialState : function() {
 		return {
 			editorTheme : this.props.editorTheme,
-			view        : 'text' //'text', 'style', 'meta'
+			view        : 'text' //'text', 'style', 'meta', 'template'
 		};
 	},
 
 	editor     : React.createRef(null),
 	codeEditor : React.createRef(null),
 
-	isText  : function() {return this.state.view == 'text';},
-	isStyle : function() {return this.state.view == 'style';},
-	isMeta  : function() {return this.state.view == 'meta';},
+	isText     : function() {return this.state.view == 'text';},
+	isStyle    : function() {return this.state.view == 'style';},
+	isMeta     : function() {return this.state.view == 'meta';},
+	isTemplate : function() {return this.state.view == 'template';},
 
 	componentDidMount : function() {
 
@@ -429,6 +435,19 @@ const Editor = createClass({
 					view={this.state.view}
 					value={this.props.brew.text}
 					onChange={this.props.onTextChange}
+					editorTheme={this.state.editorTheme}
+					rerenderParent={this.rerenderParent} />
+			</>;
+		}
+		if(this.isTemplate()){
+			console.log(this.props.brew);
+			return <>
+				<CodeEditor key='codeEditor'
+					ref={this.codeEditor}
+					language='gfm'
+					view={this.state.view}
+					value={this.props.brew.templates ?? DEFAULT_TEMPLATE_TEXT}
+					onChange={this.props.onTemplateChange}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent} />
 			</>;

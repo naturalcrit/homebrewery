@@ -116,7 +116,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 	}
 	if(brew.text.startsWith('```templates')) {
 		const index = brew.text.indexOf('```\n\n');
-		brew.templates = brew.text.slice(12, index - 1);
+		brew.templates = brew.text.slice(13, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
 	// Stub until we have written the editor

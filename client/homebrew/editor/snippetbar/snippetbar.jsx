@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /*eslint max-lines: ["warn", {"max": 250, "skipBlankLines": true, "skipComments": true}]*/
 require('./snippetbar.less');
 const React = require('react');
@@ -238,6 +239,12 @@ const Snippetbar = createClass({
 				onClick={()=>this.props.onViewChange('meta')}>
 				<i className='fas fa-info-circle' />
 			</div>
+
+			<div className={cx('template', { selected: this.props.view === 'template' })}
+				onClick={()=>this.props.onViewChange('template')}>
+			    <i className='fas fa-file-alt' />
+			</div>
+
 		</div>;
 	},
 
