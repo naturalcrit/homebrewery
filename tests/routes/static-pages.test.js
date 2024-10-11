@@ -1,7 +1,8 @@
-const supertest = require('supertest');
+import * as supertest from 'supertest';
+import * as appJS from 'app.js';
 
 // Mimic https responses to avoid being redirected all the time
-const app = supertest.agent(require('app.js').app)
+const app = supertest.agent(appJS.app)
     .set('X-Forwarded-Proto', 'https');
 
 describe('Tests for static pages', ()=>{

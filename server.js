@@ -1,6 +1,6 @@
-const DB = require('./server/db.js');
-const server = require('./server/app.js');
-const config = require('./server/config.js');
+import { default as DB } from './server/db.js';
+import { default as server } from './server/app.js';
+import { default as config } from './server/config.js';
 
 DB.connect(config).then(()=>{
 	// Ensure that we have successfully connected to the database

@@ -93,4 +93,4 @@ const diceFont = {
 	'df_solid_small_dot_d6_6' : 'df solid-small-dot-d6-6'
 };
 
-module.exports = diceFont;
+export default diceFont;

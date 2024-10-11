@@ -1,6 +1,8 @@
-module.exports = (req, res, next)=>{
+import * as pkgjson from '../../package.json';
+
+export default (req, res, next)=>{
 	const userVersion = req.get('Homebrewery-Version');
-	const version = require('../../package.json').version;
+	const version = pkgjson.version;
 
 	if(userVersion != version) {
 		return res.status(412).send({

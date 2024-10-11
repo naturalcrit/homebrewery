@@ -1,18 +1,22 @@
 /* eslint-disable max-lines */
-const _ = require('lodash');
-const HomebrewModel = require('./homebrew.model.js').model;
-const router = require('express').Router();
-const zlib = require('zlib');
-const GoogleActions = require('./googleActions.js');
-const Markdown = require('../shared/naturalcrit/markdown.js');
-const yaml = require('js-yaml');
-const asyncHandler = require('express-async-handler');
-const { nanoid } = require('nanoid');
-const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
+import {default as _ }  from 'lodash';
 
-const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
+import { model as HomebrewModel } from './homebrew.model.js';
 
-const Themes = require('../themes/themes.json');
+import * as expressRouter from 'express';
+const router = expressRouter.Router();
+
+import * as  zlib from 'zlib';
+import * as  GoogleActions from './googleActions.js';
+import * as  Markdown from '../shared/naturalcrit/markdown.js';
+import * as  yaml from 'js-yaml';
+import { default as  asyncHandler } from 'express-async-handler';
+import { nanoid } from 'nanoid';
+import { splitTextStyleAndMetadata } from '../shared/helpers.js';
+
+import { DEFAULT_BREW, DEFAULT_BREW_LOAD } from './brewDefaults.js';
+
+import Themes from '../themes/themes.json';
 
 const isStaticTheme = (renderer, themeName)=>{
 	return Themes[renderer]?.[themeName] !== undefined;
@@ -464,7 +468,8 @@ const api = {
 	}
 };
 
-router.use('/api', require('./middleware/check-client-version.js'));
+import { default as middleware } from './middleware/check-client-version.js';
+router.use('/api', middleware);
 router.post('/api', asyncHandler(api.newBrew));
 router.put('/api/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
 router.put('/api/update/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
@@ -472,4 +477,4 @@ router.delete('/api/:id', asyncHandler(api.deleteBrew));
 router.get('/api/remove/:id', asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
 
-module.exports = api;
+export { api };

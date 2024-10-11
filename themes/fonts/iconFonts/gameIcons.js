@@ -506,4 +506,4 @@ const gameIcons = {
 	'gi_acid'                     : 'gi acid'
 };
 
-module.exports = gameIcons;
+export default gameIcons;

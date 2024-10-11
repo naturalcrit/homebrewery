@@ -1,7 +1,7 @@
-const jwt = require('jwt-simple');
+import jwt from 'jwt-simple';
 
 // Load configuration values
-const config = require('./config.js');
+import config from './config.js';
 
 // Generate an Access Token for the given User ID
 const generateAccessToken = (account)=>{
@@ -24,6 +24,6 @@ const generateAccessToken = (account)=>{
 	return token;
 };
 
-module.exports = {
+export default {
 	generateAccessToken : generateAccessToken
 };

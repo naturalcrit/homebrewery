@@ -2051,4 +2051,4 @@ const fontAwesome = {
 	'fab_zhihu'                          : 'fab fa-zhihu'
 };
 
-module.exports = fontAwesome;
+export default fontAwesome;

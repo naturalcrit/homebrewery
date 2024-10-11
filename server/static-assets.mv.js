@@ -1,4 +1,4 @@
-const expressStaticGzip = require('express-static-gzip');
+import expressStaticGzip from 'express-static-gzip';
 
 // Serve brotli-compressed static files if available
 const customCacheControlHandler=(response, path)=>{
@@ -28,4 +28,4 @@ const init=(pathToAssets)=>{
 		} });
 };
 
-module.exports = init;
+export default init;

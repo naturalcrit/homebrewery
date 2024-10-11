@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const { nanoid } = require('nanoid');
-const _ = require('lodash');
-const zlib = require('zlib');
+import { default as mongoose } from 'mongoose';
+import { nanoid } from 'nanoid';
+import { default as _ } from 'lodash';
+import { default as zlib } from 'zlib';
 
 const HomebrewSchema = mongoose.Schema({
 	shareId   : { type: String, default: ()=>{return nanoid(12);}, index: { unique: true } },
@@ -62,7 +62,7 @@ HomebrewSchema.statics.getByUser = async function(username, allowAccess=false, f
 
 const Homebrew = mongoose.model('Homebrew', HomebrewSchema);
 
-module.exports = {
-	schema : HomebrewSchema,
-	model  : Homebrew,
+export {
+	HomebrewSchema as schema,
+	Homebrew as model,
 };

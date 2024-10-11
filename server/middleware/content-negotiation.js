@@ -1,8 +1,8 @@
-const config = require('../config.js');
+import config from '../config.js';
 const nodeEnv = config.get('node_env');
 const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
 
-module.exports = (req, res, next)=>{
+export default (req, res, next)=>{
 	const isImageRequest = req.get('Accept')?.split(',')
         ?.filter((h)=>!h.includes('q='))
         ?.every((h)=>/image\/.*/.test(h));

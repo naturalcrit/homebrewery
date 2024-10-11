@@ -1,7 +1,10 @@
 /* eslint-disable max-lines */
 
-const dedent = require('dedent-tabs').default;
-const Markdown = require('naturalcrit/markdown.js');
+import { default as dedentTabs } from 'dedent-tabs';
+const dedent = dedentTabs.default;
+
+import { default as Markdown } from 'naturalcrit/markdown.js';
+
 
 // Marked.js adds line returns after closing tags on some default tokens.
 // This removes those line returns for comparison sake.
