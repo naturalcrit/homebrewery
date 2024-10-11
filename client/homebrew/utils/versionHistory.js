@@ -105,11 +105,15 @@ export async function updateHistory(brew) {
 export async function versionHistoryGarbageCollection(){
 	const entries = await IDB.entries();
 
+	const expiredKeys = [];
 	for (const [key, value] of entries){
 		const expireAt = new Date(value.savedAt);
 		expireAt.setMinutes(expireAt.getMinutes() + GARBAGE_COLLECT_DELAY);
 		if(new Date() > expireAt){
-			await IDB.del(key);
+			expiredKeys.push(key);
 		};
 	};
+	if(expiredKeys.length > 0){
+		await IDB.delMany(expiredKeys);
+	}
 };
