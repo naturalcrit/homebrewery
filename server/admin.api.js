@@ -1,9 +1,11 @@
-const HomebrewModel = require('./homebrew.model.js').model;
-const NotificationModel = require('./notifications.model.js').model;
-const router = require('express').Router();
-const Moment = require('moment');
-const templateFn = require('../client/template.js');
-const zlib = require('zlib');
+import { model as HomebrewModel } from './homebrew.model.js';
+import { model as NotificationModel } from './notifications.model.js';
+import Express from 'express';
+import * as Moment from 'moment';
+import * as templateFn from '../client/template.js';
+import * as zlib from 'zlib';
+
+const router = Express.Router();
 
 process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
 process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password3';
@@ -182,4 +184,4 @@ router.get('/admin', mw.adminOnly, (req, res)=>{
 	});
 });
 
-module.exports = router;
+export default router;

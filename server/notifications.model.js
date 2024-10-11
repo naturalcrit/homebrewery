@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const _ = require('lodash');
+import mongoose from 'mongoose';
+import _ from 'lodash';
 
 const NotificationSchema = new mongoose.Schema({
 	dismissKey : { type: String, unique: true, required: true },
@@ -56,7 +56,7 @@ NotificationSchema.statics.getAll = async function() {
 
 const Notification = mongoose.model('Notification', NotificationSchema);
 
-module.exports = {
+export default {
 	schema : NotificationSchema,
 	model  : Notification,
 };

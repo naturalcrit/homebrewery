@@ -1,8 +1,8 @@
 /* eslint-disable max-lines */
-const googleDrive = require('@googleapis/drive');
-const { nanoid } = require('nanoid');
-const token = require('./token.js');
-const config = require('./config.js');
+import * as googleDrive from '@googleapis/drive';
+import { nanoid } from 'nanoid';
+import * as token from './token.js';
+import * as config from './config.js';
 
 let serviceAuth;
 if(!config.get('service_account')){
@@ -333,4 +333,4 @@ const GoogleActions = {
 	}
 };
 
-module.exports = GoogleActions;
+export default GoogleActions;

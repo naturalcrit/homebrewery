@@ -1,6 +1,7 @@
-const express = require('express');
-const asyncHandler = require('express-async-handler');
-const HomebrewModel = require('./homebrew.model.js').model;
+import express from 'express';
+import asyncHandler from 'express-async-handler';
+import * as HomebrewModelSchema from './homebrew.model.js';
+const HomebrewModel = HomebrewModelSchema.model;
 
 const router = express.Router();
 
@@ -106,4 +107,4 @@ const findTotal = async (req, res)=>{
 router.get('/api/vault/total', asyncHandler(findTotal));
 router.get('/api/vault', asyncHandler(findBrews));
 
-module.exports = router;
+export default router;

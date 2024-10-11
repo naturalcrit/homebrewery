@@ -1,9 +1,10 @@
-const supertest = require('supertest');
-
-const app = supertest.agent(require('app.js').app)
+import supertest from 'supertest';
+import * as theApp  from 'app.js';
+const app = supertest.agent(theApp.app)
 	.set('X-Forwarded-Proto', 'https');
 
-const NotificationModel = require('./notifications.model.js').model;
+import * as notificationModelSchema from './notifications.model.js';
+const NotificationModel = notificationModelSchema.model;
 
 describe('Tests for admin api', ()=>{
 	afterEach(()=>{

@@ -51,7 +51,7 @@ const fetchThemeBundle = async (obj, renderer, theme)=>{
 	}));
 };
 
-module.exports = {
+export {
 	splitTextStyleAndMetadata,
 	printCurrentBrew,
 	fetchThemeBundle,

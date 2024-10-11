@@ -1,18 +1,18 @@
 /* eslint-disable max-lines */
-const _ = require('lodash');
-const Marked = require('marked');
-const MarkedExtendedTables = require('marked-extended-tables');
-const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartypants-lite');
-const { gfmHeadingId: MarkedGFMHeadingId, resetHeadings: MarkedGFMResetHeadingIDs } = require('marked-gfm-heading-id');
-const { markedEmoji: MarkedEmojis } = require('marked-emoji');
+import * as  _ from 'lodash';
+import * as  Marked from 'marked';
+import * as  MarkedExtendedTables from 'marked-extended-tables';
+import { markedSmartypantsLite as MarkedSmartypantsLite } from 'marked-smartypants-lite';
+import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
+import { markedEmoji as MarkedEmojis } from 'marked-emoji';
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
-const diceFont      = require('../../themes/fonts/iconFonts/diceFont.js');
-const elderberryInn = require('../../themes/fonts/iconFonts/elderberryInn.js');
-const fontAwesome   = require('../../themes/fonts/iconFonts/fontAwesome.js');
-const gameIcons     = require('../../themes/fonts/iconFonts/gameIcons.js');
+import * as  diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
+import * as  elderberryInn from '../../themes/fonts/iconFonts/elderberryInn.js';
+import * as  fontAwesome   from '../../themes/fonts/iconFonts/fontAwesome.js';
+import * as  gameIcons     from '../../themes/fonts/iconFonts/gameIcons.js';
 
-const MathParser = require('expr-eval').Parser;
+import * as  MathParser from 'expr-eval'.Parser;
 const renderer = new Marked.Renderer();
 const tokenizer = new Marked.Tokenizer();
 

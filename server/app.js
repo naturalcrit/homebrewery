@@ -2,25 +2,25 @@
 // Set working directory to project root
 process.chdir(`${__dirname}/..`);
 
-const _ = require('lodash');
-const jwt = require('jwt-simple');
-const express = require('express');
-const yaml = require('js-yaml');
+import * as _ from 'lodash';
+import * as jwt from 'jwt-simple';
+import * as express from 'express';
+import * as yaml from 'js-yaml';
 const app = express();
-const config = require('./config.js');
-const fs = require('fs-extra');
+import * as config from './config.js';
+import * as fs from 'fs-extra';
 
 
-const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = require('./homebrew.api.js');
-const GoogleActions = require('./googleActions.js');
-const serveCompressedStaticAssets = require('./static-assets.mv.js');
-const sanitizeFilename = require('sanitize-filename');
-const asyncHandler = require('express-async-handler');
-const templateFn = require('./../client/template.js');
+import { homebrewApi, getBrew, getUsersBrewThemes, getCSS } from './homebrew.api.js';
+import GoogleActions from './googleActions.js';
+import serveCompressedStaticAssets from './static-assets.mv.js';
+import sanitizeFilename from 'sanitize-filename';
+import asyncHandler from 'express-async-handler';
+import templateFn from './../client/template.js';
 
-const { DEFAULT_BREW } = require('./brewDefaults.js');
+import { DEFAULT_BREW } from './brewDefaults.js';
 
-const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
+import { splitTextStyleAndMetadata } from '../shared/helpers.js';
 
 
 const sanitizeBrew = (brew, accessType)=>{
@@ -59,12 +59,14 @@ app.use(homebrewApi);
 app.use(require('./admin.api.js'));
 app.use(require('./vault.api.js'));
 
-const HomebrewModel     = require('./homebrew.model.js').model;
-const welcomeText       = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
-const welcomeTextLegacy = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
-const migrateText       = require('fs').readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
-const changelogText     = require('fs').readFileSync('changelog.md', 'utf8');
-const faqText           = require('fs').readFileSync('faq.md', 'utf8');
+import * as hbModel from './homebrew.model.js';
+import { readFileSync } from 'fs';
+const HomebrewModel = hbModel.model;
+const welcomeText       = readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
+const welcomeTextLegacy = readFileSync('client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
+const migrateText       = readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
+const changelogText     = readFileSync('changelog.md', 'utf8');
+const faqText           = readFileSync('faq.md', 'utf8');
 
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
@@ -561,6 +563,6 @@ app.use((req, res)=>{
 });
 //^=====--------------------------------------=====^//
 
-module.exports = {
+export default {
 	app : app
 };

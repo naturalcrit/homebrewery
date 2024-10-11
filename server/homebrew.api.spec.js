@@ -1,5 +1,11 @@
 /* eslint-disable max-lines */
 
+import * as google from './googleActions.js';
+import * as hbmodel from './homebrew.model.js';
+import * as api from './homebrew.api';
+const model = hbmodel.model;
+
+
 describe('Tests for api', ()=>{
 	let api;
 	let google;
@@ -36,9 +42,6 @@ describe('Tests for api', ()=>{
 			}
 		});
 
-		google = require('./googleActions.js');
-		model = require('./homebrew.model.js').model;
-
 		jest.mock('./googleActions.js');
 		google.authCheck = jest.fn(()=>'client');
 		google.newGoogleBrew = jest.fn(()=>'id');
@@ -53,8 +56,6 @@ describe('Tests for api', ()=>{
 			set       : jest.fn(()=>{}),
 			setHeader : jest.fn(()=>{})
 		};
-
-		api = require('./homebrew.api');
 
 		hbBrew = {
 			text        : `brew text`,
