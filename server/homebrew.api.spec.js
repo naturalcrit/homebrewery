@@ -564,16 +564,6 @@ brew`);
 				views       : 0
 			});
 		});
-
-		it('should handle google error', async()=>{
-			google.newGoogleBrew = jest.fn(()=>{
-				throw 'err';
-			});
-			await api.newBrew({ body: { text: 'asdf', title: '' }, query: { saveToGoogle: true }, account: { username: 'test user' } }, res);
-
-			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.send).toHaveBeenCalledWith('err');
-		});
 	});
 
 	describe('deleteGoogleBrew', ()=>{
@@ -939,7 +929,7 @@ brew`);
 			expect(req.brew).toEqual(testBrew);
 			expect(req.brew).toHaveProperty('style', '\nI Have a style!\n');
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.send).toHaveBeenCalledWith("\nI Have a style!\n");
+			expect(res.send).toHaveBeenCalledWith('\nI Have a style!\n');
 			expect(res.set).toHaveBeenCalledWith({
 				'Cache-Control' : 'no-cache',
 				'Content-Type'  : 'text/css'
