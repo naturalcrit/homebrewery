@@ -1,7 +1,7 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
-const { useState, useRef, useEffect, useCallback } = React;
+const { useState, useRef, useCallback } = React;
 const _ = require('lodash');
 
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
