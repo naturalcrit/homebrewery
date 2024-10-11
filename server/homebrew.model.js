@@ -62,7 +62,7 @@ HomebrewSchema.statics.getByUser = async function(username, allowAccess=false, f
 
 const Homebrew = mongoose.model('Homebrew', HomebrewSchema);
 
-export default {
-	schema : HomebrewSchema,
-	model  : Homebrew,
+export {
+	HomebrewSchema as schema,
+	Homebrew as model,
 };

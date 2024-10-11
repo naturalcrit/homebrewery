@@ -1,8 +1,7 @@
 /* eslint-disable max-lines */
 import {default as _ }  from 'lodash';
 
-import {default as  HomebrewModelSchema } from './homebrew.model.js';
-const  HomebrewModel = HomebrewModelSchema.model;
+import { model as HomebrewModel } from './homebrew.model.js';
 
 import * as expressRouter from 'express';
 const router = expressRouter.Router();
@@ -469,7 +468,7 @@ const api = {
 	}
 };
 
-import {default as middleware} from './middleware/check-client-version.js';
+import { default as middleware } from './middleware/check-client-version.js';
 router.use('/api', middleware);
 router.post('/api', asyncHandler(api.newBrew));
 router.put('/api/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
@@ -478,4 +477,4 @@ router.delete('/api/:id', asyncHandler(api.deleteBrew));
 router.get('/api/remove/:id', asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
 
-export default api;
+export { api };

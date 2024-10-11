@@ -1,7 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import * as HomebrewModelSchema from './homebrew.model.js';
-const HomebrewModel = HomebrewModelSchema.model;
+import { model as HomebrewModel } from './homebrew.model.js';
 
 const router = express.Router();
 

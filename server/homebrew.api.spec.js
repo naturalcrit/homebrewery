@@ -1,15 +1,10 @@
 /* eslint-disable max-lines */
 
-import * as google from './googleActions.js';
-import { default as hbmodel } from './homebrew.model.js';
-import { default as api } from './homebrew.api.js';
-const model = hbmodel.model;
-
+import { default as google } from './googleActions.js';
+import { model } from './homebrew.model.js';
+import { api } from './homebrew.api.js';
 
 describe('Tests for api', ()=>{
-	let api;
-	let google;
-	let model;
 	let hbBrew;
 	let googleBrew;
 	let res;

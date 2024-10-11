@@ -1,9 +1,9 @@
 import { model as HomebrewModel } from './homebrew.model.js';
 import { model as NotificationModel } from './notifications.model.js';
-import Express from 'express';
-import * as Moment from 'moment';
-import * as templateFn from '../client/template.js';
-import * as zlib from 'zlib';
+import { default as Express } from 'express';
+import { default as Moment } from 'moment';
+import { default  as templateFn } from '../client/template.js';
+import { default as zlib } from 'zlib';
 
 const router = Express.Router();
 

@@ -4,7 +4,7 @@ process.chdir(`${__dirname}/..`);
 
 import * as _ from 'lodash';
 import * as jwt from 'jwt-simple';
-import * as express from 'express';
+import express from 'express';
 import * as yaml from 'js-yaml';
 const app = express();
 import * as config from './config.js';
@@ -70,10 +70,8 @@ app.use(homebrewApi);
 app.use(adminAPI);
 app.use(vaultAPI);
 
-import { default as hbModel } from './homebrew.model.js';
-console.log(hbModel);
+import { model as HomebrewModel } from './homebrew.model.js';
 import { readFileSync } from 'fs';
-const HomebrewModel = hbModel.model;
 const welcomeText       = readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 const welcomeTextLegacy = readFileSync('client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
 const migrateText       = readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
@@ -576,6 +574,6 @@ app.use((req, res)=>{
 });
 //^=====--------------------------------------=====^//
 
-export default {
-	app : app
+export {
+	app
 };
