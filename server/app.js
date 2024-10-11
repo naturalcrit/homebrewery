@@ -9,6 +9,7 @@ import * as yaml from 'js-yaml';
 const app = express();
 import * as config from './config.js';
 import * as fs from 'fs-extra';
+import { default as packageJSON } from './../package.json';
 
 
 import { homebrewApi, getBrew, getUsersBrewThemes, getCSS } from './homebrew.api.js';
@@ -22,6 +23,13 @@ import { DEFAULT_BREW } from './brewDefaults.js';
 
 import { splitTextStyleAndMetadata } from '../shared/helpers.js';
 
+import { default as useContentNegotiation } from './middleware/content-negotiation.js';
+
+import { default as useBodyParser } from 'body-parser';
+const useBodyParserJSON = useBodyParser.json({ limit: '25mb' });
+
+import { default as useCookieParser } from 'cookie-parser';
+import { default as useForceSSLmw } from './forcessl.mw.js';
 
 const sanitizeBrew = (brew, accessType)=>{
 	brew._id = undefined;
@@ -33,10 +41,10 @@ const sanitizeBrew = (brew, accessType)=>{
 };
 
 app.use('/', serveCompressedStaticAssets(`build`));
-app.use(require('./middleware/content-negotiation.js'));
-app.use(require('body-parser').json({ limit: '25mb' }));
-app.use(require('cookie-parser')());
-app.use(require('./forcessl.mw.js'));
+app.use(useContentNegotiation);
+app.use(useBodyParserJSON);
+app.use(useCookieParser());
+app.use(useForceSSLmw);
 
 //Account Middleware
 app.use((req, res, next)=>{
@@ -55,11 +63,15 @@ app.use((req, res, next)=>{
 	return next();
 });
 
-app.use(homebrewApi);
-app.use(require('./admin.api.js'));
-app.use(require('./vault.api.js'));
+import { default as adminAPI } from './admin.api.js';
+import { default as vaultAPI } from './vault.api.js';
 
-import * as hbModel from './homebrew.model.js';
+app.use(homebrewApi);
+app.use(adminAPI);
+app.use(vaultAPI);
+
+import { default as hbModel } from './homebrew.model.js';
+console.log(hbModel);
 import { readFileSync } from 'fs';
 const HomebrewModel = hbModel.model;
 const welcomeText       = readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
@@ -487,7 +499,7 @@ const renderPage = async (req, res)=>{
 		deployment  : config.get('heroku_app_name') ?? ''
 	};
 	const props = {
-		version       : require('./../package.json').version,
+		version       : packageJSON.version,
 		url           : req.customUrl || req.originalUrl,
 		brew          : req.brew,
 		brews         : req.brews,

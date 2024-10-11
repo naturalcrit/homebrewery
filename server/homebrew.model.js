@@ -1,7 +1,7 @@
-import * as mongoose from 'mongoose';
+import { default as mongoose } from 'mongoose';
 import { nanoid } from 'nanoid';
-import * as  _ from 'lodash';
-import * as  zlib from 'zlib';
+import { default as _ } from 'lodash';
+import { default as zlib } from 'zlib';
 
 const HomebrewSchema = mongoose.Schema({
 	shareId   : { type: String, default: ()=>{return nanoid(12);}, index: { unique: true } },

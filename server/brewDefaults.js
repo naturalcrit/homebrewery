@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import { default as _ } from 'lodash';
 
 // Default properties for newly-created brews
 const DEFAULT_BREW = {

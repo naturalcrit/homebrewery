@@ -102,7 +102,7 @@ describe('Tests for admin api', ()=>{
 			const dismissKey = 'testKey';
 
 			jest.spyOn(NotificationModel, 'findOneAndDelete')
-				.mockImplementationOnce(() => {
+				.mockImplementationOnce(()=>{
 					return { exec: jest.fn().mockResolvedValue() };
 				});
 			const response = await app

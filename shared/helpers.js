@@ -1,6 +1,6 @@
-const _ = require('lodash');
-const yaml = require('js-yaml');
-const request = require('../client/homebrew/utils/request-middleware.js');
+import { default as _ } from 'lodash';
+import { default as yaml } from 'js-yaml';
+import { default as request }  from '../client/homebrew/utils/request-middleware.js';
 
 const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');

@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 
-import * as Markdown from 'naturalcrit/markdown.js';
+import { default as Markdown } from 'naturalcrit/markdown.js';
 
 test('Processes the markdown within an HTML block if its just a class wrapper', function() {
 	const source = '<div>*Bold text*</div>';

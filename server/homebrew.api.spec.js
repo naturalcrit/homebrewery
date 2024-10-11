@@ -1,9 +1,9 @@
 /* eslint-disable max-lines */
 
-import * as google from './googleActions.js';
-import * as hbmodel from './homebrew.model.js';
-import * as api from './homebrew.api';
-const model = hbmodel.model;
+// import * as google from './googleActions.js';
+// import { default as hbmodel } from './homebrew.model.js';
+// import { default as api } from './homebrew.api.js';
+// const model = hbmodel.model;
 
 
 describe('Tests for api', ()=>{

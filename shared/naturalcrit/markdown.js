@@ -1,18 +1,20 @@
 /* eslint-disable max-lines */
-import * as  _ from 'lodash';
+import { default as  _ } from 'lodash';
 import * as  Marked from 'marked';
-import * as  MarkedExtendedTables from 'marked-extended-tables';
+import { default as MarkedExtendedTables } from 'marked-extended-tables';
 import { markedSmartypantsLite as MarkedSmartypantsLite } from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis } from 'marked-emoji';
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
-import * as  diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
-import * as  elderberryInn from '../../themes/fonts/iconFonts/elderberryInn.js';
-import * as  fontAwesome   from '../../themes/fonts/iconFonts/fontAwesome.js';
-import * as  gameIcons     from '../../themes/fonts/iconFonts/gameIcons.js';
+import { default as diceFont }       from '../../themes/fonts/iconFonts/diceFont.js';
+import { default as elderberryInn }  from '../../themes/fonts/iconFonts/elderberryInn.js';
+import { default as fontAwesome }    from '../../themes/fonts/iconFonts/fontAwesome.js';
+import { default as gameIcons }      from '../../themes/fonts/iconFonts/gameIcons.js';
 
-import * as  MathParser from 'expr-eval'.Parser;
+import { default as ExprMathParser } from 'expr-eval';
+
+const MathParser = ExprMathParser.Parser;
 const renderer = new Marked.Renderer();
 const tokenizer = new Marked.Tokenizer();
 
@@ -854,7 +856,7 @@ const globalVarsList    = {};
 let varsQueue       = [];
 let globalPageNumber = 0;
 
-module.exports = {
+export default {
 	marked : Marked,
 	render : (rawBrewText, pageNumber=0)=>{
 		globalVarsList[pageNumber] = {};					//Reset global links for current page, to ensure values are parsed in order

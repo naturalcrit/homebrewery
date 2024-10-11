@@ -2,7 +2,7 @@
 import * as googleDrive from '@googleapis/drive';
 import { nanoid } from 'nanoid';
 import * as token from './token.js';
-import * as config from './config.js';
+import { default as config } from './config.js';
 
 let serviceAuth;
 if(!config.get('service_account')){

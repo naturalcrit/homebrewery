@@ -1,4 +1,4 @@
-import { nconf } from 'nconf';
+import { default as nconf } from 'nconf';
 
 export default nconf
     .argv()

@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
-import * as  _ from 'lodash';
+import {default as _ }  from 'lodash';
 
-import * as  HomebrewModelSchema from './homebrew.model.js';
+import {default as  HomebrewModelSchema } from './homebrew.model.js';
 const  HomebrewModel = HomebrewModelSchema.model;
 
 import * as expressRouter from 'express';
@@ -11,7 +11,7 @@ import * as  zlib from 'zlib';
 import * as  GoogleActions from './googleActions.js';
 import * as  Markdown from '../shared/naturalcrit/markdown.js';
 import * as  yaml from 'js-yaml';
-import * as  asyncHandler from 'express-async-handler';
+import { default as  asyncHandler } from 'express-async-handler';
 import { nanoid } from 'nanoid';
 import { splitTextStyleAndMetadata } from '../shared/helpers.js';
 
@@ -469,7 +469,7 @@ const api = {
 	}
 };
 
-import * as middleware from './middleware/check-client-version.js'; 
+import {default as middleware} from './middleware/check-client-version.js';
 router.use('/api', middleware);
 router.post('/api', asyncHandler(api.newBrew));
 router.put('/api/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
