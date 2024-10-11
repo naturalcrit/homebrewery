@@ -483,7 +483,8 @@ const renderPage = async (req, res)=>{
 	const configuration = {
 		local       : isLocalEnvironment,
 		publicUrl   : config.get('publicUrl') ?? '',
-		environment : nodeEnv
+		environment : nodeEnv,
+		deployment  : config.get('heroku_app_name') ?? ''
 	};
 	const props = {
 		version       : require('./../package.json').version,
