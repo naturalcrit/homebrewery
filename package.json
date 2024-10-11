@@ -4,17 +4,17 @@
   "version": "3.15.0",
   "engines": {
     "npm": "^10.8.x",
-    "node": "^20.17.x"
+    "node": "^20.18.x"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/naturalcrit/homebrewery.git"
   },
   "scripts": {
-    "dev": "node --experimental-require-module scripts/dev.js",
-    "quick": "node --experimental-require-module scripts/quick.js",
-    "build": "node --experimental-require-module scripts/buildHomebrew.js && node --experimental-require-module scripts/buildAdmin.js",
-    "builddev": "node --experimental-require-module scripts/buildHomebrew.js --dev",
+    "dev": "node scripts/dev.js",
+    "quick": "node scripts/quick.js",
+    "build": "node scripts/buildHomebrew.js && node scripts/buildAdmin.js",
+    "builddev": "node scripts/buildHomebrew.js --dev",
     "lint": "eslint --fix",
     "lint:dry": "eslint",
     "stylelint": "stylelint --fix **/*.{less}",
@@ -38,10 +38,10 @@
     "test:hard-breaks": "jest tests/markdown/hard-breaks.test.js --verbose --noStackTrace",
     "test:emojis": "jest tests/markdown/emojis.test.js --verbose --noStackTrace",
     "test:route": "jest tests/routes/static-pages.test.js --verbose",
-    "phb": "node --experimental-require-module scripts/phb.js",
+    "phb": "node scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
     "postinstall": "npm run build",
-    "start": "node --experimental-require-module server.js"
+    "start": "node server.js"
   },
   "author": "stolksdorf",
   "license": "MIT",
@@ -116,7 +116,7 @@
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.30.1",
     "mongoose": "^8.7.1",
-    "nanoid": "^5.0.7",
+    "nanoid": "3.3.4",
     "nconf": "^0.12.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
