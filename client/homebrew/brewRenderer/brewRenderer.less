@@ -3,9 +3,13 @@
 .brewRenderer {
 	overflow-y    : scroll;
 	will-change   : transform;
-	padding   : 60px 0px;
+	padding-top   : 30px;
+	height        : 100vh;
 	&:has(.facing, .flow) {
 		padding : 60px 30px;
+	}
+	&.deployment {
+		background-color: darkred;
 	}
 	:where(.pages) {
 		&.facing {
@@ -71,6 +75,7 @@
 		overflow-y  : unset;
 		.pages {
 			margin : 0px;
+			zoom: 100% !important;
 			& > .page { box-shadow : unset; }
 		}
 	}
