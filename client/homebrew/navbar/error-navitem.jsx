@@ -116,17 +116,6 @@ const ErrorNavItem = createClass({
 			</Nav.item>;
 		}
 
-		if(HBErrorCode === '55') {
-			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
-				Oops!
-				<div className='errorContainer' onClick={clearError}>
-					Looks like there are too many requests
-					from this IP address in a short time.
-					Please try again after a few minutes.
-				</div>
-			</Nav.item>;
-		}
-
 		return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 			Oops!
 			<div className='errorContainer'>
