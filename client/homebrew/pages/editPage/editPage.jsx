@@ -458,7 +458,6 @@ const EditPage = createClass({
 						userThemes={this.props.userThemes}
 						snippetBundle={this.state.themeBundle.snippets}
 						templateBundle={this.state.themeBundle.templates}
-						userTemplates={this.state.userTemplates}
 						updateBrew={this.updateBrew}
 						onCursorPageChange={this.handleEditorCursorPageChange}
 						onViewPageChange={this.handleEditorViewPageChange}
@@ -480,7 +479,8 @@ const EditPage = createClass({
 						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 						allowPrint={true}
 						templateBundle={asTemplateMap(this.state.themeBundle.templates)}
-						userTemplates={asTemplateMap(this.state.userTemplates)}
+						userTemplates={asTemplateMap(this.state.brew.templates)}
+						templates={this.state.brew.templates}
 					/>
 				</SplitPane>
 			</div>

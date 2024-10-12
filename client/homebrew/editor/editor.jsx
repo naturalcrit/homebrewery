@@ -440,7 +440,6 @@ const Editor = createClass({
 			</>;
 		}
 		if(this.isTemplate()){
-			console.log(this.props.brew);
 			return <>
 				<CodeEditor key='codeEditor'
 					ref={this.codeEditor}
