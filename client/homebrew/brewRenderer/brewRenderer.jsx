@@ -56,7 +56,7 @@ const getPageTemplates = (pages)=>{
 	pages.forEach((page, index)=>{
 		const firstLine = page.split('\n')[0];
 		const firstLineClean = firstLine.slice(5).trim();
-		if(firstLineClean.length > 0) {
+		if((firstLineClean.length > 0) || (brewTemplates.length > 0)) {
 			brewTemplates[ index ] = firstLineClean;
 		}
 		tempPages.push(page.slice(firstLine.length));
