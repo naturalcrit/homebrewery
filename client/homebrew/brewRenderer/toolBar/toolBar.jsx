@@ -88,9 +88,9 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 		return deltaZoom;
 	};
 
-	const setBookMode = ()=>{
-		const nextMode = modes[(modes.indexOf(arrangement) + 1) % modes.length];
-		setArrangement(nextMode);
+	const setBookMode = (view)=>{
+		// const nextMode = modes[(modes.indexOf(arrangement) + 1) % modes.length];
+		setArrangement(view);
 	};
 
 	return (
@@ -148,13 +148,24 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 
 			{/*v=====----------------------< Page Controls >---------------------=====v*/}
 			<div className='group'>
-				<button
-					id='book-mode'
-					className='tool'
-					onClick={()=>setBookMode()}
-				>
-					{arrangement}
-				</button>
+				<div className='radio-group' role='group'>
+					<button role='radio'
+						id='single-view'
+						className={`tool${arrangement === 'single' && ' active'}`}
+						onClick={()=>setBookMode('single')}
+					><i className='fac single-view-alt' /></button>
+					<button role='radio'
+						id='facing-view'
+						className={`tool${arrangement === 'facing' && ' active'}`}
+						onClick={()=>setBookMode('facing')}
+					><i className='fac facing-view-alt' /></button>
+					<button role='radio'
+						id='flow-view'
+						className={`tool${arrangement === 'flow' && ' active'}`}
+						onClick={()=>setBookMode('flow')}
+					><i className='fac flow-view-alt' /></button>
+
+				</div>
 				<AnchoredBox id='view-mode-options' className='tool' title='Options'>
 					<label title='Modify the horizontal space between pages.'>Column gap<input type='range' min={0} max={200} className='range-input' onChange={(evt)=>onStyleChange({ columnGap: `${evt.target.value}px` })} /></label>
 					<label title='Modify the vertical space between rows of pages.'>Row gap<input type='range' min={0} max={200} className='range-input' onChange={(evt)=>onStyleChange({ rowGap: `${evt.target.value}px` })} /></label>

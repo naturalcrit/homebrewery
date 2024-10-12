@@ -34,11 +34,21 @@
 		align-items : center;
 	}
 
+	.active {
+		background-color: #444;
+	}
+
 	.anchored-box {
 		color: #CCCCCC;
 		input[type='number']{
 			width: 4ch;
 		}
+	}
+
+	.radio-group:has(button[role='radio']){
+		display: flex;
+		border: 1px solid #333;
+		height: 100%;
 	}
 
 	input {
@@ -90,7 +100,7 @@
 	}
 
 	button {
-		box-sizing       : content-box;
+		box-sizing       : border-box;
 		display          : flex;
 		align-items      : center;
 		justify-content  : center;
@@ -107,7 +117,7 @@
 		}
 
 		&:hover { background-color : #444444; }
-		&:focus { outline : 1px solid #D3D3D3; }
+		&:focus { border : 1px solid #D3D3D3;outline: none;}
 		&:disabled {
 			color            : #777777;
 			background-color : unset !important;
