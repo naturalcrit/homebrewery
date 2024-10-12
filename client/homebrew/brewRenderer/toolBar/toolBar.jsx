@@ -122,7 +122,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 				</button>
 				<input
 					id='zoom-slider'
-					className='range-input tool'
+					className='range-input tool hover-tooltip'
 					type='range'
 					name='zoom'
 					list='zoomLevels'
@@ -156,8 +156,8 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 					{arrangement}
 				</button>
 				<AnchoredBox id='view-mode-options' className='tool' title='Options'>
-					<label title='Modify the horizontal space between pages.'>Column gap<input type='range' min={0} max={200} className='range-input' onChange={(evt)=>onStyleChange({ columnGap: `${evt.target.value}px` })} /></label>
-					<label title='Modify the vertical space between rows of pages.'>Row gap<input type='range' min={0} max={200} className='range-input' onChange={(evt)=>onStyleChange({ rowGap: `${evt.target.value}px` })} /></label>
+					<label title='Modify the horizontal space between pages.'>Column gap<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>onStyleChange({ columnGap: `${evt.target.value}px` })} /></label>
+					<label title='Modify the vertical space between rows of pages.'>Row gap<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>onStyleChange({ rowGap: `${evt.target.value}px` })} /></label>
 
 					<h2>Facing</h2>
 					<label title='Start 1st page on the right side, such as if you have cover page.'>Start on right
