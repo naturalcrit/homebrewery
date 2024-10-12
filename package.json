@@ -101,7 +101,6 @@
     "expr-eval": "^2.0.2",
     "express": "^4.21.1",
     "express-async-handler": "^1.2.0",
-    "express-rate-limit": "^7.4.0",
     "express-static-gzip": "2.1.8",
     "fs-extra": "11.2.0",
     "idb-keyval": "^6.2.1",
