@@ -64,9 +64,9 @@ const BrewRenderer = (props)=>{
 	};
 
 	const [state, setState] = useState({
-		isMounted  : false,
-		visibility : 'hidden',
-		zoom       : 100,
+		isMounted     : false,
+		visibility    : 'hidden',
+		zoom          : 100,
 		previewStyles : {}
 	});
 
@@ -175,11 +175,25 @@ const BrewRenderer = (props)=>{
 	};
 
 	const handleStyle = (newStyle)=>{
-		setState((prevState)=>({
-			...prevState,
-			previewStyles : { ...prevState.previewStyles, ...newStyle }, 
-		}));
+		setState((prevState)=>{
+			// Merge styles, skipping those that are empty objects or null
+			const mergedStyles = Object.entries(newStyle).reduce((acc, [selector, style])=>{
+				if(style && Object.keys(style).length > 0) {
+					acc[selector] = {
+						...(prevState.previewStyles[selector] || {}), // Preserve existing styles
+						...style, // Add or override with new styles
+					};
+				} else {
+					// If the style is an empty object or null, delete the selector
+					delete acc[selector];
+				}
+				return acc;
+			}, { ...prevState.previewStyles });
+
+			return { ...prevState, previewStyles: mergedStyles };
+		});
 	};
+
 
 	const styleObject = {};
 
