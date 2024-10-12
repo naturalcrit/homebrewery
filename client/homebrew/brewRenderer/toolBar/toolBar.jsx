@@ -93,13 +93,13 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 		return deltaZoom;
 	};
 
-	const setBookMode = ()=>{
-		const nextMode = modes[(modes.indexOf(arrangement) + 1) % modes.length];
-		setArrangement(nextMode);
+	const setBookMode = (view)=>{
+		// const nextMode = modes[(modes.indexOf(arrangement) + 1) % modes.length];
+		setArrangement(view);
 	};
 
 	return (
-		<div className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`}>
+		<div className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`} role='toolbar'>
 			<button className='toggleButton' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible);}}><i className='fas fa-glasses' /></button>
 			{/*v=====----------------------< Zoom Controls >---------------------=====v*/}
 			<div className='group'>
@@ -153,13 +153,27 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 
 			{/*v=====----------------------< Page Controls >---------------------=====v*/}
 			<div className='group'>
-				<button
-					id='book-mode'
-					className='tool'
-					onClick={()=>setBookMode()}
-				>
-					{arrangement}
-				</button>
+				<div className='radio-group' role='group'>
+					<button role='radio'
+						id='single-view'
+						className={`tool${arrangement === 'single' && ' active'}`}
+						title='Single Page'
+						onClick={()=>setBookMode('single')}
+					><i className='fac single-view-alt' /></button>
+					<button role='radio'
+						id='facing-view'
+						className={`tool${arrangement === 'facing' && ' active'}`}
+						title='Facing Pages'
+						onClick={()=>setBookMode('facing')}
+					><i className='fac facing-view-alt' /></button>
+					<button role='radio'
+						id='flow-view'
+						className={`tool${arrangement === 'flow' && ' active'}`}
+						title='Flow Pages'
+						onClick={()=>setBookMode('flow')}
+					><i className='fac flow-view-alt' /></button>
+
+				</div>
 				<AnchoredBox id='view-mode-options' className='tool' title='Options'>
 					<label title='Modify the horizontal space between pages.'>Column gap<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>onStyleChange({ '.pages': { columnGap: `${evt.target.value}px` }})} /></label>
 					<label title='Modify the vertical space between rows of pages.'>Row gap<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>onStyleChange({ '.pages': { rowGap: `${evt.target.value}px` } })} /></label>

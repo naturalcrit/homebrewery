@@ -1,5 +1,5 @@
-require('./anchoredBox.less');
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, forwardRef } from 'react';
+import './anchoredBox.less';
 
 const AnchoredBox = ({ anchorPoint = 'center', className, children, ...props })=>{
 	const [visible, setVisible] = useState(false);
@@ -8,10 +8,12 @@ const AnchoredBox = ({ anchorPoint = 'center', className, children, ...props })=
 
 	useEffect(()=>{
 		const handleClickOutside = (evt)=>{
-			if(boxRef.current &&
-				!boxRef.current.contains(evt.target) &&
-				triggerRef.current &&
-				!triggerRef.current.contains(evt.target)){
+			if(
+				boxRef.current &&
+        !boxRef.current.contains(evt.target) &&
+        triggerRef.current &&
+        !triggerRef.current.contains(evt.target)
+			) {
 				setVisible(false);
 			}
 		};
@@ -33,23 +35,43 @@ const AnchoredBox = ({ anchorPoint = 'center', className, children, ...props })=
 				iframe.contentWindow.document.removeEventListener('click', handleClickOutside);
 			}
 		};
-	}, []); // Empty dependency array to run effect on mount only
+	}, []);
 
 	const handleClick = ()=>{
 		setVisible(!visible);
+		triggerRef.current?.focus();
+	};
+
+	const handleKeyDown = (evt)=>{
+		if(evt.key === 'Escape') {
+			setVisible(false);
+			triggerRef.current?.focus();
+		}
 	};
 
 	return (
 		<>
-			<button className={`${className} anchored-trigger${visible ? ' active' : ''}`} onClick={handleClick} ref={triggerRef}>
-				<i className='fas fa-gear' />
-			</button>
-			<div className={`anchored-box${visible ? ' active' : ''}`}  ref={boxRef}>
+			<TriggerButton
+				className={`${className} anchored-trigger${visible ? ' active' : ''}`}
+				onClick={handleClick}
+				ref={triggerRef}
+			/>
+			<div
+				className={`anchored-box${visible ? ' active' : ''}`}
+				ref={boxRef}
+				onKeyDown={(evt)=>handleKeyDown(evt)}
+			>
 				<h1>{props.title}</h1>
 				{children}
 			</div>
 		</>
 	);
 };
+
+const TriggerButton = forwardRef((props, ref)=>(
+	<button ref={ref} {...props}>
+		<i className='fas fa-gear' />
+	</button>
+));
 
 export default AnchoredBox;
