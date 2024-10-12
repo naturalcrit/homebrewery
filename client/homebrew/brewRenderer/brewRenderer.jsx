@@ -37,7 +37,7 @@ const BrewPage = (props)=>{
 		...props
 	};
 	const cleanText = props.contents; //DOMPurify.sanitize(props.contents, purifyConfig);
-	return <div className={props.className} id={`p${props.index + 1}`} >
+	return <div className={props.className} id={`p${props.index + 1}`} style={props.style}>
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
 };
@@ -67,7 +67,7 @@ const BrewRenderer = (props)=>{
 		isMounted  : false,
 		visibility : 'hidden',
 		zoom       : 100,
-		pagesStyle : null
+		previewStyles : {}
 	});
 
 	const mainRef  = useRef(null);
@@ -118,7 +118,7 @@ const BrewRenderer = (props)=>{
 		} else {
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			const html = Markdown.render(pageText, index);
-			return <BrewPage className='page' index={index} key={index} contents={html} />;
+			return <BrewPage className='page' index={index} key={index} contents={html} style={ state.previewStyles['.page']} />;
 		}
 	};
 
@@ -177,7 +177,7 @@ const BrewRenderer = (props)=>{
 	const handleStyle = (newStyle)=>{
 		setState((prevState)=>({
 			...prevState,
-			pagesStyle : { ...prevState.pagesStyle, ...newStyle }, 
+			previewStyles : { ...prevState.previewStyles, ...newStyle }, 
 		}));
 	};
 
@@ -223,7 +223,8 @@ const BrewRenderer = (props)=>{
 						&&
 						<>
 							{renderStyle()}
-							<div className='pages' lang={`${props.lang || 'en'}`} style={{ zoom: `${state.zoom}%`, ...state.pagesStyle }}>
+							{console.log(state.previewStyles)}
+							<div className='pages' lang={`${props.lang || 'en'}`} style={{ zoom: `${state.zoom}%`, ...state.previewStyles['.pages'] }}>
 								{renderPages()}
 							</div>
 						</>

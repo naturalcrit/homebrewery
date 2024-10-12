@@ -15,6 +15,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 	const [pageNum, setPageNum] = useState(currentPage);
 	const [arrangement, setArrangement] = useState('single');
 	const [startOnRight, setStartOnRight] = useState(true);
+	const [pageShadows, setPageShadows] = useState(true);
 	const [pagesStyle, setPagesStyle] = useState({});
 	const [toolsVisible, setToolsVisible] = useState(true);
 	const modes = ['single', 'facing', 'flow'];
@@ -40,6 +41,10 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 			pagesContainer.classList.add(startOnRight ? 'recto' : 'verso');
 		}
 	}, [arrangement, startOnRight]);
+
+	useEffect(()=>{
+		onStyleChange({ '.page': pageShadows ? {} : { boxShadow: 'none' } });
+	}, [pageShadows]);
 
 
 	const handleZoomButton = (zoom)=>{
@@ -156,17 +161,15 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 					{arrangement}
 				</button>
 				<AnchoredBox id='view-mode-options' className='tool' title='Options'>
-					<label title='Modify the horizontal space between pages.'>Column gap<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>onStyleChange({ columnGap: `${evt.target.value}px` })} /></label>
-					<label title='Modify the vertical space between rows of pages.'>Row gap<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>onStyleChange({ rowGap: `${evt.target.value}px` })} /></label>
-
-					<h2>Facing</h2>
+					<label title='Modify the horizontal space between pages.'>Column gap<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>onStyleChange({ '.pages': { columnGap: `${evt.target.value}px` }})} /></label>
+					<label title='Modify the vertical space between rows of pages.'>Row gap<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>onStyleChange({ '.pages': { rowGap: `${evt.target.value}px` } })} /></label>
 					<label title='Start 1st page on the right side, such as if you have cover page.'>Start on right
 						<input type='checkbox'
 							onChange={()=>setStartOnRight(!startOnRight)}
 							checked={startOnRight}
-							disabled={arrangement !== 'facing' ? true : false}
 							title={arrangement !== 'facing' ? 'Switch to Facing to enable toggle.' : null} />
 					</label>
+					<label title='Remove the page shadow from every page.'>Page shadow<input type='checkbox' checked={pageShadows} onChange={()=>setPageShadows(!pageShadows)} /></label>
 				</AnchoredBox>
 			</div>
 
