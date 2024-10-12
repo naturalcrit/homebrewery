@@ -9,6 +9,7 @@ const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
 const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
+
 const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
 
 const Themes = require('../themes/themes.json');
@@ -266,6 +267,7 @@ const api = {
 	getThemeBundle : async(req, res)=>{
 		/*	getThemeBundle: Collects the theme and all parent themes
 				returns an object containing an array of css, and an array of snippets, in render order
+    
 				req.params.id       : The shareId ( User theme ) or name ( static theme )
 				req.params.renderer : The Markdown renderer used for this theme */
 
@@ -392,6 +394,7 @@ const api = {
 		// Call and wait for afterSave to complete
 		const after = await afterSave();
 		if(!after) return;
+
 		res.status(200).send(saved);
 	},
 	deleteGoogleBrew : async (account, id, editId, res)=>{
