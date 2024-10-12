@@ -119,15 +119,6 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.templates = brew.text.slice(13, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
-	// Stub until we have written the editor
-	if(!brew?.templates) {
-		brew.templates = dedent`
-		\page Master Test 1
-		{{wide}}
-		Hello!
-		:::
-		`;
-	}
 };
 
 const printCurrentBrew = ()=>{
