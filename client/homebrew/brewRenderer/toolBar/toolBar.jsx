@@ -94,7 +94,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 	};
 
 	return (
-		<div className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`}>
+		<div className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`} role='toolbar'>
 			<button className='toggleButton' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible);}}><i className='fas fa-glasses' /></button>
 			{/*v=====----------------------< Zoom Controls >---------------------=====v*/}
 			<div className='group'>
@@ -152,16 +152,19 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 					<button role='radio'
 						id='single-view'
 						className={`tool${arrangement === 'single' && ' active'}`}
+						title='Single Page'
 						onClick={()=>setBookMode('single')}
 					><i className='fac single-view-alt' /></button>
 					<button role='radio'
 						id='facing-view'
 						className={`tool${arrangement === 'facing' && ' active'}`}
+						title='Facing Pages'
 						onClick={()=>setBookMode('facing')}
 					><i className='fac facing-view-alt' /></button>
 					<button role='radio'
 						id='flow-view'
 						className={`tool${arrangement === 'flow' && ' active'}`}
+						title='Flow Pages'
 						onClick={()=>setBookMode('flow')}
 					><i className='fac flow-view-alt' /></button>
 
