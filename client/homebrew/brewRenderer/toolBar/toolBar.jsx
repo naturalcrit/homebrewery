@@ -183,7 +183,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 							checked={startOnRight}
 							title={arrangement !== 'facing' ? 'Switch to Facing to enable toggle.' : null} />
 					</label>
-					<label title='Remove the page shadow from every page.'>Page shadow<input type='checkbox' checked={pageShadows} onChange={()=>setPageShadows(!pageShadows)} /></label>
+					<label title='Toggle the page shadow on every page.'>Page shadows<input type='checkbox' checked={pageShadows} onChange={()=>setPageShadows(!pageShadows)} /></label>
 				</AnchoredBox>
 			</div>
 
