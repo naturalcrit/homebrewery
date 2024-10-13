@@ -76,8 +76,12 @@ router.get('/admin/lookup/:id', mw.adminOnly, async (req, res, next)=>{
 	.then((brew)=>{
 		if(!brew)	// No document found
 			return res.status(404).json({ error: 'Document not found' });
-		else
+		else {
+			if(!brew.text && brew.textBin){
+				brew.text = zlib.inflateRawSync(brew.textBin);
+			}
 			return res.json(brew);
+		}
 	})
 	.catch((err)=>{
 		console.error(err);
