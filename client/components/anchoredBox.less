@@ -1,17 +1,13 @@
 .anchored-trigger {
-	@supports (anchor-name: --view-settings){
-		anchor-name: --view-settings;
-	}
 	&.active {
 		background-color: #444444;
 	}
-
 }
+
 .anchored-box {
 	position:absolute;
 	top: 30px;
-	@supports (position-anchor: --view-settings){
-		position-anchor: --view-settings;
+	@supports (inset-block-start: anchor(bottom)){
 		inset-block-start: anchor(bottom);
 	}
 	justify-self: anchor-center;
