@@ -237,7 +237,6 @@ const BrewRenderer = (props)=>{
 						&&
 						<>
 							{renderStyle()}
-							{console.log(state.previewStyles)}
 							<div className='pages' lang={`${props.lang || 'en'}`} style={{ zoom: `${state.zoom}%`, ...state.previewStyles['.pages'] }}>
 								{renderPages()}
 							</div>
