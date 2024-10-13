@@ -104,6 +104,37 @@ router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{
 		});
 });
 
+/* Cleans `<script` and `</script>` from the "text" field of a brew */
+router.put('/admin/clean/script/:id', (req, res)=>{
+	console.log(`[ADMIN] Cleaning script tags from ShareID ${req.params.id}`);
+
+	function cleanText(text){return text.replaceAll(/(<\/?s)cript/gi, '');};
+
+	HomebrewModel.findOne({ shareId: req.params.id })
+		.then((brew)=>{
+			if(!brew)
+				return res.status(404).send('Brew not found');
+
+			if(!brew.text && brew.textBin) {
+				brew.text = zlib.inflateRawSync(brew.textBin);
+			}
+
+			const properties = ['text', 'description', 'title'];
+			properties.forEach((property)=>{
+				brew[property] = cleanText(brew[property]);
+			});
+
+			brew.textBin = zlib.deflateRawSync(brew.text);
+			brew.text = undefined;
+
+			return brew.save();
+		})
+		.then((obj)=>res.status(200).send(obj))
+		.catch((err)=>{
+			console.error(err);
+			res.status(500).send('Error while saving');
+		});
+});
 
 /* Compresses the "text" field of a brew to binary */
 router.put('/admin/compress/:id', (req, res)=>{
