@@ -9,7 +9,6 @@ const yaml = require('js-yaml');
 const asyncHandler = require('express-async-handler');
 const { nanoid } = require('nanoid');
 const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
-const rateLimit = require('express-rate-limit');
 
 const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
 
@@ -354,7 +353,7 @@ const api = {
 			if(!brew.googleId) return;
 		} else if(brew.googleId) {
 			// If the google id exists and no other actions are being performed, update the google brew
-			const updated = await api.updateGoogleBrew(req.account, api.excludeGoogleProps(brew), res, req);
+			const updated = await GoogleActions.updateGoogleBrew(api.excludeGoogleProps(brew), req.ip);
 
 			if(!updated) return;
 		}
@@ -398,15 +397,6 @@ const api = {
 
 		res.status(200).send(saved);
 	},
-
-	updateGoogleBrew : async (account, brew, res, req)=>{
-		//let oAuth2Client;
-		//if(account.googleId)
-		//	oAuth2Client = GoogleActions.authCheck(account, res);
-
-		return await GoogleActions.updateGoogleBrew(brew, undefined, req.ip);
-	},
-
 	deleteGoogleBrew : async (account, id, editId, res)=>{
 		const auth = await GoogleActions.authCheck(account, res);
 		await GoogleActions.deleteGoogleBrew(auth, id, editId);

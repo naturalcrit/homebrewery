@@ -32,7 +32,7 @@ import { updateHistory, versionHistoryGarbageCollection } from '../../utils/vers
 
 const googleDriveIcon = require('../../googleDrive.svg');
 
-const SAVE_TIMEOUT = 16000;
+const SAVE_TIMEOUT = 10000;
 
 const EditPage = createClass({
 	displayName     : 'EditPage',
@@ -228,8 +228,8 @@ const EditPage = createClass({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
-		updateHistory(this.state.brew);
-		versionHistoryGarbageCollection();
+		await updateHistory(this.state.brew);
+		await versionHistoryGarbageCollection();
 
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 

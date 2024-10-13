@@ -154,9 +154,8 @@ const GoogleActions = {
 	  return brews;
 	},
 
-	updateGoogleBrew : async (brew, auth = defaultAuth, userIp)=>{
-		const drive = googleDrive.drive({ version: 'v3', auth: auth });
-		console.log(auth == defaultAuth ? 'UPDATE w SERVICEACC' : 'UPDATE w USERACC')
+	updateGoogleBrew : async (brew, userIp)=>{
+		const drive = googleDrive.drive({ version: 'v3', auth: defaultAuth });
 
 		await drive.files.update({
 			fileId   : brew.googleId,
@@ -222,7 +221,6 @@ const GoogleActions = {
 		})
 		.catch((err)=>{
 			console.log('Error while creating new Google brew');
-			console.error(err);
 			throw (err);
 		});
 

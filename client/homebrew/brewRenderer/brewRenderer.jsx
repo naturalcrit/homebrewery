@@ -1,7 +1,7 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
-const { useState, useRef, useEffect, useCallback } = React;
+const { useState, useRef, useCallback } = React;
 const _ = require('lodash');
 
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
@@ -54,16 +54,15 @@ const BrewRenderer = (props)=>{
 		theme                      : '5ePHB',
 		lang                       : '',
 		errors                     : [],
-		currentEditorCursorPageNum : 0,
-		currentEditorViewPageNum   : 0,
-		currentBrewRendererPageNum : 0,
+		currentEditorCursorPageNum : 1,
+		currentEditorViewPageNum   : 1,
+		currentBrewRendererPageNum : 1,
 		themeBundle                : {},
 		onPageChange               : ()=>{},
 		...props
 	};
 
 	const [state, setState] = useState({
-		height     : PAGE_HEIGHT,
 		isMounted  : false,
 		visibility : 'hidden',
 		zoom       : 100
@@ -206,7 +205,6 @@ const BrewRenderer = (props)=>{
 		}
 	};
 
-
 	const emitClick = ()=>{ // Allow clicks inside iFrame to interact with dropdowns, etc. from outside
 		if(!window || !document) return;
 		document.dispatchEvent(new MouseEvent('click'));
@@ -219,6 +217,12 @@ const BrewRenderer = (props)=>{
 			zoom : newZoom
 		}));
 	};
+
+	const styleObject = {};
+
+	if(global.config.deployment) {
+		styleObject.backgroundImage = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='40px' width='200px'><text x='0' y='15' fill='white' font-size='20'>${global.config.deployment}</text></svg>")`;
+	}
 
 	return (
 		<>
@@ -245,11 +249,11 @@ const BrewRenderer = (props)=>{
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
 			>
-				<div className={'brewRenderer'}
+				<div className={`brewRenderer ${global.config.deployment && 'deployment'}`}
 					onScroll={updateCurrentPage}
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
-					style={{ height: state.height }}>
+					style={ styleObject }>
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted

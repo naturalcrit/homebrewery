@@ -1,11 +1,11 @@
-/*eslint max-lines: ["warn", {"max": 250, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 350, "skipBlankLines": true, "skipComments": true}]*/
 require('./snippetbar.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
-import { getHistoryItems, historyExists } from '../../utils/versionHistory.js';
+import { loadHistory } from '../../utils/versionHistory.js';
 
 //Import all themes
 const ThemeSnippets = {};
@@ -50,27 +50,47 @@ const Snippetbar = createClass({
 			renderer      : this.props.renderer,
 			themeSelector : false,
 			snippets      : [],
-			historyExists : false
+			showHistory   : false,
+			historyExists : false,
+			historyItems  : []
 		};
 	},
 
-	componentDidMount : async function() {
+	componentDidMount : async function(prevState) {
 		const snippets = this.compileSnippets();
 		this.setState({
 			snippets : snippets
 		});
 	},
 
-	componentDidUpdate : async function(prevProps) {
+	componentDidUpdate : async function(prevProps, prevState) {
 		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.snippetBundle != this.props.snippetBundle) {
 			this.setState({
 				snippets : this.compileSnippets()
 			});
 		};
 
-		this.setState({
-			historyExists : historyExists(this.props.brew)
+		// Update history list if it has changed
+		const checkHistoryItems = await loadHistory(this.props.brew);
+
+		// If all items have the noData property, there is no saved data
+		const checkHistoryExists = !checkHistoryItems.every((historyItem)=>{
+			return historyItem?.noData;
 		});
+		if(prevState.historyExists != checkHistoryExists){
+			this.setState({
+				historyExists : checkHistoryExists
+			});
+		}
+
+		// If any history items have changed, update the list
+		if(checkHistoryExists && checkHistoryItems.some((historyItem, index)=>{
+			return index >= prevState.historyItems.length || !_.isEqual(historyItem, prevState.historyItems[index]);
+		})){
+			this.setState({
+				historyItems : checkHistoryItems
+			});
+		}
 	},
 
 	mergeCustomizer : function(oldValue, newValue, key) {
@@ -148,12 +168,18 @@ const Snippetbar = createClass({
 		return this.props.updateBrew(item);
 	},
 
+	toggleHistoryMenu : function(){
+		this.setState({
+			showHistory : !this.state.showHistory
+		});
+	},
+
 	renderHistoryItems : function() {
-		const historyItems = getHistoryItems(this.props.brew);
+		if(!this.state.historyExists) return;
 
 		return <div className='dropdown'>
-			{_.map(historyItems, (item, index)=>{
-				if(!item.savedAt) return;
+			{_.map(this.state.historyItems, (item, index)=>{
+				if(item.noData || !item.savedAt) return;
 
 				const saveTime = new Date(item.savedAt);
 				const diffMs = new Date() - saveTime;
@@ -194,9 +220,10 @@ const Snippetbar = createClass({
 		}
 
 		return <div className='editors'>
-			<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`} >
+			<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`}
+				onClick={this.toggleHistoryMenu} >
 				<i className='fas fa-clock-rotate-left' />
-				{this.state.historyExists && this.renderHistoryItems() }
+				{ this.state.showHistory && this.renderHistoryItems() }
 			</div>
 			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
 				onClick={this.props.undo} >
