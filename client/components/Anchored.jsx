@@ -1,5 +1,5 @@
 import React, { useState, useRef, forwardRef, useEffect, cloneElement, Children } from 'react';
-import './anchoredBox.less';
+import './Anchored.less';
 
 // Anchored is a wrapper component that must have as children an <AnchoredTrigger> and a <AnchoredBox> component.
 // AnchoredTrigger must have a unique `id` prop, which is passed up to Anchored, saved in state on mount, and 

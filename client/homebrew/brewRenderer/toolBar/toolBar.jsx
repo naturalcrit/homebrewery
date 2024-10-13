@@ -3,7 +3,7 @@ const React = require('react');
 const { useState, useEffect } = React;
 const _ = require('lodash');
 
-import { Anchored, AnchoredBox, AnchoredTrigger} from '../../../components/anchoredBox.jsx';
+import { Anchored, AnchoredBox, AnchoredTrigger } from '../../../components/Anchored.jsx';
 // import * as ZoomIcons from '../../../icons/icon-components/zoomIcons.jsx';
 
 const MAX_ZOOM = 300;
@@ -13,12 +13,12 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 
 	const [zoomLevel, setZoomLevel] = useState(100);
 	const [pageNum, setPageNum] = useState(currentPage);
-	const [arrangement, setArrangement] = useState('single');
+	const [spread, setSpread] = useState('single');
 	const [startOnRight, setStartOnRight] = useState(true);
 	const [pageShadows, setPageShadows] = useState(true);
 	const [pagesStyle, setPagesStyle] = useState({});
 	const [toolsVisible, setToolsVisible] = useState(true);
-	const modes = ['single', 'facing', 'flow'];
+	const spreads = ['single', 'facing', 'flow'];
 
 	useEffect(()=>{
 		onZoomChange(zoomLevel);
@@ -35,12 +35,12 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 		const pagesContainer = iframe?.contentWindow?.document.querySelector('.pages');
 
 		if(pagesContainer) {
-			modes.forEach((mode)=>pagesContainer.classList.remove(mode));
-			pagesContainer.classList.add(arrangement);
+			spreads.forEach((spread)=>pagesContainer.classList.remove(spread));
+			pagesContainer.classList.add(spread);
 			['recto', 'verso'].forEach((leaf)=>pagesContainer.classList.remove(leaf));
 			pagesContainer.classList.add(startOnRight ? 'recto' : 'verso');
 		}
-	}, [arrangement, startOnRight]);
+	}, [spread, startOnRight]);
 
 	useEffect(()=>{
 		onStyleChange({ '.page': pageShadows ? {} : { boxShadow: 'none' } });
@@ -91,11 +91,6 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 
 		const deltaZoom = (desiredZoom - zoomLevel) - margin;
 		return deltaZoom;
-	};
-
-	const setBookMode = (view)=>{
-		// const nextMode = modes[(modes.indexOf(arrangement) + 1) % modes.length];
-		setArrangement(view);
 	};
 
 	return (
@@ -155,27 +150,27 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 			<div className='group'>
 				<div className='radio-group' role='group'>
 					<button role='radio'
-						id='single-view'
-						className={`tool${arrangement === 'single' && ' active'}`}
+						id='single-spread'
+						className={`tool${spread === 'single' && ' active'}`}
 						title='Single Page'
-						onClick={()=>setBookMode('single')}
-					><i className='fac single-view-alt' /></button>
+						onClick={()=>setSpread('single')}
+					><i className='fac single-spread' /></button>
 					<button role='radio'
-						id='facing-view'
-						className={`tool${arrangement === 'facing' && ' active'}`}
+						id='facing-spread'
+						className={`tool${spread === 'facing' && ' active'}`}
 						title='Facing Pages'
-						onClick={()=>setBookMode('facing')}
-					><i className='fac facing-view-alt' /></button>
+						onClick={()=>setSpread('facing')}
+					><i className='fac facing-spread' /></button>
 					<button role='radio'
-						id='flow-view'
-						className={`tool${arrangement === 'flow' && ' active'}`}
+						id='flow-spread'
+						className={`tool${spread === 'flow' && ' active'}`}
 						title='Flow Pages'
-						onClick={()=>setBookMode('flow')}
-					><i className='fac flow-view-alt' /></button>
+						onClick={()=>setSpread('flow')}
+					><i className='fac flow-spread' /></button>
 
 				</div>
 				<Anchored>
-					<AnchoredTrigger id='view-settings' className='tool' title='Spread options'><i className='fas fa-gear' /></AnchoredTrigger>
+					<AnchoredTrigger id='spread-settings' className='tool' title='Spread options'><i className='fas fa-gear' /></AnchoredTrigger>
 					<AnchoredBox title='Options'>
 						<h1>Options</h1>
 						<label title='Modify the horizontal space between pages.'>Column gap<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>onStyleChange({ '.pages': { columnGap: `${evt.target.value}px` }})} /></label>
@@ -184,7 +179,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 							<input type='checkbox'
 								onChange={()=>setStartOnRight(!startOnRight)}
 								checked={startOnRight}
-								title={arrangement !== 'facing' ? 'Switch to Facing to enable toggle.' : null} />
+								title={spread !== 'facing' ? 'Switch to Facing to enable toggle.' : null} />
 						</label>
 						<label title='Toggle the page shadow on every page.'>Page shadows<input type='checkbox' checked={pageShadows} onChange={()=>setPageShadows(!pageShadows)} /></label>
 					</AnchoredBox>
