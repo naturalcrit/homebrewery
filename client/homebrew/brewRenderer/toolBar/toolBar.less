@@ -40,8 +40,14 @@
 
 	.anchored-box {
 		color: #CCCCCC;
-		input[type='number']{
-			width: 4ch;
+		display: flex;
+		flex-direction: column;
+		gap: 5px;
+		input{
+			height: unset;
+			&[type='range'] {
+				padding: 0;
+			}
 		}
 	}
 
