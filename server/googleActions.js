@@ -25,6 +25,15 @@ if(!config.get('service_account')){
 
 const defaultAuth = serviceAuth || config.get('google_api_key');
 
+const retryConfig = {
+  retry: 3, // Number of retry attempts
+  retryDelay: 100, // Initial delay in milliseconds
+  retryDelayMultiplier: 2, // Multiplier for exponential backoff
+  maxRetryDelay: 32000, // Maximum delay in milliseconds
+  httpMethodsToRetry: ['PATCH'], // Only retry PATCH requests
+  statusCodesToRetry: [[429, 429]], // Only retry on 429 status code
+};
+
 const GoogleActions = {
 
 	authCheck : (account, res, updateTokens=true)=>{
@@ -112,9 +121,7 @@ const GoogleActions = {
 			})
 			.catch((err)=>{
 				console.log(`Error Listing Google Brews`);
-				console.error(err);
 				throw (err);
-				//TODO: Should break out here, but continues on for some reason.
 			});
 			fileList.push(...obj.data.files);
 			NextPageToken = obj.data.nextPageToken;
@@ -147,7 +154,7 @@ const GoogleActions = {
 	  return brews;
 	},
 
-	updateGoogleBrew : async (brew)=>{
+	updateGoogleBrew : async (brew, userIp)=>{
 		const drive = googleDrive.drive({ version: 'v3', auth: defaultAuth });
 
 		await drive.files.update({
@@ -168,7 +175,11 @@ const GoogleActions = {
 			media : {
 				mimeType : 'text/plain',
 				body     : brew.text
-			}
+			},
+			headers: {
+				'X-Forwarded-For': userIp, // Set the X-Forwarded-For header
+			},
+			retryConfig
 		})
 		.catch((err)=>{
 			console.log('Error saving to google');
