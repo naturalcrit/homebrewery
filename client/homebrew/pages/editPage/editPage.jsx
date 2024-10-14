@@ -228,8 +228,8 @@ const EditPage = createClass({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
-		updateHistory(this.state.brew);
-		versionHistoryGarbageCollection();
+		await updateHistory(this.state.brew);
+		await versionHistoryGarbageCollection();
 
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 
