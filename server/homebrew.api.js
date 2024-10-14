@@ -102,7 +102,7 @@ const api = {
 			stub = stub?.toObject();
 
 			if(stub?.lock?.locked && accessType != 'edit') {
-				throw { HBErrorCode: '100', code: stub.lock.code, message: stub.lock.shareMessage, brewId: stub.shareId, brewTitle: stub.title };
+				throw { HBErrorCode: '51', code: stub.lock.code, message: stub.lock.shareMessage, brewId: stub.shareId, brewTitle: stub.title };
 			}
 
 			// If there is a google id, try to find the google brew
@@ -155,6 +155,20 @@ const api = {
 			next();
 		};
 	},
+
+	getCSS : async (req, res)=>{
+		const { brew } = req;
+		if(!brew) return res.status(404).send('');
+		splitTextStyleAndMetadata(brew);
+		if(!brew.style) return res.status(404).send('');
+
+		res.set({
+			'Cache-Control' : 'no-cache',
+			'Content-Type'  : 'text/css'
+		});
+		return res.status(200).send(brew.style);
+	},
+
 	mergeBrewText : (brew)=>{
 		let text = brew.text;
 		if(brew.style !== undefined) {
@@ -235,11 +249,8 @@ const api = {
 
 		let googleId, saved;
 		if(saveToGoogle) {
-			googleId = await api.newGoogleBrew(req.account, newHomebrew, res)
-				.catch((err)=>{
-					console.error(err);
-					res.status(err?.status || err?.response?.status || 500).send(err?.message || err);
-				});
+			googleId = await api.newGoogleBrew(req.account, newHomebrew, res);
+
 			if(!googleId) return;
 			api.excludeStubProps(newHomebrew);
 			newHomebrew.googleId = googleId;
@@ -348,19 +359,13 @@ const api = {
 			brew.googleId = undefined;
 		} else if(!brew.googleId && saveToGoogle) {
 			// If we don't have a google id and the user wants to save to google, create the google brew and set the google id on the brew
-			brew.googleId = await api.newGoogleBrew(req.account, api.excludeGoogleProps(brew), res)
-				.catch((err)=>{
-					console.error(err);
-					res.status(err.status || err.response.status).send(err.message || err);
-				});
+			brew.googleId = await api.newGoogleBrew(req.account, api.excludeGoogleProps(brew), res);
+
 			if(!brew.googleId) return;
 		} else if(brew.googleId) {
 			// If the google id exists and no other actions are being performed, update the google brew
-			const updated = await GoogleActions.updateGoogleBrew(api.excludeGoogleProps(brew))
-				.catch((err)=>{
-					console.error(err);
-					res.status(err?.response?.status || 500).send(err);
-				});
+			const updated = await GoogleActions.updateGoogleBrew(api.excludeGoogleProps(brew), req.ip);
+
 			if(!updated) return;
 		}
 

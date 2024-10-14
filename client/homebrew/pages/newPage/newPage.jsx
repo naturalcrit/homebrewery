@@ -39,13 +39,15 @@ const NewPage = createClass({
 		const brew = this.props.brew;
 
 		return {
-			brew              : brew,
-			isSaving          : false,
-			saveGoogle        : (global.account && global.account.googleId ? true : false),
-			error             : null,
-			htmlErrors        : Markdown.validate(brew.text),
-			currentEditorPage : 0,
-			themeBundle       : {}
+			brew                       : brew,
+			isSaving                   : false,
+			saveGoogle                 : (global.account && global.account.googleId ? true : false),
+			error                      : null,
+			htmlErrors                 : Markdown.validate(brew.text),
+			currentEditorViewPageNum   : 1,
+			currentEditorCursorPageNum : 1,
+			currentBrewRendererPageNum : 1,
+			themeBundle                : {}
 		};
 	},
 
@@ -84,6 +86,9 @@ const NewPage = createClass({
 		if(brew.style)
 			localStorage.setItem(STYLEKEY, brew.style);
 		localStorage.setItem(METAKEY, JSON.stringify({ 'renderer': brew.renderer, 'theme': brew.theme, 'lang': brew.lang }));
+		if(window.location.pathname != '/new') {
+			window.history.replaceState({}, window.location.title, '/new/');
+		}
 	},
 	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
@@ -105,15 +110,26 @@ const NewPage = createClass({
 		this.editor.current.update();
 	},
 
+	handleEditorViewPageChange : function(pageNumber){
+		this.setState({ currentEditorViewPageNum: pageNumber });
+	},
+
+	handleEditorCursorPageChange : function(pageNumber){
+		this.setState({ currentEditorCursorPageNum: pageNumber });
+	},
+
+	handleBrewRendererPageChange : function(pageNumber){
+		this.setState({ currentBrewRendererPageNum: pageNumber });
+	},
+
 	handleTextChange : function(text){
 		//If there are errors, run the validator on every change to give quick feedback
 		let htmlErrors = this.state.htmlErrors;
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 
 		this.setState((prevState)=>({
-			brew              : { ...prevState.brew, text: text },
-			htmlErrors        : htmlErrors,
-			currentEditorPage : this.editor.current.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
+			brew       : { ...prevState.brew, text: text },
+			htmlErrors : htmlErrors,
 		}));
 		localStorage.setItem(BREWKEY, text);
 	},
@@ -218,6 +234,11 @@ const NewPage = createClass({
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
 						snippetBundle={this.state.themeBundle.snippets}
+						onCursorPageChange={this.handleEditorCursorPageChange}
+						onViewPageChange={this.handleEditorViewPageChange}
+						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
+						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
+						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}
@@ -227,7 +248,10 @@ const NewPage = createClass({
 						themeBundle={this.state.themeBundle}
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
-						currentEditorPage={this.state.currentEditorPage}
+						onPageChange={this.handleBrewRendererPageChange}
+						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
+						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
+						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 						allowPrint={true}
 					/>
 				</SplitPane>

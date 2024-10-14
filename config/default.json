@@ -7,5 +7,7 @@
 	"enable_gists" : true,
 	"enable_themes" : true,
 	"local_environments" : ["docker", "local"],
-	"publicUrl" : "https://homebrewery.naturalcrit.com"
+	"publicUrl" : "https://homebrewery.naturalcrit.com",
+	"hb_images" : null,
+	"hb_fonts" : null
 }
