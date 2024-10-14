@@ -3,7 +3,7 @@ const _ = require('lodash');
 const Marked = require('marked');
 const MarkedExtendedTables = require('marked-extended-tables');
 const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartypants-lite');
-const { gfmHeadingId: MarkedGFMHeadingId } = require('marked-gfm-heading-id');
+const { gfmHeadingId: MarkedGFMHeadingId, resetHeadings: MarkedGFMResetHeadingIDs } = require('marked-gfm-heading-id');
 const { markedEmoji: MarkedEmojis } = require('marked-emoji');
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
@@ -28,17 +28,18 @@ const mathParser = new MathParser({
 		round    : true,
 		floor    : true,
 		ceil     : true,
+		abs      : true,
 
 		sin     : false, cos     : false, tan     : false, asin    : false, acos    : false,
 		atan    : false, sinh    : false, cosh    : false, tanh    : false, asinh   : false,
 		acosh   : false, atanh   : false, sqrt    : false, cbrt    : false, log     : false,
 		log2    : false, ln      : false, lg      : false, log10   : false, expm1   : false,
-		log1p   : false, abs     : false, trunc   : false, join    : false, sum     : false,
+		log1p   : false, trunc   : false, join    : false, sum     : false, indexOf : false,
 		'-'     : false, '+'     : false, exp     : false, not     : false, length  : false,
 		'!'     : false, sign    : false, random  : false, fac     : false, min     : false,
 		max     : false, hypot   : false, pyt     : false, pow     : false, atan2   : false,
 		'if'    : false, gamma   : false, roundTo : false, map     : false, fold    : false,
-		filter  : false, indexOf : false,
+		filter  : false,
 
 		remainder   : false, factorial   : false,
 		comparison  : false, concatenate : false,
@@ -46,6 +47,16 @@ const mathParser = new MathParser({
 		array       : false, fndef       : false
 	}
 });
+// Add sign function
+mathParser.functions.sign = function (a) {
+	if(a >= 0) return '+';
+	return '-';
+};
+// Add signed function
+mathParser.functions.signed = function (a) {
+	if(a >= 0) return `+${a}`;
+	return `${a}`;
+};
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (html) {
@@ -75,7 +86,7 @@ renderer.link = function (href, title, text) {
 	if(href[0] == '#') {
 		self = true;
 	}
-	href = cleanUrl(this.options.sanitize, this.options.baseUrl, href);
+	href = cleanUrl(href);
 
 	if(href === null) {
 		return text;
@@ -88,6 +99,20 @@ renderer.link = function (href, title, text) {
 		out += ' target="_self"';
 	}
 	out += `>${text}</a>`;
+	return out;
+};
+
+// Expose `src` attribute as `--HB_src` to make the URL accessible via CSS
+renderer.image = function (href, title, text) {
+	href = cleanUrl(href);
+	if(href === null)
+		return text;
+
+	let out = `<img src="${href}" alt="${text}" style="--HB_src:url(${href});"`;
+	if(title)
+		out += ` title="${title}"`;
+
+	out += '>';
 	return out;
 };
 
@@ -345,6 +370,27 @@ const superSubScripts = {
 	}
 };
 
+const forcedParagraphBreaks = {
+	name  : 'hardBreaks',
+	level : 'block',
+	start(src) { return src.match(/\n:+$/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const regex  = /^(:+)(?:\n|$)/ym;
+		const match = regex.exec(src);
+		if(match?.length) {
+			return {
+				type   : 'hardBreaks', // Should match "name" above
+				raw    : match[0],     // Text to consume from the source
+				length : match[1].length,
+				text   : ''
+			};
+		}
+	},
+	renderer(token) {
+		return `<div class='blank'></div>`.repeat(token.length).concat('\n');
+	}
+};
+
 const definitionListsSingleLine = {
 	name  : 'definitionListsSingleLine',
 	level : 'block',
@@ -389,9 +435,9 @@ const definitionListsSingleLine = {
 const definitionListsMultiLine = {
 	name  : 'definitionListsMultiLine',
 	level : 'block',
-	start(src) { return src.match(/\n[^\n]*\n::/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	start(src) { return src.match(/\n[^\n]*\n::[^:\n]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const regex = /(\n?\n?(?!::)[^\n]+?(?=\n::))|\n::(.(?:.|\n)*?(?=(?:\n::)|(?:\n\n)|$))/y;
+		const regex = /(\n?\n?(?!::)[^\n]+?(?=\n::[^:\n]))|\n::([^:\n](?:.|\n)*?(?=(?:\n::)|(?:\n\n)|$))/y;
 		let match;
 		let endIndex = 0;
 		const definitions = [];
@@ -441,7 +487,7 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 	const label  = match[2];
 
 	//v=====--------------------< HANDLE MATH >-------------------=====v//
-	const mathRegex = /[a-z]+\(|[+\-*/^()]/g;
+	const mathRegex = /[a-z]+\(|[+\-*/^(),]/g;
 	const matches = label.split(mathRegex);
 	const mathVars = matches.filter((match)=>isNaN(match))?.map((s)=>s.trim()); // Capture any variable names
 
@@ -451,7 +497,7 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 		mathVars?.forEach((variable)=>{
 			const foundVar = lookupVar(variable, globalPageNumber, hoist);
 			if(foundVar && foundVar.resolved && foundVar.content && !isNaN(foundVar.content)) // Only subsitute math values if fully resolved, not empty strings, and numbers
-				replacedLabel = replacedLabel.replaceAll(variable, foundVar.content);
+				replacedLabel = replacedLabel.replaceAll(new RegExp(`(?<!\\w)(${variable})(?!\\w)`, 'g'), foundVar.content);
 		});
 
 		try {
@@ -695,34 +741,27 @@ const MarkedEmojiOptions = {
 	renderer : (token)=>`<i class="${token.emoji}"></i>`
 };
 
+const tableTerminators = [
+	`:+\\n`,                // hardBreak
+	` *{[^\n]+}`,           // blockInjector
+	` *{{[^{\n]*\n.*?\n}}`  // mustacheDiv
+];
+
 Marked.use(MarkedVariables());
-Marked.use({ extensions: [definitionListsMultiLine, definitionListsSingleLine, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use({ extensions : [definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks, superSubScripts,
+	mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
-Marked.use(MarkedExtendedTables(), MarkedGFMHeadingId(), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
+Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
-const nonWordAndColonTest = /[^\w:]/g;
-const cleanUrl = function (sanitize, base, href) {
-	if(sanitize) {
-		let prot;
-		try {
-			prot = decodeURIComponent(unescape(href))
-        .replace(nonWordAndColonTest, '')
-        .toLowerCase();
-		} catch (e) {
-			return null;
-		}
-		if(prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
-			return null;
-		}
-	}
+function cleanUrl(href) {
 	try {
 		href = encodeURI(href).replace(/%25/g, '%');
-	} catch (e) {
+	} catch {
 		return null;
 	}
 	return href;
-};
+}
 
 const escapeTest = /[&<>"']/;
 const escapeReplace = /[&<>"']/g;
@@ -817,13 +856,15 @@ let globalPageNumber = 0;
 
 module.exports = {
 	marked : Marked,
-	render : (rawBrewText, pageNumber=1)=>{
-		globalVarsList[pageNumber] = {};						//Reset global links for current page, to ensure values are parsed in order
-		varsQueue              = [];						//Could move into MarkedVariables()
-		globalPageNumber        = pageNumber;
+	render : (rawBrewText, pageNumber=0)=>{
+		globalVarsList[pageNumber] = {};					//Reset global links for current page, to ensure values are parsed in order
+		varsQueue                  = [];						//Could move into MarkedVariables()
+		globalPageNumber           = pageNumber;
+		if(pageNumber==0) {
+			MarkedGFMResetHeadingIDs();
+		}
 
-		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`)
-														 .replace(/^(:+)$/gm, (match)=>`${`<div class='blank'></div>`.repeat(match.length)}\n`);
+		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`);
 		const opts = Marked.defaults;
 
 		rawBrewText = opts.hooks.preprocess(rawBrewText);

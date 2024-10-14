@@ -1,3 +1,4 @@
+@import (less) './themes/fonts/Blank/fonts.less';
 @import (less) './themes/fonts/5e/fonts.less';
 @import (less) './themes/assets/assets.less';
 @import (less) './themes/fonts/iconFonts/elderberryInn.less';
@@ -12,7 +13,7 @@
 }
 
 @page { margin : 0; }
-body { counter-reset : page-numbers; }
+body { counter-reset : page-numbers 0; }
 * { -webkit-print-color-adjust : exact; }
 
 //*****************************
@@ -51,7 +52,6 @@ body { counter-reset : page-numbers; }
 	height            : 279.4mm;
 	padding           : 1.4cm 1.9cm 1.7cm;
 	overflow          : hidden;
-	counter-increment : page-numbers;
 	background-color  : var(--HB_Color_Background);
 	text-rendering    : optimizeLegibility;
 	contain           : size;
@@ -156,6 +156,19 @@ body { counter-reset : page-numbers; }
 		break-inside                : avoid;
 	}
 
+	/* Wrap Text */
+	.wrapLeft {
+		shape-outside : var(--HB_src);
+		float         : right;
+		shape-margin  : 0.2cm;
+	}
+
+	.wrapRight {
+		shape-outside : var(--HB_src);
+		float         : left;
+		shape-margin  : 0.2cm;
+	}
+
 	/* Watermark */
 	.watermark {
 		position        : absolute;
@@ -236,7 +249,7 @@ body { counter-reset : page-numbers; }
 			left       : 50%;
 			width      : 50%;
 			height     : 50%;
-			transform  : translateX(-50%) translateY(50%) rotate(calc(-1deg * var(--rotation))) scaleX(calc(1 / var(--scaleX))) scaleY(calc(1 / var(--scaleY)));
+			transform  : translateX(-50%) translateY(50%) scaleX(calc(1 / var(--scaleX))) scaleY(calc(1 / var(--scaleY))) rotate(calc(-1deg * var(--rotation)));
 		}
 		& img {
 			position : absolute;
@@ -481,6 +494,7 @@ body { counter-reset : page-numbers; }
 	&:nth-child(even) {
 		.pageNumber { left : 30px; }
 	}
+<<<<<<< HEAD
 }
 
 //*******************************
@@ -547,4 +561,15 @@ body { counter-reset : page-numbers; }
 	  .ol-noIndent ol li:not(:last-child) { 
 		 margin-bottom: 0.5em; 	
 	  }  
+=======
+
+	.resetCounting {
+		counter-set : page-numbers 1;
+	}
+
+	&:not(:has(.skipCounting)) {
+		counter-increment : page-numbers;
+	}
+
+>>>>>>> master
 }

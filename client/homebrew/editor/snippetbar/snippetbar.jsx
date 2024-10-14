@@ -1,9 +1,11 @@
-/*eslint max-lines: ["warn", {"max": 250, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 350, "skipBlankLines": true, "skipComments": true}]*/
 require('./snippetbar.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
+
+import { loadHistory } from '../../utils/versionHistory.js';
 
 //Import all themes
 const ThemeSnippets = {};
@@ -38,7 +40,8 @@ const Snippetbar = createClass({
 			unfoldCode        : ()=>{},
 			updateEditorTheme : ()=>{},
 			cursorPos         : {},
-			snippetBundle     : []
+			snippetBundle     : [],
+			updateBrew        : ()=>{}
 		};
 	},
 
@@ -46,33 +49,54 @@ const Snippetbar = createClass({
 		return {
 			renderer      : this.props.renderer,
 			themeSelector : false,
-			snippets      : []
+			snippets      : [],
+			showHistory   : false,
+			historyExists : false,
+			historyItems  : []
 		};
 	},
 
-	componentDidMount : async function() {
+	componentDidMount : async function(prevState) {
 		const snippets = this.compileSnippets();
 		this.setState({
 			snippets : snippets
 		});
 	},
 
-	componentDidUpdate : async function(prevProps) {
+	componentDidUpdate : async function(prevProps, prevState) {
 		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.snippetBundle != this.props.snippetBundle) {
-			const snippets = this.compileSnippets();
 			this.setState({
-				snippets : snippets
+				snippets : this.compileSnippets()
+			});
+		};
+
+		// Update history list if it has changed
+		const checkHistoryItems = await loadHistory(this.props.brew);
+
+		// If all items have the noData property, there is no saved data
+		const checkHistoryExists = !checkHistoryItems.every((historyItem)=>{
+			return historyItem?.noData;
+		});
+		if(prevState.historyExists != checkHistoryExists){
+			this.setState({
+				historyExists : checkHistoryExists
+			});
+		}
+
+		// If any history items have changed, update the list
+		if(checkHistoryExists && checkHistoryItems.some((historyItem, index)=>{
+			return index >= prevState.historyItems.length || !_.isEqual(historyItem, prevState.historyItems[index]);
+		})){
+			this.setState({
+				historyItems : checkHistoryItems
 			});
 		}
 	},
 
-
 	mergeCustomizer : function(oldValue, newValue, key) {
 		if(key == 'snippets') {
 			const result = _.reverse(_.unionBy(_.reverse(newValue), _.reverse(oldValue), 'name')); // Join snippets together, with preference for the child theme over the parent theme
-			return _.filter(result, function(snip) {
-				return(snip.hasOwnProperty('gen') || snip.hasOwnProperty('subsnippets'));
-			});
+			return result.filter((snip)=>snip.gen || snip.subsnippets);
 		}
 	},
 
@@ -140,6 +164,42 @@ const Snippetbar = createClass({
 		});
 	},
 
+	replaceContent : function(item){
+		return this.props.updateBrew(item);
+	},
+
+	toggleHistoryMenu : function(){
+		this.setState({
+			showHistory : !this.state.showHistory
+		});
+	},
+
+	renderHistoryItems : function() {
+		if(!this.state.historyExists) return;
+
+		return <div className='dropdown'>
+			{_.map(this.state.historyItems, (item, index)=>{
+				if(item.noData || !item.savedAt) return;
+
+				const saveTime = new Date(item.savedAt);
+				const diffMs = new Date() - saveTime;
+				const diffSecs = Math.floor(diffMs / 1000);
+
+				let diffString = `about ${diffSecs} seconds ago`;
+
+				if(diffSecs > 60) diffString = `about ${Math.floor(diffSecs / 60)} minutes ago`;
+				if(diffSecs > (60 * 60)) diffString = `about ${Math.floor(diffSecs / (60 * 60))} hours ago`;
+				if(diffSecs > (24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (24 * 60 * 60))} days ago`;
+				if(diffSecs > (7 * 24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (7 * 24 * 60 * 60))} weeks ago`;
+
+				return <div className='snippet' key={index} onClick={()=>{this.replaceContent(item);}} >
+					<i className={`fas fa-${index+1}`} />
+					<span className='name' title={saveTime.toISOString()}>v{item.version} : {diffString}</span>
+				</div>;
+			})}
+		</div>;
+	},
+
 	renderEditorButtons : function(){
 		if(!this.props.showEditButtons) return;
 
@@ -160,6 +220,11 @@ const Snippetbar = createClass({
 		}
 
 		return <div className='editors'>
+			<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`}
+				onClick={this.toggleHistoryMenu} >
+				<i className='fas fa-clock-rotate-left' />
+				{ this.state.showHistory && this.renderHistoryItems() }
+			</div>
 			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
 				onClick={this.props.undo} >
 				<i className='fas fa-undo' />

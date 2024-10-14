@@ -28,6 +28,7 @@ const MetadataEditor = createClass({
 		return {
 			metadata : {
 				editId      : null,
+				shareId     : null,
 				title       : '',
 				description : '',
 				thumbnail   : '',
@@ -196,6 +197,7 @@ const MetadataEditor = createClass({
 
 		const listThemes = (renderer)=>{
 			return _.map(_.values(mergedThemes[renderer]), (theme)=>{
+				if(theme.path == this.props.metadata.shareId) return;
 				const preview = theme.thumbnail || `/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`;
 				const texture = theme.thumbnail || `/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`;
 				return <div className='item' key={`${renderer}_${theme.name}`} onClick={()=>this.handleTheme(theme)} title={''}>
@@ -302,17 +304,14 @@ const MetadataEditor = createClass({
 						onChange={(e)=>this.handleRenderer('V3', e)} />
 					V3
 				</label>
-
-				<a href='/legacy' target='_blank' rel='noopener noreferrer'>
-					Click here to see the demo page for the old Legacy renderer!
-				</a>
+				<small><a href='/legacy' target='_blank' rel='noopener noreferrer'>Click here to see the demo page for the old Legacy renderer!</a></small>
 			</div>
 		</div>;
 	},
 
 	render : function(){
 		return <div className='metadataEditor'>
-			<h1 className='sectionHead'>Brew</h1>
+			<h1>Properties Editor</h1>
 
 			<div className='field title'>
 				<label>title</label>
@@ -360,9 +359,7 @@ const MetadataEditor = createClass({
 
 			{this.renderRenderOptions()}
 
-			<hr/>
-
-			<h1 className='sectionHead'>Authors</h1>
+			<h2>Authors</h2>
 
 			{this.renderAuthors()}
 
@@ -373,15 +370,13 @@ const MetadataEditor = createClass({
 				notes={['Invited author usernames are case sensitive.', 'After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.']}
 				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}/>
 
-			<hr/>
-
-			<h1 className='sectionHead'>Privacy</h1>
+			<h2>Privacy</h2>
 
 			<div className='field publish'>
 				<label>publish</label>
 				<div className='value'>
 					{this.renderPublish()}
-					<small>Published homebrews will be publicly viewable and searchable (eventually...)</small>
+					<small>Published brews are searchable in <a href='/vault'>the Vault</a> and visible on your user page.  Unpublished brews are not indexed in the Vault or visible on your user page, but can still be shared and indexed by search engines.  You can unpublish a brew any time.</small>
 				</div>
 			</div>
 
