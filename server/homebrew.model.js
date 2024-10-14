@@ -59,6 +59,21 @@ HomebrewSchema.statics.getByUser = async function(username, allowAccess=false, f
 		.catch((error)=>{throw 'Can not find brews';});
 	return brews;
 };
+HomebrewSchema.statics.getDocumentCountsByDate = async function() {
+	return this.aggregate([
+		{
+			$group : {
+				_id   : { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }, // Group by formatted date
+				count : { $sum: 1 } // Count documents for each date
+			}
+		},
+		{
+			// Sort by date ascending
+			$sort : { _id: 1 }
+		}
+	], { maxTimeMS: 10000 });
+};
+
 
 const Homebrew = mongoose.model('Homebrew', HomebrewSchema);
 

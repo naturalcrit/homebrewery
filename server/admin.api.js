@@ -125,18 +125,31 @@ router.put('/admin/compress/:id', (req, res)=>{
 
 router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 	try {
-		const totalBrewsCount = await HomebrewModel.countDocuments({});
+		const totalBrewsCount = await HomebrewModel.estimatedDocumentCount();
 		const publishedBrewsCount = await HomebrewModel.countDocuments({ published: true });
+		const totalUnauthored = await HomebrewModel.countDocuments({ authors: [] });
 
 		return res.json({
-			totalBrews          : totalBrewsCount,
-			totalPublishedBrews : publishedBrewsCount
+			totalBrews     : totalBrewsCount,
+			totalPublished : publishedBrewsCount,
+			totalUnauthored : totalUnauthored,
 		});
 	} catch (error) {
 		console.error(error);
 		return res.status(500).json({ error: 'Internal Server Error' });
 	}
 });
+
+router.get('/admin/byDate', mw.adminOnly, async (req, res) => {
+    try {
+        const data = await HomebrewModel.getDocumentCountsByDate(); // Call the static method
+        res.json(data); // Return the aggregated data
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 // #######################   NOTIFICATIONS
 

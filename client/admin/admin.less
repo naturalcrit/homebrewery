@@ -59,7 +59,6 @@ body {
 			dd {
 				height      : 1em;
 				padding     : 0 0 0.5em 0;
-				margin-left : @maxItemWidth + 6px;
 			}
 		}
 
@@ -87,6 +86,34 @@ body {
 			display         : flex;
 			gap             : 50px;
 			justify-content : space-between;
+		}
+	}
+
+	table {
+		padding    : 10px;
+
+		tr:nth-child(even) { background : #DDDDDD; }
+
+		th, td {
+			padding:5px 10px;
+			border-right:1px solid;
+
+			&:last-child {
+				border-right: none;
+			}
+		}
+		
+		th, td:first-child {
+			font-weight: 900;
+		}
+		th:not(:first-child) {
+			border-bottom: 2px solid;
+		}
+	
+		tr {
+			td:first-child {
+				border-right:2px solid;
+			}
 		}
 	}
 
