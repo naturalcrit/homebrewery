@@ -38,17 +38,64 @@
 		background-color: #444;
 	}
 
+	.anchored-trigger {
+		&.active {
+			background-color: #444444;
+		}
+	}
+
 	.anchored-box {
-		color: #CCCCCC;
-		display: flex;
-		flex-direction: column;
-		gap: 5px;
+		--box-color      : #555555;
+		top              : 30px;
+		display          : flex;
+		flex-direction   : column;
+		gap              : 5px;
+		padding          : 15px;
+		margin-top       : 10px;
+		font-size        : .8em;
+		color            : #CCCCCC;
+		background-color : var(--box-color);
+		border-radius    : 5px;
+	
+		h1 {
+			border-bottom: 1px solid currentColor;
+			margin-bottom: 0.5em;
+			padding-bottom: 0.3em;
+		}
+	
+		h2 {
+			color: lightgray;
+			border-bottom: 1px solid currentColor;
+			margin: 1em 0 0.5em 0;
+			padding-bottom: 0.3em;
+		}
+	
+		label {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 6px;
+	
+		}
 		input{
 			height: unset;
 			&[type='range'] {
 				padding: 0;
 			}
 		}
+		&:before {
+			content: "";
+			width: 0px;
+			height: 0px;
+			position: absolute;
+			border: 10px solid transparent;
+			border-bottom: 10px solid var(--box-color);
+			left: 50%;
+			transform: translateX(-50%);
+			top: -20px;
+			pointer-events: none;
+		  }
+
 	}
 
 	.radio-group:has(button[role='radio']){
