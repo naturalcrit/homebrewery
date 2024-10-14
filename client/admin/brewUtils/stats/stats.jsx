@@ -191,6 +191,12 @@ const Stats = () => {
 			<button
 				onClick={() => {
 					fetchStats();
+				}}
+			>
+				Fetch Stats
+			</button>
+			<button
+				onClick={() => {
 					fetchChartData();
 				}}
 			>
