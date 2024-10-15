@@ -5,6 +5,7 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
+import {templatesToSnippet} from '../../../../shared/helpers.js';
 import { loadHistory } from '../../utils/versionHistory.js';
 
 //Import all themes
@@ -41,6 +42,7 @@ const Snippetbar = createClass({
 			updateEditorTheme : ()=>{},
 			cursorPos         : {},
 			snippetBundle     : [],
+			templateBundle    : [],
 			updateBrew        : ()=>{}
 		};
 	},
@@ -63,8 +65,9 @@ const Snippetbar = createClass({
 		});
 	},
 
-	componentDidUpdate : async function(prevProps, prevState) {
-		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.snippetBundle != this.props.snippetBundle) {
+	componentDidUpdate : async function(prevProps) {
+		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme
+				|| prevProps.snippetBundle != this.props.snippetBundle || prevProps.templateBundle != this.props.templateBundle) {
 			this.setState({
 				snippets : this.compileSnippets()
 			});
@@ -93,8 +96,8 @@ const Snippetbar = createClass({
 		}
 	},
 
-	mergeCustomizer : function(oldValue, newValue, key) {
-		if(key == 'snippets') {
+	mergeCustomizer : function(oldValue, newValue, key) {
+		if(key == 'snippets') {
 			const result = _.reverse(_.unionBy(_.reverse(newValue), _.reverse(oldValue), 'name')); // Join snippets together, with preference for the child theme over the parent theme
 			return result.filter((snip)=>snip.gen || snip.subsnippets);
 		}
@@ -114,6 +117,12 @@ const Snippetbar = createClass({
 
 			oldSnippets = _.keyBy(compiledSnippets, 'groupName');
 		}
+
+		const templateAsSnippets = templatesToSnippet(this.props.brew.title, this.props.brew.templates, this.props.templateBundle);
+
+
+		compiledSnippets.push(templateAsSnippets);
+
 		return compiledSnippets;
 	},
 
@@ -149,7 +158,8 @@ const Snippetbar = createClass({
 	},
 
 	renderSnippetGroups : function(){
-		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
+		const useView = this.props.view == 'template' ? 'text' : this.props.view; // Use the Text Snippets for Templates
+		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === useView);
 
 		return _.map(snippets, (snippetGroup)=>{
 			return <SnippetGroup
@@ -254,6 +264,12 @@ const Snippetbar = createClass({
 				onClick={()=>this.props.onViewChange('meta')}>
 				<i className='fas fa-info-circle' />
 			</div>
+
+			<div className={cx('template', { selected: this.props.view === 'template' })}
+				onClick={()=>this.props.onViewChange('template')}>
+			    <i className='fas fa-file-alt' />
+			</div>
+
 		</div>;
 	},
 

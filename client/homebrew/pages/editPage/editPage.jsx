@@ -26,7 +26,7 @@ const LockNotification = require('./lockNotification/lockNotification.jsx');
 const Markdown = require('naturalcrit/markdown.js');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
-const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
+const { printCurrentBrew, fetchThemeBundle, asTemplateMap } = require('../../../../shared/helpers.js');
 
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 
@@ -61,7 +61,8 @@ const EditPage = createClass({
 			currentEditorCursorPageNum : 1,
 			currentBrewRendererPageNum : 1,
 			displayLockMessage         : this.props.brew.lock || false,
-			themeBundle                : {}
+			themeBundle                : {},
+			userTemplates              : this.props.brew.templates
 		};
 	},
 
@@ -137,6 +138,18 @@ const EditPage = createClass({
 
 		this.setState((prevState)=>({
 			brew       : { ...prevState.brew, text: text },
+			isPending  : true,
+			htmlErrors : htmlErrors,
+		}), ()=>{if(this.state.autoSave) this.trySave();});
+	},
+
+	handleTemplateChange : function(templates){
+		//If there are errors, run the validator on every change to give quick feedback
+		let htmlErrors = this.state.htmlErrors;
+		if(htmlErrors.length) htmlErrors = Markdown.validate(templates);
+
+		this.setState((prevState)=>({
+			brew       : { ...prevState.brew, templates: templates },
 			isPending  : true,
 			htmlErrors : htmlErrors,
 		}), ()=>{if(this.state.autoSave) this.trySave();});
@@ -234,6 +247,7 @@ const EditPage = createClass({
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 
 		const brew = this.state.brew;
+		console.log(brew);
 		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
 
 		const params = `${transfer ? `?${this.state.saveGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : ''}`;
@@ -436,12 +450,14 @@ const EditPage = createClass({
 						ref={this.editor}
 						brew={this.state.brew}
 						onTextChange={this.handleTextChange}
+						onTemplateChange={this.handleTemplateChange}
 						onStyleChange={this.handleStyleChange}
 						onMetaChange={this.handleMetaChange}
 						reportError={this.errorReported}
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
 						snippetBundle={this.state.themeBundle.snippets}
+						templateBundle={this.state.themeBundle.templates}
 						updateBrew={this.updateBrew}
 						onCursorPageChange={this.handleEditorCursorPageChange}
 						onViewPageChange={this.handleEditorViewPageChange}
@@ -462,6 +478,9 @@ const EditPage = createClass({
 						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
 						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 						allowPrint={true}
+						templateBundle={asTemplateMap(this.state.themeBundle.templates)}
+						userTemplates={asTemplateMap(this.state.brew.templates)}
+						templates={this.state.brew.templates}
 					/>
 				</SplitPane>
 			</div>
