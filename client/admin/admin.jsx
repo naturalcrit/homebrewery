@@ -4,8 +4,9 @@ const createClass = require('create-react-class');
 
 const BrewUtils = require('./brewUtils/brewUtils.jsx');
 const NotificationUtils = require('./notificationUtils/notificationUtils.jsx');
+const Stats = require('./stats/stats.jsx');
 
-const tabGroups = ['brew', 'notifications'];
+const tabGroups = ['brew', 'notifications', 'stats'];
 
 const Admin = createClass({
 	getDefaultProps : function() {
@@ -39,7 +40,13 @@ const Admin = createClass({
 				</nav>
 				{this.state.currentTab==='brew' && <BrewUtils />}
 				{this.state.currentTab==='notifications' && <NotificationUtils />}
+				{this.state.currentTab==='stats' && <Stats />}
 			</main>
+			<footer>
+				<div className="container">
+					
+				</div>
+			</footer>
 		</div>;
 	}
 });

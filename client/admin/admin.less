@@ -11,7 +11,7 @@ html,body, #reactContainer, .naturalCrit { min-height : 100%; }
 @sidebarWidth : 250px;
 
 body {
-	height           : 100%;
+	height           : 100vh;
 	padding          : 0;
 	margin           : 0;
 	font-family      : 'Open Sans', sans-serif;
@@ -19,6 +19,10 @@ body {
 	color            : #4B5055;
 	background-color : #EEEEEE;
 	text-rendering   : optimizeLegibility;
+
+	main {
+		height:100%;
+	}
 }
 
 :where(.admin) {
@@ -95,33 +99,36 @@ body {
 		tr:nth-child(even) { background : #DDDDDD; }
 
 		th, td {
-			padding:5px 10px;
-			border-right:1px solid;
+			padding        : 5px 10px;
+			text-align     : center;
+			vertical-align : middle;
+			border-right   : 1px solid;
 
-			&:last-child {
-				border-right: none;
-			}
+			&:last-child { border-right : none; }
 		}
 		
-		th, td:first-child {
-			font-weight: 900;
-		}
-		th:not(:first-child) {
-			border-bottom: 2px solid;
-		}
+		th, td:first-child { font-weight : 900; }
+		th:not(:first-child) { border-bottom : 2px solid; }
 	
 		tr {
 			td:first-child {
-				border-right:2px solid;
+				text-align   : right;
+				border-right : 2px solid;
 			}
 		}
 	}
 
 	.error {
-		background: rgb(178, 54, 54);
-		color:white;
-		font-weight: 900;
-		margin-block:10px;
-		padding:10px;
+		padding          : 10px;
+		margin-block     : 10px;
+		font-weight      : 900;
+		color            : white;
+		background-color : @red;
+	}
+
+	footer {
+		height           : 100px;
+		margin-top       : 30px;
+		background-color : @red;
 	}
 }

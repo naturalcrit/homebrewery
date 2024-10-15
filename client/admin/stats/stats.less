@@ -1,0 +1,133 @@
+.stats {
+	position : relative;
+	width    : 100%;
+
+	.pending {
+		position         : absolute;
+		top              : 0px;
+		left             : 0px;
+		width            : 100%;
+		height           : 100%;
+		background-color : rgba(238, 238, 238, 0.5);
+	}
+
+	dl {
+		display               : grid;
+		grid-template-columns : 6fr 1fr;
+		gap                   : 20px;
+		width                 : max-content;
+		max-width             : 100%;
+
+		dt,
+		dd { width : max-content; }
+	}
+
+	.content {
+		width                 : 100%;
+
+		.table, .graph {
+			display            : grid;
+			grid-template-rows : 1.5em 1fr;
+			gap                : 10px;
+			align-items        : center;
+			width              : 600px;
+			height             : max-content;
+			margin-bottom      : 50px;
+
+			&:has(>*:only-child) { grid-template-rows : 1fr; }
+
+			button:only-child {
+				display     : grid;
+				place-items : center;
+				width       : 100%;
+				height      : 100%;
+				font-size   : 25px;
+			}
+
+			.heading {
+				display         : flex;
+				justify-content : space-between;
+
+				button {
+					height  : auto;
+					padding : 5px 10px;
+				}
+			}
+		}
+
+		.chart {
+			position      : relative;
+			width         : 800px;
+			height        : 300px;
+			margin-bottom : 100px;
+			font-family   : monospace;
+			background    : #CCCCCC;
+
+			.leftAxis {
+				position     : absolute;
+				top          : 0px;
+				bottom       : 0px;
+				left         : 0px;
+				width        : 50px;
+				translate    : -100%;
+
+				.axisLabel {
+					position  : absolute;
+					top       : -2em;
+					right     : 50%;
+					translate : 50%;
+				}
+
+				span { 
+					position      : absolute;
+					right         : 10px;
+					width         : 100%;
+					text-align    : right;
+					translate     : 0 50%;
+
+					&::after {
+						position   : absolute;
+						top        : 50%;
+						right      : -10px;
+						width      : 0.5em;
+						height     : 2px;
+						content    : '';
+						background : black;
+					}
+				}
+			}
+
+			.bottomAxis {
+				position   : absolute;
+				right      : 0px;
+				bottom     : 0px;
+				left       : 0px;
+				height     : 50px;
+				translate  : 0 100%;
+
+				.bottomLabel {
+					position   : absolute;
+					width      : max-content;
+					text-align : right;
+					rotate     : -75deg;
+					transform-origin: bottom right;
+					translate:-70%;
+				}
+			}
+
+			.data {
+				position         : relative;
+				width            : 100%;
+				height           : 100%;
+				background-color : #FFFFFF;
+				border-bottom    : 2px solid black;
+				border-left      : 2px solid black;
+
+				.column {
+					position         : absolute;
+					background-color : rgb(93, 93, 219);
+				}
+			}
+		}
+	}
+}
