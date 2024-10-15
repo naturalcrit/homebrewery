@@ -26,7 +26,7 @@ const LockNotification = require('./lockNotification/lockNotification.jsx');
 const Markdown = require('naturalcrit/markdown.js');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
-const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
+const { printCurrentBrew, fetchThemeBundle, asTemplateMap } = require('../../../../shared/helpers.js');
 
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 
@@ -61,7 +61,8 @@ const EditPage = createClass({
 			currentEditorCursorPageNum : 1,
 			currentBrewRendererPageNum : 1,
 			displayLockMessage         : this.props.brew.lock || false,
-			themeBundle                : {}
+			themeBundle                : {},
+			userTemplates              : this.props.brew.templates
 		};
 	},
 
@@ -442,6 +443,8 @@ const EditPage = createClass({
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
 						snippetBundle={this.state.themeBundle.snippets}
+						templateBundle={this.state.themeBundle.templates}
+						userTemplates={this.state.userTemplates}
 						updateBrew={this.updateBrew}
 						onCursorPageChange={this.handleEditorCursorPageChange}
 						onViewPageChange={this.handleEditorViewPageChange}
@@ -462,6 +465,8 @@ const EditPage = createClass({
 						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
 						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 						allowPrint={true}
+						templateBundle={asTemplateMap(this.state.themeBundle.templates)}
+						userTemplates={asTemplateMap(this.state.userTemplates)}
 					/>
 				</SplitPane>
 			</div>
