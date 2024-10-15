@@ -1,7 +1,7 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
-const { useState, useRef, useCallback } = React;
+const { useState, useRef, useCallback, memo } = React;
 const _ = require('lodash');
 
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
@@ -47,7 +47,7 @@ const BrewPage = (props)=>{
 const renderedPages = [];
 let rawPages      = [];
 
-const BrewRenderer = (props)=>{
+const BrewRenderer = memo((props)=>{
 	props = {
 		text                       : '',
 		style                      : '',
@@ -224,6 +224,19 @@ const BrewRenderer = (props)=>{
 			</Frame>
 		</>
 	);
-};
+}, arePropsEqual);
+
+//Only re-render brewRenderer if arePropsEqual == true
+function arePropsEqual(oldProps, newProps) {
+	return (
+		oldProps.text.length  === newProps.text.length &&
+		oldProps.style.length === newProps.style.length &&
+		oldProps.renderer     === newProps.renderer &&
+		oldProps.theme        === newProps.theme &&
+		oldProps.errors       === newProps.errors &&
+		oldProps.themeBundle  === newProps.themeBundle &&
+		oldProps.lang         === newProps.lang
+	);
+}
 
 module.exports = BrewRenderer;
