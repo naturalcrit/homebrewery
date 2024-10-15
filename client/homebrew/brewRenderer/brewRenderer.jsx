@@ -37,7 +37,7 @@ const BrewPage = (props)=>{
 		...props
 	};
 	const cleanText = props.contents; //DOMPurify.sanitize(props.contents, purifyConfig);
-	return <div className={props.className} id={`p${props.index + 1}`} >
+	return <div className={props.className} id={`p${props.index + 1}`} style={props.style}>
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
 };
@@ -64,9 +64,10 @@ const BrewRenderer = (props)=>{
 	};
 
 	const [state, setState] = useState({
-		isMounted  : false,
-		visibility : 'hidden',
-		zoom       : 100
+		isMounted     : false,
+		visibility    : 'hidden',
+		zoom          : 100,
+		previewStyles : {}
 	});
 
 	const mainRef  = useRef(null);
@@ -117,7 +118,7 @@ const BrewRenderer = (props)=>{
 		} else {
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			const html = Markdown.render(pageText, index);
-			return <BrewPage className='page' index={index} key={index} contents={html} />;
+			return <BrewPage className='page' index={index} key={index} contents={html} style={ state.previewStyles['.page']} />;
 		}
 	};
 
@@ -173,6 +174,27 @@ const BrewRenderer = (props)=>{
 		}));
 	};
 
+	const handleStyle = (newStyle)=>{
+		setState((prevState)=>{
+			// Merge styles, skipping those that are empty objects or null
+			const mergedStyles = Object.entries(newStyle).reduce((acc, [selector, style])=>{
+				if(style && Object.keys(style).length > 0) {
+					acc[selector] = {
+						...(prevState.previewStyles[selector] || {}), // Preserve existing styles
+						...style, // Add or override with new styles
+					};
+				} else {
+					// If the style is an empty object or null, delete the selector
+					delete acc[selector];
+				}
+				return acc;
+			}, { ...prevState.previewStyles });
+
+			return { ...prevState, previewStyles: mergedStyles };
+		});
+	};
+
+
 	const styleObject = {};
 
 	if(global.config.deployment) {
@@ -196,7 +218,7 @@ const BrewRenderer = (props)=>{
 				<NotificationPopup />
 			</div>
 
-			<ToolBar onZoomChange={handleZoom} currentPage={props.currentBrewRendererPageNum}  totalPages={rawPages.length}/>
+			<ToolBar onZoomChange={handleZoom} currentPage={props.currentBrewRendererPageNum}  totalPages={rawPages.length} onStyleChange={handleStyle} />
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
@@ -215,7 +237,7 @@ const BrewRenderer = (props)=>{
 						&&
 						<>
 							{renderStyle()}
-							<div className='pages' lang={`${props.lang || 'en'}`} style={{ zoom: `${state.zoom}%` }}>
+							<div className='pages' lang={`${props.lang || 'en'}`} style={{ zoom: `${state.zoom}%`, ...state.previewStyles['.pages'] }}>
 								{renderPages()}
 							</div>
 						</>

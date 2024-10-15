@@ -34,6 +34,76 @@
 		align-items : center;
 	}
 
+	.active {
+		background-color: #444;
+	}
+
+	.anchored-trigger {
+		&.active {
+			background-color: #444444;
+		}
+	}
+
+	.anchored-box {
+		--box-color      : #555555;
+		top              : 30px;
+		display          : flex;
+		flex-direction   : column;
+		gap              : 5px;
+		padding          : 15px;
+		margin-top       : 10px;
+		font-size        : .8em;
+		color            : #CCCCCC;
+		background-color : var(--box-color);
+		border-radius    : 5px;
+	
+		h1 {
+			border-bottom: 1px solid currentColor;
+			margin-bottom: 0.5em;
+			padding-bottom: 0.3em;
+		}
+	
+		h2 {
+			color: lightgray;
+			border-bottom: 1px solid currentColor;
+			margin: 1em 0 0.5em 0;
+			padding-bottom: 0.3em;
+		}
+	
+		label {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 6px;
+	
+		}
+		input{
+			height: unset;
+			&[type='range'] {
+				padding: 0;
+			}
+		}
+		&:before {
+			content: "";
+			width: 0px;
+			height: 0px;
+			position: absolute;
+			border: 10px solid transparent;
+			border-bottom: 10px solid var(--box-color);
+			left: 50%;
+			transform: translateX(-50%);
+			top: -20px;
+			pointer-events: none;
+		  }
+
+	}
+
+	.radio-group:has(button[role='radio']){
+		display: flex;
+		border: 1px solid #333;
+		height: 100%;
+	}
+
 	input {
 		position       : relative;
 		height         : 1.5em;
@@ -57,7 +127,7 @@
 				outline          : none;
 			}
 
-			&:hover::after {
+			&.hover-tooltip[value]:hover::after {
 				position         : absolute;
 				bottom           : -30px;
 				left             : 50%;
@@ -83,7 +153,7 @@
 	}
 
 	button {
-		box-sizing       : content-box;
+		box-sizing       : border-box;
 		display          : flex;
 		align-items      : center;
 		justify-content  : center;
@@ -94,8 +164,13 @@
 		font-weight      : unset;
 		color            : inherit;
 		background-color : unset;
+
+		&:not(button:has(i, svg)) {
+			padding: 0 8px;
+		}
+
 		&:hover { background-color : #444444; }
-		&:focus { outline : 1px solid #D3D3D3; }
+		&:focus { border : 1px solid #D3D3D3;outline: none;}
 		&:disabled {
 			color            : #777777;
 			background-color : unset !important;

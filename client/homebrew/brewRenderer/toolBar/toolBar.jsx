@@ -3,15 +3,22 @@ const React = require('react');
 const { useState, useEffect } = React;
 const _ = require('lodash');
 
+import { Anchored, AnchoredBox, AnchoredTrigger } from '../../../components/Anchored.jsx';
+// import * as ZoomIcons from '../../../icons/icon-components/zoomIcons.jsx';
 
 const MAX_ZOOM = 300;
 const MIN_ZOOM = 10;
 
-const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
+const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleChange })=>{
 
 	const [zoomLevel, setZoomLevel] = useState(100);
-	const [pageNum, setPageNum]     = useState(currentPage);
+	const [pageNum, setPageNum] = useState(currentPage);
+	const [spread, setSpread] = useState('single');
+	const [startOnRight, setStartOnRight] = useState(true);
+	const [pageShadows, setPageShadows] = useState(true);
+	const [pagesStyle, setPagesStyle] = useState({});
 	const [toolsVisible, setToolsVisible] = useState(true);
+	const spreads = ['single', 'facing', 'flow'];
 
 	useEffect(()=>{
 		onZoomChange(zoomLevel);
@@ -19,7 +26,26 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 	useEffect(()=>{
 		setPageNum(currentPage);
-	}, [currentPage]);
+	}, [currentPage]);;
+
+	// update display arrangement when arrangement state is changed.
+	// todo: do this the 'react' way, without querying the dom.
+	useEffect(()=>{
+		const iframe = document.getElementById('BrewRenderer');
+		const pagesContainer = iframe?.contentWindow?.document.querySelector('.pages');
+
+		if(pagesContainer) {
+			spreads.forEach((spread)=>pagesContainer.classList.remove(spread));
+			pagesContainer.classList.add(spread);
+			['recto', 'verso'].forEach((leaf)=>pagesContainer.classList.remove(leaf));
+			pagesContainer.classList.add(startOnRight ? 'recto' : 'verso');
+		}
+	}, [spread, startOnRight]);
+
+	useEffect(()=>{
+		onStyleChange({ '.page': pageShadows ? {} : { boxShadow: 'none' } });
+	}, [pageShadows]);
+
 
 	const handleZoomButton = (zoom)=>{
 		setZoomLevel(_.round(_.clamp(zoom, MIN_ZOOM, MAX_ZOOM)));
@@ -68,7 +94,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	};
 
 	return (
-		<div className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`}>
+		<div className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`} role='toolbar'>
 			<button className='toggleButton' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible);}}><i className='fas fa-glasses' /></button>
 			{/*v=====----------------------< Zoom Controls >---------------------=====v*/}
 			<div className='group'>
@@ -96,7 +122,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				</button>
 				<input
 					id='zoom-slider'
-					className='range-input tool'
+					className='range-input tool hover-tooltip'
 					type='range'
 					name='zoom'
 					list='zoomLevels'
@@ -121,6 +147,45 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 			</div>
 
 			{/*v=====----------------------< Page Controls >---------------------=====v*/}
+			<div className='group'>
+				<div className='radio-group' role='group'>
+					<button role='radio'
+						id='single-spread'
+						className={`tool${spread === 'single' && ' active'}`}
+						title='Single Page'
+						onClick={()=>setSpread('single')}
+					><i className='fac single-spread' /></button>
+					<button role='radio'
+						id='facing-spread'
+						className={`tool${spread === 'facing' && ' active'}`}
+						title='Facing Pages'
+						onClick={()=>setSpread('facing')}
+					><i className='fac facing-spread' /></button>
+					<button role='radio'
+						id='flow-spread'
+						className={`tool${spread === 'flow' && ' active'}`}
+						title='Flow Pages'
+						onClick={()=>setSpread('flow')}
+					><i className='fac flow-spread' /></button>
+
+				</div>
+				<Anchored>
+					<AnchoredTrigger id='spread-settings' className='tool' title='Spread options'><i className='fas fa-gear' /></AnchoredTrigger>
+					<AnchoredBox title='Options'>
+						<h1>Options</h1>
+						<label title='Modify the horizontal space between pages.'>Column gap<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>onStyleChange({ '.pages': { columnGap: `${evt.target.value}px` }})} /></label>
+						<label title='Modify the vertical space between rows of pages.'>Row gap<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>onStyleChange({ '.pages': { rowGap: `${evt.target.value}px` } })} /></label>
+						<label title='Start 1st page on the right side, such as if you have cover page.'>Start on right
+							<input type='checkbox'
+								onChange={()=>setStartOnRight(!startOnRight)}
+								checked={startOnRight}
+								title={spread !== 'facing' ? 'Switch to Facing to enable toggle.' : null} />
+						</label>
+						<label title='Toggle the page shadow on every page.'>Page shadows<input type='checkbox' checked={pageShadows} onChange={()=>setPageShadows(!pageShadows)} /></label>
+					</AnchoredBox>
+				</Anchored>
+			</div>
+
 			<div className='group'>
 				<button
 					id='previous-page'
