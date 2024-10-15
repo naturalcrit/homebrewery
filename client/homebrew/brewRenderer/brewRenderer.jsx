@@ -229,13 +229,13 @@ const BrewRenderer = memo((props)=>{
 //Only re-render brewRenderer if arePropsEqual == true
 function arePropsEqual(oldProps, newProps) {
 	return (
-		oldProps.text.length  === newProps.text.length &&
-		oldProps.style.length === newProps.style.length &&
-		oldProps.renderer     === newProps.renderer &&
-		oldProps.theme        === newProps.theme &&
-		oldProps.errors       === newProps.errors &&
-		oldProps.themeBundle  === newProps.themeBundle &&
-		oldProps.lang         === newProps.lang
+		oldProps?.text?.length  === newProps?.text?.length &&
+		oldProps?.style?.length === newProps?.style?.length &&
+		oldProps?.renderer      === newProps?.renderer &&
+		oldProps?.theme         === newProps?.theme &&
+		oldProps?.errors        === newProps?.errors &&
+		oldProps?.themeBundle   === newProps?.themeBundle &&
+		oldProps?.lang          === newProps?.lang
 	);
 }
 
