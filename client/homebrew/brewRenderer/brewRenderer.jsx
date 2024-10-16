@@ -106,8 +106,8 @@ const BrewRenderer = (props)=>{
 
 	const renderStyle = ()=>{
 		const cleanStyle = props.style; //DOMPurify.sanitize(props.style, purifyConfig);
-		const themeStyles = props.themeBundle?.joinedStyles ?? '<style>@import url("/themes/V3/Blank/style.css");</style>';
-		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `${themeStyles} \n\n <style> ${cleanStyle} </style>` }} />;
+		const themeStyles = props.themeBundle?.joinedStyles ?? '@import url("/themes/V3/Blank/style.css");';
+		return `${themeStyles}\n\n${cleanStyle}`;
 	};
 
 	const renderPage = (pageText, index)=>{
@@ -202,7 +202,7 @@ const BrewRenderer = (props)=>{
 			<ToolBar onZoomChange={handleZoom} currentPage={props.currentBrewRendererPageNum}  totalPages={rawPages.length}/>
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
-			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
+			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT} head={<style>{renderedStyle}</style>}
 				style={{ width: '100%', height: '100%', visibility: state.visibility }}
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
@@ -217,7 +217,6 @@ const BrewRenderer = (props)=>{
 					{state.isMounted
 						&&
 						<>
-							{renderedStyle}
 							<div className='pages' lang={`${props.lang || 'en'}`} style={{ zoom: `${state.zoom}%` }}>
 								{renderedPages}
 							</div>
