@@ -202,6 +202,7 @@ const sanityCheckUnders = (indexes, entryAddress)=>{
 // Processes a list of Index Marker targets, either as page numbers or as Cross References
 const formatIndexLocations = (indexes, pagesArray, entry, runningErrors)=>{
 	let results = '';
+	const regularRef = [];
 	const seeRef = [];
 	const seeAlsoRef = [];
 	const seeUnderRef = [];
@@ -209,8 +210,7 @@ const formatIndexLocations = (indexes, pagesArray, entry, runningErrors)=>{
 
 	for (const [k, pageNumber] of pagesArray.entries()) {
 		if(typeof pageNumber == 'number') {
-			if(results.length == 0) results = ' ... pg. ';
-			results = results.concat('[', parseInt(pageNumber+1), `](#p${parseInt(pageNumber)}_${entry.toLowerCase().replaceAll(' ', '')}), `);
+			regularRef.push('[', parseInt(pageNumber+1), `](#p${parseInt(pageNumber)}_${entry.toLowerCase().replaceAll(' ', '')}) `);
 		} else {
 			let targetIndex = pageNumber.index?.length > 0 ? pageNumber.index : 'Index:';
 			const targetTopic = pageNumber.topic;
@@ -236,7 +236,8 @@ const formatIndexLocations = (indexes, pagesArray, entry, runningErrors)=>{
 			}
 		}
 	}
-	if(results[results.length - 1] == ',') results = results.slice(-1);
+	// This could be a single string with ternaries but that's a pain to read, so high school string joins.
+	if(regularRef.length > 0) results = ` ... pg. ${regularRef.join()}`;
 	if(seeRef.length > 0) results += `\n    see ${seeRef.join(';')}`;
 	if(seeUnderRef.length > 0) results += `\n    see under ${seeUnderRef.join(';')}`;
 	if(seeAlsoRef.length > 0) results += `\n    see also ${seeAlsoRef.join(';')}`;
