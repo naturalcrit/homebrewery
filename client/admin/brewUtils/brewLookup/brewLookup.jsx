@@ -12,22 +12,40 @@ const BrewLookup = createClass({
 	},
 	getInitialState() {
 		return {
-			query     : '',
-			foundBrew : null,
-			searching : false,
-			error     : null
+			query          : '',
+			foundBrew      : null,
+			searching      : false,
+			error          : null,
+			checkForScript : false
 		};
 	},
 	handleChange(e){
 		this.setState({ query: e.target.value });
 	},
 	lookup(){
-		this.setState({ searching: true, error: null });
+		this.setState({ searching: true, error: null, checkForScript: false });
 
 		request.get(`/admin/lookup/${this.state.query}`)
 			.then((res)=>this.setState({ foundBrew: res.body }))
 			.catch((err)=>this.setState({ error: err }))
 			.finally(()=>this.setState({ searching: false }));
+	},
+
+	checkForScript(){
+		const brew = this.state.foundBrew;
+		const scriptCheck = brew.text.match(/(<\/?s)cript/);
+		this.setState({
+			checkForScript : !!scriptCheck
+		});
+	},
+
+	cleanScript(){
+		if(!this.state.foundBrew?.shareId) return;
+
+		request.put(`/admin/clean/script/${this.state.foundBrew.shareId}`)
+			.then((res)=>this.setState({ foundBrew: res.body }))
+			.catch((err)=>this.setState({ error: err }))
+			.finally(()=>this.setState({ checkForScript: false }));
 	},
 
 	renderFoundBrew(){
@@ -52,6 +70,8 @@ const BrewLookup = createClass({
 				<dt>Num of Views</dt>
 				<dd>{brew.views}</dd>
 			</dl>
+			<button onClick={this.checkForScript}>Scan for SCRIPTs</button>
+			{this.state.checkForScript && <button onClick={this.cleanScript}>CLEAN BREW</button>}
 		</div>;
 	},
 
