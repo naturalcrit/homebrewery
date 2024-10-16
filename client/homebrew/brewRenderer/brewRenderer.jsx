@@ -122,7 +122,6 @@ const BrewRenderer = (props)=>{
 	};
 
 	const renderPages = ()=>{
-		console.log("renderPages")
 		if(props.errors && props.errors.length)
 			return renderedPages;
 
@@ -180,8 +179,8 @@ const BrewRenderer = (props)=>{
 		styleObject.backgroundImage = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='40px' width='200px'><text x='0' y='15' fill='white' font-size='20'>${global.config.deployment}</text></svg>")`;
 	}
 
-	const renderedStyle = useMemo(()=> renderStyle(), [props.style.length, props.themeBundle]);
-	renderedPages = useMemo(() => renderPages(), [props.text.length]);
+	const renderedStyle = useMemo(()=> renderStyle(), [props.style?.length, props.themeBundle]);
+	renderedPages = useMemo(() => renderPages(), [props.text?.length]);
 
 	return (
 		<>
