@@ -1,7 +1,7 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
-const { useState, useRef, useCallback } = React;
+const { useState, useRef, useCallback, useMemo } = React;
 const _ = require('lodash');
 
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
@@ -44,7 +44,7 @@ const BrewPage = (props)=>{
 
 
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
-const renderedPages = [];
+let renderedPages = [];
 let rawPages      = [];
 
 const BrewRenderer = (props)=>{
@@ -110,6 +110,8 @@ const BrewRenderer = (props)=>{
 		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `${themeStyles} \n\n <style> ${cleanStyle} </style>` }} />;
 	};
 
+	const renderedStyle = useMemo(()=> renderStyle(), [props.style.length, props.themeBundle]);
+
 	const renderPage = (pageText, index)=>{
 		if(props.renderer == 'legacy') {
 			const html = MarkdownLegacy.render(pageText);
@@ -122,6 +124,7 @@ const BrewRenderer = (props)=>{
 	};
 
 	const renderPages = ()=>{
+		console.log("renderPages")
 		if(props.errors && props.errors.length)
 			return renderedPages;
 
@@ -138,6 +141,8 @@ const BrewRenderer = (props)=>{
 		});
 		return renderedPages;
 	};
+
+	renderedPages = useMemo(() => renderPages(), [props.text.length]);
 
 	const handleControlKeys = (e)=>{
 		if(!(e.ctrlKey || e.metaKey)) return;
@@ -214,9 +219,9 @@ const BrewRenderer = (props)=>{
 					{state.isMounted
 						&&
 						<>
-							{renderStyle()}
+							{renderedStyle}
 							<div className='pages' lang={`${props.lang || 'en'}`} style={{ zoom: `${state.zoom}%` }}>
-								{renderPages()}
+								{renderedPages}
 							</div>
 						</>
 					}
