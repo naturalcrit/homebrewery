@@ -59,6 +59,7 @@ HomebrewSchema.statics.getByUser = async function(username, allowAccess=false, f
 		.catch((error)=>{throw 'Can not find brews';});
 	return brews;
 };
+
 HomebrewSchema.statics.getDocumentCountsByDate = async function() {
 	return this.aggregate([
 		{

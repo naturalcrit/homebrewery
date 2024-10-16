@@ -122,23 +122,24 @@ router.put('/admin/compress/:id', (req, res)=>{
 		});
 });
 
-
 router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 	try {
-		const totalBrewsCount = await HomebrewModel.estimatedDocumentCount();
-		//const publishedBrewsCount = await HomebrewModel.countDocuments({ published: true });
-		const unauthoredBrewsCount = await HomebrewModel.countDocuments({ authors: [] });
-		const nonGoogleBrewsCount = await HomebrewModel.countDocuments({ googleId: null });
-		const legacyBrewsCount = await HomebrewModel.countDocuments({ renderer : 'legacy'});
-		//const thumbnailBrewsCount = await HomebrewModel.countDocuments({ thumbnail : ''});
+		const [totalBrewsCount, unauthoredBrewsCount, nonGoogleBrewsCount, legacyBrewsCount] = await Promise.all([
+			HomebrewModel.estimatedDocumentCount(),
+			//HomebrewModel.countDocuments({ published: true });
+			HomebrewModel.countDocuments({ authors: [] }),
+			HomebrewModel.countDocuments({ googleId: null }),
+			HomebrewModel.countDocuments({ renderer: 'legacy' }),
+			//HomebrewModel.countDocuments({ thumbnail : ''});
+		]);
 
 		return res.json({
-			totalBrews		: totalBrewsCount,
-			//totalPublished	: publishedBrewsCount,
+			totalBrews      : totalBrewsCount,
+			//totalPublished: publishedBrewsCount,
 			totalUnauthored : unauthoredBrewsCount,
-			totalGoogle		: totalBrewsCount - nonGoogleBrewsCount,
-			totalLegacy		: legacyBrewsCount,
-			//totalThumbnail	: totalBrewsCount - thumbnailBrewsCount,
+			totalGoogle     : totalBrewsCount - nonGoogleBrewsCount,
+			totalLegacy     : legacyBrewsCount,
+			//totalThumbnail: totalBrewsCount - thumbnailBrewsCount,
 		});
 	} catch (error) {
 		console.error(error);
@@ -146,24 +147,24 @@ router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 	}
 });
 
-router.get('/admin/brewsByDate', mw.adminOnly, async (req, res) => {
-    try {
-        const data = await HomebrewModel.getDocumentCountsByDate();
-        res.json(data);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
+router.get('/admin/brewsByDate', mw.adminOnly, async (req, res)=>{
+	try {
+		const data = await HomebrewModel.getDocumentCountsByDate();
+		res.json(data);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
 });
 
-router.get('/admin/brewsByLang', mw.adminOnly, async (req, res) => {
-    try {
-        const data = await HomebrewModel.getDocumentCountsByLang();
-        res.json(data);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
+router.get('/admin/brewsByLang', mw.adminOnly, async (req, res)=>{
+	try {
+		const data = await HomebrewModel.getDocumentCountsByLang();
+		res.json(data);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
 });
 
 // #######################   NOTIFICATIONS
