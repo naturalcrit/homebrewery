@@ -110,8 +110,6 @@ const BrewRenderer = (props)=>{
 		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `${themeStyles} \n\n <style> ${cleanStyle} </style>` }} />;
 	};
 
-	const renderedStyle = useMemo(()=> renderStyle(), [props.style.length, props.themeBundle]);
-
 	const renderPage = (pageText, index)=>{
 		if(props.renderer == 'legacy') {
 			const html = MarkdownLegacy.render(pageText);
@@ -141,8 +139,6 @@ const BrewRenderer = (props)=>{
 		});
 		return renderedPages;
 	};
-
-	renderedPages = useMemo(() => renderPages(), [props.text.length]);
 
 	const handleControlKeys = (e)=>{
 		if(!(e.ctrlKey || e.metaKey)) return;
@@ -183,6 +179,9 @@ const BrewRenderer = (props)=>{
 	if(global.config.deployment) {
 		styleObject.backgroundImage = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='40px' width='200px'><text x='0' y='15' fill='white' font-size='20'>${global.config.deployment}</text></svg>")`;
 	}
+
+	const renderedStyle = useMemo(()=> renderStyle(), [props.style.length, props.themeBundle]);
+	renderedPages = useMemo(() => renderPages(), [props.text.length]);
 
 	return (
 		<>
