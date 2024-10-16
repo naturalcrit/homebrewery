@@ -11,7 +11,7 @@ html,body, #reactContainer, .naturalCrit { min-height : 100%; }
 @sidebarWidth : 250px;
 
 body {
-	height           : 100vh;
+	height           : 100%;
 	padding          : 0;
 	margin           : 0;
 	font-family      : 'Open Sans', sans-serif;
@@ -26,6 +26,7 @@ body {
 }
 
 :where(.admin) {
+	min-height:100%;
 
 	header {
 		padding          : 20px 0px;
@@ -123,12 +124,6 @@ body {
 		margin-block     : 10px;
 		font-weight      : 900;
 		color            : white;
-		background-color : @red;
-	}
-
-	footer {
-		height           : 100px;
-		margin-top       : 30px;
 		background-color : @red;
 	}
 }

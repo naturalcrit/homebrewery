@@ -71,7 +71,7 @@ HomebrewSchema.statics.getDocumentCountsByDate = async function() {
 			// Sort by date ascending
 			$sort : { _id: 1 }
 		}
-	], { maxTimeMS: 10000 });
+	], { maxTimeMS: 30000 });
 };
 
 HomebrewSchema.statics.getDocumentCountsByLang = async function() {
@@ -85,7 +85,7 @@ HomebrewSchema.statics.getDocumentCountsByLang = async function() {
 		{
 			$sort: { _id: 1 }
 		}
-	], { maxTimeMS: 10000 });
+	], { maxTimeMS: 30000 });
 };
 
 const Homebrew = mongoose.model('Homebrew', HomebrewSchema);

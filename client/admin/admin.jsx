@@ -42,11 +42,6 @@ const Admin = createClass({
 				{this.state.currentTab==='notifications' && <NotificationUtils />}
 				{this.state.currentTab==='stats' && <Stats />}
 			</main>
-			<footer>
-				<div className="container">
-					
-				</div>
-			</footer>
 		</div>;
 	}
 });

@@ -126,19 +126,19 @@ router.put('/admin/compress/:id', (req, res)=>{
 router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 	try {
 		const totalBrewsCount = await HomebrewModel.estimatedDocumentCount();
-		const publishedBrewsCount = await HomebrewModel.countDocuments({ published: true });
+		//const publishedBrewsCount = await HomebrewModel.countDocuments({ published: true });
 		const unauthoredBrewsCount = await HomebrewModel.countDocuments({ authors: [] });
 		const nonGoogleBrewsCount = await HomebrewModel.countDocuments({ googleId: null });
 		const legacyBrewsCount = await HomebrewModel.countDocuments({ renderer : 'legacy'});
-		const thumbnailBrewsCount = await HomebrewModel.countDocuments({ thumbnail : ''});
+		//const thumbnailBrewsCount = await HomebrewModel.countDocuments({ thumbnail : ''});
 
 		return res.json({
 			totalBrews		: totalBrewsCount,
-			totalPublished	: publishedBrewsCount,
+			//totalPublished	: publishedBrewsCount,
 			totalUnauthored : unauthoredBrewsCount,
 			totalGoogle		: totalBrewsCount - nonGoogleBrewsCount,
 			totalLegacy		: legacyBrewsCount,
-			totalThumbnail	: totalBrewsCount - thumbnailBrewsCount,
+			//totalThumbnail	: totalBrewsCount - thumbnailBrewsCount,
 		});
 	} catch (error) {
 		console.error(error);

@@ -54,16 +54,21 @@ const Stats = () => {
 		const min = Math.min(...values);
 		const max = Math.max(...values);
 		const range = max - min;
-	
+
 		if (rangeType === '0 to max') {
 			// Create an array of multiples of 5 from 0 to max
-			return Array.from({ length: Math.floor(max / 5) + 1 }, (_, i) => i * 5);
+			return Array.from(
+				{ length: Math.floor(max / 5) + 1 },
+				(_, i) => i * 5
+			);
 		} else if (rangeType === 'min to max') {
 			// Create an array of multiples of 5 starting from the minimum value, and up to the max value
-			return Array.from({ length: Math.floor(range / 5) + 1 }, (_, i) => min + i * 5);
+			return Array.from(
+				{ length: Math.floor(range / 5) + 1 },
+				(_, i) => min + i * 5
+			);
 		}
 	};
-	
 
 	const renderTable = () => {
 		if (!stats)
@@ -98,59 +103,74 @@ const Stats = () => {
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td>Total published</td>
-							<td>{stats.totalPublished}</td>
-							<td>
-								{Math.round(
-									(stats.totalPublished / stats.totalBrews) *
-										100
-								)}
-								%
-							</td>
-						</tr>
-						<tr>
-							<td>Total without author</td>
-							<td>{stats.totalUnauthored}</td>
-							<td>
-								{Math.round(
-									(stats.totalUnauthored / stats.totalBrews) *
-										100
-								)}
-								%
-							</td>
-						</tr>
-						<tr>
-							<td>Total in Google storage</td>
-							<td>{stats.totalGoogle}</td>
-							<td>
-								{Math.round(
-									(stats.totalGoogle / stats.totalBrews) * 100
-								)}
-								%
-							</td>
-						</tr>
-						<tr>
-							<td>Total in Legacy renderer</td>
-							<td>{stats.totalLegacy}</td>
-							<td>
-								{Math.round(
-									(stats.totalLegacy / stats.totalBrews) * 100
-								)}
-								%
-							</td>
-						</tr>
-						<tr>
-							<td>Total with thumbnail</td>
-							<td>{stats.totalThumbnail}</td>
-							<td>
-								{Math.round(
-									(stats.totalThumbnail / stats.totalBrews) *
-										100
-								)}
-								%
-							</td>
-						</tr>
+						{stats.totalPublished && (
+							<tr>
+								<td>Total published</td>
+								<td>{stats.totalPublished}</td>
+								<td>
+									{Math.round(
+										(stats.totalPublished /
+											stats.totalBrews) *
+											100
+									)}
+									%
+								</td>
+							</tr>
+						)}
+						{stats.totalUnauthored && (
+							<tr>
+								<td>Total without author</td>
+								<td>{stats.totalUnauthored}</td>
+								<td>
+									{Math.round(
+										(stats.totalUnauthored /
+											stats.totalBrews) *
+											100
+									)}
+									%
+								</td>
+							</tr>
+						)}
+						{stats.totalGoogle && (
+							<tr>
+								<td>Total in Google storage</td>
+								<td>{stats.totalGoogle}</td>
+								<td>
+									{Math.round(
+										(stats.totalGoogle / stats.totalBrews) *
+											100
+									)}
+									%
+								</td>
+							</tr>
+						)}
+						{stats.totalLegacy && (
+							<tr>
+								<td>Total in Legacy renderer</td>
+								<td>{stats.totalLegacy}</td>
+								<td>
+									{Math.round(
+										(stats.totalLegacy / stats.totalBrews) *
+											100
+									)}
+									%
+								</td>
+							</tr>
+						)}
+						{stats.totalThumbnail && (
+							<tr>
+								<td>Total with thumbnail</td>
+								<td>{stats.totalThumbnail}</td>
+								<td>
+									{Math.round(
+										(stats.totalThumbnail /
+											stats.totalBrews) *
+											100
+									)}
+									%
+								</td>
+							</tr>
+						)}
 					</tbody>
 				</table>
 			</>
@@ -159,7 +179,7 @@ const Stats = () => {
 
 	const renderChart = (category) => {
 		const dataset = chartData?.find((item) => item.category === category);
-	
+
 		if (!chartData || chartData.length === 0 || !dataset) {
 			return (
 				<button
@@ -190,7 +210,7 @@ const Stats = () => {
 						<div className="axisLabel">Brews</div>
 						{
 							// Map chartRange as spans, setting their bottom position as percentage of bottom
-							chartRange(dataset.data || [], '0 to max')?.map(
+							chartRange(dataset.data, '0 to max')?.map(
 								(value, index) => (
 									<span
 										key={index}
@@ -240,8 +260,9 @@ const Stats = () => {
 									className="bottomLabel"
 									style={{
 										left: `${
-											((index / dataset.labels.length) *
-											100) + (50 / dataset.labels.length - 0.3)
+											(index / dataset.labels.length) *
+												100 +
+											(50 / dataset.labels.length - 0.3)
 										}%`,
 									}}
 								>
