@@ -4,6 +4,10 @@
 	overflow-y    : scroll;
 	will-change   : transform;
 	padding-top   : 30px;
+	height        : 100vh;
+	&.deployment {
+		background-color: darkred;
+	}
 	:where(.pages) {
 		margin : 30px 0px;
 		& > :where(.page) {

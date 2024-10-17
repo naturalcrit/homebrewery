@@ -1,7 +1,7 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
-const { useState, useRef, useEffect, useCallback } = React;
+const { useState, useRef, useCallback, useMemo } = React;
 const _ = require('lodash');
 
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
@@ -44,7 +44,7 @@ const BrewPage = (props)=>{
 
 
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
-const renderedPages = [];
+let renderedPages = [];
 let rawPages      = [];
 
 const BrewRenderer = (props)=>{
@@ -64,7 +64,6 @@ const BrewRenderer = (props)=>{
 	};
 
 	const [state, setState] = useState({
-		height     : PAGE_HEIGHT,
 		isMounted  : false,
 		visibility : 'hidden',
 		zoom       : 100
@@ -77,17 +76,6 @@ const BrewRenderer = (props)=>{
 	} else {
 		rawPages = props.text.split(/^\\page$/gm);
 	}
-
-	useEffect(()=>{ // Unmounting steps
-		return ()=>{window.removeEventListener('resize', updateSize);};
-	}, []);
-
-	const updateSize = ()=>{
-		setState((prevState)=>({
-			...prevState,
-			height : mainRef.current.parentNode.clientHeight,
-		}));
-	};
 
 	const updateCurrentPage = useCallback(_.throttle((e)=>{
 		const { scrollTop, clientHeight, scrollHeight } = e.target;
@@ -163,8 +151,6 @@ const BrewRenderer = (props)=>{
 
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
-			updateSize();
-			window.addEventListener('resize', updateSize);
 			renderPages(); //Make sure page is renderable before showing
 			setState((prevState)=>({
 				...prevState,
@@ -186,6 +172,15 @@ const BrewRenderer = (props)=>{
 			zoom : newZoom
 		}));
 	};
+
+	const styleObject = {};
+
+	if(global.config.deployment) {
+		styleObject.backgroundImage = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='40px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${global.config.deployment}</text></svg>")`;
+	}
+
+	const renderedStyle = useMemo(()=> renderStyle(), [props.style?.length, props.themeBundle]);
+	renderedPages = useMemo(() => renderPages(), [props.text?.length]);
 
 	return (
 		<>
@@ -212,19 +207,19 @@ const BrewRenderer = (props)=>{
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
 			>
-				<div className={'brewRenderer'}
+				<div className={`brewRenderer ${global.config.deployment && 'deployment'}`}
 					onScroll={updateCurrentPage}
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
-					style={{ height: state.height }}>
+					style={ styleObject }>
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted
 						&&
 						<>
-							{renderStyle()}
+							{renderedStyle}
 							<div className='pages' lang={`${props.lang || 'en'}`} style={{ zoom: `${state.zoom}%` }}>
-								{renderPages()}
+								{renderedPages}
 							</div>
 						</>
 					}

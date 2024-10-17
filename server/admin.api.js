@@ -2,7 +2,6 @@ const HomebrewModel = require('./homebrew.model.js').model;
 const NotificationModel = require('./notifications.model.js').model;
 const router = require('express').Router();
 const Moment = require('moment');
-//const render = require('vitreum/steps/render');
 const templateFn = require('../client/template.js');
 const zlib = require('zlib');
 
@@ -23,7 +22,7 @@ const mw = {
 		if(process.env.ADMIN_USER === username && process.env.ADMIN_PASS === password){
 			return next();
 		}
-		return res.status(401).send('Access denied');
+		throw { HBErrorCode: '52', code: 401, message: 'Access denied' };
 	}
 };
 
