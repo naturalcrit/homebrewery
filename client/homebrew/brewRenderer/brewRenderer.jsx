@@ -123,17 +123,6 @@ const BrewRenderer = (props)=>{
 		props.onPageChange(currentPageNumber);
 	}, 200), []);
 
-	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
-		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
-			renderPages(); //Make sure page is renderable before showing
-			setState((prevState)=>({
-				...prevState,
-				isMounted  : true,
-				visibility : 'visible'
-			}));
-		}, 100);
-	};
-
 	const isInView = (index)=>{
 		if(!state.isMounted)
 			return false;
@@ -196,6 +185,17 @@ const BrewRenderer = (props)=>{
 			e.stopPropagation();
 			e.preventDefault();
 		}
+	};
+
+	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
+		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
+			renderPages(); //Make sure page is renderable before showing
+			setState((prevState)=>({
+				...prevState,
+				isMounted  : true,
+				visibility : 'visible'
+			}));
+		}, 100);
 	};
 
 	const emitClick = ()=>{ // Allow clicks inside iFrame to interact with dropdowns, etc. from outside
