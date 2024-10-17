@@ -1,7 +1,7 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
-const { useState, useRef, useCallback, useMemo } = React;
+const { useState, useRef, useCallback, useMemo, useEffect } = React;
 const _ = require('lodash');
 
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
@@ -78,9 +78,10 @@ const BrewRenderer = (props)=>{
 	}
 
 	useEffect(()=>{
-		const iframeDoc = document.getElementById('brewRenderer');
+		const iframeDoc = document.getElementById('BrewRenderer');
 		const hash = window.location.hash;
-		console.log(hash);
+		console.log('Hash: ', hash || 'There is no hash');
+		console.log(iframeDoc || 'no iframe yet');
 		if(hash && iframeDoc) {
 		  const anchor = iframeDoc.querySelector(hash);
 
@@ -114,17 +115,8 @@ const BrewRenderer = (props)=>{
 		};
 	}, []);
 
-	const updateSize = ()=>{
-		setState((prevState)=>({
-			...prevState,
-			height : mainRef.current.parentNode.clientHeight,
-		}));
-	};
-
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
-			updateSize();
-			window.addEventListener('resize', updateSize);
 			renderPages(); //Make sure page is renderable before showing
 			setState((prevState)=>({
 				...prevState,
