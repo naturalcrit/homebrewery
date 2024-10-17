@@ -8,8 +8,9 @@ const express = require('express');
 const yaml = require('js-yaml');
 const app = express();
 const config = require('./config.js');
+const fs = require('fs-extra');
 
-const { homebrewApi, getBrew, getUsersBrewThemes } = require('./homebrew.api.js');
+const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = require('./homebrew.api.js');
 const GoogleActions = require('./googleActions.js');
 const serveCompressedStaticAssets = require('./static-assets.mv.js');
 const sanitizeFilename = require('sanitize-filename');
@@ -29,6 +30,8 @@ const sanitizeBrew = (brew, accessType)=>{
 	}
 	return brew;
 };
+
+app.set('trust proxy', 1 /* number of proxies between user and server */)
 
 app.use('/', serveCompressedStaticAssets(`build`));
 app.use(require('./middleware/content-negotiation.js'));
@@ -55,6 +58,7 @@ app.use((req, res, next)=>{
 
 app.use(homebrewApi);
 app.use(require('./admin.api.js'));
+app.use(require('./vault.api.js'));
 
 const HomebrewModel     = require('./homebrew.model.js').model;
 const welcomeText       = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
@@ -201,6 +205,26 @@ app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	res.status(200).send(brew.text);
 });
 
+//Serve brew metadata
+app.get('/metadata/:id', asyncHandler(getBrew('share')), (req, res)=>{
+	const { brew } = req;
+	sanitizeBrew(brew, 'share');
+
+	const fields = ['title', 'pageCount', 'description', 'authors', 'lang',
+	  'published', 'views', 'shareId', 'createdAt', 'updatedAt',
+	  'lastViewed', 'thumbnail', 'tags'
+	];
+
+	const metadata = fields.reduce((acc, field)=>{
+	  if(brew[field] !== undefined) acc[field] = brew[field];
+	  return acc;
+	}, {});
+	res.status(200).json(metadata);
+});
+
+//Serve brew styling
+app.get('/css/:id', asyncHandler(getBrew('share')), (req, res)=>{getCSS(req, res);});
+
 //User Page
 app.get('/user/:username', async (req, res, next)=>{
 	const ownAccount = req.account && (req.account.username == req.params.username);
@@ -234,6 +258,8 @@ app.get('/user/:username', async (req, res, next)=>{
 		console.log(err);
 	});
 
+	brews.forEach(brew => brew.stubbed = true); //All brews from MongoDB are "stubbed"
+
 	if(ownAccount && req?.account?.googleId){
 		const auth = await GoogleActions.authCheck(req.account, res);
 		let googleBrews = await GoogleActions.listGoogleBrews(auth)
@@ -241,12 +267,12 @@ app.get('/user/:username', async (req, res, next)=>{
 				console.error(err);
 			});
 
+		// If stub matches file from Google, use Google metadata over stub metadata
 		if(googleBrews && googleBrews.length > 0) {
 			for (const brew of brews.filter((brew)=>brew.googleId)) {
 				const match = googleBrews.findIndex((b)=>b.editId === brew.editId);
 				if(match !== -1) {
 					brew.googleId = googleBrews[match].googleId;
-					brew.stubbed = true;
 					brew.pageCount = googleBrews[match].pageCount;
 					brew.renderer = googleBrews[match].renderer;
 					brew.version = googleBrews[match].version;
@@ -255,6 +281,7 @@ app.get('/user/:username', async (req, res, next)=>{
 				}
 			}
 
+			//Remaining unstubbed google brews display current user as author
 			googleBrews = googleBrews.map((brew)=>({ ...brew, authors: [req.account.username] }));
 			brews = _.concat(brews, googleBrews);
 		}
@@ -357,27 +384,26 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 app.get('/account', asyncHandler(async (req, res, next)=>{
 	const data = {};
 	data.title = 'Account Information Page';
+	
+	if(!req.account) {
+		res.set('WWW-Authenticate', 'Bearer realm="Authorization Required"');
+		const error = new Error('No valid account');
+		error.status = 401;
+		error.HBErrorCode = '50';
+		error.page = data.title;
+		return next(error);
+	};
 
 	let auth;
 	let googleCount = [];
 	if(req.account) {
 		if(req.account.googleId) {
-			try {
-				auth = await GoogleActions.authCheck(req.account, res, false);
-			} catch (e) {
-				auth = undefined;
-				console.log('Google auth check failed!');
-				console.log(e);
-			}
-			if(auth.credentials.access_token) {
-				try {
-					googleCount = await GoogleActions.listGoogleBrews(auth);
-				} catch (e) {
-					googleCount = undefined;
-					console.log('List Google files failed!');
-					console.log(e);
-				}
-			}
+			auth = await GoogleActions.authCheck(req.account, res, false)
+
+			googleCount = await GoogleActions.listGoogleBrews(auth)
+				.catch((err)=>{
+					console.error(err);
+				});
 		}
 
 		const query = { authors: req.account.username, googleId: { $exists: false } };
@@ -391,7 +417,7 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 			username    : req.account.username,
 			issued      : req.account.issued,
 			googleId    : Boolean(req.account.googleId),
-			authCheck   : Boolean(req.account.googleId && auth.credentials.access_token),
+			authCheck   : Boolean(req.account.googleId && auth?.credentials.access_token),
 			mongoCount  : mongoCount,
 			googleCount : googleCount?.length
 		};
@@ -421,6 +447,19 @@ if(isLocalEnvironment){
 	});
 }
 
+// Add Static Local Paths
+app.use('/staticImages', express.static(config.get('hb_images') && fs.existsSync(config.get('hb_images')) ? config.get('hb_images') :'staticImages'));
+app.use('/staticFonts', express.static(config.get('hb_fonts')  && fs.existsSync(config.get('hb_fonts')) ? config.get('hb_fonts'):'staticFonts'));
+
+//Vault Page
+app.get('/vault', asyncHandler(async(req, res, next)=>{
+	req.ogMeta = { ...defaultMetaTags,
+		title       : 'The Vault',
+		description : 'Search for Brews'
+	};
+	return next();
+}));
+
 //Send rendered page
 app.use(asyncHandler(async (req, res, next)=>{
 	if (!req.route) return res.redirect('/'); // Catch-all for invalid routes
@@ -436,7 +475,8 @@ const renderPage = async (req, res)=>{
 	const configuration = {
 		local       : isLocalEnvironment,
 		publicUrl   : config.get('publicUrl') ?? '',
-		environment : nodeEnv
+		environment : nodeEnv,
+		deployment  : config.get('heroku_app_name') ?? ''
 	};
 	const props = {
 		version       : require('./../package.json').version,
@@ -480,7 +520,7 @@ app.use(async (err, req, res, next)=>{
 	err.originalUrl = req.originalUrl;
 	console.error(err);
 
-	if(err.originalUrl?.startsWith('/api/')) {
+	if(err.originalUrl?.startsWith('/api')) {
 		// console.log('API error');
 		res.status(err.status || err.response?.status || 500).send(err);
 		return;
