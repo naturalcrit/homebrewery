@@ -91,13 +91,6 @@ If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](
 
 \page
 
-
-
-
-
-
-
-
 ## Markdown+
 The Homebrewery aims to make homebrewing as simple as possible, providing a live editor with Markdown syntax that is more human-readable and faster to write with than raw HTML.
 
