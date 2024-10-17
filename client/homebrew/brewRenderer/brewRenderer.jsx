@@ -77,40 +77,45 @@ const BrewRenderer = (props)=>{
 		rawPages = props.text.split(/^\\page$/gm);
 	}
 
-	useEffect(()=>{
-		const iframeDoc = document.getElementById('BrewRenderer');
+	useEffect(() => {
+		const iframe = document.getElementById('BrewRenderer');
 		const hash = window.location.hash;
-		console.log('Hash: ', hash || 'There is no hash');
-		console.log(iframeDoc || 'no iframe yet');
-		if(hash && iframeDoc) {
-		  const anchor = iframeDoc.querySelector(hash);
-
-			if(anchor) {
-				anchor.scrollIntoView();
+	
+		const scrollToHash = () => {
+			const iframeDoc = iframe?.contentDocument || iframe?.contentWindow?.document;
+			let anchor = iframeDoc.querySelector(hash);
+	
+			if (anchor) {
+				anchor.scrollIntoView({ behavior: 'smooth' });
 			} else {
 				// Use MutationObserver to wait for the element if it's not immediately available
-				const observer = new MutationObserver((mutations, obs)=>{
-				const anchorElement = iframeDoc.querySelector(hash);
-				if(anchorElement) {
-					anchorElement.scrollIntoView();
-					obs.disconnect(); // Stop observing once the element is found
-				}
+				const observer = new MutationObserver((mutations, obs) => {
+					anchor = iframeDoc.querySelector(hash);	
+					if (anchor) {
+						anchor.scrollIntoView({ behavior: 'smooth' });
+						obs.disconnect();
+					}
 				});
 
-				observer.observe(iframeDoc, {
-					childList : true,
-					subtree   : true,
-				});
+				if (iframeDoc.body) {
+					observer.observe(iframeDoc.body, {
+						childList: true,
+						subtree: true,
+					});
+				}
+			}
+		};
+	
+		if (hash) {
+			iframe.addEventListener('load', scrollToHash);
+	
+			if (iframe.contentDocument?.readyState === 'complete') {
+				scrollToHash();
 			}
 		}
-		/*
-		const elementId = window.location.hash.slice(1);
-		if(elementId && state.isMounted) {
-			const element = document.getElementById(elementId);
-			element.scrollIntoView({ block: 'start' });
-		}
-		*/
+
 		return ()=>{
+			iframe.removeEventListener('load', scrollToHash);
 			window.removeEventListener('resize', updateSize);
 		};
 	}, []);
