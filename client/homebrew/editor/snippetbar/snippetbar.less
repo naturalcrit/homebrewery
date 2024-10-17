@@ -5,102 +5,113 @@
 	@menuHeight : 25px;
 	position         : relative;
 	min-width        : 331px;
-	height           : @menuHeight;
+	height           : auto;
 	color            : black;
 	background-color : #DDDDDD;
 	display: flex;
+	justify-content: space-between;
+	flex-wrap:wrap-reverse;
 
 	.snippets {
-		position        : absolute;
-		top             : 0px;
-		right           : 0px;
+		display         : flex;
+		justify-content : space-between;
 	}
 
 	.editors {
 		display         : flex;
 		justify-content : space-between;
-		height          : @menuHeight;
-		
-		& > div {
-			width       : @menuHeight;
-			height      : @menuHeight;
-			line-height : @menuHeight;
-			text-align  : center;
-			cursor      : pointer;
-			&:hover,&.selected { background-color : #999999; }
-			&.text {
-				.tooltipLeft('Brew Editor');
+		>div {
+			display:flex;
+			justify-content: space-around;
+			flex:1;
+			border-left:1px solid;
+
+			&:first-child {
+				border-left: none;
 			}
-			&.style {
-				.tooltipLeft('Style Editor');
-			}
-			&.meta {
-				.tooltipLeft('Properties');
-			}
-			&.undo {
-				.tooltipLeft('Undo');
-				font-size : 0.75em;
-				color     : grey;
-				&.active { color : inherit; }
-			}
-			&.redo {
-				.tooltipLeft('Redo');
-				font-size : 0.75em;
-				color     : grey;
-				&.active { color : inherit; }
-			}
-			&.foldAll {
-				.tooltipLeft('Fold All');
-				font-size : 0.75em;
-				color     : inherit;
-			}
-			&.unfoldAll {
-				.tooltipLeft('Unfold All');
-				font-size : 0.75em;
-				color     : inherit;
-			}
-			&.history {
-				.tooltipLeft('History');
-				font-size : 0.75em;
-				color     : grey;
-				position  : relative;
-				&.active {
-					color : inherit;
+
+			& > div {
+				width       : @menuHeight;
+				height      : @menuHeight;
+				line-height : @menuHeight;
+				text-align  : center;
+				cursor      : pointer;
+				&:hover,&.selected { background-color : #999999; }
+				&.text {
+					.tooltipLeft('Brew Editor');
 				}
-				&>.dropdown{
-					right         : -1px;
-					&>.snippet{
-						padding-right : 10px;
+				&.style {
+					.tooltipLeft('Style Editor');
+				}
+				&.meta {
+					.tooltipLeft('Properties');
+				}
+				&.undo {
+					.tooltipLeft('Undo');
+					font-size : 0.75em;
+					color     : grey;
+					&.active { color : inherit; }
+				}
+				&.redo {
+					.tooltipLeft('Redo');
+					font-size : 0.75em;
+					color     : grey;
+					&.active { color : inherit; }
+				}
+				&.foldAll {
+					.tooltipLeft('Fold All');
+					font-size : 0.75em;
+					color     : inherit;
+				}
+				&.unfoldAll {
+					.tooltipLeft('Unfold All');
+					font-size : 0.75em;
+					color     : inherit;
+				}
+				&.history {
+					.tooltipLeft('History');
+					font-size : 0.75em;
+					color     : grey;
+					position  : relative;
+					border:none;
+					&.active {
+						color : inherit;
+					}
+					&>.dropdown{
+						right         : -1px;
+						&>.snippet{
+							padding-right : 10px;
+						}
 					}
 				}
-			}
-			&.editorTheme {
-				.tooltipLeft('Editor Themes');
-				font-size : 0.75em;
-				color     : black;
-				&.active {
-					position         : relative;
-					background-color : #999999;
+				&.editorTheme {
+					.tooltipLeft('Editor Themes');
+					font-size : 0.75em;
+					color     : black;
+					&.active {
+						position         : relative;
+						background-color : #999999;
+					}
+				}
+				&.divider {
+					width      : 5px;
+					background : linear-gradient(currentColor, currentColor) no-repeat center/1px 100%;
+					&:hover { background-color : inherit; }
 				}
 			}
-			&.divider {
-				width      : 5px;
-				background : linear-gradient(currentColor, currentColor) no-repeat center/1px 100%;
-				&:hover { background-color : inherit; }
+			.themeSelector {
+				position         : absolute;
+				top              : 25px;
+				right            : 0;
+				z-index          : 10;
+				display          : flex;
+				align-items      : center;
+				justify-content  : center;
+				width            : 170px;
+				height           : inherit;
+				background-color : inherit;
 			}
-		}
-		.themeSelector {
-			position         : absolute;
-			top              : 25px;
-			right            : 0;
-			z-index          : 10;
-			display          : flex;
-			align-items      : center;
-			justify-content  : center;
-			width            : 170px;
-			height           : inherit;
-			background-color : inherit;
-		}
+		}		
 	}
 	.snippetBarButton {
 		display        : inline-block;
@@ -111,6 +122,7 @@
 		line-height    : @menuHeight;
 		text-transform : uppercase;
 		cursor         : pointer;
+		text-wrap: nowrap;
 		&:hover, &.selected { background-color : #999999; }
 		i {
 			margin-right   : 3px;
@@ -126,7 +138,8 @@
 		.tooltipLeft('Edit Brew Properties');
 	}
 	.snippetGroup {
-		border-left   : 1px solid currentColor;
+		border-right   : 1px solid currentColor;
+
 		&:hover {
 			& > .dropdown { visibility : visible; }
 		}
@@ -213,15 +226,16 @@
 	}
 }
 
-@container editor (width < 538px) {
+@container editor (width < 568px) {
 
-	.snippetBar {
-		display : flex;
-		flex-wrap : wrap;
-		height : 50px;
-
-		.snippets {
-			position : static;
-		}
+	.editors,.snippets {
+		width:332.59px;
 	}
+	.editors {
+		border-right:1px solid;
+	}
+	.snippetBar .editors>div.history>.dropdown {
+		right:unset;
+	}
+
 }
