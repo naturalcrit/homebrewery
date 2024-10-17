@@ -115,6 +115,14 @@ const BrewRenderer = (props)=>{
 		};
 	}, []);
 
+	const updateCurrentPage = useCallback(_.throttle((e)=>{
+		const { scrollTop, clientHeight, scrollHeight } = e.target;
+		const totalScrollableHeight = scrollHeight - clientHeight;
+		const currentPageNumber = Math.max(Math.ceil((scrollTop / totalScrollableHeight) * rawPages.length), 1);
+
+		props.onPageChange(currentPageNumber);
+	}, 200), []);
+
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			renderPages(); //Make sure page is renderable before showing
@@ -125,14 +133,6 @@ const BrewRenderer = (props)=>{
 			}));
 		}, 100);
 	};
-
-	const updateCurrentPage = useCallback(_.throttle((e)=>{
-		const { scrollTop, clientHeight, scrollHeight } = e.target;
-		const totalScrollableHeight = scrollHeight - clientHeight;
-		const currentPageNumber = Math.max(Math.ceil((scrollTop / totalScrollableHeight) * rawPages.length), 1);
-
-		props.onPageChange(currentPageNumber);
-	}, 200), []);
 
 	const isInView = (index)=>{
 		if(!state.isMounted)
