@@ -16,8 +16,8 @@ const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
 const { printCurrentBrew } = require('../../../shared/helpers.js');
 
-//const DOMPurify = require('dompurify');
-//const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
+const DOMPurify = require('dompurify');
+const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
 
 const PAGE_HEIGHT = 1056;
 
@@ -41,6 +41,7 @@ const BrewPage = (props)=>{
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
 };
+
 
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
 let renderedPages = [];
