@@ -12,6 +12,7 @@ const ThemeSnippets = {};
 ThemeSnippets['Legacy_5ePHB'] = require('themes/Legacy/5ePHB/snippets.js');
 ThemeSnippets['V3_5ePHB']     = require('themes/V3/5ePHB/snippets.js');
 ThemeSnippets['V3_5eDMG']     = require('themes/V3/5eDMG/snippets.js');
+ThemeSnippets['V3_5eTCE']     = require('themes/V3/5eTCE/snippets.js');
 ThemeSnippets['V3_Journal']   = require('themes/V3/Journal/snippets.js');
 ThemeSnippets['V3_Blank']     = require('themes/V3/Blank/snippets.js');
 
