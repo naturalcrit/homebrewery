@@ -235,7 +235,7 @@ const Snippetbar = createClass({
 			</div>
 			<div className='divider'></div>
 			{foldButtons}
-			<div className={`editorTool editorTheme ${this.state.themeSelector ? 'active' : ''}`}
+			<div className={`editorTheme ${this.state.themeSelector ? 'active' : ''}`}
 				onClick={this.toggleThemeSelector} >
 				<i className='fas fa-palette' />
 				{this.state.themeSelector && this.renderThemeSelector()}
