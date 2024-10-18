@@ -2,99 +2,116 @@
 @import (less) '././././themes/fonts/5e/fonts.less';
 
 .snippetBar {
-	@menuHeight      : 25px;
+	@menuHeight : 25px;
 	position         : relative;
-	height           : @menuHeight;
+	min-width        : 331px;
+	height           : auto;
 	color            : black;
 	background-color : #DDDDDD;
+	display: flex;
+	justify-content: space-between;
+	flex-wrap:wrap-reverse;
 
-	.editors {
-		position        : absolute;
-		top             : 0px;
-		right           : 0px;
+	.snippets {
 		display         : flex;
 		justify-content : space-between;
-		height          : @menuHeight;
-		& > div {
-			width       : @menuHeight;
-			height      : @menuHeight;
-			line-height : @menuHeight;
-			text-align  : center;
-			cursor      : pointer;
-			&:hover,&.selected { background-color : #999999; }
-			&.text {
-				.tooltipLeft('Brew Editor');
+	}
+
+	.editors {
+		display         : flex;
+		justify-content : space-between;
+		>div {
+			display:flex;
+			justify-content: space-around;
+			flex:1;
+			border-left:1px solid;
+
+			&:first-child {
+				border-left: none;
 			}
-			&.style {
-				.tooltipLeft('Style Editor');
-			}
-			&.meta {
-				.tooltipLeft('Properties');
-			}
-			&.undo {
-				.tooltipLeft('Undo');
-				font-size : 0.75em;
-				color     : grey;
-				&.active { color : inherit; }
-			}
-			&.redo {
-				.tooltipLeft('Redo');
-				font-size : 0.75em;
-				color     : grey;
-				&.active { color : inherit; }
-			}
-			&.foldAll {
-				.tooltipLeft('Fold All');
-				font-size : 0.75em;
-				color     : inherit;
-			}
-			&.unfoldAll {
-				.tooltipLeft('Unfold All');
-				font-size : 0.75em;
-				color     : inherit;
-			}
-			&.history {
-				.tooltipLeft('History');
-				font-size : 0.75em;
-				color     : grey;
-				position  : relative;
-				&.active {
-					color : inherit;
+
+			& > div {
+				width       : @menuHeight;
+				height      : @menuHeight;
+				line-height : @menuHeight;
+				text-align  : center;
+				cursor      : pointer;
+				&:hover,&.selected { background-color : #999999; }
+				&.text {
+					.tooltipLeft('Brew Editor');
 				}
-				&>.dropdown{
-					right         : -1px;
-					&>.snippet{
-						padding-right : 10px;
+				&.style {
+					.tooltipLeft('Style Editor');
+				}
+				&.meta {
+					.tooltipLeft('Properties');
+				}
+				&.undo {
+					.tooltipLeft('Undo');
+					font-size : 0.75em;
+					color     : grey;
+					&.active { color : inherit; }
+				}
+				&.redo {
+					.tooltipLeft('Redo');
+					font-size : 0.75em;
+					color     : grey;
+					&.active { color : inherit; }
+				}
+				&.foldAll {
+					.tooltipLeft('Fold All');
+					font-size : 0.75em;
+					color     : inherit;
+				}
+				&.unfoldAll {
+					.tooltipLeft('Unfold All');
+					font-size : 0.75em;
+					color     : inherit;
+				}
+				&.history {
+					.tooltipLeft('History');
+					font-size : 0.75em;
+					color     : grey;
+					position  : relative;
+					border:none;
+					&.active {
+						color : inherit;
+					}
+					&>.dropdown{
+						right         : -1px;
+						&>.snippet{
+							padding-right : 10px;
+						}
 					}
 				}
-			}
-			&.editorTheme {
-				.tooltipLeft('Editor Themes');
-				font-size : 0.75em;
-				color     : black;
-				&.active {
-					position         : relative;
-					background-color : #999999;
+				&.editorTheme {
+					.tooltipLeft('Editor Themes');
+					font-size : 0.75em;
+					color     : black;
+					&.active {
+						position         : relative;
+						background-color : #999999;
+					}
+				}
+				&.divider {
+					width      : 5px;
+					background : linear-gradient(currentColor, currentColor) no-repeat center/1px 100%;
+					&:hover { background-color : inherit; }
 				}
 			}
-			&.divider {
-				width      : 5px;
-				background : linear-gradient(currentColor, currentColor) no-repeat center/1px 100%;
-				&:hover { background-color : inherit; }
+			.themeSelector {
+				position         : absolute;
+				top              : 25px;
+				right            : 0;
+				z-index          : 10;
+				display          : flex;
+				align-items      : center;
+				justify-content  : center;
+				width            : 170px;
+				height           : inherit;
+				background-color : inherit;
 			}
-		}
-		.themeSelector {
-			position         : absolute;
-			top              : 25px;
-			right            : 0;
-			z-index          : 10;
-			display          : flex;
-			align-items      : center;
-			justify-content  : center;
-			width            : 170px;
-			height           : inherit;
-			background-color : inherit;
-		}
+		}		
 	}
 	.snippetBarButton {
 		display        : inline-block;
@@ -105,6 +122,7 @@
 		line-height    : @menuHeight;
 		text-transform : uppercase;
 		cursor         : pointer;
+		text-wrap: nowrap;
 		&:hover, &.selected { background-color : #999999; }
 		i {
 			margin-right   : 3px;
@@ -121,6 +139,7 @@
 	}
 	.snippetGroup {
 		border-right   : 1px solid currentColor;
+
 		&:hover {
 			& > .dropdown { visibility : visible; }
 		}
@@ -142,11 +161,11 @@
 				cursor      : pointer;
 				.animate(background-color);
 				i {
+					min-width    : 25px;
 					height       : 1.2em;
 					margin-right : 8px;
 					font-size    : 1.2em;
-					min-width: 25px;
-					text-align: center;
+					text-align   : center;
 					& ~ i {
 						margin-right : 0;
 						margin-left  : 5px;
@@ -205,4 +224,18 @@
 			}
 		}
 	}
+}
+
+@container editor (width < 568px) {
+
+	.editors,.snippets {
+		width:332.59px;
+	}
+	.editors {
+		border-right:1px solid;
+	}
+	.snippetBar .editors>div.history>.dropdown {
+		right:unset;
+	}
+
 }
