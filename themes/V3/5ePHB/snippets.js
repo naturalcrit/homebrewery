@@ -195,7 +195,6 @@ module.exports = [
 			{
 				name        : 'Table of Contents Toggles',
 				icon        : 'fas fa-book',
-				disabled    : false,
 				subsnippets : [
 					{
 						name : 'Enable H1-H4 all pages',
