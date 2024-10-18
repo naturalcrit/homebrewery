@@ -1,7 +1,7 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
-const { useState, useRef, useCallback, useMemo } = React;
+const { useState, useRef, useCallback, useMemo, useEffect } = React;
 const _ = require('lodash');
 
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
@@ -76,6 +76,49 @@ const BrewRenderer = (props)=>{
 	} else {
 		rawPages = props.text.split(/^\\page$/gm);
 	}
+
+	useEffect(() => {
+		const iframe = document.getElementById('BrewRenderer');
+		const hash = window.location.hash;
+	
+		const scrollToHash = () => {
+			const iframeDoc = iframe?.contentDocument || iframe?.contentWindow?.document;
+			let anchor = iframeDoc.querySelector(hash);
+	
+			if (anchor) {
+				anchor.scrollIntoView({ behavior: 'smooth' });
+			} else {
+				// Use MutationObserver to wait for the element if it's not immediately available
+				const observer = new MutationObserver((mutations, obs) => {
+					anchor = iframeDoc.querySelector(hash);	
+					if (anchor) {
+						anchor.scrollIntoView({ behavior: 'smooth' });
+						obs.disconnect();
+					}
+				});
+
+				if (iframeDoc.body) {
+					observer.observe(iframeDoc.body, {
+						childList: true,
+						subtree: true,
+					});
+				}
+			}
+		};
+	
+		if (hash) {
+			iframe.addEventListener('load', scrollToHash);
+	
+			if (iframe.contentDocument?.readyState === 'complete') {
+				scrollToHash();
+			}
+		}
+
+		return ()=>{
+			iframe.removeEventListener('load', scrollToHash);
+			window.removeEventListener('resize', updateSize);
+		};
+	}, []);
 
 	const updateCurrentPage = useCallback(_.throttle((e)=>{
 		const { scrollTop, clientHeight, scrollHeight } = e.target;
