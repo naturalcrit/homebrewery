@@ -199,17 +199,17 @@ module.exports = [
 					{
 						name : 'Enable H1-H4 all pages',
 						icon : 'fas fa-dice-four',
-						gen  : `\n.pages {\n h4 {--TOC: include; }\n}\n\n`,
+						gen  : `.page {\n\th4 {--TOC: include; }\n}\n\n`,
 					},
 					{
 						name : 'Enable H1-H5 all pages',
 						icon : 'fas fa-dice-five',
-						gen  : `\n.pages {\n h4, h5 {--TOC: include; }\n}\n\n`,
+						gen  : `.page {\n\th4, h5 {--TOC: include; }\n}\n\n`,
 					},
 					{
 						name : 'Enable H1-H6 all pages',
 						icon : 'fas fa-dice-six',
-						gen  : `\n.pages {\n h4, h5, h6 {--TOC: include; }\n}\n\n`,
+						gen  : `.page {\n\th4, h5, h6 {--TOC: include; }\n}\n\n`,
 					},
 				]
 			}
