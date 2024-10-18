@@ -100,35 +100,31 @@ const HomePage = createClass({
 		return <div className='homePage sitePage'>
 			<Meta name='google-site-verification' content='NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4' />
 			{this.renderNavbar()}
-
-			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove}>
-					<Editor
-						ref={this.editor}
-						brew={this.state.brew}
-						onTextChange={this.handleTextChange}
-						renderer={this.state.brew.renderer}
-						showEditButtons={false}
-						snippetBundle={this.state.themeBundle.snippets}
-						onCursorPageChange={this.handleEditorCursorPageChange}
-						onViewPageChange={this.handleEditorViewPageChange}
-						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
-						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
-						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
-					/>
-					<BrewRenderer
-						text={this.state.brew.text}
-						style={this.state.brew.style}
-						renderer={this.state.brew.renderer}
-						onPageChange={this.handleBrewRendererPageChange}
-						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
-						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
-						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
-						themeBundle={this.state.themeBundle}
-					/>
-				</SplitPane>
-			</div>
-
+			<SplitPane onDragFinish={this.handleSplitMove}>
+				<Editor
+					ref={this.editor}
+					brew={this.state.brew}
+					onTextChange={this.handleTextChange}
+					renderer={this.state.brew.renderer}
+					showEditButtons={false}
+					snippetBundle={this.state.themeBundle.snippets}
+					onCursorPageChange={this.handleEditorCursorPageChange}
+					onViewPageChange={this.handleEditorViewPageChange}
+					currentEditorViewPageNum={this.state.currentEditorViewPageNum}
+					currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
+					currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+				/>
+				<BrewRenderer
+					text={this.state.brew.text}
+					style={this.state.brew.style}
+					renderer={this.state.brew.renderer}
+					onPageChange={this.handleBrewRendererPageChange}
+					currentEditorViewPageNum={this.state.currentEditorViewPageNum}
+					currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
+					currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+					themeBundle={this.state.themeBundle}
+				/>
+			</SplitPane>
 			<div className={cx('floatingSaveButton', { show: this.state.welcomeText != this.state.brew.text })} onClick={this.handleSave}>
 				Save current <i className='fas fa-save' />
 			</div>
