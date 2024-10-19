@@ -50,10 +50,10 @@
 			color        : #D3D3D3;
 			accent-color : #D3D3D3;
   
-			&::-webkit-slider-thumb, &::-moz-slider-thumb { 
+			&::-webkit-slider-thumb, &::-moz-range-thumb { 
 				width            : 5px;
 				height           : 5px;
-				cursor           : pointer;
+				cursor           : ew-resize;
 				outline          : none;
 			}
 
@@ -76,7 +76,7 @@
 
 		// `.text-input` if generic to all range inputs, or `#page-input` if only for current page input
 		&#page-input {
-			width        : 4ch;
+			max-width	 : 7ch;
 			margin-right : 1ch;
 			text-align   : center;
 		}
