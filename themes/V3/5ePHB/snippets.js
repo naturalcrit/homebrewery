@@ -154,31 +154,6 @@ module.exports = [
 						]
 					},
 
-					{
-						name        : 'Table of Contents Toggles',
-						icon        : 'fas fa-book',
-						//gen         : `{{tocGlobalH4}}\n\n`,
-						disabled    : true
-						// RELIES ON .PAGES:HAS() WHICH IS VERY SLOW
-						// WILL BE MOVED TO STYLE TAB SNIPPETS
-						// subsnippets : [
-						// 	{
-						// 		name : 'Enable H1-H4 all pages',
-						// 		icon : 'fas fa-dice-four',
-						// 		gen  : `{{tocGlobalH4}}\n\n`,
-						// 	},
-						// 	{
-						// 		name : 'Enable H1-H5 all pages',
-						// 		icon : 'fas fa-dice-five',
-						// 		gen  : `{{tocGlobalH5}}\n\n`,
-						// 	},
-						// 	{
-						// 		name : 'Enable H1-H6 all pages',
-						// 		icon : 'fas fa-dice-six',
-						// 		gen  : `{{tocGlobalH6}}\n\n`,
-						// 	},
-						// ]
-					}
 				]
 			},
 			{
@@ -217,6 +192,27 @@ module.exports = [
 							line-height: 1em;
 						}\n\n`
 			},
+			{
+				name        : 'Table of Contents Toggles',
+				icon        : 'fas fa-book',
+				subsnippets : [
+					{
+						name : 'Enable H1-H4 all pages',
+						icon : 'fas fa-dice-four',
+						gen  : `.page {\n\th4 {--TOC: include; }\n}\n\n`,
+					},
+					{
+						name : 'Enable H1-H5 all pages',
+						icon : 'fas fa-dice-five',
+						gen  : `.page {\n\th4, h5 {--TOC: include; }\n}\n\n`,
+					},
+					{
+						name : 'Enable H1-H6 all pages',
+						icon : 'fas fa-dice-six',
+						gen  : `.page {\n\th4, h5, h6 {--TOC: include; }\n}\n\n`,
+					},
+				]
+			}
 		]
 	},
 
