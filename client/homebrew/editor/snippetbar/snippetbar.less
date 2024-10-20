@@ -2,7 +2,7 @@
 @import (less) '././././themes/fonts/5e/fonts.less';
 
 .snippetBar {
-	@menuHeight : 25px;
+	@menuHeight      : 25px;
 	position         : relative;
 	display          : flex;
 	flex-wrap        : wrap-reverse;
@@ -74,7 +74,7 @@
 					border    : none;
 					&.active { color : inherit; }
 					& > .dropdown {
-						right         : -1px;
+						right : -1px;
 						& > .snippet { padding-right : 10px; }
 					}
 				}
@@ -220,9 +220,7 @@
 }
 
 @container editor (width < 553px) {
-
-	.editors,.snippets { flex:1; }
-	.editors { border-bottom:1px solid}
+	.editors,.snippets { flex : 1; }
+	.editors { border-bottom : 1px solid;}
 	.snippetBar .editors > div.history > .dropdown { right : unset; }
-
 }
