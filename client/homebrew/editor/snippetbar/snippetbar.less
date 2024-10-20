@@ -4,33 +4,31 @@
 .snippetBar {
 	@menuHeight : 25px;
 	position         : relative;
+	display          : flex;
+	flex-wrap        : wrap-reverse;
+	justify-content  : space-between;
 	min-width        : 331px;
 	height           : auto;
 	color            : black;
 	background-color : #DDDDDD;
-	display: flex;
-	justify-content: space-between;
-	flex-wrap:wrap-reverse;
 
 	.snippets {
 		display         : flex;
-		justify-content : space-between;
+		justify-content : space-evenly;
 	}
 
 	.editors {
 		display         : flex;
 		justify-content : space-between;
 		>div {
-			display:flex;
-			justify-content: space-around;
-			flex:1;
-			border-left:1px solid;
+			display         : flex;
+			flex            : 1;
+			justify-content : space-around;
 
-			&:first-child {
-				border-left: none;
-			}
+			&:first-child { border-left : none; }
 
 			& > div {
+				position    : relative;
 				width       : @menuHeight;
 				height      : @menuHeight;
 				line-height : @menuHeight;
@@ -70,18 +68,14 @@
 				}
 				&.history {
 					.tooltipLeft('History');
+					position  : relative;
 					font-size : 0.75em;
 					color     : grey;
-					position  : relative;
-					border:none;
-					&.active {
-						color : inherit;
-					}
-					&>.dropdown{
+					border    : none;
+					&.active { color : inherit; }
+					& > .dropdown {
 						right         : -1px;
-						&>.snippet{
-							padding-right : 10px;
-						}
+						& > .snippet { padding-right : 10px; }
 					}
 				}
 				&.editorTheme {
@@ -121,8 +115,8 @@
 		font-weight    : 800;
 		line-height    : @menuHeight;
 		text-transform : uppercase;
+		text-wrap      : nowrap;
 		cursor         : pointer;
-		text-wrap: nowrap;
 		&:hover, &.selected { background-color : #999999; }
 		i {
 			margin-right   : 3px;
@@ -138,7 +132,6 @@
 		.tooltipLeft('Edit Brew Properties');
 	}
 	.snippetGroup {
-		border-right   : 1px solid currentColor;
 
 		&:hover {
 			& > .dropdown { visibility : visible; }
@@ -198,7 +191,7 @@
 					}
 				}
 				.name { margin-right : auto; }
-				.disabled { text-decoration: line-through; }
+				.disabled { text-decoration : line-through; }
 				.beta {
 					align-self    : center;
 					padding       : 4px 6px;
@@ -226,16 +219,10 @@
 	}
 }
 
-@container editor (width < 568px) {
+@container editor (width < 553px) {
 
-	.editors,.snippets {
-		width:332.59px;
-	}
-	.editors {
-		border-right:1px solid;
-	}
-	.snippetBar .editors>div.history>.dropdown {
-		right:unset;
-	}
+	.editors,.snippets { flex:1; }
+	.editors { border-bottom:1px solid}
+	.snippetBar .editors > div.history > .dropdown { right : unset; }
 
 }
