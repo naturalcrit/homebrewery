@@ -429,42 +429,40 @@ const EditPage = createClass({
 			<Meta name='robots' content='noindex, nofollow' />
 			{this.renderNavbar()}
 
-			<div className='content'>
-				{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} />}
-				<SplitPane onDragFinish={this.handleSplitMove}>
-					<Editor
-						ref={this.editor}
-						brew={this.state.brew}
-						onTextChange={this.handleTextChange}
-						onStyleChange={this.handleStyleChange}
-						onMetaChange={this.handleMetaChange}
-						reportError={this.errorReported}
-						renderer={this.state.brew.renderer}
-						userThemes={this.props.userThemes}
-						snippetBundle={this.state.themeBundle.snippets}
-						updateBrew={this.updateBrew}
-						onCursorPageChange={this.handleEditorCursorPageChange}
-						onViewPageChange={this.handleEditorViewPageChange}
-						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
-						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
-						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
-					/>
-					<BrewRenderer
-						text={this.state.brew.text}
-						style={this.state.brew.style}
-						renderer={this.state.brew.renderer}
-						theme={this.state.brew.theme}
-						themeBundle={this.state.themeBundle}
-						errors={this.state.htmlErrors}
-						lang={this.state.brew.lang}
-						onPageChange={this.handleBrewRendererPageChange}
-						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
-						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
-						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
-						allowPrint={true}
-					/>
-				</SplitPane>
-			</div>
+			{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} />}
+			<SplitPane onDragFinish={this.handleSplitMove}>
+				<Editor
+					ref={this.editor}
+					brew={this.state.brew}
+					onTextChange={this.handleTextChange}
+					onStyleChange={this.handleStyleChange}
+					onMetaChange={this.handleMetaChange}
+					reportError={this.errorReported}
+					renderer={this.state.brew.renderer}
+					userThemes={this.props.userThemes}
+					snippetBundle={this.state.themeBundle.snippets}
+					updateBrew={this.updateBrew}
+					onCursorPageChange={this.handleEditorCursorPageChange}
+					onViewPageChange={this.handleEditorViewPageChange}
+					currentEditorViewPageNum={this.state.currentEditorViewPageNum}
+					currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
+					currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+				/>
+				<BrewRenderer
+					text={this.state.brew.text}
+					style={this.state.brew.style}
+					renderer={this.state.brew.renderer}
+					theme={this.state.brew.theme}
+					themeBundle={this.state.themeBundle}
+					errors={this.state.htmlErrors}
+					lang={this.state.brew.lang}
+					onPageChange={this.handleBrewRendererPageChange}
+					currentEditorViewPageNum={this.state.currentEditorViewPageNum}
+					currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
+					currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+					allowPrint={true}
+				/>
+			</SplitPane>
 		</div>;
 	}
 });
