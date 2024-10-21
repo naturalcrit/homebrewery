@@ -586,8 +586,9 @@ brew`);
 
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.send).toHaveBeenCalledWith({
-				styles   : ['/* From Brew: https://localhost/share/userThemeAID */\n\nUser Theme A Style'],
-				snippets : []
+				styles    : ['/* From Brew: https://localhost/share/userThemeAID */\n\nUser Theme A Style'],
+				snippets  : [],
+				templates : []
 			});
 		});
 
@@ -611,7 +612,8 @@ brew`);
 					'/* From Brew: https://localhost/share/userThemeBID */\n\nUser Theme B Style',
 					'/* From Brew: https://localhost/share/userThemeAID */\n\nUser Theme A Style'
 				],
-				snippets : []
+				snippets : [],
+				templates : []
 			});
 		});
 
@@ -629,7 +631,8 @@ brew`);
 				snippets : [
 					'V3_Blank',
 					'V3_5ePHB'
-				]
+				],
+				templates : []
 			});
 		});
 
@@ -660,7 +663,8 @@ brew`);
 					'V3_Blank',
 					'V3_5ePHB',
 					'V3_5eDMG'
-				]
+				],
+				templates : []
 			});
 		});
 
