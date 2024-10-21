@@ -7,11 +7,19 @@ const _ = require('lodash');
 const MAX_ZOOM = 300;
 const MIN_ZOOM = 10;
 
-const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
+const ToolBar = ({ onZoomChange, currentPage, visiblePages, formattedPages, centerPage, totalPages })=>{
 
 	const [zoomLevel, setZoomLevel] = useState(100);
-	const [pageNum, setPageNum]     = useState(currentPage);
+	const [pageNum, setPageNum]     = useState(null);
 	const [toolsVisible, setToolsVisible] = useState(true);
+
+	useEffect(()=>{
+		setPageNum(visiblePages[0]);
+	}, []);
+
+	useEffect(()=>{
+		setPageNum(formattedPages);
+	}, [visiblePages]);
 
 	useEffect(()=>{
 		onZoomChange(zoomLevel);
@@ -26,17 +34,21 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 	};
 
 	const handlePageInput = (pageInput)=>{
+		console.log(pageInput);
 		if(/[0-9]/.test(pageInput))
 			setPageNum(parseInt(pageInput)); // input type is 'text', so `page` comes in as a string, not number.
 	};
 
 	const scrollToPage = (pageNumber)=>{
+		console.log('visiblePages:', visiblePages);
+		console.log('centerPage:', centerPage);
+		console.log('pageNumber:', pageNumber);
+		if(typeof pageNumber !== 'number') return;
 		pageNumber = _.clamp(pageNumber, 1, totalPages);
 		const iframe = document.getElementById('BrewRenderer');
 		const brewRenderer = iframe?.contentWindow?.document.querySelector('.brewRenderer');
 		const page = brewRenderer?.querySelector(`#p${pageNumber}`);
 		page?.scrollIntoView({ block: 'start' });
-		setPageNum(pageNumber);
 	};
 
 
@@ -125,7 +137,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<button
 					id='previous-page'
 					className='previousPage tool'
-					onClick={()=>scrollToPage(pageNum - 1)}
+					onClick={()=>scrollToPage(_.min(visiblePages) - visiblePages.length)}
 					disabled={pageNum <= 1}
 				>
 					<i className='fas fa-arrow-left'></i>
@@ -139,7 +151,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 						name='page'
 						inputMode='numeric'
 						pattern='[0-9]'
-						value={pageNum}
+						value={`${pageNum}`}
 						onClick={(e)=>e.target.select()}
 						onChange={(e)=>handlePageInput(e.target.value)}
 						onBlur={()=>scrollToPage(pageNum)}
@@ -151,7 +163,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<button
 					id='next-page'
 					className='tool'
-					onClick={()=>scrollToPage(pageNum + 1)}
+					onClick={()=>scrollToPage(_.max(visiblePages) + 1)}
 					disabled={pageNum >= totalPages}
 				>
 					<i className='fas fa-arrow-right'></i>
