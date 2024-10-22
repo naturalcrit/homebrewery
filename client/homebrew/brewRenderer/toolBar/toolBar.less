@@ -16,8 +16,8 @@
 	color            : #CCCCCC;
 	background-color : #555555;
 	& > *:not(.toggleButton) {
-		opacity: 1;
-		transition: all .2s ease;
+		opacity    : 1;
+		transition : all 0.2s ease;
 	}
 
 	.group {
@@ -39,9 +39,9 @@
 		height         : 1.5em;
 		padding        : 2px 5px;
 		font-family    : 'Open Sans', sans-serif;
-		color          : #000000;
-		background     : #EEEEEE;
-		border         : 1px solid gray;
+		color          : inherit;
+		background     : #3B3B3B;
+		border         : none;
 		&:focus { outline : 1px solid #D3D3D3; }
 
 		// `.range-input` if generic to all range inputs, or `#zoom-slider` if only for zoom slider
@@ -76,7 +76,7 @@
 
 		// `.text-input` if generic to all range inputs, or `#page-input` if only for current page input
 		&#page-input {
-			width        : 4ch;
+			width        : 10ch;
 			margin-right : 1ch;
 			text-align   : center;
 		}
@@ -100,29 +100,27 @@
 			color            : #777777;
 			background-color : unset !important;
 		}
-		i {
-			font-size:1.2em;
-		}
+		i { font-size : 1.2em; }
 	}
 
 	&.hidden {
-		width: 32px;
-		transition: all .3s ease;
-		flex-wrap:nowrap;
-		overflow: hidden;
-		background-color: unset;
-		opacity: .5;
+		flex-wrap        : nowrap;
+		width            : 32px;
+		overflow         : hidden;
+		background-color : unset;
+		opacity          : 0.5;
+		transition       : all 0.3s ease;
 		& > *:not(.toggleButton) {
-			opacity: 0;
-			transition: all .2s ease;
+			opacity    : 0;
+			transition : all 0.2s ease;
 		}
 	}
 }
 
 button.toggleButton {
-	z-index : 5;
-	position:absolute;
-	left: 0;
-	width: 32px;
-	min-width: unset;
+	position  : absolute;
+	left      : 0;
+	z-index   : 5;
+	width     : 32px;
+	min-width : unset;
 }

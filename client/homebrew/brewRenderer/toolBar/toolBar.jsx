@@ -7,36 +7,40 @@ const _ = require('lodash');
 const MAX_ZOOM = 300;
 const MIN_ZOOM = 10;
 
-const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
+const ToolBar = ({ onZoomChange, visiblePages, totalPages })=>{
 
 	const [zoomLevel, setZoomLevel] = useState(100);
-	const [pageNum, setPageNum]     = useState(currentPage);
+	const [pageNum, setPageNum]     = useState(1);
 	const [toolsVisible, setToolsVisible] = useState(true);
+
+	useEffect(()=>{
+		if(visiblePages.length !== 0){   // If zoomed in enough, it's possible that no page fits the intersection criteria, so don't update.
+			setPageNum(formatVisiblePages(visiblePages));
+		}
+	}, [visiblePages]);
 
 	useEffect(()=>{
 		onZoomChange(zoomLevel);
 	}, [zoomLevel]);
-
-	useEffect(()=>{
-		setPageNum(currentPage);
-	}, [currentPage]);
 
 	const handleZoomButton = (zoom)=>{
 		setZoomLevel(_.round(_.clamp(zoom, MIN_ZOOM, MAX_ZOOM)));
 	};
 
 	const handlePageInput = (pageInput)=>{
+		console.log(pageInput);
 		if(/[0-9]/.test(pageInput))
 			setPageNum(parseInt(pageInput)); // input type is 'text', so `page` comes in as a string, not number.
 	};
 
+	// scroll to a page, used in the Prev/Next Page buttons.
 	const scrollToPage = (pageNumber)=>{
+		if(typeof pageNumber !== 'number') return;
 		pageNumber = _.clamp(pageNumber, 1, totalPages);
 		const iframe = document.getElementById('BrewRenderer');
 		const brewRenderer = iframe?.contentWindow?.document.querySelector('.brewRenderer');
 		const page = brewRenderer?.querySelector(`#p${pageNumber}`);
 		page?.scrollIntoView({ block: 'start' });
-		setPageNum(pageNumber);
 	};
 
 
@@ -65,6 +69,28 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 		const deltaZoom = (desiredZoom - zoomLevel) - margin;
 		return deltaZoom;
+	};
+
+	// format the visible pages to work with ranges, including separate ranges ("2-7, 10-15")
+	const formatVisiblePages = (pages)=>{
+		if(pages.length === 0) return '';
+
+		const sortedPages = [...pages].sort((a, b)=>a - b); // Copy and sort the array
+		const ranges = [];
+		let start = sortedPages[0];
+
+		for (let i = 1; i <= sortedPages.length; i++) {
+			// If the current page is not consecutive or it's the end of the list
+			if(i === sortedPages.length || sortedPages[i] !== sortedPages[i - 1] + 1) {
+				// Push the range to the list
+				ranges.push(
+					start === sortedPages[i - 1] ? `${start}` : `${start} - ${sortedPages[i - 1]}`
+				);
+				start = sortedPages[i]; // Start a new range
+			}
+		}
+
+		return ranges.join(', ');
 	};
 
 	return (
@@ -125,7 +151,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<button
 					id='previous-page'
 					className='previousPage tool'
-					onClick={()=>scrollToPage(pageNum - 1)}
+					onClick={()=>scrollToPage(_.min(visiblePages) - visiblePages.length)}
 					disabled={pageNum <= 1}
 				>
 					<i className='fas fa-arrow-left'></i>
@@ -139,7 +165,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 						name='page'
 						inputMode='numeric'
 						pattern='[0-9]'
-						value={pageNum}
+						value={`${pageNum}`}
 						onClick={(e)=>e.target.select()}
 						onChange={(e)=>handlePageInput(e.target.value)}
 						onBlur={()=>scrollToPage(pageNum)}
@@ -151,7 +177,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<button
 					id='next-page'
 					className='tool'
-					onClick={()=>scrollToPage(pageNum + 1)}
+					onClick={()=>scrollToPage(_.max(visiblePages) + 1)}
 					disabled={pageNum >= totalPages}
 				>
 					<i className='fas fa-arrow-right'></i>
