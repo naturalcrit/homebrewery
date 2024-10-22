@@ -360,34 +360,6 @@ module.exports = [
 					},
 
 					{
-						name : "Gallant Knight's Tiny Trove",
-						subsnippets : [
-
-							{
-								name : 'Required Text',
-								subsnippets : [
-
-									{
-										name : "Tiny Trove Colophon",
-										gen	 : LicenseDTTRPGGCC.gallantKnightTinyTroveColophon,
-									},
-
-									{
-										name : "Tiny Trove Cover",
-										gen	 : LicenseDTTRPGGCC.gallantKnightTinyTroveCover,
-									}
-								]
-							},
-
-							{
-								name : "Tiny Trove Colophon Logo",
-								gen	 : LicenseDTTRPGGCC.gallantKnightTinyTroveColophonLogo,
-							},
-
-						]
-					},
-
-					{
 						name : 'Green Ronin\'s Age Creator\'s Alliance',
 						subsnippets : [
 							{

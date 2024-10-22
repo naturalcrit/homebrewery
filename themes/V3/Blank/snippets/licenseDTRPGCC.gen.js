@@ -100,23 +100,6 @@ module.exports = {
 		All other original material in this work is copyright \[year\] by \[your legal name or company name\] and published under the Community Content Agreement for Free League Workshop.
 		`;
 	},
-	// Gallant Knight Games Tony Trove - Verify Logos and Access
-	gallantKnightTinyTroveColophon : function() {
-		return dedent`
-		This game product is powered by TinyD6^tm^, a trademark of Gallant Knight Games, in the USA and other countries. Used with permission.  Original text content of Tiny Dungeon: Second Edition, Tiny Frontiers: Revised, Tiny Wastelands, Beach Patrol, Magnum Vice:  Fury  Force, Tiny Supers, Gallant Knight Games Logo, TinyD6 Logo, content and original artwork are copyright {{far,fa-copyright}} 2015-2019 , Gallant Knight Games unless otherwise specified.
-		`;
-	},
-	gallantKnightTinyTroveColophonLogo    : `![Powered by TinyD6]()`,
-	gallantKnightTinyTroveCover           : `![Powered by TinyD6]()`,
-	// Green Ronin's Adevnture Game Engine
-	greenRoninAgeCreatorsAllianceColophon : function() {
-		return dedent`
-			This product was created under license. \[Game Title\] and its logo, and the AGE Creators Alliance and its logo, are trademarks of Green Ronin Publishing, LLC in the U.S.A. and other countries.
-
-			This work contains material that is copyright Green Ronin Publishing, LLC and/or other authors. Such material is used with permission under the Community Content Agreement for AGE Creators Alliance.
-
-			All other original material in this work is copyright \[year\] by \[your legal name or company name\] and published under the Community Content Agreement for AGE Creators Alliance.		`;
-	},
 	// Verify Logo redistribution
 	greenRoninAgeCreatorsAllianceCover                : `Requires the \[Game Title\] Rulebook from Green Ronin Publishing for use.`,
 	greenRoninAgeCreatorsAllianceLogo                 : `![Age Creators Alliance](/themes/assets/license_logos/AGECreatorsAlliance.png)`,
