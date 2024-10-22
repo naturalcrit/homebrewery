@@ -1,7 +1,7 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
-const { useState, useRef, useCallback, useMemo, useEffect } = React;
+const { useState, useRef, useCallback, useMemo } = React;
 const _ = require('lodash');
 
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
@@ -78,8 +78,7 @@ const BrewRenderer = (props)=>{
 	}
 
 	const scrollToHash = (hash) => {
-		const iframe = document.getElementById('BrewRenderer');
-		const iframeDoc = iframe?.contentDocument || iframe?.contentWindow?.document;
+		const iframeDoc = document.getElementById('BrewRenderer').contentDocument;
 		let anchor = iframeDoc.querySelector(hash);
 
 		if (anchor) {
