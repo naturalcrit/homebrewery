@@ -2,17 +2,17 @@
 import React from "react";
 const { useRef, useEffect } = React;
 
-function Dialog({ dismissKeys, closeText = 'Close', blocking = false, ...rest }) {
+function Dialog({ dismisskeys, closeText = 'Close', blocking = false, ...rest }) {
 	const dialogRef = useRef(null);
 
 	useEffect(()=>{
-		if (dismissKeys.length !== 0) {
+		if (dismisskeys.length !== 0) {
 			blocking ? dialogRef.current?.showModal() : dialogRef.current?.show();
 		}
-	}, [dialogRef.current, dismissKeys]);
+	}, [dialogRef.current, dismisskeys]);
 
 	const dismiss = () => {
-		dismissKeys.forEach(key => {
+		dismisskeys.forEach(key => {
 			if (key) {
 				localStorage.setItem(key, 'true');
 			}

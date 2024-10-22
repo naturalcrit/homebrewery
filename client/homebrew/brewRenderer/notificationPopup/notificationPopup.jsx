@@ -53,7 +53,7 @@ const NotificationPopup = ()=>{
 				))
 	};
 
-	return <Dialog className='notificationPopup' dismissKeys={dissmissKeyList} closeText={DISMISS_BUTTON} >
+	return <Dialog className='notificationPopup' dismisskeys={dissmissKeyList} closeText={DISMISS_BUTTON} >
 		<div className='header'>
 			<i className='fas fa-info-circle info'></i>
 			<h3>Notice</h3>
