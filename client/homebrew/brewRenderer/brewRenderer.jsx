@@ -99,11 +99,11 @@ const BrewRenderer = (props)=>{
 	};
 
 	const [state, setState] = useState({
-		isMounted      : false,
-		visibility     : 'hidden',
-		zoom           : 100,
-		visiblePages   : [],
-		centerPage     : 1
+		isMounted    : false,
+		visibility   : 'hidden',
+		zoom         : 100,
+		visiblePages : [],
+		centerPage   : 1
 	});
 	const iframeRef = useRef(null);
 	const mainRef  = useRef(null);
