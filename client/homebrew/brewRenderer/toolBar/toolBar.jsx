@@ -14,11 +14,9 @@ const ToolBar = ({ onZoomChange, currentPage, visiblePages, formattedPages, cent
 	const [toolsVisible, setToolsVisible] = useState(true);
 
 	useEffect(()=>{
-		setPageNum(visiblePages[0]);
-	}, []);
-
-	useEffect(()=>{
-		setPageNum(formattedPages);
+		if(visiblePages.length !== 0){
+			setPageNum(formattedPages);
+		}
 	}, [visiblePages]);
 
 	useEffect(()=>{

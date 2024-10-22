@@ -114,8 +114,8 @@ const BrewRenderer = (props)=>{
 	}
 
 	useEffect(() => {
-		props.onPageChange(formatVisiblePages(state.visiblePages));
-	}, [state.visiblePages]);
+		props.onPageChange(state.centerPage);
+	}, [state.centerPage]);
 
 	const handlePageVisibilityChange = useCallback((pageNum, isVisible) => {
 		setState((prevState) => {
