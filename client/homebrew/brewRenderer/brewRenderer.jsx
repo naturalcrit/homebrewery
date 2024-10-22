@@ -91,10 +91,7 @@ const BrewRenderer = (props)=>{
 					anchor.scrollIntoView({ behavior: 'smooth' });
 					obs.disconnect();
 				}
-			}).observe(iframeDoc, {
-				childList : true,
-				subtree   : true,
-			});
+			}).observe(iframeDoc, { childList: true, subtree: true });
 		}
 	};
 
