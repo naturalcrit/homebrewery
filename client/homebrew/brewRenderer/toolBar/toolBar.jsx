@@ -7,14 +7,14 @@ const _ = require('lodash');
 const MAX_ZOOM = 300;
 const MIN_ZOOM = 10;
 
-const ToolBar = ({ onZoomChange, visiblePages, formattedPages, centerPage, totalPages })=>{
+const ToolBar = ({ onZoomChange, visiblePages, formattedPages, totalPages })=>{
 
 	const [zoomLevel, setZoomLevel] = useState(100);
 	const [pageNum, setPageNum]     = useState(1);
 	const [toolsVisible, setToolsVisible] = useState(true);
 
 	useEffect(()=>{
-		if(visiblePages.length !== 0){
+		if(visiblePages.length !== 0){   // If zoomed in enough, it's possible that no page fits the intersection criteria, so don't update.
 			setPageNum(formattedPages);
 		}
 	}, [visiblePages]);
@@ -33,10 +33,8 @@ const ToolBar = ({ onZoomChange, visiblePages, formattedPages, centerPage, total
 			setPageNum(parseInt(pageInput)); // input type is 'text', so `page` comes in as a string, not number.
 	};
 
+	// scroll to a page, used in the Prev/Next Page buttons.
 	const scrollToPage = (pageNumber)=>{
-		console.log('visiblePages:', visiblePages);
-		console.log('centerPage:', centerPage);
-		console.log('pageNumber:', pageNumber);
 		if(typeof pageNumber !== 'number') return;
 		pageNumber = _.clamp(pageNumber, 1, totalPages);
 		const iframe = document.getElementById('BrewRenderer');

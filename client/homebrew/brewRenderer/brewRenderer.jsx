@@ -30,30 +30,32 @@ const INITIAL_CONTENT = dedent`
 	</head><body style='overflow: hidden'><div></div></body></html>`;
 
 //v=====----------------------< Brew Page Component >---------------------=====v//
-const BrewPage = ({contents = '', index = 0, onVisibilityChange, onCenterPageChange, ...props})=>{
+const BrewPage = ({ contents = '', index = 0, onVisibilityChange, onCenterPageChange, ...props })=>{
 	const pageRef = useRef(null);
 	const cleanText = contents; //DOMPurify.sanitize(props.contents, purifyConfig);
 
 	useEffect(()=>{
 		if(!pageRef.current) return;
-		const observer = new IntersectionObserver(
+
+		// Observer for tracking pages within the `.pages` div
+		const visibleObserver = new IntersectionObserver(
 			(entries)=>{
 				entries.forEach((entry)=>{
 					if(entry.isIntersecting){
-						onVisibilityChange(index + 1, true);
+						onVisibilityChange(index + 1, true);    // add page to array of visible pages.
 					} else {
 						onVisibilityChange(index + 1, false);
 					}
 				});
 			},
-			{ threshold: .3, rootMargin: '0px 0px 0px 0px'  }
+			{ threshold: .3, rootMargin: '0px 0px 0px 0px'  } // detect when >30% of page is within bounds.
 		);
 
 		// Observer for tracking the page at the center of the iframe.
 		const centerObserver = new IntersectionObserver(
-			(entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
+			(entries)=>{
+				entries.forEach((entry)=>{
+					if(entry.isIntersecting) {
 						onCenterPageChange(index + 1); // Set this page as the center page
 					}
 				});
@@ -61,11 +63,11 @@ const BrewPage = ({contents = '', index = 0, onVisibilityChange, onCenterPageCha
 			{ threshold: 0, rootMargin: '-50% 0px -50% 0px' } // Detect when the page is at the center
 		);
 
-		observer.observe(pageRef.current);
+		// attach observers to each `.page`
+		visibleObserver.observe(pageRef.current);
 		centerObserver.observe(pageRef.current);
-
 		return ()=>{
-			observer.disconnect();
+			visibleObserver.disconnect();
 			centerObserver.disconnect();
 		};
 	}, [index, onVisibilityChange, onCenterPageChange]);
@@ -113,17 +115,18 @@ const BrewRenderer = (props)=>{
 		rawPages = props.text.split(/^\\page$/gm);
 	}
 
-	useEffect(() => {
+	// update centerPage (aka "current page") and pass it up to parent components
+	useEffect(()=>{
 		props.onPageChange(state.centerPage);
 	}, [state.centerPage]);
 
-	const handlePageVisibilityChange = useCallback((pageNum, isVisible) => {
-		setState((prevState) => {
-			let updatedVisiblePages = new Set(prevState.visiblePages);
+	const handlePageVisibilityChange = useCallback((pageNum, isVisible)=>{
+		setState((prevState)=>{
+			const updatedVisiblePages = new Set(prevState.visiblePages);
 			if(isVisible){
-				updatedVisiblePages.add(pageNum)
+				updatedVisiblePages.add(pageNum);
 			} else {
-				updatedVisiblePages.delete(pageNum)
+				updatedVisiblePages.delete(pageNum);
 			}
 			const pages = Array.from(updatedVisiblePages);
 
@@ -134,16 +137,16 @@ const BrewRenderer = (props)=>{
 		});
 	}, []);
 
-	const formatVisiblePages = (pages) => {
-		if (pages.length === 0) return '';
-	
-		const sortedPages = [...pages].sort((a, b) => a - b); // Copy and sort the array
-		let ranges = [];
+	const formatVisiblePages = (pages)=>{
+		if(pages.length === 0) return '';
+
+		const sortedPages = [...pages].sort((a, b)=>a - b); // Copy and sort the array
+		const ranges = [];
 		let start = sortedPages[0];
-	
+
 		for (let i = 1; i <= sortedPages.length; i++) {
 			// If the current page is not consecutive or it's the end of the list
-			if (i === sortedPages.length || sortedPages[i] !== sortedPages[i - 1] + 1) {
+			if(i === sortedPages.length || sortedPages[i] !== sortedPages[i - 1] + 1) {
 				// Push the range to the list
 				ranges.push(
 					start === sortedPages[i - 1] ? `${start}` : `${start} - ${sortedPages[i - 1]}`
@@ -151,12 +154,12 @@ const BrewRenderer = (props)=>{
 				start = sortedPages[i]; // Start a new range
 			}
 		}
-	
+
 		return ranges.join(', ');
 	};
 
-	const handleCenterPageChange = useCallback((pageNum) => {
-		setState((prevState) => ({
+	const handleCenterPageChange = useCallback((pageNum)=>{
+		setState((prevState)=>({
 			...prevState,
 			centerPage : pageNum,
 		}));
@@ -256,8 +259,8 @@ const BrewRenderer = (props)=>{
 		styleObject.backgroundImage = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='40px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${global.config.deployment}</text></svg>")`;
 	}
 
-	const renderedStyle = useMemo(()=> renderStyle(), [props.style, props.themeBundle]);
-	renderedPages = useMemo(() => renderPages(), [props.text]);
+	const renderedStyle = useMemo(()=>renderStyle(), [props.style, props.themeBundle]);
+	renderedPages = useMemo(()=>renderPages(), [props.text]);
 
 	return (
 		<>
