@@ -85,20 +85,16 @@ const BrewRenderer = (props)=>{
 			anchor.scrollIntoView({ behavior: 'smooth' });
 		} else {
 			// Use MutationObserver to wait for the element if it's not immediately available
-			const observer = new MutationObserver((mutations, obs) => {
+			new MutationObserver((mutations, obs) => {
 				anchor = iframeDoc.querySelector(hash);	
 				if (anchor) {
 					anchor.scrollIntoView({ behavior: 'smooth' });
 					obs.disconnect();
 				}
+			}).observe(iframeDoc, {
+				childList : true,
+				subtree   : true,
 			});
-
-			if (iframeDoc.body) {
-				observer.observe(iframeDoc.body, {
-					childList: true,
-					subtree: true,
-				});
-			}
 		}
 	};
 
