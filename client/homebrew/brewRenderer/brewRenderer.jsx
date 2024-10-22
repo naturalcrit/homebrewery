@@ -103,7 +103,6 @@ const BrewRenderer = (props)=>{
 		visibility     : 'hidden',
 		zoom           : 100,
 		visiblePages   : [],
-		formattedPages : '',
 		centerPage     : 1
 	});
 	const iframeRef = useRef(null);
@@ -131,32 +130,10 @@ const BrewRenderer = (props)=>{
 			const pages = Array.from(updatedVisiblePages);
 
 			return { ...prevState,
-				visiblePages   : _.sortBy(pages),
-				formattedPages : formatVisiblePages(pages)
+				visiblePages : _.sortBy(pages)
 			};
 		});
 	}, []);
-
-	const formatVisiblePages = (pages)=>{
-		if(pages.length === 0) return '';
-
-		const sortedPages = [...pages].sort((a, b)=>a - b); // Copy and sort the array
-		const ranges = [];
-		let start = sortedPages[0];
-
-		for (let i = 1; i <= sortedPages.length; i++) {
-			// If the current page is not consecutive or it's the end of the list
-			if(i === sortedPages.length || sortedPages[i] !== sortedPages[i - 1] + 1) {
-				// Push the range to the list
-				ranges.push(
-					start === sortedPages[i - 1] ? `${start}` : `${start} - ${sortedPages[i - 1]}`
-				);
-				start = sortedPages[i]; // Start a new range
-			}
-		}
-
-		return ranges.join(', ');
-	};
 
 	const handleCenterPageChange = useCallback((pageNum)=>{
 		setState((prevState)=>({
@@ -279,7 +256,7 @@ const BrewRenderer = (props)=>{
 				<NotificationPopup />
 			</div>
 
-			<ToolBar onZoomChange={handleZoom} centerPage={state.centerPage} visiblePages={state.visiblePages} formattedPages={state.formattedPages} totalPages={rawPages.length}/>
+			<ToolBar onZoomChange={handleZoom} centerPage={state.centerPage} visiblePages={state.visiblePages} totalPages={rawPages.length}/>
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}

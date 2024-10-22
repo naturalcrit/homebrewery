@@ -7,7 +7,7 @@ const _ = require('lodash');
 const MAX_ZOOM = 300;
 const MIN_ZOOM = 10;
 
-const ToolBar = ({ onZoomChange, visiblePages, formattedPages, totalPages })=>{
+const ToolBar = ({ onZoomChange, visiblePages, totalPages })=>{
 
 	const [zoomLevel, setZoomLevel] = useState(100);
 	const [pageNum, setPageNum]     = useState(1);
@@ -15,7 +15,7 @@ const ToolBar = ({ onZoomChange, visiblePages, formattedPages, totalPages })=>{
 
 	useEffect(()=>{
 		if(visiblePages.length !== 0){   // If zoomed in enough, it's possible that no page fits the intersection criteria, so don't update.
-			setPageNum(formattedPages);
+			setPageNum(formatVisiblePages(visiblePages));
 		}
 	}, [visiblePages]);
 
@@ -69,6 +69,27 @@ const ToolBar = ({ onZoomChange, visiblePages, formattedPages, totalPages })=>{
 
 		const deltaZoom = (desiredZoom - zoomLevel) - margin;
 		return deltaZoom;
+	};
+
+	const formatVisiblePages = (pages)=>{
+		if(pages.length === 0) return '';
+
+		const sortedPages = [...pages].sort((a, b)=>a - b); // Copy and sort the array
+		const ranges = [];
+		let start = sortedPages[0];
+
+		for (let i = 1; i <= sortedPages.length; i++) {
+			// If the current page is not consecutive or it's the end of the list
+			if(i === sortedPages.length || sortedPages[i] !== sortedPages[i - 1] + 1) {
+				// Push the range to the list
+				ranges.push(
+					start === sortedPages[i - 1] ? `${start}` : `${start} - ${sortedPages[i - 1]}`
+				);
+				start = sortedPages[i]; // Start a new range
+			}
+		}
+
+		return ranges.join(', ');
 	};
 
 	return (
