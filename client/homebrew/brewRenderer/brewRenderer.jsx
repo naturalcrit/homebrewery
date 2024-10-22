@@ -77,48 +77,31 @@ const BrewRenderer = (props)=>{
 		rawPages = props.text.split(/^\\page$/gm);
 	}
 
-	useEffect(() => {
+	const scrollToHash = (hash) => {
 		const iframe = document.getElementById('BrewRenderer');
-		const hash = window.location.hash;
-	
-		const scrollToHash = () => {
-			const iframeDoc = iframe?.contentDocument || iframe?.contentWindow?.document;
-			let anchor = iframeDoc.querySelector(hash);
-	
-			if (anchor) {
-				anchor.scrollIntoView({ behavior: 'smooth' });
-			} else {
-				// Use MutationObserver to wait for the element if it's not immediately available
-				const observer = new MutationObserver((mutations, obs) => {
-					anchor = iframeDoc.querySelector(hash);	
-					if (anchor) {
-						anchor.scrollIntoView({ behavior: 'smooth' });
-						obs.disconnect();
-					}
-				});
+		const iframeDoc = iframe?.contentDocument || iframe?.contentWindow?.document;
+		let anchor = iframeDoc.querySelector(hash);
 
-				if (iframeDoc.body) {
-					observer.observe(iframeDoc.body, {
-						childList: true,
-						subtree: true,
-					});
+		if (anchor) {
+			anchor.scrollIntoView({ behavior: 'smooth' });
+		} else {
+			// Use MutationObserver to wait for the element if it's not immediately available
+			const observer = new MutationObserver((mutations, obs) => {
+				anchor = iframeDoc.querySelector(hash);	
+				if (anchor) {
+					anchor.scrollIntoView({ behavior: 'smooth' });
+					obs.disconnect();
 				}
-			}
-		};
-	
-		if (hash) {
-			iframe.addEventListener('load', scrollToHash);
-	
-			if (iframe.contentDocument?.readyState === 'complete') {
-				scrollToHash();
+			});
+
+			if (iframeDoc.body) {
+				observer.observe(iframeDoc.body, {
+					childList: true,
+					subtree: true,
+				});
 			}
 		}
-
-		return ()=>{
-			iframe.removeEventListener('load', scrollToHash);
-			window.removeEventListener('resize', updateSize);
-		};
-	}, []);
+	};
 
 	const updateCurrentPage = useCallback(_.throttle((e)=>{
 		const { scrollTop, clientHeight, scrollHeight } = e.target;
@@ -193,6 +176,8 @@ const BrewRenderer = (props)=>{
 	};
 
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
+		scrollToHash(window.location.hash);
+
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			renderPages(); //Make sure page is renderable before showing
 			setState((prevState)=>({
