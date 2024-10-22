@@ -71,6 +71,7 @@ const ToolBar = ({ onZoomChange, visiblePages, totalPages })=>{
 		return deltaZoom;
 	};
 
+	// format the visible pages to work with ranges, including separate ranges ("2-7, 10-15")
 	const formatVisiblePages = (pages)=>{
 		if(pages.length === 0) return '';
 
