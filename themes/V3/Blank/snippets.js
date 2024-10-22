@@ -486,11 +486,6 @@ module.exports = [
 					},
 
 					{
-						name : "Travellers Aid Society Colophon",
-						gen	 : LicenseDTTRPGGCC.mongooseTravellersAidSocietyColophon,
-					},
-
-					{
 						name : "Cypher System Creator",
 						subsnippets : [
 							{
@@ -1086,3 +1081,10 @@ module.exports = [
 		]
 	},
 ];
+
+// Recontact after first of year
+// 					{
+// 	name : "Travellers Aid Society Colophon",
+// 	gen	 : LicenseDTTRPGGCC.mongooseTravellersAidSocietyColophon,
+// },
+

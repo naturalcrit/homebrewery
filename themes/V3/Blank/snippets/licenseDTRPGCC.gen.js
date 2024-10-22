@@ -169,7 +169,8 @@ module.exports = {
 		`;
 	},
 	// Mongoose's version of Traveller's Aid Society - Verify Logo and access
-	mongooseTravellersAidSocietyColophon : `This product was created under license. Traveller and its logo are trademarks of Far Future Enterprises. This work contains material that is copyright Mongoose Publishing and/or other authors. Such material is used with permission under the Community Content Agreement for The Travellers' Aid Society.`,
+	// Recontact after first of 2025
+	// mongooseTravellersAidSocietyColophon : `This product was created under license. Traveller and its logo are trademarks of Far Future Enterprises. This work contains material that is copyright Mongoose Publishing and/or other authors. Such material is used with permission under the Community Content Agreement for The Travellers' Aid Society.`,
 	// Monte Cook's Cypher License
 	monteCookCypherCover                 : `Requires the Cypher System Rulebook from Monte Cook Games. Distributed through the Cypher System CreatorTM at DriveThruRPG.`,
 	monteCookCypherColophon              : function() {
