@@ -7,10 +7,10 @@ const _ = require('lodash');
 const MAX_ZOOM = 300;
 const MIN_ZOOM = 10;
 
-const ToolBar = ({ onZoomChange, currentPage, visiblePages, formattedPages, centerPage, totalPages })=>{
+const ToolBar = ({ onZoomChange, visiblePages, formattedPages, centerPage, totalPages })=>{
 
 	const [zoomLevel, setZoomLevel] = useState(100);
-	const [pageNum, setPageNum]     = useState(null);
+	const [pageNum, setPageNum]     = useState(1);
 	const [toolsVisible, setToolsVisible] = useState(true);
 
 	useEffect(()=>{
@@ -22,10 +22,6 @@ const ToolBar = ({ onZoomChange, currentPage, visiblePages, formattedPages, cent
 	useEffect(()=>{
 		onZoomChange(zoomLevel);
 	}, [zoomLevel]);
-
-	useEffect(()=>{
-		setPageNum(currentPage);
-	}, [currentPage]);
 
 	const handleZoomButton = (zoom)=>{
 		setZoomLevel(_.round(_.clamp(zoom, MIN_ZOOM, MAX_ZOOM)));

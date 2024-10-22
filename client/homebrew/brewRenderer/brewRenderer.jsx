@@ -263,9 +263,7 @@ const BrewRenderer = (props)=>{
 		<>
 			{/*render dummy page while iFrame is mounting.*/}
 			{!state.isMounted
-				? <div className='brewRenderer'
-					// onScroll={updateCurrentPage}
-				>
+				? <div className='brewRenderer'>
 					<div className='pages'>
 						{renderDummyPage(1)}
 					</div>
@@ -287,7 +285,6 @@ const BrewRenderer = (props)=>{
 				onClick={()=>{emitClick();}}
 			>
 				<div className={`brewRenderer ${global.config.deployment && 'deployment'}`}
-					// onScroll={updateCurrentPage}
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
 					style={ styleObject }
@@ -298,8 +295,7 @@ const BrewRenderer = (props)=>{
 						&&
 						<>
 							{renderedStyle}
-							<div className='pages' lang={`${props.lang || 'en'}`} style={{ zoom: `${state.zoom}%` }} 
-					ref={iframeRef}>
+							<div className='pages' lang={`${props.lang || 'en'}`} style={{ zoom: `${state.zoom}%` }} ref={iframeRef}>
 								{renderedPages}
 							</div>
 						</>
