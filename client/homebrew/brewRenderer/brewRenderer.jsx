@@ -78,6 +78,8 @@ const BrewRenderer = (props)=>{
 	}
 
 	const scrollToHash = (hash) => {
+		if (!hash) return;
+
 		const iframeDoc = document.getElementById('BrewRenderer').contentDocument;
 		let anchor = iframeDoc.querySelector(hash);
 
