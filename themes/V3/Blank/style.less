@@ -494,7 +494,14 @@ body { counter-reset : page-numbers 0; }
 	&:nth-child(even) {
 		.pageNumber { left : 30px; }
 	}
-<<<<<<< HEAD
+
+	.resetCounting {
+		counter-set : page-numbers 1;
+	}
+
+	&:not(:has(.skipCounting)) {
+		counter-increment : page-numbers;
+	}
 }
 
 //*******************************
@@ -561,15 +568,5 @@ body { counter-reset : page-numbers 0; }
 	  .ol-noIndent ol li:not(:last-child) { 
 		 margin-bottom: 0.5em; 	
 	  }  
-=======
 
-	.resetCounting {
-		counter-set : page-numbers 1;
-	}
-
-	&:not(:has(.skipCounting)) {
-		counter-increment : page-numbers;
-	}
-
->>>>>>> master
 }
