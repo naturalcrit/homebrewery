@@ -77,6 +77,24 @@ const BrewRenderer = (props)=>{
 		rawPages = props.text.split(/^\\page$/gm);
 	}
 
+	const scrollToHash = (hash) => {
+		const iframeDoc = document.getElementById('BrewRenderer').contentDocument;
+		let anchor = iframeDoc.querySelector(hash);
+
+		if (anchor) {
+			anchor.scrollIntoView({ behavior: 'smooth' });
+		} else {
+			// Use MutationObserver to wait for the element if it's not immediately available
+			new MutationObserver((mutations, obs) => {
+				anchor = iframeDoc.querySelector(hash);	
+				if (anchor) {
+					anchor.scrollIntoView({ behavior: 'smooth' });
+					obs.disconnect();
+				}
+			}).observe(iframeDoc, { childList: true, subtree: true });
+		}
+	};
+
 	const updateCurrentPage = useCallback(_.throttle((e)=>{
 		const { scrollTop, clientHeight, scrollHeight } = e.target;
 		const totalScrollableHeight = scrollHeight - clientHeight;
@@ -150,6 +168,8 @@ const BrewRenderer = (props)=>{
 	};
 
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
+		scrollToHash(window.location.hash);
+
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			renderPages(); //Make sure page is renderable before showing
 			setState((prevState)=>({
