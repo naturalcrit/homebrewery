@@ -43,7 +43,6 @@ const ToolBar = ({ onZoomChange, visiblePages, totalPages })=>{
 		page?.scrollIntoView({ block: 'start' });
 	};
 
-
 	const calculateChange = (mode)=>{
 		const iframe = document.getElementById('BrewRenderer');
 		const iframeWidth = iframe.getBoundingClientRect().width;
@@ -151,7 +150,10 @@ const ToolBar = ({ onZoomChange, visiblePages, totalPages })=>{
 				<button
 					id='previous-page'
 					className='previousPage tool'
-					onClick={()=>scrollToPage(_.min(visiblePages) - visiblePages.length)}
+					onClick={()=>{
+						const rangeOffset = visiblePages.length > 1 ? 1 : 0;
+						scrollToPage(_.min(visiblePages) - visiblePages.length + rangeOffset);
+					}}
 					disabled={pageNum <= 1}
 				>
 					<i className='fas fa-arrow-left'></i>
@@ -177,7 +179,10 @@ const ToolBar = ({ onZoomChange, visiblePages, totalPages })=>{
 				<button
 					id='next-page'
 					className='tool'
-					onClick={()=>scrollToPage(_.max(visiblePages) + 1)}
+					onClick={()=>{
+						const rangeOffset = visiblePages.length > 1 ? 0 : 1;
+						scrollToPage(_.max(visiblePages) + rangeOffset);
+					}}
 					disabled={pageNum >= totalPages}
 				>
 					<i className='fas fa-arrow-right'></i>
