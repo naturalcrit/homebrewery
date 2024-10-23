@@ -151,17 +151,20 @@ const Snippetbar = createClass({
 	renderSnippetGroups : function(){
 		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
 
-		return _.map(snippets, (snippetGroup)=>{
-			return <SnippetGroup
-				brew={this.props.brew}
-				groupName={snippetGroup.groupName}
-				icon={snippetGroup.icon}
-				snippets={snippetGroup.snippets}
-				key={snippetGroup.groupName}
-				onSnippetClick={this.handleSnippetClick}
-				cursorPos={this.props.cursorPos}
-			/>;
-		});
+		return <div className='snippets'>
+			{_.map(snippets, (snippetGroup)=>{
+				return <SnippetGroup
+					brew={this.props.brew}
+					groupName={snippetGroup.groupName}
+					icon={snippetGroup.icon}
+					snippets={snippetGroup.snippets}
+					key={snippetGroup.groupName}
+					onSnippetClick={this.handleSnippetClick}
+					cursorPos={this.props.cursorPos}
+				/>;
+			})
+			}
+		</div>;
 	},
 
 	replaceContent : function(item){
@@ -220,40 +223,46 @@ const Snippetbar = createClass({
 		}
 
 		return <div className='editors'>
-			<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`}
-				onClick={this.toggleHistoryMenu} >
-				<i className='fas fa-clock-rotate-left' />
-				{ this.state.showHistory && this.renderHistoryItems() }
+			<div className='historyTools'>
+				<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`}
+					onClick={this.toggleHistoryMenu} >
+					<i className='fas fa-clock-rotate-left' />
+					{ this.state.showHistory && this.renderHistoryItems() }
+				</div>
+				<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
+					onClick={this.props.undo} >
+					<i className='fas fa-undo' />
+				</div>
+				<div className={`editorTool redo ${this.props.historySize.redo ? 'active' : ''}`}
+					onClick={this.props.redo} >
+					<i className='fas fa-redo' />
+				</div>
 			</div>
-			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
-				onClick={this.props.undo} >
-				<i className='fas fa-undo' />
-			</div>
-			<div className={`editorTool redo ${this.props.historySize.redo ? 'active' : ''}`}
-				onClick={this.props.redo} >
-				<i className='fas fa-redo' />
-			</div>
-			<div className='divider'></div>
-			{foldButtons}
-			<div className={`editorTool editorTheme ${this.state.themeSelector ? 'active' : ''}`}
-				onClick={this.toggleThemeSelector} >
-				<i className='fas fa-palette' />
-				{this.state.themeSelector && this.renderThemeSelector()}
+			<div className='codeTools'>
+				{foldButtons}
+				<div className={`editorTool editorTheme ${this.state.themeSelector ? 'active' : ''}`}
+					onClick={this.toggleThemeSelector} >
+					<i className='fas fa-palette' />
+					{this.state.themeSelector && this.renderThemeSelector()}
+				</div>
 			</div>
 
-			<div className='divider'></div>
-			<div className={cx('text', { selected: this.props.view === 'text' })}
-				 onClick={()=>this.props.onViewChange('text')}>
-				<i className='fa fa-beer' />
+
+			<div className='tabs'>
+				<div className={cx('text', { selected: this.props.view === 'text' })}
+					onClick={()=>this.props.onViewChange('text')}>
+					<i className='fa fa-beer' />
+				</div>
+				<div className={cx('style', { selected: this.props.view === 'style' })}
+					onClick={()=>this.props.onViewChange('style')}>
+					<i className='fa fa-paint-brush' />
+				</div>
+				<div className={cx('meta', { selected: this.props.view === 'meta' })}
+					onClick={()=>this.props.onViewChange('meta')}>
+					<i className='fas fa-info-circle' />
+				</div>
 			</div>
-			<div className={cx('style', { selected: this.props.view === 'style' })}
-				 onClick={()=>this.props.onViewChange('style')}>
-				<i className='fa fa-paint-brush' />
-			</div>
-			<div className={cx('meta', { selected: this.props.view === 'meta' })}
-				onClick={()=>this.props.onViewChange('meta')}>
-				<i className='fas fa-info-circle' />
-			</div>
+
 		</div>;
 	},
 
@@ -291,8 +300,9 @@ const SnippetGroup = createClass({
 		return _.map(snippets, (snippet)=>{
 			return <div className='snippet' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
 				<i className={snippet.icon} />
-				<span className='name'title={snippet.name}>{snippet.name}</span>
+				<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span>
 				{snippet.experimental && <span className='beta'>beta</span>}
+				{snippet.disabled     && <span className='beta' title='temporarily disabled due to large slowdown; under re-design'>disabled</span>}
 				{snippet.subsnippets && <>
 					<i className='fas fa-caret-right'></i>
 					<div className='dropdown side'>
