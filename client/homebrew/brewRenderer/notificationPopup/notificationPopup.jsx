@@ -7,7 +7,6 @@ import Dialog from '../../../components/dialog.jsx';
 const DISMISS_BUTTON = <i className='fas fa-times dismiss' />;
 
 const NotificationPopup = ()=>{
-	
 	const [notifications, setNotifications] = useState([]);
 	const [dissmissKeyList, setDismissKeyList] = useState([]);
 	const [error, setError] = useState(null);
@@ -16,9 +15,8 @@ const NotificationPopup = ()=>{
 		getNotifications();
 	}, []);
 
-	const getNotifications = async () => {
+	const getNotifications = async ()=>{
 		setError(null);
-
 		try {
 			const res = await request.get('/admin/notification/all');
 			pickActiveNotifications(res.body || []);
@@ -26,30 +24,29 @@ const NotificationPopup = ()=>{
 			console.log(err);
 			setError(`Error looking up notifications: ${err?.response?.body?.message || err.message}`);
 		}
-	}
+	};
 
-	const pickActiveNotifications = (notifs) => {
+	const pickActiveNotifications = (notifs)=>{
 		const now = new Date();
-		const filteredNotifications = notifs.filter(notification => {
+		const filteredNotifications = notifs.filter((notification)=>{
 			const startDate = new Date(notification.startAt);
 			const stopDate = new Date(notification.stopAt);
 			const dismissed = localStorage.getItem(notification.dismissKey) ? true : false;
 			return now >= startDate && now <= stopDate && !dismissed;
 		});
 		setNotifications(filteredNotifications);
-		setDismissKeyList(filteredNotifications.map(notif => notif.dismissKey));
-	}
+		setDismissKeyList(filteredNotifications.map((notif)=>notif.dismissKey));
+	};
 
 	const renderNotificationsList = ()=>{
-		if(error)
-			return <div className='error'>{error}</div>;
+		if(error) return <div className='error'>{error}</div>;
 
 		return notifications.map((notification)=>(
 			<li key={notification.dismissKey} >
 				<em>{notification.title}</em><br />
 				<p dangerouslySetInnerHTML={{ __html: notification.text }}></p>
 			</li>
-		))
+		));
 	};
 
 	return <Dialog className='notificationPopup' dismisskeys={dissmissKeyList} closeText={DISMISS_BUTTON} >

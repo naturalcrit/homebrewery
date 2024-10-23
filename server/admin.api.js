@@ -143,7 +143,6 @@ router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 router.get('/admin/notification/all', async (req, res, next)=>{
 	try {
 		const notifications = await NotificationModel.getAll();
-		console.log('notifications: ', notifications);
 		return res.json(notifications);
 		
 	} catch (error) {
@@ -153,7 +152,6 @@ router.get('/admin/notification/all', async (req, res, next)=>{
 });
 
 router.post('/admin/notification/add', mw.adminOnly, async (req, res, next)=>{
-	console.table(req.body);
 	try {
 		const notification = await NotificationModel.addNotification(req.body);
 		return res.status(201).json(notification);
