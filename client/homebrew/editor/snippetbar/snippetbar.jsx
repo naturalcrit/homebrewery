@@ -208,7 +208,7 @@ const Snippetbar = createClass({
 		if(!this.props.showEditButtons) return;
 
 		let foldButtons;
-		if(this.props.view == 'text'){
+		if(this.props.view !== 'meta'){
 			foldButtons =
 				<>
 					<div className={`editorTool foldAll ${this.props.foldCode ? 'active' : ''}`}
