@@ -4,11 +4,10 @@ const request = require('../../utils/request-middleware.js');
 
 import Dialog from '../../../components/dialog.jsx';
 
-const DISMISS_KEY = 'dismiss_notification01-10-24';
 const DISMISS_BUTTON = <i className='fas fa-times dismiss' />;
 
 const NotificationPopup = ()=>{
-
+	
 	const [notifications, setNotifications] = useState([]);
 	const [dissmissKeyList, setDismissKeyList] = useState([]);
 	const [error, setError] = useState(null);
@@ -46,11 +45,11 @@ const NotificationPopup = ()=>{
 			return <div className='error'>{error}</div>;
 
 		return notifications.map((notification)=>(
-					<li key={notification.dismissKey} >
-						<em>{notification.title}</em><br />
-						<p>{notification.text}</p>
-					</li>
-				))
+			<li key={notification.dismissKey} >
+				<em>{notification.title}</em><br />
+				<p dangerouslySetInnerHTML={{ __html: notification.text }}></p>
+			</li>
+		))
 	};
 
 	return <Dialog className='notificationPopup' dismisskeys={dissmissKeyList} closeText={DISMISS_BUTTON} >
