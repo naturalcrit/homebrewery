@@ -207,21 +207,16 @@ const Snippetbar = createClass({
 	renderEditorButtons : function(){
 		if(!this.props.showEditButtons) return;
 
-		let foldButtons;
-		if(this.props.view !== 'meta'){
-			foldButtons =
-				<>
-					<div className={`editorTool foldAll ${this.props.foldCode ? 'active' : ''}`}
-						onClick={this.props.foldCode} >
-						<i className='fas fa-compress-alt' />
-					</div>
-					<div className={`editorTool unfoldAll ${this.props.unfoldCode ? 'active' : ''}`}
-						onClick={this.props.unfoldCode} >
-						<i className='fas fa-expand-alt' />
-					</div>
-				</>;
-
-		}
+		const foldButtons = <>
+			<div className={`editorTool foldAll ${this.props.view !== 'meta' && this.props.foldCode ? 'active' : ''}`}
+				onClick={this.props.foldCode} >
+				<i className='fas fa-compress-alt' />
+			</div>
+			<div className={`editorTool unfoldAll ${this.props.view !== 'meta' && this.props.unfoldCode ? 'active' : ''}`}
+				onClick={this.props.unfoldCode} >
+				<i className='fas fa-expand-alt' />
+			</div>
+		</>;
 
 		return <div className='editors'>
 			<div className='historyTools'>

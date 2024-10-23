@@ -14,18 +14,15 @@
 	.snippets {
 		display         : flex;
 		justify-content : flex-start;
-		min-width:327.58px;
+		min-width       : 327.58px;
 	}
 
 	.editors {
 		display         : flex;
 		justify-content : flex-end;
-		min-width:225px;
+		min-width       : 225px;
 
-		&:only-child {
-			min-width: unset;
-			margin-left:auto;
-		}
+		&:only-child { margin-left : auto; }
 
 		>div {
 			display         : flex;
@@ -66,12 +63,14 @@
 				&.foldAll {
 					.tooltipLeft('Fold All');
 					font-size : 0.75em;
-					color     : inherit;
+					color     : grey;
+					&.active { color : inherit; }
 				}
 				&.unfoldAll {
 					.tooltipLeft('Unfold All');
 					font-size : 0.75em;
-					color     : inherit;
+					color     : grey;
+					&.active { color : inherit; }
 				}
 				&.history {
 					.tooltipLeft('History');
@@ -225,13 +224,17 @@
 		}
 	}
 }
-/*text tab*/
 @container editor (width < 553px) {
-	/*This rule doesn't apply to properties editor or homepage*/
-	.snippetBar:not(:has(>*:only-child)) {
-		.editors { flex:1;justify-content : space-between;}
-		.snippets { flex:1;justify-content : space-evenly; }
-		.editors { border-bottom : 1px solid;}
+	.snippetBar {
+		.editors { 
+			flex            : 1;
+			justify-content : space-between;
+			border-bottom   : 1px solid;
+		}
+		.snippets { 
+			flex            : 1;
+			justify-content : space-evenly; 
+		}
 		.editors > div.history > .dropdown { right : unset; }
 	}
 }
