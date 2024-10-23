@@ -7,7 +7,6 @@
 	display          : flex;
 	flex-wrap        : wrap-reverse;
 	justify-content  : space-between;
-	min-width        : 331px;
 	height           : auto;
 	color            : black;
 	background-color : #DDDDDD;
@@ -20,6 +19,10 @@
 	.editors {
 		display         : flex;
 		justify-content : space-between;
+
+		&:only-child {
+			margin-left:auto;
+		}
 		>div {
 			display         : flex;
 			flex            : 1;
@@ -218,9 +221,21 @@
 		}
 	}
 }
-
+/*text tab*/
 @container editor (width < 553px) {
-	.editors,.snippets { flex : 1; }
-	.editors { border-bottom : 1px solid;}
-	.snippetBar .editors > div.history > .dropdown { right : unset; }
+	/*This rule doesn't apply to properties editor or homepage*/
+	.snippetBar:not(:has(>*:only-child)):has(.snippets >*:nth-child(3)) {
+		.editors,.snippets { flex : 1; }
+		.editors { border-bottom : 1px solid;}
+		.editors > div.history > .dropdown { right : unset; }
+	}
+}
+/*style tab*/
+@container editor (width < 328px) {
+	/*This rule doesn't apply to properties editor or homepage*/
+	.snippetBar:not(:has(>*:only-child)) {
+		.editors,.snippets { flex : 1; }
+		.editors { border-bottom : 1px solid;}
+		.editors > div.history > .dropdown { right : unset; }
+	}
 }

@@ -150,6 +150,7 @@ const Snippetbar = createClass({
 
 	renderSnippetGroups : function(){
 		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
+		if(snippets.length === 0) return null;
 
 		return <div className='snippets'>
 			{_.map(snippets, (snippetGroup)=>{
