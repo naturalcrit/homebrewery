@@ -1,6 +1,6 @@
 const React = require('react');
-const createClass = require('create-react-class');
-const _     = require('lodash');
+const { useState, useEffect } = require('react');
+const _ = require('lodash');
 
 const ListPage = require('../basePages/listPage/listPage.jsx');
 
@@ -14,69 +14,50 @@ const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const VaultNavitem = require('../../navbar/vault.navitem.jsx');
 
-const UserPage = createClass({
-	displayName     : 'UserPage',
-	getDefaultProps : function() {
-		return {
-			username : '',
-			brews    : [],
-			query    : '',
-			error    : null
-		};
-	},
-	getInitialState : function() {
-		const usernameWithS = this.props.username + (this.props.username.endsWith('s') ? `’` : `’s`);
+const UserPage = (props) => {
+    const { username = '', brews = [], query = '', error = null } = props;
+    const usernameWithS = username + (username.endsWith('s') ? `’` : `’s`);
 
-		const brews = _.groupBy(this.props.brews, (brew)=>{
-			return (brew.published ? 'published' : 'private');
-		});
+    const groupedBrews = _.groupBy(brews, (brew) => {
+        return brew.published ? 'published' : 'private';
+    });
 
-		const brewCollection = [
-			{
-				title : `${usernameWithS} published brews`,
-				class : 'published',
-				brews : brews.published
-			}
-		];
-		if(this.props.username == global.account?.username){
-			brewCollection.push(
-				{
-					title : `${usernameWithS} unpublished brews`,
-					class : 'unpublished',
-					brews : brews.private
-				}
-			);
-		}
+	const brewCollection = [
+		{
+			title: `${usernameWithS} published brews`,
+			class: 'published',
+			brews: groupedBrews.published || []
+		},
+		...(username === global.account?.username ? [{
+			title: `${usernameWithS} unpublished brews`,
+			class: 'unpublished',
+			brews: groupedBrews.private || []
+		}] : [])
+	];	
 
-		return {
-			brewCollection : brewCollection
-		};
-	},
-	errorReported : function(error) {
-		this.setState({
-			error
-		});
-	},
+    const [currentError, setCurrentError] = useState(error);
 
-	navItems : function() {
-		return <Navbar>
-			<Nav.section>
-				{this.state.error ?
-					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
-					null
-				}
-				<NewBrew />
-				<HelpNavItem />
-				<VaultNavitem/>
-				<RecentNavItem />
-				<Account />
-			</Nav.section>
-		</Navbar>;
-	},
+    const errorReported = (error) => {
+        setCurrentError(error);
+    };
 
-	render : function(){
-		return <ListPage brewCollection={this.state.brewCollection} navItems={this.navItems()} query={this.props.query} reportError={this.errorReported}></ListPage>;
-	}
-});
+    const navItems = () => (
+        <Navbar>
+            <Nav.section>
+                {currentError && (<ErrorNavItem error={currentError} parent={null}></ErrorNavItem>)}
+                <NewBrew />
+                <HelpNavItem />
+                <VaultNavitem />
+                <RecentNavItem />
+                <Account />
+            </Nav.section>
+        </Navbar>
+    );
+
+    return (
+        <ListPage brewCollection={brewCollection}  navItems={navItems()} query={query} reportError={errorReported}
+        />
+    );
+};
 
 module.exports = UserPage;
