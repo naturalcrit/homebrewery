@@ -1,6 +1,6 @@
 require('./brewItem.less');
 const React = require('react');
-const createClass = require('create-react-class');
+const { useCallback } = React;
 const moment = require('moment');
 const request = require('../../../../utils/request-middleware.js');
 
@@ -8,176 +8,172 @@ const googleDriveIcon = require('../../../../googleDrive.svg');
 const homebreweryIcon = require('../../../../thumbnail.png');
 const dedent = require('dedent-tabs').default;
 
-const BrewItem = createClass({
-	displayName     : 'BrewItem',
-	getDefaultProps : function() {
-		return {
-			brew : {
-				title       : '',
-				description : '',
-				authors     : [],
-				stubbed     : true
-			},
-			updateListFilter : ()=>{},
-			reportError      : ()=>{},
-			renderStorage    : true
-		};
+const BrewItem = ({
+	brew = {
+		title       : '',
+		description : '',
+		authors     : [],
+		stubbed     : true,
 	},
+	updateListFilter = ()=>{},
+	reportError = ()=>{},
+	renderStorage = true,
+})=>{
 
-	deleteBrew : function(){
-		if(this.props.brew.authors.length <= 1){
-			if(!confirm('Are you sure you want to delete this brew? Because you are the only owner of this brew, the document will be deleted permanently.')) return;
-			if(!confirm('Are you REALLY sure? You will not be able to recover the document.')) return;
+	const deleteBrew = useCallback(()=>{
+		if(brew.authors.length <= 1) {
+			if(!window.confirm('Are you sure you want to delete this brew? Because you are the only owner of this brew, the document will be deleted permanently.')) return;
+			if(!window.confirm('Are you REALLY sure? You will not be able to recover the document.')) return;
 		} else {
-			if(!confirm('Are you sure you want to remove this brew from your collection? This will remove you as an editor, but other owners will still be able to access the document.')) return;
-			if(!confirm('Are you REALLY sure? You will lose editor access to this document.')) return;
+			if(!window.confirm('Are you sure you want to remove this brew from your collection? This will remove you as an editor, but other owners will still be able to access the document.')) return;
+			if(!window.confirm('Are you REALLY sure? You will lose editor access to this document.')) return;
 		}
 
-		request.delete(`/api/${this.props.brew.googleId ?? ''}${this.props.brew.editId}`)
-			.send()
-			.end((err, res)=>{
-				if(err) {
-					this.props.reportError(err);
-				} else {
-					location.reload();
-				}
-			});
-	},
+		request.delete(`/api/${brew.googleId ?? ''}${brew.editId}`).send().end((err, res)=>{
+				if (err) reportError(err); else window.location.reload();
+        });
+	}, [brew, reportError]);
 
-	updateFilter : function(type, term){
-		this.props.updateListFilter(type, term);
-	},
+	const updateFilter = useCallback((type, term)=> updateListFilter(type, term), [updateListFilter]);
 
-	renderDeleteBrewLink : function(){
-		if(!this.props.brew.editId) return;
+	const renderDeleteBrewLink = ()=>{
+		if(!brew.editId) return null;
 
-		return <a className='deleteLink' onClick={this.deleteBrew}>
-			<i className='fas fa-trash-alt' title='Delete' />
-		</a>;
-	},
+		return (
+			<a className='deleteLink' onClick={deleteBrew}>
+				<i className='fas fa-trash-alt' title='Delete' />
+			</a>
+		);
+	};
 
-	renderEditLink : function(){
-		if(!this.props.brew.editId) return;
+	const renderEditLink = ()=>{
+		if(!brew.editId) return null;
 
-		let editLink = this.props.brew.editId;
-		if(this.props.brew.googleId && !this.props.brew.stubbed) {
-			editLink = this.props.brew.googleId + editLink;
+		let editLink = brew.editId;
+		if(brew.googleId && !brew.stubbed) editLink = brew.googleId + editLink;
+
+		return (
+			<a className='editLink' href={`/edit/${editLink}`} target='_blank' rel='noopener noreferrer'>
+				<i className='fas fa-pencil-alt' title='Edit' />
+			</a>
+		);
+	};
+
+	const renderShareLink = ()=>{
+		if(!brew.shareId) return null;
+
+		let shareLink = brew.shareId;
+		if(brew.googleId && !brew.stubbed) {
+			shareLink = brew.googleId + shareLink;
 		}
 
-		return <a className='editLink' href={`/edit/${editLink}`} target='_blank' rel='noopener noreferrer'>
-			<i className='fas fa-pencil-alt' title='Edit' />
-		</a>;
-	},
+		return (
+			<a className='shareLink' href={`/share/${shareLink}`} target='_blank' rel='noopener noreferrer'>
+				<i className='fas fa-share-alt' title='Share' />
+			</a>
+		);
+	};
 
-	renderShareLink : function(){
-		if(!this.props.brew.shareId) return;
+	const renderDownloadLink = ()=>{
+		if(!brew.shareId) return null;
 
-		let shareLink = this.props.brew.shareId;
-		if(this.props.brew.googleId && !this.props.brew.stubbed) {
-			shareLink = this.props.brew.googleId + shareLink;
+		let shareLink = brew.shareId;
+		if(brew.googleId && !brew.stubbed) {
+			shareLink = brew.googleId + shareLink;
 		}
 
-		return <a className='shareLink' href={`/share/${shareLink}`} target='_blank' rel='noopener noreferrer'>
-			<i className='fas fa-share-alt' title='Share' />
-		</a>;
-	},
+		return (
+			<a className='downloadLink' href={`/download/${shareLink}`}>
+				<i className='fas fa-download' title='Download' />
+			</a>
+		);
+	};
 
-	renderDownloadLink : function(){
-		if(!this.props.brew.shareId) return;
-
-		let shareLink = this.props.brew.shareId;
-		if(this.props.brew.googleId && !this.props.brew.stubbed) {
-			shareLink = this.props.brew.googleId + shareLink;
+	const renderStorageIcon = ()=>{
+		if(!renderStorage) return null;
+		if(brew.googleId) {
+			return (
+				<span title={brew.webViewLink ? 'Your Google Drive Storage' : 'Another User\'s Google Drive Storage'}>
+					<a href={brew.webViewLink} target='_blank'>
+						<img className='googleDriveIcon' src={googleDriveIcon} alt='googleDriveIcon' />
+					</a>
+				</span>
+			);
 		}
 
-		return <a className='downloadLink' href={`/download/${shareLink}`}>
-			<i className='fas fa-download' title='Download' />
-		</a>;
-	},
+		return (
+			<span title='Homebrewery Storage'>
+				<img className='homebreweryIcon' src={homebreweryIcon} alt='homebreweryIcon' />
+			</span>
+		);
+	};
 
-	renderStorageIcon : function(){
-		if(!this.props.renderStorage) return;
-		if(this.props.brew.googleId) {
-			return <span title={this.props.brew.webViewLink ? 'Your Google Drive Storage': 'Another User\'s Google Drive Storage'}>
-				<a href={this.props.brew.webViewLink} target='_blank'>
-					<img className='googleDriveIcon' src={googleDriveIcon} alt='googleDriveIcon' />
-				</a>
-			</span>;
-		}
+	if(Array.isArray(brew.tags)) {
+		brew.tags = brew.tags?.filter((tag)=>tag); // remove tags that are empty strings
+		brew.tags.sort((a, b)=>{
+			return a.indexOf(':') - b.indexOf(':') !== 0 ? a.indexOf(':') - b.indexOf(':') : a.toLowerCase().localeCompare(b.toLowerCase());
+		});
+	}
 
-		return <span title='Homebrewery Storage'>
-			<img className='homebreweryIcon' src={homebreweryIcon} alt='homebreweryIcon' />
-		</span>;
-	},
+	const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
 
-	render : function(){
-		const brew = this.props.brew;
-		if(Array.isArray(brew.tags)) {               // temporary fix until dud tags are cleaned
-			brew.tags = brew.tags?.filter((tag)=>tag); //remove tags that are empty strings
-			brew.tags.sort((a, b)=>{
-				return a.indexOf(':') - b.indexOf(':') != 0 ? a.indexOf(':') - b.indexOf(':') : a.toLowerCase().localeCompare(b.toLowerCase());
-			});
-		}
-		const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
-
-		return <div className='brewItem'>
-			{brew.thumbnail &&
-				<div className='thumbnail' style={{ backgroundImage: `url(${brew.thumbnail})` }} >
-				</div>
-			}
+	return (
+		<div className='brewItem'>
+			{brew.thumbnail && <div className='thumbnail' style={{ backgroundImage: `url(${brew.thumbnail})` }}></div>}
 			<div className='text'>
 				<h2>{brew.title}</h2>
 				<p className='description'>{brew.description}</p>
 			</div>
 			<hr />
 			<div className='info'>
-
-				{brew.tags?.length ? <>
+				{brew.tags?.length ? (
 					<div className='brewTags' title={`${brew.tags.length} tags:\n${brew.tags.join('\n')}`}>
-						<i className='fas fa-tags'/>
+						<i className='fas fa-tags' />
 						{brew.tags.map((tag, idx)=>{
 							const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
-							return <span key={idx} className={matches[1]} onClick={()=>{this.updateFilter(tag);}}>{matches[2]}</span>;
+							return <span key={idx} className={matches[1]} onClick={()=>updateFilter(tag)}>{matches[2]}</span>;
 						})}
 					</div>
-				</> : <></>
-				}
+				) : null}
 				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
-					<i className='fas fa-user'/> {brew.authors?.map((author, index)=>(
+					<i className='fas fa-user' />{' '}
+					{brew.authors?.map((author, index)=>(
 						<React.Fragment key={index}>
-							{author === 'hidden'
-								? <span title="Username contained an email address; hidden to protect user's privacy">{author}</span>
-								: <a href={`/user/${author}`}>{author}</a>
-							}
+							{author === 'hidden' ? (
+								<span title="Username contained an email address; hidden to protect user's privacy">
+									{author}
+								</span>
+							) : (<a href={`/user/${author}`}>{author}</a>)}
 							{index < brew.authors.length - 1 && ', '}
 						</React.Fragment>
 					))}
 				</span>
 				<br />
 				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
-					<i className='fas fa-eye'/> {brew.views}
+					<i className='fas fa-eye' /> {brew.views}
 				</span>
-				{brew.pageCount &&
+				{brew.pageCount && (
 					<span title={`Page count: ${brew.pageCount}`}>
 						<i className='far fa-file' /> {brew.pageCount}
 					</span>
-				}
-				<span title={dedent`
-					Created: ${moment(brew.createdAt).local().format(dateFormatString)}
-					Last updated: ${moment(brew.updatedAt).local().format(dateFormatString)}`}>
+				)}
+				<span
+					title={dedent` Created: ${moment(brew.createdAt).local().format(dateFormatString)}
+                        Last updated: ${moment(brew.updatedAt).local().format(dateFormatString)}`}
+				>
 					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
 				</span>
-				{this.renderStorageIcon()}
+				{renderStorageIcon()}
 			</div>
 
 			<div className='links'>
-				{this.renderShareLink()}
-				{this.renderEditLink()}
-				{this.renderDownloadLink()}
-				{this.renderDeleteBrewLink()}
+				{renderShareLink()}
+				{renderEditLink()}
+				{renderDownloadLink()}
+				{renderDeleteBrewLink()}
 			</div>
-		</div>;
-	}
-});
+		</div>
+	);
+};
 
 module.exports = BrewItem;
