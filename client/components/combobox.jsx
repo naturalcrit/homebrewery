@@ -34,18 +34,21 @@ const Combobox = ({ autoSuggest = { filterOn: ['data-value'] }, ...props }) => {
 		}
 	}, [currentOption]);
 
-	const handleInputChange = (evt) => {
+	const handleInputChange = (evt)=>{
 		const newValue = evt.target.value;
 		setInputValue(newValue);
 		setCurrentOption(-1);
 
 		const filtered = React.Children.toArray(props.children).filter((option) => {
 			return autoSuggest.filterOn.some((filterAttr) => {
+		const filtered = React.Children.toArray(props.children).filter((option)=>{
+			return autoSuggest.filterOn.some((filterAttr)=>{
 				return option.props[filterAttr]?.toLowerCase().startsWith(newValue.toLowerCase());
 			});
 		});
 		setFilteredOptions(filtered);
-	}
+	};
+
 
 	// Handle keyboard navigation
 	const handleKeyDown = (evt) => {
@@ -75,15 +78,13 @@ const Combobox = ({ autoSuggest = { filterOn: ['data-value'] }, ...props }) => {
 				}
 			}
 		}
-	}
 
-	const handleOptionClick = (evt) => {
 		setShowDropdown(false);
 		setInputValue(evt.currentTarget.dataset.value);
-	}
+	};
 
 	// Render the filtered options
-	const renderChildren = () => {
+	const renderChildren = ()=>{
 		optionRefs.current = []; // Reset refs for each render cycle
 
 		// Add refs and event handlers for filtered options
@@ -100,9 +101,9 @@ const Combobox = ({ autoSuggest = { filterOn: ['data-value'] }, ...props }) => {
 
 
 	return (
-		<div className="combobox" ref={componentRef}>
+		<div className='combobox' ref={componentRef}>
 			<input
-				type="text"
+				type='text'
 				ref={inputRef}
 				value={inputValue}
 				onClick={() => {
@@ -117,6 +118,6 @@ const Combobox = ({ autoSuggest = { filterOn: ['data-value'] }, ...props }) => {
 			</div>
 		</div>
 	);
-}
+};
 
 module.exports = Combobox;
