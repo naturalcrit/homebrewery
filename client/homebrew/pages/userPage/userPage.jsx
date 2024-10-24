@@ -33,7 +33,7 @@ const UserPage = ({ username = '', brews = [], query = '', error = null, ...prop
 		}] : [])
 	];	
 
-    const navItems = () => (
+    const navItems = (
         <Navbar>
             <Nav.section>
                 {currentError && (<ErrorNavItem error={currentError} parent={null}></ErrorNavItem>)}
