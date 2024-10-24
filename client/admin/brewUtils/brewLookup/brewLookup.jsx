@@ -1,3 +1,5 @@
+require('./brewLookup.less');
+
 const React = require('react');
 const createClass = require('create-react-class');
 const cx    = require('classnames');
@@ -27,18 +29,21 @@ const BrewLookup = createClass({
 		this.setState({ searching: true, error: null, checkForScript: false, scriptCount: undefined });
 
 		request.get(`/admin/lookup/${this.state.query}`)
-			.then((res)=>this.setState({ foundBrew: res.body }))
+			.then((res)=>{
+				const foundBrew = res.body;
+				const scriptCheck = foundBrew.text.match(/(<\/?s)cript/);
+				this.setState({
+					foundBrew      : foundBrew,
+					scriptCount    : scriptCheck?.length || 0,
+					checkForScript : scriptCheck?.length > 0
+				});
+			})
 			.catch((err)=>this.setState({ error: err }))
-			.finally(()=>this.setState({ searching: false }));
-	},
-
-	checkForScript(){
-		const brew = this.state.foundBrew;
-		const scriptCheck = brew.text.match(/(<\/?s)cript/);
-		this.setState({
-			checkForScript : !!scriptCheck,
-			scriptCount    : scriptCheck?.length || 0
-		});
+			.finally(()=>{
+				this.setState({
+					searching : false
+				});
+			});
 	},
 
 	cleanScript(){
@@ -71,10 +76,15 @@ const BrewLookup = createClass({
 
 				<dt>Num of Views</dt>
 				<dd>{brew.views}</dd>
+
+				<dt>Number of SCRIPT tags detected</dt>
+				<dd>{this.state.scriptCount}</dd>
 			</dl>
-			<button onClick={this.checkForScript}>Scan for SCRIPTs</button>
-			{(typeof this.state.scriptCount == 'number') && <p>Number of SCRIPT tags found: {this.state.scriptCount}</p>}
-			{this.state.checkForScript && <button onClick={this.cleanScript}>CLEAN BREW</button>}
+			{this.state.checkForScript &&
+				<div className='cleanButton'>
+					<button onClick={this.cleanScript}>CLEAN BREW</button>
+				</div>
+			}
 		</div>;
 	},
 
