@@ -7,7 +7,7 @@ const Combobox = ({ autoSuggest = { filterOn: ['data-value'] }, ...props }) => {
 	const [showDropdown, setShowDropdown] = useState(false);
 	const [inputFocused, setInputFocused] = useState(false);
 	const [currentOption, setCurrentOption] = useState(-1);
-	const [filteredOptions, setFilteredOptions] = useState([]);
+	const [filteredOptions, setFilteredOptions] = useState(React.Children.toArray(props.children));
 	const optionRefs = useRef([]);
 	const componentRef = useRef(null);
 
