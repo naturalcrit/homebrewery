@@ -69,7 +69,7 @@ router.post('/admin/cleanup', mw.adminOnly, (req, res)=>{
 });
 
 /* Searches for matching edit or share id, also attempts to partial match */
-router.get('/admin/lookup/:id', mw.adminOnly, asyncHandler(HomebrewAPI.getBrew('admin', true)), async (req, res, next)=>{
+router.get('/admin/lookup/:id', mw.adminOnly, asyncHandler(HomebrewAPI.getBrew('admin', false)), async (req, res, next)=>{
 	const brew = req?.brew ?? undefined;
 
 	try {
