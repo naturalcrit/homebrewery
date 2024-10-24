@@ -87,8 +87,18 @@ const api = {
 			// Get relevant IDs for the brew
 			const { id, googleId } = api.getId(req);
 
+			const accessMap = {
+				edit  : { editId: id },
+				share : { shareId: id },
+				admin : {
+					$or : [
+						{ editId: { $regex: req.params.id, $options: 'i' } },
+						{ shareId: { $regex: req.params.id, $options: 'i' } },
+					] }
+			};
+
 			// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine.
-			let stub = await HomebrewModel.get(accessType === 'edit' ? { editId: id } : { shareId: id })
+			let stub = await HomebrewModel.get(accessMap[accessType])
 				.catch((err)=>{
 					if(googleId) {
 						console.warn(`Unable to find document stub for ${accessType}Id ${id}`);
