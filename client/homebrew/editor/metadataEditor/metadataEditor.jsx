@@ -241,13 +241,13 @@ const MetadataEditor = createClass({
 	renderLanguageDropdown : function(){
 		const langCodes = ['en', 'de', 'de-ch', 'fr', 'ja', 'es', 'it', 'sv', 'ru', 'zh-Hans', 'zh-Hant'];
 		const langOptions = _.map(langCodes.sort(), (code, index)=>{
-				const localName = new Intl.DisplayNames([code], { type: 'language' });
-				const englishName = new Intl.DisplayNames('en', { type: 'language' });
-				return <button className='item' title={`${englishName.of(code)}`} key={`${index}`} data-value={`${code}`} data-detail={`${localName.of(code)}`}>
-					{`${code}`}
-					<div className='detail'>{`${localName.of(code)}`}</div>
-				</button>;
-			});
+			const localName = new Intl.DisplayNames([code], { type: 'language' });
+			const englishName = new Intl.DisplayNames('en', { type: 'language' });
+			return <button className='item' title={`${englishName.of(code)}`} key={`${index}`} data-value={`${code}`} data-detail={`${localName.of(code)}`}>
+				{`${code}`}
+				<div className='detail'>{`${localName.of(code)}`}</div>
+			</button>;
+		});
 
 
 		const debouncedHandleFieldChange =  _.debounce(this.handleFieldChange, 500);
@@ -267,7 +267,7 @@ const MetadataEditor = createClass({
 					options={langOptions}
 					autoSuggest={{
 						suggestMethod           : 'startsWith',
-						clearAutoSuggestOnClick : true,
+						clearAutoSuggestOnClick : false,
 						filterOn                : ['data-value', 'data-detail', 'title']
 					}}
 				>
