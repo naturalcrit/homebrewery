@@ -2,7 +2,7 @@ require('./combobox.less');
 import React, { useState, useRef, useEffect } from 'react';
 const _ = require('lodash');
 
-const Combobox = ({ autoSuggest = { filterOn: ['data-value'] }, ...props }) => {
+const Combobox = ({ onSelect, onEntry, autoSuggest = { filterOn: ['data-value'], suggestMethod: 'includes', clearAutoSuggestOnClick: false }, ...props })=>{
 	const [inputValue, setInputValue] = useState(props.value || '');
 	const [showDropdown, setShowDropdown] = useState(false);
 	const [inputFocused, setInputFocused] = useState(false);
@@ -39,8 +39,6 @@ const Combobox = ({ autoSuggest = { filterOn: ['data-value'] }, ...props }) => {
 		setInputValue(newValue);
 		setCurrentOption(-1);
 
-		const filtered = React.Children.toArray(props.children).filter((option) => {
-			return autoSuggest.filterOn.some((filterAttr) => {
 		const filtered = React.Children.toArray(props.children).filter((option)=>{
 			return autoSuggest.filterOn.some((filterAttr)=>{
 				return option.props[filterAttr]?.toLowerCase().startsWith(newValue.toLowerCase());
@@ -145,13 +143,18 @@ const Combobox = ({ autoSuggest = { filterOn: ['data-value'] }, ...props }) => {
 				type='text'
 				ref={inputRef}
 				value={inputValue}
-				onClick={() => {
+				placeholder={props.placeholder}
+				onClick={()=>{
 					setShowDropdown(true);
 					setInputFocused(true);
-				onKeyDown={(evt)=>handleKeyDown(evt)}
+					autoSuggest.clearAutoSuggestOnClick && setInputValue('');
 				}}
-				onChange={(evt) => handleInputChange(evt)}
-				onKeyDown={(evt) => handleKeyDown(evt)}
+				onChange={(evt)=>handleInputChange(evt)}
+				onKeyDown={(evt)=>handleKeyDown(evt)}
+				onFocus={()=>{setInputFocused(true);}}
+				onBlur={()=>{
+					setInputFocused(false);
+				}}
 			/>
 			<div className={`dropdown-options${showDropdown ? ' open' : ''}`}>
 				{renderChildren()}
