@@ -49,37 +49,72 @@ const Combobox = ({ autoSuggest = { filterOn: ['data-value'] }, ...props }) => {
 		setFilteredOptions(filtered);
 	};
 
+	/* eslint-disable brace-style */
 
 	// Handle keyboard navigation
-	const handleKeyDown = (evt) => {
-		if (inputFocused || (currentOption >= 0)) {
+	const handleKeyDown = (evt)=>{
+		const modifiers = ['Meta', 'Shift', 'Alt', 'Control', 'Tab'];
+		if(inputFocused || (currentOption >= 0)) {
 			const optionsLength = filteredOptions.length;
+
+			if((evt.key === ' ') && (inputValue === '')){
+				evt.preventDefault();
+				setShowDropdown(!showDropdown);
+			}
+
 			// ArrowDown moves to the next option
-			if (evt.key === 'ArrowDown') {
+			else if(evt.key === 'ArrowDown') {
 				evt.preventDefault();
 				if((currentOption === -1) && (showDropdown === false)){
 					setShowDropdown(true);
 				};
 				const nextIndex = currentOption + 1;
-				if (nextIndex < optionsLength) {
+				if(nextIndex < optionsLength) {
 					setCurrentOption(nextIndex);
 				} else {
 					setCurrentOption(0);
 				}
 			}
+
 			// ArrowUp moves to the previous option
-			else if (evt.key === 'ArrowUp') {
+			else if(evt.key === 'ArrowUp') {
 				evt.preventDefault();
 				const prevIndex = currentOption - 1;
-				if (prevIndex >= 0) {
+				if(prevIndex >= 0) {
 					setCurrentOption(prevIndex);
 				} else {
-					setCurrentOption(optionsLength - 1);
+					setCurrentOption(-1);
+					inputRef.current.focus();
 				}
+			}
+
+			// Escape key closes the dropdown
+			else if(evt.key === 'Escape'){
+				setCurrentOption(-1);
+				inputRef.current.focus();
+				setShowDropdown(false);
+			}
+
+			// Backspace key while menu is open still deletes characters in input
+			else if((evt.key === 'Backspace') && showDropdown){
+				inputRef.current.focus();
+			}
+
+			else if((evt.key === 'Tab')){
+				setCurrentOption(-1);
+				setShowDropdown(false);
+			}
+
+			// Prevent modifier keys from triggering dropdown (example, shift+tab or tab to move focus)
+			else if(!modifiers.includes(evt.key)) {
+				setShowDropdown(true);
 			}
 		}
 
-		setShowDropdown(false);
+
+	};
+	/* eslint-enable brace-style */
+
 		setInputValue(evt.currentTarget.dataset.value);
 	};
 
@@ -109,6 +144,7 @@ const Combobox = ({ autoSuggest = { filterOn: ['data-value'] }, ...props }) => {
 				onClick={() => {
 					setShowDropdown(true);
 					setInputFocused(true);
+				onKeyDown={(evt)=>handleKeyDown(evt)}
 				}}
 				onChange={(evt) => handleInputChange(evt)}
 				onKeyDown={(evt) => handleKeyDown(evt)}
