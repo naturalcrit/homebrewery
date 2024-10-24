@@ -47,7 +47,7 @@ const UserPage = ({ username = '', brews = [], query = '', error = null, ...prop
     );
 
     return (
-        <ListPage brewCollection={brewCollection}  navItems={navItems()} query={query} reportError={(error) =>setCurrentError(error)} />
+        <ListPage brewCollection={brewCollection}  navItems={navItems} query={query} reportError={(error) =>setCurrentError(error)} />
     );
 };
 
