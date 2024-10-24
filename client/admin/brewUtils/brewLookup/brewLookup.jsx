@@ -31,7 +31,7 @@ const BrewLookup = createClass({
 		request.get(`/admin/lookup/${this.state.query}`)
 			.then((res)=>{
 				const foundBrew = res.body;
-				const scriptCheck = foundBrew.text.match(/(<\/?s)cript/);
+				const scriptCheck = foundBrew.text.match(/(<\/?s)cript/g);
 				this.setState({
 					foundBrew      : foundBrew,
 					scriptCount    : scriptCheck?.length || 0,
