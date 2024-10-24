@@ -115,6 +115,7 @@ const Combobox = ({ autoSuggest = { filterOn: ['data-value'] }, ...props }) => {
 	};
 	/* eslint-enable brace-style */
 
+	const handleOptionClick = (evt)=>{
 		setInputValue(evt.currentTarget.dataset.value);
 	};
 
