@@ -1,9 +1,31 @@
+@import 'naturalcrit/styles/colors.less';
+
 .combobox {
 	position: relative;
 	width: max(200px, fit-content);
 	input { 
 		display: block;
 		width: 100%;
+	}
+	> button {
+		all: unset;
+		box-sizing: border-box;
+		position: absolute;
+		top: 0;
+		right: 0;
+		height: calc(100% - 4px);
+		aspect-ratio: 1;
+		margin: 2px;
+		text-align: center;
+		cursor: pointer;
+		&:focus {
+			background-color: @blueLight;
+		}
+		&:hover, &:active {
+			background-color: @blue;
+			color: white;
+		}
+
 	}
 	.dropdown-options {
 		display: none;
@@ -15,7 +37,6 @@
         overflow-y: auto;
         max-height: 200px;
 		padding: 3px;
-
         &::-webkit-scrollbar {
           width: 14px;
         }

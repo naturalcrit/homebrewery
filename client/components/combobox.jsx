@@ -156,6 +156,7 @@ const Combobox = ({ onSelect, onEntry, autoSuggest = { filterOn: ['data-value'],
 					setInputFocused(false);
 				}}
 			/>
+			<button tabIndex={-1} onClick={()=>setShowDropdown(!showDropdown)}><i className='fas fa-caret-down' /></button>
 			<div className={`dropdown-options${showDropdown ? ' open' : ''}`}>
 				{renderChildren()}
 			</div>
