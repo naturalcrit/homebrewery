@@ -92,8 +92,8 @@ const api = {
 				share : { shareId: id },
 				admin : {
 					$or : [
-						{ editId: { $regex: req.params.id, $options: 'i' } },
-						{ shareId: { $regex: req.params.id, $options: 'i' } },
+						{ editId: { $regex: id, $options: 'i' } },
+						{ shareId: { $regex: id, $options: 'i' } },
 					] }
 			};
 
