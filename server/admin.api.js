@@ -5,6 +5,9 @@ const Moment = require('moment');
 const templateFn = require('../client/template.js');
 const zlib = require('zlib');
 
+const HomebrewAPI = require('./homebrew.api.js');
+const asyncHandler = require('express-async-handler');
+
 process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
 process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password3';
 
@@ -66,23 +69,19 @@ router.post('/admin/cleanup', mw.adminOnly, (req, res)=>{
 });
 
 /* Searches for matching edit or share id, also attempts to partial match */
-router.get('/admin/lookup/:id', mw.adminOnly, async (req, res, next)=>{
-	HomebrewModel.findOne({
-		$or : [
-			{ editId: { $regex: req.params.id, $options: 'i' } },
-			{ shareId: { $regex: req.params.id, $options: 'i' } },
-		]
-	}).exec()
-	.then((brew)=>{
-		if(!brew)	// No document found
+router.get('/admin/lookup/:id', mw.adminOnly, asyncHandler(HomebrewAPI.getBrew('admin', false)), async (req, res, next)=>{
+	const brew = req?.brew ?? undefined;
+
+	try {
+		if(!brew){
+			// No document found
 			return res.status(404).json({ error: 'Document not found' });
-		else
-			return res.json(brew);
-	})
-	.catch((err)=>{
+		}
+		return res.json(brew);
+	} catch (err) {
 		console.error(err);
 		return res.status(500).json({ error: 'Internal Server Error' });
-	});
+	}
 });
 
 /* Find 50 brews that aren't compressed yet */
@@ -100,6 +99,37 @@ router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{
 		});
 });
 
+/* Cleans `<script` and `</script>` from the "text" field of a brew */
+router.put('/admin/clean/script/:id', (req, res)=>{
+	console.log(`[ADMIN] Cleaning script tags from ShareID ${req.params.id}`);
+
+	function cleanText(text){return text.replaceAll(/(<\/?s)cript/gi, '');};
+
+	HomebrewModel.findOne({ shareId: req.params.id })
+		.then((brew)=>{
+			if(!brew)
+				return res.status(404).send('Brew not found');
+
+			if(!brew.text && brew.textBin) {
+				brew.text = zlib.inflateRawSync(brew.textBin);
+			}
+
+			const properties = ['text', 'description', 'title'];
+			properties.forEach((property)=>{
+				brew[property] = cleanText(brew[property]);
+			});
+
+			brew.textBin = zlib.deflateRawSync(brew.text);
+			brew.text = undefined;
+
+			return brew.save();
+		})
+		.then((obj)=>res.status(200).send(obj))
+		.catch((err)=>{
+			console.error(err);
+			res.status(500).send('Error while saving');
+		});
+});
 
 /* Compresses the "text" field of a brew to binary */
 router.put('/admin/compress/:id', (req, res)=>{
@@ -144,7 +174,7 @@ router.get('/admin/notification/all', async (req, res, next)=>{
 	try {
 		const notifications = await NotificationModel.getAll();
 		return res.json(notifications);
-		
+
 	} catch (error) {
 		console.log('Error getting all notifications: ', error.message);
 		return res.status(500).json({ message: error.message });

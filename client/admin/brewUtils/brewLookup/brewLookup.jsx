@@ -1,3 +1,5 @@
+require('./brewLookup.less');
+
 const React = require('react');
 const createClass = require('create-react-class');
 const cx    = require('classnames');
@@ -12,22 +14,45 @@ const BrewLookup = createClass({
 	},
 	getInitialState() {
 		return {
-			query     : '',
-			foundBrew : null,
-			searching : false,
-			error     : null
+			query          : '',
+			foundBrew      : null,
+			searching      : false,
+			error          : null,
+			checkForScript : false,
+			scriptCount    : undefined
 		};
 	},
 	handleChange(e){
 		this.setState({ query: e.target.value });
 	},
 	lookup(){
-		this.setState({ searching: true, error: null });
+		this.setState({ searching: true, error: null, checkForScript: false, scriptCount: undefined });
 
 		request.get(`/admin/lookup/${this.state.query}`)
+			.then((res)=>{
+				const foundBrew = res.body;
+				const scriptCheck = foundBrew?.text.match(/(<\/?s)cript/g);
+				this.setState({
+					foundBrew      : foundBrew,
+					scriptCount    : scriptCheck?.length || 0,
+					checkForScript : scriptCheck?.length > 0
+				});
+			})
+			.catch((err)=>this.setState({ error: err }))
+			.finally(()=>{
+				this.setState({
+					searching : false
+				});
+			});
+	},
+
+	cleanScript(){
+		if(!this.state.foundBrew?.shareId) return;
+
+		request.put(`/admin/clean/script/${this.state.foundBrew.shareId}`)
 			.then((res)=>this.setState({ foundBrew: res.body }))
 			.catch((err)=>this.setState({ error: err }))
-			.finally(()=>this.setState({ searching: false }));
+			.finally(()=>this.setState({ checkForScript: false, scriptCount: 0 }));
 	},
 
 	renderFoundBrew(){
@@ -51,7 +76,15 @@ const BrewLookup = createClass({
 
 				<dt>Num of Views</dt>
 				<dd>{brew.views}</dd>
+
+				<dt>Number of SCRIPT tags detected</dt>
+				<dd>{this.state.scriptCount}</dd>
 			</dl>
+			{this.state.checkForScript &&
+				<div className='cleanButton'>
+					<button onClick={this.cleanScript}>CLEAN BREW</button>
+				</div>
+			}
 		</div>;
 	},
 
