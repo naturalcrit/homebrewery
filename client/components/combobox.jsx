@@ -122,18 +122,21 @@ const Combobox = ({ autoSuggest = { filterOn: ['data-value'] }, ...props }) => {
 	const renderChildren = ()=>{
 		optionRefs.current = []; // Reset refs for each render cycle
 
-		// Add refs and event handlers for filtered options
-		return filteredOptions.map((child, i) => {
-			return React.cloneElement(child, {
-				onClick: (evt) => handleOptionClick(evt),
-				onKeyDown: (evt) => handleKeyDown(evt),
-				ref: (node) => { optionRefs.current[i] = node; },
-				tabIndex: -1,
+		if(filteredOptions.length < 1){
+			return <span className='no-matches'>no matches</span>;
+		} else {
+			// Add refs and event handlers for filtered options
+			return filteredOptions.map((child, i)=>{
+				return React.cloneElement(child, {
+					onClick   : (evt)=>handleOptionClick(evt),
+					onKeyDown : (evt)=>handleKeyDown(evt),
+					ref       : (node)=>{ optionRefs.current[i] = node; },
+					tabIndex  : -1,
+				});
 			});
-		});
-	}
 
-
+		}
+	};
 
 	return (
 		<div className='combobox' ref={componentRef}>
