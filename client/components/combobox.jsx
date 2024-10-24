@@ -11,28 +11,24 @@ const Combobox = ({ autoSuggest = { filterOn: ['data-value'] }, ...props }) => {
 	const optionRefs = useRef([]);
 	const componentRef = useRef(null);
 
-	useEffect(() => {
-		const handleClickOutside = (evt) => {
-			if (showDropdown && componentRef.current && !componentRef.current.contains(evt.target)) {
+	useEffect(()=>{
+		const handleClickOutside = (evt)=>{
+			if(showDropdown && componentRef.current && !componentRef.current.contains(evt.target)) {
 				setShowDropdown(false);
 			}
 		};
-		
-		document.addEventListener('pointerdown', handleClickOutside);
 
-		return () => {
-			document.removeEventListener('pointerdown', handleClickOutside);
-		};
+		document.addEventListener('pointerdown', handleClickOutside);
+		return ()=>{document.removeEventListener('pointerdown', handleClickOutside);};
 	}, [showDropdown]);
 
-	useEffect(() => {
-		props.onSelect(inputValue);
-	
-		handleInputChange({ target: { value: inputValue } });
+	useEffect(()=>{
+		onSelect(inputValue);
+		// handleInputChange({ target: { value: inputValue } });
 	}, [inputValue]);
 
-	useEffect(() => {
-		if (currentOption >= 0 && optionRefs.current[currentOption] && optionRefs.current[currentOption].focus) {
+	useEffect(()=>{
+		if(currentOption >= 0 && optionRefs.current[currentOption]) {
 			optionRefs.current[currentOption].focus();
 		}
 	}, [currentOption]);
