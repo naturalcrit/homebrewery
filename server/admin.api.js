@@ -5,6 +5,9 @@ const Moment = require('moment');
 const templateFn = require('../client/template.js');
 const zlib = require('zlib');
 
+const HomebrewAPI = require('./homebrew.api.js');
+const asyncHandler = require('express-async-handler');
+
 process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
 process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password3';
 
@@ -66,27 +69,19 @@ router.post('/admin/cleanup', mw.adminOnly, (req, res)=>{
 });
 
 /* Searches for matching edit or share id, also attempts to partial match */
-router.get('/admin/lookup/:id', mw.adminOnly, async (req, res, next)=>{
-	HomebrewModel.findOne({
-		$or : [
-			{ editId: { $regex: req.params.id, $options: 'i' } },
-			{ shareId: { $regex: req.params.id, $options: 'i' } },
-		]
-	}).exec()
-	.then((brew)=>{
-		if(!brew)	// No document found
+router.get('/admin/lookup/:id', mw.adminOnly, asyncHandler(HomebrewAPI.getBrew('admin', true)), async (req, res, next)=>{
+	const brew = req?.brew ?? undefined;
+
+	try {
+		if(!brew){
+			// No document found
 			return res.status(404).json({ error: 'Document not found' });
-		else {
-			if(!brew.text && brew.textBin){
-				brew.text = zlib.inflateRawSync(brew.textBin);
-			}
-			return res.json(brew);
 		}
-	})
-	.catch((err)=>{
+		return res.json(brew);
+	} catch (err) {
 		console.error(err);
 		return res.status(500).json({ error: 'Internal Server Error' });
-	});
+	}
 });
 
 /* Find 50 brews that aren't compressed yet */
@@ -179,7 +174,7 @@ router.get('/admin/notification/all', async (req, res, next)=>{
 	try {
 		const notifications = await NotificationModel.getAll();
 		return res.json(notifications);
-		
+
 	} catch (error) {
 		console.log('Error getting all notifications: ', error.message);
 		return res.status(500).json({ message: error.message });
