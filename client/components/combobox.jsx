@@ -55,7 +55,7 @@ const Combobox = ({ onSelect, onEntry, autoSuggest = { filterOn: ['data-value'],
 		if(inputFocused || (currentOption >= 0)) {
 			const optionsLength = filteredOptions.length;
 
-			if((evt.key === ' ') && (inputValue === '')){
+			if(evt.key === ' ' && (inputValue === '' || (inputRef.current.selectionStart === 0 && inputRef.current.selectionEnd === inputValue.length))){
 				evt.preventDefault();
 				setShowDropdown(!showDropdown);
 			}
