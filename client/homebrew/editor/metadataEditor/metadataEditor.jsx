@@ -243,9 +243,9 @@ const MetadataEditor = createClass({
 		const langOptions = _.map(langCodes.sort(), (code, index)=>{
 			const localName = new Intl.DisplayNames([code], { type: 'language' });
 			const englishName = new Intl.DisplayNames('en', { type: 'language' });
-			return <button className='item' title={`${englishName.of(code)}`} key={`${index}`} data-value={`${code}`} data-detail={`${localName.of(code)}`}>
+			return <button className='item' title={englishName.of(code)} key={`${index}`} data-value={`${code}`} data-detail={localName.of(code)}>
 				{`${code}`}
-				<div className='detail'>{`${localName.of(code)}`}</div>
+				<div className='detail'>{localName.of(code)}</div>
 			</button>;
 		});
 
