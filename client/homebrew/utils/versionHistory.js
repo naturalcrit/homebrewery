@@ -1,4 +1,4 @@
-import { initIDBProxy } from './customIDBStoreWrapper';
+import { initIDBProxy } from './customIDBStore.js';
 
 export const HISTORY_PREFIX = 'HOMEBREWERY-HISTORY';
 export const HISTORY_SLOTS = 5;
