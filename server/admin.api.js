@@ -7,6 +7,7 @@ const zlib = require('zlib');
 
 const HomebrewAPI = require('./homebrew.api.js');
 const asyncHandler = require('express-async-handler');
+const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
 
 process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
 process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password3';
@@ -100,35 +101,25 @@ router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{
 });
 
 /* Cleans `<script` and `</script>` from the "text" field of a brew */
-router.put('/admin/clean/script/:id', (req, res)=>{
+router.put('/admin/clean/script/:id', asyncHandler(HomebrewAPI.getBrew('admin', false)), async (req, res)=>{
 	console.log(`[ADMIN] Cleaning script tags from ShareID ${req.params.id}`);
 
 	function cleanText(text){return text.replaceAll(/(<\/?s)cript/gi, '');};
 
-	HomebrewModel.findOne({ shareId: req.params.id })
-		.then((brew)=>{
-			if(!brew)
-				return res.status(404).send('Brew not found');
+	const brew = req.brew;
 
-			if(!brew.text && brew.textBin) {
-				brew.text = zlib.inflateRawSync(brew.textBin);
-			}
+	const properties = ['text', 'description', 'title'];
+	properties.forEach((property)=>{
+		brew[property] = cleanText(brew[property]);
+	});
+	// Tag cleaning is commented out as it is impossible to enter a script tag in tags
+	// brew.tags = cleanText(brew.tags.join('\n')).split('\n');
 
-			const properties = ['text', 'description', 'title'];
-			properties.forEach((property)=>{
-				brew[property] = cleanText(brew[property]);
-			});
+	splitTextStyleAndMetadata(brew);
 
-			brew.textBin = zlib.deflateRawSync(brew.text);
-			brew.text = undefined;
+	req.body = brew;
 
-			return brew.save();
-		})
-		.then((obj)=>res.status(200).send(obj))
-		.catch((err)=>{
-			console.error(err);
-			res.status(500).send('Error while saving');
-		});
+	return await HomebrewAPI.updateBrew(req, res);
 });
 
 /* Compresses the "text" field of a brew to binary */
