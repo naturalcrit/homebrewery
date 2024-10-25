@@ -2,7 +2,7 @@ require('./combobox.less');
 import React, { useState, useRef, useEffect } from 'react';
 const _ = require('lodash');
 
-const Combobox = ({ onSelect, onEntry, autoSuggest = { filterOn: ['data-value'], suggestMethod: 'includes', clearAutoSuggestOnClick: false }, ...props })=>{
+const Combobox = ({ id, onSelect, onEntry, autoSuggest = { filterOn: ['data-value'], suggestMethod: 'includes', clearAutoSuggestOnClick: false }, ...props })=>{
 	const [inputValue, setInputValue] = useState(props.value || '');
 	const [showDropdown, setShowDropdown] = useState(false);
 	const [inputFocused, setInputFocused] = useState(false);
@@ -131,6 +131,7 @@ const Combobox = ({ onSelect, onEntry, autoSuggest = { filterOn: ['data-value'],
 					onKeyDown : (evt)=>handleKeyDown(evt),
 					ref       : (node)=>{ optionRefs.current[i] = node; },
 					tabIndex  : -1,
+					role      : 'option'
 				});
 			});
 
@@ -138,9 +139,13 @@ const Combobox = ({ onSelect, onEntry, autoSuggest = { filterOn: ['data-value'],
 	};
 
 	return (
-		<div className='combobox' ref={componentRef}>
+		<div id={id} className='combobox' ref={componentRef}>
 			<input
+				id={`${id}-input`}
 				type='text'
+				role='combobox'
+				aria-controls={`${id}-menu`}
+				aria-expanded={showDropdown ? true : false}
 				ref={inputRef}
 				value={inputValue}
 				placeholder={props.placeholder}
@@ -156,8 +161,8 @@ const Combobox = ({ onSelect, onEntry, autoSuggest = { filterOn: ['data-value'],
 					setInputFocused(false);
 				}}
 			/>
-			<button tabIndex={-1} onClick={()=>setShowDropdown(!showDropdown)}><i className='fas fa-caret-down' /></button>
-			<div className={`dropdown-options${showDropdown ? ' open' : ''}`}>
+			<button tabIndex={-1} onClick={()=>setShowDropdown(!showDropdown)} aria-controls={`${id}-menu`} aria-expanded={showDropdown ? true : false}><i className='fas fa-caret-down' /></button>
+			<div id={`${id}-menu`} className={`dropdown-options${showDropdown ? ' open' : ''}`} role='listbox'>
 				{renderChildren()}
 			</div>
 		</div>

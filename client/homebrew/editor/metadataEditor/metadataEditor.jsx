@@ -256,6 +256,7 @@ const MetadataEditor = createClass({
 			<label>language</label>
 			<div className='value'>
 				<Combobox trigger='click'
+					id='language'
 					className='language-dropdown'
 					value={this.props.metadata.lang || ''}
 					placeholder='en'
