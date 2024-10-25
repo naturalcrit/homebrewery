@@ -2,8 +2,20 @@ require('./combobox.less');
 import React, { useState, useRef, useEffect } from 'react';
 const _ = require('lodash');
 
-const Combobox = ({ id, onSelect, onEntry, autoSuggest = { filterOn: ['data-value'], suggestMethod: 'includes', clearAutoSuggestOnClick: false }, ...props })=>{
 	const [inputValue, setInputValue] = useState(props.value || '');
+const Combobox = (props)=>{
+	props = {
+		id          : null,
+		onSelect    : ()=>{},
+		multiSelect : false,
+		autoSuggest : {
+			filterOn                : ['data-value'],
+			suggestMethod           : 'includes',
+			clearAutoSuggestOnClick : false
+		},
+		...props
+	};
+
 	const [showDropdown, setShowDropdown] = useState(false);
 	const [inputFocused, setInputFocused] = useState(false);
 	const [currentOption, setCurrentOption] = useState(-1);
@@ -24,7 +36,7 @@ const Combobox = ({ id, onSelect, onEntry, autoSuggest = { filterOn: ['data-valu
 	}, [showDropdown]);
 
 	useEffect(()=>{
-		onSelect(inputValue);
+		props.onSelect(inputValue);
 		// handleInputChange({ target: { value: inputValue } });
 	}, [inputValue]);
 
@@ -40,7 +52,7 @@ const Combobox = ({ id, onSelect, onEntry, autoSuggest = { filterOn: ['data-valu
 		setCurrentOption(-1);
 
 		const filtered = React.Children.toArray(props.children).filter((option)=>{
-			return autoSuggest.filterOn.some((filterAttr)=>{
+			return props.autoSuggest.filterOn.some((filterAttr)=>{
 				return option.props[filterAttr]?.toLowerCase().startsWith(newValue.toLowerCase());
 			});
 		});
@@ -139,12 +151,12 @@ const Combobox = ({ id, onSelect, onEntry, autoSuggest = { filterOn: ['data-valu
 	};
 
 	return (
-		<div id={id} className='combobox' ref={componentRef}>
+		<div id={props.id} className='combobox' ref={componentRef}>
 			<input
-				id={`${id}-input`}
+				id={`${props.id}-input`}
 				type='text'
 				role='combobox'
-				aria-controls={`${id}-menu`}
+				aria-controls={`${props.id}-menu`}
 				aria-expanded={showDropdown ? true : false}
 				ref={inputRef}
 				value={inputValue}
@@ -152,7 +164,7 @@ const Combobox = ({ id, onSelect, onEntry, autoSuggest = { filterOn: ['data-valu
 				onClick={()=>{
 					setShowDropdown(true);
 					setInputFocused(true);
-					autoSuggest.clearAutoSuggestOnClick && setInputValue('');
+					props.autoSuggest.clearAutoSuggestOnClick && setInputValue([]);
 				}}
 				onChange={(evt)=>handleInputChange(evt)}
 				onKeyDown={(evt)=>handleKeyDown(evt)}
@@ -161,8 +173,8 @@ const Combobox = ({ id, onSelect, onEntry, autoSuggest = { filterOn: ['data-valu
 					setInputFocused(false);
 				}}
 			/>
-			<button tabIndex={-1} onClick={()=>setShowDropdown(!showDropdown)} aria-controls={`${id}-menu`} aria-expanded={showDropdown ? true : false}><i className='fas fa-caret-down' /></button>
-			<div id={`${id}-menu`} className={`dropdown-options${showDropdown ? ' open' : ''}`} role='listbox'>
+			<button tabIndex={-1} onClick={()=>setShowDropdown(!showDropdown)} aria-controls={`${props.id}-menu`} aria-expanded={showDropdown ? true : false}><i className='fas fa-caret-down' /></button>
+			<div id={`${props.id}-menu`} className={`dropdown-options${showDropdown ? ' open' : ''}`} role='listbox'>
 				{renderChildren()}
 			</div>
 		</div>
