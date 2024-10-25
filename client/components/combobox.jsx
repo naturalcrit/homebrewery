@@ -25,15 +25,9 @@ const Combobox = (props)=>{
 	const componentRef = useRef(null);
 
 	useEffect(()=>{
-		const handleClickOutside = (evt)=>{
-			if(showDropdown && componentRef.current && !componentRef.current.contains(evt.target)) {
-				setShowDropdown(false);
-			}
-		};
-
 		document.addEventListener('pointerdown', handleClickOutside);
 		return ()=>{document.removeEventListener('pointerdown', handleClickOutside);};
-	}, [showDropdown]);
+	}, []);
 
 	useEffect(()=>{
 		props.onSelect(inputValue);
@@ -45,6 +39,14 @@ const Combobox = (props)=>{
 			optionRefs.current[currentOption].focus();
 		}
 	}, [currentOption]);
+
+
+	const handleClickOutside = (evt)=>{
+		console.log(componentRef.current, showDropdown)
+		if(componentRef.current && !componentRef.current.contains(evt.target)) {
+			setShowDropdown(false);
+		}
+	};
 
 	const handleInputChange = (evt)=>{
 		const newValue = evt.target.value;
