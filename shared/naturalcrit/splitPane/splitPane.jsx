@@ -3,112 +3,90 @@ const React = require('react');
 const { useState, useEffect, useRef } = React;
 const cx = require('classnames');
 
-const SplitPane = (props) => {
-	props = {
-		storageKey         : 'naturalcrit-pane-split',
-		onDragFinish       : function(){}, //fires when dragging
-		showDividerButtons : true,
-		...props
-	};
-	const pane1 = useRef(null);
-	const pane2 = useRef(null);
-	const [currentDividerPos, setCurrentDividerPos] = useState(null);
-	const [userSetDividerPos, setUserSetDividerPos] = useState(null);
-	const [windowWidth, setWindowWidth] = useState(null);
+const SplitPane = (props)=>{
+	const {
+		storageKey = 'naturalcrit-pane-split',
+		onDragFinish = ()=>{},
+		showDividerButtons = true
+	} = props;
+
 	const [isDragging, setIsDragging] = useState(false);
+	const [dividerPos, setDividerPos] = useState(null); // Initial divider position is set to `null`
 	const [moveSource, setMoveSource] = useState(false);
 	const [moveBrew, setMoveBrew] = useState(false);
 	const [showMoveArrows, setShowMoveArrows] = useState(true);
 	const [liveScroll, setLiveScroll] = useState(false);
 
-	const storageKey = props.storageKey || 'naturalcrit-pane-split';
-	const onDragFinish = props.onDragFinish || (() => {});
+	const dividerRef = useRef(null);
 
-	// Fetch saved divider position and scroll state on mount
-	useEffect(() => {
-		setWindowWidth(window.innerWidth);
-		const dividerPos = window.localStorage.getItem(storageKey);
-		const liveScrollSetting = window.localStorage.getItem('liveScroll') === 'true';
-		setLiveScroll(liveScrollSetting);
+	// Set initial divider position and liveScroll only after mounting
+	useEffect(()=>{
+		const savedPos = window.localStorage.getItem(storageKey);
+		setDividerPos(savedPos ? parseInt(savedPos, 10) : window.innerWidth / 2);
+		setLiveScroll(window.localStorage.getItem('liveScroll') === 'true');
 
-		if (dividerPos) {
-			const limitedPos = limitPosition(dividerPos, 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13));
-			setCurrentDividerPos(limitedPos);
-			setUserSetDividerPos(dividerPos);
-		} else {
-			setCurrentDividerPos(window.innerWidth / 2);
-			setUserSetDividerPos(window.innerWidth / 2);
-		}
-
-		const handleResize = () => {
-			const newPos = limitPosition(userSetDividerPos, 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13));
-			setCurrentDividerPos(newPos);
-			setWindowWidth(window.innerWidth);
+		const handleResize = ()=>{
+			setDividerPos((pos)=>limitPosition(pos,0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13))
+			);
 		};
 		window.addEventListener('resize', handleResize);
+		return ()=>window.removeEventListener('resize', handleResize);
+	}, [storageKey]);
 
-		return () => {
-			window.removeEventListener('resize', handleResize);
-		};
-	}, []);
-
-	const limitPosition = (x, min = 1, max = window.innerWidth - 13) => {
+	const limitPosition = (x, min = 1, max = window.innerWidth - 13)=>{
 		return Math.round(Math.min(max, Math.max(min, x)));
 	};
 
-	const handleUp = (e) => {
+	const handleUp =(e)=>{
 		e.preventDefault();
-		if (isDragging) {
-			onDragFinish(currentDividerPos);
-			window.localStorage.setItem(storageKey, currentDividerPos);
+		if(isDragging) {
+			onDragFinish(dividerPos);
+			window.localStorage.setItem(storageKey, dividerPos);
 		}
 		setIsDragging(false);
 	};
 
-	const handleDown = (e) => {
+	const handleDown = (e)=>{
 		e.preventDefault();
 		setIsDragging(true);
 	};
 
-	const handleMove = (e) => {
-		if (!isDragging) return;
+	const handleMove = (e)=>{
+		if(!isDragging) return;
 		e.preventDefault();
 		const newSize = limitPosition(e.pageX);
-		setCurrentDividerPos(newSize);
-		setUserSetDividerPos(newSize);
+		setDividerPos(newSize);
 	};
 
-	const liveScrollToggle = () => {
-		const newScrollState = !liveScroll;
-		window.localStorage.setItem('liveScroll', String(newScrollState));
-		setLiveScroll(newScrollState);
+	const liveScrollToggle = ()=>{
+		window.localStorage.setItem('liveScroll', String(!liveScroll));
+		setLiveScroll(!liveScroll);
 	};
 
-	const renderMoveArrows = () => {
-		console.log('showMoveArrows: ', showMoveArrows);
-		if (showMoveArrows) {
-			return (
-				<>
-					<div className='arrow left' onClick={() => setMoveSource(!moveSource)}>
-						<i className='fas fa-arrow-left' />
-					</div>
-					<div className='arrow right' onClick={() => setMoveBrew(!moveBrew)}>
-						<i className='fas fa-arrow-right' />
-					</div>
-					<div
-						id='scrollToggleDiv'
-						className={liveScroll ? 'arrow lock' : 'arrow unlock'}
-						onClick={liveScrollToggle}>
-						<i id='scrollToggle' className={liveScroll ? 'fas fa-lock' : 'fas fa-unlock'} />
-					</div>
-				</>
-			);
-		}
-	};
+	const moveArrows = showMoveArrows && (
+		<>
+			{['left', 'right'].map((direction, index) => (
+				<div
+					key={direction}
+					className={`arrow ${direction}`}
+					onClick={index === 0 ? () => setMoveSource(!moveSource) : () => setMoveBrew(!moveBrew)}
+				>
+					<i className={`fas fa-arrow-${direction}`} />
+				</div>
+			))}
+			<div
+				id='scrollToggleDiv'
+				className={`arrow ${liveScroll ? 'lock' : 'unlock'}`}
+				onClick={liveScrollToggle}
+			>
+				<i id='scrollToggle' className={`fas fa-${liveScroll ? 'lock' : 'unlock'}`} />
+			</div>
+		</>
+	);
 
-	const renderDivider = () => (
-		<div className='divider' onPointerDown={handleDown}>
-			{props.showDividerButtons && renderMoveArrows()}
+	const renderDivider = ()=>(
+		<div className='divider' onPointerDown={handleDown} ref={dividerRef}>
+			{showDividerButtons && moveArrows}
 			<div className='dots'>
 				<i className='fas fa-circle' />
 				<i className='fas fa-circle' />
@@ -119,28 +97,25 @@ const SplitPane = (props) => {
 
 	return (
 		<div className='splitPane' onPointerMove={handleMove} onPointerUp={handleUp}>
-			<Pane ref={pane1} width={currentDividerPos}>
-				{React.cloneElement(props.children[0], {
-					...(props.showDividerButtons && {
-						moveBrew,
-						moveSource,
-						liveScroll,
-						setMoveArrows: setShowMoveArrows,
-					}),
-				})}
+			<Pane width={dividerPos} moveBrew={moveBrew} moveSource={moveSource} liveScroll={liveScroll} setMoveArrows={setShowMoveArrows}>
+				{props.children[0]}
 			</Pane>
 			{renderDivider()}
-			<Pane ref={pane2} isDragging={isDragging}>{props.children[1]}</Pane>
+			<Pane isDragging={isDragging}>{props.children[1]}</Pane>
 		</div>
 	);
 };
 
-const Pane = ({ width, children, isDragging, className }) => {
+const Pane = ({ width, children, isDragging, className, moveBrew, moveSource, liveScroll, setMoveArrows })=>{
 	const styles = width
 		? { flex: 'none', width: `${width}px` }
 		: { pointerEvents: isDragging ? 'none' : 'auto' };
 
-	return <div className={cx('pane', className)} style={styles}>{children}</div>;
+	return (
+		<div className={cx('pane', className)} style={styles}>
+			{React.cloneElement(children, { moveBrew, moveSource, liveScroll, setMoveArrows })}
+		</div>
+	);
 };
 
 module.exports = SplitPane;
