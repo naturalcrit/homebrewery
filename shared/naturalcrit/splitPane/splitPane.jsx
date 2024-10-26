@@ -27,14 +27,9 @@ const SplitPane = (props)=>{
 		return ()=>window.removeEventListener('resize', handleResize);
 	}, []);
 
-	const limitPosition = (x, min = 1, max = window.innerWidth - 13)=>{
-		return Math.round(Math.min(max, Math.max(min, x)));
-	};
+	const limitPosition = (x, min = 1, max = window.innerWidth - 13)=>Math.round(Math.min(max, Math.max(min, x)));
 
-	const handleResize = ()=>{
-		setDividerPos((pos)=>limitPosition(pos, 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13))
-		);
-	};
+	const handleResize = ()=>setDividerPos((pos)=>limitPosition(pos, 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13)));
 
 	const handleUp =(e)=>{
 		e.preventDefault();
