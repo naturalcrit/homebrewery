@@ -13,42 +13,42 @@ const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const VaultNavitem = require('../../navbar/vault.navitem.jsx');
 
-const UserPage = ({ username = '', brews = [], query = '', error = null, ...props }) => {
+const UserPage = ({ username = '', brews = [], query = '', error = null, ...props })=>{
 
-    const [currentError, setCurrentError] = useState(error);
+	const [currentError, setCurrentError] = useState(error);
 
-    const usernameWithS = username + (username.endsWith('s') ? `’` : `’s`);
-    const groupedBrews = _.groupBy(brews, brew => brew.published ? 'published' : 'private');
+	const usernameWithS = username + (username.endsWith('s') ? `’` : `’s`);
+	const groupedBrews = _.groupBy(brews, (brew)=>brew.published ? 'published' : 'private');
 
 	const brewCollection = [
 		{
-			title: `${usernameWithS} published brews`,
-			class: 'published',
-			brews: groupedBrews.published || []
+			title : `${usernameWithS} published brews`,
+			class : 'published',
+			brews : groupedBrews.published || []
 		},
 		...(username === global.account?.username ? [{
-			title: `${usernameWithS} unpublished brews`,
-			class: 'unpublished',
-			brews: groupedBrews.private || []
+			title : `${usernameWithS} unpublished brews`,
+			class : 'unpublished',
+			brews : groupedBrews.private || []
 		}] : [])
-	];	
+	];
 
-    const navItems = () => (
-        <Navbar>
-            <Nav.section>
-                {currentError && (<ErrorNavItem error={currentError} parent={null}></ErrorNavItem>)}
-                <NewBrew />
-                <HelpNavItem />
-                <VaultNavitem />
-                <RecentNavItem />
-                <Account />
-            </Nav.section>
-        </Navbar>
-    );
+	const navItems = ()=>(
+		<Navbar>
+			<Nav.section>
+				{currentError && (<ErrorNavItem error={currentError} parent={null}></ErrorNavItem>)}
+				<NewBrew />
+				<HelpNavItem />
+				<VaultNavitem />
+				<RecentNavItem />
+				<Account />
+			</Nav.section>
+		</Navbar>
+	);
 
-    return (
-        <ListPage brewCollection={brewCollection}  navItems={navItems()} query={query} reportError={(error) =>setCurrentError(error)} />
-    );
+	return (
+		<ListPage brewCollection={brewCollection}  navItems={navItems()} query={query} reportError={(error)=>setCurrentError(error)} />
+	);
 };
 
 module.exports = UserPage;
