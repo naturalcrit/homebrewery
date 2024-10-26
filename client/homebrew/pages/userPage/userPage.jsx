@@ -13,7 +13,14 @@ const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const VaultNavitem = require('../../navbar/vault.navitem.jsx');
 
-const UserPage = ({ username = '', brews = [], query = '', error = null, ...props })=>{
+const UserPage = (props)=>{
+	props = {
+		username : '',
+		brews    : [],
+		query    : '',
+		error    : null,
+		...props
+	};
 
 	const [currentError, setCurrentError] = useState(error);
 
