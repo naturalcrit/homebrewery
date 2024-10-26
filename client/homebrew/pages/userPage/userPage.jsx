@@ -22,7 +22,7 @@ const UserPage = (props)=>{
 		...props
 	};
 
-	const [currentError, setCurrentError] = useState(error);
+	const [currentError, setCurrentError] = useState(error || null);
 
 	const usernameWithS = username + (username.endsWith('s') ? `’` : `’s`);
 	const groupedBrews = _.groupBy(brews, (brew)=>brew.published ? 'published' : 'private');
