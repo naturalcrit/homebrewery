@@ -22,10 +22,10 @@ const UserPage = (props)=>{
 		...props
 	};
 
-	const [currentError, setCurrentError] = useState(error || null);
+	const [currentError, setCurrentError] = useState(props.error || null);
 
-	const usernameWithS = username + (username.endsWith('s') ? `’` : `’s`);
-	const groupedBrews = _.groupBy(brews, (brew)=>brew.published ? 'published' : 'private');
+	const usernameWithS = props.username + (props.username.endsWith('s') ? `’` : `’s`);
+	const groupedBrews = _.groupBy(props.brews, (brew)=>brew.published ? 'published' : 'private');
 
 	const brewCollection = [
 		{
@@ -33,7 +33,7 @@ const UserPage = (props)=>{
 			class : 'published',
 			brews : groupedBrews.published || []
 		},
-		...(username === global.account?.username ? [{
+		...(props.username === global.account?.username ? [{
 			title : `${usernameWithS} unpublished brews`,
 			class : 'unpublished',
 			brews : groupedBrews.private || []
@@ -54,7 +54,7 @@ const UserPage = (props)=>{
 	);
 
 	return (
-		<ListPage brewCollection={brewCollection}  navItems={navItems} query={query} reportError={(error)=>setCurrentError(error)} />
+		<ListPage brewCollection={brewCollection}  navItems={navItems} query={props.query} reportError={(err)=>setCurrentError(err)} />
 	);
 };
 
