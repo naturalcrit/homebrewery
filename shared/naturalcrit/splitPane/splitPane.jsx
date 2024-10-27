@@ -11,7 +11,7 @@ const SplitPane = (props)=>{
 	} = props;
 
 	const [isDragging, setIsDragging] = useState(false);
-	const [dividerPos, setDividerPos] = useState(null); // Initial divider position is set to `null`
+	const [dividerPos, setDividerPos] = useState(null);
 	const [moveSource, setMoveSource] = useState(false);
 	const [moveBrew, setMoveBrew] = useState(false);
 	const [showMoveArrows, setShowMoveArrows] = useState(true);
@@ -20,7 +20,7 @@ const SplitPane = (props)=>{
 	// Set initial divider position and liveScroll only after mounting
 	useEffect(()=>{
 		const savedPos = window.localStorage.getItem(storageKey);
-		setDividerPos(savedPos ? parseInt(savedPos, 10) : window.innerWidth / 2);
+		setDividerPos(savedPos ? limitPosition(savedPos, 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13)) : window.innerWidth / 2);
 		setLiveScroll(window.localStorage.getItem('liveScroll') === 'true');
 
 		window.addEventListener('resize', handleResize);
@@ -29,8 +29,8 @@ const SplitPane = (props)=>{
 
 	const limitPosition = (x, min = 1, max = window.innerWidth - 13)=>Math.round(Math.min(max, Math.max(min, x)));
 
-	const handleResize = ()=>setDividerPos((pos)=>limitPosition(pos, 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13)));
-
+	const handleResize = () =>setDividerPos(limitPosition(window.localStorage.getItem(storageKey), 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13)));
+	
 	const handleUp =(e)=>{
 		e.preventDefault();
 		if(isDragging) {
@@ -84,7 +84,7 @@ const SplitPane = (props)=>{
 			</div>
 		</div>
 	);
-
+	
 	return (
 		<div className='splitPane' onPointerMove={handleMove} onPointerUp={handleUp}>
 			<Pane width={dividerPos} moveBrew={moveBrew} moveSource={moveSource} liveScroll={liveScroll} setMoveArrows={setShowMoveArrows}>
