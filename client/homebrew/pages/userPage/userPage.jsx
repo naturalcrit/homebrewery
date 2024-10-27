@@ -18,11 +18,10 @@ const UserPage = (props)=>{
 		username : '',
 		brews    : [],
 		query    : '',
-		error    : null,
 		...props
 	};
 
-	const [currentError, setCurrentError] = useState(props.error || null);
+	const [error, setError] = useState(null);
 
 	const usernameWithS = props.username + (props.username.endsWith('s') ? `’` : `’s`);
 	const groupedBrews = _.groupBy(props.brews, (brew)=>brew.published ? 'published' : 'private');
@@ -43,7 +42,7 @@ const UserPage = (props)=>{
 	const navItems = (
 		<Navbar>
 			<Nav.section>
-				{currentError && (<ErrorNavItem error={currentError} parent={null}></ErrorNavItem>)}
+				{error && (<ErrorNavItem error={error} parent={null}></ErrorNavItem>)}
 				<NewBrew />
 				<HelpNavItem />
 				<VaultNavitem />
@@ -54,7 +53,7 @@ const UserPage = (props)=>{
 	);
 
 	return (
-		<ListPage brewCollection={brewCollection}  navItems={navItems} query={props.query} reportError={(err)=>setCurrentError(err)} />
+		<ListPage brewCollection={brewCollection}  navItems={navItems} query={props.query} reportError={(err)=>setError(err)} />
 	);
 };
 
