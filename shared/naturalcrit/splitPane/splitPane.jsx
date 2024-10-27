@@ -17,7 +17,6 @@ const SplitPane = (props)=>{
 	const [showMoveArrows, setShowMoveArrows] = useState(true);
 	const [liveScroll, setLiveScroll] = useState(false);
 
-	// Set initial divider position and liveScroll only after mounting
 	useEffect(()=>{
 		const savedPos = window.localStorage.getItem(storageKey);
 		setDividerPos(savedPos ? limitPosition(savedPos, 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13)) : window.innerWidth / 2);
@@ -29,6 +28,7 @@ const SplitPane = (props)=>{
 
 	const limitPosition = (x, min = 1, max = window.innerWidth - 13)=>Math.round(Math.min(max, Math.max(min, x)));
 
+	//when resizing, the divider should grow smaller if less space is given, then grow back if the space is restored, to the original position
 	const handleResize = () =>setDividerPos(limitPosition(window.localStorage.getItem(storageKey), 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13)));
 	
 	const handleUp =(e)=>{
@@ -48,8 +48,7 @@ const SplitPane = (props)=>{
 	const handleMove = (e)=>{
 		if(!isDragging) return;
 		e.preventDefault();
-		const newSize = limitPosition(e.pageX);
-		setDividerPos(newSize);
+		setDividerPos(limitPosition(e.pageX));
 	};
 
 	const liveScrollToggle = ()=>{
@@ -75,7 +74,7 @@ const SplitPane = (props)=>{
 	);
 
 	const renderDivider = (
-		<div className='divider' onPointerDown={handleDown}>
+		<div className={`divider ${isDragging && 'dragging'}`} onPointerDown={handleDown}>
 			{showDividerButtons && renderMoveArrows}
 			<div className='dots'>
 				<i className='fas fa-circle' />
@@ -84,7 +83,7 @@ const SplitPane = (props)=>{
 			</div>
 		</div>
 	);
-	
+
 	return (
 		<div className='splitPane' onPointerMove={handleMove} onPointerUp={handleUp}>
 			<Pane width={dividerPos} moveBrew={moveBrew} moveSource={moveSource} liveScroll={liveScroll} setMoveArrows={setShowMoveArrows}>
