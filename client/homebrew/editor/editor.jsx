@@ -314,7 +314,7 @@ const Editor = createClass({
 	},
 
 	brewJump : function(targetPage=this.props.currentEditorCursorPageNum, smooth=true){
-		if(!window || isJumping)
+		if(!window || !this.isText() || isJumping)
 			return;
 
 		// Get current brewRenderer scroll position and calculate target position
@@ -355,7 +355,7 @@ const Editor = createClass({
 	},
 
 	sourceJump : function(targetPage=this.props.currentBrewRendererPageNum, smooth=true){
-		if(!this.isText || isJumping)
+		if(!this.isText() || isJumping)
 			return;
 
 		const textSplit  = this.props.renderer == 'V3' ? /^\\page$/gm : /\\page/;
