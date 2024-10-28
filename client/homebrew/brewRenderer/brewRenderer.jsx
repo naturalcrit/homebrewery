@@ -44,7 +44,6 @@ const BrewPage = (props)=>{
 
 
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
-<<<<<<< HEAD
 const renderedPages = [];
 let rawPages        = [];
 let brewTemplates;
@@ -86,10 +85,6 @@ const insertTemplate = (props, pageNumber)=>{
 };
 
 
-=======
-let renderedPages = [];
-let rawPages      = [];
->>>>>>> master
 
 const BrewRenderer = (props)=>{
 	props = {
