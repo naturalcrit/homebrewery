@@ -44,7 +44,7 @@ const BrewPage = (props)=>{
 
 
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
-const renderedPages = [];
+let renderedPages = [];
 let rawPages        = [];
 let brewTemplates;
 
@@ -70,20 +70,23 @@ const insertTemplate = (props, pageNumber)=>{
 	if(typeof brewTemplates[lookAt] !== 'undefined') {
 		const whichTemplate = brewTemplates[lookAt].split(':');
 		// If the template source is not in the themes list, it must be a local template.
-		for (let tb of props.templateBundle) {
-			if((tb.theme == whichTemplate[0]) && (tb.name == whichTemplate[1])) {
-				return tb.template;
+		if(props.templateBundle) {
+			for (let tb of props.templateBundle) {
+				if((tb.theme == whichTemplate[0]) && (tb.name == whichTemplate[1])) {
+					return tb.template;
+				}
 			}
 		}
-		for (let ut of props.userTemplates) {
-			if(ut.name == whichTemplate[1]) {
-				return ut.template;
+		if(props.userTemplates) {
+			for (let ut of props?.userTemplates) {
+				if(ut.name == whichTemplate[1]) {
+					return ut.template;
+				}
 			}
 		}
 	}
 	return '';
 };
-
 
 
 const BrewRenderer = (props)=>{
