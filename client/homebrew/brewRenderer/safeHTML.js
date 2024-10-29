@@ -27,7 +27,7 @@ function safeHTML(htmlString) {
 	elements.forEach((element)=>{
 		// Check each element for blacklisted type
 		if(blacklistTags.includes(element?.localName?.toLowerCase())) {
-			element.parentNode.removeChild(element);
+			element.remove();
 			return;
 		}
 		// Check remaining elements for blacklisted attributes
