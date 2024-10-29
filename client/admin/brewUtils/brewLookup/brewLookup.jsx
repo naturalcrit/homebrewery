@@ -71,6 +71,9 @@ const BrewLookup = createClass({
 				<dt>Share Link</dt>
 				<dd><a href={`/share/${brew.shareId}`} target='_blank' rel='noopener noreferrer'>/share/{brew.shareId}</a></dd>
 
+				<dt>Created Time</dt>
+				<dd>{brew.createdAt ? Moment(brew.createdAt).toLocaleString() : 'No creation date'}</dd>
+
 				<dt>Last Updated</dt>
 				<dd>{Moment(brew.updatedAt).fromNow()}</dd>
 
