@@ -5,7 +5,7 @@ let div = null;
 
 function safeHTML(htmlString) {
 	// If the Document interface doesn't exist, exit
-	if(!document) return null;
+	if(typeof document == 'undefined') return null;
 	// If the test document and div don't exist, create them
 	if(!doc) doc = document.implementation.createHTMLDocument('');
 	if(!div) div = doc.createElement('div');
