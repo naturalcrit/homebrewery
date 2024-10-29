@@ -20,6 +20,7 @@ function safeHTML(htmlString) {
 	// Tests to remove attributes
 	const blacklistAttrs = [
 		(test)=>{return test.localName.indexOf('on') == 0;},
+		(test)=>{return test.localName.indexOf('type') == 0 && test.value.match(/submit/i);},
 		(test)=>{return test.value.replace(/[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g, '').toLowerCase().trim().indexOf('javascript:') == 0;}
 	];
 
