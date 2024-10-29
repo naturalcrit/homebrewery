@@ -1,4 +1,4 @@
-/* eslint-disable max-lines */
+
 
 require('jsdom-global')();
 
