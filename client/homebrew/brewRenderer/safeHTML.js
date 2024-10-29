@@ -1,3 +1,5 @@
+// Derived from the vue-html-secure package, customized for Homebrewery
+
 let doc = null;
 let div = null;
 
