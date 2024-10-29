@@ -1,4 +1,4 @@
-import { initIDBProxy } from './customIDBStore.js';
+import { initCustomStore } from './customIDBStore.js';
 
 export const HISTORY_PREFIX = 'HOMEBREWERY-HISTORY';
 export const HISTORY_SLOTS = 5;
@@ -28,7 +28,7 @@ const GARBAGE_COLLECT_DELAY = 28 * 24 * 60;
 const HB_DB = 'HOMEBREWERY-DB';
 const HB_STORE = 'HISTORY';
 
-const IDB = initIDBProxy(HB_DB, HB_STORE);
+const IDB = initCustomStore(HB_DB, HB_STORE);
 
 function getKeyBySlot(brew, slot){
 	// Return a string representing the key for this brew and history slot

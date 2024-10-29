@@ -1,40 +1,5 @@
 import * as IDB from 'idb-keyval/dist/index.js';
 
-// The Proxy and the Wrapper _should_ be equivalent
-
-// IndexedDB Proxy
-
-export function initIDBProxy(db, store) {
-
-	const PROP_LIST = [
-		'entries',
-		'keys',
-		'values',
-		'clear',
-		'get',
-		'getMany',
-		'set',
-		'setMany',
-		'update',
-		'del',
-		'delMany'
-	];
-
-	const IDBHandler = {
-		get : (target, prop)=>{
-			if(!PROP_LIST.includes(prop)){ return target[prop]; }
-			return function (...args) {
-				return target[prop].apply(target, [...args, target.createStore(db, store)]);
-			};
-		}
-	};
-
-	return new Proxy(IDB, IDBHandler);
-}
-
-
-// IndexedDB Wrapper
-
 export function initCustomStore(db, store){
 	const createCustomStore = async ()=>IDB.createStore(db, store);
 
