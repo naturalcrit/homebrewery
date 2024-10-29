@@ -1,9 +1,10 @@
 .popups {
 	position         : fixed;
-	top              : @navbarHeight;
+	top              : calc(@navbarHeight + @viewerToolsHeight);
 	right            : 24px;
 	z-index          : 10001;
 	width            : 450px;
+	margin-top       : 5px;
 }
 
 .notificationPopup {
@@ -54,7 +55,10 @@
 			margin-top  : 1.4em;
 			font-size   : 0.8em;
 			line-height : 1.4em;
-			em { font-weight : 800; }
+			em { 
+				text-transform:capitalize;
+				font-weight : 800;
+			}
 		}
 	}
 }

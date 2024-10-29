@@ -1,7 +1,7 @@
 const HomebrewModel = require('./homebrew.model.js').model;
+const NotificationModel = require('./notifications.model.js').model;
 const router = require('express').Router();
 const Moment = require('moment');
-//const render = require('vitreum/steps/render');
 const templateFn = require('../client/template.js');
 const zlib = require('zlib');
 
@@ -22,7 +22,7 @@ const mw = {
 		if(process.env.ADMIN_USER === username && process.env.ADMIN_PASS === password){
 			return next();
 		}
-		return res.status(401).send('Access denied');
+		throw { HBErrorCode: '52', code: 401, message: 'Access denied' };
 	}
 };
 
@@ -138,12 +138,48 @@ router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 	}
 });
 
+// #######################   NOTIFICATIONS
+
+router.get('/admin/notification/all', async (req, res, next)=>{
+	try {
+		const notifications = await NotificationModel.getAll();
+		return res.json(notifications);
+		
+	} catch (error) {
+		console.log('Error getting all notifications: ', error.message);
+		return res.status(500).json({ message: error.message });
+	}
+});
+
+router.post('/admin/notification/add', mw.adminOnly, async (req, res, next)=>{
+	try {
+		const notification = await NotificationModel.addNotification(req.body);
+		return res.status(201).json(notification);
+	} catch (error) {
+		console.log('Error adding notification: ', error.message);
+		return res.status(500).json({ message: error.message });
+	}
+});
+
+router.delete('/admin/notification/delete/:id', mw.adminOnly, async (req, res, next)=>{
+	try {
+		const notification = await NotificationModel.deleteNotification(req.params.id);
+		return res.json(notification);
+	} catch (error) {
+		console.error('Error deleting notification: { key: ', req.params.id, ' error: ',  error.message, ' }');
+		return res.status(500).json({ message: error.message });
+	}
+});
+
 router.get('/admin', mw.adminOnly, (req, res)=>{
 	templateFn('admin', {
 		url : req.originalUrl
 	})
 	.then((page)=>res.send(page))
-	.catch((err)=>res.sendStatus(500));
+	.catch((err)=>{
+		console.log(err);
+		res.sendStatus(500);
+	});
 });
 
 module.exports = router;
