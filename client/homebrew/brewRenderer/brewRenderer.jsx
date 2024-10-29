@@ -16,8 +16,6 @@ const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
 const { printCurrentBrew } = require('../../../shared/helpers.js');
 
-const Themes = require('themes/themes.json');
-
 import { safeHTML } from './safeHTML.js';
 
 const PAGE_HEIGHT = 1056;
