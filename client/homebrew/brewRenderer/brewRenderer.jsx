@@ -18,6 +18,8 @@ const { printCurrentBrew } = require('../../../shared/helpers.js');
 
 const Themes = require('themes/themes.json');
 
+import { safeHTML } from './safeHTML.js';
+
 const PAGE_HEIGHT = 1056;
 
 const INITIAL_CONTENT = dedent`
@@ -28,7 +30,6 @@ const INITIAL_CONTENT = dedent`
 	<base target=_blank>
 	</head><body style='overflow: hidden'><div></div></body></html>`;
 
-import { safeHTML } from './safeHTML.js';
 
 //v=====----------------------< Brew Page Component >---------------------=====v//
 const BrewPage = (props)=>{
@@ -78,19 +79,19 @@ const BrewRenderer = (props)=>{
 		rawPages = props.text.split(/^\\page$/gm);
 	}
 
-	const scrollToHash = (hash) => {
-		if (!hash) return;
+	const scrollToHash = (hash)=>{
+		if(!hash) return;
 
 		const iframeDoc = document.getElementById('BrewRenderer').contentDocument;
 		let anchor = iframeDoc.querySelector(hash);
 
-		if (anchor) {
+		if(anchor) {
 			anchor.scrollIntoView({ behavior: 'smooth' });
 		} else {
 			// Use MutationObserver to wait for the element if it's not immediately available
-			new MutationObserver((mutations, obs) => {
-				anchor = iframeDoc.querySelector(hash);	
-				if (anchor) {
+			new MutationObserver((mutations, obs)=>{
+				anchor = iframeDoc.querySelector(hash);
+				if(anchor) {
 					anchor.scrollIntoView({ behavior: 'smooth' });
 					obs.disconnect();
 				}
@@ -202,8 +203,8 @@ const BrewRenderer = (props)=>{
 		styleObject.backgroundImage = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='40px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${global.config.deployment}</text></svg>")`;
 	}
 
-	const renderedStyle = useMemo(()=> renderStyle(), [props.style, props.themeBundle]);
-	renderedPages = useMemo(() => renderPages(), [props.text]);
+	const renderedStyle = useMemo(()=>renderStyle(), [props.style, props.themeBundle]);
+	renderedPages = useMemo(()=>renderPages(), [props.text]);
 
 	return (
 		<>
