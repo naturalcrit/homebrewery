@@ -86,9 +86,9 @@
     ]
   },
   "dependencies": {
-    "@babel/core": "^7.25.9",
+    "@babel/core": "^7.26.0",
     "@babel/plugin-transform-runtime": "^7.25.9",
-    "@babel/preset-env": "^7.25.9",
+    "@babel/preset-env": "^7.26.0",
     "@babel/preset-react": "^7.25.9",
     "@googleapis/drive": "^8.14.0",
     "body-parser": "^1.20.2",
@@ -115,7 +115,7 @@
     "marked-smartypants-lite": "^1.0.2",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.30.1",
-    "mongoose": "^8.7.2",
+    "mongoose": "^8.7.3",
     "nanoid": "3.3.4",
     "nconf": "^0.12.1",
     "react": "^18.3.1",
