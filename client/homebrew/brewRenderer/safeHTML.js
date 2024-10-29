@@ -31,14 +31,10 @@ function safeHTML(htmlString) {
 			return;
 		}
 		// Check remaining elements for blacklisted attributes
-		if(element.hasAttributes()){
-			for (const attribute of element.attributes){
-				for (const test of blacklistAttrs) {
-					if(test(attribute)){
-						element.removeAttribute(attribute.localName);
-						break;
-					};
-				};
+		for (const attribute of element.attributes){
+			if(blacklistAttrs.some((test)=>{return test(attribute);})) {
+				element.removeAttribute(attribute.localName);
+				break;
 			};
 		};
 	});
