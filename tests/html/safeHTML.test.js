@@ -16,10 +16,10 @@ test('Javascript via src', function() {
 	expect(rendered).toBe('<img>');
 });
 
-test('Javascript via action', function() {
+test('Javascript via form submit action', function() {
 	const source = `<form action="javascript:alert('This is a JavaScript injection via action attribute')">\n<input type="submit" value="Submit">\n</form>`;
 	const rendered = safeHTML(source);
-	expect(rendered).toBe('<form>\n<input type=\"submit\" value=\"Submit\">\n</form>');
+	expect(rendered).toBe('<form>\n<input value=\"Submit\">\n</form>');
 });
 
 test('Javascript via inline event handler - onClick', function() {
