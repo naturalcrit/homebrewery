@@ -425,7 +425,7 @@ const Editor = createClass({
 			return <>
 				<CodeEditor key='codeEditor'
 					ref={this.codeEditor}
-					language='gfm'
+					language='markdownLanguage'
 					view={this.state.view}
 					value={this.props.brew.text}
 					onChange={this.props.onTextChange}

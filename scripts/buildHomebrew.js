@@ -102,7 +102,9 @@ fs.emptyDirSync('./build');
 	//v==---------------------------MOVE CM EDITOR THEMES -----------------------------==v//
 
 	const editorThemesBuildDir = './build/homebrew/cm-themes';
-	await fs.copy('./node_modules/codemirror/theme', editorThemesBuildDir);
+	// Codemirror does not appear to supply any themes directly anymore...
+	console.log('Replace the default codemirror themes dude!');
+	// await fs.copy('./node_modules/codemirror/theme', editorThemesBuildDir);
 	await fs.copy('./themes/codeMirror/customThemes', editorThemesBuildDir);
 	editorThemeFiles = fs.readdirSync(editorThemesBuildDir);
 
