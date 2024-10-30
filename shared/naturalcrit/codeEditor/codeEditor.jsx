@@ -1,10 +1,14 @@
 /* eslint-disable max-lines */
+const cmState = require('@codemirror/state');
+import { EditorView, keymap } from '@codemirror/view';
+import { defaultKeymap } from '@codemirror/commands';
 require('./codeEditor.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const closeTag = require('./close-tag');
 const autoCompleteEmoji = require('./autocompleteEmoji');
+
 
 let CodeMirror;
 if(typeof window !== 'undefined'){
@@ -105,92 +109,101 @@ const CodeEditor = createClass({
 	},
 
 	buildEditor : function() {
-		this.codeMirror = CodeMirror(this.editor.current, {
-			lineNumbers       : true,
-			lineWrapping      : this.props.wrap,
-			indentWithTabs    : false,
-			tabSize           : 2,
-			smartIndent       : false,
-			historyEventDelay : 250,
-			scrollPastEnd     : true,
-			extraKeys         : {
-				'Tab'              : this.indent,
-				'Shift-Tab'        : this.dedent,
-				'Ctrl-B'           : this.makeBold,
-				'Cmd-B'            : this.makeBold,
-				'Shift-Ctrl-='     : this.makeSuper,
-				'Shift-Cmd-='      : this.makeSuper,
-				'Ctrl-='           : this.makeSub,
-				'Cmd-='            : this.makeSub,
-				'Ctrl-I'           : this.makeItalic,
-				'Cmd-I'            : this.makeItalic,
-				'Ctrl-U'           : this.makeUnderline,
-				'Cmd-U'            : this.makeUnderline,
-				'Ctrl-.'           : this.makeNbsp,
-				'Cmd-.'            : this.makeNbsp,
-				'Shift-Ctrl-.'     : this.makeSpace,
-				'Shift-Cmd-.'      : this.makeSpace,
-				'Shift-Ctrl-,'     : this.removeSpace,
-				'Shift-Cmd-,'      : this.removeSpace,
-				'Ctrl-M'           : this.makeSpan,
-				'Cmd-M'            : this.makeSpan,
-				'Shift-Ctrl-M'     : this.makeDiv,
-				'Shift-Cmd-M'      : this.makeDiv,
-				'Ctrl-/'           : this.makeComment,
-				'Cmd-/'            : this.makeComment,
-				'Ctrl-K'           : this.makeLink,
-				'Cmd-K'            : this.makeLink,
-				'Ctrl-L'           : ()=>this.makeList('UL'),
-				'Cmd-L'            : ()=>this.makeList('UL'),
-				'Shift-Ctrl-L'     : ()=>this.makeList('OL'),
-				'Shift-Cmd-L'      : ()=>this.makeList('OL'),
-				'Shift-Ctrl-1'     : ()=>this.makeHeader(1),
-				'Shift-Ctrl-2'     : ()=>this.makeHeader(2),
-				'Shift-Ctrl-3'     : ()=>this.makeHeader(3),
-				'Shift-Ctrl-4'     : ()=>this.makeHeader(4),
-				'Shift-Ctrl-5'     : ()=>this.makeHeader(5),
-				'Shift-Ctrl-6'     : ()=>this.makeHeader(6),
-				'Shift-Cmd-1'      : ()=>this.makeHeader(1),
-				'Shift-Cmd-2'      : ()=>this.makeHeader(2),
-				'Shift-Cmd-3'      : ()=>this.makeHeader(3),
-				'Shift-Cmd-4'      : ()=>this.makeHeader(4),
-				'Shift-Cmd-5'      : ()=>this.makeHeader(5),
-				'Shift-Cmd-6'      : ()=>this.makeHeader(6),
-				'Shift-Ctrl-Enter' : this.newColumn,
-				'Shift-Cmd-Enter'  : this.newColumn,
-				'Ctrl-Enter'       : this.newPage,
-				'Cmd-Enter'        : this.newPage,
-				'Ctrl-F'           : 'findPersistent',
-				'Cmd-F'            : 'findPersistent',
-				'Shift-Enter'      : 'findPersistentPrevious',
-				'Ctrl-['           : this.foldAllCode,
-				'Cmd-['            : this.foldAllCode,
-				'Ctrl-]'           : this.unfoldAllCode,
-				'Cmd-]'            : this.unfoldAllCode
-			},
-			foldGutter        : true,
-			foldOptions       : this.foldOptions(this.codeMirror),
-			gutters           : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-			autoCloseTags     : true,
-			styleActiveLine   : true,
-			showTrailingSpace : false,
-			theme             : this.props.editorTheme
-			// specialChars           : / /,
-			// specialCharPlaceholder : function(char) {
-			// 	const el = document.createElement('span');
-			// 	el.className = 'cm-space';
-			// 	el.innerHTML = ' ';
-			// 	return el;
-			// }
-		});
+		let startState = cmState.EditorState.create({
+			doc: "Hello World",
+			extensions: [keymap.of(defaultKeymap)]
+		  });
+		  
+		  let view = new EditorView({
+			state: startState,
+			parent: document.body
+		  });
+		// this.codeMirror = CodeMirror(this.editor.current, {
+		// 	lineNumbers       : true,
+		// 	lineWrapping      : this.props.wrap,
+		// 	indentWithTabs    : false,
+		// 	tabSize           : 2,
+		// 	smartIndent       : false,
+		// 	historyEventDelay : 250,
+		// 	scrollPastEnd     : true,
+		// 	extraKeys         : {
+		// 		'Tab'              : this.indent,
+		// 		'Shift-Tab'        : this.dedent,
+		// 		'Ctrl-B'           : this.makeBold,
+		// 		'Cmd-B'            : this.makeBold,
+		// 		'Shift-Ctrl-='     : this.makeSuper,
+		// 		'Shift-Cmd-='      : this.makeSuper,
+		// 		'Ctrl-='           : this.makeSub,
+		// 		'Cmd-='            : this.makeSub,
+		// 		'Ctrl-I'           : this.makeItalic,
+		// 		'Cmd-I'            : this.makeItalic,
+		// 		'Ctrl-U'           : this.makeUnderline,
+		// 		'Cmd-U'            : this.makeUnderline,
+		// 		'Ctrl-.'           : this.makeNbsp,
+		// 		'Cmd-.'            : this.makeNbsp,
+		// 		'Shift-Ctrl-.'     : this.makeSpace,
+		// 		'Shift-Cmd-.'      : this.makeSpace,
+		// 		'Shift-Ctrl-,'     : this.removeSpace,
+		// 		'Shift-Cmd-,'      : this.removeSpace,
+		// 		'Ctrl-M'           : this.makeSpan,
+		// 		'Cmd-M'            : this.makeSpan,
+		// 		'Shift-Ctrl-M'     : this.makeDiv,
+		// 		'Shift-Cmd-M'      : this.makeDiv,
+		// 		'Ctrl-/'           : this.makeComment,
+		// 		'Cmd-/'            : this.makeComment,
+		// 		'Ctrl-K'           : this.makeLink,
+		// 		'Cmd-K'            : this.makeLink,
+		// 		'Ctrl-L'           : ()=>this.makeList('UL'),
+		// 		'Cmd-L'            : ()=>this.makeList('UL'),
+		// 		'Shift-Ctrl-L'     : ()=>this.makeList('OL'),
+		// 		'Shift-Cmd-L'      : ()=>this.makeList('OL'),
+		// 		'Shift-Ctrl-1'     : ()=>this.makeHeader(1),
+		// 		'Shift-Ctrl-2'     : ()=>this.makeHeader(2),
+		// 		'Shift-Ctrl-3'     : ()=>this.makeHeader(3),
+		// 		'Shift-Ctrl-4'     : ()=>this.makeHeader(4),
+		// 		'Shift-Ctrl-5'     : ()=>this.makeHeader(5),
+		// 		'Shift-Ctrl-6'     : ()=>this.makeHeader(6),
+		// 		'Shift-Cmd-1'      : ()=>this.makeHeader(1),
+		// 		'Shift-Cmd-2'      : ()=>this.makeHeader(2),
+		// 		'Shift-Cmd-3'      : ()=>this.makeHeader(3),
+		// 		'Shift-Cmd-4'      : ()=>this.makeHeader(4),
+		// 		'Shift-Cmd-5'      : ()=>this.makeHeader(5),
+		// 		'Shift-Cmd-6'      : ()=>this.makeHeader(6),
+		// 		'Shift-Ctrl-Enter' : this.newColumn,
+		// 		'Shift-Cmd-Enter'  : this.newColumn,
+		// 		'Ctrl-Enter'       : this.newPage,
+		// 		'Cmd-Enter'        : this.newPage,
+		// 		'Ctrl-F'           : 'findPersistent',
+		// 		'Cmd-F'            : 'findPersistent',
+		// 		'Shift-Enter'      : 'findPersistentPrevious',
+		// 		'Ctrl-['           : this.foldAllCode,
+		// 		'Cmd-['            : this.foldAllCode,
+		// 		'Ctrl-]'           : this.unfoldAllCode,
+		// 		'Cmd-]'            : this.unfoldAllCode
+		// 	},
+		// 	foldGutter        : true,
+		// 	foldOptions       : this.foldOptions(this.codeMirror),
+		// 	gutters           : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+		// 	autoCloseTags     : true,
+		// 	styleActiveLine   : true,
+		// 	showTrailingSpace : false,
+		// 	theme             : this.props.editorTheme
+		// 	// specialChars           : / /,
+		// 	// specialCharPlaceholder : function(char) {
+		// 	// 	const el = document.createElement('span');
+		// 	// 	el.className = 'cm-space';
+		// 	// 	el.innerHTML = ' ';
+		// 	// 	return el;
+		// 	// }
+		// });
 
-		// Add custom behaviors (auto-close curlies and auto-complete emojis)
-		closeTag.autoCloseCurlyBraces(CodeMirror, this.codeMirror);
-		autoCompleteEmoji.showAutocompleteEmoji(CodeMirror, this.codeMirror);
+		// // Add custom behaviors (auto-close curlies and auto-complete emojis)
+		// closeTag.autoCloseCurlyBraces(CodeMirror, this.codeMirror);
+		// autoCompleteEmoji.showAutocompleteEmoji(CodeMirror, this.codeMirror);
 
-		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
-		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
-		this.updateSize();
+		// // Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
+		// this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
+		// this.updateSize();
 	},
 
 	indent : function () {
