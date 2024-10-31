@@ -245,25 +245,24 @@
 		display   : flex;
 		flex      : 1 0;
 		flex-wrap : wrap;
+		align-items: center;
 
 		> * { flex : 0 0 auto; }
 
 		#groupedIcon {
 			#backgroundColors;
 			position   : relative;
-			top        : -0.3em;
-			right      : -0.3em;
-			display    : inline-block;
+			height: 100%;
+			display    : flex;
+			align-items: center;
+			justify-content: center;
 			min-width  : 20px;
-			height     : ~'calc(100% + 0.6em)';
 			color      : white;
 			text-align : center;
 			cursor     : pointer;
 	
 			i {
 				position  : relative;
-				top       : 50%;
-				transform : translateY(-50%);
 			}
 	
 			&:not(:last-child) { border-right : 1px solid black; }
@@ -272,7 +271,11 @@
 		}
 
 		.badge {
-			padding          : 0.3em;
+			display: flex;
+			align-items: center;
+			height: 2em;
+			gap: 3px;
+			padding-left: 6px;
 			margin           : 2px;
 			font-size        : 0.9em;
 			background-color : #DDDDDD;
@@ -282,7 +285,8 @@
 		}
 
 		.input-group {
-			height : ~'calc(.9em + 4px + .6em)';
+			height: 2em;
+			display: flex;
 
 			input { border-radius : 0.5em 0 0 0.5em; }
 
@@ -291,33 +295,17 @@
 			.value {
 				width     : 7.5vw;
 				min-width : 75px;
+				height: 100%;
+			}
+
+			.icon {
+				#groupedIcon;
+				right     : 1px;
 				height    : 100%;
 			}
 
-			.input-group {
-				height : ~'calc(.9em + 4px + .6em)';
+			.invalid:focus { background-color : pink; }
 
-				input { border-radius : 0.5em 0 0 0.5em; }
-
-				input:last-child { border-radius : 0.5em; }
-
-				.value {
-					width     : 7.5vw;
-					min-width : 75px;
-					height    : 100%;
-				}
-
-				.invalid:focus { background-color : pink; }
-
-				.icon {
-					#groupedIcon;
-					top       : -0.54em;
-					right     : 1px;
-					height    : 97%;
-
-					i { font-size : 1.125em; }
-				}
-			}
 		}
 	}
 }
