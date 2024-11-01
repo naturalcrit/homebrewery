@@ -61,6 +61,7 @@ const EditPage = createClass({
 			currentEditorCursorPageNum : 1,
 			currentBrewRendererPageNum : 1,
 			displayLockMessage         : this.props.brew.lock || false,
+			snippetsBundle             : {},
 			themeBundle                : {}
 		};
 	},
@@ -440,6 +441,7 @@ const EditPage = createClass({
 					reportError={this.errorReported}
 					renderer={this.state.brew.renderer}
 					userThemes={this.props.userThemes}
+					snippets={this.props.snippets}
 					snippetBundle={this.state.themeBundle.snippets}
 					updateBrew={this.updateBrew}
 					onCursorPageChange={this.handleEditorCursorPageChange}

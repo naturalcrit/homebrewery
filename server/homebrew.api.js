@@ -170,6 +170,12 @@ const api = {
 				`\`\`\`\n\n` +
 				`${text}`;
 		}
+		if(brew.snippets !== undefined) {
+			text = `\`\`\`snippets\n` +
+				`${brew.snippets || ''}\n` +
+				`\`\`\`\n\n` +
+				`${text}`;
+		}
 		const metadata = _.pick(brew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']);
 		text = `\`\`\`metadata\n` +
 			`${yaml.dump(metadata)}\n` +

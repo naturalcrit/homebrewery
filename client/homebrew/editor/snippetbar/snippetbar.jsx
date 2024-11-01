@@ -6,6 +6,7 @@ const _     = require('lodash');
 const cx    = require('classnames');
 
 import { loadHistory } from '../../utils/versionHistory.js';
+import { brewSnippetsToJSON } from '../../../../shared/helpers.js';
 
 //Import all themes
 const ThemeSnippets = {};
@@ -114,6 +115,9 @@ const Snippetbar = createClass({
 
 			oldSnippets = _.keyBy(compiledSnippets, 'groupName');
 		}
+		const userSnippetsasJSON = brewSnippetsToJSON(this.props.brew.title, this.props.brew.snippets, this.props.snippetsBundle);
+		compiledSnippets.push(userSnippetsasJSON);
+
 		return compiledSnippets;
 	},
 

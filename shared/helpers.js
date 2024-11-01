@@ -1,6 +1,65 @@
 const _ = require('lodash');
 const yaml = require('js-yaml');
 const request = require('../client/homebrew/utils/request-middleware.js');
+const dedent = require('dedent');
+
+// Convert the templates from a brew to a Snippets Structure.
+const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets)=>{
+	const textSplit  = /^\\page/gm;
+	const mpAsSnippets = [];
+	// Snippets from Themes first.
+	if(themeBundleSnippets) {
+		for (let themes of themeBundleSnippets) {
+			const userSnippets = [];
+			for (let snips of themes.snippets.split(textSplit)) {
+				const name = snips.split('\n')[0];
+				if(name.length != 0) {
+					userSnippets.push({
+						name : name,
+						icon : '',
+						gen  : snips.split('\n').slice(0),
+					});
+				}
+			}
+			if(userSnippets.length > 0) {
+				mpAsSnippets.push({
+					name        : themes.name,
+					icon        : '',
+					gen         : '',
+					subsnippets : userSnippets
+				});
+			}
+		}
+	}
+	// Local Snippets
+	if(userBrewSnippets) {
+		const userSnippets = [];
+		for (let snips of userBrewSnippets.split(textSplit)) {
+			let name = mp.split('\n')[0];
+			if(name.length != 0) {
+				userSnippets.push({
+					name : name,
+					icon : '',
+					gen  : snips.split('\n').slice(0),
+				});
+			}
+		}
+		if(userSnippets.length) {
+			mpAsSnippets.push({
+				name        : menuTitle,
+				icon        : '',
+				subsnippets : userSnippets
+			});
+		}
+	}
+
+	return {
+		groupName : 'Brew Snippets',
+		icon      : 'fas fa-th-list',
+		view      : 'text',
+		snippets  : mpAsSnippets
+	};
+};
 
 const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
@@ -55,4 +114,5 @@ module.exports = {
 	splitTextStyleAndMetadata,
 	printCurrentBrew,
 	fetchThemeBundle,
+	brewSnippetsToJSON
 };
