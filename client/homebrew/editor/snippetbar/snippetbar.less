@@ -10,165 +10,206 @@
 	height           : auto;
 	color            : black;
 	background-color : #DDDDDD;
-
-	.snippets {
-		display         : flex;
-		justify-content : flex-start;
-		min-width       : 327.58px;
+	text-transform: uppercase;
+	font-size      : 0.625em;
+	font-weight    : 800;
+	box-shadow: 0 0px 4px -1px black;
+	border-bottom: 1px solid #666;
+	z-index: 500;
+	i {
+		font-size: 1.4em;
 	}
 
-	.editors {
+	// styling for dropdown menus.  Is a *mixin*, defined but not printed here,
+	// only printed within their snippetbar groups.
+	.dropdown() {
+		@supports (inset-block-start: anchor(bottom)){
+			inset-block-start: anchor(bottom);
+			inset-inline-start: anchor(left);
+			position-try: flip-inline;
+		}
+		z-index          : 1000;
+		padding          : 2px;
+		background-color : #DDDDDD;
+		box-shadow: 0 3px 5px -4px black;
+		border: 1px solid #666;
+		&:popover-open {
+			display: grid; 
+			grid-template-columns: 25px 1fr max-content auto;
+		}
+
+		.menu-group {
+			grid-column: ~'1 / -1';
+			padding: 3px;
+			border-bottom: 1px solid #BBBB;
+		}
+
+		.dropdown {
+			margin: 5px;
+			@supports (inset-block-start: anchor(bottom)){
+				inset-block-start: anchor(top);
+				inset-inline-start: anchor(right);
+				position-try: flip-inline;
+			}
+
+		}
+	}
+
+	.snippet() {
+		display: grid; 
+		grid-column: ~"1 / -1";
+		grid-template-columns: inherit; 
+		align-items : center;
+		gap : 8px;
+		min-width   : max-content;
+		padding     : 7px 5px;
+		cursor      : pointer;
+		.animate(background-color);
+		&:has(+ .dropdown:popover-open){
+			background: #999999;
+		}
+	}
+
+
+	.highlight(@color: #999999) {
+		&:hover, &[aria-selected='true'], &:has(+ .dropdown:popover-open){ background-color : @color; color: whitesmoke}
+	}
+
+	// group that holds all non-snippet buttons.
+	.tools {
 		display         : flex;
 		justify-content : flex-end;
 		min-width       : 225px;
+		container       : tools ;
 
-		&:only-child { margin-left : auto; }
+		&:only-child { margin-left : auto; }  // When on Properties tab, keep tools pushed to right side.
 
-		>div {
+		// subgroups for tools (history, code folding/theme, editor tabs)
+		> .group {
 			display         : flex;
 			flex            : 1;
 			justify-content : space-around;
 
-			&:first-child { border-left : none; }
+			.dropdown {
+				.dropdown();
 
-			& > div {
-				position    : relative;
-				width       : @menuHeight;
-				height      : @menuHeight;
-				line-height : @menuHeight;
-				text-align  : center;
-				cursor      : pointer;
-				&:hover,&.selected { background-color : #999999; }
-				&.text {
-					.tooltipLeft('Brew Editor');
+
+				.snippet {
+					.snippet();
+					i {
+						justify-self: center;
+						grid-column: ~"1 / 2";
+					}
 				}
-				&.style {
-					.tooltipLeft('Style Editor');
+			}
+			
+			// any non-snippet button
+			& > button {
+				position     : relative;
+				height       : @menuHeight;
+				flex         : 1 0 auto;
+				cursor       : pointer;
+				.highlight();
+				&:disabled {
+					color: #999999;
 				}
-				&.meta {
-					.tooltipLeft('Properties');
-				}
-				&.undo {
-					.tooltipLeft('Undo');
-					font-size : 0.75em;
-					color     : grey;
-					&.active { color : inherit; }
-				}
-				&.redo {
-					.tooltipLeft('Redo');
-					font-size : 0.75em;
-					color     : grey;
-					&.active { color : inherit; }
-				}
-				&.foldAll {
-					.tooltipLeft('Fold All');
-					font-size : 0.75em;
-					color     : grey;
-					&.active { color : inherit; }
-				}
-				&.unfoldAll {
-					.tooltipLeft('Unfold All');
-					font-size : 0.75em;
-					color     : grey;
-					&.active { color : inherit; }
-				}
-				&.history {
-					.tooltipLeft('History');
+
+				// history tools
+				&#show-history { .tooltipLeft('History');
 					position  : relative;
-					font-size : 0.75em;
-					color     : grey;
-					border    : none;
-					&.active { color : inherit; }
+					&.active { background-color : #999999; }
 					& > .dropdown {
 						right : -1px;
 						& > .snippet { padding-right : 10px; }
 					}
 				}
-				&.editorTheme {
+				&#undo { .tooltipLeft('Undo'); }
+				&#redo { .tooltipLeft('Redo'); }
+
+				// code tools
+				&#fold-all { .tooltipLeft('Fold All'); }
+				&#unfold-all { .tooltipLeft('Unfold All'); }
+				&#show-themes {
 					.tooltipLeft('Editor Themes');
-					font-size : 0.75em;
 					color     : black;
 					&.active {
 						position         : relative;
 						background-color : #999999;
 					}
+					.themeSelector {
+						position         : absolute;
+						top              : 25px;
+						right            : 0;
+						z-index          : 10;
+						display          : flex;
+						align-items      : center;
+						justify-content  : center;
+						width            : 170px;
+						height           : inherit;
+						background-color : inherit;
+					}
 				}
-				&.divider {
-					width      : 5px;
-					background : linear-gradient(currentColor, currentColor) no-repeat center/1px 100%;
-					&:hover { background-color : inherit; }
+
+				// editor tabs
+				&#brew-tab { 
+					.highlight(@orangeLight);
+					.tooltipLeft('Brew Editor');
 				}
-			}
-			.themeSelector {
-				position         : absolute;
-				top              : 25px;
-				right            : 0;
-				z-index          : 10;
-				display          : flex;
-				align-items      : center;
-				justify-content  : center;
-				width            : 170px;
-				height           : inherit;
-				background-color : inherit;
-			}
+				&#style-tab { 
+					.highlight(@blueLight);
+					.tooltipLeft('Style Editor');
+				}
+				&#properties-tab { 
+					.highlight(@tealLight);
+					.tooltipLeft('Properties');
+				}				
+			}			
 		}		
 	}
-	.snippetBarButton {
-		display        : inline-block;
-		height         : @menuHeight;
-		padding        : 0px 5px;
-		font-size      : 0.625em;
-		font-weight    : 800;
-		line-height    : @menuHeight;
-		text-transform : uppercase;
-		text-wrap      : nowrap;
-		cursor         : pointer;
-		&:hover, &.selected { background-color : #999999; }
-		i {
-			margin-right   : 3px;
-			font-size      : 1.4em;
-			vertical-align : middle;
-		}
-	}
-	.toggleMeta {
-		position    : absolute;
-		top         : 0px;
-		right       : 0px;
-		border-left : 1px solid black;
-		.tooltipLeft('Edit Brew Properties');
-	}
-	.snippetGroup {
 
-		&:hover {
-			& > .dropdown { visibility : visible; }
-		}
+	// group that holds all snippet menus.
+	.snippets {
+		height          : @menuHeight;
+		display         : flex;
+		justify-content : flex-start;
+		min-width       : min-content;
+		text-wrap       : nowrap;
+
 		.dropdown {
-			position         : absolute;
-			top              : 100%;
-			z-index          : 1000;
-			padding          : 0px;
-			margin-left      : -5px;
-			visibility       : hidden;
-			background-color : #DDDDDD;
+			.dropdown();
+		}
+
+		.snippet-menu {
+			display        : inline-block;
+			height         : 100%;
+			padding        : 0px 5px;
+			cursor         : pointer;
+			.highlight();
+
+			button {
+				height: 100%;
+				display: flex;
+				align-items: center;
+				gap: 3px;
+			}
+
 			.snippet {
-				position    : relative;
-				display     : flex;
-				align-items : center;
-				min-width   : max-content;
-				padding     : 5px;
-				font-size   : 10px;
-				cursor      : pointer;
-				.animate(background-color);
-				i {
-					min-width    : 25px;
-					height       : 1.2em;
-					margin-right : 8px;
-					font-size    : 1.2em;
-					text-align   : center;
-					& ~ i {
-						margin-right : 0;
-						margin-left  : 5px;
+				.snippet();
+				
+
+				&.menu-trigger {
+					grid-column: ~"1 / -1";
+					i.fa-caret-right {
+						grid-column: ~"4 / 5";
+						min-width: unset;
+
 					}
+				}
+				
+				i {
+					justify-self: center;
+					grid-column: ~"1 / 2";
+
 					/* Fonts */
 					&.font {
 						height : auto;
@@ -177,6 +218,8 @@
 							content   : 'ABC';
 						}
 
+						// todo: figure out how to adapt this list based on each themes' snippets.js,
+						// so different themes can have different fonts in the Fonts menu.
 						&.OpenSans {font-family : 'OpenSans';}
 						&.CodeBold {font-family : 'CodeBold';}
 						&.CodeLight {font-family : 'CodeLight';}
@@ -196,13 +239,13 @@
 						&.TimesNewRoman {font-family : 'Times New Roman';}
 					}
 				}
-				.name { margin-right : auto; }
+				.name { grid-column: ~"2 / 3"; margin-right : auto; }
 				.disabled { text-decoration : line-through; }
 				.beta {
-					align-self    : center;
+					grid-column: ~"3 / 4";
 					padding       : 4px 6px;
 					margin-left   : 5px;
-					font-family   : monospace;
+					font-size     : 0.9em;
 					line-height   : 1em;
 					color         : white;
 					background    : grey;
@@ -210,23 +253,15 @@
 				}
 				&:hover {
 					background-color : #999999;
-					& > .dropdown {
-						visibility : visible;
-						&.side {
-							top         : 0%;
-							left        : 100%;
-							margin-left : 0;
-							box-shadow  : -1px 1px 2px 0px #999999;
-						}
-					}
 				}
 			}
 		}
 	}
+	
 }
-@container editor (width < 553px) {
+@container editor (width < 570px) {
 	.snippetBar {
-		.editors { 
+		.tools { 
 			flex            : 1;
 			justify-content : space-between;
 			border-bottom   : 1px solid;
@@ -235,7 +270,7 @@
 			flex            : 1;
 			justify-content : space-evenly; 
 		}
-		.editors > div.history > .dropdown { right : unset; }
+		.tools > div.history > .dropdown { right : unset; }
 	}
 }
 
