@@ -4,6 +4,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
+const moment = require('moment');
 
 import { loadHistory } from '../../utils/versionHistory.js';
 
@@ -181,27 +182,26 @@ const Snippetbar = createClass({
 	renderHistoryItems : function() {
 		if(!this.state.historyExists) return;
 
-		return <div className='dropdown'>
-			{_.map(this.state.historyItems, (item, index)=>{
-				if(item.noData || !item.savedAt) return;
+		return (
+			<div id='history-menu' className='dropdown' popover='auto' style={{ positionAnchor: '--history-menu' }}>
+				<div className='menu-group'>Restore from...</div>
+				{this.state.historyItems.map((item, index)=>{
+					if(item.noData || !item.savedAt) return null;
 
-				const saveTime = new Date(item.savedAt);
-				const diffMs = new Date() - saveTime;
-				const diffSecs = Math.floor(diffMs / 1000);
+					const saveTime = moment(item.savedAt);
+					const diffString = saveTime.fromNow();
 
-				let diffString = `about ${diffSecs} seconds ago`;
-
-				if(diffSecs > 60) diffString = `about ${Math.floor(diffSecs / 60)} minutes ago`;
-				if(diffSecs > (60 * 60)) diffString = `about ${Math.floor(diffSecs / (60 * 60))} hours ago`;
-				if(diffSecs > (24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (24 * 60 * 60))} days ago`;
-				if(diffSecs > (7 * 24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (7 * 24 * 60 * 60))} weeks ago`;
-
-				return <div className='snippet' key={index} onClick={()=>{this.replaceContent(item);}} >
-					<i className={`fas fa-${index+1}`} />
-					<span className='name' title={saveTime.toISOString()}>v{item.version} : {diffString}</span>
-				</div>;
-			})}
-		</div>;
+					return (
+						<div className='snippet' key={index} onClick={()=>this.replaceContent(item)}>
+							<i className='fas fa-trash-arrow-up' />
+							<span className='name' title={`Restore version from ${moment(saveTime).format('YYYY/MM/DD HH:mm:ss')}`}>
+								v{item.version} : {diffString}
+							</span>
+						</div>
+					);
+				})}
+			</div>
+		);
 	},
 
 	renderEditorButtons : function(){
