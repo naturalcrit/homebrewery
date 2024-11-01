@@ -23,7 +23,6 @@ module.exports = [
 			{
 				name         : 'Table of Contents',
 				icon         : 'fas fa-book',
-				gen          : TableOfContentsGen,
 				experimental : true,
 				subsnippets  : [
 					{
@@ -33,10 +32,8 @@ module.exports = [
 						experimental : true
 					},
 					{
-						name : 'Table of Contents Individual Inclusion',
-						icon : 'fas fa-book',
-						gen  : dedent `\n{{tocInclude# CHANGE # to your header level
-							}}\n`,
+						name        : 'Table of Contents Individual Inclusion',
+						icon        : 'fas fa-book',
 						subsnippets : [
 							{
 								name : 'Individual Inclusion H1',
@@ -77,10 +74,8 @@ module.exports = [
 						]
 					},
 					{
-						name : 'Table of Contents Range Inclusion',
-						icon : 'fas fa-book',
-						gen  : dedent `\n{{tocDepthH3
-							}}\n`,
+						name        : 'Table of Contents Range Inclusion',
+						icon        : 'fas fa-book',
 						subsnippets : [
 							{
 								name : 'Include in ToC up to H3',
@@ -110,10 +105,8 @@ module.exports = [
 						]
 					},
 					{
-						name : 'Table of Contents Individual Exclusion',
-						icon : 'fas fa-book',
-						gen  : dedent `\n{{tocExcludeH1 \n
-							}}\n`,
+						name        : 'Table of Contents Individual Exclusion',
+						icon        : 'fas fa-book',
 						subsnippets : [
 							{
 								name : 'Individual Exclusion H1',
@@ -380,7 +373,6 @@ module.exports = [
 			{
 				name        : 'Class Tables',
 				icon        : 'fas fa-table',
-				gen         : ClassTableGen.full('classTable,frame,decoration,wide'),
 				subsnippets : [
 					{
 						name : 'Martial Class Table',
@@ -427,7 +419,6 @@ module.exports = [
 			{
 				name         : 'Rune Table',
 				icon         : 'fas fa-language',
-				gen          : scriptGen.dwarvish,
 				experimental : true,
 				subsnippets  : [
 					{
