@@ -35,12 +35,12 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets)=>{
 	if(userBrewSnippets) {
 		const userSnippets = [];
 		for (let snips of userBrewSnippets.split(textSplit)) {
-			let name = mp.split('\n')[0];
+			let name = snips.split('\n')[0];
 			if(name.length != 0) {
 				userSnippets.push({
-					name : name,
+					name : name.slice('\snippet '.length),
 					icon : '',
-					gen  : snips.split('\n').slice(0),
+					gen  : snips.slice(name.length + 1),
 				});
 			}
 		}
@@ -70,16 +70,19 @@ const splitTextStyleAndMetadata = (brew)=>{
 		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
 		brew.text = brew.text.slice(index + 5);
 	}
-	if(brew.text.startsWith('```css')) {
-		const index = brew.text.indexOf('```\n\n');
-		brew.style = brew.text.slice(7, index - 1);
-		brew.text = brew.text.slice(index + 5);
-	}
 	if(brew.text.startsWith('```snippets')) {
 		const index = brew.text.indexOf('```\n\n');
 		brew.snippets = brew.text.slice(11, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
+	if(brew.text.startsWith('```css')) {
+		const index = brew.text.indexOf('```\n\n');
+		brew.style = brew.text.slice(7, index - 1);
+		brew.text = brew.text.slice(index + 5);
+	}
+	// if(!brew?.snippets) {
+		brew.snippets = `\\snippet Example\nI am an example user snippet\n`;
+	// }
 };
 
 const printCurrentBrew = ()=>{
