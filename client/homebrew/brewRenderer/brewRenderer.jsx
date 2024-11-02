@@ -65,9 +65,14 @@ const BrewRenderer = (props)=>{
 
 	const [state, setState] = useState({
 		isMounted     : false,
-		visibility    : 'hidden',
-		zoom          : 100,
-		previewStyles : {}
+		visibility    : 'hidden'
+	});
+
+	const [displayOptions, setDisplayOptions] = useState({
+		zoomLevel    : 100,
+		spread       : 'single',
+		startOnRight : true,
+		pageShadows  : true
 	});
 
 	const mainRef  = useRef(null);
@@ -118,7 +123,13 @@ const BrewRenderer = (props)=>{
 		} else {
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			const html = Markdown.render(pageText, index);
-			return <BrewPage className='page' index={index} key={index} contents={html} style={ state.previewStyles['.page']} />;
+
+			const styles = {
+				...(!displayOptions.pageShadows ? { boxShadow: 'none' } : {})
+				// Add more conditions as needed
+			};
+			
+			return <BrewPage className='page' index={index} key={index} contents={html} style={styles} />;
 		}
 	};
 
@@ -166,34 +177,15 @@ const BrewRenderer = (props)=>{
 		document.dispatchEvent(new MouseEvent('click'));
 	};
 
-	//Toolbar settings:
-	const handleZoom = (newZoom)=>{
-		setState((prevState)=>({
-			...prevState,
-			zoom : newZoom
-		}));
+	const handleDisplayOptionsChange = (newDisplayOptions)=>{
+		setDisplayOptions(newDisplayOptions);
 	};
 
-	const handleStyle = (newStyle)=>{
-		setState((prevState)=>{
-			// Merge styles, skipping those that are empty objects or null
-			const mergedStyles = Object.entries(newStyle).reduce((acc, [selector, style])=>{
-				if(style && Object.keys(style).length > 0) {
-					acc[selector] = {
-						...(prevState.previewStyles[selector] || {}), // Preserve existing styles
-						...style, // Add or override with new styles
-					};
-				} else {
-					// If the style is an empty object or null, delete the selector
-					delete acc[selector];
-				}
-				return acc;
-			}, { ...prevState.previewStyles });
-
-			return { ...prevState, previewStyles: mergedStyles };
-		});
+	const pagesStyle = {
+		zoom      : `${displayOptions.zoomLevel}%`,
+		columnGap : `${displayOptions.columnGap}px`,
+		rowGap    : `${displayOptions.rowGap}px`
 	};
-
 
 	const styleObject = {};
 
@@ -218,7 +210,7 @@ const BrewRenderer = (props)=>{
 				<NotificationPopup />
 			</div>
 
-			<ToolBar onZoomChange={handleZoom} currentPage={props.currentBrewRendererPageNum}  totalPages={rawPages.length} onStyleChange={handleStyle} />
+			<ToolBar displayOptions={displayOptions} currentPage={props.currentBrewRendererPageNum} totalPages={rawPages.length} onDisplayOptionsChange={handleDisplayOptionsChange} />
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
@@ -237,7 +229,8 @@ const BrewRenderer = (props)=>{
 						&&
 						<>
 							{renderStyle()}
-							<div className='pages' lang={`${props.lang || 'en'}`} style={{ zoom: `${state.zoom}%`, ...state.previewStyles['.pages'] }}>
+							<div lang={`${props.lang || 'en'}`} style={pagesStyle} className={
+								`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread }` } >
 								{renderPages()}
 							</div>
 						</>

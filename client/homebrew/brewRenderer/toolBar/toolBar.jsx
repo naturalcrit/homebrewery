@@ -9,46 +9,22 @@ import { Anchored, AnchoredBox, AnchoredTrigger } from '../../../components/Anch
 const MAX_ZOOM = 300;
 const MIN_ZOOM = 10;
 
-const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleChange })=>{
+const ToolBar = ({ displayOptions, currentPage, totalPages, onDisplayOptionsChange })=>{
 
-	const [zoomLevel, setZoomLevel] = useState(100);
 	const [pageNum, setPageNum] = useState(currentPage);
-	const [spread, setSpread] = useState('single');
-	const [startOnRight, setStartOnRight] = useState(true);
-	const [pageShadows, setPageShadows] = useState(true);
-	const [pagesStyle, setPagesStyle] = useState({});
 	const [toolsVisible, setToolsVisible] = useState(true);
-	const spreads = ['single', 'facing', 'flow'];
-
-	useEffect(()=>{
-		onZoomChange(zoomLevel);
-	}, [zoomLevel]);
 
 	useEffect(()=>{
 		setPageNum(currentPage);
-	}, [currentPage]);;
-
-	// update display arrangement when arrangement state is changed.
-	// todo: do this the 'react' way, without querying the dom.
-	useEffect(()=>{
-		const iframe = document.getElementById('BrewRenderer');
-		const pagesContainer = iframe?.contentWindow?.document.querySelector('.pages');
-
-		if(pagesContainer) {
-			spreads.forEach((spread)=>pagesContainer.classList.remove(spread));
-			pagesContainer.classList.add(spread);
-			['recto', 'verso'].forEach((leaf)=>pagesContainer.classList.remove(leaf));
-			pagesContainer.classList.add(startOnRight ? 'recto' : 'verso');
-		}
-	}, [spread, startOnRight]);
-
-	useEffect(()=>{
-		onStyleChange({ '.page': pageShadows ? {} : { boxShadow: 'none' } });
-	}, [pageShadows]);
-
+	}, [currentPage]);
 
 	const handleZoomButton = (zoom)=>{
-		setZoomLevel(_.round(_.clamp(zoom, MIN_ZOOM, MAX_ZOOM)));
+		handleOptionChange('zoomLevel', _.round(_.clamp(zoom, MIN_ZOOM, MAX_ZOOM)));
+	};
+
+	const handleOptionChange = (optionKey, newValue)=>{
+		//setDisplayOptions(prevOptions => ({ ...prevOptions, [optionKey]: newValue }));
+		onDisplayOptionsChange({ ...displayOptions, [optionKey]: newValue });
 	};
 
 	const handlePageInput = (pageInput)=>{
@@ -89,7 +65,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 
 		const margin = 5;  // extra space so page isn't edge to edge (not truly "to fill")
 
-		const deltaZoom = (desiredZoom - zoomLevel) - margin;
+		const deltaZoom = (desiredZoom - displayOptions.zoomLevel) - margin;
 		return deltaZoom;
 	};
 
@@ -101,22 +77,22 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 				<button
 					id='fill-width'
 					className='tool'
-					onClick={()=>handleZoomButton(zoomLevel + calculateChange('fill'))}
+					onClick={()=>handleZoomButton(displayOptions.zoomLevel + calculateChange('fill'))}
 				>
 					<i className='fac fit-width' />
 				</button>
 				<button
 					id='zoom-to-fit'
 					className='tool'
-					onClick={()=>handleZoomButton(zoomLevel + calculateChange('fit'))}
+					onClick={()=>handleZoomButton(displayOptions.zoomLevel + calculateChange('fit'))}
 				>
 					<i className='fac zoom-to-fit' />
 				</button>
 				<button
 					id='zoom-out'
 					className='tool'
-					onClick={()=>handleZoomButton(zoomLevel - 20)}
-					disabled={zoomLevel <= MIN_ZOOM}
+					onClick={()=>handleZoomButton(displayOptions.zoomLevel - 20)}
+					disabled={displayOptions.zoomLevel <= MIN_ZOOM}
 				>
 					<i className='fas fa-magnifying-glass-minus' />
 				</button>
@@ -129,7 +105,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 					min={MIN_ZOOM}
 					max={MAX_ZOOM}
 					step='1'
-					value={zoomLevel}
+					value={displayOptions.zoomLevel}
 					onChange={(e)=>handleZoomButton(parseInt(e.target.value))}
 				/>
 				<datalist id='zoomLevels'>
@@ -139,33 +115,33 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 				<button
 					id='zoom-in'
 					className='tool'
-					onClick={()=>handleZoomButton(zoomLevel + 20)}
-					disabled={zoomLevel >= MAX_ZOOM}
+					onClick={()=>handleZoomButton(displayOptions.zoomLevel + 20)}
+					disabled={displayOptions.zoomLevel >= MAX_ZOOM}
 				>
 					<i className='fas fa-magnifying-glass-plus' />
 				</button>
 			</div>
 
-			{/*v=====----------------------< Page Controls >---------------------=====v*/}
+			{/*v=====----------------------< Spread Controls >---------------------=====v*/}
 			<div className='group'>
 				<div className='radio-group' role='group'>
 					<button role='radio'
 						id='single-spread'
-						className={`tool${spread === 'single' && ' active'}`}
+						className={`tool${displayOptions.spread === 'single' && ' active'}`}
 						title='Single Page'
-						onClick={()=>setSpread('single')}
+						onClick={()=>{handleOptionChange('spread', 'active')}}
 					><i className='fac single-spread' /></button>
 					<button role='radio'
 						id='facing-spread'
-						className={`tool${spread === 'facing' && ' active'}`}
+						className={`tool${displayOptions.spread === 'facing' && ' active'}`}
 						title='Facing Pages'
-						onClick={()=>setSpread('facing')}
+						onClick={()=>{handleOptionChange('spread', 'facing')}}
 					><i className='fac facing-spread' /></button>
 					<button role='radio'
 						id='flow-spread'
-						className={`tool${spread === 'flow' && ' active'}`}
+						className={`tool${displayOptions.spread === 'flow' && ' active'}`}
 						title='Flow Pages'
-						onClick={()=>setSpread('flow')}
+						onClick={()=>{handleOptionChange('spread', 'flow')}}
 					><i className='fac flow-spread' /></button>
 
 				</div>
@@ -173,19 +149,28 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages, onStyleC
 					<AnchoredTrigger id='spread-settings' className='tool' title='Spread options'><i className='fas fa-gear' /></AnchoredTrigger>
 					<AnchoredBox title='Options'>
 						<h1>Options</h1>
-						<label title='Modify the horizontal space between pages.'>Column gap<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>onStyleChange({ '.pages': { columnGap: `${evt.target.value}px` }})} /></label>
-						<label title='Modify the vertical space between rows of pages.'>Row gap<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>onStyleChange({ '.pages': { rowGap: `${evt.target.value}px` } })} /></label>
-						<label title='Start 1st page on the right side, such as if you have cover page.'>Start on right
-							<input type='checkbox'
-								onChange={()=>setStartOnRight(!startOnRight)}
-								checked={startOnRight}
-								title={spread !== 'facing' ? 'Switch to Facing to enable toggle.' : null} />
+						<label title='Modify the horizontal space between pages.'>
+							Column gap
+							<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>handleOptionChange('columnGap', evt.target.value )} />
 						</label>
-						<label title='Toggle the page shadow on every page.'>Page shadows<input type='checkbox' checked={pageShadows} onChange={()=>setPageShadows(!pageShadows)} /></label>
+						<label title='Modify the vertical space between rows of pages.'>
+							Row gap
+							<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>handleOptionChange('rowGap', evt.target.value )} />
+						</label>
+						<label title='Start 1st page on the right side, such as if you have cover page.'>
+							Start on right
+							<input type='checkbox' checked={displayOptions.startOnRight} onChange={()=>{handleOptionChange('startOnRight', !displayOptions.startOnRight)}}
+								title={displayOptions.spread !== 'facing' ? 'Switch to Facing to enable toggle.' : null} />
+						</label>
+						<label title='Toggle the page shadow on every page.'>
+							Page shadows
+							<input type='checkbox' checked={displayOptions.pageShadows} onChange={()=>{handleOptionChange('pageShadows', !displayOptions.pageShadows)}} />
+						</label>
 					</AnchoredBox>
 				</Anchored>
 			</div>
 
+			{/*v=====----------------------< Page Controls >---------------------=====v*/}
 			<div className='group'>
 				<button
 					id='previous-page'
