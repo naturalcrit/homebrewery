@@ -8,9 +8,12 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets)=>{
 	const textSplit  = /^\\page/gm;
 	const mpAsSnippets = [];
 	// Snippets from Themes first.
+	//console.log(themeBundleSnippets);
 	if(themeBundleSnippets) {
+		console.log('Looping!');
 		for (let themes of themeBundleSnippets) {
 			const userSnippets = [];
+			console.log(themes);
 			for (let snips of themes.snippets.split(textSplit)) {
 				const name = snips.split('\n')[0];
 				if(name.length != 0) {
@@ -80,9 +83,9 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
-	// if(!brew?.snippets) {
+	if(!brew?.snippets) {
 		brew.snippets = `\\snippet Example\nI am an example user snippet\n`;
-	// }
+	}
 };
 
 const printCurrentBrew = ()=>{

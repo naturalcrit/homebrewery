@@ -41,7 +41,6 @@ const Snippetbar = createClass({
 			unfoldCode        : ()=>{},
 			updateEditorTheme : ()=>{},
 			cursorPos         : {},
-			snippetBundle     : [],
 			updateBrew        : ()=>{}
 		};
 	},
@@ -102,20 +101,26 @@ const Snippetbar = createClass({
 	},
 
 	compileSnippets : function() {
+		console.log('compileSnippets');
 		let compiledSnippets = [];
 
 		let oldSnippets = _.keyBy(compiledSnippets, 'groupName');
 
-		for (let snippets of this.props.snippetBundle) {
-			if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name
-				snippets = ThemeSnippets[snippets];
+		console.log(this.props.themesBundle);
 
-			const newSnippets = _.keyBy(_.cloneDeep(snippets), 'groupName');
-			compiledSnippets = _.values(_.mergeWith(oldSnippets, newSnippets, this.mergeCustomizer));
+		if( this.props.themesBundle) {
+			for (let snippets of this.props?.themesBundle?.snippets) {
+				if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name
+					snippets = ThemeSnippets[snippets];
 
-			oldSnippets = _.keyBy(compiledSnippets, 'groupName');
+				const newSnippets = _.keyBy(_.cloneDeep(snippets), 'groupName');
+				compiledSnippets = _.values(_.mergeWith(oldSnippets, newSnippets, this.mergeCustomizer));
+
+				oldSnippets = _.keyBy(compiledSnippets, 'groupName');
+			}
 		}
-		const userSnippetsasJSON = brewSnippetsToJSON(this.props.brew.title, this.props.brew.snippets, this.props.snippetsBundle);
+		console.log(this.props.themesBundle);
+		const userSnippetsasJSON = brewSnippetsToJSON(this.props.brew.title, this.props.brew.snippets, this.props?.themesBundle?.snippets);
 		compiledSnippets.push(userSnippetsasJSON);
 
 		return compiledSnippets;
