@@ -70,6 +70,8 @@ const Stats = () => {
 		}
 	};
 
+	console.log(stats, chartData);
+
 	const renderTable = () => {
 		if (!stats)
 			return (
@@ -103,7 +105,7 @@ const Stats = () => {
 						</tr>
 					</thead>
 					<tbody>
-						{stats.totalPublished && (
+						{stats.totalPublished !== 0 && (
 							<tr>
 								<td>Total published</td>
 								<td>{stats.totalPublished}</td>
@@ -117,7 +119,7 @@ const Stats = () => {
 								</td>
 							</tr>
 						)}
-						{stats.totalUnauthored && (
+						{stats.totalUnauthored !== 0 && (
 							<tr>
 								<td>Total without author</td>
 								<td>{stats.totalUnauthored}</td>
@@ -131,7 +133,7 @@ const Stats = () => {
 								</td>
 							</tr>
 						)}
-						{stats.totalGoogle && (
+						{stats.totalGoogle !== 0 && (
 							<tr>
 								<td>Total in Google storage</td>
 								<td>{stats.totalGoogle}</td>
@@ -144,7 +146,7 @@ const Stats = () => {
 								</td>
 							</tr>
 						)}
-						{stats.totalLegacy && (
+						{stats.totalLegacy !== 0 && (
 							<tr>
 								<td>Total in Legacy renderer</td>
 								<td>{stats.totalLegacy}</td>
@@ -157,7 +159,7 @@ const Stats = () => {
 								</td>
 							</tr>
 						)}
-						{stats.totalThumbnail && (
+						{stats.totalThumbnail !== 0 && (
 							<tr>
 								<td>Total with thumbnail</td>
 								<td>{stats.totalThumbnail}</td>
