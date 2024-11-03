@@ -627,6 +627,8 @@ brew`);
 					`/* From Theme 5ePHB */\n\n@import url("/themes/V3/5ePHB/style.css");`
 				],
 				snippets : [
+					'V3_Blank',
+					'V3_5ePHB'
 				]
 			});
 		});
