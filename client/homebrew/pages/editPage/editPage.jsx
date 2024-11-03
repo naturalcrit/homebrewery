@@ -61,7 +61,6 @@ const EditPage = createClass({
 			currentEditorCursorPageNum : 1,
 			currentBrewRendererPageNum : 1,
 			displayLockMessage         : this.props.brew.lock || false,
-			snippetsBundle             : {},
 			themeBundle                : {}
 		};
 	},
@@ -138,6 +137,19 @@ const EditPage = createClass({
 
 		this.setState((prevState)=>({
 			brew       : { ...prevState.brew, text: text },
+			isPending  : true,
+			htmlErrors : htmlErrors,
+		}), ()=>{if(this.state.autoSave) this.trySave();});
+	},
+
+	handleSnipChange : function(snippet){
+		console.log('Snip Change!');
+		//If there are errors, run the validator on every change to give quick feedback
+		let htmlErrors = this.state.htmlErrors;
+		if(htmlErrors.length) htmlErrors = Markdown.validate(snippet);
+
+		this.setState((prevState)=>({
+			brew       : { ...prevState.brew, snippets: snippet },
 			isPending  : true,
 			htmlErrors : htmlErrors,
 		}), ()=>{if(this.state.autoSave) this.trySave();});
@@ -438,11 +450,12 @@ const EditPage = createClass({
 					onTextChange={this.handleTextChange}
 					onStyleChange={this.handleStyleChange}
 					onMetaChange={this.handleMetaChange}
+					onSnipChange={this.handleSnipChange}
 					reportError={this.errorReported}
 					renderer={this.state.brew.renderer}
 					userThemes={this.props.userThemes}
 					snippets={this.props.snippets}
-					snippetBundle={this.state.themeBundle.snippets}
+					themeBundle={this.state.themeBundle}
 					updateBrew={this.updateBrew}
 					onCursorPageChange={this.handleEditorCursorPageChange}
 					onViewPageChange={this.handleEditorViewPageChange}

@@ -304,7 +304,9 @@ const api = {
 			}
 			//=== Static Themes ===//
 			else {
+				const localSnippets = `${req.params.renderer}_${req.params.id}`; // Just log the name for loading on client
 				const localStyle    = `@import url(\"/themes/${req.params.renderer}/${req.params.id}/style.css\");`;
+				completeSnippets.push(localSnippets);
 				completeStyles.push(`/* From Theme ${req.params.id} */\n\n${localStyle}`);
 
 				req.params.id = Themes[req.params.renderer][req.params.id].baseTheme;

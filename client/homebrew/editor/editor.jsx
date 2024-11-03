@@ -21,6 +21,7 @@ const DEFAULT_STYLE_TEXT = dedent`
 					color: black;
 				}`;
 
+const DEFAULT_SNIPPET_TEXT = ``;
 let isJumping = false;
 
 const Editor = createClass({
@@ -35,6 +36,7 @@ const Editor = createClass({
 			onTextChange  : ()=>{},
 			onStyleChange : ()=>{},
 			onMetaChange  : ()=>{},
+			onSnipChange  : ()=>{},
 			reportError   : ()=>{},
 
 			onCursorPageChange : ()=>{},
@@ -51,7 +53,7 @@ const Editor = createClass({
 	getInitialState : function() {
 		return {
 			editorTheme : this.props.editorTheme,
-			view        : 'text' //'text', 'style', 'meta'
+			view        : 'text' //'text', 'style', 'meta', 'snip'
 		};
 	},
 
@@ -61,6 +63,7 @@ const Editor = createClass({
 	isText  : function() {return this.state.view == 'text';},
 	isStyle : function() {return this.state.view == 'style';},
 	isMeta  : function() {return this.state.view == 'meta';},
+	isSnip  : function() {return this.state.view == 'snip';},
 
 	componentDidMount : function() {
 
@@ -457,6 +460,20 @@ const Editor = createClass({
 					onChange={this.props.onMetaChange}
 					reportError={this.props.reportError}
 					userThemes={this.props.userThemes}/>
+			</>;
+		}
+
+		if(this.isSnip()){
+			return <>
+				<CodeEditor key='codeEditor'
+					ref={this.codeEditor}
+					language='gfm'
+					view={this.state.view}
+					value={this.props.brew.snippets ?? DEFAULT_SNIPPET_TEXT}
+					onChange={this.props.onSnipChange}
+					enableFolding={true}
+					editorTheme={this.state.editorTheme}
+					rerenderParent={this.rerenderParent} />
 			</>;
 		}
 	},

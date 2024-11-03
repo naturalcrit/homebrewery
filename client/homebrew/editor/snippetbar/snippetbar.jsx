@@ -41,6 +41,7 @@ const Snippetbar = createClass({
 			unfoldCode        : ()=>{},
 			updateEditorTheme : ()=>{},
 			cursorPos         : {},
+			themeBundle       : [],
 			updateBrew        : ()=>{}
 		};
 	},
@@ -64,7 +65,7 @@ const Snippetbar = createClass({
 	},
 
 	componentDidUpdate : async function(prevProps, prevState) {
-		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.snippetBundle != this.props.snippetBundle) {
+		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.themeBundle != this.props.themeBundle) {
 			this.setState({
 				snippets : this.compileSnippets()
 			});
@@ -101,15 +102,12 @@ const Snippetbar = createClass({
 	},
 
 	compileSnippets : function() {
-		console.log('compileSnippets');
 		let compiledSnippets = [];
 
 		let oldSnippets = _.keyBy(compiledSnippets, 'groupName');
 
-		console.log(this.props.themesBundle);
-
-		if( this.props.themesBundle) {
-			for (let snippets of this.props?.themesBundle?.snippets) {
+		if(this.props.themeBundle.snippets) {
+			for (let snippets of this.props.themeBundle.snippets) {
 				if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name
 					snippets = ThemeSnippets[snippets];
 
@@ -119,8 +117,8 @@ const Snippetbar = createClass({
 				oldSnippets = _.keyBy(compiledSnippets, 'groupName');
 			}
 		}
-		console.log(this.props.themesBundle);
-		const userSnippetsasJSON = brewSnippetsToJSON(this.props.brew.title, this.props.brew.snippets, this.props?.themesBundle?.snippets);
+
+		const userSnippetsasJSON = brewSnippetsToJSON(this.props.brew.title, this.props.brew.snippets, this.props.themeBundle.snippets);
 		compiledSnippets.push(userSnippetsasJSON);
 
 		return compiledSnippets;
@@ -265,6 +263,10 @@ const Snippetbar = createClass({
 				<div className={cx('meta', { selected: this.props.view === 'meta' })}
 					onClick={()=>this.props.onViewChange('meta')}>
 					<i className='fas fa-info-circle' />
+				</div>
+				<div className={cx('snip', { selected: this.props.view === 'snip' })}
+					onClick={()=>this.props.onViewChange('snip')}>
+					<i className='fas fa-th-list' />
 				</div>
 			</div>
 

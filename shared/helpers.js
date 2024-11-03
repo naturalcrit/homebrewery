@@ -8,29 +8,26 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets)=>{
 	const textSplit  = /^\\page/gm;
 	const mpAsSnippets = [];
 	// Snippets from Themes first.
-	//console.log(themeBundleSnippets);
 	if(themeBundleSnippets) {
-		console.log('Looping!');
 		for (let themes of themeBundleSnippets) {
-			const userSnippets = [];
-			console.log(themes);
-			for (let snips of themes.snippets.split(textSplit)) {
-				const name = snips.split('\n')[0];
+			if(typeof themes !== 'string') {
+				const userSnippets = [];
+				const name = themes.snippets.split('\n')[0];
 				if(name.length != 0) {
 					userSnippets.push({
-						name : name,
+						name : name.slice('\snippets '.length),
 						icon : '',
-						gen  : snips.split('\n').slice(0),
+						gen  : themes.snippets.slice(name.length + 1),
 					});
 				}
-			}
-			if(userSnippets.length > 0) {
-				mpAsSnippets.push({
-					name        : themes.name,
-					icon        : '',
-					gen         : '',
-					subsnippets : userSnippets
-				});
+				if(userSnippets.length > 0) {
+					mpAsSnippets.push({
+						name        : themes.name,
+						icon        : '',
+						gen         : '',
+						subsnippets : userSnippets
+					});
+				}
 			}
 		}
 	}
