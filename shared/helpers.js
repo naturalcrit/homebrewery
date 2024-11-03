@@ -82,9 +82,6 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
-	if(!brew?.snippets) {
-		brew.snippets = `\\snippet Example\nI am an example user snippet\n`;
-	}
 };
 
 const printCurrentBrew = ()=>{
