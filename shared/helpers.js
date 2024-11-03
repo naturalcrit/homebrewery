@@ -5,20 +5,22 @@ const dedent = require('dedent');
 
 // Convert the templates from a brew to a Snippets Structure.
 const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets)=>{
-	const textSplit  = /^\\page/gm;
+	const textSplit  = /^\\snippet /gm;
 	const mpAsSnippets = [];
 	// Snippets from Themes first.
 	if(themeBundleSnippets) {
 		for (let themes of themeBundleSnippets) {
 			if(typeof themes !== 'string') {
 				const userSnippets = [];
-				const name = themes.snippets.split('\n')[0];
-				if(name.length != 0) {
-					userSnippets.push({
-						name : name.slice('\snippets '.length),
-						icon : '',
-						gen  : themes.snippets.slice(name.length + 1),
-					});
+				for (let snips of themes.snippets.trim().split(textSplit)) {
+					const name = snips.trim().split('\n')[0];
+					if(name.length != 0) {
+						userSnippets.push({
+							name : name.slice('\snippets'.length),
+							icon : '',
+							gen  : snips.slice(name.length + 1),
+						});
+					}
 				}
 				if(userSnippets.length > 0) {
 					mpAsSnippets.push({
@@ -34,11 +36,11 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets)=>{
 	// Local Snippets
 	if(userBrewSnippets) {
 		const userSnippets = [];
-		for (let snips of userBrewSnippets.split(textSplit)) {
+		for (let snips of userBrewSnippets.trim().split(textSplit)) {
 			let name = snips.split('\n')[0];
 			if(name.length != 0) {
 				userSnippets.push({
-					name : name.slice('\snippet '.length),
+					name : name,
 					icon : '',
 					gen  : snips.slice(name.length + 1),
 				});
@@ -72,7 +74,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 	}
 	if(brew.text.startsWith('```snippets')) {
 		const index = brew.text.indexOf('```\n\n');
-		brew.snippets = brew.text.slice(11, index - 1);
+		brew.snippets = brew.text.slice(12, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
 	if(brew.text.startsWith('```css')) {

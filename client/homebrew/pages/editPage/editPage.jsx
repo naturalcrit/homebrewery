@@ -143,7 +143,6 @@ const EditPage = createClass({
 	},
 
 	handleSnipChange : function(snippet){
-		console.log('Snip Change!');
 		//If there are errors, run the validator on every change to give quick feedback
 		let htmlErrors = this.state.htmlErrors;
 		if(htmlErrors.length) htmlErrors = Markdown.validate(snippet);

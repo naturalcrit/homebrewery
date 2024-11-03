@@ -158,7 +158,7 @@ const Editor = createClass({
 
 	highlightCustomMarkdown : function(){
 		if(!this.codeEditor.current) return;
-		if(this.state.view === 'text')  {
+		if(this.state.view === 'text') {
 			const codeMirror = this.codeEditor.current.codeMirror;
 
 			codeMirror.operation(()=>{ // Batch CodeMirror styling

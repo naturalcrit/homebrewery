@@ -65,7 +65,10 @@ const Snippetbar = createClass({
 	},
 
 	componentDidUpdate : async function(prevProps, prevState) {
-		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.themeBundle != this.props.themeBundle) {
+		if(prevProps.renderer != this.props.renderer ||
+			prevProps.theme != this.props.theme ||
+			prevProps.themeBundle != this.props.themeBundle ||
+			prevProps.brew.snippets != this.props.brew.snippets) {
 			this.setState({
 				snippets : this.compileSnippets()
 			});
