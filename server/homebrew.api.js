@@ -315,7 +315,7 @@ const api = {
 				const localSnippets = `${req.params.renderer}_${req.params.id}`; // Just log the name for loading on client
 				const localStyle    = `@import url(\"/themes/${req.params.renderer}/${req.params.id}/style.css\");`;
 				completeSnippets.push(localSnippets);
-				completeStyles.push(`/* From Theme ${req.params.id} */\n\n${localStyle}`);
+				completeStyles.push(`${localStyle}`);
 
 				req.params.id = Themes[req.params.renderer][req.params.id].baseTheme;
 			}
@@ -329,6 +329,7 @@ const api = {
 		};
 
 		res.setHeader('Content-Type', 'application/json');
+		console.log(returnObj);
 		return res.status(200).send(returnObj);
 	},
 	updateBrew : async (req, res)=>{
