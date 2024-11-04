@@ -16,8 +16,8 @@
 	color            : #CCCCCC;
 	background-color : #555555;
 	& > *:not(.toggleButton) {
-		opacity: 1;
-		transition: all .2s ease;
+		opacity    : 1;
+		transition : all 0.2s ease;
 	}
 
 	.group {
@@ -34,14 +34,10 @@
 		align-items : center;
 	}
 
-	.active, [aria-checked=true] {
-		background-color: #444;
-	}
+	.active, [aria-checked='true'] { background-color : #444444; }
 
 	.anchored-trigger {
-		&.active {
-			background-color: #444444;
-		}
+		&.active { background-color : #444444; }
 	}
 
 	.anchored-box {
@@ -52,56 +48,54 @@
 		gap              : 5px;
 		padding          : 15px;
 		margin-top       : 10px;
-		font-size        : .8em;
+		font-size        : 0.8em;
 		color            : #CCCCCC;
 		background-color : var(--box-color);
 		border-radius    : 5px;
 	
 		h1 {
-			border-bottom: 1px solid currentColor;
-			margin-bottom: 0.5em;
-			padding-bottom: 0.3em;
+			padding-bottom : 0.3em;
+			margin-bottom  : 0.5em;
+			border-bottom  : 1px solid currentColor;
 		}
 	
 		h2 {
-			color: lightgray;
-			border-bottom: 1px solid currentColor;
-			margin: 1em 0 0.5em 0;
-			padding-bottom: 0.3em;
+			padding-bottom : 0.3em;
+			margin         : 1em 0 0.5em 0;
+			color          : lightgray;
+			border-bottom  : 1px solid currentColor;
 		}
 	
 		label {
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			gap: 6px;
+			display         : flex;
+			gap             : 6px;
+			align-items     : center;
+			justify-content : space-between;
 	
 		}
-		input{
-			height: unset;
-			&[type='range'] {
-				padding: 0;
-			}
+		input {
+			height : unset;
+			&[type='range'] { padding : 0; }
 		}
-		&:before {
-			content: "";
-			width: 0px;
-			height: 0px;
-			position: absolute;
-			border: 10px solid transparent;
-			border-bottom: 10px solid var(--box-color);
-			left: 50%;
-			transform: translateX(-50%);
-			top: -20px;
-			pointer-events: none;
-		  }
+		&::before {
+			position       : absolute;
+			top            : -20px;
+			left           : 50%;
+			width          : 0px;
+			height         : 0px;
+			pointer-events : none;
+			content        : '';
+			border         : 10px solid transparent;
+			border-bottom  : 10px solid var(--box-color);
+			transform      : translateX(-50%);
+		}
 
 	}
 
-	.radio-group:has(button[role='radio']){
-		display: flex;
-		border: 1px solid #333;
-		height: 100%;
+	.radio-group:has(button[role='radio']) {
+		display : flex;
+		height  : 100%;
+		border  : 1px solid #333333;
 	}
 
 	input {
@@ -165,39 +159,35 @@
 		color            : inherit;
 		background-color : unset;
 
-		&:not(button:has(i, svg)) {
-			padding: 0 8px;
-		}
+		&:not(button:has(i, svg)) { padding : 0 8px; }
 
 		&:hover { background-color : #444444; }
-		&:focus { border : 1px solid #D3D3D3;outline: none;}
+		&:focus { border  : 1px solid #D3D3D3;outline : none;}
 		&:disabled {
 			color            : #777777;
 			background-color : unset !important;
 		}
-		i {
-			font-size:1.2em;
-		}
+		i { font-size : 1.2em; }
 	}
 
 	&.hidden {
-		width: 32px;
-		transition: all .3s ease;
-		flex-wrap:nowrap;
-		overflow: hidden;
-		background-color: unset;
-		opacity: .5;
+		flex-wrap        : nowrap;
+		width            : 32px;
+		overflow         : hidden;
+		background-color : unset;
+		opacity          : 0.5;
+		transition       : all 0.3s ease;
 		& > *:not(.toggleButton) {
-			opacity: 0;
-			transition: all .2s ease;
+			opacity    : 0;
+			transition : all 0.2s ease;
 		}
 	}
 }
 
 button.toggleButton {
-	z-index : 5;
-	position:absolute;
-	left: 0;
-	width: 32px;
-	min-width: unset;
+	position  : absolute;
+	left      : 0;
+	z-index   : 5;
+	width     : 32px;
+	min-width : unset;
 }

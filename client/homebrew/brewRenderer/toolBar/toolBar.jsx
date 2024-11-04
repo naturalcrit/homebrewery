@@ -159,20 +159,20 @@ const ToolBar = ({ displayOptions, currentPage, totalPages, onDisplayOptionsChan
 						<h1>Options</h1>
 						<label title='Modify the horizontal space between pages.'>
 							Column gap
-							<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>handleOptionChange('columnGap', evt.target.value )} />
+							<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>handleOptionChange('columnGap', evt.target.value)} />
 						</label>
 						<label title='Modify the vertical space between rows of pages.'>
 							Row gap
-							<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>handleOptionChange('rowGap', evt.target.value )} />
+							<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>handleOptionChange('rowGap', evt.target.value)} />
 						</label>
 						<label title='Start 1st page on the right side, such as if you have cover page.'>
 							Start on right
-							<input type='checkbox' checked={displayOptions.startOnRight} onChange={()=>{handleOptionChange('startOnRight', !displayOptions.startOnRight)}}
+							<input type='checkbox' checked={displayOptions.startOnRight} onChange={()=>{handleOptionChange('startOnRight', !displayOptions.startOnRight);}}
 								title={displayOptions.spread !== 'facing' ? 'Switch to Facing to enable toggle.' : null} />
 						</label>
 						<label title='Toggle the page shadow on every page.'>
 							Page shadows
-							<input type='checkbox' checked={displayOptions.pageShadows} onChange={()=>{handleOptionChange('pageShadows', !displayOptions.pageShadows)}} />
+							<input type='checkbox' checked={displayOptions.pageShadows} onChange={()=>{handleOptionChange('pageShadows', !displayOptions.pageShadows);}} />
 						</label>
 					</AnchoredBox>
 				</Anchored>

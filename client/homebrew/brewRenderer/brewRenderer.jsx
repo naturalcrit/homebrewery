@@ -64,8 +64,8 @@ const BrewRenderer = (props)=>{
 	};
 
 	const [state, setState] = useState({
-		isMounted     : false,
-		visibility    : 'hidden'
+		isMounted  : false,
+		visibility : 'hidden'
 	});
 
 	const [displayOptions, setDisplayOptions] = useState({
@@ -128,7 +128,7 @@ const BrewRenderer = (props)=>{
 				...(!displayOptions.pageShadows ? { boxShadow: 'none' } : {})
 				// Add more conditions as needed
 			};
-			
+
 			return <BrewPage className='page' index={index} key={index} contents={html} style={styles} />;
 		}
 	};
@@ -230,7 +230,7 @@ const BrewRenderer = (props)=>{
 						<>
 							{renderStyle()}
 							<div lang={`${props.lang || 'en'}`} style={pagesStyle} className={
-								`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread }` } >
+								`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread}` } >
 								{renderPages()}
 							</div>
 						</>

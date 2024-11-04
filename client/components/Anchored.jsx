@@ -2,7 +2,7 @@ import React, { useState, useRef, forwardRef, useEffect, cloneElement, Children 
 import './Anchored.less';
 
 // Anchored is a wrapper component that must have as children an <AnchoredTrigger> and a <AnchoredBox> component.
-// AnchoredTrigger must have a unique `id` prop, which is passed up to Anchored, saved in state on mount, and 
+// AnchoredTrigger must have a unique `id` prop, which is passed up to Anchored, saved in state on mount, and
 // then passed down through props into AnchoredBox.  The `id` is used for the CSS Anchor Positioning properties.
 // **The Anchor Positioning API is not available in Firefox yet**
 // So in Firefox the positioning isn't perfect but is likely sufficient, and FF team seems to be working on the API quickly.
