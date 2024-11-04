@@ -10,14 +10,16 @@ const templatesToSnippet = (menuTitle, templates, themeBundle)=>{
 	// Templates from Themes first.
 	for (let themes of themeBundle) {
 		const pages = [];
-		for (let mp of themes.templates.split(textSplit)) {
-			let name = mp.split('\n')[0].trim();
-			if(name.length == 0) name = 'Blank';
-			pages.push({
-				name : name,
-				icon : '',
-				gen  : `\n\\page ${themes.name}:${name}\n`,
-			});
+		if(themes.templates) {
+			for (let mp of themes.templates.split(textSplit)) {
+				let name = mp.split('\n')[0].trim();
+				if(name.length == 0) name = 'Blank';
+				pages.push({
+					name : name,
+					icon : '',
+					gen  : `\n\\page ${themes.name}:${name}\n`,
+				});
+			}
 		}
 		if(pages.length > 0) {
 			mpAsSnippets.push({
@@ -30,14 +32,16 @@ const templatesToSnippet = (menuTitle, templates, themeBundle)=>{
 	}
 	// Local Templates
 	const pages = [];
-	for (let mp of templates.split(textSplit)) {
-		let name = mp.split('\n')[0];
-		if(name.length == 0) name = 'Blank';
-		pages.push({
-			name : name,
-			icon : '',
-			gen  : `\n\\page ${menuTitle}:${name}\n`,
-		});
+	if(templates){
+		for (let mp of templates.split(textSplit)) {
+			let name = mp.split('\n')[0];
+			if(name.length == 0) name = 'Blank';
+			pages.push({
+				name : name,
+				icon : '',
+				gen  : `\n\\page ${menuTitle}:${name}\n`,
+			});
+		}
 	}
 	if(pages.length) {
 		mpAsSnippets.push({
@@ -104,14 +108,14 @@ const splitTextStyleAndMetadata = (brew)=>{
 		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
 		brew.text = brew.text.slice(index + 5);
 	}
+	if(brew.text.startsWith('```snippets')) {
+		const index = brew.text.indexOf('```\n\n');
+		brew.snippets = brew.text.slice(12, index - 1);
+		brew.text = brew.text.slice(index + 5);
+	}
 	if(brew.text.startsWith('```css')) {
 		const index = brew.text.indexOf('```\n\n');
 		brew.style = brew.text.slice(7, index - 1);
-		brew.text = brew.text.slice(index + 5);
-	}
-	if(brew.text.startsWith('```snippets')) {
-		const index = brew.text.indexOf('```\n\n');
-		brew.snippets = brew.text.slice(11, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
 	if(brew.text.startsWith('```templates')) {

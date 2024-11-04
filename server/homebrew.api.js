@@ -303,7 +303,7 @@ const api = {
 				splitTextStyleAndMetadata(currentTheme);
 
 				// If there is anything in the snippets or style members, append them to the appropriate array
-				if(currentTheme?.snippets) completeSnippets.push(JSON.parse(currentTheme.snippets));
+				if(currentTheme?.snippets) completeSnippets.push({ name: currentTheme.title, snippets: currentTheme.snippets });
 				if(currentTheme?.templates) completeTemplates.push({ name: currentTheme.title, templates: currentTheme.templates });
 				if(currentTheme?.style) completeStyles.push(`/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.params.id} */\n\n${currentTheme.style}`);
 
