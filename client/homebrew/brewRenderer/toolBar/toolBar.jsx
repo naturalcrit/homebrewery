@@ -70,13 +70,14 @@ const ToolBar = ({ displayOptions, currentPage, totalPages, onDisplayOptionsChan
 	};
 
 	return (
-		<div className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`} role='toolbar'>
+		<div id='preview-toolbar' className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`} role='toolbar'>
 			<button className='toggleButton' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible);}}><i className='fas fa-glasses' /></button>
 			{/*v=====----------------------< Zoom Controls >---------------------=====v*/}
-			<div className='group'>
+			<div className='group' role='group' aria-label='Zoom' aria-hidden={!toolsVisible}>
 				<button
 					id='fill-width'
 					className='tool'
+					title='Set zoom to fill preview with one page'
 					onClick={()=>handleZoomButton(displayOptions.zoomLevel + calculateChange('fill'))}
 				>
 					<i className='fac fit-width' />
@@ -84,6 +85,7 @@ const ToolBar = ({ displayOptions, currentPage, totalPages, onDisplayOptionsChan
 				<button
 					id='zoom-to-fit'
 					className='tool'
+					title='Set zoom to fit entire page in preview'
 					onClick={()=>handleZoomButton(displayOptions.zoomLevel + calculateChange('fit'))}
 				>
 					<i className='fac zoom-to-fit' />
@@ -93,6 +95,7 @@ const ToolBar = ({ displayOptions, currentPage, totalPages, onDisplayOptionsChan
 					className='tool'
 					onClick={()=>handleZoomButton(displayOptions.zoomLevel - 20)}
 					disabled={displayOptions.zoomLevel <= MIN_ZOOM}
+					title='Zoom Out'
 				>
 					<i className='fas fa-magnifying-glass-minus' />
 				</button>
@@ -101,6 +104,7 @@ const ToolBar = ({ displayOptions, currentPage, totalPages, onDisplayOptionsChan
 					className='range-input tool hover-tooltip'
 					type='range'
 					name='zoom'
+					title='Set Zoom'
 					list='zoomLevels'
 					min={MIN_ZOOM}
 					max={MAX_ZOOM}
@@ -117,31 +121,35 @@ const ToolBar = ({ displayOptions, currentPage, totalPages, onDisplayOptionsChan
 					className='tool'
 					onClick={()=>handleZoomButton(displayOptions.zoomLevel + 20)}
 					disabled={displayOptions.zoomLevel >= MAX_ZOOM}
+					title='Zoom In'
 				>
 					<i className='fas fa-magnifying-glass-plus' />
 				</button>
 			</div>
 
 			{/*v=====----------------------< Spread Controls >---------------------=====v*/}
-			<div className='group'>
-				<div className='radio-group' role='group'>
+			<div className='group' role='group' aria-label='Spread' aria-hidden={!toolsVisible}>
+				<div className='radio-group' role='radiogroup'>
 					<button role='radio'
 						id='single-spread'
-						className={`tool${displayOptions.spread === 'single' && ' active'}`}
+						className='tool'
 						title='Single Page'
-						onClick={()=>{handleOptionChange('spread', 'active')}}
+						onClick={()=>{handleOptionChange('spread', 'active');}}
+						aria-checked={displayOptions.spread === 'single'}
 					><i className='fac single-spread' /></button>
 					<button role='radio'
 						id='facing-spread'
-						className={`tool${displayOptions.spread === 'facing' && ' active'}`}
+						className='tool'
 						title='Facing Pages'
-						onClick={()=>{handleOptionChange('spread', 'facing')}}
+						onClick={()=>{handleOptionChange('spread', 'facing');}}
+						aria-checked={displayOptions.spread === 'facing'}
 					><i className='fac facing-spread' /></button>
 					<button role='radio'
 						id='flow-spread'
-						className={`tool${displayOptions.spread === 'flow' && ' active'}`}
+						className='tool'
 						title='Flow Pages'
-						onClick={()=>{handleOptionChange('spread', 'flow')}}
+						onClick={()=>{handleOptionChange('spread', 'flow');}}
+						aria-checked={displayOptions.spread === 'flow'}
 					><i className='fac flow-spread' /></button>
 
 				</div>
@@ -171,10 +179,12 @@ const ToolBar = ({ displayOptions, currentPage, totalPages, onDisplayOptionsChan
 			</div>
 
 			{/*v=====----------------------< Page Controls >---------------------=====v*/}
-			<div className='group'>
+			<div className='group' role='group'  aria-label='Pages' aria-hidden={!toolsVisible}>
 				<button
 					id='previous-page'
 					className='previousPage tool'
+					type='button'
+					title='Previous Page(s)'
 					onClick={()=>scrollToPage(pageNum - 1)}
 					disabled={pageNum <= 1}
 				>
@@ -187,6 +197,7 @@ const ToolBar = ({ displayOptions, currentPage, totalPages, onDisplayOptionsChan
 						className='text-input'
 						type='text'
 						name='page'
+						title='Current page(s) in view'
 						inputMode='numeric'
 						pattern='[0-9]'
 						value={pageNum}
@@ -195,12 +206,14 @@ const ToolBar = ({ displayOptions, currentPage, totalPages, onDisplayOptionsChan
 						onBlur={()=>scrollToPage(pageNum)}
 						onKeyDown={(e)=>e.key == 'Enter' && scrollToPage(pageNum)}
 					/>
-					<span id='page-count'>/ {totalPages}</span>
+					<span id='page-count' title='Total Page Count'>/ {totalPages}</span>
 				</div>
 
 				<button
 					id='next-page'
 					className='tool'
+					type='button'
+					title='Next Page(s)'
 					onClick={()=>scrollToPage(pageNum + 1)}
 					disabled={pageNum >= totalPages}
 				>
