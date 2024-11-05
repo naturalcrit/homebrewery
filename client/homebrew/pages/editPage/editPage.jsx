@@ -247,7 +247,6 @@ const EditPage = createClass({
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 
 		const brew = this.state.brew;
-		console.log(brew);
 		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
 
 		const params = `${transfer ? `?${this.state.saveGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : ''}`;

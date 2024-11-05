@@ -113,13 +113,11 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.snippets = brew.text.slice(12, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
-	//console.log(brew.text);
 	if(brew.text.startsWith('```css')) {
 		const index = brew.text.indexOf('```\n\n');
 		brew.style = brew.text.slice(7, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
-	//console.log(brew.text);
 	if(brew.text.startsWith('```templates')) {
 		const index = brew.text.indexOf('```\n\n');
 		brew.templates = brew.text.slice(13, index - 1);

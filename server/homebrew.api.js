@@ -329,7 +329,6 @@ const api = {
 		};
 
 		res.setHeader('Content-Type', 'application/json');
-		console.log(returnObj);
 		return res.status(200).send(returnObj);
 	},
 	updateBrew : async (req, res)=>{
