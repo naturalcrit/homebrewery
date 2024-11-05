@@ -1,7 +1,7 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
-const { useState, useRef, useCallback, useMemo } = React;
+const { useState, useRef, useCallback, useMemo, useEffect } = React;
 const _ = require('lodash');
 
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
@@ -32,12 +32,54 @@ const INITIAL_CONTENT = dedent`
 //v=====----------------------< Brew Page Component >---------------------=====v//
 const BrewPage = (props)=>{
 	props = {
-		contents : '',
-		index    : 0,
+		contents           : '',
+		index              : 0,
+		onVisibilityChange : ()=>{},
+		onCenterPageChange : ()=>{},
 		...props
 	};
+	const pageRef = useRef(null);
 	const cleanText = safeHTML(props.contents);
-	return <div className={props.className} id={`p${props.index + 1}`} style={props.style}>
+
+	useEffect(()=>{
+		if(!pageRef.current) return;
+
+		// Observer for tracking pages within the `.pages` div
+		const visibleObserver = new IntersectionObserver(
+			(entries)=>{
+				entries.forEach((entry)=>{
+					if(entry.isIntersecting){
+						props.onVisibilityChange(props.index + 1, true);    // add page to array of visible pages.
+					} else {
+						props.onVisibilityChange(props.index + 1, false);
+					}
+				});
+			},
+			{ threshold: .3, rootMargin: '0px 0px 0px 0px'  } // detect when >30% of page is within bounds.
+		);
+
+		// Observer for tracking the page at the center of the iframe.
+		const centerObserver = new IntersectionObserver(
+			(entries)=>{
+				entries.forEach((entry)=>{
+					if(entry.isIntersecting) {
+						props.onCenterPageChange(props.index + 1); // Set this page as the center page
+					}
+				});
+			},
+			{ threshold: 0, rootMargin: '-50% 0px -50% 0px' } // Detect when the page is at the center
+		);
+
+		// attach observers to each `.page`
+		visibleObserver.observe(pageRef.current);
+		centerObserver.observe(pageRef.current);
+		return ()=>{
+			visibleObserver.disconnect();
+			centerObserver.disconnect();
+		};
+	}, [props.index, props.onVisibilityChange, props.onCenterPageChange]);
+
+	return <div className={props.className} id={`p${props.index + 1}`} data-index={props.index} ref={pageRef} style={props.style}>
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
 };
@@ -65,7 +107,9 @@ const BrewRenderer = (props)=>{
 
 	const [state, setState] = useState({
 		isMounted  : false,
-		visibility : 'hidden'
+		visibility : 'hidden',
+		visiblePages : [],
+		centerPage   : 1
 	});
 
 	const [displayOptions, setDisplayOptions] = useState({
@@ -75,6 +119,7 @@ const BrewRenderer = (props)=>{
 		pageShadows  : true
 	});
 
+	const iframeRef = useRef(null);
 	const mainRef  = useRef(null);
 
 	if(props.renderer == 'legacy') {
@@ -83,33 +128,33 @@ const BrewRenderer = (props)=>{
 		rawPages = props.text.split(/^\\page$/gm);
 	}
 
-	const scrollToHash = (hash)=>{
-		if(!hash) return;
+	// update centerPage (aka "current page") and pass it up to parent components
+	useEffect(()=>{
+		props.onPageChange(state.centerPage);
+	}, [state.centerPage]);
 
-		const iframeDoc = document.getElementById('BrewRenderer').contentDocument;
-		let anchor = iframeDoc.querySelector(hash);
+	const handlePageVisibilityChange = useCallback((pageNum, isVisible)=>{
+		setState((prevState)=>{
+			const updatedVisiblePages = new Set(prevState.visiblePages);
+			if(isVisible){
+				updatedVisiblePages.add(pageNum);
+			} else {
+				updatedVisiblePages.delete(pageNum);
+			}
+			const pages = Array.from(updatedVisiblePages);
 
-		if(anchor) {
-			anchor.scrollIntoView({ behavior: 'smooth' });
-		} else {
-			// Use MutationObserver to wait for the element if it's not immediately available
-			new MutationObserver((mutations, obs)=>{
-				anchor = iframeDoc.querySelector(hash);
-				if(anchor) {
-					anchor.scrollIntoView({ behavior: 'smooth' });
-					obs.disconnect();
-				}
-			}).observe(iframeDoc, { childList: true, subtree: true });
-		}
-	};
+			return { ...prevState,
+				visiblePages : _.sortBy(pages)
+			};
+		});
+	}, []);
 
-	const updateCurrentPage = useCallback(_.throttle((e)=>{
-		const { scrollTop, clientHeight, scrollHeight } = e.target;
-		const totalScrollableHeight = scrollHeight - clientHeight;
-		const currentPageNumber = Math.max(Math.ceil((scrollTop / totalScrollableHeight) * rawPages.length), 1);
-
-		props.onPageChange(currentPageNumber);
-	}, 200), []);
+	const handleCenterPageChange = useCallback((pageNum)=>{
+		setState((prevState)=>({
+			...prevState,
+			centerPage : pageNum,
+		}));
+	}, []);
 
 	const isInView = (index)=>{
 		if(!state.isMounted)
@@ -139,7 +184,7 @@ const BrewRenderer = (props)=>{
 	const renderPage = (pageText, index)=>{
 		if(props.renderer == 'legacy') {
 			const html = MarkdownLegacy.render(pageText);
-			return <BrewPage className='page phb' index={index} key={index} contents={html} />;
+			return <BrewPage className='page phb' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} onCenterPageChange={handleCenterPageChange}  />;
 		} else {
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			const html = Markdown.render(pageText, index);
@@ -149,7 +194,7 @@ const BrewRenderer = (props)=>{
 				// Add more conditions as needed
 			};
 
-			return <BrewPage className='page' index={index} key={index} contents={html} style={styles} />;
+			return <BrewPage className='page' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} onCenterPageChange={handleCenterPageChange}  />;
 		}
 	};
 
@@ -182,7 +227,6 @@ const BrewRenderer = (props)=>{
 	};
 
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
-		scrollToHash(window.location.hash);
 
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			renderPages(); //Make sure page is renderable before showing
@@ -222,7 +266,7 @@ const BrewRenderer = (props)=>{
 		<>
 			{/*render dummy page while iFrame is mounting.*/}
 			{!state.isMounted
-				? <div className='brewRenderer' onScroll={updateCurrentPage}>
+				? <div className='brewRenderer'>
 					<div className='pages'>
 						{renderDummyPage(1)}
 					</div>
@@ -235,7 +279,7 @@ const BrewRenderer = (props)=>{
 				<NotificationPopup />
 			</div>
 
-			<ToolBar displayOptions={displayOptions} currentPage={props.currentBrewRendererPageNum} totalPages={rawPages.length} onDisplayOptionsChange={handleDisplayOptionsChange} />
+			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} centerPage={state.centerPage} visiblePages={state.visiblePages} totalPages={rawPages.length}/>
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
@@ -244,19 +288,18 @@ const BrewRenderer = (props)=>{
 				onClick={()=>{emitClick();}}
 			>
 				<div className={`brewRenderer ${global.config.deployment && 'deployment'}`}
-					onScroll={updateCurrentPage}
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
-					style={ styleObject }>
+					style={ styleObject }
+				>
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted
 						&&
 						<>
-							{renderStyle()}
-							<div lang={`${props.lang || 'en'}`} style={pagesStyle} className={
-								`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread}` } >
-								{renderPages()}
+							{renderedStyle}
+							<div className={`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread}`} lang={`${props.lang || 'en'}`} style={pagesStyle} ref={iframeRef}>
+								{renderedPages}
 							</div>
 						</>
 					}
