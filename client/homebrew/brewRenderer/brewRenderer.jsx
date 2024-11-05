@@ -16,8 +16,7 @@ const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
 const { printCurrentBrew } = require('../../../shared/helpers.js');
 
-const DOMPurify = require('dompurify');
-const purifyConfig = { FORCE_BODY: true, SANITIZE_DOM: false };
+import { safeHTML } from './safeHTML.js';
 
 const PAGE_HEIGHT = 1056;
 
@@ -29,6 +28,7 @@ const INITIAL_CONTENT = dedent`
 	<base target=_blank>
 	</head><body style='overflow: hidden'><div></div></body></html>`;
 
+
 //v=====----------------------< Brew Page Component >---------------------=====v//
 const BrewPage = (props)=>{
 	props = {
@@ -36,8 +36,8 @@ const BrewPage = (props)=>{
 		index    : 0,
 		...props
 	};
-	const cleanText = props.contents; //DOMPurify.sanitize(props.contents, purifyConfig);
-	return <div className={props.className} id={`p${props.index + 1}`} >
+	const cleanText = safeHTML(props.contents);
+	return <div className={props.className} id={`p${props.index + 1}`} style={props.style}>
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
 };
@@ -53,13 +53,18 @@ let brewTemplates;
 const getPageTemplates = (pages)=>{
 	const tempPages = [];
 	brewTemplates = [];
+	brewTemplates[1] = 'Blank';
 	pages.forEach((page, index)=>{
 		const firstLine = page.split('\n')[0];
-		const firstLineClean = firstLine.slice(5).trim();
-		if((firstLineClean.length > 0) || (brewTemplates.length > 0)) {
-			brewTemplates[ index ] = firstLineClean;
+		if(firstLine.startsWith('\page')) {
+			const firstLineClean = firstLine.slice(5).trim();
+			if((firstLineClean.length > 0) || (brewTemplates.length > 0)) {
+				brewTemplates[ index ] = firstLineClean;
+			}
+			tempPages.push(page.slice(firstLine.length));
+		} else {
+			tempPages.push(page);
 		}
-		tempPages.push(page.slice(firstLine.length));
 	});
 	return tempPages;
 };
@@ -108,8 +113,14 @@ const BrewRenderer = (props)=>{
 
 	const [state, setState] = useState({
 		isMounted  : false,
-		visibility : 'hidden',
-		zoom       : 100
+		visibility : 'hidden'
+	});
+
+	const [displayOptions, setDisplayOptions] = useState({
+		zoomLevel    : 100,
+		spread       : 'single',
+		startOnRight : true,
+		pageShadows  : true
 	});
 
 	const mainRef  = useRef(null);
@@ -120,19 +131,19 @@ const BrewRenderer = (props)=>{
 		rawPages = getPageTemplates(props.text.split(/^(?=^\\page)/gm));
 	}
 
-	const scrollToHash = (hash) => {
-		if (!hash) return;
+	const scrollToHash = (hash)=>{
+		if(!hash) return;
 
 		const iframeDoc = document.getElementById('BrewRenderer').contentDocument;
 		let anchor = iframeDoc.querySelector(hash);
 
-		if (anchor) {
+		if(anchor) {
 			anchor.scrollIntoView({ behavior: 'smooth' });
 		} else {
 			// Use MutationObserver to wait for the element if it's not immediately available
-			new MutationObserver((mutations, obs) => {
-				anchor = iframeDoc.querySelector(hash);	
-				if (anchor) {
+			new MutationObserver((mutations, obs)=>{
+				anchor = iframeDoc.querySelector(hash);
+				if(anchor) {
 					anchor.scrollIntoView({ behavior: 'smooth' });
 					obs.disconnect();
 				}
@@ -168,9 +179,9 @@ const BrewRenderer = (props)=>{
 	};
 
 	const renderStyle = ()=>{
-		const cleanStyle = props.style; //DOMPurify.sanitize(props.style, purifyConfig);
 		const themeStyles = props.themeBundle?.joinedStyles ?? '<style>@import url("/themes/V3/Blank/style.css");</style>';
-		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: `${themeStyles} \n\n <style> ${cleanStyle} </style>` }} />;
+		const cleanStyle = safeHTML(`${themeStyles} \n\n <style> ${props.style} </style>`);
+		return <div style={{ display: 'none' }} dangerouslySetInnerHTML={{ __html: cleanStyle }} />;
 	};
 
 	const renderPage = (pageText, index)=>{
@@ -180,7 +191,12 @@ const BrewRenderer = (props)=>{
 		} else {
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			const html = Markdown.render(`${insertTemplate(props, index)}\n${pageText}`, index);
-			return <BrewPage className='page' index={index} key={index} contents={html} />;
+			const styles = {
+				...(!displayOptions.pageShadows ? { boxShadow: 'none' } : {})
+				// Add more conditions as needed
+			};
+
+			return <BrewPage className='page' index={index} key={index} contents={html} style={styles} />;
 		}
 	};
 
@@ -230,12 +246,14 @@ const BrewRenderer = (props)=>{
 		document.dispatchEvent(new MouseEvent('click'));
 	};
 
-	//Toolbar settings:
-	const handleZoom = (newZoom)=>{
-		setState((prevState)=>({
-			...prevState,
-			zoom : newZoom
-		}));
+	const handleDisplayOptionsChange = (newDisplayOptions)=>{
+		setDisplayOptions(newDisplayOptions);
+	};
+
+	const pagesStyle = {
+		zoom      : `${displayOptions.zoomLevel}%`,
+		columnGap : `${displayOptions.columnGap}px`,
+		rowGap    : `${displayOptions.rowGap}px`
 	};
 
 	const styleObject = {};
@@ -244,8 +262,8 @@ const BrewRenderer = (props)=>{
 		styleObject.backgroundImage = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='40px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${global.config.deployment}</text></svg>")`;
 	}
 
-	const renderedStyle = useMemo(()=> renderStyle(), [props.style, props.themeBundle]);
-	renderedPages = useMemo(() => renderPages(), [props.text]);
+	const renderedStyle = useMemo(()=>renderStyle(), [props.style, props.themeBundle]);
+	renderedPages = useMemo(()=>renderPages(), [props.text]);
 
 	return (
 		<>
@@ -264,7 +282,7 @@ const BrewRenderer = (props)=>{
 				<NotificationPopup />
 			</div>
 
-			<ToolBar onZoomChange={handleZoom} currentPage={props.currentBrewRendererPageNum}  totalPages={rawPages.length}/>
+			<ToolBar displayOptions={displayOptions} currentPage={props.currentBrewRendererPageNum} totalPages={rawPages.length} onDisplayOptionsChange={handleDisplayOptionsChange} />
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
@@ -282,9 +300,10 @@ const BrewRenderer = (props)=>{
 					{state.isMounted
 						&&
 						<>
-							{renderedStyle}
-							<div className='pages' lang={`${props.lang || 'en'}`} style={{ zoom: `${state.zoom}%` }}>
-								{renderedPages}
+							{renderStyle()}
+							<div lang={`${props.lang || 'en'}`} style={pagesStyle} className={
+								`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread}` } >
+								{renderPages()}
 							</div>
 						</>
 					}
