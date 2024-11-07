@@ -66,7 +66,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 			} else {
 				minDimRatio = [...pages].reduce((minRatio, page)=>Math.min(minRatio, iframeWidth / page.offsetWidth, iframeHeight / page.offsetHeight), Infinity);
 			}
-			console.log(minDimRatio)
+			console.log(minDimRatio);
 
 			desiredZoom = minDimRatio * 100;
 		}
@@ -249,14 +249,14 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					title='Next Page(s)'
 					onClick={()=>{
 						// if there are multiple pages in a 'row' and they are in 'view',
-						// then the 'max'/last page in view will always be the same, and 
+						// then the 'max'/last page in view will always be the same, and
 						// the other pages will always be the same (since the viewport doesn't change).
-						// So this needs to scroll to the 'max', then see what is newly in view, 
+						// So this needs to scroll to the 'max', then see what is newly in view,
 						// and if the same pages are visible, do it again but +1.
-						const start = _.max(visiblePages); 
+						const start = _.max(visiblePages);
 						scrollToPage(start);
 						if(start === _.max(visiblePages)){
-							scrollToPage(start + 1)
+							scrollToPage(start + 1);
 						};
 					}}
 					disabled={pageNum >= totalPages}

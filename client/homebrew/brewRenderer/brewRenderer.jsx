@@ -128,23 +128,14 @@ const BrewRenderer = (props)=>{
 		rawPages = props.text.split(/^\\page$/gm);
 	}
 
-	// update centerPage (aka "current page") and pass it up to parent components
-	useEffect(()=>{
-		props.onPageChange(state.centerPage);
-	}, [state.centerPage]);
-
 	const handlePageVisibilityChange = useCallback((pageNum, isVisible)=>{
 		setState((prevState)=>{
 			const updatedVisiblePages = new Set(prevState.visiblePages);
-			if(isVisible){
-				updatedVisiblePages.add(pageNum);
-			} else {
-				updatedVisiblePages.delete(pageNum);
-			}
-			const pages = Array.from(updatedVisiblePages);
+			isVisible ? updatedVisiblePages.add(pageNum) : updatedVisiblePages.delete(pageNum);
 
-			return { ...prevState,
-				visiblePages : _.sortBy(pages)
+			return {
+				...prevState,
+				visiblePages : [...updatedVisiblePages].sort((a, b)=>a - b)
 			};
 		});
 	}, []);
@@ -154,7 +145,9 @@ const BrewRenderer = (props)=>{
 			...prevState,
 			centerPage : pageNum,
 		}));
-	}, []);
+
+		props.onPageChange(pageNum);
+	}, [props.onPageChange]);
 
 	const isInView = (index)=>{
 		if(!state.isMounted)
