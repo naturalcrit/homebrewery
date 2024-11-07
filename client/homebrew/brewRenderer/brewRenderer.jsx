@@ -106,8 +106,8 @@ const BrewRenderer = (props)=>{
 	};
 
 	const [state, setState] = useState({
-		isMounted  : false,
-		visibility : 'hidden',
+		isMounted    : false,
+		visibility   : 'hidden',
 		visiblePages : [],
 		centerPage   : 1
 	});
@@ -184,6 +184,12 @@ const BrewRenderer = (props)=>{
 	const renderPage = (pageText, index)=>{
 		if(props.renderer == 'legacy') {
 			const html = MarkdownLegacy.render(pageText);
+
+			const styles = {
+				...(!displayOptions.pageShadows ? { boxShadow: 'none' } : {})
+				// Add more conditions as needed
+			};
+
 			return <BrewPage className='page phb' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} onCenterPageChange={handleCenterPageChange}  />;
 		} else {
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
