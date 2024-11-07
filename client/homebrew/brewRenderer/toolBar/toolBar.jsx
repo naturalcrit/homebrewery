@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 require('./toolBar.less');
 const React = require('react');
 const { useState, useEffect } = React;
@@ -242,8 +243,16 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					type='button'
 					title='Next Page(s)'
 					onClick={()=>{
-						const rangeOffset = visiblePages.length > 1 ? 0 : 1;
-						scrollToPage(_.max(visiblePages) + rangeOffset);
+						// if there are multiple pages in a 'row' and they are in 'view',
+						// then the 'max'/last page in view will always be the same, and 
+						// the other pages will always be the same (since the viewport doesn't change).
+						// So this needs to scroll to the 'max', then see what is newly in view, 
+						// and if the same pages are visible, do it again but +1.
+						const start = _.max(visiblePages); 
+						scrollToPage(start);
+						if(start === _.max(visiblePages)){
+							scrollToPage(start + 1)
+						};
 					}}
 					disabled={pageNum >= totalPages}
 				>
