@@ -30,7 +30,6 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 	};
 
 	const handlePageInput = (pageInput)=>{
-		console.log(pageInput);
 		if(/[0-9]/.test(pageInput))
 			setPageNum(parseInt(pageInput)); // input type is 'text', so `page` comes in as a string, not number.
 	};
