@@ -37,7 +37,7 @@ const BrewPage = (props)=>{
 		...props
 	};
 	const cleanText = safeHTML(props.contents);
-	return <div className={props.className} id={`p${props.index + 1}`} >
+	return <div className={props.className} id={`p${props.index + 1}`} style={props.style}>
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
 };
@@ -65,8 +65,14 @@ const BrewRenderer = (props)=>{
 
 	const [state, setState] = useState({
 		isMounted  : false,
-		visibility : 'hidden',
-		zoom       : 100
+		visibility : 'hidden'
+	});
+
+	const [displayOptions, setDisplayOptions] = useState({
+		zoomLevel    : 100,
+		spread       : 'single',
+		startOnRight : true,
+		pageShadows  : true
 	});
 
 	const mainRef  = useRef(null);
@@ -137,7 +143,13 @@ const BrewRenderer = (props)=>{
 		} else {
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			const html = Markdown.render(pageText, index);
-			return <BrewPage className='page' index={index} key={index} contents={html} />;
+
+			const styles = {
+				...(!displayOptions.pageShadows ? { boxShadow: 'none' } : {})
+				// Add more conditions as needed
+			};
+
+			return <BrewPage className='page' index={index} key={index} contents={html} style={styles} />;
 		}
 	};
 
@@ -187,12 +199,14 @@ const BrewRenderer = (props)=>{
 		document.dispatchEvent(new MouseEvent('click'));
 	};
 
-	//Toolbar settings:
-	const handleZoom = (newZoom)=>{
-		setState((prevState)=>({
-			...prevState,
-			zoom : newZoom
-		}));
+	const handleDisplayOptionsChange = (newDisplayOptions)=>{
+		setDisplayOptions(newDisplayOptions);
+	};
+
+	const pagesStyle = {
+		zoom      : `${displayOptions.zoomLevel}%`,
+		columnGap : `${displayOptions.columnGap}px`,
+		rowGap    : `${displayOptions.rowGap}px`
 	};
 
 	const styleObject = {};
@@ -221,7 +235,7 @@ const BrewRenderer = (props)=>{
 				<NotificationPopup />
 			</div>
 
-			<ToolBar onZoomChange={handleZoom} currentPage={props.currentBrewRendererPageNum}  totalPages={rawPages.length}/>
+			<ToolBar displayOptions={displayOptions} currentPage={props.currentBrewRendererPageNum} totalPages={rawPages.length} onDisplayOptionsChange={handleDisplayOptionsChange} />
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
@@ -240,7 +254,8 @@ const BrewRenderer = (props)=>{
 						&&
 						<>
 							{renderedStyle}
-							<div className='pages' lang={`${props.lang || 'en'}`} style={{ zoom: `${state.zoom}%` }}>
+							<div lang={`${props.lang || 'en'}`} style={pagesStyle} className={
+								`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread}` } >
 								{renderedPages}
 							</div>
 						</>
