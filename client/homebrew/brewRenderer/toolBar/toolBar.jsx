@@ -60,8 +60,14 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 			desiredZoom = (iframeWidth / widestPage) * 100;
 
 		} else if(mode == 'fit'){
+			let minDimRatio;
 			// find the page with the largest single dim (height or width) so that zoom can be adapted to fit it.
-			const minDimRatio = [...pages].reduce((minRatio, page)=>Math.min(minRatio, iframeWidth / page.offsetWidth, iframeHeight / page.offsetHeight), Infinity);
+			if(displayOptions.spread === 'facing'){
+				minDimRatio = [...pages].reduce((minRatio, page)=>Math.min(minRatio, iframeWidth / page.offsetWidth / 2), Infinity);    // if 'facing' spread, fit two pages in view
+			} else {
+				minDimRatio = [...pages].reduce((minRatio, page)=>Math.min(minRatio, iframeWidth / page.offsetWidth, iframeHeight / page.offsetHeight), Infinity);
+			}
+			console.log(minDimRatio)
 
 			desiredZoom = minDimRatio * 100;
 		}
