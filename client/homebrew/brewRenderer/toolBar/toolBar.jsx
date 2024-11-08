@@ -238,6 +238,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 						onChange={(e)=>handlePageInput(e.target.value)}
 						onBlur={()=>scrollToPage(pageNum)}
 						onKeyDown={(e)=>e.key == 'Enter' && scrollToPage(pageNum)}
+						style={{ width: `${pageNum.length}ch` }}
 					/>
 					<span id='page-count' title='Total Page Count'>/ {totalPages}</span>
 				</div>
