@@ -219,7 +219,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 						const rangeOffset = visiblePages.length > 1 ? 1 : 0;
 						scrollToPage(_.min(visiblePages) - visiblePages.length + rangeOffset);
 					}}
-					disabled={pageNum <= 1}
+					disabled={visiblePages.includes(1)}
 				>
 					<i className='fas fa-arrow-left'></i>
 				</button>
@@ -259,7 +259,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 							scrollToPage(start + 1);
 						};
 					}}
-					disabled={pageNum >= totalPages}
+					disabled={visiblePages.includes(totalPages)}
 				>
 					<i className='fas fa-arrow-right'></i>
 				</button>
