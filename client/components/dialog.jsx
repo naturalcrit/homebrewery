@@ -2,7 +2,7 @@
 import React from "react";
 const { useRef, useEffect } = React;
 
-function Dialog({ dismisskeys, closeText = 'Close', blocking = false, ...rest }) {
+function Dialog({ dismisskeys = [], closeText = 'Close', blocking = false, ...rest }) {
 	const dialogRef = useRef(null);
 
 	useEffect(()=>{
