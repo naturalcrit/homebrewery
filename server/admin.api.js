@@ -112,8 +112,6 @@ router.put('/admin/clean/script/:id', asyncHandler(HomebrewAPI.getBrew('admin', 
 	properties.forEach((property)=>{
 		brew[property] = cleanText(brew[property]);
 	});
-	// Tag cleaning is commented out as it is impossible to enter a script tag in tags
-	// brew.tags = cleanText(brew.tags.join('\n')).split('\n');
 
 	splitTextStyleAndMetadata(brew);
 
