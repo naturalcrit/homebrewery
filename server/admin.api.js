@@ -72,17 +72,7 @@ router.post('/admin/cleanup', mw.adminOnly, (req, res)=>{
 /* Searches for matching edit or share id, also attempts to partial match */
 router.get('/admin/lookup/:id', mw.adminOnly, asyncHandler(HomebrewAPI.getBrew('admin', false)), async (req, res, next)=>{
 	const brew = req?.brew ?? undefined;
-
-	try {
-		if(!brew){
-			// No document found
-			return res.status(404).json({ error: 'Document not found' });
-		}
-		return res.json(brew);
-	} catch (err) {
-		console.error(err);
-		return res.status(500).json({ error: 'Internal Server Error' });
-	}
+	return res.json(brew);
 });
 
 /* Find 50 brews that aren't compressed yet */
