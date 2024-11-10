@@ -14,28 +14,26 @@ const BrewLookup = createClass({
 	},
 	getInitialState() {
 		return {
-			query          : '',
-			foundBrew      : null,
-			searching      : false,
-			error          : null,
-			checkForScript : false,
-			scriptCount    : undefined
+			query       : '',
+			foundBrew   : null,
+			searching   : false,
+			error       : null,
+			scriptCount : 0
 		};
 	},
 	handleChange(e){
 		this.setState({ query: e.target.value });
 	},
 	lookup(){
-		this.setState({ searching: true, error: null, checkForScript: false, scriptCount: undefined });
+		this.setState({ searching: true, error: null, scriptCount: 0 });
 
 		request.get(`/admin/lookup/${this.state.query}`)
 			.then((res)=>{
 				const foundBrew = res.body;
 				const scriptCheck = foundBrew?.text.match(/(<\/?s)cript/g);
 				this.setState({
-					foundBrew      : foundBrew,
-					scriptCount    : scriptCheck?.length || 0,
-					checkForScript : scriptCheck?.length > 0
+					foundBrew   : foundBrew,
+					scriptCount : scriptCheck?.length || 0,
 				});
 			})
 			.catch((err)=>this.setState({ error: err }))
@@ -52,7 +50,7 @@ const BrewLookup = createClass({
 		request.put(`/admin/clean/script/${this.state.foundBrew.shareId}`)
 			.then((res)=>this.setState({ foundBrew: res.body }))
 			.catch((err)=>this.setState({ error: err }))
-			.finally(()=>this.setState({ checkForScript: false, scriptCount: 0 }));
+			.finally(()=>this.setState({ scriptCount: 0 }));
 	},
 
 	renderFoundBrew(){
@@ -83,7 +81,7 @@ const BrewLookup = createClass({
 				<dt>Number of SCRIPT tags detected</dt>
 				<dd>{this.state.scriptCount}</dd>
 			</dl>
-			{this.state.checkForScript &&
+			{this.state.scriptCount > 0 &&
 				<div className='cleanButton'>
 					<button onClick={this.cleanScript}>CLEAN BREW</button>
 				</div>
