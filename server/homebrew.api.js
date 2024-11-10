@@ -374,7 +374,7 @@ const api = {
 			// Compress brew text to binary before saving
 			brew.textBin = zlib.deflateRawSync(brew.text);
 			// Delete the non-binary text field since it's not needed anymore
-			brew.text = undefined;
+			if(!req?.keepText) brew.text = undefined;
 		}
 		brew.updatedAt = new Date();
 		brew.version = (brew.version || 1) + 1;

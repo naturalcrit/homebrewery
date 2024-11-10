@@ -105,6 +105,7 @@ router.put('/admin/clean/script/:id', asyncHandler(HomebrewAPI.getBrew('admin', 
 	splitTextStyleAndMetadata(brew);
 
 	req.body = brew;
+	req.keepText = true;
 
 	return await HomebrewAPI.updateBrew(req, res);
 });
@@ -152,7 +153,6 @@ router.get('/admin/notification/all', async (req, res, next)=>{
 	try {
 		const notifications = await NotificationModel.getAll();
 		return res.json(notifications);
-
 	} catch (error) {
 		console.log('Error getting all notifications: ', error.message);
 		return res.status(500).json({ message: error.message });

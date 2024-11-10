@@ -21,6 +21,13 @@ const BrewLookup = createClass({
 			scriptCount : 0
 		};
 	},
+	componentDidUpdate(prevProps, prevState){
+		if(this.state.foundBrew?.text != prevState.foundBrew?.text){
+			this.setState({
+				scriptCount : this.countScript()
+			});
+		}
+	},
 	handleChange(e){
 		this.setState({ query: e.target.value });
 	},
@@ -30,10 +37,8 @@ const BrewLookup = createClass({
 		request.get(`/admin/lookup/${this.state.query}`)
 			.then((res)=>{
 				const foundBrew = res.body;
-				const scriptCheck = foundBrew?.text.match(/(<\/?s)cript/g);
 				this.setState({
-					foundBrew   : foundBrew,
-					scriptCount : scriptCheck?.length || 0,
+					foundBrew : foundBrew
 				});
 			})
 			.catch((err)=>this.setState({ error: err }))
@@ -42,6 +47,12 @@ const BrewLookup = createClass({
 					searching : false
 				});
 			});
+	},
+
+	countScript(){
+		if(!this.state.foundBrew?.text) return 'No text';
+		const scriptCheck = this.state.foundBrew.text.match(/(<\/?s)cript/g);
+		return scriptCheck?.length || 0;
 	},
 
 	cleanScript(){
