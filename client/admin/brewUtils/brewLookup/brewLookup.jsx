@@ -81,7 +81,7 @@ const BrewLookup = createClass({
 				<dt>Number of SCRIPT tags detected</dt>
 				<dd>{this.state.scriptCount}</dd>
 			</dl>
-			{this.state.scriptCount > 0 &&
+			{this.state.scriptCount &&
 				<div className='cleanButton'>
 					<button onClick={this.cleanScript}>CLEAN BREW</button>
 				</div>
