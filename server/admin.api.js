@@ -105,7 +105,7 @@ router.put('/admin/clean/script/:id', asyncHandler(HomebrewAPI.getBrew('admin', 
 	splitTextStyleAndMetadata(brew);
 
 	req.body = brew;
-	req.keepText = true;
+	req.returnText = true;
 
 	return await HomebrewAPI.updateBrew(req, res);
 });

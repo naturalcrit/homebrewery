@@ -344,6 +344,9 @@ const api = {
 		brew.description = brew.description.trim() || '';
 		brew.text = api.mergeBrewText(brew);
 
+		// If the request specifies that we return the text field, make a copy of it to restore after saving
+		if(req.returnText) req.returnText = brew.text;
+
 		if(brew.googleId && removeFromGoogle) {
 			// If the google id exists and we're removing it from google, set afterSave to delete the google brew and mark the brew's google id as undefined
 			afterSave = async ()=>{
@@ -374,7 +377,7 @@ const api = {
 			// Compress brew text to binary before saving
 			brew.textBin = zlib.deflateRawSync(brew.text);
 			// Delete the non-binary text field since it's not needed anymore
-			if(!req?.keepText) brew.text = undefined;
+			brew.text = undefined;
 		}
 		brew.updatedAt = new Date();
 		brew.version = (brew.version || 1) + 1;
@@ -403,6 +406,9 @@ const api = {
 		// Call and wait for afterSave to complete
 		const after = await afterSave();
 		if(!after) return;
+
+		// Reinsert text field if required
+		if(req.returnText) saved.text = req.returnText;
 
 		res.status(200).send(saved);
 	},
