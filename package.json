@@ -102,7 +102,7 @@
     "expr-eval": "^2.0.2",
     "express": "^4.21.1",
     "express-async-handler": "^1.2.0",
-    "express-static-gzip": "2.1.8",
+    "express-static-gzip": "2.2.0",
     "fs-extra": "11.2.0",
     "idb-keyval": "^6.2.1",
     "js-yaml": "^4.1.0",
