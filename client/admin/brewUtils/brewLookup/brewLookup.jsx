@@ -44,13 +44,13 @@ const BrewLookup = createClass({
 			});
 	},
 
-	cleanScript(){
+	async cleanScript(){
 		if(!this.state.foundBrew?.shareId) return;
 
-		request.put(`/admin/clean/script/${this.state.foundBrew.shareId}`)
-			.then((res)=>this.setState({ foundBrew: res.body }))
-			.catch((err)=>this.setState({ error: err }))
-			.finally(()=>this.setState({ scriptCount: 0 }));
+		await request.put(`/admin/clean/script/${this.state.foundBrew.shareId}`)
+			.catch((err)=>{ this.setState({ error: err }); return; });
+
+		this.lookup();
 	},
 
 	renderFoundBrew(){
