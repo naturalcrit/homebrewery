@@ -224,6 +224,7 @@ const NewPage = createClass({
 	render : function(){
 		return <div className='newPage sitePage'>
 			{this.renderNavbar()}
+			<div className="content">
 			<SplitPane onDragFinish={this.handleSplitMove}>
 				<Editor
 					ref={this.editor}
@@ -259,6 +260,7 @@ const NewPage = createClass({
 					userTemplates={asTemplateMap(this.state.userTemplates)}
 				/>
 			</SplitPane>
+			</div>
 		</div>;
 	}
 });

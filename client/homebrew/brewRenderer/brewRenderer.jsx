@@ -300,10 +300,10 @@ const BrewRenderer = (props)=>{
 					{state.isMounted
 						&&
 						<>
-							{renderStyle()}
+							{renderedStyle}
 							<div lang={`${props.lang || 'en'}`} style={pagesStyle} className={
 								`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread}` } >
-								{renderPages()}
+								{renderedPages}
 							</div>
 						</>
 					}
