@@ -100,6 +100,7 @@ const HomePage = createClass({
 		return <div className='homePage sitePage'>
 			<Meta name='google-site-verification' content='NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4' />
 			{this.renderNavbar()}
+			<div className="content">
 			<SplitPane onDragFinish={this.handleSplitMove}>
 				<Editor
 					ref={this.editor}
@@ -125,6 +126,7 @@ const HomePage = createClass({
 					themeBundle={this.state.themeBundle}
 				/>
 			</SplitPane>
+			</div>
 			<div className={cx('floatingSaveButton', { show: this.state.welcomeText != this.state.brew.text })} onClick={this.handleSave}>
 				Save current <i className='fas fa-save' />
 			</div>

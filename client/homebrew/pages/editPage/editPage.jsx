@@ -430,6 +430,7 @@ const EditPage = createClass({
 			{this.renderNavbar()}
 
 			{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} />}
+			<div className="content">
 			<SplitPane onDragFinish={this.handleSplitMove}>
 				<Editor
 					ref={this.editor}
@@ -463,6 +464,7 @@ const EditPage = createClass({
 					allowPrint={true}
 				/>
 			</SplitPane>
+			</div>
 		</div>;
 	}
 });
