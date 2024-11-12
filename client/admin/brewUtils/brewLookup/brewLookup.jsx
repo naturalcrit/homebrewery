@@ -78,7 +78,7 @@ const BrewLookup = createClass({
 				<dt>Num of Views</dt>
 				<dd>{brew.views}</dd>
 
-				<dt>Number of SCRIPT tags detected</dt>
+				<dt>SCRIPT tags detected</dt>
 				<dd>{this.state.scriptCount}</dd>
 			</dl>
 			{this.state.scriptCount > 0 &&
