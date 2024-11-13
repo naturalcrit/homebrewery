@@ -87,8 +87,18 @@ const api = {
 			// Get relevant IDs for the brew
 			const { id, googleId } = api.getId(req);
 
+			const accessMap = {
+				edit  : { editId: id },
+				share : { shareId: id },
+				admin : {
+					$or : [
+						{ editId: id },
+						{ shareId: id },
+					] }
+			};
+
 			// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine.
-			let stub = await HomebrewModel.get(accessType === 'edit' ? { editId: id } : { shareId: id })
+			let stub = await HomebrewModel.get(accessMap[accessType])
 				.catch((err)=>{
 					if(googleId) {
 						console.warn(`Unable to find document stub for ${accessType}Id ${id}`);
@@ -242,11 +252,8 @@ const api = {
 
 		let googleId, saved;
 		if(saveToGoogle) {
-			googleId = await api.newGoogleBrew(req.account, newHomebrew, res)
-				.catch((err)=>{
-					console.error(err);
-					res.status(err?.status || err?.response?.status || 500).send(err?.message || err);
-				});
+			googleId = await api.newGoogleBrew(req.account, newHomebrew, res);
+
 			if(!googleId) return;
 			api.excludeStubProps(newHomebrew);
 			newHomebrew.googleId = googleId;
@@ -298,9 +305,8 @@ const api = {
 
 				req.params.id       = currentTheme.theme;
 				req.params.renderer = currentTheme.renderer;
-			}
+			} else {
 			//=== Static Themes ===//
-			else {
 				const localSnippets = `${req.params.renderer}_${req.params.id}`; // Just log the name for loading on client
 				const localStyle    = `@import url(\"/themes/${req.params.renderer}/${req.params.id}/style.css\");`;
 				completeSnippets.push(localSnippets);
@@ -351,19 +357,13 @@ const api = {
 			brew.googleId = undefined;
 		} else if(!brew.googleId && saveToGoogle) {
 			// If we don't have a google id and the user wants to save to google, create the google brew and set the google id on the brew
-			brew.googleId = await api.newGoogleBrew(req.account, api.excludeGoogleProps(brew), res)
-				.catch((err)=>{
-					console.error(err);
-					res.status(err.status || err.response.status).send(err.message || err);
-				});
+			brew.googleId = await api.newGoogleBrew(req.account, api.excludeGoogleProps(brew), res);
+
 			if(!brew.googleId) return;
 		} else if(brew.googleId) {
 			// If the google id exists and no other actions are being performed, update the google brew
-			const updated = await GoogleActions.updateGoogleBrew(api.excludeGoogleProps(brew))
-				.catch((err)=>{
-					console.error(err);
-					res.status(err?.response?.status || 500).send(err);
-				});
+			const updated = await GoogleActions.updateGoogleBrew(api.excludeGoogleProps(brew), req.ip);
+
 			if(!updated) return;
 		}
 
