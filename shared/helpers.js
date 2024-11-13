@@ -5,7 +5,7 @@ const dedent = require('dedent');
 
 // Convert the templates from a brew to a Snippets Structure.
 const templatesToSnippet = (menuTitle, templates, themeBundle)=>{
-	const textSplit  = /^\\page/gm;
+	const textSplit  = /^\\template/gm;
 	const mpAsSnippets = [];
 	// Templates from Themes first.
 	for (let themes of themeBundle) {
