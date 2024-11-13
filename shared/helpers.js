@@ -72,14 +72,14 @@ const splitTextStyleAndMetadata = (brew)=>{
 		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
 		brew.text = brew.text.slice(index + 5);
 	}
-	if(brew.text.startsWith('```snippets')) {
-		const index = brew.text.indexOf('```\n\n');
-		brew.snippets = brew.text.slice(12, index - 1);
-		brew.text = brew.text.slice(index + 5);
-	}
 	if(brew.text.startsWith('```css')) {
 		const index = brew.text.indexOf('```\n\n');
 		brew.style = brew.text.slice(7, index - 1);
+		brew.text = brew.text.slice(index + 5);
+	}
+	if(brew.text.startsWith('```snippets')) {
+		const index = brew.text.indexOf('```\n\n');
+		brew.snippets = brew.text.slice(12, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
 };
