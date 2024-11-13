@@ -74,26 +74,26 @@ const Snippetbar = createClass({
 		};
 
 		// Update history list if it has changed
-		// const checkHistoryItems = await loadHistory(this.props.brew);
+		const checkHistoryItems = await loadHistory(this.props.brew);
 
-		// // If all items have the noData property, there is no saved data
-		// const checkHistoryExists = !checkHistoryItems.every((historyItem)=>{
-		// 	return historyItem?.noData;
-		// });
-		// if(prevState.historyExists != checkHistoryExists){
-		// 	this.setState({
-		// 		historyExists : checkHistoryExists
-		// 	});
-		// }
+		// If all items have the noData property, there is no saved data
+		const checkHistoryExists = !checkHistoryItems.every((historyItem)=>{
+			return historyItem?.noData;
+		});
+		if(prevState.historyExists != checkHistoryExists){
+			this.setState({
+				historyExists : checkHistoryExists
+			});
+		}
 
-		// // If any history items have changed, update the list
-		// if(checkHistoryExists && checkHistoryItems.some((historyItem, index)=>{
-		// 	return index >= prevState.historyItems.length || !_.isEqual(historyItem, prevState.historyItems[index]);
-		// })){
-		// 	this.setState({
-		// 		historyItems : checkHistoryItems
-		// 	});
-		// }
+		// If any history items have changed, update the list
+		if(checkHistoryExists && checkHistoryItems.some((historyItem, index)=>{
+			return index >= prevState.historyItems.length || !_.isEqual(historyItem, prevState.historyItems[index]);
+		})){
+			this.setState({
+				historyItems : checkHistoryItems
+			});
+		}
 	},
 
 	mergeCustomizer : function(oldValue, newValue, key) {

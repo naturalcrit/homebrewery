@@ -60,7 +60,7 @@ const templatesToSnippet = (menuTitle, templates, themeBundle)=>{
 };
 
 const splitTemplates = (templates)=>{
-	const splitTemplates = templates.split(/^(?=^\\page)/gm);
+	const splitTemplates = templates.split(/^(?=^\\template)/gm);
 	const templatesObj = [];
 	splitTemplates.forEach((page)=>{
 		const firstLine = page.split('\n')[0];
