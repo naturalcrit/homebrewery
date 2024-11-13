@@ -87,8 +87,18 @@ const api = {
 			// Get relevant IDs for the brew
 			const { id, googleId } = api.getId(req);
 
+			const accessMap = {
+				edit  : { editId: id },
+				share : { shareId: id },
+				admin : {
+					$or : [
+						{ editId: id },
+						{ shareId: id },
+					] }
+			};
+
 			// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine.
-			let stub = await HomebrewModel.get(accessType === 'edit' ? { editId: id } : { shareId: id })
+			let stub = await HomebrewModel.get(accessMap[accessType])
 				.catch((err)=>{
 					if(googleId) {
 						console.warn(`Unable to find document stub for ${accessType}Id ${id}`);
@@ -301,9 +311,8 @@ const api = {
 
 				req.params.id       = currentTheme.theme;
 				req.params.renderer = currentTheme.renderer;
-			}
+			} else {
 			//=== Static Themes ===//
-			else {
 				const localSnippets = `${req.params.renderer}_${req.params.id}`; // Just log the name for loading on client
 				const localStyle    = `@import url(\"/themes/${req.params.renderer}/${req.params.id}/style.css\");`;
 				completeSnippets.push(localSnippets);
