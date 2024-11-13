@@ -44,7 +44,8 @@ const api = {
 		}
 		return { id, googleId };
 	},
-	//Get array of any of this user's brews tagged with `meta:theme`
+
+  //Get array of any of this user's brews tagged with `meta:theme`
 	getUsersBrewThemes : async (username)=>{
 		if(!username)
 			return {};
@@ -81,7 +82,8 @@ const api = {
 
 		return userThemes;
 	},
-	getBrew : (accessType, stubOnly = false)=>{
+
+  getBrew : (accessType, stubOnly = false, auth = undefined)=>{
 		// Create middleware with the accessType passed in as part of the scope
 		return async (req, res, next)=>{
 			// Get relevant IDs for the brew
@@ -115,7 +117,7 @@ const api = {
 			// If there is a google id, try to find the google brew
 			if(!stubOnly && (googleId || stub?.googleId)) {
 				let googleError;
-				const googleBrew = await GoogleActions.getGoogleBrew(googleId || stub?.googleId, id, accessType)
+				const googleBrew = await GoogleActions.getGoogleBrew(googleId || stub?.googleId, id, accessType, auth)
 					.catch((err)=>{
 						googleError = err;
 					});
@@ -407,9 +409,8 @@ const api = {
 		res.status(200).send(saved);
 	},
 	deleteGoogleBrew : async (account, id, editId, res)=>{
-		const auth = await GoogleActions.authCheck(account, res);
-		await GoogleActions.deleteGoogleBrew(auth, id, editId);
-		return true;
+		const auth = GoogleActions.authCheck(account, res);
+		return await GoogleActions.deleteGoogleBrew(auth, id, editId);
 	},
 	deleteBrew : async (req, res, next)=>{
 		// Delete an orphaned stub if its Google brew doesn't exist
