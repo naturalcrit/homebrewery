@@ -13,11 +13,12 @@
 	height           : auto;
 	padding          : 2px 0;
 	font-family      : 'Open Sans', sans-serif;
+	font-size        : 13px;
 	color            : #CCCCCC;
 	background-color : #555555;
 	& > *:not(.toggleButton) {
-		opacity: 1;
-		transition: all .2s ease;
+		opacity    : 1;
+		transition : all 0.2s ease;
 	}
 
 	.group {
@@ -32,6 +33,70 @@
 	.tool {
 		display     : flex;
 		align-items : center;
+	}
+
+	.active, [aria-checked='true'] { background-color : #444444; }
+
+	.anchored-trigger {
+		&.active { background-color : #444444; }
+	}
+
+	.anchored-box {
+		--box-color      : #555555;
+		top              : 30px;
+		display          : flex;
+		flex-direction   : column;
+		gap              : 5px;
+		padding          : 15px;
+		margin-top       : 10px;
+		font-size        : 0.8em;
+		color            : #CCCCCC;
+		background-color : var(--box-color);
+		border-radius    : 5px;
+	
+		h1 {
+			padding-bottom : 0.3em;
+			margin-bottom  : 0.5em;
+			border-bottom  : 1px solid currentColor;
+		}
+	
+		h2 {
+			padding-bottom : 0.3em;
+			margin         : 1em 0 0.5em 0;
+			color          : lightgray;
+			border-bottom  : 1px solid currentColor;
+		}
+	
+		label {
+			display         : flex;
+			gap             : 6px;
+			align-items     : center;
+			justify-content : space-between;
+	
+		}
+		input {
+			height : unset;
+			&[type='range'] { padding : 0; }
+		}
+		&::before {
+			position       : absolute;
+			top            : -20px;
+			left           : 50%;
+			width          : 0px;
+			height         : 0px;
+			pointer-events : none;
+			content        : '';
+			border         : 10px solid transparent;
+			border-bottom  : 10px solid var(--box-color);
+			transform      : translateX(-50%);
+		}
+
+	}
+
+	.radio-group:has(button[role='radio']) {
+		display : flex;
+		height  : 100%;
+		border  : 1px solid #333333;
 	}
 
 	input {
@@ -57,7 +122,7 @@
 				outline          : none;
 			}
 
-			&:hover::after {
+			&.hover-tooltip[value]:hover::after {
 				position         : absolute;
 				bottom           : -30px;
 				left             : 50%;
@@ -83,46 +148,40 @@
 	}
 
 	button {
-		box-sizing       : content-box;
+		box-sizing       : border-box;
 		display          : flex;
 		align-items      : center;
 		justify-content  : center;
 		width            : auto;
 		min-width        : 46px;
 		height           : 100%;
-		padding          : 0 0px;
-		font-weight      : unset;
-		color            : inherit;
-		background-color : unset;
 		&:hover { background-color : #444444; }
-		&:focus { outline : 1px solid #D3D3D3; }
+		&:focus { border  : 1px solid #D3D3D3;outline : none;}
 		&:disabled {
 			color            : #777777;
 			background-color : unset !important;
 		}
-		i {
-			font-size:1.2em;
-		}
+		i { font-size : 1.2em; }
 	}
 
 	&.hidden {
-		width: 32px;
-		transition: all .3s ease;
-		flex-wrap:nowrap;
-		overflow: hidden;
-		background-color: unset;
-		opacity: .5;
+		flex-wrap        : nowrap;
+		width            : 32px;
+		overflow         : hidden;
+		background-color : unset;
+		opacity          : 0.5;
+		transition       : all 0.3s ease;
 		& > *:not(.toggleButton) {
-			opacity: 0;
-			transition: all .2s ease;
+			opacity    : 0;
+			transition : all 0.2s ease;
 		}
 	}
 }
 
 button.toggleButton {
-	z-index : 5;
-	position:absolute;
-	left: 0;
-	width: 32px;
-	min-width: unset;
+	position  : absolute;
+	left      : 0;
+	z-index   : 5;
+	width     : 32px;
+	min-width : unset;
 }
