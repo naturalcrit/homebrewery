@@ -5,6 +5,10 @@ const Moment = require('moment');
 const templateFn = require('../client/template.js');
 const zlib = require('zlib');
 
+const HomebrewAPI = require('./homebrew.api.js');
+const asyncHandler = require('express-async-handler');
+const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
+
 process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
 process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password3';
 
@@ -66,23 +70,8 @@ router.post('/admin/cleanup', mw.adminOnly, (req, res)=>{
 });
 
 /* Searches for matching edit or share id, also attempts to partial match */
-router.get('/admin/lookup/:id', mw.adminOnly, async (req, res, next)=>{
-	HomebrewModel.findOne({
-		$or : [
-			{ editId: { $regex: req.params.id, $options: 'i' } },
-			{ shareId: { $regex: req.params.id, $options: 'i' } },
-		]
-	}).exec()
-	.then((brew)=>{
-		if(!brew)	// No document found
-			return res.status(404).json({ error: 'Document not found' });
-		else
-			return res.json(brew);
-	})
-	.catch((err)=>{
-		console.error(err);
-		return res.status(500).json({ error: 'Internal Server Error' });
-	});
+router.get('/admin/lookup/:id', mw.adminOnly, asyncHandler(HomebrewAPI.getBrew('admin', false)), async (req, res, next)=>{
+	return res.json(req.brew);
 });
 
 /* Find 50 brews that aren't compressed yet */
@@ -100,6 +89,25 @@ router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{
 		});
 });
 
+/* Cleans `<script` and `</script>` from the "text" field of a brew */
+router.put('/admin/clean/script/:id', asyncHandler(HomebrewAPI.getBrew('admin', false)), async (req, res)=>{
+	console.log(`[ADMIN] Cleaning script tags from ShareID ${req.params.id}`);
+
+	function cleanText(text){return text.replaceAll(/(<\/?s)cript/gi, '');};
+
+	const brew = req.brew;
+
+	const properties = ['text', 'description', 'title'];
+	properties.forEach((property)=>{
+		brew[property] = cleanText(brew[property]);
+	});
+
+	splitTextStyleAndMetadata(brew);
+
+	req.body = brew;
+
+	return await HomebrewAPI.updateBrew(req, res);
+});
 
 /* Compresses the "text" field of a brew to binary */
 router.put('/admin/compress/:id', (req, res)=>{
@@ -144,7 +152,7 @@ router.get('/admin/notification/all', async (req, res, next)=>{
 	try {
 		const notifications = await NotificationModel.getAll();
 		return res.json(notifications);
-		
+
 	} catch (error) {
 		console.log('Error getting all notifications: ', error.message);
 		return res.status(500).json({ message: error.message });
