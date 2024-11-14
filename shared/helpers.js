@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const yaml = require('js-yaml');
 const request = require('../client/homebrew/utils/request-middleware.js');
-const dedent = require('dedent');
 
 // Convert the templates from a brew to a Snippets Structure.
 const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets)=>{
