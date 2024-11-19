@@ -5,6 +5,8 @@ const MarkedExtendedTables = require('marked-extended-tables');
 const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartypants-lite');
 const { gfmHeadingId: MarkedGFMHeadingId, resetHeadings: MarkedGFMResetHeadingIDs } = require('marked-gfm-heading-id');
 const { markedEmoji: MarkedEmojis } = require('marked-emoji');
+const { processStyleTags } = require('../helpers.js');
+
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
 const diceFont      = require('../../themes/fonts/iconFonts/diceFont.js');
@@ -799,32 +801,6 @@ const voidTags = new Set([
 	'area', 'base', 'br', 'col', 'command', 'hr', 'img',
 	'input', 'keygen', 'link', 'meta', 'param', 'source'
 ]);
-
-const processStyleTags = (string)=>{
-	//split tags up. quotes can only occur right after : or =.
-	//TODO: can we simplify to just split on commas?
-	const tags = string.match(/(?:[^, ":=]+|[:=](?:"[^"]*"|))+/g);
-
-	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0]        || null;
-	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('='))).join(' ') || null;
-	const attributes = _.remove(tags, (tag)=>(tag.includes('='))).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'))
-		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
-		.reduce((obj, attr)=>{
-			const index = attr.indexOf('=');
-			let [key, value] = [attr.substring(0, index), attr.substring(index + 1)];
-			value = value.replace(/"/g, '');
-			obj[key] = value;
-			return obj;
-		}, {}) || null;
-	const styles     = tags?.length ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim()).join(' ') : null;
-
-	return {
-		id         : id,
-		classes    : classes,
-		styles     : styles,
-		attributes : _.isEmpty(attributes) ? null : attributes
-	};
-};
 
 //Given a string representing an HTML element, extract all of its properties (id, class, style, and other attributes)
 const extractHTMLStyleTags = (htmlString)=>{

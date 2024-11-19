@@ -2,6 +2,33 @@ const _ = require('lodash');
 const yaml = require('js-yaml');
 const request = require('../client/homebrew/utils/request-middleware.js');
 
+const processStyleTags = (string)=>{
+	//split tags up. quotes can only occur right after : or =.
+	//TODO: can we simplify to just split on commas?
+	const tags = string.match(/(?:[^, ":=]+|[:=](?:"[^"]*"|))+/g);
+
+	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0]        || null;
+	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('='))).join(' ') || null;
+	const attributes = _.remove(tags, (tag)=>(tag.includes('='))).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'))
+		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
+		.reduce((obj, attr)=>{
+			const index = attr.indexOf('=');
+			let [key, value] = [attr.substring(0, index), attr.substring(index + 1)];
+			value = value.replace(/"/g, '');
+			obj[key] = value;
+			return obj;
+		}, {}) || null;
+	const styles     = tags?.length ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim()).join(' ') : null;
+
+	return {
+		id         : id,
+		classes    : classes,
+		styles     : styles,
+		attributes : _.isEmpty(attributes) ? null : attributes
+	};
+};
+
+
 const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
 	if(brew.text.startsWith('```metadata')) {
@@ -55,4 +82,5 @@ module.exports = {
 	splitTextStyleAndMetadata,
 	printCurrentBrew,
 	fetchThemeBundle,
+	processStyleTags
 };
