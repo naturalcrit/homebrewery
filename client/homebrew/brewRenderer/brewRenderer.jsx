@@ -14,7 +14,7 @@ const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
 const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
-const { printCurrentBrew } = require('../../../shared/helpers.js');
+const { printCurrentBrew, processStyleTags } = require('../../../shared/helpers.js');
 
 import { safeHTML } from './safeHTML.js';
 
@@ -45,7 +45,36 @@ const BrewPage = (props)=>{
 
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
 let renderedPages = [];
+let brewTemplates;
 let rawPages      = [];
+
+
+// There is bound to be a more elegant way to do this. But this works for now.
+const getPageTemplates = (pages)=>{
+	const tempPages = [];
+	brewTemplates = [];
+	brewTemplates[1] = { name: 'Blank' };
+	pages.forEach((page, index)=>{
+		const firstLine = page.split('\n')[0].trim();
+		let pageAttributes = {};
+		if(firstLine.startsWith('\\page')) {
+			let match;
+			if(firstLine.match(/{[^{\n]/)) {
+				// Line has a mustache Block
+				const inlineRegex = /{(?=((?:[:=](?:"['\w,\-()#%=?. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}$/g;
+				match = inlineRegex.exec(firstLine);
+				if(match) {
+					pageAttributes = processStyleTags(match[1]);
+				}
+			}
+			brewTemplates[ index ] = { attr: pageAttributes };
+			tempPages.push(page.slice(firstLine.length));
+		} else {
+			tempPages.push(page);
+		}
+	});
+	return tempPages;
+};
 
 const BrewRenderer = (props)=>{
 	props = {
@@ -80,7 +109,7 @@ const BrewRenderer = (props)=>{
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split('\\page');
 	} else {
-		rawPages = props.text.split(/^\\page$/gm);
+		rawPages = getPageTemplates(props.text.split(/^(?=^\\page)/gm));
 	}
 
 	const scrollToHash = (hash)=>{
@@ -149,7 +178,17 @@ const BrewRenderer = (props)=>{
 				// Add more conditions as needed
 			};
 
-			return <BrewPage className='page' index={index} key={index} contents={html} style={styles} />;
+			// I assume there is a prettier way to do this.
+			if(brewTemplates[index]?.attr?.styles) {
+				for (let styleSplit of brewTemplates[index]?.attr?.styles.split(';')) {
+					const styleInst = styleSplit.split(':');
+					styles[styleInst[0]] = styleInst[1];
+				}
+			}
+
+			const pageClass = brewTemplates[index]?.attr?.classes?.length > 0 ? `page ${brewTemplates[index].attr.classes}` : `page`;
+
+			return <BrewPage className={pageClass} index={index} key={index} contents={html} style={styles} {...brewTemplates[index]?.attr?.attributes}/>;
 		}
 	};
 
