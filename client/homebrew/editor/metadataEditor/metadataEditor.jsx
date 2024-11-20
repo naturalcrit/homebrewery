@@ -6,7 +6,8 @@ const _     = require('lodash');
 const request = require('../../utils/request-middleware.js');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Combobox = require('client/components/combobox.jsx');
-const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
+const TagInput = require('../tagInput/tagInput.jsx');
+
 
 const Themes = require('themes/themes.json');
 const validations = require('./validations.js');
@@ -27,6 +28,7 @@ const MetadataEditor = createClass({
 		return {
 			metadata : {
 				editId      : null,
+				shareId     : null,
 				title       : '',
 				description : '',
 				thumbnail   : '',
@@ -98,7 +100,7 @@ const MetadataEditor = createClass({
 			if(renderer == 'legacy')
 				this.props.metadata.theme = '5ePHB';
 		}
-		this.props.onChange(this.props.metadata);
+		this.props.onChange(this.props.metadata, 'renderer');
 	},
 	handlePublish : function(val){
 		this.props.onChange({
@@ -110,7 +112,7 @@ const MetadataEditor = createClass({
 	handleTheme : function(theme){
 		this.props.metadata.renderer = theme.renderer;
 		this.props.metadata.theme    = theme.path;
-		this.props.onChange(this.props.metadata);
+		this.props.onChange(this.props.metadata, 'theme');
 	},
 
 	handleLanguage : function(languageCode){
@@ -191,37 +193,42 @@ const MetadataEditor = createClass({
 	renderThemeDropdown : function(){
 		if(!global.enable_themes) return;
 
+		const mergedThemes = _.merge(Themes, this.props.userThemes);
+
 		const listThemes = (renderer)=>{
-			return _.map(_.values(Themes[renderer]), (theme)=>{
-				return <div className='item' key={''} onClick={()=>this.handleTheme(theme)} title={''}>
-					{`${theme.renderer} : ${theme.name}`}
-					<img src={`/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`}/>
+			return _.map(_.values(mergedThemes[renderer]), (theme)=>{
+				if(theme.path == this.props.metadata.shareId) return;
+				const preview = theme.thumbnail || `/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`;
+				const texture = theme.thumbnail || `/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`;
+				return <div className='item' key={`${renderer}_${theme.name}`} onClick={()=>this.handleTheme(theme)} title={''}>
+					{theme.author ?? renderer} : {theme.name}
+					<div className='texture-container'>
+						<img src={texture}/>
+					</div>
 					<div className='preview'>
-						<h6>{`${theme.name}`} preview</h6>
-						<img src={`/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`}/>
+						<h6>{theme.name} preview</h6>
+						<img src={preview}/>
 					</div>
 				</div>;
 			});
 		};
 
-		const currentTheme = Themes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme];
+		const currentRenderer = this.props.metadata.renderer;
+		const currentTheme    = mergedThemes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme]
+													?? { name: `!!! THEME MISSING !!! ID=${this.props.metadata.theme}` };
 		let dropdown;
 
-		if(this.props.metadata.renderer == 'legacy') {
+		if(currentRenderer == 'legacy') {
 			dropdown =
 				<Nav.dropdown className='disabled value' trigger='disabled'>
-					<div>
-						{`Themes are not supported in the Legacy Renderer`} <i className='fas fa-caret-down'></i>
-					</div>
+					<div> {`Themes are not supported in the Legacy Renderer`} <i className='fas fa-caret-down'></i> </div>
 				</Nav.dropdown>;
 		} else {
 			dropdown =
 				<Nav.dropdown className='value' trigger='click'>
-					<div>
-						{`${_.upperFirst(currentTheme.renderer)} : ${currentTheme.name}`} <i className='fas fa-caret-down'></i>
-					</div>
-					{/*listThemes('Legacy')*/}
-					{listThemes('V3')}
+					<div> {currentTheme.author ?? _.upperFirst(currentRenderer)} : {currentTheme.name} <i className='fas fa-caret-down'></i> </div>
+
+					{listThemes(currentRenderer)}
 				</Nav.dropdown>;
 		}
 
@@ -297,17 +304,14 @@ const MetadataEditor = createClass({
 						onChange={(e)=>this.handleRenderer('V3', e)} />
 					V3
 				</label>
-
-				<a href='/legacy' target='_blank' rel='noopener noreferrer'>
-					Click here to see the demo page for the old Legacy renderer!
-				</a>
+				<small><a href='/legacy' target='_blank' rel='noopener noreferrer'>Click here to see the demo page for the old Legacy renderer!</a></small>
 			</div>
 		</div>;
 	},
 
 	render : function(){
 		return <div className='metadataEditor'>
-			<h1 className='sectionHead'>Brew</h1>
+			<h1>Properties Editor</h1>
 
 			<div className='field title'>
 				<label>title</label>
@@ -337,10 +341,11 @@ const MetadataEditor = createClass({
 				{this.renderThumbnail()}
 			</div>
 
-			<StringArrayEditor label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
+			<TagInput label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
 				placeholder='add tag' unique={true}
 				values={this.props.metadata.tags}
-				onChange={(e)=>this.handleFieldChange('tags', e)}/>
+				onChange={(e)=>this.handleFieldChange('tags', e)}
+				/>
 
 			<div className='field systems'>
 				<label>systems</label>
@@ -355,28 +360,25 @@ const MetadataEditor = createClass({
 
 			{this.renderRenderOptions()}
 
-			<hr/>
-
-			<h1 className='sectionHead'>Authors</h1>
+			<h2>Authors</h2>
 
 			{this.renderAuthors()}
 
-			<StringArrayEditor label='invited authors' valuePatterns={[/.+/]}
+			<TagInput label='invited authors' valuePatterns={[/.+/]}
 				validators={[(v)=>!this.props.metadata.authors?.includes(v)]}
 				placeholder='invite author' unique={true}
 				values={this.props.metadata.invitedAuthors}
 				notes={['Invited author usernames are case sensitive.', 'After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.']}
-				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}/>
+				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}
+				/>
 
-			<hr/>
-
-			<h1 className='sectionHead'>Privacy</h1>
+			<h2>Privacy</h2>
 
 			<div className='field publish'>
 				<label>publish</label>
 				<div className='value'>
 					{this.renderPublish()}
-					<small>Published homebrews will be publicly viewable and searchable (eventually...)</small>
+					<small>Published brews are searchable in <a href='/vault'>the Vault</a> and visible on your user page.  Unpublished brews are not indexed in the Vault or visible on your user page, but can still be shared and indexed by search engines.  You can unpublish a brew any time.</small>
 				</div>
 			</div>
 

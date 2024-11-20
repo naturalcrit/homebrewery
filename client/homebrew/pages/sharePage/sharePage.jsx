@@ -12,22 +12,36 @@ const Account = require('../../navbar/account.navitem.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
-const { printCurrentBrew } = require('../../../../shared/helpers.js');
+const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
 
 const SharePage = createClass({
 	displayName     : 'SharePage',
 	getDefaultProps : function() {
 		return {
-			brew : DEFAULT_BREW_LOAD
+			brew        : DEFAULT_BREW_LOAD,
+			disableMeta : false
+		};
+	},
+
+	getInitialState : function() {
+		return {
+			themeBundle                : {},
+			currentBrewRendererPageNum : 1
 		};
 	},
 
 	componentDidMount : function() {
 		document.addEventListener('keydown', this.handleControlKeys);
+
+		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
 	},
 
 	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
+	},
+
+	handleBrewRendererPageChange : function(pageNumber){
+		this.setState({ currentBrewRendererPageNum: pageNumber });
 	},
 
 	handleControlKeys : function(e){
@@ -60,13 +74,21 @@ const SharePage = createClass({
 	},
 
 	render : function(){
+		const titleStyle = this.props.disableMeta ? { cursor: 'default' } : {};
+		const titleEl = <Nav.item className='brewTitle' style={titleStyle}>{this.props.brew.title}</Nav.item>;
+
 		return <div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
 			<Navbar>
 				<Nav.section className='titleSection'>
-					<MetadataNav brew={this.props.brew}>
-						<Nav.item className='brewTitle'>{this.props.brew.title}</Nav.item>
-					</MetadataNav>
+					{
+						this.props.disableMeta ?
+							titleEl
+							:
+							<MetadataNav brew={this.props.brew}>
+								{titleEl}
+							</MetadataNav>
+					}
 				</Nav.section>
 
 				<Nav.section>
@@ -97,8 +119,12 @@ const SharePage = createClass({
 				<BrewRenderer
 					text={this.props.brew.text}
 					style={this.props.brew.style}
+					lang={this.props.brew.lang}
 					renderer={this.props.brew.renderer}
 					theme={this.props.brew.theme}
+					themeBundle={this.state.themeBundle}
+					onPageChange={this.handleBrewRendererPageChange}
+					currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 					allowPrint={true}
 				/>
 			</div>

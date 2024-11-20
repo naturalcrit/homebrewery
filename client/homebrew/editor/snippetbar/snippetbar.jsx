@@ -1,14 +1,13 @@
-/*eslint max-lines: ["warn", {"max": 250, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 350, "skipBlankLines": true, "skipComments": true}]*/
 require('./snippetbar.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
+import { loadHistory } from '../../utils/versionHistory.js';
+
 //Import all themes
-
-const Themes = require('themes/themes.json');
-
 const ThemeSnippets = {};
 ThemeSnippets['Legacy_5ePHB'] = require('themes/Legacy/5ePHB/snippets.js');
 ThemeSnippets['V3_5ePHB']     = require('themes/V3/5ePHB/snippets.js');
@@ -40,7 +39,9 @@ const Snippetbar = createClass({
 			foldCode          : ()=>{},
 			unfoldCode        : ()=>{},
 			updateEditorTheme : ()=>{},
-			cursorPos         : {}
+			cursorPos         : {},
+			snippetBundle     : [],
+			updateBrew        : ()=>{}
 		};
 	},
 
@@ -48,53 +49,70 @@ const Snippetbar = createClass({
 		return {
 			renderer      : this.props.renderer,
 			themeSelector : false,
-			snippets      : []
+			snippets      : [],
+			showHistory   : false,
+			historyExists : false,
+			historyItems  : []
 		};
 	},
 
-	componentDidMount : async function() {
-		const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
-		const themePath    = this.props.theme ?? '5ePHB';
-		let snippets = _.cloneDeep(ThemeSnippets[`${rendererPath}_${themePath}`]);
-		snippets = this.compileSnippets(rendererPath, themePath, snippets);
+	componentDidMount : async function(prevState) {
+		const snippets = this.compileSnippets();
 		this.setState({
 			snippets : snippets
 		});
 	},
 
-	componentDidUpdate : async function(prevProps) {
-		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme) {
-			const rendererPath = this.props.renderer == 'V3' ? 'V3' : 'Legacy';
-			const themePath    = this.props.theme ?? '5ePHB';
-			let snippets = _.cloneDeep(ThemeSnippets[`${rendererPath}_${themePath}`]);
-			snippets = this.compileSnippets(rendererPath, themePath, snippets);
+	componentDidUpdate : async function(prevProps, prevState) {
+		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.snippetBundle != this.props.snippetBundle) {
 			this.setState({
-				snippets : snippets
+				snippets : this.compileSnippets()
+			});
+		};
+
+		// Update history list if it has changed
+		const checkHistoryItems = await loadHistory(this.props.brew);
+
+		// If all items have the noData property, there is no saved data
+		const checkHistoryExists = !checkHistoryItems.every((historyItem)=>{
+			return historyItem?.noData;
+		});
+		if(prevState.historyExists != checkHistoryExists){
+			this.setState({
+				historyExists : checkHistoryExists
+			});
+		}
+
+		// If any history items have changed, update the list
+		if(checkHistoryExists && checkHistoryItems.some((historyItem, index)=>{
+			return index >= prevState.historyItems.length || !_.isEqual(historyItem, prevState.historyItems[index]);
+		})){
+			this.setState({
+				historyItems : checkHistoryItems
 			});
 		}
 	},
 
-
-	mergeCustomizer : function(valueA, valueB, key) {
+	mergeCustomizer : function(oldValue, newValue, key) {
 		if(key == 'snippets') {
-			const result = _.reverse(_.unionBy(_.reverse(valueB), _.reverse(valueA), 'name')); // Join snippets together, with preference for the current theme over the base theme
-			return _.filter(result, 'gen'); //Only keep snippets with a 'gen' property.
+			const result = _.reverse(_.unionBy(_.reverse(newValue), _.reverse(oldValue), 'name')); // Join snippets together, with preference for the child theme over the parent theme
+			return result.filter((snip)=>snip.gen || snip.subsnippets);
 		}
 	},
 
-	compileSnippets : function(rendererPath, themePath, snippets) {
-		let compiledSnippets = snippets;
-		const baseSnippetsPath = Themes[rendererPath][themePath].baseSnippets;
+	compileSnippets : function() {
+		let compiledSnippets = [];
 
-		const objB = _.keyBy(compiledSnippets, 'groupName');
+		let oldSnippets = _.keyBy(compiledSnippets, 'groupName');
 
-		if(baseSnippetsPath) {
-			const objA = _.keyBy(_.cloneDeep(ThemeSnippets[`${rendererPath}_${baseSnippetsPath}`]), 'groupName');
-			compiledSnippets = _.values(_.mergeWith(objA, objB, this.mergeCustomizer));
-			compiledSnippets = this.compileSnippets(rendererPath, baseSnippetsPath, _.cloneDeep(compiledSnippets));
-		} else {
-			const objA = _.keyBy(_.cloneDeep(ThemeSnippets[`${rendererPath}_Blank`]), 'groupName');
-			compiledSnippets = _.values(_.mergeWith(objA, objB, this.mergeCustomizer));
+		for (let snippets of this.props.snippetBundle) {
+			if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name
+				snippets = ThemeSnippets[snippets];
+
+			const newSnippets = _.keyBy(_.cloneDeep(snippets), 'groupName');
+			compiledSnippets = _.values(_.mergeWith(oldSnippets, newSnippets, this.mergeCustomizer));
+
+			oldSnippets = _.keyBy(compiledSnippets, 'groupName');
 		}
 		return compiledSnippets;
 	},
@@ -132,69 +150,115 @@ const Snippetbar = createClass({
 
 	renderSnippetGroups : function(){
 		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
+		if(snippets.length === 0) return null;
 
-		return _.map(snippets, (snippetGroup)=>{
-			return <SnippetGroup
-				brew={this.props.brew}
-				groupName={snippetGroup.groupName}
-				icon={snippetGroup.icon}
-				snippets={snippetGroup.snippets}
-				key={snippetGroup.groupName}
-				onSnippetClick={this.handleSnippetClick}
-				cursorPos={this.props.cursorPos}
-			/>;
+		return <div className='snippets'>
+			{_.map(snippets, (snippetGroup)=>{
+				return <SnippetGroup
+					brew={this.props.brew}
+					groupName={snippetGroup.groupName}
+					icon={snippetGroup.icon}
+					snippets={snippetGroup.snippets}
+					key={snippetGroup.groupName}
+					onSnippetClick={this.handleSnippetClick}
+					cursorPos={this.props.cursorPos}
+				/>;
+			})
+			}
+		</div>;
+	},
+
+	replaceContent : function(item){
+		return this.props.updateBrew(item);
+	},
+
+	toggleHistoryMenu : function(){
+		this.setState({
+			showHistory : !this.state.showHistory
 		});
+	},
+
+	renderHistoryItems : function() {
+		if(!this.state.historyExists) return;
+
+		return <div className='dropdown'>
+			{_.map(this.state.historyItems, (item, index)=>{
+				if(item.noData || !item.savedAt) return;
+
+				const saveTime = new Date(item.savedAt);
+				const diffMs = new Date() - saveTime;
+				const diffSecs = Math.floor(diffMs / 1000);
+
+				let diffString = `about ${diffSecs} seconds ago`;
+
+				if(diffSecs > 60) diffString = `about ${Math.floor(diffSecs / 60)} minutes ago`;
+				if(diffSecs > (60 * 60)) diffString = `about ${Math.floor(diffSecs / (60 * 60))} hours ago`;
+				if(diffSecs > (24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (24 * 60 * 60))} days ago`;
+				if(diffSecs > (7 * 24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (7 * 24 * 60 * 60))} weeks ago`;
+
+				return <div className='snippet' key={index} onClick={()=>{this.replaceContent(item);}} >
+					<i className={`fas fa-${index+1}`} />
+					<span className='name' title={saveTime.toISOString()}>v{item.version} : {diffString}</span>
+				</div>;
+			})}
+		</div>;
 	},
 
 	renderEditorButtons : function(){
 		if(!this.props.showEditButtons) return;
 
-		let foldButtons;
-		if(this.props.view == 'text'){
-			foldButtons =
-				<>
-					<div className={`editorTool foldAll ${this.props.foldCode ? 'active' : ''}`}
-						onClick={this.props.foldCode} >
-						<i className='fas fa-compress-alt' />
-					</div>
-					<div className={`editorTool unfoldAll ${this.props.unfoldCode ? 'active' : ''}`}
-						onClick={this.props.unfoldCode} >
-						<i className='fas fa-expand-alt' />
-					</div>
-				</>;
-
-		}
+		const foldButtons = <>
+			<div className={`editorTool foldAll ${this.props.view !== 'meta' && this.props.foldCode ? 'active' : ''}`}
+				onClick={this.props.foldCode} >
+				<i className='fas fa-compress-alt' />
+			</div>
+			<div className={`editorTool unfoldAll ${this.props.view !== 'meta' && this.props.unfoldCode ? 'active' : ''}`}
+				onClick={this.props.unfoldCode} >
+				<i className='fas fa-expand-alt' />
+			</div>
+		</>;
 
 		return <div className='editors'>
-			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
-				onClick={this.props.undo} >
-				<i className='fas fa-undo' />
+			<div className='historyTools'>
+				<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`}
+					onClick={this.toggleHistoryMenu} >
+					<i className='fas fa-clock-rotate-left' />
+					{ this.state.showHistory && this.renderHistoryItems() }
+				</div>
+				<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
+					onClick={this.props.undo} >
+					<i className='fas fa-undo' />
+				</div>
+				<div className={`editorTool redo ${this.props.historySize.redo ? 'active' : ''}`}
+					onClick={this.props.redo} >
+					<i className='fas fa-redo' />
+				</div>
 			</div>
-			<div className={`editorTool redo ${this.props.historySize.redo ? 'active' : ''}`}
-				onClick={this.props.redo} >
-				<i className='fas fa-redo' />
-			</div>
-			<div className='divider'></div>
-			{foldButtons}
-			<div className={`editorTool editorTheme ${this.state.themeSelector ? 'active' : ''}`}
-				onClick={this.toggleThemeSelector} >
-				<i className='fas fa-palette' />
-				{this.state.themeSelector && this.renderThemeSelector()}
+			<div className='codeTools'>
+				{foldButtons}
+				<div className={`editorTool editorTheme ${this.state.themeSelector ? 'active' : ''}`}
+					onClick={this.toggleThemeSelector} >
+					<i className='fas fa-palette' />
+					{this.state.themeSelector && this.renderThemeSelector()}
+				</div>
 			</div>
 
-			<div className='divider'></div>
-			<div className={cx('text', { selected: this.props.view === 'text' })}
-				 onClick={()=>this.props.onViewChange('text')}>
-				<i className='fa fa-beer' />
+
+			<div className='tabs'>
+				<div className={cx('text', { selected: this.props.view === 'text' })}
+					onClick={()=>this.props.onViewChange('text')}>
+					<i className='fa fa-beer' />
+				</div>
+				<div className={cx('style', { selected: this.props.view === 'style' })}
+					onClick={()=>this.props.onViewChange('style')}>
+					<i className='fa fa-paint-brush' />
+				</div>
+				<div className={cx('meta', { selected: this.props.view === 'meta' })}
+					onClick={()=>this.props.onViewChange('meta')}>
+					<i className='fas fa-info-circle' />
+				</div>
 			</div>
-			<div className={cx('style', { selected: this.props.view === 'style' })}
-				 onClick={()=>this.props.onViewChange('style')}>
-				<i className='fa fa-paint-brush' />
-			</div>
-			<div className={cx('meta', { selected: this.props.view === 'meta' })}
-				onClick={()=>this.props.onViewChange('meta')}>
-				<i className='fas fa-info-circle' />
-			</div>
+
 		</div>;
 	},
 
@@ -232,8 +296,9 @@ const SnippetGroup = createClass({
 		return _.map(snippets, (snippet)=>{
 			return <div className='snippet' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
 				<i className={snippet.icon} />
-				<span className='name'title={snippet.name}>{snippet.name}</span>
+				<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span>
 				{snippet.experimental && <span className='beta'>beta</span>}
+				{snippet.disabled     && <span className='beta' title='temporarily disabled due to large slowdown; under re-design'>disabled</span>}
 				{snippet.subsnippets && <>
 					<i className='fas fa-caret-right'></i>
 					<div className='dropdown side'>

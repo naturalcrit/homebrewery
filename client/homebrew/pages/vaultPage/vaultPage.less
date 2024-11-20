@@ -1,0 +1,396 @@
+.vaultPage {
+	height           : 100%;
+	overflow-y       : hidden;
+	background-color : #2C3E50;
+
+	*:not(input) { user-select : none; }
+
+	.content .dataGroup {
+		width      : 100%;
+		height     : 100%;
+		background : white;
+
+		&.form .brewLookup {
+			position : relative;
+			padding  : 50px clamp(20px, 4vw, 50px);
+
+			small {
+				font-size : 10pt;
+				color     : #555555;
+			
+				a { color : #333333; }
+			}
+
+			code {
+				padding-inline : 5px;
+				font-family    : monospace;
+				background     : lightgrey;
+				border-radius  : 5px;
+			}
+
+			h1, h2, h3, h4 {
+				font-family    : 'CodeBold';
+				letter-spacing : 2px;
+			}
+				
+			legend {
+				h3 {
+					margin-block  : 30px 20px;
+					font-size     : 20px;
+					text-align    : center;
+					border-bottom : 2px solid;
+				}
+				ul {
+					padding-inline : 30px 10px;
+					li {
+						margin-block : 5px;
+						line-height  : calc(1em + 5px);
+						list-style   : disc;
+					}
+				} 
+			}
+
+			&::after {
+				position    : absolute;
+				top         : 0;
+				right       : 0;
+				left        : 0;
+				display     : block;
+				padding     : 10px;
+				font-weight : 900;
+				color       : white;
+				white-space : pre-wrap;
+				content     : 'Error:\A At least one renderer should be enabled to make a search';
+				background  : rgb(255, 60, 60);
+				opacity     : 0;
+				transition  : opacity 0.5s;
+			}
+			&:not(:has(input[type='checkbox']:checked))::after { opacity : 1; }
+
+			.formTitle {
+				margin        : 20px 0;
+				font-size     : 30px;
+				color         : black;
+				text-align    : center;
+				border-bottom : 2px solid;
+			}
+
+			.formContents {
+				position       : relative;
+				display        : flex;
+				flex-direction : column;
+
+				label {
+					display     : flex;
+					align-items : center; 
+					margin      : 10px 0;
+				}
+				select { margin : 0 10px; }
+
+				input { 
+					margin   : 0 10px; 
+
+					&:invalid { background : rgb(255, 188, 181); }
+					
+					&[type='checkbox'] {
+						position       : relative;
+						display        : inline-block;
+						width          : 50px;
+						height         : 30px;
+						font-family    : 'WalterTurncoat';
+						font-size      : 20px;
+						font-weight    : 800;
+						color          : white;
+						letter-spacing : 2px;
+						appearance     : none;
+						background     : red;
+						isolation      : isolate;
+						border-radius  : 5px;
+
+						&::before,&::after {
+							position    : absolute;
+							inset       : 0;
+							z-index     : 5;
+							padding-top : 2px;
+							text-align  : center;
+						}
+
+						&::before {
+							display : block;
+							content : 'No';
+						}
+
+						&::after {
+							display : none;
+							content : 'Yes';
+						}
+
+						&:checked {
+							background : green;
+
+							&::before { display : none; }
+							&::after { display : block; }
+						}
+					}
+				}
+
+				#searchButton {
+					position : absolute;
+					right    : 20px;
+					bottom   : 0;
+
+					i {
+						margin-left         : 10px;
+						animation-duration  : 1000s;
+					}
+				}
+			}
+		}
+
+		&.resultsContainer {
+			display        : flex;
+			flex-direction : column;
+			height         : 100%;
+			overflow-y     : auto;
+			font-family    : 'BookInsanityRemake';
+			font-size      : 0.34cm;
+				
+			h3 {
+				font-family : 'Open Sans';
+				font-weight : 900;
+				color       : white;
+			}
+
+			.sort-container {
+				display               : flex;
+				flex-wrap             : wrap;
+				column-gap            : 15px;
+				justify-content       : center;
+				height                : 30px;
+				color                 : white;
+				background-color      : #555555;
+				border-top            : 1px solid #666666;
+				border-bottom         : 1px solid #666666;
+					
+				.sort-option {
+					display     : flex;
+					align-items : center;
+					padding     : 0 8px;
+				
+					&:hover { background-color : #444444; }
+				
+					&.active {
+						background-color : #333333;
+				
+						button {
+							font-weight : 800;
+							color       : white;
+								
+							& + .sortDir { padding-left : 5px; }
+						}
+					}
+
+					button {
+						padding          : 0;
+						font-size        : 11px;
+						font-weight      : normal;
+						color            : #CCCCCC;
+						text-transform   : uppercase;
+						background-color : transparent;
+					
+						&:hover { background : none; }
+					}
+				}
+			}
+
+			.foundBrews {
+				position         : relative;
+				width            : 100%;
+				height           : 100%;
+				max-height       : 100%;
+				padding          : 50px 50px 70px 50px;
+				overflow-y       : scroll;
+				background-color : #2C3E50;
+
+				h3 { font-size : 25px; }
+
+				&.noBrews {
+					display     : grid;
+					place-items : center;
+					color       : white;
+				}
+
+				&.searching {
+					display     : grid;
+					place-items : center;
+					color       : white;
+
+					h3 { position : relative; }
+
+					h3.searchAnim::after {
+						position  : absolute;
+						top       : 50%;
+						right     : 0;
+						width     : max-content;
+						height    : 1em;
+						content   : '';
+						translate : calc(100% + 5px) -50%;
+						animation : trailingDots 2s ease infinite;
+					}
+				}
+
+				.totalBrews {
+					position         : fixed;
+					right            : 0;
+					bottom           : 0;
+					z-index          : 1000;
+					padding          : 8px 10px;
+					font-family      : 'Open Sans';
+					font-size        : 11px;
+					font-weight      : 800;
+					color            : white;
+					background-color : #333333;
+
+					.searchAnim {
+						position : relative;
+						display  : inline-block;
+						width    : 3ch;
+						height   : 1em;
+					}
+
+					.searchAnim::after {
+						position  : absolute;
+						top       : 50%;
+						right     : 0;
+						width     : max-content;
+						height    : 1em;
+						content   : '';
+						translate : -50% -50%;
+						animation : trailingDots 2s ease infinite;
+					}
+				}
+
+				.brewItem {
+					width            : 47%;
+					margin-right     : 40px;
+					color            : black;
+					isolation        : isolate;
+						
+					&::after {
+						position         : absolute;
+						inset            : 0;
+						z-index          : -2;
+						display          : block;
+						content          : '';
+						background-image : url('/assets/parchmentBackground.jpg');
+					}
+
+					&:nth-child(even of .brewItem) { margin-right : 0; }
+
+					h2 {
+						font-family : 'MrEavesRemake';
+						font-size   : 0.75cm;
+						font-weight : 800;
+						line-height : 0.988em;
+						color       : var(--HB_Color_HeaderText);
+					}
+					.info {
+						position    : relative;
+						z-index     : 2;
+						font-family : 'ScalySansRemake';
+						font-size   : 1.2em;
+
+						>span {
+							margin-right : 12px;
+							line-height  : 1.5em;
+						}
+					}
+					.links { z-index : 2; }
+
+					hr {
+						margin     : 0px;
+						visibility : hidden;
+					}
+
+					.thumbnail { z-index : -1; }
+				}
+
+				.paginationControls {
+					position              : absolute;
+					left                  : 50%;
+					display               : grid;
+					grid-template-areas   : 'previousPage currentPage nextPage';
+					grid-template-columns : 50px 1fr 50px;
+					place-items           : center;
+					width                 : auto;
+					translate             : -50%;
+
+					.pages {
+						display         : flex;
+						grid-area       : currentPage;
+						justify-content : space-evenly;
+						width           : 100%;
+						height          : 100%;
+						padding         : 5px 8px;
+						text-align      : center;
+
+						.pageNumber {
+							margin-inline           : 1vw;
+							font-family             : 'Open Sans';
+							font-weight             : 900;
+							color                   : white;
+							text-underline-position : under;
+							text-wrap               : nowrap;
+							cursor                  : pointer;
+
+							&.currentPage {
+								color           : gold;
+								text-decoration : underline;
+								pointer-events  : none;
+							}
+
+							&.firstPage { margin-right : -5px; }
+
+							&.lastPage { margin-left : -5px; }
+						}
+					}
+
+					button {
+						width : max-content;
+
+						&.previousPage { grid-area : previousPage; }
+
+						&.nextPage { grid-area : nextPage; }
+					}
+
+				}
+			}
+		}
+	}
+	
+}
+
+@keyframes trailingDots {
+
+	0%,
+	32% { content : ' .'; }
+
+	33%,
+	65% { content : ' ..'; }
+
+	66%,
+	100% { content : ' ...'; }
+}
+
+// media query for when the page is smaller than 1079 px in width
+@media screen and (max-width : 1079px) {
+	.vaultPage {
+
+		.dataGroup.form .brewLookup { padding : 1px 20px 20px 10px; }
+
+		.dataGroup.resultsContainer .foundBrews .brewItem {
+			width         : 100%;
+			margin-inline : auto;
+		}
+	}
+}

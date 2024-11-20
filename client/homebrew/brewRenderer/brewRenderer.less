@@ -1,10 +1,47 @@
 @import (multiple, less) 'shared/naturalcrit/styles/reset.less';
 
 .brewRenderer {
-	will-change : transform;
-	overflow-y  : scroll;
+	overflow-y    : scroll;
+	will-change   : transform;
+	padding-top   : 60px;
+	height        : 100vh;
+	&:has(.facing, .flow) {
+		padding : 60px 30px;
+	}
+	&.deployment {
+		background-color: darkred;
+	}
 	:where(.pages) {
-		margin : 30px 0px;
+		&.facing {
+			display: grid; 
+			grid-template-columns: repeat(2, auto); 
+			grid-template-rows: repeat(3, auto); 
+			gap: 10px 10px; 
+			justify-content: center;
+			&.recto .page:first-child {
+				// sets first page on 'right' ('recto') of the preview, as if for a Cover page.  
+				// todo: add a checkbox to toggle this setting
+				grid-column-start: 2; 
+			}
+			& :where(.page) {
+				margin-left: unset !important;
+				margin-right: unset !important;
+			}
+		}
+
+		&.flow {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			justify-content: flex-start;
+			& :where(.page) {
+				flex: 0 0 auto;
+				margin-left: unset !important;
+				margin-right: unset !important;
+			}
+
+		}
+
 		& > :where(.page) {
 			width         : 215.9mm;
 			height        : 279.4mm;
@@ -13,67 +50,36 @@
 			margin-left   : auto;
 			box-shadow    : 1px 4px 14px #000000;
 		}
+		*[id] {
+			scroll-margin-top:100px;
+		}
 	}
-
 	&::-webkit-scrollbar {
-		width: 20px;
-		&:horizontal{
-			height: 20px;
-			width:auto;
+		width : 20px;
+		&:horizontal {
+			width  : auto;
+			height : 20px;
 		}
 		&-thumb {
-			background: linear-gradient(90deg, #d3c1af 15px, #00000000 15px);
-			&:horizontal{
-				background: linear-gradient(0deg, #d3c1af 15px, #00000000 15px);
-			}
+			background : linear-gradient(90deg, #D3C1AF 15px, #00000000 15px);
+			&:horizontal { background : linear-gradient(0deg, #D3C1AF 15px, #00000000 15px); }
 		}
-		&-corner {
-			visibility: hidden;
-		}
+		&-corner { visibility : hidden; }
 	}
-	
-
-
-
-
 }
+
 .pane { position : relative; }
-.pageInfo {
-	position         : absolute;
-	right            : 17px;
-	bottom           : 0;
-	z-index          : 1000;
-	font-size        : 10px;
-	font-weight      : 800;
-	color            : white;
-	background-color : #333333;
-	div {
-		display          : inline-block;
-		padding          : 8px 10px;
-		&:not(:last-child) { border-right : 1px solid #666666; }
-	}
-}
-.ppr_msg {
-	position         : absolute;
-	bottom           : 0;
-	left             : 0px;
-	z-index          : 1000;
-	padding          : 8px 10px;
-	font-size        : 10px;
-	font-weight      : 800;
-	color            : white;
-	background-color : #333333;
-}
 
 @media print {
+	.toolBar { display : none; }
 	.brewRenderer {
-		height: 100%;
-		overflow-y: unset;
+		height      : 100%;
+		padding-top : unset;
+		overflow-y  : unset;
 		.pages {
-			margin: 0px;
-			&>.page {
-				box-shadow: unset;
-			}
+			margin : 0px;
+			zoom: 100% !important;
+			& > .page { box-shadow : unset; }
 		}
 	}
 }

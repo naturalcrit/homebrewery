@@ -1,86 +1,78 @@
-const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
 
-const getTOC = (pages)=>{
-	const add1 = (title, page)=>{
-		res.push({
-			title    : title,
-			page     : page + 1,
-			children : []
-		});
-	};
-	const add2 = (title, page)=>{
-		if(!_.last(res)) add1(null, page);
-		_.last(res).children.push({
-			title    : title,
-			page     : page + 1,
-			children : []
-		});
-	};
-	const add3 = (title, page)=>{
-		if(!_.last(res)) add1(null, page);
-		if(!_.last(_.last(res).children)) add2(null, page);
-		_.last(_.last(res).children).children.push({
-			title    : title,
-			page     : page + 1,
-			children : []
-		});
-	};
+// Map each actual page to its footer label, accounting for skips or numbering resets
+const mapPages = (pages)=>{
+	let actualPage = 0;
+	let mappedPage = 0; // Number displayed in footer
+	const pageMap    = [];
 
-	const res = [];
-	_.each(pages, (page, pageNum)=>{
-		if(!page.includes('{{frontCover}}') && !page.includes('{{insideCover}}') && !page.includes('{{partCover}}') && !page.includes('{{backCover}}')) {
-			const lines = page.split('\n');
-			_.each(lines, (line)=>{
-				if(_.startsWith(line, '# ')){
-					const title = line.replace('# ', '');
-					add1(title, pageNum);
-				}
-				if(_.startsWith(line, '## ')){
-					const title = line.replace('## ', '');
-					add2(title, pageNum);
-				}
-				if(_.startsWith(line, '### ')){
-					const title = line.replace('### ', '');
-					add3(title, pageNum);
-				}
-			});
-		}
+	pages.forEach((page)=>{
+		actualPage++;
+		const doSkip  = page.querySelector('.skipCounting');
+		const doReset = page.querySelector('.resetCounting');
+
+		if(doReset)
+			mappedPage = 1;
+		if(!doSkip && !doReset)
+			mappedPage++;
+
+		pageMap[actualPage] = {
+			mappedPage : mappedPage,
+			showPage   : !doSkip
+		};
 	});
-	return res;
+	return pageMap;
+};
+
+const getMarkdown = (headings, pageMap)=>{
+	const levelPad    = ['- ###', '  - ####', '    -', '      -', '        -', '          -'];
+
+	const allMarkdown = [];
+	const depthChain  = [0];
+
+	headings.forEach((heading)=>{
+		const page       = parseInt(heading.closest('.page').id?.replace(/^p/, ''));
+		const mappedPage = pageMap[page].mappedPage;
+		const showPage   = pageMap[page].showPage;
+		const title      = heading.textContent.trim();
+		const ToCExclude = getComputedStyle(heading).getPropertyValue('--TOC');
+		const depth      = parseInt(heading.tagName.substring(1));
+
+		if(!title || !showPage || ToCExclude == 'exclude')
+			return;
+
+		//If different header depth than last, remove indents until nearest higher-level header, then indent once
+		if(depth !== depthChain[depthChain.length -1]) {
+			while (depth <= depthChain[depthChain.length - 1]) {
+				depthChain.pop();
+			}
+			depthChain.push(depth);
+		}
+
+		const markdown = `${levelPad[depthChain.length - 2]} [{{ ${title}}}{{ ${mappedPage}}}](#p${page})`;
+		allMarkdown.push(markdown);
+	});
+	return allMarkdown.join('\n');
+};
+
+const getTOC = ()=>{
+	const iframe = document.getElementById('BrewRenderer');
+	const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+	const headings = iframeDocument.querySelectorAll('h1, h2, h3, h4, h5, h6');
+	const pages    = iframeDocument.querySelectorAll('.page');
+
+	const pageMap = mapPages(pages);
+	return getMarkdown(headings, pageMap);
 };
 
 module.exports = function(props){
-	const pages = props.brew.text.split('\\page');
-	const TOC = getTOC(pages);
-	const markdown = _.reduce(TOC, (r, g1, idx1)=>{
-		if(g1.title !== null) {
-			r.push(`- ### [{{ ${g1.title}}}{{ ${g1.page}}}](#p${g1.page})`);
-		}
-		if(g1.children.length){
-			_.each(g1.children, (g2, idx2)=>{
-				if(g2.title !== null) {
-					r.push(`  - #### [{{ ${g2.title}}}{{ ${g2.page}}}](#p${g2.page})`);
-				}
-				if(g2.children.length){
-					_.each(g2.children, (g3, idx3)=>{
-						if(g2.title !== null) {
-							r.push(`    - [{{ ${g3.title}}}{{ ${g3.page}}}](#p${g3.page})`);
-						} else { // Don't over-indent if no level-2 parent entry
-							r.push(`  - [{{ ${g3.title}}}{{ ${g3.page}}}](#p${g3.page})`);
-						}
-					});
-				}
-			});
-		}
-		return r;
-	}, []).join('\n');
+	const TOC = getTOC();
 
 	return dedent`
 		{{toc,wide
 		# Contents
 
-		${markdown}
+		${TOC}
 		}}
 		\n`;
 };

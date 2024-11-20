@@ -2,6 +2,9 @@ const dedent = require('dedent-tabs').default;
 
 const loginUrl = 'https://www.naturalcrit.com/login';
 
+//001-050 : Brew errors
+//050-100 : Other pages errors
+
 const errorIndex = (props)=>{
 	return {
 		// Default catch all
@@ -136,17 +139,48 @@ const errorIndex = (props)=>{
 
 		**Brew ID:**  ${props.brew.brewId}`,
 
+		// Theme load error
+		'09' : dedent`
+		## No Homebrewery theme document could be found.
+		
+		The server could not locate the Homebrewery document. It was likely deleted by
+		its owner.
+		
+		:
+
+		**Requested access:** ${props.brew.accessType}
+
+		**Brew ID:**  ${props.brew.brewId}`,
+
+		//account page when account is not defined
+		'50' : dedent`
+		## You are not signed in
+		
+		You are trying to access the account page, but are not signed in to an account.
+		
+		Please login or signup at our [login page](https://www.naturalcrit.com/login?redirect=https://homebrewery.naturalcrit.com/account).`,
+
 		// Brew locked by Administrators error
-		'100' : dedent`
+		'51' : dedent`
 		## This brew has been locked.
 		
-		Please contact the Administrators to unlock this document.
+		Only an author may request that this lock is removed.
 		
 		:
 
 		**Brew ID:**  ${props.brew.brewId}
 		
 		**Brew Title:** ${props.brew.brewTitle}`,
+
+		// ####### Admin page error ####### 
+		'52': dedent`
+		## Access Denied
+		You need to provide correct administrator credentials to access this page.`,
+
+		'90' : dedent` An unexpected error occurred while looking for these brews.  
+            Try again in a few minutes.`,
+
+		'91' : dedent` An unexpected error occurred while trying to get the total of brews.`,
 	};
 };
 

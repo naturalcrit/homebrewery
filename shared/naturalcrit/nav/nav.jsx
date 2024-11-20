@@ -12,10 +12,8 @@ const Nav = {
 		displayName : 'Nav.base',
 		render      : function(){
 			return <nav>
-				<div className='navContent'>
 					{this.props.children}
-				</div>
-			</nav>;
+					</nav>;
 		}
 	}),
 	logo : function(){
@@ -47,8 +45,8 @@ const Nav = {
 				color   : null
 			};
 		},
-		handleClick : function(){
-			this.props.onClick();
+		handleClick : function(e){
+			this.props.onClick(e);
 		},
 		render : function(){
 			const classes = cx('navItem', this.props.color, this.props.className);
