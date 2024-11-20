@@ -4,7 +4,7 @@ const React = require('react');
 const _ = require('lodash');
 const createClass = require('create-react-class');
 
-const request = require('../../utils/request-middleware.js');
+import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
@@ -23,7 +23,7 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const LockNotification = require('./lockNotification/lockNotification.jsx');
 
-const Markdown = require('naturalcrit/markdown.js');
+import Markdown from 'naturalcrit/markdown.js';
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
 const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
