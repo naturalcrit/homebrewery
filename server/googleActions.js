@@ -60,7 +60,7 @@ const GoogleActions = {
 				account.googleRefreshToken = tokens.refresh_token;
 			}
 			account.googleAccessToken = tokens.access_token;
-			const JWTToken = token.generateAccessToken(account);
+			const JWTToken = token(account);
 
 			//Save updated token to cookie
 			//res.cookie('nc_session', JWTToken, { maxAge: 1000*60*60*24*365, path: '/', sameSite: 'lax' });
