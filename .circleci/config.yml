@@ -82,6 +82,9 @@ jobs:
       - run:
           name: Test - Coverage
           command: npm run test:coverage
+      - run:
+          name: Test - Content Negotiation
+          command: npm run test:content-negotiation
 
 workflows:
   build_and_test:
