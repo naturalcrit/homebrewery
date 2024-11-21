@@ -15,7 +15,7 @@ const BrewItem      = require('../basePages/listPage/brewItem/brewItem.jsx');
 const SplitPane     = require('../../../../shared/naturalcrit/splitPane/splitPane.jsx');
 const ErrorIndex    = require('../errorPage/errors/errorIndex.js');
 
-const request = require('../../utils/request-middleware.js');
+import request from '../../utils/request-middleware.js';
 
 const VaultPage = (props)=>{
 	const [pageState, setPageState] = useState(parseInt(props.query.page) || 1);
@@ -411,10 +411,11 @@ const VaultPage = (props)=>{
 	};
 
 	return (
-		<div className='vaultPage'>
+		<div className='sitePage vaultPage'>
 			<link href='/themes/V3/Blank/style.css' rel='stylesheet' />
 			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet' />
 			{renderNavItems()}
+			<div className="content">
 			<SplitPane showDividerButtons={false}>
 				<div className='form dataGroup'>{renderForm()}</div>
 				<div className='resultsContainer dataGroup'>
@@ -422,6 +423,7 @@ const VaultPage = (props)=>{
 					{renderFoundBrews()}
 				</div>
 			</SplitPane>
+			</div>
 		</div>
 	);
 };

@@ -1,8 +1,9 @@
 /* eslint-disable max-lines */
-const googleDrive = require('@googleapis/drive');
-const { nanoid } = require('nanoid');
-const token = require('./token.js');
-const config = require('./config.js');
+import googleDrive from '@googleapis/drive';
+import { nanoid }  from 'nanoid';
+import token       from './token.js';
+import config      from './config.js';
+
 
 let serviceAuth;
 if(!config.get('service_account')){
@@ -72,7 +73,7 @@ const GoogleActions = {
 	getGoogleFolder : async (auth)=>{
 		const drive = googleDrive.drive({ version: 'v3', auth });
 
-		fileMetadata = {
+		const fileMetadata = {
 			'name'     : 'Homebrewery',
 			'mimeType' : 'application/vnd.google-apps.folder'
 		};
@@ -344,4 +345,4 @@ const GoogleActions = {
 	}
 };
 
-module.exports = GoogleActions;
+export default GoogleActions;
