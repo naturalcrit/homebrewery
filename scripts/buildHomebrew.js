@@ -1,14 +1,15 @@
-const fs = require('fs-extra');
-const zlib = require('zlib');
-const Proj = require('./project.json');
+import fs   from 'fs-extra';
+import zlib from 'zlib';
+import Proj from './project.json' with { type: 'json' };
+import vitreum from 'vitreum';
+const { pack, watchFile, livereload } = vitreum;
 
-const { pack, watchFile, livereload } = require('vitreum');
-const isDev = !!process.argv.find((arg)=>arg=='--dev');
+import lessTransform  from 'vitreum/transforms/less.js';
+import assetTransform from 'vitreum/transforms/asset.js';
+import babel          from '@babel/core';
+import less           from 'less';
 
-const lessTransform  = require('vitreum/transforms/less.js');
-const assetTransform = require('vitreum/transforms/asset.js');
-const babel          = require('@babel/core');
-const less           = require('less');
+const isDev = !!process.argv.find((arg) => arg === '--dev');
 
 const babelify = async (code)=>(await babel.transformAsync(code, { presets: [['@babel/preset-env', { 'exclude': ['proposal-dynamic-import'] }], '@babel/preset-react'], plugins: ['@babel/plugin-transform-runtime'] })).code;
 
@@ -24,7 +25,7 @@ const build = async ({ bundle, render, ssr })=>{
 	//css = `@layer bundle {\n${css}\n}`;
 	await fs.outputFile('./build/homebrew/bundle.css', css);
 	await fs.outputFile('./build/homebrew/bundle.js', bundle);
-	await fs.outputFile('./build/homebrew/ssr.js', ssr);
+	await fs.outputFile('./build/homebrew/ssr.cjs', ssr);
 
 	await fs.copy('./client/homebrew/favicon.ico', './build/assets/favicon.ico');
 
@@ -51,7 +52,7 @@ fs.emptyDirSync('./build');
 	const themes = { Legacy: {}, V3: {} };
 
 	let themeFiles = fs.readdirSync('./themes/Legacy');
-	for (dir of themeFiles) {
+	for (let dir of themeFiles) {
 		const themeData = JSON.parse(fs.readFileSync(`./themes/Legacy/${dir}/settings.json`).toString());
 		themeData.path = dir;
 		themes.Legacy[dir] = (themeData);
@@ -68,7 +69,7 @@ fs.emptyDirSync('./build');
 	}
 
 	themeFiles = fs.readdirSync('./themes/V3');
-	for (dir of themeFiles) {
+	for (let dir of themeFiles) {
 		const themeData = JSON.parse(fs.readFileSync(`./themes/V3/${dir}/settings.json`).toString());
 		themeData.path = dir;
 		themes.V3[dir] = (themeData);
@@ -104,14 +105,14 @@ fs.emptyDirSync('./build');
 	const editorThemesBuildDir = './build/homebrew/cm-themes';
 	await fs.copy('./node_modules/codemirror/theme', editorThemesBuildDir);
 	await fs.copy('./themes/codeMirror/customThemes', editorThemesBuildDir);
-	editorThemeFiles = fs.readdirSync(editorThemesBuildDir);
+	const editorThemeFiles = fs.readdirSync(editorThemesBuildDir);
 
 	const editorThemeFile = './themes/codeMirror/editorThemes.json';
 	if(fs.existsSync(editorThemeFile)) fs.rmSync(editorThemeFile);
 	const stream = fs.createWriteStream(editorThemeFile, { flags: 'a' });
 	stream.write('[\n"default"');
 
-	for (themeFile of editorThemeFiles) {
+	for (let themeFile of editorThemeFiles) {
 		stream.write(`,\n"${themeFile.slice(0, -4)}"`);
 	}
 	stream.write('\n]\n');

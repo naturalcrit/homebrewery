@@ -2,6 +2,7 @@
   "name": "homebrewery",
   "description": "Create authentic looking D&D homebrews using only markdown",
   "version": "3.16.0",
+  "type": "module",
   "engines": {
     "npm": "^10.2.x",
     "node": "^20.18.x"
@@ -83,7 +84,8 @@
       "@babel/preset-react"
     ],
     "plugins": [
-      "@babel/plugin-transform-runtime"
+      "@babel/plugin-transform-runtime",
+      "babel-plugin-transform-import-meta"
     ]
   },
   "dependencies": {
@@ -129,6 +131,7 @@
   },
   "devDependencies": {
     "@stylistic/stylelint-plugin": "^3.1.1",
+    "babel-plugin-transform-import-meta": "^2.2.1",
     "eslint": "^9.14.0",
     "eslint-plugin-jest": "^28.9.0",
     "eslint-plugin-react": "^7.37.2",

@@ -3,7 +3,7 @@ require('./metadataEditor.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
-const request = require('../../utils/request-middleware.js');
+import request from '../../utils/request-middleware.js';
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Combobox = require('client/components/combobox.jsx');
 const TagInput = require('../tagInput/tagInput.jsx');
