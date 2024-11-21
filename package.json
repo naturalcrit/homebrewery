@@ -57,6 +57,9 @@
       "shared",
       "server"
     ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!nanoid/).*"
+    ],
     "coveragePathIgnorePatterns": [
       "build/*"
     ],
@@ -76,16 +79,6 @@
     },
     "setupFilesAfterEnv": [
       "jest-expect-message"
-    ]
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react"
-    ],
-    "plugins": [
-      "@babel/plugin-transform-runtime",
-      "babel-plugin-transform-import-meta"
     ]
   },
   "dependencies": {
