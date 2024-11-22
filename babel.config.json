@@ -5,6 +5,7 @@
   ],
   "plugins": [
     "@babel/plugin-transform-runtime",
-    "babel-plugin-transform-import-meta"
+    "babel-plugin-transform-import-meta",
+    "@babel/plugin-syntax-import-assertions"
   ]
 }
