@@ -2,7 +2,7 @@
 // Set working directory to project root
 import { dirname }       from 'path';
 import { fileURLToPath } from 'url';
-import packageJSON       from './../package.json' with { type: "json" };
+import packageJSON       from './../package.json' with { type: 'json' };
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 process.chdir(`${__dirname}/..`);
@@ -26,7 +26,7 @@ import serveCompressedStaticAssets from './static-assets.mv.js';
 import sanitizeFilename            from 'sanitize-filename';
 import asyncHandler                from 'express-async-handler';
 import templateFn                  from '../client/template.js';
-import {model as HomebrewModel }   from './homebrew.model.js';
+import { model as HomebrewModel }   from './homebrew.model.js';
 
 import { DEFAULT_BREW }              from './brewDefaults.js';
 import { splitTextStyleAndMetadata } from '../shared/helpers.js';
@@ -47,7 +47,7 @@ const sanitizeBrew = (brew, accessType)=>{
 	return brew;
 };
 
-app.set('trust proxy', 1 /* number of proxies between user and server */)
+app.set('trust proxy', 1 /* number of proxies between user and server */);
 
 app.use('/', serveCompressedStaticAssets(`build`));
 app.use(contentNegotiation);
@@ -273,7 +273,7 @@ app.get('/user/:username', async (req, res, next)=>{
 		console.log(err);
 	});
 
-	brews.forEach(brew => brew.stubbed = true); //All brews from MongoDB are "stubbed"
+	brews.forEach((brew)=>brew.stubbed = true); //All brews from MongoDB are "stubbed"
 
 	if(ownAccount && req?.account?.googleId){
 		const auth = await GoogleActions.authCheck(req.account, res);
@@ -399,7 +399,7 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 app.get('/account', asyncHandler(async (req, res, next)=>{
 	const data = {};
 	data.title = 'Account Information Page';
-	
+
 	if(!req.account) {
 		res.set('WWW-Authenticate', 'Bearer realm="Authorization Required"');
 		const error = new Error('No valid account');
@@ -413,7 +413,7 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 	let googleCount = [];
 	if(req.account) {
 		if(req.account.googleId) {
-			auth = await GoogleActions.authCheck(req.account, res, false)
+			auth = await GoogleActions.authCheck(req.account, res, false);
 
 			googleCount = await GoogleActions.listGoogleBrews(auth)
 				.catch((err)=>{
@@ -477,8 +477,8 @@ app.get('/vault', asyncHandler(async(req, res, next)=>{
 
 //Send rendered page
 app.use(asyncHandler(async (req, res, next)=>{
-	if (!req.route) return res.redirect('/'); // Catch-all for invalid routes
-		
+	if(!req.route) return res.redirect('/'); // Catch-all for invalid routes
+
 	const page = await renderPage(req, res);
 	if(!page) return;
 	res.send(page);

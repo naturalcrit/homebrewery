@@ -1,4 +1,4 @@
-import packageJSON from '../../package.json' with { type: "json" };
+import packageJSON from '../../package.json' with { type: 'json' };
 const version = packageJSON.version;
 
 export default (req, res, next)=>{
