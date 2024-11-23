@@ -370,6 +370,44 @@ const superSubScripts = {
 	}
 };
 
+
+const justifiedParagraphClasses = [];
+justifiedParagraphClasses[2] = 'mdParagraphJiustifyLeft';
+justifiedParagraphClasses[4] = 'mdParagraphJiustifyRight';
+justifiedParagraphClasses[6] = 'mdParagraphJiustifyCenter';
+
+const justifiedParagraphs = {
+	name  : 'justifiedParagraphs',
+	level : 'block',
+	start(src) {
+		return src.match(/\n(?:-:|:-|:-:) {1}/m)?.index;
+
+	},  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const regex  = /^((:- ).*)|((-: ).*)|((:-:) .*)(?:\n|$)/ym;
+		const match = regex.exec(src);
+		if(match?.length) {
+			let whichJustify;
+			if(match[2]?.length) whichJustify = 2;
+			if(match[4]?.length) whichJustify = 4;
+			if(match[6]?.length) whichJustify = 6;
+			return {
+				type   : 'justifiedParagraphs', // Should match "name" above
+				raw    : match[0],     // Text to consume from the source
+				length : match[whichJustify].length,
+				text   : match[0].slice(match[whichJustify].length),
+				class  : justifiedParagraphClasses[whichJustify],
+				tokens : this.lexer.inlineTokens(match[0].slice(match[whichJustify].length))
+			};
+		}
+	},
+	renderer(token) {
+		return `<p class="${token.class}">${this.parser.parseInline(token.tokens)}</p>`;
+	}
+
+};
+
+
 const forcedParagraphBreaks = {
 	name  : 'hardBreaks',
 	level : 'block',
@@ -748,7 +786,7 @@ const tableTerminators = [
 ];
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions : [definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks, superSubScripts,
+Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks, superSubScripts,
 	mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
