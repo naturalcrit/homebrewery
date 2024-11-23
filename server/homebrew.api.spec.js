@@ -36,8 +36,9 @@ describe('Tests for api', ()=>{
 			}
 		});
 
-		google = require('./googleActions.js');
-		model = require('./homebrew.model.js').model;
+		google = require('./googleActions.js').default;
+		model  = require('./homebrew.model.js').model;
+		api    = require('./homebrew.api').default;
 
 		jest.mock('./googleActions.js');
 		google.authCheck = jest.fn(()=>'client');
@@ -53,8 +54,6 @@ describe('Tests for api', ()=>{
 			set       : jest.fn(()=>{}),
 			setHeader : jest.fn(()=>{})
 		};
-
-		api = require('./homebrew.api');
 
 		hbBrew = {
 			text        : `brew text`,

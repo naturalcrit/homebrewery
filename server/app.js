@@ -1,25 +1,41 @@
 /*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
 // Set working directory to project root
+import { dirname }       from 'path';
+import { fileURLToPath } from 'url';
+import packageJSON       from './../package.json' with { type: "json" };
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 process.chdir(`${__dirname}/..`);
+const version = packageJSON.version;
 
-const _ = require('lodash');
-const jwt = require('jwt-simple');
-const express = require('express');
-const yaml = require('js-yaml');
+import _       from 'lodash';
+import jwt     from 'jwt-simple';
+import express from 'express';
+import yaml    from 'js-yaml';
+import config  from './config.js';
+import fs      from 'fs-extra';
+
 const app = express();
-const config = require('./config.js');
-const fs = require('fs-extra');
 
-const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = require('./homebrew.api.js');
-const GoogleActions = require('./googleActions.js');
-const serveCompressedStaticAssets = require('./static-assets.mv.js');
-const sanitizeFilename = require('sanitize-filename');
-const asyncHandler = require('express-async-handler');
-const templateFn = require('./../client/template.js');
+import api from './homebrew.api.js';
+const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = api;
+import adminApi                    from './admin.api.js';
+import vaultApi                    from './vault.api.js';
+import GoogleActions               from './googleActions.js';
+import serveCompressedStaticAssets from './static-assets.mv.js';
+import sanitizeFilename            from 'sanitize-filename';
+import asyncHandler                from 'express-async-handler';
+import templateFn                  from '../client/template.js';
+import {model as HomebrewModel }   from './homebrew.model.js';
 
-const { DEFAULT_BREW } = require('./brewDefaults.js');
+import { DEFAULT_BREW }              from './brewDefaults.js';
+import { splitTextStyleAndMetadata } from '../shared/helpers.js';
 
-const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
+//==== Middleware Imports ====//
+import contentNegotiation from './middleware/content-negotiation.js';
+import bodyParser         from 'body-parser';
+import cookieParser       from 'cookie-parser';
+import forceSSL           from './forcessl.mw.js';
 
 
 const sanitizeBrew = (brew, accessType)=>{
@@ -34,10 +50,10 @@ const sanitizeBrew = (brew, accessType)=>{
 app.set('trust proxy', 1 /* number of proxies between user and server */)
 
 app.use('/', serveCompressedStaticAssets(`build`));
-app.use(require('./middleware/content-negotiation.js'));
-app.use(require('body-parser').json({ limit: '25mb' }));
-app.use(require('cookie-parser')());
-app.use(require('./forcessl.mw.js'));
+app.use(contentNegotiation);
+app.use(bodyParser.json({ limit: '25mb' }));
+app.use(cookieParser());
+app.use(forceSSL);
 
 //Account Middleware
 app.use((req, res, next)=>{
@@ -57,15 +73,14 @@ app.use((req, res, next)=>{
 });
 
 app.use(homebrewApi);
-app.use(require('./admin.api.js'));
-app.use(require('./vault.api.js'));
+app.use(adminApi);
+app.use(vaultApi);
 
-const HomebrewModel     = require('./homebrew.model.js').model;
-const welcomeText       = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
-const welcomeTextLegacy = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
-const migrateText       = require('fs').readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
-const changelogText     = require('fs').readFileSync('changelog.md', 'utf8');
-const faqText           = require('fs').readFileSync('faq.md', 'utf8');
+const welcomeText       = fs.readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
+const welcomeTextLegacy = fs.readFileSync('client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
+const migrateText       = fs.readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
+const changelogText     = fs.readFileSync('changelog.md', 'utf8');
+const faqText           = fs.readFileSync('faq.md', 'utf8');
 
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
@@ -480,7 +495,7 @@ const renderPage = async (req, res)=>{
 		deployment  : config.get('heroku_app_name') ?? ''
 	};
 	const props = {
-		version       : require('./../package.json').version,
+		version       : version,
 		url           : req.customUrl || req.originalUrl,
 		brew          : req.brew,
 		brews         : req.brews,
@@ -557,6 +572,4 @@ app.use((req, res)=>{
 });
 //^=====--------------------------------------=====^//
 
-module.exports = {
-	app : app
-};
+export default app;

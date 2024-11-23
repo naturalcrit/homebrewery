@@ -2,7 +2,7 @@ require('./homePage.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const cx = require('classnames');
-const request = require('../../utils/request-middleware.js');
+import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
 
 const Nav = require('naturalcrit/nav/nav.jsx');

@@ -1,13 +1,15 @@
-const HomebrewModel = require('./homebrew.model.js').model;
-const NotificationModel = require('./notifications.model.js').model;
-const router = require('express').Router();
-const Moment = require('moment');
-const templateFn = require('../client/template.js');
-const zlib = require('zlib');
+import {model as HomebrewModel }     from './homebrew.model.js';
+import {model as NotificationModel } from './notifications.model.js';
+import express    from 'express';
+import Moment     from 'moment';
+import zlib       from 'zlib';
+import templateFn from '../client/template.js';
 
-const HomebrewAPI = require('./homebrew.api.js');
-const asyncHandler = require('express-async-handler');
-const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
+import HomebrewAPI  from './homebrew.api.js';
+import asyncHandler from 'express-async-handler';
+import { splitTextStyleAndMetadata } from '../shared/helpers.js';
+
+const router = express.Router();
 
 process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
 process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password3';
@@ -190,4 +192,4 @@ router.get('/admin', mw.adminOnly, (req, res)=>{
 	});
 });
 
-module.exports = router;
+export default router;
