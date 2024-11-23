@@ -1,6 +1,6 @@
 require('./notificationPopup.less');
 import React, { useEffect, useState } from 'react';
-const request = require('../../utils/request-middleware.js');
+import request from '../../utils/request-middleware.js';
 
 import Dialog from '../../../components/dialog.jsx';
 

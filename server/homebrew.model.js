@@ -1,7 +1,8 @@
-const mongoose = require('mongoose');
-const { nanoid } = require('nanoid');
-const _ = require('lodash');
-const zlib = require('zlib');
+import mongoose   from 'mongoose';
+import { nanoid } from 'nanoid';
+import _          from 'lodash';
+import zlib       from 'zlib';
+
 
 const HomebrewSchema = mongoose.Schema({
 	shareId   : { type: String, default: ()=>{return nanoid(12);}, index: { unique: true } },
@@ -44,7 +45,7 @@ HomebrewSchema.statics.get = async function(query, fields=null){
 	const brew = await Homebrew.findOne(query, fields).orFail()
 		.catch((error)=>{throw 'Can not find brew';});
 	if(!_.isNil(brew.textBin)) {			// Uncompress zipped text field
-		unzipped = zlib.inflateRawSync(brew.textBin);
+		const unzipped = zlib.inflateRawSync(brew.textBin);
 		brew.text = unzipped.toString();
 	}
 	return brew;
@@ -62,7 +63,7 @@ HomebrewSchema.statics.getByUser = async function(username, allowAccess=false, f
 
 const Homebrew = mongoose.model('Homebrew', HomebrewSchema);
 
-module.exports = {
-	schema : HomebrewSchema,
-	model  : Homebrew,
+export { 
+	HomebrewSchema as schema,
+	Homebrew       as model
 };

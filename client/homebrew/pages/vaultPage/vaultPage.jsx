@@ -15,7 +15,7 @@ const BrewItem      = require('../basePages/listPage/brewItem/brewItem.jsx');
 const SplitPane     = require('../../../../shared/naturalcrit/splitPane/splitPane.jsx');
 const ErrorIndex    = require('../errorPage/errors/errorIndex.js');
 
-const request = require('../../utils/request-middleware.js');
+import request from '../../utils/request-middleware.js';
 
 const VaultPage = (props)=>{
 	const [pageState, setPageState] = useState(parseInt(props.query.page) || 1);
