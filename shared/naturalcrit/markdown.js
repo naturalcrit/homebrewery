@@ -372,9 +372,9 @@ const superSubScripts = {
 
 
 const justifiedParagraphClasses = [];
-justifiedParagraphClasses[2] = 'mdParagraphJiustifyLeft';
-justifiedParagraphClasses[4] = 'mdParagraphJiustifyRight';
-justifiedParagraphClasses[6] = 'mdParagraphJiustifyCenter';
+justifiedParagraphClasses[2] = 'mdParagraphJustifyLeft';
+justifiedParagraphClasses[4] = 'mdParagraphJustifyRight';
+justifiedParagraphClasses[6] = 'mdParagraphJustifyCenter';
 
 const justifiedParagraphs = {
 	name  : 'justifiedParagraphs',
@@ -384,7 +384,7 @@ const justifiedParagraphs = {
 
 	},  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const regex  = /^((:- ).*)|((-: ).*)|((:-:) .*)(?:\n|$)/ym;
+		const regex  = /^((:- ).*)|((-: ).*)|((:-: ).*)(?:\n|$)/ym;
 		const match = regex.exec(src);
 		if(match?.length) {
 			let whichJustify;
