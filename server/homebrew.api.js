@@ -8,8 +8,10 @@ import Markdown                      from '../shared/naturalcrit/markdown.js';
 import yaml                          from 'js-yaml';
 import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
-import { splitTextStyleAndMetadata } from '../shared/helpers.js';
+import { splitTextStyleAndMetadata, 
+		 brewSnippetsToJSON }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
+
 
 const router = express.Router();
 
@@ -176,15 +178,15 @@ const api = {
 
 	mergeBrewText : (brew)=>{
 		let text = brew.text;
-		if(brew.style !== undefined) {
-			text = `\`\`\`css\n` +
-				`${brew.style || ''}\n` +
+		if(brew.snippets !== undefined) {
+			text = `\`\`\`snippets\n` +
+				`${yaml.dump(brewSnippetsToJSON('brew_snippets', brew.snippets, null, false))}` +
 				`\`\`\`\n\n` +
 				`${text}`;
 		}
-		if(brew.snippets !== undefined) {
-			text = `\`\`\`snippets\n` +
-				`${brew.snippets || ''}\n` +
+		if(brew.style !== undefined) {
+			text = `\`\`\`css\n` +
+				`${brew.style || ''}\n` +
 				`\`\`\`\n\n` +
 				`${text}`;
 		}
