@@ -908,7 +908,7 @@ brew`);
 	});
 	describe('Get CSS', ()=>{
 		it('should return brew style content as CSS text', async ()=>{
-			const testBrew = { title: 'test brew', text: '```css\n\nI Have a style!\n````\n\n' };
+			const testBrew = { title: 'test brew', text: '```css\n\nI Have a style!\n```\n\n' };
 
 			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
 			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));

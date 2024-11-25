@@ -88,19 +88,19 @@ const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
 	if(brew.text.startsWith('```metadata')) {
 		const index = brew.text.indexOf('\n```\n\n');
-		const metadataSection = brew.text.slice(11, index - 1);
+		const metadataSection = brew.text.slice(11, index + 1);
 		const metadata = yaml.load(metadataSection);
 		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
 		brew.text = brew.text.slice(index + 6);
 	}
 	if(brew.text.startsWith('```css')) {
 		const index = brew.text.indexOf('\n```\n\n');
-		brew.style = brew.text.slice(6, index - 1);
+		brew.style = brew.text.slice(7, index + 1);
 		brew.text = brew.text.slice(index + 6);
 	}
 	if(brew.text.startsWith('```snippets')) {
 		const index = brew.text.indexOf('\n```\n\n');
-		brew.snippets = yamlSnippetsToText(yaml.load(brew.text.slice(11, index - 1))).slice(0, -1);
+		brew.snippets = yamlSnippetsToText(yaml.load(brew.text.slice(11, index + 1))).slice(0, -1);
 		brew.text = brew.text.slice(index + 6);
 	}
 };
