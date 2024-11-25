@@ -106,7 +106,7 @@
     "lodash": "^4.17.21",
     "marked": "11.2.0",
     "marked-emoji": "^1.4.3",
-    "marked-extended-tables": "file:../marked-extended-tables",
+    "marked-extended-tables": "^1.0.10",
     "marked-gfm-heading-id": "^3.2.0",
     "marked-smartypants-lite": "^1.0.2",
     "markedLegacy": "npm:marked@^0.3.19",
