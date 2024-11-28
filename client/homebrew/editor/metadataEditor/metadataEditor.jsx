@@ -47,13 +47,20 @@ const MetadataEditor = createClass({
 
 	getInitialState : function(){
 		return {
-			showThumbnail : true
+			showThumbnail    : true,
+			showThemeWritein : false
 		};
 	},
 
 	toggleThumbnailDisplay : function(){
 		this.setState({
 			showThumbnail : !this.state.showThumbnail
+		});
+	},
+
+	toggleThemeWritein : function(){
+		this.setState({
+			showThemeWritein : !this.state.showThemeWritein
 		});
 	},
 
@@ -112,6 +119,12 @@ const MetadataEditor = createClass({
 	handleTheme : function(theme){
 		this.props.metadata.renderer = theme.renderer;
 		this.props.metadata.theme    = theme.path;
+		this.props.onChange(this.props.metadata, 'theme');
+	},
+
+	handleThemeWritein : function(e) {
+		this.props.metadata.renderer = 'V3';
+		this.props.metadata.theme = e.target.value;
 		this.props.onChange(this.props.metadata, 'theme');
 	},
 
@@ -213,6 +226,7 @@ const MetadataEditor = createClass({
 			});
 		};
 
+
 		const currentRenderer = this.props.metadata.renderer;
 		const currentTheme    = mergedThemes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme]
 													?? { name: `!!! THEME MISSING !!! ID=${this.props.metadata.theme}` };
@@ -234,8 +248,21 @@ const MetadataEditor = createClass({
 
 		return <div className='field themes'>
 			<label>theme</label>
-			{dropdown}
+			{!this.state.showThemeWritein?dropdown:''}
+			<button className='display' onClick={this.toggleThemeWritein}>
+				<i className={`fas fa-caret-${this.state.showThemeWritein ? 'right' : 'left'}`} />
+			</button>
+			{this.renderThemeWritein()}
 		</div>;
+	},
+
+	renderThemeWritein : function(){
+		if(!this.state.showThemeWritein) return;
+		return <input type='text'
+			default=''
+			placeholder='Enter share id'
+			                 className='value'
+			onChange={(e)=>this.handleThemeWritein(e)} />;
 	},
 
 	renderLanguageDropdown : function(){
@@ -345,7 +372,7 @@ const MetadataEditor = createClass({
 				placeholder='add tag' unique={true}
 				values={this.props.metadata.tags}
 				onChange={(e)=>this.handleFieldChange('tags', e)}
-				/>
+			/>
 
 			<div className='field systems'>
 				<label>systems</label>
@@ -370,7 +397,7 @@ const MetadataEditor = createClass({
 				values={this.props.metadata.invitedAuthors}
 				notes={['Invited author usernames are case sensitive.', 'After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.']}
 				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}
-				/>
+			/>
 
 			<h2>Privacy</h2>
 

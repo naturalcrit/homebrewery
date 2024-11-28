@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import _                             from 'lodash';
-import {model as HomebrewModel}      from './homebrew.model.js';
+import { model as HomebrewModel }    from './homebrew.model.js';
 import express                       from 'express';
 import zlib                          from 'zlib';
 import GoogleActions                 from './googleActions.js';
@@ -302,7 +302,7 @@ const api = {
 				splitTextStyleAndMetadata(currentTheme);
 
 				// If there is anything in the snippets or style members, append them to the appropriate array
-				if(currentTheme?.snippets) completeSnippets.push(JSON.parse(currentTheme.snippets));
+				// if(currentTheme?.snippets) completeSnippets.push(JSON.parse(currentTheme.snippets));
 				if(currentTheme?.style) completeStyles.push(`/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.params.id} */\n\n${currentTheme.style}`);
 
 				req.params.id       = currentTheme.theme;
