@@ -19,7 +19,7 @@ const NewBrew = ()=>{
 					style : ''
 				};
 				if(fileContent.startsWith('```metadata')) {
-					splitTextStyleAndMetadata(newBrew); // Modify newBrew directly
+					splitTextStyleAndMetadata(newBrew, true); // Modify newBrew directly
 					localStorage.setItem(BREWKEY, newBrew.text);
 					localStorage.setItem(STYLEKEY, newBrew.style);
 					localStorage.setItem(METAKEY, JSON.stringify(_.pick(newBrew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang'])));
