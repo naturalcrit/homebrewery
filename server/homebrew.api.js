@@ -1,18 +1,20 @@
 /* eslint-disable max-lines */
-const _ = require('lodash');
-const HomebrewModel = require('./homebrew.model.js').model;
-const router = require('express').Router();
-const zlib = require('zlib');
-const GoogleActions = require('./googleActions.js');
-const Markdown = require('../shared/naturalcrit/markdown.js');
-const yaml = require('js-yaml');
-const asyncHandler = require('express-async-handler');
-const { nanoid } = require('nanoid');
-const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
+import _                             from 'lodash';
+import {model as HomebrewModel}      from './homebrew.model.js';
+import express                       from 'express';
+import zlib                          from 'zlib';
+import GoogleActions                 from './googleActions.js';
+import Markdown                      from '../shared/naturalcrit/markdown.js';
+import yaml                          from 'js-yaml';
+import asyncHandler                  from 'express-async-handler';
+import { nanoid }                    from 'nanoid';
+import { splitTextStyleAndMetadata } from '../shared/helpers.js';
+import checkClientVersion            from './middleware/check-client-version.js';
 
-const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('./brewDefaults.js');
+const router = express.Router();
 
-const Themes = require('../themes/themes.json');
+import { DEFAULT_BREW, DEFAULT_BREW_LOAD } from './brewDefaults.js';
+import Themes from '../themes/themes.json' with { type: 'json' };
 
 const isStaticTheme = (renderer, themeName)=>{
 	return Themes[renderer]?.[themeName] !== undefined;
@@ -87,8 +89,18 @@ const api = {
 			// Get relevant IDs for the brew
 			const { id, googleId } = api.getId(req);
 
+			const accessMap = {
+				edit  : { editId: id },
+				share : { shareId: id },
+				admin : {
+					$or : [
+						{ editId: id },
+						{ shareId: id },
+					] }
+			};
+
 			// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine.
-			let stub = await HomebrewModel.get(accessType === 'edit' ? { editId: id } : { shareId: id })
+			let stub = await HomebrewModel.get(accessMap[accessType])
 				.catch((err)=>{
 					if(googleId) {
 						console.warn(`Unable to find document stub for ${accessType}Id ${id}`);
@@ -295,9 +307,8 @@ const api = {
 
 				req.params.id       = currentTheme.theme;
 				req.params.renderer = currentTheme.renderer;
-			}
+			} else {
 			//=== Static Themes ===//
-			else {
 				const localSnippets = `${req.params.renderer}_${req.params.id}`; // Just log the name for loading on client
 				const localStyle    = `@import url(\"/themes/${req.params.renderer}/${req.params.id}/style.css\");`;
 				completeSnippets.push(localSnippets);
@@ -464,7 +475,7 @@ const api = {
 	}
 };
 
-router.use('/api', require('./middleware/check-client-version.js'));
+router.use('/api', checkClientVersion);
 router.post('/api', asyncHandler(api.newBrew));
 router.put('/api/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
 router.put('/api/update/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
@@ -472,4 +483,4 @@ router.delete('/api/:id', asyncHandler(api.deleteBrew));
 router.get('/api/remove/:id', asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
 
-module.exports = api;
+export default api;
