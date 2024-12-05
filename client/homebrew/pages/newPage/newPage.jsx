@@ -2,9 +2,9 @@
 require('./newPage.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const request = require('../../utils/request-middleware.js');
+import request from '../../utils/request-middleware.js';
 
-const Markdown = require('naturalcrit/markdown.js');
+import Markdown from 'naturalcrit/markdown.js';
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const PrintNavItem = require('../../navbar/print.navitem.jsx');

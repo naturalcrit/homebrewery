@@ -5,7 +5,7 @@ const { useState, useRef, useCallback, useMemo } = React;
 const _ = require('lodash');
 
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
-const Markdown = require('naturalcrit/markdown.js');
+import Markdown from 'naturalcrit/markdown.js';
 const ErrorBar = require('./errorBar/errorBar.jsx');
 const ToolBar  = require('./toolBar/toolBar.jsx');
 
@@ -256,7 +256,7 @@ const BrewRenderer = (props)=>{
 	}
 
 	const renderedStyle = useMemo(()=>renderStyle(), [props.style, props.themeBundle]);
-	renderedPages = useMemo(()=>renderPages(), [props.text]);
+	renderedPages = useMemo(()=>renderPages(), [displayOptions.pageShadows, props.text]);
 
 	return (
 		<>

@@ -1,7 +1,7 @@
-const diceFont      = require('../../../themes/fonts/iconFonts/diceFont.js');
-const elderberryInn = require('../../../themes/fonts/iconFonts/elderberryInn.js');
-const fontAwesome   = require('../../../themes/fonts/iconFonts/fontAwesome.js');
-const gameIcons     = require('../../../themes/fonts/iconFonts/gameIcons.js');
+import diceFont      from '../../../themes/fonts/iconFonts/diceFont.js';
+import elderberryInn from '../../../themes/fonts/iconFonts/elderberryInn.js';
+import fontAwesome   from '../../../themes/fonts/iconFonts/fontAwesome.js';
+import gameIcons     from '../../../themes/fonts/iconFonts/gameIcons.js';
 
 const emojis = {
 	...diceFont,

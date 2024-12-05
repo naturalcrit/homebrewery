@@ -85,6 +85,52 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Wednesday 11/27/2024 - v3.16.1
+
+{{taskList
+##### 5e-Cleric
+
+* [x] Allow linking to specific HTML IDs via `#ID` at the end of the URL, e.g.: `homebrewery.naturalcrit.com/share/share/a6RCXwaDS58i#p4` to link to Page 4 directly
+
+Fixes issues [#2820](https://github.com/naturalcrit/homebrewery/issues/2820), [#3505](https://github.com/naturalcrit/homebrewery/issues/3505)
+
+* [x] Fix generation of link to certain Google Drive brews
+
+Fixes issue [#3776](https://github.com/naturalcrit/homebrewery/issues/3776)
+
+##### abquintic
+
+* [x] Fix blank pages appearing when pasting text
+
+Fixes issue [#3718](https://github.com/naturalcrit/homebrewery/issues/3718)
+
+##### Gazook89
+
+* [x] Add new brew viewing options to the view toolbar
+- {{fac,single-spread}} {{openSans **SINGLE PAGE**}}
+- {{fac,facing-spread}} {{openSans **TWO PAGE**}}
+- {{fac,flow-spread}} {{openSans **GRID**}}
+
+Fixes issue [#1379](https://github.com/naturalcrit/homebrewery/issues/1379)
+
+* [x] Updates to tag input boxes
+
+##### G-Ambatte
+
+* [x] Admin tools to fix certain corrupted documents
+
+Fixes issue [#3801](https://github.com/naturalcrit/homebrewery/issues/3801)
+
+* [x] Fix print window being affected by document zoom
+
+Fixes issue [#3744](https://github.com/naturalcrit/homebrewery/issues/3744)
+
+
+##### calculuschild, 5e-Cleric, G-Ambatte, Gazook89, abquintic
+
+* [x] Multiple code refactors, cleanups, and security fixes
+}}
+
 ### Saturday 10/12/2024 - v3.16.0
 
 {{taskList

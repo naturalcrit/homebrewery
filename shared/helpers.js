@@ -1,6 +1,6 @@
-const _ = require('lodash');
-const yaml = require('js-yaml');
-const request = require('../client/homebrew/utils/request-middleware.js');
+import _       from 'lodash';
+import yaml    from 'js-yaml';
+import request from '../client/homebrew/utils/request-middleware.js';
 
 const processStyleTags = (string)=>{
 	//split tags up. quotes can only occur right after : or =.
@@ -48,6 +48,9 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.snippets = brew.text.slice(11, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
+
+	// Handle old brews that still have empty strings in the tags metadata
+	if(typeof brew.tags === 'string') brew.tags = brew.tags ? [brew.tags] : [];
 };
 
 const printCurrentBrew = ()=>{
@@ -78,7 +81,7 @@ const fetchThemeBundle = async (obj, renderer, theme)=>{
 	}));
 };
 
-module.exports = {
+export {
 	splitTextStyleAndMetadata,
 	printCurrentBrew,
 	fetchThemeBundle,

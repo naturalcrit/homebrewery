@@ -1,4 +1,4 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
 // Default properties for newly-created brews
 const DEFAULT_BREW = {
@@ -32,7 +32,7 @@ const DEFAULT_BREW_LOAD = _.defaults(
 	},
 	DEFAULT_BREW);
 
-module.exports = {
+export {
 	DEFAULT_BREW,
 	DEFAULT_BREW_LOAD
 };
