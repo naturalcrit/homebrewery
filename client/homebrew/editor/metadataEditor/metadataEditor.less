@@ -79,6 +79,7 @@
 				text-overflow : ellipsis;
 			}
 			button {
+				.colorButton();
 				padding          : 0px 5px;
 				color            : white;
 				background-color : black;
@@ -138,16 +139,16 @@
 		margin-bottom : 15px;
 		button { width : 100%; }
 		button.publish {
-			.button(@blueLight);
+			.colorButton(@blueLight);
 		}
 		button.unpublish {
-			.button(@silver);
+			.colorButton(@silver);
 		}
 	}
 
 	.delete.field .value {
 		button {
-			.button(@red);
+			.colorButton(@red);
 		}
 	}
 	.authors.field .value {
@@ -271,7 +272,7 @@
 			&:last-child { border-radius : 0 0.5em 0.5em 0; }
 		}
 
-		.badge {
+		.tag {
 			padding          : 0.3em;
 			margin           : 2px;
 			font-size        : 0.9em;

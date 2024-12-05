@@ -69,7 +69,6 @@ pre {
 
 You can check the site status here: [Everyone or Just Me](https://downforeveryoneorjustme.com/homebrewery.naturalcrit.com)
 
-
 ### Why am I getting an error when trying to save, and my account is linked to Google?
 
 A sign-in with Google only lasts a year until the authentication expires.  You must go [here](https://www.naturalcrit.com/login), click the *Log-out* button, and then sign back in using your Google account.
@@ -82,11 +81,16 @@ If you have linked your account with a Google account, you would change your pas
 
 ### Is there a way to restore a previous version of my brew?
 
-Currently, there is no way to do this through the site yourself. This would take too much of a toll on the amount of storage the homebrewery requires. However, we do have daily backups of our database that we keep for 8 days, and you can contact the moderators on [the subreddit](https://www.reddit.com/r/homebrewery) with your Homebrewery username, the name of the lost brew, and the last known time it was working properly. We can manually look through our backups and restore it if it exists.
+In your brew, there is an icon, :fas_clock_rotate_left:, that button opens up a menu with versions of your brew, stored in order from newer to older, up to a week old. Because of the amount of duplicates this function creates, this information is stored in **your browser**, so if you were to uninstall it or clear your cookies and site data, or change computers, the info will not be there.
+
+Also, we do have daily backups of our database that we keep for 8 days, and you can contact the moderators on [the subreddit](https://www.reddit.com/r/homebrewery) with your Homebrewery username, the name of the lost brew, and the last known time it was working properly. We can manually look through our backups and restore it if it exists.
+
 
 ### I worked on a brew for X hours, and suddenly all the text disappeared!
 
 This usually happens if you accidentally drag-select all of your text and then start typing which overwrites the selection. Do not panic, and do not refresh the page or reload your brew quite yet as it is probably auto-saved in this state already. Simply press CTRL+Z as many times as needed to undo your last few changes and you will be back to where you were, then make sure to save your brew in the "good" state.
+
+You can also load a history version old enough to have all the text, using the :fas_clock_rotate_left: history versions button.
 
 \column
 
@@ -112,10 +116,7 @@ Once you have an image you would like to use, it is recommended to host it somew
 \page
 
 ### A particular font does not work for my language, what do I do?
-The fonts used were originally created for use with the English language, though revisions since then have added more support for other languages.  They are still not complete sets and may be missing a glyph/character you need.  Unfortunately, the volunteer group as it stands at the time of this writing does not have a font guru, so it would be difficult to add more glyphs (especially complicated glyphs).  Let us know which glyph is missing on the subreddit, but you may need to search [Google Fonts](https://fonts.google.com) for an alternative font if you need something fast.
-
-### Whenever I click on the "Get PDF" button, instead of getting a download, it opens Print Preview in another tab.
-Yes, this is by design. In the print preview, select "Save as PDF" as the Destination, and then click "Save". There will be a normal download dialog where you can save your brew as a PDF.
+The fonts used were originally created for use with the English language, though revisions since then have added more support for other languages. They are still not complete sets and may be missing a glyph/character you need. Unfortunately, the volunteer group as it stands at the time of this writing does not have a font guru, so it would be difficult to add more glyphs (especially complicated glyphs). Let us know which glyph is missing on the subreddit, but you may need to search [Google Fonts](https://fonts.google.com) for an alternative font if you need something fast.
 
 ### I have white borders on the bottom/sides of the print preview.
 
@@ -126,4 +127,8 @@ The Homebrewery defaults to creating US Letter page sizes.  If you are printing 
 
 ### Typing `#### Adhesion` in the text editor doesn't show the header at all in the completed page?
 
-Your ad-blocking software is mistakenly assuming your text to be an ad. Whitelist homebrewery.naturalcrit.com in your ad-blocking software.
+Your ad-blocking software is mistakenly assuming your text to be an ad. We recommend whitelisting homebrewery.naturalcrit.com in your ad-blocking software, as we have no ads.
+
+### My username appears as _hidden_ when checking my brews in the Vault, why is that?
+
+Your username is most likely your e-mail adress, and our code is picking that up and protecting your identity. This will remain as is, but you can ask for a name change by contacting the moderators on [the subreddit](https://www.reddit.com/r/homebrewery) with your Homebrewery username, and your desired new name. You will also be asked to provide details about some of your unpublished brews, to verify your identity. No information will be leaked or shared.

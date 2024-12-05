@@ -1,20 +1,21 @@
 /* eslint-disable max-lines */
-const _ = require('lodash');
-const Marked = require('marked');
-const MarkedExtendedTables = require('marked-extended-tables');
-const MarkedMermaid = require('marked-mermaidjs');
-const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartypants-lite');
-const { gfmHeadingId: MarkedGFMHeadingId, resetHeadings: MarkedGFMResetHeadingIDs } = require('marked-gfm-heading-id');
-const { markedEmoji: MarkedEmojis } = require('marked-emoji');
+import _                        from 'lodash';
+import { Parser as MathParser } from 'expr-eval';
+import { marked as Marked }              from 'marked';
+import MarkedExtendedTables     from 'marked-extended-tables';
+import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
+import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
+import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
+import { MarkedMermaid as MarkedMermaid } from 'marked-mermaidjs';
+
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
-const diceFont      = require('../../themes/fonts/iconFonts/diceFont.js');
-const elderberryInn = require('../../themes/fonts/iconFonts/elderberryInn.js');
-const fontAwesome   = require('../../themes/fonts/iconFonts/fontAwesome.js');
-const gameIcons     = require('../../themes/fonts/iconFonts/gameIcons.js');
+import diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
+import elderberryInn from '../../themes/fonts/iconFonts/elderberryInn.js';
+import gameIcons     from '../../themes/fonts/iconFonts/gameIcons.js';
+import fontAwesome   from '../../themes/fonts/iconFonts/fontAwesome.js';
 
-const MathParser = require('expr-eval').Parser;
-const renderer = new Marked.Renderer();
+const renderer  = new Marked.Renderer();
 const tokenizer = new Marked.Tokenizer();
 
 const pageElem = global.document
@@ -913,7 +914,7 @@ const globalVarsList    = {};
 let varsQueue       = [];
 let globalPageNumber = 0;
 
-module.exports = {
+const Markdown = {
 	marked : Marked,
 	render : (rawBrewText, pageNumber=0)=>{
 		globalVarsList[pageNumber] = {};					//Reset global links for current page, to ensure values are parsed in order
@@ -924,6 +925,7 @@ module.exports = {
 		}
 
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`);
+
 		const opts = Marked.defaults;
 
 		rawBrewText = opts.hooks.preprocess(rawBrewText);
@@ -994,3 +996,6 @@ module.exports = {
 		return errors;
 	},
 };
+
+export default Markdown;
+
