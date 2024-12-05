@@ -1005,7 +1005,7 @@ brew`);
 			expect(testBrew.theme).toEqual('5ePHB');
 			expect(testBrew.lang).toEqual('en');
 			// Style
-			expect(testBrew.style).toEqual('style\nstyle\nstyle');
+			expect(testBrew.style).toEqual('style\nstyle\nstyle\n');
 			// Text
 			expect(testBrew.text).toEqual('text\n');
 		});
