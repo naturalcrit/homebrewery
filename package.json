@@ -107,7 +107,7 @@
     "marked": "11.2.0",
     "marked-emoji": "^1.4.3",
     "marked-extended-tables": "^1.0.10",
-    "marked-gfm-heading-id": "^3.2.0",
+    "marked-gfm-heading-id": "^4.1.1",
     "marked-smartypants-lite": "^1.0.2",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.30.1",
