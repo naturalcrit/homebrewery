@@ -312,6 +312,34 @@ app.get('/user/:username', async (req, res, next)=>{
 	return next();
 });
 
+//Rename Brews
+app.put('/user/:username/rename-brews', async (req, res) => {
+	const { username } = req.params;
+    const { newUsername } = req.body;
+
+    if (!username || !newUsername) {
+        return res.status(400).json({ error: 'Username and newUsername are required.' });
+    }
+    try {
+        const brews = await HomebrewModel.getByUser(username, true, ['authors']);
+        const renamePromises = brews.map(async (brew) => {
+            const updatedAuthors = brew.authors.map((author) => 
+                author === username ? newUsername : author
+            );
+            return HomebrewModel.updateOne(
+                { _id: brew._id },
+                { $set: { authors: updatedAuthors } }
+            );
+        });
+        await Promise.all(renamePromises);
+
+        return res.json({ success: true, message: `Brews for ${username} renamed to ${newUsername}.` });
+    } catch (error) {
+        console.error('Error renaming brews:', error);
+        return res.status(500).json({ error: 'Failed to rename brews.' });
+    }
+});
+
 //Edit Page
 app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res, next)=>{
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
