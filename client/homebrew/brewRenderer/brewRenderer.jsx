@@ -37,7 +37,7 @@ const BrewPage = (props)=>{
 		...props
 	};
 	const cleanText = safeHTML(props.contents);
-	return <div className={props.className} id={`p${props.index + 1}`} style={props.style}>
+	return <div className={props.className} id={`p${props.index + 1}`} style={props.style} {...props.attributes}>
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
 };
@@ -173,22 +173,23 @@ const BrewRenderer = (props)=>{
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			const html = Markdown.render(pageText, index);
 
-			const styles = {
-				...(!displayOptions.pageShadows ? { boxShadow: 'none' } : {})
-				// Add more conditions as needed
-			};
-
 			// I assume there is a prettier way to do this.
+			const declaredStyles = {};
 			if(brewTemplates[index]?.attr?.styles) {
 				for (let styleSplit of brewTemplates[index]?.attr?.styles.split(';')) {
 					const styleInst = styleSplit.split(':');
-					styles[styleInst[0]] = styleInst[1];
+					if(styleInst[0] && styleInst[1]) declaredStyles[styleInst[0]] = styleInst[1];
 				}
 			}
 
-			const pageClass = brewTemplates[index]?.attr?.classes?.length > 0 ? `page ${brewTemplates[index].attr.classes}` : `page`;
+			const styles = {
+				...declaredStyles,
+				// ...(!displayOptions.pageShadows ? { boxShadow: 'none' } : {}),
+				// Add more conditions as needed
+			};
 
-			return <BrewPage className={pageClass} index={index} key={index} contents={html} style={styles} {...brewTemplates[index]?.attr?.attributes}/>;
+			const pageClass = brewTemplates[index]?.attr?.classes?.length > 0 ? `page ${brewTemplates[index].attr.classes}` : `page`;
+			return <BrewPage className={pageClass} index={index} key={index} contents={html} style={styles} attributes={brewTemplates[index]?.attr?.attributes}/>;
 		}
 	};
 
