@@ -2,7 +2,7 @@ import packageJSON from '../../package.json' with { type: "json" };
 const version = packageJSON.version;
 
 export default (req, res, next)=>{
-	console.log(req);
+	console.log(req.headers);
 	//check if req comes from localhost
 	
 	const userVersion = req.get('Homebrewery-Version');
