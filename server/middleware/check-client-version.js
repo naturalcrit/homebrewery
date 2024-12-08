@@ -1,10 +1,9 @@
 import packageJSON from '../../package.json' with { type: "json" };
 const version = packageJSON.version;
 
+//This should be only for internal calls, but right now prevents spam api calls, this should be done with a proper cors policy
+
 export default (req, res, next)=>{
-	console.log(req.headers);
-	//check if req comes from localhost
-	
 	const userVersion = req.get('Homebrewery-Version');
 
 	if(userVersion != version) {
