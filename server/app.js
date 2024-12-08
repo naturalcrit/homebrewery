@@ -55,6 +55,31 @@ app.use(bodyParser.json({ limit: '25mb' }));
 app.use(cookieParser());
 app.use(forceSSL);
 
+import cors from 'cors';
+
+// CORS Configuration
+const corsOptions = {
+
+    origin: (origin, callback) => {
+        const allowedOrigins = [
+			'https://homebrewery.naturalcrit.com',
+			'http://localhost:8000',
+			'http://localhost:8010',
+			'https://naturalcrit.com'
+		]; //allow natcrit local and live to call
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+			console.log(origin, 'not allowed');
+            callback(new Error('Not allowed by CORS, if you think this is an error, please contact us'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true,
+};
+
+app.use(cors(corsOptions));
+
 //Account Middleware
 app.use((req, res, next)=>{
 	if(req.cookies && req.cookies.nc_session){
@@ -312,6 +337,35 @@ app.get('/user/:username', async (req, res, next)=>{
 	return next();
 });
 
+//Rename Brews
+app.put('/api/user/rename', async (req, res) => {
+    const { username, newUsername } = req.body;
+
+	console.log('renaming');
+
+    if (!username || !newUsername) {
+        return res.status(400).json({ error: 'Username and newUsername are required.' });
+    }
+    try {
+        const brews = await HomebrewModel.getByUser(username, true, ['authors']);
+        const renamePromises = brews.map(async (brew) => {
+            const updatedAuthors = brew.authors.map((author) => 
+                author === username ? newUsername : author
+            );
+            return HomebrewModel.updateOne(
+                { _id: brew._id },
+                { $set: { authors: updatedAuthors } }
+            );
+        });
+        await Promise.all(renamePromises);
+
+        return res.json({ success: true, message: `Brews for ${username} renamed to ${newUsername}.` });
+    } catch (error) {
+        console.error('Error renaming brews:', error);
+        return res.status(500).json({ error: 'Failed to rename brews.' });
+    }
+});
+
 //Edit Page
 app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res, next)=>{
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
@@ -476,12 +530,15 @@ app.get('/vault', asyncHandler(async(req, res, next)=>{
 }));
 
 //Send rendered page
-app.use(asyncHandler(async (req, res, next)=>{
-	if (!req.route) return res.redirect('/'); // Catch-all for invalid routes
-		
-	const page = await renderPage(req, res);
-	if(!page) return;
-	res.send(page);
+app.use(asyncHandler(async (req, res, next) => {
+    if (!req.route && !req.path.startsWith('/api/')) {
+        return res.redirect('/');
+    }
+
+    const page = await renderPage(req, res);
+    if (!page) return;
+
+    res.send(page);
 }));
 
 //Render the page
