@@ -32,8 +32,11 @@ const INITIAL_CONTENT = dedent`
 //v=====----------------------< Brew Page Component >---------------------=====v//
 const BrewPage = (props)=>{
 	props = {
-		contents : '',
-		index    : 0,
+		contents   : '',
+		index      : 0,
+		style      : {},
+		attributes : {},
+		className  : '',
 		...props
 	};
 	const cleanText = safeHTML(props.contents);
@@ -178,13 +181,13 @@ const BrewRenderer = (props)=>{
 			if(brewTemplates[index]?.attr?.styles) {
 				for (let styleSplit of brewTemplates[index]?.attr?.styles.split(';')) {
 					const styleInst = styleSplit.split(':');
-					if(styleInst[0] && styleInst[1]) declaredStyles[styleInst[0]] = styleInst[1];
+					if(styleInst[0] && styleInst[1]) declaredStyles[styleInst[0].trim()] = styleInst[1].trim();
 				}
 			}
 
 			const styles = {
 				...declaredStyles,
-				// ...(!displayOptions.pageShadows ? { boxShadow: 'none' } : {}),
+				...(!displayOptions.pageShadows ? { boxShadow: 'none' } : {}),
 				// Add more conditions as needed
 			};
 
