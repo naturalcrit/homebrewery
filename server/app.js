@@ -71,7 +71,7 @@ const corsOptions = {
             callback(null, true);
         } else {
 			console.log(origin, 'not allowed');
-            callback(new Error('Not allowed by CORS'));
+            callback(new Error('Not allowed by CORS, if you think this is an error, please contact us'));
         }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
