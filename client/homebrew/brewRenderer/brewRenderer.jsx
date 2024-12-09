@@ -32,10 +32,8 @@ const INITIAL_CONTENT = dedent`
 //v=====----------------------< Brew Page Component >---------------------=====v//
 const BrewPage = (props)=>{
 	props = {
-		contents           : '',
-		index              : 0,
-		onVisibilityChange : ()=>{},
-		onCenterPageChange : ()=>{},
+		contents : '',
+		index    : 0,
 		...props
 	};
 	const pageRef = useRef(null);
@@ -77,7 +75,7 @@ const BrewPage = (props)=>{
 			visibleObserver.disconnect();
 			centerObserver.disconnect();
 		};
-	}, [props.index, props.onVisibilityChange, props.onCenterPageChange]);
+	}, []);
 
 	return <div className={props.className} id={`p${props.index + 1}`} data-index={props.index} ref={pageRef} style={props.style}>
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />

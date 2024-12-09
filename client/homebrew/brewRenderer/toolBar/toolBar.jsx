@@ -25,7 +25,6 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 	};
 
 	const handleOptionChange = (optionKey, newValue)=>{
-		//setDisplayOptions(prevOptions => ({ ...prevOptions, [optionKey]: newValue }));
 		onDisplayOptionsChange({ ...displayOptions, [optionKey]: newValue });
 	};
 
@@ -61,12 +60,10 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 		} else if(mode == 'fit'){
 			let minDimRatio;
 			// find the page with the largest single dim (height or width) so that zoom can be adapted to fit it.
-			if(displayOptions.spread === 'facing'){
+			if(displayOptions.spread === 'facing')
 				minDimRatio = [...pages].reduce((minRatio, page)=>Math.min(minRatio, iframeWidth / page.offsetWidth / 2), Infinity);    // if 'facing' spread, fit two pages in view
-			} else {
+			else 
 				minDimRatio = [...pages].reduce((minRatio, page)=>Math.min(minRatio, iframeWidth / page.offsetWidth, iframeHeight / page.offsetHeight), Infinity);
-			}
-			console.log(minDimRatio);
 
 			desiredZoom = minDimRatio * 100;
 		}
@@ -86,9 +83,8 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 		let start = sortedPages[0];
 
 		for (let i = 1; i <= sortedPages.length; i++) {
-			// If the current page is not consecutive or it's the end of the list
+			// If the current page is the end of the list or not consecutive
 			if(i === sortedPages.length || sortedPages[i] !== sortedPages[i - 1] + 1) {
-				// Push the range to the list
 				ranges.push(
 					start === sortedPages[i - 1] ? `${start}` : `${start} - ${sortedPages[i - 1]}`
 				);
@@ -233,7 +229,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 						title='Current page(s) in view'
 						inputMode='numeric'
 						pattern='[0-9]'
-						value={`${pageNum}`}
+						value={pageNum}
 						onClick={(e)=>e.target.select()}
 						onChange={(e)=>handlePageInput(e.target.value)}
 						onBlur={()=>scrollToPage(pageNum)}
@@ -257,6 +253,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 						const start = _.max(visiblePages);
 						scrollToPage(start);
 						if(start === _.max(visiblePages)){
+							console.log("oh no")
 							scrollToPage(start + 1);
 						};
 					}}
