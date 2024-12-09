@@ -5,7 +5,7 @@
 // reused by both the main application and all tests which require database
 // connection.
 
-const Mongoose = require('mongoose');
+import Mongoose from 'mongoose';
 
 const getMongoDBURL = (config)=>{
 	return config.get('mongodb_uri') ||
@@ -31,7 +31,7 @@ const connect = async (config)=>{
 		.catch((error)=>handleConnectionError(error));
 };
 
-module.exports = {
-	connect    : connect,
-	disconnect : disconnect
+export default {
+	connect,
+	disconnect
 };

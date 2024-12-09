@@ -4,7 +4,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
-const Markdown = require('../../../shared/naturalcrit/markdown.js');
+import Markdown from '../../../shared/naturalcrit/markdown.js';
 
 const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
 const SnippetBar = require('./snippetbar/snippetbar.jsx');
@@ -314,7 +314,7 @@ const Editor = createClass({
 	},
 
 	brewJump : function(targetPage=this.props.currentEditorCursorPageNum, smooth=true){
-		if(!window || isJumping)
+		if(!window || !this.isText() || isJumping)
 			return;
 
 		// Get current brewRenderer scroll position and calculate target position
@@ -355,7 +355,7 @@ const Editor = createClass({
 	},
 
 	sourceJump : function(targetPage=this.props.currentBrewRendererPageNum, smooth=true){
-		if(!this.isText || isJumping)
+		if(!this.isText() || isJumping)
 			return;
 
 		const textSplit  = this.props.renderer == 'V3' ? /^\\page$/gm : /\\page/;

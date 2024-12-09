@@ -10,7 +10,8 @@
 		overflow-x : hidden;
 		overflow-y : hidden;
 	}
-	>.divider {
+	.divider {
+		position         : relative;
 		display          : table;
 		width            : 15px;
 		height           : 100%;
@@ -29,10 +30,11 @@
 				color     : #666666;
 			}
 		}
-		&:hover { background-color : #999999; }
+		&:hover,&.dragging { background-color : #999999; }
 	}
 	.arrow {
 		position         : absolute;
+		left             : 50%;
 		z-index          : 999;
 		width            : 25px;
 		height           : 25px;
@@ -43,6 +45,7 @@
 		border           : 2px solid #BBBBBB;
 		border-radius    : 15px;
 		box-shadow       : 0 4px 5px #0000007F;
+		translate        : -50%;
 		&.left {
 			.tooltipLeft('Jump to location in Editor');
 			top : 30px;

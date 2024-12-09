@@ -12,10 +12,8 @@ const Nav = {
 		displayName : 'Nav.base',
 		render      : function(){
 			return <nav>
-				<div className='navContent'>
 					{this.props.children}
-				</div>
-			</nav>;
+					</nav>;
 		}
 	}),
 	logo : function(){

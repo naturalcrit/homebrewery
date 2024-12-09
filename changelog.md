@@ -81,8 +81,130 @@ pre {
 }
 ```
 
+
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
+
+### Wednesday 11/27/2024 - v3.16.1
+
+{{taskList
+##### 5e-Cleric
+
+* [x] Allow linking to specific HTML IDs via `#ID` at the end of the URL, e.g.: `homebrewery.naturalcrit.com/share/share/a6RCXwaDS58i#p4` to link to Page 4 directly
+
+Fixes issues [#2820](https://github.com/naturalcrit/homebrewery/issues/2820), [#3505](https://github.com/naturalcrit/homebrewery/issues/3505)
+
+* [x] Fix generation of link to certain Google Drive brews
+
+Fixes issue [#3776](https://github.com/naturalcrit/homebrewery/issues/3776)
+
+##### abquintic
+
+* [x] Fix blank pages appearing when pasting text
+
+Fixes issue [#3718](https://github.com/naturalcrit/homebrewery/issues/3718)
+
+##### Gazook89
+
+* [x] Add new brew viewing options to the view toolbar
+- {{fac,single-spread}} {{openSans **SINGLE PAGE**}}
+- {{fac,facing-spread}} {{openSans **TWO PAGE**}}
+- {{fac,flow-spread}} {{openSans **GRID**}}
+
+Fixes issue [#1379](https://github.com/naturalcrit/homebrewery/issues/1379)
+
+* [x] Updates to tag input boxes
+
+##### G-Ambatte
+
+* [x] Admin tools to fix certain corrupted documents
+
+Fixes issue [#3801](https://github.com/naturalcrit/homebrewery/issues/3801)
+
+* [x] Fix print window being affected by document zoom
+
+Fixes issue [#3744](https://github.com/naturalcrit/homebrewery/issues/3744)
+
+
+##### calculuschild, 5e-Cleric, G-Ambatte, Gazook89, abquintic
+
+* [x] Multiple code refactors, cleanups, and security fixes
+}}
+
+### Saturday 10/12/2024 - v3.16.0
+
+{{taskList
+##### 5e-Cleric
+
+* [x] Added a new API endpoint `/metadata/:shareId` to fetch metadata about individual brews
+
+Fixes issue [#2638](https://github.com/naturalcrit/homebrewery/issues/2638)
+
+* [x] Added A3, A5, and Card page size snippets under {{openSans **:fas_paintbrush: STYLE TAB :fas_arrow_right: :fas_print: PRINT**}}
+
+* [x] Adjust navbar styling for very long titles
+
+Fixes issue [#2071](https://github.com/naturalcrit/homebrewery/issues/2071)
+
+* [x] Added some sorting options to the {{openSans **VAULT** {{fas,fa-dungeon}}}} page
+
+* [x] Fix `language` property not working in share page
+
+Fixes issue [#3776](https://github.com/naturalcrit/homebrewery/issues/3776)
+
+##### abquintic
+
+* [x] New {{openSans **:fas_pencil: TEXT EDITOR :fas_arrow_right: :fas_bookmark: PAGE NUMBER :fas_arrow_right:**}}
+{{openSans **:fas_xmark: SKIP PAGE NUMBER**}} and {{openSans **:fas_arrow_rotate_left: RESTART PAGE NUMBER**}} snippets for more control over automatic page numbering.
+
+Fixes issue [#513](https://github.com/naturalcrit/homebrewery/issues/513)
+
+* [x] New Table of Contents control options via {{openSans **:fas_pencil: TEXT EDITOR :fas_arrow_right: :fas_book: TABLE OF CONTENTS**}} submenus. By default, H1-H3 is included in the ToC generation, but the new options allow marking `{{blocks}}` to include or exclude specific or ranges of contained headers. Also, a global option to increase the default range of H1-H3 to H1-H4/5/6. After applying these markers, you must regenerate the Table of Contents to see the changes.
+
+* [x] Added a ":fas_lock: SYNC VIEWS" button onto the divider bar. When locked, scrolling on either panel will sync the other panel to the same page.
+
+Fixes issue [#241](https://github.com/naturalcrit/homebrewery/issues/241)
+
+##### Gazook89
+
+* [x] Added a :fas_glasses: HIDE button to the page navigation bar
+
+##### G-Ambatte
+
+* [x] Automatic local backups of your files, in case of accidental data loss. Stores up to 5 snapshots of each brew edited in your browser, incrementing from a few minutes old to a maximum of several days. Restore a backup by clicking an entry in the new {{openSans **:fas_clock_rotate_left: HISTORY**}} button in the snippet bar.
+
+Fixes issue [#3070](https://github.com/naturalcrit/homebrewery/issues/3070)
+
+* [x] Fix issue with legacy brews breaking on Share page
+
+Fixes issue [#3764](https://github.com/naturalcrit/homebrewery/issues/3764)
+
+* [x] Fix print size when printing a zoomed document
+
+Fixes issue [#3744](https://github.com/naturalcrit/homebrewery/issues/3744)
+
+##### All
+
+* [x] Background code cleanup, security fixes, dev tool improvements, dependency updates, prep for upcoming features, etc.
+}}
+
+### Wednesday 9/25/2024 - v3.15.1
+
+{{taskList
+##### calculuschild
+
+* [x] Background fixes to handle Google Drive issues
+
+* [x] Remove duplicate error logging
+
+##### calculuschild, 5e-Cleric
+
+* [x] Fix links in {{openSans **RECENT BREWS :fas_clock_rotate_left:**}} and user {{openSans **BREWS :fas_beer_mug_empty:**}} pointing to trashed Google Drive files after transferring from Google to Homebrewery storage
+
+Fixes issue [#3776](https://github.com/naturalcrit/homebrewery/issues/3776)
+}}
+
+\page
 
 ### Wednesday 9/04/2024 - v3.15.0
 

@@ -3,26 +3,28 @@ const React = require('react');
 const { useState, useEffect } = React;
 const _ = require('lodash');
 
+import { Anchored, AnchoredBox, AnchoredTrigger } from '../../../components/Anchored.jsx';
+// import * as ZoomIcons from '../../../icons/icon-components/zoomIcons.jsx';
 
 const MAX_ZOOM = 300;
 const MIN_ZOOM = 10;
 
-const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
+const ToolBar = ({ displayOptions, currentPage, totalPages, onDisplayOptionsChange })=>{
 
-	const [zoomLevel, setZoomLevel] = useState(100);
-	const [pageNum, setPageNum]     = useState(currentPage);
+	const [pageNum, setPageNum] = useState(currentPage);
 	const [toolsVisible, setToolsVisible] = useState(true);
-
-	useEffect(()=>{
-		onZoomChange(zoomLevel);
-	}, [zoomLevel]);
 
 	useEffect(()=>{
 		setPageNum(currentPage);
 	}, [currentPage]);
 
 	const handleZoomButton = (zoom)=>{
-		setZoomLevel(_.round(_.clamp(zoom, MIN_ZOOM, MAX_ZOOM)));
+		handleOptionChange('zoomLevel', _.round(_.clamp(zoom, MIN_ZOOM, MAX_ZOOM)));
+	};
+
+	const handleOptionChange = (optionKey, newValue)=>{
+		//setDisplayOptions(prevOptions => ({ ...prevOptions, [optionKey]: newValue }));
+		onDisplayOptionsChange({ ...displayOptions, [optionKey]: newValue });
 	};
 
 	const handlePageInput = (pageInput)=>{
@@ -63,47 +65,51 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 
 		const margin = 5;  // extra space so page isn't edge to edge (not truly "to fill")
 
-		const deltaZoom = (desiredZoom - zoomLevel) - margin;
+		const deltaZoom = (desiredZoom - displayOptions.zoomLevel) - margin;
 		return deltaZoom;
 	};
 
 	return (
-		<div className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`}>
+		<div id='preview-toolbar' className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`} role='toolbar'>
 			<button className='toggleButton' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible);}}><i className='fas fa-glasses' /></button>
 			{/*v=====----------------------< Zoom Controls >---------------------=====v*/}
-			<div className='group'>
+			<div className='group' role='group' aria-label='Zoom' aria-hidden={!toolsVisible}>
 				<button
 					id='fill-width'
 					className='tool'
-					onClick={()=>handleZoomButton(zoomLevel + calculateChange('fill'))}
+					title='Set zoom to fill preview with one page'
+					onClick={()=>handleZoomButton(displayOptions.zoomLevel + calculateChange('fill'))}
 				>
 					<i className='fac fit-width' />
 				</button>
 				<button
 					id='zoom-to-fit'
 					className='tool'
-					onClick={()=>handleZoomButton(zoomLevel + calculateChange('fit'))}
+					title='Set zoom to fit entire page in preview'
+					onClick={()=>handleZoomButton(displayOptions.zoomLevel + calculateChange('fit'))}
 				>
 					<i className='fac zoom-to-fit' />
 				</button>
 				<button
 					id='zoom-out'
 					className='tool'
-					onClick={()=>handleZoomButton(zoomLevel - 20)}
-					disabled={zoomLevel <= MIN_ZOOM}
+					onClick={()=>handleZoomButton(displayOptions.zoomLevel - 20)}
+					disabled={displayOptions.zoomLevel <= MIN_ZOOM}
+					title='Zoom Out'
 				>
 					<i className='fas fa-magnifying-glass-minus' />
 				</button>
 				<input
 					id='zoom-slider'
-					className='range-input tool'
+					className='range-input tool hover-tooltip'
 					type='range'
 					name='zoom'
+					title='Set Zoom'
 					list='zoomLevels'
 					min={MIN_ZOOM}
 					max={MAX_ZOOM}
 					step='1'
-					value={zoomLevel}
+					value={displayOptions.zoomLevel}
 					onChange={(e)=>handleZoomButton(parseInt(e.target.value))}
 				/>
 				<datalist id='zoomLevels'>
@@ -113,18 +119,72 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 				<button
 					id='zoom-in'
 					className='tool'
-					onClick={()=>handleZoomButton(zoomLevel + 20)}
-					disabled={zoomLevel >= MAX_ZOOM}
+					onClick={()=>handleZoomButton(displayOptions.zoomLevel + 20)}
+					disabled={displayOptions.zoomLevel >= MAX_ZOOM}
+					title='Zoom In'
 				>
 					<i className='fas fa-magnifying-glass-plus' />
 				</button>
 			</div>
 
+			{/*v=====----------------------< Spread Controls >---------------------=====v*/}
+			<div className='group' role='group' aria-label='Spread' aria-hidden={!toolsVisible}>
+				<div className='radio-group' role='radiogroup'>
+					<button role='radio'
+						id='single-spread'
+						className='tool'
+						title='Single Page'
+						onClick={()=>{handleOptionChange('spread', 'active');}}
+						aria-checked={displayOptions.spread === 'single'}
+					><i className='fac single-spread' /></button>
+					<button role='radio'
+						id='facing-spread'
+						className='tool'
+						title='Facing Pages'
+						onClick={()=>{handleOptionChange('spread', 'facing');}}
+						aria-checked={displayOptions.spread === 'facing'}
+					><i className='fac facing-spread' /></button>
+					<button role='radio'
+						id='flow-spread'
+						className='tool'
+						title='Flow Pages'
+						onClick={()=>{handleOptionChange('spread', 'flow');}}
+						aria-checked={displayOptions.spread === 'flow'}
+					><i className='fac flow-spread' /></button>
+
+				</div>
+				<Anchored>
+					<AnchoredTrigger id='spread-settings' className='tool' title='Spread options'><i className='fas fa-gear' /></AnchoredTrigger>
+					<AnchoredBox title='Options'>
+						<h1>Options</h1>
+						<label title='Modify the horizontal space between pages.'>
+							Column gap
+							<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>handleOptionChange('columnGap', evt.target.value)} />
+						</label>
+						<label title='Modify the vertical space between rows of pages.'>
+							Row gap
+							<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>handleOptionChange('rowGap', evt.target.value)} />
+						</label>
+						<label title='Start 1st page on the right side, such as if you have cover page.'>
+							Start on right
+							<input type='checkbox' checked={displayOptions.startOnRight} onChange={()=>{handleOptionChange('startOnRight', !displayOptions.startOnRight);}}
+								title={displayOptions.spread !== 'facing' ? 'Switch to Facing to enable toggle.' : null} />
+						</label>
+						<label title='Toggle the page shadow on every page.'>
+							Page shadows
+							<input type='checkbox' checked={displayOptions.pageShadows} onChange={()=>{handleOptionChange('pageShadows', !displayOptions.pageShadows);}} />
+						</label>
+					</AnchoredBox>
+				</Anchored>
+			</div>
+
 			{/*v=====----------------------< Page Controls >---------------------=====v*/}
-			<div className='group'>
+			<div className='group' role='group'  aria-label='Pages' aria-hidden={!toolsVisible}>
 				<button
 					id='previous-page'
 					className='previousPage tool'
+					type='button'
+					title='Previous Page(s)'
 					onClick={()=>scrollToPage(pageNum - 1)}
 					disabled={pageNum <= 1}
 				>
@@ -137,6 +197,7 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 						className='text-input'
 						type='text'
 						name='page'
+						title='Current page(s) in view'
 						inputMode='numeric'
 						pattern='[0-9]'
 						style={{width:`${pageNum.toString().length + 2}ch`}}
@@ -146,12 +207,14 @@ const ToolBar = ({ onZoomChange, currentPage, onPageChange, totalPages })=>{
 						onBlur={()=>scrollToPage(pageNum)}
 						onKeyDown={(e)=>e.key == 'Enter' && scrollToPage(pageNum)}
 					/>
-					<span id='page-count'>/ {totalPages}</span>
+					<span id='page-count' title='Total Page Count'>/ {totalPages}</span>
 				</div>
 
 				<button
 					id='next-page'
 					className='tool'
+					type='button'
+					title='Next Page(s)'
 					onClick={()=>scrollToPage(pageNum + 1)}
 					disabled={pageNum >= totalPages}
 				>

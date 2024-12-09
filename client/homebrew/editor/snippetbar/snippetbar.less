@@ -4,105 +4,114 @@
 .snippetBar {
 	@menuHeight      : 25px;
 	position         : relative;
-	height           : @menuHeight;
+	display          : flex;
+	flex-wrap        : wrap-reverse;
+	justify-content  : space-between;
+	height           : auto;
 	color            : black;
 	background-color : #DDDDDD;
 
-	.editors {
-		position        : absolute;
-		top             : 0px;
-		right           : 0px;
+	.snippets {
 		display         : flex;
-		justify-content : space-between;
-		height          : @menuHeight;
-		& > div {
-			width       : @menuHeight;
-			height      : @menuHeight;
-			line-height : @menuHeight;
-			text-align  : center;
-			
-			&:not(.editorTool, .divider) { cursor : pointer; }
+		justify-content : flex-start;
+		min-width       : 327.58px;
+	}
 
-			&:hover,&.selected { background-color : #999999; }
+	.editors {
+		display         : flex;
+		justify-content : flex-end;
+		min-width       : 225px;
 
-			&.editorTool {
-				background-color : unset;
-				cursor:not-allowed;
+		&:only-child { margin-left : auto; }
 
-				&.active {
-					cursor : pointer;
-					&:hover { background-color : #999999; }
+		>div {
+			display         : flex;
+			flex            : 1;
+			justify-content : space-around;
+
+			&:first-child { border-left : none; }
+
+			& > div {
+				position    : relative;
+				width       : @menuHeight;
+				height      : @menuHeight;
+				line-height : @menuHeight;
+				text-align  : center;
+				cursor      : pointer;
+				&:hover,&.selected { background-color : #999999; }
+				&.text {
+					.tooltipLeft('Brew Editor');
+				}
+				&.style {
+					.tooltipLeft('Style Editor');
+				}
+				&.meta {
+					.tooltipLeft('Properties');
+				}
+				&.undo {
+					.tooltipLeft('Undo');
+					font-size : 0.75em;
+					color     : grey;
+					&.active { color : inherit; }
+				}
+				&.redo {
+					.tooltipLeft('Redo');
+					font-size : 0.75em;
+					color     : grey;
+					&.active { color : inherit; }
+				}
+				&.foldAll {
+					.tooltipLeft('Fold All');
+					font-size : 0.75em;
+					color     : grey;
+					&.active { color : inherit; }
+				}
+				&.unfoldAll {
+					.tooltipLeft('Unfold All');
+					font-size : 0.75em;
+					color     : grey;
+					&.active { color : inherit; }
+				}
+				&.history {
+					.tooltipLeft('History');
+					position  : relative;
+					font-size : 0.75em;
+					color     : grey;
+					border    : none;
+					&.active { color : inherit; }
+					& > .dropdown {
+						right : -1px;
+						& > .snippet { padding-right : 10px; }
+					}
+				}
+				&.editorTheme {
+					.tooltipLeft('Editor Themes');
+					font-size : 0.75em;
+					color     : black;
+					&.active {
+						position         : relative;
+						background-color : #999999;
+					}
+				}
+				&.divider {
+					width      : 5px;
+					background : linear-gradient(currentColor, currentColor) no-repeat center/1px 100%;
+					&:hover { background-color : inherit; }
 				}
 			}
-			&.text {
-				.tooltipLeft('Brew Editor');
+			.themeSelector {
+				position         : absolute;
+				top              : 25px;
+				right            : 0;
+				z-index          : 10;
+				display          : flex;
+				align-items      : center;
+				justify-content  : center;
+				width            : 170px;
+				height           : inherit;
+				background-color : inherit;
 			}
-			&.style {
-				.tooltipLeft('Style Editor');
-			}
-			&.meta {
-				.tooltipLeft('Properties');
-			}
-			&.undo {
-				.tooltipLeft('Undo');
-				font-size : 0.75em;
-				color     : grey;
-				&.active { color : inherit; }
-			}
-			&.redo {
-				.tooltipLeft('Redo');
-				font-size : 0.75em;
-				color     : grey;
-				&.active { color : inherit; }
-			}
-			&.foldAll {
-				.tooltipLeft('Fold All');
-				font-size : 0.75em;
-				color     : inherit;
-			}
-			&.unfoldAll {
-				.tooltipLeft('Unfold All');
-				font-size : 0.75em;
-				color     : inherit;
-			}
-			&.history {
-				.tooltipLeft('History');
-				position  : relative;
-				font-size : 0.75em;
-				color     : grey;
-				&.active { color : inherit; }
-				& > .dropdown {
-					right         : -1px;
-					& > .snippet { padding-right : 10px; }
-				}
-			}
-			&.editorTheme {
-				.tooltipLeft('Editor Themes');
-				font-size : 0.75em;
-				color     : black;
-				&.active {
-					position         : relative;
-					background-color : #999999;
-				}
-			}
-			&.divider {
-				width      : 5px;
-				background : linear-gradient(currentColor, currentColor) no-repeat center/1px 100%;
-				&:hover { background-color : inherit; }
-			}
-		}
-		.themeSelector {
-			position         : absolute;
-			top              : 25px;
-			right            : 0;
-			z-index          : 10;
-			display          : flex;
-			align-items      : center;
-			justify-content  : center;
-			width            : 170px;
-			height           : inherit;
-			background-color : inherit;
-		}
+		}		
 	}
 	.snippetBarButton {
 		display        : inline-block;
@@ -112,6 +121,7 @@
 		font-weight    : 800;
 		line-height    : @menuHeight;
 		text-transform : uppercase;
+		text-wrap      : nowrap;
 		cursor         : pointer;
 		&:hover, &.selected { background-color : #999999; }
 		i {
@@ -128,7 +138,7 @@
 		.tooltipLeft('Edit Brew Properties');
 	}
 	.snippetGroup {
-		border-right   : 1px solid currentColor;
+
 		&:hover {
 			& > .dropdown { visibility : visible; }
 		}
@@ -187,6 +197,7 @@
 					}
 				}
 				.name { margin-right : auto; }
+				.disabled { text-decoration : line-through; }
 				.beta {
 					align-self    : center;
 					padding       : 4px 6px;
@@ -213,3 +224,18 @@
 		}
 	}
 }
+@container editor (width < 553px) {
+	.snippetBar {
+		.editors { 
+			flex            : 1;
+			justify-content : space-between;
+			border-bottom   : 1px solid;
+		}
+		.snippets { 
+			flex            : 1;
+			justify-content : space-evenly; 
+		}
+		.editors > div.history > .dropdown { right : unset; }
+	}
+}
+
