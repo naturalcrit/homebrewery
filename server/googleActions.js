@@ -241,8 +241,8 @@ const GoogleActions = {
 		return obj.data.id;
 	},
 
-	getGoogleBrew : async (id, accessId, accessType)=>{
-		const drive = googleDrive.drive({ version: 'v3', auth: defaultAuth });
+	getGoogleBrew : async (auth, id, accessId, accessType)=>{
+		const drive = googleDrive.drive({ version: 'v3', auth: auth || defaultAuth });
 
 		const obj = await drive.files.get({
 			fileId : id,
