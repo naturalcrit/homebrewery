@@ -31,7 +31,7 @@
 
 			&:first-child { border-left : none; }
 
-			& > .editorTool {
+			& > div {
 				position    : relative;
 				width       : @menuHeight;
 				height      : @menuHeight;
@@ -39,7 +39,7 @@
 				text-align  : center;
 				cursor      : pointer;
 
-				&:not(.active) {
+				&.editorTool:not(.active) {
 					cursor:not-allowed;
 				}
 
