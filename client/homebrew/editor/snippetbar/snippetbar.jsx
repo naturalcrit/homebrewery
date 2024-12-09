@@ -6,6 +6,7 @@ const _     = require('lodash');
 const cx    = require('classnames');
 
 import { loadHistory } from '../../utils/versionHistory.js';
+import { brewSnippetsToJSON } from '../../../../shared/helpers.js';
 
 //Import all themes
 const ThemeSnippets = {};
@@ -40,7 +41,7 @@ const Snippetbar = createClass({
 			unfoldCode        : ()=>{},
 			updateEditorTheme : ()=>{},
 			cursorPos         : {},
-			snippetBundle     : [],
+			themeBundle       : [],
 			updateBrew        : ()=>{}
 		};
 	},
@@ -64,7 +65,10 @@ const Snippetbar = createClass({
 	},
 
 	componentDidUpdate : async function(prevProps, prevState) {
-		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.snippetBundle != this.props.snippetBundle) {
+		if(prevProps.renderer != this.props.renderer ||
+			prevProps.theme != this.props.theme ||
+			prevProps.themeBundle != this.props.themeBundle ||
+			prevProps.brew.snippets != this.props.brew.snippets) {
 			this.setState({
 				snippets : this.compileSnippets()
 			});
@@ -105,15 +109,21 @@ const Snippetbar = createClass({
 
 		let oldSnippets = _.keyBy(compiledSnippets, 'groupName');
 
-		for (let snippets of this.props.snippetBundle) {
-			if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name
-				snippets = ThemeSnippets[snippets];
+		if(this.props.themeBundle.snippets) {
+			for (let snippets of this.props.themeBundle.snippets) {
+				if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name
+					snippets = ThemeSnippets[snippets];
 
-			const newSnippets = _.keyBy(_.cloneDeep(snippets), 'groupName');
-			compiledSnippets = _.values(_.mergeWith(oldSnippets, newSnippets, this.mergeCustomizer));
+				const newSnippets = _.keyBy(_.cloneDeep(snippets), 'groupName');
+				compiledSnippets = _.values(_.mergeWith(oldSnippets, newSnippets, this.mergeCustomizer));
 
-			oldSnippets = _.keyBy(compiledSnippets, 'groupName');
+				oldSnippets = _.keyBy(compiledSnippets, 'groupName');
+			}
 		}
+
+		const userSnippetsasJSON = brewSnippetsToJSON(this.props.brew.title, this.props.brew.snippets, this.props.themeBundle.snippets);
+		compiledSnippets.push(userSnippetsasJSON);
+
 		return compiledSnippets;
 	},
 
@@ -255,6 +265,10 @@ const Snippetbar = createClass({
 				<div className={cx('meta', { selected: this.props.view === 'meta' })}
 					onClick={()=>this.props.onViewChange('meta')}>
 					<i className='fas fa-info-circle' />
+				</div>
+				<div className={cx('snip', { selected: this.props.view === 'snip' })}
+					onClick={()=>this.props.onViewChange('snip')}>
+					<i className='fas fa-th-list' />
 				</div>
 			</div>
 
