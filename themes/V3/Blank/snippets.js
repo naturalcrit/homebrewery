@@ -51,7 +51,6 @@ module.exports = [
 			{
 				name        : 'Footer',
 				icon        : 'fas fa-shoe-prints',
-				gen         : FooterGen.createFooterFunc(),
 				subsnippets : [
 					{
 						name : 'Footer from H1',
@@ -201,7 +200,6 @@ module.exports = [
 			{
 				name         : 'Watercolor Edge',
 				icon         : 'fac mask-edge',
-				gen          : ImageMaskGen.edge('bottom'),
 				experimental : true,
 				subsnippets  : [
 					{
@@ -229,7 +227,6 @@ module.exports = [
 			{
 				name         : 'Watercolor Corner',
 				icon         : 'fac mask-corner',
-				gen          : ImageMaskGen.corner,
 				experimental : true,
 				subsnippets  : [
 					{
