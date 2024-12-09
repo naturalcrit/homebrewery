@@ -999,7 +999,8 @@ brew`);
 			// Metadata
 			expect(testBrew.title).toEqual('title');
 			expect(testBrew.description).toEqual('description');
-			expect(testBrew.tags).toEqual(['tag a', 'tag b']);
+			expect(testBrew.tags).toBeInstanceOf(Array);
+			expect(testBrew.tags.length).toBe(0);
 			expect(testBrew.systems).toEqual(['test system']);
 			expect(testBrew.renderer).toEqual('legacy');
 			expect(testBrew.theme).toEqual('5ePHB');
@@ -1010,14 +1011,27 @@ brew`);
 			expect(testBrew.text).toEqual('text\n');
 		});
 
-		it('convert tags string to array', async ()=>{
+		it('load tags array from text metadata', async ()=>{
+			const testBrew = {
+				text : '```metadata\n' +
+					'tags: [ tag a ]\n' +
+					'```\n\n'
+			};
+
+			splitTextStyleAndMetadata(testBrew, true);
+
+			// Metadata
+			expect(testBrew.tags).toEqual(['tag a']);
+		});
+
+		it('load tags and convert string to array', async ()=>{
 			const testBrew = {
 				text : '```metadata\n' +
 					'tags: tag a\n' +
 					'```\n\n'
 			};
 
-			splitTextStyleAndMetadata(testBrew);
+			splitTextStyleAndMetadata(testBrew, true);
 
 			// Metadata
 			expect(testBrew.tags).toEqual(['tag a']);

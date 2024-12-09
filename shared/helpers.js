@@ -2,13 +2,15 @@ import _       from 'lodash';
 import yaml    from 'js-yaml';
 import request from '../client/homebrew/utils/request-middleware.js';
 
-const splitTextStyleAndMetadata = (brew)=>{
+const splitTextStyleAndMetadata = (brew, loadTags=false)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
 	if(brew.text.startsWith('```metadata')) {
 		const index = brew.text.indexOf('```\n\n');
 		const metadataSection = brew.text.slice(12, index - 1);
 		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
+		const metadataProps = ['title', 'description', 'systems', 'renderer', 'theme', 'lang'];
+		if(loadTags) metadataProps.push('tags');
+		Object.assign(brew, _.pick(metadata, metadataProps));
 		brew.text = brew.text.slice(index + 5);
 	}
 	if(brew.text.startsWith('```css')) {
@@ -23,7 +25,8 @@ const splitTextStyleAndMetadata = (brew)=>{
 	}
 
 	// Handle old brews that still have empty strings in the tags metadata
-	if(typeof brew.tags === 'string') brew.tags = brew.tags ? [brew.tags] : [];
+	if(typeof brew.tags === 'string' || !brew.tags) brew.tags = brew.tags ? [brew.tags] : [];
+	brew.tags = brew.tags.filter((tag)=>{return tag != '';});
 };
 
 const printCurrentBrew = ()=>{
