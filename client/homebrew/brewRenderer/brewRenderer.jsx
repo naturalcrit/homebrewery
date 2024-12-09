@@ -5,7 +5,7 @@ const { useState, useRef, useCallback, useMemo, useEffect } = React;
 const _ = require('lodash');
 
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
-const Markdown = require('naturalcrit/markdown.js');
+import Markdown from 'naturalcrit/markdown.js';
 const ErrorBar = require('./errorBar/errorBar.jsx');
 const ToolBar  = require('./toolBar/toolBar.jsx');
 
@@ -201,7 +201,8 @@ const BrewRenderer = (props)=>{
 			renderedPages.length = 0;
 
 		// Render currently-edited page first so cross-page effects (variables, links) can propagate out first
-		renderedPages[props.currentEditorCursorPageNum - 1] = renderPage(rawPages[props.currentEditorCursorPageNum - 1], props.currentEditorCursorPageNum - 1);
+		if(rawPages.length > props.currentEditorCursorPageNum -1)
+			renderedPages[props.currentEditorCursorPageNum - 1] = renderPage(rawPages[props.currentEditorCursorPageNum - 1], props.currentEditorCursorPageNum - 1);
 
 		_.forEach(rawPages, (page, index)=>{
 			if((isInView(index) || !renderedPages[index]) && typeof window !== 'undefined'){
