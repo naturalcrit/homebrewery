@@ -31,13 +31,18 @@
 
 			&:first-child { border-left : none; }
 
-			& > div {
+			& > .editorTool {
 				position    : relative;
 				width       : @menuHeight;
 				height      : @menuHeight;
 				line-height : @menuHeight;
 				text-align  : center;
 				cursor      : pointer;
+
+				&:not(.active) {
+					cursor:not-allowed;
+				}
+
 				&:hover,&.selected { background-color : #999999; }
 				&.text {
 					.tooltipLeft('Brew Editor');
