@@ -59,24 +59,27 @@ import cors from 'cors';
 
 // CORS Configuration
 const corsOptions = {
-
     origin: (origin, callback) => {
         const allowedOrigins = [
-			'https://homebrewery.naturalcrit.com',
-			'http://localhost:8000',
-			'http://localhost:8010',
-			'https://naturalcrit.com'
-		]; //allow natcrit local and live to call
-        if (!origin || allowedOrigins.includes(origin)) {
+            'https://homebrewery.naturalcrit.com',
+            'http://localhost:8000',
+            'http://localhost:8010',
+            'https://naturalcrit.com'
+        ];
+
+        const herokuRegex = /^https:\/\/.*\.herokuapp\.com$/; // Matches any Heroku app
+
+        if (!origin || allowedOrigins.includes(origin) || herokuRegex.test(origin)) {
             callback(null, true);
         } else {
-			console.log(origin, 'not allowed');
+            console.log(origin, 'not allowed');
             callback(new Error('Not allowed by CORS, if you think this is an error, please contact us'));
         }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
 };
+
 
 app.use(cors(corsOptions));
 
