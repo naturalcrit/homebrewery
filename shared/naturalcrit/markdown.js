@@ -6,6 +6,8 @@ import MarkedExtendedTables     from 'marked-extended-tables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
+import { markedMermaid as MarkedMermaid } from 'marked-mermaidjs';
+
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
 import diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
@@ -15,6 +17,10 @@ import fontAwesome   from '../../themes/fonts/iconFonts/fontAwesome.js';
 
 const renderer  = new Marked.Renderer();
 const tokenizer = new Marked.Tokenizer();
+
+const pageElem = global.document
+	? global.document.querySelector('.page')
+	: null;
 
 //Limit math features to simple items
 const mathParser = new MathParser({
@@ -120,6 +126,7 @@ renderer.image = function (href, title, text) {
 tokenizer.def = function () {
 	return undefined;
 };
+
 
 const mustacheSpans = {
 	name  : 'mustacheSpans',
@@ -741,6 +748,59 @@ const MarkedEmojiOptions = {
 	renderer : (token)=>`<i class="${token.emoji}"></i>`
 };
 
+const mermaidConfig = {
+	// container : pageElem,
+	mermaid : {
+		theme          : 'base',
+		themeVariables : {
+			fontFamily         : 'BookInsanityRemake',
+			fontSize           : '12px',
+			background         : '#EEE5CE',
+			mainBkg            : '#faf7ea',
+			primaryColor       : '#faf7ea',
+			primaryTextColor   : '#000000',
+			primaryBorderColor : '#c9ad6a',
+			lineColor          : '#c9ad6a',
+			secondaryColor     : '#E0E5C1',
+			noteBkgColor       : '#E0E5C1'
+		},
+		themeCSS : `
+			.node .nodeLabel p { inline-size: 320px; white-space: pre-wrap;  }
+			.node * { stroke-width: 2px !important; }
+		`,
+		flowchart : {
+			useMaxWidth    : true,
+			useWidth       : pageElem ? pageElem.clientWidth : 0,
+			htmlLabels     : true,
+			curve          : 'linear',
+			diagramPadding : 2,
+			nodeSpacing    : 40,
+			rankSpacing    : 40,
+			padding        : 25,
+		},
+		gantt : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		},
+		sequence : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		},
+		pie : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		},
+		requirement : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		},
+		c4 : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		}
+	}
+};
+
 const tableTerminators = [
 	`:+\\n`,                // hardBreak
 	` *{[^\n]+}`,           // blockInjector
@@ -750,7 +810,7 @@ const tableTerminators = [
 Marked.use(MarkedVariables());
 Marked.use({ extensions : [definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks, superSubScripts,
 	mustacheSpans, mustacheDivs, mustacheInjectInline] });
-Marked.use(mustacheInjectBlock);
+Marked.use(mustacheInjectBlock, MarkedMermaid(mermaidConfig));
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
