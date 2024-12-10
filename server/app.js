@@ -57,17 +57,24 @@ app.use(forceSSL);
 
 import cors from 'cors';
 
-// CORS Configuration
+const nodeEnv = config.get('node_env');
+const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
+
 const corsOptions = {
     origin: (origin, callback) => {
+
         const allowedOrigins = [
             'https://homebrewery.naturalcrit.com',
-            'http://localhost:8000',
-            'http://localhost:8010',
-            'https://naturalcrit.com'
+            'https://naturalcrit.com',
+            'https://naturalcrit-stage.herokuapp.com',
+            'https://homebrewery-stage.herokuapp.com',
         ];
 
-        const herokuRegex = /^https:\/\/.*\.herokuapp\.com$/; // Matches any Heroku app
+        if (isLocalEnvironment) {
+            allowedOrigins.push('http://localhost:8000', 'http://localhost:8010');
+        }
+
+        const herokuRegex = /^https:\/\/(?:homebrewery-pr-\d+\.herokuapp\.com|naturalcrit-pr-\d+\.herokuapp\.com)$/; // Matches any Heroku app
 
         if (!origin || allowedOrigins.includes(origin) || herokuRegex.test(origin)) {
             callback(null, true);
@@ -79,7 +86,6 @@ const corsOptions = {
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
 };
-
 
 app.use(cors(corsOptions));
 
@@ -505,8 +511,6 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 	return next();
 }));
 
-const nodeEnv = config.get('node_env');
-const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
 // Local only
 if(isLocalEnvironment){
 	// Login
