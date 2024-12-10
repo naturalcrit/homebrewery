@@ -298,7 +298,7 @@ describe('Tests for api', ()=>{
 			expect(next).toHaveBeenCalled();
 			expect(api.getId).toHaveBeenCalledWith(req);
 			expect(model.get).toHaveBeenCalledWith({ shareId: '1' });
-			expect(google.getGoogleBrew).toHaveBeenCalledWith('2', '1', 'share');
+			expect(google.getGoogleBrew).toHaveBeenCalledWith(undefined, '2', '1', 'share');
 		});
 
 		it('access is denied to a locked brew', async()=>{
