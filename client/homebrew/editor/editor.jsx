@@ -158,7 +158,7 @@ const Editor = createClass({
 
 	highlightCustomMarkdown : function(){
 		if(!this.codeEditor.current) return;
-		if(this.state.view === 'text') {
+		if((this.state.view === 'text') ||(this.state.view === 'snip')) {
 			const codeMirror = this.codeEditor.current.codeMirror;
 
 			codeMirror.operation(()=>{ // Batch CodeMirror styling
@@ -178,8 +178,10 @@ const Editor = createClass({
 				for (let i=customHighlights.length - 1;i>=0;i--) customHighlights[i].clear();
 
 				let editorPageCount = 2; // start page count from page 2
+				let userSnippetCount = 1; // start snippet count from page 2
 
-				_.forEach(this.props.brew.text.split('\n'), (line, lineNumber)=>{
+				const whichSource = this.state.view === 'text' ? this.props.brew.text : this.props.brew.snippets;
+				_.forEach(whichSource.split('\n'), (line, lineNumber)=>{
 
 					//reset custom line styles
 					codeMirror.removeLineClass(lineNumber, 'background', 'pageLine');
@@ -193,7 +195,7 @@ const Editor = createClass({
 
 					// Styling for \page breaks
 					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
-				     (this.props.renderer == 'V3'     && line.match(/^\\page$/))) {
+				     (this.props.renderer == 'V3'     && line.match(/^\\page$/) && this.state.view === 'text')) {
 
 						// add back the original class 'background' but also add the new class '.pageline'
 						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
@@ -206,12 +208,26 @@ const Editor = createClass({
 						editorPageCount += 1;
 					};
 
+
 					// New Codemirror styling for V3 renderer
 					if(this.props.renderer == 'V3') {
 						if(line.match(/^\\column$/)){
 							codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 						}
 
+						// Styling for \snippet breaks
+						if(this.state.view === 'snip' && line.match(/^\\snippet\ .*$/)) {
+
+							// add back the original class 'background' but also add the new class '.snippetLine'
+							codeMirror.addLineClass(lineNumber, 'background', 'snippetLine');
+							const userSnippetCountElement = Object.assign(document.createElement('span'), {
+								className   : 'editor-snippet-count',
+								textContent : userSnippetCount
+							});
+							codeMirror.setBookmark({ line: lineNumber, ch: line.length }, userSnippetCountElement);
+
+							userSnippetCount += 1;
+						};
 						// definition lists
 						if(line.includes('::')){
 							if(/^:*$/.test(line) == true){ return; };
