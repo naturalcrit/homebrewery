@@ -6,17 +6,17 @@ describe('Justification', ()=>{
 	test('Left Justify', function() {
 		const source = ':- Hello';
 		const rendered = Markdown.render(source);
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p class=\"mdParagraphJustifyLeft\">Hello</p>`);
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p align=\"Left\">Hello</p>`);
 	});
 	test('Right Justify', function() {
 		const source = '-: Hello';
 		const rendered = Markdown.render(source);
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p class=\"mdParagraphJustifyRight\">Hello</p>`);
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p align=\"Right\">Hello</p>`);
 	});
 	test('Center Justify', function() {
 		const source = ':-: Hello';
 		const rendered = Markdown.render(source);
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p class=\"mdParagraphJustifyCenter\">Hello</p>`);
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p align=\"Center\">Hello</p>`);
 	});
 
 	test('Ignored inside a code block', function() {
