@@ -36,14 +36,5 @@
       "baseSnippets": "5ePHB",
       "path": "Journal"
     }
-  },
-  "V4": {
-    "Blank": {
-      "name": "Blank",
-      "renderer": "V3",
-      "baseTheme": false,
-      "baseSnippets": false,
-      "path": "Blank"
-    }
   }
 }

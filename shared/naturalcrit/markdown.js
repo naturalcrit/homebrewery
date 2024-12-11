@@ -372,9 +372,9 @@ const superSubScripts = {
 
 
 const justifiedParagraphClasses = [];
-justifiedParagraphClasses[2] = 'mdParagraphJustifyLeft';
-justifiedParagraphClasses[4] = 'mdParagraphJustifyRight';
-justifiedParagraphClasses[6] = 'mdParagraphJustifyCenter';
+justifiedParagraphClasses[2] = 'Left';
+justifiedParagraphClasses[4] = 'Right';
+justifiedParagraphClasses[6] = 'Center';
 
 const justifiedParagraphs = {
 	name  : 'justifiedParagraphs',
@@ -402,7 +402,7 @@ const justifiedParagraphs = {
 		}
 	},
 	renderer(token) {
-		return `<p class="${token.class}">${this.parser.parseInline(token.tokens)}</p>`;
+		return `<p align="${token.class}">${this.parser.parseInline(token.tokens)}</p>`;
 	}
 
 };
