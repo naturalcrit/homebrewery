@@ -262,13 +262,13 @@ const Snippetbar = createClass({
 					onClick={()=>this.props.onViewChange('style')}>
 					<i className='fa fa-paint-brush' />
 				</div>
-				<div className={cx('meta', { selected: this.props.view === 'meta' })}
-					onClick={()=>this.props.onViewChange('meta')}>
-					<i className='fas fa-info-circle' />
-				</div>
 				<div className={cx('snip', { selected: this.props.view === 'snip' })}
 					onClick={()=>this.props.onViewChange('snip')}>
 					<i className='fas fa-th-list' />
+				</div>
+				<div className={cx('meta', { selected: this.props.view === 'meta' })}
+					onClick={()=>this.props.onViewChange('meta')}>
+					<i className='fas fa-info-circle' />
 				</div>
 			</div>
 
