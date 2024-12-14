@@ -1,5 +1,6 @@
 @import 'naturalcrit/styles/colors.less';
 
+
 .metadataEditor {
 	position         : absolute;
 	z-index          : 5;
@@ -9,12 +10,19 @@
 	padding          : 25px;
 	overflow-y       : auto;
 	background-color : #999999;
+	font-size		 : 13px;
 
-	.sectionHead {
+	h1 {
+		margin: 0 0 40px;
+		font-weight: bold;
+		text-transform: uppercase;
+	}
+	
+	h2 {
 		margin      : 20px 0;
-		font-weight : 1000;
-
-		&:first-of-type { margin-top : 0; }
+		font-weight : bold;
+		border-bottom: 2px solid gray;
+		color: #555;
 	}
 
 	& > div { margin-bottom : 10px; }
@@ -43,15 +51,21 @@
 		min-width     : 200px;
 		& > label {
 			width          : 80px;
-			font-size      : 11px;
 			font-weight    : 800;
 			line-height    : 1.8em;
 			text-transform : uppercase;
+			font-size: .9em;
 		}
 		& > .value {
 			flex           : 1 1 auto;
 			width          : 50px;
 			&:invalid { background : #FFB9B9; }
+			small {
+				display     : block;
+				font-size   : 0.9em;
+				font-style  : italic;
+				line-height : 1.4em;
+			}
 		}
 		input[type='text'], textarea {
 			border : 1px solid gray;
@@ -65,6 +79,7 @@
 				text-overflow : ellipsis;
 			}
 			button {
+				.colorButton();
 				padding          : 0px 5px;
 				color            : white;
 				background-color : black;
@@ -78,7 +93,6 @@
 			textarea.value {
 				height      : auto;
 				font-family : 'Open Sans', sans-serif;
-				font-size   : 0.8em;
 				resize      : none;
 			}
 		}
@@ -86,12 +100,6 @@
 		&.language .language-dropdown {
 			z-index   : 200;
 			max-width : 150px;
-		}
-		small {
-			display     : inline-block;
-			font-size   : 0.6em;
-			font-style  : italic;
-			line-height : 1.4em;
 		}
 	}
 
@@ -113,17 +121,12 @@
 			display        : inline-flex;
 			align-items    : center;
 			margin-right   : 15px;
-			font-size      : 0.7em;
+			font-size      : 0.9em;
 			font-weight    : 800;
 			white-space    : nowrap;
 			vertical-align : middle;
 			cursor         : pointer;
 			user-select    : none;
-		}
-		a {
-			display     : inline-flex;
-			font-size   : 0.7em;
-			font-weight : 800;
 		}
 		input {
 			margin         : 3px;
@@ -136,25 +139,23 @@
 		margin-bottom : 15px;
 		button { width : 100%; }
 		button.publish {
-			.button(@blueLight);
+			.colorButton(@blueLight);
 		}
 		button.unpublish {
-			.button(@silver);
+			.colorButton(@silver);
 		}
 	}
 
 	.delete.field .value {
 		button {
-			.button(@red);
+			.colorButton(@red);
 		}
 	}
 	.authors.field .value {
-		font-size      : 0.8em;
 		line-height    : 1.5em;
 	}
 
 	.themes.field {
-		font-size : 13.33px;
 		.navDropdownContainer {
 			position         : relative;
 			z-index          : 100;
@@ -165,9 +166,9 @@
 				background-color : darkgray;
 			}
 			& > div:first-child {
-				padding           : 6px 3px;
+				padding           : 3px 3px;
 				background-color  : inherit;
-				border            : 2px solid rgb(118,118,118);
+				border            : 1px solid gray;
 				i { float	: right; }
 				&:hover {
 					color            : white;
@@ -240,6 +241,7 @@
 			}
 		}
 	}
+
 	.field .list {
 		display   : flex;
 		flex      : 1 0;
@@ -258,27 +260,26 @@
 			color      : white;
 			text-align : center;
 			cursor     : pointer;
-
+	
 			i {
 				position  : relative;
 				top       : 50%;
 				transform : translateY(-50%);
 			}
-
+	
 			&:not(:last-child) { border-right : 1px solid black; }
-
+	
 			&:last-child { border-radius : 0 0.5em 0.5em 0; }
 		}
 
-		.badge {
+		.tag {
 			padding          : 0.3em;
 			margin           : 2px;
 			font-size        : 0.9em;
 			background-color : #DDDDDD;
 			border-radius    : 0.5em;
 
-			.icon {
-				#groupedIcon; }
+			.icon { #groupedIcon; }
 		}
 
 		.input-group {
@@ -294,16 +295,29 @@
 				height    : 100%;
 			}
 
-			.invalid:focus { background-color : pink; }
+			.input-group {
+				height : ~'calc(.9em + 4px + .6em)';
 
-			.icon {
-				#groupedIcon;
-				top       : -0.54em;
-				right     : 1px;
-				height    : 97%;
-				font-size : 0.8em;
+				input { border-radius : 0.5em 0 0 0.5em; }
 
-				i { font-size : 1.125em; }
+				input:last-child { border-radius : 0.5em; }
+
+				.value {
+					width     : 7.5vw;
+					min-width : 75px;
+					height    : 100%;
+				}
+
+				.invalid:focus { background-color : pink; }
+
+				.icon {
+					#groupedIcon;
+					top       : -0.54em;
+					right     : 1px;
+					height    : 97%;
+
+					i { font-size : 1.125em; }
+				}
 			}
 		}
 	}

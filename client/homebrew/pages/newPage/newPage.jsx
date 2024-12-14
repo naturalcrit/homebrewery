@@ -2,9 +2,9 @@
 require('./newPage.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const request = require('../../utils/request-middleware.js');
+import request from '../../utils/request-middleware.js';
 
-const Markdown = require('naturalcrit/markdown.js');
+import Markdown from 'naturalcrit/markdown.js';
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const PrintNavItem = require('../../navbar/print.navitem.jsx');
@@ -39,13 +39,15 @@ const NewPage = createClass({
 		const brew = this.props.brew;
 
 		return {
-			brew              : brew,
-			isSaving          : false,
-			saveGoogle        : (global.account && global.account.googleId ? true : false),
-			error             : null,
-			htmlErrors        : Markdown.validate(brew.text),
-			currentEditorPage : 0,
-			themeBundle       : {}
+			brew                       : brew,
+			isSaving                   : false,
+			saveGoogle                 : (global.account && global.account.googleId ? true : false),
+			error                      : null,
+			htmlErrors                 : Markdown.validate(brew.text),
+			currentEditorViewPageNum   : 1,
+			currentEditorCursorPageNum : 1,
+			currentBrewRendererPageNum : 1,
+			themeBundle                : {}
 		};
 	},
 
@@ -108,15 +110,26 @@ const NewPage = createClass({
 		this.editor.current.update();
 	},
 
+	handleEditorViewPageChange : function(pageNumber){
+		this.setState({ currentEditorViewPageNum: pageNumber });
+	},
+
+	handleEditorCursorPageChange : function(pageNumber){
+		this.setState({ currentEditorCursorPageNum: pageNumber });
+	},
+
+	handleBrewRendererPageChange : function(pageNumber){
+		this.setState({ currentBrewRendererPageNum: pageNumber });
+	},
+
 	handleTextChange : function(text){
 		//If there are errors, run the validator on every change to give quick feedback
 		let htmlErrors = this.state.htmlErrors;
 		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
 
 		this.setState((prevState)=>({
-			brew              : { ...prevState.brew, text: text },
-			htmlErrors        : htmlErrors,
-			currentEditorPage : this.editor.current.getCurrentPage() - 1 //Offset index since Marked starts pages at 0
+			brew       : { ...prevState.brew, text: text },
+			htmlErrors : htmlErrors,
 		}));
 		localStorage.setItem(BREWKEY, text);
 	},
@@ -210,30 +223,38 @@ const NewPage = createClass({
 	render : function(){
 		return <div className='newPage sitePage'>
 			{this.renderNavbar()}
-			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove}>
-					<Editor
-						ref={this.editor}
-						brew={this.state.brew}
-						onTextChange={this.handleTextChange}
-						onStyleChange={this.handleStyleChange}
-						onMetaChange={this.handleMetaChange}
-						renderer={this.state.brew.renderer}
-						userThemes={this.props.userThemes}
-						snippetBundle={this.state.themeBundle.snippets}
-					/>
-					<BrewRenderer
-						text={this.state.brew.text}
-						style={this.state.brew.style}
-						renderer={this.state.brew.renderer}
-						theme={this.state.brew.theme}
-						themeBundle={this.state.themeBundle}
-						errors={this.state.htmlErrors}
-						lang={this.state.brew.lang}
-						currentEditorPage={this.state.currentEditorPage}
-						allowPrint={true}
-					/>
-				</SplitPane>
+			<div className="content">
+			<SplitPane onDragFinish={this.handleSplitMove}>
+				<Editor
+					ref={this.editor}
+					brew={this.state.brew}
+					onTextChange={this.handleTextChange}
+					onStyleChange={this.handleStyleChange}
+					onMetaChange={this.handleMetaChange}
+					renderer={this.state.brew.renderer}
+					userThemes={this.props.userThemes}
+					snippetBundle={this.state.themeBundle.snippets}
+					onCursorPageChange={this.handleEditorCursorPageChange}
+					onViewPageChange={this.handleEditorViewPageChange}
+					currentEditorViewPageNum={this.state.currentEditorViewPageNum}
+					currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
+					currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+				/>
+				<BrewRenderer
+					text={this.state.brew.text}
+					style={this.state.brew.style}
+					renderer={this.state.brew.renderer}
+					theme={this.state.brew.theme}
+					themeBundle={this.state.themeBundle}
+					errors={this.state.htmlErrors}
+					lang={this.state.brew.lang}
+					onPageChange={this.handleBrewRendererPageChange}
+					currentEditorViewPageNum={this.state.currentEditorViewPageNum}
+					currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
+					currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+					allowPrint={true}
+				/>
+			</SplitPane>
 			</div>
 		</div>;
 	}

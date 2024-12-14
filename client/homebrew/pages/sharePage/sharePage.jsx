@@ -8,6 +8,7 @@ const Navbar = require('../../navbar/navbar.jsx');
 const MetadataNav = require('../../navbar/metadata.navitem.jsx');
 const PrintNavItem = require('../../navbar/print.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
+const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
@@ -25,7 +26,8 @@ const SharePage = createClass({
 
 	getInitialState : function() {
 		return {
-			themeBundle : {}
+			themeBundle                : {},
+			currentBrewRendererPageNum : 1
 		};
 	},
 
@@ -37,6 +39,10 @@ const SharePage = createClass({
 
 	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
+	},
+
+	handleBrewRendererPageChange : function(pageNumber){
+		this.setState({ currentBrewRendererPageNum: pageNumber });
 	},
 
 	handleControlKeys : function(e){
@@ -105,6 +111,7 @@ const SharePage = createClass({
 							</Nav.item>
 						</Nav.dropdown>
 					</>}
+					<VaultNavItem/>
 					<RecentNavItem brew={this.props.brew} storageKey='view' />
 					<Account />
 				</Nav.section>
@@ -114,9 +121,12 @@ const SharePage = createClass({
 				<BrewRenderer
 					text={this.props.brew.text}
 					style={this.props.brew.style}
+					lang={this.props.brew.lang}
 					renderer={this.props.brew.renderer}
 					theme={this.props.brew.theme}
 					themeBundle={this.state.themeBundle}
+					onPageChange={this.handleBrewRendererPageChange}
+					currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 					allowPrint={true}
 				/>
 			</div>

@@ -1,12 +1,14 @@
-const fs = require('fs-extra');
-const Proj = require('./project.json');
-
 const pack = require('./transforms/pack.js');
 const isDev = !!process.argv.find((arg)=>arg=='--dev');
 
 const lessTransform  = require('./transforms/less.js');
 const assetTransform = require('./transforms/asset.js');
 //const Meta = require('vitreum/headtags');
+
+import fs   from 'fs-extra';
+import Proj from './project.json' with { type: 'json' };
+
+const isDev = !!process.argv.find((arg)=>arg=='--dev');
 
 const transforms = {
 	'.less' : lessTransform,
@@ -17,7 +19,7 @@ const build = async ({ bundle, render, ssr })=>{
 	const css = await lessTransform.generate({ paths: './shared' });
 	await fs.outputFile('./build/admin/bundle.css', css);
 	await fs.outputFile('./build/admin/bundle.js', bundle);
-	await fs.outputFile('./build/admin/ssr.js', ssr);
+	await fs.outputFile('./build/admin/ssr.cjs', ssr);
 };
 
 fs.emptyDirSync('./build/admin');

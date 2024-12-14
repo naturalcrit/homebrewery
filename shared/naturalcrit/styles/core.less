@@ -21,10 +21,7 @@ html,body, #reactRoot{
 *{
 	box-sizing : border-box;
 }
-button{
-	.button();
-}
-.button(@backgroundColor : @green){
+.colorButton(@backgroundColor : @green){
 	.animate(background-color);
 	display          : inline-block;
 	padding          : 0.6em 1.2em;
@@ -46,5 +43,6 @@ button{
 	}
 	&:disabled{
 		background-color : @silver !important;
+		cursor:not-allowed;
 	}
 }

@@ -1,19 +1,19 @@
 /* eslint-disable max-lines */
-const _ = require('lodash');
-const Marked = require('marked');
-const MarkedExtendedTables = require('marked-extended-tables');
-const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartypants-lite');
-const { gfmHeadingId: MarkedGFMHeadingId, resetHeadings: MarkedGFMResetHeadingIDs } = require('marked-gfm-heading-id');
-const { markedEmoji: MarkedEmojis } = require('marked-emoji');
+import _                        from 'lodash';
+import { Parser as MathParser } from 'expr-eval';
+import { marked as Marked }              from 'marked';
+import MarkedExtendedTables     from 'marked-extended-tables';
+import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
+import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
+import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
-const diceFont      = require('../../themes/fonts/iconFonts/diceFont.js');
-const elderberryInn = require('../../themes/fonts/iconFonts/elderberryInn.js');
-const fontAwesome   = require('../../themes/fonts/iconFonts/fontAwesome.js');
-const gameIcons     = require('../../themes/fonts/iconFonts/gameIcons.js');
+import diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
+import elderberryInn from '../../themes/fonts/iconFonts/elderberryInn.js';
+import gameIcons     from '../../themes/fonts/iconFonts/gameIcons.js';
+import fontAwesome   from '../../themes/fonts/iconFonts/fontAwesome.js';
 
-const MathParser = require('expr-eval').Parser;
-const renderer = new Marked.Renderer();
+const renderer  = new Marked.Renderer();
 const tokenizer = new Marked.Tokenizer();
 
 //Limit math features to simple items
@@ -105,16 +105,16 @@ renderer.link = function (href, title, text) {
 // Expose `src` attribute as `--HB_src` to make the URL accessible via CSS
 renderer.image = function (href, title, text) {
 	href = cleanUrl(href);
-	if (href === null)
+	if(href === null)
 		return text;
 
 	let out = `<img src="${href}" alt="${text}" style="--HB_src:url(${href});"`;
-	if (title)
+	if(title)
 		out += ` title="${title}"`;
 
 	out += '>';
 	return out;
-}
+};
 
 // Disable default reflink behavior, as it steps on our variables extension
 tokenizer.def = function () {
@@ -745,7 +745,7 @@ const tableTerminators = [
 	`:+\\n`,                // hardBreak
 	` *{[^\n]+}`,           // blockInjector
 	` *{{[^{\n]*\n.*?\n}}`  // mustacheDiv
-]
+];
 
 Marked.use(MarkedVariables());
 Marked.use({ extensions : [definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks, superSubScripts,
@@ -755,12 +755,12 @@ Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
 function cleanUrl(href) {
-  try {
-    href = encodeURI(href).replace(/%25/g, '%');
-  } catch {
-    return null;
-  }
-  return href;
+	try {
+		href = encodeURI(href).replace(/%25/g, '%');
+	} catch {
+		return null;
+	}
+	return href;
 }
 
 const escapeTest = /[&<>"']/;
@@ -854,7 +854,7 @@ const globalVarsList    = {};
 let varsQueue       = [];
 let globalPageNumber = 0;
 
-module.exports = {
+const Markdown = {
 	marked : Marked,
 	render : (rawBrewText, pageNumber=0)=>{
 		globalVarsList[pageNumber] = {};					//Reset global links for current page, to ensure values are parsed in order
@@ -865,6 +865,7 @@ module.exports = {
 		}
 
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`);
+
 		const opts = Marked.defaults;
 
 		rawBrewText = opts.hooks.preprocess(rawBrewText);
@@ -935,3 +936,6 @@ module.exports = {
 		return errors;
 	},
 };
+
+export default Markdown;
+
