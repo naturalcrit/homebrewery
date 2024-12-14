@@ -346,7 +346,7 @@ app.get('/user/:username', async (req, res, next)=>{
 	return next();
 });
 
-//Rename Brews
+//Change author name on brews
 app.put('/api/user/rename', async (req, res) => {
     const { username, newUsername } = req.body;
 
@@ -538,14 +538,11 @@ app.get('/vault', asyncHandler(async(req, res, next)=>{
 
 //Send rendered page
 app.use(asyncHandler(async (req, res, next) => {
-    if (!req.route && !req.path.startsWith('/api/')) {
-        return res.redirect('/');
-    }
+	if (!req.route) return res.redirect('/'); // Catch-all for invalid routes
 
-    const page = await renderPage(req, res);
-    if (!page) return;
-
-    res.send(page);
+	const page = await renderPage(req, res);
+	if(!page) return;
+	res.send(page);
 }));
 
 //Render the page
