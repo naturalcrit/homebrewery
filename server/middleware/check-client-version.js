@@ -1,16 +1,22 @@
 import packageJSON from '../../package.json' with { type: "json" };
-const version = packageJSON.version;
 
-//This should be only for internal calls, but right now prevents spam api calls, this should be done with a proper cors policy
+export default (req, res, next) => {
+    const origin = req.get('Origin');
+    const sameSite = req.get('Host');
 
-export default (req, res, next)=>{
-	const userVersion = req.get('Homebrewery-Version');
+    if (origin && origin !== `http://${sameSite}` && origin !== `https://${sameSite}`) {
+        return next();  // Skip version check if the request is from another site, like naturalcrit.com
+    }
 
-	if(userVersion != version) {
-		return res.status(412).send({
-			message : `Client version ${userVersion} is out of date. Please save your changes elsewhere and refresh to pick up client version ${version}.`
-		});
-	}
+    const userVersion = req.get('Homebrewery-Version');
+    const version = packageJSON.version;
 
-	next();
+    if (userVersion !== version) {
+        return res.status(412).send({
+            message: `Client version ${userVersion} is out of date. Please save your changes elsewhere and refresh to pick up client version ${version}.`
+        });
+    }
+
+    next();
 };
+
