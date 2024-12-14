@@ -352,6 +352,9 @@ app.get('/user/:username', async (req, res, next)=>{
 //Change author name on brews
 app.put('/api/user/rename', async (req, res)=>{
 	const { username, newUsername } = req.body;
+
+	//this next logs will be removed in a next PR, as i need to get this live to test if req.account is created when passing the request from naturalcrit.com
+
 	console.log(`is user ${req.account.username} equal to ${username}? ${req.account.username === username} ${req.account.username === username && 'then add the damn auth for renaming!'}`);
 	console.log('renaming');
 
