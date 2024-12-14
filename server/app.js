@@ -91,12 +91,16 @@ app.use(cors(corsOptions));
 
 //Account Middleware
 app.use((req, res, next)=>{
+	console.log('passing through acc middleware')
 	if(req.cookies && req.cookies.nc_session){
 		try {
+			console.log(`creating req.account equal to "${jwt.decode(req.cookies.nc_session, config.get('secret'))}"`);
 			req.account = jwt.decode(req.cookies.nc_session, config.get('secret'));
 			//console.log("Just loaded up JWT from cookie:");
 			//console.log(req.account);
-		} catch (e){}
+		} catch (e){
+			console.log(e);
+		}
 	}
 
 	req.config = {
