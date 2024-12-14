@@ -277,6 +277,7 @@ app.get('/css/:id', asyncHandler(getBrew('share')), (req, res)=>{getCSS(req, res
 //User Page
 app.get('/user/:username', async (req, res, next)=>{
 	const ownAccount = req.account && (req.account.username == req.params.username);
+	console.log(req.account);
 
 	req.ogMeta = { ...defaultMetaTags,
 		title       : `${req.params.username}'s Collection`,
@@ -348,6 +349,7 @@ app.get('/user/:username', async (req, res, next)=>{
 
 //Change author name on brews
 app.put('/api/user/rename', async (req, res) => {
+	console.log(req.account);
     const { username, newUsername } = req.body;
 
 	console.log('renaming');
