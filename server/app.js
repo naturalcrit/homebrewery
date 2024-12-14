@@ -91,7 +91,7 @@ app.use(cors(corsOptions));
 
 //Account Middleware
 app.use((req, res, next)=>{
-	console.log('passing through acc middleware')
+	console.log('passing through acc middleware, checking for cookies now: does cookies exist? ', !!req.cookies, ', ok, does the session cookie exist? ', !!req.cookies.nc_session);
 	if(req.cookies && req.cookies.nc_session){
 		try {
 			console.log(`creating req.account equal to "${JSON.stringify(jwt.decode(req.cookies.nc_session, config.get('secret')))}"`);
