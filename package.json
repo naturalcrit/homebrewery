@@ -136,6 +136,7 @@
     "stylelint": "^16.11.0",
     "stylelint-config-recess-order": "^5.1.1",
     "stylelint-config-recommended": "^14.0.1",
-    "supertest": "^7.0.0"
+    "supertest": "^7.0.0",
+    "through2": "^4.0.2"
   }
 }

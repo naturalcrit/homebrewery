@@ -1,4 +1,4 @@
-const LessLib = require('less');
+import LessLib from 'less';
 
 const clearLessCache = ()=>{
 	const fileManagers = LessLib.environment && LessLib.environment.fileManagers || [];
@@ -30,4 +30,4 @@ transform.generate = async (_opts, dev=false)=>{
 	.then(({ css })=>css);
 };
 
-module.exports = transform;
+export default transform;

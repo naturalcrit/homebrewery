@@ -1,8 +1,8 @@
 // npm i --save-dev react react-dom browserify @babel/core @babel/preset-react watchify through2 source-map-support
 
-const browserify = require('browserify');
-const path = require('path');
-const sourceMaps = require('source-map-support');
+import browserify from 'browserify';
+import path from 'path';
+import sourceMaps from 'source-map-support';
 
 const chalk = Object.entries({
 	bright  : 1,  dim     : 2,  red     : 31,
@@ -22,7 +22,8 @@ const defaultTransforms = {
 const customTransforms = (transforms={}, opts)=>{
 	return (filename)=>{
 		let code = '';
-		return require('through2')((chunk, enc, next)=>{ code += chunk.toString(); next(); },
+		// Last code touched; not sure if this is correct for conditional importing.. Is conditional even required???
+		return import('through2').then((chunk, enc, next)=>{ code += chunk.toString(); next(); },
 			async function(done){
 				try {
 					const transform = transforms[path.extname(filename)] || transforms['*'];
@@ -50,7 +51,7 @@ const getOpts = (opts, entrypoint)=>{
 	};
 };
 
-module.exports = async (entrypoint, _opts={})=>{
+export default async (entrypoint, _opts={})=>{
 	let LibsCache;
 	const opts = getOpts(_opts, entrypoint);
 	let bundler = browserify(entrypoint, { standalone: opts.name, cache: {}, ...opts.rest })
