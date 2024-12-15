@@ -4,7 +4,7 @@
   "version": "3.16.1",
   "type": "module",
   "engines": {
-    "npm": "^10.2.x",
+    "npm": "^10.8.x",
     "node": "^20.18.x"
   },
   "repository": {
@@ -109,6 +109,7 @@
     "marked-emoji": "^1.4.3",
     "marked-extended-tables": "^1.0.10",
     "marked-gfm-heading-id": "^3.2.0",
+    "marked-mermaidjs": "^0.2.1",
     "marked-smartypants-lite": "^1.0.2",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.30.1",
