@@ -65,7 +65,7 @@ const corsOptions = {
 
 		const allowedOrigins = [
 			'https://homebrewery.naturalcrit.com',
-			'https://naturalcrit.com',
+			'https://www.naturalcrit.com',
 			'https://naturalcrit-stage.herokuapp.com',
 			'https://homebrewery-stage.herokuapp.com',
 		];
