@@ -380,7 +380,7 @@ const EditPage = createClass({
 
 **[Homebrewery Link](${global.config.publicUrl}/share/${shareLink})**`;
 
-return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title.toWellFormed())}&text=${encodeURIComponent(text)}`;
+		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title.toWellFormed())}&text=${encodeURIComponent(text)}`;
 	},
 
 	renderNavbar : function(){
