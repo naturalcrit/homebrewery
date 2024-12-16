@@ -3,9 +3,8 @@ require('./editPage.less');
 const React = require('react');
 const _ = require('lodash');
 const createClass = require('create-react-class');
-
 import request from '../../utils/request-middleware.js';
-const { Meta } = require('vitreum/headtags');
+const { Meta } = require('../../../components/headTags.jsx');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');

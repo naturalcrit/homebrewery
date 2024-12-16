@@ -1,11 +1,12 @@
+const pack = require('./transforms/pack.js');
+const isDev = !!process.argv.find((arg)=>arg=='--dev');
+
+const lessTransform  = require('./transforms/less.js');
+const assetTransform = require('./transforms/asset.js');
+//const Meta = require('vitreum/headtags');
 
 import fs   from 'fs-extra';
 import Proj from './project.json' with { type: 'json' };
-import vitreum from 'vitreum';
-const { pack } = vitreum;
-
-import lessTransform  from 'vitreum/transforms/less.js';
-import assetTransform from 'vitreum/transforms/asset.js';
 
 const isDev = !!process.argv.find((arg)=>arg=='--dev');
 

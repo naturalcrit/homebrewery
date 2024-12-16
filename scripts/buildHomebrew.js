@@ -1,15 +1,15 @@
 import fs   from 'fs-extra';
 import zlib from 'zlib';
 import Proj from './project.json' with { type: 'json' };
-import vitreum from 'vitreum';
-const { pack, watchFile, livereload } = vitreum;
+// const { watchFile, livereload } = require('vitreum');
+import pack from './transforms/pack.js';
 
-import lessTransform  from 'vitreum/transforms/less.js';
-import assetTransform from 'vitreum/transforms/asset.js';
-import babel          from '@babel/core';
-import less           from 'less';
+const isDev = !!process.argv.find((arg)=>arg=='--dev');
 
-const isDev = !!process.argv.find((arg) => arg === '--dev');
+import lessTransform  from './transforms/less.js';
+import assetTransform from './transforms/asset.js';
+import babel from '@babel/core';
+import less from 'less';
 
 const babelify = async (code)=>(await babel.transformAsync(code, { presets: [['@babel/preset-env', { 'exclude': ['proposal-dynamic-import'] }], '@babel/preset-react'], plugins: ['@babel/plugin-transform-runtime'] })).code;
 
@@ -52,7 +52,7 @@ fs.emptyDirSync('./build');
 	const themes = { Legacy: {}, V3: {} };
 
 	let themeFiles = fs.readdirSync('./themes/Legacy');
-	for (let dir of themeFiles) {
+	for (const dir of themeFiles) {
 		const themeData = JSON.parse(fs.readFileSync(`./themes/Legacy/${dir}/settings.json`).toString());
 		themeData.path = dir;
 		themes.Legacy[dir] = (themeData);
@@ -69,7 +69,7 @@ fs.emptyDirSync('./build');
 	}
 
 	themeFiles = fs.readdirSync('./themes/V3');
-	for (let dir of themeFiles) {
+	for (const dir of themeFiles) {
 		const themeData = JSON.parse(fs.readFileSync(`./themes/V3/${dir}/settings.json`).toString());
 		themeData.path = dir;
 		themes.V3[dir] = (themeData);
@@ -112,7 +112,7 @@ fs.emptyDirSync('./build');
 	const stream = fs.createWriteStream(editorThemeFile, { flags: 'a' });
 	stream.write('[\n"default"');
 
-	for (let themeFile of editorThemeFiles) {
+	for (const themeFile of editorThemeFiles) {
 		stream.write(`,\n"${themeFile.slice(0, -4)}"`);
 	}
 	stream.write('\n]\n');
@@ -156,13 +156,13 @@ fs.emptyDirSync('./build');
 	//
 
 	//In development, set up LiveReload (refreshes browser), and Nodemon (restarts server)
-	if(isDev){
-		livereload('./build');     // Install the Chrome extension LiveReload to automatically refresh the browser
-		watchFile('./server.js', { // Restart server when change detected to this file or any nested directory from here
-			ignore : ['./build', './client', './themes'],  // Ignore folders that are not running server code / avoids unneeded restarts
-			ext    : 'js json'                             // Extensions to watch (only .js/.json by default)
-			//watch : ['./server', './themes'],            // Watch additional folders if needed
-		});
-	}
+	// if(isDev){
+	// 	livereload('./build');     // Install the Chrome extension LiveReload to automatically refresh the browser
+	// 	watchFile('./server.js', { // Restart server when change detected to this file or any nested directory from here
+	// 		ignore : ['./build', './client', './themes'],  // Ignore folders that are not running server code / avoids unneeded restarts
+	// 		ext    : 'js json'                             // Extensions to watch (only .js/.json by default)
+	// 		//watch : ['./server', './themes'],            // Watch additional folders if needed
+	// 	});
+	// }
 
 })().catch(console.error);

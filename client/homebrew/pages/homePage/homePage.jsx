@@ -2,8 +2,8 @@ require('./homePage.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const cx = require('classnames');
-import request from '../../utils/request-middleware.js';
-const { Meta } = require('vitreum/headtags');
+const request = require('../../utils/request-middleware.js');
+const { Meta } = require('../../../components/headTags.jsx');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
