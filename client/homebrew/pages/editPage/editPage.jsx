@@ -380,15 +380,7 @@ const EditPage = createClass({
 
 **[Homebrewery Link](${global.config.publicUrl}/share/${shareLink})**`;
 
-		let encodedTitle;
-		try {
-			encodedTitle = encodeURIComponent(title);
-		} catch (error) {
-			console.error("Error encoding title for Reddit link:", error);
-			encodedTitle = encodeURIComponent("Check out my homebrew!"); // Fallback title
-		}
-	
-		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodedTitle}&text=${encodeURIComponent(text)}`;
+return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title.toWellFormed())}&text=${encodeURIComponent(text)}`;
 	},
 
 	renderNavbar : function(){
