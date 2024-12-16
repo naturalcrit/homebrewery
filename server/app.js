@@ -91,7 +91,6 @@ app.use(cors(corsOptions));
 
 //Account Middleware
 app.use((req, res, next)=>{
-	console.log('passing through acc middleware, checking for cookies now: does cookies exist? ', !!req.cookies, ', ok, does the session cookie exist? ', !!req.cookies.nc_session);
 	if(req.cookies && req.cookies.nc_session){
 		try {
 			req.account = jwt.decode(req.cookies.nc_session, config.get('secret'));
@@ -352,12 +351,8 @@ app.get('/user/:username', async (req, res, next)=>{
 //Change author name on brews
 app.put('/api/user/rename', async (req, res)=>{
 	const { username, newUsername } = req.body;
-
-	//this next logs will be removed in a next PR, as i need to get this live to test if req.account is created when passing the request from naturalcrit.com
-
-	console.log(`is user ${req.account.username} equal to ${username}? ${req.account.username === username} ${req.account.username === username && 'then add the damn auth for renaming!'}`);
-	console.log('renaming');
-
+	console.log(req.account);
+	
 	if(!username || !newUsername) {
 		return res.status(400).json({ error: 'Username and newUsername are required.' });
 	}
