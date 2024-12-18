@@ -351,11 +351,12 @@ app.get('/user/:username', async (req, res, next)=>{
 //Change author name on brews
 app.put('/api/user/rename', async (req, res)=>{
 	const { username, newUsername } = req.body;
-	console.log(req.account);
+	const ownAccount = req.account && (req.account.username == newUsername);
 	
-	if(!username || !newUsername) {
+	if(!username || !newUsername)
 		return res.status(400).json({ error: 'Username and newUsername are required.' });
-	}
+	if(!ownAccount)
+		return res.status(403).json({ error: 'Must be logged in to change your username' });
 	try {
 		const brews = await HomebrewModel.getByUser(username, true, ['authors']);
 		const renamePromises = brews.map(async (brew)=>{
