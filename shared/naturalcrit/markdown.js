@@ -380,11 +380,10 @@ const justifiedParagraphs = {
 	name  : 'justifiedParagraphs',
 	level : 'block',
 	start(src) {
-		return src.match(/\n(?:-:|:-|:-:) {1}/m)?.index;
-
+		return src.match(/\n(?:-:|:-|-:) {1}/m)?.index;
 	},  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const regex  = /^((:- ).*)|((-: ).*)|((:-: ).*)(?:\n|$)/ym;
+		const regex  = /^(((:-))|((-:))|((:-:))) .+\n([^\n].*\n)*\n/ygm;
 		const match = regex.exec(src);
 		if(match?.length) {
 			let whichJustify;
