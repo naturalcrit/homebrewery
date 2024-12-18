@@ -125,7 +125,7 @@ const api = {
 			// If there is a google id, try to find the google brew
 			if(!stubOnly && googleId) {
 				const oAuth2Client = isOwner ? GoogleActions.authCheck(req.account, res) : undefined;
-				
+				console.log(`user ${req.account?.username} attempting to get googlebrew ${googleId} as ${isOwner ? 'owner' : 'visitor'}`);
 				const googleBrew = await GoogleActions.getGoogleBrew(oAuth2Client, googleId, id, accessType)
 					.catch((googleError)=>{
 						const reason = googleError.errors?.[0].reason;
