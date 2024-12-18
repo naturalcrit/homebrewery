@@ -111,7 +111,7 @@ const api = {
 			const isInvited = stub?.invitedAuthors?.includes(req.account?.username);
 
 			if(accessType === 'edit' && !(isOwner || isAuthor || isInvited)) {
-				const accessError = { name: 'Access Error', status: 401, authors: stub.authors, brewTitle: stub.title, shareId: stub.shareId };
+				const accessError = { name: 'Access Error', status: 401, authors: stub?.authors, brewTitle: stub?.title, shareId: stub?.shareId };
 				if(req.account)
 					throw { ...accessError, message: 'User is not an Author', HBErrorCode: '03' };
 				else
@@ -119,7 +119,7 @@ const api = {
 			}
 
 			if(stub?.lock?.locked && accessType != 'edit') {
-				throw { HBErrorCode: '51', code: stub.lock.code, message: stub.lock.shareMessage, brewId: stub.shareId, brewTitle: stub.title };
+				throw { HBErrorCode: '51', code: stub?.lock.code, message: stub?.lock.shareMessage, brewId: stub?.shareId, brewTitle: stub?.title };
 			}
 
 			// If there is a google id, try to find the google brew
