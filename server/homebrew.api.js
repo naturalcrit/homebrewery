@@ -106,7 +106,7 @@ const api = {
 			stub = stub?.toObject();
 			googleId ??= stub?.googleId;
 
-			const isOwner   = !stub || stub?.authors?.length === 0 || stub?.authors?.[0] === req.account?.username;
+			const isOwner   = (accessType == 'edit' && (!stub || stub?.authors?.length === 0)) || stub?.authors?.[0] === req.account?.username;
 			const isAuthor  = stub?.authors?.includes(req.account?.username);
 			const isInvited = stub?.invitedAuthors?.includes(req.account?.username);
 
@@ -124,7 +124,7 @@ const api = {
 
 			// If there is a google id, try to find the google brew
 			if(!stubOnly && googleId) {
-				const oAuth2Client = isOwner? GoogleActions.authCheck(req.account, res) : undefined;
+				const oAuth2Client = isOwner ? GoogleActions.authCheck(req.account, res) : undefined;
 				
 				const googleBrew = await GoogleActions.getGoogleBrew(oAuth2Client, googleId, id, accessType)
 					.catch((googleError)=>{
