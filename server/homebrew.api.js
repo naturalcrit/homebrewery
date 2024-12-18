@@ -106,7 +106,7 @@ const api = {
 			stub = stub?.toObject();
 			googleId ??= stub?.googleId;
 
-			const isOwner   = stub?.authors?.length === 0 || stub?.authors?.[0] === req.account?.username;
+			const isOwner   = !stub || stub?.authors?.length === 0 || stub?.authors?.[0] === req.account?.username;
 			const isAuthor  = stub?.authors?.includes(req.account?.username);
 			const isInvited = stub?.invitedAuthors?.includes(req.account?.username);
 
