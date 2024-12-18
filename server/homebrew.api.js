@@ -467,12 +467,11 @@ const api = {
 	}
 };
 
-router.use('/api', checkClientVersion);
-router.post('/api', asyncHandler(api.newBrew));
-router.put('/api/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
-router.put('/api/update/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
-router.delete('/api/:id', asyncHandler(api.deleteBrew));
-router.get('/api/remove/:id', asyncHandler(api.deleteBrew));
+router.post('/api', checkClientVersion, asyncHandler(api.newBrew));
+router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
+router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
+router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew));
+router.get('/api/remove/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
 
 export default api;
