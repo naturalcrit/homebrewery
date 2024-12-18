@@ -383,7 +383,7 @@ const justifiedParagraphs = {
 		return src.match(/\n(?:-:|:-|-:) {1}/m)?.index;
 	},  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const regex  = /^(((:-))|((-:))|((:-:))) .+\n([^\n].*\n)*\n/ygm;
+		const regex  = /^(((:-))|((-:))|((:-:))) .+(\n(([^\n].*\n)*(\n|$))|$)/ygm;
 		const match = regex.exec(src);
 		if(match?.length) {
 			let whichJustify;
@@ -396,7 +396,7 @@ const justifiedParagraphs = {
 				length : match[whichJustify].length,
 				text   : match[0].slice(match[whichJustify].length),
 				class  : justifiedParagraphClasses[whichJustify],
-				tokens : this.lexer.inlineTokens(match[0].slice(match[whichJustify].length))
+				tokens : this.lexer.inlineTokens(match[0].slice(match[whichJustify].length + 1))
 			};
 		}
 	},
