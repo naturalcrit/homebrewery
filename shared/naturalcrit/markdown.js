@@ -408,7 +408,7 @@ const nonbreakingSpaces = {
 		}
 	},
 	renderer(token) {
-		return `&nbsp;`.repeat(token.length).concat('\n');
+		return `&nbsp;`.repeat(token.length).concat('');
 	}
 };
 

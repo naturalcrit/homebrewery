@@ -33,6 +33,12 @@ describe('Hard Breaks', ()=>{
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>&nbsp;&nbsp;&nbsp;\n\n&nbsp;&nbsp;&nbsp;\n\n&nbsp;&nbsp;&nbsp;\n</p>`);
 	});
 
+	test('Pair of inline Breaks', function() {
+		const source = ':>>:>>';
+		const rendered = Markdown.render(source).trim();
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>&nbsp;&nbsp;\n&nbsp;&nbsp;\n</p>`);
+	});
+
 	test('Break directly between two paragraphs', function() {
 		const source = 'Line 1\n:>>\nLine 2';
 		const rendered = Markdown.render(source).trim();
