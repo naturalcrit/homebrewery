@@ -7,6 +7,11 @@ import './Anchored.less';
 // **The Anchor Positioning API is not available in Firefox yet**
 // So in Firefox the positioning isn't perfect but is likely sufficient, and FF team seems to be working on the API quickly.
 
+// When Anchor Positioning is added to Firefox, this can also be rewritten using the Popover API-- add the `popover` attribute
+// to the container div, which will render the container in the *top level* and give it better interactions like
+// click outside to dismiss.  **Do not** add without Anchor, though, because positioning is very limited with the `popover`
+// attribute.
+
 
 const Anchored = ({ children })=>{
 	const [visible, setVisible] = useState(false);
