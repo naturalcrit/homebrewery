@@ -108,6 +108,9 @@ router.put('/admin/clean/script/:id', asyncHandler(HomebrewAPI.getBrew('admin', 
 
 	req.body = brew;
 
+	// Remove Account from request to prevent Admin user from being added to brew as an Author
+	req.account = undefined;
+
 	return await HomebrewAPI.updateBrew(req, res);
 });
 
