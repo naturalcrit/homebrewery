@@ -1,5 +1,5 @@
-import {model as HomebrewModel }     from './homebrew.model.js';
-import {model as NotificationModel } from './notifications.model.js';
+import { model as HomebrewModel }     from './homebrew.model.js';
+import { model as NotificationModel } from './notifications.model.js';
 import express    from 'express';
 import Moment     from 'moment';
 import zlib       from 'zlib';
