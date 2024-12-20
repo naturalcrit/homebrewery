@@ -1,8 +1,8 @@
 require('./homebrew.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const { StaticRouter:Router } = require('react-router-dom/server');
-const { Route, Routes, useParams, useSearchParams } = require('react-router-dom');
+const { StaticRouter:Router } = require('react-router');
+const { Route, Routes, useParams, useSearchParams } = require('react-router');
 
 const HomePage = require('./pages/homePage/homePage.jsx');
 const EditPage = require('./pages/editPage/editPage.jsx');
