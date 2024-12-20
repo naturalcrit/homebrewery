@@ -108,12 +108,12 @@ const api = {
 			stub = stub?.toObject();
 			googleId ??= stub?.googleId;
 
-			const isOwner   = stub?.authors?.length === 0 || stub?.authors?.[0] === req.account?.username;
+			const isOwner   = (accessType == 'edit' && (!stub || stub?.authors?.length === 0)) || stub?.authors?.[0] === req.account?.username;
 			const isAuthor  = stub?.authors?.includes(req.account?.username);
 			const isInvited = stub?.invitedAuthors?.includes(req.account?.username);
 
 			if(accessType === 'edit' && !(isOwner || isAuthor || isInvited)) {
-				const accessError = { name: 'Access Error', status: 401, authors: stub.authors, brewTitle: stub.title, shareId: stub.shareId };
+				const accessError = { name: 'Access Error', status: 401, authors: stub?.authors, brewTitle: stub?.title, shareId: stub?.shareId };
 				if(req.account)
 					throw { ...accessError, message: 'User is not an Author', HBErrorCode: '03' };
 				else
@@ -121,13 +121,13 @@ const api = {
 			}
 
 			if(stub?.lock?.locked && accessType != 'edit') {
-				throw { HBErrorCode: '51', code: stub.lock.code, message: stub.lock.shareMessage, brewId: stub.shareId, brewTitle: stub.title };
+				throw { HBErrorCode: '51', code: stub?.lock.code, message: stub?.lock.shareMessage, brewId: stub?.shareId, brewTitle: stub?.title };
 			}
 
-			// If there is a google id, try to find the google brew
-			if(!stubOnly && googleId) {
-				const oAuth2Client = isOwner? GoogleActions.authCheck(req.account, res) : undefined;
-				
+			// If there's a google id, get it if requesting the full brew or if no stub found yet
+			if(googleId && (!stubOnly || !stub)) {
+				const oAuth2Client = isOwner ? GoogleActions.authCheck(req.account, res) : undefined;
+
 				const googleBrew = await GoogleActions.getGoogleBrew(oAuth2Client, googleId, id, accessType)
 					.catch((googleError)=>{
 						const reason = googleError.errors?.[0].reason;
@@ -475,12 +475,11 @@ const api = {
 	}
 };
 
-router.use('/api', checkClientVersion);
-router.post('/api', asyncHandler(api.newBrew));
-router.put('/api/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
-router.put('/api/update/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
-router.delete('/api/:id', asyncHandler(api.deleteBrew));
-router.get('/api/remove/:id', asyncHandler(api.deleteBrew));
+router.post('/api', checkClientVersion, asyncHandler(api.newBrew));
+router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
+router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
+router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew));
+router.get('/api/remove/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
 
 export default api;
