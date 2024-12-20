@@ -51,6 +51,11 @@ describe('Non-Breaking Spaces', ()=>{
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<pre><code>\n:&gt;\n</code></pre>`);
 	});
 
+	test('I am actually a single-line definition list!', function() {
+		const source = 'Term ::> Definition 1\n';
+		const rendered = Markdown.render(source).trim();
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<dl><dt>Term</dt><dd>> Definition 1</dd>\n</dl>`);
+	});
 
 	test('I am actually a definition list!', function() {
 		const source = 'Term\n::> Definition 1\n';
