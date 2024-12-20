@@ -14,7 +14,7 @@ const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
 const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
-const { printCurrentBrew } = require('../../../shared/helpers.js');
+const { printCurrentBrew, processStyleTags } = require('../../../shared/helpers.js');
 
 import { safeHTML } from './safeHTML.js';
 
@@ -32,12 +32,15 @@ const INITIAL_CONTENT = dedent`
 //v=====----------------------< Brew Page Component >---------------------=====v//
 const BrewPage = (props)=>{
 	props = {
-		contents : '',
-		index    : 0,
+		contents   : '',
+		index      : 0,
+		style      : {},
+		attributes : {},
+		className  : '',
 		...props
 	};
 	const cleanText = safeHTML(props.contents);
-	return <div className={props.className} id={`p${props.index + 1}`} style={props.style}>
+	return <div className={props.className} id={`p${props.index + 1}`} style={props.style} {...props.attributes}>
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
 };
@@ -45,7 +48,36 @@ const BrewPage = (props)=>{
 
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
 let renderedPages = [];
+let brewTemplates;
 let rawPages      = [];
+
+
+// There is bound to be a more elegant way to do this. But this works for now.
+const getPageTemplates = (pages)=>{
+	const tempPages = [];
+	brewTemplates = [];
+	brewTemplates[1] = { name: 'Blank' };
+	pages.forEach((page, index)=>{
+		const firstLine = page.split('\n')[0].trim();
+		let pageAttributes = {};
+		if(firstLine.startsWith('\\page')) {
+			let match;
+			if(firstLine.match(/{[^{\n]/)) {
+				// Line has a mustache Block
+				const inlineRegex = /{(?=((?:[:=](?:"['\w,\-()#%=?. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}$/g;
+				match = inlineRegex.exec(firstLine);
+				if(match) {
+					pageAttributes = processStyleTags(match[1]);
+				}
+			}
+			brewTemplates[ index ] = { attr: pageAttributes };
+			tempPages.push(page.slice(firstLine.length));
+		} else {
+			tempPages.push(page);
+		}
+	});
+	return tempPages;
+};
 
 const BrewRenderer = (props)=>{
 	props = {
@@ -80,7 +112,7 @@ const BrewRenderer = (props)=>{
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split('\\page');
 	} else {
-		rawPages = props.text.split(/^\\page$/gm);
+		rawPages = getPageTemplates(props.text.split(/^(?=^\\page)/gm));
 	}
 
 	const scrollToHash = (hash)=>{
@@ -144,12 +176,23 @@ const BrewRenderer = (props)=>{
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			const html = Markdown.render(pageText, index);
 
+			// I assume there is a prettier way to do this.
+			const declaredStyles = {};
+			if(brewTemplates[index]?.attr?.styles) {
+				for (let styleSplit of brewTemplates[index]?.attr?.styles.split(';')) {
+					const styleInst = styleSplit.split(':');
+					if(styleInst[0] && styleInst[1]) declaredStyles[styleInst[0].trim()] = styleInst[1].trim();
+				}
+			}
+
 			const styles = {
-				...(!displayOptions.pageShadows ? { boxShadow: 'none' } : {})
+				...declaredStyles,
+				...(!displayOptions.pageShadows ? { boxShadow: 'none' } : {}),
 				// Add more conditions as needed
 			};
 
-			return <BrewPage className='page' index={index} key={index} contents={html} style={styles} />;
+			const pageClass = brewTemplates[index]?.attr?.classes?.length > 0 ? `page ${brewTemplates[index].attr.classes}` : `page`;
+			return <BrewPage className={pageClass} index={index} key={index} contents={html} style={styles} attributes={brewTemplates[index]?.attr?.attributes}/>;
 		}
 	};
 
