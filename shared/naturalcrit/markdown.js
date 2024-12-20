@@ -417,7 +417,7 @@ const definitionListsSingleLine = {
 	level : 'block',
 	start(src) { return src.match(/\n[^\n]*?::[^:\n]*/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const regex = /^([^\n]*?)::([^\:\>][^\n]*)(?:\n|$)/ym;
+		const regex = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym;
 		let match;
 		let endIndex = 0;
 		const definitions = [];
