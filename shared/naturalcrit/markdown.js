@@ -428,10 +428,31 @@ const forcedParagraphBreaks = {
 	}
 };
 
+const nonbreakingSpaces = {
+	name  : 'nonbreakingSpaces',
+	level : 'inline',
+	start(src) { return src.match(/:>+/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const regex  = /:(>+)/ym;
+		const match = regex.exec(src);
+		if(match?.length) {
+			return {
+				type   : 'nonbreakingSpaces', // Should match "name" above
+				raw    : match[0],     // Text to consume from the source
+				length : match[1].length,
+				text   : ''
+			};
+		}
+	},
+	renderer(token) {
+		return `&nbsp;`.repeat(token.length).concat('');
+	}
+};
+
 const definitionListsSingleLine = {
 	name  : 'definitionListsSingleLine',
 	level : 'block',
-	start(src) { return src.match(/\n[^\n]*?::[^\n]*/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	start(src) { return src.match(/\n[^\n]*?::[^\n]*/m)?.index; }, // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const regex = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym;
 		let match;
@@ -785,11 +806,12 @@ const tableTerminators = [
 ];
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks, superSubScripts,
-	mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
+	nonbreakingSpaces, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
-Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
+Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }),
+	MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
 function cleanUrl(href) {
 	try {
