@@ -74,6 +74,9 @@ jobs:
           name: Test - Variables
           command: npm run test:variables
       - run:
+          name: Test - Emojis
+          command: npm run test:emojis
+      - run:
           name: Test - Routes
           command: npm run test:route
       - run:
