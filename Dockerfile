@@ -9,6 +9,7 @@ WORKDIR /usr/src/app
 # Copy package.json into the image, then run yarn install
 # This improves caching so we don't have to download the dependencies every time the code changes
 COPY package.json ./
+COPY config/default.json config/default.json
 # --ignore-scripts tells yarn not to run postbuild.  We run it explicitly later
 RUN npm install --ignore-scripts
 
