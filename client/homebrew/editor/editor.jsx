@@ -21,6 +21,7 @@ const DEFAULT_STYLE_TEXT = dedent`
 					color: black;
 				}`;
 
+const DEFAULT_SNIPPET_TEXT = ``;
 let isJumping = false;
 
 const Editor = createClass({
@@ -35,6 +36,7 @@ const Editor = createClass({
 			onTextChange  : ()=>{},
 			onStyleChange : ()=>{},
 			onMetaChange  : ()=>{},
+			onSnipChange  : ()=>{},
 			reportError   : ()=>{},
 
 			onCursorPageChange : ()=>{},
@@ -51,7 +53,7 @@ const Editor = createClass({
 	getInitialState : function() {
 		return {
 			editorTheme : this.props.editorTheme,
-			view        : 'text' //'text', 'style', 'meta'
+			view        : 'text' //'text', 'style', 'meta', 'snip'
 		};
 	},
 
@@ -61,6 +63,7 @@ const Editor = createClass({
 	isText  : function() {return this.state.view == 'text';},
 	isStyle : function() {return this.state.view == 'style';},
 	isMeta  : function() {return this.state.view == 'meta';},
+	isSnip  : function() {return this.state.view == 'snip';},
 
 	componentDidMount : function() {
 
@@ -155,7 +158,7 @@ const Editor = createClass({
 
 	highlightCustomMarkdown : function(){
 		if(!this.codeEditor.current) return;
-		if(this.state.view === 'text')  {
+		if((this.state.view === 'text') ||(this.state.view === 'snip')) {
 			const codeMirror = this.codeEditor.current.codeMirror;
 
 			codeMirror.operation(()=>{ // Batch CodeMirror styling
@@ -175,8 +178,10 @@ const Editor = createClass({
 				for (let i=customHighlights.length - 1;i>=0;i--) customHighlights[i].clear();
 
 				let editorPageCount = 2; // start page count from page 2
+				let userSnippetCount = 1; // start snippet count from page 2
 
-				_.forEach(this.props.brew.text.split('\n'), (line, lineNumber)=>{
+				const whichSource = this.state.view === 'text' ? this.props.brew.text : this.props.brew.snippets;
+				_.forEach(whichSource.split('\n'), (line, lineNumber)=>{
 
 					//reset custom line styles
 					codeMirror.removeLineClass(lineNumber, 'background', 'pageLine');
@@ -190,7 +195,7 @@ const Editor = createClass({
 
 					// Styling for \page breaks
 					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
-				     (this.props.renderer == 'V3'     && line.match(/^\\page$/))) {
+				     (this.props.renderer == 'V3'     && line.match(/^\\page$/) && this.state.view === 'text')) {
 
 						// add back the original class 'background' but also add the new class '.pageline'
 						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
@@ -203,12 +208,26 @@ const Editor = createClass({
 						editorPageCount += 1;
 					};
 
+
 					// New Codemirror styling for V3 renderer
 					if(this.props.renderer == 'V3') {
 						if(line.match(/^\\column$/)){
 							codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 						}
 
+						// Styling for \snippet breaks
+						if(this.state.view === 'snip' && line.match(/^\\snippet\ .*$/)) {
+
+							// add back the original class 'background' but also add the new class '.snippetLine'
+							codeMirror.addLineClass(lineNumber, 'background', 'snippetLine');
+							const userSnippetCountElement = Object.assign(document.createElement('span'), {
+								className   : 'editor-snippet-count',
+								textContent : userSnippetCount
+							});
+							codeMirror.setBookmark({ line: lineNumber, ch: line.length }, userSnippetCountElement);
+
+							userSnippetCount += 1;
+						};
 						// definition lists
 						if(line.includes('::')){
 							if(/^:*$/.test(line) == true){ return; };
@@ -459,6 +478,20 @@ const Editor = createClass({
 					userThemes={this.props.userThemes}/>
 			</>;
 		}
+
+		if(this.isSnip()){
+			return <>
+				<CodeEditor key='codeEditor'
+					ref={this.codeEditor}
+					language='gfm'
+					view={this.state.view}
+					value={this.props.brew.snippets ?? DEFAULT_SNIPPET_TEXT}
+					onChange={this.props.onSnipChange}
+					enableFolding={true}
+					editorTheme={this.state.editorTheme}
+					rerenderParent={this.rerenderParent} />
+			</>;
+		}
 	},
 
 	redo : function(){
@@ -499,7 +532,7 @@ const Editor = createClass({
 					historySize={this.historySize()}
 					currentEditorTheme={this.state.editorTheme}
 					updateEditorTheme={this.updateEditorTheme}
-					snippetBundle={this.props.snippetBundle}
+					themeBundle={this.props.themeBundle}
 					cursorPos={this.codeEditor.current?.getCursorPosition() || {}}
 					updateBrew={this.props.updateBrew}
 				/>
