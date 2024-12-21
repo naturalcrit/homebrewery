@@ -322,11 +322,11 @@ const SnippetGroup = createClass({
 	},
 
 	render : function(){
-		const groupName = `groupName ${this.props.snippets.length === 0 ? 'disabled' : ''}`;
-		return <div className='snippetGroup snippetBarButton'>
+		const snippetGroup = `snippetGroup snippetBarButton ${this.props.snippets.length === 0 ? 'disabledSnippets' : ''}`;
+		return <div className={snippetGroup}>
 			<div className='text'>
 				<i className={this.props.icon} />
-				<span className={groupName}>{this.props.groupName}</span>
+				<span className='groupName'>{this.props.groupName}</span>
 			</div>
 			<div className='dropdown'>
 				{this.renderSnippets(this.props.snippets)}
