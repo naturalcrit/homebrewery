@@ -70,7 +70,7 @@ const errorIndex = (props)=>{
 			- **The Google Account may be closed.** Google may have removed the account
 			due to inactivity or violating a Google policy. Make sure the owner can
 			still access Google Drive normally and upload/download files to it.
-			:
+			
 			If the file isn't found, Google Drive usually puts your file in your Trash folder for
 			30 days. Assuming the trash hasn't been emptied yet, it might be worth checking.
 			You can also find the Activity tab on the right side of the Google Drive page, which
