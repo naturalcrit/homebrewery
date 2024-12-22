@@ -194,8 +194,8 @@ const errorIndex = (props)=>{
 		
 		**Brew Title:** ${props.brew.brewTitle}`,
 
-		// ####### Admin page error ####### 
-		'52': dedent`
+		// ####### Admin page error #######
+		'52' : dedent`
 		## Access Denied
 		You need to provide correct administrator credentials to access this page.`,
 
