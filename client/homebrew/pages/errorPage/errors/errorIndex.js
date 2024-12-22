@@ -7,7 +7,7 @@ const loginUrl = 'https://www.naturalcrit.com/login';
 
 const errorIndex = (props)=>{
 	const googleRefreshInstructions = dedent`
-	:
+	&nbsp;
 	
 	### Refreshing your Google Credentials
 
