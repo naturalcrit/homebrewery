@@ -79,20 +79,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 		if(pages.length === 0) return '';
 
 		const sortedPages = [...pages].sort((a, b)=>a - b); // Copy and sort the array
-		const ranges = [];
-		let start = sortedPages[0];
-
-		for (let i = 1; i <= sortedPages.length; i++) {
-			// If the current page is the end of the list or not consecutive
-			if(i === sortedPages.length || sortedPages[i] !== sortedPages[i - 1] + 1) {
-				ranges.push(
-					start === sortedPages[i - 1] ? `${start}` : `${start} - ${sortedPages[i - 1]}`
-				);
-				start = sortedPages[i]; // Start a new range
-			}
-		}
-
-		return ranges.join(', ');
+		return sortedPages.length == 1 ? `${sortedPages[0]}` : `${sortedPages[0]} - ${sortedPages.at(-1)}`;
 	};
 
 	return (
