@@ -47,9 +47,9 @@ const BrewPage = (props)=>{
 			(entries)=>{
 				entries.forEach((entry)=>{
 					if(entry.isIntersecting)
-						props.onVisibilityChange(props.index + 1, true);    // add page to array of visible pages.
+						props.onVisibilityChange(props.index + 1, true, false);    // add page to array of visible pages.
 					else 
-						props.onVisibilityChange(props.index + 1, false);
+						props.onVisibilityChange(props.index + 1, false, false);
 				});
 			},
 			{ threshold: .3, rootMargin: '0px 0px 0px 0px'  } // detect when >30% of page is within bounds.
@@ -60,7 +60,7 @@ const BrewPage = (props)=>{
 			(entries)=>{
 				entries.forEach((entry)=>{
 					if(entry.isIntersecting)
-						props.onCenterPageChange(props.index + 1); // Set this page as the center page
+						props.onVisibilityChange(props.index + 1, true, true); // Set this page as the center page
 				});
 			},
 			{ threshold: 0, rootMargin: '-50% 0px -50% 0px' } // Detect when the page is at the center
@@ -124,26 +124,21 @@ const BrewRenderer = (props)=>{
 		rawPages = props.text.split(/^\\page$/gm);
 	}
 
-	const handlePageVisibilityChange = (pageNum, isVisible)=>{
+	const handlePageVisibilityChange = (pageNum, isVisible, isCenter)=>{
 		setState((prevState)=>{
 			const updatedVisiblePages = new Set(prevState.visiblePages);
-			isVisible ? updatedVisiblePages.add(pageNum) : updatedVisiblePages.delete(pageNum);
+			if(!isCenter)
+				isVisible ? updatedVisiblePages.add(pageNum) : updatedVisiblePages.delete(pageNum);
 
 			return {
 				...prevState,
-				visiblePages : [...updatedVisiblePages].sort((a, b)=>a - b)
+				visiblePages : [...updatedVisiblePages].sort((a, b)=>a - b),
+				centerPage   : isCenter ? pageNum : prevState.centerPage
 			};
 		});
-	};
 
-	const handleCenterPageChange = (pageNum)=>{
-		setState((prevState)=>({
-			//if(prevState.visiblePages.length == 0)
-			...prevState,
-			centerPage : pageNum,
-		}));
-
-		props.onPageChange(pageNum);
+		if(isCenter)
+			props.onPageChange(pageNum);
 	};
 
 	const isInView = (index)=>{
@@ -181,12 +176,12 @@ const BrewRenderer = (props)=>{
 		if(props.renderer == 'legacy') {
 			const html = MarkdownLegacy.render(pageText);
 
-			return <BrewPage className='page phb' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} onCenterPageChange={handleCenterPageChange}  />;
+			return <BrewPage className='page phb' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} />;
 		} else {
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			const html = Markdown.render(pageText, index);
 
-			return <BrewPage className='page' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} onCenterPageChange={handleCenterPageChange}  />;
+			return <BrewPage className='page' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} />;
 		}
 	};
 
