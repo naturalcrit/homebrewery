@@ -1,7 +1,7 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
-const { useState, useRef, useCallback, useMemo, useEffect } = React;
+const { useState, useRef, useMemo, useEffect } = React;
 const _ = require('lodash');
 
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
@@ -124,7 +124,7 @@ const BrewRenderer = (props)=>{
 		rawPages = props.text.split(/^\\page$/gm);
 	}
 
-	const handlePageVisibilityChange = useCallback((pageNum, isVisible)=>{
+	const handlePageVisibilityChange = (pageNum, isVisible)=>{
 		setState((prevState)=>{
 			const updatedVisiblePages = new Set(prevState.visiblePages);
 			isVisible ? updatedVisiblePages.add(pageNum) : updatedVisiblePages.delete(pageNum);
@@ -134,16 +134,17 @@ const BrewRenderer = (props)=>{
 				visiblePages : [...updatedVisiblePages].sort((a, b)=>a - b)
 			};
 		});
-	}, []);
+	};
 
-	const handleCenterPageChange = useCallback((pageNum)=>{
+	const handleCenterPageChange = (pageNum)=>{
 		setState((prevState)=>({
+			//if(prevState.visiblePages.length == 0)
 			...prevState,
 			centerPage : pageNum,
 		}));
 
 		props.onPageChange(pageNum);
-	}, [props.onPageChange]);
+	};
 
 	const isInView = (index)=>{
 		if(!state.isMounted)
