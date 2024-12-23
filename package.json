@@ -93,6 +93,7 @@
     "classnames": "^2.5.1",
     "codemirror": "^5.65.6",
     "cookie-parser": "^1.4.7",
+    "core-js": "^3.39.0",
     "cors": "^2.8.5",
     "create-react-class": "^15.7.0",
     "dedent-tabs": "^0.10.3",
