@@ -6,24 +6,6 @@ const loginUrl = 'https://www.naturalcrit.com/login';
 //050-100 : Other pages errors
 
 const errorIndex = (props)=>{
-	const googleRefreshInstructions = dedent`
-	&nbsp;
-	
-	### Refreshing your Google Credentials
-
-	This issue may be caused by an issue with your Google credentials; if so, the following steps may resolve the issue:
-
-	- Go to https://www.naturalcrit.com/login and click logout if present (in small text at the bottom of the page).
-
-	- Click "Sign In with Google", which will refresh your Google credentials.
-	
-	- After completing the sign in process, return to Homebrewery and refresh/reload the page so that it can pick up the updated credentials.
-	
-	- If this was the source of the issue, it should now be resolved.
-
-	If following these steps does not resolve the issue, please let us know!
-	`;
-
 	return {
 		// Default catch all
 		'00' : dedent`
@@ -36,9 +18,18 @@ const errorIndex = (props)=>{
 		'01' : dedent`
 			## An error occurred while retrieving this brew from Google Drive!
 			
-			Google reported an error while attempting to retrieve a brew from this link.`
+			Google is able to see the brew at this link, but reported an error while attempting to retrieve it.
 
-			+ googleRefreshInstructions,
+			### Refreshing your Google Credentials
+
+			This issue is likely caused by an issue with your Google credentials; if you are the owner of this file, the following steps may resolve the issue:
+
+			- Go to https://www.naturalcrit.com/login and click logout if present (in small text at the bottom of the page).
+			- Click "Sign In with Google", which will refresh your Google credentials.
+			- After completing the sign in process, return to Homebrewery and refresh/reload the page so that it can pick up the updated credentials.
+			- If this was the source of the issue, it should now be resolved.
+
+			If following these steps does not resolve the issue, please let us know!`,
 
 		// Google Drive - 404 : brew deleted or access denied
 		'02' : dedent`
@@ -85,9 +76,7 @@ const errorIndex = (props)=>{
 			:
 			Also note, if you prefer not to use your Google Drive for storage, you can always
 			change the storage location of a brew by clicking the Google drive icon by the
-			brew title and choosing *transfer my brew to/from Google Drive*.`
-
-			+ googleRefreshInstructions,
+			brew title and choosing *transfer my brew to/from Google Drive*.`,
 
 		// User is not Authors list
 		'03' : dedent`
