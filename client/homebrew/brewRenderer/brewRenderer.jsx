@@ -111,7 +111,6 @@ const BrewRenderer = (props)=>{
 		pageShadows  : true
 	});
 
-	const iframeRef = useRef(null);
 	const mainRef  = useRef(null);
 
 	if(props.renderer == 'legacy') {
@@ -303,7 +302,7 @@ const BrewRenderer = (props)=>{
 						&&
 						<>
 							{renderedStyle}
-							<div className={`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread}`} lang={`${props.lang || 'en'}`} style={pagesStyle} ref={iframeRef}>
+							<div className={`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread}`} lang={`${props.lang || 'en'}`} style={pagesStyle}>
 								{renderedPages}
 							</div>
 						</>
