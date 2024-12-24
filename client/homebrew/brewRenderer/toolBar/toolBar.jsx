@@ -15,9 +15,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 	const [toolsVisible, setToolsVisible] = useState(true);
 
 	useEffect(()=>{
-		if(visiblePages.length !== 0){   // If zoomed in enough, it's possible that no page fits the intersection criteria, so don't update.
-			setPageNum(formatVisiblePages(visiblePages));
-		}
+		setPageNum(formatVisiblePages(visiblePages));
 	}, [visiblePages]);
 
 	const handleZoomButton = (zoom)=>{
@@ -74,12 +72,9 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 		return deltaZoom;
 	};
 
-	// format the visible pages to work with ranges, including separate ranges ("2-7, 10-15")
+	// format the visible pages into a range (e.g. "150-153")
 	const formatVisiblePages = (pages)=>{
-		if(pages.length === 0) return '';
-
-		const sortedPages = [...pages].sort((a, b)=>a - b); // Copy and sort the array
-		return sortedPages.length == 1 ? `${sortedPages[0]}` : `${sortedPages[0]} - ${sortedPages.at(-1)}`;
+		return pages.length === 1 ? `${pages[0]}` : `${pages[0]} - ${pages.at(-1)}`;
 	};
 
 	return (
