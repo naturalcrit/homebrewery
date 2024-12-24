@@ -198,9 +198,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					className='previousPage tool'
 					type='button'
 					title='Previous Page(s)'
-					onClick={()=>{
-						scrollToPage(_.min(visiblePages) - visiblePages.length);
-					}}
+					onClick={()=>scrollToPage(_.min(visiblePages) - visiblePages.length)}
 					disabled={visiblePages.includes(1)}
 				>
 					<i className='fas fa-arrow-left'></i>
@@ -230,9 +228,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					className='tool'
 					type='button'
 					title='Next Page(s)'
-					onClick={()=>{
-						scrollToPage(_.max(visiblePages) + 1);
-					}}
+					onClick={()=>scrollToPage(_.max(visiblePages) + 1)}
 					disabled={visiblePages.includes(totalPages)}
 				>
 					<i className='fas fa-arrow-right'></i>
