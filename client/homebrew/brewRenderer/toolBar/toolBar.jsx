@@ -15,7 +15,9 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 	const [toolsVisible, setToolsVisible] = useState(true);
 
 	useEffect(()=>{
-		setPageNum(formatVisiblePages(visiblePages));
+		// format multiple visible pages as a range (e.g. "150-153")
+		const pageRange = visiblePages.length === 1 ? `${visiblePages[0]}` : `${visiblePages[0]} - ${visiblePages.at(-1)}`;
+		setPageNum(pageRange);
 	}, [visiblePages]);
 
 	const handleZoomButton = (zoom)=>{
@@ -70,11 +72,6 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 
 		const deltaZoom = (desiredZoom - displayOptions.zoomLevel) - margin;
 		return deltaZoom;
-	};
-
-	// format the visible pages into a range (e.g. "150-153")
-	const formatVisiblePages = (pages)=>{
-		return pages.length === 1 ? `${pages[0]}` : `${pages[0]} - ${pages.at(-1)}`;
 	};
 
 	return (
