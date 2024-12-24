@@ -45,20 +45,24 @@ const BrewPage = (props)=>{
 		// Observer for tracking pages within the `.pages` div
 		const visibleObserver = new IntersectionObserver(
 			(entries)=>{
-				if(entries[0].isIntersecting)
-					props.onVisibilityChange(props.index + 1, true, false);    // add page to array of visible pages.
-				else 
-					props.onVisibilityChange(props.index + 1, false, false);
-			},
+				entries.forEach((entry)=>{
+					if(entry.isIntersecting)
+						props.onVisibilityChange(props.index + 1, true, false); // add page to array of visible pages.
+					else
+						props.onVisibilityChange(props.index + 1, false, false);
+				}
+			)},
 			{ threshold: .3, rootMargin: '0px 0px 0px 0px'  } // detect when >30% of page is within bounds.
 		);
 
 		// Observer for tracking the page at the center of the iframe.
 		const centerObserver = new IntersectionObserver(
 			(entries)=>{
-				if(entries[0].isIntersecting)
-					props.onVisibilityChange(props.index + 1, true, true); // Set this page as the center page
-			},
+				entries.forEach((entry)=>{
+					if(entry.isIntersecting)
+						props.onVisibilityChange(props.index + 1, true, true); // Set this page as the center page
+				}
+			)},
 			{ threshold: 0, rootMargin: '-50% 0px -50% 0px' } // Detect when the page is at the center
 		);
 
