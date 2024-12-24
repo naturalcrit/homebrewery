@@ -199,8 +199,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					type='button'
 					title='Previous Page(s)'
 					onClick={()=>{
-						const rangeOffset = visiblePages.length > 1 ? 1 : 0;
-						scrollToPage(_.min(visiblePages) - visiblePages.length + rangeOffset);
+						scrollToPage(_.min(visiblePages) - visiblePages.length);
 					}}
 					disabled={visiblePages.includes(1)}
 				>
@@ -232,17 +231,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					type='button'
 					title='Next Page(s)'
 					onClick={()=>{
-						// if there are multiple pages in a 'row' and they are in 'view',
-						// then the 'max'/last page in view will always be the same, and
-						// the other pages will always be the same (since the viewport doesn't change).
-						// So this needs to scroll to the 'max', then see what is newly in view,
-						// and if the same pages are visible, do it again but +1.
-						const start = _.max(visiblePages);
-						scrollToPage(start);
-						if(start === _.max(visiblePages)){
-							console.log("oh no")
-							scrollToPage(start + 1);
-						};
+						scrollToPage(_.max(visiblePages) + 1);
 					}}
 					disabled={visiblePages.includes(totalPages)}
 				>
