@@ -16,6 +16,7 @@ const PrintNavItem = require('../../navbar/print.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
+const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
@@ -393,7 +394,7 @@ const EditPage = createClass({
 
 **[Homebrewery Link](${global.config.publicUrl}/share/${shareLink})**`;
 
-		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
+		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title.toWellFormed())}&text=${encodeURIComponent(text)}`;
 	},
 
 	renderNavbar : function(){
@@ -430,6 +431,7 @@ const EditPage = createClass({
 					</Nav.item>
 				</Nav.dropdown>
 				<PrintNavItem />
+				<VaultNavItem />
 				<RecentNavItem brew={this.state.brew} storageKey='edit' />
 				<Account />
 			</Nav.section>

@@ -104,9 +104,9 @@
 		height         : 1.5em;
 		padding        : 2px 5px;
 		font-family    : 'Open Sans', sans-serif;
-		color          : #000000;
-		background     : #EEEEEE;
-		border         : 1px solid gray;
+		color          : inherit;
+		background     : #3B3B3B;
+		border         : none;
 		&:focus { outline : 1px solid #D3D3D3; }
 
 		// `.range-input` if generic to all range inputs, or `#zoom-slider` if only for zoom slider
@@ -115,10 +115,10 @@
 			color        : #D3D3D3;
 			accent-color : #D3D3D3;
   
-			&::-webkit-slider-thumb, &::-moz-slider-thumb { 
+			&::-webkit-slider-thumb, &::-moz-range-thumb { 
 				width            : 5px;
 				height           : 5px;
-				cursor           : pointer;
+				cursor           : ew-resize;
 				outline          : none;
 			}
 
@@ -141,7 +141,7 @@
 
 		// `.text-input` if generic to all range inputs, or `#page-input` if only for current page input
 		&#page-input {
-			width        : 4ch;
+			min-width    : 5ch;
 			margin-right : 1ch;
 			text-align   : center;
 		}
