@@ -92,49 +92,11 @@
 
 					&:invalid { background : rgb(255, 188, 181); }
 					
-					&[type='checkbox'] {
-						position       : relative;
-						display        : inline-block;
-						width          : 50px;
-						height         : 30px;
-						font-family    : 'WalterTurncoat';
-						font-size      : 20px;
-						font-weight    : 800;
-						color          : white;
-						letter-spacing : 2px;
-						appearance     : none;
-						background     : red;
-						isolation      : isolate;
-						border-radius  : 5px;
-
-						&::before,&::after {
-							position    : absolute;
-							inset       : 0;
-							z-index     : 5;
-							padding-top : 2px;
-							text-align  : center;
-						}
-
-						&::before {
-							display : block;
-							content : 'No';
-						}
-
-						&::after {
-							display : none;
-							content : 'Yes';
-						}
-
-						&:checked {
-							background : green;
-
-							&::before { display : none; }
-							&::after { display : block; }
-						}
-					}
+					
 				}
 
 				#searchButton {
+					.colorButton(@green);
 					position : absolute;
 					right    : 20px;
 					bottom   : 0;
@@ -152,7 +114,6 @@
 			flex-direction : column;
 			height         : 100%;
 			overflow-y     : auto;
-			font-family    : 'BookInsanityRemake';
 			font-size      : 0.34cm;
 				
 			h3 {
@@ -356,6 +317,7 @@
 					}
 
 					button {
+						.colorButton(@green);
 						width : max-content;
 
 						&.previousPage { grid-area : previousPage; }

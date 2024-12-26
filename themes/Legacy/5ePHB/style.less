@@ -42,23 +42,25 @@ body {
 }
 .phb, .page{
 	.useColumns();
-	counter-increment : phb-page-numbers;
-	position          : relative;
-	z-index           : 15;
-	box-sizing        : border-box;
-	overflow          : hidden;
-	height            : 279.4mm;
-	width             : 215.9mm;
-	padding           : 1.0cm 1.7cm;
-	padding-bottom    : 1.5cm;
-	background-color  : @background;
-	background-image  : @backgroundImage;
-	font-family       : BookSanity;
-	font-size         : 0.317cm;
-	text-rendering    : optimizeLegibility;
-	page-break-before : always;
-	page-break-after  : always;
-	contain           : size;
+	counter-increment      : phb-page-numbers;
+	position               : relative;
+	z-index                : 15;
+	box-sizing             : border-box;
+	overflow               : hidden;
+	height                 : 279.4mm;
+	width                  : 215.9mm;
+	padding                : 1.0cm 1.7cm;
+	padding-bottom         : 1.5cm;
+	background-color       : @background;
+	background-image       : @backgroundImage;
+	font-family            : BookSanity;
+	font-size              : 0.317cm;
+	text-rendering         : optimizeLegibility;
+	page-break-before      : always;
+	page-break-after       : always;
+	contain                : strict;
+	content-visibility     : auto;
+	contain-intrinsic-size : auto none;
 }
 
 .phb{

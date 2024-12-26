@@ -21,6 +21,9 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.snippets = brew.text.slice(11, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
+
+	// Handle old brews that still have empty strings in the tags metadata
+	if(typeof brew.tags === 'string') brew.tags = brew.tags ? [brew.tags] : [];
 };
 
 const printCurrentBrew = ()=>{

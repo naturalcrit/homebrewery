@@ -87,76 +87,68 @@ const api = {
 		// Create middleware with the accessType passed in as part of the scope
 		return async (req, res, next)=>{
 			// Get relevant IDs for the brew
-			const { id, googleId } = api.getId(req);
+			let { id, googleId } = api.getId(req);
 
 			const accessMap = {
 				edit  : { editId: id },
 				share : { shareId: id },
-				admin : {
-					$or : [
-						{ editId: id },
-						{ shareId: id },
-					] }
+				admin : { $or : [{ editId: id }, { shareId: id }] }
 			};
 
 			// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine.
 			let stub = await HomebrewModel.get(accessMap[accessType])
 				.catch((err)=>{
-					if(googleId) {
+					if(googleId)
 						console.warn(`Unable to find document stub for ${accessType}Id ${id}`);
-					} else {
+					else
 						console.warn(err);
-					}
 				});
 			stub = stub?.toObject();
+			googleId ??= stub?.googleId;
 
-			if(stub?.lock?.locked && accessType != 'edit') {
-				throw { HBErrorCode: '51', code: stub.lock.code, message: stub.lock.shareMessage, brewId: stub.shareId, brewTitle: stub.title };
+			const isOwner   = (accessType == 'edit' && (!stub || stub?.authors?.length === 0)) || stub?.authors?.[0] === req.account?.username;
+			const isAuthor  = stub?.authors?.includes(req.account?.username);
+			const isInvited = stub?.invitedAuthors?.includes(req.account?.username);
+
+			if(accessType === 'edit' && !(isOwner || isAuthor || isInvited)) {
+				const accessError = { name: 'Access Error', status: 401, authors: stub?.authors, brewTitle: stub?.title, shareId: stub?.shareId };
+				if(req.account)
+					throw { ...accessError, message: 'User is not an Author', HBErrorCode: '03' };
+				else
+					throw { ...accessError, message: 'User is not logged in', HBErrorCode: '04' };
 			}
 
-			// If there is a google id, try to find the google brew
-			if(!stubOnly && (googleId || stub?.googleId)) {
-				let googleError;
-				const googleBrew = await GoogleActions.getGoogleBrew(googleId || stub?.googleId, id, accessType)
-					.catch((err)=>{
-						googleError = err;
+			if(stub?.lock?.locked && accessType != 'edit') {
+				throw { HBErrorCode: '51', code: stub?.lock.code, message: stub?.lock.shareMessage, brewId: stub?.shareId, brewTitle: stub?.title };
+			}
+
+			// If there's a google id, get it if requesting the full brew or if no stub found yet
+			if(googleId && (!stubOnly || !stub)) {
+				const oAuth2Client = isOwner ? GoogleActions.authCheck(req.account, res) : undefined;
+
+				const googleBrew = await GoogleActions.getGoogleBrew(oAuth2Client, googleId, id, accessType)
+					.catch((googleError)=>{
+						const reason = googleError.errors?.[0].reason;
+						if(reason == 'notFound')
+							throw { ...googleError, HBErrorCode: '02', authors: stub?.authors, account: req.account?.username };
+						else
+							throw { ...googleError, HBErrorCode: '01' };
 					});
-				// Throw any error caught while attempting to retrieve Google brew.
-				if(googleError) {
-					const reason = googleError.errors?.[0].reason;
-					if(reason == 'notFound') {
-						throw { ...googleError, HBErrorCode: '02', authors: stub?.authors, account: req.account?.username };
-					} else {
-						throw { ...googleError, HBErrorCode: '01' };
-					}
-				}
+
 				// Combine the Homebrewery stub with the google brew, or if the stub doesn't exist just use the google brew
 				stub = stub ? _.assign({ ...api.excludeStubProps(stub), stubbed: true }, api.excludeGoogleProps(googleBrew)) : googleBrew;
 			}
-			const authorsExist = stub?.authors?.length > 0;
-			const isAuthor = stub?.authors?.includes(req.account?.username);
-			const isInvited = stub?.invitedAuthors?.includes(req.account?.username);
-			if(accessType === 'edit' && (authorsExist && !(isAuthor || isInvited))) {
-				const accessError = { name: 'Access Error', status: 401 };
-				if(req.account){
-					throw { ...accessError, message: 'User is not an Author', HBErrorCode: '03', authors: stub.authors, brewTitle: stub.title, shareId: stub.shareId };
-				}
-				throw { ...accessError, message: 'User is not logged in', HBErrorCode: '04', authors: stub.authors, brewTitle: stub.title, shareId: stub.shareId };
-			}
 
 			// If after all of that we still don't have a brew, throw an exception
-			if(!stub && !stubOnly) {
+			if(!stub)
 				throw { name: 'BrewLoad Error', message: 'Brew not found', status: 404, HBErrorCode: '05', accessType: accessType, brewId: id };
-			}
 
 			// Clean up brew: fill in missing fields with defaults / fix old invalid values
-			if(stub) {
-				stub.tags     = stub.tags     || undefined; // Clear empty strings
-				stub.renderer = stub.renderer || undefined; // Clear empty strings
-				stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
-			}
+			stub.tags     = stub.tags     || undefined; // Clear empty strings
+			stub.renderer = stub.renderer || undefined; // Clear empty strings
+			stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
 
-			req.brew = stub ?? {};
+			req.brew = stub;
 			next();
 		};
 	},
@@ -475,12 +467,11 @@ const api = {
 	}
 };
 
-router.use('/api', checkClientVersion);
-router.post('/api', asyncHandler(api.newBrew));
-router.put('/api/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
-router.put('/api/update/:id', asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
-router.delete('/api/:id', asyncHandler(api.deleteBrew));
-router.get('/api/remove/:id', asyncHandler(api.deleteBrew));
+router.post('/api', checkClientVersion, asyncHandler(api.newBrew));
+router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
+router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
+router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew));
+router.get('/api/remove/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
 
 export default api;
