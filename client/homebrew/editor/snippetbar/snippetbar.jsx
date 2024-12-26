@@ -150,6 +150,7 @@ const Snippetbar = createClass({
 
 	renderSnippetGroups : function(){
 		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
+		if(snippets.length === 0) return null;
 
 		return <div className='snippets'>
 			{_.map(snippets, (snippetGroup)=>{
@@ -206,24 +207,11 @@ const Snippetbar = createClass({
 	renderEditorButtons : function(){
 		if(!this.props.showEditButtons) return;
 
-		let foldButtons;
-		if(this.props.view == 'text'){
-			foldButtons =
-				<>
-					<div className={`editorTool foldAll ${this.props.foldCode ? 'active' : ''}`}
-						onClick={this.props.foldCode} >
-						<i className='fas fa-compress-alt' />
-					</div>
-					<div className={`editorTool unfoldAll ${this.props.unfoldCode ? 'active' : ''}`}
-						onClick={this.props.unfoldCode} >
-						<i className='fas fa-expand-alt' />
-					</div>
-				</>;
+		
 
-		}
-
-		return <div className='editors'>
-			<div className='historyTools'>
+		return (
+		<div className='editors'>
+			{this.props.view !== 'meta' && <><div className='historyTools'>
 				<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`}
 					onClick={this.toggleHistoryMenu} >
 					<i className='fas fa-clock-rotate-left' />
@@ -239,14 +227,21 @@ const Snippetbar = createClass({
 				</div>
 			</div>
 			<div className='codeTools'>
-				{foldButtons}
-				<div className={`editorTool editorTheme ${this.state.themeSelector ? 'active' : ''}`}
+			<div className={`editorTool foldAll ${this.props.foldCode ? 'active' : ''}`}
+				onClick={this.props.foldCode} >
+				<i className='fas fa-compress-alt' />
+			</div>
+			<div className={`editorTool unfoldAll ${this.props.unfoldCode ? 'active' : ''}`}
+				onClick={this.props.unfoldCode} >
+				<i className='fas fa-expand-alt' />
+			</div>
+				<div className={`editorTheme ${this.state.themeSelector ? 'active' : ''}`}
 					onClick={this.toggleThemeSelector} >
 					<i className='fas fa-palette' />
 					{this.state.themeSelector && this.renderThemeSelector()}
 				</div>
-			</div>
-
+			</div></>}
+	
 
 			<div className='tabs'>
 				<div className={cx('text', { selected: this.props.view === 'text' })}
@@ -263,7 +258,8 @@ const Snippetbar = createClass({
 				</div>
 			</div>
 
-		</div>;
+		</div>
+		)
 	},
 
 	render : function(){

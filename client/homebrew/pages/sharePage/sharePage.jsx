@@ -8,6 +8,7 @@ const Navbar = require('../../navbar/navbar.jsx');
 const MetadataNav = require('../../navbar/metadata.navitem.jsx');
 const PrintNavItem = require('../../navbar/print.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
+const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
@@ -110,6 +111,7 @@ const SharePage = createClass({
 							</Nav.item>
 						</Nav.dropdown>
 					</>}
+					<VaultNavItem/>
 					<RecentNavItem brew={this.props.brew} storageKey='view' />
 					<Account />
 				</Nav.section>

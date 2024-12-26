@@ -2,7 +2,7 @@ require('./brewItem.less');
 const React = require('react');
 const { useCallback } = React;
 const moment = require('moment');
-const request = require('../../../../utils/request-middleware.js');
+import request from '../../../../utils/request-middleware.js';
 
 const googleDriveIcon = require('../../../../googleDrive.svg');
 const homebreweryIcon = require('../../../../thumbnail.png');
