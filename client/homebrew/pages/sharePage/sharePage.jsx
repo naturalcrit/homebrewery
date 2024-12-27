@@ -26,7 +26,7 @@ const SharePage = (props)=>{
 		updateState({ currentBrewRendererPageNum: pageNumber });
 	}, []);
 
-	const handleControlKeys = useCallback((e)=>{
+	const handleControlKeys = (e)=>{
 		if(!(e.ctrlKey || e.metaKey)) return;
 		const P_KEY = 80;
 		if(e.keyCode === P_KEY) {
@@ -34,14 +34,12 @@ const SharePage = (props)=>{
 			e.stopPropagation();
 			e.preventDefault();
 		}
-	}, []);
+	};
 
 	useEffect(()=>{
 		document.addEventListener('keydown', handleControlKeys);
 		fetchThemeBundle(
-			{
-				setState,
-			},
+			{ setState },
 			brew.renderer,
 			brew.theme
 		);
@@ -49,7 +47,7 @@ const SharePage = (props)=>{
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
 		};
-	}, [brew.renderer, brew.theme, handleControlKeys]);
+	}, []);
 
 	const processShareId = useCallback(()=>{
 		return brew.googleId && !brew.stubbed ? brew.googleId + brew.shareId : brew.shareId;
