@@ -56,10 +56,7 @@ const SharePage = (props)=>{
 	const renderEditLink = ()=>{
 		if(!brew.editId) return null;
 
-		let editLink = brew.editId;
-		if(brew.googleId && !brew.stubbed) {
-			editLink = brew.googleId + editLink;
-		}
+		const editLink = brew.googleId && ! brew.stubbed ? brew.googleId + brew.editId : brew.editId;
 
 		return (
 			<Nav.item color='orange' icon='fas fa-pencil-alt' href={`/edit/${editLink}`}>
