@@ -65,9 +65,8 @@ const SharePage = (props)=>{
 		);
 	};
 
-	const titleStyle = disableMeta ? { cursor: 'default' } : {};
 	const titleEl = (
-		<Nav.item className='brewTitle' style={titleStyle}>
+		<Nav.item className='brewTitle' style={disableMeta ? { cursor: 'default' } : {}}>
 			{brew.title}
 		</Nav.item>
 	);
