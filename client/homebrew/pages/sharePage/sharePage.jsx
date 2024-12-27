@@ -49,9 +49,9 @@ const SharePage = (props)=>{
 		};
 	}, []);
 
-	const processShareId = useCallback(()=>{
+	const processShareId = ()=>{
 		return brew.googleId && !brew.stubbed ? brew.googleId + brew.shareId : brew.shareId;
-	}, [brew]);
+	};
 
 	const renderEditLink = ()=>{
 		if(!brew.editId) return null;
