@@ -411,8 +411,6 @@ const forcedParagraphBreaks = {
 	}
 };
 
-<<<<<<< HEAD
-=======
 const nonbreakingSpaces = {
 	name  : 'nonbreakingSpaces',
 	level : 'inline',
@@ -433,7 +431,6 @@ const nonbreakingSpaces = {
 		return `&nbsp;`.repeat(token.length).concat('');
 	}
 };
->>>>>>> master
 
 const definitionListsSingleLine = {
 	name  : 'definitionListsSingleLine',
