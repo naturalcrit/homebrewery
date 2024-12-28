@@ -72,6 +72,10 @@ renderer.html = function (html) {
 // Don't wrap {{ Spans alone on a line, or {{ Divs in <p> tags
 renderer.paragraph = function(text){
 	let match;
+	// Strip empty paragraphs
+	if(text.trim() == '') return '';
+	// Don't wrap index anchors
+	if(text.startsWith('<a') && (text.indexOf('data-topic') > 0)) return text;
 	if(text.startsWith('<div') || text.startsWith('</div'))
 		return `${text}`;
 	else if(match = text.match(/(^|^.*?\n)<span class="inline-block(.*?<\/span>)$/)) {
@@ -339,6 +343,107 @@ const mustacheInjectBlock = {
 			token.originalType = token.type;
 			token.type         = 'mustacheInjectBlock';
 		}
+	}
+};
+
+const indexesDuplicates = (indexEntry)=>{
+	let count = 0;
+	for (const ie of indexes) {
+		if((ie.topic === indexEntry.topic) && (ie.subtopic === indexEntry.subtopic) && (ie.index === indexEntry.index)) {
+			count++;
+		}
+	}
+	indexes.push({ ...indexEntry });
+	return count == 0 ? '' : count;
+};
+
+const indexSplit=(src)=>{
+	let index, topic, subtopic;
+	const indexSplitRegex = /(?<!\\):/;
+	const subTopicSplit = /(?<!\\)\//;
+
+	let working = [];
+	if(src.search(indexSplitRegex) < 0){
+		working[1] = src.trim();
+		index = 'Index:';
+	} else {
+		working = src.split(indexSplitRegex);
+		index = working[0].replace('\\:', ':').trim();
+		if(!working[1]?.trim()>0) {
+			working.splice(1, 1);
+		}
+		working[1] = working[1]?.trim();
+	}
+
+	if(working[1]) {
+		if(working[1].search(subTopicSplit) !== -1){
+			const topics = working[1].split(subTopicSplit);
+			topic = topics[0].trim();
+			if(topics[1]) { topics[1] = topics[1].trim(); }
+			if(topics[1]?.length>0) {
+				subtopic = topics[1].trim();
+			}
+		} else {
+			topic = working[1];
+		}
+	}
+
+	if(topic?.length>0) {
+		return { index: index, topic: topic, subtopic: subtopic };
+	} else {
+		return undefined;
+	}
+
+};
+
+const indexAnchors = {
+	name  : 'indexAnchor',
+	level : 'block',
+	start(src) {return src.match(/^#(.+)(?<!\\):([^/]+)((?<!\\)\/([^|]+))?\n/)?.index;}, // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		// const inlineRegex = /^#((.+)(?<!\\):)?([^/]+)((?<!\\)\/([^|]+))?\n/gmy;
+		const inlineRegex = /^#((.+)(?<!\\):)?(.+)((?:(?<!\\)\/(.+)))?\n/gmy;
+
+		const indexEntry = {};
+
+		let srcMatch;
+		while (srcMatch = inlineRegex.exec(src)){
+			const crossReferenceSplit = /(?<!\\)\|/g;
+
+			const crossReference = srcMatch[0].split(crossReferenceSplit);
+			let entryMatch = undefined;
+			if((crossReference[0][1] !== '#') && (crossReference[0][1] !== ' ')) {
+
+				entryMatch = indexSplit(crossReference[0].slice(1));
+			}
+			if(!entryMatch) { return; }
+			indexEntry.subtopic = entryMatch?.subtopic ? entryMatch.subtopic : undefined;
+			indexEntry.topic = entryMatch.topic;
+			indexEntry.index = entryMatch.index;
+			indexEntry.instance = indexesDuplicates(indexEntry);
+			if(crossReference.length > 1) {
+				indexEntry.crossReference = true;
+			}
+			return {
+				type       : 'indexAnchor',
+				text       : src,
+				raw        : srcMatch[0],
+				pageNumber : globalPageNumber,
+				indexEntry : indexEntry
+			};
+		}
+	},
+	renderer(token) {
+		if(!token.indexEntry?.crossReference) {
+			if(token.indexEntry?.subtopic) {
+				// This is a Subtopic entry
+				return `<a id="p${token.pageNumber}_${token.indexEntry.subtopic.replace(/\s/g, '').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-subtopic="${token.indexEntry.subtopic}" data-index="${token.indexEntry.index}"></a>`;
+			} else {
+				// This is a Topic entry
+				return `<a id="p${token.pageNumber}_${token.indexEntry.topic.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-index="${token.indexEntry.index}"></a>`;
+			}
+		}
+		return '';
 	}
 };
 
@@ -769,7 +874,7 @@ const tableTerminators = [
 ];
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions : [definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
+Marked.use({ extensions : [indexAnchors, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
 	nonbreakingSpaces, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
@@ -875,6 +980,7 @@ const extractHTMLStyleTags = (htmlString)=>{
 const globalVarsList    = {};
 let varsQueue       = [];
 let globalPageNumber = 0;
+let indexes = [];
 
 const Markdown = {
 	marked : Marked,
