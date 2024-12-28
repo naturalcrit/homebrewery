@@ -1,3 +1,7 @@
+//╔===--------------- Polyfills --------------===╗//
+import 'core-js/es/string/to-well-formed.js';
+//╚===---------------          ---------------===╝//
+
 require('./homebrew.less');
 const React = require('react');
 const createClass = require('create-react-class');
