@@ -1,6 +1,6 @@
 require('./sharePage.less');
 const React = require('react');
-const createClass = require('create-react-class');
+const { useState, useEffect, useCallback } = React;
 const { Meta } = require('vitreum/headtags');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
@@ -8,130 +8,118 @@ const Navbar = require('../../navbar/navbar.jsx');
 const MetadataNav = require('../../navbar/metadata.navitem.jsx');
 const PrintNavItem = require('../../navbar/print.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
 const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
 
-const SharePage = createClass({
-	displayName     : 'SharePage',
-	getDefaultProps : function() {
-		return {
-			brew        : DEFAULT_BREW_LOAD,
-			disableMeta : false
-		};
-	},
+const SharePage = (props)=>{
+	const { brew = DEFAULT_BREW_LOAD, disableMeta = false } = props;
 
-	getInitialState : function() {
-		return {
-			themeBundle                : {},
-			currentBrewRendererPageNum : 1
-		};
-	},
+	const [state, setState] = useState({
+		themeBundle                : {},
+		currentBrewRendererPageNum : 1,
+	});
 
-	componentDidMount : function() {
-		document.addEventListener('keydown', this.handleControlKeys);
+	const handleBrewRendererPageChange = useCallback((pageNumber)=>{
+		updateState({ currentBrewRendererPageNum: pageNumber });
+	}, []);
 
-		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
-	},
-
-	componentWillUnmount : function() {
-		document.removeEventListener('keydown', this.handleControlKeys);
-	},
-
-	handleBrewRendererPageChange : function(pageNumber){
-		this.setState({ currentBrewRendererPageNum: pageNumber });
-	},
-
-	handleControlKeys : function(e){
+	const handleControlKeys = (e)=>{
 		if(!(e.ctrlKey || e.metaKey)) return;
 		const P_KEY = 80;
-		if(e.keyCode == P_KEY){
-			if(e.keyCode == P_KEY) printCurrentBrew();
+		if(e.keyCode === P_KEY) {
+			printCurrentBrew();
 			e.stopPropagation();
 			e.preventDefault();
 		}
-	},
+	};
 
-	processShareId : function() {
-		return this.props.brew.googleId && !this.props.brew.stubbed ?
-					 this.props.brew.googleId + this.props.brew.shareId :
-					 this.props.brew.shareId;
-	},
+	useEffect(()=>{
+		document.addEventListener('keydown', handleControlKeys);
+		fetchThemeBundle(
+			{ setState },
+			brew.renderer,
+			brew.theme
+		);
 
-	renderEditLink : function(){
-		if(!this.props.brew.editId) return;
+		return ()=>{
+			document.removeEventListener('keydown', handleControlKeys);
+		};
+	}, []);
 
-		let editLink = this.props.brew.editId;
-		if(this.props.brew.googleId && !this.props.brew.stubbed) {
-			editLink = this.props.brew.googleId + editLink;
-		}
+	const processShareId = ()=>{
+		return brew.googleId && !brew.stubbed ? brew.googleId + brew.shareId : brew.shareId;
+	};
 
-		return 	<Nav.item color='orange' icon='fas fa-pencil-alt' href={`/edit/${editLink}`}>
-					edit
-		</Nav.item>;
-	},
+	const renderEditLink = ()=>{
+		if(!brew.editId) return null;
 
-	render : function(){
-		const titleStyle = this.props.disableMeta ? { cursor: 'default' } : {};
-		const titleEl = <Nav.item className='brewTitle' style={titleStyle}>{this.props.brew.title}</Nav.item>;
+		const editLink = brew.googleId && ! brew.stubbed ? brew.googleId + brew.editId : brew.editId;
 
-		return <div className='sharePage sitePage'>
+		return (
+			<Nav.item color='orange' icon='fas fa-pencil-alt' href={`/edit/${editLink}`}>
+				edit
+			</Nav.item>
+		);
+	};
+
+	const titleEl = (
+		<Nav.item className='brewTitle' style={disableMeta ? { cursor: 'default' } : {}}>
+			{brew.title}
+		</Nav.item>
+	);
+
+	return (
+		<div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
 			<Navbar>
 				<Nav.section className='titleSection'>
-					{
-						this.props.disableMeta ?
-							titleEl
-							:
-							<MetadataNav brew={this.props.brew}>
-								{titleEl}
-							</MetadataNav>
-					}
+					{disableMeta ? titleEl : <MetadataNav brew={brew}>{titleEl}</MetadataNav>}
 				</Nav.section>
 
 				<Nav.section>
-					{this.props.brew.shareId && <>
-						<PrintNavItem/>
-						<Nav.dropdown>
-							<Nav.item color='red' icon='fas fa-code'>
-								source
-							</Nav.item>
-							<Nav.item color='blue' icon='fas fa-eye' href={`/source/${this.processShareId()}`}>
-								view
-							</Nav.item>
-							{this.renderEditLink()}
-							<Nav.item color='blue' icon='fas fa-download' href={`/download/${this.processShareId()}`}>
-								download
-							</Nav.item>
-							<Nav.item color='blue' icon='fas fa-clone' href={`/new/${this.processShareId()}`}>
-								clone to new
-							</Nav.item>
-						</Nav.dropdown>
-					</>}
-					<VaultNavItem/>
-					<RecentNavItem brew={this.props.brew} storageKey='view' />
+					{brew.shareId && (
+						<>
+							<PrintNavItem />
+							<Nav.dropdown>
+								<Nav.item color='red' icon='fas fa-code'>
+									source
+								</Nav.item>
+								<Nav.item color='blue' icon='fas fa-eye' href={`/source/${processShareId()}`}>
+									view
+								</Nav.item>
+								{renderEditLink()}
+								<Nav.item color='blue' icon='fas fa-download' href={`/download/${processShareId()}`}>
+									download
+								</Nav.item>
+								<Nav.item color='blue' icon='fas fa-clone' href={`/new/${processShareId()}`}>
+									clone to new
+								</Nav.item>
+							</Nav.dropdown>
+						</>
+					)}
+					<RecentNavItem brew={brew} storageKey='view' />
 					<Account />
 				</Nav.section>
 			</Navbar>
 
 			<div className='content'>
 				<BrewRenderer
-					text={this.props.brew.text}
-					style={this.props.brew.style}
-					lang={this.props.brew.lang}
-					renderer={this.props.brew.renderer}
-					theme={this.props.brew.theme}
-					themeBundle={this.state.themeBundle}
-					onPageChange={this.handleBrewRendererPageChange}
-					currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+					text={brew.text}
+					style={brew.style}
+					lang={brew.lang}
+					renderer={brew.renderer}
+					theme={brew.theme}
+					themeBundle={state.themeBundle}
+					onPageChange={handleBrewRendererPageChange}
+					currentBrewRendererPageNum={state.currentBrewRendererPageNum}
 					allowPrint={true}
 				/>
 			</div>
-		</div>;
-	}
-});
+		</div>
+	);
+};
 
 module.exports = SharePage;
