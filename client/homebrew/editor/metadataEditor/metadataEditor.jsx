@@ -62,13 +62,17 @@ const MetadataEditor = createClass({
 	},
 
 	toggleThemeWritein : function(){
+		console.log('toggleThemeWritein');
 		this.setState({
 			showThemeWritein  : !this.state.showThemeWritein,
-			// lastThemePulldown : !this.state.showThemeWritein ? this.props.metadata.theme : this.state.lastThemePulldown,
-			// lastThemeWriteIn  : !this.state.showThemeWritein ? this.state.lastThemePulldown : this.props.metadata.theme
+			lastThemePulldown : this.state.showThemeWritein ? this.props.metadata.theme : this.state.lastThemePulldown,
+			lastThemeWriteIn  : this.state.showThemeWritein ? this.state.lastThemePulldown : this.props.metadata.theme
 		});
-		// if(this.state.showThemeWritein) this.props.metadata.theme = this.state.lastThemeWriteIn;
-		// else this.props.metadata.theme = this.state.lastThemePulldown;
+		console.log(this.state);
+		console.log(this.props.metadata);
+		if(!this.state.showThemeWritein) this.props.metadata.theme = this.state.lastThemeWriteIn;
+		else this.props.metadata.theme = this.state.lastThemePulldown;
+		this.props.onChange(this.props.metadata, 'theme');
 	},
 
 	renderThumbnail : function(){
@@ -130,9 +134,13 @@ const MetadataEditor = createClass({
 	},
 
 	handleThemeWritein : function(e) {
+		console.log('Enter!');
 		this.props.metadata.renderer = 'V3';
 		this.props.metadata.theme = e.target.value;
+		console.log(e.target.value);
+		this.props.onChange(this.props.metadata, 'renderer');
 		this.props.onChange(this.props.metadata, 'theme');
+		console.log(this.props.metadata);
 	},
 
 	handleLanguage : function(languageCode){
@@ -214,6 +222,7 @@ const MetadataEditor = createClass({
 		if(!global.enable_themes) return;
 
 		const mergedThemes = _.merge(Themes, this.props.userThemes);
+		console.log(mergedThemes);
 
 		const listThemes = (renderer)=>{
 			return _.map(_.values(mergedThemes[renderer]), (theme)=>{
@@ -230,11 +239,11 @@ const MetadataEditor = createClass({
 						<img src={preview}/>
 					</div>
 				</div>;
-			});
+			}).filter(Boolean);
 		};
 
-
 		const currentRenderer = this.props.metadata.renderer;
+		console.log(this.props.metadata.theme);
 		const currentTheme    = mergedThemes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme]
 													?? { name: `!!! THEME MISSING !!! ID=${this.props.metadata.theme}` };
 		let dropdown;
@@ -250,13 +259,14 @@ const MetadataEditor = createClass({
 					<div> {currentTheme.author ?? _.upperFirst(currentRenderer)} : {currentTheme.name} <i className='fas fa-caret-down'></i> </div>
 
 					{listThemes(currentRenderer)}
+					{console.log(listThemes(currentRenderer))}
 				</Nav.dropdown>;
 		}
 
 		return <div className='field themes'>
 			<label>theme</label>
 			{!this.state.showThemeWritein?dropdown:''}
-			<button className='display' onClick={this.toggleThemeWritein}>
+			<button className='display writeIn' onClick={this.toggleThemeWritein}>
 				<i className={`fas fa-caret-${this.state.showThemeWritein ? 'right' : 'left'}`} />
 			</button>
 			{this.renderThemeWritein()}
@@ -268,7 +278,8 @@ const MetadataEditor = createClass({
 		return <input type='text'
 			default=''
 			placeholder='Enter share id'
-			                 className='value'
+			className='value'
+			defaultValue={this.state.lastThemeWriteIn}
 			onChange={(e)=>this.handleThemeWritein(e)} />;
 	},
 
