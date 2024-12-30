@@ -40,6 +40,7 @@ const MetadataEditor = createClass({
 				theme       : '5ePHB',
 				lang        : 'en'
 			},
+
 			onChange    : ()=>{},
 			reportError : ()=>{}
 		};
@@ -47,8 +48,10 @@ const MetadataEditor = createClass({
 
 	getInitialState : function(){
 		return {
-			showThumbnail    : true,
-			showThemeWritein : false
+			showThumbnail     : true,
+			showThemeWritein  : false,
+			lastThemePulldown : '',
+			lastThemeWriteIn  : ''
 		};
 	},
 
@@ -60,8 +63,12 @@ const MetadataEditor = createClass({
 
 	toggleThemeWritein : function(){
 		this.setState({
-			showThemeWritein : !this.state.showThemeWritein
+			showThemeWritein  : !this.state.showThemeWritein,
+			// lastThemePulldown : !this.state.showThemeWritein ? this.props.metadata.theme : this.state.lastThemePulldown,
+			// lastThemeWriteIn  : !this.state.showThemeWritein ? this.state.lastThemePulldown : this.props.metadata.theme
 		});
+		// if(this.state.showThemeWritein) this.props.metadata.theme = this.state.lastThemeWriteIn;
+		// else this.props.metadata.theme = this.state.lastThemePulldown;
 	},
 
 	renderThumbnail : function(){
