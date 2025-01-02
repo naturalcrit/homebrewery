@@ -36,14 +36,14 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 			if(el.localName.match(/^h[1-6]/)){
 				navList.push({
 					depth : el.localName[1],
-					text  : el.innerText,
+					text  : el.textContent,
 					link  : el.id
 				});
 				return;
 			}
 			navList.push({
 				depth : 7,
-				text  : el.innerText,
+				text  : el.textContent,
 				link  : el.id
 			});
 		});
