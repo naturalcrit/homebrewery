@@ -1,3 +1,4 @@
+@import (less) './themes/fonts/Blank/fonts.less';
 @import (less) './themes/fonts/5e/fonts.less';
 @import (less) './themes/assets/assets.less';
 @import (less) './themes/fonts/iconFonts/elderberryInn.less';
@@ -12,7 +13,7 @@
 }
 
 @page { margin : 0; }
-body { counter-reset : page-numbers; }
+body { counter-reset : page-numbers 0; }
 * { -webkit-print-color-adjust : exact; }
 
 //*****************************
@@ -44,20 +45,21 @@ body { counter-reset : page-numbers; }
 }
 .page {
 	.useColumns();
-	position          : relative;
-	z-index           : 15;
-	box-sizing        : border-box;
-	width             : 215.9mm;
-	height            : 279.4mm;
-	padding           : 1.4cm 1.9cm 1.7cm;
-	overflow          : hidden;
-	counter-increment : page-numbers;
-	background-color  : var(--HB_Color_Background);
-	text-rendering    : optimizeLegibility;
-	contain           : size;
+	position               : relative;
+	z-index                : 15;
+	box-sizing             : border-box;
+	width                  : 215.9mm;
+	height                 : 279.4mm;
+	padding                : 1.4cm 1.9cm 1.7cm;
+	overflow               : hidden;
+	background-color       : var(--HB_Color_Background);
+	text-rendering         : optimizeLegibility;
+	contain                : strict;
+	content-visibility     : auto;
+	contain-intrinsic-size : auto none;
 }
-//*****************************
-// *            BASE
+	//*****************************
+	// *            BASE
 	// *****************************/
 .page {
 	p {
@@ -154,6 +156,19 @@ body { counter-reset : page-numbers; }
 		-webkit-column-break-inside : avoid;
 		page-break-inside           : avoid;
 		break-inside                : avoid;
+	}
+
+	/* Wrap Text */
+	.wrapLeft {
+		shape-outside : var(--HB_src);
+		float         : right;
+		shape-margin  : 0.2cm;
+	}
+
+	.wrapRight {
+		shape-outside : var(--HB_src);
+		float         : left;
+		shape-margin  : 0.2cm;
 	}
 
 	/* Watermark */
@@ -481,4 +496,13 @@ body { counter-reset : page-numbers; }
 	&:nth-child(even) {
 		.pageNumber { left : 30px; }
 	}
+
+	.resetCounting {
+		counter-set : page-numbers 1;
+	}
+
+	&:not(:has(.skipCounting)) {
+		counter-increment : page-numbers;
+	}
+
 }

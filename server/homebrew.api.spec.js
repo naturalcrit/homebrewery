@@ -1,5 +1,7 @@
 /* eslint-disable max-lines */
 
+import { splitTextStyleAndMetadata } from '../shared/helpers.js';
+
 describe('Tests for api', ()=>{
 	let api;
 	let google;
@@ -36,8 +38,9 @@ describe('Tests for api', ()=>{
 			}
 		});
 
-		google = require('./googleActions.js');
-		model = require('./homebrew.model.js').model;
+		google = require('./googleActions.js').default;
+		model  = require('./homebrew.model.js').model;
+		api    = require('./homebrew.api').default;
 
 		jest.mock('./googleActions.js');
 		google.authCheck = jest.fn(()=>'client');
@@ -50,10 +53,9 @@ describe('Tests for api', ()=>{
 		res = {
 			status    : jest.fn(()=>res),
 			send      : jest.fn(()=>{}),
+			set       : jest.fn(()=>{}),
 			setHeader : jest.fn(()=>{})
 		};
-
-		api = require('./homebrew.api');
 
 		hbBrew = {
 			text        : `brew text`,
@@ -296,7 +298,7 @@ describe('Tests for api', ()=>{
 			expect(next).toHaveBeenCalled();
 			expect(api.getId).toHaveBeenCalledWith(req);
 			expect(model.get).toHaveBeenCalledWith({ shareId: '1' });
-			expect(google.getGoogleBrew).toHaveBeenCalledWith('2', '1', 'share');
+			expect(google.getGoogleBrew).toHaveBeenCalledWith(undefined, '2', '1', 'share');
 		});
 
 		it('access is denied to a locked brew', async()=>{
@@ -308,7 +310,7 @@ describe('Tests for api', ()=>{
 			const req = { brew: {} };
 			const next = jest.fn();
 
-			await expect(fn(req, null, next)).rejects.toEqual({ 'HBErrorCode': '100', 'brewId': '1', 'brewTitle': 'test brew', 'code': 404, 'message': 'brew locked' });
+			await expect(fn(req, null, next)).rejects.toEqual({ 'HBErrorCode': '51', 'brewId': '1', 'brewTitle': 'test brew', 'code': 404, 'message': 'brew locked' });
 		});
 	});
 
@@ -558,16 +560,6 @@ brew`);
 				updatedAt   : undefined,
 				views       : 0
 			});
-		});
-
-		it('should handle google error', async()=>{
-			google.newGoogleBrew = jest.fn(()=>{
-				throw 'err';
-			});
-			await api.newBrew({ body: { text: 'asdf', title: '' }, query: { saveToGoogle: true }, account: { username: 'test user' } }, res);
-
-			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.send).toHaveBeenCalledWith('err');
 		});
 	});
 
@@ -914,6 +906,121 @@ brew`);
 			expect(saveFunc).toHaveBeenCalled();
 			expect(saved.authors).toEqual(['test']);
 			expect(saved.googleId).toEqual(brew.googleId);
+		});
+	});
+	describe('Get CSS', ()=>{
+		it('should return brew style content as CSS text', async ()=>{
+			const testBrew = { title: 'test brew', text: '```css\n\nI Have a style!\n````\n\n' };
+
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
+			model.get = jest.fn(()=>toBrewPromise(testBrew));
+
+			const fn = api.getBrew('share', true);
+			const req = { brew: {} };
+			const next = jest.fn();
+			await fn(req, null, next);
+			await api.getCSS(req, res);
+
+			expect(req.brew).toEqual(testBrew);
+			expect(req.brew).toHaveProperty('style', '\nI Have a style!\n');
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith('\nI Have a style!\n');
+			expect(res.set).toHaveBeenCalledWith({
+				'Cache-Control' : 'no-cache',
+				'Content-Type'  : 'text/css'
+			});
+		});
+
+		it('should return 404 when brew has no style content', async ()=>{
+			const testBrew = { title: 'test brew', text: 'I don\'t have a style!' };
+
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
+			model.get = jest.fn(()=>toBrewPromise(testBrew));
+
+			const fn = api.getBrew('share', true);
+			const req = { brew: {} };
+			const next = jest.fn();
+			await fn(req, null, next);
+			await api.getCSS(req, res);
+
+			expect(req.brew).toEqual(testBrew);
+			expect(req.brew).toHaveProperty('style');
+			expect(res.status).toHaveBeenCalledWith(404);
+			expect(res.send).toHaveBeenCalledWith('');
+		});
+
+		it('should return 404 when brew does not exist', async ()=>{
+			const testBrew = { };
+
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
+			model.get = jest.fn(()=>toBrewPromise(testBrew));
+
+			const fn = api.getBrew('share', true);
+			const req = { brew: {} };
+			const next = jest.fn();
+			await fn(req, null, next);
+			await api.getCSS(req, res);
+
+			expect(req.brew).toEqual(testBrew);
+			expect(req.brew).toHaveProperty('style');
+			expect(res.status).toHaveBeenCalledWith(404);
+			expect(res.send).toHaveBeenCalledWith('');
+		});
+	});
+	describe('Split Text, Style, and Metadata', ()=>{
+
+		it('basic splitting', async ()=>{
+			const testBrew = {
+				text : '```metadata\n' +
+					'title: title\n' +
+					'description: description\n' +
+					'tags: [ \'tag a\' , \'tag b\' ]\n' +
+					'systems: [ test system ]\n' +
+					'renderer: legacy\n' +
+					'theme: 5ePHB\n' +
+					'lang: en\n' +
+					'\n' +
+					'```\n' +
+					'\n' +
+					'```css\n' +
+					'style\n' +
+					'style\n' +
+					'style\n' +
+					'```\n' +
+					'\n' +
+					'text\n'
+			};
+
+			splitTextStyleAndMetadata(testBrew);
+
+			// Metadata
+			expect(testBrew.title).toEqual('title');
+			expect(testBrew.description).toEqual('description');
+			expect(testBrew.tags).toEqual(['tag a', 'tag b']);
+			expect(testBrew.systems).toEqual(['test system']);
+			expect(testBrew.renderer).toEqual('legacy');
+			expect(testBrew.theme).toEqual('5ePHB');
+			expect(testBrew.lang).toEqual('en');
+			// Style
+			expect(testBrew.style).toEqual('style\nstyle\nstyle');
+			// Text
+			expect(testBrew.text).toEqual('text\n');
+		});
+
+		it('convert tags string to array', async ()=>{
+			const testBrew = {
+				text : '```metadata\n' +
+					'tags: tag a\n' +
+					'```\n\n'
+			};
+
+			splitTextStyleAndMetadata(testBrew);
+
+			// Metadata
+			expect(testBrew.tags).toEqual(['tag a']);
 		});
 	});
 });

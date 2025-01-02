@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 
-const Markdown = require('naturalcrit/markdown.js');
+import Markdown from 'naturalcrit/markdown.js';
 
 describe('Hard Breaks', ()=>{
 	test('Single Break', function() {
