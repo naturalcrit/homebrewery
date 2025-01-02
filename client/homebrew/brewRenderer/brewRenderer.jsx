@@ -54,7 +54,8 @@ const BrewPage = (props)=>{
 					else
 						props.onVisibilityChange(props.index + 1, false, false);
 				}
-			)},
+				);
+			},
 			{ threshold: .3, rootMargin: '0px 0px 0px 0px'  } // detect when >30% of page is within bounds.
 		);
 
@@ -65,7 +66,8 @@ const BrewPage = (props)=>{
 					if(entry.isIntersecting)
 						props.onVisibilityChange(props.index + 1, true, true); // Set this page as the center page
 				}
-			)},
+				);
+			},
 			{ threshold: 0, rootMargin: '-50% 0px -50% 0px' } // Detect when the page is at the center
 		);
 
@@ -101,7 +103,7 @@ const BrewRenderer = (props)=>{
 		currentBrewRendererPageNum : 1,
 		themeBundle                : {},
 		onPageChange               : ()=>{},
-    showHeavderNav             : false,
+    	showHeaderNav              : false,
 		...props
 	};
 
@@ -311,7 +313,7 @@ const BrewRenderer = (props)=>{
 						&&
 						<>
 							{renderedStyle}
-							<div className={`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread}`} lang={`${props.lang || 'en'}`} style={pagesStyle}>
+							<div className={`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread}`} lang={`${props.lang || 'en'}`} style={pagesStyle} ref={pagesRef}>
 								{renderedPages}
 							</div>
 						</>
