@@ -1,6 +1,6 @@
 .headerNav {
 	position: fixed;
-	top: 0px;
+	top: 30px;
 	left: 0px;
 	padding: 5px 10px;
 	background-color: #ccc;
@@ -17,20 +17,19 @@
 	.navIcon {
 		cursor: pointer;
 	}
-	li {
+	a {
 		font-family: 'Open Sans';
 		font-size: 12px;
 		padding: 2px;
-		a {
-			color: inherit;
-			text-decoration: none;
-			cursor: pointer;
-			&:hover {
-				text-decoration: underline;
-			}
-            &.pageLink {
-                font-weight: 900;
-            }
+		color: inherit;
+		text-decoration: none;
+		cursor: pointer;
+		&:hover {
+			text-decoration: underline;
 		}
+		&.pageLink {
+			font-weight: 900;
+		}
+	
 	}
 }

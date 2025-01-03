@@ -4,6 +4,8 @@ import * as React from 'react';
 import * as _ from 'lodash';
 
 
+const MAX_TEXT_LENGTH = 40;
+
 const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 
 	const [state, setState] = React.useState({
@@ -66,11 +68,20 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 );
 
 const HeaderNavItem = ({ link, text, depth, className })=>{
-	return <li>
+
+	const trimString = (text, prefixLength = 0)=>{
+		const maxLength = MAX_TEXT_LENGTH - prefixLength;
+		if(text.trim().length > maxLength){
+			return `${text.trim().slice(0, maxLength)}...`;
+		}
+		return text.trim();
+	};
+
+	return <p>
 		<a href={`#${link}`} target='_self' className={className}>
-			{`${'-'.repeat(depth)}${text}`}
+			<span style={{ display: 'inline-block', width: `${depth * 0.5}em` }}></span>{trimString(text, depth)}
 		</a>
-	</li>;
+	</p>;
 };
 
 export default HeaderNav;
