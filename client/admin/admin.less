@@ -19,9 +19,14 @@ body {
 	color            : #4B5055;
 	background-color : #EEEEEE;
 	text-rendering   : optimizeLegibility;
+
+	main {
+		height:100%;
+	}
 }
 
 :where(.admin) {
+	min-height:100%;
 
 	header {
 		padding          : 20px 0px;
@@ -59,7 +64,6 @@ body {
 			dd {
 				height      : 1em;
 				padding     : 0 0 0.5em 0;
-				margin-left : @maxItemWidth + 6px;
 			}
 		}
 
@@ -90,11 +94,36 @@ body {
 		}
 	}
 
+	table {
+		padding    : 10px;
+
+		tr:nth-child(even) { background : #DDDDDD; }
+
+		th, td {
+			padding        : 5px 10px;
+			text-align     : center;
+			vertical-align : middle;
+			border-right   : 1px solid;
+
+			&:last-child { border-right : none; }
+		}
+		
+		th, td:first-child { font-weight : 900; }
+		th:not(:first-child) { border-bottom : 2px solid; }
+	
+		tr {
+			td:first-child {
+				text-align   : right;
+				border-right : 2px solid;
+			}
+		}
+	}
+
 	.error {
-		background: rgb(178, 54, 54);
-		color:white;
-		font-weight: 900;
-		margin-block:10px;
-		padding:10px;
+		padding          : 10px;
+		margin-block     : 10px;
+		font-weight      : 900;
+		color            : white;
+		background-color : @red;
 	}
 }
