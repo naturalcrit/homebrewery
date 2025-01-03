@@ -40,6 +40,7 @@ const MetadataEditor = createClass({
 				theme       : '5ePHB',
 				lang        : 'en'
 			},
+
 			onChange    : ()=>{},
 			reportError : ()=>{}
 		};
@@ -47,7 +48,10 @@ const MetadataEditor = createClass({
 
 	getInitialState : function(){
 		return {
-			showThumbnail : true
+			showThumbnail     : true,
+			showThemeWritein  : false,
+			lastThemePulldown : '',
+			lastThemeWriteIn  : ''
 		};
 	},
 
@@ -55,6 +59,20 @@ const MetadataEditor = createClass({
 		this.setState({
 			showThumbnail : !this.state.showThumbnail
 		});
+	},
+
+	toggleThemeWritein : function(){
+		console.log('toggleThemeWritein');
+		this.setState({
+			showThemeWritein  : !this.state.showThemeWritein,
+			lastThemePulldown : this.state.showThemeWritein ? this.props.metadata.theme : this.state.lastThemePulldown,
+			lastThemeWriteIn  : this.state.showThemeWritein ? this.state.lastThemePulldown : this.props.metadata.theme
+		});
+		console.log(this.state);
+		console.log(this.props.metadata);
+		if(!this.state.showThemeWritein) this.props.metadata.theme = this.state.lastThemeWriteIn;
+		else this.props.metadata.theme = this.state.lastThemePulldown;
+		this.props.onChange(this.props.metadata, 'theme');
 	},
 
 	renderThumbnail : function(){
@@ -113,6 +131,16 @@ const MetadataEditor = createClass({
 		this.props.metadata.renderer = theme.renderer;
 		this.props.metadata.theme    = theme.path;
 		this.props.onChange(this.props.metadata, 'theme');
+	},
+
+	handleThemeWritein : function(e) {
+		console.log('Enter!');
+		this.props.metadata.renderer = 'V3';
+		this.props.metadata.theme = e.target.value;
+		console.log(e.target.value);
+		this.props.onChange(this.props.metadata, 'renderer');
+		this.props.onChange(this.props.metadata, 'theme');
+		console.log(this.props.metadata);
 	},
 
 	handleLanguage : function(languageCode){
@@ -194,6 +222,7 @@ const MetadataEditor = createClass({
 		if(!global.enable_themes) return;
 
 		const mergedThemes = _.merge(Themes, this.props.userThemes);
+		console.log(mergedThemes);
 
 		const listThemes = (renderer)=>{
 			return _.map(_.values(mergedThemes[renderer]), (theme)=>{
@@ -210,10 +239,11 @@ const MetadataEditor = createClass({
 						<img src={preview}/>
 					</div>
 				</div>;
-			});
+			}).filter(Boolean);
 		};
 
 		const currentRenderer = this.props.metadata.renderer;
+		console.log(this.props.metadata.theme);
 		const currentTheme    = mergedThemes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme]
 													?? { name: `!!! THEME MISSING !!! ID=${this.props.metadata.theme}` };
 		let dropdown;
@@ -229,13 +259,28 @@ const MetadataEditor = createClass({
 					<div> {currentTheme.author ?? _.upperFirst(currentRenderer)} : {currentTheme.name} <i className='fas fa-caret-down'></i> </div>
 
 					{listThemes(currentRenderer)}
+					{console.log(listThemes(currentRenderer))}
 				</Nav.dropdown>;
 		}
 
 		return <div className='field themes'>
 			<label>theme</label>
-			{dropdown}
+			{!this.state.showThemeWritein?dropdown:''}
+			<button className='display writeIn' onClick={this.toggleThemeWritein}>
+				<i className={`fas fa-caret-${this.state.showThemeWritein ? 'right' : 'left'}`} />
+			</button>
+			{this.renderThemeWritein()}
 		</div>;
+	},
+
+	renderThemeWritein : function(){
+		if(!this.state.showThemeWritein) return;
+		return <input type='text'
+			default=''
+			placeholder='Enter share id'
+			className='value'
+			defaultValue={this.state.lastThemeWriteIn}
+			onChange={(e)=>this.handleThemeWritein(e)} />;
 	},
 
 	renderLanguageDropdown : function(){
@@ -345,7 +390,7 @@ const MetadataEditor = createClass({
 				placeholder='add tag' unique={true}
 				values={this.props.metadata.tags}
 				onChange={(e)=>this.handleFieldChange('tags', e)}
-				/>
+			/>
 
 			<div className='field systems'>
 				<label>systems</label>
@@ -370,7 +415,7 @@ const MetadataEditor = createClass({
 				values={this.props.metadata.invitedAuthors}
 				notes={['Invited author usernames are case sensitive.', 'After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.']}
 				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}
-				/>
+			/>
 
 			<h2>Privacy</h2>
 
