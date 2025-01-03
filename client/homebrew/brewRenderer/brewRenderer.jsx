@@ -16,7 +16,10 @@ const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
 const { printCurrentBrew } = require('../../../shared/helpers.js');
 
+import HeaderNav from './headerNav/headerNav.jsx';
+
 import { safeHTML } from './safeHTML.js';
+
 
 const PAGE_HEIGHT = 1056;
 
@@ -51,7 +54,8 @@ const BrewPage = (props)=>{
 					else
 						props.onVisibilityChange(props.index + 1, false, false);
 				}
-			)},
+				);
+			},
 			{ threshold: .3, rootMargin: '0px 0px 0px 0px'  } // detect when >30% of page is within bounds.
 		);
 
@@ -62,7 +66,8 @@ const BrewPage = (props)=>{
 					if(entry.isIntersecting)
 						props.onVisibilityChange(props.index + 1, true, true); // Set this page as the center page
 				}
-			)},
+				);
+			},
 			{ threshold: 0, rootMargin: '-50% 0px -50% 0px' } // Detect when the page is at the center
 		);
 
@@ -98,6 +103,7 @@ const BrewRenderer = (props)=>{
 		currentBrewRendererPageNum : 1,
 		themeBundle                : {},
 		onPageChange               : ()=>{},
+    	showHeaderNav              : false,
 		...props
 	};
 
@@ -116,6 +122,7 @@ const BrewRenderer = (props)=>{
 	});
 
 	const mainRef  = useRef(null);
+	const pagesRef = useRef(null);
 
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split('\\page');
@@ -306,12 +313,13 @@ const BrewRenderer = (props)=>{
 						&&
 						<>
 							{renderedStyle}
-							<div className={`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread}`} lang={`${props.lang || 'en'}`} style={pagesStyle}>
+							<div className={`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread}`} lang={`${props.lang || 'en'}`} style={pagesStyle} ref={pagesRef}>
 								{renderedPages}
 							</div>
 						</>
 					}
 				</div>
+				{props.showHeaderNav ? <HeaderNav ref={pagesRef} /> : <></>}
 			</Frame>
 		</>
 	);

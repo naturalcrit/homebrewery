@@ -464,6 +464,7 @@ const EditPage = createClass({
 					currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
 					currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 					allowPrint={true}
+          showHeaderNav={true}
 				/>
 			</SplitPane>
 			</div>
