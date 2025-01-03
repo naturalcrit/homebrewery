@@ -190,10 +190,12 @@ const Editor = createClass({
 
 					// Styling for \page breaks
 					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
-				     (this.props.renderer == 'V3'     && line.match(/^\\page$/))) {
+					(this.props.renderer == 'V3'     && line.match(/^\\page$/)) ||
+					(this.props.renderer == 'V3'     && line.match(/^\\page \{\S+.*}$/))) {
 
 						// add back the original class 'background' but also add the new class '.pageline'
 						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
+
 						const pageCountElement = Object.assign(document.createElement('span'), {
 							className   : 'editor-page-count',
 							textContent : editorPageCount
