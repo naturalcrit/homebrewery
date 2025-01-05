@@ -24,7 +24,7 @@ Linux installs use Docker Engine. Docker provides installers and instructions fo
 * [Debian](https://docs.docker.com/engine/install/debian/)
 * [Fedora](https://docs.docker.com/engine/install/fedora/)
 * [RHEL](https://docs.docker.com/engine/install/rhel/)
- * [Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
+* [Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
 
 ### Post installation steps
 [Manage Docker as a non-root user (highly recommended)](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user) 
