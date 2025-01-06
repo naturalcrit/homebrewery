@@ -20,6 +20,8 @@
 	li {
 		list-style-type: none;
 		a {
+			display: inline-block;
+			width: 100%;
 			font-family: 'Open Sans';
 			font-size: 12px;
 			padding: 2px;
@@ -32,6 +34,14 @@
 			&.pageLink {
 				font-weight: 900;
 			}
+
+			@depths: 1,2,3,4,5,6,7;
+
+			each(@depths, {
+				&.depth-@{value} {
+					padding-left: ((@value - 1) * 0.5em);
+				}
+			});
 		}
 	}
 }

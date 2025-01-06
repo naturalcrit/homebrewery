@@ -64,8 +64,8 @@ const HeaderNavItem = ({ link, text, depth, className })=>{
 	};
 
 	return <li>
-		<a href={`#${link}`} target='_self' className={className}>
-			<span style={{ display: 'inline-block', width: `${depth * 0.5}em` }}></span>{trimString(text, depth)}
+		<a href={`#${link}`} target='_self' className={`depth-${depth} ${className ?? ''}`}>
+			{trimString(text, depth)}
 		</a>
 	</li>;
 };
