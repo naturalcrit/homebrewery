@@ -116,7 +116,6 @@ const SharePage = (props)=>{
 					onPageChange={handleBrewRendererPageChange}
 					currentBrewRendererPageNum={state.currentBrewRendererPageNum}
 					allowPrint={true}
-					showHeaderNav={true}
 				/>
 			</div>
 		</div>
