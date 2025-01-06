@@ -20,7 +20,6 @@ const ErrorBar = (props)=>{
 					<li key={idx}>
 						Line {err.line} : {err.text}, '{err.type}' tag
 					</li>
-				);
 			})}
 		</ul>
 	);
