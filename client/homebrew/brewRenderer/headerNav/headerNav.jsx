@@ -45,9 +45,11 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 
 	};
 
-	return <div className='headerNav'>
-		{renderHeaderLinks()}
-	</div>;
+	return <nav className='headerNav'>
+		<ul>
+			{renderHeaderLinks()}
+		</ul>
+	</nav>;
 }
 );
 
@@ -61,11 +63,11 @@ const HeaderNavItem = ({ link, text, depth, className })=>{
 		return text.trim();
 	};
 
-	return <p>
+	return <li>
 		<a href={`#${link}`} target='_self' className={className}>
 			<span style={{ display: 'inline-block', width: `${depth * 0.5}em` }}></span>{trimString(text, depth)}
 		</a>
-	</p>;
+	</li>;
 };
 
 export default HeaderNav;
