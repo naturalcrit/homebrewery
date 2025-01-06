@@ -56,11 +56,19 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 const HeaderNavItem = ({ link, text, depth, className })=>{
 
 	const trimString = (text, prefixLength = 0)=>{
-		const maxLength = MAX_TEXT_LENGTH - prefixLength;
-		if(text.trim().length > maxLength){
-			return `${text.trim().slice(0, maxLength)}...`;
+		let output = text;
+
+		if(text.indexOf('\n')){
+			output = text.split('\n')[0];
 		}
-		return text.trim();
+
+		output = output.trim();
+
+		const maxLength = MAX_TEXT_LENGTH - prefixLength;
+		if(output.length > maxLength){
+			return `${output.slice(0, maxLength).trim()}...`;
+		}
+		return output;
 	};
 
 	return <li>
