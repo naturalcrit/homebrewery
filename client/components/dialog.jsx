@@ -1,22 +1,26 @@
 // Dialog box, for popups and modal blocking messages
-const React = require('react');
+import React from 'react';
 const { useRef, useEffect } = React;
 
-function Dialog({ dismissKey, closeText = 'Close', blocking = false, ...rest }) {
+function Dialog({ dismisskeys = [], closeText = 'Close', blocking = false, ...rest }) {
 	const dialogRef = useRef(null);
 
 	useEffect(()=>{
-		if(!dismissKey || !localStorage.getItem(dismissKey)) {
+		if(dismisskeys.length !== 0) {
 			blocking ? dialogRef.current?.showModal() : dialogRef.current?.show();
 		}
-	}, []);
+	}, [dialogRef.current, dismisskeys]);
 
 	const dismiss = ()=>{
-		dismissKey && localStorage.setItem(dismissKey, true);
+		dismisskeys.forEach((key)=>{
+			if(key) {
+				localStorage.setItem(key, 'true');
+			}
+		});
 		dialogRef.current?.close();
 	};
 
-	return	(
+	return (
 		<dialog ref={dialogRef} onCancel={dismiss} {...rest}>
 			{rest.children}
 			<button className='dismiss' onClick={dismiss}>

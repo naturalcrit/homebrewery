@@ -1,25 +1,41 @@
 /*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
 // Set working directory to project root
+import { dirname }       from 'path';
+import { fileURLToPath } from 'url';
+import packageJSON       from './../package.json' with { type: 'json' };
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 process.chdir(`${__dirname}/..`);
+const version = packageJSON.version;
 
-const _ = require('lodash');
-const jwt = require('jwt-simple');
-const express = require('express');
-const yaml = require('js-yaml');
+import _       from 'lodash';
+import jwt     from 'jwt-simple';
+import express from 'express';
+import yaml    from 'js-yaml';
+import config  from './config.js';
+import fs      from 'fs-extra';
+
 const app = express();
-const config = require('./config.js');
-const fs = require('fs-extra');
 
-const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = require('./homebrew.api.js');
-const GoogleActions = require('./googleActions.js');
-const serveCompressedStaticAssets = require('./static-assets.mv.js');
-const sanitizeFilename = require('sanitize-filename');
-const asyncHandler = require('express-async-handler');
-const templateFn = require('./../client/template.js');
+import api from './homebrew.api.js';
+const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = api;
+import adminApi                    from './admin.api.js';
+import vaultApi                    from './vault.api.js';
+import GoogleActions               from './googleActions.js';
+import serveCompressedStaticAssets from './static-assets.mv.js';
+import sanitizeFilename            from 'sanitize-filename';
+import asyncHandler                from 'express-async-handler';
+import templateFn                  from '../client/template.js';
+import { model as HomebrewModel }   from './homebrew.model.js';
 
-const { DEFAULT_BREW } = require('./brewDefaults.js');
+import { DEFAULT_BREW }              from './brewDefaults.js';
+import { splitTextStyleAndMetadata } from '../shared/helpers.js';
 
-const { splitTextStyleAndMetadata } = require('../shared/helpers.js');
+//==== Middleware Imports ====//
+import contentNegotiation from './middleware/content-negotiation.js';
+import bodyParser         from 'body-parser';
+import cookieParser       from 'cookie-parser';
+import forceSSL           from './forcessl.mw.js';
 
 
 const sanitizeBrew = (brew, accessType)=>{
@@ -31,13 +47,47 @@ const sanitizeBrew = (brew, accessType)=>{
 	return brew;
 };
 
-app.set('trust proxy', 1 /* number of proxies between user and server */)
+app.set('trust proxy', 1 /* number of proxies between user and server */);
 
 app.use('/', serveCompressedStaticAssets(`build`));
-app.use(require('./middleware/content-negotiation.js'));
-app.use(require('body-parser').json({ limit: '25mb' }));
-app.use(require('cookie-parser')());
-app.use(require('./forcessl.mw.js'));
+app.use(contentNegotiation);
+app.use(bodyParser.json({ limit: '25mb' }));
+app.use(cookieParser());
+app.use(forceSSL);
+
+import cors from 'cors';
+
+const nodeEnv = config.get('node_env');
+const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
+
+const corsOptions = {
+	origin : (origin, callback)=>{
+
+		const allowedOrigins = [
+			'https://homebrewery.naturalcrit.com',
+			'https://www.naturalcrit.com',
+			'https://naturalcrit-stage.herokuapp.com',
+			'https://homebrewery-stage.herokuapp.com',
+		];
+
+		if(isLocalEnvironment) {
+			allowedOrigins.push('http://localhost:8000', 'http://localhost:8010');
+		}
+
+		const herokuRegex = /^https:\/\/(?:homebrewery-pr-\d+\.herokuapp\.com|naturalcrit-pr-\d+\.herokuapp\.com)$/; // Matches any Heroku app
+
+		if(!origin || allowedOrigins.includes(origin) || herokuRegex.test(origin)) {
+			callback(null, true);
+		} else {
+			console.log(origin, 'not allowed');
+			callback(new Error('Not allowed by CORS, if you think this is an error, please contact us'));
+		}
+	},
+	methods     : ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+	credentials : true,
+};
+
+app.use(cors(corsOptions));
 
 //Account Middleware
 app.use((req, res, next)=>{
@@ -46,7 +96,9 @@ app.use((req, res, next)=>{
 			req.account = jwt.decode(req.cookies.nc_session, config.get('secret'));
 			//console.log("Just loaded up JWT from cookie:");
 			//console.log(req.account);
-		} catch (e){}
+		} catch (e){
+			console.log(e);
+		}
 	}
 
 	req.config = {
@@ -57,15 +109,14 @@ app.use((req, res, next)=>{
 });
 
 app.use(homebrewApi);
-app.use(require('./admin.api.js'));
-app.use(require('./vault.api.js'));
+app.use(adminApi);
+app.use(vaultApi);
 
-const HomebrewModel     = require('./homebrew.model.js').model;
-const welcomeText       = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
-const welcomeTextLegacy = require('fs').readFileSync('client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
-const migrateText       = require('fs').readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
-const changelogText     = require('fs').readFileSync('changelog.md', 'utf8');
-const faqText           = require('fs').readFileSync('faq.md', 'utf8');
+const welcomeText       = fs.readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
+const welcomeTextLegacy = fs.readFileSync('client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
+const migrateText       = fs.readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
+const changelogText     = fs.readFileSync('changelog.md', 'utf8');
+const faqText           = fs.readFileSync('faq.md', 'utf8');
 
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
@@ -258,7 +309,7 @@ app.get('/user/:username', async (req, res, next)=>{
 		console.log(err);
 	});
 
-	brews.forEach(brew => brew.stubbed = true); //All brews from MongoDB are "stubbed"
+	brews.forEach((brew)=>brew.stubbed = true); //All brews from MongoDB are "stubbed"
 
 	if(ownAccount && req?.account?.googleId){
 		const auth = await GoogleActions.authCheck(req.account, res);
@@ -295,6 +346,34 @@ app.get('/user/:username', async (req, res, next)=>{
 	});
 
 	return next();
+});
+
+//Change author name on brews
+app.put('/api/user/rename', async (req, res)=>{
+	const { username, newUsername } = req.body;
+	const ownAccount = req.account && (req.account.username == newUsername);
+	
+	if(!username || !newUsername)
+		return res.status(400).json({ error: 'Username and newUsername are required.' });
+	if(!ownAccount)
+		return res.status(403).json({ error: 'Must be logged in to change your username' });
+	try {
+		const brews = await HomebrewModel.getByUser(username, true, ['authors']);
+		const renamePromises = brews.map(async (brew)=>{
+			const updatedAuthors = brew.authors.map((author)=>author === username ? newUsername : author
+			);
+			return HomebrewModel.updateOne(
+				{ _id: brew._id },
+				{ $set: { authors: updatedAuthors } }
+			);
+		});
+		await Promise.all(renamePromises);
+
+		return res.json({ success: true, message: `Brews for ${username} renamed to ${newUsername}.` });
+	} catch (error) {
+		console.error('Error renaming brews:', error);
+		return res.status(500).json({ error: 'Failed to rename brews.' });
+	}
 });
 
 //Edit Page
@@ -384,7 +463,7 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 app.get('/account', asyncHandler(async (req, res, next)=>{
 	const data = {};
 	data.title = 'Account Information Page';
-	
+
 	if(!req.account) {
 		res.set('WWW-Authenticate', 'Bearer realm="Authorization Required"');
 		const error = new Error('No valid account');
@@ -398,7 +477,7 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 	let googleCount = [];
 	if(req.account) {
 		if(req.account.googleId) {
-			auth = await GoogleActions.authCheck(req.account, res, false)
+			auth = await GoogleActions.authCheck(req.account, res, false);
 
 			googleCount = await GoogleActions.listGoogleBrews(auth)
 				.catch((err)=>{
@@ -433,8 +512,6 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 	return next();
 }));
 
-const nodeEnv = config.get('node_env');
-const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
 // Local only
 if(isLocalEnvironment){
 	// Login
@@ -462,8 +539,8 @@ app.get('/vault', asyncHandler(async(req, res, next)=>{
 
 //Send rendered page
 app.use(asyncHandler(async (req, res, next)=>{
-	if (!req.route) return res.redirect('/'); // Catch-all for invalid routes
-		
+	if(!req.route) return res.redirect('/'); // Catch-all for invalid routes
+
 	const page = await renderPage(req, res);
 	if(!page) return;
 	res.send(page);
@@ -479,7 +556,7 @@ const renderPage = async (req, res)=>{
 		deployment  : config.get('heroku_app_name') ?? ''
 	};
 	const props = {
-		version       : require('./../package.json').version,
+		version       : version,
 		url           : req.customUrl || req.originalUrl,
 		brew          : req.brew,
 		brews         : req.brews,
@@ -556,6 +633,4 @@ app.use((req, res)=>{
 });
 //^=====--------------------------------------=====^//
 
-module.exports = {
-	app : app
-};
+export default app;

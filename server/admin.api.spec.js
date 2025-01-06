@@ -1,9 +1,10 @@
-const supertest = require('supertest');
+import supertest from 'supertest';
+import HBApp     from './app.js';
+import {model as NotificationModel } from './notifications.model.js';
 
-const app = supertest.agent(require('app.js').app)
-	.set('X-Forwarded-Proto', 'https');
 
-const NotificationModel = require('./notifications.model.js').model;
+// Mimic https responses to avoid being redirected all the time
+const app = supertest.agent(HBApp).set('X-Forwarded-Proto', 'https');
 
 describe('Tests for admin api', ()=>{
 	afterEach(()=>{

@@ -18,7 +18,18 @@ const errorIndex = (props)=>{
 		'01' : dedent`
 			## An error occurred while retrieving this brew from Google Drive!
 			
-			Google reported an error while attempting to retrieve a brew from this link.`,
+			Google is able to see the brew at this link, but reported an error while attempting to retrieve it.
+
+			### Refreshing your Google Credentials
+
+			This issue is likely caused by an issue with your Google credentials; if you are the owner of this file, the following steps may resolve the issue:
+
+			- Go to https://www.naturalcrit.com/login and click logout if present (in small text at the bottom of the page).
+			- Click "Sign In with Google", which will refresh your Google credentials.
+			- After completing the sign in process, return to Homebrewery and refresh/reload the page so that it can pick up the updated credentials.
+			- If this was the source of the issue, it should now be resolved.
+
+			If following these steps does not resolve the issue, please let us know!`,
 
 		// Google Drive - 404 : brew deleted or access denied
 		'02' : dedent`
@@ -50,7 +61,7 @@ const errorIndex = (props)=>{
 			- **The Google Account may be closed.** Google may have removed the account
 			due to inactivity or violating a Google policy. Make sure the owner can
 			still access Google Drive normally and upload/download files to it.
-			:
+			
 			If the file isn't found, Google Drive usually puts your file in your Trash folder for
 			30 days. Assuming the trash hasn't been emptied yet, it might be worth checking.
 			You can also find the Activity tab on the right side of the Google Drive page, which
@@ -172,8 +183,8 @@ const errorIndex = (props)=>{
 		
 		**Brew Title:** ${props.brew.brewTitle}`,
 
-		// ####### Admin page error ####### 
-		'52': dedent`
+		// ####### Admin page error #######
+		'52' : dedent`
 		## Access Denied
 		You need to provide correct administrator credentials to access this page.`,
 

@@ -1,4 +1,4 @@
-import * as IDB from 'idb-keyval/dist/index.js';
+import { initCustomStore } from './customIDBStore.js';
 
 export const HISTORY_PREFIX = 'HOMEBREWERY-HISTORY';
 export const HISTORY_SLOTS = 5;
@@ -21,12 +21,14 @@ const HISTORY_SAVE_DELAYS = {
 // 	'5' : 5
 // };
 
-const HB_DB = 'HOMEBREWERY-DB';
-const HB_STORE = 'HISTORY';
-
 const GARBAGE_COLLECT_DELAY = 28 * 24 * 60;
 // const GARBAGE_COLLECT_DELAY = 10;
 
+
+const HB_DB = 'HOMEBREWERY-DB';
+const HB_STORE = 'HISTORY';
+
+const IDB = initCustomStore(HB_DB, HB_STORE);
 
 function getKeyBySlot(brew, slot){
 	// Return a string representing the key for this brew and history slot
@@ -53,11 +55,6 @@ function parseBrewForStorage(brew, slot = 0) {
 	return [key, archiveBrew];
 }
 
-// Create a custom IDB store
-async function createHBStore(){
-	return await IDB.createStore(HB_DB, HB_STORE);
-}
-
 export async function loadHistory(brew){
 	const DEFAULT_HISTORY_ITEM = { expireAt: '2000-01-01T00:00:00.000Z', shareId: brew.shareId, noData: true };
 
@@ -69,7 +66,7 @@ export async function loadHistory(brew){
 	};
 
 	// Load all keys from IDB at once
-	const dataArray = await IDB.getMany(historyKeys, await createHBStore());
+	const dataArray = await IDB.getMany(historyKeys);
 	return dataArray.map((data)=>{ return data ?? DEFAULT_HISTORY_ITEM; });
 }
 
@@ -97,7 +94,7 @@ export async function updateHistory(brew) {
 			// Update the most recent brew
 			historyUpdate.push(parseBrewForStorage(brew, 1));
 
-			await IDB.setMany(historyUpdate, await createHBStore());
+			await IDB.setMany(historyUpdate);
 
 			// Break out of data checks because we found an expired value
 			break;
@@ -106,14 +103,17 @@ export async function updateHistory(brew) {
 };
 
 export async function versionHistoryGarbageCollection(){
+	const entries = await IDB.entries();
 
-	const entries = await IDB.entries(await createHBStore());
-
+	const expiredKeys = [];
 	for (const [key, value] of entries){
 		const expireAt = new Date(value.savedAt);
 		expireAt.setMinutes(expireAt.getMinutes() + GARBAGE_COLLECT_DELAY);
 		if(new Date() > expireAt){
-			await IDB.del(key, await createHBStore());
+			expiredKeys.push(key);
 		};
 	};
+	if(expiredKeys.length > 0){
+		await IDB.delMany(expiredKeys);
+	}
 };

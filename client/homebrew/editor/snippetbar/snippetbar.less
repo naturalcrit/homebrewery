@@ -7,19 +7,23 @@
 	display          : flex;
 	flex-wrap        : wrap-reverse;
 	justify-content  : space-between;
-	min-width        : 331px;
 	height           : auto;
 	color            : black;
 	background-color : #DDDDDD;
 
 	.snippets {
 		display         : flex;
-		justify-content : space-evenly;
+		justify-content : flex-start;
+		min-width       : 327.58px;
 	}
 
 	.editors {
 		display         : flex;
-		justify-content : space-between;
+		justify-content : flex-end;
+		min-width       : 225px;
+
+		&:only-child { margin-left : auto;min-width:unset;}
+
 		>div {
 			display         : flex;
 			flex            : 1;
@@ -34,6 +38,11 @@
 				line-height : @menuHeight;
 				text-align  : center;
 				cursor      : pointer;
+
+				&.editorTool:not(.active) {
+					cursor:not-allowed;
+				}
+
 				&:hover,&.selected { background-color : #999999; }
 				&.text {
 					.tooltipLeft('Brew Editor');
@@ -59,12 +68,14 @@
 				&.foldAll {
 					.tooltipLeft('Fold All');
 					font-size : 0.75em;
-					color     : inherit;
+					color     : grey;
+					&.active { color : inherit; }
 				}
 				&.unfoldAll {
 					.tooltipLeft('Unfold All');
 					font-size : 0.75em;
-					color     : inherit;
+					color     : grey;
+					&.active { color : inherit; }
 				}
 				&.history {
 					.tooltipLeft('History');
@@ -218,9 +229,18 @@
 		}
 	}
 }
-
 @container editor (width < 553px) {
-	.editors,.snippets { flex : 1; }
-	.editors { border-bottom : 1px solid;}
-	.snippetBar .editors > div.history > .dropdown { right : unset; }
+	.snippetBar {
+		.editors { 
+			flex            : 1;
+			justify-content : space-between;
+			border-bottom   : 1px solid;
+		}
+		.snippets { 
+			flex            : 1;
+			justify-content : space-evenly; 
+		}
+		.editors > div.history > .dropdown { right : unset; }
+	}
 }
+

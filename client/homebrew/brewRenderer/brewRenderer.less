@@ -3,13 +3,45 @@
 .brewRenderer {
 	overflow-y    : scroll;
 	will-change   : transform;
-	padding-top   : 30px;
+	padding-top   : 60px;
 	height        : 100vh;
+	&:has(.facing, .flow) {
+		padding : 60px 30px;
+	}
 	&.deployment {
 		background-color: darkred;
 	}
 	:where(.pages) {
-		margin : 30px 0px;
+		&.facing {
+			display: grid; 
+			grid-template-columns: repeat(2, auto); 
+			grid-template-rows: repeat(3, auto); 
+			gap: 10px 10px; 
+			justify-content: safe center;
+			&.recto .page:first-child {
+				// sets first page on 'right' ('recto') of the preview, as if for a Cover page.  
+				// todo: add a checkbox to toggle this setting
+				grid-column-start: 2; 
+			}
+			& :where(.page) {
+				margin-left: unset !important;
+				margin-right: unset !important;
+			}
+		}
+
+		&.flow {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 10px;
+			justify-content: safe center;
+			& :where(.page) {
+				flex: 0 0 auto;
+				margin-left: unset !important;
+				margin-right: unset !important;
+			}
+
+		}
+
 		& > :where(.page) {
 			width         : 215.9mm;
 			height        : 279.4mm;

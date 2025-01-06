@@ -45,19 +45,21 @@ body { counter-reset : page-numbers 0; }
 }
 .page {
 	.useColumns();
-	position          : relative;
-	z-index           : 15;
-	box-sizing        : border-box;
-	width             : 215.9mm;
-	height            : 279.4mm;
-	padding           : 1.4cm 1.9cm 1.7cm;
-	overflow          : hidden;
-	background-color  : var(--HB_Color_Background);
-	text-rendering    : optimizeLegibility;
-	contain           : size;
+	position               : relative;
+	z-index                : 15;
+	box-sizing             : border-box;
+	width                  : 215.9mm;
+	height                 : 279.4mm;
+	padding                : 1.4cm 1.9cm 1.7cm;
+	overflow               : hidden;
+	background-color       : var(--HB_Color_Background);
+	text-rendering         : optimizeLegibility;
+	contain                : strict;
+	content-visibility     : auto;
+	contain-intrinsic-size : auto none;
 }
-//*****************************
-// *            BASE
+	//*****************************
+	// *            BASE
 	// *****************************/
 .page {
 	p {

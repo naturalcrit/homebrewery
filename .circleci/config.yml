@@ -71,14 +71,26 @@ jobs:
           name: Test - Hard Breaks
           command: npm run test:hard-breaks
       - run:
+          name: Test - Non-Breaking Spaces
+          command: npm run test:non-breaking-spaces
+      - run:
           name: Test - Variables
           command: npm run test:variables
+      - run:
+          name: Test - Emojis
+          command: npm run test:emojis
       - run:
           name: Test - Routes
           command: npm run test:route
       - run:
+          name: Test - HTML sanitization
+          command: npm run test:safehtml
+      - run:
           name: Test - Coverage
           command: npm run test:coverage
+      - run:
+          name: Test - Content Negotiation
+          command: npm run test:content-negotiation
 
 workflows:
   build_and_test:
