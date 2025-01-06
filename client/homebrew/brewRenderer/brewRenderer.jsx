@@ -103,7 +103,6 @@ const BrewRenderer = (props)=>{
 		currentBrewRendererPageNum : 1,
 		themeBundle                : {},
 		onPageChange               : ()=>{},
-    	showHeaderNav              : false,
 		...props
 	};
 
@@ -120,6 +119,8 @@ const BrewRenderer = (props)=>{
 		startOnRight : true,
 		pageShadows  : true
 	});
+
+	const [headerState, setHeaderState] = useState(false);
 
 	const mainRef  = useRef(null);
 	const pagesRef = useRef(null);
@@ -294,7 +295,7 @@ const BrewRenderer = (props)=>{
 				<NotificationPopup />
 			</div>
 
-			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length}/>
+			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
@@ -319,7 +320,7 @@ const BrewRenderer = (props)=>{
 						</>
 					}
 				</div>
-				{props.showHeaderNav ? <HeaderNav ref={pagesRef} /> : <></>}
+				{headerState ? <HeaderNav ref={pagesRef} /> : <></>}
 			</Frame>
 		</>
 	);

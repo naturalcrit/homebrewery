@@ -8,17 +8,6 @@ const MAX_TEXT_LENGTH = 40;
 
 const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 
-	const [state, setState] = React.useState({
-		showHeaderNav : false
-	});
-
-	const toggleHeaderNav = ()=>{
-		setState((prevState)=>({
-			...prevState,
-			showHeaderNav : !prevState.showHeaderNav
-		}));
-	};
-
 	const renderHeaderLinks = ()=>{
 		if(!pagesRef.current) return;
 		const elements = pagesRef.current.querySelectorAll('[id]');
@@ -56,13 +45,8 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 
 	};
 
-	return <div className={`headerNav ${state.showHeaderNav ? 'active' : ''}`}>
-		<i
-			className={`navIcon ${state.showHeaderNav ? 'active fa-solid' : 'fa-regular'} fa-rectangle-list`}
-			onClick={toggleHeaderNav}
-			title='Navigate by Header'
-		></i>
-		{state.showHeaderNav && renderHeaderLinks()}
+	return <div className='headerNav'>
+		{renderHeaderLinks()}
 	</div>;
 }
 );
