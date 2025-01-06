@@ -27,7 +27,7 @@ const ErrorBar = (props)=>{
 	const renderProtip = ()=>(
 		<div className='protips'>
 			<h4>Protips!</h4>
-			{hasOpenError && <div>Unmatched opening tag. Close your tags, like this {'</div>'}. Match types!</div>}
+			{hasOpenError  && <div>Unmatched opening tag. Close your tags, like this {'</div>'}. Match types!</div>}
 			{hasCloseError && <div>Unmatched closing tag. Either remove it or check where it was opened.</div>}
 			{hasMatchError && <div>Type mismatch. Closed a tag with a different type.</div>}
 		</div>
@@ -42,7 +42,7 @@ const ErrorBar = (props)=>{
 				<i className='fas fa-exclamation-triangle' />
 				<h2> There are HTML errors in your markup</h2>
 				<small>
-				If these aren't fixed your brew will not render properly when you print it to PDF or share it
+					If these aren't fixed your brew will not render properly when you print it to PDF or share it
 				</small>
 				{renderErrors()}
 			</div>
