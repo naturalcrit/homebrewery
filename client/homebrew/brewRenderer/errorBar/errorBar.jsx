@@ -1,6 +1,5 @@
 require('./errorBar.less');
 const React = require('react');
-const _ = require('lodash');
 
 import Dialog from '../../../components/dialog.jsx';
 
@@ -9,13 +8,15 @@ const DISMISS_BUTTON = <i className='fas fa-times dismiss' />;
 const ErrorBar = (props)=>{
 	let hasOpenError = false, hasCloseError = false, hasMatchError = false;
 
+	props.errors.map( err => {
+		if(err.id === 'OPEN')     hasOpenError  = true;
+		if(err.id === 'CLOSE')    hasCloseError = true;
+		if(err.id === 'MISMATCH') hasMatchError = true;
+	});
+
 	const renderErrors = ()=>(
 		<ul>
-			{_.map(props.errors, (err, idx)=>{
-				if(err.id === 'OPEN') hasOpenError = true;
-				if(err.id === 'CLOSE') hasCloseError = true;
-				if(err.id === 'MISMATCH') hasMatchError = true;
-				return (
+			{props.errors.map((err, idx)=>{
 					<li key={idx}>
 						Line {err.line} : {err.text}, '{err.type}' tag
 					</li>
