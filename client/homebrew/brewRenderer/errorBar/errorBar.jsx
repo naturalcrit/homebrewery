@@ -9,7 +9,7 @@ const ErrorBar = (props)=>{
 	if(!props.errors.length) return null;
 	let hasOpenError = false, hasCloseError = false, hasMatchError = false;
 
-	props.errors.map( err => {
+	props.errors.map((err)=>{
 		if(err.id === 'OPEN')     hasOpenError  = true;
 		if(err.id === 'CLOSE')    hasCloseError = true;
 		if(err.id === 'MISMATCH') hasMatchError = true;
@@ -18,9 +18,9 @@ const ErrorBar = (props)=>{
 	const renderErrors = ()=>(
 		<ul>
 			{props.errors.map((err, idx)=>{
-					<li key={idx}>
-						Line {err.line} : {err.text}, '{err.type}' tag
-					</li>
+				<li key={idx}>
+					Line {err.line} : {err.text}, '{err.type}' tag
+				</li>;
 			})}
 		</ul>
 	);
