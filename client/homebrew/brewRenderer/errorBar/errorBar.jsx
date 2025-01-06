@@ -6,6 +6,7 @@ import Dialog from '../../../components/dialog.jsx';
 const DISMISS_BUTTON = <i className='fas fa-times dismiss' />;
 
 const ErrorBar = (props)=>{
+	if(!props.errors.length) return null;
 	let hasOpenError = false, hasCloseError = false, hasMatchError = false;
 
 	props.errors.map( err => {
@@ -32,9 +33,6 @@ const ErrorBar = (props)=>{
 			{hasMatchError && <div>Type mismatch. Closed a tag with a different type.</div>}
 		</div>
 	);
-
-	if(!props.errors.length) return null;
-
 
 	return (
 		<Dialog className='errorBar' closeText={DISMISS_BUTTON} >
