@@ -4,7 +4,6 @@ const _ = require('lodash');
 
 import Dialog from '../../../components/dialog.jsx';
 
-
 const DISMISS_BUTTON = <i className='fas fa-times dismiss' />;
 
 const ErrorBar = (props)=>{
@@ -18,7 +17,7 @@ const ErrorBar = (props)=>{
 				if(err.id === 'MISMATCH') hasMatchError = true;
 				return (
 					<li key={idx}>
-                        Line {err.line} : {err.text}, '{err.type}' tag
+						Line {err.line} : {err.text}, '{err.type}' tag
 					</li>
 				);
 			})}
@@ -42,10 +41,10 @@ const ErrorBar = (props)=>{
 			<div>
 				<i className='fas fa-exclamation-triangle' />
 				<h2> There are HTML errors in your markup</h2>
-            	<small>
-                	If these aren't fixed your brew will not render properly when you print it to PDF or share it
-            	</small>
-            	{renderErrors()}
+				<small>
+				If these aren't fixed your brew will not render properly when you print it to PDF or share it
+				</small>
+				{renderErrors()}
 			</div>
 			<hr />
 			{renderProtip()}
