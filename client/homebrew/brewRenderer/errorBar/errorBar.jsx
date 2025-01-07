@@ -18,7 +18,7 @@ const ErrorBar = (props)=>{
 	const renderErrors = ()=>(
 		<ul>
 			{props.errors.map((err, idx)=>{
-				<li key={idx}>
+				return <li key={idx}>
 					Line {err.line} : {err.text}, '{err.type}' tag
 				</li>;
 			})}
