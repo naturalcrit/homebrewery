@@ -265,7 +265,7 @@ const MetadataEditor = createClass({
 			<label>theme</label>
 			{!this.state.showThemeWritein?dropdown:''}
 			<button className='display writeIn' onClick={this.toggleThemeWritein}>
-				<i className={`fas fa-caret-${this.state.showThemeWritein ? 'right' : 'left'}`} />
+				{`${this.state.showThemeWritein ? 'Theme List' : 'Use Brew Theme' }`}
 			</button>
 			{this.renderThemeWritein()}
 		</div>;
