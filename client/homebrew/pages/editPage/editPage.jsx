@@ -443,6 +443,7 @@ const EditPage = createClass({
 					reportError={this.errorReported}
 					renderer={this.state.brew.renderer}
 					userThemes={this.props.userThemes}
+					themeBundle={this.state.themeBundle}
 					snippetBundle={this.state.themeBundle.snippets}
 					updateBrew={this.updateBrew}
 					onCursorPageChange={this.handleEditorCursorPageChange}

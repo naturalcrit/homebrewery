@@ -53,8 +53,8 @@ const MetadataEditor = createClass({
 		return {
 			showThumbnail     : true,
 			showThemeWritein  : mergedThemes[this.props.metadata.renderer][this.props.metadata.theme] ? false : true,
-			lastThemePulldown : mergedThemes[this.props.metadata.renderer][this.props.metadata.theme] ? mergedThemes[this.props.metadata.renderer][this.props.metadata.theme] : '',
-			lastThemeWriteIn  : mergedThemes[this.props.metadata.renderer][this.props.metadata.theme] ? '' : mergedThemes[this.props.metadata.renderer][this.props.metadata.theme]
+			lastThemePulldown : mergedThemes[this.props.metadata.renderer][this.props.metadata.theme] ? mergedThemes[this.props.metadata.renderer][this.props.metadata.theme].path : '',
+			lastThemeWriteIn  : mergedThemes[this.props.metadata.renderer][this.props.metadata.theme] ? '' : this.props.metadata.theme
 		};
 	},
 
@@ -244,7 +244,7 @@ const MetadataEditor = createClass({
 
 		const currentRenderer = this.props.metadata.renderer;
 		const currentTheme    = mergedThemes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme]
-													?? { name: `!!! Manually selected theme !!! ID=${this.props.metadata.theme}` };
+													?? { name: `${this.props.themeBundle?.path || ''}`, author: '!!!' };
 		let dropdown;
 
 		if(currentRenderer == 'legacy') {
@@ -273,12 +273,15 @@ const MetadataEditor = createClass({
 
 	renderThemeWritein : function(){
 		if(!this.state.showThemeWritein) return;
-		return <input type='text'
+		return <div>
+			<input type='text'
 			default=''
 			placeholder='Enter share id'
 			className='value'
 			defaultValue={this.state.lastThemeWriteIn || this.props.metadata.theme}
-			onChange={(e)=>this.handleThemeWritein(e)} />;
+			onChange={(e)=>this.handleThemeWritein(e)} />
+			<span class='userThemeName'>{`${this.state.lastThemeWriteIn ? this.props.themeBundle?.path || '' : ''}`}</span>
+		</div>;
 	},
 
 	renderLanguageDropdown : function(){
