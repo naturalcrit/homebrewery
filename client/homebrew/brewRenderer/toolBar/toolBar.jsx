@@ -62,7 +62,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 			// find the page with the largest single dim (height or width) so that zoom can be adapted to fit it.
 			if(displayOptions.spread === 'facing')
 				minDimRatio = [...pages].reduce((minRatio, page)=>Math.min(minRatio, iframeWidth / page.offsetWidth / 2), Infinity);    // if 'facing' spread, fit two pages in view
-			else 
+			else
 				minDimRatio = [...pages].reduce((minRatio, page)=>Math.min(minRatio, iframeWidth / page.offsetWidth, iframeHeight / page.offsetHeight), Infinity);
 
 			desiredZoom = minDimRatio * 100;
