@@ -16,6 +16,8 @@ const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
 const homebreweryThumbnail = require('../../thumbnail.png');
 
+let mergedThemes;
+
 const callIfExists = (val, fn, ...args)=>{
 	if(val[fn]) {
 		val[fn](...args);
@@ -47,11 +49,12 @@ const MetadataEditor = createClass({
 	},
 
 	getInitialState : function(){
+		mergedThemes = _.merge(Themes, this.props.userThemes);
 		return {
 			showThumbnail     : true,
-			showThemeWritein  : false,
-			lastThemePulldown : '',
-			lastThemeWriteIn  : ''
+			showThemeWritein  : mergedThemes[this.props.metadata.renderer][this.props.metadata.theme] ? false : true,
+			lastThemePulldown : mergedThemes[this.props.metadata.renderer][this.props.metadata.theme] ? mergedThemes[this.props.metadata.renderer][this.props.metadata.theme] : '',
+			lastThemeWriteIn  : mergedThemes[this.props.metadata.renderer][this.props.metadata.theme] ? '' : mergedThemes[this.props.metadata.renderer][this.props.metadata.theme]
 		};
 	},
 
@@ -62,17 +65,12 @@ const MetadataEditor = createClass({
 	},
 
 	toggleThemeWritein : function(){
-		console.log('toggleThemeWritein');
-		this.setState({
-			showThemeWritein  : !this.state.showThemeWritein,
-			lastThemePulldown : this.state.showThemeWritein ? this.props.metadata.theme : this.state.lastThemePulldown,
-			lastThemeWriteIn  : this.state.showThemeWritein ? this.state.lastThemePulldown : this.props.metadata.theme
-		});
-		console.log(this.state);
-		console.log(this.props.metadata);
 		if(!this.state.showThemeWritein) this.props.metadata.theme = this.state.lastThemeWriteIn;
 		else this.props.metadata.theme = this.state.lastThemePulldown;
 		this.props.onChange(this.props.metadata, 'theme');
+		this.setState({
+			showThemeWritein : !this.state.showThemeWritein
+		});
 	},
 
 	renderThumbnail : function(){
@@ -130,17 +128,22 @@ const MetadataEditor = createClass({
 	handleTheme : function(theme){
 		this.props.metadata.renderer = theme.renderer;
 		this.props.metadata.theme    = theme.path;
+		this.setState({
+			lastThemePulldown : theme.path
+		});
+
 		this.props.onChange(this.props.metadata, 'theme');
 	},
 
 	handleThemeWritein : function(e) {
-		console.log('Enter!');
 		this.props.metadata.renderer = 'V3';
 		this.props.metadata.theme = e.target.value;
-		console.log(e.target.value);
+		this.setState({
+			lastThemeWriteIn : e.target.value
+		});
+
 		this.props.onChange(this.props.metadata, 'renderer');
 		this.props.onChange(this.props.metadata, 'theme');
-		console.log(this.props.metadata);
 	},
 
 	handleLanguage : function(languageCode){
@@ -221,9 +224,6 @@ const MetadataEditor = createClass({
 	renderThemeDropdown : function(){
 		if(!global.enable_themes) return;
 
-		const mergedThemes = _.merge(Themes, this.props.userThemes);
-		console.log(mergedThemes);
-
 		const listThemes = (renderer)=>{
 			return _.map(_.values(mergedThemes[renderer]), (theme)=>{
 				if(theme.path == this.props.metadata.shareId) return;
@@ -243,9 +243,8 @@ const MetadataEditor = createClass({
 		};
 
 		const currentRenderer = this.props.metadata.renderer;
-		console.log(this.props.metadata.theme);
 		const currentTheme    = mergedThemes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme]
-													?? { name: `!!! THEME MISSING !!! ID=${this.props.metadata.theme}` };
+													?? { name: `!!! Manually selected theme !!! ID=${this.props.metadata.theme}` };
 		let dropdown;
 
 		if(currentRenderer == 'legacy') {
@@ -259,7 +258,6 @@ const MetadataEditor = createClass({
 					<div> {currentTheme.author ?? _.upperFirst(currentRenderer)} : {currentTheme.name} <i className='fas fa-caret-down'></i> </div>
 
 					{listThemes(currentRenderer)}
-					{console.log(listThemes(currentRenderer))}
 				</Nav.dropdown>;
 		}
 
@@ -279,7 +277,7 @@ const MetadataEditor = createClass({
 			default=''
 			placeholder='Enter share id'
 			className='value'
-			defaultValue={this.state.lastThemeWriteIn}
+			defaultValue={this.state.lastThemeWriteIn || this.props.metadata.theme}
 			onChange={(e)=>this.handleThemeWritein(e)} />;
 	},
 
