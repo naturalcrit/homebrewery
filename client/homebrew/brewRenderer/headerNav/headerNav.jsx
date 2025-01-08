@@ -10,7 +10,7 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 
 	const renderHeaderLinks = ()=>{
 		if(!pagesRef.current) return;
-		const elements = pagesRef.current.querySelectorAll('[id]');
+		const elements = pagesRef.current.querySelectorAll('.page:not(:has(.toc)) [id]');
 		if(!elements) return;
 		const navList = [];
 
