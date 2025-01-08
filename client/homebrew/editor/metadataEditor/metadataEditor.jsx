@@ -265,7 +265,7 @@ const MetadataEditor = createClass({
 			<label>theme</label>
 			{!this.state.showThemeWritein?dropdown:''}
 			<button className='display writeIn' onClick={this.toggleThemeWritein}>
-				{`${this.state.showThemeWritein ? 'Theme List' : 'Use Brew Theme' }`}
+				{`${this.state.showThemeWritein ? 'Theme List' : 'Use Brew Theme'}`}
 			</button>
 			{this.renderThemeWritein()}
 		</div>;
@@ -275,11 +275,11 @@ const MetadataEditor = createClass({
 		if(!this.state.showThemeWritein) return;
 		return <div>
 			<input type='text'
-			default=''
-			placeholder='Enter share id'
-			className='value'
-			defaultValue={this.state.lastThemeWriteIn || this.props.metadata.theme}
-			onChange={(e)=>this.handleThemeWritein(e)} />
+				default=''
+				placeholder='Enter share id'
+				className='value'
+				defaultValue={this.state.lastThemeWriteIn || this.props.metadata.theme}
+				onChange={(e)=>this.handleThemeWritein(e)} />
 			<span class='userThemeName'>{`${this.state.lastThemeWriteIn ? this.props.themeBundle?.path || '' : ''}`}</span>
 		</div>;
 	},
