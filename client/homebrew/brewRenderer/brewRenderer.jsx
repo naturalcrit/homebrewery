@@ -53,8 +53,7 @@ const BrewPage = (props)=>{
 						props.onVisibilityChange(props.index + 1, true, false); // add page to array of visible pages.
 					else
 						props.onVisibilityChange(props.index + 1, false, false);
-				}
-				);
+				});
 			},
 			{ threshold: .3, rootMargin: '0px 0px 0px 0px'  } // detect when >30% of page is within bounds.
 		);
@@ -65,8 +64,7 @@ const BrewPage = (props)=>{
 				entries.forEach((entry)=>{
 					if(entry.isIntersecting)
 						props.onVisibilityChange(props.index + 1, true, true); // Set this page as the center page
-				}
-				);
+				});
 			},
 			{ threshold: 0, rootMargin: '-50% 0px -50% 0px' } // Detect when the page is at the center
 		);
