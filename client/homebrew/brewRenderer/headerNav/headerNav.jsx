@@ -16,9 +16,13 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 
 		elements.forEach((el)=>{
 			if(el.className.match(/\bpage\b/)) {
+				let text = `Page ${el.id.slice(1)}`;
+				if(el.querySelector('.toc')){
+					text += ' - Contents';
+				};
 				navList.push({
 					depth     : 0,
-					text      : `Page ${el.id.slice(1)}`,
+					text      : text,
 					link      : el.id,
 					className : 'pageLink'
 				});
