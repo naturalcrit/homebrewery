@@ -71,6 +71,8 @@ const HeaderNavItem = ({ link, text, depth, className })=>{
 		return output;
 	};
 
+	if(!link || !text) return;
+
 	return <li>
 		<a href={`#${link}`} target='_self' className={`depth-${depth} ${className ?? ''}`}>
 			{trimString(text, depth)}
