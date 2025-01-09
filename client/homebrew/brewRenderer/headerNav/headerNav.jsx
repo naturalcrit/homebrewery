@@ -10,7 +10,14 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 
 	const renderHeaderLinks = ()=>{
 		if(!pagesRef.current) return;
-		const elements = pagesRef.current.querySelectorAll('div:not(.toc) > [id]');
+
+		const selector = [
+			'.pages > .page',									// All page elements, which by definition have IDs
+			'.page:not(:has(.toc)) > [id]',						// All direct children of non-ToC .page with an ID (Legacy)
+			'.page:not(:has(.toc)) > .columnWrapper > [id]',	// All direct children of non-ToC .page > .columnWrapper with an ID (V3)
+			'.page:not(:has(.toc)) h2',							// All non-ToC H2 titles, like Monster frame titles
+		];
+		const elements = pagesRef.current.querySelectorAll(selector.join(','));
 		if(!elements) return;
 		const navList = [];
 
