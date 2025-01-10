@@ -16,7 +16,10 @@ const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
 const { printCurrentBrew } = require('../../../shared/helpers.js');
 
+import HeaderNav from './headerNav/headerNav.jsx';
+
 import { safeHTML } from './safeHTML.js';
+
 
 const PAGE_HEIGHT = 1056;
 
@@ -50,8 +53,8 @@ const BrewPage = (props)=>{
 						props.onVisibilityChange(props.index + 1, true, false); // add page to array of visible pages.
 					else
 						props.onVisibilityChange(props.index + 1, false, false);
-				}
-			)},
+				});
+			},
 			{ threshold: .3, rootMargin: '0px 0px 0px 0px'  } // detect when >30% of page is within bounds.
 		);
 
@@ -61,8 +64,8 @@ const BrewPage = (props)=>{
 				entries.forEach((entry)=>{
 					if(entry.isIntersecting)
 						props.onVisibilityChange(props.index + 1, true, true); // Set this page as the center page
-				}
-			)},
+				});
+			},
 			{ threshold: 0, rootMargin: '-50% 0px -50% 0px' } // Detect when the page is at the center
 		);
 
@@ -115,7 +118,10 @@ const BrewRenderer = (props)=>{
 		pageShadows  : true
 	});
 
+	const [headerState, setHeaderState] = useState(false);
+
 	const mainRef  = useRef(null);
+	const pagesRef = useRef(null);
 
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split('\\page');
@@ -287,7 +293,7 @@ const BrewRenderer = (props)=>{
 				<NotificationPopup />
 			</div>
 
-			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length}/>
+			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
@@ -306,12 +312,13 @@ const BrewRenderer = (props)=>{
 						&&
 						<>
 							{renderedStyle}
-							<div className={`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread}`} lang={`${props.lang || 'en'}`} style={pagesStyle}>
+							<div className={`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread}`} lang={`${props.lang || 'en'}`} style={pagesStyle} ref={pagesRef}>
 								{renderedPages}
 							</div>
 						</>
 					}
 				</div>
+				{headerState ? <HeaderNav ref={pagesRef} /> : <></>}
 			</Frame>
 		</>
 	);
