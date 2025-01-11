@@ -89,7 +89,7 @@ const errorIndex = (props)=>{
 		
 		:
 
-		**Brew Title:** ${props.brew.brewTitle || 'Unable to show title'}
+		**Brew Title:** \`${props.brew.brewTitle || 'Unable to show title'}\`
 
 		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
 		
@@ -104,7 +104,7 @@ const errorIndex = (props)=>{
 		
 		:
 
-		**Brew Title:** ${props.brew.brewTitle || 'Unable to show title'}
+		**Brew Title:** \`${props.brew.brewTitle || 'Unable to show title'}\`
 
 		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
 
@@ -181,7 +181,7 @@ const errorIndex = (props)=>{
 
 		**Brew ID:**  ${props.brew.brewId}
 		
-		**Brew Title:** ${props.brew.brewTitle}`,
+		**Brew Title:** \`${props.brew.brewTitle}\`,
 
 		// ####### Admin page error #######
 		'52' : dedent`
