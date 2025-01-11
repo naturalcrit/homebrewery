@@ -4,7 +4,7 @@
 echo ::Install CURL
 apt install -y curl
 echo ::Add NodeJS source to package repo
-curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 
 # Install required packages
 echo ::Install Homebrewery requirements
