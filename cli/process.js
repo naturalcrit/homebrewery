@@ -1,4 +1,4 @@
-import fs from "fs-extra";
+import fs from "fs";
 import config from "nconf";
 import path from "path";
 
@@ -60,7 +60,7 @@ const RendererOptions = {
 		divHeader: ">\n<div className='columnWrapper'",
 		divFooter: "\n</div>",
 		pageHeader:
-			"<link href='/build/themes/V3/Blank/style.css' rel='stylesheet' />\n<link href='/build/themes/V3/5ePHB/style.css' rel='stylesheet' />\n",
+			"<link href='/themes/V3/Blank/style.css' rel='stylesheet' />\n<link href='/themes/V3/5ePHB/style.css' rel='stylesheet' />\n",
 	},
 };
 
@@ -84,8 +84,8 @@ const htmlOutput = `<!DOCTYPE html>
 		<head>
 			<link href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
 			<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
-			<link href='/build/homebrew/bundle.css' rel='stylesheet' />
-			<link rel="icon" href="/build/assets/favicon.ico" type="image/x-icon" />
+			<link href='/homebrew/bundle.css' rel='stylesheet' />
+			<link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
 			<title>The Homebrewery - Local Output</title>
 		</head>
 		<body>
@@ -101,9 +101,7 @@ const htmlOutput = `<!DOCTYPE html>
 	`;
 
 const outputDir = path.dirname(config.get("output"));
-// Write everything to the output file
-fs.writeFileSync(config.get("output"), htmlOutput);
-// Write supporting web assets
-fs.copySync("./build/", path.join(outputDir, "build/"));
+fs.mkdirSync(outputDir);
+// Write everything to the output file./test-brew.md /"), { recursive: true });
 
 console.log(`Output written to file: ${config.get("output")}`);
