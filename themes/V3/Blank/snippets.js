@@ -3,7 +3,7 @@
 const WatercolorGen = require('./snippets/watercolor.gen.js');
 const ImageMaskGen  = require('./snippets/imageMask.gen.js');
 const FooterGen     = require('./snippets/footer.gen.js');
-const dedent        = require('dedent-tabs').default;
+const dedent        = require('dedent').default;
 
 module.exports = [
 

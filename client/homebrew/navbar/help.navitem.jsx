@@ -1,5 +1,5 @@
 const React = require('react');
-const dedent = require('dedent-tabs').default;
+const dedent = require('dedent').default;
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 

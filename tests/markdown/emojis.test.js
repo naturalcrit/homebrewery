@@ -1,5 +1,5 @@
 import Markdown from 'naturalcrit/markdown.js';
-const dedent = require('dedent-tabs').default;
+const dedent = require('dedent').default;
 
 // Marked.js adds line returns after closing tags on some default tokens.
 // This removes those line returns for comparison sake.

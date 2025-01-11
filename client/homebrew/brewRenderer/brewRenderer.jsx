@@ -13,7 +13,7 @@ const ToolBar  = require('./toolBar/toolBar.jsx');
 const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
 const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
-const dedent = require('dedent-tabs').default;
+const dedent = require('dedent').default;
 const { printCurrentBrew } = require('../../../shared/helpers.js');
 
 import HeaderNav from './headerNav/headerNav.jsx';

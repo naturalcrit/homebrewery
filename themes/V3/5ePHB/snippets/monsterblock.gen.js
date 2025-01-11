@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const dedent = require('dedent-tabs').default;
+const dedent = require('dedent').default;
 
 const genList = function(list, max){
 	return _.sampleSize(list, _.random(0, max)).join(', ') || 'None';

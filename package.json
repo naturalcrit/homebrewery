@@ -96,7 +96,7 @@
     "core-js": "^3.40.0",
     "cors": "^2.8.5",
     "create-react-class": "^15.7.0",
-    "dedent-tabs": "^0.10.3",
+    "dedent": "^1.5.3",
     "dompurify": "^3.2.3",
     "expr-eval": "^2.0.2",
     "express": "^4.21.2",

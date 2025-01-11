@@ -6,7 +6,7 @@ import request from '../../../../utils/request-middleware.js';
 
 const googleDriveIcon = require('../../../../googleDrive.svg');
 const homebreweryIcon = require('../../../../thumbnail.png');
-const dedent = require('dedent-tabs').default;
+const dedent = require('dedent').default;
 
 const BrewItem = ({
 	brew = {

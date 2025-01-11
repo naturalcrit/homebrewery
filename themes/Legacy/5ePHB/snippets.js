@@ -6,7 +6,7 @@ const MonsterBlockGen    = require('./snippets/monsterblock.gen.js');
 const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
 const CoverPageGen       = require('./snippets/coverpage.gen.js');
 const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
-const dedent             = require('dedent-tabs').default;
+const dedent             = require('dedent').default;
 
 module.exports = [
 

@@ -9,7 +9,7 @@ const CoverPageGen       = require('./snippets/coverpage.gen.js');
 const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
 const indexGen           = require('./snippets/index.gen.js');
 const QuoteGen 			 = require('./snippets/quote.gen.js');
-const dedent             = require('dedent-tabs').default;
+const dedent             = require('dedent').default;
 
 
 

@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const dedent = require('dedent-tabs').default;
+const dedent = require('dedent').default;
 
 module.exports = function(classname){
 

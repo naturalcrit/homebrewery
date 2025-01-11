@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const dedent = require('dedent-tabs').default;
+const dedent = require('dedent').default;
 
 const titles = [
 	'The Burning Gallows',                    'The Ring of Nenlast',
