@@ -377,29 +377,42 @@ app.put('/api/user/rename', async (req, res)=>{
 });
 
 //Delete brews based on author
-app.delete('/api/user/delete', async (req, res)=>{
+app.delete('/api/user/delete', async (req, res) => {
 	const { username } = req.body;
+	console.log(username);
 	const ownAccount = req.account && (req.account.username == username);
 	
-	if(!username)
-		return res.status(400).json({ error: 'Username and newUsername are required.' });
-	if(!ownAccount)
-		return res.status(403).json({ error: 'Must be logged in to change your username' });
+	// if(!ownAccount) return res.status(403).json({ error: 'Must be logged in to change your username' });
 
 	try {
 		const brews = await HomebrewModel.getByUser(username, true, ['authors']);
-		await brews.forEach((brew)=>{
-			request.delete(`/api/${brew.googleId ?? ''}${brew.editId}`).send().end((err, res)=>{
-				if (err) reportError(err);
-        	});
-		});
+		console.log(brews);
+		
+		for (let brew of brews) {
+			//attaching the brew to the request for the deleteBrew method to work
+			req.brew = brew;
 
-		return res.json({ success: true, message: `Brews for ${username} renamed to ${newUsername}.` });
+			await new Promise((resolve, reject) => {
+				api.deleteBrew(req, res, (err) => {
+					if (err) {
+						reject(err);
+					} else {
+						resolve();
+					}
+				});
+			});
+		}
+		console.log('all brews should be deleted');
+		return res.json({ success: true, message: `All brews for ${username} have been deleted.` });
+
 	} catch (error) {
-		console.error('Error renaming brews:', error);
-		return res.status(500).json({ error: 'Failed to rename brews.' });
+		console.error('Error deleting brews:', error);
+		if (!res.headersSent) {
+			return res.status(500).json({ error: 'Failed to delete the brews.' });
+		}
 	}
 });
+
 
 //Edit Page
 app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res, next)=>{
