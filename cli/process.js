@@ -1,10 +1,11 @@
-const fs = require("fs-extra");
-const config = require("nconf");
-const path = require("path");
+import fs from "fs-extra";
+import config from "nconf";
+import path from "path";
 
-const App = require("../server/app.js");
+import { splitTextStyleAndMetadata } from "../shared/helpers.js";
+import markdown from "../shared/naturalcrit/markdown.js";
 
-process.chdir(__dirname);
+process.chdir(path.resolve());
 
 config.argv({ x: { lowerCase: true } }).file({ file: "config.json" });
 
@@ -40,29 +41,30 @@ const brew = {
 
 // Parse brew text to populate brew object
 // This mutates the passed object
-App.splitTextStyleAndMetadata(brew);
+splitTextStyleAndMetadata(brew);
 
 // Set Renderer Options
 const RendererOptions = {
-	legacy: {
-		module: "../shared/naturalcrit/markdownLegacy.js",
-		pageRegex: /\\page/gm,
-		divHeader: "",
-		divFooter: "",
-		pageHeader:
-			"<link href='/themes/Legacy/Blank/style.css' rel='stylesheet' />\n<link href='/themes/Legacy/5ePHB/style.css' rel='stylesheet' />\n",
-	},
+	// NOTE: legacy renderer is unsupported
+	// legacy: {
+	// module: markdownLegacy,
+	// pageRegex: /\\page/gm,
+	// divHeader: "",
+	// divFooter: "",
+	// pageHeader:
+	// "<link href='/themes/Legacy/Blank/style.css' rel='stylesheet' />\n<link href='/themes/Legacy/5ePHB/style.css' rel='stylesheet' />\n",
+	// },
 	v3: {
-		module: "../shared/naturalcrit/markdown.js",
+		module: markdown,
 		pageRegex: /^\\page$/gm,
 		divHeader: ">\n<div className='columnWrapper'",
 		divFooter: "\n</div>",
 		pageHeader:
-			"<link href='/themes/V3/Blank/style.css' rel='stylesheet' />\n<link href='/themes/V3/5ePHB/style.css' rel='stylesheet' />\n",
+			"<link href='/build/themes/V3/Blank/style.css' rel='stylesheet' />\n<link href='/build/themes/V3/5ePHB/style.css' rel='stylesheet' />\n",
 	},
 };
 
-const Marked = require(RendererOptions[config.get("renderer")].module);
+const Marked = RendererOptions[config.get("renderer")].module;
 
 // Initialize a list to render the pages in to
 brew.html = [];
@@ -82,18 +84,18 @@ const htmlOutput = `<!DOCTYPE html>
 		<head>
 			<link href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" rel="stylesheet" />
 			<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
-			<link href='/bundle.css' rel='stylesheet' />
-			<link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
+			<link href='/build/homebrew/bundle.css' rel='stylesheet' />
+			<link rel="icon" href="/build/assets/favicon.ico" type="image/x-icon" />
 			<title>The Homebrewery - Local Output</title>
 		</head>
 		<body>
-            ${RendererOptions[config.get("renderer")].pageHeader}
-            <div class='brewRenderer'>
-                <style>${brew.style}</style>
-                <div class='pages'>
-			        ${brew.html.join("\n")}
-                </div>
-            </div>
+      ${RendererOptions[config.get("renderer")].pageHeader}
+      <div class='brewRenderer'>
+        <style>${brew.style}</style>
+        <div class='pages'>
+			    ${brew.html.join("\n")}
+        </div>
+      </div>
 		</body>
 	</html>
 	`;
@@ -101,13 +103,7 @@ const htmlOutput = `<!DOCTYPE html>
 const outputDir = path.dirname(config.get("output"));
 // Write everything to the output file
 fs.writeFileSync(config.get("output"), htmlOutput);
-fs.copyFileSync(
-	"../build/homebrew/bundle.css",
-	path.join(outputDir, "/bundle.css"),
-);
-fs.copySync("../build/assets/", path.join(outputDir, "assets/"));
-fs.copySync("../build/themes/", path.join(outputDir, "themes/"));
-fs.copySync("../themes/fonts/", path.join(outputDir, "fonts/"));
+// Write supporting web assets
+fs.copySync("./build/", path.join(outputDir, "build/"));
 
 console.log(`Output written to file: ${config.get("output")}`);
-
