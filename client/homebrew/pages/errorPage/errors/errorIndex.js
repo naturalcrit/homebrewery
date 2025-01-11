@@ -181,7 +181,7 @@ const errorIndex = (props)=>{
 
 		**Brew ID:**  ${props.brew.brewId}
 		
-		**Brew Title:** \`${props.brew.brewTitle}\`,
+		**Brew Title:** \`${props.brew.brewTitle}\``,
 
 		// ####### Admin page error #######
 		'52' : dedent`
