@@ -386,6 +386,7 @@ app.delete('/api/user/delete', async (req, res) => {
 
 	try {
 		const brews = await HomebrewModel.getByUser(username, true, ['authors']);
+		//get the relevant fields, not just author you moron!
 		console.log(brews);
 		
 		for (let brew of brews) {
