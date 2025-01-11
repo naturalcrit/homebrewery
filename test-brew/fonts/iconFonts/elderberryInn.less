@@ -1,0 +1,225 @@
+/* Icon Font: Elderberry Inn */
+@font-face {
+	font-family : 'Elderberry-Inn';
+	font-style : normal;
+	font-weight : normal;
+	src : url('../../../fonts/iconFonts/elderberryInn.woff2');
+}
+
+.ei {
+	display                 : inline;
+	font-family             : 'Elderberry-Inn';
+	line-height             : 1;
+	vertical-align          : baseline;
+	text-rendering          : auto;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing  : antialiased;
+	-moz-osx-font-smoothing : grayscale;
+
+	&.book::before { content : '\E900'; }
+	&.screen::before { content : '\E901'; }
+
+	/* Spell levels */ 
+	&.spell-0::before { content : '\E902'; }
+	&.spell-1::before { content : '\E903'; }
+	&.spell-2::before { content : '\E904'; }
+	&.spell-3::before { content : '\E905'; }
+	&.spell-4::before { content : '\E906'; }
+	&.spell-5::before { content : '\E907'; }
+	&.spell-6::before { content : '\E908'; }
+	&.spell-7::before { content : '\E909'; }
+	&.spell-8::before { content : '\E90A'; }
+	&.spell-9::before { content : '\E90B'; }
+
+	/* Damage types */ 
+	&.acid::before { content : '\E90C'; }
+	&.bludgeoning::before { content : '\E90D'; }
+	&.cold::before { content : '\E90E'; }
+	&.fire::before { content : '\E90F'; }
+	&.force::before { content : '\E910'; }
+	&.lightning::before { content : '\E911'; }
+	&.necrotic::before { content : '\E912'; }
+	&.piercing::before { content : '\E913'; }
+	&.poison::before { content : '\E914'; }
+	&.psychic::before { content : '\E915'; }
+	&.radiant::before { content : '\E916'; }
+	&.slashing::before { content : '\E917'; }
+	&.thunder::before { content : '\E918'; }
+
+	/* DnD Conditions */ 
+	&.blinded::before { content : '\E919'; }
+	&.charmed::before { content : '\E91A'; }
+	&.deafened::before { content : '\E91B'; }
+	&.exhaust-1::before { content : '\E91C'; }
+	&.exhaust-2::before { content : '\E91D'; }
+	&.exhaust-3::before { content : '\E91E'; }
+	&.exhaust-4::before { content : '\E91F'; }
+	&.exhaust-5::before { content : '\E920'; }
+	&.exhaust-6::before { content : '\E921'; }
+	&.frightened::before { content : '\E922'; }
+	&.grappled::before { content : '\E923'; }
+	&.incapacitated::before { content : '\E924'; }
+	&.unconscious::before { content : '\E925'; }
+	&.invisible::before { content : '\E926'; }
+	&.paralyzed::before { content : '\E927'; }
+	&.petrified::before { content : '\E928'; }
+	&.poisoned::before { content : '\E929'; }
+	&.prone::before { content : '\E92A'; }
+	&.restrained::before { content : '\E92B'; }
+	&.stunned::before { content : '\E92C'; }
+	
+
+	/* Character Classes and Features */ 
+	&.barbarian-rage::before { content : '\E92D'; }
+	&.barbarian-reckless-attack::before { content : '\E92E'; }
+	&.bardic-inspiration::before { content : '\E92F'; }
+	&.cleric-channel-divinity::before { content : '\E930'; }
+	&.druid-wild-shape::before { content : '\E931'; }
+	&.fighter-action-surge::before { content : '\E932'; }
+	&.fighter-second-wind::before { content : '\E933'; }
+	&.monk-flurry-blows::before { content : '\E934'; }
+	&.monk-patient-defense::before { content : '\E935'; }
+	&.monk-step-of-the-wind::before { content : '\E936'; }
+	&.monk-step-of-the-wind-2::before { content : '\E937'; }
+	&.monk-step-of-the-wind-3::before { content : '\E938'; }
+	&.monk-stunning-strike::before { content : '\E939'; }
+	&.monk-stunning-strike-2::before { content : '\E93A'; }
+	&.paladin-divine-smite::before { content : '\E93B'; }
+	&.paladin-lay-on-hands::before { content : '\E93C'; }
+	&.barbarian-abilities::before { content : '\E93D'; }
+	&.barbarian::before { content : '\E93E'; }
+	&.bard-abilities::before { content : '\E93F'; }
+	&.bard::before { content : '\E940'; }
+	&.cleric-abilities::before { content : '\E941'; }
+	&.cleric::before { content : '\E942'; }
+	&.druid-abilities::before { content : '\E943'; }
+	&.druid::before { content : '\E944'; }
+	&.fighter-abilities::before { content : '\E945'; }
+	&.fighter::before { content : '\E946'; }
+	&.monk-abilities::before { content : '\E947'; }
+	&.monk::before { content : '\E948'; }
+	&.paladin-abilities::before { content : '\E949'; }
+	&.paladin::before { content : '\E94A'; }
+	&.ranger-abilities::before { content : '\E94B'; }
+	&.ranger::before { content : '\E94C'; }
+	&.rogue-abilities::before { content : '\E94D'; }
+	&.rogue::before { content : '\E94E'; }
+	&.sorcerer-abilities::before { content : '\E94F'; }
+	&.sorcerer::before { content : '\E950'; }
+	&.warlock-abilities::before { content : '\E951'; }
+	&.warlock::before { content : '\E952'; }
+	&.wizard-abilities::before { content : '\E953'; }
+	&.wizard::before { content : '\E954'; }
+
+	/* Types of actions */ 
+	&.movement::before { content : '\E955'; }
+	&.action::before { content : '\E956'; }
+	&.bonus-action::before { content : '\E957'; }
+	&.reaction::before { content : '\E958'; }
+
+	/* SRD Spells */ 
+	&.acid-arrow::before { content : '\E959'; }
+	&.action-1::before { content : '\E95A'; }
+	&.alter-self::before { content : '\E95B'; }
+	&.alter-self-2::before { content : '\E95C'; }
+	&.magic-beans::before { content : '\E95D'; }
+	&.animal-friendship::before { content : '\E95E'; }
+	&.animate-dead::before { content : '\E95F'; }
+	&.animate-objects::before { content : '\E960'; }
+	&.animate-objects-2::before { content : '\E961'; }
+	&.bane::before { content : '\E962'; }
+	&.bless::before { content : '\E963'; }
+	&.blur::before { content : '\E964'; }
+	&.bonus::before { content : '\E965'; }
+	&.branding-smite::before { content : '\E966'; }
+	&.burning-hands::before { content : '\E967'; }
+	&.charm-person::before { content : '\E968'; }
+	&.chill-touch::before { content : '\E969'; }
+	&.cloudkill::before { content : '\E96A'; }
+	&.comprehend-languages::before { content : '\E96B'; }
+	&.cone-of-cold::before { content : '\E96C'; }
+	&.conjure-elemental::before { content : '\E96D'; }
+	&.conjure-minor-elemental::before { content : '\E96E'; }
+	&.control-water::before { content : '\E96F'; }
+	&.counterspell::before { content : '\E970'; }
+	&.cure-wounds::before { content : '\E971'; }
+	&.dancing-lights::before { content : '\E972'; }
+	&.darkness::before { content : '\E973'; }
+	&.detect-magic::before { content : '\E974'; }
+	&.disguise-self::before { content : '\E975'; }
+	&.disintegrate::before { content : '\E976'; }
+	&.dispel-evil-and-good::before { content : '\E977'; }
+	&.dispel-magic::before { content : '\E978'; }
+	&.dominate-monster::before { content : '\E979'; }
+	&.dominate-person::before { content : '\E97A'; }
+	&.eldritch-blast::before { content : '\E97B'; }
+	&.enlarge-reduce::before { content : '\E97C'; }
+	&.entangle::before { content : '\E97D'; }
+	&.faerie-fire::before { content : '\E97E'; }
+	&.faerie-fire2::before { content : '\E97F'; }
+	&.feather-fall::before { content : '\E980'; }
+	&.find-familiar::before { content : '\E981'; }
+	&.finger-of-death::before { content : '\E982'; }
+	&.fireball::before { content : '\E983'; }
+	&.floating-disk::before { content : '\E984'; }
+	&.fly::before { content : '\E985'; }
+	&.fog-cloud::before { content : '\E986'; }
+	&.gaseous-form::before { content : '\E987'; }
+	&.gaseous-form2::before { content : '\E988'; }
+	&.gentle-repose::before { content : '\E989'; }
+	&.gentle-repose2::before { content : '\E98A'; }
+	&.globe-of-invulnerability::before { content : '\E98B'; }
+	&.guiding-bolt::before { content : '\E98C'; }
+	&.healing-word::before { content : '\E98D'; }
+	&.heat-metal::before { content : '\E98E'; }
+	&.hellish-rebuke::before { content : '\E98F'; }
+	&.heroes-feast::before { content : '\E990'; }
+	&.heroism::before { content : '\E991'; }
+	&.hideous-laughter::before { content : '\E992'; }
+	&.identify::before { content : '\E993'; }
+	&.illusory-script::before { content : '\E994'; }
+	&.inflict-wounds::before { content : '\E995'; }
+	&.light::before { content : '\E996'; }
+	&.longstrider::before { content : '\E997'; }
+	&.mage-armor::before { content : '\E998'; }
+	&.mage-hand::before { content : '\E999'; }
+	&.magic-missile::before { content : '\E99A'; }
+	&.mass-cure-wounds::before { content : '\E99B'; }
+	&.mass-healing-word::before { content : '\E99C'; }
+	&.Mending::before { content : '\E99D'; }
+	&.message::before { content : '\E99E'; }
+	&.Minor-illusion::before { content : '\E99F'; }
+	&.movement1::before { content : '\E9A0'; }
+	&.polymorph::before { content : '\E9A1'; }
+	&.power-word-kill::before { content : '\E9A2'; }
+	&.power-word-stun::before { content : '\E9A3'; }
+	&.prayer-of-healing::before { content : '\E9A4'; }
+	&.prestidigitation::before { content : '\E9A5'; }
+	&.protection-from-evil-and-good::before { content : '\E9A6'; }
+	&.raise-dead::before { content : '\E9A7'; }
+	&.raise-dead2::before { content : '\E9A8'; }
+	&.reaction1::before { content : '\E9A9'; }
+	&.resurrection::before { content : '\E9AA'; }
+	&.resurrection2::before { content : '\E9AB'; }
+	&.revivify::before { content : '\E9AC'; }
+	&.revivify2::before { content : '\E9AD'; }
+	&.sacred-flame::before { content : '\E9AE'; }
+	&.sanctuary::before { content : '\E9AF'; }
+	&.scorching-ray::before { content : '\E9B0'; }
+	&.sending::before { content : '\E9B1'; }
+	&.shatter::before { content : '\E9B2'; }
+	&.shield::before { content : '\E9B3'; }
+	&.silent-image::before { content : '\E9B4'; }
+	&.sleep::before { content : '\E9B5'; }
+	&.speak-with-animals::before { content : '\E9B6'; }
+	&.telekinesis::before { content : '\E9B7'; }
+	&.true-strike::before { content : '\E9B8'; }
+	&.vicious-mockery::before { content : '\E9B9'; }
+	&.wall-of-fire::before { content : '\E9BA'; }
+	&.wall-of-force::before { content : '\E9BB'; }
+	&.wall-of-ice::before { content : '\E9BC'; }
+	&.wall-of-stone::before { content : '\E9BD'; }
+	&.wall-of-thorns::before { content : '\E9BE'; }
+	&.wish::before { content : '\E9BF'; }
+}

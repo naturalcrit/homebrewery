@@ -1,9 +1,15 @@
-const HomebrewModel = require('./homebrew.model.js').model;
-const router = require('express').Router();
-const Moment = require('moment');
-//const render = require('vitreum/steps/render');
-const templateFn = require('../client/template.js');
-const zlib = require('zlib');
+import { model as HomebrewModel }     from './homebrew.model.js';
+import { model as NotificationModel } from './notifications.model.js';
+import express    from 'express';
+import Moment     from 'moment';
+import zlib       from 'zlib';
+import templateFn from '../client/template.js';
+
+import HomebrewAPI  from './homebrew.api.js';
+import asyncHandler from 'express-async-handler';
+import { splitTextStyleAndMetadata } from '../shared/helpers.js';
+
+const router = express.Router();
 
 process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
 process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password3';
@@ -22,7 +28,7 @@ const mw = {
 		if(process.env.ADMIN_USER === username && process.env.ADMIN_PASS === password){
 			return next();
 		}
-		return res.status(401).send('Access denied');
+		throw { HBErrorCode: '52', code: 401, message: 'Access denied' };
 	}
 };
 
@@ -66,23 +72,8 @@ router.post('/admin/cleanup', mw.adminOnly, (req, res)=>{
 });
 
 /* Searches for matching edit or share id, also attempts to partial match */
-router.get('/admin/lookup/:id', mw.adminOnly, async (req, res, next)=>{
-	HomebrewModel.findOne({
-		$or : [
-			{ editId: { $regex: req.params.id, $options: 'i' } },
-			{ shareId: { $regex: req.params.id, $options: 'i' } },
-		]
-	}).exec()
-	.then((brew)=>{
-		if(!brew)	// No document found
-			return res.status(404).json({ error: 'Document not found' });
-		else
-			return res.json(brew);
-	})
-	.catch((err)=>{
-		console.error(err);
-		return res.status(500).json({ error: 'Internal Server Error' });
-	});
+router.get('/admin/lookup/:id', mw.adminOnly, asyncHandler(HomebrewAPI.getBrew('admin', false)), async (req, res, next)=>{
+	return res.json(req.brew);
 });
 
 /* Find 50 brews that aren't compressed yet */
@@ -100,6 +91,28 @@ router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{
 		});
 });
 
+/* Cleans `<script` and `</script>` from the "text" field of a brew */
+router.put('/admin/clean/script/:id', asyncHandler(HomebrewAPI.getBrew('admin', false)), async (req, res)=>{
+	console.log(`[ADMIN] Cleaning script tags from ShareID ${req.params.id}`);
+
+	function cleanText(text){return text.replaceAll(/(<\/?s)cript/gi, '');};
+
+	const brew = req.brew;
+
+	const properties = ['text', 'description', 'title'];
+	properties.forEach((property)=>{
+		brew[property] = cleanText(brew[property]);
+	});
+
+	splitTextStyleAndMetadata(brew);
+
+	req.body = brew;
+
+	// Remove Account from request to prevent Admin user from being added to brew as an Author
+	req.account = undefined;
+
+	return await HomebrewAPI.updateBrew(req, res);
+});
 
 /* Compresses the "text" field of a brew to binary */
 router.put('/admin/compress/:id', (req, res)=>{
@@ -138,12 +151,48 @@ router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 	}
 });
 
+// #######################   NOTIFICATIONS
+
+router.get('/admin/notification/all', async (req, res, next)=>{
+	try {
+		const notifications = await NotificationModel.getAll();
+		return res.json(notifications);
+
+	} catch (error) {
+		console.log('Error getting all notifications: ', error.message);
+		return res.status(500).json({ message: error.message });
+	}
+});
+
+router.post('/admin/notification/add', mw.adminOnly, async (req, res, next)=>{
+	try {
+		const notification = await NotificationModel.addNotification(req.body);
+		return res.status(201).json(notification);
+	} catch (error) {
+		console.log('Error adding notification: ', error.message);
+		return res.status(500).json({ message: error.message });
+	}
+});
+
+router.delete('/admin/notification/delete/:id', mw.adminOnly, async (req, res, next)=>{
+	try {
+		const notification = await NotificationModel.deleteNotification(req.params.id);
+		return res.json(notification);
+	} catch (error) {
+		console.error('Error deleting notification: { key: ', req.params.id, ' error: ',  error.message, ' }');
+		return res.status(500).json({ message: error.message });
+	}
+});
+
 router.get('/admin', mw.adminOnly, (req, res)=>{
 	templateFn('admin', {
 		url : req.originalUrl
 	})
 	.then((page)=>res.send(page))
-	.catch((err)=>res.sendStatus(500));
+	.catch((err)=>{
+		console.log(err);
+		res.sendStatus(500);
+	});
 });
 
-module.exports = router;
+export default router;

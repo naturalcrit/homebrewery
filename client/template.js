@@ -8,6 +8,8 @@ const template = async function(name, title='', props = {}){
 	});
 	const ogMetaTags = ogTags.join('\n');
 
+	const ssrModule = await import(`../build/${name}/ssr.cjs`);
+
 	return `<!DOCTYPE html>
 	<html>
 		<head>
@@ -21,7 +23,7 @@ const template = async function(name, title='', props = {}){
 			<title>${title.length ? `${title} - The Homebrewery`: 'The Homebrewery - NaturalCrit'}</title>
 		</head>
 		<body>
-			<main id="reactRoot">${require(`../build/${name}/ssr.js`)(props)}</main>
+			<main id="reactRoot">${ssrModule.default(props)}</main>
 			<script src=${`/${name}/bundle.js`}></script>
 			<script>start_app(${JSON.stringify(props)})</script>
 		</body>
@@ -29,4 +31,4 @@ const template = async function(name, title='', props = {}){
 	`;
 };
 
-module.exports = template;
+export default template;

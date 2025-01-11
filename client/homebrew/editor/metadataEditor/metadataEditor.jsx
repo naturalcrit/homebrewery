@@ -3,10 +3,10 @@ require('./metadataEditor.less');
 const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
-const request = require('../../utils/request-middleware.js');
+import request from '../../utils/request-middleware.js';
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Combobox = require('client/components/combobox.jsx');
-const StringArrayEditor = require('../stringArrayEditor/stringArrayEditor.jsx');
+const TagInput = require('../tagInput/tagInput.jsx');
 
 
 const Themes = require('themes/themes.json');
@@ -304,17 +304,14 @@ const MetadataEditor = createClass({
 						onChange={(e)=>this.handleRenderer('V3', e)} />
 					V3
 				</label>
-
-				<a href='/legacy' target='_blank' rel='noopener noreferrer'>
-					Click here to see the demo page for the old Legacy renderer!
-				</a>
+				<small><a href='/legacy' target='_blank' rel='noopener noreferrer'>Click here to see the demo page for the old Legacy renderer!</a></small>
 			</div>
 		</div>;
 	},
 
 	render : function(){
 		return <div className='metadataEditor'>
-			<h1 className='sectionHead'>Brew</h1>
+			<h1>Properties Editor</h1>
 
 			<div className='field title'>
 				<label>title</label>
@@ -344,10 +341,11 @@ const MetadataEditor = createClass({
 				{this.renderThumbnail()}
 			</div>
 
-			<StringArrayEditor label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
+			<TagInput label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
 				placeholder='add tag' unique={true}
 				values={this.props.metadata.tags}
-				onChange={(e)=>this.handleFieldChange('tags', e)}/>
+				onChange={(e)=>this.handleFieldChange('tags', e)}
+				/>
 
 			<div className='field systems'>
 				<label>systems</label>
@@ -362,28 +360,25 @@ const MetadataEditor = createClass({
 
 			{this.renderRenderOptions()}
 
-			<hr/>
-
-			<h1 className='sectionHead'>Authors</h1>
+			<h2>Authors</h2>
 
 			{this.renderAuthors()}
 
-			<StringArrayEditor label='invited authors' valuePatterns={[/.+/]}
+			<TagInput label='invited authors' valuePatterns={[/.+/]}
 				validators={[(v)=>!this.props.metadata.authors?.includes(v)]}
 				placeholder='invite author' unique={true}
 				values={this.props.metadata.invitedAuthors}
 				notes={['Invited author usernames are case sensitive.', 'After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.']}
-				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}/>
+				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}
+				/>
 
-			<hr/>
-
-			<h1 className='sectionHead'>Privacy</h1>
+			<h2>Privacy</h2>
 
 			<div className='field publish'>
 				<label>publish</label>
 				<div className='value'>
 					{this.renderPublish()}
-					<small>Published homebrews will be publicly viewable and searchable (eventually...)</small>
+					<small>Published brews are searchable in <a href='/vault'>the Vault</a> and visible on your user page.  Unpublished brews are not indexed in the Vault or visible on your user page, but can still be shared and indexed by search engines.  You can unpublish a brew any time.</small>
 				</div>
 			</div>
 
