@@ -24,7 +24,9 @@ These instructions assume that you are installing to a completely new, fresh Ubu
 
 These installation instructions have been tested on the following Ubuntu releases:
 
-- *ubuntu-24.04.1-desktop-amd64*
+  - *ubuntu-24.04.1-desktop-amd64*
+  - *ubuntu-22.04.5-desktop-amd64*
+  - *ubuntu-20.04.6-desktop-amd64*
 
 ## Final Notes
 
