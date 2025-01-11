@@ -1,5 +1,6 @@
 const fs = require("fs-extra");
 const config = require("nconf");
+const path = require("path");
 
 const App = require("../server/app.js");
 
@@ -49,7 +50,7 @@ const RendererOptions = {
 		divHeader: "",
 		divFooter: "",
 		pageHeader:
-			"<link href='../build/themes/Legacy/Blank/style.css' rel='stylesheet' />\n<link href='../build/themes/Legacy/5ePHB/style.css' rel='stylesheet' />\n",
+			"<link href='/themes/Legacy/Blank/style.css' rel='stylesheet' />\n<link href='/themes/Legacy/5ePHB/style.css' rel='stylesheet' />\n",
 	},
 	v3: {
 		module: "../shared/naturalcrit/markdown.js",
@@ -57,7 +58,7 @@ const RendererOptions = {
 		divHeader: ">\n<div className='columnWrapper'",
 		divFooter: "\n</div>",
 		pageHeader:
-			"<link href='../build/themes/V3/Blank/style.css' rel='stylesheet' />\n<link href='../build/themes/V3/5ePHB/style.css' rel='stylesheet' />\n",
+			"<link href='/themes/V3/Blank/style.css' rel='stylesheet' />\n<link href='/themes/V3/5ePHB/style.css' rel='stylesheet' />\n",
 	},
 };
 
@@ -97,11 +98,16 @@ const htmlOutput = `<!DOCTYPE html>
 	</html>
 	`;
 
+const outputDir = path.dirname(config.get("output"));
 // Write everything to the output file
 fs.writeFileSync(config.get("output"), htmlOutput);
-fs.copyFileSync("../build/homebrew/bundle.css", "/bundle.css");
-// fs.copySync('../build/assets/', 'assets/');
-// fs.copySync('../build/themes/', 'themes/');
+fs.copyFileSync(
+	"../build/homebrew/bundle.css",
+	path.join(outputDir, "/bundle.css"),
+);
+fs.copySync("../build/assets/", path.join(outputDir, "assets/"));
+fs.copySync("../build/themes/", path.join(outputDir, "themes/"));
+fs.copySync("../themes/fonts/", path.join(outputDir, "fonts/"));
 
 console.log(`Output written to file: ${config.get("output")}`);
 
