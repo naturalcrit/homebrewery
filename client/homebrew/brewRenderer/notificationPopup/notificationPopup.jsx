@@ -49,6 +49,7 @@ const NotificationPopup = ()=>{
 		));
 	};
 
+	if(!notifications.length) return;
 	return <Dialog className='notificationPopup' dismisskeys={dissmissKeyList} closeText={DISMISS_BUTTON} >
 		<div className='header'>
 			<i className='fas fa-info-circle info'></i>
