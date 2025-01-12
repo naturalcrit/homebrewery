@@ -70,6 +70,7 @@
 
 .pane { position : relative; }
 
+
 @media print {
 	.toolBar { display : none; }
 	.brewRenderer {
@@ -81,5 +82,8 @@
 			zoom: 100% !important;
 			& > .page { box-shadow : unset; }
 		}
+	}
+	.headerNav {
+		visibility: hidden;
 	}
 }
