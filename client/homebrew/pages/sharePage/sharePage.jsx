@@ -23,7 +23,9 @@ const SharePage = (props)=>{
 	});
 
 	const handleBrewRendererPageChange = useCallback((pageNumber)=>{
-		updateState({ currentBrewRendererPageNum: pageNumber });
+		setState((prevState)=>({
+			currentBrewRendererPageNum : pageNumber,
+			...prevState }));
 	}, []);
 
 	const handleControlKeys = (e)=>{
