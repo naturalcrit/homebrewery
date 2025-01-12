@@ -213,19 +213,20 @@ const BrewRenderer = (props)=>{
 			const html = Markdown.render(pageText, index);
 
 			// I assume there is a prettier way to do this.
-			const declaredStyles = {};
-			if(brewTemplates[index]?.attr?.styles) {
-				for (let styleSplit of brewTemplates[index]?.attr?.styles.split(';')) {
-					const styleInst = styleSplit.split(':');
-					if(styleInst[0] && styleInst[1]) declaredStyles[styleInst[0].trim()] = styleInst[1].trim();
-				}
-			}
-
-			const styles = {
-				...declaredStyles,
-				...(!displayOptions.pageShadows ? { boxShadow: 'none' } : {}),
-				// Add more conditions as needed
-			};
+			const styles = (()=>{
+				const rawStyles = brewTemplates[index]?.attr?.styles || '';
+				const declaredStyles = Object.fromEntries(
+					rawStyles.split(';').map((style)=>{
+						const [key, value] = style.split(':').map((s)=>s?.trim());
+						return key && value ? [key, value] : [];
+					}).filter((entry)=>entry.length)
+				);
+				return {
+					...declaredStyles,
+					...(displayOptions.pageShadows ? {} : { boxShadow: 'none' }),
+					// Add more conditions as needed
+				};
+			})();
 
 			const pageClass = brewTemplates[index]?.attr?.classes?.length > 0 ? `page ${brewTemplates[index].attr.classes}` : `page`;
 			return <BrewPage className={pageClass} index={index} key={index} contents={html} style={styles} attributes={brewTemplates[index]?.attr?.attributes} onVisibilityChange={handlePageVisibilityChange}/>;
