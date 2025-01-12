@@ -101,7 +101,10 @@ const htmlOutput = `<!DOCTYPE html>
 	`;
 
 const outputDir = path.dirname(config.get("output"));
-fs.mkdirSync(outputDir);
-// Write everything to the output file./test-brew.md /"), { recursive: true });
+fs.mkdirSync(outputDir, { recursive: true });
+// Write everything to the output file
+fs.writeFileSync(config.get("output"), htmlOutput);
+// Write supporting web assets
+fs.cpSync("./build/", path.join(outputDir, "./"), { recursive: true });
 
 console.log(`Output written to file: ${config.get("output")}`);
