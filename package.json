@@ -139,7 +139,7 @@
     "postcss-less": "^6.0.0",
     "stylelint": "^16.13.0",
     "stylelint-config-recess-order": "^5.1.1",
-    "stylelint-config-recommended": "^14.0.1",
+    "stylelint-config-recommended": "^15.0.0",
     "supertest": "^7.0.0"
   }
 }
