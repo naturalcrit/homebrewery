@@ -11,11 +11,18 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 	const renderHeaderLinks = ()=>{
 		if(!pagesRef.current) return;
 
+		const excludedPages = {
+			'.frontCover' : 'Cover Page',
+			'.toc'        : 'Contents'
+		};
+
+		const excluded = Object.keys(excludedPages).join(',');
+
 		const selector = [
-			'.pages > .page',									// All page elements, which by definition have IDs
-			'.page:not(:has(.toc)) > [id]',						// All direct children of non-ToC .page with an ID (Legacy)
-			'.page:not(:has(.toc)) > .columnWrapper > [id]',	// All direct children of non-ToC .page > .columnWrapper with an ID (V3)
-			'.page:not(:has(.toc)) h2',							// All non-ToC H2 titles, like Monster frame titles
+			'.pages > .page',											// All page elements, which by definition have IDs
+			`.page:not(:has(${excluded})) > [id]`,						// All direct children of non-excluded .pages with an ID (Legacy)
+			`.page:not(:has(${excluded})) > .columnWrapper > [id]`,		// All direct children of non-excluded .page > .columnWrapper with an ID (V3)
+			`.page:not(:has(${excluded})) h2`,							// All non-excluded H2 titles, like Monster frame titles
 		];
 		const elements = pagesRef.current.querySelectorAll(selector.join(','));
 		if(!elements) return;
@@ -32,9 +39,13 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 		elements.forEach((el)=>{
 			if(el.className.match(/\bpage\b/)) {
 				let text = `Page ${el.id.slice(1)}`;	// The ID of a page *should* always be equal to `p` followed by the page number
-				if(el.querySelector('.toc')){			// If the page contains a table of contents, add "- Contents" to the display text
-					text += ' - Contents';
-				};
+				Object.keys(excludedPages).every((pageType)=>{
+					if(el.querySelector(pageType)){			// If the page contains a table of contents, add "- Contents" to the display text
+						text += ` - ${excludedPages[pageType]}`;
+						return false;
+					};
+					return true;
+				});
 				navList.push({
 					depth     : 0,						// Pages are always at the least indented level
 					text      : text,
