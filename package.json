@@ -129,7 +129,7 @@
   "devDependencies": {
     "@stylistic/stylelint-plugin": "^3.1.1",
     "babel-plugin-transform-import-meta": "^2.3.2",
-    "eslint": "^9.17.0",
+    "eslint": "^9.18.0",
     "eslint-plugin-jest": "^28.10.0",
     "eslint-plugin-react": "^7.37.3",
     "globals": "^15.14.0",
