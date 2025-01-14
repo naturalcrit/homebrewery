@@ -120,6 +120,21 @@ const getPageTemplates = (pages)=>{
 	return tempPages;
 };
 
+const stylesToStyleObject = (index, displayOptions)=>{
+	const rawStyles = brewTemplates[index]?.attr?.styles || '';
+	const declaredStyles = Object.fromEntries(
+		rawStyles.split(';').map((style)=>{
+			const [key, value] = style.split(':').map((s)=>s?.trim());
+			return key && value ? [key, value] : [];
+		}).filter((entry)=>entry.length)
+	);
+	return {
+		...declaredStyles,
+		...(displayOptions.pageShadows ? {} : { boxShadow: 'none' }),
+		// Add more conditions as needed
+	};
+};
+
 const BrewRenderer = (props)=>{
 	props = {
 		text                       : '',
@@ -205,34 +220,19 @@ const BrewRenderer = (props)=>{
 
 	const renderPage = (pageText, index)=>{
 
-		const styles = {
-			...(!displayOptions.pageShadows ? { boxShadow: 'none' } : {})
-			// Add more conditions as needed
-		};
 
 		if(props.renderer == 'legacy') {
 			const html = MarkdownLegacy.render(pageText);
-
+			const styles = {
+				...(!displayOptions.pageShadows ? { boxShadow: 'none' } : {})
+				// Add more conditions as needed
+			};
 			return <BrewPage className='page phb' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} />;
 		} else {
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			const html = Markdown.render(pageText, index);
 
-			// I assume there is a prettier way to do this.
-			const styles = (()=>{
-				const rawStyles = brewTemplates[index]?.attr?.styles || '';
-				const declaredStyles = Object.fromEntries(
-					rawStyles.split(';').map((style)=>{
-						const [key, value] = style.split(':').map((s)=>s?.trim());
-						return key && value ? [key, value] : [];
-					}).filter((entry)=>entry.length)
-				);
-				return {
-					...declaredStyles,
-					...(displayOptions.pageShadows ? {} : { boxShadow: 'none' }),
-					// Add more conditions as needed
-				};
-			})();
+			const styles = stylesToStyleObject(index, displayOptions);
 
 			const pageClass = brewTemplates[index]?.attr?.classes?.length > 0 ? `page ${brewTemplates[index].attr.classes}` : `page`;
 			return <BrewPage className={pageClass} index={index} key={index} contents={html} style={styles} attributes={brewTemplates[index]?.attr?.attributes} onVisibilityChange={handlePageVisibilityChange}/>;
