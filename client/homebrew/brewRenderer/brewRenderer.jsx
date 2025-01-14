@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
@@ -219,7 +220,6 @@ const BrewRenderer = (props)=>{
 	};
 
 	const renderPage = (pageText, index)=>{
-
 
 		if(props.renderer == 'legacy') {
 			const html = MarkdownLegacy.render(pageText);
