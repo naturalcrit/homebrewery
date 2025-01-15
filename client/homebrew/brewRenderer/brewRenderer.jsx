@@ -1,5 +1,4 @@
-/* eslint-disable max-lines */
-/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 400, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
 const { useState, useRef, useMemo, useEffect } = React;
