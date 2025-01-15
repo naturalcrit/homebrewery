@@ -127,7 +127,7 @@ const mustacheSpans = {
 	start(src) { return src.match(/{{[^{]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeSpan = /^{{[^\n]*}}/;               // Regex for the complete token
-		const inlineRegex = /{{(?=((?:[:=](?:"['\w,\-()#%=?.: ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *|}}/g;
+		const inlineRegex = /{{(?=((?:[:=](?:"['\w,\-()#%=?.: ]*"|'[\w,\-()#%=?.: ]*'|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *|}}/g;
 		const match = completeSpan.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -184,7 +184,7 @@ const mustacheDivs = {
 	start(src) { return src.match(/\n *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeBlock = /^ *{{[^\n}]* *\n.*\n *}}/s;                // Regex for the complete token
-		const blockRegex = /^ *{{(?=((?:[:=](?:"['\w,\-()#%=?.: ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *$|^ *}}$/gm;
+		const blockRegex = /^ *{{(?=((?:[:=](?:"['\w,\-()#%=?.: ]*"|'[\w,\-()#%=?.: ]*'|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *$|^ *}}$/gm;
 		const match = completeBlock.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -239,7 +239,7 @@ const mustacheInjectInline = {
 	level : 'inline',
 	start(src) { return src.match(/ *{[^{\n]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-()#%=?.: ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/g;
+		const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-()#%=?.: ]*"|'[\w,\-()#%=?.: ]*'|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/g;
 		const match = inlineRegex.exec(src);
 		if(match) {
 			const lastToken = tokens[tokens.length - 1];
@@ -290,7 +290,7 @@ const mustacheInjectBlock = {
 		level : 'block',
 		start(src) { return src.match(/\n *{[^{\n]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 		tokenizer(src, tokens) {
-			const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-()#%=?.: ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/ym;
+			const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-()#%=?.: ]*"|'[\w,\-()#%=?.: ]*'|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/ym;
 			const match = inlineRegex.exec(src);
 			if(match) {
 				const lastToken = tokens[tokens.length - 1];
@@ -829,7 +829,7 @@ const processStyleTags = (string)=>{
 
 	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0]        || null;
 	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('='))).join(' ') || null;
-	const attributes = _.remove(tags, (tag)=>(tag.includes('='))).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'))
+	const attributes = _.remove(tags, (tag)=>(tag.includes('=')) && (tag.slice(0, tag.indexOf(':')).indexOf('=') > 0)).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'))
 		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
 		.reduce((obj, attr)=>{
 			const index = attr.indexOf('=');
@@ -838,6 +838,16 @@ const processStyleTags = (string)=>{
 			obj[key] = value;
 			return obj;
 		}, {}) || null;
+	// Wrap CSS properties. Replace nested quotes for backwards compatibility;
+	for (let tag in tags) {
+		if(tags[tag].startsWith('--')) {
+			const tagSplit=tags[tag].split(':', 2);
+			const tagRegex = /(?=(?:"'(.*)*'"|'(.*)*'|"(.*)*"))/;
+			const tagMatch = tagRegex.exec(tagSplit[1]);
+			if(tagMatch)
+				tags[tag] = `${tagSplit[0]}:'${tagMatch[1]||tagMatch[2]||tagMatch[3]}'`;
+		}
+	}
 	const styles     = tags?.length ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim()).join(' ') : null;
 
 	return {
