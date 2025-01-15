@@ -681,7 +681,7 @@ function MarkedVariables() {
 					}
 					if(match[8]) { // Inline Definition
 						const label = match[10] ? match[10].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-						let content = match[11] ? match[11] : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						let content = match[11] || null;
 
 						// In case of nested (), find the correct matching end )
 						let level = 0;
