@@ -42,12 +42,13 @@ const RecentItems = createClass({
 			edited = _.filter(edited, (brew)=>{
 				return brew.id !== editId;
 			});
-			edited.unshift({
-				id    : editId,
-				title : this.props.brew.title,
-				url   : `/edit/${editId}`,
-				ts    : Date.now()
-			});
+			if(editId)
+				edited.unshift({
+					id    : editId,
+					title : this.props.brew.title,
+					url   : `/edit/${editId}`,
+					ts    : Date.now()
+				});
 		}
 		if(this.props.storageKey == 'view'){
 			let shareId = this.props.brew.shareId;
