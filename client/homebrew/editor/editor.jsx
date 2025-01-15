@@ -127,15 +127,15 @@ const Editor = createClass({
 
 	updateCurrentCursorPage : function(cursor) {
 		const lines = this.props.brew.text.split('\n').slice(0, cursor.line + 1);
-		const pageRegex = this.props.brew.renderer == 'V3' ? /^\\page$/ : /\\page/;
-		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1);
+		const pageRegex = this.props.brew.renderer == 'V3' ? /^\\page.*$/ : /\\page/;
+		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1) + (lines[0].startsWith('\\page') ? -1 : 0);
 		this.props.onCursorPageChange(currentPage);
 	},
 
 	updateCurrentViewPage : function(topScrollLine) {
 		const lines = this.props.brew.text.split('\n').slice(0, topScrollLine + 1);
-		const pageRegex = this.props.brew.renderer == 'V3' ? /^\\page$/ : /\\page/;
-		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1);
+		const pageRegex = this.props.brew.renderer == 'V3' ? /^\\page.*$/ : /\\page/;
+		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1) + (lines[0].startsWith('\\page') ? -1 : 0);
 		this.props.onViewPageChange(currentPage);
 	},
 
@@ -174,7 +174,7 @@ const Editor = createClass({
 
 				for (let i=customHighlights.length - 1;i>=0;i--) customHighlights[i].clear();
 
-				let editorPageCount = 2; // start page count from page 2
+				let editorPageCount = 2 + (this.props.brew.text.startsWith('\\page') ? -1 : 0); // start page count from page 2
 
 				_.forEach(this.props.brew.text.split('\n'), (line, lineNumber)=>{
 
@@ -360,8 +360,9 @@ const Editor = createClass({
 		if(!this.isText() || isJumping)
 			return;
 
-		const textSplit  = this.props.renderer == 'V3' ? /^\\page$/gm : /\\page/;
-		const textString = this.props.brew.text.split(textSplit).slice(0, targetPage-1).join(textSplit);
+		const textSplit  = this.props.renderer == 'V3' ? /^\\page.*$/gm : /\\page/;
+		const targetOffset = this.props.brew.text.startsWith('\\page') ? 0 : -1;
+		const textString = this.props.brew.text.split(textSplit).slice(0, targetPage + targetOffset).join(textSplit);
 		const targetLine = textString.match('\n') ? textString.split('\n').length - 1 : -1;
 
 		let currentY = this.codeEditor.current.codeMirror.getScrollInfo().top;
