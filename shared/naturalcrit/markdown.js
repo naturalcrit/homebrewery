@@ -1,3 +1,4 @@
+/* eslint-disable max-depth */
 /* eslint-disable max-lines */
 import _                        from 'lodash';
 import { Parser as MathParser } from 'expr-eval';
@@ -680,7 +681,7 @@ function MarkedVariables() {
 					}
 					if(match[8]) { // Inline Definition
 						const label = match[10] ? match[10].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-						let content = match[11] ? match[11].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						let content = match[11] || null;
 
 						// In case of nested (), find the correct matching end )
 						let level = 0;
@@ -696,10 +697,8 @@ function MarkedVariables() {
 									break;
 							}
 						}
-						if(i > -1) {
-							combinedRegex.lastIndex = combinedRegex.lastIndex - (content.length - i);
-							content = content.slice(0, i).trim().replace(/\s+/g, ' ');
-						}
+						combinedRegex.lastIndex = combinedRegex.lastIndex - (content.length - i);
+						content = content.slice(0, i).trim().replace(/\s+/g, ' ');
 
 						varsQueue.push(
 							{ type    : 'varDefBlock',
