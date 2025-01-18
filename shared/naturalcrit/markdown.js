@@ -1,19 +1,20 @@
+/* eslint-disable max-depth */
 /* eslint-disable max-lines */
-const _ = require('lodash');
-const Marked = require('marked');
-const MarkedExtendedTables = require('marked-extended-tables');
-const { markedSmartypantsLite: MarkedSmartypantsLite } = require('marked-smartypants-lite');
-const { gfmHeadingId: MarkedGFMHeadingId, resetHeadings: MarkedGFMResetHeadingIDs } = require('marked-gfm-heading-id');
-const { markedEmoji: MarkedEmojis } = require('marked-emoji');
+import _                        from 'lodash';
+import { Parser as MathParser } from 'expr-eval';
+import { marked as Marked }              from 'marked';
+import MarkedExtendedTables     from 'marked-extended-tables';
+import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
+import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
+import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
-const diceFont      = require('../../themes/fonts/iconFonts/diceFont.js');
-const elderberryInn = require('../../themes/fonts/iconFonts/elderberryInn.js');
-const fontAwesome   = require('../../themes/fonts/iconFonts/fontAwesome.js');
-const gameIcons     = require('../../themes/fonts/iconFonts/gameIcons.js');
+import diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
+import elderberryInn from '../../themes/fonts/iconFonts/elderberryInn.js';
+import gameIcons     from '../../themes/fonts/iconFonts/gameIcons.js';
+import fontAwesome   from '../../themes/fonts/iconFonts/fontAwesome.js';
 
-const MathParser = require('expr-eval').Parser;
-const renderer = new Marked.Renderer();
+const renderer  = new Marked.Renderer();
 const tokenizer = new Marked.Tokenizer();
 
 //Limit math features to simple items
@@ -370,6 +371,43 @@ const superSubScripts = {
 	}
 };
 
+
+const justifiedParagraphClasses = [];
+justifiedParagraphClasses[2] = 'Left';
+justifiedParagraphClasses[4] = 'Right';
+justifiedParagraphClasses[6] = 'Center';
+
+const justifiedParagraphs = {
+	name  : 'justifiedParagraphs',
+	level : 'block',
+	start(src) {
+		return src.match(/\n(?:-:|:-|-:) {1}/m)?.index;
+	},  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const regex  = /^(((:-))|((-:))|((:-:))) .+(\n(([^\n].*\n)*(\n|$))|$)/ygm;
+		const match = regex.exec(src);
+		if(match?.length) {
+			let whichJustify;
+			if(match[2]?.length) whichJustify = 2;
+			if(match[4]?.length) whichJustify = 4;
+			if(match[6]?.length) whichJustify = 6;
+			return {
+				type   : 'justifiedParagraphs', // Should match "name" above
+				raw    : match[0],     // Text to consume from the source
+				length : match[whichJustify].length,
+				text   : match[0].slice(match[whichJustify].length),
+				class  : justifiedParagraphClasses[whichJustify],
+				tokens : this.lexer.inlineTokens(match[0].slice(match[whichJustify].length + 1))
+			};
+		}
+	},
+	renderer(token) {
+		return `<p align="${token.class}">${this.parser.parseInline(token.tokens)}</p>`;
+	}
+
+};
+
+
 const forcedParagraphBreaks = {
 	name  : 'hardBreaks',
 	level : 'block',
@@ -391,10 +429,31 @@ const forcedParagraphBreaks = {
 	}
 };
 
+const nonbreakingSpaces = {
+	name  : 'nonbreakingSpaces',
+	level : 'inline',
+	start(src) { return src.match(/:>+/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const regex  = /:(>+)/ym;
+		const match = regex.exec(src);
+		if(match?.length) {
+			return {
+				type   : 'nonbreakingSpaces', // Should match "name" above
+				raw    : match[0],     // Text to consume from the source
+				length : match[1].length,
+				text   : ''
+			};
+		}
+	},
+	renderer(token) {
+		return `&nbsp;`.repeat(token.length).concat('');
+	}
+};
+
 const definitionListsSingleLine = {
 	name  : 'definitionListsSingleLine',
 	level : 'block',
-	start(src) { return src.match(/\n[^\n]*?::[^\n]*/m)?.index; },  // Hint to Marked.js to stop and check for a match
+	start(src) { return src.match(/\n[^\n]*?::[^\n]*/m)?.index; }, // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const regex = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym;
 		let match;
@@ -659,7 +718,7 @@ function MarkedVariables() {
 					}
 					if(match[8]) { // Inline Definition
 						const label = match[10] ? match[10].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-						let content = match[11] ? match[11].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						let content = match[11] || null;
 
 						// In case of nested (), find the correct matching end )
 						let level = 0;
@@ -675,10 +734,8 @@ function MarkedVariables() {
 									break;
 							}
 						}
-						if(i > -1) {
-							combinedRegex.lastIndex = combinedRegex.lastIndex - (content.length - i);
-							content = content.slice(0, i).trim().replace(/\s+/g, ' ');
-						}
+						combinedRegex.lastIndex = combinedRegex.lastIndex - (content.length - i);
+						content = content.slice(0, i).trim().replace(/\s+/g, ' ');
 
 						varsQueue.push(
 							{ type    : 'varDefBlock',
@@ -748,11 +805,12 @@ const tableTerminators = [
 ];
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions : [definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks, superSubScripts,
-	mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
+	nonbreakingSpaces, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
-Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }), MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
+Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }),
+	MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
 function cleanUrl(href) {
 	try {
@@ -854,7 +912,7 @@ const globalVarsList    = {};
 let varsQueue       = [];
 let globalPageNumber = 0;
 
-module.exports = {
+const Markdown = {
 	marked : Marked,
 	render : (rawBrewText, pageNumber=0)=>{
 		globalVarsList[pageNumber] = {};					//Reset global links for current page, to ensure values are parsed in order
@@ -865,6 +923,7 @@ module.exports = {
 		}
 
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`);
+
 		const opts = Marked.defaults;
 
 		rawBrewText = opts.hooks.preprocess(rawBrewText);
@@ -935,3 +994,6 @@ module.exports = {
 		return errors;
 	},
 };
+
+export default Markdown;
+

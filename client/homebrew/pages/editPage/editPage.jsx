@@ -4,7 +4,7 @@ const React = require('react');
 const _ = require('lodash');
 const createClass = require('create-react-class');
 
-const request = require('../../utils/request-middleware.js');
+import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
@@ -16,6 +16,7 @@ const PrintNavItem = require('../../navbar/print.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
+const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
@@ -23,7 +24,7 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const LockNotification = require('./lockNotification/lockNotification.jsx');
 
-const Markdown = require('naturalcrit/markdown.js');
+import Markdown from 'naturalcrit/markdown.js';
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
 const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
@@ -228,8 +229,8 @@ const EditPage = createClass({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
-		await updateHistory(this.state.brew);
-		await versionHistoryGarbageCollection();
+		await updateHistory(this.state.brew).catch(console.error);
+		await versionHistoryGarbageCollection().catch(console.error);
 
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 
@@ -380,7 +381,7 @@ const EditPage = createClass({
 
 **[Homebrewery Link](${global.config.publicUrl}/share/${shareLink})**`;
 
-		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title)}&text=${encodeURIComponent(text)}`;
+		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title.toWellFormed())}&text=${encodeURIComponent(text)}`;
 	},
 
 	renderNavbar : function(){
@@ -417,6 +418,7 @@ const EditPage = createClass({
 					</Nav.item>
 				</Nav.dropdown>
 				<PrintNavItem />
+				<VaultNavItem />
 				<RecentNavItem brew={this.state.brew} storageKey='edit' />
 				<Account />
 			</Nav.section>
@@ -429,8 +431,8 @@ const EditPage = createClass({
 			<Meta name='robots' content='noindex, nofollow' />
 			{this.renderNavbar()}
 
+			{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} />}
 			<div className='content'>
-				{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} />}
 				<SplitPane onDragFinish={this.handleSplitMove}>
 					<Editor
 						ref={this.editor}

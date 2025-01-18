@@ -14,9 +14,6 @@ const NotificationDetail = ({ notification, onDelete })=>(
 			<dt>Title</dt>
 			<dd>{notification.title || 'No Title'}</dd>
 
-			<dt>Text</dt>
-			<dd>{notification.text || 'No Text'}</dd>
-
 			<dt>Created</dt>
 			<dd>{Moment(notification.createdAt).format('LLLL')}</dd>
 
@@ -25,6 +22,9 @@ const NotificationDetail = ({ notification, onDelete })=>(
 
 			<dt>Stop</dt>
 			<dd>{Moment(notification.stopAt).format('LLLL') || 'No End Time'}</dd>
+
+			<dt>Text</dt>
+			<dd>{notification.text || 'No Text'}</dd>
 		</dl>
 		<button onClick={()=>onDelete(notification.dismissKey)}>DELETE</button>
 	</>

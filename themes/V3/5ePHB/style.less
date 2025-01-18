@@ -812,17 +812,8 @@ h6,
 
 // Brew level default inclusion changes.
 // These add Headers 'back' to inclusion.
-.pages:has(.tocGlobalH4) {
-	h4 {--TOC: include; }
-}
 
-.pages:has(.tocGlobalH5) {
-	h4, h5 {--TOC: include; }
-}
-
-.pages:has(.tocGlobalH6) {
-	h4, h5, h6 {--TOC: include; }
-}
+//NOTE: DO NOT USE :HAS WITH .PAGES!!! EXTREMELY SLOW TO RENDER ON LARGE DOCS!
 
 // Block level inclusion changes
 // These include either a single  (include) or a range (depth)
