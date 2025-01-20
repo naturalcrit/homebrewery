@@ -139,7 +139,7 @@
     "jsdom-global": "^3.0.2",
     "postcss-less": "^6.0.0",
     "stylelint": "^16.13.2",
-    "stylelint-config-recess-order": "^5.1.1",
+    "stylelint-config-recess-order": "^6.0.0",
     "stylelint-config-recommended": "^15.0.0",
     "supertest": "^7.0.0"
   }
