@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import _                             from 'lodash';
-import {model as HomebrewModel}      from './homebrew.model.js';
+import { model as HomebrewModel }    from './homebrew.model.js';
 import express                       from 'express';
 import zlib                          from 'zlib';
 import GoogleActions                 from './googleActions.js';
@@ -279,6 +279,7 @@ const api = {
 		let currentTheme;
 		const completeStyles   = [];
 		const completeSnippets = [];
+		let themePath = '';
 
 		while (req.params.id) {
 			//=== User Themes ===//
@@ -292,15 +293,17 @@ const api = {
 
 				currentTheme = req.brew;
 				splitTextStyleAndMetadata(currentTheme);
+				if(themePath === '') themePath = currentTheme.title;
 
 				// If there is anything in the snippets or style members, append them to the appropriate array
-				if(currentTheme?.snippets) completeSnippets.push(JSON.parse(currentTheme.snippets));
+				// if(currentTheme?.snippets) completeSnippets.push(JSON.parse(currentTheme.snippets));
 				if(currentTheme?.style) completeStyles.push(`/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.params.id} */\n\n${currentTheme.style}`);
 
 				req.params.id       = currentTheme.theme;
 				req.params.renderer = currentTheme.renderer;
 			} else {
 			//=== Static Themes ===//
+				if(themePath === '') themePath = req.params.id;
 				const localSnippets = `${req.params.renderer}_${req.params.id}`; // Just log the name for loading on client
 				const localStyle    = `@import url(\"/themes/${req.params.renderer}/${req.params.id}/style.css\");`;
 				completeSnippets.push(localSnippets);
@@ -313,7 +316,8 @@ const api = {
 		const returnObj = {
 			// Reverse the order of the arrays so they are listed oldest parent to youngest child.
 			styles   : completeStyles.reverse(),
-			snippets : completeSnippets.reverse()
+			snippets : completeSnippets.reverse(),
+			path     : themePath
 		};
 
 		res.setHeader('Content-Type', 'application/json');

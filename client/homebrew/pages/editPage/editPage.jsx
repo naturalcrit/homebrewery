@@ -151,9 +151,9 @@ const EditPage = createClass({
 	},
 
 	handleMetaChange : function(metadata, field=undefined){
-		if(field == 'theme' || field == 'renderer')	// Fetch theme bundle only if theme or renderer was changed
+		if(field == 'theme' || field == 'renderer')	{// Fetch theme bundle only if theme or renderer was changed
 			fetchThemeBundle(this, metadata.renderer, metadata.theme);
-
+		}
 		this.setState((prevState)=>({
 			brew : {
 				...prevState.brew,
@@ -443,6 +443,7 @@ const EditPage = createClass({
 						reportError={this.errorReported}
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
+						themeBundle={this.state.themeBundle}
 						snippetBundle={this.state.themeBundle.snippets}
 						updateBrew={this.updateBrew}
 						onCursorPageChange={this.handleEditorCursorPageChange}

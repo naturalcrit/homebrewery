@@ -1,5 +1,9 @@
 @import 'naturalcrit/styles/colors.less';
 
+.userThemeName {
+	padding-left: 10px;
+	padding-right: 10px;
+}
 
 .metadataEditor {
 	position         : absolute;
@@ -71,7 +75,7 @@
 			border : 1px solid gray;
 			&:focus { outline : 1px solid #444444; }
 		}
-		&.thumbnail {
+		&.thumbnail, &.themes{
 			height      : 1.4em;
 			label { line-height : 2.0em; }
 			.value {
@@ -85,6 +89,17 @@
 				background-color : black;
 				border           : 1px solid #999999;
 				&:hover { background-color : #777777; }
+			}
+		}
+
+		&.themes{
+			.value {
+				overflow      : visible;
+				text-overflow : auto;
+			}
+			button {
+				padding-left: 5px;
+				padding-right: 5px;
 			}
 		}
 
