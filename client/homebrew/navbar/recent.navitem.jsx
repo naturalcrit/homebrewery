@@ -42,12 +42,13 @@ const RecentItems = createClass({
 			edited = _.filter(edited, (brew)=>{
 				return brew.id !== editId;
 			});
-			edited.unshift({
-				id    : editId,
-				title : this.props.brew.title,
-				url   : `/edit/${editId}`,
-				ts    : Date.now()
-			});
+			if(editId)
+				edited.unshift({
+					id    : editId,
+					title : this.props.brew.title,
+					url   : `/edit/${editId}`,
+					ts    : Date.now()
+				});
 		}
 		if(this.props.storageKey == 'view'){
 			let shareId = this.props.brew.shareId;
@@ -57,12 +58,13 @@ const RecentItems = createClass({
 			viewed = _.filter(viewed, (brew)=>{
 				return brew.id !== shareId;
 			});
-			viewed.unshift({
-				id    : shareId,
-				title : this.props.brew.title,
-				url   : `/share/${shareId}`,
-				ts    : Date.now()
-			});
+			if(shareId)
+				viewed.unshift({
+					id    : shareId,
+					title : this.props.brew.title,
+					url   : `/share/${shareId}`,
+					ts    : Date.now()
+				});
 		}
 
 		//== Store the updated lists (up to 8 items each) ==//
