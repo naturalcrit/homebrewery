@@ -24,11 +24,15 @@ These instructions assume that you are installing to a completely new, fresh Ubu
 
 These installation instructions have been tested on the following Ubuntu releases:
 
-- *ubuntu-20.04.3-desktop-amd64*
+  - *ubuntu-24.04.1-desktop-amd64*
+  - *ubuntu-22.04.5-desktop-amd64*
+  - *ubuntu-20.04.6-desktop-amd64*
 
 ## Final Notes
 
 While this installation process works successfully at the time of writing (December 19, 2021), it relies on all of the Node.JS packages used in the HomeBrewery project retaining their cross-platform capabilities to continue to function. This is one of the inherent advantages of Node.JS, but it is by no means guaranteed and as such, functionality or even installation may fail without warning at some point in the future.
+
+Earlier versions of Ubuntu may requier an alternate Mongo setup, see https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/ for assistance.
 
 Regards,  
 G  
