@@ -1,3 +1,4 @@
+/* eslint-disable max-depth */
 /* eslint-disable max-lines */
 import _                        from 'lodash';
 import { Parser as MathParser } from 'expr-eval';
@@ -370,6 +371,43 @@ const superSubScripts = {
 	}
 };
 
+
+const justifiedParagraphClasses = [];
+justifiedParagraphClasses[2] = 'Left';
+justifiedParagraphClasses[4] = 'Right';
+justifiedParagraphClasses[6] = 'Center';
+
+const justifiedParagraphs = {
+	name  : 'justifiedParagraphs',
+	level : 'block',
+	start(src) {
+		return src.match(/\n(?:-:|:-|-:) {1}/m)?.index;
+	},  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const regex  = /^(((:-))|((-:))|((:-:))) .+(\n(([^\n].*\n)*(\n|$))|$)/ygm;
+		const match = regex.exec(src);
+		if(match?.length) {
+			let whichJustify;
+			if(match[2]?.length) whichJustify = 2;
+			if(match[4]?.length) whichJustify = 4;
+			if(match[6]?.length) whichJustify = 6;
+			return {
+				type   : 'justifiedParagraphs', // Should match "name" above
+				raw    : match[0],     // Text to consume from the source
+				length : match[whichJustify].length,
+				text   : match[0].slice(match[whichJustify].length),
+				class  : justifiedParagraphClasses[whichJustify],
+				tokens : this.lexer.inlineTokens(match[0].slice(match[whichJustify].length + 1))
+			};
+		}
+	},
+	renderer(token) {
+		return `<p align="${token.class}">${this.parser.parseInline(token.tokens)}</p>`;
+	}
+
+};
+
+
 const forcedParagraphBreaks = {
 	name  : 'hardBreaks',
 	level : 'block',
@@ -680,7 +718,7 @@ function MarkedVariables() {
 					}
 					if(match[8]) { // Inline Definition
 						const label = match[10] ? match[10].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-						let content = match[11] ? match[11].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						let content = match[11] || null;
 
 						// In case of nested (), find the correct matching end )
 						let level = 0;
@@ -696,10 +734,8 @@ function MarkedVariables() {
 									break;
 							}
 						}
-						if(i > -1) {
-							combinedRegex.lastIndex = combinedRegex.lastIndex - (content.length - i);
-							content = content.slice(0, i).trim().replace(/\s+/g, ' ');
-						}
+						combinedRegex.lastIndex = combinedRegex.lastIndex - (content.length - i);
+						content = content.slice(0, i).trim().replace(/\s+/g, ' ');
 
 						varsQueue.push(
 							{ type    : 'varDefBlock',
@@ -769,7 +805,7 @@ const tableTerminators = [
 ];
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions : [definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
+Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
 	nonbreakingSpaces, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
