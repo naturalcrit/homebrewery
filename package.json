@@ -39,6 +39,7 @@
     "test:definition-lists": "jest tests/markdown/definition-lists.test.js --verbose --noStackTrace",
     "test:hard-breaks": "jest tests/markdown/hard-breaks.test.js --verbose --noStackTrace",
     "test:non-breaking-spaces": "jest tests/markdown/non-breaking-spaces.test.js --verbose --noStackTrace",
+    "test:paragraph-justification": "jest tests/markdown/paragraph-justification.test.js --verbose --noStackTrace",
     "test:emojis": "jest tests/markdown/emojis.test.js --verbose --noStackTrace",
     "test:route": "jest tests/routes/static-pages.test.js --verbose",
     "test:safehtml": "jest tests/html/safeHTML.test.js --verbose",
@@ -102,7 +103,7 @@
     "express": "^4.21.2",
     "express-async-handler": "^1.2.0",
     "express-static-gzip": "2.2.0",
-    "fs-extra": "11.2.0",
+    "fs-extra": "11.3.0",
     "idb-keyval": "^6.2.1",
     "js-yaml": "^4.1.0",
     "jwt-simple": "^0.5.6",
@@ -121,7 +122,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-frame-component": "^5.2.7",
-    "react-router": "^7.1.1",
+    "react-router": "^7.1.2",
     "sanitize-filename": "1.6.3",
     "superagent": "^10.1.1",
     "vitreum": "git+https://git@github.com/calculuschild/vitreum.git"
@@ -138,7 +139,7 @@
     "jsdom-global": "^3.0.2",
     "postcss-less": "^6.0.0",
     "stylelint": "^16.13.2",
-    "stylelint-config-recess-order": "^5.1.1",
+    "stylelint-config-recess-order": "^6.0.0",
     "stylelint-config-recommended": "^15.0.0",
     "supertest": "^7.0.0"
   }
