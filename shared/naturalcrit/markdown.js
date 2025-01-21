@@ -2,7 +2,7 @@
 /* eslint-disable max-lines */
 import _                        from 'lodash';
 import { Parser as MathParser } from 'expr-eval';
-import { marked as Marked }              from 'marked';
+import { marked as Marked }     from 'marked';
 import MarkedExtendedTables     from 'marked-extended-tables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
@@ -266,12 +266,7 @@ const mustacheInjectInline = {
 		const text = this.parser.parseInline([token]);
 		const originalTags = extractHTMLStyleTags(text);
 		const injectedTags = token.injectedTags;
-		const tags = {
-			id         : injectedTags.id || originalTags.id || null,
-			classes    : [originalTags.classes,    injectedTags.classes].join(' ').trim() || null,
-			styles     : [originalTags.styles,     injectedTags.styles].join(' ').trim()  || null,
-			attributes : Object.assign(originalTags.attributes ?? {}, injectedTags.attributes ?? {})
-		};
+		const tags         = mergeHTMLTags(originalTags, injectedTags);
 		const openingTag = /(<[^\s<>]+)[^\n<>]*(>.*)/s.exec(text);
 		if(openingTag) {
 			return `${openingTag[1]}` +
@@ -315,12 +310,7 @@ const mustacheInjectBlock = {
 			const text = this.parser.parse([token]);
 			const originalTags = extractHTMLStyleTags(text);
 			const injectedTags = token.injectedTags;
-			const tags = {
-				id         : injectedTags.id || originalTags.id || null,
-				classes    : [originalTags.classes,    injectedTags.classes].join(' ').trim() || null,
-				styles     : [originalTags.styles,     injectedTags.styles].join(' ').trim()  || null,
-				attributes : Object.assign(originalTags.attributes ?? {}, injectedTags.attributes ?? {})
-			};
+			const tags         = mergeHTMLTags(originalTags, injectedTags);
 			const openingTag = /(<[^\s<>]+)[^\n<>]*(>.*)/s.exec(text);
 			if(openingTag) {
 				return `${openingTag[1]}` +
@@ -905,6 +895,15 @@ const extractHTMLStyleTags = (htmlString)=>{
 		classes    : classes,
 		styles     : styles,
 		attributes : _.isEmpty(attributes) ? null : attributes
+	};
+};
+
+const mergeHTMLTags = (originalTags, newTags) => {
+	return {
+		id         : newTags.id || originalTags.id || null,
+		classes    : [originalTags.classes, newTags.classes].join(' ').trim() || null,
+		styles     : [originalTags.styles,  newTags.styles].join(' ').trim()  || null,
+		attributes : Object.assign(originalTags.attributes ?? {}, newTags.attributes ?? {})
 	};
 };
 
