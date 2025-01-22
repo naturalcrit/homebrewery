@@ -40,7 +40,7 @@ const BrewPage = (props)=>{
 		...props
 	};
 	const pageRef = useRef(null);
-	const cleanText = safeHTML(props.contents);
+	let cleanText = safeHTML(props.contents);
 
 	useEffect(()=>{
 		if(!pageRef.current) return;
@@ -78,6 +78,20 @@ const BrewPage = (props)=>{
 		};
 	}, []);
 
+	// Extract any page styles from `\page{cssProp:value}`
+	if(cleanText.match(/^<pagebreak/)) {
+		const injectedTags = Markdown.extractHTMLStyleTags(cleanText.substring(0, cleanText.indexOf('\n')));
+		const styleObject  = injectedTags.styles?.split(';').reduce((acc, curr) => {
+			const [key, value] = curr.split(':').map(item => item.trim());
+			const camelCaseKey = key.replace(/-([a-z])/g, g => g[1].toUpperCase()); //Convert to camelCase for React
+			acc[camelCaseKey] = value;
+			return acc;
+		}, {});
+
+		props.style = {...props.style, ...styleObject};
+		cleanText = cleanText.substring(cleanText.indexOf('\n'));
+	}
+	
 	return <div className={props.className} id={`p${props.index + 1}`} data-index={props.index} ref={pageRef} style={props.style}>
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
@@ -126,7 +140,7 @@ const BrewRenderer = (props)=>{
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split('\\page');
 	} else {
-		rawPages = props.text.split(/^\\page$/gm);
+		rawPages = props.text.split(/^(?=\\page(?:{[^\n{}]+})?$)/gm);
 	}
 
 	const handlePageVisibilityChange = (pageNum, isVisible, isCenter)=>{
@@ -183,6 +197,11 @@ const BrewRenderer = (props)=>{
 
 			return <BrewPage className='page phb' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} />;
 		} else {
+			let pageText2 = pageText.substring(0, pageText.indexOf('\n'));
+			let butt  = Markdown.marked.lexer(pageText2);
+			console.log(butt)
+
+
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			const html = Markdown.render(pageText, index);
 
