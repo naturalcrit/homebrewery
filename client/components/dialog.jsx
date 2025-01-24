@@ -6,10 +6,8 @@ function Dialog({ dismisskeys = [], closeText = 'Close', blocking = false, ...re
 	const dialogRef = useRef(null);
 
 	useEffect(()=>{
-		if(dismisskeys.length !== 0) {
-			blocking ? dialogRef.current?.showModal() : dialogRef.current?.show();
-		}
-	}, [dialogRef.current, dismisskeys]);
+		blocking ? dialogRef.current?.showModal() : dialogRef.current?.show();
+	}, []);
 
 	const dismiss = ()=>{
 		dismisskeys.forEach((key)=>{
