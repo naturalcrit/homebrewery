@@ -527,21 +527,6 @@ const definitionListsMultiLine = {
 	}
 };
 
-const pageBreak = {
-	name  : 'pageBreak',
-	level : 'block',
-	start(src) { return src.match(/\n\\page/m)?.index; },  // Hint to Marked.js to stop and check for a match
-	tokenizer(src) {
-		const regex = /^\\page(?:$|(?={[^\n{}]+}$))/m;
-		const match = regex.exec(src);
-		if(match?.length)
-			return { type : 'pageBreak', raw : match[0] };
-	},
-	renderer(token) {
-		return `<pagebreak></pagebreak>\n`;
-	}
-};
-
 //v=====--------------------< Variable Handling >-------------------=====v// 242 lines
 const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 	const regex = /([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g;
@@ -810,7 +795,7 @@ const tableTerminators = [
 ];
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions : [pageBreak, justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
+Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
 	nonbreakingSpaces, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
@@ -1017,9 +1002,7 @@ const Markdown = {
 		});
 
 		return errors;
-	},
-
-	extractHTMLStyleTags : extractHTMLStyleTags
+	}
 };
 
 export default Markdown;

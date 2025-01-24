@@ -77,22 +77,8 @@ const BrewPage = (props)=>{
 			centerObserver.disconnect();
 		};
 	}, []);
-
-	// Extract any page styles from `\page{cssProp:value}`
-	if(cleanText.match(/^<pagebreak/)) {
-		const injectedTags = Markdown.extractHTMLStyleTags(cleanText.substring(0, cleanText.indexOf('\n')));
-		const styleObject  = injectedTags.styles?.split(';').reduce((acc, curr) => {
-			const [key, value] = curr.split(':').map(item => item.trim());
-			const camelCaseKey = key.replace(/-([a-z])/g, g => g[1].toUpperCase()); //Convert to camelCase for React
-			acc[camelCaseKey] = value;
-			return acc;
-		}, {});
-
-		props.style = {...props.style, ...styleObject};
-		cleanText = cleanText.substring(cleanText.indexOf('\n'));
-	}
 	
-	return <div className={props.className} id={`p${props.index + 1}`} data-index={props.index} ref={pageRef} style={props.style}>
+	return <div className={props.className} id={`p${props.index + 1}`} data-index={props.index} ref={pageRef} style={props.style} {...props.attributes}>
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
 };
@@ -187,25 +173,32 @@ const BrewRenderer = (props)=>{
 
 	const renderPage = (pageText, index)=>{
 
-		const styles = {
+		let styles = {
 			...(!displayOptions.pageShadows ? { boxShadow: 'none' } : {})
 			// Add more conditions as needed
 		};
+		let attributes = {};
 
 		if(props.renderer == 'legacy') {
 			const html = MarkdownLegacy.render(pageText);
 
 			return <BrewPage className='page phb' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} />;
 		} else {
-			let pageText2 = pageText.substring(0, pageText.indexOf('\n'));
-			let butt  = Markdown.marked.lexer(pageText2);
-			console.log(butt)
-
+			if(pageText.startsWith('\\page')) {
+				let firstLineTokens  = Markdown.marked.lexer(pageText.split('\n', 1)[0])[0].tokens;
+				let injectedTags = firstLineTokens.find(obj => obj.injectedTags !== undefined)?.injectedTags;
+				if(injectedTags) {
+					styles = {...styles, ...injectedTags.styles};
+					styles = _.mapKeys(styles, (v, k) => _.camelCase(k)); // Convert CSS to camelCase for React
+					attributes = injectedTags.attributes;
+				}
+				pageText = pageText.includes('\n') ? pageText.substring(pageText.indexOf('\n') + 1) : ''; // Remove the \page line
+			}
 
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			const html = Markdown.render(pageText, index);
 
-			return <BrewPage className='page' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} />;
+			return <BrewPage className='page' index={index} key={index} contents={html} style={styles} attributes={attributes} onVisibilityChange={handlePageVisibilityChange} />;
 		}
 	};
 
