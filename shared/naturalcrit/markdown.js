@@ -357,51 +357,99 @@ const indexesDuplicates = (indexEntry)=>{
 	return count == 0 ? '' : count;
 };
 
-const indexSplit=(src)=>{
-	let index, topic, subtopic;
-	const indexSplitRegex = /(?<!\\):/;
-	const subTopicSplit = /(?<!\\)\//;
+const indexGlossarySplit=(src, isIndex=true)=>{
+	// Because the Index and Glossary splitting is virtually identical aside from the delimiters between
+	// a topic and subtopic or term and definition I am combining this into a single function.
+	let listName, leftSide, rightSide;
+	const nameSplitRegex = /(?<!\\):/;
+	const leftRightRegex = isIndex ? /(?<!\\)\// : /(?<!\\)\/\//;
 
-	let working = [];
-	if(src.search(indexSplitRegex) < 0){
-		working[1] = src.trim();
-		index = 'Index:';
+	let leftRight = [];
+	// Check to see if a list name has been provided.
+	// If not, set a default based on isIndex.
+	if(src.search(nameSplitRegex) < 0){
+		leftRight[1] = src.trim();
+		listName = isIndex ? 'Index:' : 'Glossary:';
 	} else {
-		working = src.split(indexSplitRegex);
-		index = working[0].replace('\\:', ':').trim();
-		if(!working[1]?.trim()>0) {
-			working.splice(1, 1);
+		leftRight = src.split(nameSplitRegex);
+		listName = leftRight[0].replace('\\:', ':').trim();
+		if(!leftRight[1]?.trim()>0) {
+			leftRight.splice(1, 1);
 		}
-		working[1] = working[1]?.trim();
+		leftRight[1] = leftRight[1]?.trim();
 	}
 
-	if(working[1]) {
-		if(working[1].search(subTopicSplit) !== -1){
-			const topics = working[1].split(subTopicSplit);
-			topic = topics[0].trim();
-			if(topics[1]) { topics[1] = topics[1].trim(); }
-			if(topics[1]?.length>0) {
-				subtopic = topics[1].trim();
+	// Make certain we have what should be Index/Glossary definition left over.
+	if(leftRight[1]) {
+		// If we find the left/right split indicator, split the string and clean up.
+		if(leftRight[1].search(leftRightRegex) !== -1){
+			const leftRightSplit = leftRight[1]?.split(leftRightRegex);
+			leftSide = leftRightSplit[0].trim();
+			if(leftRightSplit[1]) { leftRightSplit[1] = leftRightSplit[1].trim(); }
+			if(leftRightSplit[1]?.length>0) {
+				rightSide = leftRightSplit[1].trim();
 			}
-		} else {
-			topic = working[1];
+		} else if(isIndex) {
+			// If we *do not* have a split indicator, and this is an index (isIndex)
+			// then it is an entry without a subtopic.
+			leftSide = leftRight[1];
 		}
 	}
 
-	if(topic?.length>0) {
-		return { index: index, topic: topic, subtopic: subtopic };
+	// Check for a left side ( subtopic or glossary definition )
+	// if one was found, return the object block.
+	if(leftSide?.length>0) {
+		return { listName: listName, leftSide: leftSide, rightSide: rightSide };
 	} else {
 		return undefined;
 	}
 
 };
 
+// const indexSplit=(src)=>{
+// 	let index, topic, subtopic;
+// 	const indexSplitRegex = /(?<!\\):/;
+// 	const subTopicSplit = /(?<!\\)\//;
+
+// 	let working = [];
+// 	if(src.search(indexSplitRegex) < 0){
+// 		working[1] = src.trim();
+// 		index = 'Index:';
+// 	} else {
+// 		working = src.split(indexSplitRegex);
+// 		index = working[0].replace('\\:', ':').trim();
+// 		if(!working[1]?.trim()>0) {
+// 			working.splice(1, 1);
+// 		}
+// 		working[1] = working[1]?.trim();
+// 	}
+
+// 	if(working[1]) {
+// 		if(working[1].search(subTopicSplit) !== -1){
+// 			const topics = working[1].split(subTopicSplit);
+// 			topic = topics[0].trim();
+// 			if(topics[1]) { topics[1] = topics[1].trim(); }
+// 			if(topics[1]?.length>0) {
+// 				subtopic = topics[1].trim();
+// 			}
+// 		} else {
+// 			topic = working[1];
+// 		}
+// 	}
+
+// 	if(topic?.length>0) {
+// 		return { index: index, topic: topic, subtopic: subtopic };
+// 	} else {
+// 		return undefined;
+// 	}
+
+// };
+
 const indexAnchors = {
 	name  : 'indexAnchor',
 	level : 'block',
-	start(src) {return src.match(/^#(.+)(?<!\\):([^/]+)((?<!\\)\/([^|]+))?\n/)?.index;}, // Hint to Marked.js to stop and check for a match
+	start(src) {return src.match(/^#((.+)(?<!\\):)?(.+)((?:(?<!\\)\/(.+)))?\n/)?.index;}, // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		// const inlineRegex = /^#((.+)(?<!\\):)?([^/]+)((?<!\\)\/([^|]+))?\n/gmy;
 		const inlineRegex = /^#((.+)(?<!\\):)?(.+)((?:(?<!\\)\/(.+)))?\n/gmy;
 
 		const indexEntry = {};
@@ -414,7 +462,7 @@ const indexAnchors = {
 			let entryMatch = undefined;
 			if((crossReference[0][1] !== '#') && (crossReference[0][1] !== ' ')) {
 
-				entryMatch = indexSplit(crossReference[0].slice(1));
+				entryMatch = indexGlossarySplit(crossReference[0].slice(1));
 			}
 			if(!entryMatch) { return; }
 			indexEntry.subtopic = entryMatch?.subtopic ? entryMatch.subtopic : undefined;
