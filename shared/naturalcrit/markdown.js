@@ -830,9 +830,9 @@ const indexGlossarySplit=(src, isIndex=true)=>{
 const glossaryEntries = {
 	name  : 'glossaryAnchor',
 	level : 'block',
-	start(src) {return src.match(/^#[^ ].*\/\/.*\n/)?.index;}, // Hint to Marked.js to stop and check for a match
+	start(src) {return src.match(/^#[^ #].*\/\/.*\n/)?.index;}, // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const inlineRegex = /^#[^ ]((.+)(?<!\\):)?(.+)\n/gy;
+		const inlineRegex = /^#[^ #]((.+)(?<!\\):)?(.+)\n/gy;
 
 		const glossaryEntry = {};
 
