@@ -8,6 +8,13 @@
     }
   },
   "V3": {
+    "5e2024": {
+      "name": "5e 2024 PHB",
+      "renderer": "V3",
+      "baseTheme": "Blank",
+      "baseSnippets": false,
+      "path": "5e2024"
+    },
     "5eDMG": {
       "name": "5e DMG",
       "renderer": "V3",
