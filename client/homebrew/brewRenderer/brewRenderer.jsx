@@ -1,7 +1,7 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
-const { useState, useRef, useMemo, useEffect } = React;
+const { useState, useRef, useMemo, useEffect, Suspense } = React;
 const _ = require('lodash');
 
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
@@ -279,36 +279,36 @@ const BrewRenderer = (props)=>{
 	return (
 		<>
 			{/*render dummy page while iFrame is mounting.*/}
-			{!state.isMounted
-				? <div className='brewRenderer'>
-					<div className='pages'>
-						{renderDummyPage(1)}
-					</div>
+			<Suspense fallback={<div className='brewRenderer'>
+				<div className='pages'>
+					{renderDummyPage(1)}
 				</div>
-				: null}
-
-			<ErrorBar errors={props.errors} />
-			<div className='popups' ref={mainRef}>
-				<RenderWarnings />
-				<NotificationPopup />
-			</div>
-
-			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>
-
-			{/*render in iFrame so broken code doesn't crash the site.*/}
-			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
-				style={{ width: '100%', height: '100%', visibility: state.visibility }}
-				contentDidMount={frameDidMount}
-				onClick={()=>{emitClick();}}
+			</div>}
 			>
-				<div className={`brewRenderer ${global.config.deployment && 'deployment'}`}
-					onKeyDown={handleControlKeys}
-					tabIndex={-1}
-					style={ styleObject }
-				>
 
-					{/* Apply CSS from Style tab and render pages from Markdown tab */}
-					{state.isMounted
+
+				<ErrorBar errors={props.errors} />
+				<div className='popups' ref={mainRef}>
+					<RenderWarnings />
+					<NotificationPopup />
+				</div>
+
+				<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>
+
+				{/*render in iFrame so broken code doesn't crash the site.*/}
+				<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
+					style={{ width: '100%', height: '100%', visibility: state.visibility }}
+					contentDidMount={frameDidMount}
+					onClick={()=>{emitClick();}}
+				>
+					<div className={`brewRenderer ${global.config.deployment && 'deployment'}`}
+						onKeyDown={handleControlKeys}
+						tabIndex={-1}
+						style={ styleObject }
+					>
+
+						{/* Apply CSS from Style tab and render pages from Markdown tab */}
+						{state.isMounted
 						&&
 						<>
 							{renderedStyle}
@@ -316,10 +316,11 @@ const BrewRenderer = (props)=>{
 								{renderedPages}
 							</div>
 						</>
-					}
-				</div>
-				{headerState ? <HeaderNav ref={pagesRef} /> : <></>}
-			</Frame>
+						}
+					</div>
+					{headerState ? <HeaderNav ref={pagesRef} /> : <></>}
+				</Frame>
+			</Suspense>
 		</>
 	);
 };
