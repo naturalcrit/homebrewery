@@ -924,13 +924,18 @@ let globalPageNumber = 0;
 
 const Markdown = {
 	marked : Marked,
-	render : (rawBrewText, pageNumber=0)=>{
+	render : (rawBrewText, pageNumber=0, renderer='V3')=>{
 		globalVarsList[pageNumber] = {};					//Reset global links for current page, to ensure values are parsed in order
 		varsQueue                  = [];						//Could move into MarkedVariables()
 		globalPageNumber           = pageNumber;
 		if(pageNumber==0) {
 			MarkedGFMResetHeadingIDs();
 		}
+
+		// Toggle plugins with behavior different in V3 and V4 - For test validation this is inverted to
+		// force the V4 behavior while. To verify the code does not break existing patterns
+		// change the !== to ===.
+		MarkedExtendedTables().extensions[0].setMode(renderer.toUpperCase() !== 'V3');
 
 		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`);
 
