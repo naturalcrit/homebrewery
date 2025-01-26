@@ -7,7 +7,7 @@ import MarkedExtendedTables     from 'marked-extended-tables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
-import Mermaid from 'mermaid';
+import { default as Mermaid } from 'mermaid';
 
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
