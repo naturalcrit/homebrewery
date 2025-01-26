@@ -7,7 +7,7 @@ import MarkedExtendedTables     from 'marked-extended-tables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
-import Mermaid from 'mermaidjs';
+import Mermaid from 'mermaid';
 
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
@@ -186,6 +186,7 @@ const isBrowser = global.document !== undefined && global.window !== undefined;
 
 // Adapted from marked-mermaid.
 const mermaidCode = (options={})=>{
+	console.log(Mermaid);
 	const defaultOptions = {
 		mermaid   : {},
 		container : undefined,
@@ -195,7 +196,7 @@ const mermaidCode = (options={})=>{
 	// Make sure we have access to the document and window object (client-side rendering)
 	if(isBrowser) {
 		// Initialize Mermaid, but do not automatically start
-		Mermaid.initialize({
+		Mermaid.mermaidAPI.initialize({
 			...options.mermaid,
 			startOnLoad : false
     	});
@@ -207,7 +208,7 @@ const mermaidCode = (options={})=>{
 		const id = Math.floor(Math.random() * 100);
 		try {
 		  return `<pre id="mermaid-${id}" class="mermaid" data-processed="true">
-		  ${Mermaid.render(`mermaid-${id}`, code, callback ?? (()=>{ }), container)}
+		  ${Mermaid.mermaidAPI.render(`mermaid-${id}`, code, callback ?? (()=>{ }), container)}
 		  </pre>`;
 		} catch (ex) {
 		  return `<pre><code>${ex}</code></pre>`;
