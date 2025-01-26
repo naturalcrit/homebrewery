@@ -1,5 +1,5 @@
-import {model as HomebrewModel }     from './homebrew.model.js';
-import {model as NotificationModel } from './notifications.model.js';
+import { model as HomebrewModel }     from './homebrew.model.js';
+import { model as NotificationModel } from './notifications.model.js';
 import express    from 'express';
 import Moment     from 'moment';
 import zlib       from 'zlib';
@@ -107,6 +107,9 @@ router.put('/admin/clean/script/:id', asyncHandler(HomebrewAPI.getBrew('admin', 
 	splitTextStyleAndMetadata(brew);
 
 	req.body = brew;
+
+	// Remove Account from request to prevent Admin user from being added to brew as an Author
+	req.account = undefined;
 
 	return await HomebrewAPI.updateBrew(req, res);
 });

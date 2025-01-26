@@ -7,11 +7,12 @@ const { pack, watchFile, livereload } = vitreum;
 import lessTransform  from 'vitreum/transforms/less.js';
 import assetTransform from 'vitreum/transforms/asset.js';
 import babel          from '@babel/core';
+import babelConfig    from '../babel.config.json' with { type : 'json' };
 import less           from 'less';
 
 const isDev = !!process.argv.find((arg) => arg === '--dev');
 
-const babelify = async (code)=>(await babel.transformAsync(code, { presets: [['@babel/preset-env', { 'exclude': ['proposal-dynamic-import'] }], '@babel/preset-react'], plugins: ['@babel/plugin-transform-runtime'] })).code;
+const babelify = async (code)=>(await babel.transformAsync(code, babelConfig)).code;
 
 const transforms = {
 	'.js'   : (code, filename, opts)=>babelify(code),
