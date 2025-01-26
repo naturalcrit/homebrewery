@@ -7,6 +7,7 @@ import MarkedExtendedTables     from 'marked-extended-tables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
+import Mermaid from 'mermaidjs';
 
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
@@ -127,6 +128,121 @@ tokenizer.def = function () {
 	return undefined;
 };
 
+const mermaidConfig = {
+	// container : pageElem,
+	mermaid : {
+		theme          : 'base',
+		themeVariables : {
+			fontFamily         : 'BookInsanityRemake',
+			fontSize           : '12px',
+			background         : '#EEE5CE',
+			mainBkg            : '#faf7ea',
+			primaryColor       : '#faf7ea',
+			primaryTextColor   : '#000000',
+			primaryBorderColor : '#c9ad6a',
+			lineColor          : '#c9ad6a',
+			secondaryColor     : '#E0E5C1',
+			noteBkgColor       : '#E0E5C1'
+		},
+		themeCSS : `
+			.node .nodeLabel p { inline-size: 320px; white-space: pre-wrap;  }
+			.node * { stroke-width: 2px !important; }
+		`,
+		flowchart : {
+			useMaxWidth    : true,
+			useWidth       : pageElem ? pageElem.clientWidth : 0,
+			htmlLabels     : true,
+			curve          : 'linear',
+			diagramPadding : 2,
+			nodeSpacing    : 40,
+			rankSpacing    : 40,
+			padding        : 25,
+		},
+		gantt : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		},
+		sequence : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		},
+		pie : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		},
+		requirement : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		},
+		c4 : {
+			useMaxWidth : true,
+			useWidth    : pageElem ? pageElem.clientWidth : 0
+		}
+	}
+};
+
+let mermaidInitialised = false;
+const isBrowser = global.document !== undefined && global.window !== undefined;
+
+// Adapted from marked-mermaid.
+const mermaidCode = (options={})=>{
+	const defaultOptions = {
+		mermaid   : {},
+		container : undefined,
+		callback  : undefined
+	  };
+
+	// Make sure we have access to the document and window object (client-side rendering)
+	if(isBrowser) {
+		// Initialize Mermaid, but do not automatically start
+		Mermaid.initialize({
+			...options.mermaid,
+			startOnLoad : false
+    	});
+		mermaidInitialised = true;
+  	}
+
+	// We memoize mermaid.render here to optimize performance
+	const renderMermaid = _.memoize((code, container = undefined, callback = undefined)=>{
+		const id = Math.floor(Math.random() * 100);
+		try {
+		  return `<pre id="mermaid-${id}" class="mermaid" data-processed="true">
+		  ${Mermaid.render(`mermaid-${id}`, code, callback ?? (()=>{ }), container)}
+		  </pre>`;
+		} catch (ex) {
+		  return `<pre><code>${ex}</code></pre>`;
+		}
+	  });
+
+	options = {
+		...defaultOptions,
+		...options
+	};
+
+	return {
+		extensions : [{
+			name  : 'code', // Needs to be "code" to be able to override the default code block renderer
+			level : 'block',
+			renderer({ lang, text }) {
+				if(lang !== 'mermaid') return false; // Continue with default renderer if it's not a mermaid code block
+
+				// Define HTML content in case of server-side rendering
+				let htmlContent = `<pre class="mermaid">${text}</pre>`;
+				if(!mermaidInitialised) {
+					htmlContent += `<script type="module">
+					import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs';
+					mermaid.initialize(${JSON.stringify({ startOnLoad: true, ...options.mermaid })});
+					</script>`;
+					mermaidInitialised = true;
+				}
+
+				return isBrowser
+			  		? renderMermaid(text, options.container, options.callback)
+			  		: htmlContent;
+			}
+		}]
+	};
+};
 
 const mustacheSpans = {
 	name  : 'mustacheSpans',
@@ -805,6 +921,7 @@ Marked.use(MarkedVariables());
 Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
 	nonbreakingSpaces, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
+Marked.use(mermaidCode(mermaidConfig));
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }),
 	MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
