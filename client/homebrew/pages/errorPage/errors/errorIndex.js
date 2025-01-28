@@ -3,14 +3,15 @@ import _ from 'lodash';
 
 const loginUrl = 'https://www.naturalcrit.com/login';
 
+// Prevent parsing text (e.g. document titles) as markdown
+const escape = (text) => {
+	return text.split('').map(char => `\\${char}`).join('');
+};
+
 //001-050 : Brew errors
 //050-100 : Other pages errors
 
 const errorIndex = (props)=>{
-	const escape = (text) => {
-		return text.split('').map(char => `\\${char}`).join('');
-	};
-
 	return {
 		// Default catch all
 		'00' : dedent`
