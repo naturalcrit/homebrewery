@@ -1,5 +1,4 @@
 const dedent = require('dedent-tabs').default;
-import _ from 'lodash';
 
 const loginUrl = 'https://www.naturalcrit.com/login';
 
