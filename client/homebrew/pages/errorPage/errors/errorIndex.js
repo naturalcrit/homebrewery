@@ -7,6 +7,10 @@ const loginUrl = 'https://www.naturalcrit.com/login';
 //050-100 : Other pages errors
 
 const errorIndex = (props)=>{
+	const escape = (text) => {
+		return text.split('').map(char => `\\${char}`).join('');
+	};
+
 	return {
 		// Default catch all
 		'00' : dedent`
@@ -90,7 +94,7 @@ const errorIndex = (props)=>{
 		
 		:
 
-		**Brew Title:** ${_.escape(props.brew.brewTitle) || 'Unable to show title'}
+		**Brew Title:** ${escape(props.brew.brewTitle) || 'Unable to show title'}
 
 		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
 		
@@ -105,7 +109,7 @@ const errorIndex = (props)=>{
 		
 		:
 
-		**Brew Title:** ${_.escape(props.brew.brewTitle) || 'Unable to show title'}
+		**Brew Title:** ${escape(props.brew.brewTitle) || 'Unable to show title'}
 
 		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
 
@@ -182,7 +186,7 @@ const errorIndex = (props)=>{
 
 		**Brew ID:**  ${props.brew.brewId}
 		
-		**Brew Title:** ${_.escape(props.brew.brewTitle)}`,
+		**Brew Title:** ${escape(props.brew.brewTitle)}`,
 
 		// ####### Admin page error #######
 		'52' : dedent`
