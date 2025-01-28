@@ -12,7 +12,7 @@ const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
 const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:{[^\n{}]+})?$)/m;
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:{[^\n{}]*})?$)/m;
 const SNIPPETBAR_HEIGHT  = 25;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
@@ -21,8 +21,6 @@ const DEFAULT_STYLE_TEXT = dedent`
 				.myExampleClass {
 					color: black;
 				}`;
-
-
 
 let isJumping = false;
 

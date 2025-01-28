@@ -126,7 +126,7 @@ const BrewRenderer = (props)=>{
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split('\\page');
 	} else {
-		rawPages = props.text.split(/^(?=\\page(?:{[^\n{}]+})?$)/gm);
+		rawPages = props.text.split(/^(?=\\page(?:{[^\n{}]*})?$)/gm);
 	}
 
 	const handlePageVisibilityChange = (pageNum, isVisible, isCenter)=>{
