@@ -1,4 +1,5 @@
 const dedent = require('dedent-tabs').default;
+import _ from 'lodash';
 
 const loginUrl = 'https://www.naturalcrit.com/login';
 
@@ -89,7 +90,7 @@ const errorIndex = (props)=>{
 		
 		:
 
-		**Brew Title:** <pre>${props.brew.brewTitle || 'Unable to show title'}</pre>
+		**Brew Title:** ${_.escape(props.brew.brewTitle) || 'Unable to show title'}
 
 		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
 		
@@ -104,7 +105,7 @@ const errorIndex = (props)=>{
 		
 		:
 
-		**Brew Title:** <pre>${props.brew.brewTitle || 'Unable to show title'}</pre>
+		**Brew Title:** ${_.escape(props.brew.brewTitle) || 'Unable to show title'}
 
 		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
 
@@ -181,7 +182,7 @@ const errorIndex = (props)=>{
 
 		**Brew ID:**  ${props.brew.brewId}
 		
-		**Brew Title:** <pre>${props.brew.brewTitle}</pre>`,
+		**Brew Title:** ${_.escape(props.brew.brewTitle)}`,
 
 		// ####### Admin page error #######
 		'52' : dedent`
