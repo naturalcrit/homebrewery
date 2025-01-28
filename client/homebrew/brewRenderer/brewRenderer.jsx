@@ -40,7 +40,7 @@ const BrewPage = (props)=>{
 		...props
 	};
 	const pageRef = useRef(null);
-	let cleanText = safeHTML(props.contents);
+	const cleanText = safeHTML(props.contents);
 
 	useEffect(()=>{
 		if(!pageRef.current) return;
@@ -77,7 +77,7 @@ const BrewPage = (props)=>{
 			centerObserver.disconnect();
 		};
 	}, []);
-	
+
 	return <div className={props.className} id={`p${props.index + 1}`} data-index={props.index} ref={pageRef} style={props.style} {...props.attributes}>
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
@@ -185,11 +185,11 @@ const BrewRenderer = (props)=>{
 			return <BrewPage className='page phb' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} />;
 		} else {
 			if(pageText.startsWith('\\page')) {
-				let firstLineTokens  = Markdown.marked.lexer(pageText.split('\n', 1)[0])[0].tokens;
-				let injectedTags = firstLineTokens.find(obj => obj.injectedTags !== undefined)?.injectedTags;
+				const firstLineTokens  = Markdown.marked.lexer(pageText.split('\n', 1)[0])[0].tokens;
+				const injectedTags = firstLineTokens.find((obj)=>obj.injectedTags !== undefined)?.injectedTags;
 				if(injectedTags) {
-					styles = {...styles, ...injectedTags.styles};
-					styles = _.mapKeys(styles, (v, k) => _.camelCase(k)); // Convert CSS to camelCase for React
+					styles = { ...styles, ...injectedTags.styles };
+					styles = _.mapKeys(styles, (v, k)=>_.camelCase(k)); // Convert CSS to camelCase for React
 					attributes = injectedTags.attributes;
 				}
 				pageText = pageText.includes('\n') ? pageText.substring(pageText.indexOf('\n') + 1) : ''; // Remove the \page line

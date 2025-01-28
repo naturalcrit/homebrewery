@@ -193,7 +193,7 @@ const Editor = createClass({
 				     (this.props.renderer == 'V3'     && line.match(/^(?=\\page(?:{[^\n{}]+})?$)/))) {
 
 						if(lineNumber > 0)      // Since \page is optional on first line of document,
-							editorPageCount += 1; // don't use it to increment page count; stay at 1 
+							editorPageCount += 1; // don't use it to increment page count; stay at 1
 
 						// add back the original class 'background' but also add the new class '.pageline'
 						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');

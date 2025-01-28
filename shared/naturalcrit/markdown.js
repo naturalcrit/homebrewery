@@ -1002,7 +1002,7 @@ const Markdown = {
 		});
 
 		return errors;
-	}
+	},
 };
 
 export default Markdown;
