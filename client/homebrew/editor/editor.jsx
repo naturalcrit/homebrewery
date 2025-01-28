@@ -12,7 +12,8 @@ const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
 const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
 
-const SNIPPETBAR_HEIGHT = 25;
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:{[^\n{}]+})?$)/m;
+const SNIPPETBAR_HEIGHT  = 25;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
 				/* Any CSS here will apply to your document! */
@@ -20,6 +21,8 @@ const DEFAULT_STYLE_TEXT = dedent`
 				.myExampleClass {
 					color: black;
 				}`;
+
+
 
 let isJumping = false;
 
@@ -127,14 +130,14 @@ const Editor = createClass({
 
 	updateCurrentCursorPage : function(cursor) {
 		const lines = this.props.brew.text.split('\n').slice(1, cursor.line + 1);
-		const pageRegex = this.props.brew.renderer == 'V3' ? /^(?=\\page(?:{[^\n{}]+})?$)/ : /\\page/;
+		const pageRegex = this.props.brew.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
 		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1);
 		this.props.onCursorPageChange(currentPage);
 	},
 
 	updateCurrentViewPage : function(topScrollLine) {
 		const lines = this.props.brew.text.split('\n').slice(1, topScrollLine + 1);
-		const pageRegex = this.props.brew.renderer == 'V3' ? /^(?=\\page(?:{[^\n{}]+})?$)/ : /\\page/;
+		const pageRegex = this.props.brew.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
 		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1);
 		this.props.onViewPageChange(currentPage);
 	},
@@ -190,7 +193,7 @@ const Editor = createClass({
 
 					// Styling for \page breaks
 					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
-				     (this.props.renderer == 'V3'     && line.match(/^(?=\\page(?:{[^\n{}]+})?$)/))) {
+				     (this.props.renderer == 'V3'     && line.match(PAGEBREAK_REGEX_V3))) {
 
 						if(lineNumber > 0)      // Since \page is optional on first line of document,
 							editorPageCount += 1; // don't use it to increment page count; stay at 1
@@ -359,7 +362,7 @@ const Editor = createClass({
 		if(!this.isText() || isJumping)
 			return;
 
-		const textSplit  = this.props.renderer == 'V3' ? /^(?=\\page(?:{[^\n{}]+})?$)/gm : /\\page/;
+		const textSplit  = this.props.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
 		const textString = this.props.brew.text.split(textSplit).slice(0, targetPage-1).join(textSplit);
 		const targetLine = textString.match('\n') ? textString.split('\n').length - 1 : -1;
 
