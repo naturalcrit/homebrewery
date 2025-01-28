@@ -5,7 +5,7 @@ const loginUrl = 'https://www.naturalcrit.com/login';
 
 // Prevent parsing text (e.g. document titles) as markdown
 const escape = (text) => {
-	return text.split('').map(char => `\\${char}`).join('');
+	return text.split('').map(char => `&#${char.charCodeAt(0)};`).join('');
 };
 
 //001-050 : Brew errors
