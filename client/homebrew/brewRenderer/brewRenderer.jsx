@@ -17,10 +17,9 @@ const dedent = require('dedent-tabs').default;
 const { printCurrentBrew } = require('../../../shared/helpers.js');
 
 import HeaderNav from './headerNav/headerNav.jsx';
-
 import { safeHTML } from './safeHTML.js';
 
-
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?: *{[^\n{}]*})?$)/m;
 const PAGE_HEIGHT = 1056;
 
 const INITIAL_CONTENT = dedent`
@@ -126,7 +125,7 @@ const BrewRenderer = (props)=>{
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split('\\page');
 	} else {
-		rawPages = props.text.split(/^(?=\\page(?:{[^\n{}]*})?$)/gm);
+		rawPages = props.text.split(PAGEBREAK_REGEX_V3);
 	}
 
 	const handlePageVisibilityChange = (pageNum, isVisible, isCenter)=>{
