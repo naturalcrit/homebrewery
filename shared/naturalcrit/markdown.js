@@ -735,7 +735,7 @@ function MarkedVariables() {
 						varsQueue.push(
 							{ type    : 'varCallInline',
 								varName : label,
-								content : match[9]
+								content : match[9].replace(/\s+/g, ' ').replace(/\[\s+/, '[').replace(/\s+\]/, ']')
 							});
 					}
 					if(match[12]) { // Inline Call
