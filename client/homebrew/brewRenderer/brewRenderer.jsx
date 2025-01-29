@@ -189,7 +189,7 @@ const BrewRenderer = (props)=>{
 				const injectedTags = firstLineTokens.find((obj)=>obj.injectedTags !== undefined)?.injectedTags;
 				if(injectedTags) {
 					styles     = { ...styles, ...injectedTags.styles };
-					styles     = _.mapKeys(styles, (v, k)=>_.camelCase(k)); // Convert CSS to camelCase for React
+					styles     = _.mapKeys(styles, (v, k) => k.startsWith('--') ? k : _.camelCase(k)); // Convert CSS to camelCase for React
 					classes    = [classes, injectedTags.classes].join(' ').trim();
 					attributes = injectedTags.attributes;
 				}
