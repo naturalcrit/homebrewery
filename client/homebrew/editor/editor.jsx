@@ -181,7 +181,7 @@ const Editor = createClass({
 				let userSnippetCount = 1; // start snippet count from page 2
 
 				const whichSource = this.state.view === 'text' ? this.props.brew.text : this.props.brew.snippets;
-				_.forEach(whichSource.split('\n'), (line, lineNumber)=>{
+				_.forEach(whichSource?.split('\n'), (line, lineNumber)=>{
 
 					//reset custom line styles
 					codeMirror.removeLineClass(lineNumber, 'background', 'pageLine');
