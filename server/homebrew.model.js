@@ -78,9 +78,11 @@ HomebrewSchema.statics.getDocumentCountsByDate = async function() {
 
 HomebrewSchema.statics.getDocumentCountsByLang = async function() {
 	return this.aggregate([
+		//To join null with end do _id: { $ifNull: ["$lang", "en"] } in the group
+		//To ignore english or null brews do {$match: {lang: { $nin: [null, en] } } }, before the group
 		{
 			$group: {
-				_id: "$lang",
+				_id: { $ifNull: ["$lang", "en"] },
 				count: { $sum: 1 }
 			}
 		},

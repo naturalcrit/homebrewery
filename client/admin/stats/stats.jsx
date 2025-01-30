@@ -25,6 +25,8 @@ const Stats = () => {
 	};
 
 	const fetchChartData = async (category) => {
+		setLoading(true);
+		setError(null);
 		try {
 			console.log(`fetching at: /admin/brewsBy${category}`);
 			const response = await fetch(`/admin/brewsBy${category}`); // Fetch aggregated data
@@ -51,23 +53,28 @@ const Stats = () => {
 	};
 
 	const chartRange = (values, rangeType) => {
-		const min = Math.min(...values);
-		const max = Math.max(...values);
-		const range = max - min;
+		let min = Infinity,
+			max = -Infinity;
+
+		// Efficiently find min and max
+		for (let val of values) {
+			if (val < min) min = val;
+			if (val > max) max = val;
+		}
+
+		let rangeSize = 20; // Max desired range size
+		let step = Math.ceil((max - min) / rangeSize) || 1; // Ensure step is at least 1
+
+		let result = [];
 
 		if (rangeType === '0 to max') {
-			// Create an array of multiples of 5 from 0 to max
-			return Array.from(
-				{ length: Math.floor(max / 5) + 1 },
-				(_, i) => i * 5
-			);
+			for (let i = 0; i <= max; i += step) result.push(i);
 		} else if (rangeType === 'min to max') {
-			// Create an array of multiples of 5 starting from the minimum value, and up to the max value
-			return Array.from(
-				{ length: Math.floor(range / 5) + 1 },
-				(_, i) => min + i * 5
-			);
+			let start = Math.ceil(min / step) * step; // Align to step
+			for (let i = start; i <= max; i += step) result.push(i);
 		}
+
+		return result;
 	};
 
 	console.log(stats, chartData);
@@ -78,8 +85,7 @@ const Stats = () => {
 				<button
 					onClick={() => {
 						fetchStats();
-					}}
-				>
+					}}>
 					Fetch Stats
 				</button>
 			);
@@ -91,8 +97,7 @@ const Stats = () => {
 					<button
 						onClick={() => {
 							fetchStats();
-						}}
-					>
+						}}>
 						Refetch Stats
 					</button>
 				</div>
@@ -109,68 +114,35 @@ const Stats = () => {
 							<tr>
 								<td>Total published</td>
 								<td>{stats.totalPublished}</td>
-								<td>
-									{Math.round(
-										(stats.totalPublished /
-											stats.totalBrews) *
-											100
-									)}
-									%
-								</td>
+								<td>{Math.round((stats.totalPublished / stats.totalBrews) * 100)}%</td>
 							</tr>
 						)}
 						{stats.totalUnauthored !== 0 && (
 							<tr>
 								<td>Total without author</td>
 								<td>{stats.totalUnauthored}</td>
-								<td>
-									{Math.round(
-										(stats.totalUnauthored /
-											stats.totalBrews) *
-											100
-									)}
-									%
-								</td>
+								<td>{Math.round((stats.totalUnauthored / stats.totalBrews) * 100)}%</td>
 							</tr>
 						)}
 						{stats.totalGoogle !== 0 && (
 							<tr>
 								<td>Total in Google storage</td>
 								<td>{stats.totalGoogle}</td>
-								<td>
-									{Math.round(
-										(stats.totalGoogle / stats.totalBrews) *
-											100
-									)}
-									%
-								</td>
+								<td>{Math.round((stats.totalGoogle / stats.totalBrews) * 100)}%</td>
 							</tr>
 						)}
 						{stats.totalLegacy !== 0 && (
 							<tr>
 								<td>Total in Legacy renderer</td>
 								<td>{stats.totalLegacy}</td>
-								<td>
-									{Math.round(
-										(stats.totalLegacy / stats.totalBrews) *
-											100
-									)}
-									%
-								</td>
+								<td>{Math.round((stats.totalLegacy / stats.totalBrews) * 100)}%</td>
 							</tr>
 						)}
 						{stats.totalThumbnail !== 0 && (
 							<tr>
 								<td>Total with thumbnail</td>
 								<td>{stats.totalThumbnail}</td>
-								<td>
-									{Math.round(
-										(stats.totalThumbnail /
-											stats.totalBrews) *
-											100
-									)}
-									%
-								</td>
+								<td>{Math.round((stats.totalThumbnail / stats.totalBrews) * 100)}%</td>
 							</tr>
 						)}
 					</tbody>
@@ -188,22 +160,20 @@ const Stats = () => {
 					className={`fetch${category}`}
 					onClick={() => {
 						fetchChartData(category);
-					}}
-				>
-					Fetch Chart Data
+					}}>
+					Fetch Chart Brews per {category}
 				</button>
 			);
 		}
 		return (
 			<>
 				<div className="heading">
-					<h4>Brews per date</h4>
+					<h4>Brews per {category}</h4>
 					<button
 						className={`fetch${category}`}
 						onClick={() => {
 							fetchChartData(category);
-						}}
-					>
+						}}>
 						Refetch Chart Data
 					</button>
 				</div>
@@ -212,22 +182,15 @@ const Stats = () => {
 						<div className="axisLabel">Brews</div>
 						{
 							// Map chartRange as spans, setting their bottom position as percentage of bottom
-							chartRange(dataset.data, '0 to max')?.map(
-								(value, index) => (
-									<span
-										key={index}
-										style={{
-											bottom: `${
-												(value /
-													Math.max(...dataset.data)) *
-												100
-											}%`,
-										}}
-									>
-										{value}
-									</span>
-								)
-							)
+							chartRange(dataset.data, '0 to max')?.map((value, index) => (
+								<span
+									key={index}
+									style={{
+										bottom: `${(value / Math.max(...dataset.data)) * 100}%`,
+									}}>
+									{value}
+								</span>
+							))
 						}
 					</div>
 					<div className="data">
@@ -235,22 +198,13 @@ const Stats = () => {
 							<div
 								key={index}
 								className="column"
-								title={value}
+								title={`${value} brews of ${dataset.labels[index]}`}
 								style={{
-									left: `${
-										(index / dataset.labels.length) * 100
-									}%`,
-									top: `${
-										100 -
-										(value / Math.max(...dataset.data)) *
-											100
-									}%`,
+									left: `${(index / dataset.labels.length) * 100}%`,
+									top: `${100 - (value / Math.max(...dataset.data)) * 100}%`,
 									bottom: '0',
-									width: `${
-										100 / dataset.labels.length - 0.3
-									}%`,
-								}}
-							></div>
+									width: `${100 / dataset.labels.length - 0.3}%`,
+								}}></div>
 						))}
 					</div>
 					<div className="bottomAxis">
@@ -262,16 +216,14 @@ const Stats = () => {
 									className="bottomLabel"
 									style={{
 										left: `${
-											(index / dataset.labels.length) *
-												100 +
-											(50 / dataset.labels.length - 0.3)
+											(index / dataset.labels.length) * 100
 										}%`,
-									}}
-								>
+									}}>
 									{label}
 								</span>
 							))
 						}
+						<div className="axisLabel">{category}</div>
 					</div>
 				</div>
 			</>
