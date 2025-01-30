@@ -166,7 +166,9 @@ Fixes issue [#3904](https://github.com/naturalcrit/homebrewery/issues/3904)
 
 ##### Gazook89
 
-* [x] Use Intersection Observers to detect on-screen pages - fixes issue [#3824](https://github.com/naturalcrit/homebrewery/issues/3824)
+* [x] Use Intersection Observers to detect on-screen pages
+
+Fixes issue [#3824](https://github.com/naturalcrit/homebrewery/issues/3824)
 
 }}
 
