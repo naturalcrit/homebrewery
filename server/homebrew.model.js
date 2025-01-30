@@ -65,7 +65,7 @@ HomebrewSchema.statics.getDocumentCountsByDate = async function() {
 	return this.aggregate([
 		{
 			$group : {
-				_id   : { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } }, // Group by formatted date
+				_id   : { $dateToString: { format: '%Y-%m', date: '$createdAt' } }, // Group by formatted date
 				count : { $sum: 1 } // Count documents for each date
 			}
 		},

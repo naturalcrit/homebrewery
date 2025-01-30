@@ -49,6 +49,8 @@ const Stats = () => {
 		} catch (error) {
 			console.error('Failed to fetch chart data:', error);
 			setError('Failed to fetch chart data.');
+		} finally {
+			setLoading(false);
 		}
 	};
 
@@ -215,9 +217,7 @@ const Stats = () => {
 									key={index}
 									className="bottomLabel"
 									style={{
-										left: `${
-											(index / dataset.labels.length) * 100
-										}%`,
+										left: `${(index / dataset.labels.length) * 100}%`,
 									}}>
 									{label}
 								</span>
