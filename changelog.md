@@ -148,6 +148,10 @@ Fixes issue [#3955](https://github.com/naturalcrit/homebrewery/issues/3955)
 
 Fixes issue [#3824](https://github.com/naturalcrit/homebrewery/issues/3824)
 
+
+##### All
+* [x] Update dependencies and scripts
+* [x] Refactor components and fix various errors
 }}
 
 ### Wednesday 11/27/2024 - v3.16.1
