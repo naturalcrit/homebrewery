@@ -96,15 +96,9 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 
 * [x] Improve navigation bar styling
 
-* [x] Add author renaming backend functions
+* [x] Add author renaming feature
 
 * [x] Fix malformed URI error when generating Reddit links
-
-* [x] Refactor User Page's Brew item component
-
-* [x] Refactor Share Page
-
-* [x] Refactor `dialog` notifications (with calculuschild and G-Ambatte)
 
 ##### dbolack
 
@@ -118,13 +112,9 @@ Fixes issue [#3919](https://github.com/naturalcrit/homebrewery/issues/3919)
 
 Fixes issue [#1930](https://github.com/naturalcrit/homebrewery/issues/1930)
 
-* [x] Fix incorrect state update call
+* [x] Allow CSS inject directly in page by doing: `/page{}` (With calculuschild)
 
-Fixes issue [#3974](https://github.com/naturalcrit/homebrewery/issues/3974)
-
-* [x] Allow CSS inject directly in page by doing: `/page{}`
-
-Fixes issue [#3901](https://github.com/naturalcrit/homebrewery/issues/3901) With calculuschild
+Fixes issue [#3901](https://github.com/naturalcrit/homebrewery/issues/3901) 
 
 * [x] Update Ubuntu install instructions
 
@@ -134,15 +124,11 @@ Fixes issue [#1952](https://github.com/naturalcrit/homebrewery/issues/1952)
 
 ##### G-Ambatte
 
-* [x] Correct obsolete tag data
+* [x] Fix crash when opening brew Properties tab
 
 Fixes issue [#3927](https://github.com/naturalcrit/homebrewery/issues/3927)
 
-* [x] Stop admin user being added as an author when updating brews via admin tools
-
-Fixes issue [#3952](https://github.com/naturalcrit/homebrewery/issues/3952)
-
-* [x] Add steps to refresh Google token to error page
+* [x] Show credentials error when oportune
 
 Fixes issue [#3955](https://github.com/naturalcrit/homebrewery/issues/3955)
 
@@ -150,15 +136,7 @@ Fixes issue [#3955](https://github.com/naturalcrit/homebrewery/issues/3955)
 
 ##### calculuschild
 
-* [x] Fetch Google brews using user auth instead of service account
-
-Fixes issue [#2954](https://github.com/naturalcrit/homebrewery/issues/2954)
-
-* [x] Fix content negotiation middleware and tests
-
-Fixes issue [#3904](https://github.com/naturalcrit/homebrewery/issues/3904)
-
-* [x] Add Emojis testing
+* [x] Add CMM and emojis tests
 
 * [x] Fix `toWellFormed() is not a function` for Win 7 users
 
