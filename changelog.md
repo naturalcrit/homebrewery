@@ -90,43 +90,83 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 {{tasklist
 ##### 5e-Cleric
 
-- Update FAQ
-- Fix styling for Vault buttons and checkboxes
-- Improve navigation bar styling
-- Add author renaming backend functions
-- Fix malformed URI error when generating Reddit links
-- Refactor User Page's Brew item component
-- Refactor Share Page
-- Refactor `dialog` notifications (with calculuschild and G-Ambatte)
+* [x] Update FAQ
+
+* [x] Fix styling for Vault buttons and checkboxes
+
+* [x] Improve navigation bar styling
+
+* [x] Add author renaming backend functions
+
+* [x] Fix malformed URI error when generating Reddit links
+
+* [x] Refactor User Page's Brew item component
+
+* [x] Refactor Share Page
+
+* [x] Refactor `dialog` notifications (with calculuschild and G-Ambatte)
 
 ##### dbolack
 
-- Fix page shadows toolbar option - fixes issue [#3919](https://github.com/naturalcrit/homebrewery/issues/3919)
-- Add Markdown for non-breaking spaces (` :>>> `)
-- Update Docker install instructions - fixes issue [#1930](https://github.com/naturalcrit/homebrewery/issues/1930)
-- Fix incorrect state update call - fixes issue [#3974](https://github.com/naturalcrit/homebrewery/issues/3974)
-- Allow CSS inject directly in page by doing: `/page{}` - fixes issue [#3901](https://github.com/naturalcrit/homebrewery/issues/3901) With calculuschild
-- Update Ubuntu install instructions - fixes issue [#1952](https://github.com/naturalcrit/homebrewery/issues/1952)
-- Add align paragraph markdown (`:-: text`)
+* [x] Fix page shadows toolbar option
+
+Fixes issue [#3919](https://github.com/naturalcrit/homebrewery/issues/3919)
+
+* [x] Add Markdown for non-breaking spaces (` :>>> `)
+
+* [x] Update Docker install instructions
+
+Fixes issue [#1930](https://github.com/naturalcrit/homebrewery/issues/1930)
+
+* [x] Fix incorrect state update call
+
+Fixes issue [#3974](https://github.com/naturalcrit/homebrewery/issues/3974)
+
+* [x] Allow CSS inject directly in page by doing: `/page{}`
+
+Fixes issue [#3901](https://github.com/naturalcrit/homebrewery/issues/3901) With calculuschild
+
+* [x] Update Ubuntu install instructions
+
+Fixes issue [#1952](https://github.com/naturalcrit/homebrewery/issues/1952)
+
+* [x] Add align paragraph markdown (`:-: text`)
 
 ##### G-Ambatte
 
-- Correct obsolete tag data - fixes issue [#3927](https://github.com/naturalcrit/homebrewery/issues/3927)
-- Stop admin user being added as an author when updating brews via admin tools - fixes issue [#3952](https://github.com/naturalcrit/homebrewery/issues/3952)
-- Add steps to refresh Google token to error page - fixes issue [#3955](https://github.com/naturalcrit/homebrewery/issues/3955)
-- Add navigation by header/ID menu
+* [x] Correct obsolete tag data
+
+Fixes issue [#3927](https://github.com/naturalcrit/homebrewery/issues/3927)
+
+* [x] Stop admin user being added as an author when updating brews via admin tools
+
+Fixes issue [#3952](https://github.com/naturalcrit/homebrewery/issues/3952)
+
+* [x] Add steps to refresh Google token to error page
+
+Fixes issue [#3955](https://github.com/naturalcrit/homebrewery/issues/3955)
+
+* [x] Add navigation by header/ID menu
 
 ##### calculuschild
 
-- Fetch Google brews using user auth instead of service account - fixes issue [#2954](https://github.com/naturalcrit/homebrewery/issues/2954)
-- Fix content negotiation middleware and tests - fixes issue [#3904](https://github.com/naturalcrit/homebrewery/issues/3904)
-- Add Emojis testing
-- Fix `toWellFormed() is not a function` for Win 7 users
-- Add `content-visibility` property to decrease reflow time on large brews
+* [x] Fetch Google brews using user auth instead of service account
+
+Fixes issue [#2954](https://github.com/naturalcrit/homebrewery/issues/2954)
+
+* [x] Fix content negotiation middleware and tests
+
+Fixes issue [#3904](https://github.com/naturalcrit/homebrewery/issues/3904)
+
+* [x] Add Emojis testing
+
+* [x] Fix `toWellFormed() is not a function` for Win 7 users
+
+* [x] Add `content-visibility` property to decrease reflow time on large brews
 
 ##### Gazook89
 
-- Use Intersection Observers to detect on-screen pages - fixes issue [#3824](https://github.com/naturalcrit/homebrewery/issues/3824)
+* [x] Use Intersection Observers to detect on-screen pages - fixes issue [#3824](https://github.com/naturalcrit/homebrewery/issues/3824)
 
 }}
 
