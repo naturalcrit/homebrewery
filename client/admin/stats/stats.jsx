@@ -241,6 +241,8 @@ const Stats = () => {
 				<div className="table">{renderTable()}</div>
 				<div className="graph Date">{renderChart('Date')}</div>
 				<div className={`graph Lang`}>{renderChart('Lang')}</div>
+				<div className="graph pageCount">{renderChart('PageCount')}</div>
+				<div className="graph version">{renderChart('Version')}</div>
 			</div>
 		</section>
 	);

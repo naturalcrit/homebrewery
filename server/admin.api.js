@@ -218,6 +218,25 @@ router.get('/admin/brewsByLang', mw.adminOnly, async (req, res)=>{
 	}
 });
 
+router.get('/admin/brewsByPageCount', mw.adminOnly, async (req, res)=>{
+	try {
+		const data = await HomebrewModel.getDocumentCountsByPageCount();
+		res.json(data);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+router.get('/admin/brewsByVersion', mw.adminOnly, async (req, res)=>{
+	try {
+		const data = await HomebrewModel.getDocumentCountsByVersion();
+		res.json(data);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+
 // #######################   NOTIFICATIONS
 
 router.get('/admin/notification/all', async (req, res, next)=>{

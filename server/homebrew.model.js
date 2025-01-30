@@ -92,6 +92,36 @@ HomebrewSchema.statics.getDocumentCountsByLang = async function() {
 	], { maxTimeMS: 30000 });
 };
 
+HomebrewSchema.statics.getDocumentCountsByPageCount = async function() {
+	return this.aggregate([
+		{$match: {pageCount: { $ne: null, $lte: 50 } } },
+		{
+			$group: {
+				_id: "$pageCount",
+				count: { $sum: 1 }
+			}
+		},
+		{
+			$sort: { _id: 1 }
+		}
+	], { maxTimeMS: 30000 });
+};
+
+HomebrewSchema.statics.getDocumentCountsByVersion = async function() {
+	return this.aggregate([
+		{$match: {version: { $ne: null, $lte: 50 } } },
+		{
+			$group: {
+				_id: "$version",
+				count: { $sum: 1 }
+			}
+		},
+		{
+			$sort: { _id: 1 }
+		}
+	], { maxTimeMS: 30000 });
+};
+
 const Homebrew = mongoose.model('Homebrew', HomebrewSchema);
 
 export { 
