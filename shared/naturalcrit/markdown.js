@@ -173,8 +173,8 @@ const mustacheSpans = {
 		return `<span` +
 			`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 			`${tags.id         ? ` id="${tags.id}"`         : ''}` +
-			`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
-			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
+			`${tags.styles     ? ` style="${Object.entries(tags.styles).map(([key, value])=>`${key}:${value};`).join(' ')}"` : ''}` +
+			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}`     : ''}` +
 			`>${this.parser.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
 	}
 };
@@ -229,7 +229,7 @@ const mustacheDivs = {
 		return `<div` +
 			`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 			`${tags.id         ? ` id="${tags.id}"`         : ''}` +
-			`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
+			`${tags.styles     ? ` style="${Object.entries(tags.styles).map(([key, value])=>`${key}:${value};`).join(' ')}"` : ''}` +
 			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
 			`>${this.parser.parse(token.tokens)}</div>`; // parse to turn child tokens into HTML
 	}
@@ -272,7 +272,7 @@ const mustacheInjectInline = {
 			return `${openingTag[1]}` +
 				`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 				`${tags.id         ? ` id="${tags.id}"`         : ''}` +
-				`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
+				`${!_.isEmpty(tags.styles)     ? ` style="${Object.entries(tags.styles).map(([key, value])=>`${key}:${value};`).join(' ')}"` : ''}` +
 				`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
 				`${openingTag[2]}`; // parse to turn child tokens into HTML
 		}
@@ -316,7 +316,7 @@ const mustacheInjectBlock = {
 				return `${openingTag[1]}` +
 					`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 					`${tags.id         ? ` id="${tags.id}"`         : ''}` +
-					`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
+					`${!_.isEmpty(tags.styles)     ? ` style="${Object.entries(tags.styles).map(([key, value])=>`${key}:${value};`).join(' ')}"` : ''}` +
 					`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
 					`${openingTag[2]}`; // parse to turn child tokens into HTML
 			}
@@ -861,15 +861,20 @@ const processStyleTags = (string)=>{
 			const index = attr.indexOf('=');
 			let [key, value] = [attr.substring(0, index), attr.substring(index + 1)];
 			value = value.replace(/"/g, '');
-			obj[key] = value;
+			obj[key.trim()] = value.trim();
 			return obj;
 		}, {}) || null;
-	const styles     = tags?.length ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim()).join(' ') : null;
+	const styles = tags?.length ? tags.reduce((styleObj, style) => {
+			const index = style.indexOf(':');
+			const [key, value] = [style.substring(0, index), style.substring(index + 1)];
+			styleObj[key.trim()] = value.replace(/"?([^"]*)"?/g, '$1').trim();
+			return styleObj;
+		}, {}) : null;
 
 	return {
 		id         : id,
 		classes    : classes,
-		styles     : styles,
+		styles     : _.isEmpty(styles)     ? null : styles,
 		attributes : _.isEmpty(attributes) ? null : attributes
 	};
 };
@@ -879,21 +884,27 @@ const extractHTMLStyleTags = (htmlString)=>{
 	const firstElementOnly = htmlString.split('>')[0];
 	const id         = firstElementOnly.match(/id="([^"]*)"/)?.[1]    || null;
 	const classes    = firstElementOnly.match(/class="([^"]*)"/)?.[1] || null;
-	const styles     = firstElementOnly.match(/style="([^"]*)"/)?.[1] || null;
+	const styles     = firstElementOnly.match(/style="([^"]*)"/)?.[1]
+		?.split(';').reduce((styleObj, style) => {
+			if (style.trim() === '') return styleObj;
+			const index = style.indexOf(':');
+			const [key, value] = [style.substring(0, index), style.substring(index + 1)];
+			styleObj[key.trim()] = value.trim();
+			return styleObj;
+		}, {}) || null;
 	const attributes = firstElementOnly.match(/[a-zA-Z]+="[^"]*"/g)
 		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
 		.reduce((obj, attr)=>{
 			const index = attr.indexOf('=');
 			let [key, value] = [attr.substring(0, index), attr.substring(index + 1)];
-			value = value.replace(/"/g, '');
-			obj[key] = value;
+			obj[key.trim()] = value.replace(/"/g, '');
 			return obj;
 		}, {}) || null;
 
 	return {
 		id         : id,
 		classes    : classes,
-		styles     : styles,
+		styles     : _.isEmpty(styles)     ? null : styles,
 		attributes : _.isEmpty(attributes) ? null : attributes
 	};
 };
@@ -902,7 +913,7 @@ const mergeHTMLTags = (originalTags, newTags) => {
 	return {
 		id         : newTags.id || originalTags.id || null,
 		classes    : [originalTags.classes, newTags.classes].join(' ').trim() || null,
-		styles     : [originalTags.styles,  newTags.styles].join(' ').trim()  || null,
+		styles     : Object.assign(originalTags.styles     ?? {}, newTags.styles     ?? {}),
 		attributes : Object.assign(originalTags.attributes ?? {}, newTags.attributes ?? {})
 	};
 };
