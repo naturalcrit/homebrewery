@@ -8,6 +8,7 @@
 }
 
 .notificationPopup {
+	font-size:17px;
 	position         : relative;
 	width            : 100%;
 	padding          : 15px;
@@ -48,17 +49,46 @@
 	}
 	ul {
 		margin-top          : 15px;
-		font-size           : 0.8em;
+		font-size           : 0.9em;
 		list-style-position : outside;
 		list-style-type     : disc;
 		li {
-			margin-top  : 1.4em;
-			font-size   : 0.8em;
-			line-height : 1.4em;
+			margin-top  : 1.2em;
+			font-size   : 0.9em;
+			line-height : 1.2em;
+			padding-left: 1em;
 			em { 
 				text-transform:capitalize;
 				font-weight : 800;
 			}
+			li { list-style-type: square;}
+		}
+		ul ul,ol ol,ul ol,ol ul {
+			margin-bottom : 0px;
+			margin-left   : 1.5em;
 		}
 	}
+
+	/*Markdown styling*/
+	code {
+		background:#08115a;
+		padding: 0.1em 0.5em;
+		border-radius:2px;
+		font-family      : 'Courier New', "Courier", monospace;
+		overflow-wrap    : break-word;
+		white-space      : pre-wrap;
+	}
+	pre code {
+		display             : inline-block;
+		width               : 100%;
+	}
+	.blank {
+		height     : 1em;
+		margin-top : 0;
+		& + * { margin-top : 0; }
+	}
+
+	
+
+
 }
