@@ -4,10 +4,13 @@
 	
 	.pending {
 		position         : absolute;
-		top              : 0px;
-		left             : 0px;
+		top              : 0.5em;
+		left             : 100px;
 		width            : 100%;
 		height           : 100%;
-		background-color : rgba(238,238,238, 0.5);
+	}
+
+	&:has(.pending) {
+		opacity:0.5;
 	}
 }

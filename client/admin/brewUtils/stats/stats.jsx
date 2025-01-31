@@ -14,7 +14,8 @@ const Stats = createClass({
 	getInitialState(){
 		return {
 			stats : {
-				totalBrews : 0
+				totalBrews          : 0,
+				totalPublishedBrews : 0
 			},
 			fetching : false
 		};
@@ -34,6 +35,8 @@ const Stats = createClass({
 			<dl>
 				<dt>Total Brew Count</dt>
 				<dd>{this.state.stats.totalBrews}</dd>
+				<dt>Total Brews Published</dt>
+				<dd>{this.state.stats.totalPublishedBrews}</dd>
 			</dl>
 
 			{this.state.fetching

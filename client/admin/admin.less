@@ -30,6 +30,10 @@ body {
 		color            : white;
 		background-color : @red;
 		i { margin-right : 30px; }
+
+		a {
+			float:right;
+		}
 	}
 
 	hr { margin : 30px 0px; }
@@ -48,10 +52,10 @@ body {
 		}
 
 		dl {
-			@maxItemWidth : 132px;
+			@maxItemWidth : 180px;
 			dt {
 				float      : left;
-				width      : @maxItemWidth;
+				max-width  : @maxItemWidth;
 				clear      : left;
 				text-align : right;
 				&::after { content : ' : '; }
