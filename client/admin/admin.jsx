@@ -1,32 +1,20 @@
-require('./admin.less');
-const React = require('react');
-const createClass = require('create-react-class');
-
+import './admin.less';
+import React, { useEffect, useState } from 'react';
 const BrewUtils = require('./brewUtils/brewUtils.jsx');
 const NotificationUtils = require('./notificationUtils/notificationUtils.jsx');
 
+
 const tabGroups = ['brew', 'notifications'];
 
-const Admin = createClass({
-	getDefaultProps : function() {
-		return {};
-	},
+const Admin = ()=>{
+	const [currentTab, setCurrentTab] = useState(localStorage.getItem('hbAdminTab') || 'brew');
 
-	getInitialState : function(){
-		return ({
-			currentTab : 'brew'
-		});
-	},
+	useEffect(()=>{
+		localStorage.setItem('hbAdminTab', currentTab);
+	}, [currentTab]);
 
-	handleClick : function(newTab){
-		if(this.state.currentTab === newTab) return;
-		this.setState({
-			currentTab : newTab
-		});
-	},
-
-	render : function(){
-		return <div className='admin'>
+	return (
+		<div className='admin'>
 			<header>
 				<div className='container'>
 					<i className='fas fa-rocket' />
@@ -35,13 +23,21 @@ const Admin = createClass({
 			</header>
 			<main className='container'>
 				<nav className='tabs'>
-					{tabGroups.map((tab, idx)=>{ return <button className={tab===this.state.currentTab ? 'active' : ''} key={idx} onClick={()=>{ return this.handleClick(tab); }}>{tab.toUpperCase()}</button>; })}
+					{tabGroups.map((tab, idx)=>(
+						<button
+							className={tab === currentTab ? 'active' : ''}
+							key={idx}
+							onClick={()=>setCurrentTab(tab)}
+						>
+							{tab.toUpperCase()}
+						</button>
+					))}
 				</nav>
-				{this.state.currentTab==='brew' && <BrewUtils />}
-				{this.state.currentTab==='notifications' && <NotificationUtils />}
+				{currentTab === 'brew' && <BrewUtils />}
+				{currentTab === 'notifications' && <NotificationUtils />}
 			</main>
-		</div>;
-	}
-});
+		</div>
+	);
+};
 
 module.exports = Admin;

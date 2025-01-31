@@ -137,7 +137,7 @@ router.put('/admin/compress/:id', (req, res)=>{
 
 router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 	try {
-		const totalBrewsCount = await HomebrewModel.countDocuments({});
+		const totalBrewsCount = await HomebrewModel.estimatedDocumentCount();
 		const publishedBrewsCount = await HomebrewModel.countDocuments({ published: true });
 
 		return res.json({
