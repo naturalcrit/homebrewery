@@ -77,17 +77,20 @@ pre {
 }
 
 .varSyntaxTable th:first-of-type {
-  width:6cm;
+	width:6cm;
+}
+
+.page .exampleTable td,th {
+	border:1px dashed #00000030;
 }
 ```
-
 
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
 ### Thursday 01/30/2024 - v3.17.0
 
-{{tasklist
+{{taskList
 ##### 5e-Cleric
 
 * [x] Update FAQ
@@ -96,9 +99,9 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 
 * [x] Improve navigation bar styling
 
-* [x] Add author renaming feature
+* [x] Add feature to change username at https://www.naturalcrit.com/account
 
-* [x] Fix malformed URI error when generating Reddit links
+* [x] Fix Reddit link crash when title has non-latin chars
 
 ##### dbolack
 
@@ -106,13 +109,13 @@ For a full record of development, visit our [Github Page](https://github.com/nat
 
 Fixes issue [#3919](https://github.com/naturalcrit/homebrewery/issues/3919)
 
-* [x] Add Markdown for non-breaking spaces (` :>>> `)
+* [x] Add `:>>>` syntax for horizontal :>>>>> spaces
 
 * [x] Update Docker install instructions
 
 Fixes issue [#1930](https://github.com/naturalcrit/homebrewery/issues/1930)
 
-* [x] Allow CSS inject directly in page by doing: `/page{}` (With calculuschild)
+* [x] Allow styling pages via `\page{myStyles}` (with calculuschild)
 
 Fixes issue [#3901](https://github.com/naturalcrit/homebrewery/issues/3901) 
 
@@ -120,7 +123,24 @@ Fixes issue [#3901](https://github.com/naturalcrit/homebrewery/issues/3901)
 
 Fixes issue [#1952](https://github.com/naturalcrit/homebrewery/issues/1952)
 
-* [x] Add align paragraph markdown (`:-: text`)
+* [x] Add `:-:` `:-` `-:` syntax for paragraph alignment, similar to table column alignment; for example:
+
+-: -: Right-aligned
+
+:-: :-: Centered
+
+* [x] Add `:-- 50% --:` syntax to allow setting table column widths by percentage; for example:
+```
+| Narrow  | Wide   |
+|:- 10% -:|:-90%--:|
+|  Cell   | Cell   |
+```
+
+
+| Narrow  | Wide   |
+|:- 10% -:|:-90%--:|
+|Cell     | Cell   |
+{exampleTable}
 
 ##### G-Ambatte
 
@@ -128,31 +148,28 @@ Fixes issue [#1952](https://github.com/naturalcrit/homebrewery/issues/1952)
 
 Fixes issue [#3927](https://github.com/naturalcrit/homebrewery/issues/3927)
 
-* [x] Show credentials error when oportune
+* [x] Update error pages with steps to refresh credentials 
 
 Fixes issue [#3955](https://github.com/naturalcrit/homebrewery/issues/3955)
 
-* [x] Add navigation by header/ID menu
+* [x] Add {{openSans :fas_rectangle_list: **NAVIGATION**}} menu to the viewer toolbar
 
 ##### calculuschild
 
-* [x] Add CMM and emojis tests
-
-* [x] Fix `toWellFormed() is not a function` for Win 7 users
-
-* [x] Add `content-visibility` property to decrease reflow time on large brews
+* [x] Reduce display lag on large brews
 
 ##### Gazook89
 
-* [x] Use Intersection Observers to detect on-screen pages
+* [x] Smarter detection of current page number
 
 Fixes issue [#3824](https://github.com/naturalcrit/homebrewery/issues/3824)
-
 
 ##### All
 * [x] Update dependencies and scripts
 * [x] Refactor components and fix various errors
 }}
+
+\column
 
 ### Wednesday 11/27/2024 - v3.16.1
 
@@ -199,6 +216,8 @@ Fixes issue [#3744](https://github.com/naturalcrit/homebrewery/issues/3744)
 
 * [x] Multiple code refactors, cleanups, and security fixes
 }}
+
+\page
 
 ### Saturday 10/12/2024 - v3.16.0
 
