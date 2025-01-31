@@ -52,14 +52,14 @@
 		list-style-position : outside;
 		list-style-type     : disc;
 		li {
-			font-size   : 0.9em;
-			line-height : 1.5em;
-			padding-left: 1em;
-			em { 
-				text-transform:capitalize;
-				font-weight : 800;
+			padding-left : 1em;
+			font-size    : 0.9em;
+			line-height  : 1.5em;
+			em {
+				font-weight    : 800; 
+				text-transform : capitalize;
 			}
-			li { list-style-type: square; line-height : 1.2em;}
+			li { line-height     : 1.2em; list-style-type : square;}
 		}
 		ul ul,ol ol,ul ol,ol ul {
 			margin-bottom : 0px;
@@ -67,14 +67,14 @@
 		}
 	}
 
-	/*Markdown styling*/
+	/* Markdown styling */
 	code {
-		background:#08115a;
-		padding: 0.1em 0.5em;
-		border-radius:2px;
-		font-family      : 'Courier New', "Courier", monospace;
+		padding          : 0.1em 0.5em;
+		font-family      : 'Courier New', 'Courier', monospace;
 		overflow-wrap    : break-word;
 		white-space      : pre-wrap;
+		background       : #08115A;
+		border-radius    : 2px;
 	}
 	pre code {
 		display          : inline-block;

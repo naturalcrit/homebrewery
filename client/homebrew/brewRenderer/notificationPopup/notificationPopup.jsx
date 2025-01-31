@@ -41,11 +41,10 @@ const NotificationPopup = ()=>{
 
 	const renderNotificationsList = ()=>{
 		if(error) return <div className='error'>{error}</div>;
-		notifications.map((notification) =>console.log(Markdown.render(notification.text, 1)));
 		return notifications.map((notification)=>(
 			<li key={notification.dismissKey} >
 				<em>{notification.title}</em><br />
-				<p dangerouslySetInnerHTML={{ __html: Markdown.render(notification.text, 1) }}></p>
+				<p dangerouslySetInnerHTML={{ __html: Markdown.render(notification.text) }}></p>
 			</li>
 		));
 	};
