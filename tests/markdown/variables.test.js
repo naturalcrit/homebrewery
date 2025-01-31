@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 
 const dedent = require('dedent-tabs').default;
-const Markdown = require('naturalcrit/markdown.js');
+import Markdown from 'naturalcrit/markdown.js';
 
 // Marked.js adds line returns after closing tags on some default tokens.
 // This removes those line returns for comparison sake.
@@ -401,5 +401,13 @@ describe('Variable names that are subsets of other names', ()=>{
 		const source = `[ab]: 2\n\n[aba]: 8\n\n[ba]: 4\n\n$[ab + aba + ba]`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered).toBe('<p>14</p>');
+	});
+});
+
+describe('Regression Tests', ()=>{
+	it('Don\'t Eat all the parentheticals!', function() {
+		const source='\n|  title 1  | title 2 | title 3 | title 4|\n|-----------|---------|---------|--------|\n|[foo](bar) |  Ipsum  |    )    |   )    |\n';
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<table><thead><tr><th>title 1</th><th>title 2</th><th>title 3</th><th>title 4</th></tr></thead><tbody><tr><td><a href=\"bar\">foo</a></td><td>Ipsum</td><td>)</td><td>)</td></tr></tbody></table>');
 	});
 });

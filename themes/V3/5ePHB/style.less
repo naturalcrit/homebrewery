@@ -11,6 +11,7 @@
 	--HB_Color_CaptionText           : #766649; // Brown
 	--HB_Color_WatercolorStain       : #BBAD82; // Light brown
 	--HB_Color_Footnotes             : #C9AD6A; // Gold
+	--TOC                            : 'include';
 }
 
 .useSansSerif() {
@@ -797,7 +798,7 @@
 // *****************************/
 
 // Default Exclusions
-// Anything not exlcuded is included, default Headers are H1, H2, and H3.
+// Anything not excluded is included, default Headers are H1, H2, and H3.
 h4,
 h5,
 h6,
@@ -808,18 +809,35 @@ h6,
 .noToC,
 .toc { --TOC: exclude; }
 
-.tocDepthH2 :is(h1, h2) {--TOC: include; }
-.tocDepthH3 :is(h1, h2, h3) {--TOC: include; }
-.tocDepthH4 :is(h1, h2, h3, h4) {--TOC: include; }
-.tocDepthH5 :is(h1, h2, h3, h4, h5) {--TOC: include; }
-.tocDepthH6 :is(h1, h2, h3, h4, h5, h6) {--TOC: include; }
 
+// Brew level default inclusion changes.
+// These add Headers 'back' to inclusion.
+
+//NOTE: DO NOT USE :HAS WITH .PAGES!!! EXTREMELY SLOW TO RENDER ON LARGE DOCS!
+
+// Block level inclusion changes
+// These include either a single  (include) or a range (depth)
 .tocIncludeH1 h1 {--TOC: include; }
 .tocIncludeH2 h2 {--TOC: include; }
 .tocIncludeH3 h3 {--TOC: include; }
 .tocIncludeH4 h4 {--TOC: include; }
 .tocIncludeH5 h5 {--TOC: include; }
 .tocIncludeH6 h6 {--TOC: include; }
+
+.tocDepthH2 :is(h1, h2) {--TOC: include; }
+.tocDepthH3 :is(h1, h2, h3) {--TOC: include; }
+.tocDepthH4 :is(h1, h2, h3, h4) {--TOC: include; }
+.tocDepthH5 :is(h1, h2, h3, h4, h5) {--TOC: include; }
+.tocDepthH6 :is(h1, h2, h3, h4, h5, h6) {--TOC: include; }
+
+// Block level exclusion changes
+// These exclude a single block level
+.tocExcludeH1 h1 {--TOC: exclude; }
+.tocExcludeH2 h2 {--TOC: exclude; }
+.tocExcludeH3 h3 {--TOC: exclude; }
+.tocExcludeH4 h4 {--TOC: exclude; }
+.tocExcludeH5 h5 {--TOC: exclude; }
+.tocExcludeH6 h6 {--TOC: exclude; }
 
 .page:has(.partCover) {
 	--TOC: exclude;
