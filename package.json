@@ -98,7 +98,7 @@
     "cors": "^2.8.5",
     "create-react-class": "^15.7.0",
     "dedent-tabs": "^0.10.3",
-    "dompurify": "^3.2.3",
+    "dompurify": "^3.2.4",
     "expr-eval": "^2.0.2",
     "express": "^4.21.2",
     "express-async-handler": "^1.2.0",
