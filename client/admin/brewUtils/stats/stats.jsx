@@ -1,10 +1,7 @@
-require('./stats.less');
 const React       = require('react');
 const createClass = require('create-react-class');
-const cx          = require('classnames');
 
 const request = require('superagent');
-
 
 const Stats = createClass({
 	displayName : 'Stats',
@@ -30,7 +27,7 @@ const Stats = createClass({
 			.finally(()=>this.setState({ fetching: false }));
 	},
 	render(){
-		return <div className='Stats'>
+		return <div className='brewUtil stats'>
 			<h2> Stats </h2>
 			<dl>
 				<dt>Total Brew Count</dt>

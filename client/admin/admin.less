@@ -22,7 +22,6 @@ body {
 }
 
 :where(.admin) {
-
 	header {
 		padding          : 20px 0px;
 		margin-bottom    : 30px;
@@ -31,14 +30,13 @@ body {
 		background-color : @red;
 		i { margin-right : 30px; }
 
-		a {
-			float:right;
-		}
+		a { float : right; }
 	}
 
 	hr { margin : 30px 0px; }
 
 	:where(.container) {
+		padding-bottom : 50px;
 		input {
 			height        : 33px;
 			padding       : 0px 10px;
@@ -52,20 +50,23 @@ body {
 		}
 
 		dl {
-			@maxItemWidth : 180px;
+			display               : grid;
+			grid-template-columns : 120px 1fr;
+			row-gap               : 10px;
+			align-items           : center;
+			justify-items         : start;
+			padding-top           : 0.5em;
 			dt {
-				float      : left;
-				max-width  : @maxItemWidth;
-				clear      : left;
-				text-align : right;
+				float       : left;
+				clear       : left;
+				height      : fit-content;
+				font-weight : 900;
+				text-align  : right;
 				&::after { content : ' : '; }
 			}
-			dd {
-				height      : 1em;
-				padding     : 0 0 0.5em 0;
-				margin-left : @maxItemWidth + 6px;
-			}
+			dd { height      : fit-content; }
 		}
+		
 
 		.tabs button {
 			margin-right     : 3px;
@@ -95,10 +96,11 @@ body {
 	}
 
 	.error {
-		background: rgb(178, 54, 54);
-		color:white;
-		font-weight: 900;
-		margin-block:10px;
-		padding:10px;
+		float        : right;
+		padding      : 10px;
+		margin-block : 10px;
+		font-weight  : 900;
+		color        : white;
+		background   : rgb(178, 54, 54);
 	}
 }
