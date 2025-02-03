@@ -1,9 +1,6 @@
-require('./brewCompress.less');
 const React       = require('react');
 const createClass = require('create-react-class');
-
 const request = require('superagent');
-
 
 const BrewCompress = createClass({
 	displayName : 'BrewCompress',
@@ -53,9 +50,9 @@ const BrewCompress = createClass({
 		if(!this.state.primed) return;
 
 		if(!this.state.count){
-			return <div className='removeBox'>No Matching Brews found.</div>;
+			return <div className='result noBrews'>No Matching Brews found.</div>;
 		}
-		return <div className='removeBox'>
+		return <div className='result'>
 			<button onClick={this.cleanup} className='remove'>
 				{this.state.pending
 					? <i className='fas fa-spin fa-spinner' />
@@ -69,7 +66,7 @@ const BrewCompress = createClass({
 		</div>;
 	},
 	render(){
-		return <div className='BrewCompress'>
+		return <div className='brewUtil brewCompress'>
 			<h2> Brew Compression </h2>
 			<p>Compresses the text in brews to binary</p>
 

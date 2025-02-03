@@ -1,9 +1,7 @@
-require('./brewCleanup.less');
 const React       = require('react');
 const createClass = require('create-react-class');
 
 const request = require('superagent');
-
 
 const BrewCleanup = createClass({
 	displayName : 'BrewCleanup',
@@ -39,9 +37,9 @@ const BrewCleanup = createClass({
 		if(!this.state.primed) return;
 
 		if(!this.state.count){
-			return <div className='removeBox'>No Matching Brews found.</div>;
+			return <div className='result noBrews'>No Matching Brews found.</div>;
 		}
-		return <div className='removeBox'>
+		return <div className='result'>
 			<button onClick={this.cleanup} className='remove'>
 				{this.state.pending
 					? <i className='fas fa-spin fa-spinner' />
@@ -52,7 +50,7 @@ const BrewCleanup = createClass({
 		</div>;
 	},
 	render(){
-		return <div className='BrewCleanup'>
+		return <div className='brewUtil brewCleanup'>
 			<h2> Brew Cleanup </h2>
 			<p>Removes very short brews to tidy up the database</p>
 
@@ -65,7 +63,7 @@ const BrewCleanup = createClass({
 			{this.renderPrimed()}
 
 			{this.state.error
-				&& <div className='error'>{this.state.error.toString()}</div>
+				&& <div className='error noBrews'>{this.state.error.toString()}</div>
 			}
 		</div>;
 	}
