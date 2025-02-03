@@ -1,17 +1,42 @@
-.dropdown-container {
-    position:relative;
-    input {
-        width: 100%;
-    }
-    .dropdown-options {
-        position:absolute;
+@import 'naturalcrit/styles/colors.less';
+
+.combobox {
+	position: relative;
+	width: max(200px, fit-content);
+	input { 
+		display: block;
+		width: 100%;
+	}
+	> button {
+		all: unset;
+		box-sizing: border-box;
+		position: absolute;
+		top: 0;
+		right: 0;
+		height: calc(100% - 4px);
+		aspect-ratio: 1;
+		margin: 2px;
+		text-align: center;
+		cursor: pointer;
+		&:focus {
+			background-color: @blueLight;
+		}
+		&:hover, &:active {
+			background-color: @blue;
+			color: white;
+		}
+
+	}
+	.dropdown-options {
+		display: none;
+		position:absolute;
         background-color: white;
-        z-index: 100;
+        z-index: 1000;
         width: 100%;
         border: 1px solid gray;
         overflow-y: auto;
         max-height: 200px;
-
+		padding: 3px;
         &::-webkit-scrollbar {
           width: 14px;
         }
@@ -23,28 +48,43 @@
           border-radius: 10px;
           border: 3px solid #ffffff;
         }
-
-        .item {
-            position:relative;
+		&.open {
+			display: unset;
+		}
+		> * {
+			all: unset;
+			display: block;
+			width: 100%;
+			position:relative;
             font-size: 11px;
             font-family: Open Sans;
             padding: 5px;
             cursor: default;
             margin: 0 3px;
+			box-sizing: border-box;
+			margin: 0;
             //border-bottom: 1px solid darkgray;
-            &:hover {
+            &:focus {
+                background-color: #bdbdbd;
+			}
+			&:hover {
                 filter: brightness(120%);
-                background-color: rgb(163, 163, 163);
+                background-color: #c1c1c1;
             }
             .detail {
                 width:100%;
                 text-align: left;
-                color: rgb(124, 124, 124);
+                color: #7c7c7c;
                 font-style:italic;
                 font-size: 9px;
             }
-        }
-
-    }
-
+			&.no-matches {
+				width:100%;
+                text-align: center;
+                color: #7c7c7c;
+                font-style:italic;
+                font-size: 9px;
+			}
+		}
+	}
 }

@@ -240,16 +240,15 @@ const MetadataEditor = createClass({
 
 	renderLanguageDropdown : function(){
 		const langCodes = ['en', 'de', 'de-ch', 'fr', 'ja', 'es', 'it', 'sv', 'ru', 'zh-Hans', 'zh-Hant'];
-		const listLanguages = ()=>{
-			return _.map(langCodes.sort(), (code, index)=>{
-				const localName = new Intl.DisplayNames([code], { type: 'language' });
-				const englishName = new Intl.DisplayNames('en', { type: 'language' });
-				return <div className='item' title={`${englishName.of(code)}`} key={`${index}`} data-value={`${code}`} data-detail={`${localName.of(code)}`}>
-					{`${code}`}
-					<div className='detail'>{`${localName.of(code)}`}</div>
-				</div>;
-			});
-		};
+		const langOptions = _.map(langCodes.sort(), (code, index)=>{
+			const localName = new Intl.DisplayNames([code], { type: 'language' });
+			const englishName = new Intl.DisplayNames('en', { type: 'language' });
+			return <button className='item' title={englishName.of(code)} key={`${index}`} data-value={`${code}`} data-detail={localName.of(code)}>
+				{`${code}`}
+				<div className='detail'>{localName.of(code)}</div>
+			</button>;
+		});
+
 
 		const debouncedHandleFieldChange =  _.debounce(this.handleFieldChange, 500);
 
@@ -257,21 +256,23 @@ const MetadataEditor = createClass({
 			<label>language</label>
 			<div className='value'>
 				<Combobox trigger='click'
+					id='language'
 					className='language-dropdown'
-					default={this.props.metadata.lang || ''}
+					value={this.props.metadata.lang || ''}
 					placeholder='en'
 					onSelect={(value)=>this.handleLanguage(value)}
 					onEntry={(e)=>{
 						e.target.setCustomValidity('');	//Clear the validation popup while typing
 						debouncedHandleFieldChange('lang', e);
 					}}
-					options={listLanguages()}
+					options={langOptions}
 					autoSuggest={{
 						suggestMethod           : 'startsWith',
-						clearAutoSuggestOnClick : true,
+						clearAutoSuggestOnClick : false,
 						filterOn                : ['data-value', 'data-detail', 'title']
 					}}
 				>
+					{langOptions}
 				</Combobox>
 				<small>Sets the HTML Lang property for your brew. May affect hyphenation or spellcheck.</small>
 			</div>
