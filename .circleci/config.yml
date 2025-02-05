@@ -10,7 +10,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: cimg/node:20.17.0
+      - image: cimg/node:20.18.0
       - image: mongo:4.4
 
     working_directory: ~/homebrewery
