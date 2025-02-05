@@ -3,8 +3,8 @@ const dedent = require('dedent-tabs').default;
 const loginUrl = 'https://www.naturalcrit.com/login';
 
 // Prevent parsing text (e.g. document titles) as markdown
-const escape = (text) => {
-	return text.split('').map(char => `&#${char.charCodeAt(0)};`).join('');
+const escape = (text = '')=>{
+	return text.split('').map((char)=>`&#${char.charCodeAt(0)};`).join('');
 };
 
 //001-050 : Brew errors
