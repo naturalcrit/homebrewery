@@ -37,6 +37,8 @@ import bodyParser         from 'body-parser';
 import cookieParser       from 'cookie-parser';
 import forceSSL           from './forcessl.mw.js';
 
+import EventEmitter from 'events';
+
 
 const sanitizeBrew = (brew, accessType)=>{
 	brew._id = undefined;
@@ -352,7 +354,7 @@ app.get('/user/:username', async (req, res, next)=>{
 app.put('/api/user/rename', async (req, res)=>{
 	const { username, newUsername } = req.body;
 	const ownAccount = req.account && (req.account.username == newUsername);
-	
+
 	if(!username || !newUsername)
 		return res.status(400).json({ error: 'Username and newUsername are required.' });
 	if(!ownAccount)
@@ -511,6 +513,27 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 
 	return next();
 }));
+
+// Event Stream
+const Stream = new EventEmitter;
+
+// After Stream starts, send initStream event
+setTimeout(()=>{
+	Stream.emit('push', 'initStream', { time: (new Date).toString() });
+}, 1000);
+
+app.get('/stream', (req, res)=>{
+	res.writeHead(200, {
+		'Content-Type'  : 'text/event-stream',
+		'Cache-Control' : 'no-cache',
+		'Connection'    : 'keep-alive'
+	});
+
+	Stream.on('push', (event, data)=>{
+		// console.log('Event:', event, 'Data:', data);
+		res.write(`data: ${JSON.stringify({ ...data, eventType: event })}\n\n`);
+	});
+});
 
 // Local only
 if(isLocalEnvironment){
