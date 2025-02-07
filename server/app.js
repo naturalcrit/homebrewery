@@ -1,4 +1,4 @@
-/*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 750, "skipBlankLines": true, "skipComments": true}]*/
 // Set working directory to project root
 import { dirname }       from 'path';
 import { fileURLToPath } from 'url';
