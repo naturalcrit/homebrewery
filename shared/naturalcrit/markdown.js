@@ -397,45 +397,6 @@ const indexGlossarySplit=(src, isIndex=true)=>{
 
 };
 
-// const indexSplit=(src)=>{
-// 	let index, topic, subtopic;
-// 	const indexSplitRegex = /(?<!\\):/;
-// 	const subTopicSplit = /(?<!\\)\//;
-
-// 	let working = [];
-// 	if(src.search(indexSplitRegex) < 0){
-// 		working[1] = src.trim();
-// 		index = 'Index:';
-// 	} else {
-// 		working = src.split(indexSplitRegex);
-// 		index = working[0].replace('\\:', ':').trim();
-// 		if(!working[1]?.trim()>0) {
-// 			working.splice(1, 1);
-// 		}
-// 		working[1] = working[1]?.trim();
-// 	}
-
-// 	if(working[1]) {
-// 		if(working[1].search(subTopicSplit) !== -1){
-// 			const topics = working[1].split(subTopicSplit);
-// 			topic = topics[0].trim();
-// 			if(topics[1]) { topics[1] = topics[1].trim(); }
-// 			if(topics[1]?.length>0) {
-// 				subtopic = topics[1].trim();
-// 			}
-// 		} else {
-// 			topic = working[1];
-// 		}
-// 	}
-
-// 	if(topic?.length>0) {
-// 		return { index: index, topic: topic, subtopic: subtopic };
-// 	} else {
-// 		return undefined;
-// 	}
-
-// };
-
 const indexAnchors = {
 	name  : 'indexAnchor',
 	level : 'block',
@@ -456,9 +417,10 @@ const indexAnchors = {
 				entryMatch = indexGlossarySplit(crossReference[0].slice(1));
 			}
 			if(!entryMatch) { return; }
-			indexEntry.subtopic = entryMatch?.subtopic ? entryMatch.subtopic : undefined;
-			indexEntry.topic = entryMatch.topic;
-			indexEntry.index = entryMatch.index;
+			console.log(entryMatch);
+			indexEntry.subtopic = entryMatch?.rightSide ? entryMatch.rightSide : undefined;
+			indexEntry.topic = entryMatch.leftSide;
+			indexEntry.index = entryMatch.listName;
 			indexEntry.instance = indexesDuplicates(indexEntry);
 			if(crossReference.length > 1) {
 				indexEntry.crossReference = true;
@@ -479,6 +441,7 @@ const indexAnchors = {
 				return `<a id="p${token.pageNumber}_${token.indexEntry.subtopic.replace(/\s/g, '').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-subtopic="${token.indexEntry.subtopic}" data-index="${token.indexEntry.index}"></a>`;
 			} else {
 				// This is a Topic entry
+				console.log(token);
 				return `<a id="p${token.pageNumber}_${token.indexEntry.topic.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-index="${token.indexEntry.index}"></a>`;
 			}
 		}
