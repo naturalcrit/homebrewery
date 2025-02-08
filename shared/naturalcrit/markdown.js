@@ -1,7 +1,8 @@
+/* eslint-disable max-depth */
 /* eslint-disable max-lines */
 import _                        from 'lodash';
 import { Parser as MathParser } from 'expr-eval';
-import { marked as Marked }              from 'marked';
+import { marked as Marked }     from 'marked';
 import MarkedExtendedTables     from 'marked-extended-tables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
@@ -172,8 +173,8 @@ const mustacheSpans = {
 		return `<span` +
 			`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 			`${tags.id         ? ` id="${tags.id}"`         : ''}` +
-			`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
-			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
+			`${tags.styles     ? ` style="${Object.entries(tags.styles).map(([key, value])=>`${key}:${value};`).join(' ')}"` : ''}` +
+			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}`     : ''}` +
 			`>${this.parser.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
 	}
 };
@@ -228,7 +229,7 @@ const mustacheDivs = {
 		return `<div` +
 			`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 			`${tags.id         ? ` id="${tags.id}"`         : ''}` +
-			`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
+			`${tags.styles     ? ` style="${Object.entries(tags.styles).map(([key, value])=>`${key}:${value};`).join(' ')}"` : ''}` +
 			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
 			`>${this.parser.parse(token.tokens)}</div>`; // parse to turn child tokens into HTML
 	}
@@ -265,18 +266,13 @@ const mustacheInjectInline = {
 		const text = this.parser.parseInline([token]);
 		const originalTags = extractHTMLStyleTags(text);
 		const injectedTags = token.injectedTags;
-		const tags = {
-			id         : injectedTags.id || originalTags.id || null,
-			classes    : [originalTags.classes,    injectedTags.classes].join(' ').trim() || null,
-			styles     : [originalTags.styles,     injectedTags.styles].join(' ').trim()  || null,
-			attributes : Object.assign(originalTags.attributes ?? {}, injectedTags.attributes ?? {})
-		};
+		const tags         = mergeHTMLTags(originalTags, injectedTags);
 		const openingTag = /(<[^\s<>]+)[^\n<>]*(>.*)/s.exec(text);
 		if(openingTag) {
 			return `${openingTag[1]}` +
 				`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 				`${tags.id         ? ` id="${tags.id}"`         : ''}` +
-				`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
+				`${!_.isEmpty(tags.styles)     ? ` style="${Object.entries(tags.styles).map(([key, value])=>`${key}:${value};`).join(' ')}"` : ''}` +
 				`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
 				`${openingTag[2]}`; // parse to turn child tokens into HTML
 		}
@@ -314,18 +310,13 @@ const mustacheInjectBlock = {
 			const text = this.parser.parse([token]);
 			const originalTags = extractHTMLStyleTags(text);
 			const injectedTags = token.injectedTags;
-			const tags = {
-				id         : injectedTags.id || originalTags.id || null,
-				classes    : [originalTags.classes,    injectedTags.classes].join(' ').trim() || null,
-				styles     : [originalTags.styles,     injectedTags.styles].join(' ').trim()  || null,
-				attributes : Object.assign(originalTags.attributes ?? {}, injectedTags.attributes ?? {})
-			};
+			const tags         = mergeHTMLTags(originalTags, injectedTags);
 			const openingTag = /(<[^\s<>]+)[^\n<>]*(>.*)/s.exec(text);
 			if(openingTag) {
 				return `${openingTag[1]}` +
 					`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 					`${tags.id         ? ` id="${tags.id}"`         : ''}` +
-					`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
+					`${!_.isEmpty(tags.styles)     ? ` style="${Object.entries(tags.styles).map(([key, value])=>`${key}:${value};`).join(' ')}"` : ''}` +
 					`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
 					`${openingTag[2]}`; // parse to turn child tokens into HTML
 			}
@@ -389,6 +380,43 @@ const underline = {
 		return  `<u>${this.parser.parseInline(token.tokens)}</u>`;
 	}
 };
+
+
+const justifiedParagraphClasses = [];
+justifiedParagraphClasses[2] = 'Left';
+justifiedParagraphClasses[4] = 'Right';
+justifiedParagraphClasses[6] = 'Center';
+
+const justifiedParagraphs = {
+	name  : 'justifiedParagraphs',
+	level : 'block',
+	start(src) {
+		return src.match(/\n(?:-:|:-|-:) {1}/m)?.index;
+	},  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const regex  = /^(((:-))|((-:))|((:-:))) .+(\n(([^\n].*\n)*(\n|$))|$)/ygm;
+		const match = regex.exec(src);
+		if(match?.length) {
+			let whichJustify;
+			if(match[2]?.length) whichJustify = 2;
+			if(match[4]?.length) whichJustify = 4;
+			if(match[6]?.length) whichJustify = 6;
+			return {
+				type   : 'justifiedParagraphs', // Should match "name" above
+				raw    : match[0],     // Text to consume from the source
+				length : match[whichJustify].length,
+				text   : match[0].slice(match[whichJustify].length),
+				class  : justifiedParagraphClasses[whichJustify],
+				tokens : this.lexer.inlineTokens(match[0].slice(match[whichJustify].length + 1))
+			};
+		}
+	},
+	renderer(token) {
+		return `<p align="${token.class}">${this.parser.parseInline(token.tokens)}</p>`;
+	}
+
+};
+
 
 const forcedParagraphBreaks = {
 	name  : 'hardBreaks',
@@ -700,7 +728,7 @@ function MarkedVariables() {
 					}
 					if(match[8]) { // Inline Definition
 						const label = match[10] ? match[10].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-						let content = match[11] ? match[11].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						let content = match[11] || null;
 
 						// In case of nested (), find the correct matching end )
 						let level = 0;
@@ -716,10 +744,8 @@ function MarkedVariables() {
 									break;
 							}
 						}
-						if(i > -1) {
-							combinedRegex.lastIndex = combinedRegex.lastIndex - (content.length - i);
-							content = content.slice(0, i).trim().replace(/\s+/g, ' ');
-						}
+						combinedRegex.lastIndex = combinedRegex.lastIndex - (content.length - i);
+						content = content.slice(0, i).trim().replace(/\s+/g, ' ');
 
 						varsQueue.push(
 							{ type    : 'varDefBlock',
@@ -789,8 +815,9 @@ const tableTerminators = [
 ];
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions : [definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
-	nonbreakingSpaces, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline, underline] });
+Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
+	nonbreakingSpaces, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use({ extensions: [underline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }),
@@ -855,15 +882,20 @@ const processStyleTags = (string)=>{
 			const index = attr.indexOf('=');
 			let [key, value] = [attr.substring(0, index), attr.substring(index + 1)];
 			value = value.replace(/"/g, '');
-			obj[key] = value;
+			obj[key.trim()] = value.trim();
 			return obj;
 		}, {}) || null;
-	const styles     = tags?.length ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim()).join(' ') : null;
+	const styles = tags?.length ? tags.reduce((styleObj, style)=>{
+		const index = style.indexOf(':');
+		const [key, value] = [style.substring(0, index), style.substring(index + 1)];
+		styleObj[key.trim()] = value.replace(/"?([^"]*)"?/g, '$1').trim();
+		return styleObj;
+	}, {}) : null;
 
 	return {
 		id         : id,
 		classes    : classes,
-		styles     : styles,
+		styles     : _.isEmpty(styles)     ? null : styles,
 		attributes : _.isEmpty(attributes) ? null : attributes
 	};
 };
@@ -873,22 +905,37 @@ const extractHTMLStyleTags = (htmlString)=>{
 	const firstElementOnly = htmlString.split('>')[0];
 	const id         = firstElementOnly.match(/id="([^"]*)"/)?.[1]    || null;
 	const classes    = firstElementOnly.match(/class="([^"]*)"/)?.[1] || null;
-	const styles     = firstElementOnly.match(/style="([^"]*)"/)?.[1] || null;
+	const styles     = firstElementOnly.match(/style="([^"]*)"/)?.[1]
+		?.split(';').reduce((styleObj, style) => {
+			if (style.trim() === '') return styleObj;
+			const index = style.indexOf(':');
+			const [key, value] = [style.substring(0, index), style.substring(index + 1)];
+			styleObj[key.trim()] = value.trim();
+			return styleObj;
+		}, {}) || null;
 	const attributes = firstElementOnly.match(/[a-zA-Z]+="[^"]*"/g)
 		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
 		.reduce((obj, attr)=>{
 			const index = attr.indexOf('=');
 			let [key, value] = [attr.substring(0, index), attr.substring(index + 1)];
-			value = value.replace(/"/g, '');
-			obj[key] = value;
+			obj[key.trim()] = value.replace(/"/g, '');
 			return obj;
 		}, {}) || null;
 
 	return {
 		id         : id,
 		classes    : classes,
-		styles     : styles,
+		styles     : _.isEmpty(styles)     ? null : styles,
 		attributes : _.isEmpty(attributes) ? null : attributes
+	};
+};
+
+const mergeHTMLTags = (originalTags, newTags) => {
+	return {
+		id         : newTags.id || originalTags.id || null,
+		classes    : [originalTags.classes, newTags.classes].join(' ').trim() || null,
+		styles     : Object.assign(originalTags.styles     ?? {}, newTags.styles     ?? {}),
+		attributes : Object.assign(originalTags.attributes ?? {}, newTags.attributes ?? {})
 	};
 };
 
