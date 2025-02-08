@@ -5,13 +5,19 @@ const React = require('react');
 const { useState } = React;
 const request = require('superagent');
 
+/*
+I tried bringing multiple react charting libraries,
+but was unable to make them work without tons of errors.
+It was way easier to build my own charts, also learned a lot in the process,
+took me an afternoon (plus minute issue fixing).
+*/
 const Stats = ()=>{
 	const [stats, setStats] = useState(null);
 	const [chartData, setChartData] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 
-	// Fetch statistics and chart data
+	// Fetching is manual, to relieve the server of pressure
 	const fetchStats = async ()=>{
 		setLoading(true);
 		setError(null);
@@ -31,12 +37,12 @@ const Stats = ()=>{
 		setError(null);
 		try {
 			console.log(`fetching at: /admin/brewsBy${category}`);
-			const response = await fetch(`/admin/brewsBy${category}`); // Fetch aggregated data
+			const response = await fetch(`/admin/brewsBy${category}`);
 			const data = await response.json();
 
 			// Prepare the data for the chart
-			const labels = data.map((item)=>item._id); // Dates
-			const counts = data.map((item)=>item.count); // Counts
+			const labels = data.map((item)=>item._id);
+			const counts = data.map((item)=>item.count);
 
 			setChartData((prevData)=>{
 				return [
@@ -57,6 +63,9 @@ const Stats = ()=>{
 	};
 
 	const chartRange = (values, rangeType)=>{
+		//this function might not be appropiate, since charts might have text or data as labels,
+		//and different data should be displayed differently
+
 		let min = Infinity,
 			max = -Infinity;
 		for (const val of values) {
