@@ -1,16 +1,18 @@
+/*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
+
 require('./stats.less');
 const React = require('react');
-const { useState, useEffect, useMemo } = React;
+const { useState } = React;
 const request = require('superagent');
 
-const Stats = () => {
+const Stats = ()=>{
 	const [stats, setStats] = useState(null);
 	const [chartData, setChartData] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
 
 	// Fetch statistics and chart data
-	const fetchStats = async () => {
+	const fetchStats = async ()=>{
 		setLoading(true);
 		setError(null);
 		try {
@@ -24,7 +26,7 @@ const Stats = () => {
 		}
 	};
 
-	const fetchChartData = async (category) => {
+	const fetchChartData = async (category)=>{
 		setLoading(true);
 		setError(null);
 		try {
@@ -33,16 +35,16 @@ const Stats = () => {
 			const data = await response.json();
 
 			// Prepare the data for the chart
-			const labels = data.map((item) => item._id); // Dates
-			const counts = data.map((item) => item.count); // Counts
+			const labels = data.map((item)=>item._id); // Dates
+			const counts = data.map((item)=>item.count); // Counts
 
-			setChartData((prevData) => {
+			setChartData((prevData)=>{
 				return [
 					...prevData,
 					{
-						category: category,
-						labels: labels,
-						data: counts,
+						category : category,
+						labels   : labels,
+						data     : counts,
 					},
 				];
 			});
@@ -54,25 +56,23 @@ const Stats = () => {
 		}
 	};
 
-	const chartRange = (values, rangeType) => {
+	const chartRange = (values, rangeType)=>{
 		let min = Infinity,
 			max = -Infinity;
-
-		// Efficiently find min and max
-		for (let val of values) {
-			if (val < min) min = val;
-			if (val > max) max = val;
+		for (const val of values) {
+			if(val < min) min = val;
+			if(val > max) max = val;
 		}
 
-		let rangeSize = 20; // Max desired range size
-		let step = Math.ceil((max - min) / rangeSize) || 1; // Ensure step is at least 1
+		const rangeSize = 20;
+		const step = Math.ceil((max - min) / rangeSize) || 1;
 
-		let result = [];
+		const result = [];
 
-		if (rangeType === '0 to max') {
+		if(rangeType === '0 to max') {
 			for (let i = 0; i <= max; i += step) result.push(i);
-		} else if (rangeType === 'min to max') {
-			let start = Math.ceil(min / step) * step; // Align to step
+		} else if(rangeType === 'min to max') {
+			const start = Math.ceil(min / step) * step;
 			for (let i = start; i <= max; i += step) result.push(i);
 		}
 
@@ -81,11 +81,11 @@ const Stats = () => {
 
 	console.log(stats, chartData);
 
-	const renderTable = () => {
-		if (!stats)
+	const renderTable = ()=>{
+		if(!stats)
 			return (
 				<button
-					onClick={() => {
+					onClick={()=>{
 						fetchStats();
 					}}>
 					Fetch Stats
@@ -94,10 +94,10 @@ const Stats = () => {
 
 		return (
 			<>
-				<div className="heading">
+				<div className='heading'>
 					<h4>Total of Brews: {stats.totalBrews}</h4>
 					<button
-						onClick={() => {
+						onClick={()=>{
 							fetchStats();
 						}}>
 						Refetch Stats
@@ -153,14 +153,14 @@ const Stats = () => {
 		);
 	};
 
-	const renderChart = (category) => {
-		const dataset = chartData?.find((item) => item.category === category);
+	const renderChart = (category)=>{
+		const dataset = chartData?.find((item)=>item.category === category);
 
-		if (!chartData || chartData.length === 0 || !dataset) {
+		if(!chartData || chartData.length === 0 || !dataset) {
 			return (
 				<button
 					className={`fetch${category}`}
-					onClick={() => {
+					onClick={()=>{
 						fetchChartData(category);
 					}}>
 					Fetch Chart Brews per {category}
@@ -169,61 +169,61 @@ const Stats = () => {
 		}
 		return (
 			<>
-				<div className="heading">
+				<div className='heading'>
 					<h4>Brews per {category}</h4>
 					<button
 						className={`fetch${category}`}
-						onClick={() => {
+						onClick={()=>{
 							fetchChartData(category);
 						}}>
 						Refetch Chart Data
 					</button>
 				</div>
-				<div className="chart">
-					<div className="leftAxis">
-						<div className="axisLabel">Brews</div>
+				<div className='chart'>
+					<div className='leftAxis'>
+						<div className='axisLabel'>Brews</div>
 						{
 							// Map chartRange as spans, setting their bottom position as percentage of bottom
-							chartRange(dataset.data, '0 to max')?.map((value, index) => (
+							chartRange(dataset.data, '0 to max')?.map((value, index)=>(
 								<span
 									key={index}
 									style={{
-										bottom: `${(value / Math.max(...dataset.data)) * 100}%`,
+										bottom : `${(value / Math.max(...dataset.data)) * 100}%`,
 									}}>
 									{value}
 								</span>
 							))
 						}
 					</div>
-					<div className="data">
-						{dataset.data.map((value, index) => (
+					<div className='data'>
+						{dataset.data.map((value, index)=>(
 							<div
 								key={index}
-								className="column"
+								className='column'
 								title={`${value} brews of ${dataset.labels[index]}`}
 								style={{
-									left: `${(index / dataset.labels.length) * 100}%`,
-									top: `${100 - (value / Math.max(...dataset.data)) * 100}%`,
-									bottom: '0',
-									width: `${100 / dataset.labels.length - 0.3}%`,
+									left   : `${(index / dataset.labels.length) * 100}%`,
+									top    : `${100 - (value / Math.max(...dataset.data)) * 100}%`,
+									bottom : '0',
+									width  : `${100 / dataset.labels.length - 0.3}%`,
 								}}></div>
 						))}
 					</div>
-					<div className="bottomAxis">
+					<div className='bottomAxis'>
 						{
 							// Render the labels on the bottom axis
-							dataset.labels.map((label, index) => (
+							dataset.labels.map((label, index)=>(
 								<span
 									key={index}
-									className="bottomLabel"
+									className='bottomLabel'
 									style={{
-										left: `${(index / dataset.labels.length) * 100}%`,
+										left : `${(index / dataset.labels.length) * 100}%`,
 									}}>
 									{label}
 								</span>
 							))
 						}
-						<div className="axisLabel">{category}</div>
+						<div className='axisLabel'>{category}</div>
 					</div>
 				</div>
 			</>
@@ -231,18 +231,18 @@ const Stats = () => {
 	};
 
 	return (
-		<section className="stats">
+		<section className='stats'>
 			<h2>Stats</h2>
 
 			{loading && <p>Loading...</p>}
-			{error && <p className="error">{error}</p>}
+			{error && <p className='error'>{error}</p>}
 
-			<div className="content">
-				<div className="table">{renderTable()}</div>
-				<div className="graph Date">{renderChart('Date')}</div>
+			<div className='content'>
+				<div className='table'>{renderTable()}</div>
+				<div className='graph Date'>{renderChart('Date')}</div>
 				<div className={`graph Lang`}>{renderChart('Lang')}</div>
-				<div className="graph pageCount">{renderChart('PageCount')}</div>
-				<div className="graph version">{renderChart('Version')}</div>
+				<div className='graph pageCount'>{renderChart('PageCount')}</div>
+				<div className='graph version'>{renderChart('Version')}</div>
 			</div>
 		</section>
 	);
