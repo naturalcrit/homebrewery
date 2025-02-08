@@ -135,19 +135,105 @@ router.put('/admin/compress/:id', (req, res)=>{
 		});
 });
 
-
-router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
+router.get('/admin/stats', mw.adminOnly, async (req, res) => {
 	try {
-		const totalBrewsCount = await HomebrewModel.countDocuments({});
-		const publishedBrewsCount = await HomebrewModel.countDocuments({ published: true });
+		let totalBrewsCount = null;
+		let publishedBrewsCount = null;
+		let unauthoredBrewsCount = null;
+		let nonGoogleBrewsCount = null;
+		let legacyBrewsCount = null;
+		let totalThumbnailCount = null;
 
+		// Attempt each count individually
+		try {
+			totalBrewsCount = await HomebrewModel.estimatedDocumentCount();
+		} catch (error) {
+			console.error("Failed to get totalBrewsCount:", error);
+		}
+
+		try {
+			publishedBrewsCount = await HomebrewModel.countDocuments({ published: 'true' });
+		} catch (error) {
+			console.error("Failed to get publishedBrewsCount:", error);
+		}
+
+		try {
+			unauthoredBrewsCount = await HomebrewModel.countDocuments({ authors: [] });
+		} catch (error) {
+			console.error("Failed to get unauthoredBrewsCount:", error);
+		}
+
+		try {
+			nonGoogleBrewsCount = await HomebrewModel.countDocuments({ googleId: null });
+		} catch (error) {
+			console.error("Failed to get nonGoogleBrewsCount:", error);
+		}
+
+		try {
+			legacyBrewsCount = await HomebrewModel.countDocuments({ renderer: 'legacy' });
+		} catch (error) {
+			console.error("Failed to get legacyBrewsCount:", error);
+		}
+
+		try {
+			totalThumbnailCount = await HomebrewModel.countDocuments({ thumbnail : ''});
+		} catch (error) {
+			console.error("Failed to get totalThumbnailCount:", error);
+		}
+
+		// Construct the response, calculating totalGoogle only if the counts are available
 		return res.json({
-			totalBrews          : totalBrewsCount,
-			totalPublishedBrews : publishedBrewsCount
+			totalBrews      : totalBrewsCount,
+			totalPublished  : publishedBrewsCount,
+			totalUnauthored : unauthoredBrewsCount,
+			totalGoogle     : totalBrewsCount ? totalBrewsCount - nonGoogleBrewsCount : null,
+			totalLegacy     : legacyBrewsCount,
+			totalThumbnail  : totalThumbnailCount,
 		});
+
+	} catch (error) {
+		console.error("Unexpected error:", error);
+		return res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+
+
+router.get('/admin/brewsByDate', mw.adminOnly, async (req, res)=>{
+	try {
+		const data = await HomebrewModel.getDocumentCountsByDate();
+		res.json(data);
 	} catch (error) {
 		console.error(error);
-		return res.status(500).json({ error: 'Internal Server Error' });
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+
+router.get('/admin/brewsByLang', mw.adminOnly, async (req, res)=>{
+	try {
+		const data = await HomebrewModel.getDocumentCountsByLang();
+		res.json(data);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+
+router.get('/admin/brewsByPageCount', mw.adminOnly, async (req, res)=>{
+	try {
+		const data = await HomebrewModel.getDocumentCountsByPageCount();
+		res.json(data);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+router.get('/admin/brewsByVersion', mw.adminOnly, async (req, res)=>{
+	try {
+		const data = await HomebrewModel.getDocumentCountsByVersion();
+		res.json(data);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
 	}
 });
 

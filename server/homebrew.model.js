@@ -61,6 +61,67 @@ HomebrewSchema.statics.getByUser = async function(username, allowAccess=false, f
 	return brews;
 };
 
+HomebrewSchema.statics.getDocumentCountsByDate = async function() {
+	return this.aggregate([
+		{
+			$group : {
+				_id   : { $dateToString: { format: '%Y-%m', date: '$createdAt' } }, // Group by formatted date
+				count : { $sum: 1 } // Count documents for each date
+			}
+		},
+		{
+			// Sort by date ascending
+			$sort : { _id: 1 }
+		}
+	], { maxTimeMS: 30000 });
+};
+
+HomebrewSchema.statics.getDocumentCountsByLang = async function() {
+	return this.aggregate([
+		//To join null with end do _id: { $ifNull: ["$lang", "en"] } in the group
+		//To ignore english or null brews do {$match: {lang: { $nin: [null, en] } } }, before the group
+		{
+			$group: {
+				_id: { $ifNull: ["$lang", "en"] },
+				count: { $sum: 1 }
+			}
+		},
+		{
+			$sort: { _id: 1 }
+		}
+	], { maxTimeMS: 30000 });
+};
+
+HomebrewSchema.statics.getDocumentCountsByPageCount = async function() {
+	return this.aggregate([
+		{$match: {pageCount: { $ne: null, $lte: 50 } } },
+		{
+			$group: {
+				_id: "$pageCount",
+				count: { $sum: 1 }
+			}
+		},
+		{
+			$sort: { _id: 1 }
+		}
+	], { maxTimeMS: 30000 });
+};
+
+HomebrewSchema.statics.getDocumentCountsByVersion = async function() {
+	return this.aggregate([
+		{$match: {version: { $ne: null, $lte: 50 } } },
+		{
+			$group: {
+				_id: "$version",
+				count: { $sum: 1 }
+			}
+		},
+		{
+			$sort: { _id: 1 }
+		}
+	], { maxTimeMS: 30000 });
+};
+
 const Homebrew = mongoose.model('Homebrew', HomebrewSchema);
 
 export { 
