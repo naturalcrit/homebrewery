@@ -88,7 +88,7 @@ const Stats = ()=>{
 		return result;
 	};
 
-	console.log(stats, chartData);
+	console.log('table data: ', stats, '; chart data: ', chartData);
 
 	const renderTable = ()=>{
 		if(!stats)
