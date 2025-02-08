@@ -1,8 +1,12 @@
+//╔===--------------- Polyfills --------------===╗//
+import 'core-js/es/string/to-well-formed.js';
+//╚===---------------          ---------------===╝//
+
 require('./homebrew.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const { StaticRouter:Router } = require('react-router-dom/server');
-const { Route, Routes, useParams, useSearchParams } = require('react-router-dom');
+const { StaticRouter:Router } = require('react-router');
+const { Route, Routes, useParams, useSearchParams } = require('react-router');
 
 const HomePage = require('./pages/homePage/homePage.jsx');
 const EditPage = require('./pages/editPage/editPage.jsx');
@@ -10,6 +14,7 @@ const UserPage = require('./pages/userPage/userPage.jsx');
 const SharePage = require('./pages/sharePage/sharePage.jsx');
 const NewPage = require('./pages/newPage/newPage.jsx');
 const ErrorPage = require('./pages/errorPage/errorPage.jsx');
+const VaultPage = require('./pages/vaultPage/vaultPage.jsx');
 const AccountPage = require('./pages/accountPage/accountPage.jsx');
 
 const WithRoute = (props)=>{
@@ -71,6 +76,7 @@ const Homebrew = createClass({
 						<Route path='/new/:id' element={<WithRoute el={NewPage} brew={this.props.brew} userThemes={this.props.userThemes}/>} />
 						<Route path='/new' element={<WithRoute el={NewPage} userThemes={this.props.userThemes}/> } />
 						<Route path='/user/:username' element={<WithRoute el={UserPage} brews={this.props.brews} />} />
+						<Route path='/vault' element={<WithRoute el={VaultPage}/>}/>
 						<Route path='/changelog' element={<WithRoute el={SharePage} brew={this.props.brew} disableMeta={true} />} />
 						<Route path='/faq' element={<WithRoute el={SharePage} brew={this.props.brew} disableMeta={true} />} />
 						<Route path='/migrate' element={<WithRoute el={SharePage} brew={this.props.brew} disableMeta={true} />} />

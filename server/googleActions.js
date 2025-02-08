@@ -1,8 +1,9 @@
 /* eslint-disable max-lines */
-const googleDrive = require('@googleapis/drive');
-const { nanoid } = require('nanoid');
-const token = require('./token.js');
-const config = require('./config.js');
+import googleDrive from '@googleapis/drive';
+import { nanoid }  from 'nanoid';
+import token       from './token.js';
+import config      from './config.js';
+
 
 let serviceAuth;
 if(!config.get('service_account')){
@@ -24,6 +25,15 @@ if(!config.get('service_account')){
 }
 
 const defaultAuth = serviceAuth || config.get('google_api_key');
+
+const retryConfig = {
+  retry: 3, // Number of retry attempts
+  retryDelay: 100, // Initial delay in milliseconds
+  retryDelayMultiplier: 2, // Multiplier for exponential backoff
+  maxRetryDelay: 32000, // Maximum delay in milliseconds
+  httpMethodsToRetry: ['PATCH'], // Only retry PATCH requests
+  statusCodesToRetry: [[429, 429]], // Only retry on 429 status code
+};
 
 const GoogleActions = {
 
@@ -50,7 +60,7 @@ const GoogleActions = {
 				account.googleRefreshToken = tokens.refresh_token;
 			}
 			account.googleAccessToken = tokens.access_token;
-			const JWTToken = token.generateAccessToken(account);
+			const JWTToken = token(account);
 
 			//Save updated token to cookie
 			//res.cookie('nc_session', JWTToken, { maxAge: 1000*60*60*24*365, path: '/', sameSite: 'lax' });
@@ -63,7 +73,7 @@ const GoogleActions = {
 	getGoogleFolder : async (auth)=>{
 		const drive = googleDrive.drive({ version: 'v3', auth });
 
-		fileMetadata = {
+		const fileMetadata = {
 			'name'     : 'Homebrewery',
 			'mimeType' : 'application/vnd.google-apps.folder'
 		};
@@ -112,9 +122,7 @@ const GoogleActions = {
 			})
 			.catch((err)=>{
 				console.log(`Error Listing Google Brews`);
-				console.error(err);
 				throw (err);
-				//TODO: Should break out here, but continues on for some reason.
 			});
 			fileList.push(...obj.data.files);
 			NextPageToken = obj.data.nextPageToken;
@@ -147,7 +155,7 @@ const GoogleActions = {
 	  return brews;
 	},
 
-	updateGoogleBrew : async (brew)=>{
+	updateGoogleBrew : async (brew, userIp)=>{
 		const drive = googleDrive.drive({ version: 'v3', auth: defaultAuth });
 
 		await drive.files.update({
@@ -168,11 +176,14 @@ const GoogleActions = {
 			media : {
 				mimeType : 'text/plain',
 				body     : brew.text
-			}
+			},
+			headers: {
+				'X-Forwarded-For': userIp, // Set the X-Forwarded-For header
+			},
+			retryConfig
 		})
 		.catch((err)=>{
 			console.log('Error saving to google');
-			console.error(err);
 			throw (err);
 		});
 
@@ -211,7 +222,6 @@ const GoogleActions = {
 		})
 		.catch((err)=>{
 			console.log('Error while creating new Google brew');
-			console.error(err);
 			throw (err);
 		});
 
@@ -231,8 +241,8 @@ const GoogleActions = {
 		return obj.data.id;
 	},
 
-	getGoogleBrew : async (id, accessId, accessType)=>{
-		const drive = googleDrive.drive({ version: 'v3', auth: defaultAuth });
+	getGoogleBrew : async (auth = defaultAuth, id, accessId, accessType)=>{
+		const drive = googleDrive.drive({ version: 'v3', auth: auth });
 
 		const obj = await drive.files.get({
 			fileId : id,
@@ -335,4 +345,4 @@ const GoogleActions = {
 	}
 };
 
-module.exports = GoogleActions;
+export default GoogleActions;

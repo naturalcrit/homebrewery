@@ -1,77 +1,78 @@
-const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
 
-const getTOC = (pages)=>{
+// Map each actual page to its footer label, accounting for skips or numbering resets
+const mapPages = (pages)=>{
+	let actualPage = 0;
+	let mappedPage = 0; // Number displayed in footer
+	const pageMap    = [];
 
-	const recursiveAdd = (title, page, targetDepth, child, curDepth=0)=>{
-		if(curDepth > 5) return; // Something went wrong.
-		if(curDepth == targetDepth) {
-			child.push({
-				title    : title,
-				page     : page,
-				children : []
-			});
-		} else {
-			if(child.length == 0) {
-				child.push({
-					title    : null,
-					page     : page,
-					children : []
-				});
+	pages.forEach((page)=>{
+		actualPage++;
+		const doSkip  = page.querySelector('.skipCounting');
+		const doReset = page.querySelector('.resetCounting');
+
+		if(doReset)
+			mappedPage = 1;
+		if(!doSkip && !doReset)
+			mappedPage++;
+
+		pageMap[actualPage] = {
+			mappedPage : mappedPage,
+			showPage   : !doSkip
+		};
+	});
+	return pageMap;
+};
+
+const getMarkdown = (headings, pageMap)=>{
+	const levelPad    = ['- ###', '  - ####', '    -', '      -', '        -', '          -'];
+
+	const allMarkdown = [];
+	const depthChain  = [0];
+
+	headings.forEach((heading)=>{
+		const page       = parseInt(heading.closest('.page').id?.replace(/^p/, ''));
+		const mappedPage = pageMap[page].mappedPage;
+		const showPage   = pageMap[page].showPage;
+		const title      = heading.textContent.trim();
+		const ToCExclude = getComputedStyle(heading).getPropertyValue('--TOC');
+		const depth      = parseInt(heading.tagName.substring(1));
+
+		if(!title || !showPage || ToCExclude == 'exclude')
+			return;
+
+		//If different header depth than last, remove indents until nearest higher-level header, then indent once
+		if(depth !== depthChain[depthChain.length -1]) {
+			while (depth <= depthChain[depthChain.length - 1]) {
+				depthChain.pop();
 			}
-			recursiveAdd(title, page, targetDepth, _.last(child).children, curDepth+1,);
+			depthChain.push(depth);
 		}
-	};
 
-	const res = [];
+		const markdown = `${levelPad[depthChain.length - 2]} [{{ ${title}}}{{ ${mappedPage}}}](#p${page})`;
+		allMarkdown.push(markdown);
+	});
+	return allMarkdown.join('\n');
+};
 
+const getTOC = ()=>{
 	const iframe = document.getElementById('BrewRenderer');
 	const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
 	const headings = iframeDocument.querySelectorAll('h1, h2, h3, h4, h5, h6');
-	const headerDepth = ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'];
+	const pages    = iframeDocument.querySelectorAll('.page');
 
-	_.each(headings, (heading)=>{
-		const onPage = parseInt(heading.closest('.page').id?.replace(/^p/, ''));
-		const ToCExclude = getComputedStyle(heading).getPropertyValue('--TOC');
-
-		if(ToCExclude != 'exclude') {
-			recursiveAdd(heading.textContent.trim(), onPage, headerDepth.indexOf(heading.tagName), res);
-		}
-	});
-	return res;
-};
-
-
-const ToCIterate = (entries, curDepth=0)=>{
-	const levelPad = ['- ###', '  - ####', '    - ', '      - ', '        - ', '          - '];
-	const toc = [];
-	if(entries.title !== null){
-		toc.push(`${levelPad[curDepth]} [{{ ${entries.title}}}{{ ${entries.page}}}](#p${entries.page})`);
-	}
-	if(entries.children.length) {
-		_.each(entries.children, (entry, idx)=>{
-			const children = ToCIterate(entry, entry.title == null ? curDepth : curDepth+1);
-			if(children.length) {
-				toc.push(...children);
-			}
-		});
-	}
-	return toc;
+	const pageMap = mapPages(pages);
+	return getMarkdown(headings, pageMap);
 };
 
 module.exports = function(props){
-	const pages = props.brew.text.split('\\page');
-	const TOC = getTOC(pages);
-	const markdown = _.reduce(TOC, (r, g1, idx1)=>{
-		r.push(ToCIterate(g1).join('\n'));
-		return r;
-	}, []).join('\n');
+	const TOC = getTOC();
 
 	return dedent`
 		{{toc,wide
 		# Contents
 
-		${markdown}
+		${TOC}
 		}}
 		\n`;
 };

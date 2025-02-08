@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 
 const dedent = require('dedent-tabs').default;
-const Markdown = require('naturalcrit/markdown.js');
+import Markdown from 'naturalcrit/markdown.js';
 
 // Marked.js adds line returns after closing tags on some default tokens.
 // This removes those line returns for comparison sake.
@@ -315,21 +315,21 @@ describe('Normal Links and Images', ()=>{
 		const source = `![alt text](url)`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
-			<p><img src="url" alt="alt text"></p>`.trimReturns());
+			<p><img src="url" alt="alt text" style="--HB_src:url(url);"></p>`.trimReturns());
 	});
 
 	it('Renders normal images with a title', function() {
 		const source = 'An image ![alt text](url "and title")!';
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
-			<p>An image <img src="url" alt="alt text" title="and title">!</p>`.trimReturns());
+			<p>An image <img src="url" alt="alt text" style="--HB_src:url(url);" title="and title">!</p>`.trimReturns());
 	});
 
 	it('Applies curly injectors to images', function() {
 		const source = `![alt text](url){width:100px}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
-			<p><img style="width:100px;" src="url" alt="alt text"></p>`.trimReturns());
+			<p><img style="--HB_src:url(url); width:100px;" src="url" alt="alt text"></p>`.trimReturns());
 	});
 
 	it('Renders normal links', function() {
@@ -401,5 +401,13 @@ describe('Variable names that are subsets of other names', ()=>{
 		const source = `[ab]: 2\n\n[aba]: 8\n\n[ba]: 4\n\n$[ab + aba + ba]`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered).toBe('<p>14</p>');
+	});
+});
+
+describe('Regression Tests', ()=>{
+	it('Don\'t Eat all the parentheticals!', function() {
+		const source='\n|  title 1  | title 2 | title 3 | title 4|\n|-----------|---------|---------|--------|\n|[foo](bar) |  Ipsum  |    )    |   )    |\n';
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<table><thead><tr><th>title 1</th><th>title 2</th><th>title 3</th><th>title 4</th></tr></thead><tbody><tr><td><a href=\"bar\">foo</a></td><td>Ipsum</td><td>)</td><td>)</td></tr></tbody></table>');
 	});
 });

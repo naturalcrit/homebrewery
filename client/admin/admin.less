@@ -6,39 +6,95 @@
 
 @import 'font-awesome/css/font-awesome.css';
 
-html,body, #reactContainer, .naturalCrit{
-	min-height : 100%;
-}
+html,body, #reactContainer, .naturalCrit { min-height : 100%; }
 
 @sidebarWidth : 250px;
 
-body{
-	background-color : #eee;
-	font-family      : 'Open Sans', sans-serif;
-	color            : #4b5055;
-	font-weight      : 100;
-	text-rendering   : optimizeLegibility;
-	margin           : 0;
+body {
+	height           : 100%;
 	padding          : 0;
-	height : 100%;
+	margin           : 0;
+	font-family      : 'Open Sans', sans-serif;
+	font-weight      : 100;
+	color            : #4B5055;
+	background-color : #EEEEEE;
+	text-rendering   : optimizeLegibility;
 }
 
-.admin{
+:where(.admin) {
 
-	header{
+	header {
+		padding          : 20px 0px;
+		margin-bottom    : 30px;
+		font-size        : 2em;
+		color            : white;
 		background-color : @red;
-		font-size: 2em;
-		padding : 20px 0px;
-		color : white;
-		margin-bottom: 30px;
-		i{
-			margin-right: 30px;
+		i { margin-right : 30px; }
+	}
+
+	hr { margin : 30px 0px; }
+
+	:where(.container) {
+		input {
+			height        : 33px;
+			padding       : 0px 10px;
+			margin-bottom : 20px;
+			font-family   : monospace;
+		}
+
+		button {
+			height         : 37px;
+			vertical-align : middle;
+		}
+
+		dl {
+			@maxItemWidth : 132px;
+			dt {
+				float      : left;
+				width      : @maxItemWidth;
+				clear      : left;
+				text-align : right;
+				&::after { content : ' : '; }
+			}
+			dd {
+				height      : 1em;
+				padding     : 0 0 0.5em 0;
+				margin-left : @maxItemWidth + 6px;
+			}
+		}
+
+		.tabs button {
+			margin-right     : 3px;
+			margin-left      : 3px;
+			color            : black;
+			background-color : #EEEEEE;
+			border           : 1px solid #444444;
+			border-radius    : 5px;
+			&:hover {
+				color            : #EEEEEE;
+				background-color : #444444;
+			}
+			&.active {
+				margin-right     : 2px;
+				margin-left      : 2px;
+				text-decoration  : underline;
+				background-color : #CCCCCC;
+				border           : 2px solid #444444;
+			}
+		}
+
+		.notificationUtils {
+			display         : flex;
+			gap             : 50px;
+			justify-content : space-between;
 		}
 	}
 
-	hr{
-		margin : 30px 0px;
+	.error {
+		background: rgb(178, 54, 54);
+		color:white;
+		font-weight: 900;
+		margin-block:10px;
+		padding:10px;
 	}
-
-
 }

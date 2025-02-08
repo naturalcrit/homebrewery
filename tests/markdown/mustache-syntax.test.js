@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 
 const dedent = require('dedent-tabs').default;
-const Markdown = require('naturalcrit/markdown.js');
+import Markdown from 'naturalcrit/markdown.js';
 
 // Marked.js adds line returns after closing tags on some default tokens.
 // This removes those line returns for comparison sake.
@@ -300,7 +300,7 @@ describe('Injection: When an injection tag follows an element', ()=>{
 		it('Renders a span "text" with its own styles, appended with injected styles', function() {
 			const source = '{{color:blue,height:10px text}}{width:10px,color:red}';
 			const rendered = Markdown.render(source);
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" style="color:blue; height:10px; width:10px; color:red;">text</span>');
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" style="color:red; height:10px; width:10px;">text</span>');
 		});
 
 		it('Renders a span "text" with its own classes, appended with injected classes', function() {
@@ -322,9 +322,9 @@ describe('Injection: When an injection tag follows an element', ()=>{
 		});
 
 		it('Renders an image element with injected style', function() {
-			const source = '![alt text](http://i.imgur.com/hMna6G0.png){position:absolute}';
+			const source = '![alt text](https://i.imgur.com/hMna6G0.png){position:absolute}';
 			const rendered = Markdown.render(source).trimReturns();
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p><img style="position:absolute;" src="http://i.imgur.com/hMna6G0.png" alt="alt text"></p>');
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<p><img style="--HB_src:url(https://i.imgur.com/hMna6G0.png); position:absolute;" src="https://i.imgur.com/hMna6G0.png" alt="alt text"></p>');
 		});
 
 		it('Renders an element modified by only the first of two consecutive injections', function() {
@@ -343,19 +343,19 @@ describe('Injection: When an injection tag follows an element', ()=>{
 		it('Renders an image with added attributes', function() {
 			const source = `![homebrew mug](https://i.imgur.com/hMna6G0.png) {position:absolute,bottom:20px,left:130px,width:220px,a="b and c",d=e}`;
 			const rendered = Markdown.render(source).trimReturns();
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p><img style="position:absolute; bottom:20px; left:130px; width:220px;" src="https://i.imgur.com/hMna6G0.png" alt="homebrew mug" a="b and c" d="e"></p>`);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p><img style="--HB_src:url(https://i.imgur.com/hMna6G0.png); position:absolute; bottom:20px; left:130px; width:220px;" src="https://i.imgur.com/hMna6G0.png" alt="homebrew mug" a="b and c" d="e"></p>`);
 		});
 
 		it('Renders an image with "=" in the url, and added attributes', function() {
 			const source = `![homebrew mug](https://i.imgur.com/hMna6G0.png?auth=12345&height=1024) {position:absolute,bottom:20px,left:130px,width:220px,a="b and c",d=e}`;
 			const rendered = Markdown.render(source).trimReturns();
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p><img style="position:absolute; bottom:20px; left:130px; width:220px;" src="https://i.imgur.com/hMna6G0.png?auth=12345&height=1024" alt="homebrew mug" a="b and c" d="e"></p>`);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p><img style="--HB_src:url(https://i.imgur.com/hMna6G0.png?auth=12345&height=1024); position:absolute; bottom:20px; left:130px; width:220px;" src="https://i.imgur.com/hMna6G0.png?auth=12345&height=1024" alt="homebrew mug" a="b and c" d="e"></p>`);
 		});
 
 		it('Renders an image and added attributes with "=" in the value, ', function() {
 			const source = `![homebrew mug](https://i.imgur.com/hMna6G0.png) {position:absolute,bottom:20px,left:130px,width:220px,a="b and c",d=e,otherUrl="url?auth=12345"}`;
 			const rendered = Markdown.render(source).trimReturns();
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p><img style="position:absolute; bottom:20px; left:130px; width:220px;" src="https://i.imgur.com/hMna6G0.png" alt="homebrew mug" a="b and c" d="e" otherUrl="url?auth=12345"></p>`);
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p><img style="--HB_src:url(https://i.imgur.com/hMna6G0.png); position:absolute; bottom:20px; left:130px; width:220px;" src="https://i.imgur.com/hMna6G0.png" alt="homebrew mug" a="b and c" d="e" otherUrl="url?auth=12345"></p>`);
 		});
 	});
 
@@ -429,7 +429,7 @@ describe('Injection: When an injection tag follows an element', ()=>{
 														}}
 														{width:10px,color:red}`;
 			const rendered = Markdown.render(source).trimReturns();
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block" style="color:blue; height:10px; width:10px; color:red;"><p>text</p></div>');
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block" style="color:red; height:10px; width:10px;"><p>text</p></div>');
 		});
 
 		it('Renders a span "text" with its own classes, appended with injected classes', function() {
