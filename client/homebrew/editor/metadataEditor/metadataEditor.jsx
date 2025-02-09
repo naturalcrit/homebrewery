@@ -239,7 +239,7 @@ const MetadataEditor = createClass({
 						<img src={preview}/>
 					</div>
 				</div>;
-			}).filter(Boolean);
+			});
 		};
 
 		const currentRenderer = this.props.metadata.renderer;
