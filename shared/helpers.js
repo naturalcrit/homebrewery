@@ -59,14 +59,8 @@ const fetchThemeBundle = async (obj, renderer, theme)=>{
 	}));
 };
 
-const fetchBrewAsThemeJSON = async (renderer, theme)=>{
-	if(!renderer || !theme) return;
-
-}
-
 export {
 	splitTextStyleAndMetadata,
 	printCurrentBrew,
 	fetchThemeBundle,
-	fetchBrewAsThemeJSON
 };
