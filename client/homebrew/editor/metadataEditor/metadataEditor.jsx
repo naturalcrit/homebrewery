@@ -290,9 +290,9 @@ const MetadataEditor = createClass({
 			return _.map(langCodes.sort(), (code, index)=>{
 				const localName = new Intl.DisplayNames([code], { type: 'language' });
 				const englishName = new Intl.DisplayNames('en', { type: 'language' });
-				return <div className='item' title={`${englishName.of(code)}`} key={`${index}`} data-value={`${code}`} data-detail={`${localName.of(code)}`}>
-					{`${code}`}
-					<div className='detail'>{`${localName.of(code)}`}</div>
+				return <div className='item' title={englishName.of(code)} key={`${index}`} value={code} detail={localName.of(code)}>
+					{code}
+					<div className='detail'>{localName.of(code)}</div>
 				</div>;
 			});
 		};
@@ -315,7 +315,7 @@ const MetadataEditor = createClass({
 					autoSuggest={{
 						suggestMethod           : 'startsWith',
 						clearAutoSuggestOnClick : true,
-						filterOn                : ['data-value', 'data-detail', 'title']
+						filterOn                : ['value', 'detail', 'title']
 					}}
 				>
 				</Combobox>
