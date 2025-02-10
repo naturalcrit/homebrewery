@@ -44,8 +44,13 @@ const fetchThemeBundle = async (obj, renderer, theme)=>{
 			.catch((err)=>{
 				obj.setState({ error: err });
 			});
-	if(!res) return;
-
+	if(!res) {
+		obj.setState((prevState)=>({
+			...prevState,
+			themeBundle : {}
+		}));
+		return;
+	}
 	const themeBundle = res.body;
 	themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n');
 	obj.setState((prevState)=>({

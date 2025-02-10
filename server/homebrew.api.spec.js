@@ -587,6 +587,7 @@ brew`);
 
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.send).toHaveBeenCalledWith({
+				path     : 'User Theme A',
 				styles   : ['/* From Brew: https://localhost/share/userThemeAID */\n\nUser Theme A Style'],
 				snippets : []
 			});
@@ -607,6 +608,7 @@ brew`);
 
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.send).toHaveBeenCalledWith({
+				path   : 'User Theme A',
 				styles : [
 					'/* From Brew: https://localhost/share/userThemeCID */\n\nUser Theme C Style',
 					'/* From Brew: https://localhost/share/userThemeBID */\n\nUser Theme B Style',
@@ -623,6 +625,7 @@ brew`);
 
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.send).toHaveBeenCalledWith({
+				path   : '5ePHB',
 				styles : [
 					`/* From Theme Blank */\n\n@import url("/themes/V3/Blank/style.css");`,
 					`/* From Theme 5ePHB */\n\n@import url("/themes/V3/5ePHB/style.css");`
@@ -649,6 +652,7 @@ brew`);
 
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.send).toHaveBeenCalledWith({
+				path : 'User Theme A',
 				styles : [
 					`/* From Theme Blank */\n\n@import url("/themes/V3/Blank/style.css");`,
 					`/* From Theme 5ePHB */\n\n@import url("/themes/V3/5ePHB/style.css");`,

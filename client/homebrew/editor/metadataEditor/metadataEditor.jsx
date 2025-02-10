@@ -16,6 +16,8 @@ const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
 const homebreweryThumbnail = require('../../thumbnail.png');
 
+let mergedThemes;
+
 const callIfExists = (val, fn, ...args)=>{
 	if(val[fn]) {
 		val[fn](...args);
@@ -40,20 +42,34 @@ const MetadataEditor = createClass({
 				theme       : '5ePHB',
 				lang        : 'en'
 			},
+
 			onChange    : ()=>{},
 			reportError : ()=>{}
 		};
 	},
 
 	getInitialState : function(){
+		mergedThemes = _.merge(Themes, this.props.userThemes);
 		return {
-			showThumbnail : true
+			showThumbnail     : true,
+			showThemeWritein  : mergedThemes[this.props.metadata.renderer][this.props.metadata.theme] ? false : true,
+			lastThemePulldown : mergedThemes[this.props.metadata.renderer][this.props.metadata.theme] ? mergedThemes[this.props.metadata.renderer][this.props.metadata.theme].path : '',
+			lastThemeWriteIn  : mergedThemes[this.props.metadata.renderer][this.props.metadata.theme] ? '' : this.props.metadata.theme
 		};
 	},
 
 	toggleThumbnailDisplay : function(){
 		this.setState({
 			showThumbnail : !this.state.showThumbnail
+		});
+	},
+
+	toggleThemeWritein : function(){
+		if(!this.state.showThemeWritein) this.props.metadata.theme = this.state.lastThemeWriteIn;
+		else this.props.metadata.theme = this.state.lastThemePulldown;
+		this.props.onChange(this.props.metadata, 'theme');
+		this.setState({
+			showThemeWritein : !this.state.showThemeWritein
 		});
 	},
 
@@ -112,6 +128,21 @@ const MetadataEditor = createClass({
 	handleTheme : function(theme){
 		this.props.metadata.renderer = theme.renderer;
 		this.props.metadata.theme    = theme.path;
+		this.setState({
+			lastThemePulldown : theme.path
+		});
+
+		this.props.onChange(this.props.metadata, 'theme');
+	},
+
+	handleThemeWritein : function(e) {
+		this.props.metadata.renderer = 'V3';
+		this.props.metadata.theme = e.target.value;
+		this.setState({
+			lastThemeWriteIn : e.target.value
+		});
+
+		this.props.onChange(this.props.metadata, 'renderer');
 		this.props.onChange(this.props.metadata, 'theme');
 	},
 
@@ -193,8 +224,6 @@ const MetadataEditor = createClass({
 	renderThemeDropdown : function(){
 		if(!global.enable_themes) return;
 
-		const mergedThemes = _.merge(Themes, this.props.userThemes);
-
 		const listThemes = (renderer)=>{
 			return _.map(_.values(mergedThemes[renderer]), (theme)=>{
 				if(theme.path == this.props.metadata.shareId) return;
@@ -215,7 +244,7 @@ const MetadataEditor = createClass({
 
 		const currentRenderer = this.props.metadata.renderer;
 		const currentTheme    = mergedThemes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme]
-													?? { name: `!!! THEME MISSING !!! ID=${this.props.metadata.theme}` };
+													?? { name: `${this.props.themeBundle?.path || ''}`, author: '!!!' };
 		let dropdown;
 
 		if(currentRenderer == 'legacy') {
@@ -234,7 +263,24 @@ const MetadataEditor = createClass({
 
 		return <div className='field themes'>
 			<label>theme</label>
-			{dropdown}
+			{!this.state.showThemeWritein?dropdown:''}
+			<button className='display writeIn' onClick={this.toggleThemeWritein}>
+				{`${this.state.showThemeWritein ? 'Theme List' : 'Use Brew Theme'}`}
+			</button>
+			{this.renderThemeWritein()}
+		</div>;
+	},
+
+	renderThemeWritein : function(){
+		if(!this.state.showThemeWritein) return;
+		return <div>
+			<input type='text'
+				default=''
+				placeholder='Enter share id'
+				className='value'
+				defaultValue={this.state.lastThemeWriteIn || this.props.metadata.theme}
+				onChange={(e)=>this.handleThemeWritein(e)} />
+			<span class='userThemeName'>{`${this.state.lastThemeWriteIn ? this.props.themeBundle?.path || '' : ''}`}</span>
 		</div>;
 	},
 
@@ -345,7 +391,7 @@ const MetadataEditor = createClass({
 				placeholder='add tag' unique={true}
 				values={this.props.metadata.tags}
 				onChange={(e)=>this.handleFieldChange('tags', e)}
-				/>
+			/>
 
 			<div className='field systems'>
 				<label>systems</label>
@@ -370,7 +416,7 @@ const MetadataEditor = createClass({
 				values={this.props.metadata.invitedAuthors}
 				notes={['Invited author usernames are case sensitive.', 'After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.']}
 				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}
-				/>
+			/>
 
 			<h2>Privacy</h2>
 
