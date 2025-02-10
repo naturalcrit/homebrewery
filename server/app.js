@@ -37,7 +37,7 @@ import bodyParser         from 'body-parser';
 import cookieParser       from 'cookie-parser';
 import forceSSL           from './forcessl.mw.js';
 
-import EventEmitter from 'events';
+import Stream from './eventStreamSource.js';
 
 
 const sanitizeBrew = (brew, accessType)=>{
@@ -514,26 +514,26 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 	return next();
 }));
 
-// Event Stream
-const Stream = new EventEmitter;
-
-// After Stream starts, send initStream event
-setTimeout(()=>{
-	Stream.emit('push', 'initStream', { time: (new Date).toString() });
-}, 1000);
-
+// Create Event Stream source for pages to listen to
 app.get('/stream', (req, res)=>{
 	res.writeHead(200, {
-		'Content-Type'  : 'text/event-stream',
-		'Cache-Control' : 'no-cache',
-		'Connection'    : 'keep-alive'
+		'Content-Type'     : 'text/event-stream',
+		'Cache-Control'    : 'no-cache',
+		'Connection'       : 'keep-alive',
+		'Content-Encoding' : 'none'
 	});
 
-	Stream.on('push', (event, data)=>{
-		// console.log('Event:', event, 'Data:', data);
+	Stream.on('sendUpdate', (event, data)=>{
+		console.log('Event:', event, '\nData:', data);
 		res.write(`data: ${JSON.stringify({ ...data, eventType: event })}\n\n`);
 	});
 });
+
+// After Stream starts, send initStream event
+setTimeout(()=>{
+	Stream.emit('sendUpdate', 'initStream', { time: new Date });
+}, 1000);
+
 
 // Local only
 if(isLocalEnvironment){
