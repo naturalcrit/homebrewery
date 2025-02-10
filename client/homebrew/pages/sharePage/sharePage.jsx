@@ -46,6 +46,18 @@ const SharePage = (props)=>{
 			brew.theme
 		);
 
+		const eventSource = new EventSource('/stream');
+
+		eventSource.addEventListener('message', (evt)=>{
+			const messageData = JSON.parse(evt.data);
+
+			if(messageData.eventType == 'brewUpdated'){
+				if(messageData.shareId == brew.shareId && messageData.version != brew.version) {
+					console.log(`brew has been updated, viewing ${brew.version}, new version is ${messageData.version}`);
+				}
+			}
+		});
+
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
 		};
