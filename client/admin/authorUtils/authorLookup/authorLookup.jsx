@@ -39,19 +39,19 @@ const authorLookup = ()=>{
 				</thead>
 				<tbody>
 					{results
-                        .sort((a, b)=>{         // Sort brews from most recently updated
-                        	if(a.updatedAt > b.updatedAt) return -1;
-                        	return 1;
-                        })
-                        .map((brew, idx)=>{
-                        	return <tr key={idx}>
-                        		<td>{brew.title}</td>
-                        		<td>{brew.shareId}</td>
-                        		<td>{brew.editId}</td>
-                        		<td>{brew.updatedAt}</td>
-                        		<td>{brew.googleId ? 'Google' : 'Homebrewery'}</td>
-                        	</tr>;
-                        })}
+						.sort((a, b)=>{         // Sort brews from most recently updated
+							if(a.updatedAt > b.updatedAt) return -1;
+							return 1;
+						})
+						.map((brew, idx)=>{
+							return <tr key={idx}>
+								<td>{brew.title}</td>
+								<td>{brew.shareId}</td>
+								<td>{brew.editId}</td>
+								<td>{brew.updatedAt}</td>
+								<td>{brew.googleId ? 'Google' : 'Homebrewery'}</td>
+							</tr>;
+						})}
 				</tbody>
 			</table>
 		</>;
@@ -70,7 +70,7 @@ const authorLookup = ()=>{
 			<div className='authorLookupInputs'>
 				<h2>Author Lookup</h2>
 				<label className='field'>
-                    Author Name:
+					Author Name:
 					<input className='fieldInput' value={author} onKeyDown={handleKeyPress} onChange={handleChange} />
 					<button onClick={lookup}>
 						<i className={`fas ${searching ? 'fa-spin fa-spinner' : 'fa-search'}`} />
