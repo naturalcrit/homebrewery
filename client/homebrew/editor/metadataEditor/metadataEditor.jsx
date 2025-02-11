@@ -49,27 +49,14 @@ const MetadataEditor = createClass({
 	},
 
 	getInitialState : function(){
-		mergedThemes = _.merge(Themes, this.props.userThemes);
 		return {
-			showThumbnail     : true,
-			showThemeWritein  : mergedThemes[this.props.metadata.renderer][this.props.metadata.theme] ? false : true,
-			lastThemePulldown : mergedThemes[this.props.metadata.renderer][this.props.metadata.theme] ? mergedThemes[this.props.metadata.renderer][this.props.metadata.theme].path : '',
-			lastThemeWriteIn  : mergedThemes[this.props.metadata.renderer][this.props.metadata.theme] ? '' : this.props.metadata.theme
+			showThumbnail     : true
 		};
 	},
 
 	toggleThumbnailDisplay : function(){
 		this.setState({
 			showThumbnail : !this.state.showThumbnail
-		});
-	},
-
-	toggleThemeWritein : function(){
-		if(!this.state.showThemeWritein) this.props.metadata.theme = this.state.lastThemeWriteIn;
-		else this.props.metadata.theme = this.state.lastThemePulldown;
-		this.props.onChange(this.props.metadata, 'theme');
-		this.setState({
-			showThemeWritein : !this.state.showThemeWritein
 		});
 	},
 
@@ -128,21 +115,15 @@ const MetadataEditor = createClass({
 	handleTheme : function(theme){
 		this.props.metadata.renderer = theme.renderer;
 		this.props.metadata.theme    = theme.path;
-		this.setState({
-			lastThemePulldown : theme.path
-		});
 
 		this.props.onChange(this.props.metadata, 'theme');
 	},
 
 	handleThemeWritein : function(e) {
-		this.props.metadata.renderer = 'V3';
 		this.props.metadata.theme = e.target.value;
-		this.setState({
-			lastThemeWriteIn : e.target.value
-		});
 
-		this.props.onChange(this.props.metadata, 'renderer');
+		
+
 		this.props.onChange(this.props.metadata, 'theme');
 	},
 
@@ -224,12 +205,14 @@ const MetadataEditor = createClass({
 	renderThemeDropdown : function(){
 		if(!global.enable_themes) return;
 
+		const mergedThemes = _.merge(Themes, this.props.userThemes);
+
 		const listThemes = (renderer)=>{
 			return _.map(_.values(mergedThemes[renderer]), (theme)=>{
 				if(theme.path == this.props.metadata.shareId) return;
 				const preview = theme.thumbnail || `/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`;
 				const texture = theme.thumbnail || `/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`;
-				return <div className='item' key={`${renderer}_${theme.name}`} onClick={()=>this.handleTheme(theme)} title={''}>
+				return <div className='item' key={`${renderer}_${theme.name}`} value={`${theme.author ?? renderer} : ${theme.name}`} data={theme} title={''}>
 					{theme.author ?? renderer} : {theme.name}
 					<div className='texture-container'>
 						<img src={texture}/>
@@ -242,45 +225,45 @@ const MetadataEditor = createClass({
 			});
 		};
 
+		console.log(this.props.themeBundle);
+
 		const currentRenderer = this.props.metadata.renderer;
 		const currentTheme    = mergedThemes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme]
-													?? { name: `${this.props.themeBundle?.path || ''}`, author: '!!!' };
+		                      ?? { name: `${this.props.themeBundle?.name || ''}`, author: `${this.props.themeBundle?.author || ''}` };
 		let dropdown;
 
 		if(currentRenderer == 'legacy') {
 			dropdown =
-				<Nav.dropdown className='disabled value' trigger='disabled'>
-					<div> {`Themes are not supported in the Legacy Renderer`} <i className='fas fa-caret-down'></i> </div>
-				</Nav.dropdown>;
+				<div className='disabled value' trigger='disabled'>
+					<div> Themes are not supported in the Legacy Renderer </div>
+				</div>;
 		} else {
 			dropdown =
-				<Nav.dropdown className='value' trigger='click'>
-					<div> {currentTheme.author ?? _.upperFirst(currentRenderer)} : {currentTheme.name} <i className='fas fa-caret-down'></i> </div>
-
-					{listThemes(currentRenderer)}
-				</Nav.dropdown>;
+				<div className='value'>
+					<Combobox trigger='click'
+						className='themes-dropdown'
+						default={`${currentTheme.author ?? _.upperFirst(currentRenderer)} : ${currentTheme.name}`}
+						placeholder='Enter the Share URL or ID of any brew with the meta:theme tag'
+						onSelect={(value)=>this.handleTheme(value)}
+						onEntry={(e)=>{
+							e.target.setCustomValidity('');	//Clear the validation popup while typing
+							//debouncedHandleFieldChange('theme', e);
+							this.handleThemeWritein(e);
+						}}
+						options={listThemes(currentRenderer)}
+						autoSuggest={{
+							suggestMethod           : 'includes',
+							clearAutoSuggestOnClick : true,
+							filterOn                : ['value', 'title']
+						}}
+					/>
+					<small>Select from the list below (built-in themes and brews you have tagged "meta:theme"), or paste in the Share URL or Share ID of any brew.</small>
+				</div>;
 		}
 
 		return <div className='field themes'>
 			<label>theme</label>
-			{!this.state.showThemeWritein?dropdown:''}
-			<button className='display writeIn' onClick={this.toggleThemeWritein}>
-				{`${this.state.showThemeWritein ? 'Theme List' : 'Use Brew Theme'}`}
-			</button>
-			{this.renderThemeWritein()}
-		</div>;
-	},
-
-	renderThemeWritein : function(){
-		if(!this.state.showThemeWritein) return;
-		return <div>
-			<input type='text'
-				default=''
-				placeholder='Enter share id'
-				className='value'
-				defaultValue={this.state.lastThemeWriteIn || this.props.metadata.theme}
-				onChange={(e)=>this.handleThemeWritein(e)} />
-			<span class='userThemeName'>{`${this.state.lastThemeWriteIn ? this.props.themeBundle?.path || '' : ''}`}</span>
+			{dropdown}
 		</div>;
 	},
 
@@ -317,8 +300,7 @@ const MetadataEditor = createClass({
 						clearAutoSuggestOnClick : true,
 						filterOn                : ['value', 'detail', 'title']
 					}}
-				>
-				</Combobox>
+				/>
 				<small>Sets the HTML Lang property for your brew. May affect hyphenation or spellcheck.</small>
 			</div>
 
