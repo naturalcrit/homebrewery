@@ -279,7 +279,8 @@ const api = {
 		let currentTheme;
 		const completeStyles   = [];
 		const completeSnippets = [];
-		let themePath = '';
+		let themeName;
+		let themeAuthor;
 
 		while (req.params.id) {
 			//=== User Themes ===//
@@ -293,17 +294,18 @@ const api = {
 
 				currentTheme = req.brew;
 				splitTextStyleAndMetadata(currentTheme);
-				if(themePath === '') themePath = currentTheme.title;
+				themeName   ??= currentTheme.title;
+				themeAuthor ??= currentTheme.authors?.[0];
 
 				// If there is anything in the snippets or style members, append them to the appropriate array
-				// if(currentTheme?.snippets) completeSnippets.push(JSON.parse(currentTheme.snippets));
+				if(currentTheme?.snippets) completeSnippets.push(JSON.parse(currentTheme.snippets));
 				if(currentTheme?.style) completeStyles.push(`/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.params.id} */\n\n${currentTheme.style}`);
 
 				req.params.id       = currentTheme.theme;
 				req.params.renderer = currentTheme.renderer;
 			} else {
 			//=== Static Themes ===//
-				if(themePath === '') themePath = req.params.id;
+				themeName ??= req.params.id;
 				const localSnippets = `${req.params.renderer}_${req.params.id}`; // Just log the name for loading on client
 				const localStyle    = `@import url(\"/themes/${req.params.renderer}/${req.params.id}/style.css\");`;
 				completeSnippets.push(localSnippets);
@@ -317,7 +319,8 @@ const api = {
 			// Reverse the order of the arrays so they are listed oldest parent to youngest child.
 			styles   : completeStyles.reverse(),
 			snippets : completeSnippets.reverse(),
-			path     : themePath
+			name     : themeName,
+			author   : themeAuthor
 		};
 
 		res.setHeader('Content-Type', 'application/json');
