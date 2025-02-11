@@ -40,8 +40,7 @@ const authorLookup = ()=>{
 					{results
                         .sort((a, b)=>{         // Sort brews from most recently updated
                         	if(a.updatedAt > b.updatedAt) return -1;
-                        	if(a.updatedAt < b.updatedAt) return 1;
-                        	return 0;
+                        	return 1;
                         })
                         .map((brew, idx)=>{
                         	return <tr key={idx}>
