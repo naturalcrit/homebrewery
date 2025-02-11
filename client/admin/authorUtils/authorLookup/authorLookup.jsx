@@ -17,6 +17,7 @@ const authorLookup = ()=>{
 		const brews = await request.get(`/admin/user/list/${author}`);
 		setResults(brews.body);
 		setSearching(false);
+	};
 
 	const renderResults = ()=>{
 		if(results.length == 0) return <>
