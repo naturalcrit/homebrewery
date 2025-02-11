@@ -361,6 +361,26 @@ const superSubScripts = {
 	}
 };
 
+const underline = {
+	name  : 'underline',
+	level : 'inline',
+	start(src) { return src.match(/\b_(?![_\s])(.*?[^_\s])_\b/m)?.index;},
+	tokenizer(src, tokens) {
+		const uRegex = /^\b_(?![_\s])(.*?[^_\s])_\b/m;
+	    const match = uRegex.exec(src);
+		if(match?.length) {
+			return {
+				type   : 'underline',
+				raw    : match[0],
+				tokens : this.lexer.inlineTokens(match[1])
+			};
+		}
+	},
+	renderer(token) {				
+		return  `<u>${this.parser.parseInline(token.tokens)}</u>`;
+	}
+};
+
 
 const justifiedParagraphClasses = [];
 justifiedParagraphClasses[2] = 'Left';
@@ -414,7 +434,7 @@ const forcedParagraphBreaks = {
 			};
 		}
 	},
-	renderer(token) {
+	renderer(token) {				
 		return `<div class='blank'></div>`.repeat(token.length).concat('\n');
 	}
 };
@@ -797,6 +817,7 @@ const tableTerminators = [
 Marked.use(MarkedVariables());
 Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
 	nonbreakingSpaces, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use({ extensions: [underline] });
 Marked.use(mustacheInjectBlock);
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }),
@@ -864,12 +885,12 @@ const processStyleTags = (string)=>{
 			obj[key.trim()] = value.trim();
 			return obj;
 		}, {}) || null;
-	const styles = tags?.length ? tags.reduce((styleObj, style) => {
-			const index = style.indexOf(':');
-			const [key, value] = [style.substring(0, index), style.substring(index + 1)];
-			styleObj[key.trim()] = value.replace(/"?([^"]*)"?/g, '$1').trim();
-			return styleObj;
-		}, {}) : null;
+	const styles = tags?.length ? tags.reduce((styleObj, style)=>{
+		const index = style.indexOf(':');
+		const [key, value] = [style.substring(0, index), style.substring(index + 1)];
+		styleObj[key.trim()] = value.replace(/"?([^"]*)"?/g, '$1').trim();
+		return styleObj;
+	}, {}) : null;
 
 	return {
 		id         : id,
