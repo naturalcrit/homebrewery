@@ -209,7 +209,7 @@ const Stats = ()=>{
 							<div
 								key={index}
 								className='column'
-								title={`${value} brews of ${dataset.labels[index]}`}
+								data-title={`${value} brews of ${dataset.labels[index]}`}
 								style={{
 									left   : `${(index / dataset.labels.length) * 100}%`,
 									top    : `${100 - (value / Math.max(...dataset.data)) * 100}%`,
