@@ -7,6 +7,7 @@ import MarkedExtendedTables     from 'marked-extended-tables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
+import MarkedHardBreaks                                                                  from 'marked-hard-breaks';
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
 import diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
@@ -398,27 +399,6 @@ const justifiedParagraphs = {
 };
 
 
-const forcedParagraphBreaks = {
-	name  : 'hardBreaks',
-	level : 'block',
-	start(src) { return src.match(/\n:+$/m)?.index; },  // Hint to Marked.js to stop and check for a match
-	tokenizer(src, tokens) {
-		const regex  = /^(:+)(?:\n|$)/ym;
-		const match = regex.exec(src);
-		if(match?.length) {
-			return {
-				type   : 'hardBreaks', // Should match "name" above
-				raw    : match[0],     // Text to consume from the source
-				length : match[1].length,
-				text   : ''
-			};
-		}
-	},
-	renderer(token) {
-		return `<div class='blank'></div>`.repeat(token.length).concat('\n');
-	}
-};
-
 const nonbreakingSpaces = {
 	name  : 'nonbreakingSpaces',
 	level : 'inline',
@@ -795,9 +775,10 @@ const tableTerminators = [
 ];
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
+Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine,
 	nonbreakingSpaces, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
+Marked.use(MarkedHardBreaks());
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }),
 	MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
