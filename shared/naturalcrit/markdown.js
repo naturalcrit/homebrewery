@@ -7,6 +7,7 @@ import MarkedExtendedTables     from 'marked-extended-tables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
+import MarkedNonbreakingSpaces                                                           from 'marked-nonbreaking-spaces';
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
 import diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
@@ -419,27 +420,6 @@ const forcedParagraphBreaks = {
 	}
 };
 
-const nonbreakingSpaces = {
-	name  : 'nonbreakingSpaces',
-	level : 'inline',
-	start(src) { return src.match(/:>+/m)?.index; },  // Hint to Marked.js to stop and check for a match
-	tokenizer(src, tokens) {
-		const regex  = /:(>+)/ym;
-		const match = regex.exec(src);
-		if(match?.length) {
-			return {
-				type   : 'nonbreakingSpaces', // Should match "name" above
-				raw    : match[0],     // Text to consume from the source
-				length : match[1].length,
-				text   : ''
-			};
-		}
-	},
-	renderer(token) {
-		return `&nbsp;`.repeat(token.length).concat('');
-	}
-};
-
 const definitionListsSingleLine = {
 	name  : 'definitionListsSingleLine',
 	level : 'block',
@@ -796,8 +776,9 @@ const tableTerminators = [
 
 Marked.use(MarkedVariables());
 Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
-	nonbreakingSpaces, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+	superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
+Marked.use(MarkedNonbreakingSpaces());
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }),
 	MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));

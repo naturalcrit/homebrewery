@@ -112,6 +112,7 @@
     "marked-emoji": "^1.4.3",
     "marked-extended-tables": "^1.1.0",
     "marked-gfm-heading-id": "^4.0.1",
+    "marked-nonbreaking-spaces": "file:../marked-nonbreaking-spaces",
     "marked-smartypants-lite": "^1.0.3",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.30.1",
