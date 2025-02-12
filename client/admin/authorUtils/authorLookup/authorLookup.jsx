@@ -48,7 +48,7 @@ const authorLookup = ()=>{
 								<td><strong>{brew.title}</strong></td>
 								<td><a href={`/share/${brew.shareId}`}>{brew.shareId}</a></td>
 								<td>{brew.editId}</td>
-								<td>{brew.updatedAt}</td>
+								<td style={{ width: '200px' }}>{brew.updatedAt}</td>
 								<td>{brew.googleId ? 'Google' : 'Homebrewery'}</td>
 							</tr>;
 						})}
