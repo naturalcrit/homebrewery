@@ -141,7 +141,7 @@
 					background-color: rgb(93, 93, 219);
 					outline: 0.1px solid rgb(79, 160, 253);
 
-					&:hover::after {
+					&::after {
 						//pseudo element with title attrb contents
 						content: attr(data-title);
 						width: max-content;
@@ -154,6 +154,11 @@
 						background: white;
 						border-radius: 5px;
 						z-index: 1000;
+						opacity:0;
+						transition: opacity 0.3s;
+					}
+					&:hover::after {
+						opacity:1;
 					}
 				}
 			}
