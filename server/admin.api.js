@@ -197,7 +197,6 @@ router.get('/admin/stats', mw.adminOnly, async (req, res) => {
 	}
 });
 
-
 router.get('/admin/brewsByDate', mw.adminOnly, async (req, res)=>{
 	try {
 		const data = await HomebrewModel.getDocumentCountsByDate();
@@ -227,6 +226,7 @@ router.get('/admin/brewsByPageCount', mw.adminOnly, async (req, res)=>{
 		res.status(500).json({ error: 'Internal Server Error' });
 	}
 });
+
 router.get('/admin/brewsByVersion', mw.adminOnly, async (req, res)=>{
 	try {
 		const data = await HomebrewModel.getDocumentCountsByVersion();

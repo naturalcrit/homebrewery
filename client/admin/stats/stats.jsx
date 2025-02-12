@@ -97,7 +97,7 @@ const Stats = ()=>{
 					onClick={()=>{
 						fetchStats();
 					}}>
-					Fetch Stats
+					Fetch Stats Table
 				</button>
 			);
 
