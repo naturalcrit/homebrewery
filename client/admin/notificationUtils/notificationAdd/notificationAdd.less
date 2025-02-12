@@ -6,18 +6,21 @@
 
 	.field {
 		display               : grid;
-		grid-template-columns : 120px 150px;
+		grid-template-columns : 120px 200px;
 		align-items           : center;
 		justify-items         : stretch;
 		width                 : 100%;
 		margin-bottom         : 20px;
-   
-	
+
 		input {
 			height        : 33px;
 			padding       : 0px 10px;
 			margin-bottom : unset;
 			font-family   : monospace;
+
+			&[type="date"] {
+				width:14ch;
+			}
 		}
 	
 		textarea {

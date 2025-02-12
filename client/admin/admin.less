@@ -22,7 +22,7 @@ body {
 }
 
 :where(.admin) {
-
+	padding-bottom : 50px;
 	header {
 		padding          : 20px 0px;
 		margin-bottom    : 30px;
@@ -30,6 +30,7 @@ body {
 		color            : white;
 		background-color : @red;
 		i { margin-right : 30px; }
+		a { float : right; }
 	}
 
 	hr { margin : 30px 0px; }
@@ -48,21 +49,23 @@ body {
 		}
 
 		dl {
-			@maxItemWidth : 132px;
+			display               : grid;
+			grid-template-columns : 120px 1fr;
+			row-gap               : 10px;
+			align-items           : center;
+			justify-items         : start;
+			padding-top           : 0.5em;
 			dt {
-				float      : left;
-				width      : @maxItemWidth;
-				clear      : left;
-				text-align : right;
+				float       : left;
+				clear       : left;
+				height      : fit-content;
+				font-weight : 900;
+				text-align  : right;
 				&::after { content : ' : '; }
 			}
-			dd {
-				height      : 1em;
-				padding     : 0 0 0.5em 0;
-				margin-left : @maxItemWidth + 6px;
-			}
+			dd { height      : fit-content; }
 		}
-
+		
 		.tabs button {
 			margin-right     : 3px;
 			margin-left      : 3px;
@@ -90,11 +93,45 @@ body {
 		}
 	}
 
+	table {
+		padding    : 10px;
+
+		tr {
+			border-bottom : 1px solid;
+			&:last-of-type { border : none; }
+			&:nth-child(even) { background : #DDDDDD; }
+		}
+
+		thead {
+			background    : rgb(193,236,230);
+			border-bottom : 2px solid;
+		}
+        
+		th, td {
+			padding        : 5px 10px;
+			vertical-align : middle;
+			text-align     : center;
+			border-right   : 1px solid;
+
+			&:last-child { border-right : none; }
+		}
+
+		th { font-weight : 900; }
+
+		td {
+			&:first-child {
+				font-weight  : 900;
+				text-align   : left;
+			}
+		}
+	}
+
 	.error {
-		background: rgb(178, 54, 54);
-		color:white;
-		font-weight: 900;
-		margin-block:10px;
-		padding:10px;
+		float        : right;
+		padding      : 10px;
+		margin-block : 10px;
+		font-weight  : 900;
+		color        : white;
+		background   : rgb(178, 54, 54);
 	}
 }
