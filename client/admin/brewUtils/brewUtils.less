@@ -1,0 +1,29 @@
+.brewUtil {
+	.result {
+		margin-top : 20px;
+		button {
+			margin-right     : 10px;
+			background-color : @red;
+		}
+	}
+	.cleanButton {
+		display : inline-block;
+		width   : 100%;
+	}
+}
+
+.stats {
+	position : relative;
+	
+	.pending {
+		position : absolute;
+		top      : 0.5em;
+		left     : 100px;
+		width    : 100%;
+		height   : 100%;
+	}
+
+	&:has(.pending) { opacity : 0.5; }
+
+	dl { grid-template-columns : 200px 250px; }
+}
