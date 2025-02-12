@@ -97,7 +97,11 @@ body {
 	table {
 		padding    : 10px;
 
-		tr:nth-child(even) { background : #DDDDDD; }
+		tr {
+			border-bottom:1px solid;
+			&:last-of-type { border:none; }
+			&:nth-child(even) { background : #DDDDDD; }
+		}
 
 		thead {
 			background    : rgb(193,236,230);
@@ -109,7 +113,7 @@ body {
 			vertical-align : middle;
 			text-align     : center;
 			border-right   : 1px solid;
-			
+
 			&:last-child { border-right : none; }
 		}
 
