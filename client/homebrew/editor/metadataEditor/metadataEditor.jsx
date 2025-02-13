@@ -68,6 +68,11 @@ const MetadataEditor = createClass({
 		const inputRules = validations[name] ?? [];
 		const validationErr = inputRules.map((rule)=>rule(e.target.value)).filter(Boolean);
 
+		const debouncedReportValidity = _.debounce((target, errMessage) => {
+			callIfExists(target, 'setCustomValidity', errMessage);
+			callIfExists(target, 'reportValidity');
+		}, 300); // 300ms debounce delay, adjust as needed
+
 		// if no validation rules, save to props
 		if(validationErr.length === 0){
 			callIfExists(e.target, 'setCustomValidity', '');
@@ -82,8 +87,8 @@ const MetadataEditor = createClass({
 				return `- ${err}`;
 			}).join('\n');
 
-			callIfExists(e.target, 'setCustomValidity', errMessage);
-			callIfExists(e.target, 'reportValidity');
+			
+			debouncedReportValidity(e.target, errMessage);
 			return false;
 		}
 	},
@@ -276,8 +281,6 @@ const MetadataEditor = createClass({
 			});
 		};
 
-		const debouncedHandleFieldChange =  _.debounce(this.handleFieldChange, 500);
-
 		return <div className='field language'>
 			<label>language</label>
 			<div className='value'>
@@ -288,7 +291,7 @@ const MetadataEditor = createClass({
 					onSelect={(value)=>this.handleLanguage(value)}
 					onEntry={(e)=>{
 						e.target.setCustomValidity('');	//Clear the validation popup while typing
-						debouncedHandleFieldChange('lang', e);
+						this.handleFieldChange('lang', e);
 					}}
 					options={listLanguages()}
 					autoSuggest={{
