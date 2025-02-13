@@ -77,13 +77,21 @@ HomebrewSchema.statics.getDocumentCountsByDate = async function() {
 };
 
 HomebrewSchema.statics.getDocumentCountsByLang = async function() {
-	return this.aggregate([{
-		$group : {
-			_id   : '$lang',
-			count : { $sum: 1 }
+	const aggregation = this.aggregate([
+	  {
+			$group : {
+		  _id   : { $ifNull: ['$lang', 'en'] },
+		  count : { $sum: 1 }
+			}
+	  },
+	  {
+			$sort : { _id: 1 }
 		}
-	}
-	], { maxTimeMS: 30000 });
+	]);
+
+	// Use the explain() method
+	const explainResult = await aggregation.explain('executionStats');
+	console.log(explainResult);
 };
 
 HomebrewSchema.statics.getDocumentCountsByPageCount = async function() {
