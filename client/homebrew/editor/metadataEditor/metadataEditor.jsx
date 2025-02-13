@@ -77,6 +77,7 @@ const MetadataEditor = createClass({
 				...this.props.metadata,
 				[name] : e.target.value
 			});
+			return true;
 		} else {
 			// if validation issues, display built-in browser error popup with each error.
 			const errMessage = validationErr.map((err)=>{
@@ -85,6 +86,7 @@ const MetadataEditor = createClass({
 
 			callIfExists(e.target, 'setCustomValidity', errMessage);
 			callIfExists(e.target, 'reportValidity');
+			return false;
 		}
 	},
 
@@ -120,9 +122,8 @@ const MetadataEditor = createClass({
 	},
 
 	handleThemeWritein : function(e) {
-		this.props.metadata.theme = e.target.value;
-
-		
+		const shareId = e.target.value.split('/').pop(); //Extract just the ID if a URL was pasted in
+		this.props.metadata.theme = shareId;
 
 		this.props.onChange(this.props.metadata, 'theme');
 	},
@@ -225,8 +226,6 @@ const MetadataEditor = createClass({
 			});
 		};
 
-		console.log(this.props.themeBundle);
-
 		const currentRenderer = this.props.metadata.renderer;
 		const currentTheme    = mergedThemes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme]
 		                      ?? { name: `${this.props.themeBundle?.name || ''}`, author: `${this.props.themeBundle?.author || ''}` };
@@ -247,8 +246,8 @@ const MetadataEditor = createClass({
 						onSelect={(value)=>this.handleTheme(value)}
 						onEntry={(e)=>{
 							e.target.setCustomValidity('');	//Clear the validation popup while typing
-							//debouncedHandleFieldChange('theme', e);
-							this.handleThemeWritein(e);
+							if(this.handleFieldChange('theme', e))
+								this.handleThemeWritein(e);
 						}}
 						options={listThemes(currentRenderer)}
 						autoSuggest={{
