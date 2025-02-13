@@ -1,165 +1,160 @@
 .stats {
-	position: relative;
-	width: 100%;
-
-	.pending {
-		position: absolute;
-		top: 0px;
-		left: 0px;
-		width: 100%;
-		height: 100%;
-		background-color: rgba(238, 238, 238, 0.5);
-	}
+	position : relative;
+	width    : 100%;
 
 	dl {
-		display: grid;
-		grid-template-columns: 6fr 1fr;
-		gap: 20px;
-		width: max-content;
-		max-width: 100%;
+		display               : grid;
+		grid-template-columns : 6fr 1fr;
+		gap                   : 20px;
+		width                 : max-content;
+		max-width             : 100%;
 
 		dt,
-		dd {
-			width: max-content;
-		}
+		dd { width : max-content; }
 	}
 
 	.content {
-		width: 100%;
-		padding-bottom:100px;
+		width          : 100%;
+		padding-bottom : 100px;
 
 		.table,
 		.graph {
-			display: grid;
-			grid-template-rows: 1.5em 1fr;
-			gap: 10px;
-			align-items: center;
-			width: 100%;
-			height: max-content;
-			margin-bottom: 50px;
+			position           : relative;
+			display            : grid;
+			grid-template-rows : 1.5em 1fr;
+			gap                : 10px;
+			align-items        : center;
+			width              : 100%;
+			height             : max-content;
+			min-height         : 200px;
+			margin-bottom      : 50px;
 
-			&:has(>*:only-child) {
-				grid-template-rows: 1fr;
-			}
+			&:has(>*:only-child) { grid-template-rows : 1fr; }
 
 			button:only-child {
-				display: grid;
-				place-items: center;
-				width: 100%;
-				height: 100%;
-				font-size: 25px;
+				position    : absolute;
+				top         : 50%;
+				left        : 50%;
+				display     : grid;
+				place-items : center;
+				width       : 70%;
+				height      : 50%;
+				font-size   : 25px;
+				translate   : -50% -50%;
 			}
 
 			.heading {
-				display: flex;
-				justify-content: space-between;
+				display         : flex;
+				justify-content : space-between;
 
 				button {
-					height: auto;
-					padding: 5px 10px;
+					display     : grid;
+					place-items : center;
+					min-width   : 150px;
+					height      : auto;
+					padding     : 5px 10px;
 				}
 			}
 		}
 
 		.chart {
-			position: relative;
-			width: 100%;
-			height: 300px;
-			margin-bottom: 100px;
-			font-family: monospace;
-			background: #CCCCCC;
+			position      : relative;
+			width         : 100%;
+			height        : 300px;
+			margin-bottom : 100px;
+			font-family   : monospace;
+			background    : #CCCCCC;
 
 			.leftAxis {
-				position: absolute;
-				top: 0px;
-				bottom: 0px;
-				left: 0px;
-				width: 50px;
-				translate: -100%;
+				position  : absolute;
+				top       : 0px;
+				bottom    : 0px;
+				left      : 0px;
+				width     : 50px;
+				translate : -100%;
 
 				.axisLabel {
-					position: absolute;
-					top: -2em;
-					right: 50%;
-					translate: 50%;
+					position  : absolute;
+					top       : -2em;
+					right     : 50%;
+					translate : 50%;
 				}
 
 				span {
-					position: absolute;
-					right: 10px;
-					width: 100%;
-					text-align: right;
-					translate: 0 50%;
+					position   : absolute;
+					right      : 10px;
+					width      : 100%;
+					text-align : right;
+					translate  : 0 50%;
 
 					&::after {
-						position: absolute;
-						top: 50%;
-						right: -10px;
-						width: 0.5em;
-						height: 2px;
-						content: '';
-						background: black;
+						position   : absolute;
+						top        : 50%;
+						right      : -10px;
+						width      : 0.5em;
+						height     : 2px;
+						content    : '';
+						background : black;
 					}
 				}
 			}
 
 			.bottomAxis {
-				position: absolute;
-				right: 0px;
-				bottom: 0px;
-				left: 0px;
-				height: 50px;
-				translate: 0 100%;
+				position  : absolute;
+				right     : 0px;
+				bottom    : 0px;
+				left      : 0px;
+				height    : 50px;
+				translate : 0 100%;
 
 				.bottomLabel {
-					position: absolute;
-					width: max-content;
-					text-align: right;
-					rotate: 75deg;
-					transform-origin: top left;
-					translate: 1em 0.5em;
+					position         : absolute;
+					width            : max-content;
+					text-align       : right;
+					transform-origin : top left;
+					rotate           : 75deg;
+					translate        : 1em 0.5em;
 				}
 
 				.axisLabel {
-					position: absolute;
-					top: 2em;
-					right: 0;
-					translate: 150%;
+					position  : absolute;
+					top       : 2em;
+					right     : 0;
+					translate : 150%;
 				}
 			}
 
 			.data {
-				position: relative;
-				width: 100%;
-				height: 100%;
-				background-color: #FFFFFF;
-				border-bottom: 2px solid black;
-				border-left: 2px solid black;
+				position         : relative;
+				width            : 100%;
+				height           : 100%;
+				background-color : #FFFFFF;
+				border-bottom    : 2px solid black;
+				border-left      : 2px solid black;
 
 				.column {
-					position: absolute;
-					background-color: rgb(93, 93, 219);
-					outline: 0.1px solid rgb(79, 160, 253);
+					position         : absolute;
+					outline          : 0.1px solid rgb(79, 160, 253);
+					background-color : rgb(93, 93, 219);
 
 					&::after {
+						position       : absolute;
+						top            : -10px;
+						left           : 50%;
+						z-index        : 1000;
+						width          : max-content;
+						padding        : 5px;
+						pointer-events : none;
 						//pseudo element with title attrb contents
-						content: attr(data-title);
-						width: max-content;
-						padding: 5px;
-						position: absolute;
-						top: -10px;
-						left: 50%;
-						translate: -50% -100%;
-						border: 2px solid;
-						background: white;
-						border-radius: 5px;
-						z-index: 1000;
-						opacity:0;
-						transition: opacity 0.3s;
+						content        : attr(data-title);
+						background     : white;
+						border         : 2px solid;
+						border-radius  : 5px;
+						opacity        : 0;
+						translate      : -50% -100%;
+						transition     : opacity 0.3s;
 					}
-					&:hover::after {
-						opacity:1;
-					}
+					&:hover::after { opacity : 1; }
 				}
 			}
 		}

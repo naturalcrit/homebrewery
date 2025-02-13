@@ -14,12 +14,13 @@ took me an afternoon (plus minute issue fixing).
 const Stats = ()=>{
 	const [stats, setStats] = useState(null);
 	const [chartData, setChartData] = useState([]);
-	const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState([]);
 	const [error, setError] = useState(null);
+	const [missingData, setMissingData] = useState([]);
 
 	// Fetching is manual, to relieve the server of pressure
 	const fetchStats = async ()=>{
-		setLoading(true);
+		setLoading((prevData)=>[...prevData, 'stats']);
 		setError(null);
 		try {
 			const res = await request.get('/admin/stats');
@@ -28,12 +29,12 @@ const Stats = ()=>{
 			console.error(error);
 			setError('Failed to fetch stats.');
 		} finally {
-			setLoading(false);
+			setLoading((prevData)=>prevData.filter((item)=>item !== 'stats'));
 		}
 	};
 
 	const fetchChartData = async (category)=>{
-		setLoading(true);
+		setLoading((prevData)=>[...prevData, category]);
 		setError(null);
 		try {
 			console.log(`fetching at: /admin/brewsBy${category}`);
@@ -45,20 +46,24 @@ const Stats = ()=>{
 			const counts = data.map((item)=>item.count);
 
 			setChartData((prevData)=>{
-				return [
-					...prevData,
-					{
-						category : category,
-						labels   : labels,
-						data     : counts,
-					},
-				];
+				const existingCategoryIndex = prevData.findIndex((item)=>item.category === category);
+
+				if(existingCategoryIndex !== -1) {
+					// Replace the existing category data
+					prevData[existingCategoryIndex] = { category, labels, data: counts };
+				} else {
+					// Add the new category data
+					prevData.push({ category, labels, data: counts });
+				}
+
+				return [...prevData];
 			});
 		} catch (error) {
 			console.error('Failed to fetch chart data:', error);
 			setError('Failed to fetch chart data.');
 		} finally {
-			setLoading(false);
+			setMissingData((prevData)=>prevData.filter((item)=>item !== category));
+			setLoading((prevData)=>prevData.filter((item)=>item !== category));
 		}
 	};
 
@@ -98,13 +103,14 @@ const Stats = ()=>{
 	console.log('table data: ', stats, '; chart data: ', chartData);
 
 	const renderTable = ()=>{
+		const isLoading = loading.includes('stats');
 		if(!stats)
 			return (
 				<button
 					onClick={()=>{
 						fetchStats();
 					}}>
-					Fetch Stats Table
+					{ !isLoading ? `Fetch stats table` : <i className='fas fa-spin fa-spinner'></i>}
 				</button>
 			);
 
@@ -116,7 +122,7 @@ const Stats = ()=>{
 						onClick={()=>{
 							fetchStats();
 						}}>
-						Refetch Stats
+						{ !isLoading ? `Refetch stats` : <i className='fas fa-spin fa-spinner'></i>}
 					</button>
 				</div>
 				<table>
@@ -171,16 +177,33 @@ const Stats = ()=>{
 
 	const renderChart = (category)=>{
 		const dataset = chartData?.find((item)=>item.category === category);
+		const isLoading = loading.includes(category);
 
 		if(!chartData || chartData.length === 0 || !dataset) {
 			return (
-				<button
-					className={`fetch${category}`}
-					onClick={()=>{
-						fetchChartData(category);
-					}}>
-					Fetch Chart Brews per {category}
-				</button>
+				<>
+					<div className='heading'>
+						<h4>Brews per {category}</h4>
+					</div>
+					<div className='chart'>
+						<div className='leftAxis'>
+							<div className='axisLabel'>Brews</div>
+						</div>
+						<div className='data'>
+							<button
+								className={`fetch${category}`}
+								onClick={()=>{
+									!isLoading && fetchChartData(category);
+								}}>
+								{ !isLoading ? `Fetch Chart Brews per ${category}` : <i className='fas fa-spin fa-spinner'></i>}
+							</button>
+						</div>
+
+						<div className='bottomAxis'>
+							<div className='axisLabel'>{category}</div>
+						</div>
+					</div>
+				</>
 			);
 		}
 		const maxY = Math.max(...dataset.data) * 1.05;
@@ -188,12 +211,17 @@ const Stats = ()=>{
 			<>
 				<div className='heading'>
 					<h4>Brews per {category}</h4>
+					{missingData.includes(category) && (
+						<span>
+							You have removed data from the table, in order to see the full table, refetch the data.
+						</span>
+					)}
 					<button
 						className={`fetch${category}`}
 						onClick={()=>{
 							fetchChartData(category);
 						}}>
-						Refetch Chart Data
+						{ !isLoading ? `Refetch chart data` : <i className='fas fa-spin fa-spinner'></i>}
 					</button>
 				</div>
 				<div className='chart'>
@@ -216,6 +244,20 @@ const Stats = ()=>{
 						{dataset.data.map((value, index)=>(
 							<div
 								key={index}
+								onClick={()=>{
+									// Remove the clicked column's data from chartData state
+									setChartData((prevData)=>prevData.map((item)=>item.category === dataset.category
+										? {
+											...item,
+											data   : item.data.filter((_, i)=>i !== index),
+											labels : item.labels.filter((_, i)=>i !== index),
+												  }
+										: item
+									)
+									);
+									//add to missingData state array the category
+									setMissingData((prevData)=>[...prevData, dataset.category]);
+								}}
 								className='column'
 								data-title={`${value} brews of ${dataset.labels[index]}`}
 								style={{
@@ -226,6 +268,7 @@ const Stats = ()=>{
 								}}></div>
 						))}
 					</div>
+
 					<div className='bottomAxis'>
 						{
 							// Render the labels on the bottom axis
@@ -250,8 +293,6 @@ const Stats = ()=>{
 	return (
 		<section className='stats'>
 			<h2>Stats</h2>
-
-			{loading && <p>Loading...</p>}
 			{error && <p className='error'>{error}</p>}
 
 			<div className='content'>
