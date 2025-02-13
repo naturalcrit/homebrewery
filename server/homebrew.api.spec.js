@@ -690,6 +690,27 @@ brew`);
 				name        : 'ThemeLoad Error',
 				status      : 404 });
 		});
+
+		it('should fail for a User Theme not tagged with meta:theme', async ()=>{
+			const brews = {
+				userThemeAID : { title: 'User Theme A', renderer: 'V3', theme: null, shareId: 'userThemeAID', style: 'User Theme A Style' }
+			};
+
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			model.get = jest.fn((getParams)=>toBrewPromise(brews[getParams.shareId]));
+			const req = { params: { renderer: 'V3', id: 'userThemeAID' }, get: ()=>{ return 'localhost'; }, protocol: 'https' };
+
+			let err;
+			await api.getThemeBundle(req, res)
+			.catch((e)=>err = e);
+
+			expect(err).toEqual({
+				HBErrorCode : '10',
+				brewId      : 'userThemeAID',
+				message     : 'Selected theme does not have the meta:theme tag',
+				name        : 'Invalid Theme Selected',
+				status      : 422 });
+		});
 	});
 
 	describe('deleteBrew', ()=>{
