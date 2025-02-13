@@ -65,7 +65,6 @@ const Stats = ()=>{
 	const chartRange = (values, rangeType)=>{
 		//this function might not be appropiate, since charts might have text or data as labels,
 		//and different data should be displayed differently
-
 		let min = Infinity,
 			max = -Infinity;
 		for (const val of values) {
@@ -74,15 +73,23 @@ const Stats = ()=>{
 		}
 
 		const rangeSize = 20;
-		const step = Math.ceil((max - min) / rangeSize) || 1;
+		const rangeBuffer = (max - min) * 0.05; // 5% buffer to ensure all values fit
+		const adjustedMax = max + rangeBuffer;
+
+		const stepRaw = Math.ceil((adjustedMax - min) / rangeSize) || 1;
+		const magnitude = Math.pow(10, Math.floor(Math.log10(stepRaw)));
+		const step =
+			[1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000].find(
+				(x)=>x * magnitude >= stepRaw
+			) * magnitude;
 
 		const result = [];
 
 		if(rangeType === '0 to max') {
-			for (let i = 0; i <= max; i += step) result.push(i);
+			for (let i = 0; i <= adjustedMax; i += step) result.push(i);
 		} else if(rangeType === 'min to max') {
 			const start = Math.ceil(min / step) * step;
-			for (let i = start; i <= max; i += step) result.push(i);
+			for (let i = start; i <= adjustedMax; i += step) result.push(i);
 		}
 
 		return result;
@@ -176,6 +183,7 @@ const Stats = ()=>{
 				</button>
 			);
 		}
+		const maxY = Math.max(...dataset.data) * 1.05;
 		return (
 			<>
 				<div className='heading'>
@@ -197,7 +205,7 @@ const Stats = ()=>{
 								<span
 									key={index}
 									style={{
-										bottom : `${(value / Math.max(...dataset.data)) * 100}%`,
+										bottom : `${(value / maxY) * 100}%`,
 									}}>
 									{value}
 								</span>
@@ -212,7 +220,7 @@ const Stats = ()=>{
 								data-title={`${value} brews of ${dataset.labels[index]}`}
 								style={{
 									left   : `${(index / dataset.labels.length) * 100}%`,
-									top    : `${100 - (value / Math.max(...dataset.data)) * 100}%`,
+									top    : `${100 - (value / maxY) * 100}%`,
 									bottom : '0',
 									width  : `${100 / dataset.labels.length - 0.3}%`,
 								}}></div>
@@ -228,7 +236,7 @@ const Stats = ()=>{
 									style={{
 										left : `${(index / dataset.labels.length) * 100}%`,
 									}}>
-									{label}
+									{(label ?? '') === '' ? 'null' : label}
 								</span>
 							))
 						}
