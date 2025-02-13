@@ -151,9 +151,9 @@ const EditPage = createClass({
 	},
 
 	handleMetaChange : function(metadata, field=undefined){
-		if(field == 'theme' || field == 'renderer')	{// Fetch theme bundle only if theme or renderer was changed
+		if(field == 'theme' || field == 'renderer')	// Fetch theme bundle only if theme or renderer was changed
 			fetchThemeBundle(this, metadata.renderer, metadata.theme);
-		}
+
 		this.setState((prevState)=>({
 			brew : {
 				...prevState.brew,
