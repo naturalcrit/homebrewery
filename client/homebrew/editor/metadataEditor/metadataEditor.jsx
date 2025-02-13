@@ -16,8 +16,6 @@ const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
 
 const homebreweryThumbnail = require('../../thumbnail.png');
 
-let mergedThemes;
-
 const callIfExists = (val, fn, ...args)=>{
 	if(val[fn]) {
 		val[fn](...args);
@@ -223,12 +221,11 @@ const MetadataEditor = createClass({
 						<img src={preview}/>
 					</div>
 				</div>;
-			});
+			}).filter(Boolean);
 		};
 
 		const currentRenderer = this.props.metadata.renderer;
-		const currentTheme    = mergedThemes[`${_.upperFirst(this.props.metadata.renderer)}`][this.props.metadata.theme]
-		                      ?? { name: `${this.props.themeBundle?.name || ''}`, author: `${this.props.themeBundle?.author || ''}` };
+		const currentThemeDisplay = this.props.themeBundle?.name ? `${this.props.themeBundle.author ?? currentRenderer} : ${this.props.themeBundle.name}` : 'No Theme Selected';
 		let dropdown;
 
 		if(currentRenderer == 'legacy') {
@@ -241,8 +238,8 @@ const MetadataEditor = createClass({
 				<div className='value'>
 					<Combobox trigger='click'
 						className='themes-dropdown'
-						default={`${currentTheme.author ?? _.upperFirst(currentRenderer)} : ${currentTheme.name}`}
-						placeholder='Enter the Share URL or ID of any brew with the meta:theme tag'
+						default={currentThemeDisplay}
+						placeholder='Select from below, or enter the Share URL or ID of a brew with the meta:theme tag'
 						onSelect={(value)=>this.handleTheme(value)}
 						onEntry={(e)=>{
 							e.target.setCustomValidity('');	//Clear the validation popup while typing
