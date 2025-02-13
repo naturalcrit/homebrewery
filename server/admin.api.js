@@ -147,7 +147,7 @@ router.put('/admin/compress/:id', (req, res)=>{
 		});
 });
 
-router.get('/admin/stats', mw.adminOnly, async (req, res) => {
+router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 	try {
 		let totalBrewsCount = null;
 		let publishedBrewsCount = null;
@@ -160,37 +160,37 @@ router.get('/admin/stats', mw.adminOnly, async (req, res) => {
 		try {
 			totalBrewsCount = await HomebrewModel.estimatedDocumentCount();
 		} catch (error) {
-			console.error("Failed to get totalBrewsCount:", error);
+			console.error('Failed to get totalBrewsCount:', error);
 		}
 
 		try {
 			publishedBrewsCount = await HomebrewModel.countDocuments({ published: 'true' });
 		} catch (error) {
-			console.error("Failed to get publishedBrewsCount:", error);
+			console.error('Failed to get publishedBrewsCount:', error);
 		}
 
 		try {
 			unauthoredBrewsCount = await HomebrewModel.countDocuments({ authors: [] });
 		} catch (error) {
-			console.error("Failed to get unauthoredBrewsCount:", error);
+			console.error('Failed to get unauthoredBrewsCount:', error);
 		}
 
 		try {
 			nonGoogleBrewsCount = await HomebrewModel.countDocuments({ googleId: null });
 		} catch (error) {
-			console.error("Failed to get nonGoogleBrewsCount:", error);
+			console.error('Failed to get nonGoogleBrewsCount:', error);
 		}
 
 		try {
 			legacyBrewsCount = await HomebrewModel.countDocuments({ renderer: 'legacy' });
 		} catch (error) {
-			console.error("Failed to get legacyBrewsCount:", error);
+			console.error('Failed to get legacyBrewsCount:', error);
 		}
 
 		try {
-			totalThumbnailCount = await HomebrewModel.countDocuments({ thumbnail : ''});
+			totalThumbnailCount = await HomebrewModel.countDocuments({ thumbnail: '' });
 		} catch (error) {
-			console.error("Failed to get totalThumbnailCount:", error);
+			console.error('Failed to get totalThumbnailCount:', error);
 		}
 
 		// Construct the response, calculating totalGoogle only if the counts are available
@@ -204,7 +204,7 @@ router.get('/admin/stats', mw.adminOnly, async (req, res) => {
 		});
 
 	} catch (error) {
-		console.error("Unexpected error:", error);
+		console.error('Unexpected error:', error);
 		return res.status(500).json({ error: 'Internal Server Error' });
 	}
 });
