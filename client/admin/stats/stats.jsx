@@ -162,13 +162,19 @@ const Stats = ()=>{
 								<td>{Math.round((stats.totalLegacy / stats.totalBrews) * 100)}%</td>
 							</tr>
 						)}
-						{stats.totalThumbnail !== 0 && (
+
+						{
+						/*
+						stats.totalThumbnail !== 0 && (
 							<tr>
 								<td>Total with thumbnail</td>
 								<td>{stats.totalThumbnail}</td>
 								<td>{Math.round((stats.totalThumbnail / stats.totalBrews) * 100)}%</td>
 							</tr>
-						)}
+						)
+						*/
+						}
+
 					</tbody>
 				</table>
 			</>

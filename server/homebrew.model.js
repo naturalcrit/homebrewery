@@ -64,6 +64,10 @@ HomebrewSchema.statics.getByUser = async function(username, allowAccess=false, f
 HomebrewSchema.statics.getDocumentCountsByDate = async function() {
 	return this.aggregate([
 		{
+			// Ensures index usage, even if ultimately useless, do not remove
+			$sort : { createdAt: 1 }
+		},
+		{
 			$group : {
 				_id   : { $dateToString: { format: '%Y-%m', date: '$createdAt' } }, // Group by formatted date
 				count : { $sum: 1 } // Count documents for each date
@@ -102,7 +106,8 @@ HomebrewSchema.statics.getDocumentCountsByPageCount = async function() {
 		},
 		{
 			$sort : { _id: 1 }
-		}
+		},
+
 	], { maxTimeMS: 30000 });
 };
 
