@@ -337,6 +337,7 @@ const EditPage = createClass({
 		if(!this.state.isPending && !this.state.isSaving){
 			return <Nav.item className='save saved'>saved.</Nav.item>;
 		}
+		return <Nav.item className='save saved'>no changes.</Nav.item>;
 	},
 
 	handleAutoSave : function(){
