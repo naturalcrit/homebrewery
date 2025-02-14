@@ -256,13 +256,8 @@ const EditPage = createClass({
 		};
 		history.replaceState(null, null, `/edit/${this.savedBrew.editId}`);
 
-		this.setState((prevState)=>({
-			brew : { ...prevState.brew,
-				googleId : this.savedBrew.googleId ? this.savedBrew.googleId : null,
-				editId 	 : this.savedBrew.editId,
-				shareId  : this.savedBrew.shareId,
-				version  : this.savedBrew.version
-			},
+		this.setState(()=>({
+			brew        : this.savedBrew,
 			isPending   : false,
 			isSaving    : false,
 			unsavedTime : new Date()
