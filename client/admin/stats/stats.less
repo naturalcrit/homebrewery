@@ -31,7 +31,14 @@
 
 			&:has(>*:only-child) { grid-template-rows : 1fr; }
 
-			button:only-child {
+			td button {
+				position:static;
+				font-size:inherit;
+				padding: 5px;
+				margin-block:10px;
+				translate:none;
+			}
+			:where(button:only-child) {
 				position    : absolute;
 				top         : 50%;
 				left        : 50%;

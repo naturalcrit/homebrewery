@@ -69,8 +69,8 @@ HomebrewSchema.statics.getDocumentCountsByDate = async function() {
 		},
 		{
 			$group : {
-				_id   : { $dateToString: { format: '%Y-%m', date: '$createdAt' } }, // Group by formatted date
-				count : { $sum: 1 } // Count documents for each date
+				_id   : { $dateToString: { format: '%Y-%m', date: '$createdAt' } },
+				count : { $sum: 1 }
 			}
 		},
 		{
@@ -82,8 +82,6 @@ HomebrewSchema.statics.getDocumentCountsByDate = async function() {
 
 HomebrewSchema.statics.getDocumentCountsByLang = async function() {
 	return this.aggregate([
-		//To join null with end do _id: { $ifNull: ["$lang", "en"] } in the group
-		//To ignore english or null brews do {$match: {lang: { $nin: [null, en] } } }, before the group
 		{
 			$sort : { 'lang': 1 }
 		}, {
@@ -97,7 +95,7 @@ HomebrewSchema.statics.getDocumentCountsByLang = async function() {
 
 HomebrewSchema.statics.getDocumentCountsByPageCount = async function() {
 	return this.aggregate([
-		{ $match: { pageCount: { $ne: null, $lte: 50 } } },
+		{ $match: { pageCount: { $lte: 50 } } },
 		{
 			$group : {
 				_id   : '$pageCount',

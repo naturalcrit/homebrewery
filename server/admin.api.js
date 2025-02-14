@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax, max-lines */
+
 import { model as HomebrewModel }     from './homebrew.model.js';
 import { model as NotificationModel } from './notifications.model.js';
 import express    from 'express';
@@ -148,63 +150,53 @@ router.put('/admin/compress/:id', (req, res)=>{
 });
 
 router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
-	try {
-		let totalBrewsCount = null;
-		let publishedBrewsCount = null;
-		let unauthoredBrewsCount = null;
-		let nonGoogleBrewsCount = null;
-		let legacyBrewsCount = null;
-		let totalThumbnailCount = null;
-
-		// Attempt each count individually
+	const stat  = req.query.stat;
+	switch (stat) {
+	case 'totalPublished':
 		try {
-			totalBrewsCount = await HomebrewModel.estimatedDocumentCount();
-		} catch (error) {
-			console.error('Failed to get totalBrewsCount:', error);
-		}
-
-		try {
-			publishedBrewsCount = await HomebrewModel.countDocuments({ published: 'true' });
+			const publishedBrewsCount = await HomebrewModel.countDocuments({ published: 'true' });
+			return res.json(publishedBrewsCount);
 		} catch (error) {
 			console.error('Failed to get publishedBrewsCount:', error);
 		}
-
+		break;
+	case 'totalUnauthored':
 		try {
-			unauthoredBrewsCount = await HomebrewModel.countDocuments({ authors: [] });
+			const unauthoredBrewsCount = await HomebrewModel.countDocuments({ authors: [] });
+			return res.json(unauthoredBrewsCount);
 		} catch (error) {
 			console.error('Failed to get unauthoredBrewsCount:', error);
 		}
-
+		break;
+	case 'totalInGoogle':
 		try {
-			nonGoogleBrewsCount = await HomebrewModel.countDocuments({ googleId: null });
+			const googleBrewsCount = await HomebrewModel.countDocuments({ googleId: { '$exists': true } });
+			return res.json(googleBrewsCount);
 		} catch (error) {
 			console.error('Failed to get nonGoogleBrewsCount:', error);
 		}
-
+		break;
+	case 'totalThumbnail':
 		try {
-			legacyBrewsCount = await HomebrewModel.countDocuments({ renderer: 'legacy' });
-		} catch (error) {
-			console.error('Failed to get legacyBrewsCount:', error);
-		}
-		try {
-			totalThumbnailCount = await HomebrewModel.countDocuments({ thumbnail: '' });
+			const totalThumbnailCount = await HomebrewModel.countDocuments({ thumbnail: { '$exists': true,  '$ne': '' } });
+			return res.json(totalThumbnailCount);
 		} catch (error) {
 			console.error('Failed to get totalThumbnailCount:', error);
 		}
-		// Construct the response, calculating totalGoogle only if the counts are available
-		return res.json({
-			totalBrews      : totalBrewsCount,
-			totalPublished  : publishedBrewsCount,
-			totalUnauthored : unauthoredBrewsCount,
-			totalGoogle     : totalBrewsCount ? totalBrewsCount - nonGoogleBrewsCount : null,
-			totalLegacy     : legacyBrewsCount,
-			totalThumbnail  : totalThumbnailCount,
-		});
+		break;
+	case 'totalBrews':
+		try {
+			const totalBrewsCount = await HomebrewModel.estimatedDocumentCount();
+			return res.json(totalBrewsCount);
+		} catch (error) {
+			console.error('Failed to get totalBrewsCount:', error);
+		}
+		break;
+	default:
+		break;
 
-	} catch (error) {
-		console.error('Unexpected error:', error);
-		return res.status(500).json({ error: 'Internal Server Error' });
 	}
+
 });
 
 router.get('/admin/brewsByDate', mw.adminOnly, async (req, res)=>{
@@ -220,7 +212,7 @@ router.get('/admin/brewsByDate', mw.adminOnly, async (req, res)=>{
 router.get('/admin/brewsByLang', mw.adminOnly, async (req, res)=>{
 	try {
 		const data = await HomebrewModel.getDocumentCountsByLang();
-		const mergedData = ()=>{
+		const mergeLanguageCounts = (data)=>{
 			const merged = data.reduce((acc, item)=>{
 				const normalizedId = String(item._id || 'en').trim().toLowerCase();
 				acc[normalizedId] = (acc[normalizedId] || 0) + item.count;
@@ -229,6 +221,8 @@ router.get('/admin/brewsByLang', mw.adminOnly, async (req, res)=>{
 
 			return Object.entries(merged).map(([key, count])=>({ _id: key, count }));
 		};
+		 const mergedData = mergeLanguageCounts(data);
+
 		res.json(mergedData);
 	} catch (error) {
 		console.error(error);

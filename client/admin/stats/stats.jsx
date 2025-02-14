@@ -2,7 +2,7 @@
 
 require('./stats.less');
 const React = require('react');
-const { useState } = React;
+const { useState, useEffect } = React;
 const request = require('superagent');
 
 /*
@@ -11,6 +11,7 @@ but was unable to make them work without tons of errors.
 It was way easier to build my own charts, also learned a lot in the process,
 took me an afternoon (plus minute issue fixing).
 */
+
 const Stats = ()=>{
 	const [stats, setStats] = useState(null);
 	const [chartData, setChartData] = useState([]);
@@ -19,18 +20,91 @@ const Stats = ()=>{
 	const [missingData, setMissingData] = useState([]);
 
 	// Fetching is manual, to relieve the server of pressure
-	const fetchStats = async ()=>{
-		setLoading((prevData)=>[...prevData, 'stats']);
+	const fetchStat = async (stat)=>{
+		setLoading((prevData)=>[...prevData, stat]);
 		setError(null);
 		try {
-			const res = await request.get('/admin/stats');
-			setStats(res.body);
+			const res = await request.get(`/admin/stats?stat=${stat}`);
+			setStats((prevData)=>{
+				const updatedStats = prevData ? [...prevData] : [];
+				const index = updatedStats.findIndex((item)=>item[stat] !== undefined);
+
+				if(index >= 0) {
+					updatedStats[index] = { [stat]: res.body };
+				} else {
+					updatedStats.push({ [stat]: res.body });
+				}
+
+				return updatedStats;
+			});
 		} catch (error) {
 			console.error(error);
 			setError('Failed to fetch stats.');
 		} finally {
-			setLoading((prevData)=>prevData.filter((item)=>item !== 'stats'));
+			setLoading((prevData)=>prevData.filter((item)=>item !== stat));
 		}
+	};
+
+	useEffect(()=>{
+		fetchStat('totalBrews');
+	}, []);
+
+	const renderTable = ()=>{
+		const rows = [
+			{ label: 'Total brews', query: 'totalBrews' },
+			{ label: 'Total published', query: 'totalPublished' },
+			{ label: 'Total without author', query: 'totalUnauthored' },
+			{ label: 'Total in Google storage', query: 'totalInGoogle' },
+			{ label: 'Total with thumbnail', query: 'totalThumbnail' },
+		];
+
+		const getValue = (query)=>{
+			const statObj = stats?.find((item)=>item[query] !== undefined);
+			return statObj ? statObj[query] : null;
+		};
+
+		const doesDataExist = (query)=>{
+			return getValue(query) !== null;
+		};
+
+		return (
+			<div>
+				<table>
+					<thead>
+						<tr>
+							<th></th>
+							<th>Number of Brews</th>
+							<th>% of Total</th>
+						</tr>
+					</thead>
+					<tbody>
+						{rows.map((row, index)=>(
+							<tr key={index}>
+								<td>{row.label}</td>
+								<td colSpan={doesDataExist(row.query) ? 1 : 2}>
+									{doesDataExist(row.query) ? (
+										getValue(row.query)
+									) : (
+										<button
+											onClick={()=>fetchStat(row.query)}
+											disabled={loading.includes(row.query)}>
+											{loading.includes(row.query) ? (
+												<i className='fas fa-spin fa-spinner'></i>
+											) : (
+												'Fetch'
+											)}
+										</button>
+									)}
+								</td>
+								{doesDataExist(row.query) && (
+									<td>{Math.round((getValue(row.query) / getValue('totalBrews')) * 100)}%</td>
+								)}
+							</tr>
+						))}
+					</tbody>
+				</table>
+			</div>
+		);
 	};
 
 	const fetchChartData = async (category)=>{
@@ -100,87 +174,6 @@ const Stats = ()=>{
 		return result;
 	};
 
-	console.log('table data: ', stats, '; chart data: ', chartData);
-
-	const renderTable = ()=>{
-		const isLoading = loading.includes('stats');
-		if(!stats)
-			return (
-				<button
-					onClick={()=>{
-						fetchStats();
-					}}>
-					{ !isLoading ? `Fetch stats table` : <i className='fas fa-spin fa-spinner'></i>}
-				</button>
-			);
-
-		return (
-			<>
-				<div className='heading'>
-					<h4>Total of Brews: {stats.totalBrews}</h4>
-					<button
-						onClick={()=>{
-							fetchStats();
-						}}>
-						{ !isLoading ? `Refetch stats` : <i className='fas fa-spin fa-spinner'></i>}
-					</button>
-				</div>
-				<table>
-					<thead>
-						<tr>
-							<th></th>
-							<th>Number of Brews</th>
-							<th>% of Total</th>
-						</tr>
-					</thead>
-					<tbody>
-						{stats.totalPublished !== 0 && (
-							<tr>
-								<td>Total published</td>
-								<td>{stats.totalPublished}</td>
-								<td>{Math.round((stats.totalPublished / stats.totalBrews) * 100)}%</td>
-							</tr>
-						)}
-						{stats.totalUnauthored !== 0 && (
-							<tr>
-								<td>Total without author</td>
-								<td>{stats.totalUnauthored}</td>
-								<td>{Math.round((stats.totalUnauthored / stats.totalBrews) * 100)}%</td>
-							</tr>
-						)}
-						{stats.totalGoogle !== 0 && (
-							<tr>
-								<td>Total in Google storage</td>
-								<td>{stats.totalGoogle}</td>
-								<td>{Math.round((stats.totalGoogle / stats.totalBrews) * 100)}%</td>
-							</tr>
-						)}
-						{stats.totalLegacy !== 0 && (
-							<tr>
-								<td>Total in Legacy renderer</td>
-								<td>{stats.totalLegacy}</td>
-								<td>{Math.round((stats.totalLegacy / stats.totalBrews) * 100)}%</td>
-							</tr>
-						)}
-
-						{
-						/*
-						stats.totalThumbnail !== 0 && (
-							<tr>
-								<td>Total with thumbnail</td>
-								<td>{stats.totalThumbnail}</td>
-								<td>{Math.round((stats.totalThumbnail / stats.totalBrews) * 100)}%</td>
-							</tr>
-						)
-						*/
-						}
-
-					</tbody>
-				</table>
-			</>
-		);
-	};
-
 	const renderChart = (category)=>{
 		const dataset = chartData?.find((item)=>item.category === category);
 		const isLoading = loading.includes(category);
@@ -201,7 +194,11 @@ const Stats = ()=>{
 								onClick={()=>{
 									!isLoading && fetchChartData(category);
 								}}>
-								{ !isLoading ? `Fetch Chart Brews per ${category}` : <i className='fas fa-spin fa-spinner'></i>}
+								{!isLoading ? (
+									`Fetch Chart Brews per ${category}`
+								) : (
+									<i className='fas fa-spin fa-spinner'></i>
+								)}
 							</button>
 						</div>
 
@@ -227,7 +224,7 @@ const Stats = ()=>{
 						onClick={()=>{
 							fetchChartData(category);
 						}}>
-						{ !isLoading ? `Refetch chart data` : <i className='fas fa-spin fa-spinner'></i>}
+						{!isLoading ? `Refetch chart data` : <i className='fas fa-spin fa-spinner'></i>}
 					</button>
 				</div>
 				<div className='chart'>
