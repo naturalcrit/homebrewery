@@ -154,7 +154,7 @@ router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 		let unauthoredBrewsCount = null;
 		let nonGoogleBrewsCount = null;
 		let legacyBrewsCount = null;
-		const totalThumbnailCount = null;
+		let totalThumbnailCount = null;
 
 		// Attempt each count individually
 		try {
@@ -186,13 +186,11 @@ router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 		} catch (error) {
 			console.error('Failed to get legacyBrewsCount:', error);
 		}
-		/*
 		try {
 			totalThumbnailCount = await HomebrewModel.countDocuments({ thumbnail: '' });
 		} catch (error) {
 			console.error('Failed to get totalThumbnailCount:', error);
 		}
-*/
 		// Construct the response, calculating totalGoogle only if the counts are available
 		return res.json({
 			totalBrews      : totalBrewsCount,
@@ -200,7 +198,7 @@ router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 			totalUnauthored : unauthoredBrewsCount,
 			totalGoogle     : totalBrewsCount ? totalBrewsCount - nonGoogleBrewsCount : null,
 			totalLegacy     : legacyBrewsCount,
-			//			totalThumbnail  : totalThumbnailCount,
+			totalThumbnail  : totalThumbnailCount,
 		});
 
 	} catch (error) {
