@@ -247,7 +247,13 @@ const EditPage = createClass({
 			});
 		if(!res) return;
 
-		this.savedBrew = res.body;
+		this.savedBrew = {
+			...this.state.brew,
+			googleId : res.body.googleId ? res.body.googleId : null,
+			editId 	 : res.body.editId,
+			shareId  : res.body.shareId,
+			version  : res.body.version
+		};
 		history.replaceState(null, null, `/edit/${this.savedBrew.editId}`);
 
 		this.setState((prevState)=>({
