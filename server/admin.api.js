@@ -220,7 +220,16 @@ router.get('/admin/brewsByDate', mw.adminOnly, async (req, res)=>{
 router.get('/admin/brewsByLang', mw.adminOnly, async (req, res)=>{
 	try {
 		const data = await HomebrewModel.getDocumentCountsByLang();
-		res.json(data);
+		const mergedData = ()=>{
+			const merged = data.reduce((acc, item)=>{
+				const normalizedId = String(item._id || 'en').trim().toLowerCase();
+				acc[normalizedId] = (acc[normalizedId] || 0) + item.count;
+				return acc;
+			}, {});
+
+			return Object.entries(merged).map(([key, count])=>({ _id: key, count }));
+		};
+		res.json(mergedData);
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ error: 'Internal Server Error' });
