@@ -304,6 +304,8 @@ const Stats = ()=>{
 				<div className={`graph Lang`}>{renderChart('Lang')}</div>
 				<div className='graph pageCount'>{renderChart('PageCount')}</div>
 				<div className='graph version'>{renderChart('Version')}</div>
+				{//<div className='graph missing'>{renderChart('MissingField')}</div>
+				}
 			</div>
 		</section>
 	);

@@ -123,7 +123,27 @@ HomebrewSchema.statics.getDocumentCountsByVersion = async function() {
 		}
 	], { maxTimeMS: 30000 });
 };
+/* Only works in local, takes longer than a minute
+Homebrew.getDocumentCountsByMissingField = async function() {
+	// Step 1: Get unique field names
+	const allFields = await this.aggregate([
+		{ $project: { fields: { $objectToArray: '$$ROOT' } } },
+		{ $unwind: '$fields' },
+		{ $group: { _id: '$fields.k' } }
+	]).then((res)=>[...new Set(res.map((field)=>field._id))]); // Ensure uniqueness
 
+	// Step 2: Count missing fields using separate queries and format output for mapping
+	const missingCounts = await Promise.all(
+		allFields.map(async (field)=>{
+			const count = await this.countDocuments({ [field]: { $exists: false } });
+			return { _id: field, count };
+		})
+	);
+	missingCounts.sort((a, b)=>b.count - a.count);
+
+	return missingCounts; // Format: [{ _id: field, count: missingCount }, ...]
+};
+*/
 const Homebrew = mongoose.model('Homebrew', HomebrewSchema);
 
 export {

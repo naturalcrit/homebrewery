@@ -249,7 +249,18 @@ router.get('/admin/brewsByVersion', mw.adminOnly, async (req, res)=>{
 		res.status(500).json({ error: 'Internal Server Error' });
 	}
 });
-
+/*
+router.get('/admin/brewsByMissingField', mw.adminOnly, async (req, res)=>{
+	try {
+		const data = await HomebrewModel.getDocumentCountsByMissingField();
+		console.log(data);
+		res.json(data);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+*/
 // #######################   NOTIFICATIONS
 
 router.get('/admin/notification/all', async (req, res, next)=>{
