@@ -1,9 +1,12 @@
 @import 'naturalcrit/styles/colors.less';
 
+.userThemeName {
+	padding-left: 10px;
+	padding-right: 10px;
+}
 
 .metadataEditor {
 	position         : absolute;
-	z-index          : 5;
 	box-sizing       : border-box;
 	width            : 100%;
 	height           : calc(100vh - 54px); // 54px is the height of the navbar + snippet bar.  probably a better way to dynamic get this.
@@ -71,8 +74,7 @@
 			border : 1px solid gray;
 			&:focus { outline : 1px solid #444444; }
 		}
-		&.thumbnail {
-			height      : 1.4em;
+		&.thumbnail, &.themes{
 			label { line-height : 2.0em; }
 			.value {
 				overflow      : hidden;
@@ -85,6 +87,17 @@
 				background-color : black;
 				border           : 1px solid #999999;
 				&:hover { background-color : #777777; }
+			}
+		}
+
+		&.themes{
+			.value {
+				overflow      : visible;
+				text-overflow : auto;
+			}
+			button {
+				padding-left: 5px;
+				padding-right: 5px;
 			}
 		}
 
@@ -156,89 +169,73 @@
 	}
 
 	.themes.field {
-		.navDropdownContainer {
+		& .dropdown-container {
 			position         : relative;
 			z-index          : 100;
 			background-color : white;
-			&.disabled {
-				font-style       : italic;
-				color            : dimgray;
-				background-color : darkgray;
-			}
-			& > div:first-child {
-				padding           : 3px 3px;
-				background-color  : inherit;
-				border            : 1px solid gray;
-				i { float	: right; }
-				&:hover {
-					color            : white;
-					background-color : @blue;
+		}
+		& .dropdown-options {
+			overflow-y : visible;
+		}
+		.disabled {
+			font-style       : italic;
+			color            : dimgray;
+			background-color : darkgray;
+		}
+		.item {
+			position          : relative;
+			padding           : 3px 3px;
+			overflow          : visible;
+			background-color  : white;
+			border-top        : 1px solid rgb(118, 118, 118);
+			.preview {
+				position       : absolute;
+				top            : 0;
+				right          : 0;
+				z-index        : 1;
+				display        : flex;
+				flex-direction : column;
+				width          : 200px;
+				overflow       : hidden;
+				color          : black;
+				background     : #CCCCCC;
+				border-radius  : 5px;
+				box-shadow     : 0 0 5px black;
+				opacity        : 0;
+				transition     : opacity 250ms ease;
+				h6 {
+					padding-block  : 0.5em;
+					padding-inline : 1em;
+					font-weight    : 900;
+					border-bottom  : 2px solid hsl(0,0%,40%);
 				}
 			}
-			.navDropdown .item > p {
-				width         : 45%;
-				height        : 1.1em;
-				overflow      : hidden;
-				text-overflow : ellipsis;
-				white-space   : nowrap;
-			}			
-			.navDropdown {
-				position	  : absolute;
-				width		    : 100%;
-				box-shadow	: 0px 5px 10px rgba(0, 0, 0, 0.3);
-				.item {
-					position          : relative;
-					padding           : 3px 3px;
-					overflow          : visible;
-					background-color  : white;
-					border-top        : 1px solid rgb(118, 118, 118);
-					.preview {
-						position       : absolute;
-						top            : 0;
-						right          : 0;
-						z-index        : 1;
-						display        : flex;
-						flex-direction : column;
-						width          : 200px;
-						overflow       : hidden;
-						color          : black;
-						background     : #CCCCCC;
-						border-radius  : 5px;
-						box-shadow     : 0 0 5px black;
-						opacity        : 0;
-						transition     : opacity 250ms ease;
-						h6 {
-							padding-block  : 0.5em;
-							padding-inline : 1em;
-							font-weight    : 900;
-							border-bottom  : 2px solid hsl(0,0%,40%);
-						}
-					}
-					&:hover {
-						color            : white;
-						background-color : @blue;
-					}
-					&:hover > .preview { opacity : 1; }
-					.texture-container {
-						position   : absolute;
-						top        : 0;
-						left       : 0;
-						width      : 100%;
-						height     : 100%;
-						min-height : 100%;
-						overflow   : hidden;
-						> img {
-							position            : absolute;
-							top                 : 0px;
-							right               : 0;
-							width               : 50%;
-							min-height          : 100%;
-							-webkit-mask-image  : linear-gradient(90deg, transparent, black 20%);
-							mask-image          : linear-gradient(90deg, transparent, black 20%);
-						}
-					}
+
+			.texture-container {
+				position   : absolute;
+				top        : 0;
+				left       : 0;
+				width      : 100%;
+				height     : 100%;
+				min-height : 100%;
+				overflow   : hidden;
+				> img {
+					position            : absolute;
+					top                 : 0;
+					right               : 0;
+					width               : 50%;
+					min-height          : 100%;
+					-webkit-mask-image  : linear-gradient(90deg, transparent, black 20%);
+					mask-image          : linear-gradient(90deg, transparent, black 20%);
 				}
 			}
+
+			&:hover {
+				color            : white;
+				background-color : @blue;
+				filter           : unset;
+			}
+			&:hover > .preview { opacity : 1; }
 		}
 	}
 
