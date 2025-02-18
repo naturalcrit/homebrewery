@@ -3,8 +3,8 @@ const dedent = require('dedent-tabs').default;
 const loginUrl = 'https://www.naturalcrit.com/login';
 
 // Prevent parsing text (e.g. document titles) as markdown
-const escape = (text) => {
-	return text.split('').map(char => `&#${char.charCodeAt(0)};`).join('');
+const escape = (text = '')=>{
+	return text.split('').map((char)=>`&#${char.charCodeAt(0)};`).join('');
 };
 
 //001-050 : Brew errors
@@ -167,6 +167,14 @@ const errorIndex = (props)=>{
 		**Requested access:** ${props.brew.accessType}
 
 		**Brew ID:**  ${props.brew.brewId}`,
+		
+		// Theme Not Valid
+		'10' : dedent`
+		## The selected theme is not tagged as a theme.
+		
+		The brew selected as a theme exists, but has not been marked for use as a theme with the \`theme:meta\` tag.
+		
+		If the selected brew is your document, you may designate it as a theme by adding the \`theme:meta\` tag.`,
 
 		//account page when account is not defined
 		'50' : dedent`

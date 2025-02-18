@@ -88,7 +88,7 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-### Thursday 01/30/2024 - v3.17.0
+### Thursday 01/30/2025 - v3.17.0
 
 {{taskList
 ##### 5e-Cleric

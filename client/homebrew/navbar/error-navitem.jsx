@@ -116,6 +116,19 @@ const ErrorNavItem = createClass({
 			</Nav.item>;
 		}
 
+		if(HBErrorCode === '10') {
+			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+				Oops!
+				<div className='errorContainer' onClick={clearError}>
+					Looks like the brew you have selected
+					as a theme is not tagged for use as a
+					theme. Verify that
+					brew <a className='lowercase' target='_blank' rel='noopener noreferrer' href={`/share/${response.body.brewId}`}>
+						{response.body.brewId}</a> has the <span className='lowercase'>meta:theme</span> tag!
+				</div>
+			</Nav.item>;
+		}
+
 		return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 			Oops!
 			<div className='errorContainer'>
