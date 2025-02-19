@@ -3,7 +3,6 @@ require('./headerNav.less');
 import * as React from 'react';
 import * as _ from 'lodash';
 
-
 const MAX_TEXT_LENGTH = 40;
 
 const HeaderNav = React.forwardRef(({}, pagesRef)=>{
@@ -32,10 +31,10 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 		const topLevelPageSelector = Object.keys(topLevelPages).join(',');
 
 		const selector = [
-			'.pages > .page',														// All page elements, which by definition have IDs
-			`.page:not(:has(${topLevelPageSelector})) > [id]`,						// All direct children of non-excluded .pages with an ID (Legacy)
-			`.page:not(:has(${topLevelPageSelector})) > .columnWrapper > [id]`,		// All direct children of non-excluded .page > .columnWrapper with an ID (V3)
-			`.page:not(:has(${topLevelPageSelector})) h2`,							// All non-excluded H2 titles, like Monster frame titles
+			'.pages > .page',                                                   // All page elements, which by definition have IDs
+			`.page:not(:has(${topLevelPageSelector})) > [id]`,                  // All direct children of non-excluded .pages with an ID (Legacy)
+			`.page:not(:has(${topLevelPageSelector})) > .columnWrapper > [id]`, // All direct children of non-excluded .page > .columnWrapper with an ID (V3)
+			`.page:not(:has(${topLevelPageSelector})) h2`,                      // All non-excluded H2 titles, like Monster frame titles
 		];
 		const elements = pagesRef.current.querySelectorAll(selector.join(','));
 		if(!elements) return;
@@ -43,17 +42,17 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 
 		// navList is a list of objects which have the following structure:
 		// {
-		// 		depth		: how deeply indented the item should be
-		// 		text		: the text to display in the nav link
-		// 		link		: the hyperlink to navigate to when clicked
-		// 		className	: [optional] the class to apply to the nav link for styling
+		// 	depth     : how deeply indented the item should be
+		// 	text      : the text to display in the nav link
+		// 	link      : the hyperlink to navigate to when clicked
+		// 	className : [optional] the class to apply to the nav link for styling
 		// }
 
 		elements.forEach((el)=>{
 			if(el.className.match(/\bpage\b/)) {
-				let text = `Page ${el.id.slice(1)}`;	// The ID of a page *should* always be equal to `p` followed by the page number
+				let text = `Page ${el.id.slice(1)}`;  // The ID of a page *should* always be equal to `p` followed by the page number
 				Object.keys(topLevelPages).every((pageType)=>{
-					if(el.querySelector(pageType)){			// If a Top Level Page, add the text result to the navigation text
+					if(el.querySelector(pageType)){     // If a Top Level Page, add the text result to the navigation text
 						text += ` - ${topLevelPages[pageType](el, pageType)}`;
 						return false;
 					};
@@ -67,17 +66,17 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 				});
 				return;
 			}
-			if(el.localName.match(/^h[1-6]/)){			// Header elements H1 through H6
+			if(el.localName.match(/^h[1-6]/)){  // Header elements H1 through H6
 				navList.push({
-					depth : el.localName[1],			// Depth is set by the header level
-					text  : el.textContent,				// Use `textContent` because `innerText` is affected by rendering, e.g. 'content-visibility: auto'
+					depth : el.localName[1], // Depth is set by the header level
+					text  : el.textContent,  // Use `textContent` because `innerText` is affected by rendering, e.g. 'content-visibility: auto'
 					link  : el.id
 				});
 				return;
 			}
 			navList.push({
-				depth : 7,								// All unmatched elements with IDs are set to the maximum depth (7)
-				text  : el.textContent,					// Use `textContent` because `innerText` is affected by rendering, e.g. 'content-visibility: auto'
+				depth : 7,              // All unmatched elements with IDs are set to the maximum depth (7)
+				text  : el.textContent, // Use `textContent` because `innerText` is affected by rendering, e.g. 'content-visibility: auto'
 				link  : el.id
 			});
 		});
