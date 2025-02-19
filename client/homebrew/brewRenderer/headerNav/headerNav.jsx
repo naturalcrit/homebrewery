@@ -20,10 +20,10 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 		// The property value is a function that returns the text to be used
 
 		const topLevelPages = {
-			'.frontCover'  : (text)=>{ return text ? `Cover: ${text}` : 'Cover Page'; },
-			'.insideCover' : (text)=>{ return text ? `Interior: ${text}` : 'Interior Cover Page'; },
-			'.partCover'   : (text)=>{ return text ? `Section: ${text}` : 'Section Cover Page'; },
-			'.backCover'   : (text)=>{ return text ? `Back: ${text}` : 'Rear Cover Page'; },
+			'.frontCover'  : (el, pageType)=>{ const text = getTextContent(el, pageType); return text ? `Cover: ${text}` : 'Cover Page'; },
+			'.insideCover' : (el, pageType)=>{ const text = getTextContent(el, pageType); return text ? `Interior: ${text}` : 'Interior Cover Page'; },
+			'.partCover'   : (el, pageType)=>{ const text = getTextContent(el, pageType); return text ? `Section: ${text}` : 'Section Cover Page'; },
+			'.backCover'   : (el, pageType)=>{ const text = getTextContent(el, pageType); return text ? `Back: ${text}` : 'Rear Cover Page'; },
 			'.toc'         : ()=>{ return 'Table of Contents'; },
 		};
 
@@ -54,7 +54,7 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 				let text = `Page ${el.id.slice(1)}`;	// The ID of a page *should* always be equal to `p` followed by the page number
 				Object.keys(topLevelPages).every((pageType)=>{
 					if(el.querySelector(pageType)){			// If a Top Level Page, add the text result to the navigation text
-						text += ` - ${topLevelPages[pageType](getTextContent(el, pageType))}`;
+						text += ` - ${topLevelPages[pageType](el, pageType)}`;
 						return false;
 					};
 					return true;
