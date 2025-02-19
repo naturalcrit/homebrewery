@@ -415,7 +415,7 @@ const forcedParagraphBreaks = {
 		}
 	},
 	renderer(token) {
-		return `<br>`.repeat(token.length).concat('\n');
+		return `<br>\n`.repeat(token.length);
 	}
 };
 
