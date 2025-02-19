@@ -11,18 +11,31 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 	const renderHeaderLinks = ()=>{
 		if(!pagesRef.current) return;
 
-		const excludedPages = {
-			'.frontCover' : 'Cover Page',
-			'.toc'        : 'Contents'
+		// Top Level Pages
+		// Pages that contain an element with a specified class will NOT have its content scanned for navigation headers
+		// e.g. cover pages, table of content pages
+		// Instead, a label will be added to the navigation at the page level
+		// ---
+		// The property name is class that will be used for detecting the page is a top level page
+		// The property value is a function that returns the text to be used
+
+		const topLevelPages = {
+			'.frontCover'  : (text)=>{ return text ? `Cover: ${text}` : 'Cover Page'; },
+			'.insideCover' : (text)=>{ return text ? `Interior: ${text}` : 'Interior Cover Page'; },
+			'.partCover'   : (text)=>{ return text ? `Section: ${text}` : 'Section Cover Page'; },
+			'.backCover'   : (text)=>{ return text ? `Back: ${text}` : 'Rear Cover Page'; },
+			'.toc'         : ()=>{ return 'Table of Contents'; },
 		};
 
-		const excluded = Object.keys(excludedPages).join(',');
+		const getTextContent = (el, pageType)=>{ return el.querySelector(pageType).textContent; };
+
+		const topLevelPageSelector = Object.keys(topLevelPages).join(',');
 
 		const selector = [
-			'.pages > .page',											// All page elements, which by definition have IDs
-			`.page:not(:has(${excluded})) > [id]`,						// All direct children of non-excluded .pages with an ID (Legacy)
-			`.page:not(:has(${excluded})) > .columnWrapper > [id]`,		// All direct children of non-excluded .page > .columnWrapper with an ID (V3)
-			`.page:not(:has(${excluded})) h2`,							// All non-excluded H2 titles, like Monster frame titles
+			'.pages > .page',														// All page elements, which by definition have IDs
+			`.page:not(:has(${topLevelPageSelector})) > [id]`,						// All direct children of non-excluded .pages with an ID (Legacy)
+			`.page:not(:has(${topLevelPageSelector})) > .columnWrapper > [id]`,		// All direct children of non-excluded .page > .columnWrapper with an ID (V3)
+			`.page:not(:has(${topLevelPageSelector})) h2`,							// All non-excluded H2 titles, like Monster frame titles
 		];
 		const elements = pagesRef.current.querySelectorAll(selector.join(','));
 		if(!elements) return;
@@ -39,9 +52,9 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 		elements.forEach((el)=>{
 			if(el.className.match(/\bpage\b/)) {
 				let text = `Page ${el.id.slice(1)}`;	// The ID of a page *should* always be equal to `p` followed by the page number
-				Object.keys(excludedPages).every((pageType)=>{
-					if(el.querySelector(pageType)){			// If the page contains a table of contents, add "- Contents" to the display text
-						text += ` - ${excludedPages[pageType]}`;
+				Object.keys(topLevelPages).every((pageType)=>{
+					if(el.querySelector(pageType)){			// If a Top Level Page, add the text result to the navigation text
+						text += ` - ${topLevelPages[pageType](getTextContent(el, pageType))}`;
 						return false;
 					};
 					return true;
