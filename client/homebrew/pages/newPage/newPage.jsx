@@ -233,6 +233,7 @@ const NewPage = createClass({
 					onMetaChange={this.handleMetaChange}
 					renderer={this.state.brew.renderer}
 					userThemes={this.props.userThemes}
+					themeBundle={this.state.themeBundle}
 					snippetBundle={this.state.themeBundle.snippets}
 					onCursorPageChange={this.handleEditorCursorPageChange}
 					onViewPageChange={this.handleEditorViewPageChange}
