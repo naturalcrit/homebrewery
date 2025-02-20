@@ -1,6 +1,6 @@
 const React = require('react');
 const createClass = require('create-react-class');
-
+require('./brewUtils.less');
 
 const BrewCleanup = require('./brewCleanup/brewCleanup.jsx');
 const BrewLookup = require('./brewLookup/brewLookup.jsx');
