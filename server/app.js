@@ -552,6 +552,7 @@ const renderPage = async (req, res)=>{
 	const configuration = {
 		local       : isLocalEnvironment,
 		publicUrl   : config.get('publicUrl') ?? '',
+		baseUrl     : `${req.protocol}://${req.get('host')}`,
 		environment : nodeEnv,
 		deployment  : config.get('heroku_app_name') ?? ''
 	};
