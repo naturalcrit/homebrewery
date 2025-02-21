@@ -7,7 +7,7 @@ import MarkedExtendedTables     from 'marked-extended-tables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
-import MarkedJustifiedParagraphs 														 from 'marked-justified-paragraphs';
+import MarkedJustifiedParagraphs                                                         from 'marked-justified-paragraphs';
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
 import diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
