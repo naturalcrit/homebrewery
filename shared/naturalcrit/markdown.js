@@ -828,7 +828,7 @@ const processStyleTags = (string)=>{
 
 	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0]        || null;
 	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('='))).join(' ') || null;
-	const attributes = _.remove(tags, (tag)=>(tag.includes('=')) && (!tag.slice(0, tag.indexOf(':'))?.indexOf('=') > 0)).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'))
+	const attributes = _.remove(tags, (tag)=>(tag.includes('='))).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'))
 		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
 		.reduce((obj, attr)=>{
 			const index = attr.indexOf('=');
@@ -851,7 +851,7 @@ const processStyleTags = (string)=>{
 	const styles = tags?.length ? tags.reduce((styleObj, style)=>{
 		const index = style.indexOf(':');
 		const [key, value] = [style.substring(0, index), style.substring(index + 1)];
-		styleObj[key.trim()] = value.trim();
+		styleObj[key.trim()] = value.replace(/"?([^"]*)"?/g, '$1').trim();
 		return styleObj;
 	}, {}) : null;
 
