@@ -8,6 +8,7 @@ import { markedSmartypantsLite as MarkedSmartypantsLite }                       
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
 import MarkedHardBreaks                                                                  from 'marked-hard-breaks';
+import MarkedSubSuperText from 'marked-subsuper-text';
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
 import diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
@@ -333,35 +334,6 @@ const mustacheInjectBlock = {
 		}
 	}
 };
-
-const superSubScripts = {
-	name  : 'superSubScript',
-	level : 'inline',
-	start(src) { return src.match(/\^/m)?.index; },  // Hint to Marked.js to stop and check for a match
-	tokenizer(src, tokens) {
-		const superRegex = /^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^/m;
-		const subRegex   = /^\^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^\^/m;
-		let isSuper = false;
-		let match = subRegex.exec(src);
-		if(!match){
-			match = superRegex.exec(src);
-			if(match)
-				isSuper = true;
-		}
-		if(match?.length) {
-			return {
-				type   : 'superSubScript', // Should match "name" above
-				raw    : match[0],          // Text to consume from the source
-				tag    : isSuper ? 'sup' : 'sub',
-				tokens : this.lexer.inlineTokens(match[1])
-			};
-		}
-	},
-	renderer(token) {
-		return `<${token.tag}>${this.parser.parseInline(token.tokens)}</${token.tag}>`;
-	}
-};
-
 
 const justifiedParagraphClasses = [];
 justifiedParagraphClasses[2] = 'Left';
@@ -776,8 +748,9 @@ const tableTerminators = [
 
 Marked.use(MarkedVariables());
 Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine,
-	nonbreakingSpaces, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+	nonbreakingSpaces, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
+Marked.use(MarkedSubSuperText());
 Marked.use(MarkedHardBreaks());
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }),
