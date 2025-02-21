@@ -1,5 +1,3 @@
-require('./brewLookup.less');
-
 const React = require('react');
 const createClass = require('create-react-class');
 const cx    = require('classnames');
@@ -55,7 +53,7 @@ const BrewLookup = createClass({
 
 	renderFoundBrew(){
 		const brew = this.state.foundBrew;
-		return <div className='foundBrew'>
+		return <div className='result'>
 			<dl>
 				<dt>Title</dt>
 				<dd>{brew.title}</dd>
@@ -90,7 +88,7 @@ const BrewLookup = createClass({
 	},
 
 	render(){
-		return <div className='brewLookup'>
+		return <div className='brewUtil brewLookup'>
 			<h2>Brew Lookup</h2>
 			<input type='text' value={this.state.query} onChange={this.handleChange} placeholder='edit or share id' />
 			<button onClick={this.lookup}>
@@ -106,7 +104,7 @@ const BrewLookup = createClass({
 
 			{this.state.foundBrew
 				? this.renderFoundBrew()
-				: <div className='noBrew'>No brew found.</div>
+				: <div className='result noBrew'>No brew found.</div>
 			}
 		</div>;
 	}

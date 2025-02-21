@@ -26,7 +26,7 @@ const authorLookup = ()=>{
 		</>;
 
 		return <>
-			<h2>{`Results - ${results.length}`}</h2>
+			<h2>{`Results - ${results.length} brews` }</h2>
 			<table className='resultsTable'>
 				<thead>
 					<tr>
@@ -45,10 +45,10 @@ const authorLookup = ()=>{
 						})
 						.map((brew, idx)=>{
 							return <tr key={idx}>
-								<td>{brew.title}</td>
-								<td>{brew.shareId}</td>
+								<td><strong>{brew.title}</strong></td>
+								<td><a href={`/share/${brew.shareId}`}>{brew.shareId}</a></td>
 								<td>{brew.editId}</td>
-								<td>{brew.updatedAt}</td>
+								<td style={{ width: '200px' }}>{brew.updatedAt}</td>
 								<td>{brew.googleId ? 'Google' : 'Homebrewery'}</td>
 							</tr>;
 						})}
