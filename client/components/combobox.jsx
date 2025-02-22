@@ -45,6 +45,7 @@ const Combobox = createClass({
 	},
 	handleDropdown : function(show){
 		this.setState({
+			value        : show ? '' : this.props.default,
 			showDropdown : show,
 			inputFocused : this.props.autoSuggest.clearAutoSuggestOnClick ? show : false
 		});
@@ -78,7 +79,7 @@ const Combobox = createClass({
 						if(!e.target.checkValidity()){
 							this.setState({
 								value : this.props.default
-							}, ()=>this.props.onEntry(e));
+							});
 						}
 					}}
 				/>
