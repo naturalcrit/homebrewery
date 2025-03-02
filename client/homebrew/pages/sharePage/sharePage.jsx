@@ -49,7 +49,7 @@ const SharePage = (props)=>{
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
 		};
-	}, []);
+	}, [brew]);
 
 	const processShareId = ()=>{
 		return brew.googleId && !brew.stubbed ? brew.googleId + brew.shareId : brew.shareId;
