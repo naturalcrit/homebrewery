@@ -432,6 +432,19 @@ app.get('/new', asyncHandler(async(req, res, next)=>{
 	return next();
 }));
 
+// Get brew data
+app.get('/get/:id', asyncHandler(getBrew('share')), (req, res)=>{
+	res.status(200).json(req.brew);
+});
+
+app.get('/share2/:id', (req, res, next)=>{
+	req.data = {
+		id   : req.params.id,
+		type : 'share'
+	};
+	return next();
+});
+
 //Share Page
 app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
 	const { brew } = req;
@@ -567,7 +580,8 @@ const renderPage = async (req, res)=>{
 		enable_themes : config.get('enable_themes'),
 		config        : configuration,
 		ogMeta        : req.ogMeta,
-		userThemes    : req.userThemes
+		userThemes    : req.userThemes,
+		data          : req.data || undefined
 	};
 	const title = req.brew ? req.brew.title : '';
 	const page = await templateFn('homebrew', title, props)
