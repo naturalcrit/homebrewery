@@ -376,6 +376,45 @@ app.put('/api/user/rename', async (req, res)=>{
 	}
 });
 
+//Delete brews based on author
+app.delete('/api/user/delete', async (req, res) => {
+	const { username } = req.body;
+	console.log(username);
+	const ownAccount = req.account && (req.account.username == username);
+	
+	// if(!ownAccount) return res.status(403).json({ error: 'Must be logged in to change your username' });
+
+	try {
+		const brews = await HomebrewModel.getByUser(username, true, ['authors']);
+		//get the relevant fields, not just author you moron!
+		console.log(brews);
+		
+		for (let brew of brews) {
+			//attaching the brew to the request for the deleteBrew method to work
+			req.brew = brew;
+
+			await new Promise((resolve, reject) => {
+				api.deleteBrew(req, res, (err) => {
+					if (err) {
+						reject(err);
+					} else {
+						resolve();
+					}
+				});
+			});
+		}
+		console.log('all brews should be deleted');
+		return res.json({ success: true, message: `All brews for ${username} have been deleted.` });
+
+	} catch (error) {
+		console.error('Error deleting brews:', error);
+		if (!res.headersSent) {
+			return res.status(500).json({ error: 'Failed to delete the brews.' });
+		}
+	}
+});
+
+
 //Edit Page
 app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res, next)=>{
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
