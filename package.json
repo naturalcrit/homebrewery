@@ -112,6 +112,7 @@
     "marked-emoji": "^2.0.0",
     "marked-extended-tables": "^2.0.0",
     "marked-gfm-heading-id": "^4.0.1",
+    "marked-alignment-paragraphs": "^1.0.0",
     "marked-smartypants-lite": "^1.0.3",
     "marked-subsuper-text": "^1.0.3",
     "markedLegacy": "npm:marked@^0.3.19",
