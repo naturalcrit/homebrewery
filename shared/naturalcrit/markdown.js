@@ -895,18 +895,6 @@ const globalVarsList    = {};
 let varsQueue       = [];
 let globalPageNumber = 0;
 
-const closePre = (text)=>{
-	const cols = text.split(/^\\column$/gm);
-	if((cols[0].match(/```/g)||[]).length % 2 != 0) {
-		// Catch inserted column pattern
-		if(cols[0].endsWith('\n\n&nbsp;\n')) {
-			cols[0] = cols[0].slice(0, cols[0].length-'\n\n&nbsp;\n'.length);
-			cols[0] += '\n```\n\n&nbsp;\n';
-		} else cols[0] += '\n```\n';
-	}
-	return cols.join(`\n\\column\n`);
-};
-
 const Markdown = {
 	marked : Marked,
 	render : (rawBrewText, pageNumber=0)=>{
@@ -917,7 +905,7 @@ const Markdown = {
 			MarkedGFMResetHeadingIDs();
 		}
 
-		rawBrewText = closePre(rawBrewText).replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`);
+		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`);
 
 		const opts = Marked.defaults;
 
