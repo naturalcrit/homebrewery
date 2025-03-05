@@ -148,7 +148,7 @@ const genAction = function(){
 		'Turnbuckle Roll'
 	]);
 
-	return `***${name}.*** *Melee Weapon Attack:* +4 to hit, reach 5ft., one target. *Hit* 5 (1d6 + 2) `;
+	return `***${name}.*** *Melee Weapon Attack:* +4 to hit, reach 5 ft., one target. *Hit:* 5 (1d6 + 2) `;
 };
 
 
@@ -161,8 +161,8 @@ module.exports = {
 			*${getType()}, ${getAlignment()}*
 			___
 			**Armor Class** :: ${_.random(10, 20)} (chain mail, shield)
-			**Hit Points**  :: ${_.random(1, 150)}(1d4 + 5)
-			**Speed**       :: ${_.random(0, 50)}ft.
+			**Hit Points**  :: ${_.random(1, 150)} (1d4 + 5)
+			**Speed**       :: ${_.random(0, 50)} ft.
 			___
 			|  STR  |  DEX  |  CON  |  INT  |  WIS  |  CHA  |
 			|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|
