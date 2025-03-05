@@ -35,11 +35,11 @@
 				font-weight: 900;
 			}
 
-			@depths: 1,2,3,4,5,6,7;
+			@depths: 0,1,2,3,4,5,6,7;
 
 			each(@depths, {
 				&.depth-@{value} {
-					padding-left: ((@value - 1) * 0.5em);
+					padding-left: ((@value) * 0.5em);
 				}
 			});
 		}
