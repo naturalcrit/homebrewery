@@ -7,6 +7,7 @@ import MarkedExtendedTables     from 'marked-extended-tables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
+import MarkedSubSuperText from 'marked-subsuper-text';
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
 import diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
@@ -339,35 +340,6 @@ const mustacheInjectBlock = {
 	}
 };
 
-const superSubScripts = {
-	name  : 'superSubScript',
-	level : 'inline',
-	start(src) { return src.match(/\^/m)?.index; },  // Hint to Marked.js to stop and check for a match
-	tokenizer(src, tokens) {
-		const superRegex = /^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^/m;
-		const subRegex   = /^\^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^\^/m;
-		let isSuper = false;
-		let match = subRegex.exec(src);
-		if(!match){
-			match = superRegex.exec(src);
-			if(match)
-				isSuper = true;
-		}
-		if(match?.length) {
-			return {
-				type   : 'superSubScript', // Should match "name" above
-				raw    : match[0],          // Text to consume from the source
-				tag    : isSuper ? 'sup' : 'sub',
-				tokens : this.lexer.inlineTokens(match[1])
-			};
-		}
-	},
-	renderer(token) {
-		return `<${token.tag}>${this.parser.parseInline(token.tokens)}</${token.tag}>`;
-	}
-};
-
-
 const justifiedParagraphClasses = [];
 justifiedParagraphClasses[2] = 'Left';
 justifiedParagraphClasses[4] = 'Right';
@@ -421,7 +393,7 @@ const forcedParagraphBreaks = {
 		}
 	},
 	renderer(token) {
-		return `<div class='blank'></div>`.repeat(token.length).concat('\n');
+		return `<br>\n`.repeat(token.length);
 	}
 };
 
@@ -802,10 +774,11 @@ const tableTerminators = [
 
 Marked.use(MarkedVariables());
 Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
-	nonbreakingSpaces, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+	nonbreakingSpaces, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
+Marked.use(MarkedSubSuperText());
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
-Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }),
+Marked.use(MarkedExtendedTables({interruptPatterns : tableTerminators}), MarkedGFMHeadingId({ globalSlugs: true }),
 	MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
 function cleanUrl(href) {
