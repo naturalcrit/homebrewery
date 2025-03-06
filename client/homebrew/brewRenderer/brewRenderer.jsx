@@ -197,7 +197,6 @@ const BrewRenderer = (props)=>{
 			}
 
 			let html = Markdown.render(pageText, index);
-			if(html.indexOf(`\n<div class='columnSplit'></div>\n`) == -1) html += `\n<div class='columnSplit'></div>\n`;
 
 			return <BrewPage className={classes} index={index} key={index} contents={html} style={styles} attributes={attributes} onVisibilityChange={handlePageVisibilityChange} />;
 		}
