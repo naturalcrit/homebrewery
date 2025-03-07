@@ -1,4 +1,4 @@
-/*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 1000, "skipBlankLines": true, "skipComments": true}]*/
 // Set working directory to project root
 import { dirname }       from 'path';
 import { fileURLToPath } from 'url';
@@ -352,7 +352,7 @@ app.get('/user/:username', async (req, res, next)=>{
 app.put('/api/user/rename', async (req, res)=>{
 	const { username, newUsername } = req.body;
 	const ownAccount = req.account && (req.account.username == newUsername);
-	
+
 	if(!username || !newUsername)
 		return res.status(400).json({ error: 'Username and newUsername are required.' });
 	if(!ownAccount)
@@ -431,11 +431,6 @@ app.get('/new', asyncHandler(async(req, res, next)=>{
 
 	return next();
 }));
-
-// Get brew data
-app.get('/get/:id', asyncHandler(getBrew('share')), (req, res)=>{
-	res.status(200).json(req.brew);
-});
 
 app.get('/share2/:id', (req, res, next)=>{
 	req.data = {

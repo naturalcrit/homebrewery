@@ -1,5 +1,6 @@
 //╔===--------------- Polyfills --------------===╗//
 import 'core-js/es/string/to-well-formed.js';
+import request from '../homebrew/utils/request-middleware.js';
 //╚===---------------          ---------------===╝//
 
 require('./homebrew.less');
@@ -17,7 +18,6 @@ const ErrorPage = require('./pages/errorPage/errorPage.jsx');
 const VaultPage = require('./pages/vaultPage/vaultPage.jsx');
 const AccountPage = require('./pages/accountPage/accountPage.jsx');
 
-const request = require('superagent');
 const { splitTextStyleAndMetadata } = require('../../shared/helpers.js');
 
 
@@ -74,14 +74,13 @@ const Homebrew = createClass({
 
 	componentDidMount : async function() {
 		if(this.props.url.startsWith('/share2/')){
-			request.get(`/get/${this.props.data.id}`)
-				.then((data)=>{
-					const brew = data.body;
-					splitTextStyleAndMetadata(brew);
-					this.setState({
-						brew: brew
-					})
-				});
+			const data = await request.get(`/api/share/${this.props.data.id}`);
+
+			const brew = data.body;
+			splitTextStyleAndMetadata(brew);
+			this.setState({
+				brew : brew
+			});
 		}
 	},
 

@@ -92,7 +92,7 @@ const api = {
 			const accessMap = {
 				edit  : { editId: id },
 				share : { shareId: id },
-				admin : { $or : [{ editId: id }, { shareId: id }] }
+				admin : { $or: [{ editId: id }, { shareId: id }] }
 			};
 
 			// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine.
@@ -294,7 +294,7 @@ const api = {
 
 				currentTheme = req.brew;
 				splitTextStyleAndMetadata(currentTheme);
-				if(!currentTheme.tags.some(tag => tag === "meta:theme" || tag === "meta:Theme"))
+				if(!currentTheme.tags.some((tag)=>tag === 'meta:theme' || tag === 'meta:Theme'))
 					throw { brewId: req.params.id, name: 'Invalid Theme Selected', message: 'Selected theme does not have the meta:theme tag', status: 422, HBErrorCode: '10' };
 				themeName   ??= currentTheme.title;
 				themeAuthor ??= currentTheme.authors?.[0];
@@ -473,6 +473,9 @@ const api = {
 		}
 
 		res.status(204).send();
+	},
+	getShareBrew : async (req, res)=>{
+		return res.status(200).json(req.brew);
 	}
 };
 
@@ -480,6 +483,7 @@ router.post('/api', checkClientVersion, asyncHandler(api.newBrew));
 router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
 router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
 router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew));
+router.get('/api/share/:id', checkClientVersion, asyncHandler(api.getBrew('share', false)), asyncHandler(api.getShareBrew));
 router.get('/api/remove/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
 
