@@ -1,6 +1,5 @@
 //╔===--------------- Polyfills --------------===╗//
 import 'core-js/es/string/to-well-formed.js';
-import request from '../homebrew/utils/request-middleware.js';
 //╚===---------------          ---------------===╝//
 
 require('./homebrew.less');
@@ -17,8 +16,6 @@ const NewPage = require('./pages/newPage/newPage.jsx');
 const ErrorPage = require('./pages/errorPage/errorPage.jsx');
 const VaultPage = require('./pages/vaultPage/vaultPage.jsx');
 const AccountPage = require('./pages/accountPage/accountPage.jsx');
-
-const { splitTextStyleAndMetadata } = require('../../shared/helpers.js');
 
 
 const WithRoute = (props)=>{
@@ -67,21 +64,22 @@ const Homebrew = createClass({
 		global.enable_themes = this.props.enable_themes;
 		global.config = this.props.config;
 
-		return {
-			brew : this.props.brew
-		};
+		return {};
+		// return {
+		// 	brew : this.props.brew
+		// };
 	},
 
 	componentDidMount : async function() {
-		if(this.props.url.startsWith('/share2/')){
-			const data = await request.get(`/api/share/${this.props.data.id}`);
+		// if(this.props.url.startsWith('/share2/')){
+		// 	const data = await request.get(`/api/share/${this.props.data.id}`);
 
-			const brew = data.body;
-			splitTextStyleAndMetadata(brew);
-			this.setState({
-				brew : brew
-			});
-		}
+		// 	const brew = data.body;
+		// 	splitTextStyleAndMetadata(brew);
+		// 	this.setState({
+		// 		brew : brew
+		// 	});
+		// }
 	},
 
 	render : function (){
@@ -90,8 +88,8 @@ const Homebrew = createClass({
 				<div className='homebrew'>
 					<Routes>
 						<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={this.props.brew} userThemes={this.props.userThemes}/>} />
-						<Route path='/share/:id' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
-						<Route path='/share2/:id' element={<WithRoute el={SharePage} brew={this.state.brew} />} />
+						<Route path='/share/:id' element={<WithRoute el={SharePage} />} />
+						{/* <Route path='/share2/:id' element={<WithRoute el={SharePage} brew={this.state.brew} />} /> */}
 						<Route path='/new/:id' element={<WithRoute el={NewPage} brew={this.props.brew} userThemes={this.props.userThemes}/>} />
 						<Route path='/new' element={<WithRoute el={NewPage} userThemes={this.props.userThemes}/> } />
 						<Route path='/user/:username' element={<WithRoute el={UserPage} brews={this.props.brews} />} />

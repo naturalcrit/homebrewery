@@ -12,10 +12,14 @@ const Account = require('../../navbar/account.navitem.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
-const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
+const { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } = require('../../../../shared/helpers.js');
+
+import request from '../../utils/request-middleware.js';
 
 const SharePage = (props)=>{
-	const { brew = DEFAULT_BREW_LOAD, disableMeta = false } = props;
+	const { disableMeta = false, id } = props;
+
+	const [brew, setBrew] = useState(DEFAULT_BREW_LOAD);
 
 	const [state, setState] = useState({
 		themeBundle                : {},
@@ -39,6 +43,14 @@ const SharePage = (props)=>{
 	};
 
 	useEffect(()=>{
+		const fetchData = async ()=>{
+			const data = await request.get(`/api/share/${id}`).catch((err)=>{console.log('Fetch Error:', err);});
+			const brewData = data.body;
+			splitTextStyleAndMetadata(brewData);
+			setBrew(brewData);
+		};
+		fetchData();
+
 		document.addEventListener('keydown', handleControlKeys);
 		fetchThemeBundle(
 			{ setState },
@@ -49,7 +61,7 @@ const SharePage = (props)=>{
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
 		};
-	}, [brew]);
+	}, []);
 
 	const processShareId = ()=>{
 		return brew.googleId && !brew.stubbed ? brew.googleId + brew.shareId : brew.shareId;
