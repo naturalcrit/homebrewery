@@ -355,7 +355,7 @@ const VaultPage = (props)=>{
 	};
 
 	const renderFoundBrews = ()=>{
-		if(searching) {
+		if(searching && !brewCollection) {
 			return (
 				<div className='foundBrews searching'>
 					<h3 className='searchAnim'>Searching</h3>
