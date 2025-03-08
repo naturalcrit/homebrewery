@@ -286,9 +286,9 @@ const VaultPage = (props)=>{
 	};
 
 	const renderPaginationControls = ()=>{
-		if(!totalBrews) return null;
+		if(!totalBrews || totalBrews < 10) return null;
 
-		const countInt = parseInt(props.query.count || 20);
+		const countInt = parseInt(brewCollection.length || 20);
 		const totalPages = Math.ceil(totalBrews / countInt);
 
 		let startPage, endPage;
@@ -415,14 +415,14 @@ const VaultPage = (props)=>{
 			<link href='/themes/V3/Blank/style.css' rel='stylesheet' />
 			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet' />
 			{renderNavItems()}
-			<div className="content">
-			<SplitPane showDividerButtons={false}>
-				<div className='form dataGroup'>{renderForm()}</div>
-				<div className='resultsContainer dataGroup'>
-					{renderSortBar()}
-					{renderFoundBrews()}
-				</div>
-			</SplitPane>
+			<div className='content'>
+				<SplitPane showDividerButtons={false}>
+					<div className='form dataGroup'>{renderForm()}</div>
+					<div className='resultsContainer dataGroup'>
+						{renderSortBar()}
+						{renderFoundBrews()}
+					</div>
+				</SplitPane>
 			</div>
 		</div>
 	);
