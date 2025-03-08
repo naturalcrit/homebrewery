@@ -237,6 +237,7 @@
 					margin-right     : 40px;
 					color            : black;
 					isolation        : isolate;
+					transition: all 0.3s;
 						
 					&::after {
 						position         : absolute;
@@ -346,7 +347,7 @@
 }
 
 // media query for when the page is smaller than 1079 px in width
-@container (max-width : 670px) {
+@container (width < 670px) {
 	.vaultPage {
 
 		.dataGroup.form .brewLookup { padding : 1px 20px 20px 10px; }
