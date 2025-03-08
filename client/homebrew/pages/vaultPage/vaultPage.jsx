@@ -395,6 +395,7 @@ const VaultPage = (props)=>{
 					{`Brews found: `}
 					<span>{totalBrews}</span>
 				</span>
+				{brewCollection.length > 10 && renderPaginationControls()}
 				{brewCollection.map((brew, index)=>{
 					return (
 						<BrewItem
