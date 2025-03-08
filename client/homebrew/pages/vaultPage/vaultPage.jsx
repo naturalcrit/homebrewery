@@ -99,14 +99,14 @@ const VaultPage = (props)=>{
 		setSearching(true);
 		setError(null);
 
-		const title  = titleRef.current.value || '';
-		const author = authorRef.current.value || '';
-		const count  = countRef.current.value || 10;
-		const v3     = v3Ref.current.checked != false;
-		const legacy = legacyRef.current.checked != false;
+		const title      = titleRef.current.value || '';
+		const author     = authorRef.current.value || '';
+		const count      = countRef.current.value || 10;
+		const v3         = v3Ref.current.checked != false;
+		const legacy     = legacyRef.current.checked != false;
 		const sortOption = sort || 'title';
-		const dirOption = dir || 'asc';
-		const pageProp = page || 1;
+		const dirOption  = dir || 'asc';
+		const pageProp   = page || 1;
 
 		setSort(sortOption);
 		setdir(dirOption);
