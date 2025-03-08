@@ -249,6 +249,124 @@ router.get('/admin/brewsByVersion', mw.adminOnly, async (req, res)=>{
 		res.status(500).json({ error: 'Internal Server Error' });
 	}
 });
+
+router.get('/admin/brewsByViews', mw.adminOnly, async (req, res)=>{
+	try {
+		const data = await HomebrewModel.getDocumentCountsByViews();
+		res.json(data);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+
+router.get('/admin/brewsBySystems', mw.adminOnly, async (req, res)=>{
+	try {
+		const data = await HomebrewModel.getDocumentCountsBySystems();
+		res.json(data);
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+
+router.get('/admin/brewsByUpdated-Created', mw.adminOnly, async (req, res)=>{
+	try {
+		const brewsByDateDifference = await HomebrewModel.aggregate([
+			{
+				$addFields : {
+					dateDifferenceInDays : {
+						$dateDiff : {
+							startDate : '$createdAt',
+							endDate   : '$updatedAt',
+							unit      : 'day'
+						}
+					}
+				}
+			},
+			{
+				$bucket : {
+					groupBy    : '$dateDifferenceInDays',
+					boundaries : [0, 30, 90, 365, 730, 1095, 1460, 1825, 2190, 2555, 2920, 3650],
+					default    : 'Over 9 years',
+					output     : {
+						count : { $sum: 1 }
+					}
+				}
+			},
+			{
+				$sort : { '_id': 1 }
+			}
+		], { maxTimeMS: 30000 });
+
+		const labelMap = new Map([
+			[1, 'Under 1 day'],
+			[30, 'Under 1 month'],
+			[90, '1 to 3 months'],
+			[365, '3 months to 1 year'],
+			[730, '1 to 2 years'],
+			[1095, '2 to 3 years'],
+			[1460, '3 to 4 years'],
+			[1825, '4 to 5 years'],
+			[2190, '5 to 6 years'],
+			[2555, '6 to 7 years'],
+			[2920, '7 to 8 years'],
+			[3650, '8 to 9 years']
+		]);
+
+		// Map the _id values to their meaningful labels
+		const labeledBrews = brewsByDateDifference.map((item)=>{
+			for (const boundary of labelMap.keys()) {
+				if(item._id <= boundary) {
+					item._id = labelMap.get(boundary);
+					break;
+				}
+			}
+			return item;
+		});
+
+		return res.json(labeledBrews);
+
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+
+router.get('/admin/brewsByPageVsVersion', mw.adminOnly, async (req, res)=>{
+	try {
+		const pageVsVersion = await HomebrewModel.aggregate([
+			{
+				$match : {
+					pageCount : { $gt: 0 }, // Exclude zero/missing values
+					version   : { $gte: 0 }
+				}
+			},
+			{
+				$project : {
+					ratio : { $divide: ['$version', '$pageCount'] }
+				}
+			},
+			{
+				$group : {
+					_id   : '$ratio',
+					count : { $sum: 1 }
+				}
+			},
+			{ $sort: { _id: 1 } }
+		], { maxTimeMS: 30000, hint: { pageCount: 1, version: 1 } });
+
+		console.log(pageVsVersion);
+
+		return res.json(pageVsVersion);
+
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+});
+
+
 /*
 router.get('/admin/brewsByMissingField', mw.adminOnly, async (req, res)=>{
 	try {

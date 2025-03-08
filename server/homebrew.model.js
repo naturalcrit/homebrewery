@@ -110,11 +110,46 @@ HomebrewSchema.statics.getDocumentCountsByPageCount = async function() {
 };
 
 HomebrewSchema.statics.getDocumentCountsByVersion = async function() {
+	const results = await this.aggregate([
+		{ $match: { version: { $ne: null } } },
+		{
+			$bucket : {
+				groupBy    : '$version',
+				boundaries : [
+					1, 5, 10, 20, 40, 60, 80, 100,
+					200, 300, 400, 500, 600, 700, 800, 900, 1000,
+					10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000
+				],
+				default : 'Unknown',
+				output  : { count: { $sum: 1 } }
+			}
+		},
+		{ $sort: { _id: 1 } }
+	], { maxTimeMS: 30000 });
+
+	// Map bucket values to meaningful labels
+	const labels = [
+		'Below 1', '1-4', '5-9', '10-19', '20-39', '40-59', '60-79', '80-99',
+		'100-199', '200-299', '300-399', '400-499', '500-599', '600-699', '700-799', '800-899', '900-999',
+		'1000+', '10000+', '20000+', '30000+', '40000+', '50000+', '60000+', '70000+', '80000+', '90000+'
+	];
+
+	const finishedCount =  results.map((item, index)=>({
+		_id   : labels[index] || 'Unknown',
+		count : item.count
+	}));
+
+	console.log(finishedCount);
+	return finishedCount;
+};
+
+
+HomebrewSchema.statics.getDocumentCountsByViews = async function() {
 	return this.aggregate([
-		{ $match: { version: { $ne: null, $lte: 50 } } },
+		{ $match: { views: { $ne: null, $lte: 50 }  } },
 		{
 			$group : {
-				_id   : '$version',
+				_id   : '$views',
 				count : { $sum: 1 }
 			}
 		},
@@ -123,6 +158,20 @@ HomebrewSchema.statics.getDocumentCountsByVersion = async function() {
 		}
 	], { maxTimeMS: 30000 });
 };
+
+HomebrewSchema.statics.getDocumentCountsBySystems = async function() {
+	return this.aggregate([
+		{ $match: { systems: { $ne: [] } } },
+		{
+			$group : {
+				_id   : '$systems',
+				count : { $sum: 1 }
+			}
+		},
+		{ $sort: { _id: 1 } }
+	], { maxTimeMS: 30000 });
+};
+
 /* Only works in local, takes longer than a minute
 Homebrew.getDocumentCountsByMissingField = async function() {
 	// Step 1: Get unique field names

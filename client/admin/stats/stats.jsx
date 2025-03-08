@@ -306,6 +306,10 @@ const Stats = ()=>{
 				<div className='graph version'>{renderChart('Version')}</div>
 				{//<div className='graph missing'>{renderChart('MissingField')}</div>
 				}
+				<div className='graph Updated-Created'>{renderChart('Updated-Created')}</div>
+				<div className='graph Views'>{renderChart('Views')}</div>
+				<div className='graph Systems'>{renderChart('Systems')}</div>
+				<div className='div graph PageVsVersion'>{renderChart('PageVsVersion')}</div>
 			</div>
 		</section>
 	);
