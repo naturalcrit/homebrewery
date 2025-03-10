@@ -114,6 +114,9 @@ Fixes issue [#1729](https://github.com/naturalcrit/homebrewery/issues/1729)
 ##### 5e-Cleric
 * [x] Style fixes for covers art and logos on A4 size pages
 * [x] Fix crash when trying to open brews that don't exist
+* [x] Tweaks and style update styling on {{openSans **VAULT** :fas_dungeon:}} page.
+
+Fixes issue [#4079](https://github.com/naturalcrit/homebrewery/issues/4079)
 
 ##### Calculuschild
 * [x] `꞉꞉꞉꞉` now produces `<br>` instead of a `<div>`
