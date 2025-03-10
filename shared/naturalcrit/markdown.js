@@ -61,7 +61,8 @@ mathParser.functions.signed = function (a) {
 };
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
-renderer.html = function (html) {
+renderer.html = function (token) {
+	let html = token.text;
 	if(_.startsWith(_.trim(html), '<div') && _.endsWith(_.trim(html), '</div>')){
 		const openTag = html.substring(0, html.indexOf('>')+1);
 		html = html.substring(html.indexOf('>')+1);
@@ -72,18 +73,21 @@ renderer.html = function (html) {
 };
 
 // Don't wrap {{ Spans alone on a line, or {{ Divs in <p> tags
-renderer.paragraph = function(text){
+renderer.paragraph = function(token){
 	let match;
+	const text = this.parser.parseInline(token.tokens);
 	if(text.startsWith('<div') || text.startsWith('</div'))
 		return `${text}`;
-	else if(match = text.match(/(^|^.*?\n)<span class="inline-block(.*?<\/span>)$/)) {
+	else if(match = text.match(/(^|^.*?\n)<span class="inline-block(.*?<\/span>)$/))
 		return `${match[1].trim() ? `<p>${match[1]}</p>` : ''}<span class="inline-block${match[2]}`;
-	} else
+	else
 		return `<p>${text}</p>\n`;
 };
 
 //Fix local links in the Preview iFrame to link inside the frame
-renderer.link = function (href, title, text) {
+renderer.link = function (token) {
+	let {href, title, tokens} = token;
+	const text = this.parser.parseInline(tokens)
 	let self = false;
 	if(href[0] == '#') {
 		self = true;
@@ -105,8 +109,8 @@ renderer.link = function (href, title, text) {
 };
 
 // Expose `src` attribute as `--HB_src` to make the URL accessible via CSS
-renderer.image = function (href, title, text) {
-	href = cleanUrl(href);
+renderer.image = function (token) {
+	let {href, title, text} = token;
 	if(href === null)
 		return text;
 
@@ -772,7 +776,7 @@ Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, defini
 Marked.use(mustacheInjectBlock);
 Marked.use(MarkedSubSuperText());
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
-Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }),
+Marked.use(MarkedExtendedTables({interruptPatterns : tableTerminators}), MarkedGFMHeadingId({ globalSlugs: true }),
 	MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
 function cleanUrl(href) {
