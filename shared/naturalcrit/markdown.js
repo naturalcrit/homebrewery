@@ -902,7 +902,12 @@ let globalPageNumber = 0;
 const Markdown = {
 	marked : Marked,
 	render : (rawBrewText, pageNumber=0)=>{
-		globalVarsList[pageNumber] = {};					//Reset global links for current page, to ensure values are parsed in order
+		globalVarsList[pageNumber] = {							//Reset global links for current page, to ensure values are parsed in order
+			'pageNumber' : {									//Add document variables for this page
+				content  : pageNumber + 1,
+				resolved : true
+			}
+		};
 		varsQueue                  = [];						//Could move into MarkedVariables()
 		globalPageNumber           = pageNumber;
 		if(pageNumber==0) {
