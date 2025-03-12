@@ -9,6 +9,7 @@ import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHead
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
 import MarkedSubSuperText from 'marked-subsuper-text';
 import { romanize } from 'romans';
+import writtenNumber from 'written-number';
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
 import diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
@@ -83,6 +84,22 @@ mathParser.functions.toCharUpper = function (a) {
 };
 mathParser.functions.toCharLower = function (a) {
 	return mathParser.functions.toChar(a).toLowerCase();
+};
+// Add word functions
+mathParser.functions.toWords = function (a) {
+	return writtenNumber(a);
+};
+mathParser.functions.toWordsUpper = function (a) {
+	return mathParser.functions.toWords(a).toUpperCase();
+};
+mathParser.functions.toWordsLower = function (a) {
+	return mathParser.functions.toWords(a).toLowerCase();
+};
+mathParser.functions.toWordsCamel = function (a) {
+	const words = mathParser.functions.toWords(a).split(' ');
+	return words.map((word)=>{
+		return _.capitalize(word);
+	}).join(' ');
 };
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
