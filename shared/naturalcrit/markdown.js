@@ -70,6 +70,20 @@ mathParser.functions.toRomansUpper = function (a) {
 mathParser.functions.toRomansLower = function (a) {
 	return romanize(a).toLowerCase();
 };
+// Add character functions
+mathParser.functions.toChar = function (a) {
+	if(a <= 0) return a;
+	const genChars = function (i) {
+		return (i > 26 ? genChars(Math.floor((i - 1) / 26)) : '') + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[(i - 1) % 26];
+	};
+	return genChars(a);
+};
+mathParser.functions.toCharUpper = function (a) {
+	return mathParser.functions.toChar(a).toUpperCase();
+};
+mathParser.functions.toCharLower = function (a) {
+	return mathParser.functions.toChar(a).toLowerCase();
+};
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (token) {
