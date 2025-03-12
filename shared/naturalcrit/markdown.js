@@ -8,6 +8,7 @@ import { markedSmartypantsLite as MarkedSmartypantsLite }                       
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
 import MarkedSubSuperText from 'marked-subsuper-text';
+import { romanize } from 'romans';
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
 import diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
@@ -59,6 +60,16 @@ mathParser.functions.signed = function (a) {
 	if(a >= 0) return `+${a}`;
 	return `${a}`;
 };
+// Add Roman numeral functions
+mathParser.functions.toRomans = function (a) {
+	return romanize(a);
+};
+mathParser.functions.toRomansUpper = function (a) {
+	return romanize(a).toUpperCase();
+};
+mathParser.functions.toRomansLower = function (a) {
+	return romanize(a).toLowerCase();
+};
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (token) {
@@ -86,8 +97,8 @@ renderer.paragraph = function(token){
 
 //Fix local links in the Preview iFrame to link inside the frame
 renderer.link = function (token) {
-	let {href, title, tokens} = token;
-	const text = this.parser.parseInline(tokens)
+	let { href, title, tokens } = token;
+	const text = this.parser.parseInline(tokens);
 	let self = false;
 	if(href[0] == '#') {
 		self = true;
@@ -110,7 +121,7 @@ renderer.link = function (token) {
 
 // Expose `src` attribute as `--HB_src` to make the URL accessible via CSS
 renderer.image = function (token) {
-	let {href, title, text} = token;
+	const { href, title, text } = token;
 	if(href === null)
 		return text;
 
@@ -776,7 +787,7 @@ Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, defini
 Marked.use(mustacheInjectBlock);
 Marked.use(MarkedSubSuperText());
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
-Marked.use(MarkedExtendedTables({interruptPatterns : tableTerminators}), MarkedGFMHeadingId({ globalSlugs: true }),
+Marked.use(MarkedExtendedTables({ interruptPatterns: tableTerminators }), MarkedGFMHeadingId({ globalSlugs: true }),
 	MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
 function cleanUrl(href) {
@@ -841,12 +852,12 @@ const processStyleTags = (string)=>{
 			obj[key.trim()] = value.trim();
 			return obj;
 		}, {}) || null;
-	const styles = tags?.length ? tags.reduce((styleObj, style) => {
-			const index = style.indexOf(':');
-			const [key, value] = [style.substring(0, index), style.substring(index + 1)];
-			styleObj[key.trim()] = value.replace(/"?([^"]*)"?/g, '$1').trim();
-			return styleObj;
-		}, {}) : null;
+	const styles = tags?.length ? tags.reduce((styleObj, style)=>{
+		const index = style.indexOf(':');
+		const [key, value] = [style.substring(0, index), style.substring(index + 1)];
+		styleObj[key.trim()] = value.replace(/"?([^"]*)"?/g, '$1').trim();
+		return styleObj;
+	}, {}) : null;
 
 	return {
 		id         : id,
@@ -862,8 +873,8 @@ const extractHTMLStyleTags = (htmlString)=>{
 	const id         = firstElementOnly.match(/id="([^"]*)"/)?.[1]    || null;
 	const classes    = firstElementOnly.match(/class="([^"]*)"/)?.[1] || null;
 	const styles     = firstElementOnly.match(/style="([^"]*)"/)?.[1]
-		?.split(';').reduce((styleObj, style) => {
-			if (style.trim() === '') return styleObj;
+		?.split(';').reduce((styleObj, style)=>{
+			if(style.trim() === '') return styleObj;
 			const index = style.indexOf(':');
 			const [key, value] = [style.substring(0, index), style.substring(index + 1)];
 			styleObj[key.trim()] = value.trim();
@@ -873,7 +884,7 @@ const extractHTMLStyleTags = (htmlString)=>{
 		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
 		.reduce((obj, attr)=>{
 			const index = attr.indexOf('=');
-			let [key, value] = [attr.substring(0, index), attr.substring(index + 1)];
+			const [key, value] = [attr.substring(0, index), attr.substring(index + 1)];
 			obj[key.trim()] = value.replace(/"/g, '');
 			return obj;
 		}, {}) || null;
@@ -886,7 +897,7 @@ const extractHTMLStyleTags = (htmlString)=>{
 	};
 };
 
-const mergeHTMLTags = (originalTags, newTags) => {
+const mergeHTMLTags = (originalTags, newTags)=>{
 	return {
 		id         : newTags.id || originalTags.id || null,
 		classes    : [originalTags.classes, newTags.classes].join(' ').trim() || null,
