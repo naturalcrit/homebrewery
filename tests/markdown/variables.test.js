@@ -479,8 +479,8 @@ describe('Custom Math Function Tests', ()=>{
 		expect(rendered).toBe('<p>Words: eighty thousand and eighty-five</p>');
 	});
 
-	it('Number to Words Test - Camelcase', function() {
-		const source = `[a]: 80085\n\nWords: $[toWordsCamel(a)]`;
+	it('Number to Words Test - Capitalized', function() {
+		const source = `[a]: 80085\n\nWords: $[toWordsCaps(a)]`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered).toBe('<p>Words: Eighty Thousand And Eighty-Five</p>');
 	});

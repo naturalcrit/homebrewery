@@ -95,7 +95,7 @@ mathParser.functions.toWordsUpper = function (a) {
 mathParser.functions.toWordsLower = function (a) {
 	return mathParser.functions.toWords(a).toLowerCase();
 };
-mathParser.functions.toWordsCamel = function (a) {
+mathParser.functions.toWordsCaps = function (a) {
 	const words = mathParser.functions.toWords(a).split(' ');
 	return words.map((word)=>{
 		return word.replace(/(?:^|\b|\s)(\w)/g, function(w, index) {
