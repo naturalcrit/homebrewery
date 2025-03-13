@@ -71,7 +71,7 @@ const corsOptions = {
 		];
 
 		if(isLocalEnvironment) {
-			allowedOrigins.push('http://localhost:8000', 'http://localhost:8010');
+			allowedOrigins.push('http://localhost:8000', 'http://localhost:8010', /^http:\/\/192\.168\.\d+\.\d+:\d+$/);
 		}
 
 		const herokuRegex = /^https:\/\/(?:homebrewery-pr-\d+\.herokuapp\.com|naturalcrit-pr-\d+\.herokuapp\.com)$/; // Matches any Heroku app
