@@ -482,6 +482,6 @@ describe('Custom Math Function Tests', ()=>{
 	it('Number to Words Test - Camelcase', function() {
 		const source = `[a]: 80085\n\nWords: $[toWordsCamel(a)]`;
 		const rendered = Markdown.render(source).trimReturns();
-		expect(rendered).toBe('<p>Words: Eighty Thousand And Eighty-five</p>');
+		expect(rendered).toBe('<p>Words: Eighty Thousand And Eighty-Five</p>');
 	});
 });

@@ -98,7 +98,9 @@ mathParser.functions.toWordsLower = function (a) {
 mathParser.functions.toWordsCamel = function (a) {
 	const words = mathParser.functions.toWords(a).split(' ');
 	return words.map((word)=>{
-		return _.capitalize(word);
+		return word.replace(/(?:^|\b|\s)(\w)/g, function(w, index) {
+			return index === 0 ? w.toLowerCase() : w.toUpperCase();
+		  });
 	}).join(' ');
 };
 
