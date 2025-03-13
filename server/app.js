@@ -71,7 +71,8 @@ const corsOptions = {
 		];
 
 		if(isLocalEnvironment) {
-			allowedOrigins.push('http://localhost:8000', 'http://localhost:8010', /^http:\/\/192\.168\.\d+\.\d+:\d+$/);
+			const localNetworkRegex = /^http:\/\/(localhost|127\.0\.0\.1|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+):\d+$/;
+			allowedOrigins.push(localNetworkRegex);
 		}
 
 		const herokuRegex = /^https:\/\/(?:homebrewery-pr-\d+\.herokuapp\.com|naturalcrit-pr-\d+\.herokuapp\.com)$/; // Matches any Heroku app
@@ -352,7 +353,7 @@ app.get('/user/:username', async (req, res, next)=>{
 app.put('/api/user/rename', async (req, res)=>{
 	const { username, newUsername } = req.body;
 	const ownAccount = req.account && (req.account.username == newUsername);
-	
+
 	if(!username || !newUsername)
 		return res.status(400).json({ error: 'Username and newUsername are required.' });
 	if(!ownAccount)
