@@ -411,3 +411,77 @@ describe('Regression Tests', ()=>{
 		expect(rendered).toBe('<table><thead><tr><th>title 1</th><th>title 2</th><th>title 3</th><th>title 4</th></tr></thead><tbody><tr><td><a href=\"bar\">foo</a></td><td>Ipsum</td><td>)</td><td>)</td></tr></tbody></table>');
 	});
 });
+
+describe('Custom Math Function Tests', ()=>{
+	it('Sign Test', function() {
+		const source = `[a]: 13\n\n[b]: -11\n\nPositive: $[sign(a)]\n\nNegative: $[sign(b)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Positive: +</p><p>Negative: -</p>');
+	});
+
+	it('Signed Test', function() {
+		const source = `[a]: 13\n\n[b]: -11\n\nPositive: $[signed(a)]\n\nNegative: $[signed(b)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Positive: +13</p><p>Negative: -11</p>');
+	});
+
+	it('Roman Numerals Test', function() {
+		const source = `[a]: 18\n\nRoman Numeral: $[toRomans(a)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Roman Numeral: XVIII</p>');
+	});
+
+	it('Roman Numerals Test - Uppercase', function() {
+		const source = `[a]: 18\n\nRoman Numeral: $[toRomansUpper(a)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Roman Numeral: XVIII</p>');
+	});
+
+	it('Roman Numerals Test - Lowercase', function() {
+		const source = `[a]: 18\n\nRoman Numeral: $[toRomansLower(a)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Roman Numeral: xviii</p>');
+	});
+
+	it('Number to Characters Test', function() {
+		const source = `[a]: 18\n\n[b]: 39\n\nCharacters: $[toChar(a)] $[toChar(b)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Characters: R AM</p>');
+	});
+
+	it('Number to Characters Test - Uppercase', function() {
+		const source = `[a]: 18\n\n[b]: 39\n\nCharacters: $[toCharUpper(a)] $[toCharUpper(b)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Characters: R AM</p>');
+	});
+
+	it('Number to Characters Test - Lowercase', function() {
+		const source = `[a]: 18\n\n[b]: 39\n\nCharacters: $[toCharLower(a)] $[toCharLower(b)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Characters: r am</p>');
+	});
+
+	it('Number to Words Test', function() {
+		const source = `[a]: 80085\n\nWords: $[toWords(a)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Words: eighty thousand and eighty-five</p>');
+	});
+
+	it('Number to Words Test - Uppercase', function() {
+		const source = `[a]: 80085\n\nWords: $[toWordsUpper(a)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Words: EIGHTY THOUSAND AND EIGHTY-FIVE</p>');
+	});
+
+	it('Number to Words Test - Lowercase', function() {
+		const source = `[a]: 80085\n\nWords: $[toWordsLower(a)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Words: eighty thousand and eighty-five</p>');
+	});
+
+	it('Number to Words Test - Camelcase', function() {
+		const source = `[a]: 80085\n\nWords: $[toWordsCamel(a)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Words: Eighty Thousand And Eighty-five</p>');
+	});
+});
