@@ -246,7 +246,6 @@ const NewPage = createClass({
 						onSnipChange={this.handleSnipChange}
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
-						snippets={this.props.snippets}
 						themeBundle={this.state.themeBundle}
 						onCursorPageChange={this.handleEditorCursorPageChange}
 						onViewPageChange={this.handleEditorViewPageChange}

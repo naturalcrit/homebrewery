@@ -108,7 +108,6 @@ const HomePage = createClass({
 					onTextChange={this.handleTextChange}
 					renderer={this.state.brew.renderer}
 					showEditButtons={false}
-					snippets={this.props.snippets}
 					themeBundle={this.state.themeBundle}
 					onCursorPageChange={this.handleEditorCursorPageChange}
 					onViewPageChange={this.handleEditorViewPageChange}

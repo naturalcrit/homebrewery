@@ -4,7 +4,7 @@ import request from '../client/homebrew/utils/request-middleware.js';
 
 // Convert the templates from a brew to a Snippets Structure.
 const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=null, full=true)=>{
-	const textSplit  = /^\\snippet /gm;
+	const textSplit  = /^\\snippet +/gm;
 	const mpAsSnippets = [];
 	// Snippets from Themes first.
 	if(themeBundleSnippets) {
@@ -15,7 +15,7 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 					const name = snips.trim().split('\n')[0];
 					if(name.length != 0) {
 						userSnippets.push({
-							name : name.slice('\snippets'.length),
+							name : name,
 							icon : '',
 							gen  : snips.slice(name.length + 1).trim(),
 						});
