@@ -17,7 +17,6 @@
 .useSansSerif() {
 	font-family : 'ScalySansRemake';
 	font-size   : 0.318cm;
-	line-height : 1.2em;
 	p,dl,ul,ol { line-height : 1.2em; }
 	ul, ol { padding-left : 1em; }
 	em { font-style : italic; }
@@ -546,8 +545,9 @@
 	columns    : 1;
 	text-align : center;
 	&::after { display : none; }
+	.frontCover { position : absolute; }
 	h1 {
-		margin-top     : 1.2cm;
+		margin-top     : 1.55cm;
 		margin-bottom  : 0;
 		font-family    : 'NodestoCapsCondensed';
 		font-size      : 2.245cm;
@@ -622,7 +622,6 @@
 		left       : 0;
 		filter     : drop-shadow(0 0 0.075cm black);
 		img {
-			width  : 100%;
 			height : 2cm;
 		}
 	}
@@ -634,8 +633,9 @@
 	columns    : 1;
 	text-align : center;
 	&::after { display	: none; }
+	.insideCover { position : absolute; }
 	h1 {
-		margin-top     : 1.2cm;
+		margin-top     : 1.55cm;
 		margin-bottom  : 0;
 		font-family    : 'NodestoCapsCondensed';
 		font-size      : 2.1cm;
@@ -667,7 +667,6 @@
 		left     : 0;
 		height   : 2cm;
 		img {
-			width  : 100%;
 			height : 2cm;
 		}
 	}
@@ -679,18 +678,17 @@
 	padding : 2.25cm 1.3cm 2cm 1.3cm;
 	color   : #FFFFFF;
 	columns : 1;
+	line-height : 1.4em;
 	&::after { display : none; }
 	.columnWrapper { width : 7.6cm; }
 	.backCover {
 		position          : absolute;
 		inset             : 0;
 		z-index           : -1;
-		width             : 11cm;
 		background-image  : @backCover;
 		background-repeat : no-repeat;
 		background-size   : contain;
 	}
-	.blank { height : 1.4em; }
 	h1 {
 		margin-bottom : 0.3cm;
 		font-family   : 'NodestoCapsCondensed';
@@ -737,7 +735,6 @@
 		img {
 			position : relative;
 			z-index  : 0;
-			width    : 100%;
 			height   : 1.5cm;
 		}
 		p {

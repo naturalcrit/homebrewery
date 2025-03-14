@@ -7,6 +7,7 @@ import MarkedExtendedTables     from 'marked-extended-tables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
+import MarkedSubSuperText from 'marked-subsuper-text';
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
 import diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
@@ -60,7 +61,8 @@ mathParser.functions.signed = function (a) {
 };
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
-renderer.html = function (html) {
+renderer.html = function (token) {
+	let html = token.text;
 	if(_.startsWith(_.trim(html), '<div') && _.endsWith(_.trim(html), '</div>')){
 		const openTag = html.substring(0, html.indexOf('>')+1);
 		html = html.substring(html.indexOf('>')+1);
@@ -71,18 +73,21 @@ renderer.html = function (html) {
 };
 
 // Don't wrap {{ Spans alone on a line, or {{ Divs in <p> tags
-renderer.paragraph = function(text){
+renderer.paragraph = function(token){
 	let match;
+	const text = this.parser.parseInline(token.tokens);
 	if(text.startsWith('<div') || text.startsWith('</div'))
 		return `${text}`;
-	else if(match = text.match(/(^|^.*?\n)<span class="inline-block(.*?<\/span>)$/)) {
+	else if(match = text.match(/(^|^.*?\n)<span class="inline-block(.*?<\/span>)$/))
 		return `${match[1].trim() ? `<p>${match[1]}</p>` : ''}<span class="inline-block${match[2]}`;
-	} else
+	else
 		return `<p>${text}</p>\n`;
 };
 
 //Fix local links in the Preview iFrame to link inside the frame
-renderer.link = function (href, title, text) {
+renderer.link = function (token) {
+	let {href, title, tokens} = token;
+	const text = this.parser.parseInline(tokens)
 	let self = false;
 	if(href[0] == '#') {
 		self = true;
@@ -104,8 +109,8 @@ renderer.link = function (href, title, text) {
 };
 
 // Expose `src` attribute as `--HB_src` to make the URL accessible via CSS
-renderer.image = function (href, title, text) {
-	href = cleanUrl(href);
+renderer.image = function (token) {
+	let {href, title, text} = token;
 	if(href === null)
 		return text;
 
@@ -333,35 +338,6 @@ const mustacheInjectBlock = {
 	}
 };
 
-const superSubScripts = {
-	name  : 'superSubScript',
-	level : 'inline',
-	start(src) { return src.match(/\^/m)?.index; },  // Hint to Marked.js to stop and check for a match
-	tokenizer(src, tokens) {
-		const superRegex = /^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^/m;
-		const subRegex   = /^\^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^\^/m;
-		let isSuper = false;
-		let match = subRegex.exec(src);
-		if(!match){
-			match = superRegex.exec(src);
-			if(match)
-				isSuper = true;
-		}
-		if(match?.length) {
-			return {
-				type   : 'superSubScript', // Should match "name" above
-				raw    : match[0],          // Text to consume from the source
-				tag    : isSuper ? 'sup' : 'sub',
-				tokens : this.lexer.inlineTokens(match[1])
-			};
-		}
-	},
-	renderer(token) {
-		return `<${token.tag}>${this.parser.parseInline(token.tokens)}</${token.tag}>`;
-	}
-};
-
-
 const justifiedParagraphClasses = [];
 justifiedParagraphClasses[2] = 'Left';
 justifiedParagraphClasses[4] = 'Right';
@@ -415,7 +391,7 @@ const forcedParagraphBreaks = {
 		}
 	},
 	renderer(token) {
-		return `<div class='blank'></div>`.repeat(token.length).concat('\n');
+		return `<br>\n`.repeat(token.length);
 	}
 };
 
@@ -796,10 +772,11 @@ const tableTerminators = [
 
 Marked.use(MarkedVariables());
 Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
-	nonbreakingSpaces, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+	nonbreakingSpaces, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
+Marked.use(MarkedSubSuperText());
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
-Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }),
+Marked.use(MarkedExtendedTables({interruptPatterns : tableTerminators}), MarkedGFMHeadingId({ globalSlugs: true }),
 	MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
 function cleanUrl(href) {

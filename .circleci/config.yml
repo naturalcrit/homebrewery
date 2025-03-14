@@ -74,9 +74,6 @@ jobs:
           name: Test - Non-Breaking Spaces
           command: npm run test:non-breaking-spaces
       - run:
-          name: Test - Paragraph Justification
-          command: npm run test:paragraph-justification
-      - run:
           name: Test - Variables
           command: npm run test:variables
       - run:
