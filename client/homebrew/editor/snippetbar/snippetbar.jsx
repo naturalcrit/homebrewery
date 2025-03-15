@@ -121,7 +121,7 @@ const Snippetbar = createClass({
 			}
 		}
 
-		const userSnippetsasJSON = brewSnippetsToJSON(this.props.brew.title, this.props.brew.snippets, this.props.themeBundle.snippets);
+		const userSnippetsasJSON = brewSnippetsToJSON(this.props.brew.title || 'New Document', this.props.brew.snippets, this.props.themeBundle.snippets);
 		compiledSnippets.push(userSnippetsasJSON);
 
 		return compiledSnippets;
