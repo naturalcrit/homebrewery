@@ -60,10 +60,9 @@ mathParser.functions.signed = function (a) {
 	return `${a}`;
 };
 
-// Make sure we normalize variable names consistantly.
+// Normalize variable names; trim edge spaces and shorten blocks of whitespace to 1 space
 const normalizeVarNames = (label)=>{
-	return label.trim()
-		.replace(/\s+/g, ' ');
+	return label.trim().replace(/\s+/g, ' ');
 };
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
@@ -670,8 +669,8 @@ function MarkedVariables() {
 							});
 					}
 					if(match[3]) { // Block Definition
-						const label   = match[4] ? normalizeVarNames(match[4]) : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-						const content = match[5] ? match[5].trim().replace(/[ \t]+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						const label   = match[4] ? normalizeVarNames(match[4]) : null;
+						const content = match[5] ? match[5].trim().replace(/[ \t]+/g, ' ') : null; // Normalize text content (except newlines for block-level content)
 
 						varsQueue.push(
 							{ type    : 'varDefBlock',
@@ -680,7 +679,7 @@ function MarkedVariables() {
 							});
 					}
 					if(match[6]) { // Block Call
-						const label = match[7] ? normalizeVarNames(match[7]) : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						const label = match[7] ? normalizeVarNames(match[7]) : null;
 
 						varsQueue.push(
 							{ type    : 'varCallBlock',
@@ -689,7 +688,7 @@ function MarkedVariables() {
 							});
 					}
 					if(match[8]) { // Inline Definition
-						const label = match[10] ? normalizeVarNames(match[10]) : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						const label = match[10] ? normalizeVarNames(match[10]) : null;
 						let content = match[11] || null;
 
 						// In case of nested (), find the correct matching end )
@@ -721,7 +720,7 @@ function MarkedVariables() {
 							});
 					}
 					if(match[12]) { // Inline Call
-						const label = match[13] ? normalizeVarNames(match[13]) : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						const label = match[13] ? normalizeVarNames(match[13]) : null;
 
 						varsQueue.push(
 							{ type    : 'varCallInline',
