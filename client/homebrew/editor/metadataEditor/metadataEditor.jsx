@@ -48,7 +48,7 @@ const MetadataEditor = createClass({
 
 	getInitialState : function(){
 		return {
-			showThumbnail     : true
+			showThumbnail : true
 		};
 	},
 
@@ -68,7 +68,7 @@ const MetadataEditor = createClass({
 		const inputRules = validations[name] ?? [];
 		const validationErr = inputRules.map((rule)=>rule(e.target.value)).filter(Boolean);
 
-		const debouncedReportValidity = _.debounce((target, errMessage) => {
+		const debouncedReportValidity = _.debounce((target, errMessage)=>{
 			callIfExists(target, 'setCustomValidity', errMessage);
 			callIfExists(target, 'reportValidity');
 		}, 300); // 300ms debounce delay, adjust as needed
@@ -87,7 +87,7 @@ const MetadataEditor = createClass({
 				return `- ${err}`;
 			}).join('\n');
 
-			
+
 			debouncedReportValidity(e.target, errMessage);
 			return false;
 		}
@@ -110,6 +110,7 @@ const MetadataEditor = createClass({
 		}
 		this.props.onChange(this.props.metadata, 'renderer');
 	},
+
 	handlePublish : function(val){
 		this.props.onChange({
 			...this.props.metadata,

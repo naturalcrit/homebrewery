@@ -1,5 +1,5 @@
 
-.noColumns(){
+.noColumns() {
 	column-count         : auto;
 	column-fill          : auto;
 	column-gap           : normal;
@@ -13,177 +13,151 @@
 	height               : auto;
 	min-height           : 279.4mm;
 	margin               : 20px auto;
-	contain				 : unset;
+	contain              : unset;
 }
-.listPage{
-	.content{
+.listPage {
+	.content {
 		z-index : 1;
-		.page{
+		.page {
 			.noColumns() !important; //Needed to override PHB Theme since this is on a lower @layer
-			&::after{
-				display : none;
-			}
-			.noBrews{
+			&::after { display : none; }
+			.noBrews {
 				margin     : 10px 0px;
 				font-size  : 1.3em;
 				font-style : italic;
 			}
 			.brewCollection {
-				h1:hover{
-					cursor: pointer;
-				}
+				h1:hover { cursor : pointer; }
 				.active::before, .inactive::before {
-					font-family: 'Font Awesome 5 Free';
-					font-weight: 900;
-					font-size: 0.6cm;
-					padding-right: 0.5em;
+					padding-right : 0.5em;
+					font-family   : 'Font Awesome 5 Free';
+					font-size     : 0.6cm;
+					font-weight   : 900;
 				}
-				.active {
-					color: var(--HB_Color_HeaderText);
-				}
-				.active::before {
-					content: '\f107';
-				}
-				.inactive {
-					color: #707070;
-				}
-				.inactive::before {
-					content: '\f105';
-				}
+				.active { color : var(--HB_Color_HeaderText); }
+				.active::before { content : '\f107'; }
+				.inactive { color : #707070; }
+				.inactive::before { content : '\f105'; }
 			}
 		}
 	}
 	.sort-container {
-		font-family        : 'Open Sans', sans-serif;
-		position           : sticky;
-		top                : 0;
-		left               : 0;
-		width              : 100%;
-		height             : 30px;
-		background-color   : #555;
-		border-top         : 1px solid #666;
-		border-bottom         : 1px solid #666;
-		color              : white;
-		text-align         : center;
-		z-index            : 1;
-		display            : flex;
-		justify-content    : center;
-		align-items        : baseline;
-		column-gap         : 15px;
-		row-gap            : 5px;
-		flex-wrap          : wrap;
-		h6{
-			text-transform : uppercase;
+		position              : sticky;
+		top                   : 0;
+		left                  : 0;
+		z-index               : 1;
+		display               : flex;
+		flex-wrap             : wrap;
+		row-gap               : 5px;
+		column-gap            : 15px;
+		align-items           : baseline;
+		justify-content       : center;
+		width                 : 100%;
+		height                : 30px;
+		font-family           : 'Open Sans', sans-serif;
+		color                 : white;
+		text-align            : center;
+		background-color      : #555555;
+		border-top            : 1px solid #666666;
+		border-bottom         : 1px solid #666666;
+		h6 {
 			font-family    : 'Open Sans', sans-serif;
 			font-size      : 11px;
 			font-weight    : bold;
+			text-transform : uppercase;
 		}
 		.sort-option {
-			display: flex;
-			align-items: center;
-			padding: 0 8px;
-			color: #ccc;
-			height: 100%;
+			display     : flex;
+			align-items : center;
+			height      : 100%;
+			padding     : 0 8px;
+			color       : #CCCCCC;
 
-			&:hover{
-				background-color : #444;
-			}
+			&:hover { background-color : #444444; }
 
 			&.active {
-			font-weight: bold;
-			color: #ddd;
-			background-color: #333;
+				font-weight      : bold;
+				color            : #DDDDDD;
+				background-color : #333333;
 
-			button {
-				color: white;
-				font-weight: 800;
-				height: 100%;
-				& + .sortDir {
-					padding-left: 5px;
+				button {
+					height      : 100%;
+					font-weight : 800;
+					color       : white;
+					& + .sortDir { padding-left : 5px; }
 				}
 			}
-		}
 
 		}
 		.filter-option {
-			margin-left: 20px;
-			background-color : transparent !important;
+			margin-left      : 20px;
 			font-size        : 11px;
-			i{
-				padding-right : 5px;
-			}
+			background-color : transparent !important;
+			i { padding-right : 5px; }
 		}
-		button{
-				background-color : transparent;
-				font-family      : 'Open Sans', sans-serif;
-				text-transform   : uppercase;
-				font-weight      : normal;
-				font-size        : 11px;
-				color            : #ccc;
-				padding          : 0;
-			}
+		button {
+			padding          : 0;
+			font-family      : 'Open Sans', sans-serif;
+			font-size        : 11px;
+			font-weight      : normal;
+			color            : #CCCCCC;
+			text-transform   : uppercase;
+			background-color : transparent;
+		}
 
 
 	}
 	.tags-container {
-		height             : 30px;
-		background-color   : #555;
-		border-top         : 1px solid #666;
-		border-bottom      : 1px solid #666;
-		color              : white;
 		display            : flex;
-		justify-content    : center;
-		align-items        : center;
-		column-gap         : 15px;
-		row-gap            : 5px;
 		flex-wrap          : wrap;
+		row-gap            : 5px;
+		column-gap         : 15px;
+		align-items        : center;
+		justify-content    : center;
+		height             : 30px;
+		color              : white;
+		background-color   : #555555;
+		border-top         : 1px solid #666666;
+		border-bottom      : 1px solid #666666;
 		span {
+			padding        : 3px;
 			font-family    : 'Open Sans', sans-serif;
 			font-size      : 11px;
 			font-weight    : bold;
+			color          : #DFDFDF;
+			cursor         : pointer;
 			border         : 1px solid;
 			border-radius  : 3px;
-			padding        : 3px;
-			cursor         : pointer;
-			color: #dfdfdf;
-			&:before {
-				font-family: 'Font Awesome 5 Free';
-				font-size: 12px;
-				margin-right: 3px;
+			&::before {
+				margin-right : 3px;
+				font-family  : 'Font Awesome 5 Free';
+				font-size    : 12px;
 			}
-			&:after {
-				content: '\f00d';
-				font-family: 'Font Awesome 5 Free';
-				font-size: 12px;
-				margin-left: 3px;
+			&::after {
+				margin-left : 3px;
+				font-family : 'Font Awesome 5 Free';
+				font-size   : 12px;
+				content     : '\f00d';
 			}
 			&.type {
-				background-color: #008000;
-				border-color: #00a000;
-				&:before{
-					content: '\f0ad';
-				}
+				background-color : #008000;
+				border-color     : #00A000;
+				&::before { content : '\f0ad'; }
 			}
 			&.group {
-				background-color: #505050;
-				border-color: #000000;
-				&:before{
-					content: '\f500';
-				}
+				background-color : #505050;
+				border-color     : #000000;
+				&::before { content : '\f500'; }
 			}
 			&.meta {
-				background-color: #000080;
-				border-color: #0000a0;
-				&:before{
-					content: '\f05a';
-				}
+				background-color : #000080;
+				border-color     : #0000A0;
+				&::before { content : '\f05a'; }
 			}
 			&.system {
-				background-color: #800000;
-				border-color: #a00000;
-				&:before{
-					content: '\f518';
-				}
+				background-color : #800000;
+				border-color     : #A00000;
+				&::before { content : '\f518'; }
 			}
 		}
 	}
