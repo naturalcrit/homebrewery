@@ -186,12 +186,14 @@ const BrewRenderer = (props)=>{
 		} else {
 			if(pageText.startsWith('\\page')) {
 				const firstLineTokens  = Markdown.marked.lexer(pageText.split('\n', 1)[0])[0].tokens;
-				const injectedTags = firstLineTokens.find((obj)=>obj.injectedTags !== undefined)?.injectedTags;
-				if(injectedTags) {
-					styles     = { ...styles, ...injectedTags.styles };
-					styles     = _.mapKeys(styles, (v, k)=>k.startsWith('--') ? k : _.camelCase(k)); // Convert CSS to camelCase for React
-					classes    = [classes, injectedTags.classes].join(' ').trim();
-					attributes = injectedTags.attributes;
+				if(firstLineTokens) { 		// Catch invalid/empty mustache blocks
+					const injectedTags = firstLineTokens.find((obj)=>obj.injectedTags !== undefined)?.injectedTags;
+					if(injectedTags) {
+						styles     = { ...styles, ...injectedTags.styles };
+						styles     = _.mapKeys(styles, (v, k)=>k.startsWith('--') ? k : _.camelCase(k)); // Convert CSS to camelCase for React
+						classes    = [classes, injectedTags.classes].join(' ').trim();
+						attributes = injectedTags.attributes;
+					}
 				}
 				pageText = pageText.includes('\n') ? pageText.substring(pageText.indexOf('\n') + 1) : ''; // Remove the \page line
 			}
