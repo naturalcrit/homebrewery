@@ -111,7 +111,6 @@ const Editor = createClass({
 		}
 	},
 
-
 	updateCurrentCursorPage : function(cursor) {
 		const lines = this.props.brew.text.split('\n').slice(1, cursor.line + 1);
 		const pageRegex = this.props.brew.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;

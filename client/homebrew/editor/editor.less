@@ -4,10 +4,8 @@
 	width     : 100%;
 	height    : 100%;
 	container : editor / inline-size;
-
 	.codeEditor {
 		height            : 100%;
-
 		.CodeMirror { height : 100%; }
 		.pageLine {
 			background : #33333328;
@@ -108,8 +106,6 @@
 
 }
 
-
 @container editor (width < 553px) {
-
-	.editor .codeEditor .CodeMirror { height : calc(100% - 51px) ; }
+	.editor .codeEditor .CodeMirror { height : calc(100% - 51px);}
 }
