@@ -1,11 +1,16 @@
 @import 'themes/codeMirror/customEditorStyles.less';
 .editor {
+	height:100%;
 	position  : relative;
 	width     : 100%;
 	container : editor / inline-size;
 
 	.codeEditor {
 		height            : 100%;
+
+		.CodeMirror {
+			height:100%;
+		}
 		.pageLine {
 			background : #33333328;
 			border-top : #333399 solid 1px;
@@ -103,4 +108,12 @@
 		span { padding : 2px 5px; }
 	}
 
+}
+
+
+@container editor (width < 553px) {
+
+	.editor .codeEditor .CodeMirror {
+		height:calc(100% - 51px) ;
+	}
 }
