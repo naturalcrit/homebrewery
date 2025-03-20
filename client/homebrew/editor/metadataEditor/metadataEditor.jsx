@@ -4,7 +4,6 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 import request from '../../utils/request-middleware.js';
-const Nav = require('naturalcrit/nav/nav.jsx');
 const Combobox = require('client/components/combobox.jsx');
 const TagInput = require('../tagInput/tagInput.jsx');
 
@@ -48,7 +47,7 @@ const MetadataEditor = createClass({
 
 	getInitialState : function(){
 		return {
-			showThumbnail     : true
+			showThumbnail : true
 		};
 	},
 
@@ -68,7 +67,7 @@ const MetadataEditor = createClass({
 		const inputRules = validations[name] ?? [];
 		const validationErr = inputRules.map((rule)=>rule(e.target.value)).filter(Boolean);
 
-		const debouncedReportValidity = _.debounce((target, errMessage) => {
+		const debouncedReportValidity = _.debounce((target, errMessage)=>{
 			callIfExists(target, 'setCustomValidity', errMessage);
 			callIfExists(target, 'reportValidity');
 		}, 300); // 300ms debounce delay, adjust as needed
@@ -87,7 +86,7 @@ const MetadataEditor = createClass({
 				return `- ${err}`;
 			}).join('\n');
 
-			
+
 			debouncedReportValidity(e.target, errMessage);
 			return false;
 		}
@@ -110,6 +109,7 @@ const MetadataEditor = createClass({
 		}
 		this.props.onChange(this.props.metadata, 'renderer');
 	},
+
 	handlePublish : function(val){
 		this.props.onChange({
 			...this.props.metadata,

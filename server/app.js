@@ -11,7 +11,6 @@ const version = packageJSON.version;
 import _       from 'lodash';
 import jwt     from 'jwt-simple';
 import express from 'express';
-import yaml    from 'js-yaml';
 import config  from './config.js';
 import fs      from 'fs-extra';
 
@@ -71,7 +70,8 @@ const corsOptions = {
 		];
 
 		if(isLocalEnvironment) {
-			allowedOrigins.push('http://localhost:8000', 'http://localhost:8010');
+			const localNetworkRegex = /^http:\/\/(localhost|127\.0\.0\.1|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+):\d+$/;
+			allowedOrigins.push(localNetworkRegex);
 		}
 
 		const herokuRegex = /^https:\/\/(?:homebrewery-pr-\d+\.herokuapp\.com|naturalcrit-pr-\d+\.herokuapp\.com)$/; // Matches any Heroku app
