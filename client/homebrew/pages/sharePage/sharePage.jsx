@@ -57,22 +57,28 @@ const SharePage = (props)=>{
 				setError(brewData);
 				return;
 			}
+
+			await fetchThemeBundle(
+				{ setState },
+				brewData.renderer,
+				brewData.theme
+			);
+
 			splitTextStyleAndMetadata(brewData);
 			setBrew(brewData);
 		};
 		fetchData();
 
 		document.addEventListener('keydown', handleControlKeys);
-		fetchThemeBundle(
-			{ setState },
-			brew.renderer,
-			brew.theme
-		);
 
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
 		};
 	}, []);
+
+	useEffect(()=>{
+		console.log(brew);
+	}, [brew]);
 
 	const processShareId = ()=>{
 		return brew.googleId && !brew.stubbed ? brew.googleId + brew.shareId : brew.shareId;
