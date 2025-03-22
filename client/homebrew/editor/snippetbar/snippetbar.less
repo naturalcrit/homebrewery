@@ -22,7 +22,7 @@
 		justify-content : flex-end;
 		min-width       : 225px;
 
-		&:only-child { margin-left : auto;min-width:unset;}
+		&:only-child {min-width   : unset; margin-left : auto;}
 
 		>div {
 			display         : flex;
@@ -39,9 +39,7 @@
 				text-align  : center;
 				cursor      : pointer;
 
-				&.editorTool:not(.active) {
-					cursor:not-allowed;
-				}
+				&.editorTool:not(.active) { cursor : not-allowed; }
 
 				&:hover,&.selected { background-color : #999999; }
 				&.text {
@@ -151,9 +149,9 @@
 			position         : absolute;
 			top              : 100%;
 			z-index          : 1000;
+			visibility       : hidden;
 			padding          : 0px;
 			margin-left      : -5px;
-			visibility       : hidden;
 			background-color : #DDDDDD;
 			.snippet {
 				position    : relative;

@@ -30,11 +30,11 @@ const BrewItem = ({
 		}
 
 		request.delete(`/api/${brew.googleId ?? ''}${brew.editId}`).send().end((err, res)=>{
-				if (err) reportError(err); else window.location.reload();
-        });
+			if(err) reportError(err); else window.location.reload();
+		});
 	}, [brew, reportError]);
 
-	const updateFilter = useCallback((type, term)=> updateListFilter(type, term), [updateListFilter]);
+	const updateFilter = useCallback((type, term)=>updateListFilter(type, term), [updateListFilter]);
 
 	const renderDeleteBrewLink = ()=>{
 		if(!brew.editId) return null;
