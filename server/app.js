@@ -1,4 +1,4 @@
-/*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 1000, "skipBlankLines": true, "skipComments": true}]*/
 // Set working directory to project root
 import { dirname }       from 'path';
 import { fileURLToPath } from 'url';
@@ -432,32 +432,40 @@ app.get('/new', asyncHandler(async(req, res, next)=>{
 	return next();
 }));
 
-//Share Page
-app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
-	const { brew } = req;
-	req.ogMeta = { ...defaultMetaTags,
-		title       : req.brew.title || 'Untitled Brew',
-		description : req.brew.description || 'No description.',
-		image       : req.brew.thumbnail || defaultMetaTags.image,
-		type        : 'article'
+app.get('/share/:id', (req, res, next)=>{
+	req.data = {
+		id   : req.params.id,
+		type : 'share'
 	};
-
-	// increase visitor view count, do not include visits by author(s)
-	if(!brew.authors.includes(req.account?.username)){
-		if(req.params.id.length > 12 && !brew._id) {
-			const googleId = brew.googleId;
-			const shareId = brew.shareId;
-			await GoogleActions.increaseView(googleId, shareId, 'share', brew)
-				.catch((err)=>{next(err);});
-		} else {
-			await HomebrewModel.increaseView({ shareId: brew.shareId });
-		}
-	};
-
-	brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
-	splitTextStyleAndMetadata(req.brew);
 	return next();
-}));
+});
+
+//Share Page
+// app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
+// 	const { brew } = req;
+// 	req.ogMeta = { ...defaultMetaTags,
+// 		title       : req.brew.title || 'Untitled Brew',
+// 		description : req.brew.description || 'No description.',
+// 		image       : req.brew.thumbnail || defaultMetaTags.image,
+// 		type        : 'article'
+// 	};
+
+// 	// increase visitor view count, do not include visits by author(s)
+// 	if(!brew.authors.includes(req.account?.username)){
+// 		if(req.params.id.length > 12 && !brew._id) {
+// 			const googleId = brew.googleId;
+// 			const shareId = brew.shareId;
+// 			await GoogleActions.increaseView(googleId, shareId, 'share', brew)
+// 				.catch((err)=>{next(err);});
+// 		} else {
+// 			await HomebrewModel.increaseView({ shareId: brew.shareId });
+// 		}
+// 	};
+
+// 	brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
+// 	splitTextStyleAndMetadata(req.brew);
+// 	return next();
+// }));
 
 //Account Page
 app.get('/account', asyncHandler(async (req, res, next)=>{
@@ -567,7 +575,8 @@ const renderPage = async (req, res)=>{
 		enable_themes : config.get('enable_themes'),
 		config        : configuration,
 		ogMeta        : req.ogMeta,
-		userThemes    : req.userThemes
+		userThemes    : req.userThemes,
+		data          : req.data || undefined
 	};
 	const title = req.brew ? req.brew.title : '';
 	const page = await templateFn('homebrew', title, props)
@@ -604,9 +613,6 @@ app.use(async (err, req, res, next)=>{
 		return;
 	}
 
-	// console.log('non-API error');
-	const status = err.status || err.code || 500;
-
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'Error Page',
 		description : 'Something went wrong!'
@@ -614,8 +620,6 @@ app.use(async (err, req, res, next)=>{
 	req.brew = {
 		...err,
 		title       : 'Error - Something went wrong!',
-		text        : err.errors?.map((error)=>{return error.message;}).join('\n\n') || err.message || 'Unknown error!',
-		status      : status,
 		HBErrorCode : err.HBErrorCode ?? '00',
 		pureError   : getPureError(err)
 	};
