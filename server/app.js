@@ -613,9 +613,6 @@ app.use(async (err, req, res, next)=>{
 		return;
 	}
 
-	// console.log('non-API error');
-	const status = err.status || err.code || 500;
-
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'Error Page',
 		description : 'Something went wrong!'
@@ -623,8 +620,6 @@ app.use(async (err, req, res, next)=>{
 	req.brew = {
 		...err,
 		title       : 'Error - Something went wrong!',
-		text        : err.errors?.map((error)=>{return error.message;}).join('\n\n') || err.message || 'Unknown error!',
-		status      : status,
 		HBErrorCode : err.HBErrorCode ?? '00',
 		pureError   : getPureError(err)
 	};
