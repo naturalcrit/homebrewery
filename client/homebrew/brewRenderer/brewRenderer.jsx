@@ -39,7 +39,7 @@ const BrewPage = (props)=>{
 		...props
 	};
 	const pageRef = useRef(null);
-	const cleanText = safeHTML(props.contents);
+	const cleanText = safeHTML(`${props.contents}\n<div class="columnSplit"></div>\n`);
 
 	useEffect(()=>{
 		if(!pageRef.current) return;
@@ -189,14 +189,13 @@ const BrewRenderer = (props)=>{
 				const injectedTags = firstLineTokens.find((obj)=>obj.injectedTags !== undefined)?.injectedTags;
 				if(injectedTags) {
 					styles     = { ...styles, ...injectedTags.styles };
-					styles     = _.mapKeys(styles, (v, k) => k.startsWith('--') ? k : _.camelCase(k)); // Convert CSS to camelCase for React
+					styles     = _.mapKeys(styles, (v, k)=>k.startsWith('--') ? k : _.camelCase(k)); // Convert CSS to camelCase for React
 					classes    = [classes, injectedTags.classes].join(' ').trim();
 					attributes = injectedTags.attributes;
 				}
 				pageText = pageText.includes('\n') ? pageText.substring(pageText.indexOf('\n') + 1) : ''; // Remove the \page line
 			}
 
-			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 			const html = Markdown.render(pageText, index);
 
 			return <BrewPage className={classes} index={index} key={index} contents={html} style={styles} attributes={attributes} onVisibilityChange={handlePageVisibilityChange} />;
