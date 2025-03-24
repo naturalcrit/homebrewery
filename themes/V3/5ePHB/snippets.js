@@ -12,6 +12,36 @@ const dedent             = require('dedent-tabs').default;
 
 
 module.exports = [
+	{
+		groupName : 'Style Editor',
+		icon      : 'fas fa-pencil-alt',
+		view      : 'style',
+		snippets  : [
+			{
+				name : 'Remove Drop Cap',
+				icon : 'fas fa-remove-format',
+				gen  : dedent`/* Removes Drop Caps */
+						.page h1+p:first-letter {
+							all: unset;
+						}\n\n
+						/* Removes Small-Caps in first line */
+						.page h1+p:first-line {
+							all: unset;
+						}`
+			},
+			{
+				name : 'Tweak Drop Cap',
+				icon : 'fas fa-sliders-h',
+				gen  : dedent`/* Drop Cap settings */
+						.page h1 + p::first-letter {
+							font-family: SolberaImitationRemake;
+							font-size: 3.5cm;
+							background-image: linear-gradient(-45deg, #322814, #998250, #322814);
+							line-height: 1em;
+						}\n\n`
+			},
+		]
+	},
 	/************************* PHB ********************/
 	{
 		groupName : 'PHB',

@@ -201,30 +201,7 @@ module.exports = [
 				name : 'Add Comment',
 				icon : 'fas fa-code',
 				gen  : '/* This is a comment that will not be rendered into your brew. */'
-			},
-			{
-				name : 'Remove Drop Cap',
-				icon : 'fas fa-remove-format',
-				gen  : dedent`/* Removes Drop Caps */
-						.page h1+p:first-letter {
-							all: unset;
-						}\n\n
-						/* Removes Small-Caps in first line */
-						.page h1+p:first-line {
-							all: unset;
-						}`
-			},
-			{
-				name : 'Tweak Drop Cap',
-				icon : 'fas fa-sliders-h',
-				gen  : dedent`/* Drop Cap settings */
-						.page h1 + p::first-letter {
-							font-family: SolberaImitationRemake;
-							font-size: 3.5cm;
-							background-image: linear-gradient(-45deg, #322814, #998250, #322814);
-							line-height: 1em;
-						}\n\n`
-			},
+			}
 		]
 	},
 
