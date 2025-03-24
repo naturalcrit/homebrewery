@@ -4,20 +4,22 @@ import request from '../client/homebrew/utils/request-middleware.js';
 
 // Convert the templates from a brew to a Snippets Structure.
 const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=null, full=true)=>{
-	const textSplit  = /^\\snippet +/gm;
+	const textSplit  = /^(\\snippet +.+\n)/gm;
 	const mpAsSnippets = [];
 	// Snippets from Themes first.
 	if(themeBundleSnippets) {
 		for (let themes of themeBundleSnippets) {
 			if(typeof themes !== 'string') {
 				const userSnippets = [];
-				for (let snips of themes.snippets.trim().split(textSplit)) {
-					const name = snips.trim().split('\n')[0];
-					if(name.length != 0) {
+				const snipSplit = themes.snippets.trim().split(textSplit).slice(1);
+				for (let snips = 0; snips < snipSplit.length; snips+=2) {
+					if(!snipSplit[snips].startsWith('\\snippet ')) break;
+					const snippetName = snipSplit[snips].split(/\\snippet +/)[1].split('\n')[0].trim();
+					if(snippetName.length != 0) {
 						userSnippets.push({
-							name : name,
+							name : snippetName,
 							icon : '',
-							gen  : snips.slice(name.length + 1).trim(),
+							gen  : snipSplit[snips + 1],
 						});
 					}
 				}
@@ -35,16 +37,14 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 	// Local Snippets
 	if(userBrewSnippets) {
 		const userSnippets = [];
-		for (let snips of userBrewSnippets.trim().split(textSplit)) {
-			let name = snips.split('\n')[0];
-			let justSnippet = snips.slice(name.length + 1);
-			if(justSnippet.slice(-1) === '\n') {
-				justSnippet = justSnippet.slice(0, -1);
-			}
-			if(name.length != 0) {
+		const snipSplit = userBrewSnippets.trim().split(textSplit).slice(1);
+		for (let snips = 0; snips < snipSplit.length; snips+=2) {
+			if(!snipSplit[snips].startsWith('\\snippet ')) break;
+			const snippetName = snipSplit[snips].split(/\\snippet +/)[1].split('\n')[0].trim();
+			if(snippetName.length != 0) {
 				const subSnip = {
-					name : name,
-					gen  : justSnippet,
+					name : snippetName,
+					gen  : snipSplit[snips + 1],
 				};
 				// if(full) subSnip.icon = '';
 				userSnippets.push(subSnip);
