@@ -487,6 +487,15 @@ module.exports = [
 		view      : 'style',
 		snippets  : [
 			{
+				name : 'US Letter Page Size',
+				icon : 'far fa-file',
+				gen  : dedent`/* US Letter Page Size */
+					.page {
+						width  : 215.9mm; /* 8.5in */
+						height : 279.4mm; /* 11in */
+					}\n\n`,
+			},
+			{
 				name : 'A3 Page Size',
 				icon : 'far fa-file',
 				gen  : dedent`/* A3 Page Size */

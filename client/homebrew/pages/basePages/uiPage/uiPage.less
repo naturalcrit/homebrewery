@@ -1,7 +1,7 @@
 .homebrew {
 	.uiPage.sitePage {
 		.content {
-			width            : ~"min(90vw, 1000px)";
+			width            : ~'min(90vw, 1000px)';
 			padding          : 2% 4%;
 			margin-top       : 25px;
 			margin-right     : auto;
@@ -17,19 +17,19 @@
 				border        : 2px solid black;
 				border-radius : 5px;
 				button {
+					width            : 125px;
+					margin-right     : 5px;
+					color            : black;
 					background-color : transparent;
 					border           : 1px solid black;
 					border-radius    : 5px;
-					width            : 125px;
-					color            : black;
-					margin-right     : 5px;
 					&.active {
-						background-color: #0007;
-						color: white;
-						&:before {
-							content: '\f00c';
-    						font-family: 'FONT AWESOME 5 FREE';
-    						margin-right: 5px;
+						color            : white;
+						background-color : #00000077;
+						&::before {
+							margin-right : 5px;
+							font-family  : 'FONT AWESOME 5 FREE';
+							content      : '\f00c';
 						}
 					}
 				}
