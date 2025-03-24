@@ -77,10 +77,6 @@ const SharePage = (props)=>{
 		};
 	}, []);
 
-	useEffect(()=>{
-		console.log(brew);
-	}, [brew]);
-
 	const processShareId = ()=>{
 		return brew.googleId && !brew.stubbed ? brew.googleId + brew.shareId : brew.shareId;
 	};
