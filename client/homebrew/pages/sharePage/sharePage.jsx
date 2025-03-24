@@ -58,13 +58,14 @@ const SharePage = (props)=>{
 				return;
 			}
 
+			splitTextStyleAndMetadata(brewData);
+
 			await fetchThemeBundle(
 				{ setState },
 				brewData.renderer,
 				brewData.theme
 			);
 
-			splitTextStyleAndMetadata(brewData);
 			setBrew(brewData);
 		};
 		fetchData();
