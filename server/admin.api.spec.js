@@ -1,6 +1,6 @@
 import supertest from 'supertest';
 import HBApp     from './app.js';
-import {model as NotificationModel } from './notifications.model.js';
+import { model as NotificationModel } from './notifications.model.js';
 
 
 // Mimic https responses to avoid being redirected all the time
@@ -16,7 +16,7 @@ describe('Tests for admin api', ()=>{
 			const testNotifications = ['a', 'b'];
 
 			jest.spyOn(NotificationModel, 'find')
-			.mockImplementationOnce(() => {
+			.mockImplementationOnce(()=>{
 				return { exec: jest.fn().mockResolvedValue(testNotifications) };
 			});
 
@@ -59,7 +59,7 @@ describe('Tests for admin api', ()=>{
 			expect(response.body).toEqual(savedNotification);
 		});
 
-		it('should handle error adding a notification without dismissKey', async () => {
+		it('should handle error adding a notification without dismissKey', async ()=>{
 			const inputNotification = {
 				title   : 'Test Notification',
 				text    : 'This is a test notification',
@@ -75,7 +75,7 @@ describe('Tests for admin api', ()=>{
 
 			const response = await app
 				.post('/admin/notification/add')
-				.set('Authorization', 'Basic ' + Buffer.from('admin:password3').toString('base64'))
+				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
 				.send(inputNotification);
 
 			expect(response.status).toBe(500);
@@ -86,14 +86,14 @@ describe('Tests for admin api', ()=>{
 			const dismissKey = 'testKey';
 
 			jest.spyOn(NotificationModel, 'findOneAndDelete')
-				.mockImplementationOnce((key) => {
+				.mockImplementationOnce((key)=>{
 					return { exec: jest.fn().mockResolvedValue(key) };
 				});
 			const response = await app
 				.delete(`/admin/notification/delete/${dismissKey}`)
 				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
 
-			expect(NotificationModel.findOneAndDelete).toHaveBeenCalledWith({'dismissKey': 'testKey'});
+			expect(NotificationModel.findOneAndDelete).toHaveBeenCalledWith({ 'dismissKey': 'testKey' });
 			expect(response.status).toBe(200);
 			expect(response.body).toEqual({ dismissKey: 'testKey' });
 		});
@@ -102,14 +102,14 @@ describe('Tests for admin api', ()=>{
 			const dismissKey = 'testKey';
 
 			jest.spyOn(NotificationModel, 'findOneAndDelete')
-				.mockImplementationOnce(() => {
+				.mockImplementationOnce(()=>{
 					return { exec: jest.fn().mockResolvedValue() };
 				});
 			const response = await app
 				.delete(`/admin/notification/delete/${dismissKey}`)
 				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
 
-			expect(NotificationModel.findOneAndDelete).toHaveBeenCalledWith({'dismissKey': 'testKey'});
+			expect(NotificationModel.findOneAndDelete).toHaveBeenCalledWith({ 'dismissKey': 'testKey' });
 			expect(response.status).toBe(500);
 			expect(response.body).toEqual({ message: 'Notification not found' });
 		});

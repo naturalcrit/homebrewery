@@ -94,7 +94,7 @@ const api = {
 			const accessMap = {
 				edit  : { editId: id },
 				share : { shareId: id },
-				admin : { $or : [{ editId: id }, { shareId: id }] }
+				admin : { $or: [{ editId: id }, { shareId: id }] }
 			};
 
 			// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine.
@@ -189,6 +189,7 @@ const api = {
 			`${text}`;
 		return text;
 	},
+
 	getGoodBrewTitle : (text)=>{
 		const tokens = Markdown.marked.lexer(text);
 		return (tokens.find((token)=>token.type === 'heading' || token.type === 'paragraph')?.text || 'No Title')
@@ -302,7 +303,7 @@ const api = {
 
 				currentTheme = req.brew;
 				splitTextStyleAndMetadata(currentTheme);
-				if(!currentTheme.tags.some(tag => tag === "meta:theme" || tag === "meta:Theme"))
+				if(!currentTheme.tags.some((tag)=>tag === 'meta:theme' || tag === 'meta:Theme'))
 					throw { brewId: req.params.id, name: 'Invalid Theme Selected', message: 'Selected theme does not have the meta:theme tag', status: 422, HBErrorCode: '10' };
 				themeName   ??= currentTheme.title;
 				themeAuthor ??= currentTheme.authors?.[0];

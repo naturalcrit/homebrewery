@@ -1,13 +1,11 @@
 
 
 .anchored-box {
-	position:absolute;
-	@supports (inset-block-start: anchor(bottom)){
-		inset-block-start: anchor(bottom);
+	position     : absolute;
+	visibility   : hidden;
+	justify-self : anchor-center;
+	@supports (inset-block-start: anchor(bottom)) {
+		inset-block-start : anchor(bottom);
 	}
-	justify-self: anchor-center;
-	visibility: hidden;
-	&.active {
-		visibility: visible;
-	}
+	&.active { visibility : visible; }
 }

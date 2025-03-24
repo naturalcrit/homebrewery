@@ -4,6 +4,8 @@ const WatercolorGen = require('./snippets/watercolor.gen.js');
 const ImageMaskGen  = require('./snippets/imageMask.gen.js');
 const FooterGen     = require('./snippets/footer.gen.js');
 const dedent        = require('dedent-tabs').default;
+const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
+const indexGen           = require('./snippets/index.gen.js');
 
 module.exports = [
 
@@ -141,7 +143,53 @@ module.exports = [
 						[Homebrewery.Naturalcrit.com](https://homebrewery.naturalcrit.com)
 						}}\n\n`;
 				},
-			}
+			},
+			{
+				name         : 'Table of Contents',
+				icon         : 'fas fa-book',
+				gen          : TableOfContentsGen,
+				experimental : true,
+				subsnippets  : [
+					{
+						name         : 'Table of Contents',
+						icon         : 'fas fa-book',
+						gen          : TableOfContentsGen,
+						experimental : true
+					},
+					{
+						name : 'Include in ToC up to H3',
+						icon : 'fas fa-dice-three',
+						gen  : dedent `\n{{tocDepthH3
+							}}\n`,
+
+					},
+					{
+						name : 'Include in ToC up to H4',
+						icon : 'fas fa-dice-four',
+						gen  : dedent `\n{{tocDepthH4
+							}}\n`,
+					},
+					{
+						name : 'Include in ToC up to H5',
+						icon : 'fas fa-dice-five',
+						gen  : dedent `\n{{tocDepthH5
+							}}\n`,
+					},
+					{
+						name : 'Include in ToC up to H6',
+						icon : 'fas fa-dice-six',
+						gen  : dedent `\n{{tocDepthH6
+							}}\n`,
+					}
+				]
+			},
+			{
+				name         : 'Index',
+				icon         : 'fas fa-bars',
+				gen          : indexGen,
+				experimental : true
+			},
+
 		]
 	},
 	{
@@ -153,7 +201,7 @@ module.exports = [
 				name : 'Add Comment',
 				icon : 'fas fa-code',
 				gen  : '/* This is a comment that will not be rendered into your brew. */'
-			},
+			}
 		]
 	},
 
@@ -438,6 +486,15 @@ module.exports = [
 		icon      : 'fas fa-print',
 		view      : 'style',
 		snippets  : [
+			{
+				name : 'US Letter Page Size',
+				icon : 'far fa-file',
+				gen  : dedent`/* US Letter Page Size */
+					.page {
+						width  : 215.9mm; /* 8.5in */
+						height : 279.4mm; /* 11in */
+					}\n\n`,
+			},
 			{
 				name : 'A3 Page Size',
 				icon : 'far fa-file',

@@ -60,6 +60,11 @@ mathParser.functions.signed = function (a) {
 	return `${a}`;
 };
 
+// Normalize variable names; trim edge spaces and shorten blocks of whitespace to 1 space
+const normalizeVarNames = (label)=>{
+	return label.trim().replace(/\s+/g, ' ');
+};
+
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (token) {
 	let html = token.text;
@@ -86,8 +91,8 @@ renderer.paragraph = function(token){
 
 //Fix local links in the Preview iFrame to link inside the frame
 renderer.link = function (token) {
-	let {href, title, tokens} = token;
-	const text = this.parser.parseInline(tokens)
+	let { href, title, tokens } = token;
+	const text = this.parser.parseInline(tokens);
 	let self = false;
 	if(href[0] == '#') {
 		self = true;
@@ -110,7 +115,7 @@ renderer.link = function (token) {
 
 // Expose `src` attribute as `--HB_src` to make the URL accessible via CSS
 renderer.image = function (token) {
-	let {href, title, text} = token;
+	const { href, title, text } = token;
 	if(href === null)
 		return text;
 
@@ -391,7 +396,7 @@ const forcedParagraphBreaks = {
 		}
 	},
 	renderer(token) {
-		return `<br>\n`.repeat(token.length);
+		return `<div class='blank'></div>\n`.repeat(token.length);
 	}
 };
 
@@ -509,7 +514,7 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 	const match = regex.exec(input);
 
 	const prefix = match[1];
-	const label  = match[2];
+	const label  = normalizeVarNames(match[2]); // Ensure the label name is normalized as it should be in the var stack.
 
 	//v=====--------------------< HANDLE MATH >-------------------=====v//
 	const mathRegex = /[a-z]+\(|[+\-*/^(),]/g;
@@ -664,8 +669,8 @@ function MarkedVariables() {
 							});
 					}
 					if(match[3]) { // Block Definition
-						const label   = match[4] ? match[4].trim().replace(/\s+/g, ' ')    : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-						const content = match[5] ? match[5].trim().replace(/[ \t]+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						const label   = match[4] ? normalizeVarNames(match[4]) : null;
+						const content = match[5] ? match[5].trim().replace(/[ \t]+/g, ' ') : null; // Normalize text content (except newlines for block-level content)
 
 						varsQueue.push(
 							{ type    : 'varDefBlock',
@@ -674,7 +679,7 @@ function MarkedVariables() {
 							});
 					}
 					if(match[6]) { // Block Call
-						const label = match[7] ? match[7].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						const label = match[7] ? normalizeVarNames(match[7]) : null;
 
 						varsQueue.push(
 							{ type    : 'varCallBlock',
@@ -683,7 +688,7 @@ function MarkedVariables() {
 							});
 					}
 					if(match[8]) { // Inline Definition
-						const label = match[10] ? match[10].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						const label = match[10] ? normalizeVarNames(match[10]) : null;
 						let content = match[11] || null;
 
 						// In case of nested (), find the correct matching end )
@@ -715,7 +720,7 @@ function MarkedVariables() {
 							});
 					}
 					if(match[12]) { // Inline Call
-						const label = match[13] ? match[13].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						const label = match[13] ? normalizeVarNames(match[13]) : null;
 
 						varsQueue.push(
 							{ type    : 'varCallInline',
@@ -776,7 +781,7 @@ Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, defini
 Marked.use(mustacheInjectBlock);
 Marked.use(MarkedSubSuperText());
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
-Marked.use(MarkedExtendedTables({interruptPatterns : tableTerminators}), MarkedGFMHeadingId({ globalSlugs: true }),
+Marked.use(MarkedExtendedTables({ interruptPatterns: tableTerminators }), MarkedGFMHeadingId({ globalSlugs: true }),
 	MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
 function cleanUrl(href) {
@@ -841,12 +846,12 @@ const processStyleTags = (string)=>{
 			obj[key.trim()] = value.trim();
 			return obj;
 		}, {}) || null;
-	const styles = tags?.length ? tags.reduce((styleObj, style) => {
-			const index = style.indexOf(':');
-			const [key, value] = [style.substring(0, index), style.substring(index + 1)];
-			styleObj[key.trim()] = value.replace(/"?([^"]*)"?/g, '$1').trim();
-			return styleObj;
-		}, {}) : null;
+	const styles = tags?.length ? tags.reduce((styleObj, style)=>{
+		const index = style.indexOf(':');
+		const [key, value] = [style.substring(0, index), style.substring(index + 1)];
+		styleObj[key.trim()] = value.replace(/"?([^"]*)"?/g, '$1').trim();
+		return styleObj;
+	}, {}) : null;
 
 	return {
 		id         : id,
@@ -862,8 +867,8 @@ const extractHTMLStyleTags = (htmlString)=>{
 	const id         = firstElementOnly.match(/id="([^"]*)"/)?.[1]    || null;
 	const classes    = firstElementOnly.match(/class="([^"]*)"/)?.[1] || null;
 	const styles     = firstElementOnly.match(/style="([^"]*)"/)?.[1]
-		?.split(';').reduce((styleObj, style) => {
-			if (style.trim() === '') return styleObj;
+		?.split(';').reduce((styleObj, style)=>{
+			if(style.trim() === '') return styleObj;
 			const index = style.indexOf(':');
 			const [key, value] = [style.substring(0, index), style.substring(index + 1)];
 			styleObj[key.trim()] = value.trim();
@@ -873,7 +878,7 @@ const extractHTMLStyleTags = (htmlString)=>{
 		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
 		.reduce((obj, attr)=>{
 			const index = attr.indexOf('=');
-			let [key, value] = [attr.substring(0, index), attr.substring(index + 1)];
+			const [key, value] = [attr.substring(0, index), attr.substring(index + 1)];
 			obj[key.trim()] = value.replace(/"/g, '');
 			return obj;
 		}, {}) || null;
@@ -886,7 +891,7 @@ const extractHTMLStyleTags = (htmlString)=>{
 	};
 };
 
-const mergeHTMLTags = (originalTags, newTags) => {
+const mergeHTMLTags = (originalTags, newTags)=>{
 	return {
 		id         : newTags.id || originalTags.id || null,
 		classes    : [originalTags.classes, newTags.classes].join(' ').trim() || null,
