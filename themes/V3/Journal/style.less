@@ -12,7 +12,7 @@
 }
 
 .useSansSerif() {
-	font-family : "PermanentMarker";
+	font-family : 'PermanentMarker';
 	font-size   : 0.3cm;
 	line-height : 1.2em;
 	color       : var(--HB_Color_Text2);
@@ -29,7 +29,7 @@
 
 .page {
 	padding             : 2.1cm 1.9cm 1.7cm 3.8cm;
-	background-image    : url("/assets/Journal/Background1.webp");
+	background-image    : url('/assets/Journal/Background1.webp');
 	background-repeat   : no-repeat;
 	background-size     : 200% 100%;
 	filter              : drop-shadow(1px 4px 14px black);
@@ -39,7 +39,7 @@
 		background-position : right;
 	}
 	&:nth-of-type(2) {
-		background-image    : url("/assets/Journal/Background2.webp"); //Only first page should show ribbon
+		background-image    : url('/assets/Journal/Background2.webp'); //Only first page should show ribbon
 	}
 
 	& .columnWrapper {
@@ -51,7 +51,7 @@
 // *            BASE
 	// *****************************/
 .page {
-	font-family : "ReenieBeanie";
+	font-family : 'ReenieBeanie';
 	font-size   : 0.53cm;
 	line-height : 0.8em;
 	color       : var(--HB_Color_Text);
@@ -71,7 +71,7 @@
 	// *           HEADERS
 	// *****************************/
 	h1,h2,h3,h4,h5 {
-		font-family   : "FrederickaTheGreat";
+		font-family   : 'FrederickaTheGreat';
 		font-weight   : unset;
 		color         : var(--HB_Color_HeaderText);
 	}
@@ -89,7 +89,7 @@
 			margin-right            : 0.1em;
 			margin-bottom           : -20px;
 			margin-left             : -40px;
-			font-family             : "FrederickaTheGreat";
+			font-family             : 'FrederickaTheGreat';
 			font-size               : 1.9em;
 			line-height             : 1em;
 		}
@@ -114,7 +114,7 @@
 		&:nth-of-type(3n) { transform : rotate(-1.5deg); }
 	}
 	h5 {
-		font-family   : "PermanentMarker";
+		font-family   : 'PermanentMarker';
 		font-size     : 0.4cm;
 		font-weight   : bold;
 		line-height   : 0.951em; //Font is misaligned. Shift up slightly
@@ -146,14 +146,14 @@
 	.note {
 		.useSansSerif();
 		padding             : 0.2cm;
-		background-image    : url("/assets/Journal/HashMarks.png"),
+		background-image    : url('/assets/Journal/HashMarks.png'),
 			linear-gradient(to bottom right, #FF000000, #A36A4E14, #41212100);
 		background-repeat   : no-repeat;
 		background-position : center;
 		background-size     : 120% 120%;
 		border-style        : solid;
 		border-width        : 1px;
-		border-image-source : url("/assets/Journal/Border1.png");
+		border-image-source : url('/assets/Journal/Border1.png');
 		border-image-slice  : 18 18 18 18;
 		border-image-width  : 6px 6px 6px 6px;
 		border-image-outset : 5px 5px 5px 5px;
@@ -173,7 +173,7 @@
 	.descriptive {
 		.useSansSerif();
 		padding             : 0.2cm;
-		background-image    : url("/assets/Journal/HashMarks.png"),
+		background-image    : url('/assets/Journal/HashMarks.png'),
 			linear-gradient(to bottom right, #FF000000, #41212114, #41212100);
 		background-repeat   : no-repeat;
 		background-position : center;
@@ -201,7 +201,7 @@
 	.artist {
 		position    : absolute;
 		width       : auto;
-		font-family : "WalterTurncoat";
+		font-family : 'WalterTurncoat';
 		font-size   : 0.27cm;
 		color       : var(--HB_Color_CaptionText);
 		text-align  : center;
@@ -211,7 +211,7 @@
 			text-indent : unset;
 		}
 		h5 {
-			font-family : "WalterTurncoat";
+			font-family : 'WalterTurncoat';
 			font-size   : 1.3em;
 		}
 		a {
@@ -309,7 +309,7 @@
 	.pageNumber {
 		right       : 3cm;
 		bottom      : 1.25cm;
-		font-family : "FrederickaTheGreat";
+		font-family : 'FrederickaTheGreat';
 		color       : var(--HB_Color_HeaderText);
 	}
 	.footnote {
@@ -370,7 +370,7 @@
 
 .page .spellList {
 	.useSansSerif();
-	font-family  : "PermanentMarker";
+	font-family  : 'PermanentMarker';
 	column-count : 2;
 	ul + h5 { margin-top : 15px; }
 	ul {
@@ -439,7 +439,7 @@
 			&:last-child {
 				width          : 1%;
 				padding-left   : 0.06cm; /* Spacing after dot leaders */
-				font-family    : "ReenieBeanie";
+				font-family    : 'ReenieBeanie';
 				font-size      : 0.34cm;
 				font-weight    : normal;
 				vertical-align : bottom; /* Keep page number bottom-aligned */
