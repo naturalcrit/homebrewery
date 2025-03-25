@@ -17,7 +17,7 @@ import fs      from 'fs-extra';
 const app = express();
 
 import api from './homebrew.api.js';
-const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = api;
+const { homebrewApi, getBrew, getMeta, getUsersBrewThemes, getCSS } = api;
 import adminApi                    from './admin.api.js';
 import vaultApi                    from './vault.api.js';
 import GoogleActions               from './googleActions.js';
@@ -429,14 +429,13 @@ app.get('/new', asyncHandler(async(req, res, next)=>{
 	return next();
 }));
 
-app.get('/share/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
+app.get('/share/:id', asyncHandler(getMeta), (req, res, next)=>{
 	req.ogMeta = { ...defaultMetaTags,
-		title       : req.brew.title || 'Untitled Brew',
-		description : req.brew.description || 'No description.',
-		image       : req.brew.thumbnail || defaultMetaTags.image,
+		title       : req.metaTagData.title || 'Untitled Brew',
+		description : req.metaTagData.description || 'No description.',
+		image       : req.metaTagData.thumbnail || defaultMetaTags.image,
 		type        : 'article'
 	};
-	req.brew = undefined;
 
 	req.data = {
 		id   : req.params.id,

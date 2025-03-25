@@ -166,6 +166,20 @@ const api = {
 		return res.status(200).send(brew.style);
 	},
 
+	getMeta : async (req, res, next)=>{
+		await api.getBrew('share', false)(req, res, ()=>{});
+
+		const metaTagData = {
+			title       : req.brew?.title || undefined,
+			description : req.brew?.description || undefined,
+			thumbnail   : req.brew?.thumbnail || undefined
+		};
+
+		req.brew = undefined;
+		req.metaTagData = metaTagData;
+		next();
+	},
+
 	mergeBrewText : (brew)=>{
 		let text = brew.text;
 		if(brew.style !== undefined) {
