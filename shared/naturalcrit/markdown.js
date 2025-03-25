@@ -381,11 +381,17 @@ const forcedParagraphBreaks = {
 	tokenizer(src, tokens) {
 		const regex  = /^(:+)(?:\n|$)/ym;
 		const match = regex.exec(src);
+
 		if(match?.length) {
+			let extraBreak = 0;
+			const lastToken = tokens[tokens.length - 1];
+			if(lastToken?.type == 'text')
+				extraBreak = 1;
+
 			return {
 				type   : 'hardBreaks', // Should match "name" above
 				raw    : match[0],     // Text to consume from the source
-				length : match[1].length,
+				length : match[1].length + extraBreak,
 				text   : ''
 			};
 		}
