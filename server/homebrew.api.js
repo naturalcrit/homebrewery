@@ -477,6 +477,11 @@ const api = {
 	},
 	returnBrew : async (req, res)=>{
 		return res.status(200).json(req.brew);
+	},
+	increaseBrewViewCount : async (req, res)=>{
+		const shareId = req.params.id;
+		await HomebrewModel.increaseView({ shareId: shareId });
+		return res.status(200).end();
 	}
 };
 
@@ -485,6 +490,7 @@ router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true
 router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
 router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/share/:id', checkClientVersion, asyncHandler(api.getBrew('share', false)), asyncHandler(api.returnBrew));
+router.put('/api/increaseView/:id', checkClientVersion, asyncHandler(api.increaseBrewViewCount));
 router.get('/api/remove/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
 
