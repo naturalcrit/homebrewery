@@ -51,6 +51,9 @@
 				&.meta {
 					.tooltipLeft('Properties');
 				}
+				&.snip {
+					.tooltipLeft('Snippets');
+				}
 				&.undo {
 					.tooltipLeft('Undo');
 					font-size : 0.75em;
@@ -226,6 +229,13 @@
 			}
 		}
 	}
+	.disabledSnippets {
+		color: grey;
+		cursor: not-allowed;
+
+		&:hover { background-color: #DDDDDD;}
+	}
+
 }
 @container editor (width < 553px) {
 	.snippetBar {
