@@ -478,8 +478,12 @@ const api = {
 	returnBrew : async (req, res)=>{
 		return res.status(200).json(req.brew);
 	},
-	increaseViewCount : async (req, res, next)=>{
+	shareAuthorChecks : async (req, res, next)=>{
+		// If logged in user is not an author:
 		if(!req.brew.authors.includes(req?.account?.username)){
+			// Remove Edit ID
+			req.brew.editId = undefined;
+			// Increase view count and lastViewed property
 			await HomebrewModel.increaseView({ shareId: req.params.id });
 		};
 		next();
@@ -490,7 +494,7 @@ router.post('/api', checkClientVersion, asyncHandler(api.newBrew));
 router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
 router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
 router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew));
-router.get('/api/share/:id', checkClientVersion, asyncHandler(api.getBrew('share', false)), asyncHandler(api.increaseViewCount), asyncHandler(api.returnBrew));
+router.get('/api/share/:id', checkClientVersion, asyncHandler(api.getBrew('share', false)), asyncHandler(api.shareAuthorChecks), asyncHandler(api.returnBrew));
 router.get('/api/remove/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
 
