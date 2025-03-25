@@ -381,7 +381,12 @@ const forcedParagraphBreaks = {
 	tokenizer(src, tokens) {
 		const regex  = /^(:+)(?:\n|$)/ym;
 		const match = regex.exec(src);
+
 		if(match?.length) {
+			const lastToken = tokens[tokens.length - 1];
+			if(lastToken?.type == 'text')
+				lastToken.type = 'paragraph';
+
 			return {
 				type   : 'hardBreaks', // Should match "name" above
 				raw    : match[0],     // Text to consume from the source
@@ -394,6 +399,14 @@ const forcedParagraphBreaks = {
 		return `<br>\n`.repeat(token.length);
 	}
 };
+
+const patchHardBreaks = {
+	walkTokens(token) {
+		if(token.type == 'list' || token.type == 'list_item') {
+			token.loose = true;
+		}
+	}
+}
 
 const nonbreakingSpaces = {
 	name  : 'nonbreakingSpaces',
@@ -774,6 +787,7 @@ Marked.use(MarkedVariables());
 Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
 	nonbreakingSpaces, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
+Marked.use(patchHardBreaks);
 Marked.use(MarkedSubSuperText());
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables({interruptPatterns : tableTerminators}), MarkedGFMHeadingId({ globalSlugs: true }),
