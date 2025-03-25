@@ -60,10 +60,6 @@ const SharePage = (props)=>{
 
 			splitTextStyleAndMetadata(brewData);
 
-			if(!brewData.authors.includes(global?.account?.username)){
-				await request.put(`/api/increaseView/${id}`);
-			};
-
 			await fetchThemeBundle(
 				{ setState },
 				brewData.renderer,
