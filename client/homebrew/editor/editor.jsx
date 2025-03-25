@@ -186,6 +186,7 @@ const Editor = createClass({
 
 					//reset custom line styles
 					codeMirror.removeLineClass(lineNumber, 'background', 'pageLine');
+					codeMirror.removeLineClass(lineNumber, 'background', 'snippetLine');
 					codeMirror.removeLineClass(lineNumber, 'text');
 					codeMirror.removeLineClass(lineNumber, 'wrap', 'sourceMoveFlash');
 
