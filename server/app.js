@@ -429,7 +429,15 @@ app.get('/new', asyncHandler(async(req, res, next)=>{
 	return next();
 }));
 
-app.get('/share/:id', (req, res, next)=>{
+app.get('/share/:id', asyncHandler(getBrew('share')), (req, res, next)=>{
+	req.ogMeta = { ...defaultMetaTags,
+		title       : req.brew.title || 'Untitled Brew',
+		description : req.brew.description || 'No description.',
+		image       : req.brew.thumbnail || defaultMetaTags.image,
+		type        : 'article'
+	};
+	req.brew = undefined;
+
 	req.data = {
 		id   : req.params.id,
 		type : 'share'
