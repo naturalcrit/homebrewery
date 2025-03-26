@@ -370,6 +370,22 @@ describe('Cross-page variables', ()=>{
 		const rendered = renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();
 		expect(rendered, `Input:\n${[source0, source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>two</p><p>one</p>\\page<p>two</p>');
 	});
+
+	it('Page numbering across pages', function() {
+		const source0 = `$[HB_pageNumber]\n\n`;
+		const source1 = `$[HB_pageNumber]\n\n`;
+		renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();	//Requires one full render of document before hoisting is picked up
+		const rendered = renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();
+		expect(rendered, `Input:\n${[source0, source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>1</p>\\page<p>2</p>');
+	});
+
+	it('Page numbering across pages - custom page number', function() {
+		const source0 = `[HB_pageNumber]:100\n\n$[HB_pageNumber]\n\n`;
+		const source1 = `$[HB_pageNumber]\n\n`;
+		renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();	//Requires one full render of document before hoisting is picked up
+		const rendered = renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();
+		expect(rendered, `Input:\n${[source0, source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>100</p>\\page<p>101</p>');
+	});
 });
 
 describe('Math function parameter handling', ()=>{
@@ -410,7 +426,7 @@ describe('Regression Tests', ()=>{
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered).toBe('<table><thead><tr><th>title 1</th><th>title 2</th><th>title 3</th><th>title 4</th></tr></thead><tbody><tr><td><a href=\"bar\">foo</a></td><td>Ipsum</td><td>)</td><td>)</td></tr></tbody></table>');
 	});
-  
+
 	it('Handle Extra spaces in image alt-text 1', function(){
 		const source='![ where is my image??](http://i.imgur.com/hMna6G0.png)';
 		const rendered = Markdown.render(source).trimReturns();
@@ -433,7 +449,7 @@ describe('Regression Tests', ()=>{
 		const source='![where is my image??](http://i.imgur.com/hMna6G0.png){height=20%,width=20%}';
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered).toBe('<p><img style=\"--HB_src:url(http://i.imgur.com/hMna6G0.png);\" src=\"http://i.imgur.com/hMna6G0.png\" alt=\"where is my image??\" height=\"20%\" width=\"20%\"></p>');
-	}); 
+	});
 });
 
 describe('Custom Math Function Tests', ()=>{
