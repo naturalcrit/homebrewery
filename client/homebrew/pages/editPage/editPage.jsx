@@ -7,16 +7,20 @@ const createClass = require('create-react-class');
 import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
 
-const NewBrew = require('../../navbar/newbrew.navitem.jsx');
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
+const { NavbarProvider } = require('../../navbar/navbarContext.jsx');
+const {Navbar, NavItem, NavSection, Dropdown} = require('../../navbar/navbar.jsx');
+
+const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
+// const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const PrintNavItem = require('../../navbar/print.navitem.jsx');
-const ErrorNavItem = require('../../navbar/error-navitem.jsx');
+// const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const VaultNavItem = require('../../navbar/vault.navitem.jsx');
+const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
+const PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
+
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
@@ -270,7 +274,7 @@ const EditPage = createClass({
 	},
 
 	renderGoogleDriveIcon : function(){
-		return <Nav.item className='googleDriveStorage' onClick={this.handleGoogleClick}>
+		return <NavItem className='googleDriveStorage' onClick={this.handleGoogleClick}>
 			<img src={googleDriveIcon} className={this.state.saveGoogle ? '' : 'inactive'} alt='Google Drive icon'/>
 
 			{this.state.confirmGoogleTransfer &&
@@ -313,14 +317,14 @@ const EditPage = createClass({
 					</div>
 				</div>
 			}
-		</Nav.item>;
+		</NavItem>;
 	},
 
 	renderSaveButton : function(){
 
 		// #1 - Currently saving, show SAVING
 		if(this.state.isSaving){
-			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
+			return <NavItem className='save' icon='fas fa-spinner fa-spin'>saving...</NavItem>;
 		}
 
 		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
@@ -329,25 +333,25 @@ const EditPage = createClass({
 			const elapsedTime = Math.round((new Date() - this.state.unsavedTime) / 1000 / 60);
 			const text = elapsedTime == 0 ? 'Autosave is OFF.' : `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
 
-			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
+			return <NavItem className='save error' icon='fas fa-exclamation-circle'>
 			Reminder...
 				<div className='errorContainer'>
 					{text}
 				</div>
-			</Nav.item>;
+			</NavItem>;
 		}
 
 		// #3 - Unsaved changes exist, click to save, show SAVE NOW
 		// Use trySave(true) instead of save() to use debounced save function
 		if(this.state.isPending){
-			return <Nav.item className='save' onClick={()=>this.trySave(true)} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
+			return <NavItem className='save' onClick={()=>this.trySave(true)} color='blue' icon='fas fa-save'>Save Now</NavItem>;
 		}
 		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
 		if(this.state.autoSave){
-			return <Nav.item className='save saved'>auto-saved.</Nav.item>;
+			return <NavItem className='save saved'>auto-saved.</NavItem>;
 		}
 		// DEFAULT - No unsaved changes, show SAVED
-		return <Nav.item className='save saved'>saved.</Nav.item>;
+		return <NavItem className='save saved'>saved.</NavItem>;
 	},
 
 	handleAutoSave : function(){
@@ -373,9 +377,9 @@ const EditPage = createClass({
 	},
 
 	renderAutoSaveButton : function(){
-		return <Nav.item onClick={this.handleAutoSave}>
+		return <NavItem onClick={this.handleAutoSave}>
 			Autosave <i className={this.state.autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
-		</Nav.item>;
+		</NavItem>;
 	},
 
 	processShareId : function() {
@@ -399,43 +403,68 @@ const EditPage = createClass({
 	renderNavbar : function(){
 		const shareLink = this.processShareId();
 
-		return <Navbar>
-			<Nav.section>
-				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
-			</Nav.section>
-
-			<Nav.section>
-				{this.renderGoogleDriveIcon()}
-				{this.state.error ?
-					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
-					<Nav.dropdown className='save-menu'>
+		return <NavbarProvider>
+			<Navbar>
+				<NavSection>
+					<MainMenu />
+					<Dropdown id='brewMenu' trigger='click' className='brew-menu'>
+						<NavItem color='purple'>Brew</NavItem>
+						<NewBrewItem />
 						{this.renderSaveButton()}
 						{this.renderAutoSaveButton()}
-					</Nav.dropdown>
-				}
-				<NewBrew />
-				<HelpNavItem/>
-				<Nav.dropdown>
-					<Nav.item color='teal' icon='fas fa-share-alt'>
-						share
-					</Nav.item>
-					<Nav.item color='blue' href={`/share/${shareLink}`}>
-						view
-					</Nav.item>
-					<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${shareLink}`);}}>
-						copy url
-					</Nav.item>
-					<Nav.item color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
-						post to reddit
-					</Nav.item>
-				</Nav.dropdown>
-				<PrintNavItem />
-				<VaultNavItem />
-				<RecentNavItem brew={this.state.brew} storageKey='edit' />
-				<Account />
-			</Nav.section>
+						<NavItem
+							href={`/user/${encodeURI(global.account.username)}`}
+							color='yellow'
+							icon='fas fa-beer'
+						>
+							brews
+						</NavItem>
+						<RecentNavItem brew={this.state.brew} storageKey='edit' />
+						<NavItem color='blue' href={`/share/${shareLink}`}>
+							view
+						</NavItem>
+						<NavItem color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${shareLink}`);}}>
+							copy url
+						</NavItem>
+						<NavItem color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
+							post to reddit
+						</NavItem>
+						<PrintNavItem />
+					</Dropdown>
+					<VaultNavItem />
+				</NavSection>
+				<NavSection>
+					<NavItem className='brewTitle'>{this.state.brew.title} {this.state.isPending && '[M]'}</NavItem>
+				</NavSection>
 
-		</Navbar>;
+				<NavSection>
+					<Account />
+					{/* {this.renderGoogleDriveIcon()}
+					{this.state.error ?
+						<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
+						
+					} */}
+					{/* <NewBrew />
+					<HelpNavItem/> */}
+					{/* <Dropdown>
+						<NavItem color='teal' icon='fas fa-share-alt'>
+							share
+						</NavItem>
+						<NavItem color='blue' href={`/share/${shareLink}`}>
+							view
+						</NavItem>
+						<NavItem color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${shareLink}`);}}>
+							copy url
+						</NavItem>
+						<NavItem color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
+							post to reddit
+						</NavItem>
+					</Dropdown> */}
+					
+				</NavSection>
+
+			</Navbar>;
+		</NavbarProvider>
 	},
 
 	render : function(){

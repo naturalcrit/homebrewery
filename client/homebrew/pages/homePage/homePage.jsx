@@ -6,13 +6,16 @@ import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
+const { NavbarProvider } = require('../../navbar/navbarContext.jsx');
+const {Navbar, NavSection, NavItem, Dropdown} = require('../../navbar/navbar.jsx');
 const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
+const PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
+const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
 const { fetchThemeBundle } = require('../../../../shared/helpers.js');
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
@@ -25,8 +28,7 @@ const HomePage = createClass({
 	displayName     : 'HomePage',
 	getDefaultProps : function() {
 		return {
-			brew : DEFAULT_BREW,
-			ver  : '0.0.0'
+			brew : DEFAULT_BREW
 		};
 	},
 	getInitialState : function() {
@@ -81,19 +83,33 @@ const HomePage = createClass({
 		}));
 	},
 	renderNavbar : function(){
-		return <Navbar ver={this.props.ver}>
-			<Nav.section>
-				{this.state.error ?
-					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
-					null
-				}
-				<NewBrewItem />
-				<HelpNavItem />
-				<VaultNavItem />
-				<RecentNavItem />
-				<AccountNavItem />
-			</Nav.section>
-		</Navbar>;
+		return <NavbarProvider>
+			<Navbar>
+				<NavSection>
+					<MainMenu />
+					<Dropdown id='brewMenu' trigger='click' className='brew-menu'>
+						<NavItem color='purple'>Brew</NavItem>
+						<NewBrewItem />
+						<NavItem
+							href={`/user/${encodeURI(global.account.username)}`}
+							color='yellow'
+							icon='fas fa-beer'
+						>
+							brews
+						</NavItem>
+						<RecentNavItem />
+					</Dropdown>
+					<VaultNavItem />
+				</NavSection>
+				<NavSection>
+					{this.state.error ?
+						<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
+						null
+					}
+					<AccountNavItem />
+				</NavSection>
+			</Navbar>
+		</NavbarProvider>;
 	},
 
 	render : function(){
