@@ -5,7 +5,7 @@ const cx = require('classnames');
 import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
+// const Nav = require('naturalcrit/nav/nav.jsx');
 const { NavbarProvider } = require('../../navbar/navbarContext.jsx');
 const {Navbar, NavSection, NavItem, Dropdown} = require('../../navbar/navbar.jsx');
 const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');

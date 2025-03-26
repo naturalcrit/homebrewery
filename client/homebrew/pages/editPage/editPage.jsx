@@ -463,7 +463,7 @@ const EditPage = createClass({
 					
 				</NavSection>
 
-			</Navbar>;
+			</Navbar>
 		</NavbarProvider>
 	},
 

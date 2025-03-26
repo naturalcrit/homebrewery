@@ -2,7 +2,7 @@ require('./uiPage.less');
 const React = require('react');
 const createClass = require('create-react-class');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
+// const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../../navbar/navbar.jsx');
 const NewBrewItem = require('../../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../../navbar/help.navitem.jsx');

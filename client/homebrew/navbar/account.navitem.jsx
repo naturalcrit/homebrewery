@@ -1,6 +1,5 @@
 const React = require('react');
 const createClass = require('create-react-class');
-// const Nav = require('naturalcrit/nav/nav.jsx');
 const {Dropdown, NavItem} = require('./navbar.jsx');
 const request = require('superagent');
 
