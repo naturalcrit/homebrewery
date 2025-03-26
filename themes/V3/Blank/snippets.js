@@ -41,7 +41,7 @@ module.exports = [
 					{
 						name : 'Variable Auto Page Number',
 						icon : 'fas fa-sort-numeric-down',
-						gen  : '{{pageNumber $[HB_PageNumber]}}\n'
+						gen  : '{{pageNumber $[HB_pageNumber]}}\n'
 					},
 					{
 						name : 'Skip Page Number Increment this Page',
