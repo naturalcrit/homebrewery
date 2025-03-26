@@ -1,6 +1,7 @@
 const React = require('react');
 const createClass = require('create-react-class');
-const Nav = require('naturalcrit/nav/nav.jsx');
+// const Nav = require('naturalcrit/nav/nav.jsx');
+const {Dropdown, NavItem} = require('./navbar.jsx');
 const request = require('superagent');
 
 const Account = createClass({
@@ -61,53 +62,46 @@ const Account = createClass({
 	render : function(){
 		//  Logged in
 		if(global.account){
-			return <Nav.dropdown>
-				<Nav.item
+			return <Dropdown id='accountMenu' trigger='click'>
+				<NavItem
 					className='account username'
 					color='orange'
 					icon='fas fa-user'
 				>
 					{global.account.username}
-				</Nav.item>
-				<Nav.item
-					href={`/user/${encodeURI(global.account.username)}`}
-					color='yellow'
-					icon='fas fa-beer'
-				>
-					brews
-				</Nav.item>
-				<Nav.item
+				</NavItem>
+				<NavItem
 					className='account'
 					color='orange'
 					icon='fas fa-user'
 					href='/account'
 				>
 					account
-				</Nav.item>
-				<Nav.item
+				</NavItem>
+				<NavItem
 					className='logout'
 					color='red'
 					icon='fas fa-power-off'
 					onClick={this.handleLogout}
 				>
 					logout
-				</Nav.item>
-			</Nav.dropdown>;
+				</NavItem>
+			</Dropdown>;
 		}
 
 		//  Logged out
 		//  LOCAL ONLY
 		if(global.config.local) {
-			return <Nav.item color='teal' icon='fas fa-sign-in-alt' onClick={this.localLogin}>
+			return <NavItem color='teal' icon='fas fa-sign-in-alt' onClick={this.localLogin}>
 				login
-			</Nav.item>;
+			</NavItem>;
 		};
 
 		// Logged out
 		// Production site
-		return <Nav.item href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`} color='teal' icon='fas fa-sign-in-alt'>
+		return <NavItem href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`} color='teal' icon='fas fa-sign-in-alt'>
 			login
-		</Nav.item>;
+		</NavItem>;
 	}
 });
 
