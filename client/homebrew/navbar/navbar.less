@@ -29,11 +29,12 @@
 	display          : flex;
 	justify-content  : space-between;
 	background-color : #333333;
+
+	
 	
 	.navSection {
 		display     : flex;
 		align-items : center;
-		&:last-child .navItem { border-left : 1px solid #666666; }
 
 		&:has(.brewTitle) {
 			flex-grow : 1;
@@ -41,33 +42,26 @@
 		}
 	}
 	// "NaturalCrit" logo
-	.navLogo {
+	.homebrewLogo {
 		display         : block;
 		margin-top      : 0px;
 		margin-right    : 8px;
-		margin-left     : 8px;
+		margin-left     : 16px;
 		color           : white;
 		text-decoration : none;
 		&:hover {
 			.name { color : @orange; }
 			svg { fill : @orange; }
 		}
+		
 		svg {
-			height       : 13px;
-			margin-right : 0.2em;
-			cursor       : pointer;
-			fill         : white;
-		}
-		span.name {
-			font-family : 'CodeLight';
-			font-size   : 15px;
-			span.crit { font-family : 'CodeBold'; }
-			small {
-				font-family    : 'Open Sans';
-				font-size      : 0.3em;
-				font-weight    : 800;
-				text-transform : uppercase;
-			}
+			height: 43px;
+			margin-right: .2em;
+			cursor: pointer;
+			fill: #fff5;
+			position: absolute;
+			left: -20px;
+			bottom: -3px;
 		}
 	}
 	.navItem {
@@ -86,14 +80,15 @@
 		text-decoration  : none;
 		cursor           : pointer;
 		background-color : #333333;
+		&.disabled {
+			background-color: @greyLight;
+			cursor: not-allowed;
+		};
 		i {
-			float       : right;
-			margin-left : 5px;
+			margin-right : 5px;
 			font-size   : 13px;
 		}
 		&.patreon {
-			border-right : 1px solid #666666;
-			border-left  : 1px solid #666666;
 			&:hover i { color : red; }
 			i {
 				color              : pink;
@@ -115,6 +110,17 @@
 			white-space      : nowrap;
 			background-color : transparent;		
 		}
+		span.name {
+			font-family : 'CodeLight';
+			font-size: 1.1em;
+			span.crit { font-family : 'CodeBold'; }
+			small {
+				font-family    : 'Open Sans';
+				font-size      : 0.3em;
+				font-weight    : 800;
+				text-transform : uppercase;
+			}
+		}
 
 		// "The Homebrewery" logo
 		&.homebrewLogo {
@@ -127,6 +133,7 @@
 				margin-bottom : -2px;
 			}
 			&:hover { color : @blue; }
+			
 		}
 		&.metadata {
 			position    : relative;
@@ -223,7 +230,6 @@
 			}
 		}
 		&.account {
-			min-width : 100px;
 			&.username { text-transform : none;}
 		}
 	}
@@ -234,104 +240,129 @@
 		.navDropdown {
 			position       : absolute;
 			//top: 28px;
-			right          : 0px;
+			// right          : 0px;
 			z-index        : 10000;
 			display        : flex;
 			flex-direction : column;
-			align-items    : flex-end;
+			// align-items    : flex-end;
 			width          : max-content;
 			min-width      : 100%;
 			max-height     : calc(100vh - 28px);
 			overflow       : hidden auto;
+
+			/* ===== Scrollbar CSS ===== */
+			/* Firefox */
+			scrollbar-width: thin;
+			scrollbar-color: #aaa #333;
+			
+			/* Chrome, Edge, and Safari */
+			::-webkit-scrollbar {
+				width: 12px;
+			}
+			
+			::-webkit-scrollbar-track {
+				background: #333;
+			}
+			
+			::-webkit-scrollbar-thumb {
+				background-color: #aaa;
+				border-radius: 10px;
+			}
+
 			.navItem {
 				position           : relative;
-				display            : flex;
+				display: grid;
+				grid-template-columns: 25px auto 25px;
+				grid-template-rows: 1fr;
+				gap: 0px 0px;
+				grid-auto-flow: row;
+				grid-template-areas:
+					"icon name caret";
 				align-items        : center;
-				justify-content    : space-between;
+				justify-content    : start;
 				width              : 100%;
 				border             : 1px solid #888888;
 				border-bottom      : 0;
 				animation-name     : glideDropDown;
 				animation-duration : 0.4s;
-			}
-		}
-		&.recent {
-			position : relative;
-			.navDropdown .navItem {
-				#backgroundColorsHover;
-				.animate(background-color);
-				position         : relative;
-				box-sizing       : border-box;
-				display          : block;
-				max-width        : 15em;
-				max-height       : ~'calc(100vh - 28px)';			
-				padding          : 8px 5px 13px;
-				overflow         : hidden auto;
-				color            : white;
-				text-decoration  : none;
-				scrollbar-color  : #666666 #333333;
-				scrollbar-width  : thin;
-				background-color : #333333;
-				border-top       : 1px solid #888888;
-				.clear {
-					position         : absolute;
-					top              : 50%;
-					right            : 0;
-					display          : none;
-					width            : 20px;
-					height           : 100%;
-					background-color : #333333;
-					border-radius    : 3px;
-					opacity          : 70%;
-					transform        : translateY(-50%);
-					&:hover { opacity : 100%; }
-					i {
-						width      : 100%;
-						height     : 100%;
-						margin     : 0;
-						font-size  : 10px;
-						text-align : center;
-					}
+				i {
+					grid-area: icon;
 				}
-				&:hover {
-					background-color : @blue;
+				span {
+					grid-area: name;
+				}
+				&:is(.navDropdownContainer.recent .navItem)  {
+					position: relative;
+					display: block;
+					&:not(:first-child) {width:15em;}
 					.clear {
-						display       : grid;
-						place-content : center;
+						position         : absolute;
+						top              : 50%;
+						right            : 0;
+						display          : none;
+						width            : 20px;
+						height           : 100%;
+						background-color : #333333;
+						border-radius    : 3px;
+						opacity          : 70%;
+						transform        : translateY(-50%);
+						&:hover { opacity : 100%; }
+						i {
+							width      : 100%;
+							height     : 100%;
+							margin     : 0;
+							font-size  : 10px;
+							text-align : center;
+						}
+					}
+					&:hover {
+						background-color : @blue;
+						.clear {
+							display       : grid;
+							place-content : center;
+						}
+					}
+					.title {
+						display       : inline-block;
+						width         : 100%;
+						overflow      : hidden auto;
+						text-overflow : ellipsis;
+						white-space   : nowrap;
+					}
+					.time {
+						position  : absolute;
+						right     : 2px;
+						bottom    : 2px;
+						font-size : 0.7em;
+						color     : #888888;
+					}
+					&.header {
+						box-sizing       : border-box;
+						display          : block;
+						padding          : 5px 0;
+						color            : #BBBBBB;
+						text-align       : center;
+						background-color : #333333;
+						border-top       : 1px solid #888888;
+						&:nth-of-type(1) { background-color : darken(@teal, 20%); }
+						&:nth-of-type(2) { background-color : darken(@purple, 30%); }
 					}
 				}
-				.title {
-					display       : inline-block;
-					width         : 100%;
-					overflow      : hidden auto;
-					text-overflow : ellipsis;
-					white-space   : nowrap;
-				}
-				.time {
-					position  : absolute;
-					right     : 2px;
-					bottom    : 2px;
-					font-size : 0.7em;
-					color     : #888888;
-				}
-				&.header {
-					box-sizing       : border-box;
-					display          : block;
-					padding          : 5px 0;
-					color            : #BBBBBB;
-					text-align       : center;
-					background-color : #333333;
-					border-top       : 1px solid #888888;
-					&:nth-of-type(1) { background-color : darken(@teal, 20%); }
-					&:nth-of-type(2) { background-color : darken(@purple, 30%); }
-				}
+				
+			}
+			
+			.navDropdown {
+				position : relative;
+				height   : 100%;
+				padding-left: 5px;
+				overflow-y:hidden;
 			}
 		}
 	}
 }
 
 // this should likely be refactored into .navDropdownContainer
-.save-menu {
+.brew-menu {
 	.dropdown { z-index : 1000; }
 	.navItem i.fa-power-off {
 		color : red;
