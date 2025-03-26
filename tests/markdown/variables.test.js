@@ -371,7 +371,7 @@ describe('Cross-page variables', ()=>{
 		expect(rendered, `Input:\n${[source0, source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>two</p><p>one</p>\\page<p>two</p>');
 	});
 
-	it('Page numbering across pages', function() {
+	it('Page numbering across pages : default', function() {
 		const source0 = `$[HB_pageNumber]\n\n`;
 		const source1 = `$[HB_pageNumber]\n\n`;
 		renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();	//Requires one full render of document before hoisting is picked up
@@ -379,12 +379,20 @@ describe('Cross-page variables', ()=>{
 		expect(rendered, `Input:\n${[source0, source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>1</p>\\page<p>2</p>');
 	});
 
-	it('Page numbering across pages - custom page number', function() {
+	it('Page numbering across pages : custom page number (Number)', function() {
 		const source0 = `[HB_pageNumber]:100\n\n$[HB_pageNumber]\n\n`;
 		const source1 = `$[HB_pageNumber]\n\n`;
 		renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();	//Requires one full render of document before hoisting is picked up
 		const rendered = renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();
 		expect(rendered, `Input:\n${[source0, source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>100</p>\\page<p>101</p>');
+	});
+
+	it('Page numbering across pages : custom page number (NaN)', function() {
+		const source0 = `[HB_pageNumber]:a\n\n$[HB_pageNumber]\n\n`;
+		const source1 = `$[HB_pageNumber]\n\n`;
+		renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();	//Requires one full render of document before hoisting is picked up
+		const rendered = renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();
+		expect(rendered, `Input:\n${[source0, source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>a</p>\\page<p>a</p>');
 	});
 });
 
