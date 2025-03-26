@@ -1,13 +1,15 @@
 const React = require('react');
-const Nav = require('naturalcrit/nav/nav.jsx');
+const { NavItem } = require('./navbar.jsx');
 
-module.exports = function(props){
-	return <Nav.item
+const PatreonNavItem = ({...props})=>{
+	return <NavItem
 		className='patreon'
 		newTab={true}
 		href='https://www.patreon.com/NaturalCrit'
 		color='green'
 		icon='fas fa-heart'>
-		help out
-	</Nav.item>;
+		Patreon
+	</NavItem>;
 };
+
+module.exports = PatreonNavItem;
