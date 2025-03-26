@@ -1,43 +1,39 @@
 @import (multiple, less) 'shared/naturalcrit/styles/reset.less';
 
 .brewRenderer {
+	height        : 100vh;
+	padding-top   : 60px;
 	overflow-y    : scroll;
 	will-change   : transform;
-	padding-top   : 60px;
-	height        : 100vh;
-	&:has(.facing, .flow) {
-		padding : 60px 30px;
-	}
-	&.deployment {
-		background-color: darkred;
-	}
+	&:has(.facing, .flow) { padding : 60px 30px; }
+	&.deployment { background-color : darkred; }
 	:where(.pages) {
 		&.facing {
-			display: grid; 
-			grid-template-columns: repeat(2, auto); 
-			grid-template-rows: repeat(3, auto); 
-			gap: 10px 10px; 
-			justify-content: safe center;
+			display               : grid; 
+			grid-template-rows    : repeat(3, auto); 
+			grid-template-columns : repeat(2, auto); 
+			gap                   : 10px 10px; 
+			justify-content       : safe center;
 			&.recto .page:first-child {
 				// sets first page on 'right' ('recto') of the preview, as if for a Cover page.  
 				// todo: add a checkbox to toggle this setting
-				grid-column-start: 2; 
+				grid-column-start : 2; 
 			}
 			& :where(.page) {
-				margin-left: unset !important;
-				margin-right: unset !important;
+				margin-right : unset !important;
+				margin-left  : unset !important;
 			}
 		}
 
 		&.flow {
-			display: flex;
-			flex-wrap: wrap;
-			gap: 10px;
-			justify-content: safe center;
+			display         : flex;
+			flex-wrap       : wrap;
+			gap             : 10px;
+			justify-content : safe center;
 			& :where(.page) {
-				flex: 0 0 auto;
-				margin-left: unset !important;
-				margin-right: unset !important;
+				flex         : 0 0 auto;
+				margin-right : unset !important;
+				margin-left  : unset !important;
 			}
 
 		}
@@ -50,9 +46,7 @@
 			margin-left   : auto;
 			box-shadow    : 1px 4px 14px #000000;
 		}
-		*[id] {
-			scroll-margin-top:100px;
-		}
+		*[id] { scroll-margin-top : 100px; }
 	}
 	&::-webkit-scrollbar {
 		width : 20px;
@@ -79,11 +73,9 @@
 		overflow-y  : unset;
 		.pages {
 			margin : 0px;
-			zoom: 100% !important;
+			zoom   : 100% !important;
 			& > .page { box-shadow : unset; }
 		}
 	}
-	.headerNav {
-		visibility: hidden;
-	}
+	.headerNav { visibility : hidden; }
 }

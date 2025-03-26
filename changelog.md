@@ -88,6 +88,20 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Tuesday 03/18/2025 - v3.18.1
+
+{{taskList
+##### G-Ambatte
+* [x] Revert colon rendering from br elements to blank divs
+
+##### 5e-Cleric
+* [x] Allow for local connections within a same network when running a local version
+Fixes issue [#4094](https://github.com/naturalcrit/homebrewery/issues/4094)
+
+* [x] Add US Letter size page snippet
+Fixes issue [#3893](https://github.com/naturalcrit/homebrewery/issues/3893)
+}}
+
 ### Monday 03/10/2025 - v3.18.0
 
 {{taskList

@@ -1,148 +1,129 @@
 
-.brewItem{
+.brewItem {
 	position                    : relative;
+	box-sizing                  : border-box;
 	display                     : inline-block;
-	vertical-align              : top;
-	box-sizing                  : border-box;
-	box-sizing                  : border-box;
-	overflow                    : hidden;
 	width                       : 48%;
 	min-height                  : 105px;
-	margin-right                : 15px;
-	margin-bottom               : 15px;
 	padding                     : 5px 15px 2px 6px;
 	padding-right               : 15px;
-	border                      : 1px solid #c9ad6a;
+	margin-right                : 15px;
+	margin-bottom               : 15px;
+	overflow                    : hidden;
+	vertical-align              : top;
+	background-color            : #CAB2802E;
+	border                      : 1px solid #C9AD6A;
 	border-radius               : 5px;
+	box-shadow                  : 0px 4px 5px 0px #333333;
+	break-inside                : avoid;
 	-webkit-column-break-inside : avoid;
 	page-break-inside           : avoid;
-	break-inside                : avoid;
-	box-shadow                  : 0px 4px 5px 0px #333;
-	background-color            : #cab2802e;
-	.thumbnail  {
-		position: absolute;
-		width: 150px;
-		height: 100%;
-		top: 0;
-		right: 0;
-		z-index: -1;
-		background-size: contain;
-		background-repeat: no-repeat;
-		background-position: right top;
-		mask-image: linear-gradient(80deg, #0000 20%, #050 40%);
-		-webkit-mask-image: linear-gradient(80deg, #0000 20%, #050 40%);
-		opacity: 50%;
+	.thumbnail {
+		position            : absolute;
+		top                 : 0;
+		right               : 0;
+		z-index             : -1;
+		width               : 150px;
+		height              : 100%;
+		background-repeat   : no-repeat;
+		background-position : right top;
+		background-size     : contain;
+		opacity             : 50%;
+		-webkit-mask-image  : linear-gradient(80deg, #00000000 20%, #005500 40%);
+		mask-image          : linear-gradient(80deg, #00000000 20%, #005500 40%);
 	}
 	.text {
 		min-height : 54px;
-		h4{
+		h4 {
 			margin-bottom : 5px;
 			font-size     : 2.2em;
 		}
 	}
-	.info{
-		position: initial;
-		bottom: 2px;
-		font-family : ScalySansRemake;
+	.info {
+		position    : initial;
+		bottom      : 2px;
+		font-family : "ScalySansRemake";
 		font-size   : 1.2em;
-		&>span{
+		& > span {
 			margin-right : 12px;
 			line-height  : 1.5em;
 
-			a {
-				color:inherit;
-			}
+			a { color : inherit; }
 		}
 	}
 	.brewTags span {
-		background-color: #c8ac6e3b;
-		margin: 2px;
-		padding: 2px;
-		border: 1px solid #c8ac6e;
-		border-radius: 4px;
-		white-space: nowrap;
-		display: inline-block;
-		font-weight: bold;
-		border-color: currentColor;
-		cursor : pointer;
-		&:before {
-			font-family: 'Font Awesome 5 Free';
-			font-size: 12px;
-			margin-right: 3px;
+		display          : inline-block;
+		padding          : 2px;
+		margin           : 2px;
+		font-weight      : bold;
+		white-space      : nowrap;
+		cursor           : pointer;
+		background-color : #C8AC6E3B;
+		border           : 1px solid #C8AC6E;
+		border-color     : currentColor;
+		border-radius    : 4px;
+		&::before {
+			margin-right : 3px;
+			font-family  : 'Font Awesome 5 Free';
+			font-size    : 12px;
 		}
 		&.type {
-			background-color: #0080003b;
-			color: #008000;
-			&:before{
-				content: '\f0ad';
-			}
+			color            : #008000;
+			background-color : #0080003B;
+			&::before { content : '\f0ad'; }
 		}
 		&.group {
-			background-color: #5050503b;
-			color: #000000;
-			&:before{
-				content: '\f500';
-			}
+			color            : #000000;
+			background-color : #5050503B;
+			&::before { content : '\f500'; }
 		}
 		&.meta {
-			background-color: #0000803b;
-			color: #000080;
-			&:before{
-				content: '\f05a';
-			}
+			color            : #000080;
+			background-color : #0000803B;
+			&::before { content : '\f05a'; }
 		}
 		&.system {
-			background-color: #8000003b;
-			color: #800000;
-			&:before{
-				content: '\f518';
-			}
+			color            : #800000;
+			background-color : #8000003B;
+			&::before { content : '\f518'; }
 		}
 	}
-	&:hover{
-		.links{
-			opacity : 1;
-		}
+	&:hover {
+		.links { opacity : 1; }
 	}
-	&:nth-child(2n + 1){
-		margin-right : 0px;
-	}
-	.links{
+	&:nth-child(2n + 1) { margin-right : 0px; }
+	.links {
 		.animate(opacity);
 		position         : absolute;
 		top              : 0px;
 		right            : 0px;
-		height           : 100%;
 		width            : 2em;
-		opacity          : 0;
-		background-color : fade(black, 60%);
+		height           : 100%;
 		text-align       : center;
-		a{
+		background-color : fade(black, 60%);
+		opacity          : 0;
+		a {
 			.animate(opacity);
 			display         : block;
 			margin          : 8px 0px;
-			opacity         : 0.6;
 			font-size       : 1.3em;
 			color           : white;
 			text-decoration : unset;
-			&:hover{
-				opacity : 1;
-			}
-			i{
-				cursor : pointer;
-			}
+			opacity         : 0.6;
+			&:hover { opacity : 1; }
+			i { cursor : pointer; }
 		}
 	}
 	.googleDriveIcon {
-		height	: 18px;
+		height  : 18px;
 		padding : 0px;
 		margin  : -5px;
 	}
 	.homebreweryIcon {
-		mix-blend-mode : darken;
-		height         : 24px;
 		position       : relative;
 		top            : 5px;
 		left           : -5px;
+		height         : 24px;
+		mix-blend-mode : darken;
 	}
 }

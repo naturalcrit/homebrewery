@@ -29,8 +29,8 @@ const SplitPane = (props)=>{
 	const limitPosition = (x, min = 1, max = window.innerWidth - 13)=>Math.round(Math.min(max, Math.max(min, x)));
 
 	//when resizing, the divider should grow smaller if less space is given, then grow back if the space is restored, to the original position
-	const handleResize = () =>setDividerPos(limitPosition(window.localStorage.getItem(storageKey), 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13)));
-	
+	const handleResize = ()=>setDividerPos(limitPosition(window.localStorage.getItem(storageKey), 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13)));
+
 	const handleUp =(e)=>{
 		e.preventDefault();
 		if(isDragging) {
