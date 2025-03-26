@@ -69,14 +69,11 @@ const corsOptions = {
 			'https://homebrewery-stage.herokuapp.com',
 		];
 
-		if(isLocalEnvironment) {
-			const localNetworkRegex = /^http:\/\/(localhost|127\.0\.0\.1|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+):\d+$/;
-			allowedOrigins.push(localNetworkRegex);
-		}
+		const localNetworkRegex = /^http:\/\/(localhost|127\.0\.0\.1|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+):\d+$/;
 
 		const herokuRegex = /^https:\/\/(?:homebrewery-pr-\d+\.herokuapp\.com|naturalcrit-pr-\d+\.herokuapp\.com)$/; // Matches any Heroku app
 
-		if(!origin || allowedOrigins.includes(origin) || herokuRegex.test(origin)) {
+		if(!origin || allowedOrigins.includes(origin) || herokuRegex.test(origin) || (isLocalEnvironment && localNetworkRegex.test(origin))) {
 			callback(null, true);
 		} else {
 			console.log(origin, 'not allowed');
