@@ -232,6 +232,7 @@ const NewPage = createClass({
 						onTextChange={this.handleTextChange}
 						onStyleChange={this.handleStyleChange}
 						onMetaChange={this.handleMetaChange}
+						onTemplateChange={this.handleTemplateChange}
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
 						themeBundle={this.state.themeBundle}
