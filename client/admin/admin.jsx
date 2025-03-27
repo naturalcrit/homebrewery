@@ -1,67 +1,50 @@
-require('./admin.less');
-const React = require('react');
-const createClass = require('create-react-class');
-
-
-const BrewCleanup = require('./brewCleanup/brewCleanup.jsx');
-const BrewLookup = require('./brewLookup/brewLookup.jsx');
-const BrewCompress = require ('./brewCompress/brewCompress.jsx');
-const Stats = require('./stats/stats.jsx');
-
+import './admin.less';
+import React, { useEffect, useState } from 'react';
+const BrewUtils = require('./brewUtils/brewUtils.jsx');
+const NotificationUtils = require('./notificationUtils/notificationUtils.jsx');
+import AuthorUtils from './authorUtils/authorUtils.jsx';
 const LockTools = require('./lockTools/lockTools.jsx');
 
-const tabGroups = ['brews', 'locks'];
+const tabGroups = ['brew', 'notifications', 'authors'];
 
-const Admin = createClass({
-	getDefaultProps : function() {
-		return {};
-	},
+const Admin = ()=>{
+	const [currentTab, setCurrentTab] = useState('brew');
 
-	getInitialState : function() {
-		return {
-			currentTab : 'brews'
-		};
-	},
+	useEffect(()=>{
+		setCurrentTab(localStorage.getItem('hbAdminTab'));
+	}, []);
 
-	handleClick : function(newTab) {
-		if(this.state.currentTab === newTab) return;
-		this.setState({
-			currentTab : newTab
-		});
-	},
+	useEffect(()=>{
+		localStorage.setItem('hbAdminTab', currentTab);
+	}, [currentTab]);
 
-	renderBrewTools : function(){
-		return <>
-			<Stats />
-			<hr />
-			<BrewLookup />
-			<hr />
-			<BrewCleanup />
-			<hr />
-			<BrewCompress />
-		</>;
-	},
-
-	render : function(){
-		return <div className='admin'>
-
+	return (
+		<div className='admin'>
 			<header>
 				<div className='container'>
 					<i className='fas fa-rocket' />
-					homebrewery admin
+					The Homebrewery Admin Page
+					<a href='/'>back to homepage</a>
 				</div>
 			</header>
-			<div className='container'>
-				<div className='tabs'>
-					{tabGroups.map((name, idx)=>{
-						return <button className={`tab ${this.state.currentTab === name ? 'active' : ''}`} key={idx} onClick={()=>{return this.handleClick(name);}}>{name.toUpperCase()}</button>;
-					})}
-				</div>
-				{this.state.currentTab == 'brews' && this.renderBrewTools()}
-				{this.state.currentTab == 'locks' && <LockTools />}
-			</div>
-		</div>;
-	}
-});
+			<main className='container'>
+				<nav className='tabs'>
+					{tabGroups.map((tab, idx)=>(
+						<button
+							className={tab === currentTab ? 'active' : ''}
+							key={idx}
+							onClick={()=>setCurrentTab(tab)}>
+							{tab.toUpperCase()}
+						</button>
+					))}
+				</nav>
+				{currentTab === 'brew' && <BrewUtils />}
+				{currentTab === 'notifications' && <NotificationUtils />}
+				{currentTab === 'authors' && <AuthorUtils />}
+        {currentTab === 'locks' && <LockTools />}
+			</main>
+		</div>
+	);
+};
 
 module.exports = Admin;

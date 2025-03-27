@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 
 const dedent = require('dedent-tabs').default;
-const Markdown = require('naturalcrit/markdown.js');
+import Markdown from 'naturalcrit/markdown.js';
 
 // Marked.js adds line returns after closing tags on some default tokens.
 // This removes those line returns for comparison sake.
@@ -402,4 +402,37 @@ describe('Variable names that are subsets of other names', ()=>{
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered).toBe('<p>14</p>');
 	});
+});
+
+describe('Regression Tests', ()=>{
+	it('Don\'t Eat all the parentheticals!', function() {
+		const source='\n|  title 1  | title 2 | title 3 | title 4|\n|-----------|---------|---------|--------|\n|[foo](bar) |  Ipsum  |    )    |   )    |\n';
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<table><thead><tr><th>title 1</th><th>title 2</th><th>title 3</th><th>title 4</th></tr></thead><tbody><tr><td><a href=\"bar\">foo</a></td><td>Ipsum</td><td>)</td><td>)</td></tr></tbody></table>');
+	});
+
+	it('Handle Extra spaces in image alt-text 1', function(){
+		const source='![ where is my image??](http://i.imgur.com/hMna6G0.png)';
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p><img src=\"http://i.imgur.com/hMna6G0.png\" alt=\"where is my image??\" style=\"--HB_src:url(http://i.imgur.com/hMna6G0.png);\"></p>');
+	});
+
+	it('Handle Extra spaces in image alt-text 2', function(){
+		const source='![where  is my image??](http://i.imgur.com/hMna6G0.png)';
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p><img src=\"http://i.imgur.com/hMna6G0.png\" alt=\"where is my image??\" style=\"--HB_src:url(http://i.imgur.com/hMna6G0.png);\"></p>');
+	});
+
+	it('Handle Extra spaces in image alt-text 3', function(){
+		const source='![where is my image?? ](http://i.imgur.com/hMna6G0.png)';
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p><img src=\"http://i.imgur.com/hMna6G0.png\" alt=\"where is my image??\" style=\"--HB_src:url(http://i.imgur.com/hMna6G0.png);\"></p>');
+	});
+
+	it('Handle Extra spaces in image alt-text 4', function(){
+		const source='![where is my image??](http://i.imgur.com/hMna6G0.png){height=20%,width=20%}';
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p><img style=\"--HB_src:url(http://i.imgur.com/hMna6G0.png);\" src=\"http://i.imgur.com/hMna6G0.png\" alt=\"where is my image??\" height=\"20%\" width=\"20%\"></p>');
+	});
+
 });

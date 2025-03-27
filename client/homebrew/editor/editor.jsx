@@ -4,7 +4,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
-const Markdown = require('../../../shared/naturalcrit/markdown.js');
+import Markdown from '../../../shared/naturalcrit/markdown.js';
 
 const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
 const SnippetBar = require('./snippetbar/snippetbar.jsx');
@@ -12,7 +12,8 @@ const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
 const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
 
-const SNIPPETBAR_HEIGHT = 25;
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?: *{[^\n{}]*})?$)/m;
+const SNIPPETBAR_HEIGHT  = 25;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
 				/* Any CSS here will apply to your document! */
@@ -126,15 +127,15 @@ const Editor = createClass({
 	},
 
 	updateCurrentCursorPage : function(cursor) {
-		const lines = this.props.brew.text.split('\n').slice(0, cursor.line + 1);
-		const pageRegex = this.props.brew.renderer == 'V3' ? /^\\page$/ : /\\page/;
+		const lines = this.props.brew.text.split('\n').slice(1, cursor.line + 1);
+		const pageRegex = this.props.brew.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
 		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1);
 		this.props.onCursorPageChange(currentPage);
 	},
 
 	updateCurrentViewPage : function(topScrollLine) {
-		const lines = this.props.brew.text.split('\n').slice(0, topScrollLine + 1);
-		const pageRegex = this.props.brew.renderer == 'V3' ? /^\\page$/ : /\\page/;
+		const lines = this.props.brew.text.split('\n').slice(1, topScrollLine + 1);
+		const pageRegex = this.props.brew.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
 		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1);
 		this.props.onViewPageChange(currentPage);
 	},
@@ -174,7 +175,7 @@ const Editor = createClass({
 
 				for (let i=customHighlights.length - 1;i>=0;i--) customHighlights[i].clear();
 
-				let editorPageCount = 2; // start page count from page 2
+				let editorPageCount = 1; // start page count from page 1
 
 				_.forEach(this.props.brew.text.split('\n'), (line, lineNumber)=>{
 
@@ -190,7 +191,10 @@ const Editor = createClass({
 
 					// Styling for \page breaks
 					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
-				     (this.props.renderer == 'V3'     && line.match(/^\\page$/))) {
+				     (this.props.renderer == 'V3'     && line.match(PAGEBREAK_REGEX_V3))) {
+
+						if(lineNumber > 0)      // Since \page is optional on first line of document,
+							editorPageCount += 1; // don't use it to increment page count; stay at 1
 
 						// add back the original class 'background' but also add the new class '.pageline'
 						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
@@ -199,8 +203,6 @@ const Editor = createClass({
 							textContent : editorPageCount
 						});
 						codeMirror.setBookmark({ line: lineNumber, ch: line.length }, pageCountElement);
-
-						editorPageCount += 1;
 					};
 
 					// New Codemirror styling for V3 renderer
@@ -314,7 +316,7 @@ const Editor = createClass({
 	},
 
 	brewJump : function(targetPage=this.props.currentEditorCursorPageNum, smooth=true){
-		if(!window || isJumping)
+		if(!window || !this.isText() || isJumping)
 			return;
 
 		// Get current brewRenderer scroll position and calculate target position
@@ -355,10 +357,10 @@ const Editor = createClass({
 	},
 
 	sourceJump : function(targetPage=this.props.currentBrewRendererPageNum, smooth=true){
-		if(!this.isText || isJumping)
+		if(!this.isText() || isJumping)
 			return;
 
-		const textSplit  = this.props.renderer == 'V3' ? /^\\page$/gm : /\\page/;
+		const textSplit  = this.props.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
 		const textString = this.props.brew.text.split(textSplit).slice(0, targetPage-1).join(textSplit);
 		const targetLine = textString.match('\n') ? textString.split('\n').length - 1 : -1;
 
@@ -454,6 +456,7 @@ const Editor = createClass({
 					rerenderParent={this.rerenderParent} />
 				<MetadataEditor
 					metadata={this.props.brew}
+					themeBundle={this.props.themeBundle}
 					onChange={this.props.onMetaChange}
 					reportError={this.props.reportError}
 					userThemes={this.props.userThemes}/>

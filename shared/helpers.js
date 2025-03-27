@@ -1,6 +1,6 @@
-const _ = require('lodash');
-const yaml = require('js-yaml');
-const request = require('../client/homebrew/utils/request-middleware.js');
+import _       from 'lodash';
+import yaml    from 'js-yaml';
+import request from '../client/homebrew/utils/request-middleware.js';
 
 const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
@@ -21,6 +21,9 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.snippets = brew.text.slice(11, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
+
+	// Handle old brews that still have empty strings in the tags metadata
+	if(typeof brew.tags === 'string') brew.tags = brew.tags ? [brew.tags] : [];
 };
 
 const printCurrentBrew = ()=>{
@@ -41,17 +44,23 @@ const fetchThemeBundle = async (obj, renderer, theme)=>{
 			.catch((err)=>{
 				obj.setState({ error: err });
 			});
-	if(!res) return;
-
+	if(!res) {
+		obj.setState((prevState)=>({
+			...prevState,
+			themeBundle : {}
+		}));
+		return;
+	}
 	const themeBundle = res.body;
 	themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n');
 	obj.setState((prevState)=>({
 		...prevState,
-		themeBundle : themeBundle
+		themeBundle : themeBundle,
+		error       : null
 	}));
 };
 
-module.exports = {
+export {
 	splitTextStyleAndMetadata,
 	printCurrentBrew,
 	fetchThemeBundle,

@@ -1,5 +1,6 @@
-const request = require('superagent');
 const version = require('../../../package.json').version;
+import request from 'superagent';
+
 
 const addHeader = (request)=>request.set('Homebrewery-Version', version);
 
@@ -10,4 +11,4 @@ const requestMiddleware = {
 	delete : (path)=>addHeader(request.delete(path)),
 };
 
-module.exports = requestMiddleware;
+export default requestMiddleware;

@@ -1,7 +1,8 @@
 @import 'themes/codeMirror/customEditorStyles.less';
 .editor {
-	position : relative;
-	width    : 100%;
+	position  : relative;
+	width     : 100%;
+	container : editor / inline-size;
 
 	.codeEditor {
 		height            : 100%;
@@ -44,26 +45,26 @@
 			color       : green;
 		}
 		.emoji:not(.cm-comment) {
-			margin-left    : 2px;
-			color          : #360034;
-			background     : #ffc8ff;
-			border-radius  : 6px;
-			font-weight    : bold;
 			padding-bottom : 1px;
+			margin-left    : 2px;
+			font-weight    : bold;
+			color          : #360034;
+			outline        : solid 2px #FF96FC;
 			outline-offset : -2px;
-			outline        : solid 2px #ff96fc;
+			background     : #FFC8FF;
+			border-radius  : 6px;
 		}
 		.superscript:not(.cm-comment) {
-			font-weight    : bold;
-			color          : goldenrod;
-			vertical-align : super;
 			font-size      : 0.9em;
+			font-weight    : bold;
+			vertical-align : super;
+			color          : goldenrod;
 		}
 		.subscript:not(.cm-comment) {
-			font-weight    : bold;
-			color          : rgb(123, 123, 15);
-			vertical-align : sub;
 			font-size      : 0.9em;
+			font-weight    : bold;
+			vertical-align : sub;
+			color          : rgb(123, 123, 15);
 		}
 		.dl-highlight {
 			&.dl-colon-highlight {

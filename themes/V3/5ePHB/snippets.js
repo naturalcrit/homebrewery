@@ -6,186 +6,12 @@ const MonsterBlockGen    = require('./snippets/monsterblock.gen.js');
 const scriptGen          = require('./snippets/script.gen.js');
 const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
 const CoverPageGen       = require('./snippets/coverpage.gen.js');
-const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
-const indexGen           = require('./snippets/index.gen.js');
 const QuoteGen 			 = require('./snippets/quote.gen.js');
 const dedent             = require('dedent-tabs').default;
 
 
 
 module.exports = [
-
-	{
-		groupName : 'Text Editor',
-		icon      : 'fas fa-pencil-alt',
-		view      : 'text',
-		snippets  : [
-			{
-				name         : 'Table of Contents',
-				icon         : 'fas fa-book',
-				gen          : TableOfContentsGen,
-				experimental : true,
-				subsnippets  : [
-					{
-						name         : 'Generate Table of Contents',
-						icon         : 'fas fa-book',
-						gen          : TableOfContentsGen,
-						experimental : true
-					},
-					{
-						name : 'Table of Contents Individual Inclusion',
-						icon : 'fas fa-book',
-						gen  : dedent `\n{{tocInclude# CHANGE # to your header level
-							}}\n`,
-						subsnippets : [
-							{
-								name : 'Individual Inclusion H1',
-								icon : 'fas fa-book',
-								gen  : dedent `\n{{tocIncludeH1 \n
-									}}\n`,
-							},
-							{
-								name : 'Individual Inclusion H2',
-								icon : 'fas fa-book',
-								gen  : dedent `\n{{tocIncludeH2 \n
-									}}\n`,
-							},
-							{
-								name : 'Individual Inclusion H3',
-								icon : 'fas fa-book',
-								gen  : dedent `\n{{tocIncludeH3 \n
-									}}\n`,
-							},
-							{
-								name : 'Individual Inclusion H4',
-								icon : 'fas fa-book',
-								gen  : dedent `\n{{tocIncludeH4 \n
-									}}\n`,
-							},
-							{
-								name : 'Individual Inclusion H5',
-								icon : 'fas fa-book',
-								gen  : dedent `\n{{tocIncludeH5 \n
-									}}\n`,
-							},
-							{
-								name : 'Individual Inclusion H6',
-								icon : 'fas fa-book',
-								gen  : dedent `\n{{tocIncludeH6 \n
-									}}\n`,
-							}
-						]
-					},
-					{
-						name : 'Table of Contents Range Inclusion',
-						icon : 'fas fa-book',
-						gen  : dedent `\n{{tocDepthH3
-							}}\n`,
-						subsnippets : [
-							{
-								name : 'Include in ToC up to H3',
-								icon : 'fas fa-dice-three',
-								gen  : dedent `\n{{tocDepthH3
-									}}\n`,
-
-							},
-							{
-								name : 'Include in ToC up to H4',
-								icon : 'fas fa-dice-four',
-								gen  : dedent `\n{{tocDepthH4
-									}}\n`,
-							},
-							{
-								name : 'Include in ToC up to H5',
-								icon : 'fas fa-dice-five',
-								gen  : dedent `\n{{tocDepthH5
-									}}\n`,
-							},
-							{
-								name : 'Include in ToC up to H6',
-								icon : 'fas fa-dice-six',
-								gen  : dedent `\n{{tocDepthH6
-									}}\n`,
-							},
-						]
-					},
-					{
-						name : 'Table of Contents Individual Exclusion',
-						icon : 'fas fa-book',
-						gen  : dedent `\n{{tocExcludeH1 \n
-							}}\n`,
-						subsnippets : [
-							{
-								name : 'Individual Exclusion H1',
-								icon : 'fas fa-book',
-								gen  : dedent `\n{{tocExcludeH1 \n
-									}}\n`,
-							},
-							{
-								name : 'Individual Exclusion H2',
-								icon : 'fas fa-book',
-								gen  : dedent `\n{{tocExcludeH2 \n
-									}}\n`,
-							},
-							{
-								name : 'Individual Exclusion H3',
-								icon : 'fas fa-book',
-								gen  : dedent `\n{{tocExcludeH3 \n
-									}}\n`,
-							},
-							{
-								name : 'Individual Exclusion H4',
-								icon : 'fas fa-book',
-								gen  : dedent `\n{{tocExcludeH4 \n
-									}}\n`,
-							},
-							{
-								name : 'Individual Exclusion H5',
-								icon : 'fas fa-book',
-								gen  : dedent `\n{{tocExcludeH5 \n
-									}}\n`,
-							},
-							{
-								name : 'Individual Exclusion H6',
-								icon : 'fas fa-book',
-								gen  : dedent `\n{{tocExcludeH6 \n
-									}}\n`,
-							},
-						]
-					},
-
-					{
-						name        : 'Table of Contents Toggles',
-						icon        : 'fas fa-book',
-						gen         : `{{tocGlobalH4}}\n\n`,
-						subsnippets : [
-							{
-								name : 'Enable H1-H4 all pages',
-								icon : 'fas fa-dice-four',
-								gen  : `{{tocGlobalH4}}\n\n`,
-							},
-							{
-								name : 'Enable H1-H5 all pages',
-								icon : 'fas fa-dice-five',
-								gen  : `{{tocGlobalH5}}\n\n`,
-							},
-							{
-								name : 'Enable H1-H6 all pages',
-								icon : 'fas fa-dice-six',
-								gen  : `{{tocGlobalH6}}\n\n`,
-							},
-						]
-					}
-				]
-			},
-			{
-				name         : 'Index',
-				icon         : 'fas fa-bars',
-				gen          : indexGen,
-				experimental : true
-			}
-		]
-	},
 	{
 		groupName : 'Style Editor',
 		icon      : 'fas fa-pencil-alt',
@@ -216,47 +42,7 @@ module.exports = [
 			},
 		]
 	},
-
-	/*********************** IMAGES *******************/
-	{
-		groupName : 'Images',
-		icon      : 'fas fa-images',
-		view      : 'text',
-		snippets  : [
-			{
-				name : 'Image',
-				icon : 'fas fa-image',
-				gen  : dedent`
-					![cat warrior](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:325px,mix-blend-mode:multiply}
-
-					{{artist,position:relative,top:-230px,left:10px,margin-bottom:-30px
-					##### Cat Warrior
-					[Kyoung Hwan Kim](https://www.artstation.com/tahra)
-					}}`
-			},
-			{
-				name : 'Background Image',
-				icon : 'fas fa-tree',
-				gen  : dedent`
-					![homebrew mug](http://i.imgur.com/hMna6G0.png) {position:absolute,top:50px,right:30px,width:280px}
-
-					{{artist,top:80px,right:30px
-					##### Homebrew Mug
-					[naturalcrit](https://homebrew.naturalcrit.com)
-					}}`
-			},
-			{
-				name : 'Watermark',
-				icon : 'fas fa-id-card',
-				gen  : dedent`
-				{{watermark Homebrewery}}\n`
-			},
-		]
-	},
-
-
 	/************************* PHB ********************/
-
 	{
 		groupName : 'PHB',
 		icon      : 'fas fa-book',
@@ -450,9 +236,6 @@ module.exports = [
 			},
 		]
 	},
-
-
-
 
 	/**************** PAGE *************/
 
