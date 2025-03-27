@@ -4,7 +4,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 
 // const request = require('superagent');
-const request = require('../../homebrew/utils/request-middleware.js');
+import request from '../../homebrew/utils/request-middleware.js';
 
 const LockTools = createClass({
 	getInitialState : function() {
@@ -226,7 +226,7 @@ const LockTable = createClass({
 										</td>;
 									})}
 									<td className='icon' onClick={()=>{navigator.clipboard.writeText(result.shareId.toString());}}><i className='fa-regular fa-clipboard'></i></td>
-									<td className='icon'><i className='fa-regular fa-circle-right'></i></td>
+									<td className='icon'><a href={`/share/${result.shareId.toString()}`} target='_blank'><i className='fa-regular fa-circle-right'></i></a></td>
 								</tr>;
 							})}
 						</tbody>

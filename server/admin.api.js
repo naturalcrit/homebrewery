@@ -305,6 +305,8 @@ router.put('/api/lock/review/remove/:id', mw.adminOnly, async (req, res)=>{
 	} catch (error) {
 		console.error(error);
 		return res.json({ status: 'ERROR', detail: `Unable to remove request for review on brew ID ${req.params.id}`, error });
+	};
+});
 
 // #######################   NOTIFICATIONS
 
