@@ -250,6 +250,7 @@ const Snippetbar = createClass({
 					</div>
 				</div></>}
 
+
 				<div className='tabs'>
 					<div className={cx('text', { selected: this.props.view === 'text' })}
 						onClick={()=>this.props.onViewChange('text')}>
@@ -263,11 +264,10 @@ const Snippetbar = createClass({
 						onClick={()=>this.props.onViewChange('meta')}>
 						<i className='fas fa-info-circle' />
 					</div>
-				</div>
-
-				<div className={cx('template', { selected: this.props.view === 'template' })}
-					onClick={()=>this.props.onViewChange('template')}>
-					<i className='fas fa-file-alt' />
+					<div className={cx('template', { selected: this.props.view === 'template' })}
+						onClick={()=>this.props.onViewChange('template')}>
+						<i className='fas fa-file-alt' />
+					</div>
 				</div>
 
 			</div>
