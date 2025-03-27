@@ -6,13 +6,16 @@ import request from '../../utils/request-middleware.js';
 
 import Markdown from 'naturalcrit/markdown.js';
 
-const Nav = require('naturalcrit/nav/nav.jsx');
 const PrintNavItem = require('../../navbar/print.navitem.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
+const {Navbar, NavItem, NavSection, Dropdown} = require('../../navbar/navbar.jsx');
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
+const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
+const VaultNavItem = require('../../navbar/vault.navitem.jsx');
+const PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
+const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
@@ -190,33 +193,43 @@ const NewPage = createClass({
 
 	renderSaveButton : function(){
 		if(this.state.isSaving){
-			return <Nav.item icon='fas fa-spinner fa-spin' className='save'>
+			return <NavItem icon='fas fa-spinner fa-spin' >
 				save...
-			</Nav.item>;
+			</NavItem>;
 		} else {
-			return <Nav.item icon='fas fa-save' className='save' onClick={this.save}>
+			return <NavItem icon='fas fa-save' onClick={this.save}>
 				save
-			</Nav.item>;
+			</NavItem>;
 		}
 	},
 
 	renderNavbar : function(){
 		return <Navbar>
-
-			<Nav.section>
-				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
-			</Nav.section>
-
-			<Nav.section>
-				{this.state.error ?
+			<NavSection>
+				<MainMenu />
+				<Dropdown id='brewMenu' trigger='click' className='brew-menu'>
+					<NavItem color='purple'>Brew</NavItem>
+					<NewBrewItem disabled />
+					{this.renderSaveButton()}
+					<NavItem
+						href={`/user/${encodeURI(global.account.username)}`}
+						color='yellow'
+						icon='fas fa-beer'
+					>
+						brews
+					</NavItem>
+					<RecentNavItem />
+				</Dropdown>
+				<VaultNavItem />
+			</NavSection>
+			<NavSection>
+				{/* {this.state.error ?
 					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
-					this.renderSaveButton()
-				}
-				<PrintNavItem />
-				<HelpNavItem />
-				<RecentNavItem />
+					null
+				} */}
+				
 				<AccountNavItem />
-			</Nav.section>
+			</NavSection>
 		</Navbar>;
 	},
 
