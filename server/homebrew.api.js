@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import _                             from 'lodash';
-import {model as HomebrewModel}      from './homebrew.model.js';
+import { model as HomebrewModel }    from './homebrew.model.js';
 import express                       from 'express';
 import zlib                          from 'zlib';
 import GoogleActions                 from './googleActions.js';
@@ -92,7 +92,7 @@ const api = {
 			const accessMap = {
 				edit  : { editId: id },
 				share : { shareId: id },
-				admin : { $or : [{ editId: id }, { shareId: id }] }
+				admin : { $or: [{ editId: id }, { shareId: id }] }
 			};
 
 			// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine.
@@ -181,6 +181,7 @@ const api = {
 			`${text}`;
 		return text;
 	},
+
 	getGoodBrewTitle : (text)=>{
 		const tokens = Markdown.marked.lexer(text);
 		return (tokens.find((token)=>token.type === 'heading' || token.type === 'paragraph')?.text || 'No Title')
@@ -279,6 +280,8 @@ const api = {
 		let currentTheme;
 		const completeStyles   = [];
 		const completeSnippets = [];
+		let themeName;
+		let themeAuthor;
 
 		while (req.params.id) {
 			//=== User Themes ===//
@@ -292,6 +295,10 @@ const api = {
 
 				currentTheme = req.brew;
 				splitTextStyleAndMetadata(currentTheme);
+				if(!currentTheme.tags.some((tag)=>tag === 'meta:theme' || tag === 'meta:Theme'))
+					throw { brewId: req.params.id, name: 'Invalid Theme Selected', message: 'Selected theme does not have the meta:theme tag', status: 422, HBErrorCode: '10' };
+				themeName   ??= currentTheme.title;
+				themeAuthor ??= currentTheme.authors?.[0];
 
 				// If there is anything in the snippets or style members, append them to the appropriate array
 				if(currentTheme?.snippets) completeSnippets.push(JSON.parse(currentTheme.snippets));
@@ -301,6 +308,7 @@ const api = {
 				req.params.renderer = currentTheme.renderer;
 			} else {
 			//=== Static Themes ===//
+				themeName ??= req.params.id;
 				const localSnippets = `${req.params.renderer}_${req.params.id}`; // Just log the name for loading on client
 				const localStyle    = `@import url(\"/themes/${req.params.renderer}/${req.params.id}/style.css\");`;
 				completeSnippets.push(localSnippets);
@@ -313,7 +321,9 @@ const api = {
 		const returnObj = {
 			// Reverse the order of the arrays so they are listed oldest parent to youngest child.
 			styles   : completeStyles.reverse(),
-			snippets : completeSnippets.reverse()
+			snippets : completeSnippets.reverse(),
+			name     : themeName,
+			author   : themeAuthor
 		};
 
 		res.setHeader('Content-Type', 'application/json');
