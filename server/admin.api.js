@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
 import { model as HomebrewModel }     from './homebrew.model.js';
 import { model as NotificationModel } from './notifications.model.js';
 import express    from 'express';
@@ -10,6 +11,7 @@ import asyncHandler from 'express-async-handler';
 import { splitTextStyleAndMetadata } from '../shared/helpers.js';
 
 const router = express.Router();
+
 
 process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
 process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password3';
@@ -160,6 +162,150 @@ router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 		console.error(error);
 		return res.status(500).json({ error: 'Internal Server Error' });
 	}
+});
+
+router.get('/api/lock/count', mw.adminOnly, async (req, res)=>{
+	try {
+		const countLocksQuery = {
+			lock : { $exists: true }
+		};
+		const count = await HomebrewModel.countDocuments(countLocksQuery)
+			.then((result)=>{
+				return result;
+			});
+		return res.json({
+			count
+		});
+	} catch (error) {
+		console.error(error);
+		return res.json({ status: 'ERROR', detail: 'Unable to get lock count', error });
+	}
+});
+
+router.post('/api/lock/:id', mw.adminOnly, async (req, res)=>{
+	try {
+		const lock = req.body;
+		lock.applied = new Date;
+
+		const filter = {
+			shareId : req.params.id
+		};
+
+		const brew = await HomebrewModel.findOne(filter);
+
+		if(brew.lock) {
+			// console.log('ALREADY LOCKED');
+			return res.json({ status: 'ALREADY LOCKED', detail: `Lock already exists on brew ${req.params.id} - ${brew.title}` });
+		}
+
+		brew.lock = lock;
+		brew.markModified('lock');
+
+		await brew.save();
+
+		// console.log(`Lock applied to brew ID ${brew.shareId} - ${brew.title}`);
+		return res.json({ status: 'LOCKED', detail: `Lock applied to brew ID ${brew.shareId} - ${brew.title}`, ...lock });
+	} catch (error) {
+		console.error(error);
+		return res.json({ status: 'ERROR', error, message: `Unable to set lock on brew ${req.params.id}` });
+	}
+});
+
+router.put('/api/unlock/:id', mw.adminOnly, async (req, res)=>{
+	try {
+		const filter = {
+			shareId : req.params.id
+		};
+
+		const brew = await HomebrewModel.findOne(filter);
+
+		if(!brew.lock) return res.json({ status: 'NOT LOCKED', detail: `Brew ID ${req.params.id} is not locked!` });
+
+		brew.lock = undefined;
+		brew.markModified('lock');
+
+		await brew.save();
+
+		// console.log(`Lock removed from brew ID ${brew.shareId} - ${brew.title}`);
+	} catch (error) {
+		console.error(error);
+		return res.json({ status: 'ERROR', detail: `Unable to clear lock on brew ${req.params.id}`, error });
+	}
+
+	return res.json({ status: 'UNLOCKED', detail: `Lock removed from brew ID ${req.params.id}` });
+});
+
+router.get('/api/lock/reviews', mw.adminOnly, async (req, res)=>{
+	try {
+		const countReviewsPipeline = [
+			{
+			  $match :
+				{
+				  'lock.reviewRequested' : { '$exists': 1 }
+				},
+			}
+		];
+		const reviewDocuments = await HomebrewModel.aggregate(countReviewsPipeline);
+		return res.json({
+			reviewDocuments
+		});
+	} catch (error) {
+		console.error(error);
+		return res.json({ status: 'ERROR', detail: 'Unable to get review collection', error });
+	}
+});
+
+router.put('/admin/lock/review/request/:id', async (req, res)=>{
+	// === This route is NOT Admin only ===
+	// Any user can request a review of their document
+	try {
+		const filter = {
+			shareId : req.params.id,
+			lock    : { $exists: 1 }
+		};
+
+		const brew = await HomebrewModel.findOne(filter);
+		if(!brew) { return res.json({ status: 'NOT LOCKED', detail: `Brew ID ${req.params.id} is not locked!` }); };
+
+		if(brew.lock.reviewRequested){
+			// console.log(`Review already requested for brew ${brew.shareId} - ${brew.title}`);
+			return res.json({ status: 'ALREADY REQUESTED', detail: `Review already requested for brew ${brew.shareId} - ${brew.title}` });
+		};
+
+		brew.lock.reviewRequested = new Date();
+		brew.markModified('lock');
+
+		await brew.save();
+
+		// console.log(`Review requested on brew ${brew.shareId} - ${brew.title}`);
+		return res.json({ status: 'REVIEW REQUESTED', detail: `Review requested on brew ID ${brew.shareId} - ${brew.title}` });
+	} catch (error) {
+		console.error(error);
+		return res.json({ status: 'ERROR', detail: `Unable to set request for review on brew ID ${req.params.id}`, error });
+	}
+});
+
+router.put('/api/lock/review/remove/:id', mw.adminOnly, async (req, res)=>{
+	try {
+		const filter = {
+			shareId                : req.params.id,
+			'lock.reviewRequested' : { $exists: 1 }
+		};
+
+		const brew = await HomebrewModel.findOne(filter);
+		if(!brew) { return res.json({ status: 'REVIEW REQUEST NOT REMOVED', detail: `Brew ID ${req.params.id} does not have a review pending!` }); };
+
+		brew.lock.reviewRequested = undefined;
+		brew.markModified('lock');
+
+		await brew.save();
+
+		// console.log(`Review request removed on brew ID ${brew.shareId} - ${brew.title}`);
+		return res.json({ status: 'REVIEW REQUEST REMOVED', detail: `Review request removed for brew ID ${brew.shareId} - ${brew.title}` });
+	} catch (error) {
+		console.error(error);
+		return res.json({ status: 'ERROR', detail: `Unable to remove request for review on brew ID ${req.params.id}`, error });
+	};
 });
 
 // #######################   NOTIFICATIONS
