@@ -101,10 +101,11 @@ const Snippetbar = createClass({
 		if(key == 'snippets') {
 			const result = _.reverse(_.unionBy(_.reverse(newValue), _.reverse(oldValue), 'name')); // Join snippets together, with preference for the child theme over the parent theme
 			return result.filter((snip)=>snip.gen || snip.subsnippets);
-		}
+		};
 	},
 
 	compileSnippets : function() {
+		console.log('compileSnippets');
 		let compiledSnippets = [];
 
 		let oldSnippets = _.keyBy(compiledSnippets, 'groupName');
@@ -122,6 +123,7 @@ const Snippetbar = createClass({
 		}
 
 		const userSnippetsasJSON = brewSnippetsToJSON(this.props.brew.title || 'New Document', this.props.brew.snippets, this.props.themeBundle.snippets);
+		console.log(userSnippetsasJSON);
 		compiledSnippets.push(userSnippetsasJSON);
 
 		return compiledSnippets;
@@ -282,11 +284,6 @@ const Snippetbar = createClass({
 });
 
 module.exports = Snippetbar;
-
-
-
-
-
 
 const SnippetGroup = createClass({
 	displayName     : 'SnippetGroup',

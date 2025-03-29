@@ -451,6 +451,7 @@ const EditPage = createClass({
 	},
 
 	render : function(){
+		console.log(this.state.themeBundle);
 		return <div className='editPage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
 			{this.renderNavbar()}

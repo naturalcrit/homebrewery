@@ -97,6 +97,7 @@ const HomePage = createClass({
 	},
 
 	render : function(){
+		console.log(this.state.themeBundle);
 		return <div className='homePage sitePage'>
 			<Meta name='google-site-verification' content='NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4' />
 			{this.renderNavbar()}
@@ -108,7 +109,7 @@ const HomePage = createClass({
 						onTextChange={this.handleTextChange}
 						renderer={this.state.brew.renderer}
 						showEditButtons={false}
-						snippetBundle={this.state.themeBundle.snippets}
+						themeBundle={this.state.themeBundle}
 						onCursorPageChange={this.handleEditorCursorPageChange}
 						onViewPageChange={this.handleEditorViewPageChange}
 						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
