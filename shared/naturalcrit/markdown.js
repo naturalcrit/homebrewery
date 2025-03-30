@@ -104,7 +104,7 @@ renderer.link = function (token) {
 	}
 	let out = `<a href="${escape(href)}"`;
 	if(title) {
-		out += ` title="${title}"`;
+		out += ` title="${escape(title)}"`;
 	}
 	if(self) {
 		out += ' target="_self"';
