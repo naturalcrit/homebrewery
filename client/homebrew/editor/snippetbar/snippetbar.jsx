@@ -105,7 +105,6 @@ const Snippetbar = createClass({
 	},
 
 	compileSnippets : function() {
-		console.log('compileSnippets');
 		let compiledSnippets = [];
 
 		let oldSnippets = _.keyBy(compiledSnippets, 'groupName');
@@ -123,7 +122,6 @@ const Snippetbar = createClass({
 		}
 
 		const userSnippetsasJSON = brewSnippetsToJSON(this.props.brew.title || 'New Document', this.props.brew.snippets, this.props.themeBundle.snippets);
-		console.log(userSnippetsasJSON);
 		compiledSnippets.push(userSnippetsasJSON);
 
 		return compiledSnippets;
