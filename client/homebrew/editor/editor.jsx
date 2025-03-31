@@ -22,7 +22,13 @@ const DEFAULT_STYLE_TEXT = dedent`
 					color: black;
 				}`;
 
-const DEFAULT_SNIPPET_TEXT = ``;
+const DEFAULT_SNIPPET_TEXT = dedent`
+				\snippet example snippet
+				
+				The text between \`\snippet title\` lines will become a snippet of name \`title\` as this example provides.
+				
+				This snippet is accessible in the brew tab, and will be inherited if the brew is used as a theme.
+`;
 let isJumping = false;
 
 const Editor = createClass({
