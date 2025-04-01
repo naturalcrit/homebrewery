@@ -13,6 +13,7 @@ const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?: *{[^\n{}]*})?$)/m;
+const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
 const SNIPPETBAR_HEIGHT  = 25;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
@@ -155,6 +156,7 @@ const Editor = createClass({
 
 	handleViewChange : function(newView){
 		this.props.setMoveArrows(newView === 'text');
+		
 		this.setState({
 			view : newView
 		}, ()=>{
@@ -190,6 +192,9 @@ const Editor = createClass({
 				const whichSource = this.state.view === 'text' ? this.props.brew.text : this.props.brew.snippets;
 				_.forEach(whichSource?.split('\n'), (line, lineNumber)=>{
 
+					const tabHighlight = this.state.view === 'text' ? 'pageLine' : 'snippetLine';
+					const textOrSnip = this.state.view === 'text';
+
 					//reset custom line styles
 					codeMirror.removeLineClass(lineNumber, 'background', 'pageLine');
 					codeMirror.removeLineClass(lineNumber, 'background', 'snippetLine');
@@ -203,40 +208,28 @@ const Editor = createClass({
 
 					// Styling for \page breaks
 					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
-				     (this.props.renderer == 'V3'     && line.match(PAGEBREAK_REGEX_V3))) {
+				     (this.props.renderer == 'V3'     && line.match(textOrSnip ? PAGEBREAK_REGEX_V3 : SNIPPETBREAK_REGEX_V3))) {
 
-						if(lineNumber > 0)      // Since \page is optional on first line of document,
+						if((lineNumber > 0) && (textOrSnip))      // Since \page is optional on first line of document,
 							editorPageCount += 1; // don't use it to increment page count; stay at 1
+						else if(this.state.view !== 'text')	userSnippetCount += 1;
 
 						// add back the original class 'background' but also add the new class '.pageline'
-						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
+						codeMirror.addLineClass(lineNumber, 'background', tabHighlight);
 						const pageCountElement = Object.assign(document.createElement('span'), {
 							className   : 'editor-page-count',
-							textContent : editorPageCount
+							textContent : textOrSnip ? editorPageCount : userSnippetCount
 						});
 						codeMirror.setBookmark({ line: lineNumber, ch: line.length }, pageCountElement);
 					};
 
 
 					// New Codemirror styling for V3 renderer
-					if(this.props.renderer == 'V3') {
+					if(this.props.renderer === 'V3') {
 						if(line.match(/^\\column$/)){
 							codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 						}
 
-						// Styling for \snippet breaks
-						if(this.state.view === 'snip' && line.match(/^\\snippet\ .*$/)) {
-
-							// add back the original class 'background' but also add the new class '.snippetLine'
-							codeMirror.addLineClass(lineNumber, 'background', 'snippetLine');
-							const userSnippetCountElement = Object.assign(document.createElement('span'), {
-								className   : 'editor-snippet-count',
-								textContent : userSnippetCount
-							});
-							codeMirror.setBookmark({ line: lineNumber, ch: line.length }, userSnippetCountElement);
-
-							userSnippetCount += 1;
-						};
 						// definition lists
 						if(line.includes('::')){
 							if(/^:*$/.test(line) == true){ return; };
@@ -490,12 +483,13 @@ const Editor = createClass({
 		}
 
 		if(this.isSnip()){
+			if(!this.props.brew.snippets) { this.props.brew.snippets = DEFAULT_SNIPPET_TEXT; }
 			return <>
 				<CodeEditor key='codeEditor'
 					ref={this.codeEditor}
 					language='gfm'
 					view={this.state.view}
-					value={this.props.brew.snippets ?? DEFAULT_SNIPPET_TEXT}
+					value={this.props.brew.snippets}
 					onChange={this.props.onSnipChange}
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
