@@ -12,7 +12,8 @@ const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
 const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_V3 = /^(?=\\(:?soft)page(?: *{[^\n{}]*})?$)/m;
+const HARDPAGEBREAK_REGEX_V3 = /^(?=\\page(?: *{[^\n{}]*})?$)/m;
 const SNIPPETBAR_HEIGHT  = 25;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
@@ -67,6 +68,7 @@ const Editor = createClass({
 
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
+		this.handleSoftPages();
 		window.addEventListener('resize', this.updateEditorSize);
 		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
@@ -89,6 +91,7 @@ const Editor = createClass({
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
 
 		this.highlightCustomMarkdown();
+		this.handleSoftPages();
 		if(prevProps.moveBrew !== this.props.moveBrew)
 			this.brewJump();
 
@@ -153,6 +156,49 @@ const Editor = createClass({
 			this.updateEditorSize();
 		});	//TODO: not sure if updateeditorsize needed
 	},
+
+	handleSoftPages : function(targetPage=this.props.currentEditorCursorPageNum) {
+		if(this.props.renderer == 'Legacy') return;
+		const testPage = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`);
+		if(!testPage) return;
+		const columnWrapper = testPage.getElementsByClassName('columnWrapper')[0];
+		const preserveStyles = columnWrapper.style;
+
+		const before = columnWrapper.offsetWidth + columnWrapper.getBoundingClientRect().x;
+		columnWrapper.style.overflow = 'hidden';
+
+		const textString = this.props.brew.text.split(HARDPAGEBREAK_REGEX_V3)[targetPage -1];
+		const strippedString = textString.replace(/\n?\\softpage +\n/, '');
+
+		let child=columnWrapper.children.length -1;
+
+		while ((child>-1) && ((columnWrapper.children[child].getBoundingClientRect().x > before) || (columnWrapper.children[child]?.className))) {
+			child--;
+		}
+
+		if(child != columnWrapper.children.length -1) {
+			console.log(child);
+			console.log(columnWrapper.children.length -1);
+			const lines = strippedString.split('\n');
+			for (let line in lines) {
+				const render = Markdown.render(lines[line]);
+				if(render.trim() == columnWrapper.children[child].outerHTML.trim()) {
+					const prevPages = this.props.brew.text.split(HARDPAGEBREAK_REGEX_V3).slice(0, targetPage-1).join(HARDPAGEBREAK_REGEX_V3);
+                    const targetLine = prevPages.split('\n').length + parseInt(line, 10) + 1;
+					console.log(typeof prevPages.split('\n').length);
+					console.log(typeof line);
+					console.log(targetLine);
+					this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
+					// this.handleInject('\softpage');
+					columnWrapper.style=preserveStyles;
+					return;
+				}
+			}
+		}
+		columnWrapper.style=preserveStyles;
+
+	},
+
 
 	highlightCustomMarkdown : function(){
 		if(!this.codeEditor.current) return;

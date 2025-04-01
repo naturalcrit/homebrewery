@@ -19,7 +19,7 @@ const { printCurrentBrew } = require('../../../shared/helpers.js');
 import HeaderNav from './headerNav/headerNav.jsx';
 import { safeHTML } from './safeHTML.js';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_V3 = /^(?=\\(?:soft)?page(?: *{[^\n{}]*})?$)/m;
 const PAGE_HEIGHT = 1056;
 
 const INITIAL_CONTENT = dedent`
@@ -184,14 +184,31 @@ const BrewRenderer = (props)=>{
 
 			return <BrewPage className='page phb' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} />;
 		} else {
-			if(pageText.startsWith('\\page')) {
-				const firstLineTokens  = Markdown.marked.lexer(pageText.split('\n', 1)[0])[0].tokens;
+			// Consider moving else block up to the .render call to a new function
+			let styledText = pageText;
+			let walkBack   = index;
+			if(pageText?.startsWith('\\softpage')) {
+				attributes = {
+					softPage : 'true'
+				};
+				while ((walkBack>-1) && styledText?.startsWith('\\softpage')) {
+					styledText = rawPages[--walkBack];
+				}
+			}
+			if(pageText?.startsWith('\\page') || pageText?.startsWith('\\softpage')) {
+				// Look at styledText for mustache instead of pageText
+				// This should be the same as pageText for \page
+				// This should be the pageText for the previous \page if \softPage
+				const firstLineTokens  = Markdown.marked.lexer(styledText.split('\n', 1)[0])[0].tokens;
 				const injectedTags = firstLineTokens?.find((obj)=>obj.injectedTags !== undefined)?.injectedTags;
 				if(injectedTags) {
 					styles     = { ...styles, ...injectedTags.styles };
 					styles     = _.mapKeys(styles, (v, k)=>k.startsWith('--') ? k : _.camelCase(k)); // Convert CSS to camelCase for React
 					classes    = [classes, injectedTags.classes].join(' ').trim();
-					attributes = injectedTags.attributes;
+					attributes = {
+						...attributes,
+						...injectedTags.attributes,
+					};
 				}
 				pageText = pageText.includes('\n') ? pageText.substring(pageText.indexOf('\n') + 1) : ''; // Remove the \page line
 			}
