@@ -189,7 +189,7 @@ const BrewRenderer = (props)=>{
 			let walkBack   = index;
 			if(pageText?.startsWith('\\softpage')) {
 				attributes = {
-					softPage : 'true'
+					softpage : 'true'
 				};
 				while ((walkBack>-1) && styledText?.startsWith('\\softpage')) {
 					styledText = rawPages[--walkBack];

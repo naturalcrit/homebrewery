@@ -12,7 +12,7 @@ const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
 const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\(:?soft)page(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_V3     = /^(?=\\(:?soft)?page(?: *{[^\n{}]*})?$)/m;
 const HARDPAGEBREAK_REGEX_V3 = /^(?=\\page(?: *{[^\n{}]*})?$)/m;
 const SNIPPETBAR_HEIGHT  = 25;
 const DEFAULT_STYLE_TEXT = dedent`
@@ -24,6 +24,7 @@ const DEFAULT_STYLE_TEXT = dedent`
 				}`;
 
 let isJumping = false;
+let softPageCalc  = false;
 
 const Editor = createClass({
 	displayName     : 'Editor',
@@ -68,7 +69,6 @@ const Editor = createClass({
 
 		this.updateEditorSize();
 		this.highlightCustomMarkdown();
-		this.handleSoftPages();
 		window.addEventListener('resize', this.updateEditorSize);
 		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
@@ -158,39 +158,50 @@ const Editor = createClass({
 	},
 
 	handleSoftPages : function(targetPage=this.props.currentEditorCursorPageNum) {
+		if(softPageCalc) return;
 		if(this.props.renderer == 'Legacy') return;
 		const testPage = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`);
 		if(!testPage) return;
+
 		const columnWrapper = testPage.getElementsByClassName('columnWrapper')[0];
 		const preserveStyles = columnWrapper.style;
 
-		const before = columnWrapper.offsetWidth + columnWrapper.getBoundingClientRect().x;
-		columnWrapper.style.overflow = 'hidden';
-
-		const textString = this.props.brew.text.split(HARDPAGEBREAK_REGEX_V3)[targetPage -1];
-		const strippedString = textString.replace(/\n?\\softpage +\n/, '');
-
 		let child=columnWrapper.children.length -1;
+		let softInsert = false;
 
-		while ((child>-1) && ((columnWrapper.children[child].getBoundingClientRect().x > before) || (columnWrapper.children[child]?.className))) {
+		const before = columnWrapper.offsetWidth + columnWrapper.getBoundingClientRect().x;
+
+		while (child>-1){
+			if((columnWrapper.children[child].getBoundingClientRect().x < before) &&
+		      (getComputedStyle(columnWrapper.children[child])?.position !== 'absolute')) break;
+			if(columnWrapper.children[child].getBoundingClientRect().x > before) softInsert = true;
 			child--;
 		}
 
-		if(child != columnWrapper.children.length -1) {
-			console.log(child);
-			console.log(columnWrapper.children.length -1);
+		// Exit if the last element is in bounds and is not absolutely positioned
+		if((child==columnWrapper.children.length -1) && (getComputedStyle(columnWrapper.children[child])?.position !== 'absolute')) return;
+
+		columnWrapper.style.overflow = 'hidden';
+
+		const allPages = this.props.brew.text.split(PAGEBREAK_REGEX_V3);
+		while((targetPage>0) && (allPages[targetPage - 1]?.startsWith('\\softpage'))) targetPage--;
+		let textString = allPages[targetPage -1];  // Get the current page's text.
+	    for (let i = targetPage; (!allPages[i]?.startsWith('\\softpage') && (i<allPages.length)); i++)
+			textString +=`\n${allPages[i]}`;
+		const strippedString = textString?.replace(/\n?\\softpage +\n/, '\n');
+
+		if(softInsert) {
 			const lines = strippedString.split('\n');
 			for (let line in lines) {
 				const render = Markdown.render(lines[line]);
 				if(render.trim() == columnWrapper.children[child].outerHTML.trim()) {
+					softPageCalc = true;
 					const prevPages = this.props.brew.text.split(HARDPAGEBREAK_REGEX_V3).slice(0, targetPage-1).join(HARDPAGEBREAK_REGEX_V3);
                     const targetLine = prevPages.split('\n').length + parseInt(line, 10) + 1;
-					console.log(typeof prevPages.split('\n').length);
-					console.log(typeof line);
-					console.log(targetLine);
 					this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
-					// this.handleInject('\softpage');
+					this.handleInject('\\softpage');
 					columnWrapper.style=preserveStyles;
+					softPageCalc = false;
 					return;
 				}
 			}
