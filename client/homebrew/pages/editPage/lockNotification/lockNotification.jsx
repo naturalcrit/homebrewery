@@ -5,13 +5,14 @@ import Dialog from '../../../../components/dialog.jsx';
 
 function LockNotification(props) {
 	props = {
-		shareId     : 0,
-		disableLock : ()=>{},
-		lock        : {},
+		shareId         : 0,
+		disableLock     : ()=>{},
+		lock            : {},
+		reviewRequested : false,
 		...props
 	};
 
-	const [reviewState, setReviewState] = React.useState(false);
+	const [reviewState, setReviewState] = React.useState(props.reviewRequested);
 
 	const removeLock = async ()=>{
 		await request.put(`/admin/lock/review/request/${props.shareId}`)
