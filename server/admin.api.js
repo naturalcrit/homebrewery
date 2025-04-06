@@ -180,32 +180,33 @@ router.get('/api/lock/count', mw.adminOnly, async (req, res)=>{
 });
 
 router.post('/api/lock/:id', mw.adminOnly, async (req, res)=>{
-	try {
-		const lock = req.body;
-		lock.applied = new Date;
 
-		const filter = {
-			shareId : req.params.id
-		};
+	const lock = req.body;
+	lock.applied = new Date;
 
-		const brew = await HomebrewModel.findOne(filter);
+	const filter = {
+		shareId : req.params.id
+	};
 
-		if(brew.lock) {
-			// console.log('ALREADY LOCKED');
-			return res.json({ status: 'ALREADY LOCKED', detail: `Lock already exists on brew ${req.params.id} - ${brew.title}` });
-		}
+	const brew = await HomebrewModel.findOne(filter);
 
-		brew.lock = lock;
-		brew.markModified('lock');
-
-		await brew.save();
-
-		// console.log(`Lock applied to brew ID ${brew.shareId} - ${brew.title}`);
-		return res.json({ status: 'LOCKED', detail: `Lock applied to brew ID ${brew.shareId} - ${brew.title}`, ...lock });
-	} catch (error) {
-		console.error(error);
-		return res.json({ status: 'ERROR', error, message: `Unable to set lock on brew ${req.params.id}` });
+	if(brew.lock) {
+		// console.log('ALREADY LOCKED');
+		return res.json({ status: 'ALREADY LOCKED', detail: `Lock already exists on brew ${req.params.id} - ${brew.title}` });
 	}
+
+	brew.lock = lock;
+	brew.markModified('lock');
+
+	await brew.save()
+		.catch((error)=>{
+			console.error(error);
+			return res.json({ status: 'ERROR', error, message: `Unable to set lock on brew ${req.params.id}` });
+		});
+
+	// console.log(`Lock applied to brew ID ${brew.shareId} - ${brew.title}`);
+	return res.json({ status: 'LOCKED', detail: `Lock applied to brew ID ${brew.shareId} - ${brew.title}`, ...lock });
+
 });
 
 router.put('/api/unlock/:id', mw.adminOnly, async (req, res)=>{
