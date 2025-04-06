@@ -285,26 +285,27 @@ router.put('/admin/lock/review/request/:id', async (req, res)=>{
 });
 
 router.put('/api/lock/review/remove/:id', mw.adminOnly, async (req, res)=>{
-	try {
-		const filter = {
-			shareId                : req.params.id,
-			'lock.reviewRequested' : { $exists: 1 }
-		};
 
-		const brew = await HomebrewModel.findOne(filter);
-		if(!brew) { return res.json({ status: 'REVIEW REQUEST NOT REMOVED', detail: `Brew ID ${req.params.id} does not have a review pending!` }); };
-
-		brew.lock.reviewRequested = undefined;
-		brew.markModified('lock');
-
-		await brew.save();
-
-		// console.log(`Review request removed on brew ID ${brew.shareId} - ${brew.title}`);
-		return res.json({ status: 'REVIEW REQUEST REMOVED', detail: `Review request removed for brew ID ${brew.shareId} - ${brew.title}` });
-	} catch (error) {
-		console.error(error);
-		return res.json({ status: 'ERROR', detail: `Unable to remove request for review on brew ID ${req.params.id}`, error });
+	const filter = {
+		shareId                : req.params.id,
+		'lock.reviewRequested' : { $exists: 1 }
 	};
+
+	const brew = await HomebrewModel.findOne(filter);
+	if(!brew) { return res.json({ status: 'REVIEW REQUEST NOT REMOVED', detail: `Brew ID ${req.params.id} does not have a review pending!` }); };
+
+	brew.lock.reviewRequested = undefined;
+	brew.markModified('lock');
+
+	await brew.save()
+		.catch((error)=>{
+			console.error(error);
+			return res.json({ status: 'ERROR', detail: `Unable to remove request for review on brew ID ${req.params.id}`, error });
+		});
+
+	// console.log(`Review request removed on brew ID ${brew.shareId} - ${brew.title}`);
+	return res.json({ status: 'REVIEW REQUEST REMOVED', detail: `Review request removed for brew ID ${brew.shareId} - ${brew.title}` });
+
 });
 
 // #######################   NOTIFICATIONS
