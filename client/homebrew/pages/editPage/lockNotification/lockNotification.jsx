@@ -1,6 +1,6 @@
-require('./lockNotification.less');
-const React = require('react');
-const request = require('../../../utils/request-middleware.js');
+import './lockNotification.less';
+import * as React from 'react';
+import request from '../../../utils/request-middleware.js';
 import Dialog from '../../../../components/dialog.jsx';
 
 function LockNotification(props) {
