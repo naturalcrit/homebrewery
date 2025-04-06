@@ -257,31 +257,31 @@ router.get('/api/lock/reviews', mw.adminOnly, async (req, res)=>{
 router.put('/admin/lock/review/request/:id', async (req, res)=>{
 	// === This route is NOT Admin only ===
 	// Any user can request a review of their document
-	try {
-		const filter = {
-			shareId : req.params.id,
-			lock    : { $exists: 1 }
-		};
+	const filter = {
+		shareId : req.params.id,
+		lock    : { $exists: 1 }
+	};
 
-		const brew = await HomebrewModel.findOne(filter);
-		if(!brew) { return res.json({ status: 'NOT LOCKED', detail: `Brew ID ${req.params.id} is not locked!` }); };
+	const brew = await HomebrewModel.findOne(filter);
+	if(!brew) { return res.json({ status: 'NOT LOCKED', detail: `Brew ID ${req.params.id} is not locked!` }); };
 
-		if(brew.lock.reviewRequested){
-			// console.log(`Review already requested for brew ${brew.shareId} - ${brew.title}`);
-			return res.json({ status: 'ALREADY REQUESTED', detail: `Review already requested for brew ${brew.shareId} - ${brew.title}` });
-		};
+	if(brew.lock.reviewRequested){
+		// console.log(`Review already requested for brew ${brew.shareId} - ${brew.title}`);
+		return res.json({ status: 'ALREADY REQUESTED', detail: `Review already requested for brew ${brew.shareId} - ${brew.title}` });
+	};
 
-		brew.lock.reviewRequested = new Date();
-		brew.markModified('lock');
+	brew.lock.reviewRequested = new Date();
+	brew.markModified('lock');
 
-		await brew.save();
+	await brew.save()
+		.catch((error)=>{
+			console.error(error);
+			return res.json({ status: 'ERROR', detail: `Unable to set request for review on brew ID ${req.params.id}`, error });
+		});
 
-		// console.log(`Review requested on brew ${brew.shareId} - ${brew.title}`);
-		return res.json({ status: 'REVIEW REQUESTED', detail: `Review requested on brew ID ${brew.shareId} - ${brew.title}` });
-	} catch (error) {
-		console.error(error);
-		return res.json({ status: 'ERROR', detail: `Unable to set request for review on brew ID ${req.params.id}`, error });
-	}
+	// console.log(`Review requested on brew ${brew.shareId} - ${brew.title}`);
+	return res.json({ status: 'REVIEW REQUESTED', detail: `Review requested on brew ID ${brew.shareId} - ${brew.title}` });
+
 });
 
 router.put('/api/lock/review/remove/:id', mw.adminOnly, async (req, res)=>{
