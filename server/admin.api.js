@@ -164,6 +164,8 @@ router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 	}
 });
 
+// #######################   LOCKS
+
 router.get('/api/lock/count', mw.adminOnly, async (req, res)=>{
 
 	const countLocksQuery = {
