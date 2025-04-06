@@ -210,47 +210,48 @@ router.post('/api/lock/:id', mw.adminOnly, async (req, res)=>{
 });
 
 router.put('/api/unlock/:id', mw.adminOnly, async (req, res)=>{
-	try {
-		const filter = {
-			shareId : req.params.id
-		};
 
-		const brew = await HomebrewModel.findOne(filter);
+	const filter = {
+		shareId : req.params.id
+	};
 
-		if(!brew.lock) return res.json({ status: 'NOT LOCKED', detail: `Brew ID ${req.params.id} is not locked!` });
+	const brew = await HomebrewModel.findOne(filter);
 
-		brew.lock = undefined;
-		brew.markModified('lock');
+	if(!brew.lock) return res.json({ status: 'NOT LOCKED', detail: `Brew ID ${req.params.id} is not locked!` });
 
-		await brew.save();
+	brew.lock = undefined;
+	brew.markModified('lock');
 
-		// console.log(`Lock removed from brew ID ${brew.shareId} - ${brew.title}`);
-	} catch (error) {
-		console.error(error);
-		return res.json({ status: 'ERROR', detail: `Unable to clear lock on brew ${req.params.id}`, error });
-	}
+	await brew.save()
+		.catch((error)=>{
+			console.error(error);
+			return res.json({ status: 'ERROR', detail: `Unable to clear lock on brew ${req.params.id}`, error });
+		});
+
+	// console.log(`Lock removed from brew ID ${brew.shareId} - ${brew.title}`);
+
 
 	return res.json({ status: 'UNLOCKED', detail: `Lock removed from brew ID ${req.params.id}` });
 });
 
 router.get('/api/lock/reviews', mw.adminOnly, async (req, res)=>{
-	try {
-		const countReviewsPipeline = [
-			{
+	const countReviewsPipeline = [
+		{
 			  $match :
 				{
 				  'lock.reviewRequested' : { '$exists': 1 }
 				},
-			}
-		];
-		const reviewDocuments = await HomebrewModel.aggregate(countReviewsPipeline);
-		return res.json({
-			reviewDocuments
+		}
+	];
+	const reviewDocuments = await HomebrewModel.aggregate(countReviewsPipeline)
+		.catch((error)=>{
+			console.error(error);
+			return res.json({ status: 'ERROR', detail: 'Unable to get review collection', error });
 		});
-	} catch (error) {
-		console.error(error);
-		return res.json({ status: 'ERROR', detail: 'Unable to get review collection', error });
-	}
+	return res.json({
+		reviewDocuments
+	});
+
 });
 
 router.put('/admin/lock/review/request/:id', async (req, res)=>{
