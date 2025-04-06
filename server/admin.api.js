@@ -165,21 +165,18 @@ router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 });
 
 router.get('/api/lock/count', mw.adminOnly, async (req, res)=>{
-	try {
-		const countLocksQuery = {
-			lock : { $exists: true }
-		};
-		const count = await HomebrewModel.countDocuments(countLocksQuery)
-			.then((result)=>{
-				return result;
-			});
-		return res.json({
-			count
+
+	const countLocksQuery = {
+		lock : { $exists: true }
+	};
+	const count = await HomebrewModel.countDocuments(countLocksQuery)
+		.catch((error)=>{
+			console.error(error);
+			return res.json({ status: 'ERROR', detail: 'Unable to get lock count', error });
 		});
-	} catch (error) {
-		console.error(error);
-		return res.json({ status: 'ERROR', detail: 'Unable to get lock count', error });
-	}
+
+	return res.json({ count });
+
 });
 
 router.post('/api/lock/:id', mw.adminOnly, async (req, res)=>{
