@@ -118,7 +118,7 @@ const api = {
 					throw { ...accessError, message: 'User is not logged in', HBErrorCode: '04' };
 			}
 
-			if(stub?.lock && accessType != 'edit') {
+			if(stub?.lock && accessType === 'share') {
 				throw { HBErrorCode: '51', code: stub.lock.code, message: stub.lock.shareMessage, brewId: stub.shareId, brewTitle: stub.title };
 			}
 
