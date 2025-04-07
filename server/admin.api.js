@@ -248,6 +248,12 @@ router.get('/api/lock/reviews', mw.adminOnly, asyncHandler(async (req, res)=>{
 				{
 				  'lock.reviewRequested' : { '$exists': 1 }
 				},
+		},
+		{
+			$project : {
+				shareId : 1,
+				title   : 1
+			}
 		}
 	];
 	const reviewDocuments = await HomebrewModel.aggregate(countReviewsPipeline)
