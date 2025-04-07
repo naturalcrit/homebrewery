@@ -127,12 +127,12 @@ const LockBrew = createClass({
 					</label>
 					<br />
 					<label>
-						Edit Message:
+						Private Message:
 						{this.renderInput('editMessage')}
 					</label>
 					<br />
 					<label>
-						Share Message:
+						Public Message:
 						{this.renderInput('shareMessage')}
 					</label>
 					<br />
