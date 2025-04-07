@@ -59,7 +59,8 @@ const LockBrew = createClass({
 			code         : 455,
 			editMessage  : '',
 			shareMessage : 'This Brew has been locked.',
-			result       : {}
+			result       : {},
+			overwrite    : false
 		};
 	},
 
@@ -73,6 +74,7 @@ const LockBrew = createClass({
 		e.preventDefault();
 		if(!this.state.editMessage) return;
 		const newLock = {
+			overwrite    : this.state.overwrite,
 			code         : parseInt(this.state.code) || 100,
 			editMessage  : this.state.editMessage,
 			shareMessage : this.state.shareMessage,
@@ -137,6 +139,10 @@ const LockBrew = createClass({
 					</label>
 					<br />
 					<label>
+						Overwrite
+						<input name='overwrite' className='checkbox' type='checkbox' value={this.state.overwrite} onClick={()=>{return this.setState((prevState)=>{return { overwrite: !prevState.overwrite };});}} />
+					</label>
+					<label>
 						<input type='submit' />
 					</label>
 				</form>
@@ -163,8 +169,8 @@ const LockBrew = createClass({
 				<div className='lockMessages'>
 					<h3>Messages</h3>
 					<ul>
-						<li><b>Edit Message:</b> This is the private message that is ONLY displayed to the authors of the locked brew. This message MUST specify exactly what actions must be taken in order to have the brew unlocked.</li>
-						<li><b>Share Message:</b> This is the public message that is displayed to the EVERYONE that attempts to view the locked brew.</li>
+						<li><b>Private Message:</b> This is the private message that is ONLY displayed to the authors of the locked brew. This message MUST specify exactly what actions must be taken in order to have the brew unlocked.</li>
+						<li><b>Public Message:</b> This is the public message that is displayed to the EVERYONE that attempts to view the locked brew.</li>
 					</ul>
 				</div>
 			</div>
