@@ -35,7 +35,9 @@ const LockTools = createClass({
 			<p>Number of brews currently locked: {this.state.reviewCount}</p>
 			<button onClick={this.updateReviewCount}>REFRESH</button>
 			<hr />
-			<LockTable title='Brews Awaiting Review' resultName='reviewDocuments' fetchURL='/api/lock/reviews' propertyNames={['shareId', 'title']} ></LockTable>
+			<LockTable title='Locked Brews' text='Total Locked Brews' resultName='lockedDocuments' fetchURL='/api/locks' propertyNames={['shareId', 'title']} ></LockTable>
+			<hr />
+			<LockTable title='Brews Awaiting Review' text='Total Reviews Waiting' resultName='reviewDocuments' fetchURL='/api/lock/reviews' propertyNames={['shareId', 'title']} ></LockTable>
 			<hr />
 			<LockBrew></LockBrew>
 			<hr />
@@ -175,6 +177,7 @@ const LockTable = createClass({
 	getDefaultProps : function() {
 		return {
 			title         : '',
+			text          : '',
 			fetchURL      : '/api/locks',
 			resultName    : '',
 			propertyNames : ['shareId']
@@ -212,7 +215,7 @@ const LockTable = createClass({
 				</div>
 				{this.state.result[this.props.resultName] &&
 				<>
-					<p>Total Reviews Waiting: {this.state.result[this.props.resultName].length}</p>
+					<p>{this.props.text}: {this.state.result[this.props.resultName].length}</p>
 					<table className='lockTable'>
 						<thead>
 							<tr>
