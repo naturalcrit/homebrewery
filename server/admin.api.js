@@ -180,6 +180,31 @@ router.get('/api/lock/count', mw.adminOnly, asyncHandler(async (req, res)=>{
 
 }));
 
+router.get('/api/locks', mw.adminOnly, asyncHandler(async (req, res)=>{
+	const countLocksPipeline = [
+		{
+			  $match :
+				{
+				  'lock' : { '$exists': 1 }
+				},
+		},
+		{
+			$project : {
+				shareId : 1,
+				title   : 1
+			}
+		}
+	];
+	const lockedDocuments = await HomebrewModel.aggregate(countLocksPipeline)
+		.catch((error)=>{
+			throw { name: 'Can Not Get Locked Brews', message: 'Unable to get locked brew collection', status: 500, HBErrorCode: '68', error };
+		});
+	return res.json({
+		lockedDocuments
+	});
+
+}));
+
 router.post('/api/lock/:id', mw.adminOnly, asyncHandler(async (req, res)=>{
 
 	const lock = req.body;
