@@ -258,7 +258,7 @@ router.get('/api/lock/reviews', mw.adminOnly, asyncHandler(async (req, res)=>{
 	];
 	const reviewDocuments = await HomebrewModel.aggregate(countReviewsPipeline)
 		.catch((error)=>{
-			throw { name: 'Unable to get reviews', message: 'Unable to get review collection', status: 500, HBErrorCode: '68', error };
+			throw { name: 'Can Not Get Reviews', message: 'Unable to get review collection', status: 500, HBErrorCode: '68', error };
 		});
 	return res.json({
 		reviewDocuments
@@ -275,11 +275,11 @@ router.put('/admin/lock/review/request/:id', asyncHandler(async (req, res)=>{
 	};
 
 	const brew = await HomebrewModel.findOne(filter);
-	if(!brew) { return res.json({ status: 'NOT LOCKED', detail: `Brew ID ${req.params.id} is not locked!` }); };
+	if(!brew) { throw { name: 'Brew Not Found', message: `Cannot find a locked brew with ID ${req.params.id}`, code: 500, HBErrorCode: '70' }; };
 
 	if(brew.lock.reviewRequested){
 		// console.log(`Review already requested for brew ${brew.shareId} - ${brew.title}`);
-		return res.json({ status: 'ALREADY REQUESTED', detail: `Review already requested for brew ${brew.shareId} - ${brew.title}` });
+		throw { name: 'Review Already Requested', message: `Review already requested for brew ${brew.shareId} - ${brew.title}`, code: 500, HBErrorCode: '71' };
 	};
 
 	brew.lock.reviewRequested = new Date();
@@ -287,12 +287,11 @@ router.put('/admin/lock/review/request/:id', asyncHandler(async (req, res)=>{
 
 	await brew.save()
 		.catch((error)=>{
-			console.error(error);
-			return res.json({ status: 'ERROR', detail: `Unable to set request for review on brew ID ${req.params.id}`, error });
+			throw { name: 'Can Not Set Review Request', message: `Unable to set request for review on brew ID ${req.params.id}`, code: 500, HBErrorCode: '69', error };
 		});
 
 	// console.log(`Review requested on brew ${brew.shareId} - ${brew.title}`);
-	return res.json({ status: 'REVIEW REQUESTED', detail: `Review requested on brew ID ${brew.shareId} - ${brew.title}` });
+	return res.json({ name: 'Review Requested', message: `Review requested on brew ID ${brew.shareId} - ${brew.title}` });
 
 }));
 
@@ -304,19 +303,18 @@ router.put('/api/lock/review/remove/:id', mw.adminOnly, asyncHandler(async (req,
 	};
 
 	const brew = await HomebrewModel.findOne(filter);
-	if(!brew) { return res.json({ status: 'REVIEW REQUEST NOT REMOVED', detail: `Brew ID ${req.params.id} does not have a review pending!` }); };
+	if(!brew) { throw { name: 'Can Not Clear Review Request', message: `Brew ID ${req.params.id} does not have a review pending!`, HBErrorCode: '73' }; };
 
 	brew.lock.reviewRequested = undefined;
 	brew.markModified('lock');
 
 	await brew.save()
 		.catch((error)=>{
-			console.error(error);
-			return res.json({ status: 'ERROR', detail: `Unable to remove request for review on brew ID ${req.params.id}`, error });
+			throw { name: 'Can Not Clear Review Request', message: `Unable to remove request for review on brew ID ${req.params.id}`, HBErrorCode: '72', error };
 		});
 
 	// console.log(`Review request removed on brew ID ${brew.shareId} - ${brew.title}`);
-	return res.json({ status: 'REVIEW REQUEST REMOVED', detail: `Review request removed for brew ID ${brew.shareId} - ${brew.title}` });
+	return res.json({ name: 'Review Request Cleared', message: `Review request removed for brew ID ${brew.shareId} - ${brew.title}` });
 
 }));
 

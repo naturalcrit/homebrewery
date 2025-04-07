@@ -203,23 +203,33 @@ const errorIndex = (props)=>{
 
 		// ####### Lock Errors
 
-		'60' : dedent`General Lock Error`,
+		'60' : dedent`Lock Error: General`,
 
-		'61' : dedent`Lock Error: Unable to get lock count`,
+		'61' : dedent`Lock Get Error: Unable to get lock count`,
 
-		'62' : dedent`Lock Error: Cannot lock`,
+		'62' : dedent`Lock Set Error: Cannot lock`,
 
-		'63' : dedent`Lock Error: Cannot lock - brew not found`,
+		'63' : dedent`Lock Set Error: Brew not found`,
 
-		'64' : dedent`Lock Error: Cannot lock - already locked`,
+		'64' : dedent`Lock Set Error: Already locked`,
 
-		'65' : dedent`Lock Error: Cannot unlock`,
+		'65' : dedent`Lock Remove Error: Cannot unlock`,
 
-		'66' : dedent`Lock Error: Cannot unlock - brew not found`,
+		'66' : dedent`Lock Remove Error: Brew not found`,
 
-		'67' : dedent`Lock Error: Cannot unlock - not locked`,
+		'67' : dedent`Lock Remove Error: Not locked`,
 
-		'68' : dedent`Lock Error: Cannot get pending reviews`,
+		'68' : dedent`Lock Get Review Error: Cannot get review requests`,
+
+		'69' : dedent`Lock Set Review Error: Cannot set review request`,
+
+		'70' : dedent`Lock Set Review Error: Brew not found`,
+
+		'71' : dedent`Lock Set Review Error: Review already requested`,
+
+		'72' : dedent`Lock Remove Review Error: Cannot clear review request`,
+
+		'73' : dedent`Lock Remove Review Error: Brew not found`,
 
 		// ####### Other Errors
 
