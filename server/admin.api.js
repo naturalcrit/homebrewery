@@ -166,10 +166,6 @@ router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 
 // #######################   LOCKS
 
-router.get('/api/lock/throw', asyncHandler(async ()=>{
-	throw { HBErrorCode: '60', code: 500, message: 'Thrown deliberately' };
-}));
-
 router.get('/api/lock/count', mw.adminOnly, asyncHandler(async (req, res)=>{
 
 	const countLocksQuery = {
