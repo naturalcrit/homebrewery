@@ -201,6 +201,28 @@ const errorIndex = (props)=>{
 		## Access Denied
 		You need to provide correct administrator credentials to access this page.`,
 
+		// ####### Lock Errors
+
+		'60' : dedent`General Lock Error`,
+
+		'61' : dedent`Lock Error: Unable to get lock count`,
+
+		'62' : dedent`Lock Error: Cannot lock`,
+
+		'63' : dedent`Lock Error: Cannot lock - brew not found`,
+
+		'64' : dedent`Lock Error: Cannot lock - already locked`,
+
+		'65' : dedent`Lock Error: Cannot unlock`,
+
+		'66' : dedent`Lock Error: Cannot unlock - brew not found`,
+
+		'67' : dedent`Lock Error: Cannot unlock - not locked`,
+
+		'68' : dedent`Lock Error: Cannot get pending reviews`,
+
+		// ####### Other Errors
+
 		'90' : dedent` An unexpected error occurred while looking for these brews.  
             Try again in a few minutes.`,
 

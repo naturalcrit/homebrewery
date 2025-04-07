@@ -7,6 +7,7 @@ const createClass = require('create-react-class');
 import request from '../../homebrew/utils/request-middleware.js';
 
 const LockTools = createClass({
+	displayName     : 'LockTools',
 	getInitialState : function() {
 		return {
 			fetching    : false,
@@ -48,6 +49,7 @@ const LockTools = createClass({
 });
 
 const LockBrew = createClass({
+	displayName     : 'LockBrew',
 	getInitialState : function() {
 		// Default values
 		return {
@@ -80,6 +82,9 @@ const LockBrew = createClass({
 			.set('Content-Type', 'application/json')
 			.then((response)=>{
 				this.setState({ result: response.body });
+			})
+			.catch((err)=>{
+				this.setState({ result: err.response.body });
 			});
 	},
 
@@ -166,6 +171,7 @@ const LockBrew = createClass({
 });
 
 const LockTable = createClass({
+	displayName     : 'LockTable',
 	getDefaultProps : function() {
 		return {
 			title         : '',
@@ -188,7 +194,7 @@ const LockTable = createClass({
 
 		request.get(this.props.fetchURL)
 			.then((res)=>this.setState({ result: res.body }))
-			.catch((err)=>this.setState({ error: err }))
+			.catch((err)=>this.setState({ result: err.response.body }))
 			.finally(()=>{
 				this.setState({ searching: false });
 			});
@@ -239,6 +245,7 @@ const LockTable = createClass({
 });
 
 const LockLookup = createClass({
+	displayName     : 'LockLookup',
 	getDefaultProps : function() {
 		return {
 			fetchURL : '/api/lookup'
@@ -263,14 +270,14 @@ const LockLookup = createClass({
 
 		request.put(`${this.props.fetchURL}/${this.state.query}`)
 			.then((res)=>this.setState({ result: res.body }))
-			.catch((err)=>this.setState({ error: err }))
+			.catch((err)=>this.setState({ result: err.response.body }))
 			.finally(()=>{
 				this.setState({ searching: false });
 			});
 	},
 
 	renderResult : function(){
-		return <>
+		return <div className='lockLookup'>
 			<h3>Result:</h3>
 			<table>
 				<tbody>
@@ -283,7 +290,7 @@ const LockLookup = createClass({
 					})}
 				</tbody>
 			</table>
-		</>;
+		</div>;
 	},
 
 	render : function() {
