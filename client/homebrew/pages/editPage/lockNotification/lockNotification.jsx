@@ -23,7 +23,7 @@ function LockNotification(props) {
 	};
 
 	const renderReviewButton = function(){
-		if(reviewState || props.lock.reviewRequested){ return <button className='inactive'>REVIEW REQUESTED</button>; };
+		if(reviewState){ return <button className='inactive'>REVIEW REQUESTED</button>; };
 		return <button onClick={removeLock}>REQUEST LOCK REMOVAL</button>;
 	};
 
