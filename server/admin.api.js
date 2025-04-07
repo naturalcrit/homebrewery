@@ -208,6 +208,10 @@ router.get('/api/locks', mw.adminOnly, asyncHandler(async (req, res)=>{
 router.post('/api/lock/:id', mw.adminOnly, asyncHandler(async (req, res)=>{
 
 	const lock = req.body;
+
+	const overwrite = lock.overwrite || false;
+	lock.overwrite = undefined;
+
 	lock.applied = new Date;
 
 	const filter = {
@@ -218,7 +222,7 @@ router.post('/api/lock/:id', mw.adminOnly, asyncHandler(async (req, res)=>{
 
 	if(!brew) throw { name: 'Brew Not Found', message: 'Cannot find brew to lock', shareId: req.params.id, status: 500, HBErrorCode: '63' };
 
-	if(brew.lock) {
+	if(brew.lock && !overwrite) {
 		// console.log('ALREADY LOCKED');
 		throw { name: 'Already Locked', message: 'Lock already exists on brew', shareId: req.params.id, title: brew.title, status: 500, HBErrorCode: '64' };
 	}
