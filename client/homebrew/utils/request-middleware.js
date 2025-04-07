@@ -1,8 +1,6 @@
-import packageJSON from '../../../package.json' with { type: 'json' };
 import request from 'superagent';
 
-
-const addHeader = (request)=>request.set('Homebrewery-Version', packageJSON.version);
+const addHeader = (request)=>request.set('Homebrewery-Version', global.version);
 
 const requestMiddleware = {
 	get    : (path)=>addHeader(request.get(path)),
