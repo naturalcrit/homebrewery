@@ -119,7 +119,7 @@ const api = {
 			}
 
 			if(stub?.lock && accessType === 'share') {
-				throw { HBErrorCode: '51', code: stub.lock.code, message: stub.lock.shareMessage, brewId: stub.shareId, brewTitle: stub.title };
+				throw { HBErrorCode: '51', code: stub.lock.code, message: stub.lock.shareMessage, brewId: stub.shareId, brewTitle: stub.title, brewAuthors: stub.authors };
 			}
 
 			// If there's a google id, get it if requesting the full brew or if no stub found yet

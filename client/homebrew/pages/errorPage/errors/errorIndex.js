@@ -194,7 +194,9 @@ const errorIndex = (props)=>{
 
 		**Brew ID:**  ${props.brew.brewId}
 		
-		**Brew Title:** ${escape(props.brew.brewTitle)}`,
+		**Brew Title:** ${escape(props.brew.brewTitle)}
+		
+		**Brew Authors:** ${escape(props.brew.brewAuthors.length ? props.brew.brewAuthors.join(',') : 'No listed authors')}`,
 
 		// ####### Admin page error #######
 		'52' : dedent`
