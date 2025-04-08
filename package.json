@@ -89,7 +89,7 @@
     "@babel/preset-env": "^7.26.9",
     "@babel/preset-react": "^7.26.3",
     "@googleapis/drive": "^11.0.0",
-    "body-parser": "^1.20.2",
+    "body-parser": "^2.2.0",
     "classnames": "^2.5.1",
     "codemirror": "^5.65.6",
     "cookie-parser": "^1.4.7",
