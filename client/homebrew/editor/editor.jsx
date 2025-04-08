@@ -61,7 +61,7 @@ const Editor = createClass({
 	getInitialState : function() {
 		return {
 			editorTheme : this.props.editorTheme,
-			view        : 'text' //'text', 'style', 'meta', 'snip'
+			view        : 'text' //'text', 'style', 'meta', 'snippet'
 		};
 	},
 
@@ -71,7 +71,7 @@ const Editor = createClass({
 	isText  : function() {return this.state.view == 'text';},
 	isStyle : function() {return this.state.view == 'style';},
 	isMeta  : function() {return this.state.view == 'meta';},
-	isSnip  : function() {return this.state.view == 'snip';},
+	isSnip  : function() {return this.state.view == 'snippet';},
 
 	componentDidMount : function() {
 
@@ -167,7 +167,7 @@ const Editor = createClass({
 
 	highlightCustomMarkdown : function(){
 		if(!this.codeEditor.current) return;
-		if((this.state.view === 'text') ||(this.state.view === 'snip')) {
+		if((this.state.view === 'text') ||(this.state.view === 'snippet')) {
 			const codeMirror = this.codeEditor.current.codeMirror;
 
 			codeMirror.operation(()=>{ // Batch CodeMirror styling

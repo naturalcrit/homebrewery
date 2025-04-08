@@ -259,8 +259,8 @@ const Snippetbar = createClass({
 						onClick={()=>this.props.onViewChange('style')}>
 						<i className='fa fa-paint-brush' />
 					</div>
-					<div className={cx('snip', { selected: this.props.view === 'snip' })}
-						onClick={()=>this.props.onViewChange('snip')}>
+					<div className={cx('snippet', { selected: this.props.view === 'snippet' })}
+						onClick={()=>this.props.onViewChange('snippet')}>
 						<i className='fas fa-th-list' />
 					</div>
 					<div className={cx('meta', { selected: this.props.view === 'meta' })}
