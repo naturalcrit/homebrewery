@@ -4,6 +4,8 @@ const WatercolorGen = require('./snippets/watercolor.gen.js');
 const ImageMaskGen  = require('./snippets/imageMask.gen.js');
 const FooterGen     = require('./snippets/footer.gen.js');
 const dedent        = require('dedent-tabs').default;
+const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
+const indexGen           = require('./snippets/index.gen.js');
 
 module.exports = [
 
@@ -35,6 +37,11 @@ module.exports = [
 						name : 'Auto-incrementing Page Number',
 						icon : 'fas fa-sort-numeric-down',
 						gen  : '{{pageNumber,auto}}\n'
+					},
+					{
+						name : 'Variable Auto Page Number',
+						icon : 'fas fa-sort-numeric-down',
+						gen  : '{{pageNumber $[HB_pageNumber]}}\n'
 					},
 					{
 						name : 'Skip Page Number Increment this Page',
@@ -141,7 +148,53 @@ module.exports = [
 						[Homebrewery.Naturalcrit.com](https://homebrewery.naturalcrit.com)
 						}}\n\n`;
 				},
-			}
+			},
+			{
+				name         : 'Table of Contents',
+				icon         : 'fas fa-book',
+				gen          : TableOfContentsGen,
+				experimental : true,
+				subsnippets  : [
+					{
+						name         : 'Table of Contents',
+						icon         : 'fas fa-book',
+						gen          : TableOfContentsGen,
+						experimental : true
+					},
+					{
+						name : 'Include in ToC up to H3',
+						icon : 'fas fa-dice-three',
+						gen  : dedent `\n{{tocDepthH3
+							}}\n`,
+
+					},
+					{
+						name : 'Include in ToC up to H4',
+						icon : 'fas fa-dice-four',
+						gen  : dedent `\n{{tocDepthH4
+							}}\n`,
+					},
+					{
+						name : 'Include in ToC up to H5',
+						icon : 'fas fa-dice-five',
+						gen  : dedent `\n{{tocDepthH5
+							}}\n`,
+					},
+					{
+						name : 'Include in ToC up to H6',
+						icon : 'fas fa-dice-six',
+						gen  : dedent `\n{{tocDepthH6
+							}}\n`,
+					}
+				]
+			},
+			{
+				name         : 'Index',
+				icon         : 'fas fa-bars',
+				gen          : indexGen,
+				experimental : true
+			},
+
 		]
 	},
 	{
@@ -153,7 +206,7 @@ module.exports = [
 				name : 'Add Comment',
 				icon : 'fas fa-code',
 				gen  : '/* This is a comment that will not be rendered into your brew. */'
-			},
+			}
 		]
 	},
 

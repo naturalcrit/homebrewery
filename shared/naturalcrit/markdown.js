@@ -8,6 +8,8 @@ import { markedSmartypantsLite as MarkedSmartypantsLite }                       
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
 import MarkedSubSuperText from 'marked-subsuper-text';
+import { romanize } from 'romans';
+import writtenNumber from 'written-number';
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
 import diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
@@ -59,6 +61,53 @@ mathParser.functions.signed = function (a) {
 	if(a >= 0) return `+${a}`;
 	return `${a}`;
 };
+// Add Roman numeral functions
+mathParser.functions.toRomans = function (a) {
+	return romanize(a);
+};
+mathParser.functions.toRomansUpper = function (a) {
+	return romanize(a).toUpperCase();
+};
+mathParser.functions.toRomansLower = function (a) {
+	return romanize(a).toLowerCase();
+};
+// Add character functions
+mathParser.functions.toChar = function (a) {
+	if(a <= 0) return a;
+	const genChars = function (i) {
+		return (i > 26 ? genChars(Math.floor((i - 1) / 26)) : '') + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[(i - 1) % 26];
+	};
+	return genChars(a);
+};
+mathParser.functions.toCharUpper = function (a) {
+	return mathParser.functions.toChar(a).toUpperCase();
+};
+mathParser.functions.toCharLower = function (a) {
+	return mathParser.functions.toChar(a).toLowerCase();
+};
+// Add word functions
+mathParser.functions.toWords = function (a) {
+	return writtenNumber(a);
+};
+mathParser.functions.toWordsUpper = function (a) {
+	return mathParser.functions.toWords(a).toUpperCase();
+};
+mathParser.functions.toWordsLower = function (a) {
+	return mathParser.functions.toWords(a).toLowerCase();
+};
+mathParser.functions.toWordsCaps = function (a) {
+	const words = mathParser.functions.toWords(a).split(' ');
+	return words.map((word)=>{
+		return word.replace(/(?:^|\b|\s)(\w)/g, function(w, index) {
+			return index === 0 ? w.toLowerCase() : w.toUpperCase();
+		  });
+	}).join(' ');
+};
+
+// Normalize variable names; trim edge spaces and shorten blocks of whitespace to 1 space
+const normalizeVarNames = (label)=>{
+	return label.trim().replace(/\s+/g, ' ');
+};
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
 renderer.html = function (token) {
@@ -99,7 +148,7 @@ renderer.link = function (token) {
 	}
 	let out = `<a href="${escape(href)}"`;
 	if(title) {
-		out += ` title="${title}"`;
+		out += ` title="${escape(title)}"`;
 	}
 	if(self) {
 		out += ' target="_self"';
@@ -509,7 +558,7 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 	const match = regex.exec(input);
 
 	const prefix = match[1];
-	const label  = match[2];
+	const label  = normalizeVarNames(match[2]); // Ensure the label name is normalized as it should be in the var stack.
 
 	//v=====--------------------< HANDLE MATH >-------------------=====v//
 	const mathRegex = /[a-z]+\(|[+\-*/^(),]/g;
@@ -664,8 +713,8 @@ function MarkedVariables() {
 							});
 					}
 					if(match[3]) { // Block Definition
-						const label   = match[4] ? match[4].trim().replace(/\s+/g, ' ')    : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-						const content = match[5] ? match[5].trim().replace(/[ \t]+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						const label   = match[4] ? normalizeVarNames(match[4]) : null;
+						const content = match[5] ? match[5].trim().replace(/[ \t]+/g, ' ') : null; // Normalize text content (except newlines for block-level content)
 
 						varsQueue.push(
 							{ type    : 'varDefBlock',
@@ -674,7 +723,7 @@ function MarkedVariables() {
 							});
 					}
 					if(match[6]) { // Block Call
-						const label = match[7] ? match[7].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						const label = match[7] ? normalizeVarNames(match[7]) : null;
 
 						varsQueue.push(
 							{ type    : 'varCallBlock',
@@ -683,7 +732,7 @@ function MarkedVariables() {
 							});
 					}
 					if(match[8]) { // Inline Definition
-						const label = match[10] ? match[10].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						const label = match[10] ? normalizeVarNames(match[10]) : null;
 						let content = match[11] || null;
 
 						// In case of nested (), find the correct matching end )
@@ -715,7 +764,7 @@ function MarkedVariables() {
 							});
 					}
 					if(match[12]) { // Inline Call
-						const label = match[13] ? match[13].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						const label = match[13] ? normalizeVarNames(match[13]) : null;
 
 						varsQueue.push(
 							{ type    : 'varCallInline',
@@ -902,7 +951,13 @@ let globalPageNumber = 0;
 const Markdown = {
 	marked : Marked,
 	render : (rawBrewText, pageNumber=0)=>{
-		globalVarsList[pageNumber] = {};					//Reset global links for current page, to ensure values are parsed in order
+		const lastPageNumber = pageNumber > 0 ? globalVarsList[pageNumber - 1].HB_pageNumber.content : 0;
+		globalVarsList[pageNumber] = {							//Reset global links for current page, to ensure values are parsed in order
+			'HB_pageNumber' : {									//Add document variables for this page
+				content  : !isNaN(Number(lastPageNumber)) ? Number(lastPageNumber) + 1 : lastPageNumber,
+				resolved : true
+			}
+		};
 		varsQueue                  = [];						//Could move into MarkedVariables()
 		globalPageNumber           = pageNumber;
 		if(pageNumber==0) {
