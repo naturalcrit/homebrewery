@@ -8,10 +8,10 @@ import LockTools  from './lockTools/lockTools.jsx';
 const tabGroups = ['brew', 'notifications', 'authors', 'locks'];
 
 const Admin = ()=>{
-	const [currentTab, setCurrentTab] = useState('brew');
+	const [currentTab, setCurrentTab] = useState('');
 
 	useEffect(()=>{
-		setCurrentTab(localStorage.getItem('hbAdminTab'));
+		setCurrentTab(localStorage.getItem('hbAdminTab') || 'brew');
 	}, []);
 
 	useEffect(()=>{
