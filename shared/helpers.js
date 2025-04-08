@@ -91,16 +91,12 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const metadataSection = brew.text.slice(11, index + 1);
 		const metadata = yaml.load(metadataSection);
 		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
+		brew.snippets = yamlSnippetsToText(_.pick(metadata, ['snippets']).snippets);
 		brew.text = brew.text.slice(index + 6);
 	}
 	if(brew.text.startsWith('```css')) {
 		const index = brew.text.indexOf('\n```\n\n');
 		brew.style = brew.text.slice(7, index + 1);
-		brew.text = brew.text.slice(index + 6);
-	}
-	if(brew.text.startsWith('```snippets')) {
-		const index = brew.text.indexOf('\n```\n\n');
-		brew.snippets = yamlSnippetsToText(yaml.load(brew.text.slice(11, index + 1))).slice(0, -1);
 		brew.text = brew.text.slice(index + 6);
 	}
 

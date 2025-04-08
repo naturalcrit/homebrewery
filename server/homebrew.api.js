@@ -170,12 +170,6 @@ const api = {
 
 	mergeBrewText : (brew)=>{
 		let text = brew.text;
-		if(brew.snippets !== undefined) {
-			text = `\`\`\`snippets\n` +
-				`${yaml.dump(brewSnippetsToJSON('brew_snippets', brew.snippets, null, false))}` +
-				`\`\`\`\n\n` +
-				`${text}`;
-		}
 		if(brew.style !== undefined) {
 			text = `\`\`\`css\n` +
 				`${brew.style || ''}\n` +
@@ -183,6 +177,7 @@ const api = {
 				`${text}`;
 		}
 		const metadata = _.pick(brew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']);
+		metadata.snippets = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false);
 		text = `\`\`\`metadata\n` +
 			`${yaml.dump(metadata)}\n` +
 			`\`\`\`\n\n` +
