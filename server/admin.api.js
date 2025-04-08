@@ -191,7 +191,9 @@ router.get('/api/locks', mw.adminOnly, asyncHandler(async (req, res)=>{
 		{
 			$project : {
 				shareId : 1,
-				title   : 1
+				editId  : 1,
+				title   : 1,
+				lock    : 1
 			}
 		}
 	];
@@ -271,7 +273,9 @@ router.get('/api/lock/reviews', mw.adminOnly, asyncHandler(async (req, res)=>{
 		{
 			$project : {
 				shareId : 1,
-				title   : 1
+				editId  : 1,
+				title   : 1,
+				lock    : 1
 			}
 		}
 	];
