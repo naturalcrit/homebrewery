@@ -223,7 +223,6 @@ router.post('/api/lock/:id', mw.adminOnly, asyncHandler(async (req, res)=>{
 	if(!brew) throw { name: 'Brew Not Found', message: 'Cannot find brew to lock', shareId: req.params.id, status: 500, HBErrorCode: '63' };
 
 	if(brew.lock && !overwrite) {
-		// console.log('ALREADY LOCKED');
 		throw { name: 'Already Locked', message: 'Lock already exists on brew', shareId: req.params.id, title: brew.title, status: 500, HBErrorCode: '64' };
 	}
 
@@ -235,7 +234,6 @@ router.post('/api/lock/:id', mw.adminOnly, asyncHandler(async (req, res)=>{
 			throw { name: 'Already Locked', message: 'Unable to set lock', shareId: req.params.id, status: 500, HBErrorCode: '62', error };
 		});
 
-	// console.log(`Lock applied to brew ID ${brew.shareId} - ${brew.title}`);
 	return res.json({ name: 'LOCKED', message: `Lock applied to brew ID ${brew.shareId} - ${brew.title}`, ...lock });
 
 }));
@@ -259,9 +257,6 @@ router.put('/api/unlock/:id', mw.adminOnly, asyncHandler(async (req, res)=>{
 		.catch((error)=>{
 			throw { name: 'Cannot Unlock', message: 'Unable to clear lock', shareId: req.params.id, status: 500, HBErrorCode: '65', error };
 		});
-
-	// console.log(`Lock removed from brew ID ${brew.shareId} - ${brew.title}`);
-
 
 	return res.json({ name: 'Unlocked', message: `Lock removed from brew ID ${req.params.id}` });
 }));
@@ -303,7 +298,6 @@ router.put('/admin/lock/review/request/:id', asyncHandler(async (req, res)=>{
 	if(!brew) { throw { name: 'Brew Not Found', message: `Cannot find a locked brew with ID ${req.params.id}`, code: 500, HBErrorCode: '70' }; };
 
 	if(brew.lock.reviewRequested){
-		// console.log(`Review already requested for brew ${brew.shareId} - ${brew.title}`);
 		throw { name: 'Review Already Requested', message: `Review already requested for brew ${brew.shareId} - ${brew.title}`, code: 500, HBErrorCode: '71' };
 	};
 
@@ -315,7 +309,6 @@ router.put('/admin/lock/review/request/:id', asyncHandler(async (req, res)=>{
 			throw { name: 'Can Not Set Review Request', message: `Unable to set request for review on brew ID ${req.params.id}`, code: 500, HBErrorCode: '69', error };
 		});
 
-	// console.log(`Review requested on brew ${brew.shareId} - ${brew.title}`);
 	return res.json({ name: 'Review Requested', message: `Review requested on brew ID ${brew.shareId} - ${brew.title}` });
 
 }));
@@ -338,7 +331,6 @@ router.put('/api/lock/review/remove/:id', mw.adminOnly, asyncHandler(async (req,
 			throw { name: 'Can Not Clear Review Request', message: `Unable to remove request for review on brew ID ${req.params.id}`, HBErrorCode: '72', error };
 		});
 
-	// console.log(`Review request removed on brew ID ${brew.shareId} - ${brew.title}`);
 	return res.json({ name: 'Review Request Cleared', message: `Review request removed for brew ID ${brew.shareId} - ${brew.title}` });
 
 }));
