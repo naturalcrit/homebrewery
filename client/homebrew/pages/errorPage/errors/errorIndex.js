@@ -167,7 +167,7 @@ const errorIndex = (props)=>{
 		**Requested access:** ${props.brew.accessType}
 
 		**Brew ID:**  ${props.brew.brewId}`,
-		
+
 		// Theme Not Valid
 		'10' : dedent`
 		## The selected theme is not tagged as a theme.
