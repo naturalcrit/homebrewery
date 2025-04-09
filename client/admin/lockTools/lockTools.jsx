@@ -143,7 +143,7 @@ const LockBrew = createClass({
 						{this.renderInput('shareMessage')}
 					</label>
 					<br />
-					<label>
+					<label className='checkbox'>
 						Overwrite
 						<input name='overwrite' className='checkbox' type='checkbox' value={this.state.overwrite} onClick={()=>{return this.setState((prevState)=>{return { overwrite: !prevState.overwrite };});}} />
 					</label>
