@@ -7,37 +7,29 @@
 }
 
 .page {
-	background-image : url(/assets/DMG_background.png);
+	background-image : url('/assets/DMG_background.png');
 	background-size  : cover;
 
-	/*TABLES WITHIN NOTES*/
-	.note table tbody tr:nth-child(odd) {
-		background:#fff;
-	}
+	/* TABLES WITHIN NOTES */
+	.note table tbody tr:nth-child(odd) { background : #FFFFFF; }
 
-	/*DROP CAP*/
+	/* DROP CAP */
 	h1 + p::first-letter {
-		background-image: unset;
-		color:black;
+		color            : black;
+		background-image : unset;
 	}
 
-	.quote p:first-child::first-line  {
-		all: unset;
+	.quote p:first-child::first-line { all : unset; }
+
+	&::after {
+		height           : 58px;
+		background-image : url('/assets/DMG_footerAccent.png');
 	}
 
-	&:after {
-		background-image : url(/assets/DMG_footerAccent.png);
-		height: 58px;
-	}
-
-	.footnote {
-		bottom : 40px;
-	}
+	.footnote { bottom : 40px; }
 }
 
 .page:has(.partCover) {
 
-	.partCover {
-		background-image: @partCoverHeaderDMG;
-	}
+	.partCover { background-image : @partCoverHeaderDMG; }
 }
