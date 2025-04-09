@@ -75,9 +75,7 @@ const Editor = createClass({
 
 	componentDidMount : function() {
 
-		this.updateEditorSize();
 		this.highlightCustomMarkdown();
-		window.addEventListener('resize', this.updateEditorSize);
 		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
 
@@ -90,10 +88,6 @@ const Editor = createClass({
 				editorTheme : editorTheme
 			});
 		}
-	},
-
-	componentWillUnmount : function() {
-		window.removeEventListener('resize', this.updateEditorSize);
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
@@ -128,14 +122,6 @@ const Editor = createClass({
 		}
 	},
 
-	updateEditorSize : function() {
-		if(this.codeEditor.current) {
-			let paneHeight = this.editor.current.parentNode.clientHeight;
-			paneHeight -= SNIPPETBAR_HEIGHT;
-			this.codeEditor.current.codeMirror.setSize(null, paneHeight);
-		}
-	},
-
 	updateCurrentCursorPage : function(cursor) {
 		const lines = this.props.brew.text.split('\n').slice(1, cursor.line + 1);
 		const pageRegex = this.props.brew.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
@@ -161,8 +147,7 @@ const Editor = createClass({
 			view : newView
 		}, ()=>{
 			this.codeEditor.current?.codeMirror.focus();
-			this.updateEditorSize();
-		});	//TODO: not sure if updateeditorsize needed
+		});
 	},
 
 	highlightCustomMarkdown : function(){
