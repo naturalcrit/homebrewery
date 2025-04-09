@@ -171,7 +171,7 @@ const Editor = createClass({
 
 				for (let i=customHighlights.length - 1;i>=0;i--) customHighlights[i].clear();
 
-				let userSnippetCount = 1; // start snippet count from page 2
+				let userSnippetCount = 1; // start snippet count from snippet 1
 				let editorPageCount = 1; // start page count from page 1
 
 				const whichSource = this.state.view === 'text' ? this.props.brew.text : this.props.brew.snippets;
