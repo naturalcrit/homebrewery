@@ -17,10 +17,9 @@ const dedent = require('dedent-tabs').default;
 const { printCurrentBrew } = require('../../../shared/helpers.js');
 
 import HeaderNav from './headerNav/headerNav.jsx';
-
 import { safeHTML } from './safeHTML.js';
 
-
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?: *{[^\n{}]*})?$)/m;
 const PAGE_HEIGHT = 1056;
 
 const INITIAL_CONTENT = dedent`
@@ -40,7 +39,7 @@ const BrewPage = (props)=>{
 		...props
 	};
 	const pageRef = useRef(null);
-	const cleanText = safeHTML(props.contents);
+	const cleanText = safeHTML(`${props.contents}\n<div class="columnSplit"></div>\n`);
 
 	useEffect(()=>{
 		if(!pageRef.current) return;
@@ -78,7 +77,7 @@ const BrewPage = (props)=>{
 		};
 	}, []);
 
-	return <div className={props.className} id={`p${props.index + 1}`} data-index={props.index} ref={pageRef} style={props.style}>
+	return <div className={props.className} id={`p${props.index + 1}`} data-index={props.index} ref={pageRef} style={props.style} {...props.attributes}>
 	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
 	       </div>;
 };
@@ -126,7 +125,7 @@ const BrewRenderer = (props)=>{
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split('\\page');
 	} else {
-		rawPages = props.text.split(/^\\page$/gm);
+		rawPages = props.text.split(PAGEBREAK_REGEX_V3);
 	}
 
 	const handlePageVisibilityChange = (pageNum, isVisible, isCenter)=>{
@@ -173,20 +172,33 @@ const BrewRenderer = (props)=>{
 
 	const renderPage = (pageText, index)=>{
 
-		const styles = {
+		let styles = {
 			...(!displayOptions.pageShadows ? { boxShadow: 'none' } : {})
 			// Add more conditions as needed
 		};
+		let classes    = 'page';
+		let attributes = {};
 
 		if(props.renderer == 'legacy') {
 			const html = MarkdownLegacy.render(pageText);
 
 			return <BrewPage className='page phb' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} />;
 		} else {
-			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
+			if(pageText.startsWith('\\page')) {
+				const firstLineTokens  = Markdown.marked.lexer(pageText.split('\n', 1)[0])[0].tokens;
+				const injectedTags = firstLineTokens?.find((obj)=>obj.injectedTags !== undefined)?.injectedTags;
+				if(injectedTags) {
+					styles     = { ...styles, ...injectedTags.styles };
+					styles     = _.mapKeys(styles, (v, k)=>k.startsWith('--') ? k : _.camelCase(k)); // Convert CSS to camelCase for React
+					classes    = [classes, injectedTags.classes].join(' ').trim();
+					attributes = injectedTags.attributes;
+				}
+				pageText = pageText.includes('\n') ? pageText.substring(pageText.indexOf('\n') + 1) : ''; // Remove the \page line
+			}
+
 			const html = Markdown.render(pageText, index);
 
-			return <BrewPage className='page' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} />;
+			return <BrewPage className={classes} index={index} key={index} contents={html} style={styles} attributes={attributes} onVisibilityChange={handlePageVisibilityChange} />;
 		}
 	};
 

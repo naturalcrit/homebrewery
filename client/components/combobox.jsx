@@ -45,6 +45,7 @@ const Combobox = createClass({
 	},
 	handleDropdown : function(show){
 		this.setState({
+			value        : show ? '' : this.props.default,
 			showDropdown : show,
 			inputFocused : this.props.autoSuggest.clearAutoSuggestOnClick ? show : false
 		});
@@ -58,10 +59,10 @@ const Combobox = createClass({
 			this.props.onEntry(e);
 		});
 	},
-	handleSelect : function(e){
+	handleSelect : function(value, data=value){
 		this.setState({
-			value : e.currentTarget.getAttribute('data-value')
-		}, ()=>{this.props.onSelect(this.state.value);});
+			value : value
+		}, ()=>{this.props.onSelect(data);});
 		;
 	},
 	renderTextInput : function(){
@@ -78,10 +79,11 @@ const Combobox = createClass({
 						if(!e.target.checkValidity()){
 							this.setState({
 								value : this.props.default
-							}, ()=>this.props.onEntry(e));
+							});
 						}
 					}}
 				/>
+				<i className='fas fa-caret-down'/>
 			</div>
 		);
 	},
@@ -92,11 +94,10 @@ const Combobox = createClass({
 			const filterOn = _.isString(this.props.autoSuggest.filterOn) ? [this.props.autoSuggest.filterOn] : this.props.autoSuggest.filterOn;
 			const filteredArrays = filterOn.map((attr)=>{
 				const children = dropdownChildren.filter((item)=>{
-					if(suggestMethod === 'includes'){
+					if(suggestMethod === 'includes')
 						return item.props[attr]?.toLowerCase().includes(this.state.value.toLowerCase());
-					} else if(suggestMethod === 'startsWith'){
+					if(suggestMethod === 'startsWith')
 						return item.props[attr]?.toLowerCase().startsWith(this.state.value.toLowerCase());
-					}
 				});
 				return children;
 			});
@@ -111,7 +112,7 @@ const Combobox = createClass({
 	},
 	render : function () {
 		const dropdownChildren = this.state.options.map((child, i)=>{
-			const clone = React.cloneElement(child, { onClick: (e)=>this.handleSelect(e) });
+			const clone = React.cloneElement(child, { onClick: ()=>this.handleSelect(child.props.value, child.props.data) });
 			return clone;
 		});
 		return (
