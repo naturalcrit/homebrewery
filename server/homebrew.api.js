@@ -177,7 +177,8 @@ const api = {
 				`${text}`;
 		}
 		const metadata = _.pick(brew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']);
-		metadata.snippets = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false);
+		const snippetsArray = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false).snippets;
+		metadata.snippets = snippetsArray.length > 0 ? snippetsArray : undefined;
 		text = `\`\`\`metadata\n` +
 			`${yaml.dump(metadata)}\n` +
 			`\`\`\`\n\n` +

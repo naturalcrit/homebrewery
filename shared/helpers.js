@@ -76,7 +76,8 @@ const yamlSnippetsToText = (yamlObj)=>{
 	if(typeof yamlObj == 'string') return yamlObj;
 
 	let snippetsText = '';
-	for (let snippet of yamlObj.snippets) {
+	
+	for (let snippet of yamlObj) {
 		for (let subSnippet of snippet.subsnippets) {
 			snippetsText = `${snippetsText}\\snippet ${subSnippet.name}\n${subSnippet.gen || ''}\n`;
 		}
@@ -91,7 +92,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const metadataSection = brew.text.slice(11, index + 1);
 		const metadata = yaml.load(metadataSection);
 		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
-		brew.snippets = yamlSnippetsToText(_.pick(metadata, ['snippets']).snippets);
+		brew.snippets = yamlSnippetsToText(_.pick(metadata, ['snippets']).snippets || '');
 		brew.text = brew.text.slice(index + 6);
 	}
 	if(brew.text.startsWith('```css')) {
