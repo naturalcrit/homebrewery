@@ -8,6 +8,8 @@ import { markedSmartypantsLite as MarkedSmartypantsLite }                       
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
 import MarkedSubSuperText from 'marked-subsuper-text';
+import { romanize } from 'romans';
+import writtenNumber from 'written-number';
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
 import diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
@@ -59,6 +61,48 @@ mathParser.functions.signed = function (a) {
 	if(a >= 0) return `+${a}`;
 	return `${a}`;
 };
+// Add Roman numeral functions
+mathParser.functions.toRomans = function (a) {
+	return romanize(a);
+};
+mathParser.functions.toRomansUpper = function (a) {
+	return romanize(a).toUpperCase();
+};
+mathParser.functions.toRomansLower = function (a) {
+	return romanize(a).toLowerCase();
+};
+// Add character functions
+mathParser.functions.toChar = function (a) {
+	if(a <= 0) return a;
+	const genChars = function (i) {
+		return (i > 26 ? genChars(Math.floor((i - 1) / 26)) : '') + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[(i - 1) % 26];
+	};
+	return genChars(a);
+};
+mathParser.functions.toCharUpper = function (a) {
+	return mathParser.functions.toChar(a).toUpperCase();
+};
+mathParser.functions.toCharLower = function (a) {
+	return mathParser.functions.toChar(a).toLowerCase();
+};
+// Add word functions
+mathParser.functions.toWords = function (a) {
+	return writtenNumber(a);
+};
+mathParser.functions.toWordsUpper = function (a) {
+	return mathParser.functions.toWords(a).toUpperCase();
+};
+mathParser.functions.toWordsLower = function (a) {
+	return mathParser.functions.toWords(a).toLowerCase();
+};
+mathParser.functions.toWordsCaps = function (a) {
+	const words = mathParser.functions.toWords(a).split(' ');
+	return words.map((word)=>{
+		return word.replace(/(?:^|\b|\s)(\w)/g, function(w, index) {
+			return index === 0 ? w.toLowerCase() : w.toUpperCase();
+		  });
+	}).join(' ');
+};
 
 // Normalize variable names; trim edge spaces and shorten blocks of whitespace to 1 space
 const normalizeVarNames = (label)=>{
@@ -104,7 +148,7 @@ renderer.link = function (token) {
 	}
 	let out = `<a href="${escape(href)}"`;
 	if(title) {
-		out += ` title="${title}"`;
+		out += ` title="${escape(title)}"`;
 	}
 	if(self) {
 		out += ' target="_self"';
@@ -907,7 +951,13 @@ let globalPageNumber = 0;
 const Markdown = {
 	marked : Marked,
 	render : (rawBrewText, pageNumber=0)=>{
-		globalVarsList[pageNumber] = {};					//Reset global links for current page, to ensure values are parsed in order
+		const lastPageNumber = pageNumber > 0 ? globalVarsList[pageNumber - 1].HB_pageNumber.content : 0;
+		globalVarsList[pageNumber] = {							//Reset global links for current page, to ensure values are parsed in order
+			'HB_pageNumber' : {									//Add document variables for this page
+				content  : !isNaN(Number(lastPageNumber)) ? Number(lastPageNumber) + 1 : lastPageNumber,
+				resolved : true
+			}
+		};
 		varsQueue                  = [];						//Could move into MarkedVariables()
 		globalPageNumber           = pageNumber;
 		if(pageNumber==0) {
