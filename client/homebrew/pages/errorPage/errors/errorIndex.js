@@ -168,6 +168,14 @@ const errorIndex = (props)=>{
 
 		**Brew ID:**  ${props.brew.brewId}`,
 
+		// Theme Not Valid
+		'10' : dedent`
+		## The selected theme is not tagged as a theme.
+		
+		The brew selected as a theme exists, but has not been marked for use as a theme with the \`theme:meta\` tag.
+		
+		If the selected brew is your document, you may designate it as a theme by adding the \`theme:meta\` tag.`,
+
 		//account page when account is not defined
 		'50' : dedent`
 		## You are not signed in

@@ -1,47 +1,48 @@
-require('./admin.less');
-const React = require('react');
-const createClass = require('create-react-class');
-
+import './admin.less';
+import React, { useEffect, useState } from 'react';
 const BrewUtils = require('./brewUtils/brewUtils.jsx');
 const NotificationUtils = require('./notificationUtils/notificationUtils.jsx');
+import AuthorUtils from './authorUtils/authorUtils.jsx';
 
-const tabGroups = ['brew', 'notifications'];
+const tabGroups = ['brew', 'notifications', 'authors'];
 
-const Admin = createClass({
-	getDefaultProps : function() {
-		return {};
-	},
+const Admin = ()=>{
+	const [currentTab, setCurrentTab] = useState('brew');
 
-	getInitialState : function(){
-		return ({
-			currentTab : 'brew'
-		});
-	},
+	useEffect(()=>{
+		setCurrentTab(localStorage.getItem('hbAdminTab'));
+	}, []);
 
-	handleClick : function(newTab){
-		if(this.state.currentTab === newTab) return;
-		this.setState({
-			currentTab : newTab
-		});
-	},
+	useEffect(()=>{
+		localStorage.setItem('hbAdminTab', currentTab);
+	}, [currentTab]);
 
-	render : function(){
-		return <div className='admin'>
+	return (
+		<div className='admin'>
 			<header>
 				<div className='container'>
 					<i className='fas fa-rocket' />
-					homebrewery admin
+					The Homebrewery Admin Page
+					<a href='/'>back to homepage</a>
 				</div>
 			</header>
 			<main className='container'>
 				<nav className='tabs'>
-					{tabGroups.map((tab, idx)=>{ return <button className={tab===this.state.currentTab ? 'active' : ''} key={idx} onClick={()=>{ return this.handleClick(tab); }}>{tab.toUpperCase()}</button>; })}
+					{tabGroups.map((tab, idx)=>(
+						<button
+							className={tab === currentTab ? 'active' : ''}
+							key={idx}
+							onClick={()=>setCurrentTab(tab)}>
+							{tab.toUpperCase()}
+						</button>
+					))}
 				</nav>
-				{this.state.currentTab==='brew' && <BrewUtils />}
-				{this.state.currentTab==='notifications' && <NotificationUtils />}
+				{currentTab === 'brew' && <BrewUtils />}
+				{currentTab === 'notifications' && <NotificationUtils />}
+				{currentTab === 'authors' && <AuthorUtils />}
 			</main>
-		</div>;
-	}
-});
+		</div>
+	);
+};
 
 module.exports = Admin;

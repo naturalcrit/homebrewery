@@ -93,7 +93,7 @@ router.get('/admin/finduncompressed', mw.adminOnly, (req, res)=>{
 
 /* Cleans `<script` and `</script>` from the "text" field of a brew */
 router.put('/admin/clean/script/:id', asyncHandler(HomebrewAPI.getBrew('admin', false)), async (req, res)=>{
-	console.log(`[ADMIN] Cleaning script tags from ShareID ${req.params.id}`);
+	console.log(`[ADMIN: ${req.account?.username || 'Not Logged In'}] Cleaning script tags from ShareID ${req.params.id}`);
 
 	function cleanText(text){return text.replaceAll(/(<\/?s)cript/gi, '');};
 
@@ -112,6 +112,18 @@ router.put('/admin/clean/script/:id', asyncHandler(HomebrewAPI.getBrew('admin', 
 	req.account = undefined;
 
 	return await HomebrewAPI.updateBrew(req, res);
+});
+
+/* Get list of a user's documents */
+router.get('/admin/user/list/:user', mw.adminOnly, async (req, res)=>{
+	const username = req.params.user;
+	const fields = { _id: 0, text: 0, textBin: 0 };		// Remove unnecessary fields from document lists
+
+	console.log(`[ADMIN: ${req.account?.username || 'Not Logged In'}] Get brew list for ${username}`);
+
+	const brews = await HomebrewModel.getByUser(username, true, fields);
+
+	return res.json(brews);
 });
 
 /* Compresses the "text" field of a brew to binary */
@@ -134,7 +146,6 @@ router.put('/admin/compress/:id', (req, res)=>{
 			res.status(500).send('Error while saving');
 		});
 });
-
 
 router.get('/admin/stats', mw.adminOnly, async (req, res)=>{
 	try {

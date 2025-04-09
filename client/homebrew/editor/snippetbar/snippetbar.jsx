@@ -207,59 +207,59 @@ const Snippetbar = createClass({
 	renderEditorButtons : function(){
 		if(!this.props.showEditButtons) return;
 
-		
+
 
 		return (
-		<div className='editors'>
-			{this.props.view !== 'meta' && <><div className='historyTools'>
-				<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`}
-					onClick={this.toggleHistoryMenu} >
-					<i className='fas fa-clock-rotate-left' />
-					{ this.state.showHistory && this.renderHistoryItems() }
+			<div className='editors'>
+				{this.props.view !== 'meta' && <><div className='historyTools'>
+					<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`}
+						onClick={this.toggleHistoryMenu} >
+						<i className='fas fa-clock-rotate-left' />
+						{ this.state.showHistory && this.renderHistoryItems() }
+					</div>
+					<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
+						onClick={this.props.undo} >
+						<i className='fas fa-undo' />
+					</div>
+					<div className={`editorTool redo ${this.props.historySize.redo ? 'active' : ''}`}
+						onClick={this.props.redo} >
+						<i className='fas fa-redo' />
+					</div>
 				</div>
-				<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
-					onClick={this.props.undo} >
-					<i className='fas fa-undo' />
-				</div>
-				<div className={`editorTool redo ${this.props.historySize.redo ? 'active' : ''}`}
-					onClick={this.props.redo} >
-					<i className='fas fa-redo' />
-				</div>
-			</div>
-			<div className='codeTools'>
-			<div className={`editorTool foldAll ${this.props.foldCode ? 'active' : ''}`}
-				onClick={this.props.foldCode} >
-				<i className='fas fa-compress-alt' />
-			</div>
-			<div className={`editorTool unfoldAll ${this.props.unfoldCode ? 'active' : ''}`}
-				onClick={this.props.unfoldCode} >
-				<i className='fas fa-expand-alt' />
-			</div>
-				<div className={`editorTheme ${this.state.themeSelector ? 'active' : ''}`}
-					onClick={this.toggleThemeSelector} >
-					<i className='fas fa-palette' />
-					{this.state.themeSelector && this.renderThemeSelector()}
-				</div>
-			</div></>}
-	
+				<div className='codeTools'>
+					<div className={`editorTool foldAll ${this.props.foldCode ? 'active' : ''}`}
+						onClick={this.props.foldCode} >
+						<i className='fas fa-compress-alt' />
+					</div>
+					<div className={`editorTool unfoldAll ${this.props.unfoldCode ? 'active' : ''}`}
+						onClick={this.props.unfoldCode} >
+						<i className='fas fa-expand-alt' />
+					</div>
+					<div className={`editorTheme ${this.state.themeSelector ? 'active' : ''}`}
+						onClick={this.toggleThemeSelector} >
+						<i className='fas fa-palette' />
+						{this.state.themeSelector && this.renderThemeSelector()}
+					</div>
+				</div></>}
 
-			<div className='tabs'>
-				<div className={cx('text', { selected: this.props.view === 'text' })}
-					onClick={()=>this.props.onViewChange('text')}>
-					<i className='fa fa-beer' />
-				</div>
-				<div className={cx('style', { selected: this.props.view === 'style' })}
-					onClick={()=>this.props.onViewChange('style')}>
-					<i className='fa fa-paint-brush' />
-				</div>
-				<div className={cx('meta', { selected: this.props.view === 'meta' })}
-					onClick={()=>this.props.onViewChange('meta')}>
-					<i className='fas fa-info-circle' />
-				</div>
-			</div>
 
-		</div>
-		)
+				<div className='tabs'>
+					<div className={cx('text', { selected: this.props.view === 'text' })}
+						onClick={()=>this.props.onViewChange('text')}>
+						<i className='fa fa-beer' />
+					</div>
+					<div className={cx('style', { selected: this.props.view === 'style' })}
+						onClick={()=>this.props.onViewChange('style')}>
+						<i className='fa fa-paint-brush' />
+					</div>
+					<div className={cx('meta', { selected: this.props.view === 'meta' })}
+						onClick={()=>this.props.onViewChange('meta')}>
+						<i className='fas fa-info-circle' />
+					</div>
+				</div>
+
+			</div>
+		);
 	},
 
 	render : function(){
