@@ -1,9 +1,8 @@
-/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
 require('./lockTools.less');
 const React = require('react');
 const createClass = require('create-react-class');
 
-// const request = require('superagent');
 import request from '../../homebrew/utils/request-middleware.js';
 
 const LockTools = createClass({
@@ -29,17 +28,23 @@ const LockTools = createClass({
 		}
 	},
 
+	updateLockData : function(lock){
+		this.setState({
+			lock : lock
+		});
+	},
+
 	render : function() {
 		return <div className='lockTools'>
 			<h2>Lock Count</h2>
 			<p>Number of brews currently locked: {this.state.reviewCount}</p>
 			<button onClick={this.updateReviewCount}>REFRESH</button>
 			<hr />
-			<LockTable title='Locked Brews' text='Total Locked Brews' resultName='lockedDocuments' fetchURL='/api/locks' propertyNames={['shareId', 'title']} ></LockTable>
+			<LockTable title='Locked Brews' text='Total Locked Brews' resultName='lockedDocuments' fetchURL='/api/locks' propertyNames={['shareId', 'title']} loadBrew={this.updateLockData} ></LockTable>
 			<hr />
-			<LockTable title='Brews Awaiting Review' text='Total Reviews Waiting' resultName='reviewDocuments' fetchURL='/api/lock/reviews' propertyNames={['shareId', 'title']} ></LockTable>
+			<LockTable title='Brews Awaiting Review' text='Total Reviews Waiting' resultName='reviewDocuments' fetchURL='/api/lock/reviews' propertyNames={['shareId', 'title']} loadBrew={this.updateLockData} ></LockTable>
 			<hr />
-			<LockBrew></LockBrew>
+			<LockBrew key={this.state.lock?.key || 0} lock={this.state.lock}></LockBrew>
 			<hr />
 			<div style={{ columns: 2 }}>
 				<LockLookup title='Unlock Brew' fetchURL='/api/unlock' updateFn={this.updateReviewCount}></LockLookup>
@@ -55,12 +60,12 @@ const LockBrew = createClass({
 	getInitialState : function() {
 		// Default values
 		return {
-			brewId       : '',
-			code         : 455,
-			editMessage  : '',
-			shareMessage : 'This Brew has been locked.',
+			brewId       : this.props.lock?.shareId || '',
+			code         : this.props.lock?.code || 455,
+			editMessage  : this.props.lock?.editMessage || '',
+			shareMessage : this.props.lock?.shareMessage || 'This Brew has been locked.',
 			result       : {},
-			overwrite    : false
+			overwrite    : false,
 		};
 	},
 
@@ -186,7 +191,8 @@ const LockTable = createClass({
 			text          : '',
 			fetchURL      : '/api/locks',
 			resultName    : '',
-			propertyNames : ['shareId']
+			propertyNames : ['shareId'],
+			loadBrew      : ()=>{}
 		};
 	},
 
@@ -198,7 +204,9 @@ const LockTable = createClass({
 		};
 	},
 
-	clickFn(){
+	lockKey : React.createRef(0),
+
+	clickFn : function (){
 		this.setState({ searching: true, error: null });
 
 		request.get(this.props.fetchURL)
@@ -207,6 +215,18 @@ const LockTable = createClass({
 			.finally(()=>{
 				this.setState({ searching: false });
 			});
+	},
+
+	updateBrewLockData : function (lockData){
+		this.lockKey.current++;
+		const brewData = {
+			key          : this.lockKey.current,
+			shareId      : lockData.shareId,
+			code         : lockData.lock.code,
+			editMessage  : lockData.lock.editMessage,
+			shareMessage : lockData.lock.shareMessage
+		};
+		this.props.loadBrew(brewData);
 	},
 
 	render : function () {
@@ -229,7 +249,7 @@ const LockTable = createClass({
 									return <th key={idx}>{name}</th>;
 								})}
 								<th>clip</th>
-								<th>view</th>
+								<th>load</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -240,8 +260,8 @@ const LockTable = createClass({
 											{result[name].toString()}
 										</td>;
 									})}
-									<td className='icon' onClick={()=>{navigator.clipboard.writeText(result.shareId.toString());}}><i className='fa-regular fa-clipboard'></i></td>
-									<td className='icon'><a href={`/share/${result.shareId.toString()}`} target='_blank'><i className='fa-regular fa-circle-right'></i></a></td>
+									<td className='icon' title='Copy ID to Clipboard' onClick={()=>{navigator.clipboard.writeText(result.shareId.toString());}}><i className='fa-regular fa-clipboard'></i></td>
+									<td className='icon' title='View Lock details' onClick={()=>{this.updateBrewLockData(result);}}><i className='fa-regular fa-circle-down'></i></td>
 								</tr>;
 							})}
 						</tbody>
