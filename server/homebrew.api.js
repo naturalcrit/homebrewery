@@ -8,8 +8,10 @@ import Markdown                      from '../shared/naturalcrit/markdown.js';
 import yaml                          from 'js-yaml';
 import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
-import { splitTextStyleAndMetadata } from '../shared/helpers.js';
+import { splitTextStyleAndMetadata, 
+		 brewSnippetsToJSON }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
+
 
 const router = express.Router();
 
@@ -175,6 +177,8 @@ const api = {
 				`${text}`;
 		}
 		const metadata = _.pick(brew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']);
+		const snippetsArray = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false).snippets;
+		metadata.snippets = snippetsArray.length > 0 ? snippetsArray : undefined;
 		text = `\`\`\`metadata\n` +
 			`${yaml.dump(metadata)}\n` +
 			`\`\`\`\n\n` +
@@ -301,7 +305,7 @@ const api = {
 				themeAuthor ??= currentTheme.authors?.[0];
 
 				// If there is anything in the snippets or style members, append them to the appropriate array
-				if(currentTheme?.snippets) completeSnippets.push(JSON.parse(currentTheme.snippets));
+				if(currentTheme?.snippets) completeSnippets.push({ name: currentTheme.title, snippets: currentTheme.snippets });
 				if(currentTheme?.style) completeStyles.push(`/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.params.id} */\n\n${currentTheme.style}`);
 
 				req.params.id       = currentTheme.theme;
