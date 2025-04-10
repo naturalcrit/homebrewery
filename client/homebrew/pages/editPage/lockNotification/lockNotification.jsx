@@ -16,7 +16,7 @@ function LockNotification(props) {
 	const [reviewState, setReviewState] = React.useState(props.reviewRequested);
 
 	const removeLock = async ()=>{
-		await request.put(`/admin/lock/review/request/${props.shareId}`)
+		await request.put(`/api/lock/review/request/${props.shareId}`)
 			.then(()=>{
 				setReviewState(true);
 			});

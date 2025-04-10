@@ -232,7 +232,7 @@ router.post('/api/lock/:id', mw.adminOnly, asyncHandler(async (req, res)=>{
 
 	await brew.save()
 		.catch((error)=>{
-			throw { name: 'Already Locked', message: 'Unable to set lock', shareId: req.params.id, status: 500, HBErrorCode: '62', error };
+			throw { name: 'Lock Error', message: 'Unable to set lock', shareId: req.params.id, status: 500, HBErrorCode: '62', error };
 		});
 
 	return res.json({ name: 'LOCKED', message: `Lock applied to brew ID ${brew.shareId} - ${brew.title}`, ...lock });
@@ -289,7 +289,7 @@ router.get('/api/lock/reviews', mw.adminOnly, asyncHandler(async (req, res)=>{
 
 }));
 
-router.put('/admin/lock/review/request/:id', asyncHandler(async (req, res)=>{
+router.put('/api/lock/review/request/:id', asyncHandler(async (req, res)=>{
 	// === This route is NOT Admin only ===
 	// Any user can request a review of their document
 	const filter = {
