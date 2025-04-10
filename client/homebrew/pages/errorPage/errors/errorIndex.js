@@ -196,7 +196,7 @@ const errorIndex = (props)=>{
 		
 		**Brew Title:** ${escape(props.brew.brewTitle)}
 		
-		**Brew Authors:**  ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'},
+		**Brew Authors:**  ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}`,
 
 		// ####### Admin page error #######
 		'52' : dedent`
