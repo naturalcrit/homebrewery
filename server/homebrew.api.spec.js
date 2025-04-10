@@ -939,7 +939,7 @@ brew`);
 	});
 	describe('Get CSS', ()=>{
 		it('should return brew style content as CSS text', async ()=>{
-			const testBrew = { title: 'test brew', text: '```css\n\nI Have a style!\n````\n\n' };
+			const testBrew = { title: 'test brew', text: '```css\n\nI Have a style!\n```\n\n' };
 
 			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
 			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
@@ -1034,7 +1034,7 @@ brew`);
 			expect(testBrew.theme).toEqual('5ePHB');
 			expect(testBrew.lang).toEqual('en');
 			// Style
-			expect(testBrew.style).toEqual('style\nstyle\nstyle');
+			expect(testBrew.style).toEqual('style\nstyle\nstyle\n');
 			// Text
 			expect(testBrew.text).toEqual('text\n');
 		});
