@@ -3,7 +3,7 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const Moment = require('moment');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
+const { NavItem, Dropdown } = require('./navbar.jsx');
 
 const EDIT_KEY = 'homebrewery-recently-edited';
 const VIEW_KEY = 'homebrewery-recently-viewed';
@@ -154,23 +154,23 @@ const RecentItems = createClass({
 
 		return <>
 			{(this.props.showEdit && this.props.showView) ?
-				<Nav.item className='header'>edited</Nav.item> : null }
+				<NavItem className='header'>edited</NavItem> : null }
 			{this.props.showEdit ?
 				makeItems(this.state.edit) : null }
 			{(this.props.showEdit && this.props.showView) ?
-				<Nav.item className='header'>viewed</Nav.item>	: null }
+				<NavItem className='header'>viewed</NavItem>	: null }
 			{this.props.showView ?
 				makeItems(this.state.view) : null }
 		</>;
 	},
 
 	render : function(){
-		return <Nav.dropdown className='recent'>
-			<Nav.item icon='fas fa-history' color='grey' >
+		return <Dropdown id='recentsMenu' className='recent' trigger='click'>
+			<NavItem icon='fas fa-history' color='grey' >
 				{this.props.text}
-			</Nav.item>
+			</NavItem>
 			{this.renderDropdown()}
-		</Nav.dropdown>;
+		</Dropdown>;
 	}
 
 });
