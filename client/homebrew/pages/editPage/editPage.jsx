@@ -50,23 +50,26 @@ const EditPage = createClass({
 	getInitialState : function() {
 		return {
 			brew                       : this.props.brew,
-			isSaving                   : false,
-			isPending                  : false,
-			alertTrashedGoogleBrew     : this.props.brew.trashed,
-			alertLoginToTransfer       : false,
 			saveGoogle                 : this.props.brew.googleId ? true : false,
 			confirmGoogleTransfer      : false,
 			error                      : null,
-			htmlErrors                 : Markdown.validate(this.props.brew.text),
 			url                        : '',
 			autoSave                   : true,
-			autoSaveWarning            : false,
 			unsavedTime                : new Date(),
 			currentEditorViewPageNum   : 1,
 			currentEditorCursorPageNum : 1,
 			currentBrewRendererPageNum : 1,
 			displayLockMessage         : this.props.brew.lock || false,
-			themeBundle                : {}
+			themeBundle                : {},
+			alerts                     : {
+				alertLoginToTransfer   : false,
+				alertTrashedGoogleBrew : this.props.brew.trashed,
+				htmlErrors             : Markdown.validate(this.props.brew.text),
+				autoSaveWarning        : false,
+				isPending              : false,
+				isSaving               : false,
+			},
+			openStoragePicker : false
 		};
 	},
 
@@ -84,18 +87,21 @@ const EditPage = createClass({
 			if(this.state.autoSave){
 				this.trySave();
 			} else {
-				this.setState({ autoSaveWarning: true });
+				this.setState((prevState)=>({ alerts: { ...prevState.alerts, autoSaveWarning: true } }));
 			}
 		});
 
 		window.onbeforeunload = ()=>{
-			if(this.state.isSaving || this.state.isPending){
+			if(this.state.alerts.isSaving || this.state.alerts.isPending){
 				return 'You have unsaved changes!';
 			}
 		};
 
 		this.setState((prevState)=>({
-			htmlErrors : Markdown.validate(prevState.brew.text)
+			alerts : {
+				...prevState.alerts,
+				htmlErrors : Markdown.validate(prevState.brew.text)
+			}
 		}));
 
 		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
@@ -108,10 +114,13 @@ const EditPage = createClass({
 	},
 	componentDidUpdate : function(){
 		const hasChange = this.hasChanges();
-		if(this.state.isPending != hasChange){
-			this.setState({
-				isPending : hasChange
-			});
+		if(this.state.alerts.isPending != hasChange){
+			this.setState((prevState)=>({
+				alerts : {
+					...prevState.alerts,
+					isPending : hasChange
+				}
+			}));
 		}
 	},
 
@@ -145,12 +154,15 @@ const EditPage = createClass({
 
 	handleTextChange : function(text){
 		//If there are errors, run the validator on every change to give quick feedback
-		let htmlErrors = this.state.htmlErrors;
-		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
+		let htmlErrors = this.state.alerts.htmlErrors;
+		if(htmlErrors) htmlErrors = Markdown.validate(text);
 
 		this.setState((prevState)=>({
-			brew       : { ...prevState.brew, text: text },
-			htmlErrors : htmlErrors,
+			brew   : { ...prevState.brew, text: text },
+			alerts : {
+				...prevState.alerts,
+				htmlErrors : htmlErrors
+			}
 		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
@@ -198,45 +210,64 @@ const EditPage = createClass({
 
 	handleGoogleClick : function(){
 		if(!global.account?.googleId) {
-			this.setState({
-				alertLoginToTransfer : true
-			});
+			this.setState((prevState)=>({
+				alerts : {
+					...prevState.alerts,
+					alertLoginToTransfer : true
+				}
+			}));
 			return;
 		}
 		this.setState((prevState)=>({
-			confirmGoogleTransfer : !prevState.confirmGoogleTransfer
+			confirmGoogleTransfer : !prevState.confirmGoogleTransfer,
 		}));
-		this.setState({
-			error    : null,
-			isSaving : false
-		});
+		this.setState((prevState)=>({
+			error  : null,
+			alerts : {
+				...prevState.alerts,
+				isSaving : false
+			}
+		}));
 	},
 
 	closeAlerts : function(event){
 		event.stopPropagation();	//Only handle click once so alert doesn't reopen
-		this.setState({
-			alertTrashedGoogleBrew : false,
-			alertLoginToTransfer   : false,
-			confirmGoogleTransfer  : false
-		});
+		this.setState((prevState)=>({
+			confirmGoogleTransfer  : false,
+			alerts : {
+				...prevState.alerts,
+				alertTrashedGoogleBrew : false,
+				alertLoginToTransfer   : false,
+			}
+		}));
 	},
 
-	toggleGoogleStorage : function(){
+	toggleGoogleStorage : function(toGoogle){
 		this.setState((prevState)=>({
-			saveGoogle : !prevState.saveGoogle,
-			isSaving   : false,
-			error      : null
+			saveGoogle : toGoogle,
+			error      : null,
+			alerts     : {
+				...prevState.alerts,
+				isSaving : false,
+			}
 		}), ()=>this.save());
 	},
 
 	save : async function(){
 		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
 
-		this.setState((prevState)=>({
-			isSaving   : true,
-			error      : null,
-			htmlErrors : Markdown.validate(prevState.brew.text)
-		}));
+		this.setState((prevState)=>{
+			return (
+				{
+					error  : null,
+					alerts : {
+						...prevState.alerts,
+						isSaving   : true,
+						htmlErrors : Markdown.validate(prevState.brew.text)
+					}
+				});
+		});
+
 
 		await updateHistory(this.state.brew).catch(console.error);
 		await versionHistoryGarbageCollection().catch(console.error);
@@ -265,11 +296,14 @@ const EditPage = createClass({
 		};
 		history.replaceState(null, null, `/edit/${this.savedBrew.editId}`);
 
-		this.setState(()=>({
+		this.setState((prevState)=>({
 			brew        : this.savedBrew,
-			isPending   : false,
-			isSaving    : false,
-			unsavedTime : new Date()
+			unsavedTime : new Date(),
+			alerts      : {
+				...prevState.alerts,
+				isPending : false,
+				isSaving  : false,
+			}
 		}));
 	},
 
@@ -378,13 +412,13 @@ const EditPage = createClass({
 	renderSaveButton : function(){
 
 		// #1 - Currently saving, show SAVING
-		if(this.state.isSaving){
+		if(this.state.alerts.isSaving){
 			return <NavItem className='save' icon='fas fa-spinner fa-spin'>saving...</NavItem>;
 		}
 
 		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
-		if(this.state.isPending && this.state.autoSaveWarning){
-			this.setAutosaveWarning();
+		if(this.state.alerts.isPending && this.state.alerts.autoSaveWarning){
+			this.setAutoSaveWarning();
 			const elapsedTime = Math.round((new Date() - this.state.unsavedTime) / 1000 / 60);
 			const text = elapsedTime == 0 ? 'Autosave is OFF.' : `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
 
@@ -398,30 +432,42 @@ const EditPage = createClass({
 
 		// #3 - Unsaved changes exist, click to save, show SAVE NOW
 		// Use trySave(true) instead of save() to use debounced save function
-		if(this.state.isPending){
-			return <NavItem className='save' onClick={()=>this.trySave(true)} color='blue' icon='fas fa-save'>Save Now</NavItem>;
+		if(this.state.alerts.isPending){
+			return <NavItem className='save' onClick={()=>this.trySave(true)} color='orange' icon='fas fa-save'>Save Now</NavItem>;
 		}
 		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
 		if(this.state.autoSave){
-			return <NavItem className='save saved'>auto-saved.</NavItem>;
+			return <NavItem className='save saved disabled' icon='fas fa-save'>auto-saved.</NavItem>;
 		}
 		// DEFAULT - No unsaved changes, show SAVED
-		return <NavItem className='save saved'>saved.</NavItem>;
+		return <NavItem className='save saved disabled' icon='fas fa-save'>saved.</NavItem>;
+	},
+
+	renderNavbarSaveButton : function(){
+		if(this.state.alerts.isSaving){
+			return <i className='save fas fa-spinner fa-spin'/>;
+		}
+		if(this.state.alerts.isPending){
+			return <i className='save fas fa-save' onClick={()=>this.trySave(true)} title='Pending save.  Click to save now.' />;
+		}
 	},
 
 	handleAutoSave : function(){
 		if(this.warningTimer) clearTimeout(this.warningTimer);
 		this.setState((prevState)=>({
-			autoSave        : !prevState.autoSave,
-			autoSaveWarning : prevState.autoSave
+			autoSave : !prevState.autoSave,
+			alerts   : {
+				...prevState.alerts,
+				autoSaveWarning : prevState.autoSave
+			}
 		}), ()=>{
 			localStorage.setItem('AUTOSAVE_ON', JSON.stringify(this.state.autoSave));
 		});
 	},
 
-	setAutosaveWarning : function(){
-		setTimeout(()=>this.setState({ autoSaveWarning: false }), 4000);                           // 4 seconds to display
-		this.warningTimer = setTimeout(()=>{this.setState({ autoSaveWarning: true });}, 900000);   // 15 minutes between warnings
+	setAutoSaveWarning : function(){
+		setTimeout(()=>this.setState((prevState)=>({ alerts: { ...prevState.alerts, autoSaveWarning: false } })), 4000);                           // 4 seconds to display
+		this.warningTimer = setTimeout((prevState)=>{this.setState({ alerts: { ...prevState.alerts, autoSaveWarning: true } });}, 900000);   // 15 minutes between warnings
 		this.warningTimer;
 	},
 
@@ -432,8 +478,8 @@ const EditPage = createClass({
 	},
 
 	renderAutoSaveButton : function(){
-		return <NavItem onClick={this.handleAutoSave}>
-			Autosave <i className={this.state.autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
+		return <NavItem onClick={this.handleAutoSave} color='orange'>
+			Autosave {this.state.autoSave ? ' is ON' : 'is OFF'}
 		</NavItem>;
 	},
 
@@ -554,7 +600,7 @@ const EditPage = createClass({
 						renderer={this.state.brew.renderer}
 						theme={this.state.brew.theme}
 						themeBundle={this.state.themeBundle}
-						errors={this.state.htmlErrors}
+						errors={this.state.alerts.htmlErrors}
 						lang={this.state.brew.lang}
 						onPageChange={this.handleBrewRendererPageChange}
 						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
