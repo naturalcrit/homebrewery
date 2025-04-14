@@ -370,6 +370,30 @@ describe('Cross-page variables', ()=>{
 		const rendered = renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();
 		expect(rendered, `Input:\n${[source0, source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>two</p><p>one</p>\\page<p>two</p>');
 	});
+
+	it('Page numbering across pages : default', function() {
+		const source0 = `$[HB_pageNumber]\n\n`;
+		const source1 = `$[HB_pageNumber]\n\n`;
+		renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();	//Requires one full render of document before hoisting is picked up
+		const rendered = renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();
+		expect(rendered, `Input:\n${[source0, source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>1</p>\\page<p>2</p>');
+	});
+
+	it('Page numbering across pages : custom page number (Number)', function() {
+		const source0 = `[HB_pageNumber]:100\n\n$[HB_pageNumber]\n\n`;
+		const source1 = `$[HB_pageNumber]\n\n`;
+		renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();	//Requires one full render of document before hoisting is picked up
+		const rendered = renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();
+		expect(rendered, `Input:\n${[source0, source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>100</p>\\page<p>101</p>');
+	});
+
+	it('Page numbering across pages : custom page number (NaN)', function() {
+		const source0 = `[HB_pageNumber]:a\n\n$[HB_pageNumber]\n\n`;
+		const source1 = `$[HB_pageNumber]\n\n`;
+		renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();	//Requires one full render of document before hoisting is picked up
+		const rendered = renderAllPages([source0, source1]).join('\n\\page\n').trimReturns();
+		expect(rendered, `Input:\n${[source0, source1].join('\n\\page\n')}`, { showPrefix: false }).toBe('<p>a</p>\\page<p>a</p>');
+	});
 });
 
 describe('Math function parameter handling', ()=>{
@@ -401,5 +425,111 @@ describe('Variable names that are subsets of other names', ()=>{
 		const source = `[ab]: 2\n\n[aba]: 8\n\n[ba]: 4\n\n$[ab + aba + ba]`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered).toBe('<p>14</p>');
+	});
+});
+
+describe('Regression Tests', ()=>{
+	it('Don\'t Eat all the parentheticals!', function() {
+		const source='\n|  title 1  | title 2 | title 3 | title 4|\n|-----------|---------|---------|--------|\n|[foo](bar) |  Ipsum  |    )    |   )    |\n';
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<table><thead><tr><th>title 1</th><th>title 2</th><th>title 3</th><th>title 4</th></tr></thead><tbody><tr><td><a href=\"bar\">foo</a></td><td>Ipsum</td><td>)</td><td>)</td></tr></tbody></table>');
+	});
+
+	it('Handle Extra spaces in image alt-text 1', function(){
+		const source='![ where is my image??](http://i.imgur.com/hMna6G0.png)';
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p><img src=\"http://i.imgur.com/hMna6G0.png\" alt=\"where is my image??\" style=\"--HB_src:url(http://i.imgur.com/hMna6G0.png);\"></p>');
+	});
+
+	it('Handle Extra spaces in image alt-text 2', function(){
+		const source='![where  is my image??](http://i.imgur.com/hMna6G0.png)';
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p><img src=\"http://i.imgur.com/hMna6G0.png\" alt=\"where is my image??\" style=\"--HB_src:url(http://i.imgur.com/hMna6G0.png);\"></p>');
+	});
+
+	it('Handle Extra spaces in image alt-text 3', function(){
+		const source='![where is my image?? ](http://i.imgur.com/hMna6G0.png)';
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p><img src=\"http://i.imgur.com/hMna6G0.png\" alt=\"where is my image??\" style=\"--HB_src:url(http://i.imgur.com/hMna6G0.png);\"></p>');
+	});
+
+	it('Handle Extra spaces in image alt-text 4', function(){
+		const source='![where is my image??](http://i.imgur.com/hMna6G0.png){height=20%,width=20%}';
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p><img style=\"--HB_src:url(http://i.imgur.com/hMna6G0.png);\" src=\"http://i.imgur.com/hMna6G0.png\" alt=\"where is my image??\" height=\"20%\" width=\"20%\"></p>');
+	});
+});
+
+describe('Custom Math Function Tests', ()=>{
+	it('Sign Test', function() {
+		const source = `[a]: 13\n\n[b]: -11\n\nPositive: $[sign(a)]\n\nNegative: $[sign(b)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Positive: +</p><p>Negative: -</p>');
+	});
+
+	it('Signed Test', function() {
+		const source = `[a]: 13\n\n[b]: -11\n\nPositive: $[signed(a)]\n\nNegative: $[signed(b)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Positive: +13</p><p>Negative: -11</p>');
+	});
+
+	it('Roman Numerals Test', function() {
+		const source = `[a]: 18\n\nRoman Numeral: $[toRomans(a)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Roman Numeral: XVIII</p>');
+	});
+
+	it('Roman Numerals Test - Uppercase', function() {
+		const source = `[a]: 18\n\nRoman Numeral: $[toRomansUpper(a)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Roman Numeral: XVIII</p>');
+	});
+
+	it('Roman Numerals Test - Lowercase', function() {
+		const source = `[a]: 18\n\nRoman Numeral: $[toRomansLower(a)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Roman Numeral: xviii</p>');
+	});
+
+	it('Number to Characters Test', function() {
+		const source = `[a]: 18\n\n[b]: 39\n\nCharacters: $[toChar(a)] $[toChar(b)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Characters: R AM</p>');
+	});
+
+	it('Number to Characters Test - Uppercase', function() {
+		const source = `[a]: 18\n\n[b]: 39\n\nCharacters: $[toCharUpper(a)] $[toCharUpper(b)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Characters: R AM</p>');
+	});
+
+	it('Number to Characters Test - Lowercase', function() {
+		const source = `[a]: 18\n\n[b]: 39\n\nCharacters: $[toCharLower(a)] $[toCharLower(b)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Characters: r am</p>');
+	});
+
+	it('Number to Words Test', function() {
+		const source = `[a]: 80085\n\nWords: $[toWords(a)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Words: eighty thousand and eighty-five</p>');
+	});
+
+	it('Number to Words Test - Uppercase', function() {
+		const source = `[a]: 80085\n\nWords: $[toWordsUpper(a)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Words: EIGHTY THOUSAND AND EIGHTY-FIVE</p>');
+	});
+
+	it('Number to Words Test - Lowercase', function() {
+		const source = `[a]: 80085\n\nWords: $[toWordsLower(a)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Words: eighty thousand and eighty-five</p>');
+	});
+
+	it('Number to Words Test - Capitalized', function() {
+		const source = `[a]: 80085\n\nWords: $[toWordsCaps(a)]`;
+		const rendered = Markdown.render(source).trimReturns();
+		expect(rendered).toBe('<p>Words: Eighty Thousand And Eighty-Five</p>');
 	});
 });

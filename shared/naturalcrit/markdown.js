@@ -1,11 +1,16 @@
+/* eslint-disable max-depth */
 /* eslint-disable max-lines */
 import _                        from 'lodash';
 import { Parser as MathParser } from 'expr-eval';
-import { marked as Marked }              from 'marked';
+import { marked as Marked }     from 'marked';
 import MarkedExtendedTables     from 'marked-extended-tables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
+import MarkedNonbreakingSpaces                                                           from 'marked-nonbreaking-spaces';
+import MarkedSubSuperText from 'marked-subsuper-text';
+import { romanize } from 'romans';
+import writtenNumber from 'written-number';
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
 import diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
@@ -57,9 +62,57 @@ mathParser.functions.signed = function (a) {
 	if(a >= 0) return `+${a}`;
 	return `${a}`;
 };
+// Add Roman numeral functions
+mathParser.functions.toRomans = function (a) {
+	return romanize(a);
+};
+mathParser.functions.toRomansUpper = function (a) {
+	return romanize(a).toUpperCase();
+};
+mathParser.functions.toRomansLower = function (a) {
+	return romanize(a).toLowerCase();
+};
+// Add character functions
+mathParser.functions.toChar = function (a) {
+	if(a <= 0) return a;
+	const genChars = function (i) {
+		return (i > 26 ? genChars(Math.floor((i - 1) / 26)) : '') + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[(i - 1) % 26];
+	};
+	return genChars(a);
+};
+mathParser.functions.toCharUpper = function (a) {
+	return mathParser.functions.toChar(a).toUpperCase();
+};
+mathParser.functions.toCharLower = function (a) {
+	return mathParser.functions.toChar(a).toLowerCase();
+};
+// Add word functions
+mathParser.functions.toWords = function (a) {
+	return writtenNumber(a);
+};
+mathParser.functions.toWordsUpper = function (a) {
+	return mathParser.functions.toWords(a).toUpperCase();
+};
+mathParser.functions.toWordsLower = function (a) {
+	return mathParser.functions.toWords(a).toLowerCase();
+};
+mathParser.functions.toWordsCaps = function (a) {
+	const words = mathParser.functions.toWords(a).split(' ');
+	return words.map((word)=>{
+		return word.replace(/(?:^|\b|\s)(\w)/g, function(w, index) {
+			return index === 0 ? w.toLowerCase() : w.toUpperCase();
+		  });
+	}).join(' ');
+};
+
+// Normalize variable names; trim edge spaces and shorten blocks of whitespace to 1 space
+const normalizeVarNames = (label)=>{
+	return label.trim().replace(/\s+/g, ' ');
+};
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
-renderer.html = function (html) {
+renderer.html = function (token) {
+	let html = token.text;
 	if(_.startsWith(_.trim(html), '<div') && _.endsWith(_.trim(html), '</div>')){
 		const openTag = html.substring(0, html.indexOf('>')+1);
 		html = html.substring(html.indexOf('>')+1);
@@ -70,18 +123,21 @@ renderer.html = function (html) {
 };
 
 // Don't wrap {{ Spans alone on a line, or {{ Divs in <p> tags
-renderer.paragraph = function(text){
+renderer.paragraph = function(token){
 	let match;
+	const text = this.parser.parseInline(token.tokens);
 	if(text.startsWith('<div') || text.startsWith('</div'))
 		return `${text}`;
-	else if(match = text.match(/(^|^.*?\n)<span class="inline-block(.*?<\/span>)$/)) {
+	else if(match = text.match(/(^|^.*?\n)<span class="inline-block(.*?<\/span>)$/))
 		return `${match[1].trim() ? `<p>${match[1]}</p>` : ''}<span class="inline-block${match[2]}`;
-	} else
+	else
 		return `<p>${text}</p>\n`;
 };
 
 //Fix local links in the Preview iFrame to link inside the frame
-renderer.link = function (href, title, text) {
+renderer.link = function (token) {
+	let { href, title, tokens } = token;
+	const text = this.parser.parseInline(tokens);
 	let self = false;
 	if(href[0] == '#') {
 		self = true;
@@ -93,7 +149,7 @@ renderer.link = function (href, title, text) {
 	}
 	let out = `<a href="${escape(href)}"`;
 	if(title) {
-		out += ` title="${title}"`;
+		out += ` title="${escape(title)}"`;
 	}
 	if(self) {
 		out += ' target="_self"';
@@ -103,8 +159,8 @@ renderer.link = function (href, title, text) {
 };
 
 // Expose `src` attribute as `--HB_src` to make the URL accessible via CSS
-renderer.image = function (href, title, text) {
-	href = cleanUrl(href);
+renderer.image = function (token) {
+	const { href, title, text } = token;
 	if(href === null)
 		return text;
 
@@ -172,8 +228,8 @@ const mustacheSpans = {
 		return `<span` +
 			`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 			`${tags.id         ? ` id="${tags.id}"`         : ''}` +
-			`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
-			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
+			`${tags.styles     ? ` style="${Object.entries(tags.styles).map(([key, value])=>`${key}:${value};`).join(' ')}"` : ''}` +
+			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}`     : ''}` +
 			`>${this.parser.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
 	}
 };
@@ -228,7 +284,7 @@ const mustacheDivs = {
 		return `<div` +
 			`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 			`${tags.id         ? ` id="${tags.id}"`         : ''}` +
-			`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
+			`${tags.styles     ? ` style="${Object.entries(tags.styles).map(([key, value])=>`${key}:${value};`).join(' ')}"` : ''}` +
 			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
 			`>${this.parser.parse(token.tokens)}</div>`; // parse to turn child tokens into HTML
 	}
@@ -265,18 +321,13 @@ const mustacheInjectInline = {
 		const text = this.parser.parseInline([token]);
 		const originalTags = extractHTMLStyleTags(text);
 		const injectedTags = token.injectedTags;
-		const tags = {
-			id         : injectedTags.id || originalTags.id || null,
-			classes    : [originalTags.classes,    injectedTags.classes].join(' ').trim() || null,
-			styles     : [originalTags.styles,     injectedTags.styles].join(' ').trim()  || null,
-			attributes : Object.assign(originalTags.attributes ?? {}, injectedTags.attributes ?? {})
-		};
+		const tags         = mergeHTMLTags(originalTags, injectedTags);
 		const openingTag = /(<[^\s<>]+)[^\n<>]*(>.*)/s.exec(text);
 		if(openingTag) {
 			return `${openingTag[1]}` +
 				`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 				`${tags.id         ? ` id="${tags.id}"`         : ''}` +
-				`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
+				`${!_.isEmpty(tags.styles)     ? ` style="${Object.entries(tags.styles).map(([key, value])=>`${key}:${value};`).join(' ')}"` : ''}` +
 				`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
 				`${openingTag[2]}`; // parse to turn child tokens into HTML
 		}
@@ -314,18 +365,13 @@ const mustacheInjectBlock = {
 			const text = this.parser.parse([token]);
 			const originalTags = extractHTMLStyleTags(text);
 			const injectedTags = token.injectedTags;
-			const tags = {
-				id         : injectedTags.id || originalTags.id || null,
-				classes    : [originalTags.classes,    injectedTags.classes].join(' ').trim() || null,
-				styles     : [originalTags.styles,     injectedTags.styles].join(' ').trim()  || null,
-				attributes : Object.assign(originalTags.attributes ?? {}, injectedTags.attributes ?? {})
-			};
+			const tags         = mergeHTMLTags(originalTags, injectedTags);
 			const openingTag = /(<[^\s<>]+)[^\n<>]*(>.*)/s.exec(text);
 			if(openingTag) {
 				return `${openingTag[1]}` +
 					`${tags.classes    ? ` class="${tags.classes}"` : ''}` +
 					`${tags.id         ? ` id="${tags.id}"`         : ''}` +
-					`${tags.styles     ? ` style="${tags.styles}"`  : ''}` +
+					`${!_.isEmpty(tags.styles)     ? ` style="${Object.entries(tags.styles).map(([key, value])=>`${key}:${value};`).join(' ')}"` : ''}` +
 					`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
 					`${openingTag[2]}`; // parse to turn child tokens into HTML
 			}
@@ -342,33 +388,41 @@ const mustacheInjectBlock = {
 	}
 };
 
-const superSubScripts = {
-	name  : 'superSubScript',
-	level : 'inline',
-	start(src) { return src.match(/\^/m)?.index; },  // Hint to Marked.js to stop and check for a match
+const justifiedParagraphClasses = [];
+justifiedParagraphClasses[2] = 'Left';
+justifiedParagraphClasses[4] = 'Right';
+justifiedParagraphClasses[6] = 'Center';
+
+const justifiedParagraphs = {
+	name  : 'justifiedParagraphs',
+	level : 'block',
+	start(src) {
+		return src.match(/\n(?:-:|:-|-:) {1}/m)?.index;
+	},  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const superRegex = /^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^/m;
-		const subRegex   = /^\^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^\^/m;
-		let isSuper = false;
-		let match = subRegex.exec(src);
-		if(!match){
-			match = superRegex.exec(src);
-			if(match)
-				isSuper = true;
-		}
+		const regex  = /^(((:-))|((-:))|((:-:))) .+(\n(([^\n].*\n)*(\n|$))|$)/ygm;
+		const match = regex.exec(src);
 		if(match?.length) {
+			let whichJustify;
+			if(match[2]?.length) whichJustify = 2;
+			if(match[4]?.length) whichJustify = 4;
+			if(match[6]?.length) whichJustify = 6;
 			return {
-				type   : 'superSubScript', // Should match "name" above
-				raw    : match[0],          // Text to consume from the source
-				tag    : isSuper ? 'sup' : 'sub',
-				tokens : this.lexer.inlineTokens(match[1])
+				type   : 'justifiedParagraphs', // Should match "name" above
+				raw    : match[0],     // Text to consume from the source
+				length : match[whichJustify].length,
+				text   : match[0].slice(match[whichJustify].length),
+				class  : justifiedParagraphClasses[whichJustify],
+				tokens : this.lexer.inlineTokens(match[0].slice(match[whichJustify].length + 1))
 			};
 		}
 	},
 	renderer(token) {
-		return `<${token.tag}>${this.parser.parseInline(token.tokens)}</${token.tag}>`;
+		return `<p align="${token.class}">${this.parser.parseInline(token.tokens)}</p>`;
 	}
+
 };
+
 
 const forcedParagraphBreaks = {
 	name  : 'hardBreaks',
@@ -387,28 +441,7 @@ const forcedParagraphBreaks = {
 		}
 	},
 	renderer(token) {
-		return `<div class='blank'></div>`.repeat(token.length).concat('\n');
-	}
-};
-
-const nonbreakingSpaces = {
-	name  : 'nonbreakingSpaces',
-	level : 'inline',
-	start(src) { return src.match(/:>+/m)?.index; },  // Hint to Marked.js to stop and check for a match
-	tokenizer(src, tokens) {
-		const regex  = /:(>+)/ym;
-		const match = regex.exec(src);
-		if(match?.length) {
-			return {
-				type   : 'nonbreakingSpaces', // Should match "name" above
-				raw    : match[0],     // Text to consume from the source
-				length : match[1].length,
-				text   : ''
-			};
-		}
-	},
-	renderer(token) {
-		return `&nbsp;`.repeat(token.length).concat('');
+		return `<div class='blank'></div>\n`.repeat(token.length);
 	}
 };
 
@@ -505,7 +538,7 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 	const match = regex.exec(input);
 
 	const prefix = match[1];
-	const label  = match[2];
+	const label  = normalizeVarNames(match[2]); // Ensure the label name is normalized as it should be in the var stack.
 
 	//v=====--------------------< HANDLE MATH >-------------------=====v//
 	const mathRegex = /[a-z]+\(|[+\-*/^(),]/g;
@@ -660,8 +693,8 @@ function MarkedVariables() {
 							});
 					}
 					if(match[3]) { // Block Definition
-						const label   = match[4] ? match[4].trim().replace(/\s+/g, ' ')    : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-						const content = match[5] ? match[5].trim().replace(/[ \t]+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						const label   = match[4] ? normalizeVarNames(match[4]) : null;
+						const content = match[5] ? match[5].trim().replace(/[ \t]+/g, ' ') : null; // Normalize text content (except newlines for block-level content)
 
 						varsQueue.push(
 							{ type    : 'varDefBlock',
@@ -670,7 +703,7 @@ function MarkedVariables() {
 							});
 					}
 					if(match[6]) { // Block Call
-						const label = match[7] ? match[7].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						const label = match[7] ? normalizeVarNames(match[7]) : null;
 
 						varsQueue.push(
 							{ type    : 'varCallBlock',
@@ -679,8 +712,8 @@ function MarkedVariables() {
 							});
 					}
 					if(match[8]) { // Inline Definition
-						const label = match[10] ? match[10].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
-						let content = match[11] ? match[11].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						const label = match[10] ? normalizeVarNames(match[10]) : null;
+						let content = match[11] || null;
 
 						// In case of nested (), find the correct matching end )
 						let level = 0;
@@ -696,10 +729,8 @@ function MarkedVariables() {
 									break;
 							}
 						}
-						if(i > -1) {
-							combinedRegex.lastIndex = combinedRegex.lastIndex - (content.length - i);
-							content = content.slice(0, i).trim().replace(/\s+/g, ' ');
-						}
+						combinedRegex.lastIndex = combinedRegex.lastIndex - (content.length - i);
+						content = content.slice(0, i).trim().replace(/\s+/g, ' ');
 
 						varsQueue.push(
 							{ type    : 'varDefBlock',
@@ -713,7 +744,7 @@ function MarkedVariables() {
 							});
 					}
 					if(match[12]) { // Inline Call
-						const label = match[13] ? match[13].trim().replace(/\s+/g, ' ') : null; // Trim edge spaces and shorten blocks of whitespace to 1 space
+						const label = match[13] ? normalizeVarNames(match[13]) : null;
 
 						varsQueue.push(
 							{ type    : 'varCallInline',
@@ -769,11 +800,13 @@ const tableTerminators = [
 ];
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions : [definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
-	nonbreakingSpaces, superSubScripts, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
+	mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
+Marked.use(MarkedSubSuperText());
+Marked.use(MarkedNonbreakingSpaces());
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
-Marked.use(MarkedExtendedTables(tableTerminators), MarkedGFMHeadingId({ globalSlugs: true }),
+Marked.use(MarkedExtendedTables({ interruptPatterns: tableTerminators }), MarkedGFMHeadingId({ globalSlugs: true }),
 	MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
 
 function cleanUrl(href) {
@@ -835,15 +868,20 @@ const processStyleTags = (string)=>{
 			const index = attr.indexOf('=');
 			let [key, value] = [attr.substring(0, index), attr.substring(index + 1)];
 			value = value.replace(/"/g, '');
-			obj[key] = value;
+			obj[key.trim()] = value.trim();
 			return obj;
 		}, {}) || null;
-	const styles     = tags?.length ? tags.map((tag)=>tag.replace(/:"?([^"]*)"?/g, ':$1;').trim()).join(' ') : null;
+	const styles = tags?.length ? tags.reduce((styleObj, style)=>{
+		const index = style.indexOf(':');
+		const [key, value] = [style.substring(0, index), style.substring(index + 1)];
+		styleObj[key.trim()] = value.replace(/"?([^"]*)"?/g, '$1').trim();
+		return styleObj;
+	}, {}) : null;
 
 	return {
 		id         : id,
 		classes    : classes,
-		styles     : styles,
+		styles     : _.isEmpty(styles)     ? null : styles,
 		attributes : _.isEmpty(attributes) ? null : attributes
 	};
 };
@@ -853,22 +891,37 @@ const extractHTMLStyleTags = (htmlString)=>{
 	const firstElementOnly = htmlString.split('>')[0];
 	const id         = firstElementOnly.match(/id="([^"]*)"/)?.[1]    || null;
 	const classes    = firstElementOnly.match(/class="([^"]*)"/)?.[1] || null;
-	const styles     = firstElementOnly.match(/style="([^"]*)"/)?.[1] || null;
+	const styles     = firstElementOnly.match(/style="([^"]*)"/)?.[1]
+		?.split(';').reduce((styleObj, style)=>{
+			if(style.trim() === '') return styleObj;
+			const index = style.indexOf(':');
+			const [key, value] = [style.substring(0, index), style.substring(index + 1)];
+			styleObj[key.trim()] = value.trim();
+			return styleObj;
+		}, {}) || null;
 	const attributes = firstElementOnly.match(/[a-zA-Z]+="[^"]*"/g)
 		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
 		.reduce((obj, attr)=>{
 			const index = attr.indexOf('=');
-			let [key, value] = [attr.substring(0, index), attr.substring(index + 1)];
-			value = value.replace(/"/g, '');
-			obj[key] = value;
+			const [key, value] = [attr.substring(0, index), attr.substring(index + 1)];
+			obj[key.trim()] = value.replace(/"/g, '');
 			return obj;
 		}, {}) || null;
 
 	return {
 		id         : id,
 		classes    : classes,
-		styles     : styles,
+		styles     : _.isEmpty(styles)     ? null : styles,
 		attributes : _.isEmpty(attributes) ? null : attributes
+	};
+};
+
+const mergeHTMLTags = (originalTags, newTags)=>{
+	return {
+		id         : newTags.id || originalTags.id || null,
+		classes    : [originalTags.classes, newTags.classes].join(' ').trim() || null,
+		styles     : Object.assign(originalTags.styles     ?? {}, newTags.styles     ?? {}),
+		attributes : Object.assign(originalTags.attributes ?? {}, newTags.attributes ?? {})
 	};
 };
 
@@ -879,7 +932,13 @@ let globalPageNumber = 0;
 const Markdown = {
 	marked : Marked,
 	render : (rawBrewText, pageNumber=0)=>{
-		globalVarsList[pageNumber] = {};					//Reset global links for current page, to ensure values are parsed in order
+		const lastPageNumber = pageNumber > 0 ? globalVarsList[pageNumber - 1].HB_pageNumber.content : 0;
+		globalVarsList[pageNumber] = {							//Reset global links for current page, to ensure values are parsed in order
+			'HB_pageNumber' : {									//Add document variables for this page
+				content  : !isNaN(Number(lastPageNumber)) ? Number(lastPageNumber) + 1 : lastPageNumber,
+				resolved : true
+			}
+		};
 		varsQueue                  = [];						//Could move into MarkedVariables()
 		globalPageNumber           = pageNumber;
 		if(pageNumber==0) {

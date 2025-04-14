@@ -2,7 +2,7 @@
 // Set working directory to project root
 import { dirname }       from 'path';
 import { fileURLToPath } from 'url';
-import packageJSON       from './../package.json' with { type: 'json' };
+import packageJSON from './../package.json' with { type: 'json' };
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 process.chdir(`${__dirname}/..`);
@@ -11,7 +11,6 @@ const version = packageJSON.version;
 import _       from 'lodash';
 import jwt     from 'jwt-simple';
 import express from 'express';
-import yaml    from 'js-yaml';
 import config  from './config.js';
 import fs      from 'fs-extra';
 
@@ -70,13 +69,11 @@ const corsOptions = {
 			'https://homebrewery-stage.herokuapp.com',
 		];
 
-		if(isLocalEnvironment) {
-			allowedOrigins.push('http://localhost:8000', 'http://localhost:8010');
-		}
+		const localNetworkRegex = /^http:\/\/(localhost|127\.0\.0\.1|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+):\d+$/;
 
 		const herokuRegex = /^https:\/\/(?:homebrewery-pr-\d+\.herokuapp\.com|naturalcrit-pr-\d+\.herokuapp\.com)$/; // Matches any Heroku app
 
-		if(!origin || allowedOrigins.includes(origin) || herokuRegex.test(origin)) {
+		if(!origin || allowedOrigins.includes(origin) || herokuRegex.test(origin) || (isLocalEnvironment && localNetworkRegex.test(origin))) {
 			callback(null, true);
 		} else {
 			console.log(origin, 'not allowed');
@@ -352,7 +349,7 @@ app.get('/user/:username', async (req, res, next)=>{
 app.put('/api/user/rename', async (req, res)=>{
 	const { username, newUsername } = req.body;
 	const ownAccount = req.account && (req.account.username == newUsername);
-	
+
 	if(!username || !newUsername)
 		return res.status(400).json({ error: 'Username and newUsername are required.' });
 	if(!ownAccount)
@@ -591,6 +588,7 @@ const renderPage = async (req, res)=>{
 	const configuration = {
 		local       : isLocalEnvironment,
 		publicUrl   : config.get('publicUrl') ?? '',
+		baseUrl     : `${req.protocol}://${req.get('host')}`,
 		environment : nodeEnv,
 		deployment  : config.get('heroku_app_name') ?? ''
 	};
