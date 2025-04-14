@@ -6,7 +6,7 @@ const _ = require('lodash');
 
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
 import Markdown from 'naturalcrit/markdown.js';
-const ErrorBar = require('./errorBar/errorBar.jsx');
+// const ErrorBar = require('./errorBar/errorBar.jsx');
 const ToolBar  = require('./toolBar/toolBar.jsx');
 
 //TODO: move to the brew renderer
@@ -299,7 +299,7 @@ const BrewRenderer = (props)=>{
 				</div>
 				: null}
 
-			<ErrorBar errors={props.errors} />
+			{/* <ErrorBar errors={props.errors} /> */}
 			<div className='popups' ref={mainRef}>
 				<RenderWarnings />
 				<NotificationPopup />
