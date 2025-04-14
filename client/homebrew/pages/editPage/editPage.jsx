@@ -526,20 +526,21 @@ const EditPage = createClass({
 				<NavSection>
 					<MainMenu />
 					<Dropdown id='brewMenu' trigger='click' className='brew-menu'>
-						<NavItem color='purple'>Brew</NavItem>
+						<NavItem color='purple' icon='fas fa-pen-fancy'>Brew</NavItem>
 						<NewBrewItem />
 						{this.renderSaveButton()}
 						{this.renderAutoSaveButton()}
+						{this.renderStoragePicker()}
 						<NavItem
 							href={`/user/${encodeURI(global.account.username)}`}
-							color='yellow'
+							color='purple'
 							icon='fas fa-beer'
 						>
 							brews
 						</NavItem>
 						<RecentNavItem brew={this.state.brew} storageKey='edit' />
-						<NavItem color='blue' href={`/share/${shareLink}`}>
-							view
+						<NavItem color='blue' href={`/share/${shareLink}`} icon='fas fa-share-from-square'>
+							share
 						</NavItem>
 						<NavItem color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${shareLink}`);}}>
 							copy url
@@ -560,33 +561,20 @@ const EditPage = createClass({
 					{/* {this.renderGoogleDriveIcon()}
 					{this.state.error ?
 						<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
-						
+
 					} */}
-					{/* <NewBrew />
-					<HelpNavItem/> */}
-					{/* <Dropdown>
-						<NavItem color='teal' icon='fas fa-share-alt'>
-							share
-						</NavItem>
-						<NavItem color='blue' href={`/share/${shareLink}`}>
-							view
-						</NavItem>
-						<NavItem color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${shareLink}`);}}>
-							copy url
-						</NavItem>
-						<NavItem color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
-							post to reddit
-						</NavItem>
-					</Dropdown> */}
-					
+
+
 				</NavSection>
 
 			</Navbar>
-		</NavbarProvider>
+		</NavbarProvider>;
 	},
 
 	render : function(){
 		return <div className='editPage sitePage'>
+			<DialogZone id='app-dialogs' />
+			{this.renderStorageTransfer()}
 			<Meta name='robots' content='noindex, nofollow' />
 			{this.renderNavbar()}
 
