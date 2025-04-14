@@ -1,0 +1,36 @@
+@import url('shared/naturalcrit/styles/colors.less');
+
+dialog {
+	z-index: 20000;
+	background-color: #333;
+	color: white;
+	padding: 30px 50px 20px 50px;
+	box-shadow: 0px 5px 10px -5px  #000;
+	font-family: Open Sans;
+	font-size: 13px;
+	pointer-events: all;
+	h2.dialog-title {
+		font-weight: 800;
+		text-transform: uppercase;
+	}
+	.dialog-content {
+		margin: 1em 0;
+	}
+	footer.dialog-footer {
+		margin-top: 20px;
+		display: flex;
+		justify-content: end;
+		gap: 8px;
+		a, button {
+			.colorButton(@blue);
+		}
+		#close {
+			.colorButton(@red);
+		}
+	}
+
+	&::backdrop {
+		background-color: #FFF7;
+	}
+	
+}
