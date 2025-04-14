@@ -36,22 +36,23 @@ const NewBrew = ({...props})=>{
 		<Dropdown id='newBrewMenu' trigger='click' disabled={props.disabled}>
 			<NavItem
 				className={`new ${props.disabled && 'disabled'}`}
-				color={props.disabled ? 'grey' : 'purple'}
-				icon='fa-solid fa-plus-square'>
+				color={props.disabled ? 'grey' : 'green'}
+				icon='fa-solid fa-plus-square'
+				caret={true}>
                 new
 			</NavItem>
 			<NavItem
 				className='fromBlank'
 				href='/new'
 				newTab={true}
-				color='purple'
+				color='green'
 				icon='fa-solid fa-file'>
                 from blank
 			</NavItem>
 
 			<NavItem
 				className='fromFile'
-				color='purple'
+				color='green'
 				icon='fa-solid fa-upload'
 				onClick={()=>{ document.getElementById('uploadTxt').click(); }}>
 				<input id='uploadTxt' className='newFromLocal' type='file' onChange={handleFileChange} style={{ display: 'none' }} />
