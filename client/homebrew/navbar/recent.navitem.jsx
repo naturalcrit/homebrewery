@@ -166,7 +166,7 @@ const RecentItems = createClass({
 
 	render : function(){
 		return <Dropdown id='recentsMenu' className='recent' trigger='click'>
-			<NavItem icon='fas fa-history' color='grey' >
+			<NavItem color='purple'  caret={true}>
 				{this.props.text}
 			</NavItem>
 			{this.renderDropdown()}

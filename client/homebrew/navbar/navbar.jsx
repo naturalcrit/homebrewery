@@ -36,13 +36,13 @@ const NavItem = ({ icon = null, href = null, newTab = false, onClick = ()=>{}, c
 			return <a {...props} className={classes} target={newTab ? '_blank' : '_self'} >
 				{icon}
 				{children && <span>{children}</span>}
-				{caret && <i className='fas fa-caret-right' />}
+				{caret && <i className='fas fa-caret-right caret' />}
 			</a>;
 		} else {
 			return <div {...props} className={classes} onClick={handleClick} >
 				{icon}
-				{children && <span>{children}</span>}
-				{caret && <i className='fas fa-caret-right' />}
+				{children && <span className='name'>{children}</span>}
+				{caret && <i className='fas fa-caret-right caret' />}
 			</div>;
 		}
 	};

@@ -17,10 +17,10 @@ const MainMenu = () => {
 		<NavSection className='mainMenu'>
 			<Dropdown id='mainMenu' trigger='click' className='mainMenu'>
 				<NavItem className='homebrewLogo'>
-					<span><NaturalCritIcon />The Homebrewery</span>
+					<NaturalCritIcon />The Homebrewery
 				</NavItem>
-				<NavItem newTab={true} href='https://www.naturalcrit.com' color='blue'>
-					<span className='name'>Natural<span className='crit'>Crit</span></span>
+				<NavItem id='naturalCritItem' newTab={true} href='https://www.naturalcrit.com' color='blue'>
+					<span className='natural'>Natural<span className='crit'>Crit</span></span>
 				</NavItem>
 				<NavItem newTab={true} href='/changelog' color='purple' icon='far fa-file-alt'>
 					{`v${global.version}`}

@@ -25,350 +25,343 @@
 
 .homebrew nav {
 	position         : relative;
-	z-index          : 2;
+	z-index          : 10000;
 	display          : flex;
 	justify-content  : space-between;
 	background-color : #333333;
-
-	
-	
-	.navSection {
-		display     : flex;
-		align-items : center;
-
-		&:has(.brewTitle) {
-			flex-grow : 1;
-			min-width : 300px; 
-		}
-	}
-	// "NaturalCrit" logo
-	.homebrewLogo {
-		display         : block;
-		margin-top      : 0px;
-		margin-right    : 8px;
-		margin-left     : 16px;
-		color           : white;
-		text-decoration : none;
-		&:hover {
-			.name { color : @orange; }
-			svg { fill : @orange; }
-		}
-		
-		svg {
-			height: 43px;
-			margin-right: .2em;
-			cursor: pointer;
-			fill: #fff5;
-			position: absolute;
-			left: -20px;
-			bottom: -3px;
-		}
-	}
-	.navItem {
-		#backgroundColorsHover;
-		.animate(background-color);
-		display          : flex;
-		align-items      : center;
-		justify-content  : center;
-		height           : 100%;
-		padding          : 8px 12px;
-		font-size        : 10px;
-		font-weight      : 800;
-		line-height      : 13px;
+	box-shadow: 0px 5px 10px -5px  #000;
+	&, a:any-link {
 		color            : white;
 		text-transform   : uppercase;
 		text-decoration  : none;
-		cursor           : pointer;
-		background-color : #333333;
-		&.disabled {
-			background-color: @greyLight;
-			cursor: not-allowed;
-		};
-		i {
-			margin-right : 5px;
-			font-size   : 13px;
-		}
-		&.patreon {
-			&:hover i { color : red; }
-			i {
-				color              : pink;
-				.animate(color);
-				animation-name     : pinkColoring;
-				animation-duration : 2s;
-			}
-		}
-		&.brewTitle {
-			display          : block;
-			width            : 100%;
-			overflow         : hidden;
-			text-overflow    : ellipsis;
-			font-size        : 12px;
-			font-weight      : 800;
-			color            : white;
-			text-align       : center;
-			text-transform   : initial;	
-			white-space      : nowrap;
-			background-color : transparent;		
-		}
-		span.name {
-			font-family : 'CodeLight';
-			font-size: 1.1em;
-			span.crit { font-family : 'CodeBold'; }
-			small {
-				font-family    : 'Open Sans';
-				font-size      : 0.3em;
-				font-weight    : 800;
-				text-transform : uppercase;
-			}
-		}
-
-		// "The Homebrewery" logo
-		&.homebrewLogo {
-			.animate(color);
-			font-family : 'CodeBold';
-			font-size   : 12px;
-			color       : white;
-			div {
-				margin-top    : 2px;
-				margin-bottom : -2px;
-			}
-			&:hover { color : @blue; }
-			
-		}
-		&.metadata {
-			position    : relative;
-			display     : flex;
-			flex-grow   : 1;
-			align-items : center;
-			height      : 100%;
-			padding     : 0;
-			i { margin-right : 10px;}
-			.window {
-				position         : absolute;
-				bottom           : 0;
-				left             : 50%;
-				z-index          : -1;
-				display          : flex;
-				flex-flow        : row wrap;
-				align-content    : baseline;
-				justify-content  : flex-start;
-				width            : 440px;
-				max-height       : ~'calc(100vh - 28px)';
-				padding          : 0 10px 5px;
-				margin           : 0 auto;
-				background-color : #333333;
-				border           : 3px solid #444444;
-				border-top       : unset;
-				border-radius    : 0 0 5px 5px;
-				box-shadow       : inset 0 7px 9px -7px #111111;
-				transition       : transform 0.4s, opacity 0.4s;
-				&.active {
-					opacity   : 1;
-					transform : translateX(-50%) translateY(100%);
-				}
-				&.inactive {
-					opacity   : 0;
-					transform : translateX(-50%) translateY(0%);
-				}
-				.row {
-					display   : flex;
-					flex-flow : row wrap;
-					width     : 100%;
-					h4 {
-						box-sizing : border-box;
-						display    : block;
-						flex-grow  : 1;
-						flex-basis : 20%;
-						min-width  : 76px;
-						padding    : 5px 0;
-						color      : #BBBBBB;
-						text-align : center;
-					}
-					p {
-						flex-grow      : 1;
-						flex-basis     : 80%;
-						padding        : 5px 0;
-						font-family    : 'Open Sans', sans-serif;
-						font-size      : 10px;
-						font-weight    : normal;
-						text-transform : initial;
-						.tag {
-							display          : inline-block;
-							padding          : 2px;
-							margin           : 2px 2px;
-							background-color : #444444;
-							border           : 2px solid grey;
-							border-radius    : 5px;
-						}
-						a.userPageLink {
-							color           : white;
-							text-decoration : none;
-							&:hover { text-decoration : underline; }
-						}
-					}
-					&:nth-of-type(even) { background-color : #555555; }
-				}
-			}
-		}
-		&.warning {
-			position         : relative;
-			color            : white;
-			background-color : @orange;
-			&:hover > .dropdown { visibility : visible; }
-			.dropdown {
-				position         : absolute;
-				top              : 28px;
-				left             : 0;
-				z-index          : 10000;
-				box-sizing       : border-box;
-				display          : block;
-				visibility       : hidden;
-				width            : 100%;
-				padding          : 13px 5px;
-				text-align       : center;
-				background-color : #333333;
-			}
-		}
-		&.account {
-			&.username { text-transform : none;}
-		}
+		font-size        : 10px;
+		font-weight      : 800;
+		line-height      : 13px;
 	}
-	.navDropdownContainer {
-		position : relative;
-		height   : 100%;
 
-		.navDropdown {
-			position       : absolute;
-			//top: 28px;
-			// right          : 0px;
-			z-index        : 10000;
-			display        : flex;
-			flex-direction : column;
-			// align-items    : flex-end;
-			width          : max-content;
-			min-width      : 100%;
-			max-height     : calc(100vh - 28px);
-			overflow       : hidden auto;
 
-			/* ===== Scrollbar CSS ===== */
-			/* Firefox */
-			scrollbar-width: thin;
-			scrollbar-color: #aaa #333;
-			
-			/* Chrome, Edge, and Safari */
-			::-webkit-scrollbar {
-				width: 12px;
+	
+
+	// NAV SECTIONS -- all navitems should be inside a section
+	.navSection {
+		display     : flex;
+		flex-wrap: nowrap;
+		align-items : center;
+		column-gap: 12px;
+
+		&:has(.brewTitle) {
+			flex: 1 1 max-content;
+		}
+
+		// NAV ITEMS -- every button inside the navbar should be a navitem
+
+		.navItem {
+			#backgroundColorsHover;
+			.animate(background-color);
+			display: grid;
+			grid-template-columns: 25px 2fr min-content;
+			grid-template-rows: 1fr;
+			gap: 0px 4px;
+			grid-auto-flow: row;
+			grid-template-areas:
+				"icon name caret";
+			align-items        : center;
+			justify-content    : start;
+			height           : 100%;
+			padding          : 8px 4px;
+			cursor           : pointer;
+			i {
+				
+				font-size   : 13px;
+				grid-area: icon;
+				justify-self: center;
 			}
-			
-			::-webkit-scrollbar-track {
-				background: #333;
+			span {
+				grid-area: name;
 			}
-			
-			::-webkit-scrollbar-thumb {
-				background-color: #aaa;
-				border-radius: 10px;
+			.caret {
+				grid-area: caret;
+				margin-right: 0;
+				margin-left: 20px;
 			}
 
-			.navItem {
-				position           : relative;
-				display: grid;
-				grid-template-columns: 25px auto 25px;
-				grid-template-rows: 1fr;
-				gap: 0px 0px;
-				grid-auto-flow: row;
-				grid-template-areas:
-					"icon name caret";
-				align-items        : center;
-				justify-content    : start;
-				width              : 100%;
-				border             : 1px solid #888888;
-				border-bottom      : 0;
-				animation-name     : glideDropDown;
-				animation-duration : 0.4s;
+			// DISABLED ITEM
+			&.disabled {
+				color: @grey;
+				cursor: not-allowed;
+			};
+
+			// LOGO ITEM
+			&.homebrewLogo {
+				.animate(color);
+				&:hover {
+					color : @orange;
+					svg { fill : @orange; }
+				}
+				svg {
+					height: 43px;
+					margin-right: .2em;
+					cursor: pointer;
+					fill: #fff5;
+					position: absolute;
+					left: -20px;
+					bottom: -3px;
+				}
+			}
+
+			// PATREON ITEM
+			&.patreon {
+				&:hover i { color : red; }
 				i {
-					grid-area: icon;
+					color              : pink;
+					.animate(color);
+					animation-name     : pinkColoring;
+					animation-duration : 2s;
 				}
-				span {
-					grid-area: name;
+			}
+
+			// TITLE ITEM
+			&.brewTitle {							//  Navbar should move to CSS Grid, and this item allowed 
+													// to move under the rest of the buttons of the navbar at small screen sizes.  
+				display          : block;
+				width: 100%;
+				overflow         : hidden;
+				text-overflow    : ellipsis;
+				text-align       : center;
+				text-transform   : initial;	
+				white-space      : nowrap;
+				.save {
+					display: inline-block;
+					color: @orangeLight;
+					padding-left: 3px;
+					&:hover { color: @orange; }
 				}
-				&:is(.navDropdownContainer.recent .navItem)  {
-					position: relative;
-					display: block;
-					&:not(:first-child) {width:15em;}
-					.clear {
-						position         : absolute;
-						top              : 50%;
-						right            : 0;
-						display          : none;
-						width            : 20px;
-						height           : 100%;
-						background-color : #333333;
-						border-radius    : 3px;
-						opacity          : 70%;
-						transform        : translateY(-50%);
-						&:hover { opacity : 100%; }
-						i {
-							width      : 100%;
-							height     : 100%;
-							margin     : 0;
-							font-size  : 10px;
+			}
+
+			// NATURALCRIT ITEM
+			&#naturalCritItem .natural {
+				font-family : 'CodeLight';
+				font-size: 1.1em;
+				.crit { font-family : 'CodeBold'; }
+			}
+
+			// ACCOUNT ITEM
+			&.account {
+				&.username { text-transform : none;}
+			}
+
+			// // AUTOSAVE ITEM  -- not currently used; saving in case we want it later
+			// i.fa-power-off {
+			// 	color : red;
+			// 	&.active {
+			// 		color  : rgb(0, 182, 52);
+			// 		filter : drop-shadow(0 0 2px rgba(0, 182, 52, 0.765));
+			// 	}
+			// }
+
+			&.metadata {
+				position    : relative;
+				display     : flex;
+				flex-grow   : 1;
+				align-items : center;
+				height      : 100%;
+				padding     : 0;
+				i { margin-right : 10px;}
+				.window {
+					position         : absolute;
+					bottom           : 0;
+					left             : 50%;
+					z-index          : -1;
+					display          : flex;
+					flex-flow        : row wrap;
+					align-content    : baseline;
+					justify-content  : flex-start;
+					width            : 440px;
+					max-height       : ~'calc(100vh - 28px)';
+					padding          : 0 10px 5px;
+					margin           : 0 auto;
+					background-color : #333333;
+					border           : 3px solid #444444;
+					border-top       : unset;
+					border-radius    : 0 0 5px 5px;
+					box-shadow       : inset 0 7px 9px -7px #111111;
+					transition       : transform 0.4s, opacity 0.4s;
+					&.active {
+						opacity   : 1;
+						transform : translateX(-50%) translateY(100%);
+					}
+					&.inactive {
+						opacity   : 0;
+						transform : translateX(-50%) translateY(0%);
+					}
+					.row {
+						display   : flex;
+						flex-flow : row wrap;
+						width     : 100%;
+						h4 {
+							box-sizing : border-box;
+							display    : block;
+							flex-grow  : 1;
+							flex-basis : 20%;
+							min-width  : 76px;
+							padding    : 5px 0;
+							color      : #BBBBBB;
 							text-align : center;
 						}
-					}
-					&:hover {
-						background-color : @blue;
-						.clear {
-							display       : grid;
-							place-content : center;
+						p {
+							flex-grow      : 1;
+							flex-basis     : 80%;
+							padding        : 5px 0;
+							font-family    : 'Open Sans', sans-serif;
+							font-size      : 10px;
+							font-weight    : normal;
+							text-transform : initial;
+							.tag {
+								display          : inline-block;
+								padding          : 2px;
+								margin           : 2px 2px;
+								background-color : #444444;
+								border           : 2px solid grey;
+								border-radius    : 5px;
+							}
+							a.userPageLink {
+								color           : white;
+								text-decoration : none;
+								&:hover { text-decoration : underline; }
+							}
 						}
-					}
-					.title {
-						display       : inline-block;
-						width         : 100%;
-						overflow      : hidden auto;
-						text-overflow : ellipsis;
-						white-space   : nowrap;
-					}
-					.time {
-						position  : absolute;
-						right     : 2px;
-						bottom    : 2px;
-						font-size : 0.7em;
-						color     : #888888;
-					}
-					&.header {
-						box-sizing       : border-box;
-						display          : block;
-						padding          : 5px 0;
-						color            : #BBBBBB;
-						text-align       : center;
-						background-color : #333333;
-						border-top       : 1px solid #888888;
-						&:nth-of-type(1) { background-color : darken(@teal, 20%); }
-						&:nth-of-type(2) { background-color : darken(@purple, 30%); }
+						&:nth-of-type(even) { background-color : #555555; }
 					}
 				}
-				
 			}
-			
-			.navDropdown {
-				position : relative;
-				height   : 100%;
-				padding-left: 5px;
-				overflow-y:hidden;
+			&.warning {
+				position         : relative;
+				color            : white;
+				background-color : @orange;
+				&:hover > .dropdown { visibility : visible; }
+				.dropdown {
+					position         : absolute;
+					top              : 28px;
+					left             : 0;
+					z-index          : 10000;
+					box-sizing       : border-box;
+					display          : block;
+					visibility       : hidden;
+					width            : 100%;
+					padding          : 13px 5px;
+					text-align       : center;
+					background-color : #333333;
+				}
 			}
 		}
-	}
-}
+		.navDropdownContainer {
+			position : relative;
+	
+			.navDropdown {
+				position       : absolute;
+				z-index        : 10000;
+				display        : flex;
+				flex-direction : column;
+				width          : 17em;
+				max-height     : calc(100vh - 28px);
+				overflow       : hidden auto;
+				background-color : #333333;
+				box-shadow: 0px 5px 10px -5px  #000;
+	
+				/* ===== Scrollbar CSS ===== */
+				/* Firefox */
+				scrollbar-width: thin;
+				scrollbar-color: #aaa #333;
+				
+				/* Chrome, Edge, and Safari */
+				::-webkit-scrollbar {
+					width: 12px;
+				}
+				
+				::-webkit-scrollbar-track {
+					background: #333;
+				}
+				
+				::-webkit-scrollbar-thumb {
+					background-color: #aaa;
+					border-radius: 10px;
+				}
+	
+				.navItem {
+					position           : relative;
+					border             : 1px solid #444;
+					border-bottom      : 0;
+					animation-name     : glideDropDown;
+					animation-duration : 0.4s;
 
-// this should likely be refactored into .navDropdownContainer
-.brew-menu {
-	.dropdown { z-index : 1000; }
-	.navItem i.fa-power-off {
-		color : red;
-		&.active {
-			color  : rgb(0, 182, 52);
-			filter : drop-shadow(0 0 2px rgba(0, 182, 52, 0.765));
+					&:is(.navDropdownContainer.recent .navDropdown .navItem) { 
+						position: relative;
+						display: block;
+						padding-right: 10px;
+						&:not(:first-child) {width:auto;}
+						.clear {
+							position         : absolute;
+							top              : 50%;
+							right            : 10px;
+							display          : none;
+							width            : 20px;
+							height           : 100%;
+							background-color : #333333;
+							border-radius    : 3px;
+							opacity          : 70%;
+							transform        : translateY(-50%);
+							&:hover { opacity : 100%; }
+							i {
+								width      : 100%;
+								height     : 100%;
+								margin     : 0;
+								font-size  : 10px;
+								text-align : center;
+							}
+						}
+						.title {
+							display       : inline-block;
+							width         : 100%;
+							overflow      : hidden auto;
+							text-overflow : ellipsis;
+							white-space   : nowrap;
+						}
+						.time {
+							position  : absolute;
+							right     : 12px;
+							bottom    : 2px;
+							font-size : 0.7em;
+							color     : #888888;
+						}
+						&.header {
+							box-sizing       : border-box;
+							display          : block;
+							padding          : 5px 0;
+							color            : #BBBBBB;
+							text-align       : center;
+							background-color : #333333;
+							border-top       : 1px solid #888888;
+							&:nth-of-type(1) { background-color : darken(@teal, 20%); }
+							&:nth-of-type(2) { background-color : darken(@purple, 30%); }
+						}
+						&:hover {
+							background-color : @purple;
+							.time { color : white !important; };
+							.clear {
+								display       : grid;
+								place-content : center;
+							}
+						}
+					}
+					
+				}
+				
+				.navDropdown {
+					position : relative;
+					overflow-y:hidden;
+					box-shadow: none;
+				}
+			}
 		}
 	}
 }

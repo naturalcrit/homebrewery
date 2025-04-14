@@ -4,7 +4,7 @@ const { printCurrentBrew } = require('../../../shared/helpers.js');
 
 
 const PrintNavItem = () => {
-	return <NavItem onClick={printCurrentBrew} color='purple' icon='far fa-file-pdf'>
+	return <NavItem onClick={printCurrentBrew} color='yellow' icon='far fa-file-pdf'>
 		get PDF
 	</NavItem>;
 };
