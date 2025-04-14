@@ -9,7 +9,7 @@ const { Meta } = require('vitreum/headtags');
 
 
 const { NavbarProvider } = require('../../navbar/navbarContext.jsx');
-const {Navbar, NavItem, NavSection, Dropdown} = require('../../navbar/navbar.jsx');
+const { Navbar, NavItem, NavSection, Dropdown } = require('../../navbar/navbar.jsx');
 
 const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
 // const HelpNavItem = require('../../navbar/help.navitem.jsx');
@@ -20,6 +20,8 @@ const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
 const PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
+const DialogZone = require('../../../components/Dialogs/DialogZone.jsx');
+const Dialog = require('../../../components/Dialogs/Dialog.jsx');
 
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
@@ -273,50 +275,105 @@ const EditPage = createClass({
 		}));
 	},
 
-	renderGoogleDriveIcon : function(){
-		return <NavItem className='googleDriveStorage' onClick={this.handleGoogleClick}>
-			<img src={googleDriveIcon} className={this.state.saveGoogle ? '' : 'inactive'} alt='Google Drive icon'/>
+	renderStorageTransfer : function(){
+		const linkedServices = [];
+		const unlinkedServices = [];
 
-			{this.state.confirmGoogleTransfer &&
-				<div className='errorContainer' onClick={this.closeAlerts}>
-					{ this.state.saveGoogle
-						?	`Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?`
-						: `Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?`
-					}
-					<br />
-					<div className='confirm' onClick={this.toggleGoogleStorage}>
-						Yes
-					</div>
-					<div className='deny'>
-						No
+		if(global.account?.googleId){
+			linkedServices.push({
+				id         : 'google-drive',
+				icon       : googleDriveIcon,
+				name       : 'Google Drive',
+				isSelected : this.props.googleId ? true : false,
+				onClick    : ()=>this.toggleGoogleStorage(true)
+			});
+		} else {
+			unlinkedServices.push({
+				id   : 'google-drive',
+				icon : googleDriveIcon,
+				name : 'Google Drive'
+			});
+		}
+
+		// storage services that are available (logged in)
+
+		const linkedButtons = linkedServices.map((service)=>(
+			<button
+				key={service.id}
+				id={`save-to-${service.id}`}
+				className={`option-box${service.isSelected ? ' selected' : ''}`}
+				onClick={service.onClick}
+			>
+				<img src={service.icon} alt={service.name} />
+				<div>{service.name}</div>
+			</button>
+		));
+
+		// storage services that are not available (needs to be logged into).
+		// ex.  If not logged into Google account, the Google Drive button will appear here.  It will be a link to the login page.
+
+		const unlinkedButtons = unlinkedServices.map((service)=>(
+			<a
+				key={service.id}
+				id={`link-${service.id}`}
+				className='option-box unlinked'
+				target='_blank'
+				rel='noopener noreferrer'
+				href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}
+			>
+				<img src={service.icon} alt={service.name} />
+				<div>Link {service.name}</div>
+			</a>
+		));
+
+		return <Dialog
+			className='prompt-dialog'
+			openModal={this.state.openStoragePicker}
+			onClose={()=>{this.setState({openStoragePicker : false })}}
+			zone='app-dialogs'
+		>
+			<Dialog.Title>Save location...</Dialog.Title>
+			<Dialog.Content>
+				<div className='storage-section'>
+					<h4>Available options:</h4>
+					<div className='options'>
+						<button
+							id='save-to-hb'
+							className={`option-box${this.props.googleId ? '' : ' selected'}`}
+							onClick={()=>this.toggleGoogleStorage(false)}
+						>
+							<NaturalCritIcon />
+							<div>Homebrewery DB</div>
+						</button>
+						{linkedButtons}
 					</div>
 				</div>
-			}
 
-			{this.state.alertLoginToTransfer &&
-				<div className='errorContainer' onClick={this.closeAlerts}>
-					You must be signed in to a Google account to transfer
-					between the homebrewery and Google Drive!
-					<a target='_blank' rel='noopener noreferrer'
-						href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
-						<div className='confirm'>
-							Sign In
+				{unlinkedButtons.length > 0 && (
+					<div className='storage-section'>
+						<h4>Link additional options:</h4>
+						<div className='options'>
+							{unlinkedButtons}
 						</div>
-					</a>
-					<div className='deny'>
-						Not Now
 					</div>
-				</div>
-			}
+				)}
+			</Dialog.Content>
+			<Dialog.Footer />
+		</Dialog>;
+	},
 
-			{this.state.alertTrashedGoogleBrew &&
+	renderStoragePicker : function(){
+		return <NavItem className='googleDriveStorage' onClick={()=>{this.setState({openStoragePicker : true})}}>
+			Saved to {this.state.saveGoogle ? <img src={googleDriveIcon} /> : 'HB'}
+
+			{/* {this.state.alertTrashedGoogleBrew &&
 				<div className='errorContainer' onClick={this.closeAlerts}>
 				This brew is currently in your Trash folder on Google Drive!<br />If you want to keep it, make sure to move it before it is deleted permanently!<br />
 					<div className='confirm'>
 						OK
 					</div>
 				</div>
-			}
+			} */}
 		</NavItem>;
 	},
 
