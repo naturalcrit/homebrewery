@@ -12,14 +12,11 @@ const { NavbarProvider } = require('../../navbar/navbarContext.jsx');
 const { Navbar, NavItem, NavSection, Dropdown } = require('../../navbar/navbar.jsx');
 
 const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
-// const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const PrintNavItem = require('../../navbar/print.navitem.jsx');
-// const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
-const PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
 const DialogZone = require('../../../components/Dialogs/DialogZone.jsx');
 const Dialog = require('../../../components/Dialogs/Dialog.jsx');
 
@@ -38,6 +35,7 @@ const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpe
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 
 const googleDriveIcon = require('../../googleDrive.svg');
+const NaturalCritIcon = require('shared/naturalcrit/svg/naturalcrit.svg.jsx');
 
 const SAVE_TIMEOUT = 10000;
 
