@@ -680,8 +680,7 @@ const tableTerminators = [
 
 Marked.use(MarkedVariables());
 Marked.use(MarkedDefinitionLists());
-Marked.use({ extensions : [justifiedParagraphs, forcedParagraphBreaks,
-	nonbreakingSpaces, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use({ extensions : [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use(MarkedAlignedParagraphs());
 Marked.use(MarkedSubSuperText());
