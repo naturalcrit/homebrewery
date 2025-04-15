@@ -7,7 +7,11 @@ import MarkedExtendedTables     from 'marked-extended-tables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
+import MarkedAlignedParagraphs 														                               from 'marked-alignment-paragraphs';
+import MarkedNonbreakingSpaces                                                           from 'marked-nonbreaking-spaces';
 import MarkedSubSuperText from 'marked-subsuper-text';
+import { romanize } from 'romans';
+import writtenNumber from 'written-number';
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
 import diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
@@ -58,6 +62,48 @@ mathParser.functions.sign = function (a) {
 mathParser.functions.signed = function (a) {
 	if(a >= 0) return `+${a}`;
 	return `${a}`;
+};
+// Add Roman numeral functions
+mathParser.functions.toRomans = function (a) {
+	return romanize(a);
+};
+mathParser.functions.toRomansUpper = function (a) {
+	return romanize(a).toUpperCase();
+};
+mathParser.functions.toRomansLower = function (a) {
+	return romanize(a).toLowerCase();
+};
+// Add character functions
+mathParser.functions.toChar = function (a) {
+	if(a <= 0) return a;
+	const genChars = function (i) {
+		return (i > 26 ? genChars(Math.floor((i - 1) / 26)) : '') + 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[(i - 1) % 26];
+	};
+	return genChars(a);
+};
+mathParser.functions.toCharUpper = function (a) {
+	return mathParser.functions.toChar(a).toUpperCase();
+};
+mathParser.functions.toCharLower = function (a) {
+	return mathParser.functions.toChar(a).toLowerCase();
+};
+// Add word functions
+mathParser.functions.toWords = function (a) {
+	return writtenNumber(a);
+};
+mathParser.functions.toWordsUpper = function (a) {
+	return mathParser.functions.toWords(a).toUpperCase();
+};
+mathParser.functions.toWordsLower = function (a) {
+	return mathParser.functions.toWords(a).toLowerCase();
+};
+mathParser.functions.toWordsCaps = function (a) {
+	const words = mathParser.functions.toWords(a).split(' ');
+	return words.map((word)=>{
+		return word.replace(/(?:^|\b|\s)(\w)/g, function(w, index) {
+			return index === 0 ? w.toLowerCase() : w.toUpperCase();
+		  });
+	}).join(' ');
 };
 
 // Normalize variable names; trim edge spaces and shorten blocks of whitespace to 1 space
@@ -343,42 +389,6 @@ const mustacheInjectBlock = {
 	}
 };
 
-const justifiedParagraphClasses = [];
-justifiedParagraphClasses[2] = 'Left';
-justifiedParagraphClasses[4] = 'Right';
-justifiedParagraphClasses[6] = 'Center';
-
-const justifiedParagraphs = {
-	name  : 'justifiedParagraphs',
-	level : 'block',
-	start(src) {
-		return src.match(/\n(?:-:|:-|-:) {1}/m)?.index;
-	},  // Hint to Marked.js to stop and check for a match
-	tokenizer(src, tokens) {
-		const regex  = /^(((:-))|((-:))|((:-:))) .+(\n(([^\n].*\n)*(\n|$))|$)/ygm;
-		const match = regex.exec(src);
-		if(match?.length) {
-			let whichJustify;
-			if(match[2]?.length) whichJustify = 2;
-			if(match[4]?.length) whichJustify = 4;
-			if(match[6]?.length) whichJustify = 6;
-			return {
-				type   : 'justifiedParagraphs', // Should match "name" above
-				raw    : match[0],     // Text to consume from the source
-				length : match[whichJustify].length,
-				text   : match[0].slice(match[whichJustify].length),
-				class  : justifiedParagraphClasses[whichJustify],
-				tokens : this.lexer.inlineTokens(match[0].slice(match[whichJustify].length + 1))
-			};
-		}
-	},
-	renderer(token) {
-		return `<p align="${token.class}">${this.parser.parseInline(token.tokens)}</p>`;
-	}
-
-};
-
-
 const forcedParagraphBreaks = {
 	name  : 'hardBreaks',
 	level : 'block',
@@ -397,27 +407,6 @@ const forcedParagraphBreaks = {
 	},
 	renderer(token) {
 		return `<div class='blank'></div>\n`.repeat(token.length);
-	}
-};
-
-const nonbreakingSpaces = {
-	name  : 'nonbreakingSpaces',
-	level : 'inline',
-	start(src) { return src.match(/:>+/m)?.index; },  // Hint to Marked.js to stop and check for a match
-	tokenizer(src, tokens) {
-		const regex  = /:(>+)/ym;
-		const match = regex.exec(src);
-		if(match?.length) {
-			return {
-				type   : 'nonbreakingSpaces', // Should match "name" above
-				raw    : match[0],     // Text to consume from the source
-				length : match[1].length,
-				text   : ''
-			};
-		}
-	},
-	renderer(token) {
-		return `&nbsp;`.repeat(token.length).concat('');
 	}
 };
 
@@ -776,10 +765,12 @@ const tableTerminators = [
 ];
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions : [justifiedParagraphs, definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
-	nonbreakingSpaces, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use({ extensions : [definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
+	mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
+Marked.use(MarkedAlignedParagraphs());
 Marked.use(MarkedSubSuperText());
+Marked.use(MarkedNonbreakingSpaces());
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables({ interruptPatterns: tableTerminators }), MarkedGFMHeadingId({ globalSlugs: true }),
 	MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
@@ -907,7 +898,13 @@ let globalPageNumber = 0;
 const Markdown = {
 	marked : Marked,
 	render : (rawBrewText, pageNumber=0)=>{
-		globalVarsList[pageNumber] = {};					//Reset global links for current page, to ensure values are parsed in order
+		const lastPageNumber = pageNumber > 0 ? globalVarsList[pageNumber - 1].HB_pageNumber.content : 0;
+		globalVarsList[pageNumber] = {							//Reset global links for current page, to ensure values are parsed in order
+			'HB_pageNumber' : {									//Add document variables for this page
+				content  : !isNaN(Number(lastPageNumber)) ? Number(lastPageNumber) + 1 : lastPageNumber,
+				resolved : true
+			}
+		};
 		varsQueue                  = [];						//Could move into MarkedVariables()
 		globalPageNumber           = pageNumber;
 		if(pageNumber==0) {
