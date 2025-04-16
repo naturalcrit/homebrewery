@@ -47,6 +47,8 @@ const Editor = createClass({
 			currentEditorCursorPageNum : 1,
 			currentEditorViewPageNum   : 1,
 			currentBrewRendererPageNum : 1,
+
+			htmlErrors : [],
 		};
 	},
 	getInitialState : function() {
@@ -80,6 +82,8 @@ const Editor = createClass({
 				editorTheme : editorTheme
 			});
 		}
+
+
 	},
 
 	componentWillUnmount : function() {
@@ -432,7 +436,8 @@ const Editor = createClass({
 					value={this.props.brew.text}
 					onChange={this.props.onTextChange}
 					editorTheme={this.state.editorTheme}
-					rerenderParent={this.rerenderParent} />
+					rerenderParent={this.rerenderParent}
+					htmlErrors={this.props.htmlErrors} />
 			</>;
 		}
 		if(this.isStyle()){
