@@ -504,8 +504,6 @@ const EditPage = createClass({
 	renderAlerts : function(){
 		// checks if any this.state.alert is either 'true', or an array with length greater than 0
 		if(Object.values(this.state.alerts).some((alert)=>(typeof alert === 'boolean' && alert) || (Array.isArray(alert) && alert.length > 0))){
-
-			console.log(this.state.alerts)
 			const autoSaveWarning = this.state.alerts.autoSaveWarning ? <i className='fas fa-triangle-exclamation' title='Autosave is turned OFF, be sure to save your work.'/> : null;
 			const htmlWarning = this.state.alerts.htmlErrors?.length > 0 ? <i className='fas fa-code' title='There are HTML errors in this brew.' /> : null;
 			const googleTrashWarning = this.state.alerts.alertTrashedGoogleBrew ? <i className='fas fa-dumpster' title='This brew is currently in your Trash folder on Google Drive!  If you want to keep it, make sure to move it before it is deleted permanently!' /> : null;
@@ -598,6 +596,7 @@ const EditPage = createClass({
 						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
 						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
 						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+						htmlErrors={this.state.alerts.htmlErrors}
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}
