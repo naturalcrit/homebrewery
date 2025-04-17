@@ -930,7 +930,7 @@ const Markdown = {
 	validate : (rawBrewText)=>{
 		const errors = [];
 		const leftovers = _.reduce(rawBrewText.split('\n'), (acc, line, _lineNumber)=>{
-			const lineNumber = _lineNumber + 1;
+			const lineNumber = _lineNumber;
 			const matches = line.match(tagRegex);
 			if(!matches || !matches.length) return acc;
 
@@ -939,7 +939,7 @@ const Markdown = {
 					if(match == `<${type}`){
 						acc.push({
 							type : type,
-							line : lineNumber
+							line : [lineNumber, lineNumber]
 						});
 					}
 					if(match === `</${type}>`){
@@ -952,7 +952,7 @@ const Markdown = {
 						// Now check that what remains in the accumulator is valid.
 						if(!acc.length){
 							errors.push({
-								line : lineNumber,
+								line : [lineNumber, lineNumber],
 								type : type,
 								text : 'Unmatched closing tag',
 								id   : 'CLOSE'
@@ -961,7 +961,7 @@ const Markdown = {
 							acc.pop();
 						} else {
 							errors.push({
-								line : `${_.last(acc).line} to ${lineNumber}`,
+								line : [_.last(acc).line[0], lineNumber],
 								type : type,
 								text : 'Type mismatch on closing tag',
 								id   : 'MISMATCH'
