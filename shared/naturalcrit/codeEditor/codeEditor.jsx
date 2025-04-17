@@ -60,7 +60,8 @@ const CodeEditor = createClass({
 
 	getInitialState : function() {
 		return {
-			docs : {}
+			docs       : {},
+			htmlErrors : this.props.htmlErrors,
 		};
 	},
 
@@ -101,6 +102,16 @@ const CodeEditor = createClass({
 
 		if(prevProps.editorTheme !== this.props.editorTheme){
 			this.codeMirror.setOption('theme', this.props.editorTheme);
+		}
+
+		if(prevProps.htmlErrors !== this.props.htmlErrors) {
+			this.setState({
+				htmlErrors : this.props.htmlErrors
+			}, ()=>{
+				this.markHTMLErrors();
+
+				console.log(this.state.htmlErrors);;
+			});
 		}
 	},
 
@@ -413,6 +424,93 @@ const CodeEditor = createClass({
 	},
 	historySize : function(){
 		return this.codeMirror.doc.historySize();
+	},
+
+	markHTMLErrors : function(){
+		this.clearHTMLErrors();
+
+		if(!this.state.htmlErrors?.length) return;
+
+		const makeLineWidget = (text, errorId)=>{
+			const widget = document.createElement('div');
+			widget.innerHTML = text;
+			widget.className = 'htmlError-widget';
+			widget.dataset.errorId = errorId;
+			return widget;
+		};
+
+		this.errorWidgets = this.errorWidgets || new Map();
+		this.errorLineClasses = this.errorLineClasses || new Map();
+
+		const totalLines = this.codeMirror.lineCount();
+
+		this.state.htmlErrors.forEach((error, index)=>{
+			try {
+				// Handle line ranges like "13 to 16"
+				let startLine, endLine;
+				startLine = error.line[0];
+				endLine = error.line[1];
+				
+
+				// Validate line numbers
+				if(isNaN(startLine) || isNaN(endLine) ||
+					startLine < 0 || startLine >= totalLines ||
+					endLine < 0 || endLine >= totalLines) {
+					return;
+				}
+
+				// Create unique ID based on line range and error text
+				const errorId = `error-${startLine}-${endLine}-${error.text.slice(0, 20)}`;
+
+				if(!this.errorWidgets.has(errorId)) {
+					// Add error styling to all lines in range
+					for (let lineNum = startLine; lineNum <= endLine; lineNum++) {
+						this.codeMirror.doc.addLineClass(lineNum, 'background', 'error');
+						this.codeMirror.doc.addLineClass(lineNum, 'gutter', 'error');
+					}
+
+					// Add widget below the last line of the range
+					const widget = this.codeMirror.doc.addLineWidget(
+						endLine,
+						makeLineWidget(error.text, errorId),
+						{ coverGutter: true }
+					);
+
+					// Store references using errorId as key
+					this.errorWidgets.set(errorId, {
+						widget,
+						lines : Array.from({ length: endLine - startLine + 1 }, (_, i)=>startLine + i),
+						text  : error.text
+					});
+					this.errorLineClasses.set(errorId, {
+						lines   : Array.from({ length: endLine - startLine + 1 }, (_, i)=>startLine + i),
+						classes : ['background', 'gutter']
+					});
+				}
+			} catch (e) {
+				console.warn('Failed to mark HTML error:', e, error);
+			}
+		});
+	},
+
+	clearHTMLErrors : function() {
+		if(this.errorWidgets) {
+			this.errorWidgets.forEach((data, errorId)=>{
+				data.widget.clear();
+			});
+			this.errorWidgets.clear();
+		}
+
+		if(this.errorLineClasses) {
+			this.errorLineClasses.forEach((lineData, errorId)=>{
+				lineData.lines.forEach((line)=>{
+					lineData.classes.forEach((className)=>{
+						this.codeMirror.doc.removeLineClass(line, className, 'error');
+					});
+				});
+			});
+			this.errorLineClasses.clear();
+		}
 	},
 
 	foldOptions : function(cm){
