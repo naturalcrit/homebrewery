@@ -927,6 +927,8 @@ const Markdown = {
 		return opts.hooks.postprocess(html);
 	},
 
+
+	//todo: this fails to remove some of the line classes if you copy/paste a range of lines into a range of error'd lines
 	validate : (rawBrewText)=>{
 		const errors = [];
 		const leftovers = _.reduce(rawBrewText.split('\n'), (acc, line, _lineNumber)=>{
