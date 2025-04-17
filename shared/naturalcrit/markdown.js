@@ -11,7 +11,6 @@ import MarkedSubSuperText       from 'marked-subsuper-text';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
-
 import { romanize } from 'romans';
 import writtenNumber from 'written-number';
 
