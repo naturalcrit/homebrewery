@@ -47,17 +47,35 @@
 	// }
 
 	.error {
-		background: rgb(232, 188, 188);
-		// border: 1px solid rgb(128, 92, 92);
-		// &.CodeMirror-linebackground {
-		// 	border-left: initial;
-		// }
+		background: rgb(255 209 209);
 	}
 
 	.htmlError-widget {
 		background: rgb(246, 159, 159);
+		border: 1px solid rgb(128, 92, 92);
+		padding: 0 42px;	
+	}
+
+	.error-list {
+		background: rgb(246, 159, 159);
 		padding: 5px 10px;
 		border: 1px solid rgb(128, 92, 92);
+		font-family: monospace;
+
+		 li:nth-child(even) {
+			background:  rgb(228 143 143);
+
+
+		}
+		
+		button {
+			font-size: 14px;
+			margin-right: 1ch;
+			cursor: pointer;
+			&:hover {
+				color: #FFF;
+			}
+		}
 	}
 
 

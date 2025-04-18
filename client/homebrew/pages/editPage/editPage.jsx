@@ -155,7 +155,7 @@ const EditPage = createClass({
 	handleTextChange : function(text){
 		//If there are errors, run the validator on every change to give quick feedback
 		let htmlErrors = this.state.alerts.htmlErrors;
-		if(htmlErrors) htmlErrors = Markdown.validate(text);
+		if(htmlErrors.length > 0) htmlErrors = Markdown.validate(text);
 
 		this.setState((prevState)=>({
 			brew   : { ...prevState.brew, text: text },

@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 require('./codeEditor.less');
 const React = require('react');
+const ReactDOM = require('react-dom/client');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const closeTag = require('./close-tag');
@@ -16,6 +17,8 @@ if(typeof window !== 'undefined'){
 	require('codemirror/mode/javascript/javascript.js');
 
 	//Addons
+	// Be sure to add the addon-on to `scripts/project.json` in addition to below
+
 	//Code folding
 	require('codemirror/addon/fold/foldcode.js');
 	require('codemirror/addon/fold/foldgutter.js');
@@ -32,6 +35,7 @@ if(typeof window !== 'undefined'){
 	// require('codemirror/addon/selection/active-line.js');
 	//Scroll past last line
 	require('codemirror/addon/scroll/scrollpastend.js');
+	require('codemirror/addon/display/panel.js');
 	//Auto-closing
 	//XML code folding is a requirement of the auto-closing tag feature and is not enabled
 	require('codemirror/addon/fold/xml-fold.js');
@@ -109,8 +113,6 @@ const CodeEditor = createClass({
 				htmlErrors : this.props.htmlErrors
 			}, ()=>{
 				this.markHTMLErrors();
-
-				console.log(this.state.htmlErrors);;
 			});
 		}
 	},
@@ -426,10 +428,54 @@ const CodeEditor = createClass({
 		return this.codeMirror.doc.historySize();
 	},
 
+	makePanel : function(content){
+		const panel = document.createElement('div');
+		panel.classList.add('editor-panel');
+		panel.appendChild(content);
+
+		return panel;
+	},
+
+	errorList : function(){
+
+		const items = this.state.htmlErrors.sort((a, b)=>a.line[0] - b.line[0]).map((err)=>{
+			const errorItem = document.createElement('li');
+			const jumpButton = document.createElement('button');
+			jumpButton.onclick = (e) => {
+				e.preventDefault();
+				const line = err.line[0];
+				this.codeMirror.scrollTo(null, this.codeMirror.charCoords({line, ch: 0}, "local").top - 20);
+				this.codeMirror.setCursor(line, 0);
+			  };
+			jumpButton.innerHTML = `<i class='fas fa-circle-arrow-right'></i>`;
+			jumpButton.title = `Jump to line ${err.line[0]}`;
+			const textSpan = document.createElement('span');
+			textSpan.innerText = `Line ${err.line[0]}: ${err.text}`;
+			errorItem.append(jumpButton, textSpan);
+			return errorItem;
+		});
+
+		let errorList = document.createElement('ul');
+		errorList.classList.add('error-list')
+
+		console.log(this.state.htmlErrors.sort((a, b)=>a.line[0] - b.line[0]));
+
+		for(let i = 0; i < items.length; i++){
+			errorList.appendChild(items[i]);
+		}
+
+		return errorList;
+	},
+
 	markHTMLErrors : function(){
 		this.clearHTMLErrors();
 
 		if(!this.state.htmlErrors?.length) return;
+
+		if(!this.errorPanel){
+			const errorPanel = this.makePanel(this.errorList());
+			this.errorPanel = this.codeMirror.addPanel(errorPanel, { position: 'after-top' });
+		}
 
 		const makeLineWidget = (text, errorId)=>{
 			const widget = document.createElement('div');
@@ -494,6 +540,12 @@ const CodeEditor = createClass({
 	},
 
 	clearHTMLErrors : function() {
+
+		if(this.errorPanel){
+			this.errorPanel.clear();
+			this.errorPanel = null;
+		}
+
 		if(this.errorWidgets) {
 			this.errorWidgets.forEach((data, errorId)=>{
 				data.widget.clear();
