@@ -18,7 +18,9 @@ const ErrorIcon = ({ color1 = '#93a4b2', color2 = '#9ca3ab' })=>{
 				</g>
 			</svg>
 			<div id='broken-text'>
-				Something is off about this brew...
+				<h2>Something is off about this brew...</h2>
+				<p>HTML errors are preventing rendering &mdash; check with the author.</p>
+				<div id='icon-attribution'><a href='https://game-icons.net/1x1/lorc/poison-bottle.html' target='_blank' referrerPolicy='noreferrer'>Poison Bottle</a> by Lorc under <a href='http://creativecommons.org/licenses/by/3.0/' target='_blank' referrerPolicy='no-referrer'>CC BY 3.0</a></div>
 			</div>
 		</div>
 	);
