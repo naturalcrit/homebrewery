@@ -320,7 +320,7 @@ const BrewRenderer = (props)=>{
 					tabIndex={-1}
 					style={ styleObject }
 				>
-					{props.htmlErrors && <div id='splash-image'><ErrorIcon /></div>}
+					{props.htmlErrors.length > 0 && <div id='splash-image'><ErrorIcon /></div>}
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted
