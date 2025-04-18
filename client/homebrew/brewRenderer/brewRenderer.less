@@ -7,6 +7,23 @@
 	will-change   : transform;
 	&:has(.facing, .flow) { padding : 60px 30px; }
 	&.deployment { background-color : darkred; }
+	&.html-errors {
+		#splash-image {
+			height: 100%;
+			display: grid;
+			place-items: center;
+			#broken-brew {
+				text-align: center;
+				color: #93a4b2;
+				font-size: 28px;
+				font-weight: bold;
+				user-select: none;
+				svg {
+					width: ~"min(70vw,400px)";
+				}
+			}
+		}
+	}
 	:where(.pages) {
 		&.facing {
 			display               : grid; 

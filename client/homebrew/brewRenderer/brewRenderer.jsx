@@ -19,6 +19,8 @@ const { printCurrentBrew } = require('../../../shared/helpers.js');
 import HeaderNav from './headerNav/headerNav.jsx';
 import { safeHTML } from './safeHTML.js';
 
+import ErrorIcon from './poison-bottle.jsx';
+
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?: *{[^\n{}]*})?$)/m;
 const PAGE_HEIGHT = 1056;
 
@@ -94,7 +96,7 @@ const BrewRenderer = (props)=>{
 		renderer                   : 'legacy',
 		theme                      : '5ePHB',
 		lang                       : '',
-		errors                     : [],
+		htmlErrors                 : [],
 		currentEditorCursorPageNum : 1,
 		currentEditorViewPageNum   : 1,
 		currentBrewRendererPageNum : 1,
@@ -203,7 +205,7 @@ const BrewRenderer = (props)=>{
 	};
 
 	const renderPages = ()=>{
-		if(props.errors && props.errors.length)
+		if(props.htmlErrors && props.htmlErrors.length)
 			return renderedPages;
 
 		if(rawPages.length != renderedPages.length) // Re-render all pages when page count changes
@@ -313,11 +315,12 @@ const BrewRenderer = (props)=>{
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
 			>
-				<div className={`brewRenderer ${global.config.deployment && 'deployment'}`}
+				<div className={`brewRenderer${global.config.deployment && ' deployment'}${props.htmlErrors && ' html-errors'}`}
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
 					style={ styleObject }
 				>
+					{props.htmlErrors && <div id='splash-image'><ErrorIcon /></div>}
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted
