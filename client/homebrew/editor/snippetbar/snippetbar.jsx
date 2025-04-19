@@ -6,6 +6,7 @@ const _     = require('lodash');
 const cx    = require('classnames');
 
 import { loadHistory } from '../../utils/versionHistory.js';
+import { brewSnippetsToJSON } from '../../../../shared/helpers.js';
 
 //Import all themes
 const ThemeSnippets = {};
@@ -40,7 +41,7 @@ const Snippetbar = createClass({
 			unfoldCode        : ()=>{},
 			updateEditorTheme : ()=>{},
 			cursorPos         : {},
-			snippetBundle     : [],
+			themeBundle       : [],
 			updateBrew        : ()=>{}
 		};
 	},
@@ -64,7 +65,10 @@ const Snippetbar = createClass({
 	},
 
 	componentDidUpdate : async function(prevProps, prevState) {
-		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.snippetBundle != this.props.snippetBundle) {
+		if(prevProps.renderer != this.props.renderer ||
+			prevProps.theme != this.props.theme ||
+			prevProps.themeBundle != this.props.themeBundle ||
+			prevProps.brew.snippets != this.props.brew.snippets) {
 			this.setState({
 				snippets : this.compileSnippets()
 			});
@@ -97,7 +101,7 @@ const Snippetbar = createClass({
 		if(key == 'snippets') {
 			const result = _.reverse(_.unionBy(_.reverse(newValue), _.reverse(oldValue), 'name')); // Join snippets together, with preference for the child theme over the parent theme
 			return result.filter((snip)=>snip.gen || snip.subsnippets);
-		}
+		};
 	},
 
 	compileSnippets : function() {
@@ -105,15 +109,21 @@ const Snippetbar = createClass({
 
 		let oldSnippets = _.keyBy(compiledSnippets, 'groupName');
 
-		for (let snippets of this.props.snippetBundle) {
-			if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name
-				snippets = ThemeSnippets[snippets];
+		if(this.props.themeBundle.snippets) {
+			for (let snippets of this.props.themeBundle.snippets) {
+				if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name
+					snippets = ThemeSnippets[snippets];
 
-			const newSnippets = _.keyBy(_.cloneDeep(snippets), 'groupName');
-			compiledSnippets = _.values(_.mergeWith(oldSnippets, newSnippets, this.mergeCustomizer));
+				const newSnippets = _.keyBy(_.cloneDeep(snippets), 'groupName');
+				compiledSnippets = _.values(_.mergeWith(oldSnippets, newSnippets, this.mergeCustomizer));
 
-			oldSnippets = _.keyBy(compiledSnippets, 'groupName');
+				oldSnippets = _.keyBy(compiledSnippets, 'groupName');
+			}
 		}
+
+		const userSnippetsasJSON = brewSnippetsToJSON(this.props.brew.title || 'New Document', this.props.brew.snippets, this.props.themeBundle.snippets);
+		compiledSnippets.push(userSnippetsasJSON);
+
 		return compiledSnippets;
 	},
 
@@ -207,8 +217,6 @@ const Snippetbar = createClass({
 	renderEditorButtons : function(){
 		if(!this.props.showEditButtons) return;
 
-
-
 		return (
 			<div className='editors'>
 				{this.props.view !== 'meta' && <><div className='historyTools'>
@@ -242,7 +250,6 @@ const Snippetbar = createClass({
 					</div>
 				</div></>}
 
-
 				<div className='tabs'>
 					<div className={cx('text', { selected: this.props.view === 'text' })}
 						onClick={()=>this.props.onViewChange('text')}>
@@ -251,6 +258,10 @@ const Snippetbar = createClass({
 					<div className={cx('style', { selected: this.props.view === 'style' })}
 						onClick={()=>this.props.onViewChange('style')}>
 						<i className='fa fa-paint-brush' />
+					</div>
+					<div className={cx('snippet', { selected: this.props.view === 'snippet' })}
+						onClick={()=>this.props.onViewChange('snippet')}>
+						<i className='fas fa-th-list' />
 					</div>
 					<div className={cx('meta', { selected: this.props.view === 'meta' })}
 						onClick={()=>this.props.onViewChange('meta')}>
@@ -271,11 +282,6 @@ const Snippetbar = createClass({
 });
 
 module.exports = Snippetbar;
-
-
-
-
-
 
 const SnippetGroup = createClass({
 	displayName     : 'SnippetGroup',
@@ -310,7 +316,8 @@ const SnippetGroup = createClass({
 	},
 
 	render : function(){
-		return <div className='snippetGroup snippetBarButton'>
+		const snippetGroup = `snippetGroup snippetBarButton ${this.props.snippets.length === 0 ? 'disabledSnippets' : ''}`;
+		return <div className={snippetGroup}>
 			<div className='text'>
 				<i className={this.props.icon} />
 				<span className='groupName'>{this.props.groupName}</span>
