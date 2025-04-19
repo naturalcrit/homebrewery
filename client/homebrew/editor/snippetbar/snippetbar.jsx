@@ -4,6 +4,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
+const moment = require('moment');
 
 import { loadHistory } from '../../utils/versionHistory.js';
 
@@ -181,83 +182,77 @@ const Snippetbar = createClass({
 	renderHistoryItems : function() {
 		if(!this.state.historyExists) return;
 
-		return <div className='dropdown'>
-			{_.map(this.state.historyItems, (item, index)=>{
-				if(item.noData || !item.savedAt) return;
+		return (
+			<div id='history-menu' className='dropdown' popover='auto' style={{ positionAnchor: '--history-menu' }}>
+				<div className='menu-group'>Restore from...</div>
+				{this.state.historyItems.map((item, index)=>{
+					if(item.noData || !item.savedAt) return null;
 
-				const saveTime = new Date(item.savedAt);
-				const diffMs = new Date() - saveTime;
-				const diffSecs = Math.floor(diffMs / 1000);
+					const saveTime = moment(item.savedAt);
+					const diffString = saveTime.fromNow();
 
-				let diffString = `about ${diffSecs} seconds ago`;
-
-				if(diffSecs > 60) diffString = `about ${Math.floor(diffSecs / 60)} minutes ago`;
-				if(diffSecs > (60 * 60)) diffString = `about ${Math.floor(diffSecs / (60 * 60))} hours ago`;
-				if(diffSecs > (24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (24 * 60 * 60))} days ago`;
-				if(diffSecs > (7 * 24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (7 * 24 * 60 * 60))} weeks ago`;
-
-				return <div className='snippet' key={index} onClick={()=>{this.replaceContent(item);}} >
-					<i className={`fas fa-${index+1}`} />
-					<span className='name' title={saveTime.toISOString()}>v{item.version} : {diffString}</span>
-				</div>;
-			})}
-		</div>;
+					return (
+						<div className='snippet' key={index} onClick={()=>this.replaceContent(item)}>
+							<i className='fas fa-trash-arrow-up' />
+							<span className='name' title={`Restore version from ${moment(saveTime).format('YYYY/MM/DD HH:mm:ss')}`}>
+								v{item.version} : {diffString}
+							</span>
+						</div>
+					);
+				})}
+			</div>
+		);
 	},
 
 	renderEditorButtons : function(){
 		if(!this.props.showEditButtons) return;
 
-
-
 		return (
-			<div className='editors'>
-				{this.props.view !== 'meta' && <><div className='historyTools'>
-					<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`}
-						onClick={this.toggleHistoryMenu} >
+			<div className='tools'>
+				<div className='historyTools group'>
+					<button id='show-history' type='button' className='tool' popovertarget='history-menu' style={{ anchorName: '--history-menu' }}>
 						<i className='fas fa-clock-rotate-left' />
-						{ this.state.showHistory && this.renderHistoryItems() }
-					</div>
-					<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
+					</button>
+					{this.renderHistoryItems()}
+					<button id='undo' type='button' disabled={!this.props.historySize.undo ? true : false} className='tool'
 						onClick={this.props.undo} >
 						<i className='fas fa-undo' />
-					</div>
-					<div className={`editorTool redo ${this.props.historySize.redo ? 'active' : ''}`}
+					</button>
+					<button id='redo'type='button' disabled={!this.props.historySize.redo ? true : false} className='tool'
 						onClick={this.props.redo} >
 						<i className='fas fa-redo' />
-					</div>
+					</button>
 				</div>
-				<div className='codeTools'>
-					<div className={`editorTool foldAll ${this.props.foldCode ? 'active' : ''}`}
+				<div className='codeTools group'>
+					<button id='fold-all' type='button' disabled={(this.props.view === 'meta' || !this.props.foldCode) ? true : false} className='tool'
 						onClick={this.props.foldCode} >
 						<i className='fas fa-compress-alt' />
-					</div>
-					<div className={`editorTool unfoldAll ${this.props.unfoldCode ? 'active' : ''}`}
+					</button>
+					<button id='unfold-all' type='button' disabled={(this.props.view === 'meta' || !this.props.unfoldCode) ? true : false} className='tool'
 						onClick={this.props.unfoldCode} >
 						<i className='fas fa-expand-alt' />
-					</div>
-					<div className={`editorTheme ${this.state.themeSelector ? 'active' : ''}`}
+					</button>
+					<button id='show-themes' type='button' className={`tool${this.state.themeSelector ? ' active' : ''}`}
 						onClick={this.toggleThemeSelector} >
 						<i className='fas fa-palette' />
 						{this.state.themeSelector && this.renderThemeSelector()}
-					</div>
-				</div></>}
-
-
-				<div className='tabs'>
-					<div className={cx('text', { selected: this.props.view === 'text' })}
-						onClick={()=>this.props.onViewChange('text')}>
-						<i className='fa fa-beer' />
-					</div>
-					<div className={cx('style', { selected: this.props.view === 'style' })}
-						onClick={()=>this.props.onViewChange('style')}>
-						<i className='fa fa-paint-brush' />
-					</div>
-					<div className={cx('meta', { selected: this.props.view === 'meta' })}
-						onClick={()=>this.props.onViewChange('meta')}>
-						<i className='fas fa-info-circle' />
-					</div>
+					</button>
 				</div>
 
+				<div className='editors group' role='tablist'>
+					<button id='brew-tab' role='tab' type='button' className='tab' aria-selected={this.props.view === 'text'}
+						onClick={()=>this.props.onViewChange('text')}>
+						<i className='fa fa-beer' />
+					</button>
+					<button id='style-tab' role='tab' type='button' className='tab' aria-selected={this.props.view === 'style'}
+						onClick={()=>this.props.onViewChange('style')}>
+						<i className='fa fa-paint-brush' />
+					</button>
+					<button id='properties-tab' role='tab' type='button' className='tab' aria-selected={this.props.view === 'meta'}
+						onClick={()=>this.props.onViewChange('meta')}>
+						<i className='fas fa-info-circle' />
+					</button>
+				</div>
 			</div>
 		);
 	},
@@ -294,28 +289,36 @@ const SnippetGroup = createClass({
 	},
 	renderSnippets : function(snippets){
 		return _.map(snippets, (snippet)=>{
-			return <div className='snippet' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
-				<i className={snippet.icon} />
-				<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span>
-				{snippet.experimental && <span className='beta'>beta</span>}
-				{snippet.disabled     && <span className='beta' title='temporarily disabled due to large slowdown; under re-design'>disabled</span>}
-				{snippet.subsnippets && <>
-					<i className='fas fa-caret-right'></i>
-					<div className='dropdown side'>
-						{this.renderSnippets(snippet.subsnippets)}
-					</div></>}
-			</div>;
+			if(snippet.subsnippets){
+				return (
+					<>
+						<button className='snippet menu-trigger' key={snippet.name} popovertarget={`${_.kebabCase(snippet.name)}-menu`} style={{ anchorName: `--${_.kebabCase(snippet.name)}-menu` }}>
+							<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span><i className='fas fa-caret-right'></i>
+						</button>
+						<div id={`${_.kebabCase(snippet.name)}-menu`} className='dropdown side' popover='auto' style={{ positionAnchor: `--${_.kebabCase(snippet.name)}-menu` }}>
+							{this.renderSnippets(snippet.subsnippets)}
+						</div>
+					</>
+				);
+			} else {
+				return <div className='snippet' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
+					<i className={snippet.icon} />
+					<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span>
+					{snippet.experimental && <span className='beta'>beta</span>}
+					{snippet.disabled     && <span className='beta' title='temporarily disabled due to large slowdown; under re-design'>disabled</span>}
+				</div>;
+			}
 
 		});
 	},
 
 	render : function(){
-		return <div className='snippetGroup snippetBarButton'>
-			<div className='text'>
+		return <div className='snippet-menu' style={{ anchorName: `--${_.kebabCase(this.props.groupName)}-menu` }}>
+			<button popovertarget={`${_.kebabCase(this.props.groupName)}-menu`}>
 				<i className={this.props.icon} />
 				<span className='groupName'>{this.props.groupName}</span>
-			</div>
-			<div className='dropdown'>
+			</button>
+			<div id={`${_.kebabCase(this.props.groupName)}-menu`} className='dropdown' popover='auto' style={{ positionAnchor: `--${_.kebabCase(this.props.groupName)}-menu` }}>
 				{this.renderSnippets(this.props.snippets)}
 			</div>
 		</div>;

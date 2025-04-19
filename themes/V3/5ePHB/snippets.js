@@ -12,6 +12,149 @@ const dedent             = require('dedent-tabs').default;
 
 
 module.exports = [
+
+	{
+		groupName : 'Text Editor',
+		icon      : 'fas fa-pencil-alt',
+		view      : 'text',
+		snippets  : [
+			{
+				name         : 'Table of Contents',
+				icon         : 'fas fa-book',
+				experimental : true,
+				subsnippets  : [
+					{
+						name         : 'Generate Table of Contents',
+						icon         : 'fas fa-book',
+						gen          : TableOfContentsGen,
+						experimental : true
+					},
+					{
+						name        : 'Table of Contents Individual Inclusion',
+						icon        : 'fas fa-book',
+						subsnippets : [
+							{
+								name : 'Individual Inclusion H1',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocIncludeH1 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Inclusion H2',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocIncludeH2 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Inclusion H3',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocIncludeH3 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Inclusion H4',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocIncludeH4 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Inclusion H5',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocIncludeH5 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Inclusion H6',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocIncludeH6 \n
+									}}\n`,
+							}
+						]
+					},
+					{
+						name        : 'Table of Contents Range Inclusion',
+						icon        : 'fas fa-book',
+						subsnippets : [
+							{
+								name : 'Include in ToC up to H3',
+								icon : 'fas fa-dice-three',
+								gen  : dedent `\n{{tocDepthH3
+									}}\n`,
+
+							},
+							{
+								name : 'Include in ToC up to H4',
+								icon : 'fas fa-dice-four',
+								gen  : dedent `\n{{tocDepthH4
+									}}\n`,
+							},
+							{
+								name : 'Include in ToC up to H5',
+								icon : 'fas fa-dice-five',
+								gen  : dedent `\n{{tocDepthH5
+									}}\n`,
+							},
+							{
+								name : 'Include in ToC up to H6',
+								icon : 'fas fa-dice-six',
+								gen  : dedent `\n{{tocDepthH6
+									}}\n`,
+							},
+						]
+					},
+					{
+						name        : 'Table of Contents Individual Exclusion',
+						icon        : 'fas fa-book',
+						subsnippets : [
+							{
+								name : 'Individual Exclusion H1',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocExcludeH1 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Exclusion H2',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocExcludeH2 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Exclusion H3',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocExcludeH3 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Exclusion H4',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocExcludeH4 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Exclusion H5',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocExcludeH5 \n
+									}}\n`,
+							},
+							{
+								name : 'Individual Exclusion H6',
+								icon : 'fas fa-book',
+								gen  : dedent `\n{{tocExcludeH6 \n
+									}}\n`,
+							},
+						]
+					},
+
+				]
+			},
+			{
+				name         : 'Index',
+				icon         : 'fas fa-bars',
+				gen          : indexGen,
+				experimental : true
+			}
+		]
+	},
 	{
 		groupName : 'Style Editor',
 		icon      : 'fas fa-pencil-alt',
@@ -167,7 +310,6 @@ module.exports = [
 			{
 				name        : 'Class Tables',
 				icon        : 'fas fa-table',
-				gen         : ClassTableGen.full('classTable,frame,decoration,wide'),
 				subsnippets : [
 					{
 						name : 'Martial Class Table',
@@ -214,7 +356,6 @@ module.exports = [
 			{
 				name         : 'Rune Table',
 				icon         : 'fas fa-language',
-				gen          : scriptGen.dwarvish,
 				experimental : true,
 				subsnippets  : [
 					{
