@@ -375,16 +375,12 @@ app.put('/api/user/rename', async (req, res)=>{
 //Delete brews based on author
 app.delete('/api/user/delete', async (req, res)=>{
 	const { username } = req.body;
-	console.log('username: ', username);
 
-	if(!username) return res.status(400).json({ error: 'Username is required.' });
-
-	//const ownAccount = req.account && (req.account.username == username);
-	//if(!ownAccount) return res.status(403).json({ error: 'Must be logged in to change your username' });
+	const ownAccount = req.account && (req.account.username == username);
+	if(!ownAccount) return res.status(403).json({ error: 'Must be logged in to delete your account' });
 
 	try {
 		const brews = await HomebrewModel.getByUser(username, true, ['_id', 'googleId', 'editId', 'authors']);
-		console.log('brews: ', brews);
 
 		const deletePromises = brews.map((brew)=>{
 			req.brew = brew;
@@ -393,7 +389,6 @@ app.delete('/api/user/delete', async (req, res)=>{
 			});
 		});
 
-		console.log('delete promises: ', deletePromises);
 		await Promise.all(deletePromises);
 
 		return res.json({ success: true, message: `All brews for ${username} have been deleted.` });

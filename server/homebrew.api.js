@@ -439,7 +439,6 @@ const api = {
 		let brew = req.brew;
 		const { googleId, editId } = brew;
 		const account = req.account;
-		//if in local, may test this with: const account = req.account || { username: 'a' };
 		const isOwner = account && (brew.authors.length === 0 || brew.authors[0] === account.username);
 		// If the user is the owner and the file is saved to google, mark the google brew for deletion
 		const shouldDeleteGoogleBrew = googleId && isOwner;
