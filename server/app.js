@@ -141,7 +141,6 @@ app.get('/', (req, res, next)=>{
 		title       : 'Homepage',
 		description : 'Homepage'
 	};
-	console.log(req.account);
 
 	splitTextStyleAndMetadata(req.brew);
 	return next();
