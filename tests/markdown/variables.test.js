@@ -145,6 +145,15 @@ describe('Block-level variables', ()=>{
 		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>My name is $[first] Jones</p>`.trimReturns());
 	});
+
+	it('Doesn\'t store snippet variables in the variable stack', function() {
+		const source = dedent`
+		[Term]#definition
+		
+		$[Term]`;
+		const rendered = Markdown.render(source).replace(/\s/g, ' ').trimReturns();
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>\$[Term]</p>`.trimReturns());
+	});
 });
 
 describe('Inline-level variables', ()=>{
