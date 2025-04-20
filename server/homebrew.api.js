@@ -500,7 +500,9 @@ const api = {
 	shareAuthorChecks : async (req, res, next)=>{
 		// If logged in user is not an author:
 		if(!req.brew.authors.includes(req?.account?.username)){
-			// Remove Edit ID
+			// Remove author-only properties
+			req.brew._id = undefined;
+			req.brew.__v = undefined;
 			req.brew.editId = undefined;
 			// Increase view count and lastViewed property
 			await HomebrewModel.increaseView({ shareId: req.params.id });
