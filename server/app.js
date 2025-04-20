@@ -111,9 +111,7 @@ app.use(vaultApi);
 
 const welcomeText       = fs.readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 const welcomeTextLegacy = fs.readFileSync('client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
-const migrateText       = fs.readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
-const changelogText     = fs.readFileSync('changelog.md', 'utf8');
-const faqText           = fs.readFileSync('faq.md', 'utf8');
+
 
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
