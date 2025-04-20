@@ -545,10 +545,10 @@ function MarkedVariables() {
 		hooks : {
 			preprocess(src) {
 				const codeBlockSkip   = /^(?: {4}[^\n]+(?:\n(?: *(?:\n|$))*)?)+|^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})(?:[^\n]*)(?:\n|$)(?:|(?:[\s\S]*?)(?:\n|$))(?: {0,3}\2[~`]* *(?=\n|$))|`[^`]*?`/;
-				const blockDefRegex   = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\][:#](?!\() *((?:\n? *[^\s].*)+)(?=\n+|$)/; //Matches 3, [4]:5
-				const blockCallRegex  = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?=\n|$)/;                                 //Matches 6, [7]
-				const inlineDefRegex  = /([!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\])\(([^\n]+)\)/;                            //Matches 8, 9[10](11)
-				const inlineCallRegex =  /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?!\()/;                                   //Matches 12, [13]
+				const blockDefRegex   = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]([:\#])(?!\() *((?:\n? *[^\s].*)+)(?=\n+|$)/; //Matches 3,[4] [5]:6
+				const blockCallRegex  = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?=\n|$)/;                                 //Matches 7, [8]
+				const inlineDefRegex  = /([!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\])\(([^\n]+)\)/;                            //Matches 9, 10[11](12)
+				const inlineCallRegex =  /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?!\()/;                                   //Matches 13, [14]
 
 				// Combine regexes and wrap in parens like so: (regex1)|(regex2)|(regex3)|(regex4)
 				const combinedRegex = new RegExp([codeBlockSkip, blockDefRegex, blockCallRegex, inlineDefRegex, inlineCallRegex].map((s)=>`(${s.source})`).join('|'), 'gm');
@@ -573,17 +573,18 @@ function MarkedVariables() {
 					}
 					if(match[3]) { // Block Definition
 						const label   = match[4] ? normalizeVarNames(match[4]) : null;
-						const content = match[5] ? match[5].trim().replace(/[ \t]+/g, ' ') : null; // Normalize text content (except newlines for block-level content)
+						const content = match[6] ? match[6].trim().replace(/[ \t]+/g, ' ') : null; // Normalize text content (except newlines for block-level content)
 
-						// Drop Snippet brew variables
-						if(content[0] !== '#') varsQueue.push(
+						// Don't push brew snippet variables
+						if(match[5] != '#') varsQueue.push(
 							{ type    : 'varDefBlock',
 								varName : label,
 								content : content
 							});
+
 					}
-					if(match[6]) { // Block Call
-						const label = match[7] ? normalizeVarNames(match[7]) : null;
+					if(match[7]) { // Block Call
+						const label = match[8] ? normalizeVarNames(match[8]) : null;
 
 						varsQueue.push(
 							{ type    : 'varCallBlock',
@@ -591,9 +592,9 @@ function MarkedVariables() {
 								content : match[0]
 							});
 					}
-					if(match[8]) { // Inline Definition
-						const label = match[10] ? normalizeVarNames(match[10]) : null;
-						let content = match[11] || null;
+					if(match[9]) { // Inline Definition
+						const label = match[11] ? normalizeVarNames(match[11]) : null;
+						let content = match[12] || null;
 
 						// In case of nested (), find the correct matching end )
 						let level = 0;
@@ -623,8 +624,8 @@ function MarkedVariables() {
 								content : match[9]
 							});
 					}
-					if(match[12]) { // Inline Call
-						const label = match[13] ? normalizeVarNames(match[13]) : null;
+					if(match[13]) { // Inline Call
+						const label = match[14] ? normalizeVarNames(match[14]) : null;
 
 						varsQueue.push(
 							{ type    : 'varCallInline',
