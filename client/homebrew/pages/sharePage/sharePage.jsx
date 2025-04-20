@@ -13,13 +13,13 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const ErrorPage = require('../errorPage/errorPage.jsx');
 
-const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
+const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
 const { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } = require('../../../../shared/helpers.js');
 
 import request from '../../utils/request-middleware.js';
 
 const SharePage = (props)=>{
-	const { disableMeta = false, id } = props;
+	const { disableMeta = false, id, fixedText, fixedTitle = '' } = props;
 
 	const [brew, setBrew] = useState(DEFAULT_BREW_LOAD);
 	const [error, setError] = useState();
@@ -47,15 +47,35 @@ const SharePage = (props)=>{
 
 	useEffect(()=>{
 		const fetchData = async ()=>{
-			const data = await request
-				.get(`/api/share/${id}`)
-				.catch((err)=>{
-					return err.response;
-				});
-			const brewData = data.body;
-			if(!data.ok) {
-				setError(brewData);
-				return;
+
+			let brewData;
+
+			if(fixedText){
+				const data = await request
+					.get(`/api/text/${fixedText}`)
+					.catch((err)=>{
+						return err.response;
+					});
+
+				brewData = Object.assign(DEFAULT_BREW, { text: data.text, title: fixedTitle });
+
+				if(!data.ok) {
+					setError(brewData);
+					return;
+				}
+			}
+
+			if(id){
+				const data = await request
+					.get(`/api/share/${id}`)
+					.catch((err)=>{
+						return err.response;
+					});
+				brewData = data.body;
+				if(!data.ok) {
+					setError(brewData);
+					return;
+				}
 			}
 
 			splitTextStyleAndMetadata(brewData);

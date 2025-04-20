@@ -89,14 +89,13 @@ const Homebrew = createClass({
 					<Routes>
 						<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={this.props.brew} userThemes={this.props.userThemes}/>} />
 						<Route path='/share/:id' element={<WithRoute el={SharePage} />} />
-						{/* <Route path='/share2/:id' element={<WithRoute el={SharePage} brew={this.state.brew} />} /> */}
 						<Route path='/new/:id' element={<WithRoute el={NewPage} brew={this.props.brew} userThemes={this.props.userThemes}/>} />
 						<Route path='/new' element={<WithRoute el={NewPage} userThemes={this.props.userThemes}/> } />
 						<Route path='/user/:username' element={<WithRoute el={UserPage} brews={this.props.brews} />} />
 						<Route path='/vault' element={<WithRoute el={VaultPage}/>}/>
-						<Route path='/changelog' element={<WithRoute el={SharePage} brew={this.props.brew} disableMeta={true} />} />
-						<Route path='/faq' element={<WithRoute el={SharePage} brew={this.props.brew} disableMeta={true} />} />
-						<Route path='/migrate' element={<WithRoute el={SharePage} brew={this.props.brew} disableMeta={true} />} />
+						<Route path='/changelog' element={<WithRoute el={SharePage} fixedText='changelog' fixedTitle='Changelog' disableMeta={true} />} />
+						<Route path='/faq' element={<WithRoute el={SharePage} fixedText='faq' fixedTitle='FAQ' disableMeta={true} />} />
+						<Route path='/migrate' element={<WithRoute el={SharePage} fixedText='migrate' disableMeta={true} />} />
 						<Route path='/account' element={<WithRoute el={AccountPage} brew={this.props.brew} accountDetails={this.props.brew.accountDetails} />} />
 						<Route path='/legacy' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
 						<Route path='/error' element={<WithRoute el={ErrorPage} brew={this.props.brew} />} />
