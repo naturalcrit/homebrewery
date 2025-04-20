@@ -6,8 +6,11 @@ const insertGlossary = (glossaries, entry, definition, runningErrors)=>{
 	const glossarySplitRegex = /(?<!\\):/;
 
 	const glossarySplit = entry.split(glossarySplitRegex);
-	const useGlossary = glossarySplit.length == 2 ? glossarySplit[0] : 'Glossary:';
-	const term = glossarySplit.length == 2 ? glossarySplit[1] : glossarySplit[0];
+
+	if(glossarySplit.length != 2) return;
+
+	const useGlossary = glossarySplit[0].trim().length > 0 ? glossarySplit[0].trim() : 'Glossary:';
+	const term = glossarySplit[1].trim();
 
 	if((!definition) || (!term)) return;
 
@@ -43,7 +46,6 @@ const findGlossaryEntries = (pages, glossaries, runningErrors)=>{
 		if(page.match(theRegex)) {
 			let match;
 			while ((match = theRegex.exec(page)) !== null){
-				console.log(match);
 				insertGlossary(glossaries, match[1], match[2], runningErrors);
 			}
 		}
@@ -90,8 +92,6 @@ module.exports = function (props) {
 
 	const runningErrors = [];
 	findGlossaryEntries(pages, glossaries, runningErrors);
-
-	console.log(glossaries);
 
 	let  resultglossaries = '';
 
