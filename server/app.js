@@ -166,54 +166,31 @@ app.get('/legacy', (req, res, next)=>{
 
 //Legacy/Other Document -> v3 Migration Guide
 app.get('/migrate', (req, res, next)=>{
-	req.brew = {
-		text     : migrateText,
-		renderer : 'V3',
-		theme    : '5ePHB'
-	},
-
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'v3 Migration Guide',
 		description : 'A brief guide to converting Legacy documents to the v3 renderer.'
 	};
 
-	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
 
 //Changelog page
 app.get('/changelog', async (req, res, next)=>{
-	req.brew = {
-		title    : 'Changelog',
-		text     : changelogText,
-		renderer : 'V3',
-		theme    : '5ePHB'
-	},
-
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'Changelog',
 		description : 'Development changelog.'
 	};
 
-	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
 
 //FAQ page
 app.get('/faq', async (req, res, next)=>{
-	req.brew = {
-		title    : 'FAQ',
-		text     : faqText,
-		renderer : 'V3',
-		theme    : '5ePHB'
-	},
-
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'FAQ',
 		description : 'Frequently Asked Questions'
 	};
 
-	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
 
