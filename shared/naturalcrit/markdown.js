@@ -545,10 +545,10 @@ function MarkedVariables() {
 		hooks : {
 			preprocess(src) {
 				const codeBlockSkip   = /^(?: {4}[^\n]+(?:\n(?: *(?:\n|$))*)?)+|^ {0,3}(`{3,}(?=[^`\n]*(?:\n|$))|~{3,})(?:[^\n]*)(?:\n|$)(?:|(?:[\s\S]*?)(?:\n|$))(?: {0,3}\2[~`]* *(?=\n|$))|`[^`]*?`/;
-				const blockDefRegex   = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:(?!\() *((?:\n? *[^\s].*)+)(?=\n+|$)/; //Matches 3, [4]:5
-				const blockCallRegex  = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?=\n|$)/;                              //Matches 6, [7]
-				const inlineDefRegex  = /([!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\])\(([^\n]+)\)/;                         //Matches 8, 9[10](11)
-				const inlineCallRegex =  /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?!\()/;                                //Matches 12, [13]
+				const blockDefRegex   = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\][:#](?!\() *((?:\n? *[^\s].*)+)(?=\n+|$)/; //Matches 3, [4]:5
+				const blockCallRegex  = /^[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?=\n|$)/;                                 //Matches 6, [7]
+				const inlineDefRegex  = /([!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\])\(([^\n]+)\)/;                            //Matches 8, 9[10](11)
+				const inlineCallRegex =  /[!$]?\[((?!\s*\])(?:\\.|[^\[\]\\])+)\](?!\()/;                                   //Matches 12, [13]
 
 				// Combine regexes and wrap in parens like so: (regex1)|(regex2)|(regex3)|(regex4)
 				const combinedRegex = new RegExp([codeBlockSkip, blockDefRegex, blockCallRegex, inlineDefRegex, inlineCallRegex].map((s)=>`(${s.source})`).join('|'), 'gm');
@@ -575,7 +575,8 @@ function MarkedVariables() {
 						const label   = match[4] ? normalizeVarNames(match[4]) : null;
 						const content = match[5] ? match[5].trim().replace(/[ \t]+/g, ' ') : null; // Normalize text content (except newlines for block-level content)
 
-						varsQueue.push(
+						// Drop Snippet brew variables
+						if(content[0] !== '#') varsQueue.push(
 							{ type    : 'varDefBlock',
 								varName : label,
 								content : content
