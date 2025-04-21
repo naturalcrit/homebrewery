@@ -190,7 +190,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 						<h1>Options</h1>
 						<label title='Modify the horizontal space between pages.'>
 							Column gap
-							<input type='range' min={0} max={200} defaultValue={displayOptions.colGap || 10} className='range-input' onChange={(evt)=>handleOptionChange('columnGap', evt.target.value)} />
+							<input type='range' min={0} max={200} defaultValue={displayOptions.columnGap || 10} className='range-input' onChange={(evt)=>handleOptionChange('columnGap', evt.target.value)} />
 						</label>
 						<label title='Modify the vertical space between rows of pages.'>
 							Row gap
