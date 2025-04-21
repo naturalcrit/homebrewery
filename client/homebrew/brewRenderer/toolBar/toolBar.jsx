@@ -55,7 +55,10 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 			// find widest page, in case pages are different widths, so that the zoom is adapted to not cut the widest page off screen.
 			const widestPage = _.maxBy([...pages], 'offsetWidth').offsetWidth;
 
-			desiredZoom = (iframeWidth / widestPage) * 100;
+			if(displayOptions.spread === 'facing')
+				desiredZoom = (iframeWidth / widestPage) * 50;
+			else
+				desiredZoom = (iframeWidth / widestPage) * 100;
 
 		} else if(mode == 'fit'){
 			let minDimRatio;
