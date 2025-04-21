@@ -117,6 +117,13 @@ const BrewRenderer = (props)=>{
 		pageShadows  : true
 	});
 
+	//useEffect to store or gather toolbar state from storage
+	useEffect(()=>{
+		const toolbarState = JSON.parse(window.localStorage.getItem('hb_toolbarState'));
+		console.log('toolbar state:', toolbarState);
+		toolbarState &&	setDisplayOptions(toolbarState);
+	}, []);
+
 	const [headerState, setHeaderState] = useState(false);
 
 	const mainRef  = useRef(null);
@@ -271,6 +278,7 @@ const BrewRenderer = (props)=>{
 
 	const handleDisplayOptionsChange = (newDisplayOptions)=>{
 		setDisplayOptions(newDisplayOptions);
+		localStorage.setItem('hb_toolbarState', JSON.stringify(newDisplayOptions));
 	};
 
 	const pagesStyle = {

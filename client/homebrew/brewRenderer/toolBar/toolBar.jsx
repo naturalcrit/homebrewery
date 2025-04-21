@@ -20,6 +20,11 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 		setPageNum(pageRange);
 	}, [visiblePages]);
 
+	useEffect(()=>{
+		const visibility = localStorage.getItem('hb_toolbarVisibility');
+		setToolsVisible(visibility);
+	}, []);
+
 	const handleZoomButton = (zoom)=>{
 		handleOptionChange('zoomLevel', _.round(_.clamp(zoom, MIN_ZOOM, MAX_ZOOM)));
 	};
@@ -80,7 +85,10 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 	return (
 		<div id='preview-toolbar' className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`} role='toolbar'>
 			<div className='toggleButton'>
-				<button title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible);}}><i className='fas fa-glasses' /></button>
+				<button title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{
+					setToolsVisible(!toolsVisible);
+					localStorage.setItem('hb_toolbarVisibility', !toolsVisible);
+				}}><i className='fas fa-glasses' /></button>
 				<button title={`${headerState ? 'Hide' : 'Show'} Header Navigation`} onClick={()=>{setHeaderState(!headerState);}}><i className='fas fa-rectangle-list' /></button>
 			</div>
 			{/*v=====----------------------< Zoom Controls >---------------------=====v*/}
@@ -170,11 +178,11 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 						<h1>Options</h1>
 						<label title='Modify the horizontal space between pages.'>
 							Column gap
-							<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>handleOptionChange('columnGap', evt.target.value)} />
+							<input type='range' min={0} max={200} defaultValue={displayOptions.colGap || 10} className='range-input' onChange={(evt)=>handleOptionChange('columnGap', evt.target.value)} />
 						</label>
 						<label title='Modify the vertical space between rows of pages.'>
 							Row gap
-							<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>handleOptionChange('rowGap', evt.target.value)} />
+							<input type='range' min={0} max={200} defaultValue={displayOptions.rowGap || 10} className='range-input' onChange={(evt)=>handleOptionChange('rowGap', evt.target.value)} />
 						</label>
 						<label title='Start 1st page on the right side, such as if you have cover page.'>
 							Start on right
