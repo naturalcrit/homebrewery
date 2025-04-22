@@ -17,6 +17,7 @@ const ErrorPage = require('./pages/errorPage/errorPage.jsx');
 const VaultPage = require('./pages/vaultPage/vaultPage.jsx');
 const AccountPage = require('./pages/accountPage/accountPage.jsx');
 
+
 const WithRoute = (props)=>{
 	const params = useParams();
 	const [searchParams] = useSearchParams();
@@ -64,6 +65,21 @@ const Homebrew = createClass({
 		global.config = this.props.config;
 
 		return {};
+		// return {
+		// 	brew : this.props.brew
+		// };
+	},
+
+	componentDidMount : async function() {
+		// if(this.props.url.startsWith('/share2/')){
+		// 	const data = await request.get(`/api/share/${this.props.data.id}`);
+
+		// 	const brew = data.body;
+		// 	splitTextStyleAndMetadata(brew);
+		// 	this.setState({
+		// 		brew : brew
+		// 	});
+		// }
 	},
 
 	render : function (){
@@ -72,14 +88,14 @@ const Homebrew = createClass({
 				<div className='homebrew'>
 					<Routes>
 						<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={this.props.brew} userThemes={this.props.userThemes}/>} />
-						<Route path='/share/:id' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
+						<Route path='/share/:id' element={<WithRoute el={SharePage} />} />
 						<Route path='/new/:id' element={<WithRoute el={NewPage} brew={this.props.brew} userThemes={this.props.userThemes}/>} />
 						<Route path='/new' element={<WithRoute el={NewPage} userThemes={this.props.userThemes}/> } />
 						<Route path='/user/:username' element={<WithRoute el={UserPage} brews={this.props.brews} />} />
 						<Route path='/vault' element={<WithRoute el={VaultPage}/>}/>
-						<Route path='/changelog' element={<WithRoute el={SharePage} brew={this.props.brew} disableMeta={true} />} />
-						<Route path='/faq' element={<WithRoute el={SharePage} brew={this.props.brew} disableMeta={true} />} />
-						<Route path='/migrate' element={<WithRoute el={SharePage} brew={this.props.brew} disableMeta={true} />} />
+						<Route path='/changelog' element={<WithRoute el={SharePage} fixedText='changelog' fixedTitle='Changelog' disableMeta={true} />} />
+						<Route path='/faq' element={<WithRoute el={SharePage} fixedText='faq' fixedTitle='FAQ' disableMeta={true} />} />
+						<Route path='/migrate' element={<WithRoute el={SharePage} fixedText='migrate' disableMeta={true} />} />
 						<Route path='/account' element={<WithRoute el={AccountPage} brew={this.props.brew} accountDetails={this.props.brew.accountDetails} />} />
 						<Route path='/legacy' element={<WithRoute el={HomePage} brew={this.props.brew} />} />
 						<Route path='/error' element={<WithRoute el={ErrorPage} brew={this.props.brew} />} />

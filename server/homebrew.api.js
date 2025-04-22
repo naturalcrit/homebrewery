@@ -8,7 +8,7 @@ import Markdown                      from '../shared/naturalcrit/markdown.js';
 import yaml                          from 'js-yaml';
 import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
-import { splitTextStyleAndMetadata, 
+import { splitTextStyleAndMetadata,
 		 brewSnippetsToJSON }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
 
@@ -17,6 +17,7 @@ const router = express.Router();
 
 import { DEFAULT_BREW, DEFAULT_BREW_LOAD } from './brewDefaults.js';
 import Themes from '../themes/themes.json' with { type: 'json' };
+import fs from 'fs-extra';
 
 const isStaticTheme = (renderer, themeName)=>{
 	return Themes[renderer]?.[themeName] !== undefined;
@@ -166,6 +167,20 @@ const api = {
 			'Content-Type'  : 'text/css'
 		});
 		return res.status(200).send(brew.style);
+	},
+
+	getMeta : async (req, res, next)=>{
+		await api.getBrew('share', false)(req, res, ()=>{});
+
+		const metaTagData = {
+			title       : req.brew?.title || undefined,
+			description : req.brew?.description || undefined,
+			thumbnail   : req.brew?.thumbnail || undefined
+		};
+
+		req.brew = undefined;
+		req.metaTagData = metaTagData;
+		next();
 	},
 
 	mergeBrewText : (brew)=>{
@@ -478,6 +493,34 @@ const api = {
 		}
 
 		res.status(204).send();
+	},
+	returnBrew : async (req, res)=>{
+		return res.status(200).json(req.brew);
+	},
+	shareAuthorChecks : async (req, res, next)=>{
+		// If logged in user is not an author:
+		if(!req.brew.authors.includes(req?.account?.username)){
+			// Remove author-only properties
+			req.brew._id = undefined;
+			req.brew.__v = undefined;
+			req.brew.editId = undefined;
+			// Increase view count and lastViewed property
+			await HomebrewModel.increaseView({ shareId: req.params.id });
+		};
+		next();
+	},
+	getStaticText : async (req, res)=>{
+		const textMap = {
+			'faq'               : 'faq.md',
+			'changelog'         : 'changelog.md',
+			'migrate'           : 'client/homebrew/pages/homePage/migrate.md',
+			'welcomeText'       : 'client/homebrew/pages/homePage/welcome_msg.md',
+			'welcomeTextLegacy' : 'client/homebrew/pages/homePage/welcome_msg_legacy.md'
+		};
+
+		const data = await fs.readFile(textMap[req.params.file], 'utf-8');
+
+		return res.status(200).send(data);
 	}
 };
 
@@ -485,7 +528,9 @@ router.post('/api', checkClientVersion, asyncHandler(api.newBrew));
 router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
 router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
 router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew));
+router.get('/api/share/:id', checkClientVersion, asyncHandler(api.getBrew('share', false)), asyncHandler(api.shareAuthorChecks), asyncHandler(api.returnBrew));
 router.get('/api/remove/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
+router.get('/api/text/:file', checkClientVersion, asyncHandler(api.getStaticText));
 
 export default api;
