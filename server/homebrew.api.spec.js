@@ -590,7 +590,8 @@ brew`);
 				name     : 'User Theme A',
 				author   : 'authorName',
 				styles   : ['/* From Brew: https://localhost/share/userThemeAID */\n\nUser Theme A Style'],
-				snippets : []
+				snippets : [],
+				templates : []
 			});
 		});
 
