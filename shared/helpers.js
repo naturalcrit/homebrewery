@@ -4,30 +4,32 @@ import yaml    from 'js-yaml';
 import request from '../client/homebrew/utils/request-middleware.js';
 
 // Convert the templates from a brew to a Snippets Structure.
-const templatesToSnippet = (menuTitle, templates, themeBundle)=>{
+const templatesToSnippet = (menuTitle, templates, themeBundle=null, full=true)=>{
 	const textSplit  = /^\\template/gm;
 	const mpAsSnippets = [];
 	// Templates from Themes first.
-	for (let themes of themeBundle) {
-		const pages = [];
-		if(themes.templates) {
-			for (let mp of themes.templates.split(textSplit)) {
-				let name = mp.split('\n')[0].trim();
-				if(name.length == 0) name = 'Blank';
-				pages.push({
-					name : name,
-					icon : '',
-					gen  : `\n\\page ${themes.name}:${name}\n`,
+	if (themeBundle) {
+		for (let themes of themeBundle) {
+			const pages = [];
+			if(themes.templates) {
+				for (let mp of themes.templates.split(textSplit)) {
+					let name = mp.split('\n')[0].trim();
+					if(name.length == 0) name = 'Blank';
+					pages.push({
+						name : name,
+						icon : '',
+						gen  : `\n\\page ${themes.name}:${name}\n`,
+					});
+				}
+			}
+			if(pages.length > 0) {
+				mpAsSnippets.push({
+					name        : themes.name,
+					icon        : '',
+					gen         : '',
+					subsnippets : pages
 				});
 			}
-		}
-		if(pages.length > 0) {
-			mpAsSnippets.push({
-				name        : themes.name,
-				icon        : '',
-				gen         : '',
-			    subsnippets : pages
-			});
 		}
 	}
 	// Local Templates
@@ -51,12 +53,17 @@ const templatesToSnippet = (menuTitle, templates, themeBundle)=>{
 		});
 	}
 
-	return {
-		groupName : 'Templates',
-		icon      : 'fas fa-pencil-alt',
-		view      : 'text',
-		snippets  : mpAsSnippets
+	const returnObj = {
+		snippets : mpAsSnippets
 	};
+
+	if(full) {
+		returnObj.groupName = 'Templates';
+		returnObj.icon = 'fas fa-pencil-alt';
+		returnObj.view = 'text';
+	}
+
+	return returnObj;
 };
 
 const splitTemplates = (templates)=>{
@@ -180,6 +187,18 @@ const yamlSnippetsToText = (yamlObj)=>{
 	return snippetsText;
 };
 
+const yamlTemplatesToText = (yamlObj)=>{
+	if(typeof yamlObj == 'string') return yamlObj;
+
+	let templateText = '';
+	
+	for (let template of yamlObj.templates.templates) {
+		templateText = `${templateText}\\template ${template.name}\n${template.body || ''}\n`;
+	}
+	return templateText;
+};
+
+
 const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
 	if(brew.text.startsWith('```metadata')) {
@@ -188,21 +207,12 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const metadata = yaml.load(metadataSection);
 		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
 		brew.snippets = yamlSnippetsToText(_.pick(metadata, ['snippets']).snippets || '');
+		brew.templates = yamlTemplatesToText(_.pick(metadata, ['templates']).templates || '');
 		brew.text = brew.text.slice(index + 6);
-	}
-	if(brew.text.startsWith('```snippets')) {
-		const index = brew.text.indexOf('```\n\n');
-		brew.snippets = brew.text.slice(12, index - 1);
-		brew.text = brew.text.slice(index + 5);
 	}
 	if(brew.text.startsWith('```css')) {
 		const index = brew.text.indexOf('```\n\n');
 		brew.style = brew.text.slice(7, index - 1);
-		brew.text = brew.text.slice(index + 5);
-	}
-	if(brew.text.startsWith('```templates')) {
-		const index = brew.text.indexOf('```\n\n');
-		brew.templates = brew.text.slice(13, index - 1);
 		brew.text = brew.text.slice(index + 5);
 	}
 

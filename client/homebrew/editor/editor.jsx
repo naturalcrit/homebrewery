@@ -51,7 +51,6 @@ const Editor = createClass({
 			onSnipChange     : ()=>{},
 			onTemplateChange : ()=>{},
 			reportError      : ()=>{},
-			reportError      : ()=>{},
 
 			onCursorPageChange : ()=>{},
 			onViewPageChange   : ()=>{},
