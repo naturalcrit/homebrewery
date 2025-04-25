@@ -14,13 +14,13 @@
 	.snippets {
 		display         : flex;
 		justify-content : flex-start;
-		min-width       : 327.58px;
+		min-width       : 432.18px;  //must be controlled every time an item is added, must be hardcoded for the wrapping as it is applied
 	}
 
 	.editors {
 		display         : flex;
 		justify-content : flex-end;
-		min-width       : 225px;
+		min-width       : 250px; //must be controlled every time an item is added, must be hardcoded for the wrapping as it is applied
 
 		&:only-child {min-width   : unset; margin-left : auto;}
 
@@ -53,6 +53,9 @@
 				}
 				&.meta {
 					.tooltipLeft('Properties');
+				}
+				&.snip {
+					.tooltipLeft('Snippets');
 				}
 				&.undo {
 					.tooltipLeft('Undo');
@@ -229,8 +232,15 @@
 			}
 		}
 	}
+	.disabledSnippets {
+		color: grey;
+		cursor: not-allowed;
+
+		&:hover { background-color: #DDDDDD;}
+	}
+
 }
-@container editor (width < 553px) {
+@container editor (width < 683px) {
 	.snippetBar {
 		.editors { 
 			flex            : 1;

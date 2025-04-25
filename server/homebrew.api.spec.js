@@ -302,7 +302,7 @@ describe('Tests for api', ()=>{
 		});
 
 		it('access is denied to a locked brew', async()=>{
-			const lockBrew = { title: 'test brew', shareId: '1', lock: { locked: true, code: 404, shareMessage: 'brew locked' } };
+			const lockBrew = { title: 'test brew', shareId: '1', lock: { code: 404, shareMessage: 'brew locked' } };
 			model.get = jest.fn(()=>toBrewPromise(lockBrew));
 			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
 
@@ -943,7 +943,7 @@ brew`);
 	});
 	describe('Get CSS', ()=>{
 		it('should return brew style content as CSS text', async ()=>{
-			const testBrew = { title: 'test brew', text: '```css\n\nI Have a style!\n````\n\n' };
+			const testBrew = { title: 'test brew', text: '```css\n\nI Have a style!\n```\n\n' };
 
 			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
 			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
@@ -1038,7 +1038,7 @@ brew`);
 			expect(testBrew.theme).toEqual('5ePHB');
 			expect(testBrew.lang).toEqual('en');
 			// Style
-			expect(testBrew.style).toEqual('style\nstyle\nstyle');
+			expect(testBrew.style).toEqual('style\nstyle\nstyle\n');
 			// Text
 			expect(testBrew.text).toEqual('text\n');
 		});

@@ -2,7 +2,7 @@
 // Set working directory to project root
 import { dirname }       from 'path';
 import { fileURLToPath } from 'url';
-import packageJSON       from './../package.json' with { type: 'json' };
+import packageJSON from './../package.json' with { type: 'json' };
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 process.chdir(`${__dirname}/..`);

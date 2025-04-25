@@ -163,6 +163,18 @@ const EditPage = createClass({
 		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
+	handleSnipChange : function(snippet){
+		//If there are errors, run the validator on every change to give quick feedback
+		let htmlErrors = this.state.htmlErrors;
+		if(htmlErrors.length) htmlErrors = Markdown.validate(snippet);
+
+		this.setState((prevState)=>({
+			brew       : { ...prevState.brew, snippets: snippet },
+			isPending  : true,
+			htmlErrors : htmlErrors,
+		}), ()=>{if(this.state.autoSave) this.trySave();});
+	},
+
 	handleStyleChange : function(style){
 		this.setState((prevState)=>({
 			brew : { ...prevState.brew, style: style }
@@ -456,7 +468,7 @@ const EditPage = createClass({
 			<Meta name='robots' content='noindex, nofollow' />
 			{this.renderNavbar()}
 
-			{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} />}
+			{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} reviewRequested={this.props.brew.lock.reviewRequested} />}
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove}>
 					<Editor
@@ -464,13 +476,13 @@ const EditPage = createClass({
 						brew={this.state.brew}
 						onTextChange={this.handleTextChange}
 						onStyleChange={this.handleStyleChange}
+						onSnipChange={this.handleSnipChange}
 						onMetaChange={this.handleMetaChange}
 						onTemplateChange={this.handleTemplateChange}
 						reportError={this.errorReported}
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
 						themeBundle={this.state.themeBundle}
-						snippetBundle={this.state.themeBundle.snippets}
 						templateBundle={this.state.themeBundle.templates}
 						updateBrew={this.updateBrew}
 						onCursorPageChange={this.handleEditorCursorPageChange}
