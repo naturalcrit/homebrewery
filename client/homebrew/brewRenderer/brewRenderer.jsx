@@ -121,7 +121,7 @@ const insertTemplate = (props, pageNumber)=>{
 		if(whichTemplate[0].length != 0) {
 			for (;whichTheme < props.templates.length; whichTheme++) {
 				if(props.templates[whichTheme].name == whichTemplate[0]) {
-					for (let temp=0; temp<props.templates[whichTheme].subsnippets.length; temp++) {
+					for (let temp=0; temp<props.templates[whichTheme]?.subsnippets?.length; temp++) {
 						if(props.templates[whichTheme].subsnippets[temp].name == whichTemplate[1]) {
 							return props.templates[whichTheme].subsnippets[temp].body;
 						}
@@ -129,9 +129,11 @@ const insertTemplate = (props, pageNumber)=>{
 				}
 			}
 		} else {
-			for (let temp=0; temp<props.templates[whichTheme].subsnippets.length; temp++) {
-				if(props.templates[whichTheme].subsnippets[temp].name === whichTemplate[1]) {
-					return props.templates[whichTheme].subsnippets[temp].body;
+			if(props?.templates) {
+				for (let temp=0; temp<props.templates[whichTheme]?.subsnippets?.length; temp++) {
+					if(props.templates[whichTheme].subsnippets[temp].name === whichTemplate[1]) {
+						return props.templates[whichTheme].subsnippets[temp].body;
+					}
 				}
 			}
 		}
