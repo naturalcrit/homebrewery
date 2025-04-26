@@ -47,7 +47,8 @@ const NewPage = createClass({
 			currentEditorViewPageNum   : 1,
 			currentEditorCursorPageNum : 1,
 			currentBrewRendererPageNum : 1,
-			themeBundle                : {}
+			themeBundle                : {},
+			userTemplates              : brew.templates
 		};
 	},
 
@@ -243,6 +244,7 @@ const NewPage = createClass({
 						onTextChange={this.handleTextChange}
 						onStyleChange={this.handleStyleChange}
 						onMetaChange={this.handleMetaChange}
+						onTemplateChange={this.handleTemplateChange}
 						onSnipChange={this.handleSnipChange}
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
