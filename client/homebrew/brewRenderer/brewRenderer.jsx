@@ -1,3 +1,4 @@
+/* eslint-disable max-depth */
 /* eslint-disable max-lines */
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
@@ -97,7 +98,7 @@ const getPageTemplates = (pages)=>{
 	brewTemplates[1] = 'Blank';
 	pages.forEach((page, index)=>{
 		const firstLine = page.split('\n')[0];
-		if(firstLine.startsWith('\page')) {
+		if(firstLine.startsWith('\\page')) {
 			const firstLineClean = firstLine.slice(5).trim();
 			if((firstLineClean.length > 0) || (brewTemplates.length > 0)) {
 				brewTemplates[ index ] = firstLineClean;
@@ -110,24 +111,27 @@ const getPageTemplates = (pages)=>{
 	return tempPages;
 };
 const insertTemplate = (props, pageNumber)=>{
-	console.log(props);
 	let lookAt = pageNumber;
 	while ((lookAt > 0) && (typeof brewTemplates[lookAt] === 'undefined')) lookAt--;
 	if(typeof brewTemplates[lookAt] !== 'undefined') {
+
 		const whichTemplate = brewTemplates[lookAt].split(':');
-		// If the template source is not in the themes list, it must be a local template.
-		if(props.templateBundle) {
-			for (let tb of props.templateBundle) {
-				if((tb.theme == whichTemplate[0]) && (tb.name == whichTemplate[1])) {
-					return tb.template;
+		let whichTheme = 0;
+
+		if(whichTemplate[0].length != 0) {
+			for (;whichTheme < props.templates.length; whichTheme++) {
+				if(props.templates[whichTheme].name == whichTemplate[0]) {
+					for (let temp=0; temp<props.templates[whichTheme].subsnippets.length; temp++) {
+						if(props.templates[whichTheme].subsnippets[temp].name == whichTemplate[1]) {
+							return props.templates[whichTheme].subsnippets[temp].body;
+						}
+					}
 				}
 			}
-		}
-		if(props.userTemplates) {
-			console.log(props.userTemplates);
-			for (let ut of props?.userTemplates) {
-				if(ut.name == whichTemplate[1]) {
-					return ut.template;
+		} else {
+			for (let temp=0; temp<props.templates[whichTheme].subsnippets.length; temp++) {
+				if(props.templates[whichTheme].subsnippets[temp].name === whichTemplate[1]) {
+					return props.templates[whichTheme].subsnippets[temp].body;
 				}
 			}
 		}

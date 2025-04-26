@@ -27,7 +27,7 @@ const LockNotification = require('./lockNotification/lockNotification.jsx');
 import Markdown from 'naturalcrit/markdown.js';
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
-const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
+const { printCurrentBrew, fetchThemeBundle, templatesToSnippet } = require('../../../../shared/helpers.js');
 
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 
@@ -497,13 +497,13 @@ const EditPage = createClass({
 						renderer={this.state.brew.renderer}
 						theme={this.state.brew.theme}
 						themeBundle={this.state.themeBundle}
-						templateBundle={this.state.themeBundle.templates}
 						errors={this.state.htmlErrors}
 						lang={this.state.brew.lang}
 						onPageChange={this.handleBrewRendererPageChange}
 						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
 						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
 						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+						templates={templatesToSnippet(this.props.brew.title, this.state.brew.templates, this.state.themeBundle.templates, false).snippets}
 						allowPrint={true}
 					/>
 				</SplitPane>

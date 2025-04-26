@@ -40,11 +40,10 @@ const templatesToSnippet = (menuTitle, templates, themeBundle=null, full=true)=>
 		for (let mp of templates.split(textSplit)) {
 			if(mp.length>0) {
 				const name = mp.split('\n')[0].trim();
-				console.log(mp.length);
 				pages.push({
 					name : name,
 					icon : '',
-					gen  : `\n\\page ${menuTitle}:${name}\n`,
+					gen  : `\n\\page ${name}\n`,
 					body : mp.split('\n').slice(1).join('\n')
 				});
 			}
@@ -70,46 +69,6 @@ const templatesToSnippet = (menuTitle, templates, themeBundle=null, full=true)=>
 
 	return returnObj;
 };
-
-// const splitTemplates = (templates)=>{
-// 	const splitTemplates = templates.split(/^(?=^\\template)/gm);
-// 	const templatesObj = [];
-// 	splitTemplates.forEach((page)=>{
-// 		const firstLine = page.split('\n')[0];
-// 		const firstLineClean = firstLine.slice(9).trim() || 'Blank';
-// 		templatesObj.push({ name: firstLineClean, template: page.slice(firstLine.length) });
-// 	});
-// 	return templatesObj;
-// };
-
-// const asTemplateMap = (templates)=>{
-// 	if(!templates) return [];
-// 	const resultTemplates = [];
-// 	if(typeof templates === 'string') {
-// 		const localTemplates = splitTemplates(templates);
-// 		for (let lt of localTemplates) {
-// 			resultTemplates.push({
-// 				theme    : '',
-// 				name     : lt.name,
-// 				template : lt.template
-// 			});
-// 		}
-// 	} else {
-// 		// Walk a template bundle
-// 		for (let theme of templates) {
-// 			const themeTemplates = splitTemplates(theme.templates);
-// 			for (let tt of themeTemplates) {
-// 				resultTemplates.push({
-// 					theme    : theme.name,
-// 					name     : tt.name,
-// 					template : tt.template
-// 				});
-// 			}
-// 		}
-
-// 	}
-// 	return resultTemplates;
-// };
 
 const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=null, full=true)=>{
 	const textSplit  = /^(\\snippet +.+\n)/gm;
@@ -185,7 +144,7 @@ const yamlSnippetsToText = (yamlObj)=>{
 
 	let snippetsText = '';
 	for (let subSnippet of yamlObj[0].subsnippets) {
-		snippetsText = `${snippetsText}\\snippet ${subSnippet.name}\n${subSnippet.gen || ''}\n`;
+		snippetsText = `${snippetsText}\\snippet ${subSnippet.name}\n${subSnippet.gen || ''}`;
 	}
 	return snippetsText;
 };
@@ -195,8 +154,7 @@ const yamlTemplatesToText = (yamlObj)=>{
 
 	let templateText = '';
 	for (let template of yamlObj[0].subsnippets) {
-		console.log(template);
-		templateText = `${templateText}\\template ${template.name}\n${template.body || ''}\n`;
+		templateText = `${templateText}\\template ${template.name}\n${template.body || ''}`;
 	}
 	return templateText;
 };
