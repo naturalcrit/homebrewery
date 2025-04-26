@@ -177,18 +177,6 @@ const api = {
 				`\`\`\`\n\n` +
 				`${text}`;
 		}
-		if(brew.snippets !== undefined) {
-			text = `\`\`\`snippets\n` +
-				`${brew.snippets || ''}\n` +
-				`\`\`\`\n\n` +
-				`${text}`;
-		}
-		if(brew.templates !== undefined) {
-			text = `\`\`\`templates\n` +
-				`${brew.templates || ''}\n` +
-				`\`\`\`\n\n` +
-				`${text}`;
-		}
 		const metadata = _.pick(brew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']);
 		const snippetsArray = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false).snippets;
 		const templatesArray = templatesToSnippet('brew_templates', brew.templates, null, false).snippets;
