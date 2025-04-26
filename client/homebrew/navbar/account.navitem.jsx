@@ -1,6 +1,6 @@
 const React = require('react');
 const createClass = require('create-react-class');
-const {Dropdown, NavItem} = require('./navbar.jsx');
+const { MenuDropdown, MenuItem } = require('../../components/menubar/Menubar.jsx');
 const request = require('superagent');
 
 const Account = createClass({
@@ -61,46 +61,44 @@ const Account = createClass({
 	render : function(){
 		//  Logged in
 		if(global.account){
-			return <Dropdown id='accountMenu' trigger='click'>
-				<NavItem
-					className='account username'
-					color='orange'
-					icon='fas fa-user'
-				>
-					{global.account.username}
-				</NavItem>
-				<NavItem
+			return <MenuDropdown id='accountMenu'
+				groupName={global.account.username}
+				className='account username'
+				color='orange'
+				icon='fas fa-user'
+				dir='down'>
+				<MenuItem
 					className='account'
 					color='orange'
 					icon='fas fa-user'
 					href='/account'
 				>
 					account
-				</NavItem>
-				<NavItem
+				</MenuItem>
+				<MenuItem
 					className='logout'
 					color='red'
 					icon='fas fa-power-off'
 					onClick={this.handleLogout}
 				>
 					logout
-				</NavItem>
-			</Dropdown>;
+				</MenuItem>
+			</MenuDropdown>;
 		}
 
 		//  Logged out
 		//  LOCAL ONLY
 		if(global.config.local) {
-			return <NavItem color='teal' icon='fas fa-sign-in-alt' onClick={this.localLogin}>
+			return <MenuItem color='teal' icon='fas fa-sign-in-alt' onClick={this.localLogin}>
 				login
-			</NavItem>;
+			</MenuItem>;
 		};
 
 		// Logged out
 		// Production site
-		return <NavItem href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`} color='teal' icon='fas fa-sign-in-alt'>
+		return <MenuItem href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`} color='teal' icon='fas fa-sign-in-alt'>
 			login
-		</NavItem>;
+		</MenuItem>;
 	}
 });
 

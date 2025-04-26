@@ -1,15 +1,15 @@
 const React = require('react');
-const { NavItem } = require('./navbar.jsx');
+const { MenuItem } = require('../../components/menubar/Menubar.jsx');
 
 const PatreonNavItem = ({...props})=>{
-	return <NavItem
+	return <MenuItem
 		className='patreon'
 		newTab={true}
 		href='https://www.patreon.com/NaturalCrit'
 		color='green'
 		icon='fas fa-heart'>
 		Patreon
-	</NavItem>;
+	</MenuItem>;
 };
 
 module.exports = PatreonNavItem;

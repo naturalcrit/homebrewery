@@ -2,7 +2,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const Moment = require('moment');
 
-const Nav = require('./navbar.jsx');
+const Nav = require('../../components/menubar/Menubar.jsx');
 
 
 const MetadataNav = createClass({

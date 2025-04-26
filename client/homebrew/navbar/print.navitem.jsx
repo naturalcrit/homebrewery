@@ -1,12 +1,12 @@
 const React = require('react');
-const {NavItem} = require('./navbar.jsx');
+const { MenuItem } = require('../../components/menubar/Menubar.jsx');
 const { printCurrentBrew } = require('../../../shared/helpers.js');
 
 
 const PrintNavItem = () => {
-	return <NavItem onClick={printCurrentBrew} color='yellow' icon='far fa-file-pdf'>
+	return <MenuItem onClick={printCurrentBrew} color='yellow' icon='far fa-file-pdf'>
 		get PDF
-	</NavItem>;
+	</MenuItem>;
 };
 PrintNavItem.displayName = 'PrintNavItem';
 

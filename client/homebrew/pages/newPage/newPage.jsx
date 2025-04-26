@@ -7,7 +7,7 @@ import request from '../../utils/request-middleware.js';
 import Markdown from 'naturalcrit/markdown.js';
 
 const PrintNavItem = require('../../navbar/print.navitem.jsx');
-const {Navbar, NavItem, NavSection, Dropdown} = require('../../navbar/navbar.jsx');
+const {Navbar, NavItem, NavSection, Dropdown} = require('../../../components/menubar/Menubar.jsx');
 const AccountNavItem = require('../../navbar/account.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;

@@ -1,0 +1,87 @@
+
+.menu-bar {
+	--button-height: 25px;
+	font-size   : 10px;
+
+	.menu-wrapper {
+		position: relative;
+		place-content: center;
+		&:is(.menu-bar > .menu-section > .menu-wrapper){
+			display: inline-block;
+		}
+	}
+	.menu-list {
+		z-index          : 1000;
+		inset-block-start: anchor(bottom);
+		inset-inline-start: anchor(left);
+		position-try: flip-inline;
+		> .menu-wrapper {
+			position:relative;
+			> .menu-list {
+				margin: 0 0px;
+				inset-block-start: anchor(top);
+				inset-inline-start: anchor(right);
+				position-try: flip-inline;
+			}
+		}
+		
+
+	}
+	
+	.menu-hr {
+		display: flex;
+		width: auto;
+		gap: 10px;
+		hr {
+			display: inline-block;
+			flex: 1 0 auto;
+			height: 0;
+			border: 0;
+			border-top: 1px solid rgba(0, 0, 0, 0.1);
+			border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+
+		}
+	}
+	.menu-item {
+		width: 100%;
+		display: grid;
+		grid-template-columns: 20px 2fr min-content;
+		grid-template-rows: 1fr;
+		gap: 0px 4px;
+		grid-auto-flow: row;
+		grid-template-areas:
+			"icon name caret";
+		align-items        : center;
+		justify-content    : start;
+		text-align: left;
+		height           : var(--button-height);
+		cursor: pointer;
+		&.icon-only {
+			display: block;
+			span, .caret {
+				.screen-reader-only();
+			}
+		}
+		i {
+			font-size: 13px;
+			grid-area: icon;
+			justify-self: center;
+		}
+		span {
+			grid-area: name;
+			margin-right: 3px;
+		}
+		.caret {
+			grid-area: caret;
+		}
+
+	}
+}
+
+@supports (anchor-name: 'foo'){
+	.menu-list {
+		top: unset !important;
+		left: unset !important;
+
+	}
+}

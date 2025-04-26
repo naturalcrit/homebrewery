@@ -1,9 +1,9 @@
 require('./error-navitem.less');
 const React = require('react');
-const {NavItem} = require('./navbar.jsx');
+const { MenuItem } = require('../../components/menubar/Menubar.jsx');
 const createClass = require('create-react-class');
 
-const ErrorNavItem = createClass({
+const ErrorMenuItem = createClass({
 	getDefaultProps : function() {
 		return {
 			error  : '',
@@ -35,25 +35,25 @@ const ErrorNavItem = createClass({
 		} catch (e){}
 
 		if(status === 409) {
-			return <NavItem className='save error' icon='fas fa-exclamation-triangle'>
+			return <MenuItem className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
 				<div className='errorContainer' onClick={clearError}>
 					{message ?? 'Conflict: please refresh to get latest changes'}
 				</div>
-			</NavItem>;
+			</MenuItem>;
 		}
 
 		if(status === 412) {
-			return <NavItem className='save error' icon='fas fa-exclamation-triangle'>
+			return <MenuItem className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
 				<div className='errorContainer' onClick={clearError}>
 					{message ?? 'Your client is out of date. Please save your changes elsewhere and refresh.'}
 				</div>
-			</NavItem>;
+			</MenuItem>;
 		}
 
 		if(HBErrorCode === '04') {
-			return <NavItem className='save error' icon='fas fa-exclamation-triangle'>
+			return <MenuItem className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
 				<div className='errorContainer' onClick={clearError}>
 					You are no longer signed in as an author of
@@ -70,20 +70,20 @@ const ErrorNavItem = createClass({
 						Not Now
 					</div>
 				</div>
-			</NavItem>;
+			</MenuItem>;
 		}
 
 		if(response.body?.errors?.[0].reason == 'storageQuotaExceeded') {
-			return <NavItem className='save error' icon='fas fa-exclamation-triangle'>
+			return <MenuItem className='save error' icon='fas fa-exclamation-triangle'>
 			Oops!
 				<div className='errorContainer' onClick={clearError}>
 				Can't save because your Google Drive seems to be full!
 				</div>
-			</NavItem>;
+			</MenuItem>;
 		}
 
 		if(response.req.url.match(/^\/api.*Google.*$/m)){
-			return <NavItem className='save error' icon='fas fa-exclamation-triangle'>
+			return <MenuItem className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
 				<div className='errorContainer' onClick={clearError}>
 					Looks like your Google credentials have
@@ -101,11 +101,11 @@ const ErrorNavItem = createClass({
 						Not Now
 					</div>
 				</div>
-			</NavItem>;
+			</MenuItem>;
 		}
 
 		if(HBErrorCode === '09') {
-			return <NavItem className='save error' icon='fas fa-exclamation-triangle'>
+			return <MenuItem className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
 				<div className='errorContainer' onClick={clearError}>
 					Looks like there was a problem retreiving
@@ -113,11 +113,11 @@ const ErrorNavItem = createClass({
 					for this brew. Verify that brew <a className='lowercase' target='_blank' rel='noopener noreferrer' href={`/share/${response.body.brewId}`}>
 						{response.body.brewId}</a> still exists!
 				</div>
-			</NavItem>;
+			</MenuItem>;
 		}
 
 		if(HBErrorCode === '10') {
-			return <NavItem className='save error' icon='fas fa-exclamation-triangle'>
+			return <MenuItem className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
 				<div className='errorContainer' onClick={clearError}>
 					Looks like the brew you have selected
@@ -126,10 +126,10 @@ const ErrorNavItem = createClass({
 					brew <a className='lowercase' target='_blank' rel='noopener noreferrer' href={`/share/${response.body.brewId}`}>
 						{response.body.brewId}</a> has the <span className='lowercase'>meta:theme</span> tag!
 				</div>
-			</NavItem>;
+			</MenuItem>;
 		}
 
-		return <NavItem className='save error' icon='fas fa-exclamation-triangle'>
+		return <MenuItem className='save error' icon='fas fa-exclamation-triangle'>
 			Oops!
 			<div className='errorContainer'>
 				Looks like there was a problem saving. <br />
@@ -137,8 +137,8 @@ const ErrorNavItem = createClass({
 				here
 				</a>.
 			</div>
-		</NavItem>;
+		</MenuItem>;
 	}
 });
 
-module.exports = ErrorNavItem;
+module.exports = ErrorMenuItem;

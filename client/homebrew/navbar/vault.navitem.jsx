@@ -1,11 +1,11 @@
 const React = require('react');
 
-const { NavItem } = require('./navbar.jsx');
+const { MenuItem } = require('../../components/menubar/Menubar.jsx');
 
 
 const VaultNavItem = () => {
 	return (
-		<NavItem
+		<MenuItem
 			color='purple'
 			icon='fas fa-dungeon'
 			href='/vault'
@@ -13,7 +13,7 @@ const VaultNavItem = () => {
 			rel='noopener noreferrer'
 		>
 			Vault
-		</NavItem>
+		</MenuItem>
 	);
 };
 

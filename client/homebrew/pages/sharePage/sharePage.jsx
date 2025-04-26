@@ -4,11 +4,14 @@ const { useState, useEffect, useCallback } = React;
 const { Meta } = require('vitreum/headtags');
 
 // const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
+const { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } = require('../../../components/menubar/Menubar.jsx');
 const MetadataNav = require('../../navbar/metadata.navitem.jsx');
+const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
 const PrintNavItem = require('../../navbar/print.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
+const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
+const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
@@ -67,45 +70,52 @@ const SharePage = (props)=>{
 		);
 	};
 
-	const titleEl = (
-		<Nav.item className='brewTitle' style={disableMeta ? { cursor: 'default' } : {}}>
-			{brew.title}
-		</Nav.item>
-	);
+
+	const renderNavbar = ()=>{
+		 // todo: bring back in the metadata viewer (MetadataNav.jsx)
+		return (
+			<Menubar id='navbar'>
+				<MenuSection className='navSection'>
+					<MainMenu />
+					<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy' dir='down'>
+						<NewBrewItem />
+						<MenuItem color='blue' href={`/new/${processShareId()}`}>
+							clone to new
+						</MenuItem>
+						<MenuRule />
+						<MenuItem href={`/user/${encodeURI(global.account.username)}`} color='purple' icon='fas fa-beer'>
+							brews
+						</MenuItem>
+						<RecentNavItem brew={brew} storageKey='view' />
+						<MenuRule />
+						<MenuItem color='blue' icon='fas fa-eye' href={`/source/${processShareId()}`}>
+							source
+						</MenuItem>
+						<MenuItem color='blue' href={`/download/${processShareId()}`}>
+							download .txt
+						</MenuItem>
+						<MenuRule />
+						<PrintNavItem />
+					</MenuDropdown>
+					<VaultNavItem />
+				</MenuSection>
+
+				<MenuSection className='navSection'>
+					<MenuItem className='brewTitle'>{brew.title}</MenuItem>
+				</MenuSection>
+
+				<MenuSection className='navSection'>
+					<Account />
+				</MenuSection>
+
+			</Menubar>
+		);
+	};
 
 	return (
 		<div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
-			<Navbar>
-				<Nav.section className='titleSection'>
-					{disableMeta ? titleEl : <MetadataNav brew={brew}>{titleEl}</MetadataNav>}
-				</Nav.section>
-
-				<Nav.section>
-					{brew.shareId && (
-						<>
-							<PrintNavItem />
-							<Nav.dropdown>
-								<Nav.item color='red' icon='fas fa-code'>
-									source
-								</Nav.item>
-								<Nav.item color='blue' icon='fas fa-eye' href={`/source/${processShareId()}`}>
-									view
-								</Nav.item>
-								{renderEditLink()}
-								<Nav.item color='blue' icon='fas fa-download' href={`/download/${processShareId()}`}>
-									download
-								</Nav.item>
-								<Nav.item color='blue' icon='fas fa-clone' href={`/new/${processShareId()}`}>
-									clone to new
-								</Nav.item>
-							</Nav.dropdown>
-						</>
-					)}
-					<RecentNavItem brew={brew} storageKey='view' />
-					<Account />
-				</Nav.section>
-			</Navbar>
+			{renderNavbar()}
 
 			<div className='content'>
 				<BrewRenderer

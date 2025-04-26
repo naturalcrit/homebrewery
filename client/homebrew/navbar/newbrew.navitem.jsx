@@ -1,6 +1,6 @@
 const React = require('react');
 const _ = require('lodash');
-const {NavItem, Dropdown} = require('./navbar.jsx');
+const {MenuItem, MenuDropdown} = require('../../components/menubar/Menubar.jsx');
 const { splitTextStyleAndMetadata } = require('../../../shared/helpers.js'); // Importing the function from helpers.js
 
 const BREWKEY  = 'homebrewery-new';
@@ -33,32 +33,29 @@ const NewBrew = ({...props})=>{
 	};
 
 	return (
-		<Dropdown id='newBrewMenu' trigger='click' disabled={props.disabled}>
-			<NavItem
-				className={`new ${props.disabled && 'disabled'}`}
-				color={props.disabled ? 'grey' : 'green'}
-				icon='fa-solid fa-plus-square'
-				caret={true}>
-                new
-			</NavItem>
-			<NavItem
+		<MenuDropdown id='newBrewMenu'
+			groupName='New'
+			color={props.disabled ? 'grey' : 'green'}
+			icon='fa-solid fa-plus-square'
+			caret={true}>
+			<MenuItem
 				className='fromBlank'
 				href='/new'
 				newTab={true}
 				color='green'
 				icon='fa-solid fa-file'>
                 from blank
-			</NavItem>
+			</MenuItem>
 
-			<NavItem
+			<MenuItem
 				className='fromFile'
 				color='green'
 				icon='fa-solid fa-upload'
 				onClick={()=>{ document.getElementById('uploadTxt').click(); }}>
 				<input id='uploadTxt' className='newFromLocal' type='file' onChange={handleFileChange} style={{ display: 'none' }} />
                 from file
-			</NavItem>
-		</Dropdown>
+			</MenuItem>
+		</MenuDropdown>
 	);
 };
 

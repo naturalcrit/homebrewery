@@ -266,9 +266,10 @@ const BrewRenderer = (props)=>{
 		}, 100);
 	};
 
-	const emitClick = ()=>{ // Allow clicks inside iFrame to interact with dropdowns, etc. from outside
+	const emitClick = ()=>{ 
 		if(!window || !document) return;
-		document.dispatchEvent(new MouseEvent('click'));
+		// Emit a custom event instead of simulating a regular click
+		document.dispatchEvent(new CustomEvent('iframe-click'));
 	};
 
 	const handleDisplayOptionsChange = (newDisplayOptions)=>{

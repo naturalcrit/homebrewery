@@ -3,7 +3,7 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const Moment = require('moment');
 
-const { NavItem, Dropdown } = require('./navbar.jsx');
+const { MenuItem, MenuDropdown, MenuRule } = require('../../components/menubar/Menubar.jsx');
 
 const EDIT_KEY = 'homebrewery-recently-edited';
 const VIEW_KEY = 'homebrewery-recently-viewed';
@@ -142,9 +142,9 @@ const RecentItems = createClass({
 	renderDropdown : function(){
 		// if(!this.state.showDropdown) return null;
 
-		const makeItems = (brews)=>{
+		const makeItems = (brews, color)=>{
 			return _.map(brews, (brew, i)=>{
-				return <a className='navItem' href={brew.url} key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
+				return <a className={`menu-item ${color}`} href={brew.url} key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
 					<span className='title'>{brew.title || '[ no title ]'}</span>
 					<span className='time'>{Moment(brew.ts).fromNow()}</span>
 					<div className='clear' title='Remove from Recents' onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></div>
@@ -153,27 +153,24 @@ const RecentItems = createClass({
 		};
 
 		return <>
-			{(this.props.showEdit && this.props.showView) ?
-				<NavItem className='header'>edited</NavItem> : null }
-			{this.props.showEdit ?
-				makeItems(this.state.edit) : null }
-			{(this.props.showEdit && this.props.showView) ?
-				<NavItem className='header'>viewed</NavItem>	: null }
-			{this.props.showView ?
-				makeItems(this.state.view) : null }
+			{(this.props.showEdit && this.props.showView) &&
+				<MenuItem id='recent-edits' className='header' icon='fas fa-pen'><MenuRule text='edited' /></MenuItem>}
+			{this.props.showEdit && makeItems(this.state.edit, 'purple')}
+			{(this.props.showEdit && this.props.showView) &&
+				<MenuItem id='recent-views' className='header' icon='fas fa-eye'><MenuRule text='viewed' /></MenuItem>}
+			{this.props.showView && makeItems(this.state.view, 'blue')}
 		</>;
 	},
 
 	render : function(){
-		return <Dropdown id='recentsMenu' className='recent' trigger='click'>
-			<NavItem color='purple'  caret={true}>
-				{this.props.text}
-			</NavItem>
+		return <MenuDropdown id='recentsMenu' className='recent' color='purple'  caret={true} groupName={this.props.text} >
 			{this.renderDropdown()}
-		</Dropdown>;
+		</MenuDropdown>;
 	}
 
 });
+
+
 
 module.exports = {
 

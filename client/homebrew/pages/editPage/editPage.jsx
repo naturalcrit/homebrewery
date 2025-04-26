@@ -7,9 +7,7 @@ const createClass = require('create-react-class');
 import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
 
-
-const { NavbarProvider } = require('../../navbar/navbarContext.jsx');
-const { Navbar, NavItem, NavSection, Dropdown } = require('../../navbar/navbar.jsx');
+const { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } = require('../../../components/menubar/Menubar.jsx');
 
 const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
 const PrintNavItem = require('../../navbar/print.navitem.jsx');
@@ -395,7 +393,7 @@ const EditPage = createClass({
 	},
 
 	renderStoragePicker : function(){
-		return <NavItem className='googleDriveStorage' onClick={()=>{this.setState({openStoragePicker : true})}}>
+		return <MenuItem className='googleDriveStorage' onClick={()=>{this.setState({openStoragePicker : true})}}>
 			Saved to {this.state.saveGoogle ? <img src={googleDriveIcon} /> : 'HB'}
 
 			{/* {this.state.alertTrashedGoogleBrew &&
@@ -406,14 +404,14 @@ const EditPage = createClass({
 					</div>
 				</div>
 			} */}
-		</NavItem>;
+		</MenuItem>;
 	},
 
 	renderSaveButton : function(){
 
 		// #1 - Currently saving, show SAVING
 		if(this.state.alerts.isSaving){
-			return <NavItem className='save' icon='fas fa-spinner fa-spin'>saving...</NavItem>;
+			return <MenuItem className='save' icon='fas fa-spinner fa-spin'>saving...</MenuItem>;
 		}
 
 		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
@@ -422,25 +420,25 @@ const EditPage = createClass({
 			const elapsedTime = Math.round((new Date() - this.state.unsavedTime) / 1000 / 60);
 			const text = elapsedTime == 0 ? 'Autosave is OFF.' : `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
 
-			return <NavItem className='save error' icon='fas fa-exclamation-circle'>
+			return <MenuItem className='save error' icon='fas fa-exclamation-circle'>
 			Reminder...
 				<div className='errorContainer'>
 					{text}
 				</div>
-			</NavItem>;
+			</MenuItem>;
 		}
 
 		// #3 - Unsaved changes exist, click to save, show SAVE NOW
 		// Use trySave(true) instead of save() to use debounced save function
 		if(this.state.alerts.isPending){
-			return <NavItem className='save' onClick={()=>this.trySave(true)} color='orange' icon='fas fa-save'>Save Now</NavItem>;
+			return <MenuItem className='save' onClick={()=>this.trySave(true)} color='orange' icon='fas fa-save'>Save Now</MenuItem>;
 		}
 		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
 		if(this.state.autoSave){
-			return <NavItem className='save saved disabled' icon='fas fa-save'>auto-saved.</NavItem>;
+			return <MenuItem className='save saved disabled' icon='fas fa-save'>auto-saved.</MenuItem>;
 		}
 		// DEFAULT - No unsaved changes, show SAVED
-		return <NavItem className='save saved disabled' icon='fas fa-save'>saved.</NavItem>;
+		return <MenuItem className='save saved disabled' icon='fas fa-save'>saved.</MenuItem>;
 	},
 
 	renderNavbarSaveButton : function(){
@@ -478,9 +476,9 @@ const EditPage = createClass({
 	},
 
 	renderAutoSaveButton : function(){
-		return <NavItem onClick={this.handleAutoSave} color='orange'>
+		return <MenuItem onClick={this.handleAutoSave} color='orange'>
 			Autosave {this.state.autoSave ? ' is ON' : 'is OFF'}
-		</NavItem>;
+		</MenuItem>;
 	},
 
 	processShareId : function() {
@@ -519,54 +517,48 @@ const EditPage = createClass({
 	renderNavbar : function(){
 		const shareLink = this.processShareId();
 
-		return <NavbarProvider>
-			<Navbar>
-				<NavSection>
+		return (
+			<Menubar id='navbar'>
+
+				<MenuSection className='navSection'>
 					<MainMenu />
-					<Dropdown id='brewMenu' trigger='click' className='brew-menu'>
-						<NavItem color='purple' icon='fas fa-pen-fancy'>Brew</NavItem>
+					<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy' dir='down'>
 						<NewBrewItem />
+						<MenuRule />
 						{this.renderSaveButton()}
 						{this.renderAutoSaveButton()}
 						{this.renderStoragePicker()}
-						<NavItem
-							href={`/user/${encodeURI(global.account.username)}`}
-							color='purple'
-							icon='fas fa-beer'
-						>
+						<MenuRule />
+						<MenuItem href={`/user/${encodeURI(global.account.username)}`} color='purple' icon='fas fa-beer'>
 							brews
-						</NavItem>
+						</MenuItem>
 						<RecentNavItem brew={this.state.brew} storageKey='edit' />
-						<NavItem color='blue' href={`/share/${shareLink}`} icon='fas fa-share-from-square'>
+						<MenuRule />
+						<MenuItem color='blue' href={`/share/${shareLink}`} icon='fas fa-share-from-square'>
 							share
-						</NavItem>
-						<NavItem color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${shareLink}`);}}>
+						</MenuItem>
+						<MenuItem color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${shareLink}`);}}>
 							copy url
-						</NavItem>
-						<NavItem color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
+						</MenuItem>
+						<MenuItem color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
 							post to reddit
-						</NavItem>
+						</MenuItem>
+						<MenuRule />
 						<PrintNavItem />
-					</Dropdown>
+					</MenuDropdown>
 					<VaultNavItem />
-				</NavSection>
-				<NavSection>
-					<NavItem className='brewTitle'>{this.props.brew.title}{this.renderAlerts()}</NavItem>
-				</NavSection>
+				</MenuSection>
 
-				<NavSection>
+				<MenuSection className='navSection'>
+					<MenuItem className='brewTitle'>{this.props.brew.title}{this.renderAlerts()}</MenuItem>
+				</MenuSection>
+
+				<MenuSection className='navSection'>
 					<Account />
-					{/* {this.renderGoogleDriveIcon()}
-					{this.state.error ?
-						<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
+				</MenuSection>
 
-					} */}
-
-
-				</NavSection>
-
-			</Navbar>
-		</NavbarProvider>;
+			</Menubar>
+		);
 	},
 
 	render : function(){

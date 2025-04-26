@@ -7,6 +7,8 @@ const cx    = require('classnames');
 const moment = require('moment');
 
 import { loadHistory } from '../../utils/versionHistory.js';
+const { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } = require('../../../components/menubar/Menubar.jsx');
+
 
 //Import all themes
 const ThemeSnippets = {};
@@ -49,9 +51,7 @@ const Snippetbar = createClass({
 	getInitialState : function() {
 		return {
 			renderer      : this.props.renderer,
-			themeSelector : false,
 			snippets      : [],
-			showHistory   : false,
 			historyExists : false,
 			historyItems  : []
 		};
@@ -122,38 +122,28 @@ const Snippetbar = createClass({
 		this.props.onInject(injectedText);
 	},
 
-	toggleThemeSelector : function(e){
-		if(e.target.tagName != 'SELECT'){
-			this.setState({
-				themeSelector : !this.state.themeSelector
-			});
-		}
-	},
-
 	changeTheme : function(e){
 		if(e.target.value == this.props.currentEditorTheme) return;
 		this.props.updateEditorTheme(e.target.value);
-
-		this.setState({
-			showThemeSelector : false,
-		});
 	},
 
 	renderThemeSelector : function(){
-		return <div className='themeSelector'>
+		return <MenuItem id='themeSelector' icon='fas fa-palette'>
 			<select value={this.props.currentEditorTheme} onChange={this.changeTheme} >
 				{EditorThemes.map((theme, key)=>{
 					return <option key={key} value={theme}>{theme}</option>;
 				})}
 			</select>
-		</div>;
+		</MenuItem>;
 	},
 
 	renderSnippetGroups : function(){
 		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
-		if(snippets.length === 0) return null;
+		if(snippets.length === 0) return (
+			<MenuSection className='snippets'></MenuSection>
+		);
 
-		return <div className='snippets'>
+		return <MenuSection className='snippets'>
 			{_.map(snippets, (snippetGroup)=>{
 				return <SnippetGroup
 					brew={this.props.brew}
@@ -166,25 +156,20 @@ const Snippetbar = createClass({
 				/>;
 			})
 			}
-		</div>;
+		</MenuSection>;
 	},
 
 	replaceContent : function(item){
 		return this.props.updateBrew(item);
 	},
 
-	toggleHistoryMenu : function(){
-		this.setState({
-			showHistory : !this.state.showHistory
-		});
-	},
 
 	renderHistoryItems : function() {
 		if(!this.state.historyExists) return;
 
 		return (
-			<div id='history-menu' className='dropdown' popover='auto' style={{ positionAnchor: '--history-menu' }}>
-				<div className='menu-group'>Restore from...</div>
+			<>
+				<MenuRule text='Restore from' />
 				{this.state.historyItems.map((item, index)=>{
 					if(item.noData || !item.savedAt) return null;
 
@@ -192,15 +177,12 @@ const Snippetbar = createClass({
 					const diffString = saveTime.fromNow();
 
 					return (
-						<div className='snippet' key={index} onClick={()=>this.replaceContent(item)}>
-							<i className='fas fa-trash-arrow-up' />
-							<span className='name' title={`Restore version from ${moment(saveTime).format('YYYY/MM/DD HH:mm:ss')}`}>
-								v{item.version} : {diffString}
-							</span>
-						</div>
+						<MenuItem icon='fas fa-trash-arrow-up' key={index} onClick={()=>this.replaceContent(item)}>
+							<span title={`Restore version from ${moment(saveTime).format('YYYY/MM/DD HH:mm:ss')}`}>v{item.version} : {diffString}</span>
+						</MenuItem>
 					);
 				})}
-			</div>
+			</>
 		);
 	},
 
@@ -208,60 +190,57 @@ const Snippetbar = createClass({
 		if(!this.props.showEditButtons) return;
 
 		return (
-			<div className='tools'>
-				<div className='historyTools group'>
-					<button id='show-history' type='button' className='tool' popovertarget='history-menu' style={{ anchorName: '--history-menu' }}>
-						<i className='fas fa-clock-rotate-left' />
-					</button>
-					{this.renderHistoryItems()}
-					<button id='undo' type='button' disabled={!this.props.historySize.undo ? true : false} className='tool'
+			<MenuSection className='tools'>
+				<MenuSection id='history-tools' className='tool-group'>
+					<MenuDropdown id='history' className='tool' groupName='history' icon='fas fa-clock-rotate-left' popovertarget='history-menu' style={{ anchorName: '--history-menu' }}>
+						{this.renderHistoryItems()}
+					</MenuDropdown>
+					<MenuItem id='undo' icon='fas fa-undo' disabled={!this.props.historySize.undo ? true : false} className='tool'
 						onClick={this.props.undo} >
-						<i className='fas fa-undo' />
-					</button>
-					<button id='redo'type='button' disabled={!this.props.historySize.redo ? true : false} className='tool'
+						Undo
+					</MenuItem>
+					<MenuItem id='redo' icon='fas fa-redo' disabled={!this.props.historySize.redo ? true : false} className='tool'
 						onClick={this.props.redo} >
-						<i className='fas fa-redo' />
-					</button>
-				</div>
-				<div className='codeTools group'>
-					<button id='fold-all' type='button' disabled={(this.props.view === 'meta' || !this.props.foldCode) ? true : false} className='tool'
+						Redo
+					</MenuItem>
+				</MenuSection>
+				<MenuSection id='code-tools' className='tool-group'>
+					<MenuItem id='fold-all' icon='fas fa-compress-alt' disabled={(this.props.view === 'meta' || !this.props.foldCode) ? true : false} className='tool'
 						onClick={this.props.foldCode} >
-						<i className='fas fa-compress-alt' />
-					</button>
-					<button id='unfold-all' type='button' disabled={(this.props.view === 'meta' || !this.props.unfoldCode) ? true : false} className='tool'
+							Fold All Code
+					</MenuItem>
+					<MenuItem id='unfold-all' icon='fas fa-expand-alt' disabled={(this.props.view === 'meta' || !this.props.unfoldCode) ? true : false} className='tool'
 						onClick={this.props.unfoldCode} >
-						<i className='fas fa-expand-alt' />
-					</button>
-					<button id='show-themes' type='button' className={`tool${this.state.themeSelector ? ' active' : ''}`}
-						onClick={this.toggleThemeSelector} >
-						<i className='fas fa-palette' />
-						{this.state.themeSelector && this.renderThemeSelector()}
-					</button>
-				</div>
+						Unfold All Code
+					</MenuItem>
+					<MenuDropdown id='show-themes' className='tool' icon='fas fa-palette' groupName='Editor Themes'>
+						{this.renderThemeSelector()}
+					</MenuDropdown>
+				</MenuSection>
 
-				<div className='editors group' role='tablist'>
-					<button id='brew-tab' role='tab' type='button' className='tab' aria-selected={this.props.view === 'text'}
+				<MenuSection id='editor-tabs' className='tool-group' role='tablist'>
+					<MenuItem id='brew-tab' role='tab' className='tab' icon='fa fa-beer' aria-selected={this.props.view === 'text'}
 						onClick={()=>this.props.onViewChange('text')}>
-						<i className='fa fa-beer' />
-					</button>
-					<button id='style-tab' role='tab' type='button' className='tab' aria-selected={this.props.view === 'style'}
+						Brew Editor
+					</MenuItem>
+					<MenuItem id='style-tab' role='tab' className='tab' icon='fa fa-paint-brush' aria-selected={this.props.view === 'style'}
 						onClick={()=>this.props.onViewChange('style')}>
-						<i className='fa fa-paint-brush' />
-					</button>
-					<button id='properties-tab' role='tab' type='button' className='tab' aria-selected={this.props.view === 'meta'}
+						Style Editor
+					</MenuItem>
+					<MenuItem id='properties-tab' role='tab' className='tab' icon='fas fa-info-circle' aria-selected={this.props.view === 'meta'}
 						onClick={()=>this.props.onViewChange('meta')}>
-						<i className='fas fa-info-circle' />
-					</button>
-				</div>
-			</div>
+						Properties Editor
+					</MenuItem>
+				</MenuSection>
+			</MenuSection>
 		);
 	},
 
 	render : function(){
-		return <div className='snippetBar'>
+		return <Menubar className='snippetBar'>
 			{this.renderSnippetGroups()}
 			{this.renderEditorButtons()}
-		</div>;
+		</Menubar>;
 	}
 });
 
@@ -291,36 +270,29 @@ const SnippetGroup = createClass({
 		return _.map(snippets, (snippet)=>{
 			if(snippet.subsnippets){
 				return (
-					<>
-						<button className='snippet menu-trigger' key={snippet.name} popovertarget={`${_.kebabCase(snippet.name)}-menu`} style={{ anchorName: `--${_.kebabCase(snippet.name)}-menu` }}>
-							<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span><i className='fas fa-caret-right'></i>
-						</button>
-						<div id={`${_.kebabCase(snippet.name)}-menu`} className='dropdown side' popover='auto' style={{ positionAnchor: `--${_.kebabCase(snippet.name)}-menu` }}>
-							{this.renderSnippets(snippet.subsnippets)}
-						</div>
-					</>
+					<MenuDropdown id={snippet.name} className='snippet-menu' groupName={snippet.name} icon={snippet.icon} dir='right' key={snippet.name}>
+						{this.renderSnippets(snippet.subsnippets)}
+					</MenuDropdown>
 				);
 			} else {
-				return <div className='snippet' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
-					<i className={snippet.icon} />
-					<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span>
-					{snippet.experimental && <span className='beta'>beta</span>}
-					{snippet.disabled     && <span className='beta' title='temporarily disabled due to large slowdown; under re-design'>disabled</span>}
-				</div>;
+				return (
+					<MenuItem className={`snippet${snippet.disabled ? ' disabled' : ''}`} icon={snippet.icon} key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
+						{snippet.name}
+						{snippet.experimental && <span className='beta'>beta</span>}
+						{snippet.disabled     && <span className='beta' title='temporarily disabled due to large slowdown; under re-design'>disabled</span>}
+
+					</MenuItem>
+				);
 			}
 
 		});
 	},
 
 	render : function(){
-		return <div className='snippet-menu' style={{ anchorName: `--${_.kebabCase(this.props.groupName)}-menu` }}>
-			<button popovertarget={`${_.kebabCase(this.props.groupName)}-menu`}>
-				<i className={this.props.icon} />
-				<span className='groupName'>{this.props.groupName}</span>
-			</button>
-			<div id={`${_.kebabCase(this.props.groupName)}-menu`} className='dropdown' popover='auto' style={{ positionAnchor: `--${_.kebabCase(this.props.groupName)}-menu` }}>
+		return (
+			<MenuDropdown id={this.props.groupName} className='snippet-menu' groupName={this.props.groupName} icon={this.props.icon} dir='down'>
 				{this.renderSnippets(this.props.snippets)}
-			</div>
-		</div>;
+			</MenuDropdown>
+		);
 	},
 });

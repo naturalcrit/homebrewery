@@ -10,40 +10,27 @@
 	100% { color : pink; }
 }
 
-@keyframes glideDropDown {
-	0% {
-		background-color : #333333;
-		opacity          : 0;
-		transform        : translate(0px, -100%);
-	}
-	100% {
-		background-color : #333333;
-		opacity          : 1;
-		transform        : translate(0px, 0px);
-	}
-}
 
-.homebrew nav {
+#navbar {
+	--navbar-color : #333333;
+	--navbar-text : #FFFFFF;
 	position         : relative;
 	z-index          : 10000;
 	display          : flex;
 	justify-content  : space-between;
-	background-color : #333333;
 	box-shadow: 0px 5px 10px -5px  #000;
-	&, a:any-link {
-		color            : white;
+	div {
+		background-color : var(--navbar-color);
+	}
+	&, a:any-link, button {
+		color            : var(--navbar-text);
 		text-transform   : uppercase;
 		text-decoration  : none;
-		font-size        : 10px;
 		font-weight      : 800;
 		line-height      : 13px;
 	}
 
-
-	
-
-	// NAV SECTIONS -- all navitems should be inside a section
-	.navSection {
+	.menu-section {
 		display     : flex;
 		flex-wrap: nowrap;
 		align-items : center;
@@ -53,38 +40,34 @@
 			flex: 1 1 max-content;
 		}
 
-		// NAV ITEMS -- every button inside the navbar should be a navitem
+		.menu-wrapper:has(:popover-open) > [popovertarget]{
+			background-color: #555555;
+		}
 
-		.navItem {
+		.menu-list {
+			box-shadow: 0px 5px 10px -5px  #000;
+			border: 1px groove #929292;
+			.menu-list {
+				margin: 1px -2px;
+			}
+		}
+
+		.menu-hr {
+			padding : 0 4px;
+			cursor:default
+		}
+
+
+		.menu-item {
 			#backgroundColorsHover;
 			.animate(background-color);
-			display: grid;
-			grid-template-columns: 25px 2fr min-content;
-			grid-template-rows: 1fr;
-			gap: 0px 4px;
-			grid-auto-flow: row;
-			grid-template-areas:
-				"icon name caret";
-			align-items        : center;
-			justify-content    : start;
-			height           : 100%;
-			padding          : 8px 4px;
-			cursor           : pointer;
-			i {
-				
-				font-size   : 13px;
-				grid-area: icon;
-				justify-self: center;
-			}
-			span {
-				grid-area: name;
-			}
-			.caret {
-				grid-area: caret;
-				margin-right: 0;
-				margin-left: 20px;
-			}
+			padding          : 4px;
+			text-wrap: nowrap;
 
+			&:where(.menu-section .menu-list .menu-item){
+				padding: 8px 4px;
+			}
+			
 			// DISABLED ITEM
 			&.disabled {
 				color: @grey;
@@ -99,7 +82,7 @@
 					svg { fill : @orange; }
 				}
 				svg {
-					height: 43px;
+					height: 28px;
 					margin-right: .2em;
 					cursor: pointer;
 					fill: #fff5;
@@ -150,14 +133,6 @@
 				&.username { text-transform : none;}
 			}
 
-			// // AUTOSAVE ITEM  -- not currently used; saving in case we want it later
-			// i.fa-power-off {
-			// 	color : red;
-			// 	&.active {
-			// 		color  : rgb(0, 182, 52);
-			// 		filter : drop-shadow(0 0 2px rgba(0, 182, 52, 0.765));
-			// 	}
-			// }
 
 			&.metadata {
 				position    : relative;
@@ -234,134 +209,71 @@
 					}
 				}
 			}
-			&.warning {
-				position         : relative;
-				color            : white;
-				background-color : @orange;
-				&:hover > .dropdown { visibility : visible; }
-				.dropdown {
-					position         : absolute;
-					top              : 28px;
-					left             : 0;
-					z-index          : 10000;
-					box-sizing       : border-box;
-					display          : block;
-					visibility       : hidden;
-					width            : 100%;
-					padding          : 13px 5px;
-					text-align       : center;
-					background-color : #333333;
-				}
-			}
+			
 		}
-		.navDropdownContainer {
-			position : relative;
-	
-			.navDropdown {
-				position       : absolute;
-				z-index        : 10000;
-				display        : flex;
-				flex-direction : column;
-				width          : 17em;
-				max-height     : calc(100vh - 28px);
-				overflow       : hidden auto;
-				background-color : #333333;
-				box-shadow: 0px 5px 10px -5px  #000;
-	
-				/* ===== Scrollbar CSS ===== */
-				/* Firefox */
-				scrollbar-width: thin;
-				scrollbar-color: #aaa #333;
-				
-				/* Chrome, Edge, and Safari */
-				::-webkit-scrollbar {
-					width: 12px;
-				}
-				
-				::-webkit-scrollbar-track {
-					background: #333;
-				}
-				
-				::-webkit-scrollbar-thumb {
-					background-color: #aaa;
-					border-radius: 10px;
-				}
-	
-				.navItem {
-					position           : relative;
-					border             : 1px solid #444;
-					border-bottom      : 0;
-					animation-name     : glideDropDown;
-					animation-duration : 0.4s;
 
-					&:is(.navDropdownContainer.recent .navDropdown .navItem) { 
-						position: relative;
-						display: block;
-						padding-right: 10px;
-						&:not(:first-child) {width:auto;}
-						.clear {
-							position         : absolute;
-							top              : 50%;
-							right            : 10px;
-							display          : none;
-							width            : 20px;
-							height           : 100%;
-							background-color : #333333;
-							border-radius    : 3px;
-							opacity          : 70%;
-							transform        : translateY(-50%);
-							&:hover { opacity : 100%; }
-							i {
-								width      : 100%;
-								height     : 100%;
-								margin     : 0;
-								font-size  : 10px;
-								text-align : center;
-							}
-						}
-						.title {
-							display       : inline-block;
-							width         : 100%;
-							overflow      : hidden auto;
-							text-overflow : ellipsis;
-							white-space   : nowrap;
-						}
-						.time {
-							position  : absolute;
-							right     : 12px;
-							bottom    : 2px;
-							font-size : 0.7em;
-							color     : #888888;
-						}
-						&.header {
-							box-sizing       : border-box;
-							display          : block;
-							padding          : 5px 0;
-							color            : #BBBBBB;
-							text-align       : center;
-							background-color : #333333;
-							border-top       : 1px solid #888888;
-							&:nth-of-type(1) { background-color : darken(@teal, 20%); }
-							&:nth-of-type(2) { background-color : darken(@purple, 30%); }
-						}
-						&:hover {
-							background-color : @purple;
-							.time { color : white !important; };
-							.clear {
-								display       : grid;
-								place-content : center;
-							}
-						}
-					}
-					
+		
+
+
+		#recent-brews-menu.menu-list { 
+			position: relative;
+			max-width: 300px;
+			min-width: 150px;
+			.menu-item {
+				position: relative;
+				grid-template-rows: 2fr;
+				grid-template-areas:
+					"icon name caret"
+					". time .";
+				height: unset;
+				.title {
+					display       : inline-block;
+					width         : 100%;
+					overflow      : hidden auto;
+					text-overflow : ellipsis;
+					white-space   : nowrap;
 				}
-				
-				.navDropdown {
-					position : relative;
-					overflow-y:hidden;
-					box-shadow: none;
+				.clear {
+					position         : absolute;
+					top:0;
+					right            : 2px;
+					margin: 3px;
+					display          : none;
+					width            : 20px;
+					height           : calc(100% - 6px);
+					background-color : #333333;
+					border-radius    : 3px;
+					opacity          : 70%;
+					box-sizing: border-box;
+					&:hover { 
+						opacity : 100%;
+						background-color: @red;
+					}
+					i {
+						width      : 100%;
+						height     : 100%;
+						margin     : 0;
+						font-size  : 10px;
+						text-align : center;
+					}
+				}
+				.time {
+					font-size : 0.7em;
+					color     : #888888;
+					display: block;
+					grid-area: time;
+				}
+
+				&:hover {
+					.time { color : white !important; };
+					.clear {
+						display       : grid;
+						place-content : center;
+					}
 				}
 			}
+			
 		}
+				
 	}
 }

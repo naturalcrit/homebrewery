@@ -5,14 +5,12 @@ const cx = require('classnames');
 import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
 
-// const Nav = require('naturalcrit/nav/nav.jsx');
-const { NavbarProvider } = require('../../navbar/navbarContext.jsx');
-const {Navbar, NavSection, NavItem, Dropdown} = require('../../navbar/navbar.jsx');
+const { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } = require('../../../components/menubar/Menubar.jsx');
 const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const AccountNavItem = require('../../navbar/account.navitem.jsx');
+const Account = require('../../navbar/account.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
 const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
@@ -83,33 +81,31 @@ const HomePage = createClass({
 		}));
 	},
 	renderNavbar : function(){
-		return <NavbarProvider>
-			<Navbar>
-				<NavSection>
+		return (
+			<Menubar id='navbar'>
+
+				<MenuSection className='navSection'>
 					<MainMenu />
-					<Dropdown id='brewMenu' trigger='click' className='brew-menu'>
-						<NavItem color='purple'>Brew</NavItem>
+					<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy'>
 						<NewBrewItem />
-						<NavItem
-							href={`/user/${encodeURI(global.account.username)}`}
-							color='yellow'
-							icon='fas fa-beer'
-						>
+						<MenuRule />
+						<MenuItem href={`/user/${encodeURI(global.account.username)}`} color='purple' icon='fas fa-beer'>
 							brews
-						</NavItem>
-						<RecentNavItem />
-					</Dropdown>
+						</MenuItem>
+						<RecentNavItem brew={this.state.brew} storageKey='edit' />
+					</MenuDropdown>
 					<VaultNavItem />
-				</NavSection>
-				<NavSection>
-					{this.state.error ?
-						<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
-						null
-					}
-					<AccountNavItem />
-				</NavSection>
-			</Navbar>
-		</NavbarProvider>;
+				</MenuSection>
+
+				<MenuSection className='navSection'>
+					<MenuItem className='brewTitle'>The Homebrewery {global.version}</MenuItem>
+				</MenuSection>
+
+				<MenuSection className='navSection'>
+					<Account />
+				</MenuSection>
+
+			</Menubar>);
 	},
 
 	render : function(){
