@@ -180,8 +180,8 @@ const api = {
 		const metadata = _.pick(brew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']);
 		const snippetsArray = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false).snippets;
 		const templatesArray = templatesToSnippet('brew_templates', brew.templates, null, false).snippets;
-		metadata.snippets = snippetsArray.length > 0 ? snippetsArray : undefined;
-		metadata.templates = templatesArray.length > 0 ? templatesArray : undefined;
+		metadata.snippets = snippetsArray?.length > 0 ? snippetsArray : undefined;
+		metadata.templates = templatesArray?.length > 0 ? templatesArray : undefined;
 		text = `\`\`\`metadata\n` +
 			`${yaml.dump(metadata)}\n` +
 			`\`\`\`\n\n` +

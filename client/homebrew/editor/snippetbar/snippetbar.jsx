@@ -165,8 +165,14 @@ const Snippetbar = createClass({
 	},
 
 	renderSnippetGroups : function(){
-		const useView = this.props.view == 'template' ? 'text' : this.props.view; // Use the Text Snippets for Templates
-		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === useView);
+		const useView = (this.props.view == 'template') || (this.props.view == 'snippet') ? 'text' : this.props.view; // Use the Text Snippets for Templates
+		let snippets = this.state.snippets.filter((snippetGroup)=>(snippetGroup.view === useView));
+		if(this.props.view == 'snippet') {
+			snippets = this.state.snippets.filter((snippetGroup)=>((snippetGroup.groupName != 'Brew Snippets') && (snippetGroup.view === useView)));
+		} else if(this.props.view == 'template') {
+			snippets = this.state.snippets.filter((snippetGroup)=>((snippetGroup.groupName != 'Templates') && (snippetGroup.view === useView)));
+		}
+
 		if(snippets.length === 0) return null;
 
 		return <div className='snippets'>

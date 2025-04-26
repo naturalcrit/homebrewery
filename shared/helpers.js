@@ -8,18 +8,20 @@ const templatesToSnippet = (menuTitle, templates, themeBundle=null, full=true)=>
 	const textSplit  = /^\\template/gm;
 	const mpAsSnippets = [];
 	// Templates from Themes first.
-	if (themeBundle) {
+	if(themeBundle?.length > 0) {
 		for (let themes of themeBundle) {
 			const pages = [];
 			if(themes.templates) {
 				for (let mp of themes.templates.split(textSplit)) {
-					let name = mp.split('\n')[0].trim();
-					if(name.length == 0) name = 'Blank';
-					pages.push({
-						name : name,
-						icon : '',
-						gen  : `\n\\page ${themes.name}:${name}\n`,
-					});
+					if(mp.length>0){
+						const name = mp.split('\n')[0].trim();
+						pages.push({
+							name : name,
+							icon : '',
+							gen  : `\n\\page ${themes.name}:${name}\n`,
+							body : mp.split('\n').slice(1).join('\n')
+						});
+					}
 				}
 			}
 			if(pages.length > 0) {
@@ -36,13 +38,16 @@ const templatesToSnippet = (menuTitle, templates, themeBundle=null, full=true)=>
 	const pages = [];
 	if(templates){
 		for (let mp of templates.split(textSplit)) {
-			let name = mp.split('\n')[0];
-			if(name.length == 0) name = 'Blank';
-			pages.push({
-				name : name,
-				icon : '',
-				gen  : `\n\\page ${menuTitle}:${name}\n`,
-			});
+			if(mp.length>0) {
+				const name = mp.split('\n')[0].trim();
+				console.log(mp.length);
+				pages.push({
+					name : name,
+					icon : '',
+					gen  : `\n\\page ${menuTitle}:${name}\n`,
+					body : mp.split('\n').slice(1).join('\n')
+				});
+			}
 		}
 	}
 	if(pages.length) {
@@ -66,45 +71,46 @@ const templatesToSnippet = (menuTitle, templates, themeBundle=null, full=true)=>
 	return returnObj;
 };
 
-const splitTemplates = (templates)=>{
-	const splitTemplates = templates.split(/^(?=^\\template)/gm);
-	const templatesObj = [];
-	splitTemplates.forEach((page)=>{
-		const firstLine = page.split('\n')[0];
-		const firstLineClean = firstLine.slice(5).trim() || 'Blank';
-		templatesObj.push({ name: firstLineClean, template: page.slice(firstLine.length) });
-	});
-	return templatesObj;
-};
+// const splitTemplates = (templates)=>{
+// 	const splitTemplates = templates.split(/^(?=^\\template)/gm);
+// 	const templatesObj = [];
+// 	splitTemplates.forEach((page)=>{
+// 		const firstLine = page.split('\n')[0];
+// 		const firstLineClean = firstLine.slice(9).trim() || 'Blank';
+// 		templatesObj.push({ name: firstLineClean, template: page.slice(firstLine.length) });
+// 	});
+// 	return templatesObj;
+// };
 
-const asTemplateMap = (templates)=>{
-	if(!templates) return [];
-	const resultTemplates = [];
-	if(typeof templates === 'string') {
-		const localTemplates = splitTemplates(templates);
-		for (let lt of localTemplates) {
-			resultTemplates.push({
-				theme    : '',
-				name     : lt.name,
-				template : lt.template
-			});
-		}
-	} else {
-		// Walk a template bundle
-		for (let theme of templates) {
-			const themeTemplates = splitTemplates(theme.templates);
-			for (let tt of themeTemplates) {
-				resultTemplates.push({
-					theme    : theme.name,
-					name     : tt.name,
-					template : tt.template
-				});
-			}
-		}
+// const asTemplateMap = (templates)=>{
+// 	if(!templates) return [];
+// 	const resultTemplates = [];
+// 	if(typeof templates === 'string') {
+// 		const localTemplates = splitTemplates(templates);
+// 		for (let lt of localTemplates) {
+// 			resultTemplates.push({
+// 				theme    : '',
+// 				name     : lt.name,
+// 				template : lt.template
+// 			});
+// 		}
+// 	} else {
+// 		// Walk a template bundle
+// 		for (let theme of templates) {
+// 			const themeTemplates = splitTemplates(theme.templates);
+// 			for (let tt of themeTemplates) {
+// 				resultTemplates.push({
+// 					theme    : theme.name,
+// 					name     : tt.name,
+// 					template : tt.template
+// 				});
+// 			}
+// 		}
 
-	}
-	return resultTemplates;
-}
+// 	}
+// 	return resultTemplates;
+// };
+
 const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=null, full=true)=>{
 	const textSplit  = /^(\\snippet +.+\n)/gm;
 	const mpAsSnippets = [];
@@ -178,11 +184,8 @@ const yamlSnippetsToText = (yamlObj)=>{
 	if(typeof yamlObj == 'string') return yamlObj;
 
 	let snippetsText = '';
-	
-	for (let snippet of yamlObj) {
-		for (let subSnippet of snippet.subsnippets) {
-			snippetsText = `${snippetsText}\\snippet ${subSnippet.name}\n${subSnippet.gen || ''}\n`;
-		}
+	for (let subSnippet of yamlObj[0].subsnippets) {
+		snippetsText = `${snippetsText}\\snippet ${subSnippet.name}\n${subSnippet.gen || ''}\n`;
 	}
 	return snippetsText;
 };
@@ -191,8 +194,8 @@ const yamlTemplatesToText = (yamlObj)=>{
 	if(typeof yamlObj == 'string') return yamlObj;
 
 	let templateText = '';
-	
-	for (let template of yamlObj.templates.templates) {
+	for (let template of yamlObj[0].subsnippets) {
+		console.log(template);
 		templateText = `${templateText}\\template ${template.name}\n${template.body || ''}\n`;
 	}
 	return templateText;
@@ -259,6 +262,6 @@ export {
 	printCurrentBrew,
 	fetchThemeBundle,
 	templatesToSnippet,
-	asTemplateMap,
+	// asTemplateMap,
 	brewSnippetsToJSON
 };

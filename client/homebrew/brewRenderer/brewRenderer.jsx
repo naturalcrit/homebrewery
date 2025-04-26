@@ -15,7 +15,7 @@ const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
 const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
-const { printCurrentBrew } = require('../../../shared/helpers.js');
+const { printCurrentBrew, templatesToSnippet } = require('../../../shared/helpers.js');
 
 import HeaderNav from './headerNav/headerNav.jsx';
 import { safeHTML } from './safeHTML.js';
@@ -110,6 +110,7 @@ const getPageTemplates = (pages)=>{
 	return tempPages;
 };
 const insertTemplate = (props, pageNumber)=>{
+	console.log(props);
 	let lookAt = pageNumber;
 	while ((lookAt > 0) && (typeof brewTemplates[lookAt] === 'undefined')) lookAt--;
 	if(typeof brewTemplates[lookAt] !== 'undefined') {
@@ -123,6 +124,7 @@ const insertTemplate = (props, pageNumber)=>{
 			}
 		}
 		if(props.userTemplates) {
+			console.log(props.userTemplates);
 			for (let ut of props?.userTemplates) {
 				if(ut.name == whichTemplate[1]) {
 					return ut.template;
