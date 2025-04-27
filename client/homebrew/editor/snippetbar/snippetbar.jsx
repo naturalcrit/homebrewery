@@ -237,7 +237,7 @@ const Snippetbar = createClass({
 	},
 
 	render : function(){
-		return <Menubar className='snippetBar'>
+		return <Menubar id='snippet-bar'>
 			{this.renderSnippetGroups()}
 			{this.renderEditorButtons()}
 		</Menubar>;

@@ -1,7 +1,9 @@
 
 .menu-bar {
 	--button-height: 25px;
+	position: relative;
 	font-size   : 10px;
+	z-index: 10000;
 
 	.menu-wrapper {
 		position: relative;
@@ -24,14 +26,13 @@
 				position-try: flip-inline;
 			}
 		}
-		
-
 	}
 	
 	.menu-hr {
 		display: flex;
 		width: auto;
 		gap: 10px;
+		cursor:default;
 		hr {
 			display: inline-block;
 			flex: 1 0 auto;
@@ -70,9 +71,13 @@
 		span {
 			grid-area: name;
 			margin-right: 3px;
+			text-wrap: nowrap;
 		}
 		.caret {
 			grid-area: caret;
+		}
+		&:disabled {
+			cursor: not-allowed;
 		}
 
 	}

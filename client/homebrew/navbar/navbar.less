@@ -11,19 +11,20 @@
 }
 
 
-#navbar {
-	--navbar-color : #333333;
-	--navbar-text : #FFFFFF;
-	position         : relative;
-	z-index          : 10000;
+#navbar.menu-bar {
+	--menubar-color : #333333;
+	--menubar-text : #FFFFFF;
+	--menubar-shadow : 0px 5px 10px -5px  #000;
+	--menubar-accent : #555555;
 	display          : flex;
 	justify-content  : space-between;
-	box-shadow: 0px 5px 10px -5px  #000;
+	box-shadow: var(--menubar-shadow);
+	background-color: var(--menubar-color);
 	div {
-		background-color : var(--navbar-color);
+		background-color : inherit;
 	}
 	&, a:any-link, button {
-		color            : var(--navbar-text);
+		color            : var(--menubar-text);
 		text-transform   : uppercase;
 		text-decoration  : none;
 		font-weight      : 800;
@@ -41,7 +42,7 @@
 		}
 
 		.menu-wrapper:has(:popover-open) > [popovertarget]{
-			background-color: #555555;
+			background-color: var(--menubar-accent);
 		}
 
 		.menu-list {
@@ -54,7 +55,6 @@
 
 		.menu-hr {
 			padding : 0 4px;
-			cursor:default
 		}
 
 
@@ -67,28 +67,29 @@
 			&:where(.menu-section .menu-list .menu-item){
 				padding: 8px 4px;
 			}
-			
-			// DISABLED ITEM
-			&.disabled {
-				color: @grey;
-				cursor: not-allowed;
-			};
 
 			// LOGO ITEM
-			&.homebrewLogo {
+			svg.natural-crit-logo {
+				fill: #fff5;
 				.animate(color);
 				&:hover {
-					color : @orange;
-					svg { fill : @orange; }
+					fill : @orange;
 				}
-				svg {
-					height: 28px;
-					margin-right: .2em;
-					cursor: pointer;
-					fill: #fff5;
-					position: absolute;
-					left: -20px;
-					bottom: -3px;
+				&:active {
+					z-index:4;
+					animation: roll 2s cubic-bezier(.5, -.4, .75, .9);
+					@keyframes roll {
+						0% {
+							transform: rotate(0deg);
+							translate: 0 0;
+						}
+						90% { opacity: 1; }
+						100% {
+							transform: rotate(1050deg);
+							translate: 400px 0px;
+							opacity: 0;
+						}
+					}
 				}
 			}
 

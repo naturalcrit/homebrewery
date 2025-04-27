@@ -17,7 +17,7 @@ const MainMenu = () => {
 	const customTrigger = <><NaturalCritIcon />The Homebrewery</>;
 
 	return (
-		<MenuDropdown id='mainMenu' className='mainMenu' groupName='The Homebrewery' customTrigger={customTrigger}>
+		<MenuDropdown id='mainMenu' className='mainMenu' groupName='The Homebrewery' customTrigger={customTrigger} color='blue'>
 			<MenuItem id='naturalCritItem' newTab={true} href='https://www.naturalcrit.com' color='blue'>
 				<span className='natural'>Natural<span className='crit'>Crit</span></span>
 			</MenuItem>

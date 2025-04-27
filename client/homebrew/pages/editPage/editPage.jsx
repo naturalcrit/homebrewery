@@ -522,7 +522,7 @@ const EditPage = createClass({
 
 				<MenuSection className='navSection'>
 					<MainMenu />
-					<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy' dir='down'>
+					<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy' dir='down' color='orange'>
 						<NewBrewItem />
 						<MenuRule />
 						{this.renderSaveButton()}

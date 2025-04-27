@@ -4,117 +4,36 @@
 
 
 
-.snippetBar{
+#snippet-bar.menu-bar {
 	--menubar-color  : #DDDDDD;
 	--menubar-border : 1px solid #666;
 	--menubar-shadow : 0 0px 4px -1px black;
-	position         : relative;
+	--menubar-accent : #AAAAAA;
 	display          : flex;
 	flex-wrap        : wrap-reverse;
 	justify-content  : space-between;
 	color            : black;
 	background-color : var(--menubar-color);
-	text-transform: uppercase;
-	font-weight    : 800;
-	box-shadow: var(--menubar-shadow);
-	border-bottom: var(--menubar-border);
-	z-index: 500;
-
-
-	.snippets.menu-section {
-		display: flex;
-		gap: 0 8px;
+	text-transform   : uppercase;
+	font-weight      : 800;
+	box-shadow       : var(--menubar-shadow);
+	border-bottom    : var(--menubar-border);
+	z-index          : 5000;
+	.menu-wrapper:has(:popover-open) > [popovertarget]{
+		background-color: var(--menubar-accent);
 	}
-	.highlight(@color: #999999) {
-		&[aria-selected='true']{
-			background-color : @color;
-			color: whitesmoke;
-			border: 1px solid currentColor;
-			box-sizing: border-box;
+	.menu-item {
+		padding: 0 5px;
+		&:hover {
+			background-color: var(--menubar-accent);
 		}
 	}
-
-	// group that holds all non-snippet buttons.
-	.tools {
-		display         : flex;
-		justify-content : flex-end;
-		min-width       : 225px;
-		container       : tools ;
-
-
-		// subgroups for tools (history, code folding/theme, editor tabs)
-		> .tool-group {
-			display         : flex;
-			flex            : 1;
-			justify-content : space-around;
-
-			> .menu-wrapper > .menu-item, > .menu-item {
-				gap : 0;
-				.menu-name, .name, .caret {
-					.screen-reader-only();
-				}
-			}
-			
-			// any non-snippet button
-			 button {
-				aspect-ratio: 1 / 1;
-				grid-template-columns: 1fr;
-				&:disabled {
-					color: #999999;
-				}
-
-
-				// history tools
-				&#show-history { .tooltipLeft('History');
-					position  : relative;
-					&.active { background-color : #999999; }
-					& > .menu-list {
-						right : -1px;
-						& > .snippet { padding-right : 10px; }
-					}
-				}
-				&#undo { .tooltipLeft('Undo'); }
-				&#redo { .tooltipLeft('Redo'); }
-
-				// code tools
-				&#fold-all { .tooltipLeft('Fold All'); }
-				&#unfold-all { .tooltipLeft('Unfold All'); }
-				&#show-themes { .tooltipLeft('Editor Themes'); }
-
-				// editor tabs
-				&#brew-tab { 
-					.highlight(@orangeLight);
-					.tooltipLeft('Brew Editor');
-					background-color: oklch(from @orangeLight l .05 h);
-				}
-				&#style-tab { 
-					.highlight(@blueLight);
-					.tooltipLeft('Style Editor');
-					background-color: oklch(from @blueLight l .05 h);
-				}
-				&#properties-tab { 
-					.highlight(@tealLight);
-					.tooltipLeft('Properties');
-					background-color: oklch(from @tealLight l .05 h);
-				}				
-			}			
-		}		
-	}
-
-	// group that holds all snippet menus.
-	.menu-wrapper {
-
-		.menu-list {
-			background-color: var(--menubar-color);
-			border: var(--menubar-border);
-			box-shadow: var(--menubar-shadow);
-		}
-
+	.menu-list {
+		background-color: var(--menubar-color);
+		border: var(--menubar-border);
+		box-shadow: var(--menubar-shadow);
 		.menu-item {
-			column-gap: 2px;
-			&:is(.menu-list  .menu-item){
-				padding: 0 5px;
-			}
+			column-gap: 10px;
 			.beta {
 				padding       : 4px 6px;
 				margin-left   : 5px;
@@ -156,5 +75,82 @@
 		}
 	}
 
-	
+	:disabled { color: #999999; }
+
+	.snippets.menu-section {
+		display: flex;
+		gap: 0 8px;
+		flex-wrap: wrap;
+	}
+
+	.menu-hr {
+		padding : 0 4px;
+	}
+
+	.highlight(@color: #999999) {
+		&[aria-selected='true']{
+			background-color : @color;
+			color: whitesmoke;
+			border: 1px solid currentColor;
+			box-sizing: border-box;
+		}
+	}
+
+	// group that holds all non-snippet buttons.
+	.tools {
+		display         : flex;
+		justify-content : flex-end;
+		min-width       : 225px;
+		container       : tools ;
+
+
+		// subgroups for tools (history, code folding/theme, editor tabs)
+		> .tool-group {
+			display         : flex;
+			flex            : 1;
+			justify-content : space-around;
+
+			> .menu-wrapper > .menu-item, > .menu-item {
+				gap : 0;
+				.menu-name, .name, .caret {
+					.screen-reader-only();
+				}
+			}
+			
+			// history tools
+			#history-menu { .tooltipLeft('History'); }
+
+			// any non-snippet button
+			 button {
+				&:not(* .menu-list .menu-item){
+					aspect-ratio: 1 / 1;
+					grid-template-columns: 1fr;
+				}
+				&#undo { .tooltipLeft('Undo'); }
+				&#redo { .tooltipLeft('Redo'); }
+
+				// code tools
+				&#fold-all { .tooltipLeft('Fold All'); }
+				&#unfold-all { .tooltipLeft('Unfold All'); }
+				&#show-themes { .tooltipLeft('Editor Themes'); }
+
+				// editor tabs
+				&#brew-tab { 
+					.highlight(@orangeLight);
+					.tooltipLeft('Brew Editor');
+					background-color: oklch(from @orangeLight l .05 h);
+				}
+				&#style-tab { 
+					.highlight(@blueLight);
+					.tooltipLeft('Style Editor');
+					background-color: oklch(from @blueLight l .05 h);
+				}
+				&#properties-tab { 
+					.highlight(@tealLight);
+					.tooltipLeft('Properties');
+					background-color: oklch(from @tealLight l .05 h);
+				}				
+			}			
+		}		
+	}
 }
