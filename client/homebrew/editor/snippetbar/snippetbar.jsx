@@ -165,7 +165,14 @@ const Snippetbar = createClass({
 
 
 	renderHistoryItems : function() {
-		if(!this.state.historyExists) return;
+		if(!this.state.historyExists) {
+			return (
+				<>
+					<MenuRule text='Restore from' />
+					<MenuItem><span>No backups found in localStorage</span></MenuItem>
+				</>
+			)
+		};
 
 		return (
 			<>
