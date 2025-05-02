@@ -434,6 +434,7 @@ app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, r
 	const { brew } = req;
 	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',
+		author      : req.brew.authors[0] || 'No author.',
 		description : req.brew.description || 'No description.',
 		image       : req.brew.thumbnail || defaultMetaTags.image,
 		type        : 'article'
