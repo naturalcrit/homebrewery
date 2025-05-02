@@ -104,7 +104,7 @@
     "idb-keyval": "^6.2.1",
     "js-yaml": "^4.1.0",
     "jwt-simple": "^0.5.6",
-    "less": "^3.13.1",
+    "less": "^4.3.0",
     "lodash": "^4.17.21",
     "marked": "15.0.9",
 		"marked-definition-lists": "^1.0.1",
