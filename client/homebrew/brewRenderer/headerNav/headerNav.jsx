@@ -5,10 +5,10 @@ import * as _ from 'lodash';
 
 const MAX_TEXT_LENGTH = 40;
 
-const HeaderNav = React.forwardRef(({}, pagesRef)=>{
+const HeaderNav = React.forwardRef(({ onScrollToHash }, ref)=>{
 
 	const renderHeaderLinks = ()=>{
-		if(!pagesRef.current) return;
+		if(!ref.current) return;
 
 		// Top Level Pages
 		// Pages that contain an element with a specified class (e.g. cover pages, table of contents)
@@ -35,7 +35,7 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 			`.page:not(:has(${topLevelPageSelector})) > .columnWrapper > [id]`, // All direct children of non-excluded .page > .columnWrapper with an ID (V3)
 			`.page:not(:has(${topLevelPageSelector})) h2`,                      // All non-excluded H2 titles, like Monster frame titles
 		];
-		const elements = pagesRef.current.querySelectorAll(selector.join(','));
+		const elements = ref.current.querySelectorAll(selector.join(','));
 		if(!elements) return;
 		const navList = [];
 
@@ -68,7 +68,7 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 			navList.push(navEntry);
 		});
 
-		return _.map(navList, (navItem, index)=><HeaderNavItem {...navItem} key={index} />
+		return _.map(navList, (navItem, index)=><HeaderNavItem {...navItem} key={index} onScrollToHash={onScrollToHash} />
 		);
 	};
 
@@ -79,7 +79,7 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 	</nav>;
 });
 
-const HeaderNavItem = ({ link, text, depth, className })=>{
+const HeaderNavItem = ({ link, text, depth, className, onScrollToHash })=>{
 
 	const trimString = (text, prefixLength = 0)=>{
 		// Sanity check nav link strings
@@ -103,11 +103,21 @@ const HeaderNavItem = ({ link, text, depth, className })=>{
 
 	if(!link || !text) return;
 
-	return <li>
-		<a href={`#${link}`} target='_self' className={`depth-${depth} ${className ?? ''}`}>
-			{trimString(text, depth)}
-		</a>
-	</li>;
+
+	const handleClick = () => {
+		onScrollToHash(`#${link}`);
+		window.location.hash = link;
+	};
+
+	return (
+		<li>
+			<button
+				className={`depth-${depth} ${className ?? ''}`}
+				onClick={handleClick}>
+				{trimString(text, depth)}
+			</button>
+		</li>
+	);
 };
 
 export default HeaderNav;

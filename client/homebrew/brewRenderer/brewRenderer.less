@@ -1,5 +1,25 @@
 @import (multiple, less) 'shared/naturalcrit/styles/reset.less';
 
+#preview-pane {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+
+	.toolBar {
+		flex: 0 0 auto;
+	}
+
+	.headerNav {
+		flex: 0 0 auto;
+	}
+
+	iframe {
+		flex: 1 1 auto;
+		border: 0;
+		min-height: 0;
+	}
+}
+
 .brewRenderer {
 	height        : 100vh;
 	padding-top   : 60px;

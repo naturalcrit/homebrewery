@@ -105,6 +105,10 @@ const BrewRenderer = (props)=>{
 		...props
 	};
 
+	useEffect(()=>{
+		console.log('renderer loaded')
+	}, []);
+
 	const [state, setState] = useState({
 		isMounted    : false,
 		visibility   : 'hidden',
@@ -292,7 +296,7 @@ const BrewRenderer = (props)=>{
 	renderedPages = useMemo(()=>renderPages(), [props.text, displayOptions]);
 
 	return (
-		<>
+		<div id='preview-pane'>
 			{/*render dummy page while iFrame is mounting.*/}
 			{!state.isMounted
 				? <div className='brewRenderer'>
@@ -307,12 +311,12 @@ const BrewRenderer = (props)=>{
 				<RenderWarnings />
 				<NotificationPopup />
 			</div>
-
 			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>
+			{headerState ? <HeaderNav ref={pagesRef} onScrollToHash={scrollToHash} /> : <></>}
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
-				style={{ width: '100%', height: '100%', visibility: state.visibility }}
+				style={{ width: '100%',  visibility: state.visibility }}
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
 			>
@@ -334,9 +338,8 @@ const BrewRenderer = (props)=>{
 						</>
 					}
 				</div>
-				{headerState ? <HeaderNav ref={pagesRef} /> : <></>}
 			</Frame>
-		</>
+		</div>
 	);
 };
 
