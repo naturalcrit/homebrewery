@@ -2,8 +2,16 @@
 .menu-bar {
 	--button-height: 25px;
 	position: relative;
+	width: 100%;
 	font-size   : 10px;
 	z-index: 10000;
+
+	.menu-section {
+		display: flex;
+		flex-wrap: nowrap;
+		align-items: center;
+		justify-content: center;
+	}
 
 	.menu-wrapper {
 		position: relative;
@@ -17,6 +25,7 @@
 		inset-block-start: anchor(bottom);
 		inset-inline-start: anchor(left);
 		position-try: flip-inline;
+		color: unset;   // [popover] gets a `canvastext` color value from useragent.
 		> .menu-wrapper {
 			position:relative;
 			> .menu-list {
@@ -80,6 +89,10 @@
 			cursor: not-allowed;
 		}
 
+	}
+
+	.inline-grid {
+		display: inline-grid;
 	}
 }
 

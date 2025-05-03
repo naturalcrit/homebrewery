@@ -22,11 +22,15 @@ const MenuSection = ({ className, children, ...props })=>{
 	</div>;
 };
 
-const MenuItem = ({ icon = null, href = null, newTab = false, onClick = ()=>{}, color = null, className = null, children, caret = null, ...props })=>{
+const MenuItem = ({ icon = null, href = null, newTab = false, onClick = null, onChange = null, color = null, className = null, children, caret = null, ...props })=>{
 
 	const handleClick = (e)=>{
 		onClick(e);
 	};
+	
+	const handleChange = (e)=>{
+		onChange(e);
+	}
 
 	const renderMenuItem = ()=>{
 		const classes = cx('menu-item', color, className);
@@ -41,13 +45,24 @@ const MenuItem = ({ icon = null, href = null, newTab = false, onClick = ()=>{}, 
 					{children && <span>{children}</span>}
 				</a>
 			);
-		} else {
+		} else if(onChange) {
+			return (
+				<input className={classes} onChange={handleChange} {...props} />
+			);
+		} else if(onClick) {
 			return (
 				<button className={classes} onClick={handleClick} {...props}>
 					{icon}
 					{children && <span className='name'>{children}</span>}
 				</button>
 			);
+		} else {
+			return (
+				<div className={classes} {...props}>
+					{icon}
+					{children && <span className='name'>{children}</span>}
+				</div>
+			)
 		}
 	};
 
