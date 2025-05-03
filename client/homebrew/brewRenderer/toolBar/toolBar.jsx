@@ -82,8 +82,8 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 	return (
 		<Menubar id='preview-toolbar' className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`} role='toolbar'>
 			<div className='toggleButton'>
-				<MenuItem icon='fas fa-glasses' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible);}}>{toolsVisible ? 'Hide toolbar' : 'Show toolbar'}</MenuItem>
 				<MenuItem icon='fas fa-rectangle-list' title={`${headerState ? 'Hide' : 'Show'} Header Navigation`} onClick={()=>{setHeaderState(!headerState);}}>{headerState ? 'Hide header navigation' : 'Show header navigation'}</MenuItem>
+				<MenuItem icon='fas fa-glasses' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible);}}>{toolsVisible ? 'Hide toolbar' : 'Show toolbar'}</MenuItem>
 			</div>
 			{/*v=====----------------------< Zoom Controls >---------------------=====v*/}
 			<MenuSection role='group' aria-label='Zoom' aria-hidden={!toolsVisible}>
