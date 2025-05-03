@@ -46,6 +46,15 @@ html,body, #reactRoot{
 	}
 }
 
+// add `.sr-only` to any individual element to hide it
+// from visual users, but still available to all screen-readers
+.sr-only {
+	.screen-reader-only();
+}
+
+// import `core.less` to any stylesheet and then use
+// `.screen-reader-only()` in any ruleset to apply these properties
+// to another selector. 
 .screen-reader-only(){
 	clip: rect(0 0 0 0); 
 	clip-path: inset(50%);
