@@ -5,6 +5,7 @@ const { useState, useEffect } = React;
 const _ = require('lodash');
 
 import { Anchored, AnchoredBox, AnchoredTrigger } from '../../../components/Anchored.jsx';
+const { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } = require('../../../components/menubar/Menubar.jsx');
 
 const MAX_ZOOM = 300;
 const MIN_ZOOM = 10;
@@ -13,6 +14,10 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 
 	const [pageNum, setPageNum]     = useState(1);
 	const [toolsVisible, setToolsVisible] = useState(true);
+
+	useEffect(()=>{
+		console.log('toolbar loaded')
+	}, []);
 
 	useEffect(()=>{
 		// format multiple visible pages as a range (e.g. "150-153")
@@ -75,41 +80,35 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 	};
 
 	return (
-		<div id='preview-toolbar' className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`} role='toolbar'>
+		<Menubar id='preview-toolbar' className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`} role='toolbar'>
 			<div className='toggleButton'>
-				<button title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible);}}><i className='fas fa-glasses' /></button>
-				<button title={`${headerState ? 'Hide' : 'Show'} Header Navigation`} onClick={()=>{setHeaderState(!headerState);}}><i className='fas fa-rectangle-list' /></button>
+				<MenuItem icon='fas fa-glasses' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible);}}>{toolsVisible ? 'Hide toolbar' : 'Show toolbar'}</MenuItem>
+				<MenuItem icon='fas fa-rectangle-list' title={`${headerState ? 'Hide' : 'Show'} Header Navigation`} onClick={()=>{setHeaderState(!headerState);}}>{headerState ? 'Hide header navigation' : 'Show header navigation'}</MenuItem>
 			</div>
 			{/*v=====----------------------< Zoom Controls >---------------------=====v*/}
-			<div className='group' role='group' aria-label='Zoom' aria-hidden={!toolsVisible}>
-				<button
+			<MenuSection role='group' aria-label='Zoom' aria-hidden={!toolsVisible}>
+				<MenuItem
 					id='fill-width'
-					className='tool'
+					icon='fac fit-width'
 					title='Set zoom to fill preview with one page'
 					onClick={()=>handleZoomButton(displayOptions.zoomLevel + calculateChange('fill'))}
-				>
-					<i className='fac fit-width' />
-				</button>
-				<button
+				>Fill to Pane Width</MenuItem>
+				<MenuItem
 					id='zoom-to-fit'
-					className='tool'
+					icon='fac zoom-to-fit'
 					title='Set zoom to fit entire page in preview'
 					onClick={()=>handleZoomButton(displayOptions.zoomLevel + calculateChange('fit'))}
-				>
-					<i className='fac zoom-to-fit' />
-				</button>
-				<button
+				>Zoom To Fit Page</MenuItem>
+				<MenuItem
 					id='zoom-out'
-					className='tool'
+					icon='fas fa-magnifying-glass-minus'
 					onClick={()=>handleZoomButton(displayOptions.zoomLevel - 20)}
 					disabled={displayOptions.zoomLevel <= MIN_ZOOM}
 					title='Zoom Out'
-				>
-					<i className='fas fa-magnifying-glass-minus' />
-				</button>
-				<input
+				>Zoom Out</MenuItem>
+				<MenuItem
 					id='zoom-slider'
-					className='range-input tool hover-tooltip'
+					className='range-input hover-tooltip'
 					type='range'
 					name='zoom'
 					title='Set Zoom'
@@ -124,45 +123,43 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					<option value='100' />
 				</datalist>
 
-				<button
+				<MenuItem
 					id='zoom-in'
-					className='tool'
+					icon='fas fa-magnifying-glass-plus'
 					onClick={()=>handleZoomButton(displayOptions.zoomLevel + 20)}
 					disabled={displayOptions.zoomLevel >= MAX_ZOOM}
 					title='Zoom In'
-				>
-					<i className='fas fa-magnifying-glass-plus' />
-				</button>
-			</div>
+				>Zoom In</MenuItem>
+			</MenuSection>
 
 			{/*v=====----------------------< Spread Controls >---------------------=====v*/}
-			<div className='group' role='group' aria-label='Spread' aria-hidden={!toolsVisible}>
+			<MenuSection role='group' aria-label='Spread' aria-hidden={!toolsVisible}>
 				<div className='radio-group' role='radiogroup'>
-					<button role='radio'
+					<MenuItem role='radio'
 						id='single-spread'
-						className='tool'
+						icon='fac single-spread'
 						title='Single Page'
 						onClick={()=>{handleOptionChange('spread', 'active');}}
 						aria-checked={displayOptions.spread === 'single'}
-					><i className='fac single-spread' /></button>
-					<button role='radio'
+					>Single Spread</MenuItem>
+					<MenuItem role='radio'
 						id='facing-spread'
-						className='tool'
+						icon='fac facing-spread'
 						title='Facing Pages'
 						onClick={()=>{handleOptionChange('spread', 'facing');}}
 						aria-checked={displayOptions.spread === 'facing'}
-					><i className='fac facing-spread' /></button>
-					<button role='radio'
+					>Facing Spread</MenuItem>
+					<MenuItem role='radio'
 						id='flow-spread'
-						className='tool'
+						icon='fac flow-spread'
 						title='Flow Pages'
 						onClick={()=>{handleOptionChange('spread', 'flow');}}
 						aria-checked={displayOptions.spread === 'flow'}
-					><i className='fac flow-spread' /></button>
+					>Flow Spreads</MenuItem>
 
 				</div>
 				<Anchored>
-					<AnchoredTrigger id='spread-settings' className='tool' title='Spread options'><i className='fas fa-gear' /></AnchoredTrigger>
+					<AnchoredTrigger id='spread-settings' title='Spread options' className='menu-item'><i className='fas fa-gear' /></AnchoredTrigger>
 					<AnchoredBox title='Options'>
 						<h1>Options</h1>
 						<label title='Modify the horizontal space between pages.'>
@@ -184,52 +181,47 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 						</label>
 					</AnchoredBox>
 				</Anchored>
-			</div>
+			</MenuSection>
 
 			{/*v=====----------------------< Page Controls >---------------------=====v*/}
-			<div className='group' role='group'  aria-label='Pages' aria-hidden={!toolsVisible}>
-				<button
+			<MenuSection role='group'  aria-label='Pages' aria-hidden={!toolsVisible}>
+				<MenuItem
 					id='previous-page'
-					className='previousPage tool'
+					className='previousPage'
+					icon='fas fa-arrow-left'
 					type='button'
 					title='Previous Page(s)'
 					onClick={()=>scrollToPage(_.min(visiblePages) - visiblePages.length)}
 					disabled={visiblePages.includes(1)}
-				>
-					<i className='fas fa-arrow-left'></i>
-				</button>
+				>Previous Page</MenuItem>
 
-				<div className='tool'>
-					<input
-						id='page-input'
-						className='text-input'
-						type='text'
-						name='page'
-						title='Current page(s) in view'
-						inputMode='numeric'
-						pattern='[0-9]'
-						value={pageNum}
-						onClick={(e)=>e.target.select()}
-						onChange={(e)=>handlePageInput(e.target.value)}
-						onBlur={()=>scrollToPage(pageNum)}
-						onKeyDown={(e)=>e.key == 'Enter' && scrollToPage(pageNum)}
-						style={{ width: `${pageNum.length}ch` }}
-					/>
-					<span id='page-count' title='Total Page Count'>/ {totalPages}</span>
-				</div>
+				<MenuItem
+					id='page-input'
+					className='text-input inline-grid'
+					type='text'
+					name='page'
+					title='Current page(s) in view'
+					inputMode='numeric'
+					pattern='[0-9]'
+					value={pageNum}
+					onClick={(e)=>e.target.select()}
+					onChange={(e)=>handlePageInput(e.target.value)}
+					onBlur={()=>scrollToPage(pageNum)}
+					onKeyDown={(e)=>e.key == 'Enter' && scrollToPage(pageNum)}
+					style={{ width: `${pageNum.length}ch` }}
+				>Current Page</MenuItem>
+				<span id='page-count' title='Total Page Count'>/ {totalPages}</span>
 
-				<button
+				<MenuItem
 					id='next-page'
-					className='tool'
+					icon='fas fa-arrow-right'
 					type='button'
 					title='Next Page(s)'
 					onClick={()=>scrollToPage(_.max(visiblePages) + 1)}
 					disabled={visiblePages.includes(totalPages)}
-				>
-					<i className='fas fa-arrow-right'></i>
-				</button>
-			</div>
-		</div>
+				>Next Page</MenuItem>
+			</MenuSection>
+		</Menubar>
 	);
 };
 
