@@ -89,7 +89,7 @@ const HomePage = createClass({
 					<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy'>
 						<NewBrewItem />
 						<MenuRule />
-						<MenuItem href={`/user/${encodeURI(global.account.username)}`} color='purple' icon='fas fa-beer'>
+						<MenuItem href={`/user/${encodeURI(global.account?.username)}`} color='purple' icon='fas fa-beer'>
 							brews
 						</MenuItem>
 						<RecentNavItem brew={this.state.brew} storageKey='edit' />
