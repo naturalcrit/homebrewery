@@ -7,14 +7,13 @@ import request from '../../utils/request-middleware.js';
 import Markdown from 'naturalcrit/markdown.js';
 
 const PrintNavItem = require('../../navbar/print.navitem.jsx');
-const {Navbar, NavItem, NavSection, Dropdown} = require('../../../components/menubar/Menubar.jsx');
-const AccountNavItem = require('../../navbar/account.navitem.jsx');
-const ErrorNavItem = require('../../navbar/error-navitem.jsx');
+
+const { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } = require('../../../components/menubar/Menubar.jsx');
+
+const Account = require('../../navbar/account.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
 const VaultNavItem = require('../../navbar/vault.navitem.jsx');
-const PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
 const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
 
 const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
@@ -193,44 +192,42 @@ const NewPage = createClass({
 
 	renderSaveButton : function(){
 		if(this.state.isSaving){
-			return <NavItem icon='fas fa-spinner fa-spin' >
-				save...
-			</NavItem>;
+			return <MenuItem className='save' icon='fas fa-spinner fa-spin'>saving...</MenuItem>;
 		} else {
-			return <NavItem icon='fas fa-save' onClick={this.save}>
-				save
-			</NavItem>;
+			return <MenuItem onClick={this.save} color='orange' icon='fas fa-save'>Save Now</MenuItem>;
 		}
 	},
 
 	renderNavbar : function(){
-		return <Navbar>
-			<NavSection>
-				<MainMenu />
-				<Dropdown id='brewMenu' trigger='click' className='brew-menu'>
-					<NavItem color='purple'>Brew</NavItem>
-					<NewBrewItem disabled />
-					{this.renderSaveButton()}
-					<NavItem
-						href={`/user/${encodeURI(global.account.username)}`}
-						color='yellow'
-						icon='fas fa-beer'
-					>
-						brews
-					</NavItem>
-					<RecentNavItem />
-				</Dropdown>
-				<VaultNavItem />
-			</NavSection>
-			<NavSection>
-				{/* {this.state.error ?
-					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
-					null
-				} */}
-				
-				<AccountNavItem />
-			</NavSection>
-		</Navbar>;
+		return (
+			<Menubar id='navbar'>
+				<MenuSection className='navSection'>
+					<MainMenu />
+					<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy' dir='down'>
+						<NewBrewItem />
+						<MenuRule />
+						{this.renderSaveButton()}
+						<MenuRule />
+						{global.account && <MenuItem href={`/user/${encodeURI(global.account.username)}`} color='purple' icon='fas fa-beer'>
+							brews
+						</MenuItem> }
+						<RecentNavItem brew={this.state.brew} storageKey='view' />
+						<MenuRule />
+						<PrintNavItem />
+					</MenuDropdown>
+					<VaultNavItem />
+				</MenuSection>
+
+				<MenuSection className='navSection'>
+					<MenuItem className='brewTitle'>{this.state.brew.title}</MenuItem>
+				</MenuSection>
+
+				<MenuSection className='navSection'>
+					<Account />
+				</MenuSection>
+
+			</Menubar>
+		);
 	},
 
 	render : function(){
