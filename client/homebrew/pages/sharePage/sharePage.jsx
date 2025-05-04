@@ -83,9 +83,9 @@ const SharePage = (props)=>{
 							clone to new
 						</MenuItem>
 						<MenuRule />
-						<MenuItem href={`/user/${encodeURI(global.account.username)}`} color='purple' icon='fas fa-beer'>
+						{global.account && <MenuItem href={`/user/${encodeURI(global.account.username)}`} color='purple' icon='fas fa-beer'>
 							brews
-						</MenuItem>
+						</MenuItem> }
 						<RecentNavItem brew={brew} storageKey='view' />
 						<MenuRule />
 						<MenuItem color='blue' icon='fas fa-eye' href={`/source/${processShareId()}`}>

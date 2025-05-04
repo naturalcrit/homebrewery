@@ -529,9 +529,9 @@ const EditPage = createClass({
 						{this.renderAutoSaveButton()}
 						{this.renderStoragePicker()}
 						<MenuRule />
-						<MenuItem href={`/user/${encodeURI(global.account.username)}`} color='purple' icon='fas fa-beer'>
+						{global.account && <MenuItem href={`/user/${encodeURI(global.account.username)}`} color='purple' icon='fas fa-beer'>
 							brews
-						</MenuItem>
+						</MenuItem> }
 						<RecentNavItem brew={this.state.brew} storageKey='edit' />
 						<MenuRule />
 						<MenuItem color='blue' href={`/share/${shareLink}`} icon='fas fa-share-from-square'>
