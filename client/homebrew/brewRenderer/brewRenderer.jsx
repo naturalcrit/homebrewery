@@ -311,7 +311,7 @@ const BrewRenderer = (props)=>{
 				<RenderWarnings />
 				<NotificationPopup />
 			</div>
-			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>
+			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState} scrollToHash={scrollToHash} />
 			{headerState ? <HeaderNav ref={pagesRef} onScrollToHash={scrollToHash} /> : <></>}
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}

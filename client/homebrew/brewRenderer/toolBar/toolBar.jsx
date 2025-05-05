@@ -5,12 +5,12 @@ const { useState, useEffect } = React;
 const _ = require('lodash');
 
 import { Anchored, AnchoredBox, AnchoredTrigger } from '../../../components/Anchored.jsx';
-const { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } = require('../../../components/menubar/Menubar.jsx');
+const { Menubar, MenuItem, MenuSection } = require('../../../components/menubar/Menubar.jsx');
 
 const MAX_ZOOM = 300;
 const MIN_ZOOM = 10;
 
-const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPages, headerState, setHeaderState })=>{
+const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPages, headerState, setHeaderState, scrollToHash })=>{
 
 	const [pageNum, setPageNum]     = useState(1);
 	const [toolsVisible, setToolsVisible] = useState(true);
@@ -34,18 +34,12 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 	};
 
 	const handlePageInput = (pageInput)=>{
+		if(pageInput == ''){
+			setPageNum('');
+			return;
+		};
 		if(/[0-9]/.test(pageInput))
 			setPageNum(parseInt(pageInput)); // input type is 'text', so `page` comes in as a string, not number.
-	};
-
-	// scroll to a page, used in the Prev/Next Page buttons.
-	const scrollToPage = (pageNumber)=>{
-		if(typeof pageNumber !== 'number') return;
-		pageNumber = _.clamp(pageNumber, 1, totalPages);
-		const iframe = document.getElementById('BrewRenderer');
-		const brewRenderer = iframe?.contentWindow?.document.querySelector('.brewRenderer');
-		const page = brewRenderer?.querySelector(`#p${pageNumber}`);
-		page?.scrollIntoView({ block: 'start' });
 	};
 
 	const calculateChange = (mode)=>{
@@ -191,7 +185,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					icon='fas fa-arrow-left'
 					type='button'
 					title='Previous Page(s)'
-					onClick={()=>scrollToPage(_.min(visiblePages) - visiblePages.length)}
+					onClick={()=>scrollToHash(`#p${_.min(visiblePages) - visiblePages.length}`)}
 					disabled={visiblePages.includes(1)}
 				>Previous Page</MenuItem>
 
@@ -206,9 +200,10 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					value={pageNum}
 					onClick={(e)=>e.target.select()}
 					onChange={(e)=>handlePageInput(e.target.value)}
-					onBlur={()=>scrollToPage(pageNum)}
-					onKeyDown={(e)=>e.key == 'Enter' && scrollToPage(pageNum)}
+					onBlur={()=>{scrollToHash(`#p${pageNum}`);}}
+					onKeyDown={(e)=>e.key == 'Enter' && scrollToHash(`#p${pageNum}`)}
 					style={{ width: `${pageNum.length}ch` }}
+					autocomplete='off'
 				>Current Page</MenuItem>
 				<span id='page-count' title='Total Page Count'>/ {totalPages}</span>
 
@@ -217,7 +212,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					icon='fas fa-arrow-right'
 					type='button'
 					title='Next Page(s)'
-					onClick={()=>scrollToPage(_.max(visiblePages) + 1)}
+					onClick={()=>scrollToHash(`#p${_.max(visiblePages) + 1}`)}
 					disabled={visiblePages.includes(totalPages)}
 				>Next Page</MenuItem>
 			</MenuSection>
