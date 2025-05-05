@@ -203,7 +203,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					onBlur={()=>{scrollToHash(`#p${pageNum}`);}}
 					onKeyDown={(e)=>e.key == 'Enter' && scrollToHash(`#p${pageNum}`)}
 					style={{ width: `${pageNum.length}ch` }}
-					autocomplete='off'
+					autoComplete='off'
 				>Current Page</MenuItem>
 				<span id='page-count' title='Total Page Count'>/ {totalPages}</span>
 
