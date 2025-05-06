@@ -30,6 +30,25 @@ const build = async ({ bundle, render, ssr })=>{
 
 	await fs.copy('./client/homebrew/favicon.ico', './build/assets/favicon.ico');
 
+	//compress files in production
+	if(!isDev){
+		await fs.outputFile('./build/homebrew/bundle.css.br', zlib.brotliCompressSync(css));
+		await fs.outputFile('./build/homebrew/bundle.js.br', zlib.brotliCompressSync(bundle));
+		await fs.outputFile('./build/homebrew/ssr.js.br', zlib.brotliCompressSync(ssr));
+	} else {
+		await fs.remove('./build/homebrew/bundle.css.br');
+		await fs.remove('./build/homebrew/bundle.js.br');
+		await fs.remove('./build/homebrew/ssr.js.br');
+	}
+};
+
+fs.emptyDirSync('./build');
+
+
+(async ()=>{
+
+	//v==----------------------------- COMPILE THEMES --------------------------------==v//
+
 	// Update list of all Theme files
 	const themes = { Legacy: {}, V3: {} };
 
@@ -68,26 +87,6 @@ const build = async ({ bundle, render, ssr })=>{
 	}
 
 	await fs.outputFile('./themes/themes.json', JSON.stringify(themes, null, 2));
-
-	//compress files in production
-	if(!isDev){
-		await fs.outputFile('./build/homebrew/bundle.css.br', zlib.brotliCompressSync(css));
-		await fs.outputFile('./build/homebrew/bundle.js.br', zlib.brotliCompressSync(bundle));
-		await fs.outputFile('./build/homebrew/ssr.js.br', zlib.brotliCompressSync(ssr));
-	} else {
-		await fs.remove('./build/homebrew/bundle.css.br');
-		await fs.remove('./build/homebrew/bundle.js.br');
-		await fs.remove('./build/homebrew/ssr.js.br');
-	}
-};
-
-fs.emptyDirSync('./build');
-
-
-(async ()=>{
-
-	//v==----------------------------- COMPILE THEMES --------------------------------==v//
-
 
 	// await less.render(lessCode, {
 	// 	compress  : !dev,
@@ -159,8 +158,9 @@ fs.emptyDirSync('./build');
 
 	//In development, set up LiveReload (refreshes browser), and Nodemon (restarts server)
 	if(isDev){
+		livereload('./build');     // Install the Chrome extension LiveReload to automatically refresh the browser
 		watchFile('./server.js', { // Restart server when change detected to this file or any nested directory from here
-			ignore : ['./build', './client'],  // Ignore folders that are not running server code / avoids unneeded restarts
+			ignore : ['./build', './client', './themes'],  // Ignore folders that are not running server code / avoids unneeded restarts
 			ext    : 'js json'                             // Extensions to watch (only .js/.json by default)
 			//watch : ['./server', './themes'],            // Watch additional folders if needed
 		});
