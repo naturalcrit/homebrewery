@@ -5,7 +5,7 @@ const dedent = require('dedent-tabs').default;
 const { MenuDropdown, MenuItem } = require('../../components/menubar/Menubar.jsx');
 const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
 
-const MainMenu = () => {
+const MainMenu = ()=>{
 
 	const customTrigger = <><NaturalCritIcon />The Homebrewery</>;
 
