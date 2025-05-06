@@ -19,7 +19,7 @@ const { printCurrentBrew } = require('../../../shared/helpers.js');
 import HeaderNav from './headerNav/headerNav.jsx';
 import { safeHTML } from './safeHTML.js';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const PAGE_HEIGHT = 1056;
 
 const INITIAL_CONTENT = dedent`

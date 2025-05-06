@@ -12,7 +12,7 @@ const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
 const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
 const SNIPPETBAR_HEIGHT  = 25;
 const DEFAULT_STYLE_TEXT = dedent`
@@ -211,7 +211,7 @@ const Editor = createClass({
 
 					// New Codemirror styling for V3 renderer
 					if(this.props.renderer === 'V3') {
-						if(line.match(/^\\column$/)){
+						if(line.match(/^\\column(?:break)?$/)){
 							codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 						}
 
