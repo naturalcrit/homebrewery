@@ -169,7 +169,7 @@
 		width            : 92px;
 		overflow         : hidden;
 		background-color : unset;
-		opacity          : 0.5;
+		opacity          : 0.7;
 		transition       : all 0.3s ease;
 		& > *:not(.toggleButton) {
 			opacity    : 0;
@@ -184,4 +184,9 @@
 	z-index   : 5;
 	display   : flex;
 	height    : 100%;
+
+	button i {
+		filter: drop-shadow(0 0 2px black) drop-shadow(0 0 1px black);
+
+	}
 }
