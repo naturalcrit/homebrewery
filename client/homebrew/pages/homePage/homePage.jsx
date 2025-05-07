@@ -7,12 +7,10 @@ const { Meta } = require('vitreum/headtags');
 
 const { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } = require('../../../components/menubar/Menubar.jsx');
 const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account = require('../../navbar/account.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
-const PatreonNavItem = require('../../navbar/patreon.navitem.jsx');
 const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
 const { fetchThemeBundle } = require('../../../../shared/helpers.js');
 

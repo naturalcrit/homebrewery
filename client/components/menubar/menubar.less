@@ -1,3 +1,6 @@
+@import (less) 'shared/naturalcrit/styles/core.less';
+
+
 
 .menu-bar {
 	--button-height: 25px;
@@ -66,9 +69,11 @@
 		text-align: left;
 		height           : var(--button-height);
 		cursor: pointer;
-		&.icon-only {
+		.icon-only {
+			grid-template-columns: 1fr;
 			display: block;
-			span, .caret {
+			gap: 0;
+			.name, .caret {
 				.screen-reader-only();
 			}
 		}
