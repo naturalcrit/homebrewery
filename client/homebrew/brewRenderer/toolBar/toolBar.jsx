@@ -21,7 +21,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 	}, [visiblePages]);
 
 	useEffect(()=>{
-		const visibility = localStorage.getItem('hb_toolbarVisibility');
+		const visibility = localStorage.getItem('hb_toolbarVisibility') === 'true';
 		setToolsVisible(visibility);
 	}, []);
 
