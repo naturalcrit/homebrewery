@@ -5,7 +5,7 @@ const moment = require('moment');
 import request from '../../../../utils/request-middleware.js';
 
 const googleDriveIcon = require('../../../../googleDrive.svg');
-const homebreweryIcon = require('../../../../thumbnail.png');
+const homebreweryIcon = require('../../../../thumbnail.svg');
 const dedent = require('dedent-tabs').default;
 
 const BrewItem = ({
