@@ -420,9 +420,6 @@ const api = {
 		return true;
 	},
 	deleteBrew : async (req, res, next)=>{
-
-		console.log('starting to delete');
-		console.log(req.brew);
 		// Delete an orphaned stub if its Google brew doesn't exist
 		try {
 			await api.getBrew('edit')(req, res, ()=>{});
