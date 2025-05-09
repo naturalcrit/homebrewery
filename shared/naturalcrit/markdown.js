@@ -825,7 +825,7 @@ const Markdown = {
 			MarkedGFMResetHeadingIDs();
 		}
 
-		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`);
+		rawBrewText = rawBrewText.replace(/^\\column(?:break)?$/gm, `\n<div class='columnSplit'></div>\n`);
 
 		const opts = Marked.defaults;
 
