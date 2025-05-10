@@ -19,7 +19,7 @@ const { printCurrentBrew } = require('../../../shared/helpers.js');
 import HeaderNav from './headerNav/headerNav.jsx';
 import { safeHTML } from './safeHTML.js';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const PAGE_HEIGHT = 1056;
 
 const INITIAL_CONTENT = dedent`
@@ -115,6 +115,13 @@ const BrewRenderer = (props)=>{
 		startOnRight : true,
 		pageShadows  : true
 	});
+
+	//useEffect to store or gather toolbar state from storage
+	useEffect(()=>{
+		const toolbarState = JSON.parse(window.localStorage.getItem('hb_toolbarState'));
+		console.log('toolbar state:', toolbarState);
+		toolbarState &&	setDisplayOptions(toolbarState);
+	}, []);
 
 	const [headerState, setHeaderState] = useState(false);
 
@@ -270,6 +277,7 @@ const BrewRenderer = (props)=>{
 
 	const handleDisplayOptionsChange = (newDisplayOptions)=>{
 		setDisplayOptions(newDisplayOptions);
+		localStorage.setItem('hb_toolbarState', JSON.stringify(newDisplayOptions));
 	};
 
 	const pagesStyle = {
