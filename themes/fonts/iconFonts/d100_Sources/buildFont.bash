@@ -10,7 +10,7 @@ if [ "${1}" == "y" ] || [ "${1}" == "n" ]; then
 	for tens in $(echo 0 1 2 3 4 5 6 7 8 9); do 
 		for ones in $(echo 0 1 2 3 4 5 6 7 8 9); do 
 			num=$(echo ${tens}${ones}); 
-			cat d10-MASTER.svg | sed "s/AAAAA/${num}/" > ./rendered-files/10-MASTER-${num}.svg
+			cat d10-MASTER-AB.svg | sed "s/AAAAA/${tens}/" | sed "s/BBBBB/${ones}/" > ./rendered-files/10-MASTER-${num}.svg
 			printf "Rendering d100 - ${num}\r"
 			# Tweak the individual die
 			if [ "${1}" == "y" ]; then inkscape ./rendered-files/10-MASTER-${num}.svg; fi
@@ -24,7 +24,7 @@ if [ "${1}" == "y" ] || [ "${1}" == "n" ]; then
 		# Tweak the individual die
 		if [ "${1}" == "y" ]; then inkscape ./rendered-files/10-MASTER-${num}.svg; fi
 	done
-	# Build the 100 ace
+	# Build the 100 face
 	num=100
 	cat d10-MASTER.svg | sed "s/AAAAA/${num}/" > ./rendered-files/10-MASTER-${num}.svg
 	printf "Rendering d100 - ${num}\r"

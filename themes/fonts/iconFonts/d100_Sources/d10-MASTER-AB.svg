@@ -5,7 +5,7 @@
    viewBox="0 0 512 512"
    version="1.1"
    id="svg3"
-   sodipodi:docname="d10-MASTER.svg"
+   sodipodi:docname="d10-MASTER-AB.svg"
    inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -26,8 +26,8 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:zoom="2.8284271"
-     inkscape:cx="292.56543"
-     inkscape:cy="342.23968"
+     inkscape:cx="543.23479"
+     inkscape:cy="342.23969"
      inkscape:window-width="1920"
      inkscape:window-height="1043"
      inkscape:window-x="0"
@@ -61,7 +61,7 @@
        id="guide5"
        inkscape:locked="false" />
     <sodipodi:guide
-       position="242.35194,339.72103"
+       position="242.52734,128.75"
        orientation="1,0"
        id="guide6"
        inkscape:locked="false" />
@@ -89,16 +89,38 @@
     </g>
     <text
        xml:space="preserve"
-       style="font-size:144px;line-height:125%;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, ';text-align:center;letter-spacing:-1.25px;word-spacing:0px;text-anchor:middle;fill:#000000;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
-       x="242.98399"
-       y="314.78174"
+       style="font-size:144px;line-height:125%;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, ';text-align:end;letter-spacing:-1.25px;word-spacing:0px;text-anchor:end;fill:#000000;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       x="240.51562"
+       y="314.38177"
        id="text1"><tspan
          sodipodi:role="line"
          id="tspan1"
-         x="242.35899"
-         y="314.78174"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:144px;font-family:'Kremlin Minister';-inkscape-font-specification:'Kremlin Minister Bold';letter-spacing:-1.25px;word-spacing:0px;fill:#000000;stroke:#000000;stroke-width:0;stroke-dasharray:none"
+         x="239.26562"
+         y="314.38177"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:144px;font-family:'Kremlin Minister';-inkscape-font-specification:'Kremlin Minister Bold';text-align:end;letter-spacing:-1.25px;word-spacing:0px;text-anchor:end;fill:#000000;stroke:#000000;stroke-width:0;stroke-dasharray:none"
          rotate="0 0 0 0 0 0">AAAAA</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-weight:bold;font-size:10.6667px;line-height:125%;font-family:'Kremlin Minister';-inkscape-font-specification:'Kremlin Minister Bold';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="334.81506"
+       y="267.28635"
+       id="text8"><tspan
+         sodipodi:role="line"
+         id="tspan8"
+         x="334.81506"
+         y="267.28635" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:144px;line-height:125%;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, ';text-align:start;letter-spacing:-1.25px;word-spacing:0px;text-anchor:start;fill:#000000;stroke:#000000;stroke-width:0;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       x="246.64769"
+       y="314.38177"
+       id="text1-3"><tspan
+         sodipodi:role="line"
+         id="tspan1-6"
+         x="246.64769"
+         y="314.38177"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:144px;font-family:'Kremlin Minister';-inkscape-font-specification:'Kremlin Minister Bold';text-align:start;letter-spacing:-1.25px;word-spacing:0px;text-anchor:start;fill:#000000;stroke:#000000;stroke-width:0;stroke-dasharray:none"
+         rotate="0 0 0 0 0 0">BBBBB</tspan></text>
   </g>
   <metadata
      id="metadata3">
