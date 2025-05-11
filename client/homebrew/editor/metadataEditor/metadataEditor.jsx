@@ -156,6 +156,19 @@ const MetadataEditor = createClass({
 			});
 	},
 
+	handleDeleteAuthor : function(author){
+		if(!confirm('Are you sure you want to delete this author? They will lose all edit access to this brew.')) return;
+		request.put(`/api/${this.props.metadata.editId}/${author}`)
+			.send()
+			.end((err, res)=>{
+				if(err) {
+					this.props.reportError(err);
+				} else {
+					window.location.reload();
+				}
+			});
+	},
+
 	renderSystems : function(){
 		return _.map(SYSTEMS, (val)=>{
 			return <label key={val}>
@@ -194,16 +207,38 @@ const MetadataEditor = createClass({
 	},
 
 	renderAuthors : function(){
+		const authors = this.props.metadata.authors;
 		let text = 'None.';
-		if(this.props.metadata.authors && this.props.metadata.authors.length){
-			text = this.props.metadata.authors.join(', ');
+		if(authors && authors.length){
+			text = authors.join(', ');
 		}
-		return <div className='field authors'>
-			<label>authors</label>
-			<div className='value'>
-				{text}
+		if(!this.props.isOwner || authors.length < 2) return (
+			<div className='field authors'>
+				<label>authors</label>
+				<div className='value'>
+					{text}
+				</div>
 			</div>
-		</div>;
+		);
+		return (
+			<div className='field authors'>
+				<label>authors</label>
+				<ul className='list'>
+					{authors.map((author, i)=>(
+						<li className='tag' key={i}>{author}
+							{i>0 &&
+							<button
+								onClick={()=>this.handleDeleteAuthor(author)}
+								className='delete'
+								title={`Remove ${author} as an`}
+							>
+								<i className='fa fa-times fa-fw'/>
+							</button>}
+						</li>
+					))}
+				</ul>
+			</div>
+		);
 	},
 
 	renderThemeDropdown : function(){
