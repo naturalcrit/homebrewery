@@ -27,7 +27,7 @@ const LockNotification = require('./lockNotification/lockNotification.jsx');
 import Markdown from 'naturalcrit/markdown.js';
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
-const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
+const { printCurrentBrew, fetchThemeBundle, templatesToSnippet } = require('../../../../shared/helpers.js');
 
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 
@@ -62,7 +62,8 @@ const EditPage = createClass({
 			currentEditorCursorPageNum : 1,
 			currentBrewRendererPageNum : 1,
 			displayLockMessage         : this.props.brew.lock || false,
-			themeBundle                : {}
+			themeBundle                : {},
+			userTemplates              : this.props.brew.templates
 		};
 	},
 
@@ -146,6 +147,18 @@ const EditPage = createClass({
 
 		this.setState((prevState)=>({
 			brew       : { ...prevState.brew, text: text },
+			htmlErrors : htmlErrors,
+		}), ()=>{if(this.state.autoSave) this.trySave();});
+	},
+
+	handleTemplateChange : function(templates){
+		//If there are errors, run the validator on every change to give quick feedback
+		let htmlErrors = this.state.htmlErrors;
+		if(htmlErrors.length) htmlErrors = Markdown.validate(templates);
+
+		this.setState((prevState)=>({
+			brew       : { ...prevState.brew, templates: templates },
+			isPending  : true,
 			htmlErrors : htmlErrors,
 		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
@@ -465,10 +478,12 @@ const EditPage = createClass({
 						onStyleChange={this.handleStyleChange}
 						onSnipChange={this.handleSnipChange}
 						onMetaChange={this.handleMetaChange}
+						onTemplateChange={this.handleTemplateChange}
 						reportError={this.errorReported}
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
 						themeBundle={this.state.themeBundle}
+						templateBundle={this.state.themeBundle.templates}
 						updateBrew={this.updateBrew}
 						onCursorPageChange={this.handleEditorCursorPageChange}
 						onViewPageChange={this.handleEditorViewPageChange}
@@ -477,6 +492,7 @@ const EditPage = createClass({
 						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 					/>
 					<BrewRenderer
+						title={this.state.brew.title}
 						text={this.state.brew.text}
 						style={this.state.brew.style}
 						renderer={this.state.brew.renderer}
@@ -488,6 +504,7 @@ const EditPage = createClass({
 						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
 						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
 						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+						templates={templatesToSnippet(this.props.brew.title, this.state.brew.templates, this.state.themeBundle.templates, false).snippets}
 						allowPrint={true}
 					/>
 				</SplitPane>
