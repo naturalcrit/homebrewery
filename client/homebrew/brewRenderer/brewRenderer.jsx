@@ -21,12 +21,11 @@ const { printCurrentBrew, templatesToSnippet } = require('../../../shared/helper
 import HeaderNav from './headerNav/headerNav.jsx';
 import { safeHTML } from './safeHTML.js';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const PAGE_HEIGHT = 1056;
 
 const INITIAL_CONTENT = dedent`
 	<!DOCTYPE html><html><head>
-	<link href="//use.fontawesome.com/releases/v6.5.1/css/all.css" rel="stylesheet" type="text/css" />
 	<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
 	<link href='/homebrew/bundle.css' type="text/css" rel='stylesheet' />
 	<base target=_blank>
@@ -99,7 +98,7 @@ const getPageTemplates = (pages)=>{
 	pages.forEach((page, index)=>{
 		const firstLine = page.split('\n')[0];
 		if(firstLine.startsWith('\\page')) {
-			const firstLineClean = firstLine.slice(5).trim();
+			const firstLineClean = firstLine.slice(firstLine.startsWith('\\pagebreak') ? 10 : 5).trim();
 			if((firstLineClean.length > 0) || (brewTemplates.length > 0)) {
 				brewTemplates[ index ] = firstLineClean;
 			}
@@ -118,21 +117,21 @@ const insertTemplate = (props, pageNumber)=>{
 		const whichTemplate = brewTemplates[lookAt].split(':');
 		let whichTheme = 0;
 
-		if(whichTemplate[0].length != 0) {
+		// If the user did not supply the Template's document source, assume the current document
+		// and insert it into the array.
+
+		if(whichTemplate.length != 2) {
+			whichTemplate.splice(0, 0, props.title);
+		}
+
+		if((whichTemplate.length == 2) && (whichTemplate[0].length != 0)) {
+			if(! props?.templates?.length > 0) return '';
 			for (;whichTheme < props.templates.length; whichTheme++) {
 				if(props.templates[whichTheme].name == whichTemplate[0]) {
 					for (let temp=0; temp<props.templates[whichTheme]?.subsnippets?.length; temp++) {
 						if(props.templates[whichTheme].subsnippets[temp].name == whichTemplate[1]) {
 							return props.templates[whichTheme].subsnippets[temp].body;
 						}
-					}
-				}
-			}
-		} else {
-			if(props?.templates) {
-				for (let temp=0; temp<props.templates[whichTheme]?.subsnippets?.length; temp++) {
-					if(props.templates[whichTheme].subsnippets[temp].name === whichTemplate[1]) {
-						return props.templates[whichTheme].subsnippets[temp].body;
 					}
 				}
 			}
@@ -171,6 +170,13 @@ const BrewRenderer = (props)=>{
 		startOnRight : true,
 		pageShadows  : true
 	});
+
+	//useEffect to store or gather toolbar state from storage
+	useEffect(()=>{
+		const toolbarState = JSON.parse(window.localStorage.getItem('hb_toolbarState'));
+		console.log('toolbar state:', toolbarState);
+		toolbarState &&	setDisplayOptions(toolbarState);
+	}, []);
 
 	const [headerState, setHeaderState] = useState(false);
 
@@ -251,6 +257,9 @@ const BrewRenderer = (props)=>{
 				pageText = pageText.includes('\n') ? pageText.substring(pageText.indexOf('\n') + 1) : ''; // Remove the \page line
 			}
 
+			// DO NOT REMOVE!!! REQUIRED FOR BACKWARDS COMPATIBILITY WITH NON-UPGRADABLE VERSIONS OF CHROME.
+			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
+
 			const html = Markdown.render(`${insertTemplate(props, index)}\n${pageText}`, index);
 
 			return <BrewPage className={classes} index={index} key={index} contents={html} style={styles} attributes={attributes} onVisibilityChange={handlePageVisibilityChange} />;
@@ -326,6 +335,7 @@ const BrewRenderer = (props)=>{
 
 	const handleDisplayOptionsChange = (newDisplayOptions)=>{
 		setDisplayOptions(newDisplayOptions);
+		localStorage.setItem('hb_toolbarState', JSON.stringify(newDisplayOptions));
 	};
 
 	const pagesStyle = {

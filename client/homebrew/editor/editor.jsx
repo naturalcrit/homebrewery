@@ -12,7 +12,7 @@ const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
 const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?: *[\w -_]*)?(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *[\w -_]*)?(?: *{[^\n{}]*})?$)/m;
 const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
 const TEMPLATEBREAK_REGEX_V3 = /^\\template\ .*$/;
 const SNIPPETBAR_HEIGHT  = 25;
@@ -25,7 +25,7 @@ const DEFAULT_STYLE_TEXT = dedent`
 				}`;
 
 const DEFAULT_TEMPLATE_TEXT = dedent`
-				\page Blank
+				\template Blank
 				`;
 
 const DEFAULT_SNIPPET_TEXT = dedent`
@@ -228,7 +228,7 @@ const Editor = createClass({
 
 					// New Codemirror styling for V3 renderer
 					if(this.props.renderer === 'V3') {
-						if(line.match(/^\\column$/)){
+						if(line.match(/^\\column(?:break)?$/)){
 							codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 						}
 
@@ -457,6 +457,7 @@ const Editor = createClass({
 			</>;
 		}
 		if(this.isTemplate()){
+			if(!this.props.brew.templates) { this.props.brew.templates = DEFAULT_TEMPLATE_TEXT; }
 			return <>
 				<CodeEditor key='codeEditor'
 					ref={this.codeEditor}

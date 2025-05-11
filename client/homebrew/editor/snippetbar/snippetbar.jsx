@@ -5,7 +5,7 @@ const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
-import {templatesToSnippet} from '../../../../shared/helpers.js';
+import { templatesToSnippet } from '../../../../shared/helpers.js';
 import { loadHistory } from '../../utils/versionHistory.js';
 import { brewSnippetsToJSON } from '../../../../shared/helpers.js';
 
@@ -71,6 +71,7 @@ const Snippetbar = createClass({
 			prevProps.theme != this.props.theme ||
 			prevProps.themeBundle != this.props.themeBundle ||
 			prevProps.templateBundle != this.props.templateBundle ||
+			prevProps.brew.templates != this.props.brew.templates ||
 			prevProps.brew.snippets != this.props.brew.snippets) {
 			this.setState({
 				snippets : this.compileSnippets()

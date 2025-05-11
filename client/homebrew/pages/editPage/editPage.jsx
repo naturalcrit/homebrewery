@@ -492,6 +492,7 @@ const EditPage = createClass({
 						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 					/>
 					<BrewRenderer
+						title={this.state.brew.title}
 						text={this.state.brew.text}
 						style={this.state.brew.style}
 						renderer={this.state.brew.renderer}

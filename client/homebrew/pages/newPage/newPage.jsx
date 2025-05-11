@@ -19,7 +19,7 @@ const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
-const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
+const { printCurrentBrew, fetchThemeBundle, templatesToSnippet } = require('../../../../shared/helpers.js');
 
 const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
@@ -48,7 +48,7 @@ const NewPage = createClass({
 			currentEditorCursorPageNum : 1,
 			currentBrewRendererPageNum : 1,
 			themeBundle                : {},
-			userTemplates              : brew.templates
+			userTemplates              : this.props.brew.templates
 		};
 	},
 
@@ -133,6 +133,17 @@ const NewPage = createClass({
 			htmlErrors : htmlErrors,
 		}));
 		localStorage.setItem(BREWKEY, text);
+	},
+
+	handleTemplateChange : function(templates){
+		//If there are errors, run the validator on every change to give quick feedback
+		let htmlErrors = this.state.htmlErrors;
+		if(htmlErrors.length) htmlErrors = Markdown.validate(templates);
+
+		this.setState((prevState)=>({
+			brew       : { ...prevState.brew, templates: templates },
+			htmlErrors : htmlErrors,
+		}));
 	},
 
 	handleStyleChange : function(style){
@@ -249,6 +260,7 @@ const NewPage = createClass({
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
 						themeBundle={this.state.themeBundle}
+						templateBundle={this.state.themeBundle.templates}
 						onCursorPageChange={this.handleEditorCursorPageChange}
 						onViewPageChange={this.handleEditorViewPageChange}
 						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
@@ -267,6 +279,7 @@ const NewPage = createClass({
 						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
 						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
 						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+						templates={templatesToSnippet(this.props.brew.title, this.state.brew.templates, this.state.themeBundle.templates, false).snippets}
 						allowPrint={true}
 					/>
 				</SplitPane>
