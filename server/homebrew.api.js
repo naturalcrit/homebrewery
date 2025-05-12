@@ -8,7 +8,7 @@ import Markdown                      from '../shared/naturalcrit/markdown.js';
 import yaml                          from 'js-yaml';
 import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
-import { splitTextStyleAndMetadata, 
+import { splitTextStyleAndMetadata,
 		 brewSnippetsToJSON }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
 
