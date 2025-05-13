@@ -158,7 +158,7 @@ const MetadataEditor = createClass({
 
 	handleDeleteAuthor : function(author){
 		if(!confirm('Are you sure you want to delete this author? They will lose all edit access to this brew.')) return;
-		request.put(`/api/${this.props.metadata.editId}/${author}`)
+		request.put(`/api/prune/${this.props.metadata.editId}/${author}`)
 			.send()
 			.end((err, res)=>{
 				if(err) {
