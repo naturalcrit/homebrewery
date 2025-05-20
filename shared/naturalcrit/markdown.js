@@ -755,7 +755,7 @@ const processStyleTags = (string)=>{
 	for (let tag in tags) {
 		if(tags[tag].startsWith('--')) {
 			const tagName=tags[tag].split(':', 1)[0];
-			const tagRegex = /(?=(?:"'.*'"|'.*'|".*"))/;
+			const tagRegex = /(?=(?:"'(.*)'"|'(.*)'|"(.*)"))/;
 			const tagMatch = tagRegex.exec(tags[tag].slice(tagName.length));
 			if(tagMatch){
 				tags[tag] = `${tagName}:'${tagMatch[1]||tagMatch[2]||tagMatch[3]}'`;
