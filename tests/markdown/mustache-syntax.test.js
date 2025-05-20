@@ -106,7 +106,7 @@ describe('Inline: When using the Inline syntax {{ }}', ()=>{
 
 
 	it('Renders a mustache span with text with quotes and css property which contains double and simple quotes', function() {
-		const source = `{{--stringVariable:"string" text "with quotes"}}`;
+		const source = `{{--stringVariable:"'string'" text "with quotes"}}`;
 		const rendered = Markdown.render(source);
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<span class="inline-block" style="--stringVariable:'string';">text “with quotes”</span>`);
 	});
