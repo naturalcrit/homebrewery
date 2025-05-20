@@ -154,7 +154,6 @@ const api = {
 			next();
 		};
 	},
-
 	getCSS : async (req, res)=>{
 		const { brew } = req;
 		if(!brew) return res.status(404).send('');
@@ -167,7 +166,6 @@ const api = {
 		});
 		return res.status(200).send(brew.style);
 	},
-
 	mergeBrewText : (brew)=>{
 		let text = brew.text;
 		if(brew.style !== undefined) {
@@ -185,7 +183,6 @@ const api = {
 			`${text}`;
 		return text;
 	},
-
 	getGoodBrewTitle : (text)=>{
 		const tokens = Markdown.marked.lexer(text);
 		return (tokens.find((token)=>token.type === 'heading' || token.type === 'paragraph')?.text || 'No Title')
