@@ -119,7 +119,6 @@ const BrewRenderer = (props)=>{
 	//useEffect to store or gather toolbar state from storage
 	useEffect(()=>{
 		const toolbarState = JSON.parse(window.localStorage.getItem('hb_toolbarState'));
-		console.log('toolbar state:', toolbarState);
 		toolbarState &&	setDisplayOptions(toolbarState);
 	}, []);
 
