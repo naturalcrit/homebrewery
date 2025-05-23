@@ -20,6 +20,8 @@ import HeaderNav from './headerNav/headerNav.jsx';
 import { safeHTML } from './safeHTML.js';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
+const COLUMNBREAK_LEGACY = /\\column(:?break)?/m;
 const PAGE_HEIGHT = 1056;
 
 const INITIAL_CONTENT = dedent`
@@ -128,7 +130,7 @@ const BrewRenderer = (props)=>{
 	const pagesRef = useRef(null);
 
 	if(props.renderer == 'legacy') {
-		rawPages = props.text.split('\\page');
+		rawPages = props.text.replace(COLUMNBREAK_LEGACY, '```\n````\n').split(PAGEBREAK_REGEX_LEGACY);
 	} else {
 		rawPages = props.text.split(PAGEBREAK_REGEX_V3);
 	}
