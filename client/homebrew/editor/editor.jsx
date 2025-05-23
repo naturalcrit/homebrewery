@@ -12,8 +12,8 @@ const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
 const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?: *{[^\n{}]*})?$)/m;
-const SNIPPETBAR_HEIGHT  = 25;
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
+const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
 				/* Any CSS here will apply to your document! */
@@ -22,6 +22,13 @@ const DEFAULT_STYLE_TEXT = dedent`
 					color: black;
 				}`;
 
+const DEFAULT_SNIPPET_TEXT = dedent`
+				\snippet example snippet
+				
+				The text between \`\snippet title\` lines will become a snippet of name \`title\` as this example provides.
+				
+				This snippet is accessible in the brew tab, and will be inherited if the brew is used as a theme.
+`;
 let isJumping = false;
 
 const Editor = createClass({
@@ -36,6 +43,7 @@ const Editor = createClass({
 			onTextChange  : ()=>{},
 			onStyleChange : ()=>{},
 			onMetaChange  : ()=>{},
+			onSnipChange  : ()=>{},
 			reportError   : ()=>{},
 
 			onCursorPageChange : ()=>{},
@@ -53,8 +61,9 @@ const Editor = createClass({
 	},
 	getInitialState : function() {
 		return {
-			editorTheme : this.props.editorTheme,
-			view        : 'text' //'text', 'style', 'meta'
+			editorTheme      : this.props.editorTheme,
+			view             : 'text', //'text', 'style', 'meta', 'snippet'
+			snippetbarHeight : 25
 		};
 	},
 
@@ -64,12 +73,11 @@ const Editor = createClass({
 	isText  : function() {return this.state.view == 'text';},
 	isStyle : function() {return this.state.view == 'style';},
 	isMeta  : function() {return this.state.view == 'meta';},
+	isSnip  : function() {return this.state.view == 'snippet';},
 
 	componentDidMount : function() {
 
-		this.updateEditorSize();
 		this.highlightCustomMarkdown();
-		window.addEventListener('resize', this.updateEditorSize);
 		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
 
@@ -83,7 +91,7 @@ const Editor = createClass({
 			});
 		}
 
-
+		this.setState({ snippetbarHeight: document.querySelector('.editor > .snippetBar').offsetHeight });
 	},
 
 	componentWillUnmount : function() {
@@ -122,14 +130,6 @@ const Editor = createClass({
 		}
 	},
 
-	updateEditorSize : function() {
-		if(this.codeEditor.current) {
-			let paneHeight = this.editor.current.parentNode.clientHeight;
-			paneHeight -= SNIPPETBAR_HEIGHT;
-			this.codeEditor.current.codeMirror.setSize(null, paneHeight);
-		}
-	},
-
 	updateCurrentCursorPage : function(cursor) {
 		const lines = this.props.brew.text.split('\n').slice(1, cursor.line + 1);
 		const pageRegex = this.props.brew.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
@@ -150,17 +150,17 @@ const Editor = createClass({
 
 	handleViewChange : function(newView){
 		this.props.setMoveArrows(newView === 'text');
+		
 		this.setState({
 			view : newView
 		}, ()=>{
 			this.codeEditor.current?.codeMirror.focus();
-			this.updateEditorSize();
-		});	//TODO: not sure if updateeditorsize needed
+		});
 	},
 
 	highlightCustomMarkdown : function(){
 		if(!this.codeEditor.current) return;
-		if(this.state.view === 'text')  {
+		if((this.state.view === 'text') ||(this.state.view === 'snippet')) {
 			const codeMirror = this.codeEditor.current.codeMirror;
 
 			codeMirror.operation(()=>{ // Batch CodeMirror styling
@@ -179,12 +179,18 @@ const Editor = createClass({
 
 				for (let i=customHighlights.length - 1;i>=0;i--) customHighlights[i].clear();
 
+				let userSnippetCount = 1; // start snippet count from snippet 1
 				let editorPageCount = 1; // start page count from page 1
 
-				_.forEach(this.props.brew.text.split('\n'), (line, lineNumber)=>{
+				const whichSource = this.state.view === 'text' ? this.props.brew.text : this.props.brew.snippets;
+				_.forEach(whichSource?.split('\n'), (line, lineNumber)=>{
+
+					const tabHighlight = this.state.view === 'text' ? 'pageLine' : 'snippetLine';
+					const textOrSnip = this.state.view === 'text';
 
 					//reset custom line styles
 					codeMirror.removeLineClass(lineNumber, 'background', 'pageLine');
+					codeMirror.removeLineClass(lineNumber, 'background', 'snippetLine');
 					codeMirror.removeLineClass(lineNumber, 'text');
 					codeMirror.removeLineClass(lineNumber, 'wrap', 'sourceMoveFlash');
 
@@ -195,23 +201,25 @@ const Editor = createClass({
 
 					// Styling for \page breaks
 					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
-				     (this.props.renderer == 'V3'     && line.match(PAGEBREAK_REGEX_V3))) {
+				     (this.props.renderer == 'V3'     && line.match(textOrSnip ? PAGEBREAK_REGEX_V3 : SNIPPETBREAK_REGEX_V3))) {
 
-						if(lineNumber > 0)      // Since \page is optional on first line of document,
+						if((lineNumber > 0) && (textOrSnip))      // Since \page is optional on first line of document,
 							editorPageCount += 1; // don't use it to increment page count; stay at 1
+						else if(this.state.view !== 'text')	userSnippetCount += 1;
 
 						// add back the original class 'background' but also add the new class '.pageline'
-						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
+						codeMirror.addLineClass(lineNumber, 'background', tabHighlight);
 						const pageCountElement = Object.assign(document.createElement('span'), {
 							className   : 'editor-page-count',
-							textContent : editorPageCount
+							textContent : textOrSnip ? editorPageCount : userSnippetCount
 						});
 						codeMirror.setBookmark({ line: lineNumber, ch: line.length }, pageCountElement);
 					};
 
+
 					// New Codemirror styling for V3 renderer
-					if(this.props.renderer == 'V3') {
-						if(line.match(/^\\column$/)){
+					if(this.props.renderer === 'V3') {
+						if(line.match(/^\\column(?:break)?$/)){
 							codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 						}
 
@@ -412,6 +420,9 @@ const Editor = createClass({
 	//Called when there are changes to the editor's dimensions
 	update : function(){
 		this.codeEditor.current?.updateSize();
+		const snipHeight = document.querySelector('.editor > .snippetBar').offsetHeight;
+		if(snipHeight !== this.state.snippetbarHeight)
+			this.setState({ snippetbarHeight: snipHeight });
 	},
 
 	updateEditorTheme : function(newTheme){
@@ -437,7 +448,8 @@ const Editor = createClass({
 					onChange={this.props.onTextChange}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
-					htmlErrors={this.props.htmlErrors} />
+					htmlErrors={this.props.htmlErrors}
+					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
 			</>;
 		}
 		if(this.isStyle()){
@@ -450,7 +462,8 @@ const Editor = createClass({
 					onChange={this.props.onStyleChange}
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
-					rerenderParent={this.rerenderParent} />
+					rerenderParent={this.rerenderParent}
+					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
 			</>;
 		}
 		if(this.isMeta()){
@@ -465,6 +478,22 @@ const Editor = createClass({
 					onChange={this.props.onMetaChange}
 					reportError={this.props.reportError}
 					userThemes={this.props.userThemes}/>
+			</>;
+		}
+
+		if(this.isSnip()){
+			if(!this.props.brew.snippets) { this.props.brew.snippets = DEFAULT_SNIPPET_TEXT; }
+			return <>
+				<CodeEditor key='codeEditor'
+					ref={this.codeEditor}
+					language='gfm'
+					view={this.state.view}
+					value={this.props.brew.snippets}
+					onChange={this.props.onSnipChange}
+					enableFolding={true}
+					editorTheme={this.state.editorTheme}
+					rerenderParent={this.rerenderParent}
+					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
 			</>;
 		}
 	},
@@ -507,7 +536,7 @@ const Editor = createClass({
 					historySize={this.historySize()}
 					currentEditorTheme={this.state.editorTheme}
 					updateEditorTheme={this.updateEditorTheme}
-					snippetBundle={this.props.snippetBundle}
+					themeBundle={this.props.themeBundle}
 					cursorPos={this.codeEditor.current?.getCursorPosition() || {}}
 					updateBrew={this.props.updateBrew}
 				/>

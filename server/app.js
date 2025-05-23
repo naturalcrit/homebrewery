@@ -2,7 +2,7 @@
 // Set working directory to project root
 import { dirname }       from 'path';
 import { fileURLToPath } from 'url';
-import packageJSON       from './../package.json' with { type: 'json' };
+import packageJSON from './../package.json' with { type: 'json' };
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 process.chdir(`${__dirname}/..`);
@@ -433,7 +433,7 @@ app.get('/new', asyncHandler(async(req, res, next)=>{
 app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
 	const { brew } = req;
 	req.ogMeta = { ...defaultMetaTags,
-		title       : req.brew.title || 'Untitled Brew',
+		title       : `${req.brew.title || 'Untitled Brew'} - ${req.brew.authors[0] || 'No author.'}`,
 		description : req.brew.description || 'No description.',
 		image       : req.brew.thumbnail || defaultMetaTags.image,
 		type        : 'article'

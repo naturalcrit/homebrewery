@@ -143,6 +143,18 @@ const NewPage = createClass({
 		localStorage.setItem(STYLEKEY, style);
 	},
 
+	handleSnipChange : function(snippet){
+		//If there are errors, run the validator on every change to give quick feedback
+		let htmlErrors = this.state.htmlErrors;
+		if(htmlErrors.length) htmlErrors = Markdown.validate(snippet);
+
+		this.setState((prevState)=>({
+			brew       : { ...prevState.brew, snippets: snippet },
+			isPending  : true,
+			htmlErrors : htmlErrors,
+		}), ()=>{if(this.state.autoSave) this.trySave();});
+	},
+
 	handleMetaChange : function(metadata, field=undefined){
 		if(field == 'theme' || field == 'renderer')	// Fetch theme bundle only if theme or renderer was changed
 			fetchThemeBundle(this, metadata.renderer, metadata.theme);
@@ -241,10 +253,10 @@ const NewPage = createClass({
 						onTextChange={this.handleTextChange}
 						onStyleChange={this.handleStyleChange}
 						onMetaChange={this.handleMetaChange}
+						onSnipChange={this.handleSnipChange}
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
 						themeBundle={this.state.themeBundle}
-						snippetBundle={this.state.themeBundle.snippets}
 						onCursorPageChange={this.handleEditorCursorPageChange}
 						onViewPageChange={this.handleEditorViewPageChange}
 						currentEditorViewPageNum={this.state.currentEditorViewPageNum}

@@ -6,7 +6,7 @@
 	z-index          : 1;
 	display          : flex;
 	flex-wrap        : wrap;
-	gap              : 8px 30px;
+	gap              : 8px 20px;
 	align-items      : center;
 	justify-content  : center;
 	padding          : 5px 0 2px;
@@ -159,7 +159,7 @@
 		width            : 92px;
 		overflow         : hidden;
 		background-color : unset;
-		opacity          : 0.5;
+		opacity          : 0.7;
 		transition       : all 0.3s ease;
 		& > *:not(.toggleButton) {
 			opacity    : 0;
@@ -177,4 +177,9 @@
 	width     : 32px;
 	min-width : unset;
 	height    : 100%;
+
+	button i {
+		filter: drop-shadow(0 0 2px black) drop-shadow(0 0 1px black);
+
+	}
 }

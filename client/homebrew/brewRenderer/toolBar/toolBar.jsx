@@ -25,6 +25,11 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 		setPageNum(pageRange);
 	}, [visiblePages]);
 
+	useEffect(()=>{
+		const visibility = localStorage.getItem('hb_toolbarVisibility') === 'true';
+		setToolsVisible(visibility);
+	}, []);
+
 	const handleZoomButton = (zoom)=>{
 		handleOptionChange('zoomLevel', _.round(_.clamp(zoom, MIN_ZOOM, MAX_ZOOM)));
 	};
@@ -54,15 +59,30 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 			// find widest page, in case pages are different widths, so that the zoom is adapted to not cut the widest page off screen.
 			const widestPage = _.maxBy([...pages], 'offsetWidth').offsetWidth;
 
-			desiredZoom = (iframeWidth / widestPage) * 100;
+			if(displayOptions.spread === 'facing')
+				desiredZoom = (iframeWidth / ((widestPage * 2) + parseInt(displayOptions.columnGap))) * 100;
+			else
+				desiredZoom = (iframeWidth / (widestPage + 20)) * 100;
 
 		} else if(mode == 'fit'){
-			let minDimRatio;
 			// find the page with the largest single dim (height or width) so that zoom can be adapted to fit it.
-			if(displayOptions.spread === 'facing')
-				minDimRatio = [...pages].reduce((minRatio, page)=>Math.min(minRatio, iframeWidth / page.offsetWidth / 2), Infinity);    // if 'facing' spread, fit two pages in view
+			let minDimRatio;
+			if(displayOptions.spread === 'active')
+				minDimRatio = [...pages].reduce(
+					(minRatio, page)=>Math.min(minRatio,
+						iframeWidth / page.offsetWidth,
+						iframeHeight / page.offsetHeight
+					),
+					Infinity
+				);
 			else
-				minDimRatio = [...pages].reduce((minRatio, page)=>Math.min(minRatio, iframeWidth / page.offsetWidth, iframeHeight / page.offsetHeight), Infinity);
+				minDimRatio = [...pages].reduce(
+					(minRatio, page)=>Math.min(minRatio,
+						iframeWidth / ((page.offsetWidth * 2) + parseInt(displayOptions.columnGap)),
+						iframeHeight / page.offsetHeight
+					),
+					Infinity
+				);
 
 			desiredZoom = minDimRatio * 100;
 		}
@@ -77,7 +97,8 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 		<Menubar id='preview-toolbar' className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`} role='toolbar'>
 			<div className='toggleButton'>
 				<MenuItem icon='fas fa-rectangle-list' title={`${headerState ? 'Hide' : 'Show'} Header Navigation`} onClick={()=>{setHeaderState(!headerState);}}>{headerState ? 'Hide header navigation' : 'Show header navigation'}</MenuItem>
-				<MenuItem icon='fas fa-glasses' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible);}}>{toolsVisible ? 'Hide toolbar' : 'Show toolbar'}</MenuItem>
+				<MenuItem icon='fas fa-glasses' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible);localStorage.setItem('hb_toolbarVisibility', !toolsVisible)}}>{toolsVisible ? 'Hide toolbar' : 'Show toolbar'}</MenuItem>
+
 			</div>
 			{/*v=====----------------------< Zoom Controls >---------------------=====v*/}
 			<MenuSection role='group' aria-label='Zoom' aria-hidden={!toolsVisible}>
@@ -158,11 +179,11 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 						<h1>Options</h1>
 						<label title='Modify the horizontal space between pages.'>
 							Column gap
-							<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>handleOptionChange('columnGap', evt.target.value)} />
+							<input type='range' min={0} max={200} defaultValue={displayOptions.columnGap || 10} className='range-input' onChange={(evt)=>handleOptionChange('columnGap', evt.target.value)} />
 						</label>
 						<label title='Modify the vertical space between rows of pages.'>
 							Row gap
-							<input type='range' min={0} max={200} defaultValue={10} className='range-input' onChange={(evt)=>handleOptionChange('rowGap', evt.target.value)} />
+							<input type='range' min={0} max={200} defaultValue={displayOptions.rowGap || 10} className='range-input' onChange={(evt)=>handleOptionChange('rowGap', evt.target.value)} />
 						</label>
 						<label title='Start 1st page on the right side, such as if you have cover page.'>
 							Start on right

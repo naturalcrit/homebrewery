@@ -116,12 +116,16 @@
 @media print {
 	.toolBar { display : none; }
 	.brewRenderer {
-		height      : 100%;
-		padding-top : unset;
-		overflow-y  : unset;
+		height     : 100%;
+		padding    : unset;
+		overflow-y : unset;
+		&:has(.facing, .flow) {
+			padding : unset;
+		}
 		.pages {
-			margin : 0px;
-			zoom   : 100% !important;
+			margin  : 0px;
+			zoom    : 100% !important;
+			display : block;
 			& > .page { box-shadow : unset; }
 		}
 	}

@@ -9,6 +9,7 @@ const moment = require('moment');
 import { loadHistory } from '../../utils/versionHistory.js';
 const { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } = require('../../../components/menubar/Menubar.jsx');
 
+import { brewSnippetsToJSON } from '../../../../shared/helpers.js';
 
 //Import all themes
 const ThemeSnippets = {};
@@ -43,7 +44,7 @@ const Snippetbar = createClass({
 			unfoldCode        : ()=>{},
 			updateEditorTheme : ()=>{},
 			cursorPos         : {},
-			snippetBundle     : [],
+			themeBundle       : [],
 			updateBrew        : ()=>{}
 		};
 	},
@@ -65,7 +66,10 @@ const Snippetbar = createClass({
 	},
 
 	componentDidUpdate : async function(prevProps, prevState) {
-		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.snippetBundle != this.props.snippetBundle) {
+		if(prevProps.renderer != this.props.renderer ||
+			prevProps.theme != this.props.theme ||
+			prevProps.themeBundle != this.props.themeBundle ||
+			prevProps.brew.snippets != this.props.brew.snippets) {
 			this.setState({
 				snippets : this.compileSnippets()
 			});
@@ -98,7 +102,7 @@ const Snippetbar = createClass({
 		if(key == 'snippets') {
 			const result = _.reverse(_.unionBy(_.reverse(newValue), _.reverse(oldValue), 'name')); // Join snippets together, with preference for the child theme over the parent theme
 			return result.filter((snip)=>snip.gen || snip.subsnippets);
-		}
+		};
 	},
 
 	compileSnippets : function() {
@@ -106,15 +110,21 @@ const Snippetbar = createClass({
 
 		let oldSnippets = _.keyBy(compiledSnippets, 'groupName');
 
-		for (let snippets of this.props.snippetBundle) {
-			if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name
-				snippets = ThemeSnippets[snippets];
+		if(this.props.themeBundle.snippets) {
+			for (let snippets of this.props.themeBundle.snippets) {
+				if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name
+					snippets = ThemeSnippets[snippets];
 
-			const newSnippets = _.keyBy(_.cloneDeep(snippets), 'groupName');
-			compiledSnippets = _.values(_.mergeWith(oldSnippets, newSnippets, this.mergeCustomizer));
+				const newSnippets = _.keyBy(_.cloneDeep(snippets), 'groupName');
+				compiledSnippets = _.values(_.mergeWith(oldSnippets, newSnippets, this.mergeCustomizer));
 
-			oldSnippets = _.keyBy(compiledSnippets, 'groupName');
+				oldSnippets = _.keyBy(compiledSnippets, 'groupName');
+			}
 		}
+
+		const userSnippetsasJSON = brewSnippetsToJSON(this.props.brew.title || 'New Document', this.props.brew.snippets, this.props.themeBundle.snippets);
+		compiledSnippets.push(userSnippetsasJSON);
+
 		return compiledSnippets;
 	},
 
@@ -234,6 +244,10 @@ const Snippetbar = createClass({
 						onClick={()=>this.props.onViewChange('style')}>
 						Style Editor
 					</MenuItem>
+					<MenuItem id='snippets-tab' className='tab' icon='fas fa-th-list' aria-selected={this.props.view === 'snippet'}
+						onClick={()=>this.props.onViewChange('snippet')}>
+						Snippets Editor
+					</MenuItem>
 					<MenuItem id='properties-tab' role='tab' className='tab' icon='fas fa-info-circle' aria-selected={this.props.view === 'meta'}
 						onClick={()=>this.props.onViewChange('meta')}>
 						Properties Editor
@@ -252,11 +266,6 @@ const Snippetbar = createClass({
 });
 
 module.exports = Snippetbar;
-
-
-
-
-
 
 const SnippetGroup = createClass({
 	displayName     : 'SnippetGroup',
