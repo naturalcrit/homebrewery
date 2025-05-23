@@ -91,7 +91,7 @@ const Editor = createClass({
 			});
 		}
 
-		this.setState({ snippetbarHeight: document.querySelector('.editor > .snippetBar').offsetHeight });
+		this.setState({ snippetbarHeight: document.querySelector('#snippet-bar').offsetHeight });
 	},
 
 	componentWillUnmount : function() {
@@ -420,7 +420,7 @@ const Editor = createClass({
 	//Called when there are changes to the editor's dimensions
 	update : function(){
 		this.codeEditor.current?.updateSize();
-		const snipHeight = document.querySelector('.editor > .snippetBar').offsetHeight;
+		const snipHeight = document.querySelector('#snippet-bar').offsetHeight;
 		if(snipHeight !== this.state.snippetbarHeight)
 			this.setState({ snippetbarHeight: snipHeight });
 	},
