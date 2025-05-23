@@ -130,7 +130,7 @@ Fixes issue [#4146](https://github.com/naturalcrit/homebrewery/issues/4146)
 New snippet found at {{openSans **:fas_pencil: TEXT EDITOR :fas_arrow_right: :fas_bookmark: PAGE NUMBERING :fas_arrow_right: :fas_arrow_down_1_9: VARIABLE AUTO PAGE NUMBER**}}
 
 ##### 5e-Cleric
-* [x] Fix search bar covering up snippet bar
+* [x] Fix search bar covering up snippet bar (3 times)
 
 Fixes issue [#4098](https://github.com/naturalcrit/homebrewery/issues/4098)
 
