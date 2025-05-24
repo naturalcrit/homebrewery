@@ -761,7 +761,7 @@ brew`);
 				status      : 422 });
 		});
 	});
-	describe('deleteAuthor', ()=>{
+	describe('deleteBrewAuthor', ()=>{
 		it('should handle case where fetching the brew returns an error', async ()=>{
 			api.getBrew = jest.fn(()=>async ()=>{ throw { message: 'err', HBErrorCode: '02' }; });
 			api.getId = jest.fn(()=>({ id: '1', googleId: '2' }));
@@ -786,7 +786,7 @@ brew`);
 			model.deleteOne = jest.fn(async ()=>{});
 			const req = { account: { username: 'test' } };
 
-			await api.deleteBrew(req, res);
+			await api.deleteAuthor(req, res);
 
 			expect(api.getBrew).toHaveBeenCalled();
 			expect(markModifiedFunc).toHaveBeenCalled();
