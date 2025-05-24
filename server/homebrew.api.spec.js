@@ -765,8 +765,8 @@ brew`);
 		it('should handle case where fetching the brew returns an error', async ()=>{
 			api.getBrew = jest.fn(()=>async ()=>{ throw { message: 'err', HBErrorCode: '02' }; });
 			api.getId = jest.fn(()=>({ id: '1', googleId: '2' }));
-			model.deleteOne = jest.fn(async ()=>{});
-			const next = jest.fn(()=>{});
+			model.deleteOne = jest.fn(async ()=>{ });
+			const next = jest.fn();
 
 			await api.deleteBrew(null, null, next);
 
@@ -777,18 +777,24 @@ brew`);
 		it('should remove one author', async ()=>{
 			const brew = {
 				...hbBrew,
-				authors : ['test', 'test2']
+				_id          : 'some-id',
+				authors      : ['test', 'test2'],
+				markModified : markModifiedFunc,
+				save         : saveFunc
 			};
 
 			api.getBrew = jest.fn(()=>async (req)=>{
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
-			model.deleteOne = jest.fn(async ()=>{});
+			model.deleteOne = jest.fn(async ()=>{ });
+
 			const req = {
- 				account : { username: 'test' },
-  				params  : { author: 'test' }
+				account : { username: 'test' },
+				params  : { author: 'test2' }
 			};
+
+			const res = { status: jest.fn(()=>res), send: jest.fn() };
 
 			await api.deleteAuthor(req, res);
 
@@ -797,9 +803,10 @@ brew`);
 			expect(model.findOne).toHaveBeenCalled();
 			expect(model.deleteOne).not.toHaveBeenCalled();
 			expect(saveFunc).toHaveBeenCalled();
-			expect(saved.authors).toEqual(['test2']);
+			expect(saved.authors).toEqual(['test']);
 		});
 	});
+
 	describe('deleteGoogleBrew', ()=>{
 		it('should check auth and delete brew', async ()=>{
 			const result = await api.deleteGoogleBrew({ username: 'test user' }, 'id', 'editId', res);
