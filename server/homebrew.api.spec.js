@@ -779,12 +779,16 @@ brew`);
 				...hbBrew,
 				authors : ['test', 'test2']
 			};
+
 			api.getBrew = jest.fn(()=>async (req)=>{
 				req.brew = brew;
 			});
 			model.findOne = jest.fn(async ()=>modelBrew(brew));
 			model.deleteOne = jest.fn(async ()=>{});
-			const req = { account: { username: 'test' } };
+			const req = {
+ 				account : { username: 'test' },
+  				params  : { author: 'test' }
+			};
 
 			await api.deleteAuthor(req, res);
 
