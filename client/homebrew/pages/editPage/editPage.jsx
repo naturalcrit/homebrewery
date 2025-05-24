@@ -166,13 +166,16 @@ const EditPage = createClass({
 
 	handleSnipChange : function(snippet){
 		//If there are errors, run the validator on every change to give quick feedback
-		let htmlErrors = this.state.htmlErrors;
-		if(htmlErrors.length) htmlErrors = Markdown.validate(snippet);
+		let htmlErrors = this.state.alerts.htmlErrors;
+		if(htmlErrors.length > 0) htmlErrors = Markdown.validate(snippet);
 
 		this.setState((prevState)=>({
-			brew       : { ...prevState.brew, snippets: snippet },
-			isPending  : true,
-			htmlErrors : htmlErrors,
+			brew      : { ...prevState.brew, snippets: snippet },
+			isPending : true,
+			alerts    : {
+				...prevState.alerts,
+				htmlErrors : htmlErrors
+			}
 		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
