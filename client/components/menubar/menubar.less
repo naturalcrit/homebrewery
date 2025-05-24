@@ -93,7 +93,10 @@
 		&:disabled {
 			cursor: not-allowed;
 		}
-
+		&.no-icons + .menu-list .menu-item {
+			grid-template-columns: 2fr min-content;
+			grid-template-areas: "name caret";
+		}
 	}
 
 	.inline-grid {

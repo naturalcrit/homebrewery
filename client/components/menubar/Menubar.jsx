@@ -35,7 +35,7 @@ const MenuItem = ({ icon = null, href = null, newTab = false, onClick = null, on
 	const renderMenuItem = ()=>{
 		const classes = cx('menu-item', color, className);
 
-		if(icon) icon = <i className={icon} />;
+		icon = icon ? <i className={icon}></i> : null;
 
 		if(href){
 			return (
@@ -150,7 +150,7 @@ const MenuDropdown = ({ groupName, icon, color = null, className = null, childre
 	const trigger = (groupName)=>{
 		if(!customTrigger){
 			return <>
-				<i className={icon} />
+				{icon && <i className={icon} />}
 				<span className='menu-name'>{groupName}</span>
 				{dir && <i className={`caret fas fa-caret-${dir}`}></i>}
 			</>;

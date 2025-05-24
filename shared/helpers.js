@@ -18,7 +18,7 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 					if(snippetName.length != 0) {
 						userSnippets.push({
 							name : snippetName,
-							icon : '',
+							// icon : '',
 							gen  : snipSplit[snips + 1],
 						});
 					}
@@ -26,7 +26,7 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 				if(userSnippets.length > 0) {
 					mpAsSnippets.push({
 						name        : themes.name,
-						icon        : '',
+						// icon        : '',
 						gen         : '',
 						subsnippets : userSnippets
 					});

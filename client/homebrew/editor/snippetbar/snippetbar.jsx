@@ -283,16 +283,17 @@ const SnippetGroup = createClass({
 		this.props.onSnippetClick(execute(snippet.gen, this.props));
 	},
 	renderSnippets : function(snippets){
+		const iconsExist = _.some(snippets, 'icon');
 		return _.map(snippets, (snippet)=>{
 			if(snippet.subsnippets){
 				return (
-					<MenuDropdown id={snippet.name} className='snippet-menu' groupName={snippet.name} icon={snippet.icon} dir='right' key={snippet.name}>
+					<MenuDropdown id={snippet.name} className={`snippet-menu${iconsExist ? '' : ' no-icons'}`} groupName={snippet.name} icon={snippet.icon ?? snippet.icon} dir='right' key={snippet.name}>
 						{this.renderSnippets(snippet.subsnippets)}
 					</MenuDropdown>
 				);
 			} else {
 				return (
-					<MenuItem className={`snippet${snippet.disabled ? ' disabled' : ''}`} icon={snippet.icon} key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
+					<MenuItem className={`snippet${snippet.disabled ? ' disabled' : ''}`} icon={snippet.icon ?? snippet.icon} key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
 						{snippet.name}
 						{snippet.experimental && <span className='beta'>beta</span>}
 						{snippet.disabled     && <span className='beta' title='temporarily disabled due to large slowdown; under re-design'>disabled</span>}
@@ -305,8 +306,9 @@ const SnippetGroup = createClass({
 	},
 
 	render : function(){
+		const iconsExist = _.some(this.props.snippets, 'icon');
 		return (
-			<MenuDropdown id={this.props.groupName} className='snippet-menu' groupName={this.props.groupName} icon={this.props.icon} dir='down'>
+			<MenuDropdown id={this.props.groupName} className={`snippet-menu${iconsExist ? '' : ' no-icons'}`} groupName={this.props.groupName} icon={this.props.icon ?? this.props.icon} dir='down'>
 				{this.renderSnippets(this.props.snippets)}
 			</MenuDropdown>
 		);
