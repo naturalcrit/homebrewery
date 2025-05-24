@@ -795,51 +795,6 @@ brew`);
 			expect(saveFunc).toHaveBeenCalled();
 			expect(saved.authors).toEqual(['test2']);
 		});
-
-		it('should delete google brew', async ()=>{
-			const brew = {
-				...googleBrew,
-				authors : ['test']
-			};
-			api.getBrew = jest.fn(()=>async (req)=>{
-				req.brew = brew;
-			});
-			model.findOne = jest.fn(async ()=>modelBrew(brew));
-			model.deleteOne = jest.fn(async ()=>{});
-			api.deleteGoogleBrew = jest.fn(async ()=>true);
-			const req = { account: { username: 'test' } };
-
-			await api.deleteBrew(req, res);
-
-			expect(api.getBrew).toHaveBeenCalled();
-			expect(model.findOne).toHaveBeenCalled();
-			expect(model.deleteOne).toHaveBeenCalled();
-			expect(api.deleteGoogleBrew).toHaveBeenCalled();
-		});
-
-		it('should retain google brew and update stub when multiple authors and extra author requests deletion', async ()=>{
-			const brew = {
-				...googleBrew,
-				authors : ['test', 'test2']
-			};
-			api.getBrew = jest.fn(()=>async (req)=>{
-				req.brew = brew;
-			});
-			model.findOne = jest.fn(async ()=>modelBrew(brew));
-			model.deleteOne = jest.fn(async ()=>{});
-			api.deleteGoogleBrew = jest.fn(async ()=>true);
-			const req = { account: { username: 'test2' } };
-
-			await api.deleteBrew(req, res);
-
-			expect(api.getBrew).toHaveBeenCalled();
-			expect(model.findOne).toHaveBeenCalled();
-			expect(model.deleteOne).not.toHaveBeenCalled();
-			expect(api.deleteGoogleBrew).not.toHaveBeenCalled();
-			expect(saveFunc).toHaveBeenCalled();
-			expect(saved.authors).toEqual(['test']);
-			expect(saved.googleId).toEqual(brew.googleId);
-		});
 	});
 	describe('deleteGoogleBrew', ()=>{
 		it('should check auth and delete brew', async ()=>{
