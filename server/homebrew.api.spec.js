@@ -761,7 +761,7 @@ brew`);
 				status      : 422 });
 		});
 	});
-	describe('deleteBrewAuthor', ()=>{
+	describe('deleteAuthor', ()=>{
 		it('should handle case where fetching the brew returns an error', async ()=>{
 			api.getBrew = jest.fn(()=>async ()=>{ throw { message: 'err', HBErrorCode: '02' }; });
 			api.getId = jest.fn(()=>({ id: '1', googleId: '2' }));
