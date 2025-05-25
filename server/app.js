@@ -431,6 +431,7 @@ app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async(req, res,
 		renderer : req.brew.renderer,
 		theme    : req.brew.theme,
 		tags     : req.brew.tags,
+		snippets : req.brew.snippets
 	};
 	req.brew = _.defaults(brew, DEFAULT_BREW);
 
