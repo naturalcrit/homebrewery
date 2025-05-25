@@ -1,3 +1,6 @@
+import packageJSON from '../package.json' with { type: 'json' };
+const version = packageJSON.version;
+
 const template = async function(name, title='', props = {}){
 	const ogTags = [];
 	const ogMeta = props.ogMeta ?? {};
@@ -15,7 +18,7 @@ const template = async function(name, title='', props = {}){
 		<head>
 			<meta name="viewport" content="width=device-width, initial-scale=1, height=device-height, interactive-widget=resizes-visual" />
 			<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
-			<link href=${`/${name}/bundle.css`} type="text/css" rel='stylesheet' />
+			<link href=${`/${name}/bundle-${version}.css`} type="text/css" rel='stylesheet' />
 			<link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
 			${ogMetaTags}
 			<meta name="twitter:card" content="summary">
