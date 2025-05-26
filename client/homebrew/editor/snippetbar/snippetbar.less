@@ -31,6 +31,18 @@
 			background-color: var(--menubar-accent);
 		}
 	}
+
+
+	&.compact {
+		.menu-section > .menu-item, .menu-section > .menu-wrapper > .menu-item {
+			grid-template-areas: "icon icon caret";
+			.name, .menu-name {
+				display: none;
+			}
+
+		}
+	}
+
 	.menu-list {
 		background-color: var(--menubar-color);
 		border: var(--menubar-border);

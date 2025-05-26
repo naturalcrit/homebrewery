@@ -204,6 +204,14 @@
 					}
 				}
 			}
+
+			&:where(.menu-bar.compact .menu-item){
+				grid-template-columns: 20px min-content;
+				grid-template-areas: "icon caret";
+				&:not(.brewTitle) .name, .menu-name {
+					display: none;
+				}
+			}
 		}
 
 		#recent-brews-menu.menu-list { 

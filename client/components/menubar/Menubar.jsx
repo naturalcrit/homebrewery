@@ -6,8 +6,64 @@ const _     = require('lodash');
 
 
 const Menubar = ({ id = null, className, children })=>{
+	const menubarRef = useRef(null);
+	const [isCompact, setIsCompact] = useState(false);
+	const fullWidthRef = useRef(null);
+
+	useEffect(()=>{
+		const menubar = menubarRef.current;
+		if(!menubar) return;
+
+		const measureFullWidth = ()=>{
+			// Temporarily remove compact class to measure full width
+			const wasCompact = menubar.classList.contains('compact');
+			if(wasCompact) menubar.classList.remove('compact');
+
+			// Measure full width needed
+			const width = menubar.scrollWidth;
+			fullWidthRef.current = width;
+
+			// Restore compact class if it was there
+			if(wasCompact) menubar.classList.add('compact');
+			return width;
+		};
+
+		const checkOverflow = _.debounce(()=>{
+			const containerWidth = menubar.parentElement.clientWidth;
+
+			const fullWidth = measureFullWidth();
+
+			console.log('fullWidth: ', fullWidth, '  containerWidth: ', containerWidth);
+			setIsCompact(fullWidth > containerWidth);
+		}, 100);
+
+		// Wait for parent element to stabilize
+		setTimeout(()=>{
+			measureFullWidth();
+			checkOverflow();
+
+			// Set up resize observer after initial measurement
+			const resizeObserver = new ResizeObserver(()=>{
+				checkOverflow();
+			});
+
+			if(menubar.parentElement) {
+				resizeObserver.observe(menubar.parentElement);
+			}
+		}, 100);
+
+		return ()=>{
+			checkOverflow.cancel();
+			resizeObserver.disconnect();
+		};
+	}, []);
+
 	return (
-		<div id={id} className={`menu-bar ${className ?? ''}`}>
+		<div
+			id={id}
+			ref={menubarRef}
+			className={cx('menu-bar', className, { compact: isCompact })}
+		>
 			{children}
 		</div>
 	);
@@ -27,10 +83,10 @@ const MenuItem = ({ icon = null, href = null, newTab = false, onClick = null, on
 	const handleClick = (e)=>{
 		onClick(e);
 	};
-	
+
 	const handleChange = (e)=>{
 		onChange(e);
-	}
+	};
 
 	const renderMenuItem = ()=>{
 		const classes = cx('menu-item', color, className);
@@ -40,9 +96,8 @@ const MenuItem = ({ icon = null, href = null, newTab = false, onClick = null, on
 		if(href){
 			return (
 				<a className={classes} href={href} target={newTab ? '_blank' : '_self'} rel='noopener noreferrer'>
-
 					{icon}
-					{children && <span>{children}</span>}
+					{children && <span className='name'>{children}</span>}
 				</a>
 			);
 		} else if(onChange) {
@@ -62,7 +117,7 @@ const MenuItem = ({ icon = null, href = null, newTab = false, onClick = null, on
 					{icon}
 					{children && <span className='name'>{children}</span>}
 				</div>
-			)
+			);
 		}
 	};
 
@@ -84,25 +139,25 @@ const MenuDropdown = ({ groupName, icon, color = null, className = null, childre
 	useEffect(()=>{
 		// Check for position-anchor support
 		setSupportsAnchorPosition(
-			CSS.supports("( position-anchor: --test  )")
+			CSS.supports('( position-anchor: --test  )')
 		);
 	}, []);
 
-    const updatePosition = useCallback(()=>{
-        if(!wrapperRef.current || !menuRef.current) return;
-        
-        // Use RAF to ensure all layout calculations are complete
-        requestAnimationFrame(()=>{
-            const triggerRect = wrapperRef.current.getBoundingClientRect();
-			const menubarRect = wrapperRef.current.closest('.menu-bar').getBoundingClientRect();
-            const isNested = wrapperRef.current.closest('.menu-list') !== null;
+	const updatePosition = useCallback(()=>{
+		if(!wrapperRef.current || !menuRef.current) return;
 
-            setMenuPosition({
-                top  : isNested ? triggerRect.height + triggerRect.y - menubarRect.height : triggerRect.height + triggerRect.y,
-                left : isNested ? triggerRect.width + triggerRect.x : triggerRect.x
-            });
-        });
-    }, []);
+		// Use RAF to ensure all layout calculations are complete
+		requestAnimationFrame(()=>{
+			const triggerRect = wrapperRef.current.getBoundingClientRect();
+			const menubarRect = wrapperRef.current.closest('.menu-bar').getBoundingClientRect();
+			const isNested = wrapperRef.current.closest('.menu-list') !== null;
+
+			setMenuPosition({
+				top  : isNested ? triggerRect.height + triggerRect.y - menubarRect.height : triggerRect.height + triggerRect.y,
+				left : isNested ? triggerRect.width + triggerRect.x : triggerRect.x
+			});
+		});
+	}, []);
 
 	useEffect(()=>{
 		// Check if browser supports CSS Anchor Positioning
@@ -119,7 +174,7 @@ const MenuDropdown = ({ groupName, icon, color = null, className = null, childre
 		const resizeObserver = new ResizeObserver(updatePosition);
 		resizeObserver.observe(wrapper);
 		resizeObserver.observe(menubarParent);
-		
+
 		window.addEventListener('scroll', updatePosition, true);
 		window.addEventListener('resize', updatePosition);
 
