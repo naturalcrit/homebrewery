@@ -205,7 +205,7 @@
 				}
 			}
 
-			&:where(.menu-bar.compact .menu-item){
+			&:where(.menu-bar.compact .menu-section > .menu-item, .menu-bar.compact .menu-section > .menu-wrapper > .menu-item){
 				grid-template-columns: 20px min-content;
 				grid-template-areas: "icon caret";
 				&:not(.brewTitle) .name, .menu-name {
