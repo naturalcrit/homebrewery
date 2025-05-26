@@ -19,6 +19,11 @@
 	@media screen and (pointer : coarse) {
 		font-size : 16px;
 	}
+
+	& > div:not(.editor-panel, .CodeMirror) {
+		position: relative;
+		height: 100%;
+	}
 	.CodeMirror-foldmarker {
 		font-family : inherit;
 		font-weight : 600;
