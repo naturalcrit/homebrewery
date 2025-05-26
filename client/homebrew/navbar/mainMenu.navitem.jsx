@@ -7,7 +7,7 @@ const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
 
 const MainMenu = ()=>{
 
-	const customTrigger = <><NaturalCritIcon /><span className='name'>The Homebrewery</span></>;
+	const customTrigger = <><NaturalCritIcon /><span className='name'>The Homebrewery</span><i className='caret fas fa-caret-down'></i></>;
 
 	return (
 		<MenuDropdown id='mainMenu' className='mainMenu' groupName='The Homebrewery' customTrigger={customTrigger} color='blue'>

@@ -16,6 +16,9 @@ const SplitPane = (props)=>{
 	const [moveBrew, setMoveBrew] = useState(false);
 	const [showMoveArrows, setShowMoveArrows] = useState(true);
 	const [liveScroll, setLiveScroll] = useState(false);
+	const [dragStartTime, setDragStartTime] = useState(0);
+  	const [dragStartPos, setDragStartPos] = useState(0);
+  	const [lastWidth, setLastWidth] = useState(null);
 
 	useEffect(()=>{
 		const savedPos = window.localStorage.getItem(storageKey);
@@ -34,6 +37,20 @@ const SplitPane = (props)=>{
 	const handleUp =(e)=>{
 		e.preventDefault();
 		if(isDragging) {
+			const dragTime = Date.now() - dragStartTime;
+			const dragDistance = Math.abs(e.pageX - dragStartPos);
+
+			if(dragTime < 200 && dragDistance < 5){
+				if(dividerPos < 50){
+					setDividerPos(limitPosition(lastWidth) || window.innerWidth / 2);
+				} else {
+          			setLastWidth(dividerPos);
+					setDividerPos(limitPosition(0));
+				}
+				console.log('click');
+			} else {
+				console.log('drag');
+			}
 			onDragFinish(dividerPos);
 			window.localStorage.setItem(storageKey, dividerPos);
 		}
@@ -43,6 +60,8 @@ const SplitPane = (props)=>{
 	const handleDown = (e)=>{
 		e.preventDefault();
 		setIsDragging(true);
+		setDragStartTime(Date.now());
+		setDragStartPos(e.pageX);
 	};
 
 	const handleMove = (e)=>{
