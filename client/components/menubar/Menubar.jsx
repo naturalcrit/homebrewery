@@ -30,10 +30,8 @@ const Menubar = ({ id = null, className, children })=>{
 
 		const checkOverflow = _.debounce(()=>{
 			const containerWidth = menubar.parentElement.clientWidth;
-
 			const fullWidth = measureFullWidth();
 
-			console.log('fullWidth: ', fullWidth, '  containerWidth: ', containerWidth);
 			setIsCompact(fullWidth > containerWidth);
 		}, 100);
 
