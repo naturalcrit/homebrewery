@@ -153,7 +153,7 @@ const Snippetbar = createClass({
 			<MenuSection className='snippets'></MenuSection>
 		);
 
-		return <MenuSection className='snippets'>
+		return <MenuSection id='snippets'>
 			{_.map(snippets, (snippetGroup)=>{
 				return <SnippetGroup
 					brew={this.props.brew}
@@ -207,60 +207,62 @@ const Snippetbar = createClass({
 		if(!this.props.showEditButtons) return;
 
 		return (
-			<MenuSection className='tools'>
-				<MenuSection id='history-tools' className='tool-group'>
-					<MenuDropdown id='history' className='tool' groupName='history' icon='fas fa-clock-rotate-left' popovertarget='history-menu' style={{ anchorName: '--history-menu' }}>
-						{this.renderHistoryItems()}
-					</MenuDropdown>
-					<MenuItem id='undo' icon='fas fa-undo' disabled={!this.props.historySize.undo ? true : false} className='tool'
-						onClick={this.props.undo} >
-						Undo
-					</MenuItem>
-					<MenuItem id='redo' icon='fas fa-redo' disabled={!this.props.historySize.redo ? true : false} className='tool'
-						onClick={this.props.redo} >
-						Redo
-					</MenuItem>
-				</MenuSection>
-				<MenuSection id='code-tools' className='tool-group'>
-					<MenuItem id='fold-all' icon='fas fa-compress-alt' disabled={(this.props.view === 'meta' || !this.props.foldCode) ? true : false} className='tool'
-						onClick={this.props.foldCode} >
-							Fold All Code
-					</MenuItem>
-					<MenuItem id='unfold-all' icon='fas fa-expand-alt' disabled={(this.props.view === 'meta' || !this.props.unfoldCode) ? true : false} className='tool'
-						onClick={this.props.unfoldCode} >
-						Unfold All Code
-					</MenuItem>
-					<MenuDropdown id='show-themes' className='tool' icon='fas fa-palette' groupName='Editor Themes'>
-						{this.renderThemeSelector()}
-					</MenuDropdown>
-				</MenuSection>
-
+			<>
 				<MenuSection id='editor-tabs' className='tool-group' role='tablist'>
 					<MenuItem id='brew-tab' role='tab' className='tab' icon='fa fa-beer' aria-selected={this.props.view === 'text'}
 						onClick={()=>this.props.onViewChange('text')}>
-						Brew Editor
+						Brew<span className='sr-only'> Editor</span>
 					</MenuItem>
 					<MenuItem id='style-tab' role='tab' className='tab' icon='fa fa-paint-brush' aria-selected={this.props.view === 'style'}
 						onClick={()=>this.props.onViewChange('style')}>
-						Style Editor
+						Style<span className='sr-only'> Editor</span>
 					</MenuItem>
 					<MenuItem id='snippets-tab' className='tab' icon='fas fa-th-list' aria-selected={this.props.view === 'snippet'}
 						onClick={()=>this.props.onViewChange('snippet')}>
-						Snippets Editor
+						Snippets<span className='sr-only'> Editor</span>
 					</MenuItem>
 					<MenuItem id='properties-tab' role='tab' className='tab' icon='fas fa-info-circle' aria-selected={this.props.view === 'meta'}
 						onClick={()=>this.props.onViewChange('meta')}>
-						Properties Editor
+						Properties<span className='sr-only'> Editor</span>
 					</MenuItem>
 				</MenuSection>
-			</MenuSection>
+				<MenuSection id='editor-tools'>
+					<MenuSection id='history-tools' className='tool-group'>
+						<MenuDropdown id='history' className='tool' groupName='history' icon='fas fa-clock-rotate-left' popovertarget='history-menu' style={{ anchorName: '--history-menu' }}>
+							{this.renderHistoryItems()}
+						</MenuDropdown>
+						<MenuItem id='undo' icon='fas fa-undo' disabled={!this.props.historySize.undo ? true : false} className='tool'
+							onClick={this.props.undo} >
+							Undo
+						</MenuItem>
+						<MenuItem id='redo' icon='fas fa-redo' disabled={!this.props.historySize.redo ? true : false} className='tool'
+							onClick={this.props.redo} >
+							Redo
+						</MenuItem>
+					</MenuSection>
+					<MenuSection id='code-tools' className='tool-group'>
+						<MenuItem id='fold-all' icon='fas fa-compress-alt' disabled={(this.props.view === 'meta' || !this.props.foldCode) ? true : false} className='tool'
+							onClick={this.props.foldCode} >
+								Fold All Code
+						</MenuItem>
+						<MenuItem id='unfold-all' icon='fas fa-expand-alt' disabled={(this.props.view === 'meta' || !this.props.unfoldCode) ? true : false} className='tool'
+							onClick={this.props.unfoldCode} >
+							Unfold All Code
+						</MenuItem>
+						<MenuDropdown id='show-themes' className='tool' icon='fas fa-palette' groupName='Editor Themes'>
+							{this.renderThemeSelector()}
+						</MenuDropdown>
+					</MenuSection>
+				</MenuSection>
+				
+			</>
 		);
 	},
 
 	render : function(){
 		return <Menubar id='snippet-bar'>
-			{this.renderSnippetGroups()}
 			{this.renderEditorButtons()}
+			{this.renderSnippetGroups()}
 		</Menubar>;
 	}
 });

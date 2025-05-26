@@ -9,9 +9,12 @@
 	--menubar-border : 1px solid #666;
 	--menubar-shadow : 0 0px 4px -1px black;
 	--menubar-accent : #AAAAAA;
-	display          : flex;
-	flex-wrap        : wrap-reverse;
-	justify-content  : space-between;
+	display          : grid;
+	grid-template-columns: min-content auto;
+	grid-template-rows: min-content min-content;
+	grid-template-areas:
+		"tabs tools"
+		"snippets snippets";
 	color            : black;
 	background-color : var(--menubar-color);
 	text-transform   : uppercase;
@@ -77,9 +80,10 @@
 
 	:disabled { color: #999999; }
 
-	.snippets.menu-section {
+	#snippets.menu-section {
 		gap: 0 8px;
 		flex-wrap: wrap;
+		justify-content: flex-start;
 	}
 
 	.menu-hr {
@@ -90,26 +94,55 @@
 		&[aria-selected='true']{
 			background-color : @color;
 			color: whitesmoke;
-			border: 1px solid currentColor;
+			outline: 1px solid currentColor;
+			outline-offset: -1px;
 			box-sizing: border-box;
+			z-index: 2;
+			box-shadow: 0 -2px 4px #666;
 		}
 	}
 
 	// group that holds all non-snippet buttons.
-	.tools {
-		display         : flex;
-		justify-content : flex-end;
-		min-width       : 225px;
-		container       : tools ;
+	#snippets {
+		grid-area: snippets;
+	}
+
+	#editor-tabs {
+		grid-area: tabs;
+
+		// editor tabs
+				#brew-tab { 
+					.highlight(@orangeLight);
+					.tooltipLeft('Brew Editor');
+					background-color: oklch(from @orangeLight l .05 h);
+				}
+				#style-tab { 
+					.highlight(@blueLight);
+					.tooltipLeft('Style Editor');
+					background-color: oklch(from @blueLight l .05 h);
+				}
+				#snippets-tab { 
+					.highlight(@purpleLight);
+					.tooltipLeft('Snippets Editor');
+					background-color: oklch(from @purpleLight l .05 h);
+				}
+				#properties-tab { 
+					.highlight(@tealLight);
+					.tooltipLeft('Properties');
+					background-color: oklch(from @tealLight l .05 h);
+				}	
+	}
+	#editor-tools {
+		grid-area: tools;
+		justify-content: end;
+
+		
 
 
 		// subgroups for tools (history, code folding/theme, editor tabs)
 		> .tool-group {
-			display         : flex;
-			flex            : 1;
-			justify-content : space-around;
 
-			> .menu-wrapper > .menu-item, > .menu-item {
+			> .menu-wrapper > .menu-item, &:not(#editor-tabs) > .menu-item {
 				gap : 0;
 				.menu-name, .name, .caret {
 					.screen-reader-only();
@@ -133,28 +166,17 @@
 				&#unfold-all { .tooltipLeft('Unfold All'); }
 				&#show-themes { .tooltipLeft('Editor Themes'); }
 
-				// editor tabs
-				&#brew-tab { 
-					.highlight(@orangeLight);
-					.tooltipLeft('Brew Editor');
-					background-color: oklch(from @orangeLight l .05 h);
-				}
-				&#style-tab { 
-					.highlight(@blueLight);
-					.tooltipLeft('Style Editor');
-					background-color: oklch(from @blueLight l .05 h);
-				}
-				&#snippets-tab { 
-					.highlight(@purpleLight);
-					.tooltipLeft('Snippets Editor');
-					background-color: oklch(from @purpleLight l .05 h);
-				}
-				&#properties-tab { 
-					.highlight(@tealLight);
-					.tooltipLeft('Properties');
-					background-color: oklch(from @tealLight l .05 h);
-				}				
+							
 			}			
-		}		
+		}
+				// Add container query for narrow state
+		@container tools (max-width: 450px) {
+			.menu-item {
+				gap: 0 !important;
+				.name {
+					.screen-reader-only();
+				}
+			}
+		}
 	}
 }
