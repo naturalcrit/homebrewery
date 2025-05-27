@@ -1,3 +1,4 @@
+@import 'naturalcrit/styles/colors.less';
 
 .splitPane {
 	position       : relative;
@@ -28,13 +29,17 @@
 		.dots {
 			display        : block;
 			position: relative;
-		left: 6px;
-			
+			left: 6px;
 			text-align     : center;
 			background: #888;
 			width: 16px;
 			border-radius: 0 4px 4px 0;
 			z-index: 5;
+			&.on-right-edge {
+				left: -6px;
+				border-radius: 4px 0 0 4px;
+			}
+			&:hover,&.dragging { background-color : @orangeLight; }
 			i {
 				display   : block !important;
 				margin    : 4px 0px;
