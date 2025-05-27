@@ -63,13 +63,36 @@ const Homebrew = createClass({
 		global.enable_themes = this.props.enable_themes;
 		global.config = this.props.config;
 
-		return {};
+		return { isClient: false };
 	},
+
+	componentDidMount : function() {
+		this.setState({ isClient: true });
+	},
+
+	backgroundObject : function() {
+		if(!this.state.isClient) return null;
+
+		if(this.props.config.deployment) {
+			return {
+				backgroundImage : `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='40px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${this.props.config.deployment}</text></svg>")`
+			};
+		} else if(this.props.config.local) {
+			return {
+				backgroundImage : `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='40px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>Local</text></svg>")`
+			};
+		}
+
+		return null;
+	},
+
 
 	render : function (){
 		return (
 			<Router location={this.props.url}>
-				<div className='homebrew'>
+				<div className={`homebrew${this.state.isClient && (this.props.config.deployment || this.props.config.local) ? ' deployment' : ''}`}
+					style={ this.backgroundObject() }
+				>
 					<Routes>
 						<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={this.props.brew} userThemes={this.props.userThemes}/>} />
 						<Route path='/share/:id' element={<WithRoute el={SharePage} brew={this.props.brew} />} />
