@@ -185,9 +185,10 @@ const mustacheSpans = {
 	start(src) { return src.match(/{{[^{]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeSpan = /^{{[^\n]*}}/;               // Regex for the complete token
-		const inlineRegex = /{{(?=((?:[:=](?:"'['\w,\-()#%=?. \&\:\!\@\$\^\*\<\>\;\:\[\]\{\}\-\_\+\=]*'"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *|}}/g;
+		const inlineRegex = /{{(?=((?:[:=](?:"['\w,\-()#%=?. \&\:\!\@\$\^\*\<\>\;\:\[\]\{\}\-\_\+\=]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *|}}/g;
 		const match = completeSpan.exec(src);
 		if(match) {
+			console.log('MustacheSpans');
 			//Find closing delimiter
 			let blockCount = 0;
 			let tags = {};
@@ -195,6 +196,7 @@ const mustacheSpans = {
 			let endToken = 0;
 			let delim;
 			while (delim = inlineRegex.exec(match[0])) {
+				console.log(delim);
 				if(_.isEmpty(tags)) {
 					tags = processStyleTags(delim[0].substring(2));
 					endTags = delim[0].length;
@@ -245,6 +247,7 @@ const mustacheDivs = {
 		const blockRegex = /^ *{{(?=((?:[:=](?:"['\w,\-()#%=?.\&\:\!\@\$\^\*\<\>\;\:\[\]\{\}\-\_\+\= ]*"|[\w\-()#%. ]*)|[^"=':{}\s]*)*))\1 *$|^ *}}$/gm;
 		const match = completeBlock.exec(src);
 		if(match) {
+			console.log('Mustache Divs');
 			//Find closing delimiter
 			let blockCount = 0;
 			let tags = {};
@@ -300,6 +303,7 @@ const mustacheInjectInline = {
 		const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-()#%=?.\&\:\!\@\$\^\*\<\>\;\:\[\]\{\}\-\_\+\= ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/g;
 		const match = inlineRegex.exec(src);
 		if(match) {
+			console.log('InlineInject');
 			const lastToken = tokens[tokens.length - 1];
 			if(!lastToken || lastToken.type == 'mustacheInjectInline')
 				return false;
@@ -739,7 +743,8 @@ const notInside = (string, stringMatch1, stringMatch2)=> {
 	const pos1 = string.indexOf(stringMatch1);
 	const pos2 = string.indexOf(stringMatch2);
 
- 	if((pos1 > 0) && (pos2 > 0) && (pos2 > pos1)) {
+ 	if(((pos1 > 0) && (pos2 == -1)) ||
+	   ((pos1 > 0) && (pos2 > 0) && (pos2 > pos1))) {
 		return true;
 	}
  	return false;
