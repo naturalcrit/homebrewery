@@ -1,3 +1,4 @@
+@import 'naturalcrit/styles/colors.less';
 
 .splitPane {
 	position       : relative;
@@ -12,20 +13,36 @@
 	}
 	.divider {
 		position         : relative;
-		display          : table;
-		width            : 15px;
+		display          : grid;
+		place-content: center;
+		width            : 4px;
 		height           : 100%;
 		text-align       : center;
 		touch-action     : none;
 		cursor           : ew-resize;
-		background-color : #BBBBBB;
+		background-color : #888;
+		z-index          : 5001;
+		box-shadow: 0 0 3px 0 black;
+		&:hover {
+			outline: 1px solid #333;
+		}
 		.dots {
-			display        : table-cell;
-			vertical-align : middle;
+			display        : block;
+			position: relative;
+			left: 6px;
 			text-align     : center;
+			background: #888;
+			width: 16px;
+			border-radius: 0 4px 4px 0;
+			z-index: 5;
+			&.on-right-edge {
+				left: -6px;
+				border-radius: 4px 0 0 4px;
+			}
+			&:hover,&.dragging { background-color : @orangeLight; }
 			i {
 				display   : block !important;
-				margin    : 10px 0px;
+				margin    : 4px 0px;
 				font-size : 6px;
 				color     : #666666;
 			}
