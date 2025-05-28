@@ -185,7 +185,7 @@ const mustacheSpans = {
 	start(src) { return src.match(/{{[^{]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeSpan = /^{{[^\n]*}}/;               // Regex for the complete token
-		const inlineRegex = /{{(?=((?:[:=](?:"['\w,\-()#%=?. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *|}}/g;
+		const inlineRegex = /{{(?=((?:[:=>](?:"['\w,\-()#%=?. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *|}}/g;
 		const match = completeSpan.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -242,7 +242,7 @@ const mustacheDivs = {
 	start(src) { return src.match(/\n *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeBlock = /^ *{{[^\n}]* *\n.*\n *}}/s;                // Regex for the complete token
-		const blockRegex = /^ *{{(?=((?:[:=](?:"['\w,\-()#%=?. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *$|^ *}}$/gm;
+		const blockRegex = /^ *{{(?=((?:[:=>](?:"['\w,\-()#%=?. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *$|^ *}}$/gm;
 		const match = completeBlock.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -297,7 +297,7 @@ const mustacheInjectInline = {
 	level : 'inline',
 	start(src) { return src.match(/ *{[^{\n]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-()#%=?. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/g;
+		const inlineRegex = /^ *{(?=((?:[:=>](?:"['\w,\-()#%=?. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/g;
 		const match = inlineRegex.exec(src);
 		if(match) {
 			const lastToken = tokens[tokens.length - 1];
@@ -735,11 +735,23 @@ const voidTags = new Set([
 	'input', 'keygen', 'link', 'meta', 'param', 'source'
 ]);
 
+const brewVarToCSSProperty = (string)=>{
+	const lookup = lookupVar(string.replace(/>"?([^"]*)"?/g, ''), globalPageNumber, false);
+	const targetProperty = string.slice(string.indexOf('>')+1);
+
+	if(lookup.resolved) {
+		return `--${targetProperty}:"'${lookup.content}'"`;
+	}
+
+	return '';
+};
+
 const processStyleTags = (string)=>{
 	//split tags up. quotes can only occur right after : or =.
 	//TODO: can we simplify to just split on commas?
-	const tags = string.match(/(?:[^, ":=]+|[:=](?:"[^"]*"|))+/g);
+	let tags = string.match(/(?:[^, ":=]+|[:=](?:"[^"]*"|))+/g);
 
+	const vars       = _.remove(tags, (tag)=>(tag.includes('>'))).map((tag)=>brewVarToCSSProperty(tag));
 	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0]        || null;
 	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('='))).join(' ') || null;
 	const attributes = _.remove(tags, (tag)=>(tag.includes('='))).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'))
@@ -751,6 +763,10 @@ const processStyleTags = (string)=>{
 			obj[key.trim()] = value.trim();
 			return obj;
 		}, {}) || null;
+	// Walk the vars conversion object and append it to tags.
+	vars.forEach((value)=>{
+		if(value != undefined) tags.push(value);
+	});
 	const styles = tags?.length ? tags.reduce((styleObj, style)=>{
 		const index = style.indexOf(':');
 		const [key, value] = [style.substring(0, index), style.substring(index + 1)];
@@ -761,7 +777,7 @@ const processStyleTags = (string)=>{
 	return {
 		id         : id,
 		classes    : classes,
-		styles     : _.isEmpty(styles)     ? null : styles,
+		styles     : _.isEmpty(styles) ? null : styles,
 		attributes : _.isEmpty(attributes) ? null : attributes
 	};
 };

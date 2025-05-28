@@ -194,10 +194,12 @@ const BrewRenderer = (props)=>{
 				const injectedTags = firstLineTokens?.find((obj)=>obj.injectedTags !== undefined)?.injectedTags;
 				if(injectedTags) {
 					styles     = { ...styles, ...injectedTags.styles };
+					styles['--HB_pageNumber'] = `'${(index + 1)}'`;
 					styles     = _.mapKeys(styles, (v, k)=>k.startsWith('--') ? k : _.camelCase(k)); // Convert CSS to camelCase for React
 					classes    = [classes, injectedTags.classes].join(' ').trim();
 					attributes = injectedTags.attributes;
 				}
+				console.log(styles);
 				pageText = pageText.includes('\n') ? pageText.substring(pageText.indexOf('\n') + 1) : ''; // Remove the \page line
 			}
 
