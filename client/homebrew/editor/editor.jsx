@@ -155,6 +155,7 @@ const Editor = createClass({
 			view : newView
 		}, ()=>{
 			this.codeEditor.current?.codeMirror.focus();
+			this.update();
 		});
 	},
 
@@ -419,10 +420,12 @@ const Editor = createClass({
 
 	//Called when there are changes to the editor's dimensions
 	update : function(){
-		this.codeEditor.current?.updateSize();
+		console.log('updating...')
 		const snipHeight = document.querySelector('#snippet-bar').offsetHeight;
-		if(snipHeight !== this.state.snippetbarHeight)
+		if(snipHeight !== this.state.snippetbarHeight){
 			this.setState({ snippetbarHeight: snipHeight });
+		}
+		this.codeEditor.current?.updateSize();
 	},
 
 	updateEditorTheme : function(newTheme){
