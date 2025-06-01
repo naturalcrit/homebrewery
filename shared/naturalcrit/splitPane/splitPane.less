@@ -12,8 +12,8 @@
 		overflow-y : hidden;
 	}
 	.divider {
-		position         : relative;
-		display          : grid;
+		position: relative;
+		display: grid;
 		place-content: center;
 		width            : 4px;
 		height           : 100%;
@@ -22,47 +22,47 @@
 		cursor           : ew-resize;
 		background-color : #888;
 		z-index          : 5001;
-		box-shadow: 0 0 3px 0 black;
+		filter: drop-shadow(0 0 3px black);
 		&:hover {
-			outline: 1px solid #333;
+			// outline: 1px solid #333;
 		}
-		.dots {
-			display        : block;
+		#flip-box {
 			position: relative;
-			left: 6px;
-			text-align     : center;
-			background: #888;
+			left: 10px;
+			background: inherit;
 			width: 16px;
 			border-radius: 0 4px 4px 0;
-			z-index: 5;
-			&.on-right-edge {
-				left: -6px;
-				border-radius: 4px 0 0 4px;
+			display        : block;
+			color: #CCC;
+			display: flex;
+			flex-direction: column;
+			gap: 5px;
+			padding: 5px 2px 5px 0 ;
+			#split-pane-tools {
+				display: flex;
+				flex-direction: column;
+				gap: 3px;
 			}
-			&:hover,&.dragging { background-color : @orangeLight; }
+		}
+
+		&.on-right-edge #flip-box {
+			left: -10px;
+			border-radius: 4px 0 0 4px;
+			padding: 5px 0px 5px 2px ;
+		}
+
+		.dots {
+			z-index: 5;
+			&:hover i,&.dragging i { color : @orangeLight; }
 			i {
-				display   : block !important;
-				margin    : 4px 0px;
-				font-size : 6px;
 				color     : #666666;
 			}
 		}
 		&:hover,&.dragging { background-color : #999999; }
 	}
 	.arrow {
-		position         : absolute;
-		left             : 50%;
-		z-index          : 999;
-		width            : 25px;
-		height           : 25px;
-		font-size        : 1.2em;
-		text-align       : center;
+		aspect-ratio: 1 / 1;
 		cursor           : pointer;
-		background-color : #DDDDDD;
-		border           : 2px solid #BBBBBB;
-		border-radius    : 15px;
-		box-shadow       : 0 4px 5px #0000007F;
-		translate        : -50%;
 		&.left {
 			.tooltipLeft('Jump to location in Editor');
 			top : 30px;
@@ -74,12 +74,12 @@
 		&.lock {
 			.tooltipRight('De-sync Editor and Preview locations.');
 			top        : 90px;
-			background : #666666;
+			color: @orangeLight;
 		}
 		&.unlock {
 			.tooltipRight('Sync Editor and Preview locations');
 			top : 90px;
 		}
-		&:hover { background-color : #666666; }
+		// &:hover { background-color : #666666; }
 	}
 }

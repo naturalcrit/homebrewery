@@ -47,7 +47,8 @@ const SplitPane = (props)=>{
 			const dragTime = Date.now() - dragStartTime;
 			const dragDistance = Math.abs(e.pageX - dragStartPos);
 
-			if(dragTime < 200 && dragDistance < 5){
+			if(dragTime < 200 && dragDistance < 5 && (e.target.closest('#split-pane-tools') == false)){
+				console.log(e.target.closest('#split-pane-tools'))
 				if(dividerPos < 50){
 					setDividerPos(limitPosition(lastWidth) || window.innerWidth / 2);
 				} else {
@@ -88,7 +89,7 @@ const SplitPane = (props)=>{
 	}
 
 	const  renderMoveArrows = (showMoveArrows &&
-		<>
+		<div id='split-pane-tools'>
 			<div className='arrow left'
 				onClick={()=>setMoveSource(!moveSource)} >
 				<i className='fas fa-arrow-left' />
@@ -101,16 +102,16 @@ const SplitPane = (props)=>{
 				onClick={liveScrollToggle} >
 				<i id='scrollToggle' className={liveScroll ? 'fas fa-lock' : 'fas fa-unlock'} />
 			</div>
-		</>
+		</div>
 	);
 
 	const renderDivider = (
-		<div className={`divider ${isDragging && 'dragging'}`} onPointerDown={handleDown}>
-			{showDividerButtons && renderMoveArrows}
-			<div className={`dots${onRightEdge() ? ' on-right-edge' : ''}`}>
-				<i className='fas fa-circle' />
-				<i className='fas fa-circle' />
-				<i className='fas fa-circle' />
+		<div className={`divider${isDragging ? ' dragging' : ''}${onRightEdge() ? ' on-right-edge' : ''}`} onPointerDown={handleDown}>
+			<div id='flip-box'>
+				{showDividerButtons && renderMoveArrows}
+				<div className={`dots`}>
+					<i className='fas fa-grip-vertical' />
+				</div>
 			</div>
 		</div>
 	);
