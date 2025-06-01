@@ -6,12 +6,12 @@
 	z-index          : 1;
 	display          : flex;
 	flex-wrap        : wrap;
-	gap              : 8px 20px;
+	gap              : 0px 20px;
 	align-items      : center;
 	justify-content  : center;
-	padding          : 5px 0 2px;
+	// padding          : 5px 0 2px;
 	font-family      : 'Open Sans', sans-serif;
-	font-size        : 13px;
+	// font-size        : 13px;
 	color            : #CCCCCC;
 	background-color : #555555;
 	anchor-name      : --toolbar;
@@ -21,14 +21,17 @@
 		transition : all 0.2s ease;
 	}
 
+	.menu-section {
+		gap: 0 5px;
+		flex-wrap: wrap;
+		justify-content: flex-start;
+	}
 
 	.menu-item {
-		height: 23px;
 		width            : auto;
-		min-width        : 46px;
+		aspect-ratio: 1 / 1;
 		grid-template-columns: 1fr;
 		gap: 0;
-		font-size: 13px;
 		.name, .caret {
 			.screen-reader-only();
 		}
@@ -44,6 +47,7 @@
 			height         : 1.5em;
 			padding        : 2px 5px;
 			font-family    : 'Open Sans', sans-serif;
+			font-size: 10px;
 			color          : inherit;
 			background     : #3B3B3B;
 			border         : none;
@@ -56,8 +60,8 @@
 				accent-color : #D3D3D3;
 	  
 				&::-webkit-slider-thumb, &::-moz-range-thumb { 
-					width            : 5px;
-					height           : 5px;
+					width            : 2px;
+					height           : 2px;
 					cursor           : ew-resize;
 					outline          : none;
 				}
@@ -82,7 +86,7 @@
 			// `.text-input` if generic to all range inputs, or `#page-input` if only for current page input
 			&#page-input {
 				min-width    : 5ch;
-				margin-right : 1ch;
+				// margin-right : 1ch;
 				text-align   : center;
 			}
 		}
@@ -148,7 +152,11 @@
 
 	.radio-group:has(button[role='radio']) {
 		display : flex;
-		border  : 1px solid #333333;
+		// border  : 1px solid #333333;
+		// border-radius: 6px;
+		.menu-item {
+			padding: 0 3px;
+		}
 	}
 
 	
