@@ -154,8 +154,8 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 						id='single-spread'
 						icon='fac single-spread'
 						title='Single Page'
-						onClick={()=>{handleOptionChange('spread', 'active');}}
-						aria-checked={displayOptions.spread === 'single'}
+						onClick={()=>{handleOptionChange('spread', 'single');}}
+						aria-checked={displayOptions.spread === 'single' || 'single'}
 					>Single Spread</MenuItem>
 					<MenuItem role='radio'
 						id='facing-spread'
