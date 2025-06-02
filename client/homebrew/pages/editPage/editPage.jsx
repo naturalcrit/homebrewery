@@ -461,6 +461,7 @@ const EditPage = createClass({
 					<Editor
 						ref={this.editor}
 						brew={this.state.brew}
+						isOwner={this.props.isOwner}
 						onTextChange={this.handleTextChange}
 						onStyleChange={this.handleStyleChange}
 						onSnipChange={this.handleSnipChange}
