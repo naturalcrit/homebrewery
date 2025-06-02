@@ -67,7 +67,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 		} else if(mode == 'fit'){
 			// find the page with the largest single dim (height or width) so that zoom can be adapted to fit it.
 			let minDimRatio;
-			if(displayOptions.spread === 'active')
+			if(displayOptions.spread === 'facing'){
 				minDimRatio = [...pages].reduce(
 					(minRatio, page)=>Math.min(minRatio,
 						iframeWidth / page.offsetWidth,
@@ -75,14 +75,18 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					),
 					Infinity
 				);
-			else
+				console.log('facing minDimRatio: ', minDimRatio);
+			} else {
+				console.log(displayOptions.columnGap)
 				minDimRatio = [...pages].reduce(
 					(minRatio, page)=>Math.min(minRatio,
-						iframeWidth / ((page.offsetWidth * 2) + parseInt(displayOptions.columnGap)),
+						iframeWidth / ((page.offsetWidth) + parseInt(displayOptions.columnGap)),
 						iframeHeight / page.offsetHeight
 					),
 					Infinity
 				);
+				console.log('minDimRation: ', minDimRatio);
+			}
 
 			desiredZoom = minDimRatio * 100;
 		}

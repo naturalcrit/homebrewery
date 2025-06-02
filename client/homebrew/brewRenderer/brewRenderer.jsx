@@ -119,7 +119,9 @@ const BrewRenderer = (props)=>{
 		zoomLevel    : 100,
 		spread       : 'single',
 		startOnRight : true,
-		pageShadows  : true
+		pageShadows  : true,
+		columnGap    : 10,
+		rowGap       : 10
 	});
 
 	//useEffect to store or gather toolbar state from storage
