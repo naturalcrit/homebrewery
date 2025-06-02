@@ -21,8 +21,8 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 	}, [visiblePages]);
 
 	useEffect(()=>{
-		const visibility = localStorage.getItem('hb_toolbarVisibility') === 'true';
-		setToolsVisible(visibility);
+		const visibility = localStorage.getItem('hb_toolbarVisibility');
+		if(visibility) setToolsVisible(visibility);
 	}, []);
 
 	const handleZoomButton = (zoom)=>{
@@ -68,7 +68,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 		} else if(mode == 'fit'){
 			// find the page with the largest single dim (height or width) so that zoom can be adapted to fit it.
 			let minDimRatio;
-			if(displayOptions.spread === 'active')
+			if(displayOptions.spread === 'single')
 				minDimRatio = [...pages].reduce(
 					(minRatio, page)=>Math.min(minRatio,
 						iframeWidth / page.offsetWidth,
@@ -165,7 +165,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 						id='single-spread'
 						className='tool'
 						title='Single Page'
-						onClick={()=>{handleOptionChange('spread', 'active');}}
+						onClick={()=>{handleOptionChange('spread', 'single');}}
 						aria-checked={displayOptions.spread === 'single'}
 					><i className='fac single-spread' /></button>
 					<button role='radio'
