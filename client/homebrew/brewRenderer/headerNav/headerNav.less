@@ -1,16 +1,16 @@
 .headerNav {
-	--menubar-color  : #DDDDDD;
+	--menubar-color  : transparent;
 	--menubar-shadow : 0 0px 4px -1px black;
 	--menubar-border : 1px solid #666;
-	position         : fixed;
-	top              : 0;
-	left             : 0px;
+	color: #bdc8cf;
+	font-family     : 'Open Sans';
+	position         : relative;
 	max-width        : 40vw;
 	max-height       : calc(100vh - 32px);
-	padding          : 5px 10px;
+	padding          : 15px 30px;
 	overflow-y       : auto;
 	background-color: var(--menubar-color);
-	border: var(--menubar-border);
+	border-right: var(--menubar-border);
 	position-anchor  : --toolbar;
 	inset-block-start: anchor(bottom);
 	inset-inline-start: anchor(left);
@@ -26,7 +26,6 @@
 			display         : inline-block;
 			width           : 100%;
 			padding         : 2px;
-			font-family     : 'Open Sans';
 			font-size       : 12px;
 			text-align: left;
 			line-height: 1.2em;
@@ -34,15 +33,56 @@
 			text-decoration : none;
 			cursor          : pointer;
 			&:hover { text-decoration : underline; }
-			&.pageLink { font-weight : 900; }
+			&.pageLink { 
+				font-weight : 900;
+				text-align: center;
+				background: #799fc9;
+				border-radius: 8px;
+				color: #2C3E4F;
+			}
 
 			@depths: 0,1,2,3,4,5,6,7;
 
 			each(@depths, {
 				&.depth-@{value} {
-					padding-left: ((@value) * 0.5em);
+					padding-left: ((@value) * 2ch);
 				}
 			});
+
+			&.depth-1 {
+				font-weight: bold;
+
+			}
 		}
+	}
+
+
+	--sb-track-color: #fff0;
+	--sb-thumb-color: #8fa1ad;
+	--sb-size: 14px;
+
+	&::-webkit-scrollbar {
+	width: var(--sb-size)
+	}
+
+	&::-webkit-scrollbar-track {
+	background: var(--sb-track-color);
+	border-radius: 1px;
+	}
+
+	&::-webkit-scrollbar-thumb {
+	background: var(--sb-thumb-color);
+	border-radius: 1px;
+	
+	}
+
+
+
+}
+
+@supports not selector(::-webkit-scrollbar) {
+	.headerNav {
+		scrollbar-color: var(--sb-thumb-color)
+						var(--sb-track-color);
 	}
 }

@@ -323,7 +323,7 @@ const BrewRenderer = (props)=>{
 				<NotificationPopup />
 			</div>
 			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState} scrollToHash={scrollToHash} />
-			{headerState ? <HeaderNav ref={pagesRef} onScrollToHash={scrollToHash} /> : <></>}
+			<HeaderNav className={`${headerState ? 'visible' : 'hidden'}`} ref={pagesRef} onScrollToHash={scrollToHash} />
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}

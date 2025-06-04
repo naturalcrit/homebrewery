@@ -1,28 +1,42 @@
 @import (multiple, less) 'shared/naturalcrit/styles/reset.less';
 
 #preview-pane {
-	display: flex;
-	flex-direction: column;
+	display: grid;
+	grid-template-columns: auto min-content;
+	grid-template-rows: min-content auto;
+	grid-template-areas: "toolbar toolbar"
+		"preview panel";
 	height: 100%;
 
 	.toolBar {
-		flex: 0 0 auto;
+		grid-area: toolbar;
+		height: 30px;
+		&.hidden {
+			height: 2px;
+		}
 	}
 
 	.headerNav {
-		flex: 0 0 auto;
+		grid-area: panel;
+		width: 250px;
+		&.hidden {
+			grid-area: unset;
+			width: 0;
+			padding: 0;
+		}
 	}
 
 	iframe {
-		flex: 1 1 auto;
+		grid-area: preview;
 		border: 0;
 		min-height: 0;
+		height: 100%;
 	}
 }
 
 .brewRenderer {
 	height        : 100vh;
-	padding-top   : 60px;
+	padding-top   : 30px;
 	overflow-y    : scroll;
 	will-change   : transform;
 	&:has(.facing, .flow) { padding : 60px 30px; }
@@ -96,17 +110,28 @@
 		}
 		*[id] { scroll-margin-top : 100px; }
 	}
+	--sb-track-color: #fff0;
+	--sb-thumb-color: #8fa1ad;
+	--sb-size: 14px;
+
 	&::-webkit-scrollbar {
-		width : 20px;
-		&:horizontal {
-			width  : auto;
-			height : 20px;
-		}
-		&-thumb {
-			background : linear-gradient(90deg, #D3C1AF 15px, #00000000 15px);
-			&:horizontal { background : linear-gradient(0deg, #D3C1AF 15px, #00000000 15px); }
-		}
-		&-corner { visibility : hidden; }
+		width: var(--sb-size);
+		height: var(--sb-size);
+	}
+
+	&::-webkit-scrollbar-track {
+		background: var(--sb-track-color);
+		border-radius: 1px;
+		&:vertical {border-left: 1px solid #61666a;}
+		&:horizontal {border-top: 1px solid #61666a;}
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background: var(--sb-thumb-color);
+		border-radius: 1px;
+	}
+	&::-webkit-scrollbar-corner {
+		background: #61666a;
 	}
 }
 

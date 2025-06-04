@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 
 const MAX_TEXT_LENGTH = 40;
 
-const HeaderNav = React.forwardRef(({ onScrollToHash }, ref)=>{
+const HeaderNav = React.forwardRef(({ onScrollToHash, ...props }, ref)=>{
 
 	const renderHeaderLinks = ()=>{
 		if(!ref.current) return;
@@ -22,7 +22,7 @@ const HeaderNav = React.forwardRef(({ onScrollToHash }, ref)=>{
 			'.insideCover' : (el, pageType)=>{ const text = getHeaderContent(el); return text ? `Interior: ${text}` : 'Interior Cover Page'; },
 			'.partCover'   : (el, pageType)=>{ const text = getHeaderContent(el); return text ? `Section: ${text}` : 'Section Cover Page'; },
 			'.backCover'   : (el, pageType)=>{ const text = getHeaderContent(el); return text ? `Back: ${text}` : 'Rear Cover Page'; },
-			'.toc'         : ()=>{ return 'Table of Contents'; },
+			'.toc'         : ()=>{ return ''; },
 		};
 
 		const getHeaderContent = (el)=>el.querySelector('h1')?.textContent;
@@ -31,9 +31,10 @@ const HeaderNav = React.forwardRef(({ onScrollToHash }, ref)=>{
 
 		const selector = [
 			'.pages > .page',                                                   // All page elements, which by definition have IDs
-			`.page:not(:has(${topLevelPageSelector})) > [id]`,                  // All direct children of non-excluded .pages with an ID (Legacy)
-			`.page:not(:has(${topLevelPageSelector})) > .columnWrapper > [id]`, // All direct children of non-excluded .page > .columnWrapper with an ID (V3)
-			`.page:not(:has(${topLevelPageSelector})) h2`,                      // All non-excluded H2 titles, like Monster frame titles
+			`.page:not(:has(.toc)) > [id]`,                  // All direct children of non-excluded .pages with an ID (Legacy)
+			`.page:not(:has(.toc)) > .columnWrapper > [id]`, // All direct children of non-excluded .page > .columnWrapper with an ID (V3)
+			`.page:not(:has(.toc)) h2`,                      // All non-excluded H2 titles, like Monster frame titles
+			`.page .toc > h1`
 		];
 		const elements = ref.current.querySelectorAll(selector.join(','));
 		if(!elements) return;
@@ -54,14 +55,14 @@ const HeaderNav = React.forwardRef(({ onScrollToHash }, ref)=>{
 				link  : el.id
 			};
 			if(el.classList.contains('page')) {
-				let text = `Page ${el.id.slice(1)}`; // Get the page # by trimming off the 'p' from the ID
+				let text = `${el.id.slice(1)}`; // Get the page # by trimming off the 'p' from the ID
 				const pageType = Object.keys(topLevelPages).find((pageType)=>el.querySelector(pageType));
-				if(pageType)
-					text += ` - ${topLevelPages[pageType](el, pageType)}`; // If a Top Level Page, add extra label
+				// if(pageType)
+				// 	text = `${topLevelPages[pageType](el, pageType)}`; // If a Top Level Page, add extra label
 
 				navEntry.depth     = 0; // Pages are always at the least indented level
 				navEntry.text      = text;
-				navEntry.className = 'pageLink';
+				navEntry.className = `pageLink ${pageType ? pageType.replace(/[.#]/, '') : ''}`;
 			} else if(el.localName.match(/^h[1-6]/)){  // Header elements H1 through H6
 				navEntry.depth = el.localName[1];      // Depth is set by the header level
 			}
@@ -72,7 +73,7 @@ const HeaderNav = React.forwardRef(({ onScrollToHash }, ref)=>{
 		);
 	};
 
-	return <nav className='headerNav'>
+	return <nav className={`headerNav ${props.className}`}>
 		<ul>
 			{renderHeaderLinks()}
 		</ul>
