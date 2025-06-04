@@ -827,6 +827,12 @@ const Markdown = {
 
 		rawBrewText = rawBrewText.replace(/^\\column(?:break)?$/gm, `\n<div class='columnSplit'></div>\n`);
 
+		const systemVariables = [
+			`[HB_pageNumber_${pageNumber + 1}]: $[HB_pageNumber]`
+		];
+
+		rawBrewText = `${rawBrewText}\n${systemVariables.join('\n\n')}`;
+
 		const opts = Marked.defaults;
 
 		rawBrewText = opts.hooks.preprocess(rawBrewText);
