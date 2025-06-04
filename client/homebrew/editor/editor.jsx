@@ -420,7 +420,6 @@ const Editor = createClass({
 
 	//Called when there are changes to the editor's dimensions
 	update : function(){
-		console.log('updating...')
 		const snipHeight = document.querySelector('#snippet-bar').offsetHeight;
 		if(snipHeight !== this.state.snippetbarHeight){
 			this.setState({ snippetbarHeight: snipHeight });

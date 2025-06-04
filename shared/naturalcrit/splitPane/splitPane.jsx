@@ -48,16 +48,12 @@ const SplitPane = (props)=>{
 			const dragDistance = Math.abs(e.pageX - dragStartPos);
 
 			if(dragTime < 200 && dragDistance < 5 && (e.target.closest('#split-pane-tools') == false)){
-				console.log(e.target.closest('#split-pane-tools'))
 				if(dividerPos < 50){
 					setDividerPos(limitPosition(lastWidth) || window.innerWidth / 2);
 				} else {
           			setLastWidth(dividerPos);
 					setDividerPos(limitPosition(0));
 				}
-				console.log('click');
-			} else {
-				console.log('drag');
 			}
 			onDragFinish(dividerPos);
 			window.localStorage.setItem(storageKey, dividerPos);
