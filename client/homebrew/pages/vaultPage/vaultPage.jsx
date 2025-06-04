@@ -5,12 +5,11 @@ require('./vaultPage.less');
 const React = require('react');
 const { useState, useEffect, useRef } = React;
 
-const Nav           = require('naturalcrit/nav/nav.jsx');
-const Navbar        = require('../../navbar/navbar.jsx');
+// const Nav           = require('naturalcrit/nav/nav.jsx');
+const Navbar        = require('../../../components/menubar/Menubar.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account       = require('../../navbar/account.navitem.jsx');
 const NewBrew       = require('../../navbar/newbrew.navitem.jsx');
-const HelpNavItem   = require('../../navbar/help.navitem.jsx');
 const BrewItem      = require('../basePages/listPage/brewItem/brewItem.jsx');
 const SplitPane     = require('../../../../shared/naturalcrit/splitPane/splitPane.jsx');
 const ErrorIndex    = require('../errorPage/errors/errorIndex.js');
@@ -126,7 +125,6 @@ const VaultPage = (props)=>{
 			</Nav.section>
 			<Nav.section>
 				<NewBrew />
-				<HelpNavItem />
 				<RecentNavItem />
 				<Account />
 			</Nav.section>

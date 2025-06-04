@@ -4,12 +4,11 @@ const _ = require('lodash');
 
 const ListPage = require('../basePages/listPage/listPage.jsx');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
+// const Nav = require('naturalcrit/nav/nav.jsx');
+const Navbar = require('../../../components/menubar/Menubar.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account = require('../../navbar/account.navitem.jsx');
 const NewBrew = require('../../navbar/newbrew.navitem.jsx');
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const VaultNavitem = require('../../navbar/vault.navitem.jsx');
 
