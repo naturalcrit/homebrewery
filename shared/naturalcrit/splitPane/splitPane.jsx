@@ -47,7 +47,7 @@ const SplitPane = (props)=>{
 			const dragTime = Date.now() - dragStartTime;
 			const dragDistance = Math.abs(e.pageX - dragStartPos);
 
-			if(dragTime < 200 && dragDistance < 5 && (e.target.closest('#split-pane-tools') == false)){
+			if(dragTime < 200 && dragDistance < 5 && (e.target.closest('#split-pane-tools') == null)){
 				if(dividerPos < 50){
 					setDividerPos(limitPosition(lastWidth) || window.innerWidth / 2);
 				} else {

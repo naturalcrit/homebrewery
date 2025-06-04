@@ -217,7 +217,7 @@ const Snippetbar = createClass({
 						onClick={()=>this.props.onViewChange('style')}>
 						Style<span className='sr-only'> Editor</span>
 					</MenuItem>
-					<MenuItem id='snippets-tab' className='tab' icon='fas fa-th-list' aria-selected={this.props.view === 'snippet'}
+					<MenuItem id='snippets-tab' role='tab' className='tab' icon='fas fa-th-list' aria-selected={this.props.view === 'snippet'}
 						onClick={()=>this.props.onViewChange('snippet')}>
 						Snippets<span className='sr-only'> Editor</span>
 					</MenuItem>
