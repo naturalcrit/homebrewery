@@ -479,13 +479,13 @@ const mergeHTMLTags = (originalTags, newTags)=>{
 const Markdown = {
 	marked : Marked,
 	render : (rawBrewText, pageNumber=0)=>{
-		const lastPageNumber = pageNumber > 0 ? getMarkedVariable(pageNumber - 1, 'HB_pageNumber.content') : 0;
+		const lastPageNumber = pageNumber > 0 ? getMarkedVariable(pageNumber - 1, 'HB_pageNumber') : 0;
+		setMarkedVarPage(pageNumber);
+		clearMarkedVarsQueue();
 		setMarkedVariable(pageNumber, 							//Reset global links for current page, to ensure values are parsed in order
 			'HB_pageNumber',									//Add document variables for this page
 			!isNaN(Number(lastPageNumber)) ? Number(lastPageNumber) + 1 : lastPageNumber
 		);
-		clearMarkedVarsQueue();						//Could move into MarkedVariables()
-		setMarkedVarPage(pageNumber);
 		if(pageNumber==0) {
 			MarkedGFMResetHeadingIDs();
 		}
